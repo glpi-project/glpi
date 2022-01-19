@@ -76,8 +76,8 @@ class DbTimezones extends AbstractRequirement
 
         $iterator = $this->db->request(
             [
-            'COUNT'  => 'cpt',
-            'FROM'   => 'mysql.time_zone_name',
+                'COUNT'  => 'cpt',
+                'FROM'   => 'mysql.time_zone_name',
             ]
         );
         $result = $iterator->current();

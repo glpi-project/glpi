@@ -52,25 +52,25 @@ function update94xto950()
         $migration->addField("glpi_items_disks", "encryption_status", "integer", [
             'after'  => "is_dynamic",
             'value'  => 0
-         ]);
+        ]);
     }
 
     if (!$DB->fieldExists("glpi_items_disks", "encryption_tool")) {
         $migration->addField("glpi_items_disks", "encryption_tool", "string", [
             'after'  => "encryption_status"
-         ]);
+        ]);
     }
 
     if (!$DB->fieldExists("glpi_items_disks", "encryption_algorithm")) {
         $migration->addField("glpi_items_disks", "encryption_algorithm", "string", [
             'after'  => "encryption_tool"
-         ]);
+        ]);
     }
 
     if (!$DB->fieldExists("glpi_items_disks", "encryption_type")) {
         $migration->addField("glpi_items_disks", "encryption_type", "string", [
             'after'  => "encryption_algorithm"
-         ]);
+        ]);
     }
     /** /Encrypted FS support  */
 
@@ -107,9 +107,9 @@ function update94xto950()
    // Fix search Softwares performance
     $migration->dropKey('glpi_softwarelicenses', 'softwares_id_expire');
     $migration->addKey('glpi_softwarelicenses', [
-      'softwares_id',
-      'expire',
-      'number'
+        'softwares_id',
+        'expire',
+        'number'
     ], 'softwares_id_expire_number');
 
     /** Private supplier followup in glpi_entities */
@@ -119,9 +119,9 @@ function update94xto950()
             "suppliers_as_private",
             "integer",
             [
-            'value'     => -2,               // Inherit as default value
-            'update'    => 0,                // Not enabled for root entity
-            'condition' => 'WHERE `id` = 0'
+                'value'     => -2,               // Inherit as default value
+                'update'    => 0,                // Not enabled for root entity
+                'condition' => 'WHERE `id` = 0'
             ]
         );
     }
@@ -135,9 +135,9 @@ function update94xto950()
             'enable_custom_css',
             'integer',
             [
-            'value'     => -2, // Inherit as default value
-            'update'    => '0', // Not enabled for root entity
-            'condition' => 'WHERE `id` = 0'
+                'value'     => -2, // Inherit as default value
+                'update'    => '0', // Not enabled for root entity
+                'condition' => 'WHERE `id` = 0'
             ]
         );
     }
@@ -210,8 +210,8 @@ function update94xto950()
     }
 
     $migration->addField('glpi_states', 'is_visible_cluster', 'bool', [
-      'value' => 1,
-      'after' => 'is_visible_pdu'
+        'value' => 1,
+        'after' => 'is_visible_pdu'
     ]);
     $migration->addKey('glpi_states', 'is_visible_cluster');
 
@@ -224,10 +224,10 @@ function update94xto950()
    //rename tables -- usefull only for 9.5 rolling release
     foreach (
         [
-        'glpi_itiltemplates',
-        'glpi_itiltemplatepredefinedfields',
-        'glpi_itiltemplatemandatoryfields',
-        'glpi_itiltemplatehiddenfields',
+            'glpi_itiltemplates',
+            'glpi_itiltemplatepredefinedfields',
+            'glpi_itiltemplatemandatoryfields',
+            'glpi_itiltemplatehiddenfields',
         ] as $table
     ) {
         if ($DB->tableExists($table)) {
@@ -237,12 +237,12 @@ function update94xto950()
    //rename fkeys -- usefull only for 9.5 rolling release
     foreach (
         [
-        'glpi_entities'                        => 'itiltemplates_id',
-        'glpi_profiles'                        => 'itiltemplates_id',
-        'glpi_ticketrecurrents'                => 'itiltemplates_id',
-        'glpi_tickettemplatehiddenfields'      => 'itiltemplates_id',
-        'glpi_tickettemplatemandatoryfields'   => 'itiltemplates_id',
-        'glpi_tickettemplatepredefinedfields'  => 'itiltemplates_id'
+            'glpi_entities'                        => 'itiltemplates_id',
+            'glpi_profiles'                        => 'itiltemplates_id',
+            'glpi_ticketrecurrents'                => 'itiltemplates_id',
+            'glpi_tickettemplatehiddenfields'      => 'itiltemplates_id',
+            'glpi_tickettemplatemandatoryfields'   => 'itiltemplates_id',
+            'glpi_tickettemplatepredefinedfields'  => 'itiltemplates_id'
         ] as $table => $field
     ) {
         if ($DB->fieldExists($table, $field)) {
@@ -280,9 +280,9 @@ function update94xto950()
                 $DB->buildInsert(
                     "glpi_{$itiltype}templates",
                     [
-                    'id'           => 1,
-                    'name'         => 'Default',
-                    'is_recursive' => 1
+                        'id'           => 1,
+                        'name'         => 'Default',
+                        'is_recursive' => 1
                     ]
                 )
             );
@@ -314,9 +314,9 @@ function update94xto950()
                 $DB->buildInsert(
                     "glpi_{$itiltype}templatemandatoryfields",
                     [
-                    'id'                       => 1,
-                    $itiltype . 'templates_id'   => 1,
-                    'num'                      => 21
+                        'id'                       => 1,
+                        $itiltype . 'templates_id'   => 1,
+                        'num'                      => 21
                     ]
                 )
             );
@@ -372,9 +372,9 @@ function update94xto950()
             $DB->buildUpdate(
                 'glpi_documents_items',
                 [
-                'date_creation' => new \QueryExpression(
-                    $DB->quoteName('date_mod')
-                )
+                    'date_creation' => new \QueryExpression(
+                        $DB->quoteName('date_mod')
+                    )
                 ],
                 [true]
             )
@@ -392,24 +392,24 @@ function update94xto950()
     };
 
     $common_dc_model_tables = [
-      'glpi_computermodels',
-      'glpi_enclosuremodels',
-      'glpi_monitormodels',
-      'glpi_networkequipmentmodels',
-      'glpi_pdumodels',
-      'glpi_peripheralmodels',
+        'glpi_computermodels',
+        'glpi_enclosuremodels',
+        'glpi_monitormodels',
+        'glpi_networkequipmentmodels',
+        'glpi_pdumodels',
+        'glpi_peripheralmodels',
     ];
     foreach ($common_dc_model_tables as $table) {
         $elements_to_fix = $DB->request(
             [
-            'SELECT'    => ['id', 'picture_front', 'picture_rear'],
-            'FROM'      => $table,
-            'WHERE'     => [
-               'OR' => [
-                  'picture_front' => ['LIKE', '%' . $doc_send_url . '%'],
-                  'picture_rear' => ['LIKE', '%' . $doc_send_url . '%'],
-               ],
-            ],
+                'SELECT'    => ['id', 'picture_front', 'picture_rear'],
+                'FROM'      => $table,
+                'WHERE'     => [
+                    'OR' => [
+                        'picture_front' => ['LIKE', '%' . $doc_send_url . '%'],
+                        'picture_rear' => ['LIKE', '%' . $doc_send_url . '%'],
+                    ],
+                ],
             ]
         );
         foreach ($elements_to_fix as $data) {
@@ -421,11 +421,11 @@ function update94xto950()
 
     $elements_to_fix = $DB->request(
         [
-         'SELECT'    => ['id', 'blueprint'],
-         'FROM'      => 'glpi_dcrooms',
-         'WHERE'     => [
-            'blueprint' => ['LIKE', '%' . $doc_send_url . '%'],
-         ],
+            'SELECT'    => ['id', 'blueprint'],
+            'FROM'      => 'glpi_dcrooms',
+            'WHERE'     => [
+                'blueprint' => ['LIKE', '%' . $doc_send_url . '%'],
+            ],
         ]
     );
     foreach ($elements_to_fix as $data) {
@@ -439,13 +439,13 @@ function update94xto950()
         $migration->addField("glpi_itilcategories", "changetemplates_id", "integer", [
             'after'  => "tickettemplates_id_demand",
             'value'  => 0
-         ]);
+        ]);
     }
     if (!$DB->fieldExists('glpi_itilcategories', 'problemtemplates_id')) {
         $migration->addField("glpi_itilcategories", "problemtemplates_id", "integer", [
             'after'  => "changetemplates_id",
             'value'  => 0
-         ]);
+        ]);
     }
 
     $migration->addKey('glpi_itilcategories', 'changetemplates_id');
@@ -494,27 +494,27 @@ function update94xto950()
 
         $new_rights = ALLSTANDARDRIGHT + PlanningExternalEvent::MANAGE_BG_EVENTS;
         $migration->addRight('externalevent', $new_rights, [
-         'planning' => Planning::READMY
+            'planning' => Planning::READMY
         ]);
     }
 
    // partial updates (for developers)
     if (!$DB->fieldExists('glpi_planningexternalevents', 'planningexternaleventtemplates_id')) {
         $migration->addField('glpi_planningexternalevents', 'planningexternaleventtemplates_id', 'int', [
-         'after' => 'id'
+            'after' => 'id'
         ]);
         $migration->addKey('glpi_planningexternalevents', 'planningexternaleventtemplates_id');
     }
     if (!$DB->fieldExists('glpi_planningexternalevents', 'is_recursive')) {
         $migration->addField('glpi_planningexternalevents', 'is_recursive', 'bool', [
-         'after' => 'entities_id',
-         'value' => 1
+            'after' => 'entities_id',
+            'value' => 1
         ]);
         $migration->addKey('glpi_planningexternalevents', 'is_recursive');
     }
     if (!$DB->fieldExists('glpi_planningexternalevents', 'users_id_guests')) {
         $migration->addField('glpi_planningexternalevents', 'users_id_guests', 'text', [
-         'after' => 'users_id',
+            'after' => 'users_id',
         ]);
     }
 
@@ -538,7 +538,7 @@ function update94xto950()
     if (!$DB->fieldExists('glpi_planningeventcategories', 'color')) {
         $migration->addField("glpi_planningeventcategories", "color", "string", [
             'after'  => "name"
-         ]);
+        ]);
     }
 
     if (!$DB->tableExists('glpi_planningexternaleventtemplates')) {
@@ -571,7 +571,7 @@ function update94xto950()
         $migration->addField("glpi_entities", "autopurge_delay", "integer", [
             'after'  => "autoclose_delay",
             'value'  => Entity::CONFIG_NEVER
-         ]);
+        ]);
     }
 
     CronTask::Register(
@@ -579,8 +579,8 @@ function update94xto950()
         'purgeticket',
         7 * DAY_TIMESTAMP,
         [
-         'mode'  => CronTask::MODE_EXTERNAL,
-         'state' => CronTask::STATE_DISABLE
+            'mode'  => CronTask::MODE_EXTERNAL,
+            'state' => CronTask::STATE_DISABLE
         ]
     );
     /** /Add purge delay per entity */
@@ -591,8 +591,8 @@ function update94xto950()
         'cleanorphans',
         7 * DAY_TIMESTAMP,
         [
-         'mode'  => CronTask::MODE_EXTERNAL,
-         'state' => CronTask::STATE_DISABLE
+            'mode'  => CronTask::MODE_EXTERNAL,
+            'state' => CronTask::STATE_DISABLE
         ]
     );
     /** /Clean oprhans documents crontask */
@@ -604,18 +604,18 @@ function update94xto950()
     if (!$DB->fieldExists("glpi_projects", "auto_percent_done")) {
         $migration->addField("glpi_projects", "auto_percent_done", "bool", [
             'after'  => "percent_done"
-         ]);
+        ]);
     }
     if (!$DB->fieldExists("glpi_projecttasks", "auto_percent_done")) {
         $migration->addField("glpi_projecttasks", "auto_percent_done", "bool", [
             'after'  => "percent_done"
-         ]);
+        ]);
     }
     /** /Add "code" field on glpi_itilcategories */
     if (!$DB->fieldExists("glpi_itilcategories", "code")) {
         $migration->addField("glpi_itilcategories", "code", "string", [
             'after'  => "groups_id"
-         ]);
+        ]);
     }
     /** /Add "code" field on glpi_itilcategories */
 
@@ -641,8 +641,8 @@ function update94xto950()
             'itemtype',
             "varchar(100) COLLATE utf8_unicode_ci NOT NULL",
             [
-            'after' => 'items_id',
-            'update' => "'Computer'", // Defines value for all existing elements
+                'after' => 'items_id',
+                'update' => "'Computer'", // Defines value for all existing elements
             ]
         );
         $migration->changeField('glpi_items_softwareversions', 'is_deleted_computer', 'is_deleted_item', 'bool');
@@ -651,15 +651,15 @@ function update94xto950()
         $migration->dropKey('glpi_items_softwareversions', 'computers_id');
         $migration->addKey('glpi_items_softwareversions', 'items_id', 'items_id');
         $migration->addKey('glpi_items_softwareversions', [
-         'itemtype',
-         'items_id'
+            'itemtype',
+            'items_id'
         ], 'item');
         $migration->dropKey('glpi_items_softwareversions', 'unicity');
         $migration->migrationOneTable('glpi_items_softwareversions');
         $migration->addKey('glpi_items_softwareversions', [
-         'itemtype',
-         'items_id',
-         'softwareversions_id'
+            'itemtype',
+            'items_id',
+            'softwareversions_id'
         ], 'unicity', 'UNIQUE');
     }
 
@@ -676,16 +676,16 @@ function update94xto950()
             'itemtype',
             "varchar(100) COLLATE utf8_unicode_ci NOT NULL",
             [
-            'after' => 'items_id',
-            'update' => "'Computer'", // Defines value for all existing elements
+                'after' => 'items_id',
+                'update' => "'Computer'", // Defines value for all existing elements
             ]
         );
         $migration->addKey('glpi_items_softwarelicenses', 'itemtype');
         $migration->dropKey('glpi_items_softwarelicenses', 'computers_id');
         $migration->addKey('glpi_items_softwarelicenses', 'items_id', 'items_id');
         $migration->addKey('glpi_items_softwarelicenses', [
-         'itemtype',
-         'items_id'
+            'itemtype',
+            'items_id'
         ], 'item');
     }
 
@@ -787,8 +787,8 @@ function update94xto950()
             'changetemplates_id',
             'integer',
             [
-            'value'     => -2, // Inherit as default value
-            'after'     => 'tickettemplates_id'
+                'value'     => -2, // Inherit as default value
+                'after'     => 'tickettemplates_id'
             ]
         );
     }
@@ -799,8 +799,8 @@ function update94xto950()
             'problemtemplates_id',
             'integer',
             [
-            'value'     => -2, // Inherit as default value
-            'after'     => 'changetemplates_id'
+                'value'     => -2, // Inherit as default value
+                'after'     => 'changetemplates_id'
             ]
         );
     }
@@ -813,8 +813,8 @@ function update94xto950()
             'changetemplates_id',
             'integer',
             [
-            'value'     => 0, // Inherit as default value
-            'after'     => 'tickettemplates_id'
+                'value'     => 0, // Inherit as default value
+                'after'     => 'tickettemplates_id'
             ]
         );
     }
@@ -825,8 +825,8 @@ function update94xto950()
             'problemtemplates_id',
             'integer',
             [
-            'value'     => 0, // Inherit as default value
-            'after'     => 'changetemplates_id'
+                'value'     => 0, // Inherit as default value
+                'after'     => 'changetemplates_id'
             ]
         );
     }
@@ -836,7 +836,7 @@ function update94xto950()
     /** Add Apple File System (All Apple devices since 2017) */
     if (countElementsInTable('glpi_filesystems', ['name' => 'APFS']) === 0) {
         $DB->insertOrDie('glpi_filesystems', [
-         'name'   => 'APFS'
+            'name'   => 'APFS'
         ]);
     }
     /** /Add Apple File System (All Apple devices since 2017) */
@@ -874,12 +874,12 @@ function update94xto950()
 
     /** Add uuid on planning items */
     $planning_items_tables = [
-      'glpi_planningexternalevents',
-      'glpi_reminders',
-      'glpi_projecttasks',
-      'glpi_changetasks',
-      'glpi_problemtasks',
-      'glpi_tickettasks',
+        'glpi_planningexternalevents',
+        'glpi_reminders',
+        'glpi_projecttasks',
+        'glpi_changetasks',
+        'glpi_problemtasks',
+        'glpi_tickettasks',
     ];
     foreach ($planning_items_tables as $table) {
         if (!$DB->fieldExists($table, 'uuid')) {
@@ -888,7 +888,7 @@ function update94xto950()
                 'uuid',
                 'string',
                 [
-                'after'  => 'id'
+                    'after'  => 'id'
                 ]
             );
             $migration->addKey($table, 'uuid', '', 'UNIQUE');
@@ -897,10 +897,10 @@ function update94xto950()
             $DB->buildUpdate(
                 $table,
                 [
-                'uuid' => new \QueryExpression('UUID()'),
+                    'uuid' => new \QueryExpression('UUID()'),
                 ],
                 [
-                'uuid' => null,
+                    'uuid' => null,
                 ]
             )
         );
@@ -928,9 +928,9 @@ function update94xto950()
 
     /** Fix mixed classes case in DB */
     $mixed_case_classes = [
-      'AuthLdap' => 'AuthLDAP',
-      'Crontask' => 'CronTask',
-      'InfoCom'  => 'Infocom',
+        'AuthLdap' => 'AuthLDAP',
+        'Crontask' => 'CronTask',
+        'InfoCom'  => 'Infocom',
     ];
     foreach ($mixed_case_classes as $bad_case_classname => $classname) {
         $migration->renameItemtype($bad_case_classname, $classname, false);
@@ -945,7 +945,7 @@ function update94xto950()
 
     /** Dashboards */
     $migration->addRight('dashboard', READ | UPDATE | CREATE | PURGE, [
-      'config' => UPDATE
+        'config' => UPDATE
     ]);
     if (!$DB->tableExists('glpi_dashboards_dashboards')) {
         $query = "CREATE TABLE `glpi_dashboards_dashboards` (
@@ -997,18 +997,18 @@ function update94xto950()
 
    //delete prevous dashboards configuration (remove partial dev versions)
     Config::deleteConfigurationValues('core', [
-      'default_dashboard_central',
-      'default_dashboard_assets',
-      'default_dashboard_helpdesk',
-      'default_dashboard_mini_ticket',
+        'default_dashboard_central',
+        'default_dashboard_assets',
+        'default_dashboard_helpdesk',
+        'default_dashboard_mini_ticket',
     ]);
 
    // add default dashboards
     $migration->addConfig([
-      'default_dashboard_central'     => 'central',
-      'default_dashboard_assets'      => 'assets',
-      'default_dashboard_helpdesk'    => 'assistance',
-      'default_dashboard_mini_ticket' => 'mini_tickets',
+        'default_dashboard_central'     => 'central',
+        'default_dashboard_assets'      => 'assets',
+        'default_dashboard_helpdesk'    => 'assistance',
+        'default_dashboard_mini_ticket' => 'mini_tickets',
     ]);
 
     if (!$DB->fieldExists('glpi_users', 'default_dashboard_central')) {
@@ -1039,14 +1039,14 @@ function update94xto950()
             $query = $DB->buildInsert(
                 \Glpi\Dashboard\Item::getTable(),
                 [
-                'dashboards_dashboards_id' => new QueryParam(),
-                'gridstack_id'             => new QueryParam(),
-                'card_id'                  => new QueryParam(),
-                'x'                        => new QueryParam(),
-                'y'                        => new QueryParam(),
-                'width'                    => new QueryParam(),
-                'height'                   => new QueryParam(),
-                'card_options'             => new QueryParam(),
+                    'dashboards_dashboards_id' => new QueryParam(),
+                    'gridstack_id'             => new QueryParam(),
+                    'card_id'                  => new QueryParam(),
+                    'x'                        => new QueryParam(),
+                    'y'                        => new QueryParam(),
+                    'width'                    => new QueryParam(),
+                    'height'                   => new QueryParam(),
+                    'card_options'             => new QueryParam(),
                 ]
             );
             $stmt = $DB->prepare($query);
@@ -1083,12 +1083,12 @@ function update94xto950()
     }
 
     $dfields = [
-      'domaintypes_id'        => 'integer',
-      'date_expiration'       => 'timestamp',
-      'users_id_tech'         => 'integer',
-      'groups_id_tech'        => 'integer',
-      'others'                => 'string',
-      'is_deleted'            => 'boolean',
+        'domaintypes_id'        => 'integer',
+        'date_expiration'       => 'timestamp',
+        'users_id_tech'         => 'integer',
+        'groups_id_tech'        => 'integer',
+        'others'                => 'string',
+        'is_deleted'            => 'boolean',
     ];
     $dindex = $dfields;
     unset($dindex['others']);
@@ -1127,18 +1127,18 @@ function update94xto950()
     foreach (['Computer', 'NetworkEquipment', 'Printer'] as $itemtype) {
         if ($DB->fieldExists($itemtype::getTable(), 'domains_id')) {
             $iterator = $DB->request([
-            'SELECT' => ['id', 'domains_id'],
-            'FROM'   => $itemtype::getTable(),
-            'WHERE'  => ['domains_id' => ['>', 0]]
+                'SELECT' => ['id', 'domains_id'],
+                'FROM'   => $itemtype::getTable(),
+                'WHERE'  => ['domains_id' => ['>', 0]]
             ]);
             if (count($iterator)) {
                  //migrate existing data
                  $migration->migrationOneTable('glpi_domains_items');
                 foreach ($iterator as $row) {
                     $DB->insert("glpi_domains_items", [
-                     'domains_id'   => $row['domains_id'],
-                     'itemtype'     => $itemtype,
-                     'items_id'     => $row['id']
+                        'domains_id'   => $row['domains_id'],
+                        'itemtype'     => $itemtype,
+                        'items_id'     => $row['id']
                     ]);
                 }
             }
@@ -1150,21 +1150,21 @@ function update94xto950()
         $migration->addField("glpi_entities", "use_domains_alert", "integer", [
             'after'  => "use_reservations_alert",
             'value'  => -2
-         ]);
+        ]);
     }
 
     if (!$DB->fieldExists('glpi_entities', 'send_domains_alert_close_expiries_delay')) {
         $migration->addField("glpi_entities", "send_domains_alert_close_expiries_delay", "integer", [
             'after'  => "use_domains_alert",
             'value'  => -2
-         ]);
+        ]);
     }
 
     if (!$DB->fieldExists('glpi_entities', 'send_domains_alert_expired_delay')) {
         $migration->addField("glpi_entities", "send_domains_alert_expired_delay", "integer", [
             'after'  => "send_domains_alert_close_expiries_delay",
             'value'  => -2
-         ]);
+        ]);
     }
 
     $ADDTODISPLAYPREF['Domain'] = [3, 4, 2, 6, 7];
@@ -1175,15 +1175,15 @@ function update94xto950()
         $DB->buildUpdate(
             'glpi_displaypreferences',
             [
-            'num'       => '205',
+                'num'       => '205',
             ],
             [
-            'num'       => '33',
-            'itemtype'  => [
-               'Computer',
-               'NetworkEquipment',
-               'Printer'
-            ]
+                'num'       => '33',
+                'itemtype'  => [
+                    'Computer',
+                    'NetworkEquipment',
+                    'Printer'
+                ]
             ]
         )
     );
@@ -1283,9 +1283,9 @@ function update94xto950()
         $DB->insertOrDie(
             'glpi_notificationtemplates',
             [
-            'name'            => 'Alert domains',
-            'itemtype'        => 'Domain',
-            'date_mod'        => new \QueryExpression('NOW()'),
+                'name'            => 'Alert domains',
+                'itemtype'        => 'Domain',
+                'date_mod'        => new \QueryExpression('NOW()'),
             ],
             'Add domains expiration notification template'
         );
@@ -1294,17 +1294,17 @@ function update94xto950()
         $DB->insertOrDie(
             'glpi_notificationtemplatetranslations',
             [
-            'notificationtemplates_id' => $notificationtemplate_id,
-            'language'                 => '',
-            'subject'                  => '##domain.action## : ##domain.entity##',
-            'content_text'             => <<<PLAINTEXT
+                'notificationtemplates_id' => $notificationtemplate_id,
+                'language'                 => '',
+                'subject'                  => '##domain.action## : ##domain.entity##',
+                'content_text'             => <<<PLAINTEXT
 ##lang.domain.entity## :##domain.entity##
 ##FOREACHdomains##
 ##lang.domain.name## : ##domain.name## - ##lang.domain.dateexpiration## : ##domain.dateexpiration##
 ##ENDFOREACHdomains##
 PLAINTEXT
             ,
-            'content_html'             => <<<HTML
+                'content_html'             => <<<HTML
 &lt;p&gt;##lang.domain.entity## :##domain.entity##&lt;br /&gt; &lt;br /&gt;
 ##FOREACHdomains##&lt;br /&gt;
 ##lang.domain.name##  : ##domain.name## - ##lang.domain.dateexpiration## :  ##domain.dateexpiration##&lt;br /&gt;
@@ -1316,28 +1316,28 @@ HTML
         );
 
         $notifications_data = [
-         [
-            'event' => 'ExpiredDomains',
-            'name'  => 'Alert expired domains',
-         ],
-         [
-            'event' => 'DomainsWhichExpire',
-            'name'  => 'Alert domains close expiries',
-         ]
+            [
+                'event' => 'ExpiredDomains',
+                'name'  => 'Alert expired domains',
+            ],
+            [
+                'event' => 'DomainsWhichExpire',
+                'name'  => 'Alert domains close expiries',
+            ]
         ];
         foreach ($notifications_data as $notification_data) {
             $DB->insertOrDie(
                 'glpi_notifications',
                 [
-                'name'            => $notification_data['name'],
-                'entities_id'     => 0,
-                'itemtype'        => 'Domain',
-                'event'           => $notification_data['event'],
-                'comment'         => null,
-                'is_recursive'    => 1,
-                'is_active'       => 1,
-                'date_creation'   => new \QueryExpression('NOW()'),
-                'date_mod'        => new \QueryExpression('NOW()'),
+                    'name'            => $notification_data['name'],
+                    'entities_id'     => 0,
+                    'itemtype'        => 'Domain',
+                    'event'           => $notification_data['event'],
+                    'comment'         => null,
+                    'is_recursive'    => 1,
+                    'is_active'       => 1,
+                    'date_creation'   => new \QueryExpression('NOW()'),
+                    'date_mod'        => new \QueryExpression('NOW()'),
                 ],
                 'Add domains expiration notification'
             );
@@ -1346,9 +1346,9 @@ HTML
             $DB->insertOrDie(
                 'glpi_notifications_notificationtemplates',
                 [
-                'notifications_id'         => $notification_id,
-                'mode'                     => Notification_NotificationTemplate::MODE_MAIL,
-                'notificationtemplates_id' => $notificationtemplate_id,
+                    'notifications_id'         => $notification_id,
+                    'mode'                     => Notification_NotificationTemplate::MODE_MAIL,
+                    'notificationtemplates_id' => $notificationtemplate_id,
                 ],
                 'Add domains expiration notification template instance'
             );
@@ -1356,9 +1356,9 @@ HTML
             $DB->insertOrDie(
                 'glpi_notificationtargets',
                 [
-                'items_id'         => Notification::ITEM_TECH_IN_CHARGE,
-                'type'             => 1,
-                'notifications_id' => $notification_id,
+                    'items_id'         => Notification::ITEM_TECH_IN_CHARGE,
+                    'type'             => 1,
+                    'notifications_id' => $notification_id,
                 ],
                 'Add domains expiration notification targets'
             );
@@ -1366,9 +1366,9 @@ HTML
             $DB->insertOrDie(
                 'glpi_notificationtargets',
                 [
-                'items_id'         => Notification::ITEM_TECH_GROUP_IN_CHARGE,
-                'type'             => 1,
-                'notifications_id' => $notification_id,
+                    'items_id'         => Notification::ITEM_TECH_GROUP_IN_CHARGE,
+                    'type'             => 1,
+                    'notifications_id' => $notification_id,
                 ],
                 'Add domains expiration notification targets'
             );
@@ -1436,17 +1436,17 @@ HTML
 
     /** update project and itil task templates to tinymce content **/
     $template_types = [
-      'ProjectTaskTemplate' => 'description',
-      'TaskTemplate'        => 'content'
+        'ProjectTaskTemplate' => 'description',
+        'TaskTemplate'        => 'content'
     ];
     foreach ($template_types as $template_type => $fieldname) {
         $query = $DB->buildUpdate(
             $template_type::getTable(),
             [
-            $fieldname => new QueryParam(),
+                $fieldname => new QueryParam(),
             ],
             [
-            'id'       => new QueryParam()
+                'id'       => new QueryParam()
             ]
         );
         $stmt = $DB->prepare($query);
@@ -1472,9 +1472,9 @@ HTML
     /** Password expiration policy */
     $migration->addConfig(
         [
-         'password_expiration_delay'      => '-1',
-         'password_expiration_notice'     => '-1',
-         'password_expiration_lock_delay' => '-1',
+            'password_expiration_delay'      => '-1',
+            'password_expiration_notice'     => '-1',
+            'password_expiration_lock_delay' => '-1',
         ]
     );
     if (!$DB->fieldExists('glpi_users', 'password_last_update')) {
@@ -1483,31 +1483,31 @@ HTML
             'password_last_update',
             'timestamp',
             [
-            'null'   => true,
-            'after'  => 'password',
+                'null'   => true,
+                'after'  => 'password',
             ]
         );
     }
     $passwordexpires_notif_count = countElementsInTable(
         'glpi_notifications',
         [
-         'itemtype' => 'User',
-         'event'    => 'passwordexpires',
+            'itemtype' => 'User',
+            'event'    => 'passwordexpires',
         ]
     );
     if ($passwordexpires_notif_count === 0) {
         $DB->insertOrDie(
             'glpi_notifications',
             [
-            'name'            => 'Password expires alert',
-            'entities_id'     => 0,
-            'itemtype'        => 'User',
-            'event'           => 'passwordexpires',
-            'comment'         => null,
-            'is_recursive'    => 1,
-            'is_active'       => 1,
-            'date_creation'   => new \QueryExpression('NOW()'),
-            'date_mod'        => new \QueryExpression('NOW()'),
+                'name'            => 'Password expires alert',
+                'entities_id'     => 0,
+                'itemtype'        => 'User',
+                'event'           => 'passwordexpires',
+                'comment'         => null,
+                'is_recursive'    => 1,
+                'is_active'       => 1,
+                'date_creation'   => new \QueryExpression('NOW()'),
+                'date_mod'        => new \QueryExpression('NOW()'),
             ],
             'Add password expires notification'
         );
@@ -1516,9 +1516,9 @@ HTML
         $DB->insertOrDie(
             'glpi_notificationtemplates',
             [
-            'name'            => 'Password expires alert',
-            'itemtype'        => 'User',
-            'date_mod'        => new \QueryExpression('NOW()'),
+                'name'            => 'Password expires alert',
+                'itemtype'        => 'User',
+                'date_mod'        => new \QueryExpression('NOW()'),
             ],
             'Add password expires notification template'
         );
@@ -1527,9 +1527,9 @@ HTML
         $DB->insertOrDie(
             'glpi_notifications_notificationtemplates',
             [
-            'notifications_id'         => $notification_id,
-            'mode'                     => Notification_NotificationTemplate::MODE_MAIL,
-            'notificationtemplates_id' => $notificationtemplate_id,
+                'notifications_id'         => $notification_id,
+                'mode'                     => Notification_NotificationTemplate::MODE_MAIL,
+                'notificationtemplates_id' => $notificationtemplate_id,
             ],
             'Add password expires notification template instance'
         );
@@ -1537,9 +1537,9 @@ HTML
         $DB->insertOrDie(
             'glpi_notificationtargets',
             [
-            'items_id'         => 19,
-            'type'             => 1,
-            'notifications_id' => $notification_id,
+                'items_id'         => 19,
+                'type'             => 1,
+                'notifications_id' => $notification_id,
             ],
             'Add password expires notification targets'
         );
@@ -1547,10 +1547,10 @@ HTML
         $DB->insertOrDie(
             'glpi_notificationtemplatetranslations',
             [
-            'notificationtemplates_id' => $notificationtemplate_id,
-            'language'                 => '',
-            'subject'                  => '##user.action##',
-            'content_text'             => <<<PLAINTEXT
+                'notificationtemplates_id' => $notificationtemplate_id,
+                'language'                 => '',
+                'subject'                  => '##user.action##',
+                'content_text'             => <<<PLAINTEXT
 ##user.realname## ##user.firstname##,
 
 ##IFuser.password.has_expired=1##
@@ -1567,7 +1567,7 @@ HTML
 ##password.update.link## ##user.password.update.url##
 PLAINTEXT
             ,
-            'content_html'             => <<<HTML
+                'content_html'             => <<<HTML
 &lt;p&gt;&lt;strong&gt;##user.realname## ##user.firstname##&lt;/strong&gt;&lt;/p&gt;
 
 ##IFuser.password.has_expired=1##
@@ -1593,9 +1593,9 @@ HTML
         'passwordexpiration',
         DAY_TIMESTAMP,
         [
-         'mode'  => CronTask::MODE_EXTERNAL,
-         'state' => CronTask::STATE_DISABLE,
-         'param' => 100,
+            'mode'  => CronTask::MODE_EXTERNAL,
+            'state' => CronTask::STATE_DISABLE,
+            'param' => 100,
         ]
     );
     /** /Password expiration policy */
@@ -1607,23 +1607,23 @@ HTML
         'checkAllUpdates',
         DAY_TIMESTAMP,
         [
-         'mode'  => CronTask::MODE_EXTERNAL,
-         'state' => CronTask::STATE_WAITING,
+            'mode'  => CronTask::MODE_EXTERNAL,
+            'state' => CronTask::STATE_WAITING,
         ]
     );
 
    // notification
     if (
         countElementsInTable('glpi_notifications', [
-        'itemtype' => 'Glpi\\\\Marketplace\\\\Controller'
+            'itemtype' => 'Glpi\\\\Marketplace\\\\Controller'
         ]) === 0
     ) {
         $DB->insertOrDie(
             'glpi_notificationtemplates',
             [
-            'name'            => 'Plugin updates',
-            'itemtype'        => 'Glpi\\\\Marketplace\\\\Controller',
-            'date_mod'        => new \QueryExpression('NOW()'),
+                'name'            => 'Plugin updates',
+                'itemtype'        => 'Glpi\\\\Marketplace\\\\Controller',
+                'date_mod'        => new \QueryExpression('NOW()'),
             ],
             'Add plugins updates notification template'
         );
@@ -1632,10 +1632,10 @@ HTML
         $DB->insertOrDie(
             'glpi_notificationtemplatetranslations',
             [
-            'notificationtemplates_id' => $notificationtemplate_id,
-            'language'                 => '',
-            'subject'                  => '##lang.plugins_updates_available##',
-            'content_text'             => <<<PLAINTEXT
+                'notificationtemplates_id' => $notificationtemplate_id,
+                'language'                 => '',
+                'subject'                  => '##lang.plugins_updates_available##',
+                'content_text'             => <<<PLAINTEXT
 ##lang.plugins_updates_available##
 
 ##FOREACHplugins##
@@ -1643,7 +1643,7 @@ HTML
 ##ENDFOREACHplugins##
 PLAINTEXT
             ,
-            'content_html'             => <<<HTML
+                'content_html'             => <<<HTML
 &lt;p&gt;##lang.plugins_updates_available##&lt;/p&gt;
 &lt;ul&gt;##FOREACHplugins##
 &lt;li&gt;##plugin.name## :##plugin.old_version## -&gt; ##plugin.version##&lt;/li&gt;
@@ -1657,15 +1657,15 @@ HTML
         $DB->insertOrDie(
             'glpi_notifications',
             [
-            'name'            => 'Check plugin updates',
-            'entities_id'     => 0,
-            'itemtype'        => 'Glpi\\\\Marketplace\\\\Controller',
-            'event'           => 'checkpluginsupdate',
-            'comment'         => null,
-            'is_recursive'    => 1,
-            'is_active'       => 1,
-            'date_creation'   => new \QueryExpression('NOW()'),
-            'date_mod'        => new \QueryExpression('NOW()'),
+                'name'            => 'Check plugin updates',
+                'entities_id'     => 0,
+                'itemtype'        => 'Glpi\\\\Marketplace\\\\Controller',
+                'event'           => 'checkpluginsupdate',
+                'comment'         => null,
+                'is_recursive'    => 1,
+                'is_active'       => 1,
+                'date_creation'   => new \QueryExpression('NOW()'),
+                'date_mod'        => new \QueryExpression('NOW()'),
             ],
             'Add plugins updates notification'
         );
@@ -1674,9 +1674,9 @@ HTML
         $DB->insertOrDie(
             'glpi_notifications_notificationtemplates',
             [
-            'notifications_id'         => $notification_id,
-            'mode'                     => Notification_NotificationTemplate::MODE_MAIL,
-            'notificationtemplates_id' => $notificationtemplate_id,
+                'notifications_id'         => $notification_id,
+                'mode'                     => Notification_NotificationTemplate::MODE_MAIL,
+                'notificationtemplates_id' => $notificationtemplate_id,
             ],
             'Add plugins updates notification template instance'
         );
@@ -1684,9 +1684,9 @@ HTML
         $DB->insertOrDie(
             'glpi_notificationtargets',
             [
-            'items_id'         => Notification::GLOBAL_ADMINISTRATOR,
-            'type'             => 1,
-            'notifications_id' => $notification_id,
+                'items_id'         => Notification::GLOBAL_ADMINISTRATOR,
+                'type'             => 1,
+                'notifications_id' => $notification_id,
             ],
             'Add domains expiration notification targets'
         );
@@ -1695,48 +1695,48 @@ HTML
 
     /** Update default right assignement rule (only it exactly match previous default rule) */
     $prev_rule = [
-      'entities_id'  => 0,
-      'sub_type'     => 'RuleRight',
-      'ranking'      => 1,
-      'name'         => 'Root',
-      'description'  => '',
-      'match'        => 'OR',
-      'is_active'    => 1,
-      'is_recursive' => 0,
-      'uuid'         => '500717c8-2bd6e957-53a12b5fd35745.02608131',
-      'condition'    => 0,
+        'entities_id'  => 0,
+        'sub_type'     => 'RuleRight',
+        'ranking'      => 1,
+        'name'         => 'Root',
+        'description'  => '',
+        'match'        => 'OR',
+        'is_active'    => 1,
+        'is_recursive' => 0,
+        'uuid'         => '500717c8-2bd6e957-53a12b5fd35745.02608131',
+        'condition'    => 0,
     ];
     $rule = new Rule();
     if ($rule->getFromDBByCrit($prev_rule)) {
         $rule->getRuleWithCriteriasAndActions($rule->fields['id'], true, true);
 
         $prev_criteria = [
-         [
-            'rules_id'  => $rule->fields['id'],
-            'criteria'  => 'uid',
-            'condition' => 0,
-            'pattern'   => '*',
-         ],
-         [
-            'rules_id'  => $rule->fields['id'],
-            'criteria'  => 'samaccountname',
-            'condition' => 0,
-            'pattern'   => '*',
-         ],
-         [
-            'rules_id'  => $rule->fields['id'],
-            'criteria'  => 'MAIL_EMAIL',
-            'condition' => 0,
-            'pattern'   => '*',
-         ],
+            [
+                'rules_id'  => $rule->fields['id'],
+                'criteria'  => 'uid',
+                'condition' => 0,
+                'pattern'   => '*',
+            ],
+            [
+                'rules_id'  => $rule->fields['id'],
+                'criteria'  => 'samaccountname',
+                'condition' => 0,
+                'pattern'   => '*',
+            ],
+            [
+                'rules_id'  => $rule->fields['id'],
+                'criteria'  => 'MAIL_EMAIL',
+                'condition' => 0,
+                'pattern'   => '*',
+            ],
         ];
         $prev_actions = [
-         [
-            'rules_id'    => $rule->fields['id'],
-            'action_type' => 'assign',
-            'field'       => 'entities_id',
-            'value'       => '0',
-         ],
+            [
+                'rules_id'    => $rule->fields['id'],
+                'action_type' => 'assign',
+                'field'       => 'entities_id',
+                'value'       => '0',
+            ],
         ];
 
         $matching_criteria = 0;
@@ -1769,20 +1769,20 @@ HTML
             $DB->insertOrDie(
                 'glpi_rulecriterias',
                 [
-                'rules_id'  => $rule->fields['id'],
-                'criteria'  => 'TYPE',
-                'condition' => 0,
-                'pattern'   => Auth::LDAP,
+                    'rules_id'  => $rule->fields['id'],
+                    'criteria'  => 'TYPE',
+                    'condition' => 0,
+                    'pattern'   => Auth::LDAP,
                 ],
                 'Update default right assignement rule'
             );
             $DB->insertOrDie(
                 'glpi_rulecriterias',
                 [
-                'rules_id'  => $rule->fields['id'],
-                'criteria'  => 'TYPE',
-                'condition' => 0,
-                'pattern'   => Auth::MAIL,
+                    'rules_id'  => $rule->fields['id'],
+                    'criteria'  => 'TYPE',
+                    'condition' => 0,
+                    'pattern'   => Auth::MAIL,
                 ],
                 'Update default right assignement rule'
             );
@@ -1867,8 +1867,8 @@ HTML
     }
     if (!$DB->fieldExists('glpi_states', 'is_visible_passivedcequipment')) {
         $migration->addField('glpi_states', 'is_visible_passivedcequipment', 'bool', [
-         'value' => 1,
-         'after' => 'is_visible_rack'
+            'value' => 1,
+            'after' => 'is_visible_rack'
         ]);
         $migration->addKey('glpi_states', 'is_visible_passivedcequipment');
     }
@@ -1880,7 +1880,7 @@ HTML
             'managed_domainrecordtypes',
             'text',
             [
-            'after'     => 'change_status'
+                'after'     => 'change_status'
             ]
         );
     }
@@ -1889,10 +1889,10 @@ HTML
         $DB->buildUpdate(
             'glpi_profiles',
             [
-            'managed_domainrecordtypes' => exportArrayToDB([])
+                'managed_domainrecordtypes' => exportArrayToDB([])
             ],
             [
-            'managed_domainrecordtypes' => ['', null]
+                'managed_domainrecordtypes' => ['', null]
             ]
         )
     );
@@ -1904,10 +1904,10 @@ HTML
             "anonymize_support_agents",
             "integer",
             [
-            'after'     => "suppliers_as_private",
-            'value'     => -2,               // Inherit as default value
-            'update'    => '0',              // Not enabled for root entity
-            'condition' => 'WHERE `id` = 0'
+                'after'     => "suppliers_as_private",
+                'value'     => -2,               // Inherit as default value
+                'update'    => '0',              // Not enabled for root entity
+                'condition' => 'WHERE `id` = 0'
             ]
         );
     }
@@ -1941,16 +1941,16 @@ HTML
    // Add new field states in contract
     if (!$DB->fieldExists('glpi_states', 'is_visible_contract')) {
         $migration->addField('glpi_states', 'is_visible_contract', 'bool', [
-         'value' => 1,
-         'after' => 'is_visible_cluster'
+            'value' => 1,
+            'after' => 'is_visible_cluster'
         ]);
         $migration->addKey('glpi_states', 'is_visible_contract');
     }
 
     if (!$DB->fieldExists('glpi_contracts', 'states_id')) {
         $migration->addField('glpi_contracts', 'states_id', 'int', [
-         'value' => 0,
-         'after' => 'is_template'
+            'value' => 0,
+            'after' => 'is_template'
         ]);
         $migration->addKey('glpi_contracts', 'states_id');
     }
@@ -1958,13 +1958,13 @@ HTML
    // No-reply notifications
     if (!$DB->fieldExists(Notification::getTable(), 'allow_response')) {
         $migration->addField(Notification::getTable(), 'allow_response', 'bool', [
-         'value' => 1
+            'value' => 1
         ]);
     }
 
     $migration->addConfig([
-      'admin_email_noreply'      => "",
-      'admin_email_noreply_name' => "",
+        'admin_email_noreply'      => "",
+        'admin_email_noreply_name' => "",
     ]);
    // /No-reply notifications
 
@@ -1977,15 +1977,15 @@ HTML
    // add missing fields to simcard as they can be associated to tickets
     if (!$DB->fieldExists(Item_DeviceSimcard::getTable(), 'users_id')) {
         $migration->addField(Item_DeviceSimcard::getTable(), 'users_id', 'int', [
-         'value' => 0,
-         'after' => 'lines_id'
+            'value' => 0,
+            'after' => 'lines_id'
         ]);
         $migration->addKey(Item_DeviceSimcard::getTable(), 'users_id');
     }
     if (!$DB->fieldExists(Item_DeviceSimcard::getTable(), 'groups_id')) {
         $migration->addField(Item_DeviceSimcard::getTable(), 'groups_id', 'int', [
-         'value' => 0,
-         'after' => 'users_id'
+            'value' => 0,
+            'after' => 'users_id'
         ]);
         $migration->addKey(Item_DeviceSimcard::getTable(), 'groups_id');
     }
@@ -2013,7 +2013,7 @@ HTML
             Config::setConfigurationValues(
                 'core',
                 [
-                'glpinetwork_registration_key' => (new GLPIKey())->encrypt($CFG_GLPI['glpinetwork_registration_key'])
+                    'glpinetwork_registration_key' => (new GLPIKey())->encrypt($CFG_GLPI['glpinetwork_registration_key'])
                 ]
             );
         }
@@ -2026,11 +2026,11 @@ HTML
         $rank = 1;
         foreach ($tab as $newval) {
             $DB->updateOrInsert("glpi_displaypreferences", [
-            'rank'      => $rank++
+                'rank'      => $rank++
             ], [
-            'users_id'  => "0",
-            'itemtype'  => $type,
-            'num'       => $newval,
+                'users_id'  => "0",
+                'itemtype'  => $type,
+                'num'       => $newval,
             ]);
         }
     }

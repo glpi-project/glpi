@@ -49,7 +49,7 @@ class DisableMaintenanceModeCommand extends AbstractCommand
         $this->setName('glpi:maintenance:disable');
         $this->setAliases(
             [
-            'maintenance:disable',
+                'maintenance:disable',
             ]
         );
         $this->setDescription(__('Disable maintenance mode'));

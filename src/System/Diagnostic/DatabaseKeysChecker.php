@@ -84,11 +84,11 @@ class DatabaseKeysChecker extends AbstractDatabaseChecker
                     || preg_match('/^is_(active|deleted|dynamic|recursive|template)$/', $column_name)
             ) {
                 $ignored_fields = [
-                'glpi_ipaddresses.mainitems_id', // FIXME Should be renamed to glpi_ipaddresses.items_id_main to fit naming conventions.
-                'glpi_networkportaggregates.networkports_id_list', // FIXME Should be replaced by a relation table.
-                'glpi_planningexternalevents.users_id_guests', // FIXME Should be replaced by a relation table.
-                'glpi_dashboards_items.card_id', // FIXME This is not a foreign key.
-                'glpi_dashboards_items.gridstack_id', // FIXME This is not a foreign key.
+                    'glpi_ipaddresses.mainitems_id', // FIXME Should be renamed to glpi_ipaddresses.items_id_main to fit naming conventions.
+                    'glpi_networkportaggregates.networkports_id_list', // FIXME Should be replaced by a relation table.
+                    'glpi_planningexternalevents.users_id_guests', // FIXME Should be replaced by a relation table.
+                    'glpi_dashboards_items.card_id', // FIXME This is not a foreign key.
+                    'glpi_dashboards_items.gridstack_id', // FIXME This is not a foreign key.
                 ];
                 if (in_array("$table_name.$column_name", $ignored_fields)) {
                     continue;

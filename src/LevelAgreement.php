@@ -205,13 +205,15 @@ abstract class LevelAgreement extends CommonDBChild
         echo "<tr class='tab_bg_1'><td>" . __('Maximum time') . "</td>";
         echo "<td>";
         Dropdown::showNumber("number_time", ['value' => $this->fields["number_time"],
-                                           'min'   => 0]);
+            'min'   => 0
+        ]);
         $possible_values = self::getDefinitionTimeValues();
         $rand = Dropdown::showFromArray(
             'definition_time',
             $possible_values,
             ['value'     => $this->fields["definition_time"],
-            'on_change' => 'appearhideendofworking()']
+                'on_change' => 'appearhideendofworking()'
+            ]
         );
         echo "\n<script type='text/javascript' >\n";
         echo "function appearhideendofworking() {\n";
@@ -255,10 +257,10 @@ abstract class LevelAgreement extends CommonDBChild
     public static function getDefinitionTimeValues(): array
     {
         return [
-         'minute' => _n('Minute', 'Minutes', Session::getPluralNumber()),
-         'hour'   => _n('Hour', 'Hours', Session::getPluralNumber()),
-         'day'    => _n('Day', 'Days', Session::getPluralNumber()),
-         'month'  => _n('Month', 'Months', Session::getPluralNumber())
+            'minute' => _n('Minute', 'Minutes', Session::getPluralNumber()),
+            'hour'   => _n('Hour', 'Hours', Session::getPluralNumber()),
+            'day'    => _n('Day', 'Days', Session::getPluralNumber()),
+            'month'  => _n('Month', 'Months', Session::getPluralNumber())
         ];
     }
 
@@ -349,9 +351,10 @@ abstract class LevelAgreement extends CommonDBChild
             echo "<script type='text/javascript' >";
             echo "function viewAddLa$instID$rand() {";
             $params = ['type'                     => $la->getType(),
-                    'parenttype'               => $slm->getType(),
-                    $slm->getForeignKeyField() => $instID,
-                    'id'                       => -1];
+                'parenttype'               => $slm->getType(),
+                $slm->getForeignKeyField() => $instID,
+                'id'                       => -1
+            ];
             Ajax::updateItemJsCode(
                 "showLa$instID$rand",
                 $CFG_GLPI["root_doc"] . "/ajax/viewsubitem.php",
@@ -406,9 +409,10 @@ abstract class LevelAgreement extends CommonDBChild
                 echo "<script type='text/javascript' >";
                 echo "function viewEditLa" . $instID . $val["id"] . "$rand() {";
                 $params = ['type'                     => $la->getType(),
-                       'parenttype'               => $slm->getType(),
-                       $slm->getForeignKeyField() => $instID,
-                       'id'                       => $val["id"]];
+                    'parenttype'               => $slm->getType(),
+                    $slm->getForeignKeyField() => $instID,
+                    'id'                       => $val["id"]
+                ];
                 Ajax::updateItemJsCode(
                     "showLa$instID$rand",
                     $CFG_GLPI["root_doc"] . "/ajax/viewsubitem.php",
@@ -430,7 +434,8 @@ abstract class LevelAgreement extends CommonDBChild
                 echo $la->getSpecificValueToDisplay(
                     'number_time',
                     ['number_time'     => $la->fields['number_time'],
-                    'definition_time' => $la->fields['definition_time']]
+                        'definition_time' => $la->fields['definition_time']
+                    ]
                 );
                 echo "</td>";
                 if (!$slm->fields['calendars_id']) {
@@ -471,12 +476,14 @@ abstract class LevelAgreement extends CommonDBChild
         $canedit = self::canUpdate();
 
         $rules_id_list = iterator_to_array($DB->request([
-         'SELECT'          => 'rules_id',
-         'DISTINCT'        => true,
-         'FROM'            => 'glpi_ruleactions',
-         'WHERE'           => [
-            'field' => $fk,
-            'value' => $this->getID()]]));
+            'SELECT'          => 'rules_id',
+            'DISTINCT'        => true,
+            'FROM'            => 'glpi_ruleactions',
+            'WHERE'           => [
+                'field' => $fk,
+                'value' => $this->getID()
+            ]
+        ]));
         $nb = count($rules_id_list);
 
         echo "<div class='spaced'>";
@@ -490,8 +497,10 @@ abstract class LevelAgreement extends CommonDBChild
                 Html::openMassiveActionsForm('massRuleTicket' . $rand);
                 $massiveactionparams
                  = ['num_displayed'    => min($_SESSION['glpilist_limit'], $nb),
-                  'specific_actions' => ['update' => _x('button', 'Update'),
-                                         'purge'  => _x('button', 'Delete permanently')]];
+                     'specific_actions' => ['update' => _x('button', 'Update'),
+                         'purge'  => _x('button', 'Delete permanently')
+                     ]
+                 ];
                 Html::showMassiveActions($massiveactionparams);
             }
             echo "<table class='tab_cadre_fixehov'>";
@@ -597,18 +606,18 @@ abstract class LevelAgreement extends CommonDBChild
         list($dateField, $field) = static::getFieldNames($type);
 
         $iterator = $DB->request([
-         'SELECT'       => [static::getTable() . '.id'],
-         'FROM'         => static::getTable(),
-         'INNER JOIN'   => [
-            'glpi_tickets' => [
-               'FKEY'   => [
-                  static::getTable()   => 'id',
-                  'glpi_tickets'       => $field
-               ]
-            ]
-         ],
-         'WHERE'        => ['glpi_tickets.id' => $tickets_id],
-         'LIMIT'        => 1
+            'SELECT'       => [static::getTable() . '.id'],
+            'FROM'         => static::getTable(),
+            'INNER JOIN'   => [
+                'glpi_tickets' => [
+                    'FKEY'   => [
+                        static::getTable()   => 'id',
+                        'glpi_tickets'       => $field
+                    ]
+                ]
+            ],
+            'WHERE'        => ['glpi_tickets.id' => $tickets_id],
+            'LIMIT'        => 1
         ]);
 
         if (count($iterator)) {
@@ -623,70 +632,70 @@ abstract class LevelAgreement extends CommonDBChild
         $tab = [];
 
         $tab[] = [
-         'id'                 => 'common',
-         'name'               => __('Characteristics')
+            'id'                 => 'common',
+            'name'               => __('Characteristics')
         ];
 
         $tab[] = [
-         'id'                 => '1',
-         'table'              => $this->getTable(),
-         'field'              => 'name',
-         'name'               => __('Name'),
-         'datatype'           => 'itemlink',
-         'massiveaction'      => false,
+            'id'                 => '1',
+            'table'              => $this->getTable(),
+            'field'              => 'name',
+            'name'               => __('Name'),
+            'datatype'           => 'itemlink',
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
-         'id'                 => '2',
-         'table'              => $this->getTable(),
-         'field'              => 'id',
-         'name'               => __('ID'),
-         'massiveaction'      => false,
-         'datatype'           => 'number'
+            'id'                 => '2',
+            'table'              => $this->getTable(),
+            'field'              => 'id',
+            'name'               => __('ID'),
+            'massiveaction'      => false,
+            'datatype'           => 'number'
         ];
 
         $tab[] = [
-         'id'                 => '5',
-         'table'              => $this->getTable(),
-         'field'              => 'number_time',
-         'name'               => _x('hour', 'Time'),
-         'datatype'           => 'specific',
-         'massiveaction'      => false,
-         'nosearch'           => true,
-         'additionalfields'   => ['definition_time']
+            'id'                 => '5',
+            'table'              => $this->getTable(),
+            'field'              => 'number_time',
+            'name'               => _x('hour', 'Time'),
+            'datatype'           => 'specific',
+            'massiveaction'      => false,
+            'nosearch'           => true,
+            'additionalfields'   => ['definition_time']
         ];
 
         $tab[] = [
-         'id'                 => '6',
-         'table'              => $this->getTable(),
-         'field'              => 'end_of_working_day',
-         'name'               => __('End of working day'),
-         'datatype'           => 'bool',
-         'massiveaction'      => false
+            'id'                 => '6',
+            'table'              => $this->getTable(),
+            'field'              => 'end_of_working_day',
+            'name'               => __('End of working day'),
+            'datatype'           => 'bool',
+            'massiveaction'      => false
         ];
 
         $tab[] = [
-         'id'                 => '7',
-         'table'              => $this->getTable(),
-         'field'              => 'type',
-         'name'               => _n('Type', 'Types', 1),
-         'datatype'           => 'specific'
+            'id'                 => '7',
+            'table'              => $this->getTable(),
+            'field'              => 'type',
+            'name'               => _n('Type', 'Types', 1),
+            'datatype'           => 'specific'
         ];
 
         $tab[] = [
-         'id'                 => '8',
-         'table'              => 'glpi_slms',
-         'field'              => 'name',
-         'name'               => __('SLM'),
-         'datatype'           => 'dropdown'
+            'id'                 => '8',
+            'table'              => 'glpi_slms',
+            'field'              => 'name',
+            'name'               => __('SLM'),
+            'datatype'           => 'dropdown'
         ];
 
         $tab[] = [
-         'id'                 => '16',
-         'table'              => $this->getTable(),
-         'field'              => 'comment',
-         'name'               => __('Comments'),
-         'datatype'           => 'text'
+            'id'                 => '16',
+            'table'              => $this->getTable(),
+            'field'              => 'comment',
+            'name'               => __('Comments'),
+            'datatype'           => 'text'
         ];
 
         return $tab;
@@ -903,7 +912,8 @@ abstract class LevelAgreement extends CommonDBChild
     public static function getTypes()
     {
         return [SLM::TTO => __('Time to own'),
-              SLM::TTR => __('Time to resolve')];
+            SLM::TTR => __('Time to resolve')
+        ];
     }
 
 
@@ -1022,9 +1032,9 @@ abstract class LevelAgreement extends CommonDBChild
         if ($ticket->fields[$ticketfield] > 0) {
             $levelticket = new static::$levelticketclass();
             $iterator = $DB->request([
-            'SELECT' => 'id',
-            'FROM'   => $levelticket::getTable(),
-            'WHERE'  => ['tickets_id' => $ticket->fields['id']]
+                'SELECT' => 'id',
+                'FROM'   => $levelticket::getTable(),
+                'WHERE'  => ['tickets_id' => $ticket->fields['id']]
             ]);
 
             foreach ($iterator as $data) {
@@ -1047,9 +1057,9 @@ abstract class LevelAgreement extends CommonDBChild
        // Update tickets : clean SLA/OLA
         list($dateField, $laField) = static::getFieldNames($this->fields['type']);
         $iterator =  $DB->request([
-         'SELECT' => 'id',
-         'FROM'   => 'glpi_tickets',
-         'WHERE'  => [$laField => $this->fields['id']]
+            'SELECT' => 'id',
+            'FROM'   => 'glpi_tickets',
+            'WHERE'  => [$laField => $this->fields['id']]
         ]);
 
         if (count($iterator)) {

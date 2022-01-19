@@ -344,11 +344,11 @@ class InstallCommand extends AbstractConfigureCommand
     {
 
         $config_options = [
-         'db-host',
-         'db-port',
-         'db-name',
-         'db-user',
-         'db-password',
+            'db-host',
+            'db-port',
+            'db-name',
+            'db-user',
+            'db-password',
         ];
         foreach ($config_options as $option) {
             $default_value = $this->getDefinition()->getOption($option)->getDefault();

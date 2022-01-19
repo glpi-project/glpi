@@ -44,16 +44,16 @@ if (!$notification_exists) {
     $DB->insertOrDie(
         'glpi_notifications',
         [
-         'id'              => null,
-         'name'            => 'New user mentionned',
-         'entities_id'     => 0,
-         'itemtype'        => 'Ticket',
-         'event'           => 'user_mention',
-         'comment'         => '',
-         'is_recursive'    => 1,
-         'is_active'       => 1,
-         'date_creation'   => new \QueryExpression('NOW()'),
-         'date_mod'        => new \QueryExpression('NOW()')
+            'id'              => null,
+            'name'            => 'New user mentionned',
+            'entities_id'     => 0,
+            'itemtype'        => 'Ticket',
+            'event'           => 'user_mention',
+            'comment'         => '',
+            'is_recursive'    => 1,
+            'is_active'       => 1,
+            'date_creation'   => new \QueryExpression('NOW()'),
+            'date_mod'        => new \QueryExpression('NOW()')
         ],
         '10.0 Add user mention notification'
     );
@@ -64,9 +64,9 @@ if (!$notification_exists) {
         $DB->insertOrDie(
             'glpi_notifications_notificationtemplates',
             [
-            'notifications_id'         => $notification_id,
-            'mode'                     => Notification_NotificationTemplate::MODE_MAIL,
-            'notificationtemplates_id' => $notificationtemplate->fields['id'],
+                'notifications_id'         => $notification_id,
+                'mode'                     => Notification_NotificationTemplate::MODE_MAIL,
+                'notificationtemplates_id' => $notificationtemplate->fields['id'],
             ],
             '10.0 Add user mention notification template'
         );
@@ -75,9 +75,9 @@ if (!$notification_exists) {
     $DB->insertOrDie(
         'glpi_notificationtargets',
         [
-         'items_id'         => '39',
-         'type'             => '1',
-         'notifications_id' => $notification_id,
+            'items_id'         => '39',
+            'type'             => '1',
+            'notifications_id' => $notification_id,
         ],
         '10.0 Add user mention notification target'
     );

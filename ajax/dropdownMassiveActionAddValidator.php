@@ -46,8 +46,9 @@ if (isset($_POST["validatortype"])) {
         case 'user':
             echo "<input type='hidden' name='groups_id' value=0 />";
             User::dropdown(['name'   => 'users_id_validate',
-                              'entity' => $_SESSION["glpiactive_entity"],
-                              'right'  => ['validate_request', 'validate_incident']]);
+                'entity' => $_SESSION["glpiactive_entity"],
+                'right'  => ['validate_request', 'validate_incident']
+            ]);
 
             echo "<br><br>" . __('Comments') . " ";
             echo "<textarea name='comment_submission' cols='50' rows='6'></textarea>&nbsp;";
@@ -58,11 +59,13 @@ if (isset($_POST["validatortype"])) {
         case 'group':
             echo "<input type='hidden' name='users_id_validate' value=0 />";
             $rand = Group::dropdown(['name'      => 'groups_id',
-                                       'entity'    => $_SESSION["glpiactive_entity"]]);
+                'entity'    => $_SESSION["glpiactive_entity"]
+            ]);
 
             $param = ['validatortype'      => 'group_user',
-                        'groups_id' => '__VALUE__',
-                        'right'     => ['validate_request', 'validate_incident']];
+                'groups_id' => '__VALUE__',
+                'right'     => ['validate_request', 'validate_incident']
+            ];
 
             Ajax::updateItemOnSelectEvent(
                 "dropdown_groups_id$rand",
@@ -76,8 +79,9 @@ if (isset($_POST["validatortype"])) {
 
         case 'group_user':
             $opt = ['groups_id'   => $_POST["groups_id"],
-                           'right'     => $_POST['right'],
-                           'entity'    => $_SESSION["glpiactive_entity"]];
+                'right'     => $_POST['right'],
+                'entity'    => $_SESSION["glpiactive_entity"]
+            ];
 
             $groups_users = TicketValidation::getGroupUserHaveRights($opt);
 
@@ -109,12 +113,12 @@ if (isset($_POST["validatortype"])) {
             if (!empty($_POST['groups_id'])) {
                 echo "<a id='all_users' class='btn btn-primary'>" . __('All') . "</a>";
                 $param_button = [
-                'validatortype'     => 'group_user',
-                'users_id_validate' => '',
-                'all_users'         => 1,
-                'groups_id'         => $_POST['groups_id'],
-                'right'             => ['validate_request', 'validate_incident'],
-                'entity'            => $_SESSION["glpiactive_entity"],
+                    'validatortype'     => 'group_user',
+                    'users_id_validate' => '',
+                    'all_users'         => 1,
+                    'groups_id'         => $_POST['groups_id'],
+                    'right'             => ['validate_request', 'validate_incident'],
+                    'entity'            => $_SESSION["glpiactive_entity"],
                 ];
                 Ajax::updateItemOnEvent(
                     'all_users',

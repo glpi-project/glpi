@@ -58,8 +58,8 @@ class PassiveDCEquipment extends DbTestCase
 
        // Add
         $id = $obj->add([
-         'name'        => __METHOD__,
-         'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true)
+            'name'        => __METHOD__,
+            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true)
         ]);
         $this->integer((int)$id)->isGreaterThan(0);
         $this->boolean($obj->getFromDB($id))->isTrue();
@@ -81,8 +81,9 @@ class PassiveDCEquipment extends DbTestCase
 
        // Add
         $id = $obj->add([
-         'name' => __METHOD__,
-         'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true)]);
+            'name' => __METHOD__,
+            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true)
+        ]);
         $this->integer((int)$id)->isGreaterThan(0);
         $this->boolean($obj->getFromDB($id))->isTrue();
         $this->variable($obj->getField('is_deleted'))->isEqualTo(0);
@@ -113,8 +114,8 @@ class PassiveDCEquipment extends DbTestCase
 
        // Add
         $id = $obj->add([
-         'name' => __METHOD__,
-         'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true)
+            'name' => __METHOD__,
+            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true)
         ]);
         $this->integer((int)$id)->isGreaterThan(0);
         $this->boolean($obj->getFromDB($id))->isTrue();

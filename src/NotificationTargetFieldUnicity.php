@@ -76,17 +76,19 @@ class NotificationTargetFieldUnicity extends NotificationTarget
     {
 
         $tags = ['unicity.message'     => __('Message'),
-                    'unicity.action_user' => __('Doer'),
-                    'unicity.action_type' => __('Intended action'),
-                    'unicity.date'        => _n('Date', 'Dates', 1),
-                    'unicity.itemtype'    => _n('Type', 'Types', 1),
-                    'unicity.entity'      => Entity::getTypeName(1),
-                    'unicity.action'      => __('Alert on duplicate record')];
+            'unicity.action_user' => __('Doer'),
+            'unicity.action_type' => __('Intended action'),
+            'unicity.date'        => _n('Date', 'Dates', 1),
+            'unicity.itemtype'    => _n('Type', 'Types', 1),
+            'unicity.entity'      => Entity::getTypeName(1),
+            'unicity.action'      => __('Alert on duplicate record')
+        ];
 
         foreach ($tags as $tag => $label) {
             $this->addTagToList(['tag'   => $tag,
-                                   'label' => $label,
-                                   'value' => true]);
+                'label' => $label,
+                'value' => true
+            ]);
         }
 
         asort($this->tag_descriptions);

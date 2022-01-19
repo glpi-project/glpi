@@ -98,21 +98,21 @@ class Entity extends DbTestCase
 
         $this->boolean(
             $entity->prepareInputForAdd([
-            'name' => ''
+                'name' => ''
             ])
         )->isFalse();
         $this->hasSessionMessages(ERROR, ["You can't add an entity without name"]);
 
         $this->boolean(
             $entity->prepareInputForAdd([
-            'anykey' => 'anyvalue'
+                'anykey' => 'anyvalue'
             ])
         )->isFalse();
         $this->hasSessionMessages(ERROR, ["You can't add an entity without name"]);
 
         $this->array(
             $entity->prepareInputForAdd([
-            'name' => 'entname'
+                'name' => 'entname'
             ])
         )
          ->string['name']->isIdenticalTo('entname')
@@ -143,8 +143,8 @@ class Entity extends DbTestCase
 
         $entity = new \Entity();
         $new_id = (int)$entity->add([
-         'name'         => 'Sub child entity',
-         'entities_id'  => $ent1
+            'name'         => 'Sub child entity',
+            'entities_id'  => $ent1
         ]);
         $this->integer($new_id)->isGreaterThan(0);
         $ackey_new_id = 'ancestors_cache_glpi_entities_' . $new_id;
@@ -173,8 +173,8 @@ class Entity extends DbTestCase
        //change parent entity
         $this->boolean(
             $entity->update([
-            'id'           => $new_id,
-            'entities_id'  => $ent2
+                'id'           => $new_id,
+                'entities_id'  => $ent2
             ])
         )->isTrue();
 
@@ -241,8 +241,8 @@ class Entity extends DbTestCase
         $DB->update(
             'glpi_entities',
             [
-            'ancestors_cache' => null,
-            'sons_cache'      => null
+                'ancestors_cache' => null,
+                'sons_cache'      => null
             ],
             [true]
         );
@@ -272,17 +272,17 @@ class Entity extends DbTestCase
         $ent0 = getItemByTypeName('Entity', '_test_root_entity', true);
         $ent1 = new \Entity();
         $ent1_id = $ent1->add([
-         'entities_id'  => $ent0,
-         'name'         => 'inherit_geo_test_parent',
-         'latitude'     => '48.8566',
-         'longitude'    => '2.3522',
-         'altitude'     => '115'
+            'entities_id'  => $ent0,
+            'name'         => 'inherit_geo_test_parent',
+            'latitude'     => '48.8566',
+            'longitude'    => '2.3522',
+            'altitude'     => '115'
         ]);
         $this->integer((int) $ent1_id)->isGreaterThan(0);
         $ent2 = new \Entity();
         $ent2_id = $ent2->add([
-         'entities_id'  => $ent1_id,
-         'name'         => 'inherit_geo_test_child',
+            'entities_id'  => $ent1_id,
+            'name'         => 'inherit_geo_test_child',
         ]);
         $this->integer((int) $ent2_id)->isGreaterThan(0);
         $this->string($ent2->fields['latitude'])->isEqualTo($ent1->fields['latitude']);
@@ -292,11 +292,11 @@ class Entity extends DbTestCase
        // Make sure we don't overwrite data a user sets
         $ent3 = new \Entity();
         $ent3_id = $ent3->add([
-         'entities_id'  => $ent1_id,
-         'name'         => 'inherit_geo_test_child2',
-         'latitude'     => '41.3851',
-         'longitude'    => '2.1734',
-         'altitude'     => '39'
+            'entities_id'  => $ent1_id,
+            'name'         => 'inherit_geo_test_child2',
+            'latitude'     => '41.3851',
+            'longitude'    => '2.1734',
+            'altitude'     => '39'
         ]);
         $this->integer((int) $ent3_id)->isGreaterThan(0);
         $this->string($ent3->fields['latitude'])->isEqualTo('41.3851');
@@ -312,8 +312,8 @@ class Entity extends DbTestCase
         $entity = new \Entity();
         $entity_id = (int)$entity->add(
             [
-            'name'         => 'Test entity',
-            'entities_id'  => $root_id,
+                'name'         => 'Test entity',
+                'entities_id'  => $root_id,
             ]
         );
         $this->integer($entity_id)->isGreaterThan(0);
@@ -324,9 +324,9 @@ class Entity extends DbTestCase
         $profile_user = new Profile_User();
         $profile_user_id = (int)$profile_user->add(
             [
-            'entities_id' => $entity_id,
-            'profiles_id' => $profile_id,
-            'users_id'    => $user_id,
+                'entities_id' => $entity_id,
+                'profiles_id' => $profile_id,
+                'users_id'    => $user_id,
             ]
         );
         $this->integer($profile_user_id)->isGreaterThan(0);
@@ -553,96 +553,96 @@ class Entity extends DbTestCase
         $child_id = getItemByTypeName('Entity', '_test_child_1', true);
 
         return [
-         [
+            [
             // Do not output custom CSS if not enabled
-            'entity_id'               => $root_id,
-            'root_enable_custom_css'  => 0,
-            'root_custom_css_code'    => 'body { color:blue; }',
-            'child_enable_custom_css' => 0,
-            'child_custom_css_code'   => '',
-            'expected'                => '',
-         ],
-         [
+                'entity_id'               => $root_id,
+                'root_enable_custom_css'  => 0,
+                'root_custom_css_code'    => 'body { color:blue; }',
+                'child_enable_custom_css' => 0,
+                'child_custom_css_code'   => '',
+                'expected'                => '',
+            ],
+            [
             // Output custom CSS if enabled
-            'entity_id'               => $root_id,
-            'root_enable_custom_css'  => 1,
-            'root_custom_css_code'    => 'body { color:blue; }',
-            'child_enable_custom_css' => 0,
-            'child_custom_css_code'   => '',
-            'expected'                => '<style>body { color:blue; }</style>',
-         ],
-         [
+                'entity_id'               => $root_id,
+                'root_enable_custom_css'  => 1,
+                'root_custom_css_code'    => 'body { color:blue; }',
+                'child_enable_custom_css' => 0,
+                'child_custom_css_code'   => '',
+                'expected'                => '<style>body { color:blue; }</style>',
+            ],
+            [
             // Do not output custom CSS if empty
-            'entity_id'               => $root_id,
-            'root_enable_custom_css'  => 1,
-            'root_custom_css_code'    => '',
-            'child_enable_custom_css' => 0,
-            'child_custom_css_code'   => '',
-            'expected'                => '',
-         ],
-         [
+                'entity_id'               => $root_id,
+                'root_enable_custom_css'  => 1,
+                'root_custom_css_code'    => '',
+                'child_enable_custom_css' => 0,
+                'child_custom_css_code'   => '',
+                'expected'                => '',
+            ],
+            [
             // Do not output custom CSS from parent if disabled in parent
-            'entity_id'               => $child_id,
-            'root_enable_custom_css'  => 0,
-            'root_custom_css_code'    => 'body { color:blue; }',
-            'child_enable_custom_css' => \Entity::CONFIG_PARENT,
-            'child_custom_css_code'   => '',
-            'expected'                => '',
-         ],
-         [
+                'entity_id'               => $child_id,
+                'root_enable_custom_css'  => 0,
+                'root_custom_css_code'    => 'body { color:blue; }',
+                'child_enable_custom_css' => \Entity::CONFIG_PARENT,
+                'child_custom_css_code'   => '',
+                'expected'                => '',
+            ],
+            [
             // Do not output custom CSS from parent if empty
-            'entity_id'               => $child_id,
-            'root_enable_custom_css'  => 1,
-            'root_custom_css_code'    => '',
-            'child_enable_custom_css' => \Entity::CONFIG_PARENT,
-            'child_custom_css_code'   => '',
-            'expected'                => '',
-         ],
-         [
+                'entity_id'               => $child_id,
+                'root_enable_custom_css'  => 1,
+                'root_custom_css_code'    => '',
+                'child_enable_custom_css' => \Entity::CONFIG_PARENT,
+                'child_custom_css_code'   => '',
+                'expected'                => '',
+            ],
+            [
             // Output custom CSS from parent
-            'entity_id'               => $child_id,
-            'root_enable_custom_css'  => 1,
-            'root_custom_css_code'    => '.link::before { content: "test"; }',
-            'child_enable_custom_css' => \Entity::CONFIG_PARENT,
-            'child_custom_css_code'   => '',
-            'expected'                => '<style>.link::before { content: "test"; }</style>',
-         ],
-         [
+                'entity_id'               => $child_id,
+                'root_enable_custom_css'  => 1,
+                'root_custom_css_code'    => '.link::before { content: "test"; }',
+                'child_enable_custom_css' => \Entity::CONFIG_PARENT,
+                'child_custom_css_code'   => '',
+                'expected'                => '<style>.link::before { content: "test"; }</style>',
+            ],
+            [
             // Do not output custom CSS from entity itself if disabled
-            'entity_id'               => $child_id,
-            'root_enable_custom_css'  => 0,
-            'root_custom_css_code'    => '',
-            'child_enable_custom_css' => 0,
-            'child_custom_css_code'   => 'body { color:blue; }',
-            'expected'                => '',
-         ],
-         [
+                'entity_id'               => $child_id,
+                'root_enable_custom_css'  => 0,
+                'root_custom_css_code'    => '',
+                'child_enable_custom_css' => 0,
+                'child_custom_css_code'   => 'body { color:blue; }',
+                'expected'                => '',
+            ],
+            [
             // Do not output custom CSS from entity itself if empty
-            'entity_id'               => $child_id,
-            'root_enable_custom_css'  => 1,
-            'root_custom_css_code'    => '',
-            'child_enable_custom_css' => 1,
-            'child_custom_css_code'   => '',
-            'expected'                => '',
-         ],
-         [
+                'entity_id'               => $child_id,
+                'root_enable_custom_css'  => 1,
+                'root_custom_css_code'    => '',
+                'child_enable_custom_css' => 1,
+                'child_custom_css_code'   => '',
+                'expected'                => '',
+            ],
+            [
             // Output custom CSS from entity itself
-            'entity_id'               => $child_id,
-            'root_enable_custom_css'  => 0,
-            'root_custom_css_code'    => '',
-            'child_enable_custom_css' => 1,
-            'child_custom_css_code'   => 'body > a { color:blue; }',
-            'expected'                => '<style>body > a { color:blue; }</style>',
-         ],
-         [
+                'entity_id'               => $child_id,
+                'root_enable_custom_css'  => 0,
+                'root_custom_css_code'    => '',
+                'child_enable_custom_css' => 1,
+                'child_custom_css_code'   => 'body > a { color:blue; }',
+                'expected'                => '<style>body > a { color:blue; }</style>',
+            ],
+            [
             // Output cleaned custom CSS
-            'entity_id'               => $child_id,
-            'root_enable_custom_css'  => 0,
-            'root_custom_css_code'    => '',
-            'child_enable_custom_css' => 1,
-            'child_custom_css_code'   => '</style><script>alert(1);</script>',
-            'expected'                => '<style>alert(1);</style>',
-         ],
+                'entity_id'               => $child_id,
+                'root_enable_custom_css'  => 0,
+                'root_custom_css_code'    => '',
+                'child_enable_custom_css' => 1,
+                'child_custom_css_code'   => '</style><script>alert(1);</script>',
+                'expected'                => '<style>alert(1);</style>',
+            ],
         ];
     }
 
@@ -664,17 +664,17 @@ class Entity extends DbTestCase
        // Define configuration values
         $update = $entity->update(
             [
-            'id'                => getItemByTypeName('Entity', 'Root entity', true),
-            'enable_custom_css' => $root_enable_custom_css,
-            'custom_css_code'   => $root_custom_css_code
+                'id'                => getItemByTypeName('Entity', 'Root entity', true),
+                'enable_custom_css' => $root_enable_custom_css,
+                'custom_css_code'   => $root_custom_css_code
             ]
         );
         $this->boolean($update)->isTrue();
         $update = $entity->update(
             [
-            'id'                => getItemByTypeName('Entity', '_test_child_1', true),
-            'enable_custom_css' => $child_enable_custom_css,
-            'custom_css_code'   => $child_custom_css_code
+                'id'                => getItemByTypeName('Entity', '_test_child_1', true),
+                'enable_custom_css' => $child_enable_custom_css,
+                'custom_css_code'   => $child_custom_css_code
             ]
         );
         $this->boolean($update)->isTrue();
@@ -687,38 +687,38 @@ class Entity extends DbTestCase
     protected function testAnonymizeSettingProvider(): array
     {
         return [
-         [
-            'interface' => 'central',
-            'setting'   => \Entity::ANONYMIZE_DISABLED,
-            'expected'  => 'test_anon_user',
-         ],
-         [
-            'interface' => 'helpdesk',
-            'setting'   => \Entity::ANONYMIZE_DISABLED,
-            'expected'  => 'test_anon_user',
-         ],
-         [
-            'interface' => 'central',
-            'setting'   => \Entity::ANONYMIZE_USE_GENERIC,
-            'expected'  => 'test_anon_user',
-         ],
-         [
-            'interface' => 'helpdesk',
-            'setting'   => \Entity::ANONYMIZE_USE_GENERIC,
-            'expected'  => "Helpdesk user",
-         ],
-         [
-            'interface' => 'central',
-            'setting'   => \Entity::ANONYMIZE_USE_NICKNAME,
-            'expected'  => 'test_anon_user',
-            'user_nick' => 'user_nick_6436345654'
-         ],
-         [
-            'interface' => 'helpdesk',
-            'setting'   => \Entity::ANONYMIZE_USE_NICKNAME,
-            'expected'  => 'user_nick_6436345654',
-            'user_nick' => 'user_nick_6436345654'
-         ],
+            [
+                'interface' => 'central',
+                'setting'   => \Entity::ANONYMIZE_DISABLED,
+                'expected'  => 'test_anon_user',
+            ],
+            [
+                'interface' => 'helpdesk',
+                'setting'   => \Entity::ANONYMIZE_DISABLED,
+                'expected'  => 'test_anon_user',
+            ],
+            [
+                'interface' => 'central',
+                'setting'   => \Entity::ANONYMIZE_USE_GENERIC,
+                'expected'  => 'test_anon_user',
+            ],
+            [
+                'interface' => 'helpdesk',
+                'setting'   => \Entity::ANONYMIZE_USE_GENERIC,
+                'expected'  => "Helpdesk user",
+            ],
+            [
+                'interface' => 'central',
+                'setting'   => \Entity::ANONYMIZE_USE_NICKNAME,
+                'expected'  => 'test_anon_user',
+                'user_nick' => 'user_nick_6436345654'
+            ],
+            [
+                'interface' => 'helpdesk',
+                'setting'   => \Entity::ANONYMIZE_USE_NICKNAME,
+                'expected'  => 'user_nick_6436345654',
+                'user_nick' => 'user_nick_6436345654'
+            ],
         ];
     }
 
@@ -739,16 +739,16 @@ class Entity extends DbTestCase
        // Set entity setting
         $entity = getItemByTypeName("Entity", "_test_root_entity");
         $update = $entity->update([
-         'id'                       => $entity->getID(),
-         'anonymize_support_agents' => $setting,
+            'id'                       => $entity->getID(),
+            'anonymize_support_agents' => $setting,
         ]);
         $this->boolean($update)->isTrue();
 
        // create a user for this test (avoid using current logged user as we don't anonymize him)
         $user_obj = new \User();
         $user_obj->add([
-         'name'     => 'test_anon_user',
-         'password' => 'test_anon_user'
+            'name'     => 'test_anon_user',
+            'password' => 'test_anon_user'
         ]);
 
        // // Set user nickname
@@ -758,8 +758,8 @@ class Entity extends DbTestCase
            // Special case, glpi wont update null to "" so we need to set
            // another value first
             $update = $user->update([
-            'id'       => $user->getID(),
-            'nickname' => 'TMP',
+                'id'       => $user->getID(),
+                'nickname' => 'TMP',
             ]);
             $this->boolean($update)->isTrue();
             $this->boolean($user->getFromDB($user->getID()))->isTrue();
@@ -767,8 +767,8 @@ class Entity extends DbTestCase
         }
 
         $update = $user->update([
-         'id'       => $user->getID(),
-         'nickname' => $user_nick,
+            'id'       => $user->getID(),
+            'nickname' => $user_nick,
         ]);
         $this->boolean($update)->isTrue();
         $this->boolean($user->getFromDB($user->getID()))->isTrue();
@@ -784,17 +784,17 @@ class Entity extends DbTestCase
 
         $ticket = new Ticket();
         $tickets_id = $ticket->add($input = [
-         'name'                 => 'test',
-         'content'              => 'test',
-         '_users_id_assign'     => getItemByTypeName('User', 'test_anon_user', true),
-         '_users_id_requester'  => getItemByTypeName('User', 'post-only', true),
-         'entities_id'          => $entity->getID(),
-         'users_id_recipient'   => getItemByTypeName('User', 'tech', true),
-         'users_id_lastupdater' => getItemByTypeName('User', 'tech', true),
+            'name'                 => 'test',
+            'content'              => 'test',
+            '_users_id_assign'     => getItemByTypeName('User', 'test_anon_user', true),
+            '_users_id_requester'  => getItemByTypeName('User', 'post-only', true),
+            'entities_id'          => $entity->getID(),
+            'users_id_recipient'   => getItemByTypeName('User', 'tech', true),
+            'users_id_lastupdater' => getItemByTypeName('User', 'tech', true),
          // The default requesttype is "Helpdesk" and will mess up our tests,
          // we need another one to be sure the "Helpdesk" string will only be
          // printed by the anonymization code
-         'requesttypes_id'      => 4,
+            'requesttypes_id'      => 4,
         ]);
         $this->integer($tickets_id)->isGreaterThan(0);
 
@@ -807,42 +807,42 @@ class Entity extends DbTestCase
 
        // Check linked users
         $ticket_users = $DB->request([
-         'SELECT' => ['tickets_id', 'users_id', 'type'],
-         'FROM'   => Ticket_User::getTable(),
-         'WHERE'  => ['tickets_id' => $tickets_id],
+            'SELECT' => ['tickets_id', 'users_id', 'type'],
+            'FROM'   => Ticket_User::getTable(),
+            'WHERE'  => ['tickets_id' => $tickets_id],
         ]);
         $this->array(iterator_to_array($ticket_users))->isEqualTo([
-         0 => [
-            'tickets_id' => $tickets_id,
-            'users_id'   => getItemByTypeName('User', 'post-only', true),
-            'type'       => CommonITILActor::REQUESTER,
-         ],
-         1 => [
-            'tickets_id' => $tickets_id,
-            'users_id'   => getItemByTypeName('User', 'test_anon_user', true),
-            'type'       => CommonITILActor::ASSIGN,
-         ],
+            0 => [
+                'tickets_id' => $tickets_id,
+                'users_id'   => getItemByTypeName('User', 'post-only', true),
+                'type'       => CommonITILActor::REQUESTER,
+            ],
+            1 => [
+                'tickets_id' => $tickets_id,
+                'users_id'   => getItemByTypeName('User', 'test_anon_user', true),
+                'type'       => CommonITILActor::ASSIGN,
+            ],
         ]);
 
        // Add followup to test ticket
         $fup = new ITILFollowup();
         $fup_id = $fup->add([
-         'content' => 'test',
-         'users_id' => getItemByTypeName('User', 'test_anon_user', true),
-         'users_id_editor' => getItemByTypeName('User', 'test_anon_user', true),
-         'itemtype' => 'Ticket',
-         'items_id' => $tickets_id,
+            'content' => 'test',
+            'users_id' => getItemByTypeName('User', 'test_anon_user', true),
+            'users_id_editor' => getItemByTypeName('User', 'test_anon_user', true),
+            'itemtype' => 'Ticket',
+            'items_id' => $tickets_id,
         ]);
         $this->integer($fup_id)->isGreaterThan(0);
 
        // Add solution to test ticket
         $solution = new ITILSolution();
         $solutions_id = $solution->add([
-         'content' => 'test',
-         'users_id' => getItemByTypeName('User', 'test_anon_user', true),
-         'users_id_editor' => getItemByTypeName('User', 'test_anon_user', true),
-         'itemtype' => 'Ticket',
-         'items_id' => $tickets_id,
+            'content' => 'test',
+            'users_id' => getItemByTypeName('User', 'test_anon_user', true),
+            'users_id_editor' => getItemByTypeName('User', 'test_anon_user', true),
+            'itemtype' => 'Ticket',
+            'items_id' => $tickets_id,
         ]);
         $this->integer($solutions_id)->isGreaterThan(0);
 
@@ -876,12 +876,12 @@ class Entity extends DbTestCase
        // Case 4: test values recovered from NotificationTargetCommonITILObject::getDataForObject()
         $notification = new NotificationTargetTicket();
         $notif_data = $notification->getDataForObject($ticket, [
-         'additionnaloption' => [
-            'usertype' => NotificationTarget::GLPI_USER,
+            'additionnaloption' => [
+                'usertype' => NotificationTarget::GLPI_USER,
             // Workaround to "simulate" different notification target and test
             // this part more easily
-            'is_self_service' => $interface == 'helpdesk',
-         ]
+                'is_self_service' => $interface == 'helpdesk',
+            ]
         ]);
         foreach ($notif_data['followups'] as $n_fup) {
             foreach ($possible_values as $value) {
@@ -929,31 +929,31 @@ class Entity extends DbTestCase
 
        // Create test entity
         $entities_id = $entity->add([
-         'name'        => 'Test',
-         'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+            'name'        => 'Test',
+            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
         ]);
         $this->integer($entities_id)->isGreaterThan(0);
 
        // Create test contracts
         $contracts_id_1 = $contract->add([
-         'name'        => 'test1',
-         'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
-         'renewal'    => Contract::RENEWAL_TACIT,
+            'name'        => 'test1',
+            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+            'renewal'    => Contract::RENEWAL_TACIT,
         ]);
         $this->integer($contracts_id_1)->isGreaterThan(0);
 
         $contracts_id_2 = $contract->add([
-         'name'        => 'test2',
-         'entities_id' => $entities_id,
-         'renewal'    => Contract::RENEWAL_TACIT,
+            'name'        => 'test2',
+            'entities_id' => $entities_id,
+            'renewal'    => Contract::RENEWAL_TACIT,
         ]);
         $this->integer($contracts_id_2)->isGreaterThan(0);
 
        // Test 1: no config
         $tickets_id = $ticket->add([
-         'name'        => 'Test ticket 1',
-         'content'     => 'Test ticket 1',
-         'entities_id' => $entities_id,
+            'name'        => 'Test ticket 1',
+            'content'     => 'Test ticket 1',
+            'entities_id' => $entities_id,
         ]);
         $this->integer($tickets_id)->isGreaterThan(0);
 
@@ -965,16 +965,16 @@ class Entity extends DbTestCase
 
        // Test 2: Use specific contract
         $res = $entity->update([
-         'id' => $entities_id,
-         'contracts_id_default' => $contracts_id_1,
+            'id' => $entities_id,
+            'contracts_id_default' => $contracts_id_1,
         ]);
         $this->boolean($res)->isTrue();
 
        // Case 1: no contract specified, specific default expected
         $tickets_id = $ticket->add([
-         'name'        => 'Test ticket 1',
-         'content'     => 'Test ticket 1',
-         'entities_id' => $entities_id,
+            'name'        => 'Test ticket 1',
+            'content'     => 'Test ticket 1',
+            'entities_id' => $entities_id,
         ]);
         $this->integer($tickets_id)->isGreaterThan(0);
         $this->boolean($ticket->getFromDB($tickets_id))->isTrue();
@@ -986,10 +986,10 @@ class Entity extends DbTestCase
 
        // Case 2: contract specified, should not change
         $tickets_id = $ticket->add([
-         'name'          => 'Test ticket 1',
-         'content'       => 'Test ticket 1',
-         'entities_id'   => $entities_id,
-         '_contracts_id' => $contracts_id_2,
+            'name'          => 'Test ticket 1',
+            'content'       => 'Test ticket 1',
+            'entities_id'   => $entities_id,
+            '_contracts_id' => $contracts_id_2,
         ]);
         $this->integer($tickets_id)->isGreaterThan(0);
         $this->boolean($ticket->getFromDB($tickets_id))->isTrue();
@@ -1001,16 +1001,16 @@ class Entity extends DbTestCase
 
        // Test 3: Use contract in current entity
         $res = $entity->update([
-         'id' => $entities_id,
-         'contracts_id_default' => '-1',
+            'id' => $entities_id,
+            'contracts_id_default' => '-1',
         ]);
         $this->boolean($res)->isTrue();
 
        // Case 1: root entity, expect no contract (no config for this entity)
         $tickets_id_2 = $ticket->add([
-         'name'        => 'Test ticket 1',
-         'content'     => 'Test ticket 1',
-         'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+            'name'        => 'Test ticket 1',
+            'content'     => 'Test ticket 1',
+            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
         ]);
         $this->integer($tickets_id_2)->isGreaterThan(0);
         $this->boolean($ticket->getFromDB($tickets_id_2))->isTrue();
@@ -1020,9 +1020,9 @@ class Entity extends DbTestCase
 
        // Case 2: sub entity, expect contract 2
         $tickets_id = $ticket->add([
-         'name'        => 'Test ticket 1',
-         'content'     => 'Test ticket 1',
-         'entities_id' => $entities_id,
+            'name'        => 'Test ticket 1',
+            'content'     => 'Test ticket 1',
+            'entities_id' => $entities_id,
         ]);
         $this->integer($tickets_id)->isGreaterThan(0);
         $this->boolean($ticket->getFromDB($tickets_id))->isTrue();
@@ -1034,10 +1034,10 @@ class Entity extends DbTestCase
 
        // Case 3: contract specified, should not change
         $tickets_id = $ticket->add([
-         'name'          => 'Test ticket 1',
-         'content'       => 'Test ticket 1',
-         'entities_id'   => $entities_id,
-         '_contracts_id' => $contracts_id_1,
+            'name'          => 'Test ticket 1',
+            'content'       => 'Test ticket 1',
+            'entities_id'   => $entities_id,
+            '_contracts_id' => $contracts_id_1,
         ]);
         $this->integer($tickets_id)->isGreaterThan(0);
         $this->boolean($ticket->getFromDB($tickets_id))->isTrue();

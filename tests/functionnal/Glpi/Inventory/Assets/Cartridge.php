@@ -42,8 +42,8 @@ class Cartridge extends AbstractInventoryAsset
     protected function assetProvider(): array
     {
         return [
-         [
-            'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+            [
+                'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST><CONTENT><DEVICE>
       <CARTRIDGES>
         <TONERBLACK>71</TONERBLACK>
@@ -77,8 +77,8 @@ class Cartridge extends AbstractInventoryAsset
         <TOTAL>1802</TOTAL>
       </PAGECOUNTERS>
     </DEVICE></CONTENT><QUERY>SNMP</QUERY><DEVICEID>foo</DEVICEID></REQUEST>",
-            'expected'  => '{"tonerblack":"71","name":"","serial":"","manufacturers_id":""}'
-         ]
+                'expected'  => '{"tonerblack":"71","name":"","serial":"","manufacturers_id":""}'
+            ]
         ];
     }
 
@@ -134,8 +134,8 @@ class Cartridge extends AbstractInventoryAsset
 
         global $DB;
         $iterator = $DB->request([
-         'FROM'   => \Printer_CartridgeInfo::getTable(),
-         'WHERE'  => ['printers_id' => $printer->fields['id']]
+            'FROM'   => \Printer_CartridgeInfo::getTable(),
+            'WHERE'  => ['printers_id' => $printer->fields['id']]
         ]);
         $this->integer(count($iterator))->isIdenticalTo(1);
 

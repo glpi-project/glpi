@@ -92,9 +92,7 @@ if (
             " . __('Email followup') . "
          </label>
          <div class='ms-2'>
-            " . Dropdown::showYesNo($_POST['field'] . '[use_notification][]', $default_notif, -1, [
-               'display' => false,
-            ]) . "
+            " . Dropdown::showYesNo($_POST['field'] . '[use_notification][]', $default_notif, -1, ['display' => false]) . "
          </div>
       </div>";
 
@@ -122,8 +120,10 @@ if (
         $email_string = Dropdown::showFromArray(
             $_POST['field'] . "[alternative_email][]",
             $emailtab,
-            ['value'   => '',
-            'display' => false]
+            [
+                'value'   => '',
+                'display' => false
+            ]
         );
     } else {
         $email_string = "<input type='mail' class='form-control' name='" . $_POST['field'] . "[alternative_email][]'

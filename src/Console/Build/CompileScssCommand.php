@@ -128,8 +128,8 @@ class CompileScssCommand extends Command
             $compiled_path = Html::getScssCompilePath($file);
             $css = Html::compileScss(
                 [
-                'file'    => $file,
-                'nocache' => true,
+                    'file'    => $file,
+                    'nocache' => true,
                 ]
             );
 

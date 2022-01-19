@@ -98,10 +98,12 @@ class TicketValidation extends CommonITILValidation
 
         $values[self::CREATEREQUEST]
                               = ['short' => __('Create for request'),
-                                      'long'  => __('Create a validation request for a request')];
+                                  'long'  => __('Create a validation request for a request')
+                              ];
         $values[self::CREATEINCIDENT]
                               = ['short' => __('Create for incident'),
-                                      'long'  => __('Create a validation request for an incident')];
+                                  'long'  => __('Create a validation request for an incident')
+                              ];
         $values[self::VALIDATEREQUEST]
                               = __('Validate a request');
         $values[self::VALIDATEINCIDENT]

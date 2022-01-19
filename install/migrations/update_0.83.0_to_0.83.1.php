@@ -74,8 +74,9 @@ function update0830to0831()
         "knowbase_admin",
         "char",
         ['after'     => "knowbase",
-                              'update'    => "1",
-        'condition' => " WHERE `config` = 'w'"]
+            'update'    => "1",
+            'condition' => " WHERE `config` = 'w'"
+        ]
     );
 
     $migration->addField("glpi_configs", "display_count_on_home", "integer", ['value' => 5]);

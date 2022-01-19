@@ -89,10 +89,11 @@ echo "<input type='hidden' name='itemtype' value='" . $_GET['itemtype'] . "'>";
 
 echo "<table class='tab_cadre_fixe' ><tr class='tab_bg_2'><td rowspan='2' width='30%'>";
 $values = [_n('Dropdown', 'Dropdowns', Session::getPluralNumber()) => ['ComputerType'    => _n('Type', 'Types', 1),
-                                                       'ComputerModel'   => _n('Model', 'Models', 1),
-                                                       'OperatingSystem' => OperatingSystem::getTypeName(1),
-                                                       'Location'        => Location::getTypeName(1)],
-               ];
+    'ComputerModel'   => _n('Model', 'Models', 1),
+    'OperatingSystem' => OperatingSystem::getTypeName(1),
+    'Location'        => Location::getTypeName(1)
+],
+];
 $devices = Dropdown::getDeviceItemTypes();
 foreach ($devices as $label => $dp) {
     foreach ($dp as $i => $name) {
@@ -137,20 +138,22 @@ if (!($item instanceof CommonDevice)) {
 
     $val = Stat::getItems($_GET['itemtype'], $_GET["date1"], $_GET["date2"], $_GET["dropdown"]);
     $params = ['type'     => $type,
-                   'dropdown' => $_GET["dropdown"],
-                   'date1'    => $_GET["date1"],
-                   'date2'    => $_GET["date2"],
-                   'start'    => $_GET["start"]];
+        'dropdown' => $_GET["dropdown"],
+        'date1'    => $_GET["date1"],
+        'date2'    => $_GET["date2"],
+        'start'    => $_GET["start"]
+    ];
 } else {
    //   echo "Device";
     $type  = "device";
 
     $val = Stat::getItems($_GET['itemtype'], $_GET["date1"], $_GET["date2"], $_GET["dropdown"]);
     $params = ['type'     => $type,
-                   'dropdown' => $_GET["dropdown"],
-                   'date1'    => $_GET["date1"],
-                   'date2'    => $_GET["date2"],
-                   'start'    => $_GET["start"]];
+        'dropdown' => $_GET["dropdown"],
+        'date1'    => $_GET["date1"],
+        'date2'    => $_GET["date2"],
+        'start'    => $_GET["start"]
+    ];
 }
 
 Html::printPager(
@@ -175,13 +178,13 @@ if (!$_GET['showgraph']) {
     );
 } else {
     $data_params = [
-      'itemtype' => $_GET['itemtype'],
-      'type'     => $type,
-      'date1'    => $_GET['date1'],
-      'date2'    => $_GET['date2'],
-      'start'    => $_GET['start'],
-      'val'      => $val,
-      'value2' => $_GET['dropdown'],
+        'itemtype' => $_GET['itemtype'],
+        'type'     => $type,
+        'date1'    => $_GET['date1'],
+        'date2'    => $_GET['date2'],
+        'start'    => $_GET['start'],
+        'val'      => $val,
+        'value2' => $_GET['dropdown'],
     ];
 
     $stat->displayPieGraphFromData(new StatDataOpened($data_params));

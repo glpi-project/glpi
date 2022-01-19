@@ -48,11 +48,14 @@ class DeviceMotherboard extends CommonDevice
         return array_merge(
             parent::getAdditionalFields(),
             [['name'  => 'chipset',
-                                     'label' => __('Chipset'),
-                                     'type'  => 'text'],
-                              ['name'  => 'devicemotherboardmodels_id',
-                                     'label' => _n('Model', 'Models', 1),
-            'type'  => 'dropdownValue']]
+                'label' => __('Chipset'),
+                'type'  => 'text'
+            ],
+                ['name'  => 'devicemotherboardmodels_id',
+                    'label' => _n('Model', 'Models', 1),
+                    'type'  => 'dropdownValue'
+                ]
+            ]
         );
     }
 
@@ -62,19 +65,19 @@ class DeviceMotherboard extends CommonDevice
         $tab = parent::rawSearchOptions();
 
         $tab[] = [
-         'id'                 => '11',
-         'table'              => $this->getTable(),
-         'field'              => 'chipset',
-         'name'               => __('Chipset'),
-         'datatype'           => 'string',
+            'id'                 => '11',
+            'table'              => $this->getTable(),
+            'field'              => 'chipset',
+            'name'               => __('Chipset'),
+            'datatype'           => 'string',
         ];
 
         $tab[] = [
-         'id'                 => '12',
-         'table'              => 'glpi_devicemotherboardmodels',
-         'field'              => 'name',
-         'name'               => _n('Model', 'Models', 1),
-         'datatype'           => 'dropdown'
+            'id'                 => '12',
+            'table'              => 'glpi_devicemotherboardmodels',
+            'field'              => 'name',
+            'name'               => _n('Model', 'Models', 1),
+            'datatype'           => 'dropdown'
         ];
 
         return $tab;
@@ -128,8 +131,9 @@ class DeviceMotherboard extends CommonDevice
     {
 
         return ['designation'      => 'equal',
-                   'manufacturers_id' => 'equal',
-                   'chipset'          => 'equal'];
+            'manufacturers_id' => 'equal',
+            'chipset'          => 'equal'
+        ];
     }
 
     public static function rawSearchOptionsToAdd($itemtype, $main_joinparams)
@@ -137,19 +141,19 @@ class DeviceMotherboard extends CommonDevice
         $tab = [];
 
         $tab[] = [
-         'id'                 => '14',
-         'table'              => 'glpi_devicemotherboards',
-         'field'              => 'designation',
-         'name'               => static::getTypeName(1),
-         'forcegroupby'       => true,
-         'massiveaction'      => false,
-         'datatype'           => 'string',
-         'joinparams'         => [
-            'beforejoin'         => [
-               'table'              => 'glpi_items_devicemotherboards',
-               'joinparams'         => $main_joinparams
+            'id'                 => '14',
+            'table'              => 'glpi_devicemotherboards',
+            'field'              => 'designation',
+            'name'               => static::getTypeName(1),
+            'forcegroupby'       => true,
+            'massiveaction'      => false,
+            'datatype'           => 'string',
+            'joinparams'         => [
+                'beforejoin'         => [
+                    'table'              => 'glpi_items_devicemotherboards',
+                    'joinparams'         => $main_joinparams
+                ]
             ]
-         ]
         ];
 
         return $tab;

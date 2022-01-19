@@ -46,10 +46,10 @@ class PowerSupply extends Device
     public function prepare(): array
     {
         $mapping = [
-         'serialnumber'  => 'serial',
-         'partnum'       => 'designation',
-         'manufacturer'  => 'manufacturers_id',
-         'power_max'     => 'power'
+            'serialnumber'  => 'serial',
+            'partnum'       => 'designation',
+            'manufacturer'  => 'manufacturers_id',
+            'power_max'     => 'power'
         ];
         foreach ($this->data as &$val) {
             foreach ($mapping as $origin => $dest) {

@@ -90,68 +90,68 @@ class AuthMail extends CommonDBTM
         $tab = [];
 
         $tab[] = [
-         'id'                 => 'common',
-         'name'               => __('Email server')
+            'id'                 => 'common',
+            'name'               => __('Email server')
         ];
 
         $tab[] = [
-         'id'                 => '1',
-         'table'              => $this->getTable(),
-         'field'              => 'name',
-         'name'               => __('Name'),
-         'datatype'           => 'itemlink',
-         'massiveaction'      => false
+            'id'                 => '1',
+            'table'              => $this->getTable(),
+            'field'              => 'name',
+            'name'               => __('Name'),
+            'datatype'           => 'itemlink',
+            'massiveaction'      => false
         ];
 
         $tab[] = [
-         'id'                 => '2',
-         'table'              => $this->getTable(),
-         'field'              => 'id',
-         'name'               => __('ID'),
-         'datatype'           => 'number',
-         'massiveaction'      => false
+            'id'                 => '2',
+            'table'              => $this->getTable(),
+            'field'              => 'id',
+            'name'               => __('ID'),
+            'datatype'           => 'number',
+            'massiveaction'      => false
         ];
 
         $tab[] = [
-         'id'                 => '3',
-         'table'              => $this->getTable(),
-         'field'              => 'host',
-         'name'               => __('Server'),
-         'datatype'           => 'string'
+            'id'                 => '3',
+            'table'              => $this->getTable(),
+            'field'              => 'host',
+            'name'               => __('Server'),
+            'datatype'           => 'string'
         ];
 
         $tab[] = [
-         'id'                 => '4',
-         'table'              => $this->getTable(),
-         'field'              => 'connect_string',
-         'name'               => __('Connection string'),
-         'massiveaction'      => false,
-         'datatype'           => 'string'
+            'id'                 => '4',
+            'table'              => $this->getTable(),
+            'field'              => 'connect_string',
+            'name'               => __('Connection string'),
+            'massiveaction'      => false,
+            'datatype'           => 'string'
         ];
 
         $tab[] = [
-         'id'                 => '6',
-         'table'              => $this->getTable(),
-         'field'              => 'is_active',
-         'name'               => __('Active'),
-         'datatype'           => 'bool'
+            'id'                 => '6',
+            'table'              => $this->getTable(),
+            'field'              => 'is_active',
+            'name'               => __('Active'),
+            'datatype'           => 'bool'
         ];
 
         $tab[] = [
-         'id'                 => '19',
-         'table'              => $this->getTable(),
-         'field'              => 'date_mod',
-         'name'               => __('Last update'),
-         'datatype'           => 'datetime',
-         'massiveaction'      => false
+            'id'                 => '19',
+            'table'              => $this->getTable(),
+            'field'              => 'date_mod',
+            'name'               => __('Last update'),
+            'datatype'           => 'datetime',
+            'massiveaction'      => false
         ];
 
         $tab[] = [
-         'id'                 => '16',
-         'table'              => $this->getTable(),
-         'field'              => 'comment',
-         'name'               => __('Comments'),
-         'datatype'           => 'text'
+            'id'                 => '16',
+            'table'              => $this->getTable(),
+            'field'              => 'comment',
+            'name'               => __('Comments'),
+            'datatype'           => 'text'
         ];
 
         return $tab;

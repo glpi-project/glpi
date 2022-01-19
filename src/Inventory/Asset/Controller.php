@@ -48,9 +48,9 @@ class Controller extends Device
     public function prepare(): array
     {
         $mapping = [
-         'name'          => 'designation',
-         'manufacturer'  => 'manufacturers_id',
-         'type'          => 'interfacetypes_id'
+            'name'          => 'designation',
+            'manufacturer'  => 'manufacturers_id',
+            'type'          => 'interfacetypes_id'
         ];
         $pcivendor = new \PCIVendor();
 

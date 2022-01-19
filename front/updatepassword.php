@@ -60,10 +60,10 @@ if (array_key_exists('update', $_POST)) {
         $error_messages = [__('Incorrect password')];
     } else {
         $input = [
-         'id'               => $user->fields['id'],
-         'current_password' => $_POST['current_password'],
-         'password'         => $_POST['password'],
-         'password2'        => $_POST['password2'],
+            'id'               => $user->fields['id'],
+            'current_password' => $_POST['current_password'],
+            'password'         => $_POST['password'],
+            'password2'        => $_POST['password2'],
         ];
         if ($input['password'] === $input['current_password']) {
             $error_messages = [__('The new password must be different from current password')];

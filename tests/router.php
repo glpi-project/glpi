@@ -37,7 +37,7 @@ define('GLPI_VAR_DIR', __DIR__ . '/files');
 define(
     'PLUGINS_DIRECTORIES',
     [
-      __DIR__ . '/fixtures/plugins',
+        __DIR__ . '/fixtures/plugins',
     ]
 );
 

@@ -42,22 +42,22 @@ class Common extends GLPITestCase
     protected function namesProvider(): array
     {
         return [
-         [
-            'propname' => 'content_type',
-            'headername' => 'Content-Type'
-         ], [
-            'propname' => 'glpi_agent_id',
-            'headername' => 'GLPI-Agent-ID'
-         ], [
-            'propname' => 'glpi_cryptokey_id',
-            'headername' => 'GLPI-CryptoKey-ID'
-         ], [
-            'propname' => 'glpi_any_any',
-            'headername' => 'GLPI-Any-Any'
-         ], [
-            'propname' => 'header_with_id_in',
-            'headername' => 'Header-With-ID-In'
-         ]
+            [
+                'propname' => 'content_type',
+                'headername' => 'Content-Type'
+            ], [
+                'propname' => 'glpi_agent_id',
+                'headername' => 'GLPI-Agent-ID'
+            ], [
+                'propname' => 'glpi_cryptokey_id',
+                'headername' => 'GLPI-CryptoKey-ID'
+            ], [
+                'propname' => 'glpi_any_any',
+                'headername' => 'GLPI-Any-Any'
+            ], [
+                'propname' => 'header_with_id_in',
+                'headername' => 'Header-With-ID-In'
+            ]
         ];
     }
 
@@ -97,8 +97,8 @@ class Common extends GLPITestCase
 
         $instance = $this->newTestedInstance;
         $instance->setHeaders([
-         'Content-Type' => 'application/xml',
-         'GLPI-Agent-ID' => 'anything'
+            'Content-Type' => 'application/xml',
+            'GLPI-Agent-ID' => 'anything'
         ]);
 
         $this->array($instance->getHeaders())

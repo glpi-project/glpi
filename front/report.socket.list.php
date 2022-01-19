@@ -52,20 +52,20 @@ if (isset($_POST["prise"]) && $_POST["prise"]) {
         ['glpi_sockets.id' => (int) $_POST["prise"]], //where
         ['glpi_locations.completename AS extra'], //select
         [
-         'glpi_locations'  => [
-            'ON'  => [
-               'glpi_locations'  => 'id',
-               'glpi_sockets'  => 'locations_id'
+            'glpi_locations'  => [
+                'ON'  => [
+                    'glpi_locations'  => 'id',
+                    'glpi_sockets'  => 'locations_id'
+                ]
             ]
-         ]
         ], //left join
         [
-         'glpi_networkportethernets'   => [
-            'ON'  => [
-               'glpi_networkportethernets'   => 'sockets_id',
-               'glpi_sockets'              => 'id'
+            'glpi_networkportethernets'   => [
+                'ON'  => [
+                    'glpi_networkportethernets'   => 'sockets_id',
+                    'glpi_sockets'              => 'id'
+                ]
             ]
-         ]
         ], //inner join
         [], //order
         Location::getTypeName()

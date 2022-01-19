@@ -60,15 +60,15 @@ class Ajax
     {
 
         $param = [
-         'width'           => 800,
-         'height'          => 400,
-         'modal'           => true,
-         'modal_class'     => "modal-lg",
-         'container'       => '',
-         'title'           => '',
-         'extraparams'     => [],
-         'display'         => true,
-         'js_modal_fields' => ''
+            'width'           => 800,
+            'height'          => 400,
+            'modal'           => true,
+            'modal_class'     => "modal-lg",
+            'container'       => '',
+            'title'           => '',
+            'extraparams'     => [],
+            'display'         => true,
+            'js_modal_fields' => ''
         ];
 
         if (count($options)) {
@@ -82,8 +82,8 @@ class Ajax
         $html = TemplateRenderer::getInstance()->render(
             'components/modal.html.twig',
             [
-            'title'       => $param['title'],
-            'modal_class' => $param['modal_class'],
+                'title'       => $param['title'],
+                'modal_class' => $param['modal_class'],
             ]
         );
 
@@ -148,14 +148,14 @@ class Ajax
     {
 
         $param = [
-         'width'         => 1050,
-         'height'        => 500,
-         'modal'         => true,
-         'title'         => '',
-         'display'       => true,
-         'dialog_class'  => 'modal-lg',
-         'autoopen'      => false,
-         'reloadonclose' => false
+            'width'         => 1050,
+            'height'        => 500,
+            'modal'         => true,
+            'title'         => '',
+            'display'       => true,
+            'dialog_class'  => 'modal-lg',
+            'autoopen'      => false,
+            'reloadonclose' => false
         ];
 
         if (count($options)) {

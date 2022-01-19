@@ -122,18 +122,18 @@ class Common
     public function getRequireds(): array
     {
         return [
-         'content_type',
-         'pragma',
-         'glpi_agent_id',
-         'cache_control',
-         'connection'
+            'content_type',
+            'pragma',
+            'glpi_agent_id',
+            'cache_control',
+            'connection'
         ];
     }
 
     public function getHeadersNames(): array
     {
         return [
-         'glpi_cryptokey_id' => 'GLPI-CryptoKey-ID'
+            'glpi_cryptokey_id' => 'GLPI-CryptoKey-ID'
         ];
     }
 

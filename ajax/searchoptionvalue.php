@@ -80,10 +80,10 @@ if (isset($_POST['searchtype'])) {
 
                     case "glpi_users.name":
                         $searchopt['toadd'] = [
-                        [
-                        'id'    => 'myself',
-                        'text'  => __('Myself'),
-                        ]
+                            [
+                                'id'    => 'myself',
+                                'text'  => __('Myself'),
+                            ]
                         ];
                         break;
 
@@ -149,10 +149,10 @@ if (isset($_POST['searchtype'])) {
                         $plug['plugin'],
                         'searchOptionsValues',
                         [
-                        'name'           => $inputname,
-                        'searchtype'     => $_POST['searchtype'],
-                        'searchoption'   => $searchopt,
-                        'value'          => $_POST['value']
+                            'name'           => $inputname,
+                            'searchtype'     => $_POST['searchtype'],
+                            'searchoption'   => $searchopt,
+                            'value'          => $_POST['value']
                         ]
                     );
                 }

@@ -94,8 +94,8 @@ class Line extends CommonDBTM
     {
         $this->initForm($ID, $options);
         TemplateRenderer::getInstance()->display('pages/management/line.html.twig', [
-         'item'   => $this,
-         'params' => $options,
+            'item'   => $this,
+            'params' => $options,
         ]);
         return true;
     }

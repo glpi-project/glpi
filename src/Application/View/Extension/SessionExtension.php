@@ -48,17 +48,17 @@ class SessionExtension extends AbstractExtension
     public function getFunctions(): array
     {
         return [
-         new TwigFunction('can_view_all_entities', [Session::class, 'canViewAllEntities']),
-         new TwigFunction('get_current_interface', [$this, 'getCurrentInterface']),
-         new TwigFunction('get_current_user', [$this, 'getCurrentUser']),
-         new TwigFunction('has_access_to_entity', [Session::class, 'haveAccessToEntity']),
-         new TwigFunction('has_access_to_user_entities', [$this, 'hasAccessToUserEntities']),
-         new TwigFunction('has_profile_right', [Session::class, 'haveRight']),
-         new TwigFunction('has_itemtype_right', [$this, 'hasItemtypeRight']),
-         new TwigFunction('is_multi_entities_mode', [Session::class, 'isMultiEntitiesMode']),
-         new TwigFunction('pull_messages', [$this, 'pullMessages']),
-         new TwigFunction('session', [$this, 'session']),
-         new TwigFunction('user_pref', [$this, 'userPref']),
+            new TwigFunction('can_view_all_entities', [Session::class, 'canViewAllEntities']),
+            new TwigFunction('get_current_interface', [$this, 'getCurrentInterface']),
+            new TwigFunction('get_current_user', [$this, 'getCurrentUser']),
+            new TwigFunction('has_access_to_entity', [Session::class, 'haveAccessToEntity']),
+            new TwigFunction('has_access_to_user_entities', [$this, 'hasAccessToUserEntities']),
+            new TwigFunction('has_profile_right', [Session::class, 'haveRight']),
+            new TwigFunction('has_itemtype_right', [$this, 'hasItemtypeRight']),
+            new TwigFunction('is_multi_entities_mode', [Session::class, 'isMultiEntitiesMode']),
+            new TwigFunction('pull_messages', [$this, 'pullMessages']),
+            new TwigFunction('session', [$this, 'session']),
+            new TwigFunction('user_pref', [$this, 'userPref']),
         ];
     }
 

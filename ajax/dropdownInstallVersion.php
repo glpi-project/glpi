@@ -54,18 +54,18 @@ if ($_POST['softwares_id'] > 0) {
     }
    // Make a select box
     $iterator = $DB->request([
-      'SELECT'    => ['glpi_softwareversions.*', 'glpi_states.name AS sname'],
-      'DISTINCT'  => true,
-      'FROM'      => 'glpi_softwareversions',
-      'LEFT JOIN' => [
-         'glpi_states'  => [
-            'ON'  => [
-               'glpi_softwareversions' => 'states_id',
-               'glpi_states'           => 'id'
+        'SELECT'    => ['glpi_softwareversions.*', 'glpi_states.name AS sname'],
+        'DISTINCT'  => true,
+        'FROM'      => 'glpi_softwareversions',
+        'LEFT JOIN' => [
+            'glpi_states'  => [
+                'ON'  => [
+                    'glpi_softwareversions' => 'states_id',
+                    'glpi_states'           => 'id'
+                ]
             ]
-         ]
-      ],
-      'WHERE'     => ['glpi_softwareversions.softwares_id' => $_POST['softwares_id']] + $where
+        ],
+        'WHERE'     => ['glpi_softwareversions.softwares_id' => $_POST['softwares_id']] + $where
     ]);
     $number = count($iterator);
 

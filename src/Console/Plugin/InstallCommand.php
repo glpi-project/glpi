@@ -256,9 +256,9 @@ class InstallCommand extends AbstractPluginCommand
         $is_already_known = $plugin->getFromDBByCrit(['directory' => $directory]);
 
         $installed_states = [
-         Plugin::ACTIVATED,
-         Plugin::TOBECONFIGURED,
-         Plugin::NOTACTIVATED,
+            Plugin::ACTIVATED,
+            Plugin::TOBECONFIGURED,
+            Plugin::NOTACTIVATED,
         ];
         return $is_already_known && in_array($plugin->fields['state'], $installed_states);
     }
@@ -333,8 +333,8 @@ class InstallCommand extends AbstractPluginCommand
         if (!$requirements_met) {
             $this->output->writeln(
                 [
-                '<error>' . sprintf(__('Plugin "%s" requirements not met.'), $directory) . '</error>',
-                '<error>' . $ob_contents . '</error>',
+                    '<error>' . sprintf(__('Plugin "%s" requirements not met.'), $directory) . '</error>',
+                    '<error>' . $ob_contents . '</error>',
                 ],
                 OutputInterface::VERBOSITY_QUIET
             );

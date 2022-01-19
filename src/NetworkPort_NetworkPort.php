@@ -58,10 +58,10 @@ class NetworkPort_NetworkPort extends CommonDBRelation
     {
 
         return $this->getFromDBByCrit([
-         'OR'  => [
-            $this->getTable() . '.networkports_id_1'  => $ID,
-            $this->getTable() . '.networkports_id_2'  => $ID
-         ]
+            'OR'  => [
+                $this->getTable() . '.networkports_id_1'  => $ID,
+                $this->getTable() . '.networkports_id_2'  => $ID
+            ]
         ]);
     }
 
@@ -100,22 +100,22 @@ class NetworkPort_NetworkPort extends CommonDBRelation
 
         $unmanaged = new Unmanaged();
         $hubs_id = $unmanaged->add([
-         'hub'          => 1,
-         'name'         => 'Hub',
-         'entities_id'  => $entities_id,
-         'comment'      => 'Port: ' . $netports_id,
+            'hub'          => 1,
+            'name'         => 'Hub',
+            'entities_id'  => $entities_id,
+            'comment'      => 'Port: ' . $netports_id,
         ]);
 
         $ports_id = $netport->add([
-         'items_id'           => $hubs_id,
-         'itemtype'           => $unmanaged->getType(),
-         'name'               => 'Hub link',
-         'instantiation_type' => 'NetworkPortEthernet'
+            'items_id'           => $hubs_id,
+            'itemtype'           => $unmanaged->getType(),
+            'name'               => 'Hub link',
+            'instantiation_type' => 'NetworkPortEthernet'
         ]);
         $this->disconnectFrom($netports_id);
         $this->add([
-         'networkports_id_1'  => $netports_id,
-         'networkports_id_2'  => $ports_id
+            'networkports_id_1'  => $netports_id,
+            'networkports_id_2'  => $ports_id
         ]);
         return $hubs_id;
     }
@@ -136,37 +136,37 @@ class NetworkPort_NetworkPort extends CommonDBRelation
         $this->disconnectFrom($ports_id);
        // Search free port
         $result = $DB->request([
-         'SELECT'    => $netport->getTable() . '.id',
-         'FROM'      => $netport->getTable(),
-         'LEFT JOIN' => [
-            self::getTable() => [
-               'ON'  => [
-                  $netport->getTable() => 'id',
-                  self::getTable()     => 'networkports_id_2'
-               ]
-            ]
-         ],
-         'WHERE'     => [
-            'itemtype'           => Unmanaged::getType(),
-            'items_id'           => $hubs_id,
-            'networkports_id_1'  => null
-         ],
-         'LIMIT'     => 1
+            'SELECT'    => $netport->getTable() . '.id',
+            'FROM'      => $netport->getTable(),
+            'LEFT JOIN' => [
+                self::getTable() => [
+                    'ON'  => [
+                        $netport->getTable() => 'id',
+                        self::getTable()     => 'networkports_id_2'
+                    ]
+                ]
+            ],
+            'WHERE'     => [
+                'itemtype'           => Unmanaged::getType(),
+                'items_id'           => $hubs_id,
+                'networkports_id_1'  => null
+            ],
+            'LIMIT'     => 1
         ])->current();
 
         $free_id = $result['id'] ?? 0;
         if (!$free_id) {
            //no free port, create a new one
             $free_id = $netport->add([
-            'itemtype'           => Unmanaged::getType(),
-            'items_id'           => $hubs_id,
-            'instantiation_type' => 'NetworkPortEthernet'
+                'itemtype'           => Unmanaged::getType(),
+                'items_id'           => $hubs_id,
+                'instantiation_type' => 'NetworkPortEthernet'
             ]);
         }
 
         $this->add([
-         'networkports_id_1'  => $ports_id,
-         'networkports_id_2'  => $free_id
+            'networkports_id_1'  => $ports_id,
+            'networkports_id_2'  => $free_id
         ]);
         return $free_id;
     }
@@ -231,8 +231,8 @@ class NetworkPort_NetworkPort extends CommonDBRelation
        // If hub have no port, delete it
         foreach (array_keys($hubs_ids) as $unmanageds_id) {
             $networkports = $netport->find([
-            'itemtype'  => Unmanaged::getType(),
-            'items_id'  => $unmanageds_id
+                'itemtype'  => Unmanaged::getType(),
+                'items_id'  => $unmanageds_id
             ]);
             if (count($networkports) < 2) {
                 $unmanaged->delete(['id' => $unmanageds_id], 1);
@@ -253,8 +253,8 @@ class NetworkPort_NetworkPort extends CommonDBRelation
                 $this->disconnectFrom($others_id);
 
                 $this->add([
-                'networkports_id_1' => $switchs_id,
-                'networkports_id_2' => $others_id
+                    'networkports_id_1' => $switchs_id,
+                    'networkports_id_2' => $others_id
                 ]);
             }
         }
@@ -317,10 +317,10 @@ class NetworkPort_NetworkPort extends CommonDBRelation
         }
 
         $input = [
-         'networkports_id_source'      => $netports_id,
-         'networkports_id_destination' => $opposite_port,
-         'connected'                   => ($action === 'add'),
-         'date'                        => $_SESSION['glpi_currenttime'],
+            'networkports_id_source'      => $netports_id,
+            'networkports_id_destination' => $opposite_port,
+            'connected'                   => ($action === 'add'),
+            'date'                        => $_SESSION['glpi_currenttime'],
         ];
 
         $log->add($input);

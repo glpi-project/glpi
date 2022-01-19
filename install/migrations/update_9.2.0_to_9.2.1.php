@@ -161,19 +161,19 @@ function update920to921()
         $DB->queryOrDie($query, "9.2 add table glpi_olalevels_tickets");
 
         $DB->insertOrDie("glpi_crontasks", [
-         'itemtype'        => "OlaLevel_Ticket",
-         'name'            => "olaticket",
-         'frequency'       => "604800",
-         'param'           => null,
-         'state'           => "1",
-         'mode'            => "1",
-         'allowmode'       => "3",
-         'hourmin'         => "0",
-         'hourmax'         => "24",
-         'logs_lifetime'   => "30",
-         'lastrun'         => null,
-         'lastcode'        => null,
-         'comment'         => null,
+            'itemtype'        => "OlaLevel_Ticket",
+            'name'            => "olaticket",
+            'frequency'       => "604800",
+            'param'           => null,
+            'state'           => "1",
+            'mode'            => "1",
+            'allowmode'       => "3",
+            'hourmin'         => "0",
+            'hourmax'         => "24",
+            'logs_lifetime'   => "30",
+            'lastrun'         => null,
+            'lastcode'        => null,
+            'comment'         => null,
         ], "9.2 populate glpi_crontasks for olaticket");
     }
 
@@ -413,12 +413,12 @@ function update920to921()
 
    //fix OS entities_id and is_recursive
     $items = [
-      'Computer'           => 'glpi_computers',
-      'Monitor'            => 'glpi_monitors',
-      'NetworkEquipment'   => 'glpi_networkequipments',
-      'Peripheral'         => 'glpi_peripherals',
-      'Phone'              => 'glpi_phones',
-      'Printer'            => 'glpi_printers'
+        'Computer'           => 'glpi_computers',
+        'Monitor'            => 'glpi_monitors',
+        'NetworkEquipment'   => 'glpi_networkequipments',
+        'Peripheral'         => 'glpi_peripherals',
+        'Phone'              => 'glpi_phones',
+        'Printer'            => 'glpi_printers'
     ];
     foreach ($items as $itemtype => $table) {
        // TODO: can be done when DB::update() supports JOINs
@@ -433,20 +433,20 @@ function update920to921()
    //drop "empty" glpi_items_operatingsystems
     $migration->addPostQuery(
         $DB->buildDelete("glpi_items_operatingsystems", [
-         'operatingsystems_id'               => "0",
-         'operatingsystemversions_id'        => "0",
-         'operatingsystemservicepacks_id'    => "0",
-         'operatingsystemarchitectures_id'   => "0",
-         'operatingsystemkernelversions_id'  => "0",
-         'operatingsystemeditions_id'        => "0",
-         'OR' => [
-            ['license_number' => null],
-            ['license_number' => ""]
-         ],
-         'OR' => [
-            ['license_id' => null],
-            ['license_id' => ""]
-         ]
+            'operatingsystems_id'               => "0",
+            'operatingsystemversions_id'        => "0",
+            'operatingsystemservicepacks_id'    => "0",
+            'operatingsystemarchitectures_id'   => "0",
+            'operatingsystemkernelversions_id'  => "0",
+            'operatingsystemeditions_id'        => "0",
+            'OR' => [
+                ['license_number' => null],
+                ['license_number' => ""]
+            ],
+            'OR' => [
+                ['license_id' => null],
+                ['license_id' => ""]
+            ]
         ])
     );
 

@@ -54,7 +54,7 @@ class Itil_Project extends DbTestCase
 
         $this->integer(
             (int)$project->add([
-            'name' => 'Some project',
+                'name' => 'Some project',
             ])
         )->isGreaterThan(0);
         $baseProjectId = $project->fields['id'];
@@ -65,8 +65,8 @@ class Itil_Project extends DbTestCase
 
             $this->integer(
                 (int)$item->add([
-                'name'    => 'ITIL item ' . $itemtype,
-                'content' => 'ITIL item ' . $itemtype,
+                    'name'    => 'ITIL item ' . $itemtype,
+                    'content' => 'ITIL item ' . $itemtype,
                 ])
             )->isGreaterThan(0);
             $items[] = $item;
@@ -74,9 +74,9 @@ class Itil_Project extends DbTestCase
            // Item should be linkable to a project
             $this->integer(
                 (int)$itil_project->add([
-                'itemtype'    => $itemtype,
-                'items_id'    => $item->fields['id'],
-                'projects_id' => $baseProjectId,
+                    'itemtype'    => $itemtype,
+                    'items_id'    => $item->fields['id'],
+                    'projects_id' => $baseProjectId,
                 ])
             )->isGreaterThan(0);
 
@@ -89,15 +89,15 @@ class Itil_Project extends DbTestCase
        //add a task
         $ptask = new \ProjectTask();
         $ptid = (int)$ptask->add([
-         'name' => 'Task for test project Clone',
-         'projects_id' => $baseProjectId
+            'name' => 'Task for test project Clone',
+            'projects_id' => $baseProjectId
         ]);
         $this->integer($ptid)->isGreaterThan(0);
 
        // Clone project should clone its links to ITIL items and task
         $cloneProjectId = (int)$project->add([
-         'name'   => 'Some project clone',
-         '_oldID' => $baseProjectId,
+            'name'   => 'Some project clone',
+            '_oldID' => $baseProjectId,
         ]);
         $this->integer($cloneProjectId)->isGreaterThan(0);
 
@@ -132,8 +132,8 @@ class Itil_Project extends DbTestCase
                 countElementsInTable(
                     $itil_project::getTable(),
                     [
-                    'itemtype' => $itemtype,
-                    'items_id' => $items_id,
+                        'itemtype' => $itemtype,
+                        'items_id' => $items_id,
                     ]
                 )
             )->isEqualTo(0);

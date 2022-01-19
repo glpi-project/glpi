@@ -47,8 +47,8 @@ abstract class DropdownParameters extends AbstractParameters
     public function getAvailableParameters(): array
     {
         return [
-         new AttributeParameter("id", __('ID')),
-         new AttributeParameter("name", __('Name')),
+            new AttributeParameter("id", __('ID')),
+            new AttributeParameter("name", __('Name')),
         ];
     }
 
@@ -59,8 +59,8 @@ abstract class DropdownParameters extends AbstractParameters
         $fields = Sanitizer::unsanitize($item->fields);
 
         return [
-         'id'   => $fields['id'],
-         'name' => $fields['name'],
+            'id'   => $fields['id'],
+            'name' => $fields['name'],
         ];
     }
 }

@@ -61,7 +61,7 @@ if (isset($_POST['delete']) || isset($_POST["purge"])) {
 } else {
     Html::header(RefusedEquipment::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "admin", "glpi\inventory\inventory", "refusedequipment");
     $refused->display([
-      'id'           => $_GET["id"]
+        'id'           => $_GET["id"]
     ]);
     Html::footer();
 }

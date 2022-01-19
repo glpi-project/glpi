@@ -108,7 +108,7 @@ if (isset($_POST["add"])) {
 } else if (isset($_POST['approval_action'])) {
     if ($_POST['users_id_validate'] == Session::getLoginUserID()) {
         $validation->update($_POST + [
-         'status' => ($_POST['approval_action'] === 'approve') ? CommonITILValidation::ACCEPTED : CommonITILValidation::REFUSED
+            'status' => ($_POST['approval_action'] === 'approve') ? CommonITILValidation::ACCEPTED : CommonITILValidation::REFUSED
         ]);
         Html::back();
     }

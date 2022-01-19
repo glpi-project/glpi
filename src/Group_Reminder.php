@@ -58,10 +58,10 @@ class Group_Reminder extends CommonDBRelation
 
         $groups = [];
         $iterator = $DB->request([
-         'FROM'   => self::getTable(),
-         'WHERE'  => [
-            'reminders_id' => $reminders_id
-         ]
+            'FROM'   => self::getTable(),
+            'WHERE'  => [
+                'reminders_id' => $reminders_id
+            ]
         ]);
 
         foreach ($iterator as $data) {

@@ -63,9 +63,9 @@ header("Content-Type: text/html; charset=UTF-8");
 if ($_REQUEST["action"] == "add_reservation_fromselect") {
     $reservation = new Reservation();
     $reservation->showForm(0, [
-      'item'  => [(int) $_REQUEST['id']],
-      'begin' => $_REQUEST['start'],
-      'end'   => $_REQUEST['end'],
+        'item'  => [(int) $_REQUEST['id']],
+        'begin' => $_REQUEST['start'],
+        'end'   => $_REQUEST['end'],
     ]);
 }
 

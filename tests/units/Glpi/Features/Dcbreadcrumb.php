@@ -41,16 +41,16 @@ class DCBreadcrumb extends \DbTestCase
     public function DCBreadcrumbProvider()
     {
         return [
-         [\Computer::class, true],
-         [\DCRoom::class, true],
-         [\Enclosure::class, true],
-         [\Monitor::class, true],
-         [\NetworkEquipment::class, true],
-         [\PassiveDCEquipment::class, true],
-         [\PDU::class, true],
-         [\Peripheral::class, true],
-         [\Rack::class, true],
-         [\Location::class, false]
+            [\Computer::class, true],
+            [\DCRoom::class, true],
+            [\Enclosure::class, true],
+            [\Monitor::class, true],
+            [\NetworkEquipment::class, true],
+            [\PassiveDCEquipment::class, true],
+            [\PDU::class, true],
+            [\Peripheral::class, true],
+            [\Rack::class, true],
+            [\Location::class, false]
         ];
     }
 
@@ -77,7 +77,7 @@ class DCBreadcrumb extends \DbTestCase
         $datacenter = new \Datacenter();
         $datacenter_name = 'test datacenter';
         $datacenter_id = $datacenter->add($datacenter_input = [
-         'name'         => $datacenter_name,
+            'name'         => $datacenter_name,
         ]);
         $this->checkInput($datacenter, $datacenter_id, $datacenter_input);
 
@@ -85,10 +85,10 @@ class DCBreadcrumb extends \DbTestCase
         $DCroom = new \DCRoom();
         $DCroom_name = 'test room';
         $DCroom_id = $DCroom->add($DCroom_input = [
-         'name'           => $DCroom_name,
-         'vis_cols'       => 10,
-         'vis_rows'       => 10,
-         'datacenters_id' => $datacenter_id
+            'name'           => $DCroom_name,
+            'vis_cols'       => 10,
+            'vis_rows'       => 10,
+            'datacenters_id' => $datacenter_id
         ]);
         $this->checkInput($DCroom, $DCroom_id, $DCroom_input);
 
@@ -96,11 +96,11 @@ class DCBreadcrumb extends \DbTestCase
         $rack = new \Rack();
         $rack_name = 'test rack';
         $rack_id = $rack->add($rack_input = [
-         'name'         => $rack_name,
-         'entities_id'   => 0,
-         'dcrooms_id'   => $DCroom_id,
-         'number_units' => 42,
-         'position' => 62,
+            'name'         => $rack_name,
+            'entities_id'   => 0,
+            'dcrooms_id'   => $DCroom_id,
+            'number_units' => 42,
+            'position' => 62,
         ]);
         $this->checkInput($rack, $rack_id, $rack_input);
 
@@ -111,10 +111,10 @@ class DCBreadcrumb extends \DbTestCase
         $Itemrack = new \Item_Rack();
         $rack_position = 37;
         $Itemrack_id = $Itemrack->add($Itemrack_input = [
-         'racks_id' => $rack_id,
-         'itemtype' => "Computer",
-         'items_id' => $computer1->getID(),
-         'position' => $rack_position,
+            'racks_id' => $rack_id,
+            'itemtype' => "Computer",
+            'items_id' => $computer1->getID(),
+            'position' => $rack_position,
         ]);
         $this->checkInput($Itemrack, $Itemrack_id, $Itemrack_input);
 

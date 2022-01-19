@@ -112,7 +112,8 @@ class RuleDictionnarySoftware extends Rule
 
         $actions['version']['name']               = _n('Version', 'Versions', 1);
         $actions['version']['force_actions']      = ['assign','regex_result',
-                                                        'append_regex_result'];
+            'append_regex_result'
+        ];
 
         $actions['manufacturer']['name']          = __('Publisher');
         $actions['manufacturer']['table']         = 'glpi_manufacturers';

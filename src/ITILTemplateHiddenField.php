@@ -81,12 +81,12 @@ abstract class ITILTemplateHiddenField extends ITILTemplateField
        // Try to delete itemtype -> delete items_id
         if ($this->fields['num'] == $itemtype_id) {
             $iterator = $DB->request([
-            'SELECT' => 'id',
-            'FROM'   => $this->getTable(),
-            'WHERE'  => [
-               static::$items_id => $this->fields[static::$itiltype],
-               'num'             => $items_id_id
-            ]
+                'SELECT' => 'id',
+                'FROM'   => $this->getTable(),
+                'WHERE'  => [
+                    static::$items_id => $this->fields[static::$itiltype],
+                    'num'             => $items_id_id
+                ]
             ]);
             if (count($iterator)) {
                  $result = $iterator->current();
@@ -112,9 +112,9 @@ abstract class ITILTemplateHiddenField extends ITILTemplateField
         global $DB;
 
         $iterator = $DB->request([
-         'FROM'   => $this->getTable(),
-         'WHERE'  => [static::$items_id => $ID],
-         'ORDER'  => 'id'
+            'FROM'   => $this->getTable(),
+            'WHERE'  => [static::$items_id => $ID],
+            'ORDER'  => 'id'
         ]);
 
         $tt_class       = static::$itemtype;
@@ -141,7 +141,7 @@ abstract class ITILTemplateHiddenField extends ITILTemplateField
     public static function getExcludedFields()
     {
         return [
-         175 => 175, // ticket's tasks (template)
+            175 => 175, // ticket's tasks (template)
         ];
     }
 
@@ -172,8 +172,8 @@ abstract class ITILTemplateHiddenField extends ITILTemplateField
         $rand    = mt_rand();
 
         $iterator = $DB->request([
-         'FROM'   => static::getTable(),
-         'WHERE'  => [static::$items_id => $ID]
+            'FROM'   => static::getTable(),
+            'WHERE'  => [static::$items_id => $ID]
         ]);
 
         $numrows = count($iterator);
@@ -208,7 +208,8 @@ abstract class ITILTemplateHiddenField extends ITILTemplateField
         if ($canedit && $numrows) {
             Html::openMassiveActionsForm('mass' . $ttm->getType() . $rand);
             $massiveactionparams = ['num_displayed' => min($_SESSION['glpilist_limit'], $numrows),
-                                      'container'     => 'mass' . $ttm->getType() . $rand];
+                'container'     => 'mass' . $ttm->getType() . $rand
+            ];
             Html::showMassiveActions($massiveactionparams);
         }
         echo "<table class='tab_cadre_fixehov'>";

@@ -47,7 +47,7 @@ class Peripheral extends InventoryAsset
     public function prepare(): array
     {
         $mapping = [
-         'manufacturer' => 'manufacturers_id',
+            'manufacturer' => 'manufacturers_id',
         ];
 
         $existing = [];
@@ -98,13 +98,13 @@ class Peripheral extends InventoryAsset
         if ($this->extra_data['inputs'] !== null) {
            //hanlde inputs
             $point_types = [
-            3 => 'Mouse',
-            4 => 'Trackball',
-            5 => 'Track Point',
-            6 => 'Glide Point',
-            7 => 'Touch Pad',
-            8 => 'Touch Screen',
-            9 => 'Mouse - Optical Sensor'
+                3 => 'Mouse',
+                4 => 'Trackball',
+                5 => 'Track Point',
+                6 => 'Glide Point',
+                7 => 'Touch Pad',
+                8 => 'Touch Screen',
+                9 => 'Mouse - Optical Sensor'
             ];
 
             foreach ($this->extra_data['inputs'] as $k => &$val) {
@@ -147,10 +147,10 @@ class Peripheral extends InventoryAsset
 
         foreach ($value as $key => $val) {
             $input = [
-            'itemtype'     => 'Peripheral',
-            'name'         => $val->name ?? '',
-            'serial'       => $val->serial ?? '',
-            'entities_id'  => $this->item->fields['entities_id']
+                'itemtype'     => 'Peripheral',
+                'name'         => $val->name ?? '',
+                'serial'       => $val->serial ?? '',
+                'entities_id'  => $this->item->fields['entities_id']
             ];
             $data = $rule->processAllRules($input, [], ['class' => $this, 'return' => true]);
 
@@ -173,12 +173,12 @@ class Peripheral extends InventoryAsset
                     $agents_id = 0;
                 }
                 $inputrulelog = [
-                'date'      => date('Y-m-d H:i:s'),
-                'rules_id'  => $data['rules_id'],
-                'items_id'  => $items_id,
-                'itemtype'  => $itemtype,
-                'agents_id' => $agents_id,
-                'method'    => 'inventory'
+                    'date'      => date('Y-m-d H:i:s'),
+                    'rules_id'  => $data['rules_id'],
+                    'items_id'  => $items_id,
+                    'itemtype'  => $itemtype,
+                    'agents_id' => $agents_id,
+                    'method'    => 'inventory'
                 ];
                 $rulesmatched->add($inputrulelog, [], false);
                 $rulesmatched->cleanOlddata($items_id, $itemtype);
@@ -187,26 +187,26 @@ class Peripheral extends InventoryAsset
 
         $db_peripherals = [];
         $iterator = $DB->request([
-         'SELECT'    => [
-            'glpi_peripherals.id',
-            'glpi_computers_items.id AS link_id',
-            'glpi_computers_items.is_dynamic',
-         ],
-         'FROM'      => 'glpi_computers_items',
-         'LEFT JOIN' => [
-            'glpi_peripherals' => [
-               'FKEY' => [
-                  'glpi_peripherals'      => 'id',
-                  'glpi_computers_items'  => 'items_id'
-               ]
+            'SELECT'    => [
+                'glpi_peripherals.id',
+                'glpi_computers_items.id AS link_id',
+                'glpi_computers_items.is_dynamic',
+            ],
+            'FROM'      => 'glpi_computers_items',
+            'LEFT JOIN' => [
+                'glpi_peripherals' => [
+                    'FKEY' => [
+                        'glpi_peripherals'      => 'id',
+                        'glpi_computers_items'  => 'items_id'
+                    ]
+                ]
+            ],
+            'WHERE'     => [
+                'itemtype' => 'Peripheral',
+                'computers_id' => $this->item->fields['id'],
+                'entities_id' => $this->entities_id,
+                'glpi_peripherals.is_global' => 0
             ]
-         ],
-         'WHERE'     => [
-            'itemtype' => 'Peripheral',
-            'computers_id' => $this->item->fields['id'],
-            'entities_id' => $this->entities_id,
-            'glpi_peripherals.is_global' => 0
-         ]
         ]);
 
         foreach ($iterator as $data) {
@@ -239,10 +239,10 @@ class Peripheral extends InventoryAsset
         if (count($peripherals)) {
             foreach ($peripherals as $peripherals_id) {
                 $input = [
-                'computers_id'    => $this->item->fields['id'],
-                'itemtype'        => 'Peripheral',
-                'items_id'        => $peripherals_id,
-                'is_dynamic'      => 1,
+                    'computers_id'    => $this->item->fields['id'],
+                    'itemtype'        => 'Peripheral',
+                    'items_id'        => $peripherals_id,
+                    'is_dynamic'      => 1,
                 ];
                 $this->addOrMoveItem($input);
             }

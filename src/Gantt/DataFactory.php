@@ -53,13 +53,13 @@ class DataFactory
         $project = new \Project();
         if ($id == -1) {
             $iterator = $DB->request([
-            'FROM' => 'glpi_projects',
-            'WHERE' => [
-               'projects_id' => 0,
-               'show_on_global_gantt' => 1,
-               'is_template' => 0,
-               'is_deleted' => 0
-            ] + getEntitiesRestrictCriteria('glpi_projects', '', '', true)
+                'FROM' => 'glpi_projects',
+                'WHERE' => [
+                    'projects_id' => 0,
+                    'show_on_global_gantt' => 1,
+                    'is_template' => 0,
+                    'is_deleted' => 0
+                ] + getEntitiesRestrictCriteria('glpi_projects', '', '', true)
             ]);
             foreach ($iterator as $data) {
                  $this->getItemsForProject($itemArray, $data['id']);

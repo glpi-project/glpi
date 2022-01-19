@@ -48,8 +48,8 @@ class CsvResponse extends DbTestCase
        // Create a dummy computer
         $computer = new Computer();
         $id = $computer->add([
-         'name'        => 'testExportToCsv 1',
-         'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+            'name'        => 'testExportToCsv 1',
+            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
         ]);
 
         $this->integer($id)->isGreaterThan(0);

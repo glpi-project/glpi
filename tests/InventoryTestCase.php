@@ -65,19 +65,19 @@ class InventoryTestCase extends \DbTestCase
            //$this->dump('Checking for unexpected logs');
             $nblogsnow = countElementsInTable(\Log::getTable());
             $logs = $DB->request([
-            'FROM' => \Log::getTable(),
-            'LIMIT' => $nblogsnow,
-            'OFFSET' => $this->nblogs,
-            'WHERE' => [
-               'NOT' => [
-                  'linked_action' => [
-                     \Log::HISTORY_ADD_DEVICE,
-                     \Log::HISTORY_ADD_RELATION,
-                     \Log::HISTORY_ADD_SUBITEM,
-                     \Log::HISTORY_CREATE_ITEM
-                  ]
-               ]
-            ]
+                'FROM' => \Log::getTable(),
+                'LIMIT' => $nblogsnow,
+                'OFFSET' => $this->nblogs,
+                'WHERE' => [
+                    'NOT' => [
+                        'linked_action' => [
+                            \Log::HISTORY_ADD_DEVICE,
+                            \Log::HISTORY_ADD_RELATION,
+                            \Log::HISTORY_ADD_SUBITEM,
+                            \Log::HISTORY_CREATE_ITEM
+                        ]
+                    ]
+                ]
             ]);
             $this->integer(count($logs))->isIdenticalTo(0, print_r(iterator_to_array($logs), true));
         }
@@ -85,9 +85,9 @@ class InventoryTestCase extends \DbTestCase
         if (str_starts_with($method, 'testUpdate')) {
             $nblogsnow = countElementsInTable(\Log::getTable());
             $logs = $DB->request([
-            'FROM' => \Log::getTable(),
-            'LIMIT' => $nblogsnow,
-            'OFFSET' => $this->nblogs,
+                'FROM' => \Log::getTable(),
+                'LIMIT' => $nblogsnow,
+                'OFFSET' => $this->nblogs,
             ]);
             $this->integer(count($logs))->isIdenticalTo(0/*, print_r(iterator_to_array($logs), true)*/);
         }

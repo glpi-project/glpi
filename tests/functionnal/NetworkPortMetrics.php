@@ -44,24 +44,24 @@ class NetworkPortMetrics extends DbTestCase
 
         $neteq = new \NetworkEquipment();
         $neteq_id = $neteq->add([
-         'name'   => 'My network equipment',
-         'entities_id'  => 0
+            'name'   => 'My network equipment',
+            'entities_id'  => 0
         ]);
         $this->integer($neteq_id)->isGreaterThan(0);
 
         $port = [
-         'name'         => 'Gigabit0/1/2',
-         'ifinerrors'   => 10,
-         'ifouterrors'  => 50,
-         'ifinbytes'    => 1076823325,
-         'ifoutbytes'   => 2179528910,
-         'ifspeed'      => 4294967295,
-         'instanciation_type' => 'NetworkPortEthernet',
-         'entities_id'  => 0,
-         'items_id'     => $neteq_id,
-         'itemtype'     => $neteq->getType(),
-         'is_dynamic'   => 1,
-         'ifmtu'        => 1000
+            'name'         => 'Gigabit0/1/2',
+            'ifinerrors'   => 10,
+            'ifouterrors'  => 50,
+            'ifinbytes'    => 1076823325,
+            'ifoutbytes'   => 2179528910,
+            'ifspeed'      => 4294967295,
+            'instanciation_type' => 'NetworkPortEthernet',
+            'entities_id'  => 0,
+            'items_id'     => $neteq_id,
+            'itemtype'     => $neteq->getType(),
+            'is_dynamic'   => 1,
+            'ifmtu'        => 1000
         ];
 
         $netport = new \NetworkPort();
@@ -114,10 +114,10 @@ class NetworkPortMetrics extends DbTestCase
        //check logs => no bytes nor errors
         global $DB;
         $iterator = $DB->request([
-         'FROM'   => \Log::getTable(),
-         'WHERE'  => [
-            'itemtype'  => 'NetworkPort'
-         ]
+            'FROM'   => \Log::getTable(),
+            'WHERE'  => [
+                'itemtype'  => 'NetworkPort'
+            ]
         ]);
 
         $this->integer(count($iterator))->isIdenticalTo(2);

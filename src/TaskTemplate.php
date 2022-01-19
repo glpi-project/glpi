@@ -55,29 +55,36 @@ class TaskTemplate extends AbstractITILChildTemplate
     {
 
         return [['name'  => 'content',
-                         'label' => __('Content'),
-                         'type'  => 'tinymce',
-                         'rows' => 10],
-                   ['name'  => 'taskcategories_id',
-                         'label' => TaskCategory::getTypeName(1),
-                         'type'  => 'dropdownValue',
-                         'list'  => true],
-                   ['name'  => 'state',
-                         'label' => __('Status'),
-                         'type'  => 'state'],
-                   ['name'  => 'is_private',
-                         'label' => __('Private'),
-                         'type'  => 'bool'],
-                   ['name'  => 'actiontime',
-                         'label' => __('Duration'),
-                         'type'  => 'actiontime'],
-                   ['name'  => 'users_id_tech',
-                         'label' => __('By'),
-                         'type'  => 'users_id_tech'],
-                   ['name'  => 'groups_id_tech',
-                         'label' => Group::getTypeName(1),
-                         'type'  => 'groups_id_tech'],
-                  ];
+            'label' => __('Content'),
+            'type'  => 'tinymce',
+            'rows' => 10
+        ],
+            ['name'  => 'taskcategories_id',
+                'label' => TaskCategory::getTypeName(1),
+                'type'  => 'dropdownValue',
+                'list'  => true
+            ],
+            ['name'  => 'state',
+                'label' => __('Status'),
+                'type'  => 'state'
+            ],
+            ['name'  => 'is_private',
+                'label' => __('Private'),
+                'type'  => 'bool'
+            ],
+            ['name'  => 'actiontime',
+                'label' => __('Duration'),
+                'type'  => 'actiontime'
+            ],
+            ['name'  => 'users_id_tech',
+                'label' => __('By'),
+                'type'  => 'users_id_tech'
+            ],
+            ['name'  => 'groups_id_tech',
+                'label' => Group::getTypeName(1),
+                'type'  => 'groups_id_tech'
+            ],
+        ];
     }
 
 
@@ -86,66 +93,66 @@ class TaskTemplate extends AbstractITILChildTemplate
         $tab = parent::rawSearchOptions();
 
         $tab[] = [
-         'id'                 => '4',
-         'name'               => __('Content'),
-         'field'              => 'content',
-         'table'              => $this->getTable(),
-         'datatype'           => 'text',
-         'htmltext'           => true
+            'id'                 => '4',
+            'name'               => __('Content'),
+            'field'              => 'content',
+            'table'              => $this->getTable(),
+            'datatype'           => 'text',
+            'htmltext'           => true
         ];
 
         $tab[] = [
-         'id'                 => '3',
-         'name'               => TaskCategory::getTypeName(1),
-         'field'              => 'name',
-         'table'              => getTableForItemType('TaskCategory'),
-         'datatype'           => 'dropdown'
+            'id'                 => '3',
+            'name'               => TaskCategory::getTypeName(1),
+            'field'              => 'name',
+            'table'              => getTableForItemType('TaskCategory'),
+            'datatype'           => 'dropdown'
         ];
 
         $tab[] = [
-         'id'                 => '5',
-         'table'              => $this->getTable(),
-         'field'              => 'is_private',
-         'name'               => __('Private'),
-         'datatype'           => 'bool'
+            'id'                 => '5',
+            'table'              => $this->getTable(),
+            'field'              => 'is_private',
+            'name'               => __('Private'),
+            'datatype'           => 'bool'
         ];
 
         $tab[] = [
-         'id'                 => '7',
-         'table'              => 'glpi_users',
-         'field'              => 'name',
-         'linkfield'          => 'users_id_tech',
-         'name'               => __('By'),
-         'datatype'           => 'dropdown',
-         'right'              => 'own_ticket'
+            'id'                 => '7',
+            'table'              => 'glpi_users',
+            'field'              => 'name',
+            'linkfield'          => 'users_id_tech',
+            'name'               => __('By'),
+            'datatype'           => 'dropdown',
+            'right'              => 'own_ticket'
         ];
 
         $tab[] = [
-         'id'                 => '8',
-         'table'              => 'glpi_groups',
-         'field'              => 'completename',
-         'linkfield'          => 'groups_id_tech',
-         'name'               => Group::getTypeName(1),
-         'condition'          => ['is_task' => 1],
-         'datatype'           => 'dropdown'
+            'id'                 => '8',
+            'table'              => 'glpi_groups',
+            'field'              => 'completename',
+            'linkfield'          => 'groups_id_tech',
+            'name'               => Group::getTypeName(1),
+            'condition'          => ['is_task' => 1],
+            'datatype'           => 'dropdown'
         ];
 
         $tab[] = [
-         'id'                 => '9',
-         'table'              => $this->getTable(),
-         'field'              => 'actiontime',
-         'name'               => __('Total duration'),
-         'datatype'           => 'actiontime',
-         'massiveaction'      => false
+            'id'                 => '9',
+            'table'              => $this->getTable(),
+            'field'              => 'actiontime',
+            'name'               => __('Total duration'),
+            'datatype'           => 'actiontime',
+            'massiveaction'      => false
         ];
 
         $tab[] = [
-         'id'                 => '10',
-         'table'              => $this->getTable(),
-         'field'              => 'state',
-         'name'               => __('Status'),
-         'searchtype'         => 'equals',
-         'datatype'           => 'specific'
+            'id'                 => '10',
+            'table'              => $this->getTable(),
+            'field'              => 'state',
+            'name'               => __('Status'),
+            'searchtype'         => 'equals',
+            'datatype'           => 'specific'
         ];
 
         return $tab;
@@ -187,25 +194,25 @@ class TaskTemplate extends AbstractITILChildTemplate
         switch ($field['type']) {
             case 'state':
                 Planning::dropdownState("state", $this->fields["state"], true, [
-                 'width'     => '100%',
+                    'width'     => '100%',
                 ]);
                 break;
             case 'users_id_tech':
                 User::dropdown([
-                'name'   => "users_id_tech",
-                'right'  => "own_ticket",
-                'value'  => $this->fields["users_id_tech"],
-                'entity' => $this->fields["entities_id"],
-                'width'  => '100%',
+                    'name'   => "users_id_tech",
+                    'right'  => "own_ticket",
+                    'value'  => $this->fields["users_id_tech"],
+                    'entity' => $this->fields["entities_id"],
+                    'width'  => '100%',
                 ]);
                 break;
             case 'groups_id_tech':
                 Group::dropdown([
-                'name'     => "groups_id_tech",
-                'condition' => ['is_task' => 1],
-                'value'     => $this->fields["groups_id_tech"],
-                'entity'    => $this->fields["entities_id"],
-                'width'     => '100%',
+                    'name'     => "groups_id_tech",
+                    'condition' => ['is_task' => 1],
+                    'value'     => $this->fields["groups_id_tech"],
+                    'entity'    => $this->fields["entities_id"],
+                    'width'     => '100%',
                 ]);
                 break;
             case 'actiontime':
@@ -216,13 +223,13 @@ class TaskTemplate extends AbstractITILChildTemplate
                 Dropdown::showTimeStamp(
                     "actiontime",
                     [
-                    'min'             => 0,
-                    'max'             => 8 * HOUR_TIMESTAMP,
-                    'value'           => $this->fields["actiontime"],
-                    'addfirstminutes' => true,
-                    'inhours'         => true,
-                    'toadd'           => $toadd,
-                    'width'           => '100%',
+                        'min'             => 0,
+                        'max'             => 8 * HOUR_TIMESTAMP,
+                        'value'           => $this->fields["actiontime"],
+                        'addfirstminutes' => true,
+                        'inhours'         => true,
+                        'toadd'           => $toadd,
+                        'width'           => '100%',
                     ]
                 );
                 break;

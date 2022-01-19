@@ -71,9 +71,10 @@ abstract class APIBaseClass extends atoum
        // enable api config
         $config = new Config();
         $config->update(['id'                              => 1,
-                            'enable_api'                      => true,
-                            'enable_api_login_credentials'    => true,
-                            'enable_api_login_external_token' => true]);
+            'enable_api'                      => true,
+            'enable_api_login_credentials'    => true,
+            'enable_api_login_external_token' => true
+        ]);
     }
 
     /**
@@ -108,11 +109,11 @@ abstract class APIBaseClass extends atoum
         $apiclient = new APIClient();
         $this->integer(
             (int)$apiclient->add([
-            'name'             => 'test app token',
-            'is_active'        => 1,
-            'ipv4_range_start' => '127.0.0.1',
-            'ipv4_range_end'   => '127.0.0.1',
-            '_reset_app_token' => true,
+                'name'             => 'test app token',
+                'is_active'        => 1,
+                'ipv4_range_start' => '127.0.0.1',
+                'ipv4_range_end'   => '127.0.0.1',
+                '_reset_app_token' => true,
             ])
         )->isGreaterThan(0);
 
@@ -123,9 +124,11 @@ abstract class APIBaseClass extends atoum
         $data = $this->query(
             'initSession',
             ['query' => [
-                  'login'     => TU_USER,
-                  'password'  => TU_PASS,
-            'app_token' => $app_token]]
+                'login'     => TU_USER,
+                'password'  => TU_PASS,
+                'app_token' => $app_token
+            ]
+            ]
         );
         $this->variable($data)->isNotFalse();
         $this->array($data)->hasKey('session_token');
@@ -134,9 +137,11 @@ abstract class APIBaseClass extends atoum
         $data = $this->query(
             'initSession',
             ['query' => [
-                  'login'     => TU_USER,
-                  'password'  => TU_PASS,
-                  'app_token' => "test_invalid_token"]],
+                'login'     => TU_USER,
+                'password'  => TU_PASS,
+                'app_token' => "test_invalid_token"
+            ]
+            ],
             400,
             'ERROR_WRONG_APP_TOKEN_PARAMETER'
         );
@@ -151,10 +156,12 @@ abstract class APIBaseClass extends atoum
         $res = $this->query(
             'changeActiveEntities',
             ['verb'    => 'POST',
-                           'headers' => ['Session-Token' => $this->session_token],
-                           'json'    => [
-                              'entities_id'   => 'all',
-                              'is_recursive'  => true]],
+                'headers' => ['Session-Token' => $this->session_token],
+                'json'    => [
+                    'entities_id'   => 'all',
+                    'is_recursive'  => true
+                ]
+            ],
             200
         );
     }
@@ -211,16 +218,18 @@ abstract class APIBaseClass extends atoum
         $data = $this->query(
             'changeActiveProfile',
             ['verb'    => 'POST',
-                            'headers' => ['Session-Token' => $this->session_token],
-            'json'    => ['profiles_id'   => 4]]
+                'headers' => ['Session-Token' => $this->session_token],
+                'json'    => ['profiles_id'   => 4]
+            ]
         );
 
        // test change to a non existing profile
         $data = $this->query(
             'changeActiveProfile',
             ['verb'    => 'POST',
-                            'headers' => ['Session-Token' => $this->session_token],
-                            'json'    => ['profiles_id'   => 9999]],
+                'headers' => ['Session-Token' => $this->session_token],
+                'json'    => ['profiles_id'   => 9999]
+            ],
             404,
             'ERROR_ITEM_NOT_FOUND'
         );
@@ -229,8 +238,9 @@ abstract class APIBaseClass extends atoum
         $data = $this->query(
             'changeActiveProfile',
             ['verb'    => 'POST',
-                            'headers' => ['Session-Token' => $this->session_token],
-                            'json'    => ['something_bad' => 4]],
+                'headers' => ['Session-Token' => $this->session_token],
+                'json'    => ['something_bad' => 4]
+            ],
             400,
             'ERROR'
         );
@@ -308,13 +318,18 @@ abstract class APIBaseClass extends atoum
         $data = $this->query(
             'getMultipleItems',
             ['headers' => ['Session-Token' => $this->session_token],
-                            'query'   => [
-                               'items'            => [['itemtype' => 'User',
-                                                       'items_id' => $uid],
-                                                      ['itemtype' => 'Entity',
-                                                       'items_id' => $eid]],
-                               'with_logs'        => true,
-                               'expand_dropdowns' => true]]
+                'query'   => [
+                    'items'            => [['itemtype' => 'User',
+                        'items_id' => $uid
+                    ],
+                        ['itemtype' => 'Entity',
+                            'items_id' => $eid
+                        ]
+                    ],
+                    'with_logs'        => true,
+                    'expand_dropdowns' => true
+                ]
+            ]
         );
 
         unset($data['headers']);
@@ -344,7 +359,8 @@ abstract class APIBaseClass extends atoum
         $data = $this->query(
             'listSearchOptions',
             ['itemtype' => 'Computer',
-            'headers'  => ['Session-Token' => $this->session_token]]
+                'headers'  => ['Session-Token' => $this->session_token]
+            ]
         );
 
         $this->variable($data)->isNotFalse();
@@ -371,13 +387,15 @@ abstract class APIBaseClass extends atoum
         $data = $this->query(
             'search',
             ['itemtype' => 'User',
-                            'headers'  => ['Session-Token' => $this->session_token],
-                            'query'    => [
-                               'sort'          => 19,
-                               'order'         => 'DESC',
-                               'range'         => '0-10',
-                               'forcedisplay'  => '81',
-            'rawdata'       => true]]
+                'headers'  => ['Session-Token' => $this->session_token],
+                'query'    => [
+                    'sort'          => 19,
+                    'order'         => 'DESC',
+                    'range'         => '0-10',
+                    'forcedisplay'  => '81',
+                    'rawdata'       => true
+                ]
+            ]
         );
 
         $this->array($data)
@@ -418,13 +436,15 @@ abstract class APIBaseClass extends atoum
         $data = $this->query(
             'search',
             ['itemtype' => 'User',
-                            'headers'  => ['Session-Token' => $this->session_token],
-                            'query'    => [
-                              'sort'          => 19,
-                              'order'         => 'DESC',
-                              'range'         => '0-2',
-                              'forcedisplay'  => '81',
-                              'rawdata'       => true]],
+                'headers'  => ['Session-Token' => $this->session_token],
+                'query'    => [
+                    'sort'          => 19,
+                    'order'         => 'DESC',
+                    'range'         => '0-2',
+                    'forcedisplay'  => '81',
+                    'rawdata'       => true
+                ]
+            ],
             206
         );
 
@@ -458,20 +478,22 @@ abstract class APIBaseClass extends atoum
         $data = $this->query(
             'search',
             ['itemtype' => 'User',
-                            'headers'  => ['Session-Token' => $this->session_token],
-                            'query'    => [
-                              'sort'          => 19,
-                              'order'         => 'DESC',
-                              'range'         => '0-100',
-                              'forcedisplay'  => '81',
-                              'rawdata'       => true,
-                              'criteria'      => [
-                                 [
-                                    'field'      => 1,
-                                    'searchtype' => 'contains',
-                                    'value'      => 'nonexistent',
-                                 ]
-                              ]]]
+                'headers'  => ['Session-Token' => $this->session_token],
+                'query'    => [
+                    'sort'          => 19,
+                    'order'         => 'DESC',
+                    'range'         => '0-100',
+                    'forcedisplay'  => '81',
+                    'rawdata'       => true,
+                    'criteria'      => [
+                        [
+                            'field'      => 1,
+                            'searchtype' => 'contains',
+                            'value'      => 'nonexistent',
+                        ]
+                    ]
+                ]
+            ]
         );
 
         $this->variable($data)->isNotFalse();
@@ -508,15 +530,17 @@ abstract class APIBaseClass extends atoum
         $data = $this->query(
             'search',
             ['itemtype' => 'User',
-                            'headers'  => ['Session-Token' => $this->session_token],
-                            'query'    => [
-                              'reset'    => 'reset',
-                              'criteria' => [[
-                                 'field'      => '134343',
-                                 'searchtype' => 'contains',
-                                 'value'      => 'dsadasd',
-                              ]]
-                            ]],
+                'headers'  => ['Session-Token' => $this->session_token],
+                'query'    => [
+                    'reset'    => 'reset',
+                    'criteria' => [[
+                        'field'      => '134343',
+                        'searchtype' => 'contains',
+                        'value'      => 'dsadasd',
+                    ]
+                    ]
+                ]
+            ],
             400,   // 400 code expected (error, bad request)
             'ERROR'
         );
@@ -525,15 +549,17 @@ abstract class APIBaseClass extends atoum
         $data = $this->query(
             'search',
             ['itemtype' => 'User',
-                             'headers'  => ['Session-Token' => $this->session_token],
-                             'query'    => [
-                              'reset'    => 'reset',
-                              'criteria' => [[
-                                 'field'      => '\134343',
-                                 'searchtype' => 'contains',
-                                 'value'      => 'dsadasd',
-                              ]]
-                             ]],
+                'headers'  => ['Session-Token' => $this->session_token],
+                'query'    => [
+                    'reset'    => 'reset',
+                    'criteria' => [[
+                        'field'      => '\134343',
+                        'searchtype' => 'contains',
+                        'value'      => 'dsadasd',
+                    ]
+                    ]
+                ]
+            ],
             400,   // 400 code expected (error, bad request)
             'ERROR'
         );
@@ -542,14 +568,16 @@ abstract class APIBaseClass extends atoum
         $data = $this->query(
             'search',
             ['itemtype' => 'User',
-                            'headers'  => ['Session-Token' => $this->session_token],
-                            'query'    => [
-                             'reset'    => 'reset',
-                             'criteria' => [[
-                                'field'      => '134343',
-                                'searchtype' => 'contains',
-                             ]]
-                            ]],
+                'headers'  => ['Session-Token' => $this->session_token],
+                'query'    => [
+                    'reset'    => 'reset',
+                    'criteria' => [[
+                        'field'      => '134343',
+                        'searchtype' => 'contains',
+                    ]
+                    ]
+                ]
+            ],
             400,  // 400 code expected (error, bad request)
             'ERROR'
         );
@@ -563,7 +591,9 @@ abstract class APIBaseClass extends atoum
         $data = $this->query(
             'badEndpoint',
             ['headers' => [
-                            'Session-Token' => $this->session_token]],
+                'Session-Token' => $this->session_token
+            ]
+            ],
             $expected_code,
             $expected_symbol
         );
@@ -579,9 +609,10 @@ abstract class APIBaseClass extends atoum
         $data = $this->query(
             'createItems',
             ['verb'     => 'POST',
-                            'itemtype' => 'Computer',
-                            'headers'  => ['Session-Token' => $this->session_token],
-                            'json'     => ['input' => ['name' => "My single computer "]]],
+                'itemtype' => 'Computer',
+                'headers'  => ['Session-Token' => $this->session_token],
+                'json'     => ['input' => ['name' => "My single computer "]]
+            ],
             201
         );
 
@@ -613,23 +644,27 @@ abstract class APIBaseClass extends atoum
         $data = $this->query(
             'createItems',
             ['verb'     => 'POST',
-                            'itemtype' => 'NetworkPort',
-                            'headers'  => ['Session-Token' => $this->session_token],
-                            'json'     => [
-                               'input' => [
-                                  'instantiation_type'       => "NetworkPortEthernet",
-                                  'name'                     => "test port",
-                                  'logical_number'           => 1,
-                                  'items_id'                 => $computers_id,
-                                  'itemtype'                 => "Computer",
-                                  'NetworkName_name'         => "testname",
-                                  'NetworkName_fqdns_id'     => 0,
+                'itemtype' => 'NetworkPort',
+                'headers'  => ['Session-Token' => $this->session_token],
+                'json'     => [
+                    'input' => [
+                        'instantiation_type'       => "NetworkPortEthernet",
+                        'name'                     => "test port",
+                        'logical_number'           => 1,
+                        'items_id'                 => $computers_id,
+                        'itemtype'                 => "Computer",
+                        'NetworkName_name'         => "testname",
+                        'NetworkName_fqdns_id'     => 0,
                                   // add an aditionnal key to the next array
                                   // to avoid xmlrpc losing -1 key.
                                   // see https://bugs.php.net/bug.php?id=37746
-                                  'NetworkName__ipaddresses' => ['-1'                => "1.2.3.4",
-                                                                 '_xmlrpc_fckng_fix' => ''],
-                                  '_create_children'         => true]]],
+                        'NetworkName__ipaddresses' => ['-1'                => "1.2.3.4",
+                            '_xmlrpc_fckng_fix' => ''
+                        ],
+                        '_create_children'         => true
+                    ]
+                ]
+            ],
             201
         );
 
@@ -652,13 +687,16 @@ abstract class APIBaseClass extends atoum
         $data = $this->query(
             'createItems',
             ['verb'     => 'POST',
-                            'itemtype' => 'Notepad',
-                            'headers'  => ['Session-Token' => $this->session_token],
-                            'json'     => [
-                               'input' => [
-                                  'itemtype' => 'Computer',
-                                  'items_id' => $computers_id,
-                                  'content'  => 'note about a computer']]],
+                'itemtype' => 'Notepad',
+                'headers'  => ['Session-Token' => $this->session_token],
+                'json'     => [
+                    'input' => [
+                        'itemtype' => 'Computer',
+                        'items_id' => $computers_id,
+                        'content'  => 'note about a computer'
+                    ]
+                ]
+            ],
             201
         );
 
@@ -694,15 +732,19 @@ abstract class APIBaseClass extends atoum
         $data = $this->query(
             'createItems',
             ['verb'     => 'POST',
-                            'itemtype' => 'Computer',
-                            'headers'  => ['Session-Token' => $this->session_token],
-                            'json'     => [
-                               'input' => [[
-                                  'name' => "My computer 2"
-                               ],[
-                                  'name' => "My computer 3"
-                               ],[
-                                  'name' => "My computer 4"]]]],
+                'itemtype' => 'Computer',
+                'headers'  => ['Session-Token' => $this->session_token],
+                'json'     => [
+                    'input' => [[
+                        'name' => "My computer 2"
+                    ],[
+                        'name' => "My computer 3"
+                    ],[
+                        'name' => "My computer 4"
+                    ]
+                    ]
+                ]
+            ],
             201
         );
 
@@ -749,11 +791,13 @@ abstract class APIBaseClass extends atoum
         $data = $this->query(
             'getItem',
             ['itemtype' => 'User',
-                            'id'       => $uid,
-                            'headers'  => ['Session-Token' => $this->session_token],
-                            'query'    => [
-                               'expand_dropdowns' => true,
-            'with_logs'        => true]]
+                'id'       => $uid,
+                'headers'  => ['Session-Token' => $this->session_token],
+                'query'    => [
+                    'expand_dropdowns' => true,
+                    'with_logs'        => true
+                ]
+            ]
         );
 
         $this->variable($data)->isNotFalse();
@@ -771,9 +815,10 @@ abstract class APIBaseClass extends atoum
         $data = $this->query(
             'getItem',
             ['itemtype' => 'Entity',
-                            'id'       => $eid,
-                            'headers'  => ['Session-Token' => $this->session_token],
-            'query'    => ['get_hateoas' => false]]
+                'id'       => $eid,
+                'headers'  => ['Session-Token' => $this->session_token],
+                'query'    => ['get_hateoas' => false]
+            ]
         );
 
         $this->variable($data)->isNotFalse();
@@ -787,9 +832,10 @@ abstract class APIBaseClass extends atoum
         $data = $this->query(
             'getItem',
             ['itemtype' => 'Computer',
-                            'id'       => $computers_id,
-                            'headers'  => ['Session-Token' => $this->session_token],
-            'query'    => ['with_networkports' => true]]
+                'id'       => $computers_id,
+                'headers'  => ['Session-Token' => $this->session_token],
+                'query'    => ['with_networkports' => true]
+            ]
         );
 
         $this->variable($data)->isNotFalse();
@@ -834,9 +880,10 @@ abstract class APIBaseClass extends atoum
         $data = $this->query(
             'getItem',
             ['itemtype' => 'Computer',
-                            'id'       => $computers_id,
-                            'headers'  => ['Session-Token'     => $this->session_token],
-            'query'    => ['with_notes' => true]]
+                'id'       => $computers_id,
+                'headers'  => ['Session-Token'     => $this->session_token],
+                'query'    => ['with_notes' => true]
+            ]
         );
 
         $this->variable($data)->isNotFalse();
@@ -864,9 +911,11 @@ abstract class APIBaseClass extends atoum
         $data = $this->query(
             'getItems',
             ['itemtype' => 'User',
-                            'headers'  => ['Session-Token' => $this->session_token],
-                            'query'    => [
-            'expand_dropdowns' => true]]
+                'headers'  => ['Session-Token' => $this->session_token],
+                'query'    => [
+                    'expand_dropdowns' => true
+                ]
+            ]
         );
 
         $this->variable($data)->isNotFalse();
@@ -890,10 +939,12 @@ abstract class APIBaseClass extends atoum
         $data = $this->query(
             'getItems',
             ['itemtype' => 'User',
-                            'headers'  => ['Session-Token' => $this->session_token],
-                            'query'    => [
-                               'range' => '0-1',
-                               'expand_dropdowns' => true]],
+                'headers'  => ['Session-Token' => $this->session_token],
+                'query'    => [
+                    'range' => '0-1',
+                    'expand_dropdowns' => true
+                ]
+            ],
             206
         );
 
@@ -916,8 +967,9 @@ abstract class APIBaseClass extends atoum
         $data = $this->query(
             'getItems',
             ['itemtype' => 'User',
-                            'headers'  => ['Session-Token' => $this->session_token],
-            'query'    => ['searchText' => ['name' => 'gl']]]
+                'headers'  => ['Session-Token' => $this->session_token],
+                'query'    => ['searchText' => ['name' => 'gl']]
+            ]
         );
 
         $this->variable($data)->isNotFalse();
@@ -937,8 +989,9 @@ abstract class APIBaseClass extends atoum
         $data = $this->query(
             'getItems',
             ['itemtype' => 'User',
-                            'headers'  => ['Session-Token' => $this->session_token],
-            'query'    => ['only_id' => true]]
+                'headers'  => ['Session-Token' => $this->session_token],
+                'query'    => ['only_id' => true]
+            ]
         );
 
         $this->variable($data)->isNotFalse();
@@ -957,8 +1010,9 @@ abstract class APIBaseClass extends atoum
         $data = $this->query(
             'getItems',
             ['itemtype' => 'Config',
-                            'headers'  => ['Session-Token' => $this->session_token],
-            'query'    => ['expand_dropdowns' => true]],
+                'headers'  => ['Session-Token' => $this->session_token],
+                'query'    => ['expand_dropdowns' => true]
+            ],
             206
         );
 
@@ -984,10 +1038,12 @@ abstract class APIBaseClass extends atoum
         $data = $this->query(
             'getItems',
             ['itemtype' => 'User',
-                            'headers'  => ['Session-Token' => $this->session_token],
-                            'query'    => [
-                               'range' => '100-105',
-                               'expand_dropdowns' => true]],
+                'headers'  => ['Session-Token' => $this->session_token],
+                'query'    => [
+                    'range' => '100-105',
+                    'expand_dropdowns' => true
+                ]
+            ],
             400,
             'ERROR_RANGE_EXCEED_TOTAL'
         );
@@ -1007,24 +1063,29 @@ abstract class APIBaseClass extends atoum
         $data = $this->query(
             'initSession',
             ['query' => [
-                              'login'    => 'post-only',
-            'password' => 'postonly']]
+                'login'    => 'post-only',
+                'password' => 'postonly'
+            ]
+            ]
         );
 
        // create a ticket for another user (glpi - super-admin)
         $ticket = new \Ticket();
         $tickets_id = $ticket->add(['name'                => 'test post-only',
-                                       'content'             => 'test post-only',
-                                       '_users_id_requester' => 2]);
+            'content'             => 'test post-only',
+            '_users_id_requester' => 2
+        ]);
         $this->integer((int)$tickets_id)->isGreaterThan(0);
 
        // try to access this ticket with post-only
         $this->query(
             'getItem',
             ['itemtype' => 'Ticket',
-                    'id'       => $tickets_id,
-                    'headers'  => [
-                        'Session-Token' => $data['session_token']]],
+                'id'       => $tickets_id,
+                'headers'  => [
+                    'Session-Token' => $data['session_token']
+                ]
+            ],
             403,
             'ERROR_RIGHT_MISSING'
         );
@@ -1033,9 +1094,12 @@ abstract class APIBaseClass extends atoum
         $data = $this->query(
             'getItems',
             ['itemtype' => 'Ticket',
-                            'headers'  => ['Session-Token' => $data['session_token'],
-                            'query'    => [
-            'expand_dropdowns' => true]]]
+                'headers'  => ['Session-Token' => $data['session_token'],
+                    'query'    => [
+                        'expand_dropdowns' => true
+                    ]
+                ]
+            ]
         );
 
         $this->variable($data)->isNotFalse();
@@ -1059,12 +1123,15 @@ abstract class APIBaseClass extends atoum
         $data = $this->query(
             'updateItems',
             ['itemtype' => 'Computer',
-                            'verb'     => 'PUT',
-                            'headers'  => ['Session-Token' => $this->session_token],
-                            'json'     => [
-                               'input' => [
-                                  'id'     => $computers_id,
-            'serial' => "abcdef"]]]
+                'verb'     => 'PUT',
+                'headers'  => ['Session-Token' => $this->session_token],
+                'json'     => [
+                    'input' => [
+                        'id'     => $computers_id,
+                        'serial' => "abcdef"
+                    ]
+                ]
+            ]
         );
 
         $this->variable($data)->isNotFalse();
@@ -1091,14 +1158,16 @@ abstract class APIBaseClass extends atoum
         $computer = new Computer();
         foreach ($computers_id_collection as $key => $computers_id) {
             $input[] = ['id'          => $computers_id['id'],
-                     'otherserial' => "abcdef"];
+                'otherserial' => "abcdef"
+            ];
         }
         $data = $this->query(
             'updateItems',
             ['itemtype' => 'Computer',
-                            'verb'     => 'PUT',
-                            'headers'  => ['Session-Token' => $this->session_token],
-            'json'     => ['input' => $input]]
+                'verb'     => 'PUT',
+                'headers'  => ['Session-Token' => $this->session_token],
+                'json'     => ['input' => $input]
+            ]
         );
 
         $this->variable($data)->isNotFalse();
@@ -1128,8 +1197,8 @@ abstract class APIBaseClass extends atoum
         $computer = new \Computer();
         $this->integer(
             $computer->add([
-            'name'         => 'A computer to delete',
-            'entities_id'  => $eid
+                'name'         => 'A computer to delete',
+                'entities_id'  => $eid
             ])
         )->isGreaterThan(0);
         $computers_id = $computer->getID();
@@ -1137,10 +1206,11 @@ abstract class APIBaseClass extends atoum
         $data = $this->query(
             'deleteItems',
             ['itemtype' => 'Computer',
-                            'id'       => $computers_id,
-                            'verb'     => 'DELETE',
-                            'headers'  => ['Session-Token' => $this->session_token],
-            'query'    => ['force_purge' => "true"]]
+                'id'       => $computers_id,
+                'verb'     => 'DELETE',
+                'headers'  => ['Session-Token' => $this->session_token],
+                'query'    => ['force_purge' => "true"]
+            ]
         );
 
         $this->variable($data)->isNotFalse();
@@ -1173,11 +1243,13 @@ abstract class APIBaseClass extends atoum
         $data = $this->query(
             'deleteItems',
             ['itemtype' => 'Computer',
-                            'verb'     => 'DELETE',
-                            'headers'  => ['Session-Token' => $this->session_token],
-                            'json'     => [
-                               'input'       => $input,
-            'force_purge' => true]]
+                'verb'     => 'DELETE',
+                'headers'  => ['Session-Token' => $this->session_token],
+                'json'     => [
+                    'input'       => $input,
+                    'force_purge' => true
+                ]
+            ]
         );
 
         $this->variable($data)->isNotFalse();
@@ -1196,8 +1268,8 @@ abstract class APIBaseClass extends atoum
        // Test multiple delete with multi-status
         $input = [];
         $computers_id_collection = [
-         ['id'  => $lastComputer['id']],
-         ['id'  => $lastComputer['id'] + 1] // Non existing computer id
+            ['id'  => $lastComputer['id']],
+            ['id'  => $lastComputer['id'] + 1] // Non existing computer id
         ];
         foreach ($computers_id_collection as $key => $computers_id) {
             $input[] = ['id' => $computers_id['id']];
@@ -1205,11 +1277,13 @@ abstract class APIBaseClass extends atoum
         $data = $this->query(
             'deleteItems',
             ['itemtype' => 'Computer',
-                            'verb'     => 'DELETE',
-                            'headers'  => ['Session-Token' => $this->session_token],
-                            'json'     => [
-                                'input'       => $input,
-                                'force_purge' => true]],
+                'verb'     => 'DELETE',
+                'headers'  => ['Session-Token' => $this->session_token],
+                'json'     => [
+                    'input'       => $input,
+                    'force_purge' => true
+                ]
+            ],
             207
         );
 
@@ -1228,12 +1302,15 @@ abstract class APIBaseClass extends atoum
         $data = $this->query(
             'createItems',
             ['itemtype' => 'Computer',
-                            'verb'     => 'POST',
-                            'headers'  => ['Session-Token' => $this->session_token],
-                            'json'    => [
-                               'input' => [
-                                  'name'        => "my computer', (SELECT `password` from `glpi_users` as `otherserial` WHERE `id`=2), '0 ' , '2016-10-26 00:00:00', '2016-10-26 00 :00 :00')#",
-                                  'otherserial' => "Not hacked"]]],
+                'verb'     => 'POST',
+                'headers'  => ['Session-Token' => $this->session_token],
+                'json'    => [
+                    'input' => [
+                        'name'        => "my computer', (SELECT `password` from `glpi_users` as `otherserial` WHERE `id`=2), '0 ' , '2016-10-26 00:00:00', '2016-10-26 00 :00 :00')#",
+                        'otherserial' => "Not hacked"
+                    ]
+                ]
+            ],
             201
         );
 
@@ -1250,12 +1327,15 @@ abstract class APIBaseClass extends atoum
         $data = $this->query(
             'updateItems',
             ['itemtype' => 'Computer',
-                            'verb'     => 'PUT',
-                            'headers'  => ['Session-Token' => $this->session_token],
-                             'json'    => [
-                                'input' => [
-                                   'id'     => $new_id,
-            'serial' => "abcdef', `otherserial`='injected"]]]
+                'verb'     => 'PUT',
+                'headers'  => ['Session-Token' => $this->session_token],
+                'json'    => [
+                    'input' => [
+                        'id'     => $new_id,
+                        'serial' => "abcdef', `otherserial`='injected"
+                    ]
+                ]
+            ]
         );
 
         $this->boolean((bool)$computer->getFromDB($new_id))->isTrue();
@@ -1294,8 +1374,9 @@ abstract class APIBaseClass extends atoum
             $data = $this->query(
                 'getItem',
                 ['itemtype' => 'Config',
-                               'id'       => $row['id'],
-                'headers' => ['Session-Token' => $this->session_token]]
+                    'id'       => $row['id'],
+                    'headers' => ['Session-Token' => $this->session_token]
+                ]
             );
             $this->array($data)->notHasKey('value');
         }
@@ -1306,8 +1387,9 @@ abstract class APIBaseClass extends atoum
         $data = $this->query(
             'getItem',
             ['itemtype' => 'Config',
-                            'id'       => $config->getID(),
-            'headers' => ['Session-Token' => $this->session_token]]
+                'id'       => $config->getID(),
+                'headers' => ['Session-Token' => $this->session_token]
+            ]
         );
 
         $this->variable($data['value'])->isNotEqualTo('');
@@ -1322,8 +1404,9 @@ abstract class APIBaseClass extends atoum
         $data = $this->query(
             'search',
             ['itemtype' => 'Config',
-                            'headers'  => ['Session-Token' => $this->session_token],
-                            'query'    => []],
+                'headers'  => ['Session-Token' => $this->session_token],
+                'query'    => []
+            ],
             206
         );
         foreach ($data['data'] as $row) {
@@ -1373,8 +1456,8 @@ abstract class APIBaseClass extends atoum
             'glpi_profilerights',
             ['rights' => 2],
             [
-            'profiles_id'  => 4,
-            'name'         => 'devicesimcard_pinpuk'
+                'profiles_id'  => 4,
+                'name'         => 'devicesimcard_pinpuk'
             ]
         );
 
@@ -1388,8 +1471,8 @@ abstract class APIBaseClass extends atoum
             'glpi_profilerights',
             ['rights' => 3],
             [
-            'profiles_id'  => 4,
-            'name'         => 'devicesimcard_pinpuk'
+                'profiles_id'  => 4,
+                'name'         => 'devicesimcard_pinpuk'
             ]
         );
         $this->session_token = $backupSessionToken;
@@ -1398,8 +1481,9 @@ abstract class APIBaseClass extends atoum
         $data = $this->query(
             'getItem',
             ['itemtype' => 'Item_DeviceSimcard',
-                            'id'       => $id,
-            'headers'  => ['Session-Token' => $limitedSessionToken]]
+                'id'       => $id,
+                'headers'  => ['Session-Token' => $limitedSessionToken]
+            ]
         );
         foreach ($sensitiveFields as $field) {
             $this->array($data)->notHasKey($field);
@@ -1409,8 +1493,9 @@ abstract class APIBaseClass extends atoum
         $data = $this->query(
             'getItem',
             ['itemtype' => 'Item_DeviceSimcard',
-                            'id'       => $id,
-            'headers'  => ['Session-Token' => $this->session_token]]
+                'id'       => $id,
+                'headers'  => ['Session-Token' => $this->session_token]
+            ]
         );
         foreach ($sensitiveFields as $field) {
             $this->array($data)->hasKey($field);
@@ -1420,15 +1505,15 @@ abstract class APIBaseClass extends atoum
         $data = $this->query(
             'search',
             ['itemtype' => 'Item_DeviceSimcard',
-                            'headers'  => ['Session-Token' => $this->session_token],
-                            'query'    => ['criteria' => [
-                                                          0 => ['field'      => 15,
-                                                                'searchtype' => 'equals',
-                                                                'value'      => $input['pin']
-                                                               ]
-                                                         ]
-                                          ]
-                           ],
+                'headers'  => ['Session-Token' => $this->session_token],
+                'query'    => ['criteria' => [
+                    0 => ['field'      => 15,
+                        'searchtype' => 'equals',
+                        'value'      => $input['pin']
+                    ]
+                ]
+                ]
+            ],
             400,
             'ERROR'
         );
@@ -1437,11 +1522,11 @@ abstract class APIBaseClass extends atoum
         $data = $this->query(
             'search',
             ['itemtype' => 'Item_DeviceSimcard',
-                            'headers'  => ['Session-Token' => $this->session_token],
-                            'query'    => [
-                                           'forcedisplay'  => [15]
-                            ]
-                           ],
+                'headers'  => ['Session-Token' => $this->session_token],
+                'query'    => [
+                    'forcedisplay'  => [15]
+                ]
+            ],
             400,
             'ERROR'
         );
@@ -1470,14 +1555,14 @@ abstract class APIBaseClass extends atoum
     {
        // test common cases
         $itemtypes = [
-         'APIClient', 'AuthLDAP', 'MailCollector', 'User'
+            'APIClient', 'AuthLDAP', 'MailCollector', 'User'
         ];
         foreach ($itemtypes as $itemtype) {
             $data = $this->query(
                 'getItems',
                 [
-                'itemtype' => $itemtype,
-                'headers'  => ['Session-Token' => $this->session_token]
+                    'itemtype' => $itemtype,
+                    'headers'  => ['Session-Token' => $this->session_token]
                 ]
             );
 
@@ -1496,7 +1581,7 @@ abstract class APIBaseClass extends atoum
        // test specific cases
        // Config
         $data = $this->query('getGlpiConfig', [
-         'headers'  => ['Session-Token' => $this->session_token]
+            'headers'  => ['Session-Token' => $this->session_token]
         ]);
 
        // Test undisclosed data are actually not disclosed
@@ -1542,7 +1627,7 @@ abstract class APIBaseClass extends atoum
         $res = $this->query(
             'lostPassword',
             ['verb'    => 'POST',
-                          ],
+            ],
             400,
             'ERROR'
         );
@@ -1551,7 +1636,7 @@ abstract class APIBaseClass extends atoum
         $res = $this->query(
             'lostPassword',
             ['verb'    => 'GET',
-                          ],
+            ],
             400,
             'ERROR'
         );
@@ -1560,7 +1645,7 @@ abstract class APIBaseClass extends atoum
         $res = $this->query(
             'lostPassword',
             ['verb'    => 'DELETE',
-                          ],
+            ],
             400,
             'ERROR'
         );
@@ -1573,28 +1658,28 @@ abstract class APIBaseClass extends atoum
         $res = $this->query(
             'lostPassword',
             ['verb'    => 'PUT',
-                           'json'    => [
-                            'email'  => $email
-                           ]
-                          ],
+                'json'    => [
+                    'email'  => $email
+                ]
+            ],
             400,
             'ERROR'
         );
 
        //enable notifications
         Config::setConfigurationValues('core', [
-         'use_notifications' => '1',
-         'notifications_mailing' => '1'
+            'use_notifications' => '1',
+            'notifications_mailing' => '1'
         ]);
 
        // Test an unknown email is rejected
         $res = $this->query(
             'lostPassword',
             ['verb'    => 'PUT',
-                           'json'    => [
-                            'email'  => 'nonexistent@localhost.local'
-                           ]
-                          ],
+                'json'    => [
+                    'email'  => 'nonexistent@localhost.local'
+                ]
+            ],
             400,
             'ERROR'
         );
@@ -1603,10 +1688,10 @@ abstract class APIBaseClass extends atoum
         $res = $this->query(
             'lostPassword',
             ['verb'    => 'PATCH',
-                           'json'    => [
-                            'email'  => $email
-                           ]
-                          ],
+                'json'    => [
+                    'email'  => $email
+                ]
+            ],
             200
         );
 
@@ -1618,12 +1703,12 @@ abstract class APIBaseClass extends atoum
         $res = $this->query(
             'lostPassword',
             ['verb'    => 'PUT',
-                           'json'    => [
-                            'email'                 => $email,
-                            'password_forget_token' => $token . 'bad',
-                            'password'              => 'NewPassword',
-                           ]
-                          ],
+                'json'    => [
+                    'email'                 => $email,
+                    'password_forget_token' => $token . 'bad',
+                    'password'              => 'NewPassword',
+                ]
+            ],
             400,
             'ERROR'
         );
@@ -1632,12 +1717,12 @@ abstract class APIBaseClass extends atoum
         $res = $this->query(
             'lostPassword',
             ['verb'    => 'PATCH',
-                         'json'    => [
-                          'email'                 => $email,
-                          'password_forget_token' => $token,
-                          'password'              => 'NewPassword',
-                         ]
-                        ],
+                'json'    => [
+                    'email'                 => $email,
+                    'password_forget_token' => $token,
+                    'password'              => 'NewPassword',
+                ]
+            ],
             200
         );
 
@@ -1658,8 +1743,8 @@ abstract class APIBaseClass extends atoum
 
        //diable notifications
         Config::setConfigurationValues('core', [
-         'use_notifications' => '0',
-         'notifications_mailing' => '0'
+            'use_notifications' => '0',
+            'notifications_mailing' => '0'
         ]);
     }
 

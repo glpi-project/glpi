@@ -68,9 +68,9 @@ if (isset($_GET['id'])) {
     $params['id'] = $_GET['id'];
 } else {
     $params = [
-      'racks_id'     => $_GET['racks_id'],
-      'orientation'  => $_GET['orientation'],
-      'position'     => $_GET['position']
+        'racks_id'     => $_GET['racks_id'],
+        'orientation'  => $_GET['orientation'],
+        'position'     => $_GET['position']
     ];
     if (isset($_GET['_onlypdu'])) {
         $params['_onlypdu'] = $_GET['_onlypdu'];

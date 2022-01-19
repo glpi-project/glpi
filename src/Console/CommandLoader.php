@@ -242,9 +242,9 @@ class CommandLoader implements CommandLoaderInterface
                          $file,
                          $plugin_basedir,
                          [
-                         NS_PLUG . ucfirst($plugin_directory->getFilename()) . '\\',
-                         'Plugin' . ucfirst($plugin_directory->getFilename()),
-                         '',
+                             NS_PLUG . ucfirst($plugin_directory->getFilename()) . '\\',
+                             'Plugin' . ucfirst($plugin_directory->getFilename()),
+                             '',
                          ]
                      );
 

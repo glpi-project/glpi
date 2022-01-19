@@ -41,7 +41,7 @@ class Group_User extends \DbTestCase
     {
         $group = new \Group();
         $gid = (int)$group->add([
-         'name' => 'Test group'
+            'name' => 'Test group'
         ]);
         $this->integer($gid)->isGreaterThan(0);
 
@@ -51,16 +51,16 @@ class Group_User extends \DbTestCase
         $group_user = $this->newTestedInstance();
         $this->integer(
             (int)$group_user->add([
-            'groups_id' => $gid,
-            'users_id'  => $uid1
+                'groups_id' => $gid,
+                'users_id'  => $uid1
             ])
         );
 
         $this->integer(
             (int)$group_user->add([
-            'groups_id'    => $gid,
-            'users_id'     => $uid2,
-            'is_manager'   => 1
+                'groups_id'    => $gid,
+                'users_id'     => $uid2,
+                'is_manager'   => 1
             ])
         );
 
@@ -84,28 +84,28 @@ class Group_User extends \DbTestCase
 
         $group = new \Group();
         $gid1 = (int)$group->add([
-         'name' => 'Test group'
+            'name' => 'Test group'
         ]);
         $this->integer($gid1)->isGreaterThan(0);
 
         $gid2 = (int)$group->add([
-         'name' => 'Test group 2'
+            'name' => 'Test group 2'
         ]);
         $this->integer($gid2)->isGreaterThan(0);
 
         $group_user = $this->newTestedInstance();
         $this->integer(
             (int)$group_user->add([
-            'groups_id' => $gid1,
-            'users_id'  => $uid
+                'groups_id' => $gid1,
+                'users_id'  => $uid
             ])
         );
 
         $this->integer(
             (int)$group_user->add([
-            'groups_id'    => $gid2,
-            'users_id'     => $uid,
-            'is_manager'   => 1
+                'groups_id'    => $gid2,
+                'users_id'     => $uid,
+                'is_manager'   => 1
             ])
         );
 
@@ -134,28 +134,28 @@ class Group_User extends \DbTestCase
        //Now, add groups to user
         $group = new \Group();
         $gid1 = (int)$group->add([
-         'name' => 'Test group'
+            'name' => 'Test group'
         ]);
         $this->integer($gid1)->isGreaterThan(0);
 
         $gid2 = (int)$group->add([
-         'name' => 'Test group 2'
+            'name' => 'Test group 2'
         ]);
         $this->integer($gid2)->isGreaterThan(0);
 
         $group_user = $this->newTestedInstance();
         $this->integer(
             (int)$group_user->add([
-            'groups_id' => $gid1,
-            'users_id'  => $user->getID()
+                'groups_id' => $gid1,
+                'users_id'  => $user->getID()
             ])
         );
 
         $this->integer(
             (int)$group_user->add([
-            'groups_id'    => $gid2,
-            'users_id'     => $user->getID(),
-            'is_manager'   => 1
+                'groups_id'    => $gid2,
+                'users_id'     => $user->getID(),
+                'is_manager'   => 1
             ])
         );
 
@@ -191,16 +191,17 @@ class Group_User extends \DbTestCase
         $group = new \Group();
        // Add a group
         $groups_id = $group->add([
-         'name' => __METHOD__,
-         'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true)]);
+            'name' => __METHOD__,
+            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true)
+        ]);
         $this->integer((int)$groups_id)->isGreaterThan(0);
         $this->boolean($group->getFromDB($groups_id))->isTrue();
 
         $group_user = new \Group_User();
         $group_users_id = $group_user->add([
-         'groups_id'  => $groups_id,
-         'users_id'   => getItemByTypeName('User', 'tech', true),
-         'is_dynamic' => 0
+            'groups_id'  => $groups_id,
+            'users_id'   => getItemByTypeName('User', 'tech', true),
+            'is_dynamic' => 0
         ]);
         $this->integer((int)$group_users_id)->isGreaterThan(0);
         $this->boolean($group_user->getFromDB($group_users_id))->isTrue();

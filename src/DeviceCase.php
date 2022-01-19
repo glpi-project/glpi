@@ -48,11 +48,14 @@ class DeviceCase extends CommonDevice
         return array_merge(
             parent::getAdditionalFields(),
             [['name'  => 'devicecasetypes_id',
-                                     'label' => _n('Type', 'Types', 1),
-                                     'type'  => 'dropdownValue'],
-                              ['name'  => 'devicecasemodels_id',
-                                     'label' => _n('Model', 'Models', 1),
-            'type'  => 'dropdownValue']]
+                'label' => _n('Type', 'Types', 1),
+                'type'  => 'dropdownValue'
+            ],
+                ['name'  => 'devicecasemodels_id',
+                    'label' => _n('Model', 'Models', 1),
+                    'type'  => 'dropdownValue'
+                ]
+            ]
         );
     }
 
@@ -62,19 +65,19 @@ class DeviceCase extends CommonDevice
         $tab = parent::rawSearchOptions();
 
         $tab[] = [
-         'id'                 => '12',
-         'table'              => 'glpi_devicecasetypes',
-         'field'              => 'name',
-         'name'               => _n('Type', 'Types', 1),
-         'datatype'           => 'dropdown'
+            'id'                 => '12',
+            'table'              => 'glpi_devicecasetypes',
+            'field'              => 'name',
+            'name'               => _n('Type', 'Types', 1),
+            'datatype'           => 'dropdown'
         ];
 
         $tab[] = [
-         'id'                 => '13',
-         'table'              => 'glpi_devicecasemodels',
-         'field'              => 'name',
-         'name'               => _n('Model', 'Models', 1),
-         'datatype'           => 'dropdown'
+            'id'                 => '13',
+            'table'              => 'glpi_devicecasemodels',
+            'field'              => 'name',
+            'name'               => _n('Model', 'Models', 1),
+            'datatype'           => 'dropdown'
         ];
 
         return $tab;
@@ -135,7 +138,8 @@ class DeviceCase extends CommonDevice
     {
 
         return ['designation'        => 'equal',
-                   'manufacturers_id'   => 'equal',
-                   'devicecasetypes_id' => 'equal'];
+            'manufacturers_id'   => 'equal',
+            'devicecasetypes_id' => 'equal'
+        ];
     }
 }

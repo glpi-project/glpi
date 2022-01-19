@@ -72,8 +72,9 @@ class Computer_Item extends CommonDBRelation
         return countElementsInTable(
             'glpi_computers_items',
             ['computers_id' => $comp->getField('id'),
-                                   'itemtype'     => $item->getType(),
-            'items_id'     => $item->getField('id')]
+                'itemtype'     => $item->getType(),
+                'items_id'     => $item->getField('id')
+            ]
         );
     }
 
@@ -284,12 +285,12 @@ class Computer_Item extends CommonDBRelation
 
         if ($item->getField('id')) {
             $iterator = $DB->request([
-            'SELECT' => ['id'],
-            'FROM'   => $this->getTable(),
-            'WHERE'  => [
-               'itemtype'  => $item->getType(),
-               'items_id'  => $item->getID()
-            ]
+                'SELECT' => ['id'],
+                'FROM'   => $this->getTable(),
+                'WHERE'  => [
+                    'itemtype'  => $item->getType(),
+                    'items_id'  => $item->getID()
+                ]
             ]);
 
             if (count($iterator) > 0) {
@@ -377,10 +378,11 @@ class Computer_Item extends CommonDBRelation
                 $massiveactionparams
                 = ['num_displayed'
                            => min($_SESSION['glpilist_limit'], $number),
-                       'specific_actions'
+                    'specific_actions'
                            => ['purge' => _x('button', 'Disconnect')],
-                       'container'
-                           => 'mass' . __CLASS__ . $rand];
+                    'container'
+                           => 'mass' . __CLASS__ . $rand
+                ];
                 Html::showMassiveActions($massiveactionparams);
             }
             echo "<table class='tab_cadre_fixehov'>";
@@ -481,13 +483,13 @@ class Computer_Item extends CommonDBRelation
         $dynamic = [];
         $result = $DB->request(
             [
-            'SELECT' => ['id', 'computers_id', 'is_dynamic'],
-            'FROM'   => self::getTable(),
-            'WHERE'  => [
-               'itemtype'   => $item->getType(),
-               'items_id'   => $ID,
-               'is_deleted' => 0,
-            ]
+                'SELECT' => ['id', 'computers_id', 'is_dynamic'],
+                'FROM'   => self::getTable(),
+                'WHERE'  => [
+                    'itemtype'   => $item->getType(),
+                    'items_id'   => $ID,
+                    'is_deleted' => 0,
+                ]
             ]
         );
         foreach ($result as $data) {
@@ -544,10 +546,11 @@ class Computer_Item extends CommonDBRelation
             $massiveactionparams
             = ['num_displayed'
                         => min($_SESSION['glpilist_limit'], $number),
-                    'specific_actions'
+                'specific_actions'
                         => ['purge' => _x('button', 'Disconnect')],
-                    'container'
-                        => 'mass' . __CLASS__ . $rand];
+                'container'
+                        => 'mass' . __CLASS__ . $rand
+            ];
             Html::showMassiveActions($massiveactionparams);
         }
         echo "<table class='tab_cadre_fixehov'>";
@@ -624,17 +627,18 @@ class Computer_Item extends CommonDBRelation
        // Update item to unit management :
         if ($item->getField('is_global')) {
             $input = ['id'        => $item->fields['id'],
-                        'is_global' => 0];
+                'is_global' => 0
+            ];
             $item->update($input);
 
            // Get connect_wire for this connection
             $iterator = $DB->request([
-            'SELECT' => ['id'],
-            'FROM'   => self::getTable(),
-            'WHERE'  => [
-               'items_id'  => $item->getID(),
-               'itemtype'  => $item->getType()
-            ]
+                'SELECT' => ['id'],
+                'FROM'   => self::getTable(),
+                'WHERE'  => [
+                    'items_id'  => $item->getID(),
+                    'itemtype'  => $item->getType()
+                ]
             ]);
 
             $first = true;
@@ -648,7 +652,8 @@ class Computer_Item extends CommonDBRelation
                     unset($temp->fields['id']);
                     if ($newID = $temp->add($temp->fields)) {
                         $conn->update(['id'       => $data['id'],
-                                 'items_id' => $newID]);
+                            'items_id' => $newID
+                        ]);
                     }
                 }
             }
@@ -687,12 +692,13 @@ class Computer_Item extends CommonDBRelation
         $rand = Dropdown::showItemType($CFG_GLPI['directconnect_types'], $options);
         if ($rand) {
             $params = ['itemtype'        => '__VALUE__',
-                         'fromtype'        => $fromtype,
-                         'value'           => 0,
-                         'myname'          => $myname,
-                         'onlyglobal'      => $onlyglobal,
-                         'entity_restrict' => $entity_restrict,
-                         'used'            => $used];
+                'fromtype'        => $fromtype,
+                'value'           => 0,
+                'myname'          => $myname,
+                'onlyglobal'      => $onlyglobal,
+                'entity_restrict' => $entity_restrict,
+                'used'            => $used
+            ];
 
             if ($onlyglobal) {
                 $params['condition'] = ['is_global' => 1];
@@ -736,14 +742,14 @@ class Computer_Item extends CommonDBRelation
 
         $field_id = Html::cleanId("dropdown_" . $myname . $rand);
         $param    = [
-         'entity_restrict' => $entity_restrict,
-         'fromtype'        => $fromtype,
-         'itemtype'        => $itemtype,
-         'onlyglobal'      => $onlyglobal,
-         'used'            => $used,
-         '_idor_token'     => Session::getNewIDORToken($itemtype, [
             'entity_restrict' => $entity_restrict,
-         ]),
+            'fromtype'        => $fromtype,
+            'itemtype'        => $itemtype,
+            'onlyglobal'      => $onlyglobal,
+            'used'            => $used,
+            '_idor_token'     => Session::getNewIDORToken($itemtype, [
+                'entity_restrict' => $entity_restrict,
+            ]),
         ];
 
         echo Html::jsAjaxDropdown(
@@ -836,17 +842,17 @@ class Computer_Item extends CommonDBRelation
 
        // RELATION : computers -> items
         $iterator = $DB->request([
-         'SELECT' => [
-            'itemtype',
-            new \QueryExpression('GROUP_CONCAT(DISTINCT ' . $DB->quoteName('items_id') . ') AS ids'),
-            'computers_id'
-         ],
-         'FROM'   => self::getTable(),
-         'WHERE'  => [
-            'itemtype'  => $item->getType(),
-            'items_id'  => $item->fields['id']
-         ],
-         'GROUP'  => 'itemtype'
+            'SELECT' => [
+                'itemtype',
+                new \QueryExpression('GROUP_CONCAT(DISTINCT ' . $DB->quoteName('items_id') . ') AS ids'),
+                'computers_id'
+            ],
+            'FROM'   => self::getTable(),
+            'WHERE'  => [
+                'itemtype'  => $item->getType(),
+                'items_id'  => $item->fields['id']
+            ],
+            'GROUP'  => 'itemtype'
         ]);
 
         foreach ($iterator as $data) {
@@ -854,7 +860,8 @@ class Computer_Item extends CommonDBRelation
                 countElementsInTable(
                     "glpi_computers",
                     ['id' => $data["computers_id"],
-                    'NOT' => ['entities_id' => $entities]]
+                        'NOT' => ['entities_id' => $entities]
+                    ]
                 ) > 0
             ) {
                 return false;

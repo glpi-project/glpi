@@ -107,15 +107,15 @@ class NetworkPortMetrics extends CommonDBChild
         $bdate = new DateTime();
         $bdate->sub(new DateInterval('P1Y'));
         $filters = [
-         'date' => ['>', $bdate->format('Y-m-d')]
+            'date' => ['>', $bdate->format('Y-m-d')]
         ];
         $filters = array_merge($filters, $user_filters);
 
         $iterator = $DB->request([
-         'FROM'   => $this->getTable(),
-         'WHERE'  => [
-            static::$items_id  => $netport->fields['id']
-         ] + $filters
+            'FROM'   => $this->getTable(),
+            'WHERE'  => [
+                static::$items_id  => $netport->fields['id']
+            ] + $filters
         ]);
 
         return iterator_to_array($iterator);
@@ -132,9 +132,9 @@ class NetworkPortMetrics extends CommonDBChild
 
        //build graph data
         $params = [
-         'label'         => $this->getTypeName(),
-         'icon'          => NetworkPort::getIcon(),
-         'apply_filters' => [],
+            'label'         => $this->getTypeName(),
+            'icon'          => NetworkPort::getIcon(),
+            'apply_filters' => [],
         ];
 
         $bytes_series = [];
@@ -164,14 +164,14 @@ class NetworkPortMetrics extends CommonDBChild
         }
 
         $bytes_bar_conf = [
-         'data'  => [
-            'labels' => $labels,
-            'series' => array_values($bytes_series),
-         ],
-         'label' => __('Input/Output bytes'),
-         'icon'  => $params['icon'],
-         'color' => '#ffffff',
-         'distributed' => false
+            'data'  => [
+                'labels' => $labels,
+                'series' => array_values($bytes_series),
+            ],
+            'label' => __('Input/Output bytes'),
+            'icon'  => $params['icon'],
+            'color' => '#ffffff',
+            'distributed' => false
         ];
 
        //display graph
@@ -181,14 +181,14 @@ class NetworkPortMetrics extends CommonDBChild
         echo "</div>";
 
         $errors_bar_conf = [
-         'data'  => [
-            'labels' => $labels,
-            'series' => array_values($errors_series),
-         ],
-         'label' => __('Input/Output errors'),
-         'icon'  => $params['icon'],
-         'color' => '#ffffff',
-         'distributed' => false
+            'data'  => [
+                'labels' => $labels,
+                'series' => array_values($errors_series),
+            ],
+            'label' => __('Input/Output errors'),
+            'icon'  => $params['icon'],
+            'color' => '#ffffff',
+            'distributed' => false
         ];
 
        //display graph

@@ -48,36 +48,36 @@ class Server extends DbTestCase
         $group_2_id = getItemByTypeName('Group', '_test_group_2', true);
 
         $users = [
-         getItemByTypeName('User', 'glpi', true) => [
-            'name'   => 'glpi',
-            'pass'   => 'glpi',
-            'groups' => [$group_1_id, $group_2_id],
-            'seeall' => false,
-         ],
-         getItemByTypeName('User', 'tech', true) => [
-            'name'   => 'tech',
-            'pass'   => 'tech',
-            'groups' => [$group_1_id],
-            'seeall' => false,
-         ],
-         getItemByTypeName('User', 'normal', true) => [
-            'name'   => 'normal',
-            'pass'   => 'normal',
-            'groups' => [$group_2_id],
-            'seeall' => false,
-         ],
-         getItemByTypeName('User', 'post-only', true) => [
-            'name'   => 'post-only',
-            'pass'   => 'postonly',
-            'groups' => [],
-            'seeall' => false,
-         ],
-         getItemByTypeName('User', TU_USER, true) => [
-            'name'   => TU_USER,
-            'pass'   => TU_PASS,
-            'groups' => [],
-            'seeall' => true,
-         ],
+            getItemByTypeName('User', 'glpi', true) => [
+                'name'   => 'glpi',
+                'pass'   => 'glpi',
+                'groups' => [$group_1_id, $group_2_id],
+                'seeall' => false,
+            ],
+            getItemByTypeName('User', 'tech', true) => [
+                'name'   => 'tech',
+                'pass'   => 'tech',
+                'groups' => [$group_1_id],
+                'seeall' => false,
+            ],
+            getItemByTypeName('User', 'normal', true) => [
+                'name'   => 'normal',
+                'pass'   => 'normal',
+                'groups' => [$group_2_id],
+                'seeall' => false,
+            ],
+            getItemByTypeName('User', 'post-only', true) => [
+                'name'   => 'post-only',
+                'pass'   => 'postonly',
+                'groups' => [],
+                'seeall' => false,
+            ],
+            getItemByTypeName('User', TU_USER, true) => [
+                'name'   => TU_USER,
+                'pass'   => TU_PASS,
+                'groups' => [],
+                'seeall' => true,
+            ],
         ];
 
         ksort($users);
@@ -88,8 +88,8 @@ class Server extends DbTestCase
                 $group_user = new \Group_User();
                 $this->integer(
                     (int)$group_user->add([
-                    'groups_id' => $group_id,
-                    'users_id'  => $user_id,
+                        'groups_id' => $group_id,
+                        'users_id'  => $user_id,
                     ])
                 )->isGreaterThan(0);
             }
@@ -99,61 +99,61 @@ class Server extends DbTestCase
            // All users should be able to get "/", "principals/" and "calendars/" collections properties
            // and should receive same result.
             $dataset[] = [
-            'path' => '/',
-            'expected_results' => [
-               [
-                  'href'         => '',
-                  'resourcetype' => 'd:collection',
-               ],
-               [
-                  'href'         => 'principals/',
-                  'resourcetype' => 'd:collection',
-               ],
-               [
-                  'href'         => 'calendars/',
-                  'resourcetype' => 'd:collection',
-               ]
-            ],
-            'login' => $user_data['name'],
-            'pass' => $user_data['pass'],
+                'path' => '/',
+                'expected_results' => [
+                    [
+                        'href'         => '',
+                        'resourcetype' => 'd:collection',
+                    ],
+                    [
+                        'href'         => 'principals/',
+                        'resourcetype' => 'd:collection',
+                    ],
+                    [
+                        'href'         => 'calendars/',
+                        'resourcetype' => 'd:collection',
+                    ]
+                ],
+                'login' => $user_data['name'],
+                'pass' => $user_data['pass'],
             ];
             $dataset[] = [
-            'path' => 'principals/',
-            'expected_results' => [
-               [
-                  'href'         => 'principals/',
-                  'resourcetype' => 'd:collection',
-               ],
-               [
-                  'href'         => 'principals/groups/',
-                  'resourcetype' => 'd:collection',
-               ],
-               [
-                  'href'         => 'principals/users/',
-                  'resourcetype' => 'd:collection',
-               ]
-            ],
-            'login' => $user_data['name'],
-            'pass' => $user_data['pass'],
+                'path' => 'principals/',
+                'expected_results' => [
+                    [
+                        'href'         => 'principals/',
+                        'resourcetype' => 'd:collection',
+                    ],
+                    [
+                        'href'         => 'principals/groups/',
+                        'resourcetype' => 'd:collection',
+                    ],
+                    [
+                        'href'         => 'principals/users/',
+                        'resourcetype' => 'd:collection',
+                    ]
+                ],
+                'login' => $user_data['name'],
+                'pass' => $user_data['pass'],
             ];
             $dataset[] = [
-            'path' => 'calendars/',
-            'expected_results' => [
-               [
-                  'href'         => 'calendars/',
-                  'resourcetype' => 'd:collection',
-               ],
-               [
-                  'href'         => 'calendars/groups/',
-                  'resourcetype' => 'd:collection',
-               ],
-               [
-                  'href'         => 'calendars/users/',
-                  'resourcetype' => 'd:collection',
-               ]
-            ],
-            'login' => $user_data['name'],
-            'pass' => $user_data['pass'],
+                'path' => 'calendars/',
+                'expected_results' => [
+                    [
+                        'href'         => 'calendars/',
+                        'resourcetype' => 'd:collection',
+                    ],
+                    [
+                        'href'         => 'calendars/groups/',
+                        'resourcetype' => 'd:collection',
+                    ],
+                    [
+                        'href'         => 'calendars/users/',
+                        'resourcetype' => 'd:collection',
+                    ]
+                ],
+                'login' => $user_data['name'],
+                'pass' => $user_data['pass'],
             ];
         }
 
@@ -161,58 +161,58 @@ class Server extends DbTestCase
        // but result will only contains data for user groups (or all groups if user has enough rights).
         foreach ($users as $user_data) {
             $groups_expected_results = [
-            [
-               'href'         => 'principals/groups/',
-               'resourcetype' => 'd:collection',
-            ],
+                [
+                    'href'         => 'principals/groups/',
+                    'resourcetype' => 'd:collection',
+                ],
             ];
             $groups = $user_data['seeall'] ? $all_groups_id : $user_data['groups'];
             foreach ($groups as $group_id) {
                // Group principal should be listed in 'principals/groups/' result
                 $groups_expected_results[] = [
-                'href'         => 'principals/groups/' . $group_id . '/',
-                'resourcetype' => 'd:principal',
+                    'href'         => 'principals/groups/' . $group_id . '/',
+                    'resourcetype' => 'd:principal',
                 ];
 
                // Group principal properties should be accessible at 'principals/groups/$group_id/'
                 $dataset[] = [
-                'path' => 'principals/groups/' . $group_id . '/',
-                'expected_results' => [
-                  [
-                     'href'         => 'principals/groups/' . $group_id . '/',
-                     'resourcetype' => 'd:principal',
-                  ],
-                ],
-                'login' => $user_data['name'],
-                'pass' => $user_data['pass'],
+                    'path' => 'principals/groups/' . $group_id . '/',
+                    'expected_results' => [
+                        [
+                            'href'         => 'principals/groups/' . $group_id . '/',
+                            'resourcetype' => 'd:principal',
+                        ],
+                    ],
+                    'login' => $user_data['name'],
+                    'pass' => $user_data['pass'],
                 ];
             }
             $dataset[] = [
-            'path' => 'principals/groups/',
-            'expected_results' => $groups_expected_results,
-            'login' => $user_data['name'],
-            'pass' => $user_data['pass'],
+                'path' => 'principals/groups/',
+                'expected_results' => $groups_expected_results,
+                'login' => $user_data['name'],
+                'pass' => $user_data['pass'],
             ];
         }
 
        // 'glpi' user can see all users principals
         $expected_results = [
-         [
-            'href'         => 'principals/users/',
-            'resourcetype' => 'd:collection',
-         ]
+            [
+                'href'         => 'principals/users/',
+                'resourcetype' => 'd:collection',
+            ]
         ];
         foreach ($users as $user_data) {
             $expected_results[] = [
-            'href'         => 'principals/users/' . $user_data['name'] . '/',
-            'resourcetype' => 'd:principal',
+                'href'         => 'principals/users/' . $user_data['name'] . '/',
+                'resourcetype' => 'd:principal',
             ];
         }
         $dataset[] = [
-         'path'             => 'principals/users/',
-         'expected_results' => $expected_results,
-         'login'            => 'glpi',
-         'pass'             => 'glpi',
+            'path'             => 'principals/users/',
+            'expected_results' => $expected_results,
+            'login'            => 'glpi',
+            'pass'             => 'glpi',
         ];
 
        // 'tech', 'normal', 'post-only' user can see only themselves in principals
@@ -221,56 +221,56 @@ class Server extends DbTestCase
             $user_data = $users[$user_id];
 
             $dataset[] = [
-            'path' => 'principals/users/',
-            'expected_results' => [
-               [
-                  'href'         => 'principals/users/',
-                  'resourcetype' => 'd:collection',
-               ],
-               [
-                  'href'         => 'principals/users/' . $user_data['name'] . '/',
-                  'resourcetype' => 'd:principal',
-               ],
-            ],
-            'login' => $user_data['name'],
-            'pass' => $user_data['pass'],
+                'path' => 'principals/users/',
+                'expected_results' => [
+                    [
+                        'href'         => 'principals/users/',
+                        'resourcetype' => 'd:collection',
+                    ],
+                    [
+                        'href'         => 'principals/users/' . $user_data['name'] . '/',
+                        'resourcetype' => 'd:principal',
+                    ],
+                ],
+                'login' => $user_data['name'],
+                'pass' => $user_data['pass'],
             ];
         }
 
        // 'glpi' user can see all users calendars
         $expected_results = [
-         [
-            'href'         => 'calendars/users/',
-            'resourcetype' => 'd:collection',
-         ]
+            [
+                'href'         => 'calendars/users/',
+                'resourcetype' => 'd:collection',
+            ]
         ];
         foreach ($users as $user_data) {
             $expected_results[] = [
-            'href'         => 'calendars/users/' . $user_data['name'] . '/',
-            'resourcetype' => 'd:collection',
+                'href'         => 'calendars/users/' . $user_data['name'] . '/',
+                'resourcetype' => 'd:collection',
             ];
         }
         $dataset[] = [
-         'path'             => 'calendars/users/',
-         'expected_results' => $expected_results,
-         'login'            => 'glpi',
-         'pass'             => 'glpi',
+            'path'             => 'calendars/users/',
+            'expected_results' => $expected_results,
+            'login'            => 'glpi',
+            'pass'             => 'glpi',
         ];
         foreach ($users as $user_data) {
             $dataset[] = [
-            'path'             => 'calendars/users/' . $user_data['name'] . '/',
-            'expected_results' => [
-               [
-                  'href'         => 'calendars/users/' . $user_data['name'] . '/',
-                  'resourcetype' => 'd:collection',
-               ],
-               [
-                  'href'         => 'calendars/users/' . $user_data['name'] . '/calendar/',
-                  'resourcetype' => ['d:collection', 'cal:calendar'],
-               ]
-            ],
-            'login'            => 'glpi',
-            'pass'             => 'glpi',
+                'path'             => 'calendars/users/' . $user_data['name'] . '/',
+                'expected_results' => [
+                    [
+                        'href'         => 'calendars/users/' . $user_data['name'] . '/',
+                        'resourcetype' => 'd:collection',
+                    ],
+                    [
+                        'href'         => 'calendars/users/' . $user_data['name'] . '/calendar/',
+                        'resourcetype' => ['d:collection', 'cal:calendar'],
+                    ]
+                ],
+                'login'            => 'glpi',
+                'pass'             => 'glpi',
             ];
         }
 
@@ -280,34 +280,34 @@ class Server extends DbTestCase
             $user_data = $users[$user_id];
 
             $dataset[] = [
-            'path' => 'calendars/users/',
-            'expected_results' => [
-               [
-                  'href'         => 'calendars/users/',
-                  'resourcetype' => 'd:collection',
-               ],
-               [
-                  'href'         => 'calendars/users/' . $user_data['name'] . '/',
-                  'resourcetype' => 'd:collection',
-               ],
-            ],
-            'login' => $user_data['name'],
-            'pass' => $user_data['pass'],
+                'path' => 'calendars/users/',
+                'expected_results' => [
+                    [
+                        'href'         => 'calendars/users/',
+                        'resourcetype' => 'd:collection',
+                    ],
+                    [
+                        'href'         => 'calendars/users/' . $user_data['name'] . '/',
+                        'resourcetype' => 'd:collection',
+                    ],
+                ],
+                'login' => $user_data['name'],
+                'pass' => $user_data['pass'],
             ];
             $dataset[] = [
-            'path' => 'calendars/users/' . $user_data['name'] . '/',
-            'expected_results' => [
-               [
-                  'href'         => 'calendars/users/' . $user_data['name'] . '/',
-                  'resourcetype' => 'd:collection',
-               ],
-               [
-                  'href'         => 'calendars/users/' . $user_data['name'] . '/calendar/',
-                  'resourcetype' => ['d:collection', 'cal:calendar'],
-               ]
-            ],
-            'login' => $user_data['name'],
-            'pass' => $user_data['pass'],
+                'path' => 'calendars/users/' . $user_data['name'] . '/',
+                'expected_results' => [
+                    [
+                        'href'         => 'calendars/users/' . $user_data['name'] . '/',
+                        'resourcetype' => 'd:collection',
+                    ],
+                    [
+                        'href'         => 'calendars/users/' . $user_data['name'] . '/calendar/',
+                        'resourcetype' => ['d:collection', 'cal:calendar'],
+                    ]
+                ],
+                'login' => $user_data['name'],
+                'pass' => $user_data['pass'],
             ];
         }
 
@@ -315,41 +315,41 @@ class Server extends DbTestCase
        // but result will only contains data for user groups (or all groups if user has enough rights).
         foreach ($users as $user_data) {
             $groups_expected_results = [
-            [
-               'href'         => 'calendars/groups/',
-               'resourcetype' => 'd:collection',
-            ],
+                [
+                    'href'         => 'calendars/groups/',
+                    'resourcetype' => 'd:collection',
+                ],
             ];
             $groups = $user_data['seeall'] ? $all_groups_id : $user_data['groups'];
             foreach ($groups as $group_id) {
                // Group principal should be listed in 'calendars/groups/' result
                 $groups_expected_results[] = [
-                'href'         => 'calendars/groups/' . $group_id . '/',
-                'resourcetype' => 'd:collection',
+                    'href'         => 'calendars/groups/' . $group_id . '/',
+                    'resourcetype' => 'd:collection',
                 ];
 
                // Group calendar list properties should be accessible at 'calendars/groups/$group_id/'
                 $dataset[] = [
-                'path' => 'calendars/groups/' . $group_id . '/',
-                'expected_results' => [
-                  [
-                     'href'         => 'calendars/groups/' . $group_id . '/',
-                     'resourcetype' => 'd:collection',
-                  ],
-                  [
-                     'href'         => 'calendars/groups/' . $group_id . '/calendar/',
-                     'resourcetype' => ['d:collection', 'cal:calendar'],
-                  ],
-                ],
-                'login' => $user_data['name'],
-                'pass' => $user_data['pass'],
+                    'path' => 'calendars/groups/' . $group_id . '/',
+                    'expected_results' => [
+                        [
+                            'href'         => 'calendars/groups/' . $group_id . '/',
+                            'resourcetype' => 'd:collection',
+                        ],
+                        [
+                            'href'         => 'calendars/groups/' . $group_id . '/calendar/',
+                            'resourcetype' => ['d:collection', 'cal:calendar'],
+                        ],
+                    ],
+                    'login' => $user_data['name'],
+                    'pass' => $user_data['pass'],
                 ];
             }
             $dataset[] = [
-            'path' => 'calendars/groups/',
-            'expected_results' => $groups_expected_results,
-            'login' => $user_data['name'],
-            'pass' => $user_data['pass'],
+                'path' => 'calendars/groups/',
+                'expected_results' => $groups_expected_results,
+                'login' => $user_data['name'],
+                'pass' => $user_data['pass'],
             ];
         }
 
@@ -418,8 +418,8 @@ class Server extends DbTestCase
 
         $group = new \Group();
         $group_id = (int)$group->add([
-         'name'    => 'Test group',
-         'is_task' => 1,
+            'name'    => 'Test group',
+            'is_task' => 1,
         ]);
         $this->integer($group_id)->isGreaterThan(0);
         $group->getFromDB($group_id);
@@ -427,22 +427,22 @@ class Server extends DbTestCase
         $group_user = new \Group_User();
         $this->integer(
             (int)$group_user->add([
-            'groups_id' => $group_id,
-            'users_id'  => $user->fields['id'],
+                'groups_id' => $group_id,
+                'users_id'  => $user->fields['id'],
             ])
         )->isGreaterThan(0);
 
         $this->login($login, $pass);
 
         $calendars = [
-         [
-            'path' => 'calendars/users/' . $user->fields['name'] . '/calendar/',
-            'name' => $user->getFriendlyName(),
-         ],
-         [
-            'path' => 'calendars/groups/' . $group_id . '/calendar/',
-            'name' => $group->getFriendlyName(),
-         ],
+            [
+                'path' => 'calendars/users/' . $user->fields['name'] . '/calendar/',
+                'name' => $user->getFriendlyName(),
+            ],
+            [
+                'path' => 'calendars/groups/' . $group_id . '/calendar/',
+                'name' => $group->getFriendlyName(),
+            ],
         ];
 
         foreach ($calendars as $calendar) {
@@ -504,8 +504,8 @@ class Server extends DbTestCase
 
         $group = new \Group();
         $group_id = (int)$group->add([
-         'name'    => 'Test group',
-         'is_task' => 1,
+            'name'    => 'Test group',
+            'is_task' => 1,
         ]);
         $this->integer($group_id)->isGreaterThan(0);
         $group->getFromDB($group_id);
@@ -513,21 +513,21 @@ class Server extends DbTestCase
         $group_user = new \Group_User();
         $this->integer(
             (int)$group_user->add([
-            'groups_id' => $group_id,
-            'users_id'  => $user->fields['id'],
+                'groups_id' => $group_id,
+                'users_id'  => $user->fields['id'],
             ])
         )->isGreaterThan(0);
 
         $objects = [
-         'principals/users/' . $user->fields['name'],
-         'calendars/users/' . $user->fields['name'] . '/calendar/',
-         'principals/groups/' . $group_id,
-         'calendars/groups/' . $group_id . '/calendar/',
+            'principals/users/' . $user->fields['name'],
+            'calendars/users/' . $user->fields['name'] . '/calendar/',
+            'principals/groups/' . $group_id,
+            'calendars/groups/' . $group_id . '/calendar/',
         ];
 
         $users_access = [
-         'normal' => 'HTTP/1.1 403 Forbidden',
-         'tech'   => 'HTTP/1.1 200 OK',
+            'normal' => 'HTTP/1.1 403 Forbidden',
+            'tech'   => 'HTTP/1.1 200 OK',
         ];
 
         foreach ($users_access as $username => $expected_status) {
@@ -566,17 +566,17 @@ class Server extends DbTestCase
 
         $event = new \PlanningExternalEvent();
         $event_id = (int)$event->add([
-         'name'        => 'Test event created in GLPI',
-         'text'        => 'Evt description',
-         'entities_id' => $_SESSION['glpiactive_entity'],
-         'plan'        => [
-            'begin' => '2019-06-15 13:00:00',
-            'end'   => '2019-06-15 13:45:00'
-         ],
-         'rrule'       => [
-            'freq'      => 'weekly',
-            'byweekday' => 'MO',
-         ],
+            'name'        => 'Test event created in GLPI',
+            'text'        => 'Evt description',
+            'entities_id' => $_SESSION['glpiactive_entity'],
+            'plan'        => [
+                'begin' => '2019-06-15 13:00:00',
+                'end'   => '2019-06-15 13:45:00'
+            ],
+            'rrule'       => [
+                'freq'      => 'weekly',
+                'byweekday' => 'MO',
+            ],
         ]);
         $this->integer($event_id)->isGreaterThan(0);
         $event->getFromDB($event_id);
@@ -726,18 +726,18 @@ VCALENDAR
 
         $event = new \PlanningExternalEvent();
         $event_id = (int)$event->add([
-         'name'        => 'Test event created in GLPI',
-         'text'        => 'Description of the event.',
-         'entities_id' => $_SESSION['glpiactive_entity'],
-         'plan'        => [
-            'begin' => '2019-06-15 13:00:00',
-            'end'   => '2019-06-15 13:45:00'
-         ],
-         'rrule'       => [
-            'freq'      => 'daily',
-            'interval'  => 3,
-            'byweekday' => 'MO,TU,WE,TH,FR',
-         ],
+            'name'        => 'Test event created in GLPI',
+            'text'        => 'Description of the event.',
+            'entities_id' => $_SESSION['glpiactive_entity'],
+            'plan'        => [
+                'begin' => '2019-06-15 13:00:00',
+                'end'   => '2019-06-15 13:45:00'
+            ],
+            'rrule'       => [
+                'freq'      => 'daily',
+                'interval'  => 3,
+                'byweekday' => 'MO,TU,WE,TH,FR',
+            ],
         ]);
         $this->integer($event_id)->isGreaterThan(0);
         $event->getFromDB($event_id);
@@ -843,10 +843,10 @@ VCALENDAR
        // Not planned task
         $event = new \PlanningExternalEvent();
         $event_id = (int)$event->add([
-         'name'        => 'Task created in GLPI',
-         'text'        => 'Description of the task.',
-         'entities_id' => $_SESSION['glpiactive_entity'],
-         'state'       => \Planning::DONE
+            'name'        => 'Task created in GLPI',
+            'text'        => 'Description of the task.',
+            'entities_id' => $_SESSION['glpiactive_entity'],
+            'state'       => \Planning::DONE
         ]);
         $this->integer($event_id)->isGreaterThan(0);
         $event->getFromDB($event_id);
@@ -872,17 +872,17 @@ VCALENDAR
        // Planned task
         $event = new \PlanningExternalEvent();
         $event_id = (int)$event->add([
-         'name'        => 'Task created in GLPI',
-         'text'        => 'Description of the task.',
-         'entities_id' => $_SESSION['glpiactive_entity'],
-         'plan'        => [
-            'begin' => '2019-06-15 13:00:00',
-            'end'   => '2019-06-15 13:45:00'
-         ],
-         'rrule'       => [
-            'freq' => 'monthly',
-         ],
-         'state'       => \Planning::TODO
+            'name'        => 'Task created in GLPI',
+            'text'        => 'Description of the task.',
+            'entities_id' => $_SESSION['glpiactive_entity'],
+            'plan'        => [
+                'begin' => '2019-06-15 13:00:00',
+                'end'   => '2019-06-15 13:45:00'
+            ],
+            'rrule'       => [
+                'freq' => 'monthly',
+            ],
+            'state'       => \Planning::TODO
         ]);
         $this->integer($event_id)->isGreaterThan(0);
         $event->getFromDB($event_id);
@@ -1022,10 +1022,10 @@ VCALENDAR
 
         $event = new \PlanningExternalEvent();
         $event_id = (int)$event->add([
-         'name'        => 'Note created in GLPI',
-         'text'        => 'Description of the note.',
-         'entities_id' => $_SESSION['glpiactive_entity'],
-         'state'       => \Planning::INFO
+            'name'        => 'Note created in GLPI',
+            'text'        => 'Description of the note.',
+            'entities_id' => $_SESSION['glpiactive_entity'],
+            'state'       => \Planning::INFO
         ]);
         $this->integer($event_id)->isGreaterThan(0);
         $event->getFromDB($event_id);
@@ -1120,9 +1120,9 @@ VCALENDAR
 
         $reminder = new \Reminder();
         $reminder_id = (int)$reminder->add([
-         'name'        => 'Test reminder created in GLPI',
-         'text'        => 'Description of the reminder.',
-         'entities_id' => $_SESSION['glpiactive_entity'],
+            'name'        => 'Test reminder created in GLPI',
+            'text'        => 'Description of the reminder.',
+            'entities_id' => $_SESSION['glpiactive_entity'],
         ]);
         $this->integer($reminder_id)->isGreaterThan(0);
         $reminder->getFromDB($reminder_id);
@@ -1195,14 +1195,14 @@ VCALENDAR
 
         $reminder = new \Reminder();
         $reminder_id = (int)$reminder->add([
-         'name'        => 'Test reminder created in GLPI',
-         'text'        => 'Description of the reminder.',
-         'entities_id' => $_SESSION['glpiactive_entity'],
-         'plan'        => [
-            'begin' => '2019-06-15 13:00:00',
-            'end'   => '2019-06-15 13:45:00'
-         ],
-         'state'       => \Planning::TODO,
+            'name'        => 'Test reminder created in GLPI',
+            'text'        => 'Description of the reminder.',
+            'entities_id' => $_SESSION['glpiactive_entity'],
+            'plan'        => [
+                'begin' => '2019-06-15 13:00:00',
+                'end'   => '2019-06-15 13:45:00'
+            ],
+            'state'       => \Planning::TODO,
         ]);
         $this->integer($reminder_id)->isGreaterThan(0);
         $reminder->getFromDB($reminder_id);
@@ -1280,18 +1280,18 @@ VCALENDAR
 
         $ticket = new \Ticket();
         $ticket_id = (int)$ticket->add([
-         'name'               => 'Test ticket',
-         'content'            => 'Ticket content.',
-         'users_id_recipient' => $user->fields['id'],
-         'entities_id'        => $_SESSION['glpiactive_entity'],
+            'name'               => 'Test ticket',
+            'content'            => 'Ticket content.',
+            'users_id_recipient' => $user->fields['id'],
+            'entities_id'        => $_SESSION['glpiactive_entity'],
         ]);
         $this->integer($ticket_id)->isGreaterThan(0);
 
         $ticket_task = new \TicketTask();
         $ticket_task_id = (int)$ticket_task->add([
-         'tickets_id'    => $ticket_id,
-         'content'       => 'Description of the task.',
-         'users_id_tech' => $user->fields['id'],
+            'tickets_id'    => $ticket_id,
+            'content'       => 'Description of the task.',
+            'users_id_tech' => $user->fields['id'],
         ]);
         $this->integer($ticket_task_id)->isGreaterThan(0);
         $ticket_task->getFromDB($ticket_task_id);
@@ -1401,27 +1401,27 @@ VCALENDAR
 
         $project = new \Project();
         $project_id = (int)$project->add([
-         'name'        => 'Test project',
-         'content'     => 'Project content.',
-         'entities_id' => $_SESSION['glpiactive_entity'],
+            'name'        => 'Test project',
+            'content'     => 'Project content.',
+            'entities_id' => $_SESSION['glpiactive_entity'],
         ]);
         $this->integer($project_id)->isGreaterThan(0);
 
         $project_task = new \ProjectTask();
         $project_task_id = (int)$project_task->add([
-         'name'        => 'Test task created in GLPI',
-         'content'     => 'Description of the task.',
-         'projects_id' => $project_id,
-         'entities_id' => $_SESSION['glpiactive_entity'],
+            'name'        => 'Test task created in GLPI',
+            'content'     => 'Description of the task.',
+            'projects_id' => $project_id,
+            'entities_id' => $_SESSION['glpiactive_entity'],
         ]);
         $this->integer($project_task_id)->isGreaterThan(0);
         $project_task->getFromDB($project_task_id);
 
         $project_task_team = new \ProjectTaskTeam();
         $project_task_team_id = (int)$project_task_team->add([
-         'projecttasks_id' => $project_task_id,
-         'itemtype'        => 'User',
-         'items_id'        => $user->fields['id'],
+            'projecttasks_id' => $project_task_id,
+            'itemtype'        => 'User',
+            'items_id'        => $user->fields['id'],
         ]);
         $this->integer($project_task_team_id)->isGreaterThan(0);
 

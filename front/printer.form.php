@@ -129,9 +129,9 @@ if (isset($_POST["add"])) {
 } else {
     Html::header(Printer::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "assets", "printer");
     $print->display([
-      'id'           => $_GET["id"],
-      'withtemplate' => $_GET["withtemplate"],
-      'formoptions'  => "data-track-changes=true"
+        'id'           => $_GET["id"],
+        'withtemplate' => $_GET["withtemplate"],
+        'formoptions'  => "data-track-changes=true"
     ]);
     Html::footer();
 }

@@ -50,17 +50,17 @@ class SimpleCache extends \GLPITestCase
 
        // Different scalar types to test.
         $values = [
-         'null'         => null,
-         'string'       => 'some value',
-         'true'         => true,
-         'false'        => false,
-         'negative int' => -10,
-         'positive int' => 15,
-         'zero'         => 0,
-         'float'        => 15.358,
-         'simple array' => ['a', 'b', 'c'],
-         'assoc array'  => ['some' => 'value', 'from' => 'assoc', 'array' => null],
-         '{}()/\@:'     => 'reserved chars in key',
+            'null'         => null,
+            'string'       => 'some value',
+            'true'         => true,
+            'false'        => false,
+            'negative int' => -10,
+            'positive int' => 15,
+            'zero'         => 0,
+            'float'        => 15.358,
+            'simple array' => ['a', 'b', 'c'],
+            'assoc array'  => ['some' => 'value', 'from' => 'assoc', 'array' => null],
+            '{}()/\@:'     => 'reserved chars in key',
         ];
 
        // Test single set/get/has/delete

@@ -45,14 +45,14 @@ class Volume extends InventoryAsset
     public function prepare(): array
     {
         $mapping = [
-         'volumn'         => 'device',
-         'filesystem'     => 'filesystems_id',
-         'total'          => 'totalsize',
-         'free'           => 'freesize',
-         'encrypt_name'   => 'encryption_tool',
-         'encrypt_algo'   => 'encryption_algorithm',
-         'encrypt_status' => 'encryption_status',
-         'encrypt_type'   => 'encryption_type'
+            'volumn'         => 'device',
+            'filesystem'     => 'filesystems_id',
+            'total'          => 'totalsize',
+            'free'           => 'freesize',
+            'encrypt_name'   => 'encryption_tool',
+            'encrypt_algo'   => 'encryption_algorithm',
+            'encrypt_status' => 'encryption_status',
+            'encrypt_type'   => 'encryption_type'
         ];
 
         foreach ($this->data as $key => &$val) {
@@ -122,12 +122,12 @@ class Volume extends InventoryAsset
         $db_existing = [];
 
         $iterator = $DB->request([
-         'SELECT' => ['id', 'name', 'device', 'mountpoint', 'is_dynamic'],
-         'FROM'   => Item_Disk::getTable(),
-         'WHERE'  => [
-            'items_id' => $this->item->fields['id'],
-            'itemtype' => $this->item->getType()
-         ]
+            'SELECT' => ['id', 'name', 'device', 'mountpoint', 'is_dynamic'],
+            'FROM'   => Item_Disk::getTable(),
+            'WHERE'  => [
+                'items_id' => $this->item->fields['id'],
+                'itemtype' => $this->item->getType()
+            ]
         ]);
         foreach ($iterator as $data) {
             $dbid = $data['id'];
@@ -159,7 +159,7 @@ class Volume extends InventoryAsset
                 unset($arraydb['is_dynamic']);
                 if ($db_elt == $arraydb) {
                     $input = (array)$val + [
-                    'id'           => $keydb,
+                        'id'           => $keydb,
                     ];
                     $itemDisk->update(Toolbox::addslashes_deep($input), $this->withHistory());
                     unset($value[$key]);
@@ -181,8 +181,8 @@ class Volume extends InventoryAsset
         if (count($value)) {
             foreach ($value as $val) {
                 $input = (array)$val + [
-                'items_id'     => $this->item->fields['id'],
-                'itemtype'     => $this->item->getType()
+                    'items_id'     => $this->item->fields['id'],
+                    'itemtype'     => $this->item->getType()
                 ];
 
                 $itemDisk->add(Toolbox::addslashes_deep($input), [], $this->withHistory());

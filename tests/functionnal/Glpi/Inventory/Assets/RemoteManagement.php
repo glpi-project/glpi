@@ -42,8 +42,8 @@ class RemoteManagement extends AbstractInventoryAsset
     protected function assetProvider(): array
     {
         return [
-         [
-            'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+            [
+                'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
   <CONTENT>
     <REMOTE_MGMT>
@@ -55,9 +55,9 @@ class RemoteManagement extends AbstractInventoryAsset
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-            'expected'  => '{"remoteid": "123456789", "type": "teamviewer", "is_dynamic": 1}'
-         ], [
-            'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+                'expected'  => '{"remoteid": "123456789", "type": "teamviewer", "is_dynamic": 1}'
+            ], [
+                'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
   <CONTENT>
     <REMOTE_MGMT>
@@ -69,9 +69,9 @@ class RemoteManagement extends AbstractInventoryAsset
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-            'expected'  => '{"remoteid": "abcdyz", "type": "anydesk", "is_dynamic": 1}'
-         ], [
-            'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+                'expected'  => '{"remoteid": "abcdyz", "type": "anydesk", "is_dynamic": 1}'
+            ], [
+                'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
   <CONTENT>
     <REMOTE_MGMT>
@@ -83,8 +83,8 @@ class RemoteManagement extends AbstractInventoryAsset
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-            'expected'  => '{"remoteid": "myspecialid", "type": "litemanager", "is_dynamic": 1}'
-         ]
+                'expected'  => '{"remoteid": "myspecialid", "type": "litemanager", "is_dynamic": 1}'
+            ]
         ];
     }
 
@@ -124,8 +124,8 @@ class RemoteManagement extends AbstractInventoryAsset
         $mgmt = new \Item_RemoteManagement();
         $this->boolean(
             $mgmt->getFromDbByCrit([
-            'itemtype' => $computer->getType(),
-            'items_id' => $computer->fields['id']
+                'itemtype' => $computer->getType(),
+                'items_id' => $computer->fields['id']
             ])
         )->isFalse('An remote management is already linked to computer!');
 
@@ -147,8 +147,8 @@ class RemoteManagement extends AbstractInventoryAsset
         $asset->handle();
         $this->boolean(
             $mgmt->getFromDbByCrit([
-            'itemtype' => $computer->getType(),
-            'items_id' => $computer->fields['id']
+                'itemtype' => $computer->getType(),
+                'items_id' => $computer->fields['id']
             ])
         )->isTrue('Remote Management has not been linked to computer :(');
     }
@@ -163,8 +163,8 @@ class RemoteManagement extends AbstractInventoryAsset
         $mgmt = new \Item_RemoteManagement();
         $this->boolean(
             $mgmt->getFromDbByCrit([
-            'itemtype' => $computer->getType(),
-            'items_id' => $computer->fields['id']
+                'itemtype' => $computer->getType(),
+                'items_id' => $computer->fields['id']
             ])
         )->isTrue('No remote management linked to computer!');
 
@@ -188,8 +188,8 @@ class RemoteManagement extends AbstractInventoryAsset
         $asset->handle();
         $this->boolean(
             $mgmt->getFromDbByCrit([
-            'itemtype' => $computer->getType(),
-            'items_id' => $computer->fields['id']
+                'itemtype' => $computer->getType(),
+                'items_id' => $computer->fields['id']
             ])
         )->isTrue();
 
@@ -226,36 +226,36 @@ class RemoteManagement extends AbstractInventoryAsset
 
        //create manually a computer, with 3 remote managements
         $computers_id = $computer->add([
-         'name'   => 'pc002',
-         'serial' => 'ggheb7ne7',
-         'entities_id' => 0
+            'name'   => 'pc002',
+            'serial' => 'ggheb7ne7',
+            'entities_id' => 0
         ]);
         $this->integer($computers_id)->isGreaterThan(0);
 
         $this->integer(
             $mgmt->add([
-            'itemtype' => 'Computer',
-            'items_id' => $computers_id,
-            'type' => 'teamviewer',
-            'remoteid' => '123456789'
+                'itemtype' => 'Computer',
+                'items_id' => $computers_id,
+                'type' => 'teamviewer',
+                'remoteid' => '123456789'
             ])
         )->isGreaterThan(0);
 
         $this->integer(
             $mgmt->add([
-            'itemtype' => 'Computer',
-            'items_id' => $computers_id,
-            'type' => 'anydesk',
-            'remoteid' => 'abcdyz'
+                'itemtype' => 'Computer',
+                'items_id' => $computers_id,
+                'type' => 'anydesk',
+                'remoteid' => 'abcdyz'
             ])
         )->isGreaterThan(0);
 
         $this->integer(
             $mgmt->add([
-            'itemtype' => 'Computer',
-            'items_id' => $computers_id,
-            'type' => 'mymgmt',
-            'remoteid' => 'qwertyuiop'
+                'itemtype' => 'Computer',
+                'items_id' => $computers_id,
+                'type' => 'mymgmt',
+                'remoteid' => 'qwertyuiop'
             ])
         )->isGreaterThan(0);
 

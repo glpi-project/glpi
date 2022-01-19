@@ -75,10 +75,10 @@ class NetworkPortConnectionLog extends CommonDBChild
     public function getCriteria(NetworkPort $netport)
     {
         return [
-         'OR' => [
-            'networkports_id_source'      => $netport->fields['id'],
-            'networkports_id_destination' => $netport->fields['id']
-         ]
+            'OR' => [
+                'networkports_id_source'      => $netport->fields['id'],
+                'networkports_id_destination' => $netport->fields['id']
+            ]
         ];
     }
 
@@ -105,8 +105,8 @@ class NetworkPortConnectionLog extends CommonDBChild
         global $DB;
 
         $iterator = $DB->request([
-         'FROM'   => $this->getTable(),
-         'WHERE'  => $this->getCriteria($netport)
+            'FROM'   => $this->getTable(),
+            'WHERE'  => $this->getCriteria($netport)
         ]);
 
         echo "<table class='tab_cadre_fixehov'>";

@@ -50,20 +50,24 @@ class DeviceSoundCard extends CommonDevice
         return array_merge(
             parent::getAdditionalFields(),
             [['name'  => 'type',
-                                     'label' => _n('Type', 'Types', 1),
-                                     'type'  => 'text'],
-                               ['name'  => 'none',
-                                     'label' => RegisteredID::getTypeName(Session::getPluralNumber()) .
+                'label' => _n('Type', 'Types', 1),
+                'type'  => 'text'
+            ],
+                ['name'  => 'none',
+                    'label' => RegisteredID::getTypeName(Session::getPluralNumber()) .
                                         RegisteredID::showAddChildButtonForItemForm(
                                             $this,
                                             '_registeredID',
                                             null,
                                             false
                                         ),
-                                     'type'  => 'registeredIDChooser'],
-                               ['name'  => 'devicesoundcardmodels_id',
-                                     'label' => _n('Model', 'Models', 1),
-            'type'  => 'dropdownValue']]
+                    'type'  => 'registeredIDChooser'
+                ],
+                ['name'  => 'devicesoundcardmodels_id',
+                    'label' => _n('Model', 'Models', 1),
+                    'type'  => 'dropdownValue'
+                ]
+            ]
         );
     }
 
@@ -73,19 +77,19 @@ class DeviceSoundCard extends CommonDevice
         $tab = parent::rawSearchOptions();
 
         $tab[] = [
-         'id'                 => '12',
-         'table'              => $this->getTable(),
-         'field'              => 'type',
-         'name'               => _n('Type', 'Types', 1),
-         'datatype'           => 'string',
+            'id'                 => '12',
+            'table'              => $this->getTable(),
+            'field'              => 'type',
+            'name'               => _n('Type', 'Types', 1),
+            'datatype'           => 'string',
         ];
 
         $tab[] = [
-         'id'                 => '13',
-         'table'              => 'glpi_devicesoundcardmodels',
-         'field'              => 'name',
-         'name'               => _n('Model', 'Models', 1),
-         'datatype'           => 'dropdown'
+            'id'                 => '13',
+            'table'              => 'glpi_devicesoundcardmodels',
+            'field'              => 'name',
+            'name'               => _n('Model', 'Models', 1),
+            'datatype'           => 'dropdown'
         ];
 
         return $tab;
@@ -146,19 +150,19 @@ class DeviceSoundCard extends CommonDevice
         $tab = [];
 
         $tab[] = [
-         'id'                 => '12',
-         'table'              => 'glpi_devicesoundcards',
-         'field'              => 'designation',
-         'name'               => static::getTypeName(1),
-         'forcegroupby'       => true,
-         'massiveaction'      => false,
-         'datatype'           => 'string',
-         'joinparams'         => [
-            'beforejoin'         => [
-               'table'              => 'glpi_items_devicesoundcards',
-               'joinparams'         => $main_joinparams
+            'id'                 => '12',
+            'table'              => 'glpi_devicesoundcards',
+            'field'              => 'designation',
+            'name'               => static::getTypeName(1),
+            'forcegroupby'       => true,
+            'massiveaction'      => false,
+            'datatype'           => 'string',
+            'joinparams'         => [
+                'beforejoin'         => [
+                    'table'              => 'glpi_items_devicesoundcards',
+                    'joinparams'         => $main_joinparams
+                ]
             ]
-         ]
         ];
 
         return $tab;

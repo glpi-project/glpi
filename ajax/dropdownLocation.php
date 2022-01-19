@@ -62,7 +62,7 @@ if (isset($_REQUEST['is_recursive'])) {
 }
 
 echo Location::dropdown([
-   'value'        => $locations_id,
-   'entity'       => $entities_id,
-   'entity_sons'  => $is_recursive,
+    'value'        => $locations_id,
+    'entity'       => $entities_id,
+    'entity_sons'  => $is_recursive,
 ]);

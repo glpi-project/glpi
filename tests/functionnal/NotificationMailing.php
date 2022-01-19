@@ -63,16 +63,16 @@ class NotificationMailing extends DbTestCase
 
         $instance = new \NotificationMailing();
         $res = $instance->sendNotification([
-         '_itemtype'                   => 'NotificationMailing',
-         '_items_id'                   => 1,
-         '_notificationtemplates_id'   => 0,
-         '_entities_id'                => 0,
-         'fromname'                    => 'TEST',
-         'subject'                     => 'Test notification',
-         'content_text'                => "Hello, this is a test notification.",
-         'to'                          => \Session::getLoginUserID(),
-         'from'                        => 'glpi@tests',
-         'toname'                      => ''
+            '_itemtype'                   => 'NotificationMailing',
+            '_items_id'                   => 1,
+            '_notificationtemplates_id'   => 0,
+            '_entities_id'                => 0,
+            'fromname'                    => 'TEST',
+            'subject'                     => 'Test notification',
+            'content_text'                => "Hello, this is a test notification.",
+            'to'                          => \Session::getLoginUserID(),
+            'from'                        => 'glpi@tests',
+            'toname'                      => ''
         ]);
         $this->boolean($res)->isTrue();
 
@@ -86,26 +86,26 @@ class NotificationMailing extends DbTestCase
 
         $this->array($row)
          ->isIdenticalTo([
-            'itemtype'                 => 'NotificationMailing',
-            'items_id'                 => 1,
-            'notificationtemplates_id' => 0,
-            'entities_id'              => 0,
-            'is_deleted'               => 0,
-            'sent_try'                 => 0,
-            'sent_time'                => null,
-            'name'                     => 'Test notification',
-            'sender'                   => 'glpi@tests',
-            'sendername'               => 'TEST',
-            'recipient'                => '7',
-            'recipientname'            => '',
-            'replyto'                  => null,
-            'replytoname'              => null,
-            'headers'                  => '{"Auto-Submitted":"auto-generated","X-Auto-Response-Suppress":"OOF, DR, NDR, RN, NRN"}',
-            'body_html'                => null,
-            'body_text'                => 'Hello, this is a test notification.',
-            'messageid'                => null,
-            'documents'                => '',
-            'mode'                     => 'mailing'
+             'itemtype'                 => 'NotificationMailing',
+             'items_id'                 => 1,
+             'notificationtemplates_id' => 0,
+             'entities_id'              => 0,
+             'is_deleted'               => 0,
+             'sent_try'                 => 0,
+             'sent_time'                => null,
+             'name'                     => 'Test notification',
+             'sender'                   => 'glpi@tests',
+             'sendername'               => 'TEST',
+             'recipient'                => '7',
+             'recipientname'            => '',
+             'replyto'                  => null,
+             'replytoname'              => null,
+             'headers'                  => '{"Auto-Submitted":"auto-generated","X-Auto-Response-Suppress":"OOF, DR, NDR, RN, NRN"}',
+             'body_html'                => null,
+             'body_text'                => 'Hello, this is a test notification.',
+             'messageid'                => null,
+             'documents'                => '',
+             'mode'                     => 'mailing'
          ]);
     }
 }

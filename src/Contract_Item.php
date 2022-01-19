@@ -143,32 +143,32 @@ class Contract_Item extends CommonDBRelation
         $tab = [];
 
         $tab[] = [
-         'id'                 => '2',
-         'table'              => $this->getTable(),
-         'field'              => 'id',
-         'name'               => __('ID'),
-         'massiveaction'      => false,
-         'datatype'           => 'number'
+            'id'                 => '2',
+            'table'              => $this->getTable(),
+            'field'              => 'id',
+            'name'               => __('ID'),
+            'massiveaction'      => false,
+            'datatype'           => 'number'
         ];
 
         $tab[] = [
-         'id'                 => '3',
-         'table'              => $this->getTable(),
-         'field'              => 'items_id',
-         'name'               => __('Associated item ID'),
-         'massiveaction'      => false,
-         'datatype'           => 'specific',
-         'additionalfields'   => ['itemtype']
+            'id'                 => '3',
+            'table'              => $this->getTable(),
+            'field'              => 'items_id',
+            'name'               => __('Associated item ID'),
+            'massiveaction'      => false,
+            'datatype'           => 'specific',
+            'additionalfields'   => ['itemtype']
         ];
 
         $tab[] = [
-         'id'                 => '4',
-         'table'              => $this->getTable(),
-         'field'              => 'itemtype',
-         'name'               => _n('Type', 'Types', 1),
-         'massiveaction'      => false,
-         'datatype'           => 'itemtypename',
-         'itemtype_list'      => 'contract_types'
+            'id'                 => '4',
+            'table'              => $this->getTable(),
+            'field'              => 'itemtype',
+            'name'               => _n('Type', 'Types', 1),
+            'massiveaction'      => false,
+            'datatype'           => 'itemtypename',
+            'itemtype_list'      => 'contract_types'
         ];
 
         return $tab;
@@ -299,8 +299,9 @@ class Contract_Item extends CommonDBRelation
 
             echo "<tr class='tab_bg_1'><td>";
             Contract::dropdown(['entity'  => $item->getEntityID(),
-                                  'used'    => $used,
-                                  'expired' => false]);
+                'used'    => $used,
+                'expired' => false
+            ]);
 
             echo "</td><td class='center'>";
             echo "<input type='submit' name='add' value=\"" . _sx('button', 'Add') . "\" class='btn btn-primary'>";
@@ -315,7 +316,8 @@ class Contract_Item extends CommonDBRelation
             if ($canedit && $number) {
                 Html::openMassiveActionsForm('mass' . __CLASS__ . $rand);
                 $massiveactionparams = ['num_displayed' => min($_SESSION['glpilist_limit'], $number),
-                                         'container'     => 'mass' . __CLASS__ . $rand];
+                    'container'     => 'mass' . __CLASS__ . $rand
+                ];
                 Html::showMassiveActions($massiveactionparams);
             }
         }
@@ -460,16 +462,16 @@ class Contract_Item extends CommonDBRelation
                 $itemtable_2 = null;
 
                 $params = [
-                'SELECT' => [
-                  $itemtable . '.*',
-                  self::getTable() . '.id AS linkid',
-                  'glpi_entities.id AS entity'
-                ],
-                'FROM'   => 'glpi_contracts_items',
-                'WHERE'  => [
-                  'glpi_contracts_items.itemtype'     => $itemtype,
-                  'glpi_contracts_items.contracts_id' => $instID
-                ]
+                    'SELECT' => [
+                        $itemtable . '.*',
+                        self::getTable() . '.id AS linkid',
+                        'glpi_entities.id AS entity'
+                    ],
+                    'FROM'   => 'glpi_contracts_items',
+                    'WHERE'  => [
+                        'glpi_contracts_items.itemtype'     => $itemtype,
+                        'glpi_contracts_items.contracts_id' => $instID
+                    ]
                 ];
 
                 if ($item instanceof Item_Devices) {
@@ -483,17 +485,17 @@ class Contract_Item extends CommonDBRelation
                 }
 
                 $params['LEFT JOIN'][$itemtable] = [
-                'FKEY' => [
-                  $itemtable        => 'id',
-                  self::getTable()  => 'items_id'
-                ]
+                    'FKEY' => [
+                        $itemtable        => 'id',
+                        self::getTable()  => 'items_id'
+                    ]
                 ];
                 if ($itemtype != 'Entity') {
                     $params['LEFT JOIN']['glpi_entities'] = [
-                    'FKEY' => [
-                     $itemtable        => 'entities_id',
-                     'glpi_entities'   => 'id'
-                    ]
+                        'FKEY' => [
+                            $itemtable        => 'entities_id',
+                            'glpi_entities'   => 'id'
+                        ]
                     ];
                 }
 
@@ -502,10 +504,10 @@ class Contract_Item extends CommonDBRelation
                     $fid_2 = $itemtype::$items_id_2;
 
                     $params['LEFT JOIN'][$itemtable_2] = [
-                    'FKEY' => [
-                     $itemtable     => $fid_2,
-                     $itemtable_2   => $id_2
-                    ]
+                        'FKEY' => [
+                            $itemtable     => $fid_2,
+                            $itemtable_2   => $id_2
+                        ]
                     ];
                 }
 
@@ -520,13 +522,16 @@ class Contract_Item extends CommonDBRelation
 
                 if ($nb > $_SESSION['glpilist_limit']) {
                     $opt = ['order'      => 'ASC',
-                            'is_deleted' => 0,
-                            'reset'      => 'reset',
-                            'start'      => 0,
-                            'sort'       => 80,
-                            'criteria'   => [0 => ['value'      => '$$$$' . $instID,
-                                                             'searchtype' => 'contains',
-                                                             'field'      => 29]]];
+                        'is_deleted' => 0,
+                        'reset'      => 'reset',
+                        'start'      => 0,
+                        'sort'       => 80,
+                        'criteria'   => [0 => ['value'      => '$$$$' . $instID,
+                            'searchtype' => 'contains',
+                            'field'      => 29
+                        ]
+                        ]
+                    ];
 
                     $url  = $item::getSearchURL();
                     $url .= (strpos($url, '?') ? '&' : '?');
@@ -534,12 +539,13 @@ class Contract_Item extends CommonDBRelation
                     $link = "<a href='$url'>" . __('Device list') . "</a>";
 
                     $data[$itemtype] = ['longlist' => true,
-                                        'name'     => sprintf(
-                                            __('%1$s: %2$s'),
-                                            $item->getTypeName($nb),
-                                            $nb
-                                        ),
-                                        'link'     => $link];
+                        'name'     => sprintf(
+                            __('%1$s: %2$s'),
+                            $item->getTypeName($nb),
+                            $nb
+                        ),
+                        'link'     => $link
+                    ];
                 } else if ($nb > 0) {
                     $data[$itemtype] = [];
                     foreach ($iterator as $objdata) {
@@ -567,17 +573,18 @@ class Contract_Item extends CommonDBRelation
             echo "<tr class='tab_bg_1'><td class='right'>";
             Dropdown::showSelectItemFromItemtypes(['itemtypes'
                                                        => $CFG_GLPI["contract_types"],
-                                                     'entity_restrict'
+                'entity_restrict'
                                                        => ($contract->fields['is_recursive']
                                                            ? getSonsOf(
                                                                'glpi_entities',
                                                                $contract->fields['entities_id']
                                                            )
                                                            : $contract->fields['entities_id']),
-                                                     'checkright'
+                'checkright'
                                                        => true,
-                                                     'used'
-                                                       => $used]);
+                'used'
+                                                       => $used
+            ]);
             echo "</td><td class='center'>";
             echo "<input type='submit' name='add' value=\"" . _sx('button', 'Add') . "\" class='btn btn-primary'>";
             echo "<input type='hidden' name='contracts_id' value='$instID'>";

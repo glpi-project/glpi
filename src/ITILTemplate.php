@@ -183,54 +183,54 @@ abstract class ITILTemplate extends CommonDropdown
 
            // SearchOption ID => name used for options
             $allowed_fields[$itiltype][$withtypeandcategory][$withitemtype] = [
-                     $itil_object->getSearchOptionIDByField(
-                         'field',
-                         'name',
-                         $itil_object->getTable()
-                     )   => 'name',
-                     $itil_object->getSearchOptionIDByField(
-                         'field',
-                         'content',
-                         $itil_object->getTable()
-                     )   => 'content',
-                     $itil_object->getSearchOptionIDByField(
-                         'field',
-                         'status',
-                         $itil_object->getTable()
-                     )   => 'status',
-                     $itil_object->getSearchOptionIDByField(
-                         'field',
-                         'urgency',
-                         $itil_object->getTable()
-                     )   => 'urgency',
-                     $itil_object->getSearchOptionIDByField(
-                         'field',
-                         'impact',
-                         $itil_object->getTable()
-                     )   => 'impact',
-                     $itil_object->getSearchOptionIDByField(
-                         'field',
-                         'priority',
-                         $itil_object->getTable()
-                     )   => 'priority',
-                     $itil_object->getSearchOptionIDByField(
-                         'field',
-                         'date',
-                         $itil_object->getTable()
-                     )   => 'date',
-                                                       4                 => '_users_id_requester',
-                                                       71                => '_groups_id_requester',
-                                                       5                 => '_users_id_assign',
-                                                       8                 => '_groups_id_assign',
-                     $itil_object->getSearchOptionIDByField(
-                         'field',
-                         'name',
-                         'glpi_suppliers'
-                     ) => '_suppliers_id_assign',
+                $itil_object->getSearchOptionIDByField(
+                    'field',
+                    'name',
+                    $itil_object->getTable()
+                )   => 'name',
+                $itil_object->getSearchOptionIDByField(
+                    'field',
+                    'content',
+                    $itil_object->getTable()
+                )   => 'content',
+                $itil_object->getSearchOptionIDByField(
+                    'field',
+                    'status',
+                    $itil_object->getTable()
+                )   => 'status',
+                $itil_object->getSearchOptionIDByField(
+                    'field',
+                    'urgency',
+                    $itil_object->getTable()
+                )   => 'urgency',
+                $itil_object->getSearchOptionIDByField(
+                    'field',
+                    'impact',
+                    $itil_object->getTable()
+                )   => 'impact',
+                $itil_object->getSearchOptionIDByField(
+                    'field',
+                    'priority',
+                    $itil_object->getTable()
+                )   => 'priority',
+                $itil_object->getSearchOptionIDByField(
+                    'field',
+                    'date',
+                    $itil_object->getTable()
+                )   => 'date',
+                4                 => '_users_id_requester',
+                71                => '_groups_id_requester',
+                5                 => '_users_id_assign',
+                8                 => '_groups_id_assign',
+                $itil_object->getSearchOptionIDByField(
+                    'field',
+                    'name',
+                    'glpi_suppliers'
+                ) => '_suppliers_id_assign',
 
-                                                       66                => '_users_id_observer',
-                                                       65                => '_groups_id_observer',
-             ];
+                66                => '_users_id_observer',
+                65                => '_groups_id_observer',
+            ];
 
             if ($withtypeandcategory) {
                 $allowed_fields[$itiltype][$withtypeandcategory][$withitemtype]
@@ -340,20 +340,20 @@ abstract class ITILTemplate extends CommonDropdown
 
         $ticket = new Ticket();
         $fields = [$ticket->getSearchOptionIDByField('field', 'name', 'glpi_tickets'),
-                      $ticket->getSearchOptionIDByField('field', 'content', 'glpi_tickets'),
-                      $ticket->getSearchOptionIDByField('field', 'urgency', 'glpi_tickets'),
-                      $ticket->getSearchOptionIDByField('field', 'completename', 'glpi_locations'),
-                      $ticket->getSearchOptionIDByField('field', 'itemtype', 'glpi_tickets'),
-                      $ticket->getSearchOptionIDByField(
-                          'field',
-                          'completename',
-                          'glpi_itilcategories'
-                      ),
-                      $ticket->getSearchOptionIDByField('field', 'type', 'glpi_tickets'),
-                      $ticket->getSearchOptionIDByField('field', 'items_id', 'glpi_tickets'),
-                      $ticket->getSearchOptionIDByField('field', 'name', 'glpi_documents'),
-                      66 // users_id_observer
-                      ];
+            $ticket->getSearchOptionIDByField('field', 'content', 'glpi_tickets'),
+            $ticket->getSearchOptionIDByField('field', 'urgency', 'glpi_tickets'),
+            $ticket->getSearchOptionIDByField('field', 'completename', 'glpi_locations'),
+            $ticket->getSearchOptionIDByField('field', 'itemtype', 'glpi_tickets'),
+            $ticket->getSearchOptionIDByField(
+                'field',
+                'completename',
+                'glpi_itilcategories'
+            ),
+            $ticket->getSearchOptionIDByField('field', 'type', 'glpi_tickets'),
+            $ticket->getSearchOptionIDByField('field', 'items_id', 'glpi_tickets'),
+            $ticket->getSearchOptionIDByField('field', 'name', 'glpi_documents'),
+            66 // users_id_observer
+        ];
         return $fields;
     }
 
@@ -394,9 +394,9 @@ abstract class ITILTemplate extends CommonDropdown
             switch ($item->getType()) {
                 case 'TicketTemplate':
                     return [
-                  1 => __('Standard interface'),
-                  2 => __('Simplified interface')
-                ];
+                        1 => __('Standard interface'),
+                        2 => __('Simplified interface')
+                    ];
                 case 'ChangeTemplate':
                 case 'ProblemTemplate':
                     return [1 => __('Preview')];
@@ -551,7 +551,8 @@ abstract class ITILTemplate extends CommonDropdown
                         if ($item->getEntityID() == $_SESSION['glpiactive_entity']) {
                             if (
                                 $item->update(['id'           => $key,
-                                             'is_recursive' => 1])
+                                    'is_recursive' => 1
+                                ])
                             ) {
                                  $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_OK);
                             } else {
@@ -628,10 +629,10 @@ abstract class ITILTemplate extends CommonDropdown
                     $DB->update(
                         'glpi_' . $itiltype . 'template' . $merge,
                         [
-                        $itiltype . 'templates_id' => $target_id
+                            $itiltype . 'templates_id' => $target_id
                         ],
                         [
-                        'id' => $val['id']
+                            'id' => $val['id']
                         ]
                     );
                 }
@@ -686,10 +687,10 @@ abstract class ITILTemplate extends CommonDropdown
                     $DB->update(
                         'glpi_itilcategories',
                         [
-                        $merge => $target_id
+                            $merge => $target_id
                         ],
                         [
-                        'id' => $val['id']
+                            'id' => $val['id']
                         ]
                     );
                 }

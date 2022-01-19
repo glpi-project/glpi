@@ -73,9 +73,9 @@ $stat->displaySearchForm(
 );
 
 $stat_params = [
-   'itemtype' => $_GET['itemtype'],
-   'date1'    => $_GET['date1'],
-   'date2'    => $_GET['date2'],
+    'itemtype' => $_GET['itemtype'],
+    'date1'    => $_GET['date1'],
+    'date2'    => $_GET['date2'],
 ];
 
 $stat->displayLineGraphFromData(new StatDataTicketNumber($stat_params));

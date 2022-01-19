@@ -63,10 +63,10 @@ class KnowbaseItemParameters extends AbstractParameters
     public function getAvailableParameters(): array
     {
         return [
-         new AttributeParameter("id", __('ID')),
-         new AttributeParameter("name", __('Subject')),
-         new AttributeParameter("answer", __('Content'), "raw"),
-         new AttributeParameter("link", _n('Link', 'Links', 1), "raw"),
+            new AttributeParameter("id", __('ID')),
+            new AttributeParameter("name", __('Subject')),
+            new AttributeParameter("answer", __('Content'), "raw"),
+            new AttributeParameter("link", _n('Link', 'Links', 1), "raw"),
         ];
     }
 
@@ -77,10 +77,10 @@ class KnowbaseItemParameters extends AbstractParameters
         $fields = Sanitizer::unsanitize($kbi->fields);
 
         return [
-         'id'     => $fields['id'],
-         'name'   => $fields['name'],
-         'answer' => $fields['answer'],
-         'link'   => $kbi->getLink(),
+            'id'     => $fields['id'],
+            'name'   => $fields['name'],
+            'answer' => $fields['answer'],
+            'link'   => $kbi->getLink(),
         ];
     }
 }

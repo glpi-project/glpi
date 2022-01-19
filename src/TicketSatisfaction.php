@@ -291,7 +291,8 @@ class TicketSatisfaction extends CommonDBTM
             case 'type':
                 $options['value'] = $values[$field];
                 $typeinquest = [1 => __('Internal survey'),
-                                 2 => __('External survey')];
+                    2 => __('External survey')
+                ];
                 return Dropdown::showFromArray($name, $typeinquest, $options);
         }
         return parent::getSpecificValueToSelect($field, $name, $values, $options);

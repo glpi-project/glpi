@@ -46,9 +46,9 @@ class RoutingExtension extends AbstractExtension
     public function getFunctions(): array
     {
         return [
-         new TwigFunction('index_path', [$this, 'indexPath']),
-         new TwigFunction('path', [$this, 'path']),
-         new TwigFunction('url', [$this, 'url']),
+            new TwigFunction('index_path', [$this, 'indexPath']),
+            new TwigFunction('path', [$this, 'path']),
+            new TwigFunction('url', [$this, 'url']),
         ];
     }
 

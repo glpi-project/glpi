@@ -44,12 +44,12 @@ class Blacklist extends DbTestCase
         $defaults = \Blacklist::getDefaults();
 
         $expecteds = [
-         \Blacklist::SERIAL => 40,
-         \Blacklist::UUID => 5,
-         \Blacklist::MAC => 19,
-         \Blacklist::MODEL => 7,
-         \Blacklist::MANUFACTURER => 1,
-         \Blacklist::IP => 3
+            \Blacklist::SERIAL => 40,
+            \Blacklist::UUID => 5,
+            \Blacklist::MAC => 19,
+            \Blacklist::MODEL => 7,
+            \Blacklist::MANUFACTURER => 1,
+            \Blacklist::IP => 3
         ];
         $this->array(array_keys($defaults))->isIdenticalTo(array_keys($expecteds));
 
@@ -61,16 +61,16 @@ class Blacklist extends DbTestCase
     protected function processProvider(): array
     {
         return [
-         [
-            'input'    => ['name' => 'My name', 'serial' => 'AGH577C'],
-            'expected' => null
-         ], [
-            'input'    => ['name' => 'My name', 'serial' => '123456'],
-            'expected' => ['name' => 'My name']
-         ], [
-            'input'    => ['name' => 'My name', 'mac' => '00:50:56:C0:00:03'],
-            'expected' => ['name' => 'My name']
-         ]
+            [
+                'input'    => ['name' => 'My name', 'serial' => 'AGH577C'],
+                'expected' => null
+            ], [
+                'input'    => ['name' => 'My name', 'serial' => '123456'],
+                'expected' => ['name' => 'My name']
+            ], [
+                'input'    => ['name' => 'My name', 'mac' => '00:50:56:C0:00:03'],
+                'expected' => ['name' => 'My name']
+            ]
         ];
     }
 

@@ -42,8 +42,8 @@ class PowerSupply extends AbstractInventoryAsset
     protected function assetProvider(): array
     {
         return [
-         [
-            'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+            [
+                'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
   <CONTENT>
     <POWERSUPPLIES>
@@ -57,8 +57,8 @@ class PowerSupply extends AbstractInventoryAsset
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-            'expected'  => '{"hotreplaceable": 1, "partnum": "High Efficiency", "plugged": 1, "status": "Present, Unknown", "designation": "High Efficiency", "is_dynamic": 1}'
-         ]
+                'expected'  => '{"hotreplaceable": 1, "partnum": "High Efficiency", "plugged": 1, "status": "Present, Unknown", "designation": "High Efficiency", "is_dynamic": 1}'
+            ]
         ];
     }
 

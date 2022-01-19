@@ -60,24 +60,26 @@ if (
                 }
 
                 $options = ['name'        => '_itil_' . $_POST["actortype"] . '[users_id]',
-                             'entity'      => $_POST['entity_restrict'],
-                             'right'       => $right,
-                             'rand'        => $rand,
-                             'ldap_import' => true];
+                    'entity'      => $_POST['entity_restrict'],
+                    'right'       => $right,
+                    'rand'        => $rand,
+                    'ldap_import' => true
+                ];
 
                 if ($CFG_GLPI["notifications_mailing"]) {
                     $paramscomment = ['value' => '__VALUE__',
-                    'allow_email' => $withemail,
-                    'field' => "_itil_" . $_POST["actortype"],
-                    'use_notification' => $_POST["use_notif"]];
+                        'allow_email' => $withemail,
+                        'field' => "_itil_" . $_POST["actortype"],
+                        'use_notification' => $_POST["use_notif"]
+                    ];
                    // Fix rand value
                     $options['rand'] = $rand;
                     if ($withemail) {
                         $options['toupdate'] = [
-                        'value_fieldname' => 'value',
-                        'to_update'       => "notif_user_$rand",
-                        'url'             => $CFG_GLPI["root_doc"] . "/ajax/uemailUpdate.php",
-                        'moreparams'      => $paramscomment
+                            'value_fieldname' => 'value',
+                            'to_update'       => "notif_user_$rand",
+                            'url'             => $CFG_GLPI["root_doc"] . "/ajax/uemailUpdate.php",
+                            'moreparams'      => $paramscomment
                         ];
                     }
                 }
@@ -91,10 +93,11 @@ if (
                         $toupdate[] = $options['toupdate'];
                     }
                     $toupdate[] = ['value_fieldname' => 'value',
-                                   'to_update'       => "countassign_$rand",
-                                   'url'             => $CFG_GLPI["root_doc"] .
+                        'to_update'       => "countassign_$rand",
+                        'url'             => $CFG_GLPI["root_doc"] .
                                                             "/ajax/ticketassigninformation.php",
-                                   'moreparams'      => ['users_id_assign' => '__VALUE__']];
+                        'moreparams'      => ['users_id_assign' => '__VALUE__']
+                    ];
                     $options['toupdate'] = $toupdate;
                 }
 
@@ -138,21 +141,23 @@ if (
                 }
 
                 $param = [
-                'name'      => '_itil_' . $_POST["actortype"] . '[groups_id]',
-                'entity'    => $_POST['entity_restrict'],
-                'condition' => $cond,
-                'rand'      => $rand
+                    'name'      => '_itil_' . $_POST["actortype"] . '[groups_id]',
+                    'entity'    => $_POST['entity_restrict'],
+                    'condition' => $cond,
+                    'rand'      => $rand
                 ];
                 if (
                     ($_POST["itemtype"] == 'Ticket')
                     && ($_POST["actortype"] == 'assign')
                 ) {
                     $param['toupdate'] = ['value_fieldname' => 'value',
-                                          'to_update'       => "countgroupassign_$rand",
-                                          'url'             => $CFG_GLPI["root_doc"] .
+                        'to_update'       => "countgroupassign_$rand",
+                        'url'             => $CFG_GLPI["root_doc"] .
                                                                   "/ajax/ticketassigninformation.php",
-                                          'moreparams'      => ['groups_id_assign'
-                                                                        => '__VALUE__']];
+                        'moreparams'      => ['groups_id_assign'
+                                                                        => '__VALUE__'
+                        ]
+                    ];
                 }
 
                 $rand = Group::dropdown($param);
@@ -169,22 +174,24 @@ if (
 
             case "supplier":
                 $options = ['name'      => '_itil_' . $_POST["actortype"] . '[suppliers_id]',
-                             'entity'    => $_POST['entity_restrict'],
-                             'rand'      => $rand];
+                    'entity'    => $_POST['entity_restrict'],
+                    'rand'      => $rand
+                ];
                 if ($CFG_GLPI["notifications_mailing"]) {
                     $paramscomment = ['value'       => '__VALUE__',
-                                      'allow_email' => $withemail,
-                                      'field'       => '_itil_' . $_POST["actortype"],
-                                      'typefield'   => "supplier",
-                                      'use_notification' => $_POST["use_notif"]];
+                        'allow_email' => $withemail,
+                        'field'       => '_itil_' . $_POST["actortype"],
+                        'typefield'   => "supplier",
+                        'use_notification' => $_POST["use_notif"]
+                    ];
                    // Fix rand value
                     $options['rand']     = $rand;
                     if ($withemail) {
                         $options['toupdate'] = [
-                        'value_fieldname' => 'value',
-                        'to_update'       => "notif_supplier_$rand",
-                        'url'             => $CFG_GLPI["root_doc"] . "/ajax/uemailUpdate.php",
-                        'moreparams'      => $paramscomment
+                            'value_fieldname' => 'value',
+                            'to_update'       => "notif_supplier_$rand",
+                            'url'             => $CFG_GLPI["root_doc"] . "/ajax/uemailUpdate.php",
+                            'moreparams'      => $paramscomment
                         ];
                     }
                 }
@@ -194,10 +201,11 @@ if (
                         $toupdate[] = $options['toupdate'];
                     }
                     $toupdate[] = ['value_fieldname' => 'value',
-                                   'to_update'       => "countassign_$rand",
-                                   'url'             => $CFG_GLPI["root_doc"] .
+                        'to_update'       => "countassign_$rand",
+                        'url'             => $CFG_GLPI["root_doc"] .
                                                             "/ajax/ticketassigninformation.php",
-                                   'moreparams'      => ['suppliers_id_assign' => '__VALUE__']];
+                        'moreparams'      => ['suppliers_id_assign' => '__VALUE__']
+                    ];
                     $options['toupdate'] = $toupdate;
                 }
 

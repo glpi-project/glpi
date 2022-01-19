@@ -90,26 +90,28 @@ class NotificationTargetCartridgeItem extends NotificationTarget
     {
 
         $tags = [
-         'cartridge.action'         => _n('Event', 'Events', 1),
-         'cartridge.reference'      => __('Reference'),
-         'cartridge.item'           => CartridgeItem::getTypeName(1),
-         'cartridge.remaining'      => __('Remaining'),
-         'cartridge.stock_target'   => __('Stock target'),
-         'cartridge.to_order'       => __('To order'),
-         'cartridge.url'            => __('URL'),
-         'cartridge.entity'         => Entity::getTypeName(1)
+            'cartridge.action'         => _n('Event', 'Events', 1),
+            'cartridge.reference'      => __('Reference'),
+            'cartridge.item'           => CartridgeItem::getTypeName(1),
+            'cartridge.remaining'      => __('Remaining'),
+            'cartridge.stock_target'   => __('Stock target'),
+            'cartridge.to_order'       => __('To order'),
+            'cartridge.url'            => __('URL'),
+            'cartridge.entity'         => Entity::getTypeName(1)
         ];
 
         foreach ($tags as $tag => $label) {
             $this->addTagToList(['tag'   => $tag,
-                                   'label' => $label,
-                                   'value' => true]);
+                'label' => $label,
+                'value' => true
+            ]);
         }
 
         $this->addTagToList(['tag'     => 'cartridges',
-                                'label'   => __('Device list'),
-                                'value'   => false,
-                                'foreach' => true]);
+            'label'   => __('Device list'),
+            'value'   => false,
+            'foreach' => true
+        ]);
 
         asort($this->tag_descriptions);
     }

@@ -57,32 +57,32 @@ class PlanningExternalEventTemplate extends CommonDropdown
     public function getAdditionalFields()
     {
         return [
-         [
-            'name'  => 'state',
-            'label' => __('Status'),
-            'type'  => 'planningstate',
-         ], [
-            'name'  => 'planningeventcategories_id',
-            'label' => _n('Category', 'Categories', 1),
-            'type'  => 'dropdownValue',
-            'list'  => true
-         ], [
-            'name'  => 'background',
-            'label' => __('Background event'),
-            'type'  => 'bool'
-         ], [
-            'name'  => 'plan',
-            'label' => _n('Calendar', 'Calendars', 1),
-            'type'  => 'plan',
-         ], [
-            'name'  => 'rrule',
-            'label' => __('Repeat'),
-            'type'  => 'rrule',
-         ], [
-            'name'  => 'text',
-            'label' => __('Description'),
-            'type'  => 'tinymce',
-         ]
+            [
+                'name'  => 'state',
+                'label' => __('Status'),
+                'type'  => 'planningstate',
+            ], [
+                'name'  => 'planningeventcategories_id',
+                'label' => _n('Category', 'Categories', 1),
+                'type'  => 'dropdownValue',
+                'list'  => true
+            ], [
+                'name'  => 'background',
+                'label' => __('Background event'),
+                'type'  => 'bool'
+            ], [
+                'name'  => 'plan',
+                'label' => _n('Calendar', 'Calendars', 1),
+                'type'  => 'plan',
+            ], [
+                'name'  => 'rrule',
+                'label' => __('Repeat'),
+                'type'  => 'rrule',
+            ], [
+                'name'  => 'text',
+                'label' => __('Description'),
+                'type'  => 'tinymce',
+            ]
         ];
     }
 
@@ -93,16 +93,16 @@ class PlanningExternalEventTemplate extends CommonDropdown
         switch ($field['type']) {
             case 'planningstate':
                 Planning::dropdownState("state", $this->fields["state"], false, [
-                 'width' => '100%',
+                    'width' => '100%',
                 ]);
                 break;
 
             case 'plan':
                 Planning::showAddEventClassicForm([
-                'duration'       => $this->fields['duration'],
-                'itemtype'       => self::getType(),
-                'items_id'       => $this->fields['id'],
-                '_display_dates' => false,
+                    'duration'       => $this->fields['duration'],
+                    'itemtype'       => self::getType(),
+                    'items_id'       => $this->fields['id'],
+                    '_display_dates' => false,
                 ]);
                 break;
 

@@ -195,28 +195,28 @@ trait CalDAVUriUtilTrait
 
             $union->addQuery(
                 [
-                'SELECT' => [
-                  'id',
-                  new \QueryExpression(
-                      $DB->quoteValue($itemtype) . ' AS ' . $DB->quoteName('itemtype')
-                  ),
-                ],
-                'FROM'   => getTableForItemType($itemtype),
-                'WHERE'  => [
-                  'uuid' => $uid,
-                ]
+                    'SELECT' => [
+                        'id',
+                        new \QueryExpression(
+                            $DB->quoteValue($itemtype) . ' AS ' . $DB->quoteName('itemtype')
+                        ),
+                    ],
+                    'FROM'   => getTableForItemType($itemtype),
+                    'WHERE'  => [
+                        'uuid' => $uid,
+                    ]
                 ]
             );
         }
 
         $items_iterator = $DB->request(
             [
-            'SELECT'   => [
-               'id',
-               'itemtype'
-            ],
-            'DISTINCT' => true,
-            'FROM'     => $union,
+                'SELECT'   => [
+                    'id',
+                    'itemtype'
+                ],
+                'DISTINCT' => true,
+                'FROM'     => $union,
             ]
         );
 

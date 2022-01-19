@@ -44,29 +44,29 @@ class CacheManager extends \GLPITestCase
     protected function contextProvider(): iterable
     {
         yield [
-         'context'         => 'tempcache',
-         'is_valid'        => false,
-         'is_configurable' => false,
+            'context'         => 'tempcache',
+            'is_valid'        => false,
+            'is_configurable' => false,
         ];
         yield [
-         'context'         => 'core',
-         'is_valid'        => true,
-         'is_configurable' => true,
+            'context'         => 'core',
+            'is_valid'        => true,
+            'is_configurable' => true,
         ];
         yield [
-         'context'         => 'translations',
-         'is_valid'        => true,
-         'is_configurable' => false,
+            'context'         => 'translations',
+            'is_valid'        => true,
+            'is_configurable' => false,
         ];
         yield [
-         'context'         => 'installer',
-         'is_valid'        => true,
-         'is_configurable' => false,
+            'context'         => 'installer',
+            'is_valid'        => true,
+            'is_configurable' => false,
         ];
         yield [
-         'context'         => 'plugin:tester',
-         'is_valid'        => true,
-         'is_configurable' => true,
+            'context'         => 'plugin:tester',
+            'is_valid'        => true,
+            'is_configurable' => true,
         ];
     }
 
@@ -137,55 +137,55 @@ class CacheManager extends \GLPITestCase
         foreach (['core', 'plugin:tester'] as $context) {
            // Invalid unique DSN
             yield [
-            'context'          => $context,
-            'dsn'              => 'whoot://invalid',
-            'options'          => [],
-            'expected_error'   => 'Invalid DSN: "whoot://invalid".',
-            'expected_adapter' => FilesystemAdapter::class, // Fallback adapter
+                'context'          => $context,
+                'dsn'              => 'whoot://invalid',
+                'options'          => [],
+                'expected_error'   => 'Invalid DSN: "whoot://invalid".',
+                'expected_adapter' => FilesystemAdapter::class, // Fallback adapter
             ];
 
            // Invalid multiple DSN
             yield [
-            'context'          => $context,
-            'dsn'              => ['redis://cache1.glpi-project.org', 'redis://cache2.glpi-project.org'],
-            'options'          => [],
-            'expected_error'   => 'Invalid DSN: ["redis://cache1.glpi-project.org","redis://cache2.glpi-project.org"].',
-            'expected_adapter' => FilesystemAdapter::class, // Fallback adapter
+                'context'          => $context,
+                'dsn'              => ['redis://cache1.glpi-project.org', 'redis://cache2.glpi-project.org'],
+                'options'          => [],
+                'expected_error'   => 'Invalid DSN: ["redis://cache1.glpi-project.org","redis://cache2.glpi-project.org"].',
+                'expected_adapter' => FilesystemAdapter::class, // Fallback adapter
             ];
 
             if (extension_loaded('memcached')) {
                // Memcached config (unique DSN)
                 yield [
-                'context'          => $context,
-                'dsn'              => 'memcached://cache.glpi-project.org',
-                'options'          => [
-                  'libketama_compatible' => true,
-                ],
-                'expected_error'   => null,
-                'expected_adapter' => MemcachedAdapter::class,
+                    'context'          => $context,
+                    'dsn'              => 'memcached://cache.glpi-project.org',
+                    'options'          => [
+                        'libketama_compatible' => true,
+                    ],
+                    'expected_error'   => null,
+                    'expected_adapter' => MemcachedAdapter::class,
                 ];
 
                // Memcached config (multiple DSN)
                 yield [
-                'context'          => $context,
-                'dsn'              => ['memcached://cache1.glpi-project.org', 'memcached://cache2.glpi-project.org'],
-                'options'          => [],
-                'expected_error'   => null,
-                'expected_adapter' => MemcachedAdapter::class,
+                    'context'          => $context,
+                    'dsn'              => ['memcached://cache1.glpi-project.org', 'memcached://cache2.glpi-project.org'],
+                    'options'          => [],
+                    'expected_error'   => null,
+                    'expected_adapter' => MemcachedAdapter::class,
                 ];
             }
 
             if (extension_loaded('redis')) {
                // Redis config
                 yield [
-                'context'          => $context,
-                'dsn'              => 'redis://cache.glpi-project.org',
-                'options'          => [
-                  'lazy'       => true,
-                  'persistent' => 1,
-                ],
-                'expected_error'   => null,
-                'expected_adapter' => RedisAdapter::class,
+                    'context'          => $context,
+                    'dsn'              => 'redis://cache.glpi-project.org',
+                    'options'          => [
+                        'lazy'       => true,
+                        'persistent' => 1,
+                    ],
+                    'expected_error'   => null,
+                    'expected_adapter' => RedisAdapter::class,
                 ];
             }
         }
@@ -220,12 +220,12 @@ class CacheManager extends \GLPITestCase
         $config_file = vfsStream::url('glpi/config/' . \Glpi\Cache\CacheManager::CONFIG_FILENAME);
 
         $expected_config = [
-         'contexts' => [
-            $context => [
-               'dsn'       => $dsn,
-               'options'   => $options,
+            'contexts' => [
+                $context => [
+                    'dsn'       => $dsn,
+                    'options'   => $options,
+                ],
             ],
-         ],
         ];
 
         $this->boolean(file_exists($config_file))->isTrue();
@@ -237,29 +237,29 @@ class CacheManager extends \GLPITestCase
         $config_filename = \Glpi\Cache\CacheManager::CONFIG_FILENAME;
 
         $expected_config = [
-         'contexts' => [
-            'core' => [
-               'dsn'       => 'memcached://localhost',
+            'contexts' => [
+                'core' => [
+                    'dsn'       => 'memcached://localhost',
+                ],
+                'plugin:tester' => [
+                    'dsn'       => 'redis://cache.glpi-project.org/glpi',
+                    'options'   => ['lazy' => true],
+                ],
+                'plugin:another' => [
+                    'dsn'       => 'redis://cache.glpi-project.org/glpi',
+                    'options'   => [],
+                ],
             ],
-            'plugin:tester' => [
-               'dsn'       => 'redis://cache.glpi-project.org/glpi',
-               'options'   => ['lazy' => true],
-            ],
-            'plugin:another' => [
-               'dsn'       => 'redis://cache.glpi-project.org/glpi',
-               'options'   => [],
-            ],
-         ],
         ];
 
         vfsStream::setup(
             'glpi',
             null,
             [
-            'config' => [
-               $config_filename => '<?php' . "\n" . 'return ' . var_export($expected_config, true) . ';',
-            ],
-            'files' => ['_cache' => []],
+                'config' => [
+                    $config_filename => '<?php' . "\n" . 'return ' . var_export($expected_config, true) . ';',
+                ],
+                'files' => ['_cache' => []],
             ]
         );
 
@@ -301,22 +301,22 @@ class CacheManager extends \GLPITestCase
     ): void {
 
         $config = [
-         'contexts' => [
-            $context => [
-               'dsn'       => $dsn,
-               'options'   => $options,
+            'contexts' => [
+                $context => [
+                    'dsn'       => $dsn,
+                    'options'   => $options,
+                ],
             ],
-         ],
         ];
 
         vfsStream::setup(
             'glpi',
             null,
             [
-            'config' => [
-               \Glpi\Cache\CacheManager::CONFIG_FILENAME => '<?php' . "\n" . 'return ' . var_export($config, true) . ';',
-            ],
-            'files' => ['_cache' => []],
+                'config' => [
+                    \Glpi\Cache\CacheManager::CONFIG_FILENAME => '<?php' . "\n" . 'return ' . var_export($config, true) . ';',
+                ],
+                'files' => ['_cache' => []],
             ]
         );
 
@@ -374,39 +374,39 @@ class CacheManager extends \GLPITestCase
     protected function dsnProvider(): iterable
     {
         yield [
-         'dsn'      => 'memcached://user:pass@127.0.0.1:1015?weight=20',
-         'is_valid' => true,
-         'scheme'   => 'memcached',
+            'dsn'      => 'memcached://user:pass@127.0.0.1:1015?weight=20',
+            'is_valid' => true,
+            'scheme'   => 'memcached',
         ];
         yield [
-         'dsn'      => ['memcached://user:pass@127.0.0.1:1015?weight=20', 'memcached://user:pass@127.0.0.1:1016?weight=30'],
-         'is_valid' => true,
-         'scheme'   => 'memcached',
+            'dsn'      => ['memcached://user:pass@127.0.0.1:1015?weight=20', 'memcached://user:pass@127.0.0.1:1016?weight=30'],
+            'is_valid' => true,
+            'scheme'   => 'memcached',
         ];
         yield [
-         'dsn'      => 'redis://localhost/glpi',
-         'is_valid' => true,
-         'scheme'   => 'redis',
+            'dsn'      => 'redis://localhost/glpi',
+            'is_valid' => true,
+            'scheme'   => 'redis',
         ];
         yield [
-         'dsn'      => 'rediss://192.168.0.15',
-         'is_valid' => true,
-         'scheme'   => 'rediss',
+            'dsn'      => 'rediss://192.168.0.15',
+            'is_valid' => true,
+            'scheme'   => 'rediss',
         ];
         yield [
-         'dsn'      => 'memcached:/localhost', // missing /
-         'is_valid' => false,
-         'scheme'   => null,
+            'dsn'      => 'memcached:/localhost', // missing /
+            'is_valid' => false,
+            'scheme'   => null,
         ];
         yield [
-         'dsn'      => 'donotknowit://127.0.0.1', // unknown scheme
-         'is_valid' => false,
-         'scheme'   => null,
+            'dsn'      => 'donotknowit://127.0.0.1', // unknown scheme
+            'is_valid' => false,
+            'scheme'   => null,
         ];
         yield [
-         'dsn'      => ['redis:///tmp/cache', 'redis://localhost/glpi'], // invalid multiple DSN
-         'is_valid' => false,
-         'scheme'   => null,
+            'dsn'      => ['redis:///tmp/cache', 'redis://localhost/glpi'], // invalid multiple DSN
+            'is_valid' => false,
+            'scheme'   => null,
         ];
     }
 
@@ -445,9 +445,9 @@ class CacheManager extends \GLPITestCase
 
        // Check base contexts
         $expected_contexts = [
-         'core',
-         'installer',
-         'translations',
+            'core',
+            'installer',
+            'translations',
         ];
         $this->variable($this->testedInstance->getKnownContexts())->isIdenticalTo($expected_contexts);
 
@@ -461,14 +461,14 @@ class CacheManager extends \GLPITestCase
        // Check contexts extracted from existing directories
         vfsStream::create(
             [
-            'files' => [
-               '_cache' => [
-                  'plugin_c' => [],
-                  'plugin_d' => [],
-                  'not_a_valid_directory' => [], // Should be ignored
-                  'templates' => [], // Should be ignored
-               ]
-            ]
+                'files' => [
+                    '_cache' => [
+                        'plugin_c' => [],
+                        'plugin_d' => [],
+                        'not_a_valid_directory' => [], // Should be ignored
+                        'templates' => [], // Should be ignored
+                    ]
+                ]
             ],
             $vfs_structure
         );
@@ -490,8 +490,8 @@ class CacheManager extends \GLPITestCase
         $this->boolean($this->testedInstance->setNamespacePrefix('my-instance'))->isTrue();
 
         $expected_config = [
-         'namespace_prefix' => 'my-instance',
-         'contexts' => [],
+            'namespace_prefix' => 'my-instance',
+            'contexts' => [],
         ];
 
         $this->boolean(file_exists($config_file))->isTrue();
@@ -501,8 +501,8 @@ class CacheManager extends \GLPITestCase
         $this->boolean($this->testedInstance->setNamespacePrefix(''))->isTrue();
 
         $expected_config = [
-         'namespace_prefix' => null,
-         'contexts' => [],
+            'namespace_prefix' => null,
+            'contexts' => [],
         ];
 
         $this->boolean(file_exists($config_file))->isTrue();

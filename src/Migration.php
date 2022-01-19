@@ -51,8 +51,8 @@ class Migration
     private $log_errors = 0;
     private $current_message_area_id;
     private $queries = [
-      'pre'    => [],
-      'post'   => []
+        'pre'    => [],
+        'post'   => []
     ];
 
     /**
@@ -168,7 +168,8 @@ class Migration
         $this->outputMessage("{$msg} ({$tps})", null, $this->current_message_area_id);
 
         $this->lastMessage = ['time' => time(),
-                            'msg'  => $msg];
+            'msg'  => $msg
+        ];
     }
 
 
@@ -919,10 +920,10 @@ class Migration
         if (count($toadd)) {
             foreach ($toadd as $type => $tab) {
                 $iterator = $DB->request([
-                 'SELECT'          => 'users_id',
-                 'DISTINCT'        => true,
-                 'FROM'            => 'glpi_displaypreferences',
-                 'WHERE'           => ['itemtype' => $type]
+                    'SELECT'          => 'users_id',
+                    'DISTINCT'        => true,
+                    'FROM'            => 'glpi_displaypreferences',
+                    'WHERE'           => ['itemtype' => $type]
                 ]);
 
                 if (count($iterator) > 0) {
@@ -946,10 +947,10 @@ class Migration
                                        $DB->insert(
                                            'glpi_displaypreferences',
                                            [
-                                           'itemtype'  => $type,
-                                           'num'       => $newval,
-                                           'rank'      => $rank++,
-                                           'users_id'  => $data['users_id']
+                                               'itemtype'  => $type,
+                                               'num'       => $newval,
+                                               'rank'      => $rank++,
+                                               'users_id'  => $data['users_id']
                                            ]
                                        );
                                 }
@@ -962,10 +963,10 @@ class Migration
                         $DB->insert(
                             'glpi_displaypreferences',
                             [
-                            'itemtype'  => $type,
-                            'num'       => $newval,
-                            'rank'      => $rank++,
-                            'users_id'  => 0
+                                'itemtype'  => $type,
+                                'num'       => $newval,
+                                'rank'      => $rank++,
+                                'users_id'  => 0
                             ]
                         );
                     }
@@ -980,8 +981,8 @@ class Migration
                     $DB->delete(
                         'glpi_displaypreferences',
                         [
-                        'itemtype'  => $type,
-                        'num'       => $tab
+                            'itemtype'  => $type,
+                            'num'       => $tab
                         ]
                     );
                 }
@@ -1001,8 +1002,8 @@ class Migration
     private function addQuery($type, $query, $message = null)
     {
         $this->queries[$type][] =  [
-         'query'     => $query,
-         'message'   => $message
+            'query'     => $query,
+            'message'   => $message
         ];
         return $this;
     }
@@ -1100,8 +1101,8 @@ class Migration
                 $existing = $DB->request(
                     "glpi_configs",
                     [
-                    'context'   => $context,
-                    'name'      => array_keys($config)
+                        'context'   => $context,
+                        'name'      => array_keys($config)
                     ]
                 );
                 foreach ($existing as $conf) {
@@ -1141,22 +1142,22 @@ class Migration
        // Get all profiles where new rights has not been added yet
         $prof_iterator = $DB->request(
             [
-            'SELECT'    => 'glpi_profiles.id',
-            'FROM'      => 'glpi_profiles',
-            'LEFT JOIN' => [
-               'glpi_profilerights' => [
-                  'ON' => [
-                     'glpi_profilerights' => 'profiles_id',
-                     'glpi_profiles'      => 'id',
-                     [
-                        'AND' => ['glpi_profilerights.name' => $name]
-                     ]
-                  ]
-               ],
-            ],
-            'WHERE'     => [
-               'glpi_profilerights.id' => null,
-            ]
+                'SELECT'    => 'glpi_profiles.id',
+                'FROM'      => 'glpi_profiles',
+                'LEFT JOIN' => [
+                    'glpi_profilerights' => [
+                        'ON' => [
+                            'glpi_profilerights' => 'profiles_id',
+                            'glpi_profiles'      => 'id',
+                            [
+                                'AND' => ['glpi_profilerights.name' => $name]
+                            ]
+                        ]
+                    ],
+                ],
+                'WHERE'     => [
+                    'glpi_profilerights.id' => null,
+                ]
             ]
         );
 
@@ -1167,8 +1168,8 @@ class Migration
         $where = [];
         foreach ($requiredrights as $reqright => $reqvalue) {
             $where['OR'][] = [
-            'name'   => $reqright,
-            new QueryExpression("{$DB->quoteName('rights')} & $reqvalue = $reqvalue")
+                'name'   => $reqright,
+                new QueryExpression("{$DB->quoteName('rights')} & $reqvalue = $reqvalue")
             ];
         }
 
@@ -1177,12 +1178,12 @@ class Migration
                 $reqmet = true;
             } else {
                 $iterator = $DB->request([
-                'SELECT' => [
-                  'name',
-                  'rights'
-                ],
-                'FROM'   => 'glpi_profilerights',
-                'WHERE'  => $where + ['profiles_id' => $profile['id']]
+                    'SELECT' => [
+                        'name',
+                        'rights'
+                    ],
+                    'FROM'   => 'glpi_profilerights',
+                    'WHERE'  => $where + ['profiles_id' => $profile['id']]
                 ]);
 
                 $reqmet = (count($iterator) == count($requiredrights));
@@ -1191,10 +1192,10 @@ class Migration
             $DB->insertOrDie(
                 'glpi_profilerights',
                 [
-                'id'           => null,
-                'profiles_id'  => $profile['id'],
-                'name'         => $name,
-                'rights'       => $reqmet ? $rights : 0
+                    'id'           => null,
+                    'profiles_id'  => $profile['id'],
+                    'name'         => $name,
+                    'rights'       => $reqmet ? $rights : 0
                 ],
                 sprintf('%1$s add right for %2$s', $this->version, $name)
             );
@@ -1377,20 +1378,20 @@ class Migration
             }
             $fkey_column_iterator = $DB->request(
                 [
-                'SELECT' => [
-                  'table_name AS TABLE_NAME',
-                  'column_name AS COLUMN_NAME',
-                ],
-                'FROM'   => 'information_schema.columns',
-                'WHERE'  => [
-                  'table_schema' => $DB->dbdefault,
-                  'table_name'   => ['LIKE', 'glpi\_%'],
-                  'OR' => [
-                     ['column_name'  => $old_fkey],
-                     ['column_name'  => ['LIKE', $old_fkey . '_%']],
-                  ],
-                ],
-                'ORDER'  => 'TABLE_NAME',
+                    'SELECT' => [
+                        'table_name AS TABLE_NAME',
+                        'column_name AS COLUMN_NAME',
+                    ],
+                    'FROM'   => 'information_schema.columns',
+                    'WHERE'  => [
+                        'table_schema' => $DB->dbdefault,
+                        'table_name'   => ['LIKE', 'glpi\_%'],
+                        'OR' => [
+                            ['column_name'  => $old_fkey],
+                            ['column_name'  => ['LIKE', $old_fkey . '_%']],
+                        ],
+                    ],
+                    'ORDER'  => 'TABLE_NAME',
                 ]
             );
             $fkey_column_array = iterator_to_array($fkey_column_iterator); // Convert to array to be able to loop twice
@@ -1443,20 +1444,20 @@ class Migration
         );
         $itemtype_column_iterator = $DB->request(
             [
-            'SELECT' => [
-               'table_name AS TABLE_NAME',
-               'column_name AS COLUMN_NAME',
-            ],
-            'FROM'   => 'information_schema.columns',
-            'WHERE'  => [
-               'table_schema' => $DB->dbdefault,
-               'table_name'   => ['LIKE', 'glpi\_%'],
-               'OR' => [
-                  ['column_name'  => 'itemtype'],
-                  ['column_name'  => ['LIKE', 'itemtype_%']],
-               ],
-            ],
-            'ORDER'  => 'TABLE_NAME',
+                'SELECT' => [
+                    'table_name AS TABLE_NAME',
+                    'column_name AS COLUMN_NAME',
+                ],
+                'FROM'   => 'information_schema.columns',
+                'WHERE'  => [
+                    'table_schema' => $DB->dbdefault,
+                    'table_name'   => ['LIKE', 'glpi\_%'],
+                    'OR' => [
+                        ['column_name'  => 'itemtype'],
+                        ['column_name'  => ['LIKE', 'itemtype_%']],
+                    ],
+                ],
+                'ORDER'  => 'TABLE_NAME',
             ]
         );
         foreach ($itemtype_column_iterator as $itemtype_column) {
@@ -1488,8 +1489,8 @@ class Migration
             $this->search_opts[$itemtype] = [];
         }
         $this->search_opts[$itemtype][] = [
-         'old' => $old_search_opt,
-         'new' => $new_search_opt
+            'old' => $old_search_opt,
+            'new' => $new_search_opt
         ];
     }
 
@@ -1514,18 +1515,18 @@ class Migration
 
                // Update display preferences
                 $DB->updateOrDie(DisplayPreference::getTable(), [
-                'num' => $new_search_opt
+                    'num' => $new_search_opt
                 ], [
-                'itemtype' => $itemtype,
-                'num'      => $old_search_opt
+                    'itemtype' => $itemtype,
+                    'num'      => $old_search_opt
                 ]);
             }
         }
 
        // Update saved searches. We have to parse every query to account for the search option in meta criteria
         $iterator = $DB->request([
-         'SELECT' => ['id', 'itemtype', 'query'],
-         'FROM'   => SavedSearch::getTable(),
+            'SELECT' => ['id', 'itemtype', 'query'],
+            'FROM'   => SavedSearch::getTable(),
         ]);
 
         foreach ($iterator as $data) {
@@ -1571,9 +1572,9 @@ class Migration
            // Write changes if any were made
             if ($is_changed) {
                 $DB->updateOrDie(SavedSearch::getTable(), [
-                'query'  => http_build_query($query)
+                    'query'  => http_build_query($query)
                 ], [
-                'id'     => $data['id']
+                    'id'     => $data['id']
                 ]);
             }
         }

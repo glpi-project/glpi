@@ -42,8 +42,8 @@ class Antivirus extends AbstractInventoryAsset
     protected function assetProvider(): array
     {
         return [
-         [
-            'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+            [
+                'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
   <CONTENT>
     <ANTIVIRUS>
@@ -59,9 +59,9 @@ class Antivirus extends AbstractInventoryAsset
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-            'expected'  => '{"company": "Microsoft Corporation", "enabled": true, "guid": "{641105E6-77ED-3F35-A304-765193BCB75F}", "name": "Microsoft Security Essentials", "uptodate": true, "version": "4.3.216.0", "manufacturers_id": "Microsoft Corporation", "antivirus_version": "4.3.216.0", "is_active": true, "is_uptodate": true, "is_dynamic": 1}'
-         ], [ //no version
-            'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+                'expected'  => '{"company": "Microsoft Corporation", "enabled": true, "guid": "{641105E6-77ED-3F35-A304-765193BCB75F}", "name": "Microsoft Security Essentials", "uptodate": true, "version": "4.3.216.0", "manufacturers_id": "Microsoft Corporation", "antivirus_version": "4.3.216.0", "is_active": true, "is_uptodate": true, "is_dynamic": 1}'
+            ], [ //no version
+                'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
   <CONTENT>
     <ANTIVIRUS>
@@ -76,9 +76,9 @@ class Antivirus extends AbstractInventoryAsset
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-            'expected'  => '{"company": "Microsoft Corporation", "enabled": true, "guid": "{641105E6-77ED-3F35-A304-765193BCB75F}", "name": "Microsoft Security Essentials", "uptodate": true, "manufacturers_id": "Microsoft Corporation", "antivirus_version": "", "is_active": true, "is_uptodate": true, "is_dynamic": 1}'
-         ], [ //w expiration date
-            'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+                'expected'  => '{"company": "Microsoft Corporation", "enabled": true, "guid": "{641105E6-77ED-3F35-A304-765193BCB75F}", "name": "Microsoft Security Essentials", "uptodate": true, "manufacturers_id": "Microsoft Corporation", "antivirus_version": "", "is_active": true, "is_uptodate": true, "is_dynamic": 1}'
+            ], [ //w expiration date
+                'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
   <CONTENT>
     <ANTIVIRUS>
@@ -95,8 +95,8 @@ class Antivirus extends AbstractInventoryAsset
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-            'expected'  => '{"company": "Microsoft Corporation", "enabled": true, "guid": "{641105E6-77ED-3F35-A304-765193BCB75F}", "name": "Microsoft Security Essentials", "uptodate": true, "version": "4.3.216.0", "manufacturers_id": "Microsoft Corporation", "antivirus_version": "4.3.216.0", "is_active": true, "is_uptodate": true, "expiration": "2019-04-01", "date_expiration": "2019-04-01", "is_dynamic": 1}'
-         ]
+                'expected'  => '{"company": "Microsoft Corporation", "enabled": true, "guid": "{641105E6-77ED-3F35-A304-765193BCB75F}", "name": "Microsoft Security Essentials", "uptodate": true, "version": "4.3.216.0", "manufacturers_id": "Microsoft Corporation", "antivirus_version": "4.3.216.0", "is_active": true, "is_uptodate": true, "expiration": "2019-04-01", "date_expiration": "2019-04-01", "is_dynamic": 1}'
+            ]
         ];
     }
 
@@ -238,33 +238,33 @@ class Antivirus extends AbstractInventoryAsset
 
        //create manually a computer, with 3 antivirus
         $computers_id = $computer->add([
-         'name'   => 'pc002',
-         'serial' => 'ggheb7ne7',
-         'entities_id' => 0
+            'name'   => 'pc002',
+            'serial' => 'ggheb7ne7',
+            'entities_id' => 0
         ]);
         $this->integer($computers_id)->isGreaterThan(0);
 
         $antivirus_1_id = $antivirus->add([
-         'computers_id' => $computers_id,
-         'name' => 'Kaspersky Endpoint Security 10 for Windows',
-         'antivirus_version' => '2021 21.3.10.391',
-         'is_active' => 1
+            'computers_id' => $computers_id,
+            'name' => 'Kaspersky Endpoint Security 10 for Windows',
+            'antivirus_version' => '2021 21.3.10.391',
+            'is_active' => 1
         ]);
         $this->integer($antivirus_1_id)->isGreaterThan(0);
 
         $antivirus_2_id = $antivirus->add([
-         'computers_id' => $computers_id,
-         'name' => 'Microsoft Security Essentials',
-         'antivirus_version' => '4.3.216.0',
-         'is_active' => 1
+            'computers_id' => $computers_id,
+            'name' => 'Microsoft Security Essentials',
+            'antivirus_version' => '4.3.216.0',
+            'is_active' => 1
         ]);
         $this->integer($antivirus_2_id)->isGreaterThan(0);
 
         $antivirus_3_id = $antivirus->add([
-         'computers_id' => $computers_id,
-         'name' => 'Avast Antivirus',
-         'antivirus_version' => '19',
-         'is_active' => 1
+            'computers_id' => $computers_id,
+            'name' => 'Avast Antivirus',
+            'antivirus_version' => '19',
+            'is_active' => 1
         ]);
         $this->integer($antivirus_3_id)->isGreaterThan(0);
 

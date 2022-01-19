@@ -72,8 +72,8 @@ class Unmanaged extends CommonDBTM
     {
         $this->initForm($ID, $options);
         TemplateRenderer::getInstance()->display('pages/assets/unmanaged.html.twig', [
-         'item'   => $this,
-         'params' => $options,
+            'item'   => $this,
+            'params' => $options,
         ]);
         return true;
     }
@@ -84,105 +84,105 @@ class Unmanaged extends CommonDBTM
         $tab = parent::rawSearchOptions();
 
         $tab[] = [
-         'id'        => '2',
-         'table'     => $this->getTable(),
-         'field'     => 'id',
-         'name'      => __('ID'),
+            'id'        => '2',
+            'table'     => $this->getTable(),
+            'field'     => 'id',
+            'name'      => __('ID'),
         ];
 
         $tab[] = [
-         'id'        => '3',
-         'table'     => 'glpi_locations',
-         'field'     => 'name',
-         'linkfield' => 'locations_id',
-         'name'      => Location::getTypeName(1),
-         'datatype'  => 'dropdown',
+            'id'        => '3',
+            'table'     => 'glpi_locations',
+            'field'     => 'name',
+            'linkfield' => 'locations_id',
+            'name'      => Location::getTypeName(1),
+            'datatype'  => 'dropdown',
         ];
 
         $tab[] = [
-         'id'           => '4',
-         'table'        => $this->getTable(),
-         'field'        => 'serial',
-         'name'         => __('Serial Number'),
+            'id'           => '4',
+            'table'        => $this->getTable(),
+            'field'        => 'serial',
+            'name'         => __('Serial Number'),
         ];
 
         $tab[] = [
-         'id'           => '5',
-         'table'        => $this->getTable(),
-         'field'        => 'otherserial',
-         'name'         => __('Inventory number'),
+            'id'           => '5',
+            'table'        => $this->getTable(),
+            'field'        => 'otherserial',
+            'name'         => __('Inventory number'),
         ];
 
         $tab[] = [
-         'id'           => '6',
-         'table'        => $this->getTable(),
-         'field'        => 'contact',
-         'name'         => Contact::getTypeName(1),
+            'id'           => '6',
+            'table'        => $this->getTable(),
+            'field'        => 'contact',
+            'name'         => Contact::getTypeName(1),
         ];
 
         $tab[] = [
-         'id'        => '7',
-         'table'     => $this->getTable(),
-         'field'     => 'hub',
-         'name'      => __('Network hub'),
-         'datatype'  => 'bool',
+            'id'        => '7',
+            'table'     => $this->getTable(),
+            'field'     => 'hub',
+            'name'      => __('Network hub'),
+            'datatype'  => 'bool',
         ];
 
         $tab[] = [
-         'id'        => '8',
-         'table'     => 'glpi_entities',
-         'field'     => 'completename',
-         'linkfield' => 'entities_id',
-         'name'      => Entity::getTypeName(1),
-         'datatype'  => 'dropdown',
+            'id'        => '8',
+            'table'     => 'glpi_entities',
+            'field'     => 'completename',
+            'linkfield' => 'entities_id',
+            'name'      => Entity::getTypeName(1),
+            'datatype'  => 'dropdown',
         ];
 
         $tab[] = [
-         'id'        => '9',
-         'table'     => 'glpi_domains',
-         'field'     => 'name',
-         'linkfield' => 'domains_id',
-         'name'      => Domain::getTypeName(1),
-         'datatype'  => 'dropdown',
+            'id'        => '9',
+            'table'     => 'glpi_domains',
+            'field'     => 'name',
+            'linkfield' => 'domains_id',
+            'name'      => Domain::getTypeName(1),
+            'datatype'  => 'dropdown',
         ];
 
         $tab[] = [
-         'id'        => '10',
-         'table'     => $this->getTable(),
-         'field'     => 'comment',
-         'name'      => __('Comments'),
-         'datatype'  => 'text',
+            'id'        => '10',
+            'table'     => $this->getTable(),
+            'field'     => 'comment',
+            'name'      => __('Comments'),
+            'datatype'  => 'text',
         ];
 
         $tab[] = [
-         'id'        => '13',
-         'table'     => $this->getTable(),
-         'field'     => 'itemtype',
-         'name'      => _n('Type', 'Types', 1),
-         'datatype'  => 'dropdown',
+            'id'        => '13',
+            'table'     => $this->getTable(),
+            'field'     => 'itemtype',
+            'name'      => _n('Type', 'Types', 1),
+            'datatype'  => 'dropdown',
         ];
 
         $tab[] = [
-         'id'        => '14',
-         'table'     => $this->getTable(),
-         'field'     => 'date_mod',
-         'name'      => __('Last update'),
-         'datatype'  => 'datetime',
+            'id'        => '14',
+            'table'     => $this->getTable(),
+            'field'     => 'date_mod',
+            'name'      => __('Last update'),
+            'datatype'  => 'datetime',
         ];
 
         $tab[] = [
-         'id'        => '15',
-         'table'     => $this->getTable(),
-         'field'     => 'sysdescr',
-         'name'      => __('Sysdescr'),
-         'datatype'  => 'text',
+            'id'        => '15',
+            'table'     => $this->getTable(),
+            'field'     => 'sysdescr',
+            'name'      => __('Sysdescr'),
+            'datatype'  => 'text',
         ];
 
         $tab[] = [
-         'id'           => '18',
-         'table'        => $this->getTable(),
-         'field'        => 'ip',
-         'name'         => __('IP'),
+            'id'           => '18',
+            'table'        => $this->getTable(),
+            'field'        => 'ip',
+            'name'         => __('IP'),
         ];
 
         return $tab;
@@ -193,7 +193,7 @@ class Unmanaged extends CommonDBTM
 
         $this->deleteChildrenAndRelationsFromDb(
             [
-            NetworkPort::class
+                NetworkPort::class
             ]
         );
     }
@@ -267,12 +267,12 @@ class Unmanaged extends CommonDBTM
         $netport = new NetworkPort();
 
         $iterator = $DB->request([
-         'SELECT' => ['id'],
-         'FROM' => NetworkPort::getTable(),
-         'WHERE' => [
-            'itemtype' => self::getType(),
-            'items_id' => $items_id
-         ]
+            'SELECT' => ['id'],
+            'FROM' => NetworkPort::getTable(),
+            'WHERE' => [
+                'itemtype' => self::getType(),
+                'items_id' => $items_id
+            ]
         ]);
 
         if (!empty($this->fields['itemtype'])) {
@@ -281,18 +281,18 @@ class Unmanaged extends CommonDBTM
 
         $asset = new $itemtype();
         $asset_data = [
-         'name'          => $this->fields['name'],
-         'entities_id'   => $this->fields['entities_id'],
-         'serial'        => $this->fields['serial'],
-         'uuid'          => $this->fields['uuid'] ?? null,
-         'is_dynamic'    => 1
+            'name'          => $this->fields['name'],
+            'entities_id'   => $this->fields['entities_id'],
+            'serial'        => $this->fields['serial'],
+            'uuid'          => $this->fields['uuid'] ?? null,
+            'is_dynamic'    => 1
         ] + $this->fields;
         $assets_id = $asset->add(Toolbox::addslashes_deep($asset_data));
 
         foreach ($iterator as $row) {
             $row += [
-            'items_id' => $assets_id,
-            'itemtype' => $itemtype
+                'items_id' => $assets_id,
+                'itemtype' => $itemtype
             ];
             $netport->update(Toolbox::addslashes_deep($row));
         }

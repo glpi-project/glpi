@@ -46,12 +46,12 @@ class Memory extends Device
     public function prepare(): array
     {
         $mapping = [
-         'capacity'     => 'size',
-         'speed'        => 'frequence',
-         'type'         => 'devicememorytypes_id',
-         'manufacturer' => 'manufacturers_id',
-         'serialnumber' => 'serial',
-         'numslots'     => 'busID'
+            'capacity'     => 'size',
+            'speed'        => 'frequence',
+            'type'         => 'devicememorytypes_id',
+            'manufacturer' => 'manufacturers_id',
+            'serialnumber' => 'serial',
+            'numslots'     => 'busID'
         ];
 
         foreach ($this->data as $k => &$val) {

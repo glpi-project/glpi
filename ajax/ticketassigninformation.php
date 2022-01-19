@@ -47,21 +47,21 @@ if (isset($_REQUEST['users_id_assign']) && ($_REQUEST['users_id_assign'] > 0)) {
     $ticket = new Ticket();
 
     $options2 = [
-      'criteria' => [
-         [
-            'field'      => 5, // users_id assign
-            'searchtype' => 'equals',
-            'value'      => $_REQUEST['users_id_assign'],
-            'link'       => 'AND',
-         ],
-         [
-            'field'      => 12, // status
-            'searchtype' => 'equals',
-            'value'      => 'notold',
-            'link'       => 'AND',
-         ],
-      ],
-      'reset' => 'reset',
+        'criteria' => [
+            [
+                'field'      => 5, // users_id assign
+                'searchtype' => 'equals',
+                'value'      => $_REQUEST['users_id_assign'],
+                'link'       => 'AND',
+            ],
+            [
+                'field'      => 12, // status
+                'searchtype' => 'equals',
+                'value'      => 'notold',
+                'link'       => 'AND',
+            ],
+        ],
+        'reset' => 'reset',
     ];
 
     $url = $ticket->getSearchURL() . "?" . Toolbox::append_params($options2, '&amp;');
@@ -80,21 +80,21 @@ if (isset($_REQUEST['users_id_assign']) && ($_REQUEST['users_id_assign'] > 0)) {
     $ticket = new Ticket();
 
     $options2 = [
-      'criteria' => [
-         [
-            'field'      => 8, // groups_id assign
-            'searchtype' => 'equals',
-            'value'      => $_REQUEST['groups_id_assign'],
-            'link'       => 'AND',
-         ],
-         [
-            'field'      => 12, // status
-            'searchtype' => 'equals',
-            'value'      => 'notold',
-            'link'       => 'AND',
-         ],
-      ],
-      'reset' => 'reset',
+        'criteria' => [
+            [
+                'field'      => 8, // groups_id assign
+                'searchtype' => 'equals',
+                'value'      => $_REQUEST['groups_id_assign'],
+                'link'       => 'AND',
+            ],
+            [
+                'field'      => 12, // status
+                'searchtype' => 'equals',
+                'value'      => 'notold',
+                'link'       => 'AND',
+            ],
+        ],
+        'reset' => 'reset',
     ];
 
     $url = $ticket->getSearchURL() . "?" . Toolbox::append_params($options2, '&amp;');
@@ -113,21 +113,21 @@ if (isset($_REQUEST['users_id_assign']) && ($_REQUEST['users_id_assign'] > 0)) {
     $ticket = new Ticket();
 
     $options2 = [
-      'criteria' => [
-         [
-            'field'      => 6, // suppliers_id assign
-            'searchtype' => 'equals',
-            'value'      => $_REQUEST['suppliers_id_assign'],
-            'link'       => 'AND',
-         ],
-         [
-            'field'      => 12, // status
-            'searchtype' => 'equals',
-            'value'      => 'notold',
-            'link'       => 'AND',
-         ],
-      ],
-      'reset' => 'reset',
+        'criteria' => [
+            [
+                'field'      => 6, // suppliers_id assign
+                'searchtype' => 'equals',
+                'value'      => $_REQUEST['suppliers_id_assign'],
+                'link'       => 'AND',
+            ],
+            [
+                'field'      => 12, // status
+                'searchtype' => 'equals',
+                'value'      => 'notold',
+                'link'       => 'AND',
+            ],
+        ],
+        'reset' => 'reset',
     ];
 
     $url = $ticket->getSearchURL() . "?" . Toolbox::append_params($options2, '&amp;');

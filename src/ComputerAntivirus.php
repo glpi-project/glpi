@@ -96,35 +96,35 @@ class ComputerAntivirus extends CommonDBChild
         $tab = [];
 
         $tab[] = [
-         'id'                 => 'common',
-         'name'               => __('Characteristics')
+            'id'                 => 'common',
+            'name'               => __('Characteristics')
         ];
 
         $tab[] = [
-         'id'                 => '1',
-         'table'              => $this->getTable(),
-         'field'              => 'name',
-         'name'               => __('Name'),
-         'datatype'           => 'itemlink',
-         'massiveaction'      => false,
+            'id'                 => '1',
+            'table'              => $this->getTable(),
+            'field'              => 'name',
+            'name'               => __('Name'),
+            'datatype'           => 'itemlink',
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
-         'id'                 => '2',
-         'table'              => $this->getTable(),
-         'field'              => 'antivirus_version',
-         'name'               => _n('Version', 'Versions', 1),
-         'datatype'           => 'string',
-         'massiveaction'      => false,
+            'id'                 => '2',
+            'table'              => $this->getTable(),
+            'field'              => 'antivirus_version',
+            'name'               => _n('Version', 'Versions', 1),
+            'datatype'           => 'string',
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
-         'id'                 => '3',
-         'table'              => $this->getTable(),
-         'field'              => 'signature_version',
-         'name'               => __('Signature database version'),
-         'datatype'           => 'string',
-         'massiveaction'      => false,
+            'id'                 => '3',
+            'table'              => $this->getTable(),
+            'field'              => 'signature_version',
+            'name'               => __('Signature database version'),
+            'datatype'           => 'string',
+            'massiveaction'      => false,
         ];
 
         return $tab;
@@ -137,90 +137,90 @@ class ComputerAntivirus extends CommonDBChild
         $name = _n('Antivirus', 'Antiviruses', Session::getPluralNumber());
 
         $tab[] = [
-         'id'                 => 'antivirus',
-         'name'               => $name
+            'id'                 => 'antivirus',
+            'name'               => $name
         ];
 
         $tab[] = [
-         'id'                 => '167',
-         'table'              => 'glpi_computerantiviruses',
-         'field'              => 'name',
-         'name'               => __('Name'),
-         'forcegroupby'       => true,
-         'massiveaction'      => false,
-         'datatype'           => 'dropdown',
-         'joinparams'         => [
-            'jointype'           => 'child'
-         ]
+            'id'                 => '167',
+            'table'              => 'glpi_computerantiviruses',
+            'field'              => 'name',
+            'name'               => __('Name'),
+            'forcegroupby'       => true,
+            'massiveaction'      => false,
+            'datatype'           => 'dropdown',
+            'joinparams'         => [
+                'jointype'           => 'child'
+            ]
         ];
 
         $tab[] = [
-         'id'                 => '168',
-         'table'              => 'glpi_computerantiviruses',
-         'field'              => 'antivirus_version',
-         'name'               => _n('Version', 'Versions', 1),
-         'forcegroupby'       => true,
-         'massiveaction'      => false,
-         'datatype'           => 'text',
-         'joinparams'         => [
-            'jointype'           => 'child'
-         ]
+            'id'                 => '168',
+            'table'              => 'glpi_computerantiviruses',
+            'field'              => 'antivirus_version',
+            'name'               => _n('Version', 'Versions', 1),
+            'forcegroupby'       => true,
+            'massiveaction'      => false,
+            'datatype'           => 'text',
+            'joinparams'         => [
+                'jointype'           => 'child'
+            ]
         ];
 
         $tab[] = [
-         'id'                 => '169',
-         'table'              => 'glpi_computerantiviruses',
-         'field'              => 'is_active',
-         'linkfield'          => '',
-         'name'               => __('Active'),
-         'datatype'           => 'bool',
-         'joinparams'         => [
-            'jointype'           => 'child'
-         ],
-         'massiveaction'      => false,
-         'forcegroupby'       => true,
-         'searchtype'         => ['equals']
+            'id'                 => '169',
+            'table'              => 'glpi_computerantiviruses',
+            'field'              => 'is_active',
+            'linkfield'          => '',
+            'name'               => __('Active'),
+            'datatype'           => 'bool',
+            'joinparams'         => [
+                'jointype'           => 'child'
+            ],
+            'massiveaction'      => false,
+            'forcegroupby'       => true,
+            'searchtype'         => ['equals']
         ];
 
         $tab[] = [
-         'id'                 => '170',
-         'table'              => 'glpi_computerantiviruses',
-         'field'              => 'is_uptodate',
-         'linkfield'          => '',
-         'name'               => __('Is up to date'),
-         'datatype'           => 'bool',
-         'joinparams'         => [
-            'jointype'           => 'child'
-         ],
-         'massiveaction'      => false,
-         'forcegroupby'       => true,
-         'searchtype'         => ['equals']
+            'id'                 => '170',
+            'table'              => 'glpi_computerantiviruses',
+            'field'              => 'is_uptodate',
+            'linkfield'          => '',
+            'name'               => __('Is up to date'),
+            'datatype'           => 'bool',
+            'joinparams'         => [
+                'jointype'           => 'child'
+            ],
+            'massiveaction'      => false,
+            'forcegroupby'       => true,
+            'searchtype'         => ['equals']
         ];
 
         $tab[] = [
-         'id'                 => '171',
-         'table'              => 'glpi_computerantiviruses',
-         'field'              => 'signature_version',
-         'name'               => __('Signature database version'),
-         'forcegroupby'       => true,
-         'massiveaction'      => false,
-         'datatype'           => 'text',
-         'joinparams'         => [
-            'jointype'           => 'child'
-         ]
+            'id'                 => '171',
+            'table'              => 'glpi_computerantiviruses',
+            'field'              => 'signature_version',
+            'name'               => __('Signature database version'),
+            'forcegroupby'       => true,
+            'massiveaction'      => false,
+            'datatype'           => 'text',
+            'joinparams'         => [
+                'jointype'           => 'child'
+            ]
         ];
 
         $tab[] = [
-         'id'                 => '172',
-         'table'              => 'glpi_computerantiviruses',
-         'field'              => 'date_expiration',
-         'name'               => __('Expiration date'),
-         'forcegroupby'       => true,
-         'massiveaction'      => false,
-         'datatype'           => 'date',
-         'joinparams'         => [
-            'jointype'           => 'child'
-         ]
+            'id'                 => '172',
+            'table'              => 'glpi_computerantiviruses',
+            'field'              => 'date_expiration',
+            'name'               => __('Expiration date'),
+            'forcegroupby'       => true,
+            'massiveaction'      => false,
+            'datatype'           => 'date',
+            'joinparams'         => [
+                'jointype'           => 'child'
+            ]
         ];
 
         return $tab;
@@ -344,11 +344,11 @@ class ComputerAntivirus extends CommonDBChild
 
         $result = $DB->request(
             [
-            'FROM'  => ComputerAntivirus::getTable(),
-            'WHERE' => [
-               'computers_id' => $ID,
-               'is_deleted'   => 0,
-            ],
+                'FROM'  => ComputerAntivirus::getTable(),
+                'WHERE' => [
+                    'computers_id' => $ID,
+                    'is_deleted'   => 0,
+                ],
             ]
         );
 

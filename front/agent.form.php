@@ -123,7 +123,8 @@ if (isset($_POST["add"])) {
     Html::header(Agent::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "admin", "glpi\inventory\inventory", "agent");
    //show agent form to add
     $agent->display([
-      'id'           => $_GET["id"],
-      'withtemplate' => $_GET["withtemplate"]]);
+        'id'           => $_GET["id"],
+        'withtemplate' => $_GET["withtemplate"]
+    ]);
     Html::footer();
 }

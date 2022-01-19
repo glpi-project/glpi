@@ -80,7 +80,8 @@ class APIRest extends API
 
             $upload_result
             = GLPIUploadHandler::uploadFiles(['name'           => $filename,
-                                              'print_response' => false]);
+                'print_response' => false
+            ]);
             foreach ($upload_result as $uresult) {
                  $this->parameters['input']->_filename[] = $uresult[0]->name;
                  $this->parameters['input']->_prefix_filename[] = $uresult[0]->prefix;

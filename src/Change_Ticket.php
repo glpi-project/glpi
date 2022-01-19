@@ -157,7 +157,8 @@ class Change_Ticket extends CommonDBRelation
                               $input2 = [$field              => $item->fields['tickets_id'],
                                   'taskcategories_id' => $input['taskcategories_id'],
                                   'actiontime'        => $input['actiontime'],
-                                  'content'           => $input['content']];
+                                  'content'           => $input['content']
+                              ];
                               if ($task->can(-1, CREATE, $input2)) {
                                   if ($task->add($input2)) {
                                       $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
@@ -187,10 +188,10 @@ class Change_Ticket extends CommonDBRelation
                         ) {
                             $solution = new ITILSolution();
                             $added = $solution->add([
-                            'itemtype'  => $ticket->getType(),
-                            'items_id'  => $ticket->getID(),
-                            'solutiontypes_id'   => $input['solutiontypes_id'],
-                            'content'            => $input['content']
+                                'itemtype'  => $ticket->getType(),
+                                'items_id'  => $ticket->getID(),
+                                'solutiontypes_id'   => $input['solutiontypes_id'],
+                                'content'            => $input['content']
                             ]);
 
                             if ($added) {
@@ -232,26 +233,26 @@ class Change_Ticket extends CommonDBRelation
         $rand    = mt_rand();
 
         $iterator = $DB->request([
-         'SELECT' => [
-            'glpi_changes_tickets.id AS linkid',
-            'glpi_tickets.*'
-         ],
-         'DISTINCT'        => true,
-         'FROM'            => 'glpi_changes_tickets',
-         'LEFT JOIN'       => [
-            'glpi_tickets' => [
-               'ON' => [
-                  'glpi_changes_tickets'  => 'tickets_id',
-                  'glpi_tickets'          => 'id'
-               ]
+            'SELECT' => [
+                'glpi_changes_tickets.id AS linkid',
+                'glpi_tickets.*'
+            ],
+            'DISTINCT'        => true,
+            'FROM'            => 'glpi_changes_tickets',
+            'LEFT JOIN'       => [
+                'glpi_tickets' => [
+                    'ON' => [
+                        'glpi_changes_tickets'  => 'tickets_id',
+                        'glpi_tickets'          => 'id'
+                    ]
+                ]
+            ],
+            'WHERE'           => [
+                'glpi_changes_tickets.changes_id'   => $ID
+            ],
+            'ORDERBY'          => [
+                'glpi_tickets.name'
             ]
-         ],
-         'WHERE'           => [
-            'glpi_changes_tickets.changes_id'   => $ID
-         ],
-         'ORDERBY'          => [
-            'glpi_tickets.name'
-         ]
         ]);
 
         $tickets = [];
@@ -274,11 +275,11 @@ class Change_Ticket extends CommonDBRelation
             echo "<tr class='tab_bg_2'><td>";
             echo "<input type='hidden' name='changes_id' value='$ID'>";
             Ticket::dropdown([
-            'used'        => $used,
-            'entity'      => $change->getEntityID(),
-            'entity_sons' => $change->isRecursive(),
-            'displaywith' => ['id'],
-            'condition'   => Ticket::getOpenCriteria()
+                'used'        => $used,
+                'entity'      => $change->getEntityID(),
+                'entity_sons' => $change->isRecursive(),
+                'displaywith' => ['id'],
+                'condition'   => Ticket::getOpenCriteria()
             ]);
             echo "</td><td class='center'>";
             echo "<input type='submit' name='add' value=\"" . _sx('button', 'Add') . "\" class='btn btn-primary'>";
@@ -294,15 +295,17 @@ class Change_Ticket extends CommonDBRelation
             Html::openMassiveActionsForm('mass' . __CLASS__ . $rand);
             $massiveactionparams
             = ['num_displayed'    => min($_SESSION['glpilist_limit'], $numrows),
-                    'specific_actions' => ['purge' => _x('button', 'Delete permanently'),
-                                                 __CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'solveticket'
+                'specific_actions' => ['purge' => _x('button', 'Delete permanently'),
+                    __CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'solveticket'
                                                         => __('Solve tickets'),
-                                                 __CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_task'
-                                                        => __('Add a new task')],
-                     'container'        => 'mass' . __CLASS__ . $rand,
-                     'extraparams'      => ['changes_id' => $change->getID()],
-                     'width'            => 1000,
-                     'height'           => 500];
+                    __CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_task'
+                                                        => __('Add a new task')
+                ],
+                'container'        => 'mass' . __CLASS__ . $rand,
+                'extraparams'      => ['changes_id' => $change->getID()],
+                'width'            => 1000,
+                'height'           => 500
+            ];
             Html::showMassiveActions($massiveactionparams);
         }
 
@@ -328,9 +331,9 @@ class Change_Ticket extends CommonDBRelation
                 Ticket::showShort(
                     $data['id'],
                     [
-                    'row_num'                => $i,
-                    'type_for_massiveaction' => __CLASS__,
-                    'id_for_massiveaction'   => $data['linkid']
+                        'row_num'                => $i,
+                        'type_for_massiveaction' => __CLASS__,
+                        'id_for_massiveaction'   => $data['linkid']
                     ]
                 );
                  $i++;
@@ -365,26 +368,26 @@ class Change_Ticket extends CommonDBRelation
         $rand    = mt_rand();
 
         $iterator = $DB->request([
-         'SELECT'          => [
-            'glpi_changes_tickets.id AS linkid',
-            'glpi_changes.*'
-         ],
-         'DISTINCT'        => true,
-         'FROM'            => 'glpi_changes_tickets',
-         'LEFT JOIN'       => [
-            'glpi_changes' => [
-               'ON' => [
-                  'glpi_changes_tickets'  => 'changes_id',
-                  'glpi_changes'          => 'id'
-               ]
+            'SELECT'          => [
+                'glpi_changes_tickets.id AS linkid',
+                'glpi_changes.*'
+            ],
+            'DISTINCT'        => true,
+            'FROM'            => 'glpi_changes_tickets',
+            'LEFT JOIN'       => [
+                'glpi_changes' => [
+                    'ON' => [
+                        'glpi_changes_tickets'  => 'changes_id',
+                        'glpi_changes'          => 'id'
+                    ]
+                ]
+            ],
+            'WHERE'           => [
+                'glpi_changes_tickets.tickets_id'   => $ID
+            ],
+            'ORDERBY'          => [
+                'glpi_changes.name'
             ]
-         ],
-         'WHERE'           => [
-            'glpi_changes_tickets.tickets_id'   => $ID
-         ],
-         'ORDERBY'          => [
-            'glpi_changes.name'
-         ]
         ]);
 
         $changes = [];
@@ -406,9 +409,9 @@ class Change_Ticket extends CommonDBRelation
             echo "<tr class='tab_bg_2'><td>";
             echo "<input type='hidden' name='tickets_id' value='$ID'>";
             Change::dropdown([
-            'used'      => $used,
-            'entity'    => $ticket->getEntityID(),
-            'condition' => Change::getOpenCriteria(),
+                'used'      => $used,
+                'entity'    => $ticket->getEntityID(),
+                'condition' => Change::getOpenCriteria(),
             ]);
             echo "</td><td class='center'>";
             echo "<input type='submit' name='add' value=\"" . _sx('button', 'Add') . "\" class='btn btn-primary'>";
@@ -427,7 +430,8 @@ class Change_Ticket extends CommonDBRelation
         if ($canedit && $numrows) {
             Html::openMassiveActionsForm('mass' . __CLASS__ . $rand);
             $massiveactionparams = ['num_displayed' => min($_SESSION['glpilist_limit'], $numrows),
-                                      'container'     => 'mass' . __CLASS__ . $rand];
+                'container'     => 'mass' . __CLASS__ . $rand
+            ];
             Html::showMassiveActions($massiveactionparams);
         }
 
@@ -451,8 +455,9 @@ class Change_Ticket extends CommonDBRelation
             foreach ($changes as $data) {
                 Session::addToNavigateListItems('Change', $data["id"]);
                 Change::showShort($data['id'], ['row_num'                => $i,
-                                                 'type_for_massiveaction' => __CLASS__,
-                                                 'id_for_massiveaction'   => $data['linkid']]);
+                    'type_for_massiveaction' => __CLASS__,
+                    'id_for_massiveaction'   => $data['linkid']
+                ]);
                  $i++;
             }
             Change::commonListHeader(Search::HTML_OUTPUT, 'mass' . __CLASS__ . $rand);

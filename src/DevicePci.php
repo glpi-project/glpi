@@ -54,17 +54,20 @@ class DevicePci extends CommonDevice
         return array_merge(
             parent::getAdditionalFields(),
             [['name'  => 'none',
-                                     'label' => RegisteredID::getTypeName(Session::getPluralNumber()) .
+                'label' => RegisteredID::getTypeName(Session::getPluralNumber()) .
                                         RegisteredID::showAddChildButtonForItemForm(
                                             $this,
                                             '_registeredID',
                                             null,
                                             false
                                         ),
-                                     'type'  => 'registeredIDChooser'],
-                         ['name'  => 'devicepcimodels_id',
-                                     'label' => _n('Model', 'Models', 1),
-            'type'  => 'dropdownValue']]
+                'type'  => 'registeredIDChooser'
+            ],
+                ['name'  => 'devicepcimodels_id',
+                    'label' => _n('Model', 'Models', 1),
+                    'type'  => 'dropdownValue'
+                ]
+            ]
         );
     }
 
@@ -74,11 +77,11 @@ class DevicePci extends CommonDevice
         $tab                 = parent::rawSearchOptions();
 
         $tab[] = [
-         'id'                 => '17',
-         'table'              => 'glpi_devicepcimodels',
-         'field'              => 'name',
-         'name'               => _n('Model', 'Models', 1),
-         'datatype'           => 'dropdown'
+            'id'                 => '17',
+            'table'              => 'glpi_devicepcimodels',
+            'field'              => 'name',
+            'name'               => _n('Model', 'Models', 1),
+            'datatype'           => 'dropdown'
         ];
 
         return $tab;
@@ -89,20 +92,20 @@ class DevicePci extends CommonDevice
         $tab = [];
 
         $tab[] = [
-         'id'                 => '95',
-         'table'              => 'glpi_devicepcis',
-         'field'              => 'designation',
-         'name'               => __('Other component'),
-         'forcegroupby'       => true,
-         'usehaving'          => true,
-         'massiveaction'      => false,
-         'datatype'           => 'string',
-         'joinparams'         => [
-            'beforejoin'         => [
-               'table'              => 'glpi_items_devicepcis',
-               'joinparams'         => $main_joinparams
+            'id'                 => '95',
+            'table'              => 'glpi_devicepcis',
+            'field'              => 'designation',
+            'name'               => __('Other component'),
+            'forcegroupby'       => true,
+            'usehaving'          => true,
+            'massiveaction'      => false,
+            'datatype'           => 'string',
+            'joinparams'         => [
+                'beforejoin'         => [
+                    'table'              => 'glpi_items_devicepcis',
+                    'joinparams'         => $main_joinparams
+                ]
             ]
-         ]
         ];
 
         return $tab;

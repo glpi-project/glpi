@@ -89,7 +89,7 @@ if (!empty($_POST['reset_translation_cache'])) {
 
 Html::header(Config::getTypeName(1), $_SERVER['PHP_SELF'], "config", "config");
 $config->display([
-   'id'           => 1,
-   'formoptions'  => "data-track-changes=true"
+    'id'           => 1,
+    'formoptions'  => "data-track-changes=true"
 ]);
 Html::footer();

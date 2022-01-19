@@ -140,8 +140,8 @@ class Notification_NotificationTemplate extends CommonDBRelation
         echo "<div class='center'>";
 
         $iterator = $DB->request([
-         'FROM'   => self::getTable(),
-         'WHERE'  => ['notifications_id' => $ID]
+            'FROM'   => self::getTable(),
+            'WHERE'  => ['notifications_id' => $ID]
         ]);
 
         echo "<table class='tab_cadre_fixehov'>";
@@ -227,8 +227,8 @@ class Notification_NotificationTemplate extends CommonDBRelation
         echo "<div class='center'>";
 
         $iterator = $DB->request([
-         'FROM'   => self::getTable(),
-         'WHERE'  => ['notificationtemplates_id' => $ID]
+            'FROM'   => self::getTable(),
+            'WHERE'  => ['notificationtemplates_id' => $ID]
         ]);
 
         echo "<table class='tab_cadre_fixehov'>";
@@ -292,9 +292,9 @@ class Notification_NotificationTemplate extends CommonDBRelation
 
         echo NotificationTemplate::getTypeName(1) . "<br>";
         NotificationTemplate::dropdown([
-         'name'       => 'notificationtemplates_id',
-         'value'     => 0,
-         'comment'   => 1,
+            'name'       => 'notificationtemplates_id',
+            'value'     => 0,
+            'comment'   => 1,
         ]);
         echo "<br><br>";
 
@@ -397,8 +397,8 @@ class Notification_NotificationTemplate extends CommonDBRelation
 
         self::getModes();
         $CFG_GLPI['notifications_modes'][$mode] = [
-         'label'  => $label,
-         'from'   => $from
+            'label'  => $label,
+            'from'   => $from
         ];
     }
 
@@ -414,14 +414,14 @@ class Notification_NotificationTemplate extends CommonDBRelation
         global $CFG_GLPI;
 
         $core_modes = [
-         self::MODE_MAIL      => [
-            'label'  => _n('Email', 'Emails', 1),
-            'from'   => 'core'
-         ],
-         self::MODE_AJAX      => [
-            'label'  => __('Browser'),
-            'from'   => 'core'
-         ]
+            self::MODE_MAIL      => [
+                'label'  => _n('Email', 'Emails', 1),
+                'from'   => 'core'
+            ],
+            self::MODE_AJAX      => [
+                'label'  => __('Browser'),
+                'from'   => 'core'
+            ]
          /*self::MODE_WEBSOCKET => [
             'label'  => __('Websocket'),
             'from'   => 'core'

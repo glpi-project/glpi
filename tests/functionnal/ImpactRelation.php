@@ -48,10 +48,10 @@ class ImpactRelation extends \DbTestCase
         $computer = getItemByTypeName('Computer', '_test_pc02');
         $impactRelationManager = new \ImpactRelation();
         $res = $impactRelationManager->add([
-         'itemtype_source'   => "Computer",
-         'items_id_source'   => $computer->fields['id'],
-         'itemtype_impacted' => "Computer",
-         'items_id_impacted' => $computer->fields['id'],
+            'itemtype_source'   => "Computer",
+            'items_id_source'   => $computer->fields['id'],
+            'itemtype_impacted' => "Computer",
+            'items_id_impacted' => $computer->fields['id'],
         ]);
 
         $this->boolean($res)->isFalse();
@@ -64,17 +64,17 @@ class ImpactRelation extends \DbTestCase
         $impactRelationManager = new \ImpactRelation();
 
         $impactRelationManager->add([
-         'itemtype_source'   => "Computer",
-         'items_id_source'   => $computer1->fields['id'],
-         'itemtype_impacted' => "Computer",
-         'items_id_impacted' => $computer2->fields['id'],
+            'itemtype_source'   => "Computer",
+            'items_id_source'   => $computer1->fields['id'],
+            'itemtype_impacted' => "Computer",
+            'items_id_impacted' => $computer2->fields['id'],
         ]);
 
         $res = $impactRelationManager->add([
-         'itemtype_source'   => "Computer",
-         'items_id_source'   => $computer1->fields['id'],
-         'itemtype_impacted' => "Computer",
-         'items_id_impacted' => $computer2->fields['id'],
+            'itemtype_source'   => "Computer",
+            'items_id_source'   => $computer1->fields['id'],
+            'itemtype_impacted' => "Computer",
+            'items_id_impacted' => $computer2->fields['id'],
         ]);
 
         $this->boolean($res)->isFalse();
@@ -85,10 +85,10 @@ class ImpactRelation extends \DbTestCase
         $impactRelationManager = new \ImpactRelation();
 
         $res = $impactRelationManager->add([
-         'itemtype_source'   => "Computer",
-         'items_id_source'   => -40,
-         'itemtype_impacted' => "Computer",
-         'items_id_impacted' => -78,
+            'itemtype_source'   => "Computer",
+            'items_id_source'   => -40,
+            'itemtype_impacted' => "Computer",
+            'items_id_impacted' => -78,
         ]);
 
         $this->boolean($res)->isFalse();
@@ -101,10 +101,10 @@ class ImpactRelation extends \DbTestCase
         $impactRelationManager = new \ImpactRelation();
 
         $res = $impactRelationManager->add([
-         'itemtype_source'   => "Computer",
-         'items_id_source'   => $computer1->fields['id'],
-         'itemtype_impacted' => "Computer",
-         'items_id_impacted' => $computer2->fields['id'],
+            'itemtype_source'   => "Computer",
+            'items_id_source'   => $computer1->fields['id'],
+            'itemtype_impacted' => "Computer",
+            'items_id_impacted' => $computer2->fields['id'],
         ]);
 
         $this->integer($res);
@@ -116,10 +116,10 @@ class ImpactRelation extends \DbTestCase
         $computer2 = getItemByTypeName('Computer', '_test_pc02');
 
         $input = [
-         'itemtype_source'   => "Computer",
-         'items_id_source'   => $computer1->fields['id'],
-         'itemtype_impacted' => "Computer",
-         'items_id_impacted' => $computer2->fields['id'],
+            'itemtype_source'   => "Computer",
+            'items_id_source'   => $computer1->fields['id'],
+            'itemtype_impacted' => "Computer",
+            'items_id_impacted' => $computer2->fields['id'],
         ];
 
         $id = \ImpactRelation::getIDFromInput($input);
@@ -133,17 +133,17 @@ class ImpactRelation extends \DbTestCase
         $impactRelationManager = new \ImpactRelation();
 
         $id1 = $impactRelationManager->add([
-         'itemtype_source'   => "Computer",
-         'items_id_source'   => $computer1->fields['id'],
-         'itemtype_impacted' => "Computer",
-         'items_id_impacted' => $computer2->fields['id'],
+            'itemtype_source'   => "Computer",
+            'items_id_source'   => $computer1->fields['id'],
+            'itemtype_impacted' => "Computer",
+            'items_id_impacted' => $computer2->fields['id'],
         ]);
 
         $input = [
-         'itemtype_source'   => "Computer",
-         'items_id_source'   => $computer1->fields['id'],
-         'itemtype_impacted' => "Computer",
-         'items_id_impacted' => $computer2->fields['id'],
+            'itemtype_source'   => "Computer",
+            'items_id_source'   => $computer1->fields['id'],
+            'itemtype_impacted' => "Computer",
+            'items_id_impacted' => $computer2->fields['id'],
         ];
 
         $id2 = \ImpactRelation::getIDFromInput($input);

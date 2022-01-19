@@ -49,10 +49,11 @@ if (isset($_POST["projects_id"])) {
     }
 
     $p = ['itemtype'     => ProjectTask::getType(),
-         'entity_restrict' => $_POST['entity_restrict'],
-         'myname'          => $_POST["myname"],
-         'condition'       => $condition,
-         'rand'            => $_POST["rand"]];
+        'entity_restrict' => $_POST['entity_restrict'],
+        'myname'          => $_POST["myname"],
+        'condition'       => $condition,
+        'rand'            => $_POST["rand"]
+    ];
 
     if (isset($_POST["used"]) && !empty($_POST["used"])) {
         if (isset($_POST["used"])) {

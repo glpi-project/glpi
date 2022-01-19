@@ -41,12 +41,12 @@ class Clonable extends \DbTestCase
     public function massiveActionTargetingProvider()
     {
         return [
-         [\Computer::class, true],
-         [\Monitor::class, true],
-         [\Software::class, true],
-         [\Ticket::class, true],
-         [\Plugin::class, false],
-         [\Config::class, false]
+            [\Computer::class, true],
+            [\Monitor::class, true],
+            [\Software::class, true],
+            [\Ticket::class, true],
+            [\Plugin::class, false],
+            [\Config::class, false]
         ];
     }
 

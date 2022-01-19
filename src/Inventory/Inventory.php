@@ -170,9 +170,9 @@ class Inventory
         }
 
         $this->metadata = [
-         'deviceid'  => $this->raw_data->deviceid,
-         'version'   => $this->raw_data->version ?? $this->raw_data->content->versionclient ?? null,
-         'itemtype'   => $this->raw_data->itemtype ?? 'Computer',
+            'deviceid'  => $this->raw_data->deviceid,
+            'version'   => $this->raw_data->version ?? $this->raw_data->content->versionclient ?? null,
+            'itemtype'   => $this->raw_data->itemtype ?? 'Computer',
         ];
 
         $expecteds = ['action', 'name', 'installed-tasks', 'enabled-tasks', 'tag'];
@@ -495,8 +495,8 @@ class Inventory
                 'title' => SNMPCredential::getTypeName(Session::getPluralNumber()),
                 'page' => SNMPCredential::getSearchURL(false),
                 'links' => [
-                   'add' => '/front/snmpcredential.form.php',
-                   'search' => '/front/snmpcredential.php',
+                    'add' => '/front/snmpcredential.form.php',
+                    'search' => '/front/snmpcredential.php',
                 ] + $links
             ];
         }
@@ -705,11 +705,11 @@ class Inventory
     {
         $exec_time = round(microtime(true) - $start, 5);
         $this->benchs[$asset][$type] = [
-         'exectime'  => $exec_time,
-         'mem'       => memory_get_usage(),
-         'mem_real'  => memory_get_usage(true),
-         'mem_peak'  => memory_get_peak_usage(),
-         'extra'     => $extra
+            'exectime'  => $exec_time,
+            'mem'       => memory_get_usage(),
+            'mem_real'  => memory_get_usage(true),
+            'mem_peak'  => memory_get_peak_usage(),
+            'extra'     => $extra
 
         ];
     }
@@ -868,9 +868,9 @@ class Inventory
             }
 
             $iterator = $DB->request([
-            'SELECT'  => 'id',
-            'FROM'    => $itemtype::getTable(),
-            'WHERE'   => ['id' => array_keys($ids)]
+                'SELECT'  => 'id',
+                'FROM'    => $itemtype::getTable(),
+                'WHERE'   => ['id' => array_keys($ids)]
             ]);
 
             if (count($iterator) === count($ids)) {

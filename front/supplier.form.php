@@ -113,8 +113,8 @@ if (isset($_POST["add"])) {
 } else {
     Html::header(Supplier::getTypeName(Session::getPluralNumber()), '', "management", "supplier");
     $ent->display([
-      'id'           => $_GET["id"],
-      'formoptions'  => "data-track-changes=true"
+        'id'           => $_GET["id"],
+        'formoptions'  => "data-track-changes=true"
     ]);
     Html::footer();
 }

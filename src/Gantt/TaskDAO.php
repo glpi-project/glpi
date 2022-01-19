@@ -57,13 +57,13 @@ class TaskDAO
         }
 
         $input = [
-         'name' => $task->text,
-         'projects_id' => $projectId,
-         'projecttasks_id' => ($parentTask != null) ? $parentTask->fields["id"] : 0,
-         'percent_done' => ($task->progress * 100),
-         'plan_start_date' => $task->start_date,
-         'plan_end_date' => $task->end_date,
-         'is_milestone' => ($task->type == "milestone") ? 1 : 0
+            'name' => $task->text,
+            'projects_id' => $projectId,
+            'projecttasks_id' => ($parentTask != null) ? $parentTask->fields["id"] : 0,
+            'percent_done' => ($task->progress * 100),
+            'plan_start_date' => $task->start_date,
+            'plan_end_date' => $task->end_date,
+            'is_milestone' => ($task->type == "milestone") ? 1 : 0
         ];
 
         $newTask = new \ProjectTask();
@@ -81,12 +81,12 @@ class TaskDAO
         }
 
         $t->update([
-         'id' => $task->id,
-         'plan_start_date' => $task->start_date,
-         'plan_end_date' => $task->end_date,
-         'percent_done' => ($task->progress * 100),
-         'name' => $task->text ?? $t->fields['name'],
-         'is_milestone' => ($task->type == "milestone") ? 1 : 0
+            'id' => $task->id,
+            'plan_start_date' => $task->start_date,
+            'plan_end_date' => $task->end_date,
+            'percent_done' => ($task->progress * 100),
+            'name' => $task->text ?? $t->fields['name'],
+            'is_milestone' => ($task->type == "milestone") ? 1 : 0
         ]);
         return true;
     }
@@ -108,9 +108,9 @@ class TaskDAO
             $updateSubtasks = ($t->fields["projects_id"] != $p->fields["projects_id"]);
 
             $input = [
-            'id' => $t->fields["id"],
-            'projects_id' => $p->fields["projects_id"],
-            'projecttasks_id' => $p->fields["id"]
+                'id' => $t->fields["id"],
+                'projects_id' => $p->fields["projects_id"],
+                'projecttasks_id' => $p->fields["id"]
             ];
             $t->update($input);
 
@@ -124,8 +124,8 @@ class TaskDAO
                     $itm = new \ProjectTask();
                     $itm->getFromDBByCrit(['uuid' => $item->id]);
                     $params = [
-                    'id' => $itm->fields["id"],
-                    'projects_id' => $p->fields["projects_id"]
+                        'id' => $itm->fields["id"],
+                        'projects_id' => $p->fields["projects_id"]
                     ];
                     $itm->update($params);
                 }
@@ -133,9 +133,9 @@ class TaskDAO
         } else if ($task->parent > 0) {
            // change parent project
             $input = [
-            'id' => $t->fields["id"],
-            'projects_id' => $task->parent,
-            'projecttasks_id' => 0
+                'id' => $t->fields["id"],
+                'projects_id' => $task->parent,
+                'projecttasks_id' => 0
             ];
 
             $t->update($input);
@@ -149,8 +149,8 @@ class TaskDAO
                 $itm = new \ProjectTask();
                 $itm->getFromDBByCrit(['uuid' => $item->id]);
                 $params = [
-                'id' => $itm->fields["id"],
-                'projects_id' => $t->fields["projects_id"]
+                    'id' => $itm->fields["id"],
+                    'projects_id' => $t->fields["projects_id"]
                 ];
                 $itm->update($params);
             }

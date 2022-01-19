@@ -144,18 +144,18 @@ abstract class AbstractCommand extends Command implements GlpiCommandInterface
         }
 
         $msg_levels = [
-         INFO    => [
-            'tag'       => 'info',
-            'verbosity' => OutputInterface::VERBOSITY_VERBOSE,
-         ],
-         WARNING => [
-            'tag'       => 'comment',
-            'verbosity' => OutputInterface::VERBOSITY_NORMAL,
-         ],
-         ERROR   => [
-            'tag'       => 'error',
-            'verbosity' => OutputInterface::VERBOSITY_QUIET,
-         ],
+            INFO    => [
+                'tag'       => 'info',
+                'verbosity' => OutputInterface::VERBOSITY_VERBOSE,
+            ],
+            WARNING => [
+                'tag'       => 'comment',
+                'verbosity' => OutputInterface::VERBOSITY_NORMAL,
+            ],
+            ERROR   => [
+                'tag'       => 'error',
+                'verbosity' => OutputInterface::VERBOSITY_QUIET,
+            ],
         ];
 
         foreach ($msg_levels as $key => $options) {

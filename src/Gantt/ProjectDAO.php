@@ -46,16 +46,16 @@ class ProjectDAO
         }
 
         $input = [
-         'name' => $project->text,
-         'comment' => $project->comment,
-         'projects_id' => $project->parent,
-         'date' => $_SESSION['glpi_currenttime'],
-         'plan_start_date' => $project->start_date,
-         'plan_end_date' => $project->end_date,
-         'priority' => 3,  //medium
-         'projectstates_id' => 1,
-         'users_id' => \Session::getLoginUserID(),
-         'show_on_global_gantt' => 1
+            'name' => $project->text,
+            'comment' => $project->comment,
+            'projects_id' => $project->parent,
+            'date' => $_SESSION['glpi_currenttime'],
+            'plan_start_date' => $project->start_date,
+            'plan_end_date' => $project->end_date,
+            'priority' => 3,  //medium
+            'projectstates_id' => 1,
+            'users_id' => \Session::getLoginUserID(),
+            'show_on_global_gantt' => 1
         ];
         $proj = new \Project();
         $proj->add($input);
@@ -72,9 +72,9 @@ class ProjectDAO
         }
 
         $p->update([
-         'id' => $project->id,
-         'percent_done' => ($project->progress * 100),
-         'name' => $project->text
+            'id' => $project->id,
+            'percent_done' => ($project->progress * 100),
+            'name' => $project->text
         ]);
         return true;
     }
@@ -89,8 +89,8 @@ class ProjectDAO
         }
 
         $input = [
-         'id' => $project->id,
-         'projects_id' => $project->parent
+            'id' => $project->id,
+            'projects_id' => $project->parent
         ];
         $p->update($input);
     }

@@ -147,39 +147,39 @@ abstract class CommonDropdown extends CommonDBTM
         $fields = [];
         if ($DB->fieldExists(static::getTable(), 'product_number')) {
             $fields[] = [
-            'name' => 'product_number',
-            'type' => 'text',
-            'label' => __('Product Number')
+                'name' => 'product_number',
+                'type' => 'text',
+                'label' => __('Product Number')
             ];
         }
         if ($DB->fieldExists(static::getTable(), 'picture')) {
             $fields[] = [
-            'name' => 'picture',
-            'type' => 'picture',
-            'label' => _n('Picture', 'Pictures', 1)
+                'name' => 'picture',
+                'type' => 'picture',
+                'label' => _n('Picture', 'Pictures', 1)
             ];
         }
         if ($DB->fieldExists($this->getTable(), 'picture_front')) {
             $fields[] = [
-            'name'   => 'picture_front',
-            'type'   => 'picture',
-            'label'  => __('Front picture')
+                'name'   => 'picture_front',
+                'type'   => 'picture',
+                'label'  => __('Front picture')
             ];
         }
 
         if ($DB->fieldExists($this->getTable(), 'picture_rear')) {
             $fields[] = [
-            'name'   => 'picture_rear',
-            'type'   => 'picture',
-            'label'  => __('Rear picture')
+                'name'   => 'picture_rear',
+                'type'   => 'picture',
+                'label'  => __('Rear picture')
             ];
         }
 
         if ($DB->fieldExists($this->getTable(), 'pictures')) {
             $fields[] = [
-            'name'   => 'pictures',
-            'type'   => 'picture_gallery',
-            'label'  => _n('Picture', 'Pictures', Session::getPluralNumber())
+                'name'   => 'pictures',
+                'type'   => 'picture_gallery',
+                'label'  => _n('Picture', 'Pictures', Session::getPluralNumber())
             ];
         }
         return $fields;
@@ -231,11 +231,11 @@ abstract class CommonDropdown extends CommonDBTM
        // if item based on location, create item in the same entity as location
         if (isset($input['locations_id']) && !isset($input['_is_update'])) {
             $iterator = $DB->request([
-            'SELECT' => ['entities_id'],
-            'FROM'   => 'glpi_locations',
-            'WHERE'  => [
-               'id' => $input['locations_id']
-            ]
+                'SELECT' => ['entities_id'],
+                'FROM'   => 'glpi_locations',
+                'WHERE'  => [
+                    'id' => $input['locations_id']
+                ]
             ]);
             foreach ($iterator as $data) {
                  $input['entities_id'] = $data['entities_id'];
@@ -315,9 +315,9 @@ abstract class CommonDropdown extends CommonDBTM
                 $this->input = $this->addFiles(
                     $this->input,
                     [
-                    'force_update'  => true,
-                    'name'          => $field['name'],
-                    'content_field' => $field['name'],
+                        'force_update'  => true,
+                        'name'          => $field['name'],
+                        'content_field' => $field['name'],
                     ]
                 );
             }
@@ -350,9 +350,9 @@ abstract class CommonDropdown extends CommonDBTM
         $fields = $this->getAdditionalFields();
 
         echo TemplateRenderer::getInstance()->render('dropdown_form.html.twig', [
-         'item'   => $this,
-         'params' => $options,
-         'additional_fields' => $fields
+            'item'   => $this,
+            'params' => $options,
+            'additional_fields' => $fields
         ]);
     }
 
@@ -389,111 +389,111 @@ abstract class CommonDropdown extends CommonDBTM
         $tab = [];
 
         $tab[] = [
-         'id'   => 'common',
-         'name' => __('Characteristics')
+            'id'   => 'common',
+            'name' => __('Characteristics')
         ];
 
         $tab[] = [
-         'id'                => '1',
-         'table'             => $this->getTable(),
-         'field'             => 'name',
-         'name'              => __('Name'),
-         'datatype'          => 'itemlink',
-         'massiveaction'     => false,
+            'id'                => '1',
+            'table'             => $this->getTable(),
+            'field'             => 'name',
+            'name'              => __('Name'),
+            'datatype'          => 'itemlink',
+            'massiveaction'     => false,
         ];
 
         $tab[] = [
-         'id'                => '2',
-         'table'             => $this->getTable(),
-         'field'             => 'id',
-         'name'              => __('ID'),
-         'massiveaction'     => false,
-         'datatype'          => 'number'
+            'id'                => '2',
+            'table'             => $this->getTable(),
+            'field'             => 'id',
+            'name'              => __('ID'),
+            'massiveaction'     => false,
+            'datatype'          => 'number'
         ];
 
         if ($DB->fieldExists($this->getTable(), 'product_number')) {
             $tab[] = [
-            'id'  => '3',
-            'table'  => $this->getTable(),
-            'field'  => 'product_number',
-            'name'   => __('Product number'),
+                'id'  => '3',
+                'table'  => $this->getTable(),
+                'field'  => 'product_number',
+                'name'   => __('Product number'),
             ];
         }
 
         $tab[] = [
-         'id'                => '16',
-         'table'             => $this->getTable(),
-         'field'             => 'comment',
-         'name'              => __('Comments'),
-         'datatype'          => 'text'
+            'id'                => '16',
+            'table'             => $this->getTable(),
+            'field'             => 'comment',
+            'name'              => __('Comments'),
+            'datatype'          => 'text'
         ];
 
         if ($this->isEntityAssign()) {
             $tab[] = [
-            'id'             => '80',
-            'table'          => 'glpi_entities',
-            'field'          => 'completename',
-            'name'           => Entity::getTypeName(1),
-            'massiveaction'  => false,
-            'datatype'       => 'dropdown'
+                'id'             => '80',
+                'table'          => 'glpi_entities',
+                'field'          => 'completename',
+                'name'           => Entity::getTypeName(1),
+                'massiveaction'  => false,
+                'datatype'       => 'dropdown'
             ];
         }
 
         if ($this->maybeRecursive()) {
             $tab[] = [
-            'id'             => '86',
-            'table'          => $this->getTable(),
-            'field'          => 'is_recursive',
-            'name'           => __('Child entities'),
-            'datatype'       => 'bool'
+                'id'             => '86',
+                'table'          => $this->getTable(),
+                'field'          => 'is_recursive',
+                'name'           => __('Child entities'),
+                'datatype'       => 'bool'
             ];
         }
 
         if ($this->isField('date_mod')) {
             $tab[] = [
-            'id'             => '19',
-            'table'          => $this->getTable(),
-            'field'          => 'date_mod',
-            'name'           => __('Last update'),
-            'datatype'       => 'datetime',
-            'massiveaction'  => false
+                'id'             => '19',
+                'table'          => $this->getTable(),
+                'field'          => 'date_mod',
+                'name'           => __('Last update'),
+                'datatype'       => 'datetime',
+                'massiveaction'  => false
             ];
         }
 
         if ($this->isField('date_creation')) {
             $tab[] = [
-            'id'             => '121',
-            'table'          => $this->getTable(),
-            'field'          => 'date_creation',
-            'name'           => __('Creation date'),
-            'datatype'       => 'datetime',
-            'massiveaction'  => false
+                'id'             => '121',
+                'table'          => $this->getTable(),
+                'field'          => 'date_creation',
+                'name'           => __('Creation date'),
+                'datatype'       => 'datetime',
+                'massiveaction'  => false
             ];
         }
 
         if ($DB->fieldExists($this->getTable(), 'picture_front')) {
             $options[] = [
-            'id'            => '137',
-            'table'         => $this->getTable(),
-            'field'         => 'picture_front',
-            'name'          => __('Front picture'),
-            'datatype'      => 'specific',
-            'nosearch'      => true,
-            'massiveaction' => true,
-            'nosort'        => true,
+                'id'            => '137',
+                'table'         => $this->getTable(),
+                'field'         => 'picture_front',
+                'name'          => __('Front picture'),
+                'datatype'      => 'specific',
+                'nosearch'      => true,
+                'massiveaction' => true,
+                'nosort'        => true,
             ];
         }
 
         if ($DB->fieldExists($this->getTable(), 'picture_rear')) {
             $options[] = [
-            'id'            => '138',
-            'table'         => $this->getTable(),
-            'field'         => 'picture_rear',
-            'name'          => __('Rear picture'),
-            'datatype'      => 'specific',
-            'nosearch'      => true,
-            'massiveaction' => true,
-            'nosort'        => true,
+                'id'            => '138',
+                'table'         => $this->getTable(),
+                'field'         => 'picture_rear',
+                'name'          => __('Rear picture'),
+                'datatype'      => 'specific',
+                'nosearch'      => true,
+                'massiveaction' => true,
+                'nosort'        => true,
             ];
         }
 
@@ -520,9 +520,9 @@ abstract class CommonDropdown extends CommonDBTM
                 if ($tablename[0] != '_') {
                     if (!is_array($field)) {
                         $row = $DB->request([
-                        'FROM'   => $tablename,
-                        'COUNT'  => 'cpt',
-                        'WHERE'  => [$field => $ID]
+                            'FROM'   => $tablename,
+                            'COUNT'  => 'cpt',
+                            'WHERE'  => [$field => $ID]
                         ])->current();
                         if ($row['cpt'] > 0) {
                              return true;
@@ -530,9 +530,9 @@ abstract class CommonDropdown extends CommonDBTM
                     } else {
                         foreach ($field as $f) {
                              $row = $DB->request([
-                             'FROM'   => $tablename,
-                             'COUNT'  => 'cpt',
-                             'WHERE'  => [$f => $ID]
+                                 'FROM'   => $tablename,
+                                 'COUNT'  => 'cpt',
+                                 'WHERE'  => [$f => $ID]
                              ])->current();
                             if ($row['cpt'] > 0) {
                                 return true;
@@ -606,17 +606,19 @@ abstract class CommonDropdown extends CommonDBTM
             Dropdown::show(
                 getItemTypeForTable($this->getTable()),
                 ['name'   => '_replace_by',
-                              'value'  => $this->fields[$fk],
-                              'entity' => $this->getEntityID(),
-                              'used'   => getSonsOf($this->getTable(), $ID),
-                'width'   => '100%']
+                    'value'  => $this->fields[$fk],
+                    'entity' => $this->getEntityID(),
+                    'used'   => getSonsOf($this->getTable(), $ID),
+                    'width'   => '100%'
+                ]
             );
         } else {
             Dropdown::show(
                 getItemTypeForTable($this->getTable()),
                 ['name'   => '_replace_by',
-                              'entity' => $this->getEntityID(),
-                'used'   => [$ID]]
+                    'entity' => $this->getEntityID(),
+                    'used'   => [$ID]
+                ]
             );
         }
         echo "<input type='hidden' name='id' value='$ID' />";
@@ -644,12 +646,12 @@ abstract class CommonDropdown extends CommonDBTM
 
         if (!empty($input["name"])) {
             $crit = [
-            'SELECT' => 'id',
-            'FROM'   => $this->getTable(),
-            'WHERE'  => [
-               'name'   => $input['name']
-            ],
-            'LIMIT'  => 1
+                'SELECT' => 'id',
+                'FROM'   => $this->getTable(),
+                'WHERE'  => [
+                    'name'   => $input['name']
+                ],
+                'LIMIT'  => 1
             ];
 
             if ($this->isEntityAssign()) {
@@ -754,9 +756,9 @@ abstract class CommonDropdown extends CommonDBTM
        }*/
 
         $input = [
-         'name'        => $value,
-         'comment'     => $comment,
-         'entities_id' => $entities_id,
+            'name'        => $value,
+            'comment'     => $comment,
+            'entities_id' => $entities_id,
         ];
 
         if ($rulecollection) {
@@ -832,7 +834,8 @@ abstract class CommonDropdown extends CommonDBTM
                         if ($item->getEntityID() == $_SESSION['glpiactive_entity']) {
                             if (
                                 $item->update(['id'           => $key,
-                                             'is_recursive' => 1])
+                                    'is_recursive' => 1
+                                ])
                             ) {
                                  $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_OK);
                             } else {
@@ -857,7 +860,8 @@ abstract class CommonDropdown extends CommonDBTM
                                 if ($newid > 0 && $key != $newid) {
                                // delete with purge for dropdown with trashbin (Budget)
                                     $item->delete(['id'          => $key,
-                                               '_replace_by' => $newid], 1);
+                                        '_replace_by' => $newid
+                                    ], 1);
                                 } else if ($newid > 0 && $key == $newid) {
                                     $input2['id'] = $newid;
                                     $item->update($input2);
@@ -907,7 +911,7 @@ abstract class CommonDropdown extends CommonDBTM
             $rand = mt_rand();
             $kbitem = new KnowbaseItem();
             $found_kbitem = $kbitem->find([
-            KnowbaseItem::getTable() . '.id'  => KnowbaseItem::getForCategory($this->fields['knowbaseitemcategories_id'])
+                KnowbaseItem::getTable() . '.id'  => KnowbaseItem::getForCategory($this->fields['knowbaseitemcategories_id'])
             ]);
 
             if (count($found_kbitem)) {
@@ -938,13 +942,13 @@ abstract class CommonDropdown extends CommonDBTM
                     $ret .= "<label for='dropdown_knowbaseitems_id$rand'>" .
                     KnowbaseItem::getTypeName() . "</label>&nbsp;";
                     $ret .= KnowbaseItem::dropdown([
-                    'value'     => reset($found_kbitem)['id'],
-                    'display'   => false,
-                    'rand'      => $rand,
-                    'condition' => [
-                    KnowbaseItem::getTable() . '.id' => KnowbaseItem::getForCategory($this->fields['knowbaseitemcategories_id'])
-                    ],
-                    'on_change' => "getKnowbaseItemAnswer$rand()"
+                        'value'     => reset($found_kbitem)['id'],
+                        'display'   => false,
+                        'rand'      => $rand,
+                        'condition' => [
+                            KnowbaseItem::getTable() . '.id' => KnowbaseItem::getForCategory($this->fields['knowbaseitemcategories_id'])
+                        ],
+                        'on_change' => "getKnowbaseItemAnswer$rand()"
                     ]);
                     $ret .= "<div class='faqadd_block_content' id='faqadd_block_content$rand'>";
                     $ret .= $kbitem->showFull(['display' => false]);

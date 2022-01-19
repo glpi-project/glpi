@@ -76,9 +76,9 @@ class ITILFollowup extends DbTestCase
         $this->boolean((bool) $fup->can(-1, \CREATE, $tmp))->isTrue();
 
         $fup_id = $fup->add([
-         'content'      => "my followup",
-         'itemtype'   => 'Ticket',
-         'items_id'   => $ticketId
+            'content'      => "my followup",
+            'itemtype'   => 'Ticket',
+            'items_id'   => $ticketId
         ]);
         $this->integer($fup_id)->isGreaterThan(0);
         $this->boolean((bool) $fup->canViewItem())->isTrue();
@@ -91,9 +91,9 @@ class ITILFollowup extends DbTestCase
         $this->boolean((bool) $fup->can(-1, \CREATE, $tmp))->isTrue();
 
         $fup_id = $fup->add([
-         'content'      => "my followup",
-         'itemtype'   => 'Change',
-         'items_id'   => $changeId
+            'content'      => "my followup",
+            'itemtype'   => 'Change',
+            'items_id'   => $changeId
         ]);
         $this->integer($fup_id)->isGreaterThan(0);
         $this->boolean((bool) $fup->canViewItem())->isTrue();
@@ -106,9 +106,9 @@ class ITILFollowup extends DbTestCase
         $this->boolean((bool) $fup->can(-1, \CREATE, $tmp))->isTrue();
 
         $fup_id = $fup->add([
-         'content'      => "my followup",
-         'itemtype'   => 'Problem',
-         'items_id'   => $problemId
+            'content'      => "my followup",
+            'itemtype'   => 'Problem',
+            'items_id'   => $problemId
         ]);
         $this->integer($fup_id)->isGreaterThan(0);
         $this->boolean((bool) $fup->canViewItem())->isTrue();
@@ -125,18 +125,18 @@ class ITILFollowup extends DbTestCase
         $tmp      = ['itemtype' => 'Ticket', 'items_id' => $ticketId];
 
         $fup_id = $fup->add([
-         'content'      => "my followup",
-         'itemtype'   => 'Ticket',
-         'items_id'   => $ticketId
+            'content'      => "my followup",
+            'itemtype'   => 'Ticket',
+            'items_id'   => $ticketId
         ]);
         $this->integer((int)$fup_id)->isGreaterThan(0);
 
         $this->boolean(
             $fup->update([
-            'id'         => $fup_id,
-            'content'    => "my followup updated",
-            'itemtype'   => 'Ticket',
-            'items_id'   => $ticketId
+                'id'         => $fup_id,
+                'content'    => "my followup updated",
+                'itemtype'   => 'Ticket',
+                'items_id'   => $ticketId
             ])
         )->isTrue();
 
@@ -147,7 +147,7 @@ class ITILFollowup extends DbTestCase
 
         $this->boolean(
             $fup->delete([
-            'id'  => $fup_id
+                'id'  => $fup_id
             ])
         )->isTrue();
         $this->boolean((bool) $fup->getFromDB($fup_id))->isFalse();
@@ -157,18 +157,18 @@ class ITILFollowup extends DbTestCase
         $tmp      = ['itemtype' => 'Change', 'items_id' => $changeId];
 
         $fup_id = $fup->add([
-         'content'      => "my followup",
-         'itemtype'   => 'Change',
-         'items_id'   => $changeId
+            'content'      => "my followup",
+            'itemtype'   => 'Change',
+            'items_id'   => $changeId
         ]);
         $this->integer((int)$fup_id)->isGreaterThan(0);
 
         $this->boolean(
             $fup->update([
-            'id'         => $fup_id,
-            'content'    => "my followup updated",
-            'itemtype'   => 'Change',
-            'items_id'   => $changeId
+                'id'         => $fup_id,
+                'content'    => "my followup updated",
+                'itemtype'   => 'Change',
+                'items_id'   => $changeId
             ])
         )->isTrue();
 
@@ -179,7 +179,7 @@ class ITILFollowup extends DbTestCase
 
         $this->boolean(
             $fup->delete([
-            'id'  => $fup_id
+                'id'  => $fup_id
             ])
         )->isTrue();
         $this->boolean((bool) $fup->getFromDB($fup_id))->isFalse();
@@ -189,18 +189,18 @@ class ITILFollowup extends DbTestCase
         $tmp      = ['itemtype' => 'Problem', 'items_id' => $problemId];
 
         $fup_id = $fup->add([
-         'content'      => "my followup",
-         'itemtype'   => 'Problem',
-         'items_id'   => $problemId
+            'content'      => "my followup",
+            'itemtype'   => 'Problem',
+            'items_id'   => $problemId
         ]);
         $this->integer((int)$fup_id)->isGreaterThan(0);
 
         $this->boolean(
             $fup->update([
-            'id'         => $fup_id,
-            'content'    => "my followup updated",
-            'itemtype'   => 'Problem',
-            'items_id'   => $problemId
+                'id'         => $fup_id,
+                'content'    => "my followup updated",
+                'itemtype'   => 'Problem',
+                'items_id'   => $problemId
             ])
         )->isTrue();
 
@@ -211,7 +211,7 @@ class ITILFollowup extends DbTestCase
 
         $this->boolean(
             $fup->delete([
-            'id'  => $fup_id
+                'id'  => $fup_id
             ])
         )->isTrue();
         $this->boolean((bool) $fup->getFromDB($fup_id))->isFalse();
@@ -226,8 +226,8 @@ class ITILFollowup extends DbTestCase
 
         $ticket = new \Ticket();
         $oldConf = [
-        'glpiset_default_tech'      => $_SESSION['glpiset_default_tech'],
-        'glpiset_default_requester' => $_SESSION['glpiset_default_requester'],
+            'glpiset_default_tech'      => $_SESSION['glpiset_default_tech'],
+            'glpiset_default_requester' => $_SESSION['glpiset_default_requester'],
         ];
 
         $_SESSION['glpiset_default_tech'] = 0;
@@ -239,11 +239,11 @@ class ITILFollowup extends DbTestCase
 
         $ITILFollowUp = new \ITILFollowup();
         $this->integer($ITILFollowUp->add([
-         'date'                            => $_SESSION['glpi_currenttime'],
-         'users_id'                        => \Session::getLoginUserID(),
-         'content'                         => "Functionnal test",
-         'items_id'                        => $ticketID,
-         'itemtype'                        => \Ticket::class,
+            'date'                            => $_SESSION['glpi_currenttime'],
+            'users_id'                        => \Session::getLoginUserID(),
+            'content'                         => "Functionnal test",
+            'items_id'                        => $ticketID,
+            'itemtype'                        => \Ticket::class,
         ]));
 
         $this->boolean($ticket->getFromDB($ticketID))
@@ -257,12 +257,12 @@ class ITILFollowup extends DbTestCase
 
         $ITILFollowUp = new \ITILFollowup();
         $this->integer($ITILFollowUp->add([
-         'date'                            => $_SESSION['glpi_currenttime'],
-         'users_id'                        => \Session::getLoginUserID(),
-         'content'                         => "Functionnal test",
-         '_do_not_compute_takeintoaccount' => true,
-         'items_id'                        => $ticketID,
-         'itemtype'                        => \Ticket::class,
+            'date'                            => $_SESSION['glpi_currenttime'],
+            'users_id'                        => \Session::getLoginUserID(),
+            'content'                         => "Functionnal test",
+            '_do_not_compute_takeintoaccount' => true,
+            'items_id'                        => $ticketID,
+            'itemtype'                        => \Ticket::class,
         ]));
 
         $this->boolean($ticket->getFromDB($ticketID))
@@ -279,45 +279,45 @@ class ITILFollowup extends DbTestCase
     protected function testIsFromSupportAgentProvider()
     {
         return [
-         [
+            [
             // Case 1: user is not an actor of the ticket
-            "roles"    => [],
-            "profile" => "Technician",
-            "expected" => true,
-         ],
-         [
-            // Case 2: user is a requester
-            "roles"    => [CommonITILActor::REQUESTER],
-            "profile" => "Technician",
-            "expected" => false,
-         ],
-         [
-            // Case 3: user is an observer with a central profile
-            "roles"    => [CommonITILActor::OBSERVER],
-            "profile" => "Technician",
-            "expected" => true,
-         ],
-         [
-            // Case 3b: user is an observer without central profiles
-            "roles"    => [CommonITILActor::OBSERVER],
-            "profile" => "Self-Service",
-            "expected" => false,
-         ],
-         [
-            // Case 4: user is assigned
-            "roles"    => [CommonITILActor::ASSIGN],
-            "profile" => "Technician",
-            "expected" => true,
-         ],
-         [
-            // Case 5: user is observer and assigned
-            "roles"    => [
-               CommonITILActor::OBSERVER,
-               CommonITILActor::ASSIGN,
+                "roles"    => [],
+                "profile" => "Technician",
+                "expected" => true,
             ],
-            "profile" => "Technician",
-            "expected" => true,
-         ],
+            [
+            // Case 2: user is a requester
+                "roles"    => [CommonITILActor::REQUESTER],
+                "profile" => "Technician",
+                "expected" => false,
+            ],
+            [
+            // Case 3: user is an observer with a central profile
+                "roles"    => [CommonITILActor::OBSERVER],
+                "profile" => "Technician",
+                "expected" => true,
+            ],
+            [
+            // Case 3b: user is an observer without central profiles
+                "roles"    => [CommonITILActor::OBSERVER],
+                "profile" => "Self-Service",
+                "expected" => false,
+            ],
+            [
+            // Case 4: user is assigned
+                "roles"    => [CommonITILActor::ASSIGN],
+                "profile" => "Technician",
+                "expected" => true,
+            ],
+            [
+            // Case 5: user is observer and assigned
+                "roles"    => [
+                    CommonITILActor::OBSERVER,
+                    CommonITILActor::ASSIGN,
+                ],
+                "profile" => "Technician",
+                "expected" => true,
+            ],
         ];
     }
 
@@ -340,8 +340,8 @@ class ITILFollowup extends DbTestCase
        // Insert a ticket;
         $ticket = new Ticket();
         $ticket_id = $ticket->add([
-         "name"    => "testIsFromSupportAgent",
-         "content" => "testIsFromSupportAgent",
+            "name"    => "testIsFromSupportAgent",
+            "content" => "testIsFromSupportAgent",
         ]);
         $this->integer($ticket_id);
 
@@ -349,21 +349,21 @@ class ITILFollowup extends DbTestCase
         $rand = mt_rand();
         $user = new User();
         $users_id = $user->add([
-         'name' => "testIsFromSupportAgent$rand",
-         'password' => 'testIsFromSupportAgent',
-         'password2' => 'testIsFromSupportAgent',
-         '_profiles_id' => getItemByTypeName('Profile', $profile, true),
-         '_entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+            'name' => "testIsFromSupportAgent$rand",
+            'password' => 'testIsFromSupportAgent',
+            'password2' => 'testIsFromSupportAgent',
+            '_profiles_id' => getItemByTypeName('Profile', $profile, true),
+            '_entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
         ]);
         $this->integer($users_id)->isGreaterThan(0);
 
        // Insert a followup
         $fup = new CoreITILFollowup();
         $fup_id = $fup->add([
-         'content'  => "testIsFromSupportAgent",
-         'users_id' => $users_id,
-         'items_id' => $ticket_id,
-         'itemtype' => "Ticket",
+            'content'  => "testIsFromSupportAgent",
+            'users_id' => $users_id,
+            'items_id' => $ticket_id,
+            'itemtype' => "Ticket",
         ]);
         $this->integer($fup_id);
         $this->boolean($fup->getFromDB($fup_id))->isTrue();
@@ -376,9 +376,9 @@ class ITILFollowup extends DbTestCase
         $tuser = new Ticket_User();
         foreach ($roles as $role) {
             $this->integer($tuser->add([
-            'tickets_id' => $ticket_id,
-            'users_id'   => $users_id,
-            'type'       => $role,
+                'tickets_id' => $ticket_id,
+                'users_id'   => $users_id,
+                'type'       => $role,
             ]));
         }
 
@@ -398,8 +398,8 @@ class ITILFollowup extends DbTestCase
        // Test uploads for item creation
         $ticket = new \Ticket();
         $ticket->add([
-         'name' => $this->getUniqueString(),
-         'content' => 'test',
+            'name' => $this->getUniqueString(),
+            'content' => 'test',
         ]);
         $this->boolean($ticket->isNewItem())->isFalse();
 
@@ -408,21 +408,21 @@ class ITILFollowup extends DbTestCase
         $filename = '5e5e92ffd9bd91.11111111image_paste22222222.png';
         $instance = new \ITILFollowup();
         $input = [
-         'users_id' => $user,
-         'items_id' => $ticket->getID(),
-         'itemtype' => 'Ticket',
-         'name'    => 'a followup',
-         'content' => '&lt;p&gt; &lt;/p&gt;&lt;p&gt;&lt;img id="3e29dffe-0237ea21-5e5e7034b1d1a1.00000000"'
+            'users_id' => $user,
+            'items_id' => $ticket->getID(),
+            'itemtype' => 'Ticket',
+            'name'    => 'a followup',
+            'content' => '&lt;p&gt; &lt;/p&gt;&lt;p&gt;&lt;img id="3e29dffe-0237ea21-5e5e7034b1d1a1.00000000"'
          . ' src="data:image/png;base64,' . $base64Image . '" width="12" height="12" /&gt;&lt;/p&gt;',
-         '_content' => [
-            $filename,
-         ],
-         '_tag_content' => [
-            '3e29dffe-0237ea21-5e5e7034b1d1a1.00000000',
-         ],
-         '_prefix_content' => [
-            '5e5e92ffd9bd91.11111111',
-         ]
+            '_content' => [
+                $filename,
+            ],
+            '_tag_content' => [
+                '3e29dffe-0237ea21-5e5e7034b1d1a1.00000000',
+            ],
+            '_prefix_content' => [
+                '5e5e92ffd9bd91.11111111',
+            ]
         ];
         copy(__DIR__ . '/../fixtures/uploads/foo.png', GLPI_TMP_DIR . '/' . $filename);
 
@@ -436,18 +436,18 @@ class ITILFollowup extends DbTestCase
         $filename = '5e5e92ffd9bd91.44444444image_paste55555555.png';
         copy(__DIR__ . '/../fixtures/uploads/bar.png', GLPI_TMP_DIR . '/' . $filename);
         $success = $instance->update([
-         'id' => $instance->getID(),
-         'content' => '&lt;p&gt; &lt;/p&gt;&lt;p&gt;&lt;img id="3e29dffe-0237ea21-5e5e7034b1d1a1.33333333"'
+            'id' => $instance->getID(),
+            'content' => '&lt;p&gt; &lt;/p&gt;&lt;p&gt;&lt;img id="3e29dffe-0237ea21-5e5e7034b1d1a1.33333333"'
          . ' src="data:image/png;base64,' . $base64Image . '" width="12" height="12" /&gt;&lt;/p&gt;',
-         '_content' => [
-            $filename,
-         ],
-         '_tag_content' => [
-            '3e29dffe-0237ea21-5e5e7034b1d1a1.33333333',
-         ],
-         '_prefix_content' => [
-            '5e5e92ffd9bd91.44444444',
-         ]
+            '_content' => [
+                $filename,
+            ],
+            '_tag_content' => [
+                '3e29dffe-0237ea21-5e5e7034b1d1a1.33333333',
+            ],
+            '_prefix_content' => [
+                '5e5e92ffd9bd91.44444444',
+            ]
         ]);
         $this->boolean($success)->isTrue();
         $expected = 'a href="/front/document.send.php?docid=';
@@ -462,8 +462,8 @@ class ITILFollowup extends DbTestCase
        // Test uploads for item creation
         $ticket = new \Ticket();
         $ticket->add([
-         'name' => $this->getUniqueString(),
-         'content' => 'test',
+            'name' => $this->getUniqueString(),
+            'content' => 'test',
         ]);
         $this->boolean($ticket->isNewItem())->isFalse();
 
@@ -472,28 +472,28 @@ class ITILFollowup extends DbTestCase
         $filename = '5e5e92ffd9bd91.11111111' . 'foo.txt';
         $instance = new \ITILFollowup();
         $input = [
-         'users_id' => $user,
-         'items_id' => $ticket->getID(),
-         'itemtype' => 'Ticket',
-         'name'    => 'a followup',
-         'content' => 'testUploadDocuments',
-         '_filename' => [
-            $filename,
-         ],
-         '_tag_filename' => [
-            '3e29dffe-0237ea21-5e5e7034b1ffff.00000000',
-         ],
-         '_prefix_filename' => [
-            '5e5e92ffd9bd91.11111111',
-         ]
+            'users_id' => $user,
+            'items_id' => $ticket->getID(),
+            'itemtype' => 'Ticket',
+            'name'    => 'a followup',
+            'content' => 'testUploadDocuments',
+            '_filename' => [
+                $filename,
+            ],
+            '_tag_filename' => [
+                '3e29dffe-0237ea21-5e5e7034b1ffff.00000000',
+            ],
+            '_prefix_filename' => [
+                '5e5e92ffd9bd91.11111111',
+            ]
         ];
         copy(__DIR__ . '/../fixtures/uploads/foo.txt', GLPI_TMP_DIR . '/' . $filename);
         $instance->add($input);
         $this->boolean($instance->isNewItem())->isFalse();
         $this->string($instance->fields['content'])->contains('testUploadDocuments');
         $count = (new \DBUtils())->countElementsInTable(\Document_Item::getTable(), [
-         'itemtype' => 'ITILFollowup',
-         'items_id' => $instance->getID(),
+            'itemtype' => 'ITILFollowup',
+            'items_id' => $instance->getID(),
         ]);
         $this->integer($count)->isEqualTo(1);
 
@@ -501,23 +501,23 @@ class ITILFollowup extends DbTestCase
         $filename = '5e5e92ffd9bd91.44444444bar.txt';
         copy(__DIR__ . '/../fixtures/uploads/bar.png', GLPI_TMP_DIR . '/' . $filename);
         $success = $instance->update([
-         'id' => $instance->getID(),
-         'content' => 'update testUploadDocuments',
-         '_filename' => [
-            $filename,
-         ],
-         '_tag_filename' => [
-            '3e29dffe-0237ea21-5e5e7034b1ffff.33333333',
-         ],
-         '_prefix_filename' => [
-            '5e5e92ffd9bd91.44444444',
-         ]
+            'id' => $instance->getID(),
+            'content' => 'update testUploadDocuments',
+            '_filename' => [
+                $filename,
+            ],
+            '_tag_filename' => [
+                '3e29dffe-0237ea21-5e5e7034b1ffff.33333333',
+            ],
+            '_prefix_filename' => [
+                '5e5e92ffd9bd91.44444444',
+            ]
         ]);
         $this->boolean($success)->isTrue();
         $this->string($instance->fields['content'])->contains('update testUploadDocuments');
         $count = (new \DBUtils())->countElementsInTable(\Document_Item::getTable(), [
-         'itemtype' => 'ITILFollowup',
-         'items_id' => $instance->getID(),
+            'itemtype' => 'ITILFollowup',
+            'items_id' => $instance->getID(),
         ]);
         $this->integer($count)->isEqualTo(2);
     }

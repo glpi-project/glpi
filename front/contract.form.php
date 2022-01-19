@@ -122,9 +122,9 @@ if (isset($_POST["add"])) {
 } else {
     Html::header(Contract::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "management", "contract");
     $contract->display([
-      'id'           => $_GET["id"],
-      'withtemplate' => $_GET["withtemplate"],
-      'formoptions'  => "data-track-changes=true"
+        'id'           => $_GET["id"],
+        'withtemplate' => $_GET["withtemplate"],
+        'formoptions'  => "data-track-changes=true"
     ]);
     Html::footer();
 }

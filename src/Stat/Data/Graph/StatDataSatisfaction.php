@@ -45,10 +45,10 @@ class StatDataSatisfaction extends StatDataAlwaysDisplay
 
         $this->labels = array_keys($avgsatisfaction);
         $this->series = [
-         [
-            'name' => __('Satisfaction'),
-            'data' => $avgsatisfaction,
-         ]
+            [
+                'name' => __('Satisfaction'),
+                'data' => $avgsatisfaction,
+            ]
         ];
     }
 

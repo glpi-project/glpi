@@ -120,9 +120,9 @@ if (isset($_POST["add"])) {
         Html::header(Rack::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "assets", "rack");
     }
     $options = [
-      'id'           => $_GET['id'],
-      'withtemplate' => $_GET['withtemplate'],
-      'formoptions'  => "data-track-changes=true"
+        'id'           => $_GET['id'],
+        'withtemplate' => $_GET['withtemplate'],
+        'formoptions'  => "data-track-changes=true"
     ];
     if (isset($_GET['position'])) {
         $options['position'] = $_GET['position'];

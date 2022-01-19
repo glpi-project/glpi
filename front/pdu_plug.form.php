@@ -68,9 +68,9 @@ if (isset($_GET['id'])) {
     $params['id'] = $_GET['id'];
 } else {
     $params = [
-      'pdus_id'      => $_GET['pdus_id'],
-      'plugs_id'     => $_GET['plugs_id'],
-      'number_plug'  => $_GET['number_plug']
+        'pdus_id'      => $_GET['pdus_id'],
+        'plugs_id'     => $_GET['plugs_id'],
+        'number_plug'  => $_GET['number_plug']
     ];
 }
 $ajax = isset($_REQUEST['ajax']) ? true : false;

@@ -52,7 +52,7 @@ if ($tasktemplates_id === null) {
 } else if ($tasktemplates_id == 0) {
    // Reset form
     echo json_encode([
-      'content' => ""
+        'content' => ""
     ]);
     die;
 }

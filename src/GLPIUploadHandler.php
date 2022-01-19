@@ -122,9 +122,9 @@ class GLPIUploadHandler extends UploadHandler
         global $CFG_GLPI, $DB;
 
         $default_params = [
-         'name'           => '',
-         'showfilesize'   => false,
-         'print_response' => true
+            'name'           => '',
+            'showfilesize'   => false,
+            'print_response' => true
         ];
         $params = array_merge($default_params, $params);
 
@@ -133,14 +133,14 @@ class GLPIUploadHandler extends UploadHandler
         $upload_dir     = GLPI_TMP_DIR . '/';
         $upload_handler = new self(
             [
-            'accept_file_types'         => DocumentType::getUploadableFilePattern(),
-            'image_versions'            => [
-               'auto_orient' => false,
-            ],
-            'param_name'                => $pname,
-            'replace_dots_in_filenames' => false,
-            'upload_dir'                => $upload_dir,
-            'max_file_size'             => $CFG_GLPI['document_max_size'] * 1024 * 1024,
+                'accept_file_types'         => DocumentType::getUploadableFilePattern(),
+                'image_versions'            => [
+                    'auto_orient' => false,
+                ],
+                'param_name'                => $pname,
+                'replace_dots_in_filenames' => false,
+                'upload_dir'                => $upload_dir,
+                'max_file_size'             => $CFG_GLPI['document_max_size'] * 1024 * 1024,
             ],
             false
         );

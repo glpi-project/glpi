@@ -80,7 +80,8 @@ class Session
         if ($auth->auth_succeded) {
            // Restart GLPI session : complete destroy to prevent lost datas
             $tosave = ['glpi_plugins', 'glpicookietest', 'phpCAS', 'glpicsrftokens',
-                         'glpiskipMaintenance'];
+                'glpiskipMaintenance'
+            ];
             $save   = [];
             foreach ($tosave as $t) {
                 if (isset($_SESSION[$t])) {
@@ -515,24 +516,24 @@ class Session
         }
 
         $iterator = $DB->request([
-         'SELECT'          => [
-            'glpi_profiles.id',
-            'glpi_profiles.name'
-         ],
-         'DISTINCT'        => true,
-         'FROM'            => 'glpi_profiles_users',
-         'INNER JOIN'      => [
-            'glpi_profiles'   => [
-               'ON' => [
-                  'glpi_profiles_users'   => 'profiles_id',
-                  'glpi_profiles'         => 'id'
-               ]
-            ]
-         ],
-         'WHERE'           => [
-            'glpi_profiles_users.users_id'   => $userID
-         ],
-         'ORDERBY'         => 'glpi_profiles.name'
+            'SELECT'          => [
+                'glpi_profiles.id',
+                'glpi_profiles.name'
+            ],
+            'DISTINCT'        => true,
+            'FROM'            => 'glpi_profiles_users',
+            'INNER JOIN'      => [
+                'glpi_profiles'   => [
+                    'ON' => [
+                        'glpi_profiles_users'   => 'profiles_id',
+                        'glpi_profiles'         => 'id'
+                    ]
+                ]
+            ],
+            'WHERE'           => [
+                'glpi_profiles_users.users_id'   => $userID
+            ],
+            'ORDERBY'         => 'glpi_profiles.name'
         ]);
 
         if (count($iterator)) {
@@ -540,26 +541,26 @@ class Session
                 $key = $data['id'];
                 $_SESSION['glpiprofiles'][$key]['name'] = $data['name'];
                 $entities_iterator = $DB->request([
-                 'SELECT'    => [
-                  'glpi_profiles_users.entities_id AS eID',
-                  'glpi_profiles_users.id AS kID',
-                  'glpi_profiles_users.is_recursive',
-                  'glpi_entities.*'
-                 ],
-                 'FROM'      => 'glpi_profiles_users',
-                 'LEFT JOIN' => [
-                  'glpi_entities'   => [
-                     'ON' => [
-                        'glpi_profiles_users'   => 'entities_id',
-                        'glpi_entities'         => 'id'
-                     ]
-                  ]
-                 ],
-                 'WHERE'     => [
-                  'glpi_profiles_users.profiles_id'   => $key,
-                  'glpi_profiles_users.users_id'      => $userID
-                 ],
-                 'ORDERBY'   => 'glpi_entities.completename'
+                    'SELECT'    => [
+                        'glpi_profiles_users.entities_id AS eID',
+                        'glpi_profiles_users.id AS kID',
+                        'glpi_profiles_users.is_recursive',
+                        'glpi_entities.*'
+                    ],
+                    'FROM'      => 'glpi_profiles_users',
+                    'LEFT JOIN' => [
+                        'glpi_entities'   => [
+                            'ON' => [
+                                'glpi_profiles_users'   => 'entities_id',
+                                'glpi_entities'         => 'id'
+                            ]
+                        ]
+                    ],
+                    'WHERE'     => [
+                        'glpi_profiles_users.profiles_id'   => $key,
+                        'glpi_profiles_users.users_id'      => $userID
+                    ],
+                    'ORDERBY'   => 'glpi_entities.completename'
                 ]);
 
                 foreach ($entities_iterator as $data) {
@@ -569,9 +570,9 @@ class Session
                          || $data['is_recursive']
                     ) {
                         $_SESSION['glpiprofiles'][$key]['entities'][$data['eID']] = [
-                         'id'           => $data['eID'],
-                         'name'         => $data['name'],
-                         'is_recursive' => $data['is_recursive']
+                            'id'           => $data['eID'],
+                            'name'         => $data['name'],
+                            'is_recursive' => $data['is_recursive']
                         ];
                     }
                 }
@@ -592,24 +593,24 @@ class Session
         $_SESSION["glpigroups"] = [];
 
         $iterator = $DB->request([
-         'SELECT'    => Group_User::getTable() . '.groups_id',
-         'FROM'      => Group_User::getTable(),
-         'LEFT JOIN' => [
-            Group::getTable() => [
-               'ON' => [
-                  Group::getTable()       => 'id',
-                  Group_User::getTable()  => 'groups_id'
-               ]
-            ]
-         ],
-         'WHERE'     => [
-            Group_User::getTable() . '.users_id' => self::getLoginUserID()
-         ] + getEntitiesRestrictCriteria(
-             Group::getTable(),
-             'entities_id',
-             $_SESSION['glpiactiveentities'],
-             true
-         )
+            'SELECT'    => Group_User::getTable() . '.groups_id',
+            'FROM'      => Group_User::getTable(),
+            'LEFT JOIN' => [
+                Group::getTable() => [
+                    'ON' => [
+                        Group::getTable()       => 'id',
+                        Group_User::getTable()  => 'groups_id'
+                    ]
+                ]
+            ],
+            'WHERE'     => [
+                Group_User::getTable() . '.users_id' => self::getLoginUserID()
+            ] + getEntitiesRestrictCriteria(
+                Group::getTable(),
+                'entities_id',
+                $_SESSION['glpiactiveentities'],
+                true
+            )
         ]);
 
         foreach ($iterator as $data) {
@@ -1453,7 +1454,7 @@ class Session
         }
 
         $_SESSION['glpiidortokens'][$token] = [
-         'expires'  => time() + GLPI_IDOR_EXPIRES
+            'expires'  => time() + GLPI_IDOR_EXPIRES
         ] + ($itemtype !== "" ? ['itemtype' => $itemtype] : [])
         + $add_params;
 

@@ -65,8 +65,8 @@ trait DCBreadcrumb
            //check if asset is part of an enclosure
             if ($enclosure = $this->isEnclosurePart($item->getType(), $item->getID(), true)) {
                 $options = [
-                 'linkoption' => $enclosure->isDeleted() ? 'class="target-deleted"' : '',
-                 'icon'       => true
+                    'linkoption' => $enclosure->isDeleted() ? 'class="target-deleted"' : '',
+                    'icon'       => true
                 ];
                 $position = $this->getItemEnclosurePosition($item->getType(), $item->getID());
                 $breadcrumb[] = $enclosure->getLink($options) . $position;
@@ -78,8 +78,8 @@ trait DCBreadcrumb
            //check if asset (or its enclosure) is part of a rack
             if ($rack = $this->isRackPart($item->getType(), $item->getID(), true)) {
                 $options = [
-                'linkoption' => $rack->isDeleted() ? 'class="target-deleted"' : '',
-                'icon'       => true
+                    'linkoption' => $rack->isDeleted() ? 'class="target-deleted"' : '',
+                    'icon'       => true
                 ];
                 $position = $this->getItemRackPosition($item->getType(), $item->getID());
                 $breadcrumb[] = $rack->getLink($options) . $position;
@@ -92,8 +92,8 @@ trait DCBreadcrumb
                 $dcroom = new DCRoom();
                 if ($dcroom->getFromDB($item->fields['dcrooms_id'])) {
                     $options = [
-                    'linkoption' => $dcroom->isDeleted() ? 'class="target-deleted"' : '',
-                    'icon'       => true
+                        'linkoption' => $dcroom->isDeleted() ? 'class="target-deleted"' : '',
+                        'icon'       => true
                     ];
                     $breadcrumb[] = $dcroom->getLink($options);
                     $item = $dcroom;
@@ -106,8 +106,8 @@ trait DCBreadcrumb
                 $datacenter = new Datacenter();
                 if ($datacenter->getFromDB($item->fields['datacenters_id'])) {
                     $options = [
-                    'linkoption' => $datacenter->isDeleted() ? 'class="target-deleted"' : '',
-                    'icon'       => true
+                        'linkoption' => $datacenter->isDeleted() ? 'class="target-deleted"' : '',
+                        'icon'       => true
                     ];
                     $breadcrumb[] = $datacenter->getLink($options);
                 }
@@ -130,8 +130,8 @@ trait DCBreadcrumb
     {
         $ien = new Item_Enclosure();
         $found = $ien->getFromDBByCrit([
-         'itemtype'  => $itemtype,
-         'items_id'  => $items_id
+            'itemtype'  => $itemtype,
+            'items_id'  => $items_id
         ]);
 
         if ($found && $getobj) {
@@ -162,8 +162,8 @@ trait DCBreadcrumb
 
         if (
             $ien->getFromDBByCrit([
-            'itemtype'  => $itemtype,
-            'items_id'  => $items_id
+                'itemtype'  => $itemtype,
+                'items_id'  => $items_id
             ])
         ) {
             $position = $ien->getField('position');
@@ -188,8 +188,8 @@ trait DCBreadcrumb
 
         if (
             $ira->getFromDBByCrit([
-            'itemtype'  => $itemtype,
-            'items_id'  => $items_id
+                'itemtype'  => $itemtype,
+                'items_id'  => $items_id
             ])
         ) {
             $position = $ira->getField('position');
@@ -212,8 +212,8 @@ trait DCBreadcrumb
     {
         $ira = new Item_Rack();
         $found = $ira->getFromDBByCrit([
-         'itemtype'  => $itemtype,
-         'items_id'  => $items_id
+            'itemtype'  => $itemtype,
+            'items_id'  => $items_id
         ]);
         if ($found && $getobj) {
             $rack = new \Rack();

@@ -42,8 +42,8 @@ class Camera extends AbstractInventoryAsset
     protected function assetProvider(): array
     {
         return [
-         [
-            'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+            [
+                'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
   <CONTENT>
     <CAMERAS>
@@ -71,8 +71,8 @@ class Camera extends AbstractInventoryAsset
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-            'expected'  => '{"resolution":["800x600","8000x6000"],"lensfacing":"BACK","flashunit":"1","imageformats":["RAW_SENSOR","JPEG","YUV_420_888","RAW10"],"orientation":"90","focallength":"4.77","sensorsize":"6.4x4.8","resolutionvideo":["176x144","1760x1440"], "is_dynamic": 1}'
-         ]
+                'expected'  => '{"resolution":["800x600","8000x6000"],"lensfacing":"BACK","flashunit":"1","imageformats":["RAW_SENSOR","JPEG","YUV_420_888","RAW10"],"orientation":"90","focallength":"4.77","sensorsize":"6.4x4.8","resolutionvideo":["176x144","1760x1440"], "is_dynamic": 1}'
+            ]
         ];
     }
 
@@ -172,64 +172,64 @@ class Camera extends AbstractInventoryAsset
 
        //create manually a computer, with 3 cameras
         $computers_id = $computer->add([
-         'name'   => 'pc002',
-         'serial' => 'ggheb7ne7',
-         'entities_id' => 0
+            'name'   => 'pc002',
+            'serial' => 'ggheb7ne7',
+            'entities_id' => 0
         ]);
         $this->integer($computers_id)->isGreaterThan(0);
 
         $manufacturer = new \Manufacturer();
         $manufacturers_id = $manufacturer->add([
-         'name' => 'Xiaomi'
+            'name' => 'Xiaomi'
         ]);
         $this->integer($manufacturers_id)->isGreaterThan(0);
 
         $model = new \DeviceCameraModel();
         $models_id = $model->add([
-         'name' => 'test'
+            'name' => 'test'
         ]);
         $this->integer($models_id)->isGreaterThan(0);
 
         $cam_1_id = $device_cam->add([
-         'designation' => 'Front cam',
-         'manufacturers_id' => $manufacturers_id,
-         'devicecameramodels_id' => $models_id,
-         'entities_id'  => 0
+            'designation' => 'Front cam',
+            'manufacturers_id' => $manufacturers_id,
+            'devicecameramodels_id' => $models_id,
+            'entities_id'  => 0
         ]);
         $this->integer($cam_1_id)->isGreaterThan(0);
 
         $item_cam_1_id = $item_cam->add([
-         'items_id'     => $computers_id,
-         'itemtype'     => 'Computer',
-         'devicecameras_id' => $cam_1_id
+            'items_id'     => $computers_id,
+            'itemtype'     => 'Computer',
+            'devicecameras_id' => $cam_1_id
         ]);
 
         $cam_2_id = $device_cam->add([
-         'designation' => 'Rear cam',
-         'manufacturers_id' => $manufacturers_id,
-         'devicecameramodels_id' => $models_id,
-         'entities_id'  => 0
+            'designation' => 'Rear cam',
+            'manufacturers_id' => $manufacturers_id,
+            'devicecameramodels_id' => $models_id,
+            'entities_id'  => 0
         ]);
         $this->integer($cam_2_id)->isGreaterThan(0);
 
         $item_cam_2_id = $item_cam->add([
-         'items_id'     => $computers_id,
-         'itemtype'     => 'Computer',
-         'devicecameras_id' => $cam_2_id
+            'items_id'     => $computers_id,
+            'itemtype'     => 'Computer',
+            'devicecameras_id' => $cam_2_id
         ]);
 
         $cam_3_id = $device_cam->add([
-         'designation' => 'Other cam',
-         'manufacturers_id' => $manufacturers_id,
-         'devicecameramodels_id' => $models_id,
-         'entities_id'  => 0
+            'designation' => 'Other cam',
+            'manufacturers_id' => $manufacturers_id,
+            'devicecameramodels_id' => $models_id,
+            'entities_id'  => 0
         ]);
         $this->integer($cam_3_id)->isGreaterThan(0);
 
         $item_cam_3_id = $item_cam->add([
-         'items_id'     => $computers_id,
-         'itemtype'     => 'Computer',
-         'devicecameras_id' => $cam_3_id
+            'items_id'     => $computers_id,
+            'itemtype'     => 'Computer',
+            'devicecameras_id' => $cam_3_id
         ]);
 
         $cams = $item_cam->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);

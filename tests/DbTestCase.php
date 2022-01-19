@@ -135,8 +135,8 @@ class DbTestCase extends \GLPITestCase
         $excludes = array_merge(
             $excludes,
             [
-            'TicketFollowup', // Deprecated
-            '/^RuleImportComputer.*/', // Deprecated
+                'TicketFollowup', // Deprecated
+                '/^RuleImportComputer.*/', // Deprecated
             ]
         );
 

@@ -44,9 +44,9 @@ class NotificationTemplate extends DbTestCase
         global $DB;
 
         $iterator = $DB->request([
-         'SELECT' => 'notificationtemplates_id',
-         'FROM'   => \NotificationTemplateTranslation::getTable(),
-         'LIMIT'  => 1
+            'SELECT' => 'notificationtemplates_id',
+            'FROM'   => \NotificationTemplateTranslation::getTable(),
+            'LIMIT'  => 1
         ]);
 
         $data = $iterator->current();

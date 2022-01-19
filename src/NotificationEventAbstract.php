@@ -75,13 +75,13 @@ abstract class NotificationEventAbstract
             );
 
             static::extraRaise([
-             'event'              => $event,
-             'item'               => $item,
-             'options'            => $options,
-             'data'               => $data,
-             'notificationtarget' => $notificationtarget,
-             'template'           => $template,
-             'notify_me'          => $notify_me
+                'event'              => $event,
+                'item'               => $item,
+                'options'            => $options,
+                'data'               => $data,
+                'notificationtarget' => $notificationtarget,
+                'template'           => $template,
+                'notify_me'          => $notify_me
             ]);
 
            // get original timezone

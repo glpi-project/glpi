@@ -46,7 +46,7 @@ if (!$DB->fieldExists("glpi_contacts", "registration_number")) {
         "registration_number",
         "string",
         [
-         'after'     => "firstname",
+            'after'     => "firstname",
         ]
     );
 }

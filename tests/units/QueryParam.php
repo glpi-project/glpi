@@ -43,11 +43,11 @@ class QueryParam extends DbTestCase
     {
 
         return [
-         [null, '?'],
-         ['', '?'],
-         ['?', '?'],
-         ['myparam', ':myparam'],
-         [':myparam', ':myparam']
+            [null, '?'],
+            ['', '?'],
+            ['?', '?'],
+            ['myparam', ':myparam'],
+            [':myparam', ':myparam']
         ];
     }
 

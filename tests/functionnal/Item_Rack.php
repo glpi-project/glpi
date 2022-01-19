@@ -47,42 +47,42 @@ class Item_Rack extends DbTestCase
     protected function modelsProvider()
     {
         return [
-         [
-            'name'            => 'Full',
-            'required_units'  => 1,
-            'depth'           => 1,
-            'is_half_rack'    => 0
-         ], [
-            'name'            => 'Midrack',
-            'required_units'  => 1,
-            'depth'           => 1,
-            'is_half_rack'    => 1
-         ], [
-            'name'            => '3U',
-            'required_units'  => 3,
-            'depth'           => 1,
-            'is_half_rack'    => 0
-         ], [
-            'name'            => '1/2 Depth',
-            'required_units'  => 1,
-            'depth'           => 0.5,
-            'is_half_rack'    => 0
-         ], [
-            'name'            => 'Mid 1/2 depth',
-            'required_units'  => 1,
-            'depth'           => 0.5,
-            'is_half_rack'    => 1
-         ], [
-            'name'            => '2U and depth',
-            'required_units'  => 2,
-            'depth'           => 0.25,
-            'is_half_rack'    => 0
-         ], [
-            'name'            => '2U and mid',
-            'required_units'  => 2,
-            'depth'           => 1,
-            'is_half_rack'    => 1
-         ]
+            [
+                'name'            => 'Full',
+                'required_units'  => 1,
+                'depth'           => 1,
+                'is_half_rack'    => 0
+            ], [
+                'name'            => 'Midrack',
+                'required_units'  => 1,
+                'depth'           => 1,
+                'is_half_rack'    => 1
+            ], [
+                'name'            => '3U',
+                'required_units'  => 3,
+                'depth'           => 1,
+                'is_half_rack'    => 0
+            ], [
+                'name'            => '1/2 Depth',
+                'required_units'  => 1,
+                'depth'           => 0.5,
+                'is_half_rack'    => 0
+            ], [
+                'name'            => 'Mid 1/2 depth',
+                'required_units'  => 1,
+                'depth'           => 0.5,
+                'is_half_rack'    => 1
+            ], [
+                'name'            => '2U and depth',
+                'required_units'  => 2,
+                'depth'           => 0.25,
+                'is_half_rack'    => 0
+            ], [
+                'name'            => '2U and mid',
+                'required_units'  => 2,
+                'depth'           => 1,
+                'is_half_rack'    => 1
+            ]
         ];
     }
 
@@ -109,49 +109,49 @@ class Item_Rack extends DbTestCase
     protected function computersProvider()
     {
         return [
-         [
-            'name'   => 'SRV-NUX-1',
-            'model'  => 'Full'
-         ], [
-            'name'   => 'SRV-NUX-2',
-            'model'  => 'Full'
-         ], [
-            'name'   => 'MID-NUX-1',
-            'model'  => 'Midrack'
-         ], [
-            'name'   => 'MID-NUX-2',
-            'model'  => 'Midrack'
-         ], [
-            'name'   => 'MID-NUX-3',
-            'model'  => 'Midrack'
-         ], [
-            'name'   => 'BIG-NUX-1',
-            'model'  => '3U'
-         ], [
-            'name'   => 'DEP-NUX-1',
-            'model'  => '1/2 Depth'
-         ], [
-            'name'   => 'DEP-NUX-2',
-            'model'  => '1/2 Depth'
-         ], [
-            'name'   => 'MAD-NUX-1',
-            'model'  => 'Mid 1/2 depth'
-         ], [
-            'name'   => 'MAD-NUX-2',
-            'model'  => 'Mid 1/2 depth'
-         ], [
-            'name'   => 'MAD-NUX-3',
-            'model'  => 'Mid 1/2 depth'
-         ], [
-            'name'   => 'MAD-NUX-4',
-            'model'  => 'Mid 1/2 depth'
-         ], [
-            'name'   => '2AD-NUX-1',
-            'model'  => '2U and depth'
-         ], [
-            'name'   => '2AM-NUX-1',
-            'model'  => '2U and mid'
-         ]
+            [
+                'name'   => 'SRV-NUX-1',
+                'model'  => 'Full'
+            ], [
+                'name'   => 'SRV-NUX-2',
+                'model'  => 'Full'
+            ], [
+                'name'   => 'MID-NUX-1',
+                'model'  => 'Midrack'
+            ], [
+                'name'   => 'MID-NUX-2',
+                'model'  => 'Midrack'
+            ], [
+                'name'   => 'MID-NUX-3',
+                'model'  => 'Midrack'
+            ], [
+                'name'   => 'BIG-NUX-1',
+                'model'  => '3U'
+            ], [
+                'name'   => 'DEP-NUX-1',
+                'model'  => '1/2 Depth'
+            ], [
+                'name'   => 'DEP-NUX-2',
+                'model'  => '1/2 Depth'
+            ], [
+                'name'   => 'MAD-NUX-1',
+                'model'  => 'Mid 1/2 depth'
+            ], [
+                'name'   => 'MAD-NUX-2',
+                'model'  => 'Mid 1/2 depth'
+            ], [
+                'name'   => 'MAD-NUX-3',
+                'model'  => 'Mid 1/2 depth'
+            ], [
+                'name'   => 'MAD-NUX-4',
+                'model'  => 'Mid 1/2 depth'
+            ], [
+                'name'   => '2AD-NUX-1',
+                'model'  => '2U and depth'
+            ], [
+                'name'   => '2AM-NUX-1',
+                'model'  => '2U and mid'
+            ]
         ];
     }
 
@@ -189,11 +189,11 @@ class Item_Rack extends DbTestCase
        //create a 10u rack
         $this->integer(
             (int)$rack->add([
-            'name'         => 'Test rack',
-            'number_units' => 10,
-            'dcrooms_id'   => 0,
-            'position'     => 0,
-            'entities_id'  => 0,
+                'name'         => 'Test rack',
+                'number_units' => 10,
+                'dcrooms_id'   => 0,
+                'position'     => 0,
+                'entities_id'  => 0,
             ])
         )->isGreaterThan(0);
 
@@ -204,10 +204,10 @@ class Item_Rack extends DbTestCase
         $ira->getEmpty();
         $this->integer(
             (int)$ira->add([
-            'racks_id'  => $rack->getID(),
-            'position'  => 15,
-            'itemtype'  => 'Computer',
-            'items_id'  => $SRVNUX1
+                'racks_id'  => $rack->getID(),
+                'position'  => 15,
+                'itemtype'  => 'Computer',
+                'items_id'  => $SRVNUX1
             ])
         )->isIdenticalTo(0);
 
@@ -217,10 +217,10 @@ class Item_Rack extends DbTestCase
         $ira->getEmpty();
         $this->integer(
             (int)$ira->add([
-            'racks_id'  => $rack->getID(),
-            'position'  => 1,
-            'itemtype'  => 'Computer',
-            'items_id'  => $SRVNUX1
+                'racks_id'  => $rack->getID(),
+                'position'  => 1,
+                'itemtype'  => 'Computer',
+                'items_id'  => $SRVNUX1
             ])
         )->isGreaterThan(0);
 
@@ -229,10 +229,10 @@ class Item_Rack extends DbTestCase
         $ira->getEmpty();
         $this->integer(
             (int)$ira->add([
-            'racks_id'  => $rack->getID(),
-            'position'  => 10,
-            'itemtype'  => 'Computer',
-            'items_id'  => $BIGNUX1
+                'racks_id'  => $rack->getID(),
+                'position'  => 10,
+                'itemtype'  => 'Computer',
+                'items_id'  => $BIGNUX1
             ])
         )->isIdenticalTo(0);
 
@@ -242,10 +242,10 @@ class Item_Rack extends DbTestCase
         $ira->getEmpty();
         $this->integer(
             (int)$ira->add([
-            'racks_id'  => $rack->getID(),
-            'position'  => 9,
-            'itemtype'  => 'Computer',
-            'items_id'  => $BIGNUX1
+                'racks_id'  => $rack->getID(),
+                'position'  => 9,
+                'itemtype'  => 'Computer',
+                'items_id'  => $BIGNUX1
             ])
         )->isIdenticalTo(0);
 
@@ -255,10 +255,10 @@ class Item_Rack extends DbTestCase
         $ira->getEmpty();
         $this->integer(
             (int)$ira->add([
-            'racks_id'  => $rack->getID(),
-            'position'  => 8,
-            'itemtype'  => 'Computer',
-            'items_id'  => $BIGNUX1
+                'racks_id'  => $rack->getID(),
+                'position'  => 8,
+                'itemtype'  => 'Computer',
+                'items_id'  => $BIGNUX1
             ])
         )->isGreaterThan(0);
 
@@ -270,10 +270,10 @@ class Item_Rack extends DbTestCase
         $ira->getEmpty();
         $this->integer(
             (int)$ira->add([
-            'racks_id'  => $rack->getID(),
-            'position'  => 1,
-            'itemtype'  => 'Computer',
-            'items_id'  => $MIDNUX1
+                'racks_id'  => $rack->getID(),
+                'position'  => 1,
+                'itemtype'  => 'Computer',
+                'items_id'  => $MIDNUX1
             ])
         )->isIdenticalTo(0);
 
@@ -283,11 +283,11 @@ class Item_Rack extends DbTestCase
         $ira->getEmpty();
         $this->integer(
             (int)$ira->add([
-            'racks_id'  => $rack->getID(),
-            'position'  => 1,
-            'itemtype'  => 'Computer',
-            'items_id'  => $MIDNUX1,
-            'hpos'      => $rack::POS_LEFT
+                'racks_id'  => $rack->getID(),
+                'position'  => 1,
+                'itemtype'  => 'Computer',
+                'items_id'  => $MIDNUX1,
+                'hpos'      => $rack::POS_LEFT
             ])
         )->isIdenticalTo(0);
 
@@ -297,11 +297,11 @@ class Item_Rack extends DbTestCase
         $ira->getEmpty();
         $this->integer(
             (int)$ira->add([
-            'racks_id'  => $rack->getID(),
-            'position'  => 2,
-            'itemtype'  => 'Computer',
-            'items_id'  => $MIDNUX1,
-            'hpos'      => $rack::POS_LEFT
+                'racks_id'  => $rack->getID(),
+                'position'  => 2,
+                'itemtype'  => 'Computer',
+                'items_id'  => $MIDNUX1,
+                'hpos'      => $rack::POS_LEFT
             ])
         )->isGreaterThan(0);
 
@@ -309,11 +309,11 @@ class Item_Rack extends DbTestCase
         $ira->getEmpty();
         $this->integer(
             (int)$ira->add([
-            'racks_id'  => $rack->getID(),
-            'position'  => 2,
-            'itemtype'  => 'Computer',
-            'items_id'  => $MIDNUX2,
-            'hpos'      => $rack::POS_LEFT
+                'racks_id'  => $rack->getID(),
+                'position'  => 2,
+                'itemtype'  => 'Computer',
+                'items_id'  => $MIDNUX2,
+                'hpos'      => $rack::POS_LEFT
             ])
         )->isIdenticalTo(0);
 
@@ -323,11 +323,11 @@ class Item_Rack extends DbTestCase
         $ira->getEmpty();
         $this->integer(
             (int)$ira->add([
-            'racks_id'  => $rack->getID(),
-            'position'  => 2,
-            'itemtype'  => 'Computer',
-            'items_id'  => $MIDNUX2,
-            'hpos'      => $rack::POS_RIGHT
+                'racks_id'  => $rack->getID(),
+                'position'  => 2,
+                'itemtype'  => 'Computer',
+                'items_id'  => $MIDNUX2,
+                'hpos'      => $rack::POS_RIGHT
             ])
         )->isGreaterThan(0);
 
@@ -335,11 +335,11 @@ class Item_Rack extends DbTestCase
         $ira->getEmpty();
         $this->integer(
             (int)$ira->add([
-            'racks_id'  => $rack->getID(),
-            'position'  => 2,
-            'itemtype'  => 'Computer',
-            'items_id'  => $MIDNUX3,
-            'hpos'      => $rack::POS_LEFT
+                'racks_id'  => $rack->getID(),
+                'position'  => 2,
+                'itemtype'  => 'Computer',
+                'items_id'  => $MIDNUX3,
+                'hpos'      => $rack::POS_LEFT
             ])
         )->isIdenticalTo(0);
 
@@ -353,10 +353,10 @@ class Item_Rack extends DbTestCase
         $ira->getEmpty();
         $this->integer(
             (int)$ira->add([
-            'racks_id'  => $rack->getID(),
-            'position'  => 1,
-            'itemtype'  => 'Computer',
-            'items_id'  => $DEPNUX1
+                'racks_id'  => $rack->getID(),
+                'position'  => 1,
+                'itemtype'  => 'Computer',
+                'items_id'  => $DEPNUX1
             ])
         )->isIdenticalTo(0);
 
@@ -366,11 +366,11 @@ class Item_Rack extends DbTestCase
         $ira->getEmpty();
         $this->integer(
             (int)$ira->add([
-            'racks_id'  => $rack->getID(),
-            'position'  => 1,
-            'itemtype'  => 'Computer',
-            'items_id'  => $DEPNUX1,
-            'orientation'  => $rack::FRONT
+                'racks_id'  => $rack->getID(),
+                'position'  => 1,
+                'itemtype'  => 'Computer',
+                'items_id'  => $DEPNUX1,
+                'orientation'  => $rack::FRONT
             ])
         )->isIdenticalTo(0);
 
@@ -380,11 +380,11 @@ class Item_Rack extends DbTestCase
         $ira->getEmpty();
         $this->integer(
             (int)$ira->add([
-            'racks_id'  => $rack->getID(),
-            'position'  => 2,
-            'itemtype'  => 'Computer',
-            'items_id'  => $DEPNUX1,
-            'orientation'  => $rack::FRONT
+                'racks_id'  => $rack->getID(),
+                'position'  => 2,
+                'itemtype'  => 'Computer',
+                'items_id'  => $DEPNUX1,
+                'orientation'  => $rack::FRONT
             ])
         )->isIdenticalTo(0);
 
@@ -394,11 +394,11 @@ class Item_Rack extends DbTestCase
         $ira->getEmpty();
         $this->integer(
             (int)$ira->add([
-            'racks_id'  => $rack->getID(),
-            'position'  => 3,
-            'itemtype'  => 'Computer',
-            'items_id'  => $DEPNUX1,
-            'orientation'  => $rack::FRONT
+                'racks_id'  => $rack->getID(),
+                'position'  => 3,
+                'itemtype'  => 'Computer',
+                'items_id'  => $DEPNUX1,
+                'orientation'  => $rack::FRONT
             ])
         )->isGreaterThan(0);
 
@@ -407,11 +407,11 @@ class Item_Rack extends DbTestCase
         $ira->getEmpty();
         $this->integer(
             (int)$ira->add([
-            'racks_id'  => $rack->getID(),
-            'position'  => 3,
-            'itemtype'  => 'Computer',
-            'items_id'  => $DEPNUX2,
-            'orientation'  => $rack::FRONT
+                'racks_id'  => $rack->getID(),
+                'position'  => 3,
+                'itemtype'  => 'Computer',
+                'items_id'  => $DEPNUX2,
+                'orientation'  => $rack::FRONT
             ])
         )->isIdenticalTo(0);
 
@@ -420,11 +420,11 @@ class Item_Rack extends DbTestCase
         $ira->getEmpty();
         $this->integer(
             (int)$ira->add([
-            'racks_id'  => $rack->getID(),
-            'position'  => 3,
-            'itemtype'  => 'Computer',
-            'items_id'  => $DEPNUX2,
-            'orientation'  => $rack::REAR
+                'racks_id'  => $rack->getID(),
+                'position'  => 3,
+                'itemtype'  => 'Computer',
+                'items_id'  => $DEPNUX2,
+                'orientation'  => $rack::REAR
             ])
         )->isGreaterThan(0);
 
@@ -439,12 +439,12 @@ class Item_Rack extends DbTestCase
         $ira->getEmpty();
         $this->integer(
             (int)$ira->add([
-            'racks_id'  => $rack->getID(),
-            'position'  => 2,
-            'itemtype'  => 'Computer',
-            'items_id'  => $MADNUX1,
-            'orientation'  => $rack::REAR,
-            'hpos'      => $rack::POS_LEFT
+                'racks_id'  => $rack->getID(),
+                'position'  => 2,
+                'itemtype'  => 'Computer',
+                'items_id'  => $MADNUX1,
+                'orientation'  => $rack::REAR,
+                'hpos'      => $rack::POS_LEFT
             ])
         )->isIdenticalTo(0);
 
@@ -453,24 +453,24 @@ class Item_Rack extends DbTestCase
         $ira->getEmpty();
         $this->integer(
             (int)$ira->add([
-            'racks_id'  => $rack->getID(),
-            'position'  => 2,
-            'itemtype'  => 'Computer',
-            'items_id'  => $MADNUX1,
-            'orientation'  => $rack::REAR,
-            'hpos'      => $rack::POS_RIGHT
+                'racks_id'  => $rack->getID(),
+                'position'  => 2,
+                'itemtype'  => 'Computer',
+                'items_id'  => $MADNUX1,
+                'orientation'  => $rack::REAR,
+                'hpos'      => $rack::POS_RIGHT
             ])
         )->isGreaterThan(0);
 
         $ira->getEmpty();
         $this->integer(
             (int)$ira->add([
-            'racks_id'  => $rack->getID(),
-            'position'  => 2,
-            'itemtype'  => 'Computer',
-            'items_id'  => $MADNUX2,
-            'orientation'  => $rack::REAR,
-            'hpos'      => $rack::POS_LEFT
+                'racks_id'  => $rack->getID(),
+                'position'  => 2,
+                'itemtype'  => 'Computer',
+                'items_id'  => $MADNUX2,
+                'orientation'  => $rack::REAR,
+                'hpos'      => $rack::POS_LEFT
             ])
         )->isIdenticalTo(0);
 
@@ -479,12 +479,12 @@ class Item_Rack extends DbTestCase
         $ira->getEmpty();
         $this->integer(
             (int)$ira->add([
-            'racks_id'  => $rack->getID(),
-            'position'  => 2,
-            'itemtype'  => 'Computer',
-            'items_id'  => $MADNUX2,
-            'orientation'  => $rack::FRONT,
-            'hpos'      => $rack::POS_RIGHT
+                'racks_id'  => $rack->getID(),
+                'position'  => 2,
+                'itemtype'  => 'Computer',
+                'items_id'  => $MADNUX2,
+                'orientation'  => $rack::FRONT,
+                'hpos'      => $rack::POS_RIGHT
             ])
         )->isGreaterThan(0);
     }

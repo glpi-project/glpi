@@ -43,16 +43,16 @@ class Location extends DbTestCase
     {
         $location1 = new \Location();
         $location1_id = $location1->add([
-         'name'         => 'inherit_geo_test_parent',
-         'latitude'     => '48.8566',
-         'longitude'    => '2.3522',
-         'altitude'     => '115'
+            'name'         => 'inherit_geo_test_parent',
+            'latitude'     => '48.8566',
+            'longitude'    => '2.3522',
+            'altitude'     => '115'
         ]);
         $this->integer((int) $location1_id)->isGreaterThan(0);
         $location2 = new \Location();
         $location2_id = $location2->add([
-         'locations_id' => $location1_id,
-         'name'         => 'inherit_geo_test_child',
+            'locations_id' => $location1_id,
+            'name'         => 'inherit_geo_test_child',
         ]);
         $this->integer((int) $location2_id)->isGreaterThan(0);
         $this->string($location2->fields['latitude'])->isEqualTo($location1->fields['latitude']);
@@ -62,11 +62,11 @@ class Location extends DbTestCase
        // Make sure we don't overwrite data a user sets
         $location3 = new \Location();
         $location3_id = $location3->add([
-         'locations_id' => $location1_id,
-         'name'         => 'inherit_geo_test_child2',
-         'latitude'     => '41.3851',
-         'longitude'    => '2.1734',
-         'altitude'     => '39'
+            'locations_id' => $location1_id,
+            'name'         => 'inherit_geo_test_child2',
+            'latitude'     => '41.3851',
+            'longitude'    => '2.1734',
+            'altitude'     => '39'
         ]);
         $this->integer((int) $location3_id)->isGreaterThan(0);
         $this->string($location3->fields['latitude'])->isEqualTo('41.3851');

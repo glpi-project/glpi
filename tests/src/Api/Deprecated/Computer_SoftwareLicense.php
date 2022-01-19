@@ -48,64 +48,64 @@ class Computer_SoftwareLicense implements DeprecatedInterface
     public static function getDeprecatedFields(): array
     {
         return [
-        "id", "computers_id", "softwarelicenses_id", "is_deleted", "is_dynamic",
-        "links"
+            "id", "computers_id", "softwarelicenses_id", "is_deleted", "is_dynamic",
+            "links"
         ];
     }
 
     public static function getCurrentAddInput(): array
     {
         return [
-         "itemtype" => "Computer",
-         "items_id" => getItemByTypeName(
-             'Computer',
-             '_test_pc01',
-             true
-         ),
-         "softwarelicenses_id" => getItemByTypeName(
-             'SoftwareLicense',
-             '_test_softlic_1',
-             true
-         ),
+            "itemtype" => "Computer",
+            "items_id" => getItemByTypeName(
+                'Computer',
+                '_test_pc01',
+                true
+            ),
+            "softwarelicenses_id" => getItemByTypeName(
+                'SoftwareLicense',
+                '_test_softlic_1',
+                true
+            ),
         ];
     }
 
     public static function getDeprecatedAddInput(): array
     {
         return [
-         "computers_id" => getItemByTypeName(
-             'Computer',
-             '_test_pc01',
-             true
-         ),
-         "softwarelicenses_id" => getItemByTypeName(
-             'SoftwareLicense',
-             '_test_softlic_1',
-             true
-         ),
+            "computers_id" => getItemByTypeName(
+                'Computer',
+                '_test_pc01',
+                true
+            ),
+            "softwarelicenses_id" => getItemByTypeName(
+                'SoftwareLicense',
+                '_test_softlic_1',
+                true
+            ),
         ];
     }
 
     public static function getDeprecatedUpdateInput(): array
     {
         return [
-         'computers_id' => getItemByTypeName('Computer', '_test_pc02', true),
+            'computers_id' => getItemByTypeName('Computer', '_test_pc02', true),
         ];
     }
 
     public static function getExpectedAfterInsert(): array
     {
         return [
-         "itemtype" => "Computer",
-         "items_id" => getItemByTypeName('Computer', '_test_pc01', true),
+            "itemtype" => "Computer",
+            "items_id" => getItemByTypeName('Computer', '_test_pc01', true),
         ];
     }
 
     public static function getExpectedAfterUpdate(): array
     {
         return [
-         "itemtype" => "Computer",
-         "items_id" => getItemByTypeName('Computer', '_test_pc02', true),
+            "itemtype" => "Computer",
+            "items_id" => getItemByTypeName('Computer', '_test_pc02', true),
         ];
     }
 

@@ -49,9 +49,9 @@ class Drive extends Device
     public function prepare(): array
     {
         $mapping = [
-         'name'         => 'designation',
-         'type'         => 'interfacetypes_id',
-         'manufacturer' => 'manufacturers_id',
+            'name'         => 'designation',
+            'type'         => 'interfacetypes_id',
+            'manufacturer' => 'manufacturers_id',
         ];
 
         $hdd = [];
@@ -92,13 +92,13 @@ class Drive extends Device
     public function isDrive($data)
     {
         $drives_regex = [
-         'rom',
-         'dvd',
-         'blu[\s-]*ray',
-         'reader',
-         'sd[\s-]*card',
-         'micro[\s-]*sd',
-         'mmc'
+            'rom',
+            'dvd',
+            'blu[\s-]*ray',
+            'reader',
+            'sd[\s-]*card',
+            'micro[\s-]*sd',
+            'mmc'
         ];
 
         foreach ($drives_regex as $regex) {

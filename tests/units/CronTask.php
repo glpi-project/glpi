@@ -45,26 +45,26 @@ class Crontask extends \GLPITestCase
 
        //create some files
         $Data = [
-         [
-            'name'    => GLPI_TMP_DIR . '/recent_file.txt',
-            'content' => 'content1',
-         ],
-         [
-            'name'    => GLPI_TMP_DIR . '/file1.txt',
-            'content' => 'content1',
-         ],
-         [
-            'name'    => GLPI_TMP_DIR . '/file2.txt',
-            'content' => 'content2',
-         ],
-         [
-            'name'    => GLPI_TMP_DIR . '/auto_orient/file3.txt',
-            'content' => 'content3',
-         ],
-         [
-            'name'    => GLPI_TMP_DIR . '/auto_orient/file4.txt',
-            'content' => 'content4',
-         ]
+            [
+                'name'    => GLPI_TMP_DIR . '/recent_file.txt',
+                'content' => 'content1',
+            ],
+            [
+                'name'    => GLPI_TMP_DIR . '/file1.txt',
+                'content' => 'content1',
+            ],
+            [
+                'name'    => GLPI_TMP_DIR . '/file2.txt',
+                'content' => 'content2',
+            ],
+            [
+                'name'    => GLPI_TMP_DIR . '/auto_orient/file3.txt',
+                'content' => 'content3',
+            ],
+            [
+                'name'    => GLPI_TMP_DIR . '/auto_orient/file4.txt',
+                'content' => 'content4',
+            ]
         ];
 
        //create auto_orient directory

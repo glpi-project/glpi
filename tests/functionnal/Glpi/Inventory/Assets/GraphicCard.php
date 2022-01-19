@@ -42,8 +42,8 @@ class GraphicCard extends AbstractInventoryAsset
     protected function assetProvider(): array
     {
         return [
-         [
-            'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+            [
+                'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
   <CONTENT>
     <VIDEOS>
@@ -57,9 +57,9 @@ class GraphicCard extends AbstractInventoryAsset
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-            'expected'  => '{"chipset": "ATY,RadeonX1600", "memory": 128, "name": "ATI Radeon X1600", "resolution": "1680x1050", "designation": "ATI Radeon X1600", "is_dynamic": 1}'
-         ], [ //with unit on memory
-            'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+                'expected'  => '{"chipset": "ATY,RadeonX1600", "memory": 128, "name": "ATI Radeon X1600", "resolution": "1680x1050", "designation": "ATI Radeon X1600", "is_dynamic": 1}'
+            ], [ //with unit on memory
+                'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
   <CONTENT>
     <VIDEOS>
@@ -72,8 +72,8 @@ class GraphicCard extends AbstractInventoryAsset
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-            'expected'  => '{"chipset": "Intel(R) HD Graphics Family", "name": "Intel(R) HD Graphics 530", "resolution": "1920x1080", "designation": "Intel(R) HD Graphics 530", "is_dynamic": 1}'
-         ]
+                'expected'  => '{"chipset": "Intel(R) HD Graphics Family", "name": "Intel(R) HD Graphics 530", "resolution": "1920x1080", "designation": "Intel(R) HD Graphics 530", "is_dynamic": 1}'
+            ]
         ];
     }
 
@@ -156,51 +156,51 @@ class GraphicCard extends AbstractInventoryAsset
 
        //create manually a computer, with 3 graphic cards
         $computers_id = $computer->add([
-         'name'   => 'pc002',
-         'serial' => 'ggheb7ne7',
-         'entities_id' => 0
+            'name'   => 'pc002',
+            'serial' => 'ggheb7ne7',
+            'entities_id' => 0
         ]);
         $this->integer($computers_id)->isGreaterThan(0);
 
         $gc_1_id = $device_gc->add([
-         'designation' => 'ATI Radeon X1600',
-         'chipset' => 'ATY,RadeonX1600',
-         'entities_id'  => 0
+            'designation' => 'ATI Radeon X1600',
+            'chipset' => 'ATY,RadeonX1600',
+            'entities_id'  => 0
         ]);
         $this->integer($gc_1_id)->isGreaterThan(0);
 
         $item_gc_1_id = $item_gc->add([
-         'items_id'     => $computers_id,
-         'itemtype'     => 'Computer',
-         'devicegraphiccards_id' => $gc_1_id
+            'items_id'     => $computers_id,
+            'itemtype'     => 'Computer',
+            'devicegraphiccards_id' => $gc_1_id
         ]);
         $this->integer($item_gc_1_id)->isGreaterThan(0);
 
         $gc_2_id = $device_gc->add([
-         'designation' => 'Intel(R) HD Graphics 530',
-         'chipset' => 'Intel(R) HD Graphics Family',
-         'entities_id'  => 0
+            'designation' => 'Intel(R) HD Graphics 530',
+            'chipset' => 'Intel(R) HD Graphics Family',
+            'entities_id'  => 0
         ]);
         $this->integer($gc_2_id)->isGreaterThan(0);
 
         $item_gc_2_id = $item_gc->add([
-         'items_id'     => $computers_id,
-         'itemtype'     => 'Computer',
-         'devicegraphiccards_id' => $gc_2_id
+            'items_id'     => $computers_id,
+            'itemtype'     => 'Computer',
+            'devicegraphiccards_id' => $gc_2_id
         ]);
         $this->integer($item_gc_2_id)->isGreaterThan(0);
 
         $gc_3_id = $device_gc->add([
-         'designation' => 'My Graphic Card',
-         'chipset' => 'My chipset',
-         'entities_id'  => 0
+            'designation' => 'My Graphic Card',
+            'chipset' => 'My chipset',
+            'entities_id'  => 0
         ]);
         $this->integer($gc_3_id)->isGreaterThan(0);
 
         $item_gc_3_id = $item_gc->add([
-         'items_id'     => $computers_id,
-         'itemtype'     => 'Computer',
-         'devicegraphiccards_id' => $gc_3_id
+            'items_id'     => $computers_id,
+            'itemtype'     => 'Computer',
+            'devicegraphiccards_id' => $gc_3_id
         ]);
         $this->integer($item_gc_3_id)->isGreaterThan(0);
 

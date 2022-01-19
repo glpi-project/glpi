@@ -117,8 +117,8 @@ if (isset($_POST["add"])) {
 } else {
     Html::header(Appliance::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "management", "appliance");
     $options = [
-      'id'           => $_GET['id'],
-      'withtemplate' => $_GET['withtemplate']
+        'id'           => $_GET['id'],
+        'withtemplate' => $_GET['withtemplate']
     ];
     $app->display($options);
     Html::footer();

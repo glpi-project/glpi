@@ -57,8 +57,8 @@ if (!$DB->tableExists('glpi_agenttypes')) {
         $DB->buildInsert(
             "glpi_agenttypes",
             [
-            'id'           => 1,
-            'name'         => 'Core',
+                'id'           => 1,
+                'name'         => 'Core',
             ]
         )
     );
@@ -106,7 +106,7 @@ if (!$DB->tableExists('glpi_agents')) {
         'threads_networkdiscovery',
         'int NOT NULL DEFAULT 1',
         [
-         'comment' => 'Number of threads for Network Discovery'
+            'comment' => 'Number of threads for Network Discovery'
         ]
     );
     $migration->addField(
@@ -114,7 +114,7 @@ if (!$DB->tableExists('glpi_agents')) {
         'threads_networkinventory',
         "int NOT NULL DEFAULT '1'",
         [
-         'comment' => 'Number of threads for Network Inventory'
+            'comment' => 'Number of threads for Network Inventory'
         ]
     );
     $migration->addField(
@@ -122,7 +122,7 @@ if (!$DB->tableExists('glpi_agents')) {
         'timeout_networkdiscovery',
         "int NOT NULL DEFAULT '0'",
         [
-         'comment' => 'Network Discovery task timeout (disabled by default)'
+            'comment' => 'Network Discovery task timeout (disabled by default)'
         ]
     );
     $migration->addField(
@@ -130,7 +130,7 @@ if (!$DB->tableExists('glpi_agents')) {
         'timeout_networkinventory',
         "int NOT NULL DEFAULT '0'",
         [
-         'comment' => 'Network Inventory task timeout (disabled by default)'
+            'comment' => 'Network Inventory task timeout (disabled by default)'
         ]
     );
 }
@@ -217,7 +217,7 @@ if (!$DB->fieldExists('glpi_networkequipments', 'autoupdatesystems_id')) {
         'autoupdatesystems_id',
         "int {$default_key_sign} NOT NULL DEFAULT '0'",
         [
-         'after' => 'date_creation',
+            'after' => 'date_creation',
         ]
     );
     $migration->addKey('glpi_networkequipments', 'autoupdatesystems_id');
@@ -229,7 +229,7 @@ if (!$DB->fieldExists('glpi_networkequipments', 'sysdescr')) {
         'sysdescr',
         'text',
         [
-         'after' => 'autoupdatesystems_id',
+            'after' => 'autoupdatesystems_id',
         ]
     );
 }
@@ -240,7 +240,7 @@ if (!$DB->fieldExists('glpi_networkequipments', 'cpu')) {
         'cpu',
         'integer',
         [
-         'after' => 'sysdescr',
+            'after' => 'sysdescr',
         ]
     );
 }
@@ -251,8 +251,8 @@ if (!$DB->fieldExists('glpi_networkequipments', 'uptime')) {
         'uptime',
         'string',
         [
-         'after' => 'cpu',
-         'value' => '0'
+            'after' => 'cpu',
+            'value' => '0'
 
         ]
     );
@@ -264,7 +264,7 @@ if (!$DB->fieldExists('glpi_networkequipments', 'last_inventory_update')) {
         'last_inventory_update',
         'timestamp',
         [
-         'after' => 'uptime',
+            'after' => 'uptime',
         ]
     );
 }
@@ -275,7 +275,7 @@ if (!$DB->fieldExists('glpi_printers', 'sysdescr')) {
         'sysdescr',
         'text',
         [
-         'after' => 'date_creation',
+            'after' => 'date_creation',
         ]
     );
 }
@@ -286,28 +286,28 @@ if (!$DB->fieldExists('glpi_printers', 'last_inventory_update')) {
         'last_inventory_update',
         'timestamp',
         [
-         'after' => 'sysdescr',
+            'after' => 'sysdescr',
         ]
     );
 }
 
 //new fields in networkports table
 $netport_fields = [
-   'ifmtu' => "int NOT NULL DEFAULT '0'",
-   'ifspeed'            => "bigint NOT NULL DEFAULT '0'",
-   'ifinternalstatus'   => "varchar(255) DEFAULT NULL",
-   'ifconnectionstatus' => "int NOT NULL DEFAULT '0'",
-   'iflastchange'       => "varchar(255) DEFAULT NULL",
-   'ifinbytes'         => "bigint NOT NULL DEFAULT '0'",
-   'ifinerrors'         => "bigint NOT NULL DEFAULT '0'",
-   'ifoutbytes'        => "bigint NOT NULL DEFAULT '0'",
-   'ifouterrors'        => "bigint NOT NULL DEFAULT '0'",
-   'ifstatus'           => "varchar(255) DEFAULT NULL",
-   'ifdescr'            => "varchar(255) DEFAULT NULL",
-   'ifalias'            => "varchar(255) DEFAULT NULL",
-   'portduplex'         => "varchar(255) DEFAULT NULL",
-   'trunk'              => "tinyint NOT NULL DEFAULT '0'",
-   'lastup'             => "timestamp NULL DEFAULT NULL"
+    'ifmtu' => "int NOT NULL DEFAULT '0'",
+    'ifspeed'            => "bigint NOT NULL DEFAULT '0'",
+    'ifinternalstatus'   => "varchar(255) DEFAULT NULL",
+    'ifconnectionstatus' => "int NOT NULL DEFAULT '0'",
+    'iflastchange'       => "varchar(255) DEFAULT NULL",
+    'ifinbytes'         => "bigint NOT NULL DEFAULT '0'",
+    'ifinerrors'         => "bigint NOT NULL DEFAULT '0'",
+    'ifoutbytes'        => "bigint NOT NULL DEFAULT '0'",
+    'ifouterrors'        => "bigint NOT NULL DEFAULT '0'",
+    'ifstatus'           => "varchar(255) DEFAULT NULL",
+    'ifdescr'            => "varchar(255) DEFAULT NULL",
+    'ifalias'            => "varchar(255) DEFAULT NULL",
+    'portduplex'         => "varchar(255) DEFAULT NULL",
+    'trunk'              => "tinyint NOT NULL DEFAULT '0'",
+    'lastup'             => "timestamp NULL DEFAULT NULL"
 ];
 foreach ($netport_fields as $netport_field => $definition) {
     if (!$DB->fieldExists('glpi_networkports', $netport_field)) {
@@ -549,7 +549,7 @@ if (!$DB->tableExists('glpi_refusedequipments')) {
             'autoupdatesystems_id',
             "int {$default_key_sign} NOT NULL DEFAULT '0'",
             [
-            'after' => 'agents_id'
+                'after' => 'agents_id'
             ]
         );
     }
@@ -562,8 +562,8 @@ CronTask::Register(
     'cleantemp',
     1 * DAY_TIMESTAMP,
     [
-      'mode'  => CronTask::MODE_EXTERNAL,
-      'state' => CronTask::STATE_DISABLE
+        'mode'  => CronTask::MODE_EXTERNAL,
+        'state' => CronTask::STATE_DISABLE
     ]
 );
 
@@ -572,8 +572,8 @@ CronTask::Register(
     'cleanorphans',
     7 * DAY_TIMESTAMP,
     [
-      'mode'  => CronTask::MODE_EXTERNAL,
-      'state' => CronTask::STATE_WAITING
+        'mode'  => CronTask::MODE_EXTERNAL,
+        'state' => CronTask::STATE_WAITING
     ]
 );
 
@@ -693,7 +693,7 @@ if (!$DB->fieldExists('glpi_printers', 'autoupdatesystems_id')) {
         'autoupdatesystems_id',
         "int {$default_key_sign} NOT NULL DEFAULT '0'",
         [
-         'after' => 'snmpcredentials_id',
+            'after' => 'snmpcredentials_id',
         ]
     );
     $migration->addKey('glpi_printers', 'autoupdatesystems_id');
@@ -704,9 +704,9 @@ if (countElementsInTable(Blacklist::getTable()) === 4) {
         $DB->buildInsert(
             Blacklist::getTable(),
             [
-            'type' => new QueryParam(),
-            'name' => new QueryParam(),
-            'value' => new QueryParam()
+                'type' => new QueryParam(),
+                'name' => new QueryParam(),
+                'value' => new QueryParam()
             ]
         )
     );

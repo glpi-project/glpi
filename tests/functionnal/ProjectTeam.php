@@ -47,19 +47,19 @@ class ProjectTeam extends DbTestCase
         $supplier_1 = getItemByTypeName('Supplier', '_suplier01_name');
 
         $expanded_team = \ProjectTeam::expandTeamData([
-         'User'   => [
-            ['items_id'  => $user->fields['id']]
-         ],
-         'Group'  => [
-            ['items_id'  => $group_1->fields['id']],
-            ['items_id'  => $group_2->fields['id']],
-         ],
-         'Supplier' => [
-            ['items_id'  => $supplier_1->fields['id']],
-         ],
-         'Contact' => [
-            ['items_id'  => $contact_1->fields['id']],
-         ],
+            'User'   => [
+                ['items_id'  => $user->fields['id']]
+            ],
+            'Group'  => [
+                ['items_id'  => $group_1->fields['id']],
+                ['items_id'  => $group_2->fields['id']],
+            ],
+            'Supplier' => [
+                ['items_id'  => $supplier_1->fields['id']],
+            ],
+            'Contact' => [
+                ['items_id'  => $contact_1->fields['id']],
+            ],
         ]);
 
         $this->array($expanded_team)

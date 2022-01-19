@@ -46,8 +46,8 @@ class NetworkEquipment extends DbTestCase
        //create network equipment
         $device = new \NetworkEquipment();
         $input = [
-         'name'         => 'Test equipment',
-         'entities_id'  => 0
+            'name'         => 'Test equipment',
+            'entities_id'  => 0
         ];
         $netequipments_id = $device->add($input);
         $this->integer($netequipments_id)->isGreaterThan(0);
@@ -58,12 +58,12 @@ class NetworkEquipment extends DbTestCase
        //create ports attached
         $netport = new \NetworkPort();
         $input = [
-         'itemtype'           => $device->getType(),
-         'items_id'           => $device->getID(),
-         'entities_id'        => 0,
-         'logical_number'     => 1256,
-         'name'               => 'Test port',
-         'instantiation_type' => 'NetworkPortEthernet'
+            'itemtype'           => $device->getType(),
+            'items_id'           => $device->getID(),
+            'entities_id'        => 0,
+            'logical_number'     => 1256,
+            'name'               => 'Test port',
+            'instantiation_type' => 'NetworkPortEthernet'
         ];
         $netports_id = $netport->add($input);
         $this->integer($netports_id)->isGreaterThan(0);
@@ -72,12 +72,12 @@ class NetworkEquipment extends DbTestCase
         $this->string($netport->fields['name'])->isIdenticalTo('Test port');
 
         $input = [
-         'itemtype'           => $device->getType(),
-         'items_id'           => $device->getID(),
-         'entities_id'        => 0,
-         'logical_number'     => 1257,
-         'name'               => 'Another test port',
-         'instantiation_type' => 'NetworkPortAggregate'
+            'itemtype'           => $device->getType(),
+            'items_id'           => $device->getID(),
+            'entities_id'        => 0,
+            'logical_number'     => 1257,
+            'name'               => 'Another test port',
+            'instantiation_type' => 'NetworkPortAggregate'
         ];
         $netports_id = $netport->add($input);
         $this->integer($netports_id)->isGreaterThan(0);

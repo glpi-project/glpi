@@ -44,8 +44,8 @@ class Printer extends AbstractInventoryAsset
     protected function assetProvider(): array
     {
         return [
-         [
-            'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+            [
+                'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
   <CONTENT>
     <PRINTERS>
@@ -64,8 +64,8 @@ class Printer extends AbstractInventoryAsset
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-            'expected'  => '{"driver": "HP Color LaserJet Pro MFP M476 PCL 6", "name": "HP Color LaserJet Pro MFP M476 PCL 6", "network": false, "printprocessor": "hpcpp155", "resolution": "600x600", "shared": false, "sharename": "HP Color LaserJet Pro MFP M476 PCL 6  (1)", "status": "Unknown", "have_usb": 0, "autoupdatesystems_id": "GLPI Native Inventory", "last_inventory_update": "DATE_NOW"}'
-         ]
+                'expected'  => '{"driver": "HP Color LaserJet Pro MFP M476 PCL 6", "name": "HP Color LaserJet Pro MFP M476 PCL 6", "network": false, "printprocessor": "hpcpp155", "resolution": "600x600", "shared": false, "sharename": "HP Color LaserJet Pro MFP M476 PCL 6  (1)", "status": "Unknown", "have_usb": 0, "autoupdatesystems_id": "GLPI Native Inventory", "last_inventory_update": "DATE_NOW"}'
+            ]
         ];
     }
 
@@ -112,38 +112,38 @@ class Printer extends AbstractInventoryAsset
         $result = $main->prepare();
         $this->array($result)->hasSize(1);
         $this->array((array)$result[0])->isIdenticalTo([
-         'autoupdatesystems_id' => 'GLPI Native Inventory',
-         'last_inventory_update' => $date_now,
-         'firmware' => '2409048_052887',
-         'ips' => ['10.59.29.175'],
-         'mac' => '00:68:eb:f2:be:10',
-         'manufacturer' => 'Hewlett-Packard',
-         'model' => 'HP LaserJet M507',
-         'name' => 'NPIF2BE10',
-         'serial' => 'PHCVN191TG',
-         'type' => 'Printer',
-         'uptime' => '7 days, 01:26:41.98',
-         'printermodels_id' => 'HP LaserJet M507',
-         'printertypes_id' => 'Printer',
-         'manufacturers_id' => 'Hewlett-Packard',
-         'have_usb' => 0,
-         'have_ethernet' => 1,
-         'memory_size' => 512,
-         'last_pages_counter' => 1802
+            'autoupdatesystems_id' => 'GLPI Native Inventory',
+            'last_inventory_update' => $date_now,
+            'firmware' => '2409048_052887',
+            'ips' => ['10.59.29.175'],
+            'mac' => '00:68:eb:f2:be:10',
+            'manufacturer' => 'Hewlett-Packard',
+            'model' => 'HP LaserJet M507',
+            'name' => 'NPIF2BE10',
+            'serial' => 'PHCVN191TG',
+            'type' => 'Printer',
+            'uptime' => '7 days, 01:26:41.98',
+            'printermodels_id' => 'HP LaserJet M507',
+            'printertypes_id' => 'Printer',
+            'manufacturers_id' => 'Hewlett-Packard',
+            'have_usb' => 0,
+            'have_ethernet' => 1,
+            'memory_size' => 512,
+            'last_pages_counter' => 1802
         ]);
 
        //get one management port only, since iftype 24 is not importable per default
         $this->array($main->getNetworkPorts())->isIdenticalTo([]);
         $this->array($mports = $main->getManagementPorts())->hasSize(1)->hasKey('management');
         $this->array((array)$mports['management'])->isIdenticalTo([
-         'mac' => '00:68:eb:f2:be:10',
-         'name' => 'Management',
-         'netname' => 'internal',
-         'instantiation_type' => 'NetworkPortAggregate',
-         'is_internal' => true,
-         'ipaddress' => [
-            '10.59.29.175'
-         ]
+            'mac' => '00:68:eb:f2:be:10',
+            'name' => 'Management',
+            'netname' => 'internal',
+            'instantiation_type' => 'NetworkPortAggregate',
+            'is_internal' => true,
+            'ipaddress' => [
+                '10.59.29.175'
+            ]
         ]);
 
         $pcounter = new \stdClass();
@@ -162,8 +162,8 @@ class Printer extends AbstractInventoryAsset
 
         global $DB;
         $iterator = $DB->request([
-         'FROM'   => \PrinterLog::getTable(),
-         'WHERE'  => ['printers_id' => $printer->fields['id']]
+            'FROM'   => \PrinterLog::getTable(),
+            'WHERE'  => ['printers_id' => $printer->fields['id']]
         ]);
         $this->integer(count($iterator))->isIdenticalTo(1);
 
@@ -173,19 +173,19 @@ class Printer extends AbstractInventoryAsset
         unset($result['date']);
 
         $this->array($result)->isIdenticalTo([
-         'printers_id' => $printer->fields['id'],
-         'total_pages' => 1802,
-         'bw_pages' => 0,
-         'color_pages' => 0,
-         'rv_pages' => 831,
-         'prints' => 0,
-         'bw_prints' => 0,
-         'color_prints' => 0,
-         'copies' => 0,
-         'bw_copies' => 0,
-         'color_copies' => 0,
-         'scanned' => 0,
-         'faxed' => 0
+            'printers_id' => $printer->fields['id'],
+            'total_pages' => 1802,
+            'bw_pages' => 0,
+            'color_pages' => 0,
+            'rv_pages' => 831,
+            'prints' => 0,
+            'bw_prints' => 0,
+            'color_prints' => 0,
+            'copies' => 0,
+            'bw_copies' => 0,
+            'color_copies' => 0,
+            'scanned' => 0,
+            'faxed' => 0
         ]);
     }
 
@@ -423,11 +423,11 @@ class Printer extends AbstractInventoryAsset
         $rulecollection = new \RuleDictionnaryPrinterCollection();
         $rule = $rulecollection->getRuleClass();
         $rule_id = $rule->add([
-         'is_active' => 1,
-         'name' => 'Ignore import',
-         'match' => 'AND',
-         'sub_type' => 'RuleDictionnaryPrinter',
-         'ranking' => 1
+            'is_active' => 1,
+            'name' => 'Ignore import',
+            'match' => 'AND',
+            'sub_type' => 'RuleDictionnaryPrinter',
+            'ranking' => 1
         ]);
         $this->integer($rule_id)->isGreaterThan(0);
 
@@ -435,10 +435,10 @@ class Printer extends AbstractInventoryAsset
         $rulecriteria = new \RuleCriteria(get_class($rule));
         $this->integer(
             $rulecriteria->add([
-            'rules_id' => $rule_id,
-            'criteria' => "name",
-            'pattern' => 'HP Deskjet 2540',
-            'condition' => 0
+                'rules_id' => $rule_id,
+                'criteria' => "name",
+                'pattern' => 'HP Deskjet 2540',
+                'condition' => 0
             ])
         )->isGreaterThan(0);
 
@@ -446,10 +446,10 @@ class Printer extends AbstractInventoryAsset
         $ruleaction = new \RuleAction(get_class($rule));
         $this->integer(
             $ruleaction->add([
-            'rules_id' => $rule_id,
-            'action_type' => 'assign',
-            'field' => '_ignore_import',
-            'value' => '1'
+                'rules_id' => $rule_id,
+                'action_type' => 'assign',
+                'field' => '_ignore_import',
+                'value' => '1'
             ])
         )->isGreaterThan(0);
 
@@ -507,11 +507,11 @@ class Printer extends AbstractInventoryAsset
         $rulecollection = new \RuleDictionnaryPrinterCollection();
         $rule = $rulecollection->getRuleClass();
         $rule_id = $rule->add([
-         'is_active' => 1,
-         'name' => 'rename',
-         'match' => 'AND',
-         'sub_type' => 'RuleDictionnaryPrinter',
-         'ranking' => 2
+            'is_active' => 1,
+            'name' => 'rename',
+            'match' => 'AND',
+            'sub_type' => 'RuleDictionnaryPrinter',
+            'ranking' => 2
         ]);
         $this->integer($rule_id)->isGreaterThan(0);
 
@@ -520,10 +520,10 @@ class Printer extends AbstractInventoryAsset
         $rulecriteria = new \RuleCriteria(get_class($rule));
         $this->integer(
             $rulecriteria->add([
-            'rules_id' => $rule_id,
-            'criteria' => "name",
-            'pattern' => 'HP Deskjet 2540',
-            'condition' => 0
+                'rules_id' => $rule_id,
+                'criteria' => "name",
+                'pattern' => 'HP Deskjet 2540',
+                'condition' => 0
             ])
         )->isGreaterThan(0);
 
@@ -531,10 +531,10 @@ class Printer extends AbstractInventoryAsset
         $ruleaction = new \RuleAction(get_class($rule));
         $this->integer(
             $ruleaction->add([
-            'rules_id' => $rule_id,
-            'action_type' => 'assign',
-            'field' => 'name',
-            'value' => 'HP Deskjet 2540 - renamed'
+                'rules_id' => $rule_id,
+                'action_type' => 'assign',
+                'field' => 'name',
+                'value' => 'HP Deskjet 2540 - renamed'
             ])
         )->isGreaterThan(0);
 
@@ -542,20 +542,20 @@ class Printer extends AbstractInventoryAsset
         $ruleaction = new \RuleAction(get_class($rule));
         $this->integer(
             $ruleaction->add([
-            'rules_id' => $rule_id,
-            'action_type' => 'assign',
-            'field' => 'manufacturer',
-            'value' => $manufacturer->fields['id']
+                'rules_id' => $rule_id,
+                'action_type' => 'assign',
+                'field' => 'manufacturer',
+                'value' => $manufacturer->fields['id']
             ])
         )->isGreaterThan(0);
 
        // Add action
         $ruleaction = new \RuleAction(get_class($rule));
         $ruleaction->add([
-         'rules_id' => $rule_id,
-         'action_type' => 'assign',
-         'field' => 'is_global',
-         'value' => '0'
+            'rules_id' => $rule_id,
+            'action_type' => 'assign',
+            'field' => 'is_global',
+            'value' => '0'
         ]);
 
         $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>

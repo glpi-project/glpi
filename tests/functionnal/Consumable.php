@@ -48,31 +48,31 @@ class Consumable extends \DbTestCase
 
         $consumable_item = new \ConsumableItem();
         $cu_id = (int)$consumable_item->add([
-         'name' => 'Test consumable item'
+            'name' => 'Test consumable item'
         ]);
         $this->integer($cu_id)->isGreaterThan(0);
 
         $group = new \Group();
         $gid1 = (int)$group->add([
-         'name' => 'Test group 1'
+            'name' => 'Test group 1'
         ]);
         $this->integer($gid1)->isGreaterThan(0);
         $gid2 = (int)$group->add([
-         'name' => 'Test group 2'
+            'name' => 'Test group 2'
         ]);
         $this->integer($gid2)->isGreaterThan(0);
 
         $user = new \User();
         $uid = (int)$user->add([
-         'name' => 'User group'
+            'name' => 'User group'
         ]);
         $this->integer($uid)->isGreaterThan(0);
 
         $c_ids = [];
         for ($i = 0; $i < 20; $i++) {
             $c_id = (int)$consumable->add([
-            'name'               => 'Test consumable',
-            'consumableitems_id' => $cu_id,
+                'name'               => 'Test consumable',
+                'consumableitems_id' => $cu_id,
             ]);
             $this->integer($c_id)->isGreaterThan(0);
 
@@ -110,9 +110,9 @@ class Consumable extends \DbTestCase
             countElementsInTable(
                 $consumable->getTable(),
                 [
-                  'consumableitems_id' => $cu_id,
-                  'itemtype'           => 'Group',
-                  'items_id'           => $gid1,
+                    'consumableitems_id' => $cu_id,
+                    'itemtype'           => 'Group',
+                    'items_id'           => $gid1,
                 ]
             )
         )->isEqualTo(0);
@@ -125,9 +125,9 @@ class Consumable extends \DbTestCase
             countElementsInTable(
                 $consumable->getTable(),
                 [
-                  'consumableitems_id' => $cu_id,
-                  'itemtype'           => 'Group',
-                  'items_id'           => $gid2,
+                    'consumableitems_id' => $cu_id,
+                    'itemtype'           => 'Group',
+                    'items_id'           => $gid2,
                 ]
             )
         )->isEqualTo(0);
@@ -135,9 +135,9 @@ class Consumable extends \DbTestCase
             countElementsInTable(
                 $consumable->getTable(),
                 [
-                  'consumableitems_id' => $cu_id,
-                  'itemtype'           => 'Group',
-                  'items_id'           => $gid1,
+                    'consumableitems_id' => $cu_id,
+                    'itemtype'           => 'Group',
+                    'items_id'           => $gid1,
                 ]
             )
         )->isEqualTo(5);
@@ -150,9 +150,9 @@ class Consumable extends \DbTestCase
             countElementsInTable(
                 $consumable->getTable(),
                 [
-                  'consumableitems_id' => $cu_id,
-                  'itemtype'           => 'User',
-                  'items_id'           => $uid,
+                    'consumableitems_id' => $cu_id,
+                    'itemtype'           => 'User',
+                    'items_id'           => $uid,
                 ]
             )
         )->isEqualTo(0);
@@ -164,28 +164,28 @@ class Consumable extends \DbTestCase
 
         $consumable_item = new \ConsumableItem();
         $cu_id = (int) $consumable_item->add([
-         'name' => 'Test consumable item'
+            'name' => 'Test consumable item'
         ]);
         $this->integer($cu_id)->isGreaterThan(0);
 
         $infocom = new \Infocom();
         $infocom_id = (int) $infocom->add([
-         'itemtype'  => \ConsumableItem::getType(),
-         'items_id'  => $cu_id,
-         'buy_date'  => '2020-10-21',
-         'value'     => '500'
+            'itemtype'  => \ConsumableItem::getType(),
+            'items_id'  => $cu_id,
+            'buy_date'  => '2020-10-21',
+            'value'     => '500'
         ]);
         $this->integer($infocom_id)->isGreaterThan(0);
 
         $consumable_id = $consumable->add([
-         'consumableitems_id' => $cu_id
+            'consumableitems_id' => $cu_id
         ]);
         $this->integer($consumable_id)->isGreaterThan(0);
 
         $infocom2 = new \Infocom();
         $infocom2_id = (int) $infocom2->getFromDBByCrit([
-         'itemtype'  => \Consumable::getType(),
-         'items_id'  => $consumable_id
+            'itemtype'  => \Consumable::getType(),
+            'items_id'  => $consumable_id
         ]);
         $this->integer($infocom2_id)->isGreaterThan(0);
         $this->string($infocom2->fields['buy_date'])->isEqualTo($infocom->fields['buy_date']);

@@ -47,8 +47,8 @@ class NotificationSettingConfig extends CommonDBTM
         if (isset($input['use_notifications'])) {
             $config = new Config();
             $tmp = [
-            'id'                 => 1,
-            'use_notifications'  => $input['use_notifications']
+                'id'                 => 1,
+                'use_notifications'  => $input['use_notifications']
             ];
             $config->update($tmp);
            //disable all notifications types if notifications has been disabled
@@ -64,8 +64,8 @@ class NotificationSettingConfig extends CommonDBTM
         foreach ($input as $k => $v) {
             if (substr($k, 0, strlen('notifications_')) === 'notifications_') {
                 $tmp = [
-                'id'  => 1,
-                $k    => $v
+                    'id'  => 1,
+                    $k    => $v
                 ];
                 $config->update($tmp);
             }
@@ -99,10 +99,10 @@ class NotificationSettingConfig extends CommonDBTM
         $out = TemplateRenderer::getInstance()->render(
             'pages/setup/setup_notifications.html.twig',
             [
-            'use_notifications' => (bool) $CFG_GLPI['use_notifications'],
-            'has_active_mode'   => Notification_NotificationTemplate::hasActiveMode(),
-            'can_update_config' => Session::haveRight("config", UPDATE) > 0,
-            'modes'             => $modes,
+                'use_notifications' => (bool) $CFG_GLPI['use_notifications'],
+                'has_active_mode'   => Notification_NotificationTemplate::hasActiveMode(),
+                'can_update_config' => Session::haveRight("config", UPDATE) > 0,
+                'modes'             => $modes,
             ]
         );
 

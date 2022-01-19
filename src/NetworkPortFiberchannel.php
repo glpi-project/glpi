@@ -113,7 +113,8 @@ class NetworkPortFiberchannel extends NetworkPortInstantiation
             'speed',
             $standard_speeds,
             ['value' => $this->fields['speed'],
-            'other' => $speed]
+                'other' => $speed
+            ]
         );
         echo "</td></tr>\n";
 
@@ -201,45 +202,45 @@ class NetworkPortFiberchannel extends NetworkPortInstantiation
         $tab = [];
 
         $tab[] = [
-         'id'                 => 'common',
-         'name'               => __('Characteristics')
+            'id'                 => 'common',
+            'name'               => __('Characteristics')
         ];
 
         $tab[] = [
-         'id'                 => '10',
-         'table'              => NetworkPort::getTable(),
-         'field'              => 'mac',
-         'datatype'           => 'mac',
-         'name'               => __('MAC'),
-         'massiveaction'      => false,
-         'joinparams'         => [
-            'jointype'           => 'empty'
-         ]
+            'id'                 => '10',
+            'table'              => NetworkPort::getTable(),
+            'field'              => 'mac',
+            'datatype'           => 'mac',
+            'name'               => __('MAC'),
+            'massiveaction'      => false,
+            'joinparams'         => [
+                'jointype'           => 'empty'
+            ]
         ];
 
         $tab[] = [
-         'id'                 => '11',
-         'table'              => $this->getTable(),
-         'field'              => 'wwn',
-         'name'               => __('World Wide Name'),
-         'massiveaction'      => false,
+            'id'                 => '11',
+            'table'              => $this->getTable(),
+            'field'              => 'wwn',
+            'name'               => __('World Wide Name'),
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
-         'id'                 => '12',
-         'table'              => $this->getTable(),
-         'field'              => 'speed',
-         'name'               => __('Fiber channel port speed'),
-         'massiveaction'      => false,
-         'datatype'           => 'specific'
+            'id'                 => '12',
+            'table'              => $this->getTable(),
+            'field'              => 'speed',
+            'name'               => __('Fiber channel port speed'),
+            'massiveaction'      => false,
+            'datatype'           => 'specific'
         ];
 
         $tab[] = [
-         'id'                 => '13',
-         'table'              => 'glpi_networkportfiberchanneltypes',
-         'field'              => 'name',
-         'name'               => __('Fiber port type'),
-         'datatype'           => 'dropdown'
+            'id'                 => '13',
+            'table'              => 'glpi_networkportfiberchanneltypes',
+            'field'              => 'name',
+            'name'               => __('Fiber port type'),
+            'datatype'           => 'dropdown'
         ];
 
         return $tab;
@@ -304,11 +305,12 @@ class NetworkPortFiberchannel extends NetworkPortInstantiation
 
         $tmp = [0     => '',
                    //TRANS: %d is the speed
-                   10    => sprintf(__('%d Mbit/s'), 10),
-                   100   => sprintf(__('%d Mbit/s'), 100),
+            10    => sprintf(__('%d Mbit/s'), 10),
+            100   => sprintf(__('%d Mbit/s'), 100),
                    //TRANS: %d is the speed
-                   1000  => sprintf(__('%d Gbit/s'), 1),
-                   10000 => sprintf(__('%d Gbit/s'), 10)];
+            1000  => sprintf(__('%d Gbit/s'), 1),
+            10000 => sprintf(__('%d Gbit/s'), 10)
+        ];
 
         if (is_null($val)) {
             return $tmp;
@@ -369,21 +371,21 @@ class NetworkPortFiberchannel extends NetworkPortInstantiation
     public static function getSearchOptionsToAddForInstantiation(array &$tab, array $joinparams)
     {
         $tab[] = [
-         'id'                 => '62',
-         'table'              => 'glpi_sockets',
-         'field'              => 'name',
-         'datatype'           => 'dropdown',
-         'name'               => __('Network fiber socket'),
-         'forcegroupby'       => true,
-         'massiveaction'      => false,
-         'joinparams'         => [
-            'jointype'           => 'child',
-            'linkfield'           => 'networkports_id',
-            'beforejoin'         => [
-               'table'              => 'glpi_networkportfiberchannels',
-               'joinparams'         => $joinparams
+            'id'                 => '62',
+            'table'              => 'glpi_sockets',
+            'field'              => 'name',
+            'datatype'           => 'dropdown',
+            'name'               => __('Network fiber socket'),
+            'forcegroupby'       => true,
+            'massiveaction'      => false,
+            'joinparams'         => [
+                'jointype'           => 'child',
+                'linkfield'           => 'networkports_id',
+                'beforejoin'         => [
+                    'table'              => 'glpi_networkportfiberchannels',
+                    'joinparams'         => $joinparams
+                ]
             ]
-         ]
         ];
     }
 }

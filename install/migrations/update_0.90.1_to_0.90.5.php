@@ -70,8 +70,8 @@ function update0901to0905()
    // fix https://github.com/glpi-project/glpi/issues/820
    // remove empty suppliers in tickets
     $DB->delete("glpi_suppliers_tickets", [
-      'suppliers_id'       => 0,
-      'alternative_email'  => ""
+        'suppliers_id'       => 0,
+        'alternative_email'  => ""
     ]);
 
    // ************ Keep it at the end **************

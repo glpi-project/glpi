@@ -49,42 +49,42 @@ class PendingReason extends DbTestCase
     protected function testGetNextFollowupDateProvider()
     {
         return [
-         [
+            [
             // Case 1: no auto bump
-            'fields' => [
-               'followup_frequency'          => 0,
+                'fields' => [
+                    'followup_frequency'          => 0,
+                ],
+                'expected' => false
             ],
-            'expected' => false
-         ],
-         [
+            [
             // Case 2: max bump reached
-            'fields' => [
-               'followup_frequency'          => 60,
-               'followups_before_resolution' => 2,
-               'bump_count'                  => 2,
+                'fields' => [
+                    'followup_frequency'          => 60,
+                    'followups_before_resolution' => 2,
+                    'bump_count'                  => 2,
+                ],
+                'expected' => false
             ],
-            'expected' => false
-         ],
-         [
+            [
             // Case 3: first bump
-            'fields' => [
-               'followup_frequency'          => 60,
-               'followups_before_resolution' => 2,
-               'bump_count'                  => 0,
-               'last_bump_date'              => '2021-02-25 12:00:00',
+                'fields' => [
+                    'followup_frequency'          => 60,
+                    'followups_before_resolution' => 2,
+                    'bump_count'                  => 0,
+                    'last_bump_date'              => '2021-02-25 12:00:00',
+                ],
+                'expected' => date('2021-02-25 12:01:00')
             ],
-            'expected' => date('2021-02-25 12:01:00')
-         ],
-         [
+            [
             // Case 4: second or more bump
-            'fields' => [
-               'followup_frequency'          => 60,
-               'followups_before_resolution' => 7,
-               'bump_count'                  => 5,
-               'last_bump_date'              => '2021-02-25 13:00:00',
+                'fields' => [
+                    'followup_frequency'          => 60,
+                    'followups_before_resolution' => 7,
+                    'bump_count'                  => 5,
+                    'last_bump_date'              => '2021-02-25 13:00:00',
+                ],
+                'expected' => '2021-02-25 13:01:00'
             ],
-            'expected' => '2021-02-25 13:01:00'
-         ],
         ];
     }
 
@@ -102,82 +102,82 @@ class PendingReason extends DbTestCase
     protected function testGetAutoResolvedateProvider()
     {
         return [
-         [
+            [
             // Case 1: no auto bump
-            'fields' => [
-               'followup_frequency'          => 0,
-               'followups_before_resolution' => 2,
+                'fields' => [
+                    'followup_frequency'          => 0,
+                    'followups_before_resolution' => 2,
+                ],
+                'expected' => false
             ],
-            'expected' => false
-         ],
-         [
+            [
             // Case 2: no auto solve
-            'fields' => [
-               'followup_frequency'          => 60,
-               'followups_before_resolution' => 0,
+                'fields' => [
+                    'followup_frequency'          => 60,
+                    'followups_before_resolution' => 0,
+                ],
+                'expected' => false
             ],
-            'expected' => false
-         ],
-         [
+            [
             // Case 3: 0/5 bump occured yet
-            'fields' => [
-               'followup_frequency'          => 60,
-               'followups_before_resolution' => 5,
-               'bump_count'                  => 0,
-               'last_bump_date'              => '2021-02-25 14:00:00',
+                'fields' => [
+                    'followup_frequency'          => 60,
+                    'followups_before_resolution' => 5,
+                    'bump_count'                  => 0,
+                    'last_bump_date'              => '2021-02-25 14:00:00',
+                ],
+                'expected' => '2021-02-25 14:06:00'
             ],
-            'expected' => '2021-02-25 14:06:00'
-         ],
-         [
+            [
             // Case 4: 1/5 bump occured
-            'fields' => [
-               'followup_frequency'          => 60,
-               'followups_before_resolution' => 5,
-               'bump_count'                  => 1,
-               'last_bump_date'              => '2021-02-25 15:00:00',
+                'fields' => [
+                    'followup_frequency'          => 60,
+                    'followups_before_resolution' => 5,
+                    'bump_count'                  => 1,
+                    'last_bump_date'              => '2021-02-25 15:00:00',
+                ],
+                'expected' => '2021-02-25 15:05:00'
             ],
-            'expected' => '2021-02-25 15:05:00'
-         ],
-         [
+            [
             // Case 5: 2/5 bump occured
-            'fields' => [
-               'followup_frequency'          => 60,
-               'followups_before_resolution' => 5,
-               'bump_count'                  => 2,
-               'last_bump_date'              => '2021-02-25 16:00:00',
+                'fields' => [
+                    'followup_frequency'          => 60,
+                    'followups_before_resolution' => 5,
+                    'bump_count'                  => 2,
+                    'last_bump_date'              => '2021-02-25 16:00:00',
+                ],
+                'expected' => '2021-02-25 16:04:00'
             ],
-            'expected' => '2021-02-25 16:04:00'
-         ],
-         [
+            [
             // Case 5: 3/5 bump occured
-            'fields' => [
-               'followup_frequency'          => 60,
-               'followups_before_resolution' => 5,
-               'bump_count'                  => 3,
-               'last_bump_date'              => '2021-02-25 17:00:00',
+                'fields' => [
+                    'followup_frequency'          => 60,
+                    'followups_before_resolution' => 5,
+                    'bump_count'                  => 3,
+                    'last_bump_date'              => '2021-02-25 17:00:00',
+                ],
+                'expected' => '2021-02-25 17:03:00'
             ],
-            'expected' => '2021-02-25 17:03:00'
-         ],
-         [
+            [
             // Case 5: 4/5 bump occured
-            'fields' => [
-               'followup_frequency'          => 60,
-               'followups_before_resolution' => 5,
-               'bump_count'                  => 4,
-               'last_bump_date'              => '2021-02-25 18:00:00',
+                'fields' => [
+                    'followup_frequency'          => 60,
+                    'followups_before_resolution' => 5,
+                    'bump_count'                  => 4,
+                    'last_bump_date'              => '2021-02-25 18:00:00',
+                ],
+                'expected' => '2021-02-25 18:02:00'
             ],
-            'expected' => '2021-02-25 18:02:00'
-         ],
-         [
+            [
             // Case 5: 5/5 bump occured
-            'fields' => [
-               'followup_frequency'          => 60,
-               'followups_before_resolution' => 5,
-               'bump_count'                  => 5,
-               'last_bump_date'              => '2021-02-25 19:00:00',
+                'fields' => [
+                    'followup_frequency'          => 60,
+                    'followups_before_resolution' => 5,
+                    'bump_count'                  => 5,
+                    'last_bump_date'              => '2021-02-25 19:00:00',
+                ],
+                'expected' => '2021-02-25 19:01:00'
             ],
-            'expected' => '2021-02-25 19:01:00'
-         ],
         ];
     }
 
@@ -196,9 +196,9 @@ class PendingReason extends DbTestCase
     protected function itemtypeProvider(): array
     {
         return [
-         ['itemtype' => Ticket::class],
-         ['itemtype' => Change::class],
-         ['itemtype' => Problem::class],
+            ['itemtype' => Ticket::class],
+            ['itemtype' => Change::class],
+            ['itemtype' => Problem::class],
         ];
     }
 
@@ -208,12 +208,12 @@ class PendingReason extends DbTestCase
         $itemtypes = [Ticket::class, Change::class, Problem::class];
         foreach ($itemtypes as $itemtype) {
             $array[] = [
-            'itemtype' => $itemtype,
-            'action_itemtype' => ITILFollowup::class,
+                'itemtype' => $itemtype,
+                'action_itemtype' => ITILFollowup::class,
             ];
             $array[] = [
-            'itemtype' => $itemtype,
-            'action_itemtype' => $itemtype::getTaskClass(),
+                'itemtype' => $itemtype,
+                'action_itemtype' => $itemtype::getTaskClass(),
             ];
         }
 
@@ -224,8 +224,8 @@ class PendingReason extends DbTestCase
     {
         if ($action_item instanceof ITILFollowup) {
             return [
-            'items_id' => $item->getID(),
-            'itemtype' => $item::getType(),
+                'items_id' => $item->getID(),
+                'itemtype' => $item::getType(),
             ];
         } else if ($action_item instanceof TicketTask) {
             return ['tickets_id' => $item->getID()];
@@ -253,8 +253,8 @@ class PendingReason extends DbTestCase
 
        // Create test item
         $items_id = $item->add([
-         'name'    => 'test',
-         'content' => 'test',
+            'name'    => 'test',
+            'content' => 'test',
         ]);
         $this->integer($items_id)->isGreaterThan(0);
         $this->boolean($item->getFromDB($items_id))->isTrue();
@@ -264,9 +264,9 @@ class PendingReason extends DbTestCase
 
        // Add a new action with the "pending" flag set
         $actions_id = $action_item->add([
-         'content' => 'test',
-         'pending' => true,
-         'pendingreasons_id' => 0,
+            'content' => 'test',
+            'pending' => true,
+            'pendingreasons_id' => 0,
         ] + self::getBaseActionAddInput($action_item, $item));
         $this->integer($actions_id)->isGreaterThan(0);
 
@@ -292,9 +292,9 @@ class PendingReason extends DbTestCase
 
        // Create test item
         $items_id = $item->add([
-         'name'    => 'test',
-         'content' => 'test',
-         'status'  => CommonITILObject::WAITING,
+            'name'    => 'test',
+            'content' => 'test',
+            'status'  => CommonITILObject::WAITING,
         ]);
         $this->integer($items_id)->isGreaterThan(0);
         $this->boolean($item->getFromDB($items_id))->isTrue();
@@ -310,8 +310,8 @@ class PendingReason extends DbTestCase
 
        // Change ticket status
         $success = $item->update([
-         'id' => $items_id,
-         'status' => CommonITILObject::ASSIGNED,
+            'id' => $items_id,
+            'status' => CommonITILObject::ASSIGNED,
         ]);
         $this->boolean($success)->isTrue();
 

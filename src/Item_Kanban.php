@@ -72,24 +72,24 @@ class Item_Kanban extends CommonDBRelation
         }
 
         $common_input = [
-         'itemtype'  => $itemtype,
-         'items_id'  => $items_id,
-         'users_id'  => $users_id,
-         'state'     => json_encode($state, JSON_FORCE_OBJECT),
-         'date_mod'  => $_SESSION['glpi_currenttime']
+            'itemtype'  => $itemtype,
+            'items_id'  => $items_id,
+            'users_id'  => $users_id,
+            'state'     => json_encode($state, JSON_FORCE_OBJECT),
+            'date_mod'  => $_SESSION['glpi_currenttime']
         ];
         $criteria = [
-         'users_id' => $users_id,
-         'itemtype' => $itemtype,
-         'items_id' => $items_id
+            'users_id' => $users_id,
+            'itemtype' => $itemtype,
+            'items_id' => $items_id
         ];
         if (countElementsInTable('glpi_items_kanbans', $criteria)) {
             $DB->update('glpi_items_kanbans', [
-            'date_mod'  => $_SESSION['glpi_currenttime']
+                'date_mod'  => $_SESSION['glpi_currenttime']
             ] + $common_input, $criteria);
         } else {
             $DB->insert('glpi_items_kanbans', [
-            'date_creation'   => $_SESSION['glpi_currenttime']
+                'date_creation'   => $_SESSION['glpi_currenttime']
             ] + $common_input);
         }
         return true;
@@ -115,13 +115,13 @@ class Item_Kanban extends CommonDBRelation
         $force_global = $item->forceGlobalState();
 
         $iterator = $DB->request([
-         'SELECT' => ['date_mod', 'state'],
-         'FROM'   => 'glpi_items_kanbans',
-         'WHERE'  => [
-            'users_id' => $force_global ? 0 : Session::getLoginUserID(),
-            'itemtype' => $itemtype,
-            'items_id' => $items_id
-         ]
+            'SELECT' => ['date_mod', 'state'],
+            'FROM'   => 'glpi_items_kanbans',
+            'WHERE'  => [
+                'users_id' => $force_global ? 0 : Session::getLoginUserID(),
+                'itemtype' => $itemtype,
+                'items_id' => $items_id
+            ]
         ]);
 
         if (count($iterator)) {
@@ -190,10 +190,10 @@ class Item_Kanban extends CommonDBRelation
 
         if (!$found) {
             $state[] = [
-            'column' => $column,
-            'visible' => true,
-            'folded' => false,
-            'cards' => []
+                'column' => $column,
+                'visible' => true,
+                'folded' => false,
+                'cards' => []
             ];
         }
         self::saveStateForItem($itemtype, $items_id, $state);

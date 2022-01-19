@@ -110,9 +110,9 @@ class PlanningRecall extends CommonDBChild
     {
 
         return $this->getFromDBByCrit([
-         $this->getTable() . '.itemtype'  => $itemtype,
-         $this->getTable() . '.items_id'  => $items_id,
-         $this->getTable() . '.users_id'  => $users_id
+            $this->getTable() . '.itemtype'  => $itemtype,
+            $this->getTable() . '.items_id'  => $items_id,
+            $this->getTable() . '.users_id'  => $users_id
         ]);
     }
 
@@ -172,8 +172,9 @@ class PlanningRecall extends CommonDBChild
                         if ($data['before_time'] >= 0) {
                             if ($pr->can($pr->fields['id'], UPDATE)) {
                                 $pr->update(['id'          => $pr->fields['id'],
-                                         'before_time' => $data['before_time'],
-                                         'when'        => $when]);
+                                    'before_time' => $data['before_time'],
+                                    'when'        => $when
+                                ]);
                             }
                         } else {
                             if ($pr->can($pr->fields['id'], PURGE)) {
@@ -229,13 +230,13 @@ class PlanningRecall extends CommonDBChild
         $result = $DB->update(
             'glpi_planningrecalls',
             [
-            'when'   => new \QueryExpression(
-                "DATE_SUB('$begin', INTERVAL " . $DB->quoteName('before_time') . " SECOND)"
-            ),
+                'when'   => new \QueryExpression(
+                    "DATE_SUB('$begin', INTERVAL " . $DB->quoteName('before_time') . " SECOND)"
+                ),
             ],
             [
-            'itemtype'  => $itemtype,
-            'items_id'  => $items_id
+                'itemtype'  => $itemtype,
+                'items_id'  => $items_id
             ]
         );
         return $result;
@@ -308,8 +309,8 @@ class PlanningRecall extends CommonDBChild
         ksort($possible_values);
 
         Dropdown::showFromArray('_planningrecall[before_time]', $possible_values, [
-         'value' => $p['value'],
-         'rand'  => $p['rand'],
+            'value' => $p['value'],
+            'rand'  => $p['rand'],
         ]);
         echo "<input type='hidden' name='_planningrecall[itemtype]' value='" . $p['itemtype'] . "'>";
         echo "<input type='hidden' name='_planningrecall[items_id]' value='" . $p['items_id'] . "'>";
@@ -394,26 +395,26 @@ class PlanningRecall extends CommonDBChild
 
         $cron_status = 0;
         $iterator = $DB->request([
-         'SELECT'    => 'glpi_planningrecalls.*',
-         'FROM'      => 'glpi_planningrecalls',
-         'LEFT JOIN' => [
-            'glpi_alerts'  => [
-               'ON' => [
-                  'glpi_planningrecalls'  => 'id',
-                  'glpi_alerts'           => 'items_id', [
-                     'AND' => [
-                        'glpi_alerts.itemtype'  => 'PlanningRecall',
-                        'glpi_alerts.type'      => Alert::ACTION
-                     ]
-                  ]
-               ]
+            'SELECT'    => 'glpi_planningrecalls.*',
+            'FROM'      => 'glpi_planningrecalls',
+            'LEFT JOIN' => [
+                'glpi_alerts'  => [
+                    'ON' => [
+                        'glpi_planningrecalls'  => 'id',
+                        'glpi_alerts'           => 'items_id', [
+                            'AND' => [
+                                'glpi_alerts.itemtype'  => 'PlanningRecall',
+                                'glpi_alerts.type'      => Alert::ACTION
+                            ]
+                        ]
+                    ]
+                ]
+            ],
+            'WHERE'     => [
+                'NOT'                         => ['glpi_planningrecalls.when' => null],
+                'glpi_planningrecalls.when'   => ['<', new \QueryExpression('NOW()')],
+                'glpi_alerts.date'            => null
             ]
-         ],
-         'WHERE'     => [
-            'NOT'                         => ['glpi_planningrecalls.when' => null],
-            'glpi_planningrecalls.when'   => ['<', new \QueryExpression('NOW()')],
-            'glpi_alerts.date'            => null
-         ]
         ]);
 
         $pr = new self();

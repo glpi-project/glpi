@@ -50,8 +50,8 @@ class PendingReason_Item extends CommonDBRelation
     {
         $em = new self();
         $find = $em->find([
-         'itemtype' => $item::getType(),
-         'items_id' => $item->getID(),
+            'itemtype' => $item::getType(),
+            'items_id' => $item->getID(),
         ]);
 
         if (!count($find)) {
@@ -79,8 +79,8 @@ class PendingReason_Item extends CommonDBRelation
     {
         $em = new self();
         $find = $em->find([
-         'itemtype' => $item::getType(),
-         'items_id' => $item->getID(),
+            'itemtype' => $item::getType(),
+            'items_id' => $item->getID(),
         ]);
 
         if (count($find)) {
@@ -114,8 +114,8 @@ class PendingReason_Item extends CommonDBRelation
     {
         $em = new self();
         $find = $em->find([
-         'itemtype' => $item::getType(),
-         'items_id' => $item->getID(),
+            'itemtype' => $item::getType(),
+            'items_id' => $item->getID(),
         ]);
 
         if (!count($find)) {
@@ -143,8 +143,8 @@ class PendingReason_Item extends CommonDBRelation
     {
         $em = new self();
         $find = $em->find([
-         'itemtype' => $item::getType(),
-         'items_id' => $item->getID(),
+            'itemtype' => $item::getType(),
+            'items_id' => $item->getID(),
         ]);
 
         if (!count($find)) {
@@ -154,7 +154,7 @@ class PendingReason_Item extends CommonDBRelation
 
         $to_delete = array_pop($find);
         $success = $em->delete([
-         'id' => $to_delete['id']
+            'id' => $to_delete['id']
         ]);
 
         if (!$success) {
@@ -219,33 +219,33 @@ class PendingReason_Item extends CommonDBRelation
         $task_class = $item::getTaskClass();
 
         $data = $DB->request([
-         'SELECT' => ['MAX' => 'id AS max_id'],
-         'FROM'  => PendingReason_Item::getTable(),
-         'WHERE' => [
-            'OR' => [
-               [
-                  'itemtype' => ITILFollowup::getType(),
-                  'items_id' => new QuerySubQuery([
-                     'SELECT' => 'id',
-                     'FROM'   => ITILFollowup::getTable(),
-                     'WHERE'  => [
-                        'itemtype' => $item::getType(),
-                        'items_id' => $item->getID(),
-                     ]
-                  ])
-               ],
-               [
-                  'itemtype' => $task_class::getType(),
-                  'items_id' => new QuerySubQuery([
-                     'SELECT' => 'id',
-                     'FROM'   => $task_class::getTable(),
-                     'WHERE'  => [
-                        $item::getForeignKeyField() => $item->getID(),
-                     ]
-                  ])
-               ],
+            'SELECT' => ['MAX' => 'id AS max_id'],
+            'FROM'  => PendingReason_Item::getTable(),
+            'WHERE' => [
+                'OR' => [
+                    [
+                        'itemtype' => ITILFollowup::getType(),
+                        'items_id' => new QuerySubQuery([
+                            'SELECT' => 'id',
+                            'FROM'   => ITILFollowup::getTable(),
+                            'WHERE'  => [
+                                'itemtype' => $item::getType(),
+                                'items_id' => $item->getID(),
+                            ]
+                        ])
+                    ],
+                    [
+                        'itemtype' => $task_class::getType(),
+                        'items_id' => new QuerySubQuery([
+                            'SELECT' => 'id',
+                            'FROM'   => $task_class::getTable(),
+                            'WHERE'  => [
+                                $item::getForeignKeyField() => $item->getID(),
+                            ]
+                        ])
+                    ],
+                ]
             ]
-         ]
         ]);
 
         if (!count($data)) {
@@ -290,26 +290,26 @@ class PendingReason_Item extends CommonDBRelation
         }
 
         $followups_query = new QuerySubQuery([
-         'SELECT'    => ['date_creation'],
-         'FROM'      => ITILFollowup::getTable(),
-         'WHERE'     => [
-            "itemtype" => $parent_itemtype,
-            "items_id" => $parent_items_id,
-         ]
+            'SELECT'    => ['date_creation'],
+            'FROM'      => ITILFollowup::getTable(),
+            'WHERE'     => [
+                "itemtype" => $parent_itemtype,
+                "items_id" => $parent_items_id,
+            ]
         ]);
 
         $tasks_query = new QuerySubQuery([
-         'SELECT'    => ['date_creation'],
-         'FROM'      => $task_class::getTable(),
-         'WHERE'     => [
-            $parent_itemtype::getForeignKeyField() => $parent_items_id,
-         ]
+            'SELECT'    => ['date_creation'],
+            'FROM'      => $task_class::getTable(),
+            'WHERE'     => [
+                $parent_itemtype::getForeignKeyField() => $parent_items_id,
+            ]
         ]);
 
         $union = new \QueryUnion([$followups_query, $tasks_query], false, 'timelinevents');
         $data = $DB->request([
-         'SELECT' => ['MAX' => 'date_creation AS max_date_creation'],
-         'FROM'   => $union
+            'SELECT' => ['MAX' => 'date_creation AS max_date_creation'],
+            'FROM'   => $union
         ]);
 
         if (!count($data)) {
@@ -375,14 +375,14 @@ class PendingReason_Item extends CommonDBRelation
 
                // Create pending_item data for event and parent
                 self::createForItem($timeline_item->input["_job"], [
-                'pendingreasons_id' => $timeline_item->input['pendingreasons_id'],
-                'followup_frequency'         => $timeline_item->input['followup_frequency'] ?? 0,
-                'followups_before_resolution'        => $timeline_item->input['followups_before_resolution'] ?? 0,
+                    'pendingreasons_id' => $timeline_item->input['pendingreasons_id'],
+                    'followup_frequency'         => $timeline_item->input['followup_frequency'] ?? 0,
+                    'followups_before_resolution'        => $timeline_item->input['followups_before_resolution'] ?? 0,
                 ]);
                 self::createForItem($timeline_item, [
-                 'pendingreasons_id' => $timeline_item->input['pendingreasons_id'],
-                 'followup_frequency'         => $timeline_item->input['followup_frequency'] ?? 0,
-                 'followups_before_resolution'        => $timeline_item->input['followups_before_resolution'] ?? 0,
+                    'pendingreasons_id' => $timeline_item->input['pendingreasons_id'],
+                    'followup_frequency'         => $timeline_item->input['followup_frequency'] ?? 0,
+                    'followups_before_resolution'        => $timeline_item->input['followups_before_resolution'] ?? 0,
                 ]);
             }
         }

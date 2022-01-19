@@ -45,15 +45,15 @@ class DatabaseInstance extends CommonDBTM
     public function getCloneRelations(): array
     {
         return [
-         Appliance_Item::class,
-         Contract_Item::class,
-         Document_Item::class,
-         Infocom::class,
-         Notepad::class,
-         KnowbaseItem_Item::class,
-         Certificate_Item::class,
-         Domain_Item::class,
-         Database::class
+            Appliance_Item::class,
+            Contract_Item::class,
+            Document_Item::class,
+            Infocom::class,
+            Notepad::class,
+            KnowbaseItem_Item::class,
+            Certificate_Item::class,
+            Domain_Item::class,
+            Database::class
         ];
     }
 
@@ -95,11 +95,11 @@ class DatabaseInstance extends CommonDBTM
         $dbs = [];
 
         $iterator = $DB->request([
-         'FROM' => Database::getTable(),
-         'WHERE' => [
-            'databaseinstances_id' => $this->fields['id'],
-            'is_deleted' => 0
-         ]
+            'FROM' => Database::getTable(),
+            'WHERE' => [
+                'databaseinstances_id' => $this->fields['id'],
+                'is_deleted' => 0
+            ]
         ]);
 
         foreach ($iterator as $row) {
@@ -127,8 +127,8 @@ class DatabaseInstance extends CommonDBTM
             'itemtype',
             $CFG_GLPI['databaseinstance_types'],
             [
-            'value' => $itemtype,
-            'rand'  => $rand
+                'value' => $itemtype,
+                'rand'  => $rand
             ]
         );
         echo "</td>";
@@ -138,10 +138,10 @@ class DatabaseInstance extends CommonDBTM
         echo "<td>";
         if ($itemtype) {
             $p = [
-              'itemtype' => '__VALUE__',
-              'dom_rand' => $rand,
-              'dom_name' => "items_id",
-              'action' => 'get_items_from_itemtype'
+                'itemtype' => '__VALUE__',
+                'dom_rand' => $rand,
+                'dom_name' => "items_id",
+                'action' => 'get_items_from_itemtype'
             ];
             Ajax::updateItemOnSelectEvent(
                 "dropdown_itemtype$rand",
@@ -151,15 +151,16 @@ class DatabaseInstance extends CommonDBTM
             );
 
             $itemtype::dropdown([
-              'name' => 'items_id',
-              'value' => $this->fields['items_id'],
-              'display_emptychoice' => true,
-              'rand' => $rand]);
+                'name' => 'items_id',
+                'value' => $this->fields['items_id'],
+                'display_emptychoice' => true,
+                'rand' => $rand
+            ]);
         } else {
             $p = ['idtable'            => '__VALUE__',
-            'rand'                  => $rand,
-            'name'                  => "items_id",
-            'width'                 => 'unset'
+                'rand'                  => $rand,
+                'name'                  => "items_id",
+                'width'                 => 'unset'
             ];
 
             Ajax::updateItemOnSelectEvent(
@@ -178,18 +179,18 @@ class DatabaseInstance extends CommonDBTM
         echo Html::input(
             'name',
             [
-            'value' => $this->fields['name'],
-            'id'    => "textfield_name$rand",
+                'value' => $this->fields['name'],
+                'id'    => "textfield_name$rand",
             ]
         );
         echo "</td>";
         echo "<td><label for='dropdown_states_id$rand'>" . __('Status') . "</label></td>";
         echo "<td>";
         State::dropdown([
-         'value'     => $this->fields["states_id"],
-         'entity'    => $this->fields["entities_id"],
-         'condition' => ['is_visible_database' => 1],
-         'rand'      => $rand
+            'value'     => $this->fields["states_id"],
+            'entity'    => $this->fields["entities_id"],
+            'condition' => ['is_visible_database' => 1],
+            'rand'      => $rand
         ]);
         echo "</td></tr>\n";
 
@@ -197,8 +198,9 @@ class DatabaseInstance extends CommonDBTM
         echo "<td><label for='dropdown_locations_id$rand'>" . Location::getTypeName(1) . "</label></td>";
         echo "<td>";
         Location::dropdown(['value'  => $this->fields["locations_id"],
-         'entity' => $this->fields["entities_id"],
-         'rand' => $rand]);
+            'entity' => $this->fields["entities_id"],
+            'rand' => $rand
+        ]);
         echo "</td>";
         echo "<td><label for='dropdown_databaseinstancetypes_id$rand'>" . DatabaseInstanceType::getFieldLabel() . "</label></td>";
         echo "<td>";
@@ -211,8 +213,8 @@ class DatabaseInstance extends CommonDBTM
         echo Html::input(
             'version',
             [
-            'id' => 'version' . $rand,
-            'value' => $this->fields['version']
+                'id' => 'version' . $rand,
+                'value' => $this->fields['version']
             ]
         );
         echo "</td>";
@@ -233,11 +235,11 @@ class DatabaseInstance extends CommonDBTM
         echo "<td><label for='dropdown_groups_id_tech$rand'>" . __('Group in charge of the hardware') . "</label></td>";
         echo "<td>";
         Group::dropdown([
-         'name'      => 'groups_id_tech',
-         'value'     => $this->fields['groups_id_tech'],
-         'entity'    => $this->fields['entities_id'],
-         'condition' => ['is_assign' => 1],
-         'rand' => $rand
+            'name'      => 'groups_id_tech',
+            'value'     => $this->fields['groups_id_tech'],
+            'entity'    => $this->fields['entities_id'],
+            'condition' => ['is_assign' => 1],
+            'rand' => $rand
         ]);
 
         echo "</td>";
@@ -255,10 +257,11 @@ class DatabaseInstance extends CommonDBTM
         echo "<td><label for='dropdown_users_id_tech$rand'>" . __('Technician in charge of the hardware') . "</label></td>";
         echo "<td>";
         User::dropdown(['name'   => 'users_id_tech',
-         'value'  => $this->fields["users_id_tech"],
-         'right'  => 'own_ticket',
-         'entity' => $this->fields["entities_id"],
-         'rand'   => $rand]);
+            'value'  => $this->fields["users_id_tech"],
+            'right'  => 'own_ticket',
+            'entity' => $this->fields["entities_id"],
+            'rand'   => $rand
+        ]);
         echo "</td></tr>";
         echo "<tr><td><label for='dropdown_manufacturers_id$rand'>" . Manufacturer::getTypeName(1) . "</label></td>";
         echo "<td>";
@@ -275,8 +278,8 @@ class DatabaseInstance extends CommonDBTM
         Html::showDateTimeField(
             "date_lastbackup",
             [
-            'value'      => $this->fields['date_lastbackup'],
-            'maybeempty' => true
+                'value'      => $this->fields['date_lastbackup'],
+                'maybeempty' => true
             ]
         );
         echo "</td></tr>\n";
@@ -307,126 +310,126 @@ class DatabaseInstance extends CommonDBTM
         $tab = parent::rawSearchOptions();
 
         $tab[] = [
-         'id'                 => '2',
-         'table'              => $this->getTable(),
-         'field'              => 'id',
-         'name'               => __('ID'),
-         'massiveaction'      => false, // implicit field is id
-         'datatype'           => 'number'
+            'id'                 => '2',
+            'table'              => $this->getTable(),
+            'field'              => 'id',
+            'name'               => __('ID'),
+            'massiveaction'      => false, // implicit field is id
+            'datatype'           => 'number'
         ];
 
         $tab = array_merge($tab, Location::rawSearchOptionsToAdd());
 
         $tab[] = [
-         'id'                 => '4',
-         'table'              => DatabaseInstanceType::getTable(),
-         'field'              => 'name',
-         'name'               => _n('Type', 'Types', 1),
-         'datatype'           => 'dropdown'
+            'id'                 => '4',
+            'table'              => DatabaseInstanceType::getTable(),
+            'field'              => 'name',
+            'name'               => _n('Type', 'Types', 1),
+            'datatype'           => 'dropdown'
         ];
 
         $tab[] = [
-         'id'                 => '168',
-         'table'              => self::getTable(),
-         'field'              => 'port',
-         'name'               => _n('Port', 'Ports', 1),
-         'forcegroupby'       => true,
-         'massiveaction'      => false,
-         'datatype'           => 'integer',
-         'joinparams'         => [
-            'jointype'           => 'child'
-         ]
+            'id'                 => '168',
+            'table'              => self::getTable(),
+            'field'              => 'port',
+            'name'               => _n('Port', 'Ports', 1),
+            'forcegroupby'       => true,
+            'massiveaction'      => false,
+            'datatype'           => 'integer',
+            'joinparams'         => [
+                'jointype'           => 'child'
+            ]
         ];
 
         $tab[] = [
-         'id'            => '5',
-         'table'         =>  DatabaseInstance::getTable(),
-         'field'         => 'items_id',
-         'name'               => _n('Associated item', 'Associated items', 2),
-         'nosearch'           => true,
-         'massiveaction' => false,
-         'forcegroupby'  =>  true,
-         'additionalfields'   => ['itemtype'],
-         'joinparams'    => ['jointype' => 'child']
+            'id'            => '5',
+            'table'         =>  DatabaseInstance::getTable(),
+            'field'         => 'items_id',
+            'name'               => _n('Associated item', 'Associated items', 2),
+            'nosearch'           => true,
+            'massiveaction' => false,
+            'forcegroupby'  =>  true,
+            'additionalfields'   => ['itemtype'],
+            'joinparams'    => ['jointype' => 'child']
         ];
 
         $tab[] = [
-         'id'                 => '40',
-         'table'              => DatabaseInstanceCategory::getTable(),
-         'field'              => 'name',
-         'name'               => _n('Category', 'Categories', 1),
-         'datatype'           => 'dropdown'
+            'id'                 => '40',
+            'table'              => DatabaseInstanceCategory::getTable(),
+            'field'              => 'name',
+            'name'               => _n('Category', 'Categories', 1),
+            'datatype'           => 'dropdown'
         ];
 
         $tab[] = [
-         'id'                 => '41',
-         'table'              => State::getTable(),
-         'field'              => 'name',
-         'name'               => _n('State', 'States', 1),
-         'datatype'           => 'dropdown'
+            'id'                 => '41',
+            'table'              => State::getTable(),
+            'field'              => 'name',
+            'name'               => _n('State', 'States', 1),
+            'datatype'           => 'dropdown'
         ];
 
         $tab[] = [
-         'id'                 => '16',
-         'table'              => $this->getTable(),
-         'field'              => 'comment',
-         'name'               => __('Comments'),
-         'datatype'           => 'text'
+            'id'                 => '16',
+            'table'              => $this->getTable(),
+            'field'              => 'comment',
+            'name'               => __('Comments'),
+            'datatype'           => 'text'
         ];
 
         $tab[] = [
-         'id'                 => '19',
-         'table'              => $this->getTable(),
-         'field'              => 'date_mod',
-         'name'               => __('Last update'),
-         'datatype'           => 'datetime',
-         'massiveaction'      => false
+            'id'                 => '19',
+            'table'              => $this->getTable(),
+            'field'              => 'date_mod',
+            'name'               => __('Last update'),
+            'datatype'           => 'datetime',
+            'massiveaction'      => false
         ];
 
         $tab[] = [
-         'id'                 => '121',
-         'table'              => $this->getTable(),
-         'field'              => 'date_creation',
-         'name'               => __('Creation date'),
-         'datatype'           => 'datetime',
-         'massiveaction'      => false
+            'id'                 => '121',
+            'table'              => $this->getTable(),
+            'field'              => 'date_creation',
+            'name'               => __('Creation date'),
+            'datatype'           => 'datetime',
+            'massiveaction'      => false
         ];
 
         $tab[] = [
-         'id'                 => '171',
-         'table'              => self::getTable(),
-         'field'              => 'date_lastboot',
-         'name'               => __('Last boot date'),
-         'massiveaction'      => false,
-         'datatype'           => 'date'
+            'id'                 => '171',
+            'table'              => self::getTable(),
+            'field'              => 'date_lastboot',
+            'name'               => __('Last boot date'),
+            'massiveaction'      => false,
+            'datatype'           => 'date'
         ];
 
         $tab[] = [
-         'id'                 => '23',
-         'table'              => Manufacturer::getTable(),
-         'field'              => 'name',
-         'name'               => Manufacturer::getTypeName(1),
-         'datatype'           => 'dropdown'
+            'id'                 => '23',
+            'table'              => Manufacturer::getTable(),
+            'field'              => 'name',
+            'name'               => Manufacturer::getTypeName(1),
+            'datatype'           => 'dropdown'
         ];
 
         $tab[] = [
-         'id'                 => '24',
-         'table'              => User::getTable(),
-         'field'              => 'name',
-         'linkfield'          => 'users_id_tech',
-         'name'               => __('Technician in charge'),
-         'datatype'           => 'dropdown',
-         'right'              => 'own_ticket'
+            'id'                 => '24',
+            'table'              => User::getTable(),
+            'field'              => 'name',
+            'linkfield'          => 'users_id_tech',
+            'name'               => __('Technician in charge'),
+            'datatype'           => 'dropdown',
+            'right'              => 'own_ticket'
         ];
 
         $tab[] = [
-         'id'                 => '49',
-         'table'              => Group::getTable(),
-         'field'              => 'completename',
-         'linkfield'          => 'groups_id_tech',
-         'name'               => __('Group in charge'),
-         'condition'          => ['is_assign' => 1],
-         'datatype'           => 'dropdown'
+            'id'                 => '49',
+            'table'              => Group::getTable(),
+            'field'              => 'completename',
+            'linkfield'          => 'groups_id_tech',
+            'name'               => __('Group in charge'),
+            'condition'          => ['is_assign' => 1],
+            'datatype'           => 'dropdown'
         ];
 
         $tab = array_merge($tab, Database::rawSearchOptionsToAdd());
@@ -464,7 +467,7 @@ class DatabaseInstance extends CommonDBTM
     {
         $this->deleteChildrenAndRelationsFromDb(
             [
-            Database::class
+                Database::class
             ]
         );
     }
@@ -506,11 +509,11 @@ class DatabaseInstance extends CommonDBTM
         global $DB;
 
         $instances = $DB->request([
-         'FROM'   => self::getTable(),
-         'WHERE'  => [
-            'itemtype' => $item->getType(),
-            'items_id' => $item->fields['id']
-         ]
+            'FROM'   => self::getTable(),
+            'WHERE'  => [
+                'itemtype' => $item->getType(),
+                'items_id' => $item->fields['id']
+            ]
         ]);
 
         if (!count($instances)) {

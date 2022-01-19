@@ -57,10 +57,10 @@ class ClearCommand extends Command
         $this->setName('glpi:cache:clear');
         $this->setAliases(
             [
-            'cache:clear',
+                'cache:clear',
             // Old command name/alias
-            'glpi:system:clear_cache',
-            'system:clear_cache'
+                'glpi:system:clear_cache',
+                'system:clear_cache'
             ]
         );
         $this->setDescription('Clear GLPI cache.');

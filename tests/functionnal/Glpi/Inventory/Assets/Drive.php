@@ -42,8 +42,8 @@ class Drive extends AbstractInventoryAsset
     protected function assetProvider(): array
     {
         return [
-         [ //hdd
-            'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+            [ //hdd
+                'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
   <CONTENT>
     <STORAGES>
@@ -61,9 +61,9 @@ class Drive extends AbstractInventoryAsset
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-            'expected'  => '{"description": "PCI", "disksize": 250059, "firmware": "BXV77D0Q", "manufacturer": "Samsung", "model": "PM951NVMe SAMSUNG 256GB", "name": "nvme0n1", "type": "disk", "capacity": 250059, "manufacturers_id": "Samsung", "designation": "PM951NVMe SAMSUNG 256GB", "serial": "S29NNXAH146409", "is_dynamic": 1}'
-         ], [ //cdrom
-            'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+                'expected'  => '{"description": "PCI", "disksize": 250059, "firmware": "BXV77D0Q", "manufacturer": "Samsung", "model": "PM951NVMe SAMSUNG 256GB", "name": "nvme0n1", "type": "disk", "capacity": 250059, "manufacturers_id": "Samsung", "designation": "PM951NVMe SAMSUNG 256GB", "serial": "S29NNXAH146409", "is_dynamic": 1}'
+            ], [ //cdrom
+                'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
   <CONTENT>
     <STORAGES>
@@ -82,8 +82,8 @@ class Drive extends AbstractInventoryAsset
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-            'expected'  => '{"description": "Lecteur de CD-ROM", "manufacturer": "(Lecteurs de CD-ROM standard)", "model": "VBOX CD-ROM ATA Device", "name": "VBOX CD-ROM ATA Device", "scsi_coid": "1", "scsi_lun": "0", "scsi_unid": "0", "type": "UNKNOWN", "designation": "Lecteur de CD-ROM", "interfacetypes_id": "UNKNOWN", "manufacturers_id": "(Lecteurs de CD-ROM standard)", "is_dynamic": 1}'
-         ]
+                'expected'  => '{"description": "Lecteur de CD-ROM", "manufacturer": "(Lecteurs de CD-ROM standard)", "model": "VBOX CD-ROM ATA Device", "name": "VBOX CD-ROM ATA Device", "scsi_coid": "1", "scsi_lun": "0", "scsi_unid": "0", "type": "UNKNOWN", "designation": "Lecteur de CD-ROM", "interfacetypes_id": "UNKNOWN", "manufacturers_id": "(Lecteurs de CD-ROM standard)", "is_dynamic": 1}'
+            ]
         ];
     }
 
@@ -187,75 +187,75 @@ class Drive extends AbstractInventoryAsset
 
        //create manually a computer, with 3 drives
         $computers_id = $computer->add([
-         'name'   => 'pc002',
-         'serial' => 'ggheb7ne7',
-         'entities_id' => 0
+            'name'   => 'pc002',
+            'serial' => 'ggheb7ne7',
+            'entities_id' => 0
         ]);
         $this->integer($computers_id)->isGreaterThan(0);
 
         $manufacturer = new \Manufacturer();
         $manufacturers_id = $manufacturer->add([
-         'name' => 'Samsung'
+            'name' => 'Samsung'
         ]);
         $this->integer($manufacturers_id)->isGreaterThan(0);
 
         $interface = new \InterfaceType();
         $interfacetypes_id = $interface->add([
-         'name' => 'CDROM'
+            'name' => 'CDROM'
         ]);
         $this->integer($interfacetypes_id)->isGreaterThan(0);
 
         $drive_1_id = $device_drive->add([
-         'designation' => 'CD-ROM drive',
-         'manufacturers_id' => $manufacturers_id,
-         'interfacetypes_id' => $interfacetypes_id,
-         'entities_id'  => 0
+            'designation' => 'CD-ROM drive',
+            'manufacturers_id' => $manufacturers_id,
+            'interfacetypes_id' => $interfacetypes_id,
+            'entities_id'  => 0
         ]);
         $this->integer($drive_1_id)->isGreaterThan(0);
 
         $item_drive_1_id = $item_drive->add([
-         'items_id'     => $computers_id,
-         'itemtype'     => 'Computer',
-         'devicedrives_id' => $drive_1_id
+            'items_id'     => $computers_id,
+            'itemtype'     => 'Computer',
+            'devicedrives_id' => $drive_1_id
         ]);
         $this->integer($item_drive_1_id)->isGreaterThan(0);
 
         $interfacetypes_id = $interface->add([
-         'name' => 'CD-ROM'
+            'name' => 'CD-ROM'
         ]);
         $this->integer($interfacetypes_id)->isGreaterThan(0);
 
         $drive_2_id = $device_drive->add([
-         'designation' => 'Lecteur de CD-ROM',
-         'manufacturers_id' => $manufacturers_id,
-         'interfacetypes_id' => $interfacetypes_id,
-         'entities_id'  => 0
+            'designation' => 'Lecteur de CD-ROM',
+            'manufacturers_id' => $manufacturers_id,
+            'interfacetypes_id' => $interfacetypes_id,
+            'entities_id'  => 0
         ]);
         $this->integer($drive_2_id)->isGreaterThan(0);
 
         $item_drive_2_id = $item_drive->add([
-         'items_id'     => $computers_id,
-         'itemtype'     => 'Computer',
-         'devicedrives_id' => $drive_2_id
+            'items_id'     => $computers_id,
+            'itemtype'     => 'Computer',
+            'devicedrives_id' => $drive_2_id
         ]);
         $this->integer($item_drive_2_id)->isGreaterThan(0);
 
         $interfacetypes_id = $interface->add([
-         'name' => 'DVD Writer'
+            'name' => 'DVD Writer'
         ]);
 
         $drive_3_id = $device_drive->add([
-         'designation' => 'My Drive',
-         'manufacturers_id' => $manufacturers_id,
-         'interfacetypes_id' => $interfacetypes_id,
-         'entities_id'  => 0
+            'designation' => 'My Drive',
+            'manufacturers_id' => $manufacturers_id,
+            'interfacetypes_id' => $interfacetypes_id,
+            'entities_id'  => 0
         ]);
         $this->integer($drive_3_id)->isGreaterThan(0);
 
         $item_drive_3_id = $item_drive->add([
-         'items_id'     => $computers_id,
-         'itemtype'     => 'Computer',
-         'devicedrives_id' => $drive_3_id
+            'items_id'     => $computers_id,
+            'itemtype'     => 'Computer',
+            'devicedrives_id' => $drive_3_id
         ]);
         $this->integer($item_drive_3_id)->isGreaterThan(0);
 
@@ -378,15 +378,15 @@ class Drive extends AbstractInventoryAsset
 
        //create manually a computer, with 3 harddrives
         $computers_id = $computer->add([
-         'name'   => 'pc002',
-         'serial' => 'ggheb7ne7',
-         'entities_id' => 0
+            'name'   => 'pc002',
+            'serial' => 'ggheb7ne7',
+            'entities_id' => 0
         ]);
         $this->integer($computers_id)->isGreaterThan(0);
 
         $manufacturer = new \Manufacturer();
         $manufacturers_id = $manufacturer->add([
-         'name' => 'Samsung'
+            'name' => 'Samsung'
         ]);
         $this->integer($manufacturers_id)->isGreaterThan(0);
 
@@ -398,47 +398,47 @@ class Drive extends AbstractInventoryAsset
         $this->integer($interfacetypes_id)->isGreaterThan(0);
 
         $harddrive_1_id = $device_hdd->add([
-         'designation' => 'PM951 NVMe SAMSUNG 256GB',
-         'manufacturers_id' => $manufacturers_id,
-         'interfacetypes_id' => $interfacetypes_id,
-         'entities_id'  => 0
+            'designation' => 'PM951 NVMe SAMSUNG 256GB',
+            'manufacturers_id' => $manufacturers_id,
+            'interfacetypes_id' => $interfacetypes_id,
+            'entities_id'  => 0
         ]);
         $this->integer($harddrive_1_id)->isGreaterThan(0);
 
         $item_harddrive_1_id = $item_hdd->add([
-         'items_id'     => $computers_id,
-         'itemtype'     => 'Computer',
-         'deviceharddrives_id' => $harddrive_1_id
+            'items_id'     => $computers_id,
+            'itemtype'     => 'Computer',
+            'deviceharddrives_id' => $harddrive_1_id
         ]);
         $this->integer($item_harddrive_1_id)->isGreaterThan(0);
 
         $harddrive_2_id = $device_hdd->add([
-         'designation' => 'HGST HTS725032A7E630',
-         'manufacturers_id' => $manufacturers_id,
-         'interfacetypes_id' => $interfacetypes_id,
-         'entities_id'  => 0
+            'designation' => 'HGST HTS725032A7E630',
+            'manufacturers_id' => $manufacturers_id,
+            'interfacetypes_id' => $interfacetypes_id,
+            'entities_id'  => 0
         ]);
         $this->integer($harddrive_2_id)->isGreaterThan(0);
 
         $item_harddrive_2_id = $item_hdd->add([
-         'items_id'     => $computers_id,
-         'itemtype'     => 'Computer',
-         'deviceharddrives_id' => $harddrive_2_id
+            'items_id'     => $computers_id,
+            'itemtype'     => 'Computer',
+            'deviceharddrives_id' => $harddrive_2_id
         ]);
         $this->integer($item_harddrive_2_id)->isGreaterThan(0);
 
         $harddrive_3_id = $device_hdd->add([
-         'designation' => 'My Hard Drive',
-         'manufacturers_id' => $manufacturers_id,
-         'interfacetypes_id' => $interfacetypes_id,
-         'entities_id'  => 0
+            'designation' => 'My Hard Drive',
+            'manufacturers_id' => $manufacturers_id,
+            'interfacetypes_id' => $interfacetypes_id,
+            'entities_id'  => 0
         ]);
         $this->integer($harddrive_3_id)->isGreaterThan(0);
 
         $item_harddrive_3_id = $item_hdd->add([
-         'items_id'     => $computers_id,
-         'itemtype'     => 'Computer',
-         'deviceharddrives_id' => $harddrive_3_id
+            'items_id'     => $computers_id,
+            'itemtype'     => 'Computer',
+            'deviceharddrives_id' => $harddrive_3_id
         ]);
         $this->integer($item_harddrive_3_id)->isGreaterThan(0);
 

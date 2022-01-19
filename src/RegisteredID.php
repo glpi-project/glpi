@@ -50,7 +50,8 @@ class RegisteredID extends CommonDBChild
     {
 
         return ['PCI' => __('PCI'),
-                   'USB' => __('USB')];
+            'USB' => __('USB')
+        ];
     }
 
 

@@ -54,95 +54,95 @@ class RefusedEquipment extends CommonDBTM
         $tab = parent::rawSearchOptions();
 
         $tab[] = [
-         'id'            => '2',
-         'table'         => RuleImportAsset::getTable(),
-         'field'         => 'id',
-         'real_type'     => RuleImportAsset::getType(),
-         'name'          => Rule::getTypeName(1),
-         'datatype'      => 'specific',
-         'massiveaction' => false,
+            'id'            => '2',
+            'table'         => RuleImportAsset::getTable(),
+            'field'         => 'id',
+            'real_type'     => RuleImportAsset::getType(),
+            'name'          => Rule::getTypeName(1),
+            'datatype'      => 'specific',
+            'massiveaction' => false,
         ];
 
         $tab[] = [
-         'id'            => '3',
-         'table'         => $this->getTable(),
-         'field'         => 'date_creation',
-         'name'          => _n('Date', 'Dates', 1),
-         'datatype'      => 'datetime',
-         'massiveaction' => false,
+            'id'            => '3',
+            'table'         => $this->getTable(),
+            'field'         => 'date_creation',
+            'name'          => _n('Date', 'Dates', 1),
+            'datatype'      => 'datetime',
+            'massiveaction' => false,
         ];
 
         $tab[] = [
-         'id'            => '4',
-         'table'         => $this->getTable(),
-         'field'         => 'itemtype',
-         'name'          => __('Item type'),
-         'massiveaction' => false,
-         'datatype'      => 'itemtypename',
+            'id'            => '4',
+            'table'         => $this->getTable(),
+            'field'         => 'itemtype',
+            'name'          => __('Item type'),
+            'massiveaction' => false,
+            'datatype'      => 'itemtypename',
         ];
 
         $tab[] = [
-         'id'            => '5',
-         'table'         => Entity::getTable(),
-         'field'         => 'completename',
-         'name'          => Entity::getTypeName(1),
-         'massiveaction' => false,
-         'datatype'      => 'dropdown',
+            'id'            => '5',
+            'table'         => Entity::getTable(),
+            'field'         => 'completename',
+            'name'          => Entity::getTypeName(1),
+            'massiveaction' => false,
+            'datatype'      => 'dropdown',
         ];
 
         $tab[] = [
-         'id'            => '6',
-         'table'         => $this->getTable(),
-         'field'         => 'serial',
-         'name'          => __('Serial number'),
-         'datatype'      => 'string',
-         'massiveaction' => false,
+            'id'            => '6',
+            'table'         => $this->getTable(),
+            'field'         => 'serial',
+            'name'          => __('Serial number'),
+            'datatype'      => 'string',
+            'massiveaction' => false,
         ];
 
         $tab[] = [
-         'id'            => '7',
-         'table'         => $this->getTable(),
-         'field'         => 'uuid',
-         'name'          => __('UUID'),
-         'datatype'      => 'string',
-         'massiveaction' => false,
+            'id'            => '7',
+            'table'         => $this->getTable(),
+            'field'         => 'uuid',
+            'name'          => __('UUID'),
+            'datatype'      => 'string',
+            'massiveaction' => false,
         ];
 
         $tab[] = [
-         'id'            => '8',
-         'table'         => $this->getTable(),
-         'field'         => 'ip',
-         'name'          => __('IP'),
-         'datatype'      => 'string',
-         'massiveaction' => false,
+            'id'            => '8',
+            'table'         => $this->getTable(),
+            'field'         => 'ip',
+            'name'          => __('IP'),
+            'datatype'      => 'string',
+            'massiveaction' => false,
         ];
 
         $tab[] = [
-         'id'            => '9',
-         'table'         => $this->getTable(),
-         'field'         => 'mac',
-         'name'          => __('MAC'),
-         'datatype'      => 'string',
-         'massiveaction' => false,
+            'id'            => '9',
+            'table'         => $this->getTable(),
+            'field'         => 'mac',
+            'name'          => __('MAC'),
+            'datatype'      => 'string',
+            'massiveaction' => false,
         ];
 
         $tab[] = [
-         'id'            => '10',
-         'table'         => $this->getTable(),
-         'field'         => 'method',
-         'name'          => __('Method'),
-         'datatype'      => 'string',
-         'massiveaction' => false,
+            'id'            => '10',
+            'table'         => $this->getTable(),
+            'field'         => 'method',
+            'name'          => __('Method'),
+            'datatype'      => 'string',
+            'massiveaction' => false,
         ];
 
         $tab[] = [
-         'id'            => '11',
-         'table'         => Agent::getTable(),
-         'field'         => 'name',
-         'name'          => Agent::getTypeName(1),
-         'datatype'      => 'itemlink',
-         'massiveaction' => false,
-         'itemlink_type' => 'Agent',
+            'id'            => '11',
+            'table'         => Agent::getTable(),
+            'field'         => 'name',
+            'name'          => Agent::getTypeName(1),
+            'datatype'      => 'itemlink',
+            'massiveaction' => false,
+            'itemlink_type' => 'Agent',
         ];
 
         return $tab;
@@ -156,8 +156,8 @@ class RefusedEquipment extends CommonDBTM
     public static function getDefaultSearchRequest()
     {
         return [
-         'sort'  => 3, //date SO
-         'order' => 'DESC'
+            'sort'  => 3, //date SO
+            'order' => 'DESC'
         ];
     }
 

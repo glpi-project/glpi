@@ -95,8 +95,8 @@ class Rack extends CommonDBTM
     {
         $this->initForm($ID, $options);
         TemplateRenderer::getInstance()->display('pages/assets/rack.html.twig', [
-         'item'   => $this,
-         'params' => $options,
+            'item'   => $this,
+            'params' => $options,
         ]);
         return true;
     }
@@ -107,144 +107,144 @@ class Rack extends CommonDBTM
         $tab = parent::rawSearchOptions();
 
         $tab[] = [
-         'id'                 => '2',
-         'table'              => $this->getTable(),
-         'field'              => 'id',
-         'name'               => __('ID'),
-         'massiveaction'      => false, // implicit field is id
-         'datatype'           => 'number'
+            'id'                 => '2',
+            'table'              => $this->getTable(),
+            'field'              => 'id',
+            'name'               => __('ID'),
+            'massiveaction'      => false, // implicit field is id
+            'datatype'           => 'number'
         ];
 
         $tab = array_merge($tab, Location::rawSearchOptionsToAdd());
 
         $tab[] = [
-         'id'                 => '4',
-         'table'              => 'glpi_racktypes',
-         'field'              => 'name',
-         'name'               => _n('Type', 'Types', 1),
-         'datatype'           => 'dropdown'
+            'id'                 => '4',
+            'table'              => 'glpi_racktypes',
+            'field'              => 'name',
+            'name'               => _n('Type', 'Types', 1),
+            'datatype'           => 'dropdown'
         ];
 
         $tab[] = [
-         'id'                 => '40',
-         'table'              => 'glpi_rackmodels',
-         'field'              => 'name',
-         'name'               => _n('Model', 'Models', 1),
-         'datatype'           => 'dropdown'
+            'id'                 => '40',
+            'table'              => 'glpi_rackmodels',
+            'field'              => 'name',
+            'name'               => _n('Model', 'Models', 1),
+            'datatype'           => 'dropdown'
         ];
 
         $tab[] = [
-         'id'                 => '31',
-         'table'              => 'glpi_states',
-         'field'              => 'completename',
-         'name'               => __('Status'),
-         'datatype'           => 'dropdown',
-         'condition'          => ['is_visible_rack' => 1]
+            'id'                 => '31',
+            'table'              => 'glpi_states',
+            'field'              => 'completename',
+            'name'               => __('Status'),
+            'datatype'           => 'dropdown',
+            'condition'          => ['is_visible_rack' => 1]
         ];
 
         $tab[] = [
-         'id'                 => '5',
-         'table'              => $this->getTable(),
-         'field'              => 'serial',
-         'name'               => __('Serial number'),
-         'datatype'           => 'string',
+            'id'                 => '5',
+            'table'              => $this->getTable(),
+            'field'              => 'serial',
+            'name'               => __('Serial number'),
+            'datatype'           => 'string',
         ];
 
         $tab[] = [
-         'id'                 => '6',
-         'table'              => $this->getTable(),
-         'field'              => 'otherserial',
-         'name'               => __('Inventory number'),
-         'datatype'           => 'string',
+            'id'                 => '6',
+            'table'              => $this->getTable(),
+            'field'              => 'otherserial',
+            'name'               => __('Inventory number'),
+            'datatype'           => 'string',
         ];
 
         $tab[] = [
-         'id'                 => '7',
-         'table'              => DCRoom::getTable(),
-         'field'              => 'name',
-         'name'               => DCRoom::getTypeName(1),
-         'datatype'           => 'dropdown'
+            'id'                 => '7',
+            'table'              => DCRoom::getTable(),
+            'field'              => 'name',
+            'name'               => DCRoom::getTypeName(1),
+            'datatype'           => 'dropdown'
         ];
 
         $tab[] = [
-         'id'                 => '8',
-         'table'              => $this->getTable(),
-         'field'              => 'number_units',
-         'name'               => __('Number of units'),
-         'datatype'           => 'number'
+            'id'                 => '8',
+            'table'              => $this->getTable(),
+            'field'              => 'number_units',
+            'name'               => __('Number of units'),
+            'datatype'           => 'number'
         ];
 
         $tab[] = [
-         'id'                 => '16',
-         'table'              => $this->getTable(),
-         'field'              => 'comment',
-         'name'               => __('Comments'),
-         'datatype'           => 'text'
+            'id'                 => '16',
+            'table'              => $this->getTable(),
+            'field'              => 'comment',
+            'name'               => __('Comments'),
+            'datatype'           => 'text'
         ];
 
         $tab[] = [
-         'id'                 => '19',
-         'table'              => $this->getTable(),
-         'field'              => 'date_mod',
-         'name'               => __('Last update'),
-         'datatype'           => 'datetime',
-         'massiveaction'      => false
+            'id'                 => '19',
+            'table'              => $this->getTable(),
+            'field'              => 'date_mod',
+            'name'               => __('Last update'),
+            'datatype'           => 'datetime',
+            'massiveaction'      => false
         ];
 
         $tab[] = [
-         'id'                 => '121',
-         'table'              => $this->getTable(),
-         'field'              => 'date_creation',
-         'name'               => __('Creation date'),
-         'datatype'           => 'datetime',
-         'massiveaction'      => false
+            'id'                 => '121',
+            'table'              => $this->getTable(),
+            'field'              => 'date_creation',
+            'name'               => __('Creation date'),
+            'datatype'           => 'datetime',
+            'massiveaction'      => false
         ];
 
         $tab[] = [
-         'id'                 => '23',
-         'table'              => 'glpi_manufacturers',
-         'field'              => 'name',
-         'name'               => Manufacturer::getTypeName(1),
-         'datatype'           => 'dropdown'
+            'id'                 => '23',
+            'table'              => 'glpi_manufacturers',
+            'field'              => 'name',
+            'name'               => Manufacturer::getTypeName(1),
+            'datatype'           => 'dropdown'
         ];
 
         $tab[] = [
-         'id'                 => '24',
-         'table'              => 'glpi_users',
-         'field'              => 'name',
-         'linkfield'          => 'users_id_tech',
-         'name'               => __('Technician in charge of the hardware'),
-         'datatype'           => 'dropdown',
-         'right'              => 'own_ticket'
+            'id'                 => '24',
+            'table'              => 'glpi_users',
+            'field'              => 'name',
+            'linkfield'          => 'users_id_tech',
+            'name'               => __('Technician in charge of the hardware'),
+            'datatype'           => 'dropdown',
+            'right'              => 'own_ticket'
         ];
 
         $tab[] = [
-         'id'                 => '49',
-         'table'              => 'glpi_groups',
-         'field'              => 'completename',
-         'linkfield'          => 'groups_id_tech',
-         'name'               => __('Group in charge of the hardware'),
-         'condition'          => ['is_assign' => 1],
-         'datatype'           => 'dropdown'
+            'id'                 => '49',
+            'table'              => 'glpi_groups',
+            'field'              => 'completename',
+            'linkfield'          => 'groups_id_tech',
+            'name'               => __('Group in charge of the hardware'),
+            'condition'          => ['is_assign' => 1],
+            'datatype'           => 'dropdown'
         ];
 
         $tab[] = [
-         'id'                 => '61',
-         'table'              => $this->getTable(),
-         'field'              => 'template_name',
-         'name'               => __('Template name'),
-         'datatype'           => 'text',
-         'massiveaction'      => false,
-         'nosearch'           => true,
-         'nodisplay'          => true,
+            'id'                 => '61',
+            'table'              => $this->getTable(),
+            'field'              => 'template_name',
+            'name'               => __('Template name'),
+            'datatype'           => 'text',
+            'massiveaction'      => false,
+            'nosearch'           => true,
+            'nodisplay'          => true,
         ];
 
         $tab[] = [
-         'id'                 => '80',
-         'table'              => 'glpi_entities',
-         'field'              => 'completename',
-         'name'               => Entity::getTypeName(1),
-         'datatype'           => 'dropdown'
+            'id'                 => '80',
+            'table'              => 'glpi_entities',
+            'field'              => 'completename',
+            'name'               => Entity::getTypeName(1),
+            'datatype'           => 'dropdown'
         ];
 
         $tab = array_merge($tab, Notepad::rawSearchOptionsToAdd());
@@ -264,8 +264,8 @@ class Rack extends CommonDBTM
                     $nb = countElementsInTable(
                         self::getTable(),
                         [
-                        'dcrooms_id'   => $item->getID(),
-                        'is_deleted'   => 0
+                            'dcrooms_id'   => $item->getID(),
+                            'is_deleted'   => 0
                         ]
                     );
                 }
@@ -309,11 +309,11 @@ class Rack extends CommonDBTM
         $canedit = $room->canEdit($room_id);
 
         $racks = $DB->request([
-         'FROM'   => self::getTable(),
-         'WHERE'  => [
-            'dcrooms_id'   => $room->getID(),
-            'is_deleted'   => 0
-         ]
+            'FROM'   => self::getTable(),
+            'WHERE'  => [
+                'dcrooms_id'   => $room->getID(),
+                'is_deleted'   => 0
+            ]
         ]);
 
         Session::initNavigateListItems(
@@ -343,8 +343,8 @@ class Rack extends CommonDBTM
             if ($canedit) {
                 Html::openMassiveActionsForm('mass' . __CLASS__ . $rand);
                 $massiveactionparams = [
-                'num_displayed'   => min($_SESSION['glpilist_limit'], count($racks)),
-                'container'       => 'mass' . __CLASS__ . $rand
+                    'num_displayed'   => min($_SESSION['glpilist_limit'], count($racks)),
+                    'container'       => 'mass' . __CLASS__ . $rand
                 ];
                 Html::showMassiveActions($massiveactionparams);
             }
@@ -696,9 +696,9 @@ JAVASCRIPT;
         }
 
         $where = [
-         'dcrooms_id'   => $input['dcrooms_id'],
-         'position'     => $input['position'],
-         'is_deleted'   => false
+            'dcrooms_id'   => $input['dcrooms_id'],
+            'position'     => $input['position'],
+            'is_deleted'   => false
         ];
 
         if (!$this->isNewItem()) {
@@ -732,10 +732,10 @@ JAVASCRIPT;
         global $DB;
 
         $iterator = $DB->request([
-         'FROM'   => Item_Rack::getTable(),
-         'WHERE'  => [
-            'racks_id'   => $this->getID()
-         ]
+            'FROM'   => Item_Rack::getTable(),
+            'WHERE'  => [
+                'racks_id'   => $this->getID()
+            ]
         ]);
 
         $filled = [];
@@ -764,8 +764,8 @@ JAVASCRIPT;
             ) {
                 while (--$units >= 0) {
                     $content_filled = [
-                    self::POS_LEFT    => [0, 0, 0, 0],
-                    self::POS_RIGHT   => [0, 0, 0, 0]
+                        self::POS_LEFT    => [0, 0, 0, 0],
+                        self::POS_RIGHT   => [0, 0, 0, 0]
                     ];
 
                     if (isset($filled[$position + $units])) {
@@ -822,8 +822,8 @@ JAVASCRIPT;
 
         $this->deleteChildrenAndRelationsFromDb(
             [
-            Item_Rack::class,
-            PDU_Rack::class,
+                Item_Rack::class,
+                PDU_Rack::class,
             ]
         );
     }

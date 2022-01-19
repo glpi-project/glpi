@@ -44,62 +44,62 @@ class Cartridge extends InventoryAsset
         $tags = [];
 
         $aliases = [
-         'tonerblack'      => ['tonerblack2'],
-         'tonerblackmax'   => ['tonerblack2max'],
-         'tonerblackused'  => ['tonerblack2used'],
-         'tonerblackremaining'   => ['tonerblack2remaining']
+            'tonerblack'      => ['tonerblack2'],
+            'tonerblackmax'   => ['tonerblack2max'],
+            'tonerblackused'  => ['tonerblack2used'],
+            'tonerblackremaining'   => ['tonerblack2remaining']
         ];
 
         $types = [
-         'toner'           => __('Toner'),
-         'drum'            => __('Drum'),
-         'cartridge'       => _n('Cartridge', 'Cartridges', 1),
-         'wastetoner'      => __('Waste bin'),
-         'maintenancekit'  => __('Maintenance kit'),
-         'fuserkit'        => __('Fuser kit'),
-         'transferkit'     => __('Transfer kit'),
-         'cleaningkit'     => __('Cleaning kit'),
-         'developer'       => __('Developer'),
-         'photoconductor'  => __('Photoconductor')
+            'toner'           => __('Toner'),
+            'drum'            => __('Drum'),
+            'cartridge'       => _n('Cartridge', 'Cartridges', 1),
+            'wastetoner'      => __('Waste bin'),
+            'maintenancekit'  => __('Maintenance kit'),
+            'fuserkit'        => __('Fuser kit'),
+            'transferkit'     => __('Transfer kit'),
+            'cleaningkit'     => __('Cleaning kit'),
+            'developer'       => __('Developer'),
+            'photoconductor'  => __('Photoconductor')
         ];
 
         $colored_types = ['toner', 'drum', 'cartridge', 'photoconductor'];
         $w_extras_types = ['cartridge'];
 
         $colors = [
-         'black'        => __('Black'),
-         'cyan'         => __('Cyan'),
-         'cyanlight'    => __('Light cyan'),
-         'magenta'      => __('Magenta'),
-         'magentalight' => __('Light magenta'),
-         'yellow'       => __('Yellow'),
-         'grey'         => __('Grey'),
-         'darkgrey'     => __('Dark grey'),
-         'gray'         => __('Grey'),
-         'darkgray'     => __('Dark grey')
+            'black'        => __('Black'),
+            'cyan'         => __('Cyan'),
+            'cyanlight'    => __('Light cyan'),
+            'magenta'      => __('Magenta'),
+            'magentalight' => __('Light magenta'),
+            'yellow'       => __('Yellow'),
+            'grey'         => __('Grey'),
+            'darkgrey'     => __('Dark grey'),
+            'gray'         => __('Grey'),
+            'darkgray'     => __('Dark grey')
         ];
 
         $states = [
-         'max'       => __('Max'),
-         'used'      => __('Used'),
-         'remaining' => __('Remaining')
+            'max'       => __('Max'),
+            'used'      => __('Used'),
+            'remaining' => __('Remaining')
         ];
 
         foreach ($types as $type => $label) {
            //not a colored type, add an entry for type only, and type + state
             if (!in_array($type, $colored_types)) {
                 $tags[$type] = [
-                'name'   => $label
+                    'name'   => $label
                 ];
 
                 foreach ($states as $state => $slabel) {
                     $tags[$type . $state] = [
                     //TRANS first argument is a type, second a state
-                    'name'   => sprintf(
-                        '%1$s %2$s',
-                        $label,
-                        $slabel
-                    )
+                        'name'   => sprintf(
+                            '%1$s %2$s',
+                            $label,
+                            $slabel
+                        )
                     ];
                     if (isset($aliases[$type . $state])) {
                         foreach ($aliases[$type . $state] as $alias) {
@@ -112,11 +112,11 @@ class Cartridge extends InventoryAsset
                 foreach ($colors as $color => $clabel) {
                     $tags[$type . $color] = [
                     //TRANS first argument is a type, second a color
-                    'name'   => sprintf(
-                        '%1$s %2$s',
-                        $label,
-                        $clabel
-                    )
+                        'name'   => sprintf(
+                            '%1$s %2$s',
+                            $label,
+                            $clabel
+                        )
                     ];
 
                     if (isset($aliases[$type . $color])) {
@@ -128,12 +128,12 @@ class Cartridge extends InventoryAsset
                     foreach ($states as $state => $slabel) {
                         $tags[$type . $color . $state] = [
                         //TRANS first argument is a type, second a color and third a state
-                        'name'   => sprintf(
-                            '%1$s %2$s %3$s',
-                            $label,
-                            $clabel,
-                            $slabel
-                        )
+                            'name'   => sprintf(
+                                '%1$s %2$s %3$s',
+                                $label,
+                                $clabel,
+                                $slabel
+                            )
                         ];
                         if (isset($aliases[$type . $color . $state])) {
                             foreach ($aliases[$type . $color . $state] as $alias) {
@@ -144,18 +144,18 @@ class Cartridge extends InventoryAsset
 
                     if (in_array($type, $w_extras_types) && $color == 'black') {
                         $extras = [
-                        'photo'  => __('Photo'),
-                        'matte'  => __('Matte')
+                            'photo'  => __('Photo'),
+                            'matte'  => __('Matte')
                         ];
                         foreach ($extras as $extra => $elabel) {
                             $tags[$type . $color . $extra] = [
-                            'name' => sprintf(
+                                'name' => sprintf(
                             //TRANS first argument is a type, second a color and third an extra (matte or photo)
-                                '%1$s %2$s %3$s',
-                                $label,
-                                $clabel,
-                                $elabel
-                            )
+                                    '%1$s %2$s %3$s',
+                                    $label,
+                                    $clabel,
+                                    $elabel
+                                )
                             ];
                             if (isset($aliases[$type . $color . $extra])) {
                                 foreach ($aliases[$type . $color . $extra] as $alias) {
@@ -164,13 +164,13 @@ class Cartridge extends InventoryAsset
                             }
 
                             $tags[$type . $extra . $color] = [
-                            'name' => sprintf(
+                                'name' => sprintf(
                            //TRANS first argument is a type, second an extra (matte or photo) and third a color
-                                '%1$s %2$s %3$s',
-                                $label,
-                                $elabel,
-                                $clabel
-                            )
+                                    '%1$s %2$s %3$s',
+                                    $label,
+                                    $elabel,
+                                    $clabel
+                                )
                             ];
                             if (isset($aliases[$type . $extra . $color])) {
                                 foreach ($aliases[$type . $extra . $color] as $alias) {
@@ -184,12 +184,12 @@ class Cartridge extends InventoryAsset
         }
 
         $tags += [
-         'informations' => [
-            'name'   => __('Many information grouped')
-         ],
-         'staples'      => [
-            'name'   => __('Staples')
-         ]
+            'informations' => [
+                'name'   => __('Many information grouped')
+            ],
+            'staples'      => [
+                'name'   => __('Staples')
+            ]
         ];
 
         return $tags;
@@ -212,8 +212,8 @@ class Cartridge extends InventoryAsset
         $db_existing = [];
 
         $iterator = $DB->request([
-         'FROM'   => Printer_CartridgeInfo::getTable(),
-         'WHERE'  => ['printers_id' => $this->item->fields['id']]
+            'FROM'   => Printer_CartridgeInfo::getTable(),
+            'WHERE'  => ['printers_id' => $this->item->fields['id']]
         ]);
 
         foreach ($iterator as $data) {
@@ -238,7 +238,7 @@ class Cartridge extends InventoryAsset
             foreach ($db_cartridges as $keydb => $arraydb) {
                 if ($k == $arraydb['property']) {
                     $input = (array)$val + [
-                    'id'           => $keydb
+                        'id'           => $keydb
                     ];
                     $cartinfo->update(Toolbox::addslashes_deep($input), false);
                     unset($value->$k);
@@ -257,9 +257,9 @@ class Cartridge extends InventoryAsset
         foreach ($value as $property => $val) {
             $cartinfo->add(
                 [
-                'printers_id' => $this->item->fields['id'],
-                'property' => addslashes($property),
-                'value' => addslashes($val)
+                    'printers_id' => $this->item->fields['id'],
+                    'property' => addslashes($property),
+                    'value' => addslashes($val)
                 ],
                 [],
                 false

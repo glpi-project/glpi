@@ -68,11 +68,11 @@ class LogCsvExport implements ExportToCsvInterface
     public function getFileHeader(): array
     {
         return [
-         __('ID'),
-         _n('Date', 'Dates', 1),
-         User::getTypeName(1),
-         _n('Field', 'Fields', 1),
-         _x('name', 'Update'),
+            __('ID'),
+            _n('Date', 'Dates', 1),
+            User::getTypeName(1),
+            _n('Field', 'Fields', 1),
+            _x('name', 'Update'),
         ];
     }
 

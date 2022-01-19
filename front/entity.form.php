@@ -38,7 +38,8 @@ $dropdown = new Entity();
 // Root entity : no delete
 if (isset($_GET['id']) && ($_GET['id'] == 0)) {
     $options = ['canedit' => true,
-                    'candel'  => false];
+        'candel'  => false
+    ];
 }
 
 if (array_key_exists('custom_css_code', $_POST)) {

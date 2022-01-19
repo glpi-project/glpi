@@ -95,9 +95,9 @@ switch ($_SERVER['REQUEST_METHOD']) {
                    // Output graph as json
                     header('Content-Type: application/json');
                     echo json_encode([
-                    'graph'  => Impact::makeDataForCytoscape($graph),
-                    'params' => $params,
-                    'readonly' => $readonly,
+                        'graph'  => Impact::makeDataForCytoscape($graph),
+                        'params' => $params,
+                        'readonly' => $readonly,
                     ]);
                 } else if ($view == "list") {
                    // Output list as HTML

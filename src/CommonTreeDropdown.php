@@ -45,9 +45,11 @@ abstract class CommonTreeDropdown extends CommonDropdown
     {
 
         return [['name'  => $this->getForeignKeyField(),
-                         'label' => __('As child of'),
-                         'type'  => 'parent',
-                         'list'  => false]];
+            'label' => __('As child of'),
+            'type'  => 'parent',
+            'list'  => false
+        ]
+        ];
     }
 
 
@@ -173,9 +175,9 @@ abstract class CommonTreeDropdown extends CommonDropdown
 
         $result = $DB->request(
             [
-            'SELECT' => 'id',
-            'FROM'   => $this->getTable(),
-            'WHERE'  => [$this->getForeignKeyField() => $this->fields['id']]
+                'SELECT' => 'id',
+                'FROM'   => $this->getTable(),
+                'WHERE'  => [$this->getForeignKeyField() => $this->fields['id']]
             ]
         );
 
@@ -245,9 +247,9 @@ abstract class CommonTreeDropdown extends CommonDropdown
             }
 
             $query = [
-            'SELECT' => ['id', 'name'],
-            'FROM'   => $this->getTable(),
-            'WHERE'  => [$this->getForeignKeyField() => $ID]
+                'SELECT' => ['id', 'name'],
+                'FROM'   => $this->getTable(),
+                'WHERE'  => [$this->getForeignKeyField() => $ID]
             ];
             if (Session::haveTranslations($this->getType(), 'completename')) {
                 DropdownTranslation::regenerateAllCompletenameTranslationsFor($this->getType(), $ID);
@@ -316,10 +318,10 @@ abstract class CommonTreeDropdown extends CommonDropdown
         $DB->update(
             $this->getTable(),
             [
-            'sons_cache' => 'NULL'
+                'sons_cache' => 'NULL'
             ],
             [
-            'id' => $ancestors
+                'id' => $ancestors
             ]
         );
 
@@ -372,9 +374,9 @@ abstract class CommonTreeDropdown extends CommonDropdown
         $this->addSonInParents();
         if ($parent && $this->dohistory) {
             $changes = [
-            0,
-            '',
-            addslashes($this->getNameID()),
+                0,
+                '',
+                addslashes($this->getNameID()),
             ];
             Log::history(
                 $parent,
@@ -408,9 +410,9 @@ abstract class CommonTreeDropdown extends CommonDropdown
                         $oldParentNameID = $parent->getNameID();
                     }
                     $changes = [
-                    '0',
-                    addslashes($this->getNameID()),
-                    '',
+                        '0',
+                        addslashes($this->getNameID()),
+                        '',
                     ];
                     Log::history(
                         $oldParentID,
@@ -430,9 +432,9 @@ abstract class CommonTreeDropdown extends CommonDropdown
                         $newParentNameID = $parent->getNameID();
                     }
                     $changes = [
-                    '0',
-                    '',
-                    addslashes($this->getNameID()),
+                        '0',
+                        '',
+                        addslashes($this->getNameID()),
                     ];
                     Log::history(
                         $newParentID,
@@ -446,9 +448,9 @@ abstract class CommonTreeDropdown extends CommonDropdown
 
             if ($history) {
                 $changes = [
-                '0',
-                $oldParentNameID,
-                $newParentNameID,
+                    '0',
+                    $oldParentNameID,
+                    $newParentNameID,
                 ];
                 Log::history(
                     $ID,
@@ -469,9 +471,9 @@ abstract class CommonTreeDropdown extends CommonDropdown
         $parent = $this->fields[$this->getForeignKeyField()];
         if ($parent && $this->dohistory) {
             $changes = [
-            '0',
-            addslashes($this->getNameID()),
-            '',
+                '0',
+                addslashes($this->getNameID()),
+                '',
             ];
             Log::history(
                 $parent,
@@ -576,9 +578,9 @@ abstract class CommonTreeDropdown extends CommonDropdown
 
         $result = $DB->request(
             [
-            'FROM'  => $this->getTable(),
-            'WHERE' => [$fk => $ID],
-            'ORDER' => 'name',
+                'FROM'  => $this->getTable(),
+                'WHERE' => [$fk => $ID],
+                'ORDER' => 'name',
             ]
         );
 
@@ -658,9 +660,10 @@ abstract class CommonTreeDropdown extends CommonDropdown
                 $itemtype = $ma->getItemType(true);
                 echo __('As child of');
                 Dropdown::show($itemtype, ['name'     => 'parent',
-                                            'comments' => 0,
-                                            'entity'   => $_SESSION['glpiactive_entity'],
-                                            'entity_sons' => $_SESSION['glpiactive_entity_recursive']]);
+                    'comments' => 0,
+                    'entity'   => $_SESSION['glpiactive_entity'],
+                    'entity_sons' => $_SESSION['glpiactive_entity_recursive']
+                ]);
                 echo "<br><br><input type='submit' name='massiveaction' class='btn btn-primary' value='" .
                            _sx('button', 'Move') . "'>\n";
                 return true;
@@ -698,7 +701,8 @@ abstract class CommonTreeDropdown extends CommonDropdown
                             ) {
                                 if (
                                     $item->update(['id' => $id,
-                                              $fk  => $parent->getID()])
+                                        $fk  => $parent->getID()
+                                    ])
                                 ) {
                                     $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
                                 } else {
@@ -729,95 +733,95 @@ abstract class CommonTreeDropdown extends CommonDropdown
         $tab = [];
 
         $tab[] = [
-         'id'   => 'common',
-         'name' => __('Characteristics')
+            'id'   => 'common',
+            'name' => __('Characteristics')
         ];
 
         $tab[] = [
-         'id'                => '1',
-         'table'              => $this->getTable(),
-         'field'              => 'completename',
-         'name'               => __('Complete name'),
-         'datatype'           => 'itemlink',
-         'massiveaction'      => false
+            'id'                => '1',
+            'table'              => $this->getTable(),
+            'field'              => 'completename',
+            'name'               => __('Complete name'),
+            'datatype'           => 'itemlink',
+            'massiveaction'      => false
         ];
 
         $tab[] = [
-         'id'                => '2',
-         'table'              => $this->getTable(),
-         'field'              => 'id',
-         'name'               => __('ID'),
-         'massiveaction'      => false,
-         'datatype'           => 'number'
+            'id'                => '2',
+            'table'              => $this->getTable(),
+            'field'              => 'id',
+            'name'               => __('ID'),
+            'massiveaction'      => false,
+            'datatype'           => 'number'
         ];
 
         $tab[] = [
-         'id'                => '14',
-         'table'             => $this->getTable(),
-         'field'             => 'name',
-         'name'              => __('Name'),
-         'datatype'          => 'itemlink',
+            'id'                => '14',
+            'table'             => $this->getTable(),
+            'field'             => 'name',
+            'name'              => __('Name'),
+            'datatype'          => 'itemlink',
         ];
 
         $tab[] = [
-         'id'                => '13',
-         'table'             => $this->getTable(),
-         'field'             => 'completename',
-         'name'              => __('Father'),
-         'datatype'          => 'dropdown',
-         'massiveaction'     => false,
+            'id'                => '13',
+            'table'             => $this->getTable(),
+            'field'             => 'completename',
+            'name'              => __('Father'),
+            'datatype'          => 'dropdown',
+            'massiveaction'     => false,
          // Add virtual condition to relink table
-         'joinparams'        => ['condition' => [new QueryExpression("1=1")]]
+            'joinparams'        => ['condition' => [new QueryExpression("1=1")]]
         ];
 
         $tab[] = [
-         'id'                => '16',
-         'table'             => $this->getTable(),
-         'field'             => 'comment',
-         'name'              => __('Comments'),
-         'datatype'          => 'text'
+            'id'                => '16',
+            'table'             => $this->getTable(),
+            'field'             => 'comment',
+            'name'              => __('Comments'),
+            'datatype'          => 'text'
         ];
 
         if ($this->isEntityAssign()) {
             $tab[] = [
-            'id'             => '80',
-            'table'          => 'glpi_entities',
-            'field'          => 'completename',
-            'name'           => Entity::getTypeName(1),
-            'massiveaction'  => false,
-            'datatype'       => 'dropdown'
+                'id'             => '80',
+                'table'          => 'glpi_entities',
+                'field'          => 'completename',
+                'name'           => Entity::getTypeName(1),
+                'massiveaction'  => false,
+                'datatype'       => 'dropdown'
             ];
         }
 
         if ($this->maybeRecursive()) {
             $tab[] = [
-            'id'             => '86',
-            'table'          => $this->getTable(),
-            'field'          => 'is_recursive',
-            'name'           => __('Child entities'),
-            'datatype'       => 'bool'
+                'id'             => '86',
+                'table'          => $this->getTable(),
+                'field'          => 'is_recursive',
+                'name'           => __('Child entities'),
+                'datatype'       => 'bool'
             ];
         }
 
         if ($this->isField('date_mod')) {
             $tab[] = [
-            'id'             => '19',
-            'table'          => $this->getTable(),
-            'field'          => 'date_mod',
-            'name'           => __('Last update'),
-            'datatype'       => 'datetime',
-            'massiveaction'  => false
+                'id'             => '19',
+                'table'          => $this->getTable(),
+                'field'          => 'date_mod',
+                'name'           => __('Last update'),
+                'datatype'       => 'datetime',
+                'massiveaction'  => false
             ];
         }
 
         if ($this->isField('date_creation')) {
             $tab[] = [
-            'id'             => '121',
-            'table'          => $this->getTable(),
-            'field'          => 'date_creation',
-            'name'           => __('Creation date'),
-            'datatype'       => 'datetime',
-            'massiveaction'  => false
+                'id'             => '121',
+                'table'          => $this->getTable(),
+                'field'          => 'date_creation',
+                'name'           => __('Creation date'),
+                'datatype'       => 'datetime',
+                'massiveaction'  => false
             ];
         }
 
@@ -872,11 +876,11 @@ abstract class CommonTreeDropdown extends CommonDropdown
 
         if (isset($input['completename']) && !empty($input['completename'])) {
             $criteria = [
-            'SELECT' => 'id',
-            'FROM'   => $this->getTable(),
-            'WHERE'  => [
-               'completename' => $input['completename']
-            ]
+                'SELECT' => 'id',
+                'FROM'   => $this->getTable(),
+                'WHERE'  => [
+                    'completename' => $input['completename']
+                ]
             ];
             if ($this->isEntityAssign()) {
                 $criteria['WHERE'] = $criteria['WHERE'] + getEntitiesRestrictCriteria(
@@ -896,12 +900,12 @@ abstract class CommonTreeDropdown extends CommonDropdown
             $fk = $this->getForeignKeyField();
 
             $criteria = [
-            'SELECT' => 'id',
-            'FROM'   => $this->getTable(),
-            'WHERE'  => [
-               'name'   => $input['name'],
-               $fk      => (isset($input[$fk]) ? $input[$fk] : 0)
-            ]
+                'SELECT' => 'id',
+                'FROM'   => $this->getTable(),
+                'WHERE'  => [
+                    'name'   => $input['name'],
+                    $fk      => (isset($input[$fk]) ? $input[$fk] : 0)
+                ]
             ];
             if ($this->isEntityAssign()) {
                 $criteria['WHERE'] = $criteria['WHERE'] + getEntitiesRestrictCriteria(
@@ -948,8 +952,8 @@ abstract class CommonTreeDropdown extends CommonDropdown
             }
 
             $tmp = [
-            'name' => $name,
-            $fk    => $parent,
+                'name' => $name,
+                $fk    => $parent,
             ];
 
             if (isset($input['is_recursive'])) {

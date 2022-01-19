@@ -51,9 +51,9 @@ class USBVendor extends DbTestCase
 
         $this->integer(
             $vendors->add([
-            'name'  => 'Something to test',
-            'vendorid'  => '01ef',
-            'deviceid'  => '02ef'
+                'name'  => 'Something to test',
+                'vendorid'  => '01ef',
+                'deviceid'  => '02ef'
             ])
         )->isGreaterThan(0);
 
@@ -74,8 +74,8 @@ class USBVendor extends DbTestCase
        //override
         $this->integer(
             $vendors->add([
-            'name'  => addslashes("Farnsworth's Electronics"),
-            'vendorid'  => '0001'
+                'name'  => addslashes("Farnsworth's Electronics"),
+                'vendorid'  => '0001'
             ])
         )->isGreaterThan(0);
         $this->string($vendors->getManufacturer('0001'))->isIdenticalTo("Farnsworth's Electronics");
@@ -93,16 +93,16 @@ class USBVendor extends DbTestCase
        //override
         $this->integer(
             $vendors->add([
-            'name'  => 'not the good one',
-            'vendorid'  => '0002',
-            'deviceid'  => '7778'
+                'name'  => 'not the good one',
+                'vendorid'  => '0002',
+                'deviceid'  => '7778'
             ])
         )->isGreaterThan(0);
         $this->integer(
             $vendors->add([
-            'name'  => 'Yeah, that works',
-            'vendorid'  => '0001',
-            'deviceid'  => '7778'
+                'name'  => 'Yeah, that works',
+                'vendorid'  => '0001',
+                'deviceid'  => '7778'
             ])
         )->isGreaterThan(0);
         $this->string($vendors->getProductName('0001', '7778'))->isIdenticalTo('Yeah, that works');

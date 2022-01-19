@@ -68,7 +68,7 @@ if (isset($_REQUEST['id'])) {
     $params['id'] = $_REQUEST['id'];
 } else {
     $params = [
-      'clusters_id'   => $_REQUEST['cluster']
+        'clusters_id'   => $_REQUEST['cluster']
     ];
 }
 

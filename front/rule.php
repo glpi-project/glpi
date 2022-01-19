@@ -42,12 +42,12 @@ Html::header(Rule::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF']
 echo TemplateRenderer::getInstance()->render(
     'pages/admin/rules_list.html.twig',
     [
-      'rules_group' => [
-         [
-            'type'    => __('Rule type'),
-            'entries' => RuleCollection::getRules(),
-         ],
-      ]
+        'rules_group' => [
+            [
+                'type'    => __('Rule type'),
+                'entries' => RuleCollection::getRules(),
+            ],
+        ]
     ]
 );
 

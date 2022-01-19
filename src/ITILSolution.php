@@ -137,9 +137,9 @@ class ITILSolution extends CommonDBChild
         }
 
         TemplateRenderer::getInstance()->display('components/itilobject/timeline/form_solution.html.twig', [
-         'item'    => $options['parent'] ?? null,
-         'subitem' => $this,
-         'params'  => $options,
+            'item'    => $options['parent'] ?? null,
+            'subitem' => $this,
+            'params'  => $options,
         ]);
     }
 
@@ -156,10 +156,10 @@ class ITILSolution extends CommonDBChild
         return countElementsInTable(
             self::getTable(),
             [
-            'WHERE' => [
-               'itemtype'  => $itemtype,
-               'items_id'  => $items_id
-            ]
+                'WHERE' => [
+                    'itemtype'  => $itemtype,
+                    'items_id'  => $items_id
+                ]
             ]
         );
     }
@@ -250,9 +250,9 @@ class ITILSolution extends CommonDBChild
         $this->input = $this->addFiles(
             $this->input,
             [
-            'force_update' => true,
-            'name' => 'content',
-            'content_field' => 'content',
+                'force_update' => true,
+                'name' => 'content',
+                'content_field' => 'content',
             ]
         );
 
@@ -280,8 +280,8 @@ class ITILSolution extends CommonDBChild
             }
 
             $this->item->update([
-            'id'     => $this->item->getID(),
-            'status' => $status
+                'id'     => $this->item->getID(),
+                'status' => $status
             ]);
         }
 
@@ -310,9 +310,9 @@ class ITILSolution extends CommonDBChild
     {
        // Replace inline pictures
         $options = [
-         'force_update' => true,
-         'name' => 'content',
-         'content_field' => 'content',
+            'force_update' => true,
+            'name' => 'content',
+            'content_field' => 'content',
         ];
         $this->input = $this->addFiles($this->input, $options);
 
@@ -374,9 +374,9 @@ class ITILSolution extends CommonDBChild
     public static function getStatuses()
     {
         return [
-         CommonITILValidation::WAITING  => __('Waiting for approval'),
-         CommonITILValidation::REFUSED  => _x('solution', 'Refused'),
-         CommonITILValidation::ACCEPTED => __('Accepted'),
+            CommonITILValidation::WAITING  => __('Waiting for approval'),
+            CommonITILValidation::REFUSED  => _x('solution', 'Refused'),
+            CommonITILValidation::ACCEPTED => __('Accepted'),
         ];
     }
 

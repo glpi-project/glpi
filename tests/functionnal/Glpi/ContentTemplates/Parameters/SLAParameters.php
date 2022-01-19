@@ -40,21 +40,21 @@ class SLAParameters extends AbstractParameters
         $test_entity_id = getItemByTypeName('Entity', '_test_child_2', true);
 
         $this->createItem('SLA', [
-         'name'            => 'sla_testGetValues',
-         'type'            => 1,
-         'entities_id'     => $test_entity_id,
-         'number_time'     => 4,
-         'definition_time' => 'hour',
+            'name'            => 'sla_testGetValues',
+            'type'            => 1,
+            'entities_id'     => $test_entity_id,
+            'number_time'     => 4,
+            'definition_time' => 'hour',
         ]);
 
         $parameters = $this->newTestedInstance();
         $values = $parameters->getValues(getItemByTypeName('SLA', 'sla_testGetValues'));
         $this->array($values)->isEqualTo([
-         'id'       => getItemByTypeName('SLA', 'sla_testGetValues', true),
-         'name'     => 'sla_testGetValues',
-         'type'     => 'Time to own',
-         'duration' => '4',
-         'unit'     => 'hours',
+            'id'       => getItemByTypeName('SLA', 'sla_testGetValues', true),
+            'name'     => 'sla_testGetValues',
+            'type'     => 'Time to own',
+            'duration' => '4',
+            'unit'     => 'hours',
         ]);
 
         $this->testGetAvailableParameters($values, $parameters->getAvailableParameters());

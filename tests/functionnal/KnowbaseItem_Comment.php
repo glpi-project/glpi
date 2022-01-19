@@ -90,10 +90,10 @@ class KnowbaseItem_Comment extends DbTestCase
         $this->login();
         $kbcom = new \KnowbaseItem_Comment();
         $input = [
-         'knowbaseitems_id' => $kb->getID(),
-         'users_id'         => getItemByTypeName('User', TU_USER, true),
-         'comment'          => 'Comment 1 for KB1',
-         'language'         => $lang
+            'knowbaseitems_id' => $kb->getID(),
+            'users_id'         => getItemByTypeName('User', TU_USER, true),
+            'comment'          => 'Comment 1 for KB1',
+            'language'         => $lang
         ];
         $kbcom1 = $kbcom->add($input);
         $this->boolean($kbcom1 > 0)->isTrue();

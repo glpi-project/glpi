@@ -149,9 +149,9 @@ class NotificationTarget extends CommonDBChild
 
         if (
             $this->getFromDBByCrit([
-            $this->getTable() . '.notifications_id'   => $notifications_id,
-            $this->getTable() . '.items_id'           => $ID,
-            $this->getTable() . '.type'               => $type
+                $this->getTable() . '.notifications_id'   => $notifications_id,
+                $this->getTable() . '.items_id'           => $ID,
+                $this->getTable() . '.type'               => $type
             ])
         ) {
             return true;
@@ -389,7 +389,7 @@ class NotificationTarget extends CommonDBChild
             $targets = getAllDataFromTable(
                 self::getTable(),
                 [
-                'notifications_id' => $notifications_id
+                    'notifications_id' => $notifications_id
                 ]
             );
             $actives = [];
@@ -401,8 +401,9 @@ class NotificationTarget extends CommonDBChild
 
             echo "<td>";
             Dropdown::showFromArray('_targets', $values, ['values'   => $actives,
-                                                            'multiple' => true,
-                                                            'readonly' => !$canedit]);
+                'multiple' => true,
+                'readonly' => !$canedit
+            ]);
             echo "</td>";
             if ($canedit) {
                 echo "<td width='20%'>";
@@ -436,7 +437,7 @@ class NotificationTarget extends CommonDBChild
         $targets = getAllDataFromTable(
             self::getTable(),
             [
-            'notifications_id' => $input['notifications_id']
+                'notifications_id' => $input['notifications_id']
             ]
         );
         $actives = [];
@@ -580,9 +581,9 @@ class NotificationTarget extends CommonDBChild
         );
 
         $param = [
-         'language'           => (empty($new_lang) ? $CFG_GLPI["language"] : $new_lang),
-         'additionnaloption'  => $notificationoption,
-         'username'           => $username
+            'language'           => (empty($new_lang) ? $CFG_GLPI["language"] : $new_lang),
+            'additionnaloption'  => $notificationoption,
+            'username'           => $username
         ];
         if (isset($data['users_id']) && $data['users_id']) {
             $param['users_id'] = $data['users_id'];
@@ -597,8 +598,8 @@ class NotificationTarget extends CommonDBChild
 
         if (isset($data['users_id']) && $data['users_id']) {
             $this->recipient_data = [
-            'itemtype' => User::class,
-            'items_id' => $data['users_id'],
+                'itemtype' => User::class,
+                'items_id' => $data['users_id'],
             ];
             Plugin::doHook(Hooks::ADD_RECIPIENT_TO_TARGET, $this);
             unset($this->recipient_data);
@@ -677,8 +678,8 @@ class NotificationTarget extends CommonDBChild
             && $user->getFromDB($this->obj->getField('users_id'))
         ) {
             $this->addToRecipientsList([
-            'language' => $user->getField('language'),
-            'users_id' => $user->getField('id')
+                'language' => $user->getField('language'),
+                'users_id' => $user->getField('id')
             ]);
         }
     }
@@ -784,26 +785,26 @@ class NotificationTarget extends CommonDBChild
         $criteria['FROM'] = Group_User::getTable();
         $criteria['INNER JOIN'] = array_merge(
             [
-            User::getTable() => [
-               'ON' => [
-                  Group_User::getTable()  => 'users_id',
-                  User::getTable()        => 'id'
-               ]
-            ],
-            Group::getTable() => [
-               'ON' => [
-                  Group_User::getTable()  => 'groups_id',
-                  Group::getTable()       => 'id'
-               ]
-            ]
+                User::getTable() => [
+                    'ON' => [
+                        Group_User::getTable()  => 'users_id',
+                        User::getTable()        => 'id'
+                    ]
+                ],
+                Group::getTable() => [
+                    'ON' => [
+                        Group_User::getTable()  => 'groups_id',
+                        Group::getTable()       => 'id'
+                    ]
+                ]
             ],
             $criteria['INNER JOIN']
         );
         $criteria['WHERE'] = array_merge(
             $criteria['WHERE'],
             [
-            Group_User::getTable() . '.groups_id'  => $group_id,
-            Group::getTable() . '.is_notify'       => 1,
+                Group_User::getTable() . '.groups_id'  => $group_id,
+                Group::getTable() . '.is_notify'       => 1,
             ]
         );
 
@@ -821,8 +822,8 @@ class NotificationTarget extends CommonDBChild
         if ($manager != 1) {
            // Do not consider it as a group notification if it only targets supervisor
             $this->recipient_data = [
-            'itemtype' => Group::class,
-            'items_id' => $group_id,
+                'itemtype' => Group::class,
+                'items_id' => $group_id,
             ];
             Plugin::doHook(Hooks::ADD_RECIPIENT_TO_TARGET, $this);
             unset($this->recipient_data);
@@ -840,11 +841,11 @@ class NotificationTarget extends CommonDBChild
     final public function getDistinctUserCriteria()
     {
         return [
-         'FIELDS'          => [
-            User::getTable() . '.id AS users_id',
-            User::getTable() . '.language AS language'
-         ],
-         'DISTINCT'        => true,
+            'FIELDS'          => [
+                User::getTable() . '.id AS users_id',
+                User::getTable() . '.language AS language'
+            ],
+            'DISTINCT'        => true,
         ];
     }
 
@@ -916,13 +917,13 @@ class NotificationTarget extends CommonDBChild
 
        // Filter groups which can be notified and have members (as notifications are sent to members)
         $iterator = $DB->request([
-         'SELECT' => ['id', 'name'],
-         'FROM'   => Group::getTable(),
-         'WHERE'  => [
-            'is_usergroup' => 1,
-            'is_notify'    => 1
-         ] + getEntitiesRestrictCriteria('glpi_groups', 'entities_id', $entity, true),
-         'ORDER'  => 'name'
+            'SELECT' => ['id', 'name'],
+            'FROM'   => Group::getTable(),
+            'WHERE'  => [
+                'is_usergroup' => 1,
+                'is_notify'    => 1
+            ] + getEntitiesRestrictCriteria('glpi_groups', 'entities_id', $entity, true),
+            'ORDER'  => 'name'
         ]);
 
         foreach ($iterator as $data) {
@@ -1117,8 +1118,8 @@ class NotificationTarget extends CommonDBChild
         }
 
         $this->recipient_data = [
-         'itemtype' => Profile::class,
-         'items_id' => $profiles_id,
+            'itemtype' => Profile::class,
+            'items_id' => $profiles_id,
         ];
         Plugin::doHook(Hooks::ADD_RECIPIENT_TO_TARGET, $this);
         unset($this->recipient_data);
@@ -1135,8 +1136,8 @@ class NotificationTarget extends CommonDBChild
         global $CFG_GLPI;
 
         $sender = [
-         'email'  => null,
-         'name'   => null
+            'email'  => null,
+            'name'   => null
         ];
 
         if (
@@ -1200,15 +1201,15 @@ class NotificationTarget extends CommonDBChild
 
         if (NotificationMailing::isUserAddressValid($admin_reply)) {
             return [
-            'email' => $admin_reply,
-            'name'  => $admin_reply_name,
+                'email' => $admin_reply,
+                'name'  => $admin_reply_name,
             ];
         }
 
        //Entity admin is not defined, return the global admin's address
         return [
-         'email' => $CFG_GLPI['admin_reply'],
-         'name'  => $CFG_GLPI['admin_reply_name']
+            'email' => $CFG_GLPI['admin_reply'],
+            'name'  => $CFG_GLPI['admin_reply_name']
         ];
     }
 
@@ -1336,20 +1337,20 @@ class NotificationTarget extends CommonDBChild
     public function getProfileJoinCriteria()
     {
         return [
-         'INNER JOIN'   => [
-            Profile_User::getTable() => [
-               'ON' => [
-                  Profile_User::getTable()   => 'users_id',
-                  User::getTable()           => 'id'
-               ]
-            ]
-         ],
-         'WHERE'        => getEntitiesRestrictCriteria(
-             Profile_User::getTable(),
-             'entities_id',
-             $this->getEntity(),
-             true
-         )
+            'INNER JOIN'   => [
+                Profile_User::getTable() => [
+                    'ON' => [
+                        Profile_User::getTable()   => 'users_id',
+                        User::getTable()           => 'id'
+                    ]
+                ]
+            ],
+            'WHERE'        => getEntitiesRestrictCriteria(
+                Profile_User::getTable(),
+                'entities_id',
+                $this->getEntity(),
+                true
+            )
         ];
     }
 
@@ -1364,8 +1365,9 @@ class NotificationTarget extends CommonDBChild
 
         $this->data = [];
         $this->addTagToList(['tag'   => 'glpi.url',
-                                'value' => $CFG_GLPI['root_doc'],
-                                'label' => __('URL of the application')]);
+            'value' => $CFG_GLPI['root_doc'],
+            'label' => __('URL of the application')
+        ]);
 
         $this->addDataForTemplate($event, $options);
 
@@ -1476,23 +1478,23 @@ class NotificationTarget extends CommonDBChild
         global $DB;
 
         $count = $DB->request([
-         'COUNT'        => 'cpt',
-         'FROM'         => self::getTable(),
-         'INNER JOIN'   => [
-            Notification::getTable()   => [
-               'ON'  => [
-                  Notification::getTable()   => 'id',
-                  self::getTable()           => 'notifications_id'
-               ]
-            ]
-         ],
-         'WHERE'        => [
-            'type'      => [
-               Notification::SUPERVISOR_GROUP_TYPE,
-               Notification::GROUP_TYPE
+            'COUNT'        => 'cpt',
+            'FROM'         => self::getTable(),
+            'INNER JOIN'   => [
+                Notification::getTable()   => [
+                    'ON'  => [
+                        Notification::getTable()   => 'id',
+                        self::getTable()           => 'notifications_id'
+                    ]
+                ]
             ],
-            'items_id'  => $group->getID()
-         ] + getEntitiesRestrictCriteria(Notification::getTable(), '', '', true)
+            'WHERE'        => [
+                'type'      => [
+                    Notification::SUPERVISOR_GROUP_TYPE,
+                    Notification::GROUP_TYPE
+                ],
+                'items_id'  => $group->getID()
+            ] + getEntitiesRestrictCriteria(Notification::getTable(), '', '', true)
         ])->current();
         return $count['cpt'];
     }
@@ -1516,23 +1518,23 @@ class NotificationTarget extends CommonDBChild
         }
 
         $iterator = $DB->request([
-         'SELECT'       => [Notification::getTable() . '.id'],
-         'FROM'         => self::getTable(),
-         'INNER JOIN'   => [
-            Notification::getTable() => [
-               'ON' => [
-                  self::getTable()           => 'notifications_id',
-                  Notification::getTable()   => 'id'
-               ]
-            ]
-         ],
-         'WHERE'        => [
-            'type'      => [
-               Notification::SUPERVISOR_GROUP_TYPE,
-               Notification::GROUP_TYPE
+            'SELECT'       => [Notification::getTable() . '.id'],
+            'FROM'         => self::getTable(),
+            'INNER JOIN'   => [
+                Notification::getTable() => [
+                    'ON' => [
+                        self::getTable()           => 'notifications_id',
+                        Notification::getTable()   => 'id'
+                    ]
+                ]
             ],
-            'items_id'  => $group->getID()
-         ] + getEntitiesRestrictCriteria(Notification::getTable(), '', '', true)
+            'WHERE'        => [
+                'type'      => [
+                    Notification::SUPERVISOR_GROUP_TYPE,
+                    Notification::GROUP_TYPE
+                ],
+                'items_id'  => $group->getID()
+            ] + getEntitiesRestrictCriteria(Notification::getTable(), '', '', true)
         ]);
 
         echo "<table class='tab_cadre_fixe'>";

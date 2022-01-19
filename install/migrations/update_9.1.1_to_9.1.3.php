@@ -75,11 +75,11 @@ function update911to913()
         $DB->updateOrDie(
             "glpi_displaypreferences",
             [
-            "num" => 17
+                "num" => 17
             ],
             [
-            'itemtype'  => "IPNetwork",
-            'num'       => 13
+                'itemtype'  => "IPNetwork",
+                'num'       => 13
             ],
             "9.1.3 Fix duplicate IPNetwork Gateway search option"
         );
@@ -88,11 +88,11 @@ function update911to913()
         $DB->updateOrDie(
             "glpi_displaypreferences",
             [
-            "num" => 18
+                "num" => 18
             ],
             [
-            'itemtype'  => "IPNetwork",
-            'num'       => 14
+                'itemtype'  => "IPNetwork",
+                'num'       => 14
             ],
             "9.1.3 Fix duplicate IPNetwork addressable network search option"
         );

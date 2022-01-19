@@ -158,30 +158,30 @@ final class RichText
     {
         $html_tags = [
          // Most common inlined tag (handle manual HTML input, usefull for $CFG_GLPI['text_login'])
-         'a',
-         'b',
-         'em',
-         'i',
-         'img',
-         'span',
-         'strong',
+            'a',
+            'b',
+            'em',
+            'i',
+            'img',
+            'span',
+            'strong',
 
          // Content separators
-         'br',
-         'hr',
+            'br',
+            'hr',
 
          // Main blocks
-         'blockquote',
-         'div',
-         'h1',
-         'h2',
-         'h3',
-         'h4',
-         'h5',
-         'h6',
-         'p',
-         'pre',
-         'table',
+            'blockquote',
+            'div',
+            'h1',
+            'h2',
+            'h3',
+            'h4',
+            'h5',
+            'h6',
+            'p',
+            'pre',
+            'table',
         ];
         return preg_match('/<(' . implode('|', $html_tags) . ')(\s+[^>]*)?>/', $content) === 1;
     }
@@ -208,10 +208,10 @@ final class RichText
             $following_spaces = '\s*\n+?';
             $content = preg_replace(
                 [
-                '/' . $leading_spaces . '<!DOCTYPE[^>]*>' . $following_spaces . '/si',
-                '/' . $leading_spaces . '<head[^>]*>.*?<\/head[^>]*>' . $following_spaces . '/si',
-                '/' . $leading_spaces . '<script[^>]*>.*?<\/script[^>]*>' . $following_spaces . '/si',
-                '/' . $leading_spaces . '<style[^>]*>.*?<\/style[^>]*>' . $following_spaces . '/si',
+                    '/' . $leading_spaces . '<!DOCTYPE[^>]*>' . $following_spaces . '/si',
+                    '/' . $leading_spaces . '<head[^>]*>.*?<\/head[^>]*>' . $following_spaces . '/si',
+                    '/' . $leading_spaces . '<script[^>]*>.*?<\/script[^>]*>' . $following_spaces . '/si',
+                    '/' . $leading_spaces . '<style[^>]*>.*?<\/style[^>]*>' . $following_spaces . '/si',
                 ],
                 '',
                 $content
@@ -254,8 +254,8 @@ final class RichText
     public static function getEnhancedHtml(?string $content, array $params = []): string
     {
         $p = [
-         'images_gallery'           => false,
-         'user_mentions'            => true,
+            'images_gallery'           => false,
+            'user_mentions'            => true,
         ];
         $p = array_replace($p, $params);
 
@@ -302,11 +302,11 @@ final class RichText
                 if (Document::isImage($docpath)) {
                     $imgsize = getimagesize($docpath);
                     $gallery = self::imageGallery([
-                    [
-                     'src' => $docsrc,
-                     'w'   => $imgsize[0],
-                     'h'   => $imgsize[1]
-                    ]
+                        [
+                            'src' => $docsrc,
+                            'w'   => $imgsize[0],
+                            'h'   => $imgsize[1]
+                        ]
                     ]);
                     $content = str_replace($img_tag, $gallery, $content);
                 }
@@ -332,14 +332,14 @@ final class RichText
     private static function imageGallery(array $imgs, array $options = []): string
     {
         $p = [
-         'controls' => [
-            'close'        => true,
-            'share'        => true,
-            'fullscreen'   => true,
-            'zoom'         => true,
-         ],
-         'rand'               => mt_rand(),
-         'gallery_item_class' => ''
+            'controls' => [
+                'close'        => true,
+                'share'        => true,
+                'fullscreen'   => true,
+                'zoom'         => true,
+            ],
+            'rand'               => mt_rand(),
+            'gallery_item_class' => ''
         ];
 
         if (is_array($options) && count($options)) {

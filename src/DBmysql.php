@@ -288,12 +288,12 @@ class DBmysql
                     && $this->fieldExists(Config::getTable(), 'value')
                 ) {
                     $conf_tz = $this->request([
-                    'SELECT' => 'value',
-                    'FROM'   => Config::getTable(),
-                    'WHERE'  => [
-                     'context'   => 'core',
-                     'name'      => 'timezone'
-                    ]
+                        'SELECT' => 'value',
+                        'FROM'   => Config::getTable(),
+                        'WHERE'  => [
+                            'context'   => 'core',
+                            'name'      => 'timezone'
+                        ]
                     ])->current();
                 }
                 $zone = !empty($conf_tz['value']) ? $conf_tz['value'] : date_default_timezone_get();
@@ -600,13 +600,13 @@ class DBmysql
     public function listTables($table = 'glpi\_%', array $where = [])
     {
         $iterator = $this->request([
-         'SELECT' => 'table_name as TABLE_NAME',
-         'FROM'   => 'information_schema.tables',
-         'WHERE'  => [
-            'table_schema' => $this->dbdefault,
-            'table_type'   => 'BASE TABLE',
-            'table_name'   => ['LIKE', $table]
-         ] + $where
+            'SELECT' => 'table_name as TABLE_NAME',
+            'FROM'   => 'information_schema.tables',
+            'WHERE'  => [
+                'table_schema' => $this->dbdefault,
+                'table_type'   => 'BASE TABLE',
+                'table_name'   => ['LIKE', $table]
+            ] + $where
         ]);
         return $iterator;
     }
@@ -621,7 +621,7 @@ class DBmysql
     public function getMyIsamTables(bool $exclude_plugins = false): DBmysqlIterator
     {
         $criteria = [
-         'engine' => 'MyIsam',
+            'engine' => 'MyIsam',
         ];
         if ($exclude_plugins) {
             $criteria[] = ['NOT' => ['information_schema.tables.table_name' => ['LIKE', 'glpi\_plugin\_%']]];
@@ -644,44 +644,44 @@ class DBmysql
 
        // Find tables that does not use utf8mb4 collation
         $tables_query = [
-         'SELECT'     => ['information_schema.tables.table_name as TABLE_NAME'],
-         'DISTINCT'   => true,
-         'FROM'       => 'information_schema.tables',
-         'WHERE'     => [
-            'information_schema.tables.table_schema' => $this->dbdefault,
-            'information_schema.tables.table_name'   => ['LIKE', 'glpi\_%'],
-            'information_schema.tables.table_type'    => 'BASE TABLE',
-            ['NOT' => ['information_schema.tables.table_collation' => 'utf8mb4_unicode_ci']],
-         ],
+            'SELECT'     => ['information_schema.tables.table_name as TABLE_NAME'],
+            'DISTINCT'   => true,
+            'FROM'       => 'information_schema.tables',
+            'WHERE'     => [
+                'information_schema.tables.table_schema' => $this->dbdefault,
+                'information_schema.tables.table_name'   => ['LIKE', 'glpi\_%'],
+                'information_schema.tables.table_type'    => 'BASE TABLE',
+                ['NOT' => ['information_schema.tables.table_collation' => 'utf8mb4_unicode_ci']],
+            ],
         ];
 
        // Find columns that does not use utf8mb4 collation
         $columns_query = [
-         'SELECT'     => ['information_schema.columns.table_name as TABLE_NAME'],
-         'DISTINCT'   => true,
-         'FROM'       => 'information_schema.columns',
-         'INNER JOIN' => [
-            'information_schema.tables' => [
-               'FKEY' => [
-                  'information_schema.tables'  => 'table_name',
-                  'information_schema.columns' => 'table_name',
-                  [
-                     'AND' => [
-                        'information_schema.tables.table_schema' => new QueryExpression(
-                            $this->quoteName('information_schema.columns.table_schema')
-                        ),
-                     ]
-                  ],
-               ]
-            ]
-         ],
-         'WHERE'     => [
-            'information_schema.tables.table_schema' => $this->dbdefault,
-            'information_schema.tables.table_name'   => ['LIKE', 'glpi\_%'],
-            'information_schema.tables.table_type'    => 'BASE TABLE',
-            ['NOT' => ['information_schema.columns.collation_name' => null]],
-            ['NOT' => ['information_schema.columns.collation_name' => 'utf8mb4_unicode_ci']]
-         ],
+            'SELECT'     => ['information_schema.columns.table_name as TABLE_NAME'],
+            'DISTINCT'   => true,
+            'FROM'       => 'information_schema.columns',
+            'INNER JOIN' => [
+                'information_schema.tables' => [
+                    'FKEY' => [
+                        'information_schema.tables'  => 'table_name',
+                        'information_schema.columns' => 'table_name',
+                        [
+                            'AND' => [
+                                'information_schema.tables.table_schema' => new QueryExpression(
+                                    $this->quoteName('information_schema.columns.table_schema')
+                                ),
+                            ]
+                        ],
+                    ]
+                ]
+            ],
+            'WHERE'     => [
+                'information_schema.tables.table_schema' => $this->dbdefault,
+                'information_schema.tables.table_name'   => ['LIKE', 'glpi\_%'],
+                'information_schema.tables.table_type'    => 'BASE TABLE',
+                ['NOT' => ['information_schema.columns.collation_name' => null]],
+                ['NOT' => ['information_schema.columns.collation_name' => 'utf8mb4_unicode_ci']]
+            ],
         ];
 
         if ($exclude_plugins) {
@@ -690,10 +690,10 @@ class DBmysql
         }
 
         $iterator = $this->request([
-         'SELECT'   => ['TABLE_NAME'],
-         'DISTINCT' => true,
-         'FROM'     => new QueryUnion([$tables_query, $columns_query], true),
-         'ORDER'    => ['TABLE_NAME']
+            'SELECT'   => ['TABLE_NAME'],
+            'DISTINCT' => true,
+            'FROM'     => new QueryUnion([$tables_query, $columns_query], true),
+            'ORDER'    => ['TABLE_NAME']
         ]);
 
         return $iterator;
@@ -712,31 +712,31 @@ class DBmysql
     {
 
         $query = [
-         'SELECT'       => ['information_schema.columns.table_name as TABLE_NAME'],
-         'DISTINCT'     => true,
-         'FROM'         => 'information_schema.columns',
-         'INNER JOIN'   => [
-            'information_schema.tables' => [
-               'FKEY' => [
-                  'information_schema.tables'  => 'table_name',
-                  'information_schema.columns' => 'table_name',
-                  [
-                     'AND' => [
-                        'information_schema.tables.table_schema' => new QueryExpression(
-                            $this->quoteName('information_schema.columns.table_schema')
-                        ),
-                     ]
-                  ],
-               ]
-            ]
-         ],
-         'WHERE'       => [
-            'information_schema.tables.table_schema' => $this->dbdefault,
-            'information_schema.tables.table_name'   => ['LIKE', 'glpi\_%'],
-            'information_schema.tables.table_type'   => 'BASE TABLE',
-            'information_schema.columns.data_type'   => 'datetime',
-         ],
-         'ORDER'       => ['TABLE_NAME']
+            'SELECT'       => ['information_schema.columns.table_name as TABLE_NAME'],
+            'DISTINCT'     => true,
+            'FROM'         => 'information_schema.columns',
+            'INNER JOIN'   => [
+                'information_schema.tables' => [
+                    'FKEY' => [
+                        'information_schema.tables'  => 'table_name',
+                        'information_schema.columns' => 'table_name',
+                        [
+                            'AND' => [
+                                'information_schema.tables.table_schema' => new QueryExpression(
+                                    $this->quoteName('information_schema.columns.table_schema')
+                                ),
+                            ]
+                        ],
+                    ]
+                ]
+            ],
+            'WHERE'       => [
+                'information_schema.tables.table_schema' => $this->dbdefault,
+                'information_schema.tables.table_name'   => ['LIKE', 'glpi\_%'],
+                'information_schema.tables.table_type'   => 'BASE TABLE',
+                'information_schema.columns.data_type'   => 'datetime',
+            ],
+            'ORDER'       => ['TABLE_NAME']
         ];
 
         if ($exclude_plugins) {
@@ -1710,9 +1710,9 @@ class DBmysql
         $now = new \DateTime();
 
         $iterator = $this->request([
-         'SELECT' => 'Name',
-         'FROM'   => 'mysql.time_zone_name',
-         'WHERE'  => ['Name' => $from_php]
+            'SELECT' => 'Name',
+            'FROM'   => 'mysql.time_zone_name',
+            'WHERE'  => ['Name' => $from_php]
         ]);
 
         foreach ($iterator as $from_mysql) {

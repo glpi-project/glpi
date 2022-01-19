@@ -47,9 +47,9 @@ class Monitor extends InventoryAsset
     {
         $serials = [];
         $mapping = [
-         'caption'      => 'name',
-         'manufacturer' => 'manufacturers_id',
-         'description'  => 'comment'
+            'caption'      => 'name',
+            'manufacturer' => 'manufacturers_id',
+            'description'  => 'comment'
         ];
 
         foreach ($this->data as &$val) {
@@ -99,26 +99,26 @@ class Monitor extends InventoryAsset
         $db_existing = [];
 
         $iterator = $DB->request([
-         'SELECT'    => [
-            'glpi_monitors.id',
-            'glpi_computers_items.id AS link_id'
-         ],
-         'FROM'      => 'glpi_computers_items',
-         'LEFT JOIN' => [
-            'glpi_monitors' => [
-               'FKEY' => [
-                  'glpi_monitors'         => 'id',
-                  'glpi_computers_items'  => 'items_id'
-               ]
+            'SELECT'    => [
+                'glpi_monitors.id',
+                'glpi_computers_items.id AS link_id'
+            ],
+            'FROM'      => 'glpi_computers_items',
+            'LEFT JOIN' => [
+                'glpi_monitors' => [
+                    'FKEY' => [
+                        'glpi_monitors'         => 'id',
+                        'glpi_computers_items'  => 'items_id'
+                    ]
+                ]
+            ],
+            'WHERE'     => [
+                'itemtype'                          => 'Monitor',
+                'computers_id'                      => $this->item->getID(),
+                'entities_id'                       => $this->entities_id,
+                'glpi_computers_items.is_dynamic'   => 1,
+                'glpi_monitors.is_global'           => 0
             ]
-         ],
-         'WHERE'     => [
-            'itemtype'                          => 'Monitor',
-            'computers_id'                      => $this->item->getID(),
-            'entities_id'                       => $this->entities_id,
-            'glpi_computers_items.is_dynamic'   => 1,
-            'glpi_monitors.is_global'           => 0
-         ]
         ]);
 
         foreach ($iterator as $data) {
@@ -140,11 +140,11 @@ class Monitor extends InventoryAsset
 
         foreach ($this->data as $key => $val) {
             $input = [
-            'itemtype'     => 'Monitor',
-            'name'         => $val->name,
-            'serial'       => $val->serial ?? '',
-            'is_dynamic'   => 1,
-            'entities_id'  => $entities_id
+                'itemtype'     => 'Monitor',
+                'name'         => $val->name,
+                'serial'       => $val->serial ?? '',
+                'is_dynamic'   => 1,
+                'entities_id'  => $entities_id
             ];
             $data = $rule->processAllRules($input, [], ['class' => $this, 'return' => true]);
 
@@ -167,12 +167,12 @@ class Monitor extends InventoryAsset
                     $agents_id = 0;
                 }
                 $inputrulelog = [
-                'date'      => date('Y-m-d H:i:s'),
-                'rules_id'  => $data['rules_id'],
-                'items_id'  => $items_id,
-                'itemtype'  => $itemtype,
-                'agents_id' => $agents_id,
-                'method'    => 'inventory'
+                    'date'      => date('Y-m-d H:i:s'),
+                    'rules_id'  => $data['rules_id'],
+                    'items_id'  => $items_id,
+                    'itemtype'  => $itemtype,
+                    'agents_id' => $agents_id,
+                    'method'    => 'inventory'
                 ];
                 $rulesmatched->add($inputrulelog, [], false);
                 $rulesmatched->cleanOlddata($items_id, $itemtype);
@@ -183,10 +183,10 @@ class Monitor extends InventoryAsset
         if (count($db_monitors) == 0) {
             foreach ($monitors as $monitors_id) {
                 $input = [
-                'computers_id' => $this->item->fields['id'],
-                'itemtype'     => 'Monitor',
-                'items_id'     => $monitors_id,
-                'is_dynamic'   => 1,
+                    'computers_id' => $this->item->fields['id'],
+                    'itemtype'     => 'Monitor',
+                    'items_id'     => $monitors_id,
+                    'is_dynamic'   => 1,
                 ];
                 $this->addOrMoveItem($input);
             }
@@ -211,10 +211,10 @@ class Monitor extends InventoryAsset
 
             foreach ($monitors as $key => $monitors_id) {
                 $input = [
-                'computers_id' => $this->item->fields['id'],
-                'itemtype'     => 'Monitor',
-                'items_id'     => $monitors_id,
-                'is_dynamic'   => 1,
+                    'computers_id' => $this->item->fields['id'],
+                    'itemtype'     => 'Monitor',
+                    'items_id'     => $monitors_id,
+                    'is_dynamic'   => 1,
                 ];
                 $this->addOrMoveItem($input);
             }

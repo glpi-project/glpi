@@ -193,14 +193,14 @@ abstract class CommonITILValidation extends CommonDBChild
         global $DB;
 
         $iterator = $DB->request([
-         'SELECT' => ['users_id_validate'],
-         'FROM'   => static::getTable(),
-         'WHERE'  => [
-            static::$items_id    => $items_id,
-            'users_id_validate'  => Session::getLoginUserID()
-         ],
-         'START'  => 0,
-         'LIMIT'  => 1
+            'SELECT' => ['users_id_validate'],
+            'FROM'   => static::getTable(),
+            'WHERE'  => [
+                static::$items_id    => $items_id,
+                'users_id_validate'  => Session::getLoginUserID()
+            ],
+            'START'  => 0,
+            'LIMIT'  => 1
         ]);
 
         if (count($iterator) > 0) {
@@ -293,16 +293,16 @@ abstract class CommonITILValidation extends CommonDBChild
 
        // Add screenshots if needed, without notification
         $this->input = $this->addFiles($this->input, [
-         'force_update'  => true,
-         'name'          => 'comment_submission',
-         'content_field' => 'comment_submission',
+            'force_update'  => true,
+            'name'          => 'comment_submission',
+            'content_field' => 'comment_submission',
         ]);
 
        // Add documents if needed, without notification
         $this->input = $this->addFiles($this->input, [
-         'force_update'  => true,
-         'name'          => 'filename',
-         'content_field' => 'comment_validation',
+            'force_update'  => true,
+            'name'          => 'filename',
+            'content_field' => 'comment_validation',
         ]);
 
         $item     = new static::$itemtype();
@@ -314,8 +314,8 @@ abstract class CommonITILValidation extends CommonDBChild
                 || ($item->fields['global_validation'] == self::NONE)
             ) {
                 $input = [
-                'id'                => $this->fields[static::$items_id],
-                'global_validation' => self::WAITING,
+                    'id'                => $this->fields[static::$items_id],
+                    'global_validation' => self::WAITING,
                 ];
 
                // to fix lastupdater
@@ -335,7 +335,8 @@ abstract class CommonITILValidation extends CommonDBChild
 
             if (!isset($this->input['_disablenotif']) && $CFG_GLPI["use_notifications"]) {
                 $options = ['validation_id'     => $this->fields["id"],
-                             'validation_status' => $this->fields["status"]];
+                    'validation_status' => $this->fields["status"]
+                ];
                 $mailsend = NotificationEvent::raiseEvent('validation', $item, $options);
             }
             if ($mailsend) {
@@ -385,10 +386,12 @@ abstract class CommonITILValidation extends CommonDBChild
             }
 
             $forbid_fields = ['entities_id', 'users_id', static::$items_id, 'users_id_validate',
-                                'comment_submission', 'submission_date', 'is_recursive'];
+                'comment_submission', 'submission_date', 'is_recursive'
+            ];
         } else if (Session::haveRightsOr(static::$rightname, $this->getCreateRights())) { // Update validation request
             $forbid_fields = ['entities_id', static::$items_id, 'status', 'comment_validation',
-                                'validation_date', 'is_recursive'];
+                'validation_date', 'is_recursive'
+            ];
         }
 
         if (count($forbid_fields)) {
@@ -415,16 +418,16 @@ abstract class CommonITILValidation extends CommonDBChild
 
        // Add screenshots if needed, without notification
         $this->input = $this->addFiles($this->input, [
-         'force_update'  => true,
-         'name'          => 'comment_submission',
-         'content_field' => 'comment_submission',
+            'force_update'  => true,
+            'name'          => 'comment_submission',
+            'content_field' => 'comment_submission',
         ]);
 
        // Add documents if needed, without notification
         $this->input = $this->addFiles($this->input, [
-         'force_update'  => true,
-         'name'          => 'filename',
-         'content_field' => 'comment_validation',
+            'force_update'  => true,
+            'name'          => 'filename',
+            'content_field' => 'comment_validation',
         ]);
 
         if ($item->getFromDB($this->fields[static::$items_id])) {
@@ -433,15 +436,16 @@ abstract class CommonITILValidation extends CommonDBChild
                 && $donotif
             ) {
                 $options  = ['validation_id'     => $this->fields["id"],
-                              'validation_status' => $this->fields["status"]];
+                    'validation_status' => $this->fields["status"]
+                ];
                 NotificationEvent::raiseEvent('validation_answer', $item, $options);
             }
 
             //if status is updated, update global approval status
             if (in_array("status", $this->updates)) {
                 $input = [
-                'id'                => $this->fields[static::$items_id],
-                'global_validation' => self::computeValidationStatus($item),
+                    'id'                => $this->fields[static::$items_id],
+                    'global_validation' => self::computeValidationStatus($item),
                 ];
                 $item->update($input);
             }
@@ -456,8 +460,8 @@ abstract class CommonITILValidation extends CommonDBChild
         if ($item->getFromDB($this->fields[static::$items_id])) {
             if (($item->fields['global_validation'] == self::WAITING)) {
                 $input = [
-                 'id'                => $this->fields[static::$items_id],
-                 'global_validation' => self::NONE,
+                    'id'                => $this->fields[static::$items_id],
+                    'global_validation' => self::NONE,
                 ];
                 $item->update($input);
             }
@@ -521,9 +525,9 @@ abstract class CommonITILValidation extends CommonDBChild
     {
 
         $tab = [
-         self::WAITING  => __('Waiting for approval'),
-         self::REFUSED  => _x('validation', 'Refused'),
-         self::ACCEPTED => __('Granted')
+            self::WAITING  => __('Waiting for approval'),
+            self::REFUSED  => _x('validation', 'Refused'),
+            self::ACCEPTED => __('Granted')
         ];
         if ($global) {
             $tab[self::NONE] = __('Not subject to approval');
@@ -557,15 +561,15 @@ abstract class CommonITILValidation extends CommonDBChild
     {
 
         $p = [
-         'value'             => self::WAITING,
-         'global'            => false,
-         'all'               => false,
-         'display'           => true,
-         'disabled'          => false,
-         'templateResult'    => "templateValidation",
-         'templateSelection' => "templateValidation",
-         'width'             => '100%',
-         'required'          => false,
+            'value'             => self::WAITING,
+            'global'            => false,
+            'all'               => false,
+            'display'           => true,
+            'disabled'          => false,
+            'templateResult'    => "templateValidation",
+            'templateSelection' => "templateValidation",
+            'width'             => '100%',
+            'required'          => false,
         ];
 
         if (is_array($options) && count($options)) {
@@ -634,12 +638,12 @@ abstract class CommonITILValidation extends CommonDBChild
         global $DB;
 
         $row = $DB->request([
-         'FROM'   => static::getTable(),
-         'COUNT'  => 'cpt',
-         'WHERE'  => [
-            'status'             => self::WAITING,
-            'users_id_validate'  => $users_id
-         ]
+            'FROM'   => static::getTable(),
+            'COUNT'  => 'cpt',
+            'WHERE'  => [
+                'status'             => self::WAITING,
+                'users_id_validate'  => $users_id
+            ]
         ])->current();
 
         return $row['cpt'];
@@ -657,12 +661,12 @@ abstract class CommonITILValidation extends CommonDBChild
         global $DB;
 
         $row = $DB->request([
-         'FROM'   => static::getTable(),
-         'COUNT'  => 'cpt',
-         'WHERE'  => [
-            static::$items_id => $items_id,
-            'status'          => $status
-         ]
+            'FROM'   => static::getTable(),
+            'COUNT'  => 'cpt',
+            'WHERE'  => [
+                static::$items_id => $items_id,
+                'status'          => $status
+            ]
         ])->current();
 
         return $row['cpt'];
@@ -684,13 +688,13 @@ abstract class CommonITILValidation extends CommonDBChild
         global $DB;
 
         $iterator = $DB->request([
-         'FROM'   => static::getTable(),
-         'WHERE'  => [
-            static::$items_id    => $items_id,
-            'users_id_validate'  => $users_id
-         ],
-         'START'  => 0,
-         'LIMIT'  => 1
+            'FROM'   => static::getTable(),
+            'WHERE'  => [
+                static::$items_id    => $items_id,
+                'users_id_validate'  => $users_id
+            ],
+            'START'  => 0,
+            'LIMIT'  => 1
         ]);
 
         if (count($iterator) > 0) {
@@ -709,7 +713,8 @@ abstract class CommonITILValidation extends CommonDBChild
         global $CFG_GLPI;
 
         $types            = ['user'  => User::getTypeName(1),
-                                'group' => Group::getTypeName(1)];
+            'group' => Group::getTypeName(1)
+        ];
 
         $rand             = Dropdown::showFromArray(
             "validatortype",
@@ -718,8 +723,9 @@ abstract class CommonITILValidation extends CommonDBChild
         );
 
         $paramsmassaction = ['validatortype' => '__VALUE__',
-                                'entity'        => $_SESSION['glpiactive_entity'],
-                                'right'         => ['validate_request', 'validate_incident']];
+            'entity'        => $_SESSION['glpiactive_entity'],
+            'right'         => ['validate_request', 'validate_incident']
+        ];
 
         Ajax::updateItemOnSelectEvent(
             "dropdown_validatortype$rand",
@@ -769,7 +775,8 @@ abstract class CommonITILValidation extends CommonDBChild
                 foreach ($ids as $id) {
                     if ($item->getFromDB($id)) {
                         $input2 = [static::$items_id      => $id,
-                                  'comment_submission'   => $input['comment_submission']];
+                            'comment_submission'   => $input['comment_submission']
+                        ];
                         if ($valid->can(-1, CREATE, $input2)) {
                             $users = $input['users_id_validate'];
                             if (!is_array($users)) {
@@ -893,9 +900,10 @@ abstract class CommonITILValidation extends CommonDBChild
             echo "<script type='text/javascript' >\n";
             echo "function viewAddValidation" . $tID . "$rand() {\n";
             $params = ['type'             => $this->getType(),
-                         'parenttype'       => static::$itemtype,
-                         static::$items_id  => $tID,
-                         'id'               => -1];
+                'parenttype'       => static::$itemtype,
+                static::$items_id  => $tID,
+                'id'               => -1
+            ];
             Ajax::updateItemJsCode(
                 "viewvalidation" . $tID . "$rand",
                 $CFG_GLPI["root_doc"] . "/ajax/viewsubitem.php",
@@ -906,14 +914,15 @@ abstract class CommonITILValidation extends CommonDBChild
         }
 
         $iterator = $DB->Request([
-         'FROM'   => $this->getTable(),
-         'WHERE'  => [static::$items_id => $item->getField('id')],
-         'ORDER'  => 'submission_date DESC'
+            'FROM'   => $this->getTable(),
+            'WHERE'  => [static::$items_id => $item->getField('id')],
+            'ORDER'  => 'submission_date DESC'
         ]);
 
         $colonnes = ['', _x('item', 'State'), __('Request date'), __('Approval requester'),
-                     __('Request comments'), __('Approval status'),
-                     __('Approver'), __('Approval comments'), __('Documents')];
+            __('Request comments'), __('Approval status'),
+            __('Approver'), __('Approval comments'), __('Documents')
+        ];
         $nb_colonnes = count($colonnes);
 
         echo "<table class='tab_cadre_fixehov'>";
@@ -967,9 +976,10 @@ abstract class CommonITILValidation extends CommonDBChild
                     echo "\n<script type='text/javascript' >\n";
                     echo "function viewEditValidation" . $item->fields['id'] . $row["id"] . "$rand() {\n";
                     $params = ['type'             => $this->getType(),
-                               'parenttype'       => static::$itemtype,
-                               static::$items_id  => $this->fields[static::$items_id],
-                               'id'               => $row["id"]];
+                        'parenttype'       => static::$itemtype,
+                        static::$items_id  => $this->fields[static::$items_id],
+                        'id'               => $row["id"]
+                    ];
                     Ajax::updateItemJsCode(
                         "viewvalidation" . $item->fields['id'] . "$rand",
                         $CFG_GLPI["root_doc"] . "/ajax/viewsubitem.php",
@@ -992,8 +1002,9 @@ abstract class CommonITILValidation extends CommonDBChild
 
                 $doc_item = new Document_Item();
                 $docs = $doc_item->find(["itemtype"          => $this->getType(),
-                                    "items_id"           => $this->getID(),
-                                    "timeline_position"  => ['>', CommonITILObject::NO_TIMELINE]]);
+                    "items_id"           => $this->getID(),
+                    "timeline_position"  => ['>', CommonITILObject::NO_TIMELINE]
+                ]);
                  $out = "";
                 foreach ($docs as $docs_values) {
                      $doc = new Document();
@@ -1033,8 +1044,8 @@ abstract class CommonITILValidation extends CommonDBChild
         }
 
         TemplateRenderer::getInstance()->display('components/itilobject/timeline/form_validation.html.twig', [
-         'item'      => $options['parent'],
-         'subitem'   => $this
+            'item'      => $options['parent'],
+            'subitem'   => $this
         ]);
     }
 
@@ -1044,76 +1055,76 @@ abstract class CommonITILValidation extends CommonDBChild
         $tab = [];
 
         $tab[] = [
-         'id'                 => 'common',
-         'name'               => CommonITILValidation::getTypeName(1)
+            'id'                 => 'common',
+            'name'               => CommonITILValidation::getTypeName(1)
         ];
 
         $tab[] = [
-         'id'                 => '1',
-         'table'              => $this->getTable(),
-         'field'              => 'comment_submission',
-         'name'               => __('Request comments'),
-         'datatype'           => 'text',
-         'htmltext'           => true
+            'id'                 => '1',
+            'table'              => $this->getTable(),
+            'field'              => 'comment_submission',
+            'name'               => __('Request comments'),
+            'datatype'           => 'text',
+            'htmltext'           => true
         ];
 
         $tab[] = [
-         'id'                 => '2',
-         'table'              => $this->getTable(),
-         'field'              => 'comment_validation',
-         'name'               => __('Approval comments'),
-         'datatype'           => 'text',
-         'htmltext'           => true
+            'id'                 => '2',
+            'table'              => $this->getTable(),
+            'field'              => 'comment_validation',
+            'name'               => __('Approval comments'),
+            'datatype'           => 'text',
+            'htmltext'           => true
         ];
 
         $tab[] = [
-         'id'                 => '3',
-         'table'              => $this->getTable(),
-         'field'              => 'status',
-         'name'               => __('Status'),
-         'searchtype'         => 'equals',
-         'datatype'           => 'specific'
+            'id'                 => '3',
+            'table'              => $this->getTable(),
+            'field'              => 'status',
+            'name'               => __('Status'),
+            'searchtype'         => 'equals',
+            'datatype'           => 'specific'
         ];
 
         $tab[] = [
-         'id'                 => '4',
-         'table'              => $this->getTable(),
-         'field'              => 'submission_date',
-         'name'               => __('Request date'),
-         'datatype'           => 'datetime'
+            'id'                 => '4',
+            'table'              => $this->getTable(),
+            'field'              => 'submission_date',
+            'name'               => __('Request date'),
+            'datatype'           => 'datetime'
         ];
 
         $tab[] = [
-         'id'                 => '5',
-         'table'              => $this->getTable(),
-         'field'              => 'validation_date',
-         'name'               => __('Approval date'),
-         'datatype'           => 'datetime'
+            'id'                 => '5',
+            'table'              => $this->getTable(),
+            'field'              => 'validation_date',
+            'name'               => __('Approval date'),
+            'datatype'           => 'datetime'
         ];
 
         $tab[] = [
-         'id'                 => '6',
-         'table'              => 'glpi_users',
-         'field'              => 'name',
-         'name'               => __('Approval requester'),
-         'datatype'           => 'itemlink',
-         'right'              => [
-            'create_incident_validation',
-            'create_request_validation'
-         ]
+            'id'                 => '6',
+            'table'              => 'glpi_users',
+            'field'              => 'name',
+            'name'               => __('Approval requester'),
+            'datatype'           => 'itemlink',
+            'right'              => [
+                'create_incident_validation',
+                'create_request_validation'
+            ]
         ];
 
         $tab[] = [
-         'id'                 => '7',
-         'table'              => 'glpi_users',
-         'field'              => 'name',
-         'linkfield'          => 'users_id_validate',
-         'name'               => __('Approver'),
-         'datatype'           => 'itemlink',
-         'right'              => [
-            'validate_request',
-            'validate_incident'
-         ]
+            'id'                 => '7',
+            'table'              => 'glpi_users',
+            'field'              => 'name',
+            'linkfield'          => 'users_id_validate',
+            'name'               => __('Approver'),
+            'datatype'           => 'itemlink',
+            'right'              => [
+                'validate_request',
+                'validate_incident'
+            ]
         ];
 
         return $tab;
@@ -1125,139 +1136,139 @@ abstract class CommonITILValidation extends CommonDBChild
         $tab = [];
 
         $tab[] = [
-         'id'                 => 'validation',
-         'name'               => CommonITILValidation::getTypeName(1)
+            'id'                 => 'validation',
+            'name'               => CommonITILValidation::getTypeName(1)
         ];
 
         $tab[] = [
-         'id'                 => '51',
-         'table'              => getTableForItemType(static::$itemtype),
-         'field'              => 'validation_percent',
-         'name'               => __('Minimum validation required'),
-         'datatype'           => 'number',
-         'unit'               => '%',
-         'min'                => 0,
-         'max'                => 100,
-         'step'               => 50
+            'id'                 => '51',
+            'table'              => getTableForItemType(static::$itemtype),
+            'field'              => 'validation_percent',
+            'name'               => __('Minimum validation required'),
+            'datatype'           => 'number',
+            'unit'               => '%',
+            'min'                => 0,
+            'max'                => 100,
+            'step'               => 50
         ];
 
         $tab[] = [
-         'id'                 => '52',
-         'table'              => getTableForItemType(static::$itemtype),
-         'field'              => 'global_validation',
-         'name'               => CommonITILValidation::getTypeName(1),
-         'searchtype'         => 'equals',
-         'datatype'           => 'specific'
+            'id'                 => '52',
+            'table'              => getTableForItemType(static::$itemtype),
+            'field'              => 'global_validation',
+            'name'               => CommonITILValidation::getTypeName(1),
+            'searchtype'         => 'equals',
+            'datatype'           => 'specific'
         ];
 
         $tab[] = [
-         'id'                 => '53',
-         'table'              => static::getTable(),
-         'field'              => 'comment_submission',
-         'name'               => __('Request comments'),
-         'datatype'           => 'text',
-         'htmltext'           => true,
-         'forcegroupby'       => true,
-         'massiveaction'      => false,
-         'joinparams'         => [
-            'jointype'           => 'child'
-         ]
-        ];
-
-        $tab[] = [
-         'id'                 => '54',
-         'table'              => static::getTable(),
-         'field'              => 'comment_validation',
-         'name'               => __('Approval comments'),
-         'datatype'           => 'text',
-         'htmltext'           => true,
-         'forcegroupby'       => true,
-         'massiveaction'      => false,
-         'joinparams'         => [
-            'jointype'           => 'child'
-         ]
-        ];
-
-        $tab[] = [
-         'id'                 => '55',
-         'table'              => static::getTable(),
-         'field'              => 'status',
-         'datatype'           => 'specific',
-         'name'               => __('Approval status'),
-         'searchtype'         => 'equals',
-         'forcegroupby'       => true,
-         'massiveaction'      => false,
-         'joinparams'         => [
-            'jointype'           => 'child'
-         ]
-        ];
-
-        $tab[] = [
-         'id'                 => '56',
-         'table'              => static::getTable(),
-         'field'              => 'submission_date',
-         'name'               => __('Request date'),
-         'datatype'           => 'datetime',
-         'forcegroupby'       => true,
-         'massiveaction'      => false,
-         'joinparams'         => [
-            'jointype'           => 'child'
-         ]
-        ];
-
-        $tab[] = [
-         'id'                 => '57',
-         'table'              => static::getTable(),
-         'field'              => 'validation_date',
-         'name'               => __('Approval date'),
-         'datatype'           => 'datetime',
-         'forcegroupby'       => true,
-         'massiveaction'      => false,
-         'joinparams'         => [
-            'jointype'           => 'child'
-         ]
-        ];
-
-        $tab[] = [
-         'id'                 => '58',
-         'table'              => 'glpi_users',
-         'field'              => 'name',
-         'name'               => _n('Requester', 'Requesters', 1),
-         'datatype'           => 'itemlink',
-         'right'              => (static::$itemtype == 'Ticket' ? 'create_ticket_validate' : 'create_validate'),
-         'forcegroupby'       => true,
-         'massiveaction'      => false,
-         'joinparams'         => [
-            'beforejoin'         => [
-               'table'              => static::getTable(),
-               'joinparams'         => [
-                  'jointype'           => 'child'
-               ]
+            'id'                 => '53',
+            'table'              => static::getTable(),
+            'field'              => 'comment_submission',
+            'name'               => __('Request comments'),
+            'datatype'           => 'text',
+            'htmltext'           => true,
+            'forcegroupby'       => true,
+            'massiveaction'      => false,
+            'joinparams'         => [
+                'jointype'           => 'child'
             ]
-         ]
         ];
 
         $tab[] = [
-         'id'                 => '59',
-         'table'              => 'glpi_users',
-         'field'              => 'name',
-         'linkfield'          => 'users_id_validate',
-         'name'               => __('Approver'),
-         'datatype'           => 'itemlink',
-         'right'              => (static::$itemtype == 'Ticket' ?
+            'id'                 => '54',
+            'table'              => static::getTable(),
+            'field'              => 'comment_validation',
+            'name'               => __('Approval comments'),
+            'datatype'           => 'text',
+            'htmltext'           => true,
+            'forcegroupby'       => true,
+            'massiveaction'      => false,
+            'joinparams'         => [
+                'jointype'           => 'child'
+            ]
+        ];
+
+        $tab[] = [
+            'id'                 => '55',
+            'table'              => static::getTable(),
+            'field'              => 'status',
+            'datatype'           => 'specific',
+            'name'               => __('Approval status'),
+            'searchtype'         => 'equals',
+            'forcegroupby'       => true,
+            'massiveaction'      => false,
+            'joinparams'         => [
+                'jointype'           => 'child'
+            ]
+        ];
+
+        $tab[] = [
+            'id'                 => '56',
+            'table'              => static::getTable(),
+            'field'              => 'submission_date',
+            'name'               => __('Request date'),
+            'datatype'           => 'datetime',
+            'forcegroupby'       => true,
+            'massiveaction'      => false,
+            'joinparams'         => [
+                'jointype'           => 'child'
+            ]
+        ];
+
+        $tab[] = [
+            'id'                 => '57',
+            'table'              => static::getTable(),
+            'field'              => 'validation_date',
+            'name'               => __('Approval date'),
+            'datatype'           => 'datetime',
+            'forcegroupby'       => true,
+            'massiveaction'      => false,
+            'joinparams'         => [
+                'jointype'           => 'child'
+            ]
+        ];
+
+        $tab[] = [
+            'id'                 => '58',
+            'table'              => 'glpi_users',
+            'field'              => 'name',
+            'name'               => _n('Requester', 'Requesters', 1),
+            'datatype'           => 'itemlink',
+            'right'              => (static::$itemtype == 'Ticket' ? 'create_ticket_validate' : 'create_validate'),
+            'forcegroupby'       => true,
+            'massiveaction'      => false,
+            'joinparams'         => [
+                'beforejoin'         => [
+                    'table'              => static::getTable(),
+                    'joinparams'         => [
+                        'jointype'           => 'child'
+                    ]
+                ]
+            ]
+        ];
+
+        $tab[] = [
+            'id'                 => '59',
+            'table'              => 'glpi_users',
+            'field'              => 'name',
+            'linkfield'          => 'users_id_validate',
+            'name'               => __('Approver'),
+            'datatype'           => 'itemlink',
+            'right'              => (static::$itemtype == 'Ticket' ?
             ['validate_request', 'validate_incident'] :
             'validate'
          ),
-         'forcegroupby'       => true,
-         'massiveaction'      => false,
-         'joinparams'         => [
-            'beforejoin'         => [
-               'table'              => static::getTable(),
-               'joinparams'         => [
-                  'jointype'           => 'child'
-               ]
+            'forcegroupby'       => true,
+            'massiveaction'      => false,
+            'joinparams'         => [
+                'beforejoin'         => [
+                    'table'              => static::getTable(),
+                    'joinparams'         => [
+                        'jointype'           => 'child'
+                    ]
+                ]
             ]
-         ]
         ];
 
         return $tab;
@@ -1340,18 +1351,18 @@ abstract class CommonITILValidation extends CommonDBChild
         global $CFG_GLPI;
 
         $params = [
-        'name'              => '' ,
-        'id'                => 0,
-        'entity'            => $_SESSION['glpiactive_entity'],
-        'right'             => ['validate_request', 'validate_incident'],
-        'groups_id'         => 0,
-        'users_id_validate' => [],
-        'applyto'           => 'show_validator_field',
-        'display'           => true,
-        'disabled'          => false,
-        'width'             => '100%',
-        'required'          => false,
-        'rand'              => mt_rand(),
+            'name'              => '' ,
+            'id'                => 0,
+            'entity'            => $_SESSION['glpiactive_entity'],
+            'right'             => ['validate_request', 'validate_incident'],
+            'groups_id'         => 0,
+            'users_id_validate' => [],
+            'applyto'           => 'show_validator_field',
+            'display'           => true,
+            'disabled'          => false,
+            'width'             => '100%',
+            'required'          => false,
+            'rand'              => mt_rand(),
         ];
 
         foreach ($options as $key => $val) {
@@ -1366,17 +1377,17 @@ abstract class CommonITILValidation extends CommonDBChild
         }
 
         $out = Dropdown::showFromArray("validatortype", [
-         'user'  => User::getTypeName(1),
-         'group' => Group::getTypeName(1)
+            'user'  => User::getTypeName(1),
+            'group' => Group::getTypeName(1)
         ], [
-         'value'               => $type,
-         'display_emptychoice' => true,
-         'display'             => $params['display'],
-         'disabled'            => $params['disabled'],
-         'rand'                => $params['rand'],
-         'width'               => $params['width'],
-         'required'            => $params['required'],
-         ]);
+            'value'               => $type,
+            'display_emptychoice' => true,
+            'display'             => $params['display'],
+            'disabled'            => $params['disabled'],
+            'rand'                => $params['rand'],
+            'width'               => $params['width'],
+            'required'            => $params['required'],
+        ]);
 
         if ($type) {
             $params['validatortype'] = $type;
@@ -1423,7 +1434,7 @@ abstract class CommonITILValidation extends CommonDBChild
     public static function getGroupUserHaveRights(array $options = [])
     {
         $params = [
-         'entity' => $_SESSION['glpiactive_entity'],
+            'entity' => $_SESSION['glpiactive_entity'],
         ];
         if (static::$itemtype == 'Ticket') {
             $params['right']  = ['validate_request', 'validate_incident'];
@@ -1466,12 +1477,13 @@ abstract class CommonITILValidation extends CommonDBChild
         $validation_percent = $item->fields['validation_percent'];
 
         $statuses           = [self::ACCEPTED => 0,
-                                  self::WAITING  => 0,
-                                  self::REFUSED  => 0];
+            self::WAITING  => 0,
+            self::REFUSED  => 0
+        ];
         $validations        = getAllDataFromTable(
             static::getTable(),
             [
-            static::$items_id => $item->getID()
+                static::$items_id => $item->getID()
             ]
         );
 
@@ -1541,7 +1553,8 @@ abstract class CommonITILValidation extends CommonDBChild
         $stats = [];
         foreach (array_keys($tab) as $status) {
             $validations = countElementsInTable(static::getTable(), [static::$items_id => $tID,
-                                                                 'status'          => $status]);
+                'status'          => $status
+            ]);
             if ($validations > 0) {
                 if (!isset($stats[$status])) {
                     $stats[$status] = 0;

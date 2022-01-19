@@ -55,27 +55,27 @@ class SlaLevel_Ticket extends CommonDBTM
         global $DB;
 
         $iterator = $DB->request([
-         'SELECT'       => [static::getTable() . '.id'],
-         'FROM'         => static::getTable(),
-         'LEFT JOIN'   => [
-            'glpi_slalevels' => [
-               'FKEY'   => [
-                  static::getTable()   => 'slalevels_id',
-                  'glpi_slalevels'     => 'id'
-               ]
+            'SELECT'       => [static::getTable() . '.id'],
+            'FROM'         => static::getTable(),
+            'LEFT JOIN'   => [
+                'glpi_slalevels' => [
+                    'FKEY'   => [
+                        static::getTable()   => 'slalevels_id',
+                        'glpi_slalevels'     => 'id'
+                    ]
+                ],
+                'glpi_slas'       => [
+                    'FKEY'   => [
+                        'glpi_slalevels'     => 'slas_id',
+                        'glpi_slas'          => 'id'
+                    ]
+                ]
             ],
-            'glpi_slas'       => [
-               'FKEY'   => [
-                  'glpi_slalevels'     => 'slas_id',
-                  'glpi_slas'          => 'id'
-               ]
-            ]
-         ],
-         'WHERE'        => [
-            static::getTable() . '.tickets_id'  => $ID,
-            'glpi_slas.type'                    => $slaType
-         ],
-         'LIMIT'        => 1
+            'WHERE'        => [
+                static::getTable() . '.tickets_id'  => $ID,
+                'glpi_slas.type'                    => $slaType
+            ],
+            'LIMIT'        => 1
         ]);
         if (count($iterator) == 1) {
             $row = $iterator->current();
@@ -100,26 +100,26 @@ class SlaLevel_Ticket extends CommonDBTM
         global $DB;
 
         $iterator = $DB->request([
-         'SELECT'    => 'glpi_slalevels_tickets.id',
-         'FROM'      => 'glpi_slalevels_tickets',
-         'LEFT JOIN' => [
-            'glpi_slalevels'  => [
-               'ON' => [
-                  'glpi_slalevels_tickets'   => 'slalevels_id',
-                  'glpi_slalevels'           => 'id'
-               ]
+            'SELECT'    => 'glpi_slalevels_tickets.id',
+            'FROM'      => 'glpi_slalevels_tickets',
+            'LEFT JOIN' => [
+                'glpi_slalevels'  => [
+                    'ON' => [
+                        'glpi_slalevels_tickets'   => 'slalevels_id',
+                        'glpi_slalevels'           => 'id'
+                    ]
+                ],
+                'glpi_slas'       => [
+                    'ON' => [
+                        'glpi_slalevels'  => 'slas_id',
+                        'glpi_slas'       => 'id'
+                    ]
+                ]
             ],
-            'glpi_slas'       => [
-               'ON' => [
-                  'glpi_slalevels'  => 'slas_id',
-                  'glpi_slas'       => 'id'
-               ]
+            'WHERE'     => [
+                'glpi_slalevels_tickets.tickets_id' => $tickets_id,
+                'glpi_slas.type'                    => $slaType
             ]
-         ],
-         'WHERE'     => [
-            'glpi_slalevels_tickets.tickets_id' => $tickets_id,
-            'glpi_slas.type'                    => $slaType
-         ]
         ]);
 
         foreach ($iterator as $data) {
@@ -160,28 +160,28 @@ class SlaLevel_Ticket extends CommonDBTM
         $tot = 0;
 
         $iterator = $DB->request([
-         'SELECT'    => [
-            'glpi_slalevels_tickets.*',
-            'glpi_slas.type AS type',
-         ],
-         'FROM'      => 'glpi_slalevels_tickets',
-         'LEFT JOIN' => [
-            'glpi_slalevels'  => [
-               'ON' => [
-                  'glpi_slalevels_tickets'   => 'slalevels_id',
-                  'glpi_slalevels'           => 'id'
-               ]
+            'SELECT'    => [
+                'glpi_slalevels_tickets.*',
+                'glpi_slas.type AS type',
             ],
-            'glpi_slas'       => [
-               'ON' => [
-                  'glpi_slalevels'  => 'slas_id',
-                  'glpi_slas'       => 'id'
-               ]
+            'FROM'      => 'glpi_slalevels_tickets',
+            'LEFT JOIN' => [
+                'glpi_slalevels'  => [
+                    'ON' => [
+                        'glpi_slalevels_tickets'   => 'slalevels_id',
+                        'glpi_slalevels'           => 'id'
+                    ]
+                ],
+                'glpi_slas'       => [
+                    'ON' => [
+                        'glpi_slalevels'  => 'slas_id',
+                        'glpi_slas'       => 'id'
+                    ]
+                ]
+            ],
+            'WHERE'     => [
+                'glpi_slalevels_tickets.date' => ['<', new \QueryExpression('NOW()')]
             ]
-         ],
-         'WHERE'     => [
-            'glpi_slalevels_tickets.date' => ['<', new \QueryExpression('NOW()')]
-         ]
         ]);
 
         foreach ($iterator as $data) {
@@ -315,27 +315,27 @@ class SlaLevel_Ticket extends CommonDBTM
         global $DB;
 
         $criteria = [
-         'SELECT'    => 'glpi_slalevels_tickets.*',
-         'FROM'      => 'glpi_slalevels_tickets',
-         'LEFT JOIN' => [
-            'glpi_slalevels'  => [
-               'ON' => [
-                  'glpi_slalevels_tickets'   => 'slalevels_id',
-                  'glpi_slalevels'           => 'id'
-               ]
+            'SELECT'    => 'glpi_slalevels_tickets.*',
+            'FROM'      => 'glpi_slalevels_tickets',
+            'LEFT JOIN' => [
+                'glpi_slalevels'  => [
+                    'ON' => [
+                        'glpi_slalevels_tickets'   => 'slalevels_id',
+                        'glpi_slalevels'           => 'id'
+                    ]
+                ],
+                'glpi_slas'       => [
+                    'ON' => [
+                        'glpi_slalevels'  => 'slas_id',
+                        'glpi_slas'       => 'id'
+                    ]
+                ]
             ],
-            'glpi_slas'       => [
-               'ON' => [
-                  'glpi_slalevels'  => 'slas_id',
-                  'glpi_slas'       => 'id'
-               ]
+            'WHERE'     => [
+                'glpi_slalevels_tickets.date'       => ['<', new \QueryExpression('NOW()')],
+                'glpi_slalevels_tickets.tickets_id' => $tickets_id,
+                'glpi_slas.type'                    => $slaType
             ]
-         ],
-         'WHERE'     => [
-            'glpi_slalevels_tickets.date'       => ['<', new \QueryExpression('NOW()')],
-            'glpi_slalevels_tickets.tickets_id' => $tickets_id,
-            'glpi_slas.type'                    => $slaType
-         ]
         ];
 
         $number = 0;

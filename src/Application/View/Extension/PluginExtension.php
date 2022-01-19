@@ -45,8 +45,8 @@ class PluginExtension extends AbstractExtension
     public function getFunctions(): array
     {
         return [
-         new TwigFunction('call_plugin_hook', [$this, 'callPluginHook']),
-         new TwigFunction('call_plugin_hook_func', [$this, 'callPluginHookFunction']),
+            new TwigFunction('call_plugin_hook', [$this, 'callPluginHook']),
+            new TwigFunction('call_plugin_hook_func', [$this, 'callPluginHookFunction']),
         ];
     }
 

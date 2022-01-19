@@ -80,22 +80,25 @@ class NotificationTargetDBConnection extends NotificationTarget
 
         foreach ($tags as $tag => $label) {
             $this->addTagToList(['tag'   => $tag,
-                                   'label' => $label,
-                                   'value' => true,
-                                   'lang'  => true]);
+                'label' => $label,
+                'value' => true,
+                'lang'  => true
+            ]);
         }
 
        //Tags with just lang
         $tags = ['dbconnection.title'
                                  => __('Slave database out of sync!'),
-                    'dbconnection.delay'
-                                 => __('The slave database is desynchronized. The difference is of:')];
+            'dbconnection.delay'
+                                 => __('The slave database is desynchronized. The difference is of:')
+        ];
 
         foreach ($tags as $tag => $label) {
             $this->addTagToList(['tag'   => $tag,
-                                   'label' => $label,
-                                   'value' => false,
-                                   'lang'  => true]);
+                'label' => $label,
+                'value' => false,
+                'lang'  => true
+            ]);
         }
 
         asort($this->tag_descriptions);

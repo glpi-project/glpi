@@ -42,28 +42,28 @@ class Document extends DbTestCase
     public function canApplyOnProvider()
     {
         return [
-         [
-            'item'   => new \DeviceBattery(),
-            'can'    => true
-         ], [
-            'item'   => 'DeviceBattery',
-            'can'    => true
-         ], [
-            'item'   => 'Item_DeviceBattery',
-            'can'    => true
-         ], [
-            'item'   => 'Computer',
-            'can'    => true
-         ], [
-            'item'   => new \Ticket(),
-            'can'    => true
-         ], [
-            'item'   => 'Config',
-            'can'    => false
-         ], [
-            'item'   => 'Pdu_Plug',
-            'can'    => false
-         ]
+            [
+                'item'   => new \DeviceBattery(),
+                'can'    => true
+            ], [
+                'item'   => 'DeviceBattery',
+                'can'    => true
+            ], [
+                'item'   => 'Item_DeviceBattery',
+                'can'    => true
+            ], [
+                'item'   => 'Computer',
+                'can'    => true
+            ], [
+                'item'   => new \Ticket(),
+                'can'    => true
+            ], [
+                'item'   => 'Config',
+                'can'    => false
+            ], [
+                'item'   => 'Pdu_Plug',
+                'can'    => false
+            ]
         ];
     }
 
@@ -91,10 +91,10 @@ class Document extends DbTestCase
     public function testDefineTabs()
     {
         $expected = [
-         'Document$main'   => 'Document',
-         'Document_Item$1' => 'Associated items',
-         'Document_Item$2' => 'Documents',
-         'Log$1'           => 'Historical'
+            'Document$main'   => 'Document',
+            'Document_Item$1' => 'Associated items',
+            'Document_Item$2' => 'Documents',
+            'Log$1'           => 'Historical'
 
         ];
         $this
@@ -107,7 +107,7 @@ class Document extends DbTestCase
     public function testPrepareInputForAdd()
     {
         $input = [
-         'filename'   => 'A_name.pdf'
+            'filename'   => 'A_name.pdf'
         ];
 
         $doc = $this->newTestedInstance;
@@ -126,8 +126,8 @@ class Document extends DbTestCase
 
         $item = new \Computer();
         $cid = (int)$item->add([
-         'name'         => 'Documented Computer',
-         'entities_id'  => 0
+            'name'         => 'Documented Computer',
+            'entities_id'  => 0
         ]);
         $this->integer($cid)->isGreaterThan(0);
 
@@ -182,16 +182,16 @@ class Document extends DbTestCase
     protected function validDocProvider()
     {
         return [
-         [
-            'filename'  => 'myfile.png',
-            'expected'  => 'PNG'
-         ], [
-            'filename'  => 'myfile.dOcX',
-            'expected'  => 'DOCX'
-         ], [
-            'filename'  => 'myfile.notknown',
-            'expected'  => ''
-         ]
+            [
+                'filename'  => 'myfile.png',
+                'expected'  => 'PNG'
+            ], [
+                'filename'  => 'myfile.dOcX',
+                'expected'  => 'DOCX'
+            ], [
+                'filename'  => 'myfile.notknown',
+                'expected'  => ''
+            ]
         ];
     }
 
@@ -208,8 +208,8 @@ class Document extends DbTestCase
         $doctype = new \DocumentType();
         $this->integer(
             (int)$doctype->add([
-            'name'   => 'Type test',
-            'ext'    => '/[0-9]{4}/'
+                'name'   => 'Type test',
+                'ext'    => '/[0-9]{4}/'
             ])
         )->isGreaterThan(0);
 
@@ -227,12 +227,12 @@ class Document extends DbTestCase
     protected function isImageProvider()
     {
         return [
-         [__FILE__, false],
-         [__DIR__ . "/../../pics/add_dropdown.png", true],
-         [__DIR__ . "/../../pics/corners.gif", true],
-         [__DIR__ . "/../../pics/PICS-AUTHORS.txt", false],
-         [__DIR__ . "/../notanimage.jpg", false],
-         [__DIR__ . "/../notafile.jpg", false]
+            [__FILE__, false],
+            [__DIR__ . "/../../pics/add_dropdown.png", true],
+            [__DIR__ . "/../../pics/corners.gif", true],
+            [__DIR__ . "/../../pics/PICS-AUTHORS.txt", false],
+            [__DIR__ . "/../notanimage.jpg", false],
+            [__DIR__ . "/../notafile.jpg", false]
         ];
     }
 
@@ -253,9 +253,9 @@ class Document extends DbTestCase
         $document = new \Document();
         $this->integer(
             (int)$document->add([
-            'name'     => 'basic document',
-            'filename' => 'doc.xls',
-            'users_id' => '2', // user "glpi"
+                'name'     => 'basic document',
+                'filename' => 'doc.xls',
+                'users_id' => '2', // user "glpi"
             ])
         )->isGreaterThan(0);
 
@@ -280,8 +280,8 @@ class Document extends DbTestCase
         $this->boolean(
             $document->update(
                 [
-                'id'       => $document->getID(),
-                'users_id' => \Session::getLoginUserID(),
+                    'id'       => $document->getID(),
+                    'users_id' => \Session::getLoginUserID(),
                 ]
             )
         )->isTrue();
@@ -297,18 +297,18 @@ class Document extends DbTestCase
         $basicDocument = new \Document();
         $this->integer(
             (int)$basicDocument->add([
-            'name'     => 'basic document',
-            'filename' => 'doc.xls',
-            'users_id' => '2', // user "glpi"
+                'name'     => 'basic document',
+                'filename' => 'doc.xls',
+                'users_id' => '2', // user "glpi"
             ])
         )->isGreaterThan(0);
 
         $inlinedDocument = new \Document();
         $this->integer(
             (int)$inlinedDocument->add([
-            'name'     => 'inlined document',
-            'filename' => 'inlined.png',
-            'users_id' => '2', // user "glpi"
+                'name'     => 'inlined document',
+                'filename' => 'inlined.png',
+                'users_id' => '2', // user "glpi"
             ])
         )->isGreaterThan(0);
 
@@ -318,26 +318,26 @@ class Document extends DbTestCase
         $glpiReminder = new \Reminder();
         $this->integer(
             (int)$glpiReminder->add([
-            'name'     => 'Glpi reminder',
-            'text'     => '<img src="/front/document.send.php?docid=' . $inlinedDocument->getID() . '" />',
-            'users_id' => '2', // user "glpi"
+                'name'     => 'Glpi reminder',
+                'text'     => '<img src="/front/document.send.php?docid=' . $inlinedDocument->getID() . '" />',
+                'users_id' => '2', // user "glpi"
             ])
         )->isGreaterThan(0);
 
         $document_item = new \Document_Item();
         $this->integer(
             (int)$document_item->add([
-            'documents_id' => $basicDocument->getID(),
-            'items_id'     => $glpiReminder->getID(),
-            'itemtype'     => \Reminder::class,
+                'documents_id' => $basicDocument->getID(),
+                'items_id'     => $glpiReminder->getID(),
+                'itemtype'     => \Reminder::class,
             ])
         )->isGreaterThan(0);
 
         $this->integer(
             (int)$document_item->add([
-            'documents_id' => $inlinedDocument->getID(),
-            'items_id'     => $glpiReminder->getID(),
-            'itemtype'     => \Reminder::class,
+                'documents_id' => $inlinedDocument->getID(),
+                'items_id'     => $glpiReminder->getID(),
+                'itemtype'     => \Reminder::class,
             ])
         )->isGreaterThan(0);
 
@@ -348,26 +348,26 @@ class Document extends DbTestCase
         $myReminder = new \Reminder();
         $this->integer(
             (int)$myReminder->add([
-            'name'     => 'My reminder',
-            'text'     => '<img src="/front/document.send.php?docid=' . $inlinedDocument->getID() . '" />',
-            'users_id' => \Session::getLoginUserID(),
+                'name'     => 'My reminder',
+                'text'     => '<img src="/front/document.send.php?docid=' . $inlinedDocument->getID() . '" />',
+                'users_id' => \Session::getLoginUserID(),
             ])
         )->isGreaterThan(0);
 
         $document_item = new \Document_Item();
         $this->integer(
             (int)$document_item->add([
-            'documents_id' => $basicDocument->getID(),
-            'items_id'     => $myReminder->getID(),
-            'itemtype'     => \Reminder::class,
+                'documents_id' => $basicDocument->getID(),
+                'items_id'     => $myReminder->getID(),
+                'itemtype'     => \Reminder::class,
             ])
         )->isGreaterThan(0);
 
         $this->integer(
             (int)$document_item->add([
-            'documents_id' => $inlinedDocument->getID(),
-            'items_id'     => $myReminder->getID(),
-            'itemtype'     => \Reminder::class,
+                'documents_id' => $inlinedDocument->getID(),
+                'items_id'     => $myReminder->getID(),
+                'itemtype'     => \Reminder::class,
             ])
         )->isGreaterThan(0);
 
@@ -386,46 +386,46 @@ class Document extends DbTestCase
         $basicDocument = new \Document();
         $this->integer(
             (int)$basicDocument->add([
-            'name'     => 'basic document',
-            'filename' => 'doc.xls',
-            'users_id' => '2', // user "glpi"
+                'name'     => 'basic document',
+                'filename' => 'doc.xls',
+                'users_id' => '2', // user "glpi"
             ])
         )->isGreaterThan(0);
 
         $inlinedDocument = new \Document();
         $this->integer(
             (int)$inlinedDocument->add([
-            'name'     => 'inlined document',
-            'filename' => 'inlined.png',
-            'users_id' => '2', // user "glpi"
+                'name'     => 'inlined document',
+                'filename' => 'inlined.png',
+                'users_id' => '2', // user "glpi"
             ])
         )->isGreaterThan(0);
 
         $kbItem = new \KnowbaseItem();
         $this->integer(
             (int)$kbItem->add([
-            'name'     => 'Generic KB item',
-            'answer'   => '<img src="/front/document.send.php?docid=' . $inlinedDocument->getID() . '" />',
-            'users_id' => '2', // user "glpi"
+                'name'     => 'Generic KB item',
+                'answer'   => '<img src="/front/document.send.php?docid=' . $inlinedDocument->getID() . '" />',
+                'users_id' => '2', // user "glpi"
             ])
         )->isGreaterThan(0);
 
         $document_item = new \Document_Item();
         $this->integer(
             (int)$document_item->add([
-            'documents_id' => $basicDocument->getID(),
-            'items_id'     => $kbItem->getID(),
-            'itemtype'     => \KnowbaseItem::class,
-            'users_id'     => getItemByTypeName('User', 'normal', true),
+                'documents_id' => $basicDocument->getID(),
+                'items_id'     => $kbItem->getID(),
+                'itemtype'     => \KnowbaseItem::class,
+                'users_id'     => getItemByTypeName('User', 'normal', true),
             ])
         )->isGreaterThan(0);
 
         $this->integer(
             (int)$document_item->add([
-            'documents_id' => $inlinedDocument->getID(),
-            'items_id'     => $kbItem->getID(),
-            'itemtype'     => \KnowbaseItem::class,
-            'users_id'     => getItemByTypeName('User', 'normal', true),
+                'documents_id' => $inlinedDocument->getID(),
+                'items_id'     => $kbItem->getID(),
+                'itemtype'     => \KnowbaseItem::class,
+                'users_id'     => getItemByTypeName('User', 'normal', true),
             ])
         )->isGreaterThan(0);
 
@@ -439,8 +439,8 @@ class Document extends DbTestCase
         $this->boolean(
             $kbItem->update(
                 [
-                'id'     => $kbItem->getID(),
-                'is_faq' => true,
+                    'id'     => $kbItem->getID(),
+                    'is_faq' => true,
                 ]
             )
         )->isTrue();
@@ -448,9 +448,9 @@ class Document extends DbTestCase
        // faq items in mulitple entity mode need to be set in root enity +recursive to be viewed
         $entity_kbitems = new \Entity_KnowbaseItem();
         $ent_kb_id = $entity_kbitems->add([
-         'knowbaseitems_id' => $kbItem->getID(),
-         'entities_id'      => 0,
-         'is_recursive'     => 1,
+            'knowbaseitems_id' => $kbItem->getID(),
+            'entities_id'      => 0,
+            'is_recursive'     => 1,
         ]);
         $this->integer($ent_kb_id)->isGreaterThan(0);
 
@@ -475,14 +475,14 @@ class Document extends DbTestCase
         $this->boolean(
             $kbItem->update(
                 [
-                'id'     => $kbItem->getID(),
-                'is_faq' => false,
+                    'id'     => $kbItem->getID(),
+                    'is_faq' => false,
                 ]
             )
         )->isTrue();
         $this->boolean(
             $entity_kbitems->delete([
-            'id' => $ent_kb_id
+                'id' => $ent_kb_id
             ])
         )->isTrue();
 
@@ -496,15 +496,15 @@ class Document extends DbTestCase
     protected function itilTypeProvider()
     {
         return [
-         [
-            'itemtype' => \Change::class,
-         ],
-         [
-            'itemtype' => \Problem::class,
-         ],
-         [
-            'itemtype' => \Ticket::class,
-         ],
+            [
+                'itemtype' => \Change::class,
+            ],
+            [
+                'itemtype' => \Problem::class,
+            ],
+            [
+                'itemtype' => \Ticket::class,
+            ],
         ];
     }
 
@@ -521,18 +521,18 @@ class Document extends DbTestCase
         $basicDocument = new \Document();
         $this->integer(
             (int)$basicDocument->add([
-            'name'     => 'basic document',
-            'filename' => 'doc.xls',
-            'users_id' => '2', // user "glpi"
+                'name'     => 'basic document',
+                'filename' => 'doc.xls',
+                'users_id' => '2', // user "glpi"
             ])
         )->isGreaterThan(0);
 
         $inlinedDocument = new \Document();
         $this->integer(
             (int)$inlinedDocument->add([
-            'name'     => 'inlined document',
-            'filename' => 'inlined.png',
-            'users_id' => '2', // user "glpi"
+                'name'     => 'inlined document',
+                'filename' => 'inlined.png',
+                'users_id' => '2', // user "glpi"
             ])
         )->isGreaterThan(0);
 
@@ -541,25 +541,25 @@ class Document extends DbTestCase
 
         $this->integer(
             (int)$item->add([
-            'name'     => 'New ' . $itemtype,
-            'content'  => '<img src="/front/document.send.php?docid=' . $inlinedDocument->getID() . '" />',
+                'name'     => 'New ' . $itemtype,
+                'content'  => '<img src="/front/document.send.php?docid=' . $inlinedDocument->getID() . '" />',
             ])
         )->isGreaterThan(0);
 
         $document_item = new \Document_Item();
         $this->integer(
             (int)$document_item->add([
-            'documents_id' => $basicDocument->getID(),
-            'items_id'     => $item->getID(),
-            'itemtype'     => $itemtype,
+                'documents_id' => $basicDocument->getID(),
+                'items_id'     => $item->getID(),
+                'itemtype'     => $itemtype,
             ])
         )->isGreaterThan(0);
 
         $this->integer(
             (int)$document_item->add([
-            'documents_id' => $inlinedDocument->getID(),
-            'items_id'     => $item->getID(),
-            'itemtype'     => $itemtype,
+                'documents_id' => $inlinedDocument->getID(),
+                'items_id'     => $item->getID(),
+                'itemtype'     => $itemtype,
             ])
         )->isGreaterThan(0);
 
@@ -576,9 +576,9 @@ class Document extends DbTestCase
         $itil_user = new $itil_user_class();
         $this->integer(
             (int)$itil_user->add([
-            $fkey      => $item->getID(),
-            'type'     => \CommonITILActor::OBSERVER,
-            'users_id' => \Session::getLoginUserID(),
+                $fkey      => $item->getID(),
+                'type'     => \CommonITILActor::OBSERVER,
+                'users_id' => \Session::getLoginUserID(),
             ])
         )->isGreaterThan(0);
 
@@ -594,42 +594,42 @@ class Document extends DbTestCase
     protected function ticketChildClassProvider()
     {
         return [
-         [
-            'itil_itemtype'  => \Change::class,
-            'child_itemtype' => \ITILSolution::class,
-         ],
-         [
-            'itil_itemtype'  => \Change::class,
-            'child_itemtype' => \ChangeTask::class,
-         ],
-         [
-            'itil_itemtype'  => \Change::class,
-            'child_itemtype' => \ITILFollowup::class,
-         ],
-         [
-            'itil_itemtype'  => \Problem::class,
-            'child_itemtype' => \ITILSolution::class,
-         ],
-         [
-            'itil_itemtype'  => \Problem::class,
-            'child_itemtype' => \ProblemTask::class,
-         ],
-         [
-            'itil_itemtype'  => \Problem::class,
-            'child_itemtype' => \ITILFollowup::class,
-         ],
-         [
-            'itil_itemtype'  => \Ticket::class,
-            'child_itemtype' => \ITILSolution::class,
-         ],
-         [
-            'itil_itemtype'  => \Ticket::class,
-            'child_itemtype' => \TicketTask::class,
-         ],
-         [
-            'itil_itemtype'  => \Ticket::class,
-            'child_itemtype' => \ITILFollowup::class,
-         ],
+            [
+                'itil_itemtype'  => \Change::class,
+                'child_itemtype' => \ITILSolution::class,
+            ],
+            [
+                'itil_itemtype'  => \Change::class,
+                'child_itemtype' => \ChangeTask::class,
+            ],
+            [
+                'itil_itemtype'  => \Change::class,
+                'child_itemtype' => \ITILFollowup::class,
+            ],
+            [
+                'itil_itemtype'  => \Problem::class,
+                'child_itemtype' => \ITILSolution::class,
+            ],
+            [
+                'itil_itemtype'  => \Problem::class,
+                'child_itemtype' => \ProblemTask::class,
+            ],
+            [
+                'itil_itemtype'  => \Problem::class,
+                'child_itemtype' => \ITILFollowup::class,
+            ],
+            [
+                'itil_itemtype'  => \Ticket::class,
+                'child_itemtype' => \ITILSolution::class,
+            ],
+            [
+                'itil_itemtype'  => \Ticket::class,
+                'child_itemtype' => \TicketTask::class,
+            ],
+            [
+                'itil_itemtype'  => \Ticket::class,
+                'child_itemtype' => \ITILFollowup::class,
+            ],
         ];
     }
 
@@ -646,9 +646,9 @@ class Document extends DbTestCase
         $inlinedDocument = new \Document();
         $this->integer(
             (int)$inlinedDocument->add([
-            'name'     => 'inlined document',
-            'filename' => 'inlined.png',
-            'users_id' => '2', // user "glpi"
+                'name'     => 'inlined document',
+                'filename' => 'inlined.png',
+                'users_id' => '2', // user "glpi"
             ])
         )->isGreaterThan(0);
 
@@ -656,28 +656,28 @@ class Document extends DbTestCase
         $fkey = $itil->getForeignKeyField();
         $this->integer(
             (int)$itil->add([
-            'name'     => 'New ' . $itil_itemtype,
-            'content'  => 'No image in content',
+                'name'     => 'New ' . $itil_itemtype,
+                'content'  => 'No image in content',
             ])
         )->isGreaterThan(0);
 
         $child = new $child_itemtype();
         $this->integer(
             (int)$child->add([
-            'content'    => '<img src="/front/document.send.php?docid=' . $inlinedDocument->getID() . '" />',
-            $fkey        => $itil->getID(),
-            'items_id'   => $itil->getID(),
-            'itemtype'   => $itil_itemtype,
-            'users_id'   => '2', // user "glpi"
+                'content'    => '<img src="/front/document.send.php?docid=' . $inlinedDocument->getID() . '" />',
+                $fkey        => $itil->getID(),
+                'items_id'   => $itil->getID(),
+                'itemtype'   => $itil_itemtype,
+                'users_id'   => '2', // user "glpi"
             ])
         )->isGreaterThan(0);
 
         $document_item = new \Document_Item();
         $this->integer(
             (int)$document_item->add([
-            'documents_id' => $inlinedDocument->getID(),
-            'items_id'     => $itil->getID(),
-            'itemtype'     => $itil_itemtype,
+                'documents_id' => $inlinedDocument->getID(),
+                'items_id'     => $itil->getID(),
+                'itemtype'     => $itil_itemtype,
             ])
         )->isGreaterThan(0);
 
@@ -692,9 +692,9 @@ class Document extends DbTestCase
         $itil_user = new $itil_user_class();
         $this->integer(
             (int)$itil_user->add([
-            $fkey => $itil->getID(),
-            'type'       => \CommonITILActor::OBSERVER,
-            'users_id'   => \Session::getLoginUserID(),
+                $fkey => $itil->getID(),
+                'type'       => \CommonITILActor::OBSERVER,
+                'users_id'   => \Session::getLoginUserID(),
             ])
         )->isGreaterThan(0);
 
@@ -710,27 +710,27 @@ class Document extends DbTestCase
         $doc = new \Document();
 
         $did1 = (int)$doc->add([
-         'name'   => 'test doc'
+            'name'   => 'test doc'
         ]);
         $this->integer($did1)->isGreaterThan(0);
 
         $did2 = (int)$doc->add([
-         'name'   => 'test doc'
+            'name'   => 'test doc'
         ]);
         $this->integer($did2)->isGreaterThan(0);
 
         $did3 = (int)$doc->add([
-         'name'   => 'test doc'
+            'name'   => 'test doc'
         ]);
         $this->integer($did3)->isGreaterThan(0);
 
        // create a ticket and link one document
         $ticket = new \Ticket();
         $tickets_id_1 = $ticket->add([
-         'name'            => "test 1",
-         'content'         => "test 1",
-         'entities_id'     => 0,
-         '_documents_id'   => [$did3]
+            'name'            => "test 1",
+            'content'         => "test 1",
+            'entities_id'     => 0,
+            '_documents_id'   => [$did3]
         ]);
         $this->integer((int)$tickets_id_1)->isGreaterThan(0);
         $this->boolean($ticket->getFromDB($tickets_id_1))->isTrue();
@@ -760,16 +760,16 @@ class Document extends DbTestCase
         copy(__DIR__ . '/../fixtures/uploads/foo.png', GLPI_TMP_DIR . '/' . $filename);
         $tag = \Rule::getUuid();
         $input = [
-         'filename' => 'foo.png',
-         '_filename' => [
-            $filename,
-         ],
-         '_tag_filename' => [
-            $tag,
-         ],
-         '_prefix_filename' => [
-            '5e5e92ffd9bd91.11111111',
-         ]
+            'filename' => 'foo.png',
+            '_filename' => [
+                $filename,
+            ],
+            '_tag_filename' => [
+                $tag,
+            ],
+            '_prefix_filename' => [
+                '5e5e92ffd9bd91.11111111',
+            ]
         ];
         $document = new \Document();
         $document->add($input);
@@ -782,8 +782,8 @@ class Document extends DbTestCase
 
        // togle the blackisted flag
         $success = $instance->update([
-         'id'             => $instance->getID(),
-         'is_blacklisted' => '1'
+            'id'             => $instance->getID(),
+            'is_blacklisted' => '1'
         ]);
         $this->boolean($success)->isTrue();
 

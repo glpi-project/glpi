@@ -51,9 +51,11 @@ class Vlan extends CommonDropdown
     {
 
         return [['name'     => 'tag',
-                         'label'    => __('ID TAG'),
-                         'type'     => '',
-                         'list'     => true]];
+            'label'    => __('ID TAG'),
+            'type'     => '',
+            'list'     => true
+        ]
+        ];
     }
 
 
@@ -62,10 +64,10 @@ class Vlan extends CommonDropdown
 
         if ($field['name'] == 'tag') {
             Dropdown::showNumber('tag', [
-            'value' => $this->fields['tag'],
-            'min'   => 1,
-            'max'   => (pow(2, 12) - 2),
-            'width' => '100%',
+                'value' => $this->fields['tag'],
+                'min'   => 1,
+                'max'   => (pow(2, 12) - 2),
+                'width' => '100%',
             ]);
         }
     }
@@ -76,13 +78,13 @@ class Vlan extends CommonDropdown
         $tab = parent::rawSearchOptions();
 
         $tab[] = [
-         'id'                 => '11',
-         'table'              => $this->getTable(),
-         'field'              => 'tag',
-         'name'               => __('ID TAG'),
-         'datatype'           => 'number',
-         'min'                => 1,
-         'max'                => 4094
+            'id'                 => '11',
+            'table'              => $this->getTable(),
+            'field'              => 'tag',
+            'name'               => __('ID TAG'),
+            'datatype'           => 'number',
+            'min'                => 1,
+            'max'                => 4094
         ];
 
         return $tab;
@@ -94,8 +96,8 @@ class Vlan extends CommonDropdown
 
         $this->deleteChildrenAndRelationsFromDb(
             [
-            IPNetwork_Vlan::class,
-            NetworkPort_Vlan::class,
+                IPNetwork_Vlan::class,
+                NetworkPort_Vlan::class,
             ]
         );
     }

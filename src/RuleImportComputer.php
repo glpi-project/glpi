@@ -96,8 +96,9 @@ class RuleImportComputer extends Rule
 
         $criterias['name']['name']                 = __("Computer's name");
         $criterias['name']['allow_condition']      = [Rule::PATTERN_IS, Rule::PATTERN_IS_NOT,
-                                                         Rule::PATTERN_IS_EMPTY,
-                                                         Rule::PATTERN_FIND];
+            Rule::PATTERN_IS_EMPTY,
+            Rule::PATTERN_FIND
+        ];
 
         $criterias['DESCRIPTION']['name']          = __('Description');
 
@@ -130,8 +131,9 @@ class RuleImportComputer extends Rule
 
         return [self::RULE_ACTION_LINK_OR_IMPORT
                                           => __('Link if possible'),
-                   self::RULE_ACTION_LINK_OR_NO_IMPORT
-                                          => __('Link if possible, otherwise imports declined')];
+            self::RULE_ACTION_LINK_OR_NO_IMPORT
+                                          => __('Link if possible, otherwise imports declined')
+        ];
     }
 
 
@@ -166,8 +168,9 @@ class RuleImportComputer extends Rule
         switch ($criteria['type']) {
             case "state":
                 $link_array = ["0" => __('No'),
-                                "1" => __('Yes if equal'),
-                                "2" => __('Yes if empty')];
+                    "1" => __('Yes if equal'),
+                    "2" => __('Yes if empty')
+                ];
 
                 Dropdown::showFromArray($name, $link_array, ['value' => $value]);
         }
@@ -182,7 +185,8 @@ class RuleImportComputer extends Rule
     {
 
         return [Rule::PATTERN_FIND     => __('is already present in GLPI'),
-                   Rule::PATTERN_IS_EMPTY => __('is empty in GLPI')];
+            Rule::PATTERN_IS_EMPTY => __('is empty in GLPI')
+        ];
     }
 
 
@@ -316,8 +320,8 @@ class RuleImportComputer extends Rule
         }
 
         $it_criteria = [
-         'SELECT' => 'glpi_computers.id',
-         'WHERE'  => [], //to fill
+            'SELECT' => 'glpi_computers.id',
+            'WHERE'  => [], //to fill
         ];
 
         foreach ($complex_criterias as $criteria) {
@@ -325,8 +329,8 @@ class RuleImportComputer extends Rule
                 case 'name':
                     if ($criteria->fields['condition'] == Rule::PATTERN_IS_EMPTY) {
                         $it_criteria['WHERE']['OR'] = [
-                        ['glpi_computers.name' => ''],
-                        ['glpi_computers.name'   => null]
+                            ['glpi_computers.name' => ''],
+                            ['glpi_computers.name'   => null]
                         ];
                     } else {
                         $it_criteria['WHERE'][] = ['glpi_computers.name' => $input['name']];
@@ -382,11 +386,12 @@ class RuleImportComputer extends Rule
                 }
                 if (is_array($val) && in_array($this->getType(), $val)) {
                     $params      = ['where_entity' => $where_entity,
-                                    'input'        => $input,
-                                    'criteria'     => $complex_criterias,
-                                    'sql_where'    => $it_criteria['WHERE'],
-                                    'sql_from'     => '',
-                                    'sql_leftjoin' => ''];
+                        'input'        => $input,
+                        'criteria'     => $complex_criterias,
+                        'sql_where'    => $it_criteria['WHERE'],
+                        'sql_from'     => '',
+                        'sql_leftjoin' => ''
+                    ];
                     $sql_results = Plugin::doOneHook(
                         $plugin,
                         "ruleImportComputer_getSqlRestriction",

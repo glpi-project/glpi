@@ -154,12 +154,12 @@ class CommonImplicitTreeDropdown extends CommonTreeDropdown
         if ($step != "add" && count($potentialSons)) { // Because there is no old sons of new node
            // First, get all my current direct sons (old ones) that are not new potential sons
             $iterator = $DB->request([
-            'SELECT' => ['id'],
-            'FROM'   => $this->getTable(),
-            'WHERE'  => [
-               $this->getForeignKeyField()   => $this->getID(),
-               'NOT'                         => ['id' => $potentialSons]
-            ]
+                'SELECT' => ['id'],
+                'FROM'   => $this->getTable(),
+                'WHERE'  => [
+                    $this->getForeignKeyField()   => $this->getID(),
+                    'NOT'                         => ['id' => $potentialSons]
+                ]
             ]);
             $oldSons = [];
             foreach ($iterator as $oldSon) {
@@ -169,10 +169,10 @@ class CommonImplicitTreeDropdown extends CommonTreeDropdown
                 $DB->update(
                     $this->getTable(),
                     [
-                    $this->getForeignKeyField() => $oldParent
+                        $this->getForeignKeyField() => $oldParent
                     ],
                     [
-                    'id' => $oldSons
+                        'id' => $oldSons
                     ]
                 );
                // Then, regenerate the old sons to reflect there new ancestors
@@ -185,12 +185,12 @@ class CommonImplicitTreeDropdown extends CommonTreeDropdown
            // And, get all direct sons of my new Father that must be attached to me (ie : that are
            // potential sons
             $iterator = $DB->request([
-            'SELECT' => ['id'],
-            'FROM'   => $this->getTable(),
-            'WHERE'  => [
-               $this->getForeignKeyField()   => $newParent,
-               'id'                          => $potentialSons
-            ]
+                'SELECT' => ['id'],
+                'FROM'   => $this->getTable(),
+                'WHERE'  => [
+                    $this->getForeignKeyField()   => $newParent,
+                    'id'                          => $potentialSons
+                ]
             ]);
             $newSons = [];
             foreach ($iterator as $newSon) {
@@ -200,10 +200,10 @@ class CommonImplicitTreeDropdown extends CommonTreeDropdown
                 $DB->update(
                     $this->getTable(),
                     [
-                    $this->getForeignKeyField() => $this->getID()
+                        $this->getForeignKeyField() => $this->getID()
                     ],
                     [
-                    'id' => $newSons
+                        'id' => $newSons
                     ]
                 );
                // Then, regenerate the new sons to reflect there new ancestors

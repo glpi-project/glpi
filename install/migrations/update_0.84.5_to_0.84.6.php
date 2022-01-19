@@ -76,17 +76,18 @@ function update0845to0846()
     $DB->queryOrDie($query_doc_i, "0.84.6 change entities_id in documents_items");
 
     $status  = ['new'           => CommonITILObject::INCOMING,
-                    'assign'        => CommonITILObject::ASSIGNED,
-                    'plan'          => CommonITILObject::PLANNED,
-                    'waiting'       => CommonITILObject::WAITING,
-                    'solved'        => CommonITILObject::SOLVED,
-                    'closed'        => CommonITILObject::CLOSED,
-                    'accepted'      => CommonITILObject::ACCEPTED,
-                    'observe'       => CommonITILObject::OBSERVED,
-                    'evaluation'    => CommonITILObject::EVALUATION,
-                    'approbation'   => CommonITILObject::APPROVAL,
-                    'test'          => CommonITILObject::TEST,
-                    'qualification' => CommonITILObject::QUALIFICATION];
+        'assign'        => CommonITILObject::ASSIGNED,
+        'plan'          => CommonITILObject::PLANNED,
+        'waiting'       => CommonITILObject::WAITING,
+        'solved'        => CommonITILObject::SOLVED,
+        'closed'        => CommonITILObject::CLOSED,
+        'accepted'      => CommonITILObject::ACCEPTED,
+        'observe'       => CommonITILObject::OBSERVED,
+        'evaluation'    => CommonITILObject::EVALUATION,
+        'approbation'   => CommonITILObject::APPROVAL,
+        'test'          => CommonITILObject::TEST,
+        'qualification' => CommonITILObject::QUALIFICATION
+    ];
    // Migrate datas
     foreach ($status as $old => $new) {
         $query = "UPDATE `glpi_tickettemplatepredefinedfields`

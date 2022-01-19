@@ -46,12 +46,12 @@ class NetworkName extends DbTestCase
        //First add IPNetwork
         $IPNetwork = new \IPNetwork();
         $ipnetwork_id = $IPNetwork->add([
-         'name'               => "test",
-         'network'            => '1.1.1.0 / 255.255.255.0',
-         'gateway'            => '1.1.1.254',
-         'entites_id'         => 0,
-         'is_recursive'       => 1,
-         'addressable'        => 0,
+            'name'               => "test",
+            'network'            => '1.1.1.0 / 255.255.255.0',
+            'gateway'            => '1.1.1.254',
+            'entites_id'         => 0,
+            'is_recursive'       => 1,
+            'addressable'        => 0,
         ]);
 
         $this->integer((int)$ipnetwork_id)->isGreaterThan(0);
@@ -66,44 +66,44 @@ class NetworkName extends DbTestCase
         unset($current_ipnetwork["sons_cache"]);
 
         $expected = [
-         "entities_id"   => 0,
-         "is_recursive"  => 1,
-         "ipnetworks_id" => 0,
-         "completename"  => "test",
-         "addressable"   => 0,
-         "version"       => 4,
-         "name"          => "test",
-         "address"       => "1.1.1.0",
-         "address_0"     => 0,
-         "address_1"     => 0,
-         "address_2"     => 65535,
-         "address_3"     => 16843008,
-         "netmask"       => "255.255.255.0",
-         "netmask_0"     => 4294967295,
-         "netmask_1"     => 4294967295,
-         "netmask_2"     => 4294967295,
-         "netmask_3"     => 4294967040,
-         "gateway"       => "1.1.1.254",
-         "gateway_0"     => 0,
-         "gateway_1"     => 0,
-         "gateway_2"     => 65535,
-         "gateway_3"     => 16843262,
-         "comment"       => null,
-         "network"       => "1.1.1.0 / 255.255.255.0",
+            "entities_id"   => 0,
+            "is_recursive"  => 1,
+            "ipnetworks_id" => 0,
+            "completename"  => "test",
+            "addressable"   => 0,
+            "version"       => 4,
+            "name"          => "test",
+            "address"       => "1.1.1.0",
+            "address_0"     => 0,
+            "address_1"     => 0,
+            "address_2"     => 65535,
+            "address_3"     => 16843008,
+            "netmask"       => "255.255.255.0",
+            "netmask_0"     => 4294967295,
+            "netmask_1"     => 4294967295,
+            "netmask_2"     => 4294967295,
+            "netmask_3"     => 4294967040,
+            "gateway"       => "1.1.1.254",
+            "gateway_0"     => 0,
+            "gateway_1"     => 0,
+            "gateway_2"     => 65535,
+            "gateway_3"     => 16843262,
+            "comment"       => null,
+            "network"       => "1.1.1.0 / 255.255.255.0",
         ];
         $this->array($current_ipnetwork)->isIdenticalTo($expected);
 
        //Second add NetworkName
         $Networkname = new \NetworkName();
         $networkname_id = $Networkname->add([
-         'name'          => "test",
-         '_ipaddresses'  => [-1 => '1.1.1.24'],
-         'entities_id'    => 0,
-         'items_id'      => 0,
-         'itemtype'      => '',
-         'fqdns_id'      => 0,
-         'comment'       => '',
-         'ipnetworks_id' => 0
+            'name'          => "test",
+            '_ipaddresses'  => [-1 => '1.1.1.24'],
+            'entities_id'    => 0,
+            'items_id'      => 0,
+            'itemtype'      => '',
+            'fqdns_id'      => 0,
+            'comment'       => '',
+            'ipnetworks_id' => 0
         ]);
 
         $this->integer((int)$networkname_id)->isGreaterThan(0);
@@ -115,15 +115,15 @@ class NetworkName extends DbTestCase
         unset($current_networkname['date_creation']);
 
         $expected = [
-         "entities_id"   => 0,
-         "items_id"      => 0,
-         "itemtype"      => "",
-         "name"          => "test",
-         "comment"       => "",
-         "fqdns_id"      => 0,
-         "ipnetworks_id" => $ipnetwork_id, //check the automatic recovery of IPNetwork previsouly created
-         "is_deleted"    => 0,
-         "is_dynamic"    => 0,
+            "entities_id"   => 0,
+            "items_id"      => 0,
+            "itemtype"      => "",
+            "name"          => "test",
+            "comment"       => "",
+            "fqdns_id"      => 0,
+            "ipnetworks_id" => $ipnetwork_id, //check the automatic recovery of IPNetwork previsouly created
+            "is_deleted"    => 0,
+            "is_dynamic"    => 0,
         ];
         $this->array($current_networkname)->isIdenticalTo($expected);
     }

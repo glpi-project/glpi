@@ -34,7 +34,8 @@
 include('../inc/includes.php');
 
 Session::checkSeveralRightsOr(['notification' => READ,
-                                    'config'       => UPDATE]);
+    'config'       => UPDATE
+]);
 
 Html::header(_n('Notification', 'Notifications', Session::getPluralNumber()), $_SERVER['PHP_SELF'], "config", "notification");
 

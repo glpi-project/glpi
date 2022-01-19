@@ -126,9 +126,9 @@ if (isset($_POST["add"])) {
         'certificate'
     );
     $certificate->display([
-      'id'           => $_GET["id"],
-      'withtemplate' => $_GET["withtemplate"],
-      'formoptions'  => "data-track-changes=true"
+        'id'           => $_GET["id"],
+        'withtemplate' => $_GET["withtemplate"],
+        'formoptions'  => "data-track-changes=true"
     ]);
     Html::footer();
 }

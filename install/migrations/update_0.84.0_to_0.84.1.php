@@ -93,7 +93,8 @@ function update0840to0841()
         'delete_problem',
         'char',
         ['after'  => 'edit_all_problem',
-        'update' => 'edit_all_problem']
+            'update' => 'edit_all_problem'
+        ]
     );
 
    // ************ Keep it at the end **************

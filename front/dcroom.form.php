@@ -117,7 +117,7 @@ if (isset($_POST["add"])) {
 } else {
     Html::header(DCRoom::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "management", "datacenter", "dcroom");
     $options = [
-      'id' => $_GET["id"],
+        'id' => $_GET["id"],
     ];
     if (
         isset($_REQUEST['_add_fromitem'])

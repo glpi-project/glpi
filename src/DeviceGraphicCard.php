@@ -86,35 +86,35 @@ class DeviceGraphicCard extends CommonDevice
         $tab = parent::rawSearchOptions();
 
         $tab[] = [
-         'id'                 => '11',
-         'table'              => $this->getTable(),
-         'field'              => 'chipset',
-         'name'               => __('Chipset'),
-         'datatype'           => 'string',
+            'id'                 => '11',
+            'table'              => $this->getTable(),
+            'field'              => 'chipset',
+            'name'               => __('Chipset'),
+            'datatype'           => 'string',
         ];
 
         $tab[] = [
-         'id'                 => '12',
-         'table'              => $this->getTable(),
-         'field'              => 'memory_default',
-         'name'               => __('Memory by default'),
-         'datatype'           => 'string',
+            'id'                 => '12',
+            'table'              => $this->getTable(),
+            'field'              => 'memory_default',
+            'name'               => __('Memory by default'),
+            'datatype'           => 'string',
         ];
 
         $tab[] = [
-         'id'                 => '14',
-         'table'              => 'glpi_interfacetypes',
-         'field'              => 'name',
-         'name'               => __('Interface'),
-         'datatype'           => 'dropdown'
+            'id'                 => '14',
+            'table'              => 'glpi_interfacetypes',
+            'field'              => 'name',
+            'name'               => __('Interface'),
+            'datatype'           => 'dropdown'
         ];
 
         $tab[] = [
-         'id'                 => '15',
-         'table'              => 'glpi_devicegraphiccardmodels',
-         'field'              => 'name',
-         'name'               => _n('Model', 'Models', 1),
-         'datatype'           => 'dropdown'
+            'id'                 => '15',
+            'table'              => 'glpi_devicegraphiccardmodels',
+            'field'              => 'name',
+            'name'               => _n('Model', 'Models', 1),
+            'datatype'           => 'dropdown'
         ];
 
         return $tab;
@@ -209,8 +209,8 @@ class DeviceGraphicCard extends CommonDevice
     {
 
         return [
-         'designation' => 'equal',
-         'chipset'  => 'equal',
+            'designation' => 'equal',
+            'chipset'  => 'equal',
         ];
     }
 
@@ -219,19 +219,19 @@ class DeviceGraphicCard extends CommonDevice
         $tab = [];
 
         $tab[] = [
-         'id'                 => '13',
-         'table'              => 'glpi_devicegraphiccards',
-         'field'              => 'designation',
-         'name'               => static::getTypeName(1),
-         'forcegroupby'       => true,
-         'massiveaction'      => false,
-         'datatype'           => 'string',
-         'joinparams'         => [
-            'beforejoin'         => [
-               'table'              => 'glpi_items_devicegraphiccards',
-               'joinparams'         => $main_joinparams
+            'id'                 => '13',
+            'table'              => 'glpi_devicegraphiccards',
+            'field'              => 'designation',
+            'name'               => static::getTypeName(1),
+            'forcegroupby'       => true,
+            'massiveaction'      => false,
+            'datatype'           => 'string',
+            'joinparams'         => [
+                'beforejoin'         => [
+                    'table'              => 'glpi_items_devicegraphiccards',
+                    'joinparams'         => $main_joinparams
+                ]
             ]
-         ]
         ];
 
         return $tab;

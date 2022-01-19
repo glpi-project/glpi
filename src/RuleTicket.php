@@ -76,12 +76,13 @@ class RuleTicket extends Rule
     {
 
         return [static::ONADD                   => __('Add'),
-                   static::ONUPDATE                => __('Update'),
-                   static::ONADD | static::ONUPDATE  => sprintf(
-                       __('%1$s / %2$s'),
-                       __('Add'),
-                       __('Update')
-                   )];
+            static::ONUPDATE                => __('Update'),
+            static::ONADD | static::ONUPDATE  => sprintf(
+                __('%1$s / %2$s'),
+                __('Add'),
+                __('Update')
+            )
+        ];
     }
 
 
@@ -257,11 +258,12 @@ class RuleTicket extends Rule
 
                                 $solution = new ITILSolution();
                                 $solution->add([
-                                "itemtype" => "Ticket",
-                                "solutiontypes_id" => $template->getField("solutiontypes_id"),
-                                "content" => $solution_content,
-                                "status" => CommonITILValidation::WAITING,
-                                "items_id" => $output['id']]);
+                                    "itemtype" => "Ticket",
+                                    "solutiontypes_id" => $template->getField("solutiontypes_id"),
+                                    "content" => $solution_content,
+                                    "status" => CommonITILValidation::WAITING,
+                                    "items_id" => $output['id']
+                                ]);
                             }
                         }
 
@@ -440,7 +442,8 @@ class RuleTicket extends Rule
                                 $group = new Group();
                                 if (
                                     $group->getFromDBByCrit(["name" => $regexvalue,
-                                                      "is_requester" => true])
+                                        "is_requester" => true
+                                    ])
                                 ) {
                                      $output['_additional_groups_requesters'][$group->getID()] = $group->getID();
                                 }
@@ -714,11 +717,11 @@ class RuleTicket extends Rule
         $criterias['global_validation']['type']               = 'dropdown_validation_status';
 
         $criterias['_date_creation_calendars_id'] = [
-         'name'            => __("Creation date is a working hour in calendar"),
-         'table'           => Calendar::getTable(),
-         'field'           => 'name',
-         'linkfield'       => '_date_creation_calendars_id',
-         'type'            => 'dropdown',
+            'name'            => __("Creation date is a working hour in calendar"),
+            'table'           => Calendar::getTable(),
+            'field'           => 'name',
+            'linkfield'       => '_date_creation_calendars_id',
+            'type'            => 'dropdown',
         ];
 
         return $criterias;
@@ -815,7 +818,8 @@ class RuleTicket extends Rule
         $actions['affectobject']['name']                      = _n('Associated element', 'Associated elements', Session::getPluralNumber());
         $actions['affectobject']['type']                      = 'text';
         $actions['affectobject']['force_actions']             = ['affectbyip', 'affectbyfqdn',
-                                                                    'affectbymac'];
+            'affectbymac'
+        ];
 
         $actions['assign_appliance']['name']                  = _n('Associated element', 'Associated elements', Session::getPluralNumber()) . " : " . Appliance::getTypeName(1);
         $actions['assign_appliance']['type']                  = 'dropdown';
@@ -964,7 +968,8 @@ class RuleTicket extends Rule
         $values = parent::getRights();
        //TRANS: short for : Business rules for ticket (entity parent)
         $values[self::PARENT] = ['short' => __('Parent business'),
-                                    'long'  => __('Business rules for ticket (entity parent)')];
+            'long'  => __('Business rules for ticket (entity parent)')
+        ];
 
         return $values;
     }

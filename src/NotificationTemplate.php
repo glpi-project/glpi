@@ -55,7 +55,7 @@ class NotificationTemplate extends CommonDBTM
     public function getCloneRelations(): array
     {
         return [
-         NotificationTemplateTranslation::class
+            NotificationTemplateTranslation::class
         ];
     }
 
@@ -134,7 +134,8 @@ class NotificationTemplate extends CommonDBTM
             'itemtype',
             $CFG_GLPI["notificationtemplates_types"],
             ['value' => ($this->fields['itemtype']
-            ? $this->fields['itemtype'] : 'Ticket')]
+            ? $this->fields['itemtype'] : 'Ticket')
+            ]
         );
         echo "</td></tr>";
 
@@ -157,35 +158,35 @@ class NotificationTemplate extends CommonDBTM
         $tab = [];
 
         $tab[] = [
-         'id'                 => 'common',
-         'name'               => __('Characteristics')
+            'id'                 => 'common',
+            'name'               => __('Characteristics')
         ];
 
         $tab[] = [
-         'id'                 => '1',
-         'table'              => $this->getTable(),
-         'field'              => 'name',
-         'name'               => __('Name'),
-         'datatype'           => 'itemlink',
-         'massiveaction'      => false,
+            'id'                 => '1',
+            'table'              => $this->getTable(),
+            'field'              => 'name',
+            'name'               => __('Name'),
+            'datatype'           => 'itemlink',
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
-         'id'                 => '4',
-         'table'              => $this->getTable(),
-         'field'              => 'itemtype',
-         'name'               => _n('Type', 'Types', 1),
-         'datatype'           => 'itemtypename',
-         'itemtype_list'      => 'notificationtemplates_types',
-         'massiveaction'      => false
+            'id'                 => '4',
+            'table'              => $this->getTable(),
+            'field'              => 'itemtype',
+            'name'               => _n('Type', 'Types', 1),
+            'datatype'           => 'itemtypename',
+            'itemtype_list'      => 'notificationtemplates_types',
+            'massiveaction'      => false
         ];
 
         $tab[] = [
-         'id'                 => '16',
-         'table'              => $this->getTable(),
-         'field'              => 'comment',
-         'name'               => __('Comments'),
-         'datatype'           => 'text'
+            'id'                 => '16',
+            'table'              => $this->getTable(),
+            'field'              => 'comment',
+            'name'               => __('Comments'),
+            'datatype'           => 'text'
         ];
 
         return $tab;
@@ -202,10 +203,10 @@ class NotificationTemplate extends CommonDBTM
     public static function dropdownTemplates($name, $itemtype, $value = 0)
     {
         self::dropdown([
-         'name'       => $name,
-         'value'     => $value,
-         'comment'   => 1,
-         'condition' => ['itemtype' => addslashes($itemtype)]
+            'name'       => $name,
+            'value'     => $value,
+            'comment'   => 1,
+            'condition' => ['itemtype' => addslashes($itemtype)]
         ]);
     }
 
@@ -556,13 +557,13 @@ class NotificationTemplate extends CommonDBTM
         global $DB;
 
         $iterator = $DB->request([
-         'FROM'   => 'glpi_notificationtemplatetranslations',
-         'WHERE'  => [
-            'notificationtemplates_id' => $this->getField('id'),
-            'language'                 => [$language, '']
-         ],
-         'ORDER'  => 'language DESC',
-         'LIMIT'  => 1
+            'FROM'   => 'glpi_notificationtemplatetranslations',
+            'WHERE'  => [
+                'notificationtemplates_id' => $this->getField('id'),
+                'language'                 => [$language, '']
+            ],
+            'ORDER'  => 'language DESC',
+            'LIMIT'  => 1
         ]);
         if (count($iterator)) {
             return $iterator->current();
@@ -619,8 +620,8 @@ class NotificationTemplate extends CommonDBTM
 
         $this->deleteChildrenAndRelationsFromDb(
             [
-            Notification_NotificationTemplate::class,
-            NotificationTemplateTranslation::class,
+                Notification_NotificationTemplate::class,
+                NotificationTemplateTranslation::class,
             ]
         );
 

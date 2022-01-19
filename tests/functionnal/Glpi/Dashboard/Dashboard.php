@@ -83,32 +83,32 @@ class Dashboard extends DbTestCase
             "New Dashboard",
             'my_context',
             [
-            [
-               'gridstack_id' => 'bn_count_Computer_4',
-               'card_id'      => 'bn_count_Computer',
-               'x'            => 0,
-               'y'            => 0,
-               'width'        => 2,
-               'height'       => 2,
-               'card_options' => [
-                  'color' => '#FFFFFF',
-               ]
-            ], [
-               'gridstack_id' => 'bn_count_Computer_5',
-               'card_id'      => 'bn_count_Computer',
-               'x'            => 2,
-               'y'            => 0,
-               'width'        => 2,
-               'height'       => 2,
-               'card_options' => [
-                  'color' => '#FFFFFF',
-               ]
+                [
+                    'gridstack_id' => 'bn_count_Computer_4',
+                    'card_id'      => 'bn_count_Computer',
+                    'x'            => 0,
+                    'y'            => 0,
+                    'width'        => 2,
+                    'height'       => 2,
+                    'card_options' => [
+                        'color' => '#FFFFFF',
+                    ]
+                ], [
+                    'gridstack_id' => 'bn_count_Computer_5',
+                    'card_id'      => 'bn_count_Computer',
+                    'x'            => 2,
+                    'y'            => 0,
+                    'width'        => 2,
+                    'height'       => 2,
+                    'card_options' => [
+                        'color' => '#FFFFFF',
+                    ]
+                ],
             ],
-            ],
             [
-            [
-               'entities_id' => 0,
-            ]
+                [
+                    'entities_id' => 0,
+                ]
             ]
         ))->isEqualTo("new-dashboard");
 
@@ -136,8 +136,8 @@ class Dashboard extends DbTestCase
         $clone_name = sprintf(__('Copy of %s'), "Test_Dashboard");
         $clone_key  = \Toolbox::slugify($clone_name);
         $this->array($this->dashboard->cloneCurrent())->isEqualTo([
-         'title' => $clone_name,
-         'key'   => $clone_key
+            'title' => $clone_name,
+            'key'   => $clone_key
         ]);
 
         $this->boolean($this->dashboard->getFromDB($clone_key))->isTrue();
@@ -191,21 +191,21 @@ class Dashboard extends DbTestCase
         $dashboards_id = $this->dashboard->fields['id'];
 
         $this->boolean($this->dashboard->delete([
-         'key' => 'test_dashboard'
+            'key' => 'test_dashboard'
         ]))->isTrue();
 
         $items = iterator_to_array($DB->request([
-         'FROM' => \Glpi\Dashboard\Item::getTable(),
-         'WHERE' => [
-            'dashboards_dashboards_id' => $dashboards_id
-         ]
+            'FROM' => \Glpi\Dashboard\Item::getTable(),
+            'WHERE' => [
+                'dashboards_dashboards_id' => $dashboards_id
+            ]
         ]));
         $this->array($items)->isEmpty();
         $rights     = iterator_to_array($DB->request([
-         'FROM' => \Glpi\Dashboard\Right::getTable(),
-         'WHERE' => [
-            'dashboards_dashboards_id' => $dashboards_id
-         ]
+            'FROM' => \Glpi\Dashboard\Right::getTable(),
+            'WHERE' => [
+                'dashboards_dashboards_id' => $dashboards_id
+            ]
         ]));
         $this->array($rights)->isEmpty();
     }
@@ -226,34 +226,34 @@ class Dashboard extends DbTestCase
         $title  = 'Test Import';
         $key    = \Toolbox::slugify($title);
         $import = [
-         $key => [
-            'title'   => $title,
-            'context' => 'core',
-            'items'   => [
-               [
-                  'gridstack_id' => 'bn_count_Computer_4',
-                  'card_id'      => 'bn_count_Computer',
-                  'x'            => 0,
-                  'y'            => 0,
-                  'width'        => 2,
-                  'height'       => 2,
-                  'card_options' => []
-               ], [
-                  'gridstack_id' => 'bn_count_Computer_5',
-                  'card_id'      => 'bn_count_Computer',
-                  'x'            => 2,
-                  'y'            => 0,
-                  'width'        => 2,
-                  'height'       => 2,
-                  'card_options' => []
-               ],
-            ],
-            'rights'  => [
-               [
-                  'entities_id' => 0
-               ]
-            ],
-         ]
+            $key => [
+                'title'   => $title,
+                'context' => 'core',
+                'items'   => [
+                    [
+                        'gridstack_id' => 'bn_count_Computer_4',
+                        'card_id'      => 'bn_count_Computer',
+                        'x'            => 0,
+                        'y'            => 0,
+                        'width'        => 2,
+                        'height'       => 2,
+                        'card_options' => []
+                    ], [
+                        'gridstack_id' => 'bn_count_Computer_5',
+                        'card_id'      => 'bn_count_Computer',
+                        'x'            => 2,
+                        'y'            => 0,
+                        'width'        => 2,
+                        'height'       => 2,
+                        'card_options' => []
+                    ],
+                ],
+                'rights'  => [
+                    [
+                        'entities_id' => 0
+                    ]
+                ],
+            ]
         ];
 
         $this->boolean(\Glpi\Dashboard\Dashboard::importFromJson($import))->isTrue();
@@ -267,26 +267,26 @@ class Dashboard extends DbTestCase
     public function testConvertRights()
     {
         $raw = [
-         [
-            'itemtype'                 => 'Entity',
-            'items_id'                 => 0,
-         ], [
-            'itemtype'                 => 'Profile',
-            'items_id'                 => 3,
-         ], [
-            'itemtype'                 => 'Profile',
-            'items_id'                 => 4,
-         ], [
-            'itemtype'                 => 'User',
-            'items_id'                 => 2,
-         ]
+            [
+                'itemtype'                 => 'Entity',
+                'items_id'                 => 0,
+            ], [
+                'itemtype'                 => 'Profile',
+                'items_id'                 => 3,
+            ], [
+                'itemtype'                 => 'Profile',
+                'items_id'                 => 4,
+            ], [
+                'itemtype'                 => 'User',
+                'items_id'                 => 2,
+            ]
         ];
 
         $this->array(\Glpi\Dashboard\Dashboard::convertRights($raw))->isEqualTo([
-         'entities_id' => [0],
-         'profiles_id' => [3, 4],
-         'users_id'    => [2],
-         'groups_id'   => [],
+            'entities_id' => [0],
+            'profiles_id' => [3, 4],
+            'users_id'    => [2],
+            'groups_id'   => [],
         ]);
     }
 
@@ -294,10 +294,10 @@ class Dashboard extends DbTestCase
     public function testCheckRights()
     {
         $rights = [
-         'entities_id' => [0],
-         'profiles_id' => [3 => 3, 4 => 4],
-         'users_id'    => [2],
-         'groups_id'   => [3],
+            'entities_id' => [0],
+            'profiles_id' => [3 => 3, 4 => 4],
+            'users_id'    => [2],
+            'groups_id'   => [3],
         ];
 
         $_SESSION['glpiactiveentities'] = [];

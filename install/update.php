@@ -247,11 +247,11 @@ if (empty($_POST["continuer"]) && empty($_POST["from_update"])) {
             $_SESSION['telemetry_from_install'] = true;
 
             TemplateRenderer::getInstance()->display('install/update.html.twig', [
-            'glpinetwork'       => GLPINetwork::showInstallMessage(),
-            'glpinetwork_url'   => GLPI_NETWORK_SERVICES,
-            'telemetry_enabled' => Telemetry::isEnabled(),
-            'telemetry_info'    => Telemetry::showTelemetry(),
-            'reference_info'    => Telemetry::showReference(),
+                'glpinetwork'       => GLPINetwork::showInstallMessage(),
+                'glpinetwork_url'   => GLPI_NETWORK_SERVICES,
+                'telemetry_enabled' => Telemetry::isEnabled(),
+                'telemetry_info'    => Telemetry::showTelemetry(),
+                'reference_info'    => Telemetry::showReference(),
             ]);
         }
     } else {

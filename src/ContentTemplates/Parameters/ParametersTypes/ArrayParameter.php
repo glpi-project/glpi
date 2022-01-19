@@ -69,11 +69,11 @@ class ArrayParameter extends AbstractParameterType
     {
         $object_parameters = new ObjectParameter($this->template_parameters);
         return [
-         'type'      => "ArrayParameter",
-         'key'       => $this->key,
-         'label'     => $this->label,
-         'items_key' => $this->template_parameters->getDefaultNodeName(),
-         'content'   => $object_parameters->compute(),
+            'type'      => "ArrayParameter",
+            'key'       => $this->key,
+            'label'     => $this->label,
+            'items_key' => $this->template_parameters->getDefaultNodeName(),
+            'content'   => $object_parameters->compute(),
         ];
     }
 

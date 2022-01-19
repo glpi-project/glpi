@@ -223,8 +223,8 @@ abstract class InventoryAsset
                             $kversion->getFromDB($value->$key);
                             if ($kversion->fields['operatingsystemkernels_id'] != $value->operatingsystemkernels_id) {
                                 $kversion->update([
-                                'id'                          => $kversion->getID(),
-                                'operatingsystemkernels_id'   => $value->operatingsystemkernels_id
+                                    'id'                          => $kversion->getID(),
+                                    'operatingsystemkernels_id'   => $value->operatingsystemkernels_id
                                 ], $this->withHistory());
                             }
                         }
@@ -360,8 +360,8 @@ abstract class InventoryAsset
     {
         $citem = new \Computer_Item();
         $citem->getFromDBByCrit([
-         'itemtype' => $input['itemtype'],
-         'items_id' => $input['items_id']
+            'itemtype' => $input['itemtype'],
+            'items_id' => $input['items_id']
         ]);
 
         $itemtype = $input['itemtype'];

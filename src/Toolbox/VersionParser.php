@@ -54,13 +54,13 @@ class VersionParser
         $version_pattern = implode(
             '',
             [
-            '/^',
-            '(?<major>\d+)', // Major release numero, always present
-            '\.(?<minor>\d+)', // Minor release numero, always present
-            '(\.(?<bugfix>\d+))?', // Bugfix numero, not always present (e.g. GLPI 9.2)
-            '(\.(?<tag_fail>\d+))?', // Redo tag operation numero, rarely present (e.g. GLPI 9.4.1.1)
-            '(?<stability_flag>-' . self::UNSTABLE_FLAG_PATTERN . ')?', // Stability flag, optional
-            '$/'
+                '/^',
+                '(?<major>\d+)', // Major release numero, always present
+                '\.(?<minor>\d+)', // Minor release numero, always present
+                '(\.(?<bugfix>\d+))?', // Bugfix numero, not always present (e.g. GLPI 9.2)
+                '(\.(?<tag_fail>\d+))?', // Redo tag operation numero, rarely present (e.g. GLPI 9.4.1.1)
+                '(?<stability_flag>-' . self::UNSTABLE_FLAG_PATTERN . ')?', // Stability flag, optional
+                '$/'
             ]
         );
         $version_matches = [];

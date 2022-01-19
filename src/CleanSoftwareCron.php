@@ -65,8 +65,8 @@ class CleanSoftwareCron extends CommonDBTM
     public static function cronInfo($name)
     {
         return [
-         'description' => self::getTaskDescription(),
-         'parameter' => self::getParameterDescription(),
+            'description' => self::getTaskDescription(),
+            'parameter' => self::getParameterDescription(),
         ];
     }
 
@@ -119,32 +119,32 @@ class CleanSoftwareCron extends CommonDBTM
     protected static function getVersionsWithNoInstallationCriteria(): array
     {
         return [
-         'SELECT' => 'id',
-         'FROM'   => SoftwareVersion::getTable(),
-         'WHERE'  => [
-            'NOT' => [
-               'OR' => [
-                  [
-                     'id' => new QuerySubQuery([
-                        'SELECT' => 'softwareversions_id',
-                        'FROM'   => Item_SoftwareVersion::getTable(),
-                     ])
-                  ],
-                  [
-                     'id' => new QuerySubQuery([
-                        'SELECT' => 'softwareversions_id_buy',
-                        'FROM'   => SoftwareLicense::getTable(),
-                     ]),
-                  ],
-                  [
-                     'id' => new QuerySubQuery([
-                        'SELECT' => 'softwareversions_id_use',
-                        'FROM'   => SoftwareLicense::getTable(),
-                     ]),
-                  ],
-               ],
+            'SELECT' => 'id',
+            'FROM'   => SoftwareVersion::getTable(),
+            'WHERE'  => [
+                'NOT' => [
+                    'OR' => [
+                        [
+                            'id' => new QuerySubQuery([
+                                'SELECT' => 'softwareversions_id',
+                                'FROM'   => Item_SoftwareVersion::getTable(),
+                            ])
+                        ],
+                        [
+                            'id' => new QuerySubQuery([
+                                'SELECT' => 'softwareversions_id_buy',
+                                'FROM'   => SoftwareLicense::getTable(),
+                            ]),
+                        ],
+                        [
+                            'id' => new QuerySubQuery([
+                                'SELECT' => 'softwareversions_id_use',
+                                'FROM'   => SoftwareLicense::getTable(),
+                            ]),
+                        ],
+                    ],
+                ],
             ],
-         ],
         ];
     }
 
@@ -156,17 +156,17 @@ class CleanSoftwareCron extends CommonDBTM
     protected static function getSoftwareWithNoVersionsCriteria(): array
     {
         return [
-         'SELECT' => 'id',
-         'FROM'   => Software::getTable(),
-         'WHERE'  => [
-            'is_deleted' => 0,
-            'NOT' => [
-               'id' => new QuerySubQuery([
-                  'SELECT' => 'softwares_id',
-                  'FROM'   => SoftwareVersion::getTable(),
-               ]),
+            'SELECT' => 'id',
+            'FROM'   => Software::getTable(),
+            'WHERE'  => [
+                'is_deleted' => 0,
+                'NOT' => [
+                    'id' => new QuerySubQuery([
+                        'SELECT' => 'softwares_id',
+                        'FROM'   => SoftwareVersion::getTable(),
+                    ]),
+                ]
             ]
-         ]
         ];
     }
 

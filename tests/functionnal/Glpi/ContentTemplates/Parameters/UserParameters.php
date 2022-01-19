@@ -48,48 +48,48 @@ class UserParameters extends AbstractParameters
         $test_location     = getItemByTypeName('Location', 'test location', true);
 
         $this->createItem('User', [
-         'name'                => 'user_testGetValues',
-         'entities_id'         => $test_entity_id,
-         'firstname'           => 'firstname',
-         'realname'            => 'lastname',
-         '_useremails'         => ['test@email.com'],
-         'phone'               => '0101010101',
-         'phone2'              => '0202020202',
-         'mobile'              => '0303030303',
-         'users_id_supervisor' => $test_user_id,
-         'usertitles_id'       => $test_usertitle,
-         'usercategories_id'   => $test_usercategory,
-         'locations_id'        => $test_location,
+            'name'                => 'user_testGetValues',
+            'entities_id'         => $test_entity_id,
+            'firstname'           => 'firstname',
+            'realname'            => 'lastname',
+            '_useremails'         => ['test@email.com'],
+            'phone'               => '0101010101',
+            'phone2'              => '0202020202',
+            'mobile'              => '0303030303',
+            'users_id_supervisor' => $test_user_id,
+            'usertitles_id'       => $test_usertitle,
+            'usercategories_id'   => $test_usercategory,
+            'locations_id'        => $test_location,
         ]);
 
         $parameters = $this->newTestedInstance();
         $values = $parameters->getValues(getItemByTypeName('User', 'user_testGetValues'));
 
         $this->array($values)->isEqualTo([
-         'id'          => getItemByTypeName('User', 'user_testGetValues', true),
-         'login'       => 'user_testGetValues',
-         'fullname'    => 'lastname firstname',
-         'email'       => 'test@email.com',
-         'phone'       => '0101010101',
-         'phone2'      => '0202020202',
-         'mobile'      => '0303030303',
-         'firstname'   => 'firstname',
-         'realname'    => 'lastname',
-         'responsible' => TU_USER,
-         'location' => [
-            'id'           => $test_location,
-            'name'         => 'test location',
-            'completename' => 'test location',
-         ],
-         'usertitle'  => [
-            'id'   => $test_usertitle,
-            'name' => 'test title',
-         ],
-         'usercategory'  => [
-            'id'   => $test_usercategory,
-            'name' => 'test category',
-         ],
-         'used_items'  => [],
+            'id'          => getItemByTypeName('User', 'user_testGetValues', true),
+            'login'       => 'user_testGetValues',
+            'fullname'    => 'lastname firstname',
+            'email'       => 'test@email.com',
+            'phone'       => '0101010101',
+            'phone2'      => '0202020202',
+            'mobile'      => '0303030303',
+            'firstname'   => 'firstname',
+            'realname'    => 'lastname',
+            'responsible' => TU_USER,
+            'location' => [
+                'id'           => $test_location,
+                'name'         => 'test location',
+                'completename' => 'test location',
+            ],
+            'usertitle'  => [
+                'id'   => $test_usertitle,
+                'name' => 'test title',
+            ],
+            'usercategory'  => [
+                'id'   => $test_usercategory,
+                'name' => 'test category',
+            ],
+            'used_items'  => [],
         ]);
 
         $this->testGetAvailableParameters($values, $parameters->getAvailableParameters());

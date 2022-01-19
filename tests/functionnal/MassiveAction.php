@@ -48,52 +48,52 @@ class MassiveAction extends DbTestCase
     protected function actionsProvider()
     {
         return [
-         [
-            'itemtype'     => 'Computer',
-            'items_id'     => '_test_pc01',
-            'allcount'     => 19,
-            'singlecount'  => 12
-         ], [
-            'itemtype'     => 'Monitor',
-            'items_id'     => '_test_monitor_1',
-            'allcount'     => 17,
-            'singlecount'  => 11
-         ], [
-            'itemtype'     => 'SoftwareLicense',
-            'items_id'     => '_test_softlic_1',
-            'allcount'     => 15,
-            'singlecount'  => 9
-         ], [
-            'itemtype'     => 'NetworkEquipment',
-            'items_id'     => '_test_networkequipment_1',
-            'allcount'     => 15,
-            'singlecount'  => 10
-         ], [
-            'itemtype'     => 'Peripheral',
-            'items_id'     => '_test_peripheral_1',
-            'allcount'     => 17,
-            'singlecount'  => 11
-         ], [
-            'itemtype'     => 'Printer',
-            'items_id'     => '_test_printer_all',
-            'allcount'     => 17,
-            'singlecount'  => 11
-         ], [
-            'itemtype'     => 'Phone',
-            'items_id'     => '_test_phone_1',
-            'allcount'     => 17,
-            'singlecount'  => 11
-         ], [
-            'itemtype'     => 'Ticket',
-            'items_id'     => '_ticket01',
-            'allcount'     => 20,
-            'singlecount'  => 10
-         ], [
-            'itemtype'     => 'Profile',
-            'items_id'     => 'Super-Admin',
-            'allcount'     => 2,
-            'singlecount'  => 1
-         ]
+            [
+                'itemtype'     => 'Computer',
+                'items_id'     => '_test_pc01',
+                'allcount'     => 19,
+                'singlecount'  => 12
+            ], [
+                'itemtype'     => 'Monitor',
+                'items_id'     => '_test_monitor_1',
+                'allcount'     => 17,
+                'singlecount'  => 11
+            ], [
+                'itemtype'     => 'SoftwareLicense',
+                'items_id'     => '_test_softlic_1',
+                'allcount'     => 15,
+                'singlecount'  => 9
+            ], [
+                'itemtype'     => 'NetworkEquipment',
+                'items_id'     => '_test_networkequipment_1',
+                'allcount'     => 15,
+                'singlecount'  => 10
+            ], [
+                'itemtype'     => 'Peripheral',
+                'items_id'     => '_test_peripheral_1',
+                'allcount'     => 17,
+                'singlecount'  => 11
+            ], [
+                'itemtype'     => 'Printer',
+                'items_id'     => '_test_printer_all',
+                'allcount'     => 17,
+                'singlecount'  => 11
+            ], [
+                'itemtype'     => 'Phone',
+                'items_id'     => '_test_phone_1',
+                'allcount'     => 17,
+                'singlecount'  => 11
+            ], [
+                'itemtype'     => 'Ticket',
+                'items_id'     => '_ticket01',
+                'allcount'     => 20,
+                'singlecount'  => 10
+            ], [
+                'itemtype'     => 'Profile',
+                'items_id'     => 'Super-Admin',
+                'allcount'     => 2,
+                'singlecount'  => 1
+            ]
         ];
     }
 
@@ -106,11 +106,11 @@ class MassiveAction extends DbTestCase
         $items_id = getItemByTypeName($itemtype, $items_id, true);
         $mact = new \MassiveAction(
             [
-            'item'            => [
-               $itemtype   => [
-                  $items_id => 1
-               ]
-            ]
+                'item'            => [
+                    $itemtype   => [
+                        $items_id => 1
+                    ]
+                ]
             ],
             [],
             'initial'
@@ -124,11 +124,11 @@ class MassiveAction extends DbTestCase
 
         $mact = new \MassiveAction(
             [
-            'item'   => [
-               $itemtype   => [
-                  $items_id => 1
-               ]
-            ]
+                'item'   => [
+                    $itemtype   => [
+                        $items_id => 1
+                    ]
+                ]
             ],
             [],
             'initial',
@@ -188,21 +188,21 @@ class MassiveAction extends DbTestCase
     protected function amendCommentProvider()
     {
         return [
-         [
-            'item'                   => getItemByTypeName("Computer", "_test_pc01"),
-            'itemtype_is_compatible' => true,
-            'has_right'              => true,
-         ],
-         [
-            'item'                   => getItemByTypeName("Ticket", "_ticket01"),
-            'itemtype_is_compatible' => false,
-            'has_right'              => false,
-         ],
-         [
-            'item'                   => getItemByTypeName("Computer", "_test_pc01"),
-            'itemtype_is_compatible' => true,
-            'has_right'              => false,
-         ],
+            [
+                'item'                   => getItemByTypeName("Computer", "_test_pc01"),
+                'itemtype_is_compatible' => true,
+                'has_right'              => true,
+            ],
+            [
+                'item'                   => getItemByTypeName("Ticket", "_ticket01"),
+                'itemtype_is_compatible' => false,
+                'has_right'              => false,
+            ],
+            [
+                'item'                   => getItemByTypeName("Computer", "_test_pc01"),
+                'itemtype_is_compatible' => true,
+                'has_right'              => false,
+            ],
         ];
     }
 
@@ -221,7 +221,7 @@ class MassiveAction extends DbTestCase
        // Set rights if needed
         if ($has_right) {
             $_SESSION['glpiactiveentities'] = [
-            $item->getEntityID()
+                $item->getEntityID()
             ];
         }
 
@@ -236,8 +236,8 @@ class MassiveAction extends DbTestCase
 
            // If we expect the test to work, set the comment to $base_comment
             $update = $item->update([
-            'id'      => $item->fields['id'],
-            'comment' => $base_comment,
+                'id'      => $item->fields['id'],
+                'comment' => $base_comment,
             ]);
             $this->boolean($update)->isTrue();
         } else if (!$itemtype_is_compatible) {
@@ -275,14 +275,14 @@ class MassiveAction extends DbTestCase
     protected function addNoteProvider()
     {
         return [
-         [
-            'item'      => getItemByTypeName("Computer", "_test_pc01"),
-            'has_right' => true,
-         ],
-         [
-            'item'      => getItemByTypeName("Ticket", "_ticket01"),
-            'has_right' => false,
-         ],
+            [
+                'item'      => getItemByTypeName("Computer", "_test_pc01"),
+                'has_right' => true,
+            ],
+            [
+                'item'      => getItemByTypeName("Ticket", "_ticket01"),
+                'has_right' => false,
+            ],
         ];
     }
 
@@ -300,9 +300,9 @@ class MassiveAction extends DbTestCase
         $new_note_content = "Test add note";
         $old_session = $_SESSION['glpiactiveprofile'][$item::$rightname] ?? 0;
         $note_search = [
-         'items_id' => $item->fields['id'],
-         'itemtype' => $item->getType(),
-         'content'  => $new_note_content
+            'items_id' => $item->fields['id'],
+            'itemtype' => $item->getType(),
+            'content'  => $new_note_content
         ];
 
         if ($has_right) {
@@ -348,36 +348,36 @@ class MassiveAction extends DbTestCase
     protected function linkToProblemProvider()
     {
         return [
-         [
+            [
             // Expected failure: wrong itemtype
-            'item'      => getItemByTypeName("Computer", "_test_pc01"),
-            'input'     => [],
-            'has_right' => false,
-         ],
-         [
+                'item'      => getItemByTypeName("Computer", "_test_pc01"),
+                'input'     => [],
+                'has_right' => false,
+            ],
+            [
             // Expected failure: missing rights
-            'item'      => getItemByTypeName("Ticket", "_ticket01"),
-            'input'     => [],
-            'has_right' => false,
-         ],
-         [
+                'item'      => getItemByTypeName("Ticket", "_ticket01"),
+                'input'     => [],
+                'has_right' => false,
+            ],
+            [
             // Expected failure: input is empty
-            'item'      => getItemByTypeName("Ticket", "_ticket01"),
-            'input'     => [],
-            'has_right' => true,
-         ],
-         [
+                'item'      => getItemByTypeName("Ticket", "_ticket01"),
+                'input'     => [],
+                'has_right' => true,
+            ],
+            [
             // Expected failure: input is invalid
-            'item'      => getItemByTypeName("Ticket", "_ticket01"),
-            'input'     => ['problems_id' => -1],
-            'has_right' => true,
-         ],
-         [
+                'item'      => getItemByTypeName("Ticket", "_ticket01"),
+                'input'     => ['problems_id' => -1],
+                'has_right' => true,
+            ],
+            [
             // Should work
-            'item'      => getItemByTypeName("Ticket", "_ticket01"),
-            'input'     => ['problems_id' => 1],
-            'has_right' => true,
-         ],
+                'item'      => getItemByTypeName("Ticket", "_ticket01"),
+                'input'     => ['problems_id' => 1],
+                'has_right' => true,
+            ],
         ];
     }
 
@@ -409,8 +409,8 @@ class MassiveAction extends DbTestCase
         if ($problems_id > 0) {
             $problem = new Problem();
             $input['problems_id'] = $problem->add([
-            'name'    => "tmp",
-            'content' => "tmp",
+                'name'    => "tmp",
+                'content' => "tmp",
             ]);
             $this->integer($input['problems_id']);
 
@@ -437,43 +437,43 @@ class MassiveAction extends DbTestCase
     {
         $ticket = new Ticket();
         $id = $ticket->add([
-         'name'    => 'test',
-         'content' => 'test'
+            'name'    => 'test',
+            'content' => 'test'
         ]);
         $ticket->getFromDB($id);
 
         return [
-         [
+            [
             // Expected failure: wrong itemtype
-            'item'        => getItemByTypeName("Computer", "_test_pc01"),
-            'input'       => [],
-            'has_right'   => false,
-            'should_work' => false,
-         ],
-         [
-            // Expected failure: missing rights
-            'item'        => $ticket,
-            'input'       => [],
-            'has_right'   => false,
-            'should_work' => false,
-         ],
-         [
-            // Expected failure: input is empty
-            'item'        => $ticket,
-            'input'       => [],
-            'has_right'   => true,
-            'should_work' => false,
-         ],
-         [
-            // Should work
-            'item'        => $ticket,
-            'input'       => [
-               'solutiontypes_id' => 0,
-               'content'          => "Solution"
+                'item'        => getItemByTypeName("Computer", "_test_pc01"),
+                'input'       => [],
+                'has_right'   => false,
+                'should_work' => false,
             ],
-            'has_right'   => true,
-            'should_work' => true,
-         ],
+            [
+            // Expected failure: missing rights
+                'item'        => $ticket,
+                'input'       => [],
+                'has_right'   => false,
+                'should_work' => false,
+            ],
+            [
+            // Expected failure: input is empty
+                'item'        => $ticket,
+                'input'       => [],
+                'has_right'   => true,
+                'should_work' => false,
+            ],
+            [
+            // Should work
+                'item'        => $ticket,
+                'input'       => [
+                    'solutiontypes_id' => 0,
+                    'content'          => "Solution"
+                ],
+                'has_right'   => true,
+                'should_work' => true,
+            ],
         ];
     }
 
@@ -530,50 +530,50 @@ class MassiveAction extends DbTestCase
     {
         $ticket = new Ticket();
         $id = $ticket->add([
-         'name'    => 'test',
-         'content' => 'test',
+            'name'    => 'test',
+            'content' => 'test',
         ]);
         $ticket->getFromDB($id);
         $this->integer($id)->isGreaterThan(0);
 
         $contract = new Contract();
         $contract_id = $contract->add([
-         'name'        => 'test',
-         'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+            'name'        => 'test',
+            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
         ]);
         $this->integer($contract_id)->isGreaterThan(0);
 
         return [
-         [
+            [
             // Expected failure: wrong itemtype
-            'item'        => getItemByTypeName("Computer", "_test_pc01"),
-            'input'       => [],
-            'has_right'   => false,
-            'should_work' => false,
-         ],
-         [
-            // Expected failure: missing rights
-            'item'        => $ticket,
-            'input'       => [],
-            'has_right'   => false,
-            'should_work' => false,
-         ],
-         [
-            // Expected failure: input is empty
-            'item'        => $ticket,
-            'input'       => [],
-            'has_right'   => true,
-            'should_work' => false,
-         ],
-         [
-            // Should work
-            'item'        => $ticket,
-            'input'       => [
-               'contracts_id' => $contract_id,
+                'item'        => getItemByTypeName("Computer", "_test_pc01"),
+                'input'       => [],
+                'has_right'   => false,
+                'should_work' => false,
             ],
-            'has_right'   => true,
-            'should_work' => true,
-         ],
+            [
+            // Expected failure: missing rights
+                'item'        => $ticket,
+                'input'       => [],
+                'has_right'   => false,
+                'should_work' => false,
+            ],
+            [
+            // Expected failure: input is empty
+                'item'        => $ticket,
+                'input'       => [],
+                'has_right'   => true,
+                'should_work' => false,
+            ],
+            [
+            // Should work
+                'item'        => $ticket,
+                'input'       => [
+                    'contracts_id' => $contract_id,
+                ],
+                'has_right'   => true,
+                'should_work' => true,
+            ],
         ];
     }
 

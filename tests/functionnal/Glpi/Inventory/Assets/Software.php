@@ -42,8 +42,8 @@ class Software extends AbstractInventoryAsset
     protected function assetProvider(): array
     {
         return [
-         [
-            'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+            [
+                'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
   <CONTENT>
     <SOFTWARES>
@@ -62,10 +62,10 @@ class Software extends AbstractInventoryAsset
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-            'expected'  => '{"arch": "x86_64", "comments": "GNU Image Manipulation Program", "filesize": 67382735, "from": "rpm", "name": "gimp", "publisher": "Fedora Project", "system_category": "Unspecified", "version": "2.8.22-7.fc28", "install_date": "2018-09-03", "manufacturers_id": "Feodra Project", "comment": "GNU Image Manipulation Program", "_system_category": "Unspecified", "operatingsystems_id": 0, "entities_id": 0, "is_template_item": 0, "is_deleted_item": 0, "is_recursive": 0, "date_install": "2018-09-03"}'
-         ],
-         [
-            'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+                'expected'  => '{"arch": "x86_64", "comments": "GNU Image Manipulation Program", "filesize": 67382735, "from": "rpm", "name": "gimp", "publisher": "Fedora Project", "system_category": "Unspecified", "version": "2.8.22-7.fc28", "install_date": "2018-09-03", "manufacturers_id": "Feodra Project", "comment": "GNU Image Manipulation Program", "_system_category": "Unspecified", "operatingsystems_id": 0, "entities_id": 0, "is_template_item": 0, "is_deleted_item": 0, "is_recursive": 0, "date_install": "2018-09-03"}'
+            ],
+            [
+                'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
   <CONTENT>
     <OPERATINGSYSTEM>
@@ -94,8 +94,8 @@ class Software extends AbstractInventoryAsset
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-            'expected'  => '{"arch": "x86_64", "comments": "GNU Image Manipulation Program", "filesize": 67382735, "from": "rpm", "name": "gimp", "publisher": "Fedora Project", "system_category": "Unspecified", "version": "2.8.22-7.fc28", "install_date": "2018-09-03", "manufacturers_id": "Feodra Project", "comment": "GNU Image Manipulation Program", "_system_category": "Unspecified", "operatingsystems_id": 0, "entities_id": 0, "is_template_item": 0, "is_deleted_item": 0, "is_recursive": 0, "date_install": "2018-09-03"}'
-         ]
+                'expected'  => '{"arch": "x86_64", "comments": "GNU Image Manipulation Program", "filesize": 67382735, "from": "rpm", "name": "gimp", "publisher": "Fedora Project", "system_category": "Unspecified", "version": "2.8.22-7.fc28", "install_date": "2018-09-03", "manufacturers_id": "Feodra Project", "comment": "GNU Image Manipulation Program", "_system_category": "Unspecified", "operatingsystems_id": 0, "entities_id": 0, "is_template_item": 0, "is_deleted_item": 0, "is_recursive": 0, "date_install": "2018-09-03"}'
+            ]
         ];
     }
 
@@ -274,9 +274,9 @@ class Software extends AbstractInventoryAsset
        //software import behave differently: non-dynamic are not handled at all.
        //create manually a computer
         $computers_id = $computer->add([
-         'name'   => 'pc002',
-         'serial' => 'ggheb7ne7',
-         'entities_id' => 0
+            'name'   => 'pc002',
+            'serial' => 'ggheb7ne7',
+            'entities_id' => 0
         ]);
         $this->integer($computers_id)->isGreaterThan(0);
 

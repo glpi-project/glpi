@@ -68,20 +68,20 @@ class NotificationAjaxSetting extends NotificationSetting
 
         if ($CFG_GLPI['notifications_ajax']) {
             $sounds = [
-            'sound_a' => __('Sound') . ' A',
-            'sound_b' => __('Sound') . ' B',
-            'sound_c' => __('Sound') . ' C',
-            'sound_d' => __('Sound') . ' D',
+                'sound_a' => __('Sound') . ' A',
+                'sound_b' => __('Sound') . ' B',
+                'sound_c' => __('Sound') . ' C',
+                'sound_d' => __('Sound') . ' D',
             ];
 
             echo "<tr class='tab_bg_2'>";
             echo "<td> " . __('Default notification sound') . "</td><td>";
             $rand_sound = mt_rand();
             Dropdown::showFromArray("notifications_ajax_sound", $sounds, [
-            'value'               => $CFG_GLPI["notifications_ajax_sound"],
-            'display_emptychoice' => true,
-            'emptylabel'          => __('Disabled'),
-            'rand'                => $rand_sound,
+                'value'               => $CFG_GLPI["notifications_ajax_sound"],
+                'display_emptychoice' => true,
+                'emptylabel'          => __('Disabled'),
+                'rand'                => $rand_sound,
             ]);
             echo "</td><td colspan='2'>&nbsp;</td></tr>";
 
@@ -91,9 +91,10 @@ class NotificationAjaxSetting extends NotificationSetting
             Dropdown::showNumber(
                 'notifications_ajax_check_interval',
                 ['value' => $CFG_GLPI["notifications_ajax_check_interval"],
-                               'min'   => 5,
-                               'max'   => 120,
-                'step'  => 5]
+                    'min'   => 5,
+                    'max'   => 120,
+                    'step'  => 5
+                ]
             );
             echo "</td>";
             echo "<td>" . __('URL of the icon') . "</td>";

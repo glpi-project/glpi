@@ -48,10 +48,10 @@ class Alert extends DbTestCase
 
        // Add
         $id = $alert->add([
-         'itemtype' => $comp->getType(),
-         'items_id' => $comp->getID(),
-         'type'     => \Alert::END,
-         'date'     => $date,
+            'itemtype' => $comp->getType(),
+            'items_id' => $comp->getID(),
+            'type'     => \Alert::END,
+            'date'     => $date,
         ]);
         $this->integer($id)->isGreaterThan(0);
         $this->integer((int)countElementsInTable($alert->getTable()))->isGreaterThan($nb);

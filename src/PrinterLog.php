@@ -108,15 +108,15 @@ class PrinterLog extends CommonDBChild
         $bdate = new DateTime();
         $bdate->sub(new DateInterval('P1Y'));
         $filters = [
-         'date' => ['>', $bdate->format('Y-m-d')]
+            'date' => ['>', $bdate->format('Y-m-d')]
         ];
         $filters = array_merge($filters, $user_filters);
 
         $iterator = $DB->request([
-         'FROM'   => $this->getTable(),
-         'WHERE'  => [
-            'printers_id'  => $printer->fields['id']
-         ] + $filters
+            'FROM'   => $this->getTable(),
+            'WHERE'  => [
+                'printers_id'  => $printer->fields['id']
+            ] + $filters
         ]);
 
         return iterator_to_array($iterator);
@@ -133,9 +133,9 @@ class PrinterLog extends CommonDBChild
 
        //build graph data
         $params = [
-         'label'         => $this->getTypeName(),
-         'icon'          => Printer::getIcon(),
-         'apply_filters' => [],
+            'label'         => $this->getTypeName(),
+            'icon'          => Printer::getIcon(),
+            'apply_filters' => [],
         ];
 
         $series = [];
@@ -156,14 +156,14 @@ class PrinterLog extends CommonDBChild
         }
 
         $bar_conf = [
-         'data'  => [
-            'labels' => $labels,
-            'series' => array_values($series),
-         ],
-         'label' => $params['label'],
-         'icon'  => $params['icon'],
-         'color' => '#ffffff',
-         'distributed' => false
+            'data'  => [
+                'labels' => $labels,
+                'series' => array_values($series),
+            ],
+            'label' => $params['label'],
+            'icon'  => $params['icon'],
+            'color' => '#ffffff',
+            'distributed' => false
         ];
 
        //display graph

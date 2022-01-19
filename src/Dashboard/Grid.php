@@ -124,7 +124,7 @@ class Grid
             || !isset(self::$all_dashboards[$this->current]['items'])
         ) {
             self::$all_dashboards[$this->current] = [
-            'items' => []
+                'items' => []
             ];
         }
 
@@ -132,7 +132,7 @@ class Grid
             $card_id      = $specs['card_id'] ?? $specs['gridstack_id'] ?? $specs['id'];
             $gridstack_id = $specs['gridstack_id']   ?? $specs['id'];
             $card_options = ($specs['card_options'] ?? []) + [
-            'card_id' => $card_id
+                'card_id' => $card_id
             ];
 
             if (GLPI_AJAX_DASHBOARD) {
@@ -289,11 +289,11 @@ HTML;
         $dropdown_dashboards = "";
         if ($nb_dashboards) {
             $dropdown_dashboards = self::dropdownDashboard("", [
-            'value'        => $this->current,
-            'display'      => false,
-            'class'        => 'dashboard_select form-select',
-            'can_view_all' => $can_view_all,
-            'noselect2'    => true,
+                'value'        => $this->current,
+                'display'      => false,
+                'class'        => 'dashboard_select form-select',
+                'can_view_all' => $can_view_all,
+                'noselect2'    => true,
             ]);
         }
 
@@ -448,10 +448,10 @@ JAVASCRIPT;
     public function embed(array $params = [])
     {
         $defaults = [
-         'dashboard'    => '',
-         'entities_id'  => 0,
-         'is_recursive' => 0,
-         'token'        => ''
+            'dashboard'    => '',
+            'entities_id'  => 0,
+            'is_recursive' => 0,
+            'token'        => ''
         ];
         $params = array_merge($defaults, $params);
 
@@ -502,10 +502,10 @@ JAVASCRIPT;
     public static function checkToken(array $params = []): bool
     {
         $defaults = [
-         'dashboard'    => '',
-         'entities_id'  => 0,
-         'is_recursive' => 0,
-         'token'        => ''
+            'dashboard'    => '',
+            'entities_id'  => 0,
+            'is_recursive' => 0,
+            'token'        => ''
         ];
         $params = array_merge($defaults, $params);
 
@@ -640,8 +640,8 @@ HTML;
         echo "</div>"; // .field
 
         echo Html::submit(_x('button', "Add"), [
-         'icon'  => 'fas fa-plus',
-         'class' => 'btn btn-primary submit-new-dashboard'
+            'icon'  => 'fas fa-plus',
+            'class' => 'btn btn-primary submit-new-dashboard'
         ]);
 
         echo "</form>"; // .card.display-widget-form
@@ -702,24 +702,24 @@ HTML;
         }
 
         TemplateRenderer::getInstance()->display('components/dashboard/widget_form.html.twig', [
-         'gridstack_id' => $gridstack_id,
-         'old_id'       => $old_id,
-         'x'            => $x,
-         'y'            => $y,
-         'width'        => $width,
-         'height'       => $height,
-         'edit'         => $edit,
-         'card'         => $card,
-         'widget_def'   => $widget_def,
-         'color'        => $color,
-         'card_id'      => $card_id,
-         'use_gradient' => $use_gradient,
-         'point_labels' => $point_labels,
-         'limit'        => $limit,
-         'list_cards'   => $list_cards,
-         'widget_types' => Widget::getAllTypes(),
-         'widgettype'   => $widgettype,
-         'card_options' => $cardopt,
+            'gridstack_id' => $gridstack_id,
+            'old_id'       => $old_id,
+            'x'            => $x,
+            'y'            => $y,
+            'width'        => $width,
+            'height'       => $height,
+            'edit'         => $edit,
+            'card'         => $card,
+            'widget_def'   => $widget_def,
+            'color'        => $color,
+            'card_id'      => $card_id,
+            'use_gradient' => $use_gradient,
+            'point_labels' => $point_labels,
+            'limit'        => $limit,
+            'list_cards'   => $list_cards,
+            'widget_types' => Widget::getAllTypes(),
+            'widgettype'   => $widgettype,
+            'card_options' => $cardopt,
         ]);
     }
 
@@ -735,7 +735,7 @@ HTML;
     public function displayFilterForm(array $params = [])
     {
         $default_params = [
-         'used'  => [],
+            'used'  => [],
         ];
         $params = array_merge($default_params, $params);
 
@@ -749,14 +749,14 @@ HTML;
         echo "<label for='dropdown_card_id$rand'>" . __("Filters") . "</label>";
         echo "<div>";
         Dropdown::showFromArray('filter_id', $list_filters, [
-         'display_emptychoice' => true,
-         'rand'                => $rand,
+            'display_emptychoice' => true,
+            'rand'                => $rand,
         ]);
         echo "</div>";
         echo "</div>"; // .field
 
         echo Html::submit("<i class='fas fa-plus'></i>&nbsp;" . _x('button', "Add"), [
-         'class' => 'btn btn-primary mt-2'
+            'class' => 'btn btn-primary mt-2'
         ]);
         echo "</form>"; // form.card.display-filter-form
     }
@@ -787,7 +787,7 @@ HTML;
         echo __("Direct link");
         echo "<div class='copy_to_clipboard_wrapper'>";
         echo Html::input('direct_link', [
-         'value' => $embed_url,
+            'value' => $embed_url,
         ]);
         echo "</div><br>";
 
@@ -795,7 +795,7 @@ HTML;
         echo __("Iframe");
         echo "<div class='copy_to_clipboard_wrapper'>";
         echo Html::input('iframe_code', [
-         'value' => $iframe,
+            'value' => $iframe,
         ]);
         echo "</div>";
         echo "</fieldset><br>";
@@ -823,10 +823,10 @@ HTML;
 
         $values = [];
         $raw_values = [
-         'profiles_id' => self::$all_dashboards[$this->current]['rights']['profiles_id'] ?? [],
-         'entities_id' => self::$all_dashboards[$this->current]['rights']['entities_id'] ?? [],
-         'users_id'    => self::$all_dashboards[$this->current]['rights']['users_id'] ?? [],
-         'groups_id'   => self::$all_dashboards[$this->current]['rights']['groups_id'] ?? [],
+            'profiles_id' => self::$all_dashboards[$this->current]['rights']['profiles_id'] ?? [],
+            'entities_id' => self::$all_dashboards[$this->current]['rights']['entities_id'] ?? [],
+            'users_id'    => self::$all_dashboards[$this->current]['rights']['users_id'] ?? [],
+            'groups_id'   => self::$all_dashboards[$this->current]['rights']['groups_id'] ?? [],
         ];
 
         foreach ($raw_values as $fkey => $ids) {
@@ -845,7 +845,7 @@ HTML;
             (self::$all_dashboards[$this->current]['users_id'] == '0' ? '0' : '1'),
             -1,
             [
-            'display' => false
+                'display' => false
             ]
         );
         echo "</div>";
@@ -931,9 +931,9 @@ HTML;
        // call provider to retrieve data
         if (isset($card['provider'])) {
             $provider_args = ($card['args'] ?? []) + [
-            'params' => [
-               'label' => $card['label'] ?? ""
-            ]
+                'params' => [
+                    'label' => $card['label'] ?? ""
+                ]
             ];
             if (isset($card_options['args']['apply_filters'])) {
                 $provider_args['params']['apply_filters'] = $card_options['args']['apply_filters'];
@@ -1045,7 +1045,7 @@ HTML;
     {
         $menu_itemtypes = [];
         $exclude   = [
-         'Config',
+            'Config',
         ];
 
         $menu = Html::getMenuInfos();
@@ -1121,15 +1121,15 @@ HTML;
                 foreach ($itemtypes as $itemtype) {
                     $clean_itemtype = str_replace('\\', '_', $itemtype);
                     $cards["bn_count_$clean_itemtype"] = [
-                    'widgettype' => ["bigNumber"],
-                    'group'      => $firstlvl,
-                    'itemtype'   => "\\$itemtype",
-                    'label'      => sprintf(__("Number of %s"), $itemtype::getTypeName()),
-                    'provider'   => "Glpi\\Dashboard\\Provider::bigNumber$itemtype",
-                    'filters'    => array_merge([
-                     'dates',
-                     'dates_mod',
-                    ], $add_filters_fct($itemtype::getTable()))
+                        'widgettype' => ["bigNumber"],
+                        'group'      => $firstlvl,
+                        'itemtype'   => "\\$itemtype",
+                        'label'      => sprintf(__("Number of %s"), $itemtype::getTypeName()),
+                        'provider'   => "Glpi\\Dashboard\\Provider::bigNumber$itemtype",
+                        'filters'    => array_merge([
+                            'dates',
+                            'dates_mod',
+                        ], $add_filters_fct($itemtype::getTable()))
                     ];
                 }
             }
@@ -1138,10 +1138,10 @@ HTML;
             $assets = array_merge($CFG_GLPI['asset_types'], ['Software']);
             foreach ($assets as $itemtype) {
                 $fk_itemtypes = [
-                'State',
-                'Entity',
-                'Manufacturer',
-                'Location',
+                    'State',
+                    'Entity',
+                    'Manufacturer',
+                    'Location',
                 ];
 
                 if (class_exists($itemtype . 'Type')) {
@@ -1159,217 +1159,217 @@ HTML;
                     );
 
                     $cards["count_" . $itemtype . "_" . $fk_itemtype] = [
-                     'widgettype' => ['summaryNumbers', 'multipleNumber', 'pie', 'donut', 'halfpie', 'halfdonut', 'bar', 'hbar'],
-                     'itemtype'   => "\\Computer",
-                     'group'      => _n('Asset', 'Assets', Session::getPluralNumber()),
-                     'label'      => $label,
-                     'provider'   => "Glpi\\Dashboard\\Provider::multipleNumber" . $itemtype . "By" . $fk_itemtype,
-                     'filters'    => array_merge([
-                     'dates',
-                     'dates_mod',
-                     ], $add_filters_fct($itemtype::getTable()))
+                        'widgettype' => ['summaryNumbers', 'multipleNumber', 'pie', 'donut', 'halfpie', 'halfdonut', 'bar', 'hbar'],
+                        'itemtype'   => "\\Computer",
+                        'group'      => _n('Asset', 'Assets', Session::getPluralNumber()),
+                        'label'      => $label,
+                        'provider'   => "Glpi\\Dashboard\\Provider::multipleNumber" . $itemtype . "By" . $fk_itemtype,
+                        'filters'    => array_merge([
+                            'dates',
+                            'dates_mod',
+                        ], $add_filters_fct($itemtype::getTable()))
                     ];
                 }
             }
 
             $tickets_cases = [
-            'late'               => __("Late tickets"),
-            'waiting_validation' => __("Ticket waiting for your approval"),
-            'notold'             => __('Not solved tickets'),
-            'incoming'           => __("New tickets"),
-            'waiting'            => __('Pending tickets'),
-            'assigned'           => __('Assigned tickets'),
-            'planned'            => __('Planned tickets'),
-            'solved'             => __('Solved tickets'),
-            'closed'             => __('Closed tickets'),
+                'late'               => __("Late tickets"),
+                'waiting_validation' => __("Ticket waiting for your approval"),
+                'notold'             => __('Not solved tickets'),
+                'incoming'           => __("New tickets"),
+                'waiting'            => __('Pending tickets'),
+                'assigned'           => __('Assigned tickets'),
+                'planned'            => __('Planned tickets'),
+                'solved'             => __('Solved tickets'),
+                'closed'             => __('Closed tickets'),
             ];
             foreach ($tickets_cases as $case => $label) {
                 $cards["bn_count_tickets_$case"] = [
-                'widgettype' => ["bigNumber"],
-                'itemtype'   => "\\Ticket",
-                'group'      => __('Assistance'),
-                'label'      => sprintf(__("Number of %s"), $label),
-                'provider'   => "Glpi\\Dashboard\\Provider::nbTicketsGeneric",
-                'args'       => [
-                  'case'   => $case,
-                  'params' => [
-                     'validation_check_user' => true,
-                  ]
-                ],
-                'cache'      => false,
-                'filters'    => [
-                  'dates', 'dates_mod', 'itilcategory',
-                  'group_tech', 'user_tech', 'requesttype', 'location'
-                ]
+                    'widgettype' => ["bigNumber"],
+                    'itemtype'   => "\\Ticket",
+                    'group'      => __('Assistance'),
+                    'label'      => sprintf(__("Number of %s"), $label),
+                    'provider'   => "Glpi\\Dashboard\\Provider::nbTicketsGeneric",
+                    'args'       => [
+                        'case'   => $case,
+                        'params' => [
+                            'validation_check_user' => true,
+                        ]
+                    ],
+                    'cache'      => false,
+                    'filters'    => [
+                        'dates', 'dates_mod', 'itilcategory',
+                        'group_tech', 'user_tech', 'requesttype', 'location'
+                    ]
                 ];
 
                 $cards["table_count_tickets_$case"] = [
-                'widgettype' => ["searchShowList"],
-                'itemtype'   => "\\Ticket",
-                'group'      => __('Assistance'),
-                'label'      => sprintf(__("List of %s"), $label),
-                'provider'   => "Glpi\\Dashboard\\Provider::nbTicketsGeneric",
-                'args'       => [
-                  'case'   => $case,
-                  'params' => [
-                     'validation_check_user' => true,
-                  ]
-                ],
-                'filters'    => [
-                  'dates', 'dates_mod', 'itilcategory',
-                  'group_tech', 'user_tech', 'requesttype', 'location'
-                ]
+                    'widgettype' => ["searchShowList"],
+                    'itemtype'   => "\\Ticket",
+                    'group'      => __('Assistance'),
+                    'label'      => sprintf(__("List of %s"), $label),
+                    'provider'   => "Glpi\\Dashboard\\Provider::nbTicketsGeneric",
+                    'args'       => [
+                        'case'   => $case,
+                        'params' => [
+                            'validation_check_user' => true,
+                        ]
+                    ],
+                    'filters'    => [
+                        'dates', 'dates_mod', 'itilcategory',
+                        'group_tech', 'user_tech', 'requesttype', 'location'
+                    ]
                 ];
             }
 
            // add specific ticket's cases
             $cards["nb_opened_ticket"] = [
-            'widgettype' => ['line', 'area', 'bar'],
-            'itemtype'   => "\\Ticket",
-            'group'      => __('Assistance'),
-            'label'      => __("Number of tickets by month"),
-            'provider'   => "Glpi\\Dashboard\\Provider::ticketsOpened",
-            'filters'    => [
-               'dates', 'dates_mod', 'itilcategory',
-               'group_tech', 'user_tech', 'requesttype', 'location'
-            ]
+                'widgettype' => ['line', 'area', 'bar'],
+                'itemtype'   => "\\Ticket",
+                'group'      => __('Assistance'),
+                'label'      => __("Number of tickets by month"),
+                'provider'   => "Glpi\\Dashboard\\Provider::ticketsOpened",
+                'filters'    => [
+                    'dates', 'dates_mod', 'itilcategory',
+                    'group_tech', 'user_tech', 'requesttype', 'location'
+                ]
             ];
 
             $cards["ticket_evolution"] = [
-            'widgettype' => ['lines', 'areas', 'bars', 'stackedbars'],
-            'itemtype'   => "\\Ticket",
-            'group'      => __('Assistance'),
-            'label'      => __("Evolution of ticket in the past year"),
-            'provider'   => "Glpi\\Dashboard\\Provider::getTicketsEvolution",
-            'filters'    => [
-               'dates', 'dates_mod', 'itilcategory',
-               'group_tech', 'user_tech', 'requesttype', 'location'
-            ]
+                'widgettype' => ['lines', 'areas', 'bars', 'stackedbars'],
+                'itemtype'   => "\\Ticket",
+                'group'      => __('Assistance'),
+                'label'      => __("Evolution of ticket in the past year"),
+                'provider'   => "Glpi\\Dashboard\\Provider::getTicketsEvolution",
+                'filters'    => [
+                    'dates', 'dates_mod', 'itilcategory',
+                    'group_tech', 'user_tech', 'requesttype', 'location'
+                ]
             ];
 
             $cards["ticket_status"] = [
-            'widgettype' => ['lines', 'areas', 'bars', 'stackedbars'],
-            'itemtype'   => "\\Ticket",
-            'group'      => __('Assistance'),
-            'label'      => __("Tickets status by month"),
-            'provider'   => "Glpi\\Dashboard\\Provider::getTicketsStatus",
-            'filters'    => [
-               'dates', 'dates_mod', 'itilcategory',
-               'group_tech', 'user_tech', 'requesttype', 'location'
-            ]
+                'widgettype' => ['lines', 'areas', 'bars', 'stackedbars'],
+                'itemtype'   => "\\Ticket",
+                'group'      => __('Assistance'),
+                'label'      => __("Tickets status by month"),
+                'provider'   => "Glpi\\Dashboard\\Provider::getTicketsStatus",
+                'filters'    => [
+                    'dates', 'dates_mod', 'itilcategory',
+                    'group_tech', 'user_tech', 'requesttype', 'location'
+                ]
             ];
 
             $cards["ticket_times"] = [
-            'widgettype' => ['lines', 'areas', 'bars', 'stackedbars'],
-            'itemtype'   => "\\Ticket",
-            'group'      => __('Assistance'),
-            'label'      => __("Tickets times (in hours)"),
-            'provider'   => "Glpi\\Dashboard\\Provider::averageTicketTimes",
-            'filters'    => [
-               'dates', 'dates_mod', 'itilcategory',
-               'group_tech', 'user_tech', 'requesttype', 'location'
-            ]
+                'widgettype' => ['lines', 'areas', 'bars', 'stackedbars'],
+                'itemtype'   => "\\Ticket",
+                'group'      => __('Assistance'),
+                'label'      => __("Tickets times (in hours)"),
+                'provider'   => "Glpi\\Dashboard\\Provider::averageTicketTimes",
+                'filters'    => [
+                    'dates', 'dates_mod', 'itilcategory',
+                    'group_tech', 'user_tech', 'requesttype', 'location'
+                ]
             ];
 
             $cards["tickets_summary"] = [
-            'widgettype' => ['summaryNumbers', 'multipleNumber', 'bar', 'hbar'],
-            'itemtype'   => "\\Ticket",
-            'group'      => __('Assistance'),
-            'label'      => __("Tickets summary"),
-            'provider'   => "Glpi\\Dashboard\\Provider::getTicketSummary",
-            'filters'    => [
-               'dates', 'dates_mod', 'itilcategory',
-               'group_tech', 'user_tech', 'requesttype', 'location'
-            ]
+                'widgettype' => ['summaryNumbers', 'multipleNumber', 'bar', 'hbar'],
+                'itemtype'   => "\\Ticket",
+                'group'      => __('Assistance'),
+                'label'      => __("Tickets summary"),
+                'provider'   => "Glpi\\Dashboard\\Provider::getTicketSummary",
+                'filters'    => [
+                    'dates', 'dates_mod', 'itilcategory',
+                    'group_tech', 'user_tech', 'requesttype', 'location'
+                ]
             ];
 
             $case = '';
             $cards["bn_count_tickets_expired_by_tech"] = [
-            'widgettype' => ['hBars', 'stackedHBars'],
-            'itemtype'   => "\\Ticket",
-            'group'      => __('Assistance'),
-            'label'      => sprintf(__("Number of tickets by SLA status and technician")),
-            'provider'   => "Glpi\\Dashboard\\Provider::nbTicketsByAgreementStatusAndTechnician",
-            'filters'    => [
-            'dates', 'dates_mod', 'itilcategory',
-            'user_tech', 'requesttype', 'location'
-            ]
+                'widgettype' => ['hBars', 'stackedHBars'],
+                'itemtype'   => "\\Ticket",
+                'group'      => __('Assistance'),
+                'label'      => sprintf(__("Number of tickets by SLA status and technician")),
+                'provider'   => "Glpi\\Dashboard\\Provider::nbTicketsByAgreementStatusAndTechnician",
+                'filters'    => [
+                    'dates', 'dates_mod', 'itilcategory',
+                    'user_tech', 'requesttype', 'location'
+                ]
             ];
 
             $cards["bn_count_tickets_expired_by_tech_group"] = [
-            'widgettype' => ['hBars', 'stackedHBars'],
-            'itemtype'   => "\\Ticket",
-            'group'      => __('Assistance'),
-            'label'      => sprintf(__("Number of tickets by SLA status and technician group")),
-            'provider'   => "Glpi\\Dashboard\\Provider::nbTicketsByAgreementStatusAndTechnicianGroup",
-            'filters'    => [
-            'dates', 'dates_mod', 'itilcategory',
-            'group_tech', 'requesttype', 'location'
-            ]
+                'widgettype' => ['hBars', 'stackedHBars'],
+                'itemtype'   => "\\Ticket",
+                'group'      => __('Assistance'),
+                'label'      => sprintf(__("Number of tickets by SLA status and technician group")),
+                'provider'   => "Glpi\\Dashboard\\Provider::nbTicketsByAgreementStatusAndTechnicianGroup",
+                'filters'    => [
+                    'dates', 'dates_mod', 'itilcategory',
+                    'group_tech', 'requesttype', 'location'
+                ]
             ];
 
             foreach (
                 [
-                     'ITILCategory' => __("Top ticket's categories"),
-                     'Entity'       => __("Top ticket's entities"),
-                     'RequestType'  => __("Top ticket's request types"),
-                     'Location'     => __("Top ticket's locations"),
-                  ] as $itemtype => $label
+                    'ITILCategory' => __("Top ticket's categories"),
+                    'Entity'       => __("Top ticket's entities"),
+                    'RequestType'  => __("Top ticket's request types"),
+                    'Location'     => __("Top ticket's locations"),
+                ] as $itemtype => $label
             ) {
                 $cards["top_ticket_$itemtype"] = [
-                'widgettype' => ['summaryNumbers', 'pie', 'donut', 'halfpie', 'halfdonut', 'multipleNumber', 'bar', 'hbar'],
-                'itemtype'   => "\\Ticket",
-                'group'      => __('Assistance'),
-                'label'      => $label,
-                'provider'   => "Glpi\\Dashboard\\Provider::multipleNumberTicketBy$itemtype",
-                'filters'    => [
-                  'dates', 'dates_mod', 'itilcategory',
-                  'group_tech', 'user_tech', 'requesttype', 'location'
-                ]
+                    'widgettype' => ['summaryNumbers', 'pie', 'donut', 'halfpie', 'halfdonut', 'multipleNumber', 'bar', 'hbar'],
+                    'itemtype'   => "\\Ticket",
+                    'group'      => __('Assistance'),
+                    'label'      => $label,
+                    'provider'   => "Glpi\\Dashboard\\Provider::multipleNumberTicketBy$itemtype",
+                    'filters'    => [
+                        'dates', 'dates_mod', 'itilcategory',
+                        'group_tech', 'user_tech', 'requesttype', 'location'
+                    ]
                 ];
             }
 
             foreach (
                 [
-                     'user_requester'  => __("Top ticket's requesters"),
-                     'group_requester' => __("Top ticket's requester groups"),
-                     'user_observer'   => __("Top ticket's observers"),
-                     'group_observer'  => __("Top ticket's observer groups"),
-                     'user_assign'     => __("Top ticket's assignees"),
-                     'group_assign'    => __("Top ticket's assignee groups"),
-                  ] as $type => $label
+                    'user_requester'  => __("Top ticket's requesters"),
+                    'group_requester' => __("Top ticket's requester groups"),
+                    'user_observer'   => __("Top ticket's observers"),
+                    'group_observer'  => __("Top ticket's observer groups"),
+                    'user_assign'     => __("Top ticket's assignees"),
+                    'group_assign'    => __("Top ticket's assignee groups"),
+                ] as $type => $label
             ) {
                 $cards["top_ticket_$type"] = [
-                'widgettype' => ['pie', 'donut', 'halfpie', 'halfdonut', 'summaryNumbers', 'multipleNumber', 'bar', 'hbar'],
-                'itemtype'   => "\\Ticket",
-                'group'      => __('Assistance'),
-                'label'      => $label,
-                'provider'   => "Glpi\\Dashboard\\Provider::nbTicketsActor",
-                'args'       => [
-                  'case' => $type,
-                ],
-                'filters'    => [
-                  'dates', 'dates_mod', 'itilcategory',
-                  'group_tech', 'user_tech', 'requesttype', 'location'
-                ]
+                    'widgettype' => ['pie', 'donut', 'halfpie', 'halfdonut', 'summaryNumbers', 'multipleNumber', 'bar', 'hbar'],
+                    'itemtype'   => "\\Ticket",
+                    'group'      => __('Assistance'),
+                    'label'      => $label,
+                    'provider'   => "Glpi\\Dashboard\\Provider::nbTicketsActor",
+                    'args'       => [
+                        'case' => $type,
+                    ],
+                    'filters'    => [
+                        'dates', 'dates_mod', 'itilcategory',
+                        'group_tech', 'user_tech', 'requesttype', 'location'
+                    ]
                 ];
             }
 
             $cards["RemindersList"] = [
-            'widgettype' => ["articleList"],
-            'label'      => __("List of reminders"),
-            'group'      => __('Tools'),
-            'provider'   => "Glpi\\Dashboard\\Provider::getArticleListReminder",
-            'filters'    => ['dates', 'dates_mod']
+                'widgettype' => ["articleList"],
+                'label'      => __("List of reminders"),
+                'group'      => __('Tools'),
+                'provider'   => "Glpi\\Dashboard\\Provider::getArticleListReminder",
+                'filters'    => ['dates', 'dates_mod']
             ];
 
             $cards["markdown_editable"] = [
-            'widgettype'   => ["markdown"],
-            'label'        => __("Editable markdown card"),
-            'group'        => __('Others'),
-            'card_options' => [
-               'content' => __("Toggle edit mode to edit content"),
-            ]
+                'widgettype'   => ["markdown"],
+                'label'        => __("Editable markdown card"),
+                'group'        => __('Others'),
+                'card_options' => [
+                    'content' => __("Toggle edit mode to edit content"),
+                ]
             ];
 
             $more_cards = Plugin::doHookFunction("dashboard_cards");
@@ -1385,13 +1385,13 @@ HTML;
     public function getRights($interface = 'central')
     {
         return [
-         READ   => __('Read'),
-         UPDATE => __('Update'),
-         CREATE => __('Create'),
-         PURGE  => [
-            'short' => __('Purge'),
-            'long'  => _x('button', 'Delete permanently')
-         ]
+            READ   => __('Read'),
+            UPDATE => __('Update'),
+            CREATE => __('Create'),
+            PURGE  => [
+                'short' => __('Purge'),
+                'long'  => _x('button', 'Delete permanently')
+            ]
         ];
     }
 

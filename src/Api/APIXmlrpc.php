@@ -315,7 +315,8 @@ class APIXmlrpc extends API
 
         $response = $this->escapekeys($response);
         $out = xmlrpc_encode_request(null, $response, ['encoding' => 'UTF-8',
-                                                          'escaping' => 'markup']);
+            'escaping' => 'markup'
+        ]);
         echo $out;
         exit;
     }

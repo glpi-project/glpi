@@ -69,8 +69,8 @@ class RuleMatchedLog extends CommonDBTM
         return countElementsInTable(
             self::getTable(),
             [
-            'itemtype' => $item->getType(),
-            'items_id' => $item->getField('id'),
+                'itemtype' => $item->getType(),
+                'items_id' => $item->getField('id'),
             ]
         );
     }
@@ -164,15 +164,15 @@ class RuleMatchedLog extends CommonDBTM
         global $DB;
 
         $iterator = $DB->request([
-         'SELECT' => 'id',
-         'FROM'   => self::getTable(),
-         'WHERE'  => [
-            'items_id'   => $items_id,
-            'itemtype'  => $itemtype
-         ],
-         'ORDER'  => 'date DESC',
-         'START'  => 30,
-         'LIMIT'  => '50000'
+            'SELECT' => 'id',
+            'FROM'   => self::getTable(),
+            'WHERE'  => [
+                'items_id'   => $items_id,
+                'itemtype'  => $itemtype
+            ],
+            'ORDER'  => 'date DESC',
+            'START'  => 30,
+            'LIMIT'  => '50000'
         ]);
         foreach ($iterator as $data) {
             $this->delete(['id' => $data['id']]);
@@ -201,12 +201,12 @@ class RuleMatchedLog extends CommonDBTM
         }
 
         $params = [
-         'FROM'   => self::getTable(),
-         'WHERE'  => [
-            'itemtype'  => $itemtype,
-            'items_id'  => intval($items_id)
-         ],
-         'COUNT'  => 'cpt'
+            'FROM'   => self::getTable(),
+            'WHERE'  => [
+                'itemtype'  => $itemtype,
+                'items_id'  => intval($items_id)
+            ],
+            'COUNT'  => 'cpt'
         ];
         $iterator = $DB->request($params);
         $number   = $iterator->current()['cpt'];
@@ -243,14 +243,14 @@ class RuleMatchedLog extends CommonDBTM
         echo "</tr>";
 
         $params = [
-         'FROM'   => self::getTable(),
-         'WHERE'  => [
-            'itemtype'  => $itemtype,
-            'items_id'  => intval($items_id)
-         ],
-         'ORDER'  => 'date DESC',
-         'START'  => (int)$start,
-         'LIMIT'  => (int)$_SESSION['glpilist_limit']
+            'FROM'   => self::getTable(),
+            'WHERE'  => [
+                'itemtype'  => $itemtype,
+                'items_id'  => intval($items_id)
+            ],
+            'ORDER'  => 'date DESC',
+            'START'  => (int)$start,
+            'LIMIT'  => (int)$_SESSION['glpilist_limit']
         ];
         foreach ($DB->request($params) as $data) {
             echo "<tr class='tab_bg_1'>";

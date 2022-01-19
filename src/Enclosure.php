@@ -48,9 +48,9 @@ class Enclosure extends CommonDBTM
     public function getCloneRelations(): array
     {
         return [
-         Item_Enclosure::class,
-         Item_Devices::class,
-         NetworkPort::class
+            Item_Enclosure::class,
+            Item_Devices::class,
+            NetworkPort::class
         ];
     }
 
@@ -92,8 +92,8 @@ class Enclosure extends CommonDBTM
     {
         $this->initForm($ID, $options);
         TemplateRenderer::getInstance()->display('pages/assets/enclosure.html.twig', [
-         'item'   => $this,
-         'params' => $options,
+            'item'   => $this,
+            'params' => $options,
         ]);
         return true;
     }
@@ -104,120 +104,120 @@ class Enclosure extends CommonDBTM
         $tab = parent::rawSearchOptions();
 
         $tab[] = [
-         'id'                 => '2',
-         'table'              => $this->getTable(),
-         'field'              => 'id',
-         'name'               => __('ID'),
-         'massiveaction'      => false, // implicit field is id
-         'datatype'           => 'number'
+            'id'                 => '2',
+            'table'              => $this->getTable(),
+            'field'              => 'id',
+            'name'               => __('ID'),
+            'massiveaction'      => false, // implicit field is id
+            'datatype'           => 'number'
         ];
 
         $tab = array_merge($tab, Location::rawSearchOptionsToAdd());
 
         $tab[] = [
-         'id'                 => '40',
-         'table'              => 'glpi_enclosuremodels',
-         'field'              => 'name',
-         'name'               => _n('Model', 'Models', 1),
-         'datatype'           => 'dropdown'
+            'id'                 => '40',
+            'table'              => 'glpi_enclosuremodels',
+            'field'              => 'name',
+            'name'               => _n('Model', 'Models', 1),
+            'datatype'           => 'dropdown'
         ];
 
         $tab[] = [
-         'id'                 => '31',
-         'table'              => 'glpi_states',
-         'field'              => 'completename',
-         'name'               => __('Status'),
-         'datatype'           => 'dropdown',
-         'condition'          => ['is_visible_computer' => 1]
+            'id'                 => '31',
+            'table'              => 'glpi_states',
+            'field'              => 'completename',
+            'name'               => __('Status'),
+            'datatype'           => 'dropdown',
+            'condition'          => ['is_visible_computer' => 1]
         ];
 
         $tab[] = [
-         'id'                 => '5',
-         'table'              => $this->getTable(),
-         'field'              => 'serial',
-         'name'               => __('Serial number'),
-         'datatype'           => 'string',
+            'id'                 => '5',
+            'table'              => $this->getTable(),
+            'field'              => 'serial',
+            'name'               => __('Serial number'),
+            'datatype'           => 'string',
         ];
 
         $tab[] = [
-         'id'                 => '6',
-         'table'              => $this->getTable(),
-         'field'              => 'otherserial',
-         'name'               => __('Inventory number'),
-         'datatype'           => 'string',
+            'id'                 => '6',
+            'table'              => $this->getTable(),
+            'field'              => 'otherserial',
+            'name'               => __('Inventory number'),
+            'datatype'           => 'string',
         ];
 
         $tab[] = [
-         'id'                 => '16',
-         'table'              => $this->getTable(),
-         'field'              => 'comment',
-         'name'               => __('Comments'),
-         'datatype'           => 'text'
+            'id'                 => '16',
+            'table'              => $this->getTable(),
+            'field'              => 'comment',
+            'name'               => __('Comments'),
+            'datatype'           => 'text'
         ];
 
         $tab[] = [
-         'id'                 => '19',
-         'table'              => $this->getTable(),
-         'field'              => 'date_mod',
-         'name'               => __('Last update'),
-         'datatype'           => 'datetime',
-         'massiveaction'      => false
+            'id'                 => '19',
+            'table'              => $this->getTable(),
+            'field'              => 'date_mod',
+            'name'               => __('Last update'),
+            'datatype'           => 'datetime',
+            'massiveaction'      => false
         ];
 
         $tab[] = [
-         'id'                 => '121',
-         'table'              => $this->getTable(),
-         'field'              => 'date_creation',
-         'name'               => __('Creation date'),
-         'datatype'           => 'datetime',
-         'massiveaction'      => false
+            'id'                 => '121',
+            'table'              => $this->getTable(),
+            'field'              => 'date_creation',
+            'name'               => __('Creation date'),
+            'datatype'           => 'datetime',
+            'massiveaction'      => false
         ];
 
         $tab[] = [
-         'id'                 => '23',
-         'table'              => 'glpi_manufacturers',
-         'field'              => 'name',
-         'name'               => Manufacturer::getTypeName(1),
-         'datatype'           => 'dropdown'
+            'id'                 => '23',
+            'table'              => 'glpi_manufacturers',
+            'field'              => 'name',
+            'name'               => Manufacturer::getTypeName(1),
+            'datatype'           => 'dropdown'
         ];
 
         $tab[] = [
-         'id'                 => '24',
-         'table'              => 'glpi_users',
-         'field'              => 'name',
-         'linkfield'          => 'users_id_tech',
-         'name'               => __('Technician in charge of the hardware'),
-         'datatype'           => 'dropdown',
-         'right'              => 'own_ticket'
+            'id'                 => '24',
+            'table'              => 'glpi_users',
+            'field'              => 'name',
+            'linkfield'          => 'users_id_tech',
+            'name'               => __('Technician in charge of the hardware'),
+            'datatype'           => 'dropdown',
+            'right'              => 'own_ticket'
         ];
 
         $tab[] = [
-         'id'                 => '49',
-         'table'              => 'glpi_groups',
-         'field'              => 'completename',
-         'linkfield'          => 'groups_id_tech',
-         'name'               => __('Group in charge of the hardware'),
-         'condition'          => ['is_assign' => 1],
-         'datatype'           => 'dropdown'
+            'id'                 => '49',
+            'table'              => 'glpi_groups',
+            'field'              => 'completename',
+            'linkfield'          => 'groups_id_tech',
+            'name'               => __('Group in charge of the hardware'),
+            'condition'          => ['is_assign' => 1],
+            'datatype'           => 'dropdown'
         ];
 
         $tab[] = [
-         'id'                 => '61',
-         'table'              => $this->getTable(),
-         'field'              => 'template_name',
-         'name'               => __('Template name'),
-         'datatype'           => 'text',
-         'massiveaction'      => false,
-         'nosearch'           => true,
-         'nodisplay'          => true,
+            'id'                 => '61',
+            'table'              => $this->getTable(),
+            'field'              => 'template_name',
+            'name'               => __('Template name'),
+            'datatype'           => 'text',
+            'massiveaction'      => false,
+            'nosearch'           => true,
+            'nodisplay'          => true,
         ];
 
         $tab[] = [
-         'id'                 => '80',
-         'table'              => 'glpi_entities',
-         'field'              => 'completename',
-         'name'               => Entity::getTypeName(1),
-         'datatype'           => 'dropdown'
+            'id'                 => '80',
+            'table'              => 'glpi_entities',
+            'field'              => 'completename',
+            'name'               => Entity::getTypeName(1),
+            'datatype'           => 'dropdown'
         ];
 
         $tab = array_merge($tab, Notepad::rawSearchOptionsToAdd());
@@ -242,10 +242,10 @@ class Enclosure extends CommonDBTM
         global $DB;
 
         $iterator = $DB->request([
-         'FROM'   => Item_Enclosure::getTable(),
-         'WHERE'  => [
-            'enclosures_id' => $this->getID()
-         ]
+            'FROM'   => Item_Enclosure::getTable(),
+            'WHERE'  => [
+                'enclosures_id' => $this->getID()
+            ]
         ]);
 
         $filled = [];
@@ -265,7 +265,7 @@ class Enclosure extends CommonDBTM
 
         $this->deleteChildrenAndRelationsFromDb(
             [
-            Item_Enclosure::class,
+                Item_Enclosure::class,
             ]
         );
     }

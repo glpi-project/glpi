@@ -90,10 +90,10 @@ class Alert extends CommonDBTM
     {
 
         $p = [
-         'name'           => 'alert',
-         'value'          => 0,
-         'display'        => true,
-         'inherit_parent' => false,
+            'name'           => 'alert',
+            'value'          => 0,
+            'display'        => true,
+            'inherit_parent' => false,
         ];
 
         if (count($options)) {
@@ -128,10 +128,10 @@ class Alert extends CommonDBTM
     {
 
         $p = [
-         'name'           => 'alert',
-         'value'          => 0,
-         'display'        => true,
-         'inherit_parent' => false,
+            'name'           => 'alert',
+            'value'          => 0,
+            'display'        => true,
+            'inherit_parent' => false,
         ];
 
         if (count($options)) {
@@ -166,11 +166,11 @@ class Alert extends CommonDBTM
     {
 
         $p = [
-         'min'     => 1,
-         'max'     => 100,
-         'step'    => 1,
-         'toadd'   => [],
-         'display' => true,
+            'min'     => 1,
+            'max'     => 100,
+            'step'    => 1,
+            'toadd'   => [],
+            'display' => true,
         ];
 
         if (isset($options['inherit_parent']) && $options['inherit_parent']) {
@@ -262,10 +262,11 @@ class Alert extends CommonDBTM
 
         if ($items_id) {
             $iter = $DB->request(self::getTable(), ['FIELDS'   => 'date',
-                                                 'ORDER'    => 'date DESC',
-                                                 'LIMIT'    => 1,
-                                                 'itemtype' => $itemtype,
-                                                 'items_id' => $items_id]);
+                'ORDER'    => 'date DESC',
+                'LIMIT'    => 1,
+                'itemtype' => $itemtype,
+                'items_id' => $items_id
+            ]);
             if ($row = $iter->current()) {
                  //TRANS: %s is the date
                  echo sprintf(__('Alert sent on %s'), Html::convDateTime($row['date']));

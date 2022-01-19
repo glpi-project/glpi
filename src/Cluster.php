@@ -45,7 +45,7 @@ class Cluster extends CommonDBTM
     public function getCloneRelations(): array
     {
         return [
-         NetworkPort::class
+            NetworkPort::class
         ];
     }
 
@@ -78,66 +78,66 @@ class Cluster extends CommonDBTM
         $tab = parent::rawSearchOptions();
 
         $tab[] = [
-         'id'                 => '31',
-         'table'              => 'glpi_states',
-         'field'              => 'completename',
-         'name'               => __('Status'),
-         'datatype'           => 'dropdown',
-         'condition'          => ['is_visible_cluster' => 1]
+            'id'                 => '31',
+            'table'              => 'glpi_states',
+            'field'              => 'completename',
+            'name'               => __('Status'),
+            'datatype'           => 'dropdown',
+            'condition'          => ['is_visible_cluster' => 1]
         ];
 
         $tab[] = [
-         'id'                 => '5',
-         'table'              => $this->getTable(),
-         'field'              => 'uuid',
-         'name'               => __('UUID'),
-         'datatype'           => 'string'
+            'id'                 => '5',
+            'table'              => $this->getTable(),
+            'field'              => 'uuid',
+            'name'               => __('UUID'),
+            'datatype'           => 'string'
         ];
 
         $tab[] = [
-         'id'                 => '16',
-         'table'              => $this->getTable(),
-         'field'              => 'comment',
-         'name'               => __('Comments'),
-         'datatype'           => 'text'
+            'id'                 => '16',
+            'table'              => $this->getTable(),
+            'field'              => 'comment',
+            'name'               => __('Comments'),
+            'datatype'           => 'text'
         ];
 
         $tab[] = [
-         'id'                 => '19',
-         'table'              => $this->getTable(),
-         'field'              => 'date_mod',
-         'name'               => __('Last update'),
-         'datatype'           => 'datetime',
-         'massiveaction'      => false
+            'id'                 => '19',
+            'table'              => $this->getTable(),
+            'field'              => 'date_mod',
+            'name'               => __('Last update'),
+            'datatype'           => 'datetime',
+            'massiveaction'      => false
         ];
 
         $tab[] = [
-         'id'                 => '121',
-         'table'              => $this->getTable(),
-         'field'              => 'date_creation',
-         'name'               => __('Creation date'),
-         'datatype'           => 'datetime',
-         'massiveaction'      => false
+            'id'                 => '121',
+            'table'              => $this->getTable(),
+            'field'              => 'date_creation',
+            'name'               => __('Creation date'),
+            'datatype'           => 'datetime',
+            'massiveaction'      => false
         ];
 
         $tab[] = [
-         'id'                 => '24',
-         'table'              => 'glpi_users',
-         'field'              => 'name',
-         'linkfield'          => 'users_id_tech',
-         'name'               => __('Technician in charge of the hardware'),
-         'datatype'           => 'dropdown',
-         'right'              => 'own_ticket'
+            'id'                 => '24',
+            'table'              => 'glpi_users',
+            'field'              => 'name',
+            'linkfield'          => 'users_id_tech',
+            'name'               => __('Technician in charge of the hardware'),
+            'datatype'           => 'dropdown',
+            'right'              => 'own_ticket'
         ];
 
         $tab[] = [
-         'id'                 => '49',
-         'table'              => 'glpi_groups',
-         'field'              => 'completename',
-         'linkfield'          => 'groups_id_tech',
-         'name'               => __('Group in charge of the hardware'),
-         'condition'          => ['is_assign' => 1],
-         'datatype'           => 'dropdown'
+            'id'                 => '49',
+            'table'              => 'glpi_groups',
+            'field'              => 'completename',
+            'linkfield'          => 'groups_id_tech',
+            'name'               => __('Group in charge of the hardware'),
+            'condition'          => ['is_assign' => 1],
+            'datatype'           => 'dropdown'
         ];
 
         $tab = array_merge($tab, Notepad::rawSearchOptionsToAdd());
@@ -150,7 +150,7 @@ class Cluster extends CommonDBTM
 
         $this->deleteChildrenAndRelationsFromDb(
             [
-            Item_Cluster::class,
+                Item_Cluster::class,
             ]
         );
     }

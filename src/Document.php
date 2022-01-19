@@ -162,7 +162,7 @@ class Document extends CommonDBTM
 
         $this->deleteChildrenAndRelationsFromDb(
             [
-            Document_Item::class,
+                Document_Item::class,
             ]
         );
 
@@ -340,8 +340,9 @@ class Document extends CommonDBTM
         ) {
             $docitem = new Document_Item();
             $docitem->add(['documents_id' => $this->fields['id'],
-                             'itemtype'     => $this->input["itemtype"],
-                             'items_id'     => $this->input["items_id"]]);
+                'itemtype'     => $this->input["itemtype"],
+                'items_id'     => $this->input["items_id"]
+            ]);
 
             Event::log(
                 $this->fields['id'],
@@ -577,12 +578,12 @@ class Document extends CommonDBTM
 
         if (count($splitter)) {
             $iterator = $DB->request([
-            'SELECT' => 'icon',
-            'FROM'   => 'glpi_documenttypes',
-            'WHERE'  => [
-               'ext'    => ['LIKE', $splitter[0]],
-               'icon'   => ['<>', '']
-            ]
+                'SELECT' => 'icon',
+                'FROM'   => 'glpi_documenttypes',
+                'WHERE'  => [
+                    'ext'    => ['LIKE', $splitter[0]],
+                    'icon'   => ['<>', '']
+                ]
             ]);
 
             if (count($iterator) > 0) {
@@ -626,13 +627,13 @@ class Document extends CommonDBTM
 
         $doc_iterator = $DB->request(
             [
-            'SELECT' => 'id',
-            'FROM'   => $this->getTable(),
-            'WHERE'  => [
-               $this->getTable() . '.sha1sum'      => $sum,
-               $this->getTable() . '.entities_id'  => $entity
-            ],
-            'LIMIT'  => 1,
+                'SELECT' => 'id',
+                'FROM'   => $this->getTable(),
+                'WHERE'  => [
+                    $this->getTable() . '.sha1sum'      => $sum,
+                    $this->getTable() . '.entities_id'  => $entity
+                ],
+                'LIMIT'  => 1,
             ]
         );
 
@@ -744,23 +745,23 @@ class Document extends CommonDBTM
 
         $criteria = array_merge_recursive(
             [
-            'COUNT'     => 'cpt',
-            'FROM'      => 'glpi_documents_items',
-            'LEFT JOIN' => [
-               'glpi_reminders'  => [
-                  'ON' => [
-                     'glpi_documents_items'  => 'items_id',
-                     'glpi_reminders'        => 'id', [
-                        'AND' => [
-                           'glpi_documents_items.itemtype'  => 'Reminder'
+                'COUNT'     => 'cpt',
+                'FROM'      => 'glpi_documents_items',
+                'LEFT JOIN' => [
+                    'glpi_reminders'  => [
+                        'ON' => [
+                            'glpi_documents_items'  => 'items_id',
+                            'glpi_reminders'        => 'id', [
+                                'AND' => [
+                                    'glpi_documents_items.itemtype'  => 'Reminder'
+                                ]
+                            ]
                         ]
-                     ]
-                  ]
-               ]
-            ],
-            'WHERE'     => [
-               'glpi_documents_items.documents_id' => $this->fields['id']
-            ]
+                    ]
+                ],
+                'WHERE'     => [
+                    'glpi_documents_items.documents_id' => $this->fields['id']
+                ]
             ],
             Reminder::getVisibilityCriteria()
         );
@@ -797,20 +798,20 @@ class Document extends CommonDBTM
         $visibilityCriteria = KnowbaseItem::getVisibilityCriteria();
 
         $request = [
-         'FROM'      => 'glpi_documents_items',
-         'COUNT'     => 'cpt',
-         'LEFT JOIN' => [
-            'glpi_knowbaseitems' => [
-               'FKEY' => [
-                  'glpi_knowbaseitems'   => 'id',
-                  'glpi_documents_items' => 'items_id',
-                  ['AND' => ['glpi_documents_items.itemtype' => 'KnowbaseItem']]
-               ]
+            'FROM'      => 'glpi_documents_items',
+            'COUNT'     => 'cpt',
+            'LEFT JOIN' => [
+                'glpi_knowbaseitems' => [
+                    'FKEY' => [
+                        'glpi_knowbaseitems'   => 'id',
+                        'glpi_documents_items' => 'items_id',
+                        ['AND' => ['glpi_documents_items.itemtype' => 'KnowbaseItem']]
+                    ]
+                ]
+            ],
+            'WHERE'     => [
+                'glpi_documents_items.documents_id' => $this->fields['id'],
             ]
-         ],
-         'WHERE'     => [
-            'glpi_documents_items.documents_id' => $this->fields['id'],
-         ]
         ];
 
         if (array_key_exists('LEFT JOIN', $visibilityCriteria) && count($visibilityCriteria['LEFT JOIN']) > 0) {
@@ -852,12 +853,12 @@ class Document extends CommonDBTM
         $itil->getFromDB($items_id);
 
         $result = $DB->request([
-         'FROM'  => Document_Item::getTable(),
-         'COUNT' => 'cpt',
-         'WHERE' => [
-            $itil->getAssociatedDocumentsCriteria(),
-            'documents_id' => $this->fields['id']
-         ]
+            'FROM'  => Document_Item::getTable(),
+            'COUNT' => 'cpt',
+            'WHERE' => [
+                $itil->getAssociatedDocumentsCriteria(),
+                'documents_id' => $this->fields['id']
+            ]
         ])->current();
 
         return $result['cpt'] > 0;
@@ -868,22 +869,22 @@ class Document extends CommonDBTM
         $tab = [];
 
         $tab[] = [
-         'id'                 => 'document',
-         'name'               => self::getTypeName(Session::getPluralNumber())
+            'id'                 => 'document',
+            'name'               => self::getTypeName(Session::getPluralNumber())
         ];
 
         $tab[] = [
-         'id'                 => '119',
-         'table'              => 'glpi_documents_items',
-         'field'              => 'id',
-         'name'               => _x('quantity', 'Number of documents'),
-         'forcegroupby'       => true,
-         'usehaving'          => true,
-         'datatype'           => 'count',
-         'massiveaction'      => false,
-         'joinparams'         => [
-            'jointype'           => 'itemtype_item'
-         ]
+            'id'                 => '119',
+            'table'              => 'glpi_documents_items',
+            'field'              => 'id',
+            'name'               => _x('quantity', 'Number of documents'),
+            'forcegroupby'       => true,
+            'usehaving'          => true,
+            'datatype'           => 'count',
+            'massiveaction'      => false,
+            'joinparams'         => [
+                'jointype'           => 'itemtype_item'
+            ]
         ];
 
         return $tab;
@@ -895,134 +896,134 @@ class Document extends CommonDBTM
         $tab = [];
 
         $tab[] = [
-         'id'                 => 'common',
-         'name'               => __('Characteristics')
+            'id'                 => 'common',
+            'name'               => __('Characteristics')
         ];
 
         $tab[] = [
-         'id'                 => '1',
-         'table'              => $this->getTable(),
-         'field'              => 'name',
-         'name'               => __('Name'),
-         'datatype'           => 'itemlink',
-         'massiveaction'      => false,
+            'id'                 => '1',
+            'table'              => $this->getTable(),
+            'field'              => 'name',
+            'name'               => __('Name'),
+            'datatype'           => 'itemlink',
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
-         'id'                 => '2',
-         'table'              => $this->getTable(),
-         'field'              => 'id',
-         'name'               => __('ID'),
-         'massiveaction'      => false,
-         'datatype'           => 'number'
+            'id'                 => '2',
+            'table'              => $this->getTable(),
+            'field'              => 'id',
+            'name'               => __('ID'),
+            'massiveaction'      => false,
+            'datatype'           => 'number'
         ];
 
         $tab[] = [
-         'id'                 => '3',
-         'table'              => $this->getTable(),
-         'field'              => 'filename',
-         'name'               => __('File'),
-         'massiveaction'      => false,
-         'datatype'           => 'string'
+            'id'                 => '3',
+            'table'              => $this->getTable(),
+            'field'              => 'filename',
+            'name'               => __('File'),
+            'massiveaction'      => false,
+            'datatype'           => 'string'
         ];
 
         $tab[] = [
-         'id'                 => '4',
-         'table'              => $this->getTable(),
-         'field'              => 'link',
-         'name'               => __('Web link'),
-         'datatype'           => 'weblink',
+            'id'                 => '4',
+            'table'              => $this->getTable(),
+            'field'              => 'link',
+            'name'               => __('Web link'),
+            'datatype'           => 'weblink',
         ];
 
         $tab[] = [
-         'id'                 => '5',
-         'table'              => $this->getTable(),
-         'field'              => 'mime',
-         'name'               => __('MIME type'),
-         'datatype'           => 'string',
+            'id'                 => '5',
+            'table'              => $this->getTable(),
+            'field'              => 'mime',
+            'name'               => __('MIME type'),
+            'datatype'           => 'string',
         ];
 
         $tab[] = [
-         'id'                 => '6',
-         'table'              => $this->getTable(),
-         'field'              => 'tag',
-         'name'               => __('Tag'),
-         'datatype'           => 'text',
-         'massiveaction'      => false
+            'id'                 => '6',
+            'table'              => $this->getTable(),
+            'field'              => 'tag',
+            'name'               => __('Tag'),
+            'datatype'           => 'text',
+            'massiveaction'      => false
         ];
 
         $tab[] = [
-         'id'                 => '7',
-         'table'              => 'glpi_documentcategories',
-         'field'              => 'completename',
-         'name'               => __('Heading'),
-         'datatype'           => 'dropdown'
+            'id'                 => '7',
+            'table'              => 'glpi_documentcategories',
+            'field'              => 'completename',
+            'name'               => __('Heading'),
+            'datatype'           => 'dropdown'
         ];
 
         $tab[] = [
-         'id'                 => '80',
-         'table'              => 'glpi_entities',
-         'field'              => 'completename',
-         'name'               => Entity::getTypeName(1),
-         'massiveaction'      => false,
-         'datatype'           => 'dropdown'
+            'id'                 => '80',
+            'table'              => 'glpi_entities',
+            'field'              => 'completename',
+            'name'               => Entity::getTypeName(1),
+            'massiveaction'      => false,
+            'datatype'           => 'dropdown'
         ];
 
         $tab[] = [
-         'id'                 => '86',
-         'table'              => $this->getTable(),
-         'field'              => 'is_recursive',
-         'name'               => __('Child entities'),
-         'datatype'           => 'bool'
+            'id'                 => '86',
+            'table'              => $this->getTable(),
+            'field'              => 'is_recursive',
+            'name'               => __('Child entities'),
+            'datatype'           => 'bool'
         ];
 
         $tab[] = [
-         'id'                 => '19',
-         'table'              => $this->getTable(),
-         'field'              => 'date_mod',
-         'name'               => __('Last update'),
-         'datatype'           => 'datetime',
-         'massiveaction'      => false
+            'id'                 => '19',
+            'table'              => $this->getTable(),
+            'field'              => 'date_mod',
+            'name'               => __('Last update'),
+            'datatype'           => 'datetime',
+            'massiveaction'      => false
         ];
 
         $tab[] = [
-         'id'                 => '121',
-         'table'              => $this->getTable(),
-         'field'              => 'date_creation',
-         'name'               => __('Creation date'),
-         'datatype'           => 'datetime',
-         'massiveaction'      => false
+            'id'                 => '121',
+            'table'              => $this->getTable(),
+            'field'              => 'date_creation',
+            'name'               => __('Creation date'),
+            'datatype'           => 'datetime',
+            'massiveaction'      => false
         ];
 
         $tab[] = [
-         'id'                 => '20',
-         'table'              => $this->getTable(),
-         'field'              => 'sha1sum',
-         'name'               => sprintf(__('%1$s (%2$s)'), __('Checksum'), __('SHA1')),
-         'massiveaction'      => false,
-         'datatype'           => 'string'
+            'id'                 => '20',
+            'table'              => $this->getTable(),
+            'field'              => 'sha1sum',
+            'name'               => sprintf(__('%1$s (%2$s)'), __('Checksum'), __('SHA1')),
+            'massiveaction'      => false,
+            'datatype'           => 'string'
         ];
 
         $tab[] = [
-         'id'                 => '16',
-         'table'              => $this->getTable(),
-         'field'              => 'comment',
-         'name'               => __('Comments'),
-         'datatype'           => 'text'
+            'id'                 => '16',
+            'table'              => $this->getTable(),
+            'field'              => 'comment',
+            'name'               => __('Comments'),
+            'datatype'           => 'text'
         ];
 
         $tab[] = [
-         'id'                 => '72',
-         'table'              => 'glpi_documents_items',
-         'field'              => 'id',
-         'name'               => _x('quantity', 'Number of associated items'),
-         'forcegroupby'       => true,
-         'usehaving'          => true,
-         'datatype'           => 'count',
-         'massiveaction'      => false,
-         'joinparams'         => [
-            'jointype'           => 'child'
-         ]
+            'id'                 => '72',
+            'table'              => 'glpi_documents_items',
+            'field'              => 'id',
+            'name'               => _x('quantity', 'Number of associated items'),
+            'forcegroupby'       => true,
+            'usehaving'          => true,
+            'datatype'           => 'count',
+            'massiveaction'      => false,
+            'joinparams'         => [
+                'jointype'           => 'child'
+            ]
         ];
 
        // add objectlock search options
@@ -1104,7 +1105,8 @@ class Document extends CommonDBTM
             && (countElementsInTable(
                 'glpi_documents',
                 ['sha1sum' => sha1_file(GLPI_DOC_DIR . "/" .
-                $input['current_filepath']) ]
+                $input['current_filepath'])
+                ]
             ) <= 1)
         ) {
             if (unlink(GLPI_DOC_DIR . "/" . $input['current_filepath'])) {
@@ -1203,7 +1205,8 @@ class Document extends CommonDBTM
             && (countElementsInTable(
                 'glpi_documents',
                 ['sha1sum' => sha1_file(GLPI_DOC_DIR . "/" .
-                $input['current_filepath']) ]
+                $input['current_filepath'])
+                ]
             ) <= 1)
         ) {
             if (unlink(GLPI_DOC_DIR . "/" . $input['current_filepath'])) {
@@ -1302,7 +1305,8 @@ class Document extends CommonDBTM
             && (countElementsInTable(
                 'glpi_documents',
                 ['sha1sum' => sha1_file(GLPI_DOC_DIR . "/" .
-                $input['current_filepath']) ]
+                $input['current_filepath'])
+                ]
             ) <= 1)
         ) {
             if (unlink(GLPI_DOC_DIR . "/" . $input['current_filepath'])) {
@@ -1454,11 +1458,11 @@ class Document extends CommonDBTM
         $ext      = end($splitter);
 
         $iterator = $DB->request([
-         'FROM'   => 'glpi_documenttypes',
-         'WHERE'  => [
-            'ext'             => ['LIKE', $ext],
-            'is_uploadable'   => 1
-         ]
+            'FROM'   => 'glpi_documenttypes',
+            'WHERE'  => [
+                'ext'             => ['LIKE', $ext],
+                'is_uploadable'   => 1
+            ]
         ]);
 
         if (count($iterator)) {
@@ -1467,11 +1471,11 @@ class Document extends CommonDBTM
 
        // Not found try with regex one
         $iterator = $DB->request([
-         'FROM'   => 'glpi_documenttypes',
-         'WHERE'  => [
-            'ext'             => ['LIKE', '/%/'],
-            'is_uploadable'   => 1
-         ]
+            'FROM'   => 'glpi_documenttypes',
+            'WHERE'  => [
+                'ext'             => ['LIKE', '/%/'],
+                'is_uploadable'   => 1
+            ]
         ]);
 
         foreach ($iterator as $data) {
@@ -1516,7 +1520,7 @@ class Document extends CommonDBTM
         }
 
         $subwhere = [
-         'glpi_documents.is_deleted'   => 0,
+            'glpi_documents.is_deleted'   => 0,
         ] + getEntitiesRestrictCriteria('glpi_documents', '', $p['entity'], true);
 
         if (count($p['used'])) {
@@ -1524,16 +1528,16 @@ class Document extends CommonDBTM
         }
 
         $criteria = [
-         'FROM'   => 'glpi_documentcategories',
-         'WHERE'  => [
-            'id' => new QuerySubQuery([
-               'SELECT'          => 'documentcategories_id',
-               'DISTINCT'        => true,
-               'FROM'            => 'glpi_documents',
-               'WHERE'           => $subwhere
-            ])
-         ],
-         'ORDER'  => 'name'
+            'FROM'   => 'glpi_documentcategories',
+            'WHERE'  => [
+                'id' => new QuerySubQuery([
+                    'SELECT'          => 'documentcategories_id',
+                    'DISTINCT'        => true,
+                    'FROM'            => 'glpi_documents',
+                    'WHERE'           => $subwhere
+                ])
+            ],
+            'ORDER'  => 'name'
         ];
         $iterator = $DB->request($criteria);
 
@@ -1547,16 +1551,18 @@ class Document extends CommonDBTM
         }
         $rand = mt_rand();
         $out  = Dropdown::showFromArray('_rubdoc', $values, ['width'               => '30%',
-                                                                'rand'                => $rand,
-                                                                'display'             => false,
-                                                                'display_emptychoice' => true]);
+            'rand'                => $rand,
+            'display'             => false,
+            'display_emptychoice' => true
+        ]);
         $field_id = Html::cleanId("dropdown__rubdoc$rand");
 
         $params   = ['rubdoc' => '__VALUE__',
-                        'entity' => $p['entity'],
-                        'rand'   => $rand,
-                        'myname' => $p['name'],
-                        'used'   => $p['used']];
+            'entity' => $p['entity'],
+            'rand'   => $rand,
+            'myname' => $p['name'],
+            'used'   => $p['used']
+        ];
 
         $out .= Ajax::updateItemOnSelectEvent(
             $field_id,
@@ -1751,19 +1757,19 @@ class Document extends CommonDBTM
         $ditable = Document_Item::getTable();
        //documents that are not present in Document_Item are oprhan
         $iterator = $DB->request([
-         'SELECT'    => ["$dtable.id"],
-         'FROM'      => $dtable,
-         'LEFT JOIN' => [
-            $ditable => [
-               'ON'  => [
-                  $dtable  => 'id',
-                  $ditable => 'documents_id'
-               ]
+            'SELECT'    => ["$dtable.id"],
+            'FROM'      => $dtable,
+            'LEFT JOIN' => [
+                $ditable => [
+                    'ON'  => [
+                        $dtable  => 'id',
+                        $ditable => 'documents_id'
+                    ]
+                ]
+            ],
+            'WHERE'     => [
+                "$ditable.documents_id" => null
             ]
-         ],
-         'WHERE'     => [
-               "$ditable.documents_id" => null
-         ]
         ]);
 
         $nb = 0;

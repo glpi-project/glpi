@@ -47,10 +47,10 @@ class Printer_CartridgeInfo extends CommonDBChild
         global $DB;
 
         $iterator = $DB->request([
-         'FROM'   => $this->getTable(),
-         'WHERE'  => [
-            self::$items_id => $printer->fields['id']
-         ]
+            'FROM'   => $this->getTable(),
+            'WHERE'  => [
+                self::$items_id => $printer->fields['id']
+            ]
         ]);
 
         $info = [];
@@ -92,10 +92,10 @@ class Printer_CartridgeInfo extends CommonDBChild
             if (is_numeric($value)) {
                 $bar_color = 'green';
                 $progressbar_data = [
-                'percent'      => $value,
-                'percent_text' => $value,
-                'color'        => $bar_color,
-                'text'         => ''
+                    'percent'      => $value,
+                    'percent_text' => $value,
+                    'color'        => $bar_color,
+                    'text'         => ''
                 ];
 
                 $out = "{$progressbar_data['text']}<div class='center' style='background-color: #ffffff; width: 100%;

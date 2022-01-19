@@ -137,7 +137,8 @@ class Notepad extends CommonDBChild
         return countElementsInTable(
             'glpi_notepads',
             ['itemtype' => $item->getType(),
-            'items_id' => $item->getID()]
+                'items_id' => $item->getID()
+            ]
         );
     }
 
@@ -151,24 +152,24 @@ class Notepad extends CommonDBChild
 
         $data = [];
         $iterator = $DB->request([
-         'SELECT'    => [
-            'glpi_notepads.*',
-            'glpi_users.picture'
-         ],
-         'FROM'      => self::getTable(),
-         'LEFT JOIN' => [
-            'glpi_users'   => [
-               'ON' => [
-                  self::getTable()  => 'users_id_lastupdater',
-                  'glpi_users'      => 'id'
-               ]
-            ]
-         ],
-         'WHERE'     => [
-            'itemtype'  => $item->getType(),
-            'items_id'  => $item->getID()
-         ],
-         'ORDERBY'   => 'date_mod DESC'
+            'SELECT'    => [
+                'glpi_notepads.*',
+                'glpi_users.picture'
+            ],
+            'FROM'      => self::getTable(),
+            'LEFT JOIN' => [
+                'glpi_users'   => [
+                    'ON' => [
+                        self::getTable()  => 'users_id_lastupdater',
+                        'glpi_users'      => 'id'
+                    ]
+                ]
+            ],
+            'WHERE'     => [
+                'itemtype'  => $item->getType(),
+                'items_id'  => $item->getID()
+            ],
+            'ORDERBY'   => 'date_mod DESC'
         ]);
 
         foreach ($iterator as $note) {
@@ -184,85 +185,85 @@ class Notepad extends CommonDBChild
         $name = _n('Note', 'Notes', Session::getPluralNumber());
 
         $tab[] = [
-         'id'                 => 'notepad',
-         'name'               => $name
+            'id'                 => 'notepad',
+            'name'               => $name
         ];
 
         $tab[] = [
-         'id'                 => '200',
-         'table'              => 'glpi_notepads',
-         'field'              => 'content',
-         'name'               => $name,
-         'datatype'           => 'text',
-         'joinparams'         => [
-            'jointype'           => 'itemtype_item'
-         ],
-         'forcegroupby'       => true,
-         'splititems'         => true,
-         'massiveaction'      => false
+            'id'                 => '200',
+            'table'              => 'glpi_notepads',
+            'field'              => 'content',
+            'name'               => $name,
+            'datatype'           => 'text',
+            'joinparams'         => [
+                'jointype'           => 'itemtype_item'
+            ],
+            'forcegroupby'       => true,
+            'splititems'         => true,
+            'massiveaction'      => false
         ];
 
         $tab[] = [
-         'id'                 => '201',
-         'table'              => 'glpi_notepads',
-         'field'              => 'date_creation',
-         'name'               => __('Creation date'),
-         'datatype'           => 'datetime',
-         'joinparams'         => [
-            'jointype'           => 'itemtype_item'
-         ],
-         'forcegroupby'       => true,
-         'massiveaction'      => false
+            'id'                 => '201',
+            'table'              => 'glpi_notepads',
+            'field'              => 'date_creation',
+            'name'               => __('Creation date'),
+            'datatype'           => 'datetime',
+            'joinparams'         => [
+                'jointype'           => 'itemtype_item'
+            ],
+            'forcegroupby'       => true,
+            'massiveaction'      => false
         ];
 
         $tab[] = [
-         'id'                 => '202',
-         'table'              => 'glpi_users',
-         'field'              => 'name',
-         'name'               => __('Writer'),
-         'datatype'           => 'dropdown',
-         'forcegroupby'       => true,
-         'massiveaction'      => false,
-         'joinparams'         => [
-            'beforejoin'         => [
-               'table'              => 'glpi_notepads',
-               'joinparams'         => [
-                  'jointype'           => 'itemtype_item'
-               ]
+            'id'                 => '202',
+            'table'              => 'glpi_users',
+            'field'              => 'name',
+            'name'               => __('Writer'),
+            'datatype'           => 'dropdown',
+            'forcegroupby'       => true,
+            'massiveaction'      => false,
+            'joinparams'         => [
+                'beforejoin'         => [
+                    'table'              => 'glpi_notepads',
+                    'joinparams'         => [
+                        'jointype'           => 'itemtype_item'
+                    ]
+                ]
             ]
-         ]
         ];
 
         $tab[] = [
-         'id'                 => '203',
-         'table'              => 'glpi_notepads',
-         'field'              => 'date_mod',
-         'name'               => __('Last update'),
-         'datatype'           => 'datetime',
-         'joinparams'         => [
-            'jointype'           => 'itemtype_item'
-         ],
-         'forcegroupby'       => true,
-         'massiveaction'      => false
+            'id'                 => '203',
+            'table'              => 'glpi_notepads',
+            'field'              => 'date_mod',
+            'name'               => __('Last update'),
+            'datatype'           => 'datetime',
+            'joinparams'         => [
+                'jointype'           => 'itemtype_item'
+            ],
+            'forcegroupby'       => true,
+            'massiveaction'      => false
         ];
 
         $tab[] = [
-         'id'                 => '204',
-         'table'              => 'glpi_users',
-         'field'              => 'name',
-         'linkfield'          => 'users_id_lastupdater',
-         'name'               => __('Last updater'),
-         'datatype'           => 'dropdown',
-         'forcegroupby'       => true,
-         'massiveaction'      => false,
-         'joinparams'         => [
-            'beforejoin'         => [
-               'table'              => 'glpi_notepads',
-               'joinparams'         => [
-                  'jointype'           => 'itemtype_item'
-               ]
+            'id'                 => '204',
+            'table'              => 'glpi_users',
+            'field'              => 'name',
+            'linkfield'          => 'users_id_lastupdater',
+            'name'               => __('Last updater'),
+            'datatype'           => 'dropdown',
+            'forcegroupby'       => true,
+            'massiveaction'      => false,
+            'joinparams'         => [
+                'beforejoin'         => [
+                    'table'              => 'glpi_notepads',
+                    'joinparams'         => [
+                        'jointype'           => 'itemtype_item'
+                    ]
+                ]
             ]
-         ]
         ];
 
         return $tab;

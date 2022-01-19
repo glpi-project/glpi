@@ -60,7 +60,7 @@ class SoftwareCategory extends CommonTreeDropdown
             Config::setConfigurationValues(
                 'core',
                 [
-                'softwarecategories_id_ondelete' => $newval,
+                    'softwarecategories_id_ondelete' => $newval,
                 ]
             );
         }

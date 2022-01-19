@@ -140,27 +140,27 @@ class Ticket_Ticket extends CommonDBRelation
         }
 
         $iterator = $DB->request([
-         'FROM'   => self::getTable(),
-         'WHERE'  => [
-            'OR'  => [
-               'tickets_id_1' => $ID,
-               'tickets_id_2' => $ID
+            'FROM'   => self::getTable(),
+            'WHERE'  => [
+                'OR'  => [
+                    'tickets_id_1' => $ID,
+                    'tickets_id_2' => $ID
+                ]
             ]
-         ]
         ]);
         $tickets = [];
 
         foreach ($iterator as $data) {
             if ($data['tickets_id_1'] != $ID) {
                 $tickets[$data['id']] = [
-                 'link'         => $data['link'],
-                 'tickets_id_1' => $data['tickets_id_1'],
-                 'tickets_id'   => $data['tickets_id_1']
+                    'link'         => $data['link'],
+                    'tickets_id_1' => $data['tickets_id_1'],
+                    'tickets_id'   => $data['tickets_id_1']
                 ];
             } else {
                 $tickets[$data['id']] = [
-                'link'       => $data['link'],
-                'tickets_id' => $data['tickets_id_2']
+                    'link'       => $data['link'],
+                    'tickets_id' => $data['tickets_id_2']
                 ];
             }
         }
@@ -348,23 +348,23 @@ class Ticket_Ticket extends CommonDBRelation
         global $DB;
 
         $result = $DB->request([
-         'COUNT'        => 'cpt',
-         'FROM'         => self::getTable() . ' AS links',
-         'INNER JOIN'   => [
-            Ticket::getTable() . ' AS tickets' => [
-               'ON' => [
-                  'links'     => 'tickets_id_1',
-                  'tickets'   => 'id'
-               ]
+            'COUNT'        => 'cpt',
+            'FROM'         => self::getTable() . ' AS links',
+            'INNER JOIN'   => [
+                Ticket::getTable() . ' AS tickets' => [
+                    'ON' => [
+                        'links'     => 'tickets_id_1',
+                        'tickets'   => 'id'
+                    ]
+                ]
+            ],
+            'WHERE'        => [
+                'links.link'         => self::SON_OF,
+                'links.tickets_id_2' => $pid,
+                'NOT'                => [
+                    'tickets.status'  => Ticket::getClosedStatusArray() + Ticket::getSolvedStatusArray()
+                ]
             ]
-         ],
-         'WHERE'        => [
-            'links.link'         => self::SON_OF,
-            'links.tickets_id_2' => $pid,
-            'NOT'                => [
-               'tickets.status'  => Ticket::getClosedStatusArray() + Ticket::getSolvedStatusArray()
-            ]
-         ]
         ])->current();
         return (int)$result['cpt'];
     }
@@ -410,8 +410,8 @@ class Ticket_Ticket extends CommonDBRelation
                 $linked_ticket = new Ticket();
                 $linked_ticket->update(
                     [
-                    'id'     => $data['tickets_id'],
-                    'status' => $ticket->fields['status']
+                        'id'     => $data['tickets_id'],
+                        'status' => $ticket->fields['status']
                     ]
                 );
             }

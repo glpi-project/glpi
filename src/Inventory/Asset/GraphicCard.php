@@ -48,7 +48,7 @@ class GraphicCard extends Device
     public function prepare(): array
     {
         $mapping = [
-         'name'   => 'designation'
+            'name'   => 'designation'
         ];
 
         foreach ($this->data as $k => &$val) {

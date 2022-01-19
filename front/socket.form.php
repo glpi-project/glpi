@@ -158,8 +158,8 @@ if (isset($_POST["add"])) {
         && isset($_REQUEST['_from_items_id'])
     ) {
         $options['_add_fromitem'] = [
-         '_from_itemtype' => $_REQUEST['_from_itemtype'],
-         '_from_items_id' => $_REQUEST['_from_items_id'],
+            '_from_itemtype' => $_REQUEST['_from_itemtype'],
+            '_from_items_id' => $_REQUEST['_from_items_id'],
         ];
     }
 

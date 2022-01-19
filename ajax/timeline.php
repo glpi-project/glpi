@@ -56,15 +56,15 @@ if (($_POST['action'] ?? null) === 'change_task_state') {
                         : Planning::DONE;
         $new_label = Planning::getState($new_state);
         echo json_encode([
-         'state'  => $new_state,
-         'label'  => $new_label
+            'state'  => $new_state,
+            'label'  => $new_label
         ]);
 
         $foreignKey = $parent->getForeignKeyField();
         $task->update([
-         'id'        => intval($_POST['tasks_id']),
-         $foreignKey => intval($_POST[$foreignKey]),
-         'state'     => $new_state
+            'id'        => intval($_POST['tasks_id']),
+            $foreignKey => intval($_POST[$foreignKey]),
+            'state'     => $new_state
         ]);
     }
 } else if (($_REQUEST['action'] ?? null) === 'viewsubitem') {
@@ -90,8 +90,8 @@ if (($_POST['action'] ?? null) === 'change_task_state') {
         $item->getFromDB($id);
     }
     $params = [
-      'item'      => $parent,
-      'subitem'   => $item
+        'item'      => $parent,
+        'subitem'   => $item
     ];
 
     if ($_REQUEST['type'] === ITILFollowup::class) {

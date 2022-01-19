@@ -82,27 +82,27 @@ class RuleDictionnaryPrinterCollection extends RuleCollection
 
        //Select all the differents software
         $criteria = [
-         'SELECT' => [
-            'glpi_printers.name',
-            'glpi_manufacturers.name AS manufacturer',
-            'glpi_printers.manufacturers_id AS manufacturers_id',
-            'glpi_printers.comment AS comment'
-         ],
-         'DISTINCT'  => true,
-         'FROM'      => 'glpi_printers',
-         'LEFT JOIN' => [
-            'glpi_manufacturers' => [
-               'ON'  => [
-                  'glpi_manufacturers' => 'id',
-                  'glpi_printers'      => 'manufacturers_id'
-               ]
-            ]
-         ],
-         'WHERE'     => [
+            'SELECT' => [
+                'glpi_printers.name',
+                'glpi_manufacturers.name AS manufacturer',
+                'glpi_printers.manufacturers_id AS manufacturers_id',
+                'glpi_printers.comment AS comment'
+            ],
+            'DISTINCT'  => true,
+            'FROM'      => 'glpi_printers',
+            'LEFT JOIN' => [
+                'glpi_manufacturers' => [
+                    'ON'  => [
+                        'glpi_manufacturers' => 'id',
+                        'glpi_printers'      => 'manufacturers_id'
+                    ]
+                ]
+            ],
+            'WHERE'     => [
             // Do not replay on trashbin and templates
-            'glpi_printers.is_deleted'    => 0,
-            'glpi_printers.is_template'   => 0
-         ]
+                'glpi_printers.is_deleted'    => 0,
+                'glpi_printers.is_template'   => 0
+            ]
         ];
 
         if ($offset) {
@@ -144,12 +144,12 @@ class RuleDictionnaryPrinterCollection extends RuleCollection
                 $IDs = [];
                //Find all the printers in the database with the same name and manufacturer
                 $print_iterator = $DB->request([
-                'SELECT' => 'id',
-                'FROM'   => 'glpi_printers',
-                'WHERE'  => [
-                  'name'               => $input['name'],
-                  'manufacturers_id'   => $input['manufacturers_id']
-                ]
+                    'SELECT' => 'id',
+                    'FROM'   => 'glpi_printers',
+                    'WHERE'  => [
+                        'name'               => $input['name'],
+                        'manufacturers_id'   => $input['manufacturers_id']
+                    ]
                 ]);
 
                 if (count($print_iterator)) {
@@ -219,26 +219,26 @@ class RuleDictionnaryPrinterCollection extends RuleCollection
         $delete_ids    = [];
 
         $iterator = $DB->request([
-         'SELECT'    => [
-            'glpi_printers.id',
-            'glpi_printers.name',
-            'glpi_printers.entities_id AS entities_id',
-            'glpi_printers.is_global AS is_global',
-            'glpi_manufacturers.name AS manufacturer'
-         ],
-         'FROM'      => 'glpi_printers',
-         'LEFT JOIN' => [
-            'glpi_manufacturers'  => [
-               'FKEY'   => [
-                  'glpi_printers'      => 'manufacturers_id',
-                  'glpi_manufacturers' => 'id'
-               ]
+            'SELECT'    => [
+                'glpi_printers.id',
+                'glpi_printers.name',
+                'glpi_printers.entities_id AS entities_id',
+                'glpi_printers.is_global AS is_global',
+                'glpi_manufacturers.name AS manufacturer'
+            ],
+            'FROM'      => 'glpi_printers',
+            'LEFT JOIN' => [
+                'glpi_manufacturers'  => [
+                    'FKEY'   => [
+                        'glpi_printers'      => 'manufacturers_id',
+                        'glpi_manufacturers' => 'id'
+                    ]
+                ]
+            ],
+            'WHERE'     => [
+                'glpi_printers.is_template'   => 0,
+                'glpi_printers.id'            => $IDs
             ]
-         ],
-         'WHERE'     => [
-            'glpi_printers.is_template'   => 0,
-            'glpi_printers.id'            => $IDs
-         ]
         ]);
 
         foreach ($iterator as $printer) {
@@ -362,8 +362,8 @@ class RuleDictionnaryPrinterCollection extends RuleCollection
         $connections = getAllDataFromTable(
             'glpi_computers_items',
             [
-            'itemtype'  => 'Printer',
-            'items_id'  => $ID
+                'itemtype'  => 'Printer',
+                'items_id'  => $ID
             ]
         );
         foreach ($connections as $connection) {
@@ -372,13 +372,15 @@ class RuleDictionnaryPrinterCollection extends RuleCollection
                 !countElementsInTable(
                     "glpi_computers_items",
                     ['itemtype'     => 'Printer',
-                                    'items_id'     => $new_printers_id,
-                    'computers_id' => $connection["computers_id"]]
+                        'items_id'     => $new_printers_id,
+                        'computers_id' => $connection["computers_id"]
+                    ]
                 )
             ) {
                //Direct connection doesn't exists in the target printer : move it
                 $computeritem->update(['id'       => $connection['id'],
-                                        'items_id' => $new_printers_id]);
+                    'items_id' => $new_printers_id
+                ]);
             } else {
                //Direct connection already exists in the target printer : delete it
                 $computeritem->delete($connection);

@@ -209,8 +209,8 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
                     && !$this->canViewPrivates()
                 ) {
                     $restrict['OR'] = [
-                    'is_private'   => 0,
-                    'users_id'     => Session::getLoginUserID()
+                        'is_private'   => 0,
+                        'users_id'     => Session::getLoginUserID()
                     ];
                 }
                 $nb = countElementsInTable($this->getTable(), $restrict);
@@ -233,9 +233,9 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
 
        // Add log entry in the ITIL object
         $changes = [
-         0,
-         '',
-         $this->fields['id'],
+            0,
+            '',
+            $this->fields['id'],
         ];
         Log::history(
             $this->getField($item->getForeignKeyField()),
@@ -248,11 +248,12 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
         if (!isset($this->input['_disablenotif']) && $CFG_GLPI["use_notifications"]) {
             $options = ['task_id'             => $this->fields["id"],
                            // Force is_private with data / not available
-                          'is_private'          => $this->isPrivate(),
+                'is_private'          => $this->isPrivate(),
                           // Pass users values
-                          'task_users_id'       => $this->fields['users_id'],
-                          'task_users_id_tech'  => $this->fields['users_id_tech'],
-                          'task_groups_id_tech' => $this->fields['groups_id_tech']];
+                'task_users_id'       => $this->fields['users_id'],
+                'task_users_id_tech'  => $this->fields['users_id_tech'],
+                'task_groups_id_tech' => $this->fields['groups_id_tech']
+            ];
             NotificationEvent::raiseEvent('delete_task', $item, $options);
         }
     }
@@ -414,9 +415,9 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
                     && ($this->input['_status'] != $this->input['_job']->fields['status'])
                 ) {
                     $update = [
-                    'status'        => $this->input['_status'],
-                    'id'            => $this->input['_job']->fields['id'],
-                    '_disablenotif' => true,
+                        'status'        => $this->input['_status'],
+                        'id'            => $this->input['_job']->fields['id'],
+                        '_disablenotif' => true,
                     ];
                     $this->input['_job']->update($update);
                 }
@@ -428,16 +429,17 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
                      || ($item->fields["status"] == CommonITILObject::ASSIGNED))
                 ) {
                     $input2 = [
-                    'id'            => $item->getID(),
-                    'status'        => CommonITILObject::PLANNED,
-                    '_disablenotif' => true,
+                        'id'            => $item->getID(),
+                        'status'        => CommonITILObject::PLANNED,
+                        '_disablenotif' => true,
                     ];
                     $item->update($input2);
                 }
 
                 if (!isset($this->input['_disablenotif']) && $CFG_GLPI["use_notifications"]) {
                     $options = ['task_id'    => $this->fields["id"],
-                                'is_private' => $this->isPrivate()];
+                        'is_private' => $this->isPrivate()
+                    ];
                     NotificationEvent::raiseEvent('update_task', $item, $options);
                 }
             }
@@ -446,9 +448,9 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
         if ($update_done) {
            // Add log entry in the ITIL object
             $changes = [
-            0,
-            '',
-            $this->fields['id'],
+                0,
+                '',
+                $this->fields['id'],
             ];
             Log::history(
                 $this->getField($item->getForeignKeyField()),
@@ -598,14 +600,14 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
        // Set pending reason data on parent and self
         if ($this->input['pending'] ?? 0) {
             PendingReason_Item::createForItem($this->input["_job"], [
-            'pendingreasons_id'           => $this->input['pendingreasons_id'],
-            'followup_frequency'          => $this->input['followup_frequency'] ?? 0,
-            'followups_before_resolution' => $this->input['followups_before_resolution'] ?? 0,
+                'pendingreasons_id'           => $this->input['pendingreasons_id'],
+                'followup_frequency'          => $this->input['followup_frequency'] ?? 0,
+                'followups_before_resolution' => $this->input['followups_before_resolution'] ?? 0,
             ]);
             PendingReason_Item::createForItem($this, [
-             'pendingreasons_id'           => $this->input['pendingreasons_id'],
-             'followup_frequency'          => $this->input['followup_frequency'] ?? 0,
-             'followups_before_resolution' => $this->input['followups_before_resolution'] ?? 0,
+                'pendingreasons_id'           => $this->input['pendingreasons_id'],
+                'followup_frequency'          => $this->input['followup_frequency'] ?? 0,
+                'followups_before_resolution' => $this->input['followups_before_resolution'] ?? 0,
             ]);
 
            // Set parent status to pending
@@ -618,9 +620,9 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
             && ($this->input['_status'] != $this->input['_job']->fields['status'])
         ) {
             $update = [
-            'status'        => $this->input['_status'],
-            'id'            => $this->input['_job']->fields['id'],
-            '_disablenotif' => true
+                'status'        => $this->input['_status'],
+                'id'            => $this->input['_job']->fields['id'],
+                '_disablenotif' => true
             ];
             $this->input['_job']->update($update);
         }
@@ -632,24 +634,25 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
               || ($this->input["_job"]->fields["status"] == CommonITILObject::ASSIGNED))
         ) {
             $input2 = [
-            'id'            => $this->input["_job"]->getID(),
-            'status'        => CommonITILObject::PLANNED,
-            '_disablenotif' => true,
+                'id'            => $this->input["_job"]->getID(),
+                'status'        => CommonITILObject::PLANNED,
+                '_disablenotif' => true,
             ];
             $this->input["_job"]->update($input2);
         }
 
         if ($donotif) {
             $options = ['task_id'             => $this->fields["id"],
-                          'is_private'          => $this->isPrivate()];
+                'is_private'          => $this->isPrivate()
+            ];
             NotificationEvent::raiseEvent('add_task', $this->input["_job"], $options);
         }
 
        // Add log entry in the ITIL object
         $changes = [
-         0,
-         '',
-         $this->fields['id'],
+            0,
+            '',
+            $this->fields['id'],
         ];
         Log::history(
             $this->getField($this->input["_job"]->getForeignKeyField()),
@@ -690,8 +693,8 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
 
         $this->deleteChildrenAndRelationsFromDb(
             [
-            PlanningRecall::class,
-            VObject::class,
+                PlanningRecall::class,
+                VObject::class,
             ]
         );
     }
@@ -719,69 +722,69 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
         $tab = [];
 
         $tab[] = [
-         'id'                 => 'common',
-         'name'               => __('Characteristics')
+            'id'                 => 'common',
+            'name'               => __('Characteristics')
         ];
 
         $tab[] = [
-         'id'                 => '1',
-         'table'              => $this->getTable(),
-         'field'              => 'content',
-         'name'               => __('Description'),
-         'datatype'           => 'text'
+            'id'                 => '1',
+            'table'              => $this->getTable(),
+            'field'              => 'content',
+            'name'               => __('Description'),
+            'datatype'           => 'text'
         ];
 
         $tab[] = [
-         'id'                 => '2',
-         'table'              => 'glpi_taskcategories',
-         'field'              => 'name',
-         'name'               => _n('Task category', 'Task categories', 1),
-         'forcegroupby'       => true,
-         'datatype'           => 'dropdown'
+            'id'                 => '2',
+            'table'              => 'glpi_taskcategories',
+            'field'              => 'name',
+            'name'               => _n('Task category', 'Task categories', 1),
+            'forcegroupby'       => true,
+            'datatype'           => 'dropdown'
         ];
 
         $tab[] = [
-         'id'                 => '3',
-         'table'              => $this->getTable(),
-         'field'              => 'date',
-         'name'               => _n('Date', 'Dates', 1),
-         'datatype'           => 'datetime'
+            'id'                 => '3',
+            'table'              => $this->getTable(),
+            'field'              => 'date',
+            'name'               => _n('Date', 'Dates', 1),
+            'datatype'           => 'datetime'
         ];
 
         if ($this->maybePrivate()) {
             $tab[] = [
-            'id'                 => '4',
-            'table'              => $this->getTable(),
-            'field'              => 'is_private',
-            'name'               => __('Public followup'),
-            'datatype'           => 'bool'
+                'id'                 => '4',
+                'table'              => $this->getTable(),
+                'field'              => 'is_private',
+                'name'               => __('Public followup'),
+                'datatype'           => 'bool'
             ];
         }
 
         $tab[] = [
-         'id'                 => '5',
-         'table'              => 'glpi_users',
-         'field'              => 'name',
-         'name'               => __('Technician'),
-         'datatype'           => 'dropdown',
-         'right'              => 'own_ticket'
+            'id'                 => '5',
+            'table'              => 'glpi_users',
+            'field'              => 'name',
+            'name'               => __('Technician'),
+            'datatype'           => 'dropdown',
+            'right'              => 'own_ticket'
         ];
 
         $tab[] = [
-         'id'                 => '6',
-         'table'              => $this->getTable(),
-         'field'              => 'actiontime',
-         'name'               => __('Total duration'),
-         'datatype'           => 'actiontime',
-         'massiveaction'      => false
+            'id'                 => '6',
+            'table'              => $this->getTable(),
+            'field'              => 'actiontime',
+            'name'               => __('Total duration'),
+            'datatype'           => 'actiontime',
+            'massiveaction'      => false
         ];
 
         $tab[] = [
-         'id'                 => '7',
-         'table'              => $this->getTable(),
-         'field'              => 'state',
-         'name'               => __('Status'),
-         'datatype'           => 'specific'
+            'id'                 => '7',
+            'table'              => $this->getTable(),
+            'field'              => 'state',
+            'name'               => __('Status'),
+            'datatype'           => 'specific'
         ];
 
         return $tab;
@@ -801,239 +804,239 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
         $task_condition = '';
         if ($task->maybePrivate() && !Session::haveRight("task", CommonITILTask::SEEPRIVATE)) {
             $task_condition = [
-            'OR' => [
-               'NEWTABLE.is_private'   => 0,
-               'NEWTABLE.users_id'     => Session::getLoginUserID()
-            ]
+                'OR' => [
+                    'NEWTABLE.is_private'   => 0,
+                    'NEWTABLE.users_id'     => Session::getLoginUserID()
+                ]
             ];
         }
 
         $tab[] = [
-         'id'                 => 'task',
-         'name'               => $name
+            'id'                 => 'task',
+            'name'               => $name
         ];
 
         $tab[] = [
-         'id'                 => '26',
-         'table'              => static::getTable(),
-         'field'              => 'content',
-         'name'               => __('Description'),
-         'datatype'           => 'text',
-         'forcegroupby'       => true,
-         'splititems'         => true,
-         'massiveaction'      => false,
-         'htmltext'           => true,
-         'joinparams'         => [
-            'jointype'           => 'child',
-            'condition'          => $task_condition,
-         ]
-        ];
-
-        $tab[] = [
-         'id'                 => '28',
-         'table'              => static::getTable(),
-         'field'              => 'id',
-         'name'               => _x('quantity', 'Number of tasks'),
-         'forcegroupby'       => true,
-         'usehaving'          => true,
-         'datatype'           => 'count',
-         'massiveaction'      => false,
-         'joinparams'         => [
-            'jointype'           => 'child',
-            'condition'          => $task_condition,
-         ]
-        ];
-
-        $tab[] = [
-         'id'                 => '20',
-         'table'              => 'glpi_taskcategories',
-         'field'              => 'name',
-         'datatype'           => 'dropdown',
-         'name'               => _n('Category', 'Categories', 1),
-         'forcegroupby'       => true,
-         'splititems'         => true,
-         'massiveaction'      => false,
-         'joinparams'         => [
-            'beforejoin'         => [
-               'table'              => static::getTable(),
-               'joinparams'         => [
-                  'jointype'           => 'child',
-                  'condition'          => $task_condition,
-               ]
-            ]
-         ]
-        ];
-
-        if ($task->maybePrivate()) {
-            $tab[] = [
-            'id'                 => '92',
+            'id'                 => '26',
             'table'              => static::getTable(),
-            'field'              => 'is_private',
-            'name'               => __('Private task'),
-            'datatype'           => 'bool',
+            'field'              => 'content',
+            'name'               => __('Description'),
+            'datatype'           => 'text',
+            'forcegroupby'       => true,
+            'splititems'         => true,
+            'massiveaction'      => false,
+            'htmltext'           => true,
+            'joinparams'         => [
+                'jointype'           => 'child',
+                'condition'          => $task_condition,
+            ]
+        ];
+
+        $tab[] = [
+            'id'                 => '28',
+            'table'              => static::getTable(),
+            'field'              => 'id',
+            'name'               => _x('quantity', 'Number of tasks'),
+            'forcegroupby'       => true,
+            'usehaving'          => true,
+            'datatype'           => 'count',
+            'massiveaction'      => false,
+            'joinparams'         => [
+                'jointype'           => 'child',
+                'condition'          => $task_condition,
+            ]
+        ];
+
+        $tab[] = [
+            'id'                 => '20',
+            'table'              => 'glpi_taskcategories',
+            'field'              => 'name',
+            'datatype'           => 'dropdown',
+            'name'               => _n('Category', 'Categories', 1),
             'forcegroupby'       => true,
             'splititems'         => true,
             'massiveaction'      => false,
             'joinparams'         => [
-               'jointype'           => 'child',
-               'condition'          => $task_condition,
+                'beforejoin'         => [
+                    'table'              => static::getTable(),
+                    'joinparams'         => [
+                        'jointype'           => 'child',
+                        'condition'          => $task_condition,
+                    ]
+                ]
             ]
+        ];
+
+        if ($task->maybePrivate()) {
+            $tab[] = [
+                'id'                 => '92',
+                'table'              => static::getTable(),
+                'field'              => 'is_private',
+                'name'               => __('Private task'),
+                'datatype'           => 'bool',
+                'forcegroupby'       => true,
+                'splititems'         => true,
+                'massiveaction'      => false,
+                'joinparams'         => [
+                    'jointype'           => 'child',
+                    'condition'          => $task_condition,
+                ]
             ];
         }
 
         $tab[] = [
-         'id'                 => '94',
-         'table'              => 'glpi_users',
-         'field'              => 'name',
-         'name'               => __('Writer'),
-         'datatype'           => 'itemlink',
-         'right'              => 'all',
-         'forcegroupby'       => true,
-         'massiveaction'      => false,
-         'joinparams'         => [
-            'beforejoin'         => [
-               'table'              => static::getTable(),
-               'joinparams'         => [
-                  'jointype'           => 'child',
-                  'condition'          => $task_condition,
-               ]
+            'id'                 => '94',
+            'table'              => 'glpi_users',
+            'field'              => 'name',
+            'name'               => __('Writer'),
+            'datatype'           => 'itemlink',
+            'right'              => 'all',
+            'forcegroupby'       => true,
+            'massiveaction'      => false,
+            'joinparams'         => [
+                'beforejoin'         => [
+                    'table'              => static::getTable(),
+                    'joinparams'         => [
+                        'jointype'           => 'child',
+                        'condition'          => $task_condition,
+                    ]
+                ]
             ]
-         ]
         ];
 
         $tab[] = [
-         'id'                 => '95',
-         'table'              => 'glpi_users',
-         'field'              => 'name',
-         'linkfield'          => 'users_id_tech',
-         'name'               => __('Technician in charge'),
-         'datatype'           => 'itemlink',
-         'right'              => 'own_ticket',
-         'forcegroupby'       => true,
-         'massiveaction'      => false,
-         'joinparams'         => [
-            'beforejoin'         => [
-               'table'              => static::getTable(),
-               'joinparams'         => [
-                  'jointype'           => 'child',
-                  'condition'          => $task_condition,
-               ]
+            'id'                 => '95',
+            'table'              => 'glpi_users',
+            'field'              => 'name',
+            'linkfield'          => 'users_id_tech',
+            'name'               => __('Technician in charge'),
+            'datatype'           => 'itemlink',
+            'right'              => 'own_ticket',
+            'forcegroupby'       => true,
+            'massiveaction'      => false,
+            'joinparams'         => [
+                'beforejoin'         => [
+                    'table'              => static::getTable(),
+                    'joinparams'         => [
+                        'jointype'           => 'child',
+                        'condition'          => $task_condition,
+                    ]
+                ]
             ]
-         ]
         ];
 
         $tab[] = [
-         'id'                 => '112',
-         'table'              => 'glpi_groups',
-         'field'              => 'completename',
-         'linkfield'          => 'groups_id_tech',
-         'name'               => __('Group in charge'),
-         'datatype'           => 'itemlink',
-         'condition'          => ['is_task' => 1],
-         'forcegroupby'       => true,
-         'massiveaction'      => false,
-         'joinparams'         => [
-            'beforejoin'         => [
-               'table'              => static::getTable(),
-               'joinparams'         => [
-                  'jointype'           => 'child',
-                  'condition'          => $task_condition,
-               ]
+            'id'                 => '112',
+            'table'              => 'glpi_groups',
+            'field'              => 'completename',
+            'linkfield'          => 'groups_id_tech',
+            'name'               => __('Group in charge'),
+            'datatype'           => 'itemlink',
+            'condition'          => ['is_task' => 1],
+            'forcegroupby'       => true,
+            'massiveaction'      => false,
+            'joinparams'         => [
+                'beforejoin'         => [
+                    'table'              => static::getTable(),
+                    'joinparams'         => [
+                        'jointype'           => 'child',
+                        'condition'          => $task_condition,
+                    ]
+                ]
             ]
-         ]
         ];
 
         $tab[] = [
-         'id'                 => '96',
-         'table'              => static::getTable(),
-         'field'              => 'actiontime',
-         'name'               => __('Duration'),
-         'datatype'           => 'timestamp',
-         'massiveaction'      => false,
-         'forcegroupby'       => true,
-         'joinparams'         => [
-            'jointype'           => 'child',
-            'condition'          => $task_condition,
-         ]
-        ];
-
-        $tab[] = [
-         'id'                 => '97',
-         'table'              => static::getTable(),
-         'field'              => 'date',
-         'name'               => _n('Date', 'Dates', 1),
-         'datatype'           => 'datetime',
-         'massiveaction'      => false,
-         'forcegroupby'       => true,
-         'joinparams'         => [
-            'jointype'           => 'child',
-            'condition'          => $task_condition,
-         ]
-        ];
-
-        $tab[] = [
-         'id'                 => '33',
-         'table'              => static::getTable(),
-         'field'              => 'state',
-         'name'               => __('Status'),
-         'datatype'           => 'specific',
-         'searchtype'         => 'equals',
-         'searchequalsonfield' => true,
-         'massiveaction'      => false,
-         'forcegroupby'       => true,
-         'joinparams'         => [
-            'jointype'           => 'child',
-            'condition'          => $task_condition,
-         ]
-        ];
-
-        $tab[] = [
-         'id'                 => '173',
-         'table'              => static::getTable(),
-         'field'              => 'begin',
-         'name'               => __('Begin date'),
-         'datatype'           => 'datetime',
-         'maybefuture'        => true,
-         'massiveaction'      => false,
-         'forcegroupby'       => true,
-         'joinparams'         => [
-            'jointype'           => 'child',
-            'condition'          => $task_condition,
-         ]
-        ];
-
-        $tab[] = [
-         'id'                 => '174',
-         'table'              => static::getTable(),
-         'field'              => 'end',
-         'name'               => __('End date'),
-         'datatype'           => 'datetime',
-         'maybefuture'        => true,
-         'massiveaction'      => false,
-         'forcegroupby'       => true,
-         'joinparams'         => [
-            'jointype'           => 'child',
-            'condition'          => $task_condition,
-         ]
-        ];
-
-        $tab[] = [
-         'id'                 => '175',
-         'table'              => TaskTemplate::getTable(),
-         'field'              => 'name',
-         'linkfield'          => 'tasktemplates_id',
-         'name'               => TaskTemplate::getTypeName(1),
-         'datatype'           => 'dropdown',
-         'massiveaction'      => false,
-         'joinparams'         => [
-            'beforejoin'         => [
-               'table'              => static::getTable(),
-               'joinparams'         => [
-                  'jointype'           => 'child',
-                  'condition'          => $task_condition,
-               ]
+            'id'                 => '96',
+            'table'              => static::getTable(),
+            'field'              => 'actiontime',
+            'name'               => __('Duration'),
+            'datatype'           => 'timestamp',
+            'massiveaction'      => false,
+            'forcegroupby'       => true,
+            'joinparams'         => [
+                'jointype'           => 'child',
+                'condition'          => $task_condition,
             ]
-         ]
+        ];
+
+        $tab[] = [
+            'id'                 => '97',
+            'table'              => static::getTable(),
+            'field'              => 'date',
+            'name'               => _n('Date', 'Dates', 1),
+            'datatype'           => 'datetime',
+            'massiveaction'      => false,
+            'forcegroupby'       => true,
+            'joinparams'         => [
+                'jointype'           => 'child',
+                'condition'          => $task_condition,
+            ]
+        ];
+
+        $tab[] = [
+            'id'                 => '33',
+            'table'              => static::getTable(),
+            'field'              => 'state',
+            'name'               => __('Status'),
+            'datatype'           => 'specific',
+            'searchtype'         => 'equals',
+            'searchequalsonfield' => true,
+            'massiveaction'      => false,
+            'forcegroupby'       => true,
+            'joinparams'         => [
+                'jointype'           => 'child',
+                'condition'          => $task_condition,
+            ]
+        ];
+
+        $tab[] = [
+            'id'                 => '173',
+            'table'              => static::getTable(),
+            'field'              => 'begin',
+            'name'               => __('Begin date'),
+            'datatype'           => 'datetime',
+            'maybefuture'        => true,
+            'massiveaction'      => false,
+            'forcegroupby'       => true,
+            'joinparams'         => [
+                'jointype'           => 'child',
+                'condition'          => $task_condition,
+            ]
+        ];
+
+        $tab[] = [
+            'id'                 => '174',
+            'table'              => static::getTable(),
+            'field'              => 'end',
+            'name'               => __('End date'),
+            'datatype'           => 'datetime',
+            'maybefuture'        => true,
+            'massiveaction'      => false,
+            'forcegroupby'       => true,
+            'joinparams'         => [
+                'jointype'           => 'child',
+                'condition'          => $task_condition,
+            ]
+        ];
+
+        $tab[] = [
+            'id'                 => '175',
+            'table'              => TaskTemplate::getTable(),
+            'field'              => 'name',
+            'linkfield'          => 'tasktemplates_id',
+            'name'               => TaskTemplate::getTypeName(1),
+            'datatype'           => 'dropdown',
+            'massiveaction'      => false,
+            'joinparams'         => [
+                'beforejoin'         => [
+                    'table'              => static::getTable(),
+                    'joinparams'         => [
+                        'jointype'           => 'child',
+                        'condition'          => $task_condition,
+                    ]
+                ]
+            ]
         ];
 
         return $tab;
@@ -1093,10 +1096,10 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
         }
 
         $default_options = [
-         'genical'             => false,
-         'color'               => '',
-         'event_type_color'    => '',
-         'display_done_events' => true,
+            'genical'             => false,
+            'color'               => '',
+            'event_type_color'    => '',
+            'display_done_events' => true,
         ];
         $options = array_merge($default_options, $options);
 
@@ -1119,18 +1122,18 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
             $edate = $DB->quoteName($item->getTable() . '.date');
             $SELECT[] = new QueryExpression($edate . ' AS ' . $DB->quoteName('notp_edate'));
             $WHERE = [
-            $item->getTable() . '.end'     => null,
-            $item->getTable() . '.begin'   => null,
-            $item->getTable() . '.actiontime' => ['>', 0],
+                $item->getTable() . '.end'     => null,
+                $item->getTable() . '.begin'   => null,
+                $item->getTable() . '.actiontime' => ['>', 0],
             //begin is replaced with creation tim minus duration
-            new QueryExpression($edate . " >= '" . $begin . "'"),
-            new QueryExpression($bdate . " <= '" . $end . "'")
+                new QueryExpression($edate . " >= '" . $begin . "'"),
+                new QueryExpression($bdate . " <= '" . $end . "'")
             ];
         } else {
            //std case: get tasks for current view dates
             $WHERE = [
-            $item->getTable() . '.end'     => ['>=', $begin],
-            $item->getTable() . '.begin'   => ['<=', $end]
+                $item->getTable() . '.end'     => ['>=', $begin],
+                $item->getTable() . '.begin'   => ['<=', $end]
             ];
         }
         $ADDWHERE = [];
@@ -1154,22 +1157,22 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
 
         if (!count($ADDWHERE)) {
             $ADDWHERE = [
-            $item->getTable() . '.users_id_tech' => new \QuerySubQuery([
-               'SELECT'          => 'glpi_profiles_users.users_id',
-               'DISTINCT'        => true,
-               'FROM'            => 'glpi_profiles',
-               'LEFT JOIN'       => [
-                  'glpi_profiles_users'   => [
-                     'ON' => [
-                        'glpi_profiles_users' => 'profiles_id',
-                        'glpi_profiles'       => 'id'
-                     ]
-                  ]
-               ],
-               'WHERE'           => [
-                  'glpi_profiles.interface'  => 'central'
-               ] + getEntitiesRestrictCriteria('glpi_profiles_users', '', $_SESSION['glpiactive_entity'], 1)
-            ])
+                $item->getTable() . '.users_id_tech' => new \QuerySubQuery([
+                    'SELECT'          => 'glpi_profiles_users.users_id',
+                    'DISTINCT'        => true,
+                    'FROM'            => 'glpi_profiles',
+                    'LEFT JOIN'       => [
+                        'glpi_profiles_users'   => [
+                            'ON' => [
+                                'glpi_profiles_users' => 'profiles_id',
+                                'glpi_profiles'       => 'id'
+                            ]
+                        ]
+                    ],
+                    'WHERE'           => [
+                        'glpi_profiles.interface'  => 'central'
+                    ] + getEntitiesRestrictCriteria('glpi_profiles_users', '', $_SESSION['glpiactive_entity'], 1)
+                ])
             ];
         }
 
@@ -1179,14 +1182,15 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
 
         if (!$options['display_done_events']) {
             $WHERE[] = ['OR' => [
-            $item->getTable() . ".state"  => Planning::TODO,
-            [
-               'AND' => [
-                  $item->getTable() . '.state'  => Planning::INFO,
-                  $item->getTable() . '.end'    => ['>', new \QueryExpression('NOW()')]
-               ]
+                $item->getTable() . ".state"  => Planning::TODO,
+                [
+                    'AND' => [
+                        $item->getTable() . '.state'  => Planning::INFO,
+                        $item->getTable() . '.end'    => ['>', new \QueryExpression('NOW()')]
+                    ]
+                ]
             ]
-            ]];
+            ];
         }
 
         if ($parentitem->maybeDeleted()) {
@@ -1195,26 +1199,27 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
 
         if (!$options['display_done_events']) {
             $WHERE[] = ['NOT' => [
-            $parentitem->getTable() . '.status' => array_merge(
-                $parentitem->getSolvedStatusArray(),
-                $parentitem->getClosedStatusArray()
-            )
-            ]];
+                $parentitem->getTable() . '.status' => array_merge(
+                    $parentitem->getSolvedStatusArray(),
+                    $parentitem->getClosedStatusArray()
+                )
+            ]
+            ];
         }
 
         $iterator = $DB->request([
-         'SELECT'       => $SELECT,
-         'FROM'         => $item->getTable(),
-         'INNER JOIN'   => [
-            $parentitem->getTable() => [
-               'ON' => [
-                  $parentitem->getTable() => 'id',
-                  $item->getTable()       => $parentitem->getForeignKeyField()
-               ]
-            ]
-         ],
-         'WHERE'        => $WHERE,
-         'ORDERBY'      => $item->getTable() . '.begin'
+            'SELECT'       => $SELECT,
+            'FROM'         => $item->getTable(),
+            'INNER JOIN'   => [
+                $parentitem->getTable() => [
+                    'ON' => [
+                        $parentitem->getTable() => 'id',
+                        $item->getTable()       => $parentitem->getForeignKeyField()
+                    ]
+                ]
+            ],
+            'WHERE'        => $WHERE,
+            'ORDERBY'      => $item->getTable() . '.begin'
         ]);
 
         $interv = [];
@@ -1427,8 +1432,8 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
     public function showForm($ID, array $options = [])
     {
         TemplateRenderer::getInstance()->display('components/itilobject/timeline/form_task.html.twig', [
-         'item'      => $options['parent'],
-         'subitem'   => $this
+            'item'      => $options['parent'],
+            'subitem'   => $this
         ]);
     }
 
@@ -1461,10 +1466,11 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
             $toadd[] = $i * HOUR_TIMESTAMP;
         }
         Dropdown::showTimeStamp("actiontime", ['min'             => 0,
-                                             'max'             => 8 * HOUR_TIMESTAMP,
-                                             'addfirstminutes' => true,
-                                             'inhours'         => true,
-                                             'toadd'           => $toadd]);
+            'max'             => 8 * HOUR_TIMESTAMP,
+            'addfirstminutes' => true,
+            'inhours'         => true,
+            'toadd'           => $toadd
+        ]);
         echo "</td>";
         echo "</tr>";
 
@@ -1505,12 +1511,12 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
         $fk_field = Toolbox::strtolower(getPlural($itemtype)) . '_id';
 
         $prep_req['INNER JOIN'] = [
-         $fk_table => [
-            'FKEY' => [
-               self::getTable()  => $fk_field,
-               $fk_table         => 'id'
+            $fk_table => [
+                'FKEY' => [
+                    self::getTable()  => $fk_field,
+                    $fk_table         => 'id'
+                ]
             ]
-         ]
         ];
 
         $prep_req['WHERE'] = [$fk_table . ".status" => $itemtype::getNotSolvedStatusArray()];
@@ -1577,36 +1583,36 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
             switch ($status) {
                 case "todo":
                     $options  = [
-                    'reset'    => 'reset',
-                    'criteria' => [
-                     [
-                        'field'      => 12, // status
-                        'searchtype' => 'equals',
-                        'value'      => 'notold',
-                        'link'       => 'AND',
-                     ]
-                    ],
+                        'reset'    => 'reset',
+                        'criteria' => [
+                            [
+                                'field'      => 12, // status
+                                'searchtype' => 'equals',
+                                'value'      => 'notold',
+                                'link'       => 'AND',
+                            ]
+                        ],
                     ];
                     if ($showgrouptickets) {
                         $options['criteria'][] = [
-                        'field'      => 112, // tech in charge of task
-                        'searchtype' => 'equals',
-                        'value'      => 'mygroups',
-                        'link'       => 'AND',
+                            'field'      => 112, // tech in charge of task
+                            'searchtype' => 'equals',
+                            'value'      => 'mygroups',
+                            'link'       => 'AND',
                         ];
                     } else {
                         $options['criteria'][] = [
-                        'field'      => 95, // tech in charge of task
-                        'searchtype' => 'equals',
-                        'value'      => $_SESSION['glpiID'],
-                        'link'       => 'AND',
+                            'field'      => 95, // tech in charge of task
+                            'searchtype' => 'equals',
+                            'value'      => $_SESSION['glpiID'],
+                            'link'       => 'AND',
                         ];
                     }
                     $options['criteria'][] = [
-                    'field'      => 33, // task status
-                    'searchtype' => 'equals',
-                    'value'      =>  Planning::TODO,
-                    'link'       => 'AND',
+                        'field'      => 33, // task status
+                        'searchtype' => 'equals',
+                        'value'      =>  Planning::TODO,
+                        'link'       => 'AND',
                     ];
 
                     if ($itemtype == "TicketTask") {
@@ -1742,17 +1748,17 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
         }
 
         $query = [
-         'SELECT'     => [$item->getTableField('*')],
-         'FROM'       => $item->getTable(),
-         'INNER JOIN' => [],
-         'WHERE'      => $criteria,
+            'SELECT'     => [$item->getTableField('*')],
+            'FROM'       => $item->getTable(),
+            'INNER JOIN' => [],
+            'WHERE'      => $criteria,
         ];
         if ($parent_item->maybeDeleted()) {
             $query['INNER JOIN'][$parent_item->getTable()] = [
-            'ON' => [
-               $parent_item->getTable() => 'id',
-               $item->getTable()        => $parent_item->getForeignKeyField(),
-            ]
+                'ON' => [
+                    $parent_item->getTable() => 'id',
+                    $item->getTable()        => $parent_item->getForeignKeyField(),
+                ]
             ];
             $query['WHERE'][$parent_item->getTableField('is_deleted')] = 0;
         }

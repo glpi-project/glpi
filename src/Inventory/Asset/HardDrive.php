@@ -46,10 +46,10 @@ class HardDrive extends Device
     public function prepare(): array
     {
         $mapping = [
-         'disksize'      => 'capacity',
-         'interface'     => 'interfacetypes_id',
-         'manufacturer'  => 'manufacturers_id',
-         'model'         => 'designation'
+            'disksize'      => 'capacity',
+            'interface'     => 'interfacetypes_id',
+            'manufacturer'  => 'manufacturers_id',
+            'model'         => 'designation'
         ];
 
         foreach ($this->data as &$val) {

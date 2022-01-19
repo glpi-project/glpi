@@ -175,8 +175,8 @@ class SavedSearch_Alert extends CommonDBChild
         echo "<td>";
         $alert = new Alert();
         $alert->getFromDBByCrit([
-         'items_id'  => $this->fields['savedsearches_id'],
-         'itemptype' => SavedSearch::getType(),
+            'items_id'  => $this->fields['savedsearches_id'],
+            'itemptype' => SavedSearch::getType(),
         ]);
         Dropdown::showFrequency('frequency', $this->fields["frequency"]);
         echo "</td></tr>";
@@ -213,11 +213,11 @@ class SavedSearch_Alert extends CommonDBChild
         echo "<div class='firstbloc'>";
 
         $iterator = $DB->request([
-         'FROM'   => Notification::getTable(),
-         'WHERE'  => [
-            'itemtype'  => self::getType(),
-            'event'     => 'alert' . ($search->getField('is_private') ? '' : '_' . $search->getID())
-         ]
+            'FROM'   => Notification::getTable(),
+            'WHERE'  => [
+                'itemtype'  => self::getType(),
+                'event'     => 'alert' . ($search->getField('is_private') ? '' : '_' . $search->getID())
+            ]
         ]);
 
         if (!$iterator->numRows()) {
@@ -257,8 +257,8 @@ class SavedSearch_Alert extends CommonDBChild
         }
 
         $iterator = $DB->request([
-         'FROM'   => self::getTable(),
-         'WHERE'  => ['savedsearches_id' => $ID]
+            'FROM'   => self::getTable(),
+            'WHERE'  => ['savedsearches_id' => $ID]
         ]);
 
         echo "<table class='tab_cadre_fixehov'>";
@@ -305,12 +305,12 @@ class SavedSearch_Alert extends CommonDBChild
     public static function getOperators($id = null)
     {
         $ops = [
-         self::OP_LESS     => '<',
-         self::OP_LESSEQ   => '<=',
-         self::OP_EQ       => '=',
-         self::OP_NOT      => '!=',
-         self::OP_GREATEQ  => '>=',
-         self::OP_GREAT    => '>'
+            self::OP_LESS     => '<',
+            self::OP_LESSEQ   => '<=',
+            self::OP_EQ       => '=',
+            self::OP_NOT      => '!=',
+            self::OP_GREATEQ  => '>=',
+            self::OP_GREAT    => '>'
         ];
         return ($id === null ? $ops : $ops[$id]);
     }
@@ -370,34 +370,36 @@ class SavedSearch_Alert extends CommonDBChild
         global $DB;
 
         $iterator = $DB->request([
-         'SELECT' => [
-            'glpi_savedsearches_alerts.*'
-         ],
-         'FROM'   => self::getTable(),
-         'LEFT JOIN' => [
-            'glpi_alerts' => [
-               'FKEY'   => [
-                  'glpi_alerts'                => 'items_id',
-                  'glpi_savedsearches_alerts'  => 'id',
-                  [
-                     'AND' => [
-                        'glpi_alerts.itemtype' => SavedSearch_Alert::class,
-                        'glpi_alerts.type'     => Alert::PERIODICITY,
-                     ],
-                  ],
-               ]
+            'SELECT' => [
+                'glpi_savedsearches_alerts.*'
+            ],
+            'FROM'   => self::getTable(),
+            'LEFT JOIN' => [
+                'glpi_alerts' => [
+                    'FKEY'   => [
+                        'glpi_alerts'                => 'items_id',
+                        'glpi_savedsearches_alerts'  => 'id',
+                        [
+                            'AND' => [
+                                'glpi_alerts.itemtype' => SavedSearch_Alert::class,
+                                'glpi_alerts.type'     => Alert::PERIODICITY,
+                            ],
+                        ],
+                    ]
+                ]
+            ],
+            'WHERE'     => [
+                'glpi_savedsearches_alerts.is_active' => true,
+                'OR' => [
+                    ['glpi_alerts.date' => null],
+                    ['glpi_alerts.date' => ['<', new QueryExpression(sprintf(
+                        'CURRENT_TIMESTAMP() - INTERVAL %s second',
+                        $DB->quoteName('glpi_savedsearches_alerts.frequency')
+                    ))
+                    ]
+                    ],
+                ]
             ]
-         ],
-         'WHERE'     => [
-            'glpi_savedsearches_alerts.is_active' => true,
-            'OR' => [
-               ['glpi_alerts.date' => null],
-               ['glpi_alerts.date' => ['<', new QueryExpression(sprintf(
-                   'CURRENT_TIMESTAMP() - INTERVAL %s second',
-                   $DB->quoteName('glpi_savedsearches_alerts.frequency')
-               ))]],
-            ]
-         ]
         ]);
 
         if ($iterator->numrows()) {
@@ -487,13 +489,13 @@ class SavedSearch_Alert extends CommonDBChild
 
                           $alert = new Alert();
                           $alert->deleteByCriteria([
-                         'itemtype' => SavedSearch_Alert::class,
-                         'items_id' => $row['id'],
+                              'itemtype' => SavedSearch_Alert::class,
+                              'items_id' => $row['id'],
                           ], 1);
                           $alert->add([
-                           'type'     => Alert::PERIODICITY,
-                           'itemtype' => SavedSearch_Alert::class,
-                           'items_id' => $row['id'],
+                              'type'     => Alert::PERIODICITY,
+                              'itemtype' => SavedSearch_Alert::class,
+                              'items_id' => $row['id'],
                           ]);
                     }
                 } catch (\Exception $e) {

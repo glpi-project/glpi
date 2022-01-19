@@ -53,10 +53,10 @@ class Item extends \CommonDBChild
         global $DB;
 
         $di_iterator = $DB->request([
-         'FROM'  => self::getTable(),
-         'WHERE' => [
-            'dashboards_dashboards_id' => $dashboards_id
-         ]
+            'FROM'  => self::getTable(),
+            'WHERE' => [
+                'dashboards_dashboards_id' => $dashboards_id
+            ]
         ]);
 
         $items = [];
@@ -92,14 +92,14 @@ class Item extends \CommonDBChild
         $query_items = $DB->buildInsert(
             self::getTable(),
             [
-            'dashboards_dashboards_id' => new \QueryParam(),
-            'gridstack_id' => new \QueryParam(),
-            'card_id'      => new \QueryParam(),
-            'x'            => new \QueryParam(),
-            'y'            => new \QueryParam(),
-            'width'        => new \QueryParam(),
-            'height'       => new \QueryParam(),
-            'card_options' => new \QueryParam(),
+                'dashboards_dashboards_id' => new \QueryParam(),
+                'gridstack_id' => new \QueryParam(),
+                'card_id'      => new \QueryParam(),
+                'x'            => new \QueryParam(),
+                'y'            => new \QueryParam(),
+                'width'        => new \QueryParam(),
+                'height'       => new \QueryParam(),
+                'card_options' => new \QueryParam(),
             ]
         );
         $stmt = $DB->prepare($query_items);

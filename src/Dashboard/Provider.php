@@ -78,7 +78,7 @@ class Provider
         $DB = DBConnection::getReadConnection();
 
         $default_params = [
-         'apply_filters'  => [],
+            'apply_filters'  => [],
         ];
         $params = array_merge($default_params, $params);
 
@@ -99,9 +99,9 @@ class Provider
 
         $criteria = array_merge_recursive(
             [
-            'SELECT' => ['COUNT DISTINCT' => $item::getTableField($item::getIndexName()) . ' as cpt'],
-            'FROM'   => $i_table,
-            'WHERE'  => $where
+                'SELECT' => ['COUNT DISTINCT' => $item::getTableField($item::getIndexName()) . ' as cpt'],
+                'FROM'   => $i_table,
+                'WHERE'  => $where
             ],
             self::getFiltersCriteria($i_table, $params['apply_filters']),
             $item instanceof Ticket ? Ticket::getCriteriaFromProfile() : []
@@ -112,21 +112,21 @@ class Provider
         $nb_items = $result['cpt'];
 
         $search_criteria = [
-         [
-            self::getSearchFiltersCriteria($i_table, $params['apply_filters'])
-         ]
+            [
+                self::getSearchFiltersCriteria($i_table, $params['apply_filters'])
+            ]
         ];
 
         $url = $item::getSearchURL() . "?" . Toolbox::append_params([
-         $search_criteria,
-         'reset' => 'reset',
+            $search_criteria,
+            'reset' => 'reset',
         ]);
 
         return [
-         'number' => $nb_items,
-         'url'    => $url,
-         'label'  => $item::getTypeName($nb_items),
-         'icon'   => $item::getIcon(),
+            'number' => $nb_items,
+            'url'    => $url,
+            'label'  => $item::getTypeName($nb_items),
+            'icon'   => $item::getIcon(),
         ];
     }
 
@@ -207,10 +207,10 @@ class Provider
         $DBread = DBConnection::getReadConnection();
 
         $default_params = [
-         'label'                 => "",
-         'icon'                  => Ticket::getIcon(),
-         'apply_filters'         => [],
-         'validation_check_user' => false,
+            'label'                 => "",
+            'icon'                  => Ticket::getIcon(),
+            'apply_filters'         => [],
+            'validation_check_user' => false,
         ];
         $params = array_merge($default_params, $params);
 
@@ -220,20 +220,20 @@ class Provider
         $skip = false;
 
         $notold = [
-         'field'      => 12,
-         'searchtype' => 'equals',
-         'value'      => 'notold',
+            'field'      => 12,
+            'searchtype' => 'equals',
+            'value'      => 'notold',
         ];
 
         $table = Ticket::getTable();
         $query_criteria = [
-         'SELECT'    => [
-            'COUNT DISTINCT' => "$table.id AS cpt",
-         ],
-         'FROM'   => $table,
-         'WHERE'  => [
-            "$table.is_deleted" => 0,
-         ] + getEntitiesRestrictCriteria($table),
+            'SELECT'    => [
+                'COUNT DISTINCT' => "$table.id AS cpt",
+            ],
+            'FROM'   => $table,
+            'WHERE'  => [
+                "$table.is_deleted" => 0,
+            ] + getEntitiesRestrictCriteria($table),
         ];
 
         $query_criteria = array_merge_recursive(
@@ -247,7 +247,7 @@ class Provider
                 $search_criteria = [$notold];
                 $params['label']  = _x('status', 'Not solved');
                 $query_criteria['WHERE'] += [
-                 "$table.status" => Ticket::getNotSolvedStatusArray(),
+                    "$table.status" => Ticket::getNotSolvedStatusArray(),
                 ];
                 break;
 
@@ -255,40 +255,40 @@ class Provider
                 $params['icon']  = "far fa-clock";
                 $params['label']  = __("Late tickets");
                 $search_criteria = array_merge([$notold], [
-                [
-                  'link'       => 'AND',
-                  'criteria'   => [
-                     [
-                        'field'      => 82,
-                        'searchtype' => 'equals',
-                        'value'      => 1,
-                     ], [
-                        'link'       => 'OR',
-                        'field'      => 182,
-                        'searchtype' => 'equals',
-                        'value'      => 1,
-                     ], [
-                        'link'       => 'OR',
-                        'field'      => 159,
-                        'searchtype' => 'equals',
-                        'value'      => 1,
-                     ], [
-                        'link'       => 'OR',
-                        'field'      => 187,
-                        'searchtype' => 'equals',
-                        'value'      => 1,
-                     ]
-                  ]
-                ]
+                    [
+                        'link'       => 'AND',
+                        'criteria'   => [
+                            [
+                                'field'      => 82,
+                                'searchtype' => 'equals',
+                                'value'      => 1,
+                            ], [
+                                'link'       => 'OR',
+                                'field'      => 182,
+                                'searchtype' => 'equals',
+                                'value'      => 1,
+                            ], [
+                                'link'       => 'OR',
+                                'field'      => 159,
+                                'searchtype' => 'equals',
+                                'value'      => 1,
+                            ], [
+                                'link'       => 'OR',
+                                'field'      => 187,
+                                'searchtype' => 'equals',
+                                'value'      => 1,
+                            ]
+                        ]
+                    ]
                 ]);
                 $query_criteria['WHERE']["$table.status"] = Ticket::getNotSolvedStatusArray();
                 $query_criteria['WHERE'][] = [
-                 'OR' => [
-                  CommonITILObject::generateSLAOLAComputation('time_to_resolve', 'glpi_tickets'),
-                  CommonITILObject::generateSLAOLAComputation('internal_time_to_resolve', 'glpi_tickets'),
-                  CommonITILObject::generateSLAOLAComputation('time_to_own', 'glpi_tickets'),
-                  CommonITILObject::generateSLAOLAComputation('internal_time_to_own', 'glpi_tickets'),
-                 ]
+                    'OR' => [
+                        CommonITILObject::generateSLAOLAComputation('time_to_resolve', 'glpi_tickets'),
+                        CommonITILObject::generateSLAOLAComputation('internal_time_to_resolve', 'glpi_tickets'),
+                        CommonITILObject::generateSLAOLAComputation('time_to_own', 'glpi_tickets'),
+                        CommonITILObject::generateSLAOLAComputation('internal_time_to_own', 'glpi_tickets'),
+                    ]
                 ];
                 break;
 
@@ -296,24 +296,24 @@ class Provider
                 $params['icon']  = "far fa-eye";
                 $params['label'] = __("Tickets waiting for validation");
                 $search_criteria = [
-                [
-                  'field'      => 55,
-                  'searchtype' => 'equals',
-                  'value'      => CommonITILValidation::WAITING,
-                ]
+                    [
+                        'field'      => 55,
+                        'searchtype' => 'equals',
+                        'value'      => CommonITILValidation::WAITING,
+                    ]
                 ];
 
                 if ($params['validation_check_user']) {
                     $search_criteria[] = [
-                    'link'       => 'AND',
-                    'field'      => 59,
-                    'searchtype' => 'equals',
-                    'value'      => Session::getLoginUserID(),
+                        'link'       => 'AND',
+                        'field'      => 59,
+                        'searchtype' => 'equals',
+                        'value'      => Session::getLoginUserID(),
                     ];
                 }
 
                 $where = [
-                'glpi_ticketvalidations.status' => CommonITILValidation::WAITING,
+                    'glpi_ticketvalidations.status' => CommonITILValidation::WAITING,
                 ];
 
                 if ($params['validation_check_user']) {
@@ -321,15 +321,15 @@ class Provider
                 }
 
                 $query_criteria = array_merge_recursive($query_criteria, [
-                'LEFT JOIN' => [
-                  'glpi_ticketvalidations' => [
-                     'ON' => [
-                        'glpi_ticketvalidations' => 'tickets_id',
-                        $table                   => 'id'
-                     ]
-                  ]
-                ],
-                'WHERE' => $where,
+                    'LEFT JOIN' => [
+                        'glpi_ticketvalidations' => [
+                            'ON' => [
+                                'glpi_ticketvalidations' => 'tickets_id',
+                                $table                   => 'id'
+                            ]
+                        ]
+                    ],
+                    'WHERE' => $where,
                 ]);
                 break;
 
@@ -385,16 +385,16 @@ class Provider
                     $status = Ticket::INCOMING;
                 }
                 $search_criteria = [
-                [
-                'field'      => 12,
-                'searchtype' => 'equals',
-                'value'      => $status,
-                ]
+                    [
+                        'field'      => 12,
+                        'searchtype' => 'equals',
+                        'value'      => $status,
+                    ]
                 ];
                 $query_criteria = array_merge_recursive($query_criteria, [
-                'WHERE' => [
-                "$table.status" => $status,
-                ]
+                    'WHERE' => [
+                        "$table.status" => $status,
+                    ]
                 ]);
                 break;
         }
@@ -402,8 +402,8 @@ class Provider
         $search_criteria['criteria'] = self::getSearchFiltersCriteria($table, $params['apply_filters']);
 
         $url = Ticket::getSearchURL() . "?" . Toolbox::append_params([
-         'criteria' => $search_criteria,
-         'reset'    => 'reset'
+            'criteria' => $search_criteria,
+            'reset'    => 'reset'
         ]);
 
         $iterator   = $DBread->request($query_criteria);
@@ -411,12 +411,12 @@ class Provider
         $nb_tickets = $result['cpt'];
 
         return [
-         'number'     => $nb_tickets,
-         'url'        => $url,
-         'label'      => $params['label'],
-         'icon'       => $params['icon'],
-         's_criteria' => $search_criteria,
-         'itemtype'   => 'Ticket',
+            'number'     => $nb_tickets,
+            'url'        => $url,
+            'label'      => $params['label'],
+            'icon'       => $params['icon'],
+            's_criteria' => $search_criteria,
+            'itemtype'   => 'Ticket',
         ];
     }
 
@@ -427,9 +427,9 @@ class Provider
         $DBread = DBConnection::getReadConnection();
 
         $default_params = [
-         'label'         => "",
-         'icon'          => 'fas fa-stopwatch',
-         'apply_filters' => [],
+            'label'         => "",
+            'icon'          => 'fas fa-stopwatch',
+            'apply_filters' => [],
         ];
         $params = array_merge($default_params, $params);
 
@@ -453,44 +453,44 @@ class Provider
 
         $friendlyName = "CONCAT(`$userTable`.$first, ' ', `$userTable`.$second)";
         $query_criteria = [
-         'COUNT' => 'cpt',
-         'SELECT'    => [
-            new QueryExpression("$friendlyName as `username`"),
-            "$userTable.name",
-            new QueryExpression("$slaState as `sla_state`"),
-         ],
-         'FROM'   => $table,
-         'INNER JOIN' => [
-            "$ticketUserTable as ul" => [
-               'FKEY' => [
-                  'ul' => 'tickets_id',
-                  $table => 'id',
-                  [
-                     'AND' => [
-                        "ul.type" => Ticket_User::ASSIGN
-                     ]
-                  ]
-               ],
+            'COUNT' => 'cpt',
+            'SELECT'    => [
+                new QueryExpression("$friendlyName as `username`"),
+                "$userTable.name",
+                new QueryExpression("$slaState as `sla_state`"),
             ],
-            $userTable => [
-               'FKEY' => [
-                  $userTable => 'id',
-                  'ul' => 'users_id',
-               ],
+            'FROM'   => $table,
+            'INNER JOIN' => [
+                "$ticketUserTable as ul" => [
+                    'FKEY' => [
+                        'ul' => 'tickets_id',
+                        $table => 'id',
+                        [
+                            'AND' => [
+                                "ul.type" => Ticket_User::ASSIGN
+                            ]
+                        ]
+                    ],
+                ],
+                $userTable => [
+                    'FKEY' => [
+                        $userTable => 'id',
+                        'ul' => 'users_id',
+                    ],
+                ],
             ],
-         ],
-         'WHERE'  => [
-            "$table.is_deleted" => 0,
-         ] + getEntitiesRestrictCriteria($table),
-         'GROUPBY' => [
-            'sla_state',
-            "$userTable.id",
-         ],
-         'ORDER' => [
-            'sla_state DESC',
-            'cpt DESC',
-            "$userTable.id",
-         ]
+            'WHERE'  => [
+                "$table.is_deleted" => 0,
+            ] + getEntitiesRestrictCriteria($table),
+            'GROUPBY' => [
+                'sla_state',
+                "$userTable.id",
+            ],
+            'ORDER' => [
+                'sla_state DESC',
+                'cpt DESC',
+                "$userTable.id",
+            ]
         ];
 
         unset($params['apply_filters']['group_tech']);
@@ -569,9 +569,9 @@ class Provider
         }
 
         return [
-         'label' => __('Tickets by SLA status and by technician'),
-         'data' => $data,
-         'icon' => $params['icon'],
+            'label' => __('Tickets by SLA status and by technician'),
+            'data' => $data,
+            'icon' => $params['icon'],
         ];
     }
 
@@ -581,9 +581,9 @@ class Provider
         $DBread = DBConnection::getReadConnection();
 
         $default_params = [
-         'label'         => "",
-         'icon'          => 'fas fa-stopwatch',
-         'apply_filters' => [],
+            'label'         => "",
+            'icon'          => 'fas fa-stopwatch',
+            'apply_filters' => [],
         ];
         $params = array_merge($default_params, $params);
 
@@ -598,43 +598,43 @@ class Provider
         $slaState = "IF ($ownExceeded AND $resolveExceeded, 3, IF ($resolveExceeded, 2, IF ($ownExceeded, 1, 0)))";
 
         $query_criteria = [
-         'COUNT' => 'cpt',
-         'SELECT'    => [
-            "$groupTable.name",
-            new QueryExpression("$slaState as `sla_state`"),
-         ],
-         'FROM'   => $table,
-         'INNER JOIN' => [
-            "$ticketGroupTable as gl" => [
-               'FKEY' => [
-                  'gl' => 'tickets_id',
-                  $table => 'id',
-                  [
-                     'AND' => [
-                        "gl.type" => Ticket_User::ASSIGN
-                     ]
-                  ]
-               ],
+            'COUNT' => 'cpt',
+            'SELECT'    => [
+                "$groupTable.name",
+                new QueryExpression("$slaState as `sla_state`"),
             ],
-            $groupTable => [
-               'FKEY' => [
-                  $groupTable => 'id',
-                  'gl' => 'groups_id',
-               ],
+            'FROM'   => $table,
+            'INNER JOIN' => [
+                "$ticketGroupTable as gl" => [
+                    'FKEY' => [
+                        'gl' => 'tickets_id',
+                        $table => 'id',
+                        [
+                            'AND' => [
+                                "gl.type" => Ticket_User::ASSIGN
+                            ]
+                        ]
+                    ],
+                ],
+                $groupTable => [
+                    'FKEY' => [
+                        $groupTable => 'id',
+                        'gl' => 'groups_id',
+                    ],
+                ],
             ],
-         ],
-         'WHERE'  => [
-            "$table.is_deleted" => 0,
-         ] + getEntitiesRestrictCriteria($table),
-         'GROUPBY' => [
-            'sla_state',
-            "$groupTable.id",
-         ],
-         'ORDER' => [
-            'sla_state DESC',
-            'cpt DESC',
-            "$groupTable.id",
-         ]
+            'WHERE'  => [
+                "$table.is_deleted" => 0,
+            ] + getEntitiesRestrictCriteria($table),
+            'GROUPBY' => [
+                'sla_state',
+                "$groupTable.id",
+            ],
+            'ORDER' => [
+                'sla_state DESC',
+                'cpt DESC',
+                "$groupTable.id",
+            ]
         ];
 
         unset($params['apply_filters']['user_tech']);
@@ -713,9 +713,9 @@ class Provider
         }
 
         return [
-         'label' => __('Tickets by SLA status and by technician group'),
-         'data' => $data,
-         'icon' => $params['icon'],
+            'label' => __('Tickets by SLA status and by technician group'),
+            'data' => $data,
+            'icon' => $params['icon'],
         ];
     }
 
@@ -762,12 +762,12 @@ class Provider
         $found_so_id = $found_so['id'] ?? 0;
 
         $default_params = [
-         'label'           => "",
-         'searchoption_id' => $found_so_id,
-         'icon'            => $fk_item::getIcon() ?? $item::getIcon(),
-         'limit'           => 50,
-         'join_key'        => 'LEFT JOIN',
-         'apply_filters'   => [],
+            'label'           => "",
+            'searchoption_id' => $found_so_id,
+            'icon'            => $fk_item::getIcon() ?? $item::getIcon(),
+            'limit'           => 50,
+            'join_key'        => 'LEFT JOIN',
+            'apply_filters'   => [],
         ];
         $params = array_merge($default_params, $params);
 
@@ -790,23 +790,23 @@ class Provider
 
         $criteria = array_merge_recursive(
             [
-            'SELECT'    => [
-               "$fk_table.$name AS fk_name",
-               "$fk_table.id AS fk_id",
-               'COUNT DISTINCT' => "$c_table.id AS cpt",
-            ],
-            'FROM'      => $c_table,
-            $params['join_key'] => [
-               $fk_table => [
-                  'ON' => [
-                     $fk_table => 'id',
-                     $c_table  => getForeignKeyFieldForItemType($fk_itemtype),
-                  ]
-               ]
-            ],
-            'GROUPBY'   => "$fk_table.$name",
-            'ORDERBY'   => "cpt DESC",
-            'LIMIT'     => $params['limit'],
+                'SELECT'    => [
+                    "$fk_table.$name AS fk_name",
+                    "$fk_table.id AS fk_id",
+                    'COUNT DISTINCT' => "$c_table.id AS cpt",
+                ],
+                'FROM'      => $c_table,
+                $params['join_key'] => [
+                    $fk_table => [
+                        'ON' => [
+                            $fk_table => 'id',
+                            $c_table  => getForeignKeyFieldForItemType($fk_itemtype),
+                        ]
+                    ]
+                ],
+                'GROUPBY'   => "$fk_table.$name",
+                'ORDERBY'   => "cpt DESC",
+                'LIMIT'     => $params['limit'],
             ],
             count($where) ? ['WHERE' => $where] : [],
             self::getFiltersCriteria($c_table, $params['apply_filters']),
@@ -815,15 +815,15 @@ class Provider
         $iterator = $DB->request($criteria);
 
         $search_criteria = [
-         'criteria' => [
-            [
-               'field'      => $params['searchoption_id'],
-               'searchtype' => 'equals',
-               'value'      => 0
+            'criteria' => [
+                [
+                    'field'      => $params['searchoption_id'],
+                    'searchtype' => 'equals',
+                    'value'      => 0
+                ],
+                self::getSearchFiltersCriteria($fk_table, $params['apply_filters'])
             ],
-            self::getSearchFiltersCriteria($fk_table, $params['apply_filters'])
-         ],
-         'reset' => 'reset',
+            'reset' => 'reset',
         ];
 
         $url = $item::getSearchURL();
@@ -833,22 +833,22 @@ class Provider
         foreach ($iterator as $result) {
             $search_criteria['criteria'][0]['value'] = $result['fk_id'] ?? 0;
             $data[] = [
-            'number' => $result['cpt'],
-            'label'  => $result['fk_name'] ?? __("without"),
-            'url'    => $url . '&' . Toolbox::append_params($search_criteria),
+                'number' => $result['cpt'],
+                'label'  => $result['fk_name'] ?? __("without"),
+                'url'    => $url . '&' . Toolbox::append_params($search_criteria),
             ];
         }
 
         if (count($data) === 0) {
             $data = [
-            'nodata' => true
+                'nodata' => true
             ];
         }
 
         return [
-         'data'  => $data,
-         'label' => $params['label'],
-         'icon'  => $params['icon'],
+            'data'  => $data,
+            'label' => $params['label'],
+            'icon'  => $params['icon'],
         ];
     }
 
@@ -868,16 +868,16 @@ class Provider
         $DB = DBConnection::getReadConnection();
 
         $default_params = [
-         'icon'          => $item::getIcon(),
-         'apply_filters' => [],
+            'icon'          => $item::getIcon(),
+            'apply_filters' => [],
         ];
         $params = array_merge($default_params, $params);
 
         $i_table           = $item::getTable();
         $criteria = array_merge_recursive(
             [
-            'SELECT' => "$i_table.*",
-            'FROM'   => $i_table
+                'SELECT' => "$i_table.*",
+                'FROM'   => $i_table
             ],
             self::getFiltersCriteria($i_table, $params['apply_filters'])
         );
@@ -886,27 +886,27 @@ class Provider
         $data = [];
         foreach ($iterator as $line) {
             $data[] = [
-            'date'    => $line['date'] ?? '',
-            'label'   => $line['name'] ?? '',
-            'content' => $line['text'] ?? '',
-            'author'  => User::getFriendlyNameById($line['users_id'] ?? 0),
-            'url'     => $item::getFormURLWithID($line['id']),
+                'date'    => $line['date'] ?? '',
+                'label'   => $line['name'] ?? '',
+                'content' => $line['text'] ?? '',
+                'author'  => User::getFriendlyNameById($line['users_id'] ?? 0),
+                'url'     => $item::getFormURLWithID($line['id']),
             ];
         }
 
         $nb_items = count($data);
         if ($nb_items === 0) {
             $data = [
-            'nodata' => true
+                'nodata' => true
             ];
         }
 
         return [
-         'data'   => $data,
-         'number' => $nb_items,
-         'url'    => $item::getSearchURL(),
-         'label'  => $item::getTypeName($nb_items),
-         'icon'   => $item::getIcon(),
+            'data'   => $data,
+            'number' => $nb_items,
+            'url'    => $item::getSearchURL(),
+            'label'  => $item::getTypeName($nb_items),
+            'icon'   => $item::getIcon(),
         ];
     }
 
@@ -925,25 +925,25 @@ class Provider
     {
         $DB = DBConnection::getReadConnection();
         $default_params = [
-         'label'         => "",
-         'icon'          => Ticket::getIcon(),
-         'apply_filters' => [],
+            'label'         => "",
+            'icon'          => Ticket::getIcon(),
+            'apply_filters' => [],
         ];
         $params = array_merge($default_params, $params);
 
         $t_table = Ticket::getTable();
         $criteria = array_merge_recursive(
             [
-            'SELECT' => [
-               'COUNT DISTINCT' => "$t_table.id as nb_tickets",
-               new QueryExpression("DATE_FORMAT(" . $DB->quoteName("date") . ", '%Y-%m') AS ticket_month")
-            ],
-            'FROM'    => $t_table,
-            'WHERE'    => [
-               "$t_table.is_deleted" => 0,
-            ] + getEntitiesRestrictCriteria($t_table),
-            'GROUPBY' => 'ticket_month',
-            'ORDER'   => 'ticket_month ASC'
+                'SELECT' => [
+                    'COUNT DISTINCT' => "$t_table.id as nb_tickets",
+                    new QueryExpression("DATE_FORMAT(" . $DB->quoteName("date") . ", '%Y-%m') AS ticket_month")
+                ],
+                'FROM'    => $t_table,
+                'WHERE'    => [
+                    "$t_table.is_deleted" => 0,
+                ] + getEntitiesRestrictCriteria($t_table),
+                'GROUPBY' => 'ticket_month',
+                'ORDER'   => 'ticket_month ASC'
             ],
             Ticket::getCriteriaFromProfile(),
             self::getFiltersCriteria($t_table, $params['apply_filters'])
@@ -951,20 +951,20 @@ class Provider
         $iterator = $DB->request($criteria);
 
         $s_criteria = [
-         'criteria' => [
-            [
-               'link'       => 'AND',
-               'field'      => 15,
-               'searchtype' => 'morethan',
-               'value'      => null
-            ], [
-               'link'       => 'AND',
-               'field'      => 15,
-               'searchtype' => 'lessthan',
-               'value'      => null
+            'criteria' => [
+                [
+                    'link'       => 'AND',
+                    'field'      => 15,
+                    'searchtype' => 'morethan',
+                    'value'      => null
+                ], [
+                    'link'       => 'AND',
+                    'field'      => 15,
+                    'searchtype' => 'lessthan',
+                    'value'      => null
+                ],
             ],
-         ],
-         'reset' => 'reset'
+            'reset' => 'reset'
         ];
 
         $data = [];
@@ -975,17 +975,17 @@ class Provider
             $s_criteria['criteria'][1]['value'] = $end_day;
 
             $data[] = [
-            'number' => $result['nb_tickets'],
-            'label'  => $result['ticket_month'],
-            'url'    => Ticket::getSearchURL() . "?" . Toolbox::append_params($s_criteria),
+                'number' => $result['nb_tickets'],
+                'label'  => $result['ticket_month'],
+                'url'    => Ticket::getSearchURL() . "?" . Toolbox::append_params($s_criteria),
             ];
         }
 
         return [
-         'data'        => $data,
-         'distributed' => false,
-         'label'       => $params['label'],
-         'icon'        => $params['icon'],
+            'data'        => $data,
+            'distributed' => false,
+            'label'       => $params['label'],
+            'icon'        => $params['icon'],
         ];
     }
 
@@ -1003,9 +1003,9 @@ class Provider
     public static function getTicketsEvolution(array $params = []): array
     {
         $default_params = [
-         'label'         => "",
-         'icon'          => Ticket::getIcon(),
-         'apply_filters' => [],
+            'label'         => "",
+            'icon'          => Ticket::getIcon(),
+            'apply_filters' => [],
         ];
         $params = array_merge($default_params, $params);
 
@@ -1026,87 +1026,87 @@ class Provider
 
         $series = [
 
-         'inter_total' => [
-            'name'   => _nx('ticket', 'Opened', 'Opened', Session::getPluralNumber()),
-            'search' => [
-               'criteria' => [
-                  [
-                     'link'       => 'AND',
-                     'field'      => 15, // creation date
-                     'searchtype' => 'morethan',
-                     'value'      => null
-                  ], [
-                     'link'       => 'AND',
-                     'field'      => 15, // creation date
-                     'searchtype' => 'lessthan',
-                     'value'      => null
-                  ],self::getSearchFiltersCriteria($t_table, $params['apply_filters']),
-               ],
-               'reset' => 'reset'
-            ]
-         ],
-         'inter_solved' => [
-            'name'   => _nx('ticket', 'Solved', 'Solved', Session::getPluralNumber()),
-            'search' => [
-               'criteria' => [
-                  [
-                     'link'       => 'AND',
-                     'field'      => 17, // solve date
-                     'searchtype' => 'morethan',
-                     'value'      => null
-                  ], [
-                     'link'       => 'AND',
-                     'field'      => 17, // solve date
-                     'searchtype' => 'lessthan',
-                     'value'      => null
-                  ],self::getSearchFiltersCriteria($t_table, $params['apply_filters']),
-               ],
-               'reset' => 'reset'
-            ]
-         ],
-         'inter_solved_late' => [
-            'name'   => __('Late'),
-            'search' => [
-               'criteria' => [
-                  [
-                     'link'       => 'AND',
-                     'field'      => 17, // solve date
-                     'searchtype' => 'morethan',
-                     'value'      => null
-                  ], [
-                     'link'       => 'AND',
-                     'field'      => 17, // solve date
-                     'searchtype' => 'lessthan',
-                     'value'      => null
-                  ], [
-                     'link'       => 'AND',
-                     'field'      => 82, // time_to_resolve exceed solve date
-                     'searchtype' => 'equals',
-                     'value'      => 1
-                  ],self::getSearchFiltersCriteria($t_table, $params['apply_filters']),
-               ],
-               'reset' => 'reset'
-            ]
-         ],
-         'inter_closed' => [
-            'name'   => __('Closed'),
-            'search' => [
-               'criteria' => [
-                  [
-                     'link'       => 'AND',
-                     'field'      => 16, // close date
-                     'searchtype' => 'morethan',
-                     'value'      => null
-                  ], [
-                     'link'       => 'AND',
-                     'field'      => 16, // close date
-                     'searchtype' => 'lessthan',
-                     'value'      => null
-                  ],self::getSearchFiltersCriteria($t_table, $params['apply_filters']),
-               ],
-               'reset' => 'reset'
-            ]
-         ],
+            'inter_total' => [
+                'name'   => _nx('ticket', 'Opened', 'Opened', Session::getPluralNumber()),
+                'search' => [
+                    'criteria' => [
+                        [
+                            'link'       => 'AND',
+                            'field'      => 15, // creation date
+                            'searchtype' => 'morethan',
+                            'value'      => null
+                        ], [
+                            'link'       => 'AND',
+                            'field'      => 15, // creation date
+                            'searchtype' => 'lessthan',
+                            'value'      => null
+                        ],self::getSearchFiltersCriteria($t_table, $params['apply_filters']),
+                    ],
+                    'reset' => 'reset'
+                ]
+            ],
+            'inter_solved' => [
+                'name'   => _nx('ticket', 'Solved', 'Solved', Session::getPluralNumber()),
+                'search' => [
+                    'criteria' => [
+                        [
+                            'link'       => 'AND',
+                            'field'      => 17, // solve date
+                            'searchtype' => 'morethan',
+                            'value'      => null
+                        ], [
+                            'link'       => 'AND',
+                            'field'      => 17, // solve date
+                            'searchtype' => 'lessthan',
+                            'value'      => null
+                        ],self::getSearchFiltersCriteria($t_table, $params['apply_filters']),
+                    ],
+                    'reset' => 'reset'
+                ]
+            ],
+            'inter_solved_late' => [
+                'name'   => __('Late'),
+                'search' => [
+                    'criteria' => [
+                        [
+                            'link'       => 'AND',
+                            'field'      => 17, // solve date
+                            'searchtype' => 'morethan',
+                            'value'      => null
+                        ], [
+                            'link'       => 'AND',
+                            'field'      => 17, // solve date
+                            'searchtype' => 'lessthan',
+                            'value'      => null
+                        ], [
+                            'link'       => 'AND',
+                            'field'      => 82, // time_to_resolve exceed solve date
+                            'searchtype' => 'equals',
+                            'value'      => 1
+                        ],self::getSearchFiltersCriteria($t_table, $params['apply_filters']),
+                    ],
+                    'reset' => 'reset'
+                ]
+            ],
+            'inter_closed' => [
+                'name'   => __('Closed'),
+                'search' => [
+                    'criteria' => [
+                        [
+                            'link'       => 'AND',
+                            'field'      => 16, // close date
+                            'searchtype' => 'morethan',
+                            'value'      => null
+                        ], [
+                            'link'       => 'AND',
+                            'field'      => 16, // close date
+                            'searchtype' => 'lessthan',
+                            'value'      => null
+                        ],self::getSearchFiltersCriteria($t_table, $params['apply_filters']),
+                    ],
+                    'reset' => 'reset'
+                ]
+            ],
         ];
 
         $filters = array_merge_recursive(
@@ -1140,8 +1140,8 @@ class Provider
                 $serie['search']['criteria'][1]['value'] = $end_day;
 
                 $serie['data'][$index] = [
-                 'value' => $number,
-                 'url'   => Ticket::getSearchURL() . "?" . Toolbox::append_params($serie['search']),
+                    'value' => $number,
+                    'url'   => Ticket::getSearchURL() . "?" . Toolbox::append_params($serie['search']),
                 ];
             }
 
@@ -1149,12 +1149,12 @@ class Provider
         }
 
         return [
-         'data'  => [
-            'labels' => $monthsyears,
-            'series' => array_values($series),
-         ],
-         'label' => $params['label'],
-         'icon'  => $params['icon'],
+            'data'  => [
+                'labels' => $monthsyears,
+                'series' => array_values($series),
+            ],
+            'label' => $params['label'],
+            'icon'  => $params['icon'],
         ];
     }
 
@@ -1174,9 +1174,9 @@ class Provider
         $DB = DBConnection::getReadConnection();
 
         $default_params = [
-         'label'          => "",
-         'icon'           => Ticket::getIcon(),
-         'apply_filters'  => [],
+            'label'          => "",
+            'icon'           => Ticket::getIcon(),
+            'apply_filters'  => [],
         ];
         $params = array_merge($default_params, $params);
 
@@ -1185,12 +1185,12 @@ class Provider
 
         $sub_query = array_merge_recursive(
             [
-            'DISTINCT' => true,
-            'SELECT'   => ["$t_table.*"],
-            'FROM'     => $t_table,
-            'WHERE'    => [
-               "$t_table.is_deleted" => 0,
-            ] + getEntitiesRestrictCriteria($t_table),
+                'DISTINCT' => true,
+                'SELECT'   => ["$t_table.*"],
+                'FROM'     => $t_table,
+                'WHERE'    => [
+                    "$t_table.is_deleted" => 0,
+                ] + getEntitiesRestrictCriteria($t_table),
             ],
             // limit count for profiles with limited rights
             Ticket::getCriteriaFromProfile(),
@@ -1198,68 +1198,68 @@ class Provider
         );
 
         $criteria = [
-         'SELECT'   => [
-            new QueryExpression(
-                "FROM_UNIXTIME(UNIX_TIMESTAMP(" . $DB->quoteName("{$t_table}_distinct.date") . "),'%Y-%m') AS period"
-            ),
-            new QueryExpression(
-                "SUM(IF({$t_table}_distinct.status = " . Ticket::INCOMING . ", 1, 0))
+            'SELECT'   => [
+                new QueryExpression(
+                    "FROM_UNIXTIME(UNIX_TIMESTAMP(" . $DB->quoteName("{$t_table}_distinct.date") . "),'%Y-%m') AS period"
+                ),
+                new QueryExpression(
+                    "SUM(IF({$t_table}_distinct.status = " . Ticket::INCOMING . ", 1, 0))
                   as " . $DB->quoteValue(_x('status', 'New'))
-            ),
-            new QueryExpression(
-                "SUM(IF({$t_table}_distinct.status = " . Ticket::ASSIGNED . ", 1, 0))
+                ),
+                new QueryExpression(
+                    "SUM(IF({$t_table}_distinct.status = " . Ticket::ASSIGNED . ", 1, 0))
                   as " . $DB->quoteValue(_x('status', 'Processing (assigned)'))
-            ),
-            new QueryExpression(
-                "SUM(IF({$t_table}_distinct.status = " . Ticket::PLANNED . ", 1, 0))
+                ),
+                new QueryExpression(
+                    "SUM(IF({$t_table}_distinct.status = " . Ticket::PLANNED . ", 1, 0))
                   as " . $DB->quoteValue(_x('status', 'Processing (planned)'))
-            ),
-            new QueryExpression(
-                "SUM(IF({$t_table}_distinct.status = " . Ticket::WAITING . ", 1, 0))
+                ),
+                new QueryExpression(
+                    "SUM(IF({$t_table}_distinct.status = " . Ticket::WAITING . ", 1, 0))
                   as " . $DB->quoteValue(__('Pending'))
-            ),
-            new QueryExpression(
-                "SUM(IF({$t_table}_distinct.status = " . Ticket::SOLVED . ", 1, 0))
+                ),
+                new QueryExpression(
+                    "SUM(IF({$t_table}_distinct.status = " . Ticket::SOLVED . ", 1, 0))
                   as " . $DB->quoteValue(_x('status', 'Solved'))
-            ),
-            new QueryExpression(
-                "SUM(IF({$t_table}_distinct.status = " . Ticket::CLOSED . ", 1, 0))
+                ),
+                new QueryExpression(
+                    "SUM(IF({$t_table}_distinct.status = " . Ticket::CLOSED . ", 1, 0))
                   as " . $DB->quoteValue(_x('status', 'Closed'))
-            ),
-         ],
-         'FROM' => new QuerySubQuery($sub_query, "{$t_table}_distinct"),
-         'ORDER'   => 'period ASC',
-         'GROUP'    => ['period']
+                ),
+            ],
+            'FROM' => new QuerySubQuery($sub_query, "{$t_table}_distinct"),
+            'ORDER'   => 'period ASC',
+            'GROUP'    => ['period']
         ];
 
         $iterator = $DB->request($criteria);
 
         $s_criteria = [
-         'criteria' => [
-            [
-               'link'       => 'AND',
-               'field'      => 12, // status
-               'searchtype' => 'equals',
-               'value'      => null
-            ], [
-               'link'       => 'AND',
-               'field'      => 15, // creation date
-               'searchtype' => 'morethan',
-               'value'      => null
-            ], [
-               'link'       => 'AND',
-               'field'      => 15, // creation date
-               'searchtype' => 'lessthan',
-               'value'      => null
+            'criteria' => [
+                [
+                    'link'       => 'AND',
+                    'field'      => 12, // status
+                    'searchtype' => 'equals',
+                    'value'      => null
+                ], [
+                    'link'       => 'AND',
+                    'field'      => 15, // creation date
+                    'searchtype' => 'morethan',
+                    'value'      => null
+                ], [
+                    'link'       => 'AND',
+                    'field'      => 15, // creation date
+                    'searchtype' => 'lessthan',
+                    'value'      => null
+                ],
+                self::getSearchFiltersCriteria($t_table, $params['apply_filters'])
             ],
-            self::getSearchFiltersCriteria($t_table, $params['apply_filters'])
-         ],
-         'reset' => 'reset'
+            'reset' => 'reset'
         ];
 
         $data = [
-         'labels' => [],
-         'series' => []
+            'labels' => [],
+            'series' => []
         ];
         foreach ($iterator as $result) {
             list($start_day, $end_day) = self::formatMonthyearDates($result['period']);
@@ -1277,17 +1277,17 @@ class Provider
 
                 $data['series'][$i]['name'] = $label2;
                 $data['series'][$i]['data'][] = [
-                'value' => (int) $value,
-                'url'   => Ticket::getSearchURL() . "?" . Toolbox::append_params($s_criteria),
+                    'value' => (int) $value,
+                    'url'   => Ticket::getSearchURL() . "?" . Toolbox::append_params($s_criteria),
                 ];
                 $i++;
             }
         }
 
         return [
-         'data'  => $data,
-         'label' => $params['label'],
-         'icon'  => $params['icon'],
+            'data'  => $data,
+            'label' => $params['label'],
+            'icon'  => $params['icon'],
         ];
     }
 
@@ -1315,9 +1315,9 @@ class Provider
     ): array {
         $DBread = DBConnection::getReadConnection();
         $default_params = [
-         'label'         => "",
-         'icon'          => null,
-         'apply_filters' => [],
+            'label'         => "",
+            'icon'          => null,
+            'apply_filters' => [],
         ];
         $params = array_merge($default_params, $params);
 
@@ -1325,12 +1325,12 @@ class Provider
         $li_table = Ticket_User::getTable();
         $ug_table = User::getTable();
         $n_fields = [
-         "$ug_table.firstname as first",
-         "$ug_table.realname as second",
+            "$ug_table.firstname as first",
+            "$ug_table.realname as second",
         ];
 
         $where = [
-         "$t_table.is_deleted" => 0,
+            "$t_table.is_deleted" => 0,
         ];
 
         $case_array = explode('_', $case);
@@ -1341,7 +1341,7 @@ class Provider
             $li_table = Group_Ticket::getTable();
             $ug_table = Group::getTable();
             $n_fields = [
-            "$ug_table.completename as first"
+                "$ug_table.completename as first"
             ];
             $params['icon'] = $params['icon'] ?? Group::getIcon();
         }
@@ -1376,33 +1376,33 @@ class Provider
 
         $criteria = array_merge_recursive(
             [
-            'SELECT' => array_merge([
-               'COUNT DISTINCT' => "$t_table.id AS nb_tickets",
-               "$ug_table.id as actor_id",
-            ], $n_fields),
-            'FROM' => $t_table,
-            'INNER JOIN' => [
-               $li_table => [
-                  'ON' => [
-                     $li_table => getForeignKeyFieldForItemType("Ticket"),
-                     $t_table  => 'id',
-                     [
-                        'AND' => [
-                           "$li_table.type" => $type
+                'SELECT' => array_merge([
+                    'COUNT DISTINCT' => "$t_table.id AS nb_tickets",
+                    "$ug_table.id as actor_id",
+                ], $n_fields),
+                'FROM' => $t_table,
+                'INNER JOIN' => [
+                    $li_table => [
+                        'ON' => [
+                            $li_table => getForeignKeyFieldForItemType("Ticket"),
+                            $t_table  => 'id',
+                            [
+                                'AND' => [
+                                    "$li_table.type" => $type
+                                ]
+                            ]
                         ]
-                     ]
-                  ]
-               ],
-               $ug_table => [
-                  'ON' => [
-                     $li_table => getForeignKeyFieldForTable($ug_table),
-                     $ug_table  => 'id'
-                  ]
-               ]
-            ],
-            'GROUPBY' => "$ug_table.id",
-            'ORDER'   => 'nb_tickets DESC',
-            'WHERE'   => $where + getEntitiesRestrictCriteria($t_table),
+                    ],
+                    $ug_table => [
+                        'ON' => [
+                            $li_table => getForeignKeyFieldForTable($ug_table),
+                            $ug_table  => 'id'
+                        ]
+                    ]
+                ],
+                'GROUPBY' => "$ug_table.id",
+                'ORDER'   => 'nb_tickets DESC',
+                'WHERE'   => $where + getEntitiesRestrictCriteria($t_table),
             ],
             Ticket::getCriteriaFromProfile(),
             self::getFiltersCriteria($t_table, $params['apply_filters'])
@@ -1410,30 +1410,30 @@ class Provider
         $iterator = $DBread->request($criteria);
 
         $s_criteria = [
-         'criteria' => [
-            [
-               'link'       => 'AND',
-               'field'      => $soption,
-               'searchtype' => 'equals',
-               'value'      => null
+            'criteria' => [
+                [
+                    'link'       => 'AND',
+                    'field'      => $soption,
+                    'searchtype' => 'equals',
+                    'value'      => null
+                ],
+                self::getSearchFiltersCriteria($t_table, $params['apply_filters']),
             ],
-            self::getSearchFiltersCriteria($t_table, $params['apply_filters']),
-         ],
-         'reset' => 'reset'
+            'reset' => 'reset'
         ];
         $data = [];
         foreach ($iterator as $result) {
             $s_criteria['criteria'][0]['value'] = $result['actor_id'];
             $data[] = [
-            'number' => $result['nb_tickets'],
-            'label'  => $result['first'] . " " . ($result['second'] ?? ""),
-            'url'    => Ticket::getSearchURL() . "?" . Toolbox::append_params($s_criteria),
+                'number' => $result['nb_tickets'],
+                'label'  => $result['first'] . " " . ($result['second'] ?? ""),
+                'url'    => Ticket::getSearchURL() . "?" . Toolbox::append_params($s_criteria),
             ];
         }
         return [
-         'data'  => $data,
-         'label' => $params['label'],
-         'icon'  => $params['icon'],
+            'data'  => $data,
+            'label' => $params['label'],
+            'icon'  => $params['icon'],
         ];
     }
 
@@ -1452,28 +1452,28 @@ class Provider
     {
         $DBread = DBConnection::getReadConnection();
         $default_params = [
-         'label'         => "",
-         'icon'          => "fas fa-stopwatch",
-         'apply_filters' => [],
+            'label'         => "",
+            'icon'          => "fas fa-stopwatch",
+            'apply_filters' => [],
         ];
         $params = array_merge($default_params, $params);
 
         $t_table  = Ticket::getTable();
         $criteria = array_merge_recursive(
             [
-            'SELECT' => [
-               new QueryExpression("DATE_FORMAT(" . $DBread->quoteName("date") . ", '%Y-%m') AS period"),
-               new QueryExpression("AVG(" . $DBread->quoteName("takeintoaccount_delay_stat") . ") AS avg_takeintoaccount_delay_stat"),
-               new QueryExpression("AVG(" . $DBread->quoteName("waiting_duration") . ") AS avg_waiting_duration"),
-               new QueryExpression("AVG(" . $DBread->quoteName("solve_delay_stat") . ") AS avg_solve_delay_stat"),
-               new QueryExpression("AVG(" . $DBread->quoteName("close_delay_stat") . ") AS close_delay_stat"),
-            ],
-            'FROM' => $t_table,
-            'WHERE' => [
-               'is_deleted' => 0,
-            ] + getEntitiesRestrictCriteria($t_table),
-            'ORDER' => 'period ASC',
-            'GROUP' => ['period']
+                'SELECT' => [
+                    new QueryExpression("DATE_FORMAT(" . $DBread->quoteName("date") . ", '%Y-%m') AS period"),
+                    new QueryExpression("AVG(" . $DBread->quoteName("takeintoaccount_delay_stat") . ") AS avg_takeintoaccount_delay_stat"),
+                    new QueryExpression("AVG(" . $DBread->quoteName("waiting_duration") . ") AS avg_waiting_duration"),
+                    new QueryExpression("AVG(" . $DBread->quoteName("solve_delay_stat") . ") AS avg_solve_delay_stat"),
+                    new QueryExpression("AVG(" . $DBread->quoteName("close_delay_stat") . ") AS close_delay_stat"),
+                ],
+                'FROM' => $t_table,
+                'WHERE' => [
+                    'is_deleted' => 0,
+                ] + getEntitiesRestrictCriteria($t_table),
+                'ORDER' => 'period ASC',
+                'GROUP' => ['period']
             ],
             Ticket::getCriteriaFromProfile(),
             self::getFiltersCriteria($t_table, $params['apply_filters'])
@@ -1481,22 +1481,22 @@ class Provider
         $iterator = $DBread->request($criteria);
 
         $data = [
-         'labels' => [],
-         'series' => [
-            [
-               'name' => __("Time to own"),
-               'data' => []
-            ], [
-               'name' => __("Waiting time"),
-               'data' => []
-            ], [
-               'name' => __("Time to resolve"),
-               'data' => []
-            ], [
-               'name' => __("Time to close"),
-               'data' => []
+            'labels' => [],
+            'series' => [
+                [
+                    'name' => __("Time to own"),
+                    'data' => []
+                ], [
+                    'name' => __("Waiting time"),
+                    'data' => []
+                ], [
+                    'name' => __("Time to resolve"),
+                    'data' => []
+                ], [
+                    'name' => __("Time to close"),
+                    'data' => []
+                ]
             ]
-         ]
         ];
         foreach ($iterator as $r) {
             $data['labels'][] = $r['period'];
@@ -1510,9 +1510,9 @@ class Provider
         }
 
         return [
-         'data'  => $data,
-         'label' => $params['label'],
-         'icon'  => $params['icon'],
+            'data'  => $data,
+            'label' => $params['label'],
+            'icon'  => $params['icon'],
         ];
     }
 
@@ -1530,9 +1530,9 @@ class Provider
     public static function getTicketSummary(array $params = [])
     {
         $default_params = [
-         'label'         => "",
-         'icon'          => "",
-         'apply_filters' => [],
+            'label'         => "",
+            'icon'          => "",
+            'apply_filters' => [],
         ];
         $params = array_merge($default_params, $params);
 
@@ -1544,41 +1544,41 @@ class Provider
         $solved     = self::nbTicketsGeneric('solved', $params);
 
         return [
-         'data'  => [
-            [
-               'number' => $incoming['number'],
-               'label'  => __("New"),
-               'url'    => $incoming['url'],
-               'color'  => '#3bc519',
-            ], [
-               'number' => $assigned['number'],
-               'label'  => __("Assigned"),
-               'url'    => $assigned['url'],
-               'color'  => '#f1cd29',
-            ], [
-               'number' => $waiting['number'],
-               'label'  => __("Pending"),
-               'url'    => $waiting['url'],
-               'color'  => '#f1a129',
-            ], [
-               'number' => $tovalidate['number'],
-               'label'  => __("To validate"),
-               'url'    => $tovalidate['url'],
-               'color'  => '#266ae9',
-            ], [
-               'number' => $solved['number'],
-               'label'  => __("Solved"),
-               'url'    => $solved['url'],
-               'color'  => '#edc949',
-            ], [
-               'number' => $closed['number'],
-               'label'  => __("Closed"),
-               'url'    => $closed['url'],
-               'color'  => '#555555',
-            ]
-         ],
-         'label' => $params['label'],
-         'icon'  => $params['icon'],
+            'data'  => [
+                [
+                    'number' => $incoming['number'],
+                    'label'  => __("New"),
+                    'url'    => $incoming['url'],
+                    'color'  => '#3bc519',
+                ], [
+                    'number' => $assigned['number'],
+                    'label'  => __("Assigned"),
+                    'url'    => $assigned['url'],
+                    'color'  => '#f1cd29',
+                ], [
+                    'number' => $waiting['number'],
+                    'label'  => __("Pending"),
+                    'url'    => $waiting['url'],
+                    'color'  => '#f1a129',
+                ], [
+                    'number' => $tovalidate['number'],
+                    'label'  => __("To validate"),
+                    'url'    => $tovalidate['url'],
+                    'color'  => '#266ae9',
+                ], [
+                    'number' => $solved['number'],
+                    'label'  => __("Solved"),
+                    'url'    => $solved['url'],
+                    'color'  => '#edc949',
+                ], [
+                    'number' => $closed['number'],
+                    'label'  => __("Closed"),
+                    'url'    => $closed['url'],
+                    'color'  => '#555555',
+                ]
+            ],
+            'label' => $params['label'],
+            'icon'  => $params['icon'],
         ];
     }
 
@@ -1625,9 +1625,9 @@ class Provider
        //exclude itilobject already processed with 'date'
         if (
             !in_array($table, [
-            Ticket::getTable(),
-            Change::getTable(),
-            Problem::getTable(),
+                Ticket::getTable(),
+                Change::getTable(),
+                Problem::getTable(),
             ]) && $DB->fieldExists($table, 'date_creation')
             && isset($apply_filters['dates'])
             && count($apply_filters['dates']) == 2
@@ -1651,10 +1651,10 @@ class Provider
             && (int) $apply_filters['itilcategory'] > 0
         ) {
             $s_criteria['criteria'][] = [
-            'link'       => 'AND',
-            'field'      => self::getSearchOptionID($table, 'itilcategories_id', 'glpi_itilcategories'), // itilcategory
-            'searchtype' => 'equals',
-            'value'      => (int) $apply_filters['itilcategory']
+                'link'       => 'AND',
+                'field'      => self::getSearchOptionID($table, 'itilcategories_id', 'glpi_itilcategories'), // itilcategory
+                'searchtype' => 'equals',
+                'value'      => (int) $apply_filters['itilcategory']
             ];
         }
 
@@ -1664,10 +1664,10 @@ class Provider
             && (int) $apply_filters['requesttype'] > 0
         ) {
             $s_criteria['criteria'][] = [
-            'link'       => 'AND',
-            'field'      => self::getSearchOptionID($table, 'requesttypes_id', 'glpi_requesttypes'), // request type
-            'searchtype' => 'equals',
-            'value'      => (int) $apply_filters['requesttype']
+                'link'       => 'AND',
+                'field'      => self::getSearchOptionID($table, 'requesttypes_id', 'glpi_requesttypes'), // request type
+                'searchtype' => 'equals',
+                'value'      => (int) $apply_filters['requesttype']
             ];
         }
 
@@ -1677,10 +1677,10 @@ class Provider
             && (int) $apply_filters['location'] > 0
         ) {
             $s_criteria['criteria'][] = [
-            'link'       => 'AND',
-            'field'      => self::getSearchOptionID($table, 'locations_id', 'glpi_locations'), // location
-            'searchtype' => 'equals',
-            'value'      => (int) $apply_filters['location']
+                'link'       => 'AND',
+                'field'      => self::getSearchOptionID($table, 'locations_id', 'glpi_locations'), // location
+                'searchtype' => 'equals',
+                'value'      => (int) $apply_filters['location']
             ];
         }
 
@@ -1690,10 +1690,10 @@ class Provider
             && (int) $apply_filters['manufacturer'] > 0
         ) {
             $s_criteria['criteria'][] = [
-            'link'       => 'AND',
-            'field'      => self::getSearchOptionID($table, 'manufacturers_id', 'glpi_manufacturers'), // manufacturer
-            'searchtype' => 'equals',
-            'value'      => (int) $apply_filters['manufacturer']
+                'link'       => 'AND',
+                'field'      => self::getSearchOptionID($table, 'manufacturers_id', 'glpi_manufacturers'), // manufacturer
+                'searchtype' => 'equals',
+                'value'      => (int) $apply_filters['manufacturer']
             ];
         }
 
@@ -1708,23 +1708,23 @@ class Provider
             if ($groups_id != null) {
                 if ($DB->fieldExists($table, 'groups_id_tech')) {
                     $s_criteria['criteria'][] = [
-                    'link'       => 'AND',
-                    'field'      => self::getSearchOptionID($table, 'groups_id_tech', 'glpi_groups'), // group tech
-                    'searchtype' => 'equals',
-                    'value'      => $groups_id
+                        'link'       => 'AND',
+                        'field'      => self::getSearchOptionID($table, 'groups_id_tech', 'glpi_groups'), // group tech
+                        'searchtype' => 'equals',
+                        'value'      => $groups_id
                     ];
                 } else if (
                     in_array($table, [
-                    Ticket::getTable(),
-                    Change::getTable(),
-                    Problem::getTable(),
+                        Ticket::getTable(),
+                        Change::getTable(),
+                        Problem::getTable(),
                     ])
                 ) {
                     $s_criteria['criteria'][] = [
-                    'link'       => 'AND',
-                    'field'      => 8, // group tech
-                    'searchtype' => 'equals',
-                    'value'      => $groups_id
+                        'link'       => 'AND',
+                        'field'      => 8, // group tech
+                        'searchtype' => 'equals',
+                        'value'      => $groups_id
                     ];
                 }
             }
@@ -1736,23 +1736,23 @@ class Provider
         ) {
             if ($DB->fieldExists($table, 'users_id_tech')) {
                 $s_criteria['criteria'][] = [
-                'link'       => 'AND',
-                'field'      => self::getSearchOptionID($table, 'users_id_tech', 'glpi_users'),// tech
-                'searchtype' => 'equals',
-                'value'      =>  (int) $apply_filters['user_tech']
+                    'link'       => 'AND',
+                    'field'      => self::getSearchOptionID($table, 'users_id_tech', 'glpi_users'),// tech
+                    'searchtype' => 'equals',
+                    'value'      =>  (int) $apply_filters['user_tech']
                 ];
             } else if (
                 in_array($table, [
-                Ticket::getTable(),
-                Change::getTable(),
-                Problem::getTable(),
+                    Ticket::getTable(),
+                    Change::getTable(),
+                    Problem::getTable(),
                 ])
             ) {
                 $s_criteria['criteria'][] = [
-                'link'       => 'AND',
-                'field'      => 5,// tech
-                'searchtype' => 'equals',
-                'value'      =>  (int) $apply_filters['user_tech']
+                    'link'       => 'AND',
+                    'field'      => 5,// tech
+                    'searchtype' => 'equals',
+                    'value'      =>  (int) $apply_filters['user_tech']
                 ];
             }
         }
@@ -1778,9 +1778,9 @@ class Provider
        //exclude itilobject already processed with 'date'
         if (
             (!in_array($table, [
-            Ticket::getTable(),
-            Change::getTable(),
-            Problem::getTable(),
+                Ticket::getTable(),
+                Change::getTable(),
+                Problem::getTable(),
             ]) && $DB->fieldExists($table, 'date_creation'))
             && isset($apply_filters['dates'])
             && count($apply_filters['dates']) == 2
@@ -1802,7 +1802,7 @@ class Provider
             && (int) $apply_filters['itilcategory'] > 0
         ) {
             $where += [
-            "$table.itilcategories_id" => (int) $apply_filters['itilcategory']
+                "$table.itilcategories_id" => (int) $apply_filters['itilcategory']
             ];
         }
 
@@ -1812,7 +1812,7 @@ class Provider
             && (int) $apply_filters['requesttype'] > 0
         ) {
             $where += [
-            "$table.requesttypes_id" => (int) $apply_filters['requesttype']
+                "$table.requesttypes_id" => (int) $apply_filters['requesttype']
             ];
         }
 
@@ -1822,7 +1822,7 @@ class Provider
             && (int) $apply_filters['location'] > 0
         ) {
             $where += [
-            "$table.locations_id" => (int) $apply_filters['location']
+                "$table.locations_id" => (int) $apply_filters['location']
             ];
         }
 
@@ -1832,7 +1832,7 @@ class Provider
             && (int) $apply_filters['manufacturer'] > 0
         ) {
             $where += [
-            "$table.manufacturers_id" => (int) $apply_filters['manufacturer']
+                "$table.manufacturers_id" => (int) $apply_filters['manufacturer']
             ];
         }
 
@@ -1847,13 +1847,13 @@ class Provider
             if ($groups_id != null) {
                 if ($DB->fieldExists($table, 'groups_id_tech')) {
                     $where += [
-                    "$table.groups_id_tech" => $groups_id
+                        "$table.groups_id_tech" => $groups_id
                     ];
                 } else if (
                     in_array($table, [
-                    Ticket::getTable(),
-                    Change::getTable(),
-                    Problem::getTable(),
+                        Ticket::getTable(),
+                        Change::getTable(),
+                        Problem::getTable(),
                     ])
                 ) {
                     $itemtype  = getItemTypeForTable($table);
@@ -1863,16 +1863,16 @@ class Provider
                     $fk        = $main_item->getForeignKeyField();
 
                     $join += [
-                    "$gl_table as gl" => [
-                     'ON' => [
-                        'gl'   => $fk,
-                        $table => 'id',
-                     ]
-                    ]
+                        "$gl_table as gl" => [
+                            'ON' => [
+                                'gl'   => $fk,
+                                $table => 'id',
+                            ]
+                        ]
                     ];
                     $where += [
-                    "gl.type"      => \CommonITILActor::ASSIGN,
-                    "gl.groups_id" => $groups_id
+                        "gl.type"      => \CommonITILActor::ASSIGN,
+                        "gl.groups_id" => $groups_id
                     ];
                 }
             }
@@ -1889,13 +1889,13 @@ class Provider
             if ($users_id !== null) {
                 if ($DB->fieldExists($table, 'users_id_tech')) {
                     $where += [
-                    "$table.users_id_tech" => $users_id,
+                        "$table.users_id_tech" => $users_id,
                     ];
                 } else if (
                     in_array($table, [
-                    Ticket::getTable(),
-                    Change::getTable(),
-                    Problem::getTable(),
+                        Ticket::getTable(),
+                        Change::getTable(),
+                        Problem::getTable(),
                     ])
                 ) {
                     $itemtype  = getItemTypeForTable($table);
@@ -1905,16 +1905,16 @@ class Provider
                     $fk        = $main_item->getForeignKeyField();
 
                     $join += [
-                    "$ul_table as ul" => [
-                     'ON' => [
-                        'ul'   => $fk,
-                        $table => 'id',
-                     ]
-                    ]
+                        "$ul_table as ul" => [
+                            'ON' => [
+                                'ul'   => $fk,
+                                $table => 'id',
+                            ]
+                        ]
                     ];
                     $where += [
-                    "ul.type"     => \CommonITILActor::ASSIGN,
-                    "ul.users_id" => $users_id,
+                        "ul.type"     => \CommonITILActor::ASSIGN,
+                        "ul.users_id" => $users_id,
                     ];
                 }
             }
@@ -1937,8 +1937,8 @@ class Provider
         $end   = strtotime($dates[1]);
 
         return [
-         [$field => ['>=', date('Y-m-d', $begin)]],
-         [$field => ['<=', date('Y-m-d', $end)]],
+            [$field => ['>=', date('Y-m-d', $begin)]],
+            [$field => ['<=', date('Y-m-d', $end)]],
         ];
     }
 
@@ -1948,18 +1948,18 @@ class Provider
         if ($when == "begin") {
             $begin = strtotime($dates[0]);
             return [
-            'link'       => 'AND',
-            'field'      => $searchoption_id, // creation date
-            'searchtype' => 'morethan',
-            'value'      => date('Y-m-d 00:00:00', $begin)
+                'link'       => 'AND',
+                'field'      => $searchoption_id, // creation date
+                'searchtype' => 'morethan',
+                'value'      => date('Y-m-d 00:00:00', $begin)
             ];
         } else {
             $end   = strtotime($dates[1]);
             return [
-            'link'       => 'AND',
-            'field'      => $searchoption_id, // creation date
-            'searchtype' => 'lessthan',
-            'value'      => date('Y-m-d 00:00:00', $end)
+                'link'       => 'AND',
+                'field'      => $searchoption_id, // creation date
+                'searchtype' => 'lessthan',
+                'value'      => date('Y-m-d 00:00:00', $end)
             ];
         }
     }

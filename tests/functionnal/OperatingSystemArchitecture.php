@@ -47,18 +47,18 @@ class OperatingSystemArchitecture extends CommonDropdown
     public function typenameProvider()
     {
         return [
-         [\OperatingSystemArchitecture::getTypeName(), 'Operating system architectures'],
-         [\OperatingSystemArchitecture::getTypeName(0), 'Operating system architectures'],
-         [\OperatingSystemArchitecture::getTypeName(10), 'Operating system architectures'],
-         [\OperatingSystemArchitecture::getTypeName(1), 'Operating system architecture']
+            [\OperatingSystemArchitecture::getTypeName(), 'Operating system architectures'],
+            [\OperatingSystemArchitecture::getTypeName(0), 'Operating system architectures'],
+            [\OperatingSystemArchitecture::getTypeName(10), 'Operating system architectures'],
+            [\OperatingSystemArchitecture::getTypeName(1), 'Operating system architecture']
         ];
     }
 
     protected function getTabs()
     {
         return [
-         'OperatingSystemArchitecture$main'  => 'Operating system architecture',
-         'Log$1'                             => 'Historical'
+            'OperatingSystemArchitecture$main'  => 'Operating system architecture',
+            'Log$1'                             => 'Historical'
         ];
     }
 
@@ -72,7 +72,7 @@ class OperatingSystemArchitecture extends CommonDropdown
         $this->newTestedInstance();
         $this->integer(
             (int)$this->testedInstance->add([
-            'name' => 'Arch name ' . $this->getUniqueString()
+                'name' => 'Arch name ' . $this->getUniqueString()
             ])
         )->isGreaterThan(0);
         $this->boolean($this->testedInstance->getFromDB($this->testedInstance->getID()))->isTrue();

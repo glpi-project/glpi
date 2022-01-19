@@ -46,13 +46,13 @@ class Telemetry extends CommonGLPI
     public static function getTelemetryInfos()
     {
         $data = [
-         'glpi'   => self::grabGlpiInfos(),
-         'system' => [
-            'db'           => self::grabDbInfos(),
-            'web_server'   => self::grabWebserverInfos(),
-            'php'          => self::grabPhpInfos(),
-            'os'           => self::grabOsInfos()
-         ]
+            'glpi'   => self::grabGlpiInfos(),
+            'system' => [
+                'db'           => self::grabDbInfos(),
+                'web_server'   => self::grabWebserverInfos(),
+                'php'          => self::grabPhpInfos(),
+                'os'           => self::grabOsInfos()
+            ]
         ];
 
         return $data;
@@ -68,32 +68,32 @@ class Telemetry extends CommonGLPI
         global $CFG_GLPI;
 
         $glpi = [
-         'uuid'               => self::getInstanceUuid(),
-         'version'            => GLPI_VERSION,
-         'plugins'            => [],
-         'default_language'   => $CFG_GLPI['language'],
-         'install_mode'       => GLPI_INSTALL_MODE,
-         'usage'              => [
-            'avg_entities'          => self::getAverage('Entity'),
-            'avg_computers'         => self::getAverage('Computer'),
-            'avg_networkequipments' => self::getAverage('NetworkEquipment'),
-            'avg_tickets'           => self::getAverage('Ticket'),
-            'avg_problems'          => self::getAverage('Problem'),
-            'avg_changes'           => self::getAverage('Change'),
-            'avg_projects'          => self::getAverage('Project'),
-            'avg_users'             => self::getAverage('User'),
-            'avg_groups'            => self::getAverage('Group'),
-            'ldap_enabled'          => AuthLDAP::useAuthLdap(),
-            'mailcollector_enabled' => (MailCollector::countActiveCollectors() > 0),
-            'notifications_modes'   => []
-         ]
+            'uuid'               => self::getInstanceUuid(),
+            'version'            => GLPI_VERSION,
+            'plugins'            => [],
+            'default_language'   => $CFG_GLPI['language'],
+            'install_mode'       => GLPI_INSTALL_MODE,
+            'usage'              => [
+                'avg_entities'          => self::getAverage('Entity'),
+                'avg_computers'         => self::getAverage('Computer'),
+                'avg_networkequipments' => self::getAverage('NetworkEquipment'),
+                'avg_tickets'           => self::getAverage('Ticket'),
+                'avg_problems'          => self::getAverage('Problem'),
+                'avg_changes'           => self::getAverage('Change'),
+                'avg_projects'          => self::getAverage('Project'),
+                'avg_users'             => self::getAverage('User'),
+                'avg_groups'            => self::getAverage('Group'),
+                'ldap_enabled'          => AuthLDAP::useAuthLdap(),
+                'mailcollector_enabled' => (MailCollector::countActiveCollectors() > 0),
+                'notifications_modes'   => []
+            ]
         ];
 
         $plugins = new Plugin();
         foreach ($plugins->getList(['directory', 'version']) as $plugin) {
             $glpi['plugins'][] = [
-            'key'       => $plugin['directory'],
-            'version'   => $plugin['version']
+                'key'       => $plugin['directory'],
+                'version'   => $plugin['version']
             ];
         }
 
@@ -120,17 +120,17 @@ class Telemetry extends CommonGLPI
         $dbinfos = $DB->getInfo();
 
         $size_res = $DB->request([
-         'SELECT' => new \QueryExpression("ROUND(SUM(data_length + index_length) / 1024 / 1024, 1) AS dbsize"),
-         'FROM'   => 'information_schema.tables',
-         'WHERE'  => ['table_schema' => $DB->dbdefault]
+            'SELECT' => new \QueryExpression("ROUND(SUM(data_length + index_length) / 1024 / 1024, 1) AS dbsize"),
+            'FROM'   => 'information_schema.tables',
+            'WHERE'  => ['table_schema' => $DB->dbdefault]
         ])->current();
 
         $db = [
-         'engine'    => $dbinfos['Server Software'],
-         'version'   => $dbinfos['Server Version'],
-         'size'      => $size_res['dbsize'],
-         'log_size'  => '',
-         'sql_mode'  => $dbinfos['Server SQL Mode']
+            'engine'    => $dbinfos['Server Software'],
+            'version'   => $dbinfos['Server Version'],
+            'size'      => $size_res['dbsize'],
+            'log_size'  => '',
+            'sql_mode'  => $dbinfos['Server SQL Mode']
         ];
 
         return $db;
@@ -146,8 +146,8 @@ class Telemetry extends CommonGLPI
         global $CFG_GLPI;
 
         $server = [
-         'engine'  => '',
-         'version' => '',
+            'engine'  => '',
+            'version' => '',
         ];
 
         if (!filter_var(gethostbyname(parse_url($CFG_GLPI['url_base'], PHP_URL_HOST)), FILTER_VALIDATE_IP)) {
@@ -185,16 +185,16 @@ class Telemetry extends CommonGLPI
     public static function grabPhpInfos()
     {
         $php = [
-         'version'   => str_replace(PHP_EXTRA_VERSION, '', PHP_VERSION),
-         'modules'   => get_loaded_extensions(),
-         'setup'     => [
-            'max_execution_time'    => ini_get('max_execution_time'),
-            'memory_limit'          => ini_get('memory_limit'),
-            'post_max_size'         => ini_get('post_max_size'),
-            'safe_mode'             => ini_get('safe_mode'),
-            'session'               => ini_get('session.save_handler'),
-            'upload_max_filesize'   => ini_get('upload_max_filesize')
-         ]
+            'version'   => str_replace(PHP_EXTRA_VERSION, '', PHP_VERSION),
+            'modules'   => get_loaded_extensions(),
+            'setup'     => [
+                'max_execution_time'    => ini_get('max_execution_time'),
+                'memory_limit'          => ini_get('memory_limit'),
+                'post_max_size'         => ini_get('post_max_size'),
+                'safe_mode'             => ini_get('safe_mode'),
+                'session'               => ini_get('session.save_handler'),
+                'upload_max_filesize'   => ini_get('upload_max_filesize')
+            ]
         ];
 
         return $php;
@@ -212,9 +212,9 @@ class Telemetry extends CommonGLPI
             $distro = preg_replace('/\s+$/S', '', file_get_contents('/etc/redhat-release'));
         }
         $os = [
-         'family'       => php_uname('s'),
-         'distribution' => ($distro ?: ''),
-         'version'      => php_uname('r')
+            'family'       => php_uname('s'),
+            'distribution' => ($distro ?: ''),
+            'version'      => php_uname('r')
         ];
         return $os;
     }
@@ -274,8 +274,8 @@ class Telemetry extends CommonGLPI
 
         $url = GLPI_TELEMETRY_URI . '/telemetry';
         $opts = [
-         CURLOPT_POSTFIELDS      => $infos,
-         CURLOPT_HTTPHEADER      => ['Content-Type:application/json']
+            CURLOPT_POSTFIELDS      => $infos,
+            CURLOPT_HTTPHEADER      => ['Content-Type:application/json']
         ];
 
         $errstr = null;
@@ -399,12 +399,12 @@ class Telemetry extends CommonGLPI
     {
         global $DB;
         $iterator = $DB->request([
-         'SELECT' => ['state'],
-         'FROM'   => 'glpi_crontasks',
-         'WHERE'  => [
-            'name'   => 'telemetry',
-            'state' => 1
-         ]
+            'SELECT' => ['state'],
+            'FROM'   => 'glpi_crontasks',
+            'WHERE'  => [
+                'name'   => 'telemetry',
+                'state' => 1
+            ]
 
         ]);
         return count($iterator) > 0;

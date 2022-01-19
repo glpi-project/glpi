@@ -47,15 +47,15 @@ class USBVendor extends CommonDropdown implements CacheableListInterface
     public function getAdditionalFields()
     {
         return [
-         [
-            'name'   => 'vendorid',
-            'label'  => __('Vendor ID'),
-            'type'   => 'text'
-         ], [
-            'name'  => 'deviceid',
-            'label' => __('Device ID'),
-            'type'  => 'text'
-         ]
+            [
+                'name'   => 'vendorid',
+                'label'  => __('Vendor ID'),
+                'type'   => 'text'
+            ], [
+                'name'  => 'deviceid',
+                'label' => __('Device ID'),
+                'type'  => 'text'
+            ]
         ];
     }
 
@@ -64,19 +64,19 @@ class USBVendor extends CommonDropdown implements CacheableListInterface
         $tab = parent::rawSearchOptions();
 
         $tab[] = [
-         'id'                 => '10',
-         'table'              => $this->getTable(),
-         'field'              => 'vendorid',
-         'name'               => __('Vendor ID'),
-         'datatype'           => 'string'
+            'id'                 => '10',
+            'table'              => $this->getTable(),
+            'field'              => 'vendorid',
+            'name'               => __('Vendor ID'),
+            'datatype'           => 'string'
         ];
 
         $tab[] = [
-         'id'                 => '11',
-         'table'              => $this->getTable(),
-         'field'              => 'deviceid',
-         'name'               => __('Device ID'),
-         'datatype'           => 'string'
+            'id'                 => '11',
+            'table'              => $this->getTable(),
+            'field'              => 'deviceid',
+            'name'               => __('Device ID'),
+            'datatype'           => 'string'
         ];
 
         return $tab;

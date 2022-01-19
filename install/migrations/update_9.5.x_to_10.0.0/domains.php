@@ -40,10 +40,10 @@
 
 /** Add templates to domains  */
 $migration->addField('glpi_domains', 'is_template', 'bool', [
-   'after' => 'comment'
+    'after' => 'comment'
 ]);
 $migration->addField('glpi_domains', 'template_name', 'string', [
-   'after' => 'is_template'
+    'after' => 'is_template'
 ]);
 $migration->addKey('glpi_domains', 'is_template');
 /** /Add templates to domains  */
@@ -70,7 +70,7 @@ if (!$DB->fieldExists('glpi_domainrecordtypes', 'fields')) {
         'fields',
         'text',
         [
-         'after'  => 'name'
+            'after'  => 'name'
         ]
     );
     foreach (DomainRecordType::getDefaults() as $type) {
@@ -90,26 +90,27 @@ if (!$DB->fieldExists('glpi_domainrecordtypes', 'fields')) {
 
    //add is_fqdn on some domain records types
     $fields = [
-      'CNAME'  => ['target'],
-      'MX'     => ['server'],
-      'SOA'    => ['primary_name_server', 'primary_contact'],
-      'SRV'    => ['target']
+        'CNAME'  => ['target'],
+        'MX'     => ['server'],
+        'SOA'    => ['primary_name_server', 'primary_contact'],
+        'SRV'    => ['target']
     ];
 
     $fields_it = $DB->request([
-      'FROM'   => 'glpi_domainrecordtypes',
-      'WHERE'  => ['name' => array_keys($fields)]
+        'FROM'   => 'glpi_domainrecordtypes',
+        'WHERE'  => ['name' => array_keys($fields)]
     ]);
     foreach ($fields_it as $field) {
         if (empty($field['fields']) || $field['fields'] === '[]') {
             if ($field['name'] === 'CNAME') {
                 //cname field definition has been added
                 $field['fields'] = json_encode([[
-                 'key'         => 'target',
-                 'label'       => 'Target',
-                 'placeholder' => 'sip.example.com.',
-                 'is_fqdn'     => true
-                ]]);
+                    'key'         => 'target',
+                    'label'       => 'Target',
+                    'placeholder' => 'sip.example.com.',
+                    'is_fqdn'     => true
+                ]
+                ]);
             } else {
                 continue;
             }
@@ -157,13 +158,13 @@ $migration->addField(
     'data_obj',
     'text',
     [
-      'after'  => 'data'
+        'after'  => 'data'
     ]
 );
 
 // Rename date_creation (date the domain is created outside GLPI) field, then re-add field (Date the GLPI item was created)
 $migration->changeField(Domain::getTable(), 'date_creation', 'date_domaincreation', 'datetime', [
-   'after'  => 'date_expiration'
+    'after'  => 'date_expiration'
 ]);
 $migration->dropKey(Domain::getTable(), 'date_creation');
 $migration->migrationOneTable(Domain::getTable());

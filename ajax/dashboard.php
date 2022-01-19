@@ -47,9 +47,9 @@ if (!isset($request_data['embed']) || !$request_data['embed']) {
     Session::checkLoginUser();
 } else if (
     !in_array($_REQUEST['action'], [
-    'get_dashboard_items',
-    'get_card',
-    'get_cards'
+        'get_dashboard_items',
+        'get_card',
+        'get_cards'
     ])
 ) {
     Html::displayRightError();

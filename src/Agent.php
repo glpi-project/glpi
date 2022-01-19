@@ -72,74 +72,74 @@ class Agent extends CommonDBTM
     {
 
         $tab = [
-         [
-            'id'            => 'common',
-            'name'          => self::getTypeName(1)
-         ], [
-            'id'            => '1',
-            'table'         => $this->getTable(),
-            'field'         => 'name',
-            'name'          => __('Name'),
-            'datatype'      => 'itemlink',
-         ], [
-            'id'            => '2',
-            'table'         => Entity::getTable(),
-            'field'         => 'completename',
-            'name'          => Entity::getTypeName(1),
-            'datatype'      => 'dropdown',
-         ], [
-            'id'            => '3',
-            'table'         => $this->getTable(),
-            'field'         => 'is_recursive',
-            'name'          => __('Child entities'),
-            'datatype'      => 'bool',
-         ], [
-            'id'            => '4',
-            'table'         => $this->getTable(),
-            'field'         => 'last_contact',
-            'name'          => __('Last contact'),
-            'datatype'      => 'datetime',
-         ], [
-            'id'            => '5',
-            'table'         => $this->getTable(),
-            'field'         => 'locked',
-            'name'          => __('Locked'),
-            'datatype'      => 'bool',
-         ], [
-            'id'            => '6',
-            'table'         => $this->getTable(),
-            'field'         => 'deviceid',
-            'name'          => __('Device id'),
-            'datatype'      => 'text',
-            'massiveaction' => false,
-         ], [
-            'id'            => '8',
-            'table'         => $this->getTable(),
-            'field'         => 'version',
-            'name'          => _n('Version', 'Versions', 1),
-            'datatype'      => 'text',
-            'massiveaction' => false,
-         ], [
-            'id'            => '10',
-            'table'         => $this->getTable(),
-            'field'         => 'useragent',
-            'name'          => __('Useragent'),
-            'datatype'      => 'text',
-            'massiveaction' => false,
-         ], [
-            'id'            => '11',
-            'table'         => $this->getTable(),
-            'field'         => 'tag',
-            'name'          => __('Tag'),
-            'datatype'      => 'text',
-            'massiveaction' => false,
-         ], [
-            'id'            => '14',
-            'table'         => $this->getTable(),
-            'field'         => 'port',
-            'name'          => _n('Port', 'Ports', 1),
-            'datatype'      => 'integer',
-         ]
+            [
+                'id'            => 'common',
+                'name'          => self::getTypeName(1)
+            ], [
+                'id'            => '1',
+                'table'         => $this->getTable(),
+                'field'         => 'name',
+                'name'          => __('Name'),
+                'datatype'      => 'itemlink',
+            ], [
+                'id'            => '2',
+                'table'         => Entity::getTable(),
+                'field'         => 'completename',
+                'name'          => Entity::getTypeName(1),
+                'datatype'      => 'dropdown',
+            ], [
+                'id'            => '3',
+                'table'         => $this->getTable(),
+                'field'         => 'is_recursive',
+                'name'          => __('Child entities'),
+                'datatype'      => 'bool',
+            ], [
+                'id'            => '4',
+                'table'         => $this->getTable(),
+                'field'         => 'last_contact',
+                'name'          => __('Last contact'),
+                'datatype'      => 'datetime',
+            ], [
+                'id'            => '5',
+                'table'         => $this->getTable(),
+                'field'         => 'locked',
+                'name'          => __('Locked'),
+                'datatype'      => 'bool',
+            ], [
+                'id'            => '6',
+                'table'         => $this->getTable(),
+                'field'         => 'deviceid',
+                'name'          => __('Device id'),
+                'datatype'      => 'text',
+                'massiveaction' => false,
+            ], [
+                'id'            => '8',
+                'table'         => $this->getTable(),
+                'field'         => 'version',
+                'name'          => _n('Version', 'Versions', 1),
+                'datatype'      => 'text',
+                'massiveaction' => false,
+            ], [
+                'id'            => '10',
+                'table'         => $this->getTable(),
+                'field'         => 'useragent',
+                'name'          => __('Useragent'),
+                'datatype'      => 'text',
+                'massiveaction' => false,
+            ], [
+                'id'            => '11',
+                'table'         => $this->getTable(),
+                'field'         => 'tag',
+                'name'          => __('Tag'),
+                'datatype'      => 'text',
+                'massiveaction' => false,
+            ], [
+                'id'            => '14',
+                'table'         => $this->getTable(),
+                'field'         => 'port',
+                'name'          => _n('Port', 'Ports', 1),
+                'datatype'      => 'integer',
+            ]
         ];
 
         return $tab;
@@ -228,7 +228,7 @@ class Agent extends CommonDBTM
             echo Html::hidden(
                 'items_id',
                 [
-                'value' => $this->fields["items_id"]
+                    'value' => $this->fields["items_id"]
                 ]
             );
         }
@@ -353,12 +353,12 @@ class Agent extends CommonDBTM
         $atype->getFromDBByCrit(['name' => 'Core']);
 
         $input = [
-         'deviceid'     => $deviceid,
-         'name'         => $deviceid,
-         'last_contact' => date('Y-m-d H:i:s'),
-         'useragent'    => $_SERVER['HTTP_USER_AGENT'] ?? null,
-         'agenttypes_id' => $atype->fields['id'],
-         'itemtype'     => $metadata['itemtype'] ?? 'Computer'
+            'deviceid'     => $deviceid,
+            'name'         => $deviceid,
+            'last_contact' => date('Y-m-d H:i:s'),
+            'useragent'    => $_SERVER['HTTP_USER_AGENT'] ?? null,
+            'agenttypes_id' => $atype->fields['id'],
+            'itemtype'     => $metadata['itemtype'] ?? 'Computer'
         ];
 
         if (isset($metadata['provider']['version'])) {
@@ -472,40 +472,40 @@ class Agent extends CommonDBTM
 
            //append linked ips
             $ports_iterator = $DB->request([
-            'SELECT' => ['ips.name', 'ips.version'],
-            'FROM'   => NetworkPort::getTable() . ' AS netports',
-            'WHERE'  => [
-               'netports.itemtype'  => $item->getType(),
-               'netports.items_id'  => $item->getID(),
-               'NOT'       => [
-                  'OR'  => [
-                     'netports.instantiation_type' => 'NetworkPortLocal',
-                     'ips.name'                    => ['127.0.0.1', '::1']
-                  ]
-               ]
-            ],
-            'INNER JOIN'   => [
-               NetworkName::getTable() . ' AS netnames' => [
-                  'ON'  => [
-                     'netnames'  => 'items_id',
-                     'netports'  => 'id', [
-                        'AND' => [
-                           'netnames.itemtype'  => NetworkPort::getType()
+                'SELECT' => ['ips.name', 'ips.version'],
+                'FROM'   => NetworkPort::getTable() . ' AS netports',
+                'WHERE'  => [
+                    'netports.itemtype'  => $item->getType(),
+                    'netports.items_id'  => $item->getID(),
+                    'NOT'       => [
+                        'OR'  => [
+                            'netports.instantiation_type' => 'NetworkPortLocal',
+                            'ips.name'                    => ['127.0.0.1', '::1']
                         ]
-                     ]
-                  ]
-               ],
-               IPAddress::getTable() . ' AS ips' => [
-                  'ON'  => [
-                     'ips'       => 'items_id',
-                     'netnames'  => 'id', [
-                        'AND' => [
-                           'ips.itemtype' => NetworkName::getType()
+                    ]
+                ],
+                'INNER JOIN'   => [
+                    NetworkName::getTable() . ' AS netnames' => [
+                        'ON'  => [
+                            'netnames'  => 'items_id',
+                            'netports'  => 'id', [
+                                'AND' => [
+                                    'netnames.itemtype'  => NetworkPort::getType()
+                                ]
+                            ]
                         ]
-                     ]
-                  ]
-               ]
-            ]
+                    ],
+                    IPAddress::getTable() . ' AS ips' => [
+                        'ON'  => [
+                            'ips'       => 'items_id',
+                            'netnames'  => 'id', [
+                                'AND' => [
+                                    'ips.itemtype' => NetworkName::getType()
+                                ]
+                            ]
+                        ]
+                    ]
+                ]
             ]);
             foreach ($ports_iterator as $row) {
                 if (!in_array($row['name'], $adresses)) {
@@ -520,20 +520,20 @@ class Agent extends CommonDBTM
 
            //append linked domains
             $iterator = $DB->request([
-            'SELECT' => ['d.name'],
-            'FROM'   => Domain_Item::getTable(),
-            'WHERE'  => [
-               'itemtype'  => $item->getType(),
-               'items_id'  => $item->getID()
-            ],
-            'INNER JOIN'   => [
-               Domain::getTable() . ' AS d'  => [
-                  'ON'  => [
-                     Domain_Item::getTable() => Domain::getForeignKeyField(),
-                     'd'                     => 'id'
-                  ]
-               ]
-            ]
+                'SELECT' => ['d.name'],
+                'FROM'   => Domain_Item::getTable(),
+                'WHERE'  => [
+                    'itemtype'  => $item->getType(),
+                    'items_id'  => $item->getID()
+                ],
+                'INNER JOIN'   => [
+                    Domain::getTable() . ' AS d'  => [
+                        'ON'  => [
+                            Domain_Item::getTable() => Domain::getForeignKeyField(),
+                            'd'                     => 'id'
+                        ]
+                    ]
+                ]
             ]);
 
             foreach ($iterator as $row) {
@@ -592,8 +592,8 @@ class Agent extends CommonDBTM
 
         foreach ($adresses as $adress) {
             $options = [
-            'base_uri'        => sprintf('%s/%s', $adress, $endpoint),
-            'connect_timeout' => self::TIMEOUT,
+                'base_uri'        => sprintf('%s/%s', $adress, $endpoint),
+                'connect_timeout' => self::TIMEOUT,
             ];
 
            // add proxy string if configured in glpi

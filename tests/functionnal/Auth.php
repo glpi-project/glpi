@@ -42,19 +42,19 @@ class Auth extends DbTestCase
     protected function loginProvider()
     {
         return [
-         ['john', true],
-         ['john doe', true],
-         ['john_doe', true],
-         ['john-doe', true],
-         ['john.doe', true],
-         ['john \'o doe', true],
-         ['john@doe.com', true],
-         ['@doe.com', true],
-         ['john " doe', false],
-         ['john^doe', false],
-         ['john$doe', false],
-         [null, false],
-         ['', false]
+            ['john', true],
+            ['john doe', true],
+            ['john_doe', true],
+            ['john-doe', true],
+            ['john.doe', true],
+            ['john \'o doe', true],
+            ['john@doe.com', true],
+            ['@doe.com', true],
+            ['john " doe', false],
+            ['john^doe', false],
+            ['john$doe', false],
+            [null, false],
+            ['', false]
         ];
     }
 
@@ -70,8 +70,8 @@ class Auth extends DbTestCase
     {
         $methods = \Auth::getLoginAuthMethods();
         $expected = [
-         '_default'  => 'local',
-         'local'     => 'GLPI internal database'
+            '_default'  => 'local',
+            'local'     => 'GLPI internal database'
         ];
         $this->array($methods)->isIdenticalTo($expected);
     }
@@ -87,52 +87,52 @@ class Auth extends DbTestCase
 
        // test with no password expiration
         $tests[] = [
-         'last_update'   => date('Y-m-d H:i:s', strtotime('-10 years')),
-         'exp_delay'     => -1,
-         'lock_delay'    => -1,
-         'expected_lock' => false,
+            'last_update'   => date('Y-m-d H:i:s', strtotime('-10 years')),
+            'exp_delay'     => -1,
+            'lock_delay'    => -1,
+            'expected_lock' => false,
         ];
 
        // tests with no lock on password expiration
         $cases = [
-         '-5 days'  => false,
-         '-30 days' => false,
+            '-5 days'  => false,
+            '-30 days' => false,
         ];
         foreach ($cases as $last_update => $expected_lock) {
             $tests[] = [
-            'last_update'   => date('Y-m-d H:i:s', strtotime($last_update)),
-            'exp_delay'     => 15,
-            'lock_delay'    => -1,
-            'expected_lock' => $expected_lock,
+                'last_update'   => date('Y-m-d H:i:s', strtotime($last_update)),
+                'exp_delay'     => 15,
+                'lock_delay'    => -1,
+                'expected_lock' => $expected_lock,
             ];
         }
 
        // tests with immediate lock on password expiration
         $cases = [
-         '-5 days'  => false,
-         '-30 days' => true,
+            '-5 days'  => false,
+            '-30 days' => true,
         ];
         foreach ($cases as $last_update => $expected_lock) {
             $tests[] = [
-            'last_update'   => date('Y-m-d H:i:s', strtotime($last_update)),
-            'exp_delay'     => 15,
-            'lock_delay'    => 0,
-            'expected_lock' => $expected_lock,
+                'last_update'   => date('Y-m-d H:i:s', strtotime($last_update)),
+                'exp_delay'     => 15,
+                'lock_delay'    => 0,
+                'expected_lock' => $expected_lock,
             ];
         }
 
        // tests with delayed lock on password expiration
         $cases = [
-         '-5 days'  => false,
-         '-20 days' => false,
-         '-30 days' => true,
+            '-5 days'  => false,
+            '-20 days' => false,
+            '-30 days' => true,
         ];
         foreach ($cases as $last_update => $expected_lock) {
             $tests[] = [
-            'last_update'   => date('Y-m-d H:i:s', strtotime($last_update)),
-            'exp_delay'     => 15,
-            'lock_delay'    => 10,
-            'expected_lock' => $expected_lock,
+                'last_update'   => date('Y-m-d H:i:s', strtotime($last_update)),
+                'exp_delay'     => 15,
+                'lock_delay'    => 10,
+                'expected_lock' => $expected_lock,
             ];
         }
 
@@ -154,10 +154,10 @@ class Auth extends DbTestCase
         $user = new \User();
         $username = 'test_lock_' . mt_rand();
         $user_id = (int) $user->add([
-         'name'         => $username,
-         'password'     => 'test',
-         'password2'    => 'test',
-         '_profiles_id' => 1,
+            'name'         => $username,
+            'password'     => 'test',
+            'password2'    => 'test',
+            '_profiles_id' => 1,
         ]);
         $this->integer($user_id)->isGreaterThan(0);
         $this->boolean($user->update(['id' => $user_id, 'password_last_update' => $last_update]))->isTrue();

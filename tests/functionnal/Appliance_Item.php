@@ -52,19 +52,19 @@ class Appliance_Item extends DbTestCase
         $appliance = new \Appliance();
 
         $appliance_1 = (int)$appliance->add([
-         'name'   => 'Test appliance'
+            'name'   => 'Test appliance'
         ]);
         $this->integer($appliance_1)->isGreaterThan(0);
 
         $appliance_2 = (int)$appliance->add([
-         'name'   => 'Test appliance'
+            'name'   => 'Test appliance'
         ]);
         $this->integer($appliance_2)->isGreaterThan(0);
 
         $itemtypes = [
-         'Computer'  => '_test_pc01',
-         'Printer'   => '_test_printer_all',
-         'Software'  => '_test_soft'
+            'Computer'  => '_test_pc01',
+            'Printer'   => '_test_printer_all',
+            'Software'  => '_test_soft'
         ];
 
         foreach ($itemtypes as $itemtype => $itemname) {
@@ -76,9 +76,9 @@ class Appliance_Item extends DbTestCase
                 }
 
                 $input = [
-                'appliances_id'   => $app,
-                'itemtype'        => $itemtype,
-                'items_id'        => $items_id
+                    'appliances_id'   => $app,
+                    'itemtype'        => $itemtype,
+                    'items_id'        => $items_id
                 ];
                 $this
                 ->given($this->newTestedInstance)
@@ -105,8 +105,8 @@ class Appliance_Item extends DbTestCase
         $this->boolean($appliance->delete(['id' => $appliance_2], true))->isTrue();
 
         $iterator = $DB->request([
-         'FROM'   => \Appliance_Item::getTable(),
-         'WHERE'  => ['appliances_id' => [$appliance_1, $appliance_2]]
+            'FROM'   => \Appliance_Item::getTable(),
+            'WHERE'  => ['appliances_id' => [$appliance_1, $appliance_2]]
         ]);
         $this->integer(count($iterator))->isIdenticalTo(0);
     }

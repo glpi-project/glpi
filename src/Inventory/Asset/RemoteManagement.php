@@ -51,7 +51,7 @@ class RemoteManagement extends InventoryAsset
         }
 
         $mapping = [
-         'id'      => 'remoteid',
+            'id'      => 'remoteid',
         ];
 
         foreach ($this->data as &$val) {
@@ -80,12 +80,12 @@ class RemoteManagement extends InventoryAsset
         $db_existing = [];
 
         $iterator = $DB->request([
-         'SELECT' => ['id', 'remoteid', 'type', 'is_dynamic'],
-         'FROM'   => Item_RemoteManagement::getTable(),
-         'WHERE'  => [
-            'itemtype' => $this->item->getType(),
-            'items_id' => $this->item->fields['id']
-         ]
+            'SELECT' => ['id', 'remoteid', 'type', 'is_dynamic'],
+            'FROM'   => Item_RemoteManagement::getTable(),
+            'WHERE'  => [
+                'itemtype' => $this->item->getType(),
+                'items_id' => $this->item->fields['id']
+            ]
         ]);
         foreach ($iterator as $data) {
             $idtmp = $data['id'];
@@ -110,7 +110,7 @@ class RemoteManagement extends InventoryAsset
                 unset($arraydb['is_dynamic']);
                 if ($compare == $arraydb) {
                     $input = (array)$val + [
-                    'id'           => $keydb
+                        'id'           => $keydb
                     ];
                     $mgmt->update(Toolbox::addslashes_deep($input), $this->withHistory());
                     unset($value[$k]);

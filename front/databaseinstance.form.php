@@ -120,8 +120,8 @@ if (isset($_POST["add"])) {
 } else {
     Html::header(DatabaseInstance::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "management", "database", "databaseinstance");
     $options = [
-      'id'           => $_GET['id'],
-      'withtemplate' => $_GET['withtemplate']
+        'id'           => $_GET['id'],
+        'withtemplate' => $_GET['withtemplate']
     ];
     $instance->display($options);
     Html::footer();

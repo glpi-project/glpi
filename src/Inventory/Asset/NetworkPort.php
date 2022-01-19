@@ -64,11 +64,11 @@ class NetworkPort extends InventoryAsset
 
         $this->extra_data['\Glpi\Inventory\Asset\\' . $this->item->getType()] = null;
         $mapping = [
-         'ifname'   => 'name',
-         'ifnumber' => 'logical_number',
-         'ifportduplex' => 'portduplex',
-         'ifinoctets' => 'ifinbytes',
-         'ifoutoctets' => 'ifoutbytes'
+            'ifname'   => 'name',
+            'ifnumber' => 'logical_number',
+            'ifportduplex' => 'portduplex',
+            'ifinoctets' => 'ifinbytes',
+            'ifoutoctets' => 'ifoutbytes'
         ];
 
         foreach ($this->data as $k => &$val) {
@@ -118,7 +118,7 @@ class NetworkPort extends InventoryAsset
 
             if (property_exists($val, 'aggregate')) {
                 $this->aggregates[$val->ifnumber] = [
-                'aggregates' => array_fill_keys($val->aggregate, 0)
+                    'aggregates' => array_fill_keys($val->aggregate, 0)
                 ];
                 unset($val->aggregate);
             }
@@ -157,10 +157,10 @@ class NetworkPort extends InventoryAsset
         $ifnumber = $port->ifnumber;
 
         $lldp_mapping = [
-         'ifnumber'  => 'logical_number',
-         'model'     => 'networkportmodels_id',
-         'sysmac'    => 'mac',
-         'sysname'   => 'name'
+            'ifnumber'  => 'logical_number',
+            'model'     => 'networkportmodels_id',
+            'sysmac'    => 'mac',
+            'sysname'   => 'name'
         ];
 
         foreach ($connections as $connection) {
@@ -197,7 +197,7 @@ class NetworkPort extends InventoryAsset
         $results = [];
 
         $mapping = [
-         'number'  => 'tag'
+            'number'  => 'tag'
         ];
 
         foreach ($vlans as $vlan) {
@@ -230,12 +230,12 @@ class NetworkPort extends InventoryAsset
             $this->current_connection = $connection;
             $input = ['entities_id' => $this->entities_id];
             $props = [
-             'ifdescr',
+                'ifdescr',
              /*'sysdescr',*/
-             'ifnumber',
-             'mac',
-             'model',
-             'ip'
+                'ifnumber',
+                'mac',
+                'model',
+                'ip'
             ];
 
             foreach ($props as $prop) {
@@ -263,8 +263,8 @@ class NetworkPort extends InventoryAsset
 
                 if (!($contacts_id && $contacts_id == $connections_id)) {
                     $wire->add([
-                    'networkports_id_1'  => $netports_id,
-                    'networkports_id_2'  => $connections_id
+                        'networkports_id_1'  => $netports_id,
+                        'networkports_id_2'  => $connections_id
                     ], [], $this->withHistory());
                 }
             }
@@ -327,8 +327,8 @@ class NetworkPort extends InventoryAsset
 
                 if (!($contacts_id && $contacts_id == $connections_id)) {
                     $wire->add([
-                    'networkports_id_1'  => $netports_id,
-                    'networkports_id_2'  => $connections_id
+                        'networkports_id_1'  => $netports_id,
+                        'networkports_id_2'  => $connections_id
                     ], [], $this->withHistory());
                 }
             }
@@ -352,24 +352,24 @@ class NetworkPort extends InventoryAsset
 
         $db_vlans = [];
         $iterator = $DB->request([
-         'SELECT' => [
-            "$pvtable.id",
-            "$vtable.name",
-            "$vtable.tag",
-            "$pvtable.tagged",
-         ],
-         'FROM'   => $pvtable,
-         'LEFT JOIN' => [
-            $vtable => [
-               'ON'  => [
-                  $vtable  => 'id',
-                  $pvtable => 'vlans_id'
-               ]
+            'SELECT' => [
+                "$pvtable.id",
+                "$vtable.name",
+                "$vtable.tag",
+                "$pvtable.tagged",
+            ],
+            'FROM'   => $pvtable,
+            'LEFT JOIN' => [
+                $vtable => [
+                    'ON'  => [
+                        $vtable  => 'id',
+                        $pvtable => 'vlans_id'
+                    ]
+                ]
+            ],
+            'WHERE'     => [
+                'networkports_id' => $netports_id
             ]
-         ],
-         'WHERE'     => [
-            'networkports_id' => $netports_id
-         ]
         ]);
 
         foreach ($iterator as $row) {
@@ -400,7 +400,7 @@ class NetworkPort extends InventoryAsset
 
         $db_vlans = [];
         $vlans_iterator = $DB->request([
-         'FROM'   => \Vlan::getTable()
+            'FROM'   => \Vlan::getTable()
         ]);
         foreach ($vlans_iterator as $row) {
             $db_vlans[$row['name'] . '|' . $row['tag']] = $row['id'];
@@ -413,8 +413,8 @@ class NetworkPort extends InventoryAsset
 
             if (!$exists) {
                 $stmt_columns = [
-                'name' => $vlan_data->name ?? '',
-                'tag'  => $vlan_data->tag
+                    'name' => $vlan_data->name ?? '',
+                    'tag'  => $vlan_data->tag
                 ];
                 $stmt_types = str_repeat('s', count($stmt_columns));
 
@@ -442,9 +442,9 @@ class NetworkPort extends InventoryAsset
             $vlans_id = $db_vlans[$vlan_key];
 
             $pvlan_stmt_columns = [
-            'networkports_id' => $netports_id,
-            'vlans_id'        => $vlans_id,
-            'tagged'          => $vlan_data->tagged ?? 0
+                'networkports_id' => $netports_id,
+                'vlans_id'        => $vlans_id,
+                'tagged'          => $vlan_data->tagged ?? 0
             ];
             $pvlan_stmt_types = str_repeat('s', count($pvlan_stmt_columns));
 
@@ -509,8 +509,8 @@ class NetworkPort extends InventoryAsset
                 $input = $netport_aggregate->fields;
             } else {
                 $input = [
-                'networkports_id'       => $netports_id,
-                'networkports_id_list'  => []
+                    'networkports_id'       => $netports_id,
+                    'networkports_id_list'  => []
                 ];
                 $input['id'] = $netport_aggregate->add($input, [], $this->withHistory());
             }
@@ -585,12 +585,12 @@ class NetworkPort extends InventoryAsset
                 $agents_id = 0;
             }
             $inputrulelog = [
-            'date'      => date('Y-m-d H:i:s'),
-            'rules_id'  => $rules_id,
-            'items_id'  => $items_id,
-            'itemtype'  => $itemtype,
-            'agents_id' => $agents_id,
-            'method'    => 'inventory'
+                'date'      => date('Y-m-d H:i:s'),
+                'rules_id'  => $rules_id,
+                'items_id'  => $items_id,
+                'itemtype'  => $itemtype,
+                'agents_id' => $agents_id,
+                'method'    => 'inventory'
             ];
             $rulesmatched->add($inputrulelog, [], false);
             $rulesmatched->cleanOlddata($items_id, $itemtype);
@@ -599,18 +599,18 @@ class NetworkPort extends InventoryAsset
         if (!$ports_id) {
            //create network port
             $input = [
-            'items_id'           => $items_id,
-            'itemtype'           => $itemtype,
-            'instantiation_type' => 'NetworkPortEthernet'
+                'items_id'           => $items_id,
+                'itemtype'           => $itemtype,
+                'instantiation_type' => 'NetworkPortEthernet'
             ];
             if (property_exists($port, 'ip')) {
                 $input += [
-                '_create_children'         => 1,
-                'NetworkName_name'         => '',
-                'NetworkName_fqdns_id'     => 0,
-                'NetworkName__ipaddresses' => [
-                  '-1' => $port->ip
-                ]
+                    '_create_children'         => 1,
+                    'NetworkName_name'         => '',
+                    'NetworkName_fqdns_id'     => 0,
+                    'NetworkName__ipaddresses' => [
+                        '-1' => $port->ip
+                    ]
                 ];
             }
 
@@ -742,8 +742,8 @@ class NetworkPort extends InventoryAsset
 
         $glpi_ports = [];
         $dbports = $netport->find([
-         'items_id' => $hubs_id,
-         'itemtype' => Unmanaged::getType()
+            'items_id' => $hubs_id,
+            'itemtype' => Unmanaged::getType()
         ]);
         foreach ($dbports as $dbport) {
             $id = $link->getOppositeContact($dbport['id']);

@@ -46,7 +46,7 @@ class Simcard extends Device
     public function prepare(): array
     {
         $mapping = [
-         'imsi' => 'serial'
+            'imsi' => 'serial'
         ];
         foreach ($this->data as $k => &$val) {
             foreach ($mapping as $origin => $dest) {

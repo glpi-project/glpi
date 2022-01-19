@@ -58,10 +58,10 @@ class Entity_Reminder extends CommonDBRelation
 
         $ent   = [];
         $iterator = $DB->request([
-         'FROM'   => self::getTable(),
-         'WHERE'  => [
-            'reminders_id' => $reminder->fields['id']
-         ]
+            'FROM'   => self::getTable(),
+            'WHERE'  => [
+                'reminders_id' => $reminder->fields['id']
+            ]
         ]);
 
         foreach ($iterator as $data) {

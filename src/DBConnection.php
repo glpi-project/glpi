@@ -115,10 +115,10 @@ class DBConnection extends CommonDBTM
     ): bool {
 
         $properties = [
-         'dbhost'     => $host,
-         'dbuser'     => $user,
-         'dbpassword' => rawurlencode($password),
-         'dbdefault'  => $dbname,
+            'dbhost'     => $host,
+            'dbuser'     => $user,
+            'dbpassword' => rawurlencode($password),
+            'dbdefault'  => $dbname,
         ];
         if ($use_timezones) {
             $properties[self::PROPERTY_USE_TIMEZONES] = true;
@@ -265,11 +265,11 @@ class DBConnection extends CommonDBTM
         }
 
         $properties = [
-         'slave'      => true,
-         'dbhost'     => $host,
-         'dbuser'     => $user,
-         'dbpassword' => rawurlencode($password),
-         'dbdefault'  => $dbname,
+            'slave'      => true,
+            'dbhost'     => $host,
+            'dbuser'     => $user,
+            'dbpassword' => rawurlencode($password),
+            'dbdefault'  => $dbname,
         ];
         if ($use_timezones) {
             $properties[self::PROPERTY_USE_TIMEZONES] = true;
@@ -613,7 +613,8 @@ class DBConnection extends CommonDBTM
     {
 
         return ['description' => __('Check the SQL replica'),
-                   'parameter'   => __('Max delay between master and slave (minutes)')];
+            'parameter'   => __('Max delay between master and slave (minutes)')
+        ];
     }
 
 
@@ -658,8 +659,9 @@ class DBConnection extends CommonDBTM
                 if ($diff > ($task->fields['param'] * 60)) {
                    //Raise event if replicate is not synchronized
                     $options = ['diff'        => $diff,
-                                'name'        => $name,
-                                'entities_id' => 0]; // entity to avoid warning in getReplyTo
+                        'name'        => $name,
+                        'entities_id' => 0
+                    ]; // entity to avoid warning in getReplyTo
                     NotificationEvent::raiseEvent('desynchronization', new self(), $options);
                 }
             }
@@ -736,8 +738,8 @@ class DBConnection extends CommonDBTM
         $cron           = new CronTask();
         $cron->getFromDBbyName('DBConnection', 'CheckDBreplicate');
         $input = [
-         'id'    => $cron->fields['id'],
-         'state' => ($enable ? 1 : 0)
+            'id'    => $cron->fields['id'],
+            'state' => ($enable ? 1 : 0)
         ];
         $cron->update($input);
     }

@@ -51,7 +51,7 @@ class PendingReasonCron extends CommonDBTM
     public static function cronInfo($name)
     {
         return [
-         'description' => self::getTaskDescription(),
+            'description' => self::getTaskDescription(),
         ];
     }
 
@@ -78,21 +78,21 @@ class PendingReasonCron extends CommonDBTM
         }
 
         $targets = [
-         Ticket::getType(),
-         Change::getType(),
-         Problem::getType(),
+            Ticket::getType(),
+            Change::getType(),
+            Problem::getType(),
         ];
 
         $now = date("Y-m-d H:i:s");
 
         $data = $DB->request([
-         'SELECT' => 'id',
-         'FROM'   => PendingReason_Item::getTable(),
-         'WHERE'  => [
-            'pendingreasons_id'  => ['>', 0],
-            'followup_frequency' => ['>', 0],
-            'itemtype'           => $targets
-         ]
+            'SELECT' => 'id',
+            'FROM'   => PendingReason_Item::getTable(),
+            'WHERE'  => [
+                'pendingreasons_id'  => ['>', 0],
+                'followup_frequency' => ['>', 0],
+                'itemtype'           => $targets
+            ]
         ]);
 
         foreach ($data as $row) {
@@ -128,9 +128,9 @@ class PendingReasonCron extends CommonDBTM
                 }
 
                 $success = $pending_item->update([
-                'id'             => $pending_item->getID(),
-                'bump_count'     => $pending_item->fields['bump_count'] + 1,
-                'last_bump_date' => date("Y-m-d H:i:s"),
+                    'id'             => $pending_item->getID(),
+                    'bump_count'     => $pending_item->fields['bump_count'] + 1,
+                    'last_bump_date' => date("Y-m-d H:i:s"),
                 ]);
 
                 if (!$success) {
@@ -141,13 +141,13 @@ class PendingReasonCron extends CommonDBTM
                // Add bump (new followup from template)
                 $fup = new ITILFollowup();
                 $fup->add([
-                'itemtype' => $item::getType(),
-                'items_id' => $item->getID(),
-                'users_id' => $config['system_user'],
-                'content' => addslashes($fup_template->fields['content']),
-                'is_private' => $fup_template->fields['is_private'],
-                'requesttypes_id' => $fup_template->fields['requesttypes_id'],
-                'timeline_position' => CommonITILObject::TIMELINE_RIGHT,
+                    'itemtype' => $item::getType(),
+                    'items_id' => $item->getID(),
+                    'users_id' => $config['system_user'],
+                    'content' => addslashes($fup_template->fields['content']),
+                    'is_private' => $fup_template->fields['is_private'],
+                    'requesttypes_id' => $fup_template->fields['requesttypes_id'],
+                    'timeline_position' => CommonITILObject::TIMELINE_RIGHT,
                 ]);
                 $task->addVolume(1);
             } else if ($resolve && $now > $resolve) {
@@ -168,11 +168,11 @@ class PendingReasonCron extends CommonDBTM
                // Add solution
                 $solution = new ITILSolution();
                 $solution->add([
-                'itemtype'         => $item::getType(),
-                'items_id'         => $item->getID(),
-                'solutiontypes_id' => $solution_template->fields['solutiontypes_id'],
-                'content'          => addslashes($solution_template->fields['content']),
-                'users_id'         => $config['system_user'],
+                    'itemtype'         => $item::getType(),
+                    'items_id'         => $item->getID(),
+                    'solutiontypes_id' => $solution_template->fields['solutiontypes_id'],
+                    'content'          => addslashes($solution_template->fields['content']),
+                    'users_id'         => $config['system_user'],
                 ]);
                 $task->addVolume(1);
             }

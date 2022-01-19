@@ -52,7 +52,8 @@ if (!isset($_REQUEST['action'])) {
 $action = $_REQUEST['action'];
 
 $nonkanban_actions = ['update', 'bulk_add_item', 'add_item', 'move_item', 'show_card_edit_form', 'delete_item', 'load_item_panel',
-   'add_teammember', 'delete_teammember'];
+    'add_teammember', 'delete_teammember'
+];
 if (isset($_REQUEST['itemtype'])) {
     if (!in_array($_REQUEST['action'], $nonkanban_actions) && !Toolbox::hasTrait($_REQUEST['itemtype'], Kanban::class)) {
        // Bad request
@@ -112,8 +113,8 @@ if (($_POST['action'] ?? null) === 'update') {
     $checkParams(['column_field', 'column_value']);
    // Update project or task based on changes made in the Kanban
     $item->update([
-      'id'                   => $_POST['items_id'],
-      $_POST['column_field'] => $_POST['column_value']
+        'id'                   => $_POST['items_id'],
+        $_POST['column_field'] => $_POST['column_value']
     ]);
 } else if (($_POST['action'] ?? null) === 'add_item') {
     $checkParams(['inputs']);
@@ -177,7 +178,7 @@ if (($_POST['action'] ?? null) === 'update') {
 } else if ($_REQUEST['action'] === 'get_switcher_dropdown') {
     $values = $itemtype::getAllForKanban();
     Dropdown::showFromArray('kanban-board-switcher', $values, [
-      'value'  => $_REQUEST['items_id'] ?? ''
+        'value'  => $_REQUEST['items_id'] ?? ''
     ]);
 } else if ($_REQUEST['action'] === 'get_url') {
     $checkParams(['items_id']);
@@ -204,7 +205,7 @@ if (($_POST['action'] ?? null) === 'update') {
     $params = $_POST['params'] ?? [];
     $column_item = new $column_itemtype();
     $column_id = $column_item->add([
-      'name'   => $_POST['column_name']
+        'name'   => $_POST['column_name']
     ] + $params);
     header("Content-Type: application/json; charset=UTF-8", true);
     $column = $itemtype::getKanbanColumns($_POST['items_id'], $column_field, [$column_id]);
@@ -216,8 +217,8 @@ if (($_POST['action'] ?? null) === 'update') {
     $checkParams(['items_id', 'last_load']);
     header("Content-Type: application/json; charset=UTF-8", true);
     $response = [
-      'state'     => Item_Kanban::loadStateForItem($_REQUEST['itemtype'], $_REQUEST['items_id'], $_REQUEST['last_load']),
-      'timestamp' => $_SESSION['glpi_currenttime']
+        'state'     => Item_Kanban::loadStateForItem($_REQUEST['itemtype'], $_REQUEST['items_id'], $_REQUEST['last_load']),
+        'timestamp' => $_SESSION['glpi_currenttime']
     ];
     echo json_encode($response, JSON_FORCE_OBJECT);
 } else if ($_REQUEST['action'] === 'list_columns') {
@@ -252,19 +253,19 @@ if (($_POST['action'] ?? null) === 'update') {
 } else if (($_POST['action'] ?? null) === 'add_teammember') {
     $checkParams(['itemtype_teammember', 'items_id_teammember']);
     $item->addTeamMember($_POST['itemtype_teammember'], (int) $_POST['items_id_teammember'], [
-      'role'   => (int) $_POST['role']
+        'role'   => (int) $_POST['role']
     ]);
 } else if (($_POST['action'] ?? null) === 'delete_teammember') {
     $checkParams(['itemtype_teammember', 'items_id_teammember']);
     $item->deleteTeamMember($_POST['itemtype_teammember'], (int) $_POST['items_id_teammember'], [
-      'role'   => (int) $_POST['role']
+        'role'   => (int) $_POST['role']
     ]);
 } else if (($_REQUEST['action'] ?? null) === 'load_item_panel') {
     if (isset($itemtype, $item)) {
         TemplateRenderer::getInstance()->display('components/kanban/item_panels/default_panel.html.twig', [
-         'itemtype'     => $itemtype,
-         'item_fields'  => $item->fields,
-         'team'         => Toolbox::hasTrait($item, Teamwork::class) ? $item->getTeam() : []
+            'itemtype'     => $itemtype,
+            'item_fields'  => $item->fields,
+            'team'         => Toolbox::hasTrait($item, Teamwork::class) ? $item->getTeam() : []
         ]);
     } else {
         http_response_code(400);

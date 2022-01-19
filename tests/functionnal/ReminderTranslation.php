@@ -52,8 +52,8 @@ class ReminderTranslation extends DbTestCase
         $_SESSION['glpi_currenttime'] = $date;
 
         $data = [
-         'name'         => '_test_reminder01',
-         'entities_id'  => 0
+            'name'         => '_test_reminder01',
+            'entities_id'  => 0
         ];
 
         $reminder = new \Reminder();
@@ -96,10 +96,10 @@ class ReminderTranslation extends DbTestCase
         $trans = new \ReminderTranslation();
 
         $input = [
-         'reminders_id' => $reminder->getID(),
-         'users_id'     => getItemByTypeName('User', TU_USER, true),
-         'text'         => $text,
-         'language'     => $lang
+            'reminders_id' => $reminder->getID(),
+            'users_id'     => getItemByTypeName('User', TU_USER, true),
+            'text'         => $text,
+            'language'     => $lang
         ];
         $transID1 = $trans->add($input);
         $this->boolean($transID1 > 0)->isTrue();

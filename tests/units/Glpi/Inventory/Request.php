@@ -91,14 +91,14 @@ class Request extends \GLPITestCase
     protected function queriesProvider()
     {
         return [
-         ['query' => 'INVENTORY'], //Request::INVENT_QUERY | Request::INVENT_ACTION
-         ['query' => 'PROLOG'], //Request::PROLOG_QUERY
-         ['query' => 'SNMPQUERY'], //Request::OLD_SNMP_QUERY
-         ['query' => 'SNMP'], //Request::SNMP_QUERY
-         ['query' => 'NETDISCOVERY'], //Request::NETDISCOVERY_ACTION
-         ['query' => 'inventory'], //Request::INVENT_QUERY | Request::INVENT_ACTION
-         ['query' => 'prolog'], //Request::PROLOG_QUERY
-         ['query' => 'netinventory'], //Request::NETINV_ACTION
+            ['query' => 'INVENTORY'], //Request::INVENT_QUERY | Request::INVENT_ACTION
+            ['query' => 'PROLOG'], //Request::PROLOG_QUERY
+            ['query' => 'SNMPQUERY'], //Request::OLD_SNMP_QUERY
+            ['query' => 'SNMP'], //Request::SNMP_QUERY
+            ['query' => 'NETDISCOVERY'], //Request::NETDISCOVERY_ACTION
+            ['query' => 'inventory'], //Request::INVENT_QUERY | Request::INVENT_ACTION
+            ['query' => 'prolog'], //Request::PROLOG_QUERY
+            ['query' => 'netinventory'], //Request::NETINV_ACTION
         ];
     }
 
@@ -121,13 +121,13 @@ class Request extends \GLPITestCase
     protected function unhandledQueriesProvider()
     {
         return [
-         ['query' => 'register'], //Request::REGISTER_ACTION
-         ['query' => 'configuration'], //Request::CONFIG_ACTION
-         ['query' => 'esx'], //Request::ESX_ACTION
-         ['query' => 'collect'], //Request::COLLECT_ACTION
-         ['query' => 'deploy'], //Request:: DEPLOY_ACTION
-         ['query' => 'wakeonlan'], //Request::WOL_ACTION
-         ['query' => 'unknown'],
+            ['query' => 'register'], //Request::REGISTER_ACTION
+            ['query' => 'configuration'], //Request::CONFIG_ACTION
+            ['query' => 'esx'], //Request::ESX_ACTION
+            ['query' => 'collect'], //Request::COLLECT_ACTION
+            ['query' => 'deploy'], //Request:: DEPLOY_ACTION
+            ['query' => 'wakeonlan'], //Request::WOL_ACTION
+            ['query' => 'unknown'],
         ];
     }
 
@@ -160,55 +160,55 @@ class Request extends \GLPITestCase
         $request->handleContentType('application/xml');
        //to test nodes with attributes
         $request->addToResponse([
-         'OPTION' => [
-            'NAME' => 'NETDISCOVERY',
-            'PARAM' => [
-               'content' => '',
-               'attributes' => [
-                  'THREADS_DISCOVERY' => 5,
-                  'TIMEOUT' => 1,
-                  'PID' => 16
-               ]
-            ],
-            'RANGEIP' => [
-               'content' => '',
-               'attributes' => [
-                  'ID' => 1,
-                  'IPSTART' => '192.168.1.1',
-                  'IPEND' => '192.168.1.254',
-                  'ENTITY' => 0
-               ]
-            ],
-            [
-               'AUTHENTICATION' => [
-                  'content' => '',
-                  'attributes' => [
-                     'ID' => 1,
-                     'COMMUNITY' => 'public',
-                     'VERSION' => '1',
-                     'USERNAME' => '',
-                     'AUTHPROTOCOL' => '',
-                     'AUTHPASSPHRASE' => '',
-                     'PRIVPROTOCOL' => '',
-                     'PRIVPASSPHRASE' => ''
-                  ]
-               ]
-            ], [
-               'AUTHENTICATION' => [
-                  'content' => '',
-                  'attributes' => [
-                     'ID' => 2,
-                     'COMMUNITY' => 'public',
-                     'VERSION' => '2c',
-                     'USERNAME' => '',
-                     'AUTHPROTOCOL' => '',
-                     'AUTHPASSPHRASE' => '',
-                     'PRIVPROTOCOL' => '',
-                     'PRIVPASSPHRASE' => ''
-                  ]
-               ]
+            'OPTION' => [
+                'NAME' => 'NETDISCOVERY',
+                'PARAM' => [
+                    'content' => '',
+                    'attributes' => [
+                        'THREADS_DISCOVERY' => 5,
+                        'TIMEOUT' => 1,
+                        'PID' => 16
+                    ]
+                ],
+                'RANGEIP' => [
+                    'content' => '',
+                    'attributes' => [
+                        'ID' => 1,
+                        'IPSTART' => '192.168.1.1',
+                        'IPEND' => '192.168.1.254',
+                        'ENTITY' => 0
+                    ]
+                ],
+                [
+                    'AUTHENTICATION' => [
+                        'content' => '',
+                        'attributes' => [
+                            'ID' => 1,
+                            'COMMUNITY' => 'public',
+                            'VERSION' => '1',
+                            'USERNAME' => '',
+                            'AUTHPROTOCOL' => '',
+                            'AUTHPASSPHRASE' => '',
+                            'PRIVPROTOCOL' => '',
+                            'PRIVPASSPHRASE' => ''
+                        ]
+                    ]
+                ], [
+                    'AUTHENTICATION' => [
+                        'content' => '',
+                        'attributes' => [
+                            'ID' => 2,
+                            'COMMUNITY' => 'public',
+                            'VERSION' => '2c',
+                            'USERNAME' => '',
+                            'AUTHPROTOCOL' => '',
+                            'AUTHPASSPHRASE' => '',
+                            'PRIVPROTOCOL' => '',
+                            'PRIVPASSPHRASE' => ''
+                        ]
+                    ]
+                ]
             ]
-         ]
         ]);
 
         $this->string($request->getResponse())->isIdenticalTo("<?xml version=\"1.0\"?>\n<REPLY><OPTION><NAME>NETDISCOVERY</NAME><PARAM THREADS_DISCOVERY=\"5\" TIMEOUT=\"1\" PID=\"16\"/><RANGEIP ID=\"1\" IPSTART=\"192.168.1.1\" IPEND=\"192.168.1.254\" ENTITY=\"0\"/><AUTHENTICATION ID=\"1\" COMMUNITY=\"public\" VERSION=\"1\" USERNAME=\"\" AUTHPROTOCOL=\"\" AUTHPASSPHRASE=\"\" PRIVPROTOCOL=\"\" PRIVPASSPHRASE=\"\"/><AUTHENTICATION ID=\"2\" COMMUNITY=\"public\" VERSION=\"2c\" USERNAME=\"\" AUTHPROTOCOL=\"\" AUTHPASSPHRASE=\"\" PRIVPROTOCOL=\"\" PRIVPASSPHRASE=\"\"/></OPTION></REPLY>\n");
@@ -217,25 +217,25 @@ class Request extends \GLPITestCase
     protected function compressionProvider(): array
     {
         return [
-         [
-            'function' => 'gzcompress',
-            'mime' => 'application/x-compress-zlib'
-         ], [
-            'function' => 'gzcompress',
-            'mime' => 'application/x-zlib'
-         ], [
-            'function' => 'gzencode',
-            'mime' => 'application/x-gzip'
-         ], [
-            'function' => 'gzencode',
-            'mime' => 'application/x-compress-gzip'
-         ], [
-            'function' => 'gzdeflate',
-            'mime' => 'application/x-compress-deflate'
-         ], [
-            'function' => 'gzdeflate',
-            'mime' => 'application/x-deflate'
-         ]
+            [
+                'function' => 'gzcompress',
+                'mime' => 'application/x-compress-zlib'
+            ], [
+                'function' => 'gzcompress',
+                'mime' => 'application/x-zlib'
+            ], [
+                'function' => 'gzencode',
+                'mime' => 'application/x-gzip'
+            ], [
+                'function' => 'gzencode',
+                'mime' => 'application/x-compress-gzip'
+            ], [
+                'function' => 'gzdeflate',
+                'mime' => 'application/x-compress-deflate'
+            ], [
+                'function' => 'gzdeflate',
+                'mime' => 'application/x-deflate'
+            ]
         ];
     }
 

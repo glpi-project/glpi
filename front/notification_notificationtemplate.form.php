@@ -69,7 +69,7 @@ if (isset($_POST["add"])) {
         "notifications_notificationtemplates"
     );
     $params = [
-      'id' => $_GET['id'],
+        'id' => $_GET['id'],
     ];
     if (isset($_GET['notifications_id'])) {
         $params['notifications_id'] = $_GET['notifications_id'];

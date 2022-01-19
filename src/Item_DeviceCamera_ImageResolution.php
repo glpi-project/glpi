@@ -53,7 +53,7 @@ class Item_DeviceCamera_ImageResolution extends CommonDBRelation
                     $nb = countElementsInTable(
                         self::getTable(),
                         [
-                        'item_devicecameras_id' => $item->getID()
+                            'item_devicecameras_id' => $item->getID()
                         ]
                     );
                 }
@@ -98,19 +98,19 @@ class Item_DeviceCamera_ImageResolution extends CommonDBRelation
         $canedit = $camera->canEdit($ID);
 
         $items = $DB->request([
-         'SELECT' => [self::getTable() . '.*', ImageResolution::getTable() . '.is_video'],
-         'FROM'   => self::getTable(),
-         'LEFT JOIN' => [
-            ImageResolution::getTable() => [
-               'ON' => [
-                  ImageResolution::getTable() => 'id',
-                  self::getTable() => 'imageresolutions_id'
-               ]
+            'SELECT' => [self::getTable() . '.*', ImageResolution::getTable() . '.is_video'],
+            'FROM'   => self::getTable(),
+            'LEFT JOIN' => [
+                ImageResolution::getTable() => [
+                    'ON' => [
+                        ImageResolution::getTable() => 'id',
+                        self::getTable() => 'imageresolutions_id'
+                    ]
+                ]
+            ],
+            'WHERE'  => [
+                'item_devicecameras_id' => $camera->getID()
             ]
-         ],
-         'WHERE'  => [
-            'item_devicecameras_id' => $camera->getID()
-         ]
         ]);
         $link = new self();
 
@@ -134,8 +134,8 @@ class Item_DeviceCamera_ImageResolution extends CommonDBRelation
             if ($canedit) {
                 Html::openMassiveActionsForm('mass' . __CLASS__ . $rand);
                 $massiveactionparams = [
-                'num_displayed'   => min($_SESSION['glpilist_limit'], count($items)),
-                'container'       => 'mass' . __CLASS__ . $rand
+                    'num_displayed'   => min($_SESSION['glpilist_limit'], count($items)),
+                    'container'       => 'mass' . __CLASS__ . $rand
                 ];
                 Html::showMassiveActions($massiveactionparams);
             }

@@ -47,9 +47,9 @@ class Sensor extends Device
     {
 
         $mapping = [
-         'manufacturer' => 'manufacturers_id',
-         'type'         => 'devicesensortypes_id',
-         'name'         => 'designation'
+            'manufacturer' => 'manufacturers_id',
+            'type'         => 'devicesensortypes_id',
+            'name'         => 'designation'
         ];
 
         foreach ($this->data as &$val) {

@@ -43,11 +43,11 @@ class Lockedfield extends DbTestCase
     {
         $computer = new \Computer();
         $cid = (int)$computer->add([
-         'name'         => 'Computer from inventory',
-         'serial'       => '123456',
-         'otherserial'  => '789012',
-         'entities_id'  => 0,
-         'is_dynamic'   => 1
+            'name'         => 'Computer from inventory',
+            'serial'       => '123456',
+            'otherserial'  => '789012',
+            'entities_id'  => 0,
+            'is_dynamic'   => 1
         ]);
         $this->integer($cid)->isGreaterThan(0);
 
@@ -66,9 +66,9 @@ class Lockedfield extends DbTestCase
        //ensure new dynamic update does not override otherserial again
         $this->boolean(
             (bool)$computer->update([
-            'id' => $cid,
-            'otherserial'  => '789012',
-            'is_dynamic'   => 1
+                'id' => $cid,
+                'otherserial'  => '789012',
+                'is_dynamic'   => 1
             ])
         )->isTrue();
 
@@ -79,9 +79,9 @@ class Lockedfield extends DbTestCase
        //ensure new dynamic update do not set new lock on regular update
         $this->boolean(
             (bool)$computer->update([
-            'id' => $cid,
-            'name'         => 'Computer name changed',
-            'is_dynamic'   => 1
+                'id' => $cid,
+                'name'         => 'Computer name changed',
+                'is_dynamic'   => 1
             ])
         )->isTrue();
 

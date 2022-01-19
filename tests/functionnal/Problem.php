@@ -45,11 +45,11 @@ class Problem extends DbTestCase
         $computer   = getItemByTypeName('Computer', '_test_pc01');
         $problem     = new \Problem();
         $problems_id = $problem->add([
-         'name'           => "test add from computer \'_test_pc01\'",
-         'content'        => "test add from computer \'_test_pc01\'",
-         '_add_from_item' => true,
-         '_from_itemtype' => 'Computer',
-         '_from_items_id' => $computer->getID(),
+            'name'           => "test add from computer \'_test_pc01\'",
+            'content'        => "test add from computer \'_test_pc01\'",
+            '_add_from_item' => true,
+            '_from_itemtype' => 'Computer',
+            '_from_items_id' => $computer->getID(),
         ]);
         $this->integer($problems_id)->isGreaterThan(0);
         $this->boolean($problem->getFromDB($problems_id))->isTrue();
@@ -64,10 +64,10 @@ class Problem extends DbTestCase
         $this->login('glpi', 'glpi');
         $entity = new \Entity();
         $entityId = $entity->import([
-         'name' => 'an entity configured to check problem auto assignation of user ad group',
-         'entities_id' => 0,
-         'level' => 0,
-         'auto_assign_mode' => \Entity::CONFIG_NEVER,
+            'name' => 'an entity configured to check problem auto assignation of user ad group',
+            'entities_id' => 0,
+            'level' => 0,
+            'auto_assign_mode' => \Entity::CONFIG_NEVER,
         ]);
         $this->boolean($entity->isNewID($entityId))->isFalse();
 
@@ -81,97 +81,97 @@ class Problem extends DbTestCase
 
         $group = new \Group();
         $group->add([
-         'name' => 'A group to check automatic tech and group assignation',
-         'entities_id' => 0,
-         'is_recursive' => '1',
-         'level' => 0,
+            'name' => 'A group to check automatic tech and group assignation',
+            'entities_id' => 0,
+            'is_recursive' => '1',
+            'level' => 0,
         ]);
         $this->boolean($group->isNewItem())->isFalse();
 
         $itilCategory = new \ITILCategory();
         $itilCategory->add([
-         'name' => 'A category to check automatic tech and group assignation',
-         'itilcategories_id' => 0,
-         'users_id' => 4, // Tech
-         'groups_id' => $group->getID(),
+            'name' => 'A category to check automatic tech and group assignation',
+            'itilcategories_id' => 0,
+            'users_id' => 4, // Tech
+            'groups_id' => $group->getID(),
         ]);
         $this->boolean($itilCategory->isNewItem())->isFalse();
 
         $problem = new \Problem();
         $problem->add([
-         'name' => 'A problem to check if it is not automatically assigned user and group',
-         'content' => 'foo',
-         'itilcategories_id' => $itilCategory->getID(),
+            'name' => 'A problem to check if it is not automatically assigned user and group',
+            'content' => 'foo',
+            'itilcategories_id' => $itilCategory->getID(),
         ]);
         $this->boolean($problem->isNewItem())->isFalse();
         $problem->getFromDB($problem->getID());
         $problemUser = new \Problem_User();
         $groupProblem = new \group_Problem();
         $rows = $problemUser->find([
-         'problems_id' => $problem->getID(),
-         'type'       => \CommonITILActor::ASSIGN,
+            'problems_id' => $problem->getID(),
+            'type'       => \CommonITILActor::ASSIGN,
         ]);
         $this->integer(count($rows))->isEqualTo(0);
         $rows = $groupProblem->find([
-         'problems_id' => $problem->getID(),
-         'type'       => \CommonITILActor::ASSIGN,
+            'problems_id' => $problem->getID(),
+            'type'       => \CommonITILActor::ASSIGN,
         ]);
         $this->integer(count($rows))->isEqualTo(0);
 
        // check Entity::AUTO_ASSIGN_HARDWARE_CATEGORY assignment
         $entity->update([
-         'id' => $entity->getID(),
-         'auto_assign_mode' => \Entity::AUTO_ASSIGN_HARDWARE_CATEGORY,
+            'id' => $entity->getID(),
+            'auto_assign_mode' => \Entity::AUTO_ASSIGN_HARDWARE_CATEGORY,
         ]);
 
         $problem = new \Problem();
         $problem->add([
-         'name' => 'A problem to check if it is automatically assigned user and group (1)',
-         'content' => 'foo',
-         'itilcategories_id' => $itilCategory->getID(),
+            'name' => 'A problem to check if it is automatically assigned user and group (1)',
+            'content' => 'foo',
+            'itilcategories_id' => $itilCategory->getID(),
         ]);
         $this->boolean($problem->isNewItem())->isFalse();
         $problem->getFromDB($problem->getID());
         $problemUser = new \Problem_User();
         $groupProblem = new \group_Problem();
         $rows = $problemUser->find([
-         'problems_id' => $problem->getID(),
-         'users_id'    => 4, // tech
-         'type'       => \CommonITILActor::ASSIGN,
+            'problems_id' => $problem->getID(),
+            'users_id'    => 4, // tech
+            'type'       => \CommonITILActor::ASSIGN,
         ]);
         $this->integer(count($rows))->isEqualTo(0);
         $rows = $groupProblem->find([
-         'problems_id' => $problem->getID(),
-         'groups_id'   => $group->getID(),
-         'type'       => \CommonITILActor::ASSIGN,
+            'problems_id' => $problem->getID(),
+            'groups_id'   => $group->getID(),
+            'type'       => \CommonITILActor::ASSIGN,
         ]);
 
        // check Entity::AUTO_ASSIGN_CATEGORY_HARDWARE assignment
         $entity->update([
-         'id' => $entity->getID(),
-         'auto_assign_mode' => \Entity::AUTO_ASSIGN_CATEGORY_HARDWARE,
+            'id' => $entity->getID(),
+            'auto_assign_mode' => \Entity::AUTO_ASSIGN_CATEGORY_HARDWARE,
         ]);
 
         $problem = new \Problem();
         $problem->add([
-         'name' => 'A problem to check if it is automatically assigned user and group (2)',
-         'content' => 'foo',
-         'itilcategories_id' => $itilCategory->getID(),
+            'name' => 'A problem to check if it is automatically assigned user and group (2)',
+            'content' => 'foo',
+            'itilcategories_id' => $itilCategory->getID(),
         ]);
         $this->boolean($problem->isNewItem())->isFalse();
         $problem->getFromDB($problem->getID());
         $problemUser = new \Problem_User();
         $groupProblem = new \group_Problem();
         $rows = $problemUser->find([
-         'problems_id' => $problem->getID(),
-         'users_id'    => 4, // tech
-         'type'       => \CommonITILActor::ASSIGN,
+            'problems_id' => $problem->getID(),
+            'users_id'    => 4, // tech
+            'type'       => \CommonITILActor::ASSIGN,
         ]);
         $this->integer(count($rows))->isEqualTo(0);
         $rows = $groupProblem->find([
-         'problems_id' => $problem->getID(),
-         'groups_id'   => $group->getID(),
-         'type'       => \CommonITILActor::ASSIGN,
+            'problems_id' => $problem->getID(),
+            'groups_id'   => $group->getID(),
+            'type'       => \CommonITILActor::ASSIGN,
         ]);
     }
 
@@ -179,9 +179,9 @@ class Problem extends DbTestCase
     {
         $roles = \Problem::getTeamRoles();
         $this->array($roles)->containsValues([
-         \CommonITILActor::ASSIGN,
-         \CommonITILActor::OBSERVER,
-         \CommonITILActor::REQUESTER,
+            \CommonITILActor::ASSIGN,
+            \CommonITILActor::OBSERVER,
+            \CommonITILActor::REQUESTER,
         ]);
     }
 

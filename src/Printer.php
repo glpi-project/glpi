@@ -46,7 +46,8 @@ class Printer extends CommonDBTM
     public $dohistory                   = true;
 
     protected static $forward_entity_to = ['Infocom', 'NetworkPort', 'ReservationItem',
-                                          'Item_OperatingSystem', 'Item_Disk', 'Item_SoftwareVersion'];
+        'Item_OperatingSystem', 'Item_Disk', 'Item_SoftwareVersion'
+    ];
 
     public static $rightname                   = 'printer';
     protected $usenotepad               = true;
@@ -54,14 +55,14 @@ class Printer extends CommonDBTM
     public function getCloneRelations(): array
     {
         return [
-         Item_OperatingSystem::class,
-         Item_Devices::class,
-         Infocom::class,
-         NetworkPort::class,
-         Contract_Item::class,
-         Document_Item::class,
-         Computer_Item::class,
-         KnowbaseItem_Item::class,
+            Item_OperatingSystem::class,
+            Item_Devices::class,
+            Infocom::class,
+            NetworkPort::class,
+            Contract_Item::class,
+            Document_Item::class,
+            Computer_Item::class,
+            KnowbaseItem_Item::class,
         ];
     }
 
@@ -154,33 +155,34 @@ class Printer extends CommonDBTM
 
        // Evaluate connection in the 2 ways
         $tabend = ['networkports_id_1' => 'networkports_id_2',
-                 'networkports_id_2' => 'networkports_id_1'];
+            'networkports_id_2' => 'networkports_id_1'
+        ];
         foreach ($tabend as $enda => $endb) {
             $criteria = [
-            'SELECT'       => [
-               'itemtype',
-               new QueryExpression('GROUP_CONCAT(DISTINCT ' . $DB->quoteName('items_id') . ') AS ' . $DB->quoteName('ids'))
-            ],
-            'FROM'         => 'glpi_networkports_networkports',
-            'INNER JOIN'   => [
-               'glpi_networkports'  => [
-                  'ON'  => [
-                     'glpi_networkports_networkports' => $endb,
-                     'glpi_networkports'              => 'id'
-                  ]
-               ]
-            ],
-            'WHERE'        => [
-               'glpi_networkports_networkports.' . $enda   => new QuerySubQuery([
-                  'SELECT' => 'id',
-                  'FROM'   => 'glpi_networkports',
-                  'WHERE'  => [
-                     'itemtype'  => $this->getType(),
-                     'items_id'  => $ID
-                  ]
-               ])
-            ],
-            'GROUPBY'      => 'itemtype'
+                'SELECT'       => [
+                    'itemtype',
+                    new QueryExpression('GROUP_CONCAT(DISTINCT ' . $DB->quoteName('items_id') . ') AS ' . $DB->quoteName('ids'))
+                ],
+                'FROM'         => 'glpi_networkports_networkports',
+                'INNER JOIN'   => [
+                    'glpi_networkports'  => [
+                        'ON'  => [
+                            'glpi_networkports_networkports' => $endb,
+                            'glpi_networkports'              => 'id'
+                        ]
+                    ]
+                ],
+                'WHERE'        => [
+                    'glpi_networkports_networkports.' . $enda   => new QuerySubQuery([
+                        'SELECT' => 'id',
+                        'FROM'   => 'glpi_networkports',
+                        'WHERE'  => [
+                            'itemtype'  => $this->getType(),
+                            'items_id'  => $ID
+                        ]
+                    ])
+                ],
+                'GROUPBY'      => 'itemtype'
             ];
 
             $iterator = $DB->request($criteria);
@@ -191,7 +193,8 @@ class Printer extends CommonDBTM
                     if ($item->isEntityAssign()) {
                         if (
                             countElementsInTable($itemtable, ['id' => $data["ids"],
-                                             'NOT' => [ 'entities_id' => $entities]]) > 0
+                                'NOT' => [ 'entities_id' => $entities]
+                            ]) > 0
                         ) {
                             return false;
                         }
@@ -248,18 +251,18 @@ class Printer extends CommonDBTM
         $DB->update(
             'glpi_cartridges',
             [
-            'printers_id' => 'NULL'
+                'printers_id' => 'NULL'
             ],
             [
-            'printers_id' => $this->fields['id']
+                'printers_id' => $this->fields['id']
             ]
         );
 
         $this->deleteChildrenAndRelationsFromDb(
             [
-            Certificate_Item::class,
-            Computer_Item::class,
-            Item_Project::class,
+                Certificate_Item::class,
+                Computer_Item::class,
+                Item_Project::class,
             ]
         );
 
@@ -285,8 +288,8 @@ class Printer extends CommonDBTM
     {
         $this->initForm($ID, $options);
         TemplateRenderer::getInstance()->display('pages/assets/printer.html.twig', [
-         'item'   => $this,
-         'params' => $options,
+            'item'   => $this,
+            'params' => $options,
         ]);
         return true;
     }
@@ -303,12 +306,12 @@ class Printer extends CommonDBTM
         global $DB;
 
         $iterator = $DB->request([
-         'SELECT' => 'computers_id',
-         'FROM'   => 'glpi_computers_items',
-         'WHERE'  => [
-            'itemtype'  => $this->getType(),
-            'items_id'  => $this->fields['id']
-         ]
+            'SELECT' => 'computers_id',
+            'FROM'   => 'glpi_computers_items',
+            'WHERE'  => [
+                'itemtype'  => $this->getType(),
+                'items_id'  => $this->fields['id']
+            ]
         ]);
         $tab = [];
         foreach ($iterator as $data) {
@@ -328,7 +331,7 @@ class Printer extends CommonDBTM
         if (static::canUpdate()) {
             Computer_Item::getMassiveActionsForItemtype($actions, __CLASS__, 0, $checkitem);
             $actions += [
-            'Item_SoftwareLicense' . MassiveAction::CLASS_ACTION_SEPARATOR . 'add'
+                'Item_SoftwareLicense' . MassiveAction::CLASS_ACTION_SEPARATOR . 'add'
                => "<i class='ma-icon fas fa-key'></i>" .
                   _x('button', 'Add a license')
             ];
@@ -343,288 +346,289 @@ class Printer extends CommonDBTM
         $tab = parent::rawSearchOptions();
 
         $tab[] = [
-         'id'                 => '2',
-         'table'              => $this->getTable(),
-         'field'              => 'id',
-         'name'               => __('ID'),
-         'massiveaction'      => false,
-         'datatype'           => 'number'
+            'id'                 => '2',
+            'table'              => $this->getTable(),
+            'field'              => 'id',
+            'name'               => __('ID'),
+            'massiveaction'      => false,
+            'datatype'           => 'number'
         ];
 
         $tab = array_merge($tab, Location::rawSearchOptionsToAdd());
 
         $tab[] = [
-         'id'                 => '4',
-         'table'              => 'glpi_printertypes',
-         'field'              => 'name',
-         'name'               => _n('Type', 'Types', 1),
-         'datatype'           => 'dropdown'
+            'id'                 => '4',
+            'table'              => 'glpi_printertypes',
+            'field'              => 'name',
+            'name'               => _n('Type', 'Types', 1),
+            'datatype'           => 'dropdown'
         ];
 
         $tab[] = [
-         'id'                 => '40',
-         'table'              => 'glpi_printermodels',
-         'field'              => 'name',
-         'name'               => _n('Model', 'Models', 1),
-         'datatype'           => 'dropdown'
+            'id'                 => '40',
+            'table'              => 'glpi_printermodels',
+            'field'              => 'name',
+            'name'               => _n('Model', 'Models', 1),
+            'datatype'           => 'dropdown'
         ];
 
         $tab[] = [
-         'id'                 => '31',
-         'table'              => 'glpi_states',
-         'field'              => 'completename',
-         'name'               => __('Status'),
-         'datatype'           => 'dropdown',
-         'condition'          => ['is_visible_printer' => 1]
+            'id'                 => '31',
+            'table'              => 'glpi_states',
+            'field'              => 'completename',
+            'name'               => __('Status'),
+            'datatype'           => 'dropdown',
+            'condition'          => ['is_visible_printer' => 1]
         ];
 
         $tab[] = [
-         'id'                 => '5',
-         'table'              => $this->getTable(),
-         'field'              => 'serial',
-         'name'               => __('Serial number'),
-         'datatype'           => 'string',
+            'id'                 => '5',
+            'table'              => $this->getTable(),
+            'field'              => 'serial',
+            'name'               => __('Serial number'),
+            'datatype'           => 'string',
         ];
 
         $tab[] = [
-         'id'                 => '6',
-         'table'              => $this->getTable(),
-         'field'              => 'otherserial',
-         'name'               => __('Inventory number'),
-         'datatype'           => 'string',
+            'id'                 => '6',
+            'table'              => $this->getTable(),
+            'field'              => 'otherserial',
+            'name'               => __('Inventory number'),
+            'datatype'           => 'string',
         ];
 
         $tab[] = [
-         'id'                 => '7',
-         'table'              => $this->getTable(),
-         'field'              => 'contact',
-         'name'               => __('Alternate username'),
-         'datatype'           => 'string',
+            'id'                 => '7',
+            'table'              => $this->getTable(),
+            'field'              => 'contact',
+            'name'               => __('Alternate username'),
+            'datatype'           => 'string',
         ];
 
         $tab[] = [
-         'id'                 => '8',
-         'table'              => $this->getTable(),
-         'field'              => 'contact_num',
-         'name'               => __('Alternate username number'),
-         'datatype'           => 'string',
+            'id'                 => '8',
+            'table'              => $this->getTable(),
+            'field'              => 'contact_num',
+            'name'               => __('Alternate username number'),
+            'datatype'           => 'string',
         ];
 
         $tab[] = [
-         'id'                 => '70',
-         'table'              => 'glpi_users',
-         'field'              => 'name',
-         'name'               => User::getTypeName(1),
-         'datatype'           => 'dropdown',
-         'right'              => 'all'
+            'id'                 => '70',
+            'table'              => 'glpi_users',
+            'field'              => 'name',
+            'name'               => User::getTypeName(1),
+            'datatype'           => 'dropdown',
+            'right'              => 'all'
         ];
 
         $tab[] = [
-         'id'                 => '71',
-         'table'              => 'glpi_groups',
-         'field'              => 'completename',
-         'name'               => Group::getTypeName(1),
-         'condition'          => ['is_itemgroup' => 1],
-         'datatype'           => 'dropdown'
+            'id'                 => '71',
+            'table'              => 'glpi_groups',
+            'field'              => 'completename',
+            'name'               => Group::getTypeName(1),
+            'condition'          => ['is_itemgroup' => 1],
+            'datatype'           => 'dropdown'
         ];
 
         $tab[] = [
-         'id'                 => '19',
-         'table'              => $this->getTable(),
-         'field'              => 'date_mod',
-         'name'               => __('Last update'),
-         'datatype'           => 'datetime',
-         'massiveaction'      => false
+            'id'                 => '19',
+            'table'              => $this->getTable(),
+            'field'              => 'date_mod',
+            'name'               => __('Last update'),
+            'datatype'           => 'datetime',
+            'massiveaction'      => false
         ];
 
         $tab[] = [
-         'id'                 => '121',
-         'table'              => $this->getTable(),
-         'field'              => 'date_creation',
-         'name'               => __('Creation date'),
-         'datatype'           => 'datetime',
-         'massiveaction'      => false
+            'id'                 => '121',
+            'table'              => $this->getTable(),
+            'field'              => 'date_creation',
+            'name'               => __('Creation date'),
+            'datatype'           => 'datetime',
+            'massiveaction'      => false
         ];
 
         $tab[] = [
-         'id'                 => '16',
-         'table'              => $this->getTable(),
-         'field'              => 'comment',
-         'name'               => __('Comments'),
-         'datatype'           => 'text'
+            'id'                 => '16',
+            'table'              => $this->getTable(),
+            'field'              => 'comment',
+            'name'               => __('Comments'),
+            'datatype'           => 'text'
         ];
 
         $tab[] = [
-         'id'                 => '42',
-         'table'              => $this->getTable(),
-         'field'              => 'have_serial',
-         'name'               => __('Serial'),
-         'datatype'           => 'bool'
+            'id'                 => '42',
+            'table'              => $this->getTable(),
+            'field'              => 'have_serial',
+            'name'               => __('Serial'),
+            'datatype'           => 'bool'
         ];
 
         $tab[] = [
-         'id'                 => '43',
-         'table'              => $this->getTable(),
-         'field'              => 'have_parallel',
-         'name'               => __('Parallel'),
-         'datatype'           => 'bool'
+            'id'                 => '43',
+            'table'              => $this->getTable(),
+            'field'              => 'have_parallel',
+            'name'               => __('Parallel'),
+            'datatype'           => 'bool'
         ];
 
         $tab[] = [
-         'id'                 => '44',
-         'table'              => $this->getTable(),
-         'field'              => 'have_usb',
-         'name'               => __('USB'),
-         'datatype'           => 'bool'
+            'id'                 => '44',
+            'table'              => $this->getTable(),
+            'field'              => 'have_usb',
+            'name'               => __('USB'),
+            'datatype'           => 'bool'
         ];
 
         $tab[] = [
-         'id'                 => '45',
-         'table'              => $this->getTable(),
-         'field'              => 'have_ethernet',
-         'name'               => __('Ethernet'),
-         'datatype'           => 'bool'
+            'id'                 => '45',
+            'table'              => $this->getTable(),
+            'field'              => 'have_ethernet',
+            'name'               => __('Ethernet'),
+            'datatype'           => 'bool'
         ];
 
         $tab[] = [
-         'id'                 => '46',
-         'table'              => $this->getTable(),
-         'field'              => 'have_wifi',
-         'name'               => __('Wifi'),
-         'datatype'           => 'bool'
+            'id'                 => '46',
+            'table'              => $this->getTable(),
+            'field'              => 'have_wifi',
+            'name'               => __('Wifi'),
+            'datatype'           => 'bool'
         ];
 
         $tab[] = [
-         'id'                 => '13',
-         'table'              => $this->getTable(),
-         'field'              => 'memory_size',
-         'name'               => _n('Memory', 'Memories', 1),
-         'datatype'           => 'string',
+            'id'                 => '13',
+            'table'              => $this->getTable(),
+            'field'              => 'memory_size',
+            'name'               => _n('Memory', 'Memories', 1),
+            'datatype'           => 'string',
         ];
 
         $tab[] = [
-         'id'                 => '11',
-         'table'              => $this->getTable(),
-         'field'              => 'init_pages_counter',
-         'name'               => __('Initial page counter'),
-         'datatype'           => 'number',
-         'nosearch'           => true,
+            'id'                 => '11',
+            'table'              => $this->getTable(),
+            'field'              => 'init_pages_counter',
+            'name'               => __('Initial page counter'),
+            'datatype'           => 'number',
+            'nosearch'           => true,
         ];
 
         $tab[] = [
-         'id'                 => '12',
-         'table'              => $this->getTable(),
-         'field'              => 'last_pages_counter',
-         'name'               => __('Current counter of pages'),
-         'datatype'           => 'number',
+            'id'                 => '12',
+            'table'              => $this->getTable(),
+            'field'              => 'last_pages_counter',
+            'name'               => __('Current counter of pages'),
+            'datatype'           => 'number',
         ];
 
         $tab[] = [
-         'id'                 => '9',
-         'table'              => $this->getTable(),
-         'field'              => '_virtual',
-         'linkfield'          => '_virtual',
-         'name'               => _n('Cartridge', 'Cartridges', Session::getPluralNumber()),
-         'datatype'           => 'specific',
-         'massiveaction'      => false,
-         'nosearch'           => true,
-         'nosort'             => true
+            'id'                 => '9',
+            'table'              => $this->getTable(),
+            'field'              => '_virtual',
+            'linkfield'          => '_virtual',
+            'name'               => _n('Cartridge', 'Cartridges', Session::getPluralNumber()),
+            'datatype'           => 'specific',
+            'massiveaction'      => false,
+            'nosearch'           => true,
+            'nosort'             => true
         ];
 
         $tab[] = [
-         'id'                 => '17',
-         'table'              => 'glpi_cartridges',
-         'field'              => 'id',
-         'name'               => __('Number of used cartridges'),
-         'datatype'           => 'count',
-         'forcegroupby'       => true,
-         'usehaving'          => true,
-         'massiveaction'      => false,
-         'joinparams'         => [
-            'jointype'           => 'child',
-            'condition'          => ['NOT' => ['NEWTABLE.date_use' => null],
-                                     'NEWTABLE.date_out' => null]
-         ]
+            'id'                 => '17',
+            'table'              => 'glpi_cartridges',
+            'field'              => 'id',
+            'name'               => __('Number of used cartridges'),
+            'datatype'           => 'count',
+            'forcegroupby'       => true,
+            'usehaving'          => true,
+            'massiveaction'      => false,
+            'joinparams'         => [
+                'jointype'           => 'child',
+                'condition'          => ['NOT' => ['NEWTABLE.date_use' => null],
+                    'NEWTABLE.date_out' => null
+                ]
+            ]
         ];
 
         $tab[] = [
-         'id'                 => '18',
-         'table'              => 'glpi_cartridges',
-         'field'              => 'id',
-         'name'               => __('Number of worn cartridges'),
-         'datatype'           => 'count',
-         'forcegroupby'       => true,
-         'usehaving'          => true,
-         'massiveaction'      => false,
-         'joinparams'         => [
-            'jointype'           => 'child',
-            'condition'          => ['NOT' => ['NEWTABLE.date_out' => null]]
-         ]
+            'id'                 => '18',
+            'table'              => 'glpi_cartridges',
+            'field'              => 'id',
+            'name'               => __('Number of worn cartridges'),
+            'datatype'           => 'count',
+            'forcegroupby'       => true,
+            'usehaving'          => true,
+            'massiveaction'      => false,
+            'joinparams'         => [
+                'jointype'           => 'child',
+                'condition'          => ['NOT' => ['NEWTABLE.date_out' => null]]
+            ]
         ];
 
         $tab[] = [
-         'id'                 => '32',
-         'table'              => 'glpi_networks',
-         'field'              => 'name',
-         'name'               => _n('Network', 'Networks', 1),
-         'datatype'           => 'dropdown'
+            'id'                 => '32',
+            'table'              => 'glpi_networks',
+            'field'              => 'name',
+            'name'               => _n('Network', 'Networks', 1),
+            'datatype'           => 'dropdown'
         ];
 
         $tab[] = [
-         'id'                 => '23',
-         'table'              => 'glpi_manufacturers',
-         'field'              => 'name',
-         'name'               => Manufacturer::getTypeName(1),
-         'datatype'           => 'dropdown'
+            'id'                 => '23',
+            'table'              => 'glpi_manufacturers',
+            'field'              => 'name',
+            'name'               => Manufacturer::getTypeName(1),
+            'datatype'           => 'dropdown'
         ];
 
         $tab[] = [
-         'id'                 => '24',
-         'table'              => 'glpi_users',
-         'field'              => 'name',
-         'linkfield'          => 'users_id_tech',
-         'name'               => __('Technician in charge of the hardware'),
-         'datatype'           => 'dropdown',
-         'right'              => 'own_ticket'
+            'id'                 => '24',
+            'table'              => 'glpi_users',
+            'field'              => 'name',
+            'linkfield'          => 'users_id_tech',
+            'name'               => __('Technician in charge of the hardware'),
+            'datatype'           => 'dropdown',
+            'right'              => 'own_ticket'
         ];
 
         $tab[] = [
-         'id'                 => '49',
-         'table'              => 'glpi_groups',
-         'field'              => 'completename',
-         'linkfield'          => 'groups_id_tech',
-         'name'               => __('Group in charge of the hardware'),
-         'condition'          => ['is_assign' => 1],
-         'datatype'           => 'dropdown'
+            'id'                 => '49',
+            'table'              => 'glpi_groups',
+            'field'              => 'completename',
+            'linkfield'          => 'groups_id_tech',
+            'name'               => __('Group in charge of the hardware'),
+            'condition'          => ['is_assign' => 1],
+            'datatype'           => 'dropdown'
         ];
 
         $tab[] = [
-         'id'                 => '61',
-         'table'              => $this->getTable(),
-         'field'              => 'template_name',
-         'name'               => __('Template name'),
-         'datatype'           => 'text',
-         'massiveaction'      => false,
-         'nosearch'           => true,
-         'nodisplay'          => true,
+            'id'                 => '61',
+            'table'              => $this->getTable(),
+            'field'              => 'template_name',
+            'name'               => __('Template name'),
+            'datatype'           => 'text',
+            'massiveaction'      => false,
+            'nosearch'           => true,
+            'nodisplay'          => true,
         ];
 
         $tab[] = [
-         'id'                 => '80',
-         'table'              => 'glpi_entities',
-         'field'              => 'completename',
-         'name'               => Entity::getTypeName(1),
-         'massiveaction'      => false,
-         'datatype'           => 'dropdown'
+            'id'                 => '80',
+            'table'              => 'glpi_entities',
+            'field'              => 'completename',
+            'name'               => Entity::getTypeName(1),
+            'massiveaction'      => false,
+            'datatype'           => 'dropdown'
         ];
 
         $tab[] = [
-         'id'                 => '82',
-         'table'              => $this->getTable(),
-         'field'              => 'is_global',
-         'name'               => __('Global management'),
-         'datatype'           => 'bool',
-         'massiveaction'      => false
+            'id'                 => '82',
+            'table'              => $this->getTable(),
+            'field'              => 'is_global',
+            'name'               => __('Global management'),
+            'datatype'           => 'bool',
+            'massiveaction'      => false
         ];
 
         $tab = array_merge($tab, Notepad::rawSearchOptionsToAdd());
@@ -651,13 +655,13 @@ class Printer extends CommonDBTM
 
        //Look for the software by his name in GLPI for a specific entity
         $iterator = $DB->request([
-         'SELECT' => ['id', 'is_deleted'],
-         'FROM'   => self::getTable(),
-         'WHERE'  => [
-            'name'         => $name,
-            'is_template'  => 0,
-            'entities_id'  => $entity
-         ]
+            'SELECT' => ['id', 'is_deleted'],
+            'FROM'   => self::getTable(),
+            'WHERE'  => [
+                'name'         => $name,
+                'is_template'  => 0,
+                'entities_id'  => $entity
+            ]
         ]);
 
         if (count($iterator) > 0) {
@@ -701,12 +705,12 @@ class Printer extends CommonDBTM
 
        //If there's a printer in a parent entity with the same name and manufacturer
         $iterator = $DB->request([
-         'SELECT' => 'id',
-         'FROM'   => self::getTable(),
-         'WHERE'  => [
-            'manufacturers_id'   => $manufacturer_id,
-            'name'               => $name,
-         ] + getEntitiesRestrictCriteria(self::getTable, 'entities_id', $entity, true)
+            'SELECT' => 'id',
+            'FROM'   => self::getTable(),
+            'WHERE'  => [
+                'manufacturers_id'   => $manufacturer_id,
+                'name'               => $name,
+            ] + getEntitiesRestrictCriteria(self::getTable, 'entities_id', $entity, true)
         ]);
 
         if ($printer = $iterator->current()) {

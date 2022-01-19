@@ -46,10 +46,10 @@ switch ($action) {
     case 'get_items_from_itemtype':
         if ($_POST['itemtype'] && class_exists($_POST['itemtype'])) {
             $_POST['itemtype']::dropdown(['name'                => $_POST['dom_name'],
-                                       'rand'                => $_POST['dom_rand'],
-                                       'display_emptychoice' => true,
-                                       'display_dc_position' => true,
-                                       'width'               => '100%',
+                'rand'                => $_POST['dom_rand'],
+                'display_emptychoice' => true,
+                'display_dc_position' => true,
+                'width'               => '100%',
             ]);
         }
         break;
@@ -60,19 +60,22 @@ switch ($action) {
             && isset($_GET['items_id'])
         ) {
             Socket::dropdown(['name'         =>  $_GET['dom_name'],
-                           'condition'    => ['socketmodels_id'   => isset($_GET['socketmodels_id']) ?? 0 ,
-                                             'itemtype'           => $_GET['itemtype'],
-                                             'items_id'           => $_GET['items_id']],
-                           'displaywith'  => ['itemtype', 'items_id', 'networkports_id'],
+                'condition'    => ['socketmodels_id'   => isset($_GET['socketmodels_id']) ?? 0 ,
+                    'itemtype'           => $_GET['itemtype'],
+                    'items_id'           => $_GET['items_id']
+                ],
+                'displaywith'  => ['itemtype', 'items_id', 'networkports_id'],
             ]);
         }
         break;
 
     case 'get_networkport_dropdown':
          NetworkPort::dropdown(['name'                => 'networkports_id',
-                                'display_emptychoice' => true,
-                                'condition'           => ['items_id' => $_GET['items_id'],
-                                                          'itemtype' => $_GET['itemtype']]]);
+             'display_emptychoice' => true,
+             'condition'           => ['items_id' => $_GET['items_id'],
+                 'itemtype' => $_GET['itemtype']
+             ]
+         ]);
         break;
 
 

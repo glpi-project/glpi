@@ -249,10 +249,10 @@ class Plugin extends DbTestCase
     {
 
         $initial_data = [
-         'directory' => $this->test_plugin_directory,
-         'name'      => 'Test plugin',
-         'version'   => '1.0',
-         'state'     => \Plugin::ACTIVATED,
+            'directory' => $this->test_plugin_directory,
+            'name'      => 'Test plugin',
+            'version'   => '1.0',
+            'state'     => \Plugin::ACTIVATED,
         ];
         $expected_data = $initial_data;
 
@@ -276,14 +276,14 @@ class Plugin extends DbTestCase
     {
 
         $setup_informations = [
-         'name'      => 'Test plugin',
-         'version'   => '1.0',
+            'name'      => 'Test plugin',
+            'version'   => '1.0',
         ];
         $expected_data = array_merge(
             $setup_informations,
             [
-            'directory' => $this->test_plugin_directory,
-            'state'     => \Plugin::NOTINSTALLED,
+                'directory' => $this->test_plugin_directory,
+                'state'     => \Plugin::NOTINSTALLED,
             ]
         );
 
@@ -303,20 +303,20 @@ class Plugin extends DbTestCase
     {
 
         $initial_data = [
-         'directory' => $this->test_plugin_directory,
-         'name'      => 'Test plugin',
-         'version'   => '1.0',
-         'state'     => \Plugin::ACTIVATED,
+            'directory' => $this->test_plugin_directory,
+            'name'      => 'Test plugin',
+            'version'   => '1.0',
+            'state'     => \Plugin::ACTIVATED,
         ];
         $setup_informations = [
-         'name'    => 'Test plugin NG',
-         'version' => '2.0',
+            'name'    => 'Test plugin NG',
+            'version' => '2.0',
         ];
         $expected_data = array_merge(
             $initial_data,
             $setup_informations,
             [
-            'state' => \Plugin::NOTUPDATED,
+                'state' => \Plugin::NOTUPDATED,
             ]
         );
 
@@ -341,20 +341,20 @@ class Plugin extends DbTestCase
     {
 
         $initial_data = [
-         'directory' => $this->test_plugin_directory,
-         'name'      => 'Test plugin',
-         'version'   => '1.0',
-         'state'     => \Plugin::NOTINSTALLED,
+            'directory' => $this->test_plugin_directory,
+            'name'      => 'Test plugin',
+            'version'   => '1.0',
+            'state'     => \Plugin::NOTINSTALLED,
         ];
         $setup_informations = [
-         'name'    => 'Test plugin NG',
-         'version' => '2.0',
+            'name'    => 'Test plugin NG',
+            'version' => '2.0',
         ];
         $expected_data = array_merge(
             $initial_data,
             $setup_informations,
             [
-            'state' => \Plugin::NOTINSTALLED,
+                'state' => \Plugin::NOTINSTALLED,
             ]
         );
 
@@ -374,20 +374,20 @@ class Plugin extends DbTestCase
     {
 
         $initial_data = [
-         'directory' => $this->test_plugin_directory,
-         'name'      => 'Test plugin',
-         'version'   => '1.0',
-         'state'     => \Plugin::NOTUPDATED,
+            'directory' => $this->test_plugin_directory,
+            'name'      => 'Test plugin',
+            'version'   => '1.0',
+            'state'     => \Plugin::NOTUPDATED,
         ];
         $setup_informations = [
-         'name'    => 'Test plugin NG',
-         'version' => '2.0',
+            'name'    => 'Test plugin NG',
+            'version' => '2.0',
         ];
         $expected_data = array_merge(
             $initial_data,
             $setup_informations,
             [
-            'state' => \Plugin::NOTUPDATED,
+                'state' => \Plugin::NOTUPDATED,
             ]
         );
 
@@ -410,9 +410,9 @@ class Plugin extends DbTestCase
 
        // Create files for in new directory of plugin
         $new_informations = [
-         'name'    => 'Test plugin revamped',
-         'oldname' => $this->test_plugin_directory,
-         'version' => '2.0',
+            'name'    => 'Test plugin revamped',
+            'oldname' => $this->test_plugin_directory,
+            'version' => '2.0',
         ];
         $new_directory = $this->anothertest_plugin_directory;
         $this->createTestPluginFiles(
@@ -424,10 +424,10 @@ class Plugin extends DbTestCase
        // Create initial data in DB
         $old_directory = $this->test_plugin_directory;
         $initial_data = [
-         'directory' => $this->test_plugin_directory,
-         'name'      => 'Old plugin',
-         'version'   => '1.0',
-         'state'     => \Plugin::ACTIVATED,
+            'directory' => $this->test_plugin_directory,
+            'name'      => 'Old plugin',
+            'version'   => '1.0',
+            'state'     => \Plugin::ACTIVATED,
         ];
         $plugin_id = $plugin->add($initial_data);
         $this->integer((int)$plugin_id)->isGreaterThan(0);
@@ -459,21 +459,21 @@ class Plugin extends DbTestCase
     {
 
         $initial_data = [
-         'directory' => 'oldnameofplugin',
-         'name'      => 'Old plugin',
-         'version'   => '1.0',
-         'state'     => \Plugin::ACTIVATED,
+            'directory' => 'oldnameofplugin',
+            'name'      => 'Old plugin',
+            'version'   => '1.0',
+            'state'     => \Plugin::ACTIVATED,
         ];
         $setup_informations = [
-         'name'    => 'Test plugin revamped',
-         'oldname' => 'oldnameofplugin',
-         'version' => '2.0',
+            'name'    => 'Test plugin revamped',
+            'oldname' => 'oldnameofplugin',
+            'version' => '2.0',
         ];
         $expected_data = array_merge(
             $setup_informations,
             [
-            'directory' => $this->test_plugin_directory,
-            'state'     => \Plugin::NOTUPDATED,
+                'directory' => $this->test_plugin_directory,
+                'state'     => \Plugin::NOTUPDATED,
             ]
         );
 
@@ -497,14 +497,14 @@ class Plugin extends DbTestCase
     {
 
         $initial_data = [
-         'directory' => $this->test_plugin_directory,
-         'name'      => 'Test plugin',
-         'version'   => '1.0',
-         'state'     => \Plugin::NOTACTIVATED,
+            'directory' => $this->test_plugin_directory,
+            'name'      => 'Test plugin',
+            'version'   => '1.0',
+            'state'     => \Plugin::NOTACTIVATED,
         ];
         $setup_informations = [
-         'name'      => 'Test plugin',
-         'version'   => '1.0',
+            'name'      => 'Test plugin',
+            'version'   => '1.0',
         ];
         $expected_data = $initial_data;
 
@@ -524,19 +524,19 @@ class Plugin extends DbTestCase
     {
 
         $initial_data = [
-         'directory' => $this->test_plugin_directory,
-         'name'      => 'Test plugin',
-         'version'   => '1.0',
-         'state'     => \Plugin::NOTACTIVATED,
+            'directory' => $this->test_plugin_directory,
+            'name'      => 'Test plugin',
+            'version'   => '1.0',
+            'state'     => \Plugin::NOTACTIVATED,
         ];
         $setup_informations = [
-         'name'    => 'Test plugin',
-         'version' => '1.0',
+            'name'    => 'Test plugin',
+            'version' => '1.0',
         ];
         $expected_data = array_merge(
             $initial_data,
             [
-            'state' => \Plugin::TOBECONFIGURED,
+                'state' => \Plugin::TOBECONFIGURED,
             ]
         );
 
@@ -559,24 +559,24 @@ class Plugin extends DbTestCase
     {
 
         $initial_data = [
-         'directory' => $this->test_plugin_directory,
-         'name'      => 'Test plugin',
-         'version'   => '1.0',
-         'state'     => \Plugin::ACTIVATED,
+            'directory' => $this->test_plugin_directory,
+            'name'      => 'Test plugin',
+            'version'   => '1.0',
+            'state'     => \Plugin::ACTIVATED,
         ];
         $setup_informations = [
-         'name'         => 'Test plugin',
-         'version'      => '1.0',
-         'requirements' => [
-            'glpi' => [
-               'min' => '15.0',
+            'name'         => 'Test plugin',
+            'version'      => '1.0',
+            'requirements' => [
+                'glpi' => [
+                    'min' => '15.0',
+                ],
             ],
-         ],
         ];
         $expected_data = array_merge(
             $initial_data,
             [
-            'state' => \Plugin::NOTACTIVATED,
+                'state' => \Plugin::NOTACTIVATED,
             ]
         );
 
@@ -601,19 +601,19 @@ class Plugin extends DbTestCase
     {
 
         $initial_data = [
-         'directory' => $this->test_plugin_directory,
-         'name'      => 'Test plugin',
-         'version'   => '1.0',
-         'state'     => \Plugin::ACTIVATED,
+            'directory' => $this->test_plugin_directory,
+            'name'      => 'Test plugin',
+            'version'   => '1.0',
+            'state'     => \Plugin::ACTIVATED,
         ];
         $setup_informations = [
-         'name'    => 'Test plugin',
-         'version' => '1.0',
+            'name'    => 'Test plugin',
+            'version' => '1.0',
         ];
         $expected_data = array_merge(
             $initial_data,
             [
-            'state' => \Plugin::NOTACTIVATED,
+                'state' => \Plugin::NOTACTIVATED,
             ]
         );
 
@@ -636,19 +636,19 @@ class Plugin extends DbTestCase
     {
 
         $initial_data = [
-         'directory' => $this->test_plugin_directory,
-         'name'      => 'Test plugin',
-         'version'   => '1.0',
-         'state'     => \Plugin::ACTIVATED,
+            'directory' => $this->test_plugin_directory,
+            'name'      => 'Test plugin',
+            'version'   => '1.0',
+            'state'     => \Plugin::ACTIVATED,
         ];
         $setup_informations = [
-         'name'    => 'Test plugin',
-         'version' => '1.0',
+            'name'    => 'Test plugin',
+            'version' => '1.0',
         ];
         $expected_data = array_merge(
             $initial_data,
             [
-            'state' => \Plugin::TOBECONFIGURED,
+                'state' => \Plugin::TOBECONFIGURED,
             ]
         );
 
@@ -671,14 +671,14 @@ class Plugin extends DbTestCase
     {
 
         $initial_data = [
-         'directory' => $this->test_plugin_directory,
-         'name'      => 'Test plugin',
-         'version'   => '1.0',
-         'state'     => \Plugin::ACTIVATED,
+            'directory' => $this->test_plugin_directory,
+            'name'      => 'Test plugin',
+            'version'   => '1.0',
+            'state'     => \Plugin::ACTIVATED,
         ];
         $setup_informations = [
-         'name'    => 'Test plugin',
-         'version' => '1.0',
+            'name'    => 'Test plugin',
+            'version' => '1.0',
         ];
         $expected_data = $initial_data;
 
@@ -701,14 +701,14 @@ class Plugin extends DbTestCase
     {
 
         $initial_data = [
-         'directory' => $this->test_plugin_directory,
-         'name'      => 'Test plugin',
-         'version'   => '1.0',
-         'state'     => \Plugin::ACTIVATED,
+            'directory' => $this->test_plugin_directory,
+            'name'      => 'Test plugin',
+            'version'   => '1.0',
+            'state'     => \Plugin::ACTIVATED,
         ];
         $setup_informations = [
-         'name'    => 'Test plugin',
-         'version' => '1.0',
+            'name'    => 'Test plugin',
+            'version' => '1.0',
         ];
         $expected_data = $initial_data;
 

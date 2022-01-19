@@ -82,13 +82,13 @@ class NotificationTargetCertificate extends NotificationTarget
 
         foreach ($options['certificates'] as $id => $certificate) {
             $this->data['certificates'][] = [
-              '##certificate.name##'           => $certificate['name'],
-              '##certificate.serial##'         => $certificate['serial'],
-              '##certificate.expirationdate##' => Html::convDate($certificate["date_expiration"]),
-              '##certificate.url##'            => $this->formatURL(
-                  $options['additionnaloption']['usertype'],
-                  "Certificate_" . $id
-              ),
+                '##certificate.name##'           => $certificate['name'],
+                '##certificate.serial##'         => $certificate['serial'],
+                '##certificate.expirationdate##' => Html::convDate($certificate["date_expiration"]),
+                '##certificate.url##'            => $this->formatURL(
+                    $options['additionnaloption']['usertype'],
+                    "Certificate_" . $id
+                ),
             ];
         }
 
@@ -105,22 +105,24 @@ class NotificationTargetCertificate extends NotificationTarget
     {
 
         $tags = ['certificate.expirationdate' => __('Expiration date'),
-               'certificate.name'           => __('Name'),
-               'certificate.serial'         => __('Serial number'),
-               'certificate.url'            => __('URL'),
-               'certificate.entity'         => Entity::getTypeName(1),
-               ];
+            'certificate.name'           => __('Name'),
+            'certificate.serial'         => __('Serial number'),
+            'certificate.url'            => __('URL'),
+            'certificate.entity'         => Entity::getTypeName(1),
+        ];
 
         foreach ($tags as $tag => $label) {
             $this->addTagToList(['tag'   => $tag,
-                              'label' => $label,
-                              'value' => true]);
+                'label' => $label,
+                'value' => true
+            ]);
         }
 
         $this->addTagToList(['tag'     => 'certificates',
-                           'label'   => __('Device list'),
-                           'value'   => false,
-                           'foreach' => true]);
+            'label'   => __('Device list'),
+            'value'   => false,
+            'foreach' => true
+        ]);
 
         asort($this->tag_descriptions);
     }

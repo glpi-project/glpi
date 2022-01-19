@@ -101,11 +101,11 @@ class Dashboard extends \CommonDBTM
         global $DB;
 
         $iterator = $DB->request([
-         'FROM'  => self::getTable(),
-         'WHERE' => [
-            'key' => $ID
-         ],
-         'LIMIT' => 1
+            'FROM'  => self::getTable(),
+            'WHERE' => [
+                'key' => $ID
+            ],
+            'LIMIT' => 1
         ]);
         if (count($iterator) == 1) {
             $this->fields = $iterator->current();
@@ -194,11 +194,11 @@ class Dashboard extends \CommonDBTM
         global $DB, $GLPI_CACHE;
 
         $DB->updateOrInsert(self::getTable(), [
-         'key'     => $this->key,
-         'name'    => $this->fields['name'],
-         'context' => $this->fields['context']
+            'key'     => $this->key,
+            'name'    => $this->fields['name'],
+            'context' => $this->fields['context']
         ], [
-         'key'  => $this->key
+            'key'  => $this->key
         ]);
 
        // reload dashboard
@@ -223,9 +223,9 @@ class Dashboard extends \CommonDBTM
     public function cleanDBonPurge()
     {
         $this->deleteChildrenAndRelationsFromDb([
-         Item::class,
-         Right::class,
-         Filter::class,
+            Item::class,
+            Right::class,
+            Filter::class,
         ]);
     }
 
@@ -249,7 +249,7 @@ class Dashboard extends \CommonDBTM
         $this->items   = $items;
 
         $this->deleteChildrenAndRelationsFromDb([
-         Item::class,
+            Item::class,
         ]);
 
         Item::addForDashboard($this->fields['id'], $items);
@@ -291,7 +291,7 @@ class Dashboard extends \CommonDBTM
         $this->rights = $rights;
 
         $this->deleteChildrenAndRelationsFromDb([
-         Right::class,
+            Right::class,
         ]);
 
         Right::addForDashboard($this->fields['id'], $rights);
@@ -352,8 +352,8 @@ class Dashboard extends \CommonDBTM
         $this->save();
 
         return [
-         'title' => $this->fields['name'],
-         'key'   => $this->key
+            'title' => $this->fields['name'],
+            'key'   => $this->key
         ];
     }
 
@@ -447,10 +447,10 @@ class Dashboard extends \CommonDBTM
     public static function convertRights(array $raw_rights = []): array
     {
         $rights = [
-         'entities_id' => [],
-         'profiles_id' => [],
-         'users_id'    => [],
-         'groups_id'   => [],
+            'entities_id' => [],
+            'profiles_id' => [],
+            'users_id'    => [],
+            'groups_id'   => [],
         ];
         foreach ($raw_rights as $right_line) {
             $fk = getForeignKeyFieldForItemType($right_line['itemtype']);
@@ -471,10 +471,10 @@ class Dashboard extends \CommonDBTM
     public static function checkRights(array $rights = []): bool
     {
         $default_rights = [
-         'entities_id' => [],
-         'profiles_id' => [],
-         'users_id'    => [],
-         'groups_id'   => [],
+            'entities_id' => [],
+            'profiles_id' => [],
+            'users_id'    => [],
+            'groups_id'   => [],
         ];
         $rights = array_merge_recursive($default_rights, $rights);
 
@@ -535,9 +535,9 @@ class Dashboard extends \CommonDBTM
         $this->load();
 
         return $this->update([
-         'id'       => $this->fields['id'],
-         'key'      => $this->fields['key'],
-         'users_id' => ($is_private ? Session::getLoginUserID() : 0)
+            'id'       => $this->fields['id'],
+            'key'      => $this->fields['key'],
+            'users_id' => ($is_private ? Session::getLoginUserID() : 0)
         ]);
     }
 

@@ -70,8 +70,8 @@ class KnowbaseItem_Item extends CommonDBRelation
                     $nb = countElementsInTable(
                         'glpi_knowbaseitems_items',
                         [
-                        'itemtype' => $item::getType(),
-                        'items_id' => $item->getId()
+                            'itemtype' => $item::getType(),
+                            'items_id' => $item->getId()
                         ]
                     );
                 }
@@ -122,8 +122,8 @@ class KnowbaseItem_Item extends CommonDBRelation
             $number = countElementsInTable(
                 'glpi_knowbaseitems_items',
                 [
-                'itemtype' => $item::getType(),
-                'items_id' => $item_id
+                    'itemtype' => $item::getType(),
+                    'items_id' => $item_id
                 ]
             );
         }
@@ -158,9 +158,9 @@ class KnowbaseItem_Item extends CommonDBRelation
                 $visibility = KnowbaseItem::getVisibilityCriteria();
                 $condition = (isset($visibility['WHERE']) && count($visibility['WHERE'])) ? $visibility['WHERE'] : [];
                 $rand = KnowbaseItem::dropdown([
-                'entity'    => $item->getEntityID(),
-                'used'      => self::getItems($item, 0, 0, true),
-                'condition' => $condition
+                    'entity'    => $item->getEntityID(),
+                    'used'      => self::getItems($item, 0, 0, true),
+                    'condition' => $condition
                 ]);
             }
             echo "</td><td>";
@@ -207,8 +207,9 @@ class KnowbaseItem_Item extends CommonDBRelation
             $massiveactionparams
             = ['num_displayed'
                         => min($_SESSION['glpilist_limit'], $number),
-                    'container'
-                        => 'mass' . __CLASS__ . $rand];
+                'container'
+                        => 'mass' . __CLASS__ . $rand
+            ];
             Html::showMassiveActions($massiveactionparams);
         }
         echo "<table class='tab_cadre_fixehov'>";
@@ -294,11 +295,11 @@ class KnowbaseItem_Item extends CommonDBRelation
         $checkright = true;
 
         $rand = Dropdown::showSelectItemFromItemtypes([
-         'items_id_name'   => $name,
-         'entity_restrict' => $entity_restrict,
-         'itemtypes'       => $CFG_GLPI['kb_types'],
-         'onlyglobal'      => $onlyglobal,
-         'checkright'      => $checkright
+            'items_id_name'   => $name,
+            'entity_restrict' => $entity_restrict,
+            'itemtypes'       => $CFG_GLPI['kb_types'],
+            'onlyglobal'      => $onlyglobal,
+            'checkright'      => $checkright
         ]);
 
         return $rand;
@@ -319,26 +320,26 @@ class KnowbaseItem_Item extends CommonDBRelation
         global $DB;
 
         $criteria = [
-         'FROM'      => ['glpi_knowbaseitems_items'],
-         'FIELDS'    => ['glpi_knowbaseitems_items' => '*'],
-         'INNER JOIN' => [
-            'glpi_knowbaseitems' => [
-               'ON'  => [
-                  'glpi_knowbaseitems_items' => 'knowbaseitems_id',
-                  'glpi_knowbaseitems'       => 'id'
-               ]
+            'FROM'      => ['glpi_knowbaseitems_items'],
+            'FIELDS'    => ['glpi_knowbaseitems_items' => '*'],
+            'INNER JOIN' => [
+                'glpi_knowbaseitems' => [
+                    'ON'  => [
+                        'glpi_knowbaseitems_items' => 'knowbaseitems_id',
+                        'glpi_knowbaseitems'       => 'id'
+                    ]
+                ]
+            ],
+            'WHERE'     => [],
+            'ORDER'     => ['itemtype', 'items_id DESC'],
+            'GROUPBY'   => [
+                'glpi_knowbaseitems_items.id',
+                'glpi_knowbaseitems_items.knowbaseitems_id',
+                'glpi_knowbaseitems_items.itemtype',
+                'glpi_knowbaseitems_items.items_id',
+                'glpi_knowbaseitems_items.date_creation',
+                'glpi_knowbaseitems_items.date_mod'
             ]
-         ],
-         'WHERE'     => [],
-         'ORDER'     => ['itemtype', 'items_id DESC'],
-         'GROUPBY'   => [
-            'glpi_knowbaseitems_items.id',
-            'glpi_knowbaseitems_items.knowbaseitems_id',
-             'glpi_knowbaseitems_items.itemtype',
-             'glpi_knowbaseitems_items.items_id',
-             'glpi_knowbaseitems_items.date_creation',
-             'glpi_knowbaseitems_items.date_mod'
-         ]
         ];
         $where = [];
 
@@ -359,10 +360,10 @@ class KnowbaseItem_Item extends CommonDBRelation
             $where[] = ['glpi_knowbaseitems_items.itemtype' => $item::getType()];
             if (count($where)) {
                 $criteria['INNER JOIN'][$item->getTable()] = [
-                'ON' => [
-                  'glpi_knowbaseitems_items' => 'items_id',
-                  $item->getTable()          => 'id'
-                ]
+                    'ON' => [
+                        'glpi_knowbaseitems_items' => 'items_id',
+                        $item->getTable()          => 'id'
+                    ]
                 ];
             }
         }

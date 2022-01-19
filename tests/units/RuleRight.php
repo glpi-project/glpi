@@ -59,9 +59,9 @@ class RuleRight extends DbTestCase
             (int)countElementsInTable(
                 'glpi_rules',
                 [
-                'name'      => 'Root',
-                'is_active' => 1,
-                'sub_type'  => 'RuleRight'
+                    'name'      => 'Root',
+                    'is_active' => 1,
+                    'sub_type'  => 'RuleRight'
                 ]
             )
         )->isIdenticalTo(1);
@@ -72,40 +72,40 @@ class RuleRight extends DbTestCase
        //prepare rules
         $rules = new \RuleRight();
         $rules_id = $rules->add([
-         'sub_type'     => 'RuleRight',
-         'name'         => 'test local account ruleright',
-         'match'        => 'AND',
-         'is_active'    => 1,
-         'entities_id'  => 0,
-         'is_recursive' => 1,
+            'sub_type'     => 'RuleRight',
+            'name'         => 'test local account ruleright',
+            'match'        => 'AND',
+            'is_active'    => 1,
+            'entities_id'  => 0,
+            'is_recursive' => 1,
         ]);
 
         $criteria = new \RuleCriteria();
         $criteria->add([
-         'rules_id'  => $rules_id,
-         'criteria'  => 'LOGIN',
-         'condition' => \Rule::PATTERN_IS,
-         'pattern'   => TU_USER,
+            'rules_id'  => $rules_id,
+            'criteria'  => 'LOGIN',
+            'condition' => \Rule::PATTERN_IS,
+            'pattern'   => TU_USER,
         ]);
         $criteria->add([
-         'rules_id'  => $rules_id,
-         'criteria'  => 'MAIL_EMAIL',
-         'condition' => \Rule::PATTERN_IS,
-         'pattern'   => TU_USER . '@glpi.com',
+            'rules_id'  => $rules_id,
+            'criteria'  => 'MAIL_EMAIL',
+            'condition' => \Rule::PATTERN_IS,
+            'pattern'   => TU_USER . '@glpi.com',
         ]);
 
         $actions = new \RuleAction();
         $actions->add([
-         'rules_id'    => $rules_id,
-         'action_type' => 'assign',
-         'field'       => 'profiles_id',
-         'value'       => 5, // 'normal' profile
+            'rules_id'    => $rules_id,
+            'action_type' => 'assign',
+            'field'       => 'profiles_id',
+            'value'       => 5, // 'normal' profile
         ]);
         $actions->add([
-         'rules_id'    => $rules_id,
-         'action_type' => 'assign',
-         'field'       => 'entities_id',
-         'value'       => 1, // '_test_child_1' entity
+            'rules_id'    => $rules_id,
+            'action_type' => 'assign',
+            'field'       => 'entities_id',
+            'value'       => 1, // '_test_child_1' entity
         ]);
 
        // login the user to force a real synchronisation and get it's glpi id
@@ -132,7 +132,7 @@ class RuleRight extends DbTestCase
 
        // cleanup
         $rules->delete([
-         'id' => $rules_id,
+            'id' => $rules_id,
         ], true);
         $exist = $rules->getFromDB($rules_id);
         $this->boolean($exist)->isFalse();
@@ -165,9 +165,9 @@ class RuleRight extends DbTestCase
     public function testLocalAccountNoRules()
     {
         $testuser = [
-         'name'      => 'testuser',
-         'password'  => 'test',
-         'password2' => 'test',
+            'name'      => 'testuser',
+            'password'  => 'test',
+            'password2' => 'test',
         ];
 
         $user = new \User();
@@ -198,8 +198,8 @@ class RuleRight extends DbTestCase
        // be fixed on next login
         $pu = new \Profile_User();
         $res = $pu->update([
-         'id' => $right2['id'],
-         'profiles_id' => 2
+            'id' => $right2['id'],
+            'profiles_id' => 2
         ]);
         $this->boolean($res)->isTrue();
         $this->boolean($pu->getFromDB($right2['id']))->isTrue();

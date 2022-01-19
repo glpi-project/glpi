@@ -44,9 +44,9 @@ class PlanningExternalEventTemplate extends \AbstractPlanningEvent
         parent::beforeTestMethod($method);
 
         $this->input = array_merge($this->input, [
-         '_planningrecall' => [
-            'before_time' => 2 * \HOUR_TIMESTAMP,
-         ],
+            '_planningrecall' => [
+                'before_time' => 2 * \HOUR_TIMESTAMP,
+            ],
         ]);
     }
 

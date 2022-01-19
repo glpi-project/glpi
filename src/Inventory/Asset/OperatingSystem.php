@@ -46,12 +46,12 @@ class OperatingSystem extends InventoryAsset
     public function prepare(): array
     {
         $mapping = [
-         'name'           => 'operatingsystems_id',
-         'version'        => 'operatingsystemversions_id',
-         'service_pack'   => 'operatingsystemservicepacks_id',
-         'arch'           => 'operatingsystemarchitectures_id',
-         'kernel_name'    => 'operatingsystemkernels_id',
-         'kernel_version' => 'operatingsystemkernelversions_id'
+            'name'           => 'operatingsystems_id',
+            'version'        => 'operatingsystemversions_id',
+            'service_pack'   => 'operatingsystemservicepacks_id',
+            'arch'           => 'operatingsystemarchitectures_id',
+            'kernel_name'    => 'operatingsystemkernels_id',
+            'kernel_version' => 'operatingsystemkernelversions_id'
         ];
 
         $val = (object)$this->data;
@@ -105,22 +105,22 @@ class OperatingSystem extends InventoryAsset
         $val = $this->data[0];
 
         $ios->getFromDBByCrit([
-         'itemtype'  => $this->item->getType(),
-         'items_id'  => $this->item->fields['id']
+            'itemtype'  => $this->item->getType(),
+            'items_id'  => $this->item->fields['id']
         ]);
 
         $input_os = [
-         'itemtype'                          => $this->item->getType(),
-         'items_id'                          => $this->item->fields['id'],
-         'operatingsystemarchitectures_id'   => $val->operatingsystemarchitectures_id ?? 0,
-         'operatingsystemkernelversions_id'  => $val->operatingsystemkernelversions_id ?? 0,
-         'operatingsystems_id'               => $val->operatingsystems_id,
-         'operatingsystemversions_id'        => $val->operatingsystemversions_id ?? 0,
-         'operatingsystemservicepacks_id'    => $val->operatingsystemservicepacks_id ?? 0,
-         'licenseid'                         => $val->licenseid ?? '',
-         'license_number'                    => $val->license_number ?? '',
-         'is_dynamic'                        => 1,
-         'entities_id'                       => $this->item->fields['entities_id']
+            'itemtype'                          => $this->item->getType(),
+            'items_id'                          => $this->item->fields['id'],
+            'operatingsystemarchitectures_id'   => $val->operatingsystemarchitectures_id ?? 0,
+            'operatingsystemkernelversions_id'  => $val->operatingsystemkernelversions_id ?? 0,
+            'operatingsystems_id'               => $val->operatingsystems_id,
+            'operatingsystemversions_id'        => $val->operatingsystemversions_id ?? 0,
+            'operatingsystemservicepacks_id'    => $val->operatingsystemservicepacks_id ?? 0,
+            'licenseid'                         => $val->licenseid ?? '',
+            'license_number'                    => $val->license_number ?? '',
+            'is_dynamic'                        => 1,
+            'entities_id'                       => $this->item->fields['entities_id']
         ];
 
         $this->withHistory(true);//always store history for OS
@@ -147,12 +147,12 @@ class OperatingSystem extends InventoryAsset
        //cleanup
         if (!$this->main_asset || !$this->main_asset->isPartial()) {
             $iterator = $DB->request([
-            'FROM' => $ios->getTable(),
-            'WHERE' => [
-               'itemtype'  => $this->item->getType(),
-               'items_id'  => $this->item->fields['id'],
-               'NOT'       => ['id' => $ios->fields['id']]
-            ]
+                'FROM' => $ios->getTable(),
+                'WHERE' => [
+                    'itemtype'  => $this->item->getType(),
+                    'items_id'  => $this->item->fields['id'],
+                    'NOT'       => ['id' => $ios->fields['id']]
+                ]
             ]);
 
             foreach ($iterator as $row) {

@@ -53,13 +53,13 @@ function update921to922()
     $migration->setVersion('9.2.2');
 
     $migration->addConfig([
-      'smtp_retry_time' => 5,
+        'smtp_retry_time' => 5,
     ]);
 
     $migration->addPostQuery(
         $DB->buildDelete("glpi_configs", [
-         'context'   => "core",
-         'name'      => "default_graphtype"
+            'context'   => "core",
+            'name'      => "default_graphtype"
         ])
     );
 

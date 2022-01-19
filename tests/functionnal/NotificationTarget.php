@@ -58,8 +58,8 @@ class NotificationTarget extends DbTestCase
 
         $entity  = new \Entity();
         $this->boolean($entity->update([
-         'id'                       => $root,
-         'notification_subject_tag' => "prefix_root",
+            'id'                       => $root,
+            'notification_subject_tag' => "prefix_root",
         ]))->isTrue();
 
         $this->string($ntarget_parent->getSubjectPrefix())->isEqualTo("[prefix_root] ");
@@ -67,8 +67,8 @@ class NotificationTarget extends DbTestCase
         $this->string($ntarget_child_2->getSubjectPrefix())->isEqualTo("[prefix_root] ");
 
         $this->boolean($entity->update([
-         'id'                       => $parent,
-         'notification_subject_tag' => "prefix_parent",
+            'id'                       => $parent,
+            'notification_subject_tag' => "prefix_parent",
         ]))->isTrue();
 
         $this->string($ntarget_parent->getSubjectPrefix())->isEqualTo("[prefix_parent] ");
@@ -76,8 +76,8 @@ class NotificationTarget extends DbTestCase
         $this->string($ntarget_child_2->getSubjectPrefix())->isEqualTo("[prefix_parent] ");
 
         $this->boolean($entity->update([
-         'id'                       => $child_1,
-         'notification_subject_tag' => "prefix_child_1",
+            'id'                       => $child_1,
+            'notification_subject_tag' => "prefix_child_1",
         ]))->isTrue();
 
         $this->string($ntarget_parent->getSubjectPrefix())->isEqualTo("[prefix_parent] ");
@@ -85,8 +85,8 @@ class NotificationTarget extends DbTestCase
         $this->string($ntarget_child_2->getSubjectPrefix())->isEqualTo("[prefix_parent] ");
 
         $this->boolean($entity->update([
-         'id'                       => $child_2,
-         'notification_subject_tag' => "prefix_child_2",
+            'id'                       => $child_2,
+            'notification_subject_tag' => "prefix_child_2",
         ]))->isTrue();
 
         $this->string($ntarget_parent->getSubjectPrefix())->isEqualTo("[prefix_parent] ");
@@ -115,97 +115,97 @@ class NotificationTarget extends DbTestCase
         $CFG_GLPI['from_email'] = '';
 
         $this->array($ntarget_parent->getReplyTo())->isEqualTo([
-         'email' => 'test@global.tld',
-         'name'  => 'test global'
+            'email' => 'test@global.tld',
+            'name'  => 'test global'
         ]);
         $this->array($ntarget_child_1->getReplyTo())->isEqualTo([
-         'email' => 'test@global.tld',
-         'name'  => 'test global'
+            'email' => 'test@global.tld',
+            'name'  => 'test global'
         ]);
         $this->array($ntarget_child_2->getReplyTo())->isEqualTo([
-         'email' => 'test@global.tld',
-         'name'  => 'test global'
+            'email' => 'test@global.tld',
+            'name'  => 'test global'
         ]);
 
        // test root entity settings
         $entity  = new \Entity();
         $this->boolean($entity->update([
-         'id'               => $root,
-         'admin_reply'      => "test@root.tld",
-         'admin_reply_name' => "test root",
+            'id'               => $root,
+            'admin_reply'      => "test@root.tld",
+            'admin_reply_name' => "test root",
         ]))->isTrue();
 
         $this->array($ntarget_parent->getReplyTo())->isEqualTo([
-         'email' => 'test@root.tld',
-         'name'  => 'test root'
+            'email' => 'test@root.tld',
+            'name'  => 'test root'
         ]);
         $this->array($ntarget_child_1->getReplyTo())->isEqualTo([
-         'email' => 'test@root.tld',
-         'name'  => 'test root'
+            'email' => 'test@root.tld',
+            'name'  => 'test root'
         ]);
         $this->array($ntarget_child_2->getReplyTo())->isEqualTo([
-         'email' => 'test@root.tld',
-         'name'  => 'test root'
+            'email' => 'test@root.tld',
+            'name'  => 'test root'
         ]);
 
        // test parent entity settings
         $this->boolean($entity->update([
-         'id'               => $parent,
-         'admin_reply'      => "test@parent.tld",
-         'admin_reply_name' => "test parent",
+            'id'               => $parent,
+            'admin_reply'      => "test@parent.tld",
+            'admin_reply_name' => "test parent",
         ]))->isTrue();
 
         $this->array($ntarget_parent->getReplyTo())->isEqualTo([
-         'email' => 'test@parent.tld',
-         'name'  => 'test parent'
+            'email' => 'test@parent.tld',
+            'name'  => 'test parent'
         ]);
         $this->array($ntarget_child_1->getReplyTo())->isEqualTo([
-         'email' => 'test@parent.tld',
-         'name'  => 'test parent'
+            'email' => 'test@parent.tld',
+            'name'  => 'test parent'
         ]);
         $this->array($ntarget_child_2->getReplyTo())->isEqualTo([
-         'email' => 'test@parent.tld',
-         'name'  => 'test parent'
+            'email' => 'test@parent.tld',
+            'name'  => 'test parent'
         ]);
 
        // test child_1 entity settings
         $this->boolean($entity->update([
-         'id'               => $child_1,
-         'admin_reply'      => "test@child1.tld",
-         'admin_reply_name' => "test child1",
+            'id'               => $child_1,
+            'admin_reply'      => "test@child1.tld",
+            'admin_reply_name' => "test child1",
         ]))->isTrue();
 
         $this->array($ntarget_parent->getReplyTo())->isEqualTo([
-         'email' => 'test@parent.tld',
-         'name'  => 'test parent'
+            'email' => 'test@parent.tld',
+            'name'  => 'test parent'
         ]);
         $this->array($ntarget_child_1->getReplyTo())->isEqualTo([
-         'email' => 'test@child1.tld',
-         'name'  => 'test child1'
+            'email' => 'test@child1.tld',
+            'name'  => 'test child1'
         ]);
         $this->array($ntarget_child_2->getReplyTo())->isEqualTo([
-         'email' => 'test@parent.tld',
-         'name'  => 'test parent'
+            'email' => 'test@parent.tld',
+            'name'  => 'test parent'
         ]);
 
        // test child_2 entity settings
         $this->boolean($entity->update([
-         'id'               => $child_2,
-         'admin_reply'      => "test@child2.tld",
-         'admin_reply_name' => "test child2",
+            'id'               => $child_2,
+            'admin_reply'      => "test@child2.tld",
+            'admin_reply_name' => "test child2",
         ]))->isTrue();
 
         $this->array($ntarget_parent->getReplyTo())->isEqualTo([
-         'email' => 'test@parent.tld',
-         'name'  => 'test parent'
+            'email' => 'test@parent.tld',
+            'name'  => 'test parent'
         ]);
         $this->array($ntarget_child_1->getReplyTo())->isEqualTo([
-         'email' => 'test@child1.tld',
-         'name'  => 'test child1'
+            'email' => 'test@child1.tld',
+            'name'  => 'test child1'
         ]);
         $this->array($ntarget_child_2->getReplyTo())->isEqualTo([
-         'email' => 'test@child2.tld',
-         'name'  => 'test child2'
+            'email' => 'test@child2.tld',
+            'name'  => 'test child2'
         ]);
     }
 }

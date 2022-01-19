@@ -93,14 +93,14 @@ abstract class CommonDBRelation extends CommonDBConnexity
 
         $conditions = [];
         $fields     = [
-         static::getIndexName(),
-         static::$items_id_1 . ' AS items_id_1',
-         static::$items_id_2 . ' AS items_id_2'
+            static::getIndexName(),
+            static::$items_id_1 . ' AS items_id_1',
+            static::$items_id_2 . ' AS items_id_2'
         ];
 
        // Check item 1 type
         $where1 = [
-         static::$items_id_1  => $items_id
+            static::$items_id_1  => $items_id
         ];
 
         $request = false;
@@ -129,7 +129,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
 
        // Check item 2 type
         $where2 = [
-         static::$items_id_2 => $items_id
+            static::$items_id_2 => $items_id
         ];
         $request = false;
         if (preg_match('/^itemtype/', static::$itemtype_2)) {
@@ -157,9 +157,9 @@ abstract class CommonDBRelation extends CommonDBConnexity
 
         if (count($conditions) != 0) {
             $criteria = [
-            'SELECT' => $fields,
-            'FROM'   => static::getTable(),
-            'WHERE'  => ['OR' => $conditions]
+                'SELECT' => $fields,
+                'FROM'   => static::getTable(),
+                'WHERE'  => ['OR' => $conditions]
             ];
             return $criteria;
         }
@@ -301,42 +301,42 @@ abstract class CommonDBRelation extends CommonDBConnexity
         $tab = [];
 
         $tab[] = [
-         'id'                 => 'common',
-         'name'               => __('Characteristics')
+            'id'                 => 'common',
+            'name'               => __('Characteristics')
         ];
 
         $tab[] = [
-         'id'                 => '2',
-         'table'              => $this->getTable(),
-         'field'              => 'id',
-         'name'               => __('ID'),
-         'massiveaction'      => false,
-         'datatype'           => 'number'
+            'id'                 => '2',
+            'table'              => $this->getTable(),
+            'field'              => 'id',
+            'name'               => __('ID'),
+            'massiveaction'      => false,
+            'datatype'           => 'number'
         ];
 
         $itemtype1 = static::$itemtype_1;
         if (!preg_match('/^itemtype/', $itemtype1)) {
             $tab[] = [
-            'id'                 => '3',
-            'table'              => getTableForItemType($itemtype1),
-            'field'              => $itemtype1::getIndexName(),
-            'linkfield'          => static::$items_id_1,
-            'name'               => call_user_func([$itemtype1, 'getTypeName']),
-            'datatype'           => 'text',
-            'massiveaction'      => false
+                'id'                 => '3',
+                'table'              => getTableForItemType($itemtype1),
+                'field'              => $itemtype1::getIndexName(),
+                'linkfield'          => static::$items_id_1,
+                'name'               => call_user_func([$itemtype1, 'getTypeName']),
+                'datatype'           => 'text',
+                'massiveaction'      => false
             ];
         }
 
         $itemtype2 = static::$itemtype_2;
         if (!preg_match('/^itemtype/', $itemtype2)) {
             $tab[] = [
-            'id'                 => '4',
-            'table'              => getTableForItemType($itemtype2),
-            'field'              => $itemtype2::getIndexName(),
-            'linkfield'          => static::$items_id_2,
-            'name'               => call_user_func([$itemtype2, 'getTypeName']),
-            'datatype'           => 'text',
-            'massiveaction'      => false
+                'id'                 => '4',
+                'table'              => getTableForItemType($itemtype2),
+                'field'              => $itemtype2::getIndexName(),
+                'linkfield'          => static::$items_id_2,
+                'name'               => call_user_func([$itemtype2, 'getTypeName']),
+                'datatype'           => 'text',
+                'massiveaction'      => false
             ];
         }
 
@@ -758,9 +758,10 @@ abstract class CommonDBRelation extends CommonDBConnexity
        // True if item changed
         if (
             !$this->checkAttachedItemChangesAllowed($input, [static::$itemtype_1,
-                                                                 static::$items_id_1,
-                                                                 static::$itemtype_2,
-                                                                 static::$items_id_2])
+                static::$items_id_1,
+                static::$itemtype_2,
+                static::$items_id_2
+            ])
         ) {
             return false;
         }
@@ -787,7 +788,8 @@ abstract class CommonDBRelation extends CommonDBConnexity
     {
 
         return $item->getNameID(['forceid'    => true,
-                                    'additional' => true]);
+            'additional' => true
+        ]);
     }
 
 
@@ -809,7 +811,8 @@ abstract class CommonDBRelation extends CommonDBConnexity
     {
 
         return $item->getNameID(['forceid'    => true,
-                                    'additional' => true]);
+            'additional' => true
+        ]);
     }
 
 
@@ -833,9 +836,9 @@ abstract class CommonDBRelation extends CommonDBConnexity
                 && static::$logs_for_item_1
             ) {
                 $changes = [
-                (isset($this->_force_log_option) ? $this->_force_log_option : 0),
-                '',
-                addslashes($this->getHistoryNameForItem1($item2, 'add')),
+                    (isset($this->_force_log_option) ? $this->_force_log_option : 0),
+                    '',
+                    addslashes($this->getHistoryNameForItem1($item2, 'add')),
                 ];
                 Log::history(
                     $item1->getID(),
@@ -848,9 +851,9 @@ abstract class CommonDBRelation extends CommonDBConnexity
 
             if ($item2->dohistory && static::$logs_for_item_2) {
                 $changes = [
-                '0',
-                '',
-                addslashes($this->getHistoryNameForItem2($item1, 'add')),
+                    '0',
+                    '',
+                    addslashes($this->getHistoryNameForItem2($item1, 'add')),
                 ];
                 Log::history(
                     $item2->getID(),
@@ -1030,9 +1033,9 @@ abstract class CommonDBRelation extends CommonDBConnexity
                     && static::$logs_for_item_1
                 ) {
                     $changes = [
-                    '0',
-                    addslashes($this->getHistoryNameForItem1($item2, 'lock')),
-                    '',
+                        '0',
+                        addslashes($this->getHistoryNameForItem1($item2, 'lock')),
+                        '',
                     ];
 
                     Log::history(
@@ -1049,9 +1052,9 @@ abstract class CommonDBRelation extends CommonDBConnexity
                     && static::$logs_for_item_2
                 ) {
                     $changes = [
-                    '0',
-                    addslashes($this->getHistoryNameForItem2($item1, 'lock')),
-                    '',
+                        '0',
+                        addslashes($this->getHistoryNameForItem2($item1, 'lock')),
+                        '',
                     ];
                     Log::history(
                         $item2->getID(),
@@ -1089,9 +1092,9 @@ abstract class CommonDBRelation extends CommonDBConnexity
                     && static::$logs_for_item_1
                 ) {
                     $changes = [
-                    '0',
-                    '',
-                    addslashes($this->getHistoryNameForItem1($item2, 'unlock')),
+                        '0',
+                        '',
+                        addslashes($this->getHistoryNameForItem1($item2, 'unlock')),
                     ];
                     Log::history(
                         $item1->getID(),
@@ -1107,9 +1110,9 @@ abstract class CommonDBRelation extends CommonDBConnexity
                     && static::$logs_for_item_2
                 ) {
                     $changes = [
-                    '0',
-                    '',
-                    addslashes($this->getHistoryNameForItem2($item1, 'unlock')),
+                        '0',
+                        '',
+                        addslashes($this->getHistoryNameForItem2($item1, 'unlock')),
                     ];
                     Log::history(
                         $item2->getID(),
@@ -1143,9 +1146,9 @@ abstract class CommonDBRelation extends CommonDBConnexity
                 && static::$logs_for_item_1
             ) {
                 $changes = [
-                '0',
-                addslashes($this->getHistoryNameForItem1($item2, 'delete')),
-                '',
+                    '0',
+                    addslashes($this->getHistoryNameForItem1($item2, 'delete')),
+                    '',
                 ];
                 Log::history(
                     $item1->getID(),
@@ -1161,9 +1164,9 @@ abstract class CommonDBRelation extends CommonDBConnexity
                 && static::$logs_for_item_2
             ) {
                 $changes = [
-                '0',
-                addslashes($this->getHistoryNameForItem2($item1, 'delete')),
-                '',
+                    '0',
+                    addslashes($this->getHistoryNameForItem2($item1, 'delete')),
+                    '',
                 ];
                 Log::history(
                     $item2->getID(),
@@ -1326,22 +1329,25 @@ abstract class CommonDBRelation extends CommonDBConnexity
     {
 
         return ['select_items_options_1'        => [],
-                   'dropdown_method_1'             => 'dropdown',
-                   'select_items_options_2'        => [],
-                   'dropdown_method_2'             => 'dropdown',
-                   'can_remove_all_at_once'        => true,
-                   'only_remove_all_at_once'       => false,
-                   'itemtypes'                     => [],
-                   'button_labels'                 => ['add'    => _sx('button', 'Add'),
-                                                            'remove' => _sx(
-                                                                'button',
-                                                                'Delete permanently'
-                                                            )],
-                   'normalized'                    => ['add'    => ['add'],
-                                                            'remove' => ['remove']],
-                   'check_both_items_if_same_type' => false,
-                   'can_link_several_times'        => false,
-                   'update_if_different'           => false];
+            'dropdown_method_1'             => 'dropdown',
+            'select_items_options_2'        => [],
+            'dropdown_method_2'             => 'dropdown',
+            'can_remove_all_at_once'        => true,
+            'only_remove_all_at_once'       => false,
+            'itemtypes'                     => [],
+            'button_labels'                 => ['add'    => _sx('button', 'Add'),
+                'remove' => _sx(
+                    'button',
+                    'Delete permanently'
+                )
+            ],
+            'normalized'                    => ['add'    => ['add'],
+                'remove' => ['remove']
+            ],
+            'check_both_items_if_same_type' => false,
+            'can_link_several_times'        => false,
+            'update_if_different'           => false
+        ];
     }
 
 
@@ -1699,8 +1705,8 @@ abstract class CommonDBRelation extends CommonDBConnexity
                         }
 
                         $WHERE = [
-                        static::$items_id_1  => $item_1->getID(),
-                        static::$items_id_2  => $item_2->getID()
+                            static::$items_id_1  => $item_1->getID(),
+                            static::$items_id_2  => $item_2->getID()
                         ];
                         if (preg_match('/^itemtype/', static::$itemtype_1)) {
                             $WHERE[static::$itemtype_1] = $item_1->getType();
@@ -1714,8 +1720,8 @@ abstract class CommonDBRelation extends CommonDBConnexity
                             && ($item_1->getType() == $item_2->getType())
                         ) {
                             $ORWHERE = [
-                            static::$items_id_1 = $item_2->getID(),
-                            static::$items_id_2 = $item_2->getID()
+                                static::$items_id_1 = $item_2->getID(),
+                                static::$items_id_2 = $item_2->getID()
                             ];
                             if (preg_match('/^itemtype/', static::$itemtype_1)) {
                                 $ORWHERE[static::$itemtype_1] = $item_2->getType();
@@ -1724,17 +1730,17 @@ abstract class CommonDBRelation extends CommonDBConnexity
                                 $ORWHERE[static::$itemtype_2] = $item_2->getType();
                             }
                             $WHERE = [
-                            'OR' => [
-                            $WHERE,
-                            $ORWHERE
-                            ]
+                                'OR' => [
+                                    $WHERE,
+                                    $ORWHERE
+                                ]
                             ];
                         }
 
                         $criteria = [
-                        'SELECT' => static::getIndexName(),
-                        'FROM'   => static::getTable(),
-                        'WHERE'  => $WHERE
+                            'SELECT' => static::getIndexName(),
+                            'FROM'   => static::getTable(),
+                            'WHERE'  => $WHERE
                         ];
                     }
                     $request        = $DB->request($criteria);
@@ -1818,20 +1824,20 @@ abstract class CommonDBRelation extends CommonDBConnexity
         $link_table = getTableForItemType($link_type);
 
         $params = [
-         'SELECT'    => [static::getTable() . '.id AS linkid', $link_table . '.*'],
-         'FROM'      => static::getTable(),
-         'LEFT JOIN' => [
-            $link_table  => [
-               'FKEY'   => [
-                  static::getTable()   => $link_id,
-                  $link_table          => 'id'
-               ]
-            ]
-         ],
-         'WHERE'     => [
-            static::getTable() . '.' . $where_id => $item->fields['id']
-         ],
-         'ORDER'     => $link_table . '.name'
+            'SELECT'    => [static::getTable() . '.id AS linkid', $link_table . '.*'],
+            'FROM'      => static::getTable(),
+            'LEFT JOIN' => [
+                $link_table  => [
+                    'FKEY'   => [
+                        static::getTable()   => $link_id,
+                        $link_table          => 'id'
+                    ]
+                ]
+            ],
+            'WHERE'     => [
+                static::getTable() . '.' . $where_id => $item->fields['id']
+            ],
+            'ORDER'     => $link_table . '.name'
         ];
 
         $rel_class = static::class;
@@ -1851,10 +1857,10 @@ abstract class CommonDBRelation extends CommonDBConnexity
         if ($noent === false && $link->isEntityAssign() && $link_type != Entity::getType()) {
             $params['SELECT'][] = 'glpi_entities.id AS entity';
             $params['INNER JOIN']['glpi_entities'] = [
-            'FKEY'   => [
-               $link_table       => 'entities_id',
-               'glpi_entities'   => 'id'
-            ]
+                'FKEY'   => [
+                    $link_table       => 'entities_id',
+                    'glpi_entities'   => 'id'
+                ]
             ];
             $params['WHERE'] += getEntitiesRestrictCriteria($link_table, '', '', 'auto');
             $params['ORDER'] = ['glpi_entities.completename', $params['ORDER']];
@@ -1895,13 +1901,13 @@ abstract class CommonDBRelation extends CommonDBConnexity
     protected static function getDistinctTypesParams($items_id, $extra_where = [])
     {
         $params = [
-         'SELECT'          => 'itemtype',
-         'DISTINCT'        => true,
-         'FROM'            => static::getTable(),
-         'WHERE'           => [
-            static::$items_id_1  => $items_id,
-         ] + $extra_where,
-         'ORDER'           => 'itemtype'
+            'SELECT'          => 'itemtype',
+            'DISTINCT'        => true,
+            'FROM'            => static::getTable(),
+            'WHERE'           => [
+                static::$items_id_1  => $items_id,
+            ] + $extra_where,
+            'ORDER'           => 'itemtype'
         ];
         return $params;
     }
@@ -1935,8 +1941,8 @@ abstract class CommonDBRelation extends CommonDBConnexity
     public static function getTypeItemsQueryParams_Select(CommonDBTM $item): array
     {
         return [
-         $item->getTable() . '.*',
-         static::getTable() . '.id AS linkid',
+            $item->getTable() . '.*',
+            static::getTable() . '.id AS linkid',
         ];
     }
 
@@ -1972,18 +1978,18 @@ abstract class CommonDBRelation extends CommonDBConnexity
         }
 
         $params = [
-         'SELECT' => static::getTypeItemsQueryParams_Select($item),
-         'FROM'   => $item->getTable(),
-         'WHERE'  => $where,
-         'LEFT JOIN' => [
-            static::getTable() => [
-               'FKEY' => [
-                  static::getTable()   => 'items_id',
-                  $item->getTable()    => 'id'
-               ]
-            ]
-         ],
-         'ORDER'     => $item->getTable() . '.' . $order_col
+            'SELECT' => static::getTypeItemsQueryParams_Select($item),
+            'FROM'   => $item->getTable(),
+            'WHERE'  => $where,
+            'LEFT JOIN' => [
+                static::getTable() => [
+                    'FKEY' => [
+                        static::getTable()   => 'items_id',
+                        $item->getTable()    => 'id'
+                    ]
+                ]
+            ],
+            'ORDER'     => $item->getTable() . '.' . $order_col
         ];
 
         if ($DB->fieldExists(static::getTable(), 'is_deleted')) {
@@ -2001,10 +2007,10 @@ abstract class CommonDBRelation extends CommonDBConnexity
         if ($noent === false && $item->isEntityAssign() && $itemtype != Entity::getType()) {
             $params['SELECT'][] = 'glpi_entities.id AS entity';
             $params['LEFT JOIN']['glpi_entities'] = [
-            'FKEY'   => [
-               $item->getTable() => 'entities_id',
-               'glpi_entities'   => 'id'
-            ]
+                'FKEY'   => [
+                    $item->getTable() => 'entities_id',
+                    'glpi_entities'   => 'id'
+                ]
             ];
             $params['WHERE'] += getEntitiesRestrictCriteria($item->getTable(), '', '', 'auto');
             $params['ORDER'] = ['glpi_entities.completename', $params['ORDER']];

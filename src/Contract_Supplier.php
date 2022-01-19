@@ -142,9 +142,10 @@ class Contract_Supplier extends CommonDBRelation
 
             echo "<tr class='tab_bg_1'><td class='right'>";
             Contract::dropdown(['used'         => $used,
-                                  'entity'       => $supplier->fields["entities_id"],
-                                  'entity_sons'  => $supplier->fields["is_recursive"],
-                                  'nochecklimit' => true]);
+                'entity'       => $supplier->fields["entities_id"],
+                'entity_sons'  => $supplier->fields["is_recursive"],
+                'nochecklimit' => true
+            ]);
 
             echo "</td><td class='center'>";
             echo "<input type='submit' name='add' value=\"" . _sx('button', 'Add') . "\" class='btn btn-primary'>";
@@ -158,7 +159,8 @@ class Contract_Supplier extends CommonDBRelation
         if ($canedit && $number) {
             Html::openMassiveActionsForm('mass' . __CLASS__ . $rand);
             $massiveactionparams = ['container'     => 'mass' . __CLASS__ . $rand,
-                                      'num_displayed' => min($_SESSION['glpilist_limit'], $number)];
+                'num_displayed' => min($_SESSION['glpilist_limit'], $number)
+            ];
             Html::showMassiveActions($massiveactionparams);
         }
         echo "<table class='tab_cadre_fixe'>";
@@ -274,8 +276,9 @@ class Contract_Supplier extends CommonDBRelation
             echo "<tr class='tab_bg_1'><td class='right'>";
 
             Supplier::dropdown(['used'         => $used,
-                                  'entity'       => $contract->fields["entities_id"],
-                                  'entity_sons'  => $contract->fields["is_recursive"]]);
+                'entity'       => $contract->fields["entities_id"],
+                'entity_sons'  => $contract->fields["is_recursive"]
+            ]);
             echo "</td><td class='center'>";
             echo "<input type='submit' name='add' value=\"" . _sx('button', 'Add') . "\" class='btn btn-primary'>";
             echo "</td></tr>";
@@ -288,7 +291,8 @@ class Contract_Supplier extends CommonDBRelation
         if ($canedit && $number) {
             Html::openMassiveActionsForm('mass' . __CLASS__ . $rand);
             $massiveactionparams = ['num_displayed' => min($_SESSION['glpilist_limit'], $number),
-                                      'container'     => 'mass' . __CLASS__ . $rand];
+                'container'     => 'mass' . __CLASS__ . $rand
+            ];
             Html::showMassiveActions($massiveactionparams);
         }
         echo "<table class='tab_cadre_fixe'>";

@@ -100,7 +100,7 @@ class ConsumableItem extends CommonDBTM
 
         $this->deleteChildrenAndRelationsFromDb(
             [
-            Consumable::class,
+                Consumable::class,
             ]
         );
 
@@ -143,137 +143,137 @@ class ConsumableItem extends CommonDBTM
         $tab = parent::rawSearchOptions();
 
         $tab[] = [
-         'id'                 => '2',
-         'table'              => $this->getTable(),
-         'field'              => 'id',
-         'name'               => __('ID'),
-         'datatype'           => 'number',
-         'massiveaction'      => false
+            'id'                 => '2',
+            'table'              => $this->getTable(),
+            'field'              => 'id',
+            'name'               => __('ID'),
+            'datatype'           => 'number',
+            'massiveaction'      => false
         ];
 
         $tab[] = [
-         'id'                 => '34',
-         'table'              => $this->getTable(),
-         'field'              => 'ref',
-         'name'               => __('Reference'),
-         'datatype'           => 'string',
+            'id'                 => '34',
+            'table'              => $this->getTable(),
+            'field'              => 'ref',
+            'name'               => __('Reference'),
+            'datatype'           => 'string',
         ];
 
         $tab[] = [
-         'id'                 => '6',
-         'table'              => $this->getTable(),
-         'field'              => 'otherserial',
-         'name'               => __('Inventory number'),
-         'datatype'           => 'string',
+            'id'                 => '6',
+            'table'              => $this->getTable(),
+            'field'              => 'otherserial',
+            'name'               => __('Inventory number'),
+            'datatype'           => 'string',
         ];
 
         $tab[] = [
-         'id'                 => '4',
-         'table'              => 'glpi_consumableitemtypes',
-         'field'              => 'name',
-         'name'               => _n('Type', 'Types', 1),
-         'datatype'           => 'dropdown'
+            'id'                 => '4',
+            'table'              => 'glpi_consumableitemtypes',
+            'field'              => 'name',
+            'name'               => _n('Type', 'Types', 1),
+            'datatype'           => 'dropdown'
         ];
 
         $tab[] = [
-         'id'                 => '23',
-         'table'              => 'glpi_manufacturers',
-         'field'              => 'name',
-         'name'               => Manufacturer::getTypeName(1),
-         'datatype'           => 'dropdown'
+            'id'                 => '23',
+            'table'              => 'glpi_manufacturers',
+            'field'              => 'name',
+            'name'               => Manufacturer::getTypeName(1),
+            'datatype'           => 'dropdown'
         ];
 
         $tab[] = [
-         'id'                 => '9',
-         'table'              => $this->getTable(),
-         'field'              => '_virtual',
-         'linkfield'          => '_virtual',
-         'name'               => _n('Consumable', 'Consumables', Session::getPluralNumber()),
-         'datatype'           => 'specific',
-         'massiveaction'      => false,
-         'nosearch'           => true,
-         'nosort'             => true,
-         'additionalfields'   => ['alarm_threshold']
+            'id'                 => '9',
+            'table'              => $this->getTable(),
+            'field'              => '_virtual',
+            'linkfield'          => '_virtual',
+            'name'               => _n('Consumable', 'Consumables', Session::getPluralNumber()),
+            'datatype'           => 'specific',
+            'massiveaction'      => false,
+            'nosearch'           => true,
+            'nosort'             => true,
+            'additionalfields'   => ['alarm_threshold']
         ];
 
         $tab[] = [
-         'id'                 => '17',
-         'table'              => 'glpi_consumables',
-         'field'              => 'id',
-         'name'               => __('Number of used consumables'),
-         'datatype'           => 'count',
-         'forcegroupby'       => true,
-         'usehaving'          => true,
-         'massiveaction'      => false,
-         'joinparams'         => [
-            'jointype'           => 'child',
-            'condition'          => ['NOT' => ['NEWTABLE.date_out' => null]]
-         ]
+            'id'                 => '17',
+            'table'              => 'glpi_consumables',
+            'field'              => 'id',
+            'name'               => __('Number of used consumables'),
+            'datatype'           => 'count',
+            'forcegroupby'       => true,
+            'usehaving'          => true,
+            'massiveaction'      => false,
+            'joinparams'         => [
+                'jointype'           => 'child',
+                'condition'          => ['NOT' => ['NEWTABLE.date_out' => null]]
+            ]
         ];
 
         $tab[] = [
-         'id'                 => '19',
-         'table'              => 'glpi_consumables',
-         'field'              => 'id',
-         'name'               => __('Number of new consumables'),
-         'datatype'           => 'count',
-         'forcegroupby'       => true,
-         'usehaving'          => true,
-         'massiveaction'      => false,
-         'joinparams'         => [
-            'jointype'           => 'child',
-            'condition'          => ['NEWTABLE.date_out' => null]
-         ]
+            'id'                 => '19',
+            'table'              => 'glpi_consumables',
+            'field'              => 'id',
+            'name'               => __('Number of new consumables'),
+            'datatype'           => 'count',
+            'forcegroupby'       => true,
+            'usehaving'          => true,
+            'massiveaction'      => false,
+            'joinparams'         => [
+                'jointype'           => 'child',
+                'condition'          => ['NEWTABLE.date_out' => null]
+            ]
         ];
 
         $tab = array_merge($tab, Location::rawSearchOptionsToAdd());
 
         $tab[] = [
-         'id'                 => '24',
-         'table'              => 'glpi_users',
-         'field'              => 'name',
-         'linkfield'          => 'users_id_tech',
-         'name'               => __('Technician in charge of the hardware'),
-         'datatype'           => 'dropdown',
-         'right'              => 'own_ticket'
+            'id'                 => '24',
+            'table'              => 'glpi_users',
+            'field'              => 'name',
+            'linkfield'          => 'users_id_tech',
+            'name'               => __('Technician in charge of the hardware'),
+            'datatype'           => 'dropdown',
+            'right'              => 'own_ticket'
         ];
 
         $tab[] = [
-         'id'                 => '49',
-         'table'              => 'glpi_groups',
-         'field'              => 'completename',
-         'linkfield'          => 'groups_id_tech',
-         'name'               => __('Group in charge of the hardware'),
-         'condition'          => ['is_assign' => 1],
-         'datatype'           => 'dropdown'
+            'id'                 => '49',
+            'table'              => 'glpi_groups',
+            'field'              => 'completename',
+            'linkfield'          => 'groups_id_tech',
+            'name'               => __('Group in charge of the hardware'),
+            'condition'          => ['is_assign' => 1],
+            'datatype'           => 'dropdown'
         ];
 
         $tab[] = [
-         'id'                 => '8',
-         'table'              => $this->getTable(),
-         'field'              => 'alarm_threshold',
-         'name'               => __('Alert threshold'),
-         'datatype'           => 'number',
-         'toadd'              => [
-            '-1'                 => 'Never'
-         ]
+            'id'                 => '8',
+            'table'              => $this->getTable(),
+            'field'              => 'alarm_threshold',
+            'name'               => __('Alert threshold'),
+            'datatype'           => 'number',
+            'toadd'              => [
+                '-1'                 => 'Never'
+            ]
         ];
 
         $tab[] = [
-         'id'                 => '16',
-         'table'              => $this->getTable(),
-         'field'              => 'comment',
-         'name'               => __('Comments'),
-         'datatype'           => 'text'
+            'id'                 => '16',
+            'table'              => $this->getTable(),
+            'field'              => 'comment',
+            'name'               => __('Comments'),
+            'datatype'           => 'text'
         ];
 
         $tab[] = [
-         'id'                 => '80',
-         'table'              => 'glpi_entities',
-         'field'              => 'completename',
-         'name'               => Entity::getTypeName(1),
-         'massiveaction'      => false,
-         'datatype'           => 'dropdown'
+            'id'                 => '80',
+            'table'              => 'glpi_entities',
+            'field'              => 'completename',
+            'name'               => Entity::getTypeName(1),
+            'massiveaction'      => false,
+            'datatype'           => 'dropdown'
         ];
 
         $tab = array_merge($tab, Notepad::rawSearchOptionsToAdd());
@@ -309,36 +309,36 @@ class ConsumableItem extends CommonDBTM
             foreach (Entity::getEntitiesToNotify('consumables_alert_repeat') as $entity => $repeat) {
                 $alerts_result = $DB->request(
                     [
-                    'SELECT'    => [
-                     'glpi_consumableitems.id AS consID',
-                     'glpi_consumableitems.entities_id AS entity',
-                     'glpi_consumableitems.ref AS ref',
-                     'glpi_consumableitems.name AS name',
-                     'glpi_consumableitems.alarm_threshold AS threshold',
-                     'glpi_alerts.id AS alertID',
-                     'glpi_alerts.date',
-                    ],
-                    'FROM'      => ConsumableItem::getTable(),
-                    'LEFT JOIN' => [
-                     'glpi_alerts' => [
-                        'FKEY' => [
-                           'glpi_alerts'         => 'items_id',
-                           'glpi_consumableitems' => 'id',
-                           [
-                              'AND' => ['glpi_alerts.itemtype' => 'ConsumableItem'],
-                           ],
-                        ]
-                     ]
-                    ],
-                    'WHERE'     => [
-                     'glpi_consumableitems.is_deleted'      => 0,
-                     'glpi_consumableitems.alarm_threshold' => ['>=', 0],
-                     'glpi_consumableitems.entities_id'     => $entity,
-                     'OR'                                  => [
-                        ['glpi_alerts.date' => null],
-                        ['glpi_alerts.date' => ['<', new QueryExpression('CURRENT_TIMESTAMP() - INTERVAL ' . $repeat . ' second')]],
-                     ],
-                    ],
+                        'SELECT'    => [
+                            'glpi_consumableitems.id AS consID',
+                            'glpi_consumableitems.entities_id AS entity',
+                            'glpi_consumableitems.ref AS ref',
+                            'glpi_consumableitems.name AS name',
+                            'glpi_consumableitems.alarm_threshold AS threshold',
+                            'glpi_alerts.id AS alertID',
+                            'glpi_alerts.date',
+                        ],
+                        'FROM'      => ConsumableItem::getTable(),
+                        'LEFT JOIN' => [
+                            'glpi_alerts' => [
+                                'FKEY' => [
+                                    'glpi_alerts'         => 'items_id',
+                                    'glpi_consumableitems' => 'id',
+                                    [
+                                        'AND' => ['glpi_alerts.itemtype' => 'ConsumableItem'],
+                                    ],
+                                ]
+                            ]
+                        ],
+                        'WHERE'     => [
+                            'glpi_consumableitems.is_deleted'      => 0,
+                            'glpi_consumableitems.alarm_threshold' => ['>=', 0],
+                            'glpi_consumableitems.entities_id'     => $entity,
+                            'OR'                                  => [
+                                ['glpi_alerts.date' => null],
+                                ['glpi_alerts.date' => ['<', new QueryExpression('CURRENT_TIMESTAMP() - INTERVAL ' . $repeat . ' second')]],
+                            ],
+                        ],
                     ]
                 );
 
@@ -371,8 +371,8 @@ class ConsumableItem extends CommonDBTM
 
                 if (!empty($items)) {
                     $options = [
-                    'entities_id' => $entity,
-                    'items'       => $items,
+                        'entities_id' => $entity,
+                        'items'       => $items,
                     ];
 
                     if (NotificationEvent::raiseEvent('alert', new ConsumableItem(), $options)) {
@@ -391,8 +391,8 @@ class ConsumableItem extends CommonDBTM
                         }
 
                         $input = [
-                        'type'     => Alert::THRESHOLD,
-                        'itemtype' => 'ConsumableItem',
+                            'type'     => Alert::THRESHOLD,
+                            'itemtype' => 'ConsumableItem',
                         ];
 
                       // add alerts
@@ -432,10 +432,11 @@ class ConsumableItem extends CommonDBTM
 
        // see query_alert in cronConsumable()
         $item = ['consID'    => $this->fields['id'],
-                    'entity'    => $this->fields['entities_id'],
-                    'ref'       => $this->fields['ref'],
-                    'name'      => $this->fields['name'],
-                    'threshold' => $this->fields['alarm_threshold']];
+            'entity'    => $this->fields['entities_id'],
+            'ref'       => $this->fields['ref'],
+            'name'      => $this->fields['name'],
+            'threshold' => $this->fields['alarm_threshold']
+        ];
 
         $options = [];
         $options['entities_id'] = $this->getEntityID();
@@ -457,8 +458,8 @@ class ConsumableItem extends CommonDBTM
     {
         $this->initForm($ID, $options);
         TemplateRenderer::getInstance()->display('pages/assets/consumableitem.html.twig', [
-         'item'   => $this,
-         'params' => $options,
+            'item'   => $this,
+            'params' => $options,
         ]);
         return true;
     }

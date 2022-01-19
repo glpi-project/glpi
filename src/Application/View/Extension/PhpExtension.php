@@ -46,16 +46,16 @@ class PhpExtension extends AbstractExtension
     public function getFunctions(): array
     {
         return [
-         new TwigFunction('php_config', [$this, 'phpConfig']),
-         new TwigFunction('call', [$this, 'call']),
+            new TwigFunction('php_config', [$this, 'phpConfig']),
+            new TwigFunction('call', [$this, 'call']),
         ];
     }
 
     public function getTests(): array
     {
         return [
-         new TwigTest('instanceof', [$this, 'isInstanceOf']),
-         new TwigTest('usingtrait', [$this, 'isUsingTrait']),
+            new TwigTest('instanceof', [$this, 'isInstanceOf']),
+            new TwigTest('usingtrait', [$this, 'isUsingTrait']),
         ];
     }
 

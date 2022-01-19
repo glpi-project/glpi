@@ -87,8 +87,8 @@ class SLM extends CommonDBTM
 
         $this->deleteChildrenAndRelationsFromDb(
             [
-            SLA::class,
-            OLA::class,
+                SLA::class,
+                OLA::class,
             ]
         );
     }
@@ -123,8 +123,9 @@ class SLM extends CommonDBTM
         echo "<td>";
 
         Calendar::dropdown(['value'      => $this->fields["calendars_id"],
-                          'emptylabel' => __('24/7'),
-                          'toadd'      => ['-1' => __('Calendar of the ticket')]]);
+            'emptylabel' => __('24/7'),
+            'toadd'      => ['-1' => __('Calendar of the ticket')]
+        ]);
         echo "</td></tr>";
 
         $this->showFormButtons($options);
@@ -138,42 +139,42 @@ class SLM extends CommonDBTM
         $tab = [];
 
         $tab[] = [
-         'id'                 => 'common',
-         'name'               => __('Characteristics')
+            'id'                 => 'common',
+            'name'               => __('Characteristics')
         ];
 
         $tab[] = [
-         'id'                 => '1',
-         'table'              => $this->getTable(),
-         'field'              => 'name',
-         'name'               => __('Name'),
-         'datatype'           => 'itemlink',
-         'massiveaction'      => false,
+            'id'                 => '1',
+            'table'              => $this->getTable(),
+            'field'              => 'name',
+            'name'               => __('Name'),
+            'datatype'           => 'itemlink',
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
-         'id'                 => '2',
-         'table'              => $this->getTable(),
-         'field'              => 'id',
-         'name'               => __('ID'),
-         'massiveaction'      => false,
-         'datatype'           => 'number'
+            'id'                 => '2',
+            'table'              => $this->getTable(),
+            'field'              => 'id',
+            'name'               => __('ID'),
+            'massiveaction'      => false,
+            'datatype'           => 'number'
         ];
 
         $tab[] = [
-         'id'                 => '4',
-         'table'              => 'glpi_calendars',
-         'field'              => 'name',
-         'name'               => _n('Calendar', 'Calendars', 1),
-         'datatype'           => 'dropdown'
+            'id'                 => '4',
+            'table'              => 'glpi_calendars',
+            'field'              => 'name',
+            'name'               => _n('Calendar', 'Calendars', 1),
+            'datatype'           => 'dropdown'
         ];
 
         $tab[] = [
-         'id'                 => '16',
-         'table'              => $this->getTable(),
-         'field'              => 'comment',
-         'name'               => __('Comments'),
-         'datatype'           => 'text'
+            'id'                 => '16',
+            'table'              => $this->getTable(),
+            'field'              => 'comment',
+            'name'               => __('Comments'),
+            'datatype'           => 'text'
         ];
 
         return $tab;

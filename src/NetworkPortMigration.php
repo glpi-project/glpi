@@ -109,12 +109,13 @@ class NetworkPortMigration extends CommonDBChild
 
         return [ 'unknown_interface_type'
                               => __('Undefined interface'),
-                    'invalid_network'
+            'invalid_network'
                               => __('Invalid network (already defined or with invalid addresses)'),
-                    'invalid_gateway'
+            'invalid_gateway'
                               => __('Gateway not include inside the network'),
-                    'invalid_address'
-                              => __('Invalid IP address') ];
+            'invalid_address'
+                              => __('Invalid IP address')
+        ];
     }
 
 
@@ -174,7 +175,8 @@ class NetworkPortMigration extends CommonDBChild
             $network = new IPNetwork();
 
             $params = ["address" => $address,
-                         "netmask" => $netmask];
+                "netmask" => $netmask
+            ];
             if (isset($this->fields["address"])) {
                 $params["exclude IDs"] = $this->fields["address"];
             }
@@ -313,9 +315,9 @@ class NetworkPortMigration extends CommonDBChild
 
         echo "<tr class='tab_bg_1'><td>" . NetworkInterface::getTypeName(1) . "</td><$interface_cell>\n";
         $iterator = $DB->request([
-         'SELECT' => 'name',
-         'FROM'   => 'glpi_networkinterfaces',
-         'WHERE'  => ['id' => $this->fields['networkinterfaces_id']]
+            'SELECT' => 'name',
+            'FROM'   => 'glpi_networkinterfaces',
+            'WHERE'  => ['id' => $this->fields['networkinterfaces_id']]
         ]);
         if (count($iterator)) {
             $row = $iterator->current();
@@ -419,54 +421,54 @@ class NetworkPortMigration extends CommonDBChild
        // From 10 to 14
         foreach (self::getMotives() as $motive => $name) {
             $tab[] = [
-            'id'                 => $optionIndex,
-            'table'              => $this->getTable(),
-            'field'              => $motive,
-            'name'               => $name,
-            'datatype'           => 'bool'
+                'id'                 => $optionIndex,
+                'table'              => $this->getTable(),
+                'field'              => $motive,
+                'name'               => $name,
+                'datatype'           => 'bool'
             ];
 
             $optionIndex++;
         }
 
         $tab[] = [
-         'id'                 => '20',
-         'table'              => $this->getTable(),
-         'field'              => 'ip',
-         'datatype'           => 'ip',
-         'name'               => IPAddress::getTypeName(1)
+            'id'                 => '20',
+            'table'              => $this->getTable(),
+            'field'              => 'ip',
+            'datatype'           => 'ip',
+            'name'               => IPAddress::getTypeName(1)
         ];
 
         $tab[] = [
-         'id'                 => '21',
-         'table'              => $this->getTable(),
-         'field'              => 'netmask',
-         'datatype'           => 'string',
-         'name'               => IPNetmask::getTypeName(1)
+            'id'                 => '21',
+            'table'              => $this->getTable(),
+            'field'              => 'netmask',
+            'datatype'           => 'string',
+            'name'               => IPNetmask::getTypeName(1)
         ];
 
         $tab[] = [
-         'id'                 => '22',
-         'table'              => $this->getTable(),
-         'field'              => 'subnet',
-         'datatype'           => 'string',
-         'name'               => __('Network address')
+            'id'                 => '22',
+            'table'              => $this->getTable(),
+            'field'              => 'subnet',
+            'datatype'           => 'string',
+            'name'               => __('Network address')
         ];
 
         $tab[] = [
-         'id'                 => '23',
-         'table'              => $this->getTable(),
-         'field'              => 'gateway',
-         'datatype'           => 'string',
-         'name'               => IPAddress::getTypeName(1)
+            'id'                 => '23',
+            'table'              => $this->getTable(),
+            'field'              => 'gateway',
+            'datatype'           => 'string',
+            'name'               => IPAddress::getTypeName(1)
         ];
 
         $tab[] = [
-         'id'                 => '24',
-         'table'              => 'glpi_networkinterfaces',
-         'field'              => 'name',
-         'datatype'           => 'dropdown',
-         'name'               => NetworkInterface::getTypeName(1)
+            'id'                 => '24',
+            'table'              => 'glpi_networkinterfaces',
+            'field'              => 'name',
+            'datatype'           => 'dropdown',
+            'name'               => NetworkInterface::getTypeName(1)
         ];
 
         return $tab;

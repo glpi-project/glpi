@@ -78,7 +78,7 @@ class SsoVariable extends CommonDropdown
             Config::setConfigurationValues(
                 'core',
                 [
-                'ssovariables_id' => $newval,
+                    'ssovariables_id' => $newval,
                 ]
             );
         }

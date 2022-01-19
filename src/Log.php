@@ -86,7 +86,8 @@ class Log extends CommonDBTM
             $nb = countElementsInTable(
                 'glpi_logs',
                 ['itemtype' => $item->getType(),
-                'items_id' => $item->getID()]
+                    'items_id' => $item->getID()
+                ]
             );
         }
         return self::createTabEntry(self::getTypeName(1), $nb);
@@ -161,22 +162,23 @@ class Log extends CommonDBTM
                        // other cases; link field -> get data from dropdown
                         if ($val2["table"] != 'glpi_auth_tables') {
                             $changes = [$id_search_option,
-                                      addslashes(sprintf(
-                                          __('%1$s (%2$s)'),
-                                          Dropdown::getDropdownName(
-                                              $val2["table"],
-                                              $oldval
-                                          ),
-                                          $oldval
-                                      )),
-                                      addslashes(sprintf(
-                                          __('%1$s (%2$s)'),
-                                          Dropdown::getDropdownName(
-                                              $val2["table"],
-                                              $values[$key]
-                                          ),
-                                          $values[$key]
-                                      ))];
+                                addslashes(sprintf(
+                                    __('%1$s (%2$s)'),
+                                    Dropdown::getDropdownName(
+                                        $val2["table"],
+                                        $oldval
+                                    ),
+                                    $oldval
+                                )),
+                                addslashes(sprintf(
+                                    __('%1$s (%2$s)'),
+                                    Dropdown::getDropdownName(
+                                        $val2["table"],
+                                        $values[$key]
+                                    ),
+                                    $values[$key]
+                                ))
+                            ];
                         }
                     }
                     break;
@@ -246,15 +248,15 @@ class Log extends CommonDBTM
         }
 
         $params = [
-         'items_id'          => $items_id,
-         'itemtype'          => $itemtype,
-         'itemtype_link'     => $itemtype_link,
-         'linked_action'     => $linked_action,
-         'user_name'         => addslashes($username),
-         'date_mod'          => $date_mod,
-         'id_search_option'  => $id_search_option,
-         'old_value'         => $old_value,
-         'new_value'         => $new_value
+            'items_id'          => $items_id,
+            'itemtype'          => $itemtype,
+            'itemtype_link'     => $itemtype_link,
+            'linked_action'     => $linked_action,
+            'user_name'         => addslashes($username),
+            'date_mod'          => $date_mod,
+            'id_search_option'  => $id_search_option,
+            'old_value'         => $old_value,
+            'new_value'         => $new_value
         ];
         $result = $DB->insert(self::getTable(), $params);
 
@@ -289,31 +291,31 @@ class Log extends CommonDBTM
         $filtered_number = countElementsInTable("glpi_logs", ['items_id' => $items_id, 'itemtype' => $itemtype ] + $sql_filters);
 
         TemplateRenderer::getInstance()->display('components/logs.html.twig', [
-         'total_number'      => $total_number,
-         'filtered_number'   => $filtered_number,
-         'logs'              => $filtered_number > 0
+            'total_number'      => $total_number,
+            'filtered_number'   => $filtered_number,
+            'logs'              => $filtered_number > 0
             ? self::getHistoryData($item, $start, $_SESSION['glpilist_limit'], $sql_filters)
             : [],
-         'start'             => $start,
-         'href'              => $item::getFormURLWithID($items_id),
-         'additional_params' => $is_filtered ? http_build_query(['filters' => $filters]) : "",
-         'is_tab'            => true,
-         'items_id'          => $items_id,
-         'filters'           => Toolbox::stripslashes_deep($filters),
-         'user_names'        => $is_filtered
+            'start'             => $start,
+            'href'              => $item::getFormURLWithID($items_id),
+            'additional_params' => $is_filtered ? http_build_query(['filters' => $filters]) : "",
+            'is_tab'            => true,
+            'items_id'          => $items_id,
+            'filters'           => Toolbox::stripslashes_deep($filters),
+            'user_names'        => $is_filtered
             ? Log::getDistinctUserNamesValuesInItemLog($item)
             : [],
-         'affected_fields'   => $is_filtered
+            'affected_fields'   => $is_filtered
             ? Log::getDistinctAffectedFieldValuesInItemLog($item)
             : [],
-         'linked_actions'    => $is_filtered
+            'linked_actions'    => $is_filtered
             ? Log::getDistinctLinkedActionValuesInItemLog($item)
             : [],
-         'csv_url'           => $CFG_GLPI['root_doc'] . "/front/log/export.php?" . http_build_query([
-            'filter'   => $filters,
-            'itemtype' => $item::getType(),
-            'id'       => $item->getId()
-         ]),
+            'csv_url'           => $CFG_GLPI['root_doc'] . "/front/log/export.php?" . http_build_query([
+                'filter'   => $filters,
+                'itemtype' => $item::getType(),
+                'id'       => $item->getId()
+            ]),
         ]);
         ;
     }
@@ -339,12 +341,12 @@ class Log extends CommonDBTM
         $SEARCHOPTION = Search::getOptions($itemtype);
 
         $query = [
-         'FROM'   => self::getTable(),
-         'WHERE'  => [
-            'items_id'  => $items_id,
-            'itemtype'  => $itemtype
-         ] + $sqlfilters,
-         'ORDER'  => 'id DESC'
+            'FROM'   => self::getTable(),
+            'WHERE'  => [
+                'items_id'  => $items_id,
+                'itemtype'  => $itemtype
+            ] + $sqlfilters,
+            'ORDER'  => 'id DESC'
         ];
 
         if ($limit) {
@@ -767,14 +769,14 @@ class Log extends CommonDBTM
         $items_id = $item->getField('id');
 
         $iterator = $DB->request([
-         'SELECT'          => 'user_name',
-         'DISTINCT'        => true,
-         'FROM'            => self::getTable(),
-         'WHERE'  => [
-               'items_id'  => $items_id,
-               'itemtype'  => $itemtype
+            'SELECT'          => 'user_name',
+            'DISTINCT'        => true,
+            'FROM'            => self::getTable(),
+            'WHERE'  => [
+                'items_id'  => $items_id,
+                'itemtype'  => $itemtype
             ],
-         'ORDER'  => 'id DESC'
+            'ORDER'  => 'id DESC'
         ]);
 
         $values = [];
@@ -810,14 +812,14 @@ class Log extends CommonDBTM
         $affected_fields = ['linked_action', 'itemtype_link', 'id_search_option'];
 
         $iterator = $DB->request([
-         'SELECT'  => $affected_fields,
-         'FROM'    => self::getTable(),
-         'WHERE'   => [
-               'items_id'  => $items_id,
-               'itemtype'  => $itemtype
+            'SELECT'  => $affected_fields,
+            'FROM'    => self::getTable(),
+            'WHERE'   => [
+                'items_id'  => $items_id,
+                'itemtype'  => $itemtype
             ],
-         'GROUPBY' => $affected_fields,
-         'ORDER'   => 'id DESC'
+            'GROUPBY' => $affected_fields,
+            'ORDER'   => 'id DESC'
         ]);
 
         $values = [];
@@ -846,22 +848,22 @@ class Log extends CommonDBTM
                     case self::HISTORY_LOCK_SUBITEM:
                     case self::HISTORY_UNLOCK_SUBITEM:
                         $linked_action_values = [
-                        self::HISTORY_ADD_DEVICE,
-                        self::HISTORY_DELETE_DEVICE,
-                        self::HISTORY_LOCK_DEVICE,
-                        self::HISTORY_UNLOCK_DEVICE,
-                        self::HISTORY_DISCONNECT_DEVICE,
-                        self::HISTORY_CONNECT_DEVICE,
-                        self::HISTORY_ADD_RELATION,
-                        self::HISTORY_UPDATE_RELATION,
-                        self::HISTORY_DEL_RELATION,
-                        self::HISTORY_LOCK_RELATION,
-                        self::HISTORY_UNLOCK_RELATION,
-                        self::HISTORY_ADD_SUBITEM,
-                        self::HISTORY_UPDATE_SUBITEM,
-                        self::HISTORY_DELETE_SUBITEM,
-                        self::HISTORY_LOCK_SUBITEM,
-                        self::HISTORY_UNLOCK_SUBITEM,
+                            self::HISTORY_ADD_DEVICE,
+                            self::HISTORY_DELETE_DEVICE,
+                            self::HISTORY_LOCK_DEVICE,
+                            self::HISTORY_UNLOCK_DEVICE,
+                            self::HISTORY_DISCONNECT_DEVICE,
+                            self::HISTORY_CONNECT_DEVICE,
+                            self::HISTORY_ADD_RELATION,
+                            self::HISTORY_UPDATE_RELATION,
+                            self::HISTORY_DEL_RELATION,
+                            self::HISTORY_LOCK_RELATION,
+                            self::HISTORY_UNLOCK_RELATION,
+                            self::HISTORY_ADD_SUBITEM,
+                            self::HISTORY_UPDATE_SUBITEM,
+                            self::HISTORY_DELETE_SUBITEM,
+                            self::HISTORY_LOCK_SUBITEM,
+                            self::HISTORY_UNLOCK_SUBITEM,
                         ];
                         $key = 'linked_action::' . implode(',', $linked_action_values) . ';'
                         . 'itemtype_link::' . $data['itemtype_link'] . ';';
@@ -894,8 +896,8 @@ class Log extends CommonDBTM
                     case self::HISTORY_INSTALL_SOFTWARE:
                     case self::HISTORY_UNINSTALL_SOFTWARE:
                         $linked_action_values = [
-                        self::HISTORY_INSTALL_SOFTWARE,
-                        self::HISTORY_UNINSTALL_SOFTWARE,
+                            self::HISTORY_INSTALL_SOFTWARE,
+                            self::HISTORY_UNINSTALL_SOFTWARE,
                         ];
                         $key = 'linked_action::' . implode(',', $linked_action_values) . ';';
 
@@ -904,26 +906,26 @@ class Log extends CommonDBTM
 
                     default:
                         $linked_action_values_to_exclude = [
-                           0, //Exclude lines corresponding to no action.
-                           self::HISTORY_ADD_DEVICE,
-                           self::HISTORY_DELETE_DEVICE,
-                           self::HISTORY_LOCK_DEVICE,
-                           self::HISTORY_UNLOCK_DEVICE,
-                           self::HISTORY_DISCONNECT_DEVICE,
-                           self::HISTORY_CONNECT_DEVICE,
-                           self::HISTORY_ADD_RELATION,
-                           self::HISTORY_UPDATE_RELATION,
-                           self::HISTORY_DEL_RELATION,
-                           self::HISTORY_LOCK_RELATION,
-                           self::HISTORY_UNLOCK_RELATION,
-                           self::HISTORY_ADD_SUBITEM,
-                           self::HISTORY_UPDATE_SUBITEM,
-                           self::HISTORY_DELETE_SUBITEM,
-                           self::HISTORY_LOCK_SUBITEM,
-                           self::HISTORY_UNLOCK_SUBITEM,
-                           self::HISTORY_UPDATE_DEVICE,
-                           self::HISTORY_INSTALL_SOFTWARE,
-                           self::HISTORY_UNINSTALL_SOFTWARE,
+                            0, //Exclude lines corresponding to no action.
+                            self::HISTORY_ADD_DEVICE,
+                            self::HISTORY_DELETE_DEVICE,
+                            self::HISTORY_LOCK_DEVICE,
+                            self::HISTORY_UNLOCK_DEVICE,
+                            self::HISTORY_DISCONNECT_DEVICE,
+                            self::HISTORY_CONNECT_DEVICE,
+                            self::HISTORY_ADD_RELATION,
+                            self::HISTORY_UPDATE_RELATION,
+                            self::HISTORY_DEL_RELATION,
+                            self::HISTORY_LOCK_RELATION,
+                            self::HISTORY_UNLOCK_RELATION,
+                            self::HISTORY_ADD_SUBITEM,
+                            self::HISTORY_UPDATE_SUBITEM,
+                            self::HISTORY_DELETE_SUBITEM,
+                            self::HISTORY_LOCK_SUBITEM,
+                            self::HISTORY_UNLOCK_SUBITEM,
+                            self::HISTORY_UPDATE_DEVICE,
+                            self::HISTORY_INSTALL_SOFTWARE,
+                            self::HISTORY_UNINSTALL_SOFTWARE,
                         ];
 
                         $key = 'linked_action:NOT:' . implode(',', $linked_action_values_to_exclude) . ';';
@@ -981,14 +983,14 @@ class Log extends CommonDBTM
         $items_id = $item->getField('id');
 
         $iterator = $DB->request([
-         'SELECT'          => 'linked_action',
-         'DISTINCT'        => true,
-         'FROM'            => self::getTable(),
-         'WHERE'  => [
-               'items_id'  => $items_id,
-               'itemtype'  => $itemtype
+            'SELECT'          => 'linked_action',
+            'DISTINCT'        => true,
+            'FROM'            => self::getTable(),
+            'WHERE'  => [
+                'items_id'  => $items_id,
+                'itemtype'  => $itemtype
             ],
-         'ORDER'           => 'id DESC'
+            'ORDER'           => 'id DESC'
         ]);
 
         $values = [];
@@ -1193,14 +1195,14 @@ class Log extends CommonDBTM
                 }
             }
             $sql_filters[] = [
-            'OR' => $affected_field_crit
+                'OR' => $affected_field_crit
             ];
         }
 
         if (isset($filters['date']) && !empty($filters['date'])) {
             $sql_filters[] = [
-            ['date_mod' => ['>=', "{$filters['date']} 00:00:00"]],
-            ['date_mod' => ['<=', "{$filters['date']} 23:59:59"]],
+                ['date_mod' => ['>=', "{$filters['date']} 00:00:00"]],
+                ['date_mod' => ['<=', "{$filters['date']} 23:59:59"]],
             ];
         }
 

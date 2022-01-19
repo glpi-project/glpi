@@ -65,11 +65,11 @@ class AssetParameters extends AbstractParameters
     public function getAvailableParameters(): array
     {
         return [
-         new AttributeParameter("id", __('ID')),
-         new AttributeParameter("name", __('Name')),
-         new AttributeParameter("itemtype", __('Itemtype')),
-         new AttributeParameter("serial", __('Serial number')),
-         new ObjectParameter(new EntityParameters()),
+            new AttributeParameter("id", __('ID')),
+            new AttributeParameter("name", __('Name')),
+            new AttributeParameter("itemtype", __('Itemtype')),
+            new AttributeParameter("serial", __('Serial number')),
+            new ObjectParameter(new EntityParameters()),
         ];
     }
 
@@ -80,10 +80,10 @@ class AssetParameters extends AbstractParameters
         $fields = Sanitizer::unsanitize($asset->fields);
 
         $values = [
-         'id'       => $fields['id'],
-         'name'     => $fields['name'],
-         'itemtype' => $asset->getType(),
-         'serial'   => $fields['serial'],
+            'id'       => $fields['id'],
+            'name'     => $fields['name'],
+            'itemtype' => $asset->getType(),
+            'serial'   => $fields['serial'],
         ];
 
        // Add asset's entity

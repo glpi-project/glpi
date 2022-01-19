@@ -75,10 +75,10 @@ class TicketFollowup implements DeprecatedInterface
     {
        // Add itemtype condition
         $criteria[] = [
-         "link"       => 'AND',
-         "field"      => "6",
-         "searchtype" => 'equals',
-         "value"      => "Ticket"
+            "link"       => 'AND',
+            "field"      => "6",
+            "searchtype" => 'equals',
+            "value"      => "Ticket"
         ];
 
         return $criteria;
@@ -90,37 +90,37 @@ class TicketFollowup implements DeprecatedInterface
          ->updateSearchOptionsUids($soptions)
          ->updateSearchOptionsTables($soptions)
          ->alterSearchOption($soptions, "1", [
-            "available_searchtypes" => ["contains"]
+             "available_searchtypes" => ["contains"]
          ])
          ->alterSearchOption($soptions, "2", [
-            "available_searchtypes" => [
-               "contains",
-               "equals",
-               "notequals"
-            ]
+             "available_searchtypes" => [
+                 "contains",
+                 "equals",
+                 "notequals"
+             ]
          ])
          ->alterSearchOption($soptions, "3", [
-            "available_searchtypes" => [
-               "equals",
-               "notequals",
-               "lessthan",
-               "morethan",
-               "contains"
-            ]
+             "available_searchtypes" => [
+                 "equals",
+                 "notequals",
+                 "lessthan",
+                 "morethan",
+                 "contains"
+             ]
          ])
          ->alterSearchOption($soptions, "4", [
-            "available_searchtypes" => [
-               "equals",
-               "notequals",
-               "contains"
-            ]
+             "available_searchtypes" => [
+                 "equals",
+                 "notequals",
+                 "contains"
+             ]
          ])
          ->alterSearchOption($soptions, "5", [
-            "available_searchtypes" => [
-               "contains",
-               "equals",
-               "notequals"
-            ]
+             "available_searchtypes" => [
+                 "contains",
+                 "equals",
+                 "notequals"
+             ]
          ])
          ->deleteSearchOption($soptions, "6")
          ->deleteSearchOption($soptions, "119")

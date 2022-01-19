@@ -48,15 +48,15 @@ class Bios extends Device
     {
         $type = new DeviceFirmwareType();
         $type->getFromDBByCrit([
-         'name' => 'BIOS'
+            'name' => 'BIOS'
         ]);
         $type_id = $type->getID();
 
         $mapping = [
-         'bdate'           => 'date',
-         'bversion'        => 'version',
-         'bmanufacturer'   => 'manufacturers_id',
-         'biosserial'      => 'serial'
+            'bdate'           => 'date',
+            'bversion'        => 'version',
+            'bmanufacturer'   => 'manufacturers_id',
+            'biosserial'      => 'serial'
         ];
 
         $val = (object)$this->data;

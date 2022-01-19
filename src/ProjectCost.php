@@ -119,76 +119,76 @@ class ProjectCost extends CommonDBChild
         $tab = [];
 
         $tab[] = [
-         'id'                 => 'common',
-         'name'               => __('Characteristics')
+            'id'                 => 'common',
+            'name'               => __('Characteristics')
         ];
 
         $tab[] = [
-         'id'                 => '1',
-         'table'              => $this->getTable(),
-         'field'              => 'name',
-         'name'               => __('Title'),
-         'searchtype'         => 'contains',
-         'datatype'           => 'itemlink',
-         'massiveaction'      => false,
+            'id'                 => '1',
+            'table'              => $this->getTable(),
+            'field'              => 'name',
+            'name'               => __('Title'),
+            'searchtype'         => 'contains',
+            'datatype'           => 'itemlink',
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
-         'id'                 => '2',
-         'table'              => $this->getTable(),
-         'field'              => 'id',
-         'name'               => __('ID'),
-         'massiveaction'      => false,
-         'datatype'           => 'number'
+            'id'                 => '2',
+            'table'              => $this->getTable(),
+            'field'              => 'id',
+            'name'               => __('ID'),
+            'massiveaction'      => false,
+            'datatype'           => 'number'
         ];
 
         $tab[] = [
-         'id'                 => '16',
-         'table'              => $this->getTable(),
-         'field'              => 'comment',
-         'name'               => __('Comments'),
-         'datatype'           => 'text'
+            'id'                 => '16',
+            'table'              => $this->getTable(),
+            'field'              => 'comment',
+            'name'               => __('Comments'),
+            'datatype'           => 'text'
         ];
 
         $tab[] = [
-         'id'                 => '12',
-         'table'              => $this->getTable(),
-         'field'              => 'begin_date',
-         'name'               => __('Begin date'),
-         'datatype'           => 'datetime'
+            'id'                 => '12',
+            'table'              => $this->getTable(),
+            'field'              => 'begin_date',
+            'name'               => __('Begin date'),
+            'datatype'           => 'datetime'
         ];
 
         $tab[] = [
-         'id'                 => '10',
-         'table'              => $this->getTable(),
-         'field'              => 'end_date',
-         'name'               => __('End date'),
-         'datatype'           => 'datetime'
+            'id'                 => '10',
+            'table'              => $this->getTable(),
+            'field'              => 'end_date',
+            'name'               => __('End date'),
+            'datatype'           => 'datetime'
         ];
 
         $tab[] = [
-         'id'                 => '14',
-         'table'              => $this->getTable(),
-         'field'              => 'cost',
-         'name'               => _n('Cost', 'Costs', 1),
-         'datatype'           => 'decimal'
+            'id'                 => '14',
+            'table'              => $this->getTable(),
+            'field'              => 'cost',
+            'name'               => _n('Cost', 'Costs', 1),
+            'datatype'           => 'decimal'
         ];
 
         $tab[] = [
-         'id'                 => '18',
-         'table'              => 'glpi_budgets',
-         'field'              => 'name',
-         'name'               => Budget::getTypeName(1),
-         'datatype'           => 'dropdown'
+            'id'                 => '18',
+            'table'              => 'glpi_budgets',
+            'field'              => 'name',
+            'name'               => Budget::getTypeName(1),
+            'datatype'           => 'dropdown'
         ];
 
         $tab[] = [
-         'id'                 => '80',
-         'table'              => 'glpi_entities',
-         'field'              => 'completename',
-         'name'               => Entity::getTypeName(1),
-         'massiveaction'      => false,
-         'datatype'           => 'dropdown'
+            'id'                 => '80',
+            'table'              => 'glpi_entities',
+            'field'              => 'completename',
+            'name'               => Entity::getTypeName(1),
+            'massiveaction'      => false,
+            'datatype'           => 'dropdown'
         ];
 
         return $tab;
@@ -235,9 +235,9 @@ class ProjectCost extends CommonDBChild
         global $DB;
 
         $iterator = $DB->request([
-         'FROM'   => $this->getTable(),
-         'WHERE'  => ['projects_id' => $projects_id],
-         'ORDER'  => ['end_date DESC', 'id DESC']
+            'FROM'   => $this->getTable(),
+            'WHERE'  => ['projects_id' => $projects_id],
+            'ORDER'  => ['end_date DESC', 'id DESC']
         ]);
 
         if (count($iterator)) {
@@ -330,9 +330,9 @@ class ProjectCost extends CommonDBChild
         echo "<div class='center'>";
 
         $iterator = $DB->request([
-         'FROM'   => self::getTable(),
-         'WHERE'  => ['projects_id' => $ID],
-         'ORDER'  => ['begin_date']
+            'FROM'   => self::getTable(),
+            'WHERE'  => ['projects_id' => $ID],
+            'ORDER'  => ['begin_date']
         ]);
 
         $rand   = mt_rand();
@@ -342,9 +342,10 @@ class ProjectCost extends CommonDBChild
             echo "<script type='text/javascript' >\n";
             echo "function viewAddCost" . $ID . "_$rand() {\n";
             $params = ['type'         => __CLASS__,
-                         'parenttype'   => 'Project',
-                         'projects_id' => $ID,
-                         'id'           => -1];
+                'parenttype'   => 'Project',
+                'projects_id' => $ID,
+                'id'           => -1
+            ];
             Ajax::updateItemJsCode(
                 "viewcost" . $ID . "_$rand",
                 $CFG_GLPI["root_doc"] . "/ajax/viewsubitem.php",
@@ -401,9 +402,10 @@ class ProjectCost extends CommonDBChild
                      echo "\n<script type='text/javascript' >\n";
                      echo "function viewEditCost" . $data['projects_id'] . "_" . $data["id"] . "_$rand() {\n";
                      $params = ['type'         => __CLASS__,
-                                'parenttype'   => 'Project',
-                                'projects_id' => $data["projects_id"],
-                                'id'           => $data["id"]];
+                         'parenttype'   => 'Project',
+                         'projects_id' => $data["projects_id"],
+                         'id'           => $data["id"]
+                     ];
                      Ajax::updateItemJsCode(
                          "viewcost" . $ID . "_$rand",
                          $CFG_GLPI["root_doc"] . "/ajax/viewsubitem.php",

@@ -59,10 +59,10 @@ class Group_KnowbaseItem extends CommonDBRelation
         $groups = [];
 
         $iterator = $DB->request([
-         'FROM'   => self::getTable(),
-         'WHERE'  => [
-            'knowbaseitems_id' => $knowbaseitems_id
-         ]
+            'FROM'   => self::getTable(),
+            'WHERE'  => [
+                'knowbaseitems_id' => $knowbaseitems_id
+            ]
         ]);
 
         foreach ($iterator as $data) {

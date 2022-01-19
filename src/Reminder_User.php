@@ -59,10 +59,10 @@ class Reminder_User extends CommonDBRelation
         $users = [];
 
         $iterator = $DB->request([
-         'FROM'   => self::getTable(),
-         'WHERE'  => [
-            'reminders_id' => $reminders_id
-         ]
+            'FROM'   => self::getTable(),
+            'WHERE'  => [
+                'reminders_id' => $reminders_id
+            ]
         ]);
 
         foreach ($iterator as $data) {

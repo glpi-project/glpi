@@ -41,8 +41,8 @@ $migration->addPostQuery(
     $DB->buildDelete(
         'glpi_configs',
         [
-         'context'   => 'core',
-         'name'      => 'use_timezones',
+            'context'   => 'core',
+            'name'      => 'use_timezones',
         ]
     )
 );
@@ -60,7 +60,7 @@ $migration->addPostQuery(
 
 /** Fix mixed classes case in DB */
 $mixed_case_classes = [
-   'DeviceMotherBoardModel' => 'DeviceMotherboardModel',
+    'DeviceMotherBoardModel' => 'DeviceMotherboardModel',
 ];
 foreach ($mixed_case_classes as $bad_case_classname => $classname) {
     $migration->renameItemtype($bad_case_classname, $classname, false);

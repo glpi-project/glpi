@@ -44,13 +44,13 @@ class DataExport extends \GLPITestCase
     {
        // Standard value
         yield [
-         'value'           => 'Some value',
-         'expected_result' => 'Some value',
+            'value'           => 'Some value',
+            'expected_result' => 'Some value',
         ];
 
        // Ticket title column
         yield [
-         'value'           => Sanitizer::sanitize(<<<HTML
+            'value'           => Sanitizer::sanitize(<<<HTML
 <a id="Ticket1" href="/front/ticket.form.php?id=1" data-hasqtip="0">Ticket title</a>
 <div id="contentTicket1" class="invisible"><div class="content"><p>Ticket content ...</p></div></div>
 <script type="text/javascript">
@@ -63,7 +63,7 @@ $(function(){\$('#Ticket1').qtip({
 //]]>
 </script>
 HTML, false),
-         'expected_result' => "Ticket title ",
+            'expected_result' => "Ticket title ",
         ];
     }
 

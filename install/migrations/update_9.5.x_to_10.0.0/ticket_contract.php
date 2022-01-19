@@ -62,10 +62,10 @@ if (!$DB->fieldExists("glpi_entities", "contracts_id_default")) {
         "contracts_id_default",
         "int {$default_key_sign} NOT NULL DEFAULT 0",
         [
-         'after'     => "anonymize_support_agents",
-         'value'     => -2,               // Inherit as default value
-         'update'    => '0',              // Not enabled for root entity
-         'condition' => 'WHERE `id` = 0'
+            'after'     => "anonymize_support_agents",
+            'value'     => -2,               // Inherit as default value
+            'update'    => '0',              // Not enabled for root entity
+            'condition' => 'WHERE `id` = 0'
         ]
     );
 

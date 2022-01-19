@@ -81,8 +81,8 @@ class Computer extends DbTestCase
        // Create the link
         $link = new \Computer_Item();
         $in = ['computers_id' => $computer->getField('id'),
-             'itemtype'     => $printer->getType(),
-             'items_id'     => $printer->getID(),
+            'itemtype'     => $printer->getType(),
+            'items_id'     => $printer->getID(),
         ];
         $this->integer((int)$link->add($in))->isGreaterThan(0);
 
@@ -93,12 +93,12 @@ class Computer extends DbTestCase
         $CFG_GLPI['state_autoupdate_mode']  = -1;
         $CFG_GLPI['is_location_autoupdate'] = 1;
         $in = ['id'           => $computer->getField('id'),
-             'contact'      => $this->getUniqueString(),
-             'contact_num'  => $this->getUniqueString(),
-             'users_id'     => $this->getUniqueInteger(),
-             'groups_id'    => $this->getUniqueInteger(),
-             'states_id'    => $this->getUniqueInteger(),
-             'locations_id' => $this->getUniqueInteger(),
+            'contact'      => $this->getUniqueString(),
+            'contact_num'  => $this->getUniqueString(),
+            'users_id'     => $this->getUniqueInteger(),
+            'groups_id'    => $this->getUniqueInteger(),
+            'states_id'    => $this->getUniqueInteger(),
+            'locations_id' => $this->getUniqueInteger(),
         ];
         $this->boolean($computer->update(\Toolbox::addslashes_deep($in)))->isTrue();
         $this->boolean($computer->getFromDB($computer->getID()))->isTrue();
@@ -113,12 +113,12 @@ class Computer extends DbTestCase
 
        //reset values
         $in = ['id'           => $computer->getField('id'),
-             'contact'      => '',
-             'contact_num'  => '',
-             'users_id'     => 0,
-             'groups_id'    => 0,
-             'states_id'    => 0,
-             'locations_id' => 0,
+            'contact'      => '',
+            'contact_num'  => '',
+            'users_id'     => 0,
+            'groups_id'    => 0,
+            'states_id'    => 0,
+            'locations_id' => 0,
         ];
         $this->boolean($computer->update($in))->isTrue();
         $this->boolean($computer->getFromDB($computer->getID()))->isTrue();
@@ -138,12 +138,12 @@ class Computer extends DbTestCase
         $CFG_GLPI['state_autoupdate_mode']  = 0;
         $CFG_GLPI['is_location_autoupdate'] = 0;
         $in2 = ['id'          => $computer->getField('id'),
-             'contact'      => $this->getUniqueString(),
-             'contact_num'  => $this->getUniqueString(),
-             'users_id'     => $this->getUniqueInteger(),
-             'groups_id'    => $this->getUniqueInteger(),
-             'states_id'    => $this->getUniqueInteger(),
-             'locations_id' => $this->getUniqueInteger(),
+            'contact'      => $this->getUniqueString(),
+            'contact_num'  => $this->getUniqueString(),
+            'users_id'     => $this->getUniqueInteger(),
+            'groups_id'    => $this->getUniqueInteger(),
+            'states_id'    => $this->getUniqueInteger(),
+            'locations_id' => $this->getUniqueInteger(),
         ];
         $this->boolean($computer->update(\Toolbox::addslashes_deep($in2)))->isTrue();
         $this->boolean($computer->getFromDB($computer->getID()))->isTrue();
@@ -164,8 +164,8 @@ class Computer extends DbTestCase
         $cpu = new \DeviceProcessor();
         $cpuid = $cpu->add(
             [
-            'designation'  => 'Intel(R) Core(TM) i5-4210U CPU @ 1.70GHz',
-            'frequence'    => '1700'
+                'designation'  => 'Intel(R) Core(TM) i5-4210U CPU @ 1.70GHz',
+                'frequence'    => '1700'
             ]
         );
 
@@ -174,11 +174,11 @@ class Computer extends DbTestCase
         $link = new \Item_DeviceProcessor();
         $linkid = $link->add(
             [
-            'items_id'              => $computer->getID(),
-            'itemtype'              => \Computer::getType(),
-            'deviceprocessors_id'   => $cpuid,
-            'locations_id'          => $computer->getField('locations_id'),
-            'states_id'             => $computer->getField('states_id'),
+                'items_id'              => $computer->getID(),
+                'itemtype'              => \Computer::getType(),
+                'deviceprocessors_id'   => $cpuid,
+                'locations_id'          => $computer->getField('locations_id'),
+                'states_id'             => $computer->getField('states_id'),
             ]
         );
 
@@ -188,8 +188,8 @@ class Computer extends DbTestCase
         $CFG_GLPI['state_autoupdate_mode']  = -1;
         $CFG_GLPI['is_location_autoupdate'] = 1;
         $in = ['id'           => $computer->getField('id'),
-             'states_id'    => $this->getUniqueInteger(),
-             'locations_id' => $this->getUniqueInteger(),
+            'states_id'    => $this->getUniqueInteger(),
+            'locations_id' => $this->getUniqueInteger(),
         ];
         $this->boolean($computer->update($in))->isTrue();
         $this->boolean($computer->getFromDB($computer->getID()))->isTrue();
@@ -204,8 +204,8 @@ class Computer extends DbTestCase
 
        //reset
         $in = ['id'           => $computer->getField('id'),
-             'states_id'    => 0,
-             'locations_id' => 0,
+            'states_id'    => 0,
+            'locations_id' => 0,
         ];
         $this->boolean($computer->update($in))->isTrue();
         $this->boolean($computer->getFromDB($computer->getID()))->isTrue();
@@ -222,8 +222,8 @@ class Computer extends DbTestCase
         $CFG_GLPI['state_autoupdate_mode']  = 0;
         $CFG_GLPI['is_location_autoupdate'] = 0;
         $in2 = ['id'          => $computer->getField('id'),
-             'states_id'    => $this->getUniqueInteger(),
-             'locations_id' => $this->getUniqueInteger(),
+            'states_id'    => $this->getUniqueInteger(),
+            'locations_id' => $this->getUniqueInteger(),
         ];
         $this->boolean($computer->update($in2))->isTrue();
         $this->boolean($computer->getFromDB($computer->getID()))->isTrue();
@@ -260,12 +260,12 @@ class Computer extends DbTestCase
 
        // Change the computer
         $in = ['id'           => $computer->getField('id'),
-             'contact'      => $this->getUniqueString(),
-             'contact_num'  => $this->getUniqueString(),
-             'users_id'     => $this->getUniqueInteger(),
-             'groups_id'    => $this->getUniqueInteger(),
-             'states_id'    => $this->getUniqueInteger(),
-             'locations_id' => $this->getUniqueInteger(),
+            'contact'      => $this->getUniqueString(),
+            'contact_num'  => $this->getUniqueString(),
+            'users_id'     => $this->getUniqueInteger(),
+            'groups_id'    => $this->getUniqueInteger(),
+            'states_id'    => $this->getUniqueInteger(),
+            'locations_id' => $this->getUniqueInteger(),
         ];
         $this->boolean($computer->update(\Toolbox::addslashes_deep($in)))->isTrue();
         $this->boolean($computer->getFromDB($computer->getID()))->isTrue();
@@ -273,8 +273,8 @@ class Computer extends DbTestCase
         $printer = new \Printer();
         $pid = $printer->add(
             [
-            'name'         => 'A test printer',
-            'entities_id'  => $computer->getField('entities_id')
+                'name'         => 'A test printer',
+                'entities_id'  => $computer->getField('entities_id')
             ]
         );
 
@@ -283,8 +283,8 @@ class Computer extends DbTestCase
        // Create the link
         $link = new \Computer_Item();
         $in2 = ['computers_id' => $computer->getField('id'),
-             'itemtype'     => $printer->getType(),
-             'items_id'     => $printer->getID(),
+            'itemtype'     => $printer->getType(),
+            'items_id'     => $printer->getID(),
         ];
         $this->integer((int)$link->add($in2))->isGreaterThan(0);
 
@@ -301,8 +301,8 @@ class Computer extends DbTestCase
         $cpu = new \DeviceProcessor();
         $cpuid = $cpu->add(
             [
-            'designation'  => 'Intel(R) Core(TM) i5-4210U CPU @ 1.70GHz',
-            'frequence'    => '1700'
+                'designation'  => 'Intel(R) Core(TM) i5-4210U CPU @ 1.70GHz',
+                'frequence'    => '1700'
             ]
         );
 
@@ -311,16 +311,16 @@ class Computer extends DbTestCase
         $link = new \Item_DeviceProcessor();
         $linkid = $link->add(
             [
-            'items_id'              => $computer->getID(),
-            'itemtype'              => \Computer::getType(),
-            'deviceprocessors_id'   => $cpuid
+                'items_id'              => $computer->getID(),
+                'itemtype'              => \Computer::getType(),
+                'deviceprocessors_id'   => $cpuid
             ]
         );
 
         $this->integer((int)$linkid)->isGreaterThan(0);
 
         $in3 = ['states_id'    => $in['states_id'],
-              'locations_id' => $in['locations_id'],
+            'locations_id' => $in['locations_id'],
         ];
 
         $this->boolean($link->getFromDB($link->getID()))->isTrue();
@@ -340,7 +340,8 @@ class Computer extends DbTestCase
         global $DB;
 
         $iter = $DB->request(['SELECT' => 'id',
-                            'FROM'   => 'glpi_computers']);
+            'FROM'   => 'glpi_computers'
+        ]);
         $prev = false;
         foreach (\Computer::getFromIter($iter) as $comp) {
             $this->object($comp)->isInstanceOf('Computer');
@@ -384,24 +385,24 @@ class Computer extends DbTestCase
         $note = new \Notepad();
         $this->integer(
             $note->add([
-            'itemtype'  => 'Computer',
-            'items_id'  => $id
+                'itemtype'  => 'Computer',
+                'items_id'  => $id
             ])
         )->isGreaterThan(0);
 
        //add os
         $os = new \OperatingSystem();
         $osid = $os->add([
-         'name'   => 'My own OS'
+            'name'   => 'My own OS'
         ]);
         $this->integer($osid)->isGreaterThan(0);
 
         $ios = new \Item_OperatingSystem();
         $this->integer(
             $ios->add([
-            'operatingsystems_id' => $osid,
-            'itemtype'            => 'Computer',
-            'items_id'            => $id,
+                'operatingsystems_id' => $osid,
+                'itemtype'            => 'Computer',
+                'items_id'            => $id,
             ])
         )->isGreaterThan(0);
 
@@ -409,8 +410,8 @@ class Computer extends DbTestCase
         $infocom = new \Infocom();
         $this->integer(
             $infocom->add([
-            'itemtype'  => 'Computer',
-            'items_id'  => $id
+                'itemtype'  => 'Computer',
+                'items_id'  => $id
             ])
         )->isGreaterThan(0);
 
@@ -418,8 +419,8 @@ class Computer extends DbTestCase
         $cpu = new \DeviceProcessor();
         $cpuid = $cpu->add(
             [
-            'designation'  => 'Intel(R) Core(TM) i5-4210U CPU @ 1.70GHz',
-            'frequence'    => '1700'
+                'designation'  => 'Intel(R) Core(TM) i5-4210U CPU @ 1.70GHz',
+                'frequence'    => '1700'
             ]
         );
 
@@ -428,9 +429,9 @@ class Computer extends DbTestCase
         $link = new \Item_DeviceProcessor();
         $linkid = $link->add(
             [
-            'items_id'              => $id,
-            'itemtype'              => 'Computer',
-            'deviceprocessors_id'   => $cpuid
+                'items_id'              => $id,
+                'itemtype'              => 'Computer',
+                'deviceprocessors_id'   => $cpuid
             ]
         );
         $this->integer((int)$linkid)->isGreaterThan(0);
@@ -443,9 +444,9 @@ class Computer extends DbTestCase
         $docitem = new \Document_Item();
         $this->integer(
             $docitem->add([
-            'documents_id' => $docid,
-            'itemtype'     => 'Computer',
-            'items_id'     => $id
+                'documents_id' => $docid,
+                'itemtype'     => 'Computer',
+                'items_id'     => $id
             ])
         )->isGreaterThan(0);
 
@@ -480,9 +481,9 @@ class Computer extends DbTestCase
 
        //TODO: would be better to check each Computer::getCloneRelations() ones.
         $relations = [
-         \Infocom::class => 1,
-         \Notepad::class  => 1,
-         \Item_OperatingSystem::class => 1
+            \Infocom::class => 1,
+            \Notepad::class  => 1,
+            \Item_OperatingSystem::class => 1
         ];
 
         foreach ($relations as $relation => $expected) {
@@ -507,23 +508,23 @@ class Computer extends DbTestCase
 
         $soft = new \Software();
         $softwares_id = $soft->add([
-         'name'         => 'GLPI',
-         'entities_id'  => $computer->fields['entities_id']
+            'name'         => 'GLPI',
+            'entities_id'  => $computer->fields['entities_id']
         ]);
         $this->integer($softwares_id)->isGreaterThan(0);
 
         $version = new \SoftwareVersion();
         $versions_id = $version->add([
-         'softwares_id' => $softwares_id,
-         'name'         => '9.5'
+            'softwares_id' => $softwares_id,
+            'name'         => '9.5'
         ]);
         $this->integer($versions_id)->isGreaterThan(0);
 
         $link = new \Item_SoftwareVersion();
         $link_id  = $link->add([
-         'itemtype'              => 'Computer',
-         'items_id'              => $cid,
-         'softwareversions_id'   => $versions_id
+            'itemtype'              => 'Computer',
+            'items_id'              => $cid,
+            'softwareversions_id'   => $versions_id
         ]);
         $this->integer($link_id)->isGreaterThan(0);
 
@@ -557,11 +558,11 @@ class Computer extends DbTestCase
 
         global $DB;
         $softwares = $DB->request([
-         'FROM'   => \Item_SoftwareVersion::getTable(),
-         'WHERE'  => [
-            'itemtype'  => 'Computer',
-            'items_id'  => $cid
-         ]
+            'FROM'   => \Item_SoftwareVersion::getTable(),
+            'WHERE'  => [
+                'itemtype'  => 'Computer',
+                'items_id'  => $cid
+            ]
         ]);
         $this->integer(count($softwares))->isidenticalTo(1);
     }

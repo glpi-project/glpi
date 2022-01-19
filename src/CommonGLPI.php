@@ -477,7 +477,7 @@ class CommonGLPI implements CommonGLPIInterface
         }
         if ($data = static::getAdditionalMenuContent()) {
             $newmenu = [
-            strtolower($type) => $menu,
+                strtolower($type) => $menu,
             ];
            // Force overwrite existing menu
             foreach ($data as $key => $val) {
@@ -892,9 +892,10 @@ JAVASCRIPT;
 
             foreach ($onglets as $key => $val) {
                 $tabs[$key] = ['title'  => $val,
-                                'url'    => $tabpage,
-                                'params' => "_target=$target&amp;_itemtype=" . $this->getType() .
-                                            "&amp;_glpi_tab=$key&amp;id=$ID$extraparamhtml"];
+                    'url'    => $tabpage,
+                    'params' => "_target=$target&amp;_itemtype=" . $this->getType() .
+                                            "&amp;_glpi_tab=$key&amp;id=$ID$extraparamhtml"
+                ];
             }
 
            // Not all tab for templates and if only 1 tab
@@ -904,9 +905,10 @@ JAVASCRIPT;
                 && (count($tabs) > 1)
             ) {
                 $tabs[-1] = ['title'  => __('All'),
-                              'url'    => $tabpage,
-                              'params' => "_target=$target&amp;_itemtype=" . $this->getType() .
-                                          "&amp;_glpi_tab=-1&amp;id=$ID$extraparamhtml"];
+                    'url'    => $tabpage,
+                    'params' => "_target=$target&amp;_itemtype=" . $this->getType() .
+                                          "&amp;_glpi_tab=-1&amp;id=$ID$extraparamhtml"
+                ];
             }
 
             Ajax::createTabs(
@@ -1153,7 +1155,7 @@ JAVASCRIPT;
         echo "<div class='row'>";
         if ($this instanceof CommonDBTM) {
             TemplateRenderer::getInstance()->display('layout/parts/saved_searches.html.twig', [
-            'itemtype' => $this->getType(),
+                'itemtype' => $this->getType(),
             ]);
         }
         echo "<div class='col'>";
@@ -1238,8 +1240,9 @@ JAVASCRIPT;
                 $user = new User();
                 if ($user->getFromDB($uid)) {
                     $user->update(['id' => $uid,
-                                   'display_options'
-                                        => exportArrayToDB($_SESSION['glpi_display_options'])]);
+                        'display_options'
+                                        => exportArrayToDB($_SESSION['glpi_display_options'])
+                    ]);
                 }
             }
         }
@@ -1392,9 +1395,10 @@ JAVASCRIPT;
                                                 "/front/display.options.php?itemtype=" .
                                                 static::getType() . "&sub_itemtype=$sub_itemtype",
             ['display'       => false,
-                                                   'width'         => 600,
-                                                   'height'        => 500,
-            'reloadonclose' => true]
+                'width'         => 600,
+                'height'        => 500,
+                'reloadonclose' => true
+            ]
         );
 
         return $link;
@@ -1504,13 +1508,13 @@ JAVASCRIPT;
                 $ret .= "<label for='dropdown_knowbaseitems_id$rand'>" .
                     KnowbaseItem::getTypeName() . "</label>&nbsp;";
                 $ret .= KnowbaseItem::dropdown([
-                'value'     => reset($found_kbitem)['id'],
-                'display'   => false,
-                'rand'      => $rand,
-                'condition' => [
-                    KnowbaseItem::getTable() . '.id' => $kbitem_ids
-                ],
-                'on_change' => "getKnowbaseItemAnswer$rand()"
+                    'value'     => reset($found_kbitem)['id'],
+                    'display'   => false,
+                    'rand'      => $rand,
+                    'condition' => [
+                        KnowbaseItem::getTable() . '.id' => $kbitem_ids
+                    ],
+                    'on_change' => "getKnowbaseItemAnswer$rand()"
                 ]);
                 $ret .= "<div class='faqadd_block_content' id='faqadd_block_content$rand'>";
                 $ret .= $kbitem->showFull(['display' => false]);

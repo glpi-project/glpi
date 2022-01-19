@@ -103,11 +103,11 @@ class Item_Rack extends CommonDBRelation
         $canedit = $rack->canEdit($ID);
 
         $items = $DB->request([
-         'FROM'   => self::getTable(),
-         'WHERE'  => [
-            'racks_id' => $rack->getID()
-         ],
-         'ORDER' => 'position DESC'
+            'FROM'   => self::getTable(),
+            'WHERE'  => [
+                'racks_id' => $rack->getID()
+            ],
+            'ORDER' => 'position DESC'
         ]);
         $link = new self();
 
@@ -140,8 +140,8 @@ class Item_Rack extends CommonDBRelation
             if ($canedit) {
                 Html::openMassiveActionsForm('mass' . __CLASS__ . $rand);
                 $massiveactionparams = [
-                'num_displayed'   => min($_SESSION['glpilist_limit'], count($items)),
-                'container'       => 'mass' . __CLASS__ . $rand
+                    'num_displayed'   => min($_SESSION['glpilist_limit'], count($items)),
+                    'container'       => 'mass' . __CLASS__ . $rand
                 ];
                 Html::showMassiveActions($massiveactionparams);
             }
@@ -211,20 +211,20 @@ class Item_Rack extends CommonDBRelation
             $position = $row['position'];
 
             $gs_item = [
-            'id'        => $row['id'],
-            'name'      => $item->getName(),
-            'x'         => $row['hpos'] >= 2 ? 1 : 0,
-            'y'         => $rack->fields['number_units'] - $row['position'],
-            'height'    => 1,
-            'width'     => 2,
-            'bgcolor'   => $row['bgcolor'],
-            'picture_f' => null,
-            'picture_r' => null,
-            'url'       => $item->getLinkURL(),
-            'rel_url'   => $rel->getLinkURL(),
-            'rear'      => false,
-            'half_rack' => false,
-            'reserved'  => (bool) $row['is_reserved'],
+                'id'        => $row['id'],
+                'name'      => $item->getName(),
+                'x'         => $row['hpos'] >= 2 ? 1 : 0,
+                'y'         => $rack->fields['number_units'] - $row['position'],
+                'height'    => 1,
+                'width'     => 2,
+                'bgcolor'   => $row['bgcolor'],
+                'picture_f' => null,
+                'picture_r' => null,
+                'url'       => $item->getLinkURL(),
+                'rel_url'   => $rel->getLinkURL(),
+                'rear'      => false,
+                'half_rack' => false,
+                'reserved'  => (bool) $row['is_reserved'],
             ];
 
             $model_class = $item->getType() . 'Model';
@@ -261,9 +261,9 @@ class Item_Rack extends CommonDBRelation
 
             if (isset($data[$row['orientation']][$position])) {
                 $data[$row['orientation']][$row['position']] = [
-                'row'     => $row,
-                'item'    => $item,
-                'gs_item' => $gs_item
+                    'row'     => $row,
+                    'item'    => $item,
+                    'gs_item' => $gs_item
                 ];
 
                //add to other side if needed
@@ -278,9 +278,9 @@ class Item_Rack extends CommonDBRelation
                        //$row['position'] = substr($row['position'], 0, -2)."_".$gs_item['x'];
                     }
                     $data[$flip_orientation][$row['position']] = [
-                    'row'     => $row,
-                    'item'    => $item,
-                    'gs_item' => $gs_item
+                        'row'     => $row,
+                        'item'    => $item,
+                        'gs_item' => $gs_item
                     ];
                 }
             } else {
@@ -407,17 +407,17 @@ JAVASCRIPT;
         global $DB;
 
         $items = $DB->request([
-         'FROM'   => self::getTable(),
-         'WHERE'  => [
-            'racks_id' => $rack->getID()
-         ]
+            'FROM'   => self::getTable(),
+            'WHERE'  => [
+                'racks_id' => $rack->getID()
+            ]
         ]);
 
         $weight = 0;
         $power  = 0;
         $units  = [
-         Rack::FRONT => array_fill(0, $rack->fields['number_units'], 0),
-         Rack::REAR  => array_fill(0, $rack->fields['number_units'], 0),
+            Rack::FRONT => array_fill(0, $rack->fields['number_units'], 0),
+            Rack::REAR  => array_fill(0, $rack->fields['number_units'], 0),
         ];
 
         $rel = new self();
@@ -469,23 +469,23 @@ JAVASCRIPT;
         echo "<div class='rack_side_block_content'>";
         echo "<h3>" . __("Space") . "</h3>";
         Html::progressBar('rack_space', [
-         'create' => true,
-         'percent' => $space_prct,
-         'message' => $space_prct . "%",
+            'create' => true,
+            'percent' => $space_prct,
+            'message' => $space_prct . "%",
         ]);
 
         echo "<h3>" . __("Weight") . "</h3>";
         Html::progressBar('rack_weight', [
-         'create' => true,
-         'percent' => $weight_prct,
-         'message' => $weight . " / " . $rack->fields['max_weight']
+            'create' => true,
+            'percent' => $weight_prct,
+            'message' => $weight . " / " . $rack->fields['max_weight']
         ]);
 
         echo "<h3>" . __("Power") . "</h3>";
         Html::progressBar('rack_power', [
-         'create' => true,
-         'percent' => $power_prct,
-         'message' => $power . " / " . $rack->fields['max_power']
+            'create' => true,
+            'percent' => $power_prct,
+            'message' => $power . " / " . $rack->fields['max_power']
         ]);
         echo "</div>";
         echo "</div>";
@@ -516,8 +516,8 @@ JAVASCRIPT;
             echo Html::hidden(
                 'itemtype',
                 [
-                'id'    => "itemtype_$rand",
-                'value' => 'PDU'
+                    'id'    => "itemtype_$rand",
+                    'value' => 'PDU'
                 ]
             );
             echo PDU::getTypeName(1);
@@ -530,9 +530,9 @@ JAVASCRIPT;
                 'itemtype',
                 $types,
                 [
-                'display_emptychoice'   => true,
-                'value'                 => $this->fields["itemtype"],
-                'rand'                  => $rand
+                    'display_emptychoice'   => true,
+                    'value'                 => $this->fields["itemtype"],
+                    'rand'                  => $rand
                 ]
             );
         }
@@ -540,7 +540,7 @@ JAVASCRIPT;
        //get all used items
         $used = $used_reserved = [];
         $iterator = $DB->request([
-         'FROM' => $this->getTable()
+            'FROM' => $this->getTable()
         ]);
         foreach ($iterator as $row) {
             $used[$row['itemtype']][] = $row['items_id'];
@@ -551,10 +551,10 @@ JAVASCRIPT;
         }
        // get all reserved items
         $iterator = $DB->request([
-         'FROM'  => $this->getTable(),
-         'WHERE' => [
-            'is_reserved' => true
-         ]
+            'FROM'  => $this->getTable(),
+            'WHERE' => [
+                'is_reserved' => true
+            ]
         ]);
         foreach ($iterator as $row) {
             $used_reserved[$row['itemtype']][] = $row['items_id'];
@@ -562,7 +562,7 @@ JAVASCRIPT;
 
        //items part of an enclosure should not be listed
         $iterator = $DB->request([
-         'FROM'   => Item_Enclosure::getTable()
+            'FROM'   => Item_Enclosure::getTable()
         ]);
         foreach ($iterator as $row) {
             $used[$row['itemtype']][] = $row['items_id'];
@@ -570,8 +570,8 @@ JAVASCRIPT;
         echo Html::hidden(
             'used',
             [
-            'id'    => "used_$rand",
-            'value' => json_encode($used)
+                'id'    => "used_$rand",
+                'value' => json_encode($used)
             ]
         );
 
@@ -587,17 +587,17 @@ JAVASCRIPT;
             $itemtype = $this->fields['itemtype'];
             $itemtype = new $itemtype();
             $itemtype::dropdown([
-              'name'   => "items_id",
-              'value'  => $this->fields['items_id'],
-              'rand'   => $rand
+                'name'   => "items_id",
+                'value'  => $this->fields['items_id'],
+                'rand'   => $rand
             ]);
         } else {
             Dropdown::showFromArray(
                 'items_id',
                 [],
                 [
-                'display_emptychoice'   => true,
-                'rand'                  => $rand
+                    'display_emptychoice'   => true,
+                    'rand'                  => $rand
                 ]
             );
         }
@@ -615,12 +615,12 @@ JAVASCRIPT;
         Dropdown::showNumber(
             'position',
             [
-            'value'  => $this->fields["position"],
-            'min'    => 1,
-            'max'    => $rack->fields['number_units'],
-            'step'   => 1,
-            'used'   => $rack->getFilled($this->fields['itemtype'], $this->fields['items_id']),
-            'rand'   => $rand
+                'value'  => $this->fields["position"],
+                'min'    => 1,
+                'max'    => $rack->fields['number_units'],
+                'step'   => 1,
+                'used'   => $rack->getFilled($this->fields['itemtype'], $this->fields['items_id']),
+                'rand'   => $rand
             ]
         );
         echo "</td>";
@@ -632,12 +632,12 @@ JAVASCRIPT;
         Dropdown::showFromArray(
             'orientation',
             [
-            Rack::FRONT => __('Front'),
-            Rack::REAR  => __('Rear')
+                Rack::FRONT => __('Front'),
+                Rack::REAR  => __('Rear')
             ],
             [
-            'value' => $this->fields["orientation"],
-            'rand' => $rand
+                'value' => $this->fields["orientation"],
+                'rand' => $rand
             ]
         );
         echo "</td>";
@@ -646,8 +646,8 @@ JAVASCRIPT;
         Html::showColorField(
             'bgcolor',
             [
-            'value'  => $this->fields['bgcolor'],
-            'rand'   => $rand
+                'value'  => $this->fields['bgcolor'],
+                'rand'   => $rand
             ]
         );
         echo "</td>";
@@ -659,13 +659,13 @@ JAVASCRIPT;
         Dropdown::showFromArray(
             'hpos',
             [
-            Rack::POS_NONE    => __('None'),
-            Rack::POS_LEFT    => __('Left'),
-            Rack::POS_RIGHT   => __('Right')
+                Rack::POS_NONE    => __('None'),
+                Rack::POS_LEFT    => __('Left'),
+                Rack::POS_RIGHT   => __('Right')
             ],
             [
-            'value'  => $this->fields['hpos'],
-            'rand'   => $rand
+                'value'  => $this->fields['hpos'],
+                'rand'   => $rand
             ]
         );
         echo "</td>";
@@ -689,8 +689,8 @@ JAVASCRIPT;
             $this->fields['is_reserved'],
             -1,
             [
-            'rand'      => $rand,
-            'on_change' => 'toggleUsed(this.value)'
+                'rand'      => $rand,
+                'on_change' => 'toggleUsed(this.value)'
             ]
         );
 
@@ -704,13 +704,13 @@ JAVASCRIPT;
             "items_id",
             $CFG_GLPI["root_doc"] . "/ajax/dropdownAllItems.php",
             [
-            'idtable'         => '__VALUE0__',
-            'name'            => 'items_id',
-            'value'           => $this->fields['items_id'],
-            'rand'            => $rand,
-            'is_reserved'     => '__VALUE1__',
-            'used'            => '__VALUE2__',
-            'entity_restrict' => $entities,
+                'idtable'         => '__VALUE0__',
+                'name'            => 'items_id',
+                'value'           => $this->fields['items_id'],
+                'rand'            => $rand,
+                'is_reserved'     => '__VALUE1__',
+                'used'            => '__VALUE2__',
+                'entity_restrict' => $entities,
             ]
         );
         echo "</td>";

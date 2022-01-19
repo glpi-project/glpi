@@ -49,19 +49,19 @@ class StatDataTicketAverageTime extends StatDataAlwaysDisplay
 
         $this->labels = array_keys($total);
         $this->series = [
-         [
-            'name' => _nx('ticket', 'Opened', 'Opened', Session::getPluralNumber()),
-            'data' => $total,
-         ], [
-            'name' => _nx('ticket', 'Solved', 'Solved', Session::getPluralNumber()),
-            'data' => $solved,
-         ], [
-            'name' => __('Late'),
-            'data' => $closed,
-         ], [
-            'name' => __('Closed'),
-            'data' => $late,
-         ]
+            [
+                'name' => _nx('ticket', 'Opened', 'Opened', Session::getPluralNumber()),
+                'data' => $total,
+            ], [
+                'name' => _nx('ticket', 'Solved', 'Solved', Session::getPluralNumber()),
+                'data' => $solved,
+            ], [
+                'name' => __('Late'),
+                'data' => $closed,
+            ], [
+                'name' => __('Closed'),
+                'data' => $late,
+            ]
         ];
     }
 

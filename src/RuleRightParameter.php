@@ -56,9 +56,11 @@ class RuleRightParameter extends CommonDropdown
     {
 
         return [['name'  => 'value',
-                         'label' => _n('Criterion', 'Criteria', 1),
-                         'type'  => 'text',
-                         'list'  => false]];
+            'label' => _n('Criterion', 'Criteria', 1),
+            'type'  => 'text',
+            'list'  => false
+        ]
+        ];
     }
 
 
@@ -67,11 +69,11 @@ class RuleRightParameter extends CommonDropdown
         $tab = parent::rawSearchOptions();
 
         $tab[] = [
-         'id'                 => '11',
-         'table'              => $this->getTable(),
-         'field'              => 'value',
-         'name'               => _n('Criterion', 'Criteria', 1),
-         'datatype'           => 'string',
+            'id'                 => '11',
+            'table'              => $this->getTable(),
+            'field'              => 'value',
+            'name'               => _n('Criterion', 'Criteria', 1),
+            'datatype'           => 'string',
         ];
 
         return $tab;

@@ -287,11 +287,11 @@ switch ($_GET["type"]) {
             );
 
             $iterator = $DB->request([
-             'SELECT' => ['designation'],
-             'FROM'   => $device_table,
-             'WHERE'  => [
-               'id' => $_GET['id']
-             ]
+                'SELECT' => ['designation'],
+                'FROM'   => $device_table,
+                'WHERE'  => [
+                    'id' => $_GET['id']
+                ]
             ]);
             $current = $iterator->current();
 
@@ -384,12 +384,12 @@ echo "</table></div>";
 Html::closeForm();
 
 $stat_params = [
-   'itemtype' => $_GET['itemtype'],
-   'date1'    => $_GET['date1'],
-   'date2'    => $_GET['date2'],
-   'type'     => $_GET['$type'],
-   'val1'     => $val1,
-   'val2'     => $val2,
+    'itemtype' => $_GET['itemtype'],
+    'date1'    => $_GET['date1'],
+    'date2'    => $_GET['date2'],
+    'type'     => $_GET['$type'],
+    'val1'     => $val1,
+    'val2'     => $val2,
 ];
 
 $stat->displayLineGraphFromData(new StatDataTicketNumber($stat_params));

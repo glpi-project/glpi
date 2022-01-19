@@ -121,10 +121,10 @@ if ($_GET['action'] == 'create') {
     $savedsearch->showForm(
         $id,
         [
-         'type'      => $_GET['type'],
-         'url'       => rawurldecode($_GET["url"]),
-         'itemtype'  => $_GET["itemtype"],
-         'ajax'      => true
+            'type'      => $_GET['type'],
+            'url'       => rawurldecode($_GET["url"]),
+            'itemtype'  => $_GET["itemtype"],
+            'ajax'      => true
         ]
     );
     return;

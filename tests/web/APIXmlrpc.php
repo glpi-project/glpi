@@ -59,7 +59,8 @@ class APIXmlrpc extends APIBaseClass
         $headers = ["Content-Type" => "text/xml"];
         $request = xmlrpc_encode_request($resource, $params);
         return $this->http_client->post($this->base_uri, ['body'    => $request,
-                                                       'headers' => $headers]);
+            'headers' => $headers
+        ]);
     }
 
     protected function query($resource = "", $params = [], $expected_codes = 200, $expected_symbol = '')
@@ -114,8 +115,10 @@ class APIXmlrpc extends APIBaseClass
         $data = $this->query(
             'initSession',
             ['query' => [
-                  'login'    => TU_USER,
-            'password' => TU_PASS]]
+                'login'    => TU_USER,
+                'password' => TU_PASS
+            ]
+            ]
         );
 
         $this->variable($data)->isNotFalse();
@@ -143,9 +146,10 @@ class APIXmlrpc extends APIBaseClass
         $data = $this->query(
             'updateItems',
             ['itemtype' => 'Computer',
-                  'verb'     => 'PUT',
-                  'headers'  => ['Session-Token' => $this->session_token],
-                  'json'     => []],
+                'verb'     => 'PUT',
+                'headers'  => ['Session-Token' => $this->session_token],
+                'json'     => []
+            ],
             400,
             'ERROR_BAD_ARRAY'
         );

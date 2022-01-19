@@ -52,7 +52,7 @@ class PhpVersion extends \GLPITestCase
         $this->array($this->testedInstance->getValidationMessages())
          ->isEqualTo(
              [
-               'PHP version must be between 20.7 and 20.8 (exclusive).'
+                 'PHP version must be between 20.7 and 20.8 (exclusive).'
              ]
          );
     }

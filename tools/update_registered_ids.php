@@ -46,7 +46,8 @@ $registeredid = new RegisteredID();
 $manufacturer = new Manufacturer();
 foreach (
     ['PCI' => 'http://pciids.sourceforge.net/v2.2/pci.ids',
-               'USB' => 'http://www.linux-usb.org/usb.ids'] as $type => $URL
+        'USB' => 'http://www.linux-usb.org/usb.ids'
+    ] as $type => $URL
 ) {
     echo "Processing : $type\n";
     foreach (file($URL) as $line) {
@@ -62,9 +63,9 @@ foreach (
             $name = addslashes(trim(substr($line, 4)));
             if (
                 $registeredid->getFromDBByCrit([
-                'itemtype'     => 'Manufacturer',
-                'name'         => $id,
-                'device_type'  => $type
+                    'itemtype'     => 'Manufacturer',
+                    'name'         => $id,
+                    'device_type'  => $type
                 ])
             ) {
                 $manufacturer->getFromDB($registeredid->fields['items_id']);
@@ -74,9 +75,10 @@ foreach (
                     $manufacturer->add($input);
                 }
                 $input = ['itemtype'    => $manufacturer->getType(),
-                           'items_id'    => $manufacturer->getID(),
-                           'device_type' => $type,
-                           'name'        => $id];
+                    'items_id'    => $manufacturer->getID(),
+                    'device_type' => $type,
+                    'name'        => $id
+                ];
                 $registeredid->add($input);
             }
             continue;

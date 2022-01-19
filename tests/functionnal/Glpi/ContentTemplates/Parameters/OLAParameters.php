@@ -40,21 +40,21 @@ class OLAParameters extends AbstractParameters
         $test_entity_id = getItemByTypeName('Entity', '_test_child_2', true);
 
         $this->createItem('OLA', [
-         'name'            => 'ola_testGetValues',
-         'type'            => 1,
-         'entities_id'     => $test_entity_id,
-         'number_time'     => 4,
-         'definition_time' => 'hour',
+            'name'            => 'ola_testGetValues',
+            'type'            => 1,
+            'entities_id'     => $test_entity_id,
+            'number_time'     => 4,
+            'definition_time' => 'hour',
         ]);
 
         $parameters = $this->newTestedInstance();
         $values = $parameters->getValues(getItemByTypeName('OLA', 'ola_testGetValues'));
         $this->array($values)->isEqualTo([
-         'id'       => getItemByTypeName('OLA', 'ola_testGetValues', true),
-         'name'     => 'ola_testGetValues',
-         'type'     => 'Time to own',
-         'duration' => '4',
-         'unit'     => 'hours',
+            'id'       => getItemByTypeName('OLA', 'ola_testGetValues', true),
+            'name'     => 'ola_testGetValues',
+            'type'     => 'Time to own',
+            'duration' => '4',
+            'unit'     => 'hours',
         ]);
 
         $this->testGetAvailableParameters($values, $parameters->getAvailableParameters());

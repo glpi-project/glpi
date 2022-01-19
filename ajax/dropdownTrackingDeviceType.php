@@ -73,16 +73,16 @@ if ($isValidItemtype) {
     }
     $field_id = Html::cleanId("dropdown_" . $_POST['myname'] . $rand);
     $p = [
-      'itemtype'            => $itemtype,
-      'entity_restrict'     => $_POST['entity_restrict'],
-      'table'               => $table,
-      'multiple'            => $_POST["multiple"],
-      'myname'              => $_POST["myname"],
-      'rand'                => $_POST["rand"],
-      'width'               => 'calc(100% - 25px)',
-      '_idor_token'         => Session::getNewIDORToken($itemtype, [
-         'entity_restrict' => $_POST['entity_restrict'],
-      ]),
+        'itemtype'            => $itemtype,
+        'entity_restrict'     => $_POST['entity_restrict'],
+        'table'               => $table,
+        'multiple'            => $_POST["multiple"],
+        'myname'              => $_POST["myname"],
+        'rand'                => $_POST["rand"],
+        'width'               => 'calc(100% - 25px)',
+        '_idor_token'         => Session::getNewIDORToken($itemtype, [
+            'entity_restrict' => $_POST['entity_restrict'],
+        ]),
     ];
 
     if (isset($_POST["used"]) && !empty($_POST["used"])) {
@@ -110,8 +110,8 @@ if ($isValidItemtype) {
         "item_ticket_selection_information{$_POST["myname"]}_$rand",
         $CFG_GLPI["root_doc"] . "/ajax/ticketiteminformation.php",
         [
-         'items_id' => '__VALUE__',
-         'itemtype' => $_POST['itemtype']
+            'items_id' => '__VALUE__',
+            'itemtype' => $_POST['itemtype']
         ]
     );
 }

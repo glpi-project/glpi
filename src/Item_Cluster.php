@@ -92,10 +92,10 @@ class Item_Cluster extends CommonDBRelation
         $canedit = $cluster->canEdit($ID);
 
         $items = $DB->request([
-         'FROM'   => self::getTable(),
-         'WHERE'  => [
-            'clusters_id' => $ID
-         ]
+            'FROM'   => self::getTable(),
+            'WHERE'  => [
+                'clusters_id' => $ID
+            ]
         ]);
 
         Session::initNavigateListItems(
@@ -116,8 +116,8 @@ class Item_Cluster extends CommonDBRelation
                 '_add_fromitem',
                 __('Add new item to this cluster...'),
                 [
-                'cluster'   => $ID,
-                'position'  => 1
+                    'cluster'   => $ID,
+                    'position'  => 1
                 ]
             );
             echo "</div>";
@@ -132,8 +132,8 @@ class Item_Cluster extends CommonDBRelation
             if ($canedit) {
                 Html::openMassiveActionsForm('mass' . __CLASS__ . $rand);
                 $massiveactionparams = [
-                'num_displayed'   => min($_SESSION['glpilist_limit'], count($items)),
-                'container'       => 'mass' . __CLASS__ . $rand
+                    'num_displayed'   => min($_SESSION['glpilist_limit'], count($items)),
+                    'container'       => 'mass' . __CLASS__ . $rand
                 ];
                 Html::showMassiveActions($massiveactionparams);
             }
@@ -200,16 +200,16 @@ class Item_Cluster extends CommonDBRelation
             'itemtype',
             $translated_types,
             [
-            'display_emptychoice'   => true,
-            'value'                 => $this->fields["itemtype"],
-            'rand'                  => $rand
+                'display_emptychoice'   => true,
+                'value'                 => $this->fields["itemtype"],
+                'rand'                  => $rand
             ]
         );
 
        //get all used items
         $used = [];
         $iterator = $DB->request([
-         'FROM'   => $this->getTable()
+            'FROM'   => $this->getTable()
         ]);
         foreach ($iterator as $row) {
             $used [$row['itemtype']][] = $row['items_id'];
@@ -220,11 +220,11 @@ class Item_Cluster extends CommonDBRelation
             "items_id",
             $CFG_GLPI["root_doc"] . "/ajax/dropdownAllItems.php",
             [
-            'idtable'   => '__VALUE__',
-            'name'      => 'items_id',
-            'value'     => $this->fields['items_id'],
-            'rand'      => $rand,
-            'used'      => $used
+                'idtable'   => '__VALUE__',
+                'name'      => 'items_id',
+                'value'     => $this->fields['items_id'],
+                'rand'      => $rand,
+                'used'      => $used
             ]
         );
 
@@ -235,17 +235,17 @@ class Item_Cluster extends CommonDBRelation
             $itemtype = $this->fields['itemtype'];
             $itemtype = new $itemtype();
             $itemtype::dropdown([
-              'name'   => "items_id",
-              'value'  => $this->fields['items_id'],
-              'rand'   => $rand
+                'name'   => "items_id",
+                'value'  => $this->fields['items_id'],
+                'rand'   => $rand
             ]);
         } else {
             Dropdown::showFromArray(
                 'items_id',
                 [],
                 [
-                'display_emptychoice'   => true,
-                'rand'                  => $rand
+                    'display_emptychoice'   => true,
+                    'rand'                  => $rand
                 ]
             );
         }

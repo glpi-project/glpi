@@ -62,7 +62,7 @@ class DomainRecord extends CommonDBChild
         return countElementsInTable(
             self::getTable(),
             [
-            "domains_id"   => $item->getID(),
+                "domains_id"   => $item->getID(),
             ]
         );
     }
@@ -82,84 +82,84 @@ class DomainRecord extends CommonDBChild
         $tab = array_merge($tab, parent::rawSearchOptions());
 
         $tab[] = [
-         'id'                 => '2',
-         'table'              => 'glpi_domains',
-         'field'              => 'name',
-         'name'               => Domain::getTypeName(1),
-         'datatype'           => 'dropdown'
+            'id'                 => '2',
+            'table'              => 'glpi_domains',
+            'field'              => 'name',
+            'name'               => Domain::getTypeName(1),
+            'datatype'           => 'dropdown'
         ];
 
         $tab[] = [
-         'id'                 => '3',
-         'table'              => DomainRecordType::getTable(),
-         'field'              => 'name',
-         'name'               => DomainRecordType::getTypeName(1),
-         'datatype'           => 'dropdown'
+            'id'                 => '3',
+            'table'              => DomainRecordType::getTable(),
+            'field'              => 'name',
+            'name'               => DomainRecordType::getTypeName(1),
+            'datatype'           => 'dropdown'
         ];
 
         $tab[] = [
-         'id'                 => '4',
-         'table'              => $this->getTable(),
-         'field'              => 'ttl',
-         'name'               => __('TTL')
+            'id'                 => '4',
+            'table'              => $this->getTable(),
+            'field'              => 'ttl',
+            'name'               => __('TTL')
         ];
 
         $tab[] = [
-         'id'                 => '11',
-         'table'              => $this->getTable(),
-         'field'              => 'data',
-         'name'               => __('Data'),
+            'id'                 => '11',
+            'table'              => $this->getTable(),
+            'field'              => 'data',
+            'name'               => __('Data'),
         ];
 
         $tab[] = [
-         'id'                 => '6',
-         'table'              => 'glpi_users',
-         'field'              => 'name',
-         'linkfield'          => 'users_id_tech',
-         'name'               => __('Technician in charge'),
-         'datatype'           => 'dropdown'
+            'id'                 => '6',
+            'table'              => 'glpi_users',
+            'field'              => 'name',
+            'linkfield'          => 'users_id_tech',
+            'name'               => __('Technician in charge'),
+            'datatype'           => 'dropdown'
         ];
 
         $tab[] = [
-         'id'                 => '7',
-         'table'              => $this->getTable(),
-         'field'              => 'date_creation',
-         'name'               => __('Creation date'),
-         'datatype'           => 'date'
+            'id'                 => '7',
+            'table'              => $this->getTable(),
+            'field'              => 'date_creation',
+            'name'               => __('Creation date'),
+            'datatype'           => 'date'
         ];
 
         $tab[] = [
-         'id'                 => '8',
-         'table'              => $this->getTable(),
-         'field'              => 'comment',
-         'name'               => __('Comments'),
-         'datatype'           => 'text'
+            'id'                 => '8',
+            'table'              => $this->getTable(),
+            'field'              => 'comment',
+            'name'               => __('Comments'),
+            'datatype'           => 'text'
         ];
 
         $tab[] = [
-         'id'                 => '9',
-         'table'              => 'glpi_groups',
-         'field'              => 'name',
-         'linkfield'          => 'groups_id_tech',
-         'name'               => __('Group in charge'),
-         'datatype'           => 'dropdown'
+            'id'                 => '9',
+            'table'              => 'glpi_groups',
+            'field'              => 'name',
+            'linkfield'          => 'groups_id_tech',
+            'name'               => __('Group in charge'),
+            'datatype'           => 'dropdown'
         ];
 
         $tab[] = [
-         'id'                 => '10',
-         'table'              => $this->getTable(),
-         'field'              => 'date_mod',
-         'massiveaction'      => false,
-         'name'               => __('Last update'),
-         'datatype'           => 'datetime'
+            'id'                 => '10',
+            'table'              => $this->getTable(),
+            'field'              => 'date_mod',
+            'massiveaction'      => false,
+            'name'               => __('Last update'),
+            'datatype'           => 'datetime'
         ];
 
         $tab[] = [
-         'id'                 => '80',
-         'table'              => 'glpi_entities',
-         'field'              => 'completename',
-         'name'               => Entity::getTypeName(1),
-         'datatype'           => 'dropdown'
+            'id'                 => '80',
+            'table'              => 'glpi_entities',
+            'field'              => 'completename',
+            'name'               => Entity::getTypeName(1),
+            'datatype'           => 'dropdown'
         ];
 
         return $tab;
@@ -345,8 +345,8 @@ class DomainRecord extends CommonDBChild
         $domain->getFromDB($this->fields['domains_id']);
         if ($domain->isTemplate()) {
             echo Html::input('domains_id', [
-            'type'   => 'hidden',
-            'value'  => $this->fields['domains_id']
+                'type'   => 'hidden',
+                'value'  => $this->fields['domains_id']
             ]);
            // TRANS: first parameter is the template name
             echo sprintf(_n('%1$s template', '%1$s templates', 1), $domain->fields['template_name']);
@@ -354,10 +354,10 @@ class DomainRecord extends CommonDBChild
             Dropdown::show(
                 'Domain',
                 [
-                'name'   => "domains_id",
-                'value'  => $this->fields["domains_id"],
-                'entity' => $this->fields["entities_id"],
-                'rand'   => $rand,
+                    'name'   => "domains_id",
+                    'value'  => $this->fields["domains_id"],
+                    'entity' => $this->fields["entities_id"],
+                    'rand'   => $rand,
                 ]
             );
         }
@@ -384,11 +384,11 @@ class DomainRecord extends CommonDBChild
         Dropdown::show(
             'DomainRecordType',
             [
-            'name'      => "domainrecordtypes_id",
-            'value'     => $this->fields["domainrecordtypes_id"],
-            'entity'    => $this->fields["entities_id"],
-            'condition' => $condition,
-            'rand'      => $rand,
+                'name'      => "domainrecordtypes_id",
+                'value'     => $this->fields["domainrecordtypes_id"],
+                'entity'    => $this->fields["entities_id"],
+                'condition' => $condition,
+                'rand'      => $rand,
             ]
         );
         echo "</td>";
@@ -451,17 +451,19 @@ JAVASCRIPT;
         echo "<tr class='tab_bg_1'>";
         echo "<td>" . __('Technician in charge') . "</td><td>";
         User::dropdown(['name'   => "users_id_tech",
-                           'value'  => $this->fields["users_id_tech"],
-                           'entity' => $this->fields["entities_id"],
-                           'right'  => 'interface']);
+            'value'  => $this->fields["users_id_tech"],
+            'entity' => $this->fields["entities_id"],
+            'right'  => 'interface'
+        ]);
         echo "</td>";
 
         echo "<td>" . __('Group in charge') . "</td>";
         echo "<td>";
         Dropdown::show('Group', ['name'      => "groups_id_tech",
-                                    'value'     => $this->fields["groups_id_tech"],
-                                    'entity'    => $this->fields["entities_id"],
-                                    'condition' => ['is_assign' => 1]]);
+            'value'     => $this->fields["groups_id_tech"],
+            'entity'    => $this->fields["entities_id"],
+            'condition' => ['is_assign' => 1]
+        ]);
         echo "</td>";
         echo "</tr>";
 
@@ -509,18 +511,18 @@ JAVASCRIPT;
         $rand    = mt_rand();
 
         $iterator = $DB->request([
-         'SELECT'    => 'record.*',
-         'FROM'      => self::getTable() . ' AS record',
-         'WHERE'     => ['domains_id' => $instID],
-         'LEFT JOIN' => [
-            DomainRecordType::getTable() . ' AS rtype'  => [
-               'ON'  => [
-                  'rtype'  => 'id',
-                  'record' => 'domainrecordtypes_id'
-               ]
-            ]
-         ],
-         'ORDER'     => ['rtype.name ASC', 'record.name ASC']
+            'SELECT'    => 'record.*',
+            'FROM'      => self::getTable() . ' AS record',
+            'WHERE'     => ['domains_id' => $instID],
+            'LEFT JOIN' => [
+                DomainRecordType::getTable() . ' AS rtype'  => [
+                    'ON'  => [
+                        'rtype'  => 'id',
+                        'record' => 'domainrecordtypes_id'
+                    ]
+                ]
+            ],
+            'ORDER'     => ['rtype.name ASC', 'record.name ASC']
         ]);
 
         $number = count($iterator);
@@ -536,12 +538,12 @@ JAVASCRIPT;
 
             echo "<tr class='tab_bg_1'><td class='center'>";
             $used_iterator = $DB->request([
-            'SELECT' => 'id',
-            'FROM'   => self::getTable(),
-            'WHERE'  => [
-               'domains_id'   => ['>', 0],
-               'NOT'          => ['domains_id' => null]
-            ]
+                'SELECT' => 'id',
+                'FROM'   => self::getTable(),
+                'WHERE'  => [
+                    'domains_id'   => ['>', 0],
+                    'NOT'          => ['domains_id' => null]
+                ]
             ]);
 
             $used = [];
@@ -552,8 +554,8 @@ JAVASCRIPT;
             Dropdown::show(
                 'DomainRecord',
                 [
-                'name'   => "domainrecords_id",
-                'used'   => $used
+                    'name'   => "domainrecords_id",
+                    'used'   => $used
                 ]
             );
 

@@ -36,14 +36,14 @@ namespace Glpi\Toolbox;
 class Sanitizer
 {
     private const CHARS_MAPPING = [
-      '&'  => '&#38;',
-      '<'  => '&#60;',
-      '>'  => '&#62;',
+        '&'  => '&#38;',
+        '<'  => '&#60;',
+        '>'  => '&#62;',
     ];
 
     private const LEGACY_CHARS_MAPPING = [
-      '<'  => '&lt;',
-      '>'  => '&gt;',
+        '<'  => '&lt;',
+        '>'  => '&gt;',
     ];
 
     /**
@@ -302,13 +302,13 @@ class Sanitizer
         }
 
         $mapping = [
-         'x00' => "\x00",
-         'n'   => "\n",
-         'r'   => "\r",
-         '\\'  => "\\",
-         '\''  => "'",
-         '"'   => "\"",
-         'x1a' => "\x1a",
+            'x00' => "\x00",
+            'n'   => "\n",
+            'r'   => "\r",
+            '\\'  => "\\",
+            '\''  => "'",
+            '"'   => "\"",
+            'x1a' => "\x1a",
         ];
         $search  = [];
         $replace = [];

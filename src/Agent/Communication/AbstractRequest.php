@@ -332,9 +332,9 @@ abstract class AbstractRequest
         if (!empty($message)) {
             if ($this->mode === self::JSON_MODE) {
                 $this->addToResponse([
-                'status' => 'error',
-                'message' => $message,
-                'expiration' => self::DEFAULT_FREQUENCY
+                    'status' => 'error',
+                    'message' => $message,
+                    'expiration' => self::DEFAULT_FREQUENCY
                 ]);
             } else {
                 $this->addToResponse(['ERROR' => $message]);
@@ -565,8 +565,8 @@ abstract class AbstractRequest
     public function acceptedEncodings(): array
     {
         $encodings = [
-         'gzip',
-         'deflate'
+            'gzip',
+            'deflate'
         ];
 
         if (!function_exists('brotli_compress')) {
@@ -584,7 +584,7 @@ abstract class AbstractRequest
     private function prepareHeaders()
     {
         $headers = [
-          'Content-Type' => $this->getContentType(),
+            'Content-Type' => $this->getContentType(),
         ];
         $this->headers->setHeaders($headers);
     }

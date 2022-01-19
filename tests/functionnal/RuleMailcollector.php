@@ -57,37 +57,37 @@ class RuleMailCollector extends DbTestCase
        // Create new group
         $group = new Group();
         $group_id = $group->add($group_input = [
-         'name' => 'group1',
+            'name' => 'group1',
         ]);
         $this->checkInput($group, $group_id, $group_input);
 
        // Create rule
         $rule     = new \RuleMailCollector();
         $rule_id = $rule->add($rule_input = [
-         'name'         => 'test assign entity based on group',
-         'match'        => 'AND',
-         'is_active'    => 1,
-         'sub_type'     => 'RuleMailCollector',
+            'name'         => 'test assign entity based on group',
+            'match'        => 'AND',
+            'is_active'    => 1,
+            'sub_type'     => 'RuleMailCollector',
         ]);
         $this->checkInput($rule, $rule_id, $rule_input);
 
        // Create criteria to check if requester group matches a specific group
         $criteria = new RuleCriteria();
         $criteria_id = $criteria->add($criteria_input = [
-         'rules_id'  => $rule_id,
-         'criteria'  => '_groups_id_requester',
-         'condition' => Rule::PATTERN_IS,
-         'pattern'   => $group_id,
+            'rules_id'  => $rule_id,
+            'criteria'  => '_groups_id_requester',
+            'condition' => Rule::PATTERN_IS,
+            'pattern'   => $group_id,
         ]);
         $this->checkInput($criteria, $criteria_id, $criteria_input);
 
        // Create action to assign entity
         $action   = new RuleAction();
         $action_id = $action->add($action_input = [
-         'rules_id'    => $rule_id,
-         'action_type' => 'assign',
-         'field'       => 'entities_id',
-         'value'       => $entity_id,
+            'rules_id'    => $rule_id,
+            'action_type' => 'assign',
+            'field'       => 'entities_id',
+            'value'       => $entity_id,
         ]);
         $this->checkInput($action, $action_id, $action_input);
 
@@ -97,23 +97,23 @@ class RuleMailCollector extends DbTestCase
             [],
             [],
             [
-            'mailcollector'       => 0,
-            '_users_id_requester' => $normal_user_id,
+                'mailcollector'       => 0,
+                '_users_id_requester' => $normal_user_id,
             ]
         );
 
         $this->array($output)->isEqualTo(
             [
-            '_no_rule_matches' => '1',
-            '_rule_process'    => '',
+                '_no_rule_matches' => '1',
+                '_rule_process'    => '',
             ]
         );
 
        // Add "normal" user to group
         $group_user = new Group_User();
         $group_user_id = $group_user->add($group_user_input = [
-         'groups_id' => $group_id,
-         'users_id'  => $normal_user_id,
+            'groups_id' => $group_id,
+            'users_id'  => $normal_user_id,
         ]);
         $this->checkInput($group_user, $group_user_id, $group_user_input);
 
@@ -123,15 +123,15 @@ class RuleMailCollector extends DbTestCase
             [],
             [],
             [
-            'mailcollector'       => 0,
-            '_users_id_requester' => $normal_user_id,
+                'mailcollector'       => 0,
+                '_users_id_requester' => $normal_user_id,
             ]
         );
 
         $this->array($output)->isEqualTo(
             [
-            'entities_id' => $entity_id,
-            '_ruleid'     => $rule_id,
+                'entities_id' => $entity_id,
+                '_ruleid'     => $rule_id,
             ]
         );
     }

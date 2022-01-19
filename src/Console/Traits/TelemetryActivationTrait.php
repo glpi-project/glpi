@@ -95,10 +95,10 @@ trait TelemetryActivationTrait
            // Ask user its consent if no related option was provided (unless service is already active)
             $output->writeln(
                 [
-                '<comment>' . __('We need your help to improve GLPI and the plugins ecosystem!') . '</comment>',
-                '<comment>' . __('Since GLPI 9.2, we’ve introduced a new statistics feature called “Telemetry”, that anonymously with your permission, sends data to our telemetry website.') . '</comment>',
-                '<comment>' . __('Once sent, usage statistics are aggregated and made available to a broad range of GLPI developers.') . '</comment>',
-                '<comment>' . __('Let us know your usage to improve future versions of GLPI and its plugins!') . '</comment>',
+                    '<comment>' . __('We need your help to improve GLPI and the plugins ecosystem!') . '</comment>',
+                    '<comment>' . __('Since GLPI 9.2, we’ve introduced a new statistics feature called “Telemetry”, that anonymously with your permission, sends data to our telemetry website.') . '</comment>',
+                    '<comment>' . __('Once sent, usage statistics are aggregated and made available to a broad range of GLPI developers.') . '</comment>',
+                    '<comment>' . __('Let us know your usage to improve future versions of GLPI and its plugins!') . '</comment>',
                 ],
                 OutputInterface::VERBOSITY_QUIET
             );

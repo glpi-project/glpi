@@ -59,33 +59,33 @@ class Conf extends CommonGLPI
 {
     private $currents = [];
     public static $defaults = [
-      'import_software'                => 1,
-      'import_volume'                  => 1,
-      'import_antivirus'               => 1,
-      'import_registry'                => 1,
-      'import_process'                 => 1,
-      'import_vm'                      => 1,
-      'import_monitor_on_partial_sn'   => 0,
-      'component_processor'            => 1,
-      'component_memory'               => 1,
-      'component_harddrive'            => 1,
-      'component_networkcard'          => 1,
-      'component_graphiccard'          => 1,
-      'component_soundcard'            => 1,
-      'component_drive'                => 1,
-      'component_networkdrive'         => 1,
-      'component_networkcardvirtual'   => 1,
-      'component_control'              => 1,
-      'component_battery'              => 1,
-      'component_simcard'              => 1,
-      'states_id_default'              => 0,
-      'location'                       => 0,
-      'group'                          => 0,
-      'vm_type'                        => 0,
-      'vm_components'                  => 0,
-      'vm_as_computer'                 => 0,
-      'component_removablemedia'       => 1,
-      'component_powersupply'          => 1
+        'import_software'                => 1,
+        'import_volume'                  => 1,
+        'import_antivirus'               => 1,
+        'import_registry'                => 1,
+        'import_process'                 => 1,
+        'import_vm'                      => 1,
+        'import_monitor_on_partial_sn'   => 0,
+        'component_processor'            => 1,
+        'component_memory'               => 1,
+        'component_harddrive'            => 1,
+        'component_networkcard'          => 1,
+        'component_graphiccard'          => 1,
+        'component_soundcard'            => 1,
+        'component_drive'                => 1,
+        'component_networkdrive'         => 1,
+        'component_networkcardvirtual'   => 1,
+        'component_control'              => 1,
+        'component_battery'              => 1,
+        'component_simcard'              => 1,
+        'states_id_default'              => 0,
+        'location'                       => 0,
+        'group'                          => 0,
+        'vm_type'                        => 0,
+        'vm_components'                  => 0,
+        'vm_as_computer'                 => 0,
+        'component_removablemedia'       => 1,
+        'component_powersupply'          => 1
     ];
 
     /**
@@ -133,9 +133,9 @@ class Conf extends CommonGLPI
     public function knownInventoryExtensions(): array
     {
         return [
-         'json',
-         'xml',
-         'ocs'
+            'json',
+            'xml',
+            'ocs'
         ];
     }
 
@@ -249,8 +249,8 @@ class Conf extends CommonGLPI
         switch ($item->getType()) {
             case __CLASS__:
                 $tabs = [
-                 1 => __('Configuration'),
-                 2 => __('Import from file')
+                    1 => __('Configuration'),
+                    2 => __('Import from file')
                 ];
                 return $tabs;
         }
@@ -306,9 +306,9 @@ class Conf extends CommonGLPI
         echo "</td>";
         echo "<td width='360'>";
         Html::showCheckbox([
-         'name'      => 'import_volume',
-         'id'        => 'import_volume',
-         'checked'   => $config['import_volume']
+            'name'      => 'import_volume',
+            'id'        => 'import_volume',
+            'checked'   => $config['import_volume']
         ]);
         echo "</td>";
 
@@ -319,9 +319,9 @@ class Conf extends CommonGLPI
         echo "</td>";
         echo "<td>";
         Html::showCheckbox([
-         'name'      => 'import_software',
-         'id'        => 'import_software',
-         'checked'   => $config['import_software']
+            'name'      => 'import_software',
+            'id'        => 'import_software',
+            'checked'   => $config['import_software']
         ]);
         echo "</td>";
         echo "</tr>";
@@ -336,9 +336,9 @@ class Conf extends CommonGLPI
         \Dropdown::show(
             'State',
             [
-            'name'   => 'states_id_default',
-            'id'     => 'states_id_default',
-            'value'  => $config['states_id_default']
+                'name'   => 'states_id_default',
+                'id'     => 'states_id_default',
+                'value'  => $config['states_id_default']
             ]
         );
         echo "</td>";
@@ -350,9 +350,9 @@ class Conf extends CommonGLPI
         echo "</td>";
         echo "<td>";
         Html::showCheckbox([
-         'name'      => 'import_antivirus',
-         'id'        => 'import_antivirus',
-         'checked'   => $config['import_antivirus']
+            'name'      => 'import_antivirus',
+            'id'        => 'import_antivirus',
+            'checked'   => $config['import_antivirus']
         ]);
         echo "</td>";
         echo "</tr>";
@@ -365,9 +365,9 @@ class Conf extends CommonGLPI
         echo "</td>";
         echo "<td>";
         Html::showCheckbox([
-         'name'      => 'import_monitor_on_partial_sn',
-         'id'        => 'import_monitor_on_partial_sn',
-         'checked'   => $config['import_monitor_on_partial_sn']
+            'name'      => 'import_monitor_on_partial_sn',
+            'id'        => 'import_monitor_on_partial_sn',
+            'checked'   => $config['import_monitor_on_partial_sn']
         ]);
         echo "</td>";
         echo "</tr>";
@@ -418,9 +418,9 @@ class Conf extends CommonGLPI
         echo "</td>";
         echo "<td>";
         Html::showCheckbox([
-         'name'      => 'import_vm',
-         'id'        => 'import_vm',
-         'checked'   => $config['import_vm']
+            'name'      => 'import_vm',
+            'id'        => 'import_vm',
+            'checked'   => $config['import_vm']
         ]);
         echo "</td>";
         echo "<td>";
@@ -432,9 +432,9 @@ class Conf extends CommonGLPI
         \Dropdown::show(
             'ComputerType',
             [
-            'name'   => 'vm_type',
-            'id'     => 'vm_type',
-            'value'  => $config['vm_type']
+                'name'   => 'vm_type',
+                'id'     => 'vm_type',
+                'value'  => $config['vm_type']
             ]
         );
         echo "</td>";
@@ -448,9 +448,9 @@ class Conf extends CommonGLPI
         echo "</td>";
         echo "<td>";
         Html::showCheckbox([
-         'name'      => 'vm_as_computer',
-         'id'        => 'vm_as_computer',
-         'checked'   => $config['vm_as_computer']
+            'name'      => 'vm_as_computer',
+            'id'        => 'vm_as_computer',
+            'checked'   => $config['vm_as_computer']
         ]);
         echo "</td>";
         echo "<td>";
@@ -460,9 +460,9 @@ class Conf extends CommonGLPI
         echo "</td>";
         echo "<td>";
         Html::showCheckbox([
-         'name'      => 'vm_components',
-         'id'        => 'vm_components',
-         'checked'   => $config['vm_components']
+            'name'      => 'vm_components',
+            'id'        => 'vm_components',
+            'checked'   => $config['vm_components']
         ]);
         echo "</td>";
         echo "</tr>";
@@ -487,9 +487,9 @@ class Conf extends CommonGLPI
         echo "</td>";
         echo "<td>";
         Html::showCheckbox([
-         'name'      => 'component_processor',
-         'id'        => 'component_processor',
-         'checked'   => $config['component_processor']
+            'name'      => 'component_processor',
+            'id'        => 'component_processor',
+            'checked'   => $config['component_processor']
         ]);
         echo "</td>";
 
@@ -500,9 +500,9 @@ class Conf extends CommonGLPI
         echo "</td>";
         echo "<td>";
         Html::showCheckbox([
-         'name'      => 'component_harddrive',
-         'id'        => 'component_harddrive',
-         'checked'   => $config['component_harddrive']
+            'name'      => 'component_harddrive',
+            'id'        => 'component_harddrive',
+            'checked'   => $config['component_harddrive']
         ]);
         echo "</td>";
         echo "</tr>";
@@ -515,9 +515,9 @@ class Conf extends CommonGLPI
         echo "</td>";
         echo "<td>";
         Html::showCheckbox([
-         'name'      => 'component_memory',
-         'id'        => 'component_memory',
-         'checked'   => $config['component_memory']
+            'name'      => 'component_memory',
+            'id'        => 'component_memory',
+            'checked'   => $config['component_memory']
         ]);
         echo "</td>";
 
@@ -528,9 +528,9 @@ class Conf extends CommonGLPI
         echo "</td>";
         echo "<td>";
         Html::showCheckbox([
-         'name'      => 'component_soundcard',
-         'id'        => 'component_soundcard',
-         'checked'   => $config['component_soundcard']
+            'name'      => 'component_soundcard',
+            'id'        => 'component_soundcard',
+            'checked'   => $config['component_soundcard']
         ]);
 
         echo "</td>";
@@ -544,9 +544,9 @@ class Conf extends CommonGLPI
         echo "</td>";
         echo "<td>";
         Html::showCheckbox([
-         'name'      => 'component_networkcard',
-         'id'        => 'component_networkcard',
-         'checked'   => $config['component_networkcard']
+            'name'      => 'component_networkcard',
+            'id'        => 'component_networkcard',
+            'checked'   => $config['component_networkcard']
         ]);
         echo "</td>";
 
@@ -557,9 +557,9 @@ class Conf extends CommonGLPI
         echo "</td>";
         echo "<td>";
         Html::showCheckbox([
-         'name'      => 'component_networkcardvirtual',
-         'id'        => 'component_networkcardvirtual',
-         'checked'   => $config['component_networkcardvirtual']
+            'name'      => 'component_networkcardvirtual',
+            'id'        => 'component_networkcardvirtual',
+            'checked'   => $config['component_networkcardvirtual']
         ]);
 
         echo "</td>";
@@ -573,9 +573,9 @@ class Conf extends CommonGLPI
         echo "</td>";
         echo "<td>";
         Html::showCheckbox([
-         'name'      => 'component_graphiccard',
-         'id'        => 'component_graphiccard',
-         'checked'   => $config['component_graphiccard']
+            'name'      => 'component_graphiccard',
+            'id'        => 'component_graphiccard',
+            'checked'   => $config['component_graphiccard']
         ]);
         echo "</td>";
 
@@ -586,9 +586,9 @@ class Conf extends CommonGLPI
         echo "</td>";
         echo "<td>";
         Html::showCheckbox([
-         'name'      => 'component_simcard',
-         'id'        => 'component_simcard',
-         'checked'   => $config['component_simcard']
+            'name'      => 'component_simcard',
+            'id'        => 'component_simcard',
+            'checked'   => $config['component_simcard']
         ]);
         echo "</td>";
 
@@ -602,9 +602,9 @@ class Conf extends CommonGLPI
         echo "</td>";
         echo "<td>";
         Html::showCheckbox([
-         'name'      => 'component_drive',
-         'id'        => 'component_drive',
-         'checked'   => $config['component_drive']
+            'name'      => 'component_drive',
+            'id'        => 'component_drive',
+            'checked'   => $config['component_drive']
         ]);
         echo "</td>";
 
@@ -616,9 +616,9 @@ class Conf extends CommonGLPI
         echo "</td>";
         echo "<td>";
         Html::showCheckbox([
-         'name'      => 'component_networkdrive',
-         'id'        => 'component_networkdrive',
-         'checked'   => $config['component_networkdrive']
+            'name'      => 'component_networkdrive',
+            'id'        => 'component_networkdrive',
+            'checked'   => $config['component_networkdrive']
         ]);
         echo "</td>";
         echo "</tr>";
@@ -631,9 +631,9 @@ class Conf extends CommonGLPI
         echo "</td>";
         echo "<td>";
         Html::showCheckbox([
-         'name'      => 'component_removablemedia',
-         'id'        => 'component_removablemedia',
-         'checked'   => $config['component_removablemedia']
+            'name'      => 'component_removablemedia',
+            'id'        => 'component_removablemedia',
+            'checked'   => $config['component_removablemedia']
         ]);
         echo "</td>";
         echo "<td>";
@@ -643,9 +643,9 @@ class Conf extends CommonGLPI
         echo "</td>";
         echo "<td>";
         Html::showCheckbox([
-         'name'      => 'component_powersupply',
-         'id'        => 'component_powersupply',
-         'checked'   => $config['component_powersupply']
+            'name'      => 'component_powersupply',
+            'id'        => 'component_powersupply',
+            'checked'   => $config['component_powersupply']
         ]);
         echo "</td>";
 
@@ -659,9 +659,9 @@ class Conf extends CommonGLPI
         echo "</td>";
         echo "<td>";
         Html::showCheckbox([
-         'name'      => 'component_control',
-         'id'        => 'component_control',
-         'checked'   => $config['component_control']
+            'name'      => 'component_control',
+            'id'        => 'component_control',
+            'checked'   => $config['component_control']
         ]);
         echo "</td>";
 
@@ -673,9 +673,9 @@ class Conf extends CommonGLPI
         echo "</td>";
         echo "<td>";
         Html::showCheckbox([
-         'name'      => 'component_battery',
-         'id'        => 'component_battery',
-         'checked'   => $config['component_battery']
+            'name'      => 'component_battery',
+            'id'        => 'component_battery',
+            'checked'   => $config['component_battery']
         ]);
         echo "</td>";
         echo "</tr>";

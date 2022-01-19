@@ -65,8 +65,8 @@ class RuleSoftwareCategory extends DbTestCase
             (int)countElementsInTable(
                 'glpi_rules',
                 [
-                'uuid' => '500717c8-2bd6e957-53a12b5fd38869.86003425',
-                'is_active' => 0
+                    'uuid' => '500717c8-2bd6e957-53a12b5fd38869.86003425',
+                    'is_active' => 0
                 ]
             )
         )->isIdenticalTo(1);
@@ -74,8 +74,8 @@ class RuleSoftwareCategory extends DbTestCase
             (int)countElementsInTable(
                 'glpi_rules',
                 [
-                'uuid' => '500717c8-2bd6e957-53a12b5fd38869.86003425',
-                'is_active' => 1
+                    'uuid' => '500717c8-2bd6e957-53a12b5fd38869.86003425',
+                    'is_active' => 1
                 ]
             )
         )->isIdenticalTo(0);
@@ -89,8 +89,8 @@ class RuleSoftwareCategory extends DbTestCase
         $this->integer($rule->fields['is_active'])->isIdenticalTo(0);
 
         $relations = [
-         \RuleAction::class => 1,
-         \RuleCriteria::class  => 1
+            \RuleAction::class => 1,
+            \RuleCriteria::class  => 1
         ];
 
         foreach ($relations as $relation => $expected) {

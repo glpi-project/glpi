@@ -60,6 +60,7 @@ class SLA extends LevelAgreement
     public function getAddConfirmation()
     {
         return [__("The assignment of a SLA to a ticket causes the recalculation of the date."),
-              __("Escalations defined in the SLA will be triggered under this new date.")];
+            __("Escalations defined in the SLA will be triggered under this new date.")
+        ];
     }
 }

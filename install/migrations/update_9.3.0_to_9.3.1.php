@@ -71,7 +71,7 @@ function update930to931()
         'use_notification',
         'bool',
         [
-         'value' => 1
+            'value' => 1
         ]
     );
 

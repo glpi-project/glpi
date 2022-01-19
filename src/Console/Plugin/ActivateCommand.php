@@ -157,10 +157,10 @@ class ActivateCommand extends AbstractPluginCommand
         $choices = [];
         $plugin_iterator = $this->db->request(
             [
-            'FROM'  => Plugin::getTable(),
-            'WHERE' => [
-               'state' => Plugin::NOTACTIVATED
-            ]
+                'FROM'  => Plugin::getTable(),
+                'WHERE' => [
+                    'state' => Plugin::NOTACTIVATED
+                ]
             ]
         );
         foreach ($plugin_iterator as $plugin) {

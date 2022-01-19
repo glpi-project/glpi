@@ -46,13 +46,13 @@ class Battery extends Device
     public function prepare(): array
     {
         $mapping = [
-         'name'         => 'designation',
-         'manufacturer' => 'manufacturers_id',
-         'serial'       => 'serial',
-         'date'         => 'manufacturing_date',
-         'capacity'     => 'capacity',
-         'chemistry'    => 'devicebatterytypes_id',
-         'voltage'      => 'voltage'
+            'name'         => 'designation',
+            'manufacturer' => 'manufacturers_id',
+            'serial'       => 'serial',
+            'date'         => 'manufacturing_date',
+            'capacity'     => 'capacity',
+            'chemistry'    => 'devicebatterytypes_id',
+            'voltage'      => 'voltage'
         ];
 
         foreach ($this->data as &$val) {

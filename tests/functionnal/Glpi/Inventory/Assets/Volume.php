@@ -42,8 +42,8 @@ class Volume extends AbstractInventoryAsset
     protected function assetProvider(): array
     {
         return [
-         [
-            'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+            [
+                'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
   <CONTENT>
     <DRIVES>
@@ -62,9 +62,9 @@ class Volume extends AbstractInventoryAsset
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-            'expected'  => '{"encrypt_algo": "aes-xts-plain64", "encrypt_name": "LUKS1", "encrypt_status": "Yes", "filesystem": "ext4", "free": 3632, "serial": "e2d02a40-829a-44ce-b863-cf765ac2c9eb", "total": 30109, "type": "/", "volumn": "/dev/mapper/xps-root", "device": "/dev/mapper/xps-root", "filesystems_id": "ext4", "totalsize": 30109, "freesize": 3632, "encryption_tool": "LUKS1", "encryption_algorithm": "aes-xts-plain64", "encryption_status": 1, "name": "/", "mountpoint": "/", "is_dynamic": 1}'
-         ], [
-            'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+                'expected'  => '{"encrypt_algo": "aes-xts-plain64", "encrypt_name": "LUKS1", "encrypt_status": "Yes", "filesystem": "ext4", "free": 3632, "serial": "e2d02a40-829a-44ce-b863-cf765ac2c9eb", "total": 30109, "type": "/", "volumn": "/dev/mapper/xps-root", "device": "/dev/mapper/xps-root", "filesystems_id": "ext4", "totalsize": 30109, "freesize": 3632, "encryption_tool": "LUKS1", "encryption_algorithm": "aes-xts-plain64", "encryption_status": 1, "name": "/", "mountpoint": "/", "is_dynamic": 1}'
+            ], [
+                'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
   <CONTENT>
     <DRIVES>
@@ -80,9 +80,9 @@ class Volume extends AbstractInventoryAsset
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-            'expected'  => '{"filesystem": "ext4", "free": 736, "serial": "dca65bdb-c073-4bcb-bd0d-210031a532c9", "total": 975, "type": "/boot", "volumn": "/dev/nvme0n1p2", "device": "/dev/nvme0n1p2", "filesystems_id": "ext4", "totalsize": 975, "freesize": 736, "name": "/boot", "mountpoint": "/boot", "is_dynamic": 1}'
-         ], [
-            'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+                'expected'  => '{"filesystem": "ext4", "free": 736, "serial": "dca65bdb-c073-4bcb-bd0d-210031a532c9", "total": 975, "type": "/boot", "volumn": "/dev/nvme0n1p2", "device": "/dev/nvme0n1p2", "filesystems_id": "ext4", "totalsize": 975, "freesize": 736, "name": "/boot", "mountpoint": "/boot", "is_dynamic": 1}'
+            ], [
+                'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
   <CONTENT>
     <DRIVES>
@@ -98,9 +98,9 @@ class Volume extends AbstractInventoryAsset
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-            'expected'  => '{"filesystem": "vfat", "free": 191, "serial": "A710-491B", "total": 199, "type": "/boot/efi", "volumn": "/dev/nvme0n1p1", "device": "/dev/nvme0n1p1", "filesystems_id": "vfat", "totalsize": 199, "freesize": 191, "name": "/boot/efi", "mountpoint": "/boot/efi", "is_dynamic": 1}'
-         ], [
-            'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+                'expected'  => '{"filesystem": "vfat", "free": 191, "serial": "A710-491B", "total": 199, "type": "/boot/efi", "volumn": "/dev/nvme0n1p1", "device": "/dev/nvme0n1p1", "filesystems_id": "vfat", "totalsize": 199, "freesize": 191, "name": "/boot/efi", "mountpoint": "/boot/efi", "is_dynamic": 1}'
+            ], [
+                'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
   <CONTENT>
     <DRIVES>
@@ -116,9 +116,9 @@ class Volume extends AbstractInventoryAsset
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-            'expected'  => '{"filesystem": "ext4", "free": 18455, "serial": "b61d4fbf-32da-4c7a-8b15-45ae81b946b2", "total": 100280, "type": "/home", "volumn": "/dev/mapper/xps-home", "device": "/dev/mapper/xps-home", "filesystems_id": "ext4", "totalsize": 100280, "freesize": 18455, "name": "/home", "mountpoint": "/home", "is_dynamic": 1}'
-         ], [
-            'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+                'expected'  => '{"filesystem": "ext4", "free": 18455, "serial": "b61d4fbf-32da-4c7a-8b15-45ae81b946b2", "total": 100280, "type": "/home", "volumn": "/dev/mapper/xps-home", "device": "/dev/mapper/xps-home", "filesystems_id": "ext4", "totalsize": 100280, "freesize": 18455, "name": "/home", "mountpoint": "/home", "is_dynamic": 1}'
+            ], [
+                'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
   <CONTENT>
     <DRIVES>
@@ -134,9 +134,9 @@ class Volume extends AbstractInventoryAsset
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-            'expected'  => '{"filesystem": "ext4", "free": 10009, "serial": "79d60190-518f-4de4-8ed5-74146414b890", "total": 20030, "type": "/var/lib/mysql", "volumn": "/dev/mapper/xps-maria", "device": "/dev/mapper/xps-maria", "filesystems_id": "ext4", "totalsize": 20030, "freesize": 10009, "name": "/var/lib/mysql", "mountpoint": "/var/lib/mysql", "is_dynamic": 1}'
-         ], [ //network drive
-            'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+                'expected'  => '{"filesystem": "ext4", "free": 10009, "serial": "79d60190-518f-4de4-8ed5-74146414b890", "total": 20030, "type": "/var/lib/mysql", "volumn": "/dev/mapper/xps-maria", "device": "/dev/mapper/xps-maria", "filesystems_id": "ext4", "totalsize": 20030, "freesize": 10009, "name": "/var/lib/mysql", "mountpoint": "/var/lib/mysql", "is_dynamic": 1}'
+            ], [ //network drive
+                'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
   <CONTENT>
     <DRIVES>
@@ -151,9 +151,9 @@ class Volume extends AbstractInventoryAsset
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-            'expected'  => '{"filesystem": "afpfs", "free": 2143720, "total": 4194304, "type": "/Volumes/timemachine", "volumn": "//timemachine@timemachine.glpi-project.org/timemachine", "device": "//timemachine@timemachine.glpi-project.org/timemachine", "filesystems_id": "afpfs", "totalsize": 4194304, "freesize": 2143720, "name": "/Volumes/timemachine", "mountpoint": "/Volumes/timemachine", "is_dynamic": 1}'
+                'expected'  => '{"filesystem": "afpfs", "free": 2143720, "total": 4194304, "type": "/Volumes/timemachine", "volumn": "//timemachine@timemachine.glpi-project.org/timemachine", "device": "//timemachine@timemachine.glpi-project.org/timemachine", "filesystems_id": "afpfs", "totalsize": 4194304, "freesize": 2143720, "name": "/Volumes/timemachine", "mountpoint": "/Volumes/timemachine", "is_dynamic": 1}'
             ], [ //removable drive
-               'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+                'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
   <CONTENT>
     <DRIVES>
@@ -172,8 +172,8 @@ class Volume extends AbstractInventoryAsset
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-               'expected'  => '{"description": "Disque amovible", "filesystem": "FAT32", "free": 3267, "label": "USB2", "letter": "E:", "serial": "7C4A2931", "total": 7632, "type": "Removable Disk", "volumn": "USB2", "device": "USB2", "filesystems_id": "FAT32", "totalsize": 7632, "freesize": 3267, "name": "USB2", "mountpoint": "E:", "is_dynamic": 1}'
-         ]
+                'expected'  => '{"description": "Disque amovible", "filesystem": "FAT32", "free": 3267, "label": "USB2", "letter": "E:", "serial": "7C4A2931", "total": 7632, "type": "Removable Disk", "volumn": "USB2", "device": "USB2", "filesystems_id": "FAT32", "totalsize": 7632, "freesize": 3267, "name": "USB2", "mountpoint": "E:", "is_dynamic": 1}'
+            ]
         ];
     }
 
@@ -264,36 +264,36 @@ class Volume extends AbstractInventoryAsset
 
        //create manually a computer, with 3 disks
         $computers_id = $computer->add([
-         'name'   => 'pc002',
-         'serial' => 'ggheb7ne7',
-         'entities_id' => 0
+            'name'   => 'pc002',
+            'serial' => 'ggheb7ne7',
+            'entities_id' => 0
         ]);
         $this->integer($computers_id)->isGreaterThan(0);
 
         $cdisk_id = $item_disk->add([
-         "items_id"     => $computers_id,
-         "itemtype"     => 'Computer',
-         "name"         => "C:",
-         "mountpoint"   => "C:",
-         "entities_id"  => 0
+            "items_id"     => $computers_id,
+            "itemtype"     => 'Computer',
+            "name"         => "C:",
+            "mountpoint"   => "C:",
+            "entities_id"  => 0
         ]);
         $this->integer($cdisk_id)->isGreaterThan(0);
 
         $ddisk_id = $item_disk->add([
-         "items_id"     => $computers_id,
-         "itemtype"     => 'Computer',
-         "name"         => "D:",
-         "mountpoint"   => "D:",
-         "entities_id"  => 0
+            "items_id"     => $computers_id,
+            "itemtype"     => 'Computer',
+            "name"         => "D:",
+            "mountpoint"   => "D:",
+            "entities_id"  => 0
         ]);
         $this->integer($ddisk_id)->isGreaterThan(0);
 
         $zdisk_id = $item_disk->add([
-         "items_id"     => $computers_id,
-         "itemtype"     => 'Computer',
-         "name"         => "Z:",
-         "mountpoint"   => "Z:",
-         "entities_id"  => 0
+            "items_id"     => $computers_id,
+            "itemtype"     => 'Computer',
+            "name"         => "Z:",
+            "mountpoint"   => "Z:",
+            "entities_id"  => 0
         ]);
         $this->integer($zdisk_id)->isGreaterThan(0);
 
@@ -426,9 +426,9 @@ class Volume extends AbstractInventoryAsset
         $conf = new \Glpi\Inventory\Conf();
         $this->boolean(
             $conf->saveConf([
-            'import_volume' => 0,
-            'component_networkdrive' => 0,
-            'component_removablemedia' => 0
+                'import_volume' => 0,
+                'component_networkdrive' => 0,
+                'component_removablemedia' => 0
             ])
         )->isTrue();
 
@@ -437,9 +437,9 @@ class Volume extends AbstractInventoryAsset
 
         $this->boolean(
             $conf->saveConf([
-            'import_volume' => 1,
-            'component_networkdrive' => 1,
-            'component_removablemedia' => 1
+                'import_volume' => 1,
+                'component_networkdrive' => 1,
+                'component_removablemedia' => 1
             ])
         )->isTrue();
 
@@ -453,9 +453,9 @@ class Volume extends AbstractInventoryAsset
        //set config to inventory disks, but no network nor removable
         $this->boolean(
             $conf->saveConf([
-            'import_volume' => 1,
-            'component_networkdrive' => 0,
-            'component_removablemedia' => 0
+                'import_volume' => 1,
+                'component_networkdrive' => 0,
+                'component_removablemedia' => 0
             ])
         )->isTrue();
 
@@ -464,9 +464,9 @@ class Volume extends AbstractInventoryAsset
 
         $this->boolean(
             $conf->saveConf([
-            'import_volume' => 1,
-            'component_networkdrive' => 1,
-            'component_removablemedia' => 1
+                'import_volume' => 1,
+                'component_networkdrive' => 1,
+                'component_removablemedia' => 1
             ])
         )->isTrue();
 
@@ -480,9 +480,9 @@ class Volume extends AbstractInventoryAsset
        //set config to inventory disks, network and removable (the default)
         $this->boolean(
             $conf->saveConf([
-            'import_volume' => 1,
-            'component_networkdrive' => 1,
-            'component_removablemedia' => 1
+                'import_volume' => 1,
+                'component_networkdrive' => 1,
+                'component_removablemedia' => 1
             ])
         )->isTrue();
 
@@ -508,9 +508,9 @@ class Volume extends AbstractInventoryAsset
        //set config to inventory disks and network, but no removable
         $this->boolean(
             $conf->saveConf([
-            'import_volume' => 1,
-            'component_networkdrive' => 1,
-            'component_removablemedia' => 0
+                'import_volume' => 1,
+                'component_networkdrive' => 1,
+                'component_removablemedia' => 0
             ])
         )->isTrue();
 
@@ -518,9 +518,9 @@ class Volume extends AbstractInventoryAsset
 
         $this->boolean(
             $conf->saveConf([
-            'import_volume' => 1,
-            'component_networkdrive' => 1,
-            'component_removablemedia' => 1
+                'import_volume' => 1,
+                'component_networkdrive' => 1,
+                'component_removablemedia' => 1
             ])
         )->isTrue();
 

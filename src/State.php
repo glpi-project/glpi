@@ -64,14 +64,16 @@ class State extends CommonTreeDropdown
 
         $fields   = parent::getAdditionalFields();
         $fields[] = ['label' => __('Visibility'),
-                        'name'  => 'header',
-                        'list'  => false];
+            'name'  => 'header',
+            'list'  => false
+        ];
 
         foreach ($this->getvisibilityFields() as $type => $field) {
             $fields[] = ['name'  => $field,
-                           'label' => $type::getTypeName(Session::getPluralNumber()),
-                           'type'  => 'bool',
-                           'list'  => true];
+                'label' => $type::getTypeName(Session::getPluralNumber()),
+                'type'  => 'bool',
+                'list'  => true
+            ];
         }
         return $fields;
     }
@@ -95,9 +97,9 @@ class State extends CommonTreeDropdown
         }
 
         $iterator = $DB->request([
-         'SELECT' => ['id', 'name'],
-         'FROM'   => 'glpi_states',
-         'ORDER'  => 'name'
+            'SELECT' => ['id', 'name'],
+            'FROM'   => 'glpi_states',
+            'ORDER'  => 'name'
         ]);
 
         foreach ($iterator as $data) {
@@ -129,13 +131,13 @@ class State extends CommonTreeDropdown
                     }
                     $WHERE += getEntitiesRestrictCriteria($table);
                     $iterator = $DB->request([
-                    'SELECT' => [
-                     'states_id',
-                     'COUNT'  => '* AS cpt'
-                    ],
-                    'FROM'   => $table,
-                    'WHERE'  => $WHERE,
-                    'GROUP'  => 'states_id'
+                        'SELECT' => [
+                            'states_id',
+                            'COUNT'  => '* AS cpt'
+                        ],
+                        'FROM'   => $table,
+                        'WHERE'  => $WHERE,
+                        'GROUP'  => 'states_id'
                     ]);
 
                     foreach ($iterator as $data) {
@@ -165,9 +167,9 @@ class State extends CommonTreeDropdown
             echo "</tr>";
 
             $iterator = $DB->request([
-            'FROM'   => 'glpi_states',
-            'WHERE'  => getEntitiesRestrictCriteria('glpi_states', '', '', true),
-            'ORDER'  => 'completename'
+                'FROM'   => 'glpi_states',
+                'WHERE'  => getEntitiesRestrictCriteria('glpi_states', '', '', true),
+                'ORDER'  => 'completename'
             ]);
 
            // No state
@@ -193,11 +195,14 @@ class State extends CommonTreeDropdown
                 echo "<tr class='tab_bg_2'><td class='b'>";
 
                 $opt = ['reset'    => 'reset',
-                        'sort'     => 1,
-                        'start'    => 0,
-                        'criteria' => ['0' => ['value' => '$$$$' . $data['id'],
-                                                         'searchtype' => 'contains',
-                                                         'field' => 31]]];
+                    'sort'     => 1,
+                    'start'    => 0,
+                    'criteria' => ['0' => ['value' => '$$$$' . $data['id'],
+                        'searchtype' => 'contains',
+                        'field' => 31
+                    ]
+                    ]
+                ];
 
                 $url = AllAssets::getSearchURL();
                 echo "<a href='$url?" . Toolbox::append_params($opt, '&amp;') . "'>" . $data["completename"] . "</a></td>";
@@ -296,211 +301,211 @@ class State extends CommonTreeDropdown
         $tab = parent::rawSearchOptions();
 
         $tab[] = [
-         'id'                 => '21',
-         'table'              => $this->getTable(),
-         'field'              => 'is_visible_computer',
-         'name'               => sprintf(__('%1$s - %2$s'), __('Visibility'), Computer::getTypeName(Session::getPluralNumber())),
-         'datatype'           => 'bool'
+            'id'                 => '21',
+            'table'              => $this->getTable(),
+            'field'              => 'is_visible_computer',
+            'name'               => sprintf(__('%1$s - %2$s'), __('Visibility'), Computer::getTypeName(Session::getPluralNumber())),
+            'datatype'           => 'bool'
         ];
 
         $tab[] = [
-         'id'                 => '22',
-         'table'              => $this->getTable(),
-         'field'              => 'is_visible_softwareversion',
-         'name'               => sprintf(
-             __('%1$s - %2$s'),
-             __('Visibility'),
-             SoftwareVersion::getTypeName(Session::getPluralNumber())
-         ),
-         'datatype'           => 'bool'
+            'id'                 => '22',
+            'table'              => $this->getTable(),
+            'field'              => 'is_visible_softwareversion',
+            'name'               => sprintf(
+                __('%1$s - %2$s'),
+                __('Visibility'),
+                SoftwareVersion::getTypeName(Session::getPluralNumber())
+            ),
+            'datatype'           => 'bool'
         ];
 
         $tab[] = [
-         'id'                 => '23',
-         'table'              => $this->getTable(),
-         'field'              => 'is_visible_monitor',
-         'name'               => sprintf(__('%1$s - %2$s'), __('Visibility'), Monitor::getTypeName(Session::getPluralNumber())),
-         'datatype'           => 'bool'
+            'id'                 => '23',
+            'table'              => $this->getTable(),
+            'field'              => 'is_visible_monitor',
+            'name'               => sprintf(__('%1$s - %2$s'), __('Visibility'), Monitor::getTypeName(Session::getPluralNumber())),
+            'datatype'           => 'bool'
         ];
 
         $tab[] = [
-         'id'                 => '24',
-         'table'              => $this->getTable(),
-         'field'              => 'is_visible_printer',
-         'name'               => sprintf(__('%1$s - %2$s'), __('Visibility'), Printer::getTypeName(Session::getPluralNumber())),
-         'datatype'           => 'bool'
+            'id'                 => '24',
+            'table'              => $this->getTable(),
+            'field'              => 'is_visible_printer',
+            'name'               => sprintf(__('%1$s - %2$s'), __('Visibility'), Printer::getTypeName(Session::getPluralNumber())),
+            'datatype'           => 'bool'
         ];
 
         $tab[] = [
-         'id'                 => '25',
-         'table'              => $this->getTable(),
-         'field'              => 'is_visible_peripheral',
-         'name'               => sprintf(__('%1$s - %2$s'), __('Visibility'), Peripheral::getTypeName(Session::getPluralNumber())),
-         'datatype'           => 'bool'
+            'id'                 => '25',
+            'table'              => $this->getTable(),
+            'field'              => 'is_visible_peripheral',
+            'name'               => sprintf(__('%1$s - %2$s'), __('Visibility'), Peripheral::getTypeName(Session::getPluralNumber())),
+            'datatype'           => 'bool'
         ];
 
         $tab[] = [
-         'id'                 => '26',
-         'table'              => $this->getTable(),
-         'field'              => 'is_visible_phone',
-         'name'               => sprintf(__('%1$s - %2$s'), __('Visibility'), Phone::getTypeName(Session::getPluralNumber())),
-         'datatype'           => 'bool'
+            'id'                 => '26',
+            'table'              => $this->getTable(),
+            'field'              => 'is_visible_phone',
+            'name'               => sprintf(__('%1$s - %2$s'), __('Visibility'), Phone::getTypeName(Session::getPluralNumber())),
+            'datatype'           => 'bool'
         ];
 
         $tab[] = [
-         'id'                 => '27',
-         'table'              => $this->getTable(),
-         'field'              => 'is_visible_networkequipment',
-         'name'               => sprintf(
-             __('%1$s - %2$s'),
-             __('Visibility'),
-             NetworkEquipment::getTypeName(Session::getPluralNumber())
-         ),
-         'datatype'           => 'bool'
+            'id'                 => '27',
+            'table'              => $this->getTable(),
+            'field'              => 'is_visible_networkequipment',
+            'name'               => sprintf(
+                __('%1$s - %2$s'),
+                __('Visibility'),
+                NetworkEquipment::getTypeName(Session::getPluralNumber())
+            ),
+            'datatype'           => 'bool'
         ];
 
         $tab[] = [
-         'id'                 => '28',
-         'table'              => $this->getTable(),
-         'field'              => 'is_visible_softwarelicense',
-         'name'               => sprintf(
-             __('%1$s - %2$s'),
-             __('Visibility'),
-             SoftwareLicense::getTypeName(Session::getPluralNumber())
-         ),
-         'datatype'           => 'bool'
+            'id'                 => '28',
+            'table'              => $this->getTable(),
+            'field'              => 'is_visible_softwarelicense',
+            'name'               => sprintf(
+                __('%1$s - %2$s'),
+                __('Visibility'),
+                SoftwareLicense::getTypeName(Session::getPluralNumber())
+            ),
+            'datatype'           => 'bool'
         ];
 
         $tab[] = [
-         'id'                 => '29',
-         'table'              => $this->getTable(),
-         'field'              => 'is_visible_certificate',
-         'name'               => sprintf(
-             __('%1$s - %2$s'),
-             __('Visibility'),
-             Certificate::getTypeName(Session::getPluralNumber())
-         ),
-         'datatype'           => 'bool'
+            'id'                 => '29',
+            'table'              => $this->getTable(),
+            'field'              => 'is_visible_certificate',
+            'name'               => sprintf(
+                __('%1$s - %2$s'),
+                __('Visibility'),
+                Certificate::getTypeName(Session::getPluralNumber())
+            ),
+            'datatype'           => 'bool'
         ];
 
         $tab[] = [
-         'id'                 => '30',
-         'table'              => $this->getTable(),
-         'field'              => 'is_visible_rack',
-         'name'               => sprintf(
-             __('%1$s - %2$s'),
-             __('Visibility'),
-             Rack::getTypeName(Session::getPluralNumber())
-         ),
-         'datatype'           => 'bool'
+            'id'                 => '30',
+            'table'              => $this->getTable(),
+            'field'              => 'is_visible_rack',
+            'name'               => sprintf(
+                __('%1$s - %2$s'),
+                __('Visibility'),
+                Rack::getTypeName(Session::getPluralNumber())
+            ),
+            'datatype'           => 'bool'
         ];
 
         $tab[] = [
-         'id'                 => '31',
-         'table'              => $this->getTable(),
-         'field'              => 'is_visible_line',
-         'name'               => sprintf(
-             __('%1$s - %2$s'),
-             __('Visibility'),
-             Line::getTypeName(Session::getPluralNumber())
-         ),
-         'datatype'           => 'bool'
+            'id'                 => '31',
+            'table'              => $this->getTable(),
+            'field'              => 'is_visible_line',
+            'name'               => sprintf(
+                __('%1$s - %2$s'),
+                __('Visibility'),
+                Line::getTypeName(Session::getPluralNumber())
+            ),
+            'datatype'           => 'bool'
         ];
 
         $tab[] = [
-         'id'                 => '32',
-         'table'              => $this->getTable(),
-         'field'              => 'is_visible_enclosure',
-         'name'               => sprintf(
-             __('%1$s - %2$s'),
-             __('Visibility'),
-             Enclosure::getTypeName(Session::getPluralNumber())
-         ),
-         'datatype'           => 'bool'
+            'id'                 => '32',
+            'table'              => $this->getTable(),
+            'field'              => 'is_visible_enclosure',
+            'name'               => sprintf(
+                __('%1$s - %2$s'),
+                __('Visibility'),
+                Enclosure::getTypeName(Session::getPluralNumber())
+            ),
+            'datatype'           => 'bool'
         ];
 
         $tab[] = [
-         'id'                 => '33',
-         'table'              => $this->getTable(),
-         'field'              => 'is_visible_pdu',
-         'name'               => sprintf(
-             __('%1$s - %2$s'),
-             __('Visibility'),
-             PDU::getTypeName(Session::getPluralNumber())
-         ),
-         'datatype'           => 'bool'
+            'id'                 => '33',
+            'table'              => $this->getTable(),
+            'field'              => 'is_visible_pdu',
+            'name'               => sprintf(
+                __('%1$s - %2$s'),
+                __('Visibility'),
+                PDU::getTypeName(Session::getPluralNumber())
+            ),
+            'datatype'           => 'bool'
         ];
 
         $tab[] = [
-         'id'                 => '34',
-         'table'              => $this->getTable(),
-         'field'              => 'is_visible_cluster',
-         'name'               => sprintf(
-             __('%1$s - %2$s'),
-             __('Visibility'),
-             Cluster::getTypeName(Session::getPluralNumber())
-         ),
-         'datatype'           => 'bool'
+            'id'                 => '34',
+            'table'              => $this->getTable(),
+            'field'              => 'is_visible_cluster',
+            'name'               => sprintf(
+                __('%1$s - %2$s'),
+                __('Visibility'),
+                Cluster::getTypeName(Session::getPluralNumber())
+            ),
+            'datatype'           => 'bool'
         ];
 
         $tab[] = [
-         'id'                 => '35',
-         'table'              => $this->getTable(),
-         'field'              => 'is_visible_passivedcequipment',
-         'name'               => sprintf(
-             __('%1$s - %2$s'),
-             __('Visibility'),
-             PassiveDCEquipment::getTypeName(Session::getPluralNumber())
-         ),
-         'datatype'           => 'bool'
+            'id'                 => '35',
+            'table'              => $this->getTable(),
+            'field'              => 'is_visible_passivedcequipment',
+            'name'               => sprintf(
+                __('%1$s - %2$s'),
+                __('Visibility'),
+                PassiveDCEquipment::getTypeName(Session::getPluralNumber())
+            ),
+            'datatype'           => 'bool'
         ];
 
         $tab[] = [
-         'id'                 => '36',
-         'table'              => $this->getTable(),
-         'field'              => 'is_visible_contract',
-         'name'               => sprintf(
-             __('%1$s - %2$s'),
-             __('Visibility'),
-             Contract::getTypeName(Session::getPluralNumber())
-         ),
-         'datatype'           => 'bool'
+            'id'                 => '36',
+            'table'              => $this->getTable(),
+            'field'              => 'is_visible_contract',
+            'name'               => sprintf(
+                __('%1$s - %2$s'),
+                __('Visibility'),
+                Contract::getTypeName(Session::getPluralNumber())
+            ),
+            'datatype'           => 'bool'
         ];
 
         $tab[] = [
-         'id'                 => '37',
-         'table'              => $this->getTable(),
-         'field'              => 'is_visible_appliance',
-         'name'               => sprintf(
-             __('%1$s - %2$s'),
-             __('Visibility'),
-             Appliance::getTypeName(Session::getPluralNumber())
-         ),
-         'datatype'           => 'bool'
+            'id'                 => '37',
+            'table'              => $this->getTable(),
+            'field'              => 'is_visible_appliance',
+            'name'               => sprintf(
+                __('%1$s - %2$s'),
+                __('Visibility'),
+                Appliance::getTypeName(Session::getPluralNumber())
+            ),
+            'datatype'           => 'bool'
         ];
 
         $tab[] = [
-         'id'                 => '38',
-         'table'              => $this->getTable(),
-         'field'              => 'is_visible_cable',
-         'name'               => sprintf(
-             __('%1$s - %2$s'),
-             __('Visibility'),
-             Cable::getTypeName(Session::getPluralNumber())
-         ),
-         'datatype'           => 'bool'
+            'id'                 => '38',
+            'table'              => $this->getTable(),
+            'field'              => 'is_visible_cable',
+            'name'               => sprintf(
+                __('%1$s - %2$s'),
+                __('Visibility'),
+                Cable::getTypeName(Session::getPluralNumber())
+            ),
+            'datatype'           => 'bool'
         ];
 
         $tab[] = [
-         'id'                 => '39',
-         'table'              => $this->getTable(),
-         'field'              => 'is_visible_database',
-         'name'               => sprintf(
-             __('%1$s - %2$s'),
-             __('Visibility'),
-             DatabaseInstance::getTypeName(Session::getPluralNumber())
-         ),
-         'datatype'           => 'bool'
+            'id'                 => '39',
+            'table'              => $this->getTable(),
+            'field'              => 'is_visible_database',
+            'name'               => sprintf(
+                __('%1$s - %2$s'),
+                __('Visibility'),
+                DatabaseInstance::getTypeName(Session::getPluralNumber())
+            ),
+            'datatype'           => 'bool'
         ];
 
         return $tab;
@@ -552,9 +557,9 @@ class State extends CommonTreeDropdown
         }
 
         $query = [
-         'FROM'   => $this->getTable(),
-         'COUNT'  => 'cpt',
-         'WHERE'  => $where
+            'FROM'   => $this->getTable(),
+            'COUNT'  => 'cpt',
+            'WHERE'  => $where
         ];
         $row = $DB->request($query)->current();
         return (int)$row['cpt'] == 0;

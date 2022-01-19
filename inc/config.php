@@ -168,8 +168,8 @@ if (!isset($skip_db_check) && !file_exists(GLPI_CONFIG_DIR . "/config_db.php")) 
                 echo "\n";
             } else {
                 Glpi\Application\View\TemplateRenderer::getInstance()->display('maintenance.html.twig', [
-                'title'            => "MAINTENANCE MODE",
-                'maintenance_text' => $CFG_GLPI["maintenance_text"] ?? "",
+                    'title'            => "MAINTENANCE MODE",
+                    'maintenance_text' => $CFG_GLPI["maintenance_text"] ?? "",
                 ]);
             }
             exit();
@@ -194,15 +194,15 @@ if (!isset($skip_db_check) && !file_exists(GLPI_CONFIG_DIR . "/config_db.php")) 
             TemplateRenderer::getInstance()->display(
                 'install/blocks/requirements_table.html.twig',
                 [
-                'requirements' => $core_requirements,
+                    'requirements' => $core_requirements,
                 ]
             );
 
             if ($core_requirements->hasMissingMandatoryRequirements() || $core_requirements->hasMissingOptionalRequirements()) {
                 echo "<form action='" . $CFG_GLPI["root_doc"] . "/index.php' method='post'>";
                 echo Html::submit(__s('Try again'), [
-                'class' => "btn btn-primary",
-                'icon'  => "fas fa-redo",
+                    'class' => "btn btn-primary",
+                    'icon'  => "fas fa-redo",
                 ]);
                 Html::closeForm();
             }
@@ -221,9 +221,9 @@ if (!isset($skip_db_check) && !file_exists(GLPI_CONFIG_DIR . "/config_db.php")) 
                      echo "<p class='mt-2 mb-n2 alert alert-important alert-warning'>";
                      echo __('The version of the database is not compatible with the version of the installed files. An update is necessary.') . "</p>";
                      echo Html::submit(_sx('button', 'Upgrade'), [
-                    'name'  => 'from_update',
-                    'class' => "btn btn-primary",
-                    'icon'  => "fas fa-check",
+                         'name'  => 'from_update',
+                         'class' => "btn btn-primary",
+                         'icon'  => "fas fa-check",
                      ]);
                      Html::closeForm();
                 } else {

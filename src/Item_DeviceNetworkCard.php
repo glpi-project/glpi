@@ -51,15 +51,16 @@ class Item_DeviceNetworkCard extends Item_Devices
     {
 
         return ['mac'    => ['long name'  => __('MAC address'),
-                                     'short name' => __('MAC address'),
-                                     'size'       => 18,
-                                     'id'         => 20,
-                                     'datatype'   => 'mac',
-                   ],
-                   'serial' => parent::getSpecificities('serial'),
-                   'otherserial' => parent::getSpecificities('otherserial'),
-                   'locations_id' => parent::getSpecificities('locations_id'),
-                   'states_id' => parent::getSpecificities('states_id'),
-                   'busID'  => parent::getSpecificities('busID')];
+            'short name' => __('MAC address'),
+            'size'       => 18,
+            'id'         => 20,
+            'datatype'   => 'mac',
+        ],
+            'serial' => parent::getSpecificities('serial'),
+            'otherserial' => parent::getSpecificities('otherserial'),
+            'locations_id' => parent::getSpecificities('locations_id'),
+            'states_id' => parent::getSpecificities('states_id'),
+            'busID'  => parent::getSpecificities('busID')
+        ];
     }
 }

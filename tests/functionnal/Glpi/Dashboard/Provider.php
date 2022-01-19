@@ -42,8 +42,8 @@ class Provider extends DbTestCase
     public function itemProvider()
     {
         return [
-         ['item' => new \Computer()],
-         ['item' => new \Ticket()],
+            ['item' => new \Computer()],
+            ['item' => new \Ticket()],
         ];
     }
 
@@ -56,17 +56,17 @@ class Provider extends DbTestCase
 
         $itemtype = $item->getType();
         $data = [
-         \Glpi\Dashboard\Provider::bigNumberItem($item),
-         call_user_func(['\\Glpi\\Dashboard\\Provider', "bigNumber$itemtype"])
+            \Glpi\Dashboard\Provider::bigNumberItem($item),
+            call_user_func(['\\Glpi\\Dashboard\\Provider', "bigNumber$itemtype"])
         ];
 
         foreach ($data as $result) {
             $this->array($result)
             ->hasKeys([
-               'number',
-               'url',
-               'label',
-               'icon',
+                'number',
+                'url',
+                'label',
+                'icon',
             ]);
             $this->integer($result['number'])->isGreaterThan(0);
             $this->string($result['url'])->contains($item::getSearchURL());
@@ -79,16 +79,16 @@ class Provider extends DbTestCase
     public function ticketsCaseProvider()
     {
         return [
-         ['case' => 'notold'],
-         ['case' => 'late'],
-         ['case' => 'waiting_validation'],
-         ['case' => 'incoming'],
-         ['case' => 'waiting'],
-         ['case' => 'assigned'],
-         ['case' => 'planned'],
-         ['case' => 'solved'],
-         ['case' => 'closed'],
-         ['case' => 'status'],
+            ['case' => 'notold'],
+            ['case' => 'late'],
+            ['case' => 'waiting_validation'],
+            ['case' => 'incoming'],
+            ['case' => 'waiting'],
+            ['case' => 'assigned'],
+            ['case' => 'planned'],
+            ['case' => 'solved'],
+            ['case' => 'closed'],
+            ['case' => 'status'],
         ];
     }
 
@@ -102,12 +102,12 @@ class Provider extends DbTestCase
 
         $this->array($result)
          ->hasKeys([
-            'number',
-            'url',
-            'label',
-            'icon',
-            's_criteria',
-            'itemtype',
+             'number',
+             'url',
+             'label',
+             'icon',
+             's_criteria',
+             'itemtype',
          ]);
         $this->integer($result['number']);
         $this->string($result['url'])->contains(\Ticket::getSearchURL());
@@ -121,8 +121,8 @@ class Provider extends DbTestCase
     public function itemFKProvider()
     {
         return [
-         ['item' => new \Computer(), 'fk_item' => new \Entity()],
-         ['item' => new \Software(), 'fk_item' => new \Entity()],
+            ['item' => new \Computer(), 'fk_item' => new \Entity()],
+            ['item' => new \Software(), 'fk_item' => new \Entity()],
         ];
     }
 
@@ -137,17 +137,17 @@ class Provider extends DbTestCase
         $result = \Glpi\Dashboard\Provider::nbItemByFk($item, $fk_item);
         $this->array($result)
          ->hasKeys([
-            'data',
-            'label',
-            'icon',
+             'data',
+             'label',
+             'icon',
          ]);
 
         foreach ($result['data'] as $data) {
             $this->array($data)
             ->hasKeys([
-               'number',
-               'label',
-               'url',
+                'number',
+                'label',
+                'url',
             ]);
 
             $this->integer($data['number'])->isGreaterThan(0);
@@ -162,10 +162,10 @@ class Provider extends DbTestCase
         $result = \Glpi\Dashboard\Provider::ticketsOpened();
         $this->array($result)
          ->hasKeys([
-            'data',
-            'distributed',
-            'label',
-            'icon',
+             'data',
+             'distributed',
+             'label',
+             'icon',
          ]);
 
         $this->boolean($result['distributed'])->isFalse();
@@ -175,9 +175,9 @@ class Provider extends DbTestCase
         foreach ($result['data'] as $data) {
             $this->array($data)
             ->hasKeys([
-               'number',
-               'label',
-               'url',
+                'number',
+                'label',
+                'url',
             ]);
 
             $this->integer($data['number'])->isGreaterThan(0);
@@ -192,9 +192,9 @@ class Provider extends DbTestCase
         $result = \Glpi\Dashboard\Provider::getTicketsEvolution();
         $this->array($result)
          ->hasKeys([
-            'data',
-            'label',
-            'icon',
+             'data',
+             'label',
+             'icon',
          ]);
 
         $this->string($result['icon']);
@@ -223,9 +223,9 @@ class Provider extends DbTestCase
         $result = \Glpi\Dashboard\Provider::getTicketsStatus();
         $this->array($result)
          ->hasKeys([
-            'data',
-            'label',
-            'icon',
+             'data',
+             'label',
+             'icon',
          ]);
 
         $this->string($result['icon']);
@@ -254,9 +254,9 @@ class Provider extends DbTestCase
         $result = \Glpi\Dashboard\Provider::multipleNumberTicketByITILCategory();
         $this->array($result)
          ->hasKeys([
-            'data',
-            'label',
-            'icon',
+             'data',
+             'label',
+             'icon',
          ]);
 
         $this->string($result['icon']);
@@ -265,9 +265,9 @@ class Provider extends DbTestCase
         foreach ($result['data'] as $data) {
             $this->array($data)
             ->hasKeys([
-               'number',
-               'label',
-               'url',
+                'number',
+                'label',
+                'url',
             ]);
 
             $this->integer($data['number'])->isGreaterThan(0);
@@ -279,19 +279,19 @@ class Provider extends DbTestCase
     public function monthYearProvider()
     {
         return [
-         [
-            'monthyear' => '2019-01',
-            'expected'  => [
-               '2019-01-01 00:00:00',
-               '2019-02-01 00:00:00'
+            [
+                'monthyear' => '2019-01',
+                'expected'  => [
+                    '2019-01-01 00:00:00',
+                    '2019-02-01 00:00:00'
+                ]
+            ], [
+                'monthyear' => '2019-12',
+                'expected'  => [
+                    '2019-12-01 00:00:00',
+                    '2020-01-01 00:00:00'
+                ]
             ]
-         ], [
-            'monthyear' => '2019-12',
-            'expected'  => [
-               '2019-12-01 00:00:00',
-               '2020-01-01 00:00:00'
-            ]
-         ]
         ];
     }
 

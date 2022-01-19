@@ -121,12 +121,12 @@ if (isset($_POST["add"])) {
 } else if (isset($_POST['addme_observer'])) {
     $change->check($_POST['changes_id'], READ);
     $input = array_merge(Toolbox::addslashes_deep($change->fields), [
-      'id' => $_POST['changes_id'],
-      '_itil_observer' => [
-         '_type' => "user",
-         'users_id' => Session::getLoginUserID(),
-         'use_notification' => 1,
-      ]
+        'id' => $_POST['changes_id'],
+        '_itil_observer' => [
+            '_type' => "user",
+            'users_id' => Session::getLoginUserID(),
+            'use_notification' => 1,
+        ]
     ]);
     $change->update($input);
     Event::log(
@@ -143,9 +143,10 @@ if (isset($_POST["add"])) {
 
     $change->check($_POST['changes_id'], READ);
     $input = ['changes_id'       => $_POST['changes_id'],
-                  'users_id'         => Session::getLoginUserID(),
-                  'use_notification' => 1,
-                  'type'             => CommonITILActor::ASSIGN];
+        'users_id'         => Session::getLoginUserID(),
+        'use_notification' => 1,
+        'type'             => CommonITILActor::ASSIGN
+    ];
     $change_user->add($input);
     Event::log(
         $_POST['changes_id'],
@@ -163,8 +164,8 @@ if (isset($_POST["add"])) {
     if ($doc->can($doc->getID(), UPDATE)) {
         $document_item = new Document_Item();
         $found_document_items = $document_item->find([
-         $change->getAssociatedDocumentsCriteria(),
-         'documents_id' => $doc->getID()
+            $change->getAssociatedDocumentsCriteria(),
+            'documents_id' => $doc->getID()
         ]);
         foreach ($found_document_items as $item) {
             $document_item->delete(Toolbox::addslashes_deep($item), true);
@@ -175,12 +176,12 @@ if (isset($_POST["add"])) {
     $id = (int) $_POST['id'];
     $change->check($id, READ);
     $input = array_merge(Toolbox::addslashes_deep($change->fields), [
-      'id' => $id,
-      '_itil_' . $_POST['actortype'] => [
-         '_type' => "user",
-         'users_id' => Session::getLoginUserID(),
-         'use_notification' => 1,
-      ]
+        'id' => $id,
+        '_itil_' . $_POST['actortype'] => [
+            '_type' => "user",
+            'users_id' => Session::getLoginUserID(),
+            'use_notification' => 1,
+        ]
     ]);
     $change->update($input);
     Event::log(
@@ -208,9 +209,9 @@ if (isset($_POST["add"])) {
                 'savetokb',
                 $url,
                 [
-                'title'         => __('Save and add to the knowledge base'),
-                'reloadonclose' => false,
-                'autoopen'      => true,
+                    'title'         => __('Save and add to the knowledge base'),
+                    'reloadonclose' => false,
+                    'autoopen'      => true,
                 ]
             );
         }

@@ -58,18 +58,18 @@ class KnowbaseItem_Item extends DbTestCase
         $this->array($items)->hasSize(3);
 
         $expecteds = [
-         0 => [
-            'id'       => '_ticket01',
-            'itemtype' => \Ticket::getType(),
-         ],
-         1 => [
-            'id'       => '_ticket02',
-            'itemtype' => \Ticket::getType(),
-         ],
-         2 => [
-            'id'       => '_ticket03',
-            'itemtype' => \Ticket::getType(),
-         ]
+            0 => [
+                'id'       => '_ticket01',
+                'itemtype' => \Ticket::getType(),
+            ],
+            1 => [
+                'id'       => '_ticket02',
+                'itemtype' => \Ticket::getType(),
+            ],
+            2 => [
+                'id'       => '_ticket03',
+                'itemtype' => \Ticket::getType(),
+            ]
         ];
 
         foreach ($expecteds as $key => $expected) {
@@ -83,10 +83,10 @@ class KnowbaseItem_Item extends DbTestCase
         $this->array($items)->hasSize(1);
 
         $expecteds = [
-         1 => [
-            'id'       => '_ticket02',
-            'itemtype' => \Ticket::getType(),
-         ]
+            1 => [
+                'id'       => '_ticket02',
+                'itemtype' => \Ticket::getType(),
+            ]
         ];
 
         foreach ($expecteds as $key => $expected) {
@@ -99,14 +99,14 @@ class KnowbaseItem_Item extends DbTestCase
         $this->array($items)->hasSize(2);
 
         $expecteds = [
-         0 => [
-            'id'       => '_ticket03',
-            'itemtype' => \Ticket::getType(),
-         ],
-         1 => [
-            'id'       => '_test_pc21',
-            'itemtype' => \Computer::getType(),
-         ]
+            0 => [
+                'id'       => '_ticket03',
+                'itemtype' => \Ticket::getType(),
+            ],
+            1 => [
+                'id'       => '_test_pc21',
+                'itemtype' => \Computer::getType(),
+            ]
         ];
 
         foreach ($expecteds as $key => $expected) {

@@ -53,8 +53,8 @@ unset($_REQUEST['params']['_idor_token']);
 
 if (
     !Session::validateIDOR([
-      'itemtype'     => $_REQUEST['itemtype'],
-      '_idor_token'  => $idor
+        'itemtype'     => $_REQUEST['itemtype'],
+        '_idor_token'  => $idor
     ] + $_REQUEST['params'])
 ) {
     http_response_code(400);

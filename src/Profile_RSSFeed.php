@@ -58,8 +58,8 @@ class Profile_RSSFeed extends CommonDBRelation
 
         $prof  = [];
         $iterator = $DB->request([
-         'FROM'   => self::getTable(),
-         'WHERE'  => ['rssfeeds_id' => $rssfeeds_id]
+            'FROM'   => self::getTable(),
+            'WHERE'  => ['rssfeeds_id' => $rssfeeds_id]
         ]);
 
         foreach ($iterator as $data) {

@@ -118,7 +118,8 @@ class RuleCriteria extends CommonDBChild
             && ($realrule = Rule::getRuleObjectByID($this->input['rules_id']))
         ) {
             $realrule->update(['id'       => $this->input['rules_id'],
-                                 'date_mod' => $_SESSION['glpi_currenttime']]);
+                'date_mod' => $_SESSION['glpi_currenttime']
+            ]);
         }
     }
 
@@ -137,7 +138,8 @@ class RuleCriteria extends CommonDBChild
             && ($realrule = Rule::getRuleObjectByID($this->fields['rules_id']))
         ) {
             $realrule->update(['id'       => $this->fields['rules_id'],
-                                 'date_mod' => $_SESSION['glpi_currenttime']]);
+                'date_mod' => $_SESSION['glpi_currenttime']
+            ]);
         }
     }
 
@@ -160,33 +162,33 @@ class RuleCriteria extends CommonDBChild
         $tab = [];
 
         $tab[] = [
-         'id'                 => '1',
-         'table'              => $this->getTable(),
-         'field'              => 'criteria',
-         'name'               => __('Name'),
-         'massiveaction'      => false,
-         'datatype'           => 'specific',
-         'additionalfields'   => ['rules_id']
+            'id'                 => '1',
+            'table'              => $this->getTable(),
+            'field'              => 'criteria',
+            'name'               => __('Name'),
+            'massiveaction'      => false,
+            'datatype'           => 'specific',
+            'additionalfields'   => ['rules_id']
         ];
 
         $tab[] = [
-         'id'                 => '2',
-         'table'              => $this->getTable(),
-         'field'              => 'condition',
-         'name'               => __('Condition'),
-         'massiveaction'      => false,
-         'datatype'           => 'specific',
-         'additionalfields'   => ['rules_id', 'criteria']
+            'id'                 => '2',
+            'table'              => $this->getTable(),
+            'field'              => 'condition',
+            'name'               => __('Condition'),
+            'massiveaction'      => false,
+            'datatype'           => 'specific',
+            'additionalfields'   => ['rules_id', 'criteria']
         ];
 
         $tab[] = [
-         'id'                 => '3',
-         'table'              => $this->getTable(),
-         'field'              => 'pattern',
-         'name'               => __('Reason'),
-         'massiveaction'      => false,
-         'datatype'           => 'specific',
-         'additionalfields'   => ['rules_id', 'criteria', 'condition'],
+            'id'                 => '3',
+            'table'              => $this->getTable(),
+            'field'              => 'pattern',
+            'name'               => __('Reason'),
+            'massiveaction'      => false,
+            'datatype'           => 'specific',
+            'additionalfields'   => ['rules_id', 'criteria', 'condition'],
         ];
 
         return $tab;
@@ -343,9 +345,9 @@ class RuleCriteria extends CommonDBChild
 
         $rules_list = [];
         $params = ['FROM'  => $this->getTable(),
-                 'WHERE' => [static::$items_id => $rules_id],
-                 'ORDER' => 'id'
-                ];
+            'WHERE' => [static::$items_id => $rules_id],
+            'ORDER' => 'id'
+        ];
         foreach ($DB->request($params) as $rule) {
             $tmp          = new self();
             $tmp->fields  = $rule;
@@ -547,15 +549,16 @@ class RuleCriteria extends CommonDBChild
     {
 
         $criteria =  [Rule::PATTERN_IS              => __('is'),
-                         Rule::PATTERN_IS_NOT          => __('is not'),
-                         Rule::PATTERN_CONTAIN         => __('contains'),
-                         Rule::PATTERN_NOT_CONTAIN     => __('does not contain'),
-                         Rule::PATTERN_BEGIN           => __('starting with'),
-                         Rule::PATTERN_END             => __('finished by'),
-                         Rule::REGEX_MATCH             => __('regular expression matches'),
-                         Rule::REGEX_NOT_MATCH         => __('regular expression does not match'),
-                         Rule::PATTERN_EXISTS          => __('exists'),
-                         Rule::PATTERN_DOES_NOT_EXISTS => __('does not exist')];
+            Rule::PATTERN_IS_NOT          => __('is not'),
+            Rule::PATTERN_CONTAIN         => __('contains'),
+            Rule::PATTERN_NOT_CONTAIN     => __('does not contain'),
+            Rule::PATTERN_BEGIN           => __('starting with'),
+            Rule::PATTERN_END             => __('finished by'),
+            Rule::REGEX_MATCH             => __('regular expression matches'),
+            Rule::REGEX_NOT_MATCH         => __('regular expression does not match'),
+            Rule::PATTERN_EXISTS          => __('exists'),
+            Rule::PATTERN_DOES_NOT_EXISTS => __('does not exist')
+        ];
 
         $extra_criteria = call_user_func([$itemtype, 'addMoreCriteria'], $criterion);
 
@@ -650,8 +653,9 @@ class RuleCriteria extends CommonDBChild
 
         $rand   = $rule->dropdownCriteria(['value' => $this->fields['criteria']]);
         $params = ['criteria' => '__VALUE__',
-                      'rand'     => $rand,
-                      'sub_type' => $rule->getType()];
+            'rand'     => $rand,
+            'sub_type' => $rule->getType()
+        ];
 
         Ajax::updateItemOnSelectEvent(
             "dropdown_criteria$rand",

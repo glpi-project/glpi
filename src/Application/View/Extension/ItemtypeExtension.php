@@ -52,22 +52,22 @@ class ItemtypeExtension extends AbstractExtension
     public function getFilters(): array
     {
         return [
-         new TwigFilter('itemtype_class', [$this, 'getItemtypeClass']),
-         new TwigFilter('itemtype_dropdown', [$this, 'getItemtypeDropdown'], ['is_safe' => ['html']]),
-         new TwigFilter('itemtype_form_path', [$this, 'getItemtypeFormPath']),
-         new TwigFilter('itemtype_icon', [$this, 'getItemtypeIcon']),
-         new TwigFilter('itemtype_name', [$this, 'getItemtypeName']),
-         new TwigFilter('itemtype_search_path', [$this, 'getItemtypeSearchPath']),
+            new TwigFilter('itemtype_class', [$this, 'getItemtypeClass']),
+            new TwigFilter('itemtype_dropdown', [$this, 'getItemtypeDropdown'], ['is_safe' => ['html']]),
+            new TwigFilter('itemtype_form_path', [$this, 'getItemtypeFormPath']),
+            new TwigFilter('itemtype_icon', [$this, 'getItemtypeIcon']),
+            new TwigFilter('itemtype_name', [$this, 'getItemtypeName']),
+            new TwigFilter('itemtype_search_path', [$this, 'getItemtypeSearchPath']),
         ];
     }
 
     public function getFunctions(): array
     {
         return [
-         new TwigFunction('get_item', [$this, 'getItem']),
-         new TwigFunction('get_item_comment', [$this, 'getItemComment']),
-         new TwigFunction('get_item_link', [$this, 'getItemLink'], ['is_safe' => ['html']]),
-         new TwigFunction('get_item_name', [$this, 'getItemName']),
+            new TwigFunction('get_item', [$this, 'getItem']),
+            new TwigFunction('get_item_comment', [$this, 'getItemComment']),
+            new TwigFunction('get_item_link', [$this, 'getItemLink'], ['is_safe' => ['html']]),
+            new TwigFunction('get_item_name', [$this, 'getItemName']),
         ];
     }
 

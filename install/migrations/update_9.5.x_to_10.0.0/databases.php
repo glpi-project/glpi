@@ -126,10 +126,10 @@ if (!$DB->tableExists('glpi_databaseinstances')) {
 if (!$DB->fieldExists('glpi_databaseinstances', 'itemtype') || !$DB->fieldExists('glpi_databaseinstances', 'items_id')) {
    //1- migrate glpi_databaseinstances table
     $migration->addField('glpi_databaseinstances', 'itemtype', 'string', [
-      'after' => 'states_id'
+        'after' => 'states_id'
     ]);
     $migration->addField('glpi_databaseinstances', 'items_id', "int {$default_key_sign} NOT NULL DEFAULT '0'", [
-      'after' => 'itemtype'
+        'after' => 'itemtype'
     ]);
     $migration->addKey('glpi_databaseinstances', ['itemtype', 'items_id'], 'item');
     $migration->migrationOneTable('glpi_databaseinstances');
@@ -167,8 +167,8 @@ if (!$DB->tableExists('glpi_databases')) {
     $DB->queryOrDie($query, "10.0 add table glpi_databases");
 }
 $migration->addField('glpi_states', 'is_visible_database', 'bool', [
-   'value' => 1,
-   'after' => 'is_visible_appliance'
+    'value' => 1,
+    'after' => 'is_visible_appliance'
 ]);
 $migration->addKey('glpi_states', 'is_visible_database');
 

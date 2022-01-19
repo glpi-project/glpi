@@ -60,9 +60,9 @@ class Session extends \DbTestCase
         \Session::addMessageAfterRedirect($info_msg, false, INFO);
 
         $expected = [
-        ERROR   => [$err_msg],
-        WARNING => [$warn_msg],
-        INFO    => [$info_msg]
+            ERROR   => [$err_msg],
+            WARNING => [$warn_msg],
+            INFO    => [$info_msg]
         ];
         $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'])->isIdenticalTo($expected);
 
@@ -83,7 +83,7 @@ class Session extends \DbTestCase
         \Session::addMessageAfterRedirect($err_msg, false, ERROR);
 
         $expected = [
-        ERROR   => [$err_msg, $err_msg, $err_msg]
+            ERROR   => [$err_msg, $err_msg, $err_msg]
         ];
         $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'])->isIdenticalTo($expected);
 
@@ -103,7 +103,7 @@ class Session extends \DbTestCase
         \Session::addMessageAfterRedirect($err_msg, true, ERROR);
 
         $expected = [
-        ERROR   => [$err_msg, $err_msg_bis]
+            ERROR   => [$err_msg, $err_msg_bis]
         ];
         $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'])->isIdenticalTo($expected);
 
@@ -123,7 +123,7 @@ class Session extends \DbTestCase
         \Session::addMessageAfterRedirect($info_msg, false, INFO, true);
 
         $expected = [
-         INFO   => [$info_msg]
+            INFO   => [$info_msg]
         ];
         $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'])->isIdenticalTo($expected);
 
@@ -154,9 +154,9 @@ class Session extends \DbTestCase
 
         foreach ($entities_ids as $entid) {
             $group_1 = [
-            'name'         => "Test group {$entid} recursive=no",
-            'entities_id'  => $entid,
-            'is_recursive' => 0,
+                'name'         => "Test group {$entid} recursive=no",
+                'entities_id'  => $entid,
+                'is_recursive' => 0,
             ];
             $gid_1 = (int)$group->add($group_1);
             $this->integer($gid_1)->isGreaterThan(0);
@@ -165,9 +165,9 @@ class Session extends \DbTestCase
             $user_groups[] = $group_1;
 
             $group_2 = [
-            'name'         => "Test group {$entid} recursive=yes",
-            'entities_id'  => $entid,
-            'is_recursive' => 1,
+                'name'         => "Test group {$entid} recursive=yes",
+                'entities_id'  => $entid,
+                'is_recursive' => 1,
             ];
             $gid_2 = (int)$group->add($group_2);
             $this->integer($gid_2)->isGreaterThan(0);
@@ -176,9 +176,9 @@ class Session extends \DbTestCase
             $user_groups[] = $group_2;
 
             $group_3 = [
-            'name'         => "Test group {$entid} not attached to user",
-            'entities_id'  => $entid,
-            'is_recursive' => 1,
+                'name'         => "Test group {$entid} not attached to user",
+                'entities_id'  => $entid,
+                'is_recursive' => 1,
             ];
             $gid_3 = (int)$group->add($group_3);
             $this->integer($gid_3)->isGreaterThan(0);
@@ -263,21 +263,21 @@ class Session extends \DbTestCase
 
        // test with no password expiration
         $tests[] = [
-         'last_update'      => date('Y-m-d H:i:s', strtotime('-10 years')),
-         'expiration_delay' => -1,
-         'expected_result'  => false,
+            'last_update'      => date('Y-m-d H:i:s', strtotime('-10 years')),
+            'expiration_delay' => -1,
+            'expected_result'  => false,
         ];
 
        // tests with password expiration
         $cases = [
-         '-5 days'  => false,
-         '-30 days' => true,
+            '-5 days'  => false,
+            '-30 days' => true,
         ];
         foreach ($cases as $last_update => $expected_result) {
             $tests[] = [
-            'last_update'      => date('Y-m-d H:i:s', strtotime($last_update)),
-            'expiration_delay' => 15,
-            'expected_result'  => $expected_result,
+                'last_update'      => date('Y-m-d H:i:s', strtotime($last_update)),
+                'expiration_delay' => 15,
+                'expected_result'  => $expected_result,
             ];
         }
 
@@ -295,10 +295,10 @@ class Session extends \DbTestCase
         $user = new \User();
         $username = 'test_must_change_pass_' . mt_rand();
         $user_id = (int)$user->add([
-         'name'         => $username,
-         'password'     => 'test',
-         'password2'    => 'test',
-         '_profiles_id' => 1,
+            'name'         => $username,
+            'password'     => 'test',
+            'password2'    => 'test',
+            '_profiles_id' => 1,
         ]);
         $this->integer($user_id)->isGreaterThan(0);
         $this->boolean($user->update(['id' => $user_id, 'password_last_update' => $last_update]))->isTrue();
@@ -319,37 +319,37 @@ class Session extends \DbTestCase
     protected function preferredLanguageProvider()
     {
         return [
-         [
-            'header'        => null,
-            'config'        => null,
-            'legacy_config' => null,
-            'expected'      => 'en_GB',
-         ],
-         [
-            'header'        => null,
-            'config'        => null,
-            'legacy_config' => 'it_IT',
-            'expected'      => 'it_IT',
-         ],
-         [
-            'header'        => null,
-            'config'        => 'de_DE',
-            'legacy_config' => null,
-            'expected'      => 'de_DE',
-         ],
-         [
-            'header'        => 'en-US',
-            'config'        => 'fr_FR',
-            'legacy_config' => null,
-            'expected'      => 'en_US',
-         ],
-         [
+            [
+                'header'        => null,
+                'config'        => null,
+                'legacy_config' => null,
+                'expected'      => 'en_GB',
+            ],
+            [
+                'header'        => null,
+                'config'        => null,
+                'legacy_config' => 'it_IT',
+                'expected'      => 'it_IT',
+            ],
+            [
+                'header'        => null,
+                'config'        => 'de_DE',
+                'legacy_config' => null,
+                'expected'      => 'de_DE',
+            ],
+            [
+                'header'        => 'en-US',
+                'config'        => 'fr_FR',
+                'legacy_config' => null,
+                'expected'      => 'en_US',
+            ],
+            [
             // latin as first choice (not available in GLPI), should fallback to italian
-            'header'        => 'la, it-IT;q=0.9, it;q=0.8',
-            'config'        => 'en_GB',
-            'legacy_config' => null,
-            'expected'      => 'it_IT',
-         ],
+                'header'        => 'la, it-IT;q=0.9, it;q=0.8',
+                'config'        => 'en_GB',
+                'legacy_config' => null,
+                'expected'      => 'it_IT',
+            ],
         ];
     }
 
@@ -382,11 +382,11 @@ class Session extends \DbTestCase
     protected function idorProvider()
     {
         return [
-         ['itemtype' => 'Computer'],
-         ['itemtype' => 'Ticket'],
-         ['itemtype' => 'Glpi\\Dashboard\\Item'],
-         ['itemtype' => 'User', 'add_params' => ['right' => 'all']],
-         ['itemtype' => 'User', 'add_params' => ['entity_restrict' => 0]],
+            ['itemtype' => 'Computer'],
+            ['itemtype' => 'Ticket'],
+            ['itemtype' => 'Glpi\\Dashboard\\Item'],
+            ['itemtype' => 'User', 'add_params' => ['right' => 'all']],
+            ['itemtype' => 'User', 'add_params' => ['entity_restrict' => 0]],
         ];
     }
 
@@ -410,8 +410,8 @@ class Session extends \DbTestCase
 
        // validate token with dedicated method
         $result = \Session::validateIDOR([
-         '_idor_token' => $token,
-         'itemtype'    => $itemtype,
+            '_idor_token' => $token,
+            'itemtype'    => $itemtype,
         ] + $add_params);
         $this->boolean($result)->isTrue();
     }
@@ -421,30 +421,30 @@ class Session extends \DbTestCase
     {
        //  random token
         $result = \Session::validateIDOR([
-         '_idor_token' => bin2hex(random_bytes(32)),
-         'itemtype'    => 'Computer',
+            '_idor_token' => bin2hex(random_bytes(32)),
+            'itemtype'    => 'Computer',
         ]);
         $this->boolean($result)->isFalse();
 
        // bad itemtype
         $token_bad_itt = \Session::getNewIDORToken('Ticket');
         $result = \Session::validateIDOR([
-         '_idor_token' => $token_bad_itt,
-         'itemtype'    => 'Computer',
+            '_idor_token' => $token_bad_itt,
+            'itemtype'    => 'Computer',
         ]);
         $this->boolean($result)->isFalse();
 
        // missing add params
         $token_miss_param = \Session::getNewIDORToken('User', ['right' => 'all']);
         $result = \Session::validateIDOR([
-         '_idor_token' => $token_miss_param,
-         'itemtype'    => 'User',
+            '_idor_token' => $token_miss_param,
+            'itemtype'    => 'User',
         ]);
         $this->boolean($result)->isFalse();
         $result = \Session::validateIDOR([
-         '_idor_token' => $token_miss_param,
-         'itemtype'    => 'User',
-         'right'       => 'all'
+            '_idor_token' => $token_miss_param,
+            'itemtype'    => 'User',
+            'right'       => 'all'
         ]);
         $this->boolean($result)->isTrue();
     }

@@ -53,10 +53,10 @@ if ($room->getFromDB($id)) {
         'position',
         $positions,
         [
-         'value'                 => $current,
-         'rand'                  => $rand,
-         'display_emptychoice'   => true,
-         'used'                  => $used
+            'value'                 => $current,
+            'rand'                  => $rand,
+            'display_emptychoice'   => true,
+            'used'                  => $used
         ]
     );
 } else {

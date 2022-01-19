@@ -50,49 +50,49 @@ class Provider extends DbTestCase
        // Prepare context
         $slm = new Slm();
         $slm->add([
-         'name' => 'SLM',
+            'name' => 'SLM',
         ]);
 
         $slaTto = new SLA();
         $slaTto->add([
-         'name' => 'sla tto',
-         'type' => '1', // TTO
-         'number_time' => 4,
-         'definition_time' => 'hour',
-         'slms_id' => $slm->getID(),
+            'name' => 'sla tto',
+            'type' => '1', // TTO
+            'number_time' => 4,
+            'definition_time' => 'hour',
+            'slms_id' => $slm->getID(),
         ]);
 
         $slaTtr = new SLA();
         $slaTtr->add([
-         'name' => 'sla ttr',
-         'type' => '0', // TTR
-         'number_time' => 4,
-         'definition_time' => 'hour',
-         'slms_id' => $slm->getID(),
+            'name' => 'sla ttr',
+            'type' => '0', // TTR
+            'number_time' => 4,
+            'definition_time' => 'hour',
+            'slms_id' => $slm->getID(),
         ]);
 
         $ticket = new Ticket();
         $ticket->add([
-         'name' => "test dashboard card SLA / tech",
-         'content' => 'foo',
-         '_users_id_assign' => 2, // glpi
-         'sla_id_tto'       => $slaTto->getID(),
-         'sla_id_ttr'       => $slaTtr->getID(),
-         'status'           => Ticket::ASSIGNED,
+            'name' => "test dashboard card SLA / tech",
+            'content' => 'foo',
+            '_users_id_assign' => 2, // glpi
+            'sla_id_tto'       => $slaTto->getID(),
+            'sla_id_ttr'       => $slaTtr->getID(),
+            'status'           => Ticket::ASSIGNED,
         ]);
         $this->boolean($ticket->isNewItem())->isFalse();
 
         $output = \Glpi\Dashboard\Provider::nbTicketsByAgreementStatusAndTechnician();
         $this->array($output)
          ->hasKeys([
-            'label',
-            'data',
-            'icon'
+             'label',
+             'data',
+             'icon'
          ]);
         $this->array($output['data'])
          ->hasKeys([
-            'series',
-            'labels',
+             'series',
+             'labels',
          ]);
 
        // 1 label: the user glpi
@@ -116,12 +116,12 @@ class Provider extends DbTestCase
         $DB->update(
             $ticket::getTable(),
             [
-            'date'                       => '2021-01-01 00:00',
-            'time_to_own'                => '2021-01-01 01:00',
-            'takeintoaccount_delay_stat' => 50000,
+                'date'                       => '2021-01-01 00:00',
+                'time_to_own'                => '2021-01-01 01:00',
+                'takeintoaccount_delay_stat' => 50000,
             ],
             [
-            'id' => $ticket->getID()
+                'id' => $ticket->getID()
             ]
         );
         $ticket->getFromDB($ticket->getID());
@@ -135,14 +135,14 @@ class Provider extends DbTestCase
         $DB->update(
             $ticket::getTable(),
             [
-            'date'                       => '2021-01-01 00:00',
-            'time_to_own'                => '2021-01-01 01:00',
-            'takeintoaccount_delay_stat' => 60,
-            'solvedate'                  => '2021-02-01 00:00',
-            'time_to_resolve'            => '2021-01-02 00:00'
+                'date'                       => '2021-01-01 00:00',
+                'time_to_own'                => '2021-01-01 01:00',
+                'takeintoaccount_delay_stat' => 60,
+                'solvedate'                  => '2021-02-01 00:00',
+                'time_to_resolve'            => '2021-01-02 00:00'
             ],
             [
-            'id' => $ticket->getID()
+                'id' => $ticket->getID()
             ]
         );
         $ticket->getFromDB($ticket->getID());
@@ -155,14 +155,14 @@ class Provider extends DbTestCase
         $DB->update(
             $ticket::getTable(),
             [
-            'date'                       => '2021-01-01 00:00',
-            'time_to_own'                => '2021-01-01 01:00',
-            'takeintoaccount_delay_stat' => 50000,
-            'solvedate'                  => '2021-02-01 00:00',
-            'time_to_resolve'            => '2021-01-02 00:00'
+                'date'                       => '2021-01-01 00:00',
+                'time_to_own'                => '2021-01-01 01:00',
+                'takeintoaccount_delay_stat' => 50000,
+                'solvedate'                  => '2021-02-01 00:00',
+                'time_to_resolve'            => '2021-01-02 00:00'
             ],
             [
-            'id' => $ticket->getID()
+                'id' => $ticket->getID()
             ]
         );
         $ticket->getFromDB($ticket->getID());
@@ -181,58 +181,58 @@ class Provider extends DbTestCase
        // Prepare context
         $slm = new Slm();
         $slm->add([
-         'name' => 'SLM',
+            'name' => 'SLM',
         ]);
 
         $slaTto = new SLA();
         $slaTto->add([
-         'name' => 'sla tto',
-         'type' => '1', // TTO
-         'number_time' => 4,
-         'definition_time' => 'hour',
-         'slms_id' => $slm->getID(),
+            'name' => 'sla tto',
+            'type' => '1', // TTO
+            'number_time' => 4,
+            'definition_time' => 'hour',
+            'slms_id' => $slm->getID(),
         ]);
 
         $slaTtr = new SLA();
         $slaTtr->add([
-         'name' => 'sla ttr',
-         'type' => '0', // TTR
-         'number_time' => 4,
-         'definition_time' => 'hour',
-         'slms_id' => $slm->getID(),
+            'name' => 'sla ttr',
+            'type' => '0', // TTR
+            'number_time' => 4,
+            'definition_time' => 'hour',
+            'slms_id' => $slm->getID(),
         ]);
 
         $group = new Group();
         $group->add([
-         'entities_id' => 0,
-         'name'        => 'group sla test',
-         'level'       => 1,
-         'groups_id'   => 0,
+            'entities_id' => 0,
+            'name'        => 'group sla test',
+            'level'       => 1,
+            'groups_id'   => 0,
         ]);
         $this->boolean($group->isNewItem())->isFalse();
 
         $ticket = new Ticket();
         $ticket->add([
-         'name' => "test dashboard card SLA / tech",
-         'content' => 'foo',
-         '_groups_id_assign' => $group->getID(),
-         'sla_id_tto'       => $slaTto->getID(),
-         'sla_id_ttr'       => $slaTtr->getID(),
-         'status'           => Ticket::ASSIGNED,
+            'name' => "test dashboard card SLA / tech",
+            'content' => 'foo',
+            '_groups_id_assign' => $group->getID(),
+            'sla_id_tto'       => $slaTto->getID(),
+            'sla_id_ttr'       => $slaTtr->getID(),
+            'status'           => Ticket::ASSIGNED,
         ]);
         $this->boolean($ticket->isNewItem())->isFalse();
 
         $output = \Glpi\Dashboard\Provider::nbTicketsByAgreementStatusAndTechnicianGroup();
         $this->array($output)
          ->hasKeys([
-            'label',
-            'data',
-            'icon'
+             'label',
+             'data',
+             'icon'
          ]);
         $this->array($output['data'])
          ->hasKeys([
-            'series',
-            'labels',
+             'series',
+             'labels',
          ]);
 
        // 1 label: the user glpi
@@ -256,12 +256,12 @@ class Provider extends DbTestCase
         $DB->update(
             $ticket::getTable(),
             [
-            'date'                       => '2021-01-01 00:00',
-            'time_to_own'                => '2021-01-01 01:00',
-            'takeintoaccount_delay_stat' => 50000,
+                'date'                       => '2021-01-01 00:00',
+                'time_to_own'                => '2021-01-01 01:00',
+                'takeintoaccount_delay_stat' => 50000,
             ],
             [
-            'id' => $ticket->getID()
+                'id' => $ticket->getID()
             ]
         );
         $ticket->getFromDB($ticket->getID());
@@ -275,14 +275,14 @@ class Provider extends DbTestCase
         $DB->update(
             $ticket::getTable(),
             [
-            'date'                       => '2021-01-01 00:00',
-            'time_to_own'                => '2021-01-01 01:00',
-            'takeintoaccount_delay_stat' => 60,
-            'solvedate'                  => '2021-02-01 00:00',
-            'time_to_resolve'            => '2021-01-02 00:00'
+                'date'                       => '2021-01-01 00:00',
+                'time_to_own'                => '2021-01-01 01:00',
+                'takeintoaccount_delay_stat' => 60,
+                'solvedate'                  => '2021-02-01 00:00',
+                'time_to_resolve'            => '2021-01-02 00:00'
             ],
             [
-            'id' => $ticket->getID()
+                'id' => $ticket->getID()
             ]
         );
         $ticket->getFromDB($ticket->getID());
@@ -295,14 +295,14 @@ class Provider extends DbTestCase
         $DB->update(
             $ticket::getTable(),
             [
-            'date'                       => '2021-01-01 00:00',
-            'time_to_own'                => '2021-01-01 01:00',
-            'takeintoaccount_delay_stat' => 50000,
-            'solvedate'                  => '2021-02-01 00:00',
-            'time_to_resolve'            => '2021-01-02 00:00'
+                'date'                       => '2021-01-01 00:00',
+                'time_to_own'                => '2021-01-01 01:00',
+                'takeintoaccount_delay_stat' => 50000,
+                'solvedate'                  => '2021-02-01 00:00',
+                'time_to_resolve'            => '2021-01-02 00:00'
             ],
             [
-            'id' => $ticket->getID()
+                'id' => $ticket->getID()
             ]
         );
         $ticket->getFromDB($ticket->getID());

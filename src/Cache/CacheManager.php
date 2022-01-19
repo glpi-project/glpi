@@ -141,8 +141,8 @@ class CacheManager
 
         $config = $this->getRawConfig();
         $config['contexts'][$context] = [
-         'dsn'       => $dsn,
-         'options'   => $options,
+            'dsn'       => $dsn,
+            'options'   => $options,
         ];
 
         return $this->writeConfig($config);
@@ -346,9 +346,9 @@ class CacheManager
     {
        // Core contexts
         $contexts = [
-         'core',
-         'installer',
-         'translations',
+            'core',
+            'installer',
+            'translations',
         ];
 
        // Contexts defined in configuration.
@@ -546,9 +546,9 @@ PHP;
     public static function getAvailableAdapters(): array
     {
         return [
-         self::SCHEME_MEMCACHED  => __('Memcached'),
-         self::SCHEME_REDIS      => __('Redis (TCP)'),
-         self::SCHEME_REDISS     => __('Redis (TLS)'),
+            self::SCHEME_MEMCACHED  => __('Memcached'),
+            self::SCHEME_REDIS      => __('Redis (TCP)'),
+            self::SCHEME_REDISS     => __('Redis (TLS)'),
         ];
     }
 }

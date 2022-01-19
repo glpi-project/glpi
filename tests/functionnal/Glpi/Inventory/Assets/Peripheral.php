@@ -42,8 +42,8 @@ class Peripheral extends AbstractInventoryAsset
     protected function assetProvider(): array
     {
         return [
-         [
-            'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+            [
+                'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
          <REQUEST>
          <CONTENT>
             <USBDEVICES>
@@ -59,8 +59,8 @@ class Peripheral extends AbstractInventoryAsset
          <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
          <QUERY>INVENTORY</QUERY>
          </REQUEST>",
-            'expected'  => '{"caption": "VFS451 Fingerprint Reader", "manufacturer": "Validity Sensors, Inc.", "name": "VFS451 Fingerprint Reader", "productid": "0007", "serial": "00B0FE47AC85", "vendorid": "138A", "manufacturers_id": "Validity Sensors, Inc.", "is_dynamic": 1}'
-         ]
+                'expected'  => '{"caption": "VFS451 Fingerprint Reader", "manufacturer": "Validity Sensors, Inc.", "name": "VFS451 Fingerprint Reader", "productid": "0007", "serial": "00B0FE47AC85", "vendorid": "138A", "manufacturers_id": "Validity Sensors, Inc.", "is_dynamic": 1}'
+            ]
         ];
     }
 
@@ -156,69 +156,69 @@ class Peripheral extends AbstractInventoryAsset
 
        //create manually a computer, with 3 peripherals
         $computers_id = $computer->add([
-         'name'   => 'pc002',
-         'serial' => 'ggheb7ne7',
-         'entities_id' => 0
+            'name'   => 'pc002',
+            'serial' => 'ggheb7ne7',
+            'entities_id' => 0
         ]);
         $this->integer($computers_id)->isGreaterThan(0);
 
         $manufacturer = new \Manufacturer();
         $manufacturers_id = $manufacturer->add([
-         'name' => 'Validity Sensors, Inc.'
+            'name' => 'Validity Sensors, Inc.'
         ]);
         $this->integer($manufacturers_id)->isGreaterThan(0);
 
         $periph_1_id = $periph->add([
-         'name' => 'VFS451 Fingerprint Reader',
-         'manufacturers_id' => $manufacturers_id,
-         'serial' => '00B0FE47AC85',
-         'entities_id'  => 0
+            'name' => 'VFS451 Fingerprint Reader',
+            'manufacturers_id' => $manufacturers_id,
+            'serial' => '00B0FE47AC85',
+            'entities_id'  => 0
         ]);
         $this->integer($periph_1_id)->isGreaterThan(0);
 
         $item_periph_1_id = $item_periph->add([
-         'computers_id'     => $computers_id,
-         'itemtype'     => \Peripheral::class,
-         'items_id' => $periph_1_id
+            'computers_id'     => $computers_id,
+            'itemtype'     => \Peripheral::class,
+            'items_id' => $periph_1_id
         ]);
         $this->integer($item_periph_1_id)->isGreaterThan(0);
 
         $manufacturers_id = $manufacturer->add([
-         'name' => 'O2 Micro, Inc.'
+            'name' => 'O2 Micro, Inc.'
         ]);
         $this->integer($manufacturers_id)->isGreaterThan(0);
 
         $periph_2_id = $periph->add([
-         'name' => 'OZ776 CCID Smartcard Reader',
-         'manufacturers_id' => $manufacturers_id,
-         'serial' => 'ABCDEF',
-         'entities_id'  => 0
+            'name' => 'OZ776 CCID Smartcard Reader',
+            'manufacturers_id' => $manufacturers_id,
+            'serial' => 'ABCDEF',
+            'entities_id'  => 0
         ]);
         $this->integer($periph_2_id)->isGreaterThan(0);
 
         $item_periph_2_id = $item_periph->add([
-         'computers_id' => $computers_id,
-         'items_id' => $periph_2_id,
-         'itemtype'     => \Peripheral::class
+            'computers_id' => $computers_id,
+            'items_id' => $periph_2_id,
+            'itemtype'     => \Peripheral::class
         ]);
         $this->integer($item_periph_2_id)->isGreaterThan(0);
 
         $manufacturers_id = $manufacturer->add([
-         'name' => 'Logitech, Inc.'
+            'name' => 'Logitech, Inc.'
         ]);
 
         $periph_3_id = $periph->add([
-         'name' => 'Unifying Receiver',
-         'manufacturers_id' => $manufacturers_id,
-         'serial' => 'a0b2c3d4e5',
-         'entities_id'  => 0
+            'name' => 'Unifying Receiver',
+            'manufacturers_id' => $manufacturers_id,
+            'serial' => 'a0b2c3d4e5',
+            'entities_id'  => 0
         ]);
         $this->integer($periph_3_id)->isGreaterThan(0);
 
         $item_periph_3_id = $item_periph->add([
-         'computers_id' => $computers_id,
-         'items_id' => $periph_3_id,
-         'itemtype' => \Peripheral::class
+            'computers_id' => $computers_id,
+            'items_id' => $periph_3_id,
+            'itemtype' => \Peripheral::class
         ]);
         $this->integer($item_periph_3_id)->isGreaterThan(0);
 

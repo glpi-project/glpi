@@ -49,7 +49,7 @@ if (!$DB->fieldExists("glpi_entities", "registration_number")) {
         "registration_number",
         "string",
         [
-         'after'     => "ancestors_cache",
+            'after'     => "ancestors_cache",
         ]
     );
 }
