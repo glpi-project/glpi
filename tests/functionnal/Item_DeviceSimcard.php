@@ -108,8 +108,8 @@ class Item_DeviceSimcard extends DbTestCase
             'glpi_profilerights',
             ['rights' => 1],
             [
-            'profiles_id'  => 4,
-            'name'         => 'devicesimcard_pinpuk'
+                'profiles_id'  => 4,
+                'name'         => 'devicesimcard_pinpuk'
             ]
         );
 
@@ -120,8 +120,8 @@ class Item_DeviceSimcard extends DbTestCase
             'glpi_profilerights',
             ['rights' => 3],
             [
-            'profiles_id'  => 4,
-            'name'         => 'devicesimcard_pinpuk'
+                'profiles_id'  => 4,
+                'name'         => 'devicesimcard_pinpuk'
             ]
         );
 

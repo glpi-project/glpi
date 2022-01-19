@@ -80,8 +80,8 @@ class Database extends CommonDBChild
         echo Html::input(
             'name',
             [
-            'value' => $this->fields['name'],
-            'id'    => "textfield_name$rand",
+                'value' => $this->fields['name'],
+                'id'    => "textfield_name$rand",
             ]
         );
         echo "</td>";
@@ -108,9 +108,9 @@ class Database extends CommonDBChild
         echo Html::input(
             'size',
             [
-            'id' => 'size' . $rand,
-            'type' => 'number',
-            'value' => $this->fields['size']
+                'id' => 'size' . $rand,
+                'type' => 'number',
+                'value' => $this->fields['size']
             ]
         );
         echo "</td></tr>\n";
@@ -125,8 +125,8 @@ class Database extends CommonDBChild
         Html::showDateTimeField(
             "date_lastbackup",
             [
-            'value'      => $this->fields['date_lastbackup'],
-            'maybeempty' => true
+                'value'      => $this->fields['date_lastbackup'],
+                'maybeempty' => true
             ]
         );
         echo "</td></tr>\n";
@@ -148,87 +148,87 @@ class Database extends CommonDBChild
         $tab = [];
 
         $tab[] = [
-         'id'                 => 'common',
-         'name'               => $this->getTypeName(1)
+            'id'                 => 'common',
+            'name'               => $this->getTypeName(1)
         ];
 
         $tab[] = [
-         'id'                 => '1',
-         'table'              => $this->getTable(),
-         'field'              => 'name',
-         'name'               => __('Name'),
-         'datatype'           => 'itemlink',
-         'massiveaction'      => false,
+            'id'                 => '1',
+            'table'              => $this->getTable(),
+            'field'              => 'name',
+            'name'               => __('Name'),
+            'datatype'           => 'itemlink',
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
-         'id'                 => '3',
-         'table'              => $this->getTable(),
-         'field'              => 'is_active',
-         'name'               => __('Active'),
-         'datatype'           => 'bool'
+            'id'                 => '3',
+            'table'              => $this->getTable(),
+            'field'              => 'is_active',
+            'name'               => __('Active'),
+            'datatype'           => 'bool'
         ];
 
         $tab[] = [
-         'id'                 => '4',
-         'table'              => $this->getTable(),
-         'field'              => 'date_mod',
-         'name'               => __('Last update'),
-         'datatype'           => 'datetime',
-         'massiveaction'      => false
+            'id'                 => '4',
+            'table'              => $this->getTable(),
+            'field'              => 'date_mod',
+            'name'               => __('Last update'),
+            'datatype'           => 'datetime',
+            'massiveaction'      => false
         ];
 
         $tab[] = [
-         'id'                 => '5',
-         'table'              => $this->getTable(),
-         'field'              => 'date_creation',
-         'name'               => __('Creation date'),
-         'datatype'           => 'datetime',
-         'massiveaction'      => false
+            'id'                 => '5',
+            'table'              => $this->getTable(),
+            'field'              => 'date_creation',
+            'name'               => __('Creation date'),
+            'datatype'           => 'datetime',
+            'massiveaction'      => false
         ];
 
         $tab[] = [
-         'id'                 => '6',
-         'table'              => $this->getTable(),
-         'field'              => 'size',
-         'unit'               => 'auto',
-         'name'               => __('Global size'),
-         'datatype'           => 'number',
-         'width'              => 1000,
-         'massiveaction'      => false,
+            'id'                 => '6',
+            'table'              => $this->getTable(),
+            'field'              => 'size',
+            'unit'               => 'auto',
+            'name'               => __('Global size'),
+            'datatype'           => 'number',
+            'width'              => 1000,
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
-         'id'                 => '7',
-         'table'              => 'glpi_entities',
-         'field'              => 'completename',
-         'name'               => Entity::getTypeName(1),
-         'massiveaction'      => false,
-         'datatype'           => 'dropdown'
+            'id'                 => '7',
+            'table'              => 'glpi_entities',
+            'field'              => 'completename',
+            'name'               => Entity::getTypeName(1),
+            'massiveaction'      => false,
+            'datatype'           => 'dropdown'
         ];
 
         $tab[] = [
-         'id'                 => '8',
-         'table'              => $this->getTable(),
-         'field'              => 'is_recursive',
-         'name'               => __('Child entities'),
-         'datatype'           => 'bool'
+            'id'                 => '8',
+            'table'              => $this->getTable(),
+            'field'              => 'is_recursive',
+            'name'               => __('Child entities'),
+            'datatype'           => 'bool'
         ];
 
         $tab[] = [
-         'id'                 => '9',
-         'table'              => $this->getTable(),
-         'field'              => 'is_onbackup',
-         'name'               => __('Is on backup'),
-         'datatype'           => 'bool'
+            'id'                 => '9',
+            'table'              => $this->getTable(),
+            'field'              => 'is_onbackup',
+            'name'               => __('Is on backup'),
+            'datatype'           => 'bool'
         ];
 
         $tab[] = [
-         'id'                 => '10',
-         'table'              => $this->getTable(),
-         'field'              => 'date_lastbackup',
-         'name'               => __('Last backup date'),
-         'datatype'           => 'date'
+            'id'                 => '10',
+            'table'              => $this->getTable(),
+            'field'              => 'date_lastbackup',
+            'name'               => __('Last backup date'),
+            'datatype'           => 'date'
         ];
 
         $tab[] = [
@@ -249,77 +249,77 @@ class Database extends CommonDBChild
         $name = self::getTypeName(Session::getPluralNumber());
 
         $tab[] = [
-         'id'                 => 'database',
-         'name'               => $name
+            'id'                 => 'database',
+            'name'               => $name
         ];
 
         $tab[] = [
-         'id'                 => '167',
-         'table'              => self::getTable(),
-         'field'              => 'name',
-         'name'               => __('Name'),
-         'forcegroupby'       => true,
-         'massiveaction'      => false,
-         'datatype'           => 'dropdown',
-         'joinparams'         => [
-            'jointype'           => 'child'
-         ]
+            'id'                 => '167',
+            'table'              => self::getTable(),
+            'field'              => 'name',
+            'name'               => __('Name'),
+            'forcegroupby'       => true,
+            'massiveaction'      => false,
+            'datatype'           => 'dropdown',
+            'joinparams'         => [
+                'jointype'           => 'child'
+            ]
         ];
 
         $tab[] = [
-         'id'                 => '166',
-         'table'              => self::getTable(),
-         'field'              => 'size',
-         'name'               => sprintf(__('%1$s (%2$s)'), __('Size'), __('Mio')),
-         'forcegroupby'       => true,
-         'massiveaction'      => false,
-         'datatype'           => 'integer',
-         'joinparams'         => [
-            'jointype'           => 'child'
-         ]
+            'id'                 => '166',
+            'table'              => self::getTable(),
+            'field'              => 'size',
+            'name'               => sprintf(__('%1$s (%2$s)'), __('Size'), __('Mio')),
+            'forcegroupby'       => true,
+            'massiveaction'      => false,
+            'datatype'           => 'integer',
+            'joinparams'         => [
+                'jointype'           => 'child'
+            ]
         ];
 
         $tab[] = [
-         'id'                 => '169',
-         'table'              => self::getTable(),
-         'field'              => 'is_active',
-         'linkfield'          => '',
-         'name'               => __('Active'),
-         'datatype'           => 'bool',
-         'joinparams'         => [
-            'jointype'           => 'child'
-         ],
-         'massiveaction'      => false,
-         'forcegroupby'       => true,
-         'searchtype'         => ['equals']
+            'id'                 => '169',
+            'table'              => self::getTable(),
+            'field'              => 'is_active',
+            'linkfield'          => '',
+            'name'               => __('Active'),
+            'datatype'           => 'bool',
+            'joinparams'         => [
+                'jointype'           => 'child'
+            ],
+            'massiveaction'      => false,
+            'forcegroupby'       => true,
+            'searchtype'         => ['equals']
         ];
 
         $tab[] = [
-         'id'                 => '170',
-         'table'              => self::getTable(),
-         'field'              => 'is_onbackup',
-         'linkfield'          => '',
-         'name'               => __('Is on backup'),
-         'datatype'           => 'bool',
-         'joinparams'         => [
-            'jointype'           => 'child'
-         ],
-         'massiveaction'      => false,
-         'forcegroupby'       => true,
-         'searchtype'         => ['equals']
+            'id'                 => '170',
+            'table'              => self::getTable(),
+            'field'              => 'is_onbackup',
+            'linkfield'          => '',
+            'name'               => __('Is on backup'),
+            'datatype'           => 'bool',
+            'joinparams'         => [
+                'jointype'           => 'child'
+            ],
+            'massiveaction'      => false,
+            'forcegroupby'       => true,
+            'searchtype'         => ['equals']
         ];
 
         $tab[] = [
-         'id'                 => '172',
-         'table'              => self::getTable(),
-         'field'              => 'date_lastbackup',
-         'name'               => __('Last backup date'),
-         'forcegroupby'       => true,
-         'massiveaction'      => false,
-         'datatype'           => 'date',
-         'joinparams'         => [
-            'jointype'           => 'child'
-         ]
+            'id'                 => '172',
+            'table'              => self::getTable(),
+            'field'              => 'date_lastbackup',
+            'name'               => __('Last backup date'),
+            'forcegroupby'       => true,
+            'massiveaction'      => false,
+            'datatype'           => 'date',
+            'joinparams'         => [
+                'jointype'           => 'child'
+            ]
         ];
 
         return $tab;
@@ -337,8 +337,8 @@ class Database extends CommonDBChild
                 $nb = countElementsInTable(
                     self::getTable(),
                     [
-                    'databaseinstances_id' => $item->getID(),
-                    'is_deleted' => 0
+                        'databaseinstances_id' => $item->getID(),
+                        'is_deleted' => 0
                     ]
                 );
             }
@@ -382,10 +382,10 @@ class Database extends CommonDBChild
         $databases = getAllDataFromTable(
             self::getTable(),
             [
-            'WHERE'  => [
-               'databaseinstances_id' => $ID,
-            ],
-            'ORDER'  => 'name'
+                'WHERE'  => [
+                    'databaseinstances_id' => $ID,
+                ],
+                'ORDER'  => 'name'
             ]
         );
 
@@ -460,15 +460,15 @@ class Database extends CommonDBChild
     {
         if (static::canView()) {
             return [
-            'databaseinstance' => [
-               'title' => DatabaseInstance::getTypeName(Session::getPluralNumber()),
-               'page'  => DatabaseInstance::getSearchURL(false),
-               'icon'  => DatabaseInstance::getIcon(),
-               'links' => [
-                  'add'    => '/front/databaseinstance.form.php',
-                  'search' => '/front/dabataseinstance.php',
-               ]
-            ]
+                'databaseinstance' => [
+                    'title' => DatabaseInstance::getTypeName(Session::getPluralNumber()),
+                    'page'  => DatabaseInstance::getSearchURL(false),
+                    'icon'  => DatabaseInstance::getIcon(),
+                    'links' => [
+                        'add'    => '/front/databaseinstance.form.php',
+                        'search' => '/front/dabataseinstance.php',
+                    ]
+                ]
             ];
         }
     }

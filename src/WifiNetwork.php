@@ -50,14 +50,14 @@ class WifiNetwork extends CommonDropdown
     public static function getWifiCardVersion()
     {
         return [
-         ''          => '',
-         'a'         => 'a',
-         'a/b'       => 'a/b',
-         'a/b/g'     => 'a/b/g',
-         'a/b/g/n'   => 'a/b/g/n',
-         'a/b/g/n/y' => 'a/b/g/n/y',
-         'ac'        => 'ac',
-         'ax'        => 'ax',
+            ''          => '',
+            'a'         => 'a',
+            'a/b'       => 'a/b',
+            'a/b/g'     => 'a/b/g',
+            'a/b/g/n'   => 'a/b/g/n',
+            'a/b/g/n/y' => 'a/b/g/n/y',
+            'ac'        => 'ac',
+            'ax'        => 'ax',
         ];
     }
 
@@ -66,13 +66,14 @@ class WifiNetwork extends CommonDropdown
     {
 
         return [''          => Dropdown::EMPTY_VALUE,
-                   'ad-hoc'    => __('Ad-hoc'),
-                   'managed'   => __('Managed'),
-                   'master'    => __('Master'),
-                   'repeater'  => __('Repeater'),
-                   'secondary' => __('Secondary'),
-                   'monitor'   => Monitor::getTypeName(1),
-                   'auto'      => __('Automatic')];
+            'ad-hoc'    => __('Ad-hoc'),
+            'managed'   => __('Managed'),
+            'master'    => __('Master'),
+            'repeater'  => __('Repeater'),
+            'secondary' => __('Secondary'),
+            'monitor'   => Monitor::getTypeName(1),
+            'auto'      => __('Automatic')
+        ];
     }
 
 
@@ -80,8 +81,9 @@ class WifiNetwork extends CommonDropdown
     {
 
         return [''               => Dropdown::EMPTY_VALUE,
-                   'infrastructure' => __('Infrastructure (with access point)'),
-                   'ad-hoc'         => __('Ad-hoc (without access point)')];
+            'infrastructure' => __('Infrastructure (with access point)'),
+            'ad-hoc'         => __('Ad-hoc (without access point)')
+        ];
     }
 
 
@@ -100,13 +102,16 @@ class WifiNetwork extends CommonDropdown
     {
 
         return [['name'  => 'essid',
-                         'label' => __('ESSID'),
-                         'type'  => 'text',
-                         'list'  => true],
-                   ['name'  => 'mode',
-                         'label' => __('Wifi network type'),
-                         'type'  => 'wifi_mode',
-                         'list'  => true]];
+            'label' => __('ESSID'),
+            'type'  => 'text',
+            'list'  => true
+        ],
+            ['name'  => 'mode',
+                'label' => __('Wifi network type'),
+                'type'  => 'wifi_mode',
+                'list'  => true
+            ]
+        ];
     }
 
 
@@ -118,8 +123,8 @@ class WifiNetwork extends CommonDropdown
                 $field['name'],
                 self::getWifiNetworkModes(),
                 [
-                'value' => $this->fields[$field['name']],
-                'width' => '100%',
+                    'value' => $this->fields[$field['name']],
+                    'width' => '100%',
                 ]
             );
         }
@@ -131,11 +136,11 @@ class WifiNetwork extends CommonDropdown
         $tab = parent::rawSearchOptions();
 
         $tab[] = [
-         'id'                 => '10',
-         'table'              => $this->getTable(),
-         'field'              => 'essid',
-         'name'               => __('ESSID'),
-         'datatype'           => 'string',
+            'id'                 => '10',
+            'table'              => $this->getTable(),
+            'field'              => 'essid',
+            'name'               => __('ESSID'),
+            'datatype'           => 'string',
         ];
 
         return $tab;

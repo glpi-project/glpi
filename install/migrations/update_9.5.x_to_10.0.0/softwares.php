@@ -42,11 +42,11 @@ CronTask::register(
     'cleansoftware',
     MONTH_TIMESTAMP,
     [
-      'state'         => 0,
-      'param'         => 1000,
-      'mode'          => 2,
-      'allowmode'     => 3,
-      'logs_lifetime' => 300,
+        'state'         => 0,
+        'param'         => 1000,
+        'mode'          => 2,
+        'allowmode'     => 3,
+        'logs_lifetime' => 300,
     ]
 );
 // /CleanSoftwareCron cron task
@@ -58,7 +58,7 @@ if (!$DB->fieldExists('glpi_softwareversions', 'arch', false)) {
         'arch',
         'string',
         [
-         'after' => 'name'
+            'after' => 'name'
         ]
     );
     $migration->addKey('glpi_softwareversions', 'arch');

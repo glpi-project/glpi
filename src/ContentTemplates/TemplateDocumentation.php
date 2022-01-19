@@ -127,10 +127,10 @@ class TemplateDocumentation
 
        // Set table header
         $new_section->addTableHeader([
-         __("Variable"),
-         __("Label"),
-         __("Usage"),
-         __("References"),
+            __("Variable"),
+            __("Label"),
+            __("Usage"),
+            __("References"),
         ]);
 
        // Keep track of parameters needing aditionnal references
@@ -140,9 +140,9 @@ class TemplateDocumentation
         foreach ($parameters as $parameter) {
             /** @var \Glpi\ContentTemplates\Parameters\ParametersTypes\ParameterTypeInterface $parameter */
             $row = [
-            $parameter->getDocumentationField(),
-            $parameter->getDocumentationLabel(),
-            MarkdownBuilder::code($parameter->getDocumentationUsage($fields_prefix)),
+                $parameter->getDocumentationField(),
+                $parameter->getDocumentationLabel(),
+                MarkdownBuilder::code($parameter->getDocumentationUsage($fields_prefix)),
             ];
 
             $ref = $parameter->getDocumentationReferences();

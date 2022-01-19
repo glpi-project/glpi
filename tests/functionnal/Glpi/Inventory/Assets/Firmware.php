@@ -42,8 +42,8 @@ class Firmware extends AbstractInventoryAsset
     protected function assetProvider(): array
     {
         return [
-         [
-            'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+            [
+                'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
   <CONTENT>
     <DEVICE>
@@ -75,8 +75,8 @@ class Firmware extends AbstractInventoryAsset
   <DEVICEID>foo</DEVICEID>
   <QUERY>SNMPQUERY</QUERY>
   </REQUEST>",
-            'expected'  => '{"description":"device firmware","manufacturer":"Cisco","name":"UCS 6248UP 48-Port","type":"device","version":"5.0(3)N2(4.02b)","manufacturers_id":"Cisco","designation":"UCS 6248UP 48-Port","devicefirmwaretypes_id":"device", "is_dynamic": 1}'
-         ]
+                'expected'  => '{"description":"device firmware","manufacturer":"Cisco","name":"UCS 6248UP 48-Port","type":"device","version":"5.0(3)N2(4.02b)","manufacturers_id":"Cisco","designation":"UCS 6248UP 48-Port","devicefirmwaretypes_id":"device", "is_dynamic": 1}'
+            ]
         ];
     }
 
@@ -162,80 +162,80 @@ class Firmware extends AbstractInventoryAsset
 
        //create manually a computer, with 3 firmwares
         $computers_id = $computer->add([
-         'name'   => 'pc002',
-         'serial' => 'ggheb7ne7',
-         'entities_id' => 0
+            'name'   => 'pc002',
+            'serial' => 'ggheb7ne7',
+            'entities_id' => 0
         ]);
         $this->integer($computers_id)->isGreaterThan(0);
 
         $manufacturer = new \Manufacturer();
         $manufacturers_id = $manufacturer->add([
-         'name' => 'Cisco'
+            'name' => 'Cisco'
         ]);
         $this->integer($manufacturers_id)->isGreaterThan(0);
 
         $type = new \DeviceFirmwareType();
         $types_id = $type->add([
-         'name' => 'device'
+            'name' => 'device'
         ]);
         $this->integer($types_id)->isGreaterThan(0);
 
         $fw_1_id = $device_fw->add([
-         'designation' => 'UCS 6248UP 48-Port',
-         'manufacturers_id' => $manufacturers_id,
-         'devicefirmwaretypes_id' => $types_id,
-         'version' => '5.0(3)N2(4.02b)',
-         'entities_id'  => 0
+            'designation' => 'UCS 6248UP 48-Port',
+            'manufacturers_id' => $manufacturers_id,
+            'devicefirmwaretypes_id' => $types_id,
+            'version' => '5.0(3)N2(4.02b)',
+            'entities_id'  => 0
         ]);
         $this->integer($fw_1_id)->isGreaterThan(0);
 
         $item_fw_1_id = $item_fw->add([
-         'items_id'     => $computers_id,
-         'itemtype'     => 'Computer',
-         'devicefirmwares_id' => $fw_1_id
+            'items_id'     => $computers_id,
+            'itemtype'     => 'Computer',
+            'devicefirmwares_id' => $fw_1_id
         ]);
         $this->integer($item_fw_1_id)->isGreaterThan(0);
 
         $manufacturer = new \Manufacturer();
         $manufacturers_id = $manufacturer->add([
-         'name' => 'HP'
+            'name' => 'HP'
         ]);
         $this->integer($manufacturers_id)->isGreaterThan(0);
 
         $type = new \DeviceFirmwareType();
         $types_id = $type->add([
-         'name' => 'system'
+            'name' => 'system'
         ]);
         $this->integer($types_id)->isGreaterThan(0);
 
         $fw_2_id = $device_fw->add([
-         'designation' => 'HP-HttpMg-Version',
-         'manufacturers_id' => $manufacturers_id,
-         'devicefirmwaretypes_id' => $types_id,
-         'version' => 'WC.16.02.0003',
-         'entities_id'  => 0
+            'designation' => 'HP-HttpMg-Version',
+            'manufacturers_id' => $manufacturers_id,
+            'devicefirmwaretypes_id' => $types_id,
+            'version' => 'WC.16.02.0003',
+            'entities_id'  => 0
         ]);
         $this->integer($fw_2_id)->isGreaterThan(0);
 
         $item_fw_2_id = $item_fw->add([
-         'items_id'     => $computers_id,
-         'itemtype'     => 'Computer',
-         'devicefirmwares_id' => $fw_2_id
+            'items_id'     => $computers_id,
+            'itemtype'     => 'Computer',
+            'devicefirmwares_id' => $fw_2_id
         ]);
         $this->integer($item_fw_2_id)->isGreaterThan(0);
 
         $fw_3_id = $device_fw->add([
-         'designation' => 'My Firmware',
-         'manufacturers_id' => $manufacturers_id,
-         'devicefirmwaretypes_id' => $types_id,
-         'entities_id'  => 0
+            'designation' => 'My Firmware',
+            'manufacturers_id' => $manufacturers_id,
+            'devicefirmwaretypes_id' => $types_id,
+            'entities_id'  => 0
         ]);
         $this->integer($fw_3_id)->isGreaterThan(0);
 
         $item_fw_3_id = $item_fw->add([
-         'items_id'     => $computers_id,
-         'itemtype'     => 'Computer',
-         'devicefirmwares_id' => $fw_3_id
+            'items_id'     => $computers_id,
+            'itemtype'     => 'Computer',
+            'devicefirmwares_id' => $fw_3_id
         ]);
         $this->integer($item_fw_3_id)->isGreaterThan(0);
 

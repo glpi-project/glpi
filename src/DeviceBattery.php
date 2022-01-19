@@ -75,27 +75,27 @@ class DeviceBattery extends CommonDevice
         $tab = parent::rawSearchOptions();
 
         $tab[] = [
-         'id'                 => '11',
-         'table'              => $this->getTable(),
-         'field'              => 'capacity',
-         'name'               => __('Capacity'),
-         'datatype'           => 'string',
+            'id'                 => '11',
+            'table'              => $this->getTable(),
+            'field'              => 'capacity',
+            'name'               => __('Capacity'),
+            'datatype'           => 'string',
         ];
 
         $tab[] = [
-         'id'                 => '12',
-         'table'              => $this->getTable(),
-         'field'              => 'voltage',
-         'name'               => __('Voltage'),
-         'datatype'           => 'string',
+            'id'                 => '12',
+            'table'              => $this->getTable(),
+            'field'              => 'voltage',
+            'name'               => __('Voltage'),
+            'datatype'           => 'string',
         ];
 
         $tab[] = [
-         'id'                 => '13',
-         'table'              => 'glpi_devicebatterytypes',
-         'field'              => 'name',
-         'name'               => _n('Type', 'Types', 1),
-         'datatype'           => 'dropdown'
+            'id'                 => '13',
+            'table'              => 'glpi_devicebatterytypes',
+            'field'              => 'name',
+            'name'               => _n('Type', 'Types', 1),
+            'datatype'           => 'dropdown'
         ];
 
         return $tab;
@@ -169,11 +169,11 @@ class DeviceBattery extends CommonDevice
     {
 
         return [
-         'designation'           => 'equal',
-         'devicebatterytypes_id' => 'equal',
-         'manufacturers_id'      => 'equal',
-         'capacity'              => 'delta:10',
-         'voltage'               => 'delta:10'
+            'designation'           => 'equal',
+            'devicebatterytypes_id' => 'equal',
+            'manufacturers_id'      => 'equal',
+            'capacity'              => 'delta:10',
+            'voltage'               => 'delta:10'
         ];
     }
 

@@ -110,23 +110,23 @@ final class UserMention
         $options = [];
         if ($item instanceof CommonITILTask) {
             $options = [
-            'task_id'    => $item->fields['id'],
-            'is_private' => $item->isPrivate(),
+                'task_id'    => $item->fields['id'],
+                'is_private' => $item->isPrivate(),
             ];
 
             $main_item = $item->getItem();
         } else if ($item instanceof CommonITILValidation) {
             $options = [
-            'validation_id'     => $item->fields['id'],
-            'validation_status' => $item->fields['status']
+                'validation_id'     => $item->fields['id'],
+                'validation_status' => $item->fields['status']
             ];
 
             $main_item = getItemForItemtype($item->getItilObjectItemType());
             $main_item->getFromDB($item->fields[$item::$items_id]);
         } else if ($item instanceof ITILFollowup) {
             $options = [
-            'followup_id' => $item->fields['id'],
-            'is_private'  => $item->isPrivate(),
+                'followup_id' => $item->fields['id'],
+                'is_private'  => $item->isPrivate(),
             ];
 
             $main_item = getItemForItemtype($item->fields['itemtype']);
@@ -164,11 +164,11 @@ final class UserMention
                 }
 
                 $input = [
-                'type'                            => CommonITILActor::OBSERVER,
-                'users_id'                        => $user_id,
-                $main_item->getForeignKeyField()  => $main_item->fields['id'],
-                '_do_not_compute_takeintoaccount' => true,
-                '_from_object'                    => true,
+                    'type'                            => CommonITILActor::OBSERVER,
+                    'users_id'                        => $user_id,
+                    $main_item->getForeignKeyField()  => $main_item->fields['id'],
+                    '_do_not_compute_takeintoaccount' => true,
+                    '_from_object'                    => true,
                 ];
                 $userlink->add($input);
             }

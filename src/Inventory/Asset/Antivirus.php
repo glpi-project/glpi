@@ -45,12 +45,12 @@ class Antivirus extends InventoryAsset
             throw new \RuntimeException('Antivirus are handled for computers only.');
         }
         $mapping = [
-         'company'      => 'manufacturers_id',
-         'version'      => 'antivirus_version',
-         'base_version' => 'signature_version',
-         'enabled'      => 'is_active',
-         'uptodate'     => 'is_uptodate',
-         'expiration'   => 'date_expiration'
+            'company'      => 'manufacturers_id',
+            'version'      => 'antivirus_version',
+            'base_version' => 'signature_version',
+            'enabled'      => 'is_active',
+            'uptodate'     => 'is_uptodate',
+            'expiration'   => 'date_expiration'
         ];
 
         foreach ($this->data as &$val) {
@@ -82,9 +82,9 @@ class Antivirus extends InventoryAsset
         $db_existing = [];
 
         $iterator = $DB->request([
-         'SELECT' => ['id', 'name', 'antivirus_version', 'is_dynamic'],
-         'FROM'   => ComputerAntivirus::getTable(),
-         'WHERE'  => ['computers_id' => $this->item->fields['id']]
+            'SELECT' => ['id', 'name', 'antivirus_version', 'is_dynamic'],
+            'FROM'   => ComputerAntivirus::getTable(),
+            'WHERE'  => ['computers_id' => $this->item->fields['id']]
         ]);
 
         foreach ($iterator as $data) {
@@ -113,7 +113,7 @@ class Antivirus extends InventoryAsset
                 unset($arraydb['is_dynamic']);
                 if ($compare == $arraydb) {
                     $input = (array)$val + [
-                    'id'           => $keydb
+                        'id'           => $keydb
                     ];
                     $computerAntivirus->update(Toolbox::addslashes_deep($input), $this->withHistory());
                     unset($value[$k]);

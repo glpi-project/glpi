@@ -64,12 +64,12 @@ class UserEmail extends CommonDBChild
 
        // Get default one
         $iterator = $DB->request([
-         'FROM'   => self::getTable(),
-         'WHERE'  => [
-            'users_id'     => $users_id,
-         ],
-         'ORDER'  => 'is_default DESC',
-         'LIMIT'  => 1
+            'FROM'   => self::getTable(),
+            'WHERE'  => [
+                'users_id'     => $users_id,
+            ],
+            'ORDER'  => 'is_default DESC',
+            'LIMIT'  => 1
         ]);
 
         foreach ($iterator as $row) {
@@ -94,10 +94,10 @@ class UserEmail extends CommonDBChild
         $emails = [];
 
         $iterator = $DB->request([
-         'FROM'   => self::getTable(),
-         'WHERE'  => [
-            'users_id'     => $users_id,
-         ]
+            'FROM'   => self::getTable(),
+            'WHERE'  => [
+                'users_id'     => $users_id,
+            ]
         ]);
 
         foreach ($iterator as $row) {
@@ -121,12 +121,12 @@ class UserEmail extends CommonDBChild
         global $DB;
 
         $iterator = $DB->request([
-         'FROM'   => self::getTable(),
-         'WHERE'  => [
-            'users_id'  => $users_id,
-            'email'     => $email
-         ],
-         'LIMIT'  => 1
+            'FROM'   => self::getTable(),
+            'WHERE'  => [
+                'users_id'  => $users_id,
+                'email'     => $email
+            ],
+            'LIMIT'  => 1
         ]);
 
         if (count($iterator)) {
@@ -276,11 +276,11 @@ class UserEmail extends CommonDBChild
             $DB->update(
                 $this->getTable(),
                 [
-                'is_default' => 0
+                    'is_default' => 0
                 ],
                 [
-                'id'        => ['<>', $this->input['id']],
-                'users_id'  => $this->fields['users_id']
+                    'id'        => ['<>', $this->input['id']],
+                    'users_id'  => $this->fields['users_id']
                 ]
             );
         }
@@ -298,11 +298,11 @@ class UserEmail extends CommonDBChild
             $DB->update(
                 $this->getTable(),
                 [
-                'is_default' => 0
+                    'is_default' => 0
                 ],
                 [
-                'id'        => ['<>', $this->fields['id']],
-                'users_id'  => $this->fields['users_id']
+                    'id'        => ['<>', $this->fields['id']],
+                    'users_id'  => $this->fields['users_id']
                 ]
             );
         }
@@ -320,14 +320,14 @@ class UserEmail extends CommonDBChild
             $DB->update(
                 $this->getTable(),
                 [
-                'is_default'   => 1
+                    'is_default'   => 1
                 ],
                 [
-                'WHERE'  => [
-                  'id'        => ['<>', $this->fields['id']],
-                  'users_id'  => $this->fields['users_id']
-                ],
-                'LIMIT'  => 1
+                    'WHERE'  => [
+                        'id'        => ['<>', $this->fields['id']],
+                        'users_id'  => $this->fields['users_id']
+                    ],
+                    'LIMIT'  => 1
                 ]
             );
         }

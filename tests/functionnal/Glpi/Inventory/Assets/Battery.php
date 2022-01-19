@@ -42,8 +42,8 @@ class Battery extends AbstractInventoryAsset
     protected function assetProvider(): array
     {
         return [
-         [
-            'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+            [
+                'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
   <CONTENT>
     <BATTERIES>
@@ -60,9 +60,9 @@ class Battery extends AbstractInventoryAsset
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-            'expected'  => '{"capacity": "43746", "chemistry": "lithium-polymer", "date": "2015-11-10", "manufacturer": "SMP", "name": "DELL JHXPY53", "serial": "3701", "voltage": "8614", "designation": "DELL JHXPY53", "manufacturers_id": "SMP", "manufacturing_date": "2015-11-10", "devicebatterytypes_id": "lithium-polymer", "is_dynamic": 1}'
-         ], [ //no voltage
-            'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+                'expected'  => '{"capacity": "43746", "chemistry": "lithium-polymer", "date": "2015-11-10", "manufacturer": "SMP", "name": "DELL JHXPY53", "serial": "3701", "voltage": "8614", "designation": "DELL JHXPY53", "manufacturers_id": "SMP", "manufacturing_date": "2015-11-10", "devicebatterytypes_id": "lithium-polymer", "is_dynamic": 1}'
+            ], [ //no voltage
+                'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
   <CONTENT>
     <BATTERIES>
@@ -78,9 +78,9 @@ class Battery extends AbstractInventoryAsset
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-            'expected'  => '{"capacity": "43746", "chemistry": "lithium-polymer", "date": "2015-11-10", "manufacturer": "SMP", "name": "DELL JHXPY53", "serial": "3701", "voltage": "0", "designation": "DELL JHXPY53", "manufacturers_id": "SMP", "manufacturing_date": "2015-11-10", "devicebatterytypes_id": "lithium-polymer", "is_dynamic": 1}'
-         ], [ //empty info
-            'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+                'expected'  => '{"capacity": "43746", "chemistry": "lithium-polymer", "date": "2015-11-10", "manufacturer": "SMP", "name": "DELL JHXPY53", "serial": "3701", "voltage": "0", "designation": "DELL JHXPY53", "manufacturers_id": "SMP", "manufacturing_date": "2015-11-10", "devicebatterytypes_id": "lithium-polymer", "is_dynamic": 1}'
+            ], [ //empty info
+                'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
   <CONTENT>
     <BATTERIES>
@@ -95,8 +95,8 @@ class Battery extends AbstractInventoryAsset
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-            'expected'  => '{"chemistry": "Li-ION", "manufacturer": "OTHER MANU", "serial": "00000000", "voltage": "0", "manufacturers_id": "OTHER MANU", "devicebatterytypes_id": "Li-ION", "is_dynamic": 1}'
-         ]
+                'expected'  => '{"chemistry": "Li-ION", "manufacturer": "OTHER MANU", "serial": "00000000", "voltage": "0", "manufacturers_id": "OTHER MANU", "devicebatterytypes_id": "Li-ION", "is_dynamic": 1}'
+            ]
         ];
     }
 
@@ -215,68 +215,68 @@ class Battery extends AbstractInventoryAsset
 
        //create manually a computer, with 3 batteries
         $computers_id = $computer->add([
-         'name'   => 'pc002',
-         'serial' => 'ggheb7ne7',
-         'entities_id' => 0
+            'name'   => 'pc002',
+            'serial' => 'ggheb7ne7',
+            'entities_id' => 0
         ]);
         $this->integer($computers_id)->isGreaterThan(0);
 
         $manufacturer = new \Manufacturer();
         $manufacturers_id = $manufacturer->add([
-         'name' => 'SMP'
+            'name' => 'SMP'
         ]);
         $this->integer($manufacturers_id)->isGreaterThan(0);
 
         $batterytype = new \DeviceBatteryType();
         $types_id = $batterytype->add([
-         'name' => 'lithium-polymer'
+            'name' => 'lithium-polymer'
         ]);
         $this->integer($types_id)->isGreaterThan(0);
 
         $battery_1_id = $device_battery->add([
-         'designation' => 'DELL JHXPY53',
-         'manufacturers_id' => $manufacturers_id,
-         'devicebatterytypes_id' => $types_id,
-         'voltage' => 8614,
-         'capacity' => 43746,
-         'entities_id'  => 0
+            'designation' => 'DELL JHXPY53',
+            'manufacturers_id' => $manufacturers_id,
+            'devicebatterytypes_id' => $types_id,
+            'voltage' => 8614,
+            'capacity' => 43746,
+            'entities_id'  => 0
         ]);
         $this->integer($battery_1_id)->isGreaterThan(0);
 
         $item_battery_1_id = $item_battery->add([
-         'items_id'     => $computers_id,
-         'itemtype'     => 'Computer',
-         'devicebatteries_id' => $battery_1_id
+            'items_id'     => $computers_id,
+            'itemtype'     => 'Computer',
+            'devicebatteries_id' => $battery_1_id
         ]);
 
         $battery_2_id = $device_battery->add([
-         'designation' => '5B10W138',
-         'manufacturers_id' => $manufacturers_id,
-         'devicebatterytypes_id' => $types_id,
-         'voltage' => 11100,
-         'capacity' => 45280,
-         'entities_id'  => 0
+            'designation' => '5B10W138',
+            'manufacturers_id' => $manufacturers_id,
+            'devicebatterytypes_id' => $types_id,
+            'voltage' => 11100,
+            'capacity' => 45280,
+            'entities_id'  => 0
         ]);
         $this->integer($battery_2_id)->isGreaterThan(0);
 
         $item_battery_2_id = $item_battery->add([
-         'items_id'     => $computers_id,
-         'itemtype'     => 'Computer',
-         'devicebatteries_id' => $battery_2_id
+            'items_id'     => $computers_id,
+            'itemtype'     => 'Computer',
+            'devicebatteries_id' => $battery_2_id
         ]);
 
         $battery_3_id = $device_battery->add([
-         'designation' => 'test battery',
-         'manufacturers_id' => $manufacturers_id,
-         'devicebatterytypes_id' => $types_id,
-         'entities_id'  => 0
+            'designation' => 'test battery',
+            'manufacturers_id' => $manufacturers_id,
+            'devicebatterytypes_id' => $types_id,
+            'entities_id'  => 0
         ]);
         $this->integer($battery_3_id)->isGreaterThan(0);
 
         $item_battery_3_id = $item_battery->add([
-         'items_id'     => $computers_id,
-         'itemtype'     => 'Computer',
-         'devicebatteries_id' => $battery_3_id
+            'items_id'     => $computers_id,
+            'itemtype'     => 'Computer',
+            'devicebatteries_id' => $battery_3_id
         ]);
 
         $disks = $item_battery->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);

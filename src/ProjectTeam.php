@@ -127,65 +127,69 @@ class ProjectTeam extends CommonDBRelation
         if (count($team['User'])) {
             $user_ids = array_column($team['User'], 'items_id');
             $subqueries[] = new QuerySubQuery([
-            'SELECT' => ['id', 'name', 'realname', 'firstname',
-               new QueryExpression('"User" AS itemtype')],
-            'FROM' => 'glpi_users',
-            'WHERE' => [
-               'id'           => $user_ids
-            ]
+                'SELECT' => ['id', 'name', 'realname', 'firstname',
+                    new QueryExpression('"User" AS itemtype')
+                ],
+                'FROM' => 'glpi_users',
+                'WHERE' => [
+                    'id'           => $user_ids
+                ]
             ]);
         }
         if (count($team['Group'])) {
             $group_ids = array_column($team['Group'], 'items_id');
             $subqueries[] = new QuerySubQuery([
-            'SELECT' => [
-               'id',
-               'name',
-               new QueryExpression('NULL AS realname'),
-               new QueryExpression('NULL AS firstname'),
-               new QueryExpression('"Group" AS itemtype')],
-            'FROM' => 'glpi_groups',
-            'WHERE' => [
-               'id'           => $group_ids
-            ]
+                'SELECT' => [
+                    'id',
+                    'name',
+                    new QueryExpression('NULL AS realname'),
+                    new QueryExpression('NULL AS firstname'),
+                    new QueryExpression('"Group" AS itemtype')
+                ],
+                'FROM' => 'glpi_groups',
+                'WHERE' => [
+                    'id'           => $group_ids
+                ]
             ]);
         }
         if (count($team['Supplier'])) {
             $supplier_ids = array_column($team['Supplier'], 'items_id');
             $subqueries[] = new QuerySubQuery([
-            'SELECT' => [
-               'id',
-               'name',
-               new QueryExpression('NULL AS realname'),
-               new QueryExpression('NULL AS firstname'),
-               new QueryExpression('"Supplier" AS itemtype')],
-            'FROM' => 'glpi_suppliers',
-            'WHERE' => [
-               'id' => $supplier_ids
-            ]
+                'SELECT' => [
+                    'id',
+                    'name',
+                    new QueryExpression('NULL AS realname'),
+                    new QueryExpression('NULL AS firstname'),
+                    new QueryExpression('"Supplier" AS itemtype')
+                ],
+                'FROM' => 'glpi_suppliers',
+                'WHERE' => [
+                    'id' => $supplier_ids
+                ]
             ]);
         }
         if (count($team['Contact'])) {
             $contact_ids = array_column($team['Contact'], 'items_id');
             $subqueries[] = new QuerySubQuery([
-            'SELECT' => [
-               'id',
-               'name',
-               new QueryExpression('NULL AS realname'),
-               new QueryExpression('NULL AS firstname'),
-               new QueryExpression('"Contact" AS itemtype')],
-            'FROM' => 'glpi_contacts',
-            'WHERE' => [
-               'id' => $contact_ids
-            ]
+                'SELECT' => [
+                    'id',
+                    'name',
+                    new QueryExpression('NULL AS realname'),
+                    new QueryExpression('NULL AS firstname'),
+                    new QueryExpression('"Contact" AS itemtype')
+                ],
+                'FROM' => 'glpi_contacts',
+                'WHERE' => [
+                    'id' => $contact_ids
+                ]
             ]);
         }
 
         if (count($subqueries)) {
             $union = new QueryUnion($subqueries);
             $criteria = [
-            'SELECT' => ['id', 'name', 'realname', 'firstname', 'itemtype'],
-            'FROM' => $union,
+                'SELECT' => ['id', 'name', 'realname', 'firstname', 'itemtype'],
+                'FROM' => $union,
             ];
             $iterator = $DB->request($criteria);
 
@@ -226,8 +230,8 @@ class ProjectTeam extends CommonDBRelation
         }
 
         $iterator = $DB->request([
-         'FROM'   => self::getTable(),
-         'WHERE'  => ['projects_id' => $projects_id]
+            'FROM'   => self::getTable(),
+            'WHERE'  => ['projects_id' => $projects_id]
         ]);
 
         foreach ($iterator as $data) {

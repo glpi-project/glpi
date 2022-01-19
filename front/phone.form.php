@@ -131,9 +131,9 @@ if (isset($_POST["add"])) {
 } else {
     Html::header(Phone::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], 'assets', 'phone');
     $phone->display([
-      'id'           => $_GET["id"],
-      'withtemplate' => $_GET["withtemplate"],
-      'formoptions'  => "data-track-changes=true"
+        'id'           => $_GET["id"],
+        'withtemplate' => $_GET["withtemplate"],
+        'formoptions'  => "data-track-changes=true"
     ]);
     Html::footer();
 }

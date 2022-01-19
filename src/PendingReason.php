@@ -53,30 +53,30 @@ class PendingReason extends CommonDropdown
     public function getAdditionalFields()
     {
         return [
-         [
-            'name'  => 'followup_frequency',
-            'label' => __('Automatic follow-up frequency'),
-            'type'  => '',
-            'list'  => true
-         ],
-         [
-            'name'      => 'itilfollowuptemplates_id',
-            'label'     => ITILFollowupTemplate::getTypeName(1),
-            'type'      => 'dropdownValue',
-            'list'      => true
-         ],
-         [
-            'name'  => 'followups_before_resolution',
-            'label' => __('Follow-ups before automatic resolution'),
-            'type'  => '',
-            'list'  => true
-         ],
-         [
-            'name'      => 'solutiontemplates_id',
-            'label'     => SolutionTemplate::getTypeName(1),
-            'type'      => 'dropdownValue',
-            'list'      => true
-         ],
+            [
+                'name'  => 'followup_frequency',
+                'label' => __('Automatic follow-up frequency'),
+                'type'  => '',
+                'list'  => true
+            ],
+            [
+                'name'      => 'itilfollowuptemplates_id',
+                'label'     => ITILFollowupTemplate::getTypeName(1),
+                'type'      => 'dropdownValue',
+                'list'      => true
+            ],
+            [
+                'name'  => 'followups_before_resolution',
+                'label' => __('Follow-ups before automatic resolution'),
+                'type'  => '',
+                'list'  => true
+            ],
+            [
+                'name'      => 'solutiontemplates_id',
+                'label'     => SolutionTemplate::getTypeName(1),
+                'type'      => 'dropdownValue',
+                'list'      => true
+            ],
         ];
     }
 
@@ -85,43 +85,43 @@ class PendingReason extends CommonDropdown
         $tab = parent::rawSearchOptions();
 
         $tab[] = [
-         'id'                 => '200',
-         'table'              => $this->getTable(),
-         'field'              => 'followup_frequency',
-         'name'               => __('Automatic follow-up frequency'),
-         'searchtype'         => ['equals', 'notequals'],
-         'datatype'           => 'specific'
+            'id'                 => '200',
+            'table'              => $this->getTable(),
+            'field'              => 'followup_frequency',
+            'name'               => __('Automatic follow-up frequency'),
+            'searchtype'         => ['equals', 'notequals'],
+            'datatype'           => 'specific'
         ];
 
         $tab[] = [
-         'id'                 => '201',
-         'table'              => $this->getTable(),
-         'field'              => 'followups_before_resolution',
-         'name'               => __('Follow-ups before automatic resolution'),
-         'searchtype'         => ['equals', 'notequals'],
-         'datatype'           => 'specific'
+            'id'                 => '201',
+            'table'              => $this->getTable(),
+            'field'              => 'followups_before_resolution',
+            'name'               => __('Follow-ups before automatic resolution'),
+            'searchtype'         => ['equals', 'notequals'],
+            'datatype'           => 'specific'
         ];
 
         $tab[] = [
-         'id'                 => '202',
-         'table'              => ITILFollowupTemplate::getTable(),
-         'field'              => 'name',
-         'linkfield'          => ITILFollowupTemplate::getForeignKeyField(),
-         'name'               => __('Follow-up template'),
-         'massiveaction'      => false,
-         'searchtype'         => ['equals', 'notequals'],
-         'datatype'           => 'dropdown',
+            'id'                 => '202',
+            'table'              => ITILFollowupTemplate::getTable(),
+            'field'              => 'name',
+            'linkfield'          => ITILFollowupTemplate::getForeignKeyField(),
+            'name'               => __('Follow-up template'),
+            'massiveaction'      => false,
+            'searchtype'         => ['equals', 'notequals'],
+            'datatype'           => 'dropdown',
         ];
 
         $tab[] = [
-         'id'                 => '203',
-         'table'              => SolutionTemplate::getTable(),
-         'field'              => 'name',
-         'linkfield'          => SolutionTemplate::getForeignKeyField(),
-         'name'               => SolutionTemplate::getTypeName(1),
-         'massiveaction'      => false,
-         'searchtype'         => ['equals', 'notequals'],
-         'datatype'           => 'dropdown',
+            'id'                 => '203',
+            'table'              => SolutionTemplate::getTable(),
+            'field'              => 'name',
+            'linkfield'          => SolutionTemplate::getForeignKeyField(),
+            'name'               => SolutionTemplate::getTypeName(1),
+            'massiveaction'      => false,
+            'searchtype'         => ['equals', 'notequals'],
+            'datatype'           => 'dropdown',
         ];
 
         return $tab;
@@ -177,10 +177,10 @@ class PendingReason extends CommonDropdown
     public static function getFollowupFrequencyValues(): array
     {
         return [
-         WEEK_TIMESTAMP     => __("Every week"),
-         2 * WEEK_TIMESTAMP => __("Every two weeks"),
-         3 * WEEK_TIMESTAMP => __("Every three weeks"),
-         4 * WEEK_TIMESTAMP => __("Every four weeks"),
+            WEEK_TIMESTAMP     => __("Every week"),
+            2 * WEEK_TIMESTAMP => __("Every two weeks"),
+            3 * WEEK_TIMESTAMP => __("Every three weeks"),
+            4 * WEEK_TIMESTAMP => __("Every four weeks"),
         ];
     }
 
@@ -234,9 +234,9 @@ class PendingReason extends CommonDropdown
     public static function getFollowupsBeforeResolutionValues(): array
     {
         return [
-         1 => __("After one follow-up"),
-         2 => __("After two follow-ups"),
-         3 => __("After three follow-ups"),
+            1 => __("After one follow-up"),
+            2 => __("After two follow-ups"),
+            3 => __("After three follow-ups"),
         ];
     }
 

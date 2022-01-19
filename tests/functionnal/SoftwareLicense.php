@@ -55,8 +55,8 @@ class SoftwareLicense extends DbTestCase
 
        //Without softwares_id, import refused
         $input = [
-         'name'         => 'not_inserted_software_license',
-         'entities_id'  => 0
+            'name'         => 'not_inserted_software_license',
+            'entities_id'  => 0
         ];
         $this->boolean($license->prepareInputForAdd($input))->isFalse();
         $this->hasSessionMessages(ERROR, ['Please select a software for this license']);
@@ -65,20 +65,20 @@ class SoftwareLicense extends DbTestCase
         $input = [ 'name' => 'inserted_sofwarelicense', 'softwares_id' => 1];
         $license->input['softwares_id'] = 1;
         $expected = [ 'name' => 'inserted_sofwarelicense', 'softwares_id' => 1,
-                    'softwarelicenses_id' => 0, 'level' => 1,
-                    'completename' => 'inserted_sofwarelicense'
-                 ];
+            'softwarelicenses_id' => 0, 'level' => 1,
+            'completename' => 'inserted_sofwarelicense'
+        ];
         $this->array($license->prepareInputForAdd($input))->isIdenticalTo($expected);
 
        //withtemplate, empty 'expire' should be ignored. id will be replaced in _oldID
         $input = [ 'name' => 'other_inserted_sofwarelicense', 'softwares_id' => 1,
-                 'id' => 1, 'withtemplate' => 0, 'expire' => '',
-                 'softwarelicenses_id' => 0
-              ];
+            'id' => 1, 'withtemplate' => 0, 'expire' => '',
+            'softwarelicenses_id' => 0
+        ];
         $expected = [ 'name' => 'other_inserted_sofwarelicense', 'softwares_id' => 1,
-                    'softwarelicenses_id' => 0, 'level' => 1,
-                    'completename' => 'other_inserted_sofwarelicense', '_oldID' => 1
-                 ];
+            'softwarelicenses_id' => 0, 'level' => 1,
+            'completename' => 'other_inserted_sofwarelicense', '_oldID' => 1
+        ];
         $this->array($license->prepareInputForAdd($input))->isIdenticalTo($expected);
     }
 
@@ -91,9 +91,9 @@ class SoftwareLicense extends DbTestCase
     {
         $software     = new \Software();
         $softwares_id = $software->add([
-         'name'         => 'Software ' . $this->getUniqueString(),
-         'is_template'  => 0,
-         'entities_id'  => 0
+            'name'         => 'Software ' . $this->getUniqueString(),
+            'is_template'  => 0,
+            'entities_id'  => 0
         ]);
         $this->integer((int)$softwares_id)->isGreaterThan(0);
         $this->boolean($software->getFromDB($softwares_id))->isTrue();
@@ -115,9 +115,9 @@ class SoftwareLicense extends DbTestCase
 
         $parentlicense = new \SoftwareLicense();
         $parentlicense_id = $parentlicense->add([
-         'name'         => 'a_software_license',
-         'softwares_id' => $software->getID(),
-         'entities_id'  => 0
+            'name'         => 'a_software_license',
+            'softwares_id' => $software->getID(),
+            'entities_id'  => 0
         ]);
         $this->integer((int)$parentlicense_id)->isGreaterThan(0);
         $this->boolean($parentlicense->getFromDB($parentlicense_id))->isTrue();
@@ -128,11 +128,11 @@ class SoftwareLicense extends DbTestCase
         $this->variable($parentlicense->fields['level'])->isEqualTo(1);
 
         $input  = [
-         'softwares_id'          => $software->getID(),
-         'expire'                => '2017-01-01 00:00:00',
-         'name'                  => 'a_child_license',
-         'softwarelicenses_id'   => $parentlicense_id,
-         'entities_id'           => $parentlicense->fields['entities_id']
+            'softwares_id'          => $software->getID(),
+            'expire'                => '2017-01-01 00:00:00',
+            'name'                  => 'a_child_license',
+            'softwarelicenses_id'   => $parentlicense_id,
+            'entities_id'           => $parentlicense->fields['entities_id']
         ];
         $lic_id = $license->add($input);
         $this->integer($lic_id)->isGreaterThan($parentlicense_id);
@@ -153,11 +153,11 @@ class SoftwareLicense extends DbTestCase
         $software = $this->createSoft();
 
         $input   = [
-         'softwares_id' => $software->getID(),
-         'expire'       => '2017-01-01 00:00:00',
-         'name'         => 'Test licence ' . $this->getUniqueString(),
-         'number'       => 3,
-         'entities_id'  => 0
+            'softwares_id' => $software->getID(),
+            'expire'       => '2017-01-01 00:00:00',
+            'name'         => 'Test licence ' . $this->getUniqueString(),
+            'number'       => 3,
+            'entities_id'  => 0
         ];
         $lic_id = $license->add($input);
         $this->integer((int)$lic_id)->isGreaterThan(0);
@@ -168,11 +168,11 @@ class SoftwareLicense extends DbTestCase
         $comp2            = getItemByTypeName('Computer', '_test_pc02');
 
         $input_comp = [
-         'softwarelicenses_id'   => $lic_id,
-         'items_id'              => $comp1->getID(),
-         'itemtype'              => 'Computer',
-         'is_deleted'            => 0,
-         'is_dynamic'            => 0
+            'softwarelicenses_id'   => $lic_id,
+            'items_id'              => $comp1->getID(),
+            'itemtype'              => 'Computer',
+            'is_deleted'            => 0,
+            'is_dynamic'            => 0
         ];
         $this->integer((int)$license_computer->add($input_comp))->isGreaterThan(0);
 
@@ -196,11 +196,11 @@ class SoftwareLicense extends DbTestCase
         $software = $this->createSoft();
 
         $input   = [
-         'softwares_id' => $software->getID(),
-         'expire'       => '2017-01-01 00:00:00',
-         'name'         => 'Test licence ' . $this->getUniqueString(),
-         'number'       => 3,
-         'entities_id'  => 0
+            'softwares_id' => $software->getID(),
+            'expire'       => '2017-01-01 00:00:00',
+            'name'         => 'Test licence ' . $this->getUniqueString(),
+            'number'       => 3,
+            'entities_id'  => 0
         ];
         $lic_id = $license->add($input);
         $this->integer((int)$lic_id)->isGreaterThan(0);
@@ -219,11 +219,11 @@ class SoftwareLicense extends DbTestCase
 
         $software = $this->createSoft();
         $input   = [
-         'softwares_id' => $software->getID(),
-         'expire'       => '2017-01-01 00:00:00',
-         'name'         => 'Test licence ' . $this->getUniqueString(),
-         'number'       => 3,
-         'entities_id'  => 0
+            'softwares_id' => $software->getID(),
+            'expire'       => '2017-01-01 00:00:00',
+            'name'         => 'Test licence ' . $this->getUniqueString(),
+            'number'       => 3,
+            'entities_id'  => 0
         ];
         $lic_id = $license->add($input);
         $this->integer((int)$lic_id)->isGreaterThan(0);
@@ -237,17 +237,17 @@ class SoftwareLicense extends DbTestCase
        //Delete a license installation
         $license_computer = new \Item_SoftwareLicense();
         $input = [
-         'softwarelicenses_id'   => $license->getID(),
-         'items_id'              => $comp1->getID(),
-         'itemtype'              => 'Computer'
+            'softwarelicenses_id'   => $license->getID(),
+            'items_id'              => $comp1->getID(),
+            'itemtype'              => 'Computer'
         ];
         $this->boolean($license_computer->deleteByCriteria($input, true))->isTrue();
 
         $orig_number = $license->getField('number');
        //Change the number of assets to 1
         $input = [
-         'id'     => $license->getID(),
-         'number' => 1,
+            'id'     => $license->getID(),
+            'number' => 1,
         ];
         $license->update($input);
         $this->boolean($license->getFromDB($license->getID()))->isTrue();
@@ -261,8 +261,8 @@ class SoftwareLicense extends DbTestCase
 
        //cleanup
         $input = [
-         'id'     => $license->getID(),
-         'number' => $orig_number,
+            'id'     => $license->getID(),
+            'number' => $orig_number,
         ];
         $license->update($input);
 
@@ -283,11 +283,11 @@ class SoftwareLicense extends DbTestCase
     {
         $license_computer = new \Item_SoftwareLicense();
         $input = [
-         'softwarelicenses_id'   => $licenses_id,
-         'items_id'              => $items_id,
-         'itemtype'              => 'Computer',
-         'is_dynamic'            => 0,
-         'is_deleted'            => 0
+            'softwarelicenses_id'   => $licenses_id,
+            'items_id'              => $items_id,
+            'itemtype'              => 'Computer',
+            'is_dynamic'            => 0,
+            'is_deleted'            => 0
         ];
         $this->integer((int)$license_computer->add($input))->isGreaterThan(0);
     }

@@ -83,9 +83,9 @@ abstract class AbstractRightsDropdown
 
        // Build params
         $params = [
-         'values' => $values,
-         'valuesnames' => self::getValueNames($values),
-         'multiple'    => true,
+            'values' => $values,
+            'valuesnames' => self::getValueNames($values),
+            'multiple'    => true,
         ];
 
         return Html::jsAjaxDropdown($name, $field_id, $url, $params);
@@ -127,20 +127,20 @@ abstract class AbstractRightsDropdown
             $new_group = [];
             foreach ($ids as $id => $label) {
                 $new_group[] = [
-                'id' => $id,
-                'text' => $label,
-                "selection_text" => "$itemtype - $label",
+                    'id' => $id,
+                    'text' => $label,
+                    "selection_text" => "$itemtype - $label",
                 ];
             }
             $results[] = [
-            "text" => $itemtype::getTypeName(1),
-            "children" => $new_group,
+                "text" => $itemtype::getTypeName(1),
+                "children" => $new_group,
             ];
         }
 
         $ret = [
-         'results' => Sanitizer::unsanitize($results),
-         'count' =>  count($results)
+            'results' => Sanitizer::unsanitize($results),
+            'count' =>  count($results)
         ];
 
         return $ret;
@@ -179,7 +179,7 @@ abstract class AbstractRightsDropdown
     {
         $profile_item = new Profile();
         $profiles = $profile_item->find([
-         'name' => ["LIKE", "%$text%"]
+            'name' => ["LIKE", "%$text%"]
         ], [], self::LIMIT);
         $profiles_items = [];
         foreach ($profiles as $profile) {
@@ -202,7 +202,7 @@ abstract class AbstractRightsDropdown
         $entity_item = new Entity();
         $entities = $entity_item->find(
             [
-            'name' => ["LIKE", "%$text%"]
+                'name' => ["LIKE", "%$text%"]
             ] + getEntitiesRestrictCriteria(Entity::getTable()),
             [],
             self::LIMIT
@@ -247,7 +247,7 @@ abstract class AbstractRightsDropdown
         $group_item = new Group();
         $groups = $group_item->find(
             [
-            'name' => ["LIKE", "%$text%"]
+                'name' => ["LIKE", "%$text%"]
             ] + getEntitiesRestrictCriteria(Group::getTable()),
             [],
             self::LIMIT

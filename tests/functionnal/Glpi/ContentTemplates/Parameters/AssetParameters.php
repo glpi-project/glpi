@@ -40,23 +40,23 @@ class AssetParameters extends AbstractParameters
         $test_entity_id = getItemByTypeName('Entity', '_test_child_2', true);
 
         $this->createItem('Computer', [
-         'name'        => 'pc_testGetValues',
-         'serial'      => 'abcd1234',
-         'entities_id' => $test_entity_id
+            'name'        => 'pc_testGetValues',
+            'serial'      => 'abcd1234',
+            'entities_id' => $test_entity_id
         ]);
 
         $parameters = $this->newTestedInstance();
         $values = $parameters->getValues(getItemByTypeName('Computer', 'pc_testGetValues'));
         $this->array($values)->isEqualTo([
-         'id'          => getItemByTypeName('Computer', 'pc_testGetValues', true),
-         'name'        => 'pc_testGetValues',
-         'itemtype'    => 'Computer',
-         'serial'      => 'abcd1234',
-         'entity' => [
-            'id'           => $test_entity_id,
-            'name'         => '_test_child_2',
-            'completename' => 'Root entity > _test_root_entity > _test_child_2',
-         ]
+            'id'          => getItemByTypeName('Computer', 'pc_testGetValues', true),
+            'name'        => 'pc_testGetValues',
+            'itemtype'    => 'Computer',
+            'serial'      => 'abcd1234',
+            'entity' => [
+                'id'           => $test_entity_id,
+                'name'         => '_test_child_2',
+                'completename' => 'Root entity > _test_root_entity > _test_child_2',
+            ]
         ]);
 
         $this->testGetAvailableParameters($values, $parameters->getAvailableParameters());

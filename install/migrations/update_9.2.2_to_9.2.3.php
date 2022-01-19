@@ -65,8 +65,8 @@ function update922to923()
 
    //fix notificationtemplates_id in translations table
     $notifs = [
-      'Certificate',
-      'SavedSearch_Alert'
+        'Certificate',
+        'SavedSearch_Alert'
     ];
     foreach ($notifs as $notif) {
         $notification = new Notification();
@@ -87,17 +87,17 @@ function update922to923()
                 && countElementsInTable(
                     'glpi_notifications_notificationtemplates',
                     [
-                    'notifications_id'            =>  $notification->fields['id'],
-                    'notificationtemplates_id'    => $template->fields['id'],
-                    'mode'                        => Notification_NotificationTemplate::MODE_MAIL
+                        'notifications_id'            =>  $notification->fields['id'],
+                        'notificationtemplates_id'    => $template->fields['id'],
+                        'mode'                        => Notification_NotificationTemplate::MODE_MAIL
                     ]
                 ) == 0
             ) {
                 //Add missing notification template link for saved searches
                 $DB->insertOrDie("glpi_notifications_notificationtemplates", [
-                 'notifications_id'         => $notification->fields['id'],
-                 'mode'                     => Notification_NotificationTemplate::MODE_MAIL,
-                 'notificationtemplates_id' => $template->fields['id']
+                    'notifications_id'         => $notification->fields['id'],
+                    'mode'                     => Notification_NotificationTemplate::MODE_MAIL,
+                    'notificationtemplates_id' => $template->fields['id']
                 ]);
             }
         }

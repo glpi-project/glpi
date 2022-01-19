@@ -47,8 +47,9 @@ echo "<form method='get' name='form' action='report.reservation.php'>";
 echo "<table class='tab_cadre' width='500'><tr class='tab_bg_2'>";
 echo "<td class='center' width='300'>";
 User::dropdown(['name'   => 'id',
-                     'value'  => $_GET["id"],
-                     'right'  => 'reservation']);
+    'value'  => $_GET["id"],
+    'right'  => 'reservation'
+]);
 
 echo "</td>";
 echo "<td class='center'><input type='submit' class='btn btn-primary' name='submit' value='" .

@@ -66,12 +66,12 @@ class PlanningCsv implements ExportToCsvInterface
     public function getFileHeader(): array
     {
         return [
-         __('Actor'),
-         __('Title'),
-         __('Item type'),
-         __('Item id'),
-         __('Begin date'),
-         __('End date')
+            __('Actor'),
+            __('Title'),
+            __('Item type'),
+            __('Item id'),
+            __('Begin date'),
+            __('End date')
         ];
     }
 
@@ -86,10 +86,10 @@ class PlanningCsv implements ExportToCsvInterface
         $begin  = date("Y-m-d H:i:s", $begin);
         $end    = date("Y-m-d H:i:s", $end);
         $params = [
-         'who'       => $this->users_id,
-         'whogroup'  => $this->groups_id,
-         'begin'     => $begin,
-         'end'       => $end
+            'who'       => $this->users_id,
+            'whogroup'  => $this->groups_id,
+            'begin'     => $begin,
+            'end'       => $end
         ];
 
         if (empty($this->limititemtype)) {
@@ -114,12 +114,12 @@ class PlanningCsv implements ExportToCsvInterface
                 $user->getFromDB($val['users_id']);
 
                 $lines[] = [
-                'actor'     => $user->getFriendlyName(),
-                'title'     => $val['name'],
-                'itemtype'  => $itemtype->getTypeName(1),
-                'items_id'  => $val[$itemtype->getForeignKeyField()],
-                'begindate' => $dateBegin->format('Y-m-d H:i:s'),
-                'enddate'   => $dateEnd->format('Y-m-d H:i:s')
+                    'actor'     => $user->getFriendlyName(),
+                    'title'     => $val['name'],
+                    'itemtype'  => $itemtype->getTypeName(1),
+                    'items_id'  => $val[$itemtype->getForeignKeyField()],
+                    'begindate' => $dateBegin->format('Y-m-d H:i:s'),
+                    'enddate'   => $dateEnd->format('Y-m-d H:i:s')
                 ];
             }
         }

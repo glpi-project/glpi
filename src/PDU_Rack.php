@@ -219,18 +219,18 @@ class PDU_Rack extends CommonDBRelation
         $used = [];
         foreach (
             $DB->request([
-            'FROM' => $this->getTable()
+                'FROM' => $this->getTable()
             ]) as $not_racked
         ) {
             $used[] = $not_racked['pdus_id'];
         }
         foreach (
             $DB->request([
-            'SELECT' => 'items_id',
-            'FROM'   => Item_Rack::getTable(),
-            'WHERE'  => [
-            'itemtype' => 'PDU'
-            ]
+                'SELECT' => 'items_id',
+                'FROM'   => Item_Rack::getTable(),
+                'WHERE'  => [
+                    'itemtype' => 'PDU'
+                ]
             ]) as $racked
         ) {
             $used[] = $racked['items_id'];
@@ -250,11 +250,11 @@ class PDU_Rack extends CommonDBRelation
         echo "<td><label for='dropdown_pdus_id$rand'>" . PDU::getTypeName(1) . "</label></td>";
         echo "<td>";
         PDU::dropdown([
-         'value'       => $this->fields["pdus_id"],
-         'rand'        => $rand,
-         'used'        => $used,
-         'entity'      => $rack->fields['entities_id'],
-         'entity_sons' => $rack->fields['is_recursive'],
+            'value'       => $this->fields["pdus_id"],
+            'rand'        => $rand,
+            'used'        => $used,
+            'entity'      => $rack->fields['entities_id'],
+            'entity_sons' => $rack->fields['is_recursive'],
         ]);
         echo "</td>";
         echo "<td><label for='dropdown_side$rand'>" . __('Side (from rear perspective)') . "</label></td>";
@@ -263,8 +263,8 @@ class PDU_Rack extends CommonDBRelation
             'side',
             self::getSides(),
             [
-            'value' => $this->fields["side"],
-            'rand'  => $rand,
+                'value' => $this->fields["side"],
+                'rand'  => $rand,
             ]
         );
         echo "</td>";
@@ -280,12 +280,12 @@ class PDU_Rack extends CommonDBRelation
         Dropdown::showNumber(
             'position',
             [
-            'value'  => $this->fields["position"],
-            'min'    => 1,
-            'max'    => $rack->fields['number_units'],
-            'step'   => 1,
+                'value'  => $this->fields["position"],
+                'min'    => 1,
+                'max'    => $rack->fields['number_units'],
+                'step'   => 1,
             // 'used'   => $rack->getFilled($this->fields['itemtype'], $this->fields['items_id']),
-            'rand'   => $rand
+                'rand'   => $rand
             ]
         );
         echo "</td>";
@@ -298,8 +298,8 @@ class PDU_Rack extends CommonDBRelation
         Html::showColorField(
             'bgcolor',
             [
-            'value'  => $this->fields['bgcolor'],
-            'rand'   => $rand
+                'value'  => $this->fields['bgcolor'],
+                'rand'   => $rand
             ]
         );
         echo "</td>";
@@ -318,10 +318,10 @@ class PDU_Rack extends CommonDBRelation
         $canedit = $rack->canEdit($rack->getID());
         $rand    = mt_rand();
         $items   = $DB->request([
-         'FROM'   => self::getTable(),
-         'WHERE'  => [
-            'racks_id' => $rack->getID()
-         ]
+            'FROM'   => self::getTable(),
+            'WHERE'  => [
+                'racks_id' => $rack->getID()
+            ]
         ]);
 
         if (!count($items)) {
@@ -331,8 +331,8 @@ class PDU_Rack extends CommonDBRelation
             if ($canedit) {
                 Html::openMassiveActionsForm('mass' . __CLASS__ . $rand);
                 $massiveactionparams = [
-                'num_displayed'   => min($_SESSION['glpilist_limit'], count($items)),
-                'container'       => 'mass' . __CLASS__ . $rand
+                    'num_displayed'   => min($_SESSION['glpilist_limit'], count($items)),
+                    'container'       => 'mass' . __CLASS__ . $rand
                 ];
                 Html::showMassiveActions($massiveactionparams);
             }
@@ -389,36 +389,36 @@ class PDU_Rack extends CommonDBRelation
         $found_pdus = [];
        // find pdus from this relation
         $iterator = $DB->request([
-         'FROM' => self::getTable(),
-         'WHERE' => [
-            'racks_id' => $rack->getID()
-         ],
-         'ORDER' => 'side'
+            'FROM' => self::getTable(),
+            'WHERE' => [
+                'racks_id' => $rack->getID()
+            ],
+            'ORDER' => 'side'
         ]);
         foreach ($iterator as $current) {
             $found_pdus[] = [
-            'pdus_id'  => $current['pdus_id'],
-            'racked'   => false,
-            'position' => $current['position'],
-            'side'     => $current['side'],
-            'bgcolor'  => $current['bgcolor'],
+                'pdus_id'  => $current['pdus_id'],
+                'racked'   => false,
+                'position' => $current['position'],
+                'side'     => $current['side'],
+                'bgcolor'  => $current['bgcolor'],
             ];
         }
        // find pdus from item_rack relation
         $iterator = $DB->request([
-         'FROM' => Item_Rack::getTable(),
-         'WHERE' => [
-            'racks_id' => $rack->getID(),
-            'itemtype' => 'PDU'
-         ]
+            'FROM' => Item_Rack::getTable(),
+            'WHERE' => [
+                'racks_id' => $rack->getID(),
+                'itemtype' => 'PDU'
+            ]
         ]);
         foreach ($iterator as $current) {
             $found_pdus[] = [
-            'pdus_id'  => $current['items_id'],
-            'racked'   => true,
-            'position' => $current['position'],
-            'side'     => false,
-            'bgcolor'  => $current['bgcolor'],
+                'pdus_id'  => $current['items_id'],
+                'racked'   => true,
+                'position' => $current['position'],
+                'side'     => false,
+                'bgcolor'  => $current['bgcolor'],
             ];
         }
 
@@ -490,12 +490,12 @@ class PDU_Rack extends CommonDBRelation
         $rand = mt_rand();
         echo "<label for='dropdown_sub_form$rand'>" . __("The pdu will be") . "</label>&nbsp;";
         Dropdown::showFromArray('sub_form', [
-         'racked'    => __('racked'),
-         'side_rack' => __('placed at rack side'),
+            'racked'    => __('racked'),
+            'side_rack' => __('placed at rack side'),
         ], [
-         'display_emptychoice' => true,
-         'on_change'           => 'showAddPduSubForm()',
-         'rand'                => $rand,
+            'display_emptychoice' => true,
+            'on_change'           => 'showAddPduSubForm()',
+            'rand'                => $rand,
         ]);
 
         $pra_url = PDU_Rack::getFormURL() . "?racks_id=$racks_id&ajax=true";
@@ -666,10 +666,10 @@ JAVASCRIPT;
     public static function getSides()
     {
         return [
-         self::SIDE_LEFT   => __('Left'),
-         self::SIDE_RIGHT  => __('Right'),
-         self::SIDE_TOP    => __('Top'),
-         self::SIDE_BOTTOM => __('Bottom'),
+            self::SIDE_LEFT   => __('Left'),
+            self::SIDE_RIGHT  => __('Right'),
+            self::SIDE_TOP    => __('Top'),
+            self::SIDE_BOTTOM => __('Bottom'),
         ];
     }
 
@@ -694,12 +694,12 @@ JAVASCRIPT;
         global $DB;
 
         return $DB->request([
-         'FROM'  => self::getTable(),
-         'WHERE' => [
-            'racks_id' => $rack->getID(),
-            'side'     => $side
-         ],
-         'ORDER' => 'position ASC'
+            'FROM'  => self::getTable(),
+            'WHERE' => [
+                'racks_id' => $rack->getID(),
+                'side'     => $side
+            ],
+            'ORDER' => 'position ASC'
         ]);
     }
 
@@ -713,7 +713,7 @@ JAVASCRIPT;
         global $DB;
 
         return $DB->request([
-         'FROM'  => self::getTable()
+            'FROM'  => self::getTable()
         ]);
     }
 

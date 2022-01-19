@@ -50,13 +50,15 @@ class LineOperator extends CommonDropdown
     public function getAdditionalFields()
     {
         return [['name'  => 'mcc',
-                  'label' => __('Mobile Country Code'),
-                  'type'  => 'text',
-                  'list'  => true],
+            'label' => __('Mobile Country Code'),
+            'type'  => 'text',
+            'list'  => true
+        ],
             ['name'  => 'mnc',
-                  'label' => __('Mobile Network Code'),
-                  'type'  => 'text',
-                  'list'  => true],
+                'label' => __('Mobile Network Code'),
+                'type'  => 'text',
+                'list'  => true
+            ],
         ];
     }
 
@@ -98,12 +100,12 @@ class LineOperator extends CommonDropdown
 
        //check for mcc/mnc unicity
         $result = $DB->request([
-         'COUNT'  => 'cpt',
-         'FROM'   => self::getTable(),
-         'WHERE'  => [
-            'mcc' => $input['mcc'],
-            'mnc' => $input['mnc']
-         ]
+            'COUNT'  => 'cpt',
+            'FROM'   => self::getTable(),
+            'WHERE'  => [
+                'mcc' => $input['mcc'],
+                'mnc' => $input['mnc']
+            ]
         ])->current();
 
         if ($result['cpt'] > 0) {

@@ -80,14 +80,14 @@ class Calendar extends AbstractBackend
 
         $calendars_params = [
          // Calendar of current principal
-         $principal_calendar_key => [
-            'key'          => $principal_calendar_key,
-            'uri'          => self::BASE_CALENDAR_URI,
-            'principaluri' => $principalPath,
-            'name'         => $principal_item->getName(),
-            'desc'         => sprintf(__('Calendar of %s'), $principal_item->getFriendlyName()),
-            'color'        => null,
-         ]
+            $principal_calendar_key => [
+                'key'          => $principal_calendar_key,
+                'uri'          => self::BASE_CALENDAR_URI,
+                'principaluri' => $principalPath,
+                'name'         => $principal_item->getName(),
+                'desc'         => sprintf(__('Calendar of %s'), $principal_item->getFriendlyName()),
+                'color'        => null,
+            ]
         ];
 
         if ($principal_item instanceof \User) {
@@ -117,14 +117,14 @@ class Calendar extends AbstractBackend
                 }
 
                 $calendars_params[$key] = [
-                'key'          => $key,
-                'uri'          => \User::class === get_class($calendar_principal)
+                    'key'          => $key,
+                    'uri'          => \User::class === get_class($calendar_principal)
                   ? $calendar_principal->fields['name']
                   : $key,
-                'principaluri' => $this->getPrincipalUri($calendar_principal),
-                'name'         => $calendar_principal->getName(),
-                'desc'         => sprintf(__('Calendar of %s'), $calendar_principal->getFriendlyName()),
-                'color'        => $calendar_params['color'],
+                    'principaluri' => $this->getPrincipalUri($calendar_principal),
+                    'name'         => $calendar_principal->getName(),
+                    'desc'         => sprintf(__('Calendar of %s'), $calendar_principal->getFriendlyName()),
+                    'color'        => $calendar_params['color'],
                 ];
             }
         }
@@ -132,18 +132,18 @@ class Calendar extends AbstractBackend
         $calendars = [];
         foreach ($calendars_params as $key => $calendar_data) {
             $calendars[] = [
-             'id'                               => $key,
-             'uri'                              => $calendar_data['uri'],
-             'principaluri'                     => $calendar_data['principaluri'],
-             Property::DISPLAY_NAME             => $calendar_data['name'],
-             Property::CAL_COLOR                => $calendar_data['color'],
-             Property::CAL_DESCRIPTION          => $calendar_data['desc'],
-             Property::CAL_SUPPORTED_COMPONENTS => new SupportedCalendarComponentSet(
-                 $CFG_GLPI['caldav_supported_components']
-             ),
-             Property::RESOURCE_TYPE            => new ResourceType(
-                 ['{DAV:}collection', '{urn:ietf:params:xml:ns:caldav}calendar']
-             ),
+                'id'                               => $key,
+                'uri'                              => $calendar_data['uri'],
+                'principaluri'                     => $calendar_data['principaluri'],
+                Property::DISPLAY_NAME             => $calendar_data['name'],
+                Property::CAL_COLOR                => $calendar_data['color'],
+                Property::CAL_DESCRIPTION          => $calendar_data['desc'],
+                Property::CAL_SUPPORTED_COMPONENTS => new SupportedCalendarComponentSet(
+                    $CFG_GLPI['caldav_supported_components']
+                ),
+                Property::RESOURCE_TYPE            => new ResourceType(
+                    ['{DAV:}collection', '{urn:ietf:params:xml:ns:caldav}calendar']
+                ),
             ];
         }
 
@@ -271,10 +271,10 @@ class Calendar extends AbstractBackend
          : new \DateTime();
 
         return  [
-         'uri'          => $vcomponent->UID . '.ics',
-         'lastmodified' => (new \DateTime('@' . $last_modified->getTimestamp())),
-         'size'         => strlen($calendardata),
-         'calendardata' => $calendardata
+            'uri'          => $vcomponent->UID . '.ics',
+            'lastmodified' => (new \DateTime('@' . $last_modified->getTimestamp())),
+            'size'         => strlen($calendardata),
+            'calendardata' => $calendardata
         ];
     }
 
@@ -383,15 +383,15 @@ class Calendar extends AbstractBackend
        // Load existing object if exists.
         $vobject->getFromDBByCrit(
             [
-            'itemtype' => $itemtype,
-            'items_id' => $items_id,
+                'itemtype' => $itemtype,
+                'items_id' => $items_id,
             ]
         );
 
         $input = [
-         'itemtype' => $itemtype,
-         'items_id' => $items_id,
-         'data'     => $calendarData,
+            'itemtype' => $itemtype,
+            'items_id' => $items_id,
+            'data'     => $calendarData,
         ];
 
         $input = \Toolbox::addslashes_deep($input);

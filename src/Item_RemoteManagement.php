@@ -57,8 +57,8 @@ class Item_RemoteManagement extends CommonDBChild
                     $nb = countElementsInTable(
                         self::getTable(),
                         [
-                        'items_id'     => $item->getID(),
-                        'itemtype'     => $item->getType()
+                            'items_id'     => $item->getID(),
+                            'itemtype'     => $item->getType()
                         ]
                     );
                 }
@@ -88,11 +88,11 @@ class Item_RemoteManagement extends CommonDBChild
         global $DB;
 
         $iterator = $DB->request([
-         'FROM'      => self::getTable(),
-         'WHERE'     => [
-            'itemtype'     => $item->getType(),
-            'items_id'     => $item->fields['id']
-         ]
+            'FROM'      => self::getTable(),
+            'WHERE'     => [
+                'itemtype'     => $item->getType(),
+                'items_id'     => $item->fields['id']
+            ]
         ]);
         return $iterator;
     }
@@ -138,8 +138,9 @@ class Item_RemoteManagement extends CommonDBChild
             $massiveactionparams
             = ['num_displayed'
                         => min($_SESSION['glpilist_limit'], count($iterator)),
-                     'container'
-                        => 'mass' . __CLASS__ . $rand];
+                'container'
+                        => 'mass' . __CLASS__ . $rand
+            ];
             Html::showMassiveActions($massiveactionparams);
         }
 
@@ -229,26 +230,26 @@ class Item_RemoteManagement extends CommonDBChild
         $tab = [];
 
         $tab[] = [
-         'id'                 => 'common',
-         'name'               => __('Characteristics')
+            'id'                 => 'common',
+            'name'               => __('Characteristics')
         ];
 
         $tab[] = [
-         'id'                 => '1',
-         'table'              => $this->getTable(),
-         'field'              => 'remoteid',
-         'name'               => __('ID'),
-         'datatype'           => 'itemlink',
-         'massiveaction'      => false,
+            'id'                 => '1',
+            'table'              => $this->getTable(),
+            'field'              => 'remoteid',
+            'name'               => __('ID'),
+            'datatype'           => 'itemlink',
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
-         'id'                 => '2',
-         'table'              => $this->getTable(),
-         'field'              => 'type',
-         'name'               => _n('Type', 'Types', 1),
-         'datatype'           => 'string',
-         'massiveaction'      => false,
+            'id'                 => '2',
+            'table'              => $this->getTable(),
+            'field'              => 'type',
+            'name'               => _n('Type', 'Types', 1),
+            'datatype'           => 'string',
+            'massiveaction'      => false,
         ];
 
         return $tab;
@@ -260,35 +261,35 @@ class Item_RemoteManagement extends CommonDBChild
 
         $name = self::getTypeName(Session::getPluralNumber());
         $tab[] = [
-          'id'                 => 'remote_management',
-          'name'               => $name
+            'id'                 => 'remote_management',
+            'name'               => $name
         ];
 
         $tab[] = [
-         'id'                 => '180',
-         'table'              => self::getTable(),
-         'field'              => 'remoteid',
-         'name'               => __('ID'),
-         'forcegroupby'       => true,
-         'massiveaction'      => false,
-         'datatype'           => 'dropdown',
-         'joinparams'         => [
-            'jointype'           => 'itemtype_item'
-         ]
+            'id'                 => '180',
+            'table'              => self::getTable(),
+            'field'              => 'remoteid',
+            'name'               => __('ID'),
+            'forcegroupby'       => true,
+            'massiveaction'      => false,
+            'datatype'           => 'dropdown',
+            'joinparams'         => [
+                'jointype'           => 'itemtype_item'
+            ]
         ];
 
         $tab[] = [
-         'id'                 => '181',
-         'table'              => self::getTable(),
-         'field'              => 'type',
-         'name'               => _n('Type', 'Types', 1),
-         'forcegroupby'       => true,
-         'width'              => 1000,
-         'datatype'           => 'dropdown',
-         'massiveaction'      => false,
-         'joinparams'         => [
-            'jointype'           => 'itemtype_item'
-         ]
+            'id'                 => '181',
+            'table'              => self::getTable(),
+            'field'              => 'type',
+            'name'               => _n('Type', 'Types', 1),
+            'forcegroupby'       => true,
+            'width'              => 1000,
+            'datatype'           => 'dropdown',
+            'massiveaction'      => false,
+            'joinparams'         => [
+                'jointype'           => 'itemtype_item'
+            ]
         ];
 
         return $tab;
@@ -345,17 +346,17 @@ class Item_RemoteManagement extends CommonDBChild
         echo Html::input('remoteid', ['value' => $this->fields['remoteid']]);
         echo "</td><td>" . _n('Type', 'Types', 1) . "</td>";
         $types = [
-         self::TEAMVIEWER => 'TeamViewer',
-         self::LITEMANAGER => 'LiteManager',
-         self::ANYDESK => 'AnyDesk'
+            self::TEAMVIEWER => 'TeamViewer',
+            self::LITEMANAGER => 'LiteManager',
+            self::ANYDESK => 'AnyDesk'
         ];
         echo "<td>";
         echo Dropdown::showFromArray(
             'type',
             $types,
             [
-            'value'   => $this->fields['type'],
-            'display' => false
+                'value'   => $this->fields['type'],
+                'display' => false
             ]
         );
         echo "</td></tr>";

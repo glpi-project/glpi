@@ -67,16 +67,16 @@ class NotificationAjax extends DbTestCase
        //also add a mailing notification to make sure we get only ajax ons back #2997
         $instance = new \NotificationMailing();
         $res = $instance->sendNotification([
-         '_itemtype'                   => 'NotificationMailing',
-         '_items_id'                   => 1,
-         '_notificationtemplates_id'   => 0,
-         '_entities_id'                => 0,
-         'fromname'                    => 'TEST',
-         'subject'                     => 'Test notification',
-         'content_text'                => "Hello, this is a test notification.",
-         'to'                          => \Session::getLoginUserID(),
-         'from'                        => 'glpi@tests',
-         'toname'                      => ''
+            '_itemtype'                   => 'NotificationMailing',
+            '_items_id'                   => 1,
+            '_notificationtemplates_id'   => 0,
+            '_entities_id'                => 0,
+            'fromname'                    => 'TEST',
+            'subject'                     => 'Test notification',
+            'content_text'                => "Hello, this is a test notification.",
+            'to'                          => \Session::getLoginUserID(),
+            'from'                        => 'glpi@tests',
+            'toname'                      => ''
         ]);
         $this->boolean($res)->isTrue();
 
@@ -92,9 +92,9 @@ class NotificationAjax extends DbTestCase
         foreach ($notifs as $notif) {
             unset($notif['id']);
             $this->array($notif)->isIdenticalTo([
-            'title'  => 'Test notification',
-            'body'   => 'Hello, this is a test notification.',
-            'url'    => null
+                'title'  => 'Test notification',
+                'body'   => 'Hello, this is a test notification.',
+                'url'    => null
             ]);
         }
 
@@ -119,14 +119,14 @@ class NotificationAjax extends DbTestCase
         $computer = getItemByTypeName('Computer', '_test_pc01');
         $instance = new \NotificationAjax();
         $res = $instance->sendNotification([
-         '_itemtype'                   => 'Computer',
-         '_items_id'                   => $computer->getId(),
-         '_notificationtemplates_id'   => 0,
-         '_entities_id'                => 0,
-         'fromname'                    => 'TEST',
-         'subject'                     => 'Test notification',
-         'content_text'                => "Hello, this is a test notification.",
-         'to'                          => \Session::getLoginUserID()
+            '_itemtype'                   => 'Computer',
+            '_items_id'                   => $computer->getId(),
+            '_notificationtemplates_id'   => 0,
+            '_entities_id'                => 0,
+            'fromname'                    => 'TEST',
+            'subject'                     => 'Test notification',
+            'content_text'                => "Hello, this is a test notification.",
+            'to'                          => \Session::getLoginUserID()
         ]);
         $this->boolean($res)->isTrue();
 

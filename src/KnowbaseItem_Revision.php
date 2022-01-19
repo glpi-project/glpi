@@ -51,13 +51,13 @@ class KnowbaseItem_Revision extends CommonDBTM
             $where = [];
             if ($item->getType() == KnowbaseItem::getType()) {
                 $where = [
-                'knowbaseitems_id' => $item->getID(),
-                'language'         => ''
+                    'knowbaseitems_id' => $item->getID(),
+                    'language'         => ''
                 ];
             } else {
                 $where = [
-                'knowbaseitems_id' => $item->fields['knowbaseitems_id'],
-                'language'         => $item->fields['language']
+                    'knowbaseitems_id' => $item->fields['knowbaseitems_id'],
+                    'language'         => $item->fields['language']
                 ];
             }
 
@@ -96,13 +96,13 @@ class KnowbaseItem_Revision extends CommonDBTM
        // Total Number of revisions
         if ($item->getType() == KnowbaseItem::getType()) {
             $where = [
-            'knowbaseitems_id' => $item->getID(),
-            'language'         => ''
+                'knowbaseitems_id' => $item->getID(),
+                'language'         => ''
             ];
         } else {
             $where = [
-            'knowbaseitems_id' => $item->fields['knowbaseitems_id'],
-            'language'         => $item->fields['language']
+                'knowbaseitems_id' => $item->fields['knowbaseitems_id'],
+                'language'         => $item->fields['language']
             ];
         }
 
@@ -355,12 +355,12 @@ class KnowbaseItem_Revision extends CommonDBTM
         global $DB;
 
         $result = $DB->request([
-         'SELECT' => ['MAX' => 'revision AS revision'],
-         'FROM'   => 'glpi_knowbaseitems_revisions',
-         'WHERE'  => [
-            'knowbaseitems_id'   => $this->fields['knowbaseitems_id'],
-            'language'           => $this->fields['language']
-         ]
+            'SELECT' => ['MAX' => 'revision AS revision'],
+            'FROM'   => 'glpi_knowbaseitems_revisions',
+            'WHERE'  => [
+                'knowbaseitems_id'   => $this->fields['knowbaseitems_id'],
+                'language'           => $this->fields['language']
+            ]
         ])->current();
 
         $rev = $result['revision'];

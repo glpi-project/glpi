@@ -42,8 +42,8 @@ class Processor extends AbstractInventoryAsset
     protected function assetProvider(): array
     {
         return [
-         [
-            'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+            [
+                'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
   <CONTENT>
     <CPUS>
@@ -66,8 +66,8 @@ class Processor extends AbstractInventoryAsset
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-            'expected'  => '{"arch": "i386", "core": 2, "external_clock": 100, "familyname": "Core i5", "familynumber": "6", "internalid": "E3 06 04 00 FF FB EB BF", "manufacturer": "Intel", "model": "78", "name": "Intel(R) Core(TM) i5-6200U CPU @ 2.30GHz", "serial": "To Be Filled By O.E.M.", "speed": 2300, "stepping": 3, "thread": 4, "frequency": 2300, "manufacturers_id": "Intel", "designation": "Intel(R) Core(TM) i5-6200U CPU @ 2.30GHz", "nbcores": 2, "nbthreads": 4, "frequency_default": 2300, "frequence": 2300, "is_dynamic": 1}'
-         ]
+                'expected'  => '{"arch": "i386", "core": 2, "external_clock": 100, "familyname": "Core i5", "familynumber": "6", "internalid": "E3 06 04 00 FF FB EB BF", "manufacturer": "Intel", "model": "78", "name": "Intel(R) Core(TM) i5-6200U CPU @ 2.30GHz", "serial": "To Be Filled By O.E.M.", "speed": 2300, "stepping": 3, "thread": 4, "frequency": 2300, "manufacturers_id": "Intel", "designation": "Intel(R) Core(TM) i5-6200U CPU @ 2.30GHz", "nbcores": 2, "nbthreads": 4, "frequency_default": 2300, "frequence": 2300, "is_dynamic": 1}'
+            ]
         ];
     }
 
@@ -161,60 +161,60 @@ class Processor extends AbstractInventoryAsset
 
        //create manually a computer, with 3 processors
         $computers_id = $computer->add([
-         'name'   => 'pc002',
-         'serial' => 'ggheb7ne7',
-         'entities_id' => 0
+            'name'   => 'pc002',
+            'serial' => 'ggheb7ne7',
+            'entities_id' => 0
         ]);
         $this->integer($computers_id)->isGreaterThan(0);
 
         $manufacturer = new \Manufacturer();
         $manufacturers_id = $manufacturer->add([
-         'name' => 'Intel'
+            'name' => 'Intel'
         ]);
         $this->integer($manufacturers_id)->isGreaterThan(0);
 
         $cpu_1_id = $device_proc->add([
-         'designation' => 'Intel(R) Core(TM) i9',
-         'manufacturers_id' => $manufacturers_id,
-         'frequence' => '2300',
-         'entities_id'  => 0
+            'designation' => 'Intel(R) Core(TM) i9',
+            'manufacturers_id' => $manufacturers_id,
+            'frequence' => '2300',
+            'entities_id'  => 0
         ]);
         $this->integer($cpu_1_id)->isGreaterThan(0);
 
         $item_cpu_1_id = $item_proc->add([
-         'items_id'     => $computers_id,
-         'itemtype'     => 'Computer',
-         'deviceprocessors_id' => $cpu_1_id
+            'items_id'     => $computers_id,
+            'itemtype'     => 'Computer',
+            'deviceprocessors_id' => $cpu_1_id
         ]);
         $this->integer($item_cpu_1_id)->isGreaterThan(0);
 
         $cpu_2_id = $device_proc->add([
-         'designation' => 'Intel(R) Core(TM) i5',
-         'manufacturers_id' => $manufacturers_id,
-         'frequence' => '2000',
-         'entities_id'  => 0
+            'designation' => 'Intel(R) Core(TM) i5',
+            'manufacturers_id' => $manufacturers_id,
+            'frequence' => '2000',
+            'entities_id'  => 0
         ]);
         $this->integer($cpu_2_id)->isGreaterThan(0);
 
         $item_cpu_2_id = $item_proc->add([
-         'items_id'     => $computers_id,
-         'itemtype'     => 'Computer',
-         'deviceprocessors_id' => $cpu_2_id
+            'items_id'     => $computers_id,
+            'itemtype'     => 'Computer',
+            'deviceprocessors_id' => $cpu_2_id
         ]);
         $this->integer($item_cpu_2_id)->isGreaterThan(0);
 
         $cpu_3_id = $device_proc->add([
-         'designation' => 'Intel(R) Core(TM) i3',
-         'manufacturers_id' => $manufacturers_id,
-         'frequence' => '1800',
-         'entities_id'  => 0
+            'designation' => 'Intel(R) Core(TM) i3',
+            'manufacturers_id' => $manufacturers_id,
+            'frequence' => '1800',
+            'entities_id'  => 0
         ]);
         $this->integer($cpu_3_id)->isGreaterThan(0);
 
         $item_cpu_3_id = $item_proc->add([
-         'items_id'     => $computers_id,
-         'itemtype'     => 'Computer',
-         'deviceprocessors_id' => $cpu_3_id
+            'items_id'     => $computers_id,
+            'itemtype'     => 'Computer',
+            'deviceprocessors_id' => $cpu_3_id
         ]);
         $this->integer($item_cpu_3_id)->isGreaterThan(0);
 

@@ -37,11 +37,11 @@ Session::checkRight("link", READ);
 
 if (isset($_GET["lID"])) {
     $iterator = $DB->request([
-      'SELECT' => ['id', 'link', 'data'],
-      'FROM'   => 'glpi_links',
-      'WHERE'  => [
-         'id' => $_GET['lID']
-      ]
+        'SELECT' => ['id', 'link', 'data'],
+        'FROM'   => 'glpi_links',
+        'WHERE'  => [
+            'id' => $_GET['lID']
+        ]
     ]);
 
     if (count($iterator) == 1) {

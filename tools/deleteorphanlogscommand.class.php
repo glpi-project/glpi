@@ -46,7 +46,7 @@ class DeleteOrphanLogsCommand extends AbstractCommand
         $this->setName('glpi:tools:delete_orphan_logs');
         $this->setAliases(
             [
-            'tools:delete_orphan_logs',
+                'tools:delete_orphan_logs',
             ]
         );
         $this->setDescription(__('Delete orphan logs'));
@@ -84,12 +84,12 @@ class DeleteOrphanLogsCommand extends AbstractCommand
 
             $result = $this->db->request(
                 [
-                'SELECT' => ['id', 'items_id'],
-                'FROM' => 'glpi_logs',
-                'WHERE' => [
-                  ['NOT' => ['items_id' => new QuerySubQuery(['SELECT' => 'id', 'FROM' => $tablename])]],
-                  'itemtype' => $itemtype,
-                ],
+                    'SELECT' => ['id', 'items_id'],
+                    'FROM' => 'glpi_logs',
+                    'WHERE' => [
+                        ['NOT' => ['items_id' => new QuerySubQuery(['SELECT' => 'id', 'FROM' => $tablename])]],
+                        'itemtype' => $itemtype,
+                    ],
                 ]
             );
 

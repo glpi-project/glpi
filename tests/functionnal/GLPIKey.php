@@ -43,17 +43,17 @@ class GLPIKey extends \DbTestCase
     protected function getExpectedKeyPathProvider()
     {
         return [
-         ['0.90.5', null],
-         ['9.3.5', null],
-         ['9.4.0', null],
-         ['9.4.5', null],
-         ['9.4.6', GLPI_CONFIG_DIR . '/glpi.key'],
-         ['9.4.9', GLPI_CONFIG_DIR . '/glpi.key'],
-         ['9.5.0-dev', GLPI_CONFIG_DIR . '/glpicrypt.key'],
-         ['9.5.0', GLPI_CONFIG_DIR . '/glpicrypt.key'],
-         ['9.5.3', GLPI_CONFIG_DIR . '/glpicrypt.key'],
-         ['9.6.1', GLPI_CONFIG_DIR . '/glpicrypt.key'],
-         ['15.3.0', GLPI_CONFIG_DIR . '/glpicrypt.key'],
+            ['0.90.5', null],
+            ['9.3.5', null],
+            ['9.4.0', null],
+            ['9.4.5', null],
+            ['9.4.6', GLPI_CONFIG_DIR . '/glpi.key'],
+            ['9.4.9', GLPI_CONFIG_DIR . '/glpi.key'],
+            ['9.5.0-dev', GLPI_CONFIG_DIR . '/glpicrypt.key'],
+            ['9.5.0', GLPI_CONFIG_DIR . '/glpicrypt.key'],
+            ['9.5.3', GLPI_CONFIG_DIR . '/glpicrypt.key'],
+            ['9.6.1', GLPI_CONFIG_DIR . '/glpicrypt.key'],
+            ['15.3.0', GLPI_CONFIG_DIR . '/glpicrypt.key'],
         ];
     }
 
@@ -84,30 +84,30 @@ class GLPIKey extends \DbTestCase
     {
        // basic string, default key
         yield [
-         'encrypted' => 'G6y/xA==',
-         'decrypted' => 'test',
-         'key'       => null,
+            'encrypted' => 'G6y/xA==',
+            'decrypted' => 'test',
+            'key'       => null,
         ];
 
        // string with special chars, default key
         yield [
-         'encrypted' => 'IYx+rrgV1IqUtqSD1repTebaf4c=',
-         'decrypted' => 'zE2^oS1!mC6"dD6&',
-         'key'       => null,
+            'encrypted' => 'IYx+rrgV1IqUtqSD1repTebaf4c=',
+            'decrypted' => 'zE2^oS1!mC6"dD6&',
+            'key'       => null,
         ];
 
        // basic string, simple custom key
         yield [
-         'encrypted' => '7cjo5w==',
-         'decrypted' => 'test',
-         'key'       => 'custom_k3y',
+            'encrypted' => '7cjo5w==',
+            'decrypted' => 'test',
+            'key'       => 'custom_k3y',
         ];
 
        // string with special chars, complex custom  key
         yield [
-         'encrypted' => 'n7iLkqvGhVeXsoFVwqWEVkimkW8=',
-         'decrypted' => 'zE2^oS1!mC6"dD6&',
-         'key'       => 'sY4<sT6*oK3^aN0%',
+            'encrypted' => 'n7iLkqvGhVeXsoFVwqWEVkimkW8=',
+            'decrypted' => 'zE2^oS1!mC6"dD6&',
+            'key'       => 'sY4<sT6*oK3^aN0%',
         ];
     }
 
@@ -358,21 +358,21 @@ class GLPIKey extends \DbTestCase
         $key = hex2bin('a72f621a029175008055f103fb977fe185fecdb248e42c18751afb391278d4b6');
 
         yield [
-         'string'    => 'MyP4ssw0rD',
-         'encrypted' => 'LO/9MItyVPEV1a/fn9kMehifov25XPOEqQl69GmnWFlcPG7zWk5v5CrSPRtVHd5Oy1Y=',
-         'key'       => $key,
+            'string'    => 'MyP4ssw0rD',
+            'encrypted' => 'LO/9MItyVPEV1a/fn9kMehifov25XPOEqQl69GmnWFlcPG7zWk5v5CrSPRtVHd5Oy1Y=',
+            'key'       => $key,
         ];
 
         yield [
-         'string'    => 'This is a string I want to crypt, with some unusual chars like %, \', @, and so on!',
-         'encrypted' => 'lBaMoLV3u0DOZS17qDBoO4uVY56WEmYQpUg+F+WfZ8zE3Nt/nQzBajs6VNY5F1CHHKKSaAR5wGdmYfY2MLX4b7KYOBuC/JYeOUnPXvhQTe8uuAdkDxjqmRqRtY2TaNhQBPBz6ul8i+YZRwW3oPe0wssZl2uV0KONNfI=',
-         'key'       => $key,
+            'string'    => 'This is a string I want to crypt, with some unusual chars like %, \', @, and so on!',
+            'encrypted' => 'lBaMoLV3u0DOZS17qDBoO4uVY56WEmYQpUg+F+WfZ8zE3Nt/nQzBajs6VNY5F1CHHKKSaAR5wGdmYfY2MLX4b7KYOBuC/JYeOUnPXvhQTe8uuAdkDxjqmRqRtY2TaNhQBPBz6ul8i+YZRwW3oPe0wssZl2uV0KONNfI=',
+            'key'       => $key,
         ];
 
         yield [
-         'string'    => '',
-         'encrypted' => 'tBH3MhNfobeT0tdmcYbSNqhll0OTcRSSRajXtSZ980RmzLLgJC3Owg==',
-         'key'       => $key,
+            'string'    => '',
+            'encrypted' => 'tBH3MhNfobeT0tdmcYbSNqhll0OTcRSSRajXtSZ980RmzLLgJC3Owg==',
+            'key'       => $key,
         ];
     }
 
@@ -476,13 +476,13 @@ class GLPIKey extends \DbTestCase
         $hooks_backup = $PLUGIN_HOOKS[Hooks::SECURED_FIELDS] ?? null;
 
         $PLUGIN_HOOKS[Hooks::SECURED_FIELDS] = [
-         'myplugin' => [
-            'glpi_plugin_myplugin_remote.key',
-            'glpi_plugin_myplugin_remote.secret',
-         ],
-         'anotherplugin' => [
-            'glpi_plugin_anotherplugin_link.pass',
-         ],
+            'myplugin' => [
+                'glpi_plugin_myplugin_remote.key',
+                'glpi_plugin_myplugin_remote.secret',
+            ],
+            'anotherplugin' => [
+                'glpi_plugin_anotherplugin_link.pass',
+            ],
         ];
 
         $fields = $this->testedInstance->getFields();
@@ -494,11 +494,11 @@ class GLPIKey extends \DbTestCase
 
         $this->array($fields)->isEqualTo(
             [
-            'glpi_mailcollectors.passwd',
-            'glpi_authldaps.rootdn_passwd',
-            'glpi_plugin_myplugin_remote.key',
-            'glpi_plugin_myplugin_remote.secret',
-            'glpi_plugin_anotherplugin_link.pass',
+                'glpi_mailcollectors.passwd',
+                'glpi_authldaps.rootdn_passwd',
+                'glpi_plugin_myplugin_remote.key',
+                'glpi_plugin_myplugin_remote.secret',
+                'glpi_plugin_anotherplugin_link.pass',
             ]
         );
     }
@@ -513,12 +513,12 @@ class GLPIKey extends \DbTestCase
         $hooks_backup = $PLUGIN_HOOKS[Hooks::SECURED_CONFIGS] ?? null;
 
         $PLUGIN_HOOKS[Hooks::SECURED_CONFIGS] = [
-         'myplugin' => [
-            'password',
-         ],
-         'anotherplugin' => [
-            'secret',
-         ],
+            'myplugin' => [
+                'password',
+            ],
+            'anotherplugin' => [
+                'secret',
+            ],
         ];
 
         $configs = $this->testedInstance->getConfigs();
@@ -530,17 +530,17 @@ class GLPIKey extends \DbTestCase
 
         $this->array($configs)->isEqualTo(
             [
-            'core' => [
-               'glpinetwork_registration_key',
-               'proxy_passwd',
-               'smtp_passwd',
-            ],
-            'plugin:myplugin' => [
-               'password',
-            ],
-            'plugin:anotherplugin' => [
-               'secret',
-            ],
+                'core' => [
+                    'glpinetwork_registration_key',
+                    'proxy_passwd',
+                    'smtp_passwd',
+                ],
+                'plugin:myplugin' => [
+                    'password',
+                ],
+                'plugin:anotherplugin' => [
+                    'secret',
+                ],
             ]
         );
     }
@@ -555,9 +555,9 @@ class GLPIKey extends \DbTestCase
         $hooks_backup = $PLUGIN_HOOKS[Hooks::SECURED_CONFIGS] ?? null;
 
         $PLUGIN_HOOKS[Hooks::SECURED_CONFIGS] = [
-         'myplugin' => [
-            'password',
-         ],
+            'myplugin' => [
+                'password',
+            ],
         ];
 
         $is_url_base_secured = $this->testedInstance->isConfigSecured('core', 'url_base');

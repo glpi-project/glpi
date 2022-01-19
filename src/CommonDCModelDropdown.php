@@ -59,64 +59,64 @@ abstract class CommonDCModelDropdown extends CommonDropdown
 
         if ($DB->fieldExists($this->getTable(), 'weight')) {
             $fields[] = [
-            'name'   => 'weight',
-            'type'   => 'integer',
-            'label'  => __('Weight'),
-            'min'    => 0,
+                'name'   => 'weight',
+                'type'   => 'integer',
+                'label'  => __('Weight'),
+                'min'    => 0,
             ];
         }
 
         if ($DB->fieldExists($this->getTable(), 'required_units')) {
             $fields[] = [
-            'name'   => 'required_units',
-            'type'   => 'integer',
-            'min'    => 1,
-            'label'  => __('Required units')
+                'name'   => 'required_units',
+                'type'   => 'integer',
+                'min'    => 1,
+                'label'  => __('Required units')
             ];
         }
 
         if ($DB->fieldExists($this->getTable(), 'depth')) {
             $fields[] = [
-            'name'   => 'depth',
-            'type'   => 'depth',
-            'label'  => __('Depth')
+                'name'   => 'depth',
+                'type'   => 'depth',
+                'label'  => __('Depth')
             ];
         }
 
         if ($DB->fieldExists($this->getTable(), 'power_connections')) {
             $fields[] = [
-            'name'   => 'power_connections',
-            'type'   => 'integer',
-            'label'  => __('Power connections'),
-            'min'    => 0,
+                'name'   => 'power_connections',
+                'type'   => 'integer',
+                'label'  => __('Power connections'),
+                'min'    => 0,
             ];
         }
 
         if ($DB->fieldExists($this->getTable(), 'power_consumption')) {
             $fields[] = [
-            'name'   => 'power_consumption',
-            'type'   => 'integer',
-            'label'  => __('Power consumption'),
-            'unit'   => __('watts'),
-            'min'    => 0,
+                'name'   => 'power_consumption',
+                'type'   => 'integer',
+                'label'  => __('Power consumption'),
+                'unit'   => __('watts'),
+                'min'    => 0,
             ];
         }
 
         if ($DB->fieldExists($this->getTable(), 'max_power')) {
             $fields[] = [
-            'name'   => 'max_power',
-            'type'   => 'integer',
-            'label'  => __('Max. power (in watts)'),
-            'unit'   => __('watts'),
-            'min'    => 0,
+                'name'   => 'max_power',
+                'type'   => 'integer',
+                'label'  => __('Max. power (in watts)'),
+                'unit'   => __('watts'),
+                'min'    => 0,
             ];
         }
 
         if ($DB->fieldExists($this->getTable(), 'is_half_rack')) {
             $fields[] = [
-            'name'   => 'is_half_rack',
-            'type'   => 'bool',
-            'label'  => __('Is half rack')
+                'name'   => 'is_half_rack',
+                'type'   => 'bool',
+                'label'  => __('Is half rack')
             ];
         }
 
@@ -131,60 +131,60 @@ abstract class CommonDCModelDropdown extends CommonDropdown
 
         if ($DB->fieldExists($table, 'weight')) {
             $options[] = [
-            'id'       => '131',
-            'table'    => $table,
-            'field'    => 'weight',
-            'name'     => __('Weight'),
-            'datatype' => 'decimal'
+                'id'       => '131',
+                'table'    => $table,
+                'field'    => 'weight',
+                'name'     => __('Weight'),
+                'datatype' => 'decimal'
             ];
         }
 
         if ($DB->fieldExists($table, 'required_units')) {
             $options[] = [
-            'id'       => '132',
-            'table'    => $table,
-            'field'    => 'required_units',
-            'name'     => __('Required units'),
-            'datatype' => 'number'
+                'id'       => '132',
+                'table'    => $table,
+                'field'    => 'required_units',
+                'name'     => __('Required units'),
+                'datatype' => 'number'
             ];
         }
 
         if ($DB->fieldExists($table, 'depth')) {
             $options[] = [
-            'id'       => '133',
-            'table'    => $table,
-            'field'    => 'depth',
-            'name'     => __('Depth'),
+                'id'       => '133',
+                'table'    => $table,
+                'field'    => 'depth',
+                'name'     => __('Depth'),
             ];
         }
 
         if ($DB->fieldExists($table, 'power_connections')) {
             $options[] = [
-            'id'       => '134',
-            'table'    => $table,
-            'field'    => 'power_connections',
-            'name'     => __('Power connections'),
-            'datatype' => 'number'
+                'id'       => '134',
+                'table'    => $table,
+                'field'    => 'power_connections',
+                'name'     => __('Power connections'),
+                'datatype' => 'number'
             ];
         }
 
         if ($DB->fieldExists($table, 'power_consumption')) {
             $options[] = [
-            'id'       => '135',
-            'table'    => $table,
-            'field'    => 'power_consumption',
-            'name'     => __('Power consumption'),
-            'datatype' => 'decimal'
+                'id'       => '135',
+                'table'    => $table,
+                'field'    => 'power_consumption',
+                'name'     => __('Power consumption'),
+                'datatype' => 'decimal'
             ];
         }
 
         if ($DB->fieldExists($table, 'is_half_rack')) {
             $options[] = [
-            'id'       => '136',
-            'table'    => $table,
-            'field'    => 'is_half_rack',
-            'name'     => __('Is half rack'),
-            'datatype' => 'bool'
+                'id'       => '136',
+                'table'    => $table,
+                'field'    => 'is_half_rack',
+                'name'     => __('Is half rack'),
+                'datatype' => 'bool'
             ];
         }
 
@@ -201,8 +201,8 @@ abstract class CommonDCModelDropdown extends CommonDropdown
             case 'picture_rear':
                 if (isset($options['html']) && $options['html']) {
                     return Html::image(Toolbox::getPictureUrl($values[$field]), [
-                    'alt'   => $options['searchopt']['name'],
-                    'style' => 'height: 30px;',
+                        'alt'   => $options['searchopt']['name'],
+                        'style' => 'height: 30px;',
                     ]);
                 }
         }
@@ -233,14 +233,14 @@ abstract class CommonDCModelDropdown extends CommonDropdown
                 Dropdown::showFromArray(
                     $field['name'],
                     [
-                    '1'      => __('1'),
-                    '0.5'    => __('1/2'),
-                    '0.33'   => __('1/3'),
-                    '0.25'   => __('1/4')
+                        '1'      => __('1'),
+                        '0.5'    => __('1/2'),
+                        '0.33'   => __('1/3'),
+                        '0.25'   => __('1/4')
                     ],
                     [
-                    'value'   => $this->fields[$field['name']],
-                    'width'   => '100%'
+                        'value'   => $this->fields[$field['name']],
+                        'width'   => '100%'
                     ]
                 );
                 break;

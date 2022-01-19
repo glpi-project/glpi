@@ -59,42 +59,42 @@ class MailCollector extends DbTestCase
             ->boolean($this->testedInstance->getEmpty())
             ->array($this->testedInstance->fields)
                ->isIdenticalTo([
-                  'id'                   => '',
-                  'name'                 => '',
-                  'host'                 => '',
-                  'login'                => '',
-                  'filesize_max'         => '2097152',
-                  'is_active'            => 1,
-                  'date_mod'             => '',
-                  'comment'              => '',
-                  'passwd'               => '',
-                  'accepted'             => '',
-                  'refused'              => '',
-                  'errors'               => '',
-                  'use_mail_date'        => '',
-                  'date_creation'        => '',
-                  'requester_field'      => '',
-                  'add_cc_to_observer'   => '',
-                  'collect_only_unread'  => ''
+                   'id'                   => '',
+                   'name'                 => '',
+                   'host'                 => '',
+                   'login'                => '',
+                   'filesize_max'         => '2097152',
+                   'is_active'            => 1,
+                   'date_mod'             => '',
+                   'comment'              => '',
+                   'passwd'               => '',
+                   'accepted'             => '',
+                   'refused'              => '',
+                   'errors'               => '',
+                   'use_mail_date'        => '',
+                   'date_creation'        => '',
+                   'requester_field'      => '',
+                   'add_cc_to_observer'   => '',
+                   'collect_only_unread'  => ''
                ]);
     }
 
     protected function subjectProvider()
     {
         return [
-         [
-            'raw'       => 'This is a subject',
-            'expected'  => 'This is a subject'
-         ], [
-            'raw'       => "With a \ncarriage return",
-            'expected'  => "With a \ncarriage return"
-         ], [
-            'raw'       => 'We have a problem, <strong>URGENT</strong>',
-            'expected'  => 'We have a problem, &#60;strong&#62;URGENT&#60;/strong&#62;'
-         ], [ //dunno why...
-            'raw'       => 'Subject with =20 character',
-            'expected'  => "Subject with \n character"
-         ]
+            [
+                'raw'       => 'This is a subject',
+                'expected'  => 'This is a subject'
+            ], [
+                'raw'       => "With a \ncarriage return",
+                'expected'  => "With a \ncarriage return"
+            ], [
+                'raw'       => 'We have a problem, <strong>URGENT</strong>',
+                'expected'  => 'We have a problem, &#60;strong&#62;URGENT&#60;/strong&#62;'
+            ], [ //dunno why...
+                'raw'       => 'Subject with =20 character',
+                'expected'  => "Subject with \n character"
+            ]
         ];
     }
 
@@ -125,8 +125,8 @@ class MailCollector extends DbTestCase
         $this->newTestedInstance();
 
         $oinput = [
-         'passwd'    => 'Ph34r',
-         'is_active' => true
+            'passwd'    => 'Ph34r',
+            'is_active' => true
         ];
 
         $prepared = $this->testedInstance->prepareInput($oinput, 'add');
@@ -136,8 +136,8 @@ class MailCollector extends DbTestCase
 
        //empty password means no password.
         $oinput = [
-         'passwd'    => '',
-         'is_active' => true
+            'passwd'    => '',
+            'is_active' => true
         ];
 
         $this->array($this->testedInstance->prepareInput($oinput, 'add'))
@@ -145,7 +145,7 @@ class MailCollector extends DbTestCase
 
        //manage host
         $oinput = [
-         'mail_server' => 'mail.example.com'
+            'mail_server' => 'mail.example.com'
         ];
 
         $this->array($this->testedInstance->prepareInput($oinput, 'add'))
@@ -153,22 +153,22 @@ class MailCollector extends DbTestCase
 
        //manage host
         $oinput = [
-         'mail_server'     => 'mail.example.com',
-         'server_port'     => 143,
-         'server_mailbox'  => 'bugs'
+            'mail_server'     => 'mail.example.com',
+            'server_port'     => 143,
+            'server_mailbox'  => 'bugs'
         ];
 
         $this->array($this->testedInstance->prepareInput($oinput, 'add'))
            ->isIdenticalTo([
-              'mail_server'      => 'mail.example.com',
-              'server_port'      => 143,
-              'server_mailbox'   => 'bugs',
-              'host'             => '{mail.example.com:143}bugs'
+               'mail_server'      => 'mail.example.com',
+               'server_port'      => 143,
+               'server_mailbox'   => 'bugs',
+               'host'             => '{mail.example.com:143}bugs'
            ]);
 
         $oinput = [
-         'passwd'          => 'Ph34r',
-         '_blank_passwd'   => true
+            'passwd'          => 'Ph34r',
+            '_blank_passwd'   => true
         ];
         $this->array($this->testedInstance->prepareInputForUpdate($oinput))
          ->isIdenticalTo(['passwd' => '', '_blank_passwd' => true]);
@@ -185,8 +185,8 @@ class MailCollector extends DbTestCase
 
        //Add an active collector
         $nid = (int)$this->testedInstance->add([
-         'name'      => 'Maille name',
-         'is_active' => true
+            'name'      => 'Maille name',
+            'is_active' => true
         ]);
         $this->integer($nid)->isGreaterThan(0);
 
@@ -196,8 +196,8 @@ class MailCollector extends DbTestCase
 
         $this->boolean(
             $this->testedInstance->update([
-            'id'        => $this->testedInstance->fields['id'],
-            'is_active' => false
+                'id'        => $this->testedInstance->fields['id'],
+                'is_active' => false
             ])
         )->isTrue();
 
@@ -221,64 +221,64 @@ class MailCollector extends DbTestCase
         $uname = 'localhost';
 
         return [
-         [
-            'headers'  => [],
-            'expected' => false,
-         ],
-         [
-            'headers'  => [
-               'message-id' => 'donotknow',
+            [
+                'headers'  => [],
+                'expected' => false,
             ],
-            'expected' => false,
-         ],
-         [
-            'headers'  => [
-               'message-id' => "GLPI-1.{$time}.{$rand}@{$uname}", // old ticket format
+            [
+                'headers'  => [
+                    'message-id' => 'donotknow',
+                ],
+                'expected' => false,
             ],
-            'expected' => true,
-         ],
-         [
-            'headers'  => [
-               'message-id' => "GLPI-SoftwareLicence-1.{$time}.{$rand}@{$uname}", // old format with object relation
+            [
+                'headers'  => [
+                    'message-id' => "GLPI-1.{$time}.{$rand}@{$uname}", // old ticket format
+                ],
+                'expected' => true,
             ],
-            'expected' => true,
-         ],
-         [
-            'headers'  => [
-               'message-id' => "GLPI.{$time}.{$rand}@{$uname}", // old format without object relation
+            [
+                'headers'  => [
+                    'message-id' => "GLPI-SoftwareLicence-1.{$time}.{$rand}@{$uname}", // old format with object relation
+                ],
+                'expected' => true,
             ],
-            'expected' => true,
-         ],
-         [
-            'headers'  => [
-               'message-id' => $ticket_notif->getMessageID(), // new format for ticket
+            [
+                'headers'  => [
+                    'message-id' => "GLPI.{$time}.{$rand}@{$uname}", // old format without object relation
+                ],
+                'expected' => true,
             ],
-            'expected' => true,
-         ],
-         [
-            'headers'  => [
-               'message-id' => $soft_notif->getMessageID(), // new format with object relation
+            [
+                'headers'  => [
+                    'message-id' => $ticket_notif->getMessageID(), // new format for ticket
+                ],
+                'expected' => true,
             ],
-            'expected' => true,
-         ],
-         [
-            'headers'  => [
-               'message-id' => $base_notif->getMessageID(), // new format without object relation
+            [
+                'headers'  => [
+                    'message-id' => $soft_notif->getMessageID(), // new format with object relation
+                ],
+                'expected' => true,
             ],
-            'expected' => true,
-         ],
-         [
-            'headers'  => [
-               'message-id' => "GLPI_notmyuuid-Ticket-1.{$time}.{$rand}@{$uname}", // new format with object relation
+            [
+                'headers'  => [
+                    'message-id' => $base_notif->getMessageID(), // new format without object relation
+                ],
+                'expected' => true,
             ],
-            'expected' => false,
-         ],
-         [
-            'headers'  => [
-               'message-id' => "GLPI_notmyuuid.{$time}.{$rand}@{$uname}", // new format without object relation
+            [
+                'headers'  => [
+                    'message-id' => "GLPI_notmyuuid-Ticket-1.{$time}.{$rand}@{$uname}", // new format with object relation
+                ],
+                'expected' => false,
             ],
-            'expected' => false,
-         ],
+            [
+                'headers'  => [
+                    'message-id' => "GLPI_notmyuuid.{$time}.{$rand}@{$uname}", // new format without object relation
+                ],
+                'expected' => false,
+            ],
         ];
     }
 
@@ -291,8 +291,8 @@ class MailCollector extends DbTestCase
 
         $message = new Message(
             [
-            'headers' => $headers,
-            'content' => 'Message contents...',
+                'headers' => $headers,
+                'content' => 'Message contents...',
             ]
         );
 
@@ -320,138 +320,138 @@ class MailCollector extends DbTestCase
 
         return [
          // invalid header
-         [
-            'headers'           => [
-               'in-reply-to' => 'notavalidvalue',
-               'references'  => 'donotknow',
+            [
+                'headers'           => [
+                    'in-reply-to' => 'notavalidvalue',
+                    'references'  => 'donotknow',
+                ],
+                'expected_itemtype' => null,
+                'expected_items_id' => null,
+                'accepted'          => true,
             ],
-            'expected_itemtype' => null,
-            'expected_items_id' => null,
-            'accepted'          => true,
-         ],
          // old ticket format - found item
-         [
-            'headers'           => [
-               'in-reply-to' => "GLPI-{$ticket_id}.{$time1}.{$rand1}@{$uname1}",
+            [
+                'headers'           => [
+                    'in-reply-to' => "GLPI-{$ticket_id}.{$time1}.{$rand1}@{$uname1}",
+                ],
+                'expected_itemtype' => Ticket::class,
+                'expected_items_id' => $ticket_id,
+                'accepted'          => true,
             ],
-            'expected_itemtype' => Ticket::class,
-            'expected_items_id' => $ticket_id,
-            'accepted'          => true,
-         ],
-         [
-            'headers'           => [
-               'references'  => "GLPI-{$ticket_id}.{$time1}.{$rand1}@{$uname2}",
+            [
+                'headers'           => [
+                    'references'  => "GLPI-{$ticket_id}.{$time1}.{$rand1}@{$uname2}",
+                ],
+                'expected_itemtype' => Ticket::class,
+                'expected_items_id' => $ticket_id,
+                'accepted'          => true,
             ],
-            'expected_itemtype' => Ticket::class,
-            'expected_items_id' => $ticket_id,
-            'accepted'          => true,
-         ],
          // old ticket format - invalid items_id
-         [
-            'headers'           => [
-               'in-reply-to' => "GLPI-9999999.{$time2}.{$rand2}@{$uname1}",
+            [
+                'headers'           => [
+                    'in-reply-to' => "GLPI-9999999.{$time2}.{$rand2}@{$uname1}",
+                ],
+                'expected_itemtype' => null,
+                'expected_items_id' => null,
+                'accepted'          => true,
             ],
-            'expected_itemtype' => null,
-            'expected_items_id' => null,
-            'accepted'          => true,
-         ],
          // old items header format - found item
-         [
-            'headers'           => [
-               'in-reply-to' => "GLPI-SoftwareLicense-{$soft_id}.{$time1}.{$rand2}@{$uname2}",
+            [
+                'headers'           => [
+                    'in-reply-to' => "GLPI-SoftwareLicense-{$soft_id}.{$time1}.{$rand2}@{$uname2}",
+                ],
+                'expected_itemtype' => SoftwareLicense::class,
+                'expected_items_id' => $soft_id,
+                'accepted'          => true,
             ],
-            'expected_itemtype' => SoftwareLicense::class,
-            'expected_items_id' => $soft_id,
-            'accepted'          => true,
-         ],
          // old items header format - invalid itemtype
-         [
-            'headers'           => [
-               'references'  => "GLPI-UnknownType-{$soft_id}.{$time2}.{$rand2}@{$uname1}",
+            [
+                'headers'           => [
+                    'references'  => "GLPI-UnknownType-{$soft_id}.{$time2}.{$rand2}@{$uname1}",
+                ],
+                'expected_itemtype' => null,
+                'expected_items_id' => null,
+                'accepted'          => true,
             ],
-            'expected_itemtype' => null,
-            'expected_items_id' => null,
-            'accepted'          => true,
-         ],
          // old items header format - invalid items_id
-         [
-            'headers'           => [
-               'references'  => "GLPI-SoftwareLicense-9999999.{$time1}.{$rand1}@{$uname2}",
+            [
+                'headers'           => [
+                    'references'  => "GLPI-SoftwareLicense-9999999.{$time1}.{$rand1}@{$uname2}",
+                ],
+                'expected_itemtype' => null,
+                'expected_items_id' => null,
+                'accepted'          => true,
             ],
-            'expected_itemtype' => null,
-            'expected_items_id' => null,
-            'accepted'          => true,
-         ],
          // new header format - found item
-         [
-            'headers'           => [
-               'in-reply-to' => $ticket_notif->getMessageID(),
+            [
+                'headers'           => [
+                    'in-reply-to' => $ticket_notif->getMessageID(),
+                ],
+                'expected_itemtype' => Ticket::class,
+                'expected_items_id' => $ticket_id,
+                'accepted'          => true,
             ],
-            'expected_itemtype' => Ticket::class,
-            'expected_items_id' => $ticket_id,
-            'accepted'          => true,
-         ],
-         [
-            'headers'           => [
-               'references'  => $soft_notif->getMessageID(),
+            [
+                'headers'           => [
+                    'references'  => $soft_notif->getMessageID(),
+                ],
+                'expected_itemtype' => SoftwareLicense::class,
+                'expected_items_id' => $soft_id,
+                'accepted'          => true,
             ],
-            'expected_itemtype' => SoftwareLicense::class,
-            'expected_items_id' => $soft_id,
-            'accepted'          => true,
-         ],
-         [
-            'headers'           => [
-               'in-reply-to' => 'notavalidvalue',
-               'references'  => $soft_notif->getMessageID(),
+            [
+                'headers'           => [
+                    'in-reply-to' => 'notavalidvalue',
+                    'references'  => $soft_notif->getMessageID(),
+                ],
+                'expected_itemtype' => SoftwareLicense::class,
+                'expected_items_id' => $soft_id,
+                'accepted'          => true,
             ],
-            'expected_itemtype' => SoftwareLicense::class,
-            'expected_items_id' => $soft_id,
-            'accepted'          => true,
-         ],
-         [
-            'headers'           => [
-               'in-reply-to' => $soft_notif->getMessageID(),
-               'references'  => 'donotknow',
+            [
+                'headers'           => [
+                    'in-reply-to' => $soft_notif->getMessageID(),
+                    'references'  => 'donotknow',
+                ],
+                'expected_itemtype' => SoftwareLicense::class,
+                'expected_items_id' => $soft_id,
+                'accepted'          => true,
             ],
-            'expected_itemtype' => SoftwareLicense::class,
-            'expected_items_id' => $soft_id,
-            'accepted'          => true,
-         ],
          // new header format - invalid itemtype
-         [
-            'headers'           => [
-               'references'  => "GLPI_{$uuid}-UnknownType-{$ticket_id}.{$time2}.{$rand2}@{$uname1}",
+            [
+                'headers'           => [
+                    'references'  => "GLPI_{$uuid}-UnknownType-{$ticket_id}.{$time2}.{$rand2}@{$uname1}",
+                ],
+                'expected_itemtype' => null,
+                'expected_items_id' => null,
+                'accepted'          => true,
             ],
-            'expected_itemtype' => null,
-            'expected_items_id' => null,
-            'accepted'          => true,
-         ],
          // new header format - invalid items_id
-         [
-            'headers'           => [
-               'references'  => "GLPI_{$uuid}-Ticket-9999999.{$time1}.{$rand1}@{$uname1}",
+            [
+                'headers'           => [
+                    'references'  => "GLPI_{$uuid}-Ticket-9999999.{$time1}.{$rand1}@{$uname1}",
+                ],
+                'expected_itemtype' => null,
+                'expected_items_id' => null,
+                'accepted'          => true,
             ],
-            'expected_itemtype' => null,
-            'expected_items_id' => null,
-            'accepted'          => true,
-         ],
          // new header format - uuid from another GLPI instance
-         [
-            'headers'           => [
-               'in-reply-to' => "GLPI_notmyuuid-Ticket-{$ticket_id}.{$time1}.{$rand1}@{$uname2}",
+            [
+                'headers'           => [
+                    'in-reply-to' => "GLPI_notmyuuid-Ticket-{$ticket_id}.{$time1}.{$rand1}@{$uname2}",
+                ],
+                'expected_itemtype' => null,
+                'expected_items_id' => null,
+                'accepted'          => false,
             ],
-            'expected_itemtype' => null,
-            'expected_items_id' => null,
-            'accepted'          => false,
-         ],
-         [
-            'headers'           => [
-               'references'  => "GLPI_notmyuuid-Ticket-{$ticket_id}.{$time2}.{$rand2}@{$uname1}",
+            [
+                'headers'           => [
+                    'references'  => "GLPI_notmyuuid-Ticket-{$ticket_id}.{$time2}.{$rand2}@{$uname1}",
+                ],
+                'expected_itemtype' => null,
+                'expected_items_id' => null,
+                'accepted'          => false,
             ],
-            'expected_itemtype' => null,
-            'expected_items_id' => null,
-            'accepted'          => false,
-         ],
         ];
     }
 
@@ -468,8 +468,8 @@ class MailCollector extends DbTestCase
 
         $message = new Message(
             [
-            'headers' => $headers,
-            'content' => 'Message contents...',
+                'headers' => $headers,
+                'content' => 'Message contents...',
             ]
         );
 
@@ -496,8 +496,8 @@ class MailCollector extends DbTestCase
 
         $message = new Message(
             [
-            'headers' => $headers,
-            'content' => 'Message contents...',
+                'headers' => $headers,
+                'content' => 'Message contents...',
             ]
         );
 
@@ -515,18 +515,18 @@ class MailCollector extends DbTestCase
         }
 
         $this->mailgate_id = (int)$collector->add([
-         'name'                  => 'testuser',
-         'login'                 => 'testuser',
-         'is_active'             => true,
-         'passwd'                => 'applesauce',
-         'mail_server'           => 'dovecot',
-         'server_type'           => '/imap',
-         'server_port'           => 143,
-         'server_ssl'            => '',
-         'server_cert'           => '/novalidate-cert',
-         'add_cc_to_observer'    => 1,
-         'collect_only_unread'   => 1,
-         'requester_field'       => \MailCollector::REQUESTER_FIELD_REPLY_TO,
+            'name'                  => 'testuser',
+            'login'                 => 'testuser',
+            'is_active'             => true,
+            'passwd'                => 'applesauce',
+            'mail_server'           => 'dovecot',
+            'server_type'           => '/imap',
+            'server_port'           => 143,
+            'server_ssl'            => '',
+            'server_cert'           => '/novalidate-cert',
+            'add_cc_to_observer'    => 1,
+            'collect_only_unread'   => 1,
+            'requester_field'       => \MailCollector::REQUESTER_FIELD_REPLY_TO,
         ]);
 
         $this->integer($this->mailgate_id)->isGreaterThan(0);
@@ -550,17 +550,17 @@ class MailCollector extends DbTestCase
         $uemail = new \UserEmail();
         $this->integer(
             (int)$uemail->add([
-            'users_id'     => $nuid,
-            'is_default'   => 1,
-            'email'        => 'normal@glpi-project.org'
+                'users_id'     => $nuid,
+                'is_default'   => 1,
+                'email'        => 'normal@glpi-project.org'
             ])
         )->isGreaterThan(0);
         $tuid = getItemByTypeName('User', 'tech', true);
         $this->integer(
             (int)$uemail->add([
-            'users_id'     => $tuid,
-            'is_default'   => 1,
-            'email'        => 'tech@glpi-project.org'
+                'users_id'     => $tuid,
+                'is_default'   => 1,
+                'email'        => 'tech@glpi-project.org'
             ])
         )->isGreaterThan(0);
 
@@ -568,8 +568,8 @@ class MailCollector extends DbTestCase
         $doctype = new \DocumentType();
         $this->integer(
             $doctype->add([
-            'name'   => 'Type test',
-            'ext'    => '/^1234567890(_\\\d+)?$/'
+                'name'   => 'Type test',
+                'ext'    => '/^1234567890(_\\\d+)?$/'
             ])
         )->isGreaterThan(0);
 
@@ -609,24 +609,24 @@ class MailCollector extends DbTestCase
 
        // Check not imported emails
         $not_imported_specs = [
-         [
-            'subject' => 'Have a problem, can you help me?',
-            'from'    => 'unknown@glpi-project.org',
-            'to'      => 'unittests@glpi-project.org',
-            'reason'  => \NotImportedEmail::USER_UNKNOWN,
-         ],
-         [
-            'subject' => 'Test\'ed issue',
-            'from'    => 'unknown@glpi-project.org',
-            'to'      => 'unittests@glpi-project.org',
-            'reason'  => \NotImportedEmail::USER_UNKNOWN,
-         ],
-         [
-            'subject' => null, // Subject is empty has mail was not processed
-            'from'    => '', // '' as value is not nullable in DB
-            'to'      => '', // '' as value is not nullable in DB
-            'reason'  => \NotImportedEmail::FAILED_OPERATION,
-         ]
+            [
+                'subject' => 'Have a problem, can you help me?',
+                'from'    => 'unknown@glpi-project.org',
+                'to'      => 'unittests@glpi-project.org',
+                'reason'  => \NotImportedEmail::USER_UNKNOWN,
+            ],
+            [
+                'subject' => 'Test\'ed issue',
+                'from'    => 'unknown@glpi-project.org',
+                'to'      => 'unittests@glpi-project.org',
+                'reason'  => \NotImportedEmail::USER_UNKNOWN,
+            ],
+            [
+                'subject' => null, // Subject is empty has mail was not processed
+                'from'    => '', // '' as value is not nullable in DB
+                'to'      => '', // '' as value is not nullable in DB
+                'reason'  => \NotImportedEmail::FAILED_OPERATION,
+            ]
         ];
         $iterator = $DB->request(['FROM' => \NotImportedEmail::getTable()]);
         $this->integer(count($iterator))->isIdenticalTo(count($not_imported_specs));
@@ -634,10 +634,10 @@ class MailCollector extends DbTestCase
         $not_imported_values = [];
         foreach ($iterator as $data) {
             $not_imported_values[] = [
-            'subject' => $data['subject'],
-            'from'    => $data['from'],
-            'to'      => $data['to'],
-            'reason'  => $data['reason'],
+                'subject' => $data['subject'],
+                'from'    => $data['from'],
+                'to'      => $data['to'],
+                'reason'  => $data['reason'],
             ];
             $this->integer($data['mailcollectors_id'])->isIdenticalTo($this->mailgate_id);
         }
@@ -646,55 +646,55 @@ class MailCollector extends DbTestCase
        // Check created tickets and their actors
         $actors_specs = [
          // Mails having "tech" user as requester
-         [
-            'users_id'      => $tuid,
-            'actor_type'    => \CommonITILActor::REQUESTER,
-            'tickets_names' => [
-               'PHP fatal error',
-               'Ticket with observer',
-               'Re: [GLPI #0038927] Update - Issues with new Windows 10 machine',
-               'A message without to header',
-            ]
-         ],
+            [
+                'users_id'      => $tuid,
+                'actor_type'    => \CommonITILActor::REQUESTER,
+                'tickets_names' => [
+                    'PHP fatal error',
+                    'Ticket with observer',
+                    'Re: [GLPI #0038927] Update - Issues with new Windows 10 machine',
+                    'A message without to header',
+                ]
+            ],
          // Mails having "normal" user as requester
-         [
-            'users_id'      => $nuid,
-            'actor_type'    => \CommonITILActor::REQUESTER,
-            'tickets_names' => [
-               'Test import mail avec emoticons :smiley: unicode',
-               'Test images',
-               'Test\'ed issue',
-               'Test Email from Outlook',
-               'No contenttype',
-               'проверка',
-               'тест2',
-               'Inlined image with no Content-Disposition',
-               'This is a mail without subject.', // No subject = name is set using ticket contents
-               'Image tag splitted on multiple lines',
-               'Attachement having filename using RFC5987 (multiple lines)',
-               'Attachement having filename using RFC5987 (single line)',
-               'Mono-part HTML message',
-               '24.1 Test attachment with long multibyte filename',
-               '24.2 Test attachment with short multibyte filename',
-               '25 - Test attachment with invalid chars for OS',
-               '26 Illegal char in body',
-               '28 Multiple attachments no extension',
-            ]
-         ],
+            [
+                'users_id'      => $nuid,
+                'actor_type'    => \CommonITILActor::REQUESTER,
+                'tickets_names' => [
+                    'Test import mail avec emoticons :smiley: unicode',
+                    'Test images',
+                    'Test\'ed issue',
+                    'Test Email from Outlook',
+                    'No contenttype',
+                    'проверка',
+                    'тест2',
+                    'Inlined image with no Content-Disposition',
+                    'This is a mail without subject.', // No subject = name is set using ticket contents
+                    'Image tag splitted on multiple lines',
+                    'Attachement having filename using RFC5987 (multiple lines)',
+                    'Attachement having filename using RFC5987 (single line)',
+                    'Mono-part HTML message',
+                    '24.1 Test attachment with long multibyte filename',
+                    '24.2 Test attachment with short multibyte filename',
+                    '25 - Test attachment with invalid chars for OS',
+                    '26 Illegal char in body',
+                    '28 Multiple attachments no extension',
+                ]
+            ],
          // Mails having "normal" user as observer (add_cc_to_observer = true)
-         [
-            'users_id'      => $nuid,
-            'actor_type'    => \CommonITILActor::OBSERVER,
-            'tickets_names' => [
-               'Ticket with observer',
-            ]
-         ],
+            [
+                'users_id'      => $nuid,
+                'actor_type'    => \CommonITILActor::OBSERVER,
+                'tickets_names' => [
+                    'Ticket with observer',
+                ]
+            ],
         ];
 
        // Tickets on which content should be checked (key is ticket name)
         $tickets_contents = [
          // Plain text on mono-part email
-         'PHP fatal error' => <<<PLAINTEXT
+            'PHP fatal error' => <<<PLAINTEXT
 On some cases, doing the following:
 # blahblah
 
@@ -704,24 +704,24 @@ Will cause a PHP fatal error:
 Best regards,
 PLAINTEXT,
          // HTML on multi-part email
-         'Re: [GLPI #0038927] Update - Issues with new Windows 10 machine' => <<<HTML
+            'Re: [GLPI #0038927] Update - Issues with new Windows 10 machine' => <<<HTML
 <html>
 <body>
 <p>This message have reply to header, requester should be get from this header.</p>
 </body>
 </html>
 HTML,
-         'Mono-part HTML message' => <<<HTML
+            'Mono-part HTML message' => <<<HTML
 <html>
 <body>
 <p>This HTML message does not use <strong>"multipart/alternative"</strong> format.</p>
 </body>
 </html>
 HTML,
-         '26 Illegal char in body' => <<<PLAINTEXT
+            '26 Illegal char in body' => <<<PLAINTEXT
 这是很坏的Minus C Blabla
 PLAINTEXT,
-         '28 Multiple attachments no extension' => <<<HTML
+            '28 Multiple attachments no extension' => <<<HTML
 
 <HTML><BODY><div>&nbsp;</div><div>Test</div><div>&nbsp;</div></BODY></HTML>
 HTML,
@@ -729,20 +729,20 @@ HTML,
 
         foreach ($actors_specs as $actor_specs) {
             $iterator = $DB->request([
-            'SELECT' => ['t.id', 't.name', 't.content', 'tu.users_id'],
-            'FROM'   => \Ticket::getTable() . " AS t",
-            'INNER JOIN'   => [
-               \Ticket_User::getTable() . " AS tu"  => [
-                  'ON'  => [
-                     't'   => 'id',
-                     'tu'  => 'tickets_id'
-                  ]
-               ]
-            ],
-            'WHERE'  => [
-               'tu.users_id'  => $actor_specs['users_id'],
-               'tu.type'      => $actor_specs['actor_type'],
-            ]
+                'SELECT' => ['t.id', 't.name', 't.content', 'tu.users_id'],
+                'FROM'   => \Ticket::getTable() . " AS t",
+                'INNER JOIN'   => [
+                    \Ticket_User::getTable() . " AS tu"  => [
+                        'ON'  => [
+                            't'   => 'id',
+                            'tu'  => 'tickets_id'
+                        ]
+                    ]
+                ],
+                'WHERE'  => [
+                    'tu.users_id'  => $actor_specs['users_id'],
+                    'tu.type'      => $actor_specs['actor_type'],
+                ]
             ]);
 
             $this->integer(count($iterator))->isIdenticalTo(count($actor_specs['tickets_names']));
@@ -765,40 +765,40 @@ HTML,
 
        // Check creation of expected documents
         $expected_docs = [
-         '00-logoteclib.png',
+            '00-logoteclib.png',
          // Space is missing between "France" and "très" due to a bug in laminas-mail
-         '01-screenshot-2018-4-12-observatoire-francetres-haut-debit.png',
-         '01-test.JPG',
-         '15-image001.png',
-         '18-blank.gif',
-         '19-secl-chas.gif',
-         '20-special-chars.gif',
-         '24.1-zhang-wen-jian-ming-jiang-dao-zhi-nei-rong-chu-zhi-biao-tou-zhong-de-lian-xu-xing.txt',
-         '24.2-zhong-guo-zi-fu.txt',
-         '25-new-text-document.txt',
-         '1234567890',
-         '1234567890_2',
-         '1234567890_3',
+            '01-screenshot-2018-4-12-observatoire-francetres-haut-debit.png',
+            '01-test.JPG',
+            '15-image001.png',
+            '18-blank.gif',
+            '19-secl-chas.gif',
+            '20-special-chars.gif',
+            '24.1-zhang-wen-jian-ming-jiang-dao-zhi-nei-rong-chu-zhi-biao-tou-zhong-de-lian-xu-xing.txt',
+            '24.2-zhong-guo-zi-fu.txt',
+            '25-new-text-document.txt',
+            '1234567890',
+            '1234567890_2',
+            '1234567890_3',
         ];
 
         $iterator = $DB->request(
             [
-            'SELECT' => ['d.filename'],
-            'FROM'   => \Document::getTable() . " AS d",
-            'INNER JOIN'   => [
-               \Document_Item::getTable() . " AS d_item"  => [
-                  'ON'  => [
-                     'd'      => 'id',
-                     'd_item' => 'documents_id',
-                     [
-                        'AND' => [
-                           'd_item.itemtype'      => 'Ticket',
-                           'd_item.date_creation' => $_SESSION["glpi_currenttime"],
+                'SELECT' => ['d.filename'],
+                'FROM'   => \Document::getTable() . " AS d",
+                'INNER JOIN'   => [
+                    \Document_Item::getTable() . " AS d_item"  => [
+                        'ON'  => [
+                            'd'      => 'id',
+                            'd_item' => 'documents_id',
+                            [
+                                'AND' => [
+                                    'd_item.itemtype'      => 'Ticket',
+                                    'd_item.date_creation' => $_SESSION["glpi_currenttime"],
+                                ]
+                            ]
                         ]
-                     ]
-                  ]
-               ]
-            ]
+                    ]
+                ]
             ]
         );
 
@@ -812,31 +812,31 @@ HTML,
 
        // Check creation of expected followups
         $expected_followups = [
-         [
-            'items_id' => 100,
-            'users_id' => $tuid,
-            'content'  => 'This is a reply that references Ticket 100 in In-Reply-To header (old format).' . "\r\n" . 'It should be added as followup.',
-         ],
-         [
-            'items_id' => 100,
-            'users_id' => $tuid,
-            'content'  => 'This is a reply that references Ticket 100 in References header (old format).' . "\r\n" . 'It should be added as followup.',
-         ],
-         [
-            'items_id' => 101,
-            'users_id' => $tuid,
-            'content'  => 'This is a reply that references Ticket 101 in its subject.' . "\r\n" . 'It should be added as followup.',
-         ],
-         [
-            'items_id' => 100,
-            'users_id' => $tuid,
-            'content'  => 'This is a reply that references Ticket 100 in In-Reply-To header (new format).' . "\r\n" . 'It should be added as followup.',
-         ],
-         [
-            'items_id' => 100,
-            'users_id' => $tuid,
-            'content'  => 'This is a reply that references Ticket 100 in References header (new format).' . "\r\n" . 'It should be added as followup.',
-         ],
+            [
+                'items_id' => 100,
+                'users_id' => $tuid,
+                'content'  => 'This is a reply that references Ticket 100 in In-Reply-To header (old format).' . "\r\n" . 'It should be added as followup.',
+            ],
+            [
+                'items_id' => 100,
+                'users_id' => $tuid,
+                'content'  => 'This is a reply that references Ticket 100 in References header (old format).' . "\r\n" . 'It should be added as followup.',
+            ],
+            [
+                'items_id' => 101,
+                'users_id' => $tuid,
+                'content'  => 'This is a reply that references Ticket 101 in its subject.' . "\r\n" . 'It should be added as followup.',
+            ],
+            [
+                'items_id' => 100,
+                'users_id' => $tuid,
+                'content'  => 'This is a reply that references Ticket 100 in In-Reply-To header (new format).' . "\r\n" . 'It should be added as followup.',
+            ],
+            [
+                'items_id' => 100,
+                'users_id' => $tuid,
+                'content'  => 'This is a reply that references Ticket 100 in References header (new format).' . "\r\n" . 'It should be added as followup.',
+            ],
         ];
 
         foreach ($expected_followups as $expected_followup) {
@@ -847,42 +847,42 @@ HTML,
     protected function mailServerProtocolsProvider()
     {
         return [
-         [
-            'cnx_string'        => '',
-            'expected_type'     => '',
-            'expected_protocol' => null,
-            'expected_storage'  => null,
-         ],
-         [
-            'cnx_string'        => '{mail.domain.org/imap}',
-            'expected_type'     => 'imap',
-            'expected_protocol' => \Laminas\Mail\Protocol\Imap::class,
-            'expected_storage'  => \Laminas\Mail\Storage\Imap::class,
-         ],
-         [
-            'cnx_string'        => '{mail.domain.org/imap/ssl/debug}INBOX',
-            'expected_type'     => 'imap',
-            'expected_protocol' => \Laminas\Mail\Protocol\Imap::class,
-            'expected_storage'  => \Laminas\Mail\Storage\Imap::class,
-         ],
-         [
-            'cnx_string'        => '{mail.domain.org/pop}',
-            'expected_type'     => 'pop',
-            'expected_protocol' => \Laminas\Mail\Protocol\Pop3::class,
-            'expected_storage'  => \Laminas\Mail\Storage\Pop3::class,
-         ],
-         [
-            'cnx_string'        => '{mail.domain.org/pop/ssl/tls}',
-            'expected_type'     => 'pop',
-            'expected_protocol' => \Laminas\Mail\Protocol\Pop3::class,
-            'expected_storage'  => \Laminas\Mail\Storage\Pop3::class,
-         ],
-         [
-            'cnx_string'        => '{mail.domain.org/unknown-type/ssl}',
-            'expected_type'     => '',
-            'expected_protocol' => null,
-            'expected_storage'  => null,
-         ],
+            [
+                'cnx_string'        => '',
+                'expected_type'     => '',
+                'expected_protocol' => null,
+                'expected_storage'  => null,
+            ],
+            [
+                'cnx_string'        => '{mail.domain.org/imap}',
+                'expected_type'     => 'imap',
+                'expected_protocol' => \Laminas\Mail\Protocol\Imap::class,
+                'expected_storage'  => \Laminas\Mail\Storage\Imap::class,
+            ],
+            [
+                'cnx_string'        => '{mail.domain.org/imap/ssl/debug}INBOX',
+                'expected_type'     => 'imap',
+                'expected_protocol' => \Laminas\Mail\Protocol\Imap::class,
+                'expected_storage'  => \Laminas\Mail\Storage\Imap::class,
+            ],
+            [
+                'cnx_string'        => '{mail.domain.org/pop}',
+                'expected_type'     => 'pop',
+                'expected_protocol' => \Laminas\Mail\Protocol\Pop3::class,
+                'expected_storage'  => \Laminas\Mail\Storage\Pop3::class,
+            ],
+            [
+                'cnx_string'        => '{mail.domain.org/pop/ssl/tls}',
+                'expected_type'     => 'pop',
+                'expected_protocol' => \Laminas\Mail\Protocol\Pop3::class,
+                'expected_storage'  => \Laminas\Mail\Storage\Pop3::class,
+            ],
+            [
+                'cnx_string'        => '{mail.domain.org/unknown-type/ssl}',
+                'expected_type'     => '',
+                'expected_protocol' => null,
+                'expected_storage'  => null,
+            ],
         ];
     }
 
@@ -906,9 +906,9 @@ HTML,
         }
 
         $params = [
-         'host'     => 'dovecot',
-         'user'     => 'testuser',
-         'password' => 'applesauce',
+            'host'     => 'dovecot',
+            'user'     => 'testuser',
+            'password' => 'applesauce',
         ];
         if ($expected_storage !== null) {
             $this->object(\Toolbox::getMailServerStorageInstance($type, $params))->isInstanceOf($expected_storage);
@@ -936,101 +936,101 @@ CLASS
 
         return [
          // Check that invalid hook result does not alter core protocols specs
-         [
-            'hook_result'        => 'invalid result',
-            'type'               => 'imap',
-            'expected_warning'   => 'Invalid value returned by "mail_server_protocols" hook.',
-            'expected_protocol'  => 'Laminas\Mail\Protocol\Imap',
-            'expected_storage'   => 'Laminas\Mail\Storage\Imap',
-         ],
-         // Check that hook cannot alter core protocols specs
-         [
-            'hook_result'        => [
-               'imap' => [
-                  'label'    => 'Override test',
-                  'protocol' => 'SomeClass',
-                  'storage'  => 'SomeClass',
-               ],
+            [
+                'hook_result'        => 'invalid result',
+                'type'               => 'imap',
+                'expected_warning'   => 'Invalid value returned by "mail_server_protocols" hook.',
+                'expected_protocol'  => 'Laminas\Mail\Protocol\Imap',
+                'expected_storage'   => 'Laminas\Mail\Storage\Imap',
             ],
-            'type'               => 'imap',
-            'expected_warning'   => 'Protocol "imap" is already defined and cannot be overwritten.',
-            'expected_protocol'  => 'Laminas\Mail\Protocol\Imap',
-            'expected_storage'   => 'Laminas\Mail\Storage\Imap',
-         ],
          // Check that hook cannot alter core protocols specs
-         [
-            'hook_result'        => [
-               'pop' => [
-                  'label'    => 'Override test',
-                  'protocol' => 'SomeClass',
-                  'storage'  => 'SomeClass',
-               ],
+            [
+                'hook_result'        => [
+                    'imap' => [
+                        'label'    => 'Override test',
+                        'protocol' => 'SomeClass',
+                        'storage'  => 'SomeClass',
+                    ],
+                ],
+                'type'               => 'imap',
+                'expected_warning'   => 'Protocol "imap" is already defined and cannot be overwritten.',
+                'expected_protocol'  => 'Laminas\Mail\Protocol\Imap',
+                'expected_storage'   => 'Laminas\Mail\Storage\Imap',
             ],
-            'type'               => 'pop',
-            'expected_warning'   => 'Protocol "pop" is already defined and cannot be overwritten.',
-            'expected_protocol'  => 'Laminas\Mail\Protocol\Pop3',
-            'expected_storage'   => 'Laminas\Mail\Storage\Pop3',
-         ],
+         // Check that hook cannot alter core protocols specs
+            [
+                'hook_result'        => [
+                    'pop' => [
+                        'label'    => 'Override test',
+                        'protocol' => 'SomeClass',
+                        'storage'  => 'SomeClass',
+                    ],
+                ],
+                'type'               => 'pop',
+                'expected_warning'   => 'Protocol "pop" is already defined and cannot be overwritten.',
+                'expected_protocol'  => 'Laminas\Mail\Protocol\Pop3',
+                'expected_storage'   => 'Laminas\Mail\Storage\Pop3',
+            ],
          // Check that class must exists
-         [
-            'hook_result'        => [
-               'custom-protocol' => [
-                  'label'    => 'Invalid class',
-                  'protocol' => 'SomeClass1',
-                  'storage'  => 'SomeClass2',
-               ],
+            [
+                'hook_result'        => [
+                    'custom-protocol' => [
+                        'label'    => 'Invalid class',
+                        'protocol' => 'SomeClass1',
+                        'storage'  => 'SomeClass2',
+                    ],
+                ],
+                'type'               => 'custom-protocol',
+                'expected_warning'   => 'Invalid specs for protocol "custom-protocol".',
+                'expected_protocol'  => null,
+                'expected_storage'   => null,
             ],
-            'type'               => 'custom-protocol',
-            'expected_warning'   => 'Invalid specs for protocol "custom-protocol".',
-            'expected_protocol'  => null,
-            'expected_storage'   => null,
-         ],
          // Check that class must implements expected functions
-         [
-            'hook_result'        => [
-               'custom-protocol' => [
-                  'label'    => 'Invalid class',
-                  'protocol' => 'Plugin',
-                  'storage'  => 'Migration',
-               ],
+            [
+                'hook_result'        => [
+                    'custom-protocol' => [
+                        'label'    => 'Invalid class',
+                        'protocol' => 'Plugin',
+                        'storage'  => 'Migration',
+                    ],
+                ],
+                'type'               => 'custom-protocol',
+                'expected_warning'   => 'Invalid specs for protocol "custom-protocol".',
+                'expected_protocol'  => null,
+                'expected_storage'   => null,
             ],
-            'type'               => 'custom-protocol',
-            'expected_warning'   => 'Invalid specs for protocol "custom-protocol".',
-            'expected_protocol'  => null,
-            'expected_storage'   => null,
-         ],
          // Check valid case using class names
-         [
-            'hook_result'        => [
-               'custom-protocol' => [
-                  'label'    => 'Custom email protocol',
-                  'protocol' => 'PluginTesterFakeProtocol',
-                  'storage'  => 'PluginTesterFakeStorage',
-               ],
+            [
+                'hook_result'        => [
+                    'custom-protocol' => [
+                        'label'    => 'Custom email protocol',
+                        'protocol' => 'PluginTesterFakeProtocol',
+                        'storage'  => 'PluginTesterFakeStorage',
+                    ],
+                ],
+                'type'               => 'custom-protocol',
+                'expected_warning'   => null,
+                'expected_protocol'  => 'PluginTesterFakeProtocol',
+                'expected_storage'   => 'PluginTesterFakeStorage',
             ],
-            'type'               => 'custom-protocol',
-            'expected_warning'   => null,
-            'expected_protocol'  => 'PluginTesterFakeProtocol',
-            'expected_storage'   => 'PluginTesterFakeStorage',
-         ],
          // Check valid case using callback
-         [
-            'hook_result'        => [
-               'custom-protocol' => [
-                  'label'    => 'Custom email protocol',
-                  'protocol' => function () {
-                    return new \PluginTesterFakeProtocol();
-                  },
-                  'storage'  => function (array $params) {
-                    return new \PluginTesterFakeStorage($params);
-                  },
-               ],
+            [
+                'hook_result'        => [
+                    'custom-protocol' => [
+                        'label'    => 'Custom email protocol',
+                        'protocol' => function () {
+                            return new \PluginTesterFakeProtocol();
+                        },
+                        'storage'  => function (array $params) {
+                            return new \PluginTesterFakeStorage($params);
+                        },
+                    ],
+                ],
+                'type'               => 'custom-protocol',
+                'expected_warning'   => null,
+                'expected_protocol'  => 'PluginTesterFakeProtocol',
+                'expected_storage'   => 'PluginTesterFakeStorage',
             ],
-            'type'               => 'custom-protocol',
-            'expected_warning'   => null,
-            'expected_protocol'  => 'PluginTesterFakeProtocol',
-            'expected_storage'   => 'PluginTesterFakeStorage',
-         ],
         ];
     }
 
@@ -1071,9 +1071,9 @@ CLASS
         $storage   = null;
         $getStorage = function () use ($type, &$storage) {
             $params = [
-            'host'     => 'dovecot',
-            'user'     => 'testuser',
-            'password' => 'applesauce',
+                'host'     => 'dovecot',
+                'user'     => 'testuser',
+                'password' => 'applesauce',
             ];
             $storage = \Toolbox::getMailServerStorageInstance($type, $params);
         };

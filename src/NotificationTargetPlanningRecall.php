@@ -118,8 +118,8 @@ class NotificationTargetPlanningRecall extends NotificationTarget
 
             if ($field != "" && $user->getFromDB($item->fields[$field])) {
                 $this->addToRecipientsList([
-                'language' => $user->fields['language'],
-                'users_id' => $user->fields['id']
+                    'language' => $user->fields['language'],
+                    'users_id' => $user->fields['id']
                 ]);
             }
         }
@@ -138,8 +138,8 @@ class NotificationTargetPlanningRecall extends NotificationTarget
                 foreach ($item->fields['users_id_guests'] as $users_id) {
                     if ($user->getFromDB($users_id)) {
                         $this->addToRecipientsList([
-                        'language' => $user->fields['language'],
-                        'users_id' => $user->fields['id']
+                            'language' => $user->fields['language'],
+                            'users_id' => $user->fields['id']
                         ]);
                     }
                 }
@@ -239,22 +239,23 @@ class NotificationTargetPlanningRecall extends NotificationTarget
     {
 
         $tags_all = ['recall.action'            => _n('Event', 'Events', 1),
-                        'recall.item.user'         => __('Writer'),
-                        'recall.item.date_mod'     => __('Last update'),
-                        'recall.item.name'         => __('Title'),
-                        'recall.item.private'      => __('Private'),
-                        'recall.item.content'      => __('Description'),
-                        'recall.item.url'          => __('URL'),
-                        'recall.itemtype'          => __('Item type'),
-                        'recall.planning.begin'    => __('Start date'),
-                        'recall.planning.state'    => __('Status'),
-                        'recall.planning.end'      => __('End date'),
-                        ];
+            'recall.item.user'         => __('Writer'),
+            'recall.item.date_mod'     => __('Last update'),
+            'recall.item.name'         => __('Title'),
+            'recall.item.private'      => __('Private'),
+            'recall.item.content'      => __('Description'),
+            'recall.item.url'          => __('URL'),
+            'recall.itemtype'          => __('Item type'),
+            'recall.planning.begin'    => __('Start date'),
+            'recall.planning.state'    => __('Status'),
+            'recall.planning.end'      => __('End date'),
+        ];
 
         foreach ($tags_all as $tag => $label) {
             $this->addTagToList(['tag'   => $tag,
-                                   'label' => $label,
-                                   'value' => true]);
+                'label' => $label,
+                'value' => true
+            ]);
         }
 
         asort($this->tag_descriptions);

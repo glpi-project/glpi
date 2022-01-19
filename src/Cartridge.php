@@ -56,7 +56,7 @@ class Cartridge extends CommonDBRelation
     public function getCloneRelations(): array
     {
         return [
-         Infocom::class
+            Infocom::class
         ];
     }
 
@@ -107,8 +107,9 @@ class Cartridge extends CommonDBRelation
         }
 
         return ["cartridgeitems_id" => $item->fields["id"],
-                   "entities_id"       => $item->getEntityID(),
-                   "date_in"           => date("Y-m-d")];
+            "entities_id"       => $item->getEntityID(),
+            "date_in"           => date("Y-m-d")
+        ];
     }
 
     public function post_addItem()
@@ -119,8 +120,8 @@ class Cartridge extends CommonDBRelation
         if (count($infocoms)) {
             $infocom = reset($infocoms);
             $infocom->clone([
-            'itemtype'  => self::getType(),
-            'items_id'  => $this->getID()
+                'itemtype'  => self::getType(),
+                'items_id'  => $this->getID()
             ]);
         }
 
@@ -139,7 +140,8 @@ class Cartridge extends CommonDBRelation
                  || ($this->oldvalues['pages'] == $printer->getField('last_pages_counter')))
             ) {
                 $printer->update(['id'                 => $printer->getID(),
-                                   'last_pages_counter' => $this->fields['pages'] ]);
+                    'last_pages_counter' => $this->fields['pages']
+                ]);
             }
         }
         parent::post_updateItem($history);
@@ -203,7 +205,8 @@ class Cartridge extends CommonDBRelation
                         if ($item->can($key, UPDATE)) {
                             if (
                                 $item->update(['id' => $key,
-                                             'pages' => $input['pages']])
+                                    'pages' => $input['pages']
+                                ])
                             ) {
                                 $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_OK);
                             } else {
@@ -239,12 +242,12 @@ class Cartridge extends CommonDBRelation
         $result = $DB->update(
             $this->getTable(),
             [
-            'date_out'     => 'NULL',
-            'date_use'     => 'NULL',
-            'printers_id'  => 0
+                'date_out'     => 'NULL',
+                'date_use'     => 'NULL',
+                'printers_id'  => 0
             ],
             [
-            'id' => $input['id']
+                'id' => $input['id']
             ]
         );
         if ($result && ($DB->affectedRows() > 0)) {
@@ -272,13 +275,13 @@ class Cartridge extends CommonDBRelation
 
        // Get first unused cartridge
         $iterator = $DB->request([
-         'SELECT' => ['id'],
-         'FROM'   => $this->getTable(),
-         'WHERE'  => [
-            'cartridgeitems_id'  => $tID,
-            'date_use'           => null
-         ],
-         'LIMIT'  => 1
+            'SELECT' => ['id'],
+            'FROM'   => $this->getTable(),
+            'WHERE'  => [
+                'cartridgeitems_id'  => $tID,
+                'date_use'           => null
+            ],
+            'LIMIT'  => 1
         ]);
 
         if (count($iterator)) {
@@ -288,19 +291,19 @@ class Cartridge extends CommonDBRelation
             $result = $DB->update(
                 $this->getTable(),
                 [
-                'date_use'     => date('Y-m-d'),
-                'printers_id'  => $pID
+                    'date_use'     => date('Y-m-d'),
+                    'printers_id'  => $pID
                 ],
                 [
-                'id'        => $cID,
-                'date_use'  => null
+                    'id'        => $cID,
+                    'date_use'  => null
                 ]
             );
             if ($result && ($DB->affectedRows() > 0)) {
                  $changes = [
-                   '0',
-                   '',
-                   __('Installing a cartridge'),
+                     '0',
+                     '',
+                     __('Installing a cartridge'),
                  ];
                  Log::history($pID, 'Printer', $changes, 0, Log::HISTORY_LOG_SIMPLE_MESSAGE);
                  return true;
@@ -333,10 +336,10 @@ class Cartridge extends CommonDBRelation
             $result = $DB->update(
                 $this->getTable(),
                 [
-                'date_out'  => date('Y-m-d')
+                    'date_out'  => date('Y-m-d')
                 ] + $toadd,
                 [
-                'id'  => $ID
+                    'id'  => $ID
                 ]
             );
 
@@ -345,9 +348,9 @@ class Cartridge extends CommonDBRelation
                 && ($DB->affectedRows() > 0)
             ) {
                  $changes = [
-                  '0',
-                  '',
-                  __('Uninstalling a cartridge'),
+                     '0',
+                     '',
+                     __('Uninstalling a cartridge'),
                  ];
                  Log::history(
                      $this->getField("printers_id"),
@@ -482,9 +485,9 @@ class Cartridge extends CommonDBRelation
         global $DB;
 
         $row = $DB->request([
-         'FROM'   => self::getTable(),
-         'COUNT'  => 'cpt',
-         'WHERE'  => ['cartridgeitems_id' => $tID]
+            'FROM'   => self::getTable(),
+            'COUNT'  => 'cpt',
+            'WHERE'  => ['cartridgeitems_id' => $tID]
         ])->current();
         return $row['cpt'];
     }
@@ -504,9 +507,9 @@ class Cartridge extends CommonDBRelation
         global $DB;
 
         $row = $DB->request([
-         'FROM'   => self::getTable(),
-         'COUNT'  => 'cpt',
-         'WHERE'  => ['printers_id' => $pID]
+            'FROM'   => self::getTable(),
+            'COUNT'  => 'cpt',
+            'WHERE'  => ['printers_id' => $pID]
         ])->current();
         return (int)$row['cpt'];
     }
@@ -524,16 +527,16 @@ class Cartridge extends CommonDBRelation
         global $DB;
 
         $row = $DB->request([
-         'SELECT' => ['id'],
-         'COUNT'  => 'cpt',
-         'FROM'   => 'glpi_cartridges',
-         'WHERE'  => [
-            'cartridgeitems_id'  => $tID,
-            'date_out'           => null,
-            'NOT'                => [
-               'date_use'  => null
+            'SELECT' => ['id'],
+            'COUNT'  => 'cpt',
+            'FROM'   => 'glpi_cartridges',
+            'WHERE'  => [
+                'cartridgeitems_id'  => $tID,
+                'date_out'           => null,
+                'NOT'                => [
+                    'date_use'  => null
+                ]
             ]
-         ]
         ])->current();
         return (int)$row['cpt'];
     }
@@ -553,13 +556,13 @@ class Cartridge extends CommonDBRelation
         global $DB;
 
         $result = $DB->request([
-         'COUNT'  => 'cpt',
-         'FROM'   => self::getTable(),
-         'WHERE'  => [
-            'printers_id'  => $pID,
-            'date_out'     => null,
-            'NOT'          => ['date_use' => null]
-         ]
+            'COUNT'  => 'cpt',
+            'FROM'   => self::getTable(),
+            'WHERE'  => [
+                'printers_id'  => $pID,
+                'date_out'     => null,
+                'NOT'          => ['date_use' => null]
+            ]
         ])->current();
         return $result['cpt'];
     }
@@ -577,12 +580,12 @@ class Cartridge extends CommonDBRelation
         global $DB;
 
         $result = $DB->request([
-         'COUNT'  => 'cpt',
-         'FROM'   => self::getTable(),
-         'WHERE'  => [
-            'cartridgeitems_id'  => $tID,
-            'NOT'                => ['date_out' => null]
-         ]
+            'COUNT'  => 'cpt',
+            'FROM'   => self::getTable(),
+            'WHERE'  => [
+                'cartridgeitems_id'  => $tID,
+                'NOT'                => ['date_out' => null]
+            ]
         ])->current();
         return $result['cpt'];
     }
@@ -602,12 +605,12 @@ class Cartridge extends CommonDBRelation
         global $DB;
 
         $result = $DB->request([
-         'COUNT'  => 'cpt',
-         'FROM'   => self::getTable(),
-         'WHERE'  => [
-            'printers_id'  => $pID,
-            'NOT'          => ['date_out' => null]
-         ]
+            'COUNT'  => 'cpt',
+            'FROM'   => self::getTable(),
+            'WHERE'  => [
+                'printers_id'  => $pID,
+                'NOT'          => ['date_out' => null]
+            ]
         ])->current();
         return $result['cpt'];
     }
@@ -625,12 +628,12 @@ class Cartridge extends CommonDBRelation
         global $DB;
 
         $result = $DB->request([
-         'COUNT'  => 'cpt',
-         'FROM'   => self::getTable(),
-         'WHERE'  => [
-            'cartridgeitems_id'  => $tID,
-            'date_use'           => null
-         ]
+            'COUNT'  => 'cpt',
+            'FROM'   => self::getTable(),
+            'WHERE'  => [
+                'cartridgeitems_id'  => $tID,
+                'date_use'           => null
+            ]
         ])->current();
         return $result['cpt'];
     }
@@ -647,11 +650,11 @@ class Cartridge extends CommonDBRelation
         global $DB;
 
         $it = $DB->request([
-         'COUNT'  => 'stock_target',
-         'FROM'   => CartridgeItem::getTable(),
-         'WHERE'  => [
-            'id'  => $tID
-         ]
+            'COUNT'  => 'stock_target',
+            'FROM'   => CartridgeItem::getTable(),
+            'WHERE'  => [
+                'id'  => $tID
+            ]
         ]);
         if ($it->count()) {
             return $it->current()['stock_target'];
@@ -670,11 +673,11 @@ class Cartridge extends CommonDBRelation
         global $DB;
 
         $it = $DB->request([
-         'COUNT'  => 'alarm_threshold',
-         'FROM'   => CartridgeItem::getTable(),
-         'WHERE'  => [
-            'id'  => $tID
-         ]
+            'COUNT'  => 'alarm_threshold',
+            'FROM'   => CartridgeItem::getTable(),
+            'WHERE'  => [
+                'id'  => $tID
+            ]
         ]);
         if ($it->count()) {
             return $it->current()['stock_target'];
@@ -723,17 +726,17 @@ class Cartridge extends CommonDBRelation
 
         $where = ['glpi_cartridges.cartridgeitems_id' => $tID];
         $order = [
-         'glpi_cartridges.date_use ASC',
-         'glpi_cartridges.date_out DESC',
-         'glpi_cartridges.date_in'
+            'glpi_cartridges.date_use ASC',
+            'glpi_cartridges.date_out DESC',
+            'glpi_cartridges.date_in'
         ];
 
         if (!$show_old) { // NEW
             $where['glpi_cartridges.date_out'] = null;
             $order = [
-            'glpi_cartridges.date_out ASC',
-            'glpi_cartridges.date_use ASC',
-            'glpi_cartridges.date_in'
+                'glpi_cartridges.date_out ASC',
+                'glpi_cartridges.date_use ASC',
+                'glpi_cartridges.date_in'
             ];
         } else { //OLD
             $where['NOT'] = ['glpi_cartridges.date_out' => null];
@@ -745,23 +748,23 @@ class Cartridge extends CommonDBRelation
         $nb_pages_printed = 0;
 
         $iterator = $DB->request([
-         'SELECT' => [
-            'glpi_cartridges.*',
-            'glpi_printers.id AS printID',
-            'glpi_printers.name AS printname',
-            'glpi_printers.init_pages_counter'
-         ],
-         'FROM'   => self::gettable(),
-         'LEFT JOIN' => [
-            'glpi_printers'   => [
-               'FKEY'   => [
-                  self::getTable()  => 'printers_id',
-                  'glpi_printers'   => 'id'
-               ]
-            ]
-         ],
-         'WHERE'     => $where,
-         'ORDER'     => $order
+            'SELECT' => [
+                'glpi_cartridges.*',
+                'glpi_printers.id AS printID',
+                'glpi_printers.name AS printname',
+                'glpi_printers.init_pages_counter'
+            ],
+            'FROM'   => self::gettable(),
+            'LEFT JOIN' => [
+                'glpi_printers'   => [
+                    'FKEY'   => [
+                        self::getTable()  => 'printers_id',
+                        'glpi_printers'   => 'id'
+                    ]
+                ]
+            ],
+            'WHERE'     => $where,
+            'ORDER'     => $order
         ]);
 
         $number = count($iterator);
@@ -771,17 +774,18 @@ class Cartridge extends CommonDBRelation
             $rand = mt_rand();
             Html::openMassiveActionsForm('mass' . __CLASS__ . $rand);
             $actions = ['purge' => _x('button', 'Delete permanently'),
-                     'Infocom' . MassiveAction::CLASS_ACTION_SEPARATOR . 'activate'
+                'Infocom' . MassiveAction::CLASS_ACTION_SEPARATOR . 'activate'
                               => __('Enable the financial and administrative information')
-                          ];
+            ];
             if (!$show_old) {
                 $actions['Cartridge' . MassiveAction::CLASS_ACTION_SEPARATOR . 'backtostock']
                   = __('Back to stock');
             }
             $massiveactionparams = ['num_displayed'    => min($_SESSION['glpilist_limit'], $number),
-                                      'specific_actions' => $actions,
-                                      'container'        => 'mass' . __CLASS__ . $rand,
-                                      'rand'             => $rand];
+                'specific_actions' => $actions,
+                'container'        => 'mass' . __CLASS__ . $rand,
+                'rand'             => $rand
+            ];
             Html::showMassiveActions($massiveactionparams);
         }
         echo "<table class='tab_cadre_fixehov'>";
@@ -940,8 +944,9 @@ class Cartridge extends CommonDBRelation
             echo "<tr><td class='center tab_bg_2' width='20%'>";
             echo "<input type='hidden' name='cartridgeitems_id' value='$ID'>\n";
             Dropdown::showNumber('to_add', ['value' => 1,
-                                              'min'   => 1,
-                                              'max'   => 100]);
+                'min'   => 1,
+                'max'   => 100
+            ]);
             echo "</td><td>";
             echo " <input type='submit' name='add' value=\"" . __s('Add cartridges') . "\"
                 class='btn btn-primary'>";
@@ -981,39 +986,39 @@ class Cartridge extends CommonDBRelation
             $where['glpi_cartridges.date_out'] = null;
         }
         $iterator = $DB->request([
-         'SELECT'    => [
-            'glpi_cartridgeitems.id AS tID',
-            'glpi_cartridgeitems.is_deleted',
-            'glpi_cartridgeitems.ref AS ref',
-            'glpi_cartridgeitems.name AS type',
-            'glpi_cartridges.id',
-            'glpi_cartridges.pages AS pages',
-            'glpi_cartridges.date_use AS date_use',
-            'glpi_cartridges.date_out AS date_out',
-            'glpi_cartridges.date_in AS date_in',
-            'glpi_cartridgeitemtypes.name AS typename'
-         ],
-         'FROM'      => self::getTable(),
-         'LEFT JOIN' => [
-            'glpi_cartridgeitems'      => [
-               'FKEY'   => [
-                  self::getTable()        => 'cartridgeitems_id',
-                  'glpi_cartridgeitems'   => 'id'
-               ]
+            'SELECT'    => [
+                'glpi_cartridgeitems.id AS tID',
+                'glpi_cartridgeitems.is_deleted',
+                'glpi_cartridgeitems.ref AS ref',
+                'glpi_cartridgeitems.name AS type',
+                'glpi_cartridges.id',
+                'glpi_cartridges.pages AS pages',
+                'glpi_cartridges.date_use AS date_use',
+                'glpi_cartridges.date_out AS date_out',
+                'glpi_cartridges.date_in AS date_in',
+                'glpi_cartridgeitemtypes.name AS typename'
             ],
-            'glpi_cartridgeitemtypes'  => [
-               'FKEY'   => [
-                  'glpi_cartridgeitems'      => 'cartridgeitemtypes_id',
-                  'glpi_cartridgeitemtypes'  => 'id'
-               ]
+            'FROM'      => self::getTable(),
+            'LEFT JOIN' => [
+                'glpi_cartridgeitems'      => [
+                    'FKEY'   => [
+                        self::getTable()        => 'cartridgeitems_id',
+                        'glpi_cartridgeitems'   => 'id'
+                    ]
+                ],
+                'glpi_cartridgeitemtypes'  => [
+                    'FKEY'   => [
+                        'glpi_cartridgeitems'      => 'cartridgeitemtypes_id',
+                        'glpi_cartridgeitemtypes'  => 'id'
+                    ]
+                ]
+            ],
+            'WHERE'     => $where,
+            'ORDER'     => [
+                'glpi_cartridges.date_out ASC',
+                'glpi_cartridges.date_use DESC',
+                'glpi_cartridges.date_in',
             ]
-         ],
-         'WHERE'     => $where,
-         'ORDER'     => [
-            'glpi_cartridges.date_out ASC',
-            'glpi_cartridges.date_use DESC',
-            'glpi_cartridges.date_in',
-         ]
         ]);
 
         $number = count($iterator);
@@ -1028,8 +1033,9 @@ class Cartridge extends CommonDBRelation
                 //TRANS : multiplier
                 echo "</td><td>" . __('x') . "&nbsp;";
                 Dropdown::showNumber("nbcart", ['value' => 1,
-                                                 'min'   => 1,
-                                                 'max'   => 5]);
+                    'min'   => 1,
+                    'max'   => 5
+                ]);
                 echo "</td><td><input type='submit' name='install' value=\"" . _sx('button', 'Install') . "\"
                                   class='btn btn-primary'>";
             } else {
@@ -1051,20 +1057,23 @@ class Cartridge extends CommonDBRelation
             if (!$old) {
                 $actions = [__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'uninstall'
                                        => __('End of life'),
-                             __CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'backtostock'
+                    __CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'backtostock'
                                        => __('Back to stock')
-                            ];
+                ];
             } else {
                 $actions = [__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'updatepages'
                                       => __('Update printer counter'),
-                             'purge' => _x('button', 'Delete permanently')];
+                    'purge' => _x('button', 'Delete permanently')
+                ];
             }
             $massiveactionparams = ['num_displayed'    => min($_SESSION['glpilist_limit'], $number),
-                           'specific_actions' => $actions,
-                           'container'        => 'mass' . __CLASS__ . $rand,
-                           'rand'             => $rand,
-                           'extraparams'      => ['maxpages'
-                                                       => $printer->fields['last_pages_counter']]];
+                'specific_actions' => $actions,
+                'container'        => 'mass' . __CLASS__ . $rand,
+                'rand'             => $rand,
+                'extraparams'      => ['maxpages'
+                                                       => $printer->fields['last_pages_counter']
+                ]
+            ];
             Html::showMassiveActions($massiveactionparams);
         }
         echo "<table class='tab_cadre_fixehov'>";
@@ -1121,9 +1130,10 @@ class Cartridge extends CommonDBRelation
                 echo "\n<script type='text/javascript' >\n";
                 echo "function viewEditCartridge" . $cart_id . "$rand() {\n";
                 $params = ['type'        => __CLASS__,
-                            'parenttype'  => 'Printer',
-                            'printers_id' => $printer->fields["id"],
-                            'id'          => $cart_id];
+                    'parenttype'  => 'Printer',
+                    'printers_id' => $printer->fields["id"],
+                    'id'          => $cart_id
+                ];
                 Ajax::updateItemJsCode(
                     "viewcartridge$rand",
                     $CFG_GLPI["root_doc"] . "/ajax/viewsubitem.php",
@@ -1252,9 +1262,10 @@ class Cartridge extends CommonDBRelation
         echo "<td>" . __('Use date') . "</td><td>";
         if ($is_used && !$is_old) {
             Html::showDateField("date_use", ['value'      => $this->fields["date_use"],
-                                               'maybeempty' => false,
-                                               'canedit'    => true,
-                                               'min'        => $this->fields["date_in"]]);
+                'maybeempty' => false,
+                'canedit'    => true,
+                'min'        => $this->fields["date_in"]
+            ]);
         } else {
             echo Html::convDate($this->fields["date_use"]);
         }
@@ -1264,9 +1275,10 @@ class Cartridge extends CommonDBRelation
             echo "<tr class='tab_bg_1'>";
             echo "<td>" . __('End date') . "</td><td>";
             Html::showDateField("date_out", ['value'      => $this->fields["date_out"],
-                                               'maybeempty' => false,
-                                               'canedit'    => true,
-                                               'min'        => $this->fields["date_use"]]);
+                'maybeempty' => false,
+                'canedit'    => true,
+                'min'        => $this->fields["date_use"]
+            ]);
             echo "</td>";
             echo "<td>" . __('Printer counter') . "</td><td>";
             echo "<input type='text' name='pages' value=\"" . $this->fields['pages'] . "\">";
@@ -1290,9 +1302,9 @@ class Cartridge extends CommonDBRelation
 
        //Look for parameters for this entity
         $iterator = $DB->request([
-         'SELECT' => ['cartridges_alert_repeat'],
-         'FROM'   => 'glpi_entities',
-         'WHERE'  => ['id' => $entity]
+            'SELECT' => ['cartridges_alert_repeat'],
+            'FROM'   => 'glpi_entities',
+            'WHERE'  => ['id' => $entity]
         ]);
 
         if (!count($iterator)) {

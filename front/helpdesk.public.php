@@ -77,7 +77,8 @@ if (
         Session::haveRight('followup', ITILFollowup::SEEPUBLIC)
         || Session::haveRight('task', TicketTask::SEEPUBLIC)
         || Session::haveRightsOr('ticketvalidation', [TicketValidation::VALIDATEREQUEST,
-                                                          TicketValidation::VALIDATEINCIDENT])
+            TicketValidation::VALIDATEINCIDENT
+        ])
     ) {
         Html::redirect($CFG_GLPI['root_doc'] . "/front/ticket.php");
     } else if (Session::haveRight('reservation', ReservationItem::RESERVEANITEM)) {
@@ -134,14 +135,14 @@ if (isset($_GET['create_ticket'])) {
 
     Html::requireJs('masonry');
     TemplateRenderer::getInstance()->display('pages/self-service/home.html.twig', [
-      'password_alert' => $password_alert,
-      'ticket_summary' => $ticket_summary,
-      'survey_list'    => $survey_list,
-      'reminder_list'  => $reminder_list,
-      'rss_feed'       => $rss_feed,
-      'kb_popular'     => $kb_popular,
-      'kb_recent'      => $kb_recent,
-      'kb_lastupdate'  => $kb_lastupdate,
+        'password_alert' => $password_alert,
+        'ticket_summary' => $ticket_summary,
+        'survey_list'    => $survey_list,
+        'reminder_list'  => $reminder_list,
+        'rss_feed'       => $rss_feed,
+        'kb_popular'     => $kb_popular,
+        'kb_recent'      => $kb_recent,
+        'kb_lastupdate'  => $kb_lastupdate,
     ]);
 }
 

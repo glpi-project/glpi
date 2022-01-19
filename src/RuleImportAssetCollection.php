@@ -88,17 +88,17 @@ class RuleImportAssetCollection extends RuleCollection
         }
 
         $criteria['LEFT JOIN']['glpi_rulecriterias AS crit'] = [
-         'ON'  => [
-            'crit'         => 'rules_id',
-            'glpi_rules'   => 'id'
-         ]
+            'ON'  => [
+                'crit'         => 'rules_id',
+                'glpi_rules'   => 'id'
+            ]
         ];
         $criteria['GROUPBY'] = ['glpi_rules.id'];
 
         if ($current_tab != '_global') {
             $where = [
-            'crit.criteria'   => 'itemtype',
-            'crit.pattern'    => getSingular($current_tab)
+                'crit.criteria'   => 'itemtype',
+                'crit.pattern'    => getSingular($current_tab)
             ];
             $criteria['WHERE']  += $where;
         } else {

@@ -85,121 +85,121 @@ class RuleImportAsset extends Rule
         }
 
         $criteria = [
-         'entities_id' => [
-            'table'     => 'glpi_entities',
-            'field'     => 'entities_id',
-            'name'      => __('Target entity for the asset'),
-            'linkfield' => 'entities_id',
-            'type'      => 'dropdown',
-            'is_global'       => false,
-            'allow_condition' => [
-                Rule::PATTERN_IS,
-                Rule::PATTERN_IS_NOT,
-                Rule::PATTERN_CONTAIN,
-                Rule::PATTERN_NOT_CONTAIN,
-                Rule::PATTERN_BEGIN,
-                Rule::PATTERN_END,
-                Rule::REGEX_MATCH,
-                Rule::REGEX_NOT_MATCH
-             ],
-         ],
-         'states_id'  => [
-            'table'     => 'glpi_states',
-            'field'     => 'name',
-            'name'      => __('Having the status'),
-            'linkfield' => 'state',
-            'type'      => 'dropdown',
-            //Means that this criterion can only be used in a global search query
-            'is_global' => true,
-            'allow_condition' => [Rule::PATTERN_IS, Rule::PATTERN_IS_NOT]
-         ],
-         'name' => [
-            'name'            => __("Item name")
-         ],
-         'model' => [
-            'name'            => sprintf('%s > %s', _n('Asset', 'Assets', 1), _n('Model', 'Models', 1)),
-         ],
-         'manufacturer' => [ // Manufacturer as Text to allow text criteria (contains, regex, ...)
-            'name'            => Manufacturer::getTypeName(1)
-         ],
-         'mac' => [
-            'name'            => sprintf('%s > %s > %s', _n('Asset', 'Assets', 1), NetworkPort::getTypename(1), __('MAC')),
-         ],
-         'ip' => [
-            'name'            => sprintf('%s > %s > %s', _n('Asset', 'Assets', 1), NetworkPort::getTypename(1), __('IP')),
-         ],
-         'ifdescr' => [
-            'name'            => sprintf('%s > %s > %s', _n('Asset', 'Assets', 1), NetworkPort::getTypename(1), __('Port description'))
-         ],
-         'ifnumber' => [
-            'name'            => sprintf('%s > %s > %s', _n('Asset', 'Assets', 1), NetworkPort::getTypename(1), _n('Port number', 'Ports number', 1)),
-         ],
-         'serial' => [
-            'name'            => sprintf('%s > %s', _n('Asset', 'Assets', 1), __('Serial number')),
-         ],
-         'uuid' => [
-            'name'            => sprintf('%s > %s', _n('Asset', 'Assets', 1), __('UUID')),
-         ],
-         'device_id' => [
-            'name'            => sprintf('%s > %s', Agent::getTypeName(1), __('Device_id')),
-         ],
-         'mskey' => [
-            'name'            => sprintf('%s > %s', _n('Asset', 'Assets', 1), __('Serial of the operating system')),
-         ],
-         'name' => [
-            'name'            => sprintf('%s > %s', _n('Asset', 'Assets', 1), __('Name')),
-         ],
-         'tag' => [
-            'name'            => sprintf('%s > %s', Agent::getTypeName(1), __('Inventory tag')),
-         ],
-         'osname' => [
-            'name'            => sprintf('%s > %s', _n('Asset', 'Assets', 1), OperatingSystem::getTypeName(1)),
-         ],
-         'itemtype' => [
-            'name'            => sprintf('%s > %s', _n('Asset', 'Assets', 1), __('Item type')),
-            'type'            => 'dropdown_inventory_itemtype',
-            'is_global'       => false,
-            'allow_condition' => [
-               Rule::PATTERN_IS,
-               Rule::PATTERN_IS_NOT,
-               Rule::PATTERN_EXISTS,
-               Rule::PATTERN_DOES_NOT_EXISTS,
+            'entities_id' => [
+                'table'     => 'glpi_entities',
+                'field'     => 'entities_id',
+                'name'      => __('Target entity for the asset'),
+                'linkfield' => 'entities_id',
+                'type'      => 'dropdown',
+                'is_global'       => false,
+                'allow_condition' => [
+                    Rule::PATTERN_IS,
+                    Rule::PATTERN_IS_NOT,
+                    Rule::PATTERN_CONTAIN,
+                    Rule::PATTERN_NOT_CONTAIN,
+                    Rule::PATTERN_BEGIN,
+                    Rule::PATTERN_END,
+                    Rule::REGEX_MATCH,
+                    Rule::REGEX_NOT_MATCH
+                ],
             ],
-         ],
-         'domains_id' => [
-            'table'           => 'glpi_domains',
-            'field'           => 'name',
-            'name'            => sprintf('%s > %s', _n('Asset', 'Assets', 1), Domain::getTypeName(1)),
-            'linkfield'       => 'domain',
-            'type'            => 'dropdown',
-            'is_global'       => false,
-         ],
+            'states_id'  => [
+                'table'     => 'glpi_states',
+                'field'     => 'name',
+                'name'      => __('Having the status'),
+                'linkfield' => 'state',
+                'type'      => 'dropdown',
+            //Means that this criterion can only be used in a global search query
+                'is_global' => true,
+                'allow_condition' => [Rule::PATTERN_IS, Rule::PATTERN_IS_NOT]
+            ],
+            'name' => [
+                'name'            => __("Item name")
+            ],
+            'model' => [
+                'name'            => sprintf('%s > %s', _n('Asset', 'Assets', 1), _n('Model', 'Models', 1)),
+            ],
+            'manufacturer' => [ // Manufacturer as Text to allow text criteria (contains, regex, ...)
+                'name'            => Manufacturer::getTypeName(1)
+            ],
+            'mac' => [
+                'name'            => sprintf('%s > %s > %s', _n('Asset', 'Assets', 1), NetworkPort::getTypename(1), __('MAC')),
+            ],
+            'ip' => [
+                'name'            => sprintf('%s > %s > %s', _n('Asset', 'Assets', 1), NetworkPort::getTypename(1), __('IP')),
+            ],
+            'ifdescr' => [
+                'name'            => sprintf('%s > %s > %s', _n('Asset', 'Assets', 1), NetworkPort::getTypename(1), __('Port description'))
+            ],
+            'ifnumber' => [
+                'name'            => sprintf('%s > %s > %s', _n('Asset', 'Assets', 1), NetworkPort::getTypename(1), _n('Port number', 'Ports number', 1)),
+            ],
+            'serial' => [
+                'name'            => sprintf('%s > %s', _n('Asset', 'Assets', 1), __('Serial number')),
+            ],
+            'uuid' => [
+                'name'            => sprintf('%s > %s', _n('Asset', 'Assets', 1), __('UUID')),
+            ],
+            'device_id' => [
+                'name'            => sprintf('%s > %s', Agent::getTypeName(1), __('Device_id')),
+            ],
+            'mskey' => [
+                'name'            => sprintf('%s > %s', _n('Asset', 'Assets', 1), __('Serial of the operating system')),
+            ],
+            'name' => [
+                'name'            => sprintf('%s > %s', _n('Asset', 'Assets', 1), __('Name')),
+            ],
+            'tag' => [
+                'name'            => sprintf('%s > %s', Agent::getTypeName(1), __('Inventory tag')),
+            ],
+            'osname' => [
+                'name'            => sprintf('%s > %s', _n('Asset', 'Assets', 1), OperatingSystem::getTypeName(1)),
+            ],
+            'itemtype' => [
+                'name'            => sprintf('%s > %s', _n('Asset', 'Assets', 1), __('Item type')),
+                'type'            => 'dropdown_inventory_itemtype',
+                'is_global'       => false,
+                'allow_condition' => [
+                    Rule::PATTERN_IS,
+                    Rule::PATTERN_IS_NOT,
+                    Rule::PATTERN_EXISTS,
+                    Rule::PATTERN_DOES_NOT_EXISTS,
+                ],
+            ],
+            'domains_id' => [
+                'table'           => 'glpi_domains',
+                'field'           => 'name',
+                'name'            => sprintf('%s > %s', _n('Asset', 'Assets', 1), Domain::getTypeName(1)),
+                'linkfield'       => 'domain',
+                'type'            => 'dropdown',
+                'is_global'       => false,
+            ],
 
-         'linked_item' => [
-            'name'            => __('Linked asset', 'Linked assets', 1),
-            'type'            => 'yesno',
-            'allow_condition' => [Rule::PATTERN_FIND]
-         ],
+            'linked_item' => [
+                'name'            => __('Linked asset', 'Linked assets', 1),
+                'type'            => 'yesno',
+                'allow_condition' => [Rule::PATTERN_FIND]
+            ],
 
-         'entityrestrict' => [
-            'name'            => sprintf('%s > %s', __('General'), __('Restrict search in defined entity')),
-            'allow_condition' => [self::PATTERN_ENTITY_RESTRICT],
-         ],
-         'link_criteria_port' => [
-            'name'            => sprintf('%s > %s', __('General'), __('Restrict criteria to same network port')),
-            'allow_condition' => [self::PATTERN_NETWORK_PORT_RESTRICT],
-            'is_global'       => true
-         ],
-         'only_these_criteria' => [
-            'name'            => sprintf('%s > %s', __('General'), __('Only criteria of this rule in data')),
-            'allow_condition' => [self::PATTERN_ONLY_CRITERIA_RULE],
-            'is_global'       => true
-         ],
-         'partial' => [
-            'name'   => __('Is partial'),
-            'type'   => 'yesno',
-            'allow_condition' => [Rule::PATTERN_IS, Rule::PATTERN_IS_NOT]
-         ]
+            'entityrestrict' => [
+                'name'            => sprintf('%s > %s', __('General'), __('Restrict search in defined entity')),
+                'allow_condition' => [self::PATTERN_ENTITY_RESTRICT],
+            ],
+            'link_criteria_port' => [
+                'name'            => sprintf('%s > %s', __('General'), __('Restrict criteria to same network port')),
+                'allow_condition' => [self::PATTERN_NETWORK_PORT_RESTRICT],
+                'is_global'       => true
+            ],
+            'only_these_criteria' => [
+                'name'            => sprintf('%s > %s', __('General'), __('Only criteria of this rule in data')),
+                'allow_condition' => [self::PATTERN_ONLY_CRITERIA_RULE],
+                'is_global'       => true
+            ],
+            'partial' => [
+                'name'   => __('Is partial'),
+                'type'   => 'yesno',
+                'allow_condition' => [Rule::PATTERN_IS, Rule::PATTERN_IS_NOT]
+            ]
         ];
 
         return $criteria;
@@ -209,14 +209,14 @@ class RuleImportAsset extends Rule
     public function getActions()
     {
         $actions = [
-         '_inventory'   => [
-            'name'   => __('Inventory link'),
-            'type'   => 'inventory_type'
-         ],
-         '_ignore_import'  => [
-            'name'   => __('Refuse import'),
-            'type'   => 'yesonly'
-         ]
+            '_inventory'   => [
+                'name'   => __('Inventory link'),
+                'type'   => 'inventory_type'
+            ],
+            '_ignore_import'  => [
+                'name'   => __('Refuse import'),
+                'type'   => 'yesonly'
+            ]
         ];
         return $actions;
     }
@@ -225,9 +225,9 @@ class RuleImportAsset extends Rule
     public static function getRuleActionValues()
     {
         return [
-         self::RULE_ACTION_LINK_OR_IMPORT    => __('Link if possible'),
-         self::RULE_ACTION_LINK_OR_NO_IMPORT => __('Link if possible, otherwise imports declined'),
-         self::RULE_ACTION_DENIED            => __('Import denied (no log)')
+            self::RULE_ACTION_LINK_OR_IMPORT    => __('Link if possible'),
+            self::RULE_ACTION_LINK_OR_NO_IMPORT => __('Link if possible, otherwise imports declined'),
+            self::RULE_ACTION_DENIED            => __('Import denied (no log)')
         ];
     }
 
@@ -249,9 +249,9 @@ class RuleImportAsset extends Rule
         switch ($criteria['type']) {
             case "state":
                 $link_array = [
-                 "0" => __('No'),
-                 "1" => __('Yes if equal'),
-                 "2" => __('Yes if empty')
+                    "0" => __('No'),
+                    "1" => __('Yes if equal'),
+                    "2" => __('Yes if empty')
                 ];
 
                 Dropdown::showFromArray($name, $link_array, ['value' => $value]);
@@ -277,9 +277,9 @@ class RuleImportAsset extends Rule
                 return [self::PATTERN_ONLY_CRITERIA_RULE => __('Yes')];
             default:
                 return [
-               self::PATTERN_FIND      => __('is already present'),
-               self::PATTERN_IS_EMPTY  => __('is empty')
-            ];
+                    self::PATTERN_FIND      => __('is already present'),
+                    self::PATTERN_IS_EMPTY  => __('is empty')
+                ];
         }
     }
 
@@ -496,9 +496,9 @@ class RuleImportAsset extends Rule
             }
 
             $it_criteria = [
-            'SELECT' => ["$itemtable.id"],
-            'FROM'   => $itemtable, //to fill
-            'WHERE'  => [] //to fill
+                'SELECT' => ["$itemtable.id"],
+                'FROM'   => $itemtable, //to fill
+                'WHERE'  => [] //to fill
             ];
 
             if ($this->link_criteria_port) {
@@ -517,11 +517,11 @@ class RuleImportAsset extends Rule
                     }
                     if (is_array($val) && in_array($this->getType(), $val)) {
                         $params = [
-                        'where_entity' => $where_entity,
-                        'itemtype'     => $itemtype,
-                        'input'        => $input,
-                        'criteria'     => $this->complex_criteria,
-                        'sql_criteria' => $it_criteria,
+                            'where_entity' => $where_entity,
+                            'itemtype'     => $itemtype,
+                            'input'        => $input,
+                            'criteria'     => $this->complex_criteria,
+                            'sql_criteria' => $it_criteria,
                         ];
                         $sql_results = Plugin::doOneHook(
                             $plugin,
@@ -597,37 +597,37 @@ class RuleImportAsset extends Rule
 
         if ($is_ip) {
             $it_criteria['LEFT JOIN']['glpi_networkports'] = [
-            'ON'  => [
-               $itemtable           => 'id',
-               'glpi_networkports'  => 'items_id', [
-                  'AND' => ['glpi_networkports.itemtype' => $itemtype]
-               ]
-            ]
+                'ON'  => [
+                    $itemtable           => 'id',
+                    'glpi_networkports'  => 'items_id', [
+                        'AND' => ['glpi_networkports.itemtype' => $itemtype]
+                    ]
+                ]
             ];
             $it_criteria['LEFT JOIN']['glpi_networknames'] = [
-            'ON'  => [
-               'glpi_networkports'  => 'id',
-               'glpi_networknames'  => 'items_id', [
-                  'AND' => ['glpi_networknames.itemtype' => 'NetworkPort']
-               ]
-            ]
+                'ON'  => [
+                    'glpi_networkports'  => 'id',
+                    'glpi_networknames'  => 'items_id', [
+                        'AND' => ['glpi_networknames.itemtype' => 'NetworkPort']
+                    ]
+                ]
             ];
             $it_criteria['LEFT JOIN']['glpi_ipaddresses'] = [
-            'ON'  => [
-               'glpi_networknames'  => 'id',
-               'glpi_ipaddresses'   => 'items_id', [
-                  'AND' => ['glpi_ipaddresses.itemtype' => 'NetworkName']
-               ]
-            ]
+                'ON'  => [
+                    'glpi_networknames'  => 'id',
+                    'glpi_ipaddresses'   => 'items_id', [
+                        'AND' => ['glpi_ipaddresses.itemtype' => 'NetworkName']
+                    ]
+                ]
             ];
         } else if ($is_networkport) {
             $it_criteria['LEFT JOIN']['glpi_networkports'] = [
-            'ON'  => [
-               $itemtable           => 'id',
-               'glpi_networkports'  => 'items_id', [
-                  'AND' => ['glpi_networkports.itemtype' => $itemtype]
-               ]
-            ]
+                'ON'  => [
+                    $itemtable           => 'id',
+                    'glpi_networkports'  => 'items_id', [
+                        'AND' => ['glpi_networkports.itemtype' => $itemtype]
+                    ]
+                ]
             ];
         }
     }
@@ -649,38 +649,38 @@ class RuleImportAsset extends Rule
             if ($criterion->fields['criteria'] == 'ip') {
                 $astable = 'networkports_' . $criterion->fields['criteria'];
                 $it_criteria['LEFT JOIN']['glpi_networkports AS ' . $astable] = [
-                 'ON'  => [
-                  $itemtable  => 'id',
-                  $astable    => 'items_id', [
-                     'AND' => [$astable . '.itemtype' => $itemtype]
-                  ]
-                 ]
+                    'ON'  => [
+                        $itemtable  => 'id',
+                        $astable    => 'items_id', [
+                            'AND' => [$astable . '.itemtype' => $itemtype]
+                        ]
+                    ]
                 ];
                 $it_criteria['LEFT JOIN']['glpi_networknames'] = [
-                'ON'  => [
-                  $astable  => 'id',
-                  'glpi_networknames'  => 'items_id', [
-                     'AND' => ['glpi_networknames.itemtype' => 'NetworkPort']
-                  ]
-                ]
+                    'ON'  => [
+                        $astable  => 'id',
+                        'glpi_networknames'  => 'items_id', [
+                            'AND' => ['glpi_networknames.itemtype' => 'NetworkPort']
+                        ]
+                    ]
                 ];
                 $it_criteria['LEFT JOIN']['glpi_ipaddresses'] = [
-                'ON'  => [
-                  'glpi_networknames'  => 'id',
-                  'glpi_ipaddresses'   => 'items_id', [
-                     'AND' => ['glpi_ipaddresses.itemtype' => 'NetworkName']
-                  ]
-                ]
+                    'ON'  => [
+                        'glpi_networknames'  => 'id',
+                        'glpi_ipaddresses'   => 'items_id', [
+                            'AND' => ['glpi_ipaddresses.itemtype' => 'NetworkName']
+                        ]
+                    ]
                 ];
             } else if ($this->isNetPort($criterion->fields['criteria'])) {
                 $astable = 'networkports_' . $criterion->fields['criteria'];
                 $it_criteria['LEFT JOIN']['glpi_networkports AS ' . $astable] = [
-                'ON'  => [
-                 $itemtable  => 'id',
-                 $astable    => 'items_id', [
-                    'AND' => [$astable . '.itemtype' => $itemtype]
-                 ]
-                ]
+                    'ON'  => [
+                        $itemtable  => 'id',
+                        $astable    => 'items_id', [
+                            'AND' => [$astable . '.itemtype' => $itemtype]
+                        ]
+                    ]
                 ];
             }
         }
@@ -705,8 +705,8 @@ class RuleImportAsset extends Rule
                 case 'name':
                     if ($criterion->fields['condition'] == Rule::PATTERN_IS_EMPTY) {
                         $it_criteria['WHERE']['OR'] = [
-                        ["$itemtable.name" => ''],
-                        ["$itemtable.name"   => null]
+                            ["$itemtable.name" => ''],
+                            ["$itemtable.name"   => null]
                         ];
                     } else {
                         $it_criteria['WHERE'][] = ["$itemtable.name" => $input['name']];
@@ -726,7 +726,7 @@ class RuleImportAsset extends Rule
                         $input['mac'] = [$input['mac']];
                     }
                     $it_criteria['WHERE'][] = [
-                    $ntable . '.mac' => $input['mac']
+                        $ntable . '.mac' => $input['mac']
                     ];
                     break;
 
@@ -788,10 +788,10 @@ class RuleImportAsset extends Rule
                 case 'otherserial':
                     if ($criterion->fields['condition'] == self::PATTERN_IS_EMPTY) {
                         $it_criteria['WHERE'][] = [
-                        'OR' => [
-                        ["$itemtable.otherserial" => ''],
-                        ["$itemtable.otherserial" => null]
-                        ]
+                            'OR' => [
+                                ["$itemtable.otherserial" => ''],
+                                ["$itemtable.otherserial" => null]
+                            ]
                         ];
                     } else {
                         $it_criteria['WHERE'][] = ["$itemtable.otherserial" => $input['otherserial']];
@@ -839,32 +839,32 @@ class RuleImportAsset extends Rule
 
                 case 'device_id':
                     $it_criteria['LEFT JOIN']['glpi_agents'] = [
-                    'ON'  => [
-                     'glpi_agents'  => 'items_id',
-                     $itemtable     => 'id'
-                    ]
+                        'ON'  => [
+                            'glpi_agents'  => 'items_id',
+                            $itemtable     => 'id'
+                        ]
                     ];
                     $it_criteria['WHERE'][] = [
-                    'glpi_agents.device_id' => $input['device_id']
+                        'glpi_agents.device_id' => $input['device_id']
                     ];
                     break;
 
                 case 'domain':
                     $it_criteria['LEFT JOIN']['glpi_domains'] = [
-                    'ON'  => [
-                     'glpi_domains' => 'id',
-                     $itemtable     => 'domains_id'
-                    ]
+                        'ON'  => [
+                            'glpi_domains' => 'id',
+                            $itemtable     => 'domains_id'
+                        ]
                     ];
                     $it_criteria['WHERE'][] = [
-                    'glpi_domains.name'  => $input['domains_id']
+                        'glpi_domains.name'  => $input['domains_id']
                     ];
                     break;
 
                 case 'linked_item':
                     $it_criteria['WHERE'][] = [
-                    'itemtype' => $input['linked_item']['itemtype'],
-                    'items_id' => $input['linked_item']['items_id']
+                        'itemtype' => $input['linked_item']['itemtype'],
+                        'items_id' => $input['linked_item']['items_id']
                     ];
                     break;
             }
@@ -879,8 +879,8 @@ class RuleImportAsset extends Rule
 
         $rulesmatched = new RuleMatchedLog();
         $inputrulelog = [
-         'date'      => date('Y-m-d H:i:s'),
-         'rules_id'  => $rules_id
+            'date'      => date('Y-m-d H:i:s'),
+            'rules_id'  => $rules_id
         ];
 
         if ($class && method_exists($class, 'getAgent') && $class->getAgent()) {
@@ -933,8 +933,8 @@ class RuleImportAsset extends Rule
                              $output['found_inventories'] = [$items_id, $itemtype, $rules_id];
                             if (!isset($params['return'])) {
                                 $inputrulelog = $inputrulelog + [
-                                'items_id'  => $items_id,
-                                'itemtype'  => $itemtype
+                                    'items_id'  => $items_id,
+                                    'itemtype'  => $itemtype
                                 ];
                                 $rulesmatched->add($inputrulelog);
                                 $rulesmatched->cleanOlddata($items_id, $itemtype);
@@ -1026,1228 +1026,1228 @@ class RuleImportAsset extends Rule
         $rules = [];
 
         $rules[] = [
-         'name'      => 'No creation on partial import',
-         'match'     => 'AND',
-         'is_active' => 1,
-         'criteria'  => [
-            [
-               'criteria'  => 'partial',
-               'condition' => Rule::PATTERN_IS,
-               'pattern'   => 1
-            ], [
-               'criteria'  => 'itemtype',
-               'condition' => Rule::PATTERN_DOES_NOT_EXISTS,
-               'pattern'   => 1
+            'name'      => 'No creation on partial import',
+            'match'     => 'AND',
+            'is_active' => 1,
+            'criteria'  => [
+                [
+                    'criteria'  => 'partial',
+                    'condition' => Rule::PATTERN_IS,
+                    'pattern'   => 1
+                ], [
+                    'criteria'  => 'itemtype',
+                    'condition' => Rule::PATTERN_DOES_NOT_EXISTS,
+                    'pattern'   => 1
+                ],
             ],
-         ],
-         'action'    => '_deny'
+            'action'    => '_deny'
         ];
 
         $rules[] = [
-         'name'      => 'Device update (by mac+ifnumber restricted port)',
-         'match'     => 'AND',
-         'is_active' => 1,
-         'criteria'  => [
-            [
-               'criteria'  => 'itemtype',
-               'condition' => Rule::PATTERN_DOES_NOT_EXISTS,
-               'pattern'   => 1
+            'name'      => 'Device update (by mac+ifnumber restricted port)',
+            'match'     => 'AND',
+            'is_active' => 1,
+            'criteria'  => [
+                [
+                    'criteria'  => 'itemtype',
+                    'condition' => Rule::PATTERN_DOES_NOT_EXISTS,
+                    'pattern'   => 1
+                ],
+                [
+                    'criteria'  => 'mac',
+                    'condition' => Rule::PATTERN_FIND,
+                    'pattern'   => 1
+                ],
+                [
+                    'criteria'  => 'mac',
+                    'condition' => Rule::PATTERN_EXISTS,
+                    'pattern'   => 1
+                ],
+                [
+                    'criteria'  => 'ifnumber',
+                    'condition' => Rule::PATTERN_FIND,
+                    'pattern'   => 1
+                ],
+                [
+                    'criteria'  => 'ifnumber',
+                    'condition' => Rule::PATTERN_EXISTS,
+                    'pattern'   => 1
+                ],
+                [
+                    'criteria'  => 'link_criteria_port',
+                    'condition' => self::PATTERN_NETWORK_PORT_RESTRICT,
+                    'pattern'   => 1
+                ],
             ],
-            [
-               'criteria'  => 'mac',
-               'condition' => Rule::PATTERN_FIND,
-               'pattern'   => 1
-            ],
-            [
-               'criteria'  => 'mac',
-               'condition' => Rule::PATTERN_EXISTS,
-               'pattern'   => 1
-            ],
-            [
-               'criteria'  => 'ifnumber',
-               'condition' => Rule::PATTERN_FIND,
-               'pattern'   => 1
-            ],
-            [
-               'criteria'  => 'ifnumber',
-               'condition' => Rule::PATTERN_EXISTS,
-               'pattern'   => 1
-            ],
-            [
-               'criteria'  => 'link_criteria_port',
-               'condition' => self::PATTERN_NETWORK_PORT_RESTRICT,
-               'pattern'   => 1
-            ],
-         ],
-         'action'    => '_link'
+            'action'    => '_link'
         ];
 
         $rules[] = [
-         'name'      => 'Device update (by mac+ifnumber not restricted port)',
-         'match'     => 'AND',
-         'is_active' => 1,
-         'criteria'  => [
-            [
-               'criteria'  => 'itemtype',
-               'condition' => Rule::PATTERN_DOES_NOT_EXISTS,
-               'pattern'   => 1
+            'name'      => 'Device update (by mac+ifnumber not restricted port)',
+            'match'     => 'AND',
+            'is_active' => 1,
+            'criteria'  => [
+                [
+                    'criteria'  => 'itemtype',
+                    'condition' => Rule::PATTERN_DOES_NOT_EXISTS,
+                    'pattern'   => 1
+                ],
+                [
+                    'criteria'  => 'mac',
+                    'condition' => Rule::PATTERN_FIND,
+                    'pattern'   => 1
+                ],
+                [
+                    'criteria'  => 'mac',
+                    'condition' => Rule::PATTERN_EXISTS,
+                    'pattern'   => 1
+                ],
+                [
+                    'criteria'  => 'ifnumber',
+                    'condition' => Rule::PATTERN_FIND,
+                    'pattern'   => 1
+                ],
+                [
+                    'criteria'  => 'ifnumber',
+                    'condition' => Rule::PATTERN_EXISTS,
+                    'pattern'   => 1
+                ],
             ],
-            [
-               'criteria'  => 'mac',
-               'condition' => Rule::PATTERN_FIND,
-               'pattern'   => 1
-            ],
-            [
-               'criteria'  => 'mac',
-               'condition' => Rule::PATTERN_EXISTS,
-               'pattern'   => 1
-            ],
-            [
-               'criteria'  => 'ifnumber',
-               'condition' => Rule::PATTERN_FIND,
-               'pattern'   => 1
-            ],
-            [
-               'criteria'  => 'ifnumber',
-               'condition' => Rule::PATTERN_EXISTS,
-               'pattern'   => 1
-            ],
-         ],
-         'action'    => '_link'
+            'action'    => '_link'
         ];
 
         $rules[] = [
-         'name'      => 'Device import (by mac+ifnumber)',
-         'match'     => 'AND',
-         'is_active' => 1,
-         'criteria'  => [
-            [
-               'criteria'  => 'itemtype',
-               'condition' => Rule::PATTERN_DOES_NOT_EXISTS,
-               'pattern'   => 1
+            'name'      => 'Device import (by mac+ifnumber)',
+            'match'     => 'AND',
+            'is_active' => 1,
+            'criteria'  => [
+                [
+                    'criteria'  => 'itemtype',
+                    'condition' => Rule::PATTERN_DOES_NOT_EXISTS,
+                    'pattern'   => 1
+                ],
+                [
+                    'criteria'  => 'mac',
+                    'condition' => Rule::PATTERN_EXISTS,
+                    'pattern'   => 1
+                ],
+                [
+                    'criteria'  => 'ifnumber',
+                    'condition' => Rule::PATTERN_EXISTS,
+                    'pattern'   => 1
+                ],
             ],
-            [
-               'criteria'  => 'mac',
-               'condition' => Rule::PATTERN_EXISTS,
-               'pattern'   => 1
-            ],
-            [
-               'criteria'  => 'ifnumber',
-               'condition' => Rule::PATTERN_EXISTS,
-               'pattern'   => 1
-            ],
-         ],
-         'action'    => '_link'
+            'action'    => '_link'
         ];
 
         $rules[] = [
-         'name'      => 'Device update (by ip+ifdescr restricted port)',
-         'match'     => 'AND',
-         'is_active' => 1,
-         'criteria'  => [
-            [
-               'criteria'  => 'itemtype',
-               'condition' => Rule::PATTERN_DOES_NOT_EXISTS,
-               'pattern'   => 1
+            'name'      => 'Device update (by ip+ifdescr restricted port)',
+            'match'     => 'AND',
+            'is_active' => 1,
+            'criteria'  => [
+                [
+                    'criteria'  => 'itemtype',
+                    'condition' => Rule::PATTERN_DOES_NOT_EXISTS,
+                    'pattern'   => 1
+                ],
+                [
+                    'criteria'  => 'ip',
+                    'condition' => Rule::PATTERN_FIND,
+                    'pattern'   => 1
+                ],
+                [
+                    'criteria'  => 'ip',
+                    'condition' => Rule::PATTERN_EXISTS,
+                    'pattern'   => 1
+                ],
+                [
+                    'criteria'  => 'ifdescr',
+                    'condition' => Rule::PATTERN_FIND,
+                    'pattern'   => 1
+                ],
+                [
+                    'criteria'  => 'ifdescr',
+                    'condition' => Rule::PATTERN_EXISTS,
+                    'pattern'   => 1
+                ],
+                [
+                    'criteria'  => 'link_criteria_port',
+                    'condition' => self::PATTERN_NETWORK_PORT_RESTRICT,
+                    'pattern'   => 1
+                ],
             ],
-            [
-               'criteria'  => 'ip',
-               'condition' => Rule::PATTERN_FIND,
-               'pattern'   => 1
-            ],
-            [
-               'criteria'  => 'ip',
-               'condition' => Rule::PATTERN_EXISTS,
-               'pattern'   => 1
-            ],
-            [
-               'criteria'  => 'ifdescr',
-               'condition' => Rule::PATTERN_FIND,
-               'pattern'   => 1
-            ],
-            [
-               'criteria'  => 'ifdescr',
-               'condition' => Rule::PATTERN_EXISTS,
-               'pattern'   => 1
-            ],
-            [
-               'criteria'  => 'link_criteria_port',
-               'condition' => self::PATTERN_NETWORK_PORT_RESTRICT,
-               'pattern'   => 1
-            ],
-         ],
-         'action'    => '_link'
+            'action'    => '_link'
         ];
 
         $rules[] = [
-         'name'      => 'Device update (by ip+ifdescr not restricted port)',
-         'match'     => 'AND',
-         'is_active' => 1,
-         'criteria'  => [
-            [
-               'criteria'  => 'itemtype',
-               'condition' => Rule::PATTERN_DOES_NOT_EXISTS,
-               'pattern'   => 1
+            'name'      => 'Device update (by ip+ifdescr not restricted port)',
+            'match'     => 'AND',
+            'is_active' => 1,
+            'criteria'  => [
+                [
+                    'criteria'  => 'itemtype',
+                    'condition' => Rule::PATTERN_DOES_NOT_EXISTS,
+                    'pattern'   => 1
+                ],
+                [
+                    'criteria'  => 'ip',
+                    'condition' => Rule::PATTERN_FIND,
+                    'pattern'   => 1
+                ],
+                [
+                    'criteria'  => 'ip',
+                    'condition' => Rule::PATTERN_EXISTS,
+                    'pattern'   => 1
+                ],
+                [
+                    'criteria'  => 'ifdescr',
+                    'condition' => Rule::PATTERN_FIND,
+                    'pattern'   => 1
+                ],
+                [
+                    'criteria'  => 'ifdescr',
+                    'condition' => Rule::PATTERN_EXISTS,
+                    'pattern'   => 1
+                ],
             ],
-            [
-               'criteria'  => 'ip',
-               'condition' => Rule::PATTERN_FIND,
-               'pattern'   => 1
-            ],
-            [
-               'criteria'  => 'ip',
-               'condition' => Rule::PATTERN_EXISTS,
-               'pattern'   => 1
-            ],
-            [
-               'criteria'  => 'ifdescr',
-               'condition' => Rule::PATTERN_FIND,
-               'pattern'   => 1
-            ],
-            [
-               'criteria'  => 'ifdescr',
-               'condition' => Rule::PATTERN_EXISTS,
-               'pattern'   => 1
-            ],
-         ],
-         'action'    => '_link'
+            'action'    => '_link'
         ];
 
         $rules[] = [
-         'name'      => 'Device import (by ip+ifdescr)',
-         'match'     => 'AND',
-         'is_active' => 1,
-         'criteria'  => [
-            [
-               'criteria'  => 'itemtype',
-               'condition' => Rule::PATTERN_DOES_NOT_EXISTS,
-               'pattern'   => 1
+            'name'      => 'Device import (by ip+ifdescr)',
+            'match'     => 'AND',
+            'is_active' => 1,
+            'criteria'  => [
+                [
+                    'criteria'  => 'itemtype',
+                    'condition' => Rule::PATTERN_DOES_NOT_EXISTS,
+                    'pattern'   => 1
+                ],
+                [
+                    'criteria'  => 'ip',
+                    'condition' => Rule::PATTERN_EXISTS,
+                    'pattern'   => 1
+                ],
+                [
+                    'criteria'  => 'ifdescr',
+                    'condition' => Rule::PATTERN_EXISTS,
+                    'pattern'   => 1
+                ],
             ],
-            [
-               'criteria'  => 'ip',
-               'condition' => Rule::PATTERN_EXISTS,
-               'pattern'   => 1
-            ],
-            [
-               'criteria'  => 'ifdescr',
-               'condition' => Rule::PATTERN_EXISTS,
-               'pattern'   => 1
-            ],
-         ],
-         'action'    => '_link'
+            'action'    => '_link'
         ];
 
         $rules[] = [
-         'name'      => 'Update only mac address (mac on switch port)',
-         'match'     => 'AND',
-         'is_active' => 1,
-         'criteria'  => [
-            [
-               'criteria'  => 'itemtype',
-               'condition' => Rule::PATTERN_DOES_NOT_EXISTS,
-               'pattern'   => 1
+            'name'      => 'Update only mac address (mac on switch port)',
+            'match'     => 'AND',
+            'is_active' => 1,
+            'criteria'  => [
+                [
+                    'criteria'  => 'itemtype',
+                    'condition' => Rule::PATTERN_DOES_NOT_EXISTS,
+                    'pattern'   => 1
+                ],
+                [
+                    'criteria'  => 'mac',
+                    'condition' => Rule::PATTERN_FIND,
+                    'pattern'   => 1
+                ],
+                [
+                    'criteria'  => 'mac',
+                    'condition' => Rule::PATTERN_EXISTS,
+                    'pattern'   => 1
+                ],
+                [
+                    'criteria'  => 'only_these_criteria',
+                    'condition' => self::PATTERN_ONLY_CRITERIA_RULE,
+                    'pattern'   => 1
+                ],
             ],
-            [
-               'criteria'  => 'mac',
-               'condition' => Rule::PATTERN_FIND,
-               'pattern'   => 1
-            ],
-            [
-               'criteria'  => 'mac',
-               'condition' => Rule::PATTERN_EXISTS,
-               'pattern'   => 1
-            ],
-            [
-               'criteria'  => 'only_these_criteria',
-               'condition' => self::PATTERN_ONLY_CRITERIA_RULE,
-               'pattern'   => 1
-            ],
-         ],
-         'action'    => '_link'
+            'action'    => '_link'
         ];
 
         $rules[] = [
-         'name'      => 'Import only mac address (mac on switch port)',
-         'match'     => 'AND',
-         'is_active' => 1,
-         'criteria'  => [
-            [
-               'criteria'  => 'itemtype',
-               'condition' => Rule::PATTERN_DOES_NOT_EXISTS,
-               'pattern'   => 1
+            'name'      => 'Import only mac address (mac on switch port)',
+            'match'     => 'AND',
+            'is_active' => 1,
+            'criteria'  => [
+                [
+                    'criteria'  => 'itemtype',
+                    'condition' => Rule::PATTERN_DOES_NOT_EXISTS,
+                    'pattern'   => 1
+                ],
+                [
+                    'criteria'  => 'mac',
+                    'condition' => Rule::PATTERN_EXISTS,
+                    'pattern'   => 1
+                ],
+                [
+                    'criteria'  => 'only_these_criteria',
+                    'condition' => self::PATTERN_ONLY_CRITERIA_RULE,
+                    'pattern'   => 1
+                ],
             ],
-            [
-               'criteria'  => 'mac',
-               'condition' => Rule::PATTERN_EXISTS,
-               'pattern'   => 1
-            ],
-            [
-               'criteria'  => 'only_these_criteria',
-               'condition' => self::PATTERN_ONLY_CRITERIA_RULE,
-               'pattern'   => 1
-            ],
-         ],
-         'action'    => '_link'
+            'action'    => '_link'
         ];
 
         $rules[] = [
-         'name'      => 'Computer constraint (name)',
-         'match'     => 'AND',
-         'is_active' => 1,
-         'criteria'  => [
-            [
-               'criteria'  => 'itemtype',
-               'condition' => Rule::PATTERN_IS,
-               'pattern'   => 'Computer'
+            'name'      => 'Computer constraint (name)',
+            'match'     => 'AND',
+            'is_active' => 1,
+            'criteria'  => [
+                [
+                    'criteria'  => 'itemtype',
+                    'condition' => Rule::PATTERN_IS,
+                    'pattern'   => 'Computer'
+                ],
+                [
+                    'criteria'  => 'name',
+                    'condition' => Rule::PATTERN_DOES_NOT_EXISTS,
+                    'pattern'   => 1
+                ]
             ],
-            [
-               'criteria'  => 'name',
-               'condition' => Rule::PATTERN_DOES_NOT_EXISTS,
-               'pattern'   => 1
-            ]
-         ],
-         'action'    => '_deny'
+            'action'    => '_deny'
         ];
 
         $rules[] = [
-         'name'      => 'Computer update (by serial + uuid)',
-         'match'     => 'AND',
-         'is_active' => 1,
-         'criteria'  => [
-            [
-               'criteria'  => 'itemtype',
-               'condition' => Rule::PATTERN_IS,
-               'pattern'   => 'Computer'
+            'name'      => 'Computer update (by serial + uuid)',
+            'match'     => 'AND',
+            'is_active' => 1,
+            'criteria'  => [
+                [
+                    'criteria'  => 'itemtype',
+                    'condition' => Rule::PATTERN_IS,
+                    'pattern'   => 'Computer'
+                ],
+                [
+                    'criteria'  => 'serial',
+                    'condition' => Rule::PATTERN_FIND,
+                    'pattern'   => 1
+                ],
+                [
+                    'criteria'  => 'serial',
+                    'condition' => Rule::PATTERN_EXISTS,
+                    'pattern'   => 1
+                ],
+                [
+                    'criteria'  => 'uuid',
+                    'condition' => Rule::PATTERN_FIND,
+                    'pattern'   => 1
+                ],
+                [
+                    'criteria'  => 'uuid',
+                    'condition' => Rule::PATTERN_EXISTS,
+                    'pattern'   => 1
+                ]
             ],
-            [
-               'criteria'  => 'serial',
-               'condition' => Rule::PATTERN_FIND,
-               'pattern'   => 1
-            ],
-            [
-               'criteria'  => 'serial',
-               'condition' => Rule::PATTERN_EXISTS,
-               'pattern'   => 1
-            ],
-            [
-               'criteria'  => 'uuid',
-               'condition' => Rule::PATTERN_FIND,
-               'pattern'   => 1
-            ],
-            [
-               'criteria'  => 'uuid',
-               'condition' => Rule::PATTERN_EXISTS,
-               'pattern'   => 1
-            ]
-         ],
-         'action'    => '_link'
+            'action'    => '_link'
         ];
         $rules[] = [
-         'name'      => 'Computer update (by serial)',
-         'match'     => 'AND',
-         'is_active' => 1,
-         'criteria'  => [
-            [
-               'criteria'  => 'itemtype',
-               'condition' => Rule::PATTERN_IS,
-               'pattern'   => 'Computer'
+            'name'      => 'Computer update (by serial)',
+            'match'     => 'AND',
+            'is_active' => 1,
+            'criteria'  => [
+                [
+                    'criteria'  => 'itemtype',
+                    'condition' => Rule::PATTERN_IS,
+                    'pattern'   => 'Computer'
+                ],
+                [
+                    'criteria'  => 'serial',
+                    'condition' => Rule::PATTERN_FIND,
+                    'pattern'   => 1
+                ],
+                [
+                    'criteria'  => 'serial',
+                    'condition' => Rule::PATTERN_EXISTS,
+                    'pattern'   => 1
+                ]
             ],
-            [
-               'criteria'  => 'serial',
-               'condition' => Rule::PATTERN_FIND,
-               'pattern'   => 1
-            ],
-            [
-               'criteria'  => 'serial',
-               'condition' => Rule::PATTERN_EXISTS,
-               'pattern'   => 1
-            ]
-         ],
-         'action'    => '_link'
-        ];
-
-        $rules[] = [
-         'name'      => 'Computer update (by uuid)',
-         'match'     => 'AND',
-         'is_active' => 0,
-         'criteria'  => [
-            [
-               'criteria'  => 'itemtype',
-               'condition' => Rule::PATTERN_IS,
-               'pattern'   => 'Computer'
-            ],
-            [
-               'criteria'  => 'uuid',
-               'condition' => Rule::PATTERN_FIND,
-               'pattern'   => 1
-            ],
-            [
-               'criteria'  => 'uuid',
-               'condition' => Rule::PATTERN_EXISTS,
-               'pattern'   => 1
-            ]
-         ],
-         'action'    => '_link'
+            'action'    => '_link'
         ];
 
         $rules[] = [
-         'name'      => 'Computer update (by mac)',
-         'match'     => 'AND',
-         'is_active' => 0,
-         'criteria'  => [
-            [
-               'criteria'  => 'itemtype',
-               'condition' => Rule::PATTERN_IS,
-               'pattern'   => 'Computer'
+            'name'      => 'Computer update (by uuid)',
+            'match'     => 'AND',
+            'is_active' => 0,
+            'criteria'  => [
+                [
+                    'criteria'  => 'itemtype',
+                    'condition' => Rule::PATTERN_IS,
+                    'pattern'   => 'Computer'
+                ],
+                [
+                    'criteria'  => 'uuid',
+                    'condition' => Rule::PATTERN_FIND,
+                    'pattern'   => 1
+                ],
+                [
+                    'criteria'  => 'uuid',
+                    'condition' => Rule::PATTERN_EXISTS,
+                    'pattern'   => 1
+                ]
             ],
-            [
-               'criteria'  => 'mac',
-               'condition' => Rule::PATTERN_FIND,
-               'pattern'   => 1
-            ],
-            [
-               'criteria'  => 'mac',
-               'condition' => Rule::PATTERN_EXISTS,
-               'pattern'   => 1
-            ]
-         ],
-         'action'    => '_link'
+            'action'    => '_link'
         ];
 
         $rules[] = [
-         'name'      => 'Computer update (by name)',
-         'match'     => 'AND',
-         'is_active' => 1,
-         'criteria'  => [
-            [
-               'criteria'  => 'itemtype',
-               'condition' => Rule::PATTERN_IS,
-               'pattern'   => 'Computer'
+            'name'      => 'Computer update (by mac)',
+            'match'     => 'AND',
+            'is_active' => 0,
+            'criteria'  => [
+                [
+                    'criteria'  => 'itemtype',
+                    'condition' => Rule::PATTERN_IS,
+                    'pattern'   => 'Computer'
+                ],
+                [
+                    'criteria'  => 'mac',
+                    'condition' => Rule::PATTERN_FIND,
+                    'pattern'   => 1
+                ],
+                [
+                    'criteria'  => 'mac',
+                    'condition' => Rule::PATTERN_EXISTS,
+                    'pattern'   => 1
+                ]
             ],
-            [
-               'criteria'  => 'name',
-               'condition' => Rule::PATTERN_FIND,
-               'pattern'   => 1
-            ],
-            [
-               'criteria'  => 'name',
-               'condition' => Rule::PATTERN_EXISTS,
-               'pattern'   => 1
-            ]
-         ],
-         'action'    => '_link'
+            'action'    => '_link'
         ];
 
         $rules[] = [
-         'name'      => 'Computer import (by serial + uuid)',
-         'match'     => 'AND',
-         'is_active' => 1,
-         'criteria'  => [
-            [
-               'criteria'  => 'itemtype',
-               'condition' => Rule::PATTERN_IS,
-               'pattern'   => 'Computer'
+            'name'      => 'Computer update (by name)',
+            'match'     => 'AND',
+            'is_active' => 1,
+            'criteria'  => [
+                [
+                    'criteria'  => 'itemtype',
+                    'condition' => Rule::PATTERN_IS,
+                    'pattern'   => 'Computer'
+                ],
+                [
+                    'criteria'  => 'name',
+                    'condition' => Rule::PATTERN_FIND,
+                    'pattern'   => 1
+                ],
+                [
+                    'criteria'  => 'name',
+                    'condition' => Rule::PATTERN_EXISTS,
+                    'pattern'   => 1
+                ]
             ],
-            [
-               'criteria'  => 'uuid',
-               'condition' => Rule::PATTERN_EXISTS,
-               'pattern'   => 1
-            ],
-            [
-               'criteria'  => 'serial',
-               'condition' => Rule::PATTERN_EXISTS,
-               'pattern'   => 1
-            ]
-         ],
-         'action'    => '_link'
+            'action'    => '_link'
         ];
 
         $rules[] = [
-         'name'      => 'Computer import (by serial)',
-         'match'     => 'AND',
-         'is_active' => 1,
-         'criteria'  => [
-            [
-               'criteria'  => 'itemtype',
-               'condition' => Rule::PATTERN_IS,
-               'pattern'   => 'Computer'
+            'name'      => 'Computer import (by serial + uuid)',
+            'match'     => 'AND',
+            'is_active' => 1,
+            'criteria'  => [
+                [
+                    'criteria'  => 'itemtype',
+                    'condition' => Rule::PATTERN_IS,
+                    'pattern'   => 'Computer'
+                ],
+                [
+                    'criteria'  => 'uuid',
+                    'condition' => Rule::PATTERN_EXISTS,
+                    'pattern'   => 1
+                ],
+                [
+                    'criteria'  => 'serial',
+                    'condition' => Rule::PATTERN_EXISTS,
+                    'pattern'   => 1
+                ]
             ],
-            [
-               'criteria'  => 'serial',
-               'condition' => Rule::PATTERN_EXISTS,
-               'pattern'   => 1
-            ]
-         ],
-         'action'    => '_link'
+            'action'    => '_link'
         ];
 
         $rules[] = [
-         'name'      => 'Computer import (by uuid)',
-         'match'     => 'AND',
-         'is_active' => 0,
-         'criteria'  => [
-            [
-               'criteria'  => 'itemtype',
-               'condition' => Rule::PATTERN_IS,
-               'pattern'   => 'Computer'
+            'name'      => 'Computer import (by serial)',
+            'match'     => 'AND',
+            'is_active' => 1,
+            'criteria'  => [
+                [
+                    'criteria'  => 'itemtype',
+                    'condition' => Rule::PATTERN_IS,
+                    'pattern'   => 'Computer'
+                ],
+                [
+                    'criteria'  => 'serial',
+                    'condition' => Rule::PATTERN_EXISTS,
+                    'pattern'   => 1
+                ]
             ],
-            [
-               'criteria'  => 'uuid',
-               'condition' => Rule::PATTERN_EXISTS,
-               'pattern'   => 1
-            ]
-         ],
-         'action'    => '_link'
+            'action'    => '_link'
         ];
 
         $rules[] = [
-         'name'      => 'Computer import (by mac)',
-         'match'     => 'AND',
-         'is_active' => 0,
-         'criteria'  => [
-            [
-               'criteria'  => 'itemtype',
-               'condition' => Rule::PATTERN_IS,
-               'pattern'   => 'Computer'
+            'name'      => 'Computer import (by uuid)',
+            'match'     => 'AND',
+            'is_active' => 0,
+            'criteria'  => [
+                [
+                    'criteria'  => 'itemtype',
+                    'condition' => Rule::PATTERN_IS,
+                    'pattern'   => 'Computer'
+                ],
+                [
+                    'criteria'  => 'uuid',
+                    'condition' => Rule::PATTERN_EXISTS,
+                    'pattern'   => 1
+                ]
             ],
-            [
-               'criteria'  => 'mac',
-               'condition' => Rule::PATTERN_EXISTS,
-               'pattern'   => 1
-            ]
-         ],
-         'action'    => '_link'
+            'action'    => '_link'
         ];
 
         $rules[] = [
-         'name'      => 'Computer import (by name)',
-         'match'     => 'AND',
-         'is_active' => 1,
-         'criteria'  => [
-            [
-               'criteria'  => 'itemtype',
-               'condition' => Rule::PATTERN_IS,
-               'pattern'   => 'Computer'
+            'name'      => 'Computer import (by mac)',
+            'match'     => 'AND',
+            'is_active' => 0,
+            'criteria'  => [
+                [
+                    'criteria'  => 'itemtype',
+                    'condition' => Rule::PATTERN_IS,
+                    'pattern'   => 'Computer'
+                ],
+                [
+                    'criteria'  => 'mac',
+                    'condition' => Rule::PATTERN_EXISTS,
+                    'pattern'   => 1
+                ]
             ],
-            [
-               'criteria'  => 'name',
-               'condition' => Rule::PATTERN_EXISTS,
-               'pattern'   => 1
-            ]
-         ],
-         'action'    => '_link'
+            'action'    => '_link'
         ];
 
         $rules[] = [
-         'name'      => 'Computer import denied',
-         'match'     => 'AND',
-         'is_active' => 1,
-         'criteria'  => [
-            [
-               'criteria'  => 'itemtype',
-               'condition' => Rule::PATTERN_IS,
-               'pattern'   => 'Computer'
-            ]
-         ],
-         'action'    => '_deny'
-        ];
-
-        $rules[] = [
-         'name'      => 'Printer constraint (name)',
-         'match'     => 'AND',
-         'is_active' => 1,
-         'criteria'  => [
-            [
-               'criteria'  => 'itemtype',
-               'condition' => Rule::PATTERN_IS,
-               'pattern'   => 'Printer'
+            'name'      => 'Computer import (by name)',
+            'match'     => 'AND',
+            'is_active' => 1,
+            'criteria'  => [
+                [
+                    'criteria'  => 'itemtype',
+                    'condition' => Rule::PATTERN_IS,
+                    'pattern'   => 'Computer'
+                ],
+                [
+                    'criteria'  => 'name',
+                    'condition' => Rule::PATTERN_EXISTS,
+                    'pattern'   => 1
+                ]
             ],
-            [
-               'criteria'  => 'name',
-               'condition' => Rule::PATTERN_DOES_NOT_EXISTS,
-               'pattern'   => 1
-            ]
-         ],
-         'action'    => '_deny'
+            'action'    => '_link'
         ];
 
         $rules[] = [
-         'name'      => 'Printer update (by serial)',
-         'match'     => 'AND',
-         'is_active' => 1,
-         'criteria'  => [
-            [
-               'criteria'  => 'itemtype',
-               'condition' => Rule::PATTERN_IS,
-               'pattern'   => 'Printer'
+            'name'      => 'Computer import denied',
+            'match'     => 'AND',
+            'is_active' => 1,
+            'criteria'  => [
+                [
+                    'criteria'  => 'itemtype',
+                    'condition' => Rule::PATTERN_IS,
+                    'pattern'   => 'Computer'
+                ]
             ],
-            [
-               'criteria'  => 'serial',
-               'condition' => Rule::PATTERN_EXISTS,
-               'pattern'   => 1
+            'action'    => '_deny'
+        ];
+
+        $rules[] = [
+            'name'      => 'Printer constraint (name)',
+            'match'     => 'AND',
+            'is_active' => 1,
+            'criteria'  => [
+                [
+                    'criteria'  => 'itemtype',
+                    'condition' => Rule::PATTERN_IS,
+                    'pattern'   => 'Printer'
+                ],
+                [
+                    'criteria'  => 'name',
+                    'condition' => Rule::PATTERN_DOES_NOT_EXISTS,
+                    'pattern'   => 1
+                ]
             ],
-            [
-               'criteria'  => 'serial',
-               'condition' => Rule::PATTERN_FIND,
-               'pattern'   => 1
-            ]
-         ],
-         'action'    => '_link'
+            'action'    => '_deny'
         ];
 
         $rules[] = [
-         'name'      => 'Printer update (by mac)',
-         'match'     => 'AND',
-         'is_active' => 0,
-         'criteria'  => [
-            [
-               'criteria'  => 'itemtype',
-               'condition' => Rule::PATTERN_IS,
-               'pattern'   => 'Printer'
+            'name'      => 'Printer update (by serial)',
+            'match'     => 'AND',
+            'is_active' => 1,
+            'criteria'  => [
+                [
+                    'criteria'  => 'itemtype',
+                    'condition' => Rule::PATTERN_IS,
+                    'pattern'   => 'Printer'
+                ],
+                [
+                    'criteria'  => 'serial',
+                    'condition' => Rule::PATTERN_EXISTS,
+                    'pattern'   => 1
+                ],
+                [
+                    'criteria'  => 'serial',
+                    'condition' => Rule::PATTERN_FIND,
+                    'pattern'   => 1
+                ]
             ],
-            [
-               'criteria'  => 'mac',
-               'condition' => Rule::PATTERN_EXISTS,
-               'pattern'   => 1
+            'action'    => '_link'
+        ];
+
+        $rules[] = [
+            'name'      => 'Printer update (by mac)',
+            'match'     => 'AND',
+            'is_active' => 0,
+            'criteria'  => [
+                [
+                    'criteria'  => 'itemtype',
+                    'condition' => Rule::PATTERN_IS,
+                    'pattern'   => 'Printer'
+                ],
+                [
+                    'criteria'  => 'mac',
+                    'condition' => Rule::PATTERN_EXISTS,
+                    'pattern'   => 1
+                ],
+                [
+                    'criteria'  => 'mac',
+                    'condition' => Rule::PATTERN_FIND,
+                    'pattern'   => 1
+                ]
             ],
-            [
-               'criteria'  => 'mac',
-               'condition' => Rule::PATTERN_FIND,
-               'pattern'   => 1
-            ]
-         ],
-         'action'    => '_link'
+            'action'    => '_link'
         ];
 
         $rules[] = [
-         'name'      => 'Printer import (by serial)',
-         'match'     => 'AND',
-         'is_active' => 1,
-         'criteria'  => [
-            [
-               'criteria'  => 'itemtype',
-               'condition' => Rule::PATTERN_IS,
-               'pattern'   => 'Printer'
+            'name'      => 'Printer import (by serial)',
+            'match'     => 'AND',
+            'is_active' => 1,
+            'criteria'  => [
+                [
+                    'criteria'  => 'itemtype',
+                    'condition' => Rule::PATTERN_IS,
+                    'pattern'   => 'Printer'
+                ],
+                [
+                    'criteria'  => 'serial',
+                    'condition' => Rule::PATTERN_EXISTS,
+                    'pattern'   => 1
+                ]
             ],
-            [
-               'criteria'  => 'serial',
-               'condition' => Rule::PATTERN_EXISTS,
-               'pattern'   => 1
-            ]
-         ],
-         'action'    => '_link'
+            'action'    => '_link'
         ];
 
         $rules[] = [
-         'name'      => 'Printer import (by mac)',
-         'match'     => 'AND',
-         'is_active' => 0,
-         'criteria'  => [
-            [
-               'criteria'  => 'itemtype',
-               'condition' => Rule::PATTERN_IS,
-               'pattern'   => 'Printer'
+            'name'      => 'Printer import (by mac)',
+            'match'     => 'AND',
+            'is_active' => 0,
+            'criteria'  => [
+                [
+                    'criteria'  => 'itemtype',
+                    'condition' => Rule::PATTERN_IS,
+                    'pattern'   => 'Printer'
+                ],
+                [
+                    'criteria'  => 'mac',
+                    'condition' => Rule::PATTERN_EXISTS,
+                    'pattern'   => 1
+                ]
             ],
-            [
-               'criteria'  => 'mac',
-               'condition' => Rule::PATTERN_EXISTS,
-               'pattern'   => 1
-            ]
-         ],
-         'action'    => '_link'
+            'action'    => '_link'
         ];
 
         $rules[] = [
-         'name'      => 'Printer import denied',
-         'match'     => 'AND',
-         'is_active' => 1,
-         'criteria'  => [
-            [
-               'criteria'  => 'itemtype',
-               'condition' => Rule::PATTERN_IS,
-               'pattern'   => 'Printer'
-            ]
-         ],
-         'action'    => '_deny'
-        ];
-
-        $rules[] = [
-         'name'      => 'NetworkEquipment constraint (name)',
-         'match'     => 'AND',
-         'is_active' => 1,
-         'criteria'  => [
-            [
-               'criteria'  => 'itemtype',
-               'condition' => Rule::PATTERN_IS,
-               'pattern'   => 'NetworkEquipment'
+            'name'      => 'Printer import denied',
+            'match'     => 'AND',
+            'is_active' => 1,
+            'criteria'  => [
+                [
+                    'criteria'  => 'itemtype',
+                    'condition' => Rule::PATTERN_IS,
+                    'pattern'   => 'Printer'
+                ]
             ],
-            [
-               'criteria'  => 'name',
-               'condition' => Rule::PATTERN_DOES_NOT_EXISTS,
-               'pattern'   => 1
-            ]
-         ],
-         'action'    => '_deny'
+            'action'    => '_deny'
         ];
 
         $rules[] = [
-         'name'      => 'NetworkEquipment update (by serial)',
-         'match'     => 'AND',
-         'is_active' => 1,
-         'criteria'  => [
-            [
-               'criteria'  => 'itemtype',
-               'condition' => Rule::PATTERN_IS,
-               'pattern'   => 'NetworkEquipment'
+            'name'      => 'NetworkEquipment constraint (name)',
+            'match'     => 'AND',
+            'is_active' => 1,
+            'criteria'  => [
+                [
+                    'criteria'  => 'itemtype',
+                    'condition' => Rule::PATTERN_IS,
+                    'pattern'   => 'NetworkEquipment'
+                ],
+                [
+                    'criteria'  => 'name',
+                    'condition' => Rule::PATTERN_DOES_NOT_EXISTS,
+                    'pattern'   => 1
+                ]
             ],
-            [
-               'criteria'  => 'serial',
-               'condition' => Rule::PATTERN_EXISTS,
-               'pattern'   => 1
+            'action'    => '_deny'
+        ];
+
+        $rules[] = [
+            'name'      => 'NetworkEquipment update (by serial)',
+            'match'     => 'AND',
+            'is_active' => 1,
+            'criteria'  => [
+                [
+                    'criteria'  => 'itemtype',
+                    'condition' => Rule::PATTERN_IS,
+                    'pattern'   => 'NetworkEquipment'
+                ],
+                [
+                    'criteria'  => 'serial',
+                    'condition' => Rule::PATTERN_EXISTS,
+                    'pattern'   => 1
+                ],
+                [
+                    'criteria'  => 'serial',
+                    'condition' => Rule::PATTERN_FIND,
+                    'pattern'   => 1
+                ]
             ],
-            [
-               'criteria'  => 'serial',
-               'condition' => Rule::PATTERN_FIND,
-               'pattern'   => 1
-            ]
-         ],
-         'action'    => '_link'
+            'action'    => '_link'
         ];
 
         $rules[] = [
-         'name'      => 'NetworkEquipment update (by mac)',
-         'match'     => 'AND',
-         'is_active' => 0,
-         'criteria'  => [
-            [
-               'criteria'  => 'itemtype',
-               'condition' => Rule::PATTERN_IS,
-               'pattern'   => 'NetworkEquipment'
+            'name'      => 'NetworkEquipment update (by mac)',
+            'match'     => 'AND',
+            'is_active' => 0,
+            'criteria'  => [
+                [
+                    'criteria'  => 'itemtype',
+                    'condition' => Rule::PATTERN_IS,
+                    'pattern'   => 'NetworkEquipment'
+                ],
+                [
+                    'criteria'  => 'mac',
+                    'condition' => Rule::PATTERN_EXISTS,
+                    'pattern'   => 1
+                ],
+                [
+                    'criteria'  => 'mac',
+                    'condition' => Rule::PATTERN_FIND,
+                    'pattern'   => 1
+                ]
             ],
-            [
-               'criteria'  => 'mac',
-               'condition' => Rule::PATTERN_EXISTS,
-               'pattern'   => 1
+            'action'    => '_link'
+        ];
+
+        $rules[] = [
+            'name'      => 'NetworkEquipment import (by serial)',
+            'match'     => 'AND',
+            'is_active' => 1,
+            'criteria'  => [
+                [
+                    'criteria'  => 'itemtype',
+                    'condition' => Rule::PATTERN_IS,
+                    'pattern'   => 'NetworkEquipment'
+                ],
+                [
+                    'criteria'  => 'serial',
+                    'condition' => Rule::PATTERN_EXISTS,
+                    'pattern'   => 1
+                ]
             ],
-            [
-               'criteria'  => 'mac',
-               'condition' => Rule::PATTERN_FIND,
-               'pattern'   => 1
-            ]
-         ],
-         'action'    => '_link'
+            'action'    => '_link'
         ];
 
         $rules[] = [
-         'name'      => 'NetworkEquipment import (by serial)',
-         'match'     => 'AND',
-         'is_active' => 1,
-         'criteria'  => [
-            [
-               'criteria'  => 'itemtype',
-               'condition' => Rule::PATTERN_IS,
-               'pattern'   => 'NetworkEquipment'
+            'name'      => 'NetworkEquipment import (by mac)',
+            'match'     => 'AND',
+            'is_active' => 0,
+            'criteria'  => [
+                [
+                    'criteria'  => 'itemtype',
+                    'condition' => Rule::PATTERN_IS,
+                    'pattern'   => 'NetworkEquipment'
+                ],
+                [
+                    'criteria'  => 'mac',
+                    'condition' => Rule::PATTERN_EXISTS,
+                    'pattern'   => 1
+                ]
             ],
-            [
-               'criteria'  => 'serial',
-               'condition' => Rule::PATTERN_EXISTS,
-               'pattern'   => 1
-            ]
-         ],
-         'action'    => '_link'
+            'action'    => '_link'
         ];
 
         $rules[] = [
-         'name'      => 'NetworkEquipment import (by mac)',
-         'match'     => 'AND',
-         'is_active' => 0,
-         'criteria'  => [
-            [
-               'criteria'  => 'itemtype',
-               'condition' => Rule::PATTERN_IS,
-               'pattern'   => 'NetworkEquipment'
+            'name'      => 'NetworkEquipment import denied',
+            'match'     => 'AND',
+            'is_active' => 1,
+            'criteria'  => [
+                [
+                    'criteria'  => 'itemtype',
+                    'condition' => Rule::PATTERN_IS,
+                    'pattern'   => 'NetworkEquipment'
+                ]
             ],
-            [
-               'criteria'  => 'mac',
-               'condition' => Rule::PATTERN_EXISTS,
-               'pattern'   => 1
-            ]
-         ],
-         'action'    => '_link'
+            'action'    => '_deny'
         ];
 
         $rules[] = [
-         'name'      => 'NetworkEquipment import denied',
-         'match'     => 'AND',
-         'is_active' => 1,
-         'criteria'  => [
-            [
-               'criteria'  => 'itemtype',
-               'condition' => Rule::PATTERN_IS,
-               'pattern'   => 'NetworkEquipment'
-            ]
-         ],
-         'action'    => '_deny'
-        ];
-
-        $rules[] = [
-         'name'      => 'Peripheral update (by serial)',
-         'match'     => 'AND',
-         'is_active' => 1,
-         'criteria'  => [
-            [
-               'criteria'  => 'itemtype',
-               'condition' => Rule::PATTERN_IS,
-               'pattern'   => 'Peripheral'
+            'name'      => 'Peripheral update (by serial)',
+            'match'     => 'AND',
+            'is_active' => 1,
+            'criteria'  => [
+                [
+                    'criteria'  => 'itemtype',
+                    'condition' => Rule::PATTERN_IS,
+                    'pattern'   => 'Peripheral'
+                ],
+                [
+                    'criteria'  => 'serial',
+                    'condition' => Rule::PATTERN_EXISTS,
+                    'pattern'   => 1
+                ],
+                [
+                    'criteria'  => 'serial',
+                    'condition' => Rule::PATTERN_FIND,
+                    'pattern'   => 1
+                ]
             ],
-            [
-               'criteria'  => 'serial',
-               'condition' => Rule::PATTERN_EXISTS,
-               'pattern'   => 1
+            'action'    => '_link'
+        ];
+
+        $rules[] = [
+            'name'      => 'Peripheral import (by serial)',
+            'match'     => 'AND',
+            'is_active' => 1,
+            'criteria'  => [
+                [
+                    'criteria'  => 'itemtype',
+                    'condition' => Rule::PATTERN_IS,
+                    'pattern'   => 'Peripheral'
+                ],
+                [
+                    'criteria'  => 'serial',
+                    'condition' => Rule::PATTERN_EXISTS,
+                    'pattern'   => 1
+                ]
             ],
-            [
-               'criteria'  => 'serial',
-               'condition' => Rule::PATTERN_FIND,
-               'pattern'   => 1
-            ]
-         ],
-         'action'    => '_link'
+            'action'    => '_link'
         ];
 
         $rules[] = [
-         'name'      => 'Peripheral import (by serial)',
-         'match'     => 'AND',
-         'is_active' => 1,
-         'criteria'  => [
-            [
-               'criteria'  => 'itemtype',
-               'condition' => Rule::PATTERN_IS,
-               'pattern'   => 'Peripheral'
+            'name'      => 'Peripheral import denied',
+            'match'     => 'AND',
+            'is_active' => 1,
+            'criteria'  => [
+                [
+                    'criteria'  => 'itemtype',
+                    'condition' => Rule::PATTERN_IS,
+                    'pattern'   => 'Peripheral'
+                ]
             ],
-            [
-               'criteria'  => 'serial',
-               'condition' => Rule::PATTERN_EXISTS,
-               'pattern'   => 1
-            ]
-         ],
-         'action'    => '_link'
+            'action'    => '_deny'
         ];
 
         $rules[] = [
-         'name'      => 'Peripheral import denied',
-         'match'     => 'AND',
-         'is_active' => 1,
-         'criteria'  => [
-            [
-               'criteria'  => 'itemtype',
-               'condition' => Rule::PATTERN_IS,
-               'pattern'   => 'Peripheral'
-            ]
-         ],
-         'action'    => '_deny'
-        ];
-
-        $rules[] = [
-         'name'      => 'Monitor update (by serial)',
-         'match'     => 'AND',
-         'is_active' => 1,
-         'criteria'  => [
-            [
-               'criteria'  => 'itemtype',
-               'condition' => Rule::PATTERN_IS,
-               'pattern'   => 'Monitor'
+            'name'      => 'Monitor update (by serial)',
+            'match'     => 'AND',
+            'is_active' => 1,
+            'criteria'  => [
+                [
+                    'criteria'  => 'itemtype',
+                    'condition' => Rule::PATTERN_IS,
+                    'pattern'   => 'Monitor'
+                ],
+                [
+                    'criteria'  => 'serial',
+                    'condition' => Rule::PATTERN_EXISTS,
+                    'pattern'   => 1
+                ],
+                [
+                    'criteria'  => 'serial',
+                    'condition' => Rule::PATTERN_FIND,
+                    'pattern'   => 1
+                ]
             ],
-            [
-               'criteria'  => 'serial',
-               'condition' => Rule::PATTERN_EXISTS,
-               'pattern'   => 1
+            'action'    => '_link'
+        ];
+
+        $rules[] = [
+            'name'      => 'Monitor import (by serial)',
+            'match'     => 'AND',
+            'is_active' => 1,
+            'criteria'  => [
+                [
+                    'criteria'  => 'itemtype',
+                    'condition' => Rule::PATTERN_IS,
+                    'pattern'   => 'Monitor'
+                ],
+                [
+                    'criteria'  => 'serial',
+                    'condition' => Rule::PATTERN_EXISTS,
+                    'pattern'   => 1
+                ]
             ],
-            [
-               'criteria'  => 'serial',
-               'condition' => Rule::PATTERN_FIND,
-               'pattern'   => 1
-            ]
-         ],
-         'action'    => '_link'
+            'action'    => '_link'
         ];
 
         $rules[] = [
-         'name'      => 'Monitor import (by serial)',
-         'match'     => 'AND',
-         'is_active' => 1,
-         'criteria'  => [
-            [
-               'criteria'  => 'itemtype',
-               'condition' => Rule::PATTERN_IS,
-               'pattern'   => 'Monitor'
+            'name'      => 'Monitor import denied',
+            'match'     => 'AND',
+            'is_active' => 1,
+            'criteria'  => [
+                [
+                    'criteria'  => 'itemtype',
+                    'condition' => Rule::PATTERN_IS,
+                    'pattern'   => 'Monitor'
+                ]
             ],
-            [
-               'criteria'  => 'serial',
-               'condition' => Rule::PATTERN_EXISTS,
-               'pattern'   => 1
-            ]
-         ],
-         'action'    => '_link'
+            'action'    => '_deny'
         ];
 
         $rules[] = [
-         'name'      => 'Monitor import denied',
-         'match'     => 'AND',
-         'is_active' => 1,
-         'criteria'  => [
-            [
-               'criteria'  => 'itemtype',
-               'condition' => Rule::PATTERN_IS,
-               'pattern'   => 'Monitor'
-            ]
-         ],
-         'action'    => '_deny'
-        ];
-
-        $rules[] = [
-         'name'      => 'Phone constraint (name)',
-         'match'     => 'AND',
-         'is_active' => 0,
-         'criteria'  => [
-            [
-               'criteria'  => 'itemtype',
-               'condition' => Rule::PATTERN_IS,
-               'pattern'   => 'Phone'
+            'name'      => 'Phone constraint (name)',
+            'match'     => 'AND',
+            'is_active' => 0,
+            'criteria'  => [
+                [
+                    'criteria'  => 'itemtype',
+                    'condition' => Rule::PATTERN_IS,
+                    'pattern'   => 'Phone'
+                ],
+                [
+                    'criteria'  => 'name',
+                    'condition' => Rule::PATTERN_DOES_NOT_EXISTS,
+                    'pattern'   => 1
+                ]
             ],
-            [
-               'criteria'  => 'name',
-               'condition' => Rule::PATTERN_DOES_NOT_EXISTS,
-               'pattern'   => 1
-            ]
-         ],
-         'action'    => '_deny'
+            'action'    => '_deny'
         ];
 
         $rules[] = [
-         'name'      => 'Phone update (by mac)',
-         'match'     => 'AND',
-         'is_active' => 0,
-         'criteria'  => [
-            [
-               'criteria'  => 'itemtype',
-               'condition' => Rule::PATTERN_IS,
-               'pattern'   => 'Phone'
+            'name'      => 'Phone update (by mac)',
+            'match'     => 'AND',
+            'is_active' => 0,
+            'criteria'  => [
+                [
+                    'criteria'  => 'itemtype',
+                    'condition' => Rule::PATTERN_IS,
+                    'pattern'   => 'Phone'
+                ],
+                [
+                    'criteria'  => 'mac',
+                    'condition' => Rule::PATTERN_FIND,
+                    'pattern'   => 1
+                ],
+                [
+                    'criteria'  => 'mac',
+                    'condition' => Rule::PATTERN_EXISTS,
+                    'pattern'   => 1
+                ]
             ],
-            [
-               'criteria'  => 'mac',
-               'condition' => Rule::PATTERN_FIND,
-               'pattern'   => 1
+            'action'    => '_link'
+        ];
+
+        $rules[] = [
+            'name'      => 'Phone import (by mac)',
+            'match'     => 'AND',
+            'is_active' => 0,
+            'criteria'  => [
+                [
+                    'criteria'  => 'itemtype',
+                    'condition' => Rule::PATTERN_IS,
+                    'pattern'   => 'Phone'
+                ],
+                [
+                    'criteria'  => 'mac',
+                    'condition' => Rule::PATTERN_EXISTS,
+                    'pattern'   => 1
+                ]
             ],
-            [
-               'criteria'  => 'mac',
-               'condition' => Rule::PATTERN_EXISTS,
-               'pattern'   => 1
-            ]
-         ],
-         'action'    => '_link'
+            'action'    => '_link'
         ];
 
         $rules[] = [
-         'name'      => 'Phone import (by mac)',
-         'match'     => 'AND',
-         'is_active' => 0,
-         'criteria'  => [
-            [
-               'criteria'  => 'itemtype',
-               'condition' => Rule::PATTERN_IS,
-               'pattern'   => 'Phone'
+            'name'      => 'Phone import denied',
+            'match'     => 'AND',
+            'is_active' => 0,
+            'criteria'  => [
+                [
+                    'criteria'  => 'itemtype',
+                    'condition' => Rule::PATTERN_IS,
+                    'pattern'   => 'Phone'
+                ]
             ],
-            [
-               'criteria'  => 'mac',
-               'condition' => Rule::PATTERN_EXISTS,
-               'pattern'   => 1
-            ]
-         ],
-         'action'    => '_link'
+            'action'    => '_deny'
         ];
 
         $rules[] = [
-         'name'      => 'Phone import denied',
-         'match'     => 'AND',
-         'is_active' => 0,
-         'criteria'  => [
-            [
-               'criteria'  => 'itemtype',
-               'condition' => Rule::PATTERN_IS,
-               'pattern'   => 'Phone'
-            ]
-         ],
-         'action'    => '_deny'
-        ];
-
-        $rules[] = [
-         'name'      => 'Cluster update (by uuid)',
-         'match'     => 'AND',
-         'is_active' => 1,
-         'criteria'  => [
-            [
-               'criteria'  => 'itemtype',
-               'condition' => Rule::PATTERN_IS,
-               'pattern'   => 'Cluster'
+            'name'      => 'Cluster update (by uuid)',
+            'match'     => 'AND',
+            'is_active' => 1,
+            'criteria'  => [
+                [
+                    'criteria'  => 'itemtype',
+                    'condition' => Rule::PATTERN_IS,
+                    'pattern'   => 'Cluster'
+                ],
+                [
+                    'criteria'  => 'uuid',
+                    'condition' => Rule::PATTERN_EXISTS,
+                    'pattern'   => 1
+                ],
+                [
+                    'criteria'  => 'uuid',
+                    'condition' => Rule::PATTERN_FIND,
+                    'pattern'   => 1
+                ]
             ],
-            [
-               'criteria'  => 'uuid',
-               'condition' => Rule::PATTERN_EXISTS,
-               'pattern'   => 1
+            'action'    => '_link'
+        ];
+
+        $rules[] = [
+            'name'      => 'Cluster import (by uuid)',
+            'match'     => 'AND',
+            'is_active' => 1,
+            'criteria'  => [
+                [
+                    'criteria'  => 'itemtype',
+                    'condition' => Rule::PATTERN_IS,
+                    'pattern'   => 'Cluster'
+                ],
+                [
+                    'criteria'  => 'uuid',
+                    'condition' => Rule::PATTERN_EXISTS,
+                    'pattern'   => 1
+                ]
             ],
-            [
-               'criteria'  => 'uuid',
-               'condition' => Rule::PATTERN_FIND,
-               'pattern'   => 1
-            ]
-         ],
-         'action'    => '_link'
+            'action'    => '_link'
         ];
 
         $rules[] = [
-         'name'      => 'Cluster import (by uuid)',
-         'match'     => 'AND',
-         'is_active' => 1,
-         'criteria'  => [
-            [
-               'criteria'  => 'itemtype',
-               'condition' => Rule::PATTERN_IS,
-               'pattern'   => 'Cluster'
+            'name'      => 'Cluster import denied',
+            'match'     => 'AND',
+            'is_active' => 1,
+            'criteria'  => [
+                [
+                    'criteria'  => 'itemtype',
+                    'condition' => Rule::PATTERN_IS,
+                    'pattern'   => 'Cluster'
+                ]
             ],
-            [
-               'criteria'  => 'uuid',
-               'condition' => Rule::PATTERN_EXISTS,
-               'pattern'   => 1
-            ]
-         ],
-         'action'    => '_link'
+            'action'    => '_deny'
         ];
 
         $rules[] = [
-         'name'      => 'Cluster import denied',
-         'match'     => 'AND',
-         'is_active' => 1,
-         'criteria'  => [
-            [
-               'criteria'  => 'itemtype',
-               'condition' => Rule::PATTERN_IS,
-               'pattern'   => 'Cluster'
-            ]
-         ],
-         'action'    => '_deny'
-        ];
-
-        $rules[] = [
-         'name'      => 'Enclosure update (by serial)',
-         'match'     => 'AND',
-         'is_active' => 1,
-         'criteria'  => [
-            [
-               'criteria'  => 'itemtype',
-               'condition' => Rule::PATTERN_IS,
-               'pattern'   => 'Enclosure'
+            'name'      => 'Enclosure update (by serial)',
+            'match'     => 'AND',
+            'is_active' => 1,
+            'criteria'  => [
+                [
+                    'criteria'  => 'itemtype',
+                    'condition' => Rule::PATTERN_IS,
+                    'pattern'   => 'Enclosure'
+                ],
+                [
+                    'criteria'  => 'serial',
+                    'condition' => Rule::PATTERN_EXISTS,
+                    'pattern'   => 1
+                ],
+                [
+                    'criteria'  => 'serial',
+                    'condition' => Rule::PATTERN_FIND,
+                    'pattern'   => 1
+                ]
             ],
-            [
-               'criteria'  => 'serial',
-               'condition' => Rule::PATTERN_EXISTS,
-               'pattern'   => 1
+            'action'    => '_link'
+        ];
+
+        $rules[] = [
+            'name'      => 'Enclosure import (by serial)',
+            'match'     => 'AND',
+            'is_active' => 1,
+            'criteria'  => [
+                [
+                    'criteria'  => 'itemtype',
+                    'condition' => Rule::PATTERN_IS,
+                    'pattern'   => 'Enclosure'
+                ],
+                [
+                    'criteria'  => 'serial',
+                    'condition' => Rule::PATTERN_EXISTS,
+                    'pattern'   => 1
+                ]
             ],
-            [
-               'criteria'  => 'serial',
-               'condition' => Rule::PATTERN_FIND,
-               'pattern'   => 1
-            ]
-         ],
-         'action'    => '_link'
+            'action'    => '_link'
         ];
 
         $rules[] = [
-         'name'      => 'Enclosure import (by serial)',
-         'match'     => 'AND',
-         'is_active' => 1,
-         'criteria'  => [
-            [
-               'criteria'  => 'itemtype',
-               'condition' => Rule::PATTERN_IS,
-               'pattern'   => 'Enclosure'
+            'name'      => 'Enclosure import denied',
+            'match'     => 'AND',
+            'is_active' => 1,
+            'criteria'  => [
+                [
+                    'criteria'  => 'itemtype',
+                    'condition' => Rule::PATTERN_IS,
+                    'pattern'   => 'Enclosure'
+                ]
             ],
-            [
-               'criteria'  => 'serial',
-               'condition' => Rule::PATTERN_EXISTS,
-               'pattern'   => 1
-            ]
-         ],
-         'action'    => '_link'
+            'action'    => '_deny'
         ];
 
         $rules[] = [
-         'name'      => 'Enclosure import denied',
-         'match'     => 'AND',
-         'is_active' => 1,
-         'criteria'  => [
-            [
-               'criteria'  => 'itemtype',
-               'condition' => Rule::PATTERN_IS,
-               'pattern'   => 'Enclosure'
-            ]
-         ],
-         'action'    => '_deny'
-        ];
-
-        $rules[] = [
-         'name'      => 'Global constraint (name)',
-         'match'     => 'AND',
-         'is_active' => 1,
-         'criteria'  => [
-            [
-               'criteria'  => 'name',
-               'condition' => Rule::PATTERN_DOES_NOT_EXISTS,
-               'pattern'   => 1
-            ]
-         ],
-         'action'    => '_deny'
-        ];
-
-        $rules[] = [
-         'name'      => 'Global update (by serial)',
-         'match'     => 'AND',
-         'is_active' => 1,
-         'criteria'  => [
-            [
-               'criteria'  => 'serial',
-               'condition' => Rule::PATTERN_EXISTS,
-               'pattern'   => 1
+            'name'      => 'Global constraint (name)',
+            'match'     => 'AND',
+            'is_active' => 1,
+            'criteria'  => [
+                [
+                    'criteria'  => 'name',
+                    'condition' => Rule::PATTERN_DOES_NOT_EXISTS,
+                    'pattern'   => 1
+                ]
             ],
-            [
-               'criteria'  => 'serial',
-               'condition' => Rule::PATTERN_FIND,
-               'pattern'   => 1
-            ]
-         ],
-         'action'    => '_link'
+            'action'    => '_deny'
         ];
 
         $rules[] = [
-         'name'      => 'Global update (by mac)',
-         'match'     => 'AND',
-         'is_active' => 0,
-         'criteria'  => [
-            [
-               'criteria'  => 'mac',
-               'condition' => Rule::PATTERN_EXISTS,
-               'pattern'   => 1
+            'name'      => 'Global update (by serial)',
+            'match'     => 'AND',
+            'is_active' => 1,
+            'criteria'  => [
+                [
+                    'criteria'  => 'serial',
+                    'condition' => Rule::PATTERN_EXISTS,
+                    'pattern'   => 1
+                ],
+                [
+                    'criteria'  => 'serial',
+                    'condition' => Rule::PATTERN_FIND,
+                    'pattern'   => 1
+                ]
             ],
-            [
-               'criteria'  => 'mac',
-               'condition' => Rule::PATTERN_FIND,
-               'pattern'   => 1
-            ]
-         ],
-         'action'    => '_link'
+            'action'    => '_link'
         ];
 
         $rules[] = [
-         'name'      => 'Global import (by serial)',
-         'match'     => 'AND',
-         'is_active' => 1,
-         'criteria'  => [
-            [
-               'criteria'  => 'serial',
-               'condition' => Rule::PATTERN_EXISTS,
-               'pattern'   => 1
-            ]
-         ],
-         'action'    => '_link'
-        ];
-
-        $rules[] = [
-         'name'      => 'Global import (by mac)',
-         'match'     => 'AND',
-         'is_active' => 0,
-         'criteria'  => [
-            [
-               'criteria'  => 'mac',
-               'condition' => Rule::PATTERN_EXISTS,
-               'pattern'   => 1
-            ]
-         ],
-         'action'    => '_link'
-        ];
-
-        $rules[] = [
-         'name'      => 'Global import denied',
-         'match'     => 'AND',
-         'is_active' => 1,
-         'criteria'  => [
-            [
-               'criteria'  => 'itemtype',
-               'condition' => Rule::PATTERN_IS,
-               'pattern'   => ''
-            ]
-         ],
-         'action'    => '_deny'
-        ];
-
-        $rules[] = [
-         'name'      => 'Database update (by name)',
-         'match'     => 'AND',
-         'is_active' => 1,
-         'criteria'  => [
-            [
-               'criteria'  => 'itemtype',
-               'condition' => Rule::PATTERN_IS,
-               'pattern'   => 'DatabaseInstance'
+            'name'      => 'Global update (by mac)',
+            'match'     => 'AND',
+            'is_active' => 0,
+            'criteria'  => [
+                [
+                    'criteria'  => 'mac',
+                    'condition' => Rule::PATTERN_EXISTS,
+                    'pattern'   => 1
+                ],
+                [
+                    'criteria'  => 'mac',
+                    'condition' => Rule::PATTERN_FIND,
+                    'pattern'   => 1
+                ]
             ],
-            [
-               'criteria'  => 'name',
-               'condition' => Rule::PATTERN_EXISTS,
-               'pattern'   => 1
-            ],
-            [
-               'criteria'  => 'name',
-               'condition' => Rule::PATTERN_FIND,
-               'pattern'   => 1
-            ],
-            [
-               'criteria'  => 'linked_item',
-               'condition' => Rule::PATTERN_FIND,
-               'pattern'   => 1
-            ]
-         ],
-         'action'    => '_link'
+            'action'    => '_link'
         ];
 
         $rules[] = [
-         'name'      => 'Database import (by name)',
-         'match'     => 'AND',
-         'is_active' => 1,
-         'criteria'  => [
-            [
-               'criteria'  => 'itemtype',
-               'condition' => Rule::PATTERN_IS,
-               'pattern'   => 'DatabaseInstance'
+            'name'      => 'Global import (by serial)',
+            'match'     => 'AND',
+            'is_active' => 1,
+            'criteria'  => [
+                [
+                    'criteria'  => 'serial',
+                    'condition' => Rule::PATTERN_EXISTS,
+                    'pattern'   => 1
+                ]
             ],
-            [
-               'criteria'  => 'name',
-               'condition' => Rule::PATTERN_EXISTS,
-               'pattern'   => 1
-            ]
-         ],
-         'action'    => '_link'
+            'action'    => '_link'
         ];
 
         $rules[] = [
-         'name'      => 'Database import denied',
-         'match'     => 'AND',
-         'is_active' => 1,
-         'criteria'  => [
-            [
-               'criteria'  => 'itemtype',
-               'condition' => Rule::PATTERN_IS,
-               'pattern'   => 'DatabaseInstance'
-            ]
-         ],
-         'action'    => '_deny'
+            'name'      => 'Global import (by mac)',
+            'match'     => 'AND',
+            'is_active' => 0,
+            'criteria'  => [
+                [
+                    'criteria'  => 'mac',
+                    'condition' => Rule::PATTERN_EXISTS,
+                    'pattern'   => 1
+                ]
+            ],
+            'action'    => '_link'
+        ];
+
+        $rules[] = [
+            'name'      => 'Global import denied',
+            'match'     => 'AND',
+            'is_active' => 1,
+            'criteria'  => [
+                [
+                    'criteria'  => 'itemtype',
+                    'condition' => Rule::PATTERN_IS,
+                    'pattern'   => ''
+                ]
+            ],
+            'action'    => '_deny'
+        ];
+
+        $rules[] = [
+            'name'      => 'Database update (by name)',
+            'match'     => 'AND',
+            'is_active' => 1,
+            'criteria'  => [
+                [
+                    'criteria'  => 'itemtype',
+                    'condition' => Rule::PATTERN_IS,
+                    'pattern'   => 'DatabaseInstance'
+                ],
+                [
+                    'criteria'  => 'name',
+                    'condition' => Rule::PATTERN_EXISTS,
+                    'pattern'   => 1
+                ],
+                [
+                    'criteria'  => 'name',
+                    'condition' => Rule::PATTERN_FIND,
+                    'pattern'   => 1
+                ],
+                [
+                    'criteria'  => 'linked_item',
+                    'condition' => Rule::PATTERN_FIND,
+                    'pattern'   => 1
+                ]
+            ],
+            'action'    => '_link'
+        ];
+
+        $rules[] = [
+            'name'      => 'Database import (by name)',
+            'match'     => 'AND',
+            'is_active' => 1,
+            'criteria'  => [
+                [
+                    'criteria'  => 'itemtype',
+                    'condition' => Rule::PATTERN_IS,
+                    'pattern'   => 'DatabaseInstance'
+                ],
+                [
+                    'criteria'  => 'name',
+                    'condition' => Rule::PATTERN_EXISTS,
+                    'pattern'   => 1
+                ]
+            ],
+            'action'    => '_link'
+        ];
+
+        $rules[] = [
+            'name'      => 'Database import denied',
+            'match'     => 'AND',
+            'is_active' => 1,
+            'criteria'  => [
+                [
+                    'criteria'  => 'itemtype',
+                    'condition' => Rule::PATTERN_IS,
+                    'pattern'   => 'DatabaseInstance'
+                ]
+            ],
+            'action'    => '_deny'
         ];
 
        //load default rules from plugins
@@ -2272,11 +2272,11 @@ class RuleImportAsset extends Rule
         foreach ($rules as $rule) {
             $rulecollection = new RuleImportAssetCollection();
             $input = [
-            'is_active' => $rule['is_active'],
-            'name'      => $rule['name'],
-            'match'     => $rule['match'],
-            'sub_type'  => self::getType(),
-            'ranking'   => $ranking
+                'is_active' => $rule['is_active'],
+                'name'      => $rule['name'],
+                'match'     => $rule['match'],
+                'sub_type'  => self::getType(),
+                'ranking'   => $ranking
             ];
 
             $exists = false;
@@ -2301,8 +2301,8 @@ class RuleImportAsset extends Rule
            // Add action
             $ruleaction = new RuleAction(get_class($ruleclass));
             $input = [
-            'rules_id'     => $rule_id,
-            'action_type'  => 'assign'
+                'rules_id'     => $rule_id,
+                'action_type'  => 'assign'
             ];
 
             switch ($rule['action']) {
@@ -2367,10 +2367,10 @@ class RuleImportAsset extends Rule
     public function getNetportCriteria(): array
     {
         return [
-         'mac',
-         'ip',
-         'ifnumber',
-         'ifdescr'
+            'mac',
+            'ip',
+            'ifnumber',
+            'ifdescr'
         ];
     }
 
@@ -2384,19 +2384,19 @@ class RuleImportAsset extends Rule
         global $PLUGIN_HOOKS;
 
         $criteria = array_merge([
-         'manufacturer',
-         'model',
-         'name',
-         'serial',
-         'otherserial',
-         'uuid',
-         'device_id',
-         'itemtype',
-         'domains_id',
-         'linked_item',
-         'entity_restrict',
-         'link_criteria_port',
-         'only_these_criteria'
+            'manufacturer',
+            'model',
+            'name',
+            'serial',
+            'otherserial',
+            'uuid',
+            'device_id',
+            'itemtype',
+            'domains_id',
+            'linked_item',
+            'entity_restrict',
+            'link_criteria_port',
+            'only_these_criteria'
         ], $this->getNetportCriteria());
 
        //Add plugin global criteria
@@ -2450,9 +2450,9 @@ class RuleImportAsset extends Rule
                 $options['display'] = false;
                 return Rule::dropdown(
                     [
-                    'sub_type' => static::class,
-                    'display' => false,
-                    'name' => $name
+                        'sub_type' => static::class,
+                        'display' => false,
+                        'name' => $name
                     ] + $options
                 );
         }

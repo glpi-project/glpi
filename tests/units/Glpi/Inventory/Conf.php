@@ -41,9 +41,9 @@ class Conf extends \GLPITestCase
     public function testKnownInventoryExtensions()
     {
         $expected = [
-         'json',
-         'xml',
-         'ocs'
+            'json',
+            'xml',
+            'ocs'
         ];
 
         $this
@@ -56,19 +56,19 @@ class Conf extends \GLPITestCase
     protected function inventoryfilesProvider(): array
     {
         return [
-         [
-            'file'      => 'computer.json',
-            'expected'  => true
-         ], [
-            'file'      => 'anything.xml',
-            'expected'  => true
-         ], [
-            'file'      => 'another.ocs',
-            'expected'  => true
-         ], [
-            'file'      => 'computer.xls',
-            'expected'  => false
-         ]
+            [
+                'file'      => 'computer.json',
+                'expected'  => true
+            ], [
+                'file'      => 'anything.xml',
+                'expected'  => true
+            ], [
+                'file'      => 'another.ocs',
+                'expected'  => true
+            ], [
+                'file'      => 'computer.xls',
+                'expected'  => false
+            ]
         ];
     }
 
@@ -91,8 +91,8 @@ class Conf extends \GLPITestCase
         $defaults = \Glpi\Inventory\Conf::$defaults;
         foreach ($defaults as $key => $value) {
             $provider[] = [
-            'key'    => $key,
-            'value'  => $value
+                'key'    => $key,
+                'value'  => $value
             ];
         }
         return $provider;

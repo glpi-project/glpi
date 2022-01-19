@@ -66,19 +66,19 @@ class DBmysqlIterator implements SeekableIterator, Countable
 
    //Known query operators
     private $allowed_operators = [
-      '=',
-      '!=',
-      '<',
-      '<=',
-      '>',
-      '>=',
-      '<>',
-      'LIKE',
-      'REGEXP',
-      'NOT LIKE',
-      'NOT REGEX',
-      '&',
-      '|'
+        '=',
+        '!=',
+        '<',
+        '<=',
+        '>',
+        '>=',
+        '<>',
+        'LIKE',
+        'REGEXP',
+        'NOT LIKE',
+        'NOT REGEX',
+        '&',
+        '|'
     ];
 
     /**

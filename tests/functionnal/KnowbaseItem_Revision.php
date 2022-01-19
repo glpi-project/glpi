@@ -65,8 +65,8 @@ class KnowbaseItem_Revision extends DbTestCase
         $kb1 = $this->getNewKbItem();
 
         $where = [
-         'knowbaseitems_id' => $kb1->getID(),
-         'language'         => ''
+            'knowbaseitems_id' => $kb1->getID(),
+            'language'         => ''
         ];
 
         $nb = countElementsInTable(
@@ -78,8 +78,8 @@ class KnowbaseItem_Revision extends DbTestCase
         $this->boolean(
             $kb1->update(
                 [
-                'id'   => $kb1->getID(),
-                'name' => '_knowbaseitem01-01'
+                    'id'   => $kb1->getID(),
+                    'name' => '_knowbaseitem01-01'
                 ]
             )
         )->isTrue();
@@ -92,8 +92,8 @@ class KnowbaseItem_Revision extends DbTestCase
 
         $rev_id = null;
         $data = $DB->request([
-         'SELECT' => ['MIN' => 'id as id'],
-         'FROM'   => 'glpi_knowbaseitems_revisions'
+            'SELECT' => ['MIN' => 'id as id'],
+            'FROM'   => 'glpi_knowbaseitems_revisions'
         ])->current();
         $rev_id = $data['id'];
 
@@ -110,8 +110,8 @@ class KnowbaseItem_Revision extends DbTestCase
         $this->boolean(
             $kb1->update(
                 [
-                'id'     => $kb1->getID(),
-                'answer' => \Toolbox::addslashes_deep('Don\'t use paths with spaces, like C:\\Program Files\\MyApp')
+                    'id'     => $kb1->getID(),
+                    'answer' => \Toolbox::addslashes_deep('Don\'t use paths with spaces, like C:\\Program Files\\MyApp')
                 ]
             )
         )->isTrue();
@@ -119,8 +119,8 @@ class KnowbaseItem_Revision extends DbTestCase
         $this->boolean(
             $kb1->update(
                 [
-                'id'     => $kb1->getID(),
-                'answer' => 'Answer changed'
+                    'id'     => $kb1->getID(),
+                    'answer' => 'Answer changed'
                 ]
             )
         )->isTrue();
@@ -133,8 +133,8 @@ class KnowbaseItem_Revision extends DbTestCase
 
         $nrev_id = null;
         $data = $DB->request([
-         'SELECT' => new \QueryExpression('MAX(id) AS id'),
-         'FROM'   => 'glpi_knowbaseitems_revisions'
+            'SELECT' => new \QueryExpression('MAX(id) AS id'),
+            'FROM'   => 'glpi_knowbaseitems_revisions'
         ])->current();
         $nrev_id = $data['id'];
 
@@ -170,8 +170,8 @@ class KnowbaseItem_Revision extends DbTestCase
         $this->boolean(
             $kb1->update(
                 [
-                'id'   => $kb1->getID(),
-                'name' => '_knowbaseitem01-01'
+                    'id'   => $kb1->getID(),
+                    'name' => '_knowbaseitem01-01'
                 ]
             )
         )->isTrue();
@@ -183,8 +183,8 @@ class KnowbaseItem_Revision extends DbTestCase
         $this->boolean(
             $kb1->update(
                 [
-                'id'   => $kb1->getID(),
-                'name' => '_knowbaseitem01-02'
+                    'id'   => $kb1->getID(),
+                    'name' => '_knowbaseitem01-02'
                 ]
             )
         )->isTrue();

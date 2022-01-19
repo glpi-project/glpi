@@ -42,8 +42,8 @@ class Sensor extends AbstractInventoryAsset
     protected function assetProvider(): array
     {
         return [
-         [
-            'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+            [
+                'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
   <CONTENT>
     <SENSORS>
@@ -58,9 +58,9 @@ class Sensor extends AbstractInventoryAsset
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-            'expected'  => '{"name": "LSM330DLC 3-axis Accelerometer", "manufacturer": "STMicroelectronics", "type": "ACCELEROMETER", "version": "1", "manufacturers_id": "STMicroelectronics", "devicesensortypes_id": "ACCELEROMETER", "designation": "LSM330DLC 3-axis Accelerometer", "is_dynamic": 1}'
-         ], [
-            'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+                'expected'  => '{"name": "LSM330DLC 3-axis Accelerometer", "manufacturer": "STMicroelectronics", "type": "ACCELEROMETER", "version": "1", "manufacturers_id": "STMicroelectronics", "devicesensortypes_id": "ACCELEROMETER", "designation": "LSM330DLC 3-axis Accelerometer", "is_dynamic": 1}'
+            ], [
+                'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
   <CONTENT>
     <SENSORS>
@@ -75,8 +75,8 @@ class Sensor extends AbstractInventoryAsset
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-            'expected'  => '{"name": "AK8975C 3-axis Magnetic field sensor", "manufacturer": "Asahi Kasei Microdevices", "type": "MAGNETIC FIELD", "version": "1", "manufacturers_id": "Asahi Kasei Microdevices", "devicesensortypes_id": "MAGNETIC FIELD", "designation": "AK8975C 3-axis Magnetic field sensor", "is_dynamic": 1}'
-         ]
+                'expected'  => '{"name": "AK8975C 3-axis Magnetic field sensor", "manufacturer": "Asahi Kasei Microdevices", "type": "MAGNETIC FIELD", "version": "1", "manufacturers_id": "Asahi Kasei Microdevices", "devicesensortypes_id": "MAGNETIC FIELD", "designation": "AK8975C 3-axis Magnetic field sensor", "is_dynamic": 1}'
+            ]
         ];
     }
 
@@ -162,80 +162,80 @@ class Sensor extends AbstractInventoryAsset
 
        //create manually a computer, with 3 sensors
         $computers_id = $computer->add([
-         'name'   => 'pc002',
-         'serial' => 'ggheb7ne7',
-         'entities_id' => 0
+            'name'   => 'pc002',
+            'serial' => 'ggheb7ne7',
+            'entities_id' => 0
         ]);
         $this->integer($computers_id)->isGreaterThan(0);
 
         $manufacturer = new \Manufacturer();
         $manufacturers_id = $manufacturer->add([
-         'name' => 'STMicroelectronics'
+            'name' => 'STMicroelectronics'
         ]);
         $this->integer($manufacturers_id)->isGreaterThan(0);
 
         $type = new \DeviceSensorType();
         $types_id = $type->add([
-         'name' => 'ACCELEROMETER'
+            'name' => 'ACCELEROMETER'
         ]);
         $this->integer($types_id)->isGreaterThan(0);
 
         $sensor_1_id = $device_sensor->add([
-         'designation' => 'LSM330DLC 3-axis Accelerometer',
-         'manufacturers_id' => $manufacturers_id,
-         'devicesensortypes_id' => $types_id,
-         'locations_id' => 0,
-         'entities_id'  => 0
+            'designation' => 'LSM330DLC 3-axis Accelerometer',
+            'manufacturers_id' => $manufacturers_id,
+            'devicesensortypes_id' => $types_id,
+            'locations_id' => 0,
+            'entities_id'  => 0
         ]);
         $this->integer($sensor_1_id)->isGreaterThan(0);
 
         $item_sensor_1_id = $item_sensor->add([
-         'items_id'     => $computers_id,
-         'itemtype'     => 'Computer',
-         'devicesensors_id' => $sensor_1_id
+            'items_id'     => $computers_id,
+            'itemtype'     => 'Computer',
+            'devicesensors_id' => $sensor_1_id
         ]);
         $this->integer($item_sensor_1_id)->isGreaterThan(0);
 
         $manufacturers_id = $manufacturer->add([
-         'name' => 'Asahi Kasei Microdevices'
+            'name' => 'Asahi Kasei Microdevices'
         ]);
         $this->integer($manufacturers_id)->isGreaterThan(0);
 
         $types_id = $type->add([
-         'name' => 'MAGNETIC FIELD'
+            'name' => 'MAGNETIC FIELD'
         ]);
         $this->integer($types_id)->isGreaterThan(0);
 
         $sensor_2_id = $device_sensor->add([
-         'designation' => 'AK8975C 3-axis Magnetic field sensor',
-         'manufacturers_id' => $manufacturers_id,
-         'devicesensortypes_id' => $types_id,
-         'locations_id' => 0,
-         'entities_id'  => 0
+            'designation' => 'AK8975C 3-axis Magnetic field sensor',
+            'manufacturers_id' => $manufacturers_id,
+            'devicesensortypes_id' => $types_id,
+            'locations_id' => 0,
+            'entities_id'  => 0
 
         ]);
         $this->integer($sensor_2_id)->isGreaterThan(0);
 
         $item_sensor_2_id = $item_sensor->add([
-         'items_id'     => $computers_id,
-         'itemtype'     => 'Computer',
-         'devicesensors_id' => $sensor_2_id
+            'items_id'     => $computers_id,
+            'itemtype'     => 'Computer',
+            'devicesensors_id' => $sensor_2_id
         ]);
         $this->integer($item_sensor_2_id)->isGreaterThan(0);
 
         $sensor_3_id = $device_sensor->add([
-         'designation' => 'TMG399X RGB Sensor',
-         'manufacturers_id' => $manufacturers_id,
-         'devicesensortypes_id' => $types_id,
-         'locations_id' => 0,
-         'entities_id'  => 0
+            'designation' => 'TMG399X RGB Sensor',
+            'manufacturers_id' => $manufacturers_id,
+            'devicesensortypes_id' => $types_id,
+            'locations_id' => 0,
+            'entities_id'  => 0
         ]);
         $this->integer($sensor_3_id)->isGreaterThan(0);
 
         $item_sensor_3_id = $item_sensor->add([
-         'items_id'     => $computers_id,
-         'itemtype'     => 'Computer',
-         'devicesensors_id' => $sensor_3_id
+            'items_id'     => $computers_id,
+            'itemtype'     => 'Computer',
+            'devicesensors_id' => $sensor_3_id
         ]);
         $this->integer($item_sensor_3_id)->isGreaterThan(0);
 

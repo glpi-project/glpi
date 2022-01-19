@@ -134,8 +134,8 @@ class Notification_NotificationTemplate extends DbTestCase
     {
         $mode = \Notification_NotificationTemplate::getMode(\Notification_NotificationTemplate::MODE_MAIL);
         $expected = [
-         'label'  => 'Email',
-         'from'   => 'core'
+            'label'  => 'Email',
+            'from'   => 'core'
         ];
         $this->array($mode)->isIdenticalTo($expected);
 
@@ -147,14 +147,14 @@ class Notification_NotificationTemplate extends DbTestCase
     {
         $modes = \Notification_NotificationTemplate::getModes();
         $expected = [
-         \Notification_NotificationTemplate::MODE_MAIL   => [
-            'label'  => 'Email',
-            'from'   => 'core'
-         ],
-         \Notification_NotificationTemplate::MODE_AJAX   => [
-            'label'  => 'Browser',
-            'from'   => 'core'
-         ]
+            \Notification_NotificationTemplate::MODE_MAIL   => [
+                'label'  => 'Email',
+                'from'   => 'core'
+            ],
+            \Notification_NotificationTemplate::MODE_AJAX   => [
+                'label'  => 'Browser',
+                'from'   => 'core'
+            ]
         ];
         $this->array($modes)->isIdenticalTo($expected);
 
@@ -166,8 +166,8 @@ class Notification_NotificationTemplate extends DbTestCase
         );
         $modes = \Notification_NotificationTemplate::getModes();
         $expected['test_mode'] = [
-         'label'  => 'A test label',
-         'from'   => 'anyplugin'
+            'label'  => 'A test label',
+            'from'   => 'anyplugin'
         ];
         $this->array($modes)->isIdenticalTo($expected);
     }

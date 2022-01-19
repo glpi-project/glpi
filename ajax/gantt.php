@@ -55,8 +55,8 @@ if (isset($_REQUEST['getData'])) {
     });
 
     $result = [
-      'data' => $itemArray,
-      'links' => $links
+        'data' => $itemArray,
+        'links' => $links
     ];
     echo json_encode($result);
 } else if (isset($_POST["addTask"])) {
@@ -71,13 +71,13 @@ if (isset($_REQUEST['getData'])) {
         $ganttItem = $factory->populateGanttItem($newTask->fields, "task");
 
         $result = [
-         'ok' => true,
-         'item' => $ganttItem
+            'ok' => true,
+            'item' => $ganttItem
         ];
     } catch (\Exception $ex) {
         $result = [
-         'ok' => false,
-         'error' => $ex->getMessage()
+            'ok' => false,
+            'error' => $ex->getMessage()
         ];
     }
     echo json_encode($result);
@@ -91,12 +91,12 @@ if (isset($_REQUEST['getData'])) {
         $taskDAO = new Glpi\Gantt\TaskDAO();
         $updated = $taskDAO->updateTask($item);
         $result = [
-         'ok' => $updated
+            'ok' => $updated
         ];
     } catch (\Exception $ex) {
         $result = [
-         'ok' => false,
-         'error' => $ex->getMessage()
+            'ok' => false,
+            'error' => $ex->getMessage()
         ];
     }
     echo json_encode($result);
@@ -124,12 +124,12 @@ if (isset($_REQUEST['getData'])) {
         $dao->updateParent($item);
 
         $result = [
-         'ok' => true
+            'ok' => true
         ];
     } catch (\Exception $ex) {
         $result = [
-         'ok' => false,
-         'error' => $ex->getMessage()
+            'ok' => false,
+            'error' => $ex->getMessage()
         ];
     }
     echo json_encode($result);
@@ -149,12 +149,12 @@ if (isset($_REQUEST['getData'])) {
         $dao->updateParent($item);
 
         $result = [
-         'ok' => true
+            'ok' => true
         ];
     } catch (\Exception $ex) {
         $result = [
-         'ok' => false,
-         'error' => $ex->getMessage()
+            'ok' => false,
+            'error' => $ex->getMessage()
         ];
     }
     echo json_encode($result);
@@ -170,13 +170,13 @@ if (isset($_REQUEST['getData'])) {
         $ganttItem = $factory->populateGanttItem($newProj->fields, "project");
 
         $result = [
-         'ok' => true,
-         'item' => $ganttItem
+            'ok' => true,
+            'item' => $ganttItem
         ];
     } catch (\Exception $ex) {
         $result = [
-         'ok' => false,
-         'error' => $ex->getMessage()
+            'ok' => false,
+            'error' => $ex->getMessage()
         ];
     }
     echo json_encode($result);
@@ -190,12 +190,12 @@ if (isset($_REQUEST['getData'])) {
         $projectDAO = new Glpi\Gantt\ProjectDAO();
         $updated = $projectDAO->updateProject($item);
         $result = [
-         'ok' => $updated
+            'ok' => $updated
         ];
     } catch (\Exception $ex) {
         $result = [
-         'ok' => false,
-         'error' => $ex->getMessage()
+            'ok' => false,
+            'error' => $ex->getMessage()
         ];
     }
     echo json_encode($result);
@@ -210,13 +210,13 @@ if (isset($_REQUEST['getData'])) {
 
         $id = $taskLink->add($_POST["taskLink"]);
         $result = [
-         'ok' => true,
-         'id' => $id
+            'ok' => true,
+            'id' => $id
         ];
     } catch (\Exception $ex) {
         $result = [
-         'ok' => false,
-         'error' => $ex->getMessage()
+            'ok' => false,
+            'error' => $ex->getMessage()
         ];
     }
     echo json_encode($result);
@@ -226,12 +226,12 @@ if (isset($_REQUEST['getData'])) {
         $taskLink = new \ProjectTaskLink();
         $taskLink->update($_POST["taskLink"]);
         $result = [
-         'ok' => true
+            'ok' => true
         ];
     } catch (\Exception $ex) {
         $result = [
-         'ok' => false,
-         'error' => $ex->getMessage()
+            'ok' => false,
+            'error' => $ex->getMessage()
         ];
     }
     echo json_encode($result);
@@ -241,12 +241,12 @@ if (isset($_REQUEST['getData'])) {
         $taskLink = new \ProjectTaskLink();
         $taskLink->delete($_POST);
         $result = [
-         'ok' => true
+            'ok' => true
         ];
     } catch (\Exception $ex) {
         $result = [
-         'ok' => false,
-         'error' => $ex->getMessage()
+            'ok' => false,
+            'error' => $ex->getMessage()
         ];
     }
     echo json_encode($result);
@@ -261,8 +261,8 @@ if (isset($_REQUEST['getData'])) {
         }
     } catch (\Exception $ex) {
         $result = [
-         'ok' => false,
-         'error' => $ex->getMessage()
+            'ok' => false,
+            'error' => $ex->getMessage()
         ];
     }
     echo json_encode($result);

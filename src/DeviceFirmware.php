@@ -47,26 +47,26 @@ class DeviceFirmware extends CommonDevice
         return array_merge(
             parent::getAdditionalFields(),
             [
-            [
-               'name'  => 'devicefirmwaretypes_id',
-               'label' => _n('Type', 'Types', 1),
-               'type'  => 'dropdownValue'
-            ],
-            [
-               'name'   => 'date',
-               'label'  => __('Release date'),
-               'type'   => 'date'
-            ],
-            [
-               'name'   => 'version',
-               'label'  => _n('Version', 'Versions', 1),
-               'type'   => 'text'
-            ],
-            [
-               'name'   => 'devicefirmwaremodels_id',
-               'label'  => _n('Model', 'Models', 1),
-               'type'   => 'dropdownValue'
-            ]
+                [
+                    'name'  => 'devicefirmwaretypes_id',
+                    'label' => _n('Type', 'Types', 1),
+                    'type'  => 'dropdownValue'
+                ],
+                [
+                    'name'   => 'date',
+                    'label'  => __('Release date'),
+                    'type'   => 'date'
+                ],
+                [
+                    'name'   => 'version',
+                    'label'  => _n('Version', 'Versions', 1),
+                    'type'   => 'text'
+                ],
+                [
+                    'name'   => 'devicefirmwaremodels_id',
+                    'label'  => _n('Model', 'Models', 1),
+                    'type'   => 'dropdownValue'
+                ]
             ]
         );
     }
@@ -77,34 +77,34 @@ class DeviceFirmware extends CommonDevice
         $tab = parent::rawSearchOptions();
 
         $tab[] = [
-         'id'                 => '11',
-         'table'              => $this->getTable(),
-         'field'              => 'date',
-         'name'               => __('Release date'),
-         'datatype'           => 'date'
+            'id'                 => '11',
+            'table'              => $this->getTable(),
+            'field'              => 'date',
+            'name'               => __('Release date'),
+            'datatype'           => 'date'
         ];
 
         $tab[] = [
-         'id'                 => '12',
-         'table'              => 'glpi_devicefirmwaremodels',
-         'field'              => 'name',
-         'name'               => _n('Model', 'Models', 1),
-         'datatype'           => 'dropdown'
+            'id'                 => '12',
+            'table'              => 'glpi_devicefirmwaremodels',
+            'field'              => 'name',
+            'name'               => _n('Model', 'Models', 1),
+            'datatype'           => 'dropdown'
         ];
 
         $tab[] = [
-         'id'                 => '13',
-         'table'              => 'glpi_devicefirmwaretypes',
-         'field'              => 'name',
-         'name'               => _n('Type', 'Types', 1),
-         'datatype'           => 'dropdown'
+            'id'                 => '13',
+            'table'              => 'glpi_devicefirmwaretypes',
+            'field'              => 'name',
+            'name'               => _n('Type', 'Types', 1),
+            'datatype'           => 'dropdown'
         ];
 
         $tab[] = [
-         'id'                 => '14',
-         'table'              => 'glpi_devicefirmwares',
-         'field'              => 'version',
-         'name'               => _n('Version', 'Versions', 1),
+            'id'                 => '14',
+            'table'              => 'glpi_devicefirmwares',
+            'field'              => 'version',
+            'name'               => _n('Version', 'Versions', 1),
         ];
 
         return $tab;
@@ -178,10 +178,10 @@ class DeviceFirmware extends CommonDevice
     {
 
         return [
-         'designation'              => 'equal',
-         'devicefirmwaretypes_id'   => 'equal',
-         'manufacturers_id'         => 'equal',
-         'version'                  => 'equal'
+            'designation'              => 'equal',
+            'devicefirmwaretypes_id'   => 'equal',
+            'manufacturers_id'         => 'equal',
+            'version'                  => 'equal'
         ];
     }
 

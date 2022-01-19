@@ -106,9 +106,9 @@ class Migration extends \GLPITestCase
         )->isIdenticalTo("Task completed.");
 
         $this->array($this->queries)->isIdenticalTo([
-         'UPDATE pre_table SET mfield = "myvalue"',
-         'UPDATE post_table SET mfield = "myvalue"',
-         'UPDATE post_otable SET ofield = "myvalue"'
+            'UPDATE pre_table SET mfield = "myvalue"',
+            'UPDATE post_table SET mfield = "myvalue"',
+            'UPDATE post_otable SET ofield = "myvalue"'
         ]);
     }
 
@@ -119,17 +119,17 @@ class Migration extends \GLPITestCase
         $this->calling($this->db)->fetchAssoc = [];
         $this->calling($this->db)->dataSeek = true;
         $this->calling($this->db)->listFields = [
-         'id'        => '',
-         'context'   => '',
-         'name'      => '',
-         'value'     => ''
+            'id'        => '',
+            'context'   => '',
+            'name'      => '',
+            'value'     => ''
         ];
         $DB = $this->db;
 
        //test with non existing value => new keys should be inserted
         $this->migration->addConfig([
-         'one' => 'key',
-         'two' => 'value'
+            'one' => 'key',
+            'two' => 'value'
         ]);
 
         $this->output(
@@ -139,23 +139,23 @@ class Migration extends \GLPITestCase
         )->isIdenticalTo('Configuration values added for one, two (core).Task completed.');
 
         $core_queries = [
-         0 => 'SELECT * FROM `glpi_configs` WHERE `context` = \'core\' AND `name` IN (\'one\', \'two\')',
-         1 => 'SELECT `id` FROM `glpi_configs` WHERE `context` = \'core\' AND `name` = \'one\'',
-         2 => 'INSERT INTO `glpi_configs` (`context`, `name`, `value`) VALUES (\'core\', \'one\', \'key\')',
-         3 => 'SELECT * FROM `glpi_configs` WHERE `glpi_configs`.`id` = \'0\' LIMIT 1',
-         4 => 'INSERT INTO `glpi_logs` (`items_id`, `itemtype`, `itemtype_link`, `linked_action`, `user_name`, `date_mod`, `id_search_option`, `old_value`, `new_value`) VALUES (\'1\', \'Config\', \'\', \'0\', \'\', \'' . $_SESSION['glpi_currenttime'] . '\', \'1\', \'one \', \'key\')',
-         5 => 'SELECT `id` FROM `glpi_configs` WHERE `context` = \'core\' AND `name` = \'two\'',
-         6 => 'INSERT INTO `glpi_configs` (`context`, `name`, `value`) VALUES (\'core\', \'two\', \'value\')',
-         7 => 'SELECT * FROM `glpi_configs` WHERE `glpi_configs`.`id` = \'0\' LIMIT 1',
-         8 => 'INSERT INTO `glpi_logs` (`items_id`, `itemtype`, `itemtype_link`, `linked_action`, `user_name`, `date_mod`, `id_search_option`, `old_value`, `new_value`) VALUES (\'1\', \'Config\', \'\', \'0\', \'\', \'' . $_SESSION['glpi_currenttime'] . '\', \'1\', \'two \', \'value\')',
+            0 => 'SELECT * FROM `glpi_configs` WHERE `context` = \'core\' AND `name` IN (\'one\', \'two\')',
+            1 => 'SELECT `id` FROM `glpi_configs` WHERE `context` = \'core\' AND `name` = \'one\'',
+            2 => 'INSERT INTO `glpi_configs` (`context`, `name`, `value`) VALUES (\'core\', \'one\', \'key\')',
+            3 => 'SELECT * FROM `glpi_configs` WHERE `glpi_configs`.`id` = \'0\' LIMIT 1',
+            4 => 'INSERT INTO `glpi_logs` (`items_id`, `itemtype`, `itemtype_link`, `linked_action`, `user_name`, `date_mod`, `id_search_option`, `old_value`, `new_value`) VALUES (\'1\', \'Config\', \'\', \'0\', \'\', \'' . $_SESSION['glpi_currenttime'] . '\', \'1\', \'one \', \'key\')',
+            5 => 'SELECT `id` FROM `glpi_configs` WHERE `context` = \'core\' AND `name` = \'two\'',
+            6 => 'INSERT INTO `glpi_configs` (`context`, `name`, `value`) VALUES (\'core\', \'two\', \'value\')',
+            7 => 'SELECT * FROM `glpi_configs` WHERE `glpi_configs`.`id` = \'0\' LIMIT 1',
+            8 => 'INSERT INTO `glpi_logs` (`items_id`, `itemtype`, `itemtype_link`, `linked_action`, `user_name`, `date_mod`, `id_search_option`, `old_value`, `new_value`) VALUES (\'1\', \'Config\', \'\', \'0\', \'\', \'' . $_SESSION['glpi_currenttime'] . '\', \'1\', \'two \', \'value\')',
         ];
         $this->array($this->queries)->isIdenticalTo($core_queries);
 
        //test with existing value on different context => new keys should be inserted in correct context
         $this->queries = [];
         $this->migration->addConfig([
-         'one' => 'key',
-         'two' => 'value'
+            'one' => 'key',
+            'two' => 'value'
         ], 'test-context');
 
         $this->output(
@@ -165,21 +165,21 @@ class Migration extends \GLPITestCase
         )->isIdenticalTo('Configuration values added for one, two (test-context).Task completed.');
 
         $this->array($this->queries)->isIdenticalTo([
-         0 => 'SELECT * FROM `glpi_configs` WHERE `context` = \'test-context\' AND `name` IN (\'one\', \'two\')',
-         1 => 'SELECT `id` FROM `glpi_configs` WHERE `context` = \'test-context\' AND `name` = \'one\'',
-         2 => 'INSERT INTO `glpi_configs` (`context`, `name`, `value`) VALUES (\'test-context\', \'one\', \'key\')',
-         3 => 'SELECT * FROM `glpi_configs` WHERE `glpi_configs`.`id` = \'0\' LIMIT 1',
-         4 => 'INSERT INTO `glpi_logs` (`items_id`, `itemtype`, `itemtype_link`, `linked_action`, `user_name`, `date_mod`, `id_search_option`, `old_value`, `new_value`) VALUES (\'1\', \'Config\', \'\', \'0\', \'\', \'' . $_SESSION['glpi_currenttime'] . '\', \'1\', \'one (test-context) \', \'key\')',
-         5 => 'SELECT `id` FROM `glpi_configs` WHERE `context` = \'test-context\' AND `name` = \'two\'',
-         6 => 'INSERT INTO `glpi_configs` (`context`, `name`, `value`) VALUES (\'test-context\', \'two\', \'value\')',
-         7 => 'SELECT * FROM `glpi_configs` WHERE `glpi_configs`.`id` = \'0\' LIMIT 1',
-         8 => 'INSERT INTO `glpi_logs` (`items_id`, `itemtype`, `itemtype_link`, `linked_action`, `user_name`, `date_mod`, `id_search_option`, `old_value`, `new_value`) VALUES (\'1\', \'Config\', \'\', \'0\', \'\', \'' . $_SESSION['glpi_currenttime'] . '\', \'1\', \'two (test-context) \', \'value\')',
+            0 => 'SELECT * FROM `glpi_configs` WHERE `context` = \'test-context\' AND `name` IN (\'one\', \'two\')',
+            1 => 'SELECT `id` FROM `glpi_configs` WHERE `context` = \'test-context\' AND `name` = \'one\'',
+            2 => 'INSERT INTO `glpi_configs` (`context`, `name`, `value`) VALUES (\'test-context\', \'one\', \'key\')',
+            3 => 'SELECT * FROM `glpi_configs` WHERE `glpi_configs`.`id` = \'0\' LIMIT 1',
+            4 => 'INSERT INTO `glpi_logs` (`items_id`, `itemtype`, `itemtype_link`, `linked_action`, `user_name`, `date_mod`, `id_search_option`, `old_value`, `new_value`) VALUES (\'1\', \'Config\', \'\', \'0\', \'\', \'' . $_SESSION['glpi_currenttime'] . '\', \'1\', \'one (test-context) \', \'key\')',
+            5 => 'SELECT `id` FROM `glpi_configs` WHERE `context` = \'test-context\' AND `name` = \'two\'',
+            6 => 'INSERT INTO `glpi_configs` (`context`, `name`, `value`) VALUES (\'test-context\', \'two\', \'value\')',
+            7 => 'SELECT * FROM `glpi_configs` WHERE `glpi_configs`.`id` = \'0\' LIMIT 1',
+            8 => 'INSERT INTO `glpi_logs` (`items_id`, `itemtype`, `itemtype_link`, `linked_action`, `user_name`, `date_mod`, `id_search_option`, `old_value`, `new_value`) VALUES (\'1\', \'Config\', \'\', \'0\', \'\', \'' . $_SESSION['glpi_currenttime'] . '\', \'1\', \'two (test-context) \', \'value\')',
         ]);
 
        //test with one existing value => only new key should be inserted
         $this->migration->addConfig([
-         'one' => 'key',
-         'two' => 'value'
+            'one' => 'key',
+            'two' => 'value'
         ]);
         $this->queries = [];
         $this->calling($this->db)->request = function ($table) {
@@ -188,11 +188,12 @@ class Migration extends \GLPITestCase
           // -> returns a value for config 'one'
             if ('glpi_configs' === $table) {
                   $dbresult = [[
-                 'id'        => '42',
-                 'context'   => 'core',
-                 'name'      => 'one',
-                 'value'     => 'setted value'
-                  ]];
+                      'id'        => '42',
+                      'context'   => 'core',
+                      'name'      => 'one',
+                      'value'     => 'setted value'
+                  ]
+                  ];
                   return new \ArrayIterator($dbresult);
             }
           // Other calls corresponds to call made in Config::setConfigurationValues()
@@ -208,8 +209,8 @@ class Migration extends \GLPITestCase
         )->isIdenticalTo('Configuration values added for two (core).Task completed.');
 
         $this->array($this->queries)->isIdenticalTo([
-         0 => 'INSERT INTO `glpi_configs` (`context`, `name`, `value`) VALUES (\'core\', \'two\', \'value\')',
-         1 => 'INSERT INTO `glpi_logs` (`items_id`, `itemtype`, `itemtype_link`, `linked_action`, `user_name`, `date_mod`, `id_search_option`, `old_value`, `new_value`) VALUES (\'1\', \'Config\', \'\', \'0\', \'\', \'' . $_SESSION['glpi_currenttime'] . '\', \'1\', \'two \', \'value\')',
+            0 => 'INSERT INTO `glpi_configs` (`context`, `name`, `value`) VALUES (\'core\', \'two\', \'value\')',
+            1 => 'INSERT INTO `glpi_logs` (`items_id`, `itemtype`, `itemtype_link`, `linked_action`, `user_name`, `date_mod`, `id_search_option`, `old_value`, `new_value`) VALUES (\'1\', \'Config\', \'\', \'0\', \'\', \'' . $_SESSION['glpi_currenttime'] . '\', \'1\', \'two \', \'value\')',
         ]);
     }
 
@@ -228,13 +229,13 @@ class Migration extends \GLPITestCase
         )->isIdenticalTo("Task completed.");
 
         $this->array($this->queries)->isIdenticalTo([
-         0 => 'SELECT `table_name` AS `TABLE_NAME` FROM `information_schema`.`tables`' .
+            0 => 'SELECT `table_name` AS `TABLE_NAME` FROM `information_schema`.`tables`' .
                ' WHERE `table_schema` = \'' . $DB->dbdefault .
                '\' AND `table_type` = \'BASE TABLE\' AND `table_name` LIKE \'table1\'',
-         1 => 'SELECT `table_name` AS `TABLE_NAME` FROM `information_schema`.`tables`' .
+            1 => 'SELECT `table_name` AS `TABLE_NAME` FROM `information_schema`.`tables`' .
                ' WHERE `table_schema` = \'' . $DB->dbdefault  .
                '\' AND `table_type` = \'BASE TABLE\' AND `table_name` LIKE \'table2\''
-             ]);
+        ]);
 
        //try to backup existant tables
         $this->queries = [];
@@ -251,7 +252,7 @@ class Migration extends \GLPITestCase
          "You can delete backup tables if you have no need of them.Task completed.");*/
 
         $this->array($this->queries)->isIdenticalTo([
-         0 => 'DROP TABLE `backup_glpi_existingtest`',
+            0 => 'DROP TABLE `backup_glpi_existingtest`',
         ]);
 
         $this->queries = [];
@@ -269,7 +270,7 @@ class Migration extends \GLPITestCase
          "You can delete backup tables if you have no need of them.Task completed.");
 
         $this->array($this->queries)->isIdenticalTo([
-         0 => 'RENAME TABLE `glpi_existingtest` TO `backup_glpi_existingtest`',
+            0 => 'RENAME TABLE `glpi_existingtest` TO `backup_glpi_existingtest`',
         ]);
     }
 
@@ -289,7 +290,7 @@ class Migration extends \GLPITestCase
         )->isIdenticalTo("Change of the database layout - change_tableTask completed.");
 
         $this->array($this->queries)->isIdenticalTo([
-         "ALTER TABLE `change_table` DROP `id`  ,\n" .
+            "ALTER TABLE `change_table` DROP `id`  ,\n" .
          "CHANGE `ID` `id` INT NOT NULL DEFAULT '0'   FIRST  ",
         ]);
 
@@ -306,7 +307,7 @@ class Migration extends \GLPITestCase
 
         $collate = $DB->use_utf8mb4 ? 'utf8mb4_unicode_ci' : 'utf8_unicode_ci';
         $this->array($this->queries)->isIdenticalTo([
-         "ALTER TABLE `change_table` DROP `name`  ,\n" .
+            "ALTER TABLE `change_table` DROP `name`  ,\n" .
          "CHANGE `NAME` `name` VARCHAR(255) COLLATE $collate DEFAULT NULL   AFTER `id` ",
         ]);
     }
@@ -314,263 +315,263 @@ class Migration extends \GLPITestCase
     protected function fieldsFormatsProvider()
     {
         return [
-         [
-            'table'     => 'my_table',
-            'field'     => 'my_field',
-            'format'    => 'bool',
-            'options'   => [],
-            'sql'       => "ALTER TABLE `my_table` ADD `my_field` TINYINT NOT NULL DEFAULT '0'   "
-         ], [
-            'table'     => 'my_table',
-            'field'     => 'my_field',
-            'format'    => 'bool',
-            'options'   => ['value' => 1],
-            'sql'       => "ALTER TABLE `my_table` ADD `my_field` TINYINT NOT NULL DEFAULT '1'   "
-         ], [
-            'table'     => 'my_table',
-            'field'     => 'my_field',
-            'format'    => 'char',
-            'options'   => [],
-            'sql'       => "ALTER TABLE `my_table` ADD `my_field` CHAR(1) DEFAULT NULL   "
-         ], [
-            'table'     => 'my_table',
-            'field'     => 'my_field',
-            'format'    => 'char',
-            'options'   => ['value' => 'a'],
-            'sql'       => "ALTER TABLE `my_table` ADD `my_field` CHAR(1) NOT NULL DEFAULT 'a'   "
-         ], [
-            'table'     => 'my_table',
-            'field'     => 'my_field',
-            'format'    => 'string',
-            'options'   => [],
-            'sql'       => "ALTER TABLE `my_table` ADD `my_field` VARCHAR(255) COLLATE utf8_unicode_ci DEFAULT NULL   ",
-            'db_properties' => [
-                'use_utf8mb4' => false,
-            ],
-         ], [
-            'table'     => 'my_table',
-            'field'     => 'my_field',
-            'format'    => 'string',
-            'options'   => [],
-            'sql'       => "ALTER TABLE `my_table` ADD `my_field` VARCHAR(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL   ",
-            'db_properties' => [
-                'use_utf8mb4' => true,
-            ],
-         ], [
-            'table'     => 'my_table',
-            'field'     => 'my_field',
-            'format'    => 'string',
-            'options'   => ['value' => 'a string'],
-            'sql'       => "ALTER TABLE `my_table` ADD `my_field` VARCHAR(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT 'a string'   ",
-            'db_properties' => [
-                'use_utf8mb4' => false,
-            ],
-         ], [
-            'table'     => 'my_table',
-            'field'     => 'my_field',
-            'format'    => 'string',
-            'options'   => ['value' => 'a string'],
-            'sql'       => "ALTER TABLE `my_table` ADD `my_field` VARCHAR(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'a string'   ",
-            'db_properties' => [
-                'use_utf8mb4' => true,
-            ],
-         ], [
-            'table'     => 'my_table',
-            'field'     => 'my_field',
-            'format'    => 'integer',
-            'options'   => [],
-            'sql'       => "ALTER TABLE `my_table` ADD `my_field` INT NOT NULL DEFAULT '0'   "
-         ], [
-            'table'     => 'my_table',
-            'field'     => 'my_field',
-            'format'    => 'integer',
-            'options'   => ['value' => 2],
-            'sql'       => "ALTER TABLE `my_table` ADD `my_field` INT NOT NULL DEFAULT '2'   "
-         ], [
-            'table'     => 'my_table',
-            'field'     => 'my_field',
-            'format'    => 'date',
-            'options'   => [],
-            'sql'       => "ALTER TABLE `my_table` ADD `my_field` DATE DEFAULT NULL   "
-         ], [
-            'table'     => 'my_table',
-            'field'     => 'my_field',
-            'format'    => 'date',
-            'options'   => ['value' => '2018-06-04'],
-            'sql'       => "ALTER TABLE `my_table` ADD `my_field` DATE DEFAULT '2018-06-04'   "
-         ], [
-            'table'     => 'my_table',
-            'field'     => 'my_field',
-            'format'    => 'datetime',
-            'options'   => [],
-            'sql'       => "ALTER TABLE `my_table` ADD `my_field` TIMESTAMP NULL DEFAULT NULL   "
-         ], [
-            'table'     => 'my_table',
-            'field'     => 'my_field',
-            'format'    => 'datetime',
-            'options'   => ['value' => '2018-06-04 08:16:38'],
-            'sql'       => "ALTER TABLE `my_table` ADD `my_field` TIMESTAMP DEFAULT '2018-06-04 08:16:38'   "
-         ], [
-            'table'     => 'my_table',
-            'field'     => 'my_field',
-            'format'    => 'text',
-            'options'   => [],
-            'sql'       => "ALTER TABLE `my_table` ADD `my_field` TEXT COLLATE utf8_unicode_ci DEFAULT NULL   ",
-            'db_properties' => [
-                'use_utf8mb4' => false,
-            ],
-         ], [
-            'table'     => 'my_table',
-            'field'     => 'my_field',
-            'format'    => 'text',
-            'options'   => [],
-            'sql'       => "ALTER TABLE `my_table` ADD `my_field` TEXT COLLATE utf8mb4_unicode_ci DEFAULT NULL   ",
-            'db_properties' => [
-                'use_utf8mb4' => true,
-            ],
-         ], [
-            'table'     => 'my_table',
-            'field'     => 'my_field',
-            'format'    => 'text',
-            'options'   => ['value' => 'A text'],
-            'sql'       => "ALTER TABLE `my_table` ADD `my_field` TEXT COLLATE utf8_unicode_ci NOT NULL DEFAULT 'A text'   ",
-            'db_properties' => [
-                'use_utf8mb4' => false,
-            ],
-         ], [
-            'table'     => 'my_table',
-            'field'     => 'my_field',
-            'format'    => 'text',
-            'options'   => ['value' => 'A text'],
-            'sql'       => "ALTER TABLE `my_table` ADD `my_field` TEXT COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'A text'   ",
-            'db_properties' => [
-                'use_utf8mb4' => true,
-            ],
-         ], [
-            'table'     => 'my_table',
-            'field'     => 'my_field',
-            'format'    => 'mediumtext',
-            'options'   => [],
-            'sql'       => "ALTER TABLE `my_table` ADD `my_field` MEDIUMTEXT COLLATE utf8_unicode_ci DEFAULT NULL   ",
-            'db_properties' => [
-                'use_utf8mb4' => false,
-            ],
-         ], [
-            'table'     => 'my_table',
-            'field'     => 'my_field',
-            'format'    => 'mediumtext',
-            'options'   => [],
-            'sql'       => "ALTER TABLE `my_table` ADD `my_field` MEDIUMTEXT COLLATE utf8mb4_unicode_ci DEFAULT NULL   ",
-            'db_properties' => [
-                'use_utf8mb4' => true,
-            ],
-         ], [
-            'table'     => 'my_table',
-            'field'     => 'my_field',
-            'format'    => 'mediumtext',
-            'options'   => ['value' => 'A medium text'],
-            'sql'       => "ALTER TABLE `my_table` ADD `my_field` MEDIUMTEXT COLLATE utf8_unicode_ci NOT NULL DEFAULT 'A medium text'   ",
-            'db_properties' => [
-                'use_utf8mb4' => false,
-            ],
-         ], [
-            'table'     => 'my_table',
-            'field'     => 'my_field',
-            'format'    => 'mediumtext',
-            'options'   => ['value' => 'A medium text'],
-            'sql'       => "ALTER TABLE `my_table` ADD `my_field` MEDIUMTEXT COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'A medium text'   ",
-            'db_properties' => [
-                'use_utf8mb4' => true,
-            ],
-         ], [
-            'table'     => 'my_table',
-            'field'     => 'my_field',
-            'format'    => 'longtext',
-            'options'   => [],
-            'sql'       => "ALTER TABLE `my_table` ADD `my_field` LONGTEXT COLLATE utf8_unicode_ci DEFAULT NULL   ",
-            'db_properties' => [
-                'use_utf8mb4' => false,
-            ],
-         ], [
-            'table'     => 'my_table',
-            'field'     => 'my_field',
-            'format'    => 'longtext',
-            'options'   => [],
-            'sql'       => "ALTER TABLE `my_table` ADD `my_field` LONGTEXT COLLATE utf8mb4_unicode_ci DEFAULT NULL   ",
-            'db_properties' => [
-                'use_utf8mb4' => true,
-            ],
-         ], [
-            'table'     => 'my_table',
-            'field'     => 'my_field',
-            'format'    => 'longtext',
-            'options'   => ['value' => 'A long text'],
-            'sql'       => "ALTER TABLE `my_table` ADD `my_field` LONGTEXT COLLATE utf8_unicode_ci NOT NULL DEFAULT 'A long text'   ",
-            'db_properties' => [
-                'use_utf8mb4' => false,
-            ],
-         ], [
-            'table'     => 'my_table',
-            'field'     => 'my_field',
-            'format'    => 'longtext',
-            'options'   => ['value' => 'A long text'],
-            'sql'       => "ALTER TABLE `my_table` ADD `my_field` LONGTEXT COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'A long text'   ",
-            'db_properties' => [
-                'use_utf8mb4' => true,
-            ],
-         ], [
-            'table'     => 'my_table',
-            'field'     => 'id',
-            'format'    => 'autoincrement',
-            'options'   => [],
-            'sql'       => "ALTER TABLE `my_table` ADD `id` INT  NOT NULL AUTO_INCREMENT   ",
-            'db_properties' => [
-                'allow_signed_keys' => true,
-            ],
-         ], [
-            'table'     => 'my_table',
-            'field'     => 'id',
-            'format'    => 'autoincrement',
-            'options'   => [],
-            'sql'       => "ALTER TABLE `my_table` ADD `id` INT unsigned NOT NULL AUTO_INCREMENT   ",
-            'db_properties' => [
-                'allow_signed_keys' => false,
-            ],
-         ], [
-            'table'     => 'my_table',
-            'field'     => 'my_field',
-            'format'    => "INT NOT NULL DEFAULT '42'",
-            'options'   => [],
-            'sql'       => "ALTER TABLE `my_table` ADD `my_field` INT NOT NULL DEFAULT '42'   "
-         ], [
-            'table'     => 'my_table',
-            'field'     => 'my_field',
-            'format'    => 'integer',
-            'options'   => ['comment' => 'a comment'],
-            'sql'       => "ALTER TABLE `my_table` ADD `my_field` INT NOT NULL DEFAULT '0'  COMMENT 'a comment'  "
-         ], [
-            'table'     => 'my_table',
-            'field'     => 'my_field',
-            'format'    => 'integer',
-            'options'   => ['after' => 'other_field'],
-            'sql'       => "ALTER TABLE `my_table` ADD `my_field` INT NOT NULL DEFAULT '0'   AFTER `other_field` "
-         ], [
-            'table'     => 'my_table',
-            'field'     => 'my_field',
-            'format'    => 'integer',
-            'options'   => ['first' => true],
-            'sql'       => "ALTER TABLE `my_table` ADD `my_field` INT NOT NULL DEFAULT '0'   FIRST  "
-         ], [
-            'table'     => 'my_table',
-            'field'     => 'my_field',
-            'format'    => 'integer',
-            'options'   => ['value' => '-2', 'update' => '0', 'condition' => 'WHERE `id` = 0'],
-            'sql'       => [
-               "ALTER TABLE `my_table` ADD `my_field` INT NOT NULL DEFAULT '-2'   ",
-               "UPDATE `my_table`
+            [
+                'table'     => 'my_table',
+                'field'     => 'my_field',
+                'format'    => 'bool',
+                'options'   => [],
+                'sql'       => "ALTER TABLE `my_table` ADD `my_field` TINYINT NOT NULL DEFAULT '0'   "
+            ], [
+                'table'     => 'my_table',
+                'field'     => 'my_field',
+                'format'    => 'bool',
+                'options'   => ['value' => 1],
+                'sql'       => "ALTER TABLE `my_table` ADD `my_field` TINYINT NOT NULL DEFAULT '1'   "
+            ], [
+                'table'     => 'my_table',
+                'field'     => 'my_field',
+                'format'    => 'char',
+                'options'   => [],
+                'sql'       => "ALTER TABLE `my_table` ADD `my_field` CHAR(1) DEFAULT NULL   "
+            ], [
+                'table'     => 'my_table',
+                'field'     => 'my_field',
+                'format'    => 'char',
+                'options'   => ['value' => 'a'],
+                'sql'       => "ALTER TABLE `my_table` ADD `my_field` CHAR(1) NOT NULL DEFAULT 'a'   "
+            ], [
+                'table'     => 'my_table',
+                'field'     => 'my_field',
+                'format'    => 'string',
+                'options'   => [],
+                'sql'       => "ALTER TABLE `my_table` ADD `my_field` VARCHAR(255) COLLATE utf8_unicode_ci DEFAULT NULL   ",
+                'db_properties' => [
+                    'use_utf8mb4' => false,
+                ],
+            ], [
+                'table'     => 'my_table',
+                'field'     => 'my_field',
+                'format'    => 'string',
+                'options'   => [],
+                'sql'       => "ALTER TABLE `my_table` ADD `my_field` VARCHAR(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL   ",
+                'db_properties' => [
+                    'use_utf8mb4' => true,
+                ],
+            ], [
+                'table'     => 'my_table',
+                'field'     => 'my_field',
+                'format'    => 'string',
+                'options'   => ['value' => 'a string'],
+                'sql'       => "ALTER TABLE `my_table` ADD `my_field` VARCHAR(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT 'a string'   ",
+                'db_properties' => [
+                    'use_utf8mb4' => false,
+                ],
+            ], [
+                'table'     => 'my_table',
+                'field'     => 'my_field',
+                'format'    => 'string',
+                'options'   => ['value' => 'a string'],
+                'sql'       => "ALTER TABLE `my_table` ADD `my_field` VARCHAR(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'a string'   ",
+                'db_properties' => [
+                    'use_utf8mb4' => true,
+                ],
+            ], [
+                'table'     => 'my_table',
+                'field'     => 'my_field',
+                'format'    => 'integer',
+                'options'   => [],
+                'sql'       => "ALTER TABLE `my_table` ADD `my_field` INT NOT NULL DEFAULT '0'   "
+            ], [
+                'table'     => 'my_table',
+                'field'     => 'my_field',
+                'format'    => 'integer',
+                'options'   => ['value' => 2],
+                'sql'       => "ALTER TABLE `my_table` ADD `my_field` INT NOT NULL DEFAULT '2'   "
+            ], [
+                'table'     => 'my_table',
+                'field'     => 'my_field',
+                'format'    => 'date',
+                'options'   => [],
+                'sql'       => "ALTER TABLE `my_table` ADD `my_field` DATE DEFAULT NULL   "
+            ], [
+                'table'     => 'my_table',
+                'field'     => 'my_field',
+                'format'    => 'date',
+                'options'   => ['value' => '2018-06-04'],
+                'sql'       => "ALTER TABLE `my_table` ADD `my_field` DATE DEFAULT '2018-06-04'   "
+            ], [
+                'table'     => 'my_table',
+                'field'     => 'my_field',
+                'format'    => 'datetime',
+                'options'   => [],
+                'sql'       => "ALTER TABLE `my_table` ADD `my_field` TIMESTAMP NULL DEFAULT NULL   "
+            ], [
+                'table'     => 'my_table',
+                'field'     => 'my_field',
+                'format'    => 'datetime',
+                'options'   => ['value' => '2018-06-04 08:16:38'],
+                'sql'       => "ALTER TABLE `my_table` ADD `my_field` TIMESTAMP DEFAULT '2018-06-04 08:16:38'   "
+            ], [
+                'table'     => 'my_table',
+                'field'     => 'my_field',
+                'format'    => 'text',
+                'options'   => [],
+                'sql'       => "ALTER TABLE `my_table` ADD `my_field` TEXT COLLATE utf8_unicode_ci DEFAULT NULL   ",
+                'db_properties' => [
+                    'use_utf8mb4' => false,
+                ],
+            ], [
+                'table'     => 'my_table',
+                'field'     => 'my_field',
+                'format'    => 'text',
+                'options'   => [],
+                'sql'       => "ALTER TABLE `my_table` ADD `my_field` TEXT COLLATE utf8mb4_unicode_ci DEFAULT NULL   ",
+                'db_properties' => [
+                    'use_utf8mb4' => true,
+                ],
+            ], [
+                'table'     => 'my_table',
+                'field'     => 'my_field',
+                'format'    => 'text',
+                'options'   => ['value' => 'A text'],
+                'sql'       => "ALTER TABLE `my_table` ADD `my_field` TEXT COLLATE utf8_unicode_ci NOT NULL DEFAULT 'A text'   ",
+                'db_properties' => [
+                    'use_utf8mb4' => false,
+                ],
+            ], [
+                'table'     => 'my_table',
+                'field'     => 'my_field',
+                'format'    => 'text',
+                'options'   => ['value' => 'A text'],
+                'sql'       => "ALTER TABLE `my_table` ADD `my_field` TEXT COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'A text'   ",
+                'db_properties' => [
+                    'use_utf8mb4' => true,
+                ],
+            ], [
+                'table'     => 'my_table',
+                'field'     => 'my_field',
+                'format'    => 'mediumtext',
+                'options'   => [],
+                'sql'       => "ALTER TABLE `my_table` ADD `my_field` MEDIUMTEXT COLLATE utf8_unicode_ci DEFAULT NULL   ",
+                'db_properties' => [
+                    'use_utf8mb4' => false,
+                ],
+            ], [
+                'table'     => 'my_table',
+                'field'     => 'my_field',
+                'format'    => 'mediumtext',
+                'options'   => [],
+                'sql'       => "ALTER TABLE `my_table` ADD `my_field` MEDIUMTEXT COLLATE utf8mb4_unicode_ci DEFAULT NULL   ",
+                'db_properties' => [
+                    'use_utf8mb4' => true,
+                ],
+            ], [
+                'table'     => 'my_table',
+                'field'     => 'my_field',
+                'format'    => 'mediumtext',
+                'options'   => ['value' => 'A medium text'],
+                'sql'       => "ALTER TABLE `my_table` ADD `my_field` MEDIUMTEXT COLLATE utf8_unicode_ci NOT NULL DEFAULT 'A medium text'   ",
+                'db_properties' => [
+                    'use_utf8mb4' => false,
+                ],
+            ], [
+                'table'     => 'my_table',
+                'field'     => 'my_field',
+                'format'    => 'mediumtext',
+                'options'   => ['value' => 'A medium text'],
+                'sql'       => "ALTER TABLE `my_table` ADD `my_field` MEDIUMTEXT COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'A medium text'   ",
+                'db_properties' => [
+                    'use_utf8mb4' => true,
+                ],
+            ], [
+                'table'     => 'my_table',
+                'field'     => 'my_field',
+                'format'    => 'longtext',
+                'options'   => [],
+                'sql'       => "ALTER TABLE `my_table` ADD `my_field` LONGTEXT COLLATE utf8_unicode_ci DEFAULT NULL   ",
+                'db_properties' => [
+                    'use_utf8mb4' => false,
+                ],
+            ], [
+                'table'     => 'my_table',
+                'field'     => 'my_field',
+                'format'    => 'longtext',
+                'options'   => [],
+                'sql'       => "ALTER TABLE `my_table` ADD `my_field` LONGTEXT COLLATE utf8mb4_unicode_ci DEFAULT NULL   ",
+                'db_properties' => [
+                    'use_utf8mb4' => true,
+                ],
+            ], [
+                'table'     => 'my_table',
+                'field'     => 'my_field',
+                'format'    => 'longtext',
+                'options'   => ['value' => 'A long text'],
+                'sql'       => "ALTER TABLE `my_table` ADD `my_field` LONGTEXT COLLATE utf8_unicode_ci NOT NULL DEFAULT 'A long text'   ",
+                'db_properties' => [
+                    'use_utf8mb4' => false,
+                ],
+            ], [
+                'table'     => 'my_table',
+                'field'     => 'my_field',
+                'format'    => 'longtext',
+                'options'   => ['value' => 'A long text'],
+                'sql'       => "ALTER TABLE `my_table` ADD `my_field` LONGTEXT COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'A long text'   ",
+                'db_properties' => [
+                    'use_utf8mb4' => true,
+                ],
+            ], [
+                'table'     => 'my_table',
+                'field'     => 'id',
+                'format'    => 'autoincrement',
+                'options'   => [],
+                'sql'       => "ALTER TABLE `my_table` ADD `id` INT  NOT NULL AUTO_INCREMENT   ",
+                'db_properties' => [
+                    'allow_signed_keys' => true,
+                ],
+            ], [
+                'table'     => 'my_table',
+                'field'     => 'id',
+                'format'    => 'autoincrement',
+                'options'   => [],
+                'sql'       => "ALTER TABLE `my_table` ADD `id` INT unsigned NOT NULL AUTO_INCREMENT   ",
+                'db_properties' => [
+                    'allow_signed_keys' => false,
+                ],
+            ], [
+                'table'     => 'my_table',
+                'field'     => 'my_field',
+                'format'    => "INT NOT NULL DEFAULT '42'",
+                'options'   => [],
+                'sql'       => "ALTER TABLE `my_table` ADD `my_field` INT NOT NULL DEFAULT '42'   "
+            ], [
+                'table'     => 'my_table',
+                'field'     => 'my_field',
+                'format'    => 'integer',
+                'options'   => ['comment' => 'a comment'],
+                'sql'       => "ALTER TABLE `my_table` ADD `my_field` INT NOT NULL DEFAULT '0'  COMMENT 'a comment'  "
+            ], [
+                'table'     => 'my_table',
+                'field'     => 'my_field',
+                'format'    => 'integer',
+                'options'   => ['after' => 'other_field'],
+                'sql'       => "ALTER TABLE `my_table` ADD `my_field` INT NOT NULL DEFAULT '0'   AFTER `other_field` "
+            ], [
+                'table'     => 'my_table',
+                'field'     => 'my_field',
+                'format'    => 'integer',
+                'options'   => ['first' => true],
+                'sql'       => "ALTER TABLE `my_table` ADD `my_field` INT NOT NULL DEFAULT '0'   FIRST  "
+            ], [
+                'table'     => 'my_table',
+                'field'     => 'my_field',
+                'format'    => 'integer',
+                'options'   => ['value' => '-2', 'update' => '0', 'condition' => 'WHERE `id` = 0'],
+                'sql'       => [
+                    "ALTER TABLE `my_table` ADD `my_field` INT NOT NULL DEFAULT '-2'   ",
+                    "UPDATE `my_table`
                         SET `my_field` = 0 WHERE `id` = 0",
+                ]
             ]
-         ]
         ];
     }
 
@@ -642,9 +643,9 @@ class Migration extends \GLPITestCase
         global $DB;
 
         $DB->delete('glpi_profilerights', [
-         'name' => [
-            'testright1', 'testright2', 'testright3', 'testright4'
-         ]
+            'name' => [
+                'testright1', 'testright2', 'testright3', 'testright4'
+            ]
         ]);
        //Test adding a READ right when profile has READ and UPDATE config right (Default)
         $this->migration->addRight('testright1', READ);
@@ -652,62 +653,62 @@ class Migration extends \GLPITestCase
         $this->migration->addRight('testright2', READ, ['group' => UPDATE]);
        //Test adding an UPDATE right when profile has READ and UPDATE group right and CREATE entity right
         $this->migration->addRight('testright3', UPDATE, [
-         'group'  => READ | UPDATE,
-         'entity' => CREATE
+            'group'  => READ | UPDATE,
+            'entity' => CREATE
         ]);
        //Test adding a READ right when profile with no requirements
         $this->migration->addRight('testright4', READ, []);
 
         $right1 = $DB->request([
-         'FROM' => 'glpi_profilerights',
-         'WHERE'  => [
-            'name'   => 'testright1',
-            'rights' => READ
-         ]
+            'FROM' => 'glpi_profilerights',
+            'WHERE'  => [
+                'name'   => 'testright1',
+                'rights' => READ
+            ]
         ]);
         $this->integer(count($right1))->isEqualTo(1);
 
         $right1 = $DB->request([
-         'FROM' => 'glpi_profilerights',
-         'WHERE'  => [
-            'name'   => 'testright2',
-            'rights' => READ
-         ]
+            'FROM' => 'glpi_profilerights',
+            'WHERE'  => [
+                'name'   => 'testright2',
+                'rights' => READ
+            ]
         ]);
         $this->integer(count($right1))->isEqualTo(2);
 
         $right1 = $DB->request([
-         'FROM' => 'glpi_profilerights',
-         'WHERE'  => [
-            'name'   => 'testright3',
-            'rights' => UPDATE
-         ]
+            'FROM' => 'glpi_profilerights',
+            'WHERE'  => [
+                'name'   => 'testright3',
+                'rights' => UPDATE
+            ]
         ]);
         $this->integer(count($right1))->isEqualTo(1);
 
         $right1 = $DB->request([
-         'FROM' => 'glpi_profilerights',
-         'WHERE'  => [
-            'name'   => 'testright4',
-            'rights' => READ
-         ]
+            'FROM' => 'glpi_profilerights',
+            'WHERE'  => [
+                'name'   => 'testright4',
+                'rights' => READ
+            ]
         ]);
         $this->integer(count($right1))->isEqualTo(8);
 
        //Test adding a READ right only on profiles where it has not been set yet
         $DB->delete('glpi_profilerights', [
-         'profiles_id' => [1, 2, 3, 4],
-         'name' => 'testright4'
+            'profiles_id' => [1, 2, 3, 4],
+            'name' => 'testright4'
         ]);
 
         $this->migration->addRight('testright4', READ | UPDATE, []);
 
         $right4 = $DB->request([
-         'FROM' => 'glpi_profilerights',
-         'WHERE'  => [
-            'name'   => 'testright4',
-            'rights' => READ | UPDATE
-         ]
+            'FROM' => 'glpi_profilerights',
+            'WHERE'  => [
+                'name'   => 'testright4',
+                'rights' => READ | UPDATE
+            ]
         ]);
         $this->integer(count($right4))->isEqualTo(4);
     }
@@ -743,7 +744,7 @@ class Migration extends \GLPITestCase
 
         $this->array($this->queries)->isIdenticalTo(
             [
-            "RENAME TABLE `glpi_oldtable` TO `glpi_newtable`",
+                "RENAME TABLE `glpi_oldtable` TO `glpi_newtable`",
             ]
         );
 
@@ -758,10 +759,10 @@ class Migration extends \GLPITestCase
 
         $this->array($this->queries)->isIdenticalTo(
             [
-            "ALTER TABLE `glpi_oldtable` ADD `bool_field` TINYINT NOT NULL DEFAULT '0'   ",
-            "ALTER TABLE `glpi_oldtable` ADD FULLTEXT `fulltext_key` (`fulltext_key`)",
-            "ALTER TABLE `glpi_oldtable` ADD UNIQUE `id` (`id`)",
-            "RENAME TABLE `glpi_oldtable` TO `glpi_newtable`",
+                "ALTER TABLE `glpi_oldtable` ADD `bool_field` TINYINT NOT NULL DEFAULT '0'   ",
+                "ALTER TABLE `glpi_oldtable` ADD FULLTEXT `fulltext_key` (`fulltext_key`)",
+                "ALTER TABLE `glpi_oldtable` ADD UNIQUE `id` (`id`)",
+                "RENAME TABLE `glpi_oldtable` TO `glpi_newtable`",
             ]
         );
 
@@ -776,10 +777,10 @@ class Migration extends \GLPITestCase
 
         $this->array($this->queries)->isIdenticalTo(
             [
-            "RENAME TABLE `glpi_oldtable` TO `glpi_newtable`",
-            "ALTER TABLE `glpi_newtable` ADD `bool_field` TINYINT NOT NULL DEFAULT '0'   ",
-            "ALTER TABLE `glpi_newtable` ADD FULLTEXT `fulltext_key` (`fulltext_key`)",
-            "ALTER TABLE `glpi_newtable` ADD UNIQUE `id` (`id`)",
+                "RENAME TABLE `glpi_oldtable` TO `glpi_newtable`",
+                "ALTER TABLE `glpi_newtable` ADD `bool_field` TINYINT NOT NULL DEFAULT '0'   ",
+                "ALTER TABLE `glpi_newtable` ADD FULLTEXT `fulltext_key` (`fulltext_key`)",
+                "ALTER TABLE `glpi_newtable` ADD UNIQUE `id` (`id`)",
             ]
         );
     }
@@ -839,9 +840,9 @@ class Migration extends \GLPITestCase
         };
         $this->calling($this->db)->fieldExists = true;
         $this->calling($this->db)->request = new \ArrayIterator([
-         [
-            'TABLE_NAME' => 'glpi_item_with_fkey', 'COLUMN_NAME' => 'someoldtypes_id'
-         ]
+            [
+                'TABLE_NAME' => 'glpi_item_with_fkey', 'COLUMN_NAME' => 'someoldtypes_id'
+            ]
         ]);
 
         $this->exception(
@@ -876,9 +877,9 @@ class Migration extends \GLPITestCase
             ) {
                   // Request used for foreign key fields
                   return new \ArrayIterator([
-                 ['TABLE_NAME' => 'glpi_oneitem_with_fkey',     'COLUMN_NAME' => 'someoldtypes_id'],
-                 ['TABLE_NAME' => 'glpi_anotheritem_with_fkey', 'COLUMN_NAME' => 'someoldtypes_id'],
-                 ['TABLE_NAME' => 'glpi_anotheritem_with_fkey', 'COLUMN_NAME' => 'someoldtypes_id_tech'],
+                      ['TABLE_NAME' => 'glpi_oneitem_with_fkey',     'COLUMN_NAME' => 'someoldtypes_id'],
+                      ['TABLE_NAME' => 'glpi_anotheritem_with_fkey', 'COLUMN_NAME' => 'someoldtypes_id'],
+                      ['TABLE_NAME' => 'glpi_anotheritem_with_fkey', 'COLUMN_NAME' => 'someoldtypes_id_tech'],
                   ]);
             }
             if (
@@ -887,10 +888,10 @@ class Migration extends \GLPITestCase
             ) {
                  // Request used for itemtype fields
                  return new \ArrayIterator([
-                 ['TABLE_NAME' => 'glpi_computers', 'COLUMN_NAME' => 'itemtype'],
-                 ['TABLE_NAME' => 'glpi_users',     'COLUMN_NAME' => 'itemtype'],
-                 ['TABLE_NAME' => 'glpi_stuffs',    'COLUMN_NAME' => 'itemtype_source'],
-                 ['TABLE_NAME' => 'glpi_stuffs',    'COLUMN_NAME' => 'itemtype_dest'],
+                     ['TABLE_NAME' => 'glpi_computers', 'COLUMN_NAME' => 'itemtype'],
+                     ['TABLE_NAME' => 'glpi_users',     'COLUMN_NAME' => 'itemtype'],
+                     ['TABLE_NAME' => 'glpi_stuffs',    'COLUMN_NAME' => 'itemtype_source'],
+                     ['TABLE_NAME' => 'glpi_stuffs',    'COLUMN_NAME' => 'itemtype_dest'],
                  ]);
             }
             return [];
@@ -906,26 +907,26 @@ class Migration extends \GLPITestCase
             implode(
                 '',
                 [
-                '============================ Rename "SomeOldType" itemtype to "NewName" ============================' . "\n",
-                'Rename "glpi_someoldtypes" table to "glpi_newnames"',
-                'Rename "someoldtypes_id" foreign keys to "newnames_id" in all tables',
-                'Rename "SomeOldType" itemtype to "NewName" in all tables',
-                'Change of the database layout - glpi_oneitem_with_fkey',
-                'Change of the database layout - glpi_anotheritem_with_fkey',
-                'Task completed.',
+                    '============================ Rename "SomeOldType" itemtype to "NewName" ============================' . "\n",
+                    'Rename "glpi_someoldtypes" table to "glpi_newnames"',
+                    'Rename "someoldtypes_id" foreign keys to "newnames_id" in all tables',
+                    'Rename "SomeOldType" itemtype to "NewName" in all tables',
+                    'Change of the database layout - glpi_oneitem_with_fkey',
+                    'Change of the database layout - glpi_anotheritem_with_fkey',
+                    'Task completed.',
                 ]
             )
         );
 
         $this->array($this->queries)->isIdenticalTo([
-         "RENAME TABLE `glpi_someoldtypes` TO `glpi_newnames`",
-         "ALTER TABLE `glpi_oneitem_with_fkey` CHANGE `someoldtypes_id` `newnames_id` int unsigned NOT NULL DEFAULT '0'   ",
-         "ALTER TABLE `glpi_anotheritem_with_fkey` CHANGE `someoldtypes_id` `newnames_id` int unsigned NOT NULL DEFAULT '0'   ,\n"
+            "RENAME TABLE `glpi_someoldtypes` TO `glpi_newnames`",
+            "ALTER TABLE `glpi_oneitem_with_fkey` CHANGE `someoldtypes_id` `newnames_id` int unsigned NOT NULL DEFAULT '0'   ",
+            "ALTER TABLE `glpi_anotheritem_with_fkey` CHANGE `someoldtypes_id` `newnames_id` int unsigned NOT NULL DEFAULT '0'   ,\n"
          . "CHANGE `someoldtypes_id_tech` `newnames_id_tech` int unsigned NOT NULL DEFAULT '0'   ",
-         "UPDATE `glpi_computers` SET `itemtype` = 'NewName' WHERE `itemtype` = 'SomeOldType'",
-         "UPDATE `glpi_users` SET `itemtype` = 'NewName' WHERE `itemtype` = 'SomeOldType'",
-         "UPDATE `glpi_stuffs` SET `itemtype_source` = 'NewName' WHERE `itemtype_source` = 'SomeOldType'",
-         "UPDATE `glpi_stuffs` SET `itemtype_dest` = 'NewName' WHERE `itemtype_dest` = 'SomeOldType'",
+            "UPDATE `glpi_computers` SET `itemtype` = 'NewName' WHERE `itemtype` = 'SomeOldType'",
+            "UPDATE `glpi_users` SET `itemtype` = 'NewName' WHERE `itemtype` = 'SomeOldType'",
+            "UPDATE `glpi_stuffs` SET `itemtype_source` = 'NewName' WHERE `itemtype_source` = 'SomeOldType'",
+            "UPDATE `glpi_stuffs` SET `itemtype_dest` = 'NewName' WHERE `itemtype_dest` = 'SomeOldType'",
         ]);
 
        // Test renaming without DB structure update
@@ -940,18 +941,18 @@ class Migration extends \GLPITestCase
             implode(
                 '',
                 [
-                '============================ Rename "SomeOldType" itemtype to "NewName" ============================' . "\n",
-                'Rename "SomeOldType" itemtype to "NewName" in all tables',
-                'Task completed.',
+                    '============================ Rename "SomeOldType" itemtype to "NewName" ============================' . "\n",
+                    'Rename "SomeOldType" itemtype to "NewName" in all tables',
+                    'Task completed.',
                 ]
             )
         );
 
         $this->array($this->queries)->isIdenticalTo([
-         "UPDATE `glpi_computers` SET `itemtype` = 'NewName' WHERE `itemtype` = 'SomeOldType'",
-         "UPDATE `glpi_users` SET `itemtype` = 'NewName' WHERE `itemtype` = 'SomeOldType'",
-         "UPDATE `glpi_stuffs` SET `itemtype_source` = 'NewName' WHERE `itemtype_source` = 'SomeOldType'",
-         "UPDATE `glpi_stuffs` SET `itemtype_dest` = 'NewName' WHERE `itemtype_dest` = 'SomeOldType'",
+            "UPDATE `glpi_computers` SET `itemtype` = 'NewName' WHERE `itemtype` = 'SomeOldType'",
+            "UPDATE `glpi_users` SET `itemtype` = 'NewName' WHERE `itemtype` = 'SomeOldType'",
+            "UPDATE `glpi_stuffs` SET `itemtype_source` = 'NewName' WHERE `itemtype_source` = 'SomeOldType'",
+            "UPDATE `glpi_stuffs` SET `itemtype_dest` = 'NewName' WHERE `itemtype_dest` = 'SomeOldType'",
         ]);
     }
 
@@ -966,39 +967,39 @@ class Migration extends \GLPITestCase
             }
             if ($request['FROM'] === \DisplayPreference::getTable()) {
                  return new \ArrayIterator([
-                [
-                 'id'        => 0,
-                 'itemtype'  => 'Computer',
-                 'num'       => 40,
-                ],
-                [
-                 'id'        => 1,
-                 'itemtype'  => 'Computer',
-                 'num'       => 41,
-                ],
-                [
-                 'id'        => 2,
-                 'itemtype'  => 'Monitor',
-                 'num'       => 40,
-                ]
+                     [
+                         'id'        => 0,
+                         'itemtype'  => 'Computer',
+                         'num'       => 40,
+                     ],
+                     [
+                         'id'        => 1,
+                         'itemtype'  => 'Computer',
+                         'num'       => 41,
+                     ],
+                     [
+                         'id'        => 2,
+                         'itemtype'  => 'Monitor',
+                         'num'       => 40,
+                     ]
                  ]);
             } else if ($request['FROM'] === \SavedSearch::getTable()) {
                 return new \ArrayIterator([
-                [
-                'id'        => 0,
-                'itemtype'  => 'Computer',
-                'query'     => 'is_deleted=0&as_map=0&criteria%5B0%5D%5Blink%5D=AND&criteria%5B0%5D%5Bfield%5D=40&criteria%5B0%5D%5Bsearchtype%5D=contains&criteria%5B0%5D%5Bvalue%5D=LT1&criteria%5B1%5D%5Blink%5D=AND&criteria%5B1%5D%5Bitemtype%5D=Budget&criteria%5B1%5D%5Bmeta%5D=1&criteria%5B1%5D%5Bfield%5D=4&criteria%5B1%5D%5Bsearchtype%5D=contains&criteria%5B1%5D%5Bvalue%5D=&search=Search&itemtype=Computer'
-                ],
-                [
-                'id'        => 1,
-                'itemtype'  => 'Budget',
-                'query'     => 'is_deleted=0&as_map=0&criteria%5B0%5D%5Blink%5D=AND&criteria%5B0%5D%5Bfield%5D=40&criteria%5B0%5D%5Bsearchtype%5D=contains&criteria%5B0%5D%5Bvalue%5D=LT1&criteria%5B1%5D%5Blink%5D=AND&criteria%5B1%5D%5Bitemtype%5D=Computer&criteria%5B1%5D%5Bmeta%5D=1&criteria%5B1%5D%5Bfield%5D=40&criteria%5B1%5D%5Bsearchtype%5D=contains&criteria%5B1%5D%5Bvalue%5D=&search=Search&itemtype=Computer'
-                ],
-                [
-                'id'        => 2,
-                'itemtype'  => 'Monitor',
-                'query'     => 'is_deleted=0&as_map=0&criteria%5B0%5D%5Blink%5D=AND&criteria%5B0%5D%5Bfield%5D=40&criteria%5B0%5D%5Bsearchtype%5D=contains&criteria%5B0%5D%5Bvalue%5D=LT1&criteria%5B1%5D%5Blink%5D=AND&criteria%5B1%5D%5Bitemtype%5D=Budget&criteria%5B1%5D%5Bmeta%5D=1&criteria%5B1%5D%5Bfield%5D=40&criteria%5B1%5D%5Bsearchtype%5D=contains&criteria%5B1%5D%5Bvalue%5D=&search=Search&itemtype=Monitor'
-                ]
+                    [
+                        'id'        => 0,
+                        'itemtype'  => 'Computer',
+                        'query'     => 'is_deleted=0&as_map=0&criteria%5B0%5D%5Blink%5D=AND&criteria%5B0%5D%5Bfield%5D=40&criteria%5B0%5D%5Bsearchtype%5D=contains&criteria%5B0%5D%5Bvalue%5D=LT1&criteria%5B1%5D%5Blink%5D=AND&criteria%5B1%5D%5Bitemtype%5D=Budget&criteria%5B1%5D%5Bmeta%5D=1&criteria%5B1%5D%5Bfield%5D=4&criteria%5B1%5D%5Bsearchtype%5D=contains&criteria%5B1%5D%5Bvalue%5D=&search=Search&itemtype=Computer'
+                    ],
+                    [
+                        'id'        => 1,
+                        'itemtype'  => 'Budget',
+                        'query'     => 'is_deleted=0&as_map=0&criteria%5B0%5D%5Blink%5D=AND&criteria%5B0%5D%5Bfield%5D=40&criteria%5B0%5D%5Bsearchtype%5D=contains&criteria%5B0%5D%5Bvalue%5D=LT1&criteria%5B1%5D%5Blink%5D=AND&criteria%5B1%5D%5Bitemtype%5D=Computer&criteria%5B1%5D%5Bmeta%5D=1&criteria%5B1%5D%5Bfield%5D=40&criteria%5B1%5D%5Bsearchtype%5D=contains&criteria%5B1%5D%5Bvalue%5D=&search=Search&itemtype=Computer'
+                    ],
+                    [
+                        'id'        => 2,
+                        'itemtype'  => 'Monitor',
+                        'query'     => 'is_deleted=0&as_map=0&criteria%5B0%5D%5Blink%5D=AND&criteria%5B0%5D%5Bfield%5D=40&criteria%5B0%5D%5Bsearchtype%5D=contains&criteria%5B0%5D%5Bvalue%5D=LT1&criteria%5B1%5D%5Blink%5D=AND&criteria%5B1%5D%5Bitemtype%5D=Budget&criteria%5B1%5D%5Bmeta%5D=1&criteria%5B1%5D%5Bfield%5D=40&criteria%5B1%5D%5Bsearchtype%5D=contains&criteria%5B1%5D%5Bvalue%5D=&search=Search&itemtype=Monitor'
+                    ]
                 ]);
             }
             return new \ArrayIterator([]);
@@ -1008,9 +1009,9 @@ class Migration extends \GLPITestCase
         $this->migration->executeMigration();
 
         $this->array($this->queries)->isIdenticalTo([
-         "UPDATE `glpi_displaypreferences` SET `num` = '100' WHERE `itemtype` = 'Computer' AND `num` = '40'",
-         "UPDATE `glpi_savedsearches` SET `query` = 'is_deleted=0&as_map=0&criteria%5B0%5D%5Blink%5D=AND&criteria%5B0%5D%5Bfield%5D=100&criteria%5B0%5D%5Bsearchtype%5D=contains&criteria%5B0%5D%5Bvalue%5D=LT1&criteria%5B1%5D%5Blink%5D=AND&criteria%5B1%5D%5Bitemtype%5D=Budget&criteria%5B1%5D%5Bmeta%5D=1&criteria%5B1%5D%5Bfield%5D=4&criteria%5B1%5D%5Bsearchtype%5D=contains&criteria%5B1%5D%5Bvalue%5D=&search=Search&itemtype=Computer' WHERE `id` = '0'",
-         "UPDATE `glpi_savedsearches` SET `query` = 'is_deleted=0&as_map=0&criteria%5B0%5D%5Blink%5D=AND&criteria%5B0%5D%5Bfield%5D=40&criteria%5B0%5D%5Bsearchtype%5D=contains&criteria%5B0%5D%5Bvalue%5D=LT1&criteria%5B1%5D%5Blink%5D=AND&criteria%5B1%5D%5Bitemtype%5D=Computer&criteria%5B1%5D%5Bmeta%5D=1&criteria%5B1%5D%5Bfield%5D=100&criteria%5B1%5D%5Bsearchtype%5D=contains&criteria%5B1%5D%5Bvalue%5D=&search=Search&itemtype=Computer' WHERE `id` = '1'",
+            "UPDATE `glpi_displaypreferences` SET `num` = '100' WHERE `itemtype` = 'Computer' AND `num` = '40'",
+            "UPDATE `glpi_savedsearches` SET `query` = 'is_deleted=0&as_map=0&criteria%5B0%5D%5Blink%5D=AND&criteria%5B0%5D%5Bfield%5D=100&criteria%5B0%5D%5Bsearchtype%5D=contains&criteria%5B0%5D%5Bvalue%5D=LT1&criteria%5B1%5D%5Blink%5D=AND&criteria%5B1%5D%5Bitemtype%5D=Budget&criteria%5B1%5D%5Bmeta%5D=1&criteria%5B1%5D%5Bfield%5D=4&criteria%5B1%5D%5Bsearchtype%5D=contains&criteria%5B1%5D%5Bvalue%5D=&search=Search&itemtype=Computer' WHERE `id` = '0'",
+            "UPDATE `glpi_savedsearches` SET `query` = 'is_deleted=0&as_map=0&criteria%5B0%5D%5Blink%5D=AND&criteria%5B0%5D%5Bfield%5D=40&criteria%5B0%5D%5Bsearchtype%5D=contains&criteria%5B0%5D%5Bvalue%5D=LT1&criteria%5B1%5D%5Blink%5D=AND&criteria%5B1%5D%5Bitemtype%5D=Computer&criteria%5B1%5D%5Bmeta%5D=1&criteria%5B1%5D%5Bfield%5D=100&criteria%5B1%5D%5Bsearchtype%5D=contains&criteria%5B1%5D%5Bvalue%5D=&search=Search&itemtype=Computer' WHERE `id` = '1'",
         ]);
     }
 }

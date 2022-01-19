@@ -135,11 +135,11 @@ trait InventoryNetworkPort
         $unmanaged = new Unmanaged();
 
         $criteria = [
-         'FROM'   => NetworkPort::getTable(),
-         'WHERE'  => [
-            'itemtype'  => 'Unmanaged',
-            'mac'       => new QueryParam()
-         ]
+            'FROM'   => NetworkPort::getTable(),
+            'WHERE'  => [
+                'itemtype'  => 'Unmanaged',
+                'mac'       => new QueryParam()
+            ]
         ];
 
         $it = new DBmysqlIterator(null);
@@ -160,11 +160,11 @@ trait InventoryNetworkPort
                      $row = $results->fetch_object();
                      $unmanageds_id = $row->items_id;
                      $input = [
-                     'logical_number'  => $port->logical_number,
-                     'itemtype'        => $this->itemtype,
-                     'items_id'        => $this->items_id,
-                     'is_dynamic'      => 1,
-                     'name'            => addslashes($port->name)
+                         'logical_number'  => $port->logical_number,
+                         'itemtype'        => $this->itemtype,
+                         'items_id'        => $this->items_id,
+                         'is_dynamic'      => 1,
+                         'name'            => addslashes($port->name)
                      ];
 
                      $networkport->update($input, $this->withHistory());
@@ -195,14 +195,14 @@ trait InventoryNetworkPort
 
             if ($this->ipnetwork_stmt == null) {
                 $criteria = [
-                'COUNT'  => 'cnt',
-                'FROM'   => IPNetwork::getTable(),
-                'WHERE'  => [
-                  'entities_id'  => $this->entities_id,
-                  'address'      => new QueryParam(),
-                  'netmask'      => new QueryParam(),
-                  'gateway'      => new QueryParam(),
-                ]
+                    'COUNT'  => 'cnt',
+                    'FROM'   => IPNetwork::getTable(),
+                    'WHERE'  => [
+                        'entities_id'  => $this->entities_id,
+                        'address'      => new QueryParam(),
+                        'netmask'      => new QueryParam(),
+                        'gateway'      => new QueryParam(),
+                    ]
                 ];
 
                 $it = new DBmysqlIterator(null);
@@ -227,10 +227,10 @@ trait InventoryNetworkPort
 
             if ($count == 0) {
                  $input = [
-                  'name'         => sprintf('%s/%s - %s', $port->subnet, $port->netmask, $port->gateway),
-                  'network'      => sprintf('%s/%s', $port->subnet, $port->netmask),
-                  'gateway'      => $port->gateway,
-                  'entities_id'  => $this->entities_id
+                     'name'         => sprintf('%s/%s - %s', $port->subnet, $port->netmask, $port->gateway),
+                     'network'      => sprintf('%s/%s', $port->subnet, $port->netmask),
+                     'gateway'      => $port->gateway,
+                     'entities_id'  => $this->entities_id
                  ];
                  $ipnetwork->add(Toolbox::addslashes_deep($input), [], $this->withHistory());
             }
@@ -258,10 +258,10 @@ trait InventoryNetworkPort
         $input = array_merge(
             $input,
             [
-            'entities_id'  => $this->entities_id,
-            'items_id'     => $this->items_id,
-            'itemtype'     => $this->itemtype,
-            'is_dynamic'   => 1
+                'entities_id'  => $this->entities_id,
+                'items_id'     => $this->items_id,
+                'itemtype'     => $this->itemtype,
+                'is_dynamic'   => 1
             ]
         );
 
@@ -285,11 +285,11 @@ trait InventoryNetworkPort
     {
         $networkname = new NetworkName();
         $input = [
-         'entities_id'  => $this->entities_id,
-         'is_dynamic'   => 1,
-         'items_id'     => $items_id,
-         'is_recursive' => 0,
-         'itemtype'     => 'NetworkPort'
+            'entities_id'  => $this->entities_id,
+            'is_dynamic'   => 1,
+            'items_id'     => $items_id,
+            'is_recursive' => 0,
+            'itemtype'     => 'NetworkPort'
         ];
 
         if ($name !== null) {
@@ -313,10 +313,10 @@ trait InventoryNetworkPort
         $ipaddress = new IPAddress();
         foreach ($ips as $ip) {
             $input = [
-            'items_id'     => $items_id,
-            'itemtype'     => 'NetworkName',
-            'name'         => addslashes($ip),
-            'is_dynamic'   => 1
+                'items_id'     => $items_id,
+                'itemtype'     => 'NetworkName',
+                'name'         => addslashes($ip),
+                'is_dynamic'   => 1
             ];
             $ipaddress->add($input, [], $this->withHistory());
         }
@@ -335,13 +335,13 @@ trait InventoryNetworkPort
         $networkport = new NetworkPort();
 
         $iterator = $DB->request([
-         'SELECT' => ['id', 'name', 'mac', 'instantiation_type', 'logical_number'],
-         'FROM'   => 'glpi_networkports',
-         'WHERE'  => [
-            'items_id'     => $this->items_id,
-            'itemtype'     => $this->itemtype,
-            'is_dynamic'   => 1
-         ]
+            'SELECT' => ['id', 'name', 'mac', 'instantiation_type', 'logical_number'],
+            'FROM'   => 'glpi_networkports',
+            'WHERE'  => [
+                'items_id'     => $this->items_id,
+                'itemtype'     => $this->itemtype,
+                'is_dynamic'   => 1
+            ]
         ]);
         foreach ($iterator as $row) {
             $id = $row['id'];
@@ -388,8 +388,8 @@ trait InventoryNetworkPort
                 if (property_exists($data, 'logical_number') && $data->logical_number != $db_lnumber) {
                     $networkport->update(
                         [
-                        'id'              => $keydb,
-                        'logical_number'  => $data->logical_number
+                            'id'              => $keydb,
+                            'logical_number'  => $data->logical_number
                         ],
                         $this->withHistory()
                     );
@@ -408,12 +408,12 @@ trait InventoryNetworkPort
                    //handle network name
                     if ($netname_stmt == null) {
                         $criteria = [
-                        'SELECT' => 'id',
-                        'FROM'   => NetworkName::getTable(),
-                        'WHERE'  => [
-                        'itemtype'  => 'NetworkPort',
-                        'items_id'  => new QueryParam()
-                        ]
+                            'SELECT' => 'id',
+                            'FROM'   => NetworkName::getTable(),
+                            'WHERE'  => [
+                                'itemtype'  => 'NetworkPort',
+                                'items_id'  => new QueryParam()
+                            ]
                         ];
 
                         $it = new DBmysqlIterator(null);
@@ -439,12 +439,12 @@ trait InventoryNetworkPort
                    //Handle ipaddresses
                     $db_addresses = [];
                     $iterator = $DB->request([
-                    'SELECT' => ['id', 'name'],
-                    'FROM'   => 'glpi_ipaddresses',
-                    'WHERE'  => [
-                     'items_id'  => $netname_id,
-                     'itemtype'  => 'NetworkName'
-                    ]
+                        'SELECT' => ['id', 'name'],
+                        'FROM'   => 'glpi_ipaddresses',
+                        'WHERE'  => [
+                            'items_id'  => $netname_id,
+                            'itemtype'  => 'NetworkName'
+                        ]
                     ]);
 
                     foreach ($iterator as $db_data) {
@@ -541,13 +541,13 @@ trait InventoryNetworkPort
         if (property_exists($data, 'mac')) {
             if ($this->idevice_stmt == null) {
                 $criteria = [
-                'SELECT' => 'id',
-                'FROM'   => Item_DeviceNetworkCard::getTable(),
-                'WHERE'  => [
-                  'itemtype'  => $this->itemtype,
-                  'items_id'  => $this->items_id,
-                  'mac'       => new QueryParam()
-                ]
+                    'SELECT' => 'id',
+                    'FROM'   => Item_DeviceNetworkCard::getTable(),
+                    'WHERE'  => [
+                        'itemtype'  => $this->itemtype,
+                        'items_id'  => $this->items_id,
+                        'mac'       => new QueryParam()
+                    ]
                 ];
 
                 $it = new DBmysqlIterator(null);

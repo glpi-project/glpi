@@ -101,8 +101,8 @@ class TemplateManager
             $html = TemplateManager::render(
                 $template,
                 [
-                'itemtype' => $itil_item->getType(),
-                $parameters->getDefaultNodeName() => $parameters->getValues($itil_item),
+                    'itemtype' => $itil_item->getType(),
+                    $parameters->getDefaultNodeName() => $parameters->getValues($itil_item),
                 ]
             );
         } catch (\Twig\Error\Error $e) {

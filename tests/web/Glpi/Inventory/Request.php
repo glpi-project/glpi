@@ -146,14 +146,14 @@ class Request extends \GLPITestCase
             'POST',
             $this->base_uri . 'front/inventory.php',
             [
-            'headers' => [
-               'Content-Type' => 'application/xml'
-            ],
-            'body'   => '<?xml version="1.0" encoding="UTF-8" ?>' .
-               '<REQUEST>' .
+                'headers' => [
+                    'Content-Type' => 'application/xml'
+                ],
+                'body'   => '<?xml version="1.0" encoding="UTF-8" ?>' .
+                '<REQUEST>' .
                   '<DEVICEID>mydeviceuniqueid</DEVICEID>' .
                   '<QUERY>PROLOG</QUERY>' .
-               '</REQUEST>'
+                '</REQUEST>'
             ]
         );
         $this->checkXmlResponse($res, '<PROLOG_FREQ>24</PROLOG_FREQ><RESPONSE>SEND</RESPONSE>', 200);

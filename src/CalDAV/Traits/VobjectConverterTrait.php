@@ -72,8 +72,8 @@ trait VobjectConverterTrait
 
         $vobject = new \VObject();
         $vobject_crit = [
-         'items_id' => $item->fields['id'],
-         'itemtype' => $item->getType(),
+            'items_id' => $item->fields['id'],
+            'itemtype' => $item->getType(),
         ];
 
        // Restore previously saved VCalendar if available
@@ -345,8 +345,8 @@ trait VobjectConverterTrait
         }
 
         return [
-         'begin' => $begin_datetime->format('Y-m-d H:i:s'),
-         'end'   => $end_datetime->format('Y-m-d H:i:s'),
+            'begin' => $begin_datetime->format('Y-m-d H:i:s'),
+            'end'   => $end_datetime->format('Y-m-d H:i:s'),
         ];
     }
 

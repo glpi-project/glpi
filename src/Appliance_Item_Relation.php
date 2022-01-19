@@ -177,10 +177,10 @@ class Appliance_Item_Relation extends CommonDBRelation
         global $DB;
 
         $iterator = $DB->request([
-         'FROM'   => self::getTable(),
-         'WHERE'  => [
-            Appliance_Item::getForeignKeyField() => $appliances_items_id
-         ]
+            'FROM'   => self::getTable(),
+            'WHERE'  => [
+                Appliance_Item::getForeignKeyField() => $appliances_items_id
+            ]
         ]);
 
         $relations = [];
@@ -246,19 +246,21 @@ class Appliance_Item_Relation extends CommonDBRelation
         if ($canedit) {
             $form_url  = Appliance_Item_Relation::getFormURL();
             $modal_html = json_encode("
-         <form action='{$form_url}' method='POST'>
-            <p>" . Dropdown::showSelectItemFromItemtypes([
-               'items_id_name'   => 'items_id',
-               'itemtypes'       => Appliance_Item_Relation::getTypes(true),
-               'entity_restrict' => ($item->fields['is_recursive'] ?? false)
+                <form action='{$form_url}' method='POST'>
+                <p>"
+                . Dropdown::showSelectItemFromItemtypes([
+                    'items_id_name'   => 'items_id',
+                    'itemtypes'       => Appliance_Item_Relation::getTypes(true),
+                    'entity_restrict' => ($item->fields['is_recursive'] ?? false)
                                        ? getSonsOf('glpi_entities', $item->fields['entities_id'])
                                        : $item->fields['entities_id'],
-               'checkright'     => true,
-               'display'        => false,
-            ]) . "</p>
-            <input type='hidden' name='appliances_items_id'>
-            " . Html::submit(_x('button', "Add"), ['name' => 'add']) . "
-         " . Html::closeForm(false));
+                    'checkright'     => true,
+                    'display'        => false,
+                ])
+                . "</p>
+                <input type='hidden' name='appliances_items_id'>
+                " . Html::submit(_x('button', "Add"), ['name' => 'add']) . "
+            " . Html::closeForm(false));
 
             $crsf_token = Session::getNewCSRFToken();
 

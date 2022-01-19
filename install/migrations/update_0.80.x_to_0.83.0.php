@@ -49,15 +49,16 @@ function update080xto0830()
 
     $backup_tables = false;
     $newtables     = ['glpi_entities_knowbaseitems', 'glpi_entities_reminders',
-                          'glpi_groups_problems', 'glpi_groups_knowbaseitems', 'glpi_groups_reminders',
-                          'glpi_knowbaseitems_profiles',  'glpi_knowbaseitems_users',
-                          'glpi_items_problems', 'glpi_problems',
-                          'glpi_problemtasks', 'glpi_problems_ticket', 'glpi_problems_users',
-                          'glpi_profiles_reminders', 'glpi_reminders_users',
-                          'glpi_ticketrecurrents',
-                          'glpi_tickettemplates', 'glpi_tickettemplatehiddenfields',
-                          'glpi_tickettemplatemandatoryfields',
-                          'glpi_tickettemplatepredefinedfields', 'glpi_useremails'];
+        'glpi_groups_problems', 'glpi_groups_knowbaseitems', 'glpi_groups_reminders',
+        'glpi_knowbaseitems_profiles',  'glpi_knowbaseitems_users',
+        'glpi_items_problems', 'glpi_problems',
+        'glpi_problemtasks', 'glpi_problems_ticket', 'glpi_problems_users',
+        'glpi_profiles_reminders', 'glpi_reminders_users',
+        'glpi_ticketrecurrents',
+        'glpi_tickettemplates', 'glpi_tickettemplatehiddenfields',
+        'glpi_tickettemplatemandatoryfields',
+        'glpi_tickettemplatepredefinedfields', 'glpi_useremails'
+    ];
 
     foreach ($newtables as $new_table) {
        // rename new tables if exists ?
@@ -233,7 +234,8 @@ function update080xto0830()
         "show_my_problem",
         "char",
         ['update'    => "1",
-        'condition' => " WHERE `own_ticket` = 1"]
+            'condition' => " WHERE `own_ticket` = 1"
+        ]
     );
 
     $migration->addField(
@@ -241,7 +243,8 @@ function update080xto0830()
         "show_all_problem",
         "char",
         ['update'    => "1",
-        'condition' => " WHERE `show_all_ticket` = 1"]
+            'condition' => " WHERE `show_all_ticket` = 1"
+        ]
     );
 
     $migration->addField(
@@ -249,7 +252,8 @@ function update080xto0830()
         "edit_all_problem",
         "char",
         ['update'    => "1",
-        'condition' => " WHERE `update_ticket` = 1"]
+            'condition' => " WHERE `update_ticket` = 1"
+        ]
     );
 
     $migration->changeField(
@@ -301,7 +305,8 @@ function update080xto0830()
 
        // Migrate templates
         $from = ['task.planning.user##', 'task.planning.begin##', 'task.planning.end##',
-                    'task.planning.status##',];
+            'task.planning.status##',
+        ];
         $to = ['task.user##', 'task.begin##', 'task.end##', 'task.status##',];
 
         $query = "SELECT `glpi_notificationtemplatetranslations`.*
@@ -413,23 +418,26 @@ function update080xto0830()
             $DB->queryOrDie($query, "0.83 add problem notification translation");
 
             $notifications = ['new'         => [],
-                                'update'      => [Notification::ASSIGN_TECH,
-                                                       Notification::OLD_TECH_IN_CHARGE],
-                                'solved'      => [],
-                                'add_task'    => [],
-                                'update_task' => [],
-                                'delete_task' => [],
-                                'closed'      => [],
-                                'delete'      => []];
+                'update'      => [Notification::ASSIGN_TECH,
+                    Notification::OLD_TECH_IN_CHARGE
+                ],
+                'solved'      => [],
+                'add_task'    => [],
+                'update_task' => [],
+                'delete_task' => [],
+                'closed'      => [],
+                'delete'      => []
+            ];
 
             $notif_names   = ['new'         => 'New Problem',
-                                'update'      => 'Update Problem',
-                                'solved'      => 'Resolve Problem',
-                                'add_task'    => 'Add Task',
-                                'update_task' => 'Update Task',
-                                'delete_task' => 'Delete Task',
-                                'closed'      => 'Close Problem',
-                                'delete'      => 'Delete Problem'];
+                'update'      => 'Update Problem',
+                'solved'      => 'Resolve Problem',
+                'add_task'    => 'Add Task',
+                'update_task' => 'Update Task',
+                'delete_task' => 'Delete Task',
+                'closed'      => 'Close Problem',
+                'delete'      => 'Delete Problem'
+            ];
 
             foreach ($notifications as $key => $val) {
                 $notifications[$key][] = Notification::AUTHOR;
@@ -524,8 +532,9 @@ function update080xto0830()
     $itemtype_tables = ["glpi_bookmarks", "glpi_bookmarks_users", "glpi_displaypreferences"];
 
     $typestochange = ['TicketSolutionTemplate' => 'SolutionTemplate',
-                          'TicketSolutionType'     => 'SolutionType',
-                          'TicketCategory'         => 'ITILCategory',];
+        'TicketSolutionType'     => 'SolutionType',
+        'TicketCategory'         => 'ITILCategory',
+    ];
 
     foreach ($itemtype_tables as $table) {
         foreach ($typestochange as $key => $val) {
@@ -623,9 +632,12 @@ function update080xto0830()
 
    /// Add document types
     $types = ['csv' => ['name' => 'Comma-Separated Values',
-                                 'icon' => 'csv-dist.png'],
-                  'svg' => ['name' => 'Scalable Vector Graphics',
-                                 'icon' => 'svg-dist.png'],];
+        'icon' => 'csv-dist.png'
+    ],
+        'svg' => ['name' => 'Scalable Vector Graphics',
+            'icon' => 'svg-dist.png'
+        ],
+    ];
 
     foreach ($types as $ext => $data) {
         $query = "SELECT *
@@ -642,11 +654,12 @@ function update080xto0830()
     }
    /// Update icons
     $types = ['c'   => 'c-dist.png',
-                  'h'   => 'h-dist.png',
-                  'swf' => 'swf-dist.png',
-                  'pas' => 'pas-dist.png',
-                  'wmv' => 'wmv-dist.png',
-                  'zip' => 'zip-dist.png',];
+        'h'   => 'h-dist.png',
+        'swf' => 'swf-dist.png',
+        'pas' => 'pas-dist.png',
+        'wmv' => 'wmv-dist.png',
+        'zip' => 'zip-dist.png',
+    ];
 
     foreach ($types as $ext => $icon) {
         $query = "SELECT `id`
@@ -699,7 +712,8 @@ function update080xto0830()
             "itemtype",
             "VARCHAR(100) DEFAULT NULL",
             ["after" => "date_out",
-            "update" => "'User'"]
+                "update" => "'User'"
+            ]
         )
     ) {
         $migration->dropKey("glpi_consumables", 'users_id');
@@ -1213,153 +1227,156 @@ function update080xto0830()
     $migration->displayMessage(sprintf(__('Data migration - %s'), 'Create new default profiles'));
 
     $profiles = ['hotliner'   => ['name'                      => 'Hotliner',
-                                           'interface'                 => 'central',
-                                           'user'                      => 'r',
-                                           'import_externalauth_users' => 'w',
-                                           'create_ticket'             => '1',
-                                           'assign_ticket'             => '1',
-                                           'global_add_followups'      => '1',
-                                           'add_followups'             => '1',
-                                           'update_ticket'             => '1',
-                                           'observe_ticket'            => '1',
-                                           'show_all_ticket'           => '1',
-                                           'show_full_ticket'          => '1',
-                                           'show_all_problem'          => '1',
-                                           'show_planning'             => '1',
-                                           'statistic'                 => '1',
-                                           'tickettemplate'            => 'r',
-                                           'password_update'           => '1',
-                                           'helpdesk_hardware'         => '3',
-                                           'helpdesk_item_type'
+        'interface'                 => 'central',
+        'user'                      => 'r',
+        'import_externalauth_users' => 'w',
+        'create_ticket'             => '1',
+        'assign_ticket'             => '1',
+        'global_add_followups'      => '1',
+        'add_followups'             => '1',
+        'update_ticket'             => '1',
+        'observe_ticket'            => '1',
+        'show_all_ticket'           => '1',
+        'show_full_ticket'          => '1',
+        'show_all_problem'          => '1',
+        'show_planning'             => '1',
+        'statistic'                 => '1',
+        'tickettemplate'            => 'r',
+        'password_update'           => '1',
+        'helpdesk_hardware'         => '3',
+        'helpdesk_item_type'
                                                 => addslashes('["Computer", "Monitor", "NetworkEquipment",' .
                                                               '"Peripheral", "Phone", "Printer",' .
                                                               '"Software"]'),
-                                           'create_validation'         => '1',
-                                           'update_own_followups'      => '1',
-                                           'create_ticket_on_login'    => '1'],
+        'create_validation'         => '1',
+        'update_own_followups'      => '1',
+        'create_ticket_on_login'    => '1'
+    ],
 
-                     'technician' => ['name'                      => 'Technician',
-                                           'interface'                 => 'central',
-                                           'password_update'           => '1',
-                                           'computer'                  => 'w',
-                                           'monitor'                   => 'w',
-                                           'software'                  => 'w',
-                                           'networking'                => 'w',
-                                           'printer'                   => 'w',
-                                           'peripheral'                => 'w',
-                                           'cartridge'                 => 'w',
-                                           'consumable'                => 'w',
-                                           'phone'                     => 'w',
-                                           'notes'                     => 'w',
-                                           'document'                  => 'w',
-                                           'knowbase'                  => 'w',
-                                           'faq'                       => 'w',
-                                           'reservation_helpdesk'      => '1',
-                                           'reservation_central'       => 'w',
-                                           'reports'                   => 'r',
-                                           'view_ocsng'                => 'r',
-                                           'sync_ocsng'                => 'w',
-                                           'user'                      => 'w',
-                                           'group'                     => 'r',
-                                           'entity'                    => 'r',
-                                           'transfer'                  => 'r',
-                                           'reminder_public'           => 'w',
-                                           'create_ticket'             => '1',
-                                           'add_followups'             => '1',
-                                           'global_add_followups'      => '1',
-                                           'global_add_tasks'          => '1',
-                                           'update_ticket'             => '1',
-                                           'own_ticket'                => '1',
-                                           'show_all_ticket'           => '1',
-                                           'show_assign_ticket'        => '1',
-                                           'show_full_ticket'          => '1',
-                                           'observe_ticket'            => '1',
-                                           'update_followups'          => '1',
-                                           'update_tasks'              => '1',
-                                           'show_planning'             => '1',
-                                           'statistic'                 => '1',
-                                           'helpdesk_hardware'         => '3',
-                                           'helpdesk_item_type'
+        'technician' => ['name'                      => 'Technician',
+            'interface'                 => 'central',
+            'password_update'           => '1',
+            'computer'                  => 'w',
+            'monitor'                   => 'w',
+            'software'                  => 'w',
+            'networking'                => 'w',
+            'printer'                   => 'w',
+            'peripheral'                => 'w',
+            'cartridge'                 => 'w',
+            'consumable'                => 'w',
+            'phone'                     => 'w',
+            'notes'                     => 'w',
+            'document'                  => 'w',
+            'knowbase'                  => 'w',
+            'faq'                       => 'w',
+            'reservation_helpdesk'      => '1',
+            'reservation_central'       => 'w',
+            'reports'                   => 'r',
+            'view_ocsng'                => 'r',
+            'sync_ocsng'                => 'w',
+            'user'                      => 'w',
+            'group'                     => 'r',
+            'entity'                    => 'r',
+            'transfer'                  => 'r',
+            'reminder_public'           => 'w',
+            'create_ticket'             => '1',
+            'add_followups'             => '1',
+            'global_add_followups'      => '1',
+            'global_add_tasks'          => '1',
+            'update_ticket'             => '1',
+            'own_ticket'                => '1',
+            'show_all_ticket'           => '1',
+            'show_assign_ticket'        => '1',
+            'show_full_ticket'          => '1',
+            'observe_ticket'            => '1',
+            'update_followups'          => '1',
+            'update_tasks'              => '1',
+            'show_planning'             => '1',
+            'statistic'                 => '1',
+            'helpdesk_hardware'         => '3',
+            'helpdesk_item_type'
                                                 => addslashes('["Computer", "Monitor", "NetworkEquipment",' .
                                                                '"Peripheral", "Phone", "Printer",' .
                                                                '"Software"]'),
-                                           'import_externalauth_users' => 'w',
-                                           'create_validation'         => '1',
-                                           'sla'                       => 'r',
-                                           'update_own_followups'      => '1',
-                                           'show_my_problem'           => '1',
-                                           'show_all_problem'          => '1',
-                                           'tickettemplate'            => 'r',
-                                           'ticketrecurrent'           => 'r'],
+            'import_externalauth_users' => 'w',
+            'create_validation'         => '1',
+            'sla'                       => 'r',
+            'update_own_followups'      => '1',
+            'show_my_problem'           => '1',
+            'show_all_problem'          => '1',
+            'tickettemplate'            => 'r',
+            'ticketrecurrent'           => 'r'
+        ],
 
-                     'supervisor' => ['name'                      => 'Supervisor',
-                                           'interface'                 => 'central',
-                                           'password_update'           => '1',
-                                           'computer'                  => 'w',
-                                           'monitor'                   => 'w',
-                                           'software'                  => 'w',
-                                           'networking'                => 'w',
-                                           'printer'                   => 'w',
-                                           'peripheral'                => 'w',
-                                           'cartridge'                 => 'w',
-                                           'consumable'                => 'w',
-                                           'phone'                     => 'w',
-                                           'notes'                     => 'w',
-                                           'document'                  => 'w',
-                                           'knowbase'                  => 'w',
-                                           'faq'                       => 'w',
-                                           'reservation_helpdesk'      => '1',
-                                           'reservation_central'       => 'w',
-                                           'reports'                   => 'r',
-                                           'view_ocsng'                => 'r',
-                                           'sync_ocsng'                => 'w',
-                                           'entity_dropdown'           => 'w',
-                                           'rule_ticket'               => 'r',
-                                           'entity_rule_ticket'        => 'w',
-                                           'user'                      => 'w',
-                                           'group'                     => 'r',
-                                           'entity'                    => 'r',
-                                           'transfer'                  => 'r',
-                                           'logs'                      => 'r',
-                                           'reminder_public'           => 'w',
-                                           'create_ticket'             => '1',
-                                           'delete_ticket'             => '1',
-                                           'add_followups'             => '1',
-                                           'global_add_followups'      => '1',
-                                           'global_add_tasks'          => '1',
-                                           'update_ticket'             => '1',
-                                           'update_priority'           => '1',
-                                           'own_ticket'                => '1',
-                                           'steal_ticket'              => '1',
-                                           'assign_ticket'             => '1',
-                                           'show_all_ticket'           => '1',
-                                           'show_assign_ticket'        => '1',
-                                           'show_full_ticket'          => '1',
-                                           'observe_ticket'            => '1',
-                                           'update_followups'          => '1',
-                                           'update_tasks'              => '1',
-                                           'show_planning'             => '1',
-                                           'show_all_planning'         => '1',
-                                           'statistic'                 => '1',
-                                           'helpdesk_hardware'         => '3',
-                                           'helpdesk_item_type'
+        'supervisor' => ['name'                      => 'Supervisor',
+            'interface'                 => 'central',
+            'password_update'           => '1',
+            'computer'                  => 'w',
+            'monitor'                   => 'w',
+            'software'                  => 'w',
+            'networking'                => 'w',
+            'printer'                   => 'w',
+            'peripheral'                => 'w',
+            'cartridge'                 => 'w',
+            'consumable'                => 'w',
+            'phone'                     => 'w',
+            'notes'                     => 'w',
+            'document'                  => 'w',
+            'knowbase'                  => 'w',
+            'faq'                       => 'w',
+            'reservation_helpdesk'      => '1',
+            'reservation_central'       => 'w',
+            'reports'                   => 'r',
+            'view_ocsng'                => 'r',
+            'sync_ocsng'                => 'w',
+            'entity_dropdown'           => 'w',
+            'rule_ticket'               => 'r',
+            'entity_rule_ticket'        => 'w',
+            'user'                      => 'w',
+            'group'                     => 'r',
+            'entity'                    => 'r',
+            'transfer'                  => 'r',
+            'logs'                      => 'r',
+            'reminder_public'           => 'w',
+            'create_ticket'             => '1',
+            'delete_ticket'             => '1',
+            'add_followups'             => '1',
+            'global_add_followups'      => '1',
+            'global_add_tasks'          => '1',
+            'update_ticket'             => '1',
+            'update_priority'           => '1',
+            'own_ticket'                => '1',
+            'steal_ticket'              => '1',
+            'assign_ticket'             => '1',
+            'show_all_ticket'           => '1',
+            'show_assign_ticket'        => '1',
+            'show_full_ticket'          => '1',
+            'observe_ticket'            => '1',
+            'update_followups'          => '1',
+            'update_tasks'              => '1',
+            'show_planning'             => '1',
+            'show_all_planning'         => '1',
+            'statistic'                 => '1',
+            'helpdesk_hardware'         => '3',
+            'helpdesk_item_type'
                                                 => addslashes('["Computer", "Monitor", "NetworkEquipment",' .
                                                                '"Peripheral", "Phone", "Printer",' .
                                                                '"Software"]'),
-                                           'import_externalauth_users' => 'w',
-                                           'rule_mailcollector'        => 'w',
-                                           'validate_ticket'           => '1',
-                                           'create_validation'         => '1',
-                                           'calendar'                  => 'w',
-                                           'sla'                       => 'w',
-                                           'update_own_followups'      => '1',
-                                           'delete_followups'          => '1',
-                                           'show_my_problem'           => '1',
-                                           'show_all_problem'          => '1',
-                                           'edit_all_problem'          => '1',
-                                           'tickettemplate'            => 'w',
-                                           'ticketrecurrent'           => 'w']
-                                 ];
+            'import_externalauth_users' => 'w',
+            'rule_mailcollector'        => 'w',
+            'validate_ticket'           => '1',
+            'create_validation'         => '1',
+            'calendar'                  => 'w',
+            'sla'                       => 'w',
+            'update_own_followups'      => '1',
+            'delete_followups'          => '1',
+            'show_my_problem'           => '1',
+            'show_all_problem'          => '1',
+            'edit_all_problem'          => '1',
+            'tickettemplate'            => 'w',
+            'ticketrecurrent'           => 'w'
+        ]
+    ];
 
     foreach ($profiles as $profile => $data) {
         $query  = "INSERT INTO `glpi_profiles`
@@ -1692,7 +1709,8 @@ function update080xto0830()
 
    // migration to new values for inherit parent (-1 => -2)
     $fieldparent = ['autofill_buy_date', 'autofill_delivery_date', 'autofill_warranty_date',
-                        'autofill_order_date', 'autofill_use_date'];
+        'autofill_order_date', 'autofill_use_date'
+    ];
 
     foreach ($fieldparent as $field_parent) {
         if ($DB->fieldExists("glpi_entitydatas", $field_parent, false)) {
@@ -1741,8 +1759,9 @@ function update080xto0830()
 
    // migration to new values for inherit config
     $fieldconfig = ['auto_assign_mode', 'autoclose_delay', 'cartridges_alert_repeat',
-                        'consumables_alert_repeat', 'notclosed_delay', 'use_contracts_alert',
-                        'use_infocoms_alert', 'use_licenses_alert', 'use_reservations_alert'];
+        'consumables_alert_repeat', 'notclosed_delay', 'use_contracts_alert',
+        'use_infocoms_alert', 'use_licenses_alert', 'use_reservations_alert'
+    ];
 
     $query = "SELECT *
              FROM `glpi_configs`";
@@ -1802,8 +1821,9 @@ function update080xto0830()
                             $field_config,
                             'integer',
                             ['update' => $data[$field_config],
-                                              'value'  => ($field_config == "default_alarm_threshold"
-                            ? 10 : 0)]
+                                'value'  => ($field_config == "default_alarm_threshold"
+                            ? 10 : 0)
+                            ]
                         );
 
                          $migration->dropField("glpi_configs", $field_config);
@@ -1831,14 +1851,16 @@ function update080xto0830()
    //   $ADDTODISPLAYPREF['KnowbaseItem'] = array(2,3,4,5,6,7);
 
     $renametables = ['TicketSolutionType'     => 'SolutionType',
-                         'TicketSolutionTemplate' => 'SolutionTemplate',
-                         'TicketCategory'         => 'ITILCategory'];
+        'TicketSolutionTemplate' => 'SolutionTemplate',
+        'TicketCategory'         => 'ITILCategory'
+    ];
 
     $itemtype_tables = ["glpi_bookmarks"          => 'itemtype',
-                            "glpi_bookmarks_users"    => 'itemtype',
-                            "glpi_displaypreferences" => 'itemtype',
-                            "glpi_logs"               => 'itemtype',
-                            "glpi_events"             => 'type',];
+        "glpi_bookmarks_users"    => 'itemtype',
+        "glpi_displaypreferences" => 'itemtype',
+        "glpi_logs"               => 'itemtype',
+        "glpi_events"             => 'type',
+    ];
 
     foreach ($itemtype_tables as $table => $field) {
         foreach ($renametables as $key => $val) {

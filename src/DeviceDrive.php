@@ -48,17 +48,22 @@ class DeviceDrive extends CommonDevice
         return array_merge(
             parent::getAdditionalFields(),
             [['name'  => 'is_writer',
-                                     'label' => __('Writing ability'),
-                                     'type'  => 'bool'],
-                               ['name'  => 'speed',
-                                     'label' => __('Speed'),
-                                     'type'  => 'text'],
-                               ['name'  => 'interfacetypes_id',
-                                     'label' => __('Interface'),
-                                     'type'  => 'dropdownValue'],
-                               ['name'  => 'devicedrivemodels_id',
-                                     'label' => _n('Model', 'Models', 1),
-            'type'  => 'dropdownValue']]
+                'label' => __('Writing ability'),
+                'type'  => 'bool'
+            ],
+                ['name'  => 'speed',
+                    'label' => __('Speed'),
+                    'type'  => 'text'
+                ],
+                ['name'  => 'interfacetypes_id',
+                    'label' => __('Interface'),
+                    'type'  => 'dropdownValue'
+                ],
+                ['name'  => 'devicedrivemodels_id',
+                    'label' => _n('Model', 'Models', 1),
+                    'type'  => 'dropdownValue'
+                ]
+            ]
         );
     }
 
@@ -68,35 +73,35 @@ class DeviceDrive extends CommonDevice
         $tab = parent::rawSearchOptions();
 
         $tab[] = [
-         'id'                 => '12',
-         'table'              => $this->getTable(),
-         'field'              => 'is_writer',
-         'name'               => __('Writing ability'),
-         'datatype'           => 'bool'
+            'id'                 => '12',
+            'table'              => $this->getTable(),
+            'field'              => 'is_writer',
+            'name'               => __('Writing ability'),
+            'datatype'           => 'bool'
         ];
 
         $tab[] = [
-         'id'                 => '13',
-         'table'              => $this->getTable(),
-         'field'              => 'speed',
-         'name'               => __('Speed'),
-         'datatype'           => 'string',
+            'id'                 => '13',
+            'table'              => $this->getTable(),
+            'field'              => 'speed',
+            'name'               => __('Speed'),
+            'datatype'           => 'string',
         ];
 
         $tab[] = [
-         'id'                 => '14',
-         'table'              => 'glpi_interfacetypes',
-         'field'              => 'name',
-         'name'               => __('Interface'),
-         'datatype'           => 'dropdown'
+            'id'                 => '14',
+            'table'              => 'glpi_interfacetypes',
+            'field'              => 'name',
+            'name'               => __('Interface'),
+            'datatype'           => 'dropdown'
         ];
 
         $tab[] = [
-         'id'                 => '15',
-         'table'              => 'glpi_devicedrivemodels',
-         'field'              => 'name',
-         'name'               => _n('Model', 'Models', 1),
-         'datatype'           => 'dropdown'
+            'id'                 => '15',
+            'table'              => 'glpi_devicedrivemodels',
+            'field'              => 'name',
+            'name'               => _n('Model', 'Models', 1),
+            'datatype'           => 'dropdown'
         ];
 
         return $tab;
@@ -176,8 +181,9 @@ class DeviceDrive extends CommonDevice
     {
 
         return ['designation'       => 'equal',
-                   'manufacturers_id'  => 'equal',
-                   'interfacetypes_id' => 'equal'];
+            'manufacturers_id'  => 'equal',
+            'interfacetypes_id' => 'equal'
+        ];
     }
 
 

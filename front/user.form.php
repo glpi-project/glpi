@@ -173,8 +173,8 @@ if (isset($_GET['getvcard'])) {
     if (Session::getLoginUserID()) {
         $user->update(
             [
-            'id'        => Session::getLoginUserID(),
-            'language'  => $_POST['language']
+                'id'        => Session::getLoginUserID(),
+                'language'  => $_POST['language']
             ]
         );
     } else {
@@ -214,8 +214,9 @@ if (isset($_GET['getvcard'])) {
         if (isset($_POST['login']) && !empty($_POST['login'])) {
             Session::checkRight("user", User::IMPORTEXTAUTHUSERS);
             $input = ['name'     => $_POST['login'],
-                     '_extauth' => 1,
-                     'add'      => 1];
+                '_extauth' => 1,
+                'add'      => 1
+            ];
             $user->check(-1, CREATE, $input);
             $newID = $user->add($input);
             Event::log(
@@ -236,8 +237,8 @@ if (isset($_GET['getvcard'])) {
         Session::checkRight("user", READ);
         Html::header(User::getTypeName(Session::getPluralNumber()), '', "admin", "user");
         $user->display([
-         'id'           => $_GET["id"],
-         'formoptions'  => "data-track-changes=true"
+            'id'           => $_GET["id"],
+            'formoptions'  => "data-track-changes=true"
         ]);
         Html::footer();
     }

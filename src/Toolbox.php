@@ -309,12 +309,12 @@ class Toolbox
     public static function getHtmLawedSafeConfig(): array
     {
         $config = [
-         'elements'         => '* -applet -canvas -embed -form -object -script',
-         'deny_attribute'   => 'on*, srcdoc',
-         'comment'          => 1, // 1: remove HTML comments (and do not display their contents)
-         'cdata'            => 1, // 1: remove CDATA sections (and do not display their contents)
-         'direct_list_nest' => 1, // 1: Allow usage of ul/ol tags nested in other ul/ol tags
-         'schemes'          => '*: aim, app, feed, file, ftp, gopher, http, https, irc, mailto, news, nntp, sftp, ssh, tel, telnet, notes'
+            'elements'         => '* -applet -canvas -embed -form -object -script',
+            'deny_attribute'   => 'on*, srcdoc',
+            'comment'          => 1, // 1: remove HTML comments (and do not display their contents)
+            'cdata'            => 1, // 1: remove CDATA sections (and do not display their contents)
+            'direct_list_nest' => 1, // 1: Allow usage of ul/ol tags nested in other ul/ol tags
+            'schemes'          => '*: aim, app, feed, file, ftp, gopher, http, https, irc, mailto, news, nntp, sftp, ssh, tel, telnet, notes'
         ];
         if (!GLPI_ALLOW_IFRAME_IN_RICH_TEXT) {
             $config['elements'] .= '-iframe';
@@ -1375,30 +1375,30 @@ class Toolbox
 
         $ch = curl_init($url);
         $opts = [
-         CURLOPT_URL             => $url,
-         CURLOPT_USERAGENT       => "GLPI/" . trim($CFG_GLPI["version"]),
-         CURLOPT_RETURNTRANSFER  => 1,
-         CURLOPT_CONNECTTIMEOUT  => 5,
+            CURLOPT_URL             => $url,
+            CURLOPT_USERAGENT       => "GLPI/" . trim($CFG_GLPI["version"]),
+            CURLOPT_RETURNTRANSFER  => 1,
+            CURLOPT_CONNECTTIMEOUT  => 5,
         ] + $eopts;
 
         if (!empty($CFG_GLPI["proxy_name"])) {
            // Connection using proxy
             $opts += [
-            CURLOPT_PROXY           => $CFG_GLPI['proxy_name'],
-            CURLOPT_PROXYPORT       => $CFG_GLPI['proxy_port'],
-            CURLOPT_PROXYTYPE       => CURLPROXY_HTTP
+                CURLOPT_PROXY           => $CFG_GLPI['proxy_name'],
+                CURLOPT_PROXYPORT       => $CFG_GLPI['proxy_port'],
+                CURLOPT_PROXYTYPE       => CURLPROXY_HTTP
             ];
 
             if (!empty($CFG_GLPI["proxy_user"])) {
                 $opts += [
-                CURLOPT_PROXYAUTH    => CURLAUTH_BASIC,
-                CURLOPT_PROXYUSERPWD => $CFG_GLPI["proxy_user"] . ":" . (new GLPIKey())->decrypt($CFG_GLPI["proxy_passwd"]),
+                    CURLOPT_PROXYAUTH    => CURLAUTH_BASIC,
+                    CURLOPT_PROXYUSERPWD => $CFG_GLPI["proxy_user"] . ":" . (new GLPIKey())->decrypt($CFG_GLPI["proxy_passwd"]),
                 ];
             }
 
             if ($defaultport == 443) {
                 $opts += [
-                CURLOPT_HTTPPROXYTUNNEL => 1
+                    CURLOPT_HTTPPROXYTUNNEL => 1
                 ];
             }
         }
@@ -1812,10 +1812,12 @@ class Toolbox
             'server_type',
             $values,
             ['value'               => $svalue,
-            'display_emptychoice' => true]
+                'display_emptychoice' => true
+            ]
         );
         $values = [//TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
-                     '/ssl' => __('SSL')];
+            '/ssl' => __('SSL')
+        ];
 
         $svalue = ($tab['ssl'] ? '/ssl' : '');
 
@@ -1823,13 +1825,15 @@ class Toolbox
             'server_ssl',
             $values,
             ['value'               => $svalue,
-            'display_emptychoice' => true]
+                'display_emptychoice' => true
+            ]
         );
 
         $values = [//TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
-                     '/tls' => __('TLS'),
+            '/tls' => __('TLS'),
                      //TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
-                     '/notls' => __('NO-TLS'),];
+            '/notls' => __('NO-TLS'),
+        ];
 
         $svalue = '';
         if (($tab['tls'] === true)) {
@@ -1843,14 +1847,16 @@ class Toolbox
             'server_tls',
             $values,
             ['value'               => $svalue,
-                                    'width'               => '14%',
-            'display_emptychoice' => true]
+                'width'               => '14%',
+                'display_emptychoice' => true
+            ]
         );
 
         $values = [//TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
-                     '/novalidate-cert' => __('NO-VALIDATE-CERT'),
+            '/novalidate-cert' => __('NO-VALIDATE-CERT'),
                      //TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
-                     '/validate-cert' => __('VALIDATE-CERT'),];
+            '/validate-cert' => __('VALIDATE-CERT'),
+        ];
 
         $svalue = '';
         if (($tab['validate-cert'] === false)) {
@@ -1864,11 +1870,13 @@ class Toolbox
             'server_cert',
             $values,
             ['value'               => $svalue,
-            'display_emptychoice' => true]
+                'display_emptychoice' => true
+            ]
         );
 
         $values = [//TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
-                     '/norsh' => __('NORSH')];
+            '/norsh' => __('NORSH')
+        ];
 
         $svalue = ($tab['norsh'] === true ? '/norsh' : '');
 
@@ -1876,11 +1884,13 @@ class Toolbox
             'server_rsh',
             $values,
             ['value'               => $svalue,
-            'display_emptychoice' => true]
+                'display_emptychoice' => true
+            ]
         );
 
         $values = [//TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
-                     '/secure' => __('SECURE')];
+            '/secure' => __('SECURE')
+        ];
 
         $svalue = ($tab['secure'] === true ? '/secure' : '');
 
@@ -1888,11 +1898,13 @@ class Toolbox
             'server_secure',
             $values,
             ['value'               => $svalue,
-            'display_emptychoice' => true]
+                'display_emptychoice' => true
+            ]
         );
 
         $values = [//TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
-                     '/debug' => __('DEBUG')];
+            '/debug' => __('DEBUG')
+        ];
 
         $svalue = ($tab['debug'] === true ? '/debug' : '');
 
@@ -1900,8 +1912,9 @@ class Toolbox
             'server_debug',
             $values,
             ['value'               => $svalue,
-                                    'width'               => '12%',
-            'display_emptychoice' => true]
+                'width'               => '12%',
+                'display_emptychoice' => true
+            ]
         );
 
         echo "<input type=hidden name=imap_string value='" . $value . "'>";
@@ -1993,18 +2006,18 @@ class Toolbox
     private static function getMailServerProtocols(): array
     {
         $protocols = [
-         'imap' => [
+            'imap' => [
             //TRANS: IMAP mail server protocol
-            'label'    => __('IMAP'),
-            'protocol' => 'Laminas\Mail\Protocol\Imap',
-            'storage'  => 'Laminas\Mail\Storage\Imap',
-         ],
-         'pop'  => [
+                'label'    => __('IMAP'),
+                'protocol' => 'Laminas\Mail\Protocol\Imap',
+                'storage'  => 'Laminas\Mail\Storage\Imap',
+            ],
+            'pop'  => [
             //TRANS: POP3 mail server protocol
-            'label'    => __('POP'),
-            'protocol' => 'Laminas\Mail\Protocol\Pop3',
-            'storage'  => 'Laminas\Mail\Storage\Pop3',
-         ]
+                'label'    => __('POP'),
+                'protocol' => 'Laminas\Mail\Protocol\Pop3',
+                'storage'  => 'Laminas\Mail\Storage\Pop3',
+            ]
         ];
 
         $additionnal_protocols = Plugin::doHookFunction('mail_server_protocols', []);
@@ -2300,9 +2313,9 @@ class Toolbox
             Config::setConfigurationValues(
                 'core',
                 [
-                'language'      => $lang,
-                'version'       => GLPI_VERSION,
-                'dbversion'     => GLPI_SCHEMA_VERSION,
+                    'language'      => $lang,
+                    'version'       => GLPI_VERSION,
+                    'dbversion'     => GLPI_SCHEMA_VERSION,
                 ]
             );
 
@@ -2311,11 +2324,11 @@ class Toolbox
                 $DB->updateOrDie(
                     'glpi_crontasks',
                     [
-                    'mode'   => 2
+                        'mode'   => 2
                     ],
                     [
-                    'name'      => ['!=', 'watcher'],
-                    'allowmode' => ['&', 2]
+                        'name'      => ['!=', 'watcher'],
+                        'allowmode' => ['&', 2]
                     ],
                     '4203'
                 );
@@ -2673,10 +2686,11 @@ class Toolbox
                         ) {
                             $docitem = new Document_Item();
                             $docitem->add(['documents_id'  => $image['id'],
-                                         '_do_notif'     => false,
-                                         '_disablenotif' => true,
-                                         'itemtype'      => $item->getType(),
-                                         'items_id'      => $item->fields['id']]);
+                                '_do_notif'     => false,
+                                '_disablenotif' => true,
+                                'itemtype'      => $item->getType(),
+                                'items_id'      => $item->fields['id']
+                            ]);
                         }
                     } else {
                       // Remove tag
@@ -2809,23 +2823,23 @@ class Toolbox
         switch ($type) {
             case 'js':
                 $formats = [
-                 0 => 'Y-m-d',
-                 1 => 'd-m-Y',
-                 2 => 'm-d-Y'
+                    0 => 'Y-m-d',
+                    1 => 'd-m-Y',
+                    2 => 'm-d-Y'
                 ];
                 break;
             case 'php':
                 $formats = [
-                0 => __('YYYY-MM-DD'),
-                1 => __('DD-MM-YYYY'),
-                2 => __('MM-DD-YYYY')
+                    0 => __('YYYY-MM-DD'),
+                    1 => __('DD-MM-YYYY'),
+                    2 => __('MM-DD-YYYY')
                 ];
                 break;
             case 'gantt':
                 $formats = [
-                0 => '%Y-%m-%d',
-                1 => '%d-%m-%Y',
-                2 => '%m-%d-%Y'
+                    0 => '%Y-%m-%d',
+                    1 => '%d-%m-%Y',
+                    2 => '%m-%d-%Y'
                 ];
                 break;
             default:
@@ -3172,9 +3186,9 @@ HTML;
         $hash = intval($hash / count($base_S));
         $L = $base_L[$hash % count($base_L)];
         $hsl = [
-         'H' => $H,
-         'S' => $S,
-         'L' => $L
+            'H' => $H,
+            'S' => $S,
+            'L' => $L
         ];
 
        // return hex

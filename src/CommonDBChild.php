@@ -65,14 +65,14 @@ abstract class CommonDBChild extends CommonDBConnexity
     public static function getSQLCriteriaToSearchForItem($itemtype, $items_id)
     {
         $criteria = [
-         'SELECT' => [
-            static::getIndexName(),
-            static::$items_id . ' AS items_id'
-         ],
-         'FROM'   => static::getTable(),
-         'WHERE'  => [
-            static::$items_id  => $items_id
-         ]
+            'SELECT' => [
+                static::getIndexName(),
+                static::$items_id . ' AS items_id'
+            ],
+            'FROM'   => static::getTable(),
+            'WHERE'  => [
+                static::$items_id  => $items_id
+            ]
         ];
 
        // Check item 1 type
@@ -461,7 +461,8 @@ abstract class CommonDBChild extends CommonDBConnexity
        // True if item changed
         if (
             !$this->checkAttachedItemChangesAllowed($input, [static::$itemtype,
-                                                                 static::$items_id])
+                static::$items_id
+            ])
         ) {
             return false;
         }
@@ -486,7 +487,8 @@ abstract class CommonDBChild extends CommonDBConnexity
     {
 
         return $this->getNameID(['forceid'    => true,
-                                    'additional' => true]);
+            'additional' => true
+        ]);
     }
 
 
@@ -509,9 +511,9 @@ abstract class CommonDBChild extends CommonDBConnexity
             && static::$logs_for_parent
         ) {
             $changes = [
-            '0',
-            '',
-            $this->getHistoryNameForItem($item, 'add'),
+                '0',
+                '',
+                $this->getHistoryNameForItem($item, 'add'),
             ];
             Log::history(
                 $item->getID(),
@@ -633,7 +635,7 @@ abstract class CommonDBChild extends CommonDBConnexity
             && $item->dohistory
         ) {
             $changes = [
-            '0',
+                '0',
             ];
 
             if (static::$log_history_delete == Log::HISTORY_LOG_SIMPLE_MESSAGE) {
@@ -682,9 +684,9 @@ abstract class CommonDBChild extends CommonDBConnexity
                 && $item->dohistory
             ) {
                 $changes = [
-                '0',
-                addslashes($this->getHistoryNameForItem($item, 'lock')),
-                '',
+                    '0',
+                    addslashes($this->getHistoryNameForItem($item, 'lock')),
+                    '',
                 ];
                 Log::history(
                     $item->getID(),
@@ -726,9 +728,9 @@ abstract class CommonDBChild extends CommonDBConnexity
                 && $item->dohistory
             ) {
                 $changes = [
-                '0',
-                '',
-                addslashes($this->getHistoryNameForItem($item, 'unlock')),
+                    '0',
+                    '',
+                    addslashes($this->getHistoryNameForItem($item, 'unlock')),
                 ];
                 Log::history(
                     $item->getID(),
@@ -905,10 +907,10 @@ abstract class CommonDBChild extends CommonDBConnexity
         }
 
         $query = [
-         'FROM'   => static::getTable(),
-         'WHERE'  => [
-            static::$items_id => $item->getID()
-         ]
+            'FROM'   => static::getTable(),
+            'WHERE'  => [
+                static::$items_id => $item->getID()
+            ]
         ];
 
         if (preg_match('/^itemtype/', static::$itemtype)) {
@@ -959,7 +961,8 @@ abstract class CommonDBChild extends CommonDBConnexity
     {
 
         $input = [static::getIndexName() => $id,
-                     static::$items_id      => $items_id];
+            static::$items_id      => $items_id
+        ];
 
         if (preg_match('/^itemtype/', static::$itemtype)) {
             $input[static::$itemtype] = $itemtype;

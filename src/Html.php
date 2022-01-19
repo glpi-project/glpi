@@ -79,9 +79,10 @@ class Html
         if ($striptags) {
            // Strip ToolTips
             $specialfilter = ['@<div[^>]*?tooltip_picture[^>]*?>.*?</div[^>]*?>@si',
-                                '@<div[^>]*?tooltip_text[^>]*?>.*?</div[^>]*?>@si',
-                                '@<div[^>]*?tooltip_picture_border[^>]*?>.*?</div[^>]*?>@si',
-                                '@<div[^>]*?invisible[^>]*?>.*?</div[^>]*?>@si'];
+                '@<div[^>]*?tooltip_text[^>]*?>.*?</div[^>]*?>@si',
+                '@<div[^>]*?tooltip_picture_border[^>]*?>.*?</div[^>]*?>@si',
+                '@<div[^>]*?invisible[^>]*?>.*?</div[^>]*?>@si'
+            ];
             $value         = preg_replace($specialfilter, '', $value);
 
             $value = preg_replace("/<(p|br|div)( [^>]*)?" . ">/i", "\n", $value);
@@ -89,10 +90,10 @@ class Html
         }
 
         $search = ['@<script[^>]*?>.*?</script[^>]*?>@si', // Strip out javascript
-                      '@<style[^>]*?>.*?</style[^>]*?>@si', // Strip out style
-                      '@<title[^>]*?>.*?</title[^>]*?>@si', // Strip out title
-                      '@<!DOCTYPE[^>]*?>@si', // Strip out !DOCTYPE
-                       ];
+            '@<style[^>]*?>.*?</style[^>]*?>@si', // Strip out style
+            '@<title[^>]*?>.*?</title[^>]*?>@si', // Strip out title
+            '@<!DOCTYPE[^>]*?>@si', // Strip out !DOCTYPE
+        ];
         $value = preg_replace($search, '', $value);
 
        // Neutralize not well formatted html tags
@@ -298,15 +299,17 @@ class Html
             return array_map([__CLASS__, __METHOD__], $value);
         }
         $order   = ['\r\n',
-                       '\n',
-                       "\\'",
-                       '\"',
-                       '\\\\'];
+            '\n',
+            "\\'",
+            '\"',
+            '\\\\'
+        ];
         $replace = ["\n",
-                       "\n",
-                       "'",
-                       '"',
-                       "\\"];
+            "\n",
+            "'",
+            '"',
+            "\\"
+        ];
         return str_replace($order, $replace, $value);
     }
 
@@ -809,9 +812,9 @@ class Html
                 }
                 echo "<div id='debug$tab_id$rand' class='tab-pane'>";
                 $tab_info['display_callable']([
-                'with_session' => $with_session,
-                'ajax'         => $ajax,
-                'rand'         => $rand,
+                    'with_session' => $with_session,
+                    'ajax'         => $ajax,
+                    'rand'         => $rand,
                 ]);
                 echo "</div>";
             }
@@ -898,8 +901,8 @@ class Html
         }
 
         TemplateRenderer::getInstance()->display('display_and_die.html.twig', [
-         'title'   => __('Access denied'),
-         'message' => $message,
+            'title'   => __('Access denied'),
+            'message' => $message,
         ]);
 
         self::nullFooter();
@@ -1176,11 +1179,11 @@ HTML;
         $theme = $_SESSION['glpipalette'] ?? 'auror';
 
         $tpl_vars = [
-         'lang'      => $CFG_GLPI["languages"][$_SESSION['glpilanguage']][3],
-         'title'     => $title,
-         'theme'     => $theme,
-         'css_files' => [],
-         'js_files'  => [],
+            'lang'      => $CFG_GLPI["languages"][$_SESSION['glpilanguage']][3],
+            'title'     => $title,
+            'theme'     => $theme,
+            'css_files' => [],
+            'js_files'  => [],
         ];
 
         $tpl_vars['css_files'][] = 'public/lib/base.css';
@@ -1370,7 +1373,7 @@ HTML;
                     'NetworkEquipment', 'Peripheral', 'Printer',
                     'CartridgeItem', 'ConsumableItem', 'Phone',
                     'Rack', 'Enclosure', 'PDU', 'PassiveDCEquipment', 'Unmanaged', 'Cable'
-                    ], $CFG_GLPI['devices_in_menu']),
+                ], $CFG_GLPI['devices_in_menu']),
                 'icon'    => 'ti ti-package'
             ],
         ];
@@ -1529,12 +1532,12 @@ HTML;
             }
 
             $allassets = [
-            'Computer',
-            'Monitor',
-            'Peripheral',
-            'NetworkEquipment',
-            'Phone',
-            'Printer'
+                'Computer',
+                'Monitor',
+                'Peripheral',
+                'NetworkEquipment',
+                'Phone',
+                'Printer'
             ];
 
             foreach ($allassets as $type) {
@@ -1612,11 +1615,11 @@ HTML;
         $menu = Plugin::doHookFunction("redefine_menus", $menu);
 
         $tpl_vars = [
-         'menu'        => $menu,
-         'sector'      => $sector,
-         'item'        => $item,
-         'option'      => $option,
-         'menu_active' => $menu_active,
+            'menu'        => $menu,
+            'sector'      => $sector,
+            'item'        => $item,
+            'option'      => $option,
+            'menu_active' => $menu_active,
         ];
         $tpl_vars += self::getPageHeaderTplVars();
 
@@ -1664,7 +1667,7 @@ HTML;
         echo self::getCoreVariablesForJavascript(true);
 
         $tpl_vars = [
-         'js_files' => [],
+            'js_files' => [],
         ];
 
        // On demand scripts
@@ -1801,15 +1804,15 @@ HTML;
         $menu = [];
         foreach ($links as $label => $url) {
             $menu[] = [
-            'title'   => $label,
-            'default' => $url
+                'title'   => $label,
+                'default' => $url
             ];
         }
 
         TemplateRenderer::getInstance()->display(
             'layout/parts/page_header.html.twig',
             [
-            'menu' => $menu,
+                'menu' => $menu,
             ] + self::getPageHeaderTplVars()
         );
 
@@ -1836,18 +1839,18 @@ HTML;
         self::includeHeader($title, 'self-service');
 
         $menu = [
-         'home' => [
-            'default' => '/front/helpdesk.public.php',
-            'title'   => __('Home'),
-            'icon'    => 'fas fa-home',
-         ],
+            'home' => [
+                'default' => '/front/helpdesk.public.php',
+                'title'   => __('Home'),
+                'icon'    => 'fas fa-home',
+            ],
         ];
 
         if (Session::haveRight("ticket", CREATE)) {
             $menu['create_ticket'] = [
-            'default' => '/front/helpdesk.public.php?create_ticket=1',
-            'title'   => __('Create a ticket'),
-            'icon'    => 'ti ti-plus',
+                'default' => '/front/helpdesk.public.php?create_ticket=1',
+                'title'   => __('Create a ticket'),
+                'icon'    => 'ti ti-plus',
             ];
         }
 
@@ -1857,25 +1860,25 @@ HTML;
             || Session::haveRight("followup", ITILFollowup::SEEPUBLIC)
         ) {
             $menu['tickets'] = [
-            'default' => '/front/ticket.php',
-            'title'   => _n('Ticket', 'Tickets', Session::getPluralNumber()),
-            'icon'    => Ticket::getIcon(),
+                'default' => '/front/ticket.php',
+                'title'   => _n('Ticket', 'Tickets', Session::getPluralNumber()),
+                'icon'    => Ticket::getIcon(),
             ];
         }
 
         if (Session::haveRight("reservation", ReservationItem::RESERVEANITEM)) {
             $menu['reservation'] = [
-            'default' => '/front/reservationitem.php',
-            'title'   => _n('Reservation', 'Reservations', Session::getPluralNumber()),
-            'icon'    => ReservationItem::getIcon(),
+                'default' => '/front/reservationitem.php',
+                'title'   => _n('Reservation', 'Reservations', Session::getPluralNumber()),
+                'icon'    => ReservationItem::getIcon(),
             ];
         }
 
         if (Session::haveRight('knowbase', KnowbaseItem::READFAQ)) {
             $menu['faq'] = [
-            'default' => '/front/helpdesk.faq.php',
-            'title'   => __('FAQ'),
-            'icon'    => KnowbaseItem::getIcon(),
+                'default' => '/front/helpdesk.faq.php',
+                'title'   => __('FAQ'),
+                'icon'    => KnowbaseItem::getIcon(),
             ];
         }
 
@@ -1884,8 +1887,8 @@ HTML;
             && count($PLUGIN_HOOKS["helpdesk_menu_entry"])
         ) {
             $menu['plugins'] = [
-            'title' => __("Plugins"),
-            'icon'  => Plugin::getIcon(),
+                'title' => __("Plugins"),
+                'icon'  => Plugin::getIcon(),
             ];
 
             foreach ($PLUGIN_HOOKS["helpdesk_menu_entry"] as $plugin => $active) {
@@ -1910,7 +1913,7 @@ HTML;
         TemplateRenderer::getInstance()->display(
             'layout/parts/page_header.html.twig',
             [
-            'menu' => $menu,
+                'menu' => $menu,
             ] + self::getPageHeaderTplVars()
         );
 
@@ -1945,11 +1948,11 @@ HTML;
         }
 
         return [
-         'is_debug_active'       => $_SESSION['glpi_use_mode'] == Session::DEBUG_MODE,
-         'is_impersonate_active' => Session::isImpersonateActive(),
-         'founded_new_version'   => $founded_new_version,
-         'user'                  => $user instanceof User ? $user : null,
-         'platform'              => $platform,
+            'is_debug_active'       => $_SESSION['glpi_use_mode'] == Session::DEBUG_MODE,
+            'is_impersonate_active' => Session::isImpersonateActive(),
+            'founded_new_version'   => $founded_new_version,
+            'user'                  => $user instanceof User ? $user : null,
+            'platform'              => $platform,
         ];
     }
 
@@ -2585,13 +2588,13 @@ HTML;
                     'modal_massiveaction_window' . $identifier,
                     $url,
                     [
-                    'title'           => $p['title'],
-                    'extraparams'     => $p['extraparams'],
-                    'width'           => $p['width'],
-                    'height'          => $p['height'],
-                    'js_modal_fields' => $js_modal_fields,
-                    'display'         => false,
-                    'modal_class'     => "modal-xl",
+                        'title'           => $p['title'],
+                        'extraparams'     => $p['extraparams'],
+                        'width'           => $p['width'],
+                        'height'          => $p['height'],
+                        'js_modal_fields' => $js_modal_fields,
+                        'display'         => false,
+                        'modal_class'     => "modal-xl",
                     ]
                 );
             }
@@ -2660,24 +2663,24 @@ HTML;
         global $CFG_GLPI;
 
         $p = [
-         'value'        => '',
-         'defaultDate'  => '',
-         'maybeempty'   => true,
-         'canedit'      => true,
-         'min'          => '',
-         'max'          => '',
-         'showyear'     => false,
-         'display'      => true,
-         'range'        => false,
-         'rand'         => mt_rand(),
-         'calendar_btn' => true,
-         'clear_btn'    => true,
-         'yearrange'    => '',
-         'multiple'     => false,
-         'size'         => 10,
-         'required'     => false,
-         'placeholder'  => '',
-         'on_change'    => '',
+            'value'        => '',
+            'defaultDate'  => '',
+            'maybeempty'   => true,
+            'canedit'      => true,
+            'min'          => '',
+            'max'          => '',
+            'showyear'     => false,
+            'display'      => true,
+            'range'        => false,
+            'rand'         => mt_rand(),
+            'calendar_btn' => true,
+            'clear_btn'    => true,
+            'yearrange'    => '',
+            'multiple'     => false,
+            'size'         => 10,
+            'required'     => false,
+            'placeholder'  => '',
+            'on_change'    => '',
         ];
 
         foreach ($options as $key => $val) {
@@ -2836,19 +2839,19 @@ JS;
         global $CFG_GLPI;
 
         $p = [
-         'value'      => '',
-         'maybeempty' => true,
-         'canedit'    => true,
-         'mindate'    => '',
-         'maxdate'    => '',
-         'mintime'    => '',
-         'maxtime'    => '',
-         'timestep'   => -1,
-         'showyear'   => true,
-         'display'    => true,
-         'rand'       => mt_rand(),
-         'required'   => false,
-         'on_change'  => '',
+            'value'      => '',
+            'maybeempty' => true,
+            'canedit'    => true,
+            'mindate'    => '',
+            'maxdate'    => '',
+            'mintime'    => '',
+            'maxtime'    => '',
+            'timestep'   => -1,
+            'showyear'   => true,
+            'display'    => true,
+            'rand'       => mt_rand(),
+            'required'   => false,
+            'on_change'  => '',
         ];
 
         foreach ($options as $key => $val) {
@@ -2973,16 +2976,16 @@ JS;
         global $CFG_GLPI;
 
         $p = [
-         'value'      => '',
-         'maybeempty' => true,
-         'canedit'    => true,
-         'mintime'    => '',
-         'maxtime'    => '',
-         'timestep'   => -1,
-         'display'    => true,
-         'rand'       => mt_rand(),
-         'required'   => false,
-         'on_change'  => '',
+            'value'      => '',
+            'maybeempty' => true,
+            'canedit'    => true,
+            'mintime'    => '',
+            'maxtime'    => '',
+            'timestep'   => -1,
+            'display'    => true,
+            'rand'       => mt_rand(),
+            'required'   => false,
+            'on_change'  => '',
         ];
 
         foreach ($options as $key => $val) {
@@ -3128,8 +3131,9 @@ JS;
             "_select_$element",
             $dates,
             ['value'   => $value,
-                                                        'display' => false,
-            'rand'    => $rand]
+                'display' => false,
+                'rand'    => $rand
+            ]
         );
         $field_id   = Html::cleanId("dropdown__select_$element$rand");
 
@@ -3138,9 +3142,10 @@ JS;
         $output    .= "<span id='$contentid'></span>";
 
         $params     = ['value'         => '__VALUE__',
-                          'name'          => $element,
-                          'withtime'      => $p['with_time'],
-                          'specificvalue' => $specific_value];
+            'name'          => $element,
+            'withtime'      => $p['with_time'],
+            'specificvalue' => $specific_value
+        ];
 
         $output    .= Ajax::updateItemOnSelectEvent(
             $field_id,
@@ -3416,10 +3421,10 @@ JS;
     public static function showDatesTimelineGraph($options = [])
     {
         $default_options = [
-         'title'   => '',
-         'dates'   => [],
-         'display' => true,
-         'add_now' => true
+            'title'   => '',
+            'dates'   => [],
+            'display' => true,
+            'add_now' => true
         ];
         $options = array_merge($default_options, $options);
 
@@ -3427,9 +3432,9 @@ JS;
         if ($options['add_now']) {
             $now = time();
             $options['dates'][$now . "_now"] = [
-            'timestamp' => $now,
-            'label' => __('Now'),
-            'class' => 'now'
+                'timestamp' => $now,
+                'label' => __('Now'),
+                'class' => 'now'
             ];
         }
 
@@ -3444,8 +3449,8 @@ JS;
         $out = TemplateRenderer::getInstance()->render(
             'components/dates_timeline.html.twig',
             [
-            'title' => $options['title'],
-            'dates' => $options['dates'],
+                'title' => $options['title'],
+                'dates' => $options['dates'],
             ]
         );
 
@@ -3550,8 +3555,9 @@ JS;
                 'tooltippopup' . $rand,
                 $param['popup'],
                 ['display' => false,
-                                                     'width'   => 600,
-                'height'  => 300]
+                    'width'   => 600,
+                    'height'  => 300
+                ]
             );
         }
         $js = "$(function(){";
@@ -3684,17 +3690,17 @@ JS;
         }
 
         $plugins = [
-         'autoresize',
-         'code',
-         'directionality',
-         'fullscreen',
-         'link',
-         'lists',
-         'paste',
-         'quickbars',
-         'searchreplace',
-         'tabfocus',
-         'table',
+            'autoresize',
+            'code',
+            'directionality',
+            'fullscreen',
+            'link',
+            'lists',
+            'paste',
+            'quickbars',
+            'searchreplace',
+            'tabfocus',
+            'table',
         ];
         if ($enable_images) {
             $plugins[] = 'image';
@@ -3708,8 +3714,8 @@ JS;
         $language_opts = '';
         if ($language !== 'en_GB') {
             $language_opts = json_encode([
-            'language' => $language,
-            'language_url' => $language_url
+                'language' => $language,
+                'language_url' => $language_url
             ]);
         }
        // init tinymce
@@ -3863,8 +3869,8 @@ JAVASCRIPT
         $url = "/front/contenttemplates/documentation.php?preset=$preset_target";
         $link =  $CFG_GLPI['root_doc'] . $url;
         $params = [
-         'target' => '_blank',
-         'style'  => 'margin-top:6px; display: block'
+            'target' => '_blank',
+            'style'  => 'margin-top:6px; display: block'
         ];
 
         if (!is_null($link_id)) {
@@ -4683,8 +4689,8 @@ JAVASCRIPT
         }
 
         $options = [
-         'id'        => $field_id,
-         'selected'  => $value
+            'id'        => $field_id,
+            'selected'  => $value
         ];
 
        // manage multiple select (with multiple values)
@@ -5112,9 +5118,9 @@ JAVASCRIPT
     public static function progress($max, $value, $params = [])
     {
         $p = [
-         'rand'            => mt_rand(),
-         'tooltip'         => '',
-         'append_percent'  => true
+            'rand'            => mt_rand(),
+            'tooltip'         => '',
+            'append_percent'  => true
         ];
         $p = array_replace($p, $params);
 
@@ -5399,11 +5405,11 @@ JAVASCRIPT
         }
 
         $display .= self::uploadedFiles([
-         'filecontainer' => $p['filecontainer'],
-         'name'          => $p['name'],
-         'display'       => false,
-         'uploads'       => $p['uploads'],
-         'editor_id'     => $p['editor_id'],
+            'filecontainer' => $p['filecontainer'],
+            'name'          => $p['name'],
+            'display'       => false,
+            'uploads'       => $p['uploads'],
+            'editor_id'     => $p['editor_id'],
         ]);
 
         $max_file_size  = $CFG_GLPI['document_max_size'] * 1024 * 1024;
@@ -5624,16 +5630,16 @@ JAVASCRIPT
 
                 // Rebuild the minimal data to show the already uploaded files
                 $upload = [
-                'name'    => $upload,
-                'id'      => 'doc' . $p['name'] . mt_rand(),
-                'display' => $displayName,
-                'size'    => filesize(GLPI_TMP_DIR . '/' . $upload),
-                'prefix'  => $prefix,
+                    'name'    => $upload,
+                    'id'      => 'doc' . $p['name'] . mt_rand(),
+                    'display' => $displayName,
+                    'size'    => filesize(GLPI_TMP_DIR . '/' . $upload),
+                    'prefix'  => $prefix,
                 ];
                 $tag = $p['uploads']['_tag_' . $p['name']][$uploadId];
                 $tag = [
-                'name' => $tag,
-                'tag'  => "#$tag#",
+                    'name' => $tag,
+                    'tag'  => "#$tag#",
                 ];
 
                 // Show the name and size of the upload
@@ -5717,8 +5723,8 @@ JAVASCRIPT
        // count checked
         foreach ($columns as $col_name => $column) {
             $nb_cb_per_col[$col_name] = [
-            'total'   => 0,
-            'checked' => 0
+                'total'   => 0,
+                'checked' => 0
             ];
         }
 
@@ -5729,8 +5735,8 @@ JAVASCRIPT
 
             if (!is_string($row)) {
                 $nb_cb_per_row[$row_name] = [
-                'total'   => 0,
-                'checked' => 0
+                    'total'   => 0,
+                    'checked' => 0
                 ];
 
                 foreach ($columns as $col_name => $column) {
@@ -5753,13 +5759,13 @@ JAVASCRIPT
         }
 
         TemplateRenderer::getInstance()->display('components/checkbox_matrix.html.twig', [
-         'title'          => $param['title'],
-         'columns'        => $columns,
-         'rows'           => $rows,
-         'param'          => $param,
-         'number_columns' => $number_columns,
-         'nb_cb_per_col'  => $nb_cb_per_col,
-         'nb_cb_per_row'  => $nb_cb_per_row,
+            'title'          => $param['title'],
+            'columns'        => $columns,
+            'rows'           => $rows,
+            'param'          => $param,
+            'number_columns' => $number_columns,
+            'nb_cb_per_col'  => $nb_cb_per_col,
+            'nb_cb_per_row'  => $nb_cb_per_row,
         ]);
 
         return $param['rand'];
@@ -6218,10 +6224,10 @@ JAVASCRIPT
 
         if (isset($CFG_GLPI['notifications_ajax']) && $CFG_GLPI['notifications_ajax'] && !Session::isImpersonateActive()) {
             $options = [
-            'interval'  => ($CFG_GLPI['notifications_ajax_check_interval'] ? $CFG_GLPI['notifications_ajax_check_interval'] : 5) * 1000,
-            'sound'     => $CFG_GLPI['notifications_ajax_sound'] ? $CFG_GLPI['notifications_ajax_sound'] : false,
-            'icon'      => ($CFG_GLPI["notifications_ajax_icon_url"] ? $CFG_GLPI['root_doc'] . $CFG_GLPI['notifications_ajax_icon_url'] : false),
-            'user_id'   => Session::getLoginUserID()
+                'interval'  => ($CFG_GLPI['notifications_ajax_check_interval'] ? $CFG_GLPI['notifications_ajax_check_interval'] : 5) * 1000,
+                'sound'     => $CFG_GLPI['notifications_ajax_sound'] ? $CFG_GLPI['notifications_ajax_sound'] : false,
+                'icon'      => ($CFG_GLPI["notifications_ajax_icon_url"] ? $CFG_GLPI['root_doc'] . $CFG_GLPI['notifications_ajax_icon_url'] : false),
+                'user_id'   => Session::getLoginUserID()
             ];
             $js = "$(function() {
             notifications_ajax = new GLPINotificationsAjax(" . json_encode($options) . ");
@@ -6248,8 +6254,8 @@ JAVASCRIPT
                 foreach ($files as $file) {
                     if (file_exists($plugin_root_dir . "/{$file}")) {
                         echo Html::script("$plugin_web_dir/{$file}", [
-                        'version'   => $version,
-                        'type'      => 'text/javascript'
+                            'version'   => $version,
+                            'type'      => 'text/javascript'
                         ]);
                     } else {
                         trigger_error("{$file} file not found from plugin {$plugin}!", E_USER_WARNING);
@@ -6272,8 +6278,8 @@ JAVASCRIPT
                 foreach ($files as $file) {
                     if (file_exists($plugin_root_dir . "/{$file}")) {
                         echo self::script("$plugin_web_dir/{$file}", [
-                        'version'   => $version,
-                        'type'      => 'module'
+                            'version'   => $version,
+                            'type'      => 'module'
                         ]);
                     } else {
                         trigger_error("{$file} file not found from plugin {$plugin}!", E_USER_WARNING);
@@ -6465,16 +6471,16 @@ HTML;
                         foreach ($firstlvl['content'] as $menu) {
                             if (isset($menu['title']) && strlen($menu['title']) > 0) {
                                 $fuzzy_entries[] = [
-                                 'url'   => $menu['page'],
-                                 'title' => $firstlvl['title'] . " > " . $menu['title']
+                                    'url'   => $menu['page'],
+                                    'title' => $firstlvl['title'] . " > " . $menu['title']
                                 ];
 
                                 if (isset($menu['options'])) {
                                     foreach ($menu['options'] as $submenu) {
                                         if (isset($submenu['title']) && strlen($submenu['title']) > 0) {
                                             $fuzzy_entries[] = [
-                                            'url'   => $submenu['page'],
-                                            'title' => $firstlvl['title'] . " > " .
+                                                'url'   => $submenu['page'],
+                                                'title' => $firstlvl['title'] . " > " .
                                                $menu['title'] . " > " .
                                                $submenu['title']
                                             ];
@@ -6488,8 +6494,8 @@ HTML;
                     if (isset($firstlvl['default'])) {
                         if (strlen($menu['title']) > 0) {
                             $fuzzy_entries[] = [
-                            'url'   => $firstlvl['default'],
-                            'title' => $firstlvl['title']
+                                'url'   => $firstlvl['default'],
+                                'title' => $firstlvl['title']
                             ];
                         }
                     }
@@ -6582,8 +6588,8 @@ HTML;
             $scss->setSourceMap(Compiler::SOURCE_MAP_INLINE);
             $scss->setSourceMapOptions(
                 [
-                'sourceMapBasepath' => GLPI_ROOT . '/',
-                'sourceRoot'        => $CFG_GLPI['root_doc'] . '/',
+                    'sourceMapBasepath' => GLPI_ROOT . '/',
+                    'sourceRoot'        => $CFG_GLPI['root_doc'] . '/',
                 ]
             );
         }
@@ -6644,8 +6650,8 @@ HTML;
                 }
 
                 $possible_filenames = [
-                sprintf('%s/css/lib/%s/%s.scss', GLPI_ROOT, $file_chunks['directory'], $file_chunks['file']),
-                sprintf('%s/css/lib/%s/_%s.scss', GLPI_ROOT, $file_chunks['directory'], $file_chunks['file']),
+                    sprintf('%s/css/lib/%s/%s.scss', GLPI_ROOT, $file_chunks['directory'], $file_chunks['file']),
+                    sprintf('%s/css/lib/%s/_%s.scss', GLPI_ROOT, $file_chunks['directory'], $file_chunks['file']),
                 ];
                 foreach ($possible_filenames as $filename) {
                     if (file_exists($filename)) {
@@ -6762,8 +6768,8 @@ CSS;
         return implode(
             DIRECTORY_SEPARATOR,
             [
-            self::getScssCompileDir(),
-            str_replace('/', '_', $file) . '.min.css',
+                self::getScssCompileDir(),
+                str_replace('/', '_', $file) . '.min.css',
             ]
         );
     }

@@ -232,16 +232,16 @@ class ITILFollowup extends CommonDBChild
 
        // Add screenshots if needed, without notification
         $this->input = $this->addFiles($this->input, [
-         'force_update'  => true,
-         'name'          => 'content',
-         'content_field' => 'content',
-         'date' => $this->fields['date'],
+            'force_update'  => true,
+            'name'          => 'content',
+            'content_field' => 'content',
+            'date' => $this->fields['date'],
         ]);
 
        // Add documents if needed, without notification
         $this->input = $this->addFiles($this->input, [
-         'force_update'  => true,
-         'date' => $this->fields['date'],
+            'force_update'  => true,
+            'date' => $this->fields['date'],
         ]);
 
         $donotif = !isset($this->input['_disablenotif']) && $CFG_GLPI["use_notifications"];
@@ -259,14 +259,14 @@ class ITILFollowup extends CommonDBChild
        // Set pending reason data on parent and self
         if ($this->input['pending'] ?? 0) {
             PendingReason_Item::createForItem($parentitem, [
-              'pendingreasons_id'           => $this->input['pendingreasons_id'] ?? 0,
-              'followup_frequency'          => $this->input['followup_frequency'] ?? 0,
-              'followups_before_resolution' => $this->input['followups_before_resolution'] ?? 0,
+                'pendingreasons_id'           => $this->input['pendingreasons_id'] ?? 0,
+                'followup_frequency'          => $this->input['followup_frequency'] ?? 0,
+                'followups_before_resolution' => $this->input['followups_before_resolution'] ?? 0,
             ]);
             PendingReason_Item::createForItem($this, [
-              'pendingreasons_id'           => $this->input['pendingreasons_id'] ?? 0,
-              'followup_frequency'          => $this->input['followup_frequency'] ?? 0,
-              'followups_before_resolution' => $this->input['followups_before_resolution'] ?? 0,
+                'pendingreasons_id'           => $this->input['pendingreasons_id'] ?? 0,
+                'followup_frequency'          => $this->input['followup_frequency'] ?? 0,
+                'followups_before_resolution' => $this->input['followups_before_resolution'] ?? 0,
             ]);
         }
 
@@ -276,10 +276,10 @@ class ITILFollowup extends CommonDBChild
             && ($parentitem->fields["status"] == CommonITILObject::SOLVED)
         ) {
             $update = [
-            'id'        => $parentitem->fields['id'],
-            'status'    => CommonITILObject::CLOSED,
-            'closedate' => $_SESSION["glpi_currenttime"],
-            '_accepted' => true,
+                'id'        => $parentitem->fields['id'],
+                'status'    => CommonITILObject::CLOSED,
+                'closedate' => $_SESSION["glpi_currenttime"],
+                '_accepted' => true,
             ];
 
            // Use update method for history
@@ -360,15 +360,16 @@ class ITILFollowup extends CommonDBChild
 
         if ($donotif) {
             $options = ['followup_id' => $this->fields["id"],
-                          'is_private'  => $this->fields['is_private']];
+                'is_private'  => $this->fields['is_private']
+            ];
             NotificationEvent::raiseEvent("add_followup", $parentitem, $options);
         }
 
        // Add log entry in the ITILObject
         $changes = [
-         0,
-         '',
-         $this->fields['id'],
+            0,
+            '',
+            $this->fields['id'],
         ];
         Log::history(
             $this->getField('items_id'),
@@ -397,9 +398,9 @@ class ITILFollowup extends CommonDBChild
 
        // Add log entry in the ITIL Object
         $changes = [
-         0,
-         '',
-         $this->fields['id'],
+            0,
+            '',
+            $this->fields['id'],
         ];
         Log::history(
             $this->getField(self::$items_id),
@@ -412,7 +413,8 @@ class ITILFollowup extends CommonDBChild
         if ($donotif) {
             $options = ['followup_id' => $this->fields["id"],
                            // Force is_private with data / not available
-                          'is_private'  => $this->fields['is_private']];
+                'is_private'  => $this->fields['is_private']
+            ];
             NotificationEvent::raiseEvent('delete_followup', $job, $options);
         }
     }
@@ -533,14 +535,14 @@ class ITILFollowup extends CommonDBChild
 
        // Add screenshots if needed, without notification
         $this->input = $this->addFiles($this->input, [
-         'force_update' => true,
-         'name'          => 'content',
-         'content_field' => 'content',
+            'force_update' => true,
+            'name'          => 'content',
+            'content_field' => 'content',
         ]);
 
        // Add documents if needed, without notification
         $this->input = $this->addFiles($this->input, [
-         'force_update' => true,
+            'force_update' => true,
         ]);
 
        //Get user_id when not logged (from mailgate)
@@ -564,7 +566,8 @@ class ITILFollowup extends CommonDBChild
                 //FIXME: _need_send_mail does not seems to be used
 
                 $options = ['followup_id' => $this->fields["id"],
-                             'is_private'  => $this->fields['is_private']];
+                    'is_private'  => $this->fields['is_private']
+                ];
 
                 NotificationEvent::raiseEvent("update_followup", $job, $options);
             }
@@ -578,18 +581,18 @@ class ITILFollowup extends CommonDBChild
             && ($this->input['_status'] != $this->input['_job']->fields['status'])
         ) {
             $update = [
-             'status'        => $this->input['_status'],
-             'id'            => $this->input['_job']->fields['id'],
-             '_disablenotif' => true,
+                'status'        => $this->input['_status'],
+                'id'            => $this->input['_job']->fields['id'],
+                '_disablenotif' => true,
             ];
             $this->input['_job']->update($update);
         }
 
        // Add log entry in the ITIL Object
         $changes = [
-         0,
-         '',
-         $this->fields['id'],
+            0,
+            '',
+            $this->fields['id'],
         ];
         Log::history(
             $this->getField('items_id'),
@@ -630,58 +633,58 @@ class ITILFollowup extends CommonDBChild
         $tab = [];
 
         $tab[] = [
-         'id'                 => 'common',
-         'name'               => __('Characteristics')
+            'id'                 => 'common',
+            'name'               => __('Characteristics')
         ];
 
         $tab[] = [
-         'id'                 => '1',
-         'table'              => $this->getTable(),
-         'field'              => 'content',
-         'name'               => __('Description'),
-         'datatype'           => 'text'
+            'id'                 => '1',
+            'table'              => $this->getTable(),
+            'field'              => 'content',
+            'name'               => __('Description'),
+            'datatype'           => 'text'
         ];
 
         $tab[] = [
-         'id'                 => '2',
-         'table'              => 'glpi_requesttypes',
-         'field'              => 'name',
-         'name'               => RequestType::getTypeName(1),
-         'forcegroupby'       => true,
-         'datatype'           => 'dropdown'
+            'id'                 => '2',
+            'table'              => 'glpi_requesttypes',
+            'field'              => 'name',
+            'name'               => RequestType::getTypeName(1),
+            'forcegroupby'       => true,
+            'datatype'           => 'dropdown'
         ];
 
         $tab[] = [
-         'id'                 => '3',
-         'table'              => $this->getTable(),
-         'field'              => 'date',
-         'name'               => _n('Date', 'Dates', 1),
-         'datatype'           => 'datetime'
+            'id'                 => '3',
+            'table'              => $this->getTable(),
+            'field'              => 'date',
+            'name'               => _n('Date', 'Dates', 1),
+            'datatype'           => 'datetime'
         ];
 
         $tab[] = [
-         'id'                 => '4',
-         'table'              => $this->getTable(),
-         'field'              => 'is_private',
-         'name'               => __('Private'),
-         'datatype'           => 'bool'
+            'id'                 => '4',
+            'table'              => $this->getTable(),
+            'field'              => 'is_private',
+            'name'               => __('Private'),
+            'datatype'           => 'bool'
         ];
 
         $tab[] = [
-         'id'                 => '5',
-         'table'              => 'glpi_users',
-         'field'              => 'name',
-         'name'               => User::getTypeName(1),
-         'datatype'           => 'dropdown',
-         'right'              => 'all'
+            'id'                 => '5',
+            'table'              => 'glpi_users',
+            'field'              => 'name',
+            'name'               => User::getTypeName(1),
+            'datatype'           => 'dropdown',
+            'right'              => 'all'
         ];
 
         $tab[] = [
-         'id'                 => '6',
-         'table'              => $this->getTable(),
-         'field'              => 'itemtype',
-         'name'               => RequestType::getTypeName(1),
-         'datatype'           => 'dropdown'
+            'id'                 => '6',
+            'table'              => $this->getTable(),
+            'field'              => 'itemtype',
+            'name'               => RequestType::getTypeName(1),
+            'datatype'           => 'dropdown'
         ];
 
         return $tab;
@@ -694,117 +697,117 @@ class ITILFollowup extends CommonDBChild
         $tab = [];
 
         $tab[] = [
-         'id'                 => 'followup',
-         'name'               => _n('Followup', 'Followups', Session::getPluralNumber())
+            'id'                 => 'followup',
+            'name'               => _n('Followup', 'Followups', Session::getPluralNumber())
         ];
 
         $followup_condition = '';
         if (!Session::haveRight('followup', self::SEEPRIVATE)) {
             $followup_condition = [
-            'OR' => [
-               'NEWTABLE.is_private'   => 0,
-               'NEWTABLE.users_id'     => Session::getLoginUserID()
-            ]
+                'OR' => [
+                    'NEWTABLE.is_private'   => 0,
+                    'NEWTABLE.users_id'     => Session::getLoginUserID()
+                ]
             ];
         }
 
         $tab[] = [
-         'id'                 => '25',
-         'table'              => static::getTable(),
-         'field'              => 'content',
-         'name'               => __('Description'),
-         'forcegroupby'       => true,
-         'splititems'         => true,
-         'massiveaction'      => false,
-         'joinparams'         => [
-            'jointype'           => 'itemtype_item',
-            'condition'          => $followup_condition
-         ],
-         'datatype'           => 'text',
-         'htmltext'           => true
+            'id'                 => '25',
+            'table'              => static::getTable(),
+            'field'              => 'content',
+            'name'               => __('Description'),
+            'forcegroupby'       => true,
+            'splititems'         => true,
+            'massiveaction'      => false,
+            'joinparams'         => [
+                'jointype'           => 'itemtype_item',
+                'condition'          => $followup_condition
+            ],
+            'datatype'           => 'text',
+            'htmltext'           => true
         ];
 
         $tab[] = [
-         'id'                 => '36',
-         'table'              => static::getTable(),
-         'field'              => 'date',
-         'name'               => _n('Date', 'Dates', 1),
-         'datatype'           => 'datetime',
-         'massiveaction'      => false,
-         'forcegroupby'       => true,
-         'joinparams'         => [
-            'jointype'           => 'itemtype_item',
-            'condition'          => $followup_condition
-         ]
-        ];
-
-        $tab[] = [
-         'id'                 => '27',
-         'table'              => static::getTable(),
-         'field'              => 'id',
-         'name'               => _x('quantity', 'Number of followups'),
-         'forcegroupby'       => true,
-         'usehaving'          => true,
-         'datatype'           => 'count',
-         'massiveaction'      => false,
-         'joinparams'         => [
-            'jointype'           => 'itemtype_item',
-            'condition'          => $followup_condition
-         ]
-        ];
-
-        $tab[] = [
-         'id'                 => '29',
-         'table'              => 'glpi_requesttypes',
-         'field'              => 'name',
-         'name'               => RequestType::getTypeName(1),
-         'datatype'           => 'dropdown',
-         'forcegroupby'       => true,
-         'massiveaction'      => false,
-         'joinparams'         => [
-            'beforejoin'         => [
-               'table'              => static::getTable(),
-               'joinparams'         => [
-                  'jointype'           => 'itemtype_item',
-                  'condition'          => $followup_condition
-               ]
+            'id'                 => '36',
+            'table'              => static::getTable(),
+            'field'              => 'date',
+            'name'               => _n('Date', 'Dates', 1),
+            'datatype'           => 'datetime',
+            'massiveaction'      => false,
+            'forcegroupby'       => true,
+            'joinparams'         => [
+                'jointype'           => 'itemtype_item',
+                'condition'          => $followup_condition
             ]
-         ]
         ];
 
         $tab[] = [
-         'id'                 => '91',
-         'table'              => static::getTable(),
-         'field'              => 'is_private',
-         'name'               => __('Private followup'),
-         'datatype'           => 'bool',
-         'forcegroupby'       => true,
-         'splititems'         => true,
-         'massiveaction'      => false,
-         'joinparams'         => [
-            'jointype'           => 'itemtype_item',
-            'condition'          => $followup_condition
-         ]
-        ];
-
-        $tab[] = [
-         'id'                 => '93',
-         'table'              => 'glpi_users',
-         'field'              => 'name',
-         'name'               => __('Writer'),
-         'datatype'           => 'itemlink',
-         'right'              => 'all',
-         'forcegroupby'       => true,
-         'massiveaction'      => false,
-         'joinparams'         => [
-            'beforejoin'         => [
-               'table'              => static::getTable(),
-               'joinparams'         => [
-                  'jointype'           => 'itemtype_item',
-                  'condition'          => $followup_condition
-               ]
+            'id'                 => '27',
+            'table'              => static::getTable(),
+            'field'              => 'id',
+            'name'               => _x('quantity', 'Number of followups'),
+            'forcegroupby'       => true,
+            'usehaving'          => true,
+            'datatype'           => 'count',
+            'massiveaction'      => false,
+            'joinparams'         => [
+                'jointype'           => 'itemtype_item',
+                'condition'          => $followup_condition
             ]
-         ]
+        ];
+
+        $tab[] = [
+            'id'                 => '29',
+            'table'              => 'glpi_requesttypes',
+            'field'              => 'name',
+            'name'               => RequestType::getTypeName(1),
+            'datatype'           => 'dropdown',
+            'forcegroupby'       => true,
+            'massiveaction'      => false,
+            'joinparams'         => [
+                'beforejoin'         => [
+                    'table'              => static::getTable(),
+                    'joinparams'         => [
+                        'jointype'           => 'itemtype_item',
+                        'condition'          => $followup_condition
+                    ]
+                ]
+            ]
+        ];
+
+        $tab[] = [
+            'id'                 => '91',
+            'table'              => static::getTable(),
+            'field'              => 'is_private',
+            'name'               => __('Private followup'),
+            'datatype'           => 'bool',
+            'forcegroupby'       => true,
+            'splititems'         => true,
+            'massiveaction'      => false,
+            'joinparams'         => [
+                'jointype'           => 'itemtype_item',
+                'condition'          => $followup_condition
+            ]
+        ];
+
+        $tab[] = [
+            'id'                 => '93',
+            'table'              => 'glpi_users',
+            'field'              => 'name',
+            'name'               => __('Writer'),
+            'datatype'           => 'itemlink',
+            'right'              => 'all',
+            'forcegroupby'       => true,
+            'massiveaction'      => false,
+            'joinparams'         => [
+                'beforejoin'         => [
+                    'table'              => static::getTable(),
+                    'joinparams'         => [
+                        'jointype'           => 'itemtype_item',
+                        'condition'          => $followup_condition
+                    ]
+                ]
+            ]
         ];
 
         return $tab;
@@ -830,8 +833,8 @@ class ITILFollowup extends CommonDBChild
         }
 
         TemplateRenderer::getInstance()->display('components/itilobject/timeline/form_followup.html.twig', [
-         'item'      => $options['parent'],
-         'subitem'   => $this
+            'item'      => $options['parent'],
+            'subitem'   => $this
         ]);
     }
 
@@ -850,12 +853,15 @@ class ITILFollowup extends CommonDBChild
 
         $values[self::ADDGROUPTICKET]
                                  = ['short' => __('Add followup (associated groups)'),
-                                         'long'  => __('Add a followup to tickets of associated groups')];
+                                     'long'  => __('Add a followup to tickets of associated groups')
+                                 ];
         $values[self::UPDATEMY]    = __('Update followups (author)');
         $values[self::ADDMYTICKET] = ['short' => __('Add followup (requester)'),
-                                         'long'  => __('Add a followup to tickets (requester)')];
+            'long'  => __('Add a followup to tickets (requester)')
+        ];
         $values[self::ADD_AS_OBSERVER] = ['short' => __('Add followup (watcher)'),
-                                         'long'  => __('Add a followup to tickets (watcher)')];
+            'long'  => __('Add a followup to tickets (watcher)')
+        ];
         $values[self::SEEPUBLIC]   = __('See public ones');
 
         if ($interface == 'helpdesk') {
@@ -875,8 +881,8 @@ class ITILFollowup extends CommonDBChild
         echo "<td>";
         RequestType::dropdown(
             [
-            'value' => RequestType::getDefault('followup'),
-            'condition' => ['is_active' => 1, 'is_itilfollowup' => 1]
+                'value' => RequestType::getDefault('followup'),
+                'condition' => ['is_active' => 1, 'is_itilfollowup' => 1]
             ]
         );
         echo "</td>";
@@ -925,11 +931,11 @@ class ITILFollowup extends CommonDBChild
                             $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                         } else {
                             $input2 = [
-                            'items_id'        => $id,
-                            'itemtype'        => $item->getType(),
-                            'is_private'      => $input['is_private'],
-                            'requesttypes_id' => $input['requesttypes_id'],
-                            'content'         => $input['content']
+                                'items_id'        => $id,
+                                'itemtype'        => $item->getType(),
+                                'is_private'      => $input['is_private'],
+                                'requesttypes_id' => $input['requesttypes_id'],
+                                'content'         => $input['content']
                             ];
                             if ($fup->can(-1, CREATE, $input2)) {
                                 if ($fup->add($input2)) {
@@ -1062,18 +1068,18 @@ class ITILFollowup extends CommonDBChild
            // requester depending on how GLPI is used so we must check the user's
            // profiles
             $central_profiles = $DB->request([
-            'COUNT' => 'total',
-            'FROM' => Profile::getTable(),
-            'WHERE' => [
-               'interface' => 'central',
-               'id' => new QuerySubQuery([
-                  'SELECT' => ['profiles_id'],
-                  'FROM' => Profile_User::getTable(),
-                  'WHERE' => [
-                     'users_id' => $user_id
-                  ]
-               ])
-            ]
+                'COUNT' => 'total',
+                'FROM' => Profile::getTable(),
+                'WHERE' => [
+                    'interface' => 'central',
+                    'id' => new QuerySubQuery([
+                        'SELECT' => ['profiles_id'],
+                        'FROM' => Profile_User::getTable(),
+                        'WHERE' => [
+                            'users_id' => $user_id
+                        ]
+                    ])
+                ]
             ]);
 
            // No profiles, let's assume it is a support agent to be safe

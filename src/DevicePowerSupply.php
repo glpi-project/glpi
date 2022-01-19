@@ -48,14 +48,18 @@ class DevicePowerSupply extends CommonDevice
         return array_merge(
             parent::getAdditionalFields(),
             [['name'  => 'is_atx',
-                                     'label' => __('ATX'),
-                                     'type'  => 'bool'],
-                               ['name'  => 'power',
-                                     'label' => __('Power'),
-                                     'type'  => 'text'],
-                               ['name'  => 'devicepowersupplymodels_id',
-                                     'label' => _n('Model', 'Models', 1),
-            'type'  => 'dropdownValue']]
+                'label' => __('ATX'),
+                'type'  => 'bool'
+            ],
+                ['name'  => 'power',
+                    'label' => __('Power'),
+                    'type'  => 'text'
+                ],
+                ['name'  => 'devicepowersupplymodels_id',
+                    'label' => _n('Model', 'Models', 1),
+                    'type'  => 'dropdownValue'
+                ]
+            ]
         );
     }
 
@@ -65,27 +69,27 @@ class DevicePowerSupply extends CommonDevice
         $tab = parent::rawSearchOptions();
 
         $tab[] = [
-         'id'                 => '11',
-         'table'              => $this->getTable(),
-         'field'              => 'is_atx',
-         'name'               => __('ATX'),
-         'datatype'           => 'bool'
+            'id'                 => '11',
+            'table'              => $this->getTable(),
+            'field'              => 'is_atx',
+            'name'               => __('ATX'),
+            'datatype'           => 'bool'
         ];
 
         $tab[] = [
-         'id'                 => '12',
-         'table'              => $this->getTable(),
-         'field'              => 'power',
-         'name'               => __('Power'),
-         'datatype'           => 'string',
+            'id'                 => '12',
+            'table'              => $this->getTable(),
+            'field'              => 'power',
+            'name'               => __('Power'),
+            'datatype'           => 'string',
         ];
 
         $tab[] = [
-         'id'                 => '13',
-         'table'              => 'glpi_devicepowersupplymodels',
-         'field'              => 'name',
-         'name'               => _n('Model', 'Models', 1),
-         'datatype'           => 'dropdown'
+            'id'                 => '13',
+            'table'              => 'glpi_devicepowersupplymodels',
+            'field'              => 'name',
+            'name'               => _n('Model', 'Models', 1),
+            'datatype'           => 'dropdown'
         ];
 
         return $tab;
@@ -138,20 +142,20 @@ class DevicePowerSupply extends CommonDevice
         $tab = [];
 
         $tab[] = [
-         'id'                 => '39',
-         'table'              => 'glpi_devicepowersupplies',
-         'field'              => 'designation',
-         'name'               => static::getTypeName(1),
-         'forcegroupby'       => true,
-         'usehaving'          => true,
-         'massiveaction'      => false,
-         'datatype'           => 'string',
-         'joinparams'         => [
-            'beforejoin'         => [
-               'table'              => 'glpi_items_devicepowersupplies',
-               'joinparams'         => $main_joinparams
+            'id'                 => '39',
+            'table'              => 'glpi_devicepowersupplies',
+            'field'              => 'designation',
+            'name'               => static::getTypeName(1),
+            'forcegroupby'       => true,
+            'usehaving'          => true,
+            'massiveaction'      => false,
+            'datatype'           => 'string',
+            'joinparams'         => [
+                'beforejoin'         => [
+                    'table'              => 'glpi_items_devicepowersupplies',
+                    'joinparams'         => $main_joinparams
+                ]
             ]
-         ]
         ];
 
         return $tab;

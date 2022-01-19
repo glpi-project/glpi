@@ -40,22 +40,22 @@ class LocationParameters extends AbstractParameters
         $test_entity_id = getItemByTypeName('Entity', '_test_child_2', true);
 
         $this->createItem('Location', [
-         'name'        => 'location_testGetValues_parent',
-         'entities_id' => $test_entity_id,
+            'name'        => 'location_testGetValues_parent',
+            'entities_id' => $test_entity_id,
         ]);
 
         $this->createItem('Location', [
-         'name'        => 'location_testGetValues',
-         'entities_id' => $test_entity_id,
-         'locations_id' => getItemByTypeName('Location', 'location_testGetValues_parent', true)
+            'name'        => 'location_testGetValues',
+            'entities_id' => $test_entity_id,
+            'locations_id' => getItemByTypeName('Location', 'location_testGetValues_parent', true)
         ]);
 
         $parameters = $this->newTestedInstance();
         $values = $parameters->getValues(getItemByTypeName('Location', 'location_testGetValues'));
         $this->array($values)->isEqualTo([
-         'id'   => getItemByTypeName('Location', 'location_testGetValues', true),
-         'name' => 'location_testGetValues',
-         'completename' => 'location_testGetValues_parent > location_testGetValues',
+            'id'   => getItemByTypeName('Location', 'location_testGetValues', true),
+            'name' => 'location_testGetValues',
+            'completename' => 'location_testGetValues_parent > location_testGetValues',
         ]);
 
         $this->testGetAvailableParameters($values, $parameters->getAvailableParameters());

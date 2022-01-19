@@ -79,19 +79,19 @@ class Printer extends NetworkEquipment
         $rulecollection = new RuleDictionnaryPrinterCollection();
 
         $mapping_pcounter = [
-         'total'        => 'total_pages',
-         'black'        => 'bw_pages',
-         'color'        => 'color_pages',
-         'duplex'       => 'rv_pages', //keep first, rectoverso is the standard and should be used if present
-         'rectoverso'   => 'rv_pages',
-         'scanned'      => 'scanned',
-         'printtotal'   => 'prints',
-         'printblack'   => 'bw_prints',
-         'printcolor'   => 'color_prints',
-         'copytotal'    => 'copies',
-         'copyblack'    => 'bw_copies',
-         'copycolor'    => 'color_copies',
-         'faxtotal'     => 'faxed',
+            'total'        => 'total_pages',
+            'black'        => 'bw_pages',
+            'color'        => 'color_pages',
+            'duplex'       => 'rv_pages', //keep first, rectoverso is the standard and should be used if present
+            'rectoverso'   => 'rv_pages',
+            'scanned'      => 'scanned',
+            'printtotal'   => 'prints',
+            'printblack'   => 'bw_prints',
+            'printcolor'   => 'color_prints',
+            'copytotal'    => 'copies',
+            'copyblack'    => 'bw_copies',
+            'copycolor'    => 'color_copies',
+            'faxtotal'     => 'faxed',
         ];
 
         foreach ($this->data as $k => &$val) {
@@ -189,10 +189,10 @@ class Printer extends NetworkEquipment
 
         foreach ($this->data as $key => $val) {
             $input = [
-            'itemtype'     => "Printer",
-            'name'         => $val->name,
-            'serial'       => $val->serial ?? '',
-            'is_dynamic'   => 1
+                'itemtype'     => "Printer",
+                'name'         => $val->name,
+                'serial'       => $val->serial ?? '',
+                'is_dynamic'   => 1
             ];
             $data = $rule->processAllRules($input, [], ['class' => $this, 'return' => true]);
             if (isset($data['found_inventories'])) {
@@ -214,12 +214,12 @@ class Printer extends NetworkEquipment
                     $agents_id = 0;
                 }
                 $inputrulelog = [
-                'date'      => date('Y-m-d H:i:s'),
-                'rules_id'  => $data['rules_id'],
-                'items_id'  => $items_id,
-                'itemtype'  => $itemtype,
-                'agents_id' => $agents_id,
-                'method'    => 'inventory'
+                    'date'      => date('Y-m-d H:i:s'),
+                    'rules_id'  => $data['rules_id'],
+                    'items_id'  => $items_id,
+                    'itemtype'  => $itemtype,
+                    'agents_id' => $agents_id,
+                    'method'    => 'inventory'
                 ];
                 $rulesmatched->add($inputrulelog, [], false);
                 $rulesmatched->cleanOlddata(end($printers), 'Printer');
@@ -227,26 +227,26 @@ class Printer extends NetworkEquipment
         }
         $db_printers = [];
         $iterator = $DB->request([
-         'SELECT'    => [
-            'glpi_printers.id',
-            'glpi_computers_items.id AS link_id'
-         ],
-         'FROM'      => 'glpi_computers_items',
-         'LEFT JOIN' => [
-            'glpi_printers' => [
-               'FKEY' => [
-                  'glpi_printers'         => 'id',
-                  'glpi_computers_items'  => 'items_id'
-               ]
+            'SELECT'    => [
+                'glpi_printers.id',
+                'glpi_computers_items.id AS link_id'
+            ],
+            'FROM'      => 'glpi_computers_items',
+            'LEFT JOIN' => [
+                'glpi_printers' => [
+                    'FKEY' => [
+                        'glpi_printers'         => 'id',
+                        'glpi_computers_items'  => 'items_id'
+                    ]
+                ]
+            ],
+            'WHERE'     => [
+                'itemtype'                          => 'Printer',
+                'computers_id'                      => $this->item->fields['id'],
+                'entities_id'                       => $entities_id,
+                'glpi_computers_items.is_dynamic'   => 1,
+                'glpi_printers.is_global'           => 0
             ]
-         ],
-         'WHERE'     => [
-            'itemtype'                          => 'Printer',
-            'computers_id'                      => $this->item->fields['id'],
-            'entities_id'                       => $entities_id,
-            'glpi_computers_items.is_dynamic'   => 1,
-            'glpi_printers.is_global'           => 0
-         ]
         ]);
 
         foreach ($iterator as $data) {
@@ -274,11 +274,11 @@ class Printer extends NetworkEquipment
 
         foreach ($printers as $printers_id) {
             $input = [
-            'entities_id'  => $entities_id,
-            'computers_id' => $this->item->fields['id'],
-            'itemtype'     => 'Printer',
-            'items_id'     => $printers_id,
-            'is_dynamic'   => 1
+                'entities_id'  => $entities_id,
+                'computers_id' => $this->item->fields['id'],
+                'itemtype'     => 'Printer',
+                'items_id'     => $printers_id,
+                'is_dynamic'   => 1
             ];
             $this->addOrMoveItem($input);
         }

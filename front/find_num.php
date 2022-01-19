@@ -96,25 +96,26 @@ if (isset($_POST["send"])) {
     echo " </tr>";
 
     $types = ['Computer'         => Computer::getTypeName(1),
-                  'NetworkEquipment' => NetworkEquipment::getTypeName(1),
-                  'Printer'          => Printer::getTypeName(1),
-                  'Monitor'          => Monitor::getTypeName(1),
-                  'Peripheral'       => Peripheral::getTypeName(1)];
+        'NetworkEquipment' => NetworkEquipment::getTypeName(1),
+        'Printer'          => Printer::getTypeName(1),
+        'Monitor'          => Monitor::getTypeName(1),
+        'Peripheral'       => Peripheral::getTypeName(1)
+    ];
     foreach ($types as $type => $label) {
         $iterator = $DB->request([
-         'SELECT' => ['name', 'id', 'contact', 'serial', 'otherserial'],
-         'FROM'   => getTableForItemType($type),
-         'WHERE'  => [
-            'is_template'  => 0,
-            'is_deleted'   => 0,
-            'OR'           => [
-               'contact'      => ['LIKE', '%' . $_POST['NomContact'] . '%'],
-               'name'         => ['LIKE', '%' . $_POST['NomContact'] . '%'],
-               'serial'       => ['LIKE', '%' . $_POST['NomContact'] . '%'],
-               'otherserial'  => ['LIKE', '%' . $_POST['NomContact'] . '%'],
-            ]
-         ],
-         'ORDER'           => ['name']
+            'SELECT' => ['name', 'id', 'contact', 'serial', 'otherserial'],
+            'FROM'   => getTableForItemType($type),
+            'WHERE'  => [
+                'is_template'  => 0,
+                'is_deleted'   => 0,
+                'OR'           => [
+                    'contact'      => ['LIKE', '%' . $_POST['NomContact'] . '%'],
+                    'name'         => ['LIKE', '%' . $_POST['NomContact'] . '%'],
+                    'serial'       => ['LIKE', '%' . $_POST['NomContact'] . '%'],
+                    'otherserial'  => ['LIKE', '%' . $_POST['NomContact'] . '%'],
+                ]
+            ],
+            'ORDER'           => ['name']
         ]);
 
         foreach ($iterator as $ligne) {
@@ -136,14 +137,14 @@ if (isset($_POST["send"])) {
     }
 
     $iterator = $DB->request([
-      'SELECT' => ['name', 'id'],
-      'FROM'   => 'glpi_softwares',
-      'WHERE'  => [
-         'is_template'  => 0,
-         'is_deleted'   => 0,
-         'name'         => ['LIKE', "%{$_POST['NomContact']}%"]
-      ],
-      'ORDER'  => ['name']
+        'SELECT' => ['name', 'id'],
+        'FROM'   => 'glpi_softwares',
+        'WHERE'  => [
+            'is_template'  => 0,
+            'is_deleted'   => 0,
+            'name'         => ['LIKE', "%{$_POST['NomContact']}%"]
+        ],
+        'ORDER'  => ['name']
     ]);
 
     foreach ($iterator as $ligne) {

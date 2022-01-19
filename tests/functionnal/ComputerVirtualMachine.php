@@ -51,11 +51,11 @@ class ComputerVirtualMachine extends DbTestCase
 
         $this->integer(
             $id = (int)$obj->add([
-            'computers_id' => $computer->fields['id'],
-            'name'         => 'Virtu Hall',
-            'uuid'         => $uuid,
-            'vcpu'         => 1,
-            'ram'          => 1024
+                'computers_id' => $computer->fields['id'],
+                'name'         => 'Virtu Hall',
+                'uuid'         => $uuid,
+                'vcpu'         => 1,
+                'ram'          => 1024
             ])
         )->isGreaterThan(0);
         $this->boolean($obj->getFromDB($id))->isTrue();
@@ -67,9 +67,9 @@ class ComputerVirtualMachine extends DbTestCase
 
         $this->integer(
             $cid = (int)$computer->add([
-            'name'         => 'Virtu Hall',
-            'uuid'         => $uuid,
-            'entities_id'  => 0
+                'name'         => 'Virtu Hall',
+                'uuid'         => $uuid,
+                'entities_id'  => 0
             ])
         )->isGreaterThan(0);
 

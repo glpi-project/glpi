@@ -109,9 +109,9 @@ if (isset($_POST["add"])) {
     }
     Html::header(Item_RemoteManagement::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "assets", $itemtype);
     $mgmt->display([
-      'id'        => $_GET["id"],
-      'items_id'  => $_GET["items_id"],
-      'itemtype'  => $_GET['itemtype']
+        'id'        => $_GET["id"],
+        'items_id'  => $_GET["items_id"],
+        'itemtype'  => $_GET['itemtype']
     ]);
     Html::footer();
 }

@@ -214,16 +214,18 @@ class MassiveAction
                         }
 
                         $remove_from_post = ['items', 'action', 'action_name', 'processor',
-                                            'massiveaction', 'is_deleted', 'initial_items'];
+                            'massiveaction', 'is_deleted', 'initial_items'
+                        ];
 
                         $this->identifier  = mt_rand();
                         $this->done        = [];
                         $this->nb_done     = 0;
                         $this->action_name = $POST['action_name'];
                         $this->results     = ['ok'      => 0,
-                                             'ko'      => 0,
-                                             'noright' => 0,
-                                             'messages' => []];
+                            'ko'      => 0,
+                            'noright' => 0,
+                            'messages' => []
+                        ];
                         foreach ($POST['items'] as $itemtype => $ids) {
                             $this->nb_items += count($ids);
                         }
@@ -412,7 +414,8 @@ class MassiveAction
             $this->hidden_fields_defined = true;
 
             $common_fields = ['action', 'processor', 'is_deleted', 'initial_items',
-                                'item_itemtype', 'item_items_id', 'items', 'action_name'];
+                'item_itemtype', 'item_items_id', 'items', 'action_name'
+            ];
 
             if (!empty($this->POST['massive_action_fields'])) {
                 $common_fields = array_merge($common_fields, $this->POST['massive_action_fields']);
@@ -706,8 +709,8 @@ class MassiveAction
     public function showDefaultSubForm()
     {
         echo Html::submit("<i class='fas fa-save'></i><span>" . _x('button', 'Post') . "</span>", [
-         'name'  => 'massiveaction',
-         'class' => 'btn btn-sm btn-primary',
+            'name'  => 'massiveaction',
+            'class' => 'btn btn-sm btn-primary',
         ]);
     }
 
@@ -922,7 +925,8 @@ class MassiveAction
 
                     if (Infocom::canApplyOn($itemtype)) {
                         Session::checkSeveralRightsOr([$itemtype  => UPDATE,
-                                                     "infocom"  => UPDATE]);
+                            "infocom"  => UPDATE
+                        ]);
                     } else {
                         $item->checkGlobal(UPDATE);
                     }
@@ -954,7 +958,8 @@ class MassiveAction
                         $plug['plugin'],
                         'MassiveActionsFieldsDisplay',
                         ['itemtype' => $item->getType(),
-                        'options'  => $item->search]
+                            'options'  => $item->search
+                        ]
                     );
                 }
 
@@ -995,8 +1000,8 @@ class MassiveAction
                     $submitname = stripslashes($ma->POST['submitname']);
                 }
                 echo Html::submit($submitname, [
-                'name'  => 'massiveaction',
-                'class' => 'btn btn-sm btn-primary',
+                    'name'  => 'massiveaction',
+                    'class' => 'btn btn-sm btn-primary',
                 ]);
 
                 return true;
@@ -1009,10 +1014,10 @@ class MassiveAction
                 echo __('How many copies do you want to create?');
                 echo "</td><tr>";
                 echo "<td>" . Html::input("nb_copy", [
-                'id'     => "nb_copy$rand",
-                'value'  => 1,
-                'type'   => 'number',
-                'min'    => 1
+                    'id'     => "nb_copy$rand",
+                    'value'  => 1,
+                    'type'   => 'number',
+                    'min'    => 1
                 ]);
                 echo "</td>";
                 echo "</tr></table>";
@@ -1024,8 +1029,8 @@ class MassiveAction
                       $submitname = stripslashes($ma->POST['submitname']);
                 }
                 echo Html::submit($submitname, [
-                'name'  => 'massiveaction',
-                'class' => 'btn btn-sm btn-primary',
+                    'name'  => 'massiveaction',
+                    'class' => 'btn btn-sm btn-primary',
                 ]);
 
                 return true;
@@ -1038,8 +1043,8 @@ class MassiveAction
                 );
                 echo "<br><br>";
                 echo Html::submit("<i class='fas fa-plus'></i><span>" . _x('button', 'Add') . "</span>", [
-                 'name'  => 'massiveaction',
-                 'class' => 'btn btn-sm btn-primary',
+                    'name'  => 'massiveaction',
+                    'class' => 'btn btn-sm btn-primary',
                 ]);
 
                 return true;
@@ -1048,12 +1053,12 @@ class MassiveAction
                 echo __("Amendment to insert");
                 echo ("<br><br>");
                 Html::textarea([
-                'name' => 'amendment'
+                    'name' => 'amendment'
                 ]);
                 echo ("<br><br>");
                 echo Html::submit("<i class='fas fa-save'></i><span>" . __('Update') . "</span>", [
-                 'name'  => 'massiveaction',
-                 'class' => 'btn btn-sm btn-primary',
+                    'name'  => 'massiveaction',
+                    'class' => 'btn btn-sm btn-primary',
                 ]);
 
                 return true;
@@ -1062,12 +1067,12 @@ class MassiveAction
                 echo __("New Note");
                 echo ("<br><br>");
                 Html::textarea([
-                'name' => 'add_note'
+                    'name' => 'add_note'
                 ]);
                 echo ("<br><br>");
                 echo Html::submit("<i class='fas fa-plus'></i><span>" . _sx('button', 'Add') . "</span>", [
-                 'name'  => 'massiveaction',
-                 'class' => 'btn btn-sm btn-primary',
+                    'name'  => 'massiveaction',
+                    'class' => 'btn btn-sm btn-primary',
                 ]);
 
                 return true;
@@ -1094,7 +1099,8 @@ class MassiveAction
         if ($this->display_progress_bars) {
             if (!isset($this->progress_bar_displayed)) {
                 Html::progressBar('main_' . $this->identifier, ['create'  => true,
-                                                               'message' => $this->action_name]);
+                    'message' => $this->action_name
+                ]);
                 $this->progress_bar_displayed         = true;
                 $this->fields_to_remove_when_reload[] = 'progress_bar_displayed';
                 if (count($this->items) > 1) {
@@ -1115,7 +1121,8 @@ class MassiveAction
                     Html::progressBar(
                         'itemtype_' . $this->identifier,
                         ['message' => $itemtype::getTypeName(Session::getPluralNumber()),
-                        'percent' => $percent]
+                            'percent' => $percent
+                        ]
                     );
                 }
             }
@@ -1302,8 +1309,8 @@ class MassiveAction
                                     ))
                                 ) {
                                     $input2 = [
-                                    'items_id'  => $key,
-                                    'itemtype'  => $item->getType()
+                                        'items_id'  => $key,
+                                        'itemtype'  => $item->getType()
                                     ];
 
                                     if ($ic->can(-1, CREATE, $input2)) {
@@ -1319,7 +1326,8 @@ class MassiveAction
                                         unset($ic->fields);
                                         if (
                                             $ic->update(['id'            => $id,
-                                                   $input["field"] => $input[$input["field"]]])
+                                                $input["field"] => $input[$input["field"]]
+                                            ])
                                         ) {
                                             $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_OK);
                                         } else {
@@ -1386,7 +1394,8 @@ class MassiveAction
                                 ) {
                                     if (
                                         $item->update(['id'            => $key,
-                                                   $input["field"] => $input[$input["field"]]])
+                                            $input["field"] => $input[$input["field"]]
+                                        ])
                                     ) {
                                         $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_OK);
                                     } else {
@@ -1484,8 +1493,8 @@ class MassiveAction
 
                    // Update the comment
                     $success = $item->update([
-                    'id'      => $id,
-                    'comment' => $comment
+                        'id'      => $id,
+                        'comment' => $comment
                     ]);
 
                     if (!$success) {
@@ -1512,11 +1521,11 @@ class MassiveAction
 
                 foreach ($ids as $id) {
                     $success = $em->add([
-                    'itemtype'             => $item::getType(),
-                    'items_id'             => $id,
-                    'content'              => $content,
-                    'users_id'             => Session::getLoginUserID(),
-                    'users_id_lastupdater' => Session::getLoginUserID(),
+                        'itemtype'             => $item::getType(),
+                        'items_id'             => $id,
+                        'content'              => $content,
+                        'users_id'             => Session::getLoginUserID(),
+                        'users_id_lastupdater' => Session::getLoginUserID(),
                     ]);
 
                     if (!$success) {

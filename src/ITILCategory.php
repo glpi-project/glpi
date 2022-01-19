@@ -46,68 +46,83 @@ class ITILCategory extends CommonTreeDropdown
     {
 
         $tab = [['name'      => $this->getForeignKeyField(),
-                         'label'     => __('As child of'),
-                         'type'      => 'parent',
-                         'list'      => false],
-                   ['name'      => 'users_id',
-                         'label'     => __('Technician in charge of the hardware'),
-                         'type'      => 'UserDropdown',
-                         'right'     => 'own_ticket',
-                         'list'      => true],
-                   ['name'      => 'groups_id',
-                         'label'     => __('Group in charge of the hardware'),
-                         'type'      => 'dropdownValue',
-                         'condition' => ['is_assign' => 1],
-                         'list'      => true],
-                   ['name'      => 'knowbaseitemcategories_id',
-                         'label'     => __('Knowledge base'),
-                         'type'      => 'dropdownValue',
-                         'list'      => true],
-                   ['name'      => 'code',
-                         'label'     => __('Code representing the ticket category'),
-                         'type'      => 'text',
-                         'list'      => false],
-                   ['name'      => 'is_helpdeskvisible',
-                         'label'     => __('Visible in the simplified interface'),
-                         'type'      => 'bool',
-                         'list'      => true],
-                   ['name'      => 'is_incident',
-                         'label'     => __('Visible for an incident'),
-                         'type'      => 'bool',
-                         'list'      => true],
-                   ['name'      => 'is_request',
-                         'label'     => __('Visible for a request'),
-                         'type'      => 'bool',
-                         'list'      => true],
-                   ['name'      => 'is_problem',
-                         'label'     => __('Visible for a problem'),
-                         'type'      => 'bool',
-                         'list'      => true],
-                   ['name'      => 'is_change',
-                         'label'     => __('Visible for a change'),
-                         'type'      => 'bool',
-                         'list'      => true],
-                   ['name'      => 'tickettemplates_id_demand',
-                         'label'     => __('Template for a request'),
-                         'type'      => 'dropdownValue',
-                         'list'      => true],
-                   ['name'      => 'tickettemplates_id_incident',
-                         'label'     => __('Template for an incident'),
-                         'type'      => 'dropdownValue',
-                         'list'      => true],
-                   ['name'      => 'changetemplates_id',
-                         'label'     => __('Template for a change'),
-                         'type'      => 'dropdownValue',
-                         'list'      => true],
-                   ['name'      => 'problemtemplates_id',
-                         'label'     => __('Template for a problem'),
-                         'type'      => 'dropdownValue',
-                         'list'      => true],
-                  ];
+            'label'     => __('As child of'),
+            'type'      => 'parent',
+            'list'      => false
+        ],
+            ['name'      => 'users_id',
+                'label'     => __('Technician in charge of the hardware'),
+                'type'      => 'UserDropdown',
+                'right'     => 'own_ticket',
+                'list'      => true
+            ],
+            ['name'      => 'groups_id',
+                'label'     => __('Group in charge of the hardware'),
+                'type'      => 'dropdownValue',
+                'condition' => ['is_assign' => 1],
+                'list'      => true
+            ],
+            ['name'      => 'knowbaseitemcategories_id',
+                'label'     => __('Knowledge base'),
+                'type'      => 'dropdownValue',
+                'list'      => true
+            ],
+            ['name'      => 'code',
+                'label'     => __('Code representing the ticket category'),
+                'type'      => 'text',
+                'list'      => false
+            ],
+            ['name'      => 'is_helpdeskvisible',
+                'label'     => __('Visible in the simplified interface'),
+                'type'      => 'bool',
+                'list'      => true
+            ],
+            ['name'      => 'is_incident',
+                'label'     => __('Visible for an incident'),
+                'type'      => 'bool',
+                'list'      => true
+            ],
+            ['name'      => 'is_request',
+                'label'     => __('Visible for a request'),
+                'type'      => 'bool',
+                'list'      => true
+            ],
+            ['name'      => 'is_problem',
+                'label'     => __('Visible for a problem'),
+                'type'      => 'bool',
+                'list'      => true
+            ],
+            ['name'      => 'is_change',
+                'label'     => __('Visible for a change'),
+                'type'      => 'bool',
+                'list'      => true
+            ],
+            ['name'      => 'tickettemplates_id_demand',
+                'label'     => __('Template for a request'),
+                'type'      => 'dropdownValue',
+                'list'      => true
+            ],
+            ['name'      => 'tickettemplates_id_incident',
+                'label'     => __('Template for an incident'),
+                'type'      => 'dropdownValue',
+                'list'      => true
+            ],
+            ['name'      => 'changetemplates_id',
+                'label'     => __('Template for a change'),
+                'type'      => 'dropdownValue',
+                'list'      => true
+            ],
+            ['name'      => 'problemtemplates_id',
+                'label'     => __('Template for a problem'),
+                'type'      => 'dropdownValue',
+                'list'      => true
+            ],
+        ];
 
         if (
             !Session::haveRightsOr('problem', [CREATE, UPDATE, DELETE,
-                                                  Problem::READALL, Problem::READMY])
+                Problem::READALL, Problem::READMY
+            ])
         ) {
             unset($tab[7]);
         }
@@ -120,152 +135,152 @@ class ITILCategory extends CommonTreeDropdown
         $tab                       = parent::rawSearchOptions();
 
         $tab[] = [
-         'id'                 => '70',
-         'table'              => 'glpi_users',
-         'field'              => 'name',
-         'name'               => __('Technician in charge of the hardware'),
-         'datatype'           => 'dropdown',
-         'right'              => 'own_ticket'
+            'id'                 => '70',
+            'table'              => 'glpi_users',
+            'field'              => 'name',
+            'name'               => __('Technician in charge of the hardware'),
+            'datatype'           => 'dropdown',
+            'right'              => 'own_ticket'
         ];
 
         $tab[] = [
-         'id'                 => '71',
-         'table'              => 'glpi_groups',
-         'field'              => 'completename',
-         'name'               => Group::getTypeName(1),
-         'datatype'           => 'dropdown'
+            'id'                 => '71',
+            'table'              => 'glpi_groups',
+            'field'              => 'completename',
+            'name'               => Group::getTypeName(1),
+            'datatype'           => 'dropdown'
         ];
 
         $tab[] = [
-         'id'                 => '72',
-         'table'              => TicketTemplate::getTable(),
-         'field'              => 'name',
-         'linkfield'          => 'tickettemplates_id_demand',
-         'name'               => __('Template for a request'),
-         'datatype'           => 'dropdown'
+            'id'                 => '72',
+            'table'              => TicketTemplate::getTable(),
+            'field'              => 'name',
+            'linkfield'          => 'tickettemplates_id_demand',
+            'name'               => __('Template for a request'),
+            'datatype'           => 'dropdown'
         ];
 
         $tab[] = [
-         'id'                 => '73',
-         'table'              => TicketTemplate::getTable(),
-         'field'              => 'name',
-         'linkfield'          => 'tickettemplates_id_incident',
-         'name'               => __('Template for an incident'),
-         'datatype'           => 'dropdown'
+            'id'                 => '73',
+            'table'              => TicketTemplate::getTable(),
+            'field'              => 'name',
+            'linkfield'          => 'tickettemplates_id_incident',
+            'name'               => __('Template for an incident'),
+            'datatype'           => 'dropdown'
         ];
 
         $tab[] = [
-         'id'                 => '100',
-         'table'              => ChangeTemplate::getTable(),
-         'field'              => 'name',
-         'linkfield'          => 'changetemplates_id',
-         'name'               => __('Template for a change'),
-         'datatype'           => 'dropdown'
+            'id'                 => '100',
+            'table'              => ChangeTemplate::getTable(),
+            'field'              => 'name',
+            'linkfield'          => 'changetemplates_id',
+            'name'               => __('Template for a change'),
+            'datatype'           => 'dropdown'
         ];
 
         $tab[] = [
-         'id'                 => '101',
-         'table'              => ProblemTemplate::getTable(),
-         'field'              => 'name',
-         'linkfield'          => 'problemtemplates_id',
-         'name'               => __('Template for a problem'),
-         'datatype'           => 'dropdown'
+            'id'                 => '101',
+            'table'              => ProblemTemplate::getTable(),
+            'field'              => 'name',
+            'linkfield'          => 'problemtemplates_id',
+            'name'               => __('Template for a problem'),
+            'datatype'           => 'dropdown'
         ];
 
         $tab[] = [
-         'id'                 => '74',
-         'table'              => $this->getTable(),
-         'field'              => 'is_incident',
-         'name'               => __('Visible for an incident'),
-         'datatype'           => 'bool'
+            'id'                 => '74',
+            'table'              => $this->getTable(),
+            'field'              => 'is_incident',
+            'name'               => __('Visible for an incident'),
+            'datatype'           => 'bool'
         ];
 
         $tab[] = [
-         'id'                 => '75',
-         'table'              => $this->getTable(),
-         'field'              => 'is_request',
-         'name'               => __('Visible for a request'),
-         'datatype'           => 'bool'
+            'id'                 => '75',
+            'table'              => $this->getTable(),
+            'field'              => 'is_request',
+            'name'               => __('Visible for a request'),
+            'datatype'           => 'bool'
         ];
 
         $tab[] = [
-         'id'                 => '76',
-         'table'              => $this->getTable(),
-         'field'              => 'is_problem',
-         'name'               => __('Visible for a problem'),
-         'datatype'           => 'bool'
+            'id'                 => '76',
+            'table'              => $this->getTable(),
+            'field'              => 'is_problem',
+            'name'               => __('Visible for a problem'),
+            'datatype'           => 'bool'
         ];
 
         $tab[] = [
-         'id'                 => '85',
-         'table'              => $this->getTable(),
-         'field'              => 'is_change',
-         'name'               => __('Visible for a change'),
-         'datatype'           => 'bool'
+            'id'                 => '85',
+            'table'              => $this->getTable(),
+            'field'              => 'is_change',
+            'name'               => __('Visible for a change'),
+            'datatype'           => 'bool'
         ];
 
         $tab[] = [
-         'id'                 => '3',
-         'table'              => $this->getTable(),
-         'field'              => 'is_helpdeskvisible',
-         'name'               => __('Visible in the simplified interface'),
-         'datatype'           => 'bool'
+            'id'                 => '3',
+            'table'              => $this->getTable(),
+            'field'              => 'is_helpdeskvisible',
+            'name'               => __('Visible in the simplified interface'),
+            'datatype'           => 'bool'
         ];
 
         $tab[] = [
-         'id'                 => '77',
-         'table'              => 'glpi_tickets',
-         'field'              => 'id',
-         'name'               => _x('quantity', 'Number of tickets'),
-         'datatype'           => 'count',
-         'forcegroupby'       => true,
-         'massiveaction'      => false,
-         'joinparams'         => [
-            'jointype'           => 'child'
-         ]
+            'id'                 => '77',
+            'table'              => 'glpi_tickets',
+            'field'              => 'id',
+            'name'               => _x('quantity', 'Number of tickets'),
+            'datatype'           => 'count',
+            'forcegroupby'       => true,
+            'massiveaction'      => false,
+            'joinparams'         => [
+                'jointype'           => 'child'
+            ]
         ];
 
         $tab[] = [
-         'id'                 => '78',
-         'table'              => 'glpi_problems',
-         'field'              => 'id',
-         'name'               => _x('quantity', 'Number of problems'),
-         'datatype'           => 'count',
-         'forcegroupby'       => true,
-         'massiveaction'      => false,
-         'joinparams'         => [
-            'jointype'           => 'child'
-         ]
+            'id'                 => '78',
+            'table'              => 'glpi_problems',
+            'field'              => 'id',
+            'name'               => _x('quantity', 'Number of problems'),
+            'datatype'           => 'count',
+            'forcegroupby'       => true,
+            'massiveaction'      => false,
+            'joinparams'         => [
+                'jointype'           => 'child'
+            ]
         ];
 
         $tab[] = [
-         'id'                 => '98',
-         'table'              => 'glpi_changes',
-         'field'              => 'id',
-         'name'               => _x('quantity', 'Number of changes'),
-         'datatype'           => 'count',
-         'forcegroupby'       => true,
-         'massiveaction'      => false,
-         'joinparams'         => [
-            'jointype'           => 'child'
-         ]
+            'id'                 => '98',
+            'table'              => 'glpi_changes',
+            'field'              => 'id',
+            'name'               => _x('quantity', 'Number of changes'),
+            'datatype'           => 'count',
+            'forcegroupby'       => true,
+            'massiveaction'      => false,
+            'joinparams'         => [
+                'jointype'           => 'child'
+            ]
         ];
 
         $tab[] = [
-         'id'                 => '79',
-         'table'              => 'glpi_knowbaseitemcategories',
-         'field'              => 'completename',
-         'name'               => __('Knowledge base'),
-         'datatype'           => 'dropdown'
+            'id'                 => '79',
+            'table'              => 'glpi_knowbaseitemcategories',
+            'field'              => 'completename',
+            'name'               => __('Knowledge base'),
+            'datatype'           => 'dropdown'
         ];
 
         $tab[] = [
-         'id'                 => '99',
-         'table'              => $this->getTable(),
-         'field'              => 'code',
-         'name'               => __('Code representing the ticket category'),
-         'massiveaction'      => false,
-         'datatype'           => 'string'
+            'id'                 => '99',
+            'table'              => $this->getTable(),
+            'field'              => 'code',
+            'name'               => __('Code representing the ticket category'),
+            'massiveaction'      => false,
+            'datatype'           => 'string'
         ];
 
         return $tab;
@@ -315,9 +330,9 @@ class ITILCategory extends CommonTreeDropdown
         global $DB;
 
         $iterator = $DB->request([
-         'SELECT' => 'id',
-         'FROM'   => self::getTable(),
-         'WHERE'  => [$field => $value]
+            'SELECT' => 'id',
+            'FROM'   => self::getTable(),
+            'WHERE'  => [$field => $value]
         ]);
 
         if (count($iterator) == 1) {
@@ -416,16 +431,16 @@ class ITILCategory extends CommonTreeDropdown
         echo "<div class='center'>";
 
         $iterator = $DB->request([
-         'FROM'   => 'glpi_itilcategories',
-         'WHERE'  => [
-            'OR' => [
-               'tickettemplates_id_incident' => $ID,
-               'tickettemplates_id_demand'   => $ID,
-               'changetemplates_id'          => $ID,
-               'problemtemplates_id'         => $ID
-            ]
-         ],
-         'ORDER'  => 'name'
+            'FROM'   => 'glpi_itilcategories',
+            'WHERE'  => [
+                'OR' => [
+                    'tickettemplates_id_incident' => $ID,
+                    'tickettemplates_id_demand'   => $ID,
+                    'changetemplates_id'          => $ID,
+                    'problemtemplates_id'         => $ID
+                ]
+            ],
+            'ORDER'  => 'name'
         ]);
 
         echo "<table class='tab_cadre_fixe'>";

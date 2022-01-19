@@ -58,10 +58,10 @@ class Calendar_Holiday extends DbTestCase
         $holidays = $calendar_holiday->getHolidaysForCalendar($default_calendar_id);
         $this->array($holidays)->isEqualTo(
             [
-            ['begin_date' => '2000-01-01', 'end_date' => '2000-01-01', 'is_perpetual' => 1],
-            ['begin_date' => '2020-04-06', 'end_date' => '2020-04-17', 'is_perpetual' => 0],
-            ['begin_date' => '2020-08-03', 'end_date' => '2020-08-21', 'is_perpetual' => 0],
-            ['begin_date' => '2020-12-21', 'end_date' => '2020-12-25', 'is_perpetual' => 0],
+                ['begin_date' => '2000-01-01', 'end_date' => '2000-01-01', 'is_perpetual' => 1],
+                ['begin_date' => '2020-04-06', 'end_date' => '2020-04-17', 'is_perpetual' => 0],
+                ['begin_date' => '2020-08-03', 'end_date' => '2020-08-21', 'is_perpetual' => 0],
+                ['begin_date' => '2020-12-21', 'end_date' => '2020-12-25', 'is_perpetual' => 0],
             ]
         );
 
@@ -164,76 +164,76 @@ class Calendar_Holiday extends DbTestCase
 
         $holiday_id = (int)$holiday->add(
             [
-            'name'         => 'New Year՛s Day',
-            'entities_id'  => 0,
-            'is_recursive' => 1,
-            'begin_date'   => '2000-01-01',
-            'end_date'     => '2000-01-01',
-            'is_perpetual' => 1,
+                'name'         => 'New Year՛s Day',
+                'entities_id'  => 0,
+                'is_recursive' => 1,
+                'begin_date'   => '2000-01-01',
+                'end_date'     => '2000-01-01',
+                'is_perpetual' => 1,
             ]
         );
         $this->integer($holiday_id)->isGreaterThan(0);
         $calendar_holiday_id = (int)$calendar_holiday->add(
             [
-            'holidays_id'  => $holiday_id,
-            'calendars_id' => $calendar_id,
+                'holidays_id'  => $holiday_id,
+                'calendars_id' => $calendar_id,
             ]
         );
         $this->integer($calendar_holiday_id)->isGreaterThan(0);
 
         $holiday_id = (int)$holiday->add(
             [
-            'name'         => 'Spring holidays',
-            'entities_id'  => 0,
-            'is_recursive' => 1,
-            'begin_date'   => '2020-04-06',
-            'end_date'     => '2020-04-17',
-            'is_perpetual' => 0,
+                'name'         => 'Spring holidays',
+                'entities_id'  => 0,
+                'is_recursive' => 1,
+                'begin_date'   => '2020-04-06',
+                'end_date'     => '2020-04-17',
+                'is_perpetual' => 0,
             ]
         );
         $this->integer($holiday_id)->isGreaterThan(0);
         $calendar_holiday_id = (int)$calendar_holiday->add(
             [
-            'holidays_id'  => $holiday_id,
-            'calendars_id' => $calendar_id,
+                'holidays_id'  => $holiday_id,
+                'calendars_id' => $calendar_id,
             ]
         );
         $this->integer($calendar_holiday_id)->isGreaterThan(0);
 
         $holiday_id = (int)$holiday->add(
             [
-            'name'         => 'Summer holidays',
-            'entities_id'  => 0,
-            'is_recursive' => 1,
-            'begin_date'   => '2020-08-03',
-            'end_date'     => '2020-08-21',
-            'is_perpetual' => 0,
+                'name'         => 'Summer holidays',
+                'entities_id'  => 0,
+                'is_recursive' => 1,
+                'begin_date'   => '2020-08-03',
+                'end_date'     => '2020-08-21',
+                'is_perpetual' => 0,
             ]
         );
         $this->integer($holiday_id)->isGreaterThan(0);
         $calendar_holiday_id = (int)$calendar_holiday->add(
             [
-            'holidays_id'  => $holiday_id,
-            'calendars_id' => $calendar_id,
+                'holidays_id'  => $holiday_id,
+                'calendars_id' => $calendar_id,
             ]
         );
         $this->integer($calendar_holiday_id)->isGreaterThan(0);
 
         $holiday_id = (int)$holiday->add(
             [
-            'name'         => 'Winter holidays',
-            'entities_id'  => 0,
-            'is_recursive' => 1,
-            'begin_date'   => '2020-12-21',
-            'end_date'     => '2020-12-25',
-            'is_perpetual' => 0,
+                'name'         => 'Winter holidays',
+                'entities_id'  => 0,
+                'is_recursive' => 1,
+                'begin_date'   => '2020-12-21',
+                'end_date'     => '2020-12-25',
+                'is_perpetual' => 0,
             ]
         );
         $this->integer($holiday_id)->isGreaterThan(0);
         $calendar_holiday_id = (int)$calendar_holiday->add(
             [
-            'holidays_id'  => $holiday_id,
-            'calendars_id' => $calendar_id,
+                'holidays_id'  => $holiday_id,
+                'calendars_id' => $calendar_id,
             ]
         );
         $this->integer($calendar_holiday_id)->isGreaterThan(0);

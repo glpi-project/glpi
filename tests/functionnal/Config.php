@@ -87,13 +87,13 @@ class Config extends DbTestCase
     public function testDefineTabs()
     {
         $expected = [
-         'Config$1'      => 'General setup',
-         'Config$2'      => 'Default values',
-         'Config$3'      => 'Assets',
-         'Config$4'      => 'Assistance',
-         'Config$12'     => 'Management',
-         'GLPINetwork$1' => 'GLPI Network',
-         'Log$1'         => 'Historical',
+            'Config$1'      => 'General setup',
+            'Config$2'      => 'Default values',
+            'Config$3'      => 'Assets',
+            'Config$4'      => 'Assistance',
+            'Config$12'     => 'Management',
+            'GLPINetwork$1' => 'GLPI Network',
+            'Log$1'         => 'Historical',
         ];
         $this
          ->given($this->newTestedInstance)
@@ -113,19 +113,19 @@ class Config extends DbTestCase
        //check extra tabs from superadmin profile
         $this->login();
         $expected = [
-         'Config$1'      => 'General setup',
-         'Config$2'      => 'Default values',
-         'Config$3'      => 'Assets',
-         'Config$4'      => 'Assistance',
-         'Config$12'     => 'Management',
-         'Config$9'      => 'Logs purge',
-         'Config$5'      => 'System',
-         'Config$10'     => 'Security',
-         'Config$7'      => 'Performance',
-         'Config$8'      => 'API',
-         'Config$11'      => \Impact::getTypeName(),
-         'GLPINetwork$1' => 'GLPI Network',
-         'Log$1'         => 'Historical',
+            'Config$1'      => 'General setup',
+            'Config$2'      => 'Default values',
+            'Config$3'      => 'Assets',
+            'Config$4'      => 'Assistance',
+            'Config$12'     => 'Management',
+            'Config$9'      => 'Logs purge',
+            'Config$5'      => 'System',
+            'Config$10'     => 'Security',
+            'Config$7'      => 'Performance',
+            'Config$8'      => 'API',
+            'Config$11'      => \Impact::getTypeName(),
+            'GLPINetwork$1' => 'GLPI Network',
+            'Log$1'         => 'Historical',
         ];
         $this
          ->given($this->newTestedInstance)
@@ -142,9 +142,9 @@ class Config extends DbTestCase
     public function testUnsetUndisclosedFields()
     {
         $input = [
-         'context'   => 'core',
-         'name'      => 'name',
-         'value'     => 'value'
+            'context'   => 'core',
+            'name'      => 'name',
+            'value'     => 'value'
         ];
         $expected = $input;
 
@@ -152,9 +152,9 @@ class Config extends DbTestCase
         $this->array($input)->isIdenticalTo($expected);
 
         $input = [
-         'context'   => 'core',
-         'name'      => 'proxy_passwd',
-         'value'     => 'value'
+            'context'   => 'core',
+            'name'      => 'proxy_passwd',
+            'value'     => 'value'
         ];
         $expected = $input;
         unset($expected['value']);
@@ -163,9 +163,9 @@ class Config extends DbTestCase
         $this->array($input)->isIdenticalTo($expected);
 
         $input = [
-         'context'   => 'core',
-         'name'      => 'smtp_passwd',
-         'value'     => 'value'
+            'context'   => 'core',
+            'name'      => 'smtp_passwd',
+            'value'     => 'value'
         ];
         $expected = $input;
         unset($expected['value']);
@@ -190,17 +190,17 @@ class Config extends DbTestCase
         $this->boolean(\Config::validatePassword(''))->isFalse();
 
         $expected = [
-         'Password too short!',
-         'Password must include at least a digit!',
-         'Password must include at least a lowercase letter!',
-         'Password must include at least a uppercase letter!',
-         'Password must include at least a symbol!'
+            'Password too short!',
+            'Password must include at least a digit!',
+            'Password must include at least a lowercase letter!',
+            'Password must include at least a uppercase letter!',
+            'Password must include at least a symbol!'
         ];
         $this->hasSessionMessages(ERROR, $expected);
         $expected = [
-         'Password must include at least a digit!',
-         'Password must include at least a uppercase letter!',
-         'Password must include at least a symbol!'
+            'Password must include at least a digit!',
+            'Password must include at least a uppercase letter!',
+            'Password must include at least a symbol!'
         ];
         $this->boolean(\Config::validatePassword('mypassword'))->isFalse();
         $this->hasSessionMessages(ERROR, $expected);
@@ -212,8 +212,8 @@ class Config extends DbTestCase
         $this->hasSessionMessages(ERROR, $expected);
 
         $expected = [
-         'Password must include at least a uppercase letter!',
-         'Password must include at least a symbol!'
+            'Password must include at least a uppercase letter!',
+            'Password must include at least a symbol!'
         ];
         $this->boolean(\Config::validatePassword('my1password'))->isFalse();
         $this->hasSessionMessages(ERROR, $expected);
@@ -224,7 +224,7 @@ class Config extends DbTestCase
         $this->hasSessionMessages(ERROR, $expected);
 
         $expected = [
-         'Password must include at least a symbol!'
+            'Password must include at least a symbol!'
         ];
         $this->boolean(\Config::validatePassword('my1paSsword'))->isFalse();
         $this->hasSessionMessages(ERROR, $expected);
@@ -290,57 +290,57 @@ class Config extends DbTestCase
          ->hasKeys(['error', 'good', 'missing', 'may']);
 
         $expected = [
-         'error'     => 0,
-         'good'      => [
-            'mysqli' => 'mysqli extension is installed',
-         ],
-         'missing'   => [],
-         'may'       => []
+            'error'     => 0,
+            'good'      => [
+                'mysqli' => 'mysqli extension is installed',
+            ],
+            'missing'   => [],
+            'may'       => []
         ];
 
        //check extension from class name
         $list = [
-         'mysqli' => [
-            'required'  => true,
-            'class'     => 'mysqli'
-         ]
+            'mysqli' => [
+                'required'  => true,
+                'class'     => 'mysqli'
+            ]
         ];
         $report = \Config::checkExtensions($list);
         $this->array($report)->isIdenticalTo($expected);
 
        //check extension from method name
         $list = [
-         'mysqli' => [
-            'required'  => true,
-            'function'  => 'mysqli_commit'
-         ]
+            'mysqli' => [
+                'required'  => true,
+                'function'  => 'mysqli_commit'
+            ]
         ];
         $report = \Config::checkExtensions($list);
         $this->array($report)->isIdenticalTo($expected);
 
        //check extension from its name
         $list = [
-         'mysqli' => [
-            'required'  => true
-         ]
+            'mysqli' => [
+                'required'  => true
+            ]
         ];
         $report = \Config::checkExtensions($list);
         $this->array($report)->isIdenticalTo($expected);
 
        //required, missing extension
         $list['notantext'] = [
-         'required'  => true
+            'required'  => true
         ];
         $report = \Config::checkExtensions($list);
         $expected = [
-         'error'     => 2,
-         'good'      => [
-            'mysqli' => 'mysqli extension is installed',
-         ],
-         'missing'   => [
-            'notantext' => 'notantext extension is missing'
-         ],
-         'may'       => []
+            'error'     => 2,
+            'good'      => [
+                'mysqli' => 'mysqli extension is installed',
+            ],
+            'missing'   => [
+                'notantext' => 'notantext extension is missing'
+            ],
+            'may'       => []
         ];
         $this->array($report)->isIdenticalTo($expected);
 
@@ -349,14 +349,14 @@ class Config extends DbTestCase
         $list['totally_optionnal'] = ['required' => false];
         $report = \Config::checkExtensions($list);
         $expected = [
-         'error'     => 1,
-         'good'      => [
-            'mysqli' => 'mysqli extension is installed',
-         ],
-         'missing'   => [],
-         'may'       => [
-            'totally_optionnal' => 'totally_optionnal extension is not present'
-         ]
+            'error'     => 1,
+            'good'      => [
+                'mysqli' => 'mysqli extension is installed',
+            ],
+            'missing'   => [],
+            'may'       => [
+                'totally_optionnal' => 'totally_optionnal extension is not present'
+            ]
         ];
         $this->array($report)->isIdenticalTo($expected);
     }
@@ -370,8 +370,8 @@ class Config extends DbTestCase
 
         $conf = \Config::getConfigurationValues('core', ['version', 'dbversion']);
         $this->array($conf)->isEqualTo([
-         'dbversion' => GLPI_SCHEMA_VERSION,
-         'version'   => GLPI_VERSION
+            'dbversion' => GLPI_SCHEMA_VERSION,
+            'version'   => GLPI_VERSION
         ]);
     }
 
@@ -379,38 +379,38 @@ class Config extends DbTestCase
     {
         $conf = \Config::getConfigurationValues('core', ['version', 'notification_to_myself']);
         $this->array($conf)->isEqualTo([
-         'notification_to_myself'   => '1',
-         'version'                  => GLPI_VERSION
+            'notification_to_myself'   => '1',
+            'version'                  => GLPI_VERSION
         ]);
 
        //update configuration value
         \Config::setConfigurationValues('core', ['notification_to_myself' => 0]);
         $conf = \Config::getConfigurationValues('core', ['version', 'notification_to_myself']);
         $this->array($conf)->isEqualTo([
-         'notification_to_myself'   => '0',
-         'version'                  => GLPI_VERSION
+            'notification_to_myself'   => '0',
+            'version'                  => GLPI_VERSION
         ]);
         \Config::setConfigurationValues('core', ['notification_to_myself' => 1]); //reset
 
        //check new configuration key does not exists
         $conf = \Config::getConfigurationValues('core', ['version', 'new_configuration_key']);
         $this->array($conf)->isEqualTo([
-         'version' => GLPI_VERSION
+            'version' => GLPI_VERSION
         ]);
 
        //add new configuration key
         \Config::setConfigurationValues('core', ['new_configuration_key' => 'test']);
         $conf = \Config::getConfigurationValues('core', ['version', 'new_configuration_key']);
         $this->array($conf)->isEqualTo([
-         'new_configuration_key' => 'test',
-         'version'               => GLPI_VERSION
+            'new_configuration_key' => 'test',
+            'version'               => GLPI_VERSION
         ]);
 
        //drop new configuration key
         \Config::deleteConfigurationValues('core', ['new_configuration_key']);
         $conf = \Config::getConfigurationValues('core', ['version', 'new_configuration_key']);
         $this->array($conf)->isEqualTo([
-         'version' => GLPI_VERSION
+            'version' => GLPI_VERSION
         ]);
     }
 
@@ -418,32 +418,32 @@ class Config extends DbTestCase
     {
         $conf = new \Config();
         $this->array($conf->getRights())->isIdenticalTo([
-         READ     => 'Read',
-         UPDATE   => 'Update'
+            READ     => 'Read',
+            UPDATE   => 'Update'
         ]);
     }
 
     public function testGetPalettes()
     {
         $expected = [
-         'aerialgreen'     => 'Aerialgreen',
-         'auror'           => 'Auror',
-         'auror_dark'      => 'Auror_dark',
-         'automn'          => 'Automn',
-         'classic'         => 'Classic',
-         'clockworkorange' => 'Clockworkorange',
-         'dark'            => 'Dark',
-         'darker'          => 'Darker',
-         'flood'           => 'Flood',
-         'greenflat'       => 'Greenflat',
-         'hipster'         => 'Hipster',
-         'icecream'        => 'Icecream',
-         'lightblue'       => 'Lightblue',
-         'midnight'        => 'Midnight',
-         'premiumred'      => 'Premiumred',
-         'purplehaze'      => 'Purplehaze',
-         'teclib'          => 'Teclib',
-         'vintage'         => 'Vintage',
+            'aerialgreen'     => 'Aerialgreen',
+            'auror'           => 'Auror',
+            'auror_dark'      => 'Auror_dark',
+            'automn'          => 'Automn',
+            'classic'         => 'Classic',
+            'clockworkorange' => 'Clockworkorange',
+            'dark'            => 'Dark',
+            'darker'          => 'Darker',
+            'flood'           => 'Flood',
+            'greenflat'       => 'Greenflat',
+            'hipster'         => 'Hipster',
+            'icecream'        => 'Icecream',
+            'lightblue'       => 'Lightblue',
+            'midnight'        => 'Midnight',
+            'premiumred'      => 'Premiumred',
+            'purplehaze'      => 'Purplehaze',
+            'teclib'          => 'Teclib',
+            'vintage'         => 'Vintage',
         ];
         $this
          ->if($this->newTestedInstance)
@@ -460,39 +460,39 @@ class Config extends DbTestCase
     protected function dbEngineProvider()
     {
         return [
-         [
-            'raw'       => '10.1.48-MariaDB',
-            'version'   => '10.1.48',
-            'compat'    => false
-         ], [
-            'raw'       => '10.2.14-MariaDB',
-            'version'   => '10.2.14',
-            'compat'    => true
-         ], [
-            'raw'       => '10.3.28-MariaDB',
-            'version'   => '10.3.28',
-            'compat'    => true
-         ], [
-            'raw'       => '10.4.8-MariaDB-1:10.4.8+maria~bionic',
-            'version'   => '10.4.8',
-            'compat'    => true
-         ], [
-            'raw'       => '10.5.9-MariaDB',
-            'version'   => '10.5.9',
-            'compat'    => true
-         ], [
-            'raw'       => '5.6.38-log',
-            'version'   => '5.6.38',
-            'compat'    => false
-         ],  [
-            'raw'       => '5.7.50-log',
-            'version'   => '5.7.50',
-            'compat'    => true
-         ], [
-            'raw'       => '8.0.23-standard',
-            'version'   => '8.0.23',
-            'compat'    => true
-         ],
+            [
+                'raw'       => '10.1.48-MariaDB',
+                'version'   => '10.1.48',
+                'compat'    => false
+            ], [
+                'raw'       => '10.2.14-MariaDB',
+                'version'   => '10.2.14',
+                'compat'    => true
+            ], [
+                'raw'       => '10.3.28-MariaDB',
+                'version'   => '10.3.28',
+                'compat'    => true
+            ], [
+                'raw'       => '10.4.8-MariaDB-1:10.4.8+maria~bionic',
+                'version'   => '10.4.8',
+                'compat'    => true
+            ], [
+                'raw'       => '10.5.9-MariaDB',
+                'version'   => '10.5.9',
+                'compat'    => true
+            ], [
+                'raw'       => '5.6.38-log',
+                'version'   => '5.6.38',
+                'compat'    => false
+            ],  [
+                'raw'       => '5.7.50-log',
+                'version'   => '5.7.50',
+                'compat'    => true
+            ], [
+                'raw'       => '8.0.23-standard',
+                'version'   => '8.0.23',
+                'compat'    => true
+            ],
         ];
     }
 
@@ -536,26 +536,26 @@ class Config extends DbTestCase
     protected function itemtypeLinkedToConfigurationProvider()
     {
         return [
-         [
-            'key'      => 'documentcategories_id_forticket',
-            'itemtype' => 'DocumentCategory',
-         ],
-         [
-            'key'      => 'default_requesttypes_id',
-            'itemtype' => 'RequestType',
-         ],
-         [
-            'key'      => 'softwarecategories_id_ondelete',
-            'itemtype' => 'SoftwareCategory',
-         ],
-         [
-            'key'      => 'ssovariables_id',
-            'itemtype' => 'SsoVariable',
-         ],
-         [
-            'key'      => 'transfers_id_auto',
-            'itemtype' => 'Transfer',
-         ],
+            [
+                'key'      => 'documentcategories_id_forticket',
+                'itemtype' => 'DocumentCategory',
+            ],
+            [
+                'key'      => 'default_requesttypes_id',
+                'itemtype' => 'RequestType',
+            ],
+            [
+                'key'      => 'softwarecategories_id_ondelete',
+                'itemtype' => 'SoftwareCategory',
+            ],
+            [
+                'key'      => 'ssovariables_id',
+                'itemtype' => 'SsoVariable',
+            ],
+            [
+                'key'      => 'transfers_id_auto',
+                'itemtype' => 'Transfer',
+            ],
         ];
     }
 
@@ -635,21 +635,21 @@ class Config extends DbTestCase
 
         $conf = new \Config();
         $this->array($CFG_GLPI['devices_in_menu'])->isIdenticalTo([
-         'Item_DeviceSimcard'
+            'Item_DeviceSimcard'
         ]);
 
        //Config::prepareInputForUpdate() always return false.
         $conf->update([
-         'id'                       => 1,
-         '_update_devices_in_menu'  => 1,
-         'devices_in_menu'          => ['Item_DeviceSimcard', 'Item_DeviceBattery']
+            'id'                       => 1,
+            '_update_devices_in_menu'  => 1,
+            'devices_in_menu'          => ['Item_DeviceSimcard', 'Item_DeviceBattery']
         ]);
 
        //check values in db
         $res = $DB->request([
-         'SELECT' => 'value',
-         'FROM'   => $conf->getTable(),
-         'WHERE'  => ['name' => 'devices_in_menu']
+            'SELECT' => 'value',
+            'FROM'   => $conf->getTable(),
+            'WHERE'  => ['name' => 'devices_in_menu']
         ])->current();
         $this->array($res)->isIdenticalTo(
             ['value' => exportArrayToDB(['Item_DeviceSimcard', 'Item_DeviceBattery'])]
@@ -671,8 +671,8 @@ class Config extends DbTestCase
             $user = new \User();
             $user_id = $user->add(
                 [
-                'name'     => 'test_user_' . mt_rand(),
-                'authtype' => $authtype,
+                    'name'     => 'test_user_' . mt_rand(),
+                    'authtype' => $authtype,
                 ]
             );
             $this->integer($user_id)->isGreaterThan(0);
@@ -721,8 +721,8 @@ class Config extends DbTestCase
         $_SESSION['glpi_currenttime'] = $update_datetime;
         $conf->update(
             [
-            'id'                        => 1,
-            'password_expiration_delay' => 30
+                'id'                        => 1,
+                'password_expiration_delay' => 30
             ]
         );
         $_SESSION['glpi_currenttime'] = $current_time;
@@ -751,8 +751,8 @@ class Config extends DbTestCase
         $_SESSION['glpi_currenttime'] = $new_update_datetime;
         $conf->update(
             [
-            'id'                        => 1,
-            'password_expiration_delay' => 45
+                'id'                        => 1,
+                'password_expiration_delay' => 45
             ]
         );
         $_SESSION['glpi_currenttime'] = $current_time;
@@ -780,24 +780,24 @@ class Config extends DbTestCase
         $PLUGIN_HOOKS[Hooks::SECURED_CONFIGS]['tester'] = ['passwd'];
 
         return [
-         [
-            'context'          => 'core',
-            'name'             => 'unexisting_config',
-            'is_secured'       => false,
-            'old_value_prefix' => 'unexisting_config ',
-         ],
-         [
-            'context'          => 'plugin:tester',
-            'name'             => 'check',
-            'is_secured'       => false,
-            'old_value_prefix' => 'check (plugin:tester) ',
-         ],
-         [
-            'context'          => 'plugin:tester',
-            'name'             => 'passwd',
-            'is_secured'       => true,
-            'old_value_prefix' => 'passwd (plugin:tester) ',
-         ]
+            [
+                'context'          => 'core',
+                'name'             => 'unexisting_config',
+                'is_secured'       => false,
+                'old_value_prefix' => 'unexisting_config ',
+            ],
+            [
+                'context'          => 'plugin:tester',
+                'name'             => 'check',
+                'is_secured'       => false,
+                'old_value_prefix' => 'check (plugin:tester) ',
+            ],
+            [
+                'context'          => 'plugin:tester',
+                'name'             => 'passwd',
+                'is_secured'       => true,
+                'old_value_prefix' => 'passwd (plugin:tester) ',
+            ]
         ];
     }
 
@@ -810,13 +810,13 @@ class Config extends DbTestCase
 
         $expected_history = [];
         $history_entry_fields = [
-         'itemtype'         => \Config::getType(),
-         'items_id'         => 1,
-         'itemtype_link'    => '',
-         'linked_action'    => 0,
-         'user_name'        => Session::getLoginUserID(false),
-         'date_mod'         => $_SESSION['glpi_currenttime'],
-         'id_search_option' => 1,
+            'itemtype'         => \Config::getType(),
+            'items_id'         => 1,
+            'itemtype_link'    => '',
+            'linked_action'    => 0,
+            'user_name'        => Session::getLoginUserID(false),
+            'date_mod'         => $_SESSION['glpi_currenttime'],
+            'id_search_option' => 1,
         ];
 
         $clean_ids = function (&$value, $key) {
@@ -826,10 +826,10 @@ class Config extends DbTestCase
        // History on first value
         \Config::setConfigurationValues($context, [$name => 'first value']);
         $expected_history = [
-         $history_entry_fields + [
-            'old_value' => $old_value_prefix . ($is_secured ? '********' : ''),
-            'new_value' => $is_secured ? '********' : 'first value',
-         ],
+            $history_entry_fields + [
+                'old_value' => $old_value_prefix . ($is_secured ? '********' : ''),
+                'new_value' => $is_secured ? '********' : 'first value',
+            ],
         ];
 
         $found_history = array_values(getAllDataFromTable(Log::getTable(), $history_crit));
@@ -839,8 +839,8 @@ class Config extends DbTestCase
        // History on updated value
         \Config::setConfigurationValues($context, [$name => 'new value']);
         $expected_history[] = $history_entry_fields + [
-         'old_value' => $old_value_prefix . ($is_secured ? '********' : 'first value'),
-         'new_value' => $is_secured ? '********' : 'new value',
+            'old_value' => $old_value_prefix . ($is_secured ? '********' : 'first value'),
+            'new_value' => $is_secured ? '********' : 'new value',
         ];
 
         $found_history = array_values(getAllDataFromTable(Log::getTable(), $history_crit));
@@ -850,8 +850,8 @@ class Config extends DbTestCase
        // History on config deletion
         \Config::deleteConfigurationValues($context, [$name]);
         $expected_history[] = $history_entry_fields + [
-         'old_value' => $old_value_prefix . ($is_secured ? '********' : 'new value'),
-         'new_value' => $is_secured ? '********' : '',
+            'old_value' => $old_value_prefix . ($is_secured ? '********' : 'new value'),
+            'new_value' => $is_secured ? '********' : '',
         ];
 
         $found_history = array_values(getAllDataFromTable(Log::getTable(), $history_crit));

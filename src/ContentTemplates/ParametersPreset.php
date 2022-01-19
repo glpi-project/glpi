@@ -94,9 +94,9 @@ class ParametersPreset
         switch ($key) {
             case self::ITIL_CHILD_TEMPLATE:
                 $types = [
-                 TicketTemplate::getTypeName(1),
-                 TaskTemplate::getTypeName(1),
-                 SolutionTemplate::getTypeName(1),
+                    TicketTemplate::getTypeName(1),
+                    TaskTemplate::getTypeName(1),
+                    SolutionTemplate::getTypeName(1),
                 ];
 
                 return implode("/", $types);
@@ -117,10 +117,10 @@ class ParametersPreset
     public static function getForAbstractTemplates(): array
     {
         return [
-         new AttributeParameter('itemtype', __('Itemtype')),
-         new ObjectParameter(new TicketParameters()),
-         new ObjectParameter(new ChangeParameters()),
-         new ObjectParameter(new ProblemParameters())
+            new AttributeParameter('itemtype', __('Itemtype')),
+            new ObjectParameter(new TicketParameters()),
+            new ObjectParameter(new ChangeParameters()),
+            new ObjectParameter(new ProblemParameters())
         ];
     }
 
@@ -133,8 +133,8 @@ class ParametersPreset
     public static function getForTicketSolution(): array
     {
         return [
-         new AttributeParameter('itemtype', __('Itemtype')),
-         new ObjectParameter(new TicketParameters()),
+            new AttributeParameter('itemtype', __('Itemtype')),
+            new ObjectParameter(new TicketParameters()),
         ];
     }
 }

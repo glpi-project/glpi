@@ -113,7 +113,8 @@ class RuleAction extends CommonDBChild
             && ($realrule = Rule::getRuleObjectByID($this->input['rules_id']))
         ) {
             $realrule->update(['id'       => $this->input['rules_id'],
-                                 'date_mod' => $_SESSION['glpi_currenttime']]);
+                'date_mod' => $_SESSION['glpi_currenttime']
+            ]);
         }
     }
 
@@ -132,7 +133,8 @@ class RuleAction extends CommonDBChild
             && ($realrule = Rule::getRuleObjectByID($this->fields['rules_id']))
         ) {
             $realrule->update(['id'       => $this->fields['rules_id'],
-                                 'date_mod' => $_SESSION['glpi_currenttime']]);
+                'date_mod' => $_SESSION['glpi_currenttime']
+            ]);
         }
     }
 
@@ -155,33 +157,33 @@ class RuleAction extends CommonDBChild
         $tab = [];
 
         $tab[] = [
-         'id'                 => '1',
-         'table'              => $this->getTable(),
-         'field'              => 'action_type',
-         'name'               => self::getTypeName(1),
-         'massiveaction'      => false,
-         'datatype'           => 'specific',
-         'additionalfields'   => ['rules_id']
+            'id'                 => '1',
+            'table'              => $this->getTable(),
+            'field'              => 'action_type',
+            'name'               => self::getTypeName(1),
+            'massiveaction'      => false,
+            'datatype'           => 'specific',
+            'additionalfields'   => ['rules_id']
         ];
 
         $tab[] = [
-         'id'                 => '2',
-         'table'              => $this->getTable(),
-         'field'              => 'field',
-         'name'               => _n('Field', 'Fields', Session::getPluralNumber()),
-         'massiveaction'      => false,
-         'datatype'           => 'specific',
-         'additionalfields'   => ['rules_id']
+            'id'                 => '2',
+            'table'              => $this->getTable(),
+            'field'              => 'field',
+            'name'               => _n('Field', 'Fields', Session::getPluralNumber()),
+            'massiveaction'      => false,
+            'datatype'           => 'specific',
+            'additionalfields'   => ['rules_id']
         ];
 
         $tab[] = [
-         'id'                 => '3',
-         'table'              => $this->getTable(),
-         'field'              => 'value',
-         'name'               => __('Value'),
-         'massiveaction'      => false,
-         'datatype'           => 'specific',
-         'additionalfields'   => ['rules_id'],
+            'id'                 => '3',
+            'table'              => $this->getTable(),
+            'field'              => 'value',
+            'name'               => __('Value'),
+            'massiveaction'      => false,
+            'datatype'           => 'specific',
+            'additionalfields'   => ['rules_id'],
         ];
 
         return $tab;
@@ -280,10 +282,11 @@ class RuleAction extends CommonDBChild
                     && $generic_rule->getFromDB($values['rules_id'])
                 ) {
                     return self::dropdownActions(['subtype'     => $generic_rule->fields["sub_type"],
-                                                  'name'        => $name,
-                                                  'value'       => $values[$field],
-                                                  'alreadyused' => false,
-                                                  'display'     => false]);
+                        'name'        => $name,
+                        'value'       => $values[$field],
+                        'alreadyused' => false,
+                        'display'     => false
+                    ]);
                 }
                 break;
 
@@ -320,9 +323,9 @@ class RuleAction extends CommonDBChild
         global $DB;
 
         $iterator = $DB->request([
-         'FROM'   => $this->getTable(),
-         'WHERE'  => [static::$items_id => $ID],
-         'ORDER'  => 'id'
+            'FROM'   => $this->getTable(),
+            'WHERE'  => [static::$items_id => $ID],
+            'ORDER'  => 'id'
         ]);
 
         $rules_actions = [];
@@ -347,10 +350,10 @@ class RuleAction extends CommonDBChild
     {
 
         $input = [
-         'action_type'     => $action,
-         'field'           => $field,
-         'value'           => $value,
-         static::$items_id => $ruleid,
+            'action_type'     => $action,
+            'field'           => $field,
+            'value'           => $value,
+            static::$items_id => $ruleid,
         ];
         $this->add($input);
     }
@@ -371,12 +374,12 @@ class RuleAction extends CommonDBChild
     {
 
         $p = [
-         'subtype'     => '',
-         'name'        => '',
-         'field'       => '',
-         'value'       => '',
-         'alreadyused' => false,
-         'display'     => true,
+            'subtype'     => '',
+            'name'        => '',
+            'field'       => '',
+            'value'       => '',
+            'alreadyused' => false,
+            'display'     => true,
         ];
 
         if (is_array($options) && count($options)) {
@@ -407,7 +410,8 @@ class RuleAction extends CommonDBChild
             }
 
             return Dropdown::showFromArray($p['name'], $elements, ['value'   => $p['value'],
-                                                                     'display' => $p['display']]);
+                'display' => $p['display']
+            ]);
         }
     }
 
@@ -416,20 +420,21 @@ class RuleAction extends CommonDBChild
     {
 
         return ['assign'              => __('Assign'),
-              'append'              => __('Add'),
-              'regex_result'        => __('Assign the value from regular expression'),
-              'append_regex_result' => __('Add the result of regular expression'),
-              'affectbyip'          => __('Assign: equipment by IP address'),
-              'affectbyfqdn'        => __('Assign: equipment by name + domain'),
-              'affectbymac'         => __('Assign: equipment by MAC address'),
-              'compute'             => __('Recalculate'),
-              'do_not_compute'      => __('Do not calculate'),
-              'send'                => __('Send'),
-              'add_validation'      => __('Send'),
-              'fromuser'            => __('Copy from user'),
-              'defaultfromuser'     => __('Copy default from user'),
-              'firstgroupfromuser'  => __('Copy first group from user'),
-              'fromitem'            => __('Copy from item')];
+            'append'              => __('Add'),
+            'regex_result'        => __('Assign the value from regular expression'),
+            'append_regex_result' => __('Add the result of regular expression'),
+            'affectbyip'          => __('Assign: equipment by IP address'),
+            'affectbyfqdn'        => __('Assign: equipment by name + domain'),
+            'affectbymac'         => __('Assign: equipment by MAC address'),
+            'compute'             => __('Recalculate'),
+            'do_not_compute'      => __('Do not calculate'),
+            'send'                => __('Send'),
+            'add_validation'      => __('Send'),
+            'fromuser'            => __('Copy from user'),
+            'defaultfromuser'     => __('Copy default from user'),
+            'firstgroupfromuser'  => __('Copy first group from user'),
+            'fromitem'            => __('Copy from item')
+        ];
     }
 
 
@@ -484,9 +489,9 @@ class RuleAction extends CommonDBChild
 
             $actions = [];
             $iterator = $DB->request([
-            'SELECT' => 'field',
-            'FROM'   => $this->getTable(),
-            'WHERE'  => [static::$items_id => $rules_id],
+                'SELECT' => 'field',
+                'FROM'   => $this->getTable(),
+                'WHERE'  => [static::$items_id => $rules_id],
             ]);
 
             foreach ($iterator as $action) {
@@ -513,7 +518,7 @@ class RuleAction extends CommonDBChild
         $display = false;
 
         $param = [
-         'value' => '',
+            'value' => '',
         ];
         if (isset($options['value'])) {
             $param['value'] = $options['value'];
@@ -616,9 +621,9 @@ class RuleAction extends CommonDBChild
                                 $rule_data = getAllDataFromTable(
                                     self::getTable(),
                                     [
-                                    'action_type'           => 'add_validation',
-                                    'field'                 => 'users_id_validate',
-                                    $item->getRuleIdField() => $options[$item->getRuleIdField()]
+                                        'action_type'           => 'add_validation',
+                                        'field'                 => 'users_id_validate',
+                                        $item->getRuleIdField() => $options[$item->getRuleIdField()]
                                     ]
                                 );
 
@@ -639,9 +644,9 @@ class RuleAction extends CommonDBChild
                                 $rule_data = getAllDataFromTable(
                                     self::getTable(),
                                     [
-                                    'action_type'           => 'add_validation',
-                                    'field'                 => 'groups_id_validate',
-                                    $item->getRuleIdField() => $options[$item->getRuleIdField()]
+                                        'action_type'           => 'add_validation',
+                                        'field'                 => 'groups_id_validate',
+                                        $item->getRuleIdField() => $options[$item->getRuleIdField()]
                                     ]
                                 );
                                 foreach ($rule_data as $data) {
@@ -651,10 +656,11 @@ class RuleAction extends CommonDBChild
 
                             $param['name']      = 'value';
                             $param['condition'] = [new QuerySubQuery([
-                            'SELECT' => ['COUNT' => ['users_id']],
-                            'FROM'   => 'glpi_groups_users',
-                            'WHERE'  => ['groups_id' => new \QueryExpression('glpi_groups.id')]
-                            ])];
+                                'SELECT' => ['COUNT' => ['users_id']],
+                                'FROM'   => 'glpi_groups_users',
+                                'WHERE'  => ['groups_id' => new \QueryExpression('glpi_groups.id')]
+                            ])
+                            ];
                             $param['right']     = ['validate_incident', 'validate_request'];
                             $param['used']      = $used;
                             Group::dropdown($param);
@@ -669,8 +675,8 @@ class RuleAction extends CommonDBChild
 
                         case "dropdown_validation_status":
                             TicketValidation::dropdownStatus('value', [
-                            'global' => true,
-                            'value' => $param['value'],
+                                'global' => true,
+                                'value' => $param['value'],
                             ]);
                             $display = true;
                             break;
@@ -730,11 +736,13 @@ class RuleAction extends CommonDBChild
             unset($used[$this->fields['field']]);
         }
         $rand   = $rule->dropdownActions(['value' => $this->fields['field'],
-                                             'used'  => $used]);
+            'used'  => $used
+        ]);
         $params = ['field'                 => '__VALUE__',
-                      'sub_type'              => $rule->getType(),
-                      'ruleactions_id'        => $this->getID(),
-                      $rule->getRuleIdField() => $this->fields[static::$items_id]];
+            'sub_type'              => $rule->getType(),
+            'ruleactions_id'        => $this->getID(),
+            $rule->getRuleIdField() => $this->fields[static::$items_id]
+        ];
 
         Ajax::updateItemOnSelectEvent(
             "dropdown_field$rand",

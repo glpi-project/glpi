@@ -42,31 +42,31 @@ class CronTask extends DbTestCase
     protected function registerProvider()
     {
         return [
-         [
-            'itemtype'        => 'CoreNonExistent',
-            'name'            => 'CoreTest1',
-            'should_register' => false, // Non-existent core class
-         ],
-         [
-            'itemtype'        => 'CronTask',
-            'name'            => 'CoreTest2',
-            'should_register' => true, // Existing core class
-         ],
-         [
-            'itemtype'        => 'Glpi\Marketplace\Controller',
-            'name'            => 'CoreTest3',
-            'should_register' => true, // Existing core namespaced class
-         ],
-         [
-            'itemtype'        => 'PluginTestItemtype',
-            'name'            => 'PluginTest1',
-            'should_register' => true, // Plugin class. Existence not checked.
-         ],
-         [
-            'itemtype'        => 'GlpiPlugin\\Tester\\TestItemtype',
-            'name'            => 'NamespacedPluginTest1',
-            'should_register' => true, // Plugin class with namespace. Existence not checked.
-         ],
+            [
+                'itemtype'        => 'CoreNonExistent',
+                'name'            => 'CoreTest1',
+                'should_register' => false, // Non-existent core class
+            ],
+            [
+                'itemtype'        => 'CronTask',
+                'name'            => 'CoreTest2',
+                'should_register' => true, // Existing core class
+            ],
+            [
+                'itemtype'        => 'Glpi\Marketplace\Controller',
+                'name'            => 'CoreTest3',
+                'should_register' => true, // Existing core namespaced class
+            ],
+            [
+                'itemtype'        => 'PluginTestItemtype',
+                'name'            => 'PluginTest1',
+                'should_register' => true, // Plugin class. Existence not checked.
+            ],
+            [
+                'itemtype'        => 'GlpiPlugin\\Tester\\TestItemtype',
+                'name'            => 'NamespacedPluginTest1',
+                'should_register' => true, // Plugin class with namespace. Existence not checked.
+            ],
         ];
     }
 
@@ -87,24 +87,24 @@ class CronTask extends DbTestCase
     {
        // Only plugins are supported with the unregister method.
         return [
-         [
-            'plugin_name'       => 'Test',
-            'itemtype'          => 'PluginTestItemtype',
-            'name'              => 'PluginTest1',
-            'should_unregister' => true,
-         ],
-         [
-            'plugin_name'       => 'Tester',
-            'itemtype'          => 'GlpiPlugin\\Tester\\TestItemtype',
-            'name'              => 'NamespacedPluginTest1',
-            'should_unregister' => true,
-         ],
-         [
-            'plugin_name'       => 'Tester',
-            'itemtype'          => 'GlpiPlugin\\TesterNg\\TestItemtype',
-            'name'              => 'NamespacedPluginTest2',
-            'should_unregister' => false, // plugin name does not match class namespace
-         ],
+            [
+                'plugin_name'       => 'Test',
+                'itemtype'          => 'PluginTestItemtype',
+                'name'              => 'PluginTest1',
+                'should_unregister' => true,
+            ],
+            [
+                'plugin_name'       => 'Tester',
+                'itemtype'          => 'GlpiPlugin\\Tester\\TestItemtype',
+                'name'              => 'NamespacedPluginTest1',
+                'should_unregister' => true,
+            ],
+            [
+                'plugin_name'       => 'Tester',
+                'itemtype'          => 'GlpiPlugin\\TesterNg\\TestItemtype',
+                'name'              => 'NamespacedPluginTest2',
+                'should_unregister' => false, // plugin name does not match class namespace
+            ],
         ];
     }
 
@@ -121,9 +121,9 @@ class CronTask extends DbTestCase
 
        // Check the task has been created in DB
         $iterator = $DB->request([
-         'SELECT' => ['id'],
-         'FROM'   => \CronTask::getTable(),
-         'WHERE'  => ['itemtype' => addslashes($itemtype), 'name' => $name]
+            'SELECT' => ['id'],
+            'FROM'   => \CronTask::getTable(),
+            'WHERE'  => ['itemtype' => addslashes($itemtype), 'name' => $name]
         ]);
         $this->integer($iterator->count())->isEqualTo(1);
 
@@ -133,9 +133,9 @@ class CronTask extends DbTestCase
 
        // Check the delete actually worked
         $iterator = $DB->request([
-         'SELECT' => ['id'],
-         'FROM'   => \CronTask::getTable(),
-         'WHERE'  => ['itemtype' => addslashes($itemtype), 'name' => $name]
+            'SELECT' => ['id'],
+            'FROM'   => \CronTask::getTable(),
+            'WHERE'  => ['itemtype' => addslashes($itemtype), 'name' => $name]
         ]);
         $this->integer($iterator->count())->isEqualTo($should_unregister ? 0 : 1);
     }
@@ -143,31 +143,31 @@ class CronTask extends DbTestCase
     protected function getNeedToRunProvider()
     {
         return [
-         [
-            'itemtype'    => 'CronTask',
-            'name'        => 'CoreTest1',
-            'should_run'  => true,
-         ],
-         [
-            'itemtype'    => 'Glpi\Marketplace\Controller',
-            'name'        => 'CoreTest2',
-            'should_run'  => true,
-         ],
-         [
-            'itemtype'    => 'PluginTestItemtype',
-            'name'        => 'PluginTest1',
-            'should_run'  => false, // Inactive plugin
-         ],
-         [
-            'itemtype'    => 'PluginTesterItemtype',
-            'name'        => 'PluginTest2',
-            'should_run'  => true,
-         ],
-         [
-            'itemtype'    => 'GlpiPlugin\\Tester\\TestItemtype',
-            'name'        => 'NamespacedPluginTest',
-            'should_run'  => true,
-         ],
+            [
+                'itemtype'    => 'CronTask',
+                'name'        => 'CoreTest1',
+                'should_run'  => true,
+            ],
+            [
+                'itemtype'    => 'Glpi\Marketplace\Controller',
+                'name'        => 'CoreTest2',
+                'should_run'  => true,
+            ],
+            [
+                'itemtype'    => 'PluginTestItemtype',
+                'name'        => 'PluginTest1',
+                'should_run'  => false, // Inactive plugin
+            ],
+            [
+                'itemtype'    => 'PluginTesterItemtype',
+                'name'        => 'PluginTest2',
+                'should_run'  => true,
+            ],
+            [
+                'itemtype'    => 'GlpiPlugin\\Tester\\TestItemtype',
+                'name'        => 'NamespacedPluginTest',
+                'should_run'  => true,
+            ],
         ];
     }
 
@@ -189,9 +189,9 @@ class CronTask extends DbTestCase
             $name,
             30,
             [
-            'state'   => \CronTask::STATE_WAITING,
-            'hourmin' => 0,
-            'hourmax' => 24,
+                'state'   => \CronTask::STATE_WAITING,
+                'hourmin' => 0,
+                'hourmax' => 24,
             ]
         );
         $this->variable($plugin_task)->isNotEqualTo(false);

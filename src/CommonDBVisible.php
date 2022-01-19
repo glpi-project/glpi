@@ -181,10 +181,11 @@ abstract class CommonDBVisible extends CommonDBTM
             Html::openMassiveActionsForm('mass' . __CLASS__ . $rand);
             $massiveactionparams = ['num_displayed'
                               => min($_SESSION['glpilist_limit'], $nb),
-                           'container'
+                'container'
                               => 'mass' . __CLASS__ . $rand,
-                           'specific_actions'
-                              => ['delete' => _x('button', 'Delete permanently')]];
+                'specific_actions'
+                              => ['delete' => _x('button', 'Delete permanently')]
+            ];
 
             if ($this->fields['users_id'] != Session::getLoginUserID()) {
                 $massiveactionparams['confirm']
@@ -361,8 +362,8 @@ abstract class CommonDBVisible extends CommonDBTM
     protected function getShowVisibilityDropdownParams()
     {
         return [
-         'type'  => '__VALUE__',
-         'right' => strtolower($this::getType()) . '_public'
+            'type'  => '__VALUE__',
+            'right' => strtolower($this::getType()) . '_public'
         ];
     }
 }

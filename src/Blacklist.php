@@ -78,13 +78,16 @@ class Blacklist extends CommonDropdown
     {
 
         return [['name'  => 'value',
-                         'label' => __('Value'),
-                         'type'  => 'text',
-                         'list'  => true],
-                   ['name'  => 'type',
-                         'label' => _n('Type', 'Types', 1),
-                         'type'  => '',
-                         'list'  => true]];
+            'label' => __('Value'),
+            'type'  => 'text',
+            'list'  => true
+        ],
+            ['name'  => 'type',
+                'label' => _n('Type', 'Types', 1),
+                'type'  => '',
+                'list'  => true
+            ]
+        ];
     }
 
 
@@ -104,20 +107,20 @@ class Blacklist extends CommonDropdown
         $tab = parent::rawSearchOptions();
 
         $tab[] = [
-         'id'                 => '11',
-         'table'              => $this->getTable(),
-         'field'              => 'value',
-         'name'               => __('Value'),
-         'datatype'           => 'text',
+            'id'                 => '11',
+            'table'              => $this->getTable(),
+            'field'              => 'value',
+            'name'               => __('Value'),
+            'datatype'           => 'text',
         ];
 
         $tab[] = [
-         'id'                 => '12',
-         'table'              => $this->getTable(),
-         'field'              => 'type',
-         'name'               => _n('Type', 'Types', 1),
-         'searchtype'         => ['equals', 'notequals'],
-         'datatype'           => 'specific'
+            'id'                 => '12',
+            'table'              => $this->getTable(),
+            'field'              => 'type',
+            'name'               => _n('Type', 'Types', 1),
+            'searchtype'         => ['equals', 'notequals'],
+            'datatype'           => 'specific'
         ];
 
         return $tab;
@@ -142,8 +145,8 @@ class Blacklist extends CommonDropdown
 
         if ($field['name'] == 'type') {
             self::dropdownType($field['name'], [
-            'value' => $this->fields['type'],
-            'width' => '100%',
+                'value' => $this->fields['type'],
+                'width' => '100%',
             ]);
         }
     }
@@ -196,10 +199,10 @@ class Blacklist extends CommonDropdown
     {
 
         $params = [
-         'value'     => 0,
-         'toadd'     => [],
-         'on_change' => '',
-         'display'   => true,
+            'value'     => 0,
+            'toadd'     => [],
+            'on_change' => '',
+            'display'   => true,
         ];
 
         if (is_array($options) && count($options)) {
@@ -228,15 +231,15 @@ class Blacklist extends CommonDropdown
     {
 
         $options = [
-         self::IP               => __('IP'),
-         self::MAC              => __('MAC'),
-         self::SERIAL           => __('Serial number'),
-         self::UUID             => __('UUID'),
-         self::EMAIL            => _n('Email', 'Emails', 1),
+            self::IP               => __('IP'),
+            self::MAC              => __('MAC'),
+            self::SERIAL           => __('Serial number'),
+            self::UUID             => __('UUID'),
+            self::EMAIL            => _n('Email', 'Emails', 1),
          //'Windows product key' => 'winProdKey',
-         self::MODEL            => _n('Model', 'Models', 1),
-         self::NAME             => __('Name'),
-         self::MANUFACTURER     => _n('Manufacturer', 'Manufacturers', 1)
+            self::MODEL            => _n('Model', 'Models', 1),
+            self::NAME             => __('Name'),
+            self::MANUFACTURER     => _n('Manufacturer', 'Manufacturers', 1)
         ];
 
         return $options;
@@ -341,125 +344,125 @@ class Blacklist extends CommonDropdown
         $defaults = [];
 
         $serials = [
-         'N/A',
-         '(null string)',
-         'INVALID',
-         'SYS-1234567890',
-         'SYS-9876543210',
-         'SN-12345',
-         'SN-1234567890',
-         '1111111111',
-         '1111111',
-         '1',
-         '0123456789',
-         '12345',
-         '123456',
-         '1234567',
-         '12345678',
-         '123456789',
-         '1234567890',
-         '123456789000',
-         '12345678901234567',
-         '0000000000',
-         '000000000',
-         '00000000',
-         '0000000',
-         'NNNNNNN',
-         'xxxxxxxxxxx',
-         'EVAL',
-         'IATPASS',
-         'none',
-         'To Be Filled By O.E.M.',
-         'Tulip Computers',
-         'Serial Number xxxxxx',
-         'SN-123456fvgv3i0b8o5n6n7k',
-         'Unknow',
-         'System Serial Number',
-         'MB-1234567890',
-         '0',
-         'empty',
-         'Not Specified',
-         'OEM_Serial',
-         'SystemSerialNumb'
+            'N/A',
+            '(null string)',
+            'INVALID',
+            'SYS-1234567890',
+            'SYS-9876543210',
+            'SN-12345',
+            'SN-1234567890',
+            '1111111111',
+            '1111111',
+            '1',
+            '0123456789',
+            '12345',
+            '123456',
+            '1234567',
+            '12345678',
+            '123456789',
+            '1234567890',
+            '123456789000',
+            '12345678901234567',
+            '0000000000',
+            '000000000',
+            '00000000',
+            '0000000',
+            'NNNNNNN',
+            'xxxxxxxxxxx',
+            'EVAL',
+            'IATPASS',
+            'none',
+            'To Be Filled By O.E.M.',
+            'Tulip Computers',
+            'Serial Number xxxxxx',
+            'SN-123456fvgv3i0b8o5n6n7k',
+            'Unknow',
+            'System Serial Number',
+            'MB-1234567890',
+            '0',
+            'empty',
+            'Not Specified',
+            'OEM_Serial',
+            'SystemSerialNumb'
         ];
         foreach ($serials as $serial) {
             $defaults[self::SERIAL][] = [
-            'name' => 'invalid serial',
-             'value' => $serial
+                'name' => 'invalid serial',
+                'value' => $serial
             ];
         }
 
         $uuids = [
-         'FFFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF',
-         '03000200-0400-0500-0006-000700080009',
-         '6AB5B300-538D-1014-9FB5-B0684D007B53',
-         '01010101-0101-0101-0101-010101010101',
-         '2'
+            'FFFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF',
+            '03000200-0400-0500-0006-000700080009',
+            '6AB5B300-538D-1014-9FB5-B0684D007B53',
+            '01010101-0101-0101-0101-010101010101',
+            '2'
         ];
         foreach ($uuids as $uuid) {
             $defaults[self::UUID][] = [
-              'name' => 'invalid UUID',
-              'value' => $uuid
+                'name' => 'invalid UUID',
+                'value' => $uuid
             ];
         }
 
         $defaults[self::MAC] = [['name' => 'empty MAC', 'value' => '']];
         $macs = [
-         '20:41:53:59:4e:ff', //RACK Async Adaptater
-         '02:00:4e:43:50:49', //NCP Secure Client Virtual NDIS6 Adapter
-         'e2:e6:16:20:0a:35', //Fireware
-         'd2:0a:2d:a0:04:be', //Fireware
-         '00:a0:c6:00:00:00', //Qualcomm Gobi 2000 HS-USB Mobile Broadband Device 9225
-         'd2:6b:25:2f:2c:e7', //Fireware
-         '33:50:6f:45:30:30', //Miniport WAN (PPPOE)
-         '0a:00:27:00:00:00', //VirtualBox
-         '00:50:56:C0:00:01', //vmnet
-         '00:50:56:C0:00:08', //vmnet
-         '02:80:37:EC:02:00', //Dell Wireless 5530 HSPA Mobile Broadband Minicard NetworkAdapter mac address
-         '50:50:54:50:30:30',
-         '24:b6:20:52:41:53',
-         '00:50:56:C0:00:02',
-         '/00:50:56:C0:[0-9a-f]+:[0-9a-f]+/i',//VMware MAC address
-         'FE:FF:FF:FF:FF:FF',
-         '00:00:00:00:00:00',
-         '00:0b:ca:fe:00:00'
+            '20:41:53:59:4e:ff', //RACK Async Adaptater
+            '02:00:4e:43:50:49', //NCP Secure Client Virtual NDIS6 Adapter
+            'e2:e6:16:20:0a:35', //Fireware
+            'd2:0a:2d:a0:04:be', //Fireware
+            '00:a0:c6:00:00:00', //Qualcomm Gobi 2000 HS-USB Mobile Broadband Device 9225
+            'd2:6b:25:2f:2c:e7', //Fireware
+            '33:50:6f:45:30:30', //Miniport WAN (PPPOE)
+            '0a:00:27:00:00:00', //VirtualBox
+            '00:50:56:C0:00:01', //vmnet
+            '00:50:56:C0:00:08', //vmnet
+            '02:80:37:EC:02:00', //Dell Wireless 5530 HSPA Mobile Broadband Minicard NetworkAdapter mac address
+            '50:50:54:50:30:30',
+            '24:b6:20:52:41:53',
+            '00:50:56:C0:00:02',
+            '/00:50:56:C0:[0-9a-f]+:[0-9a-f]+/i',//VMware MAC address
+            'FE:FF:FF:FF:FF:FF',
+            '00:00:00:00:00:00',
+            '00:0b:ca:fe:00:00'
         ];
         foreach ($macs as $mac) {
             $defaults[self::MAC][] = [
-            'name' => 'invalid MAC',
-            'value' => $mac
+                'name' => 'invalid MAC',
+                'value' => $mac
             ];
         }
 
         $models = [
-         'Unknow',
-         'To Be Filled By O.E.M.',
-         '*',
-         'System Product Name',
-         'Product Name',
-         'System Name',
-         'All Series'
+            'Unknow',
+            'To Be Filled By O.E.M.',
+            '*',
+            'System Product Name',
+            'Product Name',
+            'System Name',
+            'All Series'
         ];
         foreach ($models as $model) {
             $defaults[self::MODEL][] = [
-            'name' => $model,
-            'value' => $model
+                'name' => $model,
+                'value' => $model
             ];
         }
 
         $defaults[self::MANUFACTURER] = [['name' => 'System manufacturer', 'value' => 'System manufacturer']];
 
         $defaults[self::IP] = [
-         [
-            'name' => 'empty IP',
-            'value' => ''
-         ], [
-            'name' => 'zero IP',
-            'value' => '0.0.0.0'
-         ], [
-            'name' => 'localhost',
-            'value' => '127.0.0.1'
-         ]
+            [
+                'name' => 'empty IP',
+                'value' => ''
+            ], [
+                'name' => 'zero IP',
+                'value' => '0.0.0.0'
+            ], [
+                'name' => 'localhost',
+                'value' => '127.0.0.1'
+            ]
         ];
 
         return $defaults;

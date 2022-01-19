@@ -56,9 +56,9 @@ if (($_GET['action'] ?? null) === 'show_pdu_form') {
             $item_rack = new Item_Rack();
             $item_rack->getFromDB((int) $_POST['id']);
             $answer['status'] = $item_rack->update([
-            'id'       => (int) $_POST['id'],
-            'position' => (int) $_POST['position'],
-            'hpos'     => (int) $_POST['hpos'],
+                'id'       => (int) $_POST['id'],
+                'position' => (int) $_POST['position'],
+                'hpos'     => (int) $_POST['hpos'],
             ]);
             break;
 
@@ -66,8 +66,8 @@ if (($_GET['action'] ?? null) === 'show_pdu_form') {
             $pdu_rack = new PDU_Rack();
             $pdu_rack->getFromDB((int) $_POST['id']);
             $answer['status'] = $pdu_rack->update([
-            'id'       => (int) $_POST['id'],
-            'position' => (int) $_POST['position']
+                'id'       => (int) $_POST['id'],
+                'position' => (int) $_POST['position']
             ]);
             break;
 
@@ -75,9 +75,9 @@ if (($_GET['action'] ?? null) === 'show_pdu_form') {
             $rack = new Rack();
             $rack->getFromDB((int) $_POST['id']);
             $answer['status'] = $rack->update([
-            'id'         => (int) $_POST['id'],
-            'dcrooms_id' => (int) $_POST['dcrooms_id'],
-            'position'   => (int) $_POST['x'] . "," . (int) $_POST['y'],
+                'id'         => (int) $_POST['id'],
+                'dcrooms_id' => (int) $_POST['dcrooms_id'],
+                'position'   => (int) $_POST['x'] . "," . (int) $_POST['y'],
             ]);
             break;
     }

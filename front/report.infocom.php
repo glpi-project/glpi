@@ -55,9 +55,9 @@ if (
 
 $stat = new Stat();
 $chart_opts =  [
-   'width'  => '90%',
-   'legend' => false,
-   'title'  => __('Value'),
+    'width'  => '90%',
+    'legend' => false,
+    'title'  => __('Value'),
 ];
 
 Report::title();
@@ -99,54 +99,54 @@ function display_infocoms_report($itemtype, $begin, $end)
         return false;
     }
     $criteria = [
-      'SELECT'       => [
-         'glpi_infocoms.*',
-         "$itemtable.name AS name",
-         "$itemtable.ticket_tco",
-         'glpi_entities.completename AS entname',
-         'glpi_entities.id AS entID'
+        'SELECT'       => [
+            'glpi_infocoms.*',
+            "$itemtable.name AS name",
+            "$itemtable.ticket_tco",
+            'glpi_entities.completename AS entname',
+            'glpi_entities.id AS entID'
 
-      ],
-      'FROM'         => 'glpi_infocoms',
-      'INNER JOIN'   => [
-         $itemtable  => [
-            'ON'  => [
-               'glpi_infocoms'   => 'items_id',
-               $itemtable        => 'id', [
-                  'AND' => [
-                     'glpi_infocoms.itemtype'   => $itemtype
-                  ]
-               ]
+        ],
+        'FROM'         => 'glpi_infocoms',
+        'INNER JOIN'   => [
+            $itemtable  => [
+                'ON'  => [
+                    'glpi_infocoms'   => 'items_id',
+                    $itemtable        => 'id', [
+                        'AND' => [
+                            'glpi_infocoms.itemtype'   => $itemtype
+                        ]
+                    ]
+                ]
             ]
-         ]
-      ],
-      'LEFT JOIN'    => [
-         'glpi_entities'   => [
-            'ON'  => [
-               'glpi_entities'   => 'id',
-               $itemtable        => 'entities_id'
+        ],
+        'LEFT JOIN'    => [
+            'glpi_entities'   => [
+                'ON'  => [
+                    'glpi_entities'   => 'id',
+                    $itemtable        => 'entities_id'
+                ]
             ]
-         ]
-      ],
-      'WHERE'        => ["$itemtable.is_template" => 0] + getEntitiesRestrictCriteria($itemtable),
-      'ORDERBY'      => ['entname ASC', 'buy_date', 'use_date']
+        ],
+        'WHERE'        => ["$itemtable.is_template" => 0] + getEntitiesRestrictCriteria($itemtable),
+        'ORDERBY'      => ['entname ASC', 'buy_date', 'use_date']
     ];
 
     if (!empty($begin)) {
         $criteria['WHERE'][] = [
-         'OR'  => [
-            'glpi_infocoms.buy_date'   => ['>=', $begin],
-            'glpi_infocoms.use_date'   => ['>=', $begin]
-         ]
+            'OR'  => [
+                'glpi_infocoms.buy_date'   => ['>=', $begin],
+                'glpi_infocoms.use_date'   => ['>=', $begin]
+            ]
         ];
     }
 
     if (!empty($end)) {
         $criteria['WHERE'][] = [
-         'OR'  => [
-            'glpi_infocoms.buy_date'   => ['<=', $end],
-            'glpi_infocoms.use_date'   => ['<=', $end]
-         ]
+            'OR'  => [
+                'glpi_infocoms.buy_date'   => ['<=', $end],
+                'glpi_infocoms.use_date'   => ['<=', $end]
+            ]
         ];
     }
 
@@ -275,9 +275,9 @@ function display_infocoms_report($itemtype, $begin, $end)
                 ),
                 array_keys($valeurnettegraphdisplay),
                 [
-                [
-                  'data' => $valeurnettegraphdisplay
-                ]
+                    [
+                        'data' => $valeurnettegraphdisplay
+                    ]
                 ],
                 $chart_opts
             );
@@ -304,9 +304,9 @@ function display_infocoms_report($itemtype, $begin, $end)
                 ),
                 array_keys($valeurgraphdisplay),
                 [
-                [
-                  'data' => $valeurgraphdisplay
-                ]
+                    [
+                        'data' => $valeurgraphdisplay
+                    ]
                 ],
                 $chart_opts
             );
@@ -358,9 +358,9 @@ if (count($valeurnettegraphtot) > 0) {
         __('Total account net value'),
         array_keys($valeurnettegraphtotdisplay),
         [
-         [
-            'data' => $valeurnettegraphtotdisplay
-         ]
+            [
+                'data' => $valeurnettegraphtotdisplay
+            ]
         ],
         $chart_opts
     );
@@ -372,9 +372,9 @@ if (count($valeurgraphtot) > 0) {
         __('Total value'),
         array_keys($valeurgraphtotdisplay),
         [
-         [
-            'data' => $valeurgraphtotdisplay
-         ]
+            [
+                'data' => $valeurgraphtotdisplay
+            ]
         ],
         $chart_opts
     );

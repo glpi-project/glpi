@@ -57,20 +57,20 @@ class Server extends DAV\Server
 
        // Directory tree
         $tree = [
-         new DAV\SimpleCollection(
-             Principal::PRINCIPALS_ROOT,
-             [
-               new DAVACL\PrincipalCollection($principalBackend, Principal::PREFIX_GROUPS),
-               new DAVACL\PrincipalCollection($principalBackend, Principal::PREFIX_USERS),
-             ]
-         ),
-         new DAV\SimpleCollection(
-             Calendar::CALENDAR_ROOT,
-             [
-               new CalendarRoot($principalBackend, $calendarBackend, Principal::PREFIX_GROUPS),
-               new CalendarRoot($principalBackend, $calendarBackend, Principal::PREFIX_USERS),
-             ]
-         ),
+            new DAV\SimpleCollection(
+                Principal::PRINCIPALS_ROOT,
+                [
+                    new DAVACL\PrincipalCollection($principalBackend, Principal::PREFIX_GROUPS),
+                    new DAVACL\PrincipalCollection($principalBackend, Principal::PREFIX_USERS),
+                ]
+            ),
+            new DAV\SimpleCollection(
+                Calendar::CALENDAR_ROOT,
+                [
+                    new CalendarRoot($principalBackend, $calendarBackend, Principal::PREFIX_GROUPS),
+                    new CalendarRoot($principalBackend, $calendarBackend, Principal::PREFIX_USERS),
+                ]
+            ),
         ];
 
         parent::__construct($tree);

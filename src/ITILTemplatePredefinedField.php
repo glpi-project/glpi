@@ -90,12 +90,12 @@ abstract class ITILTemplatePredefinedField extends ITILTemplateField
        // Try to delete itemtype -> delete items_id
         if ($this->fields['num'] == $itemtype_id) {
             $iterator = $DB->request([
-            'SELECT' => 'id',
-            'FROM'   => $this->getTable(),
-            'WHERE'  => [
-               static::$items_id => $this->fields[static::$items_id],
-               'num'             => $items_id_id
-            ]
+                'SELECT' => 'id',
+                'FROM'   => $this->getTable(),
+                'WHERE'  => [
+                    static::$items_id => $this->fields[static::$items_id],
+                    'num'             => $items_id_id
+                ]
             ]);
 
             if (count($iterator)) {
@@ -151,9 +151,9 @@ abstract class ITILTemplatePredefinedField extends ITILTemplateField
         global $DB;
 
         $iterator = $DB->request([
-         'FROM'   => $this->getTable(),
-         'WHERE'  => [static::$items_id => $ID],
-         'ORDER'  => 'id'
+            'FROM'   => $this->getTable(),
+            'WHERE'  => [static::$items_id => $ID],
+            'ORDER'  => 'id'
         ]);
 
         $tt_class       = static::$itemtype;
@@ -204,9 +204,9 @@ abstract class ITILTemplatePredefinedField extends ITILTemplateField
         }
 
         $fields = [
-         $itil_object->getSearchOptionIDByField('field', 'name', 'glpi_documents'),
-         $itil_object->getSearchOptionIDByField('field', 'items_id', $itemstable),
-         $itil_object->getSearchOptionIDByField('field', 'name', 'glpi_tasktemplates')
+            $itil_object->getSearchOptionIDByField('field', 'name', 'glpi_documents'),
+            $itil_object->getSearchOptionIDByField('field', 'items_id', $itemstable),
+            $itil_object->getSearchOptionIDByField('field', 'name', 'glpi_tasktemplates')
         ];
 
         return $fields;
@@ -222,7 +222,7 @@ abstract class ITILTemplatePredefinedField extends ITILTemplateField
     public static function getExcludedFields()
     {
         return [
-         -2 => -2, // validation request
+            -2 => -2, // validation request
         ];
     }
 
@@ -258,15 +258,15 @@ abstract class ITILTemplatePredefinedField extends ITILTemplateField
         $rand          = mt_rand();
 
         $iterator = $DB->request([
-         'FROM'   => static::getTable(),
-         'WHERE'  => [static::$items_id => $ID],
-         'ORDER'  => 'id'
+            'FROM'   => static::getTable(),
+            'WHERE'  => [static::$items_id => $ID],
+            'ORDER'  => 'id'
         ]);
 
         $display_options = [
-         'relative_dates' => true,
-         'comments'       => true,
-         'html'           => true
+            'relative_dates' => true,
+            'comments'       => true,
+            'html'           => true
         ];
 
         $predeffields = [];
@@ -298,18 +298,21 @@ abstract class ITILTemplatePredefinedField extends ITILTemplateField
             }
 
             $rand_dp  = Dropdown::showFromArray('num', $display_fields, ['used' => $used,
-                                                                           'toadd']);
+                'toadd'
+            ]);
             echo "</td><td class='top'>";
             $paramsmassaction = ['id_field'         => '__VALUE__',
-                                    'itemtype'         => static::$itiltype,
-                                    'inline'           => true,
-                                    'submitname'       => _sx('button', 'Add'),
-                                    'options'          => ['relative_dates'     => 1,
-                                                               'with_time'          => 1,
-                                                               'with_days'          => 0,
-                                                               'with_specific_date' => 0,
-                                                               'itemlink_as_string' => 1,
-                                                               'entity'             => $tt->getEntityID()]];
+                'itemtype'         => static::$itiltype,
+                'inline'           => true,
+                'submitname'       => _sx('button', 'Add'),
+                'options'          => ['relative_dates'     => 1,
+                    'with_time'          => 1,
+                    'with_days'          => 0,
+                    'with_specific_date' => 0,
+                    'itemlink_as_string' => 1,
+                    'entity'             => $tt->getEntityID()
+                ]
+            ];
 
             Ajax::updateItemOnSelectEvent(
                 "dropdown_num" . $rand_dp,
@@ -329,7 +332,8 @@ abstract class ITILTemplatePredefinedField extends ITILTemplateField
         if ($canedit && $numrows) {
             Html::openMassiveActionsForm('mass' . static::getType() . $rand);
             $massiveactionparams = ['num_displayed' => min($_SESSION['glpilist_limit'], $numrows),
-                                       'container'     => 'mass' . static::getType() . $rand];
+                'container'     => 'mass' . static::getType() . $rand
+            ];
             Html::showMassiveActions($massiveactionparams);
         }
         echo "<table class='tab_cadre_fixehov'>";

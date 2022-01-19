@@ -97,16 +97,16 @@ class Update
         if (!$DB->tableExists('glpi_config') && !$DB->tableExists('glpi_configs')) {
            //very, very old version!
             $currents = [
-            'version'   => '0.1',
-            'dbversion' => '0.1',
-            'language'  => 'en_GB'
+                'version'   => '0.1',
+                'dbversion' => '0.1',
+                'language'  => 'en_GB'
             ];
         } else if (!$DB->tableExists("glpi_configs")) {
            // < 0.78
            // Get current version
             $result = $DB->request([
-            'SELECT' => ['version', 'language'],
-            'FROM'   => 'glpi_config'
+                'SELECT' => ['version', 'language'],
+                'FROM'   => 'glpi_config'
             ])->current();
 
             $currents['version']    = trim($result['version']);
@@ -116,8 +116,8 @@ class Update
            // < 0.85
            // Get current version and language
             $result = $DB->request([
-            'SELECT' => ['version', 'language'],
-            'FROM'   => 'glpi_configs'
+                'SELECT' => ['version', 'language'],
+                'FROM'   => 'glpi_configs'
             ])->current();
 
             $currents['version']    = trim($result['version']);
@@ -232,20 +232,21 @@ class Update
 
         // Update version number and default langage and new version_founded ---- LEAVE AT THE END
         Config::setConfigurationValues('core', ['version'             => GLPI_VERSION,
-                                              'dbversion'           => GLPI_SCHEMA_VERSION,
-                                              'language'            => $this->language,
-                                              'founded_new_version' => '']);
+            'dbversion'           => GLPI_SCHEMA_VERSION,
+            'language'            => $this->language,
+            'founded_new_version' => ''
+        ]);
 
         if (defined('GLPI_SYSTEM_CRON')) {
            // Downstream packages may provide a good system cron
             $DB->updateOrDie(
                 'glpi_crontasks',
                 [
-                'mode'   => 2
+                    'mode'   => 2
                 ],
                 [
-                'name'      => ['!=', 'watcher'],
-                'allowmode' => ['&', 2]
+                    'name'      => ['!=', 'watcher'],
+                    'allowmode' => ['&', 2]
                 ]
             );
         }

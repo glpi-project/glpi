@@ -51,54 +51,54 @@ class Ticket extends DbTestCase
     public function ticketProvider()
     {
         return [
-         'single requester' => [
-            [
-               '_users_id_requester' => '3'
+            'single requester' => [
+                [
+                    '_users_id_requester' => '3'
+                ],
             ],
-         ],
-         'single unknown requester' => [
-            [
-               '_users_id_requester'         => '0',
-               '_users_id_requester_notif'   => [
-                  'use_notification'   => ['1'],
-                  'alternative_email'  => ['unknownuser@localhost.local']
-               ],
+            'single unknown requester' => [
+                [
+                    '_users_id_requester'         => '0',
+                    '_users_id_requester_notif'   => [
+                        'use_notification'   => ['1'],
+                        'alternative_email'  => ['unknownuser@localhost.local']
+                    ],
+                ],
             ],
-         ],
-         'multiple requesters' => [
-            [
-               '_users_id_requester' => ['3', '5'],
+            'multiple requesters' => [
+                [
+                    '_users_id_requester' => ['3', '5'],
+                ],
             ],
-         ],
-         'multiple mixed requesters' => [
-            [
-               '_users_id_requester'         => ['3', '5', '0'],
-               '_users_id_requester_notif'   => [
-                  'use_notification'   => ['1', '0', '1'],
-                  'alternative_email'  => ['','', 'unknownuser@localhost.local']
-               ],
+            'multiple mixed requesters' => [
+                [
+                    '_users_id_requester'         => ['3', '5', '0'],
+                    '_users_id_requester_notif'   => [
+                        'use_notification'   => ['1', '0', '1'],
+                        'alternative_email'  => ['','', 'unknownuser@localhost.local']
+                    ],
+                ],
             ],
-         ],
-         'single observer' => [
-            [
-               '_users_id_observer' => '3'
+            'single observer' => [
+                [
+                    '_users_id_observer' => '3'
+                ],
             ],
-         ],
-         'multiple observers' => [
-            [
-               '_users_id_observer' => ['3', '5'],
+            'multiple observers' => [
+                [
+                    '_users_id_observer' => ['3', '5'],
+                ],
             ],
-         ],
-         'single assign' => [
-            [
-               '_users_id_assign' => '3'
+            'single assign' => [
+                [
+                    '_users_id_assign' => '3'
+                ],
             ],
-         ],
-         'multiple assigns' => [
-            [
-               '_users_id_assign' => ['3', '5'],
+            'multiple assigns' => [
+                [
+                    '_users_id_assign' => ['3', '5'],
+                ],
             ],
-         ],
         ];
     }
 
@@ -159,9 +159,9 @@ class Ticket extends DbTestCase
             $ticketUser = new \Ticket_User();
             $this->boolean(
                 $ticketUser->getFromDBByCrit([
-                'tickets_id'         => $ticketId,
-                'users_id'           => 0,
-                'alternative_email'  => $alternateEmail
+                    'tickets_id'         => $ticketId,
+                    'users_id'           => 0,
+                    'alternative_email'  => $alternateEmail
                 ])
             )->isTrue();
         }
@@ -175,74 +175,74 @@ class Ticket extends DbTestCase
        // 1- create a task category
         $taskcat    = new \TaskCategory();
         $taskcat_id = $taskcat->add([
-         'name' => 'my task cat',
+            'name' => 'my task cat',
         ]);
         $this->boolean($taskcat->isNewItem())->isFalse();
 
        // 2- create some task templates
         $tasktemplate = new \TaskTemplate();
         $ttA_id          = $tasktemplate->add([
-         'name'              => 'my task template A',
-         'content'           => '<p>my task template A</p>',
-         'taskcategories_id' => $taskcat_id,
-         'actiontime'        => 60,
-         'is_private'        => true,
-         'users_id_tech'     => 2,
-         'groups_id_tech'    => 0,
-         'state'             => \Planning::INFO,
+            'name'              => 'my task template A',
+            'content'           => '<p>my task template A</p>',
+            'taskcategories_id' => $taskcat_id,
+            'actiontime'        => 60,
+            'is_private'        => true,
+            'users_id_tech'     => 2,
+            'groups_id_tech'    => 0,
+            'state'             => \Planning::INFO,
         ]);
         $this->boolean($tasktemplate->isNewItem())->isFalse();
         $ttB_id          = $tasktemplate->add([
-         'name'              => 'my task template B',
-         'content'           => '<p>my task template B</p>',
-         'taskcategories_id' => $taskcat_id,
-         'actiontime'        => 120,
-         'is_private'        => false,
-         'users_id_tech'     => 2,
-         'groups_id_tech'    => 0,
-         'state'             => \Planning::TODO,
+            'name'              => 'my task template B',
+            'content'           => '<p>my task template B</p>',
+            'taskcategories_id' => $taskcat_id,
+            'actiontime'        => 120,
+            'is_private'        => false,
+            'users_id_tech'     => 2,
+            'groups_id_tech'    => 0,
+            'state'             => \Planning::TODO,
         ]);
         $this->boolean($tasktemplate->isNewItem())->isFalse();
 
        // 3 - create a ticket template with the task templates in predefined fields
         $itiltemplate    = new \TicketTemplate();
         $itiltemplate_id = $itiltemplate->add([
-         'name' => 'my ticket template',
+            'name' => 'my ticket template',
         ]);
         $this->boolean($itiltemplate->isNewItem())->isFalse();
         $ttp = new \TicketTemplatePredefinedField();
         $ttp->add([
-         'tickettemplates_id' => $itiltemplate_id,
-         'num'                => '175',
-         'value'              => $ttA_id,
+            'tickettemplates_id' => $itiltemplate_id,
+            'num'                => '175',
+            'value'              => $ttA_id,
         ]);
         $this->boolean($ttp->isNewItem())->isFalse();
         $ttp->add([
-         'tickettemplates_id' => $itiltemplate_id,
-         'num'                => '176',
-         'value'              => $ttB_id,
+            'tickettemplates_id' => $itiltemplate_id,
+            'num'                => '176',
+            'value'              => $ttB_id,
         ]);
         $this->boolean($ttp->isNewItem())->isFalse();
 
        // 4 - create a ticket category using the ticket template
         $itilcat    = new \ITILCategory();
         $itilcat_id = $itilcat->add([
-         'name'                        => 'my itil category',
-         'ticketltemplates_id_incident' => $itiltemplate_id,
-         'tickettemplates_id_demand'   => $itiltemplate_id,
-         'is_incident'                 => true,
-         'is_request'                  => true,
+            'name'                        => 'my itil category',
+            'ticketltemplates_id_incident' => $itiltemplate_id,
+            'tickettemplates_id_demand'   => $itiltemplate_id,
+            'is_incident'                 => true,
+            'is_request'                  => true,
         ]);
         $this->boolean($itilcat->isNewItem())->isFalse();
 
        // 5 - create a ticket using the ticket category
         $ticket     = new \Ticket();
         $tickets_id = $ticket->add([
-         'name'                => 'test task template',
-         'content'             => 'test task template',
-         'itilcategories_id'   => $itilcat_id,
-         '_tickettemplates_id' => $itiltemplate_id,
-         '_tasktemplates_id'   => [$ttA_id, $ttB_id],
+            'name'                => 'test task template',
+            'content'             => 'test task template',
+            'itilcategories_id'   => $itilcat_id,
+            '_tickettemplates_id' => $itiltemplate_id,
+            '_tasktemplates_id'   => [$ttA_id, $ttB_id],
         ]);
         $this->boolean($ticket->isNewItem())->isFalse();
 
@@ -381,8 +381,8 @@ class Ticket extends DbTestCase
 
         $this->integer(
             (int)$ticket->add([
-            'name'    => '',
-            'content' => 'A ticket to check ACLS',
+                'name'    => '',
+                'content' => 'A ticket to check ACLS',
             ])
         )->isGreaterThan(0);
 
@@ -416,10 +416,10 @@ class Ticket extends DbTestCase
         $fup = new \ITILFollowup();
         $this->integer(
             (int)$fup->add([
-            'itemtype'  => 'Ticket',
-            'items_id'   => $ticket->getID(),
-            'users_id'     => $uid,
-            'content'      => 'A simple followup'
+                'itemtype'  => 'Ticket',
+                'items_id'   => $ticket->getID(),
+                'users_id'     => $uid,
+                'content'      => 'A simple followup'
             ])
         )->isGreaterThan(0);
 
@@ -479,8 +479,8 @@ class Ticket extends DbTestCase
 
         $this->integer(
             (int)$ticket->add([
-            'name'    => '',
-            'content' => 'A ticket to check ACLS',
+                'name'    => '',
+                'content' => 'A ticket to check ACLS',
             ])
         )->isGreaterThan(0);
 
@@ -514,10 +514,10 @@ class Ticket extends DbTestCase
         $fup = new \ITILFollowup();
         $this->integer(
             (int)$fup->add([
-            'itemtype'  => 'Ticket',
-            'items_id'   => $ticket->getID(),
-            'users_id'     => $uid,
-            'content'      => 'A simple followup'
+                'itemtype'  => 'Ticket',
+                'items_id'   => $ticket->getID(),
+                'users_id'     => $uid,
+                'content'      => 'A simple followup'
             ])
         )->isGreaterThan(0);
 
@@ -551,8 +551,8 @@ class Ticket extends DbTestCase
             'glpi_profilerights',
             ['rights' => 168965],
             [
-            'profiles_id'  => 6,
-            'name'         => 'ticket'
+                'profiles_id'  => 6,
+                'name'         => 'ticket'
             ]
         );
        //ACLs have changed: login again.
@@ -563,8 +563,8 @@ class Ticket extends DbTestCase
             'glpi_profilerights',
             ['rights' => 168967],
             [
-            'profiles_id'  => 6,
-            'name'         => 'ticket'
+                'profiles_id'  => 6,
+                'name'         => 'ticket'
             ]
         );
 
@@ -594,8 +594,8 @@ class Ticket extends DbTestCase
 
         $this->integer(
             (int)$ticket->add([
-            'name'    => '',
-            'content' => 'Another ticket to check ACLS',
+                'name'    => '',
+                'content' => 'Another ticket to check ACLS',
             ])
         )->isGreaterThan(0);
         $this->boolean((bool)$ticket->getFromDB($ticket->getID()))->isTrue();
@@ -630,8 +630,8 @@ class Ticket extends DbTestCase
         $ticket = new \Ticket();
         $this->integer(
             (int)$ticket->add([
-            'name'    => '',
-            'content' => 'A ticket to check ACLS',
+                'name'    => '',
+                'content' => 'A ticket to check ACLS',
             ])
         )->isGreaterThan(0);
 
@@ -669,8 +669,8 @@ class Ticket extends DbTestCase
             'glpi_profilerights',
             ['rights' => 168965],
             [
-            'profiles_id'  => 6,
-            'name'         => 'ticket'
+                'profiles_id'  => 6,
+                'name'         => 'ticket'
             ]
         );
        //ACLs have changed: login again.
@@ -681,8 +681,8 @@ class Ticket extends DbTestCase
             'glpi_profilerights',
             ['rights' => 168967],
             [
-            'profiles_id'  => 6,
-            'name'         => 'ticket'
+                'profiles_id'  => 6,
+                'name'         => 'ticket'
             ]
         );
 
@@ -855,8 +855,8 @@ class Ticket extends DbTestCase
         $ticket = new \Ticket();
         $this->integer(
             (int)$ticket->add([
-            'name'    => '',
-            'content' => 'A ticket to check displayed postonly form',
+                'name'    => '',
+                'content' => 'A ticket to check displayed postonly form',
             ])
         )->isGreaterThan(0);
         $this->boolean($ticket->getFromDB($ticket->getId()))->isTrue();
@@ -884,10 +884,10 @@ class Ticket extends DbTestCase
         $fup = new \ITILFollowup();
         $this->integer(
             (int)$fup->add([
-            'itemtype'  => 'Ticket',
-            'items_id'   => $ticket->getID(),
-            'users_id'     => $uid,
-            'content'      => 'A simple followup'
+                'itemtype'  => 'Ticket',
+                'items_id'   => $ticket->getID(),
+                'users_id'     => $uid,
+                'content'      => 'A simple followup'
             ])
         )->isGreaterThan(0);
 
@@ -918,10 +918,10 @@ class Ticket extends DbTestCase
         $ticket = new \Ticket();
         $this->integer(
             (int)$ticket->add([
-            'name'                => '',
-            'content'             => 'A ticket to check displayed tech form',
-            '_users_id_requester' => '3', // post-only
-            '_users_id_assign'    => '4', // tech
+                'name'                => '',
+                'content'             => 'A ticket to check displayed tech form',
+                '_users_id_requester' => '3', // post-only
+                '_users_id_assign'    => '4', // tech
             ])
         )->isGreaterThan(0);
         $this->boolean($ticket->getFromDB($ticket->getId()))->isTrue();
@@ -1031,10 +1031,10 @@ class Ticket extends DbTestCase
         $fup = new \ITILFollowup();
         $this->integer(
             (int)$fup->add([
-            'itemtype'  => 'Ticket',
-            'items_id'   => $ticket->getID(),
-            'users_id'     => $uid,
-            'content'      => 'A simple followup'
+                'itemtype'  => 'Ticket',
+                'items_id'   => $ticket->getID(),
+                'users_id'     => $uid,
+                'content'      => 'A simple followup'
             ])
         )->isGreaterThan(0);
 
@@ -1069,8 +1069,8 @@ class Ticket extends DbTestCase
             'glpi_profilerights',
             ['rights' => $rights],
             [
-            'profiles_id'  => 6,
-            'name'         => 'ticket'
+                'profiles_id'  => 6,
+                'name'         => 'ticket'
             ]
         );
 
@@ -1084,8 +1084,8 @@ class Ticket extends DbTestCase
                 'glpi_profilerights',
                 ['rights' => 168967],
                 [
-                'profiles_id'  => 6,
-                'name'         => 'ticket'
+                    'profiles_id'  => 6,
+                    'name'         => 'ticket'
                 ]
             );
         }
@@ -1098,8 +1098,8 @@ class Ticket extends DbTestCase
         $ticket = new \Ticket();
         $this->integer(
             (int)$ticket->add([
-            'name'    => '',
-            'content' => 'A ticket to check priority ACLS',
+                'name'    => '',
+                'content' => 'A ticket to check priority ACLS',
             ])
         )->isGreaterThan(0);
 
@@ -1133,8 +1133,8 @@ class Ticket extends DbTestCase
             'glpi_profilerights',
             ['rights' => 234503],
             [
-            'profiles_id'  => 6,
-            'name'         => 'ticket'
+                'profiles_id'  => 6,
+                'name'         => 'ticket'
             ]
         );
 
@@ -1146,8 +1146,8 @@ class Ticket extends DbTestCase
             'glpi_profilerights',
             ['rights' => 168967],
             [
-            'profiles_id'  => 6,
-            'name'         => 'ticket'
+                'profiles_id'  => 6,
+                'name'         => 'ticket'
             ]
         );
 
@@ -1179,8 +1179,8 @@ class Ticket extends DbTestCase
         $ticket = new \Ticket();
         $this->integer(
             (int)$ticket->add([
-            'name'    => '',
-            'content' => 'A ticket to check assign ACLS',
+                'name'    => '',
+                'content' => 'A ticket to check assign ACLS',
             ])
         )->isGreaterThan(0);
 
@@ -1215,8 +1215,8 @@ class Ticket extends DbTestCase
             'glpi_profilerights',
             ['rights' => 136199],
             [
-            'profiles_id'  => 6,
-            'name'         => 'ticket'
+                'profiles_id'  => 6,
+                'name'         => 'ticket'
             ]
         );
 
@@ -1228,8 +1228,8 @@ class Ticket extends DbTestCase
             'glpi_profilerights',
             ['rights' => 168967],
             [
-            'profiles_id'  => 6,
-            'name'         => 'ticket'
+                'profiles_id'  => 6,
+                'name'         => 'ticket'
             ]
         );
 
@@ -1259,8 +1259,8 @@ class Ticket extends DbTestCase
             'glpi_profilerights',
             ['rights' => 144391],
             [
-            'profiles_id'  => 6,
-            'name'         => 'ticket'
+                'profiles_id'  => 6,
+                'name'         => 'ticket'
             ]
         );
 
@@ -1272,8 +1272,8 @@ class Ticket extends DbTestCase
             'glpi_profilerights',
             ['rights' => 168967],
             [
-            'profiles_id'  => 6,
-            'name'         => 'ticket'
+                'profiles_id'  => 6,
+                'name'         => 'ticket'
             ]
         );
 
@@ -1308,8 +1308,8 @@ class Ticket extends DbTestCase
         $ticket = new \Ticket();
         $this->integer(
             (int)$ticket->add([
-            'name'    => '',
-            'content' => 'A ticket to check followup updates',
+                'name'    => '',
+                'content' => 'A ticket to check followup updates',
             ])
         )->isGreaterThan(0);
 
@@ -1317,10 +1317,10 @@ class Ticket extends DbTestCase
         $fup = new \ITILFollowup();
         $this->integer(
             (int)$fup->add([
-            'itemtype'  => $ticket::getType(),
-            'items_id'   => $ticket->getID(),
-            'users_id'     => $uid,
-            'content'      => 'A simple followup'
+                'itemtype'  => $ticket::getType(),
+                'items_id'   => $ticket->getID(),
+                'users_id'     => $uid,
+                'content'      => 'A simple followup'
             ])
         )->isGreaterThan(0);
 
@@ -1328,8 +1328,8 @@ class Ticket extends DbTestCase
         $uid2 = getItemByTypeName('User', TU_USER, true);
         $this->boolean($fup->getFromDB($fup->getID()))->isTrue();
         $this->boolean($fup->update([
-         'id'        => $fup->getID(),
-         'content'   => 'A simple edited followup'
+            'id'        => $fup->getID(),
+            'content'   => 'A simple edited followup'
         ]))->isTrue();
 
         $this->boolean($fup->getFromDB($fup->getID()))->isTrue();
@@ -1388,10 +1388,10 @@ class Ticket extends DbTestCase
             $fup = new \ITILFollowup();
             $this->integer(
                 (int)$fup->add([
-                'itemtype'  => 'Ticket',
-                'items_id'   => $tickets_id,
-                'users_id'     => $uid,
-                'content'      => 'A simple followup'
+                    'itemtype'  => 'Ticket',
+                    'items_id'   => $tickets_id,
+                    'users_id'     => $uid,
+                    'content'      => 'A simple followup'
                 ])
             )->isGreaterThan(0);
 
@@ -1403,9 +1403,9 @@ class Ticket extends DbTestCase
             $task = new \TicketTask();
             $this->integer(
                 (int)$task->add([
-                'tickets_id'   => $tickets_id,
-                'users_id'     => $uid,
-                'content'      => 'A simple Task'
+                    'tickets_id'   => $tickets_id,
+                    'users_id'     => $uid,
+                    'content'      => 'A simple Task'
                 ])
             )->isGreaterThan(0);
 
@@ -1417,19 +1417,19 @@ class Ticket extends DbTestCase
             $doc = new \Document();
             $this->integer(
                 (int)$doc->add([
-                'users_id'     => $uid,
-                'tickets_id'   => $tickets_id,
-                'name'         => 'A simple document object'
+                    'users_id'     => $uid,
+                    'tickets_id'   => $tickets_id,
+                    'name'         => 'A simple document object'
                 ])
             )->isGreaterThan(0);
 
             $doc_item = new \Document_Item();
             $this->integer(
                 (int)$doc_item->add([
-                'users_id'      => $uid,
-                'items_id'      => $tickets_id,
-                'itemtype'      => 'Ticket',
-                'documents_id'  => $doc->getID()
+                    'users_id'      => $uid,
+                    'items_id'      => $tickets_id,
+                    'itemtype'      => 'Ticket',
+                    'documents_id'  => $doc->getID()
                 ])
             )->isGreaterThan(0);
 
@@ -1441,10 +1441,10 @@ class Ticket extends DbTestCase
             $val = new \TicketValidation();
             $this->integer(
                 (int)$val->add([
-                'tickets_id'   => $tickets_id,
-                'comment_submission'      => 'A simple validation',
-                'users_id_validate' => 5, // normal
-                'status' => 2
+                    'tickets_id'   => $tickets_id,
+                    'comment_submission'      => 'A simple validation',
+                    'users_id_validate' => 5, // normal
+                    'status' => 2
                 ])
             )->isGreaterThan(0);
 
@@ -1464,8 +1464,8 @@ class Ticket extends DbTestCase
             $tkt = new \Ticket();
             $this->boolean(
                 (bool)$tkt->update([
-                'id'   => $tickets_id,
-                'solution'      => 'A simple solution from ' . $users_name
+                    'id'   => $tickets_id,
+                    'solution'      => 'A simple solution from ' . $users_name
                 ])
             )->isEqualto(true);
 
@@ -1495,17 +1495,17 @@ class Ticket extends DbTestCase
         ]))->isGreaterThan(0);
 
         $tlp = [
-         'glpi'      => ['pass' => 'glpi',     'pos' => \CommonITILObject::TIMELINE_LEFT],
-         'post-only' => ['pass' => 'postonly', 'pos' => \CommonITILObject::TIMELINE_LEFT],
-         'tech'      => ['pass' => 'tech',     'pos' => \CommonITILObject::TIMELINE_RIGHT],
-         'normal'    => ['pass' => 'normal',   'pos' => \CommonITILObject::TIMELINE_RIGHT]
+            'glpi'      => ['pass' => 'glpi',     'pos' => \CommonITILObject::TIMELINE_LEFT],
+            'post-only' => ['pass' => 'postonly', 'pos' => \CommonITILObject::TIMELINE_LEFT],
+            'tech'      => ['pass' => 'tech',     'pos' => \CommonITILObject::TIMELINE_RIGHT],
+            'normal'    => ['pass' => 'normal',   'pos' => \CommonITILObject::TIMELINE_RIGHT]
         ];
 
         $this->testGetTimelinePosition2($tlp, $ticket->getID());
 
        // Solution timeline tests
         $tlp = [
-         'tech'      => ['pass' => 'tech',     'pos' => \CommonITILObject::TIMELINE_RIGHT]
+            'tech'      => ['pass' => 'tech',     'pos' => \CommonITILObject::TIMELINE_RIGHT]
         ];
 
         $this->testGetTimelinePositionSolution($tlp, $ticket->getID());
@@ -1551,79 +1551,79 @@ class Ticket extends DbTestCase
     public function inputProvider()
     {
         return [
-         [
-            'input'     => [
-               'name'     => 'This is a title',
-               'content'   => 'This is a content'
-            ],
-            'expected'  => [
-               'name' => 'This is a title',
-               'content' => 'This is a content'
+            [
+                'input'     => [
+                    'name'     => 'This is a title',
+                    'content'   => 'This is a content'
+                ],
+                'expected'  => [
+                    'name' => 'This is a title',
+                    'content' => 'This is a content'
+                ]
+            ], [
+                'input'     => [
+                    'name'      => '',
+                    'content'   => 'This is a content'
+                ],
+                'expected'  => [
+                    'name' => 'This is a content',
+                    'content' => 'This is a content'
+                ]
+            ], [
+                'input'     => [
+                    'name'      => '',
+                    'content'   => "This is a content\nwith a carriage return"
+                ],
+                'expected'  => [
+                    'name' => 'This is a content with a carriage return',
+                    'content' => 'This is a content\nwith a carriage return'
+                ]
+            ], [
+                'input'     => [
+                    'name'      => '',
+                    'content'   => "This is a content\r\nwith a carriage return"
+                ],
+                'expected'  => [
+                    'name' => 'This is a content with a carriage return',
+                    'content' => 'This is a content\nwith a carriage return'
+                ]
+            ], [
+                'input'     => [
+                    'name'      => '',
+                    'content'   => "<p>This is a content\r\nwith a carriage return</p>"
+                ],
+                'expected'  => [
+                    'name' => 'This is a content with a carriage return',
+                    'content' => '<p>This is a content\nwith a carriage return</p>',
+                ]
+            ], [
+                'input'     => [
+                    'name'      => '',
+                    'content'   => "&lt;p&gt;This is a content\r\nwith a carriage return&lt;/p&gt;"
+                ],
+                'expected'  => [
+                    'name' => 'This is a content with a carriage return',
+                    'content' => '&lt;p&gt;This is a content\nwith a carriage return&lt;/p&gt;'
+                ]
+            ], [
+                'input'     => [
+                    'name'      => '',
+                    'content'   => 'Test for buggy &#039; character'
+                ],
+                'expected'  => [
+                    'name'      => 'Test for buggy \\\' character',
+                    'content'   => 'Test for buggy \\\' character',
+                ]
+            ], [
+                'input'     => [
+                    'name'      => '',
+                    'content'   => 'Test for buggy &#39; character'
+                ],
+                'expected'  => [
+                    'name'      => 'Test for buggy \\\' character',
+                    'content'   => 'Test for buggy \\\' character',
+                ]
             ]
-         ], [
-            'input'     => [
-               'name'      => '',
-               'content'   => 'This is a content'
-            ],
-            'expected'  => [
-               'name' => 'This is a content',
-               'content' => 'This is a content'
-            ]
-         ], [
-            'input'     => [
-               'name'      => '',
-               'content'   => "This is a content\nwith a carriage return"
-            ],
-            'expected'  => [
-               'name' => 'This is a content with a carriage return',
-               'content' => 'This is a content\nwith a carriage return'
-            ]
-         ], [
-            'input'     => [
-               'name'      => '',
-               'content'   => "This is a content\r\nwith a carriage return"
-            ],
-            'expected'  => [
-               'name' => 'This is a content with a carriage return',
-               'content' => 'This is a content\nwith a carriage return'
-            ]
-         ], [
-            'input'     => [
-               'name'      => '',
-               'content'   => "<p>This is a content\r\nwith a carriage return</p>"
-            ],
-            'expected'  => [
-               'name' => 'This is a content with a carriage return',
-               'content' => '<p>This is a content\nwith a carriage return</p>',
-            ]
-         ], [
-            'input'     => [
-               'name'      => '',
-               'content'   => "&lt;p&gt;This is a content\r\nwith a carriage return&lt;/p&gt;"
-            ],
-            'expected'  => [
-               'name' => 'This is a content with a carriage return',
-               'content' => '&lt;p&gt;This is a content\nwith a carriage return&lt;/p&gt;'
-            ]
-         ], [
-            'input'     => [
-               'name'      => '',
-               'content'   => 'Test for buggy &#039; character'
-            ],
-            'expected'  => [
-               'name'      => 'Test for buggy \\\' character',
-               'content'   => 'Test for buggy \\\' character',
-            ]
-         ], [
-            'input'     => [
-               'name'      => '',
-               'content'   => 'Test for buggy &#39; character'
-            ],
-            'expected'  => [
-               'name'      => 'Test for buggy \\\' character',
-               'content'   => 'Test for buggy \\\' character',
-            ]
-         ]
         ];
     }
 
@@ -1649,8 +1649,8 @@ class Ticket extends DbTestCase
         $ticket = new \Ticket();
         $this->integer(
             (int)$ticket->add([
-            'name'    => '',
-            'content' => 'A ticket to check change of status when using "associate myself" feature',
+                'name'    => '',
+                'content' => 'A ticket to check change of status when using "associate myself" feature',
             ])
         )->isGreaterThan(0);
         $tickets_id = $ticket->getID();
@@ -1662,10 +1662,10 @@ class Ticket extends DbTestCase
        // simulate "associate myself" feature
         $ticket_user = new \Ticket_User();
         $input_ticket_user = [
-         'tickets_id'       => $tickets_id,
-         'users_id'         => \Session::getLoginUserID(),
-         'use_notification' => 1,
-         'type'             => \CommonITILActor::ASSIGN
+            'tickets_id'       => $tickets_id,
+            'users_id'         => \Session::getLoginUserID(),
+            'use_notification' => 1,
+            'type'             => \CommonITILActor::ASSIGN
         ];
         $this->integer((int) $ticket_user->add($input_ticket_user))->isGreaterThan(0);
         $this->boolean($ticket_user->getFromDB($ticket_user->getId()))->isTrue();
@@ -1677,7 +1677,7 @@ class Ticket extends DbTestCase
 
        // remove associated user
         $ticket_user->delete([
-         'id' => $ticket_user->getId()
+            'id' => $ticket_user->getId()
         ]);
 
        // check status (should be INCOMING)
@@ -1701,7 +1701,7 @@ class Ticket extends DbTestCase
 
        // remove associated user
         $ticket_user->delete([
-         'id' => $ticket_user->getId()
+            'id' => $ticket_user->getId()
         ]);
 
        // check status (should be INCOMING)
@@ -1711,7 +1711,7 @@ class Ticket extends DbTestCase
 
        // remove associated user
         $ticket_user->delete([
-         'id' => $ticket_user->getId()
+            'id' => $ticket_user->getId()
         ]);
 
        // check with very limited rights and redo "associate myself"
@@ -1738,31 +1738,32 @@ class Ticket extends DbTestCase
        // 1- create a category
         $itilcat      = new \ITILCategory();
         $first_cat_id = $itilcat->add([
-                                       'name' => 'my first cat',
-                                    ]);
+            'name' => 'my first cat',
+        ]);
         $this->boolean($itilcat->isNewItem())->isFalse();
 
        // 2- create a category
         $second_cat    = new \ITILCategory();
         $second_cat_id = $second_cat->add([
-                                           'name' => 'my second cat',
-                                        ]);
+            'name' => 'my second cat',
+        ]);
         $this->boolean($second_cat->isNewItem())->isFalse();
 
        // 3- create ticket
         $ticket    = new \Ticket();
         $ticket_id = $ticket->add([
-                                   'name'              => 'A ticket to check the category change when using the "transfer" function.',
-                                   'content'           => 'A ticket to check the category change when using the "transfer" function.',
-                                   'itilcategories_id' => $first_cat_id,
-                                   'status'            => \CommonITILObject::CLOSED
-                                ]);
+            'name'              => 'A ticket to check the category change when using the "transfer" function.',
+            'content'           => 'A ticket to check the category change when using the "transfer" function.',
+            'itilcategories_id' => $first_cat_id,
+            'status'            => \CommonITILObject::CLOSED
+        ]);
 
         $this->boolean($ticket->isNewItem())->isFalse();
 
        // 4 - delete category with replacement
         $itilcat->delete(['id'          => $first_cat_id,
-                        '_replace_by' => $second_cat_id], 1);
+            '_replace_by' => $second_cat_id
+        ], 1);
 
        // 5 - check that the category has been replaced in the ticket
         $ticket->getFromDB($ticket_id);
@@ -1773,45 +1774,45 @@ class Ticket extends DbTestCase
     protected function computePriorityProvider()
     {
         return [
-         [
-            'input'    => [
-               'urgency'   => 2,
-               'impact'    => 2
-            ],
-            'urgency'  => '2',
-            'impact'   => '2',
-            'priority' => '2'
-         ], [
-            'input'    => [
-               'urgency'   => 5
-            ],
-            'urgency'  => '5',
-            'impact'   => '3',
-            'priority' => '4'
-         ], [
-            'input'    => [
-               'impact'   => 5
-            ],
-            'urgency'  => '3',
-            'impact'   => '5',
-            'priority' => '4'
-         ], [
-            'input'    => [
-               'urgency'   => 5,
-               'impact'    => 5
-            ],
-            'urgency'  => '5',
-            'impact'   => '5',
-            'priority' => '5'
-         ], [
-            'input'    => [
-               'urgency'   => 5,
-               'impact'    => 1
-            ],
-            'urgency'  => '5',
-            'impact'   => '1',
-            'priority' => '2'
-         ]
+            [
+                'input'    => [
+                    'urgency'   => 2,
+                    'impact'    => 2
+                ],
+                'urgency'  => '2',
+                'impact'   => '2',
+                'priority' => '2'
+            ], [
+                'input'    => [
+                    'urgency'   => 5
+                ],
+                'urgency'  => '5',
+                'impact'   => '3',
+                'priority' => '4'
+            ], [
+                'input'    => [
+                    'impact'   => 5
+                ],
+                'urgency'  => '3',
+                'impact'   => '5',
+                'priority' => '4'
+            ], [
+                'input'    => [
+                    'urgency'   => 5,
+                    'impact'    => 5
+                ],
+                'urgency'  => '5',
+                'impact'   => '5',
+                'priority' => '5'
+            ], [
+                'input'    => [
+                    'urgency'   => 5,
+                    'impact'    => 1
+                ],
+                'urgency'  => '5',
+                'impact'   => '1',
+                'priority' => '2'
+            ]
         ];
     }
 
@@ -1896,120 +1897,120 @@ class Ticket extends DbTestCase
     protected function canTakeIntoAccountProvider()
     {
         return [
-         [
-            'input'    => [
-               '_users_id_requester' => ['3'], // "post-only"
+            [
+                'input'    => [
+                    '_users_id_requester' => ['3'], // "post-only"
+                ],
+                'user'     => [
+                    'login'    => 'post-only',
+                    'password' => 'postonly',
+                ],
+                'expected' => false, // is requester, so cannot take into account
             ],
-            'user'     => [
-               'login'    => 'post-only',
-               'password' => 'postonly',
+            [
+                'input'    => [
+                    '_users_id_requester' => ['3', '4'], // "post-only" and "tech"
+                ],
+                'user'     => [
+                    'login'    => 'tech',
+                    'password' => 'tech',
+                ],
+                'expected' => false, // is requester, so cannot take into account
             ],
-            'expected' => false, // is requester, so cannot take into account
-         ],
-         [
-            'input'    => [
-               '_users_id_requester' => ['3', '4'], // "post-only" and "tech"
+            [
+                'input'    => [
+                    '_users_id_requester' => ['3'], // "post-only"
+                ],
+                'user'     => [
+                    'login'    => 'tech',
+                    'password' => 'tech',
+                ],
+                'expected' => true, // has enough rights so can take into account
             ],
-            'user'     => [
-               'login'    => 'tech',
-               'password' => 'tech',
+            [
+                'input'    => [
+                    '_users_id_requester' => ['3'], // "post-only"
+                ],
+                'user'     => [
+                    'login'    => 'tech',
+                    'password' => 'tech',
+                    'rights'   => [
+                        'task' => \READ,
+                        'followup' => \READ,
+                    ],
+                ],
+                'expected' => false, // has not enough rights so cannot take into account
             ],
-            'expected' => false, // is requester, so cannot take into account
-         ],
-         [
-            'input'    => [
-               '_users_id_requester' => ['3'], // "post-only"
+            [
+                'input'    => [
+                    '_users_id_requester' => ['3'], // "post-only"
+                ],
+                'user'     => [
+                    'login'    => 'tech',
+                    'password' => 'tech',
+                    'rights'   => [
+                        'task' => \READ + \CommonITILTask::ADDALLITEM,
+                        'followup' => \READ,
+                    ],
+                ],
+                'expected' => true, // has enough rights so can take into account
             ],
-            'user'     => [
-               'login'    => 'tech',
-               'password' => 'tech',
+            [
+                'input'    => [
+                    '_users_id_requester' => ['3'], // "post-only"
+                ],
+                'user'     => [
+                    'login'    => 'tech',
+                    'password' => 'tech',
+                    'rights'   => [
+                        'task' => \READ,
+                        'followup' => \READ + \ITILFollowup::ADDALLTICKET,
+                    ],
+                ],
+                'expected' => true, // has enough rights so can take into account
             ],
-            'expected' => true, // has enough rights so can take into account
-         ],
-         [
-            'input'    => [
-               '_users_id_requester' => ['3'], // "post-only"
+            [
+                'input'    => [
+                    '_users_id_requester' => ['3'], // "post-only"
+                ],
+                'user'     => [
+                    'login'    => 'tech',
+                    'password' => 'tech',
+                    'rights'   => [
+                        'task' => \READ,
+                        'followup' => \READ + \ITILFollowup::ADDMYTICKET,
+                    ],
+                ],
+                'expected' => true, // has enough rights so can take into account
             ],
-            'user'     => [
-               'login'    => 'tech',
-               'password' => 'tech',
-               'rights'   => [
-                  'task' => \READ,
-                  'followup' => \READ,
-               ],
+            [
+                'input'    => [
+                    '_users_id_requester' => ['3'], // "post-only"
+                ],
+                'user'     => [
+                    'login'    => 'tech',
+                    'password' => 'tech',
+                    'rights'   => [
+                        'task' => \READ,
+                        'followup' => \READ + \ITILFollowup::ADDGROUPTICKET,
+                    ],
+                ],
+                'expected' => true, // has enough rights so can take into account
             ],
-            'expected' => false, // has not enough rights so cannot take into account
-         ],
-         [
-            'input'    => [
-               '_users_id_requester' => ['3'], // "post-only"
-            ],
-            'user'     => [
-               'login'    => 'tech',
-               'password' => 'tech',
-               'rights'   => [
-                  'task' => \READ + \CommonITILTask::ADDALLITEM,
-                  'followup' => \READ,
-               ],
-            ],
-            'expected' => true, // has enough rights so can take into account
-         ],
-         [
-            'input'    => [
-               '_users_id_requester' => ['3'], // "post-only"
-            ],
-            'user'     => [
-               'login'    => 'tech',
-               'password' => 'tech',
-               'rights'   => [
-                  'task' => \READ,
-                  'followup' => \READ + \ITILFollowup::ADDALLTICKET,
-               ],
-            ],
-            'expected' => true, // has enough rights so can take into account
-         ],
-         [
-            'input'    => [
-               '_users_id_requester' => ['3'], // "post-only"
-            ],
-            'user'     => [
-               'login'    => 'tech',
-               'password' => 'tech',
-               'rights'   => [
-                  'task' => \READ,
-                  'followup' => \READ + \ITILFollowup::ADDMYTICKET,
-               ],
-            ],
-            'expected' => true, // has enough rights so can take into account
-         ],
-         [
-            'input'    => [
-               '_users_id_requester' => ['3'], // "post-only"
-            ],
-            'user'     => [
-               'login'    => 'tech',
-               'password' => 'tech',
-               'rights'   => [
-                  'task' => \READ,
-                  'followup' => \READ + \ITILFollowup::ADDGROUPTICKET,
-               ],
-            ],
-            'expected' => true, // has enough rights so can take into account
-         ],
-         [
-            'input'    => [
-               '_do_not_compute_takeintoaccount' => 1,
-               '_users_id_requester'             => ['4'], // "tech"
-               '_users_id_assign'                => ['4'], // "tech"
-            ],
-            'user'     => [
-               'login'    => 'tech',
-               'password' => 'tech',
-            ],
+            [
+                'input'    => [
+                    '_do_not_compute_takeintoaccount' => 1,
+                    '_users_id_requester'             => ['4'], // "tech"
+                    '_users_id_assign'                => ['4'], // "tech"
+                ],
+                'user'     => [
+                    'login'    => 'tech',
+                    'password' => 'tech',
+                ],
             // is requester but also assigned, so can take into account
             // this is only possible if "_do_not_compute_takeintoaccount" flag is set by business rules
-            'expected' => true,
-         ],
+                'expected' => true,
+            ],
         ];
     }
 
@@ -2031,9 +2032,9 @@ class Ticket extends DbTestCase
         $ticket = new \Ticket();
         $ticketId = $ticket->add(
             $input + [
-            'name'    => '',
-            'content' => 'A ticket to check canTakeIntoAccount() results',
-            'status'  => CommonITILObject::ASSIGNED
+                'name'    => '',
+                'content' => 'A ticket to check canTakeIntoAccount() results',
+                'status'  => CommonITILObject::ASSIGNED
             ]
         );
         $this->integer((int)$ticketId)->isGreaterThan(0);
@@ -2057,9 +2058,9 @@ class Ticket extends DbTestCase
         $this->boolean(
             $ticket->update(
                 [
-                'id'                              => $ticketId,
-                'content'                         => 'Updated ticket 1',
-                '_do_not_compute_takeintoaccount' => 1
+                    'id'                              => $ticketId,
+                    'content'                         => 'Updated ticket 1',
+                    '_do_not_compute_takeintoaccount' => 1
                 ]
             )
         )->isTrue();
@@ -2069,8 +2070,8 @@ class Ticket extends DbTestCase
         $this->boolean(
             $ticket->update(
                 [
-                'id'      => $ticketId,
-                'content' => 'Updated ticket 2',
+                    'id'      => $ticketId,
+                    'content' => 'Updated ticket 2',
                 ]
             )
         )->isTrue();
@@ -2093,8 +2094,8 @@ class Ticket extends DbTestCase
         $ticket = new \Ticket();
         $ticket_id = $ticket->add(
             [
-            'name'    => '',
-            'content' => 'A ticket to check isAlreadyTakenIntoAccount() results',
+                'name'    => '',
+                'content' => 'A ticket to check isAlreadyTakenIntoAccount() results',
             ]
         );
         $this->integer((int)$ticket_id)->isGreaterThan(0);
@@ -2110,10 +2111,10 @@ class Ticket extends DbTestCase
         $ticket_user = new \Ticket_User();
         $ticket_user_id = $ticket_user->add(
             [
-            'tickets_id'       => $ticket_id,
-            'users_id'         => \Session::getLoginUserID(),
-            'use_notification' => 1,
-            'type'             => \CommonITILActor::ASSIGN
+                'tickets_id'       => $ticket_id,
+                'users_id'         => \Session::getLoginUserID(),
+                'use_notification' => 1,
+                'type'             => \CommonITILActor::ASSIGN
             ]
         );
         $this->integer((int)$ticket_user_id)->isGreaterThan(0);
@@ -2130,35 +2131,35 @@ class Ticket extends DbTestCase
        // set default calendar and autoclose delay in root entity
         $entity = new \Entity();
         $this->boolean($entity->update([
-         'id'              => 0,
-         'calendars_id'    => 1,
-         'autoclose_delay' => 5,
+            'id'              => 0,
+            'calendars_id'    => 1,
+            'autoclose_delay' => 5,
         ]))->isTrue();
 
        // create some solved tickets at various solvedate
         $ticket = new \Ticket();
         $tickets_id_1 = $ticket->add([
-         'name'        => "test autoclose 1",
-         'content'     => "test autoclose 1",
-         'entities_id' => 0,
-         'status'      => \CommonITILObject::SOLVED,
+            'name'        => "test autoclose 1",
+            'content'     => "test autoclose 1",
+            'entities_id' => 0,
+            'status'      => \CommonITILObject::SOLVED,
         ]);
         $this->integer((int)$tickets_id_1)->isGreaterThan(0);
         $DB->update('glpi_tickets', [
-         'solvedate' => date('Y-m-d 10:00:00', time() - 10 * DAY_TIMESTAMP),
+            'solvedate' => date('Y-m-d 10:00:00', time() - 10 * DAY_TIMESTAMP),
         ], [
-         'id' => $tickets_id_1,
+            'id' => $tickets_id_1,
         ]);
         $tickets_id_2 = $ticket->add([
-         'name'        => "test autoclose 1",
-         'content'     => "test autoclose 1",
-         'entities_id' => 0,
-         'status'      => \CommonITILObject::SOLVED,
+            'name'        => "test autoclose 1",
+            'content'     => "test autoclose 1",
+            'entities_id' => 0,
+            'status'      => \CommonITILObject::SOLVED,
         ]);
         $DB->update('glpi_tickets', [
-         'solvedate' => date('Y-m-d 10:00:00', time()),
+            'solvedate' => date('Y-m-d 10:00:00', time()),
         ], [
-         'id' => $tickets_id_2,
+            'id' => $tickets_id_2,
         ]);
         $this->integer((int)$tickets_id_2)->isGreaterThan(0);
 
@@ -2187,30 +2188,30 @@ class Ticket extends DbTestCase
         $group_user = new \Group_User();
         $this->integer(
             (int)$group_user->add([
-            'groups_id' => $group_id,
-            'users_id'  => '4', // "tech"
+                'groups_id' => $group_id,
+                'users_id'  => '4', // "tech"
             ])
         )->isGreaterThan(0);
 
         $test_cases = [
-         [
-            'input'    => [
-               'content' => 'test',
+            [
+                'input'    => [
+                    'content' => 'test',
+                ],
+                'computed' => false, // not computed as tech is requester
             ],
-            'computed' => false, // not computed as tech is requester
-         ],
-         [
-            'input'    => [
-               '_users_id_assign' => '4', // "tech"
+            [
+                'input'    => [
+                    '_users_id_assign' => '4', // "tech"
+                ],
+                'computed' => true, // computed on asignment
             ],
-            'computed' => true, // computed on asignment
-         ],
-         [
-            'input'    => [
-               '_users_id_observer' => '4', // "tech"
+            [
+                'input'    => [
+                    '_users_id_observer' => '4', // "tech"
+                ],
+                'computed' => false, // not computed as new actor is not assigned
             ],
-            'computed' => false, // not computed as new actor is not assigned
-         ],
          /* Triggers PHP error "Uncaught Error: [] operator not supported for strings in /var/www/glpi/inc/ticket.class.php:1162"
          [
             'input'    => [
@@ -2219,66 +2220,66 @@ class Ticket extends DbTestCase
             'computed' => false, // not computed as new actor is not assigned
          ],
          */
-         [
-            'input'    => [
-               '_additional_assigns' => [
-                  ['users_id' => '4'], // "tech"
-               ],
+            [
+                'input'    => [
+                    '_additional_assigns' => [
+                        ['users_id' => '4'], // "tech"
+                    ],
+                ],
+                'computed' => true, // computed on asignment
             ],
-            'computed' => true, // computed on asignment
-         ],
-         [
-            'input'    => [
-               '_additional_observers' => [
-                  ['users_id' => '4'], // "tech"
-               ],
+            [
+                'input'    => [
+                    '_additional_observers' => [
+                        ['users_id' => '4'], // "tech"
+                    ],
+                ],
+                'computed' => false, // not computed as new actor is not assigned
             ],
-            'computed' => false, // not computed as new actor is not assigned
-         ],
-         [
-            'input'    => [
-               '_additional_requesters' => [
-                  ['users_id' => '2'], // "post-only"
-               ],
+            [
+                'input'    => [
+                    '_additional_requesters' => [
+                        ['users_id' => '2'], // "post-only"
+                    ],
+                ],
+                'computed' => false, // not computed as new actor is not assigned
             ],
-            'computed' => false, // not computed as new actor is not assigned
-         ],
-         [
-            'input'    => [
-               '_groups_id_assign' => $group_id,
+            [
+                'input'    => [
+                    '_groups_id_assign' => $group_id,
+                ],
+                'computed' => true, // computed on asignment
             ],
-            'computed' => true, // computed on asignment
-         ],
-         [
-            'input'    => [
-               '_groups_id_observer' => $group_id,
+            [
+                'input'    => [
+                    '_groups_id_observer' => $group_id,
+                ],
+                'computed' => false, // not computed as new actor is not assigned
             ],
-            'computed' => false, // not computed as new actor is not assigned
-         ],
-         [
-            'input'    => [
-               '_groups_id_requester' => $group_id,
+            [
+                'input'    => [
+                    '_groups_id_requester' => $group_id,
+                ],
+                'computed' => false, // not computed as new actor is not assigned
             ],
-            'computed' => false, // not computed as new actor is not assigned
-         ],
-         [
-            'input'    => [
-               '_additional_groups_assigns' => [$group_id],
+            [
+                'input'    => [
+                    '_additional_groups_assigns' => [$group_id],
+                ],
+                'computed' => true, // computed on asignment
             ],
-            'computed' => true, // computed on asignment
-         ],
-         [
-            'input'    => [
-               '_additional_groups_observers' => [$group_id],
+            [
+                'input'    => [
+                    '_additional_groups_observers' => [$group_id],
+                ],
+                'computed' => false, // not computed as new actor is not assigned
             ],
-            'computed' => false, // not computed as new actor is not assigned
-         ],
-         [
-            'input'    => [
-               '_additional_groups_requesters' => [$group_id],
+            [
+                'input'    => [
+                    '_additional_groups_requesters' => [$group_id],
+                ],
+                'computed' => false, // not computed as new actor is not assigned
             ],
-            'computed' => false, // not computed as new actor is not assigned
-         ],
          /* Not computing delay, do not know why
          [
             'input'    => [
@@ -2287,14 +2288,14 @@ class Ticket extends DbTestCase
             'computed' => true, // computed on asignment
          ],
          */
-         [
-            'input'    => [
-               '_additional_suppliers_assigns' => [
-                  ['suppliers_id' => '1'], // "_suplier01_name"
-               ],
+            [
+                'input'    => [
+                    '_additional_suppliers_assigns' => [
+                        ['suppliers_id' => '1'], // "_suplier01_name"
+                    ],
+                ],
+                'computed' => true, // computed on asignment
             ],
-            'computed' => true, // computed on asignment
-         ],
         ];
 
        // for all test cases that expect a computation
@@ -2325,8 +2326,8 @@ class Ticket extends DbTestCase
         $ticket = new \Ticket();
         $ticketId = $ticket->add(
             $input + [
-            'name'    => '',
-            'content' => 'A ticket to check takeintoaccount_delay_stat computation state',
+                'name'    => '',
+                'content' => 'A ticket to check takeintoaccount_delay_stat computation state',
             ]
         );
         $this->integer((int)$ticketId)->isGreaterThan(0);
@@ -2358,8 +2359,8 @@ class Ticket extends DbTestCase
         $ticket = new \Ticket();
         $ticketId = $ticket->add(
             [
-            'name'    => '',
-            'content' => 'A ticket to check takeintoaccount_delay_stat computation state',
+                'name'    => '',
+                'content' => 'A ticket to check takeintoaccount_delay_stat computation state',
             ]
         );
         $this->integer((int)$ticketId)->isGreaterThan(0);
@@ -2377,7 +2378,7 @@ class Ticket extends DbTestCase
         $this->boolean(
             $ticket->update(
                 $input + [
-                'id' => $ticketId,
+                    'id' => $ticketId,
                 ]
             )
         )->isTrue();
@@ -2403,72 +2404,72 @@ class Ticket extends DbTestCase
         $this->integer((int)$group_id)->isGreaterThan(0);
 
         return [
-         [
-            'input'    => [
-               '_users_id_assign' => ['4'], // "tech"
-               'status' => \CommonITILObject::INCOMING,
+            [
+                'input'    => [
+                    '_users_id_assign' => ['4'], // "tech"
+                    'status' => \CommonITILObject::INCOMING,
+                ],
+                'expected' => \CommonITILObject::ASSIGNED, // incoming changed to assign as actors are set
             ],
-            'expected' => \CommonITILObject::ASSIGNED, // incoming changed to assign as actors are set
-         ],
-         [
-            'input'    => [
-               '_groups_id_assign' => $group_id,
-               'status' => \CommonITILObject::INCOMING,
+            [
+                'input'    => [
+                    '_groups_id_assign' => $group_id,
+                    'status' => \CommonITILObject::INCOMING,
+                ],
+                'expected' => \CommonITILObject::ASSIGNED, // incoming changed to assign as actors are set
             ],
-            'expected' => \CommonITILObject::ASSIGNED, // incoming changed to assign as actors are set
-         ],
-         [
-            'input'    => [
-               '_suppliers_id_assign' => '1', // "_suplier01_name"
-               'status' => \CommonITILObject::INCOMING,
+            [
+                'input'    => [
+                    '_suppliers_id_assign' => '1', // "_suplier01_name"
+                    'status' => \CommonITILObject::INCOMING,
+                ],
+                'expected' => \CommonITILObject::ASSIGNED, // incoming changed to assign as actors are set
             ],
-            'expected' => \CommonITILObject::ASSIGNED, // incoming changed to assign as actors are set
-         ],
-         [
-            'input'    => [
-               '_users_id_assign' => ['4'], // "tech"
-               'status' => \CommonITILObject::INCOMING,
-               '_do_not_compute_status' => '1',
+            [
+                'input'    => [
+                    '_users_id_assign' => ['4'], // "tech"
+                    'status' => \CommonITILObject::INCOMING,
+                    '_do_not_compute_status' => '1',
+                ],
+                'expected' => \CommonITILObject::INCOMING, // flag prevent status change
             ],
-            'expected' => \CommonITILObject::INCOMING, // flag prevent status change
-         ],
-         [
-            'input'    => [
-               '_groups_id_assign' => $group_id,
-               'status' => \CommonITILObject::INCOMING,
-               '_do_not_compute_status' => '1',
+            [
+                'input'    => [
+                    '_groups_id_assign' => $group_id,
+                    'status' => \CommonITILObject::INCOMING,
+                    '_do_not_compute_status' => '1',
+                ],
+                'expected' => \CommonITILObject::INCOMING, // flag prevent status change
             ],
-            'expected' => \CommonITILObject::INCOMING, // flag prevent status change
-         ],
-         [
-            'input'    => [
-               '_suppliers_id_assign' => '1', // "_suplier01_name"
-               'status' => \CommonITILObject::INCOMING,
-               '_do_not_compute_status' => '1',
+            [
+                'input'    => [
+                    '_suppliers_id_assign' => '1', // "_suplier01_name"
+                    'status' => \CommonITILObject::INCOMING,
+                    '_do_not_compute_status' => '1',
+                ],
+                'expected' => \CommonITILObject::INCOMING, // flag prevent status change
             ],
-            'expected' => \CommonITILObject::INCOMING, // flag prevent status change
-         ],
-         [
-            'input'    => [
-               '_users_id_assign' => ['4'], // "tech"
-               'status' => \CommonITILObject::WAITING,
+            [
+                'input'    => [
+                    '_users_id_assign' => ['4'], // "tech"
+                    'status' => \CommonITILObject::WAITING,
+                ],
+                'expected' => \CommonITILObject::WAITING, // status not changed as not "new"
             ],
-            'expected' => \CommonITILObject::WAITING, // status not changed as not "new"
-         ],
-         [
-            'input'    => [
-               '_groups_id_assign' => $group_id,
-               'status' => \CommonITILObject::WAITING,
+            [
+                'input'    => [
+                    '_groups_id_assign' => $group_id,
+                    'status' => \CommonITILObject::WAITING,
+                ],
+                'expected' => \CommonITILObject::WAITING, // status not changed as not "new"
             ],
-            'expected' => \CommonITILObject::WAITING, // status not changed as not "new"
-         ],
-         [
-            'input'    => [
-               '_suppliers_id_assign' => '1', // "_suplier01_name"
-               'status' => \CommonITILObject::WAITING,
+            [
+                'input'    => [
+                    '_suppliers_id_assign' => '1', // "_suplier01_name"
+                    'status' => \CommonITILObject::WAITING,
+                ],
+                'expected' => \CommonITILObject::WAITING, // status not changed as not "new"
             ],
-            'expected' => \CommonITILObject::WAITING, // status not changed as not "new"
-         ],
         ];
     }
 
@@ -2489,8 +2490,8 @@ class Ticket extends DbTestCase
         $ticket = new \Ticket();
         $ticketId = $this->integer(
             (int)$ticket->add([
-            'name'    => '',
-            'content' => 'A ticket to check status computation',
+                'name'    => '',
+                'content' => 'A ticket to check status computation',
             ] + $input)
         )->isGreaterThan(0);
 
@@ -2505,33 +2506,33 @@ class Ticket extends DbTestCase
     {
         $rule = new \Rule();
         $rule->getFromDBByCrit([
-         'sub_type' => 'RuleTicket',
-         'name' => 'Ticket location from user',
+            'sub_type' => 'RuleTicket',
+            'name' => 'Ticket location from user',
         ]);
         $location = new \Location();
         $location->getFromDBByCrit([
-         'name' => '_location01'
+            'name' => '_location01'
         ]);
         $user = new \User();
         $user->add([
-         'name' => $this->getUniqueString(),
-         'locations_id' => $location->getID(),
+            'name' => $this->getUniqueString(),
+            'locations_id' => $location->getID(),
         ]);
 
        // test ad ticket with single requester
         $ticket = new \Ticket();
         $rule->update([
-         'id' => $rule->getID(),
-         'is_active' => '1'
+            'id' => $rule->getID(),
+            'is_active' => '1'
         ]);
         $ticket->add([
-         '_users_id_requester' => $user->getID(),
-         'name' => 'test location assignment',
-         'content' => 'test location assignment',
+            '_users_id_requester' => $user->getID(),
+            'name' => 'test location assignment',
+            'content' => 'test location assignment',
         ]);
         $rule->update([
-         'id' => $rule->getID(),
-         'is_active' => '0'
+            'id' => $rule->getID(),
+            'is_active' => '0'
         ]);
         $ticket->getFromDB($ticket->getID());
         $this->integer((int) $ticket->fields['locations_id'])->isEqualTo($location->getID());
@@ -2539,17 +2540,17 @@ class Ticket extends DbTestCase
        // test add ticket with multiple requesters
         $ticket = new \Ticket();
         $rule->update([
-         'id' => $rule->getID(),
-         'is_active' => '1'
+            'id' => $rule->getID(),
+            'is_active' => '1'
         ]);
         $ticket->add([
-         '_users_id_requester' => [$user->getID(), 2],
-         'name' => 'test location assignment',
-         'content' => 'test location assignment',
+            '_users_id_requester' => [$user->getID(), 2],
+            'name' => 'test location assignment',
+            'content' => 'test location assignment',
         ]);
         $rule->update([
-         'id' => $rule->getID(),
-         'is_active' => '0'
+            'id' => $rule->getID(),
+            'is_active' => '0'
         ]);
         $ticket->getFromDB($ticket->getID());
         $this->integer((int) $ticket->fields['locations_id'])->isEqualTo($location->getID());
@@ -2557,17 +2558,17 @@ class Ticket extends DbTestCase
        // test add ticket with multiple requesters
         $ticket = new \Ticket();
         $rule->update([
-         'id' => $rule->getID(),
-         'is_active' => '1'
+            'id' => $rule->getID(),
+            'is_active' => '1'
         ]);
         $ticket->add([
-         '_users_id_requester' => [2, $user->getID()],
-         'name' => 'test location assignment',
-         'content' => 'test location assignment',
+            '_users_id_requester' => [2, $user->getID()],
+            'name' => 'test location assignment',
+            'content' => 'test location assignment',
         ]);
         $rule->update([
-         'id' => $rule->getID(),
-         'is_active' => '0'
+            'id' => $rule->getID(),
+            'is_active' => '0'
         ]);
         $ticket->getFromDB($ticket->getID());
         $this->integer((int) $ticket->fields['locations_id'])->isEqualTo(0);
@@ -2582,32 +2583,32 @@ class Ticket extends DbTestCase
        // set default calendar and autoclose delay in root entity
         $entity = new \Entity();
         $this->boolean($entity->update([
-         'id'              => 0,
-         'calendars_id'    => 1,
-         'autopurge_delay' => 5,
+            'id'              => 0,
+            'calendars_id'    => 1,
+            'autopurge_delay' => 5,
         ]))->isTrue();
 
         $doc = new \Document();
         $did = (int)$doc->add([
-         'name'   => 'test doc'
+            'name'   => 'test doc'
         ]);
         $this->integer($did)->isGreaterThan(0);
 
        // create some closed tickets at various solvedate
         $ticket = new \Ticket();
         $tickets_id_1 = $ticket->add([
-         'name'            => "test autopurge 1",
-         'content'         => "test autopurge 1",
-         'entities_id'     => 0,
-         'status'          => \CommonITILObject::CLOSED,
-         '_documents_id'   => [$did]
+            'name'            => "test autopurge 1",
+            'content'         => "test autopurge 1",
+            'entities_id'     => 0,
+            'status'          => \CommonITILObject::CLOSED,
+            '_documents_id'   => [$did]
         ]);
         $this->integer((int)$tickets_id_1)->isGreaterThan(0);
         $this->boolean(
             $DB->update('glpi_tickets', [
-            'closedate' => date('Y-m-d 10:00:00', time() - 10 * DAY_TIMESTAMP),
+                'closedate' => date('Y-m-d 10:00:00', time() - 10 * DAY_TIMESTAMP),
             ], [
-            'id' => $tickets_id_1,
+                'id' => $tickets_id_1,
             ])
         )->isTrue();
         $this->boolean($ticket->getFromDB($tickets_id_1))->isTrue();
@@ -2616,17 +2617,17 @@ class Ticket extends DbTestCase
         $this->boolean($docitem->getFromDBByCrit(['itemtype' => 'Ticket', 'items_id' => $tickets_id_1]))->isTrue();
 
         $tickets_id_2 = $ticket->add([
-         'name'        => "test autopurge 2",
-         'content'     => "test autopurge 2",
-         'entities_id' => 0,
-         'status'      => \CommonITILObject::CLOSED,
+            'name'        => "test autopurge 2",
+            'content'     => "test autopurge 2",
+            'entities_id' => 0,
+            'status'      => \CommonITILObject::CLOSED,
         ]);
         $this->integer((int)$tickets_id_2)->isGreaterThan(0);
         $this->boolean(
             $DB->update('glpi_tickets', [
-            'closedate' => date('Y-m-d 10:00:00', time()),
+                'closedate' => date('Y-m-d 10:00:00', time()),
             ], [
-            'id' => $tickets_id_2,
+                'id' => $tickets_id_2,
             ])
         );
 
@@ -2653,197 +2654,197 @@ class Ticket extends DbTestCase
 
         $ticket = new \Ticket();
         $ticket1 = $ticket->add([
-         'name'        => "test merge 1",
-         'content'     => "test merge 1",
-         'entities_id' => 0,
-         'status'      => \CommonITILObject::INCOMING,
+            'name'        => "test merge 1",
+            'content'     => "test merge 1",
+            'entities_id' => 0,
+            'status'      => \CommonITILObject::INCOMING,
         ]);
         $ticket2 = $ticket->add([
-         'name'        => "test merge 2",
-         'content'     => "test merge 2",
-         'entities_id' => 0,
-         'status'      => \CommonITILObject::INCOMING,
+            'name'        => "test merge 2",
+            'content'     => "test merge 2",
+            'entities_id' => 0,
+            'status'      => \CommonITILObject::INCOMING,
         ]);
         $ticket3 = $ticket->add([
-         'name'        => "test merge 3",
-         'content'     => "test merge 3",
-         'entities_id' => 0,
-         'status'      => \CommonITILObject::INCOMING,
+            'name'        => "test merge 3",
+            'content'     => "test merge 3",
+            'entities_id' => 0,
+            'status'      => \CommonITILObject::INCOMING,
         ]);
 
         $task = new \TicketTask();
         $fup = new \ITILFollowup();
         $task->add([
-         'tickets_id'   => $ticket2,
-         'content'      => 'ticket 2 task 1'
+            'tickets_id'   => $ticket2,
+            'content'      => 'ticket 2 task 1'
         ]);
         $task->add([
-         'tickets_id'   => $ticket3,
-         'content'      => 'ticket 3 task 1'
+            'tickets_id'   => $ticket3,
+            'content'      => 'ticket 3 task 1'
         ]);
         $fup->add([
-         'itemtype'  => 'Ticket',
-         'items_id'  => $ticket2,
-         'content'   => 'ticket 2 fup 1'
+            'itemtype'  => 'Ticket',
+            'items_id'  => $ticket2,
+            'content'   => 'ticket 2 fup 1'
         ]);
         $fup->add([
-         'itemtype'  => 'Ticket',
-         'items_id'  => $ticket3,
-         'content'   => 'ticket 3 fup 1'
+            'itemtype'  => 'Ticket',
+            'items_id'  => $ticket3,
+            'content'   => 'ticket 3 fup 1'
         ]);
 
         $document = new \Document();
         $documents_id = $document->add([
-         'name'     => 'basic document in both',
-         'filename' => 'doc.xls',
-         'users_id' => '2', // user "glpi"
+            'name'     => 'basic document in both',
+            'filename' => 'doc.xls',
+            'users_id' => '2', // user "glpi"
         ]);
         $documents_id2 = $document->add([
-         'name'     => 'basic document in target',
-         'filename' => 'doc.xls',
-         'users_id' => '2', // user "glpi"
+            'name'     => 'basic document in target',
+            'filename' => 'doc.xls',
+            'users_id' => '2', // user "glpi"
         ]);
         $documents_id3 = $document->add([
-         'name'     => 'basic document in sources',
-         'filename' => 'doc.xls',
-         'users_id' => '2', // user "glpi"
+            'name'     => 'basic document in sources',
+            'filename' => 'doc.xls',
+            'users_id' => '2', // user "glpi"
         ]);
 
         $document_item = new \Document_Item();
        // Add document to two tickets to test merging duplicates
         $document_item->add([
-         'itemtype'     => 'Ticket',
-         'items_id'     => $ticket2,
-         'documents_id' => $documents_id,
-         'entities_id'  => '0',
-         'is_recursive' => 0
+            'itemtype'     => 'Ticket',
+            'items_id'     => $ticket2,
+            'documents_id' => $documents_id,
+            'entities_id'  => '0',
+            'is_recursive' => 0
         ]);
         $document_item->add([
-         'itemtype'     => 'Ticket',
-         'items_id'     => $ticket1,
-         'documents_id' => $documents_id,
-         'entities_id'  => '0',
-         'is_recursive' => 0
+            'itemtype'     => 'Ticket',
+            'items_id'     => $ticket1,
+            'documents_id' => $documents_id,
+            'entities_id'  => '0',
+            'is_recursive' => 0
         ]);
         $document_item->add([
-         'itemtype'     => 'Ticket',
-         'items_id'     => $ticket1,
-         'documents_id' => $documents_id2,
-         'entities_id'  => '0',
-         'is_recursive' => 0
+            'itemtype'     => 'Ticket',
+            'items_id'     => $ticket1,
+            'documents_id' => $documents_id2,
+            'entities_id'  => '0',
+            'is_recursive' => 0
         ]);
         $document_item->add([
-         'itemtype'     => 'Ticket',
-         'items_id'     => $ticket2,
-         'documents_id' => $documents_id3,
-         'entities_id'  => '0',
-         'is_recursive' => 0
+            'itemtype'     => 'Ticket',
+            'items_id'     => $ticket2,
+            'documents_id' => $documents_id3,
+            'entities_id'  => '0',
+            'is_recursive' => 0
         ]);
         $document_item->add([
-         'itemtype'     => 'Ticket',
-         'items_id'     => $ticket3,
-         'documents_id' => $documents_id3,
-         'entities_id'  => '0',
-         'is_recursive' => 0
+            'itemtype'     => 'Ticket',
+            'items_id'     => $ticket3,
+            'documents_id' => $documents_id3,
+            'entities_id'  => '0',
+            'is_recursive' => 0
         ]);
 
         $ticket_user = new \Ticket_User();
         $ticket_user->add([
-         'tickets_id'         => $ticket1,
-         'type'               => \Ticket_User::REQUESTER,
-         'users_id'           => 2
+            'tickets_id'         => $ticket1,
+            'type'               => \Ticket_User::REQUESTER,
+            'users_id'           => 2
         ]);
         $ticket_user->add([ // Duplicate with #1
-         'tickets_id'         => $ticket3,
-         'type'               => \Ticket_User::REQUESTER,
-         'users_id'           => 2
+            'tickets_id'         => $ticket3,
+            'type'               => \Ticket_User::REQUESTER,
+            'users_id'           => 2
         ]);
         $ticket_user->add([
-         'tickets_id'         => $ticket1,
-         'users_id'           => 0,
-         'type'               => \Ticket_User::REQUESTER,
-         'alternative_email'  => 'test@glpi.com'
+            'tickets_id'         => $ticket1,
+            'users_id'           => 0,
+            'type'               => \Ticket_User::REQUESTER,
+            'alternative_email'  => 'test@glpi.com'
         ]);
         $ticket_user->add([ // Duplicate with #3
-         'tickets_id'         => $ticket2,
-         'users_id'           => 0,
-         'type'               => \Ticket_User::REQUESTER,
-         'alternative_email'  => 'test@glpi.com'
+            'tickets_id'         => $ticket2,
+            'users_id'           => 0,
+            'type'               => \Ticket_User::REQUESTER,
+            'alternative_email'  => 'test@glpi.com'
         ]);
         $ticket_user->add([ // Duplicate with #1
-         'tickets_id'         => $ticket2,
-         'users_id'           => 2,
-         'type'               => \Ticket_User::REQUESTER,
-         'alternative_email'  => 'test@glpi.com'
+            'tickets_id'         => $ticket2,
+            'users_id'           => 2,
+            'type'               => \Ticket_User::REQUESTER,
+            'alternative_email'  => 'test@glpi.com'
         ]);
         $ticket_user->add([
-         'tickets_id'         => $ticket3,
-         'users_id'           => 2,
-         'type'               => \Ticket_User::ASSIGN,
-         'alternative_email'  => 'test@glpi.com'
+            'tickets_id'         => $ticket3,
+            'users_id'           => 2,
+            'type'               => \Ticket_User::ASSIGN,
+            'alternative_email'  => 'test@glpi.com'
         ]);
 
         $ticket_group = new \Group_Ticket();
         $ticket_group->add([
-         'tickets_id'         => $ticket1,
-         'groups_id'          => 1,
-         'type'               => \Group_Ticket::REQUESTER
+            'tickets_id'         => $ticket1,
+            'groups_id'          => 1,
+            'type'               => \Group_Ticket::REQUESTER
         ]);
         $ticket_group->add([ // Duplicate with #1
-         'tickets_id'         => $ticket3,
-         'groups_id'          => 1,
-         'type'               => \Group_Ticket::REQUESTER
+            'tickets_id'         => $ticket3,
+            'groups_id'          => 1,
+            'type'               => \Group_Ticket::REQUESTER
         ]);
         $ticket_group->add([
-         'tickets_id'         => $ticket3,
-         'groups_id'          => 1,
-         'type'               => \Group_Ticket::ASSIGN
+            'tickets_id'         => $ticket3,
+            'groups_id'          => 1,
+            'type'               => \Group_Ticket::ASSIGN
         ]);
 
         $ticket_supplier = new \Supplier_Ticket();
         $ticket_supplier->add([
-         'tickets_id'         => $ticket1,
-         'type'               => \Supplier_Ticket::REQUESTER,
-         'suppliers_id'       => 2
+            'tickets_id'         => $ticket1,
+            'type'               => \Supplier_Ticket::REQUESTER,
+            'suppliers_id'       => 2
         ]);
         $ticket_supplier->add([ // Duplicate with #1
-         'tickets_id'         => $ticket3,
-         'type'               => \Supplier_Ticket::REQUESTER,
-         'suppliers_id'       => 2
+            'tickets_id'         => $ticket3,
+            'type'               => \Supplier_Ticket::REQUESTER,
+            'suppliers_id'       => 2
         ]);
         $ticket_supplier->add([
-         'tickets_id'         => $ticket1,
-         'suppliers_id'       => 0,
-         'type'               => \Supplier_Ticket::REQUESTER,
-         'alternative_email'  => 'test@glpi.com'
+            'tickets_id'         => $ticket1,
+            'suppliers_id'       => 0,
+            'type'               => \Supplier_Ticket::REQUESTER,
+            'alternative_email'  => 'test@glpi.com'
         ]);
         $ticket_supplier->add([ // Duplicate with #3
-         'tickets_id'         => $ticket2,
-         'suppliers_id'       => 0,
-         'type'               => \Supplier_Ticket::REQUESTER,
-         'alternative_email'  => 'test@glpi.com'
+            'tickets_id'         => $ticket2,
+            'suppliers_id'       => 0,
+            'type'               => \Supplier_Ticket::REQUESTER,
+            'alternative_email'  => 'test@glpi.com'
         ]);
         $ticket_supplier->add([ // Duplicate with #1
-         'tickets_id'         => $ticket2,
-         'suppliers_id'       => 2,
-         'type'               => \Supplier_Ticket::REQUESTER,
-         'alternative_email'  => 'test@glpi.com'
+            'tickets_id'         => $ticket2,
+            'suppliers_id'       => 2,
+            'type'               => \Supplier_Ticket::REQUESTER,
+            'alternative_email'  => 'test@glpi.com'
         ]);
         $ticket_supplier->add([
-         'tickets_id'         => $ticket3,
-         'suppliers_id'       => 2,
-         'type'               => \Supplier_Ticket::ASSIGN,
-         'alternative_email'  => 'test@glpi.com'
+            'tickets_id'         => $ticket3,
+            'suppliers_id'       => 2,
+            'type'               => \Supplier_Ticket::ASSIGN,
+            'alternative_email'  => 'test@glpi.com'
         ]);
 
         $status = [];
         $mergeparams = [
-         'linktypes' => [
-            'ITILFollowup',
-            'TicketTask',
-            'Document'
-         ],
-         'link_type'  => \Ticket_Ticket::SON_OF
+            'linktypes' => [
+                'ITILFollowup',
+                'TicketTask',
+                'Document'
+            ],
+            'link_type'  => \Ticket_Ticket::SON_OF
         ];
 
         \Ticket::merge($ticket1, [$ticket2, $ticket3], $status, $mergeparams);
@@ -2861,17 +2862,22 @@ class Ticket extends DbTestCase
 
         $task_count = count($task->find(['tickets_id' => $ticket1]));
         $fup_count = count($fup->find([
-         'itemtype' => 'Ticket',
-         'items_id' => $ticket1]));
+            'itemtype' => 'Ticket',
+            'items_id' => $ticket1
+        ]));
         $doc_count = count($document_item->find([
-         'itemtype' => 'Ticket',
-         'items_id' => $ticket1]));
+            'itemtype' => 'Ticket',
+            'items_id' => $ticket1
+        ]));
         $user_count = count($ticket_user->find([
-         'tickets_id' => $ticket1]));
+            'tickets_id' => $ticket1
+        ]));
         $group_count = count($ticket_group->find([
-         'tickets_id' => $ticket1]));
+            'tickets_id' => $ticket1
+        ]));
         $supplier_count = count($ticket_supplier->find([
-         'tickets_id' => $ticket1]));
+            'tickets_id' => $ticket1
+        ]));
 
        // Target ticket should have all tasks
         $this->integer((int)$task_count)->isEqualTo(2);
@@ -2894,105 +2900,105 @@ class Ticket extends DbTestCase
     {
         $ticket = new \Ticket();
         $ticket_id = $ticket->add([
-         'name'            => "test",
-         'content'         => "test",
+            'name'            => "test",
+            'content'         => "test",
         ]);
         $this->integer((int)$ticket_id)->isGreaterThan(0);
 
         return [
-         [
-            'rights'   => [
-               \Change::$rightname       => 0,
-               \Problem::$rightname      => 0,
-               \Ticket::$rightname       => 0,
-               \ITILFollowup::$rightname => 0,
-               \TicketTask::$rightname   => 0,
+            [
+                'rights'   => [
+                    \Change::$rightname       => 0,
+                    \Problem::$rightname      => 0,
+                    \Ticket::$rightname       => 0,
+                    \ITILFollowup::$rightname => 0,
+                    \TicketTask::$rightname   => 0,
+                ],
+                'ticket_id'      => $ticket_id,
+                'bypass_rights'  => false,
+                'expected_where' => sprintf(
+                    "(`glpi_documents_items`.`itemtype` = 'Ticket' AND `glpi_documents_items`.`items_id` = '%1\$s') OR (`glpi_documents_items`.`itemtype` = 'TicketValidation' AND `glpi_documents_items`.`items_id` IN (SELECT `id` FROM `glpi_ticketvalidations` WHERE `glpi_ticketvalidations`.`tickets_id` = '%1\$s'))",
+                    $ticket_id
+                ),
             ],
-            'ticket_id'      => $ticket_id,
-            'bypass_rights'  => false,
-            'expected_where' => sprintf(
-                "(`glpi_documents_items`.`itemtype` = 'Ticket' AND `glpi_documents_items`.`items_id` = '%1\$s') OR (`glpi_documents_items`.`itemtype` = 'TicketValidation' AND `glpi_documents_items`.`items_id` IN (SELECT `id` FROM `glpi_ticketvalidations` WHERE `glpi_ticketvalidations`.`tickets_id` = '%1\$s'))",
-                $ticket_id
-            ),
-         ],
-         [
-            'rights'   => [
-               \Change::$rightname       => 0,
-               \Problem::$rightname      => 0,
-               \Ticket::$rightname       => \READ,
-               \ITILFollowup::$rightname => 0,
-               \TicketTask::$rightname   => 0,
+            [
+                'rights'   => [
+                    \Change::$rightname       => 0,
+                    \Problem::$rightname      => 0,
+                    \Ticket::$rightname       => \READ,
+                    \ITILFollowup::$rightname => 0,
+                    \TicketTask::$rightname   => 0,
+                ],
+                'ticket_id'      => $ticket_id,
+                'bypass_rights'  => false,
+                'expected_where' => sprintf(
+                    "(`glpi_documents_items`.`itemtype` = 'Ticket' AND `glpi_documents_items`.`items_id` = '%1\$s')"
+                    . " OR (`glpi_documents_items`.`itemtype` = 'ITILFollowup' AND `glpi_documents_items`.`items_id` IN (SELECT `id` FROM `glpi_itilfollowups` WHERE `glpi_itilfollowups`.`itemtype` = 'Ticket' AND `glpi_itilfollowups`.`items_id` = '%1\$s' AND ((`is_private` = '0' OR `users_id` = '%2\$s'))))"
+                    . " OR (`glpi_documents_items`.`itemtype` = 'ITILSolution' AND `glpi_documents_items`.`items_id` IN (SELECT `id` FROM `glpi_itilsolutions` WHERE `glpi_itilsolutions`.`itemtype` = 'Ticket' AND `glpi_itilsolutions`.`items_id` = '%1\$s'))"
+                    . " OR (`glpi_documents_items`.`itemtype` = 'TicketValidation' AND `glpi_documents_items`.`items_id` IN (SELECT `id` FROM `glpi_ticketvalidations` WHERE `glpi_ticketvalidations`.`tickets_id` = '%1\$s'))",
+                    $ticket_id,
+                    getItemByTypeName('User', TU_USER, true)
+                ),
             ],
-            'ticket_id'      => $ticket_id,
-            'bypass_rights'  => false,
-            'expected_where' => sprintf(
-                "(`glpi_documents_items`.`itemtype` = 'Ticket' AND `glpi_documents_items`.`items_id` = '%1\$s')"
-                . " OR (`glpi_documents_items`.`itemtype` = 'ITILFollowup' AND `glpi_documents_items`.`items_id` IN (SELECT `id` FROM `glpi_itilfollowups` WHERE `glpi_itilfollowups`.`itemtype` = 'Ticket' AND `glpi_itilfollowups`.`items_id` = '%1\$s' AND ((`is_private` = '0' OR `users_id` = '%2\$s'))))"
-                . " OR (`glpi_documents_items`.`itemtype` = 'ITILSolution' AND `glpi_documents_items`.`items_id` IN (SELECT `id` FROM `glpi_itilsolutions` WHERE `glpi_itilsolutions`.`itemtype` = 'Ticket' AND `glpi_itilsolutions`.`items_id` = '%1\$s'))"
-                . " OR (`glpi_documents_items`.`itemtype` = 'TicketValidation' AND `glpi_documents_items`.`items_id` IN (SELECT `id` FROM `glpi_ticketvalidations` WHERE `glpi_ticketvalidations`.`tickets_id` = '%1\$s'))",
-                $ticket_id,
-                getItemByTypeName('User', TU_USER, true)
-            ),
-         ],
-         [
-            'rights'   => [
-               \Change::$rightname       => 0,
-               \Problem::$rightname      => 0,
-               \Ticket::$rightname       => \READ,
-               \ITILFollowup::$rightname => \ITILFollowup::SEEPUBLIC,
-               \TicketTask::$rightname   => \TicketTask::SEEPUBLIC,
+            [
+                'rights'   => [
+                    \Change::$rightname       => 0,
+                    \Problem::$rightname      => 0,
+                    \Ticket::$rightname       => \READ,
+                    \ITILFollowup::$rightname => \ITILFollowup::SEEPUBLIC,
+                    \TicketTask::$rightname   => \TicketTask::SEEPUBLIC,
+                ],
+                'ticket_id'      => $ticket_id,
+                'bypass_rights'  => false,
+                'expected_where' => sprintf(
+                    "(`glpi_documents_items`.`itemtype` = 'Ticket' AND `glpi_documents_items`.`items_id` = '%1\$s')"
+                    . " OR (`glpi_documents_items`.`itemtype` = 'ITILFollowup' AND `glpi_documents_items`.`items_id` IN (SELECT `id` FROM `glpi_itilfollowups` WHERE `glpi_itilfollowups`.`itemtype` = 'Ticket' AND `glpi_itilfollowups`.`items_id` = '%1\$s' AND ((`is_private` = '0' OR `users_id` = '%2\$s'))))"
+                    . " OR (`glpi_documents_items`.`itemtype` = 'ITILSolution' AND `glpi_documents_items`.`items_id` IN (SELECT `id` FROM `glpi_itilsolutions` WHERE `glpi_itilsolutions`.`itemtype` = 'Ticket' AND `glpi_itilsolutions`.`items_id` = '%1\$s'))"
+                    . " OR (`glpi_documents_items`.`itemtype` = 'TicketValidation' AND `glpi_documents_items`.`items_id` IN (SELECT `id` FROM `glpi_ticketvalidations` WHERE `glpi_ticketvalidations`.`tickets_id` = '%1\$s'))"
+                    . " OR (`glpi_documents_items`.`itemtype` = 'TicketTask' AND `glpi_documents_items`.`items_id` IN (SELECT `id` FROM `glpi_tickettasks` WHERE `tickets_id` = '%1\$s' AND ((`is_private` = '0' OR `users_id` = '%2\$s'))))",
+                    $ticket_id,
+                    getItemByTypeName('User', TU_USER, true)
+                ),
             ],
-            'ticket_id'      => $ticket_id,
-            'bypass_rights'  => false,
-            'expected_where' => sprintf(
-                "(`glpi_documents_items`.`itemtype` = 'Ticket' AND `glpi_documents_items`.`items_id` = '%1\$s')"
-                . " OR (`glpi_documents_items`.`itemtype` = 'ITILFollowup' AND `glpi_documents_items`.`items_id` IN (SELECT `id` FROM `glpi_itilfollowups` WHERE `glpi_itilfollowups`.`itemtype` = 'Ticket' AND `glpi_itilfollowups`.`items_id` = '%1\$s' AND ((`is_private` = '0' OR `users_id` = '%2\$s'))))"
-                . " OR (`glpi_documents_items`.`itemtype` = 'ITILSolution' AND `glpi_documents_items`.`items_id` IN (SELECT `id` FROM `glpi_itilsolutions` WHERE `glpi_itilsolutions`.`itemtype` = 'Ticket' AND `glpi_itilsolutions`.`items_id` = '%1\$s'))"
-                . " OR (`glpi_documents_items`.`itemtype` = 'TicketValidation' AND `glpi_documents_items`.`items_id` IN (SELECT `id` FROM `glpi_ticketvalidations` WHERE `glpi_ticketvalidations`.`tickets_id` = '%1\$s'))"
-                . " OR (`glpi_documents_items`.`itemtype` = 'TicketTask' AND `glpi_documents_items`.`items_id` IN (SELECT `id` FROM `glpi_tickettasks` WHERE `tickets_id` = '%1\$s' AND ((`is_private` = '0' OR `users_id` = '%2\$s'))))",
-                $ticket_id,
-                getItemByTypeName('User', TU_USER, true)
-            ),
-         ],
-         [
-            'rights'   => [
-               \Change::$rightname       => 0,
-               \Problem::$rightname      => 0,
-               \Ticket::$rightname       => \READ,
-               \ITILFollowup::$rightname => \ITILFollowup::SEEPRIVATE,
-               \TicketTask::$rightname   => 0,
+            [
+                'rights'   => [
+                    \Change::$rightname       => 0,
+                    \Problem::$rightname      => 0,
+                    \Ticket::$rightname       => \READ,
+                    \ITILFollowup::$rightname => \ITILFollowup::SEEPRIVATE,
+                    \TicketTask::$rightname   => 0,
+                ],
+                'ticket_id'      => $ticket_id,
+                'bypass_rights'  => false,
+                'expected_where' => sprintf(
+                    "(`glpi_documents_items`.`itemtype` = 'Ticket' AND `glpi_documents_items`.`items_id` = '%1\$s')"
+                    . " OR (`glpi_documents_items`.`itemtype` = 'ITILFollowup' AND `glpi_documents_items`.`items_id` IN (SELECT `id` FROM `glpi_itilfollowups` WHERE `glpi_itilfollowups`.`itemtype` = 'Ticket' AND `glpi_itilfollowups`.`items_id` = '%1\$s'))"
+                    . " OR (`glpi_documents_items`.`itemtype` = 'ITILSolution' AND `glpi_documents_items`.`items_id` IN (SELECT `id` FROM `glpi_itilsolutions` WHERE `glpi_itilsolutions`.`itemtype` = 'Ticket' AND `glpi_itilsolutions`.`items_id` = '%1\$s'))"
+                    . " OR (`glpi_documents_items`.`itemtype` = 'TicketValidation' AND `glpi_documents_items`.`items_id` IN (SELECT `id` FROM `glpi_ticketvalidations` WHERE `glpi_ticketvalidations`.`tickets_id` = '%1\$s'))",
+                    $ticket_id,
+                    getItemByTypeName('User', TU_USER, true)
+                ),
             ],
-            'ticket_id'      => $ticket_id,
-            'bypass_rights'  => false,
-            'expected_where' => sprintf(
-                "(`glpi_documents_items`.`itemtype` = 'Ticket' AND `glpi_documents_items`.`items_id` = '%1\$s')"
-                . " OR (`glpi_documents_items`.`itemtype` = 'ITILFollowup' AND `glpi_documents_items`.`items_id` IN (SELECT `id` FROM `glpi_itilfollowups` WHERE `glpi_itilfollowups`.`itemtype` = 'Ticket' AND `glpi_itilfollowups`.`items_id` = '%1\$s'))"
-                . " OR (`glpi_documents_items`.`itemtype` = 'ITILSolution' AND `glpi_documents_items`.`items_id` IN (SELECT `id` FROM `glpi_itilsolutions` WHERE `glpi_itilsolutions`.`itemtype` = 'Ticket' AND `glpi_itilsolutions`.`items_id` = '%1\$s'))"
-                . " OR (`glpi_documents_items`.`itemtype` = 'TicketValidation' AND `glpi_documents_items`.`items_id` IN (SELECT `id` FROM `glpi_ticketvalidations` WHERE `glpi_ticketvalidations`.`tickets_id` = '%1\$s'))",
-                $ticket_id,
-                getItemByTypeName('User', TU_USER, true)
-            ),
-         ],
-         [
-            'rights'   => [
-               \Change::$rightname       => 0,
-               \Problem::$rightname      => 0,
-               \Ticket::$rightname       => \READ,
-               \ITILFollowup::$rightname => \ITILFollowup::SEEPUBLIC,
-               \TicketTask::$rightname   => \TicketTask::SEEPRIVATE,
+            [
+                'rights'   => [
+                    \Change::$rightname       => 0,
+                    \Problem::$rightname      => 0,
+                    \Ticket::$rightname       => \READ,
+                    \ITILFollowup::$rightname => \ITILFollowup::SEEPUBLIC,
+                    \TicketTask::$rightname   => \TicketTask::SEEPRIVATE,
+                ],
+                'ticket_id'      => $ticket_id,
+                'bypass_rights'  => false,
+                'expected_where' => sprintf(
+                    "(`glpi_documents_items`.`itemtype` = 'Ticket' AND `glpi_documents_items`.`items_id` = '%1\$s')"
+                    . " OR (`glpi_documents_items`.`itemtype` = 'ITILFollowup' AND `glpi_documents_items`.`items_id` IN (SELECT `id` FROM `glpi_itilfollowups` WHERE `glpi_itilfollowups`.`itemtype` = 'Ticket' AND `glpi_itilfollowups`.`items_id` = '%1\$s' AND ((`is_private` = '0' OR `users_id` = '%2\$s'))))"
+                    . " OR (`glpi_documents_items`.`itemtype` = 'ITILSolution' AND `glpi_documents_items`.`items_id` IN (SELECT `id` FROM `glpi_itilsolutions` WHERE `glpi_itilsolutions`.`itemtype` = 'Ticket' AND `glpi_itilsolutions`.`items_id` = '%1\$s'))"
+                    . " OR (`glpi_documents_items`.`itemtype` = 'TicketValidation' AND `glpi_documents_items`.`items_id` IN (SELECT `id` FROM `glpi_ticketvalidations` WHERE `glpi_ticketvalidations`.`tickets_id` = '%1\$s'))"
+                    . " OR (`glpi_documents_items`.`itemtype` = 'TicketTask' AND `glpi_documents_items`.`items_id` IN (SELECT `id` FROM `glpi_tickettasks` WHERE `tickets_id` = '%1\$s'))",
+                    $ticket_id,
+                    getItemByTypeName('User', TU_USER, true)
+                ),
             ],
-            'ticket_id'      => $ticket_id,
-            'bypass_rights'  => false,
-            'expected_where' => sprintf(
-                "(`glpi_documents_items`.`itemtype` = 'Ticket' AND `glpi_documents_items`.`items_id` = '%1\$s')"
-                . " OR (`glpi_documents_items`.`itemtype` = 'ITILFollowup' AND `glpi_documents_items`.`items_id` IN (SELECT `id` FROM `glpi_itilfollowups` WHERE `glpi_itilfollowups`.`itemtype` = 'Ticket' AND `glpi_itilfollowups`.`items_id` = '%1\$s' AND ((`is_private` = '0' OR `users_id` = '%2\$s'))))"
-                . " OR (`glpi_documents_items`.`itemtype` = 'ITILSolution' AND `glpi_documents_items`.`items_id` IN (SELECT `id` FROM `glpi_itilsolutions` WHERE `glpi_itilsolutions`.`itemtype` = 'Ticket' AND `glpi_itilsolutions`.`items_id` = '%1\$s'))"
-                . " OR (`glpi_documents_items`.`itemtype` = 'TicketValidation' AND `glpi_documents_items`.`items_id` IN (SELECT `id` FROM `glpi_ticketvalidations` WHERE `glpi_ticketvalidations`.`tickets_id` = '%1\$s'))"
-                . " OR (`glpi_documents_items`.`itemtype` = 'TicketTask' AND `glpi_documents_items`.`items_id` IN (SELECT `id` FROM `glpi_tickettasks` WHERE `tickets_id` = '%1\$s'))",
-                $ticket_id,
-                getItemByTypeName('User', TU_USER, true)
-            ),
-         ],
         ];
     }
 
@@ -3031,7 +3037,7 @@ class Ticket extends DbTestCase
 
        // Test display of saved inputs from a previous submit
         $_SESSION['saveInput'][\Ticket::class] = [
-         'content' => '&lt;p&gt; &lt;/p&gt;&lt;p&gt;&lt;img id="3e29dffe-0237ea21-5e5e7034b1d1a1.77230247"'
+            'content' => '&lt;p&gt; &lt;/p&gt;&lt;p&gt;&lt;img id="3e29dffe-0237ea21-5e5e7034b1d1a1.77230247"'
          . ' src="data:image/png;base64,' . $base64Image . '" width="12" height="12" /&gt;&lt;/p&gt;',
         ];
 
@@ -3053,18 +3059,18 @@ class Ticket extends DbTestCase
         $filename = '5e5e92ffd9bd91.11111111image_paste22222222.png';
         $instance = new \Ticket();
         $input = [
-         'name'    => 'a ticket',
-         'content' => '&lt;p&gt; &lt;/p&gt;&lt;p&gt;&lt;img id="3e29dffe-0237ea21-5e5e7034b1d1a1.00000000"'
+            'name'    => 'a ticket',
+            'content' => '&lt;p&gt; &lt;/p&gt;&lt;p&gt;&lt;img id="3e29dffe-0237ea21-5e5e7034b1d1a1.00000000"'
          . ' src="data:image/png;base64,' . $base64Image . '" width="12" height="12" /&gt;&lt;/p&gt;',
-         '_content' => [
-            $filename,
-         ],
-         '_tag_content' => [
-            '3e29dffe-0237ea21-5e5e7034b1d1a1.00000000',
-         ],
-         '_prefix_content' => [
-            '5e5e92ffd9bd91.11111111',
-         ]
+            '_content' => [
+                $filename,
+            ],
+            '_tag_content' => [
+                '3e29dffe-0237ea21-5e5e7034b1d1a1.00000000',
+            ],
+            '_prefix_content' => [
+                '5e5e92ffd9bd91.11111111',
+            ]
         ];
         copy(__DIR__ . '/../fixtures/uploads/foo.png', GLPI_TMP_DIR . '/' . $filename);
         $instance->add($input);
@@ -3076,18 +3082,18 @@ class Ticket extends DbTestCase
         $filename = '5e5e92ffd9bd91.44444444image_paste55555555.png';
         copy(__DIR__ . '/../fixtures/uploads/bar.png', GLPI_TMP_DIR . '/' . $filename);
         $instance->update([
-         'id' => $instance->getID(),
-         'content' => '&lt;p&gt; &lt;/p&gt;&lt;p&gt;&lt;img id="3e29dffe-0237ea21-5e5e7034b1d1a1.33333333"'
+            'id' => $instance->getID(),
+            'content' => '&lt;p&gt; &lt;/p&gt;&lt;p&gt;&lt;img id="3e29dffe-0237ea21-5e5e7034b1d1a1.33333333"'
          . ' src="data:image/png;base64,' . $base64Image . '" width="12" height="12" /&gt;&lt;/p&gt;',
-         '_content' => [
-            $filename,
-         ],
-         '_tag_content' => [
-            '3e29dffe-0237ea21-5e5e7034b1d1a1.33333333',
-         ],
-         '_prefix_content' => [
-            '5e5e92ffd9bd91.44444444',
-         ]
+            '_content' => [
+                $filename,
+            ],
+            '_tag_content' => [
+                '3e29dffe-0237ea21-5e5e7034b1d1a1.33333333',
+            ],
+            '_prefix_content' => [
+                '5e5e92ffd9bd91.44444444',
+            ]
         ]);
         $expected = 'a href="/front/document.send.php?docid=';
         $this->string($instance->fields['content'])->contains($expected);
@@ -3102,24 +3108,24 @@ class Ticket extends DbTestCase
         $filename = '5e5e92ffd9bd91.11111111' . 'foo.txt';
         $instance = new \Ticket();
         $input = [
-         'name'    => 'a ticket',
-         'content' => 'testUploadDocuments',
-         '_filename' => [
-            $filename,
-         ],
-         '_tag_filename' => [
-            '3e29dffe-0237ea21-5e5e7034b1ffff.00000000',
-         ],
-         '_prefix_filename' => [
-            '5e5e92ffd9bd91.11111111',
-         ]
+            'name'    => 'a ticket',
+            'content' => 'testUploadDocuments',
+            '_filename' => [
+                $filename,
+            ],
+            '_tag_filename' => [
+                '3e29dffe-0237ea21-5e5e7034b1ffff.00000000',
+            ],
+            '_prefix_filename' => [
+                '5e5e92ffd9bd91.11111111',
+            ]
         ];
         copy(__DIR__ . '/../fixtures/uploads/foo.txt', GLPI_TMP_DIR . '/' . $filename);
         $instance->add($input);
         $this->string($instance->fields['content'])->contains('testUploadDocuments');
         $count = (new \DBUtils())->countElementsInTable(\Document_Item::getTable(), [
-         'itemtype' => 'Ticket',
-         'items_id' => $instance->getID(),
+            'itemtype' => 'Ticket',
+            'items_id' => $instance->getID(),
         ]);
         $this->integer($count)->isEqualTo(1);
 
@@ -3127,22 +3133,22 @@ class Ticket extends DbTestCase
         $filename = '5e5e92ffd9bd91.44444444bar.txt';
         copy(__DIR__ . '/../fixtures/uploads/bar.txt', GLPI_TMP_DIR . '/' . $filename);
         $instance->update([
-         'id' => $instance->getID(),
-         'content' => 'update testUploadDocuments',
-         '_filename' => [
-            $filename,
-         ],
-         '_tag_filename' => [
-            '3e29dffe-0237ea21-5e5e7034b1d1a1.33333333',
-         ],
-         '_prefix_filename' => [
-            '5e5e92ffd9bd91.44444444',
-         ]
+            'id' => $instance->getID(),
+            'content' => 'update testUploadDocuments',
+            '_filename' => [
+                $filename,
+            ],
+            '_tag_filename' => [
+                '3e29dffe-0237ea21-5e5e7034b1d1a1.33333333',
+            ],
+            '_prefix_filename' => [
+                '5e5e92ffd9bd91.44444444',
+            ]
         ]);
         $this->string($instance->fields['content'])->contains('update testUploadDocuments');
         $count = (new \DBUtils())->countElementsInTable(\Document_Item::getTable(), [
-         'itemtype' => 'Ticket',
-         'items_id' => $instance->getID(),
+            'itemtype' => 'Ticket',
+            'items_id' => $instance->getID(),
         ]);
         $this->integer($count)->isEqualTo(2);
     }
@@ -3159,16 +3165,16 @@ class Ticket extends DbTestCase
        // create a template with a predeined description
         $ticketTemplate = new \TicketTemplate();
         $ticketTemplate->add([
-         'name' => $this->getUniqueString(),
+            'name' => $this->getUniqueString(),
         ]);
         $base64Image = base64_encode(file_get_contents(__DIR__ . '/../fixtures/uploads/foo.png'));
         $content = '&lt;p&gt;&lt;img id="3e29dffe-0237ea21-5e57d2c8895d55.57735524"'
         . ' src="data:image/png;base64,' . $base64Image . '" width="12" height="12" /&gt;&lt;/p&gt;';
         $predefinedField = new \TicketTemplatePredefinedField();
         $predefinedField->add([
-         'tickettemplates_id' => $ticketTemplate->getID(),
-         'num' => '21',
-         'value' => $content
+            'tickettemplates_id' => $ticketTemplate->getID(),
+            'num' => '21',
+            'value' => $content
         ]);
         $session_tpl_id_back = $_SESSION['glpiactiveprofile']['tickettemplates_id'];
         $_SESSION['glpiactiveprofile']['tickettemplates_id'] = $ticketTemplate->getID();
@@ -3206,13 +3212,13 @@ class Ticket extends DbTestCase
        // make postonly delegate of the group
         $gu = new \Group_User();
         $this->integer($gu->add([
-         'users_id'         => $postonly_id,
-         'groups_id'        => $groups_id,
-         'is_userdelegate' => 1,
+            'users_id'         => $postonly_id,
+            'groups_id'        => $groups_id,
+            'is_userdelegate' => 1,
         ]))->isGreaterThan(0);
         $this->integer($gu->add([
-         'users_id'  => $normal_id,
-         'groups_id' => $groups_id,
+            'users_id'  => $normal_id,
+            'groups_id' => $groups_id,
         ]))->isGreaterThan(0);
 
        // check postonly can now create (yes for normal and himself) or not (no for others) for other users
@@ -3234,8 +3240,8 @@ class Ticket extends DbTestCase
         $ticket = new \Ticket();
         $this->integer(
             (int)$ticket->add([
-            'name'    => '',
-            'content' => 'A ticket to check ACLS',
+                'name'    => '',
+                'content' => 'A ticket to check ACLS',
             ])
         )->isGreaterThan(0);
 
@@ -3262,10 +3268,10 @@ class Ticket extends DbTestCase
         $ticket = new \Ticket();
         $this->integer(
             (int)$ticket->add([
-            'name'               => '',
-            'content'            => 'A ticket to check ACLS',
-            'users_id_recipient' => $post_only_id,
-            '_auto_import'       => false,
+                'name'               => '',
+                'content'            => 'A ticket to check ACLS',
+                'users_id_recipient' => $post_only_id,
+                '_auto_import'       => false,
             ])
         )->isGreaterThan(0);
 
@@ -3273,11 +3279,11 @@ class Ticket extends DbTestCase
         $DB->update(
             'glpi_profilerights',
             [
-            'rights' => 0
+                'rights' => 0
             ],
             [
-            'profiles_id' => getItemByTypeName('Profile', 'Self-Service', true),
-            'name'        => \ITILFollowup::$rightname,
+                'profiles_id' => getItemByTypeName('Profile', 'Self-Service', true),
+                'name'        => \ITILFollowup::$rightname,
             ]
         );
 
@@ -3291,11 +3297,11 @@ class Ticket extends DbTestCase
         $DB->update(
             'glpi_profilerights',
             [
-            'rights' => \ITILFollowup::ADDMYTICKET
+                'rights' => \ITILFollowup::ADDMYTICKET
             ],
             [
-            'profiles_id' => getItemByTypeName('Profile', 'Self-Service', true),
-            'name'        => \ITILFollowup::$rightname,
+                'profiles_id' => getItemByTypeName('Profile', 'Self-Service', true),
+                'name'        => \ITILFollowup::$rightname,
             ]
         );
 
@@ -3317,8 +3323,8 @@ class Ticket extends DbTestCase
         $ticket = new \Ticket();
         $this->integer(
             (int)$ticket->add([
-            'name'    => '',
-            'content' => 'A ticket to check ACLS',
+                'name'    => '',
+                'content' => 'A ticket to check ACLS',
             ])
         )->isGreaterThan(0);
 
@@ -3326,11 +3332,11 @@ class Ticket extends DbTestCase
         $DB->update(
             'glpi_profilerights',
             [
-            'rights' => 0
+                'rights' => 0
             ],
             [
-            'profiles_id' => getItemByTypeName('Profile', 'Self-Service', true),
-            'name'        => \ITILFollowup::$rightname,
+                'profiles_id' => getItemByTypeName('Profile', 'Self-Service', true),
+                'name'        => \ITILFollowup::$rightname,
             ]
         );
 
@@ -3344,9 +3350,9 @@ class Ticket extends DbTestCase
         $this->login();
         $ticket_user = new \Ticket_User();
         $input_ticket_user = [
-         'tickets_id' => $ticket->getID(),
-         'users_id'   => $post_only_id,
-         'type'       => \CommonITILActor::REQUESTER
+            'tickets_id' => $ticket->getID(),
+            'users_id'   => $post_only_id,
+            'type'       => \CommonITILActor::REQUESTER
         ];
         $this->integer((int) $ticket_user->add($input_ticket_user))->isGreaterThan(0);
         $this->boolean($ticket->getFromDB($ticket->getID()))->isTrue(); // Reload ticket actors
@@ -3361,11 +3367,11 @@ class Ticket extends DbTestCase
         $DB->update(
             'glpi_profilerights',
             [
-            'rights' => \ITILFollowup::ADDMYTICKET
+                'rights' => \ITILFollowup::ADDMYTICKET
             ],
             [
-            'profiles_id' => getItemByTypeName('Profile', 'Self-Service', true),
-            'name'        => \ITILFollowup::$rightname,
+                'profiles_id' => getItemByTypeName('Profile', 'Self-Service', true),
+                'name'        => \ITILFollowup::$rightname,
             ]
         );
 
@@ -3387,8 +3393,8 @@ class Ticket extends DbTestCase
         $ticket = new \Ticket();
         $this->integer(
             (int)$ticket->add([
-            'name'    => '',
-            'content' => 'A ticket to check ACLS',
+                'name'    => '',
+                'content' => 'A ticket to check ACLS',
             ])
         )->isGreaterThan(0);
 
@@ -3396,11 +3402,11 @@ class Ticket extends DbTestCase
         $DB->update(
             'glpi_profilerights',
             [
-            'rights' => 0
+                'rights' => 0
             ],
             [
-            'profiles_id' => getItemByTypeName('Profile', 'Self-Service', true),
-            'name'        => \ITILFollowup::$rightname,
+                'profiles_id' => getItemByTypeName('Profile', 'Self-Service', true),
+                'name'        => \ITILFollowup::$rightname,
             ]
         );
 
@@ -3418,16 +3424,16 @@ class Ticket extends DbTestCase
         $group_user = new \Group_User();
         $this->integer(
             (int)$group_user->add([
-            'groups_id' => $group_id,
-            'users_id'  => $post_only_id,
+                'groups_id' => $group_id,
+                'users_id'  => $post_only_id,
             ])
         )->isGreaterThan(0);
 
         $group_ticket = new \Group_Ticket();
         $input_group_ticket = [
-         'tickets_id' => $ticket->getID(),
-         'groups_id'  => $group_id,
-         'type'       => \CommonITILActor::REQUESTER
+            'tickets_id' => $ticket->getID(),
+            'groups_id'  => $group_id,
+            'type'       => \CommonITILActor::REQUESTER
         ];
         $this->integer((int) $group_ticket->add($input_group_ticket))->isGreaterThan(0);
         $this->boolean($ticket->getFromDB($ticket->getID()))->isTrue(); // Reload ticket actors
@@ -3442,11 +3448,11 @@ class Ticket extends DbTestCase
         $DB->update(
             'glpi_profilerights',
             [
-            'rights' => \ITILFollowup::ADDGROUPTICKET
+                'rights' => \ITILFollowup::ADDGROUPTICKET
             ],
             [
-            'profiles_id' => getItemByTypeName('Profile', 'Self-Service', true),
-            'name'        => \ITILFollowup::$rightname,
+                'profiles_id' => getItemByTypeName('Profile', 'Self-Service', true),
+                'name'        => \ITILFollowup::$rightname,
             ]
         );
 
@@ -3468,8 +3474,8 @@ class Ticket extends DbTestCase
         $ticket = new \Ticket();
         $this->integer(
             (int)$ticket->add([
-            'name'    => '',
-            'content' => 'A ticket to check ACLS',
+                'name'    => '',
+                'content' => 'A ticket to check ACLS',
             ])
         )->isGreaterThan(0);
 
@@ -3477,11 +3483,11 @@ class Ticket extends DbTestCase
         $DB->update(
             'glpi_profilerights',
             [
-            'rights' => 0
+                'rights' => 0
             ],
             [
-            'profiles_id' => getItemByTypeName('Profile', 'Self-Service', true),
-            'name'        => \ITILFollowup::$rightname,
+                'profiles_id' => getItemByTypeName('Profile', 'Self-Service', true),
+                'name'        => \ITILFollowup::$rightname,
             ]
         );
 
@@ -3495,9 +3501,9 @@ class Ticket extends DbTestCase
         $this->login();
         $ticket_user = new \Ticket_User();
         $input_ticket_user = [
-         'tickets_id' => $ticket->getID(),
-         'users_id'   => $post_only_id,
-         'type'       => \CommonITILActor::ASSIGN
+            'tickets_id' => $ticket->getID(),
+            'users_id'   => $post_only_id,
+            'type'       => \CommonITILActor::ASSIGN
         ];
         $this->integer((int) $ticket_user->add($input_ticket_user))->isGreaterThan(0);
         $this->boolean($ticket->getFromDB($ticket->getID()))->isTrue(); // Reload ticket actors
@@ -3520,8 +3526,8 @@ class Ticket extends DbTestCase
         $ticket = new \Ticket();
         $this->integer(
             (int)$ticket->add([
-            'name'    => '',
-            'content' => 'A ticket to check ACLS',
+                'name'    => '',
+                'content' => 'A ticket to check ACLS',
             ])
         )->isGreaterThan(0);
 
@@ -3529,11 +3535,11 @@ class Ticket extends DbTestCase
         $DB->update(
             'glpi_profilerights',
             [
-            'rights' => 0
+                'rights' => 0
             ],
             [
-            'profiles_id' => getItemByTypeName('Profile', 'Self-Service', true),
-            'name'        => \ITILFollowup::$rightname,
+                'profiles_id' => getItemByTypeName('Profile', 'Self-Service', true),
+                'name'        => \ITILFollowup::$rightname,
             ]
         );
 
@@ -3551,16 +3557,16 @@ class Ticket extends DbTestCase
         $group_user = new \Group_User();
         $this->integer(
             (int)$group_user->add([
-            'groups_id' => $group_id,
-            'users_id'  => $post_only_id,
+                'groups_id' => $group_id,
+                'users_id'  => $post_only_id,
             ])
         )->isGreaterThan(0);
 
         $group_ticket = new \Group_Ticket();
         $input_group_ticket = [
-         'tickets_id' => $ticket->getID(),
-         'groups_id'  => $group_id,
-         'type'       => \CommonITILActor::ASSIGN
+            'tickets_id' => $ticket->getID(),
+            'groups_id'  => $group_id,
+            'type'       => \CommonITILActor::ASSIGN
         ];
         $this->integer((int) $group_ticket->add($input_group_ticket))->isGreaterThan(0);
         $this->boolean($ticket->getFromDB($ticket->getID()))->isTrue(); // Reload ticket actors
@@ -3583,8 +3589,8 @@ class Ticket extends DbTestCase
         $ticket = new \Ticket();
         $this->integer(
             (int)$ticket->add([
-            'name'    => '',
-            'content' => 'A ticket to check ACLS',
+                'name'    => '',
+                'content' => 'A ticket to check ACLS',
             ])
         )->isGreaterThan(0);
 
@@ -3598,9 +3604,9 @@ class Ticket extends DbTestCase
         $this->login();
         $ticket_user = new \Ticket_User();
         $input_ticket_user = [
-         'tickets_id' => $ticket->getID(),
-         'users_id'   => $post_only_id,
-         'type'       => \CommonITILActor::OBSERVER
+            'tickets_id' => $ticket->getID(),
+            'users_id'   => $post_only_id,
+            'type'       => \CommonITILActor::OBSERVER
         ];
         $this->integer((int) $ticket_user->add($input_ticket_user))->isGreaterThan(0);
         $this->boolean($ticket->getFromDB($ticket->getID()))->isTrue(); // Reload ticket actors
@@ -3615,11 +3621,11 @@ class Ticket extends DbTestCase
         $DB->update(
             'glpi_profilerights',
             [
-            'rights' => \ITILFollowup::ADD_AS_OBSERVER
+                'rights' => \ITILFollowup::ADD_AS_OBSERVER
             ],
             [
-            'profiles_id' => getItemByTypeName('Profile', 'Self-Service', true),
-            'name'        => \ITILFollowup::$rightname,
+                'profiles_id' => getItemByTypeName('Profile', 'Self-Service', true),
+                'name'        => \ITILFollowup::$rightname,
             ]
         );
 
@@ -3633,27 +3639,27 @@ class Ticket extends DbTestCase
     protected function convertContentForTicketProvider(): iterable
     {
         yield [
-         'content'  => '',
-         'files'    => [],
-         'tags'     => [],
-         'expected' => '',
+            'content'  => '',
+            'files'    => [],
+            'tags'     => [],
+            'expected' => '',
         ];
 
        // Content with embedded image.
         yield [
-         'content'  => <<<HTML
+            'content'  => <<<HTML
 Here is the screenshot:
 <img src="screenshot.png" />
 blabla
 HTML
          ,
-         'files'    => [
-            'screenshot.png' => 'screenshot.png',
-         ],
-         'tags'     => [
-            'screenshot.png' => '9faff0a6-f37490bd-60e2af9721f420.96500246',
-         ],
-         'expected' => <<<HTML
+            'files'    => [
+                'screenshot.png' => 'screenshot.png',
+            ],
+            'tags'     => [
+                'screenshot.png' => '9faff0a6-f37490bd-60e2af9721f420.96500246',
+            ],
+            'expected' => <<<HTML
 Here is the screenshot:
 <p>#9faff0a6-f37490bd-60e2af9721f420.96500246#</p>
 blabla
@@ -3663,20 +3669,20 @@ HTML
 
        // Content with leading external image that will not be replaced by a tag.
         yield [
-         'content'  => <<<HTML
+            'content'  => <<<HTML
 <img src="http://test.glpi-project.org/logo.png" />
 Here is the screenshot:
 <img src="img.jpg" />
 blabla
 HTML
          ,
-         'files'    => [
-            'img.jpg' => 'img.jpg',
-         ],
-         'tags'     => [
-            'img.jpg' => '3eaff0a6-f37490bd-60e2a59721f420.96500246',
-         ],
-         'expected' => <<<HTML
+            'files'    => [
+                'img.jpg' => 'img.jpg',
+            ],
+            'tags'     => [
+                'img.jpg' => '3eaff0a6-f37490bd-60e2a59721f420.96500246',
+            ],
+            'expected' => <<<HTML
 <img src="http://test.glpi-project.org/logo.png" />
 Here is the screenshot:
 <p>#3eaff0a6-f37490bd-60e2a59721f420.96500246#</p>
@@ -3706,14 +3712,14 @@ HTML
 
        // Tickets to create before tests
         $this->createItems(\Ticket::class, [
-         [
-            'name'    => 'testIsValidatorProvider 1',
-            'content' => 'testIsValidatorProvider 1',
-         ],
-         [
-            'name'    => 'testIsValidatorProvider 2',
-            'content' => 'testIsValidatorProvider 2',
-         ],
+            [
+                'name'    => 'testIsValidatorProvider 1',
+                'content' => 'testIsValidatorProvider 1',
+            ],
+            [
+                'name'    => 'testIsValidatorProvider 2',
+                'content' => 'testIsValidatorProvider 2',
+            ],
         ]);
 
        // Get id of created tickets to reuse later
@@ -3722,37 +3728,37 @@ HTML
 
        // TicketValidation items to create before tests
         $this->createItems(TicketValidation::class, [
-         [
-            'tickets_id'        => $tickets_id_1,
-            'users_id_validate' => $users_id_1,
-         ],
-         [
-            'tickets_id'        => $tickets_id_2,
-            'users_id_validate' => $users_id_2,
-         ],
+            [
+                'tickets_id'        => $tickets_id_1,
+                'users_id_validate' => $users_id_1,
+            ],
+            [
+                'tickets_id'        => $tickets_id_2,
+                'users_id_validate' => $users_id_2,
+            ],
         ]);
 
         return [
-         [
-            'tickets_id' => $tickets_id_1,
-            'users_id'   => $users_id_1,
-            'expected'   => true,
-         ],
-         [
-            'tickets_id' => $tickets_id_1,
-            'users_id'   => $users_id_2,
-            'expected'   => false,
-         ],
-         [
-            'tickets_id' => $tickets_id_2,
-            'users_id'   => $users_id_1,
-            'expected'   => false,
-         ],
-         [
-            'tickets_id' => $tickets_id_2,
-            'users_id'   => $users_id_2,
-            'expected'   => true,
-         ],
+            [
+                'tickets_id' => $tickets_id_1,
+                'users_id'   => $users_id_1,
+                'expected'   => true,
+            ],
+            [
+                'tickets_id' => $tickets_id_1,
+                'users_id'   => $users_id_2,
+                'expected'   => false,
+            ],
+            [
+                'tickets_id' => $tickets_id_2,
+                'users_id'   => $users_id_1,
+                'expected'   => false,
+            ],
+            [
+                'tickets_id' => $tickets_id_2,
+                'users_id'   => $users_id_2,
+                'expected'   => true,
+            ],
         ];
     }
 
@@ -3773,9 +3779,9 @@ HTML
     {
         $roles = \Ticket::getTeamRoles();
         $this->array($roles)->containsValues([
-         \CommonITILActor::ASSIGN,
-         \CommonITILActor::OBSERVER,
-         \CommonITILActor::REQUESTER,
+            \CommonITILActor::ASSIGN,
+            \CommonITILActor::OBSERVER,
+            \CommonITILActor::REQUESTER,
         ]);
     }
 
@@ -3796,8 +3802,8 @@ HTML
         $ticket = new \Ticket();
 
         $tickets_id = $ticket->add([
-         'name'      => 'Team test',
-         'content'   => 'Team test'
+            'name'      => 'Team test',
+            'content'   => 'Team test'
         ]);
         $this->integer($tickets_id)->isGreaterThan(0);
 

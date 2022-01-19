@@ -77,8 +77,8 @@ class Certificate extends DbTestCase
 
        // Add
         $id = $obj->add([
-         'name'        => $this->getUniqueString(),
-         'entities_id' => 0
+            'name'        => $this->getUniqueString(),
+            'entities_id' => 0
         ]);
         $this->integer($id)->isGreaterThan(0);
 
@@ -101,13 +101,13 @@ class Certificate extends DbTestCase
 
        // Add
         $id = $obj->add([
-         'name' => $this->method,
+            'name' => $this->method,
         ]);
         $this->integer($id)->isGreaterThan(0);
 
        // Delete
         $in = [
-         'id' => $obj->getID(),
+            'id' => $obj->getID(),
         ];
         $this->boolean($obj->delete($in))->isTrue();
     }
@@ -119,8 +119,8 @@ class Certificate extends DbTestCase
 
        // Add
         $id = $certificate->add([
-         'name'        => $this->getUniqueString(),
-         'entities_id' => 0
+            'name'        => $this->getUniqueString(),
+            'entities_id' => 0
         ]);
         $this->integer($id)->isGreaterThan(0);
 
@@ -163,26 +163,26 @@ class Certificate extends DbTestCase
     public function getIn($method = "")
     {
         return [
-         'name'                => $method,
-         'entities_id'         => 0,
-         'serial'              => $this->getUniqueString(),
-         'otherserial'         => $this->getUniqueString(),
-         'comment'             => $this->getUniqueString(),
-         'certificatetypes_id' => $this->getUniqueInteger(),
-         'dns_name'            => $this->getUniqueString(),
-         'dns_suffix'          => $this->getUniqueString(),
-         'users_id_tech'       => $this->getUniqueInteger(),
-         'groups_id_tech'      => $this->getUniqueInteger(),
-         'locations_id'        => $this->getUniqueInteger(),
-         'manufacturers_id'    => $this->getUniqueInteger(),
-         'users_id'            => $this->getUniqueInteger(),
-         'groups_id'           => $this->getUniqueInteger(),
-         'is_autosign'         => 1,
-         'date_expiration'     => date('Y-m-d', time() + MONTH_TIMESTAMP),
-         'states_id'           => $this->getUniqueInteger(),
-         'command'             => $this->getUniqueString(),
-         'certificate_request' => $this->getUniqueString(),
-         'certificate_item'    => $this->getUniqueString(),
+            'name'                => $method,
+            'entities_id'         => 0,
+            'serial'              => $this->getUniqueString(),
+            'otherserial'         => $this->getUniqueString(),
+            'comment'             => $this->getUniqueString(),
+            'certificatetypes_id' => $this->getUniqueInteger(),
+            'dns_name'            => $this->getUniqueString(),
+            'dns_suffix'          => $this->getUniqueString(),
+            'users_id_tech'       => $this->getUniqueInteger(),
+            'groups_id_tech'      => $this->getUniqueInteger(),
+            'locations_id'        => $this->getUniqueInteger(),
+            'manufacturers_id'    => $this->getUniqueInteger(),
+            'users_id'            => $this->getUniqueInteger(),
+            'groups_id'           => $this->getUniqueInteger(),
+            'is_autosign'         => 1,
+            'date_expiration'     => date('Y-m-d', time() + MONTH_TIMESTAMP),
+            'states_id'           => $this->getUniqueInteger(),
+            'command'             => $this->getUniqueString(),
+            'certificate_request' => $this->getUniqueString(),
+            'certificate_item'    => $this->getUniqueString(),
         ];
     }
 
@@ -195,18 +195,18 @@ class Certificate extends DbTestCase
 
        // Add
         $id = $obj->add([
-         'name'            => $this->getUniqueString(),
-         'entities_id'     => 0,
-         'date_expiration' => date('Y-m-d', time() - MONTH_TIMESTAMP)
+            'name'            => $this->getUniqueString(),
+            'entities_id'     => 0,
+            'date_expiration' => date('Y-m-d', time() - MONTH_TIMESTAMP)
         ]);
         $this->integer($id)->isGreaterThan(0);
 
        // set root entity config for certificates alerts
         $entity = new \Entity();
         $entity->update([
-         'id'                                   => 0,
-         'use_certificates_alert'               => true,
-         'send_certificates_alert_before_delay' => true,
+            'id'                                   => 0,
+            'use_certificates_alert'               => true,
+            'send_certificates_alert_before_delay' => true,
         ]);
 
        // force usage of notification (no alert sended otherwise)

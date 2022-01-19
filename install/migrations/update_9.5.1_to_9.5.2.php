@@ -50,10 +50,10 @@ function update951to952()
     $migration->displayTitle("Building inline images data in " . Document_Item::getTable());
 
     $itemtypes = [
-      'ITILFollowup' => 'content',
-      'ITILSolution' => 'content',
-      'Reminder'     => 'text',
-      'KnowbaseItem' => 'answer'
+        'ITILFollowup' => 'content',
+        'ITILSolution' => 'content',
+        'Reminder'     => 'text',
+        'KnowbaseItem' => 'answer'
     ];
 
     foreach (['Change', 'Problem', 'Ticket'] as $itiltype) {
@@ -67,11 +67,11 @@ function update951to952()
         $regexPattern = 'document\\\.send\\\.php\\\?docid=[0-9]+';
         $user_field = is_a($itemtype, CommonITILObject::class, true) ? 'users_id_recipient' : 'users_id';
         $result = $DB->request([
-         'SELECT' => ['id', $field, $user_field],
-         'FROM'   => $itemtype::getTable(),
-         'WHERE'  => [
-            $field => ['REGEXP', $regexPattern]
-         ]
+            'SELECT' => ['id', $field, $user_field],
+            'FROM'   => $itemtype::getTable(),
+            'WHERE'  => [
+                $field => ['REGEXP', $regexPattern]
+            ]
         ]);
 
         foreach ($result as $data) {
@@ -84,13 +84,13 @@ function update951to952()
 
             foreach ($matches[1] as $docid) {
                 $docs_input[] = [
-                'documents_id'       => $docid,
-                'itemtype'           => $itemtype,
-                'items_id'           => $data['id'],
-                'timeline_position'  => CommonITILObject::NO_TIMELINE,
-                'users_id'           => $data[$user_field],
-                '_disablenotif'      => true, // prevent parent object "update" notification
-                '_do_update_ticket'  => false
+                    'documents_id'       => $docid,
+                    'itemtype'           => $itemtype,
+                    'items_id'           => $data['id'],
+                    'timeline_position'  => CommonITILObject::NO_TIMELINE,
+                    'users_id'           => $data[$user_field],
+                    '_disablenotif'      => true, // prevent parent object "update" notification
+                    '_do_update_ticket'  => false
                 ];
             }
         }
@@ -110,8 +110,8 @@ function update951to952()
         'DomainsAlert',
         DAY_TIMESTAMP,
         [
-         'mode'  => CronTask::MODE_EXTERNAL,
-         'state' => CronTask::STATE_WAITING,
+            'mode'  => CronTask::MODE_EXTERNAL,
+            'state' => CronTask::STATE_WAITING,
         ]
     );
    /* /Register missing DomainAlert crontask */
@@ -123,8 +123,8 @@ function update951to952()
     $migration->addField('glpi_appliances', 'is_helpdesk_visible', 'bool', ['after' => 'otherserial', 'value' => 1]);
     $migration->addKey('glpi_appliances', 'is_helpdesk_visible');
     $migration->addField('glpi_states', 'is_visible_appliance', 'bool', [
-      'value' => 1,
-      'after' => 'is_visible_contract'
+        'value' => 1,
+        'after' => 'is_visible_contract'
     ]);
     $migration->addKey('glpi_states', 'is_visible_appliance');
 
@@ -140,8 +140,8 @@ function update951to952()
         $migration->addKey('glpi_appliancerelations', 'itemtype');
         $migration->addKey('glpi_appliancerelations', 'items_id');
         $migration->addKey('glpi_appliancerelations', [
-         'itemtype',
-         'items_id',
+            'itemtype',
+            'items_id',
         ], 'item');
         $migration->migrationOneTable('glpi_appliancerelations');
         $migration->renameTable('glpi_appliancerelations', 'glpi_appliances_items_relations');
@@ -149,16 +149,16 @@ function update951to952()
 
     if ($DB->fieldExists('glpi_appliances', 'relationtype')) {
         $iterator = $DB->request([
-         'SELECT' => ['items.id', 'app.relationtype'],
-         'FROM'   => 'glpi_appliances_items AS items',
-         'LEFT JOIN' => [
-            'glpi_appliances AS app' => [
-               'ON'  => [
-                  'app'    => 'id',
-                  'items'  => 'appliances_id'
-               ]
+            'SELECT' => ['items.id', 'app.relationtype'],
+            'FROM'   => 'glpi_appliances_items AS items',
+            'LEFT JOIN' => [
+                'glpi_appliances AS app' => [
+                    'ON'  => [
+                        'app'    => 'id',
+                        'items'  => 'appliances_id'
+                    ]
+                ]
             ]
-         ]
         ]);
         foreach ($iterator as $row) {
             $itemtype = null;
@@ -178,10 +178,10 @@ function update951to952()
                 $DB->buildUpdate(
                     'glpi_appliances_items_relations',
                     [
-                    'itemtype'  => $itemtype
+                        'itemtype'  => $itemtype
                     ],
                     [
-                    'appliances_items_id'   => $row['id']
+                        'appliances_items_id'   => $row['id']
                     ]
                 )
             );

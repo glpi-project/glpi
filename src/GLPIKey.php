@@ -59,8 +59,8 @@ class GLPIKey
      * @var array
      */
     protected $fields = [
-      'glpi_mailcollectors.passwd',
-      'glpi_authldaps.rootdn_passwd'
+        'glpi_mailcollectors.passwd',
+        'glpi_authldaps.rootdn_passwd'
     ];
 
     /**
@@ -70,11 +70,11 @@ class GLPIKey
      * @var array
      */
     protected $configs = [
-      'core'   => [
-         'glpinetwork_registration_key',
-         'proxy_passwd',
-         'smtp_passwd',
-      ]
+        'core'   => [
+            'glpinetwork_registration_key',
+            'proxy_passwd',
+            'smtp_passwd',
+        ]
     ];
 
     public function __construct(string $config_dir = GLPI_CONFIG_DIR)
@@ -275,9 +275,9 @@ class GLPIKey
             list($table, $column) = explode('.', $field);
 
             $iterator = $DB->request([
-            'SELECT' => ['id', $column],
-            'FROM'   => $table,
-            ['NOT' => [$column => null]],
+                'SELECT' => ['id', $column],
+                'FROM'   => $table,
+                ['NOT' => [$column => null]],
             ]);
 
             foreach ($iterator as $row) {
@@ -317,12 +317,12 @@ class GLPIKey
 
         foreach ($this->getConfigs() as $context => $names) {
             $iterator = $DB->request([
-            'FROM'   => Config::getTable(),
-            'WHERE'  => [
-               'context'   => $context,
-               'name'      => $names,
-               ['NOT' => ['value' => null]],
-            ]
+                'FROM'   => Config::getTable(),
+                'WHERE'  => [
+                    'context'   => $context,
+                    'name'      => $names,
+                    ['NOT' => ['value' => null]],
+                ]
             ]);
 
             foreach ($iterator as $row) {

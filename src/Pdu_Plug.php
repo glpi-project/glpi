@@ -92,10 +92,10 @@ class Pdu_Plug extends CommonDBRelation
         $canedit = $pdu->canEdit($ID);
 
         $items = $DB->request([
-         'FROM'   => self::getTable(),
-         'WHERE'  => [
-            'pdus_id' => $pdu->getID()
-         ]
+            'FROM'   => self::getTable(),
+            'WHERE'  => [
+                'pdus_id' => $pdu->getID()
+            ]
         ]);
         $link = new self();
 
@@ -121,8 +121,8 @@ class Pdu_Plug extends CommonDBRelation
             echo "<table class='tab_cadre_fixe'><tr class='tab_bg_1'><td>";
             echo "<label for='dropdown_plugs_id$rand'>" . __('Add a new plug') . "</label></td><td>";
             Plug::dropdown([
-            'name'   => "plugs_id",
-            'rand'   => $rand
+                'name'   => "plugs_id",
+                'rand'   => $rand
             ]);
             echo "</td><td>";
             echo "<label for='number_plugs'>" . __('Number');
@@ -130,9 +130,9 @@ class Pdu_Plug extends CommonDBRelation
             echo Html::input(
                 'number_plugs',
                 [
-                'id'     => 'number_plugs',
-                'type'   => 'number',
-                'min'    => 1
+                    'id'     => 'number_plugs',
+                    'type'   => 'number',
+                    'min'    => 1
                 ]
             );
             echo "</td><td>";
@@ -147,8 +147,8 @@ class Pdu_Plug extends CommonDBRelation
         } else {
             if ($canedit) {
                 $massiveactionparams = [
-                'num_displayed'   => min($_SESSION['glpilist_limit'], count($items)),
-                'container'       => 'mass' . __CLASS__ . $rand
+                    'num_displayed'   => min($_SESSION['glpilist_limit'], count($items)),
+                    'container'       => 'mass' . __CLASS__ . $rand
                 ];
                 Html::showMassiveActions($massiveactionparams);
             }

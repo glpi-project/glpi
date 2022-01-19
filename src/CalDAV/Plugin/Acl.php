@@ -55,8 +55,8 @@ class Acl extends Plugin
     use CalDAVUriUtilTrait;
 
     public $principalCollectionSet = [
-      Principal::PREFIX_GROUPS,
-      Principal::PREFIX_USERS,
+        Principal::PREFIX_GROUPS,
+        Principal::PREFIX_USERS,
     ];
 
     public $allowUnauthenticatedAccess = false;
@@ -77,25 +77,25 @@ class Acl extends Plugin
         }
 
         $acl[] = [
-         'principal' => '{DAV:}authenticated',
-         'privilege' => '{DAV:}read',
-         'protected' => true,
+            'principal' => '{DAV:}authenticated',
+            'privilege' => '{DAV:}read',
+            'protected' => true,
         ];
 
         if ($node instanceof Calendar && Session::haveRight(PlanningExternalEvent::$rightname, UPDATE)) {
            // If user can update external events, then he is able to write on calendar to create new events.
             $acl[] = [
-            'principal' => '{DAV:}authenticated',
-            'privilege' => '{DAV:}write',
-            'protected' => true,
+                'principal' => '{DAV:}authenticated',
+                'privilege' => '{DAV:}write',
+                'protected' => true,
             ];
         } else if ($node instanceof CalendarObject) {
             $item = $this->getCalendarItemForPath($node->getName());
             if ($item instanceof CommonDBTM && $item->can($item->fields['id'], UPDATE)) {
                 $acl[] = [
-                'principal' => '{DAV:}authenticated',
-                'privilege' => '{DAV:}write',
-                'protected' => true,
+                    'principal' => '{DAV:}authenticated',
+                    'privilege' => '{DAV:}write',
+                    'protected' => true,
                 ];
             }
         }

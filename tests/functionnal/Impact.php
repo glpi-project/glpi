@@ -54,25 +54,25 @@ class Impact extends \DbTestCase
 
         foreach ($this->forward as $edge) {
             $this->graph['edges'][] = [
-            'source' => $edge[0],
-            'target' => $edge[1],
-            'flag'   => \Impact::DIRECTION_FORWARD,
+                'source' => $edge[0],
+                'target' => $edge[1],
+                'flag'   => \Impact::DIRECTION_FORWARD,
             ];
         }
 
         foreach ($this->backward as $edge) {
             $this->graph['edges'][] = [
-            'source' => $edge[0],
-            'target' => $edge[1],
-            'flag'   => \Impact::DIRECTION_BACKWARD,
+                'source' => $edge[0],
+                'target' => $edge[1],
+                'flag'   => \Impact::DIRECTION_BACKWARD,
             ];
         }
 
         foreach ($this->both as $edge) {
             $this->graph['edges'][] = [
-            'source' => $edge[0],
-            'target' => $edge[1],
-            'flag'   => \Impact::DIRECTION_FORWARD | \Impact::DIRECTION_BACKWARD,
+                'source' => $edge[0],
+                'target' => $edge[1],
+                'flag'   => \Impact::DIRECTION_FORWARD | \Impact::DIRECTION_BACKWARD,
             ];
         }
     }
@@ -81,8 +81,8 @@ class Impact extends \DbTestCase
     {
         $em = new ImpactCompound();
         $id = $em->add([
-         'name'  => $name,
-         'color' => $color,
+            'name'  => $name,
+            'color' => $color,
         ]);
 
         $this->integer($id);
@@ -93,9 +93,9 @@ class Impact extends \DbTestCase
     {
         $em = new ImpactItem();
         $id = $em->add([
-         'itemtype'  => $item->getType(),
-         'items_id'  => $item->fields['id'],
-         'parent_id' => $parent,
+            'itemtype'  => $item->getType(),
+            'items_id'  => $item->fields['id'],
+            'parent_id' => $parent,
         ]);
 
         $this->integer($id);
@@ -106,10 +106,10 @@ class Impact extends \DbTestCase
     {
         $em = new ImpactRelation();
         $id = $em->add([
-         'itemtype_source'   => $source->getType(),
-         'items_id_source'   => $source->fields['id'],
-         'itemtype_impacted' => $impacted->getType(),
-         'items_id_impacted' => $impacted->fields['id'],
+            'itemtype_source'   => $source->getType(),
+            'items_id_source'   => $source->fields['id'],
+            'itemtype_impacted' => $impacted->getType(),
+            'items_id_impacted' => $impacted->fields['id'],
         ]);
 
         $this->integer($id);
@@ -191,9 +191,9 @@ class Impact extends \DbTestCase
        // Create a ticket and link it to the computer
         $ticket_id = $ticket_em->add(['name' => "test", 'content' => "test"]);
         $item_ticket_em->add([
-         'itemtype'   => "Computer",
-         'items_id'   => $computer2->fields['id'],
-         'tickets_id' => $ticket_id,
+            'itemtype'   => "Computer",
+            'items_id'   => $computer2->fields['id'],
+            'tickets_id' => $ticket_id,
         ]);
 
        // Get the actual ticket
@@ -319,30 +319,30 @@ class Impact extends \DbTestCase
 
        // Test queries to evaluate before and after clean
         $relations_to_computer2_query = [
-         'FROM'   => \ImpactRelation::getTable(),
-         'WHERE' => [
-            'OR' => [
-               [
-                  'itemtype_source' => get_class($computer2),
-                  'items_id_source' => $computer2->fields['id']
-               ],
-               [
-                  'itemtype_impacted' => get_class($computer2),
-                  'items_id_impacted' => $computer2->fields['id']
-               ],
+            'FROM'   => \ImpactRelation::getTable(),
+            'WHERE' => [
+                'OR' => [
+                    [
+                        'itemtype_source' => get_class($computer2),
+                        'items_id_source' => $computer2->fields['id']
+                    ],
+                    [
+                        'itemtype_impacted' => get_class($computer2),
+                        'items_id_impacted' => $computer2->fields['id']
+                    ],
+                ]
             ]
-         ]
         ];
         $impact_item_computer2_query = [
-         'FROM'   => \ImpactItem::getTable(),
-         'WHERE'  => [
-            'itemtype' => get_class($computer2),
-            'items_id' => $computer2->fields['id'],
-         ]
+            'FROM'   => \ImpactItem::getTable(),
+            'WHERE'  => [
+                'itemtype' => get_class($computer2),
+                'items_id' => $computer2->fields['id'],
+            ]
         ];
         $compound01_members_query = [
-         'FROM' => \ImpactItem::getTable(),
-         'WHERE' => ["parent_id" => $compound01_id]
+            'FROM' => \ImpactItem::getTable(),
+            'WHERE' => ["parent_id" => $compound01_id]
         ];
 
        // Before deletion
@@ -370,117 +370,117 @@ class Impact extends \DbTestCase
     }
 
     private $nodes = [
-      ['id' => "A"],
-      ['id' => "B"],
-      ['id' => "C"],
-      ['id' => "D"],
-      ['id' => "E"],
-      ['id' => "F"],
-      ['id' => "G"],
+        ['id' => "A"],
+        ['id' => "B"],
+        ['id' => "C"],
+        ['id' => "D"],
+        ['id' => "E"],
+        ['id' => "F"],
+        ['id' => "G"],
     ];
 
     private $forward = [
-      ['A', 'B'],
-      ['B', 'E'],
-      ['E', 'G'],
+        ['A', 'B'],
+        ['B', 'E'],
+        ['E', 'G'],
     ];
 
     private $backward = [
-      ['F', 'C'],
+        ['F', 'C'],
     ];
 
     private $both = [
-      ['A', 'D'],
-      ['D', 'C'],
-      ['C', 'A'],
+        ['A', 'D'],
+        ['D', 'C'],
+        ['C', 'A'],
     ];
 
     private $graph = [
-      'nodes' => [],
-      'edges' => []
+        'nodes' => [],
+        'edges' => []
     ];
 
     public function bfsProvider()
     {
         return [
-         [
-            'a'         => ['id' => "A"],
-            'b'         => ['id' => "B"],
-            'direction' => \Impact::DIRECTION_FORWARD,
-            'result'    => [
-               $this->graph['nodes']['A'],
-               $this->graph['nodes']['B'],
+            [
+                'a'         => ['id' => "A"],
+                'b'         => ['id' => "B"],
+                'direction' => \Impact::DIRECTION_FORWARD,
+                'result'    => [
+                    $this->graph['nodes']['A'],
+                    $this->graph['nodes']['B'],
+                ],
             ],
-         ],
-         [
-            'a'         => ['id' => "A"],
-            'b'         => ['id' => "E"],
-            'direction' => \Impact::DIRECTION_FORWARD,
-            'result'    => [
-               $this->graph['nodes']['A'],
-               $this->graph['nodes']['B'],
-               $this->graph['nodes']['E'],
+            [
+                'a'         => ['id' => "A"],
+                'b'         => ['id' => "E"],
+                'direction' => \Impact::DIRECTION_FORWARD,
+                'result'    => [
+                    $this->graph['nodes']['A'],
+                    $this->graph['nodes']['B'],
+                    $this->graph['nodes']['E'],
+                ],
             ],
-         ],
-         [
-            'a'         => ['id' => "A"],
-            'b'         => ['id' => "G"],
-            'direction' => \Impact::DIRECTION_FORWARD,
-            'result'    => [
-               $this->graph['nodes']['A'],
-               $this->graph['nodes']['B'],
-               $this->graph['nodes']['E'],
-               $this->graph['nodes']['G'],
+            [
+                'a'         => ['id' => "A"],
+                'b'         => ['id' => "G"],
+                'direction' => \Impact::DIRECTION_FORWARD,
+                'result'    => [
+                    $this->graph['nodes']['A'],
+                    $this->graph['nodes']['B'],
+                    $this->graph['nodes']['E'],
+                    $this->graph['nodes']['G'],
+                ],
             ],
-         ],
-         [
-            'a'         => ['id' => "A"],
-            'b'         => ['id' => "D"],
-            'direction' => \Impact::DIRECTION_FORWARD,
-            'result'    => [
-               $this->graph['nodes']['A'],
-               $this->graph['nodes']['D'],
+            [
+                'a'         => ['id' => "A"],
+                'b'         => ['id' => "D"],
+                'direction' => \Impact::DIRECTION_FORWARD,
+                'result'    => [
+                    $this->graph['nodes']['A'],
+                    $this->graph['nodes']['D'],
+                ],
             ],
-         ],
-         [
-            'a'         => ['id' => "A"],
-            'b'         => ['id' => "C"],
-            'direction' => \Impact::DIRECTION_FORWARD,
-            'result'    => [
-               $this->graph['nodes']['A'],
-               $this->graph['nodes']['D'],
-               $this->graph['nodes']['C'],
+            [
+                'a'         => ['id' => "A"],
+                'b'         => ['id' => "C"],
+                'direction' => \Impact::DIRECTION_FORWARD,
+                'result'    => [
+                    $this->graph['nodes']['A'],
+                    $this->graph['nodes']['D'],
+                    $this->graph['nodes']['C'],
+                ],
             ],
-         ],
-         [
-            'a'         => ['id' => "A"],
-            'b'         => ['id' => "D"],
-            'direction' => \Impact::DIRECTION_BACKWARD,
-            'result'    => [
-               $this->graph['nodes']['D'],
-               $this->graph['nodes']['C'],
-               $this->graph['nodes']['A'],
+            [
+                'a'         => ['id' => "A"],
+                'b'         => ['id' => "D"],
+                'direction' => \Impact::DIRECTION_BACKWARD,
+                'result'    => [
+                    $this->graph['nodes']['D'],
+                    $this->graph['nodes']['C'],
+                    $this->graph['nodes']['A'],
+                ],
             ],
-         ],
-         [
-            'a'         => ['id' => "A"],
-            'b'         => ['id' => "C"],
-            'direction' => \Impact::DIRECTION_BACKWARD,
-            'result'    => [
-               $this->graph['nodes']['C'],
-               $this->graph['nodes']['A'],
+            [
+                'a'         => ['id' => "A"],
+                'b'         => ['id' => "C"],
+                'direction' => \Impact::DIRECTION_BACKWARD,
+                'result'    => [
+                    $this->graph['nodes']['C'],
+                    $this->graph['nodes']['A'],
+                ],
             ],
-         ],
-         [
-            'a'         => ['id' => "A"],
-            'b'         => ['id' => "F"],
-            'direction' => \Impact::DIRECTION_BACKWARD,
-            'result'    => [
-               $this->graph['nodes']['F'],
-               $this->graph['nodes']['C'],
-               $this->graph['nodes']['A'],
+            [
+                'a'         => ['id' => "A"],
+                'b'         => ['id' => "F"],
+                'direction' => \Impact::DIRECTION_BACKWARD,
+                'result'    => [
+                    $this->graph['nodes']['F'],
+                    $this->graph['nodes']['C'],
+                    $this->graph['nodes']['A'],
+                ],
             ],
-         ],
         ];
     }
 

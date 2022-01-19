@@ -55,9 +55,9 @@ if (
 
 $stat = new Stat();
 $chart_opts =  [
-   'width'  => '90%',
-   'legend' => false,
-   'title'  => __('Value'),
+    'width'  => '90%',
+    'legend' => false,
+    'title'  => __('Value'),
 ];
 
 Report::title();
@@ -97,30 +97,30 @@ function display_infocoms_report($itemtype, $begin, $end)
     }
 
     $criteria = [
-      'SELECT'       => 'glpi_infocoms.*',
-      'FROM'         => 'glpi_infocoms',
-      'INNER JOIN'   => [
-         $itemtable  => [
-            'ON'  => [
-               $itemtable        => 'id',
-               'glpi_infocoms'   => 'items_id', [
-                  'AND' => [
-                     'glpi_infocoms.itemtype' => $itemtype
-                  ]
-               ]
+        'SELECT'       => 'glpi_infocoms.*',
+        'FROM'         => 'glpi_infocoms',
+        'INNER JOIN'   => [
+            $itemtable  => [
+                'ON'  => [
+                    $itemtable        => 'id',
+                    'glpi_infocoms'   => 'items_id', [
+                        'AND' => [
+                            'glpi_infocoms.itemtype' => $itemtype
+                        ]
+                    ]
+                ]
             ]
-         ]
-      ],
-      'WHERE'        => []
+        ],
+        'WHERE'        => []
     ];
 
     switch ($itemtype) {
         case 'SoftwareLicense':
             $criteria['INNER JOIN']['glpi_softwares'] = [
-            'ON'  => [
-               'glpi_softwarelicenses' => 'softwares_id',
-               'glpi_softwares'        => 'id'
-            ]
+                'ON'  => [
+                    'glpi_softwarelicenses' => 'softwares_id',
+                    'glpi_softwares'        => 'id'
+                ]
             ];
             $criteria['WHERE'] =  getEntitiesRestrictCriteria("glpi_softwarelicenses");
             break;
@@ -128,10 +128,10 @@ function display_infocoms_report($itemtype, $begin, $end)
             if (is_a($itemtype, CommonDBChild::class, true)) {
                 $childitemtype = $itemtype::$itemtype; // acces to child via $itemtype static
                 $criteria['INNER JOIN'][$childitemtype::getTable()] = [
-                'ON'  => [
-                  $itemtype::getTable() => $itemtype::$items_id,
-                  $childitemtype::getTable() => 'id'
-                ]
+                    'ON'  => [
+                        $itemtype::getTable() => $itemtype::$items_id,
+                        $childitemtype::getTable() => 'id'
+                    ]
                 ];
                 $criteria['WHERE'] =  getEntitiesRestrictCriteria($itemtable);
             }
@@ -140,18 +140,18 @@ function display_infocoms_report($itemtype, $begin, $end)
 
     if (!empty($begin)) {
         $criteria['WHERE'][] = [
-         'OR'  => [
-            'glpi_infocoms.buy_date'   => ['>=', $begin],
-            'glpi_infocoms.use_date'   => ['>=', $begin]
-         ]
+            'OR'  => [
+                'glpi_infocoms.buy_date'   => ['>=', $begin],
+                'glpi_infocoms.use_date'   => ['>=', $begin]
+            ]
         ];
     }
     if (!empty($end)) {
         $criteria['WHERE'][] = [
-         'OR'  => [
-            'glpi_infocoms.buy_date'   => ['<=', $end],
-            'glpi_infocoms.use_date'   => ['<=', $end]
-         ]
+            'OR'  => [
+                'glpi_infocoms.buy_date'   => ['<=', $end],
+                'glpi_infocoms.use_date'   => ['<=', $end]
+            ]
         ];
     }
     $iterator = $DB->request($criteria);
@@ -254,9 +254,9 @@ function display_infocoms_report($itemtype, $begin, $end)
                 ),
                 array_keys($valeurnettegraphdisplay),
                 [
-                [
-                  'data' => $valeurnettegraphdisplay
-                ]
+                    [
+                        'data' => $valeurnettegraphdisplay
+                    ]
                 ],
                 $chart_opts
             );
@@ -282,9 +282,9 @@ function display_infocoms_report($itemtype, $begin, $end)
                 ),
                 array_keys($valeurgraphdisplay),
                 [
-                [
-                  'data' => $valeurgraphdisplay
-                ]
+                    [
+                        'data' => $valeurgraphdisplay
+                    ]
                 ],
                 $chart_opts
             );
@@ -337,9 +337,9 @@ if (count($valeurnettegraphtot) > 0) {
         __('Total account net value'),
         array_keys($valeurnettegraphtotdisplay),
         [
-         [
-            'data' => $valeurnettegraphtotdisplay
-         ]
+            [
+                'data' => $valeurnettegraphtotdisplay
+            ]
         ],
         $chart_opts
     );
@@ -351,9 +351,9 @@ if (count($valeurgraphtot) > 0) {
         __('Total value'),
         array_keys($valeurgraphtotdisplay),
         [
-         [
-            'data' => $valeurgraphtotdisplay
-         ]
+            [
+                'data' => $valeurgraphtotdisplay
+            ]
         ],
         $chart_opts
     );

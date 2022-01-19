@@ -46,9 +46,9 @@ class Firmware extends Device
     public function prepare(): array
     {
         $mapping = [
-         'name'         => 'designation',
-         'manufacturer' => 'manufacturers_id',
-         'type'         => 'devicefirmwaretypes_id'
+            'name'         => 'designation',
+            'manufacturer' => 'manufacturers_id',
+            'type'         => 'devicefirmwaretypes_id'
         ];
 
         foreach ($this->data as &$val) {

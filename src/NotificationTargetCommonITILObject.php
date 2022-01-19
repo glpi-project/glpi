@@ -120,20 +120,20 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
     {
 
         $events = [
-         'requester_user'    => __('New user in requesters'),
-         'requester_group'   => __('New group in requesters'),
-         'observer_user'     => __('New user in observers'),
-         'observer_group'    => __('New group in observers'),
-         'assign_user'       => __('New user in assignees'),
-         'assign_group'      => __('New group in assignees'),
-         'assign_supplier'   => __('New supplier in assignees'),
-         'add_task'          => __('New task'),
-         'update_task'       => __('Update of a task'),
-         'delete_task'       => __('Deletion of a task'),
-         'add_followup'      => __("New followup"),
-         'update_followup'   => __('Update of a followup'),
-         'delete_followup'   => __('Deletion of a followup'),
-         'user_mention'      => __('User mentionned'),
+            'requester_user'    => __('New user in requesters'),
+            'requester_group'   => __('New group in requesters'),
+            'observer_user'     => __('New user in observers'),
+            'observer_group'    => __('New group in observers'),
+            'assign_user'       => __('New user in assignees'),
+            'assign_group'      => __('New group in assignees'),
+            'assign_supplier'   => __('New supplier in assignees'),
+            'add_task'          => __('New task'),
+            'update_task'       => __('Update of a task'),
+            'delete_task'       => __('Deletion of a task'),
+            'add_followup'      => __("New followup"),
+            'update_followup'   => __('Update of a followup'),
+            'delete_followup'   => __('Deletion of a followup'),
+            'user_mention'      => __('User mentionned'),
         ];
 
         asort($events);
@@ -157,19 +157,20 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
 
        //Look for the user by his id
         $criteria = ['LEFT JOIN' => [
-         User::getTable() => [
-            'ON' => [
-               $userlinktable    => 'users_id',
-               User::getTable()  => 'id'
+            User::getTable() => [
+                'ON' => [
+                    $userlinktable    => 'users_id',
+                    User::getTable()  => 'id'
+                ]
             ]
-         ]
-        ]] + $this->getDistinctUserCriteria() + $this->getProfileJoinCriteria();
+        ]
+        ] + $this->getDistinctUserCriteria() + $this->getProfileJoinCriteria();
         $criteria['FROM'] = $userlinktable;
         $criteria['FIELDS'] = array_merge(
             $criteria['FIELDS'],
             [
-            "$userlinktable.use_notification AS notif",
-            "$userlinktable.alternative_email AS altemail"
+                "$userlinktable.use_notification AS notif",
+                "$userlinktable.alternative_email AS altemail"
             ]
         );
         $criteria['WHERE']["$userlinktable.$fkfield"] = $this->obj->fields['id'];
@@ -198,8 +199,8 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
                 }
 
                 $user = [
-                'language' => $author_lang,
-                'users_id' => $author_id
+                    'language' => $author_lang,
+                    'users_id' => $author_id
                 ];
                 if ($this->isMailMode()) {
                     $user['email'] = $author_email;
@@ -210,22 +211,22 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
 
        // Anonymous user
         $iterator = $DB->request([
-         'SELECT' => 'alternative_email',
-         'FROM'   => $userlinktable,
-         'WHERE'  => [
-            $fkfield             => $this->obj->fields['id'],
-            'users_id'           => 0,
-            'use_notification'   => 1,
-            'type'               => $type
-         ]
+            'SELECT' => 'alternative_email',
+            'FROM'   => $userlinktable,
+            'WHERE'  => [
+                $fkfield             => $this->obj->fields['id'],
+                'users_id'           => 0,
+                'use_notification'   => 1,
+                'type'               => $type
+            ]
         ]);
         foreach ($iterator as $data) {
             if ($this->isMailMode()) {
                 if (NotificationMailing::isUserAddressValid($data['alternative_email'])) {
                     $this->addToRecipientsList([
-                     'email'    => $data['alternative_email'],
-                     'language' => $CFG_GLPI["language"],
-                     'users_id' => -1
+                        'email'    => $data['alternative_email'],
+                        'language' => $CFG_GLPI["language"],
+                        'users_id' => -1
                     ]);
                 }
             }
@@ -249,12 +250,12 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
 
        //Look for the user by his id
         $iterator = $DB->request([
-         'SELECT' => 'groups_id',
-         'FROM'   => $grouplinktable,
-         'WHERE'  => [
-            $fkfield => $this->obj->fields['id'],
-            'type'   => $type
-         ]
+            'SELECT' => 'groups_id',
+            'FROM'   => $grouplinktable,
+            'WHERE'  => [
+                $fkfield => $this->obj->fields['id'],
+                'type'   => $type
+            ]
         ]);
 
         foreach ($iterator as $data) {
@@ -282,12 +283,12 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
         $fkfield        = $this->obj->getForeignKeyField();
 
         $iterator = $DB->request([
-         'SELECT' => 'groups_id',
-         'FROM'   => $grouplinktable,
-         'WHERE'  => [
-            $fkfield => $this->obj->fields['id'],
-            'type'   => $type
-         ]
+            'SELECT' => 'groups_id',
+            'FROM'   => $grouplinktable,
+            'WHERE'  => [
+                $fkfield => $this->obj->fields['id'],
+                'type'   => $type
+            ]
         ]);
 
         foreach ($iterator as $data) {
@@ -312,12 +313,12 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
         $fkfield        = $this->obj->getForeignKeyField();
 
         $iterator = $DB->request([
-         'SELECT' => 'groups_id',
-         'FROM'   => $grouplinktable,
-         'WHERE'  => [
-            $fkfield => $this->obj->fields['id'],
-            'type'   => $type
-         ]
+            'SELECT' => 'groups_id',
+            'FROM'   => $grouplinktable,
+            'WHERE'  => [
+                $fkfield => $this->obj->fields['id'],
+                'type'   => $type
+            ]
         ]);
 
         foreach ($iterator as $data) {
@@ -372,8 +373,8 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
             }
 
             $user = [
-            'language' => $author_lang,
-            'users_id' => $author_id
+                'language' => $author_lang,
+                'users_id' => $author_id
             ];
             if ($this->isMailMode()) {
                 $user['email'] = $author_email;
@@ -414,23 +415,23 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
             $fkfield           = $this->obj->getForeignKeyField();
 
             $iterator = $DB->request([
-            'SELECT'          => [
-               'glpi_suppliers.email AS email',
-               'glpi_suppliers.name AS name'
-            ],
-            'DISTINCT'        => true,
-            'FROM'            => $supplierlinktable,
-            'LEFT JOIN'       => [
-               'glpi_suppliers'  => [
-                  'ON' => [
-                     $supplierlinktable   => 'suppliers_id',
-                     'glpi_suppliers'     => 'id'
-                  ]
-               ]
-            ],
-            'WHERE'           => [
-               "$supplierlinktable.$fkfield" => $this->obj->getID()
-            ]
+                'SELECT'          => [
+                    'glpi_suppliers.email AS email',
+                    'glpi_suppliers.name AS name'
+                ],
+                'DISTINCT'        => true,
+                'FROM'            => $supplierlinktable,
+                'LEFT JOIN'       => [
+                    'glpi_suppliers'  => [
+                        'ON' => [
+                            $supplierlinktable   => 'suppliers_id',
+                            'glpi_suppliers'     => 'id'
+                        ]
+                    ]
+                ],
+                'WHERE'           => [
+                    "$supplierlinktable.$fkfield" => $this->obj->getID()
+                ]
             ]);
 
             foreach ($iterator as $data) {
@@ -455,13 +456,14 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
             $validationtable = getTableForItemType($this->obj->getType() . 'Validation');
 
             $criteria = ['LEFT JOIN' => [
-            User::getTable() => [
-               'ON' => [
-                  $validationtable  => 'users_id_validate',
-                  User::getTable()  => 'id'
-               ]
+                User::getTable() => [
+                    'ON' => [
+                        $validationtable  => 'users_id_validate',
+                        User::getTable()  => 'id'
+                    ]
+                ]
             ]
-            ]] + $this->getDistinctUserCriteria() + $this->getProfileJoinCriteria();
+            ] + $this->getDistinctUserCriteria() + $this->getProfileJoinCriteria();
             $criteria['FROM'] = $validationtable;
             $criteria['WHERE']["$validationtable.id"] = $options['validation_id'];
 
@@ -487,13 +489,14 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
             $validationtable = getTableForItemType($this->obj->getType() . 'Validation');
 
             $criteria = ['LEFT JOIN' => [
-            User::getTable() => [
-               'ON' => [
-                  $validationtable  => 'users_id',
-                  User::getTable()  => 'id'
-               ]
+                User::getTable() => [
+                    'ON' => [
+                        $validationtable  => 'users_id',
+                        User::getTable()  => 'id'
+                    ]
+                ]
             ]
-            ]] + $this->getDistinctUserCriteria() + $this->getProfileJoinCriteria();
+            ] + $this->getDistinctUserCriteria() + $this->getProfileJoinCriteria();
             $criteria['FROM'] = $validationtable;
             $criteria['WHERE']["$validationtable.id"] = $options['validation_id'];
 
@@ -521,13 +524,14 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
 
             $criteria = array_merge_recursive(
                 ['INNER JOIN' => [
-                User::getTable() => [
-                  'ON' => [
-                     $followuptable    => 'users_id',
-                     User::getTable()  => 'id'
-                  ]
+                    User::getTable() => [
+                        'ON' => [
+                            $followuptable    => 'users_id',
+                            User::getTable()  => 'id'
+                        ]
+                    ]
                 ]
-                ]],
+                ],
                 $this->getDistinctUserCriteria() + $this->getProfileJoinCriteria()
             );
             $criteria['FROM'] = $followuptable;
@@ -567,13 +571,14 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
 
             $criteria = array_merge_recursive(
                 ['INNER JOIN' => [
-                User::getTable() => [
-                  'ON' => [
-                     $tasktable        => 'users_id',
-                     User::getTable()  => 'id'
-                  ]
+                    User::getTable() => [
+                        'ON' => [
+                            $tasktable        => 'users_id',
+                            User::getTable()  => 'id'
+                        ]
+                    ]
                 ]
-                ]],
+                ],
                 $this->getDistinctUserCriteria() + $this->getProfileJoinCriteria()
             );
             $criteria['FROM'] = $tasktable;
@@ -613,13 +618,14 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
 
             $criteria = array_merge_recursive(
                 ['INNER JOIN' => [
-                User::getTable() => [
-                  'ON' => [
-                     $tasktable        => 'users_id_tech',
-                     User::getTable()  => 'id'
-                  ]
+                    User::getTable() => [
+                        'ON' => [
+                            $tasktable        => 'users_id_tech',
+                            User::getTable()  => 'id'
+                        ]
+                    ]
                 ]
-                ]],
+                ],
                 $this->getDistinctUserCriteria() + $this->getProfileJoinCriteria()
             );
             $criteria['FROM'] = $tasktable;
@@ -652,16 +658,16 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
         } else if (isset($options['task_id'])) {
             $tasktable = getTableForItemType($this->obj->getType() . 'Task');
             $iterator = $DB->request([
-            'FROM'   => $tasktable,
-            'INNER JOIN'   => [
-               'glpi_groups'  => [
-                  'ON'  => [
-                     'glpi_groups'  => 'id',
-                     $tasktable     => 'groups_id_tech'
-                  ]
-               ]
-            ],
-            'WHERE'        => ["$tasktable.id" => $options['task_id']]
+                'FROM'   => $tasktable,
+                'INNER JOIN'   => [
+                    'glpi_groups'  => [
+                        'ON'  => [
+                            'glpi_groups'  => 'id',
+                            $tasktable     => 'groups_id_tech'
+                        ]
+                    ]
+                ],
+                'WHERE'        => ["$tasktable.id" => $options['task_id']]
             ]);
             foreach ($iterator as $data) {
                 $this->addForGroup(0, $data['groups_id_tech']);
@@ -675,12 +681,12 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
         global $DB;
 
         $iterator = $DB->request([
-         'SELECT' => ['profiles_id'],
-         'FROM'   => 'glpi_profilerights',
-         'WHERE'  => [
-            'name'   => 'followup',
-            'rights' => ['&', ITILFollowup::SEEPRIVATE]
-         ]
+            'SELECT' => ['profiles_id'],
+            'FROM'   => 'glpi_profilerights',
+            'WHERE'  => [
+                'name'   => 'followup',
+                'rights' => ['&', ITILFollowup::SEEPRIVATE]
+            ]
         ]);
 
         foreach ($iterator as $data) {
@@ -688,11 +694,11 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
         }
 
         $profiles_iterator = $DB->request([
-         'SELECT' => ['id'],
-         'FROM'   => Profile::getTable(),
-         'WHERE'  => [
-            'interface' => 'central',
-         ]
+            'SELECT' => ['id'],
+            'FROM'   => Profile::getTable(),
+            'WHERE'  => [
+                'interface' => 'central',
+            ]
         ]);
 
         foreach ($profiles_iterator as $profiles_data) {
@@ -704,8 +710,8 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
     public function addAdditionnalUserInfo(array $data)
     {
         return [
-         'show_private'    => $this->getShowPrivateInfo($data),
-         'is_self_service' => $this->getIsSelfServiceInfo($data),
+            'show_private'    => $this->getShowPrivateInfo($data),
+            'is_self_service' => $this->getIsSelfServiceInfo($data),
         ];
     }
 
@@ -718,12 +724,12 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
         }
 
         $result = $DB->request([
-         'COUNT'  => 'cpt',
-         'FROM'   => 'glpi_profiles_users',
-         'WHERE'  => [
-            'users_id'     => $data['users_id'],
-            'profiles_id'  => $this->private_profiles
-         ] + getEntitiesRestrictCriteria('glpi_profiles_users', 'entities_id', $this->getEntity(), true)
+            'COUNT'  => 'cpt',
+            'FROM'   => 'glpi_profiles_users',
+            'WHERE'  => [
+                'users_id'     => $data['users_id'],
+                'profiles_id'  => $this->private_profiles
+            ] + getEntitiesRestrictCriteria('glpi_profiles_users', 'entities_id', $this->getEntity(), true)
         ])->current();
 
         if ($result['cpt']) {
@@ -741,12 +747,12 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
         }
 
         $result = $DB->request([
-         'COUNT'  => 'cpt',
-         'FROM'   => Profile_User::getTable(),
-         'WHERE'  => [
-            'users_id'     => $data['users_id'],
-            'profiles_id'  => $this->central_profiles
-         ] + getEntitiesRestrictCriteria(Profile_User::getTable(), 'entities_id', $this->getEntity(), true)
+            'COUNT'  => 'cpt',
+            'FROM'   => Profile_User::getTable(),
+            'WHERE'  => [
+                'users_id'     => $data['users_id'],
+                'profiles_id'  => $this->central_profiles
+            ] + getEntitiesRestrictCriteria(Profile_User::getTable(), 'entities_id', $this->getEntity(), true)
         ])->current();
 
         if ($result['cpt']) {
@@ -761,16 +767,16 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
 
         if ($this->isPrivate()) {
             $criteria['INNER JOIN'][Profile::getTable()] = [
-            'ON' => [
-               Profile::getTable()        => 'id',
-               Profile_User::getTable()   => 'profiles_id'
-            ]
+                'ON' => [
+                    Profile::getTable()        => 'id',
+                    Profile_User::getTable()   => 'profiles_id'
+                ]
             ];
             $criteria['INNER JOIN'][ProfileRight::getTable()] = [
-            'ON' => [
-               ProfileRight::getTable()   => 'profiles_id',
-               Profile::getTable()        => 'id'
-            ]
+                'ON' => [
+                    ProfileRight::getTable()   => 'profiles_id',
+                    Profile::getTable()        => 'id'
+                ]
             ];
             $criteria['WHERE'][ProfileRight::getTable() . '.name'] = 'followup';
             $criteria['WHERE'][ProfileRight::getTable() . '.rights'] = ['&', ITILFollowup::SEEPRIVATE];
@@ -1007,8 +1013,8 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
         if (array_key_exists('users_id', $options) && $user->getFromDB($options['users_id'])) {
             $this->addToRecipientsList(
                 [
-                'language' => $user->fields['language'],
-                'users_id' => $user->fields['id'],
+                    'language' => $user->fields['language'],
+                    'users_id' => $user->fields['id'],
                 ]
             );
         }
@@ -1350,12 +1356,12 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
 
         $itilsolution = new ITILSolution();
         $solution = $itilsolution->getFromDBByRequest([
-         'WHERE'  => [
-            'itemtype'  => $objettype,
-            'items_id'  => $item->fields['id']
-         ],
-         'ORDER'  => 'date_creation DESC',
-         'LIMIT'  => 1
+            'WHERE'  => [
+                'itemtype'  => $objettype,
+                'items_id'  => $item->fields['id']
+            ],
+            'ORDER'  => 'date_creation DESC',
+            'LIMIT'  => 1
         ]);
 
         if ($solution) {
@@ -1384,8 +1390,8 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
             $followups          = getAllDataFromTable(
                 'glpi_itilfollowups',
                 [
-                'WHERE'  => $followup_restrict,
-                'ORDER'  => ['date_mod DESC', 'id ASC']
+                    'WHERE'  => $followup_restrict,
+                    'ORDER'  => ['date_mod DESC', 'id ASC']
                 ]
             );
             $data['followups'] = [];
@@ -1436,12 +1442,12 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
 
            // Get unresolved items
             $restrict = [
-            'NOT' => [
-               $item->getTable() . '.status' => array_merge(
-                   $item->getSolvedStatusArray(),
-                   $item->getClosedStatusArray()
-               )
-            ]
+                'NOT' => [
+                    $item->getTable() . '.status' => array_merge(
+                        $item->getSolvedStatusArray(),
+                        $item->getClosedStatusArray()
+                    )
+                ]
             ];
 
             if ($item->maybeDeleted()) {
@@ -1453,20 +1459,20 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
 
            // Document
             $iterator = $DB->request([
-            'SELECT'    => 'glpi_documents.*',
-            'FROM'      => 'glpi_documents',
-            'LEFT JOIN' => [
-               'glpi_documents_items'  => [
-                  'ON' => [
-                     'glpi_documents_items'  => 'documents_id',
-                     'glpi_documents'        => 'id'
-                  ]
-               ]
-            ],
-            'WHERE'     => [
-               $item->getAssociatedDocumentsCriteria(),
-               'timeline_position' => ['>', CommonITILObject::NO_TIMELINE], // skip inlined images
-            ]
+                'SELECT'    => 'glpi_documents.*',
+                'FROM'      => 'glpi_documents',
+                'LEFT JOIN' => [
+                    'glpi_documents_items'  => [
+                        'ON' => [
+                            'glpi_documents_items'  => 'documents_id',
+                            'glpi_documents'        => 'id'
+                        ]
+                    ]
+                ],
+                'WHERE'     => [
+                    $item->getAssociatedDocumentsCriteria(),
+                    'timeline_position' => ['>', CommonITILObject::NO_TIMELINE], // skip inlined images
+                ]
             ]);
 
             $data["documents"] = [];
@@ -1529,8 +1535,8 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
             $costs          = getAllDataFromTable(
                 getTableForItemType($costtype),
                 [
-                'WHERE'  => [$item->getForeignKeyField() => $item->getField('id')],
-                'ORDER'  => ['begin_date DESC', 'id ASC']
+                    'WHERE'  => [$item->getForeignKeyField() => $item->getField('id')],
+                    'ORDER'  => ['begin_date DESC', 'id ASC']
                 ]
             );
             $data['costs'] = [];
@@ -1573,8 +1579,8 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
             $tasks          = getAllDataFromTable(
                 $taskobj->getTable(),
                 [
-                'WHERE'  => $restrict,
-                'ORDER'  => ['date_mod DESC', 'id ASC']
+                    'WHERE'  => $restrict,
+                    'ORDER'  => ['date_mod DESC', 'id ASC']
                 ]
             );
             $data['tasks'] = [];
@@ -1623,13 +1629,13 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
             $data['timelineitems'] = [];
 
             $options = [
-            'with_documents'    => false,
-            'with_logs'         => false,
-            'with_validations'  => false,
-            'expose_private'    => $show_private,
-            'bypass_rights'     => true,
-            'sort_by_date_desc' => true,
-            'is_self_service'   => $is_self_service,
+                'with_documents'    => false,
+                'with_logs'         => false,
+                'with_validations'  => false,
+                'expose_private'    => $show_private,
+                'bypass_rights'     => true,
+                'sort_by_date_desc' => true,
+                'is_self_service'   => $is_self_service,
             ];
 
             $timeline = $item->getTimelineItems($options);
@@ -1678,317 +1684,324 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
 
        //Locales
         $tags = [$objettype . '.id'                    => __('ID'),
-                    $objettype . '.title'                 => __('Title'),
-                    $objettype . '.url'                   => __('URL'),
-                    $objettype . '.category'              => _n('Category', 'Categories', 1),
-                    $objettype . '.content'               => __('Description'),
-                    $objettype . '.description'           => sprintf(
-                        __('%1$s: %2$s'),
-                        $this->obj->getTypeName(1),
-                        __('Description')
-                    ),
-                    $objettype . '.status'                => __('Status'),
-                    $objettype . '.urgency'               => __('Urgency'),
-                    $objettype . '.impact'                => __('Impact'),
-                    $objettype . '.priority'              => __('Priority'),
-                    $objettype . '.time'                  => __('Total duration'),
-                    $objettype . '.creationdate'          => __('Opening date'),
-                    $objettype . '.closedate'             => __('Closing date'),
-                    $objettype . '.solvedate'             => __('Date of solving'),
-                    $objettype . '.duedate'               => __('Time to resolve'),
-                    $objettype . '.authors'               => _n('Requester', 'Requesters', Session::getPluralNumber()),
-                    'author.id'                         => __('Requester ID'),
-                    'author.name'                       => _n('Requester', 'Requesters', 1),
-                    'author.location'                   => __('Requester location'),
-                    'author.mobile'                     => __('Mobile phone'),
-                    'author.phone'                      => Phone::getTypeName(1),
-                    'author.phone2'                     => __('Phone 2'),
-                    'author.email'                      => _n('Email', 'Emails', 1),
-                    'author.title'                      => _x('person', 'Title'),
-                    'author.category'                   => _n('Category', 'Categories', 1),
-                    $objettype . '.suppliers'             => _n('Supplier', 'Suppliers', Session::getPluralNumber()),
-                    'supplier.id'                       => __('Supplier ID'),
-                    'supplier.name'                     => Supplier::getTypeName(1),
-                    'supplier.phone'                    => Phone::getTypeName(1),
-                    'supplier.fax'                      => __('Fax'),
-                    'supplier.website'                  => __('Website'),
-                    'supplier.email'                    => _n('Email', 'Emails', 1),
-                    'supplier.address'                  => __('Address'),
-                    'supplier.postcode'                 => __('Postal code'),
-                    'supplier.town'                     => __('City'),
-                    'supplier.state'                    => _x('location', 'State'),
-                    'supplier.country'                  => __('Country'),
-                    'supplier.comments'                 => _n('Comment', 'Comments', Session::getPluralNumber()),
-                    'supplier.type'                     => SupplierType::getTypeName(1),
-                    $objettype . '.openbyuser'            => __('Writer'),
-                    $objettype . '.lastupdater'           => __('Last updater'),
-                    $objettype . '.assigntousers'         => __('Assigned to technicians'),
-                    $objettype . '.assigntosupplier'      => __('Assigned to a supplier'),
-                    $objettype . '.groups'                => _n(
-                        'Requester group',
-                        'Requester groups',
-                        Session::getPluralNumber()
-                    ),
-                    $objettype . '.observergroups'        => _n('Watcher group', 'Watcher groups', Session::getPluralNumber()),
-                    $objettype . '.assigntogroups'        => __('Assigned to groups'),
-                    $objettype . '.solution.type'         => SolutionType::getTypeName(1),
-                    $objettype . '.solution.description'  => ITILSolution::getTypeName(1),
-                    $objettype . '.observerusers'         => _n('Watcher', 'Watchers', Session::getPluralNumber()),
-                    $objettype . '.action'                => _n('Event', 'Events', 1),
-                    'followup.date'                     => __('Opening date'),
-                    'followup.isprivate'                => __('Private'),
-                    'followup.author'                   => __('Writer'),
-                    'followup.description'              => __('Description'),
-                    'followup.requesttype'              => RequestType::getTypeName(1),
-                    $objettype . '.numberoffollowups'     => _x('quantity', 'Number of followups'),
-                    $objettype . '.numberofunresolved'    => __('Number of unresolved items'),
-                    $objettype . '.numberofdocuments'     => _x('quantity', 'Number of documents'),
-                    $objettype . '.costtime'              => __('Time cost'),
-                    $objettype . '.costfixed'             => __('Fixed cost'),
-                    $objettype . '.costmaterial'          => __('Material cost'),
-                    $objettype . '.totalcost'             => __('Total cost'),
-                    $objettype . '.numberofcosts'         => __('Number of costs'),
-                    'cost.name'                         => sprintf(
-                        __('%1$s: %2$s'),
-                        _n('Cost', 'Costs', 1),
-                        __('Name')
-                    ),
-                    'cost.comment'                      => sprintf(
-                        __('%1$s: %2$s'),
-                        _n('Cost', 'Costs', 1),
-                        __('Comments')
-                    ),
-                    'cost.datebegin'                    => sprintf(
-                        __('%1$s: %2$s'),
-                        _n('Cost', 'Costs', 1),
-                        __('Begin date')
-                    ),
-                    'cost.dateend'                      => sprintf(
-                        __('%1$s: %2$s'),
-                        _n('Cost', 'Costs', 1),
-                        __('End date')
-                    ),
-                    'cost.time'                         => sprintf(
-                        __('%1$s: %2$s'),
-                        _n('Cost', 'Costs', 1),
-                        __('Duration')
-                    ),
-                    'cost.costtime'                     => sprintf(
-                        __('%1$s: %2$s'),
-                        _n('Cost', 'Costs', 1),
-                        __('Time cost')
-                    ),
-                    'cost.costfixed'                    => sprintf(
-                        __('%1$s: %2$s'),
-                        _n('Cost', 'Costs', 1),
-                        __('Fixed cost')
-                    ),
-                    'cost.costmaterial'                 => sprintf(
-                        __('%1$s: %2$s'),
-                        _n('Cost', 'Costs', 1),
-                        __('Material cost')
-                    ),
-                    'cost.totalcost'                    => sprintf(
-                        __('%1$s: %2$s'),
-                        _n('Cost', 'Costs', 1),
-                        __('Total cost')
-                    ),
-                    'cost.budget'                       => sprintf(
-                        __('%1$s: %2$s'),
-                        _n('Cost', 'Costs', 1),
-                        Budget::getTypeName(1)
-                    ),
-                    'task.author'                       => __('Writer'),
-                    'task.isprivate'                    => __('Private'),
-                    'task.date'                         => __('Opening date'),
-                    'task.description'                  => __('Description'),
-                    'task.categoryid'                   => __('Category id'),
-                    'task.category'                     => _n('Category', 'Categories', 1),
-                    'task.categorycomment'              => __('Category comment'),
-                    'task.time'                         => __('Total duration'),
-                    'task.user'                         => __('User assigned to task'),
-                    'task.group'                        => __('Group assigned to task'),
-                    'task.begin'                        => __('Start date'),
-                    'task.end'                          => __('End date'),
-                    'task.status'                       => __('Status'),
-                    $objettype . '.numberoftasks'         => _x('quantity', 'Number of tasks'),
-                    $objettype . '.entity.phone'          => sprintf(
-                        __('%1$s (%2$s)'),
-                        Entity::getTypeName(1),
-                        Phone::getTypeName(1)
-                    ),
-                    $objettype . '.entity.fax'            => sprintf(
-                        __('%1$s (%2$s)'),
-                        Entity::getTypeName(1),
-                        __('Fax')
-                    ),
-                    $objettype . '.entity.website'        => sprintf(
-                        __('%1$s (%2$s)'),
-                        Entity::getTypeName(1),
-                        __('Website')
-                    ),
-                    $objettype . '.entity.email'          => sprintf(
-                        __('%1$s (%2$s)'),
-                        Entity::getTypeName(1),
-                        _n('Email', 'Emails', 1)
-                    ),
-                    $objettype . '.entity.address'        => sprintf(
-                        __('%1$s (%2$s)'),
-                        Entity::getTypeName(1),
-                        __('Address')
-                    ),
-                    $objettype . '.entity.postcode'       => sprintf(
-                        __('%1$s (%2$s)'),
-                        Entity::getTypeName(1),
-                        __('Postal code')
-                    ),
-                    $objettype . '.entity.town'           => sprintf(
-                        __('%1$s (%2$s)'),
-                        Entity::getTypeName(1),
-                        __('City')
-                    ),
-                    $objettype . '.entity.state'          => sprintf(
-                        __('%1$s (%2$s)'),
-                        Entity::getTypeName(1),
-                        _x('location', 'State')
-                    ),
-                    $objettype . '.entity.country'        => sprintf(
-                        __('%1$s (%2$s)'),
-                        Entity::getTypeName(1),
-                        __('Country')
-                    ),
-                    'timelineitems.author'              => __('Writer'),
-                    'timelineitems.date'                => __('Opening date'),
-                    'timelineitems.type'                => __('Internal type'),
-                    'timelineitems.typename'            => _n('Type', 'Types', 1),
-                    'timelineitems.description'         => __('Description'),
-                    'timelineitems.position'            => __('Position'),
+            $objettype . '.title'                 => __('Title'),
+            $objettype . '.url'                   => __('URL'),
+            $objettype . '.category'              => _n('Category', 'Categories', 1),
+            $objettype . '.content'               => __('Description'),
+            $objettype . '.description'           => sprintf(
+                __('%1$s: %2$s'),
+                $this->obj->getTypeName(1),
+                __('Description')
+            ),
+            $objettype . '.status'                => __('Status'),
+            $objettype . '.urgency'               => __('Urgency'),
+            $objettype . '.impact'                => __('Impact'),
+            $objettype . '.priority'              => __('Priority'),
+            $objettype . '.time'                  => __('Total duration'),
+            $objettype . '.creationdate'          => __('Opening date'),
+            $objettype . '.closedate'             => __('Closing date'),
+            $objettype . '.solvedate'             => __('Date of solving'),
+            $objettype . '.duedate'               => __('Time to resolve'),
+            $objettype . '.authors'               => _n('Requester', 'Requesters', Session::getPluralNumber()),
+            'author.id'                         => __('Requester ID'),
+            'author.name'                       => _n('Requester', 'Requesters', 1),
+            'author.location'                   => __('Requester location'),
+            'author.mobile'                     => __('Mobile phone'),
+            'author.phone'                      => Phone::getTypeName(1),
+            'author.phone2'                     => __('Phone 2'),
+            'author.email'                      => _n('Email', 'Emails', 1),
+            'author.title'                      => _x('person', 'Title'),
+            'author.category'                   => _n('Category', 'Categories', 1),
+            $objettype . '.suppliers'             => _n('Supplier', 'Suppliers', Session::getPluralNumber()),
+            'supplier.id'                       => __('Supplier ID'),
+            'supplier.name'                     => Supplier::getTypeName(1),
+            'supplier.phone'                    => Phone::getTypeName(1),
+            'supplier.fax'                      => __('Fax'),
+            'supplier.website'                  => __('Website'),
+            'supplier.email'                    => _n('Email', 'Emails', 1),
+            'supplier.address'                  => __('Address'),
+            'supplier.postcode'                 => __('Postal code'),
+            'supplier.town'                     => __('City'),
+            'supplier.state'                    => _x('location', 'State'),
+            'supplier.country'                  => __('Country'),
+            'supplier.comments'                 => _n('Comment', 'Comments', Session::getPluralNumber()),
+            'supplier.type'                     => SupplierType::getTypeName(1),
+            $objettype . '.openbyuser'            => __('Writer'),
+            $objettype . '.lastupdater'           => __('Last updater'),
+            $objettype . '.assigntousers'         => __('Assigned to technicians'),
+            $objettype . '.assigntosupplier'      => __('Assigned to a supplier'),
+            $objettype . '.groups'                => _n(
+                'Requester group',
+                'Requester groups',
+                Session::getPluralNumber()
+            ),
+            $objettype . '.observergroups'        => _n('Watcher group', 'Watcher groups', Session::getPluralNumber()),
+            $objettype . '.assigntogroups'        => __('Assigned to groups'),
+            $objettype . '.solution.type'         => SolutionType::getTypeName(1),
+            $objettype . '.solution.description'  => ITILSolution::getTypeName(1),
+            $objettype . '.observerusers'         => _n('Watcher', 'Watchers', Session::getPluralNumber()),
+            $objettype . '.action'                => _n('Event', 'Events', 1),
+            'followup.date'                     => __('Opening date'),
+            'followup.isprivate'                => __('Private'),
+            'followup.author'                   => __('Writer'),
+            'followup.description'              => __('Description'),
+            'followup.requesttype'              => RequestType::getTypeName(1),
+            $objettype . '.numberoffollowups'     => _x('quantity', 'Number of followups'),
+            $objettype . '.numberofunresolved'    => __('Number of unresolved items'),
+            $objettype . '.numberofdocuments'     => _x('quantity', 'Number of documents'),
+            $objettype . '.costtime'              => __('Time cost'),
+            $objettype . '.costfixed'             => __('Fixed cost'),
+            $objettype . '.costmaterial'          => __('Material cost'),
+            $objettype . '.totalcost'             => __('Total cost'),
+            $objettype . '.numberofcosts'         => __('Number of costs'),
+            'cost.name'                         => sprintf(
+                __('%1$s: %2$s'),
+                _n('Cost', 'Costs', 1),
+                __('Name')
+            ),
+            'cost.comment'                      => sprintf(
+                __('%1$s: %2$s'),
+                _n('Cost', 'Costs', 1),
+                __('Comments')
+            ),
+            'cost.datebegin'                    => sprintf(
+                __('%1$s: %2$s'),
+                _n('Cost', 'Costs', 1),
+                __('Begin date')
+            ),
+            'cost.dateend'                      => sprintf(
+                __('%1$s: %2$s'),
+                _n('Cost', 'Costs', 1),
+                __('End date')
+            ),
+            'cost.time'                         => sprintf(
+                __('%1$s: %2$s'),
+                _n('Cost', 'Costs', 1),
+                __('Duration')
+            ),
+            'cost.costtime'                     => sprintf(
+                __('%1$s: %2$s'),
+                _n('Cost', 'Costs', 1),
+                __('Time cost')
+            ),
+            'cost.costfixed'                    => sprintf(
+                __('%1$s: %2$s'),
+                _n('Cost', 'Costs', 1),
+                __('Fixed cost')
+            ),
+            'cost.costmaterial'                 => sprintf(
+                __('%1$s: %2$s'),
+                _n('Cost', 'Costs', 1),
+                __('Material cost')
+            ),
+            'cost.totalcost'                    => sprintf(
+                __('%1$s: %2$s'),
+                _n('Cost', 'Costs', 1),
+                __('Total cost')
+            ),
+            'cost.budget'                       => sprintf(
+                __('%1$s: %2$s'),
+                _n('Cost', 'Costs', 1),
+                Budget::getTypeName(1)
+            ),
+            'task.author'                       => __('Writer'),
+            'task.isprivate'                    => __('Private'),
+            'task.date'                         => __('Opening date'),
+            'task.description'                  => __('Description'),
+            'task.categoryid'                   => __('Category id'),
+            'task.category'                     => _n('Category', 'Categories', 1),
+            'task.categorycomment'              => __('Category comment'),
+            'task.time'                         => __('Total duration'),
+            'task.user'                         => __('User assigned to task'),
+            'task.group'                        => __('Group assigned to task'),
+            'task.begin'                        => __('Start date'),
+            'task.end'                          => __('End date'),
+            'task.status'                       => __('Status'),
+            $objettype . '.numberoftasks'         => _x('quantity', 'Number of tasks'),
+            $objettype . '.entity.phone'          => sprintf(
+                __('%1$s (%2$s)'),
+                Entity::getTypeName(1),
+                Phone::getTypeName(1)
+            ),
+            $objettype . '.entity.fax'            => sprintf(
+                __('%1$s (%2$s)'),
+                Entity::getTypeName(1),
+                __('Fax')
+            ),
+            $objettype . '.entity.website'        => sprintf(
+                __('%1$s (%2$s)'),
+                Entity::getTypeName(1),
+                __('Website')
+            ),
+            $objettype . '.entity.email'          => sprintf(
+                __('%1$s (%2$s)'),
+                Entity::getTypeName(1),
+                _n('Email', 'Emails', 1)
+            ),
+            $objettype . '.entity.address'        => sprintf(
+                __('%1$s (%2$s)'),
+                Entity::getTypeName(1),
+                __('Address')
+            ),
+            $objettype . '.entity.postcode'       => sprintf(
+                __('%1$s (%2$s)'),
+                Entity::getTypeName(1),
+                __('Postal code')
+            ),
+            $objettype . '.entity.town'           => sprintf(
+                __('%1$s (%2$s)'),
+                Entity::getTypeName(1),
+                __('City')
+            ),
+            $objettype . '.entity.state'          => sprintf(
+                __('%1$s (%2$s)'),
+                Entity::getTypeName(1),
+                _x('location', 'State')
+            ),
+            $objettype . '.entity.country'        => sprintf(
+                __('%1$s (%2$s)'),
+                Entity::getTypeName(1),
+                __('Country')
+            ),
+            'timelineitems.author'              => __('Writer'),
+            'timelineitems.date'                => __('Opening date'),
+            'timelineitems.type'                => __('Internal type'),
+            'timelineitems.typename'            => _n('Type', 'Types', 1),
+            'timelineitems.description'         => __('Description'),
+            'timelineitems.position'            => __('Position'),
 
-                   ];
+        ];
 
         foreach ($tags as $tag => $label) {
             $this->addTagToList(['tag'    => $tag,
-                                   'label'  => $label,
-                                   'value'  => true,
-                                   'events' => parent::TAG_FOR_ALL_EVENTS]);
+                'label'  => $label,
+                'value'  => true,
+                'events' => parent::TAG_FOR_ALL_EVENTS
+            ]);
         }
 
        //Foreach global tags
         $tags = ['log'       => __('Historical'),
-                    'followups' => _n('Followup', 'Followups', Session::getPluralNumber()),
-                    'tasks'     => _n('Task', 'Tasks', Session::getPluralNumber()),
-                    'costs'     => _n('Cost', 'Costs', Session::getPluralNumber()),
-                    'authors'   => _n('Requester', 'Requesters', Session::getPluralNumber()),
-                    'suppliers' => _n('Supplier', 'Suppliers', Session::getPluralNumber()),
-                    'timelineitems' => sprintf(__('Processing %1$s'), strtolower($objettype))];
+            'followups' => _n('Followup', 'Followups', Session::getPluralNumber()),
+            'tasks'     => _n('Task', 'Tasks', Session::getPluralNumber()),
+            'costs'     => _n('Cost', 'Costs', Session::getPluralNumber()),
+            'authors'   => _n('Requester', 'Requesters', Session::getPluralNumber()),
+            'suppliers' => _n('Supplier', 'Suppliers', Session::getPluralNumber()),
+            'timelineitems' => sprintf(__('Processing %1$s'), strtolower($objettype))
+        ];
 
         foreach ($tags as $tag => $label) {
             $this->addTagToList(['tag'     => $tag,
-                                   'label'   => $label,
-                                   'value'   => false,
-                                   'foreach' => true]);
+                'label'   => $label,
+                'value'   => false,
+                'foreach' => true
+            ]);
         }
 
        //Tags with just lang
         $tags = [$objettype . '.days'               => _n('Day', 'Days', Session::getPluralNumber()),
-                    $objettype . '.attribution'        => __('Assigned to'),
-                    $objettype . '.entity'             => Entity::getTypeName(1),
-                    $objettype . '.nocategoryassigned' => __('No defined category'),
-                    $objettype . '.log'                => __('Historical'),
-                    $objettype . '.tasks'              => _n('Task', 'Tasks', Session::getPluralNumber()),
-                    $objettype . '.costs'              => _n('Cost', 'Costs', Session::getPluralNumber()),
-                    $objettype . '.timelineitems'       => sprintf(__('Processing %1$s'), strtolower($objettype))];
+            $objettype . '.attribution'        => __('Assigned to'),
+            $objettype . '.entity'             => Entity::getTypeName(1),
+            $objettype . '.nocategoryassigned' => __('No defined category'),
+            $objettype . '.log'                => __('Historical'),
+            $objettype . '.tasks'              => _n('Task', 'Tasks', Session::getPluralNumber()),
+            $objettype . '.costs'              => _n('Cost', 'Costs', Session::getPluralNumber()),
+            $objettype . '.timelineitems'       => sprintf(__('Processing %1$s'), strtolower($objettype))
+        ];
 
         foreach ($tags as $tag => $label) {
             $this->addTagToList(['tag'   => $tag,
-                                   'label' => $label,
-                                   'value' => false,
-                                   'lang'  => true]);
+                'label' => $label,
+                'value' => false,
+                'lang'  => true
+            ]);
         }
 
        //Tags without lang
         $tags = [$objettype . '.urlapprove'     => __('Web link to approval the solution'),
-                    $objettype . '.entity'         => sprintf(
-                        __('%1$s (%2$s)'),
-                        Entity::getTypeName(1),
-                        __('Complete name')
-                    ),
-                    $objettype . '.shortentity'    => sprintf(
-                        __('%1$s (%2$s)'),
-                        Entity::getTypeName(1),
-                        __('Name')
-                    ),
-                    $objettype . '.numberoflogs'   => sprintf(
-                        __('%1$s: %2$s'),
-                        __('Historical'),
-                        _x('quantity', 'Number of items')
-                    ),
-                    $objettype . '.log.date'       => sprintf(
-                        __('%1$s: %2$s'),
-                        __('Historical'),
-                        _n('Date', 'Dates', 1)
-                    ),
-                    $objettype . '.log.user'       => sprintf(
-                        __('%1$s: %2$s'),
-                        __('Historical'),
-                        User::getTypeName(1)
-                    ),
-                    $objettype . '.log.field'      => sprintf(
-                        __('%1$s: %2$s'),
-                        __('Historical'),
-                        _n('Field', 'Fields', 1)
-                    ),
-                    $objettype . '.log.content'    => sprintf(
-                        __('%1$s: %2$s'),
-                        __('Historical'),
-                        _x('name', 'Update')
-                    ),
-                    'document.url'               => sprintf(
-                        __('%1$s: %2$s'),
-                        Document::getTypeName(1),
-                        __('URL')
-                    ),
-                    'document.downloadurl'       => sprintf(
-                        __('%1$s: %2$s'),
-                        Document::getTypeName(1),
-                        __('Download URL')
-                    ),
-                    'document.heading'           => sprintf(
-                        __('%1$s: %2$s'),
-                        Document::getTypeName(1),
-                        __('Heading')
-                    ),
-                    'document.id'                => sprintf(
-                        __('%1$s: %2$s'),
-                        Document::getTypeName(1),
-                        __('ID')
-                    ),
-                    'document.filename'          => sprintf(
-                        __('%1$s: %2$s'),
-                        Document::getTypeName(1),
-                        __('File')
-                    ),
-                    'document.weblink'           => sprintf(
-                        __('%1$s: %2$s'),
-                        Document::getTypeName(1),
-                        __('Web link')
-                    ),
-                    'document.name'              => sprintf(
-                        __('%1$s: %2$s'),
-                        Document::getTypeName(1),
-                        __('Name')
-                    ),
-                     $objettype . '.urldocument'   => sprintf(
-                         __('%1$s: %2$s'),
-                         Document::getTypeName(Session::getPluralNumber()),
-                         __('URL')
-                     )];
+            $objettype . '.entity'         => sprintf(
+                __('%1$s (%2$s)'),
+                Entity::getTypeName(1),
+                __('Complete name')
+            ),
+            $objettype . '.shortentity'    => sprintf(
+                __('%1$s (%2$s)'),
+                Entity::getTypeName(1),
+                __('Name')
+            ),
+            $objettype . '.numberoflogs'   => sprintf(
+                __('%1$s: %2$s'),
+                __('Historical'),
+                _x('quantity', 'Number of items')
+            ),
+            $objettype . '.log.date'       => sprintf(
+                __('%1$s: %2$s'),
+                __('Historical'),
+                _n('Date', 'Dates', 1)
+            ),
+            $objettype . '.log.user'       => sprintf(
+                __('%1$s: %2$s'),
+                __('Historical'),
+                User::getTypeName(1)
+            ),
+            $objettype . '.log.field'      => sprintf(
+                __('%1$s: %2$s'),
+                __('Historical'),
+                _n('Field', 'Fields', 1)
+            ),
+            $objettype . '.log.content'    => sprintf(
+                __('%1$s: %2$s'),
+                __('Historical'),
+                _x('name', 'Update')
+            ),
+            'document.url'               => sprintf(
+                __('%1$s: %2$s'),
+                Document::getTypeName(1),
+                __('URL')
+            ),
+            'document.downloadurl'       => sprintf(
+                __('%1$s: %2$s'),
+                Document::getTypeName(1),
+                __('Download URL')
+            ),
+            'document.heading'           => sprintf(
+                __('%1$s: %2$s'),
+                Document::getTypeName(1),
+                __('Heading')
+            ),
+            'document.id'                => sprintf(
+                __('%1$s: %2$s'),
+                Document::getTypeName(1),
+                __('ID')
+            ),
+            'document.filename'          => sprintf(
+                __('%1$s: %2$s'),
+                Document::getTypeName(1),
+                __('File')
+            ),
+            'document.weblink'           => sprintf(
+                __('%1$s: %2$s'),
+                Document::getTypeName(1),
+                __('Web link')
+            ),
+            'document.name'              => sprintf(
+                __('%1$s: %2$s'),
+                Document::getTypeName(1),
+                __('Name')
+            ),
+            $objettype . '.urldocument'   => sprintf(
+                __('%1$s: %2$s'),
+                Document::getTypeName(Session::getPluralNumber()),
+                __('URL')
+            )
+        ];
 
         foreach ($tags as $tag => $label) {
             $this->addTagToList(['tag'   => $tag,
-                                   'label' => $label,
-                                   'value' => true,
-                                   'lang'  => false]);
+                'label' => $label,
+                'value' => true,
+                'lang'  => false
+            ]);
         }
 
        //Tickets with a fixed set of values
@@ -1999,14 +2012,17 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
         }
 
         $tags = [$objettype . '.storestatus' => ['text'     => __('Status value in database'),
-                                                       'allowed_values'
-                                                                  => $allowed_ticket]];
+            'allowed_values'
+                                                                  => $allowed_ticket
+        ]
+        ];
         foreach ($tags as $tag => $label) {
             $this->addTagToList(['tag'            => $tag,
-                                   'label'          => $label['text'],
-                                   'value'          => true,
-                                   'lang'           => false,
-                                   'allowed_values' => $label['allowed_values']]);
+                'label'          => $label['text'],
+                'value'          => true,
+                'lang'           => false,
+                'allowed_values' => $label['allowed_values']
+            ]);
         }
     }
 

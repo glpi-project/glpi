@@ -51,9 +51,9 @@ class ProblemTemplate extends ITILTemplate
     public function getCloneRelations(): array
     {
         return [
-         ProblemTemplateHiddenField::class,
-         ProblemTemplateMandatoryField::class,
-         ProblemTemplatePredefinedField::class,
+            ProblemTemplateHiddenField::class,
+            ProblemTemplateMandatoryField::class,
+            ProblemTemplatePredefinedField::class,
         ];
     }
 }

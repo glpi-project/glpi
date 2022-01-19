@@ -42,8 +42,8 @@ class Bios extends AbstractInventoryAsset
     protected function assetProvider(): array
     {
         return [
-         [
-            'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+            [
+                'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
   <CONTENT>
     <BIOS>
@@ -63,9 +63,9 @@ class Bios extends AbstractInventoryAsset
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-            'expected'  => '{"bdate": "2016-02-06", "bmanufacturer": "Dell Inc.", "bversion": "1.4.3", "mmanufacturer": "Dell Inc.", "mmodel": "07TYC2", "msn": "/640HP72/CN129636460078/", "skunumber": "0704", "smanufacturer": "Dell Inc.", "smodel": "XPS 13 9350", "ssn": "640HP72", "date": "2016-02-06", "version": "1.4.3", "manufacturers_id": "Dell Inc.", "designation": "Dell Inc. BIOS", "devicefirmwaretypes_id": 1}'
-         ], [
-            'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+                'expected'  => '{"bdate": "2016-02-06", "bmanufacturer": "Dell Inc.", "bversion": "1.4.3", "mmanufacturer": "Dell Inc.", "mmodel": "07TYC2", "msn": "/640HP72/CN129636460078/", "skunumber": "0704", "smanufacturer": "Dell Inc.", "smodel": "XPS 13 9350", "ssn": "640HP72", "date": "2016-02-06", "version": "1.4.3", "manufacturers_id": "Dell Inc.", "designation": "Dell Inc. BIOS", "devicefirmwaretypes_id": 1}'
+            ], [
+                'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
   <CONTENT>
     <BIOS>
@@ -79,8 +79,8 @@ class Bios extends AbstractInventoryAsset
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-            'expected'  => '{"bversion": "IM51.0090.B09", "smanufacturer": "Apple Computer, Inc.", "smodel": "iMac5,1", "ssn": "W87051UGVUV", "version": "IM51.0090.B09", "designation": " BIOS", "devicefirmwaretypes_id": 1}'
-         ]
+                'expected'  => '{"bversion": "IM51.0090.B09", "smanufacturer": "Apple Computer, Inc.", "smodel": "iMac5,1", "ssn": "W87051UGVUV", "version": "IM51.0090.B09", "designation": " BIOS", "devicefirmwaretypes_id": 1}'
+            ]
         ];
     }
 
@@ -160,35 +160,35 @@ class Bios extends AbstractInventoryAsset
 
         $type = new \DeviceFirmwareType();
         $type->getFromDBByCrit([
-         'name' => 'BIOS'
+            'name' => 'BIOS'
         ]);
         $types_id = $type->getID();
 
         $manufacturer = new \Manufacturer();
         $manufacturers_id = $manufacturer->add([
-         'name' => 'Dell Inc.'
+            'name' => 'Dell Inc.'
         ]);
         $this->integer($manufacturers_id)->isGreaterThan(0);
 
        //create manually a computer, with a bios
         $computers_id = $computer->add([
-         'name'   => 'pc002',
-         'serial' => 'ggheb7ne7',
-         'entities_id' => 0
+            'name'   => 'pc002',
+            'serial' => 'ggheb7ne7',
+            'entities_id' => 0
         ]);
         $this->integer($computers_id)->isGreaterThan(0);
 
         $bios_id = $device_bios->add([
-         'designation' => 'Dell Inc. BIOS',
-         'devicefirmwaretypes_id' => $types_id,
-         'manufacturers_id' => $manufacturers_id,
-         'version' => '1.4.3'
+            'designation' => 'Dell Inc. BIOS',
+            'devicefirmwaretypes_id' => $types_id,
+            'manufacturers_id' => $manufacturers_id,
+            'version' => '1.4.3'
         ]);
 
         $item_bios_id = $item_bios->add([
-         'items_id' => $computers_id,
-         'itemtype' => 'Computer',
-         'devicefirmwares_id' => $bios_id
+            'items_id' => $computers_id,
+            'itemtype' => 'Computer',
+            'devicefirmwares_id' => $bios_id
         ]);
         $this->integer($item_bios_id)->isGreaterThan(0);
 

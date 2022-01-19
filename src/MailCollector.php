@@ -97,7 +97,7 @@ class MailCollector extends CommonDBTM
     const REQUESTER_FIELD_REPLY_TO = 1;
 
     public static $undisclosedFields = [
-      'passwd',
+        'passwd',
     ];
 
     public static function getTypeName($nb = 0)
@@ -297,8 +297,8 @@ class MailCollector extends CommonDBTM
         echo "<tr class='tab_bg_1'><td>" . __('Use Reply-To as requester (when available)') . "</td>";
         echo "<td>";
         Dropdown::showFromArray("requester_field", [
-         self::REQUESTER_FIELD_FROM => __('No'),
-         self::REQUESTER_FIELD_REPLY_TO => __('Yes')
+            self::REQUESTER_FIELD_FROM => __('No'),
+            self::REQUESTER_FIELD_REPLY_TO => __('Yes')
         ], ["value" => $this->fields['requester_field']]);
         echo "</td></tr>\n";
 
@@ -456,92 +456,92 @@ class MailCollector extends CommonDBTM
         $tab = [];
 
         $tab[] = [
-         'id'                 => 'common',
-         'name'               => __('Characteristics')
+            'id'                 => 'common',
+            'name'               => __('Characteristics')
         ];
 
         $tab[] = [
-         'id'                 => '1',
-         'table'              => $this->getTable(),
-         'field'              => 'name',
-         'name'               => __('Name'),
-         'datatype'           => 'itemlink',
-         'massiveaction'      => false,
+            'id'                 => '1',
+            'table'              => $this->getTable(),
+            'field'              => 'name',
+            'name'               => __('Name'),
+            'datatype'           => 'itemlink',
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
-         'id'                 => '2',
-         'table'              => $this->getTable(),
-         'field'              => 'is_active',
-         'name'               => __('Active'),
-         'datatype'           => 'bool'
+            'id'                 => '2',
+            'table'              => $this->getTable(),
+            'field'              => 'is_active',
+            'name'               => __('Active'),
+            'datatype'           => 'bool'
         ];
 
         $tab[] = [
-         'id'                 => '3',
-         'table'              => $this->getTable(),
-         'field'              => 'host',
-         'name'               => __('Connection string'),
-         'massiveaction'      => false,
-         'datatype'           => 'string'
+            'id'                 => '3',
+            'table'              => $this->getTable(),
+            'field'              => 'host',
+            'name'               => __('Connection string'),
+            'massiveaction'      => false,
+            'datatype'           => 'string'
         ];
 
         $tab[] = [
-         'id'                 => '4',
-         'table'              => $this->getTable(),
-         'field'              => 'login',
-         'name'               => __('Login'),
-         'massiveaction'      => false,
-         'datatype'           => 'string',
+            'id'                 => '4',
+            'table'              => $this->getTable(),
+            'field'              => 'login',
+            'name'               => __('Login'),
+            'massiveaction'      => false,
+            'datatype'           => 'string',
         ];
 
         $tab[] = [
-         'id'                 => '5',
-         'table'              => $this->getTable(),
-         'field'              => 'filesize_max',
-         'name'               => __('Maximum size of each file imported by the mails receiver'),
-         'datatype'           => 'integer'
+            'id'                 => '5',
+            'table'              => $this->getTable(),
+            'field'              => 'filesize_max',
+            'name'               => __('Maximum size of each file imported by the mails receiver'),
+            'datatype'           => 'integer'
         ];
 
         $tab[] = [
-         'id'                 => '16',
-         'table'              => $this->getTable(),
-         'field'              => 'comment',
-         'name'               => __('Comments'),
-         'datatype'           => 'text'
+            'id'                 => '16',
+            'table'              => $this->getTable(),
+            'field'              => 'comment',
+            'name'               => __('Comments'),
+            'datatype'           => 'text'
         ];
 
         $tab[] = [
-         'id'                 => '19',
-         'table'              => $this->getTable(),
-         'field'              => 'date_mod',
-         'name'               => __('Last update'),
-         'datatype'           => 'datetime',
-         'massiveaction'      => false
+            'id'                 => '19',
+            'table'              => $this->getTable(),
+            'field'              => 'date_mod',
+            'name'               => __('Last update'),
+            'datatype'           => 'datetime',
+            'massiveaction'      => false
         ];
 
         $tab[] = [
-         'id'                 => '20',
-         'table'              => $this->getTable(),
-         'field'              => 'accepted',
-         'name'               => __('Accepted mail archive folder (optional)'),
-         'datatype'           => 'string'
+            'id'                 => '20',
+            'table'              => $this->getTable(),
+            'field'              => 'accepted',
+            'name'               => __('Accepted mail archive folder (optional)'),
+            'datatype'           => 'string'
         ];
 
         $tab[] = [
-         'id'                 => '21',
-         'table'              => $this->getTable(),
-         'field'              => 'refused',
-         'name'               => __('Refused mail archive folder (optional)'),
-         'datatype'           => 'string'
+            'id'                 => '21',
+            'table'              => $this->getTable(),
+            'field'              => 'refused',
+            'name'               => __('Refused mail archive folder (optional)'),
+            'datatype'           => 'string'
         ];
 
         $tab[] = [
-         'id'                 => '22',
-         'table'              => $this->getTable(),
-         'field'              => 'errors',
-         'name'               => __('Connection errors'),
-         'datatype'           => 'integer'
+            'id'                 => '22',
+            'table'              => $this->getTable(),
+            'field'              => 'errors',
+            'name'               => __('Connection errors'),
+            'datatype'           => 'integer'
         ];
 
         return $tab;
@@ -558,11 +558,11 @@ class MailCollector extends CommonDBTM
         global $DB;
 
         $query = [
-         'FROM'   => NotImportedEmail::getTable(),
-         'WHERE'  => [
-            'id' => $emails_ids,
-         ],
-         'ORDER'  => 'mailcollectors_id'
+            'FROM'   => NotImportedEmail::getTable(),
+            'WHERE'  => [
+                'id' => $emails_ids,
+            ],
+            'ORDER'  => 'mailcollectors_id'
         ];
 
         $todelete = [];
@@ -577,16 +577,16 @@ class MailCollector extends CommonDBTM
                 $connect_config = Toolbox::parseMailServerConnectString($collector->fields['host']);
                 $collector->fields['host'] = Toolbox::constructMailServerConfig(
                     [
-                    'mail_server'   => $connect_config['address'],
-                    'server_port'   => $connect_config['port'],
-                    'server_type'   => !empty($connect_config['type']) ? '/' . $connect_config['type'] : '',
-                    'server_ssl'    => $connect_config['ssl'] ? '/ssl' : '',
-                    'server_cert'   => $connect_config['validate-cert'] ? '/validate-cert' : '/novalidate-cert',
-                    'server_tls'    => $connect_config['tls'] ? '/tls' : '',
-                    'server_rsh'    => $connect_config['norsh'] ? '/norsh' : '',
-                    'server_secure' => $connect_config['secure'] ? '/secure' : '',
-                    'server_debug'  => $connect_config['debug'] ? '/debug' : '',
-                    'server_mailbox' => $collector->fields[self::REFUSED_FOLDER],
+                        'mail_server'   => $connect_config['address'],
+                        'server_port'   => $connect_config['port'],
+                        'server_type'   => !empty($connect_config['type']) ? '/' . $connect_config['type'] : '',
+                        'server_ssl'    => $connect_config['ssl'] ? '/ssl' : '',
+                        'server_cert'   => $connect_config['validate-cert'] ? '/validate-cert' : '/novalidate-cert',
+                        'server_tls'    => $connect_config['tls'] ? '/tls' : '',
+                        'server_rsh'    => $connect_config['norsh'] ? '/norsh' : '',
+                        'server_secure' => $connect_config['secure'] ? '/secure' : '',
+                        'server_debug'  => $connect_config['debug'] ? '/debug' : '',
+                        'server_mailbox' => $collector->fields[self::REFUSED_FOLDER],
                     ]
                 );
 
@@ -607,8 +607,8 @@ class MailCollector extends CommonDBTM
                                 $uid,
                                 $message,
                                 [
-                                'mailgates_id' => $mailcollector_id,
-                                'play_rules'   => false
+                                    'mailgates_id' => $mailcollector_id,
+                                    'play_rules'   => false
                                 ]
                             );
                             $tkt['_users_id_requester'] = $rejected[$head['message_id']]['users_id'];
@@ -646,8 +646,8 @@ class MailCollector extends CommonDBTM
                // Email not present in mailbox
                 if (count($rejected)) {
                     $clean = [
-                    '<' => '',
-                    '>' => ''
+                        '<' => '',
+                        '>' => ''
                     ];
                     foreach ($rejected as $id => $data) {
                         if ($action == 1) {
@@ -737,11 +737,11 @@ class MailCollector extends CommonDBTM
 
                 foreach ($messages as $uid => $message) {
                     $rejinput = [
-                    'mailcollectors_id' => $mailgateID,
-                    'from'              => '',
-                    'to'                => '',
-                    'messageid'         => '',
-                    'date'              => $_SESSION["glpi_currenttime"],
+                        'mailcollectors_id' => $mailgateID,
+                        'from'              => '',
+                        'to'                => '',
+                        'messageid'         => '',
+                        'date'              => $_SESSION["glpi_currenttime"],
                     ];
 
                   //prevent loop when message is read but when it's impossible to move / delete
@@ -756,8 +756,8 @@ class MailCollector extends CommonDBTM
                             $uid,
                             $message,
                             [
-                            'mailgates_id' => $mailgateID,
-                            'play_rules'   => true
+                                'mailgates_id' => $mailgateID,
+                                'play_rules'   => true
                             ]
                         );
 
@@ -1341,10 +1341,10 @@ class MailCollector extends CommonDBTM
         $config = Toolbox::parseMailServerConnectString($this->fields['host']);
 
         $params = [
-         'host'      => $config['address'],
-         'user'      => $this->fields['login'],
-         'password'  => (new GLPIKey())->decrypt($this->fields['passwd']),
-         'port'      => $config['port']
+            'host'      => $config['address'],
+            'user'      => $this->fields['login'],
+            'password'  => (new GLPIKey())->decrypt($this->fields['passwd']),
+            'port'      => $config['port']
         ];
 
         if ($config['ssl']) {
@@ -1371,14 +1371,14 @@ class MailCollector extends CommonDBTM
             $this->storage = $storage;
             if ($this->fields['errors'] > 0) {
                 $this->update([
-                'id'     => $this->getID(),
-                'errors' => 0
+                    'id'     => $this->getID(),
+                    'errors' => 0
                 ]);
             }
         } catch (\Exception $e) {
             $this->update([
-            'id'     => $this->getID(),
-            'errors' => ($this->fields['errors'] + 1)
+                'id'     => $this->getID(),
+                'errors' => ($this->fields['errors'] + 1)
             ]);
            // Any errors will cause an Exception.
             throw $e;
@@ -1475,14 +1475,14 @@ class MailCollector extends CommonDBTM
         }
 
         $mail_details = [
-         'from'       => Toolbox::strtolower($sender_email),
-         'subject'    => $subject,
-         'reply-to'   => $reply_to_addr !== null ? Toolbox::strtolower($reply_to_addr) : null,
-         'to'         => $to !== null ? Toolbox::strtolower($to) : null,
-         'message_id' => $message->getHeader('message_id')->getFieldValue(),
-         'tos'        => $tos,
-         'ccs'        => $ccs,
-         'date'       => $date
+            'from'       => Toolbox::strtolower($sender_email),
+            'subject'    => $subject,
+            'reply-to'   => $reply_to_addr !== null ? Toolbox::strtolower($reply_to_addr) : null,
+            'to'         => $to !== null ? Toolbox::strtolower($to) : null,
+            'message_id' => $message->getHeader('message_id')->getFieldValue(),
+            'tos'        => $tos,
+            'ccs'        => $ccs,
+            'date'       => $date
         ];
 
         if (isset($message->references)) {
@@ -1677,7 +1677,8 @@ class MailCollector extends CommonDBTM
                    // Link file based on Content-ID header
                     if (isset($part->contentId)) {
                         $clean = ['<' => '',
-                                 '>' => ''];
+                            '>' => ''
+                        ];
                         $this->altfiles[strtr($part->contentId, $clean)] = $filename;
                     }
                 }
@@ -1804,8 +1805,8 @@ class MailCollector extends CommonDBTM
 
         NotImportedEmail::deleteLog();
         $iterator = $DB->request([
-         'FROM'   => 'glpi_mailcollectors',
-         'WHERE'  => ['is_active' => 1]
+            'FROM'   => 'glpi_mailcollectors',
+            'WHERE'  => ['is_active' => 1]
         ]);
 
         $max = $task->fields['param'];
@@ -1846,9 +1847,9 @@ class MailCollector extends CommonDBTM
         switch ($name) {
             case 'mailgate':
                 return [
-               'description' => __('Retrieve email (Mails receivers)'),
-               'parameter'   => __('Number of emails to retrieve')
-            ];
+                    'description' => __('Retrieve email (Mails receivers)'),
+                    'parameter'   => __('Number of emails to retrieve')
+                ];
 
             case 'mailgateerror':
                 return ['description' => __('Send alarms on receiver errors')];
@@ -1873,11 +1874,11 @@ class MailCollector extends CommonDBTM
         $cron_status   = 0;
 
         $iterator = $DB->request([
-         'FROM'   => 'glpi_mailcollectors',
-         'WHERE'  => [
-            'errors'    => ['>', 0],
-            'is_active' => 1
-         ]
+            'FROM'   => 'glpi_mailcollectors',
+            'WHERE'  => [
+                'errors'    => ['>', 0],
+                'is_active' => 1
+            ]
         ]);
 
         $items = [];
@@ -2011,8 +2012,8 @@ class MailCollector extends CommonDBTM
         global $DB;
 
         $criteria = [
-         'COUNT'  => 'cpt',
-         'FROM'   => 'glpi_mailcollectors'
+            'COUNT'  => 'cpt',
+            'FROM'   => 'glpi_mailcollectors'
         ];
 
         if (true === $active) {

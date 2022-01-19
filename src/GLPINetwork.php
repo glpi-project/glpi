@@ -194,10 +194,10 @@ class GLPINetwork extends CommonGLPI
         }
 
         $informations = [
-         'is_valid'           => false,
-         'validation_message' => null,
-         'owner'              => null,
-         'subscription'       => null,
+            'is_valid'           => false,
+            'validation_message' => null,
+            'owner'              => null,
+            'subscription'       => null,
         ];
 
         if ($registration_key === '') {
@@ -209,14 +209,14 @@ class GLPINetwork extends CommonGLPI
         $registration_response = Toolbox::callCurl(
             rtrim(GLPI_NETWORK_REGISTRATION_API_URL, '/') . '/info',
             [
-            CURLOPT_HTTPHEADER => [
-               'Accept:application/json',
-               'Accept-Language: ' . $lang,
-               'Content-Type:application/json',
-               'User-Agent:' . self::getGlpiUserAgent(),
-               'X-Registration-Key:' . $registration_key,
-               'X-Glpi-Network-Uid:' . self::getGlpiNetworkUid(),
-            ]
+                CURLOPT_HTTPHEADER => [
+                    'Accept:application/json',
+                    'Accept-Language: ' . $lang,
+                    'Content-Type:application/json',
+                    'User-Agent:' . self::getGlpiUserAgent(),
+                    'X-Registration-Key:' . $registration_key,
+                    'X-Glpi-Network-Uid:' . self::getGlpiNetworkUid(),
+                ]
             ],
             $error_message
         );
@@ -320,10 +320,10 @@ class GLPINetwork extends CommonGLPI
         $response = \Toolbox::callCurl(
             rtrim(GLPI_NETWORK_REGISTRATION_API_URL, '/') . '/offers',
             [
-            CURLOPT_HTTPHEADER => [
-               'Accept:application/json',
-               'Accept-Language: ' . $lang,
-            ]
+                CURLOPT_HTTPHEADER => [
+                    'Accept:application/json',
+                    'Accept-Language: ' . $lang,
+                ]
             ],
             $error_message
         );

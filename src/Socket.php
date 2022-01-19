@@ -113,13 +113,15 @@ class Socket extends CommonDBChild
 
         echo "<span id='show_itemtype_field' class='input_listener'>";
         Dropdown::showFromArray('itemtype', self::getSocketLinkTypes(), ['value' => $itemtype,
-                                                                       'rand' => $rand_itemtype]);
+            'rand' => $rand_itemtype
+        ]);
         echo "</span>";
 
         $params = ['itemtype'   => '__VALUE__',
-                 'dom_rand'   => $rand_items_id,
-                 'dom_name'   => 'items_id',
-                 'action'     => 'get_items_from_itemtype'];
+            'dom_rand'   => $rand_items_id,
+            'dom_name'   => 'items_id',
+            'action'     => 'get_items_from_itemtype'
+        ];
         Ajax::updateItemOnSelectEvent(
             "dropdown_itemtype$rand_itemtype",
             "show_items_id_field",
@@ -130,19 +132,22 @@ class Socket extends CommonDBChild
         echo "<span id='show_items_id_field' class='input_listener'>";
         if (!empty($itemtype)) {
             $rand_items_id =  $itemtype::dropdown(['name'                  => 'items_id',
-                                                'value'                 => $items_id,
-                                                'display_emptychoice'   => true,
-                                                'display_dc_position'   => true,
-                                                'rand' => $rand_items_id]);
+                'value'                 => $items_id,
+                'display_emptychoice'   => true,
+                'display_dc_position'   => true,
+                'rand' => $rand_items_id
+            ]);
         }
         echo "</span>";
 
         echo "<span id='show_networkport_field'>";
         NetworkPort::dropdown(['name'                => 'networkports_id',
-                             'value'               => $networkports_id,
-                             'display_emptychoice' => true,
-                             'condition'           => ['items_id' => $items_id,
-                                                       'itemtype' => $itemtype]]);
+            'value'               => $networkports_id,
+            'display_emptychoice' => true,
+            'condition'           => ['items_id' => $items_id,
+                'itemtype' => $itemtype
+            ]
+        ]);
         echo "</span>";
 
        //Listener to update breacrumb / socket
@@ -197,8 +202,8 @@ class Socket extends CommonDBChild
         }
 
         TemplateRenderer::getInstance()->display('pages/assets/socket.html.twig', [
-         'item'   => $this,
-         'params' => $options,
+            'item'   => $this,
+            'params' => $options,
         ]);
         return true;
     }
@@ -265,8 +270,8 @@ class Socket extends CommonDBChild
     public static function dropdownWiringSide($name, $options = [])
     {
         $params = [
-         'value'     => 0,
-         'display'   => true,
+            'value'     => 0,
+            'display'   => true,
         ];
 
         if (is_array($options) && count($options)) {
@@ -286,8 +291,8 @@ class Socket extends CommonDBChild
     public static function getSides()
     {
         return [
-         self::REAR   => __('Endpoint A'),
-         self::FRONT  => __('Endpoint B'),
+            self::REAR   => __('Endpoint A'),
+            self::FRONT  => __('Endpoint B'),
         ];
     }
 
@@ -325,54 +330,54 @@ class Socket extends CommonDBChild
         $tab  = parent::rawSearchOptions();
 
         $tab[] = [
-         'id'                 => '5',
-         'table'              => Socket::getTable(),
-         'field'              => 'position',
-         'name'               => __('Position'),
-         'datatype'           => 'text'
+            'id'                 => '5',
+            'table'              => Socket::getTable(),
+            'field'              => 'position',
+            'name'               => __('Position'),
+            'datatype'           => 'text'
         ];
 
         $tab[] = [
-         'id'                 => '6',
-         'table'              => SocketModel::getTable(),
-         'field'              => 'name',
-         'name'               => SocketModel::getTypeName(1),
-         'datatype'           => 'dropdown'
+            'id'                 => '6',
+            'table'              => SocketModel::getTable(),
+            'field'              => 'name',
+            'name'               => SocketModel::getTypeName(1),
+            'datatype'           => 'dropdown'
         ];
 
         $tab[] = [
-         'id'                 => '7',
-         'table'              => Socket::getTable(),
-         'field'              => 'itemtype',
-         'name'               => _n('Associated item type', 'Associated item types', Session::getPluralNumber()),
-         'datatype'           => 'itemtypename',
-         'itemtype_list'      => 'socket_types',
-         'additionalfields'   => ['itemtype'],
-         'joinparams'         => [
-            'jointype'           => 'child'
-         ],
-         'forcegroupby'       => true,
-         'massiveaction'      => false
+            'id'                 => '7',
+            'table'              => Socket::getTable(),
+            'field'              => 'itemtype',
+            'name'               => _n('Associated item type', 'Associated item types', Session::getPluralNumber()),
+            'datatype'           => 'itemtypename',
+            'itemtype_list'      => 'socket_types',
+            'additionalfields'   => ['itemtype'],
+            'joinparams'         => [
+                'jointype'           => 'child'
+            ],
+            'forcegroupby'       => true,
+            'massiveaction'      => false
         ];
 
         $tab[] = [
-         'id'                 => '8',
-         'table'              => $this->getTable(),
-         'field'              => 'items_id',
-         'name'               => __('Associated item ID'),
-         'massiveaction'      => false,
-         'datatype'           => 'specific',
-         'searchtype'         => 'equals',
-         'additionalfields'   => ['itemtype']
+            'id'                 => '8',
+            'table'              => $this->getTable(),
+            'field'              => 'items_id',
+            'name'               => __('Associated item ID'),
+            'massiveaction'      => false,
+            'datatype'           => 'specific',
+            'searchtype'         => 'equals',
+            'additionalfields'   => ['itemtype']
         ];
 
         $tab[] = [
-         'id'                 => '9',
-         'table'              => Socket::getTable(),
-         'field'              => 'wiring_side',
-         'name'               => __('Wiring side'),
-         'searchtype'         => 'equals',
-         'datatype'           => 'specific'
+            'id'                 => '9',
+            'table'              => Socket::getTable(),
+            'field'              => 'wiring_side',
+            'name'               => __('Wiring side'),
+            'searchtype'         => 'equals',
+            'datatype'           => 'specific'
         ];
 
         $tab = array_merge($tab, Location::rawSearchOptionsToAdd());
@@ -393,51 +398,51 @@ class Socket extends CommonDBChild
         $tab = [];
 
         $tab[] = [
-         'id'                 => 'socket',
-         'name'               => Socket::getTypeName(0)
+            'id'                 => 'socket',
+            'name'               => Socket::getTypeName(0)
         ];
 
         $tab[] = [
-         'id'                 => '1310',
-         'table'              => Socket::getTable(),
-         'field'              => 'id',
-         'name'               => Socket::getTypeName(0),
-         'searchtype'         => 'equals',
-         'joinparams'         => [
-            'jointype'           => 'itemtype_item',
-         ],
-         'datatype'           => 'dropdown'
+            'id'                 => '1310',
+            'table'              => Socket::getTable(),
+            'field'              => 'id',
+            'name'               => Socket::getTypeName(0),
+            'searchtype'         => 'equals',
+            'joinparams'         => [
+                'jointype'           => 'itemtype_item',
+            ],
+            'datatype'           => 'dropdown'
         ];
 
         $tab[] = [
-         'id'                 => '1311',
-         'table'              => SocketModel::getTable(),
-         'field'              => 'name',
-         'name'               => SocketModel::getTypeName(0),
-         'forcegroupby'       => true,
-         'massiveaction'      => false,
-         'searchtype'         => 'equals',
-         'datatype'           => 'dropdown',
-         'joinparams'         => [
-            'beforejoin'         => [
-               'table'              => self::getTable(),
-               'joinparams'         => [
-                  'jointype'           => 'itemtype_item'
-               ]
+            'id'                 => '1311',
+            'table'              => SocketModel::getTable(),
+            'field'              => 'name',
+            'name'               => SocketModel::getTypeName(0),
+            'forcegroupby'       => true,
+            'massiveaction'      => false,
+            'searchtype'         => 'equals',
+            'datatype'           => 'dropdown',
+            'joinparams'         => [
+                'beforejoin'         => [
+                    'table'              => self::getTable(),
+                    'joinparams'         => [
+                        'jointype'           => 'itemtype_item'
+                    ]
+                ]
             ]
-         ]
         ];
 
         $tab[] = [
-         'id'                 => '1312',
-         'table'              => Socket::getTable(),
-         'field'              => 'wiring_side',
-         'name'               => __('Wiring side'),
-         'searchtype'         => 'equals',
-         'joinparams'         => [
-            'jointype'           => 'itemtype_item',
-         ],
-         'datatype'           => 'specific'
+            'id'                 => '1312',
+            'table'              => Socket::getTable(),
+            'field'              => 'wiring_side',
+            'name'               => __('Wiring side'),
+            'searchtype'         => 'equals',
+            'joinparams'         => [
+                'jointype'           => 'itemtype_item',
+            ],
+            'datatype'           => 'specific'
         ];
 
         return $tab;
@@ -522,12 +527,12 @@ class Socket extends CommonDBChild
 
         if (!empty($input["name"])) {
             $iterator = $DB->request([
-            'SELECT' => 'id',
-            'FROM'   => $this->getTable(),
-            'WHERE'  => [
-               'name'         => $input['name'],
-               'locations_id' => $input["locations_id"] ?? 0
-            ]
+                'SELECT' => 'id',
+                'FROM'   => $this->getTable(),
+                'WHERE'  => [
+                    'name'         => $input['name'],
+                    'locations_id' => $input["locations_id"] ?? 0
+                ]
             ]);
 
            // Check twin :
@@ -564,10 +569,12 @@ class Socket extends CommonDBChild
        //find other socket with same networkport and reset it
         if ($this->fields['networkports_id'] > 0) {
             $iter = $DB->request(['SELECT' => 'id',
-            'FROM'  => getTableForItemType(Socket::getType()),
-            'WHERE' => [
-            'networkports_id' => $this->fields['networkports_id'],
-            ['NOT' => ['id' => $this->fields['id']]]]]);
+                'FROM'  => getTableForItemType(Socket::getType()),
+                'WHERE' => [
+                    'networkports_id' => $this->fields['networkports_id'],
+                    ['NOT' => ['id' => $this->fields['id']]]
+                ]
+            ]);
 
             foreach (Socket::getFromIter($iter) as $socket) {
                  $socket->fields['networkports_id'] = 0;
@@ -609,7 +616,8 @@ class Socket extends CommonDBChild
                               $nb =  countElementsInTable(
                                   $this->getTable(),
                                   ['itemtype' => $item->getType(),
-                                  'items_id' => $item->getID()]
+                                      'items_id' => $item->getID()
+                                  ]
                               );
                         }
                         return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
@@ -663,19 +671,19 @@ class Socket extends CommonDBChild
                 '_add_fromitem',
                 __('New socket for this item...'),
                 [
-                '_from_itemtype' => $item->getType(),
-                '_from_items_id' => $item->getID(),
+                    '_from_itemtype' => $item->getType(),
+                    '_from_items_id' => $item->getID(),
                 ]
             );
             echo "</div>";
         }
 
         $iterator = $DB->request([
-         'FROM'   => Socket::getTable(),
-         'WHERE'  => [
-            'itemtype'   => $item->getType(),
-            'items_id'   => $item->getID(),
-         ]
+            'FROM'   => Socket::getTable(),
+            'WHERE'  => [
+                'itemtype'   => $item->getType(),
+                'items_id'   => $item->getID(),
+            ]
         ]);
         $numrows = count($iterator);
 
@@ -684,9 +692,11 @@ class Socket extends CommonDBChild
             $massiveactionparams
             = ['num_displayed'
                         => min($_SESSION['glpilist_limit'], $numrows),
-               'specific_actions'
+                'specific_actions'
                         => ['update' => _x('button', 'Update'),
-                            'purge'  => _x('button', 'Delete permanently')]];
+                            'purge'  => _x('button', 'Delete permanently')
+                        ]
+            ];
 
             Html::showMassiveActions($massiveactionparams);
         }
@@ -753,8 +763,9 @@ class Socket extends CommonDBChild
             $cable = new Cable();
             if (
                 $cable->getFromDBByCrit(['OR' => ['sockets_id_endpoint_a' => $socket->fields["id"],
-                                               'sockets_id_endpoint_b' => $socket->fields["id"]
-                                              ]])
+                    'sockets_id_endpoint_b' => $socket->fields["id"]
+                ]
+                ])
             ) {
                 echo "<td><a href='" . $cable->getLinkURL() . "'>" . $cable->getName() . "</a></td>";
             } else {
@@ -808,7 +819,7 @@ class Socket extends CommonDBChild
             echo Html::input(
                 'name',
                 [
-                'value' => '',
+                    'value' => '',
                 ]
             );
             echo "</td>";
@@ -838,12 +849,14 @@ class Socket extends CommonDBChild
             echo "<td>" . __('Name') . "</td><td>";
             echo "<input type='text' maxlength='100' size='10' name='_before'>&nbsp;";
             Dropdown::showNumber('_from', ['value' => 0,
-                                             'min'   => 0,
-                                             'max'   => 400]);
+                'min'   => 0,
+                'max'   => 400
+            ]);
             echo "&nbsp;-->&nbsp;";
             Dropdown::showNumber('_to', ['value' => 0,
-                                           'min'   => 0,
-                                           'max'   => 400]);
+                'min'   => 0,
+                'max'   => 400
+            ]);
 
             echo "&nbsp;<input type='text' maxlength='100' size='10' name='_after'><br>";
             echo "</td>";
@@ -887,10 +900,11 @@ class Socket extends CommonDBChild
                 $massiveactionparams
                 = ['num_displayed'
                            => min($_SESSION['glpilist_limit'], $number),
-                       'container'
+                    'container'
                            => 'mass' . __CLASS__ . $rand,
-                       'specific_actions'
-                           => ['purge' => _x('button', 'Delete permanently')]];
+                    'specific_actions'
+                           => ['purge' => _x('button', 'Delete permanently')]
+                ];
                 Html::showMassiveActions($massiveactionparams);
             }
 
@@ -911,9 +925,10 @@ class Socket extends CommonDBChild
             echo "</tr>\n";
 
             $crit = ['locations_id' => $ID,
-                       'ORDER'        => 'name',
-                       'START'        => $start,
-                       'LIMIT'        => $_SESSION['glpilist_limit']];
+                'ORDER'        => 'name',
+                'START'        => $start,
+                'LIMIT'        => $_SESSION['glpilist_limit']
+            ];
 
             Session::initNavigateListItems(
                 'Socket',

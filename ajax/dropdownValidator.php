@@ -50,11 +50,11 @@ if (isset($_POST["validatortype"])) {
             }
             $value = (isset($_POST['users_id_validate'][0]) ? $_POST['users_id_validate'][0] : 0);
             User::dropdown([
-            'name'   => !empty($_POST['name']) ? $_POST['name'] . '[]' : 'users_id_validate[]',
-            'entity' => $_POST['entity'],
-            'value'  => $value,
-            'right'  => $_POST['right'],
-            'width'  => '100%',
+                'name'   => !empty($_POST['name']) ? $_POST['name'] . '[]' : 'users_id_validate[]',
+                'entity' => $_POST['entity'],
+                'value'  => $value,
+                'right'  => $_POST['right'],
+                'width'  => '100%',
             ]);
             break;
 
@@ -64,10 +64,10 @@ if (isset($_POST["validatortype"])) {
             $value = (isset($_POST['users_id_validate']['groups_id']) ? $_POST['users_id_validate']['groups_id'] : $_POST['groups_id']);
 
             $rand = Group::dropdown([
-            'name'   => $name,
-            'value'  => $value,
-            'entity' => $_POST["entity"],
-            'width'  => '100%',
+                'name'   => $name,
+                'value'  => $value,
+                'entity' => $_POST["entity"],
+                'width'  => '100%',
             ]);
 
             $param                        = ['validatortype' => 'list_users'];
@@ -101,8 +101,9 @@ if (isset($_POST["validatortype"])) {
                 $_POST['users_id_validate'] = [];
             }
             $opt             = ['groups_id' => $_POST["groups_id"],
-                                  'right'     => $_POST['right'],
-                                  'entity'    => $_POST["entity"]];
+                'right'     => $_POST['right'],
+                'entity'    => $_POST["entity"]
+            ];
             $data_users      = TicketValidation::getGroupUserHaveRights($opt);
             $users           = [];
             $param['values'] = [];
@@ -143,13 +144,13 @@ if (isset($_POST["validatortype"])) {
            // Display all/none buttons to select all or no users in group
             if (!empty($_POST['groups_id'])) {
                 $param_button = [
-                 'validatortype'     => 'list_users',
-                 'name'              => !empty($_POST['name']) ? $_POST['name'] : '',
-                 'users_id_validate' => '',
-                 'all_users'         => 1,
-                 'groups_id'         => $_POST['groups_id'],
-                 'entity'            => $_POST['entity'],
-                 'right'             => $_POST['right'],
+                    'validatortype'     => 'list_users',
+                    'name'              => !empty($_POST['name']) ? $_POST['name'] : '',
+                    'users_id_validate' => '',
+                    'all_users'         => 1,
+                    'groups_id'         => $_POST['groups_id'],
+                    'entity'            => $_POST['entity'],
+                    'right'             => $_POST['right'],
                 ];
                 Ajax::updateItemOnEvent(
                     'all_users',

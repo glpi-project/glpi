@@ -141,18 +141,19 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject
     {
 
         $events = ['new'               => __('New ticket'),
-                      'update'            => __('Update of a ticket'),
-                      'solved'            => __('Ticket solved'),
-                      'rejectsolution'    => __('Solution rejected'),
-                      'validation'        => __('Validation request'),
-                      'validation_answer' => __('Validation request answer'),
-                      'closed'            => __('Closing of the ticket'),
-                      'delete'            => __('Deletion of a ticket'),
-                      'alertnotclosed'    => __('Not solved tickets'),
-                      'recall'            => __('Automatic reminders of SLAs'),
-                      'recall_ola'        => __('Automatic reminders of OLAs'),
-                      'satisfaction'      => __('Satisfaction survey'),
-                      'replysatisfaction' => __('Satisfaction survey answer')];
+            'update'            => __('Update of a ticket'),
+            'solved'            => __('Ticket solved'),
+            'rejectsolution'    => __('Solution rejected'),
+            'validation'        => __('Validation request'),
+            'validation_answer' => __('Validation request answer'),
+            'closed'            => __('Closing of the ticket'),
+            'delete'            => __('Deletion of a ticket'),
+            'alertnotclosed'    => __('Not solved tickets'),
+            'recall'            => __('Automatic reminders of SLAs'),
+            'recall_ola'        => __('Automatic reminders of OLAs'),
+            'satisfaction'      => __('Satisfaction survey'),
+            'replysatisfaction' => __('Satisfaction survey answer')
+        ];
 
         $events = array_merge($events, parent::getEvents());
         asort($events);
@@ -479,14 +480,14 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject
 
            // Approbation of solution
             $solution_restrict = [
-            'itemtype' => 'Ticket',
-            'items_id' => $item->getField('id')
+                'itemtype' => 'Ticket',
+                'items_id' => $item->getField('id')
             ];
             $replysolved = getAllDataFromTable(
                 'glpi_itilfollowups',
                 [
-                'WHERE'  => $solution_restrict,
-                'ORDER'  => ['date_mod DESC', 'id ASC']
+                    'WHERE'  => $solution_restrict,
+                    'ORDER'  => ['date_mod DESC', 'id ASC']
                 ]
             );
             $current = current($replysolved);
@@ -504,8 +505,8 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject
             $validations = getAllDataFromTable(
                 'glpi_ticketvalidations',
                 [
-                'WHERE'  => $restrict,
-                'ORDER'  => ['submission_date DESC', 'id ASC']
+                    'WHERE'  => $restrict,
+                    'ORDER'  => ['submission_date DESC', 'id ASC']
                 ]
             );
             $data['validations'] = [];
@@ -588,197 +589,206 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject
 
        //Locales
         $tags = ['ticket.type'                  => _n('Type', 'Types', 1),
-                    'ticket.sla'                   => __('SLA'),
-                    'ticket.sla_tto'               => sprintf(
-                        __('%1$s / %2$s'),
-                        __('SLA'),
-                        __('Time to own')
-                    ),
-                    'ticket.sla_ttr'               => sprintf(
-                        __('%1$s / %2$s'),
-                        __('SLA'),
-                        __('Time to resolve')
-                    ),
-                    'ticket.ola_tto'               => sprintf(
-                        __('%1$s / %2$s'),
-                        __('OLA'),
-                        __('Internal time to own')
-                    ),
-                    'ticket.ola_ttr'               => sprintf(
-                        __('%1$s / %2$s'),
-                        __('OLA'),
-                        __('Internal time to resolve')
-                    ),
-                    'ticket.requesttype'           => RequestType::getTypeName(1),
-                    'ticket.itemtype'              => __('Item type'),
-                    'ticket.item.name'             => _n('Associated item', 'Associated items', 1),
-                    'ticket.item.serial'           => __('Serial number'),
-                    'ticket.item.otherserial'      => __('Inventory number'),
-                    'ticket.item.location'         => sprintf(
-                        __('%1$s: %2$s'),
-                        _n('Associated element', 'Associated elements', Session::getPluralNumber()),
-                        __('Location name')
-                    ),
-                    'ticket.item.locationcomment'  => sprintf(
-                        __('%1$s: %2$s'),
-                        _n('Associated element', 'Associated elements', Session::getPluralNumber()),
-                        __('Location comments')
-                    ),
-                    'ticket.item.locationroom'     => sprintf(
-                        __('%1$s: %2$s'),
-                        _n('Associated element', 'Associated elements', Session::getPluralNumber()),
-                        __('Room number')
-                    ),
-                    'ticket.item.locationbuilding' => sprintf(
-                        __('%1$s: %2$s'),
-                        _n('Associated element', 'Associated elements', Session::getPluralNumber()),
-                        __('Building number')
-                    ),
-                    'ticket.item.locationlatitude' => sprintf(
-                        __('%1$s: %2$s'),
-                        _n('Associated element', 'Associated elements', Session::getPluralNumber()),
-                        __('Latitude')
-                    ),
-                    'ticket.item.locationlongitude' => sprintf(
-                        __('%1$s: %2$s'),
-                        _n('Associated element', 'Associated elements', Session::getPluralNumber()),
-                        __('Longitude')
-                    ),
-                    'ticket.item.locationaltitude' => sprintf(
-                        __('%1$s: %2$s'),
-                        _n('Associated element', 'Associated elements', Session::getPluralNumber()),
-                        __('Altitude')
-                    ),
-                    'ticket.item.model'            => _n('Model', 'Models', 1),
-                    'ticket.item.contact'          => __('Alternate username'),
-                    'ticket.item.contactnumber'    => __('Alternate username number'),
-                    'ticket.item.user'             => User::getTypeName(1),
-                    'ticket.item.group'            => Group::getTypeName(1),
-                    'ticket.isdeleted'             => __('Deleted'),
-                    'ticket.numberoflinkedtickets' => _x('quantity', 'Number of linked tickets'),
-                    'ticket.numberofproblems'      => _x('quantity', 'Number of problems'),
-                    'ticket.numberofchanges'       => _x('quantity', 'Number of changes'),
-                    'ticket.numberofitems'         => _x('quantity', 'Number of items'),
-                    'ticket.autoclose'             => __('Automatic closing of solved tickets after'),
-                    'ticket.location'              => Location::getTypeName(1),
-                    'ticket.location.comment'      => __('Location comments'),
-                    'ticket.location.room'         => __('Room number'),
-                    'ticket.location.building'     => __('Building number'),
-                    'ticket.location.latitude'     => __('Latitude'),
-                    'ticket.location.longitude'    => __('Longitude'),
-                    'ticket.location.altitude'     => __('Altitude'),
-                    'ticket.globalvalidation'      => __('Global approval status'),
-                    'ticket.solution.approval.description'  => __('Solution rejection comment'),
-                    'ticket.solution.approval.date'         => __('Solution rejection date'),
-                    'ticket.solution.approval.author'       => __('Approver')
-                  ];
+            'ticket.sla'                   => __('SLA'),
+            'ticket.sla_tto'               => sprintf(
+                __('%1$s / %2$s'),
+                __('SLA'),
+                __('Time to own')
+            ),
+            'ticket.sla_ttr'               => sprintf(
+                __('%1$s / %2$s'),
+                __('SLA'),
+                __('Time to resolve')
+            ),
+            'ticket.ola_tto'               => sprintf(
+                __('%1$s / %2$s'),
+                __('OLA'),
+                __('Internal time to own')
+            ),
+            'ticket.ola_ttr'               => sprintf(
+                __('%1$s / %2$s'),
+                __('OLA'),
+                __('Internal time to resolve')
+            ),
+            'ticket.requesttype'           => RequestType::getTypeName(1),
+            'ticket.itemtype'              => __('Item type'),
+            'ticket.item.name'             => _n('Associated item', 'Associated items', 1),
+            'ticket.item.serial'           => __('Serial number'),
+            'ticket.item.otherserial'      => __('Inventory number'),
+            'ticket.item.location'         => sprintf(
+                __('%1$s: %2$s'),
+                _n('Associated element', 'Associated elements', Session::getPluralNumber()),
+                __('Location name')
+            ),
+            'ticket.item.locationcomment'  => sprintf(
+                __('%1$s: %2$s'),
+                _n('Associated element', 'Associated elements', Session::getPluralNumber()),
+                __('Location comments')
+            ),
+            'ticket.item.locationroom'     => sprintf(
+                __('%1$s: %2$s'),
+                _n('Associated element', 'Associated elements', Session::getPluralNumber()),
+                __('Room number')
+            ),
+            'ticket.item.locationbuilding' => sprintf(
+                __('%1$s: %2$s'),
+                _n('Associated element', 'Associated elements', Session::getPluralNumber()),
+                __('Building number')
+            ),
+            'ticket.item.locationlatitude' => sprintf(
+                __('%1$s: %2$s'),
+                _n('Associated element', 'Associated elements', Session::getPluralNumber()),
+                __('Latitude')
+            ),
+            'ticket.item.locationlongitude' => sprintf(
+                __('%1$s: %2$s'),
+                _n('Associated element', 'Associated elements', Session::getPluralNumber()),
+                __('Longitude')
+            ),
+            'ticket.item.locationaltitude' => sprintf(
+                __('%1$s: %2$s'),
+                _n('Associated element', 'Associated elements', Session::getPluralNumber()),
+                __('Altitude')
+            ),
+            'ticket.item.model'            => _n('Model', 'Models', 1),
+            'ticket.item.contact'          => __('Alternate username'),
+            'ticket.item.contactnumber'    => __('Alternate username number'),
+            'ticket.item.user'             => User::getTypeName(1),
+            'ticket.item.group'            => Group::getTypeName(1),
+            'ticket.isdeleted'             => __('Deleted'),
+            'ticket.numberoflinkedtickets' => _x('quantity', 'Number of linked tickets'),
+            'ticket.numberofproblems'      => _x('quantity', 'Number of problems'),
+            'ticket.numberofchanges'       => _x('quantity', 'Number of changes'),
+            'ticket.numberofitems'         => _x('quantity', 'Number of items'),
+            'ticket.autoclose'             => __('Automatic closing of solved tickets after'),
+            'ticket.location'              => Location::getTypeName(1),
+            'ticket.location.comment'      => __('Location comments'),
+            'ticket.location.room'         => __('Room number'),
+            'ticket.location.building'     => __('Building number'),
+            'ticket.location.latitude'     => __('Latitude'),
+            'ticket.location.longitude'    => __('Longitude'),
+            'ticket.location.altitude'     => __('Altitude'),
+            'ticket.globalvalidation'      => __('Global approval status'),
+            'ticket.solution.approval.description'  => __('Solution rejection comment'),
+            'ticket.solution.approval.date'         => __('Solution rejection date'),
+            'ticket.solution.approval.author'       => __('Approver')
+        ];
         foreach ($tags as $tag => $label) {
             $this->addTagToList(['tag'    => $tag,
-                                   'label'  => $label,
-                                   'value'  => true,
-                                   'events' => NotificationTarget::TAG_FOR_ALL_EVENTS]);
+                'label'  => $label,
+                'value'  => true,
+                'events' => NotificationTarget::TAG_FOR_ALL_EVENTS
+            ]);
         }
 
        //Events specific for validation
         $tags = ['validation.author'            => _n('Requester', 'Requesters', 1),
-                    'validation.status'            => __('Status of the approval request'),
-                    'validation.submissiondate'    => sprintf(
-                        __('%1$s: %2$s'),
-                        __('Request'),
-                        _n('Date', 'Dates', 1)
-                    ),
-                    'validation.commentsubmission' => sprintf(
-                        __('%1$s: %2$s'),
-                        __('Request'),
-                        __('Comments')
-                    ),
-                    'validation.validationdate'    => sprintf(
-                        __('%1$s: %2$s'),
-                        _n('Validation', 'Validations', 1),
-                        _n('Date', 'Dates', 1)
-                    ),
-                    'validation.validator'         => __('Decision-maker'),
-                    'validation.commentvalidation' => sprintf(
-                        __('%1$s: %2$s'),
-                        _n('Validation', 'Validations', 1),
-                        __('Comments')
-                    )
-                    ];
+            'validation.status'            => __('Status of the approval request'),
+            'validation.submissiondate'    => sprintf(
+                __('%1$s: %2$s'),
+                __('Request'),
+                _n('Date', 'Dates', 1)
+            ),
+            'validation.commentsubmission' => sprintf(
+                __('%1$s: %2$s'),
+                __('Request'),
+                __('Comments')
+            ),
+            'validation.validationdate'    => sprintf(
+                __('%1$s: %2$s'),
+                _n('Validation', 'Validations', 1),
+                _n('Date', 'Dates', 1)
+            ),
+            'validation.validator'         => __('Decision-maker'),
+            'validation.commentvalidation' => sprintf(
+                __('%1$s: %2$s'),
+                _n('Validation', 'Validations', 1),
+                __('Comments')
+            )
+        ];
 
         foreach ($tags as $tag => $label) {
             $this->addTagToList(['tag'    => $tag,
-                                   'label'  => $label,
-                                   'value'  => true,
-                                   'events' => ['validation', 'validation_answer']]);
+                'label'  => $label,
+                'value'  => true,
+                'events' => ['validation', 'validation_answer']
+            ]);
         }
        //Tags without lang for validation
         $tags = ['validation.submission.title'
                                           => __('A validation request has been submitted'),
-                    'validation.answer.title'
+            'validation.answer.title'
                                           => __('An answer to a validation request was produced')
-                    ];
+        ];
 
         foreach ($tags as $tag => $label) {
             $this->addTagToList(['tag'   => $tag,
-                                   'label' => $label,
-                                   'value' => true,
-                                   'lang'  => false,
-                                   'events' => ['validation', 'validation_answer']]);
+                'label' => $label,
+                'value' => true,
+                'lang'  => false,
+                'events' => ['validation', 'validation_answer']
+            ]);
         }
 
        // Events for ticket satisfaction
         $tags = ['satisfaction.datebegin'    => __('Creation date of the satisfaction survey'),
-                    'satisfaction.dateanswered' => __('Response date to the satisfaction survey'),
-                    'satisfaction.satisfaction' => __('Satisfaction'),
-                    'satisfaction.description'  => __('Comments to the satisfaction survey')];
+            'satisfaction.dateanswered' => __('Response date to the satisfaction survey'),
+            'satisfaction.satisfaction' => __('Satisfaction'),
+            'satisfaction.description'  => __('Comments to the satisfaction survey')
+        ];
 
         foreach ($tags as $tag => $label) {
             $this->addTagToList(['tag'    => $tag,
-                                   'label'  => $label,
-                                   'value'  => true,
-                                   'events' => ['satisfaction']]);
+                'label'  => $label,
+                'value'  => true,
+                'events' => ['satisfaction']
+            ]);
         }
 
         $tags = ['satisfaction.type'  => __('Survey type'),];
 
         foreach ($tags as $tag => $label) {
             $this->addTagToList(['tag'    => $tag,
-                                   'label'  => $label,
-                                   'value'  => true,
-                                   'lang'   => false,
-                                   'events' => ['satisfaction']]);
+                'label'  => $label,
+                'value'  => true,
+                'lang'   => false,
+                'events' => ['satisfaction']
+            ]);
         }
 
         $tags = ['satisfaction.text' => __('Invitation to fill out the survey')];
 
         foreach ($tags as $tag => $label) {
             $this->addTagToList(['tag'    => $tag,
-                                   'label'  => $label,
-                                   'value'  => false,
-                                   'lang'   => true,
-                                   'events' => ['satisfaction']]);
+                'label'  => $label,
+                'value'  => false,
+                'lang'   => true,
+                'events' => ['satisfaction']
+            ]);
         }
 
        //Foreach global tags
         $tags = ['validations'   => _n('Validation', 'Validations', Session::getPluralNumber()),
-                    'linkedtickets' => _n('Linked ticket', 'Linked tickets', Session::getPluralNumber()),
-                    'problems'      => Problem::getTypeName(Session::getPluralNumber()),
-                    'changes'       => _n('Change', 'Changes', Session::getPluralNumber()),
-                    'items'         => _n('Associated item', 'Associated items', Session::getPluralNumber()),
-                    'documents'     => Document::getTypeName(Session::getPluralNumber())];
+            'linkedtickets' => _n('Linked ticket', 'Linked tickets', Session::getPluralNumber()),
+            'problems'      => Problem::getTypeName(Session::getPluralNumber()),
+            'changes'       => _n('Change', 'Changes', Session::getPluralNumber()),
+            'items'         => _n('Associated item', 'Associated items', Session::getPluralNumber()),
+            'documents'     => Document::getTypeName(Session::getPluralNumber())
+        ];
 
         foreach ($tags as $tag => $label) {
             $this->addTagToList(['tag'     => $tag,
-                                   'label'   => $label,
-                                   'value'   => false,
-                                   'foreach' => true]);
+                'label'   => $label,
+                'value'   => false,
+                'foreach' => true
+            ]);
         }
 
        //Tags with just lang
         $tags = ['ticket.linkedtickets'    => _n('Linked ticket', 'Linked tickets', Session::getPluralNumber()),
-                    'ticket.problems'         => Problem::getTypeName(Session::getPluralNumber()),
-                    'ticket.changes'          => _n('Change', 'Changes', Session::getPluralNumber()),
-                    'ticket.autoclosewarning'
+            'ticket.problems'         => Problem::getTypeName(Session::getPluralNumber()),
+            'ticket.changes'          => _n('Change', 'Changes', Session::getPluralNumber()),
+            'ticket.autoclosewarning'
                      => sprintf(
                          _n(
                              'Without a reply, the ticket will be automatically closed after %s day',
@@ -786,21 +796,24 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject
                              2
                          ),
                          '?'
-                     )];
+                     )
+        ];
 
         foreach ($tags as $tag => $label) {
             $this->addTagToList(['tag'   => $tag,
-                                   'label' => $label,
-                                   'value' => false,
-                                   'lang'  => true]);
+                'label' => $label,
+                'value' => false,
+                'lang'  => true
+            ]);
         }
 
        //Foreach tag for alertnotclosed
         $this->addTagToList(['tag'     => 'tickets',
-                                'label'   => __('Not solved tickets'),
-                                'value'   => false,
-                                'foreach' => true,
-                                'events'  => ['alertnotclosed']]);
+            'label'   => __('Not solved tickets'),
+            'value'   => false,
+            'foreach' => true,
+            'events'  => ['alertnotclosed']
+        ]);
 
        //Tags without lang
         $tags = ['ticket.urlvalidation'    => sprintf(
@@ -808,69 +821,70 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject
             __('Validation request'),
             __('URL')
         ),
-                    'ticket.urlsatisfaction'  => sprintf(
-                        __('%1$s: %2$s'),
-                        __('Satisfaction'),
-                        __('URL')
-                    ),
-                    'linkedticket.id'         => sprintf(
-                        __('%1$s: %2$s'),
-                        _n('Linked ticket', 'Linked tickets', 1),
-                        __('ID')
-                    ),
-                    'linkedticket.link'       => sprintf(
-                        __('%1$s: %2$s'),
-                        _n('Linked ticket', 'Linked tickets', 1),
-                        Link::getTypeName(1)
-                    ),
-                    'linkedticket.url'        => sprintf(
-                        __('%1$s: %2$s'),
-                        _n('Linked ticket', 'Linked tickets', 1),
-                        __('URL')
-                    ),
-                    'linkedticket.title'      => sprintf(
-                        __('%1$s: %2$s'),
-                        _n('Linked ticket', 'Linked tickets', 1),
-                        __('Title')
-                    ),
-                    'linkedticket.content'    => sprintf(
-                        __('%1$s: %2$s'),
-                        _n('Linked ticket', 'Linked tickets', 1),
-                        __('Description')
-                    ),
-                    'problem.id'              => sprintf(__('%1$s: %2$s'), Problem::getTypeName(1), __('ID')),
-                    'problem.date'            => sprintf(__('%1$s: %2$s'), Problem::getTypeName(1), _n('Date', 'Dates', 1)),
-                    'problem.url'             => sprintf(__('%1$s: %2$s'), Problem::getTypeName(1), ('URL')),
-                    'problem.title'           => sprintf(
-                        __('%1$s: %2$s'),
-                        Problem::getTypeName(1),
-                        __('Title')
-                    ),
-                    'problem.content'         => sprintf(
-                        __('%1$s: %2$s'),
-                        Problem::getTypeName(1),
-                        __('Description')
-                    ),
-                    'change.id'               => sprintf(__('%1$s: %2$s'), Change::getTypeName(1), __('ID')),
-                    'change.date'             => sprintf(__('%1$s: %2$s'), Change::getTypeName(1), _n('Date', 'Dates', 1)),
-                    'change.url'              => sprintf(__('%1$s: %2$s'), Change::getTypeName(1), ('URL')),
-                    'change.title'            => sprintf(
-                        __('%1$s: %2$s'),
-                        Change::getTypeName(1),
-                        __('Title')
-                    ),
-                    'change.content'          => sprintf(
-                        __('%1$s: %2$s'),
-                        Change::getTypeName(1),
-                        __('Description')
-                    )
-                   ];
+            'ticket.urlsatisfaction'  => sprintf(
+                __('%1$s: %2$s'),
+                __('Satisfaction'),
+                __('URL')
+            ),
+            'linkedticket.id'         => sprintf(
+                __('%1$s: %2$s'),
+                _n('Linked ticket', 'Linked tickets', 1),
+                __('ID')
+            ),
+            'linkedticket.link'       => sprintf(
+                __('%1$s: %2$s'),
+                _n('Linked ticket', 'Linked tickets', 1),
+                Link::getTypeName(1)
+            ),
+            'linkedticket.url'        => sprintf(
+                __('%1$s: %2$s'),
+                _n('Linked ticket', 'Linked tickets', 1),
+                __('URL')
+            ),
+            'linkedticket.title'      => sprintf(
+                __('%1$s: %2$s'),
+                _n('Linked ticket', 'Linked tickets', 1),
+                __('Title')
+            ),
+            'linkedticket.content'    => sprintf(
+                __('%1$s: %2$s'),
+                _n('Linked ticket', 'Linked tickets', 1),
+                __('Description')
+            ),
+            'problem.id'              => sprintf(__('%1$s: %2$s'), Problem::getTypeName(1), __('ID')),
+            'problem.date'            => sprintf(__('%1$s: %2$s'), Problem::getTypeName(1), _n('Date', 'Dates', 1)),
+            'problem.url'             => sprintf(__('%1$s: %2$s'), Problem::getTypeName(1), ('URL')),
+            'problem.title'           => sprintf(
+                __('%1$s: %2$s'),
+                Problem::getTypeName(1),
+                __('Title')
+            ),
+            'problem.content'         => sprintf(
+                __('%1$s: %2$s'),
+                Problem::getTypeName(1),
+                __('Description')
+            ),
+            'change.id'               => sprintf(__('%1$s: %2$s'), Change::getTypeName(1), __('ID')),
+            'change.date'             => sprintf(__('%1$s: %2$s'), Change::getTypeName(1), _n('Date', 'Dates', 1)),
+            'change.url'              => sprintf(__('%1$s: %2$s'), Change::getTypeName(1), ('URL')),
+            'change.title'            => sprintf(
+                __('%1$s: %2$s'),
+                Change::getTypeName(1),
+                __('Title')
+            ),
+            'change.content'          => sprintf(
+                __('%1$s: %2$s'),
+                Change::getTypeName(1),
+                __('Description')
+            )
+        ];
 
         foreach ($tags as $tag => $label) {
             $this->addTagToList(['tag'   => $tag,
-                                   'label' => $label,
-                                   'value' => true,
-                                   'lang'  => false]);
+                'label' => $label,
+                'value' => true,
+                'lang'  => false
+            ]);
         }
 
        //Tickets with a fixed set of values
@@ -882,14 +896,17 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject
 
         $tags = ['validation.validationstatus'
                      => ['text'           => __('Status value in database'),
-                              'allowed_values' => $allowed_validation]];
+                         'allowed_values' => $allowed_validation
+                     ]
+        ];
 
         foreach ($tags as $tag => $label) {
             $this->addTagToList(['tag'            => $tag,
-                                   'label'          => $label['text'],
-                                   'value'          => true,
-                                   'lang'           => false,
-                                   'allowed_values' => $label['allowed_values']]);
+                'label'          => $label['text'],
+                'value'          => true,
+                'lang'           => false,
+                'allowed_values' => $label['allowed_values']
+            ]);
         }
 
         asort($this->tag_descriptions);

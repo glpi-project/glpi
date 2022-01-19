@@ -118,6 +118,7 @@ if (isset($_POST["add"])) {
 } else {
     Html::header(Cartridge::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "assets", "cartridgeitem");
     $cartype->display(['id' => $_GET["id"],
-      'formoptions'  => "data-track-changes=true"]);
+        'formoptions'  => "data-track-changes=true"
+    ]);
     Html::footer();
 }

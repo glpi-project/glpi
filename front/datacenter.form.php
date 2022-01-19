@@ -117,8 +117,8 @@ if (isset($_POST["add"])) {
 } else {
     Html::header(Datacenter::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "management", "datacenter");
     $datacenter->display([
-      'id'           => $_GET["id"],
-      'formoptions'  => "data-track-changes=true"
+        'id'           => $_GET["id"],
+        'formoptions'  => "data-track-changes=true"
     ]);
     Html::footer();
 }

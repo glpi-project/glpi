@@ -96,6 +96,7 @@ if (isset($_POST["add"])) {
 } else {
     Html::header(Computer::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "assets", "computer");
     $antivirus->display(['id'           => $_GET["id"],
-                        'computers_id' => $_GET["computers_id"]]);
+        'computers_id' => $_GET["computers_id"]
+    ]);
     Html::footer();
 }

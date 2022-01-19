@@ -49,21 +49,21 @@ class ErrorHandler
      * @var array
      */
     const ERROR_LEVEL_MAP = [
-      E_ERROR             => LogLevel::CRITICAL,
-      E_WARNING           => LogLevel::WARNING,
-      E_PARSE             => LogLevel::ALERT,
-      E_NOTICE            => LogLevel::NOTICE,
-      E_CORE_ERROR        => LogLevel::CRITICAL,
-      E_CORE_WARNING      => LogLevel::WARNING,
-      E_COMPILE_ERROR     => LogLevel::ALERT,
-      E_COMPILE_WARNING   => LogLevel::WARNING,
-      E_USER_ERROR        => LogLevel::ERROR,
-      E_USER_WARNING      => LogLevel::WARNING,
-      E_USER_NOTICE       => LogLevel::NOTICE,
-      E_STRICT            => LogLevel::NOTICE,
-      E_RECOVERABLE_ERROR => LogLevel::ERROR,
-      E_DEPRECATED        => LogLevel::NOTICE,
-      E_USER_DEPRECATED   => LogLevel::NOTICE,
+        E_ERROR             => LogLevel::CRITICAL,
+        E_WARNING           => LogLevel::WARNING,
+        E_PARSE             => LogLevel::ALERT,
+        E_NOTICE            => LogLevel::NOTICE,
+        E_CORE_ERROR        => LogLevel::CRITICAL,
+        E_CORE_WARNING      => LogLevel::WARNING,
+        E_COMPILE_ERROR     => LogLevel::ALERT,
+        E_COMPILE_WARNING   => LogLevel::WARNING,
+        E_USER_ERROR        => LogLevel::ERROR,
+        E_USER_WARNING      => LogLevel::WARNING,
+        E_USER_NOTICE       => LogLevel::NOTICE,
+        E_STRICT            => LogLevel::NOTICE,
+        E_RECOVERABLE_ERROR => LogLevel::ERROR,
+        E_DEPRECATED        => LogLevel::NOTICE,
+        E_USER_DEPRECATED   => LogLevel::NOTICE,
     ];
 
     /**
@@ -72,12 +72,12 @@ class ErrorHandler
      * @var array
      */
     const FATAL_ERRORS = [
-      E_ERROR,
-      E_PARSE,
-      E_CORE_ERROR,
-      E_COMPILE_ERROR,
-      E_USER_ERROR,
-      E_RECOVERABLE_ERROR,
+        E_ERROR,
+        E_PARSE,
+        E_CORE_ERROR,
+        E_COMPILE_ERROR,
+        E_USER_ERROR,
+        E_RECOVERABLE_ERROR,
     ];
 
     /**
@@ -538,21 +538,21 @@ class ErrorHandler
     private function codeToString(int $error_code): string
     {
         $map = [
-         E_ERROR             => 'Error',
-         E_WARNING           => 'Warning',
-         E_PARSE             => 'Parsing Error',
-         E_NOTICE            => 'Notice',
-         E_CORE_ERROR        => 'Core Error',
-         E_CORE_WARNING      => 'Core Warning',
-         E_COMPILE_ERROR     => 'Compile Error',
-         E_COMPILE_WARNING   => 'Compile Warning',
-         E_USER_ERROR        => 'User Error',
-         E_USER_WARNING      => 'User Warning',
-         E_USER_NOTICE       => 'User Notice',
-         E_STRICT            => 'Runtime Notice',
-         E_RECOVERABLE_ERROR => 'Catchable Fatal Error',
-         E_DEPRECATED        => 'Deprecated function',
-         E_USER_DEPRECATED   => 'User deprecated function',
+            E_ERROR             => 'Error',
+            E_WARNING           => 'Warning',
+            E_PARSE             => 'Parsing Error',
+            E_NOTICE            => 'Notice',
+            E_CORE_ERROR        => 'Core Error',
+            E_CORE_WARNING      => 'Core Warning',
+            E_COMPILE_ERROR     => 'Compile Error',
+            E_COMPILE_WARNING   => 'Compile Warning',
+            E_USER_ERROR        => 'User Error',
+            E_USER_WARNING      => 'User Warning',
+            E_USER_NOTICE       => 'User Notice',
+            E_STRICT            => 'Runtime Notice',
+            E_RECOVERABLE_ERROR => 'Catchable Fatal Error',
+            E_DEPRECATED        => 'Deprecated function',
+            E_USER_DEPRECATED   => 'User deprecated function',
         ];
 
         return $map[$error_code] ?? 'Unknown error';

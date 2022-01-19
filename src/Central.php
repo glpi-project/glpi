@@ -63,10 +63,10 @@ class Central extends CommonGLPI
 
         if ($item->getType() == __CLASS__) {
             $tabs = [
-            1 => __('Personal View'),
-            2 => __('Group View'),
-            3 => __('Global View'),
-            4 => _n('RSS feed', 'RSS feeds', Session::getPluralNumber()),
+                1 => __('Personal View'),
+                2 => __('Group View'),
+                3 => __('Global View'),
+                4 => _n('RSS feed', 'RSS feeds', Session::getPluralNumber()),
             ];
 
             $grid = new Glpi\Dashboard\Grid('central');
@@ -157,7 +157,7 @@ class Central extends CommonGLPI
         }
 
         TemplateRenderer::getInstance()->display('components/masonry_grid.html.twig', [
-         'grid_items' => $grid_items,
+            'grid_items' => $grid_items,
         ]);
     }
 
@@ -180,126 +180,126 @@ class Central extends CommonGLPI
 
         if (Session::haveRightsOr('ticketvalidation', TicketValidation::getValidateRights())) {
             $lists[] = [
-            'itemtype'  => Ticket::class,
-            'status'    => 'tovalidate'
+                'itemtype'  => Ticket::class,
+                'status'    => 'tovalidate'
             ];
         }
 
         if ($showticket) {
             if (Ticket::isAllowedStatus(Ticket::SOLVED, Ticket::CLOSED)) {
                 $lists[] = [
-                'itemtype'  => Ticket::class,
-                'status'    => 'toapprove'
+                    'itemtype'  => Ticket::class,
+                    'status'    => 'toapprove'
                 ];
             }
 
             $lists[] = [
-            'itemtype'  => Ticket::class,
-            'status'    => 'survey'
+                'itemtype'  => Ticket::class,
+                'status'    => 'survey'
             ];
             $lists[] = [
-            'itemtype'  => Ticket::class,
-            'status'    => 'validation.rejected'
+                'itemtype'  => Ticket::class,
+                'status'    => 'validation.rejected'
             ];
             $lists[] = [
-            'itemtype'  => Ticket::class,
-            'status'    => 'solution.rejected'
+                'itemtype'  => Ticket::class,
+                'status'    => 'solution.rejected'
             ];
             $lists[] = [
-            'itemtype'  => Ticket::class,
-            'status'    => 'requestbyself'
+                'itemtype'  => Ticket::class,
+                'status'    => 'requestbyself'
             ];
             $lists[] = [
-            'itemtype'  => Ticket::class,
-            'status'    => 'observed'
+                'itemtype'  => Ticket::class,
+                'status'    => 'observed'
             ];
             $lists[] = [
-            'itemtype'  => Ticket::class,
-            'status'    => 'process'
+                'itemtype'  => Ticket::class,
+                'status'    => 'process'
             ];
             $lists[] = [
-            'itemtype'  => Ticket::class,
-            'status'    => 'waiting'
+                'itemtype'  => Ticket::class,
+                'status'    => 'waiting'
             ];
             $lists[] = [
-            'itemtype'  => TicketTask::class,
-            'status'    => 'todo'
+                'itemtype'  => TicketTask::class,
+                'status'    => 'todo'
             ];
         }
 
         if ($showproblem) {
             $lists[] = [
-            'itemtype'  => Problem::class,
-            'status'    => 'process'
+                'itemtype'  => Problem::class,
+                'status'    => 'process'
             ];
             $lists[] = [
-            'itemtype'  => ProblemTask::class,
-            'status'    => 'todo'
+                'itemtype'  => ProblemTask::class,
+                'status'    => 'todo'
             ];
         }
 
         if ($showchanges) {
             $lists[] = [
-            'itemtype'  => Change::class,
-            'status'    => 'process'
+                'itemtype'  => Change::class,
+                'status'    => 'process'
             ];
             $lists[] = [
-            'itemtype'  => ChangeTask::class,
-            'status'    => 'todo'
+                'itemtype'  => ChangeTask::class,
+                'status'    => 'todo'
             ];
         }
 
         $twig_params = [
-         'messages'  => self::getMessages(),
-         'cards'     => []
+            'messages'  => self::getMessages(),
+            'cards'     => []
         ];
         foreach ($lists as $list) {
             $card_params = [
-            'start'              => 0,
-            'status'             => $list['status'],
-            'showgrouptickets'   => 'false'
+                'start'              => 0,
+                'status'             => $list['status'],
+                'showgrouptickets'   => 'false'
             ];
             $idor = Session::getNewIDORToken($list['itemtype'], $card_params);
             $twig_params['cards'][] = [
-            'itemtype'  => $list['itemtype'],
-            'widget'    => 'central_list',
-            'params'    => $card_params + [
-               '_idor_token'  => $idor
-            ]
+                'itemtype'  => $list['itemtype'],
+                'widget'    => 'central_list',
+                'params'    => $card_params + [
+                    '_idor_token'  => $idor
+                ]
             ];
         }
 
         $card_params = [
-         'who' => Session::getLoginUserID()
+            'who' => Session::getLoginUserID()
         ];
         $idor = Session::getNewIDORToken(Planning::class, $card_params);
         $twig_params['cards'][] = [
-         'itemtype'  => Planning::class,
-         'widget'    => 'central_list',
-         'params'    => $card_params + [
-            '_idor_token'  => $idor
-         ]
+            'itemtype'  => Planning::class,
+            'widget'    => 'central_list',
+            'params'    => $card_params + [
+                '_idor_token'  => $idor
+            ]
         ];
 
         $idor = Session::getNewIDORToken(Reminder::class);
         $twig_params['cards'][] = [
-         'itemtype'  => Reminder::class,
-         'widget'    => 'central_list',
-         'params'    => [
-            '_idor_token'  => $idor
-         ]
-        ];
-        $idor = Session::getNewIDORToken(Reminder::class, [
-         'personal'  => 'false'
-        ]);
-        if (Session::haveRight("reminder_public", READ)) {
-            $twig_params['cards'][] = [
             'itemtype'  => Reminder::class,
             'widget'    => 'central_list',
             'params'    => [
-               'personal'     => 'false',
-               '_idor_token'  => $idor
+                '_idor_token'  => $idor
             ]
+        ];
+        $idor = Session::getNewIDORToken(Reminder::class, [
+            'personal'  => 'false'
+        ]);
+        if (Session::haveRight("reminder_public", READ)) {
+            $twig_params['cards'][] = [
+                'itemtype'  => Reminder::class,
+                'widget'    => 'central_list',
+                'params'    => [
+                    'personal'     => 'false',
+                    '_idor_token'  => $idor
+                ]
             ];
         }
 
@@ -316,32 +316,32 @@ class Central extends CommonGLPI
     {
 
         $idor = Session::getNewIDORToken(RSSFeed::class, [
-         'personal'  => 'true'
+            'personal'  => 'true'
         ]);
         $twig_params = [
-         'messages'  => self::getMessages(),
-         'cards'     => [
-            [
-               'itemtype'  => RSSFeed::class,
-               'widget'    => 'central_list',
-               'params'    => [
-                  'personal'     => 'true',
-                  '_idor_token'  => $idor
-               ]
+            'messages'  => self::getMessages(),
+            'cards'     => [
+                [
+                    'itemtype'  => RSSFeed::class,
+                    'widget'    => 'central_list',
+                    'params'    => [
+                        'personal'     => 'true',
+                        '_idor_token'  => $idor
+                    ]
+                ]
             ]
-         ]
         ];
         if (RSSFeed::canView()) {
             $idor = Session::getNewIDORToken(RSSFeed::class, [
-            'personal'  => 'false'
+                'personal'  => 'false'
             ]);
             $twig_params['cards'][] = [
-             'itemtype'  => RSSFeed::class,
-             'widget'    => 'central_list',
-             'params'    => [
-               'personal'     => 'false',
-               '_idor_token'  => $idor
-             ]
+                'itemtype'  => RSSFeed::class,
+                'widget'    => 'central_list',
+                'params'    => [
+                    'personal'     => 'false',
+                    '_idor_token'  => $idor
+                ]
             ];
         }
         TemplateRenderer::getInstance()->display('central/widget_tab.html.twig', $twig_params);
@@ -364,78 +364,78 @@ class Central extends CommonGLPI
 
         if ($showticket) {
             $lists[] = [
-            'itemtype'  => Ticket::class,
-            'status'    => 'process'
+                'itemtype'  => Ticket::class,
+                'status'    => 'process'
             ];
             $lists[] = [
-            'itemtype'  => TicketTask::class,
-            'status'    => 'todo'
+                'itemtype'  => TicketTask::class,
+                'status'    => 'todo'
             ];
         }
         if (Session::haveRight('ticket', Ticket::READGROUP)) {
             $lists[] = [
-            'itemtype'  => Ticket::class,
-            'status'    => 'waiting'
+                'itemtype'  => Ticket::class,
+                'status'    => 'waiting'
             ];
         }
         if ($showproblem) {
             $lists[] = [
-            'itemtype'  => Problem::class,
-            'status'    => 'process'
+                'itemtype'  => Problem::class,
+                'status'    => 'process'
             ];
             $lists[] = [
-            'itemtype'  => ProblemTask::class,
-            'status'    => 'todo'
+                'itemtype'  => ProblemTask::class,
+                'status'    => 'todo'
             ];
         }
 
         if ($showchange) {
             $lists[] = [
-            'itemtype'  => Change::class,
-            'status'    => 'process'
+                'itemtype'  => Change::class,
+                'status'    => 'process'
             ];
             $lists[] = [
-            'itemtype'  => ChangeTask::class,
-            'status'    => 'todo'
+                'itemtype'  => ChangeTask::class,
+                'status'    => 'todo'
             ];
         }
 
         if (Session::haveRight('ticket', Ticket::READGROUP)) {
             $lists[] = [
-            'itemtype'  => Ticket::class,
-            'status'    => 'observed'
+                'itemtype'  => Ticket::class,
+                'status'    => 'observed'
             ];
             $lists[] = [
-            'itemtype'  => Ticket::class,
-            'status'    => 'toapprove'
+                'itemtype'  => Ticket::class,
+                'status'    => 'toapprove'
             ];
             $lists[] = [
-            'itemtype'  => Ticket::class,
-            'status'    => 'requestbyself'
+                'itemtype'  => Ticket::class,
+                'status'    => 'requestbyself'
             ];
         } else {
             $lists[] = [
-            'itemtype'  => Ticket::class,
-            'status'    => 'waiting'
+                'itemtype'  => Ticket::class,
+                'status'    => 'waiting'
             ];
         }
 
         $twig_params = [
-         'cards' => [],
+            'cards' => [],
         ];
         foreach ($lists as $list) {
             $card_params = [
-            'start'              => 0,
-            'status'             => $list['status'],
-            'showgrouptickets'   => 'true'
+                'start'              => 0,
+                'status'             => $list['status'],
+                'showgrouptickets'   => 'true'
             ];
             $idor = Session::getNewIDORToken($list['itemtype'], $card_params);
             $twig_params['cards'][] = [
-            'itemtype'  => $list['itemtype'],
-            'widget'    => 'central_list',
-            'params'    => $card_params + [
-               '_idor_token'  => $idor
-            ]
+                'itemtype'  => $list['itemtype'],
+                'widget'    => 'central_list',
+                'params'    => $card_params + [
+                    '_idor_token'  => $idor
+                ]
             ];
         }
         TemplateRenderer::getInstance()->display('central/widget_tab.html.twig', $twig_params);
@@ -519,7 +519,7 @@ class Central extends CommonGLPI
 
         $messages = self::getMessages();
         TemplateRenderer::getInstance()->display('central/messages.html.twig', [
-         'messages'  => $messages
+            'messages'  => $messages
         ]);
     }
 }

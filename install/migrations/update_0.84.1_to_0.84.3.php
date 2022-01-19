@@ -69,17 +69,18 @@ function update0841to0843()
 
    // Upgrade ticket bookmarks and clean _glpi_csrf_token
     $status =  ['new'           => CommonITILObject::INCOMING,
-                    'assign'        => CommonITILObject::ASSIGNED,
-                    'plan'          => CommonITILObject::PLANNED,
-                    'waiting'       => CommonITILObject::WAITING,
-                    'solved'        => CommonITILObject::SOLVED,
-                    'closed'        => CommonITILObject::CLOSED,
-                    'accepted'      => CommonITILObject::ACCEPTED,
-                    'observe'       => CommonITILObject::OBSERVED,
-                    'evaluation'    => CommonITILObject::EVALUATION,
-                    'approbation'   => CommonITILObject::APPROVAL,
-                    'test'          => CommonITILObject::TEST,
-                    'qualification' => CommonITILObject::QUALIFICATION];
+        'assign'        => CommonITILObject::ASSIGNED,
+        'plan'          => CommonITILObject::PLANNED,
+        'waiting'       => CommonITILObject::WAITING,
+        'solved'        => CommonITILObject::SOLVED,
+        'closed'        => CommonITILObject::CLOSED,
+        'accepted'      => CommonITILObject::ACCEPTED,
+        'observe'       => CommonITILObject::OBSERVED,
+        'evaluation'    => CommonITILObject::EVALUATION,
+        'approbation'   => CommonITILObject::APPROVAL,
+        'test'          => CommonITILObject::TEST,
+        'qualification' => CommonITILObject::QUALIFICATION
+    ];
 
     $query = "SELECT *
              FROM `glpi_bookmarks`";

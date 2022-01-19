@@ -91,8 +91,9 @@ class Item_Ticket extends CommonItilObject_Item
 
         $ticket = new Ticket();
         $input  = ['id'            => $this->fields['tickets_id'],
-                      'date_mod'      => $_SESSION["glpi_currenttime"],
-                      '_donotadddocs' => true];
+            'date_mod'      => $_SESSION["glpi_currenttime"],
+            '_donotadddocs' => true
+        ];
 
         if (!isset($this->input['_do_notif']) || $this->input['_do_notif']) {
             $input['_forcenotif'] = true;
@@ -111,8 +112,9 @@ class Item_Ticket extends CommonItilObject_Item
 
         $ticket = new Ticket();
         $input = ['id'            => $this->fields['tickets_id'],
-                     'date_mod'      => $_SESSION["glpi_currenttime"],
-                     '_donotadddocs' => true];
+            'date_mod'      => $_SESSION["glpi_currenttime"],
+            '_donotadddocs' => true
+        ];
 
         if (!isset($this->input['_do_notif']) || $this->input['_do_notif']) {
             $input['_forcenotif'] = true;
@@ -129,8 +131,9 @@ class Item_Ticket extends CommonItilObject_Item
        // Avoid duplicate entry
         if (
             countElementsInTable($this->getTable(), ['tickets_id' => $input['tickets_id'],
-                                                   'itemtype'   => $input['itemtype'],
-                                                   'items_id'   => $input['items_id']]) > 0
+                'itemtype'   => $input['itemtype'],
+                'items_id'   => $input['items_id']
+            ]) > 0
         ) {
             return false;
         }
@@ -183,11 +186,11 @@ class Item_Ticket extends CommonItilObject_Item
         global $CFG_GLPI;
 
         $params = [
-         'id'  => (isset($ticket->fields['id']) && $ticket->fields['id'] != '') ? $ticket->fields['id'] : 0,
-         '_users_id_requester' => 0,
-         'items_id'            => [],
-         'itemtype'            => '',
-         '_canupdate'          => false
+            'id'  => (isset($ticket->fields['id']) && $ticket->fields['id'] != '') ? $ticket->fields['id'] : 0,
+            '_users_id_requester' => 0,
+            'items_id'            => [],
+            'itemtype'            => '',
+            '_canupdate'          => false
         ];
 
         $opt = [];
@@ -239,13 +242,13 @@ class Item_Ticket extends CommonItilObject_Item
         $count = 0;
 
         $twig_params = [
-         'rand'               => $rand,
-         'can_edit'           => $canedit,
-         'my_items_dropdown'  => '',
-         'all_items_dropdown' => '',
-         'items_to_add'       => [],
-         'params'             => $params,
-         'opt'                => []
+            'rand'               => $rand,
+            'can_edit'           => $canedit,
+            'my_items_dropdown'  => '',
+            'all_items_dropdown' => '',
+            'items_to_add'       => [],
+            'params'             => $params,
+            'opt'                => []
         ];
 
        // Get ticket template
@@ -264,8 +267,9 @@ class Item_Ticket extends CommonItilObject_Item
        // Show associated item dropdowns
         if ($canedit) {
             $p = ['used'       => $params['items_id'],
-            'rand'       => $rand,
-            'tickets_id' => $params['id']];
+                'rand'       => $rand,
+                'tickets_id' => $params['id']
+            ];
            // My items
             if ($params['_users_id_requester'] > 0) {
                 ob_start();
@@ -298,9 +302,9 @@ class Item_Ticket extends CommonItilObject_Item
                         $itemtype,
                         $items_id,
                         [
-                        'rand'      => $rand,
-                        'delete'    => $delete,
-                        'visible'   => ($count <= 5)
+                            'rand'      => $rand,
+                            'delete'    => $delete,
+                            'visible'   => ($count <= 5)
                         ]
                     );
                 }
@@ -530,7 +534,8 @@ class Item_Ticket extends CommonItilObject_Item
                             $nb = countElementsInTable(
                                 'glpi_items_tickets',
                                 ['tickets_id' => $item->getID(),
-                                'itemtype' => $_SESSION["glpiactiveprofile"]["helpdesk_item_type"]]
+                                    'itemtype' => $_SESSION["glpiactiveprofile"]["helpdesk_item_type"]
+                                ]
                             );
                         }
                         return self::createTabEntry(_n('Item', 'Items', Session::getPluralNumber()), $nb);
@@ -570,9 +575,10 @@ class Item_Ticket extends CommonItilObject_Item
         global $DB, $CFG_GLPI;
 
         $params = ['tickets_id' => 0,
-                      'used'       => [],
-                      'multiple'   => false,
-                      'rand'       => mt_rand()];
+            'used'       => [],
+            'multiple'   => false,
+            'rand'       => mt_rand()
+        ];
 
         foreach ($options as $key => $val) {
             $params[$key] = $val;
@@ -598,11 +604,11 @@ class Item_Ticket extends CommonItilObject_Item
                     $itemtable = getTableForItemType($itemtype);
 
                     $criteria = [
-                    'FROM'   => $itemtable,
-                    'WHERE'  => [
-                     'users_id' => $userID
-                    ] + getEntitiesRestrictCriteria($itemtable, '', $entity_restrict, $item->maybeRecursive()),
-                    'ORDER'  => $item->getNameField()
+                        'FROM'   => $itemtable,
+                        'WHERE'  => [
+                            'users_id' => $userID
+                        ] + getEntitiesRestrictCriteria($itemtable, '', $entity_restrict, $item->maybeRecursive()),
+                        'ORDER'  => $item->getNameField()
                     ];
 
                     if ($item->maybeDeleted()) {
@@ -650,22 +656,22 @@ class Item_Ticket extends CommonItilObject_Item
            // My group items
             if (Session::haveRight("show_group_hardware", "1")) {
                 $iterator = $DB->request([
-                'SELECT'    => [
-                  'glpi_groups_users.groups_id',
-                  'glpi_groups.name'
-                ],
-                'FROM'      => 'glpi_groups_users',
-                'LEFT JOIN' => [
-                  'glpi_groups'  => [
-                     'ON' => [
-                        'glpi_groups_users'  => 'groups_id',
-                        'glpi_groups'        => 'id'
-                     ]
-                  ]
-                ],
-                'WHERE'     => [
-                  'glpi_groups_users.users_id'  => $userID
-                ] + getEntitiesRestrictCriteria('glpi_groups', '', $entity_restrict, true)
+                    'SELECT'    => [
+                        'glpi_groups_users.groups_id',
+                        'glpi_groups.name'
+                    ],
+                    'FROM'      => 'glpi_groups_users',
+                    'LEFT JOIN' => [
+                        'glpi_groups'  => [
+                            'ON' => [
+                                'glpi_groups_users'  => 'groups_id',
+                                'glpi_groups'        => 'id'
+                            ]
+                        ]
+                    ],
+                    'WHERE'     => [
+                        'glpi_groups_users.users_id'  => $userID
+                    ] + getEntitiesRestrictCriteria('glpi_groups', '', $entity_restrict, true)
                 ]);
 
                 $devices = [];
@@ -684,11 +690,11 @@ class Item_Ticket extends CommonItilObject_Item
                         ) {
                             $itemtable  = getTableForItemType($itemtype);
                             $criteria = [
-                            'FROM'   => $itemtable,
-                            'WHERE'  => [
-                            'groups_id' => $groups
-                            ] + getEntitiesRestrictCriteria($itemtable, '', $entity_restrict, $item->maybeRecursive()),
-                            'ORDER'  => $item->getNameField()
+                                'FROM'   => $itemtable,
+                                'WHERE'  => [
+                                    'groups_id' => $groups
+                                ] + getEntitiesRestrictCriteria($itemtable, '', $entity_restrict, $item->maybeRecursive()),
+                                'ORDER'  => $item->getNameField()
                             ];
 
                             if ($item->maybeDeleted()) {
@@ -739,33 +745,33 @@ class Item_Ticket extends CommonItilObject_Item
                 foreach ($software_helpdesk_types as $itemtype) {
                     if (isset($already_add[$itemtype]) && count($already_add[$itemtype])) {
                         $iterator = $DB->request([
-                         'SELECT'          => [
-                        'glpi_softwareversions.name AS version',
-                        'glpi_softwares.name AS name',
-                        'glpi_softwares.id'
-                         ],
-                         'DISTINCT'        => true,
-                         'FROM'            => 'glpi_items_softwareversions',
-                         'LEFT JOIN'       => [
-                          'glpi_softwareversions'  => [
-                           'ON' => [
-                              'glpi_items_softwareversions' => 'softwareversions_id',
-                              'glpi_softwareversions'       => 'id'
-                           ]
-                          ],
-                          'glpi_softwares'        => [
-                           'ON' => [
-                              'glpi_softwareversions' => 'softwares_id',
-                              'glpi_softwares'        => 'id'
-                           ]
-                          ]
-                         ],
-                         'WHERE'        => [
-                           'glpi_items_softwareversions.items_id' => $already_add[$itemtype],
-                           'glpi_items_softwareversions.itemtype' => $itemtype,
-                           'glpi_softwares.is_helpdesk_visible'   => 1
-                          ] + getEntitiesRestrictCriteria('glpi_softwares', '', $entity_restrict),
-                         'ORDERBY'      => 'glpi_softwares.name'
+                            'SELECT'          => [
+                                'glpi_softwareversions.name AS version',
+                                'glpi_softwares.name AS name',
+                                'glpi_softwares.id'
+                            ],
+                            'DISTINCT'        => true,
+                            'FROM'            => 'glpi_items_softwareversions',
+                            'LEFT JOIN'       => [
+                                'glpi_softwareversions'  => [
+                                    'ON' => [
+                                        'glpi_items_softwareversions' => 'softwareversions_id',
+                                        'glpi_softwareversions'       => 'id'
+                                    ]
+                                ],
+                                'glpi_softwares'        => [
+                                    'ON' => [
+                                        'glpi_softwareversions' => 'softwares_id',
+                                        'glpi_softwares'        => 'id'
+                                    ]
+                                ]
+                            ],
+                            'WHERE'        => [
+                                'glpi_items_softwareversions.items_id' => $already_add[$itemtype],
+                                'glpi_items_softwareversions.itemtype' => $itemtype,
+                                'glpi_softwares.is_helpdesk_visible'   => 1
+                            ] + getEntitiesRestrictCriteria('glpi_softwares', '', $entity_restrict),
+                            'ORDERBY'      => 'glpi_softwares.name'
                         ]);
 
                          $devices = [];
@@ -818,22 +824,22 @@ class Item_Ticket extends CommonItilObject_Item
                             $already_add[$itemtype] = [];
                         }
                         $criteria = [
-                        'SELECT'          => "$itemtable.*",
-                        'DISTINCT'        => true,
-                        'FROM'            => 'glpi_computers_items',
-                        'LEFT JOIN'       => [
-                        $itemtable  => [
-                           'ON' => [
-                              'glpi_computers_items'  => 'items_id',
-                              $itemtable              => 'id'
-                           ]
-                        ]
-                        ],
-                        'WHERE'           => [
-                        'glpi_computers_items.itemtype'     => $itemtype,
-                        'glpi_computers_items.computers_id' => $already_add['Computer']
-                        ] + getEntitiesRestrictCriteria($itemtable, '', $entity_restrict),
-                        'ORDERBY'         => "$itemtable.name"
+                            'SELECT'          => "$itemtable.*",
+                            'DISTINCT'        => true,
+                            'FROM'            => 'glpi_computers_items',
+                            'LEFT JOIN'       => [
+                                $itemtable  => [
+                                    'ON' => [
+                                        'glpi_computers_items'  => 'items_id',
+                                        $itemtable              => 'id'
+                                    ]
+                                ]
+                            ],
+                            'WHERE'           => [
+                                'glpi_computers_items.itemtype'     => $itemtype,
+                                'glpi_computers_items.computers_id' => $already_add['Computer']
+                            ] + getEntitiesRestrictCriteria($itemtable, '', $entity_restrict),
+                            'ORDERBY'         => "$itemtable.name"
                         ];
 
                         if ($item->maybeDeleted()) {
@@ -940,17 +946,17 @@ class Item_Ticket extends CommonItilObject_Item
         foreach ($itemtypes as $type) {
             $table = getTableForItemType($type);
             $union->addQuery([
-            'SELECT' => [
-               'id',
-               new \QueryExpression("$type AS " . $DB->quoteName('itemtype')),
-               "name"
-            ],
-            'FROM'   => $table,
-            'WHERE'  => [
-               'NOT'          => ['id' => null],
-               'is_deleted'   => 0,
-               'is_template'  => 0
-            ]
+                'SELECT' => [
+                    'id',
+                    new \QueryExpression("$type AS " . $DB->quoteName('itemtype')),
+                    "name"
+                ],
+                'FROM'   => $table,
+                'WHERE'  => [
+                    'NOT'          => ['id' => null],
+                    'is_deleted'   => 0,
+                    'is_template'  => 0
+                ]
             ]);
         }
 
@@ -1000,21 +1006,21 @@ class Item_Ticket extends CommonItilObject_Item
         switch ($ma->getAction()) {
             case 'add_item':
                 Dropdown::showSelectItemFromItemtypes(['items_id_name'   => 'items_id',
-                                                   'itemtype_name'   => 'item_itemtype',
-                                                   'itemtypes'       => $CFG_GLPI['ticket_types'],
-                                                   'checkright'      => true,
-                                                   'entity_restrict' => $_SESSION['glpiactive_entity']
-                                                  ]);
+                    'itemtype_name'   => 'item_itemtype',
+                    'itemtypes'       => $CFG_GLPI['ticket_types'],
+                    'checkright'      => true,
+                    'entity_restrict' => $_SESSION['glpiactive_entity']
+                ]);
                 echo "<br><input type='submit' name='add' value=\"" . _sx('button', 'Add') . "\" class='btn btn-primary'>";
                 break;
 
             case 'delete_item':
                 Dropdown::showSelectItemFromItemtypes(['items_id_name'   => 'items_id',
-                                                   'itemtype_name'   => 'item_itemtype',
-                                                   'itemtypes'       => $CFG_GLPI['ticket_types'],
-                                                   'checkright'      => true,
-                                                   'entity_restrict' => $_SESSION['glpiactive_entity']
-                                                  ]);
+                    'itemtype_name'   => 'item_itemtype',
+                    'itemtypes'       => $CFG_GLPI['ticket_types'],
+                    'checkright'      => true,
+                    'entity_restrict' => $_SESSION['glpiactive_entity']
+                ]);
 
                 echo "<br><input type='submit' name='delete' value=\"" . __('Delete permanently') . "\" class='btn btn-primary'>";
                 break;
@@ -1088,9 +1094,9 @@ class Item_Ticket extends CommonItilObject_Item
                 foreach ($ids as $id) {
                     if ($item->getFromDB($id) && !empty($input['items_id'])) {
                         $item_found = $item_ticket->find([
-                        'tickets_id'   => $id,
-                        'itemtype'     => $input['item_itemtype'],
-                        'items_id'     => $input['items_id']
+                            'tickets_id'   => $id,
+                            'itemtype'     => $input['item_itemtype'],
+                            'items_id'     => $input['items_id']
                         ]);
                         if (!empty($item_found)) {
                              $item_founds_id = array_keys($item_found);
@@ -1131,32 +1137,32 @@ class Item_Ticket extends CommonItilObject_Item
         $tab = [];
 
         $tab[] = [
-         'id'                 => '3',
-         'table'              => $this->getTable(),
-         'field'              => 'tickets_id',
-         'name'               => Ticket::getTypeName(1),
-         'datatype'           => 'dropdown',
+            'id'                 => '3',
+            'table'              => $this->getTable(),
+            'field'              => 'tickets_id',
+            'name'               => Ticket::getTypeName(1),
+            'datatype'           => 'dropdown',
         ];
 
         $tab[] = [
-         'id'                 => '13',
-         'table'              => $this->getTable(),
-         'field'              => 'items_id',
-         'name'               => _n('Associated element', 'Associated elements', Session::getPluralNumber()),
-         'datatype'           => 'specific',
-         'comments'           => true,
-         'nosort'             => true,
-         'additionalfields'   => ['itemtype']
+            'id'                 => '13',
+            'table'              => $this->getTable(),
+            'field'              => 'items_id',
+            'name'               => _n('Associated element', 'Associated elements', Session::getPluralNumber()),
+            'datatype'           => 'specific',
+            'comments'           => true,
+            'nosort'             => true,
+            'additionalfields'   => ['itemtype']
         ];
 
         $tab[] = [
-         'id'                 => '131',
-         'table'              => $this->getTable(),
-         'field'              => 'itemtype',
-         'name'               => _n('Associated item type', 'Associated item types', Session::getPluralNumber()),
-         'datatype'           => 'itemtypename',
-         'itemtype_list'      => 'ticket_types',
-         'nosort'             => true
+            'id'                 => '131',
+            'table'              => $this->getTable(),
+            'field'              => 'itemtype',
+            'name'               => _n('Associated item type', 'Associated item types', Session::getPluralNumber()),
+            'datatype'           => 'itemtypename',
+            'itemtype_list'      => 'ticket_types',
+            'nosort'             => true
         ];
 
         return $tab;

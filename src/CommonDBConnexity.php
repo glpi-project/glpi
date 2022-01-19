@@ -115,8 +115,8 @@ abstract class CommonDBConnexity extends CommonDBTM
         $criteria = static::getSQLCriteriaToSearchForItem($itemtype, $items_id);
         if ($criteria !== null) {
             $input = [
-            '_no_history'     => true,
-            '_no_notif'       => true
+                '_no_history'     => true,
+                '_no_notif'       => true
             ];
 
             $iterator = $DB->request($criteria);
@@ -465,7 +465,7 @@ abstract class CommonDBConnexity extends CommonDBTM
     {
 
         $newItemArray = [
-         $items_id => $this->fields[$items_id],
+            $items_id => $this->fields[$items_id],
         ];
         $previousItemArray = [];
 
@@ -507,11 +507,14 @@ abstract class CommonDBConnexity extends CommonDBTM
     {
 
         return ['reaffect'      => false,
-                   'itemtypes'     => [],
-                   'normalized'    => ['affect'   => ['affect'],
-                                            'unaffect' => ['unaffect']],
-                   'action_name'   => ['affect'   => _x('button', 'Associate'),
-                                            'unaffect' => _x('button', 'Dissociate')]];
+            'itemtypes'     => [],
+            'normalized'    => ['affect'   => ['affect'],
+                'unaffect' => ['unaffect']
+            ],
+            'action_name'   => ['affect'   => _x('button', 'Associate'),
+                'unaffect' => _x('button', 'Dissociate')
+            ]
+        ];
     }
 
 

@@ -50,13 +50,13 @@ class StatDataSatisfaction extends StatDataAlwaysDisplay
 
         $this->labels = array_keys($opensatisfaction);
         $this->series = [
-         [
-            'name' => _nx('survey', 'Opened', 'Opened', Session::getPluralNumber()),
-            'data' => $opensatisfaction,
-         ], [
-            'name' => _nx('survey', 'Answered', 'Answered', Session::getPluralNumber()),
-            'data' => $answersatisfaction,
-         ]
+            [
+                'name' => _nx('survey', 'Opened', 'Opened', Session::getPluralNumber()),
+                'data' => $opensatisfaction,
+            ], [
+                'name' => _nx('survey', 'Answered', 'Answered', Session::getPluralNumber()),
+                'data' => $answersatisfaction,
+            ]
         ];
     }
 

@@ -44,7 +44,7 @@ class SoftwareVersion extends DbTestCase
     {
         $this
          ->string(CoreSoftwareVersion::dropdownForOneSoftware([
-            "display" => false
+             "display" => false
          ]))
          ->isNotEmpty();
     }

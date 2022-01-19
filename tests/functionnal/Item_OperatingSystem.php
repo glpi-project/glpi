@@ -60,7 +60,7 @@ class Item_OperatingSystem extends DbTestCase
             $instance = new $classname();
             $this->integer(
                 (int)$instance->add([
-                'name' => $classname . ' ' . $this->getUniqueInteger()
+                    'name' => $classname . ' ' . $this->getUniqueInteger()
                 ])
             )->isGreaterThan(0);
             $this->boolean($instance->getFromDB($instance->getID()))->isTrue();
@@ -76,14 +76,14 @@ class Item_OperatingSystem extends DbTestCase
         $objects = $this->createDdObjects();
         $ios = new \Item_OperatingSystem();
         $input = [
-         'itemtype'                          => $computer->getType(),
-         'items_id'                          => $computer->getID(),
-         'operatingsystems_id'               => $objects['']->getID(),
-         'operatingsystemarchitectures_id'   => $objects['Architecture']->getID(),
-         'operatingsystemversions_id'        => $objects['Version']->getID(),
-         'operatingsystemkernelversions_id'  => $objects['KernelVersion']->getID(),
-         'licenseid'                         => $this->getUniqueString(),
-         'license_number'                    => $this->getUniqueString()
+            'itemtype'                          => $computer->getType(),
+            'items_id'                          => $computer->getID(),
+            'operatingsystems_id'               => $objects['']->getID(),
+            'operatingsystemarchitectures_id'   => $objects['Architecture']->getID(),
+            'operatingsystemversions_id'        => $objects['Version']->getID(),
+            'operatingsystemkernelversions_id'  => $objects['KernelVersion']->getID(),
+            'licenseid'                         => $this->getUniqueString(),
+            'license_number'                    => $this->getUniqueString()
         ];
         $this->integer(
             (int)$ios->add($input)
@@ -112,14 +112,14 @@ class Item_OperatingSystem extends DbTestCase
         $objects = $this->createDdObjects();
         $ios = new \Item_OperatingSystem();
         $input = [
-         'itemtype'                          => $computer->getType(),
-         'items_id'                          => $computer->getID(),
-         'operatingsystems_id'               => $objects['']->getID(),
-         'operatingsystemarchitectures_id'   => $objects['Architecture']->getID(),
-         'operatingsystemversions_id'        => $objects['Version']->getID(),
-         'operatingsystemkernelversions_id'  => $objects['KernelVersion']->getID(),
-         'licenseid'                         => $this->getUniqueString(),
-         'license_number'                    => $this->getUniqueString()
+            'itemtype'                          => $computer->getType(),
+            'items_id'                          => $computer->getID(),
+            'operatingsystems_id'               => $objects['']->getID(),
+            'operatingsystemarchitectures_id'   => $objects['Architecture']->getID(),
+            'operatingsystemversions_id'        => $objects['Version']->getID(),
+            'operatingsystemkernelversions_id'  => $objects['KernelVersion']->getID(),
+            'licenseid'                         => $this->getUniqueString(),
+            'license_number'                    => $this->getUniqueString()
         ];
         $this->integer(
             (int)$ios->add($input)
@@ -149,14 +149,14 @@ class Item_OperatingSystem extends DbTestCase
         $objects = $this->createDdObjects();
         $ios = new \Item_OperatingSystem();
         $input = [
-         'itemtype'                          => $computer->getType(),
-         'items_id'                          => $computer->getID(),
-         'operatingsystems_id'               => $objects['']->getID(),
-         'operatingsystemarchitectures_id'   => $objects['Architecture']->getID(),
-         'operatingsystemversions_id'        => $objects['Version']->getID(),
-         'operatingsystemkernelversions_id'  => $objects['KernelVersion']->getID(),
-         'licenseid'                         => $this->getUniqueString(),
-         'license_number'                    => $this->getUniqueString()
+            'itemtype'                          => $computer->getType(),
+            'items_id'                          => $computer->getID(),
+            'operatingsystems_id'               => $objects['']->getID(),
+            'operatingsystemarchitectures_id'   => $objects['Architecture']->getID(),
+            'operatingsystemversions_id'        => $objects['Version']->getID(),
+            'operatingsystemkernelversions_id'  => $objects['KernelVersion']->getID(),
+            'licenseid'                         => $this->getUniqueString(),
+            'license_number'                    => $this->getUniqueString()
         ];
         $this->integer(
             (int)$ios->add($input)
@@ -174,14 +174,14 @@ class Item_OperatingSystem extends DbTestCase
         $objects = $this->createDdObjects();
         $ios = new \Item_OperatingSystem();
         $input = [
-         'itemtype'                          => $computer->getType(),
-         'items_id'                          => $computer->getID(),
-         'operatingsystems_id'               => $objects['']->getID(),
-         'operatingsystemarchitectures_id'   => $objects['Architecture']->getID(),
-         'operatingsystemversions_id'        => $objects['Version']->getID(),
-         'operatingsystemkernelversions_id'  => $objects['KernelVersion']->getID(),
-         'licenseid'                         => $this->getUniqueString(),
-         'license_number'                    => $this->getUniqueString()
+            'itemtype'                          => $computer->getType(),
+            'items_id'                          => $computer->getID(),
+            'operatingsystems_id'               => $objects['']->getID(),
+            'operatingsystemarchitectures_id'   => $objects['Architecture']->getID(),
+            'operatingsystemversions_id'        => $objects['Version']->getID(),
+            'operatingsystemkernelversions_id'  => $objects['KernelVersion']->getID(),
+            'licenseid'                         => $this->getUniqueString(),
+            'license_number'                    => $this->getUniqueString()
         ];
         $this->integer(
             (int)$ios->add($input)
@@ -207,25 +207,25 @@ class Item_OperatingSystem extends DbTestCase
         $computer = new \Computer();
         $this->integer(
             (int)$computer->add([
-            'name'         => 'Test Item/OS',
-            'entities_id'  => $eid,
-            'is_recursive' => 0
+                'name'         => 'Test Item/OS',
+                'entities_id'  => $eid,
+                'is_recursive' => 0
             ])
         )->isGreaterThan(0);
 
         $os = new \OperatingSystem();
         $this->integer(
             (int)$os->add([
-            'name' => 'Test OS'
+                'name' => 'Test OS'
             ])
         )->isGreaterThan(0);
 
         $ios = new \Item_OperatingSystem();
         $this->integer(
             (int)$ios->add([
-            'operatingsystems_id'   => $os->getID(),
-            'itemtype'              => 'Computer',
-            'items_id'              => $computer->getID()
+                'operatingsystems_id'   => $os->getID(),
+                'itemtype'              => 'Computer',
+                'items_id'              => $computer->getID()
             ])
         )->isGreaterThan(0);
         $this->boolean($ios->getFromDB($ios->getID()))->isTrue();
@@ -250,8 +250,8 @@ class Item_OperatingSystem extends DbTestCase
         $this->setEntity('_test_root_entity', true);
         $this->boolean(
             (bool)$computer->update([
-            'id'           => $computer->getID(),
-            'is_recursive' => 1
+                'id'           => $computer->getID(),
+                'is_recursive' => 1
             ])
         )->isTrue();
         $this->boolean($ios->getFromDB($ios->getID()))->isTrue();

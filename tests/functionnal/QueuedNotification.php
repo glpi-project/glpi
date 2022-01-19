@@ -56,15 +56,15 @@ class QueuedNotification extends DbTestCase
        // First notification
         $queued_id_1 = $queued_notification->add(
             [
-            'itemtype'                 => 'Project',
-            'items_id'                 => $project_id_1,
-            'entities_id'              => $root_entity_id,
-            'notificationtemplates_id' => $project_notification_id,
-            'sender'                   => 'mailer@glpi-project.org',
-            'recipient'                => 'test-user@glpi-project.org',
-            'name'                     => 'Test notification 1',
-            'body_text'                => 'Text of notification 1',
-            'mode'                     => Notification_NotificationTemplate::MODE_MAIL,
+                'itemtype'                 => 'Project',
+                'items_id'                 => $project_id_1,
+                'entities_id'              => $root_entity_id,
+                'notificationtemplates_id' => $project_notification_id,
+                'sender'                   => 'mailer@glpi-project.org',
+                'recipient'                => 'test-user@glpi-project.org',
+                'name'                     => 'Test notification 1',
+                'body_text'                => 'Text of notification 1',
+                'mode'                     => Notification_NotificationTemplate::MODE_MAIL,
             ]
         );
         $this->integer($queued_id_1)->isGreaterThan(0);
@@ -73,15 +73,15 @@ class QueuedNotification extends DbTestCase
        // Notification with same item and recipient, should trigger previous notification deletion
         $queued_id_2 = $queued_notification->add(
             [
-            'itemtype'                 => 'Project',
-            'items_id'                 => $project_id_1,
-            'entities_id'              => $root_entity_id,
-            'notificationtemplates_id' => $project_notification_id,
-            'sender'                   => 'mailer@glpi-project.org',
-            'recipient'                => 'test-user@glpi-project.org',
-            'name'                     => 'Test notification 2',
-            'body_text'                => 'Text of notification 2',
-            'mode'                     => Notification_NotificationTemplate::MODE_MAIL,
+                'itemtype'                 => 'Project',
+                'items_id'                 => $project_id_1,
+                'entities_id'              => $root_entity_id,
+                'notificationtemplates_id' => $project_notification_id,
+                'sender'                   => 'mailer@glpi-project.org',
+                'recipient'                => 'test-user@glpi-project.org',
+                'name'                     => 'Test notification 2',
+                'body_text'                => 'Text of notification 2',
+                'mode'                     => Notification_NotificationTemplate::MODE_MAIL,
             ]
         );
         $this->integer($queued_id_2)->isGreaterThan(0);
@@ -92,15 +92,15 @@ class QueuedNotification extends DbTestCase
        // Notification with different recipient, should not trigger previous notification deletion
         $queued_id_3 = $queued_notification->add(
             [
-            'itemtype'                 => 'Project',
-            'items_id'                 => $project_id_1,
-            'entities_id'              => $root_entity_id,
-            'notificationtemplates_id' => $project_notification_id,
-            'sender'                   => 'mailer@glpi-project.org',
-            'recipient'                => 'another-user@glpi-project.org',
-            'name'                     => 'Test notification 3',
-            'body_text'                => 'Text of notification 3',
-            'mode'                     => Notification_NotificationTemplate::MODE_MAIL,
+                'itemtype'                 => 'Project',
+                'items_id'                 => $project_id_1,
+                'entities_id'              => $root_entity_id,
+                'notificationtemplates_id' => $project_notification_id,
+                'sender'                   => 'mailer@glpi-project.org',
+                'recipient'                => 'another-user@glpi-project.org',
+                'name'                     => 'Test notification 3',
+                'body_text'                => 'Text of notification 3',
+                'mode'                     => Notification_NotificationTemplate::MODE_MAIL,
             ]
         );
         $this->integer($queued_id_2)->isGreaterThan(0);
@@ -112,15 +112,15 @@ class QueuedNotification extends DbTestCase
         $this->integer($project_id_1)->isGreaterThan(0);
         $queued_id_4 = $queued_notification->add(
             [
-            'itemtype'                 => 'Project',
-            'items_id'                 => $project_id_2,
-            'entities_id'              => $root_entity_id,
-            'notificationtemplates_id' => $project_notification_id,
-            'sender'                   => 'mailer@glpi-project.org',
-            'recipient'                => 'test-user@glpi-project.org',
-            'name'                     => 'Test notification 4',
-            'body_text'                => 'Text of notification 4',
-            'mode'                     => Notification_NotificationTemplate::MODE_MAIL,
+                'itemtype'                 => 'Project',
+                'items_id'                 => $project_id_2,
+                'entities_id'              => $root_entity_id,
+                'notificationtemplates_id' => $project_notification_id,
+                'sender'                   => 'mailer@glpi-project.org',
+                'recipient'                => 'test-user@glpi-project.org',
+                'name'                     => 'Test notification 4',
+                'body_text'                => 'Text of notification 4',
+                'mode'                     => Notification_NotificationTemplate::MODE_MAIL,
             ]
         );
         $this->integer($queued_id_2)->isGreaterThan(0);
@@ -147,15 +147,15 @@ class QueuedNotification extends DbTestCase
        // First notification
         $queued_id_1 = $queued_notification->add(
             [
-            'itemtype'                 => 'Ticket',
-            'items_id'                 => $ticket_id_1,
-            'entities_id'              => $root_entity_id,
-            'notificationtemplates_id' => $ticket_notification_id,
-            'sender'                   => 'mailer@glpi-project.org',
-            'recipient'                => 'test-user@glpi-project.org',
-            'name'                     => 'Test notification 1',
-            'body_text'                => 'Text of notification 1',
-            'mode'                     => Notification_NotificationTemplate::MODE_MAIL,
+                'itemtype'                 => 'Ticket',
+                'items_id'                 => $ticket_id_1,
+                'entities_id'              => $root_entity_id,
+                'notificationtemplates_id' => $ticket_notification_id,
+                'sender'                   => 'mailer@glpi-project.org',
+                'recipient'                => 'test-user@glpi-project.org',
+                'name'                     => 'Test notification 1',
+                'body_text'                => 'Text of notification 1',
+                'mode'                     => Notification_NotificationTemplate::MODE_MAIL,
             ]
         );
         $this->integer($queued_id_1)->isGreaterThan(0);
@@ -164,15 +164,15 @@ class QueuedNotification extends DbTestCase
        // Notification with same item and recipient, should trigger previous notification deletion
         $queued_id_2 = $queued_notification->add(
             [
-            'itemtype'                 => 'Ticket',
-            'items_id'                 => $ticket_id_1,
-            'entities_id'              => $root_entity_id,
-            'notificationtemplates_id' => $ticket_notification_id,
-            'sender'                   => 'mailer@glpi-project.org',
-            'recipient'                => 'test-user@glpi-project.org',
-            'name'                     => 'Test notification 2',
-            'body_text'                => 'Text of notification 2',
-            'mode'                     => Notification_NotificationTemplate::MODE_MAIL,
+                'itemtype'                 => 'Ticket',
+                'items_id'                 => $ticket_id_1,
+                'entities_id'              => $root_entity_id,
+                'notificationtemplates_id' => $ticket_notification_id,
+                'sender'                   => 'mailer@glpi-project.org',
+                'recipient'                => 'test-user@glpi-project.org',
+                'name'                     => 'Test notification 2',
+                'body_text'                => 'Text of notification 2',
+                'mode'                     => Notification_NotificationTemplate::MODE_MAIL,
             ]
         );
         $this->integer($queued_id_2)->isGreaterThan(0);
@@ -183,15 +183,15 @@ class QueuedNotification extends DbTestCase
        // Notification with different recipient, should not trigger previous notification deletion
         $queued_id_3 = $queued_notification->add(
             [
-            'itemtype'                 => 'Ticket',
-            'items_id'                 => $ticket_id_1,
-            'entities_id'              => $root_entity_id,
-            'notificationtemplates_id' => $ticket_notification_id,
-            'sender'                   => 'mailer@glpi-project.org',
-            'recipient'                => 'another-user@glpi-project.org',
-            'name'                     => 'Test notification 3',
-            'body_text'                => 'Text of notification 3',
-            'mode'                     => Notification_NotificationTemplate::MODE_MAIL,
+                'itemtype'                 => 'Ticket',
+                'items_id'                 => $ticket_id_1,
+                'entities_id'              => $root_entity_id,
+                'notificationtemplates_id' => $ticket_notification_id,
+                'sender'                   => 'mailer@glpi-project.org',
+                'recipient'                => 'another-user@glpi-project.org',
+                'name'                     => 'Test notification 3',
+                'body_text'                => 'Text of notification 3',
+                'mode'                     => Notification_NotificationTemplate::MODE_MAIL,
             ]
         );
         $this->integer($queued_id_2)->isGreaterThan(0);
@@ -204,15 +204,15 @@ class QueuedNotification extends DbTestCase
         $this->integer($ticket_id_1)->isGreaterThan(0);
         $queued_id_4 = $queued_notification->add(
             [
-            'itemtype'                 => 'Ticket',
-            'items_id'                 => $ticket_id_2,
-            'entities_id'              => $root_entity_id,
-            'notificationtemplates_id' => $ticket_notification_id,
-            'sender'                   => 'mailer@glpi-project.org',
-            'recipient'                => 'test-user@glpi-project.org',
-            'name'                     => 'Test notification 4',
-            'body_text'                => 'Text of notification 4',
-            'mode'                     => Notification_NotificationTemplate::MODE_MAIL,
+                'itemtype'                 => 'Ticket',
+                'items_id'                 => $ticket_id_2,
+                'entities_id'              => $root_entity_id,
+                'notificationtemplates_id' => $ticket_notification_id,
+                'sender'                   => 'mailer@glpi-project.org',
+                'recipient'                => 'test-user@glpi-project.org',
+                'name'                     => 'Test notification 4',
+                'body_text'                => 'Text of notification 4',
+                'mode'                     => Notification_NotificationTemplate::MODE_MAIL,
             ]
         );
         $this->integer($queued_id_2)->isGreaterThan(0);

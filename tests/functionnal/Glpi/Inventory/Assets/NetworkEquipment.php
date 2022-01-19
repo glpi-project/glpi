@@ -44,8 +44,8 @@ class NetworkEquipment extends AbstractInventoryAsset
     protected function assetProvider(): array
     {
         return [
-         [
-            'xml'   => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+            [
+                'xml'   => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
   <CONTENT>
     <DEVICE>
@@ -83,9 +83,9 @@ class NetworkEquipment extends AbstractInventoryAsset
   <DEVICEID>foo</DEVICEID>
   <QUERY>SNMPQUERY</QUERY>
 </REQUEST>",
-            'asset'  => '{"autoupdatesystems_id":"GLPI Native Inventory","last_inventory_update": "DATE_NOW","contact":"noc@glpi-project.org","cpu":4,"firmware":"5.0(3)N2(4.02b)","location":"paris.pa3","mac":"8c:60:4f:8d:ae:fc","manufacturer":"Cisco","model":"UCS 6248UP 48-Port","name":"ucs6248up-cluster-pa3-B","serial":"SSI1912014B","type":"Networking","uptime":"482 days, 05:42:18.50","ips":["127.0.0.1","10.2.5.10","192.168.12.5"],"locations_id":"paris.pa3","networkequipmentmodels_id":"UCS 6248UP 48-Port","networkequipmenttypes_id":"Networking","manufacturers_id":"Cisco"}'
-         ], [
-            'xml'   => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+                'asset'  => '{"autoupdatesystems_id":"GLPI Native Inventory","last_inventory_update": "DATE_NOW","contact":"noc@glpi-project.org","cpu":4,"firmware":"5.0(3)N2(4.02b)","location":"paris.pa3","mac":"8c:60:4f:8d:ae:fc","manufacturer":"Cisco","model":"UCS 6248UP 48-Port","name":"ucs6248up-cluster-pa3-B","serial":"SSI1912014B","type":"Networking","uptime":"482 days, 05:42:18.50","ips":["127.0.0.1","10.2.5.10","192.168.12.5"],"locations_id":"paris.pa3","networkequipmentmodels_id":"UCS 6248UP 48-Port","networkequipmenttypes_id":"Networking","manufacturers_id":"Cisco"}'
+            ], [
+                'xml'   => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
   <CONTENT>
     <DEVICE>
@@ -152,8 +152,8 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
   <DEVICEID>foo</DEVICEID>
   <QUERY>SNMPQUERY</QUERY>
 </REQUEST>",
-            'asset'  => '{"autoupdatesystems_id":"GLPI Native Inventory","last_inventory_update": "DATE_NOW","cpu":47,"firmware":"12.2(55)SE6","ips":["10.1.0.100","10.1.0.22","10.1.0.41","10.1.0.45","10.1.0.59","10.11.11.1","10.11.11.5","10.11.13.1","10.11.13.5","172.21.0.1","172.21.0.7","172.22.0.1","172.22.0.5","172.23.0.1","172.23.0.5","172.24.0.1","172.24.0.5","172.25.1.15","172.28.200.1","172.28.200.5","172.28.211.5","172.28.215.1","172.28.221.1","185.10.253.65","185.10.253.97","185.10.254.1","185.10.255.146","185.10.255.224","185.10.255.250"],"location":"paris.pa3","mac":"00:23:ac:6a:01:00","manufacturer":"Cisco","model":"Catalyst 3750-24\\/48","name":"3k-1-pa3.teclib.infra","ram":128,"serial":"FOC1243W0ED","type":"Networking","uptime":"103 days, 13:53:28.28","locations_id":"paris.pa3","networkequipmentmodels_id":"Catalyst 3750-24\\/48","networkequipmenttypes_id":"Networking","manufacturers_id":"Cisco"}'
-         ]
+                'asset'  => '{"autoupdatesystems_id":"GLPI Native Inventory","last_inventory_update": "DATE_NOW","cpu":47,"firmware":"12.2(55)SE6","ips":["10.1.0.100","10.1.0.22","10.1.0.41","10.1.0.45","10.1.0.59","10.11.11.1","10.11.11.5","10.11.13.1","10.11.13.5","172.21.0.1","172.21.0.7","172.22.0.1","172.22.0.5","172.23.0.1","172.23.0.5","172.24.0.1","172.24.0.5","172.25.1.15","172.28.200.1","172.28.200.5","172.28.211.5","172.28.215.1","172.28.221.1","185.10.253.65","185.10.253.97","185.10.254.1","185.10.255.146","185.10.255.224","185.10.255.250"],"location":"paris.pa3","mac":"00:23:ac:6a:01:00","manufacturer":"Cisco","model":"Catalyst 3750-24\\/48","name":"3k-1-pa3.teclib.infra","ram":128,"serial":"FOC1243W0ED","type":"Networking","uptime":"103 days, 13:53:28.28","locations_id":"paris.pa3","networkequipmentmodels_id":"Catalyst 3750-24\\/48","networkequipmenttypes_id":"Networking","manufacturers_id":"Cisco"}'
+            ]
         ];
     }
 
@@ -217,61 +217,61 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         $this->array($result)->hasSize(5);
 
         $expected_stack = [
-         1001 => [
-            'contained_index' => 1,
-            'description' => 'WS-C3750G-48TS',
-            'fru' => 1,
-            'index' => 1001,
-            'model' => 'WS-C3750G-48TS-S',
-            'name' => '1',
-            'serial' => 'FOC1243W0ED',
-            'type' => 'chassis',
-            'firmware' => '12.2(55)SE6',
-         ],
-         2001 => [
-            'contained_index' => 1,
-            'description' => 'WS-C3750G-48TS',
-            'fru' => 1,
-            'index' => 2001,
-            'model' => 'WS-C3750G-48TS-S',
-            'name' => '2',
-            'serial' => 'FOC1127Z4LH',
-            'type' => 'chassis',
-            'firmware' => '12.2(55)SE6',
-         ],
-         3001 => [
-            'contained_index' => 1,
-            'description' => 'WS-C3750G-48TS',
-            'fru' => 1,
-            'index' => 3001,
-            'model' => 'WS-C3750G-48TS-S',
-            'name' => '3',
-            'serial' => 'FOC1232W0JH',
-            'type' => 'chassis',
-            'firmware' => '12.2(55)SE6',
-         ],
-         4001 => [
-            'contained_index' => 1,
-            'description' => 'WS-C3750G-48TS',
-            'fru' => 1,
-            'index' => 4001,
-            'model' => 'WS-C3750G-48TS-S',
-            'name' => '4',
-            'serial' => 'FOC1033Y0M7',
-            'type' => 'chassis',
-            'firmware' => '12.2(55)SE6',
-         ],
-         8001 => [
-            'contained_index' => 1,
-            'description' => 'WS-C3750G-48TS',
-            'fru' => 1,
-            'index' => 8001,
-            'model' => 'WS-C3750G-48TS-S',
-            'name' => '8',
-            'serial' => 'FOC0929U1SR',
-            'type' => 'chassis',
-            'firmware' => '12.2(55)SE6',
-         ]
+            1001 => [
+                'contained_index' => 1,
+                'description' => 'WS-C3750G-48TS',
+                'fru' => 1,
+                'index' => 1001,
+                'model' => 'WS-C3750G-48TS-S',
+                'name' => '1',
+                'serial' => 'FOC1243W0ED',
+                'type' => 'chassis',
+                'firmware' => '12.2(55)SE6',
+            ],
+            2001 => [
+                'contained_index' => 1,
+                'description' => 'WS-C3750G-48TS',
+                'fru' => 1,
+                'index' => 2001,
+                'model' => 'WS-C3750G-48TS-S',
+                'name' => '2',
+                'serial' => 'FOC1127Z4LH',
+                'type' => 'chassis',
+                'firmware' => '12.2(55)SE6',
+            ],
+            3001 => [
+                'contained_index' => 1,
+                'description' => 'WS-C3750G-48TS',
+                'fru' => 1,
+                'index' => 3001,
+                'model' => 'WS-C3750G-48TS-S',
+                'name' => '3',
+                'serial' => 'FOC1232W0JH',
+                'type' => 'chassis',
+                'firmware' => '12.2(55)SE6',
+            ],
+            4001 => [
+                'contained_index' => 1,
+                'description' => 'WS-C3750G-48TS',
+                'fru' => 1,
+                'index' => 4001,
+                'model' => 'WS-C3750G-48TS-S',
+                'name' => '4',
+                'serial' => 'FOC1033Y0M7',
+                'type' => 'chassis',
+                'firmware' => '12.2(55)SE6',
+            ],
+            8001 => [
+                'contained_index' => 1,
+                'description' => 'WS-C3750G-48TS',
+                'fru' => 1,
+                'index' => 8001,
+                'model' => 'WS-C3750G-48TS-S',
+                'name' => '8',
+                'serial' => 'FOC0929U1SR',
+                'type' => 'chassis',
+                'firmware' => '12.2(55)SE6',
+            ]
         ];
 
         $this->boolean($main->isStackedSwitch())->isTrue();

@@ -148,7 +148,8 @@ class Infocom extends CommonDBChild
                         $nb = countElementsInTable(
                             'glpi_infocoms',
                             ['itemtype' => $item->getType(),
-                            'items_id' => $item->getID()]
+                                'items_id' => $item->getID()
+                            ]
                         );
                     }
                     return self::createTabEntry(__('Management'), $nb);
@@ -187,8 +188,8 @@ class Infocom extends CommonDBChild
         return countElementsInTable(
             'glpi_infocoms',
             [
-            'suppliers_id' => $item->getField('id'),
-            'NOT' => ['itemtype' => ['ConsumableItem', 'CartridgeItem', 'Software']]
+                'suppliers_id' => $item->getField('id'),
+                'NOT' => ['itemtype' => ['ConsumableItem', 'CartridgeItem', 'Software']]
             ] + getEntitiesRestrictCriteria('glpi_infocoms', '', $_SESSION['glpiactiveentities'])
         );
     }
@@ -251,8 +252,8 @@ class Infocom extends CommonDBChild
 
         if (
             $this->getFromDBByCrit([
-            $this->getTable() . '.items_id'  => $ID,
-            $this->getTable() . '.itemtype'  => $itemtype
+                $this->getTable() . '.items_id'  => $ID,
+                $this->getTable() . '.itemtype'  => $itemtype
             ])
         ) {
             return true;
@@ -293,7 +294,8 @@ class Infocom extends CommonDBChild
         $infocom = new self();
         $infocom->getFromDB($changes['id']);
         $tmp           = ['itemtype' => $itemtype,
-                             'items_id' => $changes['id']];
+            'items_id' => $changes['id']
+        ];
         $add_or_update = false;
 
        //For each date that can be automatically filled
@@ -379,11 +381,12 @@ class Infocom extends CommonDBChild
     {
 
         return ['autofill_buy_date'         => 'buy_date',
-                   'autofill_use_date'         => 'use_date',
-                   'autofill_delivery_date'    => 'delivery_date',
-                   'autofill_warranty_date'    => 'warranty_date',
-                   'autofill_order_date'       => 'order_date',
-                   'autofill_decommission_date' => 'decommission_date'];
+            'autofill_use_date'         => 'use_date',
+            'autofill_delivery_date'    => 'delivery_date',
+            'autofill_warranty_date'    => 'warranty_date',
+            'autofill_order_date'       => 'order_date',
+            'autofill_decommission_date' => 'decommission_date'
+        ];
     }
 
 
@@ -490,35 +493,35 @@ class Infocom extends CommonDBChild
             $before    = Entity::getUsedConfig('send_infocoms_alert_before_delay', $entity);
             $table = self::getTable();
             $iterator = $DB->request([
-            'SELECT'    => "$table.*",
-            'FROM'      => $table,
-            'LEFT JOIN'  => [
-               'glpi_alerts'  => [
-                  'ON' => [
-                     'glpi_alerts'  => 'items_id',
-                     $table         => 'id', [
-                        'AND' => [
-                           'glpi_alerts.itemtype'  => self::getType(),
-                           'glpi_alerts.type'      => Alert::END
+                'SELECT'    => "$table.*",
+                'FROM'      => $table,
+                'LEFT JOIN'  => [
+                    'glpi_alerts'  => [
+                        'ON' => [
+                            'glpi_alerts'  => 'items_id',
+                            $table         => 'id', [
+                                'AND' => [
+                                    'glpi_alerts.itemtype'  => self::getType(),
+                                    'glpi_alerts.type'      => Alert::END
+                                ]
+                            ]
                         ]
-                     ]
-                  ]
-               ]
-            ],
-            'WHERE'     => [
-               new \QueryExpression(
-                   '(' . $DB->quoteName('glpi_infocoms.alert') . ' & ' . pow(2, Alert::END) . ') > 0'
-               ),
-               "$table.entities_id"       => $entity,
-               "$table.warranty_duration" => ['>', 0],
-               'NOT'                      => ["$table.warranty_date" => null],
-               new \QueryExpression(
-                   'DATEDIFF(ADDDATE(' . $DB->quoteName('glpi_infocoms.warranty_date') . ', INTERVAL (' .
-                   $DB->quoteName('glpi_infocoms.warranty_duration') . ') MONTH), CURDATE() ) <= ' .
-                   $DB->quoteValue($before)
-               ),
-               'glpi_alerts.date'         => null
-            ]
+                    ]
+                ],
+                'WHERE'     => [
+                    new \QueryExpression(
+                        '(' . $DB->quoteName('glpi_infocoms.alert') . ' & ' . pow(2, Alert::END) . ') > 0'
+                    ),
+                    "$table.entities_id"       => $entity,
+                    "$table.warranty_duration" => ['>', 0],
+                    'NOT'                      => ["$table.warranty_date" => null],
+                    new \QueryExpression(
+                        'DATEDIFF(ADDDATE(' . $DB->quoteName('glpi_infocoms.warranty_date') . ', INTERVAL (' .
+                        $DB->quoteName('glpi_infocoms.warranty_duration') . ') MONTH), CURDATE() ) <= ' .
+                        $DB->quoteValue($before)
+                    ),
+                    'glpi_alerts.date'         => null
+                ]
             ]);
 
             foreach ($iterator as $data) {
@@ -555,7 +558,8 @@ class Infocom extends CommonDBChild
         foreach ($items_infos as $entity => $items) {
             if (
                 NotificationEvent::raiseEvent("alert", new self(), ['entities_id' => $entity,
-                                                                      'items'       => $items])
+                    'items'       => $items
+                ])
             ) {
                 $message     = $items_messages[$entity];
                 $cron_status = 1;
@@ -671,15 +675,15 @@ class Infocom extends CommonDBChild
     {
 
         $values = [
-         2 => __('Linear'),
-         1 => __('Decreasing')
+            2 => __('Linear'),
+            1 => __('Decreasing')
         ];
 
         return Dropdown::showFromArray($name, $values, [
-         'value'               => $value,
-         'display'             => $display,
-         'display_emptychoice' => true,
-         'width'               => '100%',
+            'value'               => $value,
+            'display'             => $display,
+            'display_emptychoice' => true,
+            'width'               => '100%',
         ]);
     }
 
@@ -763,12 +767,12 @@ class Infocom extends CommonDBChild
         }
 
         $result = $DB->request([
-         'COUNT'  => 'cpt',
-         'FROM'   => 'glpi_infocoms',
-         'WHERE'  => [
-            'itemtype'  => $itemtype,
-            'items_id'  => $device_id
-         ]
+            'COUNT'  => 'cpt',
+            'FROM'   => 'glpi_infocoms',
+            'WHERE'  => [
+                'itemtype'  => $itemtype,
+                'items_id'  => $device_id
+            ]
         ])->current();
 
         $add    = "add";
@@ -882,9 +886,9 @@ class Infocom extends CommonDBChild
             }
 
             $years[$usedate->format('Y') + $i] = [
-            'start_value'  => (double)$begin_value,
-            'value'        => $value,
-            'annuity'      => $current_annuity
+                'start_value'  => (double)$begin_value,
+                'value'        => $value,
+                'annuity'      => $current_annuity
             ];
         }
 
@@ -908,10 +912,10 @@ class Infocom extends CommonDBChild
         }
 
         $old = [
-         'annee'     => [],
-         'annuite'   => [],
-         'vcnetdeb'  => [],
-         'vcnetfin'  => []
+            'annee'     => [],
+            'annuite'   => [],
+            'vcnetdeb'  => [],
+            'vcnetfin'  => []
         ];
         foreach ($values as $year => $value) {
             $old['annee'][]      = $year;
@@ -1121,18 +1125,18 @@ class Infocom extends CommonDBChild
 
             $ic->getFromDBforDevice($item->getType(), $dev_ID);
             $can_input = [
-            'itemtype'    => $item->getType(),
-            'items_id'    => $dev_ID,
-            'entities_id' => $item->getEntityID()
+                'itemtype'    => $item->getType(),
+                'items_id'    => $dev_ID,
+                'entities_id' => $item->getEntityID()
             ];
             TemplateRenderer::getInstance()->display('components/infocom.html.twig', [
-            'item'              => $item,
-            'infocom'           => $ic,
-            'withtemplate'      => $withtemplate,
-            'can_create'        => $ic->can(-1, CREATE, $can_input),
-            'can_edit'          => ($ic->canEdit($ic->fields['id']) && ($withtemplate != 2)),
-            'can_global_update' => Session::haveRight(self::$rightname, UPDATE),
-            'can_global_purge'  => Session::haveRight(self::$rightname, PURGE),
+                'item'              => $item,
+                'infocom'           => $ic,
+                'withtemplate'      => $withtemplate,
+                'can_create'        => $ic->can(-1, CREATE, $can_input),
+                'can_edit'          => ($ic->canEdit($ic->fields['id']) && ($withtemplate != 2)),
+                'can_global_update' => Session::haveRight(self::$rightname, UPDATE),
+                'can_global_purge'  => Session::haveRight(self::$rightname, PURGE),
             ]);
         }
     }
@@ -1154,290 +1158,294 @@ class Infocom extends CommonDBChild
             case 'CartridgeItem':
                 // Return the infocom linked to the license, not the template linked to the software
                 $beforejoin        = ['table'      => 'glpi_cartridges',
-                                       'joinparams' => ['jointype' => 'child']];
+                    'joinparams' => ['jointype' => 'child']
+                ];
                 $specific_itemtype = 'Cartridge';
                 break;
 
             case 'ConsumableItem':
                // Return the infocom linked to the license, not the template linked to the software
                 $beforejoin        = ['table'      => 'glpi_consumables',
-                                       'joinparams' => ['jointype' => 'child']];
+                    'joinparams' => ['jointype' => 'child']
+                ];
                 $specific_itemtype = 'Consumable';
                 break;
         }
 
         $joinparams        = ['jointype'          => 'itemtype_item',
-                                 'specific_itemtype' => $specific_itemtype];
+            'specific_itemtype' => $specific_itemtype
+        ];
         $complexjoinparams = [];
         if (count($beforejoin)) {
             $complexjoinparams['beforejoin'][] = $beforejoin;
             $joinparams['beforejoin']          = $beforejoin;
         }
         $complexjoinparams['beforejoin'][] = ['table'      => 'glpi_infocoms',
-                                                 'joinparams' => $joinparams];
+            'joinparams' => $joinparams
+        ];
 
         $tab = [];
 
         $tab[] = [
-         'id'                 => 'financial',
-         'name'               => __('Financial and administrative information')
+            'id'                 => 'financial',
+            'name'               => __('Financial and administrative information')
         ];
 
         $tab[] = [
-         'id'                 => '25',
-         'table'              => 'glpi_infocoms',
-         'field'              => 'immo_number',
-         'name'               => __('Immobilization number'),
-         'forcegroupby'       => true,
-         'joinparams'         => $joinparams,
-         'datatype'           => 'string'
+            'id'                 => '25',
+            'table'              => 'glpi_infocoms',
+            'field'              => 'immo_number',
+            'name'               => __('Immobilization number'),
+            'forcegroupby'       => true,
+            'joinparams'         => $joinparams,
+            'datatype'           => 'string'
         ];
 
         $tab[] = [
-         'id'                 => '26',
-         'table'              => 'glpi_infocoms',
-         'field'              => 'order_number',
-         'name'               => __('Order number'),
-         'forcegroupby'       => true,
-         'joinparams'         => $joinparams,
-         'datatype'           => 'string'
+            'id'                 => '26',
+            'table'              => 'glpi_infocoms',
+            'field'              => 'order_number',
+            'name'               => __('Order number'),
+            'forcegroupby'       => true,
+            'joinparams'         => $joinparams,
+            'datatype'           => 'string'
         ];
 
         $tab[] = [
-         'id'                 => '27',
-         'table'              => 'glpi_infocoms',
-         'field'              => 'delivery_number',
-         'name'               => __('Delivery form'),
-         'forcegroupby'       => true,
-         'joinparams'         => $joinparams,
-         'datatype'           => 'string'
+            'id'                 => '27',
+            'table'              => 'glpi_infocoms',
+            'field'              => 'delivery_number',
+            'name'               => __('Delivery form'),
+            'forcegroupby'       => true,
+            'joinparams'         => $joinparams,
+            'datatype'           => 'string'
         ];
 
         $tab[] = [
-         'id'                 => '28',
-         'table'              => 'glpi_infocoms',
-         'field'              => 'bill',
-         'name'               => __('Invoice number'),
-         'forcegroupby'       => true,
-         'joinparams'         => $joinparams,
-         'datatype'           => 'string'
+            'id'                 => '28',
+            'table'              => 'glpi_infocoms',
+            'field'              => 'bill',
+            'name'               => __('Invoice number'),
+            'forcegroupby'       => true,
+            'joinparams'         => $joinparams,
+            'datatype'           => 'string'
         ];
 
         $tab[] = [
-         'id'                 => '37',
-         'table'              => 'glpi_infocoms',
-         'field'              => 'buy_date',
-         'name'               => __('Date of purchase'),
-         'datatype'           => 'date',
-         'forcegroupby'       => true,
-         'joinparams'         => $joinparams
+            'id'                 => '37',
+            'table'              => 'glpi_infocoms',
+            'field'              => 'buy_date',
+            'name'               => __('Date of purchase'),
+            'datatype'           => 'date',
+            'forcegroupby'       => true,
+            'joinparams'         => $joinparams
         ];
 
         $tab[] = [
-         'id'                 => '38',
-         'table'              => 'glpi_infocoms',
-         'field'              => 'use_date',
-         'name'               => __('Startup date'),
-         'datatype'           => 'date',
-         'forcegroupby'       => true,
-         'joinparams'         => $joinparams
+            'id'                 => '38',
+            'table'              => 'glpi_infocoms',
+            'field'              => 'use_date',
+            'name'               => __('Startup date'),
+            'datatype'           => 'date',
+            'forcegroupby'       => true,
+            'joinparams'         => $joinparams
         ];
 
         $tab[] = [
-         'id'                 => '142',
-         'table'              => 'glpi_infocoms',
-         'field'              => 'delivery_date',
-         'name'               => __('Delivery date'),
-         'datatype'           => 'date',
-         'forcegroupby'       => true,
-         'joinparams'         => $joinparams
+            'id'                 => '142',
+            'table'              => 'glpi_infocoms',
+            'field'              => 'delivery_date',
+            'name'               => __('Delivery date'),
+            'datatype'           => 'date',
+            'forcegroupby'       => true,
+            'joinparams'         => $joinparams
         ];
 
         $tab[] = [
-         'id'                 => '124',
-         'table'              => 'glpi_infocoms',
-         'field'              => 'order_date',
-         'name'               => __('Order date'),
-         'datatype'           => 'date',
-         'forcegroupby'       => true,
-         'joinparams'         => $joinparams
+            'id'                 => '124',
+            'table'              => 'glpi_infocoms',
+            'field'              => 'order_date',
+            'name'               => __('Order date'),
+            'datatype'           => 'date',
+            'forcegroupby'       => true,
+            'joinparams'         => $joinparams
         ];
 
         $tab[] = [
-         'id'                 => '123',
-         'table'              => 'glpi_infocoms',
-         'field'              => 'warranty_date',
-         'name'               => __('Start date of warranty'),
-         'datatype'           => 'date',
-         'forcegroupby'       => true,
-         'joinparams'         => $joinparams
+            'id'                 => '123',
+            'table'              => 'glpi_infocoms',
+            'field'              => 'warranty_date',
+            'name'               => __('Start date of warranty'),
+            'datatype'           => 'date',
+            'forcegroupby'       => true,
+            'joinparams'         => $joinparams
         ];
 
         $tab[] = [
-         'id'                 => '125',
-         'table'              => 'glpi_infocoms',
-         'field'              => 'inventory_date',
-         'name'               => __('Date of last physical inventory'),
-         'datatype'           => 'date',
-         'forcegroupby'       => true,
-         'joinparams'         => $joinparams
+            'id'                 => '125',
+            'table'              => 'glpi_infocoms',
+            'field'              => 'inventory_date',
+            'name'               => __('Date of last physical inventory'),
+            'datatype'           => 'date',
+            'forcegroupby'       => true,
+            'joinparams'         => $joinparams
         ];
 
         $tab[] = [
-         'id'                 => '50',
-         'table'              => 'glpi_budgets',
-         'field'              => 'name',
-         'datatype'           => 'dropdown',
-         'name'               => Budget::getTypeName(1),
-         'forcegroupby'       => true,
-         'joinparams'         => $complexjoinparams
+            'id'                 => '50',
+            'table'              => 'glpi_budgets',
+            'field'              => 'name',
+            'datatype'           => 'dropdown',
+            'name'               => Budget::getTypeName(1),
+            'forcegroupby'       => true,
+            'joinparams'         => $complexjoinparams
         ];
 
         $tab[] = [
-         'id'                 => '51',
-         'table'              => 'glpi_infocoms',
-         'field'              => 'warranty_duration',
-         'name'               => __('Warranty duration'),
-         'forcegroupby'       => true,
-         'joinparams'         => $joinparams,
-         'datatype'           => 'number',
-         'unit'               => 'month',
-         'max'                => '120',
-         'toadd'              => [
-            '-1'                 => __('Lifelong')
-         ]
+            'id'                 => '51',
+            'table'              => 'glpi_infocoms',
+            'field'              => 'warranty_duration',
+            'name'               => __('Warranty duration'),
+            'forcegroupby'       => true,
+            'joinparams'         => $joinparams,
+            'datatype'           => 'number',
+            'unit'               => 'month',
+            'max'                => '120',
+            'toadd'              => [
+                '-1'                 => __('Lifelong')
+            ]
         ];
 
         $tab[] = [
-         'id'                 => '52',
-         'table'              => 'glpi_infocoms',
-         'field'              => 'warranty_info',
-         'name'               => __('Warranty information'),
-         'forcegroupby'       => true,
-         'joinparams'         => $joinparams,
-         'datatype'           => 'string',
+            'id'                 => '52',
+            'table'              => 'glpi_infocoms',
+            'field'              => 'warranty_info',
+            'name'               => __('Warranty information'),
+            'forcegroupby'       => true,
+            'joinparams'         => $joinparams,
+            'datatype'           => 'string',
         ];
 
         $tab[] = [
-         'id'                 => '120',
-         'table'              => 'glpi_infocoms',
-         'field'              => 'end_warranty',
-         'name'               => __('Warranty expiration date'),
-         'datatype'           => 'date_delay',
-         'datafields'         => [
-            '1'                  => 'warranty_date',
-            '2'                  => 'warranty_duration'
-         ],
-         'searchunit'         => 'MONTH',
-         'delayunit'          => 'MONTH',
-         'forcegroupby'       => true,
-         'massiveaction'      => false,
-         'joinparams'         => $joinparams
+            'id'                 => '120',
+            'table'              => 'glpi_infocoms',
+            'field'              => 'end_warranty',
+            'name'               => __('Warranty expiration date'),
+            'datatype'           => 'date_delay',
+            'datafields'         => [
+                '1'                  => 'warranty_date',
+                '2'                  => 'warranty_duration'
+            ],
+            'searchunit'         => 'MONTH',
+            'delayunit'          => 'MONTH',
+            'forcegroupby'       => true,
+            'massiveaction'      => false,
+            'joinparams'         => $joinparams
         ];
 
         $tab[] = [
-         'id'                 => '53',
-         'table'              => 'glpi_suppliers',
-         'field'              => 'name',
-         'datatype'           => 'dropdown',
-         'name'               => Supplier::getTypeName(1),
-         'forcegroupby'       => true,
-         'joinparams'         => $complexjoinparams
+            'id'                 => '53',
+            'table'              => 'glpi_suppliers',
+            'field'              => 'name',
+            'datatype'           => 'dropdown',
+            'name'               => Supplier::getTypeName(1),
+            'forcegroupby'       => true,
+            'joinparams'         => $complexjoinparams
         ];
 
         $tab[] = [
-         'id'                 => '54',
-         'table'              => 'glpi_infocoms',
-         'field'              => 'value',
-         'name'               => _x('price', 'Value'),
-         'datatype'           => 'decimal',
-         'forcegroupby'       => true,
-         'joinparams'         => $joinparams
+            'id'                 => '54',
+            'table'              => 'glpi_infocoms',
+            'field'              => 'value',
+            'name'               => _x('price', 'Value'),
+            'datatype'           => 'decimal',
+            'forcegroupby'       => true,
+            'joinparams'         => $joinparams
         ];
 
         $tab[] = [
-         'id'                 => '55',
-         'table'              => 'glpi_infocoms',
-         'field'              => 'warranty_value',
-         'name'               => __('Warranty extension value'),
-         'datatype'           => 'decimal',
-         'forcegroupby'       => true,
-         'joinparams'         => $joinparams
+            'id'                 => '55',
+            'table'              => 'glpi_infocoms',
+            'field'              => 'warranty_value',
+            'name'               => __('Warranty extension value'),
+            'datatype'           => 'decimal',
+            'forcegroupby'       => true,
+            'joinparams'         => $joinparams
         ];
 
         $tab[] = [
-         'id'                 => '56',
-         'table'              => 'glpi_infocoms',
-         'field'              => 'sink_time',
-         'name'               => __('Amortization duration'),
-         'forcegroupby'       => true,
-         'joinparams'         => $joinparams,
-         'datatype'           => 'number',
-         'max'                => '15',
-         'unit'               => 'year'
+            'id'                 => '56',
+            'table'              => 'glpi_infocoms',
+            'field'              => 'sink_time',
+            'name'               => __('Amortization duration'),
+            'forcegroupby'       => true,
+            'joinparams'         => $joinparams,
+            'datatype'           => 'number',
+            'max'                => '15',
+            'unit'               => 'year'
         ];
 
         $tab[] = [
-         'id'                 => '57',
-         'table'              => 'glpi_infocoms',
-         'field'              => 'sink_type',
-         'name'               => __('Amortization type'),
-         'forcegroupby'       => true,
-         'joinparams'         => $joinparams,
-         'datatype'           => 'specific',
-         'searchequalsonfield' => 'specific',
-         'searchtype'         => ['equals', 'notequals']
+            'id'                 => '57',
+            'table'              => 'glpi_infocoms',
+            'field'              => 'sink_type',
+            'name'               => __('Amortization type'),
+            'forcegroupby'       => true,
+            'joinparams'         => $joinparams,
+            'datatype'           => 'specific',
+            'searchequalsonfield' => 'specific',
+            'searchtype'         => ['equals', 'notequals']
         ];
 
         $tab[] = [
-         'id'                 => '58',
-         'table'              => 'glpi_infocoms',
-         'field'              => 'sink_coeff',
-         'name'               => __('Amortization coefficient'),
-         'forcegroupby'       => true,
-         'joinparams'         => $joinparams,
-         'datatype'           => 'decimal',
+            'id'                 => '58',
+            'table'              => 'glpi_infocoms',
+            'field'              => 'sink_coeff',
+            'name'               => __('Amortization coefficient'),
+            'forcegroupby'       => true,
+            'joinparams'         => $joinparams,
+            'datatype'           => 'decimal',
         ];
 
         $tab[] = [
-         'id'                 => '59',
-         'table'              => 'glpi_infocoms',
-         'field'              => 'alert',
-         'name'               => __('Email alarms'),
-         'forcegroupby'       => true,
-         'joinparams'         => $joinparams,
-         'datatype'           => 'specific'
+            'id'                 => '59',
+            'table'              => 'glpi_infocoms',
+            'field'              => 'alert',
+            'name'               => __('Email alarms'),
+            'forcegroupby'       => true,
+            'joinparams'         => $joinparams,
+            'datatype'           => 'specific'
         ];
 
         $tab[] = [
-         'id'                 => '122',
-         'table'              => 'glpi_infocoms',
-         'field'              => 'comment',
-         'name'               => __('Comments on financial and administrative information'),
-         'datatype'           => 'text',
-         'forcegroupby'       => true,
-         'joinparams'         => $joinparams
+            'id'                 => '122',
+            'table'              => 'glpi_infocoms',
+            'field'              => 'comment',
+            'name'               => __('Comments on financial and administrative information'),
+            'datatype'           => 'text',
+            'forcegroupby'       => true,
+            'joinparams'         => $joinparams
         ];
 
         $tab[] = [
-         'id'                 => '173',
-         'table'              => 'glpi_businesscriticities',
-         'field'              => 'completename',
-         'name'               => _n('Business criticity', 'Business criticities', 1),
-         'datatype'           => 'dropdown',
-         'forcegroupby'       => true,
-         'joinparams'         => $complexjoinparams
+            'id'                 => '173',
+            'table'              => 'glpi_businesscriticities',
+            'field'              => 'completename',
+            'name'               => _n('Business criticity', 'Business criticities', 1),
+            'datatype'           => 'dropdown',
+            'forcegroupby'       => true,
+            'joinparams'         => $complexjoinparams
         ];
 
         $tab[] = [
-         'id'                 => '159',
-         'table'              => 'glpi_infocoms',
-         'field'              => 'decommission_date',
-         'name'               => __('Decommission date'),
-         'datatype'           => 'date',
-         'maybefuture'        => true,
-         'forcegroupby'       => true,
-         'joinparams'         => $joinparams
+            'id'                 => '159',
+            'table'              => 'glpi_infocoms',
+            'field'              => 'decommission_date',
+            'name'               => __('Decommission date'),
+            'datatype'           => 'date',
+            'maybefuture'        => true,
+            'forcegroupby'       => true,
+            'joinparams'         => $joinparams
         ];
 
         return $tab;
@@ -1449,242 +1457,242 @@ class Infocom extends CommonDBChild
         $tab = [];
 
         $tab[] = [
-         'id'                 => 'common',
-         'name'               => __('Characteristics')
+            'id'                 => 'common',
+            'name'               => __('Characteristics')
         ];
 
         $tab[] = [
-         'id'                 => '2',
-         'table'              => $this->getTable(),
-         'field'              => 'id',
-         'name'               => __('ID'),
-         'massiveaction'      => false,
-         'datatype'           => 'number'
+            'id'                 => '2',
+            'table'              => $this->getTable(),
+            'field'              => 'id',
+            'name'               => __('ID'),
+            'massiveaction'      => false,
+            'datatype'           => 'number'
         ];
 
         $tab[] = [
-         'id'                 => '4',
-         'table'              => $this->getTable(),
-         'field'              => 'buy_date',
-         'name'               => __('Date of purchase'),
-         'datatype'           => 'date'
+            'id'                 => '4',
+            'table'              => $this->getTable(),
+            'field'              => 'buy_date',
+            'name'               => __('Date of purchase'),
+            'datatype'           => 'date'
         ];
 
         $tab[] = [
-         'id'                 => '5',
-         'table'              => $this->getTable(),
-         'field'              => 'use_date',
-         'name'               => __('Startup date'),
-         'datatype'           => 'date'
+            'id'                 => '5',
+            'table'              => $this->getTable(),
+            'field'              => 'use_date',
+            'name'               => __('Startup date'),
+            'datatype'           => 'date'
         ];
 
         $tab[] = [
-         'id'                 => '24',
-         'table'              => $this->getTable(),
-         'field'              => 'delivery_date',
-         'name'               => __('Delivery date'),
-         'datatype'           => 'date',
-         'forcegroupby'       => true
+            'id'                 => '24',
+            'table'              => $this->getTable(),
+            'field'              => 'delivery_date',
+            'name'               => __('Delivery date'),
+            'datatype'           => 'date',
+            'forcegroupby'       => true
         ];
 
         $tab[] = [
-         'id'                 => '23',
-         'table'              => $this->getTable(),
-         'field'              => 'order_date',
-         'name'               => __('Order date'),
-         'datatype'           => 'date',
-         'forcegroupby'       => true
+            'id'                 => '23',
+            'table'              => $this->getTable(),
+            'field'              => 'order_date',
+            'name'               => __('Order date'),
+            'datatype'           => 'date',
+            'forcegroupby'       => true
         ];
 
         $tab[] = [
-         'id'                 => '25',
-         'table'              => $this->getTable(),
-         'field'              => 'warranty_date',
-         'name'               => __('Start date of warranty'),
-         'datatype'           => 'date',
-         'forcegroupby'       => true
+            'id'                 => '25',
+            'table'              => $this->getTable(),
+            'field'              => 'warranty_date',
+            'name'               => __('Start date of warranty'),
+            'datatype'           => 'date',
+            'forcegroupby'       => true
         ];
 
         $tab[] = [
-         'id'                 => '27',
-         'table'              => $this->getTable(),
-         'field'              => 'inventory_date',
-         'name'               => __('Date of last physical inventory'),
-         'datatype'           => 'date',
-         'forcegroupby'       => true
+            'id'                 => '27',
+            'table'              => $this->getTable(),
+            'field'              => 'inventory_date',
+            'name'               => __('Date of last physical inventory'),
+            'datatype'           => 'date',
+            'forcegroupby'       => true
         ];
 
         $tab[] = [
-         'id'                 => '28',
-         'table'              => $this->getTable(),
-         'field'              => 'decommission_date',
-         'name'               => __('Decommission date'),
-         'maybefuture'        => true,
-         'datatype'           => 'date',
-         'forcegroupby'       => true
+            'id'                 => '28',
+            'table'              => $this->getTable(),
+            'field'              => 'decommission_date',
+            'name'               => __('Decommission date'),
+            'maybefuture'        => true,
+            'datatype'           => 'date',
+            'forcegroupby'       => true
         ];
 
         $tab[] = [
-         'id'                 => '6',
-         'table'              => $this->getTable(),
-         'field'              => 'warranty_duration',
-         'name'               => __('Warranty duration'),
-         'datatype'           => 'number',
-         'unit'               => 'month',
-         'max'                => '120',
-         'toadd'              => [
-            '-1'                 => __('Lifelong')
-         ]
+            'id'                 => '6',
+            'table'              => $this->getTable(),
+            'field'              => 'warranty_duration',
+            'name'               => __('Warranty duration'),
+            'datatype'           => 'number',
+            'unit'               => 'month',
+            'max'                => '120',
+            'toadd'              => [
+                '-1'                 => __('Lifelong')
+            ]
         ];
 
         $tab[] = [
-         'id'                 => '7',
-         'table'              => $this->getTable(),
-         'field'              => 'warranty_info',
-         'name'               => __('Warranty information'),
-         'datatype'           => 'string'
+            'id'                 => '7',
+            'table'              => $this->getTable(),
+            'field'              => 'warranty_info',
+            'name'               => __('Warranty information'),
+            'datatype'           => 'string'
         ];
 
         $tab[] = [
-         'id'                 => '8',
-         'table'              => $this->getTable(),
-         'field'              => 'warranty_value',
-         'name'               => __('Warranty extension value'),
-         'datatype'           => 'decimal'
+            'id'                 => '8',
+            'table'              => $this->getTable(),
+            'field'              => 'warranty_value',
+            'name'               => __('Warranty extension value'),
+            'datatype'           => 'decimal'
         ];
 
         $tab[] = [
-         'id'                 => '9',
-         'table'              => 'glpi_suppliers',
-         'field'              => 'name',
-         'name'               => Supplier::getTypeName(1),
-         'datatype'           => 'dropdown'
+            'id'                 => '9',
+            'table'              => 'glpi_suppliers',
+            'field'              => 'name',
+            'name'               => Supplier::getTypeName(1),
+            'datatype'           => 'dropdown'
         ];
 
         $tab[] = [
-         'id'                 => '10',
-         'table'              => $this->getTable(),
-         'field'              => 'order_number',
-         'name'               => __('Order number'),
-         'datatype'           => 'string',
+            'id'                 => '10',
+            'table'              => $this->getTable(),
+            'field'              => 'order_number',
+            'name'               => __('Order number'),
+            'datatype'           => 'string',
         ];
 
         $tab[] = [
-         'id'                 => '11',
-         'table'              => $this->getTable(),
-         'field'              => 'delivery_number',
-         'name'               => __('Delivery form'),
-         'datatype'           => 'string',
+            'id'                 => '11',
+            'table'              => $this->getTable(),
+            'field'              => 'delivery_number',
+            'name'               => __('Delivery form'),
+            'datatype'           => 'string',
         ];
 
         $tab[] = [
-         'id'                 => '12',
-         'table'              => $this->getTable(),
-         'field'              => 'immo_number',
-         'name'               => __('Immobilization number'),
-         'datatype'           => 'string',
+            'id'                 => '12',
+            'table'              => $this->getTable(),
+            'field'              => 'immo_number',
+            'name'               => __('Immobilization number'),
+            'datatype'           => 'string',
         ];
 
         $tab[] = [
-         'id'                 => '13',
-         'table'              => $this->getTable(),
-         'field'              => 'value',
-         'name'               => _x('price', 'Value'),
-         'datatype'           => 'decimal'
+            'id'                 => '13',
+            'table'              => $this->getTable(),
+            'field'              => 'value',
+            'name'               => _x('price', 'Value'),
+            'datatype'           => 'decimal'
         ];
 
         $tab[] = [
-         'id'                 => '14',
-         'table'              => $this->getTable(),
-         'field'              => 'sink_time',
-         'name'               => __('Amortization duration'),
-         'datatype'           => 'number',
-         'max'                => '15',
-         'unit'               => 'year'
+            'id'                 => '14',
+            'table'              => $this->getTable(),
+            'field'              => 'sink_time',
+            'name'               => __('Amortization duration'),
+            'datatype'           => 'number',
+            'max'                => '15',
+            'unit'               => 'year'
         ];
 
         $tab[] = [
-         'id'                 => '15',
-         'table'              => $this->getTable(),
-         'field'              => 'sink_type',
-         'name'               => __('Amortization type'),
-         'datatype'           => 'specific',
-         'searchtype'         => ['equals', 'notequals']
+            'id'                 => '15',
+            'table'              => $this->getTable(),
+            'field'              => 'sink_type',
+            'name'               => __('Amortization type'),
+            'datatype'           => 'specific',
+            'searchtype'         => ['equals', 'notequals']
         ];
 
         $tab[] = [
-         'id'                 => '16',
-         'table'              => $this->getTable(),
-         'field'              => 'comment',
-         'name'               => __('Comments'),
-         'datatype'           => 'text'
+            'id'                 => '16',
+            'table'              => $this->getTable(),
+            'field'              => 'comment',
+            'name'               => __('Comments'),
+            'datatype'           => 'text'
         ];
 
         $tab[] = [
-         'id'                 => '17',
-         'table'              => $this->getTable(),
-         'field'              => 'sink_coeff',
-         'name'               => __('Amortization coefficient'),
-         'datatype'           => 'decimal'
+            'id'                 => '17',
+            'table'              => $this->getTable(),
+            'field'              => 'sink_coeff',
+            'name'               => __('Amortization coefficient'),
+            'datatype'           => 'decimal'
         ];
 
         $tab[] = [
-         'id'                 => '18',
-         'table'              => $this->getTable(),
-         'field'              => 'bill',
-         'name'               => __('Invoice number'),
-         'datatype'           => 'string',
+            'id'                 => '18',
+            'table'              => $this->getTable(),
+            'field'              => 'bill',
+            'name'               => __('Invoice number'),
+            'datatype'           => 'string',
         ];
 
         $tab[] = [
-         'id'                 => '19',
-         'table'              => 'glpi_budgets',
-         'field'              => 'name',
-         'name'               => Budget::getTypeName(1),
-         'datatype'           => 'itemlink'
+            'id'                 => '19',
+            'table'              => 'glpi_budgets',
+            'field'              => 'name',
+            'name'               => Budget::getTypeName(1),
+            'datatype'           => 'itemlink'
         ];
 
         $tab[] = [
-         'id'                 => '20',
-         'table'              => $this->getTable(),
-         'field'              => 'itemtype',
-         'name'               => _n('Type', 'Types', 1),
-         'datatype'           => 'itemtype',
-         'massiveaction'      => false
+            'id'                 => '20',
+            'table'              => $this->getTable(),
+            'field'              => 'itemtype',
+            'name'               => _n('Type', 'Types', 1),
+            'datatype'           => 'itemtype',
+            'massiveaction'      => false
         ];
 
         $tab[] = [
-         'id'                 => '21',
-         'table'              => $this->getTable(),
-         'field'              => 'items_id',
-         'name'               => __('ID'),
-         'datatype'           => 'integer',
-         'massiveaction'      => false
+            'id'                 => '21',
+            'table'              => $this->getTable(),
+            'field'              => 'items_id',
+            'name'               => __('ID'),
+            'datatype'           => 'integer',
+            'massiveaction'      => false
         ];
 
         $tab[] = [
-         'id'                 => '22',
-         'table'              => $this->getTable(),
-         'field'              => 'alert',
-         'name'               => __('Alarms on financial and administrative information'),
-         'datatype'           => 'integer'
+            'id'                 => '22',
+            'table'              => $this->getTable(),
+            'field'              => 'alert',
+            'name'               => __('Alarms on financial and administrative information'),
+            'datatype'           => 'integer'
         ];
 
         $tab[] = [
-         'id'                 => '80',
-         'table'              => 'glpi_entities',
-         'field'              => 'completename',
-         'name'               => Entity::getTypeName(1),
-         'massiveaction'      => false,
-         'datatype'           => 'dropdown'
+            'id'                 => '80',
+            'table'              => 'glpi_entities',
+            'field'              => 'completename',
+            'name'               => Entity::getTypeName(1),
+            'massiveaction'      => false,
+            'datatype'           => 'dropdown'
         ];
 
         $tab[] = [
-         'id'                 => '86',
-         'table'              => $this->getTable(),
-         'field'              => 'is_recursive',
-         'name'               => __('Child entities'),
-         'datatype'           => 'bool'
+            'id'                 => '86',
+            'table'              => $this->getTable(),
+            'field'              => 'is_recursive',
+            'name'               => __('Child entities'),
+            'datatype'           => 'bool'
         ];
 
         return $tab;
@@ -1698,9 +1706,10 @@ class Infocom extends CommonDBChild
     {
 
         $item = ['item_name'          => '',
-                    'warrantyexpiration' => '',
-                    'itemtype'           => $this->fields['itemtype'],
-                    'items_id'           => $this->fields['items_id']];
+            'warrantyexpiration' => '',
+            'itemtype'           => $this->fields['itemtype'],
+            'items_id'           => $this->fields['items_id']
+        ];
 
         $options['entities_id'] = $this->getEntityID();
         $options['items']       = [$item];
@@ -1784,7 +1793,8 @@ class Infocom extends CommonDBChild
                     foreach ($ids as $key) {
                         if (!$ic->getFromDBforDevice($itemtype, $key)) {
                             $input = ['itemtype' => $itemtype,
-                                    'items_id' => $key];
+                                'items_id' => $key
+                            ];
                             if ($ic->can(-1, CREATE, $input)) {
                                 if ($ic->add($input)) {
                                      $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_OK);
@@ -1851,13 +1861,13 @@ class Infocom extends CommonDBChild
         global $DB;
 
         $types_iterator = $DB->request([
-         'SELECT'          => 'itemtype',
-         'DISTINCT'        => true,
-         'FROM'            => 'glpi_infocoms',
-         'WHERE'           => [
-            'NOT'          => ['itemtype' => self::getExcludedTypes()]
-         ] + $where,
-         'ORDER'           => 'itemtype'
+            'SELECT'          => 'itemtype',
+            'DISTINCT'        => true,
+            'FROM'            => 'glpi_infocoms',
+            'WHERE'           => [
+                'NOT'          => ['itemtype' => self::getExcludedTypes()]
+            ] + $where,
+            'ORDER'           => 'itemtype'
         ]);
         return $types_iterator;
     }

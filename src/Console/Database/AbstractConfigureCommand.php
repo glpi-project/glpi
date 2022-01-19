@@ -151,9 +151,9 @@ abstract class AbstractConfigureCommand extends AbstractCommand implements Force
     {
 
         $questions = [
-         'db-name'     => new Question(__('Database name:'), ''), // Required
-         'db-user'     => new Question(__('Database user:'), ''), // Required
-         'db-password' => new Question(__('Database password:'), ''), // Prompt if null (passed without value)
+            'db-name'     => new Question(__('Database name:'), ''), // Required
+            'db-user'     => new Question(__('Database user:'), ''), // Required
+            'db-password' => new Question(__('Database password:'), ''), // Prompt if null (passed without value)
         ];
         $questions['db-password']->setHidden(true); // Make password input hidden
 

@@ -42,8 +42,8 @@ class SoundCard extends AbstractInventoryAsset
     protected function assetProvider(): array
     {
         return [
-         [
-            'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+            [
+                'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
   <CONTENT>
     <SOUNDS>
@@ -56,8 +56,8 @@ class SoundCard extends AbstractInventoryAsset
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-            'expected'  => '{"description": "rev 21", "manufacturer": "Intel Corporation Sunrise Point-LP HD Audio", "name": "Audio device", "designation": "Audio device", "manufacturers_id": "Intel Corporation Sunrise Point-LP HD Audio", "comment": "rev 21", "is_dynamic": 1}'
-         ]
+                'expected'  => '{"description": "rev 21", "manufacturer": "Intel Corporation Sunrise Point-LP HD Audio", "name": "Audio device", "designation": "Audio device", "manufacturers_id": "Intel Corporation Sunrise Point-LP HD Audio", "comment": "rev 21", "is_dynamic": 1}'
+            ]
         ];
     }
 
@@ -140,62 +140,62 @@ class SoundCard extends AbstractInventoryAsset
 
        //create manually a computer, with 3 sound cards
         $computers_id = $computer->add([
-         'name'   => 'pc002',
-         'serial' => 'ggheb7ne7',
-         'entities_id' => 0
+            'name'   => 'pc002',
+            'serial' => 'ggheb7ne7',
+            'entities_id' => 0
         ]);
         $this->integer($computers_id)->isGreaterThan(0);
 
         $manufacturer = new \Manufacturer();
         $manufacturers_id = $manufacturer->add([
-         'name' => 'Intel Corporation'
+            'name' => 'Intel Corporation'
         ]);
         $this->integer($manufacturers_id)->isGreaterThan(0);
 
         $sound_1_id = $device_sound->add([
-         'designation' => 'Audio device',
-         'manufacturers_id' => $manufacturers_id,
-         'entities_id'  => 0
+            'designation' => 'Audio device',
+            'manufacturers_id' => $manufacturers_id,
+            'entities_id'  => 0
         ]);
         $this->integer($sound_1_id)->isGreaterThan(0);
 
         $item_sound_1_id = $item_sound->add([
-         'items_id'     => $computers_id,
-         'itemtype'     => 'Computer',
-         'devicesoundcards_id' => $sound_1_id
+            'items_id'     => $computers_id,
+            'itemtype'     => 'Computer',
+            'devicesoundcards_id' => $sound_1_id
         ]);
         $this->integer($item_sound_1_id)->isGreaterThan(0);
 
         $manufacturers_id = $manufacturer->add([
-         'name' => 'Realtek'
+            'name' => 'Realtek'
         ]);
         $this->integer($manufacturers_id)->isGreaterThan(0);
 
         $sound_2_id = $device_sound->add([
-         'designation' => 'Realtek High Definition Audio',
-         'manufacturers_id' => $manufacturers_id,
-         'entities_id'  => 0
+            'designation' => 'Realtek High Definition Audio',
+            'manufacturers_id' => $manufacturers_id,
+            'entities_id'  => 0
         ]);
         $this->integer($sound_2_id)->isGreaterThan(0);
 
         $item_sound_2_id = $item_sound->add([
-         'items_id'     => $computers_id,
-         'itemtype'     => 'Computer',
-         'devicesoundcards_id' => $sound_2_id
+            'items_id'     => $computers_id,
+            'itemtype'     => 'Computer',
+            'devicesoundcards_id' => $sound_2_id
         ]);
         $this->integer($item_sound_2_id)->isGreaterThan(0);
 
         $sound_3_id = $device_sound->add([
-         'designation' => 'My Sound Card',
-         'manufacturers_id' => $manufacturers_id,
-         'entities_id'  => 0
+            'designation' => 'My Sound Card',
+            'manufacturers_id' => $manufacturers_id,
+            'entities_id'  => 0
         ]);
         $this->integer($sound_3_id)->isGreaterThan(0);
 
         $item_sound_3_id = $item_sound->add([
-         'items_id'     => $computers_id,
-         'itemtype'     => 'Computer',
-         'devicesoundcards_id' => $sound_3_id
+            'items_id'     => $computers_id,
+            'itemtype'     => 'Computer',
+            'devicesoundcards_id' => $sound_3_id
         ]);
         $this->integer($item_sound_3_id)->isGreaterThan(0);
 

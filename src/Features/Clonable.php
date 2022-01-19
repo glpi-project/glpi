@@ -62,11 +62,11 @@ trait Clonable
     private function cleanCloneInput(array $input): array
     {
         $properties_to_clean = [
-         'id',
-         'date_mod',
-         'date_creation',
-         'template_name',
-         'is_template'
+            'id',
+            'date_mod',
+            'date_creation',
+            'template_name',
+            'is_template'
         ];
         foreach ($properties_to_clean as $property) {
             if (array_key_exists($property, $input)) {

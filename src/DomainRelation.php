@@ -40,15 +40,15 @@ class DomainRelation extends CommonDropdown
     public static $rightname                   = 'domain';
 
     public static $knowrelations = [
-      [
-         'id'        => self::BELONGS,
-         'name'      => 'Belongs',
-         'comment'   => 'Item belongs to domain'
-      ], [
-         'id'        => self::MANAGE,
-         'name'      => 'Manage',
-         'comment'   => 'Item manages domain'
-      ]
+        [
+            'id'        => self::BELONGS,
+            'name'      => 'Belongs',
+            'comment'   => 'Item belongs to domain'
+        ], [
+            'id'        => self::MANAGE,
+            'name'      => 'Manage',
+            'comment'   => 'Item manages domain'
+        ]
     ];
 
     public static function getTypeName($nb = 0)

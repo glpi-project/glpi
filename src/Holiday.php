@@ -51,14 +51,18 @@ class Holiday extends CommonDropdown
     {
 
         return [['name'  => 'begin_date',
-                         'label' => __('Start'),
-                         'type'  => 'date'],
-                   ['name'  => 'end_date',
-                         'label' => __('End'),
-                         'type'  => 'date'],
-                   ['name'  => 'is_perpetual',
-                         'label' => __('Recurrent'),
-                         'type'  => 'bool']];
+            'label' => __('Start'),
+            'type'  => 'date'
+        ],
+            ['name'  => 'end_date',
+                'label' => __('End'),
+                'type'  => 'date'
+            ],
+            ['name'  => 'is_perpetual',
+                'label' => __('Recurrent'),
+                'type'  => 'bool'
+            ]
+        ];
     }
 
 
@@ -67,27 +71,27 @@ class Holiday extends CommonDropdown
         $tab = parent::rawSearchOptions();
 
         $tab[] = [
-         'id'                 => '11',
-         'table'              => $this->getTable(),
-         'field'              => 'begin_date',
-         'name'               => __('Start'),
-         'datatype'           => 'date'
+            'id'                 => '11',
+            'table'              => $this->getTable(),
+            'field'              => 'begin_date',
+            'name'               => __('Start'),
+            'datatype'           => 'date'
         ];
 
         $tab[] = [
-         'id'                 => '12',
-         'table'              => $this->getTable(),
-         'field'              => 'end_date',
-         'name'               => __('End'),
-         'datatype'           => 'date'
+            'id'                 => '12',
+            'table'              => $this->getTable(),
+            'field'              => 'end_date',
+            'name'               => __('End'),
+            'datatype'           => 'date'
         ];
 
         $tab[] = [
-         'id'                 => '13',
-         'table'              => $this->getTable(),
-         'field'              => 'is_perpetual',
-         'name'               => __('Recurrent'),
-         'datatype'           => 'bool'
+            'id'                 => '13',
+            'table'              => $this->getTable(),
+            'field'              => 'is_perpetual',
+            'name'               => __('Recurrent'),
+            'datatype'           => 'bool'
         ];
 
         return $tab;
@@ -147,7 +151,7 @@ class Holiday extends CommonDropdown
 
         $this->deleteChildrenAndRelationsFromDb(
             [
-            Calendar_Holiday::class,
+                Calendar_Holiday::class,
             ]
         );
     }

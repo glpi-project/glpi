@@ -64,7 +64,7 @@ if (isset($_GET['id'])) {
     $params['id'] = $_GET['id'];
 } else {
     $params = [
-      'racks_id'     => $_GET['racks_id'],
+        'racks_id'     => $_GET['racks_id'],
     ];
 }
 

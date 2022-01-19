@@ -95,100 +95,100 @@ abstract class CommonITILCost extends CommonDBChild
         $tab = [];
 
         $tab[] = [
-         'id'                 => 'common',
-         'name'               => __('Characteristics')
+            'id'                 => 'common',
+            'name'               => __('Characteristics')
         ];
 
         $tab[] = [
-         'id'                 => '1',
-         'table'              => $this->getTable(),
-         'field'              => 'name',
-         'name'               => __('Title'),
-         'searchtype'         => 'contains',
-         'datatype'           => 'itemlink',
-         'massiveaction'      => false,
+            'id'                 => '1',
+            'table'              => $this->getTable(),
+            'field'              => 'name',
+            'name'               => __('Title'),
+            'searchtype'         => 'contains',
+            'datatype'           => 'itemlink',
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
-         'id'                 => '2',
-         'table'              => $this->getTable(),
-         'field'              => 'id',
-         'name'               => __('ID'),
-         'massiveaction'      => false,
-         'datatype'           => 'number'
+            'id'                 => '2',
+            'table'              => $this->getTable(),
+            'field'              => 'id',
+            'name'               => __('ID'),
+            'massiveaction'      => false,
+            'datatype'           => 'number'
         ];
 
         $tab[] = [
-         'id'                 => '16',
-         'table'              => $this->getTable(),
-         'field'              => 'comment',
-         'name'               => __('Comments'),
-         'datatype'           => 'text'
+            'id'                 => '16',
+            'table'              => $this->getTable(),
+            'field'              => 'comment',
+            'name'               => __('Comments'),
+            'datatype'           => 'text'
         ];
 
         $tab[] = [
-         'id'                 => '12',
-         'table'              => $this->getTable(),
-         'field'              => 'begin_date',
-         'name'               => __('Begin date'),
-         'datatype'           => 'datetime'
+            'id'                 => '12',
+            'table'              => $this->getTable(),
+            'field'              => 'begin_date',
+            'name'               => __('Begin date'),
+            'datatype'           => 'datetime'
         ];
 
         $tab[] = [
-         'id'                 => '10',
-         'table'              => $this->getTable(),
-         'field'              => 'end_date',
-         'name'               => __('End date'),
-         'datatype'           => 'datetime'
+            'id'                 => '10',
+            'table'              => $this->getTable(),
+            'field'              => 'end_date',
+            'name'               => __('End date'),
+            'datatype'           => 'datetime'
         ];
 
         $tab[] = [
-         'id'                 => '11',
-         'table'              => $this->getTable(),
-         'field'              => 'actiontime',
-         'name'               => __('Duration'),
-         'datatype'           => 'timestamp'
+            'id'                 => '11',
+            'table'              => $this->getTable(),
+            'field'              => 'actiontime',
+            'name'               => __('Duration'),
+            'datatype'           => 'timestamp'
         ];
 
         $tab[] = [
-         'id'                 => '14',
-         'table'              => $this->getTable(),
-         'field'              => 'cost_time',
-         'name'               => __('Time cost'),
-         'datatype'           => 'decimal'
+            'id'                 => '14',
+            'table'              => $this->getTable(),
+            'field'              => 'cost_time',
+            'name'               => __('Time cost'),
+            'datatype'           => 'decimal'
         ];
 
         $tab[] = [
-         'id'                 => '15',
-         'table'              => $this->getTable(),
-         'field'              => 'cost_fixed',
-         'name'               => __('Fixed cost'),
-         'datatype'           => 'decimal'
+            'id'                 => '15',
+            'table'              => $this->getTable(),
+            'field'              => 'cost_fixed',
+            'name'               => __('Fixed cost'),
+            'datatype'           => 'decimal'
         ];
 
         $tab[] = [
-         'id'                 => '19',
-         'table'              => $this->getTable(),
-         'field'              => 'cost_material',
-         'name'               => __('Material cost'),
-         'datatype'           => 'decimal'
+            'id'                 => '19',
+            'table'              => $this->getTable(),
+            'field'              => 'cost_material',
+            'name'               => __('Material cost'),
+            'datatype'           => 'decimal'
         ];
 
         $tab[] = [
-         'id'                 => '18',
-         'table'              => 'glpi_budgets',
-         'field'              => 'name',
-         'name'               => Budget::getTypeName(1),
-         'datatype'           => 'dropdown'
+            'id'                 => '18',
+            'table'              => 'glpi_budgets',
+            'field'              => 'name',
+            'name'               => Budget::getTypeName(1),
+            'datatype'           => 'dropdown'
         ];
 
         $tab[] = [
-         'id'                 => '80',
-         'table'              => 'glpi_entities',
-         'field'              => 'completename',
-         'name'               => Entity::getTypeName(1),
-         'massiveaction'      => false,
-         'datatype'           => 'dropdown'
+            'id'                 => '80',
+            'table'              => 'glpi_entities',
+            'field'              => 'completename',
+            'name'               => Entity::getTypeName(1),
+            'massiveaction'      => false,
+            'datatype'           => 'dropdown'
         ];
 
         return $tab;
@@ -202,102 +202,102 @@ abstract class CommonITILCost extends CommonDBChild
         $tab = [];
 
         $tab[] = [
-         'id'                 => 'cost',
-         'name'               => _n('Cost', 'Costs', 1)
+            'id'                 => 'cost',
+            'name'               => _n('Cost', 'Costs', 1)
         ];
 
         $tab[] = [
-         'id'                 => '48',
-         'table'              => static::getTable(),
-         'field'              => 'totalcost',
-         'name'               => __('Total cost'),
-         'datatype'           => 'decimal',
-         'forcegroupby'       => true,
-         'usehaving'          => true,
-         'massiveaction'      => false,
-         'joinparams'         => [
-            'jointype'           => 'child'
-         ],
-         'computation'        =>
+            'id'                 => '48',
+            'table'              => static::getTable(),
+            'field'              => 'totalcost',
+            'name'               => __('Total cost'),
+            'datatype'           => 'decimal',
+            'forcegroupby'       => true,
+            'usehaving'          => true,
+            'massiveaction'      => false,
+            'joinparams'         => [
+                'jointype'           => 'child'
+            ],
+            'computation'        =>
             '(SUM(' . $DB->quoteName('TABLE.actiontime') . ' * ' .
             $DB->quoteName('TABLE.cost_time') . '/' . HOUR_TIMESTAMP .
             ' + ' . $DB->quoteName('TABLE.cost_fixed') . ' + ' .
             $DB->quoteName('TABLE.cost_material') . ') / COUNT(' .
             $DB->quoteName('TABLE.id') . ')) * COUNT(DISTINCT ' .
             $DB->quoteName('TABLE.id') . ')',
-         'nometa'             => true, // cannot GROUP_CONCAT a SUM
+            'nometa'             => true, // cannot GROUP_CONCAT a SUM
         ];
 
         $tab[] = [
-         'id'                 => '42',
-         'table'              => static::getTable(),
-         'field'              => 'cost_time',
-         'name'               => __('Time cost'),
-         'datatype'           => 'decimal',
-         'forcegroupby'       => true,
-         'usehaving'          => true,
-         'massiveaction'      => false,
-         'joinparams'         => [
-            'jointype'           => 'child'
-         ],
-         'computation'        =>
+            'id'                 => '42',
+            'table'              => static::getTable(),
+            'field'              => 'cost_time',
+            'name'               => __('Time cost'),
+            'datatype'           => 'decimal',
+            'forcegroupby'       => true,
+            'usehaving'          => true,
+            'massiveaction'      => false,
+            'joinparams'         => [
+                'jointype'           => 'child'
+            ],
+            'computation'        =>
             '(SUM(' . $DB->quoteName('TABLE.actiontime') . ' * ' .
             $DB->quoteName('TABLE.cost_time') . '/' . HOUR_TIMESTAMP .
             ') / COUNT(' . $DB->quoteName('TABLE.id') . ')) * COUNT(DISTINCT ' .
             $DB->quoteName('TABLE.id') . ')',
-         'nometa'             => true, // cannot GROUP_CONCAT a SUM
+            'nometa'             => true, // cannot GROUP_CONCAT a SUM
         ];
 
         $tab[] = [
-         'id'                 => '49',
-         'table'              => static::getTable(),
-         'field'              => 'actiontime',
-         'name'               => sprintf(__('%1$s - %2$s'), _n('Cost', 'Costs', 1), __('Duration')),
-         'datatype'           => 'timestamp',
-         'forcegroupby'       => true,
-         'usehaving'          => true,
-         'massiveaction'      => false,
-         'joinparams'         => [
-            'jointype'           => 'child'
-         ]
+            'id'                 => '49',
+            'table'              => static::getTable(),
+            'field'              => 'actiontime',
+            'name'               => sprintf(__('%1$s - %2$s'), _n('Cost', 'Costs', 1), __('Duration')),
+            'datatype'           => 'timestamp',
+            'forcegroupby'       => true,
+            'usehaving'          => true,
+            'massiveaction'      => false,
+            'joinparams'         => [
+                'jointype'           => 'child'
+            ]
         ];
 
         $tab[] = [
-         'id'                 => '43',
-         'table'              => static::getTable(),
-         'field'              => 'cost_fixed',
-         'name'               => __('Fixed cost'),
-         'datatype'           => 'decimal',
-         'forcegroupby'       => true,
-         'usehaving'          => true,
-         'massiveaction'      => false,
-         'joinparams'         => [
-            'jointype'           => 'child'
-         ],
-         'computation'        =>
+            'id'                 => '43',
+            'table'              => static::getTable(),
+            'field'              => 'cost_fixed',
+            'name'               => __('Fixed cost'),
+            'datatype'           => 'decimal',
+            'forcegroupby'       => true,
+            'usehaving'          => true,
+            'massiveaction'      => false,
+            'joinparams'         => [
+                'jointype'           => 'child'
+            ],
+            'computation'        =>
             '(SUM(' . $DB->quoteName('TABLE.cost_fixed') . ') / COUNT(' .
             $DB->quoteName('TABLE.id') . '))
             * COUNT(DISTINCT ' . $DB->quoteName('TABLE.id') . ')',
-         'nometa'             => true, // cannot GROUP_CONCAT a SUM
+            'nometa'             => true, // cannot GROUP_CONCAT a SUM
         ];
 
         $tab[] = [
-         'id'                 => '44',
-         'table'              => static::getTable(),
-         'field'              => 'cost_material',
-         'name'               => __('Material cost'),
-         'datatype'           => 'decimal',
-         'forcegroupby'       => true,
-         'usehaving'          => true,
-         'massiveaction'      => false,
-         'joinparams'         => [
-            'jointype'           => 'child'
-         ],
-         'computation'        =>
+            'id'                 => '44',
+            'table'              => static::getTable(),
+            'field'              => 'cost_material',
+            'name'               => __('Material cost'),
+            'datatype'           => 'decimal',
+            'forcegroupby'       => true,
+            'usehaving'          => true,
+            'massiveaction'      => false,
+            'joinparams'         => [
+                'jointype'           => 'child'
+            ],
+            'computation'        =>
             '(SUM(' . $DB->quoteName('TABLE.cost_material') . ') / COUNT(' .
             $DB->quoteName('TABLE.id') . '))
             * COUNT(DISTINCT ' . $DB->quoteName('TABLE.id') . ')',
-         'nometa'             => true, // cannot GROUP_CONCAT a SUM
+            'nometa'             => true, // cannot GROUP_CONCAT a SUM
         ];
 
         return $tab;
@@ -355,9 +355,9 @@ abstract class CommonITILCost extends CommonDBChild
         global $DB;
 
         $result = $DB->request([
-         'SELECT' => ['SUM' => 'actiontime AS sumtime'],
-         'FROM'   => $this->getTable(),
-         'WHERE'  => [static::$items_id => $items_id]
+            'SELECT' => ['SUM' => 'actiontime AS sumtime'],
+            'FROM'   => $this->getTable(),
+            'WHERE'  => [static::$items_id => $items_id]
         ])->current();
         return $result['sumtime'];
     }
@@ -373,14 +373,14 @@ abstract class CommonITILCost extends CommonDBChild
         global $DB;
 
         $result = $DB->request([
-         'FROM'   => $this->getTable(),
-         'WHERE'  => [
-            static::$items_id => $items_id
-         ],
-         'ORDER'  => [
-            'end_date DESC',
-            'id DESC'
-         ]
+            'FROM'   => $this->getTable(),
+            'WHERE'  => [
+                static::$items_id => $items_id
+            ],
+            'ORDER'  => [
+                'end_date DESC',
+                'id DESC'
+            ]
         ])->current();
         return $result;
     }
@@ -437,7 +437,8 @@ abstract class CommonITILCost extends CommonDBChild
         echo "<td>" . __('Duration') . "</td>";
         echo "<td>";
         Dropdown::showTimeStamp('actiontime', ['value'           => $this->fields['actiontime'],
-                                                  'addfirstminutes' => true]);
+            'addfirstminutes' => true
+        ]);
         echo "</td>";
         echo "<td>" . __('End date') . "</td>";
         echo "<td>";
@@ -474,7 +475,8 @@ abstract class CommonITILCost extends CommonDBChild
         echo "<tr class='tab_bg_1'><td>" . Budget::getTypeName(1) . "</td>";
         echo "<td>";
         Budget::dropdown(['value'  => $this->fields["budgets_id"],
-                             'entity' => $this->fields["entities_id"]]);
+            'entity' => $this->fields["entities_id"]
+        ]);
         echo "</td></tr>";
 
         $this->showFormButtons($options);
@@ -522,11 +524,11 @@ abstract class CommonITILCost extends CommonDBChild
             $items_ids = (count($alltickets) ? $alltickets : 0);
         }
         $iterator = $DB->request([
-         'FROM'   => static::getTable(),
-         'WHERE'  => [
-            static::$items_id   => $items_ids
-         ],
-         'ORDER'  => 'begin_date'
+            'FROM'   => static::getTable(),
+            'WHERE'  => [
+                static::$items_id   => $items_ids
+            ],
+            'ORDER'  => 'begin_date'
         ]);
 
         $rand   = mt_rand();
@@ -542,9 +544,10 @@ abstract class CommonITILCost extends CommonDBChild
             echo "<script type='text/javascript' >\n";
             echo "function viewAddCost" . $ID . "_$rand() {\n";
             $params = ['type'             => static::getType(),
-                         'parenttype'       => static::$itemtype,
-                         static::$items_id  => $ID,
-                         'id'               => -1];
+                'parenttype'       => static::$itemtype,
+                static::$items_id  => $ID,
+                'id'               => -1
+            ];
             Ajax::updateItemJsCode(
                 "viewcost" . $ID . "_$rand",
                 $CFG_GLPI["root_doc"] . "/ajax/viewsubitem.php",
@@ -630,9 +633,10 @@ abstract class CommonITILCost extends CommonDBChild
                      echo "\n<script type='text/javascript' >\n";
                      echo "function viewEditCost" . $data[static::$items_id] . "_" . $data["id"] . "_$rand() {\n";
                      $params = ['type'            => static::getType(),
-                             'parenttype'       => static::$itemtype,
-                             static::$items_id  => $data[static::$items_id],
-                             'id'               => $data["id"]];
+                         'parenttype'       => static::$itemtype,
+                         static::$items_id  => $data[static::$items_id],
+                         'id'               => $data["id"]
+                     ];
                      Ajax::updateItemJsCode(
                          "viewcost" . $ID . "_$rand",
                          $CFG_GLPI["root_doc"] . "/ajax/viewsubitem.php",
@@ -697,22 +701,22 @@ abstract class CommonITILCost extends CommonDBChild
 
         $result = $DB->request(
             [
-            'FROM'      => getTableForItemType($type),
-            'WHERE'     => [
-               static::$items_id      => $ID,
-            ],
-            'ORDER'     => [
-               'begin_date'
-            ],
+                'FROM'      => getTableForItemType($type),
+                'WHERE'     => [
+                    static::$items_id      => $ID,
+                ],
+                'ORDER'     => [
+                    'begin_date'
+                ],
             ]
         );
 
         $tab = ['totalcost'   => 0,
-                  'actiontime'   => 0,
-                  'costfixed'    => 0,
-                  'costtime'     => 0,
-                  'costmaterial' => 0
-             ];
+            'actiontime'   => 0,
+            'costfixed'    => 0,
+            'costtime'     => 0,
+            'costmaterial' => 0
+        ];
 
         foreach ($result as $data) {
             $tab['actiontime']   += $data['actiontime'];

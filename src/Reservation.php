@@ -221,12 +221,12 @@ class Reservation extends CommonDBChild
             $rand = mt_rand(1, mt_getrandmax());
 
             $result = $DB->request([
-            'COUNT'  => 'cpt',
-            'FROM'   => 'glpi_reservations',
-            'WHERE'  => [
-               'reservationitems_id'   => $reservationitems_id,
-               'group'                 => $rand
-            ]
+                'COUNT'  => 'cpt',
+                'FROM'   => 'glpi_reservations',
+                'WHERE'  => [
+                    'reservationitems_id'   => $reservationitems_id,
+                    'group'                 => $rand
+                ]
             ])->current();
             $count = (int)$result['cpt'];
         } while ($count > 0);
@@ -258,13 +258,13 @@ class Reservation extends CommonDBChild
         }
 
         $result = $DB->request([
-         'COUNT'  => 'cpt',
-         'FROM'   => $this->getTable(),
-         'WHERE'  => $where + [
-            'reservationitems_id'   => $this->fields['reservationitems_id'],
-            'end'                   => ['>', $this->fields['begin']],
-            'begin'                 => ['<', $this->fields['end']]
-         ]
+            'COUNT'  => 'cpt',
+            'FROM'   => $this->getTable(),
+            'WHERE'  => $where + [
+                'reservationitems_id'   => $this->fields['reservationitems_id'],
+                'end'                   => ['>', $this->fields['begin']],
+                'begin'                 => ['<', $this->fields['end']]
+            ]
         ])->current();
         return $result['cpt'] > 0;
     }
@@ -377,11 +377,11 @@ class Reservation extends CommonDBChild
 
         if (isset($this->input['_delete_group']) && $this->input['_delete_group']) {
             $iterator = $DB->request([
-            'FROM'   => 'glpi_reservations',
-            'WHERE'  => [
-               'reservationitems_id'   => $this->fields['reservationitems_id'],
-               'group'                 => $this->fields['group']
-            ]
+                'FROM'   => 'glpi_reservations',
+                'WHERE'  => [
+                    'reservationitems_id'   => $this->fields['reservationitems_id'],
+                    'group'                 => $this->fields['group']
+                ]
             ]);
             $rr = clone $this;
             foreach ($iterator as $data) {
@@ -474,9 +474,9 @@ JAVASCRIPT;
         global $DB;
 
         $defaults = [
-         'start'               => '',
-         'end'                 => '',
-         'reservationitems_id' => 0,
+            'start'               => '',
+            'end'                 => '',
+            'reservationitems_id' => 0,
         ];
         $params = array_merge($defaults, $params);
 
@@ -495,33 +495,33 @@ JAVASCRIPT;
         $where = [];
         if ($params['reservationitems_id'] > 0) {
             $where = [
-            "$res_table.reservationitems_id" => $params['reservationitems_id'],
+                "$res_table.reservationitems_id" => $params['reservationitems_id'],
             ];
         }
 
         $iterator = $DB->request([
-         'SELECT'     => [
-            "$res_table.id",
-            "$res_table.begin",
-            "$res_table.end",
-            "$res_table.comment",
-            "$res_table.users_id",
-            "$res_i_table.items_id",
-            "$res_i_table.itemtype",
-         ],
-         'FROM'       => $res_table,
-         'INNER JOIN' => [
-            $res_i_table => [
-               'ON' => [
-                  $res_i_table => 'id',
-                  $res_table   => 'reservationitems_id'
-               ]
-            ]
-               ],
-         'WHERE' => [
-            'end'   => ['>', $start],
-            'begin' => ['<', $end],
-         ] + $where
+            'SELECT'     => [
+                "$res_table.id",
+                "$res_table.begin",
+                "$res_table.end",
+                "$res_table.comment",
+                "$res_table.users_id",
+                "$res_i_table.items_id",
+                "$res_i_table.itemtype",
+            ],
+            'FROM'       => $res_table,
+            'INNER JOIN' => [
+                $res_i_table => [
+                    'ON' => [
+                        $res_i_table => 'id',
+                        $res_table   => 'reservationitems_id'
+                    ]
+                ]
+            ],
+            'WHERE' => [
+                'end'   => ['>', $start],
+                'begin' => ['<', $end],
+            ] + $where
         ]);
 
         $events = [];
@@ -542,26 +542,26 @@ JAVASCRIPT;
             }
 
             $name = $item->getName([
-            'complete' => true,
+                'complete' => true,
             ]);
 
             $events[] = [
-             'id'          => $data['id'],
-             'resourceId'  => $data['itemtype'] . "-" . $data['items_id'],
-             'start'       => $data['begin'],
-             'end'         => $data['end'],
-             'comment'     => $data['comment'] .
+                'id'          => $data['id'],
+                'resourceId'  => $data['itemtype'] . "-" . $data['items_id'],
+                'start'       => $data['begin'],
+                'end'         => $data['end'],
+                'comment'     => $data['comment'] .
                              $canedit_admin || $my_item
                               ? "\n" . sprintf(__("Reserved by %s"), $username)
                               : "",
-             'title'       => $params['reservationitems_id'] ? "" : $name,
-             'icon'        => $item->getIcon(),
-             'description' => $item->getTypeName(),
-             'itemtype'    => $data['itemtype'],
-             'items_id'    => $data['items_id'],
-             'color'       => Toolbox::getColorForString($name),
-             'ajaxurl'     => Reservation::getFormURLWithID($data['id']),
-             'editable'    => $canedit_admin || ($can_reserve && $my_item),
+                'title'       => $params['reservationitems_id'] ? "" : $name,
+                'icon'        => $item->getIcon(),
+                'description' => $item->getTypeName(),
+                'itemtype'    => $data['itemtype'],
+                'items_id'    => $data['items_id'],
+                'color'       => Toolbox::getColorForString($name),
+                'ajaxurl'     => Reservation::getFormURLWithID($data['id']),
+                'editable'    => $canedit_admin || ($can_reserve && $my_item),
             ];
         }
 
@@ -576,15 +576,15 @@ JAVASCRIPT;
         $res_i_table = ReservationItem::getTable();
 
         $iterator = $DB->request([
-         'SELECT' => [
-            "$res_i_table.items_id",
-            "$res_i_table.itemtype",
-         ],
-         'FROM'   => $res_i_table,
-         'WHERE'  => [
-            'is_active'  => 1,
-            'is_deleted' => 0
-         ]
+            'SELECT' => [
+                "$res_i_table.items_id",
+                "$res_i_table.itemtype",
+            ],
+            'FROM'   => $res_i_table,
+            'WHERE'  => [
+                'is_active'  => 1,
+                'is_deleted' => 0
+            ]
         ]);
 
         $resources = [];
@@ -598,8 +598,8 @@ JAVASCRIPT;
             }
 
             $resources[] = [
-            'id' => $data['itemtype'] . "-" . $data['items_id'],
-            'title' => sprintf(__("%s - %s"), $data['itemtype']::getTypeName(), $item->getName()),
+                'id' => $data['itemtype'] . "-" . $data['items_id'],
+                'title' => sprintf(__("%s - %s"), $data['itemtype']::getTypeName(), $item->getName()),
             ];
         }
 
@@ -628,9 +628,9 @@ JAVASCRIPT;
         }
 
         return $reservation->update([
-         'id'    => (int) $event['id'],
-         'begin' => $event['start'],
-         'end'   => $event['end']
+            'id'    => (int) $event['id'],
+            'begin' => $event['start'],
+            'end'   => $event['end']
         ]);
     }
 
@@ -698,11 +698,11 @@ JAVASCRIPT;
         if (count($options['item']) == 1 && $first_item == 0) {
            // only one id = 0, display an item dropdown
             Dropdown::showSelectItemFromItemtypes([
-            'items_id_name'   => 'items[]',
-            'itemtypes'       => $CFG_GLPI['reservation_types'],
-            'entity_restrict' => Session::getActiveEntity(),
-            'checkright'      => true,
-            'ajax_page'       => $CFG_GLPI['root_doc'] . '/ajax/reservable_items.php'
+                'items_id_name'   => 'items[]',
+                'itemtypes'       => $CFG_GLPI['reservation_types'],
+                'entity_restrict' => Session::getActiveEntity(),
+                'checkright'      => true,
+                'ajax_page'       => $CFG_GLPI['root_doc'] . '/ajax/reservable_items.php'
             ]);
             echo "<span id='item_dropdown'>";
         } else {
@@ -751,17 +751,17 @@ JAVASCRIPT;
             );
         } else {
             User::dropdown([
-            'value'        => $uid,
-            'entity'       => $entities_id,
-            'entity_sons'  => $is_recursive,
-            'right'        => 'all'
+                'value'        => $uid,
+                'entity'       => $entities_id,
+                'entity_sons'  => $is_recursive,
+                'right'        => 'all'
             ]);
         }
         echo "</td></tr>\n";
         echo "<tr class='tab_bg_2'><td>" . __('Start date') . "</td><td>";
         Html::showDateTimeField("resa[begin]", [
-         'value'      => $resa->fields["begin"],
-         'maybeempty' => false
+            'value'      => $resa->fields["begin"],
+            'maybeempty' => false
         ]);
         echo "</td></tr>";
         $default_delay = floor((strtotime($resa->fields["end"]) - strtotime($resa->fields["begin"]))
@@ -769,16 +769,16 @@ JAVASCRIPT;
                        * $CFG_GLPI['time_step'] * MINUTE_TIMESTAMP;
         echo "<tr class='tab_bg_2'><td>" . __('Duration') . "</td><td>";
         $rand = Dropdown::showTimeStamp("resa[_duration]", [
-         'min'        => 0,
-         'max'        => 24 * HOUR_TIMESTAMP,
-         'value'      => $default_delay,
-         'emptylabel' => __('Specify an end date')
+            'min'        => 0,
+            'max'        => 24 * HOUR_TIMESTAMP,
+            'value'      => $default_delay,
+            'emptylabel' => __('Specify an end date')
         ]);
         echo "<br><div id='date_end$rand'></div>";
         $params = [
-         'duration'     => '__VALUE__',
-         'end'          => $resa->fields["end"],
-         'name'         => "resa[end]"
+            'duration'     => '__VALUE__',
+            'end'          => $resa->fields["end"],
+            'name'         => "resa[end]"
         ];
         Ajax::updateItemOnSelectEvent(
             "dropdown_resa[_duration]$rand",
@@ -798,10 +798,10 @@ JAVASCRIPT;
             echo "<tr class='tab_bg_2'><td>" . __('Repetition') . "</td>";
             echo "<td>";
             $rand = Dropdown::showFromArray('periodicity[type]', [
-            ''      => _x('periodicity', 'None'),
-            'day'   => _x('periodicity', 'Daily'),
-            'week'  => _x('periodicity', 'Weekly'),
-            'month' => _x('periodicity', 'Monthly')
+                ''      => _x('periodicity', 'None'),
+                'day'   => _x('periodicity', 'Daily'),
+                'week'  => _x('periodicity', 'Weekly'),
+                'month' => _x('periodicity', 'Monthly')
             ]);
             $field_id = Html::cleanId("dropdown_periodicity[type]$rand");
 
@@ -810,8 +810,8 @@ JAVASCRIPT;
                 "resaperiodcontent$rand",
                 $CFG_GLPI["root_doc"] . "/ajax/resaperiod.php",
                 [
-                                          'type'     => '__VALUE__',
-                                          'end'      => $resa->fields["end"]
+                    'type'     => '__VALUE__',
+                    'end'      => $resa->fields["end"]
                 ]
             );
             echo "<br><div id='resaperiodcontent$rand'></div>";
@@ -900,14 +900,17 @@ JAVASCRIPT;
                    // No days set add 1 week
                     if (!isset($options['days'])) {
                         $dates = [['begin' => strtotime('+1 week', $begin_time),
-                                       'end'   => strtotime('+1 week', $end_time)]];
+                            'end'   => strtotime('+1 week', $end_time)
+                        ]
+                        ];
                     } else {
                         if (is_array($options['days'])) {
                             $begin_hour = $begin_time - strtotime(date('Y-m-d', $begin_time));
                             $end_hour   = $end_time - strtotime(date('Y-m-d', $end_time));
                             foreach ($options['days'] as $day => $val) {
                                 $dates[] = ['begin' => strtotime("next $day", $begin_time) + $begin_hour,
-                                         'end'   => strtotime("next $day", $end_time) + $end_hour];
+                                    'end'   => strtotime("next $day", $end_time) + $end_hour
+                                ];
                             }
                         }
                     }
@@ -1058,36 +1061,36 @@ JAVASCRIPT;
 
        // Print reservation in progress
         $iterator = $DB->request([
-         'SELECT'    => [
-            'begin',
-            'end',
-            'items_id',
-            'glpi_reservationitems.entities_id',
-            'users_id',
-            'glpi_reservations.comment',
-            'reservationitems_id',
-            'completename'
-         ],
-         'FROM'      => 'glpi_reservations',
-         'LEFT JOIN' => [
-            'glpi_reservationitems' => [
-               'ON' => [
-                  'glpi_reservationitems' => 'id',
-                  'glpi_reservations'     => 'reservationitems_id'
-               ]
+            'SELECT'    => [
+                'begin',
+                'end',
+                'items_id',
+                'glpi_reservationitems.entities_id',
+                'users_id',
+                'glpi_reservations.comment',
+                'reservationitems_id',
+                'completename'
             ],
-            'glpi_entities' => [
-               'ON' => [
-                  'glpi_reservationitems' => 'entities_id',
-                  'glpi_entities'         => 'id'
-               ]
-            ]
-         ],
-         'WHERE'     => [
-            'end'       => ['>', $now],
-            'users_id'  => $ID
-         ],
-         'ORDERBY'   => 'begin'
+            'FROM'      => 'glpi_reservations',
+            'LEFT JOIN' => [
+                'glpi_reservationitems' => [
+                    'ON' => [
+                        'glpi_reservationitems' => 'id',
+                        'glpi_reservations'     => 'reservationitems_id'
+                    ]
+                ],
+                'glpi_entities' => [
+                    'ON' => [
+                        'glpi_reservationitems' => 'entities_id',
+                        'glpi_entities'         => 'id'
+                    ]
+                ]
+            ],
+            'WHERE'     => [
+                'end'       => ['>', $now],
+                'users_id'  => $ID
+            ],
+            'ORDERBY'   => 'begin'
         ]);
 
         $ri = new ReservationItem();
@@ -1140,36 +1143,36 @@ JAVASCRIPT;
 
        // Print old reservations
         $iterator = $DB->request([
-         'SELECT'    => [
-            'begin',
-            'end',
-            'items_id',
-            'glpi_reservationitems.entities_id',
-            'users_id',
-            'glpi_reservations.comment',
-            'reservationitems_id',
-            'completename'
-         ],
-         'FROM'      => 'glpi_reservations',
-         'LEFT JOIN' => [
-            'glpi_reservationitems' => [
-               'ON' => [
-                  'glpi_reservationitems' => 'id',
-                  'glpi_reservations'     => 'reservationitems_id'
-               ]
+            'SELECT'    => [
+                'begin',
+                'end',
+                'items_id',
+                'glpi_reservationitems.entities_id',
+                'users_id',
+                'glpi_reservations.comment',
+                'reservationitems_id',
+                'completename'
             ],
-            'glpi_entities'         => [
-               'ON' => [
-                  'glpi_reservationitems' => 'entities_id',
-                  'glpi_entities'         => 'id'
-               ]
-            ]
-         ],
-         'WHERE'     => [
-            'end'       => ['<=', $now],
-            'users_id'  => $ID
-         ],
-         'ORDERBY'   => 'begin DESC'
+            'FROM'      => 'glpi_reservations',
+            'LEFT JOIN' => [
+                'glpi_reservationitems' => [
+                    'ON' => [
+                        'glpi_reservationitems' => 'id',
+                        'glpi_reservations'     => 'reservationitems_id'
+                    ]
+                ],
+                'glpi_entities'         => [
+                    'ON' => [
+                        'glpi_reservationitems' => 'entities_id',
+                        'glpi_entities'         => 'id'
+                    ]
+                ]
+            ],
+            'WHERE'     => [
+                'end'       => ['<=', $now],
+                'users_id'  => $ID
+            ],
+            'ORDERBY'   => 'begin DESC'
         ]);
 
         echo "<div class='spaced'>";

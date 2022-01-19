@@ -73,8 +73,8 @@ class SavedSearch_User extends CommonDBRelation
                 return Dropdown::showFromArray(
                     $options['name'],
                     [
-                    '1'   => __('Yes'),
-                    '0'   => __('No')
+                        '1'   => __('Yes'),
+                        '0'   => __('No')
                     ],
                     $options
                 );
@@ -99,9 +99,11 @@ class SavedSearch_User extends CommonDBRelation
         global $DB;
 
         $iter = $DB->request(['SELECT' => 'savedsearches_id',
-                            'FROM'   => 'glpi_savedsearches_users',
-                            'WHERE'  => ['users_id' => $users_id,
-                                         'itemtype' => $itemtype]]);
+            'FROM'   => 'glpi_savedsearches_users',
+            'WHERE'  => ['users_id' => $users_id,
+                'itemtype' => $itemtype
+            ]
+        ]);
         if (count($iter)) {
             $row = $iter->current();
            // Load default bookmark for this $itemtype

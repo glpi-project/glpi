@@ -57,27 +57,27 @@ abstract class CommonITILObjectParameters extends AbstractParameters
     public function getAvailableParameters(): array
     {
         return [
-         new AttributeParameter("id", __('ID')),
-         new AttributeParameter("ref", __("Reference (# + id)")),
-         new AttributeParameter("link", _n('Link', 'Links', 1), "raw"),
-         new AttributeParameter("name", __('Title')),
-         new AttributeParameter("content", __('Description'), "raw"),
-         new AttributeParameter("date", __('Opening date'), 'date("d/m/y H:i")'),
-         new AttributeParameter("solvedate", __('Resolution date'), 'date("d/m/y H:i")'),
-         new AttributeParameter("closedate", __('Closing date'), 'date("d/m/y H:i")'),
-         new AttributeParameter("status", __('Status')),
-         new AttributeParameter("urgency", __('Urgency')),
-         new AttributeParameter("impact", __('Impact')),
-         new AttributeParameter("priority", __('Priority')),
-         new ObjectParameter(new EntityParameters()),
-         new ObjectParameter(new ITILCategoryParameters()),
-         new ArrayParameter("requesters.users", new UserParameters(), _n('Requester', 'Requesters', Session::getPluralNumber())),
-         new ArrayParameter("observers.users", new UserParameters(), _n('Watcher', 'Watchers', Session::getPluralNumber())),
-         new ArrayParameter("assignees.users", new UserParameters(), _n('Assignee', 'Assignees', Session::getPluralNumber())),
-         new ArrayParameter("requesters.groups", new GroupParameters(), _n('Requester group', 'Requester groups', Session::getPluralNumber())),
-         new ArrayParameter("observers.groups", new GroupParameters(), _n('Watcher group', 'Watcher groups', Session::getPluralNumber())),
-         new ArrayParameter("assignees.groups", new GroupParameters(), _n('Assigned group', 'Assigned groups', Session::getPluralNumber())),
-         new ArrayParameter("assignees.suppliers", new SupplierParameters(), _n('Assigned supplier', 'Assigned suppliers', Session::getPluralNumber())),
+            new AttributeParameter("id", __('ID')),
+            new AttributeParameter("ref", __("Reference (# + id)")),
+            new AttributeParameter("link", _n('Link', 'Links', 1), "raw"),
+            new AttributeParameter("name", __('Title')),
+            new AttributeParameter("content", __('Description'), "raw"),
+            new AttributeParameter("date", __('Opening date'), 'date("d/m/y H:i")'),
+            new AttributeParameter("solvedate", __('Resolution date'), 'date("d/m/y H:i")'),
+            new AttributeParameter("closedate", __('Closing date'), 'date("d/m/y H:i")'),
+            new AttributeParameter("status", __('Status')),
+            new AttributeParameter("urgency", __('Urgency')),
+            new AttributeParameter("impact", __('Impact')),
+            new AttributeParameter("priority", __('Priority')),
+            new ObjectParameter(new EntityParameters()),
+            new ObjectParameter(new ITILCategoryParameters()),
+            new ArrayParameter("requesters.users", new UserParameters(), _n('Requester', 'Requesters', Session::getPluralNumber())),
+            new ArrayParameter("observers.users", new UserParameters(), _n('Watcher', 'Watchers', Session::getPluralNumber())),
+            new ArrayParameter("assignees.users", new UserParameters(), _n('Assignee', 'Assignees', Session::getPluralNumber())),
+            new ArrayParameter("requesters.groups", new GroupParameters(), _n('Requester group', 'Requester groups', Session::getPluralNumber())),
+            new ArrayParameter("observers.groups", new GroupParameters(), _n('Watcher group', 'Watcher groups', Session::getPluralNumber())),
+            new ArrayParameter("assignees.groups", new GroupParameters(), _n('Assigned group', 'Assigned groups', Session::getPluralNumber())),
+            new ArrayParameter("assignees.suppliers", new SupplierParameters(), _n('Assigned supplier', 'Assigned suppliers', Session::getPluralNumber())),
         ];
     }
 
@@ -90,18 +90,18 @@ abstract class CommonITILObjectParameters extends AbstractParameters
 
        // Base values from ticket property
         $values = [
-         'id'        => $fields['id'],
-         'ref'       => "#" . $fields['id'],
-         'link'      => $commonitil->getLink(),
-         'name'      => $fields['name'],
-         'content'   => $fields['content'],
-         'date'      => $fields['date'],
-         'solvedate' => $fields['solvedate'],
-         'closedate' => $fields['closedate'],
-         'status'    => $commonitil::getStatus($fields['status']),
-         'urgency'   => $commonitil::getUrgencyName($fields['urgency']),
-         'impact'    => $commonitil::getImpactName($fields['impact']),
-         'priority'  => $commonitil::getPriorityName($fields['priority']),
+            'id'        => $fields['id'],
+            'ref'       => "#" . $fields['id'],
+            'link'      => $commonitil->getLink(),
+            'name'      => $fields['name'],
+            'content'   => $fields['content'],
+            'date'      => $fields['date'],
+            'solvedate' => $fields['solvedate'],
+            'closedate' => $fields['closedate'],
+            'status'    => $commonitil::getStatus($fields['status']),
+            'urgency'   => $commonitil::getUrgencyName($fields['urgency']),
+            'impact'    => $commonitil::getImpactName($fields['impact']),
+            'priority'  => $commonitil::getPriorityName($fields['priority']),
         ];
 
        // Add ticket's entity
@@ -120,24 +120,24 @@ abstract class CommonITILObjectParameters extends AbstractParameters
         $commonitil->loadActors();
 
         $values['requesters'] = [
-         'users'  => [],
-         'groups' => [],
+            'users'  => [],
+            'groups' => [],
         ];
         $values['observers'] = [
-         'users'  => [],
-         'groups' => [],
+            'users'  => [],
+            'groups' => [],
         ];
         $values['assignees'] = [
-         'users'     => [],
-         'groups'    => [],
-         'suppliers' => [],
+            'users'     => [],
+            'groups'    => [],
+            'suppliers' => [],
         ];
 
         $user_parameters = new UserParameters();
         $users_to_add = [
-         'requesters' => CommonITILActor::REQUESTER,
-         'observers'  => CommonITILActor::OBSERVER,
-         'assignees'  => CommonITILActor::ASSIGN,
+            'requesters' => CommonITILActor::REQUESTER,
+            'observers'  => CommonITILActor::OBSERVER,
+            'assignees'  => CommonITILActor::ASSIGN,
         ];
         foreach ($users_to_add as $key => $type) {
             foreach ($commonitil->getUsers($type) as $data) {
@@ -149,9 +149,9 @@ abstract class CommonITILObjectParameters extends AbstractParameters
 
         $group_parameters = new GroupParameters();
         $groups_to_add = [
-         'requesters' => CommonITILActor::REQUESTER,
-         'observers'  => CommonITILActor::OBSERVER,
-         'assignees'  => CommonITILActor::ASSIGN,
+            'requesters' => CommonITILActor::REQUESTER,
+            'observers'  => CommonITILActor::OBSERVER,
+            'assignees'  => CommonITILActor::ASSIGN,
         ];
         foreach ($groups_to_add as $key => $type) {
             foreach ($commonitil->getGroups($type) as $data) {

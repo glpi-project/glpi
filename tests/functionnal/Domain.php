@@ -62,16 +62,16 @@ class Domain extends DbTestCase
 
         $domain = new \Domain();
         $domains_id = (int)$domain->add([
-         'name'   => 'glpi-project.org'
+            'name'   => 'glpi-project.org'
         ]);
         $this->integer($domains_id)->isGreaterThan(0);
 
         $domain_item = new \Domain_Item();
         $this->integer(
             $domain_item->add([
-            'domains_id'   => $domains_id,
-            'itemtype'     => 'Computer',
-            'items_id'     => getItemByTypeName('Computer', '_test_pc01', true)
+                'domains_id'   => $domains_id,
+                'itemtype'     => 'Computer',
+                'items_id'     => getItemByTypeName('Computer', '_test_pc01', true)
             ])
         )->isGreaterThan(0);
 
@@ -79,9 +79,9 @@ class Domain extends DbTestCase
         foreach (['www', 'ftp', 'mail'] as $sub) {
             $this->integer(
                 (int)$record->add([
-                'name'         => $sub,
-                'data'         => 'glpi-project.org.',
-                'domains_id'   => $domains_id
+                    'name'         => $sub,
+                    'data'         => 'glpi-project.org.',
+                    'domains_id'   => $domains_id
                 ])
             )->isGreaterThan(0);
         }
@@ -103,18 +103,18 @@ class Domain extends DbTestCase
         $entity = getItemByTypeName('Entity', '_test_root_entity');
         $this->boolean(
             $entity->update([
-            'id'                                      => $entity->fields['id'],
-            'use_domains_alert'                       => 1,
-            'send_domains_alert_close_expiries_delay' => 7,
-            'send_domains_alert_expired_delay'        => 1
+                'id'                                      => $entity->fields['id'],
+                'use_domains_alert'                       => 1,
+                'send_domains_alert_close_expiries_delay' => 7,
+                'send_domains_alert_expired_delay'        => 1
             ])
         )->isTrue();
         $this->boolean($entity->getFromDB($entity->fields['id']))->isTrue();
 
         $this->array(\Entity::getEntitiesToNotify('use_domains_alert'))->isIdenticalTo([
-         getItemByTypeName('Entity', '_test_root_entity', true)   => 1,
-         getItemByTypeName('Entity', '_test_child_1', true)       => 1,
-         getItemByTypeName('Entity', '_test_child_2', true)       => 1,
+            getItemByTypeName('Entity', '_test_root_entity', true)   => 1,
+            getItemByTypeName('Entity', '_test_child_1', true)       => 1,
+            getItemByTypeName('Entity', '_test_child_2', true)       => 1,
         ]);
 
         $iterator = $DB->request(\Domain::expiredDomainsCriteria($entity->fields['id']));
@@ -137,7 +137,7 @@ class Domain extends DbTestCase
         $this->login();
         $domain = new \Domain();
         $domains_id = (int)$domain->add([
-         'name'   => 'glpi-project.org'
+            'name'   => 'glpi-project.org'
         ]);
         $this->integer($domains_id)->isGreaterThan(0);
 
@@ -145,9 +145,9 @@ class Domain extends DbTestCase
         foreach (['www', 'ftp', 'mail'] as $sub) {
             $this->integer(
                 (int)$record->add([
-                'name'         => $sub,
-                'data'         => 'glpi-project.org.',
-                'domains_id'   => $domains_id
+                    'name'         => $sub,
+                    'data'         => 'glpi-project.org.',
+                    'domains_id'   => $domains_id
                 ])
             )->isGreaterThan(0);
         }
@@ -177,8 +177,8 @@ class Domain extends DbTestCase
 
         global $DB;
         $records = $DB->request([
-         'FROM'   => \DomainRecord::getTable(),
-         'WHERE'  => ['domains_id' => $domains_id]
+            'FROM'   => \DomainRecord::getTable(),
+            'WHERE'  => ['domains_id' => $domains_id]
         ]);
         foreach ($records as $row) {
             $this->integer((int)$row['entities_id'])->isidenticalTo($entities_id);

@@ -47,12 +47,12 @@ if (isset($_POST["rubdoc"])) {
    // Clean used array
     if (isset($_POST['used']) && is_array($_POST['used']) && (count($_POST['used']) > 0)) {
         $iterator = $DB->request([
-         'SELECT' => ['id'],
-         'FROM'   => 'glpi_documents',
-         'WHERE'  => [
-            'id'                    => $_POST['used'],
-            'documentcategories_id' => (int)$_POST['rubdoc']
-         ]
+            'SELECT' => ['id'],
+            'FROM'   => 'glpi_documents',
+            'WHERE'  => [
+                'id'                    => $_POST['used'],
+                'documentcategories_id' => (int)$_POST['rubdoc']
+            ]
         ]);
 
         foreach ($iterator as $data) {
@@ -71,12 +71,12 @@ if (isset($_POST["rubdoc"])) {
     Dropdown::show(
         'Document',
         [
-         'name'      => $_POST['myname'],
-         'used'      => $used,
-         'width'     => '50%',
-         'entity'    => intval($_POST['entity']),
-         'rand'      => intval($_POST['rand']),
-         'condition' => ['glpi_documents.documentcategories_id' => (int)$_POST["rubdoc"]]
+            'name'      => $_POST['myname'],
+            'used'      => $used,
+            'width'     => '50%',
+            'entity'    => intval($_POST['entity']),
+            'rand'      => intval($_POST['rand']),
+            'condition' => ['glpi_documents.documentcategories_id' => (int)$_POST["rubdoc"]]
         ]
     );
 }

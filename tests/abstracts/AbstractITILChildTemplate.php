@@ -50,9 +50,9 @@ Itemtype: {{ itemtype }}
 TPL;
 
         $change = $this->createItem('Change', [
-         'name'         => 'test change',
-         'content'      => '<p>test content</p>',
-         'entities_id'  => getItemByTypeName('Entity', '_test_child_2', true),
+            'name'         => 'test change',
+            'content'      => '<p>test content</p>',
+            'entities_id'  => getItemByTypeName('Entity', '_test_child_2', true),
         ]);
         $this->string($template->getRenderedContent($change))
          ->isEqualTo(<<<HTML
@@ -62,9 +62,9 @@ HTML
         );
 
         $problem = $this->createItem('Problem', [
-         'name'         => 'test problem',
-         'content'      => '<p>test content</p>',
-         'entities_id'  => getItemByTypeName('Entity', '_test_child_2', true),
+            'name'         => 'test problem',
+            'content'      => '<p>test content</p>',
+            'entities_id'  => getItemByTypeName('Entity', '_test_child_2', true),
         ]);
         $this->string($template->getRenderedContent($problem))
          ->isEqualTo(<<<HTML
@@ -74,9 +74,9 @@ HTML
         );
 
         $ticket = $this->createItem('Ticket', [
-         'name'         => 'test ticket',
-         'content'      => '<p>test content</p>',
-         'entities_id'  => getItemByTypeName('Entity', '_test_child_2', true),
+            'name'         => 'test ticket',
+            'content'      => '<p>test content</p>',
+            'entities_id'  => getItemByTypeName('Entity', '_test_child_2', true),
         ]);
         $this->string($template->getRenderedContent($ticket))
          ->isEqualTo(<<<HTML
@@ -89,20 +89,20 @@ HTML
     protected function prepareInputProvider(): iterable
     {
         yield [
-         'content'  => '{{ itemtype }}',
-         'is_valid' => true,
+            'content'  => '{{ itemtype }}',
+            'is_valid' => true,
         ];
 
         yield [
-         'content'  => 'Invalid template {{',
-         'is_valid' => false,
-         'error'    => 'Content: Invalid twig template syntax',
+            'content'  => 'Invalid template {{',
+            'is_valid' => false,
+            'error'    => 'Content: Invalid twig template syntax',
         ];
 
         yield [
-         'content'  => 'Unauthorized tag {% set var = 15 %}',
-         'is_valid' => false,
-         'error'    => 'Content: Invalid twig template (Tag "set" is not allowed in "template" at line 1.)',
+            'content'  => 'Unauthorized tag {% set var = 15 %}',
+            'is_valid' => false,
+            'error'    => 'Content: Invalid twig template (Tag "set" is not allowed in "template" at line 1.)',
         ];
     }
 

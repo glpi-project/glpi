@@ -51,10 +51,10 @@ abstract class MainAsset extends InventoryAsset
 
     /** @var array */
     protected $extra_data = [
-      'hardware'     => null,
-      'bios'         => null,
-      'users'        => null,
-      '\Glpi\Inventory\Asset\NetworkCard' => null
+        'hardware'     => null,
+        'bios'         => null,
+        'users'        => null,
+        '\Glpi\Inventory\Asset\NetworkCard' => null
     ];
     /** @var mixed */
     protected $raw_data;
@@ -149,11 +149,11 @@ abstract class MainAsset extends InventoryAsset
         $hardware = (object)$this->extra_data['hardware'];
 
         $hw_mapping = [
-         'name'           => 'name',
-         'winprodid'      => 'licenseid',
-         'winprodkey'     => 'license_number',
-         'workgroup'      => 'domains_id',
-         'lastloggeduser' => 'users_id',
+            'name'           => 'name',
+            'winprodid'      => 'licenseid',
+            'winprodkey'     => 'license_number',
+            'workgroup'      => 'domains_id',
+            'lastloggeduser' => 'users_id',
         ];
 
         foreach ($hw_mapping as $origin => $dest) {
@@ -228,12 +228,12 @@ abstract class MainAsset extends InventoryAsset
                 $val->contact = $val->users_id;
                 $split_user = explode("@", $val->users_id);
                 $iterator = $DB->request([
-                'SELECT' => 'id',
-                'FROM'   => 'glpi_users',
-                'WHERE'  => [
-                  'name'   => $split_user[0]
-                ],
-                'LIMIT'  => 1
+                    'SELECT' => 'id',
+                    'FROM'   => 'glpi_users',
+                    'WHERE'  => [
+                        'name'   => $split_user[0]
+                    ],
+                    'LIMIT'  => 1
                 ]);
 
                 if (count($iterator)) {
@@ -288,12 +288,12 @@ abstract class MainAsset extends InventoryAsset
                             }
                         }
                         $iterator = $DB->request([
-                        'SELECT' => ['id'],
-                        'FROM'   => 'glpi_users',
-                        'WHERE'  => [
-                        'name'   => $a_users->login
-                        ] + $where_add,
-                        'LIMIT'  => 1
+                            'SELECT' => ['id'],
+                            'FROM'   => 'glpi_users',
+                            'WHERE'  => [
+                                'name'   => $a_users->login
+                            ] + $where_add,
+                            'LIMIT'  => 1
                         ]);
                         if ($row = $iterator->current()) {
                               $val->users_id = $row['id'];
@@ -683,12 +683,12 @@ abstract class MainAsset extends InventoryAsset
 
         $rulesmatched = new RuleMatchedLog();
         $inputrulelog = [
-         'date'      => date('Y-m-d H:i:s'),
-         'rules_id'  => $rules_id,
-         'items_id'  => $items_id,
-         'itemtype'  => $itemtype,
-         'agents_id' => $this->agent->fields['id'],
-         'method'    => $this->request_query ?? Request::INVENT_QUERY
+            'date'      => date('Y-m-d H:i:s'),
+            'rules_id'  => $rules_id,
+            'items_id'  => $items_id,
+            'itemtype'  => $itemtype,
+            'agents_id' => $this->agent->fields['id'],
+            'method'    => $this->request_query ?? Request::INVENT_QUERY
         ];
         $rulesmatched->add($inputrulelog, [], false);
         $rulesmatched->cleanOlddata($items_id, $itemtype);

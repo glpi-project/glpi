@@ -43,11 +43,13 @@ class RuleDictionnarySoftwareCollection extends DbTestCase
     {
         $collection = new \RuleDictionnarySoftwareCollection();
         $params     = ['manufacturers_id' => 1,
-                     '_bad'             => '_value2',
-                     '_ignore_import'   => '1'];
+            '_bad'             => '_value2',
+            '_ignore_import'   => '1'
+        ];
         $result     = $collection->cleanTestOutputCriterias($params);
         $expected   = ['manufacturers_id' => 1,
-                   '_ignore_import'   => '1'];
+            '_ignore_import'   => '1'
+        ];
         $this->array($result)->isIdenticalTo($expected);
     }
 
@@ -71,9 +73,9 @@ class RuleDictionnarySoftwareCollection extends DbTestCase
     {
         $old_software = new \Software();
         $softwares_id = $old_software->add([
-         'name'         => 'Software ' . $this->getUniqueString(),
-         'is_template'  => 0,
-         'entities_id'  => 0
+            'name'         => 'Software ' . $this->getUniqueString(),
+            'is_template'  => 0,
+            'entities_id'  => 0
         ]);
         $this->integer((int)$softwares_id)->isGreaterThan(0);
         $this->boolean($old_software->getFromDB($softwares_id))->isTrue();
@@ -82,9 +84,9 @@ class RuleDictionnarySoftwareCollection extends DbTestCase
         for ($i = 0; $i < 5; ++$i) {
             $license = new \SoftwareLicense();
             $license_id = $license->add([
-            'name'         => 'Software license ' . $this->getUniqueString(),
-            'softwares_id' => $old_software->getID(),
-            'entities_id'  => 0
+                'name'         => 'Software license ' . $this->getUniqueString(),
+                'softwares_id' => $old_software->getID(),
+                'entities_id'  => 0
             ]);
             $this->integer((int)$license_id)->isGreaterThan(0);
             $this->boolean($license->getFromDB($license_id))->isTrue();
@@ -92,9 +94,9 @@ class RuleDictionnarySoftwareCollection extends DbTestCase
 
         $new_software = new \Software();
         $softwares_id = $new_software->add([
-         'name'         => 'Software ' . $this->getUniqueString(),
-         'is_template'  => 0,
-         'entities_id'  => 0
+            'name'         => 'Software ' . $this->getUniqueString(),
+            'is_template'  => 0,
+            'entities_id'  => 0
         ]);
         $this->integer((int)$softwares_id)->isGreaterThan(0);
         $this->boolean($new_software->getFromDB($softwares_id))->isTrue();
@@ -149,11 +151,11 @@ class RuleDictionnarySoftwareCollection extends DbTestCase
         $this->integer($soft_id_5)->isGreaterThan(0);
 
         $collection->putOldSoftsInTrash([
-         $soft_id_1,
-         $soft_id_2,
-         $soft3->getID(),
-         $soft_id_4,
-         $soft_id_5
+            $soft_id_1,
+            $soft_id_2,
+            $soft3->getID(),
+            $soft_id_4,
+            $soft_id_5
         ]);
 
        //Softwares newly put in trash
@@ -184,47 +186,47 @@ class RuleDictionnarySoftwareCollection extends DbTestCase
         $collection = new \RuleDictionnarySoftwareCollection();
 
         $rules_id = $rule->add(['name'        => 'Ignore import',
-                              'is_active'   => 1,
-                              'entities_id' => 0,
-                              'sub_type'    => 'RuleDictionnarySoftware',
-                              'match'       => \Rule::AND_MATCHING,
-                              'condition'   => 0,
-                              'description' => ''
-                             ]);
+            'is_active'   => 1,
+            'entities_id' => 0,
+            'sub_type'    => 'RuleDictionnarySoftware',
+            'match'       => \Rule::AND_MATCHING,
+            'condition'   => 0,
+            'description' => ''
+        ]);
         $this->integer($rules_id)->isGreaterThan(0);
 
         $this->integer(
             (int)$criteria->add([
-            'rules_id'  => $rules_id,
-            'criteria'  => 'name',
-            'condition' => \Rule::PATTERN_IS,
-            'pattern'   => 'Mozilla Firefox 52'
+                'rules_id'  => $rules_id,
+                'criteria'  => 'name',
+                'condition' => \Rule::PATTERN_IS,
+                'pattern'   => 'Mozilla Firefox 52'
             ])
         )->isGreaterThan(0);
 
         $this->integer(
             (int)$action->add([
-            'rules_id'    => $rules_id,
-            'action_type' => 'assign',
-            'field'       => '_ignore_import',
-            'value'       => '1'
+                'rules_id'    => $rules_id,
+                'action_type' => 'assign',
+                'field'       => '_ignore_import',
+                'value'       => '1'
             ])
         )->isGreaterThan(0);
 
         $input = ['name'             => 'Mozilla Firefox 52',
-                'version'          => '52',
-                'manufacturer'     => 'Mozilla',
-                '_system_category' => 'web'
-               ];
+            'version'          => '52',
+            'manufacturer'     => 'Mozilla',
+            '_system_category' => 'web'
+        ];
         $result = $collection->processAllRules($input);
         $expected = ['_ignore_import' => '1', '_ruleid' => "$rules_id"];
         $this->array($result)->isIdenticalTo($expected);
 
         $input = ['name'             => 'Mozilla Firefox 53',
-                'version'          => '52',
-                'manufacturer'     => 'Mozilla',
-                '_system_category' => 'web'
-               ];
+            'version'          => '52',
+            'manufacturer'     => 'Mozilla',
+            '_system_category' => 'web'
+        ];
         $result = $collection->processAllRules($input);
         $expected = ['_no_rule_matches' => '1', '_rule_process' => ''];
         $this->array($result)->isIdenticalTo($expected);
@@ -238,37 +240,37 @@ class RuleDictionnarySoftwareCollection extends DbTestCase
         $collection = new \RuleDictionnarySoftwareCollection();
 
         $rules_id = $rule->add(['name'        => 'Set version',
-                              'is_active'   => 1,
-                              'entities_id' => 0,
-                              'sub_type'    => 'RuleDictionnarySoftware',
-                              'match'       => \Rule::AND_MATCHING,
-                              'condition'   => 0,
-                              'description' => ''
-                           ]);
+            'is_active'   => 1,
+            'entities_id' => 0,
+            'sub_type'    => 'RuleDictionnarySoftware',
+            'match'       => \Rule::AND_MATCHING,
+            'condition'   => 0,
+            'description' => ''
+        ]);
         $this->integer($rules_id)->isGreaterThan(0);
 
         $this->integer(
             $criteria->add([
-            'rules_id'  => $rules_id,
-            'criteria'  => 'name',
-            'condition' => \Rule::REGEX_MATCH,
-            'pattern'   => '/Mozilla Firefox (.*)/'
+                'rules_id'  => $rules_id,
+                'criteria'  => 'name',
+                'condition' => \Rule::REGEX_MATCH,
+                'pattern'   => '/Mozilla Firefox (.*)/'
             ])
         )->isGreaterThan(0);
 
         $this->integer(
             $action->add([
-            'rules_id'    => $rules_id,
-            'action_type' => 'regex_result',
-            'field'       => 'version',
-            'value'       => '#0'
+                'rules_id'    => $rules_id,
+                'action_type' => 'regex_result',
+                'field'       => 'version',
+                'value'       => '#0'
             ])
         )->isGreaterThan(0);
 
         $input = ['name'             => 'Mozilla Firefox 52',
-                'manufacturer'     => 'Mozilla',
-                '_system_category' => 'web'
-               ];
+            'manufacturer'     => 'Mozilla',
+            '_system_category' => 'web'
+        ];
 
         $collection->RuleList = new \stdClass();
         $collection->RuleList->load = true;
@@ -285,54 +287,54 @@ class RuleDictionnarySoftwareCollection extends DbTestCase
         $collection = new \RuleDictionnarySoftwareCollection();
 
         $rules_id = $rule->add(['name'        => 'Set version',
-                              'is_active'   => 1,
-                              'entities_id' => 0,
-                              'sub_type'    => 'RuleDictionnarySoftware',
-                              'match'       => \Rule::AND_MATCHING,
-                              'condition'   => 0,
-                              'description' => ''
-                           ]);
+            'is_active'   => 1,
+            'entities_id' => 0,
+            'sub_type'    => 'RuleDictionnarySoftware',
+            'match'       => \Rule::AND_MATCHING,
+            'condition'   => 0,
+            'description' => ''
+        ]);
         $this->integer($rules_id)->isGreaterThan(0);
 
         $this->integer(
             $criteria->add([
-            'rules_id'  => $rules_id,
-            'criteria'  => 'name',
-            'condition' => \Rule::REGEX_MATCH,
-            'pattern'   => '/Mozilla Firefox (.*)/'
+                'rules_id'  => $rules_id,
+                'criteria'  => 'name',
+                'condition' => \Rule::REGEX_MATCH,
+                'pattern'   => '/Mozilla Firefox (.*)/'
             ])
         )->isGreaterThan(0);
 
         $this->integer(
             $action->add([
-            'rules_id'    => $rules_id,
-            'action_type' => 'regex_result',
-            'field'       => 'version',
-            'value'       => '#0'
+                'rules_id'    => $rules_id,
+                'action_type' => 'regex_result',
+                'field'       => 'version',
+                'value'       => '#0'
             ])
         )->isGreaterThan(0);
 
         $this->integer(
             $action->add([
-            'rules_id'    => $rules_id,
-            'action_type' => 'assign',
-            'field'       => 'name',
-            'value'       => 'Mozilla Firefox'
+                'rules_id'    => $rules_id,
+                'action_type' => 'assign',
+                'field'       => 'name',
+                'value'       => 'Mozilla Firefox'
             ])
         )->isGreaterThan(0);
 
         $input = ['name'             => 'Mozilla Firefox 52',
-                'manufacturer'     => 'Mozilla',
-                '_system_category' => 'web'
-               ];
+            'manufacturer'     => 'Mozilla',
+            '_system_category' => 'web'
+        ];
 
         $collection->RuleList = new \stdClass();
         $collection->RuleList->load = true;
         $result   = $collection->processAllRules($input);
         $expected = [
-         'version' => '52',
-         'name'    => 'Mozilla Firefox',
-         '_ruleid' => "$rules_id",
+            'version' => '52',
+            'name'    => 'Mozilla Firefox',
+            '_ruleid' => "$rules_id",
         ];
         $this->array($result)->isIdenticalTo($expected);
     }
@@ -347,54 +349,54 @@ class RuleDictionnarySoftwareCollection extends DbTestCase
         $categories_id = $category->importExternal('web');
 
         $rules_id = $rule->add(['name'        => 'Set version',
-                              'is_active'   => 1,
-                              'entities_id' => 0,
-                              'sub_type'    => 'RuleDictionnarySoftware',
-                              'match'       => \Rule::AND_MATCHING,
-                              'condition'   => 0,
-                              'description' => ''
-                           ]);
+            'is_active'   => 1,
+            'entities_id' => 0,
+            'sub_type'    => 'RuleDictionnarySoftware',
+            'match'       => \Rule::AND_MATCHING,
+            'condition'   => 0,
+            'description' => ''
+        ]);
         $this->integer($rules_id)->isGreaterThan(0);
 
         $this->integer(
             $criteria->add([
-            'rules_id'  => $rules_id,
-            'criteria'  => 'name',
-            'condition' => \Rule::REGEX_MATCH,
-            'pattern'   => '/Mozilla Firefox (.*)/'
+                'rules_id'  => $rules_id,
+                'criteria'  => 'name',
+                'condition' => \Rule::REGEX_MATCH,
+                'pattern'   => '/Mozilla Firefox (.*)/'
             ])
         )->isGreaterThan(0);
 
         $this->integer(
             $action->add([
-            'rules_id'    => $rules_id,
-            'action_type' => 'assign',
-            'field'       => 'softwarecategories_id',
-            'value'       => $categories_id
+                'rules_id'    => $rules_id,
+                'action_type' => 'assign',
+                'field'       => 'softwarecategories_id',
+                'value'       => $categories_id
             ])
         )->isGreaterThan(0);
 
         $this->integer(
             $action->add([
-            'rules_id'    => $rules_id,
-            'action_type' => 'assign',
-            'field'       => 'name',
-            'value'       => 'Mozilla Firefox'
+                'rules_id'    => $rules_id,
+                'action_type' => 'assign',
+                'field'       => 'name',
+                'value'       => 'Mozilla Firefox'
             ])
         )->isGreaterThan(0);
 
         $input = ['name'             => 'Mozilla Firefox 52',
-                'manufacturer'     => 'Mozilla',
-                '_system_category' => 'web'
-               ];
+            'manufacturer'     => 'Mozilla',
+            '_system_category' => 'web'
+        ];
 
         $collection->RuleList = new \stdClass();
         $collection->RuleList->load = true;
         $result   = $collection->processAllRules($input);
         $expected = [
-         'softwarecategories_id' => "$categories_id",
-         'name'                  => 'Mozilla Firefox',
-         '_ruleid'               => "$rules_id"
+            'softwarecategories_id' => "$categories_id",
+            'name'                  => 'Mozilla Firefox',
+            '_ruleid'               => "$rules_id"
         ];
         $this->array($result)->isIdenticalTo($expected);
     }
@@ -409,44 +411,44 @@ class RuleDictionnarySoftwareCollection extends DbTestCase
         $manufacturers_id = $manufacturer->importExternal('Mozilla');
 
         $rules_id = $rule->add(['name'        => 'Set manufacturer',
-                              'is_active'   => 1,
-                              'entities_id' => 0,
-                              'sub_type'    => 'RuleDictionnarySoftware',
-                              'match'       => \Rule::AND_MATCHING,
-                              'condition'   => 0,
-                              'description' => ''
-                             ]);
+            'is_active'   => 1,
+            'entities_id' => 0,
+            'sub_type'    => 'RuleDictionnarySoftware',
+            'match'       => \Rule::AND_MATCHING,
+            'condition'   => 0,
+            'description' => ''
+        ]);
         $this->integer($rules_id)->isGreaterThan(0);
 
         $this->integer(
             $criteria->add([
-            'rules_id'  => $rules_id,
-            'criteria'  => 'name',
-            'condition' => \Rule::REGEX_MATCH,
-            'pattern'   => '/Mozilla Firefox (.*)/'
+                'rules_id'  => $rules_id,
+                'criteria'  => 'name',
+                'condition' => \Rule::REGEX_MATCH,
+                'pattern'   => '/Mozilla Firefox (.*)/'
             ])
         )->isGreaterThan(0);
 
         $this->integer(
             $action->add([
-            'rules_id'    => $rules_id,
-            'action_type' => 'assign',
-            'field'       => 'manufacturers_id',
-            'value'       => $manufacturers_id
+                'rules_id'    => $rules_id,
+                'action_type' => 'assign',
+                'field'       => 'manufacturers_id',
+                'value'       => $manufacturers_id
             ])
         )->isGreaterThan(0);
 
         $input = ['name'             => 'Mozilla Firefox 52',
-                'manufacturer'     => 'Mozilla',
-                '_system_category' => 'web'
-               ];
+            'manufacturer'     => 'Mozilla',
+            '_system_category' => 'web'
+        ];
 
         $collection->RuleList = new \stdClass();
         $collection->RuleList->load = true;
         $result   = $collection->processAllRules($input);
         $expected = ['manufacturers_id' => "$manufacturers_id",
-                   '_ruleid'          => "$rules_id"
-                  ];
+            '_ruleid'          => "$rules_id"
+        ];
         $this->array($result)->isIdenticalTo($expected);
     }
 
@@ -458,30 +460,30 @@ class RuleDictionnarySoftwareCollection extends DbTestCase
         $collection = new \RuleDictionnarySoftwareCollection();
 
         $rules_id = $rule->add(['name'        => 'Test append',
-                              'is_active'   => 1,
-                              'entities_id' => 0,
-                              'sub_type'    => 'RuleDictionnarySoftware',
-                              'match'       => \Rule::AND_MATCHING,
-                              'condition'   => 0,
-                              'description' => ''
-                           ]);
+            'is_active'   => 1,
+            'entities_id' => 0,
+            'sub_type'    => 'RuleDictionnarySoftware',
+            'match'       => \Rule::AND_MATCHING,
+            'condition'   => 0,
+            'description' => ''
+        ]);
         $this->integer($rules_id)->isGreaterThan(0);
 
         $this->integer(
             $criteria->add([
-            'rules_id'  => $rules_id,
-            'criteria'  => 'name',
-            'condition' => \Rule::REGEX_MATCH,
-            'pattern'   => '/^Soft (something|else)/'
+                'rules_id'  => $rules_id,
+                'criteria'  => 'name',
+                'condition' => \Rule::REGEX_MATCH,
+                'pattern'   => '/^Soft (something|else)/'
             ])
         )->isGreaterThan(0);
 
         $this->integer(
             $action->add([
-            'rules_id'    => $rules_id,
-            'action_type' => 'append_regex_result',
-            'field'       => 'version',
-            'value'       => '#0'
+                'rules_id'    => $rules_id,
+                'action_type' => 'append_regex_result',
+                'field'       => 'version',
+                'value'       => '#0'
             ])
         )->isGreaterThan(0);
 

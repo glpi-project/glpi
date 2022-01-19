@@ -211,8 +211,8 @@ class RacksPluginToCoreCommand extends AbstractCommand
            // Ask for confirmation (unless --no-interaction)
             $output->writeln(
                 [
-                __('You are about to launch migration of Racks plugin data into GLPI core tables.'),
-                __('It is better to make a backup of your existing data before continuing.')
+                    __('You are about to launch migration of Racks plugin data into GLPI core tables.'),
+                    __('It is better to make a backup of your existing data before continuing.')
                 ]
             );
 
@@ -266,7 +266,7 @@ class RacksPluginToCoreCommand extends AbstractCommand
                   );
                  $this->output->writeln(
                      [
-                     '<error>' . $message . '</error>',
+                         '<error>' . $message . '</error>',
                      ],
                      OutputInterface::VERBOSITY_QUIET
                  );
@@ -289,9 +289,9 @@ class RacksPluginToCoreCommand extends AbstractCommand
             $is_installable = in_array(
                 $plugin->fields['state'],
                 [
-                Plugin::TOBECLEANED, // Can be in this state if check was done without the plugin dir
-                Plugin::NOTINSTALLED, // Can be not installed if plugin has been cleaned in plugin list
-                Plugin::NOTUPDATED, // Plugin 1.8.0 version has never been installed
+                    Plugin::TOBECLEANED, // Can be in this state if check was done without the plugin dir
+                    Plugin::NOTINSTALLED, // Can be not installed if plugin has been cleaned in plugin list
+                    Plugin::NOTUPDATED, // Plugin 1.8.0 version has never been installed
                 ]
             );
             if ($is_installable) {
@@ -338,9 +338,9 @@ class RacksPluginToCoreCommand extends AbstractCommand
             $is_state_ok   = in_array(
                 $plugin->fields['state'],
                 [
-                Plugin::ACTIVATED, // Should not be possible as 1.8.0 is not compatible with 9.3
-                Plugin::TOBECONFIGURED, // Should not be possible as check_config of plugin returns always true
-                Plugin::NOTACTIVATED,
+                    Plugin::ACTIVATED, // Should not be possible as 1.8.0 is not compatible with 9.3
+                    Plugin::TOBECONFIGURED, // Should not be possible as check_config of plugin returns always true
+                    Plugin::NOTACTIVATED,
                 ]
             );
             if (!$is_state_ok) {
@@ -350,15 +350,15 @@ class RacksPluginToCoreCommand extends AbstractCommand
         }
 
         $rack_tables = [
-         'glpi_plugin_racks_itemspecifications',
-         'glpi_plugin_racks_others',
-         'glpi_plugin_racks_othermodels',
-         'glpi_plugin_racks_racks',
-         'glpi_plugin_racks_racks_items',
-         'glpi_plugin_racks_rackmodels',
-         'glpi_plugin_racks_racktypes',
-         'glpi_plugin_racks_rackstates',
-         'glpi_plugin_racks_roomlocations',
+            'glpi_plugin_racks_itemspecifications',
+            'glpi_plugin_racks_others',
+            'glpi_plugin_racks_othermodels',
+            'glpi_plugin_racks_racks',
+            'glpi_plugin_racks_racks_items',
+            'glpi_plugin_racks_rackmodels',
+            'glpi_plugin_racks_racktypes',
+            'glpi_plugin_racks_rackstates',
+            'glpi_plugin_racks_roomlocations',
         ];
         $missing_tables = false;
         foreach ($rack_tables as $table) {
@@ -390,16 +390,16 @@ class RacksPluginToCoreCommand extends AbstractCommand
     {
 
         $core_tables = [
-         'glpi_datacenters',
-         'glpi_dcrooms',
-         'glpi_items_racks',
-         'glpi_pdus',
-         'glpi_racks',
-         'glpi_rackmodels',
-         'glpi_racktypes',
-         'glpi_passivedcequipments',
-         'glpi_passivedcequipmenttypes',
-         'glpi_passivedcequipmentmodels',
+            'glpi_datacenters',
+            'glpi_dcrooms',
+            'glpi_items_racks',
+            'glpi_pdus',
+            'glpi_racks',
+            'glpi_rackmodels',
+            'glpi_racktypes',
+            'glpi_passivedcequipments',
+            'glpi_passivedcequipmenttypes',
+            'glpi_passivedcequipmentmodels',
         ];
 
         foreach ($core_tables as $table) {
@@ -466,7 +466,7 @@ class RacksPluginToCoreCommand extends AbstractCommand
 
         $dc = new Datacenter();
         $dc_fields = [
-         'name' => 'Temp Datacenter (from racks plugin migration script)',
+            'name' => 'Temp Datacenter (from racks plugin migration script)',
 
         ];
 
@@ -504,18 +504,18 @@ class RacksPluginToCoreCommand extends AbstractCommand
 
         $othermodels_iterator = $this->db->request(
             [
-            'FROM' => 'glpi_plugin_racks_othermodels'
+                'FROM' => 'glpi_plugin_racks_othermodels'
             ]
         );
 
         if ($count_othermodels = $othermodels_iterator->count()) {
             $this->output->writeln(
                 [
-                '<comment>' . __('Other items do not exist in GLPI core.') . '</comment>',
-                sprintf(
-                    __('We found %d models for other items. For each, we will ask you where you want to import it.'),
-                    $count_othermodels
-                ),
+                    '<comment>' . __('Other items do not exist in GLPI core.') . '</comment>',
+                    sprintf(
+                        __('We found %d models for other items. For each, we will ask you where you want to import it.'),
+                        $count_othermodels
+                    ),
                 ],
                 OutputInterface::VERBOSITY_QUIET
             );
@@ -534,13 +534,13 @@ class RacksPluginToCoreCommand extends AbstractCommand
                      new ChoiceQuestion(
                          sprintf(__('Where do you want to import "%s"?'), $model_label),
                          [
-                         self::OTHER_TYPE_CHOICE_COMPUTER            => Computer::getTypeName(1),
-                         self::OTHER_TYPE_CHOICE_NETWORKEQUIPEMENT   => NetworkEquipment::getTypeName(1),
-                         self::OTHER_TYPE_CHOICE_PERIPHERAL          => Peripheral::getTypeName(1),
-                         self::OTHER_TYPE_CHOICE_PDU                 => PDU::getTypeName(1),
-                         self::OTHER_TYPE_CHOICE_MONITOR             => Monitor::getTypeName(1),
-                         self::OTHER_TYPE_CHOICE_PASSIVEDCEQUIPEMENT => PassiveDCEquipment::getTypeName(1),
-                         self::OTHER_TYPE_CHOICE_IGNORE              => __('Ignore (default)'),
+                             self::OTHER_TYPE_CHOICE_COMPUTER            => Computer::getTypeName(1),
+                             self::OTHER_TYPE_CHOICE_NETWORKEQUIPEMENT   => NetworkEquipment::getTypeName(1),
+                             self::OTHER_TYPE_CHOICE_PERIPHERAL          => Peripheral::getTypeName(1),
+                             self::OTHER_TYPE_CHOICE_PDU                 => PDU::getTypeName(1),
+                             self::OTHER_TYPE_CHOICE_MONITOR             => Monitor::getTypeName(1),
+                             self::OTHER_TYPE_CHOICE_PASSIVEDCEQUIPEMENT => PassiveDCEquipment::getTypeName(1),
+                             self::OTHER_TYPE_CHOICE_IGNORE              => __('Ignore (default)'),
                          ],
                          self::OTHER_TYPE_CHOICE_IGNORE
                      )
@@ -587,8 +587,8 @@ class RacksPluginToCoreCommand extends AbstractCommand
 
                 $new_model = new $new_model_itemtype();
                 $new_model_fields = Sanitizer::sanitize([
-                 'name'    => $othermodel['name'],
-                 'comment' => $othermodel['comment'],
+                    'name'    => $othermodel['name'],
+                    'comment' => $othermodel['comment'],
                 ]);
 
                 if (
@@ -622,10 +622,10 @@ class RacksPluginToCoreCommand extends AbstractCommand
 
                  $otheritems_iterator = $this->db->request(
                      [
-                     'FROM'  => 'glpi_plugin_racks_others',
-                     'WHERE' => [
-                     'plugin_racks_othermodels_id' => $othermodel['id'],
-                     ],
+                         'FROM'  => 'glpi_plugin_racks_others',
+                         'WHERE' => [
+                             'plugin_racks_othermodels_id' => $othermodel['id'],
+                         ],
                      ]
                  );
 
@@ -639,11 +639,11 @@ class RacksPluginToCoreCommand extends AbstractCommand
                         $progress_bar->advance(1);
 
                         $new_item_fields = Sanitizer::sanitize([
-                        'name'        => strlen($otheritem['name'])
+                            'name'        => strlen($otheritem['name'])
                                      ? $otheritem['name']
                                      : $otheritem['id'],
-                        'entities_id' => $otheritem['entities_id'],
-                        $fk_new_model => $new_model_id
+                            'entities_id' => $otheritem['entities_id'],
+                            $fk_new_model => $new_model_id
                         ]);
 
                         $new_item = new $new_itemtype();
@@ -702,8 +702,8 @@ class RacksPluginToCoreCommand extends AbstractCommand
 
         $specs_iterator = $this->db->request(
             [
-            'FROM'  => 'glpi_plugin_racks_itemspecifications',
-            'ORDER' => 'id ASC'
+                'FROM'  => 'glpi_plugin_racks_itemspecifications',
+                'ORDER' => 'id ASC'
             ]
         );
 
@@ -742,12 +742,12 @@ class RacksPluginToCoreCommand extends AbstractCommand
                 }
 
                 $model_input = [
-                 'id'                => $model->fields['id'],
-                 'required_units'    => $spec['size'],
-                 'depth'             => ($spec['length'] == 1 ? 1 : 0.5),
-                 'weight'            => $spec['weight'],
-                 'is_half_rack'      => 0,
-                 'power_connections' => $spec['nb_alim'],
+                    'id'                => $model->fields['id'],
+                    'required_units'    => $spec['size'],
+                    'depth'             => ($spec['length'] == 1 ? 1 : 0.5),
+                    'weight'            => $spec['weight'],
+                    'is_half_rack'      => 0,
+                    'power_connections' => $spec['nb_alim'],
                 ];
 
                 if (!$model->update($model_input)) {
@@ -796,7 +796,7 @@ class RacksPluginToCoreCommand extends AbstractCommand
 
         $models_iterator = $this->db->request(
             [
-            'FROM' => 'glpi_plugin_racks_rackmodels',
+                'FROM' => 'glpi_plugin_racks_rackmodels',
             ]
         );
 
@@ -820,8 +820,8 @@ class RacksPluginToCoreCommand extends AbstractCommand
                 $rackmodel = new RackModel();
                 $rackmodel_fields = Sanitizer::sanitize(
                     [
-                    'name'    => $old_model['name'],
-                    'comment' => $old_model['comment'],
+                        'name'    => $old_model['name'],
+                        'comment' => $old_model['comment'],
                     ]
                 );
 
@@ -877,7 +877,7 @@ class RacksPluginToCoreCommand extends AbstractCommand
 
         $types_iterator = $this->db->request(
             [
-            'FROM' => 'glpi_plugin_racks_racktypes',
+                'FROM' => 'glpi_plugin_racks_racktypes',
             ]
         );
 
@@ -901,10 +901,10 @@ class RacksPluginToCoreCommand extends AbstractCommand
                 $racktype = new RackType();
                 $racktype_fields = Sanitizer::sanitize(
                     [
-                    'name'         => $old_type['name'],
-                    'entities_id'  => $old_type['entities_id'],
-                    'is_recursive' => $old_type['is_recursive'],
-                    'comment'      => $old_type['comment'],
+                        'name'         => $old_type['name'],
+                        'entities_id'  => $old_type['entities_id'],
+                        'is_recursive' => $old_type['is_recursive'],
+                        'comment'      => $old_type['comment'],
                     ]
                 );
 
@@ -960,7 +960,7 @@ class RacksPluginToCoreCommand extends AbstractCommand
 
         $states_iterator = $this->db->request(
             [
-            'FROM' => 'glpi_plugin_racks_rackstates',
+                'FROM' => 'glpi_plugin_racks_rackstates',
             ]
         );
 
@@ -984,8 +984,8 @@ class RacksPluginToCoreCommand extends AbstractCommand
                 $state = new State();
                 $state_fields = Sanitizer::sanitize(
                     [
-                    'name'      => $old_state['name'],
-                    'states_id' => 0,
+                        'name'      => $old_state['name'],
+                        'states_id' => 0,
                     ]
                 );
 
@@ -1044,7 +1044,7 @@ class RacksPluginToCoreCommand extends AbstractCommand
 
         $rooms_iterator = $this->db->request(
             [
-            'FROM' => 'glpi_plugin_racks_roomlocations',
+                'FROM' => 'glpi_plugin_racks_roomlocations',
             ]
         );
 
@@ -1068,12 +1068,12 @@ class RacksPluginToCoreCommand extends AbstractCommand
                 $room = new DCRoom();
                 $room_fields = Sanitizer::sanitize(
                     [
-                    'name'           => $old_room['completename'],
-                    'entities_id'    => $old_room['entities_id'],
-                    'is_recursive'   => 1,
-                    'datacenters_id' => $this->datacenter_id,
-                    'vis_cols'       => 10,
-                    'vis_rows'       => 10,
+                        'name'           => $old_room['completename'],
+                        'entities_id'    => $old_room['entities_id'],
+                        'is_recursive'   => 1,
+                        'datacenters_id' => $this->datacenter_id,
+                        'vis_cols'       => 10,
+                        'vis_rows'       => 10,
                     ]
                 );
 
@@ -1129,7 +1129,7 @@ class RacksPluginToCoreCommand extends AbstractCommand
 
         $racks_iterator = $this->db->request(
             [
-            'FROM' => 'glpi_plugin_racks_racks',
+                'FROM' => 'glpi_plugin_racks_racks',
             ]
         );
 
@@ -1180,28 +1180,28 @@ class RacksPluginToCoreCommand extends AbstractCommand
                 $rack = new Rack();
                 $rack_fields = Sanitizer::sanitize(
                     [
-                    'name'             => $old_rack['name'],
-                    'comment'          => "Imported from rack plugin",
-                    'entities_id'      => $old_rack['entities_id'],
-                    'is_recursive'     => $old_rack['is_recursive'],
-                    'locations_id'     => $old_rack['locations_id'],
-                    'serial'           => $old_rack['serial'],
-                    'rackmodels_id'    => null !== $rackmodel ? $rackmodel->fields['id'] : 0,
-                    'manufacturers_id' => $old_rack['manufacturers_id'],
-                    'racktypes_id'     => null !== $racktype ? $racktype->fields['id'] : 0,
-                    'states_id'        => null !== $rackstate ? $rackstate->fields['id'] : 0,
-                    'users_id_tech'    => $old_rack['users_id_tech'],
-                    'groups_id_tech'   => $old_rack['groups_id_tech'],
-                    'width'            => (int) $old_rack['width'],
-                    'height'           => (int) $old_rack['height'],
-                    'depth'            => (int) $old_rack['depth'],
-                    'max_weight'       => (int) $old_rack['weight'],
-                    'number_units'     => $old_rack['rack_size'],
-                    'is_template'      => $old_rack['is_template'],
-                    'template_name'    => $old_rack['template_name'],
-                    'is_deleted'       => $old_rack['is_deleted'],
-                    'dcrooms_id'       => $room_id,
-                    'bgcolor'          => "#FEC95C",
+                        'name'             => $old_rack['name'],
+                        'comment'          => "Imported from rack plugin",
+                        'entities_id'      => $old_rack['entities_id'],
+                        'is_recursive'     => $old_rack['is_recursive'],
+                        'locations_id'     => $old_rack['locations_id'],
+                        'serial'           => $old_rack['serial'],
+                        'rackmodels_id'    => null !== $rackmodel ? $rackmodel->fields['id'] : 0,
+                        'manufacturers_id' => $old_rack['manufacturers_id'],
+                        'racktypes_id'     => null !== $racktype ? $racktype->fields['id'] : 0,
+                        'states_id'        => null !== $rackstate ? $rackstate->fields['id'] : 0,
+                        'users_id_tech'    => $old_rack['users_id_tech'],
+                        'groups_id_tech'   => $old_rack['groups_id_tech'],
+                        'width'            => (int) $old_rack['width'],
+                        'height'           => (int) $old_rack['height'],
+                        'depth'            => (int) $old_rack['depth'],
+                        'max_weight'       => (int) $old_rack['weight'],
+                        'number_units'     => $old_rack['rack_size'],
+                        'is_template'      => $old_rack['is_template'],
+                        'template_name'    => $old_rack['template_name'],
+                        'is_deleted'       => $old_rack['is_deleted'],
+                        'dcrooms_id'       => $room_id,
+                        'bgcolor'          => "#FEC95C",
                     ]
                 );
 
@@ -1258,8 +1258,8 @@ class RacksPluginToCoreCommand extends AbstractCommand
 
         $items_iterator = $this->db->request(
             [
-            'FROM'  => 'glpi_plugin_racks_racks_items',
-            'ORDER' => 'id'
+                'FROM'  => 'glpi_plugin_racks_racks_items',
+                'ORDER' => 'id'
             ]
         );
 
@@ -1296,8 +1296,8 @@ class RacksPluginToCoreCommand extends AbstractCommand
                 }
 
                 $item_input = [
-                 'itemtype' => $item->getType(),
-                 'items_id' => $item->fields['id'],
+                    'itemtype' => $item->getType(),
+                    'items_id' => $item->fields['id'],
                 ];
 
                 $item_rack = new Item_Rack();
@@ -1335,11 +1335,11 @@ class RacksPluginToCoreCommand extends AbstractCommand
                 );
 
                 $item_input = $item_input + [
-                 'racks_id'    => null !== $rack ? $rack->fields['id'] : 0,
-                 'position'    => $position,
-                 'hpos'        => 0,
-                 'bgcolor'     => '#69CEBA',
-                 'orientation' => ($old_item['faces_id'] == 1 ? Rack::FRONT : Rack::REAR),
+                    'racks_id'    => null !== $rack ? $rack->fields['id'] : 0,
+                    'position'    => $position,
+                    'hpos'        => 0,
+                    'bgcolor'     => '#69CEBA',
+                    'orientation' => ($old_item['faces_id'] == 1 ? Rack::FRONT : Rack::REAR),
                 ];
 
                 if (!$item_rack->add($item_input)) {
@@ -1388,8 +1388,8 @@ class RacksPluginToCoreCommand extends AbstractCommand
             $this->elements_mapping[$old_itemtype] = [];
         }
         $this->elements_mapping[$old_itemtype][$old_id] = [
-         'itemtype' => $new_itemtype,
-         'id'       => $new_id,
+            'itemtype' => $new_itemtype,
+            'id'       => $new_id,
         ];
     }
 
@@ -1438,12 +1438,12 @@ class RacksPluginToCoreCommand extends AbstractCommand
         if (null === $this->fallback_room_id) {
             $room = new DCRoom();
             $room_fields = [
-            'name'           => 'Temp room (from plugin racks migration script)',
-            'entities_id'    => 0,
-            'is_recursive'   => 1,
-            'datacenters_id' => $this->datacenter_id,
-            'vis_cols'       => 10,
-            'vis_rows'       => 10,
+                'name'           => 'Temp room (from plugin racks migration script)',
+                'entities_id'    => 0,
+                'is_recursive'   => 1,
+                'datacenters_id' => $this->datacenter_id,
+                'vis_cols'       => 10,
+                'vis_rows'       => 10,
             ];
 
             if (

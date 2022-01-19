@@ -47,12 +47,13 @@ class NotificationTargetChange extends NotificationTargetCommonITILObject
     {
 
         $events = ['new'               => __('New change'),
-                      'update'            => __('Update of a change'),
-                      'solved'            => __('Change solved'),
-                      'validation'        => __('Validation request'),
-                      'validation_answer' => __('Validation request answer'),
-                      'closed'            => __('Closure of a change'),
-                      'delete'            => __('Deleting a change')];
+            'update'            => __('Update of a change'),
+            'solved'            => __('Change solved'),
+            'validation'        => __('Validation request'),
+            'validation_answer' => __('Validation request answer'),
+            'closed'            => __('Closure of a change'),
+            'delete'            => __('Deleting a change')
+        ];
 
         $events = array_merge($events, parent::getEvents());
         asort($events);
@@ -208,8 +209,8 @@ class NotificationTargetChange extends NotificationTargetCommonITILObject
             $validations = getAllDataFromTable(
                 'glpi_changevalidations',
                 [
-                'WHERE'  => $restrict,
-                'ORDER'  => ['submission_date DESC', 'id ASC']
+                    'WHERE'  => $restrict,
+                    'ORDER'  => ['submission_date DESC', 'id ASC']
                 ]
             );
             $data['validations'] = [];
@@ -267,130 +268,140 @@ class NotificationTargetChange extends NotificationTargetCommonITILObject
 
        //Locales
         $tags = ['change.numberoftickets'    => _x('quantity', 'Number of tickets'),
-                    'change.numberofproblems'   => _x('quantity', 'Number of problems'),
-                    'change.impactcontent'      => __('Impact'),
-                    'change.controlistcontent'  => __('Control list'),
-                    'change.rolloutplancontent' => __('Deployment plan'),
-                    'change.backoutplancontent' => __('Backup plan'),
-                    'change.checklistcontent'   => __('Checklist'),
+            'change.numberofproblems'   => _x('quantity', 'Number of problems'),
+            'change.impactcontent'      => __('Impact'),
+            'change.controlistcontent'  => __('Control list'),
+            'change.rolloutplancontent' => __('Deployment plan'),
+            'change.backoutplancontent' => __('Backup plan'),
+            'change.checklistcontent'   => __('Checklist'),
                     // 'problem.impacts'           => __('Impacts'),
                     // 'problem.causes'            => __('Causes'),
                     // 'problem.symptoms'          => __('Symptoms'),
-                    'item.name'                 => _n('Associated item', 'Associated items', 1),
-                    'item.serial'               => __('Serial number'),
-                    'item.otherserial'          => __('Inventory number'),
-                    'item.location'             => Location::getTypeName(1),
-                    'item.model'                => _n('Model', 'Models', 1),
-                    'item.contact'              => __('Alternate username'),
-                    'item.contactnumber'        => __('Alternate username number'),
-                    'item.user'                 => User::getTypeName(1),
-                    'item.group'                => Group::getTypeName(1),
-                    'change.globalvalidation'   => __('Global approval status'),];
-
-        foreach ($tags as $tag => $label) {
-            $this->addTagToList(['tag'    => $tag,
-                                   'label'  => $label,
-                                   'value'  => true,
-                                   'events' => NotificationTarget::TAG_FOR_ALL_EVENTS]);
-        }
-
-       //Events specific for validation
-        $tags = ['validation.author'            => _n('Requester', 'Requesters', 1),
-                    'validation.status'            => __('Status of the approval request'),
-                    'validation.submissiondate'    => sprintf(
-                        __('%1$s: %2$s'),
-                        __('Request'),
-                        _n('Date', 'Dates', 1)
-                    ),
-                    'validation.commentsubmission' => sprintf(
-                        __('%1$s: %2$s'),
-                        __('Request'),
-                        __('Comments')
-                    ),
-                    'validation.validationdate'    => sprintf(
-                        __('%1$s: %2$s'),
-                        _n('Validation', 'Validations', 1),
-                        _n('Date', 'Dates', 1)
-                    ),
-                    'validation.validator'         => __('Decision-maker'),
-                    'validation.commentvalidation' => sprintf(
-                        __('%1$s: %2$s'),
-                        _n('Validation', 'Validations', 1),
-                        __('Comments')
-                    )
+            'item.name'                 => _n('Associated item', 'Associated items', 1),
+            'item.serial'               => __('Serial number'),
+            'item.otherserial'          => __('Inventory number'),
+            'item.location'             => Location::getTypeName(1),
+            'item.model'                => _n('Model', 'Models', 1),
+            'item.contact'              => __('Alternate username'),
+            'item.contactnumber'        => __('Alternate username number'),
+            'item.user'                 => User::getTypeName(1),
+            'item.group'                => Group::getTypeName(1),
+            'change.globalvalidation'   => __('Global approval status'),
         ];
 
         foreach ($tags as $tag => $label) {
             $this->addTagToList(['tag'    => $tag,
-                                   'label'  => $label,
-                                   'value'  => true,
-                                   'events' => ['validation', 'validation_answer']]);
+                'label'  => $label,
+                'value'  => true,
+                'events' => NotificationTarget::TAG_FOR_ALL_EVENTS
+            ]);
+        }
+
+       //Events specific for validation
+        $tags = ['validation.author'            => _n('Requester', 'Requesters', 1),
+            'validation.status'            => __('Status of the approval request'),
+            'validation.submissiondate'    => sprintf(
+                __('%1$s: %2$s'),
+                __('Request'),
+                _n('Date', 'Dates', 1)
+            ),
+            'validation.commentsubmission' => sprintf(
+                __('%1$s: %2$s'),
+                __('Request'),
+                __('Comments')
+            ),
+            'validation.validationdate'    => sprintf(
+                __('%1$s: %2$s'),
+                _n('Validation', 'Validations', 1),
+                _n('Date', 'Dates', 1)
+            ),
+            'validation.validator'         => __('Decision-maker'),
+            'validation.commentvalidation' => sprintf(
+                __('%1$s: %2$s'),
+                _n('Validation', 'Validations', 1),
+                __('Comments')
+            )
+        ];
+
+        foreach ($tags as $tag => $label) {
+            $this->addTagToList(['tag'    => $tag,
+                'label'  => $label,
+                'value'  => true,
+                'events' => ['validation', 'validation_answer']
+            ]);
         }
 
        //Tags without lang for validation
         $tags = ['validation.submission.title'
                                     => __('A validation request has been submitted'),
-                    'validation.answer.title'
+            'validation.answer.title'
                                     => __('An answer to a validation request was produced'),
-                    'change.urlvalidation'
+            'change.urlvalidation'
                                     => sprintf(
                                         __('%1$s: %2$s'),
                                         __('Validation request'),
                                         __('URL')
-                                    )];
+                                    )
+        ];
 
         foreach ($tags as $tag => $label) {
             $this->addTagToList(['tag'   => $tag,
-                                   'label' => $label,
-                                   'value' => true,
-                                   'lang'  => false,
-                                   'events' => ['validation', 'validation_answer']]);
+                'label' => $label,
+                'value' => true,
+                'lang'  => false,
+                'events' => ['validation', 'validation_answer']
+            ]);
         }
 
        //Foreach global tags
         $tags = ['tickets'     => _n('Ticket', 'Tickets', Session::getPluralNumber()),
-                    'problems'    => Problem::getTypeName(Session::getPluralNumber()),
-                    'items'       => _n('Item', 'Items', Session::getPluralNumber()),
-                    'validations' => _n('Validation', 'Validations', Session::getPluralNumber()),
-                    'documents'   => Document::getTypeName(Session::getPluralNumber())];
+            'problems'    => Problem::getTypeName(Session::getPluralNumber()),
+            'items'       => _n('Item', 'Items', Session::getPluralNumber()),
+            'validations' => _n('Validation', 'Validations', Session::getPluralNumber()),
+            'documents'   => Document::getTypeName(Session::getPluralNumber())
+        ];
 
         foreach ($tags as $tag => $label) {
             $this->addTagToList(['tag'     => $tag,
-                                   'label'   => $label,
-                                   'value'   => false,
-                                   'foreach' => true]);
+                'label'   => $label,
+                'value'   => false,
+                'foreach' => true
+            ]);
         }
 
        //Tags with just lang
         $tags = ['change.tickets'   => _n('Ticket', 'Tickets', Session::getPluralNumber()),
-                    'change.problems'  => Problem::getTypeName(Session::getPluralNumber()),
-                    'items'            => _n('Item', 'Items', Session::getPluralNumber())];
+            'change.problems'  => Problem::getTypeName(Session::getPluralNumber()),
+            'items'            => _n('Item', 'Items', Session::getPluralNumber())
+        ];
 
         foreach ($tags as $tag => $label) {
             $this->addTagToList(['tag'   => $tag,
-                                   'label' => $label,
-                                   'value' => false,
-                                   'lang'  => true]);
+                'label' => $label,
+                'value' => false,
+                'lang'  => true
+            ]);
         }
 
        //Tags without lang
         $tags = ['ticket.id'       => sprintf(__('%1$s: %2$s'), Ticket::getTypeName(1), __('ID')),
-                    'ticket.date'     => sprintf(__('%1$s: %2$s'), Ticket::getTypeName(1), _n('Date', 'Dates', 1)),
-                    'ticket.url'      => sprintf(__('%1$s: %2$s'), Ticket::getTypeName(1), __('URL')),
-                    'ticket.title'    => sprintf(__('%1$s: %2$s'), Ticket::getTypeName(1), __('Title')),
-                    'ticket.content'  => sprintf(__('%1$s: %2$s'), Ticket::getTypeName(1), __('Description')),
-                    'problem.id'      => sprintf(__('%1$s: %2$s'), Problem::getTypeName(1), __('ID')),
-                    'problem.date'    => sprintf(__('%1$s: %2$s'), Problem::getTypeName(1), _n('Date', 'Dates', 1)),
-                    'problem.url'     => sprintf(__('%1$s: %2$s'), Problem::getTypeName(1), __('URL')),
-                    'problem.title'   => sprintf(__('%1$s: %2$s'), Problem::getTypeName(1), __('Title')),
-                    'problem.content' => sprintf(__('%1$s: %2$s'), Problem::getTypeName(1), __('Description')),
-                    ];
+            'ticket.date'     => sprintf(__('%1$s: %2$s'), Ticket::getTypeName(1), _n('Date', 'Dates', 1)),
+            'ticket.url'      => sprintf(__('%1$s: %2$s'), Ticket::getTypeName(1), __('URL')),
+            'ticket.title'    => sprintf(__('%1$s: %2$s'), Ticket::getTypeName(1), __('Title')),
+            'ticket.content'  => sprintf(__('%1$s: %2$s'), Ticket::getTypeName(1), __('Description')),
+            'problem.id'      => sprintf(__('%1$s: %2$s'), Problem::getTypeName(1), __('ID')),
+            'problem.date'    => sprintf(__('%1$s: %2$s'), Problem::getTypeName(1), _n('Date', 'Dates', 1)),
+            'problem.url'     => sprintf(__('%1$s: %2$s'), Problem::getTypeName(1), __('URL')),
+            'problem.title'   => sprintf(__('%1$s: %2$s'), Problem::getTypeName(1), __('Title')),
+            'problem.content' => sprintf(__('%1$s: %2$s'), Problem::getTypeName(1), __('Description')),
+        ];
 
         foreach ($tags as $tag => $label) {
             $this->addTagToList(['tag'   => $tag,
-                                   'label' => $label,
-                                   'value' => true,
-                                   'lang'  => false]);
+                'label' => $label,
+                'value' => true,
+                'lang'  => false
+            ]);
         }
         asort($this->tag_descriptions);
     }

@@ -51,13 +51,13 @@ class KnowbaseItem_Comment extends CommonDBTM
             $where = [];
             if ($item->getType() == KnowbaseItem::getType()) {
                 $where = [
-                'knowbaseitems_id' => $item->getID(),
-                'language'         => null
+                    'knowbaseitems_id' => $item->getID(),
+                    'language'         => null
                 ];
             } else {
                 $where = [
-                'knowbaseitems_id' => $item->fields['knowbaseitems_id'],
-                'language'         => $item->fields['language']
+                    'knowbaseitems_id' => $item->fields['knowbaseitems_id'],
+                    'language'         => $item->fields['language']
                 ];
             }
 
@@ -88,13 +88,13 @@ class KnowbaseItem_Comment extends CommonDBTM
        // Total Number of comments
         if ($item->getType() == KnowbaseItem::getType()) {
             $where = [
-            'knowbaseitems_id' => $item->getID(),
-            'language'         => null
+                'knowbaseitems_id' => $item->getID(),
+                'language'         => null
             ];
         } else {
             $where = [
-            'knowbaseitems_id' => $item->fields['knowbaseitems_id'],
-            'language'         => $item->fields['language']
+                'knowbaseitems_id' => $item->fields['knowbaseitems_id'],
+                'language'         => $item->fields['language']
             ];
         }
 
@@ -235,9 +235,9 @@ class KnowbaseItem_Comment extends CommonDBTM
         global $DB;
 
         $where = [
-         'knowbaseitems_id'  => $kbitem_id,
-         'language'          => $lang,
-         'parent_comment_id' => $parent
+            'knowbaseitems_id'  => $kbitem_id,
+            'language'          => $lang,
+            'parent_comment_id' => $parent
         ];
 
         $db_comments = $DB->request(

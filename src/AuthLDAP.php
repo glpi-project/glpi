@@ -122,7 +122,7 @@ class AuthLDAP extends CommonDBTM
     public static $conn_cache = [];
 
     public static $undisclosedFields = [
-      'rootdn_passwd',
+        'rootdn_passwd',
     ];
 
     public static function getTypeName($nb = 0)
@@ -322,9 +322,10 @@ class AuthLDAP extends CommonDBTM
                       // zero_on_empty mechanism inside massive action form ...
                         $is_recursive = (empty($input['ldap_import_recursive'][$id]) ? 0 : 1);
                         $options      = ['authldaps_id' => $_SESSION['ldap_server'],
-                                        'entities_id'  => $entity,
-                                        'is_recursive' => $is_recursive,
-                                        'type'         => $input['ldap_import_type'][$id]];
+                            'entities_id'  => $entity,
+                            'is_recursive' => $is_recursive,
+                            'type'         => $input['ldap_import_type'][$id]
+                        ];
                         if (AuthLDAP::ldapImportGroup($group_dn, $options)) {
                             $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
                         } else {
@@ -348,7 +349,8 @@ class AuthLDAP extends CommonDBTM
                     if (
                         AuthLDAP::ldapImportUserByServerId(
                             ['method' => AuthLDAP::IDENTIFIER_LOGIN,
-                                                       'value'  => $id],
+                                'value'  => $id
+                            ],
                             $_SESSION['ldap_import']['mode'],
                             $_SESSION['ldap_import']['authldaps_id'],
                             true
@@ -502,12 +504,13 @@ class AuthLDAP extends CommonDBTM
            //Fill fields when using preconfiguration models
             if (!$ID) {
                 $hidden_fields = ['comment_field', 'email1_field', 'email2_field',
-                                   'email3_field', 'email4_field', 'entity_condition',
-                                   'entity_field', 'firstname_field', 'group_condition',
-                                   'group_field', 'group_member_field', 'group_search_type',
-                                   'mobile_field', 'phone_field', 'phone2_field',
-                                   'realname_field', 'registration_number_field', 'title_field',
-                                   'use_dn', 'use_tls', 'responsible_field'];
+                    'email3_field', 'email4_field', 'entity_condition',
+                    'entity_field', 'firstname_field', 'group_condition',
+                    'group_field', 'group_member_field', 'group_search_type',
+                    'mobile_field', 'phone_field', 'phone2_field',
+                    'realname_field', 'registration_number_field', 'title_field',
+                    'use_dn', 'use_tls', 'responsible_field'
+                ];
 
                 foreach ($hidden_fields as $hidden_field) {
                     echo "<input type='hidden' name='$hidden_field' value='" .
@@ -568,18 +571,20 @@ class AuthLDAP extends CommonDBTM
             echo "</td>";
             echo "<td>" . __('Page size') . "</td><td>";
             Dropdown::showNumber("pagesize", ['value' => $this->fields['pagesize'],
-                                                'min'   => 100,
-                                                'max'   => 100000,
-                                                'step'  => 100]);
+                'min'   => 100,
+                'max'   => 100000,
+                'step'  => 100
+            ]);
             echo"</td></tr>";
 
             echo "<tr class='tab_bg_1'>";
             echo "<td>" . __('Maximum number of results') . "</td><td>";
             Dropdown::showNumber('ldap_maxlimit', ['value' => $this->fields['ldap_maxlimit'],
-                                                     'min'   => 100,
-                                                     'max'   => 999999,
-                                                     'step'  => 100,
-                                                     'toadd' => [0 => __('Unlimited')]]);
+                'min'   => 100,
+                'max'   => 999999,
+                'step'  => 100,
+                'toadd' => [0 => __('Unlimited')]
+            ]);
             echo "</td><td colspan='2'></td></tr>";
         } else {
             $hidden .= "<input type='hidden' name='can_support_pagesize' value='0'>";
@@ -590,10 +595,10 @@ class AuthLDAP extends CommonDBTM
         echo "<tr class='tab_bg_1'>";
         echo "<td>" . __('How LDAP aliases should be handled') . "</td><td colspan='4'>";
         $alias_options = [
-         LDAP_DEREF_NEVER     => __('Never dereferenced (default)'),
-         LDAP_DEREF_ALWAYS    => __('Always dereferenced'),
-         LDAP_DEREF_SEARCHING => __('Dereferenced during the search (but not when locating)'),
-         LDAP_DEREF_FINDING   => __('Dereferenced when locating (not during the search)'),
+            LDAP_DEREF_NEVER     => __('Never dereferenced (default)'),
+            LDAP_DEREF_ALWAYS    => __('Always dereferenced'),
+            LDAP_DEREF_SEARCHING => __('Dereferenced during the search (but not when locating)'),
+            LDAP_DEREF_FINDING   => __('Dereferenced when locating (not during the search)'),
         ];
         Dropdown::showFromArray(
             "deref_option",
@@ -621,10 +626,11 @@ class AuthLDAP extends CommonDBTM
         echo "<td colspan='3'>";
 
         Dropdown::showNumber('timeout', ['value'  => $this->fields["timeout"],
-                                       'min'    => 1,
-                                       'max'    => 30,
-                                       'step'   => 1,
-                                       'toadd'  => [0 => __('No timeout')]]);
+            'min'    => 1,
+            'max'    => 30,
+            'step'   => 1,
+            'toadd'  => [0 => __('No timeout')]
+        ]);
         echo "</td></tr>";
 
         echo "<tr class='tab_bg_2'><td class='center' colspan='4'>";
@@ -655,11 +661,11 @@ class AuthLDAP extends CommonDBTM
         AuthLdapReplicate::addNewReplicateForm($target, $ID);
 
         $iterator = $DB->request([
-         'FROM'   => 'glpi_authldapreplicates',
-         'WHERE'  => [
-            'authldaps_id' => $ID
-         ],
-         'ORDER'  => ['name']
+            'FROM'   => 'glpi_authldapreplicates',
+            'WHERE'  => [
+                'authldaps_id' => $ID
+            ],
+            'ORDER'  => ['name']
         ]);
 
         if (($nb = count($iterator)) > 0) {
@@ -668,7 +674,8 @@ class AuthLDAP extends CommonDBTM
             echo "<div class='center'>";
             Html::openMassiveActionsForm('massAuthLdapReplicate' . $rand);
             $massiveactionparams = ['num_displayed' => min($_SESSION['glpilist_limit'], $nb),
-                                      'container'     => 'massAuthLdapReplicate' . $rand];
+                'container'     => 'massAuthLdapReplicate' . $rand
+            ];
             Html::showMassiveActions($massiveactionparams);
             echo "<input type='hidden' name='id' value='$ID'>";
             echo "<table class='tab_cadre_fixehov'>";
@@ -708,7 +715,8 @@ class AuthLDAP extends CommonDBTM
                     'test_ldap_replicate',
                     _sx('button', 'Test'),
                     ['id'                => $ID,
-                    'ldap_replicate_id' => $ldap_replicate["id"]]
+                        'ldap_replicate_id' => $ldap_replicate["id"]
+                    ]
                 );
                 echo "</td></tr>";
             }
@@ -735,9 +743,9 @@ class AuthLDAP extends CommonDBTM
     {
 
         $p = [
-         'name'    => 'group_search_type',
-         'value'   => self::GROUP_SEARCH_USER,
-         'display' => true,
+            'name'    => 'group_search_type',
+            'value'   => self::GROUP_SEARCH_USER,
+            'display' => true,
         ];
 
         if (count($options)) {
@@ -762,9 +770,9 @@ class AuthLDAP extends CommonDBTM
     public static function getGroupSearchTypeName($val = null)
     {
         $tmp = [
-         self::GROUP_SEARCH_USER    => __('In users'),
-         self::GROUP_SEARCH_GROUP   => __('In groups'),
-         self::GROUP_SEARCH_BOTH    => __('In users and groups')
+            self::GROUP_SEARCH_USER    => __('In users'),
+            self::GROUP_SEARCH_GROUP   => __('In groups'),
+            self::GROUP_SEARCH_BOTH    => __('In users and groups')
         ];
 
         if (is_null($val)) {
@@ -1002,303 +1010,303 @@ class AuthLDAP extends CommonDBTM
         $tab = [];
 
         $tab[] = [
-         'id'                 => 'common',
-         'name'               => $this->getTypeName(1)
+            'id'                 => 'common',
+            'name'               => $this->getTypeName(1)
         ];
 
         $tab[] = [
-         'id'                 => '1',
-         'table'              => $this->getTable(),
-         'field'              => 'name',
-         'name'               => __('Name'),
-         'datatype'           => 'itemlink',
-         'massiveaction'      => false
+            'id'                 => '1',
+            'table'              => $this->getTable(),
+            'field'              => 'name',
+            'name'               => __('Name'),
+            'datatype'           => 'itemlink',
+            'massiveaction'      => false
         ];
 
         $tab[] = [
-         'id'                 => '2',
-         'table'              => $this->getTable(),
-         'field'              => 'id',
-         'name'               => __('ID'),
-         'datatype'           => 'number',
-         'massiveaction'      => false
+            'id'                 => '2',
+            'table'              => $this->getTable(),
+            'field'              => 'id',
+            'name'               => __('ID'),
+            'datatype'           => 'number',
+            'massiveaction'      => false
         ];
 
         $tab[] = [
-         'id'                 => '3',
-         'table'              => $this->getTable(),
-         'field'              => 'host',
-         'name'               => __('Server'),
-         'datatype'           => 'string'
+            'id'                 => '3',
+            'table'              => $this->getTable(),
+            'field'              => 'host',
+            'name'               => __('Server'),
+            'datatype'           => 'string'
         ];
 
         $tab[] = [
-         'id'                 => '4',
-         'table'              => $this->getTable(),
-         'field'              => 'port',
-         'name'               => _n('Port', 'Ports', 1),
-         'datatype'           => 'integer'
+            'id'                 => '4',
+            'table'              => $this->getTable(),
+            'field'              => 'port',
+            'name'               => _n('Port', 'Ports', 1),
+            'datatype'           => 'integer'
         ];
 
         $tab[] = [
-         'id'                 => '5',
-         'table'              => $this->getTable(),
-         'field'              => 'basedn',
-         'name'               => __('BaseDN'),
-         'datatype'           => 'string'
+            'id'                 => '5',
+            'table'              => $this->getTable(),
+            'field'              => 'basedn',
+            'name'               => __('BaseDN'),
+            'datatype'           => 'string'
         ];
 
         $tab[] = [
-         'id'                 => '6',
-         'table'              => $this->getTable(),
-         'field'              => 'condition',
-         'name'               => __('Connection filter'),
-         'datatype'           => 'text'
+            'id'                 => '6',
+            'table'              => $this->getTable(),
+            'field'              => 'condition',
+            'name'               => __('Connection filter'),
+            'datatype'           => 'text'
         ];
 
         $tab[] = [
-         'id'                 => '7',
-         'table'              => $this->getTable(),
-         'field'              => 'is_default',
-         'name'               => __('Default server'),
-         'datatype'           => 'bool',
-         'massiveaction'      => false
+            'id'                 => '7',
+            'table'              => $this->getTable(),
+            'field'              => 'is_default',
+            'name'               => __('Default server'),
+            'datatype'           => 'bool',
+            'massiveaction'      => false
         ];
 
         $tab[] = [
-         'id'                 => '8',
-         'table'              => $this->getTable(),
-         'field'              => 'login_field',
-         'name'               => __('Login field'),
-         'massiveaction'      => false,
-         'datatype'           => 'string'
+            'id'                 => '8',
+            'table'              => $this->getTable(),
+            'field'              => 'login_field',
+            'name'               => __('Login field'),
+            'massiveaction'      => false,
+            'datatype'           => 'string'
         ];
 
         $tab[] = [
-         'id'                 => '9',
-         'table'              => $this->getTable(),
-         'field'              => 'realname_field',
-         'name'               => __('Surname'),
-         'massiveaction'      => false,
-         'datatype'           => 'string'
+            'id'                 => '9',
+            'table'              => $this->getTable(),
+            'field'              => 'realname_field',
+            'name'               => __('Surname'),
+            'massiveaction'      => false,
+            'datatype'           => 'string'
         ];
 
         $tab[] = [
-         'id'                 => '10',
-         'table'              => $this->getTable(),
-         'field'              => 'firstname_field',
-         'name'               => __('First name'),
-         'massiveaction'      => false,
-         'datatype'           => 'string'
+            'id'                 => '10',
+            'table'              => $this->getTable(),
+            'field'              => 'firstname_field',
+            'name'               => __('First name'),
+            'massiveaction'      => false,
+            'datatype'           => 'string'
         ];
 
         $tab[] = [
-         'id'                 => '11',
-         'table'              => $this->getTable(),
-         'field'              => 'phone_field',
-         'name'               =>  _x('ldap', 'Phone'),
-         'massiveaction'      => false,
-         'datatype'           => 'string'
+            'id'                 => '11',
+            'table'              => $this->getTable(),
+            'field'              => 'phone_field',
+            'name'               =>  _x('ldap', 'Phone'),
+            'massiveaction'      => false,
+            'datatype'           => 'string'
         ];
 
         $tab[] = [
-         'id'                 => '12',
-         'table'              => $this->getTable(),
-         'field'              => 'phone2_field',
-         'name'               => __('Phone 2'),
-         'massiveaction'      => false,
-         'datatype'           => 'string'
+            'id'                 => '12',
+            'table'              => $this->getTable(),
+            'field'              => 'phone2_field',
+            'name'               => __('Phone 2'),
+            'massiveaction'      => false,
+            'datatype'           => 'string'
         ];
 
         $tab[] = [
-         'id'                 => '13',
-         'table'              => $this->getTable(),
-         'field'              => 'mobile_field',
-         'name'               => __('Mobile phone'),
-         'massiveaction'      => false,
-         'datatype'           => 'string'
+            'id'                 => '13',
+            'table'              => $this->getTable(),
+            'field'              => 'mobile_field',
+            'name'               => __('Mobile phone'),
+            'massiveaction'      => false,
+            'datatype'           => 'string'
         ];
 
         $tab[] = [
-         'id'                 => '14',
-         'table'              => $this->getTable(),
-         'field'              => 'title_field',
-         'name'               => _x('person', 'Title'),
-         'massiveaction'      => false,
-         'datatype'           => 'string'
+            'id'                 => '14',
+            'table'              => $this->getTable(),
+            'field'              => 'title_field',
+            'name'               => _x('person', 'Title'),
+            'massiveaction'      => false,
+            'datatype'           => 'string'
         ];
 
         $tab[] = [
-         'id'                 => '15',
-         'table'              => $this->getTable(),
-         'field'              => 'category_field',
-         'name'               => _n('Category', 'Categories', 1),
-         'massiveaction'      => false,
-         'datatype'           => 'string'
+            'id'                 => '15',
+            'table'              => $this->getTable(),
+            'field'              => 'category_field',
+            'name'               => _n('Category', 'Categories', 1),
+            'massiveaction'      => false,
+            'datatype'           => 'string'
         ];
 
         $tab[] = [
-         'id'                 => '16',
-         'table'              => $this->getTable(),
-         'field'              => 'comment',
-         'name'               => __('Comments'),
-         'datatype'           => 'text'
+            'id'                 => '16',
+            'table'              => $this->getTable(),
+            'field'              => 'comment',
+            'name'               => __('Comments'),
+            'datatype'           => 'text'
         ];
 
         $tab[] = [
-         'id'                 => '17',
-         'table'              => $this->getTable(),
-         'field'              => 'email1_field',
-         'name'               => _n('Email', 'Emails', 1),
-         'massiveaction'      => false,
-         'datatype'           => 'string'
+            'id'                 => '17',
+            'table'              => $this->getTable(),
+            'field'              => 'email1_field',
+            'name'               => _n('Email', 'Emails', 1),
+            'massiveaction'      => false,
+            'datatype'           => 'string'
         ];
 
         $tab[] = [
-         'id'                 => '25',
-         'table'              => $this->getTable(),
-         'field'              => 'email2_field',
-         'name'               => sprintf(__('%1$s %2$s'), _n('Email', 'Emails', 1), '2'),
-         'massiveaction'      => false,
-         'datatype'           => 'string'
+            'id'                 => '25',
+            'table'              => $this->getTable(),
+            'field'              => 'email2_field',
+            'name'               => sprintf(__('%1$s %2$s'), _n('Email', 'Emails', 1), '2'),
+            'massiveaction'      => false,
+            'datatype'           => 'string'
         ];
 
         $tab[] = [
-         'id'                 => '26',
-         'table'              => $this->getTable(),
-         'field'              => 'email3_field',
-         'name'               => sprintf(__('%1$s %2$s'), _n('Email', 'Emails', 1), '3'),
-         'massiveaction'      => false,
-         'datatype'           => 'string'
+            'id'                 => '26',
+            'table'              => $this->getTable(),
+            'field'              => 'email3_field',
+            'name'               => sprintf(__('%1$s %2$s'), _n('Email', 'Emails', 1), '3'),
+            'massiveaction'      => false,
+            'datatype'           => 'string'
         ];
 
         $tab[] = [
-         'id'                 => '27',
-         'table'              => $this->getTable(),
-         'field'              => 'email4_field',
-         'name'               => sprintf(__('%1$s %2$s'), _n('Email', 'Emails', 1), '4'),
-         'massiveaction'      => false,
-         'datatype'           => 'string'
+            'id'                 => '27',
+            'table'              => $this->getTable(),
+            'field'              => 'email4_field',
+            'name'               => sprintf(__('%1$s %2$s'), _n('Email', 'Emails', 1), '4'),
+            'massiveaction'      => false,
+            'datatype'           => 'string'
         ];
 
         $tab[] = [
-         'id'                 => '18',
-         'table'              => $this->getTable(),
-         'field'              => 'use_dn',
-         'name'               => __('Use DN in the search'),
-         'datatype'           => 'bool',
-         'massiveaction'      => false
+            'id'                 => '18',
+            'table'              => $this->getTable(),
+            'field'              => 'use_dn',
+            'name'               => __('Use DN in the search'),
+            'datatype'           => 'bool',
+            'massiveaction'      => false
         ];
 
         $tab[] = [
-         'id'                 => '19',
-         'table'              => $this->getTable(),
-         'field'              => 'date_mod',
-         'name'               => __('Last update'),
-         'datatype'           => 'datetime',
-         'massiveaction'      => false
+            'id'                 => '19',
+            'table'              => $this->getTable(),
+            'field'              => 'date_mod',
+            'name'               => __('Last update'),
+            'datatype'           => 'datetime',
+            'massiveaction'      => false
         ];
 
         $tab[] = [
-         'id'                 => '121',
-         'table'              => $this->getTable(),
-         'field'              => 'date_creation',
-         'name'               => __('Creation date'),
-         'datatype'           => 'datetime',
-         'massiveaction'      => false
+            'id'                 => '121',
+            'table'              => $this->getTable(),
+            'field'              => 'date_creation',
+            'name'               => __('Creation date'),
+            'datatype'           => 'datetime',
+            'massiveaction'      => false
         ];
 
         $tab[] = [
-         'id'                 => '20',
-         'table'              => $this->getTable(),
-         'field'              => 'language_field',
-         'name'               => __('Language'),
-         'massiveaction'      => false,
-         'datatype'           => 'string'
+            'id'                 => '20',
+            'table'              => $this->getTable(),
+            'field'              => 'language_field',
+            'name'               => __('Language'),
+            'massiveaction'      => false,
+            'datatype'           => 'string'
         ];
 
         $tab[] = [
-         'id'                 => '21',
-         'table'              => $this->getTable(),
-         'field'              => 'group_field',
-         'name'               => __('User attribute containing its groups'),
-         'massiveaction'      => false,
-         'datatype'           => 'string'
+            'id'                 => '21',
+            'table'              => $this->getTable(),
+            'field'              => 'group_field',
+            'name'               => __('User attribute containing its groups'),
+            'massiveaction'      => false,
+            'datatype'           => 'string'
         ];
 
         $tab[] = [
-         'id'                 => '22',
-         'table'              => $this->getTable(),
-         'field'              => 'group_condition',
-         'name'               => __('Filter to search in groups'),
-         'massiveaction'      => false,
-         'datatype'           => 'text'
+            'id'                 => '22',
+            'table'              => $this->getTable(),
+            'field'              => 'group_condition',
+            'name'               => __('Filter to search in groups'),
+            'massiveaction'      => false,
+            'datatype'           => 'text'
         ];
 
         $tab[] = [
-         'id'                 => '23',
-         'table'              => $this->getTable(),
-         'field'              => 'group_member_field',
-         'name'               => __('Group attribute containing its users'),
-         'massiveaction'      => false,
-         'datatype'           => 'string'
+            'id'                 => '23',
+            'table'              => $this->getTable(),
+            'field'              => 'group_member_field',
+            'name'               => __('Group attribute containing its users'),
+            'massiveaction'      => false,
+            'datatype'           => 'string'
         ];
 
         $tab[] = [
-         'id'                 => '24',
-         'table'              => $this->getTable(),
-         'field'              => 'group_search_type',
-         'datatype'           => 'specific',
-         'name'               => __('Search type'),
-         'massiveaction'      => false
+            'id'                 => '24',
+            'table'              => $this->getTable(),
+            'field'              => 'group_search_type',
+            'datatype'           => 'specific',
+            'name'               => __('Search type'),
+            'massiveaction'      => false
         ];
 
         $tab[] = [
-         'id'                 => '30',
-         'table'              => $this->getTable(),
-         'field'              => 'is_active',
-         'name'               => __('Active'),
-         'datatype'           => 'bool'
+            'id'                 => '30',
+            'table'              => $this->getTable(),
+            'field'              => 'is_active',
+            'name'               => __('Active'),
+            'datatype'           => 'bool'
         ];
 
         $tab[] = [
-         'id'                 => '28',
-         'table'              => $this->getTable(),
-         'field'              => 'sync_field',
-         'name'               => __('Synchronization field'),
-         'massiveaction'      => false,
-         'datatype'           => 'string'
+            'id'                 => '28',
+            'table'              => $this->getTable(),
+            'field'              => 'sync_field',
+            'name'               => __('Synchronization field'),
+            'massiveaction'      => false,
+            'datatype'           => 'string'
         ];
 
         $tab[] = [
-         'id'                 => '29',
-         'table'              => $this->getTable(),
-         'field'              => 'responsible_field',
-         'name'               => __('Responsible'),
-         'massiveaction'      => false,
-         'datatype'           => 'string'
+            'id'                 => '29',
+            'table'              => $this->getTable(),
+            'field'              => 'responsible_field',
+            'name'               => __('Responsible'),
+            'massiveaction'      => false,
+            'datatype'           => 'string'
         ];
 
         $tab[] = [
-         'id'                 => '31',
-         'table'              => $this->getTable(),
-         'field'              => 'inventory_domain',
-         'name'               => __('Domain name used by inventory tool'),
-         'massiveaction'      => false,
-         'datatype'           => 'string',
+            'id'                 => '31',
+            'table'              => $this->getTable(),
+            'field'              => 'inventory_domain',
+            'name'               => __('Domain name used by inventory tool'),
+            'massiveaction'      => false,
+            'datatype'           => 'string',
         ];
 
         $tab[] = [
-         'id'                 => '32',
-         'table'              => $this->getTable(),
-         'field'              => 'timeout',
-         'name'               => __('Timeout'),
-         'massiveaction'      => false,
-         'datatype'           => 'number',
-         'unit'               => 'second',
-         'toadd'              => [
-            '0'                  => __('No timeout')
-         ],
+            'id'                 => '32',
+            'table'              => $this->getTable(),
+            'field'              => 'timeout',
+            'name'               => __('Timeout'),
+            'massiveaction'      => false,
+            'datatype'           => 'number',
+            'unit'               => 'second',
+            'toadd'              => [
+                '0'                  => __('No timeout')
+            ],
         ];
 
         return $tab;
@@ -1323,11 +1331,12 @@ class AuthLDAP extends CommonDBTM
             echo "<tr class='tab_bg_1'><td><pre class='section-content'>\n&nbsp;\n";
             foreach ($ldap_servers as $value) {
                 $fields = ['Server'            => 'host',
-                            'Port'              => 'port',
-                            'BaseDN'            => 'basedn',
-                            'Connection filter' => 'condition',
-                            'RootDN'            => 'rootdn',
-                            'Use TLS'           => 'use_tls'];
+                    'Port'              => 'port',
+                    'BaseDN'            => 'basedn',
+                    'Connection filter' => 'condition',
+                    'RootDN'            => 'rootdn',
+                    'Use TLS'           => 'use_tls'
+                ];
                 $msg   = '';
                 $first = true;
                 foreach ($fields as $label => $field) {
@@ -1355,24 +1364,25 @@ class AuthLDAP extends CommonDBTM
 
         $ret    = [];
         $fields = ['login_field'               => 'name',
-                  'email1_field'              => 'email1',
-                  'email2_field'              => 'email2',
-                  'email3_field'              => 'email3',
-                  'email4_field'              => 'email4',
-                  'realname_field'            => 'realname',
-                  'firstname_field'           => 'firstname',
-                  'phone_field'               => 'phone',
-                  'phone2_field'              => 'phone2',
-                  'mobile_field'              => 'mobile',
-                  'location_field'            => 'locations_id',
-                  'comment_field'             => 'comment',
-                  'title_field'               => 'usertitles_id',
-                  'category_field'            => 'usercategories_id',
-                  'language_field'            => 'language',
-                  'registration_number_field' => 'registration_number',
-                  'picture_field'             => 'picture',
-                  'responsible_field'         => 'users_id_supervisor',
-                  'sync_field'                => 'sync_field'];
+            'email1_field'              => 'email1',
+            'email2_field'              => 'email2',
+            'email3_field'              => 'email3',
+            'email4_field'              => 'email4',
+            'realname_field'            => 'realname',
+            'firstname_field'           => 'firstname',
+            'phone_field'               => 'phone',
+            'phone2_field'              => 'phone2',
+            'mobile_field'              => 'mobile',
+            'location_field'            => 'locations_id',
+            'comment_field'             => 'comment',
+            'title_field'               => 'usertitles_id',
+            'category_field'            => 'usercategories_id',
+            'language_field'            => 'language',
+            'registration_number_field' => 'registration_number',
+            'picture_field'             => 'picture',
+            'responsible_field'         => 'users_id_supervisor',
+            'sync_field'                => 'sync_field'
+        ];
 
         foreach ($fields as $key => $val) {
             if (isset($authtype_array[$key]) && !empty($authtype_array[$key])) {
@@ -1640,8 +1650,8 @@ class AuthLDAP extends CommonDBTM
     {
 
         $values = [
-         'order' => 'DESC',
-         'start' => 0,
+            'order' => 'DESC',
+            'start' => 0,
         ];
 
         foreach ($_SESSION['ldap_import'] as $option => $value) {
@@ -1684,9 +1694,9 @@ class AuthLDAP extends CommonDBTM
 
                 Html::openMassiveActionsForm('mass' . __CLASS__ . $rand);
                 $massiveactionparams = [
-                'num_displayed'    => min(count($ldap_users), $_SESSION['glpilist_limit']),
-                'container'        => 'mass' . __CLASS__ . $rand,
-                'specific_actions' => [$form_action => $textbutton]
+                    'num_displayed'    => min(count($ldap_users), $_SESSION['glpilist_limit']),
+                    'container'        => 'mass' . __CLASS__ . $rand,
+                    'specific_actions' => [$form_action => $textbutton]
                 ];
                 echo "<div class='ms-2 ps-1 d-flex mb-2'>";
                 Html::showMassiveActions($massiveactionparams);
@@ -1837,14 +1847,14 @@ class AuthLDAP extends CommonDBTM
             $filter = Sanitizer::unsanitize($filter);
             if (self::isLdapPageSizeAvailable($config_ldap)) {
                 $controls = [
-                 [
-                  'oid'       => LDAP_CONTROL_PAGEDRESULTS,
-                  'iscritical' => true,
-                  'value'     => [
-                     'size'   => $config_ldap->fields['pagesize'],
-                     'cookie' => $cookie
-                  ]
-                 ]
+                    [
+                        'oid'       => LDAP_CONTROL_PAGEDRESULTS,
+                        'iscritical' => true,
+                        'value'     => [
+                            'size'   => $config_ldap->fields['pagesize'],
+                            'cookie' => $cookie
+                        ]
+                    ]
                 ];
                 $sr = ldap_search($ds, $values['basedn'], $filter, $attrs, 0, -1, -1, LDAP_DEREF_NEVER, $controls);
                 ldap_parse_result($ds, $sr, $errcode, $matcheddn, $errmsg, $referrals, $controls);
@@ -1950,13 +1960,13 @@ class AuthLDAP extends CommonDBTM
         $res         = $config_ldap->getFromDB($options['authldaps_id']);
 
         $values = [
-              'order'       => 'DESC',
-              'mode'        => self::ACTION_SYNCHRONIZE,
-              'ldap_filter' => '',
-              'basedn'      => $config_ldap->fields['basedn'],
-              'begin_date'  => null,
-              'end_date'    => date('Y-m-d H:i:s', time() - DAY_TIMESTAMP),
-              'script'      => 0, //Called by an external script or not
+            'order'       => 'DESC',
+            'mode'        => self::ACTION_SYNCHRONIZE,
+            'ldap_filter' => '',
+            'basedn'      => $config_ldap->fields['basedn'],
+            'begin_date'  => null,
+            'end_date'    => date('Y-m-d H:i:s', time() - DAY_TIMESTAMP),
+            'script'      => 0, //Called by an external script or not
         ];
 
         foreach ($options as $option => $value) {
@@ -2024,14 +2034,14 @@ class AuthLDAP extends CommonDBTM
         $glpi_users = [];
 
         $select = [
-         'FROM'   => User::getTable(),
-         'ORDER'  => ['name ' . $values['order']]
+            'FROM'   => User::getTable(),
+            'ORDER'  => ['name ' . $values['order']]
         ];
 
         if ($values['mode'] != self::ACTION_IMPORT) {
             $select['WHERE'] = [
-            'authtype'  => [-1, Auth::NOT_YET_AUTHENTIFIED, Auth::LDAP, Auth::EXTERNAL, Auth::CAS],
-            'auths_id'  => $options['authldaps_id']
+                'authtype'  => [-1, Auth::NOT_YET_AUTHENTIFIED, Auth::LDAP, Auth::EXTERNAL, Auth::CAS],
+                'auths_id'  => $options['authldaps_id']
             ];
         }
 
@@ -2059,22 +2069,24 @@ class AuthLDAP extends CommonDBTM
                             continue;
                         }
                         $glpi_users[] = ['id'         => $user['id'],
-                                   'user'       => $userfound['name'],
-                                   $field_for_sync => (isset($userfound[$config_ldap->fields['sync_field']]) ? $userfound[$config_ldap->fields['sync_field']] : 'NULL'),
-                                   'timestamp'  => $user_infos[$userfound[$field_for_sync]]['timestamp'],
-                                   'date_sync'  => $tmpuser->fields['date_sync'],
-                                   'dn'         => $user['user_dn']];
+                            'user'       => $userfound['name'],
+                            $field_for_sync => (isset($userfound[$config_ldap->fields['sync_field']]) ? $userfound[$config_ldap->fields['sync_field']] : 'NULL'),
+                            'timestamp'  => $user_infos[$userfound[$field_for_sync]]['timestamp'],
+                            'date_sync'  => $tmpuser->fields['date_sync'],
+                            'dn'         => $user['user_dn']
+                        ];
                     } else if (
                         ($values['mode'] == self::ACTION_ALL)
                           || (($ldap_users[$user[$field_for_db]] - strtotime($user['date_sync'])) > 0)
                     ) {
                        //If entry was modified or if script should synchronize all the users
                         $glpi_users[] = ['id'         => $user['id'],
-                                   'user'       => $user['name'],
-                                   $field_for_sync => $user['sync_field'],
-                                   'timestamp'  => $user_infos[$user[$field_for_db]]['timestamp'],
-                                   'date_sync'  => $user['date_sync'],
-                                   'dn'         => $user['user_dn']];
+                            'user'       => $user['name'],
+                            $field_for_sync => $user['sync_field'],
+                            'timestamp'  => $user_infos[$user[$field_for_db]]['timestamp'],
+                            'date_sync'  => $user['date_sync'],
+                            'dn'         => $user['user_dn']
+                        ];
                     }
                 } else if (
                     ($values['mode'] == self::ACTION_ALL)
@@ -2107,8 +2119,9 @@ class AuthLDAP extends CommonDBTM
                //If user dn exists in DB, it means that user login field has changed
                 if (!$tmpuser->getFromDBByDn(Toolbox::addslashes_deep($user_infos[$user]["user_dn"]))) {
                     $entry  = ["user"      => $user_infos[$user][$config_ldap->fields['login_field']],
-                          "timestamp" => $user_infos[$user]["timestamp"],
-                          "date_sync" => Dropdown::EMPTY_VALUE];
+                        "timestamp" => $user_infos[$user]["timestamp"],
+                        "date_sync" => Dropdown::EMPTY_VALUE
+                    ];
                     if ($config_ldap->isSyncFieldEnabled()) {
                         $entry[$field_for_sync] = $user_infos[$user][$field_for_sync];
                     }
@@ -2257,9 +2270,11 @@ class AuthLDAP extends CommonDBTM
                     echo "<tr>";
                     echo "<td>";
                     echo Html::hidden("dn[$dn_index]", ['value'                 => $group_dn,
-                                                        'data-glpicore-ma-tags' => 'common']);
+                        'data-glpicore-ma-tags' => 'common'
+                    ]);
                     echo Html::hidden("ldap_import_type[$dn_index]", ['value'                 => $search_type,
-                                                                      'data-glpicore-ma-tags' => 'common']);
+                        'data-glpicore-ma-tags' => 'common'
+                    ]);
                     Html::showMassiveActionCheckBox(
                         __CLASS__,
                         $dn_index,
@@ -2270,8 +2285,9 @@ class AuthLDAP extends CommonDBTM
                     echo "<td>" . $group_dn . "</td>";
                     echo "<td>";
                     Entity::dropdown(['value'         => $entity,
-                                      'name'          => "ldap_import_entities[$dn_index]",
-                                      'specific_tags' => ['data-glpicore-ma-tags' => 'common']]);
+                        'name'          => "ldap_import_entities[$dn_index]",
+                        'specific_tags' => ['data-glpicore-ma-tags' => 'common']
+                    ]);
                     echo "</td>";
                     if (Session::isMultiEntitiesMode()) {
                           echo "<td>";
@@ -2279,13 +2295,15 @@ class AuthLDAP extends CommonDBTM
                               __CLASS__,
                               $dn_index,
                               ['massive_tags'  => 'select_item_child_entities',
-                                                     'name'          => "ldap_import_recursive[$dn_index]",
-                              'specific_tags' => ['data-glpicore-ma-tags' => 'entities_id']]
+                                  'name'          => "ldap_import_recursive[$dn_index]",
+                                  'specific_tags' => ['data-glpicore-ma-tags' => 'entities_id']
+                              ]
                           );
                             echo "</td>";
                     } else {
                         echo Html::hidden("ldap_import_recursive[$dn_index]", ['value'                 => 0,
-                                                                              'data-glpicore-ma-tags' => 'entities_id']);
+                            'data-glpicore-ma-tags' => 'entities_id'
+                        ]);
                     }
                     echo "</tr>";
                     $dn_index++;
@@ -2387,9 +2405,9 @@ class AuthLDAP extends CommonDBTM
 
                //Get all groups from GLPI DB for the current entity and the subentities
                 $iterator = $DB->request([
-                'SELECT' => ['ldap_group_dn','ldap_value'],
-                'FROM'   => 'glpi_groups',
-                'WHERE'  => getEntitiesRestrictCriteria('glpi_groups')
+                    'SELECT' => ['ldap_group_dn','ldap_value'],
+                    'FROM'   => 'glpi_groups',
+                    'WHERE'  => getEntitiesRestrictCriteria('glpi_groups')
                 ]);
 
                //If the group exists in DB -> unset it from the LDAP groups
@@ -2501,14 +2519,14 @@ class AuthLDAP extends CommonDBTM
             $filter = Sanitizer::unsanitize($filter);
             if (self::isLdapPageSizeAvailable($config_ldap)) {
                 $controls = [
-                [
-                  'oid'       => LDAP_CONTROL_PAGEDRESULTS,
-                  'iscritical' => true,
-                  'value'     => [
-                     'size'   => $config_ldap->fields['pagesize'],
-                     'cookie' => $cookie
-                  ]
-                ]
+                    [
+                        'oid'       => LDAP_CONTROL_PAGEDRESULTS,
+                        'iscritical' => true,
+                        'value'     => [
+                            'size'   => $config_ldap->fields['pagesize'],
+                            'cookie' => $cookie
+                        ]
+                    ]
                 ];
                 $sr = ldap_search($ldap_connection, $config_ldap->fields['basedn'], $filter, $attrs, 0, -1, -1, LDAP_DEREF_NEVER, $controls);
                 ldap_parse_result($ldap_connection, $sr, $errcode, $matcheddn, $errmsg, $referrals, $controls);
@@ -2550,7 +2568,8 @@ class AuthLDAP extends CommonDBTM
                        // No cn : not a real object
                         if (isset($infos[$ligne]["cn"][0])) {
                              $groups[$infos[$ligne]["dn"]] = (["cn" => $infos[$ligne]["cn"][0],
-                                                       "search_type" => "groups"]);
+                                 "search_type" => "groups"
+                             ]);
                         }
                     } else {
                         if (isset($infos[$ligne][$extra_attribute])) {
@@ -2570,16 +2589,17 @@ class AuthLDAP extends CommonDBTM
                                     && (count($ou) > 0)
                                 ) {
                                     $iterator = $DB->request([
-                                    'SELECT' => ['ldap_value'],
-                                    'FROM'   => 'glpi_groups',
-                                    'WHERE'  => [
-                                    'ldap_group_dn' => Toolbox::addslashes_deep($ou)
-                                    ]
+                                        'SELECT' => ['ldap_value'],
+                                        'FROM'   => 'glpi_groups',
+                                        'WHERE'  => [
+                                            'ldap_group_dn' => Toolbox::addslashes_deep($ou)
+                                        ]
                                     ]);
 
                                     foreach ($iterator as $group) {
                                          $groups[$group['ldap_value']] = ["cn"          => $group['ldap_value'],
-                                                              "search_type" => "users"];
+                                             "search_type" => "users"
+                                         ];
                                     }
                                 }
                             } else {
@@ -2592,8 +2612,9 @@ class AuthLDAP extends CommonDBTM
                                         $ldap_connection,
                                         $infos[$ligne][$extra_attribute][$ligne_extra]
                                     ),
-                                      "search_type"
-                                             => "users"];
+                                        "search_type"
+                                             => "users"
+                                    ];
                                 }
                             }
                         }
@@ -2618,11 +2639,11 @@ class AuthLDAP extends CommonDBTM
         global $DB;
 
         $iterator = $DB->request([
-         'FROM'   => self::getTable(),
-         'WHERE'  => [
-            'is_active' => 1
-         ],
-         'ORDER'  => 'name ASC'
+            'FROM'   => self::getTable(),
+            'WHERE'  => [
+                'is_active' => 1
+            ],
+            'ORDER'  => 'name ASC'
         ]);
 
         if (count($iterator) == 1) {
@@ -2656,9 +2677,9 @@ class AuthLDAP extends CommonDBTM
            // clean ldap fields if asked by admin
             if ($clean_ldap_fields) {
                 $user->update([
-                 'id'         => $user->fields['id'],
-                 'user_dn'    => '',
-                 'sync_field' => '',
+                    'id'         => $user->fields['id'],
+                    'user_dn'    => '',
+                    'sync_field' => '',
                 ]);
             }
 
@@ -2670,10 +2691,10 @@ class AuthLDAP extends CommonDBTM
             }
             return AuthLDAP::ldapImportUserByServerId(
                 [
-                'method'             => self::IDENTIFIER_LOGIN,
-                'value'              => $user->fields[$user_field],
-                'identifier_field'   => $id_field,
-                'user_field'         => $user_field
+                    'method'             => self::IDENTIFIER_LOGIN,
+                    'value'              => $user->fields[$user_field],
+                    'identifier_field'   => $id_field,
+                    'user_field'         => $user_field
                 ],
                 true,
                 $user->fields["auths_id"],
@@ -2737,10 +2758,11 @@ class AuthLDAP extends CommonDBTM
 
            //Get the user's dn & login
             $attribs = ['basedn'            => $config_ldap->fields['basedn'],
-                     'login_field'       => $search_parameters['fields'][$search_parameters['method']],
-                     'search_parameters' => $search_parameters,
-                     'user_params'       => $params,
-                     'condition'         => $config_ldap->fields['condition']];
+                'login_field'       => $search_parameters['fields'][$search_parameters['method']],
+                'search_parameters' => $search_parameters,
+                'user_params'       => $params,
+                'condition'         => $config_ldap->fields['condition']
+            ];
 
             try {
                 $infos = self::searchUserDn($ds, $attribs);
@@ -2771,7 +2793,7 @@ class AuthLDAP extends CommonDBTM
                         if ($user_found && $searched_user->fields['is_deleted_ldap'] && $searched_user->fields['user_dn']) {
                             User::manageRestoredUserInLdap($searched_user->fields['id']);
                             return ['action' => self::USER_RESTORED_LDAP,
-                            'id' => $searched_user->fields['id']
+                                'id' => $searched_user->fields['id']
                             ];
                         }
 
@@ -2797,7 +2819,8 @@ class AuthLDAP extends CommonDBTM
 
                             $user->fields["id"] = $user->add($input);
                             return ['action' => self::USER_IMPORTED,
-                            'id'     => $user->fields["id"]];
+                                'id'     => $user->fields["id"]
+                            ];
                         }
                       //Get the ID by user name
                         if (!($id = User::getIdByfield($params['user_field'], $login))) {
@@ -2811,7 +2834,8 @@ class AuthLDAP extends CommonDBTM
                         }
                         $user->update($input);
                         return ['action' => self::USER_SYNCHRONIZED,
-                        'id'     => $input['id']];
+                            'id'     => $input['id']
+                        ];
                     }
                     return false;
                 }
@@ -2819,7 +2843,8 @@ class AuthLDAP extends CommonDBTM
                     $users_id = User::getIdByField($params['user_field'], $params['value']);
                     User::manageDeletedUserInLdap($users_id);
                     return ['action' => self::USER_DELETED_LDAP,
-                     'id'     => $users_id];
+                        'id'     => $users_id
+                    ];
                 }
             } catch (\RuntimeException $e) {
                 ErrorHandler::getInstance()->handleException($e);
@@ -2860,15 +2885,17 @@ class AuthLDAP extends CommonDBTM
             $group       = new Group();
             if ($options['type'] == "groups") {
                 return $group->add(["name"          => addslashes($group_infos["cn"][0]),
-                                "ldap_group_dn" => addslashes($group_infos["dn"]),
-                                "entities_id"   => $options['entities_id'],
-                                "is_recursive"  => $options['is_recursive']]);
+                    "ldap_group_dn" => addslashes($group_infos["dn"]),
+                    "entities_id"   => $options['entities_id'],
+                    "is_recursive"  => $options['is_recursive']
+                ]);
             }
             return $group->add(["name"         => addslashes($group_infos["cn"][0]),
-                             "ldap_field"   => $config_ldap->fields["group_field"],
-                             "ldap_value"   => addslashes($group_infos["dn"]),
-                             "entities_id"  => $options['entities_id'],
-                             "is_recursive" => $options['is_recursive']]);
+                "ldap_field"   => $config_ldap->fields["group_field"],
+                "ldap_value"   => addslashes($group_infos["dn"]),
+                "entities_id"  => $options['entities_id'],
+                "is_recursive" => $options['is_recursive']
+            ]);
         }
         return false;
     }
@@ -3220,9 +3247,9 @@ class AuthLDAP extends CommonDBTM
            // Caveat: if user uses a wrong password, a login attempt will still be done on all active LDAP servers.
             $known_servers = $DB->request(
                 [
-                'SELECT' => 'auths_id',
-                'FROM'   => User::getTable(),
-                'WHERE'  => ['name' => addslashes($login)],
+                    'SELECT' => 'auths_id',
+                    'FROM'   => User::getTable(),
+                    'WHERE'  => ['name' => addslashes($login)],
                 ]
             );
             $known_servers_id = array_column(iterator_to_array($known_servers), 'auths_id');
@@ -3290,12 +3317,12 @@ class AuthLDAP extends CommonDBTM
     {
 
         $values = [
-         'basedn'            => '',
-         'login_field'       => '',
-         'search_parameters' => [],
-         'user_params'       => '',
-         'condition'         => '',
-         'user_dn'           => false,
+            'basedn'            => '',
+            'login_field'       => '',
+            'search_parameters' => [],
+            'user_params'       => '',
+            'condition'         => '',
+            'user_dn'           => false,
         ];
 
         foreach ($options as $key => $value) {
@@ -3319,8 +3346,8 @@ class AuthLDAP extends CommonDBTM
 
             if ($info) {
                 $ret = [
-                'dn'        => $values['user_dn'],
-                $login_attr => $info[$login_attr][0]
+                    'dn'        => $values['user_dn'],
+                    $login_attr => $info[$login_attr][0]
                 ];
                 if ($sync_attr !== null && isset($info[0][$sync_attr])) {
                     $ret['sync_field'] = self::getFieldValue($info[0], $sync_attr);
@@ -3346,8 +3373,8 @@ class AuthLDAP extends CommonDBTM
 
             if (is_array($info) && ($info['count'] == 1)) {
                 $ret = [
-                'dn'        => $info[0]['dn'],
-                $login_attr => $info[0][$login_attr][0]
+                    'dn'        => $info[0]['dn'],
+                    $login_attr => $info[0][$login_attr][0]
                 ];
                 if ($sync_attr !== null && isset($info[0][$sync_attr])) {
                     $ret['sync_field'] = self::getFieldValue($info[0], $sync_attr);
@@ -3429,7 +3456,8 @@ class AuthLDAP extends CommonDBTM
     {
 
         $fields = ['action', 'authldaps_id', 'basedn', 'begin_date', 'criterias',  'end_date',
-                      'entities_id', 'interface', 'ldap_filter', 'mode'];
+            'entities_id', 'interface', 'ldap_filter', 'mode'
+        ];
 
        //If form accessed via modal, do not show expert mode link
        // Manage new value is set : entity or mode
@@ -3623,10 +3651,11 @@ class AuthLDAP extends CommonDBTM
                         echo "<tr><td class='text-end'><label for='dropdown_authldaps_id$rand'>" . __('LDAP directory choice') . "</label></td>";
                         echo "<td colspan='3'>";
                         self::dropdown(['name'                 => 'authldaps_id',
-                                  'value'                => $_SESSION['ldap_import']['authldaps_id'],
-                                  'condition'            => ['is_active' => 1],
-                                  'display_emptychoice'  => false,
-                                  'rand'                 => $rand]);
+                            'value'                => $_SESSION['ldap_import']['authldaps_id'],
+                            'condition'            => ['is_active' => 1],
+                            'display_emptychoice'  => false,
+                            'rand'                 => $rand
+                        ]);
                         echo "&nbsp;<input class='btn btn-secondary' type='submit' name='change_directory'
                         value=\"" . _sx('button', 'Change') . "\">";
                         echo "</td></tr>";
@@ -3653,11 +3682,11 @@ class AuthLDAP extends CommonDBTM
                </td>";
                     echo "<td>";
                     self::dropdown([
-                    'name'                 => 'authldaps_id',
-                    'value'                => $_SESSION['ldap_import']['authldaps_id'],
-                    'condition'            => ['is_active' => 1],
-                    'display_emptychoice'  => false,
-                    'rand'                 => $rand
+                        'name'                 => 'authldaps_id',
+                        'value'                => $_SESSION['ldap_import']['authldaps_id'],
+                        'condition'            => ['is_active' => 1],
+                        'display_emptychoice'  => false,
+                        'rand'                 => $rand
                     ]);
                     echo "&nbsp;<input class='btn btn-secondary' type='submit' name='change_directory'
                      value=\"" . _sx('button', 'Change') . "\">";
@@ -3673,9 +3702,9 @@ class AuthLDAP extends CommonDBTM
                     echo "<tr><td class='text-end'>" . __('Select the desired entity') . "</td>" .
                     "<td>";
                     Entity::dropdown([
-                    'value'       => $_SESSION['ldap_import']['entities_id'],
-                    'entity'      => $_SESSION['glpiactiveentities'],
-                    'on_change'    => 'this.form.submit()'
+                        'value'       => $_SESSION['ldap_import']['entities_id'],
+                        'entity'      => $_SESSION['glpiactiveentities'],
+                        'on_change'    => 'this.form.submit()'
                     ]);
                     echo "</td></tr>";
                 } else {
@@ -3704,31 +3733,32 @@ class AuthLDAP extends CommonDBTM
                 ) {
                     $field_counter = 0;
                     $fields        = ['login_field'     => __('Login'),
-                                 'sync_field'      => __('Synchronization field') . ' (' . $authldap->fields['sync_field'] . ')',
-                                 'email1_field'    => _n('Email', 'Emails', 1),
-                                 'email2_field'    => sprintf(
-                                     __('%1$s %2$s'),
-                                     _n('Email', 'Emails', 1),
-                                     '2'
-                                 ),
-                                 'email3_field'    => sprintf(
-                                     __('%1$s %2$s'),
-                                     _n('Email', 'Emails', 1),
-                                     '3'
-                                 ),
-                                 'email4_field'    => sprintf(
-                                     __('%1$s %2$s'),
-                                     _n('Email', 'Emails', 1),
-                                     '4'
-                                 ),
-                                 'realname_field'  => __('Surname'),
-                                 'firstname_field' => __('First name'),
-                                 'phone_field'     => _x('ldap', 'Phone'),
-                                 'phone2_field'    => __('Phone 2'),
-                                 'mobile_field'    => __('Mobile phone'),
-                                 'title_field'     => _x('person', 'Title'),
-                                 'category_field'  => _n('Category', 'Categories', 1),
-                                 'picture_field'   => _n('Picture', 'Pictures', 1)];
+                        'sync_field'      => __('Synchronization field') . ' (' . $authldap->fields['sync_field'] . ')',
+                        'email1_field'    => _n('Email', 'Emails', 1),
+                        'email2_field'    => sprintf(
+                            __('%1$s %2$s'),
+                            _n('Email', 'Emails', 1),
+                            '2'
+                        ),
+                        'email3_field'    => sprintf(
+                            __('%1$s %2$s'),
+                            _n('Email', 'Emails', 1),
+                            '3'
+                        ),
+                        'email4_field'    => sprintf(
+                            __('%1$s %2$s'),
+                            _n('Email', 'Emails', 1),
+                            '4'
+                        ),
+                        'realname_field'  => __('Surname'),
+                        'firstname_field' => __('First name'),
+                        'phone_field'     => _x('ldap', 'Phone'),
+                        'phone2_field'    => __('Phone 2'),
+                        'mobile_field'    => __('Mobile phone'),
+                        'title_field'     => _x('person', 'Title'),
+                        'category_field'  => _n('Category', 'Categories', 1),
+                        'picture_field'   => _n('Picture', 'Pictures', 1)
+                    ];
                     $available_fields = [];
                     foreach ($fields as $field => $label) {
                         if (isset($authldap->fields[$field]) && ($authldap->fields[$field] != '')) {
@@ -3983,11 +4013,11 @@ class AuthLDAP extends CommonDBTM
     {
 
         return [
-         self::DELETED_USER_PRESERVE                  => __('Preserve'),
-         self::DELETED_USER_DELETE                    => __('Put in trashbin'),
-         self::DELETED_USER_WITHDRAWDYNINFO           => __('Withdraw dynamic authorizations and groups'),
-         self::DELETED_USER_DISABLE                   => __('Disable'),
-         self::DELETED_USER_DISABLEANDWITHDRAWDYNINFO => __('Disable') . ' + ' . __('Withdraw dynamic authorizations and groups'),
+            self::DELETED_USER_PRESERVE                  => __('Preserve'),
+            self::DELETED_USER_DELETE                    => __('Put in trashbin'),
+            self::DELETED_USER_WITHDRAWDYNINFO           => __('Withdraw dynamic authorizations and groups'),
+            self::DELETED_USER_DISABLE                   => __('Disable'),
+            self::DELETED_USER_DISABLEANDWITHDRAWDYNINFO => __('Disable') . ' + ' . __('Withdraw dynamic authorizations and groups'),
         ];
     }
 
@@ -4000,9 +4030,9 @@ class AuthLDAP extends CommonDBTM
     public static function getLdapRestoredUserActionOptions()
     {
         return [
-         self::RESTORED_USER_PRESERVE  => __('Do nothing'),
-         self::RESTORED_USER_RESTORE   => __('Restore (move out of trashbin)'),
-         self::RESTORED_USER_ENABLE    => __('Enable'),
+            self::RESTORED_USER_PRESERVE  => __('Do nothing'),
+            self::RESTORED_USER_RESTORE   => __('Restore (move out of trashbin)'),
+            self::RESTORED_USER_ENABLE    => __('Enable'),
         ];
     }
 
@@ -4050,18 +4080,18 @@ class AuthLDAP extends CommonDBTM
        // Always get default first
 
         $iterator = $DB->request([
-         'SELECT' => ['id'],
-         'FROM'  => 'glpi_authldaps',
-         'WHERE' => [
-            'is_active' => 1,
-            'OR'        => [
-               'email1_field' => ['<>', ''],
-               'email2_field' => ['<>', ''],
-               'email3_field' => ['<>', ''],
-               'email4_field' => ['<>', '']
-            ]
-         ],
-         'ORDER'  => ['is_default DESC']
+            'SELECT' => ['id'],
+            'FROM'  => 'glpi_authldaps',
+            'WHERE' => [
+                'is_active' => 1,
+                'OR'        => [
+                    'email1_field' => ['<>', ''],
+                    'email2_field' => ['<>', ''],
+                    'email3_field' => ['<>', ''],
+                    'email4_field' => ['<>', '']
+                ]
+            ],
+            'ORDER'  => ['is_default DESC']
         ]);
         foreach ($iterator as $data) {
             $ldaps[] = $data['id'];
@@ -4209,14 +4239,14 @@ class AuthLDAP extends CommonDBTM
 
         $replicates = [];
         $criteria = ['FIELDS' => ['id', 'host', 'port'],
-                'FROM'   => 'glpi_authldapreplicates',
-                'WHERE'  => ['authldaps_id' => $master_id]
-               ];
+            'FROM'   => 'glpi_authldapreplicates',
+            'WHERE'  => ['authldaps_id' => $master_id]
+        ];
         foreach ($DB->request($criteria) as $replicate) {
             $replicates[] = ["id"   => $replicate["id"],
-                          "host" => $replicate["host"],
-                          "port" => $replicate["port"]
-                         ];
+                "host" => $replicate["host"],
+                "port" => $replicate["port"]
+            ];
         }
         return $replicates;
     }
@@ -4273,8 +4303,8 @@ class AuthLDAP extends CommonDBTM
         $count = countElementsInTable(
             'glpi_users',
             [
-            'auths_id'  => $this->getID(),
-            'NOT'       => ['sync_field' => null]
+                'auths_id'  => $this->getID(),
+                'NOT'       => ['sync_field' => null]
             ]
         );
         return $count > 0;

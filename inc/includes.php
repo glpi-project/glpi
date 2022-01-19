@@ -62,9 +62,9 @@ if (
 ) {
     $SQL_TOTAL_REQUEST    = 0;
     $DEBUG_SQL = [
-      'queries' => [],
-      'errors'  => [],
-      'times'   => [],
+        'queries' => [],
+        'errors'  => [],
+        'times'   => [],
     ];
 }
 

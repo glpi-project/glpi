@@ -96,8 +96,8 @@ if (empty($config['system_user'])) {
         $system_user_name .= '-' . Toolbox::getRandomString(8);
     }
     $id = $user->add([
-      'name'     => $system_user_name,
-      'realname' => 'Support',
+        'name'     => $system_user_name,
+        'realname' => 'Support',
     ]);
 
     if (!$id) {
@@ -115,10 +115,10 @@ if (empty($crontask->find(['itemtype' => 'PendingReasonCron']))) {
         'pendingreason_autobump_autosolve',
         30 * MINUTE_TIMESTAMP,
         [
-         'state'         => 1,
-         'mode'          => 2,
-         'allowmode'     => 3,
-         'logs_lifetime' => 60,
+            'state'         => 1,
+            'mode'          => 2,
+            'allowmode'     => 3,
+            'logs_lifetime' => 60,
         ]
     );
 

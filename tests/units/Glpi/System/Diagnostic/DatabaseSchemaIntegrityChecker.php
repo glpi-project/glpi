@@ -39,8 +39,8 @@ class DatabaseSchemaIntegrityChecker extends \GLPITestCase
     {
         return [
          // AUTO_INCREMENT, integer display width, and comments should not be included in differences.
-         [
-            'proper_sql'     => <<<SQL
+            [
+                'proper_sql'     => <<<SQL
 CREATE TABLE `table` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
@@ -49,7 +49,7 @@ CREATE TABLE `table` (
 ) ENGINE=InnoDB COMMENT='some comment with an escaped \' backquote'
 SQL
             ,
-            'effective_sql'  => <<<SQL
+                'effective_sql'  => <<<SQL
 CREATE TABLE `table` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL COMMENT 'name of the object',
@@ -58,16 +58,16 @@ CREATE TABLE `table` (
 ) ENGINE=InnoDB AUTO_INCREMENT=15
 SQL
             ,
-            'version_string' => '5.7.50-log',
-            'args'           => [
+                'version_string' => '5.7.50-log',
+                'args'           => [
+                ],
+                'expected_has'   => false,
+                'expected_diff'  => '',
             ],
-            'expected_has'   => false,
-            'expected_diff'  => '',
-         ],
 
          // Check should detect missing keys and columns.
-         [
-            'proper_sql'     => <<<SQL
+            [
+                'proper_sql'     => <<<SQL
 CREATE TABLE `table` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
@@ -85,7 +85,7 @@ CREATE TABLE `table` (
 ) ENGINE=InnoDB ROW_FORMAT=DYNAMIC
 SQL
             ,
-            'effective_sql'  => <<<SQL
+                'effective_sql'  => <<<SQL
 CREATE TABLE `table` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
@@ -98,12 +98,12 @@ CREATE TABLE `table` (
 ) ENGINE=InnoDB
 SQL
             ,
-            'version_string' => '5.7.34-standard',
-            'args'           => [
-               'strict' => false,
-            ],
-            'expected_has'   => true,
-            'expected_diff'  => <<<DIFF
+                'version_string' => '5.7.34-standard',
+                'args'           => [
+                    'strict' => false,
+                ],
+                'expected_has'   => true,
+                'expected_diff'  => <<<DIFF
 --- Original
 +++ New
 @@ @@
@@ -126,11 +126,11 @@ SQL
 
 DIFF
             ,
-         ],
+            ],
 
          // Non strict check does not take care of columns/indexes order and ROW_FORMAT.
-         [
-            'proper_sql'     => <<<SQL
+            [
+                'proper_sql'     => <<<SQL
 CREATE TABLE `table` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
@@ -141,7 +141,7 @@ CREATE TABLE `table` (
 ) ENGINE=InnoDB ROW_FORMAT=DYNAMIC
 SQL
             ,
-            'effective_sql'  => <<<SQL
+                'effective_sql'  => <<<SQL
 CREATE TABLE `table` (
   `id` int NOT NULL AUTO_INCREMENT,
   `is_valid` tinyint NOT NULL,
@@ -152,17 +152,17 @@ CREATE TABLE `table` (
 ) ENGINE=InnoDB
 SQL
             ,
-            'version_string' => '5.7.34-standard',
-            'args'           => [
-               'strict' => false,
+                'version_string' => '5.7.34-standard',
+                'args'           => [
+                    'strict' => false,
+                ],
+                'expected_has'   => false,
+                'expected_diff'  => '',
             ],
-            'expected_has'   => false,
-            'expected_diff'  => '',
-         ],
 
          // Strict check takes care of columns/indexes order and ROW_FORMAT.
-         [
-            'proper_sql'     => <<<SQL
+            [
+                'proper_sql'     => <<<SQL
 CREATE TABLE `table` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
@@ -173,7 +173,7 @@ CREATE TABLE `table` (
 ) ENGINE=InnoDB
 SQL
             ,
-            'effective_sql'  => <<<SQL
+                'effective_sql'  => <<<SQL
 CREATE TABLE `table` (
   `id` int NOT NULL AUTO_INCREMENT,
   `is_valid` tinyint NOT NULL,
@@ -184,11 +184,11 @@ CREATE TABLE `table` (
 ) ENGINE=InnoDB ROW_FORMAT=DYNAMIC
 SQL
             ,
-            'version_string' => '5.7.34-standard',
-            'args'           => [
-            ],
-            'expected_has'   => true,
-            'expected_diff'  => <<<DIFF
+                'version_string' => '5.7.34-standard',
+                'args'           => [
+                ],
+                'expected_has'   => true,
+                'expected_diff'  => <<<DIFF
 --- Original
 +++ New
 @@ @@
@@ -207,11 +207,11 @@ SQL
 
 DIFF
             ,
-         ],
+            ],
 
          // utf8mb3 should be normalized to utf8.
-         [
-            'proper_sql'     => <<<SQL
+            [
+                'proper_sql'     => <<<SQL
 CREATE TABLE `table` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
@@ -220,7 +220,7 @@ CREATE TABLE `table` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 SQL
             ,
-            'effective_sql'  => <<<SQL
+                'effective_sql'  => <<<SQL
 CREATE TABLE `table` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
@@ -229,21 +229,21 @@ CREATE TABLE `table` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci
 SQL
             ,
-            'version_string' => '8.0.24-standard',
-            'args'           => [
-               'use_utf8mb4' => false,
+                'version_string' => '8.0.24-standard',
+                'args'           => [
+                    'use_utf8mb4' => false,
+                ],
+                'expected_has'   => false,
+                'expected_diff'  => '',
             ],
-            'expected_has'   => false,
-            'expected_diff'  => '',
-         ],
 
          // DB using utf8mb4:
          // - should accept missing default charset/collate on columns if matching utf8mb4;
          // - should not accept non utf8mb4 charset;
          // - should accept 'mediumtext' instead of 'text'.
          // - should accept 'longtext' instead of 'mediumtext'.
-         [
-            'proper_sql'     => <<<SQL
+            [
+                'proper_sql'     => <<<SQL
 CREATE TABLE `table` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
@@ -254,7 +254,7 @@ CREATE TABLE `table` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
 SQL
             ,
-            'effective_sql'  => <<<SQL
+                'effective_sql'  => <<<SQL
 CREATE TABLE `table` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL CHARACTER SET utf8 COLLATE utf8_unicode_ci,
@@ -265,12 +265,12 @@ CREATE TABLE `table` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
 SQL
             ,
-            'version_string' => '5.7.34-standard',
-            'args'           => [
-               'use_utf8mb4' => true,
-            ],
-            'expected_has'   => true,
-            'expected_diff'  => <<<DIFF
+                'version_string' => '5.7.34-standard',
+                'args'           => [
+                    'use_utf8mb4' => true,
+                ],
+                'expected_has'   => true,
+                'expected_diff'  => <<<DIFF
 --- Original
 +++ New
 @@ @@
@@ -287,15 +287,15 @@ SQL
 
 DIFF
             ,
-         ],
+            ],
 
          // DB using utf8:
          // - should accept missing default charset/collate on columns if matching utf8;
          // - should not accept non utf8 charset;
          // - should not accept 'mediumtext' instead of 'text'.
          // - should not accept 'longtext' instead of 'mediumtext'.
-         [
-            'proper_sql'     => <<<SQL
+            [
+                'proper_sql'     => <<<SQL
 CREATE TABLE `table` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
@@ -305,7 +305,7 @@ CREATE TABLE `table` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 SQL
             ,
-            'effective_sql'  => <<<SQL
+                'effective_sql'  => <<<SQL
 CREATE TABLE `table` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
@@ -315,12 +315,12 @@ CREATE TABLE `table` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 SQL
             ,
-            'version_string' => '5.7.34-standard',
-            'args'           => [
-               'use_utf8mb4' => false,
-            ],
-            'expected_has'   => true,
-            'expected_diff'  => <<<DIFF
+                'version_string' => '5.7.34-standard',
+                'args'           => [
+                    'use_utf8mb4' => false,
+                ],
+                'expected_has'   => true,
+                'expected_diff'  => <<<DIFF
 --- Original
 +++ New
 @@ @@
@@ -337,14 +337,14 @@ SQL
 
 DIFF
             ,
-         ],
+            ],
 
          // DB using utf8mb3:
          // - should accept missing default charset/collate on columns if matching utf8/utf8mb3;
          // - should not accept non utf8/utf8mb3 charset;
          // - should not accept 'mediumtext' instead of 'text'.
-         [
-            'proper_sql'     => <<<SQL
+            [
+                'proper_sql'     => <<<SQL
 CREATE TABLE `table` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
@@ -353,7 +353,7 @@ CREATE TABLE `table` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 SQL
             ,
-            'effective_sql'  => <<<SQL
+                'effective_sql'  => <<<SQL
 CREATE TABLE `table` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
@@ -362,12 +362,12 @@ CREATE TABLE `table` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci
 SQL
             ,
-            'version_string' => '8.0.24-standard',
-            'args'           => [
-               'use_utf8mb4' => false,
-            ],
-            'expected_has'   => true,
-            'expected_diff'  => <<<DIFF
+                'version_string' => '8.0.24-standard',
+                'args'           => [
+                    'use_utf8mb4' => false,
+                ],
+                'expected_has'   => true,
+                'expected_diff'  => <<<DIFF
 --- Original
 +++ New
 @@ @@
@@ -382,12 +382,12 @@ SQL
 
 DIFF
             ,
-         ],
+            ],
 
          // Charset/collation difference should be ignored if related to utf8mb4 migration
          // when using ignore_utf8mb4_migration flag.
-         [
-            'proper_sql'     => <<<SQL
+            [
+                'proper_sql'     => <<<SQL
 CREATE TABLE `table` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
@@ -396,7 +396,7 @@ CREATE TABLE `table` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
 SQL
             ,
-            'effective_sql'  => <<<SQL
+                'effective_sql'  => <<<SQL
 CREATE TABLE `table` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
@@ -405,20 +405,20 @@ CREATE TABLE `table` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 SQL
             ,
-            'version_string' => '10.2.36-MariaDB',
-            'args'           => [
-               'use_utf8mb4' => false,
-               'ignore_utf8mb4_migration' => true,
+                'version_string' => '10.2.36-MariaDB',
+                'args'           => [
+                    'use_utf8mb4' => false,
+                    'ignore_utf8mb4_migration' => true,
+                ],
+                'expected_has'   => false,
+                'expected_diff'  => '',
             ],
-            'expected_has'   => false,
-            'expected_diff'  => '',
-         ],
 
          // Charset/collation difference should be ignored if related to utf8mb4 migration
          // when using ignore_utf8mb4_migration flag.
          // utf8mb3 case
-         [
-            'proper_sql'     => <<<SQL
+            [
+                'proper_sql'     => <<<SQL
 CREATE TABLE `table` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
@@ -427,7 +427,7 @@ CREATE TABLE `table` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
 SQL
             ,
-            'effective_sql'  => <<<SQL
+                'effective_sql'  => <<<SQL
 CREATE TABLE `table` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
@@ -436,19 +436,19 @@ CREATE TABLE `table` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci
 SQL
             ,
-            'version_string' => '8.0.24-standard',
-            'args'           => [
-               'use_utf8mb4' => false,
-               'ignore_utf8mb4_migration' => true,
+                'version_string' => '8.0.24-standard',
+                'args'           => [
+                    'use_utf8mb4' => false,
+                    'ignore_utf8mb4_migration' => true,
+                ],
+                'expected_has'   => false,
+                'expected_diff'  => '',
             ],
-            'expected_has'   => false,
-            'expected_diff'  => '',
-         ],
 
          // Charset/collation difference should NOT be ignored if related to utf8mb4 migration
          // when NOT using ignore_utf8mb4_migration flag.
-         [
-            'proper_sql'     => <<<SQL
+            [
+                'proper_sql'     => <<<SQL
 CREATE TABLE `table` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
@@ -457,7 +457,7 @@ CREATE TABLE `table` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
 SQL
             ,
-            'effective_sql'  => <<<SQL
+                'effective_sql'  => <<<SQL
 CREATE TABLE `table` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
@@ -466,13 +466,13 @@ CREATE TABLE `table` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 SQL
             ,
-            'version_string' => '10.2.36-MariaDB',
-            'args'           => [
-               'use_utf8mb4' => false,
-               'ignore_utf8mb4_migration' => false,
-            ],
-            'expected_has'   => true,
-            'expected_diff'  => <<<DIFF
+                'version_string' => '10.2.36-MariaDB',
+                'args'           => [
+                    'use_utf8mb4' => false,
+                    'ignore_utf8mb4_migration' => false,
+                ],
+                'expected_has'   => true,
+                'expected_diff'  => <<<DIFF
 --- Original
 +++ New
 @@ @@
@@ -487,13 +487,13 @@ SQL
 
 DIFF
             ,
-         ],
+            ],
 
          // Charset/collation difference should NOT be ignored if related to utf8mb4 migration
          // when NOT using ignore_utf8mb4_migration flag.
          // utf8mb3 case
-         [
-            'proper_sql'     => <<<SQL
+            [
+                'proper_sql'     => <<<SQL
 CREATE TABLE `table` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
@@ -502,7 +502,7 @@ CREATE TABLE `table` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
 SQL
             ,
-            'effective_sql'  => <<<SQL
+                'effective_sql'  => <<<SQL
 CREATE TABLE `table` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
@@ -511,13 +511,13 @@ CREATE TABLE `table` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci
 SQL
             ,
-            'version_string' => '8.0.24-standard',
-            'args'           => [
-               'use_utf8mb4' => false,
-               'ignore_utf8mb4_migration' => false,
-            ],
-            'expected_has'   => true,
-            'expected_diff'  => <<<DIFF
+                'version_string' => '8.0.24-standard',
+                'args'           => [
+                    'use_utf8mb4' => false,
+                    'ignore_utf8mb4_migration' => false,
+                ],
+                'expected_has'   => true,
+                'expected_diff'  => <<<DIFF
 --- Original
 +++ New
 @@ @@
@@ -532,12 +532,12 @@ SQL
 
 DIFF
             ,
-         ],
+            ],
 
          // Charset/collation difference should NOT be ignored if not related to utf8mb4 migration
          // when using ignore_utf8mb4_migration flag.
-         [
-            'proper_sql'     => <<<SQL
+            [
+                'proper_sql'     => <<<SQL
 CREATE TABLE `table` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
@@ -546,7 +546,7 @@ CREATE TABLE `table` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
 SQL
             ,
-            'effective_sql'  => <<<SQL
+                'effective_sql'  => <<<SQL
 CREATE TABLE `table` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL CHARACTER SET utf8 COLLATE utf8_unicode_ci,
@@ -555,13 +555,13 @@ CREATE TABLE `table` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 SQL
             ,
-            'version_string' => '10.2.36-MariaDB',
-            'args'           => [
-               'use_utf8mb4' => false,
-               'ignore_utf8mb4_migration' => true,
-            ],
-            'expected_has'   => true,
-            'expected_diff'  => <<<DIFF
+                'version_string' => '10.2.36-MariaDB',
+                'args'           => [
+                    'use_utf8mb4' => false,
+                    'ignore_utf8mb4_migration' => true,
+                ],
+                'expected_has'   => true,
+                'expected_diff'  => <<<DIFF
 --- Original
 +++ New
 @@ @@
@@ -575,13 +575,13 @@ SQL
 
 DIFF
             ,
-         ],
+            ],
 
          // Charset/collation difference should NOT be ignored if not related to utf8mb4 migration
          // when using ignore_utf8mb4_migration flag.
          // utf8mb3 case
-         [
-            'proper_sql'     => <<<SQL
+            [
+                'proper_sql'     => <<<SQL
 CREATE TABLE `table` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
@@ -590,7 +590,7 @@ CREATE TABLE `table` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
 SQL
             ,
-            'effective_sql'  => <<<SQL
+                'effective_sql'  => <<<SQL
 CREATE TABLE `table` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci,
@@ -599,13 +599,13 @@ CREATE TABLE `table` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci
 SQL
             ,
-            'version_string' => '8.0.24-standard',
-            'args'           => [
-               'use_utf8mb4' => false,
-               'ignore_utf8mb4_migration' => true,
-            ],
-            'expected_has'   => true,
-            'expected_diff'  => <<<DIFF
+                'version_string' => '8.0.24-standard',
+                'args'           => [
+                    'use_utf8mb4' => false,
+                    'ignore_utf8mb4_migration' => true,
+                ],
+                'expected_has'   => true,
+                'expected_diff'  => <<<DIFF
 --- Original
 +++ New
 @@ @@
@@ -619,11 +619,11 @@ SQL
 
 DIFF
             ,
-         ],
+            ],
 
          // datetime/timestamp difference should be ignored when using ignore_timestamps_migration flag.
-         [
-            'proper_sql'     => <<<SQL
+            [
+                'proper_sql'     => <<<SQL
 CREATE TABLE `table` (
   `id` int NOT NULL AUTO_INCREMENT,
   `created_at` timestamp NOT NULL,
@@ -632,7 +632,7 @@ CREATE TABLE `table` (
 ) ENGINE=InnoDB
 SQL
             ,
-            'effective_sql'  => <<<SQL
+                'effective_sql'  => <<<SQL
 CREATE TABLE `table` (
   `id` int NOT NULL AUTO_INCREMENT,
   `created_at` datetime NOT NULL,
@@ -641,17 +641,17 @@ CREATE TABLE `table` (
 ) ENGINE=InnoDB
 SQL
             ,
-            'version_string' => '10.2.36-MariaDB',
-            'args'           => [
-               'ignore_timestamps_migration' => true,
+                'version_string' => '10.2.36-MariaDB',
+                'args'           => [
+                    'ignore_timestamps_migration' => true,
+                ],
+                'expected_has'   => false,
+                'expected_diff'  => '',
             ],
-            'expected_has'   => false,
-            'expected_diff'  => '',
-         ],
 
          // datetime/timestamp difference should NOT be ignored when NOT using ignore_timestamps_migration flag.
-         [
-            'proper_sql'     => <<<SQL
+            [
+                'proper_sql'     => <<<SQL
 CREATE TABLE `table` (
   `id` int NOT NULL AUTO_INCREMENT,
   `created_at` timestamp NOT NULL,
@@ -660,7 +660,7 @@ CREATE TABLE `table` (
 ) ENGINE=InnoDB
 SQL
             ,
-            'effective_sql'  => <<<SQL
+                'effective_sql'  => <<<SQL
 CREATE TABLE `table` (
   `id` int NOT NULL AUTO_INCREMENT,
   `created_at` datetime NOT NULL,
@@ -669,12 +669,12 @@ CREATE TABLE `table` (
 ) ENGINE=InnoDB
 SQL
             ,
-            'version_string' => '10.2.36-MariaDB',
-            'args'           => [
-               'ignore_timestamps_migration' => false,
-            ],
-            'expected_has'   => true,
-            'expected_diff'  => <<<DIFF
+                'version_string' => '10.2.36-MariaDB',
+                'args'           => [
+                    'ignore_timestamps_migration' => false,
+                ],
+                'expected_has'   => true,
+                'expected_diff'  => <<<DIFF
 --- Original
 +++ New
 @@ @@
@@ -689,11 +689,11 @@ SQL
 
 DIFF
             ,
-         ],
+            ],
 
          // ROW_FORMAT difference should be ignored when using ignore_dynamic_row_format_migration flag.
-         [
-            'proper_sql'     => <<<SQL
+            [
+                'proper_sql'     => <<<SQL
 CREATE TABLE `table` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
@@ -701,7 +701,7 @@ CREATE TABLE `table` (
 ) ENGINE=InnoDB
 SQL
             ,
-            'effective_sql'  => <<<SQL
+                'effective_sql'  => <<<SQL
 CREATE TABLE `table` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
@@ -709,17 +709,17 @@ CREATE TABLE `table` (
 ) ENGINE=InnoDB ROW_FORMAT=COMPACT
 SQL
             ,
-            'version_string' => '10.2.36-MariaDB',
-            'args'           => [
-               'ignore_dynamic_row_format_migration' => true,
+                'version_string' => '10.2.36-MariaDB',
+                'args'           => [
+                    'ignore_dynamic_row_format_migration' => true,
+                ],
+                'expected_has'   => false,
+                'expected_diff'  => '',
             ],
-            'expected_has'   => false,
-            'expected_diff'  => '',
-         ],
 
          // ROW_FORMAT difference should NOT be ignored when NOT using ignore_dynamic_row_format_migration flag.
-         [
-            'proper_sql'     => <<<SQL
+            [
+                'proper_sql'     => <<<SQL
 CREATE TABLE `table` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
@@ -727,7 +727,7 @@ CREATE TABLE `table` (
 ) ENGINE=InnoDB
 SQL
             ,
-            'effective_sql'  => <<<SQL
+                'effective_sql'  => <<<SQL
 CREATE TABLE `table` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
@@ -735,12 +735,12 @@ CREATE TABLE `table` (
 ) ENGINE=InnoDB ROW_FORMAT=COMPACT
 SQL
             ,
-            'version_string' => '10.2.36-MariaDB',
-            'args'           => [
-               'ignore_dynamic_row_format_migration' => false,
-            ],
-            'expected_has'   => true,
-            'expected_diff'  => <<<DIFF
+                'version_string' => '10.2.36-MariaDB',
+                'args'           => [
+                    'ignore_dynamic_row_format_migration' => false,
+                ],
+                'expected_has'   => true,
+                'expected_diff'  => <<<DIFF
 --- Original
 +++ New
 @@ @@
@@ -751,11 +751,11 @@ SQL
 +) ENGINE=InnoDB ROW_FORMAT=COMPACT
 
 DIFF
-         ],
+            ],
 
          // ENGINE difference should be ignored when using ignore_innodb_migration flag.
-         [
-            'proper_sql'     => <<<SQL
+            [
+                'proper_sql'     => <<<SQL
 CREATE TABLE `table` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
@@ -763,7 +763,7 @@ CREATE TABLE `table` (
 ) ENGINE=InnoDB
 SQL
             ,
-            'effective_sql'  => <<<SQL
+                'effective_sql'  => <<<SQL
 CREATE TABLE `table` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
@@ -771,17 +771,17 @@ CREATE TABLE `table` (
 ) ENGINE=MyISAM
 SQL
             ,
-            'version_string' => '10.2.36-MariaDB',
-            'args'           => [
-               'ignore_innodb_migration' => true,
+                'version_string' => '10.2.36-MariaDB',
+                'args'           => [
+                    'ignore_innodb_migration' => true,
+                ],
+                'expected_has'   => false,
+                'expected_diff'  => '',
             ],
-            'expected_has'   => false,
-            'expected_diff'  => '',
-         ],
 
          // ENGINE difference should NOT be ignored when NOT using ignore_innodb_migration flag.
-         [
-            'proper_sql'     => <<<SQL
+            [
+                'proper_sql'     => <<<SQL
 CREATE TABLE `table` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
@@ -789,7 +789,7 @@ CREATE TABLE `table` (
 ) ENGINE=InnoDB
 SQL
             ,
-            'effective_sql'  => <<<SQL
+                'effective_sql'  => <<<SQL
 CREATE TABLE `table` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
@@ -797,12 +797,12 @@ CREATE TABLE `table` (
 ) ENGINE=MyISAM
 SQL
             ,
-            'version_string' => '10.2.36-MariaDB',
-            'args'           => [
-               'ignore_innodb_migration' => false,
-            ],
-            'expected_has'   => true,
-            'expected_diff'  => <<<DIFF
+                'version_string' => '10.2.36-MariaDB',
+                'args'           => [
+                    'ignore_innodb_migration' => false,
+                ],
+                'expected_has'   => true,
+                'expected_diff'  => <<<DIFF
 --- Original
 +++ New
 @@ @@
@@ -813,11 +813,11 @@ SQL
 +) ENGINE=MyISAM
 
 DIFF
-         ],
+            ],
 
          // signed/unsigned on primary/foreign keys should be ignored when using ignore_unsigned_keys_migration flag.
-         [
-            'proper_sql'     => <<<SQL
+            [
+                'proper_sql'     => <<<SQL
 CREATE TABLE `table` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
@@ -827,7 +827,7 @@ CREATE TABLE `table` (
 ) ENGINE=InnoDB
 SQL
             ,
-            'effective_sql'  => <<<SQL
+                'effective_sql'  => <<<SQL
 CREATE TABLE `table` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
@@ -837,16 +837,16 @@ CREATE TABLE `table` (
 ) ENGINE=InnoDB
 SQL
             ,
-            'version_string' => '10.2.36-MariaDB',
-            'args'           => [
-               'ignore_unsigned_keys_migration' => true,
+                'version_string' => '10.2.36-MariaDB',
+                'args'           => [
+                    'ignore_unsigned_keys_migration' => true,
+                ],
+                'expected_has'   => false,
+                'expected_diff'  => '',
             ],
-            'expected_has'   => false,
-            'expected_diff'  => '',
-         ],
          // signed/unsigned on primary/foreign keys should NOT be ignored when NOT using ignore_unsigned_keys_migration flag.
-         [
-            'proper_sql'     => <<<SQL
+            [
+                'proper_sql'     => <<<SQL
 CREATE TABLE `table` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
@@ -856,7 +856,7 @@ CREATE TABLE `table` (
 ) ENGINE=InnoDB
 SQL
             ,
-            'effective_sql'  => <<<SQL
+                'effective_sql'  => <<<SQL
 CREATE TABLE `table` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
@@ -866,12 +866,12 @@ CREATE TABLE `table` (
 ) ENGINE=InnoDB
 SQL
             ,
-            'version_string' => '10.2.36-MariaDB',
-            'args'           => [
-               'ignore_unsigned_keys_migration' => false,
-            ],
-            'expected_has'   => true,
-            'expected_diff'  => <<<DIFF
+                'version_string' => '10.2.36-MariaDB',
+                'args'           => [
+                    'ignore_unsigned_keys_migration' => false,
+                ],
+                'expected_has'   => true,
+                'expected_diff'  => <<<DIFF
 --- Original
 +++ New
 @@ @@
@@ -887,11 +887,11 @@ SQL
  ) ENGINE=InnoDB
 
 DIFF,
-         ],
+            ],
 
          // signed/unsigned on something else than primary/foreign keys should NEVER be ignored.
-         [
-            'proper_sql'     => <<<SQL
+            [
+                'proper_sql'     => <<<SQL
 CREATE TABLE `table` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
@@ -900,7 +900,7 @@ CREATE TABLE `table` (
 ) ENGINE=InnoDB
 SQL
             ,
-            'effective_sql'  => <<<SQL
+                'effective_sql'  => <<<SQL
 CREATE TABLE `table` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
@@ -909,12 +909,12 @@ CREATE TABLE `table` (
 ) ENGINE=InnoDB
 SQL
             ,
-            'version_string' => '10.2.36-MariaDB',
-            'args'           => [
-               'ignore_unsigned_keys_migration' => true,
-            ],
-            'expected_has'   => true,
-            'expected_diff'  => <<<DIFF
+                'version_string' => '10.2.36-MariaDB',
+                'args'           => [
+                    'ignore_unsigned_keys_migration' => true,
+                ],
+                'expected_has'   => true,
+                'expected_diff'  => <<<DIFF
 --- Original
 +++ New
 @@ @@
@@ -927,14 +927,14 @@ SQL
  ) ENGINE=InnoDB
 
 DIFF,
-         ],
+            ],
 
          // DB on MariaDB 10.2+ resuls should be normalized by:
          // - surrounding default numeric values by quotes;
          // - replacing current_timestamp() by CURRENT_TIMESTAMP;
          // - removing DEFAULT NULL on text fields.
-         [
-            'proper_sql'     => <<<SQL
+            [
+                'proper_sql'     => <<<SQL
 CREATE TABLE `table` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
@@ -946,7 +946,7 @@ CREATE TABLE `table` (
 ) ENGINE=InnoDB
 SQL
             ,
-            'effective_sql'  => <<<SQL
+                'effective_sql'  => <<<SQL
 CREATE TABLE `table` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
@@ -958,13 +958,13 @@ CREATE TABLE `table` (
 ) ENGINE=MyISAM
 SQL
             ,
-            'version_string' => '10.2.36-MariaDB',
-            'args'           => [
-               'ignore_innodb_migration' => true,
+                'version_string' => '10.2.36-MariaDB',
+                'args'           => [
+                    'ignore_innodb_migration' => true,
+                ],
+                'expected_has'   => false,
+                'expected_diff'  => '',
             ],
-            'expected_has'   => false,
-            'expected_diff'  => '',
-         ],
         ];
     }
 

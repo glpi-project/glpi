@@ -52,24 +52,24 @@ class Appliance_Item_Relation extends DbTestCase
         $appliance = new \Appliance();
 
         $appliances_id = (int)$appliance->add([
-         'name'   => 'Test appliance'
+            'name'   => 'Test appliance'
         ]);
         $this->integer($appliances_id)->isGreaterThan(0);
 
         $items_id = getItemByTypeName('Computer', '_test_pc01', true);
         $input = [
-         'appliances_id'   => $appliances_id,
-         'itemtype'        => 'Computer',
-         'items_id'        => $items_id
+            'appliances_id'   => $appliances_id,
+            'itemtype'        => 'Computer',
+            'items_id'        => $items_id
         ];
         $appitem = new \Appliance_Item();
         $appliances_items_id = $appitem->add($input);
         $this->integer($appliances_items_id)->isGreaterThan(0);
 
         $input = [
-         'appliances_items_id'   => $appliances_items_id,
-         'itemtype'              => 'Location',
-         'items_id'              => getItemByTypeName('Location', '_location01', true)
+            'appliances_items_id'   => $appliances_items_id,
+            'itemtype'              => 'Location',
+            'items_id'              => getItemByTypeName('Location', '_location01', true)
         ];
         $this
          ->given($this->newTestedInstance)
@@ -78,8 +78,8 @@ class Appliance_Item_Relation extends DbTestCase
                ->isGreaterThan(0);
 
         $iterator = $DB->request([
-         'FROM'   => \Appliance_Item_Relation::getTable(),
-         'WHERE'  => ['appliances_items_id' => $appliances_items_id]
+            'FROM'   => \Appliance_Item_Relation::getTable(),
+            'WHERE'  => ['appliances_items_id' => $appliances_items_id]
         ]);
 
         $this->boolean($appliance->getFromDB($appliances_id))->isTrue();
@@ -96,14 +96,14 @@ class Appliance_Item_Relation extends DbTestCase
 
         $this->boolean($appliance->delete(['id' => $appliances_id], true))->isTrue();
         $iterator = $DB->request([
-         'FROM'   => \Appliance_Item::getTable(),
-         'WHERE'  => ['appliances_id' => $appliances_id]
+            'FROM'   => \Appliance_Item::getTable(),
+            'WHERE'  => ['appliances_id' => $appliances_id]
         ]);
         $this->integer(count($iterator))->isIdenticalTo(0);
 
         $iterator = $DB->request([
-         'FROM'   => \Appliance_Item_Relation::getTable(),
-         'WHERE'  => ['appliances_items_id' => $appliances_items_id]
+            'FROM'   => \Appliance_Item_Relation::getTable(),
+            'WHERE'  => ['appliances_items_id' => $appliances_items_id]
         ]);
         $this->integer(count($iterator))->isIdenticalTo(0);
 

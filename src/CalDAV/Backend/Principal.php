@@ -129,16 +129,16 @@ class Principal extends AbstractBackend
 
         $groups_iterator = $DB->request(
             [
-            'FROM'  => \Group::getTable(),
-            'WHERE' => [
-               'is_task'   => 1,
-               'groups_id' => $group_id,
-            ] + getEntitiesRestrictCriteria(
-                \Group::getTable(),
-                'entities_id',
-                $_SESSION['glpiactiveentities'],
-                true
-            ),
+                'FROM'  => \Group::getTable(),
+                'WHERE' => [
+                    'is_task'   => 1,
+                    'groups_id' => $group_id,
+                ] + getEntitiesRestrictCriteria(
+                    \Group::getTable(),
+                    'entities_id',
+                    $_SESSION['glpiactiveentities'],
+                    true
+                ),
             ]
         );
         foreach ($groups_iterator as $group_fields) {
@@ -147,19 +147,19 @@ class Principal extends AbstractBackend
 
         $users_iterator = $DB->request(
             [
-            'SELECT'     => [\User::getTableField('name')],
-            'FROM'       => \User::getTable(),
-            'INNER JOIN' => [
-               \Group_User::getTable() => [
-                  'ON' => [
-                     \User::getTable()       => 'id',
-                     \Group_User::getTable() => 'users_id',
-                  ],
-               ],
-            ],
-            'WHERE'     => [
-               \Group_User::getTableField('groups_id') => $group_id,
-            ]
+                'SELECT'     => [\User::getTableField('name')],
+                'FROM'       => \User::getTable(),
+                'INNER JOIN' => [
+                    \Group_User::getTable() => [
+                        'ON' => [
+                            \User::getTable()       => 'id',
+                            \Group_User::getTable() => 'users_id',
+                        ],
+                    ],
+                ],
+                'WHERE'     => [
+                    \Group_User::getTableField('groups_id') => $group_id,
+                ]
             ]
         );
         foreach ($users_iterator as $user_fields) {
@@ -175,17 +175,17 @@ class Principal extends AbstractBackend
         global $DB;
 
         $groups_query = [
-         'SELECT'     => [\Group::getTableField('id')],
-         'FROM'       => \Group::getTable(),
-         'INNER JOIN' => [],
-         'WHERE'      => [
-            'is_task' => 1,
-         ] + getEntitiesRestrictCriteria(
-             \Group::getTable(),
-             'entities_id',
-             $_SESSION['glpiactiveentities'],
-             true
-         ),
+            'SELECT'     => [\Group::getTableField('id')],
+            'FROM'       => \Group::getTable(),
+            'INNER JOIN' => [],
+            'WHERE'      => [
+                'is_task' => 1,
+            ] + getEntitiesRestrictCriteria(
+                \Group::getTable(),
+                'entities_id',
+                $_SESSION['glpiactiveentities'],
+                true
+            ),
         ];
 
         $principal_itemtype = $this->getPrincipalItemtypeFromUri($path);
@@ -195,21 +195,21 @@ class Principal extends AbstractBackend
                 break;
             case \User::class:
                 $groups_query['INNER JOIN'][\Group_User::getTable()] = [
-                'ON' => [
-                  \Group::getTable()       => 'id',
-                  \Group_User::getTable()  => 'groups_id',
-                  [
-                     'AND' => [
-                        \Group_User::getTableField('users_id') => new \QuerySubQuery(
-                            [
-                              'SELECT' => 'id',
-                              'FROM'   => \User::getTable(),
-                              'WHERE'  => ['name' => $this->getUsernameFromPrincipalUri($path)],
-                            ]
-                        ),
-                     ],
-                  ],
-                ]
+                    'ON' => [
+                        \Group::getTable()       => 'id',
+                        \Group_User::getTable()  => 'groups_id',
+                        [
+                            'AND' => [
+                                \Group_User::getTableField('users_id') => new \QuerySubQuery(
+                                    [
+                                        'SELECT' => 'id',
+                                        'FROM'   => \User::getTable(),
+                                        'WHERE'  => ['name' => $this->getUsernameFromPrincipalUri($path)],
+                                    ]
+                                ),
+                            ],
+                        ],
+                    ]
                 ];
                 break;
             default:
@@ -265,17 +265,17 @@ class Principal extends AbstractBackend
     private function getPrincipalFromUserFields(array $user_fields)
     {
         return [
-         'id'                    => $user_fields['id'],
-         'uri'                   => $this->getUserPrincipalUri($user_fields['name']),
-         Property::USERNAME      => $user_fields['name'],
-         Property::DISPLAY_NAME  => formatUserName(
-             $user_fields['id'],
-             $user_fields['name'],
-             $user_fields['realname'],
-             $user_fields['firstname']
-         ),
-         Property::PRIMARY_EMAIL => \UserEmail::getDefaultForUser($user_fields['id']),
-         Property::CAL_USER_TYPE => 'INDIVIDUAL',
+            'id'                    => $user_fields['id'],
+            'uri'                   => $this->getUserPrincipalUri($user_fields['name']),
+            Property::USERNAME      => $user_fields['name'],
+            Property::DISPLAY_NAME  => formatUserName(
+                $user_fields['id'],
+                $user_fields['name'],
+                $user_fields['realname'],
+                $user_fields['firstname']
+            ),
+            Property::PRIMARY_EMAIL => \UserEmail::getDefaultForUser($user_fields['id']),
+            Property::CAL_USER_TYPE => 'INDIVIDUAL',
         ];
     }
 
@@ -289,10 +289,10 @@ class Principal extends AbstractBackend
     private function getPrincipalFromGroupFields(array $group_fields)
     {
         return [
-         'id'                    => $group_fields['id'],
-         'uri'                   => $this->getGroupPrincipalUri($group_fields['id']),
-         Property::DISPLAY_NAME  => $group_fields['name'],
-         Property::CAL_USER_TYPE => 'GROUP',
+            'id'                    => $group_fields['id'],
+            'uri'                   => $this->getGroupPrincipalUri($group_fields['id']),
+            Property::DISPLAY_NAME  => $group_fields['name'],
+            Property::CAL_USER_TYPE => 'GROUP',
         ];
     }
 }

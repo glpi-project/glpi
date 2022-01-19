@@ -108,16 +108,16 @@ class ConfigureCommand extends AbstractCommand
 
         $adapters = $this->cache_manager->getAvailableAdapters();
         $help_lines = [
-         sprintf(
-             __('Valid cache systems are: %s.'),
-             '<comment>' . implode('</comment>, <comment>', $adapters) . '</comment>'
-         ),
-         '',
-         sprintf(__('%s DSN format: %s'), $adapters[CacheManager::SCHEME_MEMCACHED], 'memcached://[user:pass@][ip|host|socket[:port]][?weight=int]'),
-         sprintf(__('%s DSN format: %s'), $adapters[CacheManager::SCHEME_REDIS], 'redis://[pass@][ip|host|socket[:port]][/db-index]'),
-         sprintf(__('%s DSN format: %s'), $adapters[CacheManager::SCHEME_REDISS], 'rediss://[pass@][ip|host|socket[:port]][/db-index]'),
-         '',
-         __('Cache namespace can be use to ensure either separation or sharing of multiple GLPI instances data on same cache system.'),
+            sprintf(
+                __('Valid cache systems are: %s.'),
+                '<comment>' . implode('</comment>, <comment>', $adapters) . '</comment>'
+            ),
+            '',
+            sprintf(__('%s DSN format: %s'), $adapters[CacheManager::SCHEME_MEMCACHED], 'memcached://[user:pass@][ip|host|socket[:port]][?weight=int]'),
+            sprintf(__('%s DSN format: %s'), $adapters[CacheManager::SCHEME_REDIS], 'redis://[pass@][ip|host|socket[:port]][/db-index]'),
+            sprintf(__('%s DSN format: %s'), $adapters[CacheManager::SCHEME_REDISS], 'rediss://[pass@][ip|host|socket[:port]][/db-index]'),
+            '',
+            __('Cache namespace can be use to ensure either separation or sharing of multiple GLPI instances data on same cache system.'),
         ];
         $this->setHelp(implode("\n", $help_lines));
     }

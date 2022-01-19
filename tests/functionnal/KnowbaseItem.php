@@ -59,19 +59,19 @@ class KnowbaseItem extends DbTestCase
         $kb = new \KnowbaseItem();
         $this->integer(
             (int)$kb->add([
-            'name'     => 'Test to remove',
-            'answer'   => 'An KB entry to remove',
-            'is_faq'   => 0,
-            'users_id' => $users_id,
-            'date'     => '2017-10-06 12:27:48',
+                'name'     => 'Test to remove',
+                'answer'   => 'An KB entry to remove',
+                'is_faq'   => 0,
+                'users_id' => $users_id,
+                'date'     => '2017-10-06 12:27:48',
             ])
         )->isGreaterThan(0);
 
        //add some comments
         $comment = new \KnowbaseItem_Comment();
         $input = [
-         'knowbaseitems_id' => $kb->getID(),
-         'users_id'         => $users_id
+            'knowbaseitems_id' => $kb->getID(),
+            'users_id'         => $users_id
         ];
 
         $id = 0;
@@ -86,8 +86,8 @@ class KnowbaseItem extends DbTestCase
        //change KB entry
         $this->boolean(
             $kb->update([
-            'id'     => $kb->getID(),
-            'answer' => 'Answer has changed'
+                'id'     => $kb->getID(),
+                'answer' => 'Answer has changed'
             ])
         )->isTrue();
 
@@ -95,8 +95,8 @@ class KnowbaseItem extends DbTestCase
         $kbu = new \KnowbaseItem_User();
         $this->integer(
             (int)$kbu->add([
-            'knowbaseitems_id'   => $kb->getID(),
-            'users_id'           => $users_id
+                'knowbaseitems_id'   => $kb->getID(),
+                'users_id'           => $users_id
             ])
         )->isGreaterThan(0);
 
@@ -104,8 +104,8 @@ class KnowbaseItem extends DbTestCase
         $kbe = new \Entity_KnowbaseItem();
         $this->integer(
             (int)$kbe->add([
-            'knowbaseitems_id'   => $kb->getID(),
-            'entities_id'        => 0
+                'knowbaseitems_id'   => $kb->getID(),
+                'entities_id'        => 0
             ])
         )->isGreaterThan(0);
 
@@ -113,14 +113,14 @@ class KnowbaseItem extends DbTestCase
         $group = new \Group();
         $this->integer(
             (int)$group->add([
-            'name'   => 'KB group'
+                'name'   => 'KB group'
             ])
         )->isGreaterThan(0);
         $kbg = new \Group_KnowbaseItem();
         $this->integer(
             (int)$kbg->add([
-            'knowbaseitems_id'   => $kb->getID(),
-            'groups_id'          => $group->getID()
+                'knowbaseitems_id'   => $kb->getID(),
+                'groups_id'          => $group->getID()
             ])
         )->isGreaterThan(0);
 
@@ -129,8 +129,8 @@ class KnowbaseItem extends DbTestCase
         $kbp = new \KnowbaseItem_Profile();
         $this->integer(
             (int)$kbp->add([
-            'knowbaseitems_id'   => $kb->getID(),
-            'profiles_id'        => $profiles_id
+                'knowbaseitems_id'   => $kb->getID(),
+                'profiles_id'        => $profiles_id
             ])
         )->isGreaterThan(0);
 
@@ -139,27 +139,27 @@ class KnowbaseItem extends DbTestCase
         $tickets_id = getItemByTypeName('Ticket', '_ticket01', true);
         $this->integer(
             (int)$kbi->add([
-            'knowbaseitems_id'   => $kb->getID(),
-            'itemtype'           => 'Ticket',
-            'items_id'           => $tickets_id
+                'knowbaseitems_id'   => $kb->getID(),
+                'itemtype'           => 'Ticket',
+                'items_id'           => $tickets_id
             ])
         )->isGreaterThan(0);
 
         $relations = [
-         $comment->getTable(),
-         \KnowbaseItem_Revision::getTable(),
-         \KnowbaseItem_User::getTable(),
-         \Entity_KnowbaseItem::getTable(),
-         \Group_KnowbaseItem::getTable(),
-         \KnowbaseItem_Profile::getTable(),
-         \KnowbaseItem_Item::getTable()
+            $comment->getTable(),
+            \KnowbaseItem_Revision::getTable(),
+            \KnowbaseItem_User::getTable(),
+            \Entity_KnowbaseItem::getTable(),
+            \Group_KnowbaseItem::getTable(),
+            \KnowbaseItem_Profile::getTable(),
+            \KnowbaseItem_Item::getTable()
         ];
 
        //check all relations have been created
         foreach ($relations as $relation) {
             $iterator = $DB->request([
-            'FROM'   => $relation,
-            'WHERE'  => ['knowbaseitems_id' => $kb->getID()]
+                'FROM'   => $relation,
+                'WHERE'  => ['knowbaseitems_id' => $kb->getID()]
             ]);
             $this->integer(count($iterator))->isGreaterThan(0);
         }
@@ -172,8 +172,8 @@ class KnowbaseItem extends DbTestCase
        //check all relations has been removed
         foreach ($relations as $relation) {
             $iterator = $DB->request([
-            'FROM'   => $relation,
-            'WHERE'  => ['knowbaseitems_id' => $kb->getID()]
+                'FROM'   => $relation,
+                'WHERE'  => ['knowbaseitems_id' => $kb->getID()]
             ]);
             $this->integer(count($iterator))->isIdenticalTo(0);
         }
@@ -190,21 +190,21 @@ class KnowbaseItem extends DbTestCase
         $users_id = getItemByTypeName('User', TU_USER, true);
         $instance = new \KnowbaseItem();
         $input = [
-         'name'     => 'Test to remove',
-         'answer'   => '&lt;p&gt; &lt;/p&gt;&lt;p&gt;&lt;img id="3e29dffe-0237ea21-5e5e7034b1d1a1.00000000"'
+            'name'     => 'Test to remove',
+            'answer'   => '&lt;p&gt; &lt;/p&gt;&lt;p&gt;&lt;img id="3e29dffe-0237ea21-5e5e7034b1d1a1.00000000"'
                         . ' src="data:image/png;base64,' . $base64Image . '" width="12" height="12" /&gt;&lt;/p&gt;',
-         '_answer' => [
-            $filename,
-         ],
-         '_tag_answer' => [
-            '3e29dffe-0237ea21-5e5e7034b1d1a1.00000000',
-         ],
-         '_prefix_answer' => [
-            '5e5e92ffd9bd91.11111111',
-         ],
-         'is_faq'   => 0,
-         'users_id' => $users_id,
-         'date'     => '2017-10-06 12:27:48',
+            '_answer' => [
+                $filename,
+            ],
+            '_tag_answer' => [
+                '3e29dffe-0237ea21-5e5e7034b1d1a1.00000000',
+            ],
+            '_prefix_answer' => [
+                '5e5e92ffd9bd91.11111111',
+            ],
+            'is_faq'   => 0,
+            'users_id' => $users_id,
+            'date'     => '2017-10-06 12:27:48',
         ];
         copy(__DIR__ . '/../fixtures/uploads/foo.png', GLPI_TMP_DIR . '/' . $filename);
         $instance->add($input);
@@ -218,18 +218,18 @@ class KnowbaseItem extends DbTestCase
         $tmpFilename = GLPI_TMP_DIR . '/' . $filename;
         file_put_contents($tmpFilename, base64_decode($base64Image));
         $success = $instance->update([
-         'id'       => $instance->getID(),
-         'answer'   => '&lt;p&gt; &lt;/p&gt;&lt;p&gt;&lt;img id="3e29dffe-0237ea21-5e5e7034b1ffff.33333333"'
+            'id'       => $instance->getID(),
+            'answer'   => '&lt;p&gt; &lt;/p&gt;&lt;p&gt;&lt;img id="3e29dffe-0237ea21-5e5e7034b1ffff.33333333"'
                         . ' src="data:image/png;base64,' . $base64Image . '" width="12" height="12" /&gt;&lt;/p&gt;',
-         '_answer' => [
-            $filename,
-         ],
-         '_tag_answer' => [
-            '3e29dffe-0237ea21-5e5e7034b1ffff.33333333',
-         ],
-         '_prefix_answer' => [
-            '5e5e92ffd9bd91.44444444',
-         ],
+            '_answer' => [
+                $filename,
+            ],
+            '_tag_answer' => [
+                '3e29dffe-0237ea21-5e5e7034b1ffff.33333333',
+            ],
+            '_prefix_answer' => [
+                '5e5e92ffd9bd91.44444444',
+            ],
         ]);
         $this->boolean($success)->isTrue();
        // Ensure there is an anchor to the uploaded document
@@ -246,25 +246,25 @@ class KnowbaseItem extends DbTestCase
         $filename = '5e5e92ffd9bd91.11111111' . 'foo.txt';
         $instance = new \KnowbaseItem();
         $input = [
-         'name'    => 'a kb item',
-         'answer' => 'testUploadDocuments',
-         '_answer' => [
-            $filename,
-         ],
-         '_tag_answer' => [
-            '3e29dffe-0237ea21-5e5e7034b1ffff.00000000',
-         ],
-         '_prefix_answer' => [
-            '5e5e92ffd9bd91.11111111',
-         ]
+            'name'    => 'a kb item',
+            'answer' => 'testUploadDocuments',
+            '_answer' => [
+                $filename,
+            ],
+            '_tag_answer' => [
+                '3e29dffe-0237ea21-5e5e7034b1ffff.00000000',
+            ],
+            '_prefix_answer' => [
+                '5e5e92ffd9bd91.11111111',
+            ]
         ];
         copy(__DIR__ . '/../fixtures/uploads/foo.txt', GLPI_TMP_DIR . '/' . $filename);
         $instance->add($input);
         $this->boolean($instance->isNewItem())->isFalse();
         $this->string($instance->fields['answer'])->contains('testUploadDocuments');
         $count = (new \DBUtils())->countElementsInTable(\Document_Item::getTable(), [
-         'itemtype' => 'KnowbaseItem',
-         'items_id' => $instance->getID(),
+            'itemtype' => 'KnowbaseItem',
+            'items_id' => $instance->getID(),
         ]);
         $this->integer($count)->isEqualTo(1);
 
@@ -272,23 +272,23 @@ class KnowbaseItem extends DbTestCase
         $filename = '5e5e92ffd9bd91.44444444bar.txt';
         copy(__DIR__ . '/../fixtures/uploads/bar.txt', GLPI_TMP_DIR . '/' . $filename);
         $success = $instance->update([
-         'id' => $instance->getID(),
-         'answer' => 'update testUploadDocuments',
-         '_answer' => [
-            $filename,
-         ],
-         '_tag_answer' => [
-            '3e29dffe-0237ea21-5e5e7034b1d1a1.33333333',
-         ],
-         '_prefix_answer' => [
-            '5e5e92ffd9bd91.44444444',
-         ]
+            'id' => $instance->getID(),
+            'answer' => 'update testUploadDocuments',
+            '_answer' => [
+                $filename,
+            ],
+            '_tag_answer' => [
+                '3e29dffe-0237ea21-5e5e7034b1d1a1.33333333',
+            ],
+            '_prefix_answer' => [
+                '5e5e92ffd9bd91.44444444',
+            ]
         ]);
         $this->boolean($success)->isTrue();
         $this->string($instance->fields['answer'])->contains('update testUploadDocuments');
         $count = (new \DBUtils())->countElementsInTable(\Document_Item::getTable(), [
-         'itemtype' => 'KnowbaseItem',
-         'items_id' => $instance->getID(),
+            'itemtype' => 'KnowbaseItem',
+            'items_id' => $instance->getID(),
         ]);
         $this->integer($count)->isEqualTo(2);
     }
@@ -303,9 +303,9 @@ class KnowbaseItem extends DbTestCase
 
        // Mocked db request result
         $it = new \ArrayIterator([
-         ['id' => '1'],
-         ['id' => '2'],
-         ['id' => '3'],
+            ['id' => '1'],
+            ['id' => '2'],
+            ['id' => '3'],
         ]);
         $this->calling($m_db)->request = $it;
 
@@ -335,22 +335,22 @@ class KnowbaseItem extends DbTestCase
     protected function testGetListRequestProvider(): array
     {
         return [
-         [
-            'params' => [
-               'knowbaseitemcategories_id' => 0,
-               'faq' => false,
-               'contains' => "test1 ",
+            [
+                'params' => [
+                    'knowbaseitemcategories_id' => 0,
+                    'faq' => false,
+                    'contains' => "test1 ",
+                ],
+                'type' => 'search'
             ],
-            'type' => 'search'
-         ],
-         [
-            'params' => [
-               'knowbaseitemcategories_id' => 0,
-               'faq' => false,
-               'contains' => "test1 / test2 ( test3 )",
-            ],
-            'type' => 'search'
-         ]
+            [
+                'params' => [
+                    'knowbaseitemcategories_id' => 0,
+                    'faq' => false,
+                    'contains' => "test1 / test2 ( test3 )",
+                ],
+                'type' => 'search'
+            ]
         ];
     }
 
@@ -374,8 +374,8 @@ class KnowbaseItem extends DbTestCase
        // Create test KB with multiple headers
         $kb_name = 'Test testGetAnswerAnchors' . mt_rand();
         $input = [
-         'name' => $kb_name,
-         'answer' => '<h1>title 1a</h1><h2>title2</h2><h1>title 1b</h1><h1>title 1c</h1>'
+            'name' => $kb_name,
+            'answer' => '<h1>title 1a</h1><h2>title2</h2><h1>title 1b</h1><h1>title 1c</h1>'
         ];
         $this->createItems('KnowbaseItem', [$input]);
 

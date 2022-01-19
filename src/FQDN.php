@@ -52,11 +52,13 @@ class FQDN extends CommonDropdown
     {
 
         return [['name'    => 'fqdn',
-                         'label'   => __('FQDN'),
-                         'type'    => 'text',
-                         'comment'
+            'label'   => __('FQDN'),
+            'type'    => 'text',
+            'comment'
                           => __('Fully Qualified Domain Name. Use the classical notation (labels separated by dots). For example: indepnet.net'),
-                         'list'    => true]];
+            'list'    => true
+        ]
+        ];
     }
 
 
@@ -163,9 +165,9 @@ class FQDN extends CommonDropdown
         }
 
         $iterator = $DB->request([
-         'SELECT' => 'id',
-         'FROM'   => self::getTable(),
-         'WHERE'  => ['fqdn' => $relation]
+            'SELECT' => 'id',
+            'FROM'   => self::getTable(),
+            'WHERE'  => ['fqdn' => $relation]
         ]);
 
         $fqdns_id_list = [];
@@ -205,11 +207,11 @@ class FQDN extends CommonDropdown
         $tab = parent::rawSearchOptions();
 
         $tab[] = [
-         'id'                 => '11',
-         'table'              => $this->getTable(),
-         'field'              => 'fqdn',
-         'name'               => __('FQDN'),
-         'datatype'           => 'string',
+            'id'                 => '11',
+            'table'              => $this->getTable(),
+            'field'              => 'fqdn',
+            'name'               => __('FQDN'),
+            'datatype'           => 'string',
         ];
 
         return $tab;

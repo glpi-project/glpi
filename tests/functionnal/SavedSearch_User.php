@@ -55,14 +55,14 @@ class SavedSearch_User extends DbTestCase
         $bk = new \SavedSearch();
         $this->boolean(
             (bool)$bk->add(['name'         => 'All my tickets',
-                            'type'         => 1,
-                            'itemtype'     => 'Ticket',
-                            'users_id'     => $uid,
-                            'is_private'   => 1,
-                            'entities_id'  => 0,
-                            'is_recursive' => 1,
-                            'url'         => 'front/ticket.php?itemtype=Ticket&sort=2&order=DESC&start=0&criteria[0][field]=5&criteria[0][searchtype]=equals&criteria[0][value]=' . $uid
-                           ])
+                'type'         => 1,
+                'itemtype'     => 'Ticket',
+                'users_id'     => $uid,
+                'is_private'   => 1,
+                'entities_id'  => 0,
+                'is_recursive' => 1,
+                'url'         => 'front/ticket.php?itemtype=Ticket&sort=2&order=DESC&start=0&criteria[0][field]=5&criteria[0][searchtype]=equals&criteria[0][value]=' . $uid
+            ])
         )->isTrue();
 
         $bk_id = $bk->fields['id'];
@@ -70,9 +70,9 @@ class SavedSearch_User extends DbTestCase
         $bk_user = new \SavedSearch_User();
         $this->boolean(
             (bool)$bk_user->add(['users_id' => $uid,
-                                 'itemtype' => 'Ticket',
-                                 'savedsearches_id' => $bk_id
-                                ])
+                'itemtype' => 'Ticket',
+                'savedsearches_id' => $bk_id
+            ])
         )->isTrue();
 
        // should get a default bookmark
@@ -80,15 +80,15 @@ class SavedSearch_User extends DbTestCase
         $this->array(
             $bk
         )->isEqualTo(['itemtype'         => 'Ticket',
-                    'sort'             => '2',
-                    'order'            => 'DESC',
-                    'savedsearches_id' => $bk_id,
-                    'criteria'         => [0 => ['field' => '5',
-                                                 'searchtype' => 'equals',
-                                                 'value' => $uid
-                                                ]
-                                          ],
-                    'reset'            => 'reset',
-                   ]);
+            'sort'             => '2',
+            'order'            => 'DESC',
+            'savedsearches_id' => $bk_id,
+            'criteria'         => [0 => ['field' => '5',
+                'searchtype' => 'equals',
+                'value' => $uid
+            ]
+            ],
+            'reset'            => 'reset',
+        ]);
     }
 }

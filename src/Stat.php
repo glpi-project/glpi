@@ -101,23 +101,23 @@ class Stat extends CommonGLPI
                // Get all groups
                 $is_field = ($type == 'group_tree') ? 'is_requester' : 'is_assign';
                 $iterator = $DB->request([
-                'SELECT' => ['id', 'name'],
-                'FROM'   => 'glpi_groups',
-                'WHERE'  => [
-                  'OR'  => [
-                     'id'        => $parent,
-                     'groups_id' => $parent
-                  ],
-                  $is_field   => 1
-                ] + getEntitiesRestrictCriteria("glpi_groups", '', '', true),
-                'ORDER'  => 'completename'
+                    'SELECT' => ['id', 'name'],
+                    'FROM'   => 'glpi_groups',
+                    'WHERE'  => [
+                        'OR'  => [
+                            'id'        => $parent,
+                            'groups_id' => $parent
+                        ],
+                        $is_field   => 1
+                    ] + getEntitiesRestrictCriteria("glpi_groups", '', '', true),
+                    'ORDER'  => 'completename'
                 ]);
 
                 $val    = [];
                 foreach ($iterator as $line) {
                      $val[] = [
-                      'id'     => $line['id'],
-                      'link'   => $line['name']
+                         'id'     => $line['id'],
+                         'link'   => $line['name']
                      ];
                 }
                 break;
@@ -127,20 +127,20 @@ class Stat extends CommonGLPI
                 $is_tree = $type == 'itilcategories_tree';
                // Get all ticket categories for tree merge management
                 $criteria = [
-                'SELECT'    => [
-                  'glpi_itilcategories.id',
-                  'glpi_itilcategories.' . ($is_tree ? 'name' : 'completename') . ' AS category'
-                ],
-                'DISTINCT'  => true,
-                'FROM'      => 'glpi_itilcategories',
-                'WHERE'     => getEntitiesRestrictCriteria('glpi_itilcategories', '', '', true),
-                'ORDERBY'   => 'completename'
+                    'SELECT'    => [
+                        'glpi_itilcategories.id',
+                        'glpi_itilcategories.' . ($is_tree ? 'name' : 'completename') . ' AS category'
+                    ],
+                    'DISTINCT'  => true,
+                    'FROM'      => 'glpi_itilcategories',
+                    'WHERE'     => getEntitiesRestrictCriteria('glpi_itilcategories', '', '', true),
+                    'ORDERBY'   => 'completename'
                 ];
 
                 if ($is_tree) {
                     $criteria['WHERE']['OR'] = [
-                    'id'                 => $parent,
-                    'itilcategories_id'  => $parent
+                        'id'                 => $parent,
+                        'itilcategories_id'  => $parent
                     ];
                 }
 
@@ -149,8 +149,8 @@ class Stat extends CommonGLPI
                 $val    = [];
                 foreach ($iterator as $line) {
                     $val[] = [
-                    'id'     => $line['id'],
-                    'link'   => $line['category']
+                        'id'     => $line['id'],
+                        'link'   => $line['category']
                     ];
                 }
                 break;
@@ -160,20 +160,20 @@ class Stat extends CommonGLPI
                 $is_tree = $type == 'locations_tree';
                // Get all locations for tree merge management
                 $criteria = [
-                'SELECT'    => [
-                  'glpi_locations.id',
-                  'glpi_locations.' . ($is_tree ? 'name' : 'completename') . ' AS location'
-                ],
-                'DISTINCT'  => true,
-                'FROM'      => 'glpi_locations',
-                'WHERE'     => getEntitiesRestrictCriteria('glpi_locations', '', '', true),
-                'ORDERBY'   => 'completename'
+                    'SELECT'    => [
+                        'glpi_locations.id',
+                        'glpi_locations.' . ($is_tree ? 'name' : 'completename') . ' AS location'
+                    ],
+                    'DISTINCT'  => true,
+                    'FROM'      => 'glpi_locations',
+                    'WHERE'     => getEntitiesRestrictCriteria('glpi_locations', '', '', true),
+                    'ORDERBY'   => 'completename'
                 ];
 
                 if ($is_tree) {
                     $criteria['WHERE']['OR'] = [
-                    'id'           => $parent,
-                    'locations_id' => $parent
+                        'id'           => $parent,
+                        'locations_id' => $parent
                     ];
                 }
 
@@ -182,8 +182,8 @@ class Stat extends CommonGLPI
                 $val    = [];
                 foreach ($iterator as $line) {
                     $val[] = [
-                    'id'     => $line['id'],
-                    'link'   => $line['location']
+                        'id'     => $line['id'],
+                        'link'   => $line['location']
                     ];
                 }
                 break;
@@ -244,18 +244,18 @@ class Stat extends CommonGLPI
 
                    //select devices IDs (table row)
                     $iterator = $DB->request([
-                    'SELECT' => [
-                     'id',
-                     'designation'
-                    ],
-                    'FROM'   => $device_table,
-                    'ORDER'  => 'designation'
+                        'SELECT' => [
+                            'id',
+                            'designation'
+                        ],
+                        'FROM'   => $device_table,
+                        'ORDER'  => 'designation'
                     ]);
 
                     foreach ($iterator as $line) {
                           $val[] = [
-                         'id'     => $line['id'],
-                         'link'   => $line['designation']
+                              'id'     => $line['id'],
+                              'link'   => $line['designation']
                           ];
                     }
                 } else {
@@ -270,8 +270,8 @@ class Stat extends CommonGLPI
                     }
 
                     $criteria = [
-                    'FROM'   => $table,
-                    'ORDER'  => $field
+                        'FROM'   => $table,
+                        'ORDER'  => $field
                     ];
 
                     if ($item->isEntityAssign()) {
@@ -284,8 +284,8 @@ class Stat extends CommonGLPI
                     $val    = [];
                     foreach ($iterator as $line) {
                         $val[] = [
-                        'id'     => $line['id'],
-                        'link'   => $line[$field]
+                            'id'     => $line['id'],
+                            'link'   => $line[$field]
                         ];
                     }
                 }
@@ -961,28 +961,28 @@ class Stat extends CommonGLPI
         $LEFTJOIN          = [];
         $INNERJOIN         = [];
         $LEFTJOINUSER      = [
-         $userlinktable => [
-            'ON' => [
-               $userlinktable => $fkfield,
-               $table         => 'id'
+            $userlinktable => [
+                'ON' => [
+                    $userlinktable => $fkfield,
+                    $table         => 'id'
+                ]
             ]
-         ]
         ];
         $LEFTJOINGROUP    = [
-         $grouplinktable => [
-            'ON' => [
-               $grouplinktable   => $fkfield,
-               $table            => 'id'
+            $grouplinktable => [
+                'ON' => [
+                    $grouplinktable   => $fkfield,
+                    $table            => 'id'
+                ]
             ]
-         ]
         ];
         $LEFTJOINSUPPLIER = [
-         $supplierlinktable => [
-            'ON' => [
-               $supplierlinktable   => $fkfield,
-               $table               => 'id'
+            $supplierlinktable => [
+                'ON' => [
+                    $supplierlinktable   => $fkfield,
+                    $table               => 'id'
+                ]
             ]
-         ]
         ];
 
         switch ($param) {
@@ -995,12 +995,12 @@ class Stat extends CommonGLPI
             case "technicien_followup":
                 $WHERE["$tasktable.users_id"] = $value;
                 $LEFTJOIN = [
-                $tasktable => [
-                  'ON' => [
-                     $tasktable  => $fkfield,
-                     $table      => 'id'
-                  ]
-                ]
+                    $tasktable => [
+                        'ON' => [
+                            $tasktable  => $fkfield,
+                            $table      => 'id'
+                        ]
+                    ]
                 ];
                 break;
 
@@ -1013,10 +1013,10 @@ class Stat extends CommonGLPI
             case "usertitles_id":
                 $LEFTJOIN  = $LEFTJOINUSER;
                 $LEFTJOIN['glpi_users'] = [
-                'ON' => [
-                  $userlinktable => 'users_id',
-                  'glpi_users'   => 'id'
-                ]
+                    'ON' => [
+                        $userlinktable => 'users_id',
+                        'glpi_users'   => 'id'
+                    ]
                 ];
                 $WHERE["glpi_users.usertitles_id"] = $value;
                 $WHERE["$userlinktable.type"] = CommonITILActor::REQUESTER;
@@ -1025,10 +1025,10 @@ class Stat extends CommonGLPI
             case "usercategories_id":
                 $LEFTJOIN  = $LEFTJOINUSER;
                 $LEFTJOIN['glpi_users'] = [
-                'ON' => [
-                  $userlinktable => 'users_id',
-                  'glpi_users'   => 'id'
-                ]
+                    'ON' => [
+                        $userlinktable => 'users_id',
+                        'glpi_users'   => 'id'
+                    ]
                 ];
                 $WHERE["glpi_users.usercategories_id"] = $value;
                 $WHERE["$userlinktable.type"] = CommonITILActor::REQUESTER;
@@ -1098,16 +1098,16 @@ class Stat extends CommonGLPI
 
             case "solutiontypes_id":
                 $LEFTJOIN = [
-                'glpi_itilsolutions' => [
-                  'ON' => [
-                     'glpi_itilsolutions'   => 'items_id',
-                     'glpi_tickets'               => 'id', [
-                        'AND' => [
-                           'glpi_itilsolutions.itemtype' => 'Ticket'
+                    'glpi_itilsolutions' => [
+                        'ON' => [
+                            'glpi_itilsolutions'   => 'items_id',
+                            'glpi_tickets'               => 'id', [
+                                'AND' => [
+                                    'glpi_itilsolutions.itemtype' => 'Ticket'
+                                ]
+                            ]
                         ]
-                     ]
-                  ]
-                ]
+                    ]
                 ];
                 $WHERE["glpi_itilsolutions.$param"] = $value;
                 break;
@@ -1120,35 +1120,35 @@ class Stat extends CommonGLPI
                 if ($itemtype == 'Ticket') {
                     $linkedtable = 'glpi_items_tickets';
                     $LEFTJOIN = [
-                    'glpi_items_tickets' => [
-                     'ON' => [
-                        'glpi_items_tickets' => 'tickets_id',
-                        'glpi_tickets'       => 'id', [
-                           'AND' => [
-                              "$linkdetable.itemtype" => 'Computer'
-                           ]
+                        'glpi_items_tickets' => [
+                            'ON' => [
+                                'glpi_items_tickets' => 'tickets_id',
+                                'glpi_tickets'       => 'id', [
+                                    'AND' => [
+                                        "$linkdetable.itemtype" => 'Computer'
+                                    ]
+                                ]
+                            ]
                         ]
-                     ]
-                    ]
                     ];
                 }
                 $INNERJOIN = [
-                'glpi_computers'  => [
-                  'ON' => [
-                     'glpi_computers'  => 'id',
-                     $linkedtable      => 'items_id'
-                  ]
-                ],
-                $devtable         => [
-                  'ON' => [
-                     'glpi_computers'  => 'id',
-                     $devtable         => 'computers_id', [
-                        'AND' => [
-                           "$devtable.$fkname" => $value
+                    'glpi_computers'  => [
+                        'ON' => [
+                            'glpi_computers'  => 'id',
+                            $linkedtable      => 'items_id'
                         ]
-                     ]
-                  ]
-                ]
+                    ],
+                    $devtable         => [
+                        'ON' => [
+                            'glpi_computers'  => 'id',
+                            $devtable         => 'computers_id', [
+                                'AND' => [
+                                    "$devtable.$fkname" => $value
+                                ]
+                            ]
+                        ]
+                    ]
                 ];
 
                 $WHERE["glpi_computers.is_template"] = 0;
@@ -1161,38 +1161,38 @@ class Stat extends CommonGLPI
                 if ($itemtype == 'Ticket') {
                     $linkedtable = 'glpi_items_tickets';
                     $LEFTJOIN = [
-                    'glpi_items_tickets' => [
-                     'ON' => [
-                        'glpi_items_tickets' => 'tickets_id',
-                        'glpi_tickets'       => 'id', [
-                           'AND' => [
-                              "$linkedtable.itemtype" => 'Computer'
-                           ]
+                        'glpi_items_tickets' => [
+                            'ON' => [
+                                'glpi_items_tickets' => 'tickets_id',
+                                'glpi_tickets'       => 'id', [
+                                    'AND' => [
+                                        "$linkedtable.itemtype" => 'Computer'
+                                    ]
+                                ]
+                            ]
                         ]
-                     ]
-                    ]
                     ];
                 }
                 $INNERJOIN = [
-                'glpi_computers' => [
-                  'ON' => [
-                     'glpi_computers'  => 'id',
-                     $linkedtable      => 'items_id'
-                  ]
-                ]
+                    'glpi_computers' => [
+                        'ON' => [
+                            'glpi_computers'  => 'id',
+                            $linkedtable      => 'items_id'
+                        ]
+                    ]
                 ];
 
                 $WHERE["glpi_computers.is_template"] = 0;
                 if (substr($champ, 0, strlen('operatingsystem')) === 'operatingsystem') {
                     $INNERJOIN['glpi_items_operatingsystems'] = [
-                    'ON' => [
-                     'glpi_computers'              => 'id',
-                     'glpi_items_operatingsystems' => 'items_id', [
-                        'AND' => [
-                           "glpi_items_operatingsystems.itemtype" => 'Computer'
+                        'ON' => [
+                            'glpi_computers'              => 'id',
+                            'glpi_items_operatingsystems' => 'items_id', [
+                                'AND' => [
+                                    "glpi_items_operatingsystems.itemtype" => 'Computer'
+                                ]
+                            ]
                         ]
-                     ]
-                    ]
                     ];
                     $WHERE["glpi_items_operatingsystems.$champ"] = $value;
                 } else {
@@ -1210,14 +1210,14 @@ class Stat extends CommonGLPI
                 );
 
                 $criteria = [
-                 'SELECT'    => [
-                  $date_unix,
-                  'COUNT DISTINCT' => "$table.id AS total_visites"
-                 ],
-                 'FROM'      => $table,
-                 'WHERE'     => $WHERE,
-                 'GROUPBY'   => 'date_unix',
-                 'ORDERBY'   => "$table.date"
+                    'SELECT'    => [
+                        $date_unix,
+                        'COUNT DISTINCT' => "$table.id AS total_visites"
+                    ],
+                    'FROM'      => $table,
+                    'WHERE'     => $WHERE,
+                    'GROUPBY'   => 'date_unix',
+                    'ORDERBY'   => "$table.date"
                 ];
                 break;
 
@@ -1231,24 +1231,24 @@ class Stat extends CommonGLPI
                 );
 
                 $criteria = [
-                 'SELECT'    => [
-                  $date_unix,
-                  'COUNT DISTINCT'  => "$table.id AS total_visites"
-                 ],
-                 'FROM'      => $table,
-                 'WHERE'     => $WHERE,
-                 'GROUPBY'   => 'date_unix',
-                 'ORDERBY'   => "$table.solvedate"
+                    'SELECT'    => [
+                        $date_unix,
+                        'COUNT DISTINCT'  => "$table.id AS total_visites"
+                    ],
+                    'FROM'      => $table,
+                    'WHERE'     => $WHERE,
+                    'GROUPBY'   => 'date_unix',
+                    'ORDERBY'   => "$table.solvedate"
                 ];
                 break;
 
             case "inter_solved_late":
                 $WHERE["$table.status"] = $solved_status;
                 $WHERE[] = [
-                'NOT' => [
-                  "$table.solvedate"         => null,
-                  "$table.time_to_resolve"   => null
-                ]
+                    'NOT' => [
+                        "$table.solvedate"         => null,
+                        "$table.time_to_resolve"   => null
+                    ]
                 ];
                 $WHERE[] = getDateCriteria("$table.solvedate", $begin, $end);
                 $WHERE[] = new QueryExpression("$table.solvedate > $table.time_to_resolve");
@@ -1258,14 +1258,14 @@ class Stat extends CommonGLPI
                 );
 
                 $criteria = [
-                 'SELECT'    => [
-                  $date_unix,
-                  'COUNT DISTINCT'  => "$table.id AS total_visites"
-                 ],
-                 'FROM'      => $table,
-                 'WHERE'     => $WHERE,
-                 'GROUPBY'   => 'date_unix',
-                 'ORDERBY'   => "$table.solvedate"
+                    'SELECT'    => [
+                        $date_unix,
+                        'COUNT DISTINCT'  => "$table.id AS total_visites"
+                    ],
+                    'FROM'      => $table,
+                    'WHERE'     => $WHERE,
+                    'GROUPBY'   => 'date_unix',
+                    'ORDERBY'   => "$table.solvedate"
                 ];
                 break;
 
@@ -1279,14 +1279,14 @@ class Stat extends CommonGLPI
                 );
 
                 $criteria = [
-                 'SELECT'    => [
-                  $date_unix,
-                  'COUNT DISTINCT'  => "$table.id AS total_visites"
-                 ],
-                 'FROM'      => $table,
-                 'WHERE'     => $WHERE,
-                 'GROUPBY'   => 'date_unix',
-                 'ORDERBY'   => "$table.closedate"
+                    'SELECT'    => [
+                        $date_unix,
+                        'COUNT DISTINCT'  => "$table.id AS total_visites"
+                    ],
+                    'FROM'      => $table,
+                    'WHERE'     => $WHERE,
+                    'GROUPBY'   => 'date_unix',
+                    'ORDERBY'   => "$table.closedate"
                 ];
                 break;
 
@@ -1301,14 +1301,14 @@ class Stat extends CommonGLPI
                 );
 
                 $criteria = [
-                 'SELECT'    => [
-                  $date_unix,
-                  'COUNT DISTINCT'  => "$table.id AS total_visites"
-                 ],
-                 'FROM'      => $table,
-                 'WHERE'     => $WHERE,
-                 'GROUPBY'   => 'date_unix',
-                 'ORDERBY'   => "$table.solvedate"
+                    'SELECT'    => [
+                        $date_unix,
+                        'COUNT DISTINCT'  => "$table.id AS total_visites"
+                    ],
+                    'FROM'      => $table,
+                    'WHERE'     => $WHERE,
+                    'GROUPBY'   => 'date_unix',
+                    'ORDERBY'   => "$table.solvedate"
                 ];
                 break;
 
@@ -1322,14 +1322,14 @@ class Stat extends CommonGLPI
                 );
 
                 $criteria = [
-                 'SELECT'    => [
-                  $date_unix,
-                  'AVG' => "solve_delay_stat AS total_visites"
-                 ],
-                 'FROM'      => $table,
-                 'WHERE'     => $WHERE,
-                 'GROUPBY'   => 'date_unix',
-                 'ORDERBY'   => "$table.solvedate"
+                    'SELECT'    => [
+                        $date_unix,
+                        'AVG' => "solve_delay_stat AS total_visites"
+                    ],
+                    'FROM'      => $table,
+                    'WHERE'     => $WHERE,
+                    'GROUPBY'   => 'date_unix',
+                    'ORDERBY'   => "$table.solvedate"
                 ];
                 break;
 
@@ -1343,14 +1343,14 @@ class Stat extends CommonGLPI
                 );
 
                 $criteria = [
-                 'SELECT'    => [
-                  $date_unix,
-                  'AVG'  => "close_delay_stat AS total_visites"
-                 ],
-                 'FROM'      => $table,
-                 'WHERE'     => $WHERE,
-                 'GROUPBY'   => 'date_unix',
-                 'ORDERBY'   => "$table.closedate"
+                    'SELECT'    => [
+                        $date_unix,
+                        'AVG'  => "close_delay_stat AS total_visites"
+                    ],
+                    'FROM'      => $table,
+                    'WHERE'     => $WHERE,
+                    'GROUPBY'   => 'date_unix',
+                    'ORDERBY'   => "$table.closedate"
                 ];
                 break;
 
@@ -1368,14 +1368,14 @@ class Stat extends CommonGLPI
                 );
 
                 $criteria = [
-                 'SELECT'    => [
-                  $date_unix,
-                  'AVG'  => "$actiontime_table.actiontime AS total_visites"
-                 ],
-                 'FROM'      => $table,
-                 'WHERE'     => $WHERE,
-                 'GROUPBY'   => 'date_unix',
-                 'ORDERBY'   => "$table.solvedate"
+                    'SELECT'    => [
+                        $date_unix,
+                        'AVG'  => "$actiontime_table.actiontime AS total_visites"
+                    ],
+                    'FROM'      => $table,
+                    'WHERE'     => $WHERE,
+                    'GROUPBY'   => 'date_unix',
+                    'ORDERBY'   => "$table.solvedate"
                 ];
                 break;
 
@@ -1389,14 +1389,14 @@ class Stat extends CommonGLPI
                 );
 
                 $criteria = [
-                 'SELECT'    => [
-                  $date_unix,
-                  'AVG'  => "$table.takeintoaccount_delay_stat AS total_visites"
-                 ],
-                 'FROM'      => $table,
-                 'WHERE'     => $WHERE,
-                 'GROUPBY'   => 'date_unix',
-                 'ORDERBY'   => "$table.solvedate"
+                    'SELECT'    => [
+                        $date_unix,
+                        'AVG'  => "$table.takeintoaccount_delay_stat AS total_visites"
+                    ],
+                    'FROM'      => $table,
+                    'WHERE'     => $WHERE,
+                    'GROUPBY'   => 'date_unix',
+                    'ORDERBY'   => "$table.solvedate"
                 ];
                 break;
 
@@ -1410,29 +1410,29 @@ class Stat extends CommonGLPI
                 );
 
                 $INNERJOIN['glpi_ticketsatisfactions'] = [
-                 'ON' => [
-                  'glpi_ticketsatisfactions' => 'tickets_id',
-                  $table                     => 'id'
-                 ]
+                    'ON' => [
+                        'glpi_ticketsatisfactions' => 'tickets_id',
+                        $table                     => 'id'
+                    ]
                 ];
 
                 $criteria = [
-                'SELECT'    => [
-                  $date_unix,
-                  'COUNT DISTINCT'  => "$table.id AS total_visites"
-                ],
-                'FROM'      => $table,
-                'WHERE'     => $WHERE,
-                'GROUPBY'   => 'date_unix',
-                'ORDERBY'   => "$table.closedate"
+                    'SELECT'    => [
+                        $date_unix,
+                        'COUNT DISTINCT'  => "$table.id AS total_visites"
+                    ],
+                    'FROM'      => $table,
+                    'WHERE'     => $WHERE,
+                    'GROUPBY'   => 'date_unix',
+                    'ORDERBY'   => "$table.closedate"
                 ];
                 break;
 
             case "inter_answersatisfaction":
                 $WHERE["$table.status"] = $closed_status;
                 $WHERE[] = [
-                ['NOT' => ["$table.closedate" => null]],
-                ['NOT' => ["glpi_ticketsatisfactions.date_answered"  => null]],
+                    ['NOT' => ["$table.closedate" => null]],
+                    ['NOT' => ["glpi_ticketsatisfactions.date_answered"  => null]],
                 ];
 
                 $WHERE[] = getDateCriteria("$table.closedate", $begin, $end);
@@ -1442,31 +1442,31 @@ class Stat extends CommonGLPI
                 );
 
                 $INNERJOIN['glpi_ticketsatisfactions'] = [
-                 'ON' => [
-                  'glpi_ticketsatisfactions' => 'tickets_id',
-                  $table                     => 'id'
-                 ]
+                    'ON' => [
+                        'glpi_ticketsatisfactions' => 'tickets_id',
+                        $table                     => 'id'
+                    ]
                 ];
 
                 $criteria = [
-                'SELECT'    => [
-                  $date_unix,
-                  'COUNT DISTINCT'  => "$table.id AS total_visites"
-                ],
-                'FROM'      => $table,
-                'WHERE'     => $WHERE,
-                'GROUPBY'   => 'date_unix',
-                'ORDERBY'   => "$table.closedate"
+                    'SELECT'    => [
+                        $date_unix,
+                        'COUNT DISTINCT'  => "$table.id AS total_visites"
+                    ],
+                    'FROM'      => $table,
+                    'WHERE'     => $WHERE,
+                    'GROUPBY'   => 'date_unix',
+                    'ORDERBY'   => "$table.closedate"
                 ];
                 break;
 
             case "inter_avgsatisfaction":
                 $WHERE["$table.status"] = $closed_status;
                 $WHERE[] = [
-                'NOT' => [
-                  "$table.closedate" => null,
-                  "glpi_ticketsatisfactions.date_answered" => null
-                ]
+                    'NOT' => [
+                        "$table.closedate" => null,
+                        "glpi_ticketsatisfactions.date_answered" => null
+                    ]
                 ];
                 $WHERE[] = getDateCriteria("$table.closedate", $begin, $end);
 
@@ -1475,21 +1475,21 @@ class Stat extends CommonGLPI
                 );
 
                 $INNERJOIN['glpi_ticketsatisfactions'] = [
-                 'ON' => [
-                  'glpi_ticketsatisfactions' => 'tickets_id',
-                  $table                     => 'id'
-                 ]
+                    'ON' => [
+                        'glpi_ticketsatisfactions' => 'tickets_id',
+                        $table                     => 'id'
+                    ]
                 ];
 
                 $criteria = [
-                'SELECT'    => [
-                  $date_unix,
-                  'AVG'  => "glpi_ticketsatisfactions.satisfaction AS total_visites"
-                ],
-                'FROM'      => $table,
-                'WHERE'     => $WHERE,
-                'GROUPBY'   => 'date_unix',
-                'ORDERBY'   => "$table.closedate"
+                    'SELECT'    => [
+                        $date_unix,
+                        'AVG'  => "glpi_ticketsatisfactions.satisfaction AS total_visites"
+                    ],
+                    'FROM'      => $table,
+                    'WHERE'     => $WHERE,
+                    'GROUPBY'   => 'date_unix',
+                    'ORDERBY'   => "$table.closedate"
                 ];
                 break;
         }
@@ -1569,31 +1569,31 @@ class Stat extends CommonGLPI
         $date1 .= " 00:00:00";
 
         $iterator = $DB->request([
-         'SELECT' => [
-            'glpi_items_tickets.itemtype',
-            'glpi_items_tickets.items_id',
-            'COUNT'  => '* AS NB'
-         ],
-         'FROM'   => 'glpi_tickets',
-         'LEFT JOIN' => [
-            'glpi_items_tickets' => [
-               'ON' => [
-                  'glpi_items_tickets' => 'tickets_id',
-                  'glpi_tickets'       => 'id'
-               ]
-            ]
-         ],
-         'WHERE'  => [
-            'date'                        => ['<=', $date2],
-            'glpi_tickets.date'           => ['>=', $date1],
-            'glpi_items_tickets.itemtype' => ['<>', ''],
-            'glpi_items_tickets.items_id' => ['>', 0]
-         ] + getEntitiesRestrictCriteria('glpi_tickets'),
-         'GROUP'  => [
-            'glpi_items_tickets.itemtype',
-            'glpi_items_tickets.items_id'
-         ],
-         'ORDER'  => 'NB DESC'
+            'SELECT' => [
+                'glpi_items_tickets.itemtype',
+                'glpi_items_tickets.items_id',
+                'COUNT'  => '* AS NB'
+            ],
+            'FROM'   => 'glpi_tickets',
+            'LEFT JOIN' => [
+                'glpi_items_tickets' => [
+                    'ON' => [
+                        'glpi_items_tickets' => 'tickets_id',
+                        'glpi_tickets'       => 'id'
+                    ]
+                ]
+            ],
+            'WHERE'  => [
+                'date'                        => ['<=', $date2],
+                'glpi_tickets.date'           => ['>=', $date1],
+                'glpi_items_tickets.itemtype' => ['<>', ''],
+                'glpi_items_tickets.items_id' => ['>', 0]
+            ] + getEntitiesRestrictCriteria('glpi_tickets'),
+            'GROUP'  => [
+                'glpi_items_tickets.itemtype',
+                'glpi_items_tickets.items_id'
+            ],
+            'ORDER'  => 'NB DESC'
         ]);
         $numrows = count($iterator);
 
@@ -1759,7 +1759,8 @@ class Stat extends CommonGLPI
                 if (is_array($pages) && count($pages)) {
                     foreach ($pages as $page => $name) {
                         $names[Plugin::getWebDir($plug, false) . '/' . $page] = ["name" => $name,
-                                                  "plug" => $plug];
+                            "plug" => $plug
+                        ];
                         $optgroup[$plug] = Plugin::getInfo($plug, 'name');
                     }
                 }
@@ -1784,7 +1785,8 @@ class Stat extends CommonGLPI
             'statmenu',
             $values,
             ['on_change' => "window.location.href=this.options[this.selectedIndex].value",
-            'value'     => $selected]
+                'value'     => $selected
+            ]
         );
         echo "</td>";
         echo "</tr>";
@@ -1846,12 +1848,12 @@ class Stat extends CommonGLPI
         ?string $csv_link = null
     ) {
         $param = [
-         'width'   => 900,
-         'height'  => 300,
-         'tooltip' => true,
-         'legend'  => true,
-         'animate' => true,
-         'csv'     => true
+            'width'   => 900,
+            'height'  => 300,
+            'tooltip' => true,
+            'legend'  => true,
+            'animate' => true,
+            'csv'     => true
         ];
 
         if (is_array($options) && count($options)) {
@@ -1992,7 +1994,7 @@ class Stat extends CommonGLPI
         ?string $csv_link = null
     ) {
         $param = [
-         'csv'     => true
+            'csv'     => true
         ];
 
         if (is_array($options) && count($options)) {
@@ -2109,8 +2111,8 @@ class Stat extends CommonGLPI
         $out .= Html::showDateField(
             'date1',
             [
-            'value'   => $date1,
-            'display' => false
+                'value'   => $date1,
+                'display' => false
             ]
         );
         $out .= "</td><td rowspan='2' class='center'>";
@@ -2120,8 +2122,8 @@ class Stat extends CommonGLPI
         $out .= Html::showDateField(
             'date2',
             [
-            'value'   => $date2,
-            'display' => false
+                'value'   => $date2,
+                'display' => false
             ]
         );
         $out .= "</td></tr>";

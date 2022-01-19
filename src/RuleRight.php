@@ -202,7 +202,8 @@ class RuleRight extends Rule
                 if ($right != '') {
                     foreach ($entity as $entID) {
                         $output["_ldap_rules"]["rules_entities_rights"][] = [$entID, $right,
-                                                                            $is_recursive];
+                            $is_recursive
+                        ];
                     }
                 } else {
                     foreach ($entity as $entID) {
@@ -289,8 +290,8 @@ class RuleRight extends Rule
     {
         if ($criteria['field'] == 'type') {
             \Auth::dropdown([
-            'name'  => $name,
-            'value' => $value,
+                'name'  => $name,
+                'value' => $value,
             ]);
             return true;
         }
@@ -395,7 +396,7 @@ class RuleRight extends Rule
                     'value',
                     $timezones,
                     [
-                    'display_emptychoice' => true
+                        'display_emptychoice' => true
                     ]
                 );
                 return true;

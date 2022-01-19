@@ -80,28 +80,28 @@ class ITILFollowupTemplate extends AbstractITILChildTemplate
         $tab = parent::rawSearchOptions();
 
         $tab[] = [
-         'id'                 => '4',
-         'name'               => __('Content'),
-         'field'              => 'content',
-         'table'              => self::getTable(),
-         'datatype'           => 'text',
-         'htmltext'           => true
+            'id'                 => '4',
+            'name'               => __('Content'),
+            'field'              => 'content',
+            'table'              => self::getTable(),
+            'datatype'           => 'text',
+            'htmltext'           => true
         ];
 
         $tab[] = [
-         'id'                 => '5',
-         'name'               => __('Source of followup'),
-         'field'              => 'name',
-         'table'              => getTableForItemType('RequestType'),
-         'datatype'           => 'dropdown'
+            'id'                 => '5',
+            'name'               => __('Source of followup'),
+            'field'              => 'name',
+            'table'              => getTableForItemType('RequestType'),
+            'datatype'           => 'dropdown'
         ];
 
         $tab[] = [
-         'id'                 => '6',
-         'name'               => __('Private'),
-         'field'              => 'is_private',
-         'table'              => self::getTable(),
-         'datatype'           => 'bool'
+            'id'                 => '6',
+            'name'               => __('Private'),
+            'field'              => 'is_private',
+            'table'              => self::getTable(),
+            'datatype'           => 'bool'
         ];
 
         return $tab;

@@ -58,10 +58,10 @@ global $CFG_GLPI, $TRANSLATE;
 // Prevent JS error for plugins that does not provide any translation files
 $default_response = json_encode(
     [
-      '' => [
-         'language'     => $CFG_GLPI['languages'][$_SESSION['glpilanguage']][1],
-         'plural-forms' => 'nplurals=2; plural=(n != 1);',
-      ],
+        '' => [
+            'language'     => $CFG_GLPI['languages'][$_SESSION['glpilanguage']][1],
+            'plural-forms' => 'nplurals=2; plural=(n != 1);',
+        ],
     ]
 );
 

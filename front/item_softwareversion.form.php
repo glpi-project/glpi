@@ -46,9 +46,9 @@ if (isset($_POST['add'])) {
     ) {
         if (
             $inst->add([
-            'itemtype'        => $_POST['itemtype'],
-            'items_id'        => $_POST['items_id'],
-            'softwareversions_id' => $_POST['softwareversions_id']
+                'itemtype'        => $_POST['itemtype'],
+                'items_id'        => $_POST['items_id'],
+                'softwareversions_id' => $_POST['softwareversions_id']
             ])
         ) {
             Event::log(

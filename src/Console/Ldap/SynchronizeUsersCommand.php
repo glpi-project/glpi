@@ -181,16 +181,16 @@ class SynchronizeUsersCommand extends AbstractCommand
         $actions = [];
         if ($only_create) {
             $actions = [
-            AuthLDAP::ACTION_IMPORT, // Import unexisting users
+                AuthLDAP::ACTION_IMPORT, // Import unexisting users
             ];
         } else if ($only_update) {
             $actions = [
-            AuthLDAP::ACTION_SYNCHRONIZE, // Update existing users but does not handle deleted ones
+                AuthLDAP::ACTION_SYNCHRONIZE, // Update existing users but does not handle deleted ones
             ];
         } else {
             $actions = [
-            AuthLDAP::ACTION_IMPORT, // Import unexisting users
-            AuthLDAP::ACTION_ALL, // Update existing users and handle deleted ones
+                AuthLDAP::ACTION_IMPORT, // Import unexisting users
+                AuthLDAP::ACTION_ALL, // Update existing users and handle deleted ones
             ];
             $deleted_user_strategy = $input->getOption('deleted-user-strategy');
             if (null !== $deleted_user_strategy) {
@@ -206,11 +206,11 @@ class SynchronizeUsersCommand extends AbstractCommand
         if (empty($servers_id)) {
             $servers_iterator = $this->db->request(
                 [
-                'SELECT' => 'id',
-                'FROM'   => AuthLDAP::getTable(),
-                'WHERE'  => [
-                  'is_active' => 1,
-                ],
+                    'SELECT' => 'id',
+                    'FROM'   => AuthLDAP::getTable(),
+                    'WHERE'  => [
+                        'is_active' => 1,
+                    ],
                 ]
             );
             if ($servers_iterator->count() === 0) {
@@ -227,11 +227,11 @@ class SynchronizeUsersCommand extends AbstractCommand
 
             $servers_iterator = $this->db->request(
                 [
-                'SELECT' => ['id', 'name'],
-                'FROM'   => AuthLDAP::getTable(),
-                'WHERE'  => [
-                  'id' => $servers_id,
-                ],
+                    'SELECT' => ['id', 'name'],
+                    'FROM'   => AuthLDAP::getTable(),
+                    'WHERE'  => [
+                        'id' => $servers_id,
+                    ],
                 ]
             );
             $servers_names = [];
@@ -271,21 +271,21 @@ class SynchronizeUsersCommand extends AbstractCommand
 
             foreach ($actions as $action) {
                 $results = [
-                 AuthLDAP::USER_IMPORTED       => 0,
-                 AuthLDAP::USER_SYNCHRONIZED   => 0,
-                 AuthLDAP::USER_DELETED_LDAP   => 0,
-                 AuthLDAP::USER_RESTORED_LDAP  => 0,
+                    AuthLDAP::USER_IMPORTED       => 0,
+                    AuthLDAP::USER_SYNCHRONIZED   => 0,
+                    AuthLDAP::USER_DELETED_LDAP   => 0,
+                    AuthLDAP::USER_RESTORED_LDAP  => 0,
                 ];
                 $limitexceeded = false;
 
                 $users = AuthLDAP::getAllUsers(
                     [
-                    'authldaps_id' => $server_id,
-                    'mode'         => $action,
-                    'ldap_filter'  => null !== $ldap_filter ? $ldap_filter : '',
-                    'script'       => true,
-                    'begin_date'   => null !== $begin_date ? $begin_date : '',
-                    'end_date'     => null !== $end_date ? $end_date : '',
+                        'authldaps_id' => $server_id,
+                        'mode'         => $action,
+                        'ldap_filter'  => null !== $ldap_filter ? $ldap_filter : '',
+                        'script'       => true,
+                        'begin_date'   => null !== $begin_date ? $begin_date : '',
+                        'end_date'     => null !== $end_date ? $end_date : '',
                     ],
                     $results,
                     $limitexceeded
@@ -377,10 +377,10 @@ class SynchronizeUsersCommand extends AbstractCommand
 
                     $result = AuthLDAP::ldapImportUserByServerId(
                         [
-                        'method'           => AuthLDAP::IDENTIFIER_LOGIN,
-                        'value'            => $value,
-                        'identifier_field' => $id_field,
-                        'user_field'       => $user_field
+                            'method'           => AuthLDAP::IDENTIFIER_LOGIN,
+                            'value'            => $value,
+                            'identifier_field' => $id_field,
+                            'user_field'       => $user_field
                         ],
                         $action,
                         $server_id
@@ -404,20 +404,20 @@ class SynchronizeUsersCommand extends AbstractCommand
                 $result_output = new Table($output);
                 $result_output->setHeaders(
                     [
-                    __('LDAP server'),
-                    __('Imported'),
-                    __('Synchronized'),
-                    __('Deleted from LDAP'),
-                    __('Restored from LDAP'),
+                        __('LDAP server'),
+                        __('Imported'),
+                        __('Synchronized'),
+                        __('Deleted from LDAP'),
+                        __('Restored from LDAP'),
                     ]
                 );
                 $result_output->addRow(
                     [
-                    $server_id,
-                    $results[AuthLDAP::USER_IMPORTED],
-                    $results[AuthLDAP::USER_SYNCHRONIZED],
-                    $results[AuthLDAP::USER_DELETED_LDAP],
-                    $results[AuthLDAP::USER_RESTORED_LDAP],
+                        $server_id,
+                        $results[AuthLDAP::USER_IMPORTED],
+                        $results[AuthLDAP::USER_SYNCHRONIZED],
+                        $results[AuthLDAP::USER_DELETED_LDAP],
+                        $results[AuthLDAP::USER_RESTORED_LDAP],
                     ]
                 );
                 $result_output->render();

@@ -43,9 +43,9 @@ if (!isset($_GET['id'])) {
 }
 
 $date_fields = [
-   'date',
-   'due_date',
-   'time_to_own'
+    'date',
+    'due_date',
+    'time_to_own'
 ];
 
 foreach ($date_fields as $date_field) {
@@ -82,9 +82,9 @@ if (isset($_POST["add"])) {
     if (isset($_POST['kb_linked_id'])) {
        //if solution should be linked to selected KB entry
         $params = [
-         'knowbaseitems_id' => $_POST['kb_linked_id'],
-         'itemtype'         => $track->getType(),
-         'items_id'         => $track->getID()
+            'knowbaseitems_id' => $_POST['kb_linked_id'],
+            'itemtype'         => $track->getType(),
+            'items_id'         => $track->getID()
         ];
         $existing = $DB->request(
             'glpi_knowbaseitems_items',
@@ -190,12 +190,12 @@ if (isset($_POST["add"])) {
     $id = (int) $_POST['id'];
     $track->check($id, READ);
     $input = array_merge(Toolbox::addslashes_deep($track->fields), [
-      'id' => $id,
-      '_itil_' . $_POST['actortype'] => [
-         '_type' => "user",
-         'users_id' => Session::getLoginUserID(),
-         'use_notification' => 1,
-      ]
+        'id' => $id,
+        '_itil_' . $_POST['actortype'] => [
+            '_type' => "user",
+            'users_id' => Session::getLoginUserID(),
+            'use_notification' => 1,
+        ]
     ]);
     $track->update($input);
     Event::log(
@@ -214,8 +214,8 @@ if (isset($_POST["add"])) {
     if ($doc->can($doc->getID(), UPDATE)) {
         $document_item = new Document_Item();
         $found_document_items = $document_item->find([
-         $track->getAssociatedDocumentsCriteria(),
-         'documents_id' => $doc->getID()
+            $track->getAssociatedDocumentsCriteria(),
+            'documents_id' => $doc->getID()
         ]);
         foreach ($found_document_items as $item) {
             $document_item->delete(Toolbox::addslashes_deep($item), true);
@@ -249,9 +249,9 @@ if (isset($_GET["id"]) && ($_GET["id"] > 0)) {
             'savetokb',
             $url,
             [
-            'title'         => __('Save and add to the knowledge base'),
-            'reloadonclose' => false,
-            'autoopen'      => true,
+                'title'         => __('Save and add to the knowledge base'),
+                'reloadonclose' => false,
+                'autoopen'      => true,
             ]
         );
     }

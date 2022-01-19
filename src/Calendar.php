@@ -50,8 +50,8 @@ class Calendar extends CommonDropdown
     public function getCloneRelations(): array
     {
         return [
-         Calendar_Holiday::class,
-         CalendarSegment::class
+            Calendar_Holiday::class,
+            CalendarSegment::class
         ];
     }
 
@@ -181,7 +181,8 @@ class Calendar extends CommonDropdown
                         $entities_id = CommonDBTM::getItemEntity('Calendar', $id);
                         if (isset($entities[$entities_id])) {
                             $input = ['calendars_id' => $id,
-                                    'holidays_id'  => $input['holidays_id']];
+                                'holidays_id'  => $input['holidays_id']
+                            ];
                             if ($calendar_holiday->add($input)) {
                                 $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
                             } else {
@@ -215,8 +216,8 @@ class Calendar extends CommonDropdown
 
         $this->deleteChildrenAndRelationsFromDb(
             [
-            Calendar_Holiday::class,
-            CalendarSegment::class,
+                Calendar_Holiday::class,
+                CalendarSegment::class,
             ]
         );
     }
@@ -661,8 +662,8 @@ class Calendar extends CommonDropdown
 
         if ($this->getFromDB($calendars_id)) {
             $input = [
-            'id'             => $calendars_id,
-            'cache_duration' => exportArrayToDB($this->getDaysDurations()),
+                'id'             => $calendars_id,
+                'cache_duration' => exportArrayToDB($this->getDaysDurations()),
             ];
             return $this->update($input);
         }

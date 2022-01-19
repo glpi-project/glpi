@@ -168,8 +168,8 @@ class Problem_Ticket extends CommonDBRelation
                     $problem->showMassiveSolutionForm($problem);
                     echo "<br>";
                     echo Html::submit(_x('button', 'Post'), [
-                    'name'  => 'massiveaction',
-                    'class' => 'btn btn-primary',
+                        'name'  => 'massiveaction',
+                        'class' => 'btn btn-primary',
                     ]);
                     return true;
                 }
@@ -207,7 +207,8 @@ class Problem_Ticket extends CommonDBRelation
                               $input2 = [$field              => $item->fields['tickets_id'],
                                   'taskcategories_id' => $input['taskcategories_id'],
                                   'actiontime'        => $input['actiontime'],
-                                  'content'           => $input['content']];
+                                  'content'           => $input['content']
+                              ];
                               if ($task->can(-1, CREATE, $input2)) {
                                   if ($task->add($input2)) {
                                       $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
@@ -238,10 +239,10 @@ class Problem_Ticket extends CommonDBRelation
                         ) {
                             $solution = new ITILSolution();
                             $added = $solution->add([
-                            'itemtype'  => $ticket->getType(),
-                            'items_id'  => $ticket->getID(),
-                            'solutiontypes_id'   => $input['solutiontypes_id'],
-                            'content'            => $input['content']
+                                'itemtype'  => $ticket->getType(),
+                                'items_id'  => $ticket->getID(),
+                                'solutiontypes_id'   => $input['solutiontypes_id'],
+                                'content'            => $input['content']
                             ]);
 
                             if ($added) {
@@ -301,10 +302,10 @@ class Problem_Ticket extends CommonDBRelation
             echo "<tr class='tab_bg_2'><td class='right'>";
             echo "<input type='hidden' name='problems_id' value='$ID'>";
             Ticket::dropdown([
-            'used'        => $used,
-            'entity'      => $problem->getEntityID(),
-            'entity_sons' => $problem->isRecursive(),
-            'displaywith' => ['id'],
+                'used'        => $used,
+                'entity'      => $problem->getEntityID(),
+                'entity_sons' => $problem->isRecursive(),
+                'displaywith' => ['id'],
             ]);
             echo "</td><td class='center'>";
             echo "<input type='submit' name='add' value=\"" . _sx('button', 'Add') . "\" class='btn btn-primary'>";
@@ -319,19 +320,21 @@ class Problem_Ticket extends CommonDBRelation
         if ($canedit && $numrows) {
             Html::openMassiveActionsForm('mass' . __CLASS__ . $rand);
             $massiveactionparams = ['num_displayed'    => min($_SESSION['glpilist_limit'], $numrows),
-                                      'container'        => 'mass' . __CLASS__ . $rand,
-                                      'specific_actions' => ['purge'
+                'container'        => 'mass' . __CLASS__ . $rand,
+                'specific_actions' => ['purge'
                                                                     => _x(
                                                                         'button',
                                                                         'Delete permanently'
                                                                     ),
-                                                                  __CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'solveticket'
+                    __CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'solveticket'
                                                                     => __('Solve tickets'),
-                                                                  __CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_task'
-                                                                    => __('Add a new task')],
-                                      'extraparams'      => ['problems_id' => $problem->getID()],
-                                      'width'            => 1000,
-                                      'height'           => 500];
+                    __CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_task'
+                                                                    => __('Add a new task')
+                ],
+                'extraparams'      => ['problems_id' => $problem->getID()],
+                'width'            => 1000,
+                'height'           => 500
+            ];
             Html::showMassiveActions($massiveactionparams);
         }
         echo "<table class='tab_cadre_fixehov'>";
@@ -356,9 +359,9 @@ class Problem_Ticket extends CommonDBRelation
                 Ticket::showShort(
                     $data['id'],
                     [
-                    'row_num'                => $i,
-                    'type_for_massiveaction' => __CLASS__,
-                    'id_for_massiveaction'   => $data['linkid']
+                        'row_num'                => $i,
+                        'type_for_massiveaction' => __CLASS__,
+                        'id_for_massiveaction'   => $data['linkid']
                     ]
                 );
                  $i++;
@@ -410,9 +413,9 @@ class Problem_Ticket extends CommonDBRelation
             echo "<input type='hidden' name='tickets_id' value='$ID'>";
 
             Problem::dropdown([
-            'used'      => $used,
-            'entity'    => $ticket->getEntityID(),
-            'condition' => Problem::getOpenCriteria()
+                'used'      => $used,
+                'entity'    => $ticket->getEntityID(),
+                'condition' => Problem::getOpenCriteria()
             ]);
             echo "</td><td class='center'>";
             echo "<input type='submit' name='add' value=\"" . _sx('button', 'Add') . "\" class='btn btn-primary'>";
@@ -432,7 +435,8 @@ class Problem_Ticket extends CommonDBRelation
         if ($canedit && $numrows) {
             Html::openMassiveActionsForm('mass' . __CLASS__ . $rand);
             $massiveactionparams = ['num_displayed'  => min($_SESSION['glpilist_limit'], $numrows),
-                                      'container'      => 'mass' . __CLASS__ . $rand];
+                'container'      => 'mass' . __CLASS__ . $rand
+            ];
             Html::showMassiveActions($massiveactionparams);
         }
         echo "<table class='tab_cadre_fixehov'>";
@@ -455,8 +459,9 @@ class Problem_Ticket extends CommonDBRelation
             foreach ($problems as $data) {
                 Session::addToNavigateListItems('Problem', $data["id"]);
                 Problem::showShort($data['id'], ['row_num'                => $i,
-                                                  'type_for_massiveaction' => __CLASS__,
-                                                  'id_for_massiveaction'   => $data['linkid']]);
+                    'type_for_massiveaction' => __CLASS__,
+                    'id_for_massiveaction'   => $data['linkid']
+                ]);
                  $i++;
             }
             Problem::commonListHeader(Search::HTML_OUTPUT, 'mass' . __CLASS__ . $rand);

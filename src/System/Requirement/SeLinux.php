@@ -91,9 +91,9 @@ class SeLinux extends AbstractRequirement
        // No need to check file context as DirectoryWriteAccess requirements will show issues
 
         $bools = [
-         'httpd_can_network_connect',
-         'httpd_can_network_connect_db',
-         'httpd_can_sendmail',
+            'httpd_can_network_connect',
+            'httpd_can_network_connect_db',
+            'httpd_can_sendmail',
         ];
 
         $has_missing_boolean = false;

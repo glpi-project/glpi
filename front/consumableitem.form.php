@@ -118,6 +118,7 @@ if (isset($_POST["add"])) {
 } else {
     Html::header(_n('Consumable', 'Consumables', Session::getPluralNumber()), $_SERVER['PHP_SELF'], "assets", "consumableitem");
     $constype->display(['id' => $_GET["id"],
-      'formoptions'  => "data-track-changes=true"]);
+        'formoptions'  => "data-track-changes=true"
+    ]);
     Html::footer();
 }

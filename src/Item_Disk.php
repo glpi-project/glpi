@@ -69,9 +69,9 @@ class Item_Disk extends CommonDBChild
                 $nb = countElementsInTable(
                     self::getTable(),
                     [
-                    'items_id'     => $item->getID(),
-                    'itemtype'     => $item->getType(),
-                    'is_deleted'   => 0
+                        'items_id'     => $item->getID(),
+                        'itemtype'     => $item->getType(),
+                        'is_deleted'   => 0
                     ]
                 );
             }
@@ -221,23 +221,23 @@ class Item_Disk extends CommonDBChild
         global $DB;
 
         $iterator = $DB->request([
-         'SELECT'    => [
-            Filesystem::getTable() . '.name AS fsname',
-            self::getTable() . '.*'
-         ],
-         'FROM'      => self::getTable(),
-         'LEFT JOIN' => [
-            Filesystem::getTable() => [
-               'FKEY' => [
-                  self::getTable()        => 'filesystems_id',
-                  Filesystem::getTable()  => 'id'
-               ]
+            'SELECT'    => [
+                Filesystem::getTable() . '.name AS fsname',
+                self::getTable() . '.*'
+            ],
+            'FROM'      => self::getTable(),
+            'LEFT JOIN' => [
+                Filesystem::getTable() => [
+                    'FKEY' => [
+                        self::getTable()        => 'filesystems_id',
+                        Filesystem::getTable()  => 'id'
+                    ]
+                ]
+            ],
+            'WHERE'     => [
+                'itemtype'     => $item->getType(),
+                'items_id'     => $item->fields['id']
             ]
-         ],
-         'WHERE'     => [
-            'itemtype'     => $item->getType(),
-            'items_id'     => $item->fields['id']
-         ]
         ]);
         return $iterator;
     }
@@ -329,9 +329,9 @@ class Item_Disk extends CommonDBChild
                 }
                 $rand = mt_rand();
                 Html::progressBar("percent$rand", [
-                'create'  => true,
-                'percent' => $percent,
-                'message' => "$percent %",
+                    'create'  => true,
+                    'percent' => $percent,
+                    'message' => "$percent %",
                 ]);
                  echo "</td>";
                  echo "<td class=\"center\">";
@@ -348,7 +348,7 @@ class Item_Disk extends CommonDBChild
                         "</br>";
 
                      Html::showTooltip($encryptionTooltip, [
-                        'awesome-class' => "fas fa-lock"
+                         'awesome-class' => "fas fa-lock"
                      ]);
                 }
 
@@ -371,57 +371,57 @@ class Item_Disk extends CommonDBChild
         $tab = [];
 
         $tab[] = [
-         'id'                 => 'common',
-         'name'               => __('Characteristics')
+            'id'                 => 'common',
+            'name'               => __('Characteristics')
         ];
 
         $tab[] = [
-         'id'                 => '1',
-         'table'              => $this->getTable(),
-         'field'              => 'name',
-         'name'               => __('Name'),
-         'datatype'           => 'itemlink',
-         'massiveaction'      => false,
+            'id'                 => '1',
+            'table'              => $this->getTable(),
+            'field'              => 'name',
+            'name'               => __('Name'),
+            'datatype'           => 'itemlink',
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
-         'id'                 => '2',
-         'table'              => $this->getTable(),
-         'field'              => 'device',
-         'name'               => __('Partition'),
-         'datatype'           => 'string',
-         'massiveaction'      => false,
+            'id'                 => '2',
+            'table'              => $this->getTable(),
+            'field'              => 'device',
+            'name'               => __('Partition'),
+            'datatype'           => 'string',
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
-         'id'                 => '3',
-         'table'              => $this->getTable(),
-         'field'              => 'mountpoint',
-         'name'               => __('Mount point'),
-         'datatype'           => 'string',
-         'massiveaction'      => false,
+            'id'                 => '3',
+            'table'              => $this->getTable(),
+            'field'              => 'mountpoint',
+            'name'               => __('Mount point'),
+            'datatype'           => 'string',
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
-         'id'                 => '4',
-         'table'              => $this->getTable(),
-         'field'              => 'totalsize',
-         'unit'               => 'auto',
-         'name'               => __('Global size'),
-         'datatype'           => 'number',
-         'width'              => 1000,
-         'massiveaction'      => false,
+            'id'                 => '4',
+            'table'              => $this->getTable(),
+            'field'              => 'totalsize',
+            'unit'               => 'auto',
+            'name'               => __('Global size'),
+            'datatype'           => 'number',
+            'width'              => 1000,
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
-         'id'                 => '5',
-         'table'              => $this->getTable(),
-         'field'              => 'freesize',
-         'unit'               => 'auto',
-         'name'               => __('Free size'),
-         'datatype'           => 'number',
-         'width'              => 1000,
-         'massiveaction'      => false,
+            'id'                 => '5',
+            'table'              => $this->getTable(),
+            'field'              => 'freesize',
+            'unit'               => 'auto',
+            'name'               => __('Free size'),
+            'datatype'           => 'number',
+            'width'              => 1000,
+            'massiveaction'      => false,
         ];
 
         return $tab;
@@ -433,168 +433,168 @@ class Item_Disk extends CommonDBChild
 
         $name = _n('Volume', 'Volumes', Session::getPluralNumber());
         $tab[] = [
-          'id'                 => 'disk',
-          'name'               => $name
+            'id'                 => 'disk',
+            'name'               => $name
         ];
 
         $tab[] = [
-         'id'                 => '156',
-         'table'              => self::getTable(),
-         'field'              => 'name',
-         'name'               => __('Name'),
-         'forcegroupby'       => true,
-         'massiveaction'      => false,
-         'datatype'           => 'dropdown',
-         'joinparams'         => [
-            'jointype'           => 'itemtype_item'
-         ]
-        ];
-
-        $tab[] = [
-         'id'                 => '150',
-         'table'              => self::getTable(),
-         'field'              => 'totalsize',
-         'unit'               => 'auto',
-         'name'               => __('Global size'),
-         'forcegroupby'       => true,
-         'usehaving'          => true,
-         'datatype'           => 'number',
-         'width'              => 1000,
-         'massiveaction'      => false,
-         'joinparams'         => [
-            'jointype'           => 'itemtype_item'
-         ]
-        ];
-
-        $tab[] = [
-         'id'                 => '151',
-         'table'              => self::getTable(),
-         'field'              => 'freesize',
-         'unit'               => 'auto',
-         'name'               => __('Free size'),
-         'forcegroupby'       => true,
-         'datatype'           => 'number',
-         'width'              => 1000,
-         'massiveaction'      => false,
-         'joinparams'         => [
-            'jointype'           => 'itemtype_item'
-         ]
-        ];
-
-        $tab[] = [
-         'id'                 => '152',
-         'table'              => self::getTable(),
-         'field'              => 'freepercent',
-         'name'               => __('Free percentage'),
-         'forcegroupby'       => true,
-         'datatype'           => 'progressbar',
-         'width'              => 2,
-         // NULLIF -> avoid divizion by zero by replacing it by null (division by null return null without warning)
-         'computation'        => 'LPAD(ROUND(100*TABLE.freesize/NULLIF(TABLE.totalsize, 0)), 3, 0)',
-         'computationgroupby' => true,
-         'unit'               => '%',
-         'massiveaction'      => false,
-         'joinparams'         => [
-            'jointype'           => 'itemtype_item'
-         ]
-        ];
-
-        $tab[] = [
-         'id'                 => '153',
-         'table'              => self::getTable(),
-         'field'              => 'mountpoint',
-         'name'               => __('Mount point'),
-         'forcegroupby'       => true,
-         'massiveaction'      => false,
-         'datatype'           => 'string',
-         'joinparams'         => [
-            'jointype'           => 'itemtype_item'
-         ]
-        ];
-
-        $tab[] = [
-         'id'                 => '154',
-         'table'              => self::getTable(),
-         'field'              => 'device',
-         'name'               => __('Partition'),
-         'forcegroupby'       => true,
-         'massiveaction'      => false,
-         'datatype'           => 'string',
-         'joinparams'         => [
-            'jointype'           => 'itemtype_item'
-         ]
-        ];
-
-        $tab[] = [
-         'id'                 => '155',
-         'table'              => 'glpi_filesystems',
-         'field'              => 'name',
-         'name'               => Filesystem::getTypeName(1),
-         'forcegroupby'       => true,
-         'massiveaction'      => false,
-         'datatype'           => 'dropdown',
-         'joinparams'         => [
-            'beforejoin'         => [
-               'table'              => self::getTable(),
-               'joinparams'         => [
-                  'jointype'           => 'itemtype_item'
-               ]
+            'id'                 => '156',
+            'table'              => self::getTable(),
+            'field'              => 'name',
+            'name'               => __('Name'),
+            'forcegroupby'       => true,
+            'massiveaction'      => false,
+            'datatype'           => 'dropdown',
+            'joinparams'         => [
+                'jointype'           => 'itemtype_item'
             ]
-         ]
         ];
 
         $tab[] = [
-         'id'                 => '174',
-         'table'              => self::getTable(),
-         'field'              => 'encryption_status',
-         'name'               => __('Encryption status'),
-         'searchtype'         => 'equals',
-         'forcegroupby'       => true,
-         'massiveaction'      => false,
-         'searchequalsonfield' => true,
-         'datatype'           => 'specific',
-         'joinparams'         => [
-            'jointype'           => 'itemtype_item'
-         ]
+            'id'                 => '150',
+            'table'              => self::getTable(),
+            'field'              => 'totalsize',
+            'unit'               => 'auto',
+            'name'               => __('Global size'),
+            'forcegroupby'       => true,
+            'usehaving'          => true,
+            'datatype'           => 'number',
+            'width'              => 1000,
+            'massiveaction'      => false,
+            'joinparams'         => [
+                'jointype'           => 'itemtype_item'
+            ]
         ];
 
         $tab[] = [
-         'id'                 => '175',
-         'table'              => self::getTable(),
-         'field'              => 'encryption_tool',
-         'name'               => __('Encryption tool'),
-         'forcegroupby'       => true,
-         'massiveaction'      => false,
-         'datatype'           => 'string',
-         'joinparams'         => [
-            'jointype'           => 'itemtype_item'
-         ]
+            'id'                 => '151',
+            'table'              => self::getTable(),
+            'field'              => 'freesize',
+            'unit'               => 'auto',
+            'name'               => __('Free size'),
+            'forcegroupby'       => true,
+            'datatype'           => 'number',
+            'width'              => 1000,
+            'massiveaction'      => false,
+            'joinparams'         => [
+                'jointype'           => 'itemtype_item'
+            ]
         ];
 
         $tab[] = [
-         'id'                 => '176',
-         'table'              => self::getTable(),
-         'field'              => 'encryption_algorithm',
-         'name'               => __('Encryption algorithm'),
-         'forcegroupby'       => true,
-         'massiveaction'      => false,
-         'datatype'           => 'string',
-         'joinparams'         => [
-            'jointype'           => 'itemtype_item'
-         ]
+            'id'                 => '152',
+            'table'              => self::getTable(),
+            'field'              => 'freepercent',
+            'name'               => __('Free percentage'),
+            'forcegroupby'       => true,
+            'datatype'           => 'progressbar',
+            'width'              => 2,
+         // NULLIF -> avoid divizion by zero by replacing it by null (division by null return null without warning)
+            'computation'        => 'LPAD(ROUND(100*TABLE.freesize/NULLIF(TABLE.totalsize, 0)), 3, 0)',
+            'computationgroupby' => true,
+            'unit'               => '%',
+            'massiveaction'      => false,
+            'joinparams'         => [
+                'jointype'           => 'itemtype_item'
+            ]
         ];
 
         $tab[] = [
-         'id'                 => '177',
-         'table'              => self::getTable(),
-         'field'              => 'encryption_type',
-         'name'               => __('Encryption type'),
-         'forcegroupby'       => true,
-         'massiveaction'      => false,
-         'datatype'           => 'string',
-         'joinparams'         => [
-            'jointype'           => 'itemtype_item'
-         ]
+            'id'                 => '153',
+            'table'              => self::getTable(),
+            'field'              => 'mountpoint',
+            'name'               => __('Mount point'),
+            'forcegroupby'       => true,
+            'massiveaction'      => false,
+            'datatype'           => 'string',
+            'joinparams'         => [
+                'jointype'           => 'itemtype_item'
+            ]
+        ];
+
+        $tab[] = [
+            'id'                 => '154',
+            'table'              => self::getTable(),
+            'field'              => 'device',
+            'name'               => __('Partition'),
+            'forcegroupby'       => true,
+            'massiveaction'      => false,
+            'datatype'           => 'string',
+            'joinparams'         => [
+                'jointype'           => 'itemtype_item'
+            ]
+        ];
+
+        $tab[] = [
+            'id'                 => '155',
+            'table'              => 'glpi_filesystems',
+            'field'              => 'name',
+            'name'               => Filesystem::getTypeName(1),
+            'forcegroupby'       => true,
+            'massiveaction'      => false,
+            'datatype'           => 'dropdown',
+            'joinparams'         => [
+                'beforejoin'         => [
+                    'table'              => self::getTable(),
+                    'joinparams'         => [
+                        'jointype'           => 'itemtype_item'
+                    ]
+                ]
+            ]
+        ];
+
+        $tab[] = [
+            'id'                 => '174',
+            'table'              => self::getTable(),
+            'field'              => 'encryption_status',
+            'name'               => __('Encryption status'),
+            'searchtype'         => 'equals',
+            'forcegroupby'       => true,
+            'massiveaction'      => false,
+            'searchequalsonfield' => true,
+            'datatype'           => 'specific',
+            'joinparams'         => [
+                'jointype'           => 'itemtype_item'
+            ]
+        ];
+
+        $tab[] = [
+            'id'                 => '175',
+            'table'              => self::getTable(),
+            'field'              => 'encryption_tool',
+            'name'               => __('Encryption tool'),
+            'forcegroupby'       => true,
+            'massiveaction'      => false,
+            'datatype'           => 'string',
+            'joinparams'         => [
+                'jointype'           => 'itemtype_item'
+            ]
+        ];
+
+        $tab[] = [
+            'id'                 => '176',
+            'table'              => self::getTable(),
+            'field'              => 'encryption_algorithm',
+            'name'               => __('Encryption algorithm'),
+            'forcegroupby'       => true,
+            'massiveaction'      => false,
+            'datatype'           => 'string',
+            'joinparams'         => [
+                'jointype'           => 'itemtype_item'
+            ]
+        ];
+
+        $tab[] = [
+            'id'                 => '177',
+            'table'              => self::getTable(),
+            'field'              => 'encryption_type',
+            'name'               => __('Encryption type'),
+            'forcegroupby'       => true,
+            'massiveaction'      => false,
+            'datatype'           => 'string',
+            'joinparams'         => [
+                'jointype'           => 'itemtype_item'
+            ]
         ];
 
         return $tab;
@@ -608,9 +608,9 @@ class Item_Disk extends CommonDBChild
     public static function getAllEncryptionStatus()
     {
         return [
-         self::ENCRYPTION_STATUS_NO          => __('Not encrypted'),
-         self::ENCRYPTION_STATUS_PARTIALLY   => __('Partially encrypted'),
-         self::ENCRYPTION_STATUS_YES         => __('Encrypted'),
+            self::ENCRYPTION_STATUS_NO          => __('Not encrypted'),
+            self::ENCRYPTION_STATUS_PARTIALLY   => __('Partially encrypted'),
+            self::ENCRYPTION_STATUS_YES         => __('Encrypted'),
         ];
     }
 
@@ -656,8 +656,8 @@ class Item_Disk extends CommonDBChild
             $name,
             $values,
             [
-            'value'   => $value,
-            'display' => false
+                'value'   => $value,
+                'display' => false
             ]
         );
     }
@@ -682,8 +682,8 @@ class Item_Disk extends CommonDBChild
         switch ($field) {
             case 'encryption_status':
                 return self::getEncryptionStatusDropdown($values[$field], [
-               'name'  => $name,
-            ]);
+                    'name'  => $name,
+                ]);
         }
         return parent::getSpecificValueToSelect($field, $name, $values, $options);
     }

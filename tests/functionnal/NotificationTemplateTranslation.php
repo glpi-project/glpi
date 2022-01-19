@@ -44,9 +44,9 @@ class NotificationTemplateTranslation extends DbTestCase
         global $DB;
 
         $iterator = $DB->request([
-         'SELECT' => 'id',
-         'FROM'   => \NotificationTemplateTranslation::getTable(),
-         'LIMIT'  => 1
+            'SELECT' => 'id',
+            'FROM'   => \NotificationTemplateTranslation::getTable(),
+            'LIMIT'  => 1
         ]);
 
         $data = $iterator->current();
@@ -69,12 +69,12 @@ class NotificationTemplateTranslation extends DbTestCase
         global $DB;
 
         $iterator = $DB->request([
-         'SELECT' => [
-            'id',
-            'notificationtemplates_id'
-         ],
-         'FROM'   => \NotificationTemplateTranslation::getTable(),
-         'LIMIT'  => 1
+            'SELECT' => [
+                'id',
+                'notificationtemplates_id'
+            ],
+            'FROM'   => \NotificationTemplateTranslation::getTable(),
+            'LIMIT'  => 1
         ]);
 
         $data = $iterator->current();
@@ -83,13 +83,13 @@ class NotificationTemplateTranslation extends DbTestCase
         $added = $template->clone();
 
         $translations = $DB->request([
-         'FROM'   => \NotificationTemplateTranslation::getTable(),
-         'WHERE'  => ['notificationtemplates_id' => $data['notificationtemplates_id']]
+            'FROM'   => \NotificationTemplateTranslation::getTable(),
+            'WHERE'  => ['notificationtemplates_id' => $data['notificationtemplates_id']]
         ]);
 
         $clonedTranslations = $DB->request([
-         'FROM'   => \NotificationTemplateTranslation::getTable(),
-         'WHERE'  => ['notificationtemplates_id' => $added]
+            'FROM'   => \NotificationTemplateTranslation::getTable(),
+            'WHERE'  => ['notificationtemplates_id' => $added]
         ]);
 
         $this->integer(count($translations))->isIdenticalTo(count($clonedTranslations));

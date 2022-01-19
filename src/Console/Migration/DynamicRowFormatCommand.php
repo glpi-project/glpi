@@ -101,7 +101,7 @@ class DynamicRowFormatCommand extends AbstractCommand
         $table_iterator = $this->db->listTables(
             'glpi\_%',
             [
-            'row_format'   => ['COMPACT', 'REDUNDANT'],
+                'row_format'   => ['COMPACT', 'REDUNDANT'],
             ]
         );
 

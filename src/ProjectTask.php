@@ -160,10 +160,10 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
 
         $this->deleteChildrenAndRelationsFromDb(
             [
-            ProjectTask_Ticket::class,
-            ProjectTaskTeam::class,
-            VObject::class,
-            ProjectTaskLink::class,
+                ProjectTask_Ticket::class,
+                ProjectTaskTeam::class,
+                VObject::class,
+                ProjectTaskLink::class,
             ]
         );
 
@@ -233,9 +233,9 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
                     case Group::getType():
                         foreach ($actors as $actor) {
                              $group_iterator = $DB->request([
-                             'SELECT' => 'users_id',
-                             'FROM'   => Group_User::getTable(),
-                             'WHERE'  => ['groups_id' => $actor['items_id']]
+                                 'SELECT' => 'users_id',
+                                 'FROM'   => Group_User::getTable(),
+                                 'WHERE'  => ['groups_id' => $actor['items_id']]
                              ]);
                             foreach ($group_iterator as $row) {
                                 $users[$row['users_id']] = $row['users_id'];
@@ -472,11 +472,11 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
 
         $tasks = [];
         $iterator = $DB->request([
-         'FROM'   => 'glpi_projecttasks',
-         'WHERE'  => [
-            'projects_id'  => $ID
-         ],
-         'ORDERBY'   => ['plan_start_date', 'real_start_date']
+            'FROM'   => 'glpi_projecttasks',
+            'WHERE'  => [
+                'projects_id'  => $ID
+            ],
+            'ORDERBY'   => ['plan_start_date', 'real_start_date']
         ]);
 
         foreach ($iterator as $data) {
@@ -499,11 +499,11 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
 
         $tasks = [];
         $iterator = $DB->request([
-         'FROM'   => 'glpi_projecttasks',
-         'WHERE'  => [
-            'projecttasks_id'  => $ID
-         ],
-         'ORDERBY'   => ['plan_start_date', 'real_start_date']
+            'FROM'   => 'glpi_projecttasks',
+            'WHERE'  => [
+                'projecttasks_id'  => $ID
+            ],
+            'ORDERBY'   => ['plan_start_date', 'real_start_date']
         ]);
 
         foreach ($iterator as $data) {
@@ -525,19 +525,19 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         global $DB;
 
         $iterator = $DB->request([
-         'FROM'         => 'glpi_projecttasks_tickets',
-         'INNER JOIN'   => [
-            'glpi_projecttasks'  => [
-               'ON' => [
-                  'glpi_projecttasks_tickets'   => 'projecttasks_id',
-                  'glpi_projecttasks'           => 'id'
-               ]
+            'FROM'         => 'glpi_projecttasks_tickets',
+            'INNER JOIN'   => [
+                'glpi_projecttasks'  => [
+                    'ON' => [
+                        'glpi_projecttasks_tickets'   => 'projecttasks_id',
+                        'glpi_projecttasks'           => 'id'
+                    ]
+                ]
+            ],
+            'FIELDS' =>  'tickets_id',
+            'WHERE'        => [
+                'glpi_projecttasks.projects_id'   => $ID
             ]
-         ],
-         'FIELDS' =>  'tickets_id',
-         'WHERE'        => [
-            'glpi_projecttasks.projects_id'   => $ID
-         ]
         ]);
 
         $tasks = [];
@@ -594,9 +594,10 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         echo "<tr class='tab_bg_1'>";
         echo "<td style='width:100px'>" . _n('Project task template', 'Project task templates', 1) . "</td><td>";
         ProjectTaskTemplate::dropdown(['value'     => $this->fields['projecttasktemplates_id'],
-                                     'entity'    => $this->getEntityID(),
-                                     'rand'      => $rand_template,
-                                     'on_change' => 'projecttasktemplate_update(this.value)']);
+            'entity'    => $this->getEntityID(),
+            'rand'      => $rand_template,
+            'on_change' => 'projecttasktemplate_update(this.value)'
+        ]);
         echo "</td>";
         echo "<td colspan='2'></td>";
         echo "</tr>";
@@ -661,11 +662,11 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         echo "<td>" . __('As child of') . "</td>";
         echo "<td>";
         $this->dropdown([
-         'entity'    => $this->fields['entities_id'],
-         'value'     => $projecttasks_id,
-         'rand'      => $rand_project,
-         'condition' => ['glpi_projecttasks.projects_id' => $this->fields['projects_id']],
-         'used'      => [$this->fields['id']]
+            'entity'    => $this->fields['entities_id'],
+            'value'     => $projecttasks_id,
+            'rand'      => $rand_project,
+            'condition' => ['glpi_projecttasks.projects_id' => $this->fields['projects_id']],
+            'used'      => [$this->fields['id']]
         ]);
         echo "</td></tr>";
 
@@ -695,9 +696,9 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         echo Html::input(
             'name',
             [
-            'value' => $this->fields['name'],
-            'id'    => "textfield_name$rand_name",
-            'size'  => '80',
+                'value' => $this->fields['name'],
+                'id'    => "textfield_name$rand_name",
+                'size'  => '80',
             ]
         );
         echo "</td></tr>\n";
@@ -706,34 +707,36 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         echo "<td>" . _x('item', 'State') . "</td>";
         echo "<td>";
         ProjectState::dropdown(['value' => $this->fields["projectstates_id"],
-                              'rand'  => $rand_state]);
+            'rand'  => $rand_state
+        ]);
         echo "</td>";
         echo "<td>" . _n('Type', 'Types', 1) . "</td>";
         echo "<td>";
         ProjectTaskType::dropdown(['value' => $this->fields["projecttasktypes_id"],
-                                 'rand'  => $rand_type]);
+            'rand'  => $rand_type
+        ]);
         echo "</td></tr>";
 
         echo "<tr class='tab_bg_1'>";
         echo "<td>" . __('Percent done') . "</td>";
         echo "<td>";
         $percent_done_params = [
-         'value' => $this->fields['percent_done'],
-         'rand'  => $rand_percent,
-         'min'   => 0,
-         'max'   => 100,
-         'step'  => 5,
-         'unit'  => '%'
+            'value' => $this->fields['percent_done'],
+            'rand'  => $rand_percent,
+            'min'   => 0,
+            'max'   => 100,
+            'step'  => 5,
+            'unit'  => '%'
         ];
         if ($this->fields['auto_percent_done']) {
             $percent_done_params['specific_tags'] = ['disabled' => 'disabled'];
         }
         Dropdown::showNumber("percent_done", $percent_done_params);
         $auto_percent_done_params = [
-         'type'      => 'checkbox',
-         'name'      => 'auto_percent_done',
-         'title'     => __('Automatically calculate'),
-         'onclick'   => "$(\"select[name='percent_done']\").prop('disabled', !$(\"input[name='auto_percent_done']\").prop('checked'));"
+            'type'      => 'checkbox',
+            'name'      => 'auto_percent_done',
+            'title'     => __('Automatically calculate'),
+            'onclick'   => "$(\"select[name='percent_done']\").prop('disabled', !$(\"input[name='auto_percent_done']\").prop('checked'));"
         ];
         if ($this->fields['auto_percent_done']) {
             $auto_percent_done_params['checked'] = 'checked';
@@ -764,7 +767,8 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         Html::showDateTimeField(
             "plan_start_date",
             ['value' => $this->fields['plan_start_date'],
-            'rand'  => $rand_plan_start_date]
+                'rand'  => $rand_plan_start_date
+            ]
         );
         echo "</td>";
         echo "<td>" . __('Real start date') . "</td>";
@@ -772,7 +776,8 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         Html::showDateTimeField(
             "real_start_date",
             ['value' => $this->fields['real_start_date'],
-            'rand'  => $rand_real_start_date]
+                'rand'  => $rand_real_start_date
+            ]
         );
         echo "</td></tr>\n";
 
@@ -780,12 +785,14 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         echo "<td>" . __('Planned end date') . "</td>";
         echo "<td>";
         Html::showDateTimeField("plan_end_date", ['value' => $this->fields['plan_end_date'],
-                                                'rand'  => $rand_plan_end_date]);
+            'rand'  => $rand_plan_end_date
+        ]);
         echo "</td>";
         echo "<td>" . __('Real end date') . "</td>";
         echo "<td>";
         Html::showDateTimeField("real_end_date", ['value' => $this->fields['real_end_date'],
-                                                'rand'  => $rand_real_end_date]);
+            'rand'  => $rand_real_end_date
+        ]);
         echo "</td></tr>\n";
 
         echo "<tr class='tab_bg_1 is_milestone" . ($this->fields['is_milestone'] ? ' starthidden' : '')  . "'>";
@@ -800,12 +807,13 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         Dropdown::showTimeStamp(
             "planned_duration",
             ['min'             => 0,
-                               'max'             => 8 * HOUR_TIMESTAMP,
-                               'rand'            => $rand_planned_duration,
-                               'value'           => $this->fields["planned_duration"],
-                               'addfirstminutes' => true,
-                               'inhours'         => true,
-            'toadd'           => $toadd]
+                'max'             => 8 * HOUR_TIMESTAMP,
+                'rand'            => $rand_planned_duration,
+                'value'           => $this->fields["planned_duration"],
+                'addfirstminutes' => true,
+                'inhours'         => true,
+                'toadd'           => $toadd
+            ]
         );
         echo "</td>";
         echo "<td>" . __('Effective duration') . "</td>";
@@ -813,12 +821,13 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         Dropdown::showTimeStamp(
             "effective_duration",
             ['min'             => 0,
-                               'max'             => 8 * HOUR_TIMESTAMP,
-                               'rand'            => $rand_effective_duration,
-                               'value'           => $this->fields["effective_duration"],
-                               'addfirstminutes' => true,
-                               'inhours'         => true,
-            'toadd'           => $toadd]
+                'max'             => 8 * HOUR_TIMESTAMP,
+                'rand'            => $rand_effective_duration,
+                'value'           => $this->fields["effective_duration"],
+                'addfirstminutes' => true,
+                'inhours'         => true,
+                'toadd'           => $toadd
+            ]
         );
         if ($ID) {
             $ticket_duration = ProjectTask_Ticket::getTicketsTotalActionTime($this->getID());
@@ -844,10 +853,10 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         echo "<td>" . __('Description') . "</td>";
         echo "<td colspan='3'>";
         Html::textarea([
-         'name'            => 'content',
-         'enable_richtext' => true,
-         'editor_id'       => "description$rand_description",
-         'value'           => RichText::getSafeHtml($this->fields["content"], true),
+            'name'            => 'content',
+            'enable_richtext' => true,
+            'editor_id'       => "description$rand_description",
+            'value'           => RichText::getSafeHtml($this->fields["content"], true),
         ]);
         echo "</td></tr>";
 
@@ -883,23 +892,23 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         }
 
         $iterator = $DB->request([
-         'SELECT'    => new QueryExpression('SUM(glpi_tickets.actiontime) AS duration'),
-         'FROM'      => self::getTable(),
-         'LEFT JOIN' => [
-            'glpi_projecttasks_tickets'   => [
-               'FKEY'   => [
-                  'glpi_projecttasks_tickets'   => 'projecttasks_id',
-                  self::getTable()              => 'id'
-               ]
+            'SELECT'    => new QueryExpression('SUM(glpi_tickets.actiontime) AS duration'),
+            'FROM'      => self::getTable(),
+            'LEFT JOIN' => [
+                'glpi_projecttasks_tickets'   => [
+                    'FKEY'   => [
+                        'glpi_projecttasks_tickets'   => 'projecttasks_id',
+                        self::getTable()              => 'id'
+                    ]
+                ],
+                'glpi_tickets'                => [
+                    'FKEY'   => [
+                        'glpi_projecttasks_tickets'   => 'tickets_id',
+                        'glpi_tickets'                => 'id'
+                    ]
+                ]
             ],
-            'glpi_tickets'                => [
-               'FKEY'   => [
-                  'glpi_projecttasks_tickets'   => 'tickets_id',
-                  'glpi_tickets'                => 'id'
-               ]
-            ]
-         ],
-         'WHERE'     => [self::getTable() . '.id' => $projecttasks_id]
+            'WHERE'     => [self::getTable() . '.id' => $projecttasks_id]
         ]);
 
         if ($row = $iterator->current()) {
@@ -921,9 +930,9 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         global $DB;
 
         $iterator = $DB->request([
-         'SELECT' => 'id',
-         'FROM'   => self::getTable(),
-         'WHERE'  => ['projects_id' => $projects_id]
+            'SELECT' => 'id',
+            'FROM'   => self::getTable(),
+            'WHERE'  => ['projects_id' => $projects_id]
         ]);
         $time = 0;
         foreach ($iterator as $data) {
@@ -945,9 +954,9 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         global $DB;
 
         $iterator = $DB->request([
-         'SELECT' => new QueryExpression('SUM(planned_duration) AS duration'),
-         'FROM'   => self::getTable(),
-         'WHERE'  => ['projects_id' => $projects_id]
+            'SELECT' => new QueryExpression('SUM(planned_duration) AS duration'),
+            'FROM'   => self::getTable(),
+            'WHERE'  => ['projects_id' => $projects_id]
         ]);
 
         foreach ($iterator as $data) {
@@ -962,204 +971,204 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         $tab = [];
 
         $tab[] = [
-         'id'                 => 'common',
-         'name'               => __('Characteristics')
+            'id'                 => 'common',
+            'name'               => __('Characteristics')
         ];
 
         $tab[] = [
-         'id'                 => '1',
-         'table'              => $this->getTable(),
-         'field'              => 'name',
-         'name'               => __('Name'),
-         'datatype'           => 'itemlink',
-         'massiveaction'      => false,
+            'id'                 => '1',
+            'table'              => $this->getTable(),
+            'field'              => 'name',
+            'name'               => __('Name'),
+            'datatype'           => 'itemlink',
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
-         'id'                 => '2',
-         'table'              => 'glpi_projects',
-         'field'              => 'name',
-         'name'               => Project::getTypeName(1),
-         'massiveaction'      => false,
-         'datatype'           => 'dropdown'
+            'id'                 => '2',
+            'table'              => 'glpi_projects',
+            'field'              => 'name',
+            'name'               => Project::getTypeName(1),
+            'massiveaction'      => false,
+            'datatype'           => 'dropdown'
         ];
 
         $tab[] = [
-         'id'                 => '13',
-         'table'              => $this->getTable(),
-         'field'              => 'name',
-         'name'               => __('Father'),
-         'datatype'           => 'dropdown',
-         'massiveaction'      => false,
+            'id'                 => '13',
+            'table'              => $this->getTable(),
+            'field'              => 'name',
+            'name'               => __('Father'),
+            'datatype'           => 'dropdown',
+            'massiveaction'      => false,
          // Add virtual condition to relink table
-         'joinparams'         => [
-            'condition'          => 'AND 1=1'
-         ]
+            'joinparams'         => [
+                'condition'          => 'AND 1=1'
+            ]
         ];
 
         $tab[] = [
-         'id'                 => '21',
-         'table'              => $this->getTable(),
-         'field'              => 'content',
-         'name'               => __('Description'),
-         'massiveaction'      => false,
-         'datatype'           => 'text'
+            'id'                 => '21',
+            'table'              => $this->getTable(),
+            'field'              => 'content',
+            'name'               => __('Description'),
+            'massiveaction'      => false,
+            'datatype'           => 'text'
         ];
 
         $tab[] = [
-         'id'                 => '12',
-         'table'              => 'glpi_projectstates',
-         'field'              => 'name',
-         'name'               => _x('item', 'State'),
-         'datatype'           => 'dropdown'
+            'id'                 => '12',
+            'table'              => 'glpi_projectstates',
+            'field'              => 'name',
+            'name'               => _x('item', 'State'),
+            'datatype'           => 'dropdown'
         ];
 
         $tab[] = [
-         'id'                 => '14',
-         'table'              => 'glpi_projecttasktypes',
-         'field'              => 'name',
-         'name'               => _n('Type', 'Types', 1),
-         'datatype'           => 'dropdown'
+            'id'                 => '14',
+            'table'              => 'glpi_projecttasktypes',
+            'field'              => 'name',
+            'name'               => _n('Type', 'Types', 1),
+            'datatype'           => 'dropdown'
         ];
 
         $tab[] = [
-         'id'                 => '121',
-         'table'              => $this->getTable(),
-         'field'              => 'date_creation',
-         'name'               => __('Creation date'),
-         'datatype'           => 'datetime',
-         'massiveaction'      => false
+            'id'                 => '121',
+            'table'              => $this->getTable(),
+            'field'              => 'date_creation',
+            'name'               => __('Creation date'),
+            'datatype'           => 'datetime',
+            'massiveaction'      => false
         ];
 
         $tab[] = [
-         'id'                 => '19',
-         'table'              => $this->getTable(),
-         'field'              => 'date_mod',
-         'name'               => __('Last update'),
-         'datatype'           => 'datetime',
-         'massiveaction'      => false
+            'id'                 => '19',
+            'table'              => $this->getTable(),
+            'field'              => 'date_mod',
+            'name'               => __('Last update'),
+            'datatype'           => 'datetime',
+            'massiveaction'      => false
         ];
 
         $tab[] = [
-         'id'                 => '5',
-         'table'              => $this->getTable(),
-         'field'              => 'percent_done',
-         'name'               => __('Percent done'),
-         'datatype'           => 'number',
-         'unit'               => '%',
-         'min'                => 0,
-         'max'                => 100,
-         'step'               => 5
+            'id'                 => '5',
+            'table'              => $this->getTable(),
+            'field'              => 'percent_done',
+            'name'               => __('Percent done'),
+            'datatype'           => 'number',
+            'unit'               => '%',
+            'min'                => 0,
+            'max'                => 100,
+            'step'               => 5
         ];
 
         $tab[] = [
-         'id'                 => '24',
-         'table'              => 'glpi_users',
-         'field'              => 'name',
-         'linkfield'          => 'users_id',
-         'name'               => __('Creator'),
-         'datatype'           => 'dropdown'
+            'id'                 => '24',
+            'table'              => 'glpi_users',
+            'field'              => 'name',
+            'linkfield'          => 'users_id',
+            'name'               => __('Creator'),
+            'datatype'           => 'dropdown'
         ];
 
         $tab[] = [
-         'id'                 => '7',
-         'table'              => $this->getTable(),
-         'field'              => 'plan_start_date',
-         'name'               => __('Planned start date'),
-         'datatype'           => 'datetime'
+            'id'                 => '7',
+            'table'              => $this->getTable(),
+            'field'              => 'plan_start_date',
+            'name'               => __('Planned start date'),
+            'datatype'           => 'datetime'
         ];
 
         $tab[] = [
-         'id'                 => '8',
-         'table'              => $this->getTable(),
-         'field'              => 'plan_end_date',
-         'name'               => __('Planned end date'),
-         'datatype'           => 'datetime'
+            'id'                 => '8',
+            'table'              => $this->getTable(),
+            'field'              => 'plan_end_date',
+            'name'               => __('Planned end date'),
+            'datatype'           => 'datetime'
         ];
 
         $tab[] = [
-         'id'                 => '9',
-         'table'              => $this->getTable(),
-         'field'              => 'real_start_date',
-         'name'               => __('Real start date'),
-         'datatype'           => 'datetime'
+            'id'                 => '9',
+            'table'              => $this->getTable(),
+            'field'              => 'real_start_date',
+            'name'               => __('Real start date'),
+            'datatype'           => 'datetime'
         ];
 
         $tab[] = [
-         'id'                 => '10',
-         'table'              => $this->getTable(),
-         'field'              => 'real_end_date',
-         'name'               => __('Real end date'),
-         'datatype'           => 'datetime'
+            'id'                 => '10',
+            'table'              => $this->getTable(),
+            'field'              => 'real_end_date',
+            'name'               => __('Real end date'),
+            'datatype'           => 'datetime'
         ];
 
         $tab[] = [
-         'id'                 => '11',
-         'table'              => $this->getTable(),
-         'field'              => 'planned_duration',
-         'name'               => __('Planned duration'),
-         'datatype'           => 'timestamp',
-         'min'                => 0,
-         'max'                => 100 * HOUR_TIMESTAMP,
-         'step'               => HOUR_TIMESTAMP,
-         'addfirstminutes'    => true,
-         'inhours'            => true
+            'id'                 => '11',
+            'table'              => $this->getTable(),
+            'field'              => 'planned_duration',
+            'name'               => __('Planned duration'),
+            'datatype'           => 'timestamp',
+            'min'                => 0,
+            'max'                => 100 * HOUR_TIMESTAMP,
+            'step'               => HOUR_TIMESTAMP,
+            'addfirstminutes'    => true,
+            'inhours'            => true
         ];
 
         $tab[] = [
-         'id'                 => '17',
-         'table'              => $this->getTable(),
-         'field'              => 'effective_duration',
-         'name'               => __('Effective duration'),
-         'datatype'           => 'timestamp',
-         'min'                => 0,
-         'max'                => 100 * HOUR_TIMESTAMP,
-         'step'               => HOUR_TIMESTAMP,
-         'addfirstminutes'    => true,
-         'inhours'            => true
+            'id'                 => '17',
+            'table'              => $this->getTable(),
+            'field'              => 'effective_duration',
+            'name'               => __('Effective duration'),
+            'datatype'           => 'timestamp',
+            'min'                => 0,
+            'max'                => 100 * HOUR_TIMESTAMP,
+            'step'               => HOUR_TIMESTAMP,
+            'addfirstminutes'    => true,
+            'inhours'            => true
         ];
 
         $tab[] = [
-         'id'                 => '16',
-         'table'              => $this->getTable(),
-         'field'              => 'comment',
-         'name'               => __('Comments'),
-         'datatype'           => 'text'
+            'id'                 => '16',
+            'table'              => $this->getTable(),
+            'field'              => 'comment',
+            'name'               => __('Comments'),
+            'datatype'           => 'text'
         ];
 
         $tab[] = [
-         'id'                 => '18',
-         'table'              => $this->getTable(),
-         'field'              => 'is_milestone',
-         'name'               => __('Milestone'),
-         'datatype'           => 'bool'
+            'id'                 => '18',
+            'table'              => $this->getTable(),
+            'field'              => 'is_milestone',
+            'name'               => __('Milestone'),
+            'datatype'           => 'bool'
         ];
 
         $tab[] = [
-         'id'                 => '50',
-         'table'              => $this->getTable(),
-         'field'              => 'template_name',
-         'name'               => __('Template name'),
-         'datatype'           => 'text',
-         'massiveaction'      => false,
-         'nosearch'           => true,
-         'nodisplay'          => true,
+            'id'                 => '50',
+            'table'              => $this->getTable(),
+            'field'              => 'template_name',
+            'name'               => __('Template name'),
+            'datatype'           => 'text',
+            'massiveaction'      => false,
+            'nosearch'           => true,
+            'nodisplay'          => true,
         ];
 
         $tab[] = [
-         'id'                 => '80',
-         'table'              => 'glpi_entities',
-         'field'              => 'completename',
-         'name'               => Entity::getTypeName(1),
-         'datatype'           => 'dropdown'
+            'id'                 => '80',
+            'table'              => 'glpi_entities',
+            'field'              => 'completename',
+            'name'               => Entity::getTypeName(1),
+            'datatype'           => 'dropdown'
         ];
 
         $tab[] = [
-         'id'                 => '86',
-         'table'              => $this->getTable(),
-         'field'              => 'is_recursive',
-         'name'               => __('Child entities'),
-         'datatype'           => 'bool'
+            'id'                 => '86',
+            'table'              => $this->getTable(),
+            'field'              => 'is_recursive',
+            'name'               => __('Child entities'),
+            'datatype'           => 'bool'
         ];
 
         $tab = array_merge($tab, Notepad::rawSearchOptionsToAdd());
@@ -1186,49 +1195,49 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         }
 
         $columns = [
-         'name'             => self::getTypeName(Session::getPluralNumber()),
-         'tname'            => _n('Type', 'Types', 1),
-         'sname'            => __('Status'),
-         'percent_done'     => __('Percent done'),
-         'plan_start_date'  => __('Planned start date'),
-         'plan_end_date'    => __('Planned end date'),
-         'planned_duration' => __('Planned duration'),
-         '_effect_duration' => __('Effective duration'),
-         'fname'            => __('Father')
+            'name'             => self::getTypeName(Session::getPluralNumber()),
+            'tname'            => _n('Type', 'Types', 1),
+            'sname'            => __('Status'),
+            'percent_done'     => __('Percent done'),
+            'plan_start_date'  => __('Planned start date'),
+            'plan_end_date'    => __('Planned end date'),
+            'planned_duration' => __('Planned duration'),
+            '_effect_duration' => __('Effective duration'),
+            'fname'            => __('Father')
         ];
 
         $criteria = [
-         'SELECT' => [
-            'glpi_projecttasks.*',
-            'glpi_projecttasktypes.name AS tname',
-            'glpi_projectstates.name AS sname',
-            'glpi_projectstates.color',
-            'father.name AS fname',
-            'father.id AS fID'
-         ],
-         'FROM'   => 'glpi_projecttasks',
-         'LEFT JOIN' => [
-           'glpi_projecttasktypes'        => [
-               'ON'  => [
-                  'glpi_projecttasktypes' => 'id',
-                  'glpi_projecttasks'     => 'projecttasktypes_id'
-               ]
+            'SELECT' => [
+                'glpi_projecttasks.*',
+                'glpi_projecttasktypes.name AS tname',
+                'glpi_projectstates.name AS sname',
+                'glpi_projectstates.color',
+                'father.name AS fname',
+                'father.id AS fID'
             ],
-            'glpi_projectstates'          => [
-               'ON'  => [
-                  'glpi_projectstates' => 'id',
-                  'glpi_projecttasks'  => 'projectstates_id'
-               ]
+            'FROM'   => 'glpi_projecttasks',
+            'LEFT JOIN' => [
+                'glpi_projecttasktypes'        => [
+                    'ON'  => [
+                        'glpi_projecttasktypes' => 'id',
+                        'glpi_projecttasks'     => 'projecttasktypes_id'
+                    ]
+                ],
+                'glpi_projectstates'          => [
+                    'ON'  => [
+                        'glpi_projectstates' => 'id',
+                        'glpi_projecttasks'  => 'projectstates_id'
+                    ]
+                ],
+                'glpi_projecttasks AS father' => [
+                    'ON'  => [
+                        'father' => 'id',
+                        'glpi_projecttasks'  => 'projecttasks_id'
+                    ]
+                ]
             ],
-            'glpi_projecttasks AS father' => [
-               'ON'  => [
-                  'father' => 'id',
-                  'glpi_projecttasks'  => 'projecttasks_id'
-               ]
-            ]
-         ],
-         'WHERE'  => [], //$where
-         'ORDERBY'   => [] // $sort $order";
+            'WHERE'  => [], //$where
+            'ORDERBY'   => [] // $sort $order";
         ];
 
         if (isset($_GET["order"]) && ($_GET["order"] == "DESC")) {
@@ -1296,32 +1305,32 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         if (Session::haveTranslations('ProjectTaskType', 'name')) {
             $criteria['SELECT'][] = 'namet2.value AS transname2';
             $criteria['LEFT JOIN']['glpi_dropdowntranslations AS namet2'] = [
-            'ON'  => [
-               'namet2'             => 'items_id',
-               'glpi_projecttasks'  => 'projecttasktypes_id', [
-                  'AND' => [
-                     'namet2.itemtype' => 'ProjectTaskType',
-                     'namet2.language' => $_SESSION['glpilanguage'],
-                     'namet2.field'    => 'name'
-                  ]
-               ]
-            ]
+                'ON'  => [
+                    'namet2'             => 'items_id',
+                    'glpi_projecttasks'  => 'projecttasktypes_id', [
+                        'AND' => [
+                            'namet2.itemtype' => 'ProjectTaskType',
+                            'namet2.language' => $_SESSION['glpilanguage'],
+                            'namet2.field'    => 'name'
+                        ]
+                    ]
+                ]
             ];
         }
 
         if (Session::haveTranslations('ProjectState', 'name')) {
             $criteria['SELECT'][] = 'namet3.value AS transname3';
             $criteria['LEFT JOIN']['glpi_dropdowntranslations AS namet3'] = [
-            'ON'  => [
-               'namet3'             => 'items_id',
-               'glpi_projectstates' => 'id', [
-                  'AND' => [
-                     'namet3.itemtype' => 'ProjectState',
-                     'namet3.language' => $_SESSION['glpilanguage'],
-                     'namet3.field'    => 'name'
-                  ]
-               ]
-            ]
+                'ON'  => [
+                    'namet3'             => 'items_id',
+                    'glpi_projectstates' => 'id', [
+                        'AND' => [
+                            'namet3.itemtype' => 'ProjectState',
+                            'namet3.language' => $_SESSION['glpilanguage'],
+                            'namet3.field'    => 'name'
+                        ]
+                    ]
+                ]
             ];
         }
 
@@ -1368,7 +1377,8 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
                     Html::showToolTip(
                         RichText::getEnhancedHtml($data['content']),
                         ['display' => false,
-                        'applyto' => "ProjectTask" . $data["id"] . $rand]
+                            'applyto' => "ProjectTask" . $data["id"] . $rand
+                        ]
                     )
                 );
                 echo "</td>";
@@ -1480,13 +1490,14 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
             echo "<tr class='tab_bg_2'><td>";
 
             $params = ['itemtypes'       => ProjectTeam::$available_types,
-                         'entity_restrict' => ($task->fields['is_recursive']
+                'entity_restrict' => ($task->fields['is_recursive']
                                                ? getSonsOf(
                                                    'glpi_entities',
                                                    $task->fields['entities_id']
                                                )
                                                : $task->fields['entities_id']),
-                         'checkright'      => true];
+                'checkright'      => true
+            ];
             $addrand = Dropdown::showSelectItemFromItemtypes($params);
 
             echo "</td>";
@@ -1502,7 +1513,8 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         if ($canedit && $nb) {
             Html::openMassiveActionsForm('mass' . __CLASS__ . $rand);
             $massiveactionparams = ['num_displayed' => min($_SESSION['glpilist_limit'], $nb),
-                                      'container'     => 'mass' . __CLASS__ . $rand];
+                'container'     => 'mass' . __CLASS__ . $rand
+            ];
             Html::showMassiveActions($massiveactionparams);
         }
         echo "<table class='tab_cadre_fixehov'>";
@@ -1574,8 +1586,10 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
                 $DB->request(
                     'glpi_projecttasks',
                     ['projecttasks_id' => $ID,
-                                     'ORDER'           => ['plan_start_date',
-                    'real_start_date']]
+                        'ORDER'           => ['plan_start_date',
+                            'real_start_date'
+                        ]
+                    ]
                 ) as $data
             ) {
                 $subtasks += static::getDataToDisplayOnGantt($data['id']);
@@ -1647,16 +1661,17 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
            // Add current task
             $todisplay[$real_begin . '#' . $real_end . '#task' . $task->getID()]
                            = ['id'      => $task->fields['uuid'],
-                              'parent_id' => $parent_id,
-                              'name'    => $task->fields['name'],
-                              'desc'    => RichText::getTextFromHtml($task->fields['content'], true, false),
-                              'link'    => $task->getlink(),
-                              'type'    => 'task',
-                              'percent' => $percent,
-                              'from'    => $real_begin,
-                              'parents' => $parents,
-                              'to'      => $real_end,
-                              'is_milestone' => $task->fields['is_milestone']];
+                               'parent_id' => $parent_id,
+                               'name'    => $task->fields['name'],
+                               'desc'    => RichText::getTextFromHtml($task->fields['content'], true, false),
+                               'link'    => $task->getlink(),
+                               'type'    => 'task',
+                               'percent' => $percent,
+                               'from'    => $real_begin,
+                               'parents' => $parents,
+                               'to'      => $real_end,
+                               'is_milestone' => $task->fields['is_milestone']
+                           ];
 
            // Add ordered subtasks
             foreach ($subtasks as $key => $val) {
@@ -1683,9 +1698,11 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
             $DB->request(
                 'glpi_projecttasks',
                 ['projects_id'     => $ID,
-                                  'projecttasks_id' => 0,
-                                  'ORDER'           => ['plan_start_date',
-                'real_start_date']]
+                    'projecttasks_id' => 0,
+                    'ORDER'           => ['plan_start_date',
+                        'real_start_date'
+                    ]
+                ]
             ) as $data
         ) {
             if ($task->getFromDB($data['id'])) {
@@ -1735,9 +1752,9 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         }
 
         $default_options = [
-         'genical'             => false,
-         'color'               => '',
-         'event_type_color'    => '',
+            'genical'             => false,
+            'color'               => '',
+            'event_type_color'    => '',
         ];
         $options = array_merge($default_options, $options);
 
@@ -1769,32 +1786,33 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
 
         if (!count($ADDWHERE)) {
             $ADDWHERE = [
-            'glpi_projecttaskteams.itemtype' => 'User',
-            'glpi_projecttaskteams.items_id' => new \QuerySubQuery([
-               'SELECT'          => 'glpi_profiles_users.users_id',
-               'DISTINCT'        => true,
-               'FROM'            => 'glpi_profiles',
-               'LEFT JOIN'       => [
-                  'glpi_profiles_users'   => [
-                     'ON' => [
-                        'glpi_profiles_users'   => 'profiles_id',
-                        'glpi_profiles'         => 'id'
-                     ]
-                  ]
-               ],
-               'WHERE'           => [
-                  'glpi_profiles.interface'  => 'central'
-               ] + getEntitiesRestrictCriteria('glpi_profiles_users', '', $_SESSION['glpiactive_entity'], 1)
-            ])
+                'glpi_projecttaskteams.itemtype' => 'User',
+                'glpi_projecttaskteams.items_id' => new \QuerySubQuery([
+                    'SELECT'          => 'glpi_profiles_users.users_id',
+                    'DISTINCT'        => true,
+                    'FROM'            => 'glpi_profiles',
+                    'LEFT JOIN'       => [
+                        'glpi_profiles_users'   => [
+                            'ON' => [
+                                'glpi_profiles_users'   => 'profiles_id',
+                                'glpi_profiles'         => 'id'
+                            ]
+                        ]
+                    ],
+                    'WHERE'           => [
+                        'glpi_profiles.interface'  => 'central'
+                    ] + getEntitiesRestrictCriteria('glpi_profiles_users', '', $_SESSION['glpiactive_entity'], 1)
+                ])
             ];
         }
 
         if (!isset($options['display_done_events']) || !$options['display_done_events']) {
             $ADDWHERE['glpi_projecttasks.percent_done'] = ['<', 100];
             $ADDWHERE[] = ['OR' => [
-            ['glpi_projectstates.is_finished'  => 0],
-            ['glpi_projectstates.is_finished'  => null]
-            ]];
+                ['glpi_projectstates.is_finished'  => 0],
+                ['glpi_projectstates.is_finished'  => null]
+            ]
+            ];
         }
 
         $SELECT = [$ttask->getTable() . '.*'];
@@ -1809,12 +1827,12 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
             $SELECT[] = new QueryExpression($edate . ' AS ' . $DB->quoteName('notp_edate'));
 
             $WHERE = [
-            $ttask->getTable() . '.plan_start_date'   => null,
-            $ttask->getTable() . '.plan_end_date'     => null,
-            $ttask->getTable() . '.planned_duration'  => ['>', 0],
+                $ttask->getTable() . '.plan_start_date'   => null,
+                $ttask->getTable() . '.plan_end_date'     => null,
+                $ttask->getTable() . '.planned_duration'  => ['>', 0],
             //begin is replaced with creation tim minus duration
-            new QueryExpression($edate . " >= '" . $begin . "'"),
-            new QueryExpression($bdate . " <= '" . $end . "'")
+                new QueryExpression($edate . " >= '" . $begin . "'"),
+                new QueryExpression($bdate . " <= '" . $end . "'")
             ];
         } else {
            //std case: get tasks for current view dates
@@ -1823,26 +1841,26 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         }
 
         $iterator = $DB->request([
-         'SELECT'       => $SELECT,
-         'FROM'         => 'glpi_projecttaskteams',
-         'INNER JOIN'   => [
-            $ttask->getTable() => [
-               'ON' => [
-                  'glpi_projecttaskteams' => 'projecttasks_id',
-                  $ttask->getTable()      => 'id'
-               ]
-            ]
-         ],
-         'LEFT JOIN'    => [
-            'glpi_projectstates' => [
-               'ON' => [
-                  $ttask->getTable()   => 'projectstates_id',
-                  'glpi_projectstates' => 'id'
-               ]
-            ]
-         ],
-         'WHERE'        => $WHERE,
-         'ORDERBY'      => $ttask->getTable() . '.plan_start_date'
+            'SELECT'       => $SELECT,
+            'FROM'         => 'glpi_projecttaskteams',
+            'INNER JOIN'   => [
+                $ttask->getTable() => [
+                    'ON' => [
+                        'glpi_projecttaskteams' => 'projecttasks_id',
+                        $ttask->getTable()      => 'id'
+                    ]
+                ]
+            ],
+            'LEFT JOIN'    => [
+                'glpi_projectstates' => [
+                    'ON' => [
+                        $ttask->getTable()   => 'projectstates_id',
+                        'glpi_projectstates' => 'id'
+                    ]
+                ]
+            ],
+            'WHERE'        => $WHERE,
+            'ORDERBY'      => $ttask->getTable() . '.plan_start_date'
         ]);
 
         $interv = [];
@@ -2017,13 +2035,13 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         }
 
         $iterator = $DB->request([
-         'SELECT' => [
-            new QueryExpression('CAST(AVG(' . $DB->quoteName('percent_done') . ') AS UNSIGNED) AS percent_done')
-         ],
-         'FROM'   => ProjectTask::getTable(),
-         'WHERE'  => [
-            'projecttasks_id' => $ID
-         ]
+            'SELECT' => [
+                new QueryExpression('CAST(AVG(' . $DB->quoteName('percent_done') . ') AS UNSIGNED) AS percent_done')
+            ],
+            'FROM'   => ProjectTask::getTable(),
+            'WHERE'  => [
+                'projecttasks_id' => $ID
+            ]
         ]);
         if ($iterator->count()) {
             $percent_done = $iterator->current()['percent_done'];
@@ -2031,8 +2049,8 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
             $percent_done = 0;
         }
         $projecttask->update([
-         'id'                 => $ID,
-         'percent_done'       => $percent_done,
+            'id'                 => $ID,
+            'percent_done'       => $percent_done,
         ]);
         return true;
     }
@@ -2042,8 +2060,8 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
 
         return self::getItemsAsVCalendars(
             [
-            ProjectTaskTeam::getTableField('itemtype') => Group::class,
-            ProjectTaskTeam::getTableField('items_id') => $groups_id,
+                ProjectTaskTeam::getTableField('itemtype') => Group::class,
+                ProjectTaskTeam::getTableField('items_id') => $groups_id,
             ]
         );
     }
@@ -2053,8 +2071,8 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
 
         return self::getItemsAsVCalendars(
             [
-            ProjectTaskTeam::getTableField('itemtype') => User::class,
-            ProjectTaskTeam::getTableField('items_id') => $users_id,
+                ProjectTaskTeam::getTableField('itemtype') => User::class,
+                ProjectTaskTeam::getTableField('items_id') => $users_id,
             ]
         );
     }
@@ -2072,16 +2090,16 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         global $DB;
 
         $query = [
-         'FROM'       => self::getTable(),
-         'INNER JOIN' => [
-            ProjectTaskTeam::getTable() => [
-               'ON' => [
-                  ProjectTaskTeam::getTable() => 'projecttasks_id',
-                  self::getTable()            => 'id',
-               ],
+            'FROM'       => self::getTable(),
+            'INNER JOIN' => [
+                ProjectTaskTeam::getTable() => [
+                    'ON' => [
+                        ProjectTaskTeam::getTable() => 'projecttasks_id',
+                        self::getTable()            => 'id',
+                    ],
+                ],
             ],
-         ],
-         'WHERE'      => $criteria,
+            'WHERE'      => $criteria,
         ];
 
         $tasks_iterator = $DB->request($query);
@@ -2193,9 +2211,9 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
     {
         $projecttask_team = new ProjectTaskTeam();
         $result = $projecttask_team->add([
-         'projecttasks_id' => $this->getID(),
-         'itemtype'        => $itemtype,
-         'items_id'        => $items_id
+            'projecttasks_id' => $this->getID(),
+            'itemtype'        => $itemtype,
+            'items_id'        => $items_id
         ]);
         return (bool) $result;
     }
@@ -2204,9 +2222,9 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
     {
         $projecttask_team = new ProjectTaskTeam();
         $result = $projecttask_team->deleteByCriteria([
-         'projecttasks_id' => $this->getID(),
-         'itemtype'        => $itemtype,
-         'items_id'        => $items_id
+            'projecttasks_id' => $this->getID(),
+            'itemtype'        => $itemtype,
+            'items_id'        => $items_id
         ]);
         return (bool) $result;
     }

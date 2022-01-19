@@ -108,9 +108,10 @@ abstract class CommonItilObject_Item extends CommonDBRelation
         global $CFG_GLPI;
 
         $params = [static::$items_id_1 => 0,
-                      'used'       => [],
-                      'multiple'   => 0,
-                      'rand'       => mt_rand()];
+            'used'       => [],
+            'multiple'   => 0,
+            'rand'       => mt_rand()
+        ];
 
         foreach ($options as $key => $val) {
             $params[$key] = $val;
@@ -149,19 +150,21 @@ abstract class CommonItilObject_Item extends CommonDBRelation
                     $myname,
                     array_keys($types),
                     ['emptylabel' => $emptylabel,
-                                          'value'      => $itemtype,
-                    'rand'       => $rand,
-                    'display_emptychoice' => true]
+                        'value'      => $itemtype,
+                        'rand'       => $rand,
+                        'display_emptychoice' => true
+                    ]
                 );
                 $found_type = isset($types[$itemtype]);
 
                 $p = ['itemtype'        => '__VALUE__',
-                       'entity_restrict' => $entity_restrict,
-                       'admin'           => $admin,
-                       'used'            => $params['used'],
-                       'multiple'        => $params['multiple'],
-                       'rand'            => $rand,
-                       'myname'          => "add_items_id"];
+                    'entity_restrict' => $entity_restrict,
+                    'admin'           => $admin,
+                    'used'            => $params['used'],
+                    'multiple'        => $params['multiple'],
+                    'rand'            => $rand,
+                    'myname'          => "add_items_id"
+                ];
 
                 Ajax::updateItemOnSelectEvent(
                     "dropdown_$myname$rand",

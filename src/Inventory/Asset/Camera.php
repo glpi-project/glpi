@@ -48,9 +48,9 @@ class Camera extends Device
     {
 
         $mapping = [
-         'manufacturer'    => 'manufacturers_id',
-         'model'           => 'devicecameramodels_id',
-         'designation'     => 'name'
+            'manufacturer'    => 'manufacturers_id',
+            'model'           => 'devicecameramodels_id',
+            'designation'     => 'name'
         ];
 
         foreach ($this->data as &$val) {
@@ -97,17 +97,17 @@ class Camera extends Device
             $resolution = new \ImageResolution();
             if (!$resolution->getFromDBByCrit(['name' => addslashes($rsl)])) {
                 $resolution->add([
-                'name'         => addslashes($rsl),
-                'is_video'     => $is_video,
-                'is_dynamic'   => 1
+                    'name'         => addslashes($rsl),
+                    'is_video'     => $is_video,
+                    'is_dynamic'   => 1
                 ]);
             }
 
             $cam_resolutions = new \Item_DeviceCamera_ImageResolution();
             $data = [
-            'item_devicecameras_id' => $itemdevice->fields['devicecameras_id'],
-            'imageresolutions_id' => $resolution->fields['id'],
-            'is_dynamic' => 1
+                'item_devicecameras_id' => $itemdevice->fields['devicecameras_id'],
+                'imageresolutions_id' => $resolution->fields['id'],
+                'is_dynamic' => 1
             ];
 
             if (!$cam_resolutions->getFromDBByCrit($data)) {
@@ -129,16 +129,16 @@ class Camera extends Device
             }
             if (!$format->getFromDBByCrit(['name' => addslashes($fmt)])) {
                 $format->add([
-                'name' => addslashes($fmt),
-                'is_dynamic' => 1
+                    'name' => addslashes($fmt),
+                    'is_dynamic' => 1
                 ]);
             }
 
             $cam_formats = new \Item_DeviceCamera_ImageFormat();
             $data = [
-            'item_devicecameras_id' => $itemdevice->fields['devicecameras_id'],
-            'imageformats_id' => $format->fields['id'],
-            'is_dynamic' => 1
+                'item_devicecameras_id' => $itemdevice->fields['devicecameras_id'],
+                'imageformats_id' => $format->fields['id'],
+                'is_dynamic' => 1
             ];
 
             if (!$cam_formats->getFromDBByCrit($data)) {

@@ -74,26 +74,30 @@ class NotificationTargetMailCollector extends NotificationTarget
     {
 
         $tags = ['mailcollector.action' => _n('Event', 'Events', 1),
-                    'mailcollector.name'   => __('Name'),
-                    'mailcollector.errors' => __('Connection errors')];
+            'mailcollector.name'   => __('Name'),
+            'mailcollector.errors' => __('Connection errors')
+        ];
 
         foreach ($tags as $tag => $label) {
             $this->addTagToList(['tag'   => $tag,
-                                   'label' => $label,
-                                   'value' => true]);
+                'label' => $label,
+                'value' => true
+            ]);
         }
 
         $tags = ['mailcollector.url' => sprintf(
             __('%1$s: %2$s'),
             _n('Receiver', 'Receivers', 1),
             __('URL')
-        )];
+        )
+        ];
 
         foreach ($tags as $tag => $label) {
             $this->addTagToList(['tag'   => $tag,
-                                   'label' => $label,
-                                   'value' => true,
-                                   'lang'  => false]);
+                'label' => $label,
+                'value' => true,
+                'lang'  => false
+            ]);
         }
 
        //Foreach global tags
@@ -101,9 +105,10 @@ class NotificationTargetMailCollector extends NotificationTarget
 
         foreach ($tags as $tag => $label) {
             $this->addTagToList(['tag'     => $tag,
-                                   'label'   => $label,
-                                   'value'   => false,
-                                   'foreach' => true]);
+                'label'   => $label,
+                'value'   => false,
+                'foreach' => true
+            ]);
         }
 
         asort($this->tag_descriptions);

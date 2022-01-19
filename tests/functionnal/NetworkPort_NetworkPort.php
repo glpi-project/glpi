@@ -44,14 +44,14 @@ class NetworkPort_NetworkPort extends DbTestCase
         $port = new \NetworkPort();
         $nb_log = (int)countElementsInTable('glpi_logs');
         $ports_id = $port->add([
-         'items_id'           => $asset->getID(),
-         'itemtype'           => 'Computer',
-         'entities_id'        => $asset->fields['entities_id'],
-         'is_recursive'       => 0,
-         'logical_number'     => 1,
-         'mac'                => $mac,
-         'instantiation_type' => 'NetworkPortEthernet',
-         'name'               => 'eth1',
+            'items_id'           => $asset->getID(),
+            'itemtype'           => 'Computer',
+            'entities_id'        => $asset->fields['entities_id'],
+            'is_recursive'       => 0,
+            'logical_number'     => 1,
+            'mac'                => $mac,
+            'instantiation_type' => 'NetworkPortEthernet',
+            'name'               => 'eth1',
         ]);
         $this->integer((int)$ports_id)->isGreaterThan(0);
         $this->integer((int)countElementsInTable('glpi_logs'))->isGreaterThan($nb_log);
@@ -72,8 +72,8 @@ class NetworkPort_NetworkPort extends DbTestCase
         $wired = new \NetworkPort_NetworkPort();
         $this->integer(
             $wired->add([
-            'networkports_id_1' => $id_1,
-            'networkports_id_2' => $id_2
+                'networkports_id_1' => $id_1,
+                'networkports_id_2' => $id_2
             ])
         )->isGreaterThan(0);
 

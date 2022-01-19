@@ -105,7 +105,7 @@ Html::header(
 );
 
 $rule->display([
-   'id'           => $_GET["id"],
-   'formoptions'  => " data-track-changes='true'"
+    'id'           => $_GET["id"],
+    'formoptions'  => " data-track-changes='true'"
 ]);
 Html::footer();

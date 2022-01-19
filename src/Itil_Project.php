@@ -72,8 +72,8 @@ class Itil_Project extends CommonDBRelation
                         $nb = countElementsInTable(
                             self::getTable(),
                             [
-                            'itemtype' => $item->getType(),
-                            'items_id' => $item->getID(),
+                                'itemtype' => $item->getType(),
+                                'items_id' => $item->getID(),
                             ]
                         );
                     }
@@ -138,26 +138,26 @@ class Itil_Project extends CommonDBRelation
             $itemTable = $itemtype::getTable();
 
             $iterator = $DB->request([
-            'SELECT'          => [
-               "$selfTable.id AS linkid",
-               "$itemTable.*"
-            ],
-            'DISTINCT'        => true,
-            'FROM'            => $selfTable,
-            'LEFT JOIN'       => [
-               $itemTable => [
-                  'FKEY' => [
-                     $selfTable => 'items_id',
-                     $itemTable => 'id',
-                  ],
-               ],
-            ],
-            'WHERE'           => [
-               "{$selfTable}.itemtype"    => $itemtype,
-               "{$selfTable}.projects_id" => $ID,
-               'NOT'                      => ["{$itemTable}.id" => null],
-            ],
-            'ORDER'  => "{$itemTable}.name",
+                'SELECT'          => [
+                    "$selfTable.id AS linkid",
+                    "$itemTable.*"
+                ],
+                'DISTINCT'        => true,
+                'FROM'            => $selfTable,
+                'LEFT JOIN'       => [
+                    $itemTable => [
+                        'FKEY' => [
+                            $selfTable => 'items_id',
+                            $itemTable => 'id',
+                        ],
+                    ],
+                ],
+                'WHERE'           => [
+                    "{$selfTable}.itemtype"    => $itemtype,
+                    "{$selfTable}.projects_id" => $ID,
+                    'NOT'                      => ["{$itemTable}.id" => null],
+                ],
+                'ORDER'  => "{$itemTable}.name",
             ]);
 
             $numrows = $iterator->count();
@@ -196,10 +196,10 @@ class Itil_Project extends CommonDBRelation
                 echo '<input type="hidden" name="itemtype" value="' . $itemtype . '" />';
                 $itemtype::dropdown(
                     [
-                    'entity'      => $project->getEntityID(),
-                    'entity_sons' => $project->isRecursive(),
-                    'name'        => 'items_id',
-                    'used'        => $used,
+                        'entity'      => $project->getEntityID(),
+                        'entity_sons' => $project->isRecursive(),
+                        'name'        => 'items_id',
+                        'used'        => $used,
                     ]
                 );
                 echo '</td>';
@@ -217,8 +217,8 @@ class Itil_Project extends CommonDBRelation
             if ($canedit && $numrows) {
                 Html::openMassiveActionsForm($massContainerId);
                 $massiveactionparams = [
-                'num_displayed' => min($_SESSION['glpilist_limit'], $numrows),
-                'container'     => $massContainerId,
+                    'num_displayed' => min($_SESSION['glpilist_limit'], $numrows),
+                    'container'     => $massContainerId,
                 ];
                 Html::showMassiveActions($massiveactionparams);
             }
@@ -242,9 +242,9 @@ class Itil_Project extends CommonDBRelation
                      $itemtype::showShort(
                          $data['id'],
                          [
-                         'row_num'                => $i,
-                         'type_for_massiveaction' => __CLASS__,
-                         'id_for_massiveaction'   => $data['linkid']
+                             'row_num'                => $i,
+                             'type_for_massiveaction' => __CLASS__,
+                             'id_for_massiveaction'   => $data['linkid']
                          ]
                      );
                      $i++;
@@ -284,26 +284,26 @@ class Itil_Project extends CommonDBRelation
         $projectTable = Project::getTable();
 
         $iterator = $DB->request([
-         'SELECT'          => [
-            "$selfTable.id AS linkid",
-            "$projectTable.*"
-         ],
-         'DISTINCT'        => true,
-         'FROM'            => $selfTable,
-         'LEFT JOIN'       => [
-            $projectTable => [
-               'FKEY' => [
-                  $selfTable    => 'projects_id',
-                  $projectTable => 'id',
-               ],
+            'SELECT'          => [
+                "$selfTable.id AS linkid",
+                "$projectTable.*"
             ],
-         ],
-         'WHERE'           => [
-            "{$selfTable}.itemtype" => $itil->getType(),
-            "{$selfTable}.items_id" => $ID,
-            'NOT'                   => ["{$projectTable}.id" => null],
-         ],
-         'ORDER'  => "{$projectTable}.name",
+            'DISTINCT'        => true,
+            'FROM'            => $selfTable,
+            'LEFT JOIN'       => [
+                $projectTable => [
+                    'FKEY' => [
+                        $selfTable    => 'projects_id',
+                        $projectTable => 'id',
+                    ],
+                ],
+            ],
+            'WHERE'           => [
+                "{$selfTable}.itemtype" => $itil->getType(),
+                "{$selfTable}.items_id" => $ID,
+                'NOT'                   => ["{$projectTable}.id" => null],
+            ],
+            'ORDER'  => "{$projectTable}.name",
         ]);
 
         $numrows = $iterator->count();
@@ -336,8 +336,8 @@ class Itil_Project extends CommonDBRelation
             echo '<input type="hidden" name="items_id" value="' . $ID . '" />';
             Project::dropdown(
                 [
-                'used'   => $used,
-                'entity' => $itil->getEntityID()
+                    'used'   => $used,
+                    'entity' => $itil->getEntityID()
                 ]
             );
             echo '</td>';
@@ -355,8 +355,8 @@ class Itil_Project extends CommonDBRelation
         if ($canedit && $numrows) {
             Html::openMassiveActionsForm($massContainerId);
             $massiveactionparams = [
-            'num_displayed' => min($_SESSION['glpilist_limit'], $numrows),
-            'container'     => $massContainerId,
+                'num_displayed' => min($_SESSION['glpilist_limit'], $numrows),
+                'container'     => $massContainerId,
             ];
             Html::showMassiveActions($massiveactionparams);
         }
@@ -380,9 +380,9 @@ class Itil_Project extends CommonDBRelation
                 Project::showShort(
                     $data['id'],
                     [
-                    'row_num'               => $i,
-                    'type_for_massiveaction' => __CLASS__,
-                    'id_for_massiveaction'   => $data['linkid']
+                        'row_num'               => $i,
+                        'type_for_massiveaction' => __CLASS__,
+                        'id_for_massiveaction'   => $data['linkid']
                     ]
                 );
                  $i++;

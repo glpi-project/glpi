@@ -55,10 +55,10 @@ class GlpiTwigRuleset extends Official
     public function getRules()
     {
         return [
-         new LowerCaseVariable(Violation::SEVERITY_ERROR),
-         new RegEngineRule(Violation::SEVERITY_ERROR, $this->getRegEngineRuleset()),
-         new TrailingSpace(Violation::SEVERITY_ERROR),
-         new UnusedMacro(Violation::SEVERITY_WARNING),
+            new LowerCaseVariable(Violation::SEVERITY_ERROR),
+            new RegEngineRule(Violation::SEVERITY_ERROR, $this->getRegEngineRuleset()),
+            new TrailingSpace(Violation::SEVERITY_ERROR),
+            new UnusedMacro(Violation::SEVERITY_WARNING),
          // new UnusedVariable(Violation::SEVERITY_WARNING), // Cannot be enable since we do not explicitely pass variables to includes
         ];
     }

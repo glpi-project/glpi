@@ -48,10 +48,10 @@ class ImpactRelation extends CommonDBRelation
 
        // Check that mandatory values are set
         $required = [
-         "itemtype_source",
-         "items_id_source",
-         "itemtype_impacted",
-         "items_id_impacted"
+            "itemtype_source",
+            "items_id_source",
+            "itemtype_impacted",
+            "items_id_impacted"
         ];
         if (array_diff($required, array_keys($input))) {
             return false;
@@ -67,13 +67,13 @@ class ImpactRelation extends CommonDBRelation
 
        // Check for duplicate
         $it = $DB->request([
-         'FROM'   => self::getTable(),
-         'WHERE'  => [
-            'itemtype_source'   => $input['itemtype_source'],
-            'items_id_source'   => $input['items_id_source'],
-            'itemtype_impacted' => $input['itemtype_impacted'],
-            'items_id_impacted' => $input['items_id_impacted']
-         ]
+            'FROM'   => self::getTable(),
+            'WHERE'  => [
+                'itemtype_source'   => $input['itemtype_source'],
+                'items_id_source'   => $input['items_id_source'],
+                'itemtype_impacted' => $input['itemtype_impacted'],
+                'items_id_impacted' => $input['items_id_impacted']
+            ]
         ]);
         if (count($it)) {
             return false;
@@ -110,13 +110,13 @@ class ImpactRelation extends CommonDBRelation
 
        // Check that the link exist
         $it = $DB->request([
-         'FROM'   => self::getTable(),
-         'WHERE'  => [
-            'itemtype_source'   => $input['itemtype_source'],
-            'items_id_source'   => $input['items_id_source'],
-            'itemtype_impacted' => $input['itemtype_impacted'],
-            'items_id_impacted' => $input['items_id_impacted']
-         ]
+            'FROM'   => self::getTable(),
+            'WHERE'  => [
+                'itemtype_source'   => $input['itemtype_source'],
+                'items_id_source'   => $input['items_id_source'],
+                'itemtype_impacted' => $input['itemtype_impacted'],
+                'items_id_impacted' => $input['items_id_impacted']
+            ]
         ]);
 
         if (count($it)) {

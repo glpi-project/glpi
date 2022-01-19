@@ -61,16 +61,16 @@ class StatDataTicketNumber extends StatDataAlwaysDisplay
 
         $this->labels = array_keys($avgsolved);
         $this->series = [
-         [
-            'name' => __('Closure'),
-            'data' => $avgsolved,
-         ], [
-            'name' => __('Resolution'),
-            'data' => $avgclosed,
-         ], [
-            'name' => __('Real duration'),
-            'data' => $avgactiontime,
-         ]
+            [
+                'name' => __('Closure'),
+                'data' => $avgsolved,
+            ], [
+                'name' => __('Resolution'),
+                'data' => $avgclosed,
+            ], [
+                'name' => __('Real duration'),
+                'data' => $avgactiontime,
+            ]
         ];
 
         if ($params['itemtype'] == 'Ticket') {
@@ -81,8 +81,8 @@ class StatDataTicketNumber extends StatDataAlwaysDisplay
             unset($val);
 
             $this->series[] = [
-            'name' => __('Take into account'),
-            'data' => $avgtaketime
+                'name' => __('Take into account'),
+                'data' => $avgtaketime
             ];
         }
     }

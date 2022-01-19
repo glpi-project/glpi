@@ -123,72 +123,72 @@ class Application extends BaseApplication
 
         $definition = new InputDefinition(
             [
-            new InputArgument(
-                'command',
-                InputArgument::REQUIRED,
-                __('The command to execute')
-            ),
+                new InputArgument(
+                    'command',
+                    InputArgument::REQUIRED,
+                    __('The command to execute')
+                ),
 
-            new InputOption(
-                '--help',
-                '-h',
-                InputOption::VALUE_NONE,
-                __('Display this help message')
-            ),
-            new InputOption(
-                '--quiet',
-                '-q',
-                InputOption::VALUE_NONE,
-                __('Do not output any message')
-            ),
-            new InputOption(
-                '--verbose',
-                '-v|vv|vvv',
-                InputOption::VALUE_NONE,
-                __('Increase the verbosity of messages: 1 for normal output, 2 for more verbose output and 3 for debug')
-            ),
-            new InputOption(
-                '--version',
-                '-V',
-                InputOption::VALUE_NONE,
-                __('Display this application version')
-            ),
-            new InputOption(
-                '--ansi',
-                null,
-                InputOption::VALUE_NONE,
-                __('Force ANSI output')
-            ),
-            new InputOption(
-                '--no-ansi',
-                null,
-                InputOption::VALUE_NONE,
-                __('Disable ANSI output')
-            ),
-            new InputOption(
-                '--no-interaction',
-                '-n',
-                InputOption::VALUE_NONE,
-                __('Do not ask any interactive question')
-            ),
-            new InputOption(
-                '--config-dir',
-                null,
-                InputOption::VALUE_OPTIONAL,
-                __('Configuration directory to use')
-            ),
-            new InputOption(
-                '--no-plugins',
-                null,
-                InputOption::VALUE_NONE,
-                __('Disable GLPI plugins (unless commands forces plugins loading)')
-            ),
-            new InputOption(
-                '--lang',
-                null,
-                InputOption::VALUE_OPTIONAL,
-                __('Output language (default value is existing GLPI "language" configuration or "en_GB")')
-            )
+                new InputOption(
+                    '--help',
+                    '-h',
+                    InputOption::VALUE_NONE,
+                    __('Display this help message')
+                ),
+                new InputOption(
+                    '--quiet',
+                    '-q',
+                    InputOption::VALUE_NONE,
+                    __('Do not output any message')
+                ),
+                new InputOption(
+                    '--verbose',
+                    '-v|vv|vvv',
+                    InputOption::VALUE_NONE,
+                    __('Increase the verbosity of messages: 1 for normal output, 2 for more verbose output and 3 for debug')
+                ),
+                new InputOption(
+                    '--version',
+                    '-V',
+                    InputOption::VALUE_NONE,
+                    __('Display this application version')
+                ),
+                new InputOption(
+                    '--ansi',
+                    null,
+                    InputOption::VALUE_NONE,
+                    __('Force ANSI output')
+                ),
+                new InputOption(
+                    '--no-ansi',
+                    null,
+                    InputOption::VALUE_NONE,
+                    __('Disable ANSI output')
+                ),
+                new InputOption(
+                    '--no-interaction',
+                    '-n',
+                    InputOption::VALUE_NONE,
+                    __('Do not ask any interactive question')
+                ),
+                new InputOption(
+                    '--config-dir',
+                    null,
+                    InputOption::VALUE_OPTIONAL,
+                    __('Configuration directory to use')
+                ),
+                new InputOption(
+                    '--no-plugins',
+                    null,
+                    InputOption::VALUE_NONE,
+                    __('Disable GLPI plugins (unless commands forces plugins loading)')
+                ),
+                new InputOption(
+                    '--lang',
+                    null,
+                    InputOption::VALUE_OPTIONAL,
+                    __('Output language (default value is existing GLPI "language" configuration or "en_GB")')
+                )
             ]
         );
 
@@ -291,8 +291,8 @@ class Application extends BaseApplication
         $CFG_GLPI = array_merge(
             $CFG_GLPI,
             [
-            'debug_sql'  => 0,
-            'debug_vars' => 0,
+                'debug_sql'  => 0,
+                'debug_vars' => 0,
             ]
         );
 

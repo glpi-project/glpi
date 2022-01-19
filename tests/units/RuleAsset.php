@@ -67,20 +67,20 @@ class RuleAsset extends DbTestCase
        // test create ticket (trigger on title)
         $computer = new \Computer();
         $computers_id = $computer->add($computer_input = [
-         'name'        => "computer",
-         '_auto'       => 1,
-         'entities_id' => $root_ent_id,
-         'is_dynamic'  => 1
+            'name'        => "computer",
+            '_auto'       => 1,
+            'entities_id' => $root_ent_id,
+            'is_dynamic'  => 1
         ]);
         $this->integer((int)$computers_id)->isGreaterThan(0);
         $this->boolean((bool)$computer->getFromDB($computers_id))->isTrue();
         $this->string((string)$computer->getField('comment'))->isEqualTo('comment1');
 
         $computers_id = $computer->add($computer_input = [
-         'name'        => "computer2",
-         'entities_id' => $root_ent_id,
-         'is_dynamic'  => 0,
-         '_auto'       => 0
+            'name'        => "computer2",
+            'entities_id' => $root_ent_id,
+            'is_dynamic'  => 0,
+            '_auto'       => 0
         ]);
         $this->integer((int)$computers_id)->isGreaterThan(0);
         $this->boolean((bool)$computer->getFromDB($computers_id))->isTrue();
@@ -88,11 +88,11 @@ class RuleAsset extends DbTestCase
 
         $monitor = new \Monitor();
         $monitors_id = $monitor->add($monitor_input = [
-         'name'        => "monitor",
-         'contact'     => 'tech',
-         'entities_id' => $root_ent_id,
-         'is_dynamic'  => 1,
-         '_auto'       => 1
+            'name'        => "monitor",
+            'contact'     => 'tech',
+            'entities_id' => $root_ent_id,
+            'is_dynamic'  => 1,
+            '_auto'       => 1
         ]);
         $this->boolean((bool)$monitor->getFromDB($monitors_id))->isTrue();
 
@@ -101,11 +101,11 @@ class RuleAsset extends DbTestCase
         $this->integer((int)$monitor->getField('users_id'))->isEqualTo(0);
 
         $computers_id = $computer->add($computer_input = [
-         'name'        => "computer3",
-         'contact'     => 'tech@AD',
-         'entities_id' => $root_ent_id,
-         'is_dynamic'  => 1,
-         '_auto'       => 1
+            'name'        => "computer3",
+            'contact'     => 'tech@AD',
+            'entities_id' => $root_ent_id,
+            'is_dynamic'  => 1,
+            '_auto'       => 1
         ]);
         $this->integer((int)$computers_id)->isGreaterThan(0);
         $this->boolean((bool)$computer->getFromDB($computers_id))->isTrue();
@@ -115,11 +115,11 @@ class RuleAsset extends DbTestCase
         $this->string((string)$computer->getField('comment'))->isEqualTo('comment1');
 
         $computers_id = $computer->add($computer_input = [
-         'name'        => "computer3",
-         'contact'     => 'tech@AD',
-         'entities_id' => $root_ent_id,
-         'is_dynamic'  => 1,
-         '_auto'       => 1
+            'name'        => "computer3",
+            'contact'     => 'tech@AD',
+            'entities_id' => $root_ent_id,
+            'is_dynamic'  => 1,
+            '_auto'       => 1
         ]);
         $this->integer((int)$computers_id)->isGreaterThan(0);
         $this->boolean((bool)$computer->getFromDB($computers_id))->isTrue();
@@ -128,11 +128,11 @@ class RuleAsset extends DbTestCase
         $this->integer((int)$computer->getField('users_id'))->isEqualTo(4);
 
         $computers_id = $computer->add($computer_input = [
-         'name'        => "computer4",
-         'contact'     => 'tech,glpi',
-         'entities_id' => $root_ent_id,
-         'is_dynamic'  => 1,
-         '_auto'       => 1
+            'name'        => "computer4",
+            'contact'     => 'tech,glpi',
+            'entities_id' => $root_ent_id,
+            'is_dynamic'  => 1,
+            '_auto'       => 1
         ]);
         $this->integer((int)$computers_id)->isGreaterThan(0);
         $this->boolean((bool)$computer->getFromDB($computers_id))->isTrue();
@@ -141,11 +141,11 @@ class RuleAsset extends DbTestCase
         $this->integer((int)$computer->getField('users_id'))->isEqualTo(4);
 
         $computers_id = $computer->add($computer_input = [
-         'name'        => "computer5",
-         'contact'     => 'tech2',
-         'entities_id' => $root_ent_id,
-         'is_dynamic'  => 1,
-         '_auto'       => 1
+            'name'        => "computer5",
+            'contact'     => 'tech2',
+            'entities_id' => $root_ent_id,
+            'is_dynamic'  => 1,
+            '_auto'       => 1
         ]);
         $this->integer((int)$computers_id)->isGreaterThan(0);
         $this->boolean((bool)$computer->getFromDB($computers_id))->isTrue();
@@ -171,11 +171,11 @@ class RuleAsset extends DbTestCase
         foreach ($CFG_GLPI['asset_types'] as $itemtype) {
             $item     = new $itemtype();
             $item_input = [
-            'name'        => "$itemtype 1",
-            '_auto'       => 1,
-            'entities_id' => $root_ent_id,
-            'is_dynamic'  => 1,
-            'comment'     => 'mycomment'
+                'name'        => "$itemtype 1",
+                '_auto'       => 1,
+                'entities_id' => $root_ent_id,
+                'is_dynamic'  => 1,
+                'comment'     => 'mycomment'
             ];
             if ($itemtype == 'SoftwareLicense') {
                 $item_input['softwares_id'] = 1;
@@ -199,32 +199,32 @@ class RuleAsset extends DbTestCase
         $ruleaction = new \RuleAction();
 
         $ruleid = $ruleasset->add($ruleinput = [
-         'name'         => "rule comment",
-         'match'        => 'AND',
-         'is_active'    => 1,
-         'sub_type'     => 'RuleAsset',
-         'condition'    => $condition,
-         'is_recursive' => 1
+            'name'         => "rule comment",
+            'match'        => 'AND',
+            'is_active'    => 1,
+            'sub_type'     => 'RuleAsset',
+            'condition'    => $condition,
+            'is_recursive' => 1
         ]);
         $this->checkInput($ruleasset, $ruleid, $ruleinput);
         $crit_id = $rulecrit->add($crit_input = [
-         'rules_id'  => $ruleid,
-         'criteria'  => '_itemtype',
-         'condition' => \Rule::PATTERN_IS,
-         'pattern'   => "Computer"
+            'rules_id'  => $ruleid,
+            'criteria'  => '_itemtype',
+            'condition' => \Rule::PATTERN_IS,
+            'pattern'   => "Computer"
         ]);
         $crit_id = $rulecrit->add($crit_input = [
-         'rules_id'  => $ruleid,
-         'criteria'  => '_auto',
-         'condition' => \Rule::PATTERN_IS,
-         'pattern'   => 1
+            'rules_id'  => $ruleid,
+            'criteria'  => '_auto',
+            'condition' => \Rule::PATTERN_IS,
+            'pattern'   => 1
         ]);
         $this->checkInput($rulecrit, $crit_id, $crit_input);
         $act_id = $ruleaction->add($act_input = [
-         'rules_id'    => $ruleid,
-         'action_type' => 'assign',
-         'field'       => 'comment',
-         'value'       => 'comment1'
+            'rules_id'    => $ruleid,
+            'action_type' => 'assign',
+            'field'       => 'comment',
+            'value'       => 'comment1'
         ]);
         $this->checkInput($ruleaction, $act_id, $act_input);
     }
@@ -236,26 +236,26 @@ class RuleAsset extends DbTestCase
         $ruleaction = new \RuleAction();
 
         $ruleid = $ruleasset->add($ruleinput = [
-         'name'         => "rule location",
-         'match'        => 'AND',
-         'is_active'    => 1,
-         'sub_type'     => 'RuleAsset',
-         'condition'    => $condition,
-         'is_recursive' => 1
+            'name'         => "rule location",
+            'match'        => 'AND',
+            'is_active'    => 1,
+            'sub_type'     => 'RuleAsset',
+            'condition'    => $condition,
+            'is_recursive' => 1
         ]);
         $this->checkInput($ruleasset, $ruleid, $ruleinput);
         $crit_id = $rulecrit->add($crit_input = [
-         'rules_id'  => $ruleid,
-         'criteria'  => '_itemtype',
-         'condition' => \Rule::PATTERN_IS,
-         'pattern'   => "*"
+            'rules_id'  => $ruleid,
+            'criteria'  => '_itemtype',
+            'condition' => \Rule::PATTERN_IS,
+            'pattern'   => "*"
         ]);
         $this->checkInput($rulecrit, $crit_id, $crit_input);
         $act_id = $ruleaction->add($act_input = [
-         'rules_id'    => $ruleid,
-         'action_type' => 'assign',
-         'field'       => 'locations_id',
-         'value'       => 1
+            'rules_id'    => $ruleid,
+            'action_type' => 'assign',
+            'field'       => 'locations_id',
+            'value'       => 1
         ]);
         $this->checkInput($ruleaction, $act_id, $act_input);
     }
@@ -267,55 +267,55 @@ class RuleAsset extends DbTestCase
        // Create solution template
         $location     = new \Location();
         $locations_id = $location->add([
-                                        'name' => "test"
-                                     ]);
+            'name' => "test"
+        ]);
         $this->integer($locations_id)->isGreaterThan(0);
         $user     = new \User();
         $users_id = $user->add([
-                                'name'         => "user test",
-                                'locations_id' => $locations_id
-                             ]);
+            'name'         => "user test",
+            'locations_id' => $locations_id
+        ]);
         $this->integer($users_id)->isGreaterThan(0);
 
        // Create rule
         $rule_asset_em = new \RuleAsset();
         $rule_asset_id = $rule_asset_em->add($ruletinput = [
-         'name'         => "test to assign location from user",
-         'match'        => 'OR',
-         'is_active'    => 1,
-         'sub_type'     => 'RuleAsset',
-         'condition'    => \RuleTicket::ONADD + \RuleTicket::ONUPDATE,
-         'is_recursive' => 1,
+            'name'         => "test to assign location from user",
+            'match'        => 'OR',
+            'is_active'    => 1,
+            'sub_type'     => 'RuleAsset',
+            'condition'    => \RuleTicket::ONADD + \RuleTicket::ONUPDATE,
+            'is_recursive' => 1,
         ]);
         $this->integer($rule_asset_id)->isGreaterThan(0);
 
        // Add condition (priority = 5) to rule
         $rule_criteria_em = new \RuleCriteria();
         $rule_criteria_id = $rule_criteria_em->add($crit_input = [
-         'rules_id'  => $rule_asset_id,
-         'criteria'  => 'users_id',
-         'condition' => \Rule::PATTERN_EXISTS,
-         'pattern'   => '',
+            'rules_id'  => $rule_asset_id,
+            'criteria'  => 'users_id',
+            'condition' => \Rule::PATTERN_EXISTS,
+            'pattern'   => '',
         ]);
         $this->integer($rule_criteria_id)->isGreaterThan(0);
 
        // Add action to rule
         $rule_action_em = new \RuleAction();
         $rule_action_id = $rule_action_em->add($act_input = [
-         'rules_id'    => $rule_asset_id,
-         'action_type' => 'fromuser',
-         'field'       => 'locations_id',
-         'value'       => 1,
+            'rules_id'    => $rule_asset_id,
+            'action_type' => 'fromuser',
+            'field'       => 'locations_id',
+            'value'       => 1,
         ]);
         $this->integer($rule_action_id)->isGreaterThan(0);
 
        // Test on creation
         $computer_em = new \Computer();
         $computer_id = $computer_em->add([
-                                          'name'        => 'test',
-                                          'entities_id' => 0,
-                                          'users_id'    => $users_id,
-                                       ]);
+            'name'        => 'test',
+            'entities_id' => 0,
+            'users_id'    => $users_id,
+        ]);
         $this->integer($computer_id)->isGreaterThan(0);
         $this->boolean($computer_em->getFromDB($computer_id))->isTrue();
         $this->integer($computer_em->getField('locations_id'))->isEqualTo($locations_id);
@@ -323,17 +323,17 @@ class RuleAsset extends DbTestCase
        // Test on update
         $computer_em = new \Computer();
         $computer_id = $computer_em->add([
-                                          'name'        => 'test2',
-                                          'entities_id' => 0,
-                                       ]);
+            'name'        => 'test2',
+            'entities_id' => 0,
+        ]);
         $this->integer($computer_id)->isGreaterThan(0);
         $this->boolean($computer_em->getFromDB($computer_id))->isTrue();
         $this->integer($computer_em->getField('locations_id'))->isNotEqualTo($locations_id);
 
         $update = $computer_em->update([
-                              'id'       => $computer_id,
-                              'users_id' => $users_id,
-                           ]);
+            'id'       => $computer_id,
+            'users_id' => $users_id,
+        ]);
         $this->boolean($update)->isTrue();
         $this->boolean($computer_em->getFromDB($computer_id))->isTrue();
         $this->integer($computer_em->getField('locations_id'))->isEqualTo($locations_id);
@@ -349,38 +349,38 @@ class RuleAsset extends DbTestCase
         $ruleaction = new \RuleAction();
 
         $ruletid = $ruleasset->add($ruletinput = [
-         'name'         => 'test default group from user criterion',
-         'match'        => 'AND',
-         'is_active'    => 1,
-         'sub_type'     => 'RuleAsset',
-         'condition'    => \RuleTicket::ONADD,
-         'is_recursive' => 1,
+            'name'         => 'test default group from user criterion',
+            'match'        => 'AND',
+            'is_active'    => 1,
+            'sub_type'     => 'RuleAsset',
+            'condition'    => \RuleTicket::ONADD,
+            'is_recursive' => 1,
         ]);
         $this->checkInput($ruleasset, $ruletid, $ruletinput);
 
        //create criteria to check if group requester already define
         $crit_id = $rulecrit->add($crit_input = [
-         'rules_id'  => $ruletid,
-         'criteria'  => 'groups_id',
-         'condition' => \Rule::PATTERN_DOES_NOT_EXISTS,
-         'pattern'   => 1,
+            'rules_id'  => $ruletid,
+            'criteria'  => 'groups_id',
+            'condition' => \Rule::PATTERN_DOES_NOT_EXISTS,
+            'pattern'   => 1,
         ]);
         $this->checkInput($rulecrit, $crit_id, $crit_input);
 
        //create action to put default user group as group requester
         $action_id = $ruleaction->add($action_input = [
-         'rules_id'    => $ruletid,
-         'action_type' => 'defaultfromuser',
-         'field'       => 'groups_id',
-         'value'       => 1,
+            'rules_id'    => $ruletid,
+            'action_type' => 'defaultfromuser',
+            'field'       => 'groups_id',
+            'value'       => 1,
         ]);
         $this->checkInput($ruleaction, $action_id, $action_input);
 
        //create new group
         $group    = new \Group();
         $group_id = $group->add($group_input = [
-         "name"         => "group1",
-         "is_requester" => true
+            "name"         => "group1",
+            "is_requester" => true
         ]);
         $this->checkInput($group, $group_id, $group_input);
 
@@ -390,8 +390,8 @@ class RuleAsset extends DbTestCase
        //add user to group
         $group_user    = new \Group_User();
         $group_user_id = $group_user->add($group_user_input = [
-         "groups_id" => $group_id,
-         "users_id"  => $user->fields['id']
+            "groups_id" => $group_id,
+            "users_id"  => $user->fields['id']
         ]);
         $this->checkInput($group_user, $group_user_id, $group_user_input);
 
@@ -402,9 +402,9 @@ class RuleAsset extends DbTestCase
        // Check ticket that trigger rule on creation
         $computer     = new \Computer();
         $computers_id = $computer->add($computer_input = [
-         'name'        => 'test',
-         'entities_id' => 0,
-         'users_id'    => $user->fields['id']
+            'name'        => 'test',
+            'entities_id' => 0,
+            'users_id'    => $user->fields['id']
         ]);
         $this->integer($computers_id)->isGreaterThan(0);
         $this->boolean($computer->getFromDB($computers_id))->isTrue();
@@ -421,46 +421,46 @@ class RuleAsset extends DbTestCase
         $ruleaction = new \RuleAction();
 
         $ruletid = $ruleasset->add($ruletinput = [
-         'name'         => 'test first group from user criterion',
-         'match'        => 'AND',
-         'is_active'    => 1,
-         'sub_type'     => 'RuleAsset',
-         'condition'    => \RuleTicket::ONADD,
-         'is_recursive' => 1,
+            'name'         => 'test first group from user criterion',
+            'match'        => 'AND',
+            'is_active'    => 1,
+            'sub_type'     => 'RuleAsset',
+            'condition'    => \RuleTicket::ONADD,
+            'is_recursive' => 1,
         ]);
         $this->checkInput($ruleasset, $ruletid, $ruletinput);
 
        //create criteria to check if group requester already define
         $crit_id = $rulecrit->add($crit_input = [
-         'rules_id'  => $ruletid,
-         'criteria'  => 'groups_id',
-         'condition' => \Rule::PATTERN_DOES_NOT_EXISTS,
-         'pattern'   => 1,
+            'rules_id'  => $ruletid,
+            'criteria'  => 'groups_id',
+            'condition' => \Rule::PATTERN_DOES_NOT_EXISTS,
+            'pattern'   => 1,
         ]);
         $this->checkInput($rulecrit, $crit_id, $crit_input);
 
        //create action to put default user group as group requester
         $action_id = $ruleaction->add($action_input = [
-         'rules_id'    => $ruletid,
-         'action_type' => 'firstgroupfromuser',
-         'field'       => 'groups_id',
-         'value'       => 1,
+            'rules_id'    => $ruletid,
+            'action_type' => 'firstgroupfromuser',
+            'field'       => 'groups_id',
+            'value'       => 1,
         ]);
         $this->checkInput($ruleaction, $action_id, $action_input);
 
        //create new group
         $group    = new \Group();
         $group_id = $group->add($group_input = [
-         "name"         => "group1",
-         "is_requester" => true
+            "name"         => "group1",
+            "is_requester" => true
         ]);
         $this->checkInput($group, $group_id, $group_input);
 
        //create second group
         $group2    = new \Group();
         $group_id2 = $group2->add($group_input2 = [
-         "name"         => "group2",
-         "is_requester" => true
+            "name"         => "group2",
+            "is_requester" => true
         ]);
         $this->checkInput($group2, $group_id2, $group_input2);
 
@@ -470,23 +470,23 @@ class RuleAsset extends DbTestCase
        //add user to group
         $group_user    = new \Group_User();
         $group_user_id = $group_user->add($group_user_input = [
-         "groups_id" => $group_id,
-         "users_id"  => $user->fields['id']
+            "groups_id" => $group_id,
+            "users_id"  => $user->fields['id']
         ]);
         $this->checkInput($group_user, $group_user_id, $group_user_input);
 
         $group_user_id = $group_user->add($group_user_input = [
-         "groups_id" => $group_id2,
-         "users_id"  => $user->fields['id']
+            "groups_id" => $group_id2,
+            "users_id"  => $user->fields['id']
         ]);
         $this->checkInput($group_user, $group_user_id, $group_user_input);
 
        // Check ticket that trigger rule on creation
         $computer     = new \Computer();
         $computers_id = $computer->add($computer_input = [
-         'name'        => 'test',
-         'entities_id' => 0,
-         'users_id'    => $user->fields['id']
+            'name'        => 'test',
+            'entities_id' => 0,
+            'users_id'    => $user->fields['id']
         ]);
         $this->integer($computers_id)->isGreaterThan(0);
         $this->boolean($computer->getFromDB($computers_id))->isTrue();

@@ -54,43 +54,43 @@ class Widget extends DbTestCase
     protected function palettes()
     {
         return [
-         [
-            'bg_color'  => "#FFFFFF",
-            'nb_series' => 4,
-            'revert'    => true,
-            'expected'  => [
-               'names'  => ['a', 'b', 'c', 'd'],
-               'colors' => [
-                  '#a6a6a6',
-                  '#808080',
-                  '#595959',
-                  '#333333',
-               ],
-            ]
-         ], [
-            'bg_color'  => "#FFFFFF",
-            'nb_series' => 4,
-            'revert'    => false,
-            'expected'  => [
-               'names'  => ['a', 'b', 'c', 'd'],
-               'colors' => [
-                  '#595959',
-                  '#808080',
-                  '#a6a6a6',
-                  '#cccccc',
-               ],
-            ]
-         ], [
-            'bg_color'  => "#FFFFFF",
-            'nb_series' => 1,
-            'revert'    => true,
-            'expected'  => [
-               'names'  => ['a'],
-               'colors' => [
-                  '#999999',
-               ],
-            ]
-         ],
+            [
+                'bg_color'  => "#FFFFFF",
+                'nb_series' => 4,
+                'revert'    => true,
+                'expected'  => [
+                    'names'  => ['a', 'b', 'c', 'd'],
+                    'colors' => [
+                        '#a6a6a6',
+                        '#808080',
+                        '#595959',
+                        '#333333',
+                    ],
+                ]
+            ], [
+                'bg_color'  => "#FFFFFF",
+                'nb_series' => 4,
+                'revert'    => false,
+                'expected'  => [
+                    'names'  => ['a', 'b', 'c', 'd'],
+                    'colors' => [
+                        '#595959',
+                        '#808080',
+                        '#a6a6a6',
+                        '#cccccc',
+                    ],
+                ]
+            ], [
+                'bg_color'  => "#FFFFFF",
+                'nb_series' => 1,
+                'revert'    => true,
+                'expected'  => [
+                    'names'  => ['a'],
+                    'colors' => [
+                        '#999999',
+                    ],
+                ]
+            ],
         ];
     }
 

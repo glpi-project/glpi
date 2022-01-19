@@ -48,9 +48,9 @@ class SoundCard extends Device
     public function prepare(): array
     {
         $mapping = [
-         'name'          => 'designation',
-         'manufacturer'  => 'manufacturers_id',
-         'description'   => 'comment'
+            'name'          => 'designation',
+            'manufacturer'  => 'manufacturers_id',
+            'description'   => 'comment'
         ];
         foreach ($this->data as &$val) {
             foreach ($mapping as $origin => $dest) {

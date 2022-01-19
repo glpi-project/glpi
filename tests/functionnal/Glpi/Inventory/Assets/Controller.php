@@ -42,8 +42,8 @@ class Controller extends AbstractInventoryAsset
     protected function assetProvider(): array
     {
         return [
-         [
-            'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+            [
+                'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
   <CONTENT>
     <CONTROLLERS>
@@ -63,9 +63,9 @@ class Controller extends AbstractInventoryAsset
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-            'expected'  => '{"caption": "Xeon E3-1200 v5/E3-1500 v5/6th Gen Core Processor Host Bridge/DRAM Registers", "driver": "skl_uncore", "manufacturer": "Intel Corporation", "name": "Xeon E3-1200 v5/E3-1500 v5/6th Gen Core Processor Host Bridge/DRAM Registers", "pciclass": "0600", "pcislot": "00:00.0", "productid": "1904", "rev": "08", "type": "Host bridge", "vendorid": "8086", "designation": "Xeon E3-1200 v5/E3-1500 v5/6th Gen Core Processor Host Bridge/DRAM Registers", "manufacturers_id": "Intel Corporation", "interfacetypes_id": "Host bridge", "is_dynamic": 1}'
-         ], [
-            'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+                'expected'  => '{"caption": "Xeon E3-1200 v5/E3-1500 v5/6th Gen Core Processor Host Bridge/DRAM Registers", "driver": "skl_uncore", "manufacturer": "Intel Corporation", "name": "Xeon E3-1200 v5/E3-1500 v5/6th Gen Core Processor Host Bridge/DRAM Registers", "pciclass": "0600", "pcislot": "00:00.0", "productid": "1904", "rev": "08", "type": "Host bridge", "vendorid": "8086", "designation": "Xeon E3-1200 v5/E3-1500 v5/6th Gen Core Processor Host Bridge/DRAM Registers", "manufacturers_id": "Intel Corporation", "interfacetypes_id": "Host bridge", "is_dynamic": 1}'
+            ], [
+                'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
   <CONTENT>
     <CONTROLLERS>
@@ -85,8 +85,8 @@ class Controller extends AbstractInventoryAsset
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-            'expected'  => '{"caption": "NVMe SSD Controller SM951/PM951", "driver": "nvme", "manufacturer": "Samsung Electronics Co Ltd", "name": "NVMe SSD Controller SM951/PM951", "pciclass": "0108", "pcislot": "3c:00.0", "productid": "a802", "rev": "01", "type": "Non-Volatile memory controller", "vendorid": "144d", "designation": "NVMe SSD Controller SM951/PM951", "manufacturers_id": "Samsung Electronics Co Ltd", "interfacetypes_id": "Non-Volatile memory controller", "is_dynamic": 1}'
-         ]
+                'expected'  => '{"caption": "NVMe SSD Controller SM951/PM951", "driver": "nvme", "manufacturer": "Samsung Electronics Co Ltd", "name": "NVMe SSD Controller SM951/PM951", "pciclass": "0108", "pcislot": "3c:00.0", "productid": "a802", "rev": "01", "type": "Non-Volatile memory controller", "vendorid": "144d", "designation": "NVMe SSD Controller SM951/PM951", "manufacturers_id": "Samsung Electronics Co Ltd", "interfacetypes_id": "Non-Volatile memory controller", "is_dynamic": 1}'
+            ]
         ];
     }
 
@@ -182,61 +182,61 @@ class Controller extends AbstractInventoryAsset
 
        //create manually a computer, with 3 controllers
         $computers_id = $computer->add([
-         'name'   => 'pc002',
-         'serial' => 'ggheb7ne7',
-         'entities_id' => 0
+            'name'   => 'pc002',
+            'serial' => 'ggheb7ne7',
+            'entities_id' => 0
         ]);
         $this->integer($computers_id)->isGreaterThan(0);
 
         $manufacturer = new \Manufacturer();
         $manufacturers_id = $manufacturer->add([
-         'name' => 'Intel Corporation'
+            'name' => 'Intel Corporation'
         ]);
         $this->integer($manufacturers_id)->isGreaterThan(0);
 
         $controller_1_id = $device_control->add([
-         'designation' => 'Xeon E3-1200 v5/E3-1500 v5/6th Gen Core Processor Host Bridge/DRAM Registers',
-         'manufacturers_id' => $manufacturers_id,
-         'entities_id'  => 0
+            'designation' => 'Xeon E3-1200 v5/E3-1500 v5/6th Gen Core Processor Host Bridge/DRAM Registers',
+            'manufacturers_id' => $manufacturers_id,
+            'entities_id'  => 0
         ]);
         $this->integer($controller_1_id)->isGreaterThan(0);
 
         $item_controller_1_id = $item_control->add([
-         'items_id'     => $computers_id,
-         'itemtype'     => 'Computer',
-         'devicecontrols_id' => $controller_1_id
+            'items_id'     => $computers_id,
+            'itemtype'     => 'Computer',
+            'devicecontrols_id' => $controller_1_id
         ]);
 
         $manufacturer = new \Manufacturer();
         $manufacturers_id = $manufacturer->add([
-         'name' => 'Samsung Electronics Co Ltd'
+            'name' => 'Samsung Electronics Co Ltd'
         ]);
 
         $controller_2_id = $device_control->add([
-         'designation' => 'NVMe SSD Controller SM951/PM951',
-         'manufacturers_id' => $manufacturers_id,
-         'entities_id'  => 0
+            'designation' => 'NVMe SSD Controller SM951/PM951',
+            'manufacturers_id' => $manufacturers_id,
+            'entities_id'  => 0
         ]);
         $this->integer($controller_2_id)->isGreaterThan(0);
 
         $item_controller_2_id = $item_control->add([
-         'items_id'     => $computers_id,
-         'itemtype'     => 'Computer',
-         'devicecontrols_id' => $controller_2_id
+            'items_id'     => $computers_id,
+            'itemtype'     => 'Computer',
+            'devicecontrols_id' => $controller_2_id
         ]);
         $this->integer($item_controller_2_id)->isGreaterThan(0);
 
         $controller_3_id = $device_control->add([
-         'designation' => 'My Controller',
-         'manufacturers_id' => $manufacturers_id,
-         'entities_id'  => 0
+            'designation' => 'My Controller',
+            'manufacturers_id' => $manufacturers_id,
+            'entities_id'  => 0
         ]);
         $this->integer($controller_3_id)->isGreaterThan(0);
 
         $item_controller_3_id = $item_control->add([
-         'items_id'     => $computers_id,
-         'itemtype'     => 'Computer',
-         'devicecontrols_id' => $controller_3_id
+            'items_id'     => $computers_id,
+            'itemtype'     => 'Computer',
+            'devicecontrols_id' => $controller_3_id
         ]);
         $this->integer($item_controller_3_id)->isGreaterThan(0);
 

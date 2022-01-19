@@ -47,18 +47,18 @@ class OperatingSystem extends CommonDropdown
     public function typenameProvider()
     {
         return [
-         [\OperatingSystem::getTypeName(), 'Operating systems'],
-         [\OperatingSystem::getTypeName(0), 'Operating systems'],
-         [\OperatingSystem::getTypeName(10), 'Operating systems'],
-         [\OperatingSystem::getTypeName(1), 'Operating system']
+            [\OperatingSystem::getTypeName(), 'Operating systems'],
+            [\OperatingSystem::getTypeName(0), 'Operating systems'],
+            [\OperatingSystem::getTypeName(10), 'Operating systems'],
+            [\OperatingSystem::getTypeName(1), 'Operating system']
         ];
     }
 
     protected function getTabs()
     {
         return [
-         'OperatingSystem$main'  => 'Operating system',
-         'Log$1'                 => 'Historical'
+            'OperatingSystem$main'  => 'Operating system',
+            'Log$1'                 => 'Historical'
         ];
     }
 
@@ -72,7 +72,7 @@ class OperatingSystem extends CommonDropdown
         $this->newTestedInstance();
         $this->integer(
             (int)$this->testedInstance->add([
-            'name' => 'OS name ' . $this->getUniqueString()
+                'name' => 'OS name ' . $this->getUniqueString()
             ])
         )->isGreaterThan(0);
         $this->boolean($this->testedInstance->getFromDB($this->testedInstance->getID()))->isTrue();

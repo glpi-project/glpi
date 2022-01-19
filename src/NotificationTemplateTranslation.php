@@ -136,9 +136,9 @@ class NotificationTemplateTranslation extends CommonDBChild
             }
         }
         Dropdown::showLanguages("language", ['display_emptychoice'  => true,
-                                             'value'              => $this->fields['language'],
-                                             'emptylabel'         => __('Default translation'),
-                                          ]);
+            'value'              => $this->fields['language'],
+            'emptylabel'         => __('Default translation'),
+        ]);
         echo "</td></tr>";
 
         echo "<tr class='tab_bg_1'><td>" . __('Subject') . "</td>";
@@ -159,13 +159,14 @@ class NotificationTemplateTranslation extends CommonDBChild
         echo "</td><td colspan='3'>";
         $content_id = "content$rand";
         Html::textarea(['name'              => 'content_html',
-                         'value'             => RichText::getSafeHtml($this->fields['content_html'], true),
-                         'rand'              => $rand,
-                         'editor_id'         => $content_id,
-                         'enable_fileupload' => false,
-                         'enable_richtext'   => true,
-                         'cols'              => 100,
-                         'rows'              => 15]);
+            'value'             => RichText::getSafeHtml($this->fields['content_html'], true),
+            'rand'              => $rand,
+            'editor_id'         => $content_id,
+            'enable_fileupload' => false,
+            'enable_richtext'   => true,
+            'cols'              => 100,
+            'rows'              => 15
+        ]);
 
         echo "<input type='hidden' name='notificationtemplates_id' value='" .
              $template->getField('id') . "'>";
@@ -301,45 +302,45 @@ class NotificationTemplateTranslation extends CommonDBChild
         $tab = [];
 
         $tab[] = [
-         'id'                 => 'common',
-         'name'               => __('Characteristics')
+            'id'                 => 'common',
+            'name'               => __('Characteristics')
         ];
 
         $tab[] = [
-         'id'                 => '1',
-         'table'              => $this->getTable(),
-         'field'              => 'language',
-         'name'               => __('Language'),
-         'datatype'           => 'language',
-         'massiveaction'      => false
+            'id'                 => '1',
+            'table'              => $this->getTable(),
+            'field'              => 'language',
+            'name'               => __('Language'),
+            'datatype'           => 'language',
+            'massiveaction'      => false
         ];
 
         $tab[] = [
-         'id'                 => '2',
-         'table'              => $this->getTable(),
-         'field'              => 'subject',
-         'name'               => __('Subject'),
-         'massiveaction'      => false,
-         'datatype'           => 'string',
+            'id'                 => '2',
+            'table'              => $this->getTable(),
+            'field'              => 'subject',
+            'name'               => __('Subject'),
+            'massiveaction'      => false,
+            'datatype'           => 'string',
         ];
 
         $tab[] = [
-         'id'                 => '3',
-         'table'              => $this->getTable(),
-         'field'              => 'content_html',
-         'name'               => __('Email HTML body'),
-         'datatype'           => 'text',
-         'htmltext'           => 'true',
-         'massiveaction'      => false
+            'id'                 => '3',
+            'table'              => $this->getTable(),
+            'field'              => 'content_html',
+            'name'               => __('Email HTML body'),
+            'datatype'           => 'text',
+            'htmltext'           => 'true',
+            'massiveaction'      => false
         ];
 
         $tab[] = [
-         'id'                 => '4',
-         'table'              => $this->getTable(),
-         'field'              => 'content_text',
-         'name'               => __('Email text body'),
-         'datatype'           => 'text',
-         'massiveaction'      => false
+            'id'                 => '4',
+            'table'              => $this->getTable(),
+            'field'              => 'content_text',
+            'name'               => __('Email text body'),
+            'datatype'           => 'text',
+            'massiveaction'      => false
         ];
 
         return $tab;
@@ -355,7 +356,7 @@ class NotificationTemplateTranslation extends CommonDBChild
         $used_languages = getAllDataFromTable(
             'glpi_notificationtemplatetranslations',
             [
-            'notificationtemplates_id' => $language_id
+                'notificationtemplates_id' => $language_id
             ]
         );
         $used           = [];
@@ -486,7 +487,8 @@ class NotificationTemplateTranslation extends CommonDBChild
         echo "<tr><th colspan='2'>" . __('Preview') . "</th></tr>";
 
         $oktypes = ['CartridgeItem', 'Change', 'ConsumableItem', 'Contract', 'CronTask',
-                       'Problem', 'Project', 'Ticket', 'User'];
+            'Problem', 'Project', 'Ticket', 'User'
+        ];
 
         if (!in_array($itemtype, $oktypes)) {
            // this itemtype doesn't work, need to be fixed
@@ -502,12 +504,14 @@ class NotificationTemplateTranslation extends CommonDBChild
 
         echo "<tr class='tab_bg_2'><td>" . $item->getTypeName(1) . "&nbsp;";
         $item->dropdown(['value'     => $id,
-                            'on_change' => 'reloadTab("' . $key . '="+this.value)']);
+            'on_change' => 'reloadTab("' . $key . '="+this.value)'
+        ]);
         echo "</td><td>" . NotificationEvent::getTypeName(1) . "&nbsp;";
         NotificationEvent::dropdownEvents(
             $item->getType(),
             ['value'     => $event,
-            'on_change' => 'reloadTab("' . $key . '_event="+this.value)']
+                'on_change' => 'reloadTab("' . $key . '_event="+this.value)'
+            ]
         );
         echo "</td>";
 
@@ -520,7 +524,8 @@ class NotificationTemplateTranslation extends CommonDBChild
 
             // TODO Awfull Hack waiting for https://forge.indepnet.net/issues/3439
             $multi   = ['alert', 'alertnotclosed', 'end', 'notice',
-                          'periodicity', 'periodicitynotice'];
+                'periodicity', 'periodicitynotice'
+            ];
             if (in_array($event, $multi)) {
              // Won't work for Cardridge and Consumable
                 $options['entities_id'] = $item->getEntityID();
@@ -528,7 +533,8 @@ class NotificationTemplateTranslation extends CommonDBChild
             }
             $target = NotificationTarget::getInstance($item, $event, $options);
             $infos  = ['language' => $_SESSION['glpilanguage'],
-                         'additionnaloption' => ['usertype' => NotificationTarget::GLPI_USER]];
+                'additionnaloption' => ['usertype' => NotificationTarget::GLPI_USER]
+            ];
 
             $template->resetComputedTemplates();
             $template->setSignature(Notification::getMailingSignature($_SESSION['glpiactive_entity']));

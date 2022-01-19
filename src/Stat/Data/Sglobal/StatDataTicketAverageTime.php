@@ -65,16 +65,16 @@ class StatDataTicketAverageTime extends StatDataAlwaysDisplay
 
         $this->labels = array_keys($avgsolved);
         $this->series = [
-         [
-            'name' => __('Closure'),
-            'data' => $avgsolved
-         ], [
-            'name' => __('Resolution'),
-            'data' => $avgclosed
-         ], [
-            'name' => __('Real duration'),
-            'data' => $avgactiontime
-         ]
+            [
+                'name' => __('Closure'),
+                'data' => $avgsolved
+            ], [
+                'name' => __('Resolution'),
+                'data' => $avgclosed
+            ], [
+                'name' => __('Real duration'),
+                'data' => $avgactiontime
+            ]
         ];
     }
 

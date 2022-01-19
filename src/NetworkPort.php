@@ -221,19 +221,22 @@ class NetworkPort extends CommonDBChild
                     $DB->request(
                         'glpi_networknames',
                         ['itemtype' => 'NetworkPort',
-                        'items_id' => $this->getID()]
+                            'items_id' => $this->getID()
+                        ]
                     ) as $dataname
                 ) {
                     foreach (
                         $DB->request(
                             'glpi_ipaddresses',
                             ['itemtype' => 'NetworkName',
-                            'items_id' => $dataname['id']]
+                                'items_id' => $dataname['id']
+                            ]
                         ) as $data
                     ) {
                          $ip->update(['id'           => $data['id'],
-                                    'mainitemtype' => $this->fields['itemtype'],
-                                    'mainitems_id' => $this->fields['items_id']]);
+                             'mainitemtype' => $this->fields['itemtype'],
+                             'mainitems_id' => $this->fields['items_id']
+                         ]);
                     }
                 }
             }
@@ -407,12 +410,12 @@ class NetworkPort extends CommonDBChild
     {
         $metrics = new NetworkPortMetrics();
         $metrics->add([
-         'networkports_id' => $this->fields['id'],
-         'ifinbytes'       => $this->fields['ifinbytes'] ?? 0,
-         'ifoutbytes'      => $this->fields['ifoutbytes'] ?? 0,
-         'ifinerrors'      => $this->fields['ifinerrors'] ?? 0,
-         'ifouterrors'     => $this->fields['ifouterrors'] ?? 0,
-         'date'            => $_SESSION['glpi_currenttime'],
+            'networkports_id' => $this->fields['id'],
+            'ifinbytes'       => $this->fields['ifinbytes'] ?? 0,
+            'ifoutbytes'      => $this->fields['ifoutbytes'] ?? 0,
+            'ifinerrors'      => $this->fields['ifinerrors'] ?? 0,
+            'ifouterrors'     => $this->fields['ifouterrors'] ?? 0,
+            'date'            => $_SESSION['glpi_currenttime'],
         ], [], false);
     }
 
@@ -455,9 +458,9 @@ class NetworkPort extends CommonDBChild
 
         $this->deleteChildrenAndRelationsFromDb(
             [
-            NetworkName::class,
-            NetworkPort_NetworkPort::class,
-            NetworkPort_Vlan::class,
+                NetworkName::class,
+                NetworkPort_NetworkPort::class,
+                NetworkPort_Vlan::class,
             ]
         );
     }
@@ -523,22 +526,31 @@ class NetworkPort extends CommonDBChild
         $options = [];
         $options[__('Global displays')]
          =  ['characteristics' => ['name'    => __('Characteristics'),
-                                             'default' => true],
-                  'internet'        => ['name'    => __('Internet information'),
-                                             'default' => true],
-                  'dynamic_import'  => ['name'    => __('Automatic inventory'),
-                                             'default' => false]];
+             'default' => true
+         ],
+             'internet'        => ['name'    => __('Internet information'),
+                 'default' => true
+             ],
+             'dynamic_import'  => ['name'    => __('Automatic inventory'),
+                 'default' => false
+             ]
+         ];
         $options[__('Common options')]
          = NetworkPortInstantiation::getGlobalInstantiationNetworkPortDisplayOptions();
         $options[__('Internet information')]
          = ['names'       => ['name'    => NetworkName::getTypeName(Session::getPluralNumber()),
-                                        'default' => false],
-                 'aliases'     => ['name'    => NetworkAlias::getTypeName(Session::getPluralNumber()),
-                                        'default' => false],
-                 'ipaddresses' => ['name'    => IPAddress::getTypeName(Session::getPluralNumber()),
-                                        'default' => true],
-                 'ipnetworks'  => ['name'    => IPNetwork::getTypeName(Session::getPluralNumber()),
-                                        'default' => true]];
+             'default' => false
+         ],
+             'aliases'     => ['name'    => NetworkAlias::getTypeName(Session::getPluralNumber()),
+                 'default' => false
+             ],
+             'ipaddresses' => ['name'    => IPAddress::getTypeName(Session::getPluralNumber()),
+                 'default' => true
+             ],
+             'ipnetworks'  => ['name'    => IPNetwork::getTypeName(Session::getPluralNumber()),
+                 'default' => true
+             ]
+         ];
 
         foreach (self::getNetworkPortInstantiations() as $portType) {
             $portTypeName           = $portType::getTypeName(0);
@@ -578,20 +590,20 @@ class NetworkPort extends CommonDBChild
         }
 
         $aggegate_iterator = $DB->request([
-         'FROM'   => $netport->getTable(),
-         'WHERE'  => [
-            'itemtype'  => $item->getType(),
-            'items_id'  => $item->getID()
-         ],
-         'ORDER'  => 'logical_number'
+            'FROM'   => $netport->getTable(),
+            'WHERE'  => [
+                'itemtype'  => $item->getType(),
+                'items_id'  => $item->getID()
+            ],
+            'ORDER'  => 'logical_number'
         ]);
 
         $aggregated_ports = [];
         foreach ($aggegate_iterator as $row) {
             $port_iterator = $DB->request([
-            'FROM'   => 'glpi_networkportaggregates',
-            'WHERE'  => ['networkports_id' => $row['id']],
-            'LIMIT'  => 1
+                'FROM'   => 'glpi_networkportaggregates',
+                'WHERE'  => ['networkports_id' => $row['id']],
+                'LIMIT'  => 1
             ]);
 
             foreach ($port_iterator as $prow) {
@@ -603,16 +615,16 @@ class NetworkPort extends CommonDBChild
         }
 
         $criteria = [
-         'FROM'   => $netport->getTable(),
-         'WHERE'  => [
-            'items_id'  => $item->getID(),
-            'itemtype'  => $item->getType(), [
-               'OR' => [
-                  ['name' => ['!=', __('Management')]],
-                  ['name' => null]
-               ]
+            'FROM'   => $netport->getTable(),
+            'WHERE'  => [
+                'items_id'  => $item->getID(),
+                'itemtype'  => $item->getType(), [
+                    'OR' => [
+                        ['name' => ['!=', __('Management')]],
+                        ['name' => null]
+                    ]
+                ]
             ]
-         ]
         ];
 
         $ports_iterator = $DB->request($criteria);
@@ -670,8 +682,8 @@ class NetworkPort extends CommonDBChild
         $search_config_top    = '';
         if (
             Session::haveRightsOr('search_config', [
-            DisplayPreference::PERSONAL,
-            DisplayPreference::GENERAL
+                DisplayPreference::PERSONAL,
+                DisplayPreference::GENERAL
             ])
         ) {
             $options_link = "<span class='fa fa-wrench pointer' title='" .
@@ -686,9 +698,9 @@ class NetworkPort extends CommonDBChild
                 'search_config_top',
                 $pref_url,
                 [
-                'title'         => __('Select default items to show'),
-                'reloadonclose' => true,
-                'display'       => false
+                    'title'         => __('Select default items to show'),
+                    'reloadonclose' => true,
+                    'display'       => false
                 ]
             );
         }
@@ -711,10 +723,10 @@ class NetworkPort extends CommonDBChild
         echo "<div class='table-responsive'>";
         if ($showmassiveactions) {
             $massiveactionparams = [
-            'num_displayed'  => min($_SESSION['glpilist_limit'], count($ports_iterator)),
-            'check_itemtype' => $itemtype,
-            'container'      => 'mass' . __CLASS__ . $rand,
-            'check_items_id' => $items_id
+                'num_displayed'  => min($_SESSION['glpilist_limit'], count($ports_iterator)),
+                'check_itemtype' => $itemtype,
+                'container'      => 'mass' . __CLASS__ . $rand,
+                'check_items_id' => $items_id
             ];
             Html::showMassiveActions($massiveactionparams);
         }
@@ -783,12 +795,12 @@ class NetworkPort extends CommonDBChild
 
        //management ports
         $criteria = [
-         'FROM'   => $netport->getTable(),
-         'WHERE'  => [
-            'items_id'  => $item->getID(),
-            'itemtype'  => $item->getType(),
-            'name'      => __('Management')
-         ]
+            'FROM'   => $netport->getTable(),
+            'WHERE'  => [
+                'items_id'  => $item->getID(),
+                'itemtype'  => $item->getType(),
+                'name'      => __('Management')
+            ]
         ];
 
         $mports_iterator = $DB->request($criteria);
@@ -799,10 +811,10 @@ class NetworkPort extends CommonDBChild
 
            //hradcode display preferences form management port
             $dprefs = [
-            1, //name
-            4, //mac
-            127, //network names
-            126 // IPs
+                1, //name
+                4, //mac
+                127, //network names
+                126 // IPs
             ];
 
             echo "<thead><tr><th colspan='" . count($dprefs) . "'>";
@@ -982,22 +994,22 @@ class NetworkPort extends CommonDBChild
                             break;
                         case 38:
                             $vlans = $DB->request([
-                             'SELECT' => [
-                                NetworkPort_Vlan::getTable() . '.id',
-                                Vlan::getTable() . '.name',
-                                NetworkPort_Vlan::getTable() . '.tagged',
-                                Vlan::getTable() . '.tag',
-                             ],
-                             'FROM'   => NetworkPort_Vlan::getTable(),
-                             'INNER JOIN'   => [
-                                Vlan::getTable() => [
-                             'ON' => [
-                                NetworkPort_Vlan::getTable()  => 'vlans_id',
-                                Vlan::getTable()              => 'id'
-                             ]
-                                ]
-                             ],
-                             'WHERE'  => ['networkports_id' => $port['id']]
+                                'SELECT' => [
+                                    NetworkPort_Vlan::getTable() . '.id',
+                                    Vlan::getTable() . '.name',
+                                    NetworkPort_Vlan::getTable() . '.tagged',
+                                    Vlan::getTable() . '.tag',
+                                ],
+                                'FROM'   => NetworkPort_Vlan::getTable(),
+                                'INNER JOIN'   => [
+                                    Vlan::getTable() => [
+                                        'ON' => [
+                                            NetworkPort_Vlan::getTable()  => 'vlans_id',
+                                            Vlan::getTable()              => 'id'
+                                        ]
+                                    ]
+                                ],
+                                'WHERE'  => ['networkports_id' => $port['id']]
                             ]);
 
                             if (count($vlans) > 10) {
@@ -1041,11 +1053,11 @@ class NetworkPort extends CommonDBChild
                                     $houtput = "<div class='hub'>";
 
                                     $hub_ports = $DB->request([
-                                    'FROM'   => NetworkPort::getTable(),
-                                    'WHERE'  => [
-                                       'itemtype'  => $device2->getType(),
-                                       'items_id'  => $device2->getID()
-                                    ]
+                                        'FROM'   => NetworkPort::getTable(),
+                                        'WHERE'  => [
+                                            'itemtype'  => $device2->getType(),
+                                            'items_id'  => $device2->getID()
+                                        ]
                                     ]);
 
                                     $list_ports = [];
@@ -1055,24 +1067,24 @@ class NetworkPort extends CommonDBChild
                                     }
 
                                     $hub_equipments = $DB->request([
-                                    'SELECT' => ['unm.*', 'netp.mac'],
-                                    'FROM'   => Unmanaged::getTable() . ' AS unm',
-                                    'INNER JOIN'   => [
-                                       NetworkPort::getTable() . ' AS netp' => [
-                                    'ON' => [
-                                       'netp'   => 'items_id',
-                                       'unm'    => 'id', [
-                                          'AND' => [
-                                             'netp.itemtype' => $device2->getType()
-                                          ]
-                                       ]
-                                    ]
-                                       ]
-                                    ],
-                                    'WHERE'  => [
-                                       'netp.itemtype'  => $device2->getType(),
-                                       'netp.id'  => $list_ports
-                                    ]
+                                        'SELECT' => ['unm.*', 'netp.mac'],
+                                        'FROM'   => Unmanaged::getTable() . ' AS unm',
+                                        'INNER JOIN'   => [
+                                            NetworkPort::getTable() . ' AS netp' => [
+                                                'ON' => [
+                                                    'netp'   => 'items_id',
+                                                    'unm'    => 'id', [
+                                                        'AND' => [
+                                                            'netp.itemtype' => $device2->getType()
+                                                        ]
+                                                    ]
+                                                ]
+                                            ]
+                                        ],
+                                        'WHERE'  => [
+                                            'netp.itemtype'  => $device2->getType(),
+                                            'netp.id'  => $list_ports
+                                        ]
                                     ]);
 
                                     if (count($hub_equipments) > 10) {
@@ -1139,11 +1151,11 @@ class NetworkPort extends CommonDBChild
                             break;
                         case 127:
                             $names_iterator = $DB->request([
-                             'FROM'   => 'glpi_networknames',
-                             'WHERE'  => [
-                                'itemtype'  => 'NetworkPort',
-                                'items_id'  => $port['id']
-                             ]
+                                'FROM'   => 'glpi_networknames',
+                                'WHERE'  => [
+                                    'itemtype'  => 'NetworkPort',
+                                    'items_id'  => $port['id']
+                                ]
                             ]);
                             foreach ($names_iterator as $namerow) {
                                  $netname = new NetworkName();
@@ -1169,24 +1181,24 @@ class NetworkPort extends CommonDBChild
         global $DB;
 
         $iterator = $DB->request([
-         'SELECT' => 'ipa.*',
-         'FROM'   => IPAddress::getTable() . ' AS ipa',
-         'INNER JOIN'   => [
-            NetworkName::getTable() . ' AS netname' => [
-               'ON' => [
-                  'ipa' => 'items_id',
-                  'netname' => 'id', [
-                     'AND' => [
-                        'ipa.itemtype' => 'NetworkName'
-                     ]
-                  ]
-               ]
+            'SELECT' => 'ipa.*',
+            'FROM'   => IPAddress::getTable() . ' AS ipa',
+            'INNER JOIN'   => [
+                NetworkName::getTable() . ' AS netname' => [
+                    'ON' => [
+                        'ipa' => 'items_id',
+                        'netname' => 'id', [
+                            'AND' => [
+                                'ipa.itemtype' => 'NetworkName'
+                            ]
+                        ]
+                    ]
+                ]
+            ],
+            'WHERE'  => [
+                'netname.items_id'   => $items_id,
+                'netname.itemtype'   => $itemtype
             ]
-         ],
-         'WHERE'  => [
-            'netname.items_id'   => $items_id,
-            'netname.itemtype'   => $itemtype
-         ]
         ]);
         return $iterator;
     }
@@ -1316,62 +1328,69 @@ class NetworkPort extends CommonDBChild
         $tab = [];
 
         $tab[] = [
-         'id'                 => 'network',
-         'name'               => __('Networking')
+            'id'                 => 'network',
+            'name'               => __('Networking')
         ];
 
         $joinparams = ['jointype' => 'itemtype_item'];
 
         $tab[] = [
-         'id'                 => '21',
-         'table'              => 'glpi_networkports',
-         'field'              => 'mac',
-         'name'               => __('MAC address'),
-         'datatype'           => 'mac',
-         'forcegroupby'       => true,
-         'massiveaction'      => false,
-         'joinparams'         => $joinparams
+            'id'                 => '21',
+            'table'              => 'glpi_networkports',
+            'field'              => 'mac',
+            'name'               => __('MAC address'),
+            'datatype'           => 'mac',
+            'forcegroupby'       => true,
+            'massiveaction'      => false,
+            'joinparams'         => $joinparams
         ];
 
         $tab[] = [
-         'id'                 => '87',
-         'table'              => 'glpi_networkports',
-         'field'              => 'instantiation_type',
-         'name'               => NetworkPortType::getTypeName(1),
-         'datatype'           => 'itemtypename',
-         'itemtype_list'      => 'networkport_instantiations',
-         'massiveaction'      => false,
-         'joinparams'         => $joinparams
+            'id'                 => '87',
+            'table'              => 'glpi_networkports',
+            'field'              => 'instantiation_type',
+            'name'               => NetworkPortType::getTypeName(1),
+            'datatype'           => 'itemtypename',
+            'itemtype_list'      => 'networkport_instantiations',
+            'massiveaction'      => false,
+            'joinparams'         => $joinparams
         ];
 
         $networkNameJoin = ['jointype'          => 'itemtype_item',
-                               'specific_itemtype' => 'NetworkPort',
-                               'condition'         => ['NEWTABLE.is_deleted' => 0],
-                               'beforejoin'        => ['table'      => 'glpi_networkports',
-                                                            'joinparams' => $joinparams]];
+            'specific_itemtype' => 'NetworkPort',
+            'condition'         => ['NEWTABLE.is_deleted' => 0],
+            'beforejoin'        => ['table'      => 'glpi_networkports',
+                'joinparams' => $joinparams
+            ]
+        ];
         NetworkName::rawSearchOptionsToAdd($tab, $networkNameJoin, $itemtype);
 
         $instantjoin = ['jointype'   => 'child',
-                           'beforejoin' => ['table'      => 'glpi_networkports',
-                                                 'joinparams' => $joinparams]];
+            'beforejoin' => ['table'      => 'glpi_networkports',
+                'joinparams' => $joinparams
+            ]
+        ];
         foreach (self::getNetworkPortInstantiations() as $instantiationType) {
             $instantiationType::getSearchOptionsToAddForInstantiation($tab, $instantjoin);
         }
 
         $netportjoin = [['table'      => 'glpi_networkports',
-                                 'joinparams' => ['jointype' => 'itemtype_item']],
-                           ['table'      => 'glpi_networkports_vlans',
-                                 'joinparams' => ['jointype' => 'child']]];
+            'joinparams' => ['jointype' => 'itemtype_item']
+        ],
+            ['table'      => 'glpi_networkports_vlans',
+                'joinparams' => ['jointype' => 'child']
+            ]
+        ];
 
         $tab[] = [
-         'id'                 => '88',
-         'table'              => 'glpi_vlans',
-         'field'              => 'name',
-         'name'               => Vlan::getTypeName(1),
-         'datatype'           => 'dropdown',
-         'forcegroupby'       => true,
-         'massiveaction'      => false,
-         'joinparams'         => ['beforejoin' => $netportjoin]
+            'id'                 => '88',
+            'table'              => 'glpi_vlans',
+            'field'              => 'name',
+            'name'               => Vlan::getTypeName(1),
+            'datatype'           => 'dropdown',
+            'forcegroupby'       => true,
+            'massiveaction'      => false,
+            'joinparams'         => ['beforejoin' => $netportjoin]
         ];
 
         return $tab;
@@ -1397,201 +1416,203 @@ class NetworkPort extends CommonDBChild
         $tab = [];
 
         $tab[] = [
-         'id'                 => 'common',
-         'name'               => __('Characteristics')
+            'id'                 => 'common',
+            'name'               => __('Characteristics')
         ];
 
         $tab[] = [
-         'id'                 => '1',
-         'table'              => $this->getTable(),
-         'field'              => 'name',
-         'name'               => __('Name'),
-         'type'               => 'text',
-         'massiveaction'      => false,
-         'datatype'           => 'itemlink',
+            'id'                 => '1',
+            'table'              => $this->getTable(),
+            'field'              => 'name',
+            'name'               => __('Name'),
+            'type'               => 'text',
+            'massiveaction'      => false,
+            'datatype'           => 'itemlink',
         ];
 
         $tab[] = [
-         'id'                 => '2',
-         'table'              => $this->getTable(),
-         'field'              => 'id',
-         'name'               => __('ID'),
-         'massiveaction'      => false,
-         'datatype'           => 'number'
+            'id'                 => '2',
+            'table'              => $this->getTable(),
+            'field'              => 'id',
+            'name'               => __('ID'),
+            'massiveaction'      => false,
+            'datatype'           => 'number'
         ];
 
         $tab[] = [
-         'id'                 => '3',
-         'table'              => $this->getTable(),
-         'field'              => 'logical_number',
-         'name'               => _n('Port number', 'Port numbers', 1),
-         'datatype'           => 'integer',
+            'id'                 => '3',
+            'table'              => $this->getTable(),
+            'field'              => 'logical_number',
+            'name'               => _n('Port number', 'Port numbers', 1),
+            'datatype'           => 'integer',
         ];
 
         $tab[] = [
-         'id'                 => '4',
-         'table'              => $this->getTable(),
-         'field'              => 'mac',
-         'name'               => __('MAC address'),
-         'datatype'           => 'mac',
+            'id'                 => '4',
+            'table'              => $this->getTable(),
+            'field'              => 'mac',
+            'name'               => __('MAC address'),
+            'datatype'           => 'mac',
         ];
 
         $tab[] = [
-         'id'                 => '5',
-         'table'              => $this->getTable(),
-         'field'              => 'instantiation_type',
-         'name'               => NetworkPortType::getTypeName(1),
-         'datatype'           => 'itemtypename',
-         'itemtype_list'      => 'networkport_instantiations',
-         'massiveaction'      => false
+            'id'                 => '5',
+            'table'              => $this->getTable(),
+            'field'              => 'instantiation_type',
+            'name'               => NetworkPortType::getTypeName(1),
+            'datatype'           => 'itemtypename',
+            'itemtype_list'      => 'networkport_instantiations',
+            'massiveaction'      => false
         ];
 
         if ($this->isField('sockets_id')) {
             $tab[] = [
-            'id'                 => '9',
-            'table'              => 'glpi_sockets',
-            'field'              => 'name',
-            'name'               => Socket::getTypeName(1),
-            'datatype'           => 'dropdown'
+                'id'                 => '9',
+                'table'              => 'glpi_sockets',
+                'field'              => 'name',
+                'name'               => Socket::getTypeName(1),
+                'datatype'           => 'dropdown'
             ];
         }
 
         $tab[] = [
-         'id'                 => '16',
-         'table'              => $this->getTable(),
-         'field'              => 'comment',
-         'name'               => __('Comments'),
-         'datatype'           => 'text'
+            'id'                 => '16',
+            'table'              => $this->getTable(),
+            'field'              => 'comment',
+            'name'               => __('Comments'),
+            'datatype'           => 'text'
         ];
 
         $tab[] = [
-         'id'                 => '20',
-         'table'              => $this->getTable(),
-         'field'              => 'itemtype',
-         'name'               => _n('Type', 'Types', 1),
-         'datatype'           => 'itemtype',
-         'massiveaction'      => false
+            'id'                 => '20',
+            'table'              => $this->getTable(),
+            'field'              => 'itemtype',
+            'name'               => _n('Type', 'Types', 1),
+            'datatype'           => 'itemtype',
+            'massiveaction'      => false
         ];
 
         $tab[] = [
-         'id'                 => '21',
-         'table'              => $this->getTable(),
-         'field'              => 'items_id',
-         'name'               => __('ID'),
-         'datatype'           => 'integer',
-         'massiveaction'      => false
+            'id'                 => '21',
+            'table'              => $this->getTable(),
+            'field'              => 'items_id',
+            'name'               => __('ID'),
+            'datatype'           => 'integer',
+            'massiveaction'      => false
         ];
 
         $tab[] = [
-         'id'    => '30',
-         'table' => $this->getTable(),
-         'field' => 'ifmtu',
-         'name'  => __('MTU'),
+            'id'    => '30',
+            'table' => $this->getTable(),
+            'field' => 'ifmtu',
+            'name'  => __('MTU'),
         ];
 
         $tab[] = [
-         'id'    => '31',
-         'table' => $this->getTable(),
-         'field' => 'ifspeed',
-         'name'  => __('Speed'),
+            'id'    => '31',
+            'table' => $this->getTable(),
+            'field' => 'ifspeed',
+            'name'  => __('Speed'),
         ];
 
         $tab[] = [
-         'id'    => '32',
-         'table' => $this->getTable(),
-         'field' => 'ifinternalstatus',
-         'name'  => __('Internal status'),
+            'id'    => '32',
+            'table' => $this->getTable(),
+            'field' => 'ifinternalstatus',
+            'name'  => __('Internal status'),
         ];
 
         $tab[] = [
-         'id'    => '33',
-         'table' => $this->getTable(),
-         'field' => 'iflastchange',
-         'name'  => __('Last change'),
+            'id'    => '33',
+            'table' => $this->getTable(),
+            'field' => 'iflastchange',
+            'name'  => __('Last change'),
         ];
 
         $tab[] = [
-         'id'    => '34',
-         'table' => $this->getTable(),
-         'field' => 'ifinbytes',
-         'name'  => __('Number of I/O bytes'),
+            'id'    => '34',
+            'table' => $this->getTable(),
+            'field' => 'ifinbytes',
+            'name'  => __('Number of I/O bytes'),
         ];
 
         $tab[] = [
-         'id'    => '35',
-         'table' => $this->getTable(),
-         'field' => 'ifinerrors',
-         'name'  => __('Number of I/O errors'),
+            'id'    => '35',
+            'table' => $this->getTable(),
+            'field' => 'ifinerrors',
+            'name'  => __('Number of I/O errors'),
         ];
 
         $tab[] = [
-         'id'    => '36',
-         'table' => $this->getTable(),
-         'field' => 'portduplex',
-         'name'  => __('Duplex'),
+            'id'    => '36',
+            'table' => $this->getTable(),
+            'field' => 'portduplex',
+            'name'  => __('Duplex'),
         ];
 
         $netportjoin = [
-         [
-            'table'      => 'glpi_networkports',
-            'joinparams' => ['jointype' => 'itemtype_item']
-         ], [
-            'table'      => 'glpi_networkports_vlans',
-            'joinparams' => ['jointype' => 'child']
-         ]
+            [
+                'table'      => 'glpi_networkports',
+                'joinparams' => ['jointype' => 'itemtype_item']
+            ], [
+                'table'      => 'glpi_networkports_vlans',
+                'joinparams' => ['jointype' => 'child']
+            ]
         ];
 
         $tab[] = [
-         'id' => '38',
-         'table' => Vlan::getTable(),
-         'field' => 'name',
-         'name' => Vlan::getTypeName(1),
-         'datatype' => 'dropdown',
-         'forcegroupby' => true,
-         'massiveaction' => false,
-         'joinparams' => ['beforejoin' => $netportjoin]
+            'id' => '38',
+            'table' => Vlan::getTable(),
+            'field' => 'name',
+            'name' => Vlan::getTypeName(1),
+            'datatype' => 'dropdown',
+            'forcegroupby' => true,
+            'massiveaction' => false,
+            'joinparams' => ['beforejoin' => $netportjoin]
         ];
 
         if (!defined('TU_USER')) {
             $tab[] = [
-            'id'    => '39',
-            'table' => $this->getTable(),
-            'field' => 'noone',
-            'name' => __('Connected to'),
-            'nosearch' => true,
-            'nodisplay' => true,
-            'massiveaction' => false
+                'id'    => '39',
+                'table' => $this->getTable(),
+                'field' => 'noone',
+                'name' => __('Connected to'),
+                'nosearch' => true,
+                'nodisplay' => true,
+                'massiveaction' => false
             ];
         }
 
         $tab[] = [
-         'id'    => '40',
-         'table' => $this->getTable(),
-         'field' => 'ifconnectionstatus',
-         'name'  => _n('Connection', 'Connections', 1),
+            'id'    => '40',
+            'table' => $this->getTable(),
+            'field' => 'ifconnectionstatus',
+            'name'  => _n('Connection', 'Connections', 1),
         ];
 
         $tab[] = [
-         'id'       => '41',
-         'table'    => $this->getTable(),
-         'field'    => 'lastup',
-         'name'     => __('Last connection'),
-         'datatype' => 'datetime',
+            'id'       => '41',
+            'table'    => $this->getTable(),
+            'field'    => 'lastup',
+            'name'     => __('Last connection'),
+            'datatype' => 'datetime',
         ];
 
         $tab[] = [
-         'id'    => '42',
-         'table' => $this->getTable(),
-         'field' => 'ifalias',
-         'name'  => __('Alias')
+            'id'    => '42',
+            'table' => $this->getTable(),
+            'field' => 'ifalias',
+            'name'  => __('Alias')
         ];
 
         $joinparams = ['jointype' => 'itemtype_item'];
         $networkNameJoin = ['jointype'          => 'itemtype_item',
-                               'specific_itemtype' => 'NetworkPort',
-                               'condition'         => ['NEWTABLE.is_deleted' => 0],
-                               'beforejoin'        => ['table'      => 'glpi_networkports',
-                                                            'joinparams' => $joinparams]];
+            'specific_itemtype' => 'NetworkPort',
+            'condition'         => ['NEWTABLE.is_deleted' => 0],
+            'beforejoin'        => ['table'      => 'glpi_networkports',
+                'joinparams' => $joinparams
+            ]
+        ];
         NetworkName::rawSearchOptionsToAdd($tab, $networkNameJoin);
 
         return $tab;
@@ -1653,8 +1674,9 @@ class NetworkPort extends CommonDBChild
         return countElementsInTable(
             'glpi_networkports',
             ['itemtype'   => $item->getType(),
-                                   'items_id'   => $item->getField('id'),
-            'is_deleted' => 0 ]
+                'items_id'   => $item->getField('id'),
+                'is_deleted' => 0
+            ]
         );
     }
 
@@ -1697,9 +1719,9 @@ class NetworkPort extends CommonDBChild
         global $DB;
 
         $iterator = $DB->request([
-         'SELECT' => ['name'],
-         'FROM'   => $this->fields['itemtype']::getTable(),
-         'WHERE'  => ['id' => $this->fields['items_id']]
+            'SELECT' => ['name'],
+            'FROM'   => $this->fields['itemtype']::getTable(),
+            'WHERE'  => ['id' => $this->fields['items_id']]
         ]);
 
         if ($iterator->count()) {
@@ -1728,24 +1750,24 @@ class NetworkPort extends CommonDBChild
         }
 
         $result = $DB->request([
-         'FROM'         => Unmanaged::getTable(),
-         'COUNT'        => 'cpt',
-         'INNER JOIN'   => [
-            $this->getTable() => [
-               'ON' => [
-                  $this->getTable()       => 'items_id',
-                  Unmanaged::getTable()   => 'id', [
-                     'AND' => [
-                        $this->getTable() . '.itemtype' => Unmanaged::getType()
-                     ]
-                  ]
-               ]
+            'FROM'         => Unmanaged::getTable(),
+            'COUNT'        => 'cpt',
+            'INNER JOIN'   => [
+                $this->getTable() => [
+                    'ON' => [
+                        $this->getTable()       => 'items_id',
+                        Unmanaged::getTable()   => 'id', [
+                            'AND' => [
+                                $this->getTable() . '.itemtype' => Unmanaged::getType()
+                            ]
+                        ]
+                    ]
+                ]
+            ],
+            'WHERE'        => [
+                'hub' => 1,
+                $this->getTable() . '.id' => $opposite
             ]
-         ],
-         'WHERE'        => [
-            'hub' => 1,
-            $this->getTable() . '.id' => $opposite
-         ]
         ])->current();
 
         return ($result['cpt'] > 0);
@@ -1754,10 +1776,10 @@ class NetworkPort extends CommonDBChild
     public function getNonLoggedFields(): array
     {
         return [
-         'ifinbytes',
-         'ifoutbytes',
-         'ifinerrors',
-         'ifouterrors'
+            'ifinbytes',
+            'ifoutbytes',
+            'ifinerrors',
+            'ifouterrors'
         ];
     }
 }

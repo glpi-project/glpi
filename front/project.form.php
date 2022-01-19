@@ -132,9 +132,9 @@ if (isset($_POST["add"])) {
         $project->showKanban(0);
     } else {
         $project->display([
-         'id'           => $_GET["id"],
-         'withtemplate' => $_GET["withtemplate"],
-         'formoptions'  => "data-track-changes=true"
+            'id'           => $_GET["id"],
+            'withtemplate' => $_GET["withtemplate"],
+            'formoptions'  => "data-track-changes=true"
         ]);
     }
     Html::footer();

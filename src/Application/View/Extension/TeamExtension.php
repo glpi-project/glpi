@@ -45,7 +45,7 @@ class TeamExtension extends AbstractExtension
     public function getFilters(): array
     {
         return [
-         new TwigFilter('team_role_name', [$this, 'getTeamRoleName']),
+            new TwigFilter('team_role_name', [$this, 'getTeamRoleName']),
         ];
     }
 

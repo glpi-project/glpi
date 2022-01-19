@@ -69,9 +69,9 @@ class PlanningExternalEvent extends CommonDBTM implements CalDAVCompatibleItemIn
        // we permits globally to update this object,
        // as users can update their onw items
         return Session::haveRightsOr(self::$rightname, [
-         CREATE,
-         UPDATE,
-         self::MANAGE_BG_EVENTS
+            CREATE,
+            UPDATE,
+            self::MANAGE_BG_EVENTS
         ]);
     }
 
@@ -166,10 +166,10 @@ class PlanningExternalEvent extends CommonDBTM implements CalDAVCompatibleItemIn
             echo "<td colspan='2'>" . $tpl_class::getTypeName() . "</td>";
             echo "<td colspan='2'>";
             $tpl_class::dropdown([
-            'value'     => $this->fields['planningexternaleventtemplates_id'],
-            'entity'    => $this->getEntityID(),
-            'rand'      => $rand,
-            'on_change' => "template_update$rand(this.value)"
+                'value'     => $this->fields['planningexternaleventtemplates_id'],
+                'entity'    => $this->getEntityID(),
+                'rand'      => $rand,
+                'on_change' => "template_update$rand(this.value)"
             ]);
 
             $ajax_url = $CFG_GLPI["root_doc"] . "/ajax/planning.php";
@@ -231,8 +231,8 @@ JAVASCRIPT;
             echo Html::input(
                 'name',
                 [
-                'value' => $this->fields['name'],
-                'id'    => "textfield_name$rand",
+                    'value' => $this->fields['name'],
+                    'id'    => "textfield_name$rand",
                 ]
             );
         } else {
@@ -247,9 +247,9 @@ JAVASCRIPT;
         echo "<tr class='tab_bg_2'><td colspan='2'>" . User::getTypeName(1) . "</td>";
         echo "<td colspan='2'>";
         User::dropdown([
-         'name'          => 'users_id',
-         'right'         => 'all',
-         'value'         => $this->fields['users_id']
+            'name'          => 'users_id',
+            'right'         => 'all',
+            'value'         => $this->fields['users_id']
         ]);
         echo "</td>";
         echo "</tr>";
@@ -257,12 +257,12 @@ JAVASCRIPT;
         echo "<tr class='tab_bg_2'><td colspan='2'>" . __('Guests') . "</td>";
         echo "<td colspan='2'>";
         User::dropdown([
-         'name'          => 'users_id_guests[]',
-         'right'         => 'all',
-         'values'        => $this->fields['users_id_guests'],
-         'specific_tags' => [
-            'multiple' => true
-         ],
+            'name'          => 'users_id_guests[]',
+            'right'         => 'all',
+            'values'        => $this->fields['users_id_guests'],
+            'specific_tags' => [
+                'multiple' => true
+            ],
         ]);
         echo "<div style='font-style: italic'>" .
             __("Each guest will have a read-only copy of this event") .
@@ -275,7 +275,7 @@ JAVASCRIPT;
         echo "<td colspan='2'>";
         if ($canedit) {
             Planning::dropdownState("state", $this->fields["state"], true, [
-              'rand' => $rand,
+                'rand' => $rand,
             ]);
         } else {
             echo Planning::getState($this->fields["state"]);
@@ -289,8 +289,8 @@ JAVASCRIPT;
         echo "<td colspan='2'>";
         if ($canedit) {
             PlanningEventCategory::dropdown([
-            'value' => $this->fields['planningeventcategories_id'],
-            'rand'  => $rand
+                'value' => $this->fields['planningeventcategories_id'],
+                'rand'  => $rand
             ]);
         } else {
             echo Dropdown::getDropdownName(
@@ -306,7 +306,7 @@ JAVASCRIPT;
         echo "<td colspan='2'>";
         if ($canedit) {
             Dropdown::showYesNo('background', $this->fields['background'], -1, [
-            'rand' => $rand,
+                'rand' => $rand,
             ]);
         } else {
             echo Dropdown::getYesNo($this->fields['background']);
@@ -317,19 +317,19 @@ JAVASCRIPT;
         echo "<tr class='tab_bg_2'><td  colspan='2'>" . _n('Calendar', 'Calendars', 1) . "</td>";
         echo "<td>";
         Planning::showAddEventClassicForm([
-         'items_id'  => $this->fields['id'],
-         'itemtype'  => $this->getType(),
-         'begin'     => $this->fields['begin'],
-         'end'       => $this->fields['end'],
-         'rand_user' => $this->fields['users_id'],
-         'rand'      => $rand_plan,
+            'items_id'  => $this->fields['id'],
+            'itemtype'  => $this->getType(),
+            'begin'     => $this->fields['begin'],
+            'end'       => $this->fields['end'],
+            'rand_user' => $this->fields['users_id'],
+            'rand'      => $rand_plan,
         ]);
         echo "</td></tr>";
 
         echo "<tr class='tab_bg_2'><td  colspan='2'>" . __('Repeat') . "</td>";
         echo "<td>";
         echo self::showRepetitionForm($this->fields['rrule'] ?? '', [
-         'rand' => $rand_rrule
+            'rand' => $rand_rrule
         ]);
         echo "</td></tr>";
 
@@ -338,12 +338,12 @@ JAVASCRIPT;
 
         if ($canedit) {
             Html::textarea([
-              'name'              => 'text',
-              'value'             => RichText::getSafeHtml($this->fields["text"], true),
-              'enable_richtext'   => true,
-              'enable_fileupload' => true,
-              'rand'              => $rand,
-              'editor_id'         => 'text' . $rand,
+                'name'              => 'text',
+                'value'             => RichText::getSafeHtml($this->fields["text"], true),
+                'enable_richtext'   => true,
+                'enable_fileupload' => true,
+                'rand'              => $rand,
+                'editor_id'         => 'text' . $rand,
             ]);
         } else {
             echo "<div class='rich_text_container'>";
@@ -356,14 +356,14 @@ JAVASCRIPT;
         if ($is_ajax && $is_rrule) {
             $options['candel'] = false;
             $options['addbuttons'] = [
-            'purge'          => [
-               'text' => __("Delete serie"),
-               'icon' => 'fas fa-trash-alt',
-            ],
-            'purge_instance' => [
-               'text' => __("Delete instance"),
-               'icon' => 'far fa-trash-alt',
-            ],
+                'purge'          => [
+                    'text' => __("Delete serie"),
+                    'icon' => 'fas fa-trash-alt',
+                ],
+                'purge_instance' => [
+                    'text' => __("Delete instance"),
+                    'icon' => 'far fa-trash-alt',
+                ],
             ];
         }
 
@@ -386,7 +386,7 @@ JAVASCRIPT;
 
         $this->deleteChildrenAndRelationsFromDb(
             [
-            VObject::class,
+                VObject::class,
             ]
         );
     }
@@ -401,10 +401,10 @@ JAVASCRIPT;
     {
 
         return self::getItemsAsVCalendars([
-         'OR' => [
-            self::getTableField('users_id')        => $users_id,
-            self::getTableField('users_id_guests') => ['LIKE', '%"' . $users_id . '"%'],
-         ]
+            'OR' => [
+                self::getTableField('users_id')        => $users_id,
+                self::getTableField('users_id_guests') => ['LIKE', '%"' . $users_id . '"%'],
+            ]
         ]);
     }
 
@@ -421,8 +421,8 @@ JAVASCRIPT;
         global $DB;
 
         $query = [
-         'FROM'  => self::getTable(),
-         'WHERE' => $criteria,
+            'FROM'  => self::getTable(),
+            'WHERE' => $criteria,
         ];
 
         $event_iterator = $DB->request($query);

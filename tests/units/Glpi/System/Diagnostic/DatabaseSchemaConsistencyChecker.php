@@ -39,7 +39,7 @@ class DatabaseSchemaConsistencyChecker extends \GLPITestCase
     {
        // `date_creation` should always be associated with `date_mod`
         yield [
-         'create_table_sql'   => <<<SQL
+            'create_table_sql'   => <<<SQL
 CREATE TABLE `%s` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
@@ -48,12 +48,12 @@ CREATE TABLE `%s` (
 ) ENGINE=InnoDB
 SQL
          ,
-         'expected_missing'   => [
-            'date_mod'
-         ],
+            'expected_missing'   => [
+                'date_mod'
+            ],
         ];
         yield [
-         'create_table_sql'   => <<<SQL
+            'create_table_sql'   => <<<SQL
 CREATE TABLE `%s` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
@@ -62,12 +62,12 @@ CREATE TABLE `%s` (
 ) ENGINE=InnoDB
 SQL
          ,
-         'expected_missing'   => [
-            'date_creation'
-         ],
+            'expected_missing'   => [
+                'date_creation'
+            ],
         ];
         yield [
-         'create_table_sql'   => <<<SQL
+            'create_table_sql'   => <<<SQL
 CREATE TABLE `%s` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
@@ -77,7 +77,7 @@ CREATE TABLE `%s` (
 ) ENGINE=InnoDB
 SQL
          ,
-         'expected_missing'   => [],
+            'expected_missing'   => [],
         ];
     }
 

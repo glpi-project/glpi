@@ -103,11 +103,11 @@ function choose_language()
     $CFG_GLPI['ajax_limit_count'] = 15;
 
     TemplateRenderer::getInstance()->display('install/choose_language.html.twig', [
-      'languages_dropdown'  => Dropdown::showLanguages('language', [
-         'display' => false,
-         'value'   => $_SESSION['glpilanguage'],
-         'width'   => '100%'
-      ])
+        'languages_dropdown'  => Dropdown::showLanguages('language', [
+            'display' => false,
+            'value'   => $_SESSION['glpilanguage'],
+            'width'   => '100%'
+        ])
     ]);
 }
 
@@ -115,7 +115,7 @@ function choose_language()
 function acceptLicense()
 {
     TemplateRenderer::getInstance()->display('install/accept_license.html.twig', [
-      'copying' => file_get_contents(GLPI_ROOT . "/COPYING.txt"),
+        'copying' => file_get_contents(GLPI_ROOT . "/COPYING.txt"),
     ]);
 }
 
@@ -133,8 +133,8 @@ function step1($update)
     $requiremements = (new RequirementsManager())->getCoreRequirementList();
 
     TemplateRenderer::getInstance()->display('install/step1.html.twig', [
-      'update'       => $update,
-      'requirements' => $requiremements,
+        'update'       => $update,
+        'requirements' => $requiremements,
     ]);
 }
 
@@ -143,7 +143,7 @@ function step1($update)
 function step2($update)
 {
     TemplateRenderer::getInstance()->display('install/step2.html.twig', [
-      'update' => $update,
+        'update' => $update,
     ]);
 }
 
@@ -168,9 +168,9 @@ function step3($host, $user, $password, $update)
 
     if (!$link->connect_error) {
         $_SESSION['db_access'] = [
-         'host'     => $host,
-         'user'     => $user,
-         'password' => $password
+            'host'     => $host,
+            'user'     => $user,
+            'password' => $password
         ];
 
         $db = new class ($link) extends DBmysql {
@@ -191,9 +191,9 @@ function step3($host, $user, $password, $update)
             while ($row = $DB_list->fetch_array()) {
                 if (
                     !in_array($row['Database'], [
-                    "information_schema",
-                    "mysql",
-                    "performance_schema"
+                        "information_schema",
+                        "mysql",
+                        "performance_schema"
                     ])
                 ) {
                     $databases[] = $row['Database'];
@@ -204,13 +204,13 @@ function step3($host, $user, $password, $update)
 
    // display html
     TemplateRenderer::getInstance()->display('install/step3.html.twig', [
-      'update'             => $update,
-      'link'               => $link,
-      'host'               => $host,
-      'user'               => $user,
-      'engine_requirement' => $engine_requirement,
-      'config_requirement' => $config_requirement,
-      'databases'          => $databases,
+        'update'             => $update,
+        'link'               => $link,
+        'host'               => $host,
+        'user'               => $user,
+        'engine_requirement' => $engine_requirement,
+        'config_requirement' => $config_requirement,
+        'databases'          => $databases,
     ]);
 }
 
@@ -392,16 +392,16 @@ function step6()
     $_SESSION['telemetry_from_install'] = true;
 
     TemplateRenderer::getInstance()->display('install/step6.html.twig', [
-      'telemetry_info' => Telemetry::showTelemetry(),
-      'reference_info' => Telemetry::showReference(),
+        'telemetry_info' => Telemetry::showTelemetry(),
+        'reference_info' => Telemetry::showReference(),
     ]);
 }
 
 function step7()
 {
     TemplateRenderer::getInstance()->display('install/step7.html.twig', [
-      'glpinetwork'     => GLPINetwork::showInstallMessage(),
-      'glpinetwork_url' => GLPI_NETWORK_SERVICES,
+        'glpinetwork'     => GLPINetwork::showInstallMessage(),
+        'glpinetwork_url' => GLPI_NETWORK_SERVICES,
     ]);
 }
 
@@ -426,8 +426,8 @@ function step8()
         'glpi_configs',
         ['value' => $DB->escape($url_base)],
         [
-         'context'   => 'core',
-         'name'      => 'url_base'
+            'context'   => 'core',
+            'name'      => 'url_base'
         ]
     );
 
@@ -436,8 +436,8 @@ function step8()
         'glpi_configs',
         ['value' => $DB->escape($url_base_api)],
         [
-         'context'   => 'core',
-         'name'      => 'url_base_api'
+            'context'   => 'core',
+            'name'      => 'url_base_api'
         ]
     );
 

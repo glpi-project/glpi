@@ -51,9 +51,9 @@ class PCIVendor extends DbTestCase
 
         $this->integer(
             $vendors->add([
-            'name'  => 'Something to test',
-            'vendorid'  => '01ef',
-            'deviceid'  => '02ef'
+                'name'  => 'Something to test',
+                'vendorid'  => '01ef',
+                'deviceid'  => '02ef'
             ])
         )->isGreaterThan(0);
 
@@ -72,8 +72,8 @@ class PCIVendor extends DbTestCase
        //override
         $this->integer(
             $vendors->add([
-            'name'  => addslashes("UnAllied Telesis, Inc (Good ID)"),
-            'vendorid'  => '0010'
+                'name'  => addslashes("UnAllied Telesis, Inc (Good ID)"),
+                'vendorid'  => '0010'
             ])
         )->isGreaterThan(0);
         $this->string($vendors->getManufacturer('0010'))->isIdenticalTo("UnAllied Telesis, Inc (Good ID)");
@@ -90,16 +90,16 @@ class PCIVendor extends DbTestCase
        //override
         $this->integer(
             $vendors->add([
-            'name'  => 'not the good one',
-            'vendorid'  => '0002',
-            'deviceid'  => '8139'
+                'name'  => 'not the good one',
+                'vendorid'  => '0002',
+                'deviceid'  => '8139'
             ])
         )->isGreaterThan(0);
         $this->integer(
             $vendors->add([
-            'name'  => 'Yeah, that works',
-            'vendorid'  => '0010',
-            'deviceid'  => '8139'
+                'name'  => 'Yeah, that works',
+                'vendorid'  => '0010',
+                'deviceid'  => '8139'
             ])
         )->isGreaterThan(0);
         $this->string($vendors->getProductName('0010', '8139'))->isIdenticalTo('Yeah, that works');

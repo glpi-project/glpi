@@ -46,31 +46,31 @@ class VirtualMachine extends InventoryAsset
     private $vms = [];
     private $allports = [];
     private $vmcomponents = [
-      'storages'  => 'Drive',
-      'drives'    => 'Volume',
-      'cpus'      => 'Processor',
-      'memories'  => 'Memory'
+        'storages'  => 'Drive',
+        'drives'    => 'Volume',
+        'cpus'      => 'Processor',
+        'memories'  => 'Memory'
     ];
 
     public function prepare(): array
     {
         $mapping = [
-         'memory'      => 'ram',
-         'vmtype'      => 'virtualmachinetypes_id',
-         'subsystem'   => 'virtualmachinesystems_id',
-         'status'      => 'virtualmachinestates_id'
+            'memory'      => 'ram',
+            'vmtype'      => 'virtualmachinetypes_id',
+            'subsystem'   => 'virtualmachinesystems_id',
+            'status'      => 'virtualmachinestates_id'
         ];
 
         $vm_mapping = [
-         'memory'          => 'ram',
-         'vmtype'          => 'computertypes_id',
-         'operatingsystem' => 'operatingsystems_id',
-         'customfields'    => 'comment'
+            'memory'          => 'ram',
+            'vmtype'          => 'computertypes_id',
+            'operatingsystem' => 'operatingsystems_id',
+            'customfields'    => 'comment'
         ];
 
         $net_mapping = [
-         'description' => 'name',
-         'macaddr'     => 'mac'
+            'description' => 'name',
+            'macaddr'     => 'mac'
         ];
 
         if ($this->item->getType() != 'Computer') {
@@ -187,12 +187,12 @@ class VirtualMachine extends InventoryAsset
         $db_existing = [];
 
         $iterator = $DB->request([
-         'SELECT' => ['id', 'name', 'uuid', 'virtualmachinesystems_id'],
-         'FROM'   => ComputerVirtualMachine::getTable(),
-         'WHERE'  => [
-            'computers_id' => $this->item->fields['id'],
-            'is_dynamic'   => 1
-         ]
+            'SELECT' => ['id', 'name', 'uuid', 'virtualmachinesystems_id'],
+            'FROM'   => ComputerVirtualMachine::getTable(),
+            'WHERE'  => [
+                'computers_id' => $this->item->fields['id'],
+                'is_dynamic'   => 1
+            ]
         ]);
 
         foreach ($iterator as $row) {
@@ -216,14 +216,14 @@ class VirtualMachine extends InventoryAsset
         foreach ($db_vms as $keydb => $arraydb) {
             foreach ($value as $key => $val) {
                 $sinput = [
-                 'name'                     => $val->name ?? '',
-                 'uuid'                     => $val->uuid ?? '',
-                 'virtualmachinesystems_id' => $val->virtualmachinesystems_id ?? 0
+                    'name'                     => $val->name ?? '',
+                    'uuid'                     => $val->uuid ?? '',
+                    'virtualmachinesystems_id' => $val->virtualmachinesystems_id ?? 0
                 ];
                 if ($sinput == $arraydb) {
                     $input = [
-                    'id'           => $keydb,
-                    'is_dynamic'   => 1
+                        'id'           => $keydb,
+                        'is_dynamic'   => 1
                     ];
 
                     foreach (['vcpu', 'memory', 'virtualmachinetypes_id', 'virtualmachinestates_id'] as $prop) {
@@ -284,14 +284,14 @@ class VirtualMachine extends InventoryAsset
 
             if (property_exists($vm, 'uuid') && $vm->uuid != '') {
                 $iterator = $DB->request([
-                'SELECT' => 'id',
-                'FROM'   => 'glpi_computers',
-                'WHERE'  => [
-                  'RAW' => [
-                     'LOWER(uuid)'  => ComputerVirtualMachine::getUUIDRestrictCriteria($vm->uuid)
-                  ]
-                ],
-                'LIMIT'  => 1
+                    'SELECT' => 'id',
+                    'FROM'   => 'glpi_computers',
+                    'WHERE'  => [
+                        'RAW' => [
+                            'LOWER(uuid)'  => ComputerVirtualMachine::getUUIDRestrictCriteria($vm->uuid)
+                        ]
+                    ],
+                    'LIMIT'  => 1
                 ]);
                 $computers_vm_id = 0;
                 foreach ($iterator as $data) {

@@ -52,9 +52,9 @@ class ProjectTaskLink extends CommonDBRelation
         global $DB;
 
         $iterator = $DB->request([
-         'SELECT' => ['glpi_projecttasklinks.*'],
-         'FROM' => 'glpi_projecttasklinks',
-         'WHERE' => "projecttasks_id_source IN (" . $projecttaskIds . ") AND projecttasks_id_target IN (" . $projecttaskIds . ")"
+            'SELECT' => ['glpi_projecttasklinks.*'],
+            'FROM' => 'glpi_projecttasklinks',
+            'WHERE' => "projecttasks_id_source IN (" . $projecttaskIds . ") AND projecttasks_id_target IN (" . $projecttaskIds . ")"
         ]);
 
         return $iterator;
@@ -64,14 +64,14 @@ class ProjectTaskLink extends CommonDBRelation
     {
         global $DB;
         $iterator = $DB->request([
-         'SELECT' => 'id',
-         'FROM' => self::getTable(),
-         'WHERE' => [
-            'AND' => ['projecttasks_id_source' => $taskLink['projecttasks_id_source']
-            ],
-            ['projecttasks_id_target' => $taskLink['projecttasks_id_target']],
-            ['type' => $taskLink['type']]
-         ]
+            'SELECT' => 'id',
+            'FROM' => self::getTable(),
+            'WHERE' => [
+                'AND' => ['projecttasks_id_source' => $taskLink['projecttasks_id_source']
+                ],
+                ['projecttasks_id_target' => $taskLink['projecttasks_id_target']],
+                ['type' => $taskLink['type']]
+            ]
         ]);
         return count($iterator) > 0;
     }

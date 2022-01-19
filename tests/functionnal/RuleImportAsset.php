@@ -70,8 +70,8 @@ class RuleImportAsset extends DbTestCase
             \RuleImportAssetCollection::getTable(),
             ['is_active' => 1],
             [
-            'name'      => ['LIKE', "%$name%"],
-            'is_active' => 0
+                'name'      => ['LIKE', "%$name%"],
+                'is_active' => 0
             ]
         );
     }
@@ -94,10 +94,10 @@ class RuleImportAsset extends DbTestCase
         $rulecriteria = new \RuleCriteria();
 
         $input = [
-         'is_active' => 1,
-         'name'      => $name,
-         'match'     => 'AND',
-         'sub_type'  => 'RuleImportAsset',
+            'is_active' => 1,
+            'name'      => $name,
+            'match'     => 'AND',
+            'sub_type'  => 'RuleImportAsset',
         ];
 
         $ruleARN = $rule->find(['name' => $afterRuleName ?? 'Computer constraint (name)'], [], 1);
@@ -107,11 +107,11 @@ class RuleImportAsset extends DbTestCase
             $DB->update(
                 'glpi_rules',
                 [
-                'ranking' => new \QueryExpression($DB->quoteName('ranking') . ' + 2')
+                    'ranking' => new \QueryExpression($DB->quoteName('ranking') . ' + 2')
                 ],
                 [
-                'ranking'   => ['>', $r['ranking']],
-                'sub_type'  => 'RuleImportAsset'
+                    'ranking'   => ['>', $r['ranking']],
+                    'sub_type'  => 'RuleImportAsset'
                 ]
             )
         )->isTrue();
@@ -122,10 +122,10 @@ class RuleImportAsset extends DbTestCase
        // Add criteria
         foreach ($criteria as $crit) {
             $input = [
-            'rules_id'  => $rules_id,
-            'criteria'  => $crit['criteria'],
-            'pattern'   => $crit['pattern'],
-            'condition' => $crit['condition'],
+                'rules_id'  => $rules_id,
+                'criteria'  => $crit['criteria'],
+                'pattern'   => $crit['pattern'],
+                'condition' => $crit['condition'],
             ];
             $this->integer((int)$rulecriteria->add($input))->isGreaterThan(0);
         }
@@ -133,10 +133,10 @@ class RuleImportAsset extends DbTestCase
        // Add action
         $ruleaction = new \RuleAction();
         $input = [
-         'rules_id'    => $rules_id,
-         'action_type' => $action['action_type'],
-         'field'       => $action['field'],
-         'value'       => $action['value'],
+            'rules_id'    => $rules_id,
+            'action_type' => $action['action_type'],
+            'field'       => $action['field'],
+            'value'       => $action['value'],
         ];
         $this->integer((int)$ruleaction->add($input))->isGreaterThan(0);
     }
@@ -144,9 +144,9 @@ class RuleImportAsset extends DbTestCase
     public function testCreateComputerName()
     {
         $input = [
-         'itemtype' => 'Computer',
-         'name'     => 'pc-01',
-         'entities_id' => 0
+            'itemtype' => 'Computer',
+            'name'     => 'pc-01',
+            'entities_id' => 0
         ];
         $ruleCollection = new \RuleImportAssetCollection();
         $rule = new \RuleImportAsset();
@@ -166,9 +166,9 @@ class RuleImportAsset extends DbTestCase
     public function testUpdateComputerName()
     {
         $input = [
-         'itemtype' => 'Computer',
-         'name'     => 'pc-01',
-         'entities_id'  => 0
+            'itemtype' => 'Computer',
+            'name'     => 'pc-01',
+            'entities_id'  => 0
         ];
         $ruleCollection = new \RuleImportAssetCollection();
         $rule = new \RuleImportAsset();
@@ -192,9 +192,9 @@ class RuleImportAsset extends DbTestCase
     public function testUpdateComputerDoubleName()
     {
         $input = [
-         'itemtype' => 'Computer',
-         'name'     => 'pc-01',
-         'entities_id'  => 0
+            'itemtype' => 'Computer',
+            'name'     => 'pc-01',
+            'entities_id'  => 0
         ];
         $ruleCollection = new \RuleImportAssetCollection();
         $rule = new \RuleImportAsset();
@@ -227,11 +227,11 @@ class RuleImportAsset extends DbTestCase
     public function testCreateComputerSerial_UUID_case1()
     {
         $input = [
-         'itemtype' => 'Computer',
-         'name'     => 'pc-01',
-         'serial'   => '75F4BF',
-         'uuid'     => '01391796-50A4-0246-955B-417652A8AF14',
-         'entities_id' => 0
+            'itemtype' => 'Computer',
+            'name'     => 'pc-01',
+            'serial'   => '75F4BF',
+            'uuid'     => '01391796-50A4-0246-955B-417652A8AF14',
+            'entities_id' => 0
         ];
         $ruleCollection = new \RuleImportAssetCollection();
         $rule = new \RuleImportAsset();
@@ -255,20 +255,20 @@ class RuleImportAsset extends DbTestCase
     public function testCreateComputerSerial_UUID_case2()
     {
         $input = [
-         'itemtype' => 'Computer',
-         'name'     => 'pc-01',
-         'serial'   => '75F4BF',
-         'uuid'     => '01391796-50A4-0246-955B-417652A8AF14',
-         'entities_id' => 0
+            'itemtype' => 'Computer',
+            'name'     => 'pc-01',
+            'serial'   => '75F4BF',
+            'uuid'     => '01391796-50A4-0246-955B-417652A8AF14',
+            'entities_id' => 0
         ];
         $ruleCollection = new \RuleImportAssetCollection();
         $rule = new \RuleImportAsset();
         $computer = new \Computer();
 
         $computers_id = (int)$computer->add([
-         'entities_id' => 0,
-         'name'        => 'pc-02',
-         'uuid'     => '01391796-50A4-0246-955B-417652A8AF14',
+            'entities_id' => 0,
+            'name'        => 'pc-02',
+            'uuid'     => '01391796-50A4-0246-955B-417652A8AF14',
         ]);
         $this->integer($computers_id)->isGreaterThan(0);
 
@@ -287,11 +287,11 @@ class RuleImportAsset extends DbTestCase
     public function testUpdateComputerSerial_UUID()
     {
         $input = [
-         'itemtype' => 'Computer',
-         'name'     => 'pc-01',
-         'serial'   => '75F4BF',
-         'uuid'     => '01391796-50A4-0246-955B-417652A8AF14',
-         'entities_id' => 0
+            'itemtype' => 'Computer',
+            'name'     => 'pc-01',
+            'serial'   => '75F4BF',
+            'uuid'     => '01391796-50A4-0246-955B-417652A8AF14',
+            'entities_id' => 0
         ];
         $ruleCollection = new \RuleImportAssetCollection();
         $rule = new \RuleImportAsset();
@@ -315,10 +315,10 @@ class RuleImportAsset extends DbTestCase
     public function testCreateComputerMac()
     {
         $input = [
-         'itemtype' => 'Computer',
-         'name'     => 'pc-01',
-         'mac'      => ['d4:81:d7:7b:6c:21'],
-         'entities_id' => 0
+            'itemtype' => 'Computer',
+            'name'     => 'pc-01',
+            'mac'      => ['d4:81:d7:7b:6c:21'],
+            'entities_id' => 0
         ];
         $ruleCollection = new \RuleImportAssetCollection();
         $rule = new \RuleImportAsset();
@@ -339,10 +339,10 @@ class RuleImportAsset extends DbTestCase
     public function testUpdateComputerMac()
     {
         $input = [
-         'itemtype' => 'Computer',
-         'name'     => 'pc-01',
-         'mac'      => ['d4:81:d7:7b:6c:21'],
-         'entities_id' => 0
+            'itemtype' => 'Computer',
+            'name'     => 'pc-01',
+            'mac'      => ['d4:81:d7:7b:6c:21'],
+            'entities_id' => 0
         ];
         $ruleCollection = new \RuleImportAssetCollection();
         $rule = new \RuleImportAsset();
@@ -350,16 +350,16 @@ class RuleImportAsset extends DbTestCase
         $nport = new \NetworkPort();
 
         $computers_id = (int)$computer->add([
-         'entities_id' => 0,
-         'name'        => 'pc-02', // to be sure the name rule not works before mac rule
+            'entities_id' => 0,
+            'name'        => 'pc-02', // to be sure the name rule not works before mac rule
         ]);
         $this->integer($computers_id)->isGreaterThan(0);
 
         $ports_id = (int)$nport->add([
-         'instantiation_type' => 'NetworkPortEthernet',
-         'itemtype'           => 'Computer',
-         'items_id'           => $computers_id,
-         'mac'                => 'd4:81:d7:7b:6c:21'
+            'instantiation_type' => 'NetworkPortEthernet',
+            'itemtype'           => 'Computer',
+            'items_id'           => $computers_id,
+            'mac'                => 'd4:81:d7:7b:6c:21'
         ]);
         $this->integer($ports_id)->isGreaterThan(0);
 
@@ -388,26 +388,26 @@ class RuleImportAsset extends DbTestCase
         $this->addRule(
             "Computer update (by ip)",
             [
-            [
-               'condition' => 0,
-               'criteria'  => 'itemtype',
-               'pattern'   => 'Computer',
+                [
+                    'condition' => 0,
+                    'criteria'  => 'itemtype',
+                    'pattern'   => 'Computer',
+                ],
+                [
+                    'condition' => \RuleImportAsset::PATTERN_FIND,
+                    'criteria'  => 'ip',
+                    'pattern'   => '1',
+                ],
+                [
+                    'condition' => \RuleImportAsset::PATTERN_EXISTS,
+                    'criteria'  => 'ip',
+                    'pattern'   => '1',
+                ],
             ],
             [
-               'condition' => \RuleImportAsset::PATTERN_FIND,
-               'criteria'  => 'ip',
-               'pattern'   => '1',
-            ],
-            [
-               'condition' => \RuleImportAsset::PATTERN_EXISTS,
-               'criteria'  => 'ip',
-               'pattern'   => '1',
-            ],
-            ],
-            [
-            'action_type' => 'assign',
-            'field'       => '_fusion',
-            'value'       => \RuleImportAsset::RULE_ACTION_LINK_OR_IMPORT,
+                'action_type' => 'assign',
+                'field'       => '_fusion',
+                'value'       => \RuleImportAsset::RULE_ACTION_LINK_OR_IMPORT,
             ],
             "Computer update (by mac)"
         );
@@ -415,21 +415,21 @@ class RuleImportAsset extends DbTestCase
         $this->addRule(
             "Computer import (by ip)",
             [
-            [
-               'condition' => 0,
-               'criteria'  => 'itemtype',
-               'pattern'   => 'Computer',
+                [
+                    'condition' => 0,
+                    'criteria'  => 'itemtype',
+                    'pattern'   => 'Computer',
+                ],
+                [
+                    'condition' => \RuleImportAsset::PATTERN_EXISTS,
+                    'criteria'  => 'ip',
+                    'pattern'   => '1',
+                ],
             ],
             [
-               'condition' => \RuleImportAsset::PATTERN_EXISTS,
-               'criteria'  => 'ip',
-               'pattern'   => '1',
-            ],
-            ],
-            [
-            'action_type' => 'assign',
-            'field'       => '_fusion',
-            'value'       => \RuleImportAsset::RULE_ACTION_LINK_OR_IMPORT,
+                'action_type' => 'assign',
+                'field'       => '_fusion',
+                'value'       => \RuleImportAsset::RULE_ACTION_LINK_OR_IMPORT,
             ],
             "Computer import (by mac)"
         );
@@ -439,10 +439,10 @@ class RuleImportAsset extends DbTestCase
     {
         $this->addComputerIPRules();
         $input = [
-         'itemtype' => 'Computer',
-         'name'     => 'pc-01',
-         'ip'       => ['192.168.0.10'],
-         'entities_id' => 0
+            'itemtype' => 'Computer',
+            'name'     => 'pc-01',
+            'ip'       => ['192.168.0.10'],
+            'entities_id' => 0
         ];
         $ruleCollection = new \RuleImportAssetCollection();
         $rule = new \RuleImportAsset();
@@ -463,10 +463,10 @@ class RuleImportAsset extends DbTestCase
     {
         $this->addComputerIPRules();
         $input = [
-         'itemtype' => 'Computer',
-         'name'     => 'pc-01',
-         'ip'       => ['192.168.0.10'],
-         'entities_id' => 0
+            'itemtype' => 'Computer',
+            'name'     => 'pc-01',
+            'ip'       => ['192.168.0.10'],
+            'entities_id' => 0
         ];
         $ruleCollection = new \RuleImportAssetCollection();
         $rule = new \RuleImportAsset();
@@ -474,22 +474,22 @@ class RuleImportAsset extends DbTestCase
         $networkPort = new \NetworkPort();
 
         $computers_id = (int)$computer->add([
-         'entities_id' => 0,
-         'name'        => 'pc-02', // to be sure the name rule not works before mac rule
+            'entities_id' => 0,
+            'name'        => 'pc-02', // to be sure the name rule not works before mac rule
         ]);
         $this->integer($computers_id)->isGreaterThan(0);
 
         $ports_id = (int)$networkPort->add([
-         'instantiation_type' => 'NetworkPortEthernet',
-         'itemtype'           => 'Computer',
-         'items_id'           => $computers_id,
-         'ip'                 => '192.168.0.10',
-         '_create_children'   => 1,
-         'NetworkName_name'   => '',
-         'NetworkName_fqdns_id' => 0,
-         'NetworkName__ipaddresses' => [
-            '-1' => '192.168.0.10'
-         ],
+            'instantiation_type' => 'NetworkPortEthernet',
+            'itemtype'           => 'Computer',
+            'items_id'           => $computers_id,
+            'ip'                 => '192.168.0.10',
+            '_create_children'   => 1,
+            'NetworkName_name'   => '',
+            'NetworkName_fqdns_id' => 0,
+            'NetworkName__ipaddresses' => [
+                '-1' => '192.168.0.10'
+            ],
         ]);
         $this->integer($ports_id)->isGreaterThan(0);
 
@@ -518,26 +518,26 @@ class RuleImportAsset extends DbTestCase
         $this->addRule(
             "Computer update (by ip)",
             [
-            [
-               'condition' => 0,
-               'criteria'  => 'itemtype',
-               'pattern'   => 'Computer',
+                [
+                    'condition' => 0,
+                    'criteria'  => 'itemtype',
+                    'pattern'   => 'Computer',
+                ],
+                [
+                    'condition' => \RuleImportAsset::PATTERN_FIND,
+                    'criteria'  => 'ip',
+                    'pattern'   => '1',
+                ],
+                [
+                    'condition' => \RuleImportAsset::PATTERN_EXISTS,
+                    'criteria'  => 'ip',
+                    'pattern'   => '1',
+                ],
             ],
             [
-               'condition' => \RuleImportAsset::PATTERN_FIND,
-               'criteria'  => 'ip',
-               'pattern'   => '1',
-            ],
-            [
-               'condition' => \RuleImportAsset::PATTERN_EXISTS,
-               'criteria'  => 'ip',
-               'pattern'   => '1',
-            ],
-            ],
-            [
-            'action_type' => 'assign',
-            'field'       => '_fusion',
-            'value'       => \RuleImportAsset::RULE_ACTION_LINK_OR_NO_IMPORT,
+                'action_type' => 'assign',
+                'field'       => '_fusion',
+                'value'       => \RuleImportAsset::RULE_ACTION_LINK_OR_NO_IMPORT,
             ],
             "Computer update (by mac)"
         );
@@ -547,10 +547,10 @@ class RuleImportAsset extends DbTestCase
     {
         $this->addComputerIPLinkOnlyRules();
         $input = [
-         'itemtype' => 'Computer',
-         'name'     => 'pc-01',
-         'ip'       => ['192.168.0.10'],
-         'entities_id' => 0
+            'itemtype' => 'Computer',
+            'name'     => 'pc-01',
+            'ip'       => ['192.168.0.10'],
+            'entities_id' => 0
         ];
         $ruleCollection = new \RuleImportAssetCollection();
         $rule = new \RuleImportAsset();
@@ -572,10 +572,10 @@ class RuleImportAsset extends DbTestCase
     {
         $this->addComputerIPLinkOnlyRules();
         $input = [
-         'itemtype' => 'Computer',
-         'name'     => 'pc-01',
-         'ip'       => ['192.168.0.10'],
-         'entities_id' => 0
+            'itemtype' => 'Computer',
+            'name'     => 'pc-01',
+            'ip'       => ['192.168.0.10'],
+            'entities_id' => 0
         ];
         $ruleCollection = new \RuleImportAssetCollection();
         $rule = new \RuleImportAsset();
@@ -583,22 +583,22 @@ class RuleImportAsset extends DbTestCase
         $networkPort = new \NetworkPort();
 
         $computers_id = (int)$computer->add([
-         'entities_id' => 0,
-         'name'        => 'pc-02', // to be sure the name rule not works before mac rule
+            'entities_id' => 0,
+            'name'        => 'pc-02', // to be sure the name rule not works before mac rule
         ]);
         $this->integer($computers_id)->isGreaterThan(0);
 
         $ports_id = (int)$networkPort->add([
-         'instantiation_type' => 'NetworkPortEthernet',
-         'itemtype'           => 'Computer',
-         'items_id'           => $computers_id,
-         'ip'                 => '192.168.0.10',
-         '_create_children'   => 1,
-         'NetworkName_name'   => '',
-         'NetworkName_fqdns_id' => 0,
-         'NetworkName__ipaddresses' => [
-            '-1' => '192.168.0.10'
-         ],
+            'instantiation_type' => 'NetworkPortEthernet',
+            'itemtype'           => 'Computer',
+            'items_id'           => $computers_id,
+            'ip'                 => '192.168.0.10',
+            '_create_children'   => 1,
+            'NetworkName_name'   => '',
+            'NetworkName_fqdns_id' => 0,
+            'NetworkName__ipaddresses' => [
+                '-1' => '192.168.0.10'
+            ],
         ]);
         $this->integer($ports_id)->isGreaterThan(0);
 
@@ -623,19 +623,19 @@ class RuleImportAsset extends DbTestCase
         global $DB;
 
         $input = [
-         'itemtype' => 'Computer',
-         'name'     => 'pc-01',
-         'entities_id' => 0
+            'itemtype' => 'Computer',
+            'name'     => 'pc-01',
+            'entities_id' => 0
         ];
         $ruleCollection = new \RuleImportAssetCollection();
 
         $DB->update(
             $ruleCollection->getTable(),
             [
-            'is_active' => 0
+                'is_active' => 0
             ],
             [
-            'is_active' => 1,
+                'is_active' => 1,
             ]
         );
 
@@ -648,19 +648,19 @@ class RuleImportAsset extends DbTestCase
     protected function refuseProvider()
     {
         return [
-         [    // IP
-            'rdata'   => ['ip' => '192.168.0.10'],
-            'rname'  => 'Global constraint (name)'
-         ], [ // IP+mac
-            'rdata'   => ['mac' => 'd4:81:d7:7b:6c:21', 'ip' => '192.168.0.10'],
-            'rname'  => 'Global constraint (name)'
-         ], [ // IP+name
-            'rdata'   => ['name' => 'pc-01', 'ip' => '192.168.0.10'],
-            'rname'  => 'Global import denied'
-         ], [ // IP+mac+name
-            'rdata'   => ['name' => 'pc-01', 'mac' => 'd4:81:d7:7b:6c:21', 'ip' => '192.168.0.10'],
-            'rname'  => 'Global import denied'
-         ]
+            [    // IP
+                'rdata'   => ['ip' => '192.168.0.10'],
+                'rname'  => 'Global constraint (name)'
+            ], [ // IP+mac
+                'rdata'   => ['mac' => 'd4:81:d7:7b:6c:21', 'ip' => '192.168.0.10'],
+                'rname'  => 'Global constraint (name)'
+            ], [ // IP+name
+                'rdata'   => ['name' => 'pc-01', 'ip' => '192.168.0.10'],
+                'rname'  => 'Global import denied'
+            ], [ // IP+mac+name
+                'rdata'   => ['name' => 'pc-01', 'mac' => 'd4:81:d7:7b:6c:21', 'ip' => '192.168.0.10'],
+                'rname'  => 'Global import denied'
+            ]
         ];
     }
 
@@ -694,10 +694,10 @@ class RuleImportAsset extends DbTestCase
     public function testCreateMacIfnumber()
     {
         $input = [
-         'ifnumber' => '10102',
-         'mac'      => '00:1a:6c:9a:fc:99',
-         'name'     => 'network-01',
-         'entities_id' => 0
+            'ifnumber' => '10102',
+            'mac'      => '00:1a:6c:9a:fc:99',
+            'name'     => 'network-01',
+            'entities_id' => 0
         ];
         $ruleCollection = new \RuleImportAssetCollection();
         $rule = new \RuleImportAsset();
@@ -721,10 +721,10 @@ class RuleImportAsset extends DbTestCase
     public function testUpdateMacIfnumber()
     {
         $input = [
-         'ifnumber' => '10102',
-         'mac'      => '00:1a:6c:9a:fc:99',
-         'name'     => 'network-01',
-         'entities_id' => 0
+            'ifnumber' => '10102',
+            'mac'      => '00:1a:6c:9a:fc:99',
+            'name'     => 'network-01',
+            'entities_id' => 0
         ];
         $ruleCollection = new \RuleImportAssetCollection();
         $rule = new \RuleImportAsset();
@@ -732,28 +732,28 @@ class RuleImportAsset extends DbTestCase
         $networkPort = new \NetworkPort();
 
         $networkEquipments_id = (int)$networkEquipment->add([
-         'entities_id' => 0,
-         'name'        => 'network-02',
+            'entities_id' => 0,
+            'name'        => 'network-02',
         ]);
         $this->integer($networkEquipments_id)->isGreaterThan(0);
 
         $ports_id = (int)$networkPort->add([
-         'mac'                => '00:1a:6c:9a:fc:99',
-         'name'               => 'Gi0/1',
-         'logical_number'     => '10101',
-         'instantiation_type' => 'NetworkPortEthernet',
-         'items_id'           => $networkEquipments_id,
-         'itemtype'           => 'NetworkEquipment',
+            'mac'                => '00:1a:6c:9a:fc:99',
+            'name'               => 'Gi0/1',
+            'logical_number'     => '10101',
+            'instantiation_type' => 'NetworkPortEthernet',
+            'items_id'           => $networkEquipments_id,
+            'itemtype'           => 'NetworkEquipment',
         ]);
         $this->integer($ports_id)->isGreaterThan(0);
 
         $ports_id = (int)$networkPort->add([
-         'mac'                => '00:1a:6c:9a:fc:99',
-         'name'               => 'Gi0/2',
-         'logical_number'     => '10102',
-         'instantiation_type' => 'NetworkPortEthernet',
-         'items_id'           => $networkEquipments_id,
-         'itemtype'           => 'NetworkEquipment',
+            'mac'                => '00:1a:6c:9a:fc:99',
+            'name'               => 'Gi0/2',
+            'logical_number'     => '10102',
+            'instantiation_type' => 'NetworkPortEthernet',
+            'items_id'           => $networkEquipments_id,
+            'itemtype'           => 'NetworkEquipment',
         ]);
         $this->integer($ports_id)->isGreaterThan(0);
 
@@ -777,8 +777,8 @@ class RuleImportAsset extends DbTestCase
     public function testUpdateIPIfdescrRestrictport()
     {
         $input = [
-         'ifdescr' => 'FastEthernet0/1',
-         'ip'      => '192.168.0.1',
+            'ifdescr' => 'FastEthernet0/1',
+            'ip'      => '192.168.0.1',
         ];
         $ruleCollection = new \RuleImportAssetCollection();
         $rule = new \RuleImportAsset();
@@ -786,44 +786,44 @@ class RuleImportAsset extends DbTestCase
         $networkPort = new \NetworkPort();
 
         $networkEquipments_id = (int)$networkEquipment->add([
-         'entities_id' => 0,
-         'name'        => 'network-02',
+            'entities_id' => 0,
+            'name'        => 'network-02',
         ]);
         $this->integer($networkEquipments_id)->isGreaterThan(0);
 
         $ports_id_1 = (int)$networkPort->add([
-         'mac'                => '00:1a:6c:9a:fc:99',
-         'name'               => 'Fa0/1',
-         'logical_number'     => '10101',
-         'instantiation_type' => 'NetworkPortEthernet',
-         'items_id'           => $networkEquipments_id,
-         'itemtype'           => 'NetworkEquipment',
-         'ip'                 => '192.168.0.1',
-         '_create_children'   => 1,
-         'NetworkName_name'   => '',
-         'NetworkName_fqdns_id' => 0,
-         'NetworkName__ipaddresses' => [
-            '-1' => '192.168.0.1'
-         ],
-         'ifdescr' => 'FastEthernet0/1',
+            'mac'                => '00:1a:6c:9a:fc:99',
+            'name'               => 'Fa0/1',
+            'logical_number'     => '10101',
+            'instantiation_type' => 'NetworkPortEthernet',
+            'items_id'           => $networkEquipments_id,
+            'itemtype'           => 'NetworkEquipment',
+            'ip'                 => '192.168.0.1',
+            '_create_children'   => 1,
+            'NetworkName_name'   => '',
+            'NetworkName_fqdns_id' => 0,
+            'NetworkName__ipaddresses' => [
+                '-1' => '192.168.0.1'
+            ],
+            'ifdescr' => 'FastEthernet0/1',
         ]);
         $this->integer($ports_id_1)->isGreaterThan(0);
 
         $ports_id_2 = (int)$networkPort->add([
-         'mac'                => '00:1a:6c:9a:fc:98',
-         'name'               => 'Fa0/2',
-         'logical_number'     => '10102',
-         'instantiation_type' => 'NetworkPortEthernet',
-         'items_id'           => $networkEquipments_id,
-         'itemtype'           => 'NetworkEquipment',
-         'ip'                 => '192.168.0.2',
-         '_create_children'   => 1,
-         'NetworkName_name'   => '',
-         'NetworkName_fqdns_id' => 0,
-         'NetworkName__ipaddresses' => [
-            '-1' => '192.168.0.2'
-         ],
-         'ifdescr' => 'FastEthernet0/2',
+            'mac'                => '00:1a:6c:9a:fc:98',
+            'name'               => 'Fa0/2',
+            'logical_number'     => '10102',
+            'instantiation_type' => 'NetworkPortEthernet',
+            'items_id'           => $networkEquipments_id,
+            'itemtype'           => 'NetworkEquipment',
+            'ip'                 => '192.168.0.2',
+            '_create_children'   => 1,
+            'NetworkName_name'   => '',
+            'NetworkName_fqdns_id' => 0,
+            'NetworkName__ipaddresses' => [
+                '-1' => '192.168.0.2'
+            ],
+            'ifdescr' => 'FastEthernet0/2',
         ]);
         $this->integer($ports_id_2)->isGreaterThan(0);
 
@@ -843,9 +843,9 @@ class RuleImportAsset extends DbTestCase
         $this->itemtype = "";
         $this->ports_id = 0;
         $input = [
-         'ifdescr' => 'FastEthernet0/1',
-         'ip'      => '192.168.0.2',
-         'entities_id' => 0
+            'ifdescr' => 'FastEthernet0/1',
+            'ip'      => '192.168.0.2',
+            'entities_id' => 0
         ];
         $data = $ruleCollection->processAllRules($input, [], ['class' => $this]);
 
@@ -863,8 +863,8 @@ class RuleImportAsset extends DbTestCase
     public function testUpdateIPIfdescrNotRestrictport()
     {
         $input = [
-         'ifdescr' => 'FastEthernet0/1',
-         'ip'      => '192.168.0.2',
+            'ifdescr' => 'FastEthernet0/1',
+            'ip'      => '192.168.0.2',
         ];
         $ruleCollection = new \RuleImportAssetCollection();
         $rule = new \RuleImportAsset();
@@ -872,45 +872,45 @@ class RuleImportAsset extends DbTestCase
         $networkPort = new \NetworkPort();
 
         $networkEquipments_id = $networkEquipment->add([
-         'entities_id' => 0,
-         'name'        => 'network-02',
+            'entities_id' => 0,
+            'name'        => 'network-02',
         ]);
         $this->integer($networkEquipments_id)->isGreaterThan(0);
 
         $ports_id = $networkPort->add([
-         'mac'                => '00:1a:6c:9a:fc:99',
-         'name'               => 'Fa0/1',
-         'logical_number'     => '10101',
-         'instantiation_type' => 'NetworkPortEthernet',
-         'items_id'           => $networkEquipments_id,
-         'itemtype'           => 'NetworkEquipment',
-         'ip'                 => '192.168.0.1',
-         '_create_children'   => 1,
-         'NetworkName_name'   => '',
-         'NetworkName_fqdns_id' => 0,
-         'NetworkName__ipaddresses' => [
-            '-1' => '192.168.0.1'
-         ],
-         'ifdescr'         => 'FastEthernet0/1',
+            'mac'                => '00:1a:6c:9a:fc:99',
+            'name'               => 'Fa0/1',
+            'logical_number'     => '10101',
+            'instantiation_type' => 'NetworkPortEthernet',
+            'items_id'           => $networkEquipments_id,
+            'itemtype'           => 'NetworkEquipment',
+            'ip'                 => '192.168.0.1',
+            '_create_children'   => 1,
+            'NetworkName_name'   => '',
+            'NetworkName_fqdns_id' => 0,
+            'NetworkName__ipaddresses' => [
+                '-1' => '192.168.0.1'
+            ],
+            'ifdescr'         => 'FastEthernet0/1',
         ]);
         $this->integer($ports_id)->isGreaterThan(0);
 
         $this->integer(
             $networkPort->add([
-            'mac'                => '00:1a:6c:9a:fc:98',
-            'name'               => 'Fa0/2',
-            'logical_number'     => '10102',
-            'instantiation_type' => 'NetworkPortEthernet',
-            'items_id'           => $networkEquipments_id,
-            'itemtype'           => 'NetworkEquipment',
-            'ip'                 => '192.168.0.2',
-            '_create_children'   => 1,
-            'NetworkName_name'   => '',
-            'NetworkName_fqdns_id' => 0,
-            'NetworkName__ipaddresses' => [
-               '-1' => '192.168.0.2'
-            ],
-            'ifdescr'         => 'FastEthernet0/2',
+                'mac'                => '00:1a:6c:9a:fc:98',
+                'name'               => 'Fa0/2',
+                'logical_number'     => '10102',
+                'instantiation_type' => 'NetworkPortEthernet',
+                'items_id'           => $networkEquipments_id,
+                'itemtype'           => 'NetworkEquipment',
+                'ip'                 => '192.168.0.2',
+                '_create_children'   => 1,
+                'NetworkName_name'   => '',
+                'NetworkName_fqdns_id' => 0,
+                'NetworkName__ipaddresses' => [
+                    '-1' => '192.168.0.2'
+                ],
+                'ifdescr'         => 'FastEthernet0/2',
             ])
         )->isGreaterThan(0);
 
@@ -931,7 +931,7 @@ class RuleImportAsset extends DbTestCase
     public function testSearchMac_nomoredata()
     {
         $input = [
-         'mac' => 'd4:81:b4:5a:a6:19'
+            'mac' => 'd4:81:b4:5a:a6:19'
         ];
         $ruleCollection = new \RuleImportAssetCollection();
         $rule = new \RuleImportAsset();
@@ -939,38 +939,38 @@ class RuleImportAsset extends DbTestCase
         $networkPort = new \NetworkPort();
 
         $printers_id = (int)$printer->add([
-         'entities_id' => 0,
-         'name'        => 'network-02',
+            'entities_id' => 0,
+            'name'        => 'network-02',
         ]);
         $this->integer($printers_id)->isGreaterThan(0);
 
         $ports_id_1 = (int)$networkPort->add([
-         'mac'                => 'd4:81:b4:5a:a6:18',
-         'name'               => 'Fa0/1',
-         'logical_number'     => '10101',
-         'instantiation_type' => 'NetworkPortEthernet',
-         'items_id'           => $printers_id,
-         'itemtype'           => 'Printer',
+            'mac'                => 'd4:81:b4:5a:a6:18',
+            'name'               => 'Fa0/1',
+            'logical_number'     => '10101',
+            'instantiation_type' => 'NetworkPortEthernet',
+            'items_id'           => $printers_id,
+            'itemtype'           => 'Printer',
         ]);
         $this->integer($ports_id_1)->isGreaterThan(0);
 
         $ports_id_2 = (int)$networkPort->add([
-         'mac'                => 'd4:81:b4:5a:a6:19',
-         'name'               => 'Fa0/2',
-         'logical_number'     => '10102',
-         'instantiation_type' => 'NetworkPortEthernet',
-         'items_id'           => $printers_id,
-         'itemtype'           => 'Printer',
+            'mac'                => 'd4:81:b4:5a:a6:19',
+            'name'               => 'Fa0/2',
+            'logical_number'     => '10102',
+            'instantiation_type' => 'NetworkPortEthernet',
+            'items_id'           => $printers_id,
+            'itemtype'           => 'Printer',
         ]);
         $this->integer($ports_id_2)->isGreaterThan(0);
 
         $ports_id_3 = (int)$networkPort->add([
-         'mac'                => 'd4:81:b4:5a:a6:20',
-         'name'               => 'Fa0/3',
-         'logical_number'     => '10103',
-         'instantiation_type' => 'NetworkPortEthernet',
-         'items_id'           => $printers_id,
-         'itemtype'           => 'Printer',
+            'mac'                => 'd4:81:b4:5a:a6:20',
+            'name'               => 'Fa0/3',
+            'logical_number'     => '10103',
+            'instantiation_type' => 'NetworkPortEthernet',
+            'items_id'           => $printers_id,
+            'itemtype'           => 'Printer',
         ]);
         $this->integer($ports_id_3)->isGreaterThan(0);
 
@@ -1039,14 +1039,14 @@ class RuleImportAsset extends DbTestCase
         $values = [];
         foreach ($known as $k => $v) {
             $values[] = [
-            'value'     => $k,
-            'expected'  => $v
+                'value'     => $k,
+                'expected'  => $v
             ];
         }
 
         $values[] = [
-         'value'     => 404,
-         'expected'  => ''
+            'value'     => 404,
+            'expected'  => ''
         ];
 
         return $values;
@@ -1072,28 +1072,28 @@ class RuleImportAsset extends DbTestCase
     protected function moreCritProvider()
     {
         return [
-         [
-            'criterion' => 'entityrestrict',
-            'expected'  => [
-               \RuleImportAsset::PATTERN_ENTITY_RESTRICT => 'Yes'
+            [
+                'criterion' => 'entityrestrict',
+                'expected'  => [
+                    \RuleImportAsset::PATTERN_ENTITY_RESTRICT => 'Yes'
+                ]
+            ], [
+                'criterion' => 'link_criteria_port',
+                'expected'  => [
+                    \RuleImportAsset::PATTERN_NETWORK_PORT_RESTRICT => 'Yes'
+                ]
+            ], [
+                'criterion' => 'only_these_criteria',
+                'expected'  => [
+                    \RuleImportAsset::PATTERN_ONLY_CRITERIA_RULE => 'Yes'
+                ]
+            ], [
+                'criterion' => 'any_other',
+                'expected'  => [
+                    \RuleImportAsset::PATTERN_FIND => 'is already present',
+                    \RuleImportAsset::PATTERN_IS_EMPTY => 'is empty'
+                ]
             ]
-         ], [
-            'criterion' => 'link_criteria_port',
-            'expected'  => [
-               \RuleImportAsset::PATTERN_NETWORK_PORT_RESTRICT => 'Yes'
-            ]
-         ], [
-            'criterion' => 'only_these_criteria',
-            'expected'  => [
-               \RuleImportAsset::PATTERN_ONLY_CRITERIA_RULE => 'Yes'
-            ]
-         ], [
-            'criterion' => 'any_other',
-            'expected'  => [
-               \RuleImportAsset::PATTERN_FIND => 'is already present',
-               \RuleImportAsset::PATTERN_IS_EMPTY => 'is empty'
-            ]
-         ]
         ];
     }
 

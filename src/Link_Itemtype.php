@@ -74,9 +74,9 @@ class Link_Itemtype extends CommonDBChild
         }
 
         $iterator = $DB->request([
-         'FROM'   => 'glpi_links_itemtypes',
-         'WHERE'  => ['links_id' => $links_id],
-         'ORDER'  => 'itemtype'
+            'FROM'   => 'glpi_links_itemtypes',
+            'WHERE'  => ['links_id' => $links_id],
+            'ORDER'  => 'itemtype'
         ]);
         $types  = [];
         $used   = [];
@@ -110,7 +110,8 @@ class Link_Itemtype extends CommonDBChild
         if ($canedit && $numrows) {
             Html::openMassiveActionsForm('mass' . __CLASS__ . $rand);
             $massiveactionparams = ['num_displayed'  => min($_SESSION['glpilist_limit'], $numrows),
-                                      'container'      => 'mass' . __CLASS__ . $rand];
+                'container'      => 'mass' . __CLASS__ . $rand
+            ];
             Html::showMassiveActions($massiveactionparams);
         }
         echo "<table class='tab_cadre_fixe'>";
@@ -202,7 +203,7 @@ class Link_Itemtype extends CommonDBChild
         $DB->delete(
             self::getTable(),
             [
-            'itemtype'  => ['LIKE', "%Plugin$itemtype%"]
+                'itemtype'  => ['LIKE', "%Plugin$itemtype%"]
             ]
         );
     }

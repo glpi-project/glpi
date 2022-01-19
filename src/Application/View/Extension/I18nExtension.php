@@ -46,12 +46,12 @@ class I18nExtension extends AbstractExtension
     public function getFunctions(): array
     {
         return [
-         new TwigFunction('__', '__'),
-         new TwigFunction('_n', '_n'),
-         new TwigFunction('_x', '_x'),
-         new TwigFunction('_nx', '_nx'),
-         new TwigFunction('get_current_locale', [$this, 'getCurrentLocale']),
-         new TwigFunction('get_plural_number', [Session::class, 'getPluralNumber']),
+            new TwigFunction('__', '__'),
+            new TwigFunction('_n', '_n'),
+            new TwigFunction('_x', '_x'),
+            new TwigFunction('_nx', '_nx'),
+            new TwigFunction('get_current_locale', [$this, 'getCurrentLocale']),
+            new TwigFunction('get_plural_number', [Session::class, 'getPluralNumber']),
         ];
     }
 

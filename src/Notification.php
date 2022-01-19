@@ -337,9 +337,9 @@ class Notification extends CommonDBTM
                     $name,
                     $events,
                     [
-                    'display'             => false,
-                    'display_emptychoice' => true,
-                    'value'               => $values[$field],
+                        'display'             => false,
+                        'display_emptychoice' => true,
+                        'value'               => $values[$field],
                     ]
                 );
              break;
@@ -353,111 +353,111 @@ class Notification extends CommonDBTM
         $tab = [];
 
         $tab[] = [
-         'id'                 => 'common',
-         'name'               => __('Characteristics')
+            'id'                 => 'common',
+            'name'               => __('Characteristics')
         ];
 
         $tab[] = [
-         'id'                 => '1',
-         'table'              => $this->getTable(),
-         'field'              => 'name',
-         'name'               => __('Name'),
-         'datatype'           => 'itemlink',
-         'massiveaction'      => false,
+            'id'                 => '1',
+            'table'              => $this->getTable(),
+            'field'              => 'name',
+            'name'               => __('Name'),
+            'datatype'           => 'itemlink',
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
-         'id'                 => '2',
-         'table'              => $this->getTable(),
-         'field'              => 'event',
-         'name'               => _n('Event', 'Events', 1),
-         'massiveaction'      => false,
-         'datatype'           => 'specific',
-         'additionalfields'   => [
-            'itemtype'
-         ],
-         'searchtype'         => [
-            'equals',
-            'notequals'
-         ]
-        ];
-
-        $tab[] = [
-         'id'                 => '3',
-         'table'              => Notification_NotificationTemplate::getTable(),
-         'field'              => 'mode',
-         'name'               => __('Notification method'),
-         'massiveaction'      => false,
-         'searchequalsonfield' => true,
-         'datatype'           => 'specific',
-         'joinparams'         => [
-            'jointype'  => 'child'
-         ],
-         'searchtype'         => [
-            '0'                  => 'equals',
-            '1'                  => 'notequals'
-         ]
-        ];
-
-        $tab[] = [
-         'id'                 => '4',
-         'table'              => 'glpi_notificationtemplates',
-         'field'              => 'name',
-         'name'               => _n('Notification template', 'Notification templates', Session::getPluralNumber()),
-         'datatype'           => 'itemlink',
-         'forcegroupby'       => true,
-         'massiveaction'      => false,
-         'joinparams'         => [
-            'beforejoin'  => [
-               'table'        => Notification_NotificationTemplate::getTable(),
-               'joinparams'   => [
-                  'jointype'  => 'child'
-               ]
+            'id'                 => '2',
+            'table'              => $this->getTable(),
+            'field'              => 'event',
+            'name'               => _n('Event', 'Events', 1),
+            'massiveaction'      => false,
+            'datatype'           => 'specific',
+            'additionalfields'   => [
+                'itemtype'
+            ],
+            'searchtype'         => [
+                'equals',
+                'notequals'
             ]
-         ]
         ];
 
         $tab[] = [
-         'id'                 => '5',
-         'table'              => $this->getTable(),
-         'field'              => 'itemtype',
-         'name'               => _n('Type', 'Types', 1),
-         'datatype'           => 'itemtypename',
-         'itemtype_list'      => 'notificationtemplates_types',
-         'massiveaction'      => false
+            'id'                 => '3',
+            'table'              => Notification_NotificationTemplate::getTable(),
+            'field'              => 'mode',
+            'name'               => __('Notification method'),
+            'massiveaction'      => false,
+            'searchequalsonfield' => true,
+            'datatype'           => 'specific',
+            'joinparams'         => [
+                'jointype'  => 'child'
+            ],
+            'searchtype'         => [
+                '0'                  => 'equals',
+                '1'                  => 'notequals'
+            ]
         ];
 
         $tab[] = [
-         'id'                 => '6',
-         'table'              => $this->getTable(),
-         'field'              => 'is_active',
-         'name'               => __('Active'),
-         'datatype'           => 'bool'
+            'id'                 => '4',
+            'table'              => 'glpi_notificationtemplates',
+            'field'              => 'name',
+            'name'               => _n('Notification template', 'Notification templates', Session::getPluralNumber()),
+            'datatype'           => 'itemlink',
+            'forcegroupby'       => true,
+            'massiveaction'      => false,
+            'joinparams'         => [
+                'beforejoin'  => [
+                    'table'        => Notification_NotificationTemplate::getTable(),
+                    'joinparams'   => [
+                        'jointype'  => 'child'
+                    ]
+                ]
+            ]
         ];
 
         $tab[] = [
-         'id'                 => '16',
-         'table'              => $this->getTable(),
-         'field'              => 'comment',
-         'name'               => __('Comments'),
-         'datatype'           => 'text'
+            'id'                 => '5',
+            'table'              => $this->getTable(),
+            'field'              => 'itemtype',
+            'name'               => _n('Type', 'Types', 1),
+            'datatype'           => 'itemtypename',
+            'itemtype_list'      => 'notificationtemplates_types',
+            'massiveaction'      => false
         ];
 
         $tab[] = [
-         'id'                 => '80',
-         'table'              => 'glpi_entities',
-         'field'              => 'completename',
-         'name'               => Entity::getTypeName(1),
-         'massiveaction'      => false,
-         'datatype'           => 'dropdown'
+            'id'                 => '6',
+            'table'              => $this->getTable(),
+            'field'              => 'is_active',
+            'name'               => __('Active'),
+            'datatype'           => 'bool'
         ];
 
         $tab[] = [
-         'id'                 => '86',
-         'table'              => $this->getTable(),
-         'field'              => 'is_recursive',
-         'name'               => __('Child entities'),
-         'datatype'           => 'bool'
+            'id'                 => '16',
+            'table'              => $this->getTable(),
+            'field'              => 'comment',
+            'name'               => __('Comments'),
+            'datatype'           => 'text'
+        ];
+
+        $tab[] = [
+            'id'                 => '80',
+            'table'              => 'glpi_entities',
+            'field'              => 'completename',
+            'name'               => Entity::getTypeName(1),
+            'massiveaction'      => false,
+            'datatype'           => 'dropdown'
+        ];
+
+        $tab[] = [
+            'id'                 => '86',
+            'table'              => $this->getTable(),
+            'field'              => 'is_recursive',
+            'name'               => __('Child entities'),
+            'datatype'           => 'bool'
         ];
 
         return $tab;
@@ -516,9 +516,9 @@ class Notification extends CommonDBTM
                         //check if already exist
                         $notification_notificationtemplate = new Notification_NotificationTemplate();
                         $data = [
-                        'mode'                     => $ma->POST['mode'],
-                        'notificationtemplates_id' => $ma->POST['notificationtemplates_id'],
-                        'notifications_id'         => $id
+                            'mode'                     => $ma->POST['mode'],
+                            'notificationtemplates_id' => $ma->POST['notificationtemplates_id'],
+                            'notifications_id'         => $id
                         ];
                         if ($notification_notificationtemplate->getFromDBByCrit($data)) {
                             $ma->itemDone(Notification::getType(), $ma->POST['notificationtemplates_id'], MassiveAction::ACTION_OK);
@@ -587,8 +587,8 @@ class Notification extends CommonDBTM
 
         $this->deleteChildrenAndRelationsFromDb(
             [
-            Notification_NotificationTemplate::class,
-            NotificationTarget::class,
+                Notification_NotificationTemplate::class,
+                NotificationTarget::class,
             ]
         );
     }
@@ -639,37 +639,37 @@ class Notification extends CommonDBTM
         global $DB, $CFG_GLPI;
 
         $criteria = [
-         'SELECT'    => [
-            Notification::getTable() . '.*',
-            Notification_NotificationTemplate::getTable() . '.mode',
-            Notification_NotificationTemplate::getTable() . '.notificationtemplates_id'
-         ],
-         'FROM'      => Notification::getTable(),
-         'LEFT JOIN' => [
-            Entity::getTable()                              => [
-               'ON' => [
-                  Entity::getTable()         => 'id',
-                  Notification::getTable()   => 'entities_id'
-               ]
+            'SELECT'    => [
+                Notification::getTable() . '.*',
+                Notification_NotificationTemplate::getTable() . '.mode',
+                Notification_NotificationTemplate::getTable() . '.notificationtemplates_id'
             ],
-            Notification_NotificationTemplate::getTable()   => [
-               'ON' => [
-                  Notification_NotificationTemplate::getTable()   => 'notifications_id',
-                  Notification::getTable()                        => 'id'
-               ]
-            ]
-         ],
-         'WHERE'     => [
-            Notification::getTable() . '.itemtype' => $itemtype,
-            Notification::getTable() . '.event'    => $event,
-            Notification::getTable() . '.is_active' => 1,
-         ] + getEntitiesRestrictCriteria(
-             Notification::getTable(),
-             'entities_id',
-             $entity,
-             true
-         ),
-         'ORDER'     => Entity::getTable() . '.level DESC'
+            'FROM'      => Notification::getTable(),
+            'LEFT JOIN' => [
+                Entity::getTable()                              => [
+                    'ON' => [
+                        Entity::getTable()         => 'id',
+                        Notification::getTable()   => 'entities_id'
+                    ]
+                ],
+                Notification_NotificationTemplate::getTable()   => [
+                    'ON' => [
+                        Notification_NotificationTemplate::getTable()   => 'notifications_id',
+                        Notification::getTable()                        => 'id'
+                    ]
+                ]
+            ],
+            'WHERE'     => [
+                Notification::getTable() . '.itemtype' => $itemtype,
+                Notification::getTable() . '.event'    => $event,
+                Notification::getTable() . '.is_active' => 1,
+            ] + getEntitiesRestrictCriteria(
+                Notification::getTable(),
+                'entities_id',
+                $entity,
+                true
+            ),
+            'ORDER'     => Entity::getTable() . '.level DESC'
         ];
 
         $modes = Notification_NotificationTemplate::getModes();

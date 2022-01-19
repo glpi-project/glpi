@@ -194,12 +194,13 @@ abstract class FQDNLabel extends CommonDBChild
         $IDs = [];
         foreach (
             ['NetworkName'  => 'glpi_networknames',
-                     'NetworkAlias' => 'glpi_networkaliases'] as $class => $table
+                'NetworkAlias' => 'glpi_networkaliases'
+            ] as $class => $table
         ) {
             $criteria = [
-            'SELECT' => 'id',
-            'FROM'   => $table,
-            'WHERE'  => ['name' => $relation]
+                'SELECT' => 'id',
+                'FROM'   => $table,
+                'WHERE'  => ['name' => $relation]
             ];
 
             if (
@@ -300,7 +301,8 @@ abstract class FQDNLabel extends CommonDBChild
                 foreach ($items as $item) {
                     if ($item->getEntityID() == $entity) {
                         $result = ["id"       => $item->getID(),
-                                  "itemtype" => $item->getType()];
+                            "itemtype" => $item->getType()
+                        ];
                         unset($labels_with_items);
                         return $result;
                     }

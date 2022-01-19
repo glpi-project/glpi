@@ -45,8 +45,8 @@ class ConfigExtension extends AbstractExtension
     public function getFunctions(): array
     {
         return [
-         new TwigFunction('config', [$this, 'config']),
-         new TwigFunction('entity_config', [$this, 'getEntityConfig']),
+            new TwigFunction('config', [$this, 'config']),
+            new TwigFunction('entity_config', [$this, 'getEntityConfig']),
         ];
     }
 

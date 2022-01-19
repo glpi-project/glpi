@@ -59,41 +59,41 @@ class DeviceCamera extends CommonDevice
         return array_merge(
             parent::getAdditionalFields(),
             [
-            [
-               'name'  => 'devicecameramodels_id',
-               'label' => _n('Model', 'Models', 1),
-               'type'  => 'dropdownValue'
-            ],
-            [
-               'name'   => 'flashunit',
-               'label'  => __('Flashunit'),
-               'type'   => 'bool',
-            ],
-            [
-               'name'   => 'lensfacing',
-               'label'  => __('Lensfacing'),
-               'type'   => 'text',
-            ],
-            [
-               'name'   => 'orientation',
-               'label'  => __('Orientation'),
-               'type'   => 'text',
-            ],
-            [
-               'name'   => 'focallength',
-               'label'  => __('Focal length'),
-               'type'   => 'text',
-            ],
-            [
-               'name'   => 'sensorsize',
-               'label'  => __('Sensor size'),
-               'type'   => 'text',
-            ],
-            [
-               'name'   => 'support',
-               'label'  => __('Support'),
-               'type'   => 'text',
-            ]
+                [
+                    'name'  => 'devicecameramodels_id',
+                    'label' => _n('Model', 'Models', 1),
+                    'type'  => 'dropdownValue'
+                ],
+                [
+                    'name'   => 'flashunit',
+                    'label'  => __('Flashunit'),
+                    'type'   => 'bool',
+                ],
+                [
+                    'name'   => 'lensfacing',
+                    'label'  => __('Lensfacing'),
+                    'type'   => 'text',
+                ],
+                [
+                    'name'   => 'orientation',
+                    'label'  => __('Orientation'),
+                    'type'   => 'text',
+                ],
+                [
+                    'name'   => 'focallength',
+                    'label'  => __('Focal length'),
+                    'type'   => 'text',
+                ],
+                [
+                    'name'   => 'sensorsize',
+                    'label'  => __('Sensor size'),
+                    'type'   => 'text',
+                ],
+                [
+                    'name'   => 'support',
+                    'label'  => __('Support'),
+                    'type'   => 'text',
+                ]
             ]
         );
     }
@@ -103,59 +103,59 @@ class DeviceCamera extends CommonDevice
         $tab = parent::rawSearchOptions();
 
         $tab[] = [
-         'id'                 => '10',
-         'table'              => 'glpi_devicecameramodels',
-         'field'              => 'name',
-         'name'               => _n('Model', 'Models', 1),
-         'datatype'           => 'dropdown'
+            'id'                 => '10',
+            'table'              => 'glpi_devicecameramodels',
+            'field'              => 'name',
+            'name'               => _n('Model', 'Models', 1),
+            'datatype'           => 'dropdown'
         ];
 
         $tab[] = [
-         'id'                 => '11',
-         'table'              => $this->getTable(),
-         'field'              => 'flashunit',
-         'name'               => __('Flashunit'),
-         'datatype'           => 'boolean',
+            'id'                 => '11',
+            'table'              => $this->getTable(),
+            'field'              => 'flashunit',
+            'name'               => __('Flashunit'),
+            'datatype'           => 'boolean',
         ];
 
         $tab[] = [
-         'id'                 => '12',
-         'table'              => $this->getTable(),
-         'field'              => 'lensfacing',
-         'name'               => __('Lensfacing'),
-         'datatype'           => 'string',
+            'id'                 => '12',
+            'table'              => $this->getTable(),
+            'field'              => 'lensfacing',
+            'name'               => __('Lensfacing'),
+            'datatype'           => 'string',
         ];
 
         $tab[] = [
-         'id'                 => '13',
-         'table'              => $this->getTable(),
-         'field'              => 'orientation',
-         'name'               => __('orientation'),
-         'datatype'           => 'string',
+            'id'                 => '13',
+            'table'              => $this->getTable(),
+            'field'              => 'orientation',
+            'name'               => __('orientation'),
+            'datatype'           => 'string',
         ];
 
         $tab[] = [
-         'id'                 => '14',
-         'table'              => $this->getTable(),
-         'field'              => 'focallength',
-         'name'               => __('Focal length'),
-         'datatype'           => 'string',
+            'id'                 => '14',
+            'table'              => $this->getTable(),
+            'field'              => 'focallength',
+            'name'               => __('Focal length'),
+            'datatype'           => 'string',
         ];
 
         $tab[] = [
-         'id'                 => '15',
-         'table'              => $this->getTable(),
-         'field'              => 'sensorsize',
-         'name'               => __('Sensor size'),
-         'datatype'           => 'string',
+            'id'                 => '15',
+            'table'              => $this->getTable(),
+            'field'              => 'sensorsize',
+            'name'               => __('Sensor size'),
+            'datatype'           => 'string',
         ];
 
         $tab[] = [
-         'id'                 => '17',
-         'table'              => $this->getTable(),
-         'field'              => 'support',
-         'name'               => __('Support'),
-         'datatype'           => 'string',
+            'id'                 => '17',
+            'table'              => $this->getTable(),
+            'field'              => 'support',
+            'name'               => __('Support'),
+            'datatype'           => 'string',
         ];
 
         return $tab;
@@ -228,9 +228,9 @@ class DeviceCamera extends CommonDevice
     public function getImportCriteria()
     {
         return [
-         'designation'           => 'equal',
-         'devicecameramodels_id' => 'equal',
-         'manufacturers_id'      => 'equal'
+            'designation'           => 'equal',
+            'devicecameramodels_id' => 'equal',
+            'manufacturers_id'      => 'equal'
         ];
     }
 

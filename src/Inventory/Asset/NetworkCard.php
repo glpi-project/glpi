@@ -54,23 +54,23 @@ class NetworkCard extends Device
     public function prepare(): array
     {
         $mapping = [
-         'name'          => 'designation',
-         'manufacturer'  => 'manufacturers_id',
-         'macaddr'       => 'mac'
+            'name'          => 'designation',
+            'manufacturer'  => 'manufacturers_id',
+            'macaddr'       => 'mac'
         ];
         $mapping_ports = [
-         'description' => 'name',
-         'macaddr'     => 'mac',
-         'type'        => 'instantiation_type',
-         'ipaddress'   => 'ip',
-         'virtualdev'  => 'virtualdev',
-         'ipsubnet'    => 'subnet',
-         'ssid'        => 'ssid',
-         'ipgateway'   => 'gateway',
-         'ipmask'      => 'netmask',
-         'ipdhcp'      => 'dhcpserver',
-         'wwn'         => 'wwn',
-         'speed'       => 'speed'
+            'description' => 'name',
+            'macaddr'     => 'mac',
+            'type'        => 'instantiation_type',
+            'ipaddress'   => 'ip',
+            'virtualdev'  => 'virtualdev',
+            'ipsubnet'    => 'subnet',
+            'ssid'        => 'ssid',
+            'ipgateway'   => 'gateway',
+            'ipmask'      => 'netmask',
+            'ipdhcp'      => 'dhcpserver',
+            'wwn'         => 'wwn',
+            'speed'       => 'speed'
         ];
         $pcivendor = new \PCIVendor();
 

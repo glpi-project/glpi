@@ -52,12 +52,12 @@ class SNMPCredential extends CommonDBTM
         $tab = parent::rawSearchOptions();
 
         $tab[] = [
-         'id'            => '2',
-         'table'         => $this->getTable(),
-         'field'         => 'community',
-         'name'          => __('Community'),
-         'datatype'      => 'string',
-         'massiveaction' => false,
+            'id'            => '2',
+            'table'         => $this->getTable(),
+            'field'         => 'community',
+            'name'          => __('Community'),
+            'datatype'      => 'string',
+            'massiveaction' => false,
         ];
 
         return $tab;
@@ -83,8 +83,8 @@ class SNMPCredential extends CommonDBTM
     {
         $this->initForm($ID, $options);
         TemplateRenderer::getInstance()->display('components/form/snmpcredential.html.twig', [
-         'item'   => $this,
-         'params' => $options,
+            'item'   => $this,
+            'params' => $options,
         ]);
 
         return true;

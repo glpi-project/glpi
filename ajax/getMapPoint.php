@@ -40,8 +40,8 @@ Session::checkLoginUser();
 $result = [];
 if (!isset($_POST['itemtype']) || !isset($_POST['items_id']) || (int)$_POST['items_id'] < 1) {
     $result = [
-      'success'   => false,
-      'message'   => __('Required argument missing!')
+        'success'   => false,
+        'message'   => __('Required argument missing!')
     ];
 } else {
     $itemtype = $_POST['itemtype'];
@@ -55,8 +55,8 @@ if (!isset($_POST['itemtype']) || !isset($_POST['items_id']) || (int)$_POST['ite
             $items_id = $item->fields['locations_id'];
         } else {
             $result = [
-            'success'   => false,
-            'message'   => __('Element seems not geolocalized or cannot be found')
+                'success'   => false,
+                'message'   => __('Element seems not geolocalized or cannot be found')
             ];
         }
     }
@@ -66,14 +66,14 @@ if (!isset($_POST['itemtype']) || !isset($_POST['items_id']) || (int)$_POST['ite
         $item->getFromDB($items_id);
         if (!empty($item->fields['latitude']) && !empty($item->fields['longitude'])) {
             $result = [
-            'name'   => $item->getName(),
-            'lat'    => $item->fields['latitude'],
-            'lng'    => $item->fields['longitude']
+                'name'   => $item->getName(),
+                'lat'    => $item->fields['latitude'],
+                'lng'    => $item->fields['longitude']
             ];
         } else {
             $result = [
-            'success'   => false,
-            'message'   => "<h3>" . __("Location seems not geolocalized!") . "</h3>" .
+                'success'   => false,
+                'message'   => "<h3>" . __("Location seems not geolocalized!") . "</h3>" .
                            "<a href='" . $item->getLinkURL() . "'>" . __("Consider filling latitude and longitude on this location.") . "</a>"
             ];
         }

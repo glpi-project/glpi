@@ -51,11 +51,12 @@ if (
         $_POST['global_end'] = '';
     }
     Html::showDateTimeField($_POST['name'], ['value'      =>  $_POST['end'],
-                                                 'timestep'   => -1,
-                                                 'maybeempty' => false,
-                                                 'canedit'    => true,
-                                                 'mindate'    => '',
-                                                 'maxdate'    => '',
-                                                 'mintime'    => $_POST['global_begin'],
-                                                 'maxtime'    => $_POST['global_end']]);
+        'timestep'   => -1,
+        'maybeempty' => false,
+        'canedit'    => true,
+        'mindate'    => '',
+        'maxdate'    => '',
+        'mintime'    => $_POST['global_begin'],
+        'maxtime'    => $_POST['global_end']
+    ]);
 }

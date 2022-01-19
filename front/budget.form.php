@@ -125,9 +125,9 @@ if (isset($_POST["add"])) {
 } else {
     Html::header(Budget::getTypeName(1), $_SERVER['PHP_SELF'], "management", "budget");
     $budget->display([
-      'id'           => $_GET["id"],
-      'withtemplate' => $_GET["withtemplate"],
-      'formoptions'  => "data-track-changes=true"
+        'id'           => $_GET["id"],
+        'withtemplate' => $_GET["withtemplate"],
+        'formoptions'  => "data-track-changes=true"
     ]);
 
     Html::footer();

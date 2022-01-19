@@ -42,7 +42,7 @@ Html::header(__('External authentication sources'), $_SERVER['PHP_SELF'], "confi
 echo TemplateRenderer::getInstance()->render(
     'pages/setup/authentication.html.twig',
     [
-      'can_use_ldap' => Toolbox::canUseLdap(),
+        'can_use_ldap' => Toolbox::canUseLdap(),
     ]
 );
 

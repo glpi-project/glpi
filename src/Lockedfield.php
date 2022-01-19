@@ -56,52 +56,52 @@ class Lockedfield extends CommonDBTM
         $tab = parent::rawSearchOptions();
 
         $tab[] = [
-         'id'                 => 1,
-         'table'              => $this->getTable(),
-         'field'              => 'field',
-         'name'               => __('Field name'),
+            'id'                 => 1,
+            'table'              => $this->getTable(),
+            'field'              => 'field',
+            'name'               => __('Field name'),
         ];
 
         $tab[] = [
-         'id'                 => '3',
-         'table'              => $this->getTable(),
-         'field'              => 'itemtype',
-         'name'               => __('Item type'),
-         'datatype'           => 'dropdown',
+            'id'                 => '3',
+            'table'              => $this->getTable(),
+            'field'              => 'itemtype',
+            'name'               => __('Item type'),
+            'datatype'           => 'dropdown',
         ];
 
         $tab[] = [
-         'id'                 => '5',
-         'table'              => $this->getTable(),
-         'field'              => 'date_creation',
-         'name'               => __('Creation date'),
-         'datatype'           => 'date'
+            'id'                 => '5',
+            'table'              => $this->getTable(),
+            'field'              => 'date_creation',
+            'name'               => __('Creation date'),
+            'datatype'           => 'date'
         ];
 
         $tab[] = [
-         'id'                 => '6',
-         'table'              => $this->getTable(),
-         'field'              => 'value',
-         'name'               => __('Last inventoried value'),
+            'id'                 => '6',
+            'table'              => $this->getTable(),
+            'field'              => 'value',
+            'name'               => __('Last inventoried value'),
          //'datatype'           => '',
-         'nosort'             => true,
-         'nosearch'           => true,
+            'nosort'             => true,
+            'nosearch'           => true,
         ];
 
         $tab[] = [
-         'id'                 => '13',
-         'table'              => $this->getTable(),
-         'field'              => 'items_id',
-         'name'               => _n('Associated element', 'Associated elements', 1),
-         'datatype'           => 'specific',
-         'comments'           => true,
-         'nosort'             => true,
-         'nosearch'           => true,
-         'additionalfields'   => ['itemtype'],
-         'joinparams'         => [
-            'jointype'           => 'child'
-         ],
-         'forcegroupby'       => true,
+            'id'                 => '13',
+            'table'              => $this->getTable(),
+            'field'              => 'items_id',
+            'name'               => _n('Associated element', 'Associated elements', 1),
+            'datatype'           => 'specific',
+            'comments'           => true,
+            'nosort'             => true,
+            'nosearch'           => true,
+            'additionalfields'   => ['itemtype'],
+            'joinparams'         => [
+                'jointype'           => 'child'
+            ],
+            'forcegroupby'       => true,
         ];
 
         return $tab;
@@ -141,11 +141,11 @@ class Lockedfield extends CommonDBTM
         global $DB;
 
         $iterator = $DB->request([
-         'FROM'   => $this->getTable(),
-         'WHERE'  => [
-            'itemtype'  => $itemtype,
-            'items_id'  => $items_id
-         ]
+            'FROM'   => $this->getTable(),
+            'WHERE'  => [
+                'itemtype'  => $itemtype,
+                'items_id'  => $items_id
+            ]
         ]);
 
         $locks = [];
@@ -166,8 +166,8 @@ class Lockedfield extends CommonDBTM
         return $DB->delete(
             $this->getTable(),
             [
-            'itemtype'  => $this->item->getType(),
-            'items_id'  => $this->item->fields['id']
+                'itemtype'  => $this->item->getType(),
+                'items_id'  => $this->item->fields['id']
             ]
         );
     }
@@ -183,12 +183,12 @@ class Lockedfield extends CommonDBTM
         return $DB->update(
             $this->getTable(),
             [
-            'value'  => $value
+                'value'  => $value
             ],
             [
-            'itemtype'  => $itemtype,
-            'items_id'  => $items_id,
-            'field'     => $field
+                'itemtype'  => $itemtype,
+                'items_id'  => $items_id,
+                'field'     => $field
             ]
         );
     }

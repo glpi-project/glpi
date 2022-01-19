@@ -46,13 +46,13 @@ class Processor extends Device
     public function prepare(): array
     {
         $mapping = [
-         'speed'        => 'frequency',
-         'manufacturer' => 'manufacturers_id',
-         'serial'       => 'serial',
-         'name'         => 'designation',
-         'core'         => 'nbcores',
-         'thread'       => 'nbthreads',
-         'id'           => 'internalid'
+            'speed'        => 'frequency',
+            'manufacturer' => 'manufacturers_id',
+            'serial'       => 'serial',
+            'name'         => 'designation',
+            'core'         => 'nbcores',
+            'thread'       => 'nbthreads',
+            'id'           => 'internalid'
         ];
         foreach ($this->data as &$val) {
             foreach ($mapping as $origin => $dest) {

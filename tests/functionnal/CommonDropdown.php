@@ -177,8 +177,8 @@ abstract class CommonDropdown extends DbTestCase
 
         $this->integer(
             (int)$this->testedInstance->add([
-            'name'      => 'Another name',
-            'comment'   => 'A comment on an object'
+                'name'      => 'Another name',
+                'comment'   => 'A comment on an object'
             ])
         )->isGreaterThan(0);
         $this->boolean(
@@ -194,8 +194,8 @@ abstract class CommonDropdown extends DbTestCase
 
         $this->boolean(
             $this->testedInstance->update([
-            'id'     => $this->testedInstance->getID(),
-            'name'   => 'Changed name'
+                'id'     => $this->testedInstance->getID(),
+                'name'   => 'Changed name'
             ])
         )->isTrue();
         $this->boolean(

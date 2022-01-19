@@ -117,9 +117,9 @@ if (isset($_POST["add"])) {
 } else {
     Html::header(Enclosure::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "assets", "enclosure");
     $options = [
-      'id'           => $_GET['id'],
-      'withtemplate' => $_GET['withtemplate'],
-      'formoptions'  => "data-track-changes=true"
+        'id'           => $_GET['id'],
+        'withtemplate' => $_GET['withtemplate'],
+        'formoptions'  => "data-track-changes=true"
     ];
     if (isset($_GET['position'])) {
         $options['position'] = $_GET['position'];

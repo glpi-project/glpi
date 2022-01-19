@@ -62,11 +62,11 @@ function update955to956()
 
        // Init date from the parent followup
         $parent_date = new QuerySubQuery([
-         'SELECT' => 'date',
-         'FROM' => 'glpi_itilfollowups',
-         'WHERE' => [
-            'id' => new QueryExpression($DB->quoteName('glpi_documents_items.items_id'))
-         ]
+            'SELECT' => 'date',
+            'FROM' => 'glpi_itilfollowups',
+            'WHERE' => [
+                'id' => new QueryExpression($DB->quoteName('glpi_documents_items.items_id'))
+            ]
         ]);
 
         $migration->addPostQuery($DB->buildUpdate(

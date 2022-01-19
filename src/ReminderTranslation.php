@@ -128,9 +128,10 @@ class ReminderTranslation extends CommonDBChild
             echo "<script type='text/javascript' >\n";
             echo "function addTranslation" . $item->getID() . "$rand() {\n";
             $params = ['type'             => __CLASS__,
-                         'parenttype'       => get_class($item),
-                         'reminders_id' => $item->fields['id'],
-                         'id'               => -1];
+                'parenttype'       => get_class($item),
+                'reminders_id' => $item->fields['id'],
+                'id'               => -1
+            ];
             Ajax::updateItemJsCode(
                 "viewtranslation" . $item->getID() . "$rand",
                 $CFG_GLPI["root_doc"] . "/ajax/viewsubitem.php",
@@ -232,8 +233,9 @@ class ReminderTranslation extends CommonDBChild
             Dropdown::showLanguages(
                 "language",
                 ['display_none' => false,
-                                       'value'        => $_SESSION['glpilanguage'],
-                'used'         => self::getAlreadyTranslatedForItem($item)]
+                    'value'        => $_SESSION['glpilanguage'],
+                    'used'         => self::getAlreadyTranslatedForItem($item)
+                ]
             );
         }
         echo "</td><td colspan='2'>&nbsp;</td></tr>";
@@ -248,9 +250,10 @@ class ReminderTranslation extends CommonDBChild
         echo "<td>" . __('Description') . "</td>";
         echo "<td colspan='3'>";
         Html::textarea(['name'              => 'text',
-                      'value'             => RichText::getSafeHtml($this->fields["text"], true),
-                      'enable_richtext'   => true,
-                      'enable_fileupload' => false]);
+            'value'             => RichText::getSafeHtml($this->fields["text"], true),
+            'enable_richtext'   => true,
+            'enable_fileupload' => false
+        ]);
         echo "</td></tr>\n";
 
         $this->showFormButtons($options);
@@ -270,8 +273,8 @@ class ReminderTranslation extends CommonDBChild
     {
         $obj   = new self();
         $found = $obj->find([
-         'reminders_id'   => $item->getID(),
-         'language'           => $_SESSION['glpilanguage']
+            'reminders_id'   => $item->getID(),
+            'language'           => $_SESSION['glpilanguage']
         ]);
 
         if (
@@ -346,8 +349,8 @@ class ReminderTranslation extends CommonDBChild
         $tab = [];
 
         $iterator = $DB->request([
-         'FROM'   => getTableForItemType(__CLASS__),
-         'WHERE'  => ['reminders_id' => $item->getID()]
+            'FROM'   => getTableForItemType(__CLASS__),
+            'WHERE'  => ['reminders_id' => $item->getID()]
         ]);
 
         foreach ($iterator as $data) {

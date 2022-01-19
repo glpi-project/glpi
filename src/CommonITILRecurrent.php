@@ -155,51 +155,51 @@ abstract class CommonITILRecurrent extends CommonDropdown
     public function getAdditionalFields()
     {
         return [
-         [
-            'name'  => 'is_active',
-            'label' => __('Active'),
-            'type'  => 'bool',
-            'list'  => false
-         ],
-         [
-            'name'  => static::getTemplateClass()::getForeignKeyField(),
-            'label' => static::getTemplateClass()::getTypeName(1),
-            'type'  => 'dropdownValue',
-            'list'  => true
-         ],
-         [
-            'name'  => 'begin_date',
-            'label' => __('Start date'),
-            'type'  => 'datetime',
-            'list'  => false
-         ],
-         [
-            'name'  => 'end_date',
-            'label' => __('End date'),
-            'type'  => 'datetime',
-            'list'  => false
-         ],
-         [
-            'name'  => 'periodicity',
-            'label' => __('Periodicity'),
-            'type'  => 'specific_timestamp',
-            'min'   => DAY_TIMESTAMP,
-            'step'  => DAY_TIMESTAMP,
-            'max'   => 2 * MONTH_TIMESTAMP
-         ],
-         [
-            'name'  => 'create_before',
-            'label' => __('Preliminary creation'),
-            'type'  => 'timestamp',
-            'max'   => 7 * DAY_TIMESTAMP,
-            'step'  => HOUR_TIMESTAMP
-         ],
-         [
-            'name'  => 'calendars_id',
-            'label' => _n('Calendar', 'Calendars', 1),
-            'type'  => 'dropdownValue',
-            'list'  => true
-         ],
+            [
+                'name'  => 'is_active',
+                'label' => __('Active'),
+                'type'  => 'bool',
+                'list'  => false
+            ],
+            [
+                'name'  => static::getTemplateClass()::getForeignKeyField(),
+                'label' => static::getTemplateClass()::getTypeName(1),
+                'type'  => 'dropdownValue',
+                'list'  => true
+            ],
+            [
+                'name'  => 'begin_date',
+                'label' => __('Start date'),
+                'type'  => 'datetime',
+                'list'  => false
+            ],
+            [
+                'name'  => 'end_date',
+                'label' => __('End date'),
+                'type'  => 'datetime',
+                'list'  => false
+            ],
+            [
+                'name'  => 'periodicity',
+                'label' => __('Periodicity'),
+                'type'  => 'specific_timestamp',
+                'min'   => DAY_TIMESTAMP,
+                'step'  => DAY_TIMESTAMP,
+                'max'   => 2 * MONTH_TIMESTAMP
+            ],
+            [
+                'name'  => 'create_before',
+                'label' => __('Preliminary creation'),
+                'type'  => 'timestamp',
+                'max'   => 7 * DAY_TIMESTAMP,
+                'step'  => HOUR_TIMESTAMP
+            ],
+            [
+                'name'  => 'calendars_id',
+                'label' => _n('Calendar', 'Calendars', 1),
+                'type'  => 'dropdownValue',
+                'list'  => true
+            ],
         ];
     }
 
@@ -269,7 +269,7 @@ abstract class CommonITILRecurrent extends CommonDropdown
         }
 
         Dropdown::showFromArray('periodicity', $possible_values, [
-         'value' => $this->fields['periodicity']
+            'value' => $this->fields['periodicity']
         ]);
     }
 
@@ -278,59 +278,59 @@ abstract class CommonITILRecurrent extends CommonDropdown
         $tab = parent::rawSearchOptions();
 
         $tab[] = [
-         'id'       => '11',
-         'table'    => $this->getTable(),
-         'field'    => 'is_active',
-         'name'     => __('Active'),
-         'datatype' => 'bool'
+            'id'       => '11',
+            'table'    => $this->getTable(),
+            'field'    => 'is_active',
+            'name'     => __('Active'),
+            'datatype' => 'bool'
         ];
 
         $tab[] = [
-         'id'       => '12',
-         'table'    => static::getTemplateClass()::getTable(),
-         'field'    => 'name',
-         'name'     => static::getTemplateClass()::getTypeName(1),
-         'datatype' => 'itemlink'
+            'id'       => '12',
+            'table'    => static::getTemplateClass()::getTable(),
+            'field'    => 'name',
+            'name'     => static::getTemplateClass()::getTypeName(1),
+            'datatype' => 'itemlink'
         ];
 
         $tab[] = [
-         'id'       => '13',
-         'table'    => $this->getTable(),
-         'field'    => 'begin_date',
-         'name'     => __('Start date'),
-         'datatype' => 'datetime'
+            'id'       => '13',
+            'table'    => $this->getTable(),
+            'field'    => 'begin_date',
+            'name'     => __('Start date'),
+            'datatype' => 'datetime'
         ];
 
         $tab[] = [
-         'id'       => '17',
-         'table'    => $this->getTable(),
-         'field'    => 'end_date',
-         'name'     => __('End date'),
-         'datatype' => 'datetime'
+            'id'       => '17',
+            'table'    => $this->getTable(),
+            'field'    => 'end_date',
+            'name'     => __('End date'),
+            'datatype' => 'datetime'
         ];
 
         $tab[] = [
-         'id'       => '15',
-         'table'    => $this->getTable(),
-         'field'    => 'periodicity',
-         'name'     => __('Periodicity'),
-         'datatype' => 'specific'
+            'id'       => '15',
+            'table'    => $this->getTable(),
+            'field'    => 'periodicity',
+            'name'     => __('Periodicity'),
+            'datatype' => 'specific'
         ];
 
         $tab[] = [
-         'id'       => '14',
-         'table'    => $this->getTable(),
-         'field'    => 'create_before',
-         'name'     => __('Preliminary creation'),
-         'datatype' => 'timestamp'
+            'id'       => '14',
+            'table'    => $this->getTable(),
+            'field'    => 'create_before',
+            'name'     => __('Preliminary creation'),
+            'datatype' => 'timestamp'
         ];
 
         $tab[] = [
-         'id'       => '18',
-         'table'    => 'glpi_calendars',
-         'field'    => 'name',
-         'name'     => _n('Calendar', 'Calendars', 1),
-         'datatype' => 'itemlink'
+            'id'       => '18',
+            'table'    => 'glpi_calendars',
+            'field'    => 'name',
+            'name'     => _n('Calendar', 'Calendars', 1),
+            'datatype' => 'itemlink'
         ];
 
         return $tab;
@@ -606,14 +606,14 @@ abstract class CommonITILRecurrent extends CommonDropdown
 
        // Compute next creation date
         $input = [
-         'id'                 => $this->getId(),
-         'next_creation_date' => $this->computeNextCreationDate(
-             $this->fields['begin_date'],
-             $this->fields['end_date'],
-             $this->fields['periodicity'],
-             $this->fields['create_before'],
-             $this->fields['calendars_id']
-         )
+            'id'                 => $this->getId(),
+            'next_creation_date' => $this->computeNextCreationDate(
+                $this->fields['begin_date'],
+                $this->fields['end_date'],
+                $this->fields['periodicity'],
+                $this->fields['create_before'],
+                $this->fields['calendars_id']
+            )
         ];
         $this->update($input);
 

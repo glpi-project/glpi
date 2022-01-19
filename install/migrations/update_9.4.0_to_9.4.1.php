@@ -50,33 +50,33 @@ function update940to941()
     $migration->addPostQuery($DB->buildUpdate(
         'glpi_displaypreferences',
         [
-         'num' => '5'
+            'num' => '5'
         ],
         [
-         'num' => '2',
-         'itemtype' => 'Profile'
+            'num' => '2',
+            'itemtype' => 'Profile'
         ]
     ));
 
    // Manually add using addPostQuery to be sure it will be added before num 2->5 update request
     $rank_result = $DB->request(
         [
-         'SELECT' => ['MAX' => 'rank AS maxrank'],
-         'FROM'   => 'glpi_displaypreferences',
-         'WHERE'  => [
-            'itemtype'  => 'Profile',
-            'users_id'  => '0',
-         ]
+            'SELECT' => ['MAX' => 'rank AS maxrank'],
+            'FROM'   => 'glpi_displaypreferences',
+            'WHERE'  => [
+                'itemtype'  => 'Profile',
+                'users_id'  => '0',
+            ]
         ]
     )->current();
     $migration->addPostQuery(
         $DB->buildInsert(
             'glpi_displaypreferences',
             [
-            'num'      => '2',
-            'itemtype' => 'Profile',
-            'users_id' => '0',
-            'rank'     => $rank_result['maxrank'] + 1,
+                'num'      => '2',
+                'itemtype' => 'Profile',
+                'users_id' => '0',
+                'rank'     => $rank_result['maxrank'] + 1,
             ]
         )
     );
@@ -98,21 +98,21 @@ function update940to941()
     $missing_param_pattern = '(document\.send\.php\?docid=[0-9]+)(' . implode('|', $quotes_possible_exp) . ')';
 
     $itil_mappings = [
-      'Change' => [
-         'itil_table' => 'glpi_changes',
-         'itil_fkey'  => 'changes_id',
-         'task_table' => 'glpi_changetasks',
-      ],
-      'Problem' => [
-         'itil_table' => 'glpi_problems',
-         'itil_fkey'  => 'problems_id',
-         'task_table' => 'glpi_problemtasks',
-      ],
-      'Ticket' => [
-         'itil_table' => 'glpi_tickets',
-         'itil_fkey'  => 'tickets_id',
-         'task_table' => 'glpi_tickettasks',
-      ],
+        'Change' => [
+            'itil_table' => 'glpi_changes',
+            'itil_fkey'  => 'changes_id',
+            'task_table' => 'glpi_changetasks',
+        ],
+        'Problem' => [
+            'itil_table' => 'glpi_problems',
+            'itil_fkey'  => 'problems_id',
+            'task_table' => 'glpi_problemtasks',
+        ],
+        'Ticket' => [
+            'itil_table' => 'glpi_tickets',
+            'itil_fkey'  => 'tickets_id',
+            'task_table' => 'glpi_tickettasks',
+        ],
     ];
 
     $fix_content_fct = function ($content, $itil_id, $itil_fkey) use ($missing_param_pattern) {
@@ -132,12 +132,12 @@ function update940to941()
         foreach (['glpi_itilfollowups', 'glpi_itilsolutions'] as $itil_element_table) {
             $elements_to_fix = $DB->request(
                 [
-                'SELECT'    => ['id', 'items_id', 'content'],
-                'FROM'      => $itil_element_table,
-                'WHERE'     => [
-                  'itemtype' => $itil_type,
-                  'content'  => ['REGEXP', $DB->escape($missing_param_pattern)],
-                ]
+                    'SELECT'    => ['id', 'items_id', 'content'],
+                    'FROM'      => $itil_element_table,
+                    'WHERE'     => [
+                        'itemtype' => $itil_type,
+                        'content'  => ['REGEXP', $DB->escape($missing_param_pattern)],
+                    ]
                 ]
             );
             foreach ($elements_to_fix as $data) {
@@ -149,11 +149,11 @@ function update940to941()
        // Fix tasks
         $tasks_to_fix = $DB->request(
             [
-            'SELECT'    => ['id', $itil_fkey, 'content'],
-            'FROM'      => $task_table,
-            'WHERE'     => [
-               'content'  => ['REGEXP', $DB->escape($missing_param_pattern)],
-            ]
+                'SELECT'    => ['id', $itil_fkey, 'content'],
+                'FROM'      => $task_table,
+                'WHERE'     => [
+                    'content'  => ['REGEXP', $DB->escape($missing_param_pattern)],
+                ]
             ]
         );
         foreach ($tasks_to_fix as $data) {

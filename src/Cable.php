@@ -90,14 +90,14 @@ class Cable extends CommonDBTM
     {
         if (static::canView()) {
             return [
-            'socket' => [
-               'title' => Socket::getTypeName(Session::getPluralNumber()),
-               'page'  => Socket::getSearchURL(false),
-               'links' => [
-                  'add'    => '/front/socket.form.php',
-                  'search' => '/front/socket.php',
-               ]
-            ]
+                'socket' => [
+                    'title' => Socket::getTypeName(Session::getPluralNumber()),
+                    'page'  => Socket::getSearchURL(false),
+                    'links' => [
+                        'add'    => '/front/socket.form.php',
+                        'search' => '/front/socket.php',
+                    ]
+                ]
             ];
         }
     }
@@ -107,218 +107,218 @@ class Cable extends CommonDBTM
         $tab = [];
 
         $tab[] = [
-         'id'                 => 'common',
-         'name'               => __('Characteristics')
+            'id'                 => 'common',
+            'name'               => __('Characteristics')
         ];
 
         $tab[] = [
-         'id'                 => '1',
-         'table'              => $this->getTable(),
-         'field'              => 'name',
-         'name'               => __('Name'),
-         'datatype'           => 'itemlink',
-         'massiveaction'      => false,
-         'autocomplete'       => true,
+            'id'                 => '1',
+            'table'              => $this->getTable(),
+            'field'              => 'name',
+            'name'               => __('Name'),
+            'datatype'           => 'itemlink',
+            'massiveaction'      => false,
+            'autocomplete'       => true,
         ];
 
         $tab[] = [
-         'id'                 => '2',
-         'table'              => $this->getTable(),
-         'field'              => 'id',
-         'name'               => __('ID'),
-         'massiveaction'      => false,
-         'datatype'           => 'number'
+            'id'                 => '2',
+            'table'              => $this->getTable(),
+            'field'              => 'id',
+            'name'               => __('ID'),
+            'massiveaction'      => false,
+            'datatype'           => 'number'
         ];
 
         $tab[] = [
-         'id'                 => '4',
-         'table'              => 'glpi_cabletypes',
-         'field'              => 'name',
-         'name'               => _n('Cable type', 'Cable types', 1),
-         'datatype'           => 'dropdown'
+            'id'                 => '4',
+            'table'              => 'glpi_cabletypes',
+            'field'              => 'name',
+            'name'               => _n('Cable type', 'Cable types', 1),
+            'datatype'           => 'dropdown'
         ];
 
         $tab[] = [
-         'id'                 => '5',
-         'table'              => 'glpi_cablestrands',
-         'field'              => 'name',
-         'name'               => _n('Cable strand', 'Cable strands', 1),
-         'datatype'           => 'dropdown'
+            'id'                 => '5',
+            'table'              => 'glpi_cablestrands',
+            'field'              => 'name',
+            'name'               => _n('Cable strand', 'Cable strands', 1),
+            'datatype'           => 'dropdown'
         ];
 
         $tab[] = [
-         'id'                 => '6',
-         'table'              => $this->getTable(),
-         'field'              => 'otherserial',
-         'name'               => __('Inventory number'),
-         'datatype'           => 'string',
-         'autocomplete'       => true,
+            'id'                 => '6',
+            'table'              => $this->getTable(),
+            'field'              => 'otherserial',
+            'name'               => __('Inventory number'),
+            'datatype'           => 'string',
+            'autocomplete'       => true,
         ];
 
         $tab[] = [
-         'id'                 => '7',
-         'table'              => $this->getTable(),
-         'field'              => 'itemtype_endpoint_a',
-         'name'               => sprintf(__('%s (%s)'), _n('Associated item type', 'Associated item types', 1), __('Endpoint A')),
-         'datatype'           => 'itemtypename',
-         'itemtype_list'      => 'socket_types',
-         'forcegroupby'       => true,
-         'massiveaction'      => false
+            'id'                 => '7',
+            'table'              => $this->getTable(),
+            'field'              => 'itemtype_endpoint_a',
+            'name'               => sprintf(__('%s (%s)'), _n('Associated item type', 'Associated item types', 1), __('Endpoint A')),
+            'datatype'           => 'itemtypename',
+            'itemtype_list'      => 'socket_types',
+            'forcegroupby'       => true,
+            'massiveaction'      => false
         ];
 
         $tab[] = [
-         'id'                 => '8',
-         'table'              => $this->getTable(),
-         'field'              => 'items_id_endpoint_b',
-         'name'               => sprintf(__('%s (%s)'), _n('Associated item', 'Associated items', 1), __('Endpoint B')),
-         'massiveaction'      => false,
-         'datatype'           => 'specific',
-         'searchtype'         => 'equals',
-         'additionalfields'   => ['itemtype_endpoint_b']
+            'id'                 => '8',
+            'table'              => $this->getTable(),
+            'field'              => 'items_id_endpoint_b',
+            'name'               => sprintf(__('%s (%s)'), _n('Associated item', 'Associated items', 1), __('Endpoint B')),
+            'massiveaction'      => false,
+            'datatype'           => 'specific',
+            'searchtype'         => 'equals',
+            'additionalfields'   => ['itemtype_endpoint_b']
         ];
 
         $tab[] = [
-         'id'                 => '9',
-         'table'              => $this->getTable(),
-         'field'              => 'itemtype_endpoint_b',
-         'name'               => sprintf(__('%s (%s)'), _n('Associated item type', 'Associated item types', 1), __('Endpoint B')),
-         'datatype'           => 'itemtypename',
-         'itemtype_list'      => 'socket_types',
-         'forcegroupby'       => true,
-         'massiveaction'      => false
+            'id'                 => '9',
+            'table'              => $this->getTable(),
+            'field'              => 'itemtype_endpoint_b',
+            'name'               => sprintf(__('%s (%s)'), _n('Associated item type', 'Associated item types', 1), __('Endpoint B')),
+            'datatype'           => 'itemtypename',
+            'itemtype_list'      => 'socket_types',
+            'forcegroupby'       => true,
+            'massiveaction'      => false
         ];
 
         $tab[] = [
-         'id'                 => '10',
-         'table'              => $this->getTable(),
-         'field'              => 'items_id_endpoint_a',
-         'name'               => sprintf(__('%s (%s)'), _n('Associated item', 'Associated items', 1), __('Endpoint A')),
-         'massiveaction'      => false,
-         'datatype'           => 'specific',
-         'searchtype'         => 'equals',
-         'additionalfields'   => ['itemtype_endpoint_a']
+            'id'                 => '10',
+            'table'              => $this->getTable(),
+            'field'              => 'items_id_endpoint_a',
+            'name'               => sprintf(__('%s (%s)'), _n('Associated item', 'Associated items', 1), __('Endpoint A')),
+            'massiveaction'      => false,
+            'datatype'           => 'specific',
+            'searchtype'         => 'equals',
+            'additionalfields'   => ['itemtype_endpoint_a']
         ];
 
         $tab[] = [
-         'id'                 => '11',
-         'table'              => SocketModel::getTable(),
-         'field'              => 'name',
-         'linkfield'          => 'socketmodels_id_endpoint_a',
-         'name'               => sprintf(__('%s (%s)'), SocketModel::getTypeName(1), __('Endpoint A')),
-         'datatype'           => 'dropdown',
-         'massiveaction'      => false,
+            'id'                 => '11',
+            'table'              => SocketModel::getTable(),
+            'field'              => 'name',
+            'linkfield'          => 'socketmodels_id_endpoint_a',
+            'name'               => sprintf(__('%s (%s)'), SocketModel::getTypeName(1), __('Endpoint A')),
+            'datatype'           => 'dropdown',
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
-         'id'                 => '12',
-         'table'              => SocketModel::getTable(),
-         'field'              => 'name',
-         'linkfield'          => 'socketmodels_id_endpoint_b',
-         'name'               => sprintf(__('%s (%s)'), SocketModel::getTypeName(1), __('Endpoint B')),
-         'datatype'           => 'dropdown',
-         'massiveaction'      => false,
+            'id'                 => '12',
+            'table'              => SocketModel::getTable(),
+            'field'              => 'name',
+            'linkfield'          => 'socketmodels_id_endpoint_b',
+            'name'               => sprintf(__('%s (%s)'), SocketModel::getTypeName(1), __('Endpoint B')),
+            'datatype'           => 'dropdown',
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
-         'id'                 => '13',
-         'table'              => Socket::getTable(),
-         'field'              => 'name',
-         'linkfield'          => 'sockets_id_endpoint_b',
-         'name'               => sprintf(__('%s (%s)'), Socket::getTypeName(1), __('Endpoint B')),
-         'datatype'           => 'dropdown',
-         'massiveaction'       => false,
+            'id'                 => '13',
+            'table'              => Socket::getTable(),
+            'field'              => 'name',
+            'linkfield'          => 'sockets_id_endpoint_b',
+            'name'               => sprintf(__('%s (%s)'), Socket::getTypeName(1), __('Endpoint B')),
+            'datatype'           => 'dropdown',
+            'massiveaction'       => false,
         ];
 
         $tab[] = [
-         'id'                 => '14',
-         'table'              => Socket::getTable(),
-         'field'              => 'name',
-         'linkfield'          => 'sockets_id_endpoint_a',
-         'name'               => sprintf(__('%s (%s)'), Socket::getTypeName(1), __('Endpoint A')),
-         'datatype'           => 'dropdown',
-         'massiveaction'      => false,
+            'id'                 => '14',
+            'table'              => Socket::getTable(),
+            'field'              => 'name',
+            'linkfield'          => 'sockets_id_endpoint_a',
+            'name'               => sprintf(__('%s (%s)'), Socket::getTypeName(1), __('Endpoint A')),
+            'datatype'           => 'dropdown',
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
-         'id'                 => '15',
-         'table'              => $this->getTable(),
-         'field'              => 'color',
-         'name'               => __('Color'),
-         'datatype'           => 'color'
+            'id'                 => '15',
+            'table'              => $this->getTable(),
+            'field'              => 'color',
+            'name'               => __('Color'),
+            'datatype'           => 'color'
         ];
 
         $tab[] = [
-         'id'                 => '16',
-         'table'              => $this->getTable(),
-         'field'              => 'comment',
-         'name'               => __('Comments'),
-         'datatype'           => 'text'
+            'id'                 => '16',
+            'table'              => $this->getTable(),
+            'field'              => 'comment',
+            'name'               => __('Comments'),
+            'datatype'           => 'text'
         ];
 
         $tab[] = [
-         'id'                 => '19',
-         'table'              => $this->getTable(),
-         'field'              => 'date_mod',
-         'name'               => __('Last update'),
-         'datatype'           => 'datetime',
-         'massiveaction'      => false
+            'id'                 => '19',
+            'table'              => $this->getTable(),
+            'field'              => 'date_mod',
+            'name'               => __('Last update'),
+            'datatype'           => 'datetime',
+            'massiveaction'      => false
         ];
 
         $tab[] = [
-         'id'                 => '24',
-         'table'              => 'glpi_users',
-         'field'              => 'name',
-         'linkfield'          => 'users_id_tech',
-         'name'               => __('Technician in charge of the hardware'),
-         'datatype'           => 'dropdown'
+            'id'                 => '24',
+            'table'              => 'glpi_users',
+            'field'              => 'name',
+            'linkfield'          => 'users_id_tech',
+            'name'               => __('Technician in charge of the hardware'),
+            'datatype'           => 'dropdown'
         ];
 
         $tab[] = [
-         'id'                 => '121',
-         'table'              => $this->getTable(),
-         'field'              => 'date_creation',
-         'name'               => __('Creation date'),
-         'datatype'           => 'datetime',
-         'massiveaction'      => false
+            'id'                 => '121',
+            'table'              => $this->getTable(),
+            'field'              => 'date_creation',
+            'name'               => __('Creation date'),
+            'datatype'           => 'datetime',
+            'massiveaction'      => false
         ];
 
         $tab[] = [
-         'id'                 => '31',
-         'table'              => 'glpi_states',
-         'field'              => 'completename',
-         'name'               => __('Status'),
-         'datatype'           => 'dropdown',
-         'condition'          => ['is_visible_cable' => 1]
+            'id'                 => '31',
+            'table'              => 'glpi_states',
+            'field'              => 'completename',
+            'name'               => __('Status'),
+            'datatype'           => 'dropdown',
+            'condition'          => ['is_visible_cable' => 1]
         ];
 
         $tab[] = [
-         'id'                 => '87',
-         'table'              => $this->getTable(),
-         'field'              => '_virtual_datacenter_position', // virtual field
-         'additionalfields'   => [
-            'items_id_endpoint_a',
-            'itemtype_endpoint_a'
-         ],
-         'name'               => sprintf(__('%s (%s)'), __('Data center position'), __('Endpoint A')),
-         'datatype'           => 'specific',
-         'nosearch'           => true,
-         'nosort'             => true,
-         'massiveaction'      => false
+            'id'                 => '87',
+            'table'              => $this->getTable(),
+            'field'              => '_virtual_datacenter_position', // virtual field
+            'additionalfields'   => [
+                'items_id_endpoint_a',
+                'itemtype_endpoint_a'
+            ],
+            'name'               => sprintf(__('%s (%s)'), __('Data center position'), __('Endpoint A')),
+            'datatype'           => 'specific',
+            'nosearch'           => true,
+            'nosort'             => true,
+            'massiveaction'      => false
         ];
 
         $tab[] = [
-         'id'                 => '88',
-         'table'              => $this->getTable(),
-         'field'              => '_virtual_datacenter_position', // virtual field
-         'additionalfields'   => [
-            'items_id_endpoint_b',
-            'itemtype_endpoint_b'
-         ],
-         'name'               => sprintf(__('%s (%s)'), __('Data center position'), __('Endpoint B')),
-         'datatype'           => 'specific',
-         'nosearch'           => true,
-         'nosort'             => true,
-         'massiveaction'      => false
+            'id'                 => '88',
+            'table'              => $this->getTable(),
+            'field'              => '_virtual_datacenter_position', // virtual field
+            'additionalfields'   => [
+                'items_id_endpoint_b',
+                'itemtype_endpoint_b'
+            ],
+            'name'               => sprintf(__('%s (%s)'), __('Data center position'), __('Endpoint B')),
+            'datatype'           => 'specific',
+            'nosearch'           => true,
+            'nosort'             => true,
+            'massiveaction'      => false
         ];
 
         return $tab;
@@ -398,8 +398,8 @@ class Cable extends CommonDBTM
     {
         $this->initForm($ID, $options);
         TemplateRenderer::getInstance()->display('pages/assets/cable.html.twig', [
-         'item'   => $this,
-         'params' => $options,
+            'item'   => $this,
+            'params' => $options,
         ]);
         return true;
     }

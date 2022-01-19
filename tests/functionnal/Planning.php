@@ -42,12 +42,12 @@ class Planning extends \DbTestCase
         $this->login();
 
         $input = [
-         'name'  => "test event to clone",
-         'plan'  => [
-            'begin'     => date('Y-m-d H:i:s'),
-            '_duration' => 2 * HOUR_TIMESTAMP
-         ],
-         'rrule' => '{"freq":"weekly","interval":"1"}'
+            'name'  => "test event to clone",
+            'plan'  => [
+                'begin'     => date('Y-m-d H:i:s'),
+                '_duration' => 2 * HOUR_TIMESTAMP
+            ],
+            'rrule' => '{"freq":"weekly","interval":"1"}'
         ];
 
         $event = new \PlanningExternalEvent();
@@ -58,10 +58,10 @@ class Planning extends \DbTestCase
         $new_end   = date('Y-m-d H:i:s', $timestamp + 2 * HOUR_TIMESTAMP);
 
         $this->integer($clone_events_id = \Planning::cloneEvent([
-         'old_itemtype' => 'PlanningExternalEvent',
-         'old_items_id' => $event_id,
-         'start'        => $new_start,
-         'end'          => $new_end
+            'old_itemtype' => 'PlanningExternalEvent',
+            'old_items_id' => $event_id,
+            'start'        => $new_start,
+            'end'          => $new_end
         ]))->isGreaterThan(0);
 
        // check cloned event
@@ -84,79 +84,79 @@ class Planning extends \DbTestCase
 
        // Expected results
         $expected_events_data = [
-         'recurring_evt_1' => [
-            'title'   => 'Recur event',
-            'tooltip' => "Recur event\nMonday, 11 am to 12 am starting on 1st of July",
-            'color'   => '#ff0000',
-            'rrule'   => "DTSTART:20190701T090000\nRRULE:FREQ=WEEKLY;BYDAY=MO\n",
-         ],
-         'simple_evt_1'    => [
-            'title'   => 'Base event with no desc',
-            'tooltip' => 'Base event with no desc',
-            'color'   => '#ff0000',
-         ],
-         'simple_evt_2'    => [
-            'title'   => 'An event in 2020/01/05',
-            'tooltip' => "An event in 2020/01/05\nDescription of my event",
-            'color'   => '#ff0000',
-         ],
-         'task_1'          => [
-            'title'   => 'Test task',
-            'tooltip' => "Test task\nDescription of the task.",
-            'color'   => '#ff0000',
-         ],
-         'another_evt_1'   => [
-            'title'   => 'Another event',
-            'tooltip' => "Another event\nAnother event description",
-            'color'   => '#a500b3',
-         ],
+            'recurring_evt_1' => [
+                'title'   => 'Recur event',
+                'tooltip' => "Recur event\nMonday, 11 am to 12 am starting on 1st of July",
+                'color'   => '#ff0000',
+                'rrule'   => "DTSTART:20190701T090000\nRRULE:FREQ=WEEKLY;BYDAY=MO\n",
+            ],
+            'simple_evt_1'    => [
+                'title'   => 'Base event with no desc',
+                'tooltip' => 'Base event with no desc',
+                'color'   => '#ff0000',
+            ],
+            'simple_evt_2'    => [
+                'title'   => 'An event in 2020/01/05',
+                'tooltip' => "An event in 2020/01/05\nDescription of my event",
+                'color'   => '#ff0000',
+            ],
+            'task_1'          => [
+                'title'   => 'Test task',
+                'tooltip' => "Test task\nDescription of the task.",
+                'color'   => '#ff0000',
+            ],
+            'another_evt_1'   => [
+                'title'   => 'Another event',
+                'tooltip' => "Another event\nAnother event description",
+                'color'   => '#a500b3',
+            ],
         ];
 
         $expected_events_keys = [
-         'all_events'   => ['recurring_evt_1', 'simple_evt_1', 'simple_evt_2', 'task_1', 'another_evt_1'],
-         'month_events' => ['recurring_evt_1', 'simple_evt_1', 'task_1', 'another_evt_1'],
-         'cal2_events'  => ['another_evt_1'],
+            'all_events'   => ['recurring_evt_1', 'simple_evt_1', 'simple_evt_2', 'task_1', 'another_evt_1'],
+            'month_events' => ['recurring_evt_1', 'simple_evt_1', 'task_1', 'another_evt_1'],
+            'cal2_events'  => ['another_evt_1'],
         ];
 
        // Add calendars
         $_SESSION['glpi_plannings']['plannings'] = [
-         'external_1' => [
-            'color'   => '#ff0000',
-            'display' => true,
-            'type'    => 'external',
-            'name'    => 'External calendar 1',
-            'url'     => 'file://' . realpath(GLPI_ROOT . '/tests/fixtures/ical/sample_1.ics'),
-         ],
-         'external_2' => [
-            'color'   => '#a500b3',
-            'display' => true,
-            'type'    => 'external',
-            'name'    => 'External calendar 2',
-            'url'     => 'file://' . realpath(GLPI_ROOT . '/tests/fixtures/ical/sample_2.ics'),
-         ],
+            'external_1' => [
+                'color'   => '#ff0000',
+                'display' => true,
+                'type'    => 'external',
+                'name'    => 'External calendar 1',
+                'url'     => 'file://' . realpath(GLPI_ROOT . '/tests/fixtures/ical/sample_1.ics'),
+            ],
+            'external_2' => [
+                'color'   => '#a500b3',
+                'display' => true,
+                'type'    => 'external',
+                'name'    => 'External calendar 2',
+                'url'     => 'file://' . realpath(GLPI_ROOT . '/tests/fixtures/ical/sample_2.ics'),
+            ],
         ];
 
        // Fetch all events
         $all_events = \Planning::constructEventsArray(
             [
-            'start'            => '2000-01-01 00:00:00',
-            'end'              => '2050-12-31 23:59:59',
-            'force_all_events' => true
+                'start'            => '2000-01-01 00:00:00',
+                'end'              => '2050-12-31 23:59:59',
+                'force_all_events' => true
             ]
         );
        // Fetch events only for a given month
         $month_events = \Planning::constructEventsArray(
             [
-            'start' => '2019-11-01 00:00:00',
-            'end'   => '2019-11-30 23:59:59',
+                'start' => '2019-11-01 00:00:00',
+                'end'   => '2019-11-30 23:59:59',
             ]
         );
        // Fetch events only for a given calendar
         $_SESSION['glpi_plannings']['plannings']['external_1']['display'] = false;
         $cal2_events = \Planning::constructEventsArray(
             [
-            'start' => '2019-11-01 00:00:00',
-            'end'   => '2019-11-30 23:59:59',
+                'start' => '2019-11-01 00:00:00',
+                'end'   => '2019-11-30 23:59:59',
             ]
         );
 

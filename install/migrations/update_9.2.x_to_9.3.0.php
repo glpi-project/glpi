@@ -357,38 +357,38 @@ function update92xto930()
 
    //devices models enhancement for datacenters
     $models = [
-      'computer',
-      'monitor',
-      'networkequipment',
-      'peripheral'
+        'computer',
+        'monitor',
+        'networkequipment',
+        'peripheral'
     ];
 
     $models_fields = [
-      [
-         'name'   => 'weight',
-         'type'   => "int NOT NULL DEFAULT '0'"
-      ], [
-         'name'   => 'required_units',
-         'type'   => "int NOT NULL DEFAULT '1'"
-      ], [
-         'name'   => 'depth',
-         'type'   => "float NOT NULL DEFAULT 1"
-      ], [
-         'name'   => 'power_connections',
-         'type'   => "int NOT NULL DEFAULT '0'"
-      ], [
-         'name'   => 'power_consumption',
-         'type'   => "int NOT NULL DEFAULT '0'"
-      ], [
-         'name'   => 'is_half_rack',
-         'type'   => "tinyint NOT NULL DEFAULT '0'"
-      ], [
-         'name'   => 'picture_front',
-         'type'   => "text"
-      ], [
-         'name'   => 'picture_rear',
-         'type'   => "text"
-      ]
+        [
+            'name'   => 'weight',
+            'type'   => "int NOT NULL DEFAULT '0'"
+        ], [
+            'name'   => 'required_units',
+            'type'   => "int NOT NULL DEFAULT '1'"
+        ], [
+            'name'   => 'depth',
+            'type'   => "float NOT NULL DEFAULT 1"
+        ], [
+            'name'   => 'power_connections',
+            'type'   => "int NOT NULL DEFAULT '0'"
+        ], [
+            'name'   => 'power_consumption',
+            'type'   => "int NOT NULL DEFAULT '0'"
+        ], [
+            'name'   => 'is_half_rack',
+            'type'   => "tinyint NOT NULL DEFAULT '0'"
+        ], [
+            'name'   => 'picture_front',
+            'type'   => "text"
+        ], [
+            'name'   => 'picture_rear',
+            'type'   => "text"
+        ]
     ];
 
     foreach ($models as $model) {
@@ -630,7 +630,8 @@ function update92xto930()
     }
 
     $migration->addField('glpi_states', 'is_visible_rack', 'bool', ['value' => 1,
-                                                                   'after' => 'is_visible_certificate']);
+        'after' => 'is_visible_certificate'
+    ]);
     $migration->addKey('glpi_states', 'is_visible_rack');
 
     $ADDTODISPLAYPREF['Datacenter'] = [3];
@@ -755,11 +756,11 @@ function update92xto930()
         $rank = 1;
         foreach ($tab as $newval) {
             $DB->updateOrInsert("glpi_displaypreferences", [
-            'rank'      => $rank++
+                'rank'      => $rank++
             ], [
-            'users_id'  => "0",
-            'itemtype'  => $type,
-            'num'       => $newval,
+                'users_id'  => "0",
+                'itemtype'  => $type,
+                'num'       => $newval,
             ]);
         }
     }
@@ -788,29 +789,29 @@ function update92xto930()
 
     /** Logs purge */
     $purge_params = [
-      'purge_computer_software_install',
-      'purge_software_computer_install',
-      'purge_software_version_install',
-      'purge_infocom_creation',
-      'purge_profile_user',
-      'purge_group_user',
-      'purge_adddevice',
-      'purge_updatedevice',
-      'purge_deletedevice',
-      'purge_connectdevice',
-      'purge_disconnectdevice',
-      'purge_userdeletedfromldap',
-      'purge_addrelation',
-      'purge_deleterelation',
-      'purge_createitem',
-      'purge_deleteitem',
-      'purge_restoreitem',
-      'purge_updateitem',
-      'purge_comments',
-      'purge_datemod',
-      'purge_all',
-      'purge_user_auth_changes',
-      'purge_plugins'
+        'purge_computer_software_install',
+        'purge_software_computer_install',
+        'purge_software_version_install',
+        'purge_infocom_creation',
+        'purge_profile_user',
+        'purge_group_user',
+        'purge_adddevice',
+        'purge_updatedevice',
+        'purge_deletedevice',
+        'purge_connectdevice',
+        'purge_disconnectdevice',
+        'purge_userdeletedfromldap',
+        'purge_addrelation',
+        'purge_deleterelation',
+        'purge_createitem',
+        'purge_deleteitem',
+        'purge_restoreitem',
+        'purge_updateitem',
+        'purge_comments',
+        'purge_datemod',
+        'purge_all',
+        'purge_user_auth_changes',
+        'purge_plugins'
     ];
 
     $purge_plugin_values = [];
@@ -843,8 +844,8 @@ function update92xto930()
         'PurgeLogs',
         7 * DAY_TIMESTAMP,
         [
-         'param' => 24,
-         'mode' => CronTask::MODE_EXTERNAL
+            'param' => 24,
+            'mode' => CronTask::MODE_EXTERNAL
         ]
     );
     /** /Logs purge */
@@ -853,14 +854,14 @@ function update92xto930()
     $iterator = $DB->request(['FROM' => Item_Rack::getTable()]);
     foreach ($iterator as $row) {
         $exists = $DB->request([
-         'FROM'   => getTableForItemType($row['itemtype']),
-         'WHERE'  => ['id' => $row['items_id']]
+            'FROM'   => getTableForItemType($row['itemtype']),
+            'WHERE'  => ['id' => $row['items_id']]
         ]);
         if (!count($exists)) {
             $DB->delete(
                 Item_Rack::getTable(),
                 [
-                'id' => $row['id']
+                    'id' => $row['id']
                 ]
             );
         }

@@ -53,20 +53,20 @@ function update943to945()
         'ola_ttr_begin_date',
         'datetime',
         [
-         'after'     => 'olalevels_id_ttr',
-         'update'    => $DB->quoteName('date'), // Assign ticket creation date by default
-         'condition' => 'WHERE ' . $iterator->analyseCrit(['NOT' => ['olas_id_ttr' => '0']])
+            'after'     => 'olalevels_id_ttr',
+            'update'    => $DB->quoteName('date'), // Assign ticket creation date by default
+            'condition' => 'WHERE ' . $iterator->analyseCrit(['NOT' => ['olas_id_ttr' => '0']])
         ]
     );
     /** /Add OLA TTR begin date field to Tickets */
 
     /** Fix language fields */
     $translatable_tables = [
-      'glpi_dropdowntranslations'             => 'DEFAULT NULL',
-      'glpi_knowbaseitemtranslations'         => 'DEFAULT NULL',
-      'glpi_notificationtemplatetranslations' => "NOT NULL DEFAULT ''",
-      'glpi_knowbaseitems_revisions'          => 'DEFAULT NULL',
-      'glpi_knowbaseitems_comments'           => 'DEFAULT NULL',
+        'glpi_dropdowntranslations'             => 'DEFAULT NULL',
+        'glpi_knowbaseitemtranslations'         => 'DEFAULT NULL',
+        'glpi_notificationtemplatetranslations' => "NOT NULL DEFAULT ''",
+        'glpi_knowbaseitems_revisions'          => 'DEFAULT NULL',
+        'glpi_knowbaseitems_comments'           => 'DEFAULT NULL',
     ];
     foreach ($translatable_tables as $table => $default) {
         $migration->changeField(

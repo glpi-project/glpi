@@ -53,11 +53,11 @@ class DbUtils extends DbTestCase
     {
 
         return [
-         ['foo', ''],
-         ['glpi_computers', 'computers_id'],
-         ['glpi_users', 'users_id'],
-         ['glpi_plugin_foo_bars', 'plugin_foo_bars_id'],
-         ['glpi_plugin_fooglpis', 'plugin_fooglpis_id']
+            ['foo', ''],
+            ['glpi_computers', 'computers_id'],
+            ['glpi_users', 'users_id'],
+            ['glpi_plugin_foo_bars', 'plugin_foo_bars_id'],
+            ['glpi_plugin_fooglpis', 'plugin_fooglpis_id']
         ];
     }
 
@@ -65,9 +65,9 @@ class DbUtils extends DbTestCase
     {
 
         return [
-         ['glpi_computers', 'computers_id'],
-         ['glpi_users', 'users_id'],
-         ['glpi_plugin_foo_bars', 'plugin_foo_bars_id']
+            ['glpi_computers', 'computers_id'],
+            ['glpi_users', 'users_id'],
+            ['glpi_plugin_foo_bars', 'plugin_foo_bars_id']
         ];
     }
 
@@ -145,17 +145,17 @@ class DbUtils extends DbTestCase
         require_once __DIR__ . '/../fixtures/pluginfooservice.php';
 
         return [
-         ['glpi_dbmysqls', 'DBmysql', false], // not a CommonGLPI, should not be valid
-         ['glpi_computers', 'Computer', true],
-         ['glpi_appliances_items', 'Appliance_Item', true],
-         ['glpi_dashboards_dashboards', 'Glpi\Dashboard\Dashboard', true],
-         ['glpi_events', 'Glpi\Event', true],
-         ['glpi_users', 'User', true],
-         ['glpi_plugin_bar_foos', 'GlpiPlugin\Bar\Foo', true],
-         ['glpi_plugin_baz_foos', 'GlpiPlugin\Baz\Foo', false], // class not exists
-         ['glpi_plugin_foo_bars', 'PluginFooBar', true],
-         ['glpi_plugin_foo_bazs', 'PluginFooBaz', false], // class not exists
-         ['glpi_plugin_foo_services', 'PluginFooService', false], // not a CommonGLPI should not be valid
+            ['glpi_dbmysqls', 'DBmysql', false], // not a CommonGLPI, should not be valid
+            ['glpi_computers', 'Computer', true],
+            ['glpi_appliances_items', 'Appliance_Item', true],
+            ['glpi_dashboards_dashboards', 'Glpi\Dashboard\Dashboard', true],
+            ['glpi_events', 'Glpi\Event', true],
+            ['glpi_users', 'User', true],
+            ['glpi_plugin_bar_foos', 'GlpiPlugin\Bar\Foo', true],
+            ['glpi_plugin_baz_foos', 'GlpiPlugin\Baz\Foo', false], // class not exists
+            ['glpi_plugin_foo_bars', 'PluginFooBar', true],
+            ['glpi_plugin_foo_bazs', 'PluginFooBaz', false], // class not exists
+            ['glpi_plugin_foo_services', 'PluginFooService', false], // not a CommonGLPI should not be valid
         ];
     }
 
@@ -259,18 +259,18 @@ class DbUtils extends DbTestCase
     {
 
         return [
-         ['model', 'models'],
-         ['address', 'addresses'],
-         ['computer', 'computers'],
-         ['thing', 'things'],
-         ['criteria', 'criterias'],
-         ['version', 'versions'],
-         ['config', 'configs'],
-         ['machine', 'machines'],
-         ['memory', 'memories'],
-         ['licence', 'licences'],
-         ['pdu', 'pdus'],
-         ['metrics', 'metrics']
+            ['model', 'models'],
+            ['address', 'addresses'],
+            ['computer', 'computers'],
+            ['thing', 'things'],
+            ['criteria', 'criterias'],
+            ['version', 'versions'],
+            ['config', 'configs'],
+            ['machine', 'machines'],
+            ['memory', 'memories'],
+            ['licence', 'licences'],
+            ['pdu', 'pdus'],
+            ['metrics', 'metrics']
         ];
     }
 
@@ -377,17 +377,17 @@ class DbUtils extends DbTestCase
     protected function dataCountMyEntities()
     {
         return [
-         ['_test_root_entity', true, 'glpi_computers', [], 8],
-         ['_test_root_entity', true, 'glpi_computers', ['name' => '_test_pc11'], 1],
-         ['_test_root_entity', true, 'glpi_computers', ['name' => '_test_pc01'], 1],
+            ['_test_root_entity', true, 'glpi_computers', [], 8],
+            ['_test_root_entity', true, 'glpi_computers', ['name' => '_test_pc11'], 1],
+            ['_test_root_entity', true, 'glpi_computers', ['name' => '_test_pc01'], 1],
 
-         ['_test_root_entity', false, 'glpi_computers', [], 3],
-         ['_test_root_entity', false, 'glpi_computers', ['name' => '_test_pc11'], 0],
-         ['_test_root_entity', false, 'glpi_computers', ['name' => '_test_pc01'], 1],
+            ['_test_root_entity', false, 'glpi_computers', [], 3],
+            ['_test_root_entity', false, 'glpi_computers', ['name' => '_test_pc11'], 0],
+            ['_test_root_entity', false, 'glpi_computers', ['name' => '_test_pc01'], 1],
 
-         ['_test_child_1', false, 'glpi_computers', [], 3],
-         ['_test_child_1', false, 'glpi_computers', ['name' => '_test_pc11'], 1],
-         ['_test_child_1', false, 'glpi_computers', ['name' => '_test_pc01'], 0],
+            ['_test_child_1', false, 'glpi_computers', [], 3],
+            ['_test_child_1', false, 'glpi_computers', ['name' => '_test_pc11'], 1],
+            ['_test_child_1', false, 'glpi_computers', ['name' => '_test_pc01'], 0],
         ];
     }
 
@@ -416,13 +416,13 @@ class DbUtils extends DbTestCase
     protected function dataCountEntities()
     {
         return [
-         ['_test_root_entity', 'glpi_computers', [], 3],
-         ['_test_root_entity', 'glpi_computers', ['name' => '_test_pc11'], 0],
-         ['_test_root_entity', 'glpi_computers', ['name' => '_test_pc01'], 1],
+            ['_test_root_entity', 'glpi_computers', [], 3],
+            ['_test_root_entity', 'glpi_computers', ['name' => '_test_pc11'], 0],
+            ['_test_root_entity', 'glpi_computers', ['name' => '_test_pc01'], 1],
 
-         ['_test_child_1', 'glpi_computers', [], 3],
-         ['_test_child_1', 'glpi_computers', ['name' => '_test_pc11'], 1],
-         ['_test_child_1', 'glpi_computers', ['name' => '_test_pc01'], 0],
+            ['_test_child_1', 'glpi_computers', [], 3],
+            ['_test_child_1', 'glpi_computers', ['name' => '_test_pc11'], 1],
+            ['_test_child_1', 'glpi_computers', ['name' => '_test_pc01'], 0],
         ];
     }
 
@@ -747,8 +747,8 @@ class DbUtils extends DbTestCase
         if (!$new_id) {
             $entity = new \Entity();
             $new_id = (int)$entity->add([
-            'name'         => 'Sub child entity',
-            'entities_id'  => $ent1
+                'name'         => 'Sub child entity',
+                'entities_id'  => $ent1
             ]);
             $this->integer($new_id)->isGreaterThan(0);
         }
@@ -771,8 +771,8 @@ class DbUtils extends DbTestCase
         if (!$new_id2) {
             $entity = new \Entity();
             $new_id2 = (int)$entity->add([
-            'name'         => 'Sub child entity 2',
-            'entities_id'  => $ent2
+                'name'         => 'Sub child entity 2',
+                'entities_id'  => $ent2
             ]);
             $this->integer($new_id2)->isGreaterThan(0);
         }
@@ -819,7 +819,8 @@ class DbUtils extends DbTestCase
             countElementsInTable(
                 'glpi_entities',
                 [
-                'NOT' => ['ancestors_cache' => null]]
+                    'NOT' => ['ancestors_cache' => null]
+                ]
             )
         )->isGreaterThan(0);
        //run a second time: db cache must be set
@@ -922,8 +923,8 @@ class DbUtils extends DbTestCase
         if (!$new_id) {
             $entity = new \Entity();
             $new_id = (int)$entity->add([
-            'name'         => 'Sub child entity',
-            'entities_id'  => $ent1
+                'name'         => 'Sub child entity',
+                'entities_id'  => $ent1
             ]);
             $this->integer($new_id)->isGreaterThan(0);
         }
@@ -945,8 +946,8 @@ class DbUtils extends DbTestCase
         if (!$new_id2) {
             $entity = new \Entity();
             $new_id2 = (int)$entity->add([
-            'name'         => 'Sub child entity 2',
-            'entities_id'  => $ent1
+                'name'         => 'Sub child entity 2',
+                'entities_id'  => $ent1
             ]);
             $this->integer($new_id2)->isGreaterThan(0);
         }
@@ -989,7 +990,7 @@ class DbUtils extends DbTestCase
             $this->testedInstance->countElementsInTable(
                 'glpi_entities',
                 [
-                'NOT' => ['sons_cache' => null]
+                    'NOT' => ['sons_cache' => null]
                 ]
             )
         )->isGreaterThan(0);
@@ -1081,7 +1082,7 @@ class DbUtils extends DbTestCase
         $this->array(
             $this->testedInstance->getDateCriteria('date', '2018-11-09', null)
         )->isIdenticalTo([
-         ['date' => ['>=', '2018-11-09']]
+            ['date' => ['>=', '2018-11-09']]
         ]);
 
         $result = $this->testedInstance->getDateCriteria('date', null, '2018-11-09');
@@ -1114,112 +1115,112 @@ class DbUtils extends DbTestCase
     {
         return [
          //will return name without changes
-         [
+            [
             //not a template
-            'name'         => 'Computer 1',
-            'field'        => 'name',
-            'is_template'  => false,
-            'itemtype'     => 'Computer',
-            'entities_id'  => -1, //default
-            'expected'     => 'Computer 1'
-         ], [
+                'name'         => 'Computer 1',
+                'field'        => 'name',
+                'is_template'  => false,
+                'itemtype'     => 'Computer',
+                'entities_id'  => -1, //default
+                'expected'     => 'Computer 1'
+            ], [
             //not a template
-            'name'         => '&lt;abc&gt;',
-            'field'        => 'name',
-            'is_template'  => false,
-            'itemtype'     => 'Computer',
-            'entities_id'  => -1, // default
-            'expected'     => '&lt;abc&gt;',
-            'deprecated'   => false, // is_template=false result in exiting before deprecation warning
-         ], [
+                'name'         => '&lt;abc&gt;',
+                'field'        => 'name',
+                'is_template'  => false,
+                'itemtype'     => 'Computer',
+                'entities_id'  => -1, // default
+                'expected'     => '&lt;abc&gt;',
+                'deprecated'   => false, // is_template=false result in exiting before deprecation warning
+            ], [
             //does not match pattern
-            'name'         => '&lt;abc&gt;',
-            'field'        => 'name',
-            'is_template'  => true,
-            'itemtype'     => 'Computer',
-            'entities_id'  => -1, // default
-            'expected'     => '&lt;abc&gt;',
-            'deprecated'   => true,
-         ], [
+                'name'         => '&lt;abc&gt;',
+                'field'        => 'name',
+                'is_template'  => true,
+                'itemtype'     => 'Computer',
+                'entities_id'  => -1, // default
+                'expected'     => '&lt;abc&gt;',
+                'deprecated'   => true,
+            ], [
             //first added
-            'name'         => '&lt;####&gt;',
-            'field'       => 'name',
-            'is_template'  => true,
-            'itemtype'     => 'Computer',
-            'entities_id'  => -1, // default
-            'expected'     => '0001',
-            'deprecated'   => true,
-         ], [
+                'name'         => '&lt;####&gt;',
+                'field'       => 'name',
+                'is_template'  => true,
+                'itemtype'     => 'Computer',
+                'entities_id'  => -1, // default
+                'expected'     => '0001',
+                'deprecated'   => true,
+            ], [
             //existing
-            'name'         => '&lt;_test_pc##&gt;',
-            'field'       => 'name',
-            'is_template'  => true,
-            'itemtype'     => 'Computer',
-            'entities_id'  => -1, // default
-            'expected'     => '_test_pc23',
-            'deprecated'   => true,
-         ], [
+                'name'         => '&lt;_test_pc##&gt;',
+                'field'       => 'name',
+                'is_template'  => true,
+                'itemtype'     => 'Computer',
+                'entities_id'  => -1, // default
+                'expected'     => '_test_pc23',
+                'deprecated'   => true,
+            ], [
             //not existing on entity
-            'name'         => '&lt;_test_pc##&gt;',
-            'field'       => 'name',
-            'is_template'  => true,
-            'itemtype'     => 'Computer',
-            'entities_id'  => 0,
-            'expected'     => '_test_pc01',
-            'deprecated'   => true,
-         ], [
+                'name'         => '&lt;_test_pc##&gt;',
+                'field'       => 'name',
+                'is_template'  => true,
+                'itemtype'     => 'Computer',
+                'entities_id'  => 0,
+                'expected'     => '_test_pc01',
+                'deprecated'   => true,
+            ], [
             //existing on entity
-            'name'         => '&lt;_test_pc##&gt;',
-            'field'       => 'name',
-            'is_template'  => true,
-            'itemtype'     => 'Computer',
-            'entities_id'  => 1,
-            'expected'     => '_test_pc04',
-            'deprecated'   => true,
-         ], [
+                'name'         => '&lt;_test_pc##&gt;',
+                'field'       => 'name',
+                'is_template'  => true,
+                'itemtype'     => 'Computer',
+                'entities_id'  => 1,
+                'expected'     => '_test_pc04',
+                'deprecated'   => true,
+            ], [
             //existing on entity
-            'name'         => '&lt;_test_pc##&gt;',
-            'field'       => 'name',
-            'is_template'  => true,
-            'itemtype'     => 'Computer',
-            'entities_id'  => 2,
-            'expected'     => '_test_pc14',
-            'deprecated'   => true,
-         ], [
+                'name'         => '&lt;_test_pc##&gt;',
+                'field'       => 'name',
+                'is_template'  => true,
+                'itemtype'     => 'Computer',
+                'entities_id'  => 2,
+                'expected'     => '_test_pc14',
+                'deprecated'   => true,
+            ], [
             // existing on entity, new XSS clean output
-            'name'         => '&#60;_test_pc##&#62;',
-            'field'       => 'name',
-            'is_template'  => true,
-            'itemtype'     => 'Computer',
-            'entities_id'  => 2,
-            'expected'     => '_test_pc14',
-            'deprecated'   => true,
-         ], [
+                'name'         => '&#60;_test_pc##&#62;',
+                'field'       => 'name',
+                'is_template'  => true,
+                'itemtype'     => 'Computer',
+                'entities_id'  => 2,
+                'expected'     => '_test_pc14',
+                'deprecated'   => true,
+            ], [
             // existing on entity, not sanitized
-            'name'         => '<_test_pc##>',
-            'field'       => 'name',
-            'is_template'  => true,
-            'itemtype'     => 'Computer',
-            'entities_id'  => 2,
-            'expected'     => '_test_pc14'
-         ], [
+                'name'         => '<_test_pc##>',
+                'field'       => 'name',
+                'is_template'  => true,
+                'itemtype'     => 'Computer',
+                'entities_id'  => 2,
+                'expected'     => '_test_pc14'
+            ], [
             // not existing on entity, new XSS clean output, and containing a special char
-            'name'         => '&#60;pc_&#60;_##&#62;',
-            'field'       => 'name',
-            'is_template'  => true,
-            'itemtype'     => 'Computer',
-            'entities_id'  => 2,
-            'expected'     => 'pc_&#60;_01',
-            'deprecated'   => true,
-         ], [
+                'name'         => '&#60;pc_&#60;_##&#62;',
+                'field'       => 'name',
+                'is_template'  => true,
+                'itemtype'     => 'Computer',
+                'entities_id'  => 2,
+                'expected'     => 'pc_&#60;_01',
+                'deprecated'   => true,
+            ], [
             // not existing on entity, not sanitized, and containing a special char
-            'name'         => '<pc_>_##>',
-            'field'       => 'name',
-            'is_template'  => true,
-            'itemtype'     => 'Computer',
-            'entities_id'  => 2,
-            'expected'     => 'pc_>_01'
-         ],
+                'name'         => '<pc_>_##>',
+                'field'       => 'name',
+                'is_template'  => true,
+                'itemtype'     => 'Computer',
+                'entities_id'  => 2,
+                'expected'     => 'pc_>_01'
+            ],
         ];
     }
 
@@ -1260,44 +1261,44 @@ class DbUtils extends DbTestCase
     {
         return [
          // Bad case classnames matching and existing class file
-         [
-            'itemtype' => 'myclass',
-            'expected' => 'MyClass',
-         ],
-         [
-            'itemtype' => 'glpi\\appliCation\\CoNsOlE\\MyCommand',
-            'expected' => 'Glpi\\Application\\Console\\MyCommand',
-         ],
-         [
-            'itemtype' => 'PluginFooBaritem',
-            'expected' => 'PluginFooBarItem',
-         ],
-         [
-            'itemtype' => 'GlpiPluGin\\Foo\\Namespacedbar',
-            'expected' => 'GlpiPlugin\\Foo\\NamespacedBar',
-         ],
+            [
+                'itemtype' => 'myclass',
+                'expected' => 'MyClass',
+            ],
+            [
+                'itemtype' => 'glpi\\appliCation\\CoNsOlE\\MyCommand',
+                'expected' => 'Glpi\\Application\\Console\\MyCommand',
+            ],
+            [
+                'itemtype' => 'PluginFooBaritem',
+                'expected' => 'PluginFooBarItem',
+            ],
+            [
+                'itemtype' => 'GlpiPluGin\\Foo\\Namespacedbar',
+                'expected' => 'GlpiPlugin\\Foo\\NamespacedBar',
+            ],
          // Good case (should not be altered)
-         [
-            'itemtype' => 'MyClass',
-            'expected' => 'MyClass',
-         ],
-         [
-            'itemtype' => 'Glpi\\Application\\Console\\MyCommand',
-            'expected' => 'Glpi\\Application\\Console\\MyCommand',
-         ],
-         [
-            'itemtype' => 'GlpiPlugin\\Foo\\NamespacedBar',
-            'expected' => 'GlpiPlugin\\Foo\\NamespacedBar',
-         ],
+            [
+                'itemtype' => 'MyClass',
+                'expected' => 'MyClass',
+            ],
+            [
+                'itemtype' => 'Glpi\\Application\\Console\\MyCommand',
+                'expected' => 'Glpi\\Application\\Console\\MyCommand',
+            ],
+            [
+                'itemtype' => 'GlpiPlugin\\Foo\\NamespacedBar',
+                'expected' => 'GlpiPlugin\\Foo\\NamespacedBar',
+            ],
          // Not matching any class file (should not be altered)
-         [
-            'itemtype' => 'notanitemtype',
-            'expected' => 'notanitemtype',
-         ],
-         [
-            'itemtype' => 'GlpiPlugin\\Invalid\\itemtype',
-            'expected' => 'GlpiPlugin\\Invalid\\itemtype',
-         ],
+            [
+                'itemtype' => 'notanitemtype',
+                'expected' => 'notanitemtype',
+            ],
+            [
+                'itemtype' => 'GlpiPlugin\\Invalid\\itemtype',
+                'expected' => 'GlpiPlugin\\Invalid\\itemtype',
+            ],
         ];
     }
 
@@ -1313,23 +1314,23 @@ class DbUtils extends DbTestCase
             'glpi',
             null,
             [
-            'src' => [
-               'Application' => [
-                  'Console' => [
-                     'MyCommand.php' => '',
-                  ],
-               ],
-               'MyClass.php' => '',
-               'NamespacedClass.php' => '',
-            ],
-            'plugins' => [
-               'foo' => [
-                  'src' => [
-                     'NamespacedBar.php' => '',
-                     'PluginFooBarItem.php' => '',
-                  ],
-               ],
-            ],
+                'src' => [
+                    'Application' => [
+                        'Console' => [
+                            'MyCommand.php' => '',
+                        ],
+                    ],
+                    'MyClass.php' => '',
+                    'NamespacedClass.php' => '',
+                ],
+                'plugins' => [
+                    'foo' => [
+                        'src' => [
+                            'NamespacedBar.php' => '',
+                            'PluginFooBarItem.php' => '',
+                        ],
+                    ],
+                ],
             ]
         );
 

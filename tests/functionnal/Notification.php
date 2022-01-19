@@ -58,8 +58,8 @@ class Notification extends DbTestCase
 
         $entity = new \Entity();
         $this->boolean($entity->update([
-         'id'                => $root,
-         'mailing_signature' => "signature_root",
+            'id'                => $root,
+            'mailing_signature' => "signature_root",
         ]))->isTrue();
 
         $this->string(\Notification::getMailingSignature($parent))->isEqualTo("signature_root");
@@ -67,8 +67,8 @@ class Notification extends DbTestCase
         $this->string(\Notification::getMailingSignature($child_2))->isEqualTo("signature_root");
 
         $this->boolean($entity->update([
-         'id'                => $parent,
-         'mailing_signature' => "signature_parent",
+            'id'                => $parent,
+            'mailing_signature' => "signature_parent",
         ]))->isTrue();
 
         $this->string(\Notification::getMailingSignature($parent))->isEqualTo("signature_parent");
@@ -76,8 +76,8 @@ class Notification extends DbTestCase
         $this->string(\Notification::getMailingSignature($child_2))->isEqualTo("signature_parent");
 
         $this->boolean($entity->update([
-         'id'                => $child_1,
-         'mailing_signature' => "signature_child_1",
+            'id'                => $child_1,
+            'mailing_signature' => "signature_child_1",
         ]))->isTrue();
 
         $this->string(\Notification::getMailingSignature($parent))->isEqualTo("signature_parent");
@@ -85,8 +85,8 @@ class Notification extends DbTestCase
         $this->string(\Notification::getMailingSignature($child_2))->isEqualTo("signature_parent");
 
         $this->boolean($entity->update([
-         'id'                => $child_2,
-         'mailing_signature' => "signature_child_2",
+            'id'                => $child_2,
+            'mailing_signature' => "signature_child_2",
         ]))->isTrue();
 
         $this->string(\Notification::getMailingSignature($parent))->isEqualTo("signature_parent");

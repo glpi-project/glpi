@@ -44,9 +44,9 @@ class DatabaseInstance extends DbTestCase
         $instance = new \DatabaseInstance();
 
         $instid = $instance->add([
-         'name' => 'To be removed',
-         'port' => 3306,
-         'size' => 52000
+            'name' => 'To be removed',
+            'port' => 3306,
+            'size' => 52000
         ]);
 
        //check DB is created, and load it
@@ -58,8 +58,8 @@ class DatabaseInstance extends DbTestCase
             $database = new \Database();
             $this->integer(
                 $database->add([
-                'name'                   => 'Database ' . $i,
-                'databaseinstances_id'   => $instid
+                    'name'                   => 'Database ' . $i,
+                    'databaseinstances_id'   => $instid
                 ])
             )->isGreaterThan(0);
         }

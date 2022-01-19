@@ -70,10 +70,10 @@ class ObjectParameter extends AbstractParameterType
         $properties =  TemplateManager::computeParameters($sub_parameters);
 
         return [
-         'type'       => "ObjectParameter",
-         'key'        => $this->key,
-         'label'      => $this->label,
-         'properties' => $properties,
+            'type'       => "ObjectParameter",
+            'key'        => $this->key,
+            'label'      => $this->label,
+            'properties' => $properties,
         ];
     }
 

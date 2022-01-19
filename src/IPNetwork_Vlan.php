@@ -62,8 +62,8 @@ class IPNetwork_Vlan extends CommonDBRelation
     {
 
         $this->getFromDBByCrit([
-         'ipnetworks_id'   => $portID,
-         'vlans_id'        => $vlanID
+            'ipnetworks_id'   => $portID,
+            'vlans_id'        => $vlanID
         ]);
 
         return $this->delete($this->fields);
@@ -78,7 +78,8 @@ class IPNetwork_Vlan extends CommonDBRelation
     {
 
         $input = ['ipnetworks_id' => $port,
-                     'vlans_id'      => $vlan];
+            'vlans_id'      => $vlan
+        ];
 
         return $this->add($input);
     }
@@ -100,20 +101,20 @@ class IPNetwork_Vlan extends CommonDBRelation
         $rand    = mt_rand();
 
         $iterator = $DB->request([
-         'SELECT'    => [
-            self::getTable() . '.id AS assocID',
-            'glpi_vlans.*'
-         ],
-         'FROM'      => self::getTable(),
-         'LEFT JOIN' => [
-            'glpi_vlans'   => [
-               'ON' => [
-                  self::getTable()  => 'vlans_id',
-                  'glpi_vlans'      => 'id'
-               ]
-            ]
-         ],
-         'WHERE'     => ['ipnetworks_id' => $ID]
+            'SELECT'    => [
+                self::getTable() . '.id AS assocID',
+                'glpi_vlans.*'
+            ],
+            'FROM'      => self::getTable(),
+            'LEFT JOIN' => [
+                'glpi_vlans'   => [
+                    'ON' => [
+                        self::getTable()  => 'vlans_id',
+                        'glpi_vlans'      => 'id'
+                    ]
+                ]
+            ],
+            'WHERE'     => ['ipnetworks_id' => $ID]
         ]);
 
         $vlans  = [];
@@ -146,7 +147,8 @@ class IPNetwork_Vlan extends CommonDBRelation
         if ($canedit && $number) {
             Html::openMassiveActionsForm('mass' . __CLASS__ . $rand);
             $massiveactionparams = ['num_displayed' => min($_SESSION['glpilist_limit'], $number),
-                                      'container'     => 'mass' . __CLASS__ . $rand];
+                'container'     => 'mass' . __CLASS__ . $rand
+            ];
             Html::showMassiveActions($massiveactionparams);
         }
         echo "<table class='tab_cadre_fixehov'>";
@@ -209,9 +211,9 @@ class IPNetwork_Vlan extends CommonDBRelation
 
         $vlans = [];
         $iterator = $DB->request([
-         'SELECT' => 'vlans_id',
-         'FROM'   => self::getTable(),
-         'WHERE'  => ['ipnetworks_id' => $portID]
+            'SELECT' => 'vlans_id',
+            'FROM'   => self::getTable(),
+            'WHERE'  => ['ipnetworks_id' => $portID]
         ]);
         foreach ($iterator as $data) {
             $vlans[$data['vlans_id']] = $data['vlans_id'];

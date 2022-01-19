@@ -110,7 +110,8 @@ class OlaLevel extends LevelAgreementLevel
             self::dropdownExecutionTime(
                 'execution_time',
                 ['max_time' => $delay,
-                'used'     => self::getAlreadyUsedExecutionTime($ola->fields['id'])]
+                    'used'     => self::getAlreadyUsedExecutionTime($ola->fields['id'])
+                ]
             );
 
             echo "</td><td class='center'>" . __('Active') . "</td><td>";
@@ -125,9 +126,9 @@ class OlaLevel extends LevelAgreementLevel
         }
 
         $iterator = $DB->request([
-         'FROM'   => 'glpi_olalevels',
-         'WHERE'  => ['olas_id' => $ID],
-         'ORDER'  => 'execution_time'
+            'FROM'   => 'glpi_olalevels',
+            'WHERE'  => ['olas_id' => $ID],
+            'ORDER'  => 'execution_time'
         ]);
         $numrows = count($iterator);
 
@@ -135,7 +136,8 @@ class OlaLevel extends LevelAgreementLevel
         if ($canedit && $numrows) {
             Html::openMassiveActionsForm('mass' . __CLASS__ . $rand);
             $massiveactionparams = ['num_displayed'  => $numrows,
-                                 'container'      => 'mass' . __CLASS__ . $rand];
+                'container'      => 'mass' . __CLASS__ . $rand
+            ];
             Html::showMassiveActions($massiveactionparams);
         }
 
@@ -257,8 +259,9 @@ class OlaLevel extends LevelAgreementLevel
         self::dropdownExecutionTime(
             'execution_time',
             ['max_time'  => $delay,
-                                   'used'      => self::getAlreadyUsedExecutionTime($ola->fields['id']),
-            'value'     => $this->fields['execution_time']]
+                'used'      => self::getAlreadyUsedExecutionTime($ola->fields['id']),
+                'value'     => $this->fields['execution_time']
+            ]
         );
         echo "</td></tr>\n";
 
@@ -287,14 +290,14 @@ class OlaLevel extends LevelAgreementLevel
         global $DB;
 
         $iterator = $DB->request([
-         'SELECT' => 'id',
-         'FROM'   => 'glpi_olalevels',
-         'WHERE'  => [
-            'olas_id'   => $olas_id,
-            'is_active' => 1
-         ],
-         'ORDER'  => 'execution_time ASC',
-         'LIMIT'  => 1
+            'SELECT' => 'id',
+            'FROM'   => 'glpi_olalevels',
+            'WHERE'  => [
+                'olas_id'   => $olas_id,
+                'is_active' => 1
+            ],
+            'ORDER'  => 'execution_time ASC',
+            'LIMIT'  => 1
         ]);
 
         if (count($iterator)) {
@@ -318,9 +321,9 @@ class OlaLevel extends LevelAgreementLevel
         global $DB;
 
         $iterator = $DB->request([
-         'SELECT' => 'execution_time',
-         'FROM'   => 'glpi_olalevels',
-         'WHERE'  => ['id' => $olalevels_id]
+            'SELECT' => 'execution_time',
+            'FROM'   => 'glpi_olalevels',
+            'WHERE'  => ['id' => $olalevels_id]
         ]);
 
         if (count($iterator)) {
@@ -328,16 +331,16 @@ class OlaLevel extends LevelAgreementLevel
             $execution_time = $result['execution_time'];
 
             $iterator = $DB->request([
-            'SELECT' => 'id',
-            'FROM'   => 'glpi_olalevels',
-            'WHERE'  => [
-               'olas_id'         => $olas_id,
-               'id'              => ['<>', $olalevels_id],
-               'execution_time'  => ['>', $execution_time],
-               'is_active'       => 1
-            ],
-            'ORDER'  => 'execution_time ASC',
-            'LIMIT'  => 1
+                'SELECT' => 'id',
+                'FROM'   => 'glpi_olalevels',
+                'WHERE'  => [
+                    'olas_id'         => $olas_id,
+                    'id'              => ['<>', $olalevels_id],
+                    'execution_time'  => ['>', $execution_time],
+                    'is_active'       => 1
+                ],
+                'ORDER'  => 'execution_time ASC',
+                'LIMIT'  => 1
             ]);
 
             if (count($iterator)) {

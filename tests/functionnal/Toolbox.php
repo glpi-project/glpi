@@ -60,17 +60,17 @@ class Toolbox extends DbTestCase
     protected function slugifyProvider()
     {
         return [
-         [
-            'string'   => 'My - string èé  Ê À ß',
-            'expected' => 'my-string-ee-e-a-ss'
-         ], [
+            [
+                'string'   => 'My - string èé  Ê À ß',
+                'expected' => 'my-string-ee-e-a-ss'
+            ], [
             //https://github.com/glpi-project/glpi/issues/2946
-            'string'   => 'Έρευνα ικανοποίησης - Αιτήματα',
-            'expected' => 'ereuna-ikanopoieses-aitemata'
-         ], [
-            'string'   => 'a-valid-one',
-            'expected' => 'a-valid-one',
-         ]
+                'string'   => 'Έρευνα ικανοποίησης - Αιτήματα',
+                'expected' => 'ereuna-ikanopoieses-aitemata'
+            ], [
+                'string'   => 'a-valid-one',
+                'expected' => 'a-valid-one',
+            ]
         ];
     }
 
@@ -85,44 +85,44 @@ class Toolbox extends DbTestCase
     protected function filenameProvider()
     {
         return [
-         [
-            'name'  => '00-logoteclib.png',
-            'expected'  => '00-logoteclib.png',
-         ], [
+            [
+                'name'  => '00-logoteclib.png',
+                'expected'  => '00-logoteclib.png',
+            ], [
             // Space is missing between "France" and "très" due to a bug in laminas-mail
-            'name'  => '01-Screenshot-2018-4-12 Observatoire - Francetrès haut débit.png',
-            'expected'  => '01-screenshot-2018-4-12-observatoire-francetres-haut-debit.png',
-         ], [
-            'name'  => '01-test.JPG',
-            'expected'  => '01-test.JPG',
-         ], [
-            'name'  => '15-image001.png',
-            'expected'  => '15-image001.png',
-         ], [
-            'name'  => '18-blank.gif',
-            'expected'  => '18-blank.gif',
-         ], [
-            'name'  => '19-ʂǷèɕɩɐɫ ȼɦâʁȿ.gif',
-            'expected'  => '19-secl-chas.gif',
-         ], [
-            'name'  => '20-specïal chars.gif',
-            'expected'  => '20-special-chars.gif',
-         ], [
-            'name'  => '24.1-长文件名，将导致内容处置标头中的连续行.txt',
-            'expected'  => '24.1-zhang-wen-jian-ming-jiang-dao-zhi-nei-rong-chu-zhi-biao-tou-zhong-de-lian-xu-xing.txt',
-         ], [
-            'name'  => '24.2-中国字符.txt',
-            'expected'  => '24.2-zhong-guo-zi-fu.txt',
-         ], [
-            'name'  => '25-New Text - Document.txt',
-            'expected'  => '25-new-text-document.txt',
-         ], [
-            'name'     => 'Έρευνα ικανοποίησης - Αιτήματα',
-            'expected' => 'ereuna-ikanopoieses-aitemata'
-         ], [
-            'name'     => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc gravida, nisi vel scelerisque feugiat, tellus purus volutpat justo, vel aliquam nibh nibh sit amet risus. Aenean eget urna et felis molestie elementum nec sit amet magna. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum nec malesuada elit, non luctus mi. Aliquam quis velit justo. Donec id pulvinar nunc. Phasellus.txt',
-            'expected' => 'lorem-ipsum-dolor-sit-amet-consectetur-adipiscing-elit.-nunc-gravida-nisi-vel-scelerisque-feugiat-tellus-purus-volutpat-justo-vel-aliquam-.txt'
-         ]
+                'name'  => '01-Screenshot-2018-4-12 Observatoire - Francetrès haut débit.png',
+                'expected'  => '01-screenshot-2018-4-12-observatoire-francetres-haut-debit.png',
+            ], [
+                'name'  => '01-test.JPG',
+                'expected'  => '01-test.JPG',
+            ], [
+                'name'  => '15-image001.png',
+                'expected'  => '15-image001.png',
+            ], [
+                'name'  => '18-blank.gif',
+                'expected'  => '18-blank.gif',
+            ], [
+                'name'  => '19-ʂǷèɕɩɐɫ ȼɦâʁȿ.gif',
+                'expected'  => '19-secl-chas.gif',
+            ], [
+                'name'  => '20-specïal chars.gif',
+                'expected'  => '20-special-chars.gif',
+            ], [
+                'name'  => '24.1-长文件名，将导致内容处置标头中的连续行.txt',
+                'expected'  => '24.1-zhang-wen-jian-ming-jiang-dao-zhi-nei-rong-chu-zhi-biao-tou-zhong-de-lian-xu-xing.txt',
+            ], [
+                'name'  => '24.2-中国字符.txt',
+                'expected'  => '24.2-zhong-guo-zi-fu.txt',
+            ], [
+                'name'  => '25-New Text - Document.txt',
+                'expected'  => '25-new-text-document.txt',
+            ], [
+                'name'     => 'Έρευνα ικανοποίησης - Αιτήματα',
+                'expected' => 'ereuna-ikanopoieses-aitemata'
+            ], [
+                'name'     => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc gravida, nisi vel scelerisque feugiat, tellus purus volutpat justo, vel aliquam nibh nibh sit amet risus. Aenean eget urna et felis molestie elementum nec sit amet magna. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum nec malesuada elit, non luctus mi. Aliquam quis velit justo. Donec id pulvinar nunc. Phasellus.txt',
+                'expected' => 'lorem-ipsum-dolor-sit-amet-consectetur-adipiscing-elit.-nunc-gravida-nisi-vel-scelerisque-feugiat-tellus-purus-volutpat-justo-vel-aliquam-.txt'
+            ]
         ];
     }
 
@@ -138,11 +138,11 @@ class Toolbox extends DbTestCase
     public function dataGetSize()
     {
         return [
-         [1,                   '1 o'],
-         [1025,                '1 Kio'],
-         [1100000,             '1.05 Mio'],
-         [1100000000,          '1.02 Gio'],
-         [1100000000000,       '1 Tio'],
+            [1,                   '1 o'],
+            [1025,                '1 Kio'],
+            [1100000,             '1.05 Mio'],
+            [1100000000,          '1.02 Gio'],
+            [1100000000000,       '1 Tio'],
         ];
     }
 
@@ -182,13 +182,13 @@ class Toolbox extends DbTestCase
     {
         foreach (
             [
-            1   => 'A',
-            2   => 'B',
-            27  => 'AA',
-            28  => 'AB',
-            53  => 'BA',
-            702 => 'ZZ',
-            703 => 'AAA',
+                1   => 'A',
+                2   => 'B',
+                27  => 'AA',
+                28  => 'AB',
+                53  => 'BA',
+                702 => 'ZZ',
+                703 => 'AAA',
             ] as $number => $bij_string
         ) {
             $this->string(\Toolbox::getBijectiveIndex($number))->isIdenticalTo($bij_string);
@@ -198,11 +198,11 @@ class Toolbox extends DbTestCase
     protected function cleanIntegerProvider()
     {
         return [
-         [1, '1'],
-         ['1', '1'],
-         ['a1', '1'],
-         ['-1', '-1'],
-         ['-a1', '-1'],
+            [1, '1'],
+            ['1', '1'],
+            ['a1', '1'],
+            ['-1', '-1'],
+            ['-a1', '-1'],
         ];
     }
 
@@ -217,13 +217,13 @@ class Toolbox extends DbTestCase
     protected function jsonDecodeProvider()
     {
         return [
-         [
-            '{"Monitor":[6],"Computer":[35]}',
-            ['Monitor' => [6], 'Computer' => [35]]
-         ], [
-            '{\"Monitor\":[\"6\"],\"Computer\":[\"35\"]}',
-            ['Monitor' => ["6"], 'Computer' => ["35"]]
-         ]
+            [
+                '{"Monitor":[6],"Computer":[35]}',
+                ['Monitor' => [6], 'Computer' => [35]]
+            ], [
+                '{\"Monitor\":[\"6\"],\"Computer\":[\"35\"]}',
+                ['Monitor' => ["6"], 'Computer' => ["35"]]
+            ]
         ];
     }
 
@@ -252,10 +252,10 @@ class Toolbox extends DbTestCase
     protected function ucProvider()
     {
         return [
-         ['hello you', 'Hello you'],
-         ['HEllO you', 'HEllO you'],
-         ['éè', 'Éè'],
-         ['ÉÈ', 'ÉÈ']
+            ['hello you', 'Hello you'],
+            ['HEllO you', 'HEllO you'],
+            ['éè', 'Éè'],
+            ['ÉÈ', 'ÉÈ']
         ];
     }
 
@@ -270,10 +270,10 @@ class Toolbox extends DbTestCase
     protected function shortcutProvider()
     {
         return [
-         ['My menu', 'm', '<u>M</u>y menu'],
-         ['Do something', 't', 'Do some<u>t</u>hing'],
-         ['Any menu entry', 'z', 'Any menu entry'],
-         ['Computer', 'O', 'C<u>o</u>mputer']
+            ['My menu', 'm', '<u>M</u>y menu'],
+            ['Do something', 't', 'Do some<u>t</u>hing'],
+            ['Any menu entry', 'z', 'Any menu entry'],
+            ['Computer', 'O', 'C<u>o</u>mputer']
         ];
     }
 
@@ -288,15 +288,15 @@ class Toolbox extends DbTestCase
     protected function strposProvider()
     {
         return [
-         ['Where is Charlie?', 'W', 0, 0],
-         ['Where is Charlie?', 'W', 1, false],
-         ['Where is Charlie?', 'w', 0, false],
-         ['Where is Charlie?', '?', 0, 16],
-         ['Where is Charlie?', '?', 3, 16],
-         ['Where is Charlie?', 'e', 0, 2],
-         ['Where is Charlie?', 'e', 2, 2],
-         ['Where is Charlie?', 'e', 3, 4],
-         ['Où est Charlie ?', 'ù', 0, 1]
+            ['Where is Charlie?', 'W', 0, 0],
+            ['Where is Charlie?', 'W', 1, false],
+            ['Where is Charlie?', 'w', 0, false],
+            ['Where is Charlie?', '?', 0, 16],
+            ['Where is Charlie?', '?', 3, 16],
+            ['Where is Charlie?', 'e', 0, 2],
+            ['Where is Charlie?', 'e', 2, 2],
+            ['Where is Charlie?', 'e', 3, 4],
+            ['Où est Charlie ?', 'ù', 0, 1]
         ];
     }
 
@@ -311,13 +311,13 @@ class Toolbox extends DbTestCase
     protected function padProvider()
     {
         return [
-         ['GLPI', 10, " ", STR_PAD_RIGHT, 'GLPI      '],
-         ['éè', 10, " ", STR_PAD_RIGHT, 'éè        '],
-         ['GLPI', 10, " ", STR_PAD_LEFT, '      GLPI'],
-         ['éè', 10, " ", STR_PAD_LEFT, '        éè'],
-         ['GLPI', 10, " ", STR_PAD_BOTH, '   GLPI   '],
-         ['éè', 10, " ", STR_PAD_BOTH, '    éè    '],
-         ['123', 10, " ", STR_PAD_BOTH, '   123    ']
+            ['GLPI', 10, " ", STR_PAD_RIGHT, 'GLPI      '],
+            ['éè', 10, " ", STR_PAD_RIGHT, 'éè        '],
+            ['GLPI', 10, " ", STR_PAD_LEFT, '      GLPI'],
+            ['éè', 10, " ", STR_PAD_LEFT, '        éè'],
+            ['GLPI', 10, " ", STR_PAD_BOTH, '   GLPI   '],
+            ['éè', 10, " ", STR_PAD_BOTH, '    éè    '],
+            ['123', 10, " ", STR_PAD_BOTH, '   123    ']
         ];
     }
 
@@ -333,8 +333,8 @@ class Toolbox extends DbTestCase
     protected function strlenProvider()
     {
         return [
-         ['GLPI', 4],
-         ['Où ça ?', 7]
+            ['GLPI', 4],
+            ['Où ça ?', 7]
         ];
     }
 
@@ -349,12 +349,12 @@ class Toolbox extends DbTestCase
     protected function substrProvider()
     {
         return [
-         ['I want a substring', 0, -1, 'I want a substring'],
-         ['I want a substring', 9, -1, 'substring'],
-         ['I want a substring', 9, 3, 'sub'],
-         ['Caractères accentués', 0, -1, 'Caractères accentués'],
-         ['Caractères accentués', 11, -1, 'accentués'],
-         ['Caractères accentués', 11, 8, 'accentué']
+            ['I want a substring', 0, -1, 'I want a substring'],
+            ['I want a substring', 9, -1, 'substring'],
+            ['I want a substring', 9, 3, 'sub'],
+            ['Caractères accentués', 0, -1, 'Caractères accentués'],
+            ['Caractères accentués', 11, -1, 'accentués'],
+            ['Caractères accentués', 11, 8, 'accentué']
         ];
     }
 
@@ -370,9 +370,9 @@ class Toolbox extends DbTestCase
     protected function lowercaseProvider()
     {
         return [
-         ['GLPI', 'glpi'],
-         ['ÉÈ', 'éè'],
-         ['glpi', 'glpi']
+            ['GLPI', 'glpi'],
+            ['ÉÈ', 'éè'],
+            ['glpi', 'glpi']
         ];
     }
 
@@ -387,9 +387,9 @@ class Toolbox extends DbTestCase
     protected function uppercaseProvider()
     {
         return [
-         ['glpi', 'GLPI'],
-         ['éè', 'ÉÈ'],
-         ['GlPI', 'GLPI']
+            ['glpi', 'GLPI'],
+            ['éè', 'ÉÈ'],
+            ['GlPI', 'GLPI']
         ];
     }
 
@@ -404,10 +404,10 @@ class Toolbox extends DbTestCase
     protected function utfProvider()
     {
         return [
-         ['a simple string', true],
-         ['caractère', true],
-         [mb_convert_encoding('caractère', 'ISO-8859-15'), false],
-         [mb_convert_encoding('simple string', 'ISO-8859-15'), true]
+            ['a simple string', true],
+            ['caractère', true],
+            [mb_convert_encoding('caractère', 'ISO-8859-15'), false],
+            [mb_convert_encoding('simple string', 'ISO-8859-15'), true]
         ];
     }
 
@@ -451,18 +451,18 @@ class Toolbox extends DbTestCase
         global $CFG_GLPI;
 
         return [
-         [
-            'path' => '',
-            'url'  => null,
-         ],
-         [
-            'path' => 'image.jpg',
-            'url'  => $CFG_GLPI['root_doc'] . '/front/document.send.php?file=_pictures/image.jpg',
-         ],
-         [
-            'path' => 'xss\' onclick="alert(\'PWNED\')".jpg',
-            'url'  => $CFG_GLPI['root_doc'] . '/front/document.send.php?file=_pictures/xss&apos; onclick=&quot;alert(&apos;PWNED&apos;)&quot;.jpg',
-         ],
+            [
+                'path' => '',
+                'url'  => null,
+            ],
+            [
+                'path' => 'image.jpg',
+                'url'  => $CFG_GLPI['root_doc'] . '/front/document.send.php?file=_pictures/image.jpg',
+            ],
+            [
+                'path' => 'xss\' onclick="alert(\'PWNED\')".jpg',
+                'url'  => $CFG_GLPI['root_doc'] . '/front/document.send.php?file=_pictures/xss&apos; onclick=&quot;alert(&apos;PWNED&apos;)&quot;.jpg',
+            ],
         ];
     }
 
@@ -491,31 +491,31 @@ class Toolbox extends DbTestCase
             }
 
             $data[] = [
-            'item'         => $item,
-            'expected_url' => $img_url,
+                'item'         => $item,
+                'expected_url' => $img_url,
             ];
 
             if ($item instanceof \CommonITILObject) {
                 $fup = new \ITILFollowup();
                 $fup->input['_job'] = $item;
                 $data[] = [
-                'item'         => $fup,
-                'expected_url' => $img_url,
+                    'item'         => $fup,
+                    'expected_url' => $img_url,
                 ];
 
                 $solution = new \ITILSolution();
                 $solution->input['_job'] = $item;
                 $data[] = [
-                'item'         => $solution,
-                'expected_url' => $img_url,
+                    'item'         => $solution,
+                    'expected_url' => $img_url,
                 ];
 
                 $task_itemtype = $itemtype . 'Task';
                 $task = new $task_itemtype();
                 $task->input['_job'] = $item;
                 $data[] = [
-                'item'         => $task,
-                'expected_url' => $img_url,
+                    'item'         => $task,
+                    'expected_url' => $img_url,
                 ];
             }
         }
@@ -536,10 +536,10 @@ class Toolbox extends DbTestCase
        // Create document in DB
         $document = new \Document();
         $doc_id = $document->add([
-         'name'     => 'basic document',
-         'filename' => 'img.png',
-         'mime'     => 'image/png',
-         'tag'      => $img_tag,
+            'name'     => 'basic document',
+            'filename' => 'img.png',
+            'mime'     => 'image/png',
+            'tag'      => $img_tag,
         ]);
         $this->integer((int)$doc_id)->isGreaterThan(0);
 
@@ -568,16 +568,16 @@ class Toolbox extends DbTestCase
         $img_url .= '&tickets_id=' . $item->fields['id'];
 
         return [
-         [
-            'url_base'     => 'http://glpi.domain.org',
-            'item'         => $item,
-            'expected_url' => $img_url,
-         ],
-         [
-            'url_base'     => 'http://www.domain.org/glpi/v9.4/',
-            'item'         => $item,
-            'expected_url' => '/glpi/v9.4/' . $img_url,
-         ],
+            [
+                'url_base'     => 'http://glpi.domain.org',
+                'item'         => $item,
+                'expected_url' => $img_url,
+            ],
+            [
+                'url_base'     => 'http://www.domain.org/glpi/v9.4/',
+                'item'         => $item,
+                'expected_url' => '/glpi/v9.4/' . $img_url,
+            ],
         ];
     }
 
@@ -594,10 +594,10 @@ class Toolbox extends DbTestCase
        // Create document in DB
         $document = new \Document();
         $doc_id = $document->add([
-         'name'     => 'basic document',
-         'filename' => 'img.png',
-         'mime'     => 'image/png',
-         'tag'      => $img_tag,
+            'name'     => 'basic document',
+            'filename' => 'img.png',
+            'mime'     => 'image/png',
+            'tag'      => $img_tag,
         ]);
         $this->integer((int)$doc_id)->isGreaterThan(0);
 
@@ -640,35 +640,35 @@ class Toolbox extends DbTestCase
        // Create multiple documents in DB
         $document = new \Document();
         $doc_id_1 = $document->add([
-         'name'     => 'document 1',
-         'filename' => 'img1.png',
-         'mime'     => 'image/png',
-         'tag'      => $img_tag_1,
+            'name'     => 'document 1',
+            'filename' => 'img1.png',
+            'mime'     => 'image/png',
+            'tag'      => $img_tag_1,
         ]);
         $this->integer((int)$doc_id_1)->isGreaterThan(0);
 
         $document = new \Document();
         $doc_id_2 = $document->add([
-         'name'     => 'document 2',
-         'filename' => 'img2.png',
-         'mime'     => 'image/png',
-         'tag'      => $img_tag_2,
+            'name'     => 'document 2',
+            'filename' => 'img2.png',
+            'mime'     => 'image/png',
+            'tag'      => $img_tag_2,
         ]);
         $this->integer((int)$doc_id_2)->isGreaterThan(0);
 
         $document = new \Document();
         $doc_id_3 = $document->add([
-         'name'     => 'document 3',
-         'filename' => 'img3.png',
-         'mime'     => 'image/png',
-         'tag'      => $img_tag_3,
+            'name'     => 'document 3',
+            'filename' => 'img3.png',
+            'mime'     => 'image/png',
+            'tag'      => $img_tag_3,
         ]);
         $this->integer((int)$doc_id_3)->isGreaterThan(0);
 
         $doc_data = [
-         $doc_id_1 => ['tag' => $img_tag_1],
-         $doc_id_2 => ['tag' => $img_tag_2],
-         $doc_id_3 => ['tag' => $img_tag_3],
+            $doc_id_1 => ['tag' => $img_tag_1],
+            $doc_id_2 => ['tag' => $img_tag_2],
+            $doc_id_3 => ['tag' => $img_tag_3],
         ];
 
         $content_text    = '';
@@ -702,19 +702,19 @@ class Toolbox extends DbTestCase
        // Create multiple documents in DB
         $document = new \Document();
         $doc_id_1 = $document->add([
-         'name'     => 'duplicated document 1',
-         'filename' => 'img.png',
-         'mime'     => 'image/png',
-         'tag'      => $img_tag,
+            'name'     => 'duplicated document 1',
+            'filename' => 'img.png',
+            'mime'     => 'image/png',
+            'tag'      => $img_tag,
         ]);
         $this->integer((int)$doc_id_1)->isGreaterThan(0);
 
         $document = new \Document();
         $doc_id_2 = $document->add([
-         'name'     => 'duplicated document 2',
-         'filename' => 'img.png',
-         'mime'     => 'image/png',
-         'tag'      => $img_tag,
+            'name'     => 'duplicated document 2',
+            'filename' => 'img.png',
+            'mime'     => 'image/png',
+            'tag'      => $img_tag,
         ]);
         $this->integer((int)$doc_id_2)->isGreaterThan(0);
 
@@ -752,10 +752,10 @@ class Toolbox extends DbTestCase
        // Create multiple documents in DB
         $document = new \Document();
         $doc_id = $document->add([
-         'name'     => 'img 1',
-         'filename' => 'img.png',
-         'mime'     => 'image/png',
-         'tag'      => $img_tag,
+            'name'     => 'img 1',
+            'filename' => 'img.png',
+            'mime'     => 'image/png',
+            'tag'      => $img_tag,
         ]);
         $this->integer((int)$doc_id)->isGreaterThan(0);
 
@@ -777,39 +777,39 @@ class Toolbox extends DbTestCase
     protected function shortenNumbers()
     {
         return [
-         [
-            'number'    => 1500,
-            'precision' => 1,
-            'expected'  => '1.5K',
-         ], [
-            'number'    => 1600,
-            'precision' => 0,
-            'expected'  => '2K',
-         ], [
-            'number'    => 1600000,
-            'precision' => 1,
-            'expected'  => '1.6M',
-         ], [
-            'number'    => 1660000,
-            'precision' => 1,
-            'expected'  => '1.7M',
-         ], [
-            'number'    => 1600000000,
-            'precision' => 1,
-            'expected'  => '1.6B',
-         ], [
-            'number'    => 1600000000000,
-            'precision' => 1,
-            'expected'  => '1.6T',
-         ], [
-            'number'    => "14%",
-            'precision' => 1,
-            'expected'  => '14%',
-         ], [
-            'number'    => "test",
-            'precision' => 1,
-            'expected'  => 'test',
-         ]
+            [
+                'number'    => 1500,
+                'precision' => 1,
+                'expected'  => '1.5K',
+            ], [
+                'number'    => 1600,
+                'precision' => 0,
+                'expected'  => '2K',
+            ], [
+                'number'    => 1600000,
+                'precision' => 1,
+                'expected'  => '1.6M',
+            ], [
+                'number'    => 1660000,
+                'precision' => 1,
+                'expected'  => '1.7M',
+            ], [
+                'number'    => 1600000000,
+                'precision' => 1,
+                'expected'  => '1.6B',
+            ], [
+                'number'    => 1600000000000,
+                'precision' => 1,
+                'expected'  => '1.6T',
+            ], [
+                'number'    => "14%",
+                'precision' => 1,
+                'expected'  => '14%',
+            ], [
+                'number'    => "test",
+                'precision' => 1,
+                'expected'  => 'test',
+            ]
         ];
     }
 
@@ -825,23 +825,23 @@ class Toolbox extends DbTestCase
     protected function colors()
     {
         return [
-         [
-            'bg_color' => "#FFFFFF",
-            'offset'   => 40,
-            'fg_color' => '#999999',
-         ], [
-            'bg_color' => "#FFFFFF",
-            'offset'   => 50,
-            'fg_color' => '#808080',
-         ], [
-            'bg_color' => "#000000",
-            'offset'   => 40,
-            'fg_color' => '#666666',
-         ], [
-            'bg_color' => "#000000",
-            'offset'   => 50,
-            'fg_color' => '#808080',
-         ],
+            [
+                'bg_color' => "#FFFFFF",
+                'offset'   => 40,
+                'fg_color' => '#999999',
+            ], [
+                'bg_color' => "#FFFFFF",
+                'offset'   => 50,
+                'fg_color' => '#808080',
+            ], [
+                'bg_color' => "#000000",
+                'offset'   => 40,
+                'fg_color' => '#666666',
+            ], [
+                'bg_color' => "#000000",
+                'offset'   => 50,
+                'fg_color' => '#808080',
+            ],
         ];
     }
 
@@ -857,22 +857,22 @@ class Toolbox extends DbTestCase
     protected function testIsCommonDBTMProvider()
     {
         return [
-         [
-            'class'         => TicketFollowup::class,
-            'is_commondbtm' => false,
-         ],
-         [
-            'class'         => Ticket::class,
-            'is_commondbtm' => true,
-         ],
-         [
-            'class'         => ITILFollowup::class,
-            'is_commondbtm' => true,
-         ],
-         [
-            'class'         => "Not a real class",
-            'is_commondbtm' => false,
-         ],
+            [
+                'class'         => TicketFollowup::class,
+                'is_commondbtm' => false,
+            ],
+            [
+                'class'         => Ticket::class,
+                'is_commondbtm' => true,
+            ],
+            [
+                'class'         => ITILFollowup::class,
+                'is_commondbtm' => true,
+            ],
+            [
+                'class'         => "Not a real class",
+                'is_commondbtm' => false,
+            ],
         ];
     }
 
@@ -887,22 +887,22 @@ class Toolbox extends DbTestCase
     protected function testIsAPIDeprecatedProvider()
     {
         return [
-         [
-            'class'         => TicketFollowup::class,
-            'is_deprecated' => true,
-         ],
-         [
-            'class'         => Ticket::class,
-            'is_deprecated' => false,
-         ],
-         [
-            'class'         => ITILFollowup::class,
-            'is_deprecated' => false,
-         ],
-         [
-            'class'         => "Not a real class",
-            'is_deprecated' => false,
-         ],
+            [
+                'class'         => TicketFollowup::class,
+                'is_deprecated' => true,
+            ],
+            [
+                'class'         => Ticket::class,
+                'is_deprecated' => false,
+            ],
+            [
+                'class'         => ITILFollowup::class,
+                'is_deprecated' => false,
+            ],
+            [
+                'class'         => "Not a real class",
+                'is_deprecated' => false,
+            ],
         ];
     }
 
@@ -917,46 +917,46 @@ class Toolbox extends DbTestCase
     protected function urlProvider()
     {
         return [
-         ['http://localhost', true],
-         ['https://localhost', true],
-         ['https;//localhost', false],
-         ['https://glpi-project.org', true],
-         ['https://glpi+project-org', false],
-         [' http://my.host.com', false],
-         ['http://my.host.com', true],
-         ['http://my.host.com/', true],
-         ['http://my.host.com/glpi/', true],
-         ['http://my.host.com /', false],
-         ['http://localhost:8080', true],
-         ['http://localhost:8080/', true],
-         ['http://my.host.com:8080/glpi/', true],
-         ['http://my.host.com:8080 /', false],
-         ['http://my.host.com: 8080/', false],
-         ['http://my.host.com :8080/', false],
-         ['http://helpdesk.global.glpi-project.org', true],
-         ['http://dev.helpdesk.global.glpi-project.org', true],
-         ['http://127.0.0.1', true],
-         ['http://127.0.0.1/glpi', true],
-         ['http://127.0.0.1:8080', true],
-         ['http://127.0.0.1:8080/', true],
-         ['http://127.0.0.1 :8080/', false],
-         ['http://127.0.0.1 :8080 /', false],
-         ['http://::1', true],
-         ['http://::1/glpi', true],
-         ['http://::1:8080/', true],
-         ['http://::1:8080/', true],
-         ['HTTPS://::1:8080/', true],
-         ['www.my.host.com', false],
-         ['127.0.0.1', false],
-         ['::1', false],
-         ['http://my.host.com/subdir/glpi/', true],
-         ['http://my.host.com/~subdir/glpi/', true],
-         ['https://localhost<', false],
-         ['https://localhost"', false],
-         ['https://localhost\'', false],
-         ['https://localhost?test=true', true],
-         ['https://localhost?test=true&othertest=false', true],
-         ['https://localhost/front/computer.php?is_deleted=0&as_map=0&criteria[0][link]=AND&criteria[0][field]=80&criteria[0][searchtype]=equals&criteria[0][value]=254&search=Search&itemtype=Computer', true],
+            ['http://localhost', true],
+            ['https://localhost', true],
+            ['https;//localhost', false],
+            ['https://glpi-project.org', true],
+            ['https://glpi+project-org', false],
+            [' http://my.host.com', false],
+            ['http://my.host.com', true],
+            ['http://my.host.com/', true],
+            ['http://my.host.com/glpi/', true],
+            ['http://my.host.com /', false],
+            ['http://localhost:8080', true],
+            ['http://localhost:8080/', true],
+            ['http://my.host.com:8080/glpi/', true],
+            ['http://my.host.com:8080 /', false],
+            ['http://my.host.com: 8080/', false],
+            ['http://my.host.com :8080/', false],
+            ['http://helpdesk.global.glpi-project.org', true],
+            ['http://dev.helpdesk.global.glpi-project.org', true],
+            ['http://127.0.0.1', true],
+            ['http://127.0.0.1/glpi', true],
+            ['http://127.0.0.1:8080', true],
+            ['http://127.0.0.1:8080/', true],
+            ['http://127.0.0.1 :8080/', false],
+            ['http://127.0.0.1 :8080 /', false],
+            ['http://::1', true],
+            ['http://::1/glpi', true],
+            ['http://::1:8080/', true],
+            ['http://::1:8080/', true],
+            ['HTTPS://::1:8080/', true],
+            ['www.my.host.com', false],
+            ['127.0.0.1', false],
+            ['::1', false],
+            ['http://my.host.com/subdir/glpi/', true],
+            ['http://my.host.com/~subdir/glpi/', true],
+            ['https://localhost<', false],
+            ['https://localhost"', false],
+            ['https://localhost\'', false],
+            ['https://localhost?test=true', true],
+            ['https://localhost?test=true&othertest=false', true],
+            ['https://localhost/front/computer.php?is_deleted=0&as_map=0&criteria[0][link]=AND&criteria[0][field]=80&criteria[0][searchtype]=equals&criteria[0][value]=254&search=Search&itemtype=Computer', true],
         ];
     }
 
@@ -983,17 +983,17 @@ class Toolbox extends DbTestCase
     public function hasTraitProvider()
     {
         return [
-         [\Computer::class, Clonable::class, true],
-         [\Monitor::class, Clonable::class, true],
-         [\CommonITILObject::class, Clonable::class, true],
-         [\Ticket::class, Clonable::class, true],
-         [\Plugin::class, Clonable::class, false],
-         [\Project::class, Kanban::class, true],
-         [\Computer::class, Kanban::class, false],
-         [\Computer::class, DCBreadcrumb::class, true],
-         [\Ticket::class, DCBreadcrumb::class, false],
-         [\CommonITILTask::class, PlanningEvent::class, true],
-         [\Computer::class, PlanningEvent::class, false],
+            [\Computer::class, Clonable::class, true],
+            [\Monitor::class, Clonable::class, true],
+            [\CommonITILObject::class, Clonable::class, true],
+            [\Ticket::class, Clonable::class, true],
+            [\Plugin::class, Clonable::class, false],
+            [\Project::class, Kanban::class, true],
+            [\Computer::class, Kanban::class, false],
+            [\Computer::class, DCBreadcrumb::class, true],
+            [\Ticket::class, DCBreadcrumb::class, false],
+            [\CommonITILTask::class, PlanningEvent::class, true],
+            [\Computer::class, PlanningEvent::class, false],
         ];
     }
 
@@ -1016,16 +1016,16 @@ class Toolbox extends DbTestCase
         copy(__DIR__ . '/../fixtures/uploads/foo.png', GLPI_TMP_DIR . '/' . $filename);
         $tag = \Rule::getUuid();
         $input = [
-         'filename' => 'foo.png',
-         '_filename' => [
-            $filename,
-         ],
-         '_tag_filename' => [
-            $tag,
-         ],
-         '_prefix_filename' => [
-            '5e5e92ffd9bd91.11111111',
-         ]
+            'filename' => 'foo.png',
+            '_filename' => [
+                $filename,
+            ],
+            '_tag_filename' => [
+                $tag,
+            ],
+            '_prefix_filename' => [
+                '5e5e92ffd9bd91.11111111',
+            ]
         ];
         $document = new \Document();
         $document->add($input);
@@ -1038,42 +1038,42 @@ class Toolbox extends DbTestCase
     public function appendParametersProvider()
     {
         return [
-         [
             [
-               'a'   => 'test1',
-               'b'   => 'test2'
-            ], '&', 'a=test1&b=test2'
-         ],
-         [
+                [
+                    'a'   => 'test1',
+                    'b'   => 'test2'
+                ], '&', 'a=test1&b=test2'
+            ],
             [
-               'a'   => [
-                  'test1', 'test2'
-               ],
-               'b'   => 'test3'
-            ], '&', 'a%5B0%5D=test1&a%5B1%5D=test2&b=test3' // '[' converted to %5B, ']' converted to %5D
-         ],
-         [
+                [
+                    'a'   => [
+                        'test1', 'test2'
+                    ],
+                    'b'   => 'test3'
+                ], '&', 'a%5B0%5D=test1&a%5B1%5D=test2&b=test3' // '[' converted to %5B, ']' converted to %5D
+            ],
             [
-               'a'   => [
-                  'test1', 'test2'
-               ],
-               'b'   => 'test3*'
-            ], '&', 'a%5B0%5D=test1&a%5B1%5D=test2&b=test3%2A' // '[' converted to %5B, ']' converted to %5D
-         ],
-         [
+                [
+                    'a'   => [
+                        'test1', 'test2'
+                    ],
+                    'b'   => 'test3*'
+                ], '&', 'a%5B0%5D=test1&a%5B1%5D=test2&b=test3%2A' // '[' converted to %5B, ']' converted to %5D
+            ],
             [
-               'a'   => 'test1',
-               'b'   => 'test2'
-            ], '_', 'a=test1_b=test2'
-         ],
-         [
+                [
+                    'a'   => 'test1',
+                    'b'   => 'test2'
+                ], '_', 'a=test1_b=test2'
+            ],
             [
-               'a'   => [
-                  'test1', 'test2'
-               ],
-               'b'   => 'test3'
-            ], '_', 'a%5B0%5D=test1_a%5B1%5D=test2_b=test3' // '[' converted to %5B, ']' converted to %5D
-         ]
+                [
+                    'a'   => [
+                        'test1', 'test2'
+                    ],
+                    'b'   => 'test3'
+                ], '_', 'a%5B0%5D=test1_a%5B1%5D=test2_b=test3' // '[' converted to %5B, ']' converted to %5D
+            ]
         ];
     }
 

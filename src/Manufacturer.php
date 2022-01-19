@@ -59,14 +59,16 @@ class Manufacturer extends CommonDropdown
     {
 
         return [['name'  => 'none',
-                         'label' => RegisteredID::getTypeName(Session::getPluralNumber()) .
+            'label' => RegisteredID::getTypeName(Session::getPluralNumber()) .
                                        RegisteredID::showAddChildButtonForItemForm(
                                            $this,
                                            '_registeredID',
                                            null,
                                            false
                                        ),
-                         'type'  => 'registeredIDChooser']];
+            'type'  => 'registeredIDChooser'
+        ]
+        ];
     }
 
 
@@ -81,7 +83,8 @@ class Manufacturer extends CommonDropdown
             && (is_array($this->input['_registeredID']))
         ) {
             $input = ['itemtype' => $this->getType(),
-                        'items_id' => $this->getID()];
+                'items_id' => $this->getID()
+            ];
 
             foreach ($this->input['_registeredID'] as $id => $registered_id) {
                 $id_object     = new RegisteredID();

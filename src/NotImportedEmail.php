@@ -138,74 +138,74 @@ class NotImportedEmail extends CommonDBTM
         $tab = [];
 
         $tab[] = [
-         'id'                 => '1',
-         'table'              => $this->getTable(),
-         'field'              => 'from',
-         'name'               => __('From email header'),
-         'massiveaction'      => false,
-         'datatype'           => 'string'
+            'id'                 => '1',
+            'table'              => $this->getTable(),
+            'field'              => 'from',
+            'name'               => __('From email header'),
+            'massiveaction'      => false,
+            'datatype'           => 'string'
         ];
 
         $tab[] = [
-         'id'                 => '2',
-         'table'              => $this->getTable(),
-         'field'              => 'to',
-         'name'               => __('To email header'),
-         'massiveaction'      => false,
-         'datatype'           => 'string'
+            'id'                 => '2',
+            'table'              => $this->getTable(),
+            'field'              => 'to',
+            'name'               => __('To email header'),
+            'massiveaction'      => false,
+            'datatype'           => 'string'
         ];
 
         $tab[] = [
-         'id'                 => '3',
-         'table'              => $this->getTable(),
-         'field'              => 'subject',
-         'name'               => __('Subject email header'),
-         'massiveaction'      => false,
-         'datatype'           => 'string'
+            'id'                 => '3',
+            'table'              => $this->getTable(),
+            'field'              => 'subject',
+            'name'               => __('Subject email header'),
+            'massiveaction'      => false,
+            'datatype'           => 'string'
         ];
 
         $tab[] = [
-         'id'                 => '4',
-         'table'              => 'glpi_mailcollectors',
-         'field'              => 'name',
-         'name'               => __('Mails receiver'),
-         'datatype'           => 'itemlink'
+            'id'                 => '4',
+            'table'              => 'glpi_mailcollectors',
+            'field'              => 'name',
+            'name'               => __('Mails receiver'),
+            'datatype'           => 'itemlink'
         ];
 
         $tab[] = [
-         'id'                 => '5',
-         'table'              => $this->getTable(),
-         'field'              => 'messageid',
-         'name'               => __('Message-ID email header'),
-         'massiveaction'      => false,
-         'datatype'           => 'string'
+            'id'                 => '5',
+            'table'              => $this->getTable(),
+            'field'              => 'messageid',
+            'name'               => __('Message-ID email header'),
+            'massiveaction'      => false,
+            'datatype'           => 'string'
         ];
 
         $tab[] = [
-         'id'                 => '6',
-         'table'              => 'glpi_users',
-         'field'              => 'name',
-         'name'               => _n('Requester', 'Requesters', 1),
-         'datatype'           => 'dropdown',
-         'right'              => 'all'
+            'id'                 => '6',
+            'table'              => 'glpi_users',
+            'field'              => 'name',
+            'name'               => _n('Requester', 'Requesters', 1),
+            'datatype'           => 'dropdown',
+            'right'              => 'all'
         ];
 
         $tab[] = [
-         'id'                 => '16',
-         'table'              => $this->getTable(),
-         'field'              => 'reason',
-         'name'               => __('Reason of rejection'),
-         'datatype'           => 'specific',
-         'massiveaction'      => false
+            'id'                 => '16',
+            'table'              => $this->getTable(),
+            'field'              => 'reason',
+            'name'               => __('Reason of rejection'),
+            'datatype'           => 'specific',
+            'massiveaction'      => false
         ];
 
         $tab[] = [
-         'id'                 => '19',
-         'table'              => $this->getTable(),
-         'field'              => 'date',
-         'name'               => _n('Date', 'Dates', 1),
-         'datatype'           => 'datetime',
-         'massiveaction'      => false
+            'id'                 => '19',
+            'table'              => $this->getTable(),
+            'field'              => 'date',
+            'name'               => _n('Date', 'Dates', 1),
+            'datatype'           => 'datetime',
+            'massiveaction'      => false
         ];
 
         return $tab;
@@ -243,10 +243,10 @@ class NotImportedEmail extends CommonDBTM
     {
 
         return [
-         self::MATCH_NO_RULE     => __('Unable to affect the email to an entity'),
-         self::USER_UNKNOWN      => __('Email not found. Impossible import'),
-         self::FAILED_OPERATION  => __('Failed operation'),
-         self::NOT_ENOUGH_RIGHTS => __('Not enough rights'),
+            self::MATCH_NO_RULE     => __('Unable to affect the email to an entity'),
+            self::USER_UNKNOWN      => __('Email not found. Impossible import'),
+            self::FAILED_OPERATION  => __('Failed operation'),
+            self::NOT_ENOUGH_RIGHTS => __('Not enough rights'),
         ];
     }
 
@@ -270,7 +270,8 @@ class NotImportedEmail extends CommonDBTM
 
             case 'messageid':
                 $clean = ['<' => '',
-                           '>' => ''];
+                    '>' => ''
+                ];
                 return strtr($values[$field], $clean);
         }
         return parent::getSpecificValueToDisplay($field, $values, $options);

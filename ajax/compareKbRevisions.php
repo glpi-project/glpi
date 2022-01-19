@@ -54,18 +54,18 @@ $kbid = $_POST['kbid'];
 $revision = new KnowbaseItem_Revision();
 $revision->getFromDB($oldid);
 $old = [
-   'name'   => $revision->fields['name'],
-   'answer' => RichText::getSafeHtml($revision->fields['answer'])
+    'name'   => $revision->fields['name'],
+    'answer' => RichText::getSafeHtml($revision->fields['answer'])
 ];
 
 $revision = $diffid == 0 ? new KnowbaseItem() : new KnowbaseItem_Revision();
 $revision->getFromDB($diffid == 0 ? $kbid : $diffid);
 $diff = [
-   'name'   => $revision->fields['name'],
-   'answer' => RichText::getSafeHtml($revision->fields['answer'])
+    'name'   => $revision->fields['name'],
+    'answer' => RichText::getSafeHtml($revision->fields['answer'])
 ];
 
 echo json_encode([
-   'old'  => $old,
-   'diff' => $diff
+    'old'  => $old,
+    'diff' => $diff
 ]);

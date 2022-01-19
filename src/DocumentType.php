@@ -43,18 +43,23 @@ class DocumentType extends CommonDropdown
     {
 
         return [['name'  => 'icon',
-                         'label' => __('Icon'),
-                         'type'  => 'icon'],
-                   ['name'  => 'is_uploadable',
-                         'label' => __('Authorized upload'),
-                         'type'  => 'bool'],
-                   ['name'    => 'ext',
-                         'label'   => __('Extension'),
-                         'type'    => 'text',
-                         'comment' => __('May be a regular expression')],
-                   ['name'  => 'mime',
-                         'label' => __('MIME type'),
-                         'type'  => 'text']];
+            'label' => __('Icon'),
+            'type'  => 'icon'
+        ],
+            ['name'  => 'is_uploadable',
+                'label' => __('Authorized upload'),
+                'type'  => 'bool'
+            ],
+            ['name'    => 'ext',
+                'label'   => __('Extension'),
+                'type'    => 'text',
+                'comment' => __('May be a regular expression')
+            ],
+            ['name'  => 'mime',
+                'label' => __('MIME type'),
+                'type'  => 'text'
+            ]
+        ];
     }
 
 
@@ -74,36 +79,36 @@ class DocumentType extends CommonDropdown
         $tab = parent::rawSearchOptions();
 
         $tab[] = [
-         'id'                 => '3',
-         'table'              => $this->getTable(),
-         'field'              => 'ext',
-         'name'               => __('Extension'),
-         'datatype'           => 'string',
+            'id'                 => '3',
+            'table'              => $this->getTable(),
+            'field'              => 'ext',
+            'name'               => __('Extension'),
+            'datatype'           => 'string',
         ];
 
         $tab[] = [
-         'id'                 => '6',
-         'table'              => $this->getTable(),
-         'field'              => 'icon',
-         'name'               => __('Icon'),
-         'massiveaction'      => false,
-         'datatype'           => 'specific'
+            'id'                 => '6',
+            'table'              => $this->getTable(),
+            'field'              => 'icon',
+            'name'               => __('Icon'),
+            'massiveaction'      => false,
+            'datatype'           => 'specific'
         ];
 
         $tab[] = [
-         'id'                 => '4',
-         'table'              => $this->getTable(),
-         'field'              => 'mime',
-         'name'               => __('MIME type'),
-         'datatype'           => 'string',
+            'id'                 => '4',
+            'table'              => $this->getTable(),
+            'field'              => 'mime',
+            'name'               => __('MIME type'),
+            'datatype'           => 'string',
         ];
 
         $tab[] = [
-         'id'                 => '5',
-         'table'              => $this->getTable(),
-         'field'              => 'is_uploadable',
-         'name'               => __('Authorized upload'),
-         'datatype'           => 'bool'
+            'id'                 => '5',
+            'table'              => $this->getTable(),
+            'field'              => 'is_uploadable',
+            'name'               => __('Authorized upload'),
+            'datatype'           => 'bool'
         ];
 
         return $tab;
@@ -180,7 +185,8 @@ class DocumentType extends CommonDropdown
             'documenttypelist',
             $CFG_GLPI["root_doc"] . "/front/documenttype.list.php",
             ['title'   => static::getTypeName(Session::getPluralNumber()),
-            'display' => false]
+                'display' => false
+            ]
         );
 
         if ($p['display']) {
@@ -200,10 +206,10 @@ class DocumentType extends CommonDropdown
         global $DB;
 
         $valid_type_iterator = $DB->request([
-         'FROM'   => 'glpi_documenttypes',
-         'WHERE'  => [
-            'is_uploadable'   => 1
-         ]
+            'FROM'   => 'glpi_documenttypes',
+            'WHERE'  => [
+                'is_uploadable'   => 1
+            ]
         ]);
 
         $valid_ext_patterns = [];

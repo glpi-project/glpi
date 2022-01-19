@@ -40,10 +40,10 @@ class Appliance extends DbTestCase
     public function testDefineTabs()
     {
         $expected = [
-         'Appliance$main'     => 'Appliance',
-         'Impact$1'           => 'Impact analysis',
-         'ManualLink$1'       => 'Links',
-         'Log$1'              => 'Historical',
+            'Appliance$main'     => 'Appliance',
+            'Impact$1'           => 'Impact analysis',
+            'ManualLink$1'       => 'Links',
+            'Log$1'              => 'Historical',
         ];
         $this
          ->given($this->newTestedInstance)
@@ -83,8 +83,8 @@ class Appliance extends DbTestCase
 
        // Add
         $id = $app->add([
-         'name'        => $this->getUniqueString(),
-         'entities_id' => 0
+            'name'        => $this->getUniqueString(),
+            'entities_id' => 0
         ]);
         $this->integer($id)->isGreaterThan(0);
 
@@ -98,18 +98,18 @@ class Appliance extends DbTestCase
         $iapp = new \Appliance_Item();
         $this->integer(
             $iapp->add([
-            'appliances_id'   => $id,
-            'itemtype'        => 'Computer',
-            'items_id'        => getItemByTypeName('Computer', '_test_pc01', true)
+                'appliances_id'   => $id,
+                'itemtype'        => 'Computer',
+                'items_id'        => getItemByTypeName('Computer', '_test_pc01', true)
             ])
         )->isGreaterThan(0);
 
         $rapp = new \Appliance_Item_Relation();
         $this->integer(
             $rapp->add([
-            'appliances_items_id'   => $iapp->fields['id'],
-            'itemtype'              => 'Location',
-            'items_id'              => getItemByTypeName('Location', '_location01', true)
+                'appliances_items_id'   => $iapp->fields['id'],
+                'itemtype'              => 'Location',
+                'items_id'              => getItemByTypeName('Location', '_location01', true)
             ])
         )->isGreaterThan(0);
 
@@ -117,8 +117,8 @@ class Appliance extends DbTestCase
         $infocom = new \Infocom();
         $this->integer(
             $infocom->add([
-            'itemtype'  => 'Appliance',
-            'items_id'  => $id
+                'itemtype'  => 'Appliance',
+                'items_id'  => $id
             ])
         )->isGreaterThan(0);
 
@@ -130,9 +130,9 @@ class Appliance extends DbTestCase
         $docitem = new \Document_Item();
         $this->integer(
             $docitem->add([
-            'documents_id' => $docid,
-            'itemtype'     => 'Appliance',
-            'items_id'     => $id
+                'documents_id' => $docid,
+                'itemtype'     => 'Appliance',
+                'items_id'     => $id
             ])
         )->isGreaterThan(0);
 

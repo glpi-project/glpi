@@ -45,12 +45,12 @@ $default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
 $DB->updateOrDie(
     'glpi_crontasks',
     [
-      'itemtype' => 'CommonITILRecurrentCron',
-      'name'     => 'RecurrentItems'
+        'itemtype' => 'CommonITILRecurrentCron',
+        'name'     => 'RecurrentItems'
     ],
     [
-      'itemtype' => 'TicketRecurrent',
-      'name'     => 'ticketrecurrent',
+        'itemtype' => 'TicketRecurrent',
+        'name'     => 'ticketrecurrent',
     ],
     "CommonITILReccurent crontask"
 );
@@ -81,5 +81,5 @@ if (!$DB->tableExists($recurrent_change_table)) {
 }
 
 $migration->addRight('recurrentchange', ALLSTANDARDRIGHT, [
-   'change' => UPDATE
+    'change' => UPDATE
 ]);

@@ -45,8 +45,8 @@ class SecurityExtension extends AbstractExtension
     public function getFunctions(): array
     {
         return [
-         new TwigFunction('csrf_token', [Session::class, 'getNewCSRFToken']),
-         new TwigFunction('idor_token', [Session::class, 'getNewIDORToken']),
+            new TwigFunction('csrf_token', [Session::class, 'getNewCSRFToken']),
+            new TwigFunction('idor_token', [Session::class, 'getNewIDORToken']),
         ];
     }
 }

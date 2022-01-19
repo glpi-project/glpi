@@ -42,16 +42,16 @@ class DBConnection extends \GLPITestCase
     protected function setConnectionCharsetProvider()
     {
         return [
-         [
-            'utf8mb4'          => true,
-            'expected_charset' => 'utf8mb4',
-            'expected_query'   => "SET NAMES 'utf8mb4' COLLATE 'utf8mb4_unicode_ci';"
-         ],
-         [
-            'utf8mb4'          => false,
-            'expected_charset' => 'utf8',
-            'expected_query'   => "SET NAMES 'utf8' COLLATE 'utf8_unicode_ci';"
-         ],
+            [
+                'utf8mb4'          => true,
+                'expected_charset' => 'utf8mb4',
+                'expected_query'   => "SET NAMES 'utf8mb4' COLLATE 'utf8mb4_unicode_ci';"
+            ],
+            [
+                'utf8mb4'          => false,
+                'expected_charset' => 'utf8',
+                'expected_query'   => "SET NAMES 'utf8' COLLATE 'utf8_unicode_ci';"
+            ],
         ];
     }
 
@@ -77,18 +77,18 @@ class DBConnection extends \GLPITestCase
     protected function mainConfigPropertiesProvider()
     {
         return [
-         [
-            'host'                     => 'localhost',
-            'user'                     => 'glpi',
-            'password'                 => 'secret',
-            'name'                     => 'glpi_db',
-            'use_timezones'            => false,
-            'log_deprecation_warnings' => false,
-            'use_utf8mb4'              => false,
-            'allow_myisam'             => true,
-            'allow_datetime'           => true,
-            'allow_signed_keys'        => true,
-            'expected'                 => <<<'PHP'
+            [
+                'host'                     => 'localhost',
+                'user'                     => 'glpi',
+                'password'                 => 'secret',
+                'name'                     => 'glpi_db',
+                'use_timezones'            => false,
+                'log_deprecation_warnings' => false,
+                'use_utf8mb4'              => false,
+                'allow_myisam'             => true,
+                'allow_datetime'           => true,
+                'allow_signed_keys'        => true,
+                'expected'                 => <<<'PHP'
 <?php
 class DB extends DBmysql {
    public $dbhost = 'localhost';
@@ -98,19 +98,19 @@ class DB extends DBmysql {
 }
 
 PHP
-         ],
-         [
-            'host'                     => '127.0.0.1',
-            'user'                     => 'root',
-            'password'                 => '',
-            'name'                     => 'db',
-            'use_timezones'            => true,
-            'log_deprecation_warnings' => false,
-            'use_utf8mb4'              => true,
-            'allow_myisam'             => false,
-            'allow_datetime'           => false,
-            'allow_signed_keys'        => false,
-            'expected'                 => <<<'PHP'
+            ],
+            [
+                'host'                     => '127.0.0.1',
+                'user'                     => 'root',
+                'password'                 => '',
+                'name'                     => 'db',
+                'use_timezones'            => true,
+                'log_deprecation_warnings' => false,
+                'use_utf8mb4'              => true,
+                'allow_myisam'             => false,
+                'allow_datetime'           => false,
+                'allow_signed_keys'        => false,
+                'expected'                 => <<<'PHP'
 <?php
 class DB extends DBmysql {
    public $dbhost = '127.0.0.1';
@@ -125,19 +125,19 @@ class DB extends DBmysql {
 }
 
 PHP
-         ],
-         [
-            'host'                     => '127.0.0.1',
-            'user'                     => 'root',
-            'password'                 => 'iT4%dU9*rI9#jT8>',
-            'name'                     => 'db',
-            'use_timezones'            => false,
-            'log_deprecation_warnings' => true,
-            'use_utf8mb4'              => false,
-            'allow_myisam'             => true,
-            'allow_datetime'           => true,
-            'allow_signed_keys'        => true,
-            'expected'                 => <<<'PHP'
+            ],
+            [
+                'host'                     => '127.0.0.1',
+                'user'                     => 'root',
+                'password'                 => 'iT4%dU9*rI9#jT8>',
+                'name'                     => 'db',
+                'use_timezones'            => false,
+                'log_deprecation_warnings' => true,
+                'use_utf8mb4'              => false,
+                'allow_myisam'             => true,
+                'allow_datetime'           => true,
+                'allow_signed_keys'        => true,
+                'expected'                 => <<<'PHP'
 <?php
 class DB extends DBmysql {
    public $dbhost = '127.0.0.1';
@@ -148,7 +148,7 @@ class DB extends DBmysql {
 }
 
 PHP
-         ],
+            ],
         ];
     }
 
@@ -193,18 +193,18 @@ PHP
     protected function slaveConfigPropertiesProvider()
     {
         return [
-         [
-            'host'                     => 'slave.db.domain.org',
-            'user'                     => 'glpi',
-            'password'                 => 'secret',
-            'name'                     => 'glpi_db',
-            'use_timezones'            => false,
-            'log_deprecation_warnings' => false,
-            'use_utf8mb4'              => false,
-            'allow_myisam'             => true,
-            'allow_datetime'           => true,
-            'allow_signed_keys'        => true,
-            'expected'                 => <<<'PHP'
+            [
+                'host'                     => 'slave.db.domain.org',
+                'user'                     => 'glpi',
+                'password'                 => 'secret',
+                'name'                     => 'glpi_db',
+                'use_timezones'            => false,
+                'log_deprecation_warnings' => false,
+                'use_utf8mb4'              => false,
+                'allow_myisam'             => true,
+                'allow_datetime'           => true,
+                'allow_signed_keys'        => true,
+                'expected'                 => <<<'PHP'
 <?php
 class DBSlave extends DBmysql {
    public $slave = true;
@@ -215,19 +215,19 @@ class DBSlave extends DBmysql {
 }
 
 PHP
-         ],
-         [
-            'host'                     => 'slave1.db.domain.org slave2.db.domain.org slave3.db.domain.org ',
-            'user'                     => 'root',
-            'password'                 => '',
-            'name'                     => 'db',
-            'use_timezones'            => true,
-            'log_deprecation_warnings' => false,
-            'use_utf8mb4'              => true,
-            'allow_myisam'             => false,
-            'allow_datetime'           => false,
-            'allow_signed_keys'        => false,
-            'expected'                 => <<<'PHP'
+            ],
+            [
+                'host'                     => 'slave1.db.domain.org slave2.db.domain.org slave3.db.domain.org ',
+                'user'                     => 'root',
+                'password'                 => '',
+                'name'                     => 'db',
+                'use_timezones'            => true,
+                'log_deprecation_warnings' => false,
+                'use_utf8mb4'              => true,
+                'allow_myisam'             => false,
+                'allow_datetime'           => false,
+                'allow_signed_keys'        => false,
+                'expected'                 => <<<'PHP'
 <?php
 class DBSlave extends DBmysql {
    public $slave = true;
@@ -247,19 +247,19 @@ class DBSlave extends DBmysql {
 }
 
 PHP
-         ],
-         [
-            'host'                     => '127.0.0.1',
-            'user'                     => 'root',
-            'password'                 => 'iT4%dU9*rI9#jT8>',
-            'name'                     => 'db',
-            'use_timezones'            => false,
-            'log_deprecation_warnings' => true,
-            'use_utf8mb4'              => false,
-            'allow_myisam'             => true,
-            'allow_datetime'           => true,
-            'allow_signed_keys'        => true,
-            'expected'                 => <<<'PHP'
+            ],
+            [
+                'host'                     => '127.0.0.1',
+                'user'                     => 'root',
+                'password'                 => 'iT4%dU9*rI9#jT8>',
+                'name'                     => 'db',
+                'use_timezones'            => false,
+                'log_deprecation_warnings' => true,
+                'use_utf8mb4'              => false,
+                'allow_myisam'             => true,
+                'allow_datetime'           => true,
+                'allow_signed_keys'        => true,
+                'expected'                 => <<<'PHP'
 <?php
 class DBSlave extends DBmysql {
    public $slave = true;
@@ -271,7 +271,7 @@ class DBSlave extends DBmysql {
 }
 
 PHP
-         ],
+            ],
         ];
     }
 
@@ -316,10 +316,10 @@ PHP
     protected function updatePropertiesProvider()
     {
         return [
-         [
+            [
             // Add new boolean + string variables, update float + array variables without slave
-            'init_config_files'     => [
-               'config_db.php' => <<<PHP
+                'init_config_files'     => [
+                    'config_db.php' => <<<PHP
 <?php
 class DB extends DBmysql {
    public \$dbuser      = 'glpi';
@@ -329,16 +329,16 @@ class DB extends DBmysql {
 }
 PHP
                ,
-            ],
-            'properties'            => [
-               'use_utf8mb4' => false,
-               'test'        => 'foobar',
-               'version'     => 10.2,
-               'prop'        => ['a', 'b'],
-            ],
-            'update_slave'          => true, // Will have no effect as slave not exists
-            'expected_config_files' => [
-               'config_db.php' => <<<PHP
+                ],
+                'properties'            => [
+                    'use_utf8mb4' => false,
+                    'test'        => 'foobar',
+                    'version'     => 10.2,
+                    'prop'        => ['a', 'b'],
+                ],
+                'update_slave'          => true, // Will have no effect as slave not exists
+                'expected_config_files' => [
+                    'config_db.php' => <<<PHP
 <?php
 class DB extends DBmysql {
    public \$dbuser      = 'glpi';
@@ -353,12 +353,12 @@ class DB extends DBmysql {
 }
 PHP
                ,
+                ],
             ],
-         ],
-         [
+            [
             // Add new boolean + float + array variables, update string variables with slave
-            'init_config_files'     => [
-               'config_db.php' => <<<PHP
+                'init_config_files'     => [
+                    'config_db.php' => <<<PHP
 <?php
 class DB extends DBmysql {
    public \$dbuser      = 'glpi';
@@ -367,7 +367,7 @@ class DB extends DBmysql {
 }
 PHP
                ,
-               'config_db_slave.php' => <<<PHP
+                    'config_db_slave.php' => <<<PHP
 <?php
 class DB extends DBmysql {
    public \$dbhost      = 'slave.domain.org';
@@ -377,16 +377,16 @@ class DB extends DBmysql {
 }
 PHP
                ,
-            ],
-            'properties'            => [
-               'use_utf8mb4' => false,
-               'test'        => 'barfoo',
-               'version'     => 10.2,
-               'prop'        => ['a', 'b'],
-            ],
-            'update_slave'          => true,
-            'expected_config_files' => [
-               'config_db.php' => <<<PHP
+                ],
+                'properties'            => [
+                    'use_utf8mb4' => false,
+                    'test'        => 'barfoo',
+                    'version'     => 10.2,
+                    'prop'        => ['a', 'b'],
+                ],
+                'update_slave'          => true,
+                'expected_config_files' => [
+                    'config_db.php' => <<<PHP
 <?php
 class DB extends DBmysql {
    public \$dbuser      = 'glpi';
@@ -401,7 +401,7 @@ class DB extends DBmysql {
 }
 PHP
                ,
-               'config_db_slave.php' => <<<PHP
+                    'config_db_slave.php' => <<<PHP
 <?php
 class DB extends DBmysql {
    public \$dbhost      = 'slave.domain.org';
@@ -417,12 +417,12 @@ class DB extends DBmysql {
 }
 PHP
                ,
+                ],
             ],
-         ],
-         [
+            [
             // Add new float variable, update string variable without updating slave
-            'init_config_files'     => [
-               'config_db.php' => <<<PHP
+                'init_config_files'     => [
+                    'config_db.php' => <<<PHP
 <?php
 class DB extends DBmysql {
    public \$dbuser      = 'glpi';
@@ -431,7 +431,7 @@ class DB extends DBmysql {
 }
 PHP
                ,
-               'config_db_slave.php' => <<<PHP
+                    'config_db_slave.php' => <<<PHP
 <?php
 class DBSlave extends DBmysql {
    public \$dbhost      = 'slave.domain.org';
@@ -441,14 +441,14 @@ class DBSlave extends DBmysql {
 }
 PHP
                ,
-            ],
-            'properties'            => [
-               'test'    => 'barfoo',
-               'version' => 10.2,
-            ],
-            'update_slave'          => false,
-            'expected_config_files' => [
-               'config_db.php' => <<<PHP
+                ],
+                'properties'            => [
+                    'test'    => 'barfoo',
+                    'version' => 10.2,
+                ],
+                'update_slave'          => false,
+                'expected_config_files' => [
+                    'config_db.php' => <<<PHP
 <?php
 class DB extends DBmysql {
    public \$dbuser      = 'glpi';
@@ -458,7 +458,7 @@ class DB extends DBmysql {
 }
 PHP
                ,
-               'config_db_slave.php' => <<<PHP
+                    'config_db_slave.php' => <<<PHP
 <?php
 class DBSlave extends DBmysql {
    public \$dbhost      = 'slave.domain.org';
@@ -468,19 +468,19 @@ class DBSlave extends DBmysql {
 }
 PHP
                ,
+                ],
             ],
-         ],
-         [
+            [
             // Cannot update a config that not exists
-            'init_config_files'     => [],
-            'properties'            => [
-               'test'    => 'foobar',
-               'version' => 10.2,
+                'init_config_files'     => [],
+                'properties'            => [
+                    'test'    => 'foobar',
+                    'version' => 10.2,
+                ],
+                'update_slave'          => false,
+                'expected_config_files' => [],
+                'expected_result'       => false,
             ],
-            'update_slave'          => false,
-            'expected_config_files' => [],
-            'expected_result'       => false,
-         ],
         ];
     }
 

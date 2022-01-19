@@ -47,8 +47,9 @@ class NotificationTargetProjectTask extends NotificationTarget
     {
 
         $events = ['new'               => __('New project task'),
-                      'update'            => __('Update of a project task'),
-                      'delete'            => __('Deletion of a project task')];
+            'update'            => __('Update of a project task'),
+            'delete'            => __('Deletion of a project task')
+        ];
         asort($events);
         return $events;
     }
@@ -120,19 +121,20 @@ class NotificationTargetProjectTask extends NotificationTarget
         global $DB;
 
         $iterator = $DB->request([
-         'SELECT' => 'items_id',
-         'FROM'   => 'glpi_projecttaskteams',
-         'WHERE'  => [
-            'itemtype'        => 'User',
-            'projecttasks_id' => $this->obj->fields['id']
-         ]
+            'SELECT' => 'items_id',
+            'FROM'   => 'glpi_projecttaskteams',
+            'WHERE'  => [
+                'itemtype'        => 'User',
+                'projecttasks_id' => $this->obj->fields['id']
+            ]
         ]);
 
         $user = new User();
         foreach ($iterator as $data) {
             if ($user->getFromDB($data['items_id'])) {
                 $this->addToRecipientsList(['language' => $user->getField('language'),
-                                            'users_id' => $user->getField('id')]);
+                    'users_id' => $user->getField('id')
+                ]);
             }
         }
     }
@@ -150,12 +152,12 @@ class NotificationTargetProjectTask extends NotificationTarget
         global $DB;
 
         $iterator = $DB->request([
-         'SELECT' => 'items_id',
-         'FROM'   => 'glpi_projecttaskteams',
-         'WHERE'  => [
-            'itemtype'        => 'Group',
-            'projecttasks_id' => $this->obj->fields['id']
-         ]
+            'SELECT' => 'items_id',
+            'FROM'   => 'glpi_projecttaskteams',
+            'WHERE'  => [
+                'itemtype'        => 'Group',
+                'projecttasks_id' => $this->obj->fields['id']
+            ]
         ]);
 
         foreach ($iterator as $data) {
@@ -174,21 +176,22 @@ class NotificationTargetProjectTask extends NotificationTarget
         global $DB, $CFG_GLPI;
 
         $iterator = $DB->request([
-         'SELECT' => 'items_id',
-         'FROM'   => 'glpi_projecttaskteams',
-         'WHERE'  => [
-            'itemtype'        => 'Contact',
-            'projecttasks_id' => $this->obj->fields['id']
-         ]
+            'SELECT' => 'items_id',
+            'FROM'   => 'glpi_projecttaskteams',
+            'WHERE'  => [
+                'itemtype'        => 'Contact',
+                'projecttasks_id' => $this->obj->fields['id']
+            ]
         ]);
 
         $contact = new Contact();
         foreach ($iterator as $data) {
             if ($contact->getFromDB($data['items_id'])) {
                 $this->addToRecipientsList(["email"    => $contact->fields["email"],
-                                            "name"     => $contact->getName(),
-                                            "language" => $CFG_GLPI["language"],
-                                            'usertype' => NotificationTarget::ANONYMOUS_USER]);
+                    "name"     => $contact->getName(),
+                    "language" => $CFG_GLPI["language"],
+                    'usertype' => NotificationTarget::ANONYMOUS_USER
+                ]);
             }
         }
     }
@@ -204,21 +207,22 @@ class NotificationTargetProjectTask extends NotificationTarget
         global $DB, $CFG_GLPI;
 
         $iterator = $DB->request([
-         'SELECT' => 'items_id',
-         'FROM'   => 'glpi_projecttaskteams',
-         'WHERE'  => [
-            'itemtype'        => 'Supplier',
-            'projecttasks_id' => $this->obj->fields['id']
-         ]
+            'SELECT' => 'items_id',
+            'FROM'   => 'glpi_projecttaskteams',
+            'WHERE'  => [
+                'itemtype'        => 'Supplier',
+                'projecttasks_id' => $this->obj->fields['id']
+            ]
         ]);
 
         $supplier = new Supplier();
         foreach ($iterator as $data) {
             if ($supplier->getFromDB($data['items_id'])) {
                 $this->addToRecipientsList(["email"    => $supplier->fields["email"],
-                                            "name"     => $supplier->getName(),
-                                            "language" => $CFG_GLPI["language"],
-                                            'usertype' => NotificationTarget::ANONYMOUS_USER]);
+                    "name"     => $supplier->getName(),
+                    "language" => $CFG_GLPI["language"],
+                    'usertype' => NotificationTarget::ANONYMOUS_USER
+                ]);
             }
         }
     }
@@ -347,8 +351,8 @@ class NotificationTargetProjectTask extends NotificationTarget
         $tasks                = getAllDataFromTable(
             'glpi_projecttasks',
             [
-            'WHERE'  => $restrict,
-            'ORDER'  => ['date_creation DESC', 'id ASC']
+                'WHERE'  => $restrict,
+                'ORDER'  => ['date_creation DESC', 'id ASC']
             ]
         );
         $this->data['tasks'] = [];
@@ -437,20 +441,20 @@ class NotificationTargetProjectTask extends NotificationTarget
 
        // Document
         $iterator = $DB->request([
-         'SELECT'    => 'glpi_documents.*',
-         'FROM'      => 'glpi_documents',
-         'LEFT JOIN' => [
-            'glpi_documents_items'  => [
-               'ON' => [
-                  'glpi_documents_items'  => 'documents_id',
-                  'glpi_documents'        => 'id'
-               ]
+            'SELECT'    => 'glpi_documents.*',
+            'FROM'      => 'glpi_documents',
+            'LEFT JOIN' => [
+                'glpi_documents_items'  => [
+                    'ON' => [
+                        'glpi_documents_items'  => 'documents_id',
+                        'glpi_documents'        => 'id'
+                    ]
+                ]
+            ],
+            'WHERE'     => [
+                'glpi_documents_items.itemtype'  => 'ProjectTask',
+                'glpi_documents_items.items_id'  => $item->fields['id']
             ]
-         ],
-         'WHERE'     => [
-            'glpi_documents_items.itemtype'  => 'ProjectTask',
-            'glpi_documents_items.items_id'  => $item->fields['id']
-         ]
         ]);
 
         $this->data["documents"] = [];
@@ -505,184 +509,190 @@ class NotificationTargetProjectTask extends NotificationTarget
     {
 
         $tags_all = ['projecttask.url'                 => __('URL'),
-                        'projecttask.action'              => _n('Event', 'Events', 1),
-                        'projecttask.name'                => __('Name'),
-                        'projecttask.project'             => Project::getTypeName(1),
-                        'projecttask.description'         => __('Description'),
-                        'projecttask.comments'            => __('Comments'),
-                        'projecttask.creationdate'        => __('Creation date'),
-                        'projecttask.lastupdatedate'      => __('Last update'),
-                        'projecttask.planstartdate'       => __('Planned start date'),
-                        'projecttask.planenddate'         => __('Planned end date'),
-                        'projecttask.realstartdate'       => __('Real start date'),
-                        'projecttask.realenddate'         => __('Real end date'),
-                        'projecttask.father'              => __('Father'),
-                        'projecttask.createbyuser'        => __('Writer'),
-                        'projecttask.type'                => _n('Type', 'Types', 1),
-                        'projecttask.state'               => _x('item', 'State'),
-                        'projecttask.percent'             => __('Percent done'),
-                        'projecttask.plannedduration'     => __('Planned duration'),
-                        'projecttask.effectiveduration'   => __('Effective duration'),
-                        'projecttask.ticketsduration'     => __('Tickets duration'),
-                        'projecttask.totalduration'       => __('Total duration'),
-                        'projecttask.numberoftasks'       => _x('quantity', 'Number of tasks'),
-                        'projecttask.numberofteammembers' => _x('quantity', 'Number of team members'),
-                        'task.date'                       => __('Opening date'),
-                        'task.name'                       => __('Name'),
-                        'task.description'                => __('Description'),
-                        'task.comments'                   => __('Comments'),
-                        'task.creationdate'               => __('Creation date'),
-                        'task.lastupdatedate'             => __('Last update'),
-                        'task.type'                       => _n('Type', 'Types', 1),
-                        'task.state'                      => _x('item', 'State'),
-                        'task.percent'                    => __('Percent done'),
-                        'task.planstartdate'              => __('Planned start date'),
-                        'task.planenddate'                => __('Planned end date'),
-                        'task.realstartdate'              => __('Real start date'),
-                        'task.realenddate'                => __('Real end date'),
-                        'projecttask.numberoflogs'        => sprintf(
-                            __('%1$s: %2$s'),
-                            __('Historical'),
-                            _x(
-                                'quantity',
-                                'Number of items'
-                            )
-                        ),
-                        'projecttask.log.date'            => sprintf(
-                            __('%1$s: %2$s'),
-                            __('Historical'),
-                            _n('Date', 'Dates', 1)
-                        ),
-                        'projecttask.log.user'            => sprintf(
-                            __('%1$s: %2$s'),
-                            __('Historical'),
-                            User::getTypeName(1)
-                        ),
-                        'projecttask.log.field'           => sprintf(
-                            __('%1$s: %2$s'),
-                            __('Historical'),
-                            _n('Field', 'Fields', 1)
-                        ),
-                        'projecttask.log.content'         => sprintf(
-                            __('%1$s: %2$s'),
-                            __('Historical'),
-                            _x('name', 'Update')
-                        ),
-                        'projecttask.numberoftickets'     => _x('quantity', 'Number of tickets'),
-                        'projecttask.numberofdocuments'   => _x('quantity', 'Number of documents'),
-                     ];
+            'projecttask.action'              => _n('Event', 'Events', 1),
+            'projecttask.name'                => __('Name'),
+            'projecttask.project'             => Project::getTypeName(1),
+            'projecttask.description'         => __('Description'),
+            'projecttask.comments'            => __('Comments'),
+            'projecttask.creationdate'        => __('Creation date'),
+            'projecttask.lastupdatedate'      => __('Last update'),
+            'projecttask.planstartdate'       => __('Planned start date'),
+            'projecttask.planenddate'         => __('Planned end date'),
+            'projecttask.realstartdate'       => __('Real start date'),
+            'projecttask.realenddate'         => __('Real end date'),
+            'projecttask.father'              => __('Father'),
+            'projecttask.createbyuser'        => __('Writer'),
+            'projecttask.type'                => _n('Type', 'Types', 1),
+            'projecttask.state'               => _x('item', 'State'),
+            'projecttask.percent'             => __('Percent done'),
+            'projecttask.plannedduration'     => __('Planned duration'),
+            'projecttask.effectiveduration'   => __('Effective duration'),
+            'projecttask.ticketsduration'     => __('Tickets duration'),
+            'projecttask.totalduration'       => __('Total duration'),
+            'projecttask.numberoftasks'       => _x('quantity', 'Number of tasks'),
+            'projecttask.numberofteammembers' => _x('quantity', 'Number of team members'),
+            'task.date'                       => __('Opening date'),
+            'task.name'                       => __('Name'),
+            'task.description'                => __('Description'),
+            'task.comments'                   => __('Comments'),
+            'task.creationdate'               => __('Creation date'),
+            'task.lastupdatedate'             => __('Last update'),
+            'task.type'                       => _n('Type', 'Types', 1),
+            'task.state'                      => _x('item', 'State'),
+            'task.percent'                    => __('Percent done'),
+            'task.planstartdate'              => __('Planned start date'),
+            'task.planenddate'                => __('Planned end date'),
+            'task.realstartdate'              => __('Real start date'),
+            'task.realenddate'                => __('Real end date'),
+            'projecttask.numberoflogs'        => sprintf(
+                __('%1$s: %2$s'),
+                __('Historical'),
+                _x(
+                    'quantity',
+                    'Number of items'
+                )
+            ),
+            'projecttask.log.date'            => sprintf(
+                __('%1$s: %2$s'),
+                __('Historical'),
+                _n('Date', 'Dates', 1)
+            ),
+            'projecttask.log.user'            => sprintf(
+                __('%1$s: %2$s'),
+                __('Historical'),
+                User::getTypeName(1)
+            ),
+            'projecttask.log.field'           => sprintf(
+                __('%1$s: %2$s'),
+                __('Historical'),
+                _n('Field', 'Fields', 1)
+            ),
+            'projecttask.log.content'         => sprintf(
+                __('%1$s: %2$s'),
+                __('Historical'),
+                _x('name', 'Update')
+            ),
+            'projecttask.numberoftickets'     => _x('quantity', 'Number of tickets'),
+            'projecttask.numberofdocuments'   => _x('quantity', 'Number of documents'),
+        ];
 
         foreach ($tags_all as $tag => $label) {
             $this->addTagToList(['tag'   => $tag,
-                                   'label' => $label,
-                                   'value' => true]);
+                'label' => $label,
+                'value' => true
+            ]);
         }
 
        //Tags without lang
         $tags = ['ticket.id'               => sprintf(__('%1$s: %2$s'), Ticket::getTypeName(1), __('ID')),
-                    'ticket.date'             => sprintf(__('%1$s: %2$s'), Ticket::getTypeName(1), _n('Date', 'Dates', 1)),
-                    'ticket.url'              => sprintf(__('%1$s: %2$s'), Ticket::getTypeName(1), ('URL')),
-                    'ticket.title'            => sprintf(
-                        __('%1$s: %2$s'),
-                        Ticket::getTypeName(1),
-                        __('Title')
-                    ),
-                    'ticket.content'          => sprintf(
-                        __('%1$s: %2$s'),
-                        Ticket::getTypeName(1),
-                        __('Description')
-                    ),
-                    'projecttask.projecturl'  => sprintf(__('%1$s: %2$s'), Project::getTypeName(1), __('URL')),
-                    'document.url'            => sprintf(
-                        __('%1$s: %2$s'),
-                        Document::getTypeName(1),
-                        __('URL')
-                    ),
-                    'document.downloadurl'    => sprintf(
-                        __('%1$s: %2$s'),
-                        Document::getTypeName(1),
-                        __('Download URL')
-                    ),
-                    'document.heading'        => sprintf(
-                        __('%1$s: %2$s'),
-                        Document::getTypeName(1),
-                        __('Heading')
-                    ),
-                    'document.id'             => sprintf(__('%1$s: %2$s'), Document::getTypeName(1), __('ID')),
-                    'document.filename'       => sprintf(
-                        __('%1$s: %2$s'),
-                        Document::getTypeName(1),
-                        __('File')
-                    ),
-                    'document.weblink'        => sprintf(
-                        __('%1$s: %2$s'),
-                        Document::getTypeName(1),
-                        __('Web link')
-                    ),
-                    'document.name'           => sprintf(
-                        __('%1$s: %2$s'),
-                        Document::getTypeName(1),
-                        __('Name')
-                    ),
-                    'projecttask.urldocument' => sprintf(
-                        __('%1$s: %2$s'),
-                        Document::getTypeName(Session::getPluralNumber()),
-                        __('URL')
-                    ),
-                    'projecttask.entity'      => sprintf(
-                        __('%1$s (%2$s)'),
-                        Entity::getTypeName(1),
-                        __('Complete name')
-                    ),
-                    'projecttask.shortentity' => sprintf(
-                        __('%1$s (%2$s)'),
-                        Entity::getTypeName(1),
-                        __('Name')
-                    ),
-                    'teammember.name'        => sprintf(
-                        __('%1$s: %2$s'),
-                        _n('Team member', 'Team members', 1),
-                        __('Name')
-                    ),
-                    'teammember.itemtype'    => sprintf(
-                        __('%1$s: %2$s'),
-                        _n('Team member', 'Team members', 1),
-                        _n('Type', 'Types', 1)
-                    )
-                     ];
+            'ticket.date'             => sprintf(__('%1$s: %2$s'), Ticket::getTypeName(1), _n('Date', 'Dates', 1)),
+            'ticket.url'              => sprintf(__('%1$s: %2$s'), Ticket::getTypeName(1), ('URL')),
+            'ticket.title'            => sprintf(
+                __('%1$s: %2$s'),
+                Ticket::getTypeName(1),
+                __('Title')
+            ),
+            'ticket.content'          => sprintf(
+                __('%1$s: %2$s'),
+                Ticket::getTypeName(1),
+                __('Description')
+            ),
+            'projecttask.projecturl'  => sprintf(__('%1$s: %2$s'), Project::getTypeName(1), __('URL')),
+            'document.url'            => sprintf(
+                __('%1$s: %2$s'),
+                Document::getTypeName(1),
+                __('URL')
+            ),
+            'document.downloadurl'    => sprintf(
+                __('%1$s: %2$s'),
+                Document::getTypeName(1),
+                __('Download URL')
+            ),
+            'document.heading'        => sprintf(
+                __('%1$s: %2$s'),
+                Document::getTypeName(1),
+                __('Heading')
+            ),
+            'document.id'             => sprintf(__('%1$s: %2$s'), Document::getTypeName(1), __('ID')),
+            'document.filename'       => sprintf(
+                __('%1$s: %2$s'),
+                Document::getTypeName(1),
+                __('File')
+            ),
+            'document.weblink'        => sprintf(
+                __('%1$s: %2$s'),
+                Document::getTypeName(1),
+                __('Web link')
+            ),
+            'document.name'           => sprintf(
+                __('%1$s: %2$s'),
+                Document::getTypeName(1),
+                __('Name')
+            ),
+            'projecttask.urldocument' => sprintf(
+                __('%1$s: %2$s'),
+                Document::getTypeName(Session::getPluralNumber()),
+                __('URL')
+            ),
+            'projecttask.entity'      => sprintf(
+                __('%1$s (%2$s)'),
+                Entity::getTypeName(1),
+                __('Complete name')
+            ),
+            'projecttask.shortentity' => sprintf(
+                __('%1$s (%2$s)'),
+                Entity::getTypeName(1),
+                __('Name')
+            ),
+            'teammember.name'        => sprintf(
+                __('%1$s: %2$s'),
+                _n('Team member', 'Team members', 1),
+                __('Name')
+            ),
+            'teammember.itemtype'    => sprintf(
+                __('%1$s: %2$s'),
+                _n('Team member', 'Team members', 1),
+                _n('Type', 'Types', 1)
+            )
+        ];
 
         foreach ($tags as $tag => $label) {
             $this->addTagToList(['tag'   => $tag,
-                                   'label' => $label,
-                                   'value' => true,
-                                   'lang'  => false]);
+                'label' => $label,
+                'value' => true,
+                'lang'  => false
+            ]);
         }
 
        //Tags with just lang
         $tags = ['projecttask.entity'   => Entity::getTypeName(1),
-                    'projecttask.log'      => __('Historical'),
-                    'projecttask.tasks'    => _n('Task', 'Tasks', Session::getPluralNumber()),
-                    'projecttask.team'     => ProjectTeam::getTypeName(1),
-                    'projecttask.tickets'  => _n('Ticket', 'Tickets', Session::getPluralNumber())];
+            'projecttask.log'      => __('Historical'),
+            'projecttask.tasks'    => _n('Task', 'Tasks', Session::getPluralNumber()),
+            'projecttask.team'     => ProjectTeam::getTypeName(1),
+            'projecttask.tickets'  => _n('Ticket', 'Tickets', Session::getPluralNumber())
+        ];
 
         foreach ($tags as $tag => $label) {
             $this->addTagToList(['tag'   => $tag,
-                                   'label' => $label,
-                                   'value' => false,
-                                   'lang'  => true]);
+                'label' => $label,
+                'value' => false,
+                'lang'  => true
+            ]);
         }
 
        //Foreach global tags
         $tags = ['log'         => __('Historical'),
-                    'tasks'       => _n('Task', 'Tasks', Session::getPluralNumber()),
-                    'tickets'     => _n('Ticket', 'Tickets', Session::getPluralNumber()),
-                    'teammembers' => _n('Team member', 'Team members', Session::getPluralNumber())];
+            'tasks'       => _n('Task', 'Tasks', Session::getPluralNumber()),
+            'tickets'     => _n('Ticket', 'Tickets', Session::getPluralNumber()),
+            'teammembers' => _n('Team member', 'Team members', Session::getPluralNumber())
+        ];
 
         foreach ($tags as $tag => $label) {
             $this->addTagToList(['tag'     => $tag,
-                                   'label'   => $label,
-                                   'value'   => false,
-                                   'foreach' => true]);
+                'label'   => $label,
+                'value'   => false,
+                'foreach' => true
+            ]);
         }
         asort($this->tag_descriptions);
     }

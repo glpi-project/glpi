@@ -50,23 +50,28 @@ class DeviceControl extends CommonDevice
         return array_merge(
             parent::getAdditionalFields(),
             [['name'  => 'is_raid',
-                                     'label' => __('RAID'),
-                                     'type'  => 'bool'],
-                               ['name'  => 'interfacetypes_id',
-                                     'label' => __('Interface'),
-                                     'type'  => 'dropdownValue'],
-                               ['name'  => 'devicecontrolmodels_id',
-                                     'label' => _n('Model', 'Models', 1),
-                                     'type'  => 'dropdownValue'],
-                               ['name'  => 'none',
-                                     'label' => RegisteredID::getTypeName(Session::getPluralNumber()) .
+                'label' => __('RAID'),
+                'type'  => 'bool'
+            ],
+                ['name'  => 'interfacetypes_id',
+                    'label' => __('Interface'),
+                    'type'  => 'dropdownValue'
+                ],
+                ['name'  => 'devicecontrolmodels_id',
+                    'label' => _n('Model', 'Models', 1),
+                    'type'  => 'dropdownValue'
+                ],
+                ['name'  => 'none',
+                    'label' => RegisteredID::getTypeName(Session::getPluralNumber()) .
                                         RegisteredID::showAddChildButtonForItemForm(
                                             $this,
                                             '_registeredID',
                                             null,
                                             false
                                         ),
-            'type'  => 'registeredIDChooser']]
+                    'type'  => 'registeredIDChooser'
+                ]
+            ]
         );
     }
 
@@ -76,27 +81,27 @@ class DeviceControl extends CommonDevice
         $tab = parent::rawSearchOptions();
 
         $tab[] = [
-         'id'                 => '12',
-         'table'              => $this->getTable(),
-         'field'              => 'is_raid',
-         'name'               => __('RAID'),
-         'datatype'           => 'bool'
+            'id'                 => '12',
+            'table'              => $this->getTable(),
+            'field'              => 'is_raid',
+            'name'               => __('RAID'),
+            'datatype'           => 'bool'
         ];
 
         $tab[] = [
-         'id'                 => '14',
-         'table'              => 'glpi_interfacetypes',
-         'field'              => 'name',
-         'name'               => __('Interface'),
-         'datatype'           => 'dropdown'
+            'id'                 => '14',
+            'table'              => 'glpi_interfacetypes',
+            'field'              => 'name',
+            'name'               => __('Interface'),
+            'datatype'           => 'dropdown'
         ];
 
         $tab[] = [
-         'id'                 => '15',
-         'table'              => 'glpi_devicecontrolmodels',
-         'field'              => 'name',
-         'name'               => _n('Model', 'Models', 1),
-         'datatype'           => 'dropdown'
+            'id'                 => '15',
+            'table'              => 'glpi_devicecontrolmodels',
+            'field'              => 'name',
+            'name'               => _n('Model', 'Models', 1),
+            'datatype'           => 'dropdown'
         ];
 
         return $tab;

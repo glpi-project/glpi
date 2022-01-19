@@ -72,10 +72,10 @@ class Computer_SoftwareLicense implements DeprecatedInterface
     public function mapDeprecatedToCurrentCriteria(array $criteria): array
     {
         $criteria[] = [
-         "link"       => 'AND',
-         "field"      => "6",
-         "searchtype" => 'equals',
-         "value"      => "Computer"
+            "link"       => 'AND',
+            "field"      => "6",
+            "searchtype" => 'equals',
+            "value"      => "Computer"
         ];
 
         return $criteria;
@@ -87,17 +87,17 @@ class Computer_SoftwareLicense implements DeprecatedInterface
          ->updateSearchOptionsUids($soptions)
          ->updateSearchOptionsTables($soptions)
          ->alterSearchOption($soptions, "5", [
-            'name'                  => "Computer",
-            'table'                 => "glpi_computers",
-            'field'                 => "name",
-            'datatype'              => "dropdown",
-            'uid'                   => "Computer_SoftwareLicense.Computer.name",
-            'available_searchtypes' => [
-               "contains",
-               "notcontains",
-               "equals",
-               "notequals"
-            ],
+             'name'                  => "Computer",
+             'table'                 => "glpi_computers",
+             'field'                 => "name",
+             'datatype'              => "dropdown",
+             'uid'                   => "Computer_SoftwareLicense.Computer.name",
+             'available_searchtypes' => [
+                 "contains",
+                 "notcontains",
+                 "equals",
+                 "notequals"
+             ],
          ])
          ->deleteSearchOption($soptions, "6");
 

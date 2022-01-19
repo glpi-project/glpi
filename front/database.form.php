@@ -117,8 +117,8 @@ if (isset($_POST["add"])) {
 } else {
     Html::header(Database::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "management", "database");
     $options = [
-      'id'           => $_GET['id'],
-      'databaseinstances_id' => $_GET['databaseinstances_id']
+        'id'           => $_GET['id'],
+        'databaseinstances_id' => $_GET['databaseinstances_id']
     ];
     $database->display($options);
     Html::footer();

@@ -107,11 +107,11 @@ if (array_key_exists('purge', $_POST) || array_key_exists('delete', $_POST)) {
 
     $link->display(
         [
-         'id'          => $id,
-         'formoptions' => 'data-track-changes=true',
+            'id'          => $id,
+            'formoptions' => 'data-track-changes=true',
 
-         'itemtype'    => $itemtype,
-         'items_id'    => $items_id
+            'itemtype'    => $itemtype,
+            'items_id'    => $items_id
         ]
     );
 

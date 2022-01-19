@@ -77,10 +77,10 @@ function update910to911()
             $DB->insertOrDie(
                 "glpi_profilerights",
                 [
-                'id'           => null,
-                'profiles_id'  => $profrights['profiles_id'],
-                'name'         => "license",
-                'rights'       => $profrights['rights']
+                    'id'           => null,
+                    'profiles_id'  => $profrights['profiles_id'],
+                    'name'         => "license",
+                    'rights'       => $profrights['rights']
                 ],
                 "9.1 add right for softwarelicense"
             );

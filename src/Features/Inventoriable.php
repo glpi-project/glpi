@@ -238,14 +238,14 @@ JAVASCRIPT;
 
         $agent = new Agent();
         $iterator = $DB->request([
-         'SELECT'    => ['id'],
-         'FROM'      => Agent::getTable(),
-         'WHERE'     => [
-            'itemtype' => $this->getType(),
-            'items_id' => $this->fields['id']
-         ],
-         'ORDERBY'   => ['last_contact DESC'],
-         'LIMIT'     => 1
+            'SELECT'    => ['id'],
+            'FROM'      => Agent::getTable(),
+            'WHERE'     => [
+                'itemtype' => $this->getType(),
+                'items_id' => $this->fields['id']
+            ],
+            'ORDERBY'   => ['last_contact DESC'],
+            'LIMIT'     => 1
         ]);
 
         $has_agent = false;
@@ -258,8 +258,8 @@ JAVASCRIPT;
         if (!$has_agent && $this instanceof DatabaseInstance) {
             if (!empty($this->fields['itemtype'] && !empty($this->fields['items_id']))) {
                 $has_agent = $agent->getFromDBByCrit([
-                'itemtype' => $this->fields['itemtype'],
-                'items_id' => $this->fields['items_id']
+                    'itemtype' => $this->fields['itemtype'],
+                    'items_id' => $this->fields['items_id']
                 ]);
             }
         }
@@ -268,13 +268,13 @@ JAVASCRIPT;
         if (!$has_agent && $this instanceof Computer) {
             $citem = new Computer_Item();
             $has_relation = $citem->getFromDBByCrit([
-            'itemtype' => $this->getType(),
-            'items_id' => $this->fields['id']
+                'itemtype' => $this->getType(),
+                'items_id' => $this->fields['id']
             ]);
             if ($has_relation) {
                 $has_agent = $agent->getFromDBByCrit([
-                 'itemtype' => Computer::getType(),
-                 'items_id' => $citem->fields['computers_id']
+                    'itemtype' => Computer::getType(),
+                    'items_id' => $citem->fields['computers_id']
                 ]);
             }
         }

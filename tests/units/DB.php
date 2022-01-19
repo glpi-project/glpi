@@ -73,14 +73,14 @@ class DB extends \GLPITestCase
     protected function dataName()
     {
         return [
-         ['field', '`field`'],
-         ['`field`', '`field`'],
-         ['*', '*'],
-         ['table.field', '`table`.`field`'],
-         ['table.*', '`table`.*'],
-         ['field AS f', '`field` AS `f`'],
-         ['field as f', '`field` AS `f`'],
-         ['table.field as f', '`table`.`field` AS `f`'],
+            ['field', '`field`'],
+            ['`field`', '`field`'],
+            ['*', '*'],
+            ['table.field', '`table`.`field`'],
+            ['table.*', '`table`.*'],
+            ['field AS f', '`field` AS `f`'],
+            ['field as f', '`field` AS `f`'],
+            ['table.field as f', '`table`.`field` AS `f`'],
         ];
     }
 
@@ -95,17 +95,17 @@ class DB extends \GLPITestCase
     protected function dataValue()
     {
         return [
-         ['foo', "'foo'"],
-         ['bar', "'bar'"],
-         ['42', "'42'"],
-         ['+33', "'+33'"],
-         [null, 'NULL'],
-         ['null', 'NULL'],
-         ['NULL', 'NULL'],
-         [new \QueryExpression('`field`'), '`field`'],
-         ['`field', "'`field'"],
-         [false, "'0'"],
-         [true, "'1'"],
+            ['foo', "'foo'"],
+            ['bar', "'bar'"],
+            ['42', "'42'"],
+            ['+33', "'+33'"],
+            [null, 'NULL'],
+            ['null', 'NULL'],
+            ['NULL', 'NULL'],
+            [new \QueryExpression('`field`'), '`field`'],
+            ['`field', "'`field'"],
+            [false, "'0'"],
+            [true, "'1'"],
         ];
     }
 
@@ -121,31 +121,31 @@ class DB extends \GLPITestCase
     protected function dataInsert()
     {
         return [
-         [
-            'table', [
-               'field'  => 'value',
-               'other'  => 'doe'
-            ],
-            'INSERT INTO `table` (`field`, `other`) VALUES (\'value\', \'doe\')'
-         ], [
-            '`table`', [
-               '`field`'  => 'value',
-               '`other`'  => 'doe'
-            ],
-            'INSERT INTO `table` (`field`, `other`) VALUES (\'value\', \'doe\')'
-         ], [
-            'table', [
-               'field'  => new \QueryParam(),
-               'other'  => new \QueryParam()
-            ],
-            'INSERT INTO `table` (`field`, `other`) VALUES (?, ?)'
-         ], [
-            'table', [
-               'field'  => new \QueryParam('field'),
-               'other'  => new \QueryParam('other')
-            ],
-            'INSERT INTO `table` (`field`, `other`) VALUES (:field, :other)'
-         ]
+            [
+                'table', [
+                    'field'  => 'value',
+                    'other'  => 'doe'
+                ],
+                'INSERT INTO `table` (`field`, `other`) VALUES (\'value\', \'doe\')'
+            ], [
+                '`table`', [
+                    '`field`'  => 'value',
+                    '`other`'  => 'doe'
+                ],
+                'INSERT INTO `table` (`field`, `other`) VALUES (\'value\', \'doe\')'
+            ], [
+                'table', [
+                    'field'  => new \QueryParam(),
+                    'other'  => new \QueryParam()
+                ],
+                'INSERT INTO `table` (`field`, `other`) VALUES (?, ?)'
+            ], [
+                'table', [
+                    'field'  => new \QueryParam('field'),
+                    'other'  => new \QueryParam('other')
+                ],
+                'INSERT INTO `table` (`field`, `other`) VALUES (:field, :other)'
+            ]
         ];
     }
 
@@ -163,90 +163,90 @@ class DB extends \GLPITestCase
     protected function dataUpdate()
     {
         return [
-         [
-            'table', [
-               'field'  => 'value',
-               'other'  => 'doe'
-            ], [
-               'id'  => 1
-            ],
-            [],
-            'UPDATE `table` SET `field` = \'value\', `other` = \'doe\' WHERE `id` = \'1\''
-         ], [
-            'table', [
-               'field'  => 'value'
-            ], [
-               'id'  => [1, 2]
-            ],
-            [],
-            'UPDATE `table` SET `field` = \'value\' WHERE `id` IN (\'1\', \'2\')'
-         ], [
-            'table', [
-               'field'  => 'value'
-            ], [
-               'NOT'  => ['id' => [1, 2]]
-            ],
-            [],
-            'UPDATE `table` SET `field` = \'value\' WHERE  NOT (`id` IN (\'1\', \'2\'))'
-         ], [
-            'table', [
-               'field'  => new \QueryParam()
-            ], [
-               'NOT' => ['id' => [new \QueryParam(), new \QueryParam()]]
-            ],
-            [],
-            'UPDATE `table` SET `field` = ? WHERE  NOT (`id` IN (?, ?))'
-         ], [
-            'table', [
-               'field'  => new \QueryParam('field')
-            ], [
-               'NOT' => ['id' => [new \QueryParam('idone'), new \QueryParam('idtwo')]]
-            ],
-            [],
-            'UPDATE `table` SET `field` = :field WHERE  NOT (`id` IN (:idone, :idtwo))'
-         ], [
-            'table', [
-               'field'  => new \QueryExpression(\DB::quoteName('field') . ' + 1')
-            ], [
-               'id'  => [1, 2]
-            ],
-            [],
-            'UPDATE `table` SET `field` = `field` + 1 WHERE `id` IN (\'1\', \'2\')'
-         ], [
-            'table', [
-               'field'  => new \QueryExpression(\DB::quoteName('field') . ' + 1')
-            ], [
-               'id'  => [1, 2]
-            ],
-            [],
-            'UPDATE `table` SET `field` = `field` + 1 WHERE `id` IN (\'1\', \'2\')'
-         ], [
-            'table', [
-               'field'  => 'value'
-            ], [
-               'id'  => [1, 2]
-            ],
             [
-               'LEFT JOIN' => [
-                  'another_table' => [
-                     'ON' => [
-                        'table'         => 'foreign_id',
-                        'another_table' => 'id'
-                     ]
-                  ],
-                  'table_3' => [
-                     'ON' => [
-                        'another_table' => 'some_id',
-                        'table_3'       => 'id'
-                     ]
-                  ]
-               ]
-            ],
-            'UPDATE `table`'
-            . ' LEFT JOIN `another_table` ON (`table`.`foreign_id` = `another_table`.`id`)'
-            . ' LEFT JOIN `table_3` ON (`another_table`.`some_id` = `table_3`.`id`)'
-            . ' SET `field` = \'value\' WHERE `id` IN (\'1\', \'2\')'
-         ]
+                'table', [
+                    'field'  => 'value',
+                    'other'  => 'doe'
+                ], [
+                    'id'  => 1
+                ],
+                [],
+                'UPDATE `table` SET `field` = \'value\', `other` = \'doe\' WHERE `id` = \'1\''
+            ], [
+                'table', [
+                    'field'  => 'value'
+                ], [
+                    'id'  => [1, 2]
+                ],
+                [],
+                'UPDATE `table` SET `field` = \'value\' WHERE `id` IN (\'1\', \'2\')'
+            ], [
+                'table', [
+                    'field'  => 'value'
+                ], [
+                    'NOT'  => ['id' => [1, 2]]
+                ],
+                [],
+                'UPDATE `table` SET `field` = \'value\' WHERE  NOT (`id` IN (\'1\', \'2\'))'
+            ], [
+                'table', [
+                    'field'  => new \QueryParam()
+                ], [
+                    'NOT' => ['id' => [new \QueryParam(), new \QueryParam()]]
+                ],
+                [],
+                'UPDATE `table` SET `field` = ? WHERE  NOT (`id` IN (?, ?))'
+            ], [
+                'table', [
+                    'field'  => new \QueryParam('field')
+                ], [
+                    'NOT' => ['id' => [new \QueryParam('idone'), new \QueryParam('idtwo')]]
+                ],
+                [],
+                'UPDATE `table` SET `field` = :field WHERE  NOT (`id` IN (:idone, :idtwo))'
+            ], [
+                'table', [
+                    'field'  => new \QueryExpression(\DB::quoteName('field') . ' + 1')
+                ], [
+                    'id'  => [1, 2]
+                ],
+                [],
+                'UPDATE `table` SET `field` = `field` + 1 WHERE `id` IN (\'1\', \'2\')'
+            ], [
+                'table', [
+                    'field'  => new \QueryExpression(\DB::quoteName('field') . ' + 1')
+                ], [
+                    'id'  => [1, 2]
+                ],
+                [],
+                'UPDATE `table` SET `field` = `field` + 1 WHERE `id` IN (\'1\', \'2\')'
+            ], [
+                'table', [
+                    'field'  => 'value'
+                ], [
+                    'id'  => [1, 2]
+                ],
+                [
+                    'LEFT JOIN' => [
+                        'another_table' => [
+                            'ON' => [
+                                'table'         => 'foreign_id',
+                                'another_table' => 'id'
+                            ]
+                        ],
+                        'table_3' => [
+                            'ON' => [
+                                'another_table' => 'some_id',
+                                'table_3'       => 'id'
+                            ]
+                        ]
+                    ]
+                ],
+                'UPDATE `table`'
+                . ' LEFT JOIN `another_table` ON (`table`.`foreign_id` = `another_table`.`id`)'
+                . ' LEFT JOIN `table_3` ON (`another_table`.`some_id` = `table_3`.`id`)'
+                . ' SET `field` = \'value\' WHERE `id` IN (\'1\', \'2\')'
+            ]
         ];
     }
 
@@ -276,61 +276,61 @@ class DB extends \GLPITestCase
     protected function dataDelete()
     {
         return [
-         [
-            'table', [
-               'id'  => 1
-            ],
-            [],
-            'DELETE `table` FROM `table` WHERE `id` = \'1\''
-         ], [
-            'table', [
-               'id'  => [1, 2]
-            ],
-            [],
-            'DELETE `table` FROM `table` WHERE `id` IN (\'1\', \'2\')'
-         ], [
-            'table', [
-               'NOT'  => ['id' => [1, 2]]
-            ],
-            [],
-            'DELETE `table` FROM `table` WHERE  NOT (`id` IN (\'1\', \'2\'))'
-         ], [
-            'table', [
-               'NOT'  => ['id' => [new \QueryParam(), new \QueryParam()]]
-            ],
-            [],
-            'DELETE `table` FROM `table` WHERE  NOT (`id` IN (?, ?))'
-         ], [
-            'table', [
-               'NOT'  => ['id' => [new \QueryParam('idone'), new \QueryParam('idtwo')]]
-            ],
-            [],
-            'DELETE `table` FROM `table` WHERE  NOT (`id` IN (:idone, :idtwo))'
-         ], [
-            'table', [
-               'id'  => 1
-            ],
             [
-               'LEFT JOIN' => [
-                  'another_table' => [
-                     'ON' => [
-                        'table'         => 'foreign_id',
-                        'another_table' => 'id'
-                     ]
-                  ],
-                  'table_3' => [
-                     'ON' => [
-                        'another_table' => 'some_id',
-                        'table_3'       => 'id'
-                     ]
-                  ]
-               ]
+                'table', [
+                    'id'  => 1
+                ],
+                [],
+                'DELETE `table` FROM `table` WHERE `id` = \'1\''
+            ], [
+                'table', [
+                    'id'  => [1, 2]
+                ],
+                [],
+                'DELETE `table` FROM `table` WHERE `id` IN (\'1\', \'2\')'
+            ], [
+                'table', [
+                    'NOT'  => ['id' => [1, 2]]
+                ],
+                [],
+                'DELETE `table` FROM `table` WHERE  NOT (`id` IN (\'1\', \'2\'))'
+            ], [
+                'table', [
+                    'NOT'  => ['id' => [new \QueryParam(), new \QueryParam()]]
+                ],
+                [],
+                'DELETE `table` FROM `table` WHERE  NOT (`id` IN (?, ?))'
+            ], [
+                'table', [
+                    'NOT'  => ['id' => [new \QueryParam('idone'), new \QueryParam('idtwo')]]
+                ],
+                [],
+                'DELETE `table` FROM `table` WHERE  NOT (`id` IN (:idone, :idtwo))'
+            ], [
+                'table', [
+                    'id'  => 1
+                ],
+                [
+                    'LEFT JOIN' => [
+                        'another_table' => [
+                            'ON' => [
+                                'table'         => 'foreign_id',
+                                'another_table' => 'id'
+                            ]
+                        ],
+                        'table_3' => [
+                            'ON' => [
+                                'another_table' => 'some_id',
+                                'table_3'       => 'id'
+                            ]
+                        ]
+                    ]
+                ],
+                'DELETE `table` FROM `table`'
+                . ' LEFT JOIN `another_table` ON (`table`.`foreign_id` = `another_table`.`id`)'
+                . ' LEFT JOIN `table_3` ON (`another_table`.`some_id` = `table_3`.`id`)'
+                . ' WHERE `id` = \'1\''
             ],
-            'DELETE `table` FROM `table`'
-            . ' LEFT JOIN `another_table` ON (`table`.`foreign_id` = `another_table`.`id`)'
-            . ' LEFT JOIN `table_3` ON (`another_table`.`some_id` = `table_3`.`id`)'
-            . ' WHERE `id` = \'1\''
-         ],
         ];
     }
 
@@ -415,15 +415,15 @@ class DB extends \GLPITestCase
     protected function commentsProvider()
     {
         return [
-         [
-            'sql' => "SQL EXPRESSION;
+            [
+                'sql' => "SQL EXPRESSION;
 /* Here begins a
    multiline comment */
 OTHER EXPRESSION;
 ",
-            'expected'  => "SQL EXPRESSION;
+                'expected'  => "SQL EXPRESSION;
 OTHER EXPRESSION;"
-         ]
+            ]
         ];
     }
 
@@ -444,10 +444,10 @@ OTHER EXPRESSION;"
     protected function sqlProvider()
     {
         return array_merge([
-         [
-            'sql'       => "SQL;\n-- comment;\n\nSQL2;",
-            'expected'  => "SQL;\n\nSQL2;"
-         ]
+            [
+                'sql'       => "SQL;\n-- comment;\n\nSQL2;",
+                'expected'  => "SQL;\n\nSQL2;"
+            ]
         ], $this->commentsProvider());
     }
 
@@ -703,14 +703,14 @@ OTHER EXPRESSION;"
         $computer = new \Computer();
         $DB->setSavepoint('save0', false);
         $computers_id_0 = $computer->add([
-         'name'        => 'computer0',
-         'entities_id' => 0
+            'name'        => 'computer0',
+            'entities_id' => 0
         ]);
         $this->integer($computers_id_0)->isGreaterThan(0);
         $DB->setSavepoint('save1', false);
         $computers_id_1 = $computer->add([
-         'name'        => 'computer1',
-         'entities_id' => 0
+            'name'        => 'computer1',
+            'entities_id' => 0
         ]);
         $this->integer($computers_id_1)->isGreaterThan(0);
         $this->boolean($computer->getFromDB($computers_id_1))->isTrue();

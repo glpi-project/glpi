@@ -53,24 +53,24 @@ class Telemetry extends DbTestCase
     {
         $infos = \Telemetry::getTelemetryInfos();
         $this->array($infos)->keys->isEqualTo([
-         'glpi',
-         'system'
+            'glpi',
+            'system'
         ]);
 
         $this->array($infos['glpi'])->keys->isEqualTo([
-         'uuid',
-         'version',
-         'plugins',
-         'default_language',
-         'install_mode',
-         'usage'
+            'uuid',
+            'version',
+            'plugins',
+            'default_language',
+            'install_mode',
+            'usage'
         ]);
 
         $this->array($infos['system'])->keys->isEqualTo([
-         'db',
-         'web_server',
-         'php',
-         'os'
+            'db',
+            'web_server',
+            'php',
+            'os'
         ]);
     }
 }

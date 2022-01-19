@@ -119,12 +119,12 @@ class Html extends \GLPITestCase
         $this->string(\Html::cleanPostForTextArea($origin))->isIdenticalTo($expected);
 
         $aorigin = [
-        $origin,
-        "Another\\none!"
+            $origin,
+            "Another\\none!"
         ];
         $aexpected = [
-         $expected,
-         "Another\none!"
+            $expected,
+            "Another\none!"
         ];
         $this->array(\Html::cleanPostForTextArea($aorigin))->isIdenticalTo($aexpected);
     }
@@ -239,80 +239,80 @@ class Html extends \GLPITestCase
         $this->integer(count($menu))->isIdenticalTo(8);
 
         $expected = [
-         'assets',
-         'helpdesk',
-         'management',
-         'tools',
-         'plugins',
-         'admin',
-         'config',
-         'preference'
+            'assets',
+            'helpdesk',
+            'management',
+            'tools',
+            'plugins',
+            'admin',
+            'config',
+            'preference'
         ];
         $this->array($menu)
          ->hasSize(count($expected))
          ->hasKeys($expected);
 
         $expected = [
-         'Computer',
-         'Monitor',
-         'Software',
-         'NetworkEquipment',
-         'Peripheral',
-         'Printer',
-         'CartridgeItem',
-         'ConsumableItem',
-         'Phone',
-         'Rack',
-         'Enclosure',
-         'PDU',
-         'PassiveDCEquipment',
-         'Unmanaged',
-         'Cable',
-         'Item_DeviceSimcard'
+            'Computer',
+            'Monitor',
+            'Software',
+            'NetworkEquipment',
+            'Peripheral',
+            'Printer',
+            'CartridgeItem',
+            'ConsumableItem',
+            'Phone',
+            'Rack',
+            'Enclosure',
+            'PDU',
+            'PassiveDCEquipment',
+            'Unmanaged',
+            'Cable',
+            'Item_DeviceSimcard'
         ];
         $this->string($menu['assets']['title'])->isIdenticalTo('Assets');
         $this->array($menu['assets']['types'])->isIdenticalTo($expected);
 
         $expected = [
-         'Ticket',
-         'Problem',
-         'Change',
-         'Planning',
-         'Stat',
-         'TicketRecurrent',
-         'RecurrentChange',
+            'Ticket',
+            'Problem',
+            'Change',
+            'Planning',
+            'Stat',
+            'TicketRecurrent',
+            'RecurrentChange',
         ];
         $this->string($menu['helpdesk']['title'])->isIdenticalTo('Assistance');
         $this->array($menu['helpdesk']['types'])->isIdenticalTo($expected);
 
         $expected = [
-         'SoftwareLicense',
-         'Budget',
-         'Supplier',
-         'Contact',
-         'Contract',
-         'Document',
-         'Line',
-         'Certificate',
-         'Datacenter',
-         'Cluster',
-         'Domain',
-         'Appliance',
-         'Database'
+            'SoftwareLicense',
+            'Budget',
+            'Supplier',
+            'Contact',
+            'Contract',
+            'Document',
+            'Line',
+            'Certificate',
+            'Datacenter',
+            'Cluster',
+            'Domain',
+            'Appliance',
+            'Database'
         ];
         $this->string($menu['management']['title'])->isIdenticalTo('Management');
         $this->array($menu['management']['types'])->isIdenticalTo($expected);
 
         $expected = [
-         'Project',
-         'Reminder',
-         'RSSFeed',
-         'KnowbaseItem',
-         'ReservationItem',
-         'Report',
-         'MigrationCleaner',
-         'SavedSearch',
-         'Impact'
+            'Project',
+            'Reminder',
+            'RSSFeed',
+            'KnowbaseItem',
+            'ReservationItem',
+            'Report',
+            'MigrationCleaner',
+            'SavedSearch',
+            'Impact'
         ];
         $this->string($menu['tools']['title'])->isIdenticalTo('Tools');
         $this->array($menu['tools']['types'])->isIdenticalTo($expected);
@@ -322,30 +322,30 @@ class Html extends \GLPITestCase
         $this->array($menu['plugins']['types'])->isIdenticalTo($expected);
 
         $expected = [
-         'User',
-         'Group',
-         'Entity',
-         'Rule',
-         'Profile',
-         'QueuedNotification',
-         'Glpi\\Event',
-         'Glpi\Inventory\Inventory'
+            'User',
+            'Group',
+            'Entity',
+            'Rule',
+            'Profile',
+            'QueuedNotification',
+            'Glpi\\Event',
+            'Glpi\Inventory\Inventory'
         ];
         $this->string($menu['admin']['title'])->isIdenticalTo('Administration');
         $this->array($menu['admin']['types'])->isIdenticalTo($expected);
 
         $expected = [
-         'CommonDropdown',
-         'CommonDevice',
-         'Notification',
-         'SLM',
-         'Config',
-         'FieldUnicity',
-         'CronTask',
-         'Auth',
-         'MailCollector',
-         'Link',
-         'Plugin'
+            'CommonDropdown',
+            'CommonDevice',
+            'Notification',
+            'SLM',
+            'Config',
+            'FieldUnicity',
+            'CronTask',
+            'Auth',
+            'MailCollector',
+            'Link',
+            'Plugin'
         ];
         $this->string($menu['config']['title'])->isIdenticalTo('Setup');
         $this->array($menu['config']['types'])->isIdenticalTo($expected);
@@ -374,10 +374,10 @@ class Html extends \GLPITestCase
 
        //fake files
         $fake_files = [
-         'file.css',
-         'file.min.css',
-         'other.css',
-         'other-min.css'
+            'file.css',
+            'file.min.css',
+            'other.css',
+            'other-min.css'
         ];
         $dir = str_replace(realpath(GLPI_ROOT), '', realpath(GLPI_TMP_DIR));
         $base_expected = '<link rel="stylesheet" type="text/css" href="' .
@@ -484,10 +484,10 @@ class Html extends \GLPITestCase
 
        //fake files
         $fake_files = [
-         'file.js',
-         'file.min.js',
-         'other.js',
-         'other-min.js'
+            'file.js',
+            'file.min.js',
+            'other.js',
+            'other-min.js'
         ];
         $dir = str_replace(realpath(GLPI_ROOT), '', realpath(GLPI_TMP_DIR));
         $base_expected = '<script type="text/javascript" src="' .
@@ -698,8 +698,8 @@ class Html extends \GLPITestCase
     public function testDisplayMessageAfterRedirect()
     {
         $_SESSION['MESSAGE_AFTER_REDIRECT'] = [
-         ERROR    => ['Something went really wrong :('],
-         WARNING  => ['Oooops, I did it again!']
+            ERROR    => ['Something went really wrong :('],
+            WARNING  => ['Oooops, I did it again!']
         ];
 
         $this->output(
@@ -778,8 +778,8 @@ class Html extends \GLPITestCase
         $this->string(\Html::image($path))->isIdenticalTo($expected);
 
         $options = [
-         'title'  => 'My title',
-         'alt'    => 'no img text'
+            'title'  => 'My title',
+            'alt'    => 'no img text'
         ];
         $expected = '<img src="/path/to/image.png" title="My title" alt="no img text"  />';
         $this->string(\Html::image($path, $options))->isIdenticalTo($expected);
@@ -798,7 +798,7 @@ class Html extends \GLPITestCase
         $this->string(\Html::link($text, $url))->isIdenticalTo($expected);
 
         $options = [
-         'confirm'   => 'U sure?'
+            'confirm'   => 'U sure?'
         ];
         $expected = '<a href="mylink.php" onclick="if (window.confirm(&apos;U sure?&apos;)){ ;return true;} else { return false;}">My link</a>';
         $this->string(\Html::link($text, $url, $options))->isIdenticalTo($expected);
@@ -819,19 +819,19 @@ class Html extends \GLPITestCase
         $this->string(\Html::hidden($name, $options))->isIdenticalTo($expected);
 
         $options = [
-         'value'  => [
-            'a value',
-            'another one'
-         ]
+            'value'  => [
+                'a value',
+                'another one'
+            ]
         ];
         $expected = "<input type=\"hidden\" name=\"hiddenfield[0]\" value=\"a value\" />\n<input type=\"hidden\" name=\"hiddenfield[1]\" value=\"another one\" />\n";
         $this->string(\Html::hidden($name, $options))->isIdenticalTo($expected);
 
         $options = [
-         'value'  => [
-            'one' => 'a value',
-            'two' => 'another one'
-         ]
+            'value'  => [
+                'one' => 'a value',
+                'two' => 'another one'
+            ]
         ];
         $expected = "<input type=\"hidden\" name=\"hiddenfield[one]\" value=\"a value\" />\n<input type=\"hidden\" name=\"hiddenfield[two]\" value=\"another one\" />\n";
         $this->string(\Html::hidden($name, $options))->isIdenticalTo($expected);
@@ -844,17 +844,17 @@ class Html extends \GLPITestCase
         $this->string(\Html::input($name))->isIdenticalTo($expected);
 
         $options = [
-         'value'     => 'myval',
-         'class'     => 'a_class',
-         'data-id'   => 12
+            'value'     => 'myval',
+            'class'     => 'a_class',
+            'data-id'   => 12
         ];
         $expected = '<input type="text" name="in_put" value="myval" class="a_class" data-id="12" />';
         $this->string(\Html::input($name, $options))->isIdenticalTo($expected);
 
         $options = [
-         'type'      => 'number',
-         'min'       => '10',
-         'value'     => 'myval',
+            'type'      => 'number',
+            'min'       => '10',
+            'value'     => 'myval',
         ];
         $expected = '<input type="number" name="in_put" min="10" value="myval" class="form-control" />';
         $this->string(\Html::input($name, $options))->isIdenticalTo($expected);
@@ -863,14 +863,18 @@ class Html extends \GLPITestCase
     public function providerGetBackUrl()
     {
         return [
-         ["http://localhost/glpi/front/change.form.php?id=1&forcetab=Change$2",
-          "http://localhost/glpi/front/change.form.php?id=1"],
-         ["http://localhost/glpi/front/change.form.php?id=1",
-          "http://localhost/glpi/front/change.form.php?id=1"],
-         ["https://test/test/test.php?param1=1&param2=2&param3=3",
-          "https://test/test/test.php?param1=1&param2=2&param3=3"],
-         ["&forcetab=test",
-          ""],
+            ["http://localhost/glpi/front/change.form.php?id=1&forcetab=Change$2",
+                "http://localhost/glpi/front/change.form.php?id=1"
+            ],
+            ["http://localhost/glpi/front/change.form.php?id=1",
+                "http://localhost/glpi/front/change.form.php?id=1"
+            ],
+            ["https://test/test/test.php?param1=1&param2=2&param3=3",
+                "https://test/test/test.php?param1=1&param2=2&param3=3"
+            ],
+            ["&forcetab=test",
+                ""
+            ],
         ];
     }
 
@@ -886,8 +890,8 @@ class Html extends \GLPITestCase
     {
 
         $structure = [
-         'css' => [
-            'all.scss' => <<<SCSS
+            'css' => [
+                'all.scss' => <<<SCSS
 body {
    font-size: 12px;
 }
@@ -896,35 +900,35 @@ body {
 SCSS
             ,
 
-            'another.scss' => <<<SCSS
+                'another.scss' => <<<SCSS
 form input {
    background: grey;
 }
 SCSS
             ,
 
-            'imports' => [
-               'borders.scss' => <<<SCSS
+                'imports' => [
+                    'borders.scss' => <<<SCSS
 .big-border {
    border: 5px dashed black;
 }
 SCSS
                ,
-               'colors.scss' => <<<SCSS
+                    'colors.scss' => <<<SCSS
 .red {
    color:red;
 }
 SCSS
+                ],
             ],
-         ],
         ];
         vfsStream::setup('glpi', null, $structure);
 
         $files_md5 = [
-         'all.scss'             => md5_file(vfsStream::url('glpi/css/all.scss')),
-         'another.scss'         => md5_file(vfsStream::url('glpi/css/another.scss')),
-         'imports/borders.scss' => md5_file(vfsStream::url('glpi/css/imports/borders.scss')),
-         'imports/colors.scss'  => md5_file(vfsStream::url('glpi/css/imports/colors.scss')),
+            'all.scss'             => md5_file(vfsStream::url('glpi/css/all.scss')),
+            'another.scss'         => md5_file(vfsStream::url('glpi/css/another.scss')),
+            'imports/borders.scss' => md5_file(vfsStream::url('glpi/css/imports/borders.scss')),
+            'imports/colors.scss'  => md5_file(vfsStream::url('glpi/css/imports/colors.scss')),
         ];
 
        // Composite scss file hash corresponds to self md5 suffixed by all imported scss md5
@@ -940,80 +944,80 @@ SCSS
     protected function testGetGenericDateTimeSearchItemsProvider(): array
     {
         return [
-         [
-            'options' => [
-               'with_time'          => true,
-               'with_future'        => false,
-               'with_days'          => false,
-               'with_specific_date' => false,
+            [
+                'options' => [
+                    'with_time'          => true,
+                    'with_future'        => false,
+                    'with_days'          => false,
+                    'with_specific_date' => false,
+                ],
+                'check_values' => [
+                    'NOW'       => "Now",
+                    '-4HOUR'    => "- 4 hours",
+                    '-14MINUTE' => "- 14 minutes",
+                ],
+                'unwanted' => ['0', '4DAY', 'LASTMONDAY'],
             ],
-            'check_values' => [
-               'NOW'       => "Now",
-               '-4HOUR'    => "- 4 hours",
-               '-14MINUTE' => "- 14 minutes",
+            [
+                'options' => [
+                    'with_time'          => true,
+                    'with_future'        => true,
+                    'with_days'          => false,
+                    'with_specific_date' => false,
+                ],
+                'check_values' => [
+                    'NOW'       => "Now",
+                    '-4HOUR'    => "- 4 hours",
+                    '-14MINUTE' => "- 14 minutes",
+                    '5DAY'      => "+ 5 days",
+                    '11HOUR'    => "+ 11 hours",
+                ],
+                'unwanted' => ['0', 'LASTMONDAY'],
             ],
-            'unwanted' => ['0', '4DAY', 'LASTMONDAY'],
-         ],
-         [
-            'options' => [
-               'with_time'          => true,
-               'with_future'        => true,
-               'with_days'          => false,
-               'with_specific_date' => false,
+            [
+                'options' => [
+                    'with_time'          => false,
+                    'with_future'        => true,
+                    'with_days'          => false,
+                    'with_specific_date' => false,
+                ],
+                'check_values' => [
+                    'NOW'       => "Today",
+                    '4DAY'      => "+ 4 days",
+                    '-3DAY'      => "- 3 days",
+                ],
+                'unwanted' => ['0', 'LASTMONDAY', '-3MINUTE'],
             ],
-            'check_values' => [
-               'NOW'       => "Now",
-               '-4HOUR'    => "- 4 hours",
-               '-14MINUTE' => "- 14 minutes",
-               '5DAY'      => "+ 5 days",
-               '11HOUR'    => "+ 11 hours",
+            [
+                'options' => [
+                    'with_time'          => true,
+                    'with_future'        => false,
+                    'with_days'          => true,
+                    'with_specific_date' => false,
+                ],
+                'check_values' => [
+                    'NOW'        => "Now",
+                    'TODAY'      => "Today",
+                    '-4HOUR'     => "- 4 hours",
+                    '-14MINUTE'  => "- 14 minutes",
+                    'LASTMONDAY' => "last Monday",
+                    'BEGINMONTH' => "Beginning of the month",
+                    'BEGINYEAR'  => "Beginning of the year",
+                ],
+                'unwanted' => ['0', '+2DAY',],
             ],
-            'unwanted' => ['0', 'LASTMONDAY'],
-         ],
-         [
-            'options' => [
-               'with_time'          => false,
-               'with_future'        => true,
-               'with_days'          => false,
-               'with_specific_date' => false,
+            [
+                'options' => [
+                    'with_time'          => false,
+                    'with_future'        => false,
+                    'with_days'          => false,
+                    'with_specific_date' => true,
+                ],
+                'check_values' => [
+                    '0' => "Specify a date",
+                ],
+                'unwanted' => ['+2DAY', 'LASTMONDAY', '-3MINUTE'],
             ],
-            'check_values' => [
-               'NOW'       => "Today",
-               '4DAY'      => "+ 4 days",
-               '-3DAY'      => "- 3 days",
-            ],
-            'unwanted' => ['0', 'LASTMONDAY', '-3MINUTE'],
-         ],
-         [
-            'options' => [
-               'with_time'          => true,
-               'with_future'        => false,
-               'with_days'          => true,
-               'with_specific_date' => false,
-            ],
-            'check_values' => [
-               'NOW'        => "Now",
-               'TODAY'      => "Today",
-               '-4HOUR'     => "- 4 hours",
-               '-14MINUTE'  => "- 14 minutes",
-               'LASTMONDAY' => "last Monday",
-               'BEGINMONTH' => "Beginning of the month",
-               'BEGINYEAR'  => "Beginning of the year",
-            ],
-            'unwanted' => ['0', '+2DAY',],
-         ],
-         [
-            'options' => [
-               'with_time'          => false,
-               'with_future'        => false,
-               'with_days'          => false,
-               'with_specific_date' => true,
-            ],
-            'check_values' => [
-               '0' => "Specify a date",
-            ],
-            'unwanted' => ['+2DAY', 'LASTMONDAY', '-3MINUTE'],
-         ],
         ];
     }
 

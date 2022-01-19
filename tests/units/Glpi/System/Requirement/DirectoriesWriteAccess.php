@@ -47,8 +47,8 @@ class DirectoriesWriteAccess extends \GLPITestCase
             'root',
             null,
             [
-            'a' => [],
-            'b' => [],
+                'a' => [],
+                'b' => [],
             ]
         );
         $path_a = vfsStream::url('root/a');
@@ -59,8 +59,8 @@ class DirectoriesWriteAccess extends \GLPITestCase
         $this->array($this->testedInstance->getValidationMessages())
          ->isEqualTo(
              [
-               'Write access to ' . $path_a . ' has been validated.',
-               'Write access to ' . $path_b . ' has been validated.',
+                 'Write access to ' . $path_a . ' has been validated.',
+                 'Write access to ' . $path_b . ' has been validated.',
              ]
          );
     }
@@ -72,8 +72,8 @@ class DirectoriesWriteAccess extends \GLPITestCase
             'root',
             null,
             [
-            'writable' => [],
-            'not_writable' => [],
+                'writable' => [],
+                'not_writable' => [],
             ]
         );
         $structure->getChild('not_writable')->chmod(0444);
@@ -87,9 +87,9 @@ class DirectoriesWriteAccess extends \GLPITestCase
         $this->array($this->testedInstance->getValidationMessages())
          ->isEqualTo(
              [
-               'Write access to ' . $writable_path . ' has been validated.',
-               'The directory could not be created in ' . $not_writable_path . '.',
-               'The directory could not be created in ' . $invalid_path . '.',
+                 'Write access to ' . $writable_path . ' has been validated.',
+                 'The directory could not be created in ' . $not_writable_path . '.',
+                 'The directory could not be created in ' . $invalid_path . '.',
              ]
          );
     }

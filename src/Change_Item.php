@@ -68,8 +68,9 @@ class Change_Item extends CommonItilObject_Item
        // Avoid duplicate entry
         if (
             countElementsInTable($this->getTable(), ['changes_id' => $input['changes_id'],
-                                                  'itemtype' => $input['itemtype'],
-                                                  'items_id' => $input['items_id']]) > 0
+                'itemtype' => $input['itemtype'],
+                'items_id' => $input['items_id']
+            ]) > 0
         ) {
             return false;
         }
@@ -113,13 +114,14 @@ class Change_Item extends CommonItilObject_Item
             }
             Dropdown::showSelectItemFromItemtypes(['itemtypes'
                                                       => $types,
-                                                     'entity_restrict'
+                'entity_restrict'
                                                       => ($change->fields['is_recursive']
                                                           ? getSonsOf(
                                                               'glpi_entities',
                                                               $change->fields['entities_id']
                                                           )
-                                                          : $change->fields['entities_id'])]);
+                                                          : $change->fields['entities_id'])
+            ]);
             echo "</td><td class='center' width='30%'>";
             echo "<input type='submit' name='add' value=\"" . _sx('button', 'Add') . "\" class='btn btn-primary'>";
             echo "<input type='hidden' name='changes_id' value='$instID'>";
@@ -234,11 +236,11 @@ class Change_Item extends CommonItilObject_Item
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $from = 'glpi_changes_' . strtolower($item->getType() . 's');
                         $result = $DB->request([
-                        'COUNT'  => 'cpt',
-                        'FROM'   => $from,
-                        'WHERE'  => [
-                        $item->getForeignKeyField()   => $item->fields['id']
-                        ]
+                            'COUNT'  => 'cpt',
+                            'FROM'   => $from,
+                            'WHERE'  => [
+                                $item->getForeignKeyField()   => $item->fields['id']
+                            ]
                         ])->current();
                         $nb = $result['cpt'];
                     }

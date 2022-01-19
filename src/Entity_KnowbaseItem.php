@@ -59,10 +59,10 @@ class Entity_KnowbaseItem extends CommonDBRelation
         $ent   = [];
 
         $iterator = $DB->request([
-         'FROM'   => self::getTable(),
-         'WHERE'  => [
-            'knowbaseitems_id' => $knowbaseitems_id
-         ]
+            'FROM'   => self::getTable(),
+            'WHERE'  => [
+                'knowbaseitems_id' => $knowbaseitems_id
+            ]
         ]);
 
         foreach ($iterator as $data) {

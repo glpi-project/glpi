@@ -68,10 +68,10 @@ class AttributeParameter extends AbstractParameterType
     public function compute(): array
     {
         return [
-         'type'   => "AttributeParameter",
-         'key'    => $this->key,
-         'label'  => $this->label,
-         'filter' => $this->filter,
+            'type'   => "AttributeParameter",
+            'key'    => $this->key,
+            'label'  => $this->label,
+            'filter' => $this->filter,
         ];
     }
 

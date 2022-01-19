@@ -112,13 +112,13 @@ class CableStrand extends CommonDropdown
         $cable = new Cable();
 
         $criteria = [
-         'SELECT' => [
-            'id'
-         ],
-         'FROM'   => $cable->getTable(),
-         'WHERE'  => [
-            'cablestrands_id' => $cablestrands_id,
-         ]
+            'SELECT' => [
+                'id'
+            ],
+            'FROM'   => $cable->getTable(),
+            'WHERE'  => [
+                'cablestrands_id' => $cablestrands_id,
+            ]
         ];
         if ($cable->maybeDeleted()) {
             $criteria['WHERE']['is_deleted'] = 0;

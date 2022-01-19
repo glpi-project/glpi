@@ -69,20 +69,20 @@ class UserParameters extends AbstractParameters
     public function getAvailableParameters(): array
     {
         return [
-         new AttributeParameter("id", __('ID')),
-         new AttributeParameter("login", __('Login')),
-         new AttributeParameter("fullname", __('Full name')),
-         new AttributeParameter("email", _n('Email', 'Emails', 1)),
-         new AttributeParameter("phone", _n('Phone', 'Phones', 1)),
-         new AttributeParameter("phone2", __('Phone 2')),
-         new AttributeParameter("mobile", __('Mobile')),
-         new AttributeParameter("firstname", __('First name')),
-         new AttributeParameter("realname", __('Surname')),
-         new AttributeParameter("responsible", __('Responsible')),
-         new ObjectParameter(new LocationParameters()),
-         new ObjectParameter(new UserTitleParameters()),
-         new ObjectParameter(new UserCategoryParameters()),
-         new ArrayParameter('used_items', new AssetParameters(), "Used items"),
+            new AttributeParameter("id", __('ID')),
+            new AttributeParameter("login", __('Login')),
+            new AttributeParameter("fullname", __('Full name')),
+            new AttributeParameter("email", _n('Email', 'Emails', 1)),
+            new AttributeParameter("phone", _n('Phone', 'Phones', 1)),
+            new AttributeParameter("phone2", __('Phone 2')),
+            new AttributeParameter("mobile", __('Mobile')),
+            new AttributeParameter("firstname", __('First name')),
+            new AttributeParameter("realname", __('Surname')),
+            new AttributeParameter("responsible", __('Responsible')),
+            new ObjectParameter(new LocationParameters()),
+            new ObjectParameter(new UserTitleParameters()),
+            new ObjectParameter(new UserCategoryParameters()),
+            new ArrayParameter('used_items', new AssetParameters(), "Used items"),
         ];
     }
 
@@ -94,15 +94,15 @@ class UserParameters extends AbstractParameters
         $fields = Sanitizer::unsanitize($user->fields);
 
         $values = [
-         'id'        => $fields['id'],
-         'login'     => $fields['name'],
-         'fullname'  => $user->getFriendlyName(),
-         'email'     => UserEmail::getDefaultForUser($fields['id']),
-         'phone'     => $fields['phone'],
-         'phone2'    => $fields['phone2'],
-         'mobile'    => $fields['mobile'],
-         'firstname' => $fields['firstname'],
-         'realname'  => $fields['realname'],
+            'id'        => $fields['id'],
+            'login'     => $fields['name'],
+            'fullname'  => $user->getFriendlyName(),
+            'email'     => UserEmail::getDefaultForUser($fields['id']),
+            'phone'     => $fields['phone'],
+            'phone2'    => $fields['phone2'],
+            'mobile'    => $fields['mobile'],
+            'firstname' => $fields['firstname'],
+            'realname'  => $fields['realname'],
         ];
 
        // Add responsible

@@ -44,8 +44,8 @@ class LogCsvExport extends \CsvTestCase
 
         $computer = new Computer();
         $id = $computer->add([
-         'name'        => 'testExportToCsv 1',
-         'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+            'name'        => 'testExportToCsv 1',
+            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
         ]);
 
         $this->integer($id)->isGreaterThan(0);
@@ -54,29 +54,29 @@ class LogCsvExport extends \CsvTestCase
        // Multiple updates
         $this->boolean(
             $computer->update([
-            'id'   => $id,
-            'name' => 'testExportToCsv 2'
+                'id'   => $id,
+                'name' => 'testExportToCsv 2'
             ])
         )->isTrue();
 
         $this->boolean(
             $computer->update([
-            'id'   => $id,
-            'name' => 'testExportToCsv 3'
+                'id'   => $id,
+                'name' => 'testExportToCsv 3'
             ])
         )->isTrue();
 
         $this->boolean(
             $computer->update([
-            'id'   => $id,
-            'name' => 'testExportToCsv 4'
+                'id'   => $id,
+                'name' => 'testExportToCsv 4'
             ])
         )->isTrue();
 
         $this->boolean(
             $computer->update([
-            'id'   => $id,
-            'name' => 'testExportToCsv 5'
+                'id'   => $id,
+                'name' => 'testExportToCsv 5'
             ])
         )->isTrue();
 
@@ -87,49 +87,49 @@ class LogCsvExport extends \CsvTestCase
         $cols     = 5;
 
         return [
-         [
+            [
             // Case 1: no filter
-            'export'   => new Core_LogCsvExport($computer, []),
-            'expected' => [
-               'filename' => $filename,
-               'cols'     => $cols,
-               'rows'     => 5
-            ]
-         ],[
+                'export'   => new Core_LogCsvExport($computer, []),
+                'expected' => [
+                    'filename' => $filename,
+                    'cols'     => $cols,
+                    'rows'     => 5
+                ]
+            ],[
             // Case 2: only creation
-            'export'   => new Core_LogCsvExport(
-                $computer,
-                ['linked_actions' => [\Log::HISTORY_CREATE_ITEM]]
-            ),
-            'expected' => [
-               'filename' => $filename,
-               'cols'     => $cols,
-               'rows'     => 1
-            ]
-         ],[
+                'export'   => new Core_LogCsvExport(
+                    $computer,
+                    ['linked_actions' => [\Log::HISTORY_CREATE_ITEM]]
+                ),
+                'expected' => [
+                    'filename' => $filename,
+                    'cols'     => $cols,
+                    'rows'     => 1
+                ]
+            ],[
             // Case 3: only updates
-            'export'   => new Core_LogCsvExport(
-                $computer,
-                ['linked_actions' => [0]]
-            ),
-            'expected' => [
-               'filename' => $filename,
-               'cols'     => $cols,
-               'rows'     => 4
-            ]
-         ],
-         [
+                'export'   => new Core_LogCsvExport(
+                    $computer,
+                    ['linked_actions' => [0]]
+                ),
+                'expected' => [
+                    'filename' => $filename,
+                    'cols'     => $cols,
+                    'rows'     => 4
+                ]
+            ],
+            [
             // Case 4: only updates on name
-            'export'   => new Core_LogCsvExport(
-                $computer,
-                ['affected_fields' => ["id_search_option::1"]]
-            ),
-            'expected' => [
-               'filename' => $filename,
-               'cols'     => $cols,
-               'rows'     => 4
-            ]
-         ],
+                'export'   => new Core_LogCsvExport(
+                    $computer,
+                    ['affected_fields' => ["id_search_option::1"]]
+                ),
+                'expected' => [
+                    'filename' => $filename,
+                    'cols'     => $cols,
+                    'rows'     => 4
+                ]
+            ],
         ];
     }
 }

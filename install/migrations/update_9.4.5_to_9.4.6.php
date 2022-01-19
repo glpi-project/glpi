@@ -46,7 +46,7 @@ function update945to946()
     $DB->deleteOrDie(
         'glpi_profilerights',
         [
-         'name'  => 'backup'
+            'name'  => 'backup'
         ]
     );
    // ************ Keep it at the end **************

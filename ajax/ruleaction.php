@@ -74,19 +74,21 @@ if (isset($_POST["sub_type"]) && class_exists($_POST["sub_type"])) {
     }
 
     $randaction = RuleAction::dropdownActions(['subtype'     => $_POST["sub_type"],
-                                                   'name'        => "action_type",
-                                                   'field'       => $_POST["field"],
-                                                   'value'       => $action_type,
-                                                   'alreadyused' => $already_used]);
+        'name'        => "action_type",
+        'field'       => $_POST["field"],
+        'value'       => $action_type,
+        'alreadyused' => $already_used
+    ]);
 
     echo "</td><td>";
     echo "<span id='action_type_span$randaction'>\n";
     echo "</span>\n";
 
     $paramsaction = ['action_type'                   => '__VALUE__',
-                         'field'                         => $_POST["field"],
-                         'sub_type'                      => $_POST["sub_type"],
-                         $item->getForeignKeyField()     => $_POST[$item->getForeignKeyField()]];
+        'field'                         => $_POST["field"],
+        'sub_type'                      => $_POST["sub_type"],
+        $item->getForeignKeyField()     => $_POST[$item->getForeignKeyField()]
+    ];
 
     Ajax::updateItemOnSelectEvent(
         "dropdown_action_type$randaction",

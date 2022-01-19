@@ -53,10 +53,10 @@ class Right extends \CommonDBChild
         global $DB;
 
         $dr_iterator = $DB->request([
-         'FROM'  => self::getTable(),
-         'WHERE' => [
-            'dashboards_dashboards_id' => $dashboards_id
-         ]
+            'FROM'  => self::getTable(),
+            'WHERE' => [
+                'dashboards_dashboards_id' => $dashboards_id
+            ]
         ]);
 
         $rights = [];
@@ -88,9 +88,9 @@ class Right extends \CommonDBChild
         $query_rights = $DB->buildInsert(
             self::getTable(),
             [
-            'dashboards_dashboards_id' => new \QueryParam(),
-            'itemtype' => new \QueryParam(),
-            'items_id' => new \QueryParam(),
+                'dashboards_dashboards_id' => new \QueryParam(),
+                'itemtype' => new \QueryParam(),
+                'items_id' => new \QueryParam(),
             ]
         );
         $stmt = $DB->prepare($query_rights);

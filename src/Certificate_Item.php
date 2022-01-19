@@ -64,7 +64,8 @@ class Certificate_Item extends CommonDBRelation
     {
         $temp = new self();
         $temp->deleteByCriteria(['itemtype' => $item->getType(),
-                               'items_id' => $item->getField('id')]);
+            'items_id' => $item->getField('id')
+        ]);
     }
 
     /**
@@ -136,9 +137,9 @@ class Certificate_Item extends CommonDBRelation
 
         $certificate  = new self();
         $certificates = $certificate->find([
-         'certificates_id' => $certificates_id,
-         'itemtype'        => $itemtype,
-         'items_id'        => $items_id
+            'certificates_id' => $certificates_id,
+            'itemtype'        => $itemtype,
+            'items_id'        => $items_id
         ]);
         if (count($certificates) != 1) {
             return false;
@@ -160,8 +161,9 @@ class Certificate_Item extends CommonDBRelation
     {
 
         $this->add(['certificates_id' => $values["certificates_id"],
-                  'items_id'        => $values["items_id"],
-                  'itemtype'        => $values["itemtype"]]);
+            'items_id'        => $values["items_id"],
+            'itemtype'        => $values["itemtype"]
+        ]);
     }
 
     /**
@@ -229,14 +231,14 @@ class Certificate_Item extends CommonDBRelation
             echo "<tr class='tab_bg_1'><td colspan='" . (3 + $colsup) . "' class='center'>";
             Dropdown::showSelectItemFromItemtypes(
                 ['items_id_name'   => 'items_id',
-                'itemtypes'       => Certificate::getTypes(true),
-                'entity_restrict' => ($certificate->fields['is_recursive']
+                    'itemtypes'       => Certificate::getTypes(true),
+                    'entity_restrict' => ($certificate->fields['is_recursive']
                                       ? getSonsOf(
                                           'glpi_entities',
                                           $certificate->fields['entities_id']
                                       )
                                        : $certificate->fields['entities_id']),
-                'checkright'      => true,
+                    'checkright'      => true,
                 ]
             );
             echo "</td><td colspan='2' class='center' class='tab_bg_1'>";
@@ -321,7 +323,7 @@ class Certificate_Item extends CommonDBRelation
 
         if ($canedit && $number) {
             $paramsma = [
-            'ontop' => false,
+                'ontop' => false,
             ];
             Html::showMassiveActions($paramsma);
             Html::closeForm();
@@ -390,7 +392,7 @@ class Certificate_Item extends CommonDBRelation
             $nb = countElementsInTable(
                 'glpi_certificates',
                 [
-                                     'is_deleted'  => 0
+                    'is_deleted'  => 0
                 ] + $entity_restrict
             );
 
@@ -425,9 +427,9 @@ class Certificate_Item extends CommonDBRelation
                      echo Html::hidden('tickets_id', ['value' => $ID]);
                 }
                  Dropdown::show('Certificate', ['entity' => $item->fields['entities_id'],
-                               'is_recursive'       => $is_recursive,
-                               'used'               => $used
-                            ]);
+                     'is_recursive'       => $is_recursive,
+                     'used'               => $used
+                 ]);
 
                  echo "</td><td class='center' width='20%'>";
                  echo Html::submit(_sx('button', 'Associate'), ['name' => 'add']);

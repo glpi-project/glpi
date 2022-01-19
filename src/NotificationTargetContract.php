@@ -40,9 +40,10 @@ class NotificationTargetContract extends NotificationTarget
     {
 
         return ['end'               => __('End of contract'),
-                   'notice'            => __('Notice'),
-                   'periodicity'       => __('Periodicity'),
-                   'periodicitynotice' => __('Periodicity notice')];
+            'notice'            => __('Notice'),
+            'periodicity'       => __('Periodicity'),
+            'periodicitynotice' => __('Periodicity notice')
+        ];
     }
 
 
@@ -166,23 +167,25 @@ class NotificationTargetContract extends NotificationTarget
     {
 
         $tags = ['contract.action'       => _n('Event', 'Events', 1),
-                    'contract.name'         => __('Name'),
-                    'contract.number'       => _x('phone', 'Number'),
-                    'contract.items.number' => _x('quantity', 'Number of items'),
-                    'contract.items'        => __('Device list'),
-                    'contract.type'         => _n('Type', 'Types', 1),
-                    'contract.entity'       => Entity::getTypeName(1),
-                    'contract.states'       => __('Status'),
-                    'contract.time'         => sprintf(
-                        __('%1$s / %2$s'),
-                        __('Contract expired since the'),
-                        __('Contract with notice since the')
-                    )];
+            'contract.name'         => __('Name'),
+            'contract.number'       => _x('phone', 'Number'),
+            'contract.items.number' => _x('quantity', 'Number of items'),
+            'contract.items'        => __('Device list'),
+            'contract.type'         => _n('Type', 'Types', 1),
+            'contract.entity'       => Entity::getTypeName(1),
+            'contract.states'       => __('Status'),
+            'contract.time'         => sprintf(
+                __('%1$s / %2$s'),
+                __('Contract expired since the'),
+                __('Contract with notice since the')
+            )
+        ];
 
         foreach ($tags as $tag => $label) {
             $this->addTagToList(['tag'   => $tag,
-                                   'label' => $label,
-                                   'value' => true]);
+                'label' => $label,
+                'value' => true
+            ]);
         }
 
        //Tags without lang
@@ -190,13 +193,15 @@ class NotificationTargetContract extends NotificationTarget
             __('%1$s: %2$s'),
             _n('Contract', 'Contracts', 1),
             __('URL')
-        )];
+        )
+        ];
 
         foreach ($tags as $tag => $label) {
             $this->addTagToList(['tag'   => $tag,
-                                   'label' => $label,
-                                   'value' => true,
-                                   'lang'  => false]);
+                'label' => $label,
+                'value' => true,
+                'lang'  => false
+            ]);
         }
 
        //Foreach global tags
@@ -204,9 +209,10 @@ class NotificationTargetContract extends NotificationTarget
 
         foreach ($tags as $tag => $label) {
             $this->addTagToList(['tag'     => $tag,
-                                   'label'   => $label,
-                                   'value'   => false,
-                                   'foreach' => true]);
+                'label'   => $label,
+                'value'   => false,
+                'foreach' => true
+            ]);
         }
 
         asort($this->tag_descriptions);

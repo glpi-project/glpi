@@ -132,8 +132,8 @@ if (!$DB->tableExists('glpi_cables')) {
     $DB->queryOrDie($query, "10.0 add table glpi_cables");
 
     $migration->addField('glpi_states', 'is_visible_cable', 'bool', [
-      'value' => 1,
-      'after' => 'is_visible_appliance'
+        'value' => 1,
+        'after' => 'is_visible_appliance'
     ]);
     $migration->addKey('glpi_states', 'is_visible_cable');
 }
@@ -176,32 +176,32 @@ if ($DB->tableExists('glpi_netpoints')) {
             continue;
         }
         $criteria = [
-         'SELECT' => [
-            "glpi_networkports.id AS networkports_id",
-            "glpi_networkports.logical_number",
-            "glpi_networkports.itemtype",
-            "glpi_networkports.items_id",
-            "glpi_netpoints.locations_id",
-            "glpi_netpoints.name",
-            "glpi_netpoints.entities_id",
-            "glpi_netpoints.date_creation",
-            "glpi_netpoints.date_mod",
-         ],
-         'FROM'      => $table,
-         'INNER JOIN' => [
-            'glpi_networkports' => [
-               'FKEY' => [
-                  'glpi_networkports'     => 'id',
-                  $table   => 'networkports_id',
-               ]
+            'SELECT' => [
+                "glpi_networkports.id AS networkports_id",
+                "glpi_networkports.logical_number",
+                "glpi_networkports.itemtype",
+                "glpi_networkports.items_id",
+                "glpi_netpoints.locations_id",
+                "glpi_netpoints.name",
+                "glpi_netpoints.entities_id",
+                "glpi_netpoints.date_creation",
+                "glpi_netpoints.date_mod",
             ],
-            'glpi_netpoints' => [
-               'FKEY' => [
-                  'glpi_netpoints'        => 'id',
-                  $table   => 'netpoints_id',
-               ]
-            ],
-         ]
+            'FROM'      => $table,
+            'INNER JOIN' => [
+                'glpi_networkports' => [
+                    'FKEY' => [
+                        'glpi_networkports'     => 'id',
+                        $table   => 'networkports_id',
+                    ]
+                ],
+                'glpi_netpoints' => [
+                    'FKEY' => [
+                        'glpi_netpoints'        => 'id',
+                        $table   => 'netpoints_id',
+                    ]
+                ],
+            ]
         ];
 
         $iterator = $DB->request($criteria);
@@ -209,14 +209,14 @@ if ($DB->tableExists('glpi_netpoints')) {
         foreach ($iterator as $data) {
             $socket = new Socket();
             $input = [
-            'name'            => $data['name'],
-            'locations_id'    => $data['locations_id'],
-            'position'        => $data['logical_number'],
-            'itemtype'        => $data['itemtype'],
-            'items_id'        => $data['items_id'],
-            'networkports_id' => $data['networkports_id'],
-            'date_creation'   => $data['date_creation'],
-            'date_mod'        => $data['date_mod'],
+                'name'            => $data['name'],
+                'locations_id'    => $data['locations_id'],
+                'position'        => $data['logical_number'],
+                'itemtype'        => $data['itemtype'],
+                'items_id'        => $data['items_id'],
+                'networkports_id' => $data['networkports_id'],
+                'date_creation'   => $data['date_creation'],
+                'date_mod'        => $data['date_mod'],
             ];
 
             $socket->add($input);

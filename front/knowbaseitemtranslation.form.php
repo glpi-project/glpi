@@ -82,8 +82,8 @@ if (isset($_POST['add'])) {
         $_SESSION["glpilanguage"] = $CFG_GLPI['language'];
        // Anonymous FAQ
         Html::simpleHeader(__('FAQ'), [
-         __('Authentication') => '/',
-         __('FAQ')            => '/front/helpdesk.faq.php'
+            __('Authentication') => '/',
+            __('FAQ')            => '/front/helpdesk.faq.php'
         ]);
     }
 

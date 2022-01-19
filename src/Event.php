@@ -105,11 +105,12 @@ class Event extends CommonDBTM
         global $DB;
 
         $input = ['items_id' => intval($items_id),
-                     'type'     => $DB->escape($type),
-                     'date'     => $_SESSION["glpi_currenttime"],
-                     'service'  => $DB->escape($service),
-                     'level'    => intval($level),
-                     'message'  => $DB->escape($event)];
+            'type'     => $DB->escape($type),
+            'date'     => $_SESSION["glpi_currenttime"],
+            'service'  => $DB->escape($service),
+            'level'    => intval($level),
+            'message'  => $DB->escape($event)
+        ];
         $tmp = new self();
         return $tmp->add($input);
     }
@@ -131,7 +132,7 @@ class Event extends CommonDBTM
         $DB->delete(
             'glpi_events',
             [
-            new \QueryExpression("UNIX_TIMESTAMP(date) < UNIX_TIMESTAMP()-$secs")
+                new \QueryExpression("UNIX_TIMESTAMP(date) < UNIX_TIMESTAMP()-$secs")
             ]
         );
         return $DB->affectedRows();
@@ -152,26 +153,28 @@ class Event extends CommonDBTM
         }
 
         $logItemtype = ['system'      => __('System'),
-                           'devices'     => _n('Component', 'Components', Session::getPluralNumber()),
-                           'planning'    => __('Planning'),
-                           'reservation' => _n('Reservation', 'Reservations', Session::getPluralNumber()),
-                           'dropdown'    => _n('Dropdown', 'Dropdowns', Session::getPluralNumber()),
-                           'rules'       => _n('Rule', 'Rules', Session::getPluralNumber())];
+            'devices'     => _n('Component', 'Components', Session::getPluralNumber()),
+            'planning'    => __('Planning'),
+            'reservation' => _n('Reservation', 'Reservations', Session::getPluralNumber()),
+            'dropdown'    => _n('Dropdown', 'Dropdowns', Session::getPluralNumber()),
+            'rules'       => _n('Rule', 'Rules', Session::getPluralNumber())
+        ];
 
         $logService = ['inventory'    => _n('Asset', 'Assets', Session::getPluralNumber()),
-                          'tracking'     => _n('Ticket', 'Tickets', Session::getPluralNumber()),
-                          'maintain'     => __('Assistance'),
-                          'planning'     => __('Planning'),
-                          'tools'        => __('Tools'),
-                          'financial'    => __('Management'),
-                          'login'        => _n('Connection', 'Connections', 1),
-                          'setup'        => __('Setup'),
-                          'security'     => __('Security'),
-                          'reservation'  => _n('Reservation', 'Reservations', Session::getPluralNumber()),
-                          'cron'         => CronTask::getTypeName(Session::getPluralNumber()),
-                          'document'     => Document::getTypeName(Session::getPluralNumber()),
-                          'notification' => _n('Notification', 'Notifications', Session::getPluralNumber()),
-                          'plugin'       => _n('Plugin', 'Plugins', Session::getPluralNumber())];
+            'tracking'     => _n('Ticket', 'Tickets', Session::getPluralNumber()),
+            'maintain'     => __('Assistance'),
+            'planning'     => __('Planning'),
+            'tools'        => __('Tools'),
+            'financial'    => __('Management'),
+            'login'        => _n('Connection', 'Connections', 1),
+            'setup'        => __('Setup'),
+            'security'     => __('Security'),
+            'reservation'  => _n('Reservation', 'Reservations', Session::getPluralNumber()),
+            'cron'         => CronTask::getTypeName(Session::getPluralNumber()),
+            'document'     => Document::getTypeName(Session::getPluralNumber()),
+            'notification' => _n('Notification', 'Notifications', Session::getPluralNumber()),
+            'plugin'       => _n('Plugin', 'Plugins', Session::getPluralNumber())
+        ];
 
         return [$logItemtype, $logService];
     }
@@ -253,10 +256,10 @@ class Event extends CommonDBTM
 
        // Query Database
         $iterator = $DB->request([
-         'FROM'   => 'glpi_events',
-         'WHERE'  => ['message' => ['LIKE', $usersearch . '%']],
-         'ORDER'  => 'date DESC',
-         'LIMIT'  => (int)$_SESSION['glpilist_limit']
+            'FROM'   => 'glpi_events',
+            'WHERE'  => ['message' => ['LIKE', $usersearch . '%']],
+            'ORDER'  => 'date DESC',
+            'LIMIT'  => (int)$_SESSION['glpilist_limit']
         ]);
 
        // Number of results
@@ -265,11 +268,11 @@ class Event extends CommonDBTM
        // No Events in database
         if ($number < 1) {
             $twig_params = [
-            'class'        => 'table table-hover table-bordered',
-            'header_rows'  => [
-               [__('No Event')]
-            ],
-            'rows'         => []
+                'class'        => 'table table-hover table-bordered',
+                'header_rows'  => [
+                    [__('No Event')]
+                ],
+                'rows'         => []
             ];
             $output = TemplateRenderer::getInstance()->render('components/table.html.twig', $twig_params);
             if ($display) {
@@ -281,30 +284,30 @@ class Event extends CommonDBTM
         }
 
         $twig_params = [
-         'class'        => 'table table-hover table-striped table-bordered',
-         'header_rows'  => [
-            [
-               [
-                  'colspan'   => 5,
-                  'content'   => "<a href=\"" . $CFG_GLPI["root_doc"] . "/front/event.php\">" .
+            'class'        => 'table table-hover table-striped table-bordered',
+            'header_rows'  => [
+                [
+                    [
+                        'colspan'   => 5,
+                        'content'   => "<a href=\"" . $CFG_GLPI["root_doc"] . "/front/event.php\">" .
                      sprintf(__('Last %d events'), $_SESSION['glpilist_limit']) . "</a>"
-               ]
+                    ]
+                ],
+                [
+                    __('Source'),
+                    __('Id'),
+                    _n('Date', 'Dates', 1),
+                    [
+                        'content'   => __('Service'),
+                        'style'     => 'width: 10%'
+                    ],
+                    [
+                        'content'   => __('Message'),
+                        'style'     => 'width: 50%'
+                    ],
+                ]
             ],
-            [
-               __('Source'),
-               __('Id'),
-               _n('Date', 'Dates', 1),
-               [
-                  'content'   => __('Service'),
-                  'style'     => 'width: 10%'
-               ],
-               [
-                  'content'   => __('Message'),
-                  'style'     => 'width: 50%'
-               ],
-            ]
-         ],
-         'rows'   => []
+            'rows'   => []
         ];
 
         foreach ($iterator as $data) {
@@ -330,14 +333,14 @@ class Event extends CommonDBTM
             $item_log_id = ob_get_clean();
 
             $twig_params['rows'][] = [
-            'class'  => 'tab_bg_2',
-            'values' => [
-               $itemtype,
-               $item_log_id,
-               Html::convDateTime($date),
-               $logService[$service] ?? '',
-               $message
-            ]
+                'class'  => 'tab_bg_2',
+                'values' => [
+                    $itemtype,
+                    $item_log_id,
+                    Html::convDateTime($date),
+                    $logService[$service] ?? '',
+                    $message
+                ]
             ];
         }
 
@@ -370,12 +373,12 @@ class Event extends CommonDBTM
 
        // Columns of the Table
         $items = [
-         "type"     => [__('Source'), ""],
-         "items_id" => [__('ID'), ""],
-         "date"     => [_n('Date', 'Dates', 1), ""],
-         "service"  => [__('Service'), "width='8%'"],
-         "level"    => [__('Level'), "width='8%'"],
-         "message"  => [__('Message'), "width='50%'"]
+            "type"     => [__('Source'), ""],
+            "items_id" => [__('ID'), ""],
+            "date"     => [_n('Date', 'Dates', 1), ""],
+            "service"  => [__('Service'), "width='8%'"],
+            "level"    => [__('Level'), "width='8%'"],
+            "message"  => [__('Message'), "width='50%'"]
         ];
 
        // define default sorting
@@ -388,24 +391,24 @@ class Event extends CommonDBTM
 
        // Query Database
         $iterator = $DBread->request([
-         'FROM'   => 'glpi_events',
-         'ORDER'  => "$sort $order",
-         'START'  => (int)$start,
-         'LIMIT'  => (int)$_SESSION['glpilist_limit']
+            'FROM'   => 'glpi_events',
+            'ORDER'  => "$sort $order",
+            'START'  => (int)$start,
+            'LIMIT'  => (int)$_SESSION['glpilist_limit']
         ]);
 
        // Number of results
         $numrows = countElementsInTable("glpi_events");
 
         TemplateRenderer::getInstance()->display('pages/admin/events_list.html.twig', [
-         'count'     => $numrows,
-         'order'     => $order,
-         'sort'      => $sort,
-         'start'     => $start,
-         'target'    => $target,
-         'events'    => $iterator,
-         'itemtypes' => $logItemtype,
-         'services'  => $logService,
+            'count'     => $numrows,
+            'order'     => $order,
+            'sort'      => $sort,
+            'start'     => $start,
+            'target'    => $target,
+            'events'    => $iterator,
+            'itemtypes' => $logItemtype,
+            'services'  => $logService,
         ]);
     }
 

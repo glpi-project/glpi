@@ -45,8 +45,8 @@ class DocumentExtension extends AbstractExtension
     public function getFilters(): array
     {
         return [
-         new TwigFilter('document_icon', [$this, 'getDocumentIcon']),
-         new TwigFilter('document_size', [$this, 'getDocumentSize']),
+            new TwigFilter('document_icon', [$this, 'getDocumentIcon']),
+            new TwigFilter('document_size', [$this, 'getDocumentSize']),
         ];
     }
 

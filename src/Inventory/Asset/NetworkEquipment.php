@@ -42,9 +42,9 @@ class NetworkEquipment extends MainAsset
     private $management_ports = [];
 
     protected $extra_data = [
-      'network_device'                          => null,
-      'network_components'                      => null,
-      '\Glpi\Inventory\Asset\NetworkPort'       => null
+        'network_device'                          => null,
+        'network_components'                      => null,
+        '\Glpi\Inventory\Asset\NetworkPort'       => null
     ];
 
     protected function getModelsFieldName(): string
@@ -69,12 +69,12 @@ class NetworkEquipment extends MainAsset
             $device = (object)$this->extra_data['network_device'];
 
             $dev_mapping = [
-            'description'  => 'sysdescr',
-            'location'     => 'locations_id',
-            'model'        => $model_field,
-            'type'         => $types_field,
-            'manufacturer' => 'manufacturers_id',
-            'credentials'  => 'snmpcredentials_id'
+                'description'  => 'sysdescr',
+                'location'     => 'locations_id',
+                'model'        => $model_field,
+                'type'         => $types_field,
+                'manufacturer' => 'manufacturers_id',
+                'credentials'  => 'snmpcredentials_id'
             ];
 
             foreach ($dev_mapping as $origin => $dest) {
@@ -242,15 +242,15 @@ class NetworkEquipment extends MainAsset
         if ($netname->getFromDBByCrit(['itemtype' => 'NetworkPort', 'items_id' => $netports_id])) {
             if ($netname->fields['name'] != $port->name) {
                 $netname->update([
-                'id'     => $netname->getID(),
-                'name'   => addslashes($port->netname ?? $port->name)
+                    'id'     => $netname->getID(),
+                    'name'   => addslashes($port->netname ?? $port->name)
                 ], $this->withHistory());
             }
         } else {
             $netname->add([
-            'itemtype'  => 'NetworkPort',
-            'items_id'  => $netports_id,
-            'name'      => addslashes($port->name)
+                'itemtype'  => 'NetworkPort',
+                'items_id'  => $netports_id,
+                'name'      => addslashes($port->name)
             ], [], $this->withHistory());
         }
     }

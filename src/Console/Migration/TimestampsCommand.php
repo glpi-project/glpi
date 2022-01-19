@@ -92,19 +92,19 @@ class TimestampsCommand extends AbstractCommand
 
                // get accurate info from information_schema to perform correct alter
                 $col_iterator = $this->db->request([
-                'SELECT' => [
-                  'table_name AS TABLE_NAME',
-                  'column_name AS COLUMN_NAME',
-                  'column_default AS COLUMN_DEFAULT',
-                  'column_comment AS COLUMN_COMMENT',
-                  'is_nullable AS IS_NULLABLE',
-                ],
-                'FROM'   => 'information_schema.columns',
-                'WHERE'  => [
-                  'table_schema' => $this->db->dbdefault,
-                  'table_name'   => $table['TABLE_NAME'],
-                  'data_type'    => 'datetime'
-                ]
+                    'SELECT' => [
+                        'table_name AS TABLE_NAME',
+                        'column_name AS COLUMN_NAME',
+                        'column_default AS COLUMN_DEFAULT',
+                        'column_comment AS COLUMN_COMMENT',
+                        'is_nullable AS IS_NULLABLE',
+                    ],
+                    'FROM'   => 'information_schema.columns',
+                    'WHERE'  => [
+                        'table_schema' => $this->db->dbdefault,
+                        'table_name'   => $table['TABLE_NAME'],
+                        'data_type'    => 'datetime'
+                    ]
                 ]);
 
                 foreach ($col_iterator as $column) {
@@ -186,7 +186,7 @@ class TimestampsCommand extends AbstractCommand
         }
 
         $properties_to_update = [
-         DBConnection::PROPERTY_ALLOW_DATETIME => false,
+            DBConnection::PROPERTY_ALLOW_DATETIME => false,
         ];
 
         $timezones_requirement = new DbTimezones($this->db);

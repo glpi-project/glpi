@@ -41,8 +41,8 @@ $result = [];
 if (!isset($_POST['itemtype']) || !isset($_POST['params'])) {
     http_response_code(500);
     $result = [
-      'success'   => false,
-      'message'   => __('Required argument missing!')
+        'success'   => false,
+        'message'   => __('Required argument missing!')
     ];
 } else {
     $itemtype = $_POST['itemtype'];
@@ -79,18 +79,18 @@ if (!isset($_POST['itemtype']) || !isset($_POST['params'])) {
         } else {
             if ($itemtype == 'Entity') {
                 $points[$idx] = [
-                'lat'    => $row['raw']["ITEM_$lat_field"],
-                'lng'    => $row['raw']["ITEM_$lng_field"],
-                'title'  => $row['raw']["ITEM_$name_field"],
-                'count'  => 1
+                    'lat'    => $row['raw']["ITEM_$lat_field"],
+                    'lng'    => $row['raw']["ITEM_$lng_field"],
+                    'title'  => $row['raw']["ITEM_$name_field"],
+                    'count'  => 1
                 ];
             } else {
                 $points[$idx] = [
-                'lat'    => $row['raw']["ITEM_$lat_field"],
-                'lng'    => $row['raw']["ITEM_$lng_field"],
-                'title'  => $row['raw']["ITEM_$name_field"],
-                'loc_id' => $row['raw']['loc_id'],
-                'count'  => 1
+                    'lat'    => $row['raw']["ITEM_$lat_field"],
+                    'lng'    => $row['raw']["ITEM_$lng_field"],
+                    'title'  => $row['raw']["ITEM_$name_field"],
+                    'loc_id' => $row['raw']['loc_id'],
+                    'count'  => 1
                 ];
             }
         }
@@ -102,8 +102,8 @@ if (!isset($_POST['itemtype']) || !isset($_POST['params'])) {
                 $points[$idx]['types'][$curtype]['name'] = strtolower($curtype::getTypeName(Session::getPluralNumber()));
             } else {
                 $points[$idx]['types'][$curtype] = [
-                'name'   => strtolower($curtype::getTypeName(1)),
-                'count'  => 1
+                    'name'   => strtolower($curtype::getTypeName(1)),
+                    'count'  => 1
                 ];
             }
         }

@@ -91,9 +91,9 @@ class ProtectedWebAccess extends AbstractRequirement
 
        //create a context to set timeout
         $context = stream_context_create([
-         'http' => [
-            'timeout' => 2.0
-         ]
+            'http' => [
+                'timeout' => 2.0
+            ]
         ]);
 
         $protocol = 'http';

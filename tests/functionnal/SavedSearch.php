@@ -56,8 +56,8 @@ class SavedSearch extends DbTestCase
             'glpi_profilerights',
             ['rights' => 1],
             [
-            'profiles_id'  => 2,
-            'name'         => 'bookmark_public'
+                'profiles_id'  => 2,
+                'name'         => 'bookmark_public'
             ]
         );
 
@@ -69,8 +69,8 @@ class SavedSearch extends DbTestCase
             'glpi_profilerights',
             ['rights' => 0],
             [
-            'profiles_id'  => 2,
-            'name'         => 'bookmark_public'
+                'profiles_id'  => 2,
+                'name'         => 'bookmark_public'
             ]
         );
 

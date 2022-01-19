@@ -65,7 +65,7 @@ function update93xto940()
 
     /** Add requester field on glpi_mailcollectors */
     $migration->addField("glpi_mailcollectors", "requester_field", "integer", [
-      'value' => '0'
+        'value' => '0'
     ]);
     /** /Add requester field on glpi_mailcollectors */
 
@@ -75,60 +75,60 @@ function update93xto940()
 
     /** Add business rules on assets */
     $rule = ['name'         => 'Domain user assignation',
-            'is_active'    => 1,
-            'is_recursive' => 1,
-            'sub_type'     => 'RuleAsset',
-            'condition'    => 3,
-            'entities_id'  => 0,
-            'uuid'         => 'fbeb1115-7a37b143-5a3a6fc1afdc17.92779763',
-            'match'        => \Rule::AND_MATCHING
-           ];
+        'is_active'    => 1,
+        'is_recursive' => 1,
+        'sub_type'     => 'RuleAsset',
+        'condition'    => 3,
+        'entities_id'  => 0,
+        'uuid'         => 'fbeb1115-7a37b143-5a3a6fc1afdc17.92779763',
+        'match'        => \Rule::AND_MATCHING
+    ];
     $criteria = [
-      ['criteria' => '_itemtype', 'condition' => \Rule::PATTERN_IS, 'pattern' => 'Computer'],
-      ['criteria' => '_auto', 'condition' => \Rule::PATTERN_IS, 'pattern' => 1],
-      ['criteria' => 'contact', 'condition' => \Rule::REGEX_MATCH, 'pattern' => '/(.*)@/']
+        ['criteria' => '_itemtype', 'condition' => \Rule::PATTERN_IS, 'pattern' => 'Computer'],
+        ['criteria' => '_auto', 'condition' => \Rule::PATTERN_IS, 'pattern' => 1],
+        ['criteria' => 'contact', 'condition' => \Rule::REGEX_MATCH, 'pattern' => '/(.*)@/']
     ];
     $action = [['action_type' => 'regex_result', 'field' => '_affect_user_by_regex', 'value' => '#0']];
     $migration->createRule($rule, $criteria, $action);
 
     $rule = ['name'         => 'Multiple users: assign to the first',
-            'is_active'    => 1,
-            'is_recursive' => 1,
-            'sub_type'     => 'RuleAsset',
-            'condition'    => 3,
-            'entities_id'  => 0,
-            'uuid'         => 'fbeb1115-7a37b143-5a3a6fc1b03762.88595154',
-            'match'        => \Rule::AND_MATCHING
-           ];
+        'is_active'    => 1,
+        'is_recursive' => 1,
+        'sub_type'     => 'RuleAsset',
+        'condition'    => 3,
+        'entities_id'  => 0,
+        'uuid'         => 'fbeb1115-7a37b143-5a3a6fc1b03762.88595154',
+        'match'        => \Rule::AND_MATCHING
+    ];
     $criteria = [
-      ['criteria' => '_itemtype', 'condition' => \Rule::PATTERN_IS, 'pattern' => 'Computer'],
-      ['criteria' => '_auto', 'condition' => \Rule::PATTERN_IS, 'pattern' => 1],
-      ['criteria' => 'contact', 'condition' => \Rule::REGEX_MATCH, 'pattern' => '/(.*),/']
+        ['criteria' => '_itemtype', 'condition' => \Rule::PATTERN_IS, 'pattern' => 'Computer'],
+        ['criteria' => '_auto', 'condition' => \Rule::PATTERN_IS, 'pattern' => 1],
+        ['criteria' => 'contact', 'condition' => \Rule::REGEX_MATCH, 'pattern' => '/(.*),/']
     ];
     $migration->createRule($rule, $criteria, $action);
 
     $rule = ['name'         => 'One user assignation',
-            'is_active'    => 1,
-            'is_recursive' => 1,
-            'sub_type'     => 'RuleAsset',
-            'condition'    => 3,
-            'entities_id'  => 0,
-            'uuid'         => 'fbeb1115-7a37b143-5a3a6fc1b073e1.16257440',
-            'match'        => \Rule::AND_MATCHING
-           ];
+        'is_active'    => 1,
+        'is_recursive' => 1,
+        'sub_type'     => 'RuleAsset',
+        'condition'    => 3,
+        'entities_id'  => 0,
+        'uuid'         => 'fbeb1115-7a37b143-5a3a6fc1b073e1.16257440',
+        'match'        => \Rule::AND_MATCHING
+    ];
     $criteria = [
-      ['criteria' => '_itemtype', 'condition' => \Rule::PATTERN_IS, 'pattern' => 'Computer'],
-      ['criteria' => '_auto', 'condition' => \Rule::PATTERN_IS, 'pattern' => 1],
-      ['criteria' => 'contact', 'condition' => \Rule::REGEX_MATCH, 'pattern' => '/(.*)/']
+        ['criteria' => '_itemtype', 'condition' => \Rule::PATTERN_IS, 'pattern' => 'Computer'],
+        ['criteria' => '_auto', 'condition' => \Rule::PATTERN_IS, 'pattern' => 1],
+        ['criteria' => 'contact', 'condition' => \Rule::REGEX_MATCH, 'pattern' => '/(.*)/']
     ];
     $migration->createRule($rule, $criteria, $action);
 
     if (!countElementsInTable('glpi_profilerights', ['profiles_id' => 4, 'name' => 'rule_asset'])) {
         $DB->insert("glpi_profilerights", [
-         'id'           => null,
-         'profiles_id'  => "4",
-         'name'         => "rule_asset",
-         'rights'       => "255",
+            'id'           => null,
+            'profiles_id'  => "4",
+            'name'         => "rule_asset",
+            'rights'       => "255",
         ]);
     }
     /** /Add business rules on assets */
@@ -157,8 +157,8 @@ function update93xto940()
             'itemtype',
             "varchar(100) COLLATE utf8_unicode_ci NOT NULL DEFAULT ''",
             [
-            'after'  => 'id',
-            'update' => "'Change'",
+                'after'  => 'id',
+                'update' => "'Change'",
             ]
         );
 
@@ -206,42 +206,42 @@ function update93xto940()
     $DB->deleteOrDie(
         'glpi_displaypreferences',
         [
-         'itemtype'  => 'Computer',
-         'num'       => [
-            100,
-            101,
-            102,
-            103,
-            104,
-            105,
-            106,
-            110,
-            111
-         ]
+            'itemtype'  => 'Computer',
+            'num'       => [
+                100,
+                101,
+                102,
+                103,
+                104,
+                105,
+                106,
+                110,
+                111
+            ]
         ]
     );
     /** /Drop old embed ocs search options */
 
     /** Factorize components search options on Computers, Printers and NetworkEquipments */
     $so_maping = [
-      '10'  => '110',
-      '35'  => '111',
-      '11'  => '112',
-      '20'  => '113',
-      '15'  => '114',
-      '34'  => '115',
-      '39'  => '116',
-      '95'  => '117'
+        '10'  => '110',
+        '35'  => '111',
+        '11'  => '112',
+        '20'  => '113',
+        '15'  => '114',
+        '34'  => '115',
+        '39'  => '116',
+        '95'  => '117'
     ];
     foreach ($so_maping as $old => $new) {
         $DB->updateOrDie(
             'glpi_displaypreferences',
             [
-            'num' => $new
+                'num' => $new
             ],
             [
-            'num'       => $old,
-            'itemtype'  => 'Computer'
+                'num'       => $old,
+                'itemtype'  => 'Computer'
             ]
         );
     }
@@ -256,8 +256,8 @@ function update93xto940()
             'itemtype',
             "varchar(100) COLLATE utf8_unicode_ci NOT NULL",
             [
-            'after'  => 'id',
-            'update' => "'Ticket'", // Defines value for all existing elements
+                'after'  => 'id',
+                'update' => "'Ticket'", // Defines value for all existing elements
             ]
         );
 
@@ -337,23 +337,23 @@ function update93xto940()
         $rank = 1;
         foreach ($tab as $newval) {
             $DB->updateOrInsert("glpi_displaypreferences", [
-            'rank'      => $rank++
+                'rank'      => $rank++
             ], [
-            'users_id'  => "0",
-            'itemtype'  => $type,
-            'num'       => $newval,
+                'users_id'  => "0",
+                'itemtype'  => $type,
+                'num'       => $newval,
             ]);
         }
     }
 
     /** Renaming olas / slas foreign keys that does not match naming conventions */
     $olas_slas_mapping = [
-      'olas_tto_id'      => 'olas_id_tto',
-      'olas_ttr_id'      => 'olas_id_ttr',
-      'ttr_olalevels_id' => 'olalevels_id_ttr',
-      'slas_tto_id'      => 'slas_id_tto',
-      'slas_ttr_id'      => 'slas_id_ttr',
-      'ttr_slalevels_id' => 'slalevels_id_ttr',
+        'olas_tto_id'      => 'olas_id_tto',
+        'olas_ttr_id'      => 'olas_id_ttr',
+        'ttr_olalevels_id' => 'olalevels_id_ttr',
+        'slas_tto_id'      => 'slas_id_tto',
+        'slas_ttr_id'      => 'slas_id_ttr',
+        'ttr_slalevels_id' => 'slalevels_id_ttr',
     ];
     foreach ($olas_slas_mapping as $old_fieldname => $new_fieldname) {
         if ($DB->fieldExists('glpi_tickets', $old_fieldname)) {
@@ -366,10 +366,10 @@ function update93xto940()
             $DB->buildUpdate(
                 'glpi_rulecriterias',
                 [
-                'criteria' => $new_fieldname
+                    'criteria' => $new_fieldname
                 ],
                 [
-                'criteria' => $old_fieldname
+                    'criteria' => $old_fieldname
                 ]
             )
         );
@@ -378,10 +378,10 @@ function update93xto940()
             $DB->buildUpdate(
                 'glpi_ruleactions',
                 [
-                'field' => $new_fieldname
+                    'field' => $new_fieldname
                 ],
                 [
-                'field' => $old_fieldname
+                    'field' => $old_fieldname
                 ]
             )
         );
@@ -397,7 +397,7 @@ function update93xto940()
             'responsible_field',
             "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL",
             [
-            'after'  => 'location_field',
+                'after'  => 'location_field',
             ]
         );
     }

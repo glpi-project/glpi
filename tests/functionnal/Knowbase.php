@@ -47,56 +47,56 @@ class Knowbase extends DbTestCase
 
         $cat_1_id = $kbcat->add(
             [
-            'name' => 'cat 1',
-            'knowbaseitemcategories_id' => 0,
+                'name' => 'cat 1',
+                'knowbaseitemcategories_id' => 0,
             ]
         );
         $this->integer($cat_1_id)->isGreaterThan(0);
 
         $cat_1_1_id = $kbcat->add(
             [
-            'name' => 'cat 1.1',
-            'knowbaseitemcategories_id' => $cat_1_id,
+                'name' => 'cat 1.1',
+                'knowbaseitemcategories_id' => $cat_1_id,
             ]
         );
         $this->integer($cat_1_1_id)->isGreaterThan(0);
 
         $cat_1_1_1_id = $kbcat->add(
             [
-            'name' => 'cat 1.1.1',
-            'knowbaseitemcategories_id' => $cat_1_1_id,
+                'name' => 'cat 1.1.1',
+                'knowbaseitemcategories_id' => $cat_1_1_id,
             ]
         );
         $this->integer($cat_1_1_1_id)->isGreaterThan(0);
 
         $cat_1_1_2_id = $kbcat->add(
             [
-            'name' => 'cat 1.1.2',
-            'knowbaseitemcategories_id' => $cat_1_1_id,
+                'name' => 'cat 1.1.2',
+                'knowbaseitemcategories_id' => $cat_1_1_id,
             ]
         );
         $this->integer($cat_1_1_2_id)->isGreaterThan(0);
 
         $cat_1_2_id = $kbcat->add(
             [
-            'name' => 'cat 1.2',
-            'knowbaseitemcategories_id' => $cat_1_id,
+                'name' => 'cat 1.2',
+                'knowbaseitemcategories_id' => $cat_1_id,
             ]
         );
         $this->integer($cat_1_2_id)->isGreaterThan(0);
 
         $cat_1_2_1_id = $kbcat->add(
             [
-            'name' => 'cat 1.2.1',
-            'knowbaseitemcategories_id' => $cat_1_2_id,
+                'name' => 'cat 1.2.1',
+                'knowbaseitemcategories_id' => $cat_1_2_id,
             ]
         );
         $this->integer($cat_1_2_1_id)->isGreaterThan(0);
 
         $cat_1_3_id = $kbcat->add(
             [
-            'name' => 'cat 1.3',
-            'knowbaseitemcategories_id' => $cat_1_id,
+                'name' => 'cat 1.3',
+                'knowbaseitemcategories_id' => $cat_1_id,
             ]
         );
         $this->integer($cat_1_3_id)->isGreaterThan(0);
@@ -106,10 +106,10 @@ class Knowbase extends DbTestCase
 
        // Expected root category item for normal user
         $expected_root_cat = [
-         'key'    => 0,
-         'parent' => null,
-         'title'  => 'Root category <span class="badge bg-azure-lt" title="This category contains articles">2</span>',
-         'a_attr' => ['data-id' => 0]
+            'key'    => 0,
+            'parent' => null,
+            'title'  => 'Root category <span class="badge bg-azure-lt" title="This category contains articles">2</span>',
+            'a_attr' => ['data-id' => 0]
         ];
 
         $tree = \Knowbase::getTreeCategoryList();
@@ -119,7 +119,7 @@ class Knowbase extends DbTestCase
         $kbitem = new \KnowbaseItem();
         $kbitem_id = $kbitem->add(
             [
-            'users_id' => \Session::getLoginUserID(),
+                'users_id' => \Session::getLoginUserID(),
             ]
         );
         $this->integer($kbitem_id)->isGreaterThan(0);
@@ -127,8 +127,8 @@ class Knowbase extends DbTestCase
         $kbitem_cat = new \KnowbaseItem_KnowbaseItemCategory();
         $kbitem_cat_id = $kbitem_cat->add(
             [
-            'knowbaseitemcategories_id' => "$cat_1_1_2_id",
-            'knowbaseitems_id' => "$kbitem_id",
+                'knowbaseitemcategories_id' => "$cat_1_1_2_id",
+                'knowbaseitems_id' => "$kbitem_id",
             ]
         );
         $this->integer($kbitem_cat_id)->isGreaterThan(0);
@@ -136,9 +136,9 @@ class Knowbase extends DbTestCase
         $kbitem_target = new \Entity_KnowbaseItem();
         $kbitem_target_id = $kbitem_target->add(
             [
-            'knowbaseitems_id' => $kbitem_id,
-            'entities_id' => 0,
-            'is_recursive' => 1,
+                'knowbaseitems_id' => $kbitem_id,
+                'entities_id' => 0,
+                'is_recursive' => 1,
             ]
         );
         $this->integer($kbitem_target_id)->isGreaterThan(0);
@@ -147,40 +147,40 @@ class Knowbase extends DbTestCase
         $tree = \Knowbase::getTreeCategoryList();
         $this->array($tree)->isEqualTo(
             [
-            array_merge($expected_root_cat, [
-               'children' => [
-                  [
-                     'key'      => $cat_1_id,
-                     'parent'   => 0,
-                     'title'    => 'cat 1',
-                     'a_attr'   => ['data-id' => $cat_1_id],
-                     'children' => [
+                array_merge($expected_root_cat, [
+                    'children' => [
                         [
-                           'key'      => $cat_1_1_id,
-                           'parent'   => $cat_1_id,
-                           'title'    => 'cat 1.1',
-                           'a_attr'   => ['data-id' => $cat_1_1_id],
-                           'children' => [
-                              [
-                                 'key'    => $cat_1_1_2_id,
-                                 'parent' => $cat_1_1_id,
-                                 'title'  => 'cat 1.1.2 <span class="badge bg-azure-lt" title="This category contains articles">1</span>',
-                                 'a_attr' => ['data-id' => $cat_1_1_2_id]
-                              ],
-                           ]
+                            'key'      => $cat_1_id,
+                            'parent'   => 0,
+                            'title'    => 'cat 1',
+                            'a_attr'   => ['data-id' => $cat_1_id],
+                            'children' => [
+                                [
+                                    'key'      => $cat_1_1_id,
+                                    'parent'   => $cat_1_id,
+                                    'title'    => 'cat 1.1',
+                                    'a_attr'   => ['data-id' => $cat_1_1_id],
+                                    'children' => [
+                                        [
+                                            'key'    => $cat_1_1_2_id,
+                                            'parent' => $cat_1_1_id,
+                                            'title'  => 'cat 1.1.2 <span class="badge bg-azure-lt" title="This category contains articles">1</span>',
+                                            'a_attr' => ['data-id' => $cat_1_1_2_id]
+                                        ],
+                                    ]
+                                ],
+                            ]
                         ],
-                     ]
-                  ],
-               ]
-            ]),
+                    ]
+                ]),
             ]
         );
 
        // Add 2nd category
         $kbitem_cat_id = $kbitem_cat->add(
             [
-            'knowbaseitemcategories_id' => "$cat_1_3_id",
-            'knowbaseitems_id' => "$kbitem_id",
+                'knowbaseitemcategories_id' => "$cat_1_3_id",
+                'knowbaseitems_id' => "$kbitem_id",
             ]
         );
         $this->integer($kbitem_cat_id)->isGreaterThan(0);
@@ -188,9 +188,9 @@ class Knowbase extends DbTestCase
         $kbitem_target = new \Entity_KnowbaseItem();
         $kbitem_target_id = $kbitem_target->add(
             [
-            'knowbaseitems_id' => $kbitem_id,
-            'entities_id' => 0,
-            'is_recursive' => 1,
+                'knowbaseitems_id' => $kbitem_id,
+                'entities_id' => 0,
+                'is_recursive' => 1,
             ]
         );
         $this->integer($kbitem_target_id)->isGreaterThan(0);
@@ -199,38 +199,38 @@ class Knowbase extends DbTestCase
         $tree = \Knowbase::getTreeCategoryList();
         $this->array($tree)->isEqualTo(
             [
-            array_merge($expected_root_cat, [
-               'children' => [
-                  [
-                     'key'      => $cat_1_id,
-                     'parent'   => 0,
-                     'title'    => 'cat 1',
-                     'a_attr'   => ['data-id' => $cat_1_id],
-                     'children' => [
+                array_merge($expected_root_cat, [
+                    'children' => [
                         [
-                           'key'      => $cat_1_1_id,
-                           'parent'   => $cat_1_id,
-                           'title'    => 'cat 1.1',
-                           'a_attr'   => ['data-id' => $cat_1_1_id],
-                           'children' => [
-                              [
-                                 'key'    => $cat_1_1_2_id,
-                                 'parent' => $cat_1_1_id,
-                                 'title'  => 'cat 1.1.2 <span class="badge bg-azure-lt" title="This category contains articles">1</span>',
-                                 'a_attr' => ['data-id' => $cat_1_1_2_id]
-                              ],
-                           ]
+                            'key'      => $cat_1_id,
+                            'parent'   => 0,
+                            'title'    => 'cat 1',
+                            'a_attr'   => ['data-id' => $cat_1_id],
+                            'children' => [
+                                [
+                                    'key'      => $cat_1_1_id,
+                                    'parent'   => $cat_1_id,
+                                    'title'    => 'cat 1.1',
+                                    'a_attr'   => ['data-id' => $cat_1_1_id],
+                                    'children' => [
+                                        [
+                                            'key'    => $cat_1_1_2_id,
+                                            'parent' => $cat_1_1_id,
+                                            'title'  => 'cat 1.1.2 <span class="badge bg-azure-lt" title="This category contains articles">1</span>',
+                                            'a_attr' => ['data-id' => $cat_1_1_2_id]
+                                        ],
+                                    ]
+                                ],
+                                [
+                                    'key'    => $cat_1_3_id,
+                                    'parent' => $cat_1_id,
+                                    'title'  => 'cat 1.3 <span class="badge bg-azure-lt" title="This category contains articles">1</span>',
+                                    'a_attr' => ['data-id' => $cat_1_3_id]
+                                ]
+                            ]
                         ],
-                        [
-                           'key'    => $cat_1_3_id,
-                           'parent' => $cat_1_id,
-                           'title'  => 'cat 1.3 <span class="badge bg-azure-lt" title="This category contains articles">1</span>',
-                           'a_attr' => ['data-id' => $cat_1_3_id]
-                        ]
-                     ]
-                  ],
-               ]
-            ]),
+                    ]
+                ]),
             ]
         );
 
@@ -238,7 +238,7 @@ class Knowbase extends DbTestCase
         $kbitem = new \KnowbaseItem();
         $kbitem_id = $kbitem->add(
             [
-            'is_faq' => 1,
+                'is_faq' => 1,
             ]
         );
         $this->integer($kbitem_id)->isGreaterThan(0);
@@ -246,8 +246,8 @@ class Knowbase extends DbTestCase
         $kbitem_cat = new \KnowbaseItem_KnowbaseItemCategory();
         $kbitem_cat_id = $kbitem_cat->add(
             [
-            'knowbaseitemcategories_id' => "$cat_1_2_1_id",
-            'knowbaseitems_id' => "$kbitem_id",
+                'knowbaseitemcategories_id' => "$cat_1_2_1_id",
+                'knowbaseitems_id' => "$kbitem_id",
             ]
         );
         $this->integer($kbitem_cat_id)->isGreaterThan(0);
@@ -255,19 +255,19 @@ class Knowbase extends DbTestCase
         $kbitem_target = new \Entity_KnowbaseItem();
         $kbitem_target_id = $kbitem_target->add(
             [
-            'knowbaseitems_id' => $kbitem_id,
-            'entities_id' => 0,
-            'is_recursive' => 1,
+                'knowbaseitems_id' => $kbitem_id,
+                'entities_id' => 0,
+                'is_recursive' => 1,
             ]
         );
         $this->integer($kbitem_target_id)->isGreaterThan(0);
 
        // Expected root category item for anonymous user
         $expected_root_cat = [
-         'key'    => 0,
-         'parent' => null,
-         'title'  => 'Root category',
-         'a_attr' => ['data-id' => 0]
+            'key'    => 0,
+            'parent' => null,
+            'title'  => 'Root category',
+            'a_attr' => ['data-id' => 0]
         ];
 
        // Check that tree contains root only (FAQ is not public) for anonymous user
@@ -289,32 +289,32 @@ class Knowbase extends DbTestCase
         $this->array($tree_with_no_public_faq)->isEqualTo([$expected_root_cat]);
         $this->array($tree_with_public_faq)->isEqualTo(
             [
-            array_merge($expected_root_cat, [
-               'children' => [
-                  [
-                     'key'      => $cat_1_id,
-                     'parent'   => 0,
-                     'title'    => 'cat 1',
-                     'a_attr'   => ['data-id' => $cat_1_id],
-                     'children' => [
+                array_merge($expected_root_cat, [
+                    'children' => [
                         [
-                           'key'      => $cat_1_2_id,
-                           'parent'   => $cat_1_id,
-                           'title'    => 'cat 1.2',
-                           'a_attr'   => ['data-id' => $cat_1_2_id],
-                           'children' => [
-                              [
-                                 'key'    => $cat_1_2_1_id,
-                                 'parent' => $cat_1_2_id,
-                                 'title'  => 'cat 1.2.1 <span class="badge bg-azure-lt" title="This category contains articles">1</span>',
-                                 'a_attr' => ['data-id' => $cat_1_2_1_id]
-                              ],
-                           ]
-                        ],
-                     ]
-                  ]
-               ],
-            ]),
+                            'key'      => $cat_1_id,
+                            'parent'   => 0,
+                            'title'    => 'cat 1',
+                            'a_attr'   => ['data-id' => $cat_1_id],
+                            'children' => [
+                                [
+                                    'key'      => $cat_1_2_id,
+                                    'parent'   => $cat_1_id,
+                                    'title'    => 'cat 1.2',
+                                    'a_attr'   => ['data-id' => $cat_1_2_id],
+                                    'children' => [
+                                        [
+                                            'key'    => $cat_1_2_1_id,
+                                            'parent' => $cat_1_2_id,
+                                            'title'  => 'cat 1.2.1 <span class="badge bg-azure-lt" title="This category contains articles">1</span>',
+                                            'a_attr' => ['data-id' => $cat_1_2_1_id]
+                                        ],
+                                    ]
+                                ],
+                            ]
+                        ]
+                    ],
+                ]),
             ]
         );
     }

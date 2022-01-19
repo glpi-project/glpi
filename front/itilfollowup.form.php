@@ -111,9 +111,9 @@ if ($handled) {
     if (isset($_POST['kb_linked_id'])) {
        //if followup should be linked to selected KB entry
         $params = [
-         'knowbaseitems_id' => $_POST['kb_linked_id'],
-         'itemtype'         => $track->getType(),
-         'items_id'         => $track->getID()
+            'knowbaseitems_id' => $_POST['kb_linked_id'],
+            'itemtype'         => $track->getType(),
+            'items_id'         => $track->getID()
         ];
         $existing = $DB->request(
             'glpi_knowbaseitems_items',

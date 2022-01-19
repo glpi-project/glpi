@@ -55,7 +55,7 @@ class SoftwareVersion extends CommonDBChild
 
         $this->deleteChildrenAndRelationsFromDb(
             [
-            Item_SoftwareVersion::class,
+                Item_SoftwareVersion::class,
             ]
         );
     }
@@ -136,8 +136,9 @@ class SoftwareVersion extends CommonDBChild
 
         echo "<tr class='tab_bg_1'><td>" . __('Status') . "</td><td>";
         State::dropdown(['value'     => $this->fields["states_id"],
-                            'entity'    => $this->fields["entities_id"],
-                            'condition' => ['is_visible_softwareversion' => 1]]);
+            'entity'    => $this->fields["entities_id"],
+            'condition' => ['is_visible_softwareversion' => 1]
+        ]);
         echo "</td></tr>\n";
 
        // Only count softwareversions_id_buy (don't care of softwareversions_id_use if no installation)
@@ -159,50 +160,50 @@ class SoftwareVersion extends CommonDBChild
         $tab = [];
 
         $tab[] = [
-         'id'                 => 'common',
-         'name'               => __('Characteristics')
+            'id'                 => 'common',
+            'name'               => __('Characteristics')
         ];
 
         $tab[] = [
-         'id'                 => '2',
-         'table'              => $this->getTable(),
-         'field'              => 'name',
-         'name'               => __('Name'),
-         'datatype'           => 'string',
+            'id'                 => '2',
+            'table'              => $this->getTable(),
+            'field'              => 'name',
+            'name'               => __('Name'),
+            'datatype'           => 'string',
         ];
 
         $tab[] = [
-         'id'                 => '4',
-         'table'              => 'glpi_operatingsystems',
-         'field'              => 'name',
-         'name'               => OperatingSystem::getTypeName(1),
-         'datatype'           => 'dropdown'
+            'id'                 => '4',
+            'table'              => 'glpi_operatingsystems',
+            'field'              => 'name',
+            'name'               => OperatingSystem::getTypeName(1),
+            'datatype'           => 'dropdown'
         ];
 
         $tab[] = [
-         'id'                 => '16',
-         'table'              => $this->getTable(),
-         'field'              => 'comment',
-         'name'               => __('Comments'),
-         'datatype'           => 'text'
+            'id'                 => '16',
+            'table'              => $this->getTable(),
+            'field'              => 'comment',
+            'name'               => __('Comments'),
+            'datatype'           => 'text'
         ];
 
         $tab[] = [
-         'id'                 => '31',
-         'table'              => 'glpi_states',
-         'field'              => 'completename',
-         'name'               => __('Status'),
-         'datatype'           => 'dropdown',
-         'condition'          => ['is_visible_softwareversion' => 1]
+            'id'                 => '31',
+            'table'              => 'glpi_states',
+            'field'              => 'completename',
+            'name'               => __('Status'),
+            'datatype'           => 'dropdown',
+            'condition'          => ['is_visible_softwareversion' => 1]
         ];
 
         $tab[] = [
-         'id'                 => '121',
-         'table'              => $this->getTable(),
-         'field'              => 'date_creation',
-         'name'               => __('Creation date'),
-         'datatype'           => 'datetime',
-         'massiveaction'      => false
+            'id'                 => '121',
+            'table'              => $this->getTable(),
+            'field'              => 'date_creation',
+            'name'               => __('Creation date'),
+            'datatype'           => 'datetime',
+            'massiveaction'      => false
         ];
 
         return $tab;
@@ -241,24 +242,24 @@ class SoftwareVersion extends CommonDBChild
 
        // Make a select box
         $criteria = [
-         'SELECT'    => [
-            'glpi_softwareversions.*',
-            'glpi_states.name AS sname'
-         ],
-         'DISTINCT'  => true,
-         'FROM'      => 'glpi_softwareversions',
-         'LEFT JOIN' => [
-            'glpi_states'  => [
-               'ON' => [
-                  'glpi_softwareversions' => 'states_id',
-                  'glpi_states'           => 'id'
-               ]
-            ]
-         ],
-         'WHERE'     => [
-            'glpi_softwareversions.softwares_id'   => $p['softwares_id']
-         ],
-         'ORDERBY'   => 'name'
+            'SELECT'    => [
+                'glpi_softwareversions.*',
+                'glpi_states.name AS sname'
+            ],
+            'DISTINCT'  => true,
+            'FROM'      => 'glpi_softwareversions',
+            'LEFT JOIN' => [
+                'glpi_states'  => [
+                    'ON' => [
+                        'glpi_softwareversions' => 'states_id',
+                        'glpi_states'           => 'id'
+                    ]
+                ]
+            ],
+            'WHERE'     => [
+                'glpi_softwareversions.softwares_id'   => $p['softwares_id']
+            ],
+            'ORDERBY'   => 'name'
         ];
 
         if (count($p['used'])) {
@@ -312,23 +313,23 @@ class SoftwareVersion extends CommonDBChild
         }
 
         $iterator = $DB->request([
-         'SELECT'    => [
-            'glpi_softwareversions.*',
-            'glpi_states.name AS sname'
-         ],
-         'FROM'      => 'glpi_softwareversions',
-         'LEFT JOIN' => [
-            'glpi_states'  => [
-               'ON' => [
-                  'glpi_softwareversions' => 'states_id',
-                  'glpi_states'           => 'id'
-               ]
-            ]
-         ],
-         'WHERE'     => [
-            'softwares_id' => $softwares_id
-         ],
-         'ORDERBY'   => 'name'
+            'SELECT'    => [
+                'glpi_softwareversions.*',
+                'glpi_states.name AS sname'
+            ],
+            'FROM'      => 'glpi_softwareversions',
+            'LEFT JOIN' => [
+                'glpi_states'  => [
+                    'ON' => [
+                        'glpi_softwareversions' => 'states_id',
+                        'glpi_states'           => 'id'
+                    ]
+                ]
+            ],
+            'WHERE'     => [
+                'softwares_id' => $softwares_id
+            ],
+            'ORDERBY'   => 'name'
         ]);
 
         Session::initNavigateListItems(

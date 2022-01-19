@@ -49,11 +49,11 @@ class FrontEndAssetsExtension extends AbstractExtension
     public function getFunctions(): array
     {
         return [
-         new TwigFunction('asset_path', [$this, 'assetPath']),
-         new TwigFunction('css_path', [$this, 'cssPath']),
-         new TwigFunction('js_path', [$this, 'jsPath']),
-         new TwigFunction('custom_css', [$this, 'customCss'], ['is_safe' => ['html']]),
-         new TwigFunction('locales_js', [$this, 'localesJs'], ['is_safe' => ['html']]),
+            new TwigFunction('asset_path', [$this, 'assetPath']),
+            new TwigFunction('css_path', [$this, 'cssPath']),
+            new TwigFunction('js_path', [$this, 'jsPath']),
+            new TwigFunction('custom_css', [$this, 'customCss'], ['is_safe' => ['html']]),
+            new TwigFunction('locales_js', [$this, 'localesJs'], ['is_safe' => ['html']]),
         ];
     }
 

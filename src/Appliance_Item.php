@@ -46,7 +46,7 @@ class Appliance_Item extends CommonDBRelation
     public function getCloneRelations(): array
     {
         return [
-         Appliance_Item_Relation::class
+            Appliance_Item_Relation::class
         ];
     }
 
@@ -116,10 +116,10 @@ class Appliance_Item extends CommonDBRelation
         $canedit = $appliance->canEdit($ID);
 
         $items = $DB->request([
-         'FROM'   => self::getTable(),
-         'WHERE'  => [
-            self::$items_id_1 => $ID
-         ]
+            'FROM'   => self::getTable(),
+            'WHERE'  => [
+                self::$items_id_1 => $ID
+            ]
         ]);
 
         Session::initNavigateListItems(
@@ -147,14 +147,14 @@ class Appliance_Item extends CommonDBRelation
             echo "<tr class='tab_bg_1'><td class='center'>";
             Dropdown::showSelectItemFromItemtypes(
                 ['items_id_name'   => 'items_id',
-                'itemtypes'       => Appliance::getTypes(true),
-                'entity_restrict' => ($appliance->fields['is_recursive']
+                    'itemtypes'       => Appliance::getTypes(true),
+                    'entity_restrict' => ($appliance->fields['is_recursive']
                                       ? getSonsOf(
                                           'glpi_entities',
                                           $appliance->fields['entities_id']
                                       )
                                        : $appliance->fields['entities_id']),
-                'checkright'      => true,
+                    'checkright'      => true,
                 ]
             );
             echo "</td><td class='center' class='tab_bg_1'>";
@@ -175,8 +175,8 @@ class Appliance_Item extends CommonDBRelation
             if ($canedit) {
                 Html::openMassiveActionsForm('mass' . __CLASS__ . $rand);
                 $massiveactionparams = [
-                'num_displayed'   => min($_SESSION['glpilist_limit'], count($items)),
-                'container'       => 'mass' . __CLASS__ . $rand
+                    'num_displayed'   => min($_SESSION['glpilist_limit'], count($items)),
+                    'container'       => 'mass' . __CLASS__ . $rand
                 ];
                 Html::showMassiveActions($massiveactionparams);
             }
@@ -276,8 +276,8 @@ class Appliance_Item extends CommonDBRelation
 
             echo "<tr class='tab_bg_1'><td>";
             Appliance::dropdown([
-            'entity'  => $item->getEntityID(),
-            'used'    => $used
+                'entity'  => $item->getEntityID(),
+                'used'    => $used
             ]);
 
             echo "</td><td class='center'>";
@@ -293,7 +293,8 @@ class Appliance_Item extends CommonDBRelation
             if ($canedit && $number) {
                 Html::openMassiveActionsForm('mass' . __CLASS__ . $rand);
                 $massiveactionparams = ['num_displayed' => min($_SESSION['glpilist_limit'], $number),
-                                         'container'     => 'mass' . __CLASS__ . $rand];
+                    'container'     => 'mass' . __CLASS__ . $rand
+                ];
                 Html::showMassiveActions($massiveactionparams);
             }
         }
@@ -462,7 +463,7 @@ class Appliance_Item extends CommonDBRelation
     {
         $this->deleteChildrenAndRelationsFromDb(
             [
-            Appliance_Item_Relation::class,
+                Appliance_Item_Relation::class,
             ]
         );
     }

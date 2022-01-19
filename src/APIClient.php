@@ -47,7 +47,7 @@ class APIClient extends CommonDBTM
     public $dohistory                   = true;
 
     public static $undisclosedFields = [
-      'app_token'
+        'app_token'
     ];
 
     public static function canCreate()
@@ -80,79 +80,79 @@ class APIClient extends CommonDBTM
         $tab = [];
 
         $tab[] = [
-         'id'                 => 'common',
-         'name'               => self::GetTypeName()
+            'id'                 => 'common',
+            'name'               => self::GetTypeName()
         ];
 
         $tab[] = [
-         'id'                 => '1',
-         'table'              => $this->getTable(),
-         'field'              => 'name',
-         'name'               => __('Name'),
-         'datatype'           => 'itemlink',
+            'id'                 => '1',
+            'table'              => $this->getTable(),
+            'field'              => 'name',
+            'name'               => __('Name'),
+            'datatype'           => 'itemlink',
         ];
 
         $tab[] = [
-         'id'                 => '2',
-         'table'              => $this->getTable(),
-         'field'              => 'id',
-         'name'               => __('ID'),
-         'massiveaction'      => false,
-         'datatype'           => 'number'
+            'id'                 => '2',
+            'table'              => $this->getTable(),
+            'field'              => 'id',
+            'name'               => __('ID'),
+            'massiveaction'      => false,
+            'datatype'           => 'number'
         ];
 
         $tab[] = [
-         'id'                 => '3',
-         'table'              => $this->getTable(),
-         'field'              => 'is_active',
-         'name'               => __('Active'),
-         'datatype'           => 'bool'
+            'id'                 => '3',
+            'table'              => $this->getTable(),
+            'field'              => 'is_active',
+            'name'               => __('Active'),
+            'datatype'           => 'bool'
         ];
 
         $tab[] = [
-         'id'                 => '4',
-         'table'              => $this->getTable(),
-         'field'              => 'dolog_method',
-         'name'               => __('Log connections'),
-         'datatype'           => 'specific'
+            'id'                 => '4',
+            'table'              => $this->getTable(),
+            'field'              => 'dolog_method',
+            'name'               => __('Log connections'),
+            'datatype'           => 'specific'
         ];
 
         $tab[] = [
-         'id'                 => 'filter',
-         'name'               => __('Filter access')
+            'id'                 => 'filter',
+            'name'               => __('Filter access')
         ];
 
         $tab[] = [
-         'id'                 => '5',
-         'table'              => $this->getTable(),
-         'field'              => 'ipv4_range_start',
-         'name'               => __('IPv4 address range') . " - " . __("Start"),
-         'datatype'           => 'specific'
+            'id'                 => '5',
+            'table'              => $this->getTable(),
+            'field'              => 'ipv4_range_start',
+            'name'               => __('IPv4 address range') . " - " . __("Start"),
+            'datatype'           => 'specific'
         ];
 
         $tab[] = [
-         'id'                 => '6',
-         'table'              => $this->getTable(),
-         'field'              => 'ipv4_range_end',
-         'name'               => __('IPv4 address range') . " - " . __("End"),
-         'datatype'           => 'specific'
+            'id'                 => '6',
+            'table'              => $this->getTable(),
+            'field'              => 'ipv4_range_end',
+            'name'               => __('IPv4 address range') . " - " . __("End"),
+            'datatype'           => 'specific'
         ];
 
         $tab[] = [
-         'id'                 => '7',
-         'table'              => $this->getTable(),
-         'field'              => 'ipv6',
-         'name'               => __('IPv6 address'),
-         'datatype'           => 'text',
+            'id'                 => '7',
+            'table'              => $this->getTable(),
+            'field'              => 'ipv6',
+            'name'               => __('IPv6 address'),
+            'datatype'           => 'text',
         ];
 
         $tab[] = [
-         'id'                 => '8',
-         'table'              => $this->getTable(),
-         'field'              => 'app_token',
-         'name'               => __('Application token'),
-         'massiveaction'      => false,
-         'datatype'           => 'text',
+            'id'                 => '8',
+            'table'              => $this->getTable(),
+            'field'              => 'app_token',
+            'name'               => __('Application token'),
+            'massiveaction'      => false,
+            'datatype'           => 'text',
         ];
 
         return $tab;
@@ -312,12 +312,13 @@ class APIClient extends CommonDBTM
     {
 
         return [self::DOLOG_DISABLED   => __('Disabled'),
-                   self::DOLOG_HISTORICAL => __('Historical'),
-                   self::DOLOG_LOGS       => _n(
-                       'Log',
-                       'Logs',
-                       Session::getPluralNumber()
-                   )];
+            self::DOLOG_HISTORICAL => __('Historical'),
+            self::DOLOG_LOGS       => _n(
+                'Log',
+                'Logs',
+                Session::getPluralNumber()
+            )
+        ];
     }
 
     /**

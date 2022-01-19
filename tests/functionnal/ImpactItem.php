@@ -48,9 +48,9 @@ class ImpactItem extends \DbTestCase
         $computer = getItemByTypeName('Computer', '_test_pc02');
 
         $id = $impactItemManager->add([
-         'itemtype'  => "Computer",
-         'items_id'  => $computer->fields['id'],
-         'parent_id' => 0,
+            'itemtype'  => "Computer",
+            'items_id'  => $computer->fields['id'],
+            'parent_id' => 0,
         ]);
 
         $impactItem = \ImpactItem::findForItem($computer);
@@ -60,34 +60,34 @@ class ImpactItem extends \DbTestCase
     public function prepareInputForUpdateProvider()
     {
         return [
-         [
-            'input'  => ['max_depth' => "glpi"],
-            'result' => \Impact::DEFAULT_DEPTH,
-         ],
-         [
-            'input'  => ['max_depth' => 0],
-            'result' => \Impact::DEFAULT_DEPTH,
-         ],
-         [
-            'input'  => ['max_depth' => -58],
-            'result' => \Impact::DEFAULT_DEPTH,
-         ],
-         [
-            'input'  => ['max_depth' => 9],
-            'result' => 9,
-         ],
-         [
-            'input'  => ['max_depth' => 2],
-            'result' => 2,
-         ],
-         [
-            'input'  => ['max_depth' => 40],
-            'result' => \Impact::NO_DEPTH_LIMIT,
-         ],
-         [
-            'input'  => ['max_depth' => \Impact::NO_DEPTH_LIMIT],
-            'result' => \Impact::NO_DEPTH_LIMIT,
-         ],
+            [
+                'input'  => ['max_depth' => "glpi"],
+                'result' => \Impact::DEFAULT_DEPTH,
+            ],
+            [
+                'input'  => ['max_depth' => 0],
+                'result' => \Impact::DEFAULT_DEPTH,
+            ],
+            [
+                'input'  => ['max_depth' => -58],
+                'result' => \Impact::DEFAULT_DEPTH,
+            ],
+            [
+                'input'  => ['max_depth' => 9],
+                'result' => 9,
+            ],
+            [
+                'input'  => ['max_depth' => 2],
+                'result' => 2,
+            ],
+            [
+                'input'  => ['max_depth' => 40],
+                'result' => \Impact::NO_DEPTH_LIMIT,
+            ],
+            [
+                'input'  => ['max_depth' => \Impact::NO_DEPTH_LIMIT],
+                'result' => \Impact::NO_DEPTH_LIMIT,
+            ],
         ];
     }
 

@@ -68,20 +68,20 @@ class KnowbaseItem_KnowbaseItemCategory extends CommonDBRelation
         $kbi_cat_table = self::getTable();
 
         $criteria = [
-         'FROM'      => [$kbi_cat_table],
-         'FIELDS'    => [$kbi_cat_table => '*'],
-         'INNER JOIN' => [
-            'glpi_knowbaseitems' => [
-               'ON'  => [
-                  $kbi_cat_table        => 'knowbaseitems_id',
-                  'glpi_knowbaseitems' => 'id'
-               ]
+            'FROM'      => [$kbi_cat_table],
+            'FIELDS'    => [$kbi_cat_table => '*'],
+            'INNER JOIN' => [
+                'glpi_knowbaseitems' => [
+                    'ON'  => [
+                        $kbi_cat_table        => 'knowbaseitems_id',
+                        'glpi_knowbaseitems' => 'id'
+                    ]
+                ]
+            ],
+            'WHERE'     => [],
+            'GROUPBY'   => [
+                $kbi_cat_table . '.id'
             ]
-         ],
-         'WHERE'     => [],
-         'GROUPBY'   => [
-            $kbi_cat_table . '.id'
-         ]
         ];
         $where = [];
 
@@ -211,8 +211,9 @@ class KnowbaseItem_KnowbaseItemCategory extends CommonDBRelation
             $massiveactionparams
             = ['num_displayed'
                         => min($_SESSION['glpilist_limit'], $number),
-                    'container'
-                        => 'mass' . __CLASS__ . $rand];
+                'container'
+                        => 'mass' . __CLASS__ . $rand
+            ];
             Html::showMassiveActions($massiveactionparams);
         }
         echo "<table class='tab_cadre_fixehov'>";

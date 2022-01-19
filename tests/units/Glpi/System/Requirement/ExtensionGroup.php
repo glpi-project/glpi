@@ -52,8 +52,8 @@ class ExtensionGroup extends \GLPITestCase
         $this->array($this->testedInstance->getValidationMessages())
          ->isEqualTo(
              [
-               'Following extensions are installed: curl.',
-               'Following extensions are missing: fake_ext.'
+                 'Following extensions are installed: curl.',
+                 'Following extensions are missing: fake_ext.'
              ]
          );
     }
@@ -66,8 +66,8 @@ class ExtensionGroup extends \GLPITestCase
         $this->array($this->testedInstance->getValidationMessages())
          ->isEqualTo(
              [
-               'Following extensions are installed: curl.',
-               'Following extensions are not present: fake_ext.'
+                 'Following extensions are installed: curl.',
+                 'Following extensions are not present: fake_ext.'
              ]
          );
     }

@@ -124,8 +124,8 @@ if (isset($_GET['getvcard'])) {
 } else {
     Html::header(Contact::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "management", "contact");
     $contact->display([
-      'id'           => $_GET["id"],
-      'formoptions'  => "data-track-changes=true"
+        'id'           => $_GET["id"],
+        'formoptions'  => "data-track-changes=true"
     ]);
     Html::footer();
 }

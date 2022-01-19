@@ -46,8 +46,8 @@ $_SESSION['glpisavedsearches_pinned'] = exportArrayToDB($all_pinned);
 $user = new User();
 $success = $user->update(
     [
-      'id'                   => Session::getLoginUserID(),
-      'savedsearches_pinned' => $_SESSION['glpisavedsearches_pinned'],
+        'id'                   => Session::getLoginUserID(),
+        'savedsearches_pinned' => $_SESSION['glpisavedsearches_pinned'],
     ]
 );
 

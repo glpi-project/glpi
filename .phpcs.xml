@@ -23,4 +23,6 @@
        <exclude name="PSR1.Methods.CamelCapsMethodName.NotCamelCaps" />
        <exclude name="Squiz.Classes.ValidClassName.NotCamelCaps" />
     </rule>
+
+    <rule ref="Generic.Arrays.ArrayIndent"></rule>
 </ruleset>

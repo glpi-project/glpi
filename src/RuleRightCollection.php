@@ -182,24 +182,24 @@ class RuleRightCollection extends RuleCollection
 
         $params = [];
         $iterator = $DB->request([
-         'SELECT'          => 'value',
-         'DISTINCT'        => true,
-         'FROM'            => 'glpi_rulerightparameters',
-         'LEFT JOIN'       => [
-            'glpi_rulecriterias' => [
-               'ON' => [
-                  'glpi_rulerightparameters' => 'value',
-                  'glpi_rulecriterias'       => 'criteria'
-               ]
+            'SELECT'          => 'value',
+            'DISTINCT'        => true,
+            'FROM'            => 'glpi_rulerightparameters',
+            'LEFT JOIN'       => [
+                'glpi_rulecriterias' => [
+                    'ON' => [
+                        'glpi_rulerightparameters' => 'value',
+                        'glpi_rulecriterias'       => 'criteria'
+                    ]
+                ],
+                'glpi_rules'         => [
+                    'ON' => [
+                        'glpi_rulecriterias' => 'rules_id',
+                        'glpi_rules'         => 'id'
+                    ]
+                ]
             ],
-            'glpi_rules'         => [
-               'ON' => [
-                  'glpi_rulecriterias' => 'rules_id',
-                  'glpi_rules'         => 'id'
-               ]
-            ]
-         ],
-         'WHERE'           => ['glpi_rules.sub_type' => 'RuleRight']
+            'WHERE'           => ['glpi_rules.sub_type' => 'RuleRight']
         ]);
 
         foreach ($iterator as $param) {
@@ -231,10 +231,10 @@ class RuleRightCollection extends RuleCollection
 
        //common parameters
         $rule_parameters = [
-         'TYPE'       => $params["type"] ?? "",
-         'LOGIN'      => $params["login"] ?? "",
-         'MAIL_EMAIL' => $params["email"] ?? $params["mail_email"] ?? "",
-         '_groups_id' => $groups
+            'TYPE'       => $params["type"] ?? "",
+            'LOGIN'      => $params["login"] ?? "",
+            'MAIL_EMAIL' => $params["email"] ?? $params["mail_email"] ?? "",
+            '_groups_id' => $groups
         ];
 
        //IMAP/POP login method

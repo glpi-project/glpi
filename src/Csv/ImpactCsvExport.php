@@ -56,10 +56,10 @@ class ImpactCsvExport implements ExportToCsvInterface
     public function getFileHeader(): array
     {
         return [
-         __("Relation"),
-         __("Itemtype"),
-         __("Id"),
-         __("Name"),
+            __("Relation"),
+            __("Itemtype"),
+            __("Id"),
+            __("Name"),
         ];
     }
 
@@ -102,10 +102,10 @@ class ImpactCsvExport implements ExportToCsvInterface
             foreach ($impact_data as $data_type => $data_elements) {
                 foreach ($data_elements as $data_element) {
                     $content[] = [
-                    $direction_label,
-                    $data_type,
-                    $data_element['stored']->fields['id'],
-                    $data_element['stored']->fields['name'],
+                        $direction_label,
+                        $data_type,
+                        $data_element['stored']->fields['id'],
+                        $data_element['stored']->fields['name'],
                     ];
                 }
             }

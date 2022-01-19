@@ -46,16 +46,16 @@ class Contract extends DbTestCase
 
         $contract = new \Contract();
         $input = [
-         'name' => 'A test contract',
-         'entities_id'  => 0
+            'name' => 'A test contract',
+            'entities_id'  => 0
         ];
         $cid = $contract->add($input);
         $this->integer($cid)->isGreaterThan(0);
 
         $cost = new \ContractCost();
         $cost_id = $cost->add([
-         'contracts_id' => $cid,
-         'name'         => 'Test cost'
+            'contracts_id' => $cid,
+            'name'         => 'Test cost'
         ]);
         $this->integer($cost_id)->isGreaterThan(0);
 
@@ -64,8 +64,8 @@ class Contract extends DbTestCase
 
         $link_supplier = new \Contract_Supplier();
         $link_id = $link_supplier->add([
-         'suppliers_id' => $suppliers_id,
-         'contracts_id' => $cid
+            'suppliers_id' => $suppliers_id,
+            'contracts_id' => $cid
         ]);
         $this->integer($link_id)->isGreaterThan(0);
 
@@ -75,9 +75,9 @@ class Contract extends DbTestCase
 
         $citem = new \Contract_Item();
         $citems_id = $citem->add([
-         'contracts_id' => $cid,
-         'itemtype'     => 'Computer',
-         'items_id'     => getItemByTypeName('Computer', '_test_pc01', true)
+            'contracts_id' => $cid,
+            'itemtype'     => 'Computer',
+            'items_id'     => getItemByTypeName('Computer', '_test_pc01', true)
         ]);
         $this->integer($citems_id)->isGreaterThan(0);
 

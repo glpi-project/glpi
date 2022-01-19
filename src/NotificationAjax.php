@@ -57,14 +57,14 @@ class NotificationAjax implements NotificationInterface
     {
         $instance = new self();
         return $instance->sendNotification([
-         '_itemtype'                   => 'NotificationAjax',
-         '_items_id'                   => 1,
-         '_notificationtemplates_id'   => 0,
-         '_entities_id'                => 0,
-         'fromname'                    => 'TEST',
-         'subject'                     => 'Test notification',
-         'content_text'                => "Hello, this is a test notification.",
-         'to'                          => Session::getLoginUserID()
+            '_itemtype'                   => 'NotificationAjax',
+            '_items_id'                   => 1,
+            '_notificationtemplates_id'   => 0,
+            '_entities_id'                => 0,
+            'fromname'                    => 'TEST',
+            'subject'                     => 'Test notification',
+            'content_text'                => "Hello, this is a test notification.",
+            'to'                          => Session::getLoginUserID()
         ]);
     }
 
@@ -121,12 +121,12 @@ class NotificationAjax implements NotificationInterface
         $return = [];
         if ($CFG_GLPI['notifications_ajax']) {
             $iterator = $DB->request([
-            'FROM'   => 'glpi_queuednotifications',
-            'WHERE'  => [
-               'is_deleted'   => false,
-               'recipient'    => Session::getLoginUserID(),
-               'mode'         => Notification_NotificationTemplate::MODE_AJAX
-            ]
+                'FROM'   => 'glpi_queuednotifications',
+                'WHERE'  => [
+                    'is_deleted'   => false,
+                    'recipient'    => Session::getLoginUserID(),
+                    'mode'         => Notification_NotificationTemplate::MODE_AJAX
+                ]
             ]);
 
             if ($iterator->numrows()) {
@@ -141,10 +141,10 @@ class NotificationAjax implements NotificationInterface
                     }
 
                     $return[] = [
-                    'id'     => $row['id'],
-                    'title'  => $row['name'],
-                    'body'   => $row['body_text'],
-                    'url'    => $url
+                        'id'     => $row['id'],
+                        'title'  => $row['name'],
+                        'body'   => $row['body_text'],
+                        'url'    => $url
                     ];
                 }
             }
@@ -172,12 +172,12 @@ class NotificationAjax implements NotificationInterface
         $DB->update(
             'glpi_queuednotifications',
             [
-            'sent_time'    => $now,
-            'is_deleted'   => 1
+                'sent_time'    => $now,
+                'is_deleted'   => 1
             ],
             [
-            'id'        => $id,
-            'recipient' => Session::getLoginUserID()
+                'id'        => $id,
+                'recipient' => Session::getLoginUserID()
             ]
         );
     }

@@ -50,7 +50,7 @@ class ProjectTask extends DbTestCase
         $ptask = new \ProjectTask();
         $this->integer(
             (int)$ptask->add([
-            'name'   => 'test'
+                'name'   => 'test'
             ])
         )->isIdenticalTo(0);
 
@@ -58,17 +58,17 @@ class ProjectTask extends DbTestCase
 
         $project = new \Project();
         $pid = (int)$project->add([
-         'name'   => 'Test project'
+            'name'   => 'Test project'
         ]);
         $this->integer($pid)->isGreaterThan(0);
 
         $this->integer(
             (int)$ptask->add([
-            'name'                     => 'first test, whole period',
-            'projects_id'              => $pid,
-            'plan_start_date'          => '2019-08-10',
-            'plan_end_date'            => '2019-08-20',
-            'projecttasktemplates_id'  => 0
+                'name'                     => 'first test, whole period',
+                'projects_id'              => $pid,
+                'plan_start_date'          => '2019-08-10',
+                'plan_end_date'            => '2019-08-20',
+                'projecttasktemplates_id'  => 0
             ])
         )->isGreaterThan(0);
         $this->hasNoSessionMessages([ERROR, WARNING]);
@@ -76,36 +76,36 @@ class ProjectTask extends DbTestCase
 
         $team = new \ProjectTaskTeam();
         $tid = (int)$team->add([
-         'projecttasks_id' => $ptask->fields['id'],
-         'itemtype'        => \User::getType(),
-         'items_id'        => $users_id
+            'projecttasks_id' => $ptask->fields['id'],
+            'itemtype'        => \User::getType(),
+            'items_id'        => $users_id
         ]);
         $this->hasNoSessionMessages([ERROR, WARNING]);
         $this->integer($tid)->isGreaterThan(0);
 
         $this->integer(
             (int)$ptask->add([
-            'name'                     => 'test, subperiod',
-            'projects_id'              => $pid,
-            'plan_start_date'          => '2019-08-13',
-            'plan_end_date'            => '2019-08-14',
-            'projecttasktemplates_id'  => 0
+                'name'                     => 'test, subperiod',
+                'projects_id'              => $pid,
+                'plan_start_date'          => '2019-08-13',
+                'plan_end_date'            => '2019-08-14',
+                'projecttasktemplates_id'  => 0
             ])
         )->isGreaterThan(0);
         $this->hasNoSessionMessages([ERROR, WARNING]);
 
         $team = new \ProjectTaskTeam();
         $tid = (int)$team->add([
-         'projecttasks_id' => $ptask->fields['id'],
-         'itemtype'        => \User::getType(),
-         'items_id'        => $users_id
+            'projecttasks_id' => $ptask->fields['id'],
+            'itemtype'        => \User::getType(),
+            'items_id'        => $users_id
         ]);
 
         $usr_str = '<a href="' . $user->getFormURLWithID($users_id) . '">' . $user->getName() . '</a>';
         $this->hasSessionMessages(
             WARNING,
             [
-            "The user $usr_str is busy at the selected timeframe.<br/>- Project task: from 2019-08-13 00:00 to 2019-08-14 00:00:<br/><a href='" .
+                "The user $usr_str is busy at the selected timeframe.<br/>- Project task: from 2019-08-13 00:00 to 2019-08-14 00:00:<br/><a href='" .
             $ptask->getFormURLWithID($task_id) . "'>first test, whole period</a><br/>"
             ]
         );
@@ -114,32 +114,32 @@ class ProjectTask extends DbTestCase
        //check when updating. first create a new task out of existing bouds
         $this->integer(
             (int)$ptask->add([
-            'name'                     => 'test subperiod, out of bounds',
-            'projects_id'              => $pid,
-            'plan_start_date'          => '2018-08-13',
-            'plan_end_date'            => '2018-08-24',
-            'projecttasktemplates_id'  => 0
+                'name'                     => 'test subperiod, out of bounds',
+                'projects_id'              => $pid,
+                'plan_start_date'          => '2018-08-13',
+                'plan_end_date'            => '2018-08-24',
+                'projecttasktemplates_id'  => 0
             ])
         )->isGreaterThan(0);
         $this->hasNoSessionMessages([ERROR, WARNING]);
 
         $team = new \ProjectTaskTeam();
         $tid = (int)$team->add([
-         'projecttasks_id' => $ptask->fields['id'],
-         'itemtype'        => \User::getType(),
-         'items_id'        => $users_id
+            'projecttasks_id' => $ptask->fields['id'],
+            'itemtype'        => \User::getType(),
+            'items_id'        => $users_id
         ]);
         $this->hasNoSessionMessages([ERROR, WARNING]);
         $this->integer($tid)->isGreaterThan(0);
 
         $this->boolean(
             $ptask->update([
-            'id'                       => $ptask->fields['id'],
-            'name'                     => 'test subperiod, no longer out of bounds',
-            'projects_id'              => $pid,
-            'plan_start_date'          => '2019-08-13',
-            'plan_end_date'            => '2019-08-24',
-            'projecttasktemplates_id'  => 0
+                'id'                       => $ptask->fields['id'],
+                'name'                     => 'test subperiod, no longer out of bounds',
+                'projects_id'              => $pid,
+                'plan_start_date'          => '2019-08-13',
+                'plan_end_date'            => '2019-08-24',
+                'projecttasktemplates_id'  => 0
             ])
         )->isTrue();
         $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'])
@@ -151,11 +151,11 @@ class ProjectTask extends DbTestCase
         $ticket = new \Ticket();
         $this->integer(
             (int)$ticket->add([
-            'name'               => 'ticket title',
-            'description'        => 'a description',
-            'content'            => '',
-            'entities_id'        => getItemByTypeName('Entity', '_test_root_entity', true),
-            '_users_id_assign'   => getItemByTypeName('User', 'tech', true)
+                'name'               => 'ticket title',
+                'description'        => 'a description',
+                'content'            => '',
+                'entities_id'        => getItemByTypeName('Entity', '_test_root_entity', true),
+                '_users_id_assign'   => getItemByTypeName('User', 'tech', true)
             ])
         )->isGreaterThan(0);
 
@@ -165,28 +165,28 @@ class ProjectTask extends DbTestCase
         $this->hasSessionMessages(
             INFO,
             [
-            "Your ticket has been registered. (Ticket: <a href='" . \Ticket::getFormURLWithID($tid) . "'>$tid</a>)"
+                "Your ticket has been registered. (Ticket: <a href='" . \Ticket::getFormURLWithID($tid) . "'>$tid</a>)"
             ]
         );
 
         $ttask = new \TicketTask();
         $ttask_id = (int)$ttask->add([
-         'name'               => 'A ticket task in bounds',
-         'content'            => 'A ticket task in bounds',
-         'tickets_id'         => $tid,
-         'plan'               => [
-            'begin'  => '2019-08-11',
-            'end'    => '2019-08-12'
-         ],
-         'users_id_tech'      => $users_id,
-         'tasktemplates_id'   => 0
+            'name'               => 'A ticket task in bounds',
+            'content'            => 'A ticket task in bounds',
+            'tickets_id'         => $tid,
+            'plan'               => [
+                'begin'  => '2019-08-11',
+                'end'    => '2019-08-12'
+            ],
+            'users_id_tech'      => $users_id,
+            'tasktemplates_id'   => 0
         ]);
         $usr_str = '<a href="' . $user->getFormURLWithID($users_id) . '">' . $user->getName() . '</a>';
 
         $this->hasSessionMessages(
             WARNING,
             [
-            "The user $usr_str is busy at the selected timeframe.<br/>- Project task: from 2019-08-11 00:00 to 2019-08-12 00:00:<br/><a href='" .
+                "The user $usr_str is busy at the selected timeframe.<br/>- Project task: from 2019-08-11 00:00 to 2019-08-12 00:00:<br/><a href='" .
             $ptask->getFormURLWithID($task_id) . "'>first test, whole period</a><br/>"
             ]
         );
@@ -197,8 +197,8 @@ class ProjectTask extends DbTestCase
     {
         $roles = \ProjectTask::getTeamRoles();
         $this->array($roles)->containsValues([
-         Team::ROLE_OWNER,
-         Team::ROLE_MEMBER,
+            Team::ROLE_OWNER,
+            Team::ROLE_MEMBER,
         ]);
     }
 
@@ -220,14 +220,14 @@ class ProjectTask extends DbTestCase
 
         $project = new \Project();
         $projects_id = $project->add([
-         'name'      => 'Team test',
-         'content'   => 'Team test'
+            'name'      => 'Team test',
+            'content'   => 'Team test'
         ]);
 
         $projecttasks_id = $project_task->add([
-         'projects_id'  => $projects_id,
-         'name'         => 'Team test',
-         'content'      => 'Team test'
+            'projects_id'  => $projects_id,
+            'name'         => 'Team test',
+            'content'      => 'Team test'
         ]);
         $this->integer($projecttasks_id)->isGreaterThan(0);
 

@@ -52,14 +52,14 @@ class PlanningCsv extends CsvTestCase
         $end->add(new \DateInterval('P5D'));
         $fend = $end->format('Y-m-d H:i:s');
         $rid = (int)$reminder->add([
-         'name'            => 'This is a "test"',
-         'is_planned'      => 1,
-         'begin_view_date' => $fbegin,
-         'end_view_date'   => $fend,
-         'plan'            => [
-            'begin'           => $fbegin,
-            'end'             => $fend
-         ]
+            'name'            => 'This is a "test"',
+            'is_planned'      => 1,
+            'begin_view_date' => $fbegin,
+            'end_view_date'   => $fend,
+            'plan'            => [
+                'begin'           => $fbegin,
+                'end'             => $fend
+            ]
         ]);
         $this->integer($rid)->isGreaterThan(0);
 
@@ -75,9 +75,9 @@ class PlanningCsv extends CsvTestCase
 
         $task = new \TicketTask();
         $tasksstates = [
-         \Planning::TODO,
-         \Planning::TODO,
-         \Planning::INFO
+            \Planning::TODO,
+            \Planning::TODO,
+            \Planning::INFO
         ];
         $date = new \DateTime();
         $date->sub(new \DateInterval('P6M'));
@@ -86,13 +86,13 @@ class PlanningCsv extends CsvTestCase
             $edate = clone $date;
             $edate->add(new \DateInterval('P2D'));
             $input = [
-            'content'         => sprintf('Task with "%s" state', $taskstate),
-            'state'           => $taskstate,
-            'tickets_id'      => $tid,
-            'users_id_tech'   => \Session::getLoginUserID(),
-            'begin'           => $date->format('Y-m-d H:i:s'),
-            'end'             => $edate->format('Y-m-d H:i:s'),
-            'actiontime'      => 172800
+                'content'         => sprintf('Task with "%s" state', $taskstate),
+                'state'           => $taskstate,
+                'tickets_id'      => $tid,
+                'users_id_tech'   => \Session::getLoginUserID(),
+                'begin'           => $date->format('Y-m-d H:i:s'),
+                'end'             => $edate->format('Y-m-d H:i:s'),
+                'actiontime'      => 172800
             ];
             $ttid = (int)$task->add($input);
             $this->integer($ttid)->isGreaterThan(0);
@@ -109,57 +109,57 @@ class PlanningCsv extends CsvTestCase
         $this->boolean($user->getFromDB(\Session::getLoginUserID()))->isTrue();
 
         $expected_header = [
-         'Actor',
-         'Title',
-         'Item type',
-         'Item id',
-         'Begin date',
-         'End date'
+            'Actor',
+            'Title',
+            'Item type',
+            'Item id',
+            'Begin date',
+            'End date'
         ];
 
         $expected_content = [
-         [
-            'actor'     => $user->getFriendlyName(),
-            'title'     => 'This is a "test"',
-            'itemtype'  => 'Reminder',
-            'items_id'  => $rid,
-            'begindate' => $fbegin,
-            'enddate'   => $fend
-         ]
+            [
+                'actor'     => $user->getFriendlyName(),
+                'title'     => 'This is a "test"',
+                'itemtype'  => 'Reminder',
+                'items_id'  => $rid,
+                'begindate' => $fbegin,
+                'enddate'   => $fend
+            ]
         ];
 
         foreach ($tasks as $input) {
             $expected_content[] = [
-            'actor'     => $user->getFriendlyName(),
-            'title'     => 'ticket title',
-            'itemtype'  => 'Ticket task',
-            'items_id'  => $input['id'],
-            'begindate' => $input['begin'],
-            'enddate'   => $input['end']
+                'actor'     => $user->getFriendlyName(),
+                'title'     => 'ticket title',
+                'itemtype'  => 'Ticket task',
+                'items_id'  => $input['id'],
+                'begindate' => $input['begin'],
+                'enddate'   => $input['end']
             ];
         }
 
         return [
-         [
-            'export' => new \Glpi\Csv\PlanningCsv(\Session::getLoginUserID(), 0),
-            'expected' => [
-               'cols'     => 6,
-               'rows'     => 3,
-               'filename' => 'planning.csv',
-               'header'   => $expected_header,
-               'content'  => $expected_content,
+            [
+                'export' => new \Glpi\Csv\PlanningCsv(\Session::getLoginUserID(), 0),
+                'expected' => [
+                    'cols'     => 6,
+                    'rows'     => 3,
+                    'filename' => 'planning.csv',
+                    'header'   => $expected_header,
+                    'content'  => $expected_content,
+                ]
+            ],
+            [
+                'export' => new \Glpi\Csv\PlanningCsv(\Session::getLoginUserID(), 0, 'Reminder'),
+                'expected' => [
+                    'cols'     => 6,
+                    'rows'     => 1,
+                    'filename' => 'planning.csv',
+                    'header'   => $expected_header,
+                    'content'  => [$expected_content[0]],
+                ]
             ]
-         ],
-         [
-            'export' => new \Glpi\Csv\PlanningCsv(\Session::getLoginUserID(), 0, 'Reminder'),
-            'expected' => [
-               'cols'     => 6,
-               'rows'     => 1,
-               'filename' => 'planning.csv',
-               'header'   => $expected_header,
-               'content'  => [$expected_content[0]],
-            ]
-         ]
         ];
     }
 }

@@ -45,10 +45,11 @@ class NotificationTargetProblem extends NotificationTargetCommonITILObject
     {
 
         $events = ['new'            => __('New problem'),
-                      'update'         => __('Update of a problem'),
-                      'solved'         => __('Problem solved'),
-                      'closed'         => __('Closure of a problem'),
-                      'delete'         => __('Deleting a problem')];
+            'update'         => __('Update of a problem'),
+            'solved'         => __('Problem solved'),
+            'closed'         => __('Closure of a problem'),
+            'delete'         => __('Deleting a problem')
+        ];
 
         $events = array_merge($events, parent::getEvents());
         asort($events);
@@ -194,69 +195,76 @@ class NotificationTargetProblem extends NotificationTargetCommonITILObject
 
        //Locales
         $tags = ['problem.numberoftickets'   => _x('quantity', 'Number of tickets'),
-                    'problem.numberofchanges'   => _x('quantity', 'Number of changes'),
-                    'problem.impacts'           => __('Impacts'),
-                    'problem.causes'            => __('Causes'),
-                    'problem.symptoms'          => __('Symptoms'),
-                    'item.name'                 => _n('Associated item', 'Associated items', 1),
-                    'item.serial'               => __('Serial number'),
-                    'item.otherserial'          => __('Inventory number'),
-                    'item.location'             => Location::getTypeName(1),
-                    'item.model'                => _n('Model', 'Models', 1),
-                    'item.contact'              => __('Alternate username'),
-                    'item.contactnumber'        => __('Alternate username number'),
-                    'item.user'                 => User::getTypeName(1),
-                    'item.group'                => Group::getTypeName(1),];
+            'problem.numberofchanges'   => _x('quantity', 'Number of changes'),
+            'problem.impacts'           => __('Impacts'),
+            'problem.causes'            => __('Causes'),
+            'problem.symptoms'          => __('Symptoms'),
+            'item.name'                 => _n('Associated item', 'Associated items', 1),
+            'item.serial'               => __('Serial number'),
+            'item.otherserial'          => __('Inventory number'),
+            'item.location'             => Location::getTypeName(1),
+            'item.model'                => _n('Model', 'Models', 1),
+            'item.contact'              => __('Alternate username'),
+            'item.contactnumber'        => __('Alternate username number'),
+            'item.user'                 => User::getTypeName(1),
+            'item.group'                => Group::getTypeName(1),
+        ];
 
         foreach ($tags as $tag => $label) {
             $this->addTagToList(['tag'    => $tag,
-                                   'label'  => $label,
-                                   'value'  => true,
-                                   'events' => NotificationTarget::TAG_FOR_ALL_EVENTS]);
+                'label'  => $label,
+                'value'  => true,
+                'events' => NotificationTarget::TAG_FOR_ALL_EVENTS
+            ]);
         }
 
        //Foreach global tags
         $tags = ['tickets'  => _n('Ticket', 'Tickets', Session::getPluralNumber()),
-                    'changes'  => _n('Change', 'Changes', Session::getPluralNumber()),
-                    'items'    => _n('Item', 'Items', Session::getPluralNumber())];
+            'changes'  => _n('Change', 'Changes', Session::getPluralNumber()),
+            'items'    => _n('Item', 'Items', Session::getPluralNumber())
+        ];
 
         foreach ($tags as $tag => $label) {
             $this->addTagToList(['tag'     => $tag,
-                                   'label'   => $label,
-                                   'value'   => false,
-                                   'foreach' => true]);
+                'label'   => $label,
+                'value'   => false,
+                'foreach' => true
+            ]);
         }
 
        //Tags with just lang
         $tags = ['problem.tickets'  => _n('Ticket', 'Tickets', Session::getPluralNumber()),
-                    'problem.changes'  => _n('Change', 'Changes', Session::getPluralNumber()),
-                    'problem.items'    => _n('Item', 'Items', Session::getPluralNumber())];
+            'problem.changes'  => _n('Change', 'Changes', Session::getPluralNumber()),
+            'problem.items'    => _n('Item', 'Items', Session::getPluralNumber())
+        ];
 
         foreach ($tags as $tag => $label) {
             $this->addTagToList(['tag'   => $tag,
-                                   'label' => $label,
-                                   'value' => false,
-                                   'lang'  => true]);
+                'label' => $label,
+                'value' => false,
+                'lang'  => true
+            ]);
         }
 
        //Tags without lang
         $tags = ['ticket.id'        => sprintf(__('%1$s: %2$s'), Ticket::getTypeName(1), __('ID')),
-                    'ticket.date'      => sprintf(__('%1$s: %2$s'), Ticket::getTypeName(1), _n('Date', 'Dates', 1)),
-                    'ticket.url'       => sprintf(__('%1$s: %2$s'), Ticket::getTypeName(1), __('URL')),
-                    'ticket.title'     => sprintf(__('%1$s: %2$s'), Ticket::getTypeName(1), __('Title')),
-                    'ticket.content'   => sprintf(__('%1$s: %2$s'), Ticket::getTypeName(1), __('Description')),
-                    'change.id'        => sprintf(__('%1$s: %2$s'), Change::getTypeName(1), __('ID')),
-                    'change.date'      => sprintf(__('%1$s: %2$s'), Change::getTypeName(1), _n('Date', 'Dates', 1)),
-                    'change.url'       => sprintf(__('%1$s: %2$s'), Change::getTypeName(1), __('URL')),
-                    'change.title'     => sprintf(__('%1$s: %2$s'), Change::getTypeName(1), __('Title')),
-                    'change.content'   => sprintf(__('%1$s: %2$s'), Change::getTypeName(1), __('Description')),
-                    ];
+            'ticket.date'      => sprintf(__('%1$s: %2$s'), Ticket::getTypeName(1), _n('Date', 'Dates', 1)),
+            'ticket.url'       => sprintf(__('%1$s: %2$s'), Ticket::getTypeName(1), __('URL')),
+            'ticket.title'     => sprintf(__('%1$s: %2$s'), Ticket::getTypeName(1), __('Title')),
+            'ticket.content'   => sprintf(__('%1$s: %2$s'), Ticket::getTypeName(1), __('Description')),
+            'change.id'        => sprintf(__('%1$s: %2$s'), Change::getTypeName(1), __('ID')),
+            'change.date'      => sprintf(__('%1$s: %2$s'), Change::getTypeName(1), _n('Date', 'Dates', 1)),
+            'change.url'       => sprintf(__('%1$s: %2$s'), Change::getTypeName(1), __('URL')),
+            'change.title'     => sprintf(__('%1$s: %2$s'), Change::getTypeName(1), __('Title')),
+            'change.content'   => sprintf(__('%1$s: %2$s'), Change::getTypeName(1), __('Description')),
+        ];
 
         foreach ($tags as $tag => $label) {
             $this->addTagToList(['tag'   => $tag,
-                                   'label' => $label,
-                                   'value' => true,
-                                   'lang'  => false]);
+                'label' => $label,
+                'value' => true,
+                'lang'  => false
+            ]);
         }
         asort($this->tag_descriptions);
     }

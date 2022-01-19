@@ -59,25 +59,25 @@ class Item_SoftwareVersion extends DbTestCase
        // Do some installations
         $ins = new \Item_SoftwareVersion();
         $this->integer((int)$ins->add([
-         'items_id'              => $computer1->getID(),
-         'itemtype'              => 'Computer',
-         'softwareversions_id'   => $ver,
+            'items_id'              => $computer1->getID(),
+            'itemtype'              => 'Computer',
+            'softwareversions_id'   => $ver,
         ]))->isGreaterThan(0);
 
         $input = [
-         'items_id'  => $computer1->getID(),
-         'itemtype'  => 'Computer',
-         'name'      => 'A name'
+            'items_id'  => $computer1->getID(),
+            'itemtype'  => 'Computer',
+            'name'      => 'A name'
         ];
 
         $expected = [
-         'items_id'              => $computer1->getID(),
-         'itemtype'              => 'Computer',
-         'name'                  => 'A name',
-         'is_template_item'      => $computer1->getField('is_template'),
-         'is_deleted_item'       => $computer1->getField('is_deleted'),
-         'entities_id'           => 1,
-         'is_recursive'          => 0
+            'items_id'              => $computer1->getID(),
+            'itemtype'              => 'Computer',
+            'name'                  => 'A name',
+            'is_template_item'      => $computer1->getField('is_template'),
+            'is_deleted_item'       => $computer1->getField('is_deleted'),
+            'entities_id'           => 1,
+            'is_recursive'          => 0
         ];
 
         $this->setEntity('_test_root_entity', true);
@@ -94,23 +94,23 @@ class Item_SoftwareVersion extends DbTestCase
        // Do some installations
         $ins = new \Item_SoftwareVersion();
         $this->integer((int)$ins->add([
-         'items_id'              => $computer1->getID(),
-         'itemtype'              => 'Computer',
-         'softwareversions_id'   => $ver,
+            'items_id'              => $computer1->getID(),
+            'itemtype'              => 'Computer',
+            'softwareversions_id'   => $ver,
         ]))->isGreaterThan(0);
 
         $input = [
-         'items_id'              => $computer1->getID(),
-         'itemtype'              => 'Computer',
-         'name'                  => 'Another name'
+            'items_id'              => $computer1->getID(),
+            'itemtype'              => 'Computer',
+            'name'                  => 'Another name'
         ];
 
         $expected = [
-         'items_id'              => $computer1->getID(),
-         'itemtype'              => 'Computer',
-         'name'                  => 'Another name',
-         'is_template_item'      => $computer1->getField('is_template'),
-         'is_deleted_item'       => $computer1->getField('is_deleted')
+            'items_id'              => $computer1->getID(),
+            'itemtype'              => 'Computer',
+            'name'                  => 'Another name',
+            'is_template_item'      => $computer1->getField('is_template'),
+            'is_deleted_item'       => $computer1->getField('is_deleted')
         ];
 
         $this->array($ins->prepareInputForUpdate($input))->isIdenticalTo($expected);
@@ -129,19 +129,19 @@ class Item_SoftwareVersion extends DbTestCase
        // Do some installations
         $ins = new \Item_SoftwareVersion();
         $this->integer((int)$ins->add([
-         'items_id'              => $computer1,
-         'itemtype'              => 'Computer',
-         'softwareversions_id'   => $ver,
+            'items_id'              => $computer1,
+            'itemtype'              => 'Computer',
+            'softwareversions_id'   => $ver,
         ]))->isGreaterThan(0);
         $this->integer($ins->add([
-         'items_id'              => $computer11,
-         'itemtype'              => 'Computer',
-         'softwareversions_id'   => $ver,
+            'items_id'              => $computer11,
+            'itemtype'              => 'Computer',
+            'softwareversions_id'   => $ver,
         ]))->isGreaterThan(0);
         $this->integer($ins->add([
-         'items_id'              => $computer12,
-         'itemtype'              => 'Computer',
-         'softwareversions_id'   => $ver,
+            'items_id'              => $computer12,
+            'itemtype'              => 'Computer',
+            'softwareversions_id'   => $ver,
         ]))->isGreaterThan(0);
 
        // Count installations
@@ -168,15 +168,15 @@ class Item_SoftwareVersion extends DbTestCase
        // Do some installations
         $softver = new \Item_SoftwareVersion();
         $softver01 = $softver->add([
-         'items_id'              => $computer1->getID(),
-         'itemtype'              => 'Computer',
-         'softwareversions_id'   => $ver1,
+            'items_id'              => $computer1->getID(),
+            'itemtype'              => 'Computer',
+            'softwareversions_id'   => $ver1,
         ]);
         $this->integer((int)$softver01)->isGreaterThan(0);
         $softver02 = $softver->add([
-         'items_id'              => $computer1->getID(),
-         'itemtype'              => 'Computer',
-         'softwareversions_id'   => $ver2,
+            'items_id'              => $computer1->getID(),
+            'itemtype'              => 'Computer',
+            'softwareversions_id'   => $ver2,
         ]);
         $this->integer((int)$softver02)->isGreaterThan(0);
 
@@ -222,9 +222,9 @@ class Item_SoftwareVersion extends DbTestCase
         $csoftver = new \Item_SoftwareVersion();
         $this->integer(
             (int)$csoftver->add([
-            'items_id'              => $computer1->fields['id'],
-            'itemtype'              => 'Computer',
-            'softwareversions_id'   => $soft1->fields['id']
+                'items_id'              => $computer1->fields['id'],
+                'itemtype'              => 'Computer',
+                'softwareversions_id'   => $soft1->fields['id']
             ])
         )->isGreaterThan(0);
 

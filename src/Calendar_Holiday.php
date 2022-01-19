@@ -77,24 +77,24 @@ class Calendar_Holiday extends CommonDBRelation
         $rand    = mt_rand();
 
         $iterator = $DB->request([
-         'SELECT' => [
-            'glpi_calendars_holidays.id AS linkid',
-            'glpi_holidays.*'
-         ],
-         'DISTINCT'        => true,
-         'FROM'            => 'glpi_calendars_holidays',
-         'LEFT JOIN'       => [
-            'glpi_holidays'   => [
-               'ON' => [
-                  'glpi_calendars_holidays'  => 'holidays_id',
-                  'glpi_holidays'            => 'id'
-               ]
-            ]
-         ],
-         'WHERE'           => [
-            'glpi_calendars_holidays.calendars_id' => $ID
-         ],
-         'ORDERBY'         => 'glpi_holidays.name'
+            'SELECT' => [
+                'glpi_calendars_holidays.id AS linkid',
+                'glpi_holidays.*'
+            ],
+            'DISTINCT'        => true,
+            'FROM'            => 'glpi_calendars_holidays',
+            'LEFT JOIN'       => [
+                'glpi_holidays'   => [
+                    'ON' => [
+                        'glpi_calendars_holidays'  => 'holidays_id',
+                        'glpi_holidays'            => 'id'
+                    ]
+                ]
+            ],
+            'WHERE'           => [
+                'glpi_calendars_holidays.calendars_id' => $ID
+            ],
+            'ORDERBY'         => 'glpi_holidays.name'
         ]);
 
         $numrows = count($iterator);
@@ -115,7 +115,8 @@ class Calendar_Holiday extends CommonDBRelation
             echo "<tr class='tab_bg_2'><td class='right'  colspan='4'>";
             echo "<input type='hidden' name='calendars_id' value='$ID'>";
             Holiday::dropdown(['used'   => $used,
-                                 'entity' => $calendar->fields["entities_id"]]);
+                'entity' => $calendar->fields["entities_id"]
+            ]);
             echo "</td><td class='center'>";
             echo "<input type='submit' name='add' value=\"" . _sx('button', 'Add') . "\" class='btn btn-primary'>";
             echo "</td></tr>";
@@ -129,7 +130,8 @@ class Calendar_Holiday extends CommonDBRelation
         if ($canedit && $numrows) {
             Html::openMassiveActionsForm('mass' . __CLASS__ . $rand);
             $massiveactionparams = ['num_displayed' => min($_SESSION['glpilist_limit'], $numrows),
-                           'container'     => 'mass' . __CLASS__ . $rand];
+                'container'     => 'mass' . __CLASS__ . $rand
+            ];
             Html::showMassiveActions($massiveactionparams);
         }
         echo "<table class='tab_cadre_fixehov'>";
@@ -257,19 +259,19 @@ class Calendar_Holiday extends CommonDBRelation
         if (($holidays = $GLPI_CACHE->get($cache_key)) === null) {
             $holidays_iterator = $DB->request(
                 [
-                'SELECT'     => ['begin_date', 'end_date', 'is_perpetual'],
-                'FROM'       => Holiday::getTable(),
-                'INNER JOIN' => [
-                  Calendar_Holiday::getTable() => [
-                     'FKEY'   => [
-                        Calendar_Holiday::getTable() => Holiday::getForeignKeyField(),
-                        Holiday::getTable()          => 'id',
-                     ],
-                  ],
-                ],
-                'WHERE'      => [
-                  Calendar_Holiday::getTableField(Calendar::getForeignKeyField()) => $calendars_id,
-                ],
+                    'SELECT'     => ['begin_date', 'end_date', 'is_perpetual'],
+                    'FROM'       => Holiday::getTable(),
+                    'INNER JOIN' => [
+                        Calendar_Holiday::getTable() => [
+                            'FKEY'   => [
+                                Calendar_Holiday::getTable() => Holiday::getForeignKeyField(),
+                                Holiday::getTable()          => 'id',
+                            ],
+                        ],
+                    ],
+                    'WHERE'      => [
+                        Calendar_Holiday::getTableField(Calendar::getForeignKeyField()) => $calendars_id,
+                    ],
                 ]
             );
             $holidays = iterator_to_array($holidays_iterator);
@@ -294,11 +296,11 @@ class Calendar_Holiday extends CommonDBRelation
 
         $iterator = $DB->request(
             [
-            'SELECT'     => [Calendar::getForeignKeyField()],
-            'FROM'       => self::getTable(),
-            'WHERE'      => [
-               Holiday::getForeignKeyField() => $holidays_id,
-            ],
+                'SELECT'     => [Calendar::getForeignKeyField()],
+                'FROM'       => self::getTable(),
+                'WHERE'      => [
+                    Holiday::getForeignKeyField() => $holidays_id,
+                ],
             ]
         );
         foreach ($iterator as $link) {

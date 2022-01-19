@@ -36,176 +36,176 @@ class DomainRecordType extends CommonDropdown
     public static $rightname = 'dropdown';
 
     public static $knowtypes = [
-      [
-         'id'        => 1,
-         'name'      => 'A',
-         'comment'   => 'Host address',
-         'fields'    => [],
-      ], [
-         'id'        => 2,
-         'name'      => 'AAAA',
-         'comment'   => 'IPv6 host address',
-         'fields'    => [],
-      ], [
-         'id'        => 3,
-         'name'      => 'ALIAS',
-         'comment'   => 'Auto resolved alias',
-         'fields'    => [],
-      ], [
-         'id'        => 4,
-         'name'      => 'CNAME',
-         'comment'   => 'Canonical name for an alias',
-         'fields'    => [
-            [
-               'key'         => 'target',
-               'label'       => 'Target',
-               'placeholder' => 'sip.example.com.',
-               'is_fqdn'     => true
+        [
+            'id'        => 1,
+            'name'      => 'A',
+            'comment'   => 'Host address',
+            'fields'    => [],
+        ], [
+            'id'        => 2,
+            'name'      => 'AAAA',
+            'comment'   => 'IPv6 host address',
+            'fields'    => [],
+        ], [
+            'id'        => 3,
+            'name'      => 'ALIAS',
+            'comment'   => 'Auto resolved alias',
+            'fields'    => [],
+        ], [
+            'id'        => 4,
+            'name'      => 'CNAME',
+            'comment'   => 'Canonical name for an alias',
+            'fields'    => [
+                [
+                    'key'         => 'target',
+                    'label'       => 'Target',
+                    'placeholder' => 'sip.example.com.',
+                    'is_fqdn'     => true
+                ],
             ],
-         ],
-      ], [
-         'id'        => 5,
-         'name'      => 'MX',
-         'comment'   => 'Mail eXchange',
-         'fields'    => [
-            [
-               'key'         => 'priority',
-               'label'       => 'Priority',
-               'placeholder' => '10',
+        ], [
+            'id'        => 5,
+            'name'      => 'MX',
+            'comment'   => 'Mail eXchange',
+            'fields'    => [
+                [
+                    'key'         => 'priority',
+                    'label'       => 'Priority',
+                    'placeholder' => '10',
+                ],
+                [
+                    'key'         => 'server',
+                    'label'       => 'Server',
+                    'placeholder' => 'mail.example.com.',
+                    'is_fqdn'     => true
+                ],
             ],
-            [
-               'key'         => 'server',
-               'label'       => 'Server',
-               'placeholder' => 'mail.example.com.',
-               'is_fqdn'     => true
+        ], [
+            'id'        => 6,
+            'name'      => 'NS',
+            'comment'   => 'Name Server',
+            'fields'    => [],
+        ], [
+            'id'        => 7,
+            'name'      => 'PTR',
+            'comment'   => 'Pointer',
+            'fields'    => [],
+        ], [
+            'id'        => 8,
+            'name'      => 'SOA',
+            'comment'   => 'Start Of Authority',
+            'fields'    => [
+                [
+                    'key'         => 'primary_name_server',
+                    'label'       => 'Primary name server',
+                    'placeholder' => 'ns1.example.com.',
+                    'is_fqdn'     => true
+                ],
+                [
+                    'key'         => 'primary_contact',
+                    'label'       => 'Primary contact',
+                    'placeholder' => 'admin.example.com.',
+                    'is_fqdn'     => true
+                ],
+                [
+                    'key'         => 'serial',
+                    'label'       => 'Serial',
+                    'placeholder' => '2020010101',
+                ],
+                [
+                    'key'         => 'zone_refresh_timer',
+                    'label'       => 'Zone refresh timer',
+                    'placeholder' => '86400',
+                ],
+                [
+                    'key'         => 'failed_refresh_retry_timer',
+                    'label'       => 'Failed refresh retry timer',
+                    'placeholder' => '7200',
+                ],
+                [
+                    'key'         => 'zone_expiry_timer',
+                    'label'       => 'Zone expiry timer',
+                    'placeholder' => '1209600',
+                ],
+                [
+                    'key'         => 'minimum_ttl',
+                    'label'       => 'Minimum TTL',
+                    'placeholder' => '300',
+                ],
             ],
-         ],
-      ], [
-         'id'        => 6,
-         'name'      => 'NS',
-         'comment'   => 'Name Server',
-         'fields'    => [],
-      ], [
-         'id'        => 7,
-         'name'      => 'PTR',
-         'comment'   => 'Pointer',
-         'fields'    => [],
-      ], [
-         'id'        => 8,
-         'name'      => 'SOA',
-         'comment'   => 'Start Of Authority',
-         'fields'    => [
-            [
-               'key'         => 'primary_name_server',
-               'label'       => 'Primary name server',
-               'placeholder' => 'ns1.example.com.',
-               'is_fqdn'     => true
+        ], [
+            'id'        => 9,
+            'name'      => 'SRV',
+            'comment'   => 'Location of service',
+            'fields'    => [
+                [
+                    'key'         => 'priority',
+                    'label'       => 'Priority',
+                    'placeholder' => '0',
+                ],
+                [
+                    'key'         => 'weight',
+                    'label'       => 'Weight',
+                    'placeholder' => '10',
+                ],
+                [
+                    'key'         => 'port',
+                    'label'       => 'Port',
+                    'placeholder' => '5060',
+                ],
+                [
+                    'key'         => 'target',
+                    'label'       => 'Target',
+                    'placeholder' => 'sip.example.com.',
+                    'is_fqdn'     => true
+                ],
             ],
-            [
-               'key'         => 'primary_contact',
-               'label'       => 'Primary contact',
-               'placeholder' => 'admin.example.com.',
-               'is_fqdn'     => true
+        ], [
+            'id'        => 10,
+            'name'      => 'TXT',
+            'comment'   => 'Descriptive text',
+            'fields'    => [
+                [
+                    'key'         => 'data',
+                    'label'       => 'TXT record data',
+                    'placeholder' => 'Your TXT record data',
+                    'quote_value' => true,
+                ],
             ],
-            [
-               'key'         => 'serial',
-               'label'       => 'Serial',
-               'placeholder' => '2020010101',
+        ], [
+            'id'        => 11,
+            'name'      => 'CAA',
+            'comment'   => 'Certification Authority Authorization',
+            'fields'    => [
+                [
+                    'key'         => 'flag',
+                    'label'       => 'Flag',
+                    'placeholder' => '0',
+                ],
+                [
+                    'key'         => 'tag',
+                    'label'       => 'Tag',
+                    'placeholder' => 'issue',
+                ],
+                [
+                    'key'         => 'value',
+                    'label'       => 'Value',
+                    'placeholder' => 'letsencrypt.org',
+                    'quote_value' => true,
+                ],
             ],
-            [
-               'key'         => 'zone_refresh_timer',
-               'label'       => 'Zone refresh timer',
-               'placeholder' => '86400',
-            ],
-            [
-               'key'         => 'failed_refresh_retry_timer',
-               'label'       => 'Failed refresh retry timer',
-               'placeholder' => '7200',
-            ],
-            [
-               'key'         => 'zone_expiry_timer',
-               'label'       => 'Zone expiry timer',
-               'placeholder' => '1209600',
-            ],
-            [
-               'key'         => 'minimum_ttl',
-               'label'       => 'Minimum TTL',
-               'placeholder' => '300',
-            ],
-         ],
-      ], [
-         'id'        => 9,
-         'name'      => 'SRV',
-         'comment'   => 'Location of service',
-         'fields'    => [
-            [
-               'key'         => 'priority',
-               'label'       => 'Priority',
-               'placeholder' => '0',
-            ],
-            [
-               'key'         => 'weight',
-               'label'       => 'Weight',
-               'placeholder' => '10',
-            ],
-            [
-               'key'         => 'port',
-               'label'       => 'Port',
-               'placeholder' => '5060',
-            ],
-            [
-               'key'         => 'target',
-               'label'       => 'Target',
-               'placeholder' => 'sip.example.com.',
-               'is_fqdn'     => true
-            ],
-         ],
-      ], [
-         'id'        => 10,
-         'name'      => 'TXT',
-         'comment'   => 'Descriptive text',
-         'fields'    => [
-            [
-               'key'         => 'data',
-               'label'       => 'TXT record data',
-               'placeholder' => 'Your TXT record data',
-               'quote_value' => true,
-            ],
-         ],
-      ], [
-         'id'        => 11,
-         'name'      => 'CAA',
-         'comment'   => 'Certification Authority Authorization',
-         'fields'    => [
-            [
-               'key'         => 'flag',
-               'label'       => 'Flag',
-               'placeholder' => '0',
-            ],
-            [
-               'key'         => 'tag',
-               'label'       => 'Tag',
-               'placeholder' => 'issue',
-            ],
-            [
-               'key'         => 'value',
-               'label'       => 'Value',
-               'placeholder' => 'letsencrypt.org',
-               'quote_value' => true,
-            ],
-         ],
-      ]
+        ]
     ];
 
 
     public function getAdditionalFields()
     {
         return [
-         [
-            'name'  => 'fields',
-            'label' => __('Fields'),
-            'type'  => 'fields',
-         ]
+            [
+                'name'  => 'fields',
+                'label' => __('Fields'),
+                'type'  => 'fields',
+            ]
         ];
     }
 
@@ -375,10 +375,10 @@ class DomainRecordType extends CommonDropdown
         $fields = json_decode($this->fields['fields'] ?? '[]', true);
         if (empty($fields)) {
             $fields = [
-            [
-               'key'   => 'data',
-               'label' => __('Data'),
-            ],
+                [
+                    'key'   => 'data',
+                    'label' => __('Data'),
+                ],
             ];
         }
 

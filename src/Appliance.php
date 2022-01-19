@@ -48,12 +48,12 @@ class Appliance extends CommonDBTM
     public function getCloneRelations(): array
     {
         return [
-         Appliance_Item::class,
-         Contract_Item::class,
-         Document_Item::class,
-         Infocom::class,
-         Notepad::class,
-         KnowbaseItem_Item::class
+            Appliance_Item::class,
+            Contract_Item::class,
+            Document_Item::class,
+            Infocom::class,
+            Notepad::class,
+            KnowbaseItem_Item::class
         ];
     }
 
@@ -100,8 +100,8 @@ class Appliance extends CommonDBTM
     {
         $this->initForm($ID, $options);
         TemplateRenderer::getInstance()->display('pages/management/appliance.html.twig', [
-         'item'   => $this,
-         'params' => $options,
+            'item'   => $this,
+            'params' => $options,
         ]);
         return true;
     }
@@ -111,159 +111,159 @@ class Appliance extends CommonDBTM
         $tab = parent::rawSearchOptions();
 
         $tab[] = [
-         'id'            => '4',
-         'table'         => self::getTable(),
-         'field'         =>  'comment',
-         'name'          =>  __('Comments'),
-         'datatype'      =>  'text'
+            'id'            => '4',
+            'table'         => self::getTable(),
+            'field'         =>  'comment',
+            'name'          =>  __('Comments'),
+            'datatype'      =>  'text'
         ];
 
         $tab = array_merge($tab, Location::rawSearchOptionsToAdd());
 
         $tab[] = [
-         'id'            => '5',
-         'table'         =>  Appliance_Item::getTable(),
-         'field'         => 'items_id',
-         'name'               => _n('Associated item', 'Associated items', 2),
-         'nosearch'           => true,
-         'massiveaction' => false,
-         'forcegroupby'  =>  true,
-         'additionalfields'   => ['itemtype'],
-         'joinparams'    => ['jointype' => 'child']
+            'id'            => '5',
+            'table'         =>  Appliance_Item::getTable(),
+            'field'         => 'items_id',
+            'name'               => _n('Associated item', 'Associated items', 2),
+            'nosearch'           => true,
+            'massiveaction' => false,
+            'forcegroupby'  =>  true,
+            'additionalfields'   => ['itemtype'],
+            'joinparams'    => ['jointype' => 'child']
         ];
 
         $tab[] = [
-         'id'            => '6',
-         'table'         => User::getTable(),
-         'field'         => 'name',
-         'name'          => User::getTypeName(1),
-         'datatype'      => 'dropdown'
+            'id'            => '6',
+            'table'         => User::getTable(),
+            'field'         => 'name',
+            'name'          => User::getTypeName(1),
+            'datatype'      => 'dropdown'
         ];
 
         $tab[] = [
-         'id'            => '8',
-         'table'         => Group::getTable(),
-         'field'         => 'completename',
-         'name'          => Group::getTypeName(1),
-         'condition'     => ['is_itemgroup' => 1],
-         'datatype'      => 'dropdown'
+            'id'            => '8',
+            'table'         => Group::getTable(),
+            'field'         => 'completename',
+            'name'          => Group::getTypeName(1),
+            'condition'     => ['is_itemgroup' => 1],
+            'datatype'      => 'dropdown'
         ];
 
         $tab[] = [
-         'id'            => '23',
-         'table'         => 'glpi_manufacturers',
-         'field'         => 'name',
-         'name'          => Manufacturer::getTypeName(1),
-         'datatype'      => 'dropdown'
+            'id'            => '23',
+            'table'         => 'glpi_manufacturers',
+            'field'         => 'name',
+            'name'          => Manufacturer::getTypeName(1),
+            'datatype'      => 'dropdown'
         ];
 
         $tab[] = [
-         'id'            => '24',
-         'table'         => User::getTable(),
-         'field'         => 'name',
-         'linkfield'     => 'users_id_tech',
-         'name'          => __('Technician in charge'),
-         'datatype'      => 'dropdown',
-         'right'         => 'own_ticket'
+            'id'            => '24',
+            'table'         => User::getTable(),
+            'field'         => 'name',
+            'linkfield'     => 'users_id_tech',
+            'name'          => __('Technician in charge'),
+            'datatype'      => 'dropdown',
+            'right'         => 'own_ticket'
         ];
 
         $tab[] = [
-         'id'            => '49',
-         'table'         => Group::getTable(),
-         'field'         => 'completename',
-         'linkfield'     => 'groups_id_tech',
-         'name'          => __('Group in charge'),
-         'condition'     => ['is_assign' => 1],
-         'datatype'      => 'dropdown'
+            'id'            => '49',
+            'table'         => Group::getTable(),
+            'field'         => 'completename',
+            'linkfield'     => 'groups_id_tech',
+            'name'          => __('Group in charge'),
+            'condition'     => ['is_assign' => 1],
+            'datatype'      => 'dropdown'
         ];
 
         $tab[] = [
-         'id'            => '9',
-         'table'         => self::getTable(),
-         'field'         => 'date_mod',
-         'name'          => __('Last update'),
-         'massiveaction' => false,
-         'datatype'      => 'datetime'
+            'id'            => '9',
+            'table'         => self::getTable(),
+            'field'         => 'date_mod',
+            'name'          => __('Last update'),
+            'massiveaction' => false,
+            'datatype'      => 'datetime'
         ];
 
         $tab[] = [
-         'id'            => '10',
-         'table'         => ApplianceEnvironment::getTable(),
-         'field'         => 'name',
-         'name'          => __('Environment'),
-         'datatype'      => 'dropdown'
+            'id'            => '10',
+            'table'         => ApplianceEnvironment::getTable(),
+            'field'         => 'name',
+            'name'          => __('Environment'),
+            'datatype'      => 'dropdown'
         ];
 
         $tab[] = [
-         'id'            => '11',
-         'table'         => ApplianceType::getTable(),
-         'field'         => 'name',
-         'name'          => _n('Type', 'Types', 1),
-         'datatype'      => 'dropdown'
+            'id'            => '11',
+            'table'         => ApplianceType::getTable(),
+            'field'         => 'name',
+            'name'          => _n('Type', 'Types', 1),
+            'datatype'      => 'dropdown'
         ];
 
         $tab[] = [
-         'id'            => '12',
-         'table'         => self::getTable(),
-         'field'         => 'serial',
-         'name'          => __('Serial number'),
+            'id'            => '12',
+            'table'         => self::getTable(),
+            'field'         => 'serial',
+            'name'          => __('Serial number'),
         ];
 
         $tab[] = [
-         'id'            => '13',
-         'table'         => self::getTable(),
-         'field'         => 'otherserial',
-         'name'          => __('Inventory number'),
+            'id'            => '13',
+            'table'         => self::getTable(),
+            'field'         => 'otherserial',
+            'name'          => __('Inventory number'),
         ];
 
         $tab[] = [
-         'id'            => '31',
-         'table'         => self::getTable(),
-         'field'         => 'id',
-         'name'          => __('ID'),
-         'datatype'      => 'number',
-         'massiveaction' => false
+            'id'            => '31',
+            'table'         => self::getTable(),
+            'field'         => 'id',
+            'name'          => __('ID'),
+            'datatype'      => 'number',
+            'massiveaction' => false
         ];
 
         $tab[] = [
-         'id'            => '80',
-         'table'         => 'glpi_entities',
-         'field'         => 'completename',
-         'name'          => Entity::getTypeName(1),
-         'datatype'      => 'dropdown'
+            'id'            => '80',
+            'table'         => 'glpi_entities',
+            'field'         => 'completename',
+            'name'          => Entity::getTypeName(1),
+            'datatype'      => 'dropdown'
         ];
 
         $tab[] = [
-         'id'            => '7',
-         'table'         => self::getTable(),
-         'field'         => 'is_recursive',
-         'name'          => __('Child entities'),
-         'massiveaction' => false,
-         'datatype'      => 'bool'
+            'id'            => '7',
+            'table'         => self::getTable(),
+            'field'         => 'is_recursive',
+            'name'          => __('Child entities'),
+            'massiveaction' => false,
+            'datatype'      => 'bool'
         ];
 
         $tab[] = [
-         'id'            => '81',
-         'table'         => Entity::getTable(),
-         'field'         => 'entities_id',
-         'name'          => sprintf('%s-%s', Entity::getTypeName(1), __('ID'))
+            'id'            => '81',
+            'table'         => Entity::getTable(),
+            'field'         => 'entities_id',
+            'name'          => sprintf('%s-%s', Entity::getTypeName(1), __('ID'))
         ];
 
         $tab[] = [
-         'id'                 => '61',
-         'table'              => $this->getTable(),
-         'field'              => 'is_helpdesk_visible',
-         'name'               => __('Associable to a ticket'),
-         'datatype'           => 'bool'
+            'id'                 => '61',
+            'table'              => $this->getTable(),
+            'field'              => 'is_helpdesk_visible',
+            'name'               => __('Associable to a ticket'),
+            'datatype'           => 'bool'
         ];
 
         $tab[] = [
-         'id'                 => '32',
-         'table'              => 'glpi_states',
-         'field'              => 'completename',
-         'name'               => __('Status'),
-         'datatype'           => 'dropdown',
-         'condition'          => ['is_visible_appliance' => 1]
+            'id'                 => '32',
+            'table'              => 'glpi_states',
+            'field'              => 'completename',
+            'name'               => __('Status'),
+            'datatype'           => 'dropdown',
+            'condition'          => ['is_visible_appliance' => 1]
         ];
 
         $tab = array_merge($tab, Certificate::rawSearchOptionsToAdd());
@@ -277,87 +277,87 @@ class Appliance extends CommonDBTM
         $tab = [];
 
         $tab[] = [
-         'id' => 'appliance',
-         'name' => self::getTypeName(Session::getPluralNumber())
+            'id' => 'appliance',
+            'name' => self::getTypeName(Session::getPluralNumber())
         ];
 
         $tab[] = [
-         'id'                 => '1210',
-         'table'              => self::getTable(),
-         'field'              => 'name',
-         'name'               => __('Name'),
-         'forcegroupby'       => true,
-         'datatype'           => 'itemlink',
-         'itemlink_type'      => 'Appliance',
-         'massiveaction'      => false,
-         'joinparams'         => [
-            'beforejoin' => [
-               'table'      => Appliance_Item::getTable(),
-               'joinparams' => ['jointype' => 'itemtype_item']
+            'id'                 => '1210',
+            'table'              => self::getTable(),
+            'field'              => 'name',
+            'name'               => __('Name'),
+            'forcegroupby'       => true,
+            'datatype'           => 'itemlink',
+            'itemlink_type'      => 'Appliance',
+            'massiveaction'      => false,
+            'joinparams'         => [
+                'beforejoin' => [
+                    'table'      => Appliance_Item::getTable(),
+                    'joinparams' => ['jointype' => 'itemtype_item']
+                ]
             ]
-         ]
         ];
 
         $tab[] = [
-         'id'                 => '1211',
-         'table'              => ApplianceType::getTable(),
-         'field'              => 'name',
-         'name'               => ApplianceType::getTypeName(1),
-         'forcegroupby'       => true,
-         'massiveaction'      => false,
-         'joinparams'         => [
-            'beforejoin' => [
-               'table'      => Appliance::getTable(),
-               'joinparams' => [
-                  'beforejoin' => [
-                     'table'      => Appliance_Item::getTable(),
-                     'joinparams' => ['jointype' => 'itemtype_item']
-                  ]
-               ]
+            'id'                 => '1211',
+            'table'              => ApplianceType::getTable(),
+            'field'              => 'name',
+            'name'               => ApplianceType::getTypeName(1),
+            'forcegroupby'       => true,
+            'massiveaction'      => false,
+            'joinparams'         => [
+                'beforejoin' => [
+                    'table'      => Appliance::getTable(),
+                    'joinparams' => [
+                        'beforejoin' => [
+                            'table'      => Appliance_Item::getTable(),
+                            'joinparams' => ['jointype' => 'itemtype_item']
+                        ]
+                    ]
+                ]
             ]
-         ]
         ];
 
         $tab[] = [
-         'id'                 => '1212',
-         'table'              => User::getTable(),
-         'field'              => 'name',
-         'name'               => User::getTypeName(1),
-         'forcegroupby'       => true,
-         'massiveaction'      => false,
-         'datatype'           => 'dropdown',
-         'joinparams'         => [
-            'beforejoin'         => [
-               'table'              => self::getTable(),
-               'joinparams'         => [
-                  'beforejoin' => [
-                     'table'      => Appliance_Item::getTable(),
-                     'joinparams' => ['jointype' => 'itemtype_item']
-                  ]
-               ]
+            'id'                 => '1212',
+            'table'              => User::getTable(),
+            'field'              => 'name',
+            'name'               => User::getTypeName(1),
+            'forcegroupby'       => true,
+            'massiveaction'      => false,
+            'datatype'           => 'dropdown',
+            'joinparams'         => [
+                'beforejoin'         => [
+                    'table'              => self::getTable(),
+                    'joinparams'         => [
+                        'beforejoin' => [
+                            'table'      => Appliance_Item::getTable(),
+                            'joinparams' => ['jointype' => 'itemtype_item']
+                        ]
+                    ]
+                ]
             ]
-         ]
         ];
 
         $tab[] = [
-         'id'                 => '1213',
-         'table'              => Group::getTable(),
-         'field'              => 'name',
-         'name'               => Group::getTypeName(1),
-         'forcegroupby'       => true,
-         'massiveaction'      => false,
-         'datatype'           => 'dropdown',
-         'joinparams'         => [
-            'beforejoin'         => [
-               'table'              => self::getTable(),
-               'joinparams'         => [
-                  'beforejoin' => [
-                     'table'      => Appliance_Item::getTable(),
-                     'joinparams' => ['jointype' => 'itemtype_item']
-                  ]
-               ]
+            'id'                 => '1213',
+            'table'              => Group::getTable(),
+            'field'              => 'name',
+            'name'               => Group::getTypeName(1),
+            'forcegroupby'       => true,
+            'massiveaction'      => false,
+            'datatype'           => 'dropdown',
+            'joinparams'         => [
+                'beforejoin'         => [
+                    'table'              => self::getTable(),
+                    'joinparams'         => [
+                        'beforejoin' => [
+                            'table'      => Appliance_Item::getTable(),
+                            'joinparams' => ['jointype' => 'itemtype_item']
+                        ]
+                    ]
+                ]
             ]
-         ]
         ];
 
         return $tab;
@@ -369,7 +369,7 @@ class Appliance extends CommonDBTM
 
         $this->deleteChildrenAndRelationsFromDb(
             [
-            Appliance_Item::class,
+                Appliance_Item::class,
             ]
         );
     }
@@ -444,7 +444,7 @@ class Appliance extends CommonDBTM
         switch ($ma->getAction()) {
             case 'add_item':
                 Appliance::dropdown([
-                 'entity'  => $_POST['entity_restrict'] ?? 0
+                    'entity'  => $_POST['entity_restrict'] ?? 0
                 ]);
                 echo Html::submit(_x('button', 'Post'), ['name' => 'massiveaction']);
                 return true;
@@ -465,9 +465,9 @@ class Appliance extends CommonDBTM
                 $input = $ma->getInput();
                 foreach ($ids as $id) {
                     $input = [
-                    'appliances_id'   => $input['appliances_id'],
-                    'items_id'        => $id,
-                    'itemtype'        => $item->getType()
+                        'appliances_id'   => $input['appliances_id'],
+                        'items_id'        => $id,
+                        'itemtype'        => $item->getType()
                     ];
                     if ($appli_item->can(-1, UPDATE, $input)) {
                         if ($appli_item->add($input)) {

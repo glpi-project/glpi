@@ -48,16 +48,16 @@ class DataHelpersExtension extends AbstractExtension
     public function getFilters(): array
     {
         return [
-         new TwigFilter('formatted_datetime', [$this, 'getFormattedDatetime']),
-         new TwigFilter('formatted_duration', [$this, 'getFormattedDuration']),
-         new TwigFilter('formatted_number', [$this, 'getFormattedNumber']),
-         new TwigFilter('html_to_text', [$this, 'getTextFromHtml']),
-         new TwigFilter('picture_url', [$this, 'getPictureUrl']),
-         new TwigFilter('relative_datetime', [$this, 'getRelativeDatetime']),
-         new TwigFilter('safe_html', [$this, 'getSafeHtml'], ['is_safe' => ['html']]),
-         new TwigFilter('verbatim_value', [$this, 'getVerbatimValue']),
-         new TwigFilter('shortcut', [$this, 'underlineShortcutLetter'], ['is_safe' => ['html']]),
-         new TwigFilter('enhanced_html', [$this, 'getEnhancedHtml'], ['is_safe' => ['html']]),
+            new TwigFilter('formatted_datetime', [$this, 'getFormattedDatetime']),
+            new TwigFilter('formatted_duration', [$this, 'getFormattedDuration']),
+            new TwigFilter('formatted_number', [$this, 'getFormattedNumber']),
+            new TwigFilter('html_to_text', [$this, 'getTextFromHtml']),
+            new TwigFilter('picture_url', [$this, 'getPictureUrl']),
+            new TwigFilter('relative_datetime', [$this, 'getRelativeDatetime']),
+            new TwigFilter('safe_html', [$this, 'getSafeHtml'], ['is_safe' => ['html']]),
+            new TwigFilter('verbatim_value', [$this, 'getVerbatimValue']),
+            new TwigFilter('shortcut', [$this, 'underlineShortcutLetter'], ['is_safe' => ['html']]),
+            new TwigFilter('enhanced_html', [$this, 'getEnhancedHtml'], ['is_safe' => ['html']]),
         ];
     }
 

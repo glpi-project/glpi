@@ -47,21 +47,21 @@ class NetworkPortType extends CommonDropdown
     {
 
         return [
-         [
-            'name'   => 'value_decimal',
-            'label'  => __('Decimal'),
-            'type'   => 'integer',
-            'max'    => 1000
-         ], [
-            'name'  => 'is_importable',
-            'label' => __('Import'),
-            'type'  => 'bool'
-         ], [
-            'name'  => 'instantiation_type',
-            'label' => __('Instanciation type'),
-            'type'           => 'itemtypename',
-            'itemtype_list'      => 'networkport_instantiations',
-         ]
+            [
+                'name'   => 'value_decimal',
+                'label'  => __('Decimal'),
+                'type'   => 'integer',
+                'max'    => 1000
+            ], [
+                'name'  => 'is_importable',
+                'label' => __('Import'),
+                'type'  => 'bool'
+            ], [
+                'name'  => 'instantiation_type',
+                'label' => __('Instanciation type'),
+                'type'           => 'itemtypename',
+                'itemtype_list'      => 'networkport_instantiations',
+            ]
         ];
     }
 
@@ -70,28 +70,28 @@ class NetworkPortType extends CommonDropdown
         $tab = parent::rawSearchOptions();
 
         $tab[] = [
-         'id'                 => '10',
-         'table'              => $this->getTable(),
-         'field'              => 'value_decimal',
-         'name'               => __('Decimal'),
-         'datatype'           => 'integer'
+            'id'                 => '10',
+            'table'              => $this->getTable(),
+            'field'              => 'value_decimal',
+            'name'               => __('Decimal'),
+            'datatype'           => 'integer'
         ];
 
         $tab[] = [
-         'id'                 => '11',
-         'table'              => $this->getTable(),
-         'field'              => 'is_importable',
-         'name'               => __('Import'),
-         'datatype'           => 'bool'
+            'id'                 => '11',
+            'table'              => $this->getTable(),
+            'field'              => 'is_importable',
+            'name'               => __('Import'),
+            'datatype'           => 'bool'
         ];
 
         $tab[] = [
-         'id'                 => '12',
-         'table'              => $this->getTable(),
-         'field'              => 'instantiation_type',
-         'name'               => __('Instanciation type'),
-         'datatype'           => 'itemtypename',
-         'itemtype_list'      => 'networkport_instantiations',
+            'id'                 => '12',
+            'table'              => $this->getTable(),
+            'field'              => 'instantiation_type',
+            'name'               => __('Instanciation type'),
+            'datatype'           => 'itemtypename',
+            'itemtype_list'      => 'networkport_instantiations',
         ];
 
         return $tab;
@@ -103,21 +103,21 @@ class NetworkPortType extends CommonDropdown
         $iftypes = json_decode(file_get_contents($jsonfile->getJsonFilePath('iftype')), true);
 
         $default_instanciations = [
-         'Ethernet'     => [6, 7, 62, 117, 169],
-         'Wifi'         => [71],
-         'Fiberchannel' => [56]
+            'Ethernet'     => [6, 7, 62, 117, 169],
+            'Wifi'         => [71],
+            'Fiberchannel' => [56]
         ];
 
         $template = [
-         'entities_id'        => 0,
-         'is_recursive'       => 0,
-         'value_decimal'      => 0,
-         'name'               => null,
-         'comment'            => null,
-         'is_importable'      => 0,
-         'instantiation_type' => null,
-         'date_creation'      => $_SESSION['glpi_currenttime'],
-         'date_mod'           => $_SESSION['glpi_currenttime']
+            'entities_id'        => 0,
+            'is_recursive'       => 0,
+            'value_decimal'      => 0,
+            'name'               => null,
+            'comment'            => null,
+            'is_importable'      => 0,
+            'instantiation_type' => null,
+            'date_creation'      => $_SESSION['glpi_currenttime'],
+            'date_mod'           => $_SESSION['glpi_currenttime']
         ];
 
         $defaults = [];
@@ -133,11 +133,11 @@ class NetworkPortType extends CommonDropdown
             }
 
             $row = array_merge($template, [
-            'value_decimal'      => (int)$iftype['decimal'],
-            'name'               => $iftype['name'],
-            'comment'            => trim($iftype['description'] . ' ' . $iftype['references']),
-            'is_importable'      => $importable,
-            'instantiation_type' => $instanciation
+                'value_decimal'      => (int)$iftype['decimal'],
+                'name'               => $iftype['name'],
+                'comment'            => trim($iftype['description'] . ' ' . $iftype['references']),
+                'is_importable'      => $importable,
+                'instantiation_type' => $instanciation
             ]);
             $defaults[] = $row;
         }
@@ -161,10 +161,10 @@ class NetworkPortType extends CommonDropdown
 
         if (($import_types = $GLPI_CACHE->get('glpi_inventory_ports_types')) === null) {
             $iterator = $DB->request([
-            'FROM'   => self::getTable(),
-            'WHERE'  => [
-               'is_importable'   => true
-            ]
+                'FROM'   => self::getTable(),
+                'WHERE'  => [
+                    'is_importable'   => true
+                ]
             ]);
 
             $import_types = [];

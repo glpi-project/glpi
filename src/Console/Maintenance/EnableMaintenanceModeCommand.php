@@ -50,7 +50,7 @@ class EnableMaintenanceModeCommand extends AbstractCommand
         $this->setName('glpi:maintenance:enable');
         $this->setAliases(
             [
-            'maintenance:enable',
+                'maintenance:enable',
             ]
         );
         $this->setDescription(__('Enable maintenance mode'));
@@ -69,7 +69,7 @@ class EnableMaintenanceModeCommand extends AbstractCommand
         global $CFG_GLPI;
 
         $values = [
-         'maintenance_mode' => '1'
+            'maintenance_mode' => '1'
         ];
         if ($input->hasOption('text')) {
             $values['maintenance_text'] = $input->getOption('text');

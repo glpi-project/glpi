@@ -44,8 +44,8 @@ class DatabaseInstance extends InventoryAsset
     public function prepare(): array
     {
         $mapping = [
-         'type' => 'databaseinstancetypes_id',
-         'manufacturer' => 'manufacturers_id'
+            'type' => 'databaseinstancetypes_id',
+            'manufacturer' => 'manufacturers_id'
         ];
 
         foreach ($this->data as &$val) {
@@ -80,16 +80,16 @@ class DatabaseInstance extends InventoryAsset
         $db_existing = [];
 
         $iterator = $DB->request([
-         'SELECT' => [
-            'id',
-            'name',
-            'is_dynamic'
-         ],
-         'FROM'   => GDatabaseInstance::getTable(),
-         'WHERE'  => [
-            'itemtype'     => $this->item->getType(),
-            'items_id'     => $this->item->fields['id']
-         ]
+            'SELECT' => [
+                'id',
+                'name',
+                'is_dynamic'
+            ],
+            'FROM'   => GDatabaseInstance::getTable(),
+            'WHERE'  => [
+                'itemtype'     => $this->item->getType(),
+                'items_id'     => $this->item->fields['id']
+            ]
         ]);
 
         foreach ($iterator as $row) {
@@ -114,13 +114,13 @@ class DatabaseInstance extends InventoryAsset
 
         foreach ($value as $key => $val) {
             $input = [
-            'itemtype'     => 'DatabaseInstance',
-            'name'         => $val->name ?? '',
-            'entities_id'  => $this->item->fields['entities_id'],
-            'linked_item' => [
-               'itemtype' => $this->item->getType(),
-               'items_id' => $this->item->fields['id']
-            ]
+                'itemtype'     => 'DatabaseInstance',
+                'name'         => $val->name ?? '',
+                'entities_id'  => $this->item->fields['entities_id'],
+                'linked_item' => [
+                    'itemtype' => $this->item->getType(),
+                    'items_id' => $this->item->fields['id']
+                ]
             ];
             $data = $rule->processAllRules($input, [], ['class' => $this, 'return' => true]);
 
@@ -133,9 +133,9 @@ class DatabaseInstance extends InventoryAsset
                 if ($data['found_inventories'][0] == 0) {
                     // add instance
                     $input += [
-                    'entities_id'  => $this->entities_id,
-                    'itemtype'     => $this->item->getType(),
-                    'items_id'     => $this->item->fields['id']
+                        'entities_id'  => $this->entities_id,
+                        'itemtype'     => $this->item->getType(),
+                        'items_id'     => $this->item->fields['id']
                     ];
                     $items_id = $instance->add(Toolbox::addslashes_deep($input), [], $this->withHistory());
                 } else {
@@ -175,7 +175,7 @@ class DatabaseInstance extends InventoryAsset
                 foreach ($databases as $database) {
                     $dbinput = (array)$database;
                     $dbinput += [
-                    'databaseinstances_id' => $instance->fields['id']
+                        'databaseinstances_id' => $instance->fields['id']
                     ];
                     $odatabase->add(Toolbox::addslashes_deep($dbinput), [], $this->withHistory());
                 }
@@ -187,12 +187,12 @@ class DatabaseInstance extends InventoryAsset
                     $agents_id = 0;
                 }
                 $inputrulelog = [
-                'date'      => date('Y-m-d H:i:s'),
-                'rules_id'  => $data['rules_id'],
-                'items_id'  => $items_id,
-                'itemtype'  => $itemtype,
-                'agents_id' => $agents_id,
-                'method'    => 'inventory'
+                    'date'      => date('Y-m-d H:i:s'),
+                    'rules_id'  => $data['rules_id'],
+                    'items_id'  => $items_id,
+                    'itemtype'  => $itemtype,
+                    'agents_id' => $agents_id,
+                    'method'    => 'inventory'
                 ];
                 $rulesmatched->add($inputrulelog, [], false);
                 $rulesmatched->cleanOlddata($items_id, $itemtype);

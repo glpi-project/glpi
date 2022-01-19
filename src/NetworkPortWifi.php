@@ -138,46 +138,46 @@ class NetworkPortWifi extends NetworkPortInstantiation
         $tab = [];
 
         $tab[] = [
-         'id'                 => 'common',
-         'name'               => __('Characteristics')
+            'id'                 => 'common',
+            'name'               => __('Characteristics')
         ];
 
         $tab[] = [
-         'id'                 => '10',
-         'table'              => NetworkPort::getTable(),
-         'field'              => 'mac',
-         'datatype'           => 'mac',
-         'name'               => __('MAC'),
-         'massiveaction'      => false,
-         'joinparams'         => [
-            'jointype'           => 'empty'
-         ]
+            'id'                 => '10',
+            'table'              => NetworkPort::getTable(),
+            'field'              => 'mac',
+            'datatype'           => 'mac',
+            'name'               => __('MAC'),
+            'massiveaction'      => false,
+            'joinparams'         => [
+                'jointype'           => 'empty'
+            ]
         ];
 
         $tab[] = [
-         'id'                 => '11',
-         'table'              => $this->getTable(),
-         'field'              => 'mode',
-         'name'               => __('Wifi mode'),
-         'massiveaction'      => false,
-         'datatype'           => 'specific'
+            'id'                 => '11',
+            'table'              => $this->getTable(),
+            'field'              => 'mode',
+            'name'               => __('Wifi mode'),
+            'massiveaction'      => false,
+            'datatype'           => 'specific'
         ];
 
         $tab[] = [
-         'id'                 => '12',
-         'table'              => $this->getTable(),
-         'field'              => 'version',
-         'name'               => __('Wifi protocol version'),
-         'massiveaction'      => false
+            'id'                 => '12',
+            'table'              => $this->getTable(),
+            'field'              => 'version',
+            'name'               => __('Wifi protocol version'),
+            'massiveaction'      => false
         ];
 
         $tab[] = [
-         'id'                 => '13',
-         'table'              => 'glpi_wifinetworks',
-         'field'              => 'name',
-         'name'               => WifiNetwork::getTypeName(1),
-         'massiveaction'      => false,
-         'datatype'           => 'dropdown'
+            'id'                 => '13',
+            'table'              => 'glpi_wifinetworks',
+            'field'              => 'name',
+            'name'               => WifiNetwork::getTypeName(1),
+            'massiveaction'      => false,
+            'datatype'           => 'dropdown'
         ];
 
         return $tab;
@@ -248,35 +248,35 @@ class NetworkPortWifi extends NetworkPortInstantiation
     {
 
         $tab[] = [
-         'id'                 => '157',
-         'table'              => 'glpi_wifinetworks',
-         'field'              => 'name',
-         'name'               => WifiNetwork::getTypeName(1),
-         'forcegroupby'       => true,
-         'massiveaction'      => false,
-         'joinparams'         => [
-            'jointype'           => 'standard',
-            'beforejoin'         => [
-               'table'              => 'glpi_networkportwifis',
-               'joinparams'         => $joinparams
+            'id'                 => '157',
+            'table'              => 'glpi_wifinetworks',
+            'field'              => 'name',
+            'name'               => WifiNetwork::getTypeName(1),
+            'forcegroupby'       => true,
+            'massiveaction'      => false,
+            'joinparams'         => [
+                'jointype'           => 'standard',
+                'beforejoin'         => [
+                    'table'              => 'glpi_networkportwifis',
+                    'joinparams'         => $joinparams
+                ]
             ]
-         ]
         ];
 
         $tab[] = [
-         'id'                 => '158',
-         'table'              => 'glpi_wifinetworks',
-         'field'              => 'essid',
-         'name'               => __('ESSID'),
-         'forcegroupby'       => true,
-         'massiveaction'      => false,
-         'joinparams'         => [
-            'jointype'           => 'standard',
-            'beforejoin'         => [
-               'table'              => 'glpi_networkportwifis',
-               'joinparams'         => $joinparams
+            'id'                 => '158',
+            'table'              => 'glpi_wifinetworks',
+            'field'              => 'essid',
+            'name'               => __('ESSID'),
+            'forcegroupby'       => true,
+            'massiveaction'      => false,
+            'joinparams'         => [
+                'jointype'           => 'standard',
+                'beforejoin'         => [
+                    'table'              => 'glpi_networkportwifis',
+                    'joinparams'         => $joinparams
+                ]
             ]
-         ]
         ];
     }
 }

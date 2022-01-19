@@ -42,8 +42,8 @@ class Agent extends DbTestCase
     public function testDefineTabs()
     {
         $expected = [
-         'Agent$main'   => 'Agent',
-         'Log$1'        => 'Historical'
+            'Agent$main'   => 'Agent',
+            'Log$1'        => 'Historical'
         ];
         $this
          ->given($this->newTestedInstance)
@@ -55,10 +55,10 @@ class Agent extends DbTestCase
     public function testHandleAgent()
     {
         $metadata = [
-         'deviceid'  => 'glpixps-2018-07-09-09-07-13',
-         'version'   => 'FusionInventory-Agent_v2.5.2-1.fc31',
-         'itemtype'  => 'Computer',
-         'tag'       => '000005'
+            'deviceid'  => 'glpixps-2018-07-09-09-07-13',
+            'version'   => 'FusionInventory-Agent_v2.5.2-1.fc31',
+            'itemtype'  => 'Computer',
+            'tag'       => '000005'
         ];
 
         $this

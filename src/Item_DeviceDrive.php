@@ -46,9 +46,10 @@ class Item_DeviceDrive extends Item_Devices
     {
 
         return ['serial' => parent::getSpecificities('serial'),
-                   'otherserial' => parent::getSpecificities('otherserial'),
-                   'locations_id' => parent::getSpecificities('locations_id'),
-                   'states_id' => parent::getSpecificities('states_id'),
-                   'busID'  => parent::getSpecificities('busID')];
+            'otherserial' => parent::getSpecificities('otherserial'),
+            'locations_id' => parent::getSpecificities('locations_id'),
+            'states_id' => parent::getSpecificities('states_id'),
+            'busID'  => parent::getSpecificities('busID')
+        ];
     }
 }

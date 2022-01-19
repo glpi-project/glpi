@@ -76,8 +76,10 @@ class GLPIMailer extends PHPMailer
 
             if (!$CFG_GLPI['smtp_check_certificate']) {
                 $this->SMTPOptions = ['ssl' => ['verify_peer'       => false,
-                                            'verify_peer_name'  => false,
-                                            'allow_self_signed' => true]];
+                    'verify_peer_name'  => false,
+                    'allow_self_signed' => true
+                ]
+                ];
             }
             if ($CFG_GLPI['smtp_sender'] != '') {
                 $this->Sender = $CFG_GLPI['smtp_sender'];

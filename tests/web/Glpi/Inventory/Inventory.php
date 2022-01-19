@@ -56,10 +56,10 @@ class Inventory extends \GLPITestCase
             'POST',
             $this->base_uri . 'front/inventory.php',
             [
-            'headers' => [
-               'Content-Type' => 'application/xml'
-            ],
-            'body'   => '<?xml version="1.0" encoding="UTF-8" ?>' .
+                'headers' => [
+                    'Content-Type' => 'application/xml'
+                ],
+                'body'   => '<?xml version="1.0" encoding="UTF-8" ?>' .
                   "<REQUEST>
                   <CONTENT>
                      <BIOS>
@@ -137,12 +137,12 @@ class Inventory extends \GLPITestCase
         $this->boolean($agent->getFromDBByCrit(['deviceid' => 'computer-2018-07-09-09-07-13']))->isTrue();
 
         $expected = [
-         'deviceid'        => 'computer-2018-07-09-09-07-13',
-         'version'         => '2.5.1-1.fc30',
-         'agenttypes_id'   => 1,
-         'locked'          => 0,
-         'itemtype'        => 'Computer',
-         'items_id'        => 0
+            'deviceid'        => 'computer-2018-07-09-09-07-13',
+            'version'         => '2.5.1-1.fc30',
+            'agenttypes_id'   => 1,
+            'locked'          => 0,
+            'itemtype'        => 'Computer',
+            'items_id'        => 0
         ];
 
         foreach ($expected as $key => $value) {

@@ -56,19 +56,19 @@ class Supplier_Ticket extends CommonITILActor
         global $DB;
 
         $iterator = $DB->request([
-         'FROM'      => $this->getTable(),
-         'LEFT JOIN' => [
-            'glpi_suppliers'  => [
-               'ON' => [
-                  $this->getTable() => 'suppliers_id',
-                  'glpi_suppliers'  => 'id'
-               ]
+            'FROM'      => $this->getTable(),
+            'LEFT JOIN' => [
+                'glpi_suppliers'  => [
+                    'ON' => [
+                        $this->getTable() => 'suppliers_id',
+                        'glpi_suppliers'  => 'id'
+                    ]
+                ]
+            ],
+            'WHERE'     => [
+                $this->getTable() . '.tickets_id'   => $items_id,
+                'glpi_suppliers.email'              => $email
             ]
-         ],
-         'WHERE'     => [
-            $this->getTable() . '.tickets_id'   => $items_id,
-            'glpi_suppliers.email'              => $email
-         ]
         ]);
 
         foreach ($iterator as $data) {

@@ -111,9 +111,9 @@ class Ticket_Contract extends CommonDBRelation
             echo "<tr class='tab_bg_2'><td class='right'>";
             echo "<input type='hidden' name='$item_a_fkey' value='$ID'>";
             $linked_itemtype::dropdown([
-            'used'        => $used,
-            'displaywith' => ['id'],
-            'entity'      => $item->fields['entities_id'],
+                'used'        => $used,
+                'displaywith' => ['id'],
+                'entity'      => $item->fields['entities_id'],
             ]);
             echo "</td><td class='center'>";
             echo "<input type='submit' name='add' value=\"" . _sx('button', 'Add') . "\" class='btn btn-primary'>";
@@ -128,14 +128,14 @@ class Ticket_Contract extends CommonDBRelation
         if ($canedit && $numrows) {
             Html::openMassiveActionsForm('mass' . __CLASS__ . $rand);
             $massiveactionparams = [
-            'num_displayed'    => min($_SESSION['glpilist_limit'], $numrows),
-            'container'        => 'mass' . __CLASS__ . $rand,
-            'specific_actions' => [
-               'purge' => _x('button', 'Delete permanently'),
-            ],
-            'extraparams'      => [$item_a_fkey => $item->getID()],
-            'width'            => 1000,
-            'height'           => 500
+                'num_displayed'    => min($_SESSION['glpilist_limit'], $numrows),
+                'container'        => 'mass' . __CLASS__ . $rand,
+                'specific_actions' => [
+                    'purge' => _x('button', 'Delete permanently'),
+                ],
+                'extraparams'      => [$item_a_fkey => $item->getID()],
+                'width'            => 1000,
+                'height'           => 500
             ];
             Html::showMassiveActions($massiveactionparams);
         }
@@ -158,11 +158,11 @@ class Ticket_Contract extends CommonDBRelation
             foreach ($linked_items as $data) {
                 Session::addToNavigateListItems($linked_itemtype, $data["id"]);
                 $linked_itemtype::showShort($data['id'], [
-                 'followups'              => false,
-                 'row_num'                => $i,
-                 'type_for_massiveaction' => __CLASS__,
-                 'id_for_massiveaction'   => $data['linkid'],
-                 'ticket_stats'           => true,
+                    'followups'              => false,
+                    'row_num'                => $i,
+                    'type_for_massiveaction' => __CLASS__,
+                    'id_for_massiveaction'   => $data['linkid'],
+                    'ticket_stats'           => true,
                 ]);
                  $i++;
             }

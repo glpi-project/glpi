@@ -61,16 +61,16 @@ class ManualLink extends CommonDBChild
             $count += countElementsInTable(
                 'glpi_manuallinks',
                 [
-                'itemtype'  => $item->getType(),
-                'items_id'  => $item->fields[$item->getIndexName()],
+                    'itemtype'  => $item->getType(),
+                    'items_id'  => $item->fields[$item->getIndexName()],
                 ]
             );
             if (Link::canView()) {
                  $count += countElementsInTable(
                      ['glpi_links_itemtypes', 'glpi_links'],
                      [
-                     'glpi_links_itemtypes.links_id'  => new \QueryExpression(DB::quoteName('glpi_links.id')),
-                     'glpi_links_itemtypes.itemtype'  => $item->getType()
+                         'glpi_links_itemtypes.links_id'  => new \QueryExpression(DB::quoteName('glpi_links.id')),
+                         'glpi_links_itemtypes.itemtype'  => $item->getType()
                      ] + getEntitiesRestrictCriteria('glpi_links', '', '', false)
                  );
             }
@@ -111,10 +111,10 @@ class ManualLink extends CommonDBChild
         echo '<td rowspan="4">';
         Html::textarea(
             [
-            'name'  => 'comment',
-            'cols'  => 50,
-            'rows'  => 8,
-            'value' => $this->fields['comment'],
+                'name'  => 'comment',
+                'cols'  => 50,
+                'rows'  => 8,
+                'value' => $this->fields['comment'],
             ]
         );
         echo '</td>';
@@ -148,9 +148,9 @@ class ManualLink extends CommonDBChild
             'icon',
             [$this->fields['icon'] => $this->fields['icon']],
             [
-            'id'       => $icon_selector_id,
-            'selected' => $this->fields['icon'],
-            'style'    => 'width:175px;'
+                'id'       => $icon_selector_id,
+                'selected' => $this->fields['icon'],
+                'style'    => 'width:175px;'
             ]
         );
         echo '</td>';
@@ -223,12 +223,12 @@ JAVASCRIPT
         }
 
         $iterator = $DB->request([
-         'FROM'         => 'glpi_manuallinks',
-         'WHERE'        => [
-            'itemtype'  => $item->getType(),
-            'items_id'  => $item->fields[$item->getIndexName()],
-         ],
-         'ORDERBY'      => 'name'
+            'FROM'         => 'glpi_manuallinks',
+            'WHERE'        => [
+                'itemtype'  => $item->getType(),
+                'items_id'  => $item->fields[$item->getIndexName()],
+            ],
+            'ORDERBY'      => 'name'
         ]);
 
         echo '<div class="spaced">';
@@ -306,25 +306,25 @@ JAVASCRIPT
         $tab = [];
 
         $tab[] = [
-         'id'                 => '146',
-         'table'              => static::getTable(),
-         'field'              => '_virtual',
-         'name'               => self::getTypeName(Session::getPluralNumber()),
-         'datatype'           => 'specific',
-         'additionalfields'   => [
-            'id',
-            'name',
-            'url',
-            'open_window',
-            'icon',
-         ],
-         'forcegroupby'       => true,
-         'nosearch'           => true,
-         'nosort'             => true,
-         'massiveaction'      => false,
-         'joinparams'         => [
-            'jointype'           => 'itemtype_item',
-         ],
+            'id'                 => '146',
+            'table'              => static::getTable(),
+            'field'              => '_virtual',
+            'name'               => self::getTypeName(Session::getPluralNumber()),
+            'datatype'           => 'specific',
+            'additionalfields'   => [
+                'id',
+                'name',
+                'url',
+                'open_window',
+                'icon',
+            ],
+            'forcegroupby'       => true,
+            'nosearch'           => true,
+            'nosort'             => true,
+            'massiveaction'      => false,
+            'joinparams'         => [
+                'jointype'           => 'itemtype_item',
+            ],
         ];
 
         return $tab;

@@ -60,9 +60,9 @@ class ProfileRight extends CommonDBChild
             || count($GLPI_CACHE->get('all_possible_rights')) == 0
         ) {
             $iterator = $DB->request([
-            'SELECT'          => 'name',
-            'DISTINCT'        => true,
-            'FROM'            => self::getTable()
+                'SELECT'          => 'name',
+                'DISTINCT'        => true,
+                'FROM'            => self::getTable()
             ]);
             foreach ($iterator as $right) {
                 // By default, all rights are NULL ...
@@ -96,8 +96,8 @@ class ProfileRight extends CommonDBChild
         }
 
         $query = [
-         'FROM'   => 'glpi_profilerights',
-         'WHERE'  => ['profiles_id' => $profiles_id]
+            'FROM'   => 'glpi_profilerights',
+            'WHERE'  => ['profiles_id' => $profiles_id]
         ];
         if (count($rights) > 0) {
             $query['WHERE']['name'] = $rights;
@@ -124,8 +124,8 @@ class ProfileRight extends CommonDBChild
         $GLPI_CACHE->set('all_possible_rights', []);
 
         $iterator = $DB->request([
-          'SELECT'   => ['id'],
-          'FROM'     => Profile::getTable()
+            'SELECT'   => ['id'],
+            'FROM'     => Profile::getTable()
         ]);
 
         foreach ($iterator as $profile) {
@@ -134,8 +134,8 @@ class ProfileRight extends CommonDBChild
                 $res = $DB->insert(
                     self::getTable(),
                     [
-                    'profiles_id'  => $profiles_id,
-                    'name'         => $name
+                        'profiles_id'  => $profiles_id,
+                        'name'         => $name
                     ]
                 );
                 if (!$res) {
@@ -162,7 +162,7 @@ class ProfileRight extends CommonDBChild
             $result = $DB->delete(
                 self::getTable(),
                 [
-                'name' => $name
+                    'name' => $name
                 ]
             );
             if (!$result) {
@@ -193,11 +193,11 @@ class ProfileRight extends CommonDBChild
             $result = $DB->update(
                 'glpi_profilerights',
                 [
-                'rights' => new \QueryExpression($DB->quoteName('rights') . ' | ' . (int)$value)
+                    'rights' => new \QueryExpression($DB->quoteName('rights') . ' | ' . (int)$value)
                 ],
                 [
-                'name'         => $right,
-                'profiles_id'  => $profiles
+                    'name'         => $right,
+                    'profiles_id'  => $profiles
                 ]
             );
             if (!$result) {
@@ -225,8 +225,8 @@ class ProfileRight extends CommonDBChild
         $ok       = true;
 
         $criteria = [
-         'FROM'   => self::getTable(),
-         'WHERE'  => ['name' => $initialright] + $condition
+            'FROM'   => self::getTable(),
+            'WHERE'  => ['name' => $initialright] + $condition
         ];
         $iterator = $DB->request($criteria);
 
@@ -238,11 +238,11 @@ class ProfileRight extends CommonDBChild
                 $res = $DB->update(
                     self::getTable(),
                     [
-                    'rights' => $val
+                        'rights' => $val
                     ],
                     [
-                    'profiles_id'  => $key,
-                    'name'         => $newright
+                        'profiles_id'  => $key,
+                        'name'         => $newright
                     ]
                 );
                 if (!$res) {
@@ -261,21 +261,21 @@ class ProfileRight extends CommonDBChild
         global $DB;
 
         $subq = new \QuerySubQuery([
-         'FROM'   => 'glpi_profilerights AS CURRENT',
-         'WHERE'  => [
-            'CURRENT.profiles_id'   => $profiles_id,
-            'CURRENT.NAME'          => new \QueryExpression('POSSIBLE.NAME')
-         ]
+            'FROM'   => 'glpi_profilerights AS CURRENT',
+            'WHERE'  => [
+                'CURRENT.profiles_id'   => $profiles_id,
+                'CURRENT.NAME'          => new \QueryExpression('POSSIBLE.NAME')
+            ]
         ]);
 
         $expr = 'NOT EXISTS ' . $subq->getQuery();
         $iterator = $DB->request([
-         'SELECT'          => 'POSSIBLE.name AS NAME',
-         'DISTINCT'        => true,
-         'FROM'            => 'glpi_profilerights AS POSSIBLE',
-         'WHERE'           => [
-            new \QueryExpression($expr)
-         ]
+            'SELECT'          => 'POSSIBLE.name AS NAME',
+            'DISTINCT'        => true,
+            'FROM'            => 'glpi_profilerights AS POSSIBLE',
+            'WHERE'           => [
+                new \QueryExpression($expr)
+            ]
         ]);
 
         if ($iterator->count() === 0) {
@@ -285,8 +285,8 @@ class ProfileRight extends CommonDBChild
         $query = $DB->buildInsert(
             self::getTable(),
             [
-            'profiles_id' => new QueryParam(),
-            'name'        => new QueryParam(),
+                'profiles_id' => new QueryParam(),
+                'name'        => new QueryParam(),
             ]
         );
         $stmt = $DB->prepare($query);
@@ -311,15 +311,18 @@ class ProfileRight extends CommonDBChild
             if (isset($right)) {
                 if (
                     $me->getFromDBByCrit(['profiles_id'   => $profiles_id,
-                                      'name'          => $name])
+                        'name'          => $name
+                    ])
                 ) {
                     $input = ['id'          => $me->getID(),
-                         'rights'      => $right];
+                        'rights'      => $right
+                    ];
                     $me->update($input);
                 } else {
                     $input = ['profiles_id' => $profiles_id,
-                         'name'        => $name,
-                         'rights'      => $right];
+                        'name'        => $name,
+                        'rights'      => $right
+                    ];
                     $me->add($input);
                 }
             }

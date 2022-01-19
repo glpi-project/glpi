@@ -60,8 +60,8 @@ class Group_User extends CommonDBRelation
         return countElementsInTable(
             'glpi_groups_users',
             [
-            'users_id' => $users_id,
-            'groups_id' => $groups_id
+                'users_id' => $users_id,
+                'groups_id' => $groups_id
             ]
         ) > 0;
     }
@@ -80,27 +80,27 @@ class Group_User extends CommonDBRelation
 
         $groups = [];
         $iterator = $DB->request([
-         'SELECT' => [
-            'glpi_groups.*',
-            'glpi_groups_users.id AS IDD',
-            'glpi_groups_users.id AS linkid',
-            'glpi_groups_users.is_dynamic AS is_dynamic',
-            'glpi_groups_users.is_manager AS is_manager',
-            'glpi_groups_users.is_userdelegate AS is_userdelegate'
-         ],
-         'FROM'   => self::getTable(),
-         'LEFT JOIN'    => [
-            Group::getTable() => [
-               'FKEY' => [
-                  Group::getTable() => 'id',
-                  self::getTable()  => 'groups_id'
-               ]
-            ]
-         ],
-         'WHERE'        => [
-            'glpi_groups_users.users_id' => $users_id
-         ] + $condition,
-         'ORDER'        => 'glpi_groups.name'
+            'SELECT' => [
+                'glpi_groups.*',
+                'glpi_groups_users.id AS IDD',
+                'glpi_groups_users.id AS linkid',
+                'glpi_groups_users.is_dynamic AS is_dynamic',
+                'glpi_groups_users.is_manager AS is_manager',
+                'glpi_groups_users.is_userdelegate AS is_userdelegate'
+            ],
+            'FROM'   => self::getTable(),
+            'LEFT JOIN'    => [
+                Group::getTable() => [
+                    'FKEY' => [
+                        Group::getTable() => 'id',
+                        self::getTable()  => 'groups_id'
+                    ]
+                ]
+            ],
+            'WHERE'        => [
+                'glpi_groups_users.users_id' => $users_id
+            ] + $condition,
+            'ORDER'        => 'glpi_groups.name'
         ]);
         foreach ($iterator as $row) {
             $groups[] = $row;
@@ -127,27 +127,27 @@ class Group_User extends CommonDBRelation
         $users = [];
 
         $iterator = $DB->request([
-         'SELECT' => [
-            'glpi_users.*',
-            'glpi_groups_users.id AS IDD',
-            'glpi_groups_users.id AS linkid',
-            'glpi_groups_users.is_dynamic AS is_dynamic',
-            'glpi_groups_users.is_manager AS is_manager',
-            'glpi_groups_users.is_userdelegate AS is_userdelegate'
-         ],
-         'FROM'   => self::getTable(),
-         'LEFT JOIN'    => [
-            User::getTable() => [
-               'FKEY' => [
-                  User::getTable() => 'id',
-                  self::getTable()  => 'users_id'
-               ]
-            ]
-         ],
-         'WHERE'        => [
-            'glpi_groups_users.groups_id' => $groups_id
-         ] + $condition,
-         'ORDER'        => 'glpi_users.name'
+            'SELECT' => [
+                'glpi_users.*',
+                'glpi_groups_users.id AS IDD',
+                'glpi_groups_users.id AS linkid',
+                'glpi_groups_users.is_dynamic AS is_dynamic',
+                'glpi_groups_users.is_manager AS is_manager',
+                'glpi_groups_users.is_userdelegate AS is_userdelegate'
+            ],
+            'FROM'   => self::getTable(),
+            'LEFT JOIN'    => [
+                User::getTable() => [
+                    'FKEY' => [
+                        User::getTable() => 'id',
+                        self::getTable()  => 'users_id'
+                    ]
+                ]
+            ],
+            'WHERE'        => [
+                'glpi_groups_users.groups_id' => $groups_id
+            ] + $condition,
+            'ORDER'        => 'glpi_users.name'
         ]);
         foreach ($iterator as $row) {
             $users[] = $row;
@@ -197,10 +197,10 @@ class Group_User extends CommonDBRelation
             echo "<input type='hidden' name='users_id' value='$ID'>";
 
             $params = [
-            'used'      => $used,
-            'condition' => [
-               'is_usergroup' => 1,
-            ] + getEntitiesRestrictCriteria(Group::getTable(), '', '', true)
+                'used'      => $used,
+                'condition' => [
+                    'is_usergroup' => 1,
+                ] + getEntitiesRestrictCriteria(Group::getTable(), '', '', true)
             ];
             Group::dropdown($params);
             echo "</td><td>" . _n('Manager', 'Managers', 1) . "</td><td>";
@@ -225,7 +225,8 @@ class Group_User extends CommonDBRelation
             Html::openMassiveActionsForm('mass' . __CLASS__ . $rand);
             echo "<input type='hidden' name='users_id' value='" . $user->fields['id'] . "'>";
             $massiveactionparams = ['num_displayed' => min($_SESSION['glpilist_limit'], count($used)),
-                           'container'     => 'mass' . __CLASS__ . $rand];
+                'container'     => 'mass' . __CLASS__ . $rand
+            ];
             Html::showMassiveActions($massiveactionparams);
         }
         echo "<table class='tab_cadre_fixehov'>";
@@ -333,9 +334,10 @@ class Group_User extends CommonDBRelation
             echo "<tr class='tab_bg_2'><td class='center'>";
 
             User::dropdown(['right'  => "all",
-                              'entity' => $entityrestrict,
-                              'with_no_right' => true,
-                              'used'   => $used_ids]);
+                'entity' => $entityrestrict,
+                'with_no_right' => true,
+                'used'   => $used_ids
+            ]);
 
             echo "</td><td>" . _n('Manager', 'Managers', 1) . "</td><td>";
             Dropdown::showYesNo('is_manager', (($crit == 'is_manager') ? 1 : 0));
@@ -394,41 +396,41 @@ class Group_User extends CommonDBRelation
        // All group members
         $pu_table = Profile_User::getTable();
         $iterator = $DB->request([
-         'SELECT' => [
-            'glpi_users.id',
-            'glpi_groups_users.id AS linkid',
-            'glpi_groups_users.groups_id',
-            'glpi_groups_users.is_dynamic AS is_dynamic',
-            'glpi_groups_users.is_manager AS is_manager',
-            'glpi_groups_users.is_userdelegate AS is_userdelegate'
-         ],
-         'DISTINCT'  => true,
-         'FROM'      => self::getTable(),
-         'LEFT JOIN' => [
-            User::getTable() => [
-               'ON' => [
-                  self::getTable() => 'users_id',
-                  User::getTable() => 'id'
-               ]
+            'SELECT' => [
+                'glpi_users.id',
+                'glpi_groups_users.id AS linkid',
+                'glpi_groups_users.groups_id',
+                'glpi_groups_users.is_dynamic AS is_dynamic',
+                'glpi_groups_users.is_manager AS is_manager',
+                'glpi_groups_users.is_userdelegate AS is_userdelegate'
             ],
-            $pu_table => [
-               'ON' => [
-                  $pu_table        => 'users_id',
-                  User::getTable() => 'id'
-               ]
+            'DISTINCT'  => true,
+            'FROM'      => self::getTable(),
+            'LEFT JOIN' => [
+                User::getTable() => [
+                    'ON' => [
+                        self::getTable() => 'users_id',
+                        User::getTable() => 'id'
+                    ]
+                ],
+                $pu_table => [
+                    'ON' => [
+                        $pu_table        => 'users_id',
+                        User::getTable() => 'id'
+                    ]
+                ]
+            ],
+            'WHERE' => [
+                self::getTable() . '.groups_id'  => $restrict,
+                'OR' => [
+                    "$pu_table.entities_id" => null
+                ] + getEntitiesRestrictCriteria($pu_table, '', $entityrestrict, 1)
+            ],
+            'ORDERBY' => [
+                User::getTable() . '.realname',
+                User::getTable() . '.firstname',
+                User::getTable() . '.name'
             ]
-         ],
-         'WHERE' => [
-            self::getTable() . '.groups_id'  => $restrict,
-            'OR' => [
-               "$pu_table.entities_id" => null
-            ] + getEntitiesRestrictCriteria($pu_table, '', $entityrestrict, 1)
-         ],
-         'ORDERBY' => [
-            User::getTable() . '.realname',
-            User::getTable() . '.firstname',
-            User::getTable() . '.name'
-         ]
         ]);
 
         foreach ($iterator as $data) {
@@ -488,13 +490,15 @@ class Group_User extends CommonDBRelation
         echo "<tr class='tab_bg_1'><td class='center'>";
         echo _n('Criterion', 'Criteria', 1) . "&nbsp;";
         $crits = ['is_manager'      => _n('Manager', 'Managers', 1),
-                     'is_userdelegate' => __('Delegatee')];
+            'is_userdelegate' => __('Delegatee')
+        ];
         Dropdown::showFromArray(
             'crit',
             $crits,
             ['value'               => $crit,
-                                    'on_change'           => 'reloadTab("start=0&criterion="+this.value)',
-            'display_emptychoice' => true]
+                'on_change'           => 'reloadTab("start=0&criterion="+this.value)',
+                'display_emptychoice' => true
+            ]
         );
         if ($group->haveChildren()) {
             echo "</td><td class='center'>" . __('Child groups');
@@ -544,7 +548,8 @@ class Group_User extends CommonDBRelation
                     $number - $start,
                     $_SESSION['glpilist_limit']
                 ),
-                                         'container'        => 'mass' . __CLASS__ . $rand];
+                    'container'        => 'mass' . __CLASS__ . $rand
+                ];
                 Html::showMassiveActions($massiveactionparams);
             }
 
@@ -648,9 +653,9 @@ class Group_User extends CommonDBRelation
 
         $specificities['select_items_options_1'] = ['right'     => 'all'];
         $specificities['select_items_options_2'] = [
-         'condition' => [
-            'is_usergroup' => 1,
-         ] + getEntitiesRestrictCriteria(Group::getTable(), '', '', true)
+            'condition' => [
+                'is_usergroup' => 1,
+            ] + getEntitiesRestrictCriteria(Group::getTable(), '', '', true)
         ];
 
        // Define normalized action for add_item and remove_item
@@ -694,61 +699,61 @@ class Group_User extends CommonDBRelation
         $tab = [];
 
         $tab[] = [
-         'id'                 => 'common',
-         'name'               => __('Characteristics')
+            'id'                 => 'common',
+            'name'               => __('Characteristics')
         ];
 
         $tab[] = [
-         'id'                 => '2',
-         'table'              => $this->getTable(),
-         'field'              => 'id',
-         'name'               => __('ID'),
-         'massiveaction'      => false,
-         'datatype'           => 'number'
+            'id'                 => '2',
+            'table'              => $this->getTable(),
+            'field'              => 'id',
+            'name'               => __('ID'),
+            'massiveaction'      => false,
+            'datatype'           => 'number'
         ];
 
         $tab[] = [
-         'id'                 => '3',
-         'table'              => $this->getTable(),
-         'field'              => 'is_dynamic',
-         'name'               => __('Dynamic'),
-         'datatype'           => 'bool',
-         'massiveaction'      => false
+            'id'                 => '3',
+            'table'              => $this->getTable(),
+            'field'              => 'is_dynamic',
+            'name'               => __('Dynamic'),
+            'datatype'           => 'bool',
+            'massiveaction'      => false
         ];
 
         $tab[] = [
-         'id'                 => '4',
-         'table'              => 'glpi_groups',
-         'field'              => 'completename',
-         'name'               => Group::getTypeName(1),
-         'massiveaction'      => false,
-         'datatype'           => 'dropdown'
+            'id'                 => '4',
+            'table'              => 'glpi_groups',
+            'field'              => 'completename',
+            'name'               => Group::getTypeName(1),
+            'massiveaction'      => false,
+            'datatype'           => 'dropdown'
         ];
 
         $tab[] = [
-         'id'                 => '5',
-         'table'              => 'glpi_users',
-         'field'              => 'name',
-         'name'               => User::getTypeName(1),
-         'massiveaction'      => false,
-         'datatype'           => 'dropdown',
-         'right'              => 'all'
+            'id'                 => '5',
+            'table'              => 'glpi_users',
+            'field'              => 'name',
+            'name'               => User::getTypeName(1),
+            'massiveaction'      => false,
+            'datatype'           => 'dropdown',
+            'right'              => 'all'
         ];
 
         $tab[] = [
-         'id'                 => '6',
-         'table'              => $this->getTable(),
-         'field'              => 'is_manager',
-         'name'               => _n('Manager', 'Managers', 1),
-         'datatype'           => 'bool'
+            'id'                 => '6',
+            'table'              => $this->getTable(),
+            'field'              => 'is_manager',
+            'name'               => _n('Manager', 'Managers', 1),
+            'datatype'           => 'bool'
         ];
 
         $tab[] = [
-         'id'                 => '7',
-         'table'              => $this->getTable(),
-         'field'              => 'is_userdelegate',
-         'name'               => __('Delegatee'),
-         'datatype'           => 'bool'
+            'id'                 => '7',
+            'table'              => $this->getTable(),
+            'field'              => 'is_userdelegate',
+            'name'               => __('Delegatee'),
+            'datatype'           => 'bool'
         ];
 
         return $tab;
@@ -844,17 +849,17 @@ class Group_User extends CommonDBRelation
        // find users with the current group in their plannings
         $user_inst = new User();
         $users = $user_inst->find([
-         'plannings' => ['LIKE', "%$planning_k%"]
+            'plannings' => ['LIKE', "%$planning_k%"]
         ]);
 
        // add the new user to found plannings
         $query = $DB->buildUpdate(
             User::getTable(),
             [
-            'plannings' => new QueryParam(),
+                'plannings' => new QueryParam(),
             ],
             [
-            'id'        => new QueryParam()
+                'id'        => new QueryParam()
             ]
         );
         $stmt = $DB->prepare($query);
@@ -869,9 +874,9 @@ class Group_User extends CommonDBRelation
 
            // add the planning for the user
             $plannings['plannings'][$planning_k]['users']['user_' . $this->fields['users_id']] = [
-            'color'   => Planning::getPaletteColor('bg', $nb_users),
-            'display' => true,
-            'type'    => 'user'
+                'color'   => Planning::getPaletteColor('bg', $nb_users),
+                'display' => true,
+                'type'    => 'user'
             ];
 
            // if current user logged, append also to its session
@@ -903,17 +908,17 @@ class Group_User extends CommonDBRelation
        // find users with the current group in their plannings
         $user_inst = new User();
         $users = $user_inst->find([
-         'plannings' => ['LIKE', "%$planning_k%"]
+            'plannings' => ['LIKE', "%$planning_k%"]
         ]);
 
        // remove the deleted user to found plannings
         $query = $DB->buildUpdate(
             User::getTable(),
             [
-            'plannings' => new QueryParam(),
+                'plannings' => new QueryParam(),
             ],
             [
-            'id'        => new QueryParam()
+                'id'        => new QueryParam()
             ]
         );
         $stmt = $DB->prepare($query);

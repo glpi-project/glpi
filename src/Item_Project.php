@@ -65,8 +65,9 @@ class Item_Project extends CommonDBRelation
        // Avoid duplicate entry
         if (
             countElementsInTable($this->getTable(), ['projects_id' => $input['projects_id'],
-                                                   'itemtype'    => $input['itemtype'],
-                                                   'items_id'    => $input['items_id']]) > 0
+                'itemtype'    => $input['itemtype'],
+                'items_id'    => $input['items_id']
+            ]) > 0
         ) {
             return false;
         }
@@ -107,13 +108,14 @@ class Item_Project extends CommonDBRelation
             echo "<tr class='tab_bg_1'><td>";
             Dropdown::showSelectItemFromItemtypes(['itemtypes'
                                                       => $CFG_GLPI["project_asset_types"],
-                                                     'entity_restrict'
+                'entity_restrict'
                                                       => ($project->fields['is_recursive']
                                                           ? getSonsOf(
                                                               'glpi_entities',
                                                               $project->fields['entities_id']
                                                           )
-                                                          : $project->fields['entities_id'])]);
+                                                          : $project->fields['entities_id'])
+            ]);
             echo "</td><td class='center' width='30%'>";
             echo "<input type='submit' name='add' value=\"" . _sx('button', 'Add') . "\" class='btn btn-primary'>";
             echo "<input type='hidden' name='projects_id' value='$instID'>";

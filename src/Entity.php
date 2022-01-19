@@ -70,61 +70,61 @@ class Entity extends CommonTreeDropdown
    // Array of "right required to update" => array of fields allowed
    // Missing field here couldn't be update (no right)
     private static $field_right = [
-      'entity' => [
+        'entity' => [
          // Address
-         'address', 'country', 'email', 'fax', 'notepad',
-         'longitude','latitude','altitude',
-         'phonenumber', 'postcode', 'state', 'town',
-         'website', 'registration_number',
+            'address', 'country', 'email', 'fax', 'notepad',
+            'longitude','latitude','altitude',
+            'phonenumber', 'postcode', 'state', 'town',
+            'website', 'registration_number',
          // Advanced (could be user_authtype ?)
-         'authldaps_id', 'entity_ldapfilter', 'ldap_dn',
-         'mail_domain', 'tag',
+            'authldaps_id', 'entity_ldapfilter', 'ldap_dn',
+            'mail_domain', 'tag',
          // Inventory
-         'entities_strategy_software', 'entities_id_software', 'level', 'name',
-         'completename', 'entities_id',
-         'ancestors_cache', 'sons_cache', 'comment', 'transfers_strategy', 'transfers_id',
-         'agent_base_url'
-      ],
+            'entities_strategy_software', 'entities_id_software', 'level', 'name',
+            'completename', 'entities_id',
+            'ancestors_cache', 'sons_cache', 'comment', 'transfers_strategy', 'transfers_id',
+            'agent_base_url'
+        ],
       // Inventory
-      'infocom' => [
-         'autofill_buy_date', 'autofill_delivery_date',
-         'autofill_order_date', 'autofill_use_date',
-         'autofill_warranty_date',
-         'autofill_decommission_date'
-      ],
+        'infocom' => [
+            'autofill_buy_date', 'autofill_delivery_date',
+            'autofill_order_date', 'autofill_use_date',
+            'autofill_warranty_date',
+            'autofill_decommission_date'
+        ],
       // Notification
-      'notification' => [
-         'admin_email', 'admin_reply', 'admin_email_name',
-         'admin_reply_name', 'delay_send_emails',
-         'is_notif_enable_default',
-         'default_cartridges_alarm_threshold',
-         'default_consumables_alarm_threshold',
-         'default_contract_alert', 'default_infocom_alert',
-         'mailing_signature', 'cartridges_alert_repeat',
-         'consumables_alert_repeat', 'notclosed_delay',
-         'use_licenses_alert', 'use_certificates_alert',
-         'send_licenses_alert_before_delay',
-         'send_certificates_alert_before_delay',
-         'use_contracts_alert',
-         'send_contracts_alert_before_delay',
-         'use_reservations_alert', 'use_infocoms_alert',
-         'send_infocoms_alert_before_delay',
-         'notification_subject_tag', 'use_domains_alert',
-         'send_domains_alert_close_expiries_delay', 'send_domains_alert_expired_delay'
-      ],
+        'notification' => [
+            'admin_email', 'admin_reply', 'admin_email_name',
+            'admin_reply_name', 'delay_send_emails',
+            'is_notif_enable_default',
+            'default_cartridges_alarm_threshold',
+            'default_consumables_alarm_threshold',
+            'default_contract_alert', 'default_infocom_alert',
+            'mailing_signature', 'cartridges_alert_repeat',
+            'consumables_alert_repeat', 'notclosed_delay',
+            'use_licenses_alert', 'use_certificates_alert',
+            'send_licenses_alert_before_delay',
+            'send_certificates_alert_before_delay',
+            'use_contracts_alert',
+            'send_contracts_alert_before_delay',
+            'use_reservations_alert', 'use_infocoms_alert',
+            'send_infocoms_alert_before_delay',
+            'notification_subject_tag', 'use_domains_alert',
+            'send_domains_alert_close_expiries_delay', 'send_domains_alert_expired_delay'
+        ],
       // Helpdesk
-      'entity_helpdesk' => [
-         'calendars_strategy', 'calendars_id', 'tickettype', 'auto_assign_mode',
-         'autoclose_delay', 'inquest_config',
-         'inquest_rate', 'inquest_delay',
-         'inquest_duration','inquest_URL',
-         'max_closedate', 'tickettemplates_strategy', 'tickettemplates_id',
-         'changetemplates_strategy', 'changetemplates_id', 'problemtemplates_strategy', 'problemtemplates_id',
-         'suppliers_as_private', 'autopurge_delay', 'anonymize_support_agents',
-         'contracts_strategy_default', 'contracts_id_default'
-      ],
+        'entity_helpdesk' => [
+            'calendars_strategy', 'calendars_id', 'tickettype', 'auto_assign_mode',
+            'autoclose_delay', 'inquest_config',
+            'inquest_rate', 'inquest_delay',
+            'inquest_duration','inquest_URL',
+            'max_closedate', 'tickettemplates_strategy', 'tickettemplates_id',
+            'changetemplates_strategy', 'changetemplates_id', 'problemtemplates_strategy', 'problemtemplates_id',
+            'suppliers_as_private', 'autopurge_delay', 'anonymize_support_agents',
+            'contracts_strategy_default', 'contracts_id_default'
+        ],
       // Configuration
-      'config' => ['enable_custom_css', 'custom_css_code']
+        'config' => ['enable_custom_css', 'custom_css_code']
     ];
 
 
@@ -285,10 +285,10 @@ class Entity extends CommonTreeDropdown
         $input = $this->handleConfigStrategyFields($input);
 
         $result = $DB->request([
-         'SELECT' => new \QueryExpression(
-             'MAX(' . $DB->quoteName('id') . ')+1 AS newID'
-         ),
-         'FROM'   => $this->getTable()
+            'SELECT' => new \QueryExpression(
+                'MAX(' . $DB->quoteName('id') . ')+1 AS newID'
+            ),
+            'FROM'   => $this->getTable()
         ])->current();
         $input['id'] = $result['newID'];
 
@@ -588,9 +588,9 @@ class Entity extends CommonTreeDropdown
 
         $this->deleteChildrenAndRelationsFromDb(
             [
-            Entity_KnowbaseItem::class,
-            Entity_Reminder::class,
-            Entity_RSSFeed::class,
+                Entity_KnowbaseItem::class,
+                Entity_Reminder::class,
+                Entity_RSSFeed::class,
             ]
         );
 
@@ -618,177 +618,177 @@ class Entity extends CommonTreeDropdown
         $tab = [];
 
         $tab[] = [
-         'id'                 => 'common',
-         'name'               => __('Characteristics')
+            'id'                 => 'common',
+            'name'               => __('Characteristics')
         ];
 
         $tab[] = [
-         'id'                 => '1',
-         'table'              => $this->getTable(),
-         'field'              => 'completename',
-         'name'               => __('Complete name'),
-         'datatype'           => 'itemlink',
-         'massiveaction'      => false
+            'id'                 => '1',
+            'table'              => $this->getTable(),
+            'field'              => 'completename',
+            'name'               => __('Complete name'),
+            'datatype'           => 'itemlink',
+            'massiveaction'      => false
         ];
 
         $tab[] = [
-         'id'                 => '2',
-         'table'              => $this->getTable(),
-         'field'              => 'id',
-         'name'               => __('ID'),
-         'massiveaction'      => false,
-         'datatype'           => 'number'
+            'id'                 => '2',
+            'table'              => $this->getTable(),
+            'field'              => 'id',
+            'name'               => __('ID'),
+            'massiveaction'      => false,
+            'datatype'           => 'number'
         ];
 
         $tab[] = [
-         'id'                 => '14',
-         'table'              => $this->getTable(),
-         'field'              => 'name',
-         'name'               => __('Name'),
-         'datatype'           => 'itemlink',
-         'massiveaction'      => false
+            'id'                 => '14',
+            'table'              => $this->getTable(),
+            'field'              => 'name',
+            'name'               => __('Name'),
+            'datatype'           => 'itemlink',
+            'massiveaction'      => false
         ];
 
         $tab[] = [
-         'id'                 => '3',
-         'table'              => $this->getTable(),
-         'field'              => 'address',
-         'name'               => __('Address'),
-         'massiveaction'      => false,
-         'datatype'           => 'text'
+            'id'                 => '3',
+            'table'              => $this->getTable(),
+            'field'              => 'address',
+            'name'               => __('Address'),
+            'massiveaction'      => false,
+            'datatype'           => 'text'
         ];
 
         $tab[] = [
-         'id'                 => '4',
-         'table'              => $this->getTable(),
-         'field'              => 'website',
-         'name'               => __('Website'),
-         'massiveaction'      => false,
-         'datatype'           => 'string',
+            'id'                 => '4',
+            'table'              => $this->getTable(),
+            'field'              => 'website',
+            'name'               => __('Website'),
+            'massiveaction'      => false,
+            'datatype'           => 'string',
         ];
 
         $tab[] = [
-         'id'                 => '5',
-         'table'              => $this->getTable(),
-         'field'              => 'phonenumber',
-         'name'               => Phone::getTypeName(1),
-         'massiveaction'      => false,
-         'datatype'           => 'string',
+            'id'                 => '5',
+            'table'              => $this->getTable(),
+            'field'              => 'phonenumber',
+            'name'               => Phone::getTypeName(1),
+            'massiveaction'      => false,
+            'datatype'           => 'string',
         ];
 
         $tab[] = [
-         'id'                 => '6',
-         'table'              => $this->getTable(),
-         'field'              => 'email',
-         'name'               => _n('Email', 'Emails', 1),
-         'datatype'           => 'email',
-         'massiveaction'      => false,
+            'id'                 => '6',
+            'table'              => $this->getTable(),
+            'field'              => 'email',
+            'name'               => _n('Email', 'Emails', 1),
+            'datatype'           => 'email',
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
-         'id'                 => '10',
-         'table'              => $this->getTable(),
-         'field'              => 'fax',
-         'name'               => __('Fax'),
-         'massiveaction'      => false,
-         'datatype'           => 'string',
+            'id'                 => '10',
+            'table'              => $this->getTable(),
+            'field'              => 'fax',
+            'name'               => __('Fax'),
+            'massiveaction'      => false,
+            'datatype'           => 'string',
         ];
 
         $tab[] = [
-         'id'                 => '25',
-         'table'              => $this->getTable(),
-         'field'              => 'postcode',
-         'name'               => __('Postal code'),
-         'datatype'           => 'string',
+            'id'                 => '25',
+            'table'              => $this->getTable(),
+            'field'              => 'postcode',
+            'name'               => __('Postal code'),
+            'datatype'           => 'string',
         ];
 
         $tab[] = [
-         'id'                 => '11',
-         'table'              => $this->getTable(),
-         'field'              => 'town',
-         'name'               => __('City'),
-         'massiveaction'      => false,
-         'datatype'           => 'string',
+            'id'                 => '11',
+            'table'              => $this->getTable(),
+            'field'              => 'town',
+            'name'               => __('City'),
+            'massiveaction'      => false,
+            'datatype'           => 'string',
         ];
 
         $tab[] = [
-         'id'                 => '12',
-         'table'              => $this->getTable(),
-         'field'              => 'state',
-         'name'               => _x('location', 'State'),
-         'massiveaction'      => false,
-         'datatype'           => 'string',
+            'id'                 => '12',
+            'table'              => $this->getTable(),
+            'field'              => 'state',
+            'name'               => _x('location', 'State'),
+            'massiveaction'      => false,
+            'datatype'           => 'string',
         ];
 
         $tab[] = [
-         'id'                 => '13',
-         'table'              => $this->getTable(),
-         'field'              => 'country',
-         'name'               => __('Country'),
-         'massiveaction'      => false,
-         'datatype'           => 'string',
+            'id'                 => '13',
+            'table'              => $this->getTable(),
+            'field'              => 'country',
+            'name'               => __('Country'),
+            'massiveaction'      => false,
+            'datatype'           => 'string',
         ];
 
         $tab[] = [
-         'id'                 => '67',
-         'table'              => $this->getTable(),
-         'field'              => 'latitude',
-         'name'               => __('Latitude'),
-         'massiveaction'      => false,
-         'datatype'           => 'string',
+            'id'                 => '67',
+            'table'              => $this->getTable(),
+            'field'              => 'latitude',
+            'name'               => __('Latitude'),
+            'massiveaction'      => false,
+            'datatype'           => 'string',
         ];
 
         $tab[] = [
-         'id'                 => '68',
-         'table'              => $this->getTable(),
-         'field'              => 'longitude',
-         'name'               => __('Longitude'),
-         'massiveaction'      => false,
-         'datatype'           => 'string',
+            'id'                 => '68',
+            'table'              => $this->getTable(),
+            'field'              => 'longitude',
+            'name'               => __('Longitude'),
+            'massiveaction'      => false,
+            'datatype'           => 'string',
         ];
 
         $tab[] = [
-         'id'                 => '69',
-         'table'              => $this->getTable(),
-         'field'              => 'altitude',
-         'name'               => __('Altitude'),
-         'massiveaction'      => false,
-         'datatype'           => 'string',
+            'id'                 => '69',
+            'table'              => $this->getTable(),
+            'field'              => 'altitude',
+            'name'               => __('Altitude'),
+            'massiveaction'      => false,
+            'datatype'           => 'string',
         ];
 
         $tab[] = [
-         'id'                 => '16',
-         'table'              => $this->getTable(),
-         'field'              => 'comment',
-         'name'               => __('Comments'),
-         'datatype'           => 'text'
+            'id'                 => '16',
+            'table'              => $this->getTable(),
+            'field'              => 'comment',
+            'name'               => __('Comments'),
+            'datatype'           => 'text'
         ];
 
         $tab[] = [
-         'id'                 => '122',
-         'table'              => $this->getTable(),
-         'field'              => 'date_mod',
-         'name'               => __('Last update'),
-         'datatype'           => 'datetime',
-         'massiveaction'      => false
+            'id'                 => '122',
+            'table'              => $this->getTable(),
+            'field'              => 'date_mod',
+            'name'               => __('Last update'),
+            'datatype'           => 'datetime',
+            'massiveaction'      => false
         ];
 
         $tab[] = [
-         'id'                 => '121',
-         'table'              => $this->getTable(),
-         'field'              => 'date_creation',
-         'name'               => __('Creation date'),
-         'datatype'           => 'datetime',
-         'massiveaction'      => false
+            'id'                 => '121',
+            'table'              => $this->getTable(),
+            'field'              => 'date_creation',
+            'name'               => __('Creation date'),
+            'datatype'           => 'datetime',
+            'massiveaction'      => false
         ];
 
         $tab[] = [
-         'id'                 => '70',
-         'table'              => $this->getTable(),
-         'field'              => 'registration_number',
-         'name'               => __('Administrative number'),
-         'datatype'           => 'string',
-         'autocomplete'       => true
+            'id'                 => '70',
+            'table'              => $this->getTable(),
+            'field'              => 'registration_number',
+            'name'               => __('Administrative number'),
+            'datatype'           => 'string',
+            'autocomplete'       => true
         ];
 
        // add objectlock search options
@@ -797,493 +797,493 @@ class Entity extends CommonTreeDropdown
         $tab = array_merge($tab, Notepad::rawSearchOptionsToAdd());
 
         $tab[] = [
-         'id'                 => 'advanced',
-         'name'               => __('Advanced information')
+            'id'                 => 'advanced',
+            'name'               => __('Advanced information')
         ];
 
         $tab[] = [
-         'id'                 => '7',
-         'table'              => $this->getTable(),
-         'field'              => 'ldap_dn',
-         'name'               => __('LDAP directory information attribute representing the entity'),
-         'massiveaction'      => false,
-         'datatype'           => 'string',
+            'id'                 => '7',
+            'table'              => $this->getTable(),
+            'field'              => 'ldap_dn',
+            'name'               => __('LDAP directory information attribute representing the entity'),
+            'massiveaction'      => false,
+            'datatype'           => 'string',
         ];
 
         $tab[] = [
-         'id'                 => '8',
-         'table'              => $this->getTable(),
-         'field'              => 'tag',
-         'name'               => __('Information in inventory tool (TAG) representing the entity'),
-         'massiveaction'      => false,
-         'datatype'           => 'string',
+            'id'                 => '8',
+            'table'              => $this->getTable(),
+            'field'              => 'tag',
+            'name'               => __('Information in inventory tool (TAG) representing the entity'),
+            'massiveaction'      => false,
+            'datatype'           => 'string',
         ];
 
         $tab[] = [
-         'id'                 => '9',
-         'table'              => 'glpi_authldaps',
-         'field'              => 'name',
-         'name'               => __('LDAP directory of an entity'),
-         'massiveaction'      => false,
-         'datatype'           => 'dropdown'
+            'id'                 => '9',
+            'table'              => 'glpi_authldaps',
+            'field'              => 'name',
+            'name'               => __('LDAP directory of an entity'),
+            'massiveaction'      => false,
+            'datatype'           => 'dropdown'
         ];
 
         $tab[] = [
-         'id'                 => '17',
-         'table'              => $this->getTable(),
-         'field'              => 'entity_ldapfilter',
-         'name'               => __('Search filter (if needed)'),
-         'massiveaction'      => false,
-         'datatype'           => 'string',
+            'id'                 => '17',
+            'table'              => $this->getTable(),
+            'field'              => 'entity_ldapfilter',
+            'name'               => __('Search filter (if needed)'),
+            'massiveaction'      => false,
+            'datatype'           => 'string',
         ];
 
         $tab[] = [
-         'id'                 => '20',
-         'table'              => $this->getTable(),
-         'field'              => 'mail_domain',
-         'name'               => __('Mail domain'),
-         'massiveaction'      => false,
-         'datatype'           => 'string',
+            'id'                 => '20',
+            'table'              => $this->getTable(),
+            'field'              => 'mail_domain',
+            'name'               => __('Mail domain'),
+            'massiveaction'      => false,
+            'datatype'           => 'string',
         ];
 
         $tab[] = [
-         'id'                 => 'notif',
-         'name'               => __('Notification options')
+            'id'                 => 'notif',
+            'name'               => __('Notification options')
         ];
 
         $tab[] = [
-         'id'                 => '60',
-         'table'              => $this->getTable(),
-         'field'              => 'delay_send_emails',
-         'name'               => __('Delay to send email notifications'),
-         'massiveaction'      => false,
-         'nosearch'           => true,
-         'datatype'           => 'number',
-         'min'                => 0,
-         'max'                => 60,
-         'step'               => 1,
-         'unit'               => 'minute',
-         'toadd'              => [self::CONFIG_PARENT => __('Inheritance of the parent entity')]
+            'id'                 => '60',
+            'table'              => $this->getTable(),
+            'field'              => 'delay_send_emails',
+            'name'               => __('Delay to send email notifications'),
+            'massiveaction'      => false,
+            'nosearch'           => true,
+            'datatype'           => 'number',
+            'min'                => 0,
+            'max'                => 60,
+            'step'               => 1,
+            'unit'               => 'minute',
+            'toadd'              => [self::CONFIG_PARENT => __('Inheritance of the parent entity')]
         ];
 
         $tab[] = [
-         'id'                 => '61',
-         'table'              => $this->getTable(),
-         'field'              => 'is_notif_enable_default',
-         'name'               => __('Enable notifications by default'),
-         'massiveaction'      => false,
-         'nosearch'           => true,
-         'datatype'           => 'string'
+            'id'                 => '61',
+            'table'              => $this->getTable(),
+            'field'              => 'is_notif_enable_default',
+            'name'               => __('Enable notifications by default'),
+            'massiveaction'      => false,
+            'nosearch'           => true,
+            'datatype'           => 'string'
         ];
 
         $tab[] = [
-         'id'                 => '18',
-         'table'              => $this->getTable(),
-         'field'              => 'admin_email',
-         'name'               => __('Administrator email'),
-         'massiveaction'      => false,
-         'datatype'           => 'string',
+            'id'                 => '18',
+            'table'              => $this->getTable(),
+            'field'              => 'admin_email',
+            'name'               => __('Administrator email'),
+            'massiveaction'      => false,
+            'datatype'           => 'string',
         ];
 
         $tab[] = [
-         'id'                 => '19',
-         'table'              => $this->getTable(),
-         'field'              => 'admin_reply',
-         'name'               => __('Administrator reply-to email (if needed)'),
-         'massiveaction'      => false,
-         'datatype'           => 'string',
+            'id'                 => '19',
+            'table'              => $this->getTable(),
+            'field'              => 'admin_reply',
+            'name'               => __('Administrator reply-to email (if needed)'),
+            'massiveaction'      => false,
+            'datatype'           => 'string',
         ];
 
         $tab[] = [
-         'id'                 => '21',
-         'table'              => $this->getTable(),
-         'field'              => 'notification_subject_tag',
-         'name'               => __('Prefix for notifications'),
-         'datatype'           => 'string',
+            'id'                 => '21',
+            'table'              => $this->getTable(),
+            'field'              => 'notification_subject_tag',
+            'name'               => __('Prefix for notifications'),
+            'datatype'           => 'string',
         ];
 
         $tab[] = [
-         'id'                 => '22',
-         'table'              => $this->getTable(),
-         'field'              => 'admin_email_name',
-         'name'               => __('Administrator name'),
-         'datatype'           => 'string',
+            'id'                 => '22',
+            'table'              => $this->getTable(),
+            'field'              => 'admin_email_name',
+            'name'               => __('Administrator name'),
+            'datatype'           => 'string',
         ];
 
         $tab[] = [
-         'id'                 => '23',
-         'table'              => $this->getTable(),
-         'field'              => 'admin_reply_name',
-         'name'               => __('Response address (if needed)'),
-         'datatype'           => 'string',
+            'id'                 => '23',
+            'table'              => $this->getTable(),
+            'field'              => 'admin_reply_name',
+            'name'               => __('Response address (if needed)'),
+            'datatype'           => 'string',
         ];
 
         $tab[] = [
-         'id'                 => '24',
-         'table'              => $this->getTable(),
-         'field'              => 'mailing_signature',
-         'name'               => __('Email signature'),
-         'datatype'           => 'text'
+            'id'                 => '24',
+            'table'              => $this->getTable(),
+            'field'              => 'mailing_signature',
+            'name'               => __('Email signature'),
+            'datatype'           => 'text'
         ];
 
         $tab[] = [
-         'id'                 => '26',
-         'table'              => $this->getTable(),
-         'field'              => 'cartridges_alert_repeat',
-         'name'               => __('Alarms on cartridges'),
-         'massiveaction'      => false,
-         'nosearch'           => true,
-         'datatype'           => 'specific'
+            'id'                 => '26',
+            'table'              => $this->getTable(),
+            'field'              => 'cartridges_alert_repeat',
+            'name'               => __('Alarms on cartridges'),
+            'massiveaction'      => false,
+            'nosearch'           => true,
+            'datatype'           => 'specific'
         ];
 
         $tab[] = [
-         'id'                 => '27',
-         'table'              => $this->getTable(),
-         'field'              => 'consumables_alert_repeat',
-         'name'               => __('Alarms on consumables'),
-         'massiveaction'      => false,
-         'nosearch'           => true,
-         'datatype'           => 'specific'
+            'id'                 => '27',
+            'table'              => $this->getTable(),
+            'field'              => 'consumables_alert_repeat',
+            'name'               => __('Alarms on consumables'),
+            'massiveaction'      => false,
+            'nosearch'           => true,
+            'datatype'           => 'specific'
         ];
 
         $tab[] = [
-         'id'                 => '29',
-         'table'              => $this->getTable(),
-         'field'              => 'use_licenses_alert',
-         'name'               => __('Alarms on expired licenses'),
-         'massiveaction'      => false,
-         'nosearch'           => true,
-         'datatype'           => 'specific'
+            'id'                 => '29',
+            'table'              => $this->getTable(),
+            'field'              => 'use_licenses_alert',
+            'name'               => __('Alarms on expired licenses'),
+            'massiveaction'      => false,
+            'nosearch'           => true,
+            'datatype'           => 'specific'
         ];
 
         $tab[] = [
-         'id'                 => '53',
-         'table'              => $this->getTable(),
-         'field'              => 'send_licenses_alert_before_delay',
-         'name'               => __('Send license alarms before'),
-         'massiveaction'      => false,
-         'nosearch'           => true,
-         'datatype'           => 'specific'
+            'id'                 => '53',
+            'table'              => $this->getTable(),
+            'field'              => 'send_licenses_alert_before_delay',
+            'name'               => __('Send license alarms before'),
+            'massiveaction'      => false,
+            'nosearch'           => true,
+            'datatype'           => 'specific'
         ];
 
         $tab[] = [
-         'id'                 => '30',
-         'table'              => $this->getTable(),
-         'field'              => 'use_contracts_alert',
-         'name'               => __('Alarms on contracts'),
-         'massiveaction'      => false,
-         'nosearch'           => true,
-         'datatype'           => 'specific'
+            'id'                 => '30',
+            'table'              => $this->getTable(),
+            'field'              => 'use_contracts_alert',
+            'name'               => __('Alarms on contracts'),
+            'massiveaction'      => false,
+            'nosearch'           => true,
+            'datatype'           => 'specific'
         ];
 
         $tab[] = [
-         'id'                 => '54',
-         'table'              => $this->getTable(),
-         'field'              => 'send_contracts_alert_before_delay',
-         'name'               => __('Send contract alarms before'),
-         'massiveaction'      => false,
-         'nosearch'           => true,
-         'datatype'           => 'specific'
+            'id'                 => '54',
+            'table'              => $this->getTable(),
+            'field'              => 'send_contracts_alert_before_delay',
+            'name'               => __('Send contract alarms before'),
+            'massiveaction'      => false,
+            'nosearch'           => true,
+            'datatype'           => 'specific'
         ];
 
         $tab[] = [
-         'id'                 => '31',
-         'table'              => $this->getTable(),
-         'field'              => 'use_infocoms_alert',
-         'name'               => __('Alarms on financial and administrative information'),
-         'massiveaction'      => false,
-         'nosearch'           => true,
-         'datatype'           => 'specific'
+            'id'                 => '31',
+            'table'              => $this->getTable(),
+            'field'              => 'use_infocoms_alert',
+            'name'               => __('Alarms on financial and administrative information'),
+            'massiveaction'      => false,
+            'nosearch'           => true,
+            'datatype'           => 'specific'
         ];
 
         $tab[] = [
-         'id'                 => '55',
-         'table'              => $this->getTable(),
-         'field'              => 'send_infocoms_alert_before_delay',
-         'name'               => __('Send financial and administrative information alarms before'),
-         'massiveaction'      => false,
-         'nosearch'           => true,
-         'datatype'           => 'specific'
+            'id'                 => '55',
+            'table'              => $this->getTable(),
+            'field'              => 'send_infocoms_alert_before_delay',
+            'name'               => __('Send financial and administrative information alarms before'),
+            'massiveaction'      => false,
+            'nosearch'           => true,
+            'datatype'           => 'specific'
         ];
 
         $tab[] = [
-         'id'                 => '32',
-         'table'              => $this->getTable(),
-         'field'              => 'use_reservations_alert',
-         'name'               => __('Alerts on reservations'),
-         'massiveaction'      => false,
-         'nosearch'           => true,
-         'datatype'           => 'specific'
+            'id'                 => '32',
+            'table'              => $this->getTable(),
+            'field'              => 'use_reservations_alert',
+            'name'               => __('Alerts on reservations'),
+            'massiveaction'      => false,
+            'nosearch'           => true,
+            'datatype'           => 'specific'
         ];
 
         $tab[] = [
-         'id'                 => '48',
-         'table'              => $this->getTable(),
-         'field'              => 'default_contract_alert',
-         'name'               => __('Default value for alarms on contracts'),
-         'massiveaction'      => false,
-         'nosearch'           => true,
-         'datatype'           => 'specific'
+            'id'                 => '48',
+            'table'              => $this->getTable(),
+            'field'              => 'default_contract_alert',
+            'name'               => __('Default value for alarms on contracts'),
+            'massiveaction'      => false,
+            'nosearch'           => true,
+            'datatype'           => 'specific'
         ];
 
         $tab[] = [
-         'id'                 => '49',
-         'table'              => $this->getTable(),
-         'field'              => 'default_infocom_alert',
-         'name'               => __('Default value for alarms on financial and administrative information'),
-         'massiveaction'      => false,
-         'nosearch'           => true,
-         'datatype'           => 'specific'
+            'id'                 => '49',
+            'table'              => $this->getTable(),
+            'field'              => 'default_infocom_alert',
+            'name'               => __('Default value for alarms on financial and administrative information'),
+            'massiveaction'      => false,
+            'nosearch'           => true,
+            'datatype'           => 'specific'
         ];
 
         $tab[] = [
-         'id'                 => '50',
-         'table'              => $this->getTable(),
-         'field'              => 'default_cartridges_alarm_threshold',
-         'name'               => __('Default threshold for cartridges count'),
-         'massiveaction'      => false,
-         'nosearch'           => true,
-         'datatype'           => 'number'
+            'id'                 => '50',
+            'table'              => $this->getTable(),
+            'field'              => 'default_cartridges_alarm_threshold',
+            'name'               => __('Default threshold for cartridges count'),
+            'massiveaction'      => false,
+            'nosearch'           => true,
+            'datatype'           => 'number'
         ];
 
         $tab[] = [
-         'id'                 => '52',
-         'table'              => $this->getTable(),
-         'field'              => 'default_consumables_alarm_threshold',
-         'name'               => __('Default threshold for consumables count'),
-         'massiveaction'      => false,
-         'nosearch'           => true,
-         'datatype'           => 'number'
+            'id'                 => '52',
+            'table'              => $this->getTable(),
+            'field'              => 'default_consumables_alarm_threshold',
+            'name'               => __('Default threshold for consumables count'),
+            'massiveaction'      => false,
+            'nosearch'           => true,
+            'datatype'           => 'number'
         ];
 
         $tab[] = [
-         'id'                 => '57',
-         'table'              => $this->getTable(),
-         'field'              => 'use_certificates_alert',
-         'name'               => __('Alarms on expired certificates'),
-         'massiveaction'      => false,
-         'nosearch'           => true,
-         'datatype'           => 'specific'
+            'id'                 => '57',
+            'table'              => $this->getTable(),
+            'field'              => 'use_certificates_alert',
+            'name'               => __('Alarms on expired certificates'),
+            'massiveaction'      => false,
+            'nosearch'           => true,
+            'datatype'           => 'specific'
         ];
 
         $tab[] = [
-         'id'                 => '58',
-         'table'              => $this->getTable(),
-         'field'              => 'send_certificates_alert_before_delay',
-         'name'               => __('Send Certificate alarms before'),
-         'massiveaction'      => false,
-         'nosearch'           => true,
-         'datatype'           => 'specific'
+            'id'                 => '58',
+            'table'              => $this->getTable(),
+            'field'              => 'send_certificates_alert_before_delay',
+            'name'               => __('Send Certificate alarms before'),
+            'massiveaction'      => false,
+            'nosearch'           => true,
+            'datatype'           => 'specific'
         ];
 
         $tab[] = [
-         'id'                 => 'helpdesk',
-         'name'               => __('Assistance')
+            'id'                 => 'helpdesk',
+            'name'               => __('Assistance')
         ];
 
         $tab[] = [
-         'id'                 => '47',
-         'table'              => $this->getTable(),
-         'field'              => 'tickettemplates_id', // not a dropdown because of special value
-         'name'               => _n('Ticket template', 'Ticket templates', 1),
-         'massiveaction'      => false,
-         'nosearch'           => true,
-         'datatype'           => 'specific',
-         'additionalfields'   => ['tickettemplates_strategy']
+            'id'                 => '47',
+            'table'              => $this->getTable(),
+            'field'              => 'tickettemplates_id', // not a dropdown because of special value
+            'name'               => _n('Ticket template', 'Ticket templates', 1),
+            'massiveaction'      => false,
+            'nosearch'           => true,
+            'datatype'           => 'specific',
+            'additionalfields'   => ['tickettemplates_strategy']
         ];
 
         $tab[] = [
-         'id'                 => '33',
-         'table'              => $this->getTable(),
-         'field'              => 'autoclose_delay',
-         'name'               => __('Automatic closing of solved tickets after'),
-         'massiveaction'      => false,
-         'nosearch'           => true,
-         'datatype'           => 'number',
-         'min'                => 1,
-         'max'                => 99,
-         'step'               => 1,
-         'unit'               => 'day',
-         'toadd'              => [
-            self::CONFIG_PARENT  => __('Inheritance of the parent entity'),
-            self::CONFIG_NEVER   => __('Never'),
-            0                  => __('Immediatly')
-         ]
+            'id'                 => '33',
+            'table'              => $this->getTable(),
+            'field'              => 'autoclose_delay',
+            'name'               => __('Automatic closing of solved tickets after'),
+            'massiveaction'      => false,
+            'nosearch'           => true,
+            'datatype'           => 'number',
+            'min'                => 1,
+            'max'                => 99,
+            'step'               => 1,
+            'unit'               => 'day',
+            'toadd'              => [
+                self::CONFIG_PARENT  => __('Inheritance of the parent entity'),
+                self::CONFIG_NEVER   => __('Never'),
+                0                  => __('Immediatly')
+            ]
         ];
 
         $tab[] = [
-         'id'                 => '59',
-         'table'              => $this->getTable(),
-         'field'              => 'autopurge_delay',
-         'name'               => __('Automatic purge of closed tickets after'),
-         'massiveaction'      => false,
-         'nosearch'           => true,
-         'datatype'           => 'number',
-         'min'                => 1,
-         'max'                => 3650,
-         'step'               => 1,
-         'unit'               => 'day',
-         'toadd'              => [
-            self::CONFIG_PARENT  => __('Inheritance of the parent entity'),
-            self::CONFIG_NEVER   => __('Never'),
-            0                  => __('Immediatly')
-         ]
+            'id'                 => '59',
+            'table'              => $this->getTable(),
+            'field'              => 'autopurge_delay',
+            'name'               => __('Automatic purge of closed tickets after'),
+            'massiveaction'      => false,
+            'nosearch'           => true,
+            'datatype'           => 'number',
+            'min'                => 1,
+            'max'                => 3650,
+            'step'               => 1,
+            'unit'               => 'day',
+            'toadd'              => [
+                self::CONFIG_PARENT  => __('Inheritance of the parent entity'),
+                self::CONFIG_NEVER   => __('Never'),
+                0                  => __('Immediatly')
+            ]
         ];
 
         $tab[] = [
-         'id'                 => '34',
-         'table'              => $this->getTable(),
-         'field'              => 'notclosed_delay',
-         'name'               => __('Alerts on tickets which are not solved'),
-         'massiveaction'      => false,
-         'nosearch'           => true,
-         'datatype'           => 'specific'
+            'id'                 => '34',
+            'table'              => $this->getTable(),
+            'field'              => 'notclosed_delay',
+            'name'               => __('Alerts on tickets which are not solved'),
+            'massiveaction'      => false,
+            'nosearch'           => true,
+            'datatype'           => 'specific'
         ];
 
         $tab[] = [
-         'id'                 => '35',
-         'table'              => $this->getTable(),
-         'field'              => 'auto_assign_mode',
-         'name'               => __('Automatic assignment of tickets'),
-         'massiveaction'      => false,
-         'nosearch'           => true,
-         'datatype'           => 'specific'
+            'id'                 => '35',
+            'table'              => $this->getTable(),
+            'field'              => 'auto_assign_mode',
+            'name'               => __('Automatic assignment of tickets'),
+            'massiveaction'      => false,
+            'nosearch'           => true,
+            'datatype'           => 'specific'
         ];
 
         $tab[] = [
-         'id'                 => '36',
-         'table'              => $this->getTable(),
-         'field'              => 'calendars_id',// not a dropdown because of special valu
-         'name'               => _n('Calendar', 'Calendars', 1),
-         'massiveaction'      => false,
-         'nosearch'           => true,
-         'datatype'           => 'specific',
-         'additionalfields'   => ['calendars_strategy']
+            'id'                 => '36',
+            'table'              => $this->getTable(),
+            'field'              => 'calendars_id',// not a dropdown because of special valu
+            'name'               => _n('Calendar', 'Calendars', 1),
+            'massiveaction'      => false,
+            'nosearch'           => true,
+            'datatype'           => 'specific',
+            'additionalfields'   => ['calendars_strategy']
         ];
 
         $tab[] = [
-         'id'                 => '37',
-         'table'              => $this->getTable(),
-         'field'              => 'tickettype',
-         'name'               => __('Tickets default type'),
-         'massiveaction'      => false,
-         'nosearch'           => true,
-         'datatype'           => 'specific'
+            'id'                 => '37',
+            'table'              => $this->getTable(),
+            'field'              => 'tickettype',
+            'name'               => __('Tickets default type'),
+            'massiveaction'      => false,
+            'nosearch'           => true,
+            'datatype'           => 'specific'
         ];
 
         $tab[] = [
-         'id'                 => 'assets',
-         'name'               => _n('Asset', 'Assets', Session::getPluralNumber())
+            'id'                 => 'assets',
+            'name'               => _n('Asset', 'Assets', Session::getPluralNumber())
         ];
 
         $tab[] = [
-         'id'                 => '38',
-         'table'              => $this->getTable(),
-         'field'              => 'autofill_buy_date',
-         'name'               => __('Date of purchase'),
-         'massiveaction'      => false,
-         'nosearch'           => true,
-         'datatype'           => 'specific'
+            'id'                 => '38',
+            'table'              => $this->getTable(),
+            'field'              => 'autofill_buy_date',
+            'name'               => __('Date of purchase'),
+            'massiveaction'      => false,
+            'nosearch'           => true,
+            'datatype'           => 'specific'
         ];
 
         $tab[] = [
-         'id'                 => '39',
-         'table'              => $this->getTable(),
-         'field'              => 'autofill_order_date',
-         'name'               => __('Order date'),
-         'massiveaction'      => false,
-         'nosearch'           => true,
-         'datatype'           => 'specific'
+            'id'                 => '39',
+            'table'              => $this->getTable(),
+            'field'              => 'autofill_order_date',
+            'name'               => __('Order date'),
+            'massiveaction'      => false,
+            'nosearch'           => true,
+            'datatype'           => 'specific'
         ];
 
         $tab[] = [
-         'id'                 => '40',
-         'table'              => $this->getTable(),
-         'field'              => 'autofill_delivery_date',
-         'name'               => __('Delivery date'),
-         'massiveaction'      => false,
-         'nosearch'           => true,
-         'datatype'           => 'specific'
+            'id'                 => '40',
+            'table'              => $this->getTable(),
+            'field'              => 'autofill_delivery_date',
+            'name'               => __('Delivery date'),
+            'massiveaction'      => false,
+            'nosearch'           => true,
+            'datatype'           => 'specific'
         ];
 
         $tab[] = [
-         'id'                 => '41',
-         'table'              => $this->getTable(),
-         'field'              => 'autofill_use_date',
-         'name'               => __('Startup date'),
-         'massiveaction'      => false,
-         'nosearch'           => true,
-         'datatype'           => 'specific'
+            'id'                 => '41',
+            'table'              => $this->getTable(),
+            'field'              => 'autofill_use_date',
+            'name'               => __('Startup date'),
+            'massiveaction'      => false,
+            'nosearch'           => true,
+            'datatype'           => 'specific'
         ];
 
         $tab[] = [
-         'id'                 => '42',
-         'table'              => $this->getTable(),
-         'field'              => 'autofill_warranty_date',
-         'name'               => __('Start date of warranty'),
-         'massiveaction'      => false,
-         'nosearch'           => true,
-         'datatype'           => 'specific'
+            'id'                 => '42',
+            'table'              => $this->getTable(),
+            'field'              => 'autofill_warranty_date',
+            'name'               => __('Start date of warranty'),
+            'massiveaction'      => false,
+            'nosearch'           => true,
+            'datatype'           => 'specific'
         ];
 
         $tab[] = [
-         'id'                 => '43',
-         'table'              => $this->getTable(),
-         'field'              => 'inquest_config',
-         'name'               => __('Satisfaction survey configuration'),
-         'massiveaction'      => false,
-         'nosearch'           => true,
-         'datatype'           => 'specific'
+            'id'                 => '43',
+            'table'              => $this->getTable(),
+            'field'              => 'inquest_config',
+            'name'               => __('Satisfaction survey configuration'),
+            'massiveaction'      => false,
+            'nosearch'           => true,
+            'datatype'           => 'specific'
         ];
 
         $tab[] = [
-         'id'                 => '44',
-         'table'              => $this->getTable(),
-         'field'              => 'inquest_rate',
-         'name'               => __('Satisfaction survey trigger rate'),
-         'massiveaction'      => false,
-         'datatype'           => 'number'
+            'id'                 => '44',
+            'table'              => $this->getTable(),
+            'field'              => 'inquest_rate',
+            'name'               => __('Satisfaction survey trigger rate'),
+            'massiveaction'      => false,
+            'datatype'           => 'number'
         ];
 
         $tab[] = [
-         'id'                 => '45',
-         'table'              => $this->getTable(),
-         'field'              => 'inquest_delay',
-         'name'               => __('Create survey after'),
-         'massiveaction'      => false,
-         'datatype'           => 'number'
+            'id'                 => '45',
+            'table'              => $this->getTable(),
+            'field'              => 'inquest_delay',
+            'name'               => __('Create survey after'),
+            'massiveaction'      => false,
+            'datatype'           => 'number'
         ];
 
         $tab[] = [
-         'id'                 => '46',
-         'table'              => $this->getTable(),
-         'field'              => 'inquest_URL',
-         'name'               => __('URL'),
-         'massiveaction'      => false,
-         'datatype'           => 'string',
+            'id'                 => '46',
+            'table'              => $this->getTable(),
+            'field'              => 'inquest_URL',
+            'name'               => __('URL'),
+            'massiveaction'      => false,
+            'datatype'           => 'string',
         ];
 
         $tab[] = [
-         'id'                 => '51',
-         'table'              => $this->getTable(),
-         'field'              => 'name',
-         'linkfield'          => 'entities_id_software', // not a dropdown because of special value
+            'id'                 => '51',
+            'table'              => $this->getTable(),
+            'field'              => 'name',
+            'linkfield'          => 'entities_id_software', // not a dropdown because of special value
                                  //TRANS: software in plural
-         'name'               => __('Entity for software creation'),
-         'massiveaction'      => false,
-         'nosearch'           => true,
-         'datatype'           => 'specific',
-         'additionalfields'   => ['entities_strategy_software']
+            'name'               => __('Entity for software creation'),
+            'massiveaction'      => false,
+            'nosearch'           => true,
+            'datatype'           => 'specific',
+            'additionalfields'   => ['entities_strategy_software']
         ];
 
         $tab[] = [
-         'id'                 => '56',
-         'table'              => $this->getTable(),
-         'field'              => 'autofill_decommission_date',
-         'name'               => __('Decommission date'),
-         'massiveaction'      => false,
-         'nosearch'           => true,
-         'datatype'           => 'specific'
+            'id'                 => '56',
+            'table'              => $this->getTable(),
+            'field'              => 'autofill_decommission_date',
+            'name'               => __('Decommission date'),
+            'massiveaction'      => false,
+            'nosearch'           => true,
+            'datatype'           => 'specific'
         ];
 
         return $tab;
@@ -1373,13 +1373,13 @@ class Entity extends CommonTreeDropdown
 
        // Others entities in level order (parent first)
         $iterator = $DB->request([
-         'SELECT' => [
-            'id AS entity',
-            'entities_id AS parent',
-            $field
-         ],
-         'FROM'   => self::getTable(),
-         'ORDER'  => 'level ASC'
+            'SELECT' => [
+                'id AS entity',
+                'entities_id AS parent',
+                $field
+            ],
+            'FROM'   => self::getTable(),
+            'ORDER'  => 'level ASC'
         ]);
 
         foreach ($iterator as $entitydata) {
@@ -1487,10 +1487,10 @@ class Entity extends CommonTreeDropdown
         echo "<td>" . __('Location on map') . "</td>";
         echo "<td>";
         $entity->displaySpecificTypeField($ID, [
-         'name'   => 'setlocation',
-         'type'   => 'setlocation',
-         'label'  => __('Location on map'),
-         'list'   => false
+            'name'   => 'setlocation',
+            'type'   => 'setlocation',
+            'label'  => __('Location on map'),
+            'list'   => false
         ]);
         echo "</td></tr>";
 
@@ -1586,9 +1586,9 @@ class Entity extends CommonTreeDropdown
             echo "<td>" . __('LDAP directory of an entity') . "</td>";
             echo "<td>";
             AuthLDAP::dropdown([
-            'value'      => $entity->fields['authldaps_id'],
-            'emptylabel' => __('Default server'),
-            'condition'  => ['is_active' => 1]
+                'value'      => $entity->fields['authldaps_id'],
+                'emptylabel' => __('Default server'),
+                'condition'  => ['is_active' => 1]
             ]);
             echo "</td></tr>";
 
@@ -1720,9 +1720,10 @@ class Entity extends CommonTreeDropdown
         echo "<td> " . __('Start date of warranty') . "</td>";
         echo "<td>";
         $options = [0                           => __('No autofill'),
-                       Infocom::COPY_BUY_DATE      => __('Copy the date of purchase'),
-                       Infocom::COPY_ORDER_DATE    => __('Copy the order date'),
-                       Infocom::COPY_DELIVERY_DATE => __('Copy the delivery date')];
+            Infocom::COPY_BUY_DATE      => __('Copy the date of purchase'),
+            Infocom::COPY_ORDER_DATE    => __('Copy the order date'),
+            Infocom::COPY_DELIVERY_DATE => __('Copy the delivery date')
+        ];
         if ($ID > 0) {
             $options[self::CONFIG_PARENT] = __('Inheritance of the parent entity');
         }
@@ -1743,9 +1744,10 @@ class Entity extends CommonTreeDropdown
         echo "<td>";
 
         $options = [0                           => __('No autofill'),
-                       Infocom::COPY_BUY_DATE      => __('Copy the date of purchase'),
-                       Infocom::COPY_ORDER_DATE    => __('Copy the order date'),
-                       Infocom::COPY_DELIVERY_DATE => __('Copy the delivery date')];
+            Infocom::COPY_BUY_DATE      => __('Copy the date of purchase'),
+            Infocom::COPY_ORDER_DATE    => __('Copy the order date'),
+            Infocom::COPY_DELIVERY_DATE => __('Copy the delivery date')
+        ];
         if ($ID > 0) {
             $options[self::CONFIG_PARENT] = __('Inheritance of the parent entity');
         }
@@ -1785,10 +1787,11 @@ class Entity extends CommonTreeDropdown
         }
 
         self::dropdown(['name'     => 'entities_id_software',
-                           'value'    => $entity->fields['entities_id_software'],
-                           'toadd'    => $toadd,
-                           'entity'   => $entities,
-                           'comments' => false]);
+            'value'    => $entity->fields['entities_id_software'],
+            'toadd'    => $toadd,
+            'entity'   => $entities,
+            'comments' => false
+        ]);
 
         if ($entity->fields['entities_id_software'] == self::CONFIG_PARENT) {
             $inherited_value = self::getUsedConfig('entities_strategy_software', $entity->fields['entities_id'], 'entities_id_software');
@@ -1803,9 +1806,9 @@ class Entity extends CommonTreeDropdown
         echo "</td>";
         echo "<td>";
         $params = [
-          'name'       => 'transfers_id',
-          'value'      => $entity->fields['transfers_id'],
-          'emptylabel' => __('No automatic transfer')
+            'name'       => 'transfers_id',
+            'value'      => $entity->fields['transfers_id'],
+            'emptylabel' => __('No automatic transfer')
         ];
         if ($entity->fields['id'] > 0) {
             $params['toadd'] = ['-1' => __('Inheritance of the parent entity')];
@@ -1916,10 +1919,11 @@ class Entity extends CommonTreeDropdown
             $toadd = [self::CONFIG_PARENT => __('Inheritance of the parent entity')];
         }
         Dropdown::showNumber('delay_send_emails', ['value' => $entity->fields["delay_send_emails"],
-                                                      'min'   => 0,
-                                                      'max'   => 100,
-                                                      'unit'  => 'minute',
-                                                      'toadd' => $toadd]);
+            'min'   => 0,
+            'max'   => 100,
+            'unit'  => 'minute',
+            'toadd' => $toadd
+        ]);
 
         if ($entity->fields['delay_send_emails'] == self::CONFIG_PARENT) {
             $tid = self::getUsedConfig('delay_send_emails', $entity->getField('entities_id'));
@@ -1932,8 +1936,9 @@ class Entity extends CommonTreeDropdown
         echo "<td>";
 
         Alert::dropdownYesNo(['name'           => "is_notif_enable_default",
-                                 'value'          =>  $entity->getField('is_notif_enable_default'),
-                                 'inherit_parent' => (($ID > 0) ? 1 : 0)]);
+            'value'          =>  $entity->getField('is_notif_enable_default'),
+            'inherit_parent' => (($ID > 0) ? 1 : 0)
+        ]);
 
         if ($entity->fields['is_notif_enable_default'] == self::CONFIG_PARENT) {
             $tid = self::getUsedConfig('is_notif_enable_default', $entity->getField('entities_id'));
@@ -1965,8 +1970,9 @@ class Entity extends CommonTreeDropdown
         echo "<td>" . __('Reminders frequency for alarms on cartridges') . "</td><td>";
         $default_value = $entity->fields['cartridges_alert_repeat'];
         Alert::dropdown(['name'           => 'cartridges_alert_repeat',
-                            'value'          => $default_value,
-                            'inherit_parent' => (($ID > 0) ? 1 : 0)]);
+            'value'          => $default_value,
+            'inherit_parent' => (($ID > 0) ? 1 : 0)
+        ]);
 
         if ($entity->fields['cartridges_alert_repeat'] == self::CONFIG_PARENT) {
             $tid = self::getUsedConfig('cartridges_alert_repeat', $entity->getField('entities_id'));
@@ -1977,17 +1983,19 @@ class Entity extends CommonTreeDropdown
         echo "<tr class='tab_bg_1'><td>" . __('Default threshold for cartridges count') . "</td><td>";
         if ($ID > 0) {
             $toadd = [self::CONFIG_PARENT => __('Inheritance of the parent entity'),
-                        self::CONFIG_NEVER => __('Never')];
+                self::CONFIG_NEVER => __('Never')
+            ];
         } else {
             $toadd = [self::CONFIG_NEVER => __('Never')];
         }
         Dropdown::showNumber(
             'default_cartridges_alarm_threshold',
             ['value' => $entity->fields["default_cartridges_alarm_threshold"],
-                                  'min'   => 0,
-                                  'max'   => 100,
-                                  'step'  => 1,
-            'toadd' => $toadd]
+                'min'   => 0,
+                'max'   => 100,
+                'step'  => 1,
+                'toadd' => $toadd
+            ]
         );
         if ($entity->fields['default_cartridges_alarm_threshold'] == self::CONFIG_PARENT) {
             $tid = self::getUsedConfig(
@@ -2006,8 +2014,9 @@ class Entity extends CommonTreeDropdown
         echo "<td>" . __('Reminders frequency for alarms on consumables') . "</td><td>";
         $default_value = $entity->fields['consumables_alert_repeat'];
         Alert::dropdown(['name'           => 'consumables_alert_repeat',
-                            'value'          => $default_value,
-                            'inherit_parent' => (($ID > 0) ? 1 : 0)]);
+            'value'          => $default_value,
+            'inherit_parent' => (($ID > 0) ? 1 : 0)
+        ]);
         if ($entity->fields['consumables_alert_repeat'] == self::CONFIG_PARENT) {
             $tid = self::getUsedConfig('consumables_alert_repeat', $entity->getField('entities_id'));
             self::inheritedValue(self::getSpecificValueToDisplay('consumables_alert_repeat', $tid), true);
@@ -2017,17 +2026,19 @@ class Entity extends CommonTreeDropdown
         echo "<tr class='tab_bg_1'><td>" . __('Default threshold for consumables count') . "</td><td>";
         if ($ID > 0) {
             $toadd = [self::CONFIG_PARENT => __('Inheritance of the parent entity'),
-                        self::CONFIG_NEVER => __('Never')];
+                self::CONFIG_NEVER => __('Never')
+            ];
         } else {
             $toadd = [self::CONFIG_NEVER => __('Never')];
         }
         Dropdown::showNumber(
             'default_consumables_alarm_threshold',
             ['value' => $entity->fields["default_consumables_alarm_threshold"],
-                                  'min'   => 0,
-                                  'max'   => 100,
-                                  'step'  => 1,
-            'toadd' => $toadd]
+                'min'   => 0,
+                'max'   => 100,
+                'step'  => 1,
+                'toadd' => $toadd
+            ]
         );
         if ($entity->fields['default_consumables_alarm_threshold'] == self::CONFIG_PARENT) {
             $tid = self::getUsedConfig(
@@ -2045,8 +2056,9 @@ class Entity extends CommonTreeDropdown
         echo "<td>" . __('Alarms on contracts') . "</td><td>";
         $default_value = $entity->fields['use_contracts_alert'];
         Alert::dropdownYesNo(['name'           => "use_contracts_alert",
-                                 'value'          => $default_value,
-                                 'inherit_parent' => (($ID > 0) ? 1 : 0)]);
+            'value'          => $default_value,
+            'inherit_parent' => (($ID > 0) ? 1 : 0)
+        ]);
         if ($entity->fields['use_contracts_alert'] == self::CONFIG_PARENT) {
             $tid = self::getUsedConfig('use_contracts_alert', $entity->getField('entities_id'));
             self::inheritedValue(self::getSpecificValueToDisplay('use_contracts_alert', $tid), true);
@@ -2055,8 +2067,9 @@ class Entity extends CommonTreeDropdown
 
         echo "<tr class='tab_bg_1'><td>" . __('Default value') . "</td><td>";
         Contract::dropdownAlert(['name'           => "default_contract_alert",
-                                    'value'          => $entity->fields["default_contract_alert"],
-                                    'inherit_parent' => (($ID > 0) ? 1 : 0)]);
+            'value'          => $entity->fields["default_contract_alert"],
+            'inherit_parent' => (($ID > 0) ? 1 : 0)
+        ]);
         if ($entity->fields['default_contract_alert'] == self::CONFIG_PARENT) {
             $tid = self::getUsedConfig('default_contract_alert', $entity->getField('entities_id'));
             self::inheritedValue(self::getSpecificValueToDisplay('default_contract_alert', $tid), true);
@@ -2068,9 +2081,10 @@ class Entity extends CommonTreeDropdown
             'send_contracts_alert_before_delay',
             $entity->fields['send_contracts_alert_before_delay'],
             ['max'            => 99,
-                                        'inherit_parent' => (($ID > 0) ? 1 : 0),
-                                        'unit'           => 'day',
-            'never_string'   => __('No')]
+                'inherit_parent' => (($ID > 0) ? 1 : 0),
+                'unit'           => 'day',
+                'never_string'   => __('No')
+            ]
         );
         if ($entity->fields['send_contracts_alert_before_delay'] == self::CONFIG_PARENT) {
             $tid = self::getUsedConfig(
@@ -2088,8 +2102,9 @@ class Entity extends CommonTreeDropdown
         echo "<td>" . __('Alarms on financial and administrative information') . "</td><td>";
         $default_value = $entity->fields['use_infocoms_alert'];
         Alert::dropdownYesNo(['name'           => "use_infocoms_alert",
-                                 'value'          => $default_value,
-                                 'inherit_parent' => (($ID > 0) ? 1 : 0)]);
+            'value'          => $default_value,
+            'inherit_parent' => (($ID > 0) ? 1 : 0)
+        ]);
         if ($entity->fields['use_infocoms_alert'] == self::CONFIG_PARENT) {
             $tid = self::getUsedConfig('use_infocoms_alert', $entity->getField('entities_id'));
             self::inheritedValue(self::getSpecificValueToDisplay('use_infocoms_alert', $tid), true);
@@ -2098,8 +2113,9 @@ class Entity extends CommonTreeDropdown
         echo "</td></tr>";
         echo "<tr class='tab_bg_1'><td>" . __('Default value') . "</td><td>";
         Infocom::dropdownAlert(['name'           => 'default_infocom_alert',
-                                   'value'          => $entity->fields["default_infocom_alert"],
-                                   'inherit_parent' => (($ID > 0) ? 1 : 0)]);
+            'value'          => $entity->fields["default_infocom_alert"],
+            'inherit_parent' => (($ID > 0) ? 1 : 0)
+        ]);
         if ($entity->fields['default_infocom_alert'] == self::CONFIG_PARENT) {
             $tid = self::getUsedConfig('default_infocom_alert', $entity->getField('entities_id'));
             self::inheritedValue(self::getSpecificValueToDisplay('default_infocom_alert', $tid), true);
@@ -2112,9 +2128,10 @@ class Entity extends CommonTreeDropdown
             'send_infocoms_alert_before_delay',
             $entity->fields['send_infocoms_alert_before_delay'],
             ['max'            => 99,
-                                        'inherit_parent' => (($ID > 0) ? 1 : 0),
-                                        'unit'           => 'day',
-            'never_string'   => __('No')]
+                'inherit_parent' => (($ID > 0) ? 1 : 0),
+                'unit'           => 'day',
+                'never_string'   => __('No')
+            ]
         );
         if ($entity->fields['send_infocoms_alert_before_delay'] == self::CONFIG_PARENT) {
             $tid = self::getUsedConfig(
@@ -2132,8 +2149,9 @@ class Entity extends CommonTreeDropdown
         echo "<td>" . __('Alarms on expired licenses') . "</td><td>";
         $default_value = $entity->fields['use_licenses_alert'];
         Alert::dropdownYesNo(['name'           => "use_licenses_alert",
-                                 'value'          => $default_value,
-                                 'inherit_parent' => (($ID > 0) ? 1 : 0)]);
+            'value'          => $default_value,
+            'inherit_parent' => (($ID > 0) ? 1 : 0)
+        ]);
         if ($entity->fields['use_licenses_alert'] == self::CONFIG_PARENT) {
             $tid = self::getUsedConfig('use_licenses_alert', $entity->getField('entities_id'));
             self::inheritedValue(self::getSpecificValueToDisplay('use_licenses_alert', $tid), true);
@@ -2144,9 +2162,10 @@ class Entity extends CommonTreeDropdown
             'send_licenses_alert_before_delay',
             $entity->fields['send_licenses_alert_before_delay'],
             ['max'            => 99,
-                                        'inherit_parent' => (($ID > 0) ? 1 : 0),
-                                        'unit'           => 'day',
-            'never_string'   => __('No')]
+                'inherit_parent' => (($ID > 0) ? 1 : 0),
+                'unit'           => 'day',
+                'never_string'   => __('No')
+            ]
         );
         if ($entity->fields['send_licenses_alert_before_delay'] == self::CONFIG_PARENT) {
             $tid = self::getUsedConfig(
@@ -2165,8 +2184,9 @@ class Entity extends CommonTreeDropdown
         echo "<td>" . __('Alarms on expired certificates') . "</td><td>";
         $default_value = $entity->fields['use_certificates_alert'];
         Alert::dropdownYesNo(['name'           => "use_certificates_alert",
-                            'value'          => $default_value,
-                            'inherit_parent' => (($ID > 0) ? 1 : 0)]);
+            'value'          => $default_value,
+            'inherit_parent' => (($ID > 0) ? 1 : 0)
+        ]);
         if ($entity->fields['use_certificates_alert'] == self::CONFIG_PARENT) {
             $tid = self::getUsedConfig('use_certificates_alert', $entity->getField('entities_id'));
             self::inheritedValue(self::getSpecificValueToDisplay('use_certificates_alert', $tid), true);
@@ -2177,9 +2197,10 @@ class Entity extends CommonTreeDropdown
             'send_certificates_alert_before_delay',
             $entity->fields['send_certificates_alert_before_delay'],
             ['max'            => 99,
-                                   'inherit_parent' => (($ID > 0) ? 1 : 0),
-                                   'unit'           => 'day',
-            'never_string'   => __('No')]
+                'inherit_parent' => (($ID > 0) ? 1 : 0),
+                'unit'           => 'day',
+                'never_string'   => __('No')
+            ]
         );
         if ($entity->fields['send_certificates_alert_before_delay'] == self::CONFIG_PARENT) {
             $tid = self::getUsedConfig(
@@ -2200,8 +2221,9 @@ class Entity extends CommonTreeDropdown
             'use_reservations_alert',
             $entity->fields['use_reservations_alert'],
             ['max'            => 99,
-                                        'inherit_parent' => (($ID > 0) ? 1 : 0),
-            'unit'           => 'hour']
+                'inherit_parent' => (($ID > 0) ? 1 : 0),
+                'unit'           => 'hour'
+            ]
         );
         if ($entity->fields['use_reservations_alert'] == self::CONFIG_PARENT) {
             $tid = self::getUsedConfig('use_reservations_alert', $entity->getField('entities_id'));
@@ -2218,8 +2240,9 @@ class Entity extends CommonTreeDropdown
             'notclosed_delay',
             $entity->fields["notclosed_delay"],
             ['max'            => 99,
-                                        'inherit_parent' => (($ID > 0) ? 1 : 0),
-            'unit'           => 'day']
+                'inherit_parent' => (($ID > 0) ? 1 : 0),
+                'unit'           => 'day'
+            ]
         );
         if ($entity->fields['notclosed_delay'] == self::CONFIG_PARENT) {
             $tid = self::getUsedConfig('notclosed_delay', $entity->getField('entities_id'));
@@ -2234,8 +2257,9 @@ class Entity extends CommonTreeDropdown
         echo "<td>" . __('Alarms on domains expiries') . "</td><td>";
         $default_value = $entity->fields['use_domains_alert'];
         Alert::dropdownYesNo(['name'           => "use_domains_alert",
-                                 'value'          => $default_value,
-                                 'inherit_parent' => (($ID > 0) ? 1 : 0)]);
+            'value'          => $default_value,
+            'inherit_parent' => (($ID > 0) ? 1 : 0)
+        ]);
         if ($entity->fields['use_domains_alert'] == self::CONFIG_PARENT) {
             $tid = self::getUsedConfig('use_domains_alert', $entity->getField('entities_id'));
             self::inheritedValue(self::getSpecificValueToDisplay('use_domains_alert', $tid), true);
@@ -2248,9 +2272,9 @@ class Entity extends CommonTreeDropdown
             'send_domains_alert_close_expiries_delay',
             $entity->fields["send_domains_alert_close_expiries_delay"],
             [
-            'max'            => 99,
-            'inherit_parent' => (($ID > 0) ? 1 : 0),
-            'unit'           => 'day'
+                'max'            => 99,
+                'inherit_parent' => (($ID > 0) ? 1 : 0),
+                'unit'           => 'day'
             ]
         );
         if ($entity->fields['send_domains_alert_close_expiries_delay'] == self::CONFIG_PARENT) {
@@ -2264,9 +2288,9 @@ class Entity extends CommonTreeDropdown
             'send_domains_alert_expired_delay',
             $entity->fields["send_domains_alert_expired_delay"],
             [
-            'max'            => 99,
-            'inherit_parent' => (($ID > 0) ? 1 : 0),
-            'unit'           => 'day'
+                'max'            => 99,
+                'inherit_parent' => (($ID > 0) ? 1 : 0),
+                'unit'           => 'day'
             ]
         );
         if ($entity->fields['send_domains_alert_expired_delay'] == self::CONFIG_PARENT) {
@@ -2343,9 +2367,9 @@ class Entity extends CommonTreeDropdown
             'enable_custom_css',
             $values,
             [
-            'display' => false,
-            'rand'    => $rand,
-            'value'   => $entity->fields['enable_custom_css']
+                'display' => false,
+                'rand'    => $rand,
+                'value'   => $entity->fields['enable_custom_css']
             ]
         );
         echo "</td></tr>";
@@ -2357,8 +2381,8 @@ class Entity extends CommonTreeDropdown
        // wrap call in function to prevent modifying variables from current scope
         call_user_func(function () use ($value, $ID) {
             $_POST  = [
-            'enable_custom_css' => $value,
-            'entities_id'       => $ID
+                'enable_custom_css' => $value,
+                'entities_id'       => $ID
             ];
             include GLPI_ROOT . '/ajax/entityCustomCssCode.php';
         });
@@ -2370,8 +2394,8 @@ class Entity extends CommonTreeDropdown
             'custom_css_container',
             $CFG_GLPI['root_doc'] . '/ajax/entityCustomCssCode.php',
             [
-            'enable_custom_css' => '__VALUE__',
-            'entities_id'       => $ID
+                'enable_custom_css' => '__VALUE__',
+                'entities_id'       => $ID
             ]
         );
 
@@ -2431,9 +2455,9 @@ class Entity extends CommonTreeDropdown
         global $DB;
 
         $iterator = $DB->request([
-         'SELECT' => 'id',
-         'FROM'   => self::getTable(),
-         'WHERE'  => [$field => $value]
+            'SELECT' => 'id',
+            'FROM'   => self::getTable(),
+            'WHERE'  => [$field => $value]
         ]);
 
         if (count($iterator) == 1) {
@@ -2555,8 +2579,9 @@ class Entity extends CommonTreeDropdown
         }
 
         $options = ['value'  => $entity->fields["tickettemplates_id"],
-                       'entity' => $ID,
-                       'toadd'  => $toadd];
+            'entity' => $ID,
+            'toadd'  => $toadd
+        ];
 
         TicketTemplate::dropdown($options);
 
@@ -2583,8 +2608,9 @@ class Entity extends CommonTreeDropdown
         }
 
         $options = ['value'  => $entity->fields["changetemplates_id"],
-                       'entity' => $ID,
-                       'toadd'  => $toadd];
+            'entity' => $ID,
+            'toadd'  => $toadd
+        ];
 
         ChangeTemplate::dropdown($options);
 
@@ -2611,8 +2637,9 @@ class Entity extends CommonTreeDropdown
         }
 
         $options = ['value'  => $entity->fields["problemtemplates_id"],
-                       'entity' => $ID,
-                       'toadd'  => $toadd];
+            'entity' => $ID,
+            'toadd'  => $toadd
+        ];
 
         ProblemTemplate::dropdown($options);
 
@@ -2635,7 +2662,8 @@ class Entity extends CommonTreeDropdown
         echo "<tr class='tab_bg_1'><td colspan='2'>" . _n('Calendar', 'Calendars', 1) . "</td>";
         echo "<td colspan='2'>";
         $options = ['value'      => $entity->fields["calendars_id"],
-                       'emptylabel' => __('24/7')];
+            'emptylabel' => __('24/7')
+        ];
 
         if ($ID != 0) {
             $options['toadd'] = [self::CONFIG_PARENT => __('Inheritance of the parent entity')];
@@ -2663,7 +2691,8 @@ class Entity extends CommonTreeDropdown
             $toadd = [self::CONFIG_PARENT => __('Inheritance of the parent entity')];
         }
         Ticket::dropdownType('tickettype', ['value' => $entity->fields["tickettype"],
-                                               'toadd' => $toadd]);
+            'toadd' => $toadd
+        ]);
 
         if (
             ($entity->fields['tickettype'] == self::CONFIG_PARENT)
@@ -2766,11 +2795,11 @@ class Entity extends CommonTreeDropdown
         }
 
         Contract::dropdown([
-         'name'      => 'contracts_id_default',
-         'condition' => Contract::getExpiredCriteria(),
-         'entity'    => $entity->getID(),
-         'toadd'     => $toadd,
-         'value'     => $current_default_contract_value,
+            'name'      => 'contracts_id_default',
+            'condition' => Contract::getExpiredCriteria(),
+            'entity'    => $entity->getID(),
+            'toadd'     => $toadd,
+            'value'     => $current_default_contract_value,
         ]);
 
         // If the entity is using it's parent value, print it
@@ -2806,9 +2835,9 @@ class Entity extends CommonTreeDropdown
        //Check if crontask is disabled
         $crontask = new CronTask();
         $criteria = [
-         'itemtype'  => 'Ticket',
-         'name'      => 'closeticket',
-         'state'     => CronTask::STATE_DISABLE
+            'itemtype'  => 'Ticket',
+            'name'      => 'closeticket',
+            'state'     => CronTask::STATE_DISABLE
         ];
         if ($crontask->getFromDBByCrit($criteria)) {
             echo "<br/><strong>" . __('Close ticket action is disabled.') . "</strong>";
@@ -2817,8 +2846,9 @@ class Entity extends CommonTreeDropdown
         echo "</td>";
         echo "<td>";
         $autoclose = [self::CONFIG_PARENT => __('Inheritance of the parent entity'),
-                         self::CONFIG_NEVER  => __('Never'),
-                         0                   => __('Immediatly')];
+            self::CONFIG_NEVER  => __('Never'),
+            0                   => __('Immediatly')
+        ];
         if ($ID == 0) {
             unset($autoclose[self::CONFIG_PARENT]);
         }
@@ -2826,11 +2856,12 @@ class Entity extends CommonTreeDropdown
         Dropdown::showNumber(
             'autoclose_delay',
             ['value' => $entity->fields['autoclose_delay'],
-                                 'min'   => 1,
-                                 'max'   => 99,
-                                 'step'  => 1,
-                                 'toadd' => $autoclose,
-            'unit'  => 'day']
+                'min'   => 1,
+                'max'   => 99,
+                'step'  => 1,
+                'toadd' => $autoclose,
+                'unit'  => 'day'
+            ]
         );
 
         if (
@@ -2855,9 +2886,9 @@ class Entity extends CommonTreeDropdown
        //Check if crontask is disabled
         $crontask = new CronTask();
         $criteria = [
-         'itemtype'  => 'Ticket',
-         'name'      => 'purgeticket',
-         'state'     => CronTask::STATE_DISABLE
+            'itemtype'  => 'Ticket',
+            'name'      => 'purgeticket',
+            'state'     => CronTask::STATE_DISABLE
         ];
         if ($crontask->getFromDBByCrit($criteria)) {
             echo "<br/><strong>" . __('Purge ticket action is disabled.') . "</strong>";
@@ -2865,8 +2896,8 @@ class Entity extends CommonTreeDropdown
         echo "</td>";
         echo "<td>";
         $autopurge = [
-         self::CONFIG_PARENT => __('Inheritance of the parent entity'),
-         self::CONFIG_NEVER  => __('Never')
+            self::CONFIG_PARENT => __('Inheritance of the parent entity'),
+            self::CONFIG_NEVER  => __('Never')
         ];
         if ($ID == 0) {
             unset($autopurge[self::CONFIG_PARENT]);
@@ -2875,12 +2906,13 @@ class Entity extends CommonTreeDropdown
         Dropdown::showNumber(
             'autopurge_delay',
             [
-            'value' => $entity->fields['autopurge_delay'],
-            'min'   => 1,
-            'max'   => 3650,
-            'step'  => 1,
-            'toadd' => $autopurge,
-            'unit'  => 'day']
+                'value' => $entity->fields['autopurge_delay'],
+                'min'   => 1,
+                'max'   => 3650,
+                'step'  => 1,
+                'toadd' => $autopurge,
+                'unit'  => 'day'
+            ]
         );
 
         if (
@@ -2910,8 +2942,9 @@ class Entity extends CommonTreeDropdown
 
        /// no inquest case = rate 0
         $typeinquest = [self::CONFIG_PARENT  => __('Inheritance of the parent entity'),
-                           1                    => __('Internal survey'),
-                           2                    => __('External survey')];
+            1                    => __('Internal survey'),
+            2                    => __('External survey')
+        ];
 
        // No inherit from parent for root entity
         if ($ID == 0) {
@@ -2972,9 +3005,11 @@ class Entity extends CommonTreeDropdown
         echo "<tr class='tab_bg_1'><td colspan='4'>";
 
         $_POST  = ['inquest_config' => $entity->fields['inquest_config'],
-                      'entities_id'    => $ID];
+            'entities_id'    => $ID
+        ];
         $params = ['inquest_config' => '__VALUE__',
-                      'entities_id'    => $ID];
+            'entities_id'    => $ID
+        ];
         echo "<div id='inquestconfig'>";
         include GLPI_ROOT . '/ajax/ticketsatisfaction.php';
         echo "</div>\n";
@@ -3247,10 +3282,10 @@ class Entity extends CommonTreeDropdown
     {
 
         $tab = [
-         self::CONFIG_PARENT                  => __('Inheritance of the parent entity'),
-         self::CONFIG_NEVER                   => __('No'),
-         self::AUTO_ASSIGN_HARDWARE_CATEGORY  => __('Based on the item then the category'),
-         self::AUTO_ASSIGN_CATEGORY_HARDWARE  => __('Based on the category then the item'),
+            self::CONFIG_PARENT                  => __('Inheritance of the parent entity'),
+            self::CONFIG_NEVER                   => __('No'),
+            self::AUTO_ASSIGN_HARDWARE_CATEGORY  => __('Based on the item then the category'),
+            self::AUTO_ASSIGN_CATEGORY_HARDWARE  => __('Based on the category then the item'),
         ];
 
         if (is_null($val)) {
@@ -3275,9 +3310,9 @@ class Entity extends CommonTreeDropdown
     {
 
         return [
-         self::CONFIG_PARENT => __('Inheritance of the parent entity'),
-         0                   => __('No'),
-         1                   => __('Yes'),
+            self::CONFIG_PARENT => __('Inheritance of the parent entity'),
+            0                   => __('No'),
+            1                   => __('Yes'),
         ];
     }
 
@@ -3292,10 +3327,10 @@ class Entity extends CommonTreeDropdown
     {
 
         return [
-         self::CONFIG_PARENT => __('Inheritance of the parent entity'),
-         self::ANONYMIZE_DISABLED => __('Disabled'),
-         self::ANONYMIZE_USE_GENERIC => __("Replace the agent's name with a generic name"),
-         self::ANONYMIZE_USE_NICKNAME => __("Replace the agent's name with a customisable nickname"),
+            self::CONFIG_PARENT => __('Inheritance of the parent entity'),
+            self::ANONYMIZE_DISABLED => __('Disabled'),
+            self::ANONYMIZE_USE_GENERIC => __("Replace the agent's name with a generic name"),
+            self::ANONYMIZE_USE_NICKNAME => __("Replace the agent's name with a customisable nickname"),
         ];
     }
 
@@ -3589,17 +3624,19 @@ class Entity extends CommonTreeDropdown
 
             case 'autofill_warranty_date':
                 $tab = [0                           => __('No autofill'),
-                         Infocom::COPY_BUY_DATE      => __('Copy the date of purchase'),
-                         Infocom::COPY_ORDER_DATE    => __('Copy the order date'),
-                         Infocom::COPY_DELIVERY_DATE => __('Copy the delivery date'),
-                         self::CONFIG_PARENT         => __('Inheritance of the parent entity')];
+                    Infocom::COPY_BUY_DATE      => __('Copy the date of purchase'),
+                    Infocom::COPY_ORDER_DATE    => __('Copy the order date'),
+                    Infocom::COPY_DELIVERY_DATE => __('Copy the delivery date'),
+                    self::CONFIG_PARENT         => __('Inheritance of the parent entity')
+                ];
                 $options['value'] = $values[$field];
                 return Dropdown::showFromArray($name, $tab, $options);
 
             case 'inquest_config':
                 $typeinquest = [self::CONFIG_PARENT  => __('Inheritance of the parent entity'),
-                                 1                    => __('Internal survey'),
-                                 2                    => __('External survey')];
+                    1                    => __('Internal survey'),
+                    2                    => __('External survey')
+                ];
                 $options['value'] = $values[$field];
                 return Dropdown::showFromArray($name, $typeinquest, $options);
 
@@ -3628,9 +3665,11 @@ class Entity extends CommonTreeDropdown
 
         $values = parent::getRights();
         $values[self::READHELPDESK]   = ['short' => __('Read parameters'),
-                                            'long'  => __('Read helpdesk parameters')];
+            'long'  => __('Read helpdesk parameters')
+        ];
         $values[self::UPDATEHELPDESK] = ['short' => __('Update parameters'),
-                                            'long'  => __('Update helpdesk parameters')];
+            'long'  => __('Update helpdesk parameters')
+        ];
 
         return $values;
     }
@@ -3682,8 +3721,8 @@ class Entity extends CommonTreeDropdown
     public static function getDefaultContractValues($entities_id): array
     {
         $values = [
-         self::CONFIG_PARENT => __('Inheritance of the parent entity'),
-         -1 => __('First found valid contract in ticket entity'),
+            self::CONFIG_PARENT => __('Inheritance of the parent entity'),
+            -1 => __('First found valid contract in ticket entity'),
         ];
 
         $contract = new Contract();

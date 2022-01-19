@@ -99,36 +99,36 @@ class RuleImportEntity extends Rule
     {
 
         return [
-         'tag' => [
-            'field' => 'name',
-            'name' => __('Inventory tag')
-         ],
-         'domain' => [
-            'field' => 'name',
-            'name' => Domain::getTypeName(1)
-         ],
-         'subnet' => [
-            'field' => 'name',
-            'name' => __('Subnet')
-         ],
-         'ip' => [
-            'field' => 'name',
-            'name' => IPAddress::getTypeName(1)
-         ],
-         'name' => [
-            'field' => 'name',
-            'name' => __("Equipment name")
-         ],
-         'serial' => [
-            'field' => 'name',
-            'name' => __('Serial number')
-         ],
-         '_source' => [
-            'table' => '',
-            'field' => '_source',
-            'name' => __('Source'),
-            'allow_condition' => [Rule::PATTERN_IS, Rule::PATTERN_IS_NOT]
-         ]
+            'tag' => [
+                'field' => 'name',
+                'name' => __('Inventory tag')
+            ],
+            'domain' => [
+                'field' => 'name',
+                'name' => Domain::getTypeName(1)
+            ],
+            'subnet' => [
+                'field' => 'name',
+                'name' => __('Subnet')
+            ],
+            'ip' => [
+                'field' => 'name',
+                'name' => IPAddress::getTypeName(1)
+            ],
+            'name' => [
+                'field' => 'name',
+                'name' => __("Equipment name")
+            ],
+            'serial' => [
+                'field' => 'name',
+                'name' => __('Serial number')
+            ],
+            '_source' => [
+                'table' => '',
+                'field' => '_source',
+                'name' => __('Source'),
+                'allow_condition' => [Rule::PATTERN_IS, Rule::PATTERN_IS_NOT]
+            ]
         ];
     }
 
@@ -206,8 +206,8 @@ class RuleImportEntity extends Rule
     {
         if ($criterion == 'ip' || $criterion == 'subnet') {
             return [
-            self::PATTERN_CIDR => __('is CIDR'),
-            self::PATTERN_NOT_CIDR => __('is not CIDR')
+                self::PATTERN_CIDR => __('is CIDR'),
+                self::PATTERN_NOT_CIDR => __('is not CIDR')
             ];
         }
         return [];
@@ -334,38 +334,38 @@ class RuleImportEntity extends Rule
     public function getActions()
     {
         $actions = [
-         'entities_id' => [
-            'name' => Entity::getTypeName(1),
-            'type' => 'dropdown',
-            'table' => Entity::getTable()
-         ],
-         'locations_id' => [
-            'name' => Location::getTypeName(1),
-            'type' => 'dropdown',
-            'table' => Location::getTable(),
-         ],
-         '_affect_entity_by_tag' => [
-            'name' => __('Entity from TAG'),
-            'type' => 'text',
-            'force_actions' => ['regex_result'],
-         ],
-         '_ignore_import' => [
-            'name' => __('Refuse import'),
-            'type' => 'yesonly'
-         ],
-         'is_recursive' => [
-            'name' => __('Child entities'),
-            'type' => 'yesno'
-         ],
-         'groups_id_tech' => [
-            'name' => __('Group in charge of the hardware'),
-            'type' => 'dropdown',
-            'table' => Group::getTable()
-         ],
-         'users_id_tech' => [
-            'name' => __('Technician in charge of the hardware'),
-            'type' => 'dropdown_users'
-         ]
+            'entities_id' => [
+                'name' => Entity::getTypeName(1),
+                'type' => 'dropdown',
+                'table' => Entity::getTable()
+            ],
+            'locations_id' => [
+                'name' => Location::getTypeName(1),
+                'type' => 'dropdown',
+                'table' => Location::getTable(),
+            ],
+            '_affect_entity_by_tag' => [
+                'name' => __('Entity from TAG'),
+                'type' => 'text',
+                'force_actions' => ['regex_result'],
+            ],
+            '_ignore_import' => [
+                'name' => __('Refuse import'),
+                'type' => 'yesonly'
+            ],
+            'is_recursive' => [
+                'name' => __('Child entities'),
+                'type' => 'yesno'
+            ],
+            'groups_id_tech' => [
+                'name' => __('Group in charge of the hardware'),
+                'type' => 'dropdown',
+                'table' => Group::getTable()
+            ],
+            'users_id_tech' => [
+                'name' => __('Technician in charge of the hardware'),
+                'type' => 'dropdown_users'
+            ]
         ];
 
         return $actions;

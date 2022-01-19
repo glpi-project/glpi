@@ -52,8 +52,8 @@ $revid = $_POST['revid'];
 $revision = new KnowbaseItem_Revision();
 $revision->getFromDB($revid);
 $rev = [
-   'name'   => $revision->fields['name'],
-   'answer' => RichText::getEnhancedHtml($revision->fields['answer'])
+    'name'   => $revision->fields['name'],
+    'answer' => RichText::getEnhancedHtml($revision->fields['answer'])
 ];
 
 echo json_encode($rev);

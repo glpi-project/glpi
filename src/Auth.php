@@ -139,8 +139,12 @@ class Auth extends CommonGLPI
         $result = $DB->request(
             'glpi_users',
             ['WHERE'    => $options,
-            'LEFT JOIN' => ['glpi_useremails' => ['FKEY' => ['glpi_users'      => 'id',
-            'glpi_useremails' => 'users_id']]]]
+                'LEFT JOIN' => ['glpi_useremails' => ['FKEY' => ['glpi_users'      => 'id',
+                    'glpi_useremails' => 'users_id'
+                ]
+                ]
+                ]
+            ]
         );
        // Check if there is a row
         if ($result->numrows() == 0) {
@@ -239,25 +243,25 @@ class Auth extends CommonGLPI
 
         if ($this->ldap_connection) {
             $params = [
-            'method' => AuthLDAP::IDENTIFIER_LOGIN,
-            'fields' => [
-               AuthLDAP::IDENTIFIER_LOGIN => $ldap_method['login_field'],
-            ],
+                'method' => AuthLDAP::IDENTIFIER_LOGIN,
+                'fields' => [
+                    AuthLDAP::IDENTIFIER_LOGIN => $ldap_method['login_field'],
+                ],
             ];
             if (!empty($ldap_method['sync_field'])) {
                 $params['fields']['sync_field'] = $ldap_method['sync_field'];
             }
             try {
                 $infos = AuthLDAP::searchUserDn($this->ldap_connection, [
-                'basedn'            => $ldap_method['basedn'],
-                'login_field'       => $ldap_method['login_field'],
-                'search_parameters' => $params,
-                'user_params'       => [
-                  'method' => AuthLDAP::IDENTIFIER_LOGIN,
-                   'value'  => $login
-                ],
-                'condition'         => Sanitizer::unsanitize($ldap_method['condition']),
-                'user_dn'           => $this->user_dn
+                    'basedn'            => $ldap_method['basedn'],
+                    'login_field'       => $ldap_method['login_field'],
+                    'search_parameters' => $params,
+                    'user_params'       => [
+                        'method' => AuthLDAP::IDENTIFIER_LOGIN,
+                        'value'  => $login
+                    ],
+                    'condition'         => Sanitizer::unsanitize($ldap_method['condition']),
+                    'user_dn'           => $this->user_dn
                 ]);
             } catch (\Throwable $e) {
                 ErrorHandler::getInstance()->handleException($e, true);
@@ -372,30 +376,30 @@ class Auth extends CommonGLPI
        // SQL query
         $result = $DB->request(
             [
-            'SELECT' => [
-               'id',
-               'password',
-               new QueryExpression(
-                   sprintf(
-                       'ADDDATE(%s, INTERVAL %d DAY) AS ' . $DB->quoteName('password_expiration_date'),
-                       $DB->quoteName('password_last_update'),
-                       $pass_expiration_delay
-                   )
-               ),
-               new QueryExpression(
-                   sprintf(
-                       'ADDDATE(%s, INTERVAL %d DAY) AS ' . $DB->quoteName('lock_date'),
-                       $DB->quoteName('password_last_update'),
-                       $pass_expiration_delay + $lock_delay
-                   )
-               )
-            ],
-            'FROM'   => User::getTable(),
-            'WHERE'  =>  [
-               'name'     => $name,
-               'authtype' => self::DB_GLPI,
-               'auths_id' => 0,
-            ]
+                'SELECT' => [
+                    'id',
+                    'password',
+                    new QueryExpression(
+                        sprintf(
+                            'ADDDATE(%s, INTERVAL %d DAY) AS ' . $DB->quoteName('password_expiration_date'),
+                            $DB->quoteName('password_last_update'),
+                            $pass_expiration_delay
+                        )
+                    ),
+                    new QueryExpression(
+                        sprintf(
+                            'ADDDATE(%s, INTERVAL %d DAY) AS ' . $DB->quoteName('lock_date'),
+                            $DB->quoteName('password_last_update'),
+                            $pass_expiration_delay + $lock_delay
+                        )
+                    )
+                ],
+                'FROM'   => User::getTable(),
+                'WHERE'  =>  [
+                    'name'     => $name,
+                    'authtype' => self::DB_GLPI,
+                    'auths_id' => 0,
+                ]
             ]
         );
 
@@ -413,8 +417,8 @@ class Auth extends CommonGLPI
                     $user = new User();
                     $user->update(
                         [
-                        'id'        => $row['id'],
-                        'is_active' => 0,
+                            'id'        => $row['id'],
+                            'is_active' => 0,
                         ]
                     );
                 }
@@ -428,7 +432,7 @@ class Auth extends CommonGLPI
                // Update password if needed
                 if (self::needRehash($password_db)) {
                     $input = [
-                    'id' => $row['id'],
+                        'id' => $row['id'],
                     ];
                  // Set glpiID to allow password update
                     $_SESSION['glpiID'] = $input['id'];
@@ -451,14 +455,14 @@ class Auth extends CommonGLPI
                     $groups_id,
                     Toolbox::stripslashes_deep($this->user->fields),
                     [
-                    'type'  => Auth::DB_GLPI,
-                    'login' => $this->user->fields['name'],
-                    'email' => UserEmail::getDefaultForUser($row['id'])
+                        'type'  => Auth::DB_GLPI,
+                        'login' => $this->user->fields['name'],
+                        'email' => UserEmail::getDefaultForUser($row['id'])
                     ]
                 );
 
                 $this->user->fields = $result + [
-                 '_ruleright_process' => true,
+                    '_ruleright_process' => true,
                 ];
 
                 return true;
@@ -678,8 +682,8 @@ class Auth extends CommonGLPI
 
        //Return all the authentication methods in an array
         $this->authtypes = [
-         'ldap' => getAllDataFromTable('glpi_authldaps'),
-         'mail' => getAllDataFromTable('glpi_authmails')
+            'ldap' => getAllDataFromTable('glpi_authldaps'),
+            'mail' => getAllDataFromTable('glpi_authmails')
         ];
     }
 
@@ -796,21 +800,21 @@ class Auth extends CommonGLPI
                         if ($ds) {
                              $ldapservers_status = true;
                              $params = [
-                              'method' => AuthLDAP::IDENTIFIER_LOGIN,
-                              'fields' => [
-                             AuthLDAP::IDENTIFIER_LOGIN => $ldap_method["login_field"],
-                              ],
+                                 'method' => AuthLDAP::IDENTIFIER_LOGIN,
+                                 'fields' => [
+                                     AuthLDAP::IDENTIFIER_LOGIN => $ldap_method["login_field"],
+                                 ],
                              ];
                              try {
                                  $user_dn = AuthLDAP::searchUserDn($ds, [
-                                 'basedn'            => $ldap_method["basedn"],
-                                 'login_field'       => $ldap_method['login_field'],
-                                 'search_parameters' => $params,
-                                 'condition'         => $ldap_method["condition"],
-                                 'user_params'       => [
-                                 'method' => AuthLDAP::IDENTIFIER_LOGIN,
-                                 'value'  => $login_name
-                                 ],
+                                     'basedn'            => $ldap_method["basedn"],
+                                     'login_field'       => $ldap_method['login_field'],
+                                     'search_parameters' => $params,
+                                     'condition'         => $ldap_method["condition"],
+                                     'user_params'       => [
+                                         'method' => AuthLDAP::IDENTIFIER_LOGIN,
+                                         'value'  => $login_name
+                                     ],
                                  ]);
                              } catch (\RuntimeException $e) {
                                  ErrorHandler::getInstance()->handleException($e, true);
@@ -901,8 +905,9 @@ class Auth extends CommonGLPI
                             );
                             if (!$this->auth_succeded && !$this->user_found) {
                                  $search_params = [
-                                 'name'     => addslashes($login_name),
-                                 'authtype' => $this::LDAP];
+                                     'name'     => addslashes($login_name),
+                                     'authtype' => $this::LDAP
+                                 ];
                                  if (!empty($login_auth)) {
                                      $search_params['auths_id'] = $this->user->fields["auths_id"];
                                  }
@@ -1035,8 +1040,8 @@ class Auth extends CommonGLPI
 
             if ($token) {
                 $data = json_encode([
-                $this->user->fields['id'],
-                $token,
+                    $this->user->fields['id'],
+                    $token,
                 ]);
 
                //Send cookie to browser
@@ -1070,11 +1075,11 @@ class Auth extends CommonGLPI
         global $DB;
 
         $p = [
-         'name'                => 'auths_id',
-         'value'               => 0,
-         'display'             => true,
-         'display_emptychoice' => true,
-         'hide_if_no_elements' => false,
+            'name'                => 'auths_id',
+            'value'               => 0,
+            'display'             => true,
+            'display_emptychoice' => true,
+            'hide_if_no_elements' => false,
         ];
 
         if (is_array($options) && count($options)) {
@@ -1084,15 +1089,15 @@ class Auth extends CommonGLPI
         }
 
         $methods = [
-         self::DB_GLPI => __('Authentication on GLPI database'),
+            self::DB_GLPI => __('Authentication on GLPI database'),
         ];
 
         $result = $DB->request([
-         'FROM'   => 'glpi_authldaps',
-         'COUNT'  => 'cpt',
-         'WHERE'  => [
-            'is_active' => 1
-         ]
+            'FROM'   => 'glpi_authldaps',
+            'COUNT'  => 'cpt',
+            'WHERE'  => [
+                'is_active' => 1
+            ]
         ])->current();
 
         if ($result['cpt'] > 0) {
@@ -1101,11 +1106,11 @@ class Auth extends CommonGLPI
         }
 
         $result = $DB->request([
-         'FROM'   => 'glpi_authmails',
-         'COUNT'  => 'cpt',
-         'WHERE'  => [
-            'is_active' => 1
-         ]
+            'FROM'   => 'glpi_authmails',
+            'COUNT'  => 'cpt',
+            'WHERE'  => [
+                'is_active' => 1
+            ]
         ])->current();
 
         if ($result['cpt'] > 0) {
@@ -1454,17 +1459,17 @@ class Auth extends CommonGLPI
                     $authldap = new AuthLDAP();
                     if (
                         $authldap->getFromDBByCrit([
-                        'id'        => $user->getField('auths_id'),
-                        'is_active' => 1,
+                            'id'        => $user->getField('auths_id'),
+                            'is_active' => 1,
                         ])
                     ) {
                         echo Html::submit("<i class='fas fa-sync-alt'></i><span>" . __s('Force synchronization') . "</span>", [
-                        'name' => 'force_ldap_resynch'
+                            'name' => 'force_ldap_resynch'
                         ]);
 
                         if (strlen($authldap->fields['sync_field']) > 0) {
                             echo Html::submit("<i class='fas fa-broom'></i><span>" . __s('Clean LDAP fields and force synchronisation') . "</span>", [
-                             'name' => 'clean_ldap_fields'
+                                'name' => 'clean_ldap_fields'
                             ]);
                         }
                     }
@@ -1481,7 +1486,8 @@ class Auth extends CommonGLPI
             echo "<h3>" . __('Change of the authentication method') . "</h3>";
             $rand             = self::dropdown(['name' => 'authtype']);
             $paramsmassaction = ['authtype' => '__VALUE__',
-                                   'name'     => 'change_auth_method'];
+                'name'     => 'change_auth_method'
+            ];
             Ajax::updateItemOnSelectEvent(
                 "dropdown_authtype$rand",
                 "show_massiveaction_field",
@@ -1635,7 +1641,8 @@ class Auth extends CommonGLPI
         echo "<td class='center'>" . SsoVariable::getTypeName(1) . "</td>";
         echo "<td>";
         SsoVariable::dropdown(['name'  => 'ssovariables_id',
-                                  'value' => $CFG_GLPI["ssovariables_id"]]);
+            'value' => $CFG_GLPI["ssovariables_id"]
+        ]);
         echo "</td>";
         echo "</tr>";
 
@@ -1756,18 +1763,18 @@ class Auth extends CommonGLPI
         global $DB;
 
         $elements = [
-         '_default'  => 'local',
-         'local'     => __("GLPI internal database")
+            '_default'  => 'local',
+            'local'     => __("GLPI internal database")
         ];
 
        // Get LDAP
         if (Toolbox::canUseLdap()) {
             $iterator = $DB->request([
-            'FROM'   => 'glpi_authldaps',
-            'WHERE'  => [
-               'is_active' => 1
-            ],
-            'ORDER'  => ['name']
+                'FROM'   => 'glpi_authldaps',
+                'WHERE'  => [
+                    'is_active' => 1
+                ],
+                'ORDER'  => ['name']
             ]);
             foreach ($iterator as $data) {
                 $elements['ldap-' . $data['id']] = $data['name'];
@@ -1779,11 +1786,11 @@ class Auth extends CommonGLPI
 
        // GET Mail servers
         $iterator = $DB->request([
-         'FROM'   => 'glpi_authmails',
-         'WHERE'  => [
-            'is_active' => 1
-         ],
-         'ORDER'  => ['name']
+            'FROM'   => 'glpi_authmails',
+            'WHERE'  => [
+                'is_active' => 1
+            ],
+            'ORDER'  => ['name']
         ]);
         foreach ($iterator as $data) {
             $elements['mail-' . $data['id']] = $data['name'];
@@ -1803,10 +1810,10 @@ class Auth extends CommonGLPI
         unset($elements['_default']);
        // show dropdown of login src only when multiple src
         $out .= Dropdown::showFromArray('auth', $elements, [
-         'display'   => false,
-         'rand'      => '1',
-         'value'     => $default,
-         'width'     => '100%'
+            'display'   => false,
+            'rand'      => '1',
+            'value'     => $default,
+            'width'     => '100%'
         ]);
 
         if ($display) {

@@ -57,8 +57,9 @@ class RuleSoftwareCategoryCollection extends DbTestCase
 
        //Process also manufacturer
         $input = ['name'             => 'Software',
-                'comment'          => 'Comment',
-                'manufacturers_id' => 1];
+            'comment'          => 'Comment',
+            'manufacturers_id' => 1
+        ];
         $params = $collection->prepareInputDataForProcess([], $input);
         $this->string($params['manufacturer'])->isIdenticalTo('My Manufacturer');
     }
@@ -71,8 +72,9 @@ class RuleSoftwareCategoryCollection extends DbTestCase
 
        //Default rule is disabled : no rule should match
         $input = ['name'             => 'MySoft',
-                'manufacturer'     => 'My Manufacturer',
-                '_system_category' => 'dev'];
+            'manufacturer'     => 'My Manufacturer',
+            '_system_category' => 'dev'
+        ];
         $result = $categoryCollection->processAllRules(null, null, $input);
         $this->array($result)->isIdenticalTo(["_no_rule_matches" => '1']);
     }
@@ -86,8 +88,9 @@ class RuleSoftwareCategoryCollection extends DbTestCase
 
        //Default rule is disabled : no rule should match
         $input = ['name'             => 'MySoft',
-                'manufacturer'     => 'My Manufacturer',
-                '_system_category' => 'dev'];
+            'manufacturer'     => 'My Manufacturer',
+            '_system_category' => 'dev'
+        ];
 
         $rules = getAllDataFromTable(
             'glpi_rules',
@@ -105,8 +108,8 @@ class RuleSoftwareCategoryCollection extends DbTestCase
        //Run the rules engine a second time with the rule enabled
         $result = $categoryCollection->processAllRules(null, null, $input);
         $this->array($result)->isIdenticalTo([
-         "_import_category" => '1',
-         "_ruleid"          => (string) $myrule['id']
+            "_import_category" => '1',
+            "_ruleid"          => (string) $myrule['id']
         ]);
 
        //Set default rule as disabled, as it was before
@@ -121,8 +124,9 @@ class RuleSoftwareCategoryCollection extends DbTestCase
 
        //Default rule is disabled : no rule should match
         $input = ['name'             => 'MySoft',
-                'manufacturer'     => 'My Manufacturer',
-                '_system_category' => 'dev'];
+            'manufacturer'     => 'My Manufacturer',
+            '_system_category' => 'dev'
+        ];
 
        //Let's enable the rule
         $rule     = new \Rule();
@@ -138,30 +142,30 @@ class RuleSoftwareCategoryCollection extends DbTestCase
         $categories_id = $category->importExternal('Application');
 
         $rules_id = $rule->add(['name'        => 'Import name',
-                              'is_active'   => 1,
-                              'entities_id' => 0,
-                              'sub_type'    => 'RuleSoftwareCategory',
-                              'match'       => \Rule::AND_MATCHING,
-                              'condition'   => 0,
-                              'description' => ''
-                             ]);
+            'is_active'   => 1,
+            'entities_id' => 0,
+            'sub_type'    => 'RuleSoftwareCategory',
+            'match'       => \Rule::AND_MATCHING,
+            'condition'   => 0,
+            'description' => ''
+        ]);
         $this->integer($rules_id)->isGreaterThan(0);
 
         $this->integer(
             $criteria->add([
-            'rules_id'  => $rules_id,
-            'criteria'  => 'name',
-            'condition' => \Rule::PATTERN_IS,
-            'pattern'   => 'MySoft'
+                'rules_id'  => $rules_id,
+                'criteria'  => 'name',
+                'condition' => \Rule::PATTERN_IS,
+                'pattern'   => 'MySoft'
             ])
         )->isGreaterThan(0);
 
         $this->integer(
             $action->add([
-            'rules_id'    => $rules_id,
-            'action_type' => 'assign',
-            'field'       => 'softwarecategories_id',
-            'value'       => $categories_id
+                'rules_id'    => $rules_id,
+                'action_type' => 'assign',
+                'field'       => 'softwarecategories_id',
+                'value'       => $categories_id
             ])
         )->isGreaterThan(0);
 
@@ -172,8 +176,8 @@ class RuleSoftwareCategoryCollection extends DbTestCase
        //Test that a software category can be assigned
         $result = $categoryCollection->processAllRules(null, null, $input);
         $this->array($result)->isIdenticalTo([
-         "softwarecategories_id" => "$categories_id",
-         "_ruleid"               => "$rules_id"
+            "softwarecategories_id" => "$categories_id",
+            "_ruleid"               => "$rules_id"
         ]);
     }
 
@@ -193,30 +197,30 @@ class RuleSoftwareCategoryCollection extends DbTestCase
         $categoryCollection->RuleList->load = true;
 
         $rules_id = $rule->add(['name'        => 'Ignore import',
-                               'is_active'   => 1,
-                               'entities_id' => 0,
-                               'sub_type'    => 'RuleSoftwareCategory',
-                               'match'       => \Rule::AND_MATCHING,
-                               'condition'   => 0,
-                               'description' => ''
-                            ]);
+            'is_active'   => 1,
+            'entities_id' => 0,
+            'sub_type'    => 'RuleSoftwareCategory',
+            'match'       => \Rule::AND_MATCHING,
+            'condition'   => 0,
+            'description' => ''
+        ]);
         $this->integer($rules_id)->isGreaterThan(0);
 
         $this->integer(
             $criteria->add([
-            'rules_id'  => $rules_id,
-            'criteria'  => '_system_category',
-            'condition' => \Rule::PATTERN_IS,
-            'pattern'   => 'dev'
+                'rules_id'  => $rules_id,
+                'criteria'  => '_system_category',
+                'condition' => \Rule::PATTERN_IS,
+                'pattern'   => 'dev'
             ])
         )->isGreaterThan(0);
 
         $this->integer(
             $action->add([
-            'rules_id'    => $rules_id,
-            'action_type' => 'assign',
-            'field'       => '_ignore_import',
-            'value'       => '1'
+                'rules_id'    => $rules_id,
+                'action_type' => 'assign',
+                'field'       => '_ignore_import',
+                'value'       => '1'
             ])
         )->isGreaterThan(0);
 
@@ -239,14 +243,15 @@ class RuleSoftwareCategoryCollection extends DbTestCase
         $categoryCollection->RuleList->load = true;
 
         $input = ['name'             => 'fusioninventory-agent',
-                'manufacturer'     => 'Teclib',
-                '_system_category' => 'dev'];
+            'manufacturer'     => 'Teclib',
+            '_system_category' => 'dev'
+        ];
 
        //Test that a software category can be ignored
         $result = $categoryCollection->processAllRules(null, null, $input);
         $this->array($result)->isIdenticalTo([
-         "_ignore_import" => '1',
-         "_ruleid"        => "$rules_id"
+            "_ignore_import" => '1',
+            "_ruleid"        => "$rules_id"
         ]);
     }
 }

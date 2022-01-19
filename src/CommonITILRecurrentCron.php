@@ -46,7 +46,7 @@ class CommonITILRecurrentCron extends CommonDBTM
     public static function cronInfo(): array
     {
         return [
-         'description' => __("Create recurrent tickets and changes")
+            'description' => __("Create recurrent tickets and changes")
         ];
     }
 
@@ -65,21 +65,21 @@ class CommonITILRecurrentCron extends CommonDBTM
 
        // Concrete classes for which recurrent items can be created
         $targets = [
-         TicketRecurrent::class,
-         RecurrentChange::class,
+            TicketRecurrent::class,
+            RecurrentChange::class,
         ];
 
         foreach ($targets as $itemtype) {
             $iterator = $DB->request([
-            'FROM'   => $itemtype::getTable(),
-            'WHERE'  => [
-               'next_creation_date' => ['<', new \QueryExpression('NOW()')],
-               'is_active'          => 1,
-               'OR'                 => [
-                  ['end_date' => null],
-                  ['end_date' => ['>', new \QueryExpression('NOW()')]]
-               ]
-            ]
+                'FROM'   => $itemtype::getTable(),
+                'WHERE'  => [
+                    'next_creation_date' => ['<', new \QueryExpression('NOW()')],
+                    'is_active'          => 1,
+                    'OR'                 => [
+                        ['end_date' => null],
+                        ['end_date' => ['>', new \QueryExpression('NOW()')]]
+                    ]
+                ]
             ]);
 
             foreach ($iterator as $data) {

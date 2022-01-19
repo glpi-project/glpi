@@ -239,21 +239,21 @@ JAVASCRIPT;
         $items_subquery = new QuerySubQuery(
             array_merge_recursive(
                 [
-                'SELECT' => ['COUNT DISTINCT' => KnowbaseItem::getTableField('id') . ' as cpt'],
-                'FROM'   => KnowbaseItem::getTable(),
-                'INNER JOIN' => [
-                  KnowbaseItem_KnowbaseItemCategory::getTable() => [
-                     'ON'  => [
-                        KnowbaseItem_KnowbaseItemCategory::getTable()   => KnowbaseItem::getForeignKeyField(),
-                        KnowbaseItem::getTable()            => 'id'
-                     ]
-                  ]
-                ],
-                'WHERE'  => [
-                  KnowbaseItem_KnowbaseItemCategory::getTableField($cat_fk) => new QueryExpression(
-                      DB::quoteName(KnowbaseItemCategory::getTableField('id'))
-                  ),
-                ]
+                    'SELECT' => ['COUNT DISTINCT' => KnowbaseItem::getTableField('id') . ' as cpt'],
+                    'FROM'   => KnowbaseItem::getTable(),
+                    'INNER JOIN' => [
+                        KnowbaseItem_KnowbaseItemCategory::getTable() => [
+                            'ON'  => [
+                                KnowbaseItem_KnowbaseItemCategory::getTable()   => KnowbaseItem::getForeignKeyField(),
+                                KnowbaseItem::getTable()            => 'id'
+                            ]
+                        ]
+                    ],
+                    'WHERE'  => [
+                        KnowbaseItem_KnowbaseItemCategory::getTableField($cat_fk) => new QueryExpression(
+                            DB::quoteName(KnowbaseItemCategory::getTableField('id'))
+                        ),
+                    ]
                 ],
                 $kbitem_visibility_crit
             ),
@@ -261,17 +261,17 @@ JAVASCRIPT;
         );
 
         $cat_iterator = $DB->request([
-         'SELECT' => [
-            KnowbaseItemCategory::getTableField('id'),
-            KnowbaseItemCategory::getTableField('name'),
-            KnowbaseItemCategory::getTableField($cat_fk),
-            $items_subquery,
-         ],
-         'FROM' => $cat_table,
-         'ORDER' => [
-            KnowbaseItemCategory::getTableField('level') . ' DESC',
-            KnowbaseItemCategory::getTableField('name'),
-         ]
+            'SELECT' => [
+                KnowbaseItemCategory::getTableField('id'),
+                KnowbaseItemCategory::getTableField('name'),
+                KnowbaseItemCategory::getTableField($cat_fk),
+                $items_subquery,
+            ],
+            'FROM' => $cat_table,
+            'ORDER' => [
+                KnowbaseItemCategory::getTableField('level') . ' DESC',
+                KnowbaseItemCategory::getTableField('name'),
+            ]
         ]);
 
         $inst = new KnowbaseItemCategory();
@@ -308,33 +308,33 @@ JAVASCRIPT;
         $root_items_count = $DB->request(
             array_merge_recursive(
                 [
-                'SELECT' => ['COUNT DISTINCT' => KnowbaseItem::getTableField('id') . ' as cpt'],
-                'FROM'   => KnowbaseItem::getTable(),
-                'LEFT JOIN' => [
-                  KnowbaseItem_KnowbaseItemCategory::getTable() => [
-                     'ON'  => [
-                        KnowbaseItem_KnowbaseItemCategory::getTable()   => KnowbaseItem::getForeignKeyField(),
-                        KnowbaseItem::getTable()            => 'id'
-                     ]
-                  ],
-                  KnowbaseItemCategory::getTable() => [
-                     'ON'  => [
-                        KnowbaseItem_KnowbaseItemCategory::getTable()   => KnowbaseItemCategory::getForeignKeyField(),
-                        KnowbaseItemCategory::getTable()    => 'id'
-                     ]
-                  ]
-                ],
-                'WHERE'  => [
-                  KnowbaseItemCategory::getTableField('id') => null,
-                ]
+                    'SELECT' => ['COUNT DISTINCT' => KnowbaseItem::getTableField('id') . ' as cpt'],
+                    'FROM'   => KnowbaseItem::getTable(),
+                    'LEFT JOIN' => [
+                        KnowbaseItem_KnowbaseItemCategory::getTable() => [
+                            'ON'  => [
+                                KnowbaseItem_KnowbaseItemCategory::getTable()   => KnowbaseItem::getForeignKeyField(),
+                                KnowbaseItem::getTable()            => 'id'
+                            ]
+                        ],
+                        KnowbaseItemCategory::getTable() => [
+                            'ON'  => [
+                                KnowbaseItem_KnowbaseItemCategory::getTable()   => KnowbaseItemCategory::getForeignKeyField(),
+                                KnowbaseItemCategory::getTable()    => 'id'
+                            ]
+                        ]
+                    ],
+                    'WHERE'  => [
+                        KnowbaseItemCategory::getTableField('id') => null,
+                    ]
                 ],
                 $kbitem_visibility_crit
             )
         )->current();
         $categories[] = [
-         'id'          => 0,
-         'name'        => __('Root category'),
-         'items_count' => $root_items_count['cpt'],
+            'id'          => 0,
+            'name'        => __('Root category'),
+            'items_count' => $root_items_count['cpt'],
         ];
 
        // construct flat data
@@ -342,12 +342,12 @@ JAVASCRIPT;
         foreach ($categories as $category) {
             $cat_id = intval($category['id']);
             $node = [
-            'key'    => $cat_id,
-            'title'  => $category['name'],
-            'parent' => $category[$cat_fk] ?? null,
-            'a_attr' => [
-               'data-id' => $cat_id
-            ],
+                'key'    => $cat_id,
+                'title'  => $category['name'],
+                'parent' => $category[$cat_fk] ?? null,
+                'a_attr' => [
+                    'data-id' => $cat_id
+                ],
             ];
 
             if ($category['items_count'] > 0) {

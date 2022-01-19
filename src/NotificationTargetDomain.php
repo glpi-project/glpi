@@ -36,8 +36,8 @@ class NotificationTargetDomain extends NotificationTarget
     public function getEvents()
     {
         return [
-         'ExpiredDomains'     => __('Expired domains'),
-         'DomainsWhichExpire' => __('Expiring domains')
+            'ExpiredDomains'     => __('Expired domains'),
+            'DomainsWhichExpire' => __('Expiring domains')
         ];
     }
 
@@ -64,8 +64,8 @@ class NotificationTargetDomain extends NotificationTarget
 
         foreach ($options['domains'] as $domain) {
             $tmp = [
-            '##domain.name##'             => $domain['name'],
-            '##domain.dateexpiration##'   => Html::convDate($domain['date_expiration'])
+                '##domain.name##'             => $domain['name'],
+                '##domain.dateexpiration##'   => Html::convDate($domain['date_expiration'])
             ];
             $this->data['domains'][] = $tmp;
         }
@@ -74,24 +74,24 @@ class NotificationTargetDomain extends NotificationTarget
     public function getTags()
     {
         $tags = [
-         'domain.name'           => __('Name'),
-         'domain.dateexpiration' => __('Expiration date')
+            'domain.name'           => __('Name'),
+            'domain.dateexpiration' => __('Expiration date')
         ];
 
         foreach ($tags as $tag => $label) {
             $this->addTagToList([
-            'tag'   => $tag,
-            'label' => $label,
-            'value' => true
+                'tag'   => $tag,
+                'label' => $label,
+                'value' => true
             ]);
         }
 
         $this->addTagToList([
-         'tag'     => 'domains',
-         'label'   => __('Expired or expiring domains'),
-         'value'   => false,
-         'foreach' => true,
-         'events'  => ['DomainsWhichExpire', 'ExpiredDomains']
+            'tag'     => 'domains',
+            'label'   => __('Expired or expiring domains'),
+            'value'   => false,
+            'foreach' => true,
+            'events'  => ['DomainsWhichExpire', 'ExpiredDomains']
         ]);
 
         asort($this->tag_descriptions);

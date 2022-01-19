@@ -64,8 +64,8 @@ class NotificationEventMailing extends DbTestCase
 
         $this->string(\NotificationEventMailing::getTargetField($data))->isIdenticalTo('email');
         $expected = [
-         'users_id'  => $uid,
-         'email'     => TU_USER . '@glpi.com'
+            'users_id'  => $uid,
+            'email'     => TU_USER . '@glpi.com'
         ];
         $this->array($data)->isIdenticalTo($expected);
     }
@@ -81,9 +81,9 @@ class NotificationEventMailing extends DbTestCase
 
         $this->array(\NotificationEventMailing::getAdminData())
          ->isIdenticalTo([
-            'email'     => $CFG_GLPI['admin_email'],
-            'name'      => $CFG_GLPI['admin_email_name'],
-            'language'  => $CFG_GLPI['language']
+             'email'     => $CFG_GLPI['admin_email'],
+             'name'      => $CFG_GLPI['admin_email_name'],
+             'language'  => $CFG_GLPI['language']
          ]);
 
         $CFG_GLPI['admin_email'] = 'adminlocalhost';
@@ -99,44 +99,44 @@ class NotificationEventMailing extends DbTestCase
         $entity1 = getItemByTypeName('Entity', '_test_child_1');
         $this->boolean(
             $entity1->update([
-            'id'                 => $entity1->getId(),
-            'admin_email'        => 'entadmin@localhost',
-            'admin_email_name'   => 'Entity admin ONE'
+                'id'                 => $entity1->getId(),
+                'admin_email'        => 'entadmin@localhost',
+                'admin_email_name'   => 'Entity admin ONE'
             ])
         )->isTrue();
 
         $entity2 = getItemByTypeName('Entity', '_test_child_2');
         $this->boolean(
             $entity2->update([
-            'id'                 => $entity2->getId(),
-            'admin_email'        => 'entadmin2localhost',
-            'admin_email_name'   => 'Entity admin TWO'
+                'id'                 => $entity2->getId(),
+                'admin_email'        => 'entadmin2localhost',
+                'admin_email_name'   => 'Entity admin TWO'
             ])
         )->isTrue();
 
         $this->array(\NotificationEventMailing::getEntityAdminsData($entity1->getID()))
          ->isIdenticalTo([
-            [
-               'language' => 'en_GB',
-               'email' => 'entadmin@localhost',
-               'name' => 'Entity admin ONE'
-            ]
+             [
+                 'language' => 'en_GB',
+                 'email' => 'entadmin@localhost',
+                 'name' => 'Entity admin ONE'
+             ]
          ]);
         $this->boolean(\NotificationEventMailing::getEntityAdminsData($entity2->getID()))->isFalse();
 
        //reset
         $this->boolean(
             $entity1->update([
-            'id'                 => $entity1->getId(),
-            'admin_email'        => 'NULL',
-            'admin_email_name'   => 'NULL'
+                'id'                 => $entity1->getId(),
+                'admin_email'        => 'NULL',
+                'admin_email_name'   => 'NULL'
             ])
         )->isTrue();
         $this->boolean(
             $entity2->update([
-            'id'                 => $entity2->getId(),
-            'admin_email'        => 'NULL',
-            'admin_email_name'   => 'NULL'
+                'id'                 => $entity2->getId(),
+                'admin_email'        => 'NULL',
+                'admin_email_name'   => 'NULL'
             ])
         )->isTrue();
     }

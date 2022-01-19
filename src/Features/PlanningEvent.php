@@ -82,8 +82,9 @@ trait PlanningEvent
     {
        // Add document if needed
         $this->input = $this->addFiles($this->input, [
-         'force_update'  => true,
-         'content_field' => 'text']);
+            'force_update'  => true,
+            'content_field' => 'text'
+        ]);
 
         if (
             !isset($this->input['_no_check_plan'])
@@ -96,7 +97,7 @@ trait PlanningEvent
                 $this->fields["begin"],
                 $this->fields["end"],
                 [
-                $this->getType() => [$this->fields['id']]
+                    $this->getType() => [$this->fields['id']]
                 ]
             );
         }
@@ -267,7 +268,7 @@ trait PlanningEvent
                 $this->fields["begin"],
                 $this->fields["end"],
                 [
-                $this->getType() => [$this->fields['id']]
+                    $this->getType() => [$this->fields['id']]
                 ]
             );
         }
@@ -318,14 +319,14 @@ trait PlanningEvent
         $this->getFromDB($id);
         $rrule = json_decode($this->fields['rrule'], true) ?? [];
         $rrule = array_merge_recursive($rrule, [
-         'exceptions' => [
-            $day
-         ]
+            'exceptions' => [
+                $day
+            ]
         ]);
         return $this->update([
-         'id'             => $id,
-         'rrule'          => $rrule,
-         '_no_check_plan' => true,
+            'id'             => $id,
+            'rrule'          => $rrule,
+            '_no_check_plan' => true,
         ]);
     }
 
@@ -345,8 +346,8 @@ trait PlanningEvent
         $fields = $this->fields;
         unset($fields['id'], $fields['uuid'], $fields['rrule']);
         $fields['plan'] = [
-         'begin' => $fields['begin'],
-         'end'   => $fields['end'],
+            'begin' => $fields['begin'],
+            'end'   => $fields['end'],
         ];
        // avoid checking availability, will be done after when updating new dates
         $fields['_no_check_plan'] = true;
@@ -381,11 +382,11 @@ trait PlanningEvent
         global $DB, $CFG_GLPI;
 
         $default_options = [
-         'genical'             => false,
-         'color'               => '',
-         'event_type_color'    => '',
-         'check_planned'       => false,
-         'display_done_events' => true,
+            'genical'             => false,
+            'color'               => '',
+            'event_type_color'    => '',
+            'check_planned'       => false,
+            'display_done_events' => true,
         ];
         $options = array_merge($default_options, $options);
 
@@ -444,9 +445,10 @@ trait PlanningEvent
            // guests accounts
             if ($DB->fieldExists($table, 'users_id_guests')) {
                 $nreadpriv = ['OR' => [
-                "$table.users_id" => $who,
-                "$table.users_id_guests" => ['LIKE', '%"' . $who . '"%'],
-                ]];
+                    "$table.users_id" => $who,
+                    "$table.users_id_guests" => ['LIKE', '%"' . $who . '"%'],
+                ]
+                ];
             }
         }
 
@@ -481,8 +483,8 @@ trait PlanningEvent
         }
 
         $WHERE = [
-         'begin' => ['<', $end],
-         'end'   => ['>', $begin]
+            'begin' => ['<', $end],
+            'end'   => ['>', $begin]
         ] + [$NASSIGN]; // "encapsulate" nassign to prevent OR overriding
 
         if ($DB->fieldExists($table, 'is_planned')) {
@@ -495,13 +497,13 @@ trait PlanningEvent
 
         if (!$options['display_done_events']) {
             $WHERE[] = [
-            'OR' => [
-               'state'  => Planning::TODO,
-               'AND'    => [
-                  'state'  => Planning::INFO,
-                  'end'    => ['>', new QueryExpression('NOW()')]
-               ]
-            ]
+                'OR' => [
+                    'state'  => Planning::TODO,
+                    'AND'    => [
+                        'state'  => Planning::INFO,
+                        'end'    => ['>', new QueryExpression('NOW()')]
+                    ]
+                ]
             ];
         }
 
@@ -509,31 +511,31 @@ trait PlanningEvent
         if (isset($event_obj->fields['rrule'])) {
             unset($WHERE['end']);
             $WHERE[] = [
-            'OR' => [
-               'end'   => ['>', $begin],
-               'rrule' => ['!=', ""],
-            ]
+                'OR' => [
+                    'end'   => ['>', $begin],
+                    'rrule' => ['!=', ""],
+                ]
             ];
         }
 
         $criteria = [
-         'SELECT'          => ["$table.*"],
-         'DISTINCT'        => true,
-         'FROM'            => $table,
-         'WHERE'           => $WHERE,
-         'ORDER'           => 'begin'
+            'SELECT'          => ["$table.*"],
+            'DISTINCT'        => true,
+            'FROM'            => $table,
+            'WHERE'           => $WHERE,
+            'ORDER'           => 'begin'
         ] + $visibility_criteria;
 
         if (isset($event_obj->fields['planningeventcategories_id'])) {
             $c_table = PlanningEventCategory::getTable();
             $criteria['SELECT'][] = "$c_table.color AS cat_color";
             $criteria['JOIN'] = [
-            $c_table => [
-               'FKEY' => [
-                  $c_table => 'id',
-                  $table   => 'planningeventcategories_id',
-               ]
-            ]
+                $c_table => [
+                    'FKEY' => [
+                        $c_table => 'id',
+                        $table   => 'planningeventcategories_id',
+                    ]
+                ]
             ];
         }
 
@@ -561,33 +563,33 @@ trait PlanningEvent
                     $is_rrule = isset($data['rrule']) && strlen($data['rrule']) > 0;
 
                     $events[$key] = [
-                    'color'            => $options['color'],
-                    'event_type_color' => $options['event_type_color'],
-                    'event_cat_color'  => $data['cat_color'] ?? "",
-                    'itemtype'         => $itemtype,
-                    $item_fk           => $data['id'],
-                    'id'               => $data['id'],
-                    'users_id'         => $data["users_id"],
-                    'state'            => $data["state"],
-                    'background'       => $has_bg ? $data['background'] : false,
-                    'name'             => Sanitizer::unsanitize($data['name']), // name is re-encoded on JS side
-                    'text'             => $data['text'] !== null
+                        'color'            => $options['color'],
+                        'event_type_color' => $options['event_type_color'],
+                        'event_cat_color'  => $data['cat_color'] ?? "",
+                        'itemtype'         => $itemtype,
+                        $item_fk           => $data['id'],
+                        'id'               => $data['id'],
+                        'users_id'         => $data["users_id"],
+                        'state'            => $data["state"],
+                        'background'       => $has_bg ? $data['background'] : false,
+                        'name'             => Sanitizer::unsanitize($data['name']), // name is re-encoded on JS side
+                        'text'             => $data['text'] !== null
                      ? RichText::getSafeHtml($data['text'])
                      : '',
-                    'ajaxurl'          => $CFG_GLPI["root_doc"] . "/ajax/planning.php" .
+                        'ajaxurl'          => $CFG_GLPI["root_doc"] . "/ajax/planning.php" .
                                         "?action=edit_event_form" .
                                         "&itemtype=$itemtype" .
                                         "&id=" . $data['id'] .
                                         "&url=$url",
-                    'editable'         => $event_obj->canUpdateItem(),
-                    'url'              => $url,
-                    'begin'            => !$is_rrule && (strcmp($begin, $data["begin"]) > 0)
+                        'editable'         => $event_obj->canUpdateItem(),
+                        'url'              => $url,
+                        'begin'            => !$is_rrule && (strcmp($begin, $data["begin"]) > 0)
                                           ? $begin
                                           : $data["begin"],
-                    'end'              => !$is_rrule && (strcmp($end, $data["end"]) < 0)
+                        'end'              => !$is_rrule && (strcmp($end, $data["end"]) < 0)
                                           ? $end
                                           : $data["end"],
-                    'rrule'            => isset($data['rrule']) && !empty($data['rrule'])
+                        'rrule'            => isset($data['rrule']) && !empty($data['rrule'])
                                           ? json_decode($data['rrule'], true)
                                           : []
                     ];
@@ -618,8 +620,8 @@ trait PlanningEvent
                             $occurence_end   = (clone $currentDate)->add(new DateInterval("PT" . $duration . "S"));
 
                             $events_toadd[] = array_merge($event, [
-                            'begin' => $occurence_begin->format('Y-m-d H:i:s'),
-                            'end'   => $occurence_end->format('Y-m-d H:i:s'),
+                                'begin' => $occurence_begin->format('Y-m-d H:i:s'),
+                                'end'   => $occurence_end->format('Y-m-d H:i:s'),
                             ]);
                         }
 
@@ -700,7 +702,8 @@ trait PlanningEvent
             $html .= Html::showToolTip(
                 "<span class='b'>" . Planning::getState($val["state"]) . "</span><br>" . $content,
                 ['applyto' => "reminder_" . $val[$item_fk] . $rand,
-                'display' => false]
+                    'display' => false
+                ]
             );
         }
         return $html;
@@ -720,33 +723,33 @@ trait PlanningEvent
     {
         $rrule = json_decode($rrule, true) ?? [];
         $defaults = [
-         'freq'       => null,
-         'interval'   => 1,
-         'until'      => null,
-         'byday'      => [],
-         'bymonth'    => [],
-         'exceptions' => [],
+            'freq'       => null,
+            'interval'   => 1,
+            'until'      => null,
+            'byday'      => [],
+            'bymonth'    => [],
+            'exceptions' => [],
         ];
         $rrule = array_merge($defaults, $rrule);
 
         $default_options = [
-         'rand' => mt_rand(),
+            'rand' => mt_rand(),
         ];
         $options = array_merge($default_options, $options);
         $rand    = $options['rand'];
 
         $out = "<div class='card' style='padding: 5px; width: 100%;'>";
         $out .= Dropdown::showFromArray('rrule[freq]', [
-         null      => __("Never"),
-         'daily'   => __("Each day"),
-         'weekly'  => __("Each week"),
-         'monthly' => __("Each month"),
-         'yearly'  => __("Each year"),
+            null      => __("Never"),
+            'daily'   => __("Each day"),
+            'weekly'  => __("Each week"),
+            'monthly' => __("Each month"),
+            'yearly'  => __("Each year"),
         ], [
-         'value'     => strtolower($rrule['freq'] ?? ""),
-         'rand'      => $rand,
-         'display'   => false,
-         'on_change' => "$(\"#toggle_ar\").toggle($(\"#dropdown_rrule_freq_$rand\").val().length > 0)"
+            'value'     => strtolower($rrule['freq'] ?? ""),
+            'rand'      => $rand,
+            'display'   => false,
+            'on_change' => "$(\"#toggle_ar\").toggle($(\"#dropdown_rrule_freq_$rand\").val().length > 0)"
         ]);
 
         $display_tar = $rrule['freq'] == null ? "none" : "inline";
@@ -768,63 +771,63 @@ trait PlanningEvent
         $out .= "<div class='field'>";
         $out .= "<label for='dropdown_interval$rand'>" . __("Interval") . "</label>";
         $out .= "<div>" . Dropdown::showNumber('rrule[interval]', [
-         'value'   => $rrule['interval'],
-         'rand'    => $rand,
-         'display' => false,
+            'value'   => $rrule['interval'],
+            'rand'    => $rand,
+            'display' => false,
         ]) . "</div>";
         $out .= "</div>";
 
         $out .= "<div class='field'>";
         $out .= "<label for='showdate$rand'>" . __("Until") . "</label>";
         $out .= "<div>" . Html::showDateField('rrule[until]', [
-         'value'   => $rrule['until'],
-         'rand'    => $rand,
-         'display' => false,
+            'value'   => $rrule['until'],
+            'rand'    => $rand,
+            'display' => false,
         ]) . "</div>";
         $out .= "</div>";
 
         $out .= "<div class='field'>";
         $out .= "<label for='dropdown_byday$rand'>" . __("By day") . "</label>";
         $out .= "<div>" . Dropdown::showFromArray('rrule[byday]', [
-         'MO' => __('Monday'),
-         'TU' => __('Tuesday'),
-         'WE' => __('Wednesday'),
-         'TH' => __('Thursday'),
-         'FR' => __('Friday'),
-         'SA' => __('Saturday'),
-         'SU' => __('Sunday'),
+            'MO' => __('Monday'),
+            'TU' => __('Tuesday'),
+            'WE' => __('Wednesday'),
+            'TH' => __('Thursday'),
+            'FR' => __('Friday'),
+            'SA' => __('Saturday'),
+            'SU' => __('Sunday'),
         ], [
-         'values'              => $rrule['byday'],
-         'rand'                => $rand,
-         'display'             => false,
-         'display_emptychoice' => true,
-         'width'               => '100%',
-         'multiple'            => true,
+            'values'              => $rrule['byday'],
+            'rand'                => $rand,
+            'display'             => false,
+            'display_emptychoice' => true,
+            'width'               => '100%',
+            'multiple'            => true,
         ]) . "</div>";
         $out .= "</div>";
 
         $out .= "<div class='field'>";
         $out .= "<label for='dropdown_bymonth$rand'>" . __("By month") . "</label>";
         $out .= "<div>" . Dropdown::showFromArray('rrule[bymonth]', [
-         1  => __('January'),
-         2  => __('February'),
-         3  => __('March'),
-         4  => __('April'),
-         5  => __('May'),
-         6  => __('June'),
-         7  => __('July'),
-         8  => __('August'),
-         9  => __('September'),
-         10 => __('October'),
-         11 => __('November'),
-         12 => __('December'),
+            1  => __('January'),
+            2  => __('February'),
+            3  => __('March'),
+            4  => __('April'),
+            5  => __('May'),
+            6  => __('June'),
+            7  => __('July'),
+            8  => __('August'),
+            9  => __('September'),
+            10 => __('October'),
+            11 => __('November'),
+            12 => __('December'),
         ], [
-         'values'              => $rrule['bymonth'],
-         'rand'                => $rand,
-         'display'             => false,
-         'display_emptychoice' => true,
-         'width'               => '100%',
-         'multiple'            => true,
+            'values'              => $rrule['bymonth'],
+            'rand'                => $rand,
+            'display'             => false,
+            'display_emptychoice' => true,
+            'width'               => '100%',
+            'multiple'            => true,
         ]) . "</div>";
         $out .= "</div>";
 
@@ -832,11 +835,11 @@ trait PlanningEvent
         $out .= "<div class='field'>";
         $out .= "<label for='showdate$rand'>" . __("Exceptions") . "</label>";
         $out .= "<div>" . Html::showDateField('rrule[exceptions]', [
-         'value'    => implode(', ', $rrule['exceptions']),
-         'rand'     => $rand,
-         'display'  => false,
-         'multiple' => true,
-         'size'     => 30,
+            'value'    => implode(', ', $rrule['exceptions']),
+            'rand'     => $rand,
+            'display'  => false,
+            'multiple' => true,
+            'size'     => 30,
         ]) . "</div>";
         $out .= "</div>";
 
@@ -926,79 +929,79 @@ trait PlanningEvent
     public function rawSearchOptions()
     {
         $tab = [
-         [
-            'id'            => 'common',
-            'name'          => self::GetTypeName()
-         ], [
-            'id'            => '1',
-            'table'         => self::getTable(),
-            'field'         => 'name',
-            'name'          => __('Name'),
-            'datatype'      => 'itemlink',
-            'massiveaction' => false,
-         ], [
-            'id'            => '2',
-            'table'         => self::getTable(),
-            'field'         => 'id',
-            'name'          => __('ID'),
-            'massiveaction' => false,
-            'datatype'      => 'number'
-         ], [
-            'id'            => '80',
-            'table'         => 'glpi_entities',
-            'field'         => 'completename',
-            'name'          => Entity::getTypeName(1),
-            'datatype'      => 'dropdown'
-         ], [
-            'id'            => '3',
-            'table'         => self::getTable(),
-            'field'         => 'state',
-            'name'          => __('Status'),
-            'datatype'      => 'specific',
-            'massiveaction' => false,
-            'searchtype'    => ['equals', 'notequals']
-         ], [
-            'id'            => '4',
-            'table'         => $this->getTable(),
-            'field'         => 'text',
-            'name'          => __('Description'),
-            'massiveaction' => false,
-            'datatype'      => 'text',
-            'htmltext'      => true
-         ], [
-            'id'            => '5',
-            'table'         => PlanningEventCategory::getTable(),
-            'field'         => 'name',
-            'name'          => PlanningEventCategory::getTypeName(),
-            'forcegroupby'  => true,
-            'datatype'      => 'dropdown'
-         ], [
-            'id'            => '6',
-            'table'         => self::getTable(),
-            'field'         => 'background',
-            'name'          => __('Background event'),
-            'datatype'      => 'bool'
-         ], [
-            'id'            => '10',
-            'table'         => self::getTable(),
-            'field'         => 'rrule',
-            'name'          => __('Repeat'),
-            'datatype'      => 'text'
-         ], [
-            'id'            => '19',
-            'table'         => self::getTable(),
-            'field'         => 'date_mod',
-            'name'          => __('Last update'),
-            'datatype'      => 'datetime',
-            'massiveaction' => false
-         ], [
-            'id'            => '121',
-            'table'         => self::getTable(),
-            'field'         => 'date_creation',
-            'name'          => __('Creation date'),
-            'datatype'      => 'datetime',
-            'massiveaction' => false
-         ]
+            [
+                'id'            => 'common',
+                'name'          => self::GetTypeName()
+            ], [
+                'id'            => '1',
+                'table'         => self::getTable(),
+                'field'         => 'name',
+                'name'          => __('Name'),
+                'datatype'      => 'itemlink',
+                'massiveaction' => false,
+            ], [
+                'id'            => '2',
+                'table'         => self::getTable(),
+                'field'         => 'id',
+                'name'          => __('ID'),
+                'massiveaction' => false,
+                'datatype'      => 'number'
+            ], [
+                'id'            => '80',
+                'table'         => 'glpi_entities',
+                'field'         => 'completename',
+                'name'          => Entity::getTypeName(1),
+                'datatype'      => 'dropdown'
+            ], [
+                'id'            => '3',
+                'table'         => self::getTable(),
+                'field'         => 'state',
+                'name'          => __('Status'),
+                'datatype'      => 'specific',
+                'massiveaction' => false,
+                'searchtype'    => ['equals', 'notequals']
+            ], [
+                'id'            => '4',
+                'table'         => $this->getTable(),
+                'field'         => 'text',
+                'name'          => __('Description'),
+                'massiveaction' => false,
+                'datatype'      => 'text',
+                'htmltext'      => true
+            ], [
+                'id'            => '5',
+                'table'         => PlanningEventCategory::getTable(),
+                'field'         => 'name',
+                'name'          => PlanningEventCategory::getTypeName(),
+                'forcegroupby'  => true,
+                'datatype'      => 'dropdown'
+            ], [
+                'id'            => '6',
+                'table'         => self::getTable(),
+                'field'         => 'background',
+                'name'          => __('Background event'),
+                'datatype'      => 'bool'
+            ], [
+                'id'            => '10',
+                'table'         => self::getTable(),
+                'field'         => 'rrule',
+                'name'          => __('Repeat'),
+                'datatype'      => 'text'
+            ], [
+                'id'            => '19',
+                'table'         => self::getTable(),
+                'field'         => 'date_mod',
+                'name'          => __('Last update'),
+                'datatype'      => 'datetime',
+                'massiveaction' => false
+            ], [
+                'id'            => '121',
+                'table'         => self::getTable(),
+                'field'         => 'date_creation',
+                'name'          => __('Creation date'),
+                'datatype'      => 'datetime',
+                'massiveaction' => false
+            ]
         ];
 
         if (!count($this->fields)) {
@@ -1007,63 +1010,63 @@ trait PlanningEvent
 
         if (isset($this->fields['is_recursive'])) {
             $tab[] = [
-            'id'            => 86,
-            'table'         => self::getTable(),
-            'field'         => 'is_recursive',
-            'name'          => __('Child entities'),
-            'datatype'      => 'bool'
+                'id'            => 86,
+                'table'         => self::getTable(),
+                'field'         => 'is_recursive',
+                'name'          => __('Child entities'),
+                'datatype'      => 'bool'
             ];
         }
 
         if (isset($this->fields['users_id'])) {
             $tab[] = [
-            'id'            => '70',
-            'table'         => User::getTable(),
-            'field'         => 'name',
-            'name'          => User::getTypeName(1),
-            'datatype'      => 'dropdown',
-            'right'         => 'all'
+                'id'            => '70',
+                'table'         => User::getTable(),
+                'field'         => 'name',
+                'name'          => User::getTypeName(1),
+                'datatype'      => 'dropdown',
+                'right'         => 'all'
             ];
         }
 
         if (isset($this->fields['users_id_guests'])) {
             $tab[] = [
-            'id'            => '12',
-            'table'         => self::getTable(),
-            'field'         => 'users_id_guests',
-            'name'          => __('Guests'),
-            'datatype'      => 'text',
+                'id'            => '12',
+                'table'         => self::getTable(),
+                'field'         => 'users_id_guests',
+                'name'          => __('Guests'),
+                'datatype'      => 'text',
             ];
         }
 
         if (isset($this->fields['begin'])) {
             $tab[] = [
-            'id'            => '8',
-            'table'         => self::getTable(),
-            'field'         => 'begin',
-            'name'          => __('Planning start date'),
-            'datatype'      => 'datetime'
+                'id'            => '8',
+                'table'         => self::getTable(),
+                'field'         => 'begin',
+                'name'          => __('Planning start date'),
+                'datatype'      => 'datetime'
             ];
         }
 
         if (isset($this->fields['end'])) {
             $tab[] = [
-            'id'            => '9',
-            'table'         => self::getTable(),
-            'field'         => 'end',
-            'name'          => __('Planning end date'),
-            'datatype'      => 'datetime'
+                'id'            => '9',
+                'table'         => self::getTable(),
+                'field'         => 'end',
+                'name'          => __('Planning end date'),
+                'datatype'      => 'datetime'
             ];
         }
 
         if (isset($this->fields['comment'])) {
             $tab[] = [
-            'id'            => '11',
-            'table'         => $this->getTable(),
-            'field'         => 'comment',
-            'name'          => _n('Comment', 'Comments', 1),
-            'massiveaction' => false,
-            'datatype'      => 'text',
+                'id'            => '11',
+                'table'         => $this->getTable(),
+                'field'         => 'comment',
+                'name'          => _n('Comment', 'Comments', 1),
+                'massiveaction' => false,
+                'datatype'      => 'text',
             ];
         }
 

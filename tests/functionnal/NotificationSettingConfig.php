@@ -49,7 +49,7 @@ class NotificationSettingConfig extends DbTestCase
 
         $settingconfig = new \NotificationSettingConfig();
         $settingconfig->update([
-         'use_notifications' => 1
+            'use_notifications' => 1
         ]);
 
         $current_config = \Config::getConfigurationValues('core');
@@ -59,7 +59,7 @@ class NotificationSettingConfig extends DbTestCase
         $this->variable($current_config['notifications_ajax'])->isEqualTo(0);
 
         $settingconfig->update([
-         'notifications_mailing' => 1
+            'notifications_mailing' => 1
         ]);
 
         $current_config = \Config::getConfigurationValues('core');
@@ -69,7 +69,7 @@ class NotificationSettingConfig extends DbTestCase
         $this->variable($current_config['notifications_ajax'])->isEqualTo(0);
 
         $settingconfig->update([
-         'use_notifications' => 0
+            'use_notifications' => 0
         ]);
 
         $current_config = \Config::getConfigurationValues('core');

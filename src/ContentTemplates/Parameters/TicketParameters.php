@@ -74,18 +74,18 @@ class TicketParameters extends CommonITILObjectParameters
     public function getAvailableParameters(): array
     {
         return array_merge(parent::getAvailableParameters(), [
-         new AttributeParameter("type", _n('Type', 'Types', 1)),
-         new AttributeParameter("global_validation", _n('Approval', 'Approvals', 1)),
-         new AttributeParameter("tto", __('Time to own'), 'date("d/m/y H:i")'),
-         new AttributeParameter("ttr", __('Time to resolve'), 'date("d/m/y H:i")'),
-         new ObjectParameter(new SLAParameters(), 'sla_tto'),
-         new ObjectParameter(new SLAParameters(), 'sla_ttr'),
-         new ObjectParameter(new OLAParameters(), 'ola_tto'),
-         new ObjectParameter(new OLAParameters(), 'ola_ttr'),
-         new ObjectParameter(new RequestTypeParameters()),
-         new ObjectParameter(new LocationParameters()),
-         new ArrayParameter("knowbaseitems", new KnowbaseItemParameters(), KnowbaseItem_Item::getTypeName(Session::getPluralNumber())),
-         new ArrayParameter("assets", new AssetParameters(), Item_Ticket::getTypeName(Session::getPluralNumber())),
+            new AttributeParameter("type", _n('Type', 'Types', 1)),
+            new AttributeParameter("global_validation", _n('Approval', 'Approvals', 1)),
+            new AttributeParameter("tto", __('Time to own'), 'date("d/m/y H:i")'),
+            new AttributeParameter("ttr", __('Time to resolve'), 'date("d/m/y H:i")'),
+            new ObjectParameter(new SLAParameters(), 'sla_tto'),
+            new ObjectParameter(new SLAParameters(), 'sla_ttr'),
+            new ObjectParameter(new OLAParameters(), 'ola_tto'),
+            new ObjectParameter(new OLAParameters(), 'ola_ttr'),
+            new ObjectParameter(new RequestTypeParameters()),
+            new ObjectParameter(new LocationParameters()),
+            new ArrayParameter("knowbaseitems", new KnowbaseItemParameters(), KnowbaseItem_Item::getTypeName(Session::getPluralNumber())),
+            new ArrayParameter("assets", new AssetParameters(), Item_Ticket::getTypeName(Session::getPluralNumber())),
         ]);
     }
 

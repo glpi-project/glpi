@@ -142,8 +142,8 @@ class ProjectTaskTeam extends CommonDBRelation
         }
 
         $criteria = [
-         'FROM'   => self::getTable(),
-         'WHERE'  => ['projecttasks_id' => $tasks_id]
+            'FROM'   => self::getTable(),
+            'WHERE'  => ['projecttasks_id' => $tasks_id]
         ];
         $iterator = $DB->request($criteria);
 
@@ -203,9 +203,9 @@ class ProjectTaskTeam extends CommonDBRelation
                 break;
             case Group::getType():
                 $group_iterator = $DB->request([
-                'SELECT' => 'users_id',
-                'FROM'   => Group_User::getTable(),
-                'WHERE'  => ['groups_id' => $input['items_id']]
+                    'SELECT' => 'users_id',
+                    'FROM'   => Group_User::getTable(),
+                    'WHERE'  => ['groups_id' => $input['items_id']]
                 ]);
                 foreach ($group_iterator as $row) {
                      Planning::checkAlreadyPlanned(

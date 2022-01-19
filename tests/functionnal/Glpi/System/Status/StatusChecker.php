@@ -113,39 +113,39 @@ class StatusChecker extends DbTestCase
        // Add a bunch of bad service items
         $auth_mail = new AuthMail();
         $authmail_id = $auth_mail->add([
-         'name'            => 'testmail',
-         'connect_string'  => '{smtp.localhost/imap/ssl/validate-cert/tls/secure}',
-         'host'            => 'localhost',
-         'is_active'       => 1
+            'name'            => 'testmail',
+            'connect_string'  => '{smtp.localhost/imap/ssl/validate-cert/tls/secure}',
+            'host'            => 'localhost',
+            'is_active'       => 1
         ]);
         $this->integer($authmail_id)->isGreaterThan(0);
 
         $auth_ldap = new AuthLDAP();
         $authlap_id = $auth_ldap->add([
-         'name'            => 'testldap',
-         'host'            => 'localhost',
-         'is_active'       => 1,
-         'rootdn'          => 'cn=Manager,dc=glpi,dc=org',
-         'rootdn_passwd'   => md5(mt_rand())
+            'name'            => 'testldap',
+            'host'            => 'localhost',
+            'is_active'       => 1,
+            'rootdn'          => 'cn=Manager,dc=glpi,dc=org',
+            'rootdn_passwd'   => md5(mt_rand())
         ]);
         $this->integer($authlap_id)->isGreaterThan(0);
 
         $crontask = new CronTask();
        // A definitely stuck crontask running for over an hour.
         $crontask->add([
-         'itemtype'     => 'Ticket',
-         'name'         => 'stucktest1',
-         'frequency'    => 60,
-         'lastrun'      => date('Y-m-d 00:00:00', strtotime('-61 minute')),
-         'state'        => \CronTask::STATE_RUNNING,
+            'itemtype'     => 'Ticket',
+            'name'         => 'stucktest1',
+            'frequency'    => 60,
+            'lastrun'      => date('Y-m-d 00:00:00', strtotime('-61 minute')),
+            'state'        => \CronTask::STATE_RUNNING,
         ]);
        // A probably stuck crontask running for longer than the run interval.
         $crontask->add([
-         'itemtype'     => 'Ticket',
-         'name'         => 'stucktest2',
-         'frequency'    => 60,
-         'lastrun'      => date('Y-m-d 00:00:00', strtotime('-5 minute')),
-         'state'        => \CronTask::STATE_RUNNING,
+            'itemtype'     => 'Ticket',
+            'name'         => 'stucktest2',
+            'frequency'    => 60,
+            'lastrun'      => date('Y-m-d 00:00:00', strtotime('-5 minute')),
+            'state'        => \CronTask::STATE_RUNNING,
         ]);
 
         $status = GlpiStatusChecker::getServiceStatus(null, true, true);
@@ -173,46 +173,46 @@ class StatusChecker extends DbTestCase
     protected function getCalculatedGlobalStatusProvider()
     {
         return [
-         [
             [
-               'db'  => ['status' => GlpiStatusChecker::STATUS_OK],
-               'cas'  => ['status' => GlpiStatusChecker::STATUS_OK],
-               'ldap'  => ['status' => GlpiStatusChecker::STATUS_OK]
+                [
+                    'db'  => ['status' => GlpiStatusChecker::STATUS_OK],
+                    'cas'  => ['status' => GlpiStatusChecker::STATUS_OK],
+                    'ldap'  => ['status' => GlpiStatusChecker::STATUS_OK]
+                ],
+                GlpiStatusChecker::STATUS_OK
             ],
-            GlpiStatusChecker::STATUS_OK
-         ],
-         [
             [
-               'db'  => ['status' => GlpiStatusChecker::STATUS_OK],
-               'cas'  => ['status' => GlpiStatusChecker::STATUS_WARNING],
-               'ldap'  => ['status' => GlpiStatusChecker::STATUS_OK]
+                [
+                    'db'  => ['status' => GlpiStatusChecker::STATUS_OK],
+                    'cas'  => ['status' => GlpiStatusChecker::STATUS_WARNING],
+                    'ldap'  => ['status' => GlpiStatusChecker::STATUS_OK]
+                ],
+                GlpiStatusChecker::STATUS_WARNING
             ],
-            GlpiStatusChecker::STATUS_WARNING
-         ],
-         [
             [
-               'db'  => ['status' => GlpiStatusChecker::STATUS_OK],
-               'cas'  => ['status' => GlpiStatusChecker::STATUS_OK],
-               'ldap'  => ['status' => GlpiStatusChecker::STATUS_PROBLEM]
+                [
+                    'db'  => ['status' => GlpiStatusChecker::STATUS_OK],
+                    'cas'  => ['status' => GlpiStatusChecker::STATUS_OK],
+                    'ldap'  => ['status' => GlpiStatusChecker::STATUS_PROBLEM]
+                ],
+                GlpiStatusChecker::STATUS_PROBLEM
             ],
-            GlpiStatusChecker::STATUS_PROBLEM
-         ],
-         [
             [
-               'db'  => ['status' => GlpiStatusChecker::STATUS_NO_DATA],
-               'cas'  => ['status' => GlpiStatusChecker::STATUS_OK],
-               'ldap'  => ['status' => GlpiStatusChecker::STATUS_OK]
+                [
+                    'db'  => ['status' => GlpiStatusChecker::STATUS_NO_DATA],
+                    'cas'  => ['status' => GlpiStatusChecker::STATUS_OK],
+                    'ldap'  => ['status' => GlpiStatusChecker::STATUS_OK]
+                ],
+                GlpiStatusChecker::STATUS_OK
             ],
-            GlpiStatusChecker::STATUS_OK
-         ],
-         [
             [
-               'db'  => ['status' => GlpiStatusChecker::STATUS_NO_DATA],
-               'cas'  => ['status' => GlpiStatusChecker::STATUS_WARNING],
-               'ldap'  => ['status' => GlpiStatusChecker::STATUS_PROBLEM]
-            ],
-            GlpiStatusChecker::STATUS_PROBLEM
-         ]
+                [
+                    'db'  => ['status' => GlpiStatusChecker::STATUS_NO_DATA],
+                    'cas'  => ['status' => GlpiStatusChecker::STATUS_WARNING],
+                    'ldap'  => ['status' => GlpiStatusChecker::STATUS_PROBLEM]
+                ],
+                GlpiStatusChecker::STATUS_PROBLEM
+            ]
         ];
     }
 

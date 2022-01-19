@@ -114,8 +114,8 @@ class DomainsPluginToCoreCommand extends AbstractCommand
            // Ask for confirmation (unless --no-interaction)
             $output->writeln(
                 [
-                __('You are about to launch migration of Domains plugin data into GLPI core tables.'),
-                __('It is better to make a backup of your existing data before continuing.')
+                    __('You are about to launch migration of Domains plugin data into GLPI core tables.'),
+                    __('It is better to make a backup of your existing data before continuing.')
                 ]
             );
 
@@ -165,7 +165,7 @@ class DomainsPluginToCoreCommand extends AbstractCommand
                   );
                  $this->output->writeln(
                      [
-                     '<error>' . $message . '</error>',
+                         '<error>' . $message . '</error>',
                      ],
                      OutputInterface::VERBOSITY_QUIET
                  );
@@ -188,9 +188,9 @@ class DomainsPluginToCoreCommand extends AbstractCommand
             $is_installable = in_array(
                 $plugin->fields['state'],
                 [
-                Plugin::TOBECLEANED, // Can be in this state if check was done without the plugin dir
-                Plugin::NOTINSTALLED, // Can be not installed if plugin has been cleaned in plugin list
-                Plugin::NOTUPDATED, // Plugin 1.8.0 version has never been installed
+                    Plugin::TOBECLEANED, // Can be in this state if check was done without the plugin dir
+                    Plugin::NOTINSTALLED, // Can be not installed if plugin has been cleaned in plugin list
+                    Plugin::NOTUPDATED, // Plugin 1.8.0 version has never been installed
                 ]
             );
             if ($is_installable) {
@@ -237,9 +237,9 @@ class DomainsPluginToCoreCommand extends AbstractCommand
             $is_state_ok   = in_array(
                 $plugin->fields['state'],
                 [
-                Plugin::ACTIVATED, // Should not be possible as 1.8.0 is not compatible with 9.3
-                Plugin::TOBECONFIGURED, // Should not be possible as check_config of plugin returns always true
-                Plugin::NOTACTIVATED,
+                    Plugin::ACTIVATED, // Should not be possible as 1.8.0 is not compatible with 9.3
+                    Plugin::TOBECONFIGURED, // Should not be possible as check_config of plugin returns always true
+                    Plugin::NOTACTIVATED,
                 ]
             );
             if (!$is_state_ok) {
@@ -249,10 +249,10 @@ class DomainsPluginToCoreCommand extends AbstractCommand
         }
 
         $domains_tables = [
-         'glpi_plugin_domains_configs',
-         'glpi_plugin_domains_domains',
-         'glpi_plugin_domains_domains_items',
-         'glpi_plugin_domains_domaintypes',
+            'glpi_plugin_domains_configs',
+            'glpi_plugin_domains_domains',
+            'glpi_plugin_domains_domains_items',
+            'glpi_plugin_domains_domaintypes',
         ];
         $missing_tables = false;
         foreach ($domains_tables as $table) {
@@ -301,14 +301,14 @@ class DomainsPluginToCoreCommand extends AbstractCommand
         );
 
         $types_iterator = $this->db->request([
-         'FROM'   => 'glpi_plugin_domains_domaintypes',
-         'ORDER'  => 'id ASC'
+            'FROM'   => 'glpi_plugin_domains_domaintypes',
+            'ORDER'  => 'id ASC'
         ]);
 
         $core_types = [];
         $coret_iterator = $this->db->request([
-         'SELECT' => ['id', 'name'],
-         'FROM'   => DomainType::getTable()
+            'SELECT' => ['id', 'name'],
+            'FROM'   => DomainType::getTable()
         ]);
         foreach ($coret_iterator as $row) {
             $core_types[$row['name']] = $row['id'];
@@ -341,9 +341,9 @@ class DomainsPluginToCoreCommand extends AbstractCommand
                 );
 
                 $type_input = [
-                 'name'         => $typ['name'],
-                 'entities_id'  => $typ['entities_id'],
-                 'comment'      => $typ['comment'],
+                    'name'         => $typ['name'],
+                    'entities_id'  => $typ['entities_id'],
+                    'comment'      => $typ['comment'],
                 ];
                 $type_input = Toolbox::addslashes_deep($type_input);
 
@@ -408,14 +408,14 @@ class DomainsPluginToCoreCommand extends AbstractCommand
         );
 
         $domains_iterator = $this->db->request([
-         'FROM'   => 'glpi_plugin_domains_domains',
-         'ORDER'  => 'id ASC'
+            'FROM'   => 'glpi_plugin_domains_domains',
+            'ORDER'  => 'id ASC'
         ]);
 
         $core_domains = [];
         $cored_iterator = $this->db->request([
-         'SELECT' => ['id', 'name'],
-         'FROM'   => Domain::getTable()
+            'SELECT' => ['id', 'name'],
+            'FROM'   => Domain::getTable()
         ]);
         foreach ($cored_iterator as $row) {
             $core_domains[$row['name']] = $row['id'];
@@ -458,20 +458,20 @@ class DomainsPluginToCoreCommand extends AbstractCommand
                 }
                 $types_id = $mapped_type !== null ? $mapped_type->fields['id'] : 0;
                 $domain_input = [
-                'name'                  => $dom['name'],
-                'entities_id'           => $dom['entities_id'],
-                'is_recursive'          => $dom['is_recursive'],
-                'domaintypes_id'        => $types_id,
-                'date_creation'         => $dom['date_creation'],
-                'date_expiration'       => $dom['date_expiration'],
-                'users_id_tech'         => $dom['users_id_tech'],
-                'groups_id_tech'        => $dom['groups_id_tech'],
+                    'name'                  => $dom['name'],
+                    'entities_id'           => $dom['entities_id'],
+                    'is_recursive'          => $dom['is_recursive'],
+                    'domaintypes_id'        => $types_id,
+                    'date_creation'         => $dom['date_creation'],
+                    'date_expiration'       => $dom['date_expiration'],
+                    'users_id_tech'         => $dom['users_id_tech'],
+                    'groups_id_tech'        => $dom['groups_id_tech'],
                 //suppliers_id not present in core
-                'comment'               => $dom['comment'],
-                'others'                => $dom['others'],
-                'is_helpdesk_visible'   => $dom['is_helpdesk_visible'],
-                'date_mod'              => $dom['date_mod'],
-                'is_deleted'            => $dom['is_deleted']
+                    'comment'               => $dom['comment'],
+                    'others'                => $dom['others'],
+                    'is_helpdesk_visible'   => $dom['is_helpdesk_visible'],
+                    'date_mod'              => $dom['date_mod'],
+                    'is_deleted'            => $dom['is_deleted']
                 ];
                 $domain_input = Toolbox::addslashes_deep($domain_input);
 
@@ -509,18 +509,18 @@ class DomainsPluginToCoreCommand extends AbstractCommand
                //handle infocoms
                 $infocom = new \Infocom();
                 $infocom_input = [
-                 'itemtype'     => 'Domain',
-                 'items_id'     => $new_did ?? $core_dom,
-                 'suppliers_id' => $dom['suppliers_id'],
-                 'entities_id'  => $dom['entities_id'],
-                 'is_recursive' => $dom['is_recursive']
+                    'itemtype'     => 'Domain',
+                    'items_id'     => $new_did ?? $core_dom,
+                    'suppliers_id' => $dom['suppliers_id'],
+                    'entities_id'  => $dom['entities_id'],
+                    'is_recursive' => $dom['is_recursive']
                 ];
                 if ($core_dom === null) {
                     $infocom->add($infocom_input);
                 } else {
                     $found = $infocom->getFromDBByCrit([
-                    'itemtype'  => 'Domain',
-                    'items_id'  => $core_dom
+                        'itemtype'  => 'Domain',
+                        'items_id'  => $core_dom
                     ]);
                     if ($found) {
                         $infocom_input['id'] = $infocom->fields['id'];
@@ -558,13 +558,13 @@ class DomainsPluginToCoreCommand extends AbstractCommand
         );
 
         $items_iterator = $this->db->request([
-         'FROM'   => 'glpi_plugin_domains_domains_items',
-         'ORDER'  => 'id ASC'
+            'FROM'   => 'glpi_plugin_domains_domains_items',
+            'ORDER'  => 'id ASC'
         ]);
 
         $core_items = [];
         $coreitems_iterator = $this->db->request([
-         'FROM'   => Domain_Item::getTable()
+            'FROM'   => Domain_Item::getTable()
         ]);
         foreach ($coreitems_iterator as $row) {
             $core_items[$row['domains_id'] . $row['itemtype'] . $row['items_id']] = $row['id'];
@@ -614,10 +614,10 @@ class DomainsPluginToCoreCommand extends AbstractCommand
                 }
 
                 $item_input = [
-                'domains_id'            => $domains_id,
-                'itemtype'              => $itm['itemtype'],
-                'items_id'              => $itm['items_id'],
-                'domainrelations_id'    => 0
+                    'domains_id'            => $domains_id,
+                    'itemtype'              => $itm['itemtype'],
+                    'items_id'              => $itm['items_id'],
+                    'domainrelations_id'    => 0
                 ];
                 $item_input = Toolbox::addslashes_deep($item_input);
 
@@ -672,8 +672,8 @@ class DomainsPluginToCoreCommand extends AbstractCommand
             $this->elements_mapping[$old_itemtype] = [];
         }
         $this->elements_mapping[$old_itemtype][$old_id] = [
-         'itemtype' => $new_itemtype,
-         'id'       => $new_id,
+            'itemtype' => $new_itemtype,
+            'id'       => $new_id,
         ];
     }
 

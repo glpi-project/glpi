@@ -54,7 +54,7 @@ class DocumentCategory extends CommonTreeDropdown
             Config::setConfigurationValues(
                 'core',
                 [
-                'documentcategories_id_forticket' => $newval,
+                    'documentcategories_id_forticket' => $newval,
                 ]
             );
         }

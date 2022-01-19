@@ -48,8 +48,10 @@ class DeviceGeneric extends CommonDevice
         return array_merge(
             parent::getAdditionalFields(),
             [['name'  => 'devicegenerictypes_id',
-                                     'label' => _n('Type', 'Types', 1),
-            'type'  => 'dropdownValue']]
+                'label' => _n('Type', 'Types', 1),
+                'type'  => 'dropdownValue'
+            ]
+            ]
         );
     }
 
@@ -59,11 +61,11 @@ class DeviceGeneric extends CommonDevice
         $tab                 = parent::rawSearchOptions();
 
         $tab[] = [
-         'id'                 => '12',
-         'table'              => 'glpi_devicegenerictypes',
-         'field'              => 'name',
-         'name'               => _n('Type', 'Types', 1),
-         'datatype'           => 'dropdown'
+            'id'                 => '12',
+            'table'              => 'glpi_devicegenerictypes',
+            'field'              => 'name',
+            'name'               => _n('Type', 'Types', 1),
+            'datatype'           => 'dropdown'
         ];
 
         return $tab;
@@ -124,9 +126,9 @@ class DeviceGeneric extends CommonDevice
     {
 
         return ['designation'       => 'equal',
-                   'manufacturers_id'  => 'equal',
-                   'devicecasetypes_id' => 'equal',
-                   'locations_id'      => 'equal',
-                   ];
+            'manufacturers_id'  => 'equal',
+            'devicecasetypes_id' => 'equal',
+            'locations_id'      => 'equal',
+        ];
     }
 }

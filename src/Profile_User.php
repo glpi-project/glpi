@@ -85,7 +85,8 @@ class Profile_User extends CommonDBRelation
         $user = new User();
         return $user->can($this->fields['users_id'], READ)
              && Profile::currentUserHaveMoreRightThan([$this->fields['profiles_id']
-                                                               => $this->fields['profiles_id']])
+                                                               => $this->fields['profiles_id']
+             ])
              && Session::haveAccessToEntity($this->fields['entities_id']);
     }
 
@@ -165,7 +166,8 @@ class Profile_User extends CommonDBRelation
 
         if ($canedit && $num) {
             $massiveactionparams = ['num_displayed' => min($_SESSION['glpilist_limit'], $num),
-                           'container'     => 'mass' . __CLASS__ . $rand];
+                'container'     => 'mass' . __CLASS__ . $rand
+            ];
             Html::showMassiveActions($massiveactionparams);
         }
 
@@ -308,39 +310,39 @@ class Profile_User extends CommonDBRelation
         $utable = User::getTable();
 
         $iterator = $DB->request([
-         'SELECT'       => [
-            "glpi_users.*",
-            "$putable.id AS linkid",
-            "$putable.is_recursive",
-            "$putable.is_dynamic",
-            "$ptable.id AS pid",
-            "$ptable.name AS pname"
-         ],
-         'FROM'         => $putable,
-         'INNER JOIN'   => [
-            $utable => [
-               'ON' => [
-                  $putable => 'users_id',
-                  $utable  => 'id'
-               ]
+            'SELECT'       => [
+                "glpi_users.*",
+                "$putable.id AS linkid",
+                "$putable.is_recursive",
+                "$putable.is_dynamic",
+                "$ptable.id AS pid",
+                "$ptable.name AS pname"
             ],
-            $ptable  => [
-               'ON' => [
-                  $putable => 'profiles_id',
-                  $ptable  => 'id'
-               ]
+            'FROM'         => $putable,
+            'INNER JOIN'   => [
+                $utable => [
+                    'ON' => [
+                        $putable => 'users_id',
+                        $utable  => 'id'
+                    ]
+                ],
+                $ptable  => [
+                    'ON' => [
+                        $putable => 'profiles_id',
+                        $ptable  => 'id'
+                    ]
+                ]
+            ],
+            'WHERE'        => [
+                "$utable.is_deleted"    => 0,
+                "$putable.entities_id"  => $ID
+            ],
+            'ORDERBY'      => [
+                "$putable.profiles_id",
+                "$utable.name",
+                "$utable.realname",
+                "$utable.firstname"
             ]
-         ],
-         'WHERE'        => [
-            "$utable.is_deleted"    => 0,
-            "$putable.entities_id"  => $ID
-         ],
-         'ORDERBY'      => [
-            "$putable.profiles_id",
-            "$utable.name",
-            "$utable.realname",
-            "$utable.firstname"
-         ]
         ]);
 
         $nb = count($iterator);
@@ -351,8 +353,9 @@ class Profile_User extends CommonDBRelation
             $massiveactionparams
             = ['container'
                         => 'mass' . __CLASS__ . $rand,
-                    'specific_actions'
-                        => ['purge' => _x('button', 'Delete permanently')]];
+                'specific_actions'
+                        => ['purge' => _x('button', 'Delete permanently')]
+            ];
             Html::showMassiveActions($massiveactionparams);
         }
         echo "<table class='tab_cadre_fixehov'>";
@@ -466,34 +469,34 @@ class Profile_User extends CommonDBRelation
         $putable = Profile_User::getTable();
         $etable = Entity::getTable();
         $iterator = $DB->request([
-         'SELECT'          => [
-            "$utable.*",
-            "$putable.entities_id AS entity",
-            "$putable.id AS linkid",
-            "$putable.is_dynamic",
-            "$putable.is_recursive"
-         ],
-         'DISTINCT'        => true,
-         'FROM'            => $putable,
-         'LEFT JOIN'       => [
-            $etable  => [
-               'ON' => [
-                  $putable => 'entities_id',
-                  $etable  => 'id'
-               ]
+            'SELECT'          => [
+                "$utable.*",
+                "$putable.entities_id AS entity",
+                "$putable.id AS linkid",
+                "$putable.is_dynamic",
+                "$putable.is_recursive"
             ],
-            $utable  => [
-               'ON' => [
-                  $putable => 'users_id',
-                  $utable  => 'id'
-               ]
-            ]
-         ],
-         'WHERE'           => [
-            "$putable.profiles_id"  => $ID,
-            "$utable.is_deleted"    => 0
-         ] + getEntitiesRestrictCriteria($putable, 'entities_id', $_SESSION['glpiactiveentities'], true),
-         'ORDERBY'         => "$etable.completename"
+            'DISTINCT'        => true,
+            'FROM'            => $putable,
+            'LEFT JOIN'       => [
+                $etable  => [
+                    'ON' => [
+                        $putable => 'entities_id',
+                        $etable  => 'id'
+                    ]
+                ],
+                $utable  => [
+                    'ON' => [
+                        $putable => 'users_id',
+                        $utable  => 'id'
+                    ]
+                ]
+            ],
+            'WHERE'           => [
+                "$putable.profiles_id"  => $ID,
+                "$utable.is_deleted"    => 0
+            ] + getEntitiesRestrictCriteria($putable, 'entities_id', $_SESSION['glpiactiveentities'], true),
+            'ORDERBY'         => "$etable.completename"
         ]);
 
         $nb = count($iterator);
@@ -503,7 +506,8 @@ class Profile_User extends CommonDBRelation
         if ($canedit && $nb) {
             Html::openMassiveActionsForm('mass' . __CLASS__ . $rand);
             $massiveactionparams = ['num_displayed' => min($_SESSION['glpilist_limit'], $nb),
-                           'container'     => 'mass' . __CLASS__ . $rand];
+                'container'     => 'mass' . __CLASS__ . $rand
+            ];
             Html::showMassiveActions($massiveactionparams);
         }
         echo "<table class='tab_cadre_fixe'><tr>";
@@ -646,13 +650,13 @@ class Profile_User extends CommonDBRelation
         global $DB;
 
         $iterator = $DB->request([
-         'SELECT'          => [
-            'entities_id',
-            'is_recursive'
-         ],
-         'DISTINCT'        => true,
-         'FROM'            => 'glpi_profiles_users',
-         'WHERE'           => ['users_id' => $user_ID]
+            'SELECT'          => [
+                'entities_id',
+                'is_recursive'
+            ],
+            'DISTINCT'        => true,
+            'FROM'            => 'glpi_profiles_users',
+            'WHERE'           => ['users_id' => $user_ID]
         ]);
         $entities = [];
 
@@ -702,31 +706,31 @@ class Profile_User extends CommonDBRelation
         $ptable = Profile::getTable();
         $prtable = ProfileRight::getTable();
         $iterator = $DB->request([
-         'SELECT'          => [
-            "$putable.entities_id",
-            "$putable.is_recursive"
-         ],
-         'DISTINCT'        => true,
-         'FROM'            => $putable,
-         'INNER JOIN'      => [
-            $ptable  => [
-               'ON' => [
-                  $putable => 'profiles_id',
-                  $ptable  => 'id'
-               ]
+            'SELECT'          => [
+                "$putable.entities_id",
+                "$putable.is_recursive"
             ],
-            $prtable => [
-               'ON' => [
-                  $prtable => 'profiles_id',
-                  $ptable  => 'id'
-               ]
+            'DISTINCT'        => true,
+            'FROM'            => $putable,
+            'INNER JOIN'      => [
+                $ptable  => [
+                    'ON' => [
+                        $putable => 'profiles_id',
+                        $ptable  => 'id'
+                    ]
+                ],
+                $prtable => [
+                    'ON' => [
+                        $prtable => 'profiles_id',
+                        $ptable  => 'id'
+                    ]
+                ]
+            ],
+            'WHERE'           => [
+                "$putable.users_id"  => $user_ID,
+                "$prtable.name"      => $rightname,
+                "$prtable.rights"    => ['&', $rights]
             ]
-         ],
-         'WHERE'           => [
-            "$putable.users_id"  => $user_ID,
-            "$prtable.name"      => $rightname,
-            "$prtable.rights"    => ['&', $rights]
-         ]
         ]);
 
         if (count($iterator) > 0) {
@@ -770,10 +774,10 @@ class Profile_User extends CommonDBRelation
         }
 
         $iterator = $DB->request([
-         'SELECT'          => 'profiles_id',
-         'DISTINCT'        => true,
-         'FROM'            => 'glpi_profiles_users',
-         'WHERE'           => $where
+            'SELECT'          => 'profiles_id',
+            'DISTINCT'        => true,
+            'FROM'            => 'glpi_profiles_users',
+            'WHERE'           => $where
         ]);
 
         foreach ($iterator as $data) {
@@ -799,12 +803,12 @@ class Profile_User extends CommonDBRelation
         global $DB;
 
         $iterator = $DB->request([
-         'SELECT' => ['entities_id', 'is_recursive'],
-         'FROM'   => self::getTable(),
-         'WHERE'  => [
-            'users_id'     => $users_id,
-            'profiles_id'  => $profiles_id
-         ]
+            'SELECT' => ['entities_id', 'is_recursive'],
+            'FROM'   => self::getTable(),
+            'WHERE'  => [
+                'users_id'     => $users_id,
+                'profiles_id'  => $profiles_id
+            ]
         ]);
 
         $entities = [];
@@ -840,9 +844,9 @@ class Profile_User extends CommonDBRelation
         global $DB;
 
         $iterator = $DB->request([
-         'SELECT' => ['entities_id', 'is_recursive'],
-         'FROM'   => 'glpi_profiles_users',
-         'WHERE'  => ['users_id' => $users_id]
+            'SELECT' => ['entities_id', 'is_recursive'],
+            'FROM'   => 'glpi_profiles_users',
+            'WHERE'  => ['users_id' => $users_id]
         ]);
 
         $entities = [];
@@ -891,12 +895,12 @@ class Profile_User extends CommonDBRelation
         global $DB;
 
         $result = $DB->request([
-         'COUNT'  => 'cpt',
-         'FROM'   => self::getTable(),
-         'WHERE'  => [
-            'users_id'     => $user_ID,
-            'profiles_id'  => $profile_id
-         ]
+            'COUNT'  => 'cpt',
+            'FROM'   => self::getTable(),
+            'WHERE'  => [
+                'users_id'     => $user_ID,
+                'profiles_id'  => $profile_id
+            ]
         ])->current();
         return $result['cpt'];
     }
@@ -910,7 +914,7 @@ class Profile_User extends CommonDBRelation
     {
 
         $crit = [
-         'users_id' => $user_ID,
+            'users_id' => $user_ID,
         ];
 
         if ($only_dynamic) {
@@ -927,63 +931,63 @@ class Profile_User extends CommonDBRelation
         $tab = [];
 
         $tab[] = [
-         'id'                 => 'common',
-         'name'               => __('Characteristics')
+            'id'                 => 'common',
+            'name'               => __('Characteristics')
         ];
 
         $tab[] = [
-         'id'                 => '2',
-         'table'              => $this->getTable(),
-         'field'              => 'id',
-         'name'               => __('ID'),
-         'massiveaction'      => false,
-         'datatype'           => 'number'
+            'id'                 => '2',
+            'table'              => $this->getTable(),
+            'field'              => 'id',
+            'name'               => __('ID'),
+            'massiveaction'      => false,
+            'datatype'           => 'number'
         ];
 
         $tab[] = [
-         'id'                 => '3',
-         'table'              => $this->getTable(),
-         'field'              => 'is_dynamic',
-         'name'               => __('Dynamic'),
-         'datatype'           => 'bool',
-         'massiveaction'      => false
+            'id'                 => '3',
+            'table'              => $this->getTable(),
+            'field'              => 'is_dynamic',
+            'name'               => __('Dynamic'),
+            'datatype'           => 'bool',
+            'massiveaction'      => false
         ];
 
         $tab[] = [
-         'id'                 => '4',
-         'table'              => 'glpi_profiles',
-         'field'              => 'name',
-         'name'               => self::getTypeName(1),
-         'datatype'           => 'dropdown',
-         'massiveaction'      => false
+            'id'                 => '4',
+            'table'              => 'glpi_profiles',
+            'field'              => 'name',
+            'name'               => self::getTypeName(1),
+            'datatype'           => 'dropdown',
+            'massiveaction'      => false
         ];
 
         $tab[] = [
-         'id'                 => '5',
-         'table'              => 'glpi_users',
-         'field'              => 'name',
-         'name'               => User::getTypeName(1),
-         'massiveaction'      => false,
-         'datatype'           => 'dropdown',
-         'right'              => 'all'
+            'id'                 => '5',
+            'table'              => 'glpi_users',
+            'field'              => 'name',
+            'name'               => User::getTypeName(1),
+            'massiveaction'      => false,
+            'datatype'           => 'dropdown',
+            'right'              => 'all'
         ];
 
         $tab[] = [
-         'id'                 => '80',
-         'table'              => 'glpi_entities',
-         'field'              => 'completename',
-         'name'               => Entity::getTypeName(1),
-         'massiveaction'      => true,
-         'datatype'           => 'dropdown'
+            'id'                 => '80',
+            'table'              => 'glpi_entities',
+            'field'              => 'completename',
+            'name'               => Entity::getTypeName(1),
+            'massiveaction'      => true,
+            'datatype'           => 'dropdown'
         ];
 
         $tab[] = [
-         'id'                 => '86',
-         'table'              => $this->getTable(),
-         'field'              => 'is_recursive',
-         'name'               => __('Child entities'),
-         'datatype'           => 'bool',
-         'massiveaction'      => false
+            'id'                 => '86',
+            'table'              => $this->getTable(),
+            'field'              => 'is_recursive',
+            'name'               => __('Child entities'),
+            'datatype'           => 'bool',
+            'massiveaction'      => false
         ];
 
         return $tab;
@@ -1028,20 +1032,20 @@ class Profile_User extends CommonDBRelation
                     if (Session::haveRight('user', READ)) {
                         if ($_SESSION['glpishow_count_on_tabs']) {
                             $count = $DB->request([
-                            'COUNT'     => 'cpt',
-                            'FROM'      => $this->getTable(),
-                            'LEFT JOIN' => [
-                              User::getTable() => [
-                              'FKEY' => [
-                                 $this->getTable() => 'users_id',
-                                 User::getTable()  => 'id'
-                              ]
-                              ]
-                            ],
-                            'WHERE'     => [
-                            User::getTable() . '.is_deleted'    => 0,
-                            $this->getTable() . '.entities_id'  => $item->getID()
-                            ]
+                                'COUNT'     => 'cpt',
+                                'FROM'      => $this->getTable(),
+                                'LEFT JOIN' => [
+                                    User::getTable() => [
+                                        'FKEY' => [
+                                            $this->getTable() => 'users_id',
+                                            User::getTable()  => 'id'
+                                        ]
+                                    ]
+                                ],
+                                'WHERE'     => [
+                                    User::getTable() . '.is_deleted'    => 0,
+                                    $this->getTable() . '.entities_id'  => $item->getID()
+                                ]
                             ])->current();
                             $nb        = $count['cpt'];
                         }
@@ -1168,10 +1172,10 @@ class Profile_User extends CommonDBRelation
         $params['SELECT'][] = self::getTable() . '.is_recursive';
         $params['SELECT'][] = 'glpi_entities.completename AS completename';
         $params['LEFT JOIN']['glpi_entities'] = [
-         'FKEY'   => [
-            self::getTable()  => 'entities_id',
-            'glpi_entities'   => 'id'
-         ]
+            'FKEY'   => [
+                self::getTable()  => 'entities_id',
+                'glpi_entities'   => 'id'
+            ]
         ];
         return $params;
     }

@@ -54,10 +54,10 @@ function update931to932()
 
     /** Clean rack/enclosure items corrupted relations */
     $corrupted_criteria = [
-      'OR' => [
-         'itemtype' => 0,
-         'items_id' => 0,
-      ],
+        'OR' => [
+            'itemtype' => 0,
+            'items_id' => 0,
+        ],
     ];
     $DB->delete(Item_Rack::getTable(), $corrupted_criteria);
     $DB->delete(Item_Enclosure::getTable(), $corrupted_criteria);
@@ -65,12 +65,12 @@ function update931to932()
 
    // limit state visibility for enclosures and pdus
     $migration->addField('glpi_states', 'is_visible_enclosure', 'bool', [
-      'value' => 1,
-      'after' => 'is_visible_rack'
+        'value' => 1,
+        'after' => 'is_visible_rack'
     ]);
     $migration->addField('glpi_states', 'is_visible_pdu', 'bool', [
-      'value' => 1,
-      'after' => 'is_visible_enclosure'
+        'value' => 1,
+        'after' => 'is_visible_enclosure'
     ]);
     $migration->addKey('glpi_states', 'is_visible_enclosure');
     $migration->addKey('glpi_states', 'is_visible_pdu');

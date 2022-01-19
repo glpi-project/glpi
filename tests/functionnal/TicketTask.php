@@ -52,11 +52,11 @@ class TicketTask extends DbTestCase
         $ticket = new \Ticket();
         $this->integer(
             (int)$ticket->add([
-            'name'               => 'ticket title',
-            'description'        => 'a description',
-            'content'            => '',
-            'entities_id'        => getItemByTypeName('Entity', '_test_root_entity', true),
-            '_users_id_assign'   => getItemByTypeName('User', 'tech', true)
+                'name'               => 'ticket title',
+                'description'        => 'a description',
+                'content'            => '',
+                'entities_id'        => getItemByTypeName('Entity', '_test_root_entity', true),
+                '_users_id_assign'   => getItemByTypeName('User', 'tech', true)
             ])
         )->isGreaterThan(0);
 
@@ -66,7 +66,7 @@ class TicketTask extends DbTestCase
         $this->hasSessionMessages(
             INFO,
             [
-            "Your ticket has been registered. (Ticket: <a href='" . \Ticket::getFormURLWithID($tid) . "'>$tid</a>)"
+                "Your ticket has been registered. (Ticket: <a href='" . \Ticket::getFormURLWithID($tid) . "'>$tid</a>)"
             ]
         );
 
@@ -89,22 +89,23 @@ class TicketTask extends DbTestCase
        //create one task with schedule and recall
         $task = new \TicketTask();
         $task_id = $task->add([
-         'state'              => \Planning::TODO,
-         'tickets_id'         => $ticketId,
-         'tasktemplates_id'   => '0',
-         'taskcategories_id'  => '0',
-         'actiontime'         => "172800", //1hours
-         'content'            => "Task with schedule and recall",
-         'users_id_tech'      => $uid,
-         '_plan'              => ['begin'  => $date_begin_string],
-         'plan'               => ['begin'        => $date_begin_string, //start date
-                                  'end'          => $date_end_string, //end date auto calculate
-                                  '_duraction'   => "172800"],  //period (2 days)
-         '_planningrecall'    => ['before_time' => '14400', //recall 4 hours
-                                  'itemtype'    => 'TicketTask',
-                                  'users_id'    => $uid,
-                                  'field'       => 'begin', //default
-                                 ]
+            'state'              => \Planning::TODO,
+            'tickets_id'         => $ticketId,
+            'tasktemplates_id'   => '0',
+            'taskcategories_id'  => '0',
+            'actiontime'         => "172800", //1hours
+            'content'            => "Task with schedule and recall",
+            'users_id_tech'      => $uid,
+            '_plan'              => ['begin'  => $date_begin_string],
+            'plan'               => ['begin'        => $date_begin_string, //start date
+                'end'          => $date_end_string, //end date auto calculate
+                '_duraction'   => "172800"
+            ],  //period (2 days)
+            '_planningrecall'    => ['before_time' => '14400', //recall 4 hours
+                'itemtype'    => 'TicketTask',
+                'users_id'    => $uid,
+                'field'       => 'begin', //default
+            ]
         ]);
         $this->integer($task_id)->isGreaterThan(0);
 
@@ -114,11 +115,11 @@ class TicketTask extends DbTestCase
        //calcul 'when'
         $when = date("Y-m-d H:i:s", strtotime($task->fields['begin']) - 14400);
         $this->boolean($recall->getFromDBByCrit(['before_time'   => '14400', //recall 4 hours
-                                                'itemtype'     => 'TicketTask',
-                                                'items_id'     => $task_id,
-                                                'users_id'     => $uid,
-                                                'when'         => $when,
-                                             ]))->isTrue();
+            'itemtype'     => 'TicketTask',
+            'items_id'     => $task_id,
+            'users_id'     => $uid,
+            'when'         => $when,
+        ]))->isTrue();
 
        //create one task with schedule and without recall
         $date_begin->add(new \DateInterval('P1M'));
@@ -129,36 +130,6 @@ class TicketTask extends DbTestCase
 
         $task = new \TicketTask();
         $task_id = $task->add([
-         'state'              => \Planning::TODO,
-         'tickets_id'         => $ticketId,
-         'tasktemplates_id'   => '0',
-         'taskcategories_id'  => '0',
-         'actiontime'         => "172800", //2 days
-         'content'            => "Task with schedule and without recall",
-         'users_id_tech'      => $uid,
-         '_plan'              => ['begin' => $date_begin_string],
-         'plan'               => ['begin'       => $date_begin_string, // start date
-                                  'end'         => $date_end_string, //end date auto calculate
-                                  '_duraction'  => "172800"],  //period (2 days)
-         '_planningrecall' => ['before_time' => '-10', //recall to none
-                               'itemtype'    => 'TicketTask',
-                               'users_id'    => $uid,
-                               'field'       => 'begin', //default
-                              ]
-        ]);
-        $this->integer($task_id)->isGreaterThan(0);
-
-       //load schedule //which return false (not exist yet without recall)
-        $recall = new \PlanningRecall();
-        $this->boolean($recall->getFromDBByCrit(['itemtype'   => 'TicketTask',
-                                                'items_id'  => $task_id,
-                                                'users_id'  => $uid,
-                                             ]))->isFalse();
-
-       //update task schedule with recall
-        $this->boolean(
-            $task->update([
-            'id'                 => $task_id,
             'state'              => \Planning::TODO,
             'tickets_id'         => $ticketId,
             'tasktemplates_id'   => '0',
@@ -166,16 +137,48 @@ class TicketTask extends DbTestCase
             'actiontime'         => "172800", //2 days
             'content'            => "Task with schedule and without recall",
             'users_id_tech'      => $uid,
-            'actiontime'         => "172800", //1hours  //period (2 days)
             '_plan'              => ['begin' => $date_begin_string],
             'plan'               => ['begin'       => $date_begin_string, // start date
-                                  'end'         => $date_end_string, //end date auto calculate
-                                  '_duraction'  => "172800"],  //period (2 days)
-            '_planningrecall' => ['before_time' => '900',
-                               'itemtype'    => 'TicketTask',
-                               'users_id'    => $uid,
-                               'field'       => 'begin', //default
-                              ]
+                'end'         => $date_end_string, //end date auto calculate
+                '_duraction'  => "172800"
+            ],  //period (2 days)
+            '_planningrecall' => ['before_time' => '-10', //recall to none
+                'itemtype'    => 'TicketTask',
+                'users_id'    => $uid,
+                'field'       => 'begin', //default
+            ]
+        ]);
+        $this->integer($task_id)->isGreaterThan(0);
+
+       //load schedule //which return false (not exist yet without recall)
+        $recall = new \PlanningRecall();
+        $this->boolean($recall->getFromDBByCrit(['itemtype'   => 'TicketTask',
+            'items_id'  => $task_id,
+            'users_id'  => $uid,
+        ]))->isFalse();
+
+       //update task schedule with recall
+        $this->boolean(
+            $task->update([
+                'id'                 => $task_id,
+                'state'              => \Planning::TODO,
+                'tickets_id'         => $ticketId,
+                'tasktemplates_id'   => '0',
+                'taskcategories_id'  => '0',
+                'actiontime'         => "172800", //2 days
+                'content'            => "Task with schedule and without recall",
+                'users_id_tech'      => $uid,
+                'actiontime'         => "172800", //1hours  //period (2 days)
+                '_plan'              => ['begin' => $date_begin_string],
+                'plan'               => ['begin'       => $date_begin_string, // start date
+                    'end'         => $date_end_string, //end date auto calculate
+                    '_duraction'  => "172800"
+                ],  //period (2 days)
+                '_planningrecall' => ['before_time' => '900',
+                    'itemtype'    => 'TicketTask',
+                    'users_id'    => $uid,
+                    'field'       => 'begin', //default
+                ]
             ])
         )->isTrue();
 
@@ -185,11 +188,11 @@ class TicketTask extends DbTestCase
        //calcul when
         $when = date("Y-m-d H:i:s", strtotime($task->fields['begin']) - 900);
         $this->boolean($recall->getFromDBByCrit(['before_time'  => '900',
-                                                'itemtype'    => 'TicketTask',
-                                                'items_id'    => $task_id,
-                                                'users_id'    => $uid,
-                                                'when'        => $when,
-                                             ]))->isTrue();
+            'itemtype'    => 'TicketTask',
+            'items_id'    => $task_id,
+            'users_id'    => $uid,
+            'when'        => $when,
+        ]))->isTrue();
     }
 
     public function testGetTaskList()
@@ -200,19 +203,19 @@ class TicketTask extends DbTestCase
         $uid = getItemByTypeName('User', TU_USER, true);
 
         $tasksstates = [
-         \Planning::TODO,
-         \Planning::TODO,
-         \Planning::INFO
+            \Planning::TODO,
+            \Planning::TODO,
+            \Planning::INFO
         ];
        //create few tasks
         $task = new \TicketTask();
         foreach ($tasksstates as $taskstate) {
             $this->integer(
                 $task->add([
-                'content'      => sprintf('Task with "%s" state', $taskstate),
-                'state'        => $taskstate,
-                'tickets_id'   => $ticketId,
-                'users_id_tech' => $uid
+                    'content'      => sprintf('Task with "%s" state', $taskstate),
+                    'state'        => $taskstate,
+                    'tickets_id'   => $ticketId,
+                    'users_id_tech' => $uid
                 ])
             )->isGreaterThan(0);
         }
@@ -237,21 +240,21 @@ class TicketTask extends DbTestCase
         $uid = getItemByTypeName('User', TU_USER, true);
 
         $tasksstates = [
-         \Planning::TODO,
-         \Planning::TODO,
-         \Planning::TODO,
-         \Planning::INFO,
-         \Planning::INFO
+            \Planning::TODO,
+            \Planning::TODO,
+            \Planning::TODO,
+            \Planning::INFO,
+            \Planning::INFO
         ];
        //create few tasks
         $task = new \TicketTask();
         foreach ($tasksstates as $taskstate) {
             $this->integer(
                 $task->add([
-                'content'      => sprintf('Task with "%s" state', $taskstate),
-                'state'        => $taskstate,
-                'tickets_id'   => $ticketId,
-                'users_id_tech' => $uid
+                    'content'      => sprintf('Task with "%s" state', $taskstate),
+                    'state'        => $taskstate,
+                    'tickets_id'   => $ticketId,
+                    'users_id_tech' => $uid
                 ])
             )->isGreaterThan(0);
         }
@@ -290,30 +293,30 @@ class TicketTask extends DbTestCase
         $ttask = new \TicketTask();
         $this->integer(
             (int)$ttask->add([
-            'name'               => 'first test, whole period',
-            'content'            => 'first test, whole period',
-            'tickets_id'         => $tid,
-            'plan'               => [
-               'begin'  => '2019-08-10',
-               'end'    => '2019-08-20'
-            ],
-            'users_id_tech'      => $users_id,
-            'tasktemplates_id'   => 0
+                'name'               => 'first test, whole period',
+                'content'            => 'first test, whole period',
+                'tickets_id'         => $tid,
+                'plan'               => [
+                    'begin'  => '2019-08-10',
+                    'end'    => '2019-08-20'
+                ],
+                'users_id_tech'      => $users_id,
+                'tasktemplates_id'   => 0
             ])
         )->isGreaterThan(0);
         $this->hasNoSessionMessages([ERROR, WARNING]);
 
         $this->integer(
             (int)$ttask->add([
-            'name'               => 'test, subperiod',
-            'content'            => 'test, subperiod',
-            'tickets_id'         => $tid,
-            'plan'               => [
-               'begin'   => '2019-08-13',
-               'end'     => '2019-08-14'
-            ],
-            'users_id_tech'      => $users_id,
-            'tasktemplates_id'   => 0
+                'name'               => 'test, subperiod',
+                'content'            => 'test, subperiod',
+                'tickets_id'         => $tid,
+                'plan'               => [
+                    'begin'   => '2019-08-13',
+                    'end'     => '2019-08-14'
+                ],
+                'users_id_tech'      => $users_id,
+                'tasktemplates_id'   => 0
             ])
         )->isGreaterThan(0);
 
@@ -321,7 +324,7 @@ class TicketTask extends DbTestCase
         $this->hasSessionMessages(
             WARNING,
             [
-            "The user $usr_str is busy at the selected timeframe.<br/>- Ticket task: from 2019-08-13 00:00 to 2019-08-14 00:00:<br/><a href='" .
+                "The user $usr_str is busy at the selected timeframe.<br/>- Ticket task: from 2019-08-13 00:00 to 2019-08-14 00:00:<br/><a href='" .
             $ticket->getFormURLWithID($tid) . "&amp;forcetab=TicketTask$1'>ticket title</a><br/>"
             ]
         );
@@ -330,15 +333,15 @@ class TicketTask extends DbTestCase
        //add another task to be updated
         $this->integer(
             (int)$ttask->add([
-            'name'               => 'first test, whole period',
-            'content'            => 'first test, whole period',
-            'tickets_id'         => $tid,
-            'plan'               => [
-               'begin'  => '2018-08-10',
-               'end'    => '2018-08-20'
-            ],
-            'users_id_tech'      => $users_id,
-            'tasktemplates_id'   => 0
+                'name'               => 'first test, whole period',
+                'content'            => 'first test, whole period',
+                'tickets_id'         => $tid,
+                'plan'               => [
+                    'begin'  => '2018-08-10',
+                    'end'    => '2018-08-20'
+                ],
+                'users_id_tech'      => $users_id,
+                'tasktemplates_id'   => 0
             ])
         )->isGreaterThan(0);
         $this->hasNoSessionMessages([ERROR, WARNING]);
@@ -347,13 +350,13 @@ class TicketTask extends DbTestCase
 
         $this->boolean(
             $ttask->update([
-            'id'           => $ttask->fields['id'],
-            'tickets_id'   => $tid,
-            'plan'               => [
-               'begin'  => str_replace('2018', '2019', $ttask->fields['begin']),
-               'end'    => str_replace('2018', '2019', $ttask->fields['end'])
-            ],
-            'users_id_tech'      => $users_id,
+                'id'           => $ttask->fields['id'],
+                'tickets_id'   => $tid,
+                'plan'               => [
+                    'begin'  => str_replace('2018', '2019', $ttask->fields['begin']),
+                    'end'    => str_replace('2018', '2019', $ttask->fields['end'])
+                ],
+                'users_id_tech'      => $users_id,
             ])
         )->isTrue();
 
@@ -361,7 +364,7 @@ class TicketTask extends DbTestCase
         $this->hasSessionMessages(
             WARNING,
             [
-            "The user $usr_str is busy at the selected timeframe.<br/>- Ticket task: from 2019-08-10 00:00 to 2019-08-20 00:00:<br/><a href='" .
+                "The user $usr_str is busy at the selected timeframe.<br/>- Ticket task: from 2019-08-10 00:00 to 2019-08-20 00:00:<br/><a href='" .
             $ticket->getFormURLWithID($tid) . "&amp;forcetab=TicketTask$1'>ticket title</a><br/>- Ticket task: from 2019-08-13 00:00 to 2019-08-14 00:00:<br/><a href='" . $ticket
             ->getFormURLWithID($tid) . "&amp;forcetab=TicketTask$1'>ticket title</a><br/>"
             ]

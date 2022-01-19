@@ -98,9 +98,9 @@ abstract class CommonITILActor extends CommonDBRelation
 
         $users = [];
         $iterator = $DB->request([
-         'FROM'   => $this->getTable(),
-         'WHERE'  => [static::getItilObjectForeignKey() => $items_id],
-         'ORDER'  => 'id ASC'
+            'FROM'   => $this->getTable(),
+            'WHERE'  => [static::getItilObjectForeignKey() => $items_id],
+            'ORDER'  => 'id ASC'
         ]);
         foreach ($iterator as $data) {
             $users[$data['type']][] = $data;
@@ -118,13 +118,13 @@ abstract class CommonITILActor extends CommonDBRelation
         global $DB;
 
         $iterator = $DB->request([
-         'FROM'   => $this->getTable(),
-         'WHERE'  => [
-            static::getItilObjectForeignKey()   => $items_id,
-            'alternative_email'                 => $email
-         ],
-         'START'  => 0,
-         'LIMIT'  => 1
+            'FROM'   => $this->getTable(),
+            'WHERE'  => [
+                static::getItilObjectForeignKey()   => $items_id,
+                'alternative_email'                 => $email
+            ],
+            'START'  => 0,
+            'LIMIT'  => 1
         ]);
         if (count($iterator) > 0) {
             return true;
@@ -318,7 +318,8 @@ abstract class CommonITILActor extends CommonDBRelation
                     $status = $item->fields['status'];
                 }
                 $item->update(['id'     => $this->fields[static::getItilObjectForeignKey()],
-                                'status' => $status]);
+                    'status' => $status
+                ]);
             } else {
                 $item->updateDateMod($this->fields[static::getItilObjectForeignKey()]);
 
@@ -408,8 +409,9 @@ abstract class CommonITILActor extends CommonDBRelation
                 && in_array(CommonITILObject::ASSIGNED, array_keys($item->getAllStatusArray()))
             ) {
                 $item->update(['id'               => $item->getID(),
-                           'status'           => CommonITILObject::ASSIGNED,
-                           '_from_assignment' => true]);
+                    'status'           => CommonITILObject::ASSIGNED,
+                    '_from_assignment' => true
+                ]);
             }
 
            // raise notification for this actor addition

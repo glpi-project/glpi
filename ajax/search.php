@@ -49,8 +49,8 @@ switch ($_REQUEST['action']) {
     case "fold_search":
         $user = new User();
         $success = $user->update([
-         'id'          => (int) Session::getLoginUserID(),
-         'fold_search' => (int) !$_POST['show_search'],
+            'id'          => (int) Session::getLoginUserID(),
+            'fold_search' => (int) !$_POST['show_search'],
         ]);
 
         echo json_encode(['success' => $success]);

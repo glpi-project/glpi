@@ -113,10 +113,10 @@ class Request extends AbstractRequest
     protected function handleTask($task): array
     {
         $params = [
-           'options' => [
-               'response' => []
-           ],
-           'item' => $this->inventory->getAgent(),
+            'options' => [
+                'response' => []
+            ],
+            'item' => $this->inventory->getAgent(),
         ];
         switch ($task) {
             case self::INVENT_TASK:
@@ -169,7 +169,7 @@ class Request extends AbstractRequest
         ];
 
         $params = [
-           'options' => [
+            'options' => [
                 'content' => $data,
                 'response' => $response
             ],
@@ -194,20 +194,20 @@ class Request extends AbstractRequest
         if ($this->headers->hasHeader('GLPI-Agent-ID')) {
             $this->setMode(self::JSON_MODE);
             $response = [
-              'expiration'  => self::DEFAULT_FREQUENCY,
-              'status'     => 'ok'
+                'expiration'  => self::DEFAULT_FREQUENCY,
+                'status'     => 'ok'
             ];
         } else {
             $response = [
-            'PROLOG_FREQ'  => self::DEFAULT_FREQUENCY,
-            'RESPONSE'     => 'SEND'
+                'PROLOG_FREQ'  => self::DEFAULT_FREQUENCY,
+                'RESPONSE'     => 'SEND'
             ];
         }
 
         $hook_params = [
-         'mode' => $this->getMode(),
-         'deviceid' => $this->getDeviceID(),
-         'response' => $response
+            'mode' => $this->getMode(),
+            'deviceid' => $this->getDeviceID(),
+            'response' => $response
         ];
         $hook_response = Plugin::doHookFunction(
             Hooks::PROLOG_RESPONSE,
@@ -234,11 +234,11 @@ class Request extends AbstractRequest
 
         $response = [];
         $hook_params = [
-         'mode' => $this->getMode(),
-         'inventory' => $this->inventory,
-         'deviceid' => $this->getDeviceID(),
-         'response' => $response,
-         'query' => $this->query
+            'mode' => $this->getMode(),
+            'inventory' => $this->inventory,
+            'deviceid' => $this->getDeviceID(),
+            'response' => $response,
+            'query' => $this->query
         ];
 
         $hook_response = Plugin::doHookFunction(
@@ -277,11 +277,11 @@ class Request extends AbstractRequest
 
         $response = [];
         $hook_params = [
-         'mode' => $this->getMode(),
-         'inventory' => $this->inventory,
-         'deviceid' => $this->getDeviceID(),
-         'response' => $response,
-         'query' => $this->query
+            'mode' => $this->getMode(),
+            'inventory' => $this->inventory,
+            'deviceid' => $this->getDeviceID(),
+            'response' => $response,
+            'query' => $this->query
         ];
 
         $hook_response = Plugin::doHookFunction(
@@ -319,8 +319,8 @@ class Request extends AbstractRequest
         $this->inventory->contact($data);
 
         $response = [
-         'expiration'  => self::DEFAULT_FREQUENCY,
-         'status'     => 'ok'
+            'expiration'  => self::DEFAULT_FREQUENCY,
+            'status'     => 'ok'
         ];
 
        //For the moment it's the Agent who informs us about the active tasks
@@ -366,8 +366,8 @@ class Request extends AbstractRequest
         } else {
             if ($this->headers->hasHeader('GLPI-Agent-ID')) {
                 $response = [
-                'expiration'  => self::DEFAULT_FREQUENCY,
-                'status'     => 'ok'
+                    'expiration'  => self::DEFAULT_FREQUENCY,
+                    'status'     => 'ok'
                 ];
             } else {
                 $response = ['RESPONSE' => 'SEND'];
@@ -504,15 +504,15 @@ class Request extends AbstractRequest
     {
         $items = $this->inventory->getItems();
         $status = [
-         'metadata' => $this->inventory->getMetadata(),
-         'items'    => $items
+            'metadata' => $this->inventory->getMetadata(),
+            'items'    => $items
         ];
 
         if (count($items) == 1) {
             $item = $items[0];
             $status += [
-            'itemtype' => $item->getType(),
-            'items_id' => $item->fields['id']
+                'itemtype' => $item->getType(),
+                'items_id' => $item->fields['id']
             ];
         } else if (count($items)) {
            // Defines 'itemtype' only if all items has same type

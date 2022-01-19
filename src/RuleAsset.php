@@ -70,12 +70,13 @@ class RuleAsset extends Rule
     {
 
         return [static::ONADD                   => __('Add'),
-                   static::ONUPDATE                => __('Update'),
-                   static::ONADD | static::ONUPDATE  => sprintf(
-                       __('%1$s / %2$s'),
-                       __('Add'),
-                       __('Update')
-                   )];
+            static::ONUPDATE                => __('Update'),
+            static::ONADD | static::ONUPDATE  => sprintf(
+                __('%1$s / %2$s'),
+                __('Add'),
+                __('Update')
+            )
+        ];
     }
 
 
@@ -96,9 +97,10 @@ class RuleAsset extends Rule
         $criterias['_itemtype']['name']             = __('Item type');
         $criterias['_itemtype']['type']             = 'dropdown_assets_itemtype';
         $criterias['_itemtype']['allow_condition']  = [Rule::PATTERN_IS,
-                                                      Rule::PATTERN_IS_NOT,
-                                                      Rule::REGEX_MATCH,
-                                                      Rule::REGEX_NOT_MATCH];
+            Rule::PATTERN_IS_NOT,
+            Rule::REGEX_MATCH,
+            Rule::REGEX_NOT_MATCH
+        ];
 
         $criterias['states_id']['table']            = 'glpi_states';
         $criterias['states_id']['field']            = 'states_id';
@@ -200,7 +202,8 @@ class RuleAsset extends Rule
         $values = parent::getRights();
        //TRANS: short for : Business rules for ticket (entity parent)
         $values[self::PARENT] = ['short' => __('Parent business'),
-                                    'long'  => __('Business rules for ticket (entity parent)')];
+            'long'  => __('Business rules for ticket (entity parent)')
+        ];
 
         return $values;
     }

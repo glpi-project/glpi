@@ -50,21 +50,22 @@ function update084xto0850()
 
     $backup_tables = false;
     $newtables     = ['glpi_blacklistedmailcontents',
-                          'glpi_changecosts', 'glpi_changes', 'glpi_changes_groups',
-                          'glpi_changes_items', 'glpi_changes_problems', 'glpi_changes_projects',
-                          'glpi_changes_suppliers', 'glpi_changes_tickets', 'glpi_changes_users',
-                          'glpi_changetasks', 'glpi_changevalidations',
-                          'glpi_dropdowntranslations',
-                          'glpi_knowbaseitemtranslations',
-                          'glpi_notepads',
-                          'glpi_problemcosts', 'glpi_projectcosts',
-                          'glpi_projects', 'glpi_projects_changes', 'glpi_projects_items',
-                          'glpi_projectstates', 'glpi_projecttasks', 'glpi_projecttasks_tickets',
-                          'glpi_projecttaskteams', 'glpi_projecttasktypes',
-                          'glpi_projectteams', 'glpi_projecttypes',
-                          'glpi_queuedmails'
+        'glpi_changecosts', 'glpi_changes', 'glpi_changes_groups',
+        'glpi_changes_items', 'glpi_changes_problems', 'glpi_changes_projects',
+        'glpi_changes_suppliers', 'glpi_changes_tickets', 'glpi_changes_users',
+        'glpi_changetasks', 'glpi_changevalidations',
+        'glpi_dropdowntranslations',
+        'glpi_knowbaseitemtranslations',
+        'glpi_notepads',
+        'glpi_problemcosts', 'glpi_projectcosts',
+        'glpi_projects', 'glpi_projects_changes', 'glpi_projects_items',
+        'glpi_projectstates', 'glpi_projecttasks', 'glpi_projecttasks_tickets',
+        'glpi_projecttaskteams', 'glpi_projecttasktypes',
+        'glpi_projectteams', 'glpi_projecttypes',
+        'glpi_queuedmails'
                           // Only do profilerights once : so not delete it
-                          /*, 'glpi_profilerights'*/];
+                          /*, 'glpi_profilerights'*/
+    ];
 
     foreach ($newtables as $new_table) {
        // rename new tables if exists ?
@@ -1105,8 +1106,9 @@ function update084xto0850()
 
    // delete notes
     $tables = ['budget', 'cartridge', 'change','computer', 'consumable', 'contact_enterprise',
-                   'contract', 'document', 'entity', 'monitor', 'networking', 'peripheral',
-                   'phone', 'printer', 'problem', 'software'];
+        'contract', 'document', 'entity', 'monitor', 'networking', 'peripheral',
+        'phone', 'printer', 'problem', 'software'
+    ];
 
     foreach (
         $DB->request(
@@ -1142,8 +1144,9 @@ function update084xto0850()
     $DB->queryOrDie($query, "0.85 delete notes right");
 
     $DELFROMDISPLAYPREF['Profile'] = [29, 35, 37, 43, 53, 54, 57, 65, 66, 67, 68, 69, 70, 71,
-                                          72, 73, 74, 75, 76, 77, 78, 80, 81, 88, 93, 94, 95, 96,
-                                          97, 98, 99, 104, 113, 114, 116, 117, 121, 122, 123];
+        72, 73, 74, 75, 76, 77, 78, 80, 81, 88, 93, 94, 95, 96,
+        97, 98, 99, 104, 113, 114, 116, 117, 121, 122, 123
+    ];
 
     $migration->displayMessage('Update for mailqueue');
 
@@ -1550,23 +1553,26 @@ function update084xto0850()
             $DB->queryOrDie($query, "0.85 add change notification translation");
 
             $notifications = ['new'         => [],
-                                'update'      => [Notification::ASSIGN_TECH,
-                                                       Notification::OLD_TECH_IN_CHARGE],
-                                'solved'      => [],
-                                'add_task'    => [],
-                                'update_task' => [],
-                                'delete_task' => [],
-                                'closed'      => [],
-                                'delete'      => []];
+                'update'      => [Notification::ASSIGN_TECH,
+                    Notification::OLD_TECH_IN_CHARGE
+                ],
+                'solved'      => [],
+                'add_task'    => [],
+                'update_task' => [],
+                'delete_task' => [],
+                'closed'      => [],
+                'delete'      => []
+            ];
 
             $notif_names   = ['new'         => 'New Change',
-                                'update'      => 'Update Change',
-                                'solved'      => 'Resolve Change',
-                                'add_task'    => 'Add Task',
-                                'update_task' => 'Update Task',
-                                'delete_task' => 'Delete Task',
-                                'closed'      => 'Close Change',
-                                'delete'      => 'Delete Change'];
+                'update'      => 'Update Change',
+                'solved'      => 'Resolve Change',
+                'add_task'    => 'Add Task',
+                'update_task' => 'Update Task',
+                'delete_task' => 'Delete Task',
+                'closed'      => 'Close Change',
+                'delete'      => 'Delete Change'
+            ];
 
             foreach ($notifications as $key => $val) {
                 $notifications[$key][] = Notification::AUTHOR;
@@ -1700,39 +1706,47 @@ function update084xto0850()
    //generate uuid for the basic rules of glpi
    // we use a complete sql where for cover all migration case (0.78 -> 0.85)
     $rules = [['sub_type'    => 'RuleImportEntity',
-                        'name'        => 'Root',
-                        'match'       => 'AND',
-                        'description' => ''],
+        'name'        => 'Root',
+        'match'       => 'AND',
+        'description' => ''
+    ],
 
-                  ['sub_type'    => 'RuleRight',
-                        'name'        => 'Root',
-                        'match'       => 'AND',
-                        'description' => ''],
+        ['sub_type'    => 'RuleRight',
+            'name'        => 'Root',
+            'match'       => 'AND',
+            'description' => ''
+        ],
 
-                  ['sub_type'    => 'RuleMailCollector',
-                        'name'        => 'Root',
-                        'match'       => 'AND',
-                        'description' => ''],
+        ['sub_type'    => 'RuleMailCollector',
+            'name'        => 'Root',
+            'match'       => 'AND',
+            'description' => ''
+        ],
 
-                  ['sub_type'    => 'RuleMailCollector',
-                        'name'        => 'Auto-Reply X-Auto-Response-Suppress',
-                        'match'       => 'AND',
-                        'description' => 'Exclude Auto-Reply emails using X-Auto-Response-Suppress header'],
+        ['sub_type'    => 'RuleMailCollector',
+            'name'        => 'Auto-Reply X-Auto-Response-Suppress',
+            'match'       => 'AND',
+            'description' => 'Exclude Auto-Reply emails using X-Auto-Response-Suppress header'
+        ],
 
-                  ['sub_type'    => 'RuleMailCollector',
-                        'name'        => 'Auto-Reply Auto-Submitted',
-                        'match'       => 'AND',
-                        'description' => 'Exclude Auto-Reply emails using Auto-Submitted header'],
+        ['sub_type'    => 'RuleMailCollector',
+            'name'        => 'Auto-Reply Auto-Submitted',
+            'match'       => 'AND',
+            'description' => 'Exclude Auto-Reply emails using Auto-Submitted header'
+        ],
 
-                  ['sub_type'    => 'RuleTicket',
-                        'name'        => 'Ticket location from item',
-                        'match'       => 'AND',
-                        'description' => ''],
+        ['sub_type'    => 'RuleTicket',
+            'name'        => 'Ticket location from item',
+            'match'       => 'AND',
+            'description' => ''
+        ],
 
-                  ['sub_type'    => 'RuleTicket',
-                        'name'        => 'Ticket location from user',
-                        'match'       => 'AND',
-                        'description' => '']];
+        ['sub_type'    => 'RuleTicket',
+            'name'        => 'Ticket location from user',
+            'match'       => 'AND',
+            'description' => ''
+        ]
+    ];
 
     $i = 0;
     foreach ($rules as $rule) {
@@ -1796,8 +1810,9 @@ function update084xto0850()
 
     foreach (
         ['is_visible_computer', 'is_visible_monitor', 'is_visible_networkequipment',
-                  'is_visible_peripheral', 'is_visible_phone', 'is_visible_printer',
-                  'is_visible_softwareversion'] as $field
+            'is_visible_peripheral', 'is_visible_phone', 'is_visible_printer',
+            'is_visible_softwareversion'
+        ] as $field
     ) {
         $migration->addField(
             'glpi_states',
@@ -1811,12 +1826,14 @@ function update084xto0850()
    // glpi_domains by entity
     $migration->addField('glpi_domains', 'entities_id', 'integer', ['after' => 'name']);
     $migration->addField('glpi_domains', 'is_recursive', 'bool', ['update' => '1',
-                                                                      'after'  => 'entities_id']);
+        'after'  => 'entities_id'
+    ]);
 
    // glpi_states by entity
     $migration->addField('glpi_states', 'entities_id', 'integer', ['after' => 'name']);
     $migration->addField('glpi_states', 'is_recursive', 'bool', ['update' => '1',
-                                                                     'after'  => 'entities_id']);
+        'after'  => 'entities_id'
+    ]);
 
    // add validity date for a user
     $migration->addField('glpi_users', 'begin_date', 'datetime');
@@ -1841,7 +1858,8 @@ function update084xto0850()
         countElementsInTable(
             'glpi_notifications',
             ['itemtype' => 'Ticket',
-            'event'    => 'replysatisfaction']
+                'event'    => 'replysatisfaction'
+            ]
         ) == 0
     ) {
        // No notifications duplicate all
@@ -2064,14 +2082,16 @@ function update084xto0850()
         'is_recursive',
         'bool',
         ['update' => '1',
-        'after'  => 'entities_id']
+            'after'  => 'entities_id'
+        ]
     );
     $migration->addField(
         'glpi_cartridgeitems',
         'is_recursive',
         'bool',
         ['update' => '1',
-        'after'  => 'entities_id']
+            'after'  => 'entities_id'
+        ]
     );
    // Fix events
     $query = "UPDATE `glpi_events`
@@ -2226,14 +2246,18 @@ function update084xto0850()
 
         $ADDTODISPLAYPREF['ProjectState'] = [12,11];
         $states = ['new' => ['name'        => _x('ticket', 'New'),
-                                     'color'       => '#06ff00',
-                                     'is_finished' => 0],
-                      'do'  => ['name'        => __('Processing'),
-                                     'color'       => '#ffb800',
-                                     'is_finished' => 0],
-                      'end' => ['name'        => __('Closed'),
-                                     'color'       => '#ff0000',
-                                     'is_finished' => 1]];
+            'color'       => '#06ff00',
+            'is_finished' => 0
+        ],
+            'do'  => ['name'        => __('Processing'),
+                'color'       => '#ffb800',
+                'is_finished' => 0
+            ],
+            'end' => ['name'        => __('Closed'),
+                'color'       => '#ff0000',
+                'is_finished' => 1
+            ]
+        ];
         foreach ($states as $key => $val) {
             $query = "INSERT INTO `glpi_projectstates`
                           (`name`,`color`,`is_finished`)
@@ -2253,7 +2277,8 @@ function update084xto0850()
         $DB->queryOrDie($query, "0.85 create glpi_projecttypes");
     }
     $migration->addField("glpi_groups", 'is_manager', "bool", ['update' => "`is_assign`",
-                                                                   'value'  => 1]);
+        'value'  => 1
+    ]);
     $migration->addKey('glpi_groups', 'is_manager');
 
     if (!$DB->tableExists('glpi_changes_projects')) {
@@ -2431,12 +2456,14 @@ function update084xto0850()
             $DB->queryOrDie($query, "0.85 add project notification translation");
 
             $notifications = ['new'         => [],
-                                'update'      => [],
-                                'delete'      => []];
+                'update'      => [],
+                'delete'      => []
+            ];
 
             $notif_names   = ['new'         => 'New Project',
-                                'update'      => 'Update Project',
-                                'delete'      => 'Delete Project'];
+                'update'      => 'Update Project',
+                'delete'      => 'Delete Project'
+            ];
 
             foreach ($notifications as $key => $val) {
                 $notifications[$key][] = Notification::MANAGER_USER;
@@ -2519,12 +2546,14 @@ function update084xto0850()
             $DB->queryOrDie($query, "0.85 add project task notification translation");
 
             $notifications = ['new'         => [],
-                                'update'      => [],
-                                'delete'      => []];
+                'update'      => [],
+                'delete'      => []
+            ];
 
             $notif_names   = ['new'         => 'New Project Task',
-                                'update'      => 'Update Project Task',
-                                'delete'      => 'Delete Project Task'];
+                'update'      => 'Update Project Task',
+                'delete'      => 'Delete Project Task'
+            ];
 
             foreach ($notifications as $key => $val) {
                 $notifications[$key][] = Notification::TEAM_USER;
@@ -2574,11 +2603,12 @@ function update084xto0850()
         $DB->queryOrDie($query, "0.85 add table glpi_notepads");
 
         $notepad_tables = ['glpi_budgets', 'glpi_cartridgeitems', 'glpi_changes',
-                              'glpi_computers', 'glpi_consumableitems', 'glpi_contacts',
-                              'glpi_contracts', 'glpi_documents', 'glpi_entities',
-                              'glpi_monitors', 'glpi_networkequipments', 'glpi_peripherals',
-                              'glpi_phones', 'glpi_printers', 'glpi_problems', 'glpi_projects',
-                              'glpi_projecttasks', 'glpi_softwares', 'glpi_suppliers'];
+            'glpi_computers', 'glpi_consumableitems', 'glpi_contacts',
+            'glpi_contracts', 'glpi_documents', 'glpi_entities',
+            'glpi_monitors', 'glpi_networkequipments', 'glpi_peripherals',
+            'glpi_phones', 'glpi_printers', 'glpi_problems', 'glpi_projects',
+            'glpi_projecttasks', 'glpi_softwares', 'glpi_suppliers'
+        ];
 
         foreach ($notepad_tables as $t) {
            // Migrate data
@@ -2610,9 +2640,10 @@ function update084xto0850()
     $migration->displayMessage(sprintf(__('Data migration - %s'), 'ticketvalidations status'));
 
     $status  = ['none'     => CommonITILValidation::NONE,
-                    'waiting'  => CommonITILValidation::WAITING,
-                    'accepted' => CommonITILValidation::ACCEPTED,
-                    'rejected' => CommonITILValidation::REFUSED];
+        'waiting'  => CommonITILValidation::WAITING,
+        'accepted' => CommonITILValidation::ACCEPTED,
+        'rejected' => CommonITILValidation::REFUSED
+    ];
 
    // Migrate datas
     foreach ($status as $old => $new) {
@@ -2751,30 +2782,30 @@ function update084xto0850()
     $migration->displayMessage(sprintf(__('Data migration - %s'), 'Devices'));
 
     $devices = [
-      'DeviceMotherboard',
-      'DeviceProcessor',
-      'DeviceMemory',
-      'DeviceHardDrive',
-      'DeviceNetworkCard',
-      'DeviceDrive',
-      'DeviceControl',
-      'DeviceGraphicCard',
-      'DeviceSoundCard',
-      'DevicePci',
-      'DeviceCase',
-      'DevicePowerSupply',
-      'Item_DeviceMotherboard',
-      'Item_DeviceProcessor',
-      'Item_DeviceMemory',
-      'Item_DeviceHardDrive',
-      'Item_DeviceNetworkCard',
-      'Item_DeviceDrive',
-      'Item_DeviceControl',
-      'Item_DeviceGraphicCard',
-      'Item_DeviceSoundCard',
-      'Item_DevicePci',
-      'Item_DeviceCase',
-      'Item_DevicePowerSupply'
+        'DeviceMotherboard',
+        'DeviceProcessor',
+        'DeviceMemory',
+        'DeviceHardDrive',
+        'DeviceNetworkCard',
+        'DeviceDrive',
+        'DeviceControl',
+        'DeviceGraphicCard',
+        'DeviceSoundCard',
+        'DevicePci',
+        'DeviceCase',
+        'DevicePowerSupply',
+        'Item_DeviceMotherboard',
+        'Item_DeviceProcessor',
+        'Item_DeviceMemory',
+        'Item_DeviceHardDrive',
+        'Item_DeviceNetworkCard',
+        'Item_DeviceDrive',
+        'Item_DeviceControl',
+        'Item_DeviceGraphicCard',
+        'Item_DeviceSoundCard',
+        'Item_DevicePci',
+        'Item_DeviceCase',
+        'Item_DevicePowerSupply'
     ];
 
     foreach ($devices as $itemtype) {
@@ -2785,7 +2816,8 @@ function update084xto0850()
         }
         if (!$DB->fieldExists($table, 'is_recursive')) {
             $migration->addField($table, 'is_recursive', 'bool', ['update' => '1',
-                                                                    'after'  => 'entities_id']);
+                'after'  => 'entities_id'
+            ]);
             $migration->addKey($table, ['is_recursive'], 'is_recursive');
         }
     }
@@ -2810,9 +2842,10 @@ function update084xto0850()
    // Complete the item_devices
     foreach (
         ['glpi_items_devicecases', 'glpi_items_devicecontrols', 'glpi_items_devicedrives',
-                  'glpi_items_devicegraphiccards', 'glpi_items_devicemotherboards',
-                  'glpi_items_devicenetworkcards', 'glpi_items_devicepcis',
-                  'glpi_items_devicepowersupplies', 'glpi_items_devicesoundcards'] as $table
+            'glpi_items_devicegraphiccards', 'glpi_items_devicemotherboards',
+            'glpi_items_devicenetworkcards', 'glpi_items_devicepcis',
+            'glpi_items_devicepowersupplies', 'glpi_items_devicesoundcards'
+        ] as $table
     ) {
         if (!$DB->fieldExists($table, 'serial')) {
             $migration->addField($table, 'serial', 'string');
@@ -2822,10 +2855,11 @@ function update084xto0850()
 
     foreach (
         ['glpi_items_devicecontrols', 'glpi_items_devicedrives',
-                  'glpi_items_devicegraphiccards', 'glpi_items_deviceharddrives',
-                  'glpi_items_devicememories', 'glpi_items_devicenetworkcards',
-                  'glpi_items_devicepcis', 'glpi_items_deviceprocessors',
-                  'glpi_items_devicesoundcards'] as $table
+            'glpi_items_devicegraphiccards', 'glpi_items_deviceharddrives',
+            'glpi_items_devicememories', 'glpi_items_devicenetworkcards',
+            'glpi_items_devicepcis', 'glpi_items_deviceprocessors',
+            'glpi_items_devicesoundcards'
+        ] as $table
     ) {
         if (!$DB->fieldExists($table, 'busID')) {
             $migration->addField($table, 'busID', 'string');
@@ -2836,11 +2870,12 @@ function update084xto0850()
    // Add key
     foreach (
         ['glpi_items_devicecases', 'glpi_items_devicecontrols', 'glpi_items_devicedrives',
-                  'glpi_items_devicegraphiccards', 'glpi_items_deviceharddrives',
-                  'glpi_items_devicememories', 'glpi_items_devicemotherboards',
-                  'glpi_items_devicenetworkcards', 'glpi_items_devicepcis',
-                  'glpi_items_devicepowersupplies', 'glpi_items_deviceprocessors',
-                  'glpi_items_devicesoundcards'] as $table
+            'glpi_items_devicegraphiccards', 'glpi_items_deviceharddrives',
+            'glpi_items_devicememories', 'glpi_items_devicemotherboards',
+            'glpi_items_devicenetworkcards', 'glpi_items_devicepcis',
+            'glpi_items_devicepowersupplies', 'glpi_items_deviceprocessors',
+            'glpi_items_devicesoundcards'
+        ] as $table
     ) {
         $migration->dropKey($table, 'item');
         $migration->migrationOneTable($table);
@@ -2931,11 +2966,12 @@ function update084xto0850()
 
    // Update ticket_status for helpdeks profiles
     $newcycle =  [ 1 =>  [ 2 => 0, 3 => 0, 4 => 0, 5 => 0, 6 => 0, ],
-                       2 =>  [ 1 => 0, 3 => 0, 4 => 0, 5 => 0, 6 => 0, ],
-                       3 =>  [ 1 => 0, 2 => 0, 4 => 0, 5 => 0, 6 => 0, ],
-                       4 =>  [ 1 => 0, 2 => 0, 3 => 0, 5 => 0, 6 => 0, ],
-                       5 =>  [ 1 => 0, 2 => 0, 3 => 0, 4 => 0, ],
-                       6 =>  [ 1 => 0, 2 => 0, 3 => 0, 4 => 0, 5 => 0, ], ];
+        2 =>  [ 1 => 0, 3 => 0, 4 => 0, 5 => 0, 6 => 0, ],
+        3 =>  [ 1 => 0, 2 => 0, 4 => 0, 5 => 0, 6 => 0, ],
+        4 =>  [ 1 => 0, 2 => 0, 3 => 0, 5 => 0, 6 => 0, ],
+        5 =>  [ 1 => 0, 2 => 0, 3 => 0, 4 => 0, ],
+        6 =>  [ 1 => 0, 2 => 0, 3 => 0, 4 => 0, 5 => 0, ],
+    ];
     $query = "UPDATE `glpi_profiles`
              SET `ticket_status` = '" . exportArrayToDB($newcycle) . "'
              WHERE `interface` = 'helpdesk'";

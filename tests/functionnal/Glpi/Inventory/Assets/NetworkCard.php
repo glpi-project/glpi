@@ -42,8 +42,8 @@ class NetworkCard extends AbstractInventoryAsset
     protected function assetProvider(): array
     {
         return [
-         [
-            'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+            [
+                'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
   <CONTENT>
     <NETWORKS>
@@ -61,10 +61,10 @@ class NetworkCard extends AbstractInventoryAsset
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-            'expected'  => '{"description": "lo", "ipaddress": "127.0.0.1", "ipmask": "255.0.0.0", "ipsubnet": "127.0.0.0", "status": "up", "type": "loopback", "virtualdev": true, "mac": "00:00:00:00:00:00"}',
-            'virtual'   => true
-         ], [
-            'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+                'expected'  => '{"description": "lo", "ipaddress": "127.0.0.1", "ipmask": "255.0.0.0", "ipsubnet": "127.0.0.0", "status": "up", "type": "loopback", "virtualdev": true, "mac": "00:00:00:00:00:00"}',
+                'virtual'   => true
+            ], [
+                'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
   <CONTENT>
     <NETWORKS>
@@ -82,10 +82,10 @@ class NetworkCard extends AbstractInventoryAsset
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-            'expected'  => '{"description": "lo", "ipaddress6": "::1", "ipmask6": "fff0::", "ipsubnet6": "::", "status": "up", "type": "loopback", "virtualdev": true, "mac": "00:00:00:00:00:00"}',
-            'virtual'   => true
-         ], [
-            'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+                'expected'  => '{"description": "lo", "ipaddress6": "::1", "ipmask6": "fff0::", "ipsubnet6": "::", "status": "up", "type": "loopback", "virtualdev": true, "mac": "00:00:00:00:00:00"}',
+                'virtual'   => true
+            ], [
+                'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
   <CONTENT>
     <NETWORKS>
@@ -111,10 +111,10 @@ class NetworkCard extends AbstractInventoryAsset
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-            'expected'  => '{"description": "wlp58s0", "driver": "iwlwifi", "ipaddress": "192.168.1.119", "ipgateway": "192.168.1.1", "ipmask": "255.255.255.0", "ipsubnet": "192.168.1.0", "pciid": "8086:24F3:8086:0050", "pcislot": "0000:3a:00.0", "status": "up", "type": "wifi", "virtualdev": false, "wifi_bssid": "58:6D:8F:C2:19:BF", "wifi_mode": "Managed", "wifi_ssid": "teclib", "wifi_version": "802.11", "mac": "44:85:00:2b:90:bc"}',
-            'virtual'   => false
-         ], [
-            'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+                'expected'  => '{"description": "wlp58s0", "driver": "iwlwifi", "ipaddress": "192.168.1.119", "ipgateway": "192.168.1.1", "ipmask": "255.255.255.0", "ipsubnet": "192.168.1.0", "pciid": "8086:24F3:8086:0050", "pcislot": "0000:3a:00.0", "status": "up", "type": "wifi", "virtualdev": false, "wifi_bssid": "58:6D:8F:C2:19:BF", "wifi_mode": "Managed", "wifi_ssid": "teclib", "wifi_version": "802.11", "mac": "44:85:00:2b:90:bc"}',
+                'virtual'   => false
+            ], [
+                'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
   <CONTENT>
     <NETWORKS>
@@ -139,10 +139,10 @@ class NetworkCard extends AbstractInventoryAsset
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-            'expected'  => '{"description": "wlp58s0", "driver": "iwlwifi", "ipaddress6": "fe80::92a4:26c6:99dd:2d60", "ipmask6": "ffff:ffff:ffff:ffff::", "ipsubnet6": "fe80::", "pciid": "8086:24F3:8086:0050", "pcislot": "0000:3a:00.0", "status": "up", "type": "wifi", "virtualdev": false, "wifi_bssid": "58:6D:8F:C2:19:BF", "wifi_mode": "Managed", "wifi_ssid": "teclib", "wifi_version": "802.11", "mac": "44:85:00:2b:90:bc"}',
-            'virtual'   => false
-         ], [
-            'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+                'expected'  => '{"description": "wlp58s0", "driver": "iwlwifi", "ipaddress6": "fe80::92a4:26c6:99dd:2d60", "ipmask6": "ffff:ffff:ffff:ffff::", "ipsubnet6": "fe80::", "pciid": "8086:24F3:8086:0050", "pcislot": "0000:3a:00.0", "status": "up", "type": "wifi", "virtualdev": false, "wifi_bssid": "58:6D:8F:C2:19:BF", "wifi_mode": "Managed", "wifi_ssid": "teclib", "wifi_version": "802.11", "mac": "44:85:00:2b:90:bc"}',
+                'virtual'   => false
+            ], [
+                'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
   <CONTENT>
     <NETWORKS>
@@ -161,10 +161,10 @@ class NetworkCard extends AbstractInventoryAsset
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-            'expected'  => '{"description": "virbr0", "ipaddress": "192.168.122.1", "ipmask": "255.255.255.0", "ipsubnet": "192.168.122.0", "status": "up", "type": "bridge", "virtualdev": true, "mac": "52:54:00:fa:20:0e"}',
-            'virtual'   => true
-         ], [
-            'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+                'expected'  => '{"description": "virbr0", "ipaddress": "192.168.122.1", "ipmask": "255.255.255.0", "ipsubnet": "192.168.122.0", "status": "up", "type": "bridge", "virtualdev": true, "mac": "52:54:00:fa:20:0e"}',
+                'virtual'   => true
+            ], [
+                'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
   <CONTENT>
     <NETWORKS>
@@ -179,10 +179,10 @@ class NetworkCard extends AbstractInventoryAsset
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-            'expected'  => '{"description": "virbr0-nic", "speed": "10", "status": "down", "virtualdev": true, "mac": "52:54:00:fa:20:0e"}',
-            'virtual'   => true
-         ], [
-            'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+                'expected'  => '{"description": "virbr0-nic", "speed": "10", "status": "down", "virtualdev": true, "mac": "52:54:00:fa:20:0e"}',
+                'virtual'   => true
+            ], [
+                'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
   <CONTENT>
     <NETWORKS>
@@ -199,10 +199,10 @@ class NetworkCard extends AbstractInventoryAsset
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-            'expected'  => '{"description": "tun0", "ipaddress": "192.168.11.47", "ipmask": "255.255.255.0", "ipsubnet": "192.168.11.0", "speed": "10", "status": "up", "virtualdev": true}',
-            'virtual'   => true
-         ], [
-            'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+                'expected'  => '{"description": "tun0", "ipaddress": "192.168.11.47", "ipmask": "255.255.255.0", "ipsubnet": "192.168.11.0", "speed": "10", "status": "up", "virtualdev": true}',
+                'virtual'   => true
+            ], [
+                'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
   <CONTENT>
     <NETWORKS>
@@ -219,9 +219,9 @@ class NetworkCard extends AbstractInventoryAsset
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-            'expected'  => '{"description": "tun0", "ipaddress6": "fe80::c33a:59c7:61c5:339e", "ipmask6": "ffff:ffff:ffff:ffff::", "ipsubnet6": "fe80::", "speed": "10", "status": "up", "virtualdev": true}',
-            'virtual'   => true
-         ]
+                'expected'  => '{"description": "tun0", "ipaddress6": "fe80::c33a:59c7:61c5:339e", "ipmask6": "ffff:ffff:ffff:ffff::", "ipsubnet6": "fe80::", "speed": "10", "status": "up", "virtualdev": true}',
+                'virtual'   => true
+            ]
         ];
     }
 
@@ -809,60 +809,60 @@ class NetworkCard extends AbstractInventoryAsset
 
        //create manually a computer, with 3 network cards
         $computers_id = $computer->add([
-         'name'   => 'pc002',
-         'serial' => 'ggheb7ne7',
-         'entities_id' => 0
+            'name'   => 'pc002',
+            'serial' => 'ggheb7ne7',
+            'entities_id' => 0
         ]);
         $this->integer($computers_id)->isGreaterThan(0);
 
         $manufacturer = new \Manufacturer();
         $manufacturers_id = $manufacturer->add([
-         'name' => 'Intel Corporation'
+            'name' => 'Intel Corporation'
         ]);
         $this->integer($manufacturers_id)->isGreaterThan(0);
 
         $card_1_id = $device_net->add([
-         'designation' => '82540EM Gigabit Ethernet Controller',
-         'manufacturers_id' => $manufacturers_id,
-         'mac_default' => '08:00:27:16:9C:60',
-         'entities_id'  => 0
+            'designation' => '82540EM Gigabit Ethernet Controller',
+            'manufacturers_id' => $manufacturers_id,
+            'mac_default' => '08:00:27:16:9C:60',
+            'entities_id'  => 0
         ]);
         $this->integer($card_1_id)->isGreaterThan(0);
 
         $item_card_1_id = $item_net->add([
-         'items_id'     => $computers_id,
-         'itemtype'     => 'Computer',
-         'devicenetworkcards_id' => $card_1_id
+            'items_id'     => $computers_id,
+            'itemtype'     => 'Computer',
+            'devicenetworkcards_id' => $card_1_id
         ]);
         $this->integer($item_card_1_id)->isGreaterThan(0);
 
         $card_2_id = $device_net->add([
-         'designation' => 'Ethernet Connection I219-LM',
-         'manufacturers_id' => $manufacturers_id,
-         'mac_default' => '18:db:f2:29:99:35',
-         'entities_id'  => 0
+            'designation' => 'Ethernet Connection I219-LM',
+            'manufacturers_id' => $manufacturers_id,
+            'mac_default' => '18:db:f2:29:99:35',
+            'entities_id'  => 0
         ]);
         $this->integer($card_2_id)->isGreaterThan(0);
 
         $item_card_2_id = $item_net->add([
-         'items_id'     => $computers_id,
-         'itemtype'     => 'Computer',
-         'devicenetworkcards_id' => $card_2_id
+            'items_id'     => $computers_id,
+            'itemtype'     => 'Computer',
+            'devicenetworkcards_id' => $card_2_id
         ]);
         $this->integer($item_card_2_id)->isGreaterThan(0);
 
         $card_3_id = $device_net->add([
-         'designation' => 'Me Ethernet Controller',
-         'manufacturers_id' => $manufacturers_id,
-         'mac_default' => '00:b1:00:00:00',
-         'entities_id'  => 0
+            'designation' => 'Me Ethernet Controller',
+            'manufacturers_id' => $manufacturers_id,
+            'mac_default' => '00:b1:00:00:00',
+            'entities_id'  => 0
         ]);
         $this->integer($card_3_id)->isGreaterThan(0);
 
         $item_card_3_id = $item_net->add([
-         'items_id'     => $computers_id,
-         'itemtype'     => 'Computer',
-         'devicenetworkcards_id' => $card_3_id
+            'items_id'     => $computers_id,
+            'itemtype'     => 'Computer',
+            'devicenetworkcards_id' => $card_3_id
         ]);
         $this->integer($item_card_3_id)->isGreaterThan(0);
 

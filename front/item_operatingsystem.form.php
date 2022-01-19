@@ -70,8 +70,8 @@ if (isset($_GET['id'])) {
     $params['id'] = $_GET['id'];
 } else {
     $params = [
-      'itemtype'  => $_GET['itemtype'],
-      'items_id'  => $_GET['items_id']
+        'itemtype'  => $_GET['itemtype'],
+        'items_id'  => $_GET['items_id']
     ];
 }
 

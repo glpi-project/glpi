@@ -59,67 +59,67 @@ class Transfer extends DbTestCase
         $itemtypeslist = $this->getClasses(
             'searchOptions',
             [
-            '/^Rule.*/',
-            '/^Common.*/',
-            '/^DB.*/',
-            '/^SlaLevel.*/',
-            '/^OlaLevel.*/',
-            'Reservation',
-            'ReservationItem',
-            'Event',
-            'Glpi\\Event',
-            'KnowbaseItem',
-            'NetworkPortMigration',
-            '/^TicketTemplate.*/',
-            '/^Computer_Software.*/',
-            '/SavedSearch.*/',
-            '/.*Notification.*/',
-            '/.*Cost.*/',
-            '/^Item_.*/',
-            '/^Device.*/',
-            '/.*Validation$/',
-            '/^Network.*/',
-            'CalendarSegment',
-            'IPAddress',
-            'IPNetwork',
-            'FQDN',
-            '/^SoftwareVersion.*/',
-            '/^SoftwareLicense.*/',
-            '/.*Predefined.*/',
-            '/.*Mandatory.*/',
-            '/.*Hidden.*/',
-            'Entity_Reminder',
-            'Document_Item',
-            'Cartridge',
-            '/.*Task.*/',
-            'Entity_RSSFeed',
-            'ComputerVirtualMachine',
-            'FieldUnicity',
-            'PurgeLogs',
-            '/.*_?KnowbaseItem_?.*/',
-            'Consumable',
-            'Infocom',
-            'ComputerAntivirus',
-            'TicketRecurrent',
-            'Agent',
-            'Printer_CartridgeInfo',
-            'PrinterLog',
-            'USBVendor',
-            'PCIVendor',
-            'PendingReasonCron',
-            'Database',
-            'Socket',
-            'Netpoint'
+                '/^Rule.*/',
+                '/^Common.*/',
+                '/^DB.*/',
+                '/^SlaLevel.*/',
+                '/^OlaLevel.*/',
+                'Reservation',
+                'ReservationItem',
+                'Event',
+                'Glpi\\Event',
+                'KnowbaseItem',
+                'NetworkPortMigration',
+                '/^TicketTemplate.*/',
+                '/^Computer_Software.*/',
+                '/SavedSearch.*/',
+                '/.*Notification.*/',
+                '/.*Cost.*/',
+                '/^Item_.*/',
+                '/^Device.*/',
+                '/.*Validation$/',
+                '/^Network.*/',
+                'CalendarSegment',
+                'IPAddress',
+                'IPNetwork',
+                'FQDN',
+                '/^SoftwareVersion.*/',
+                '/^SoftwareLicense.*/',
+                '/.*Predefined.*/',
+                '/.*Mandatory.*/',
+                '/.*Hidden.*/',
+                'Entity_Reminder',
+                'Document_Item',
+                'Cartridge',
+                '/.*Task.*/',
+                'Entity_RSSFeed',
+                'ComputerVirtualMachine',
+                'FieldUnicity',
+                'PurgeLogs',
+                '/.*_?KnowbaseItem_?.*/',
+                'Consumable',
+                'Infocom',
+                'ComputerAntivirus',
+                'TicketRecurrent',
+                'Agent',
+                'Printer_CartridgeInfo',
+                'PrinterLog',
+                'USBVendor',
+                'PCIVendor',
+                'PendingReasonCron',
+                'Database',
+                'Socket',
+                'Netpoint'
             ]
         );
 
         $fields_values = [
-         'name'            => 'Object to transfer',
-         'entities_id'     => $fentity,
-         'content'         => 'A content',
-         'definition_time' => 'hour',
-         'number_time'     => 4,
-         'begin_date'      => '2020-01-01',
+            'name'            => 'Object to transfer',
+            'entities_id'     => $fentity,
+            'content'         => 'A content',
+            'definition_time' => 'hour',
+            'number_time'     => 4,
+            'begin_date'      => '2020-01-01',
         ];
 
         $count = 0;
@@ -192,39 +192,39 @@ class Transfer extends DbTestCase
         $record = new \DomainRecord();
 
         $did = (int)$domain->add([
-         'name'         => 'glpi-project.org',
-         'entities_id'  => $fentity
+            'name'         => 'glpi-project.org',
+            'entities_id'  => $fentity
         ]);
         $this->integer($did)->isGreaterThan(0);
         $this->boolean($domain->getFromDB($did))->isTrue();
 
         $this->integer(
             (int)$record->add([
-            'name'         => 'glpi-project.org.',
-            'type'         => $type_a,
-            'data'         => '127.0.1.1',
-            'entities_id'  => $fentity,
-            'domains_id'   => $did
+                'name'         => 'glpi-project.org.',
+                'type'         => $type_a,
+                'data'         => '127.0.1.1',
+                'entities_id'  => $fentity,
+                'domains_id'   => $did
             ])
         )->isGreaterThan(0);
 
         $this->integer(
             (int)$record->add([
-            'name'         => 'www.glpi-project.org.',
-            'type'         => $type_cname,
-            'data'         => 'glpi-project.org.',
-            'entities_id'  => $fentity,
-            'domains_id'   => $did
+                'name'         => 'www.glpi-project.org.',
+                'type'         => $type_cname,
+                'data'         => 'glpi-project.org.',
+                'entities_id'  => $fentity,
+                'domains_id'   => $did
             ])
         )->isGreaterThan(0);
 
         $this->integer(
             (int)$record->add([
-            'name'         => 'doc.glpi-project.org.',
-            'type'         => $type_cname,
-            'data'         => 'glpi-doc.rtfd.io',
-            'entities_id'  => $fentity,
-            'domains_id'   => $did
+                'name'         => 'doc.glpi-project.org.',
+                'type'         => $type_cname,
+                'data'         => 'glpi-doc.rtfd.io',
+                'entities_id'  => $fentity,
+                'domains_id'   => $did
             ])
         )->isGreaterThan(0);
 
@@ -251,10 +251,10 @@ class Transfer extends DbTestCase
 
         global $DB;
         $records = $DB->request([
-         'FROM'   => $record->getTable(),
-         'WHERE'  => [
-            'domains_id' => $did
-         ]
+            'FROM'   => $record->getTable(),
+            'WHERE'  => [
+                'domains_id' => $did
+            ]
         ]);
 
         $this->integer(count($records))->isidenticalTo(3);
@@ -269,48 +269,48 @@ class Transfer extends DbTestCase
 
        // Create test computers
         $computers_to_create = [
-         'test_transfer_pc_1',
-         'test_transfer_pc_2',
-         'test_transfer_pc_3',
-         'test_transfer_pc_4',
+            'test_transfer_pc_1',
+            'test_transfer_pc_2',
+            'test_transfer_pc_3',
+            'test_transfer_pc_4',
         ];
         foreach ($computers_to_create as $computer_name) {
             $computer = new Computer();
             $computers_id = $computer->add([
-            'name'        => $computer_name,
-            'entities_id' => $test_entity,
+                'name'        => $computer_name,
+                'entities_id' => $test_entity,
             ]);
             $this->integer($computers_id)->isGreaterThan(0);
         }
 
        // Create test software
         $softwares_to_create = [
-         'test_transfer_software_1',
-         'test_transfer_software_2',
-         'test_transfer_software_3',
+            'test_transfer_software_1',
+            'test_transfer_software_2',
+            'test_transfer_software_3',
         ];
         foreach ($softwares_to_create as $software_name) {
             $software = new Software();
             $softwares_id = $software->add([
-            'name'        => $software_name,
-            'entities_id' => $test_entity,
+                'name'        => $software_name,
+                'entities_id' => $test_entity,
             ]);
             $this->integer($softwares_id)->isGreaterThan(0);
         }
 
        // Create test software versions
         $software_versions_to_create = [
-         'test_transfer_software_1' => ['V1', 'V2'],
-         'test_transfer_software_2' => ['V1', 'V2'],
-         'test_transfer_software_3' => ['V1', 'V2'],
+            'test_transfer_software_1' => ['V1', 'V2'],
+            'test_transfer_software_2' => ['V1', 'V2'],
+            'test_transfer_software_3' => ['V1', 'V2'],
         ];
         foreach ($software_versions_to_create as $software_name => $versions) {
             foreach ($versions as $version) {
                 $softwareversion = new SoftwareVersion();
                 $softwareversions_id = $softwareversion->add([
-                'name'         => $software_name . '::' . $version,
-                'softwares_id' => getItemByTypeName('Software', $software_name, true),
-                'entities_id'  => $test_entity,
+                    'name'         => $software_name . '::' . $version,
+                    'softwares_id' => getItemByTypeName('Software', $software_name, true),
+                    'entities_id'  => $test_entity,
                 ]);
                 $this->integer($softwareversions_id)->isGreaterThan(0);
             }
@@ -319,19 +319,19 @@ class Transfer extends DbTestCase
        // Link softwares and computers
         $item_softwareversion_ids = [];
         $item_softwareversion_to_create = [
-         'test_transfer_pc_1' => ['test_transfer_software_1::V1', 'test_transfer_software_2::V1'],
-         'test_transfer_pc_2' => ['test_transfer_software_1::V2', 'test_transfer_software_2::V2'],
-         'test_transfer_pc_3' => ['test_transfer_software_2::V1', 'test_transfer_software_3::V2'],
-         'test_transfer_pc_4' => ['test_transfer_software_1::V2', 'test_transfer_software_3::V1'],
+            'test_transfer_pc_1' => ['test_transfer_software_1::V1', 'test_transfer_software_2::V1'],
+            'test_transfer_pc_2' => ['test_transfer_software_1::V2', 'test_transfer_software_2::V2'],
+            'test_transfer_pc_3' => ['test_transfer_software_2::V1', 'test_transfer_software_3::V2'],
+            'test_transfer_pc_4' => ['test_transfer_software_1::V2', 'test_transfer_software_3::V1'],
         ];
         foreach ($item_softwareversion_to_create as $computer_name => $versions) {
             foreach ($versions as $version) {
                 $item_softwareversion = new Item_SoftwareVersion();
                 $item_softwareversions_id = $item_softwareversion->add([
-                'items_id'     => getItemByTypeName('Computer', $computer_name, true),
-                'itemtype'     => 'Computer',
-                'softwareversions_id' => getItemByTypeName('SoftwareVersion', $version, true),
-                'entities_id'  => $test_entity,
+                    'items_id'     => getItemByTypeName('Computer', $computer_name, true),
+                    'itemtype'     => 'Computer',
+                    'softwareversions_id' => getItemByTypeName('SoftwareVersion', $version, true),
+                    'entities_id'  => $test_entity,
                 ]);
                 $this->integer($item_softwareversions_id)->isGreaterThan(0);
                 $item_softwareversion_ids[] = $item_softwareversions_id;
@@ -339,44 +339,44 @@ class Transfer extends DbTestCase
         }
 
         return [
-         [
-            'items' => [
-               'Computer' => [
-                  getItemByTypeName('Computer', 'test_transfer_pc_1', true),
-                  getItemByTypeName('Computer', 'test_transfer_pc_2', true),
-               ]
+            [
+                'items' => [
+                    'Computer' => [
+                        getItemByTypeName('Computer', 'test_transfer_pc_1', true),
+                        getItemByTypeName('Computer', 'test_transfer_pc_2', true),
+                    ]
+                ],
+                'entities_id_destination' => $test_entity,
+                'transfer_options'        => ['keep_software' => 1],
+                'expected_softwares_after_transfer' => [
+                    'Computer' => [
+                        getItemByTypeName('Computer', 'test_transfer_pc_1', true) => [
+                            $item_softwareversion_ids[0],
+                            $item_softwareversion_ids[1]
+                        ],
+                        getItemByTypeName('Computer', 'test_transfer_pc_2', true) => [
+                            $item_softwareversion_ids[2],
+                            $item_softwareversion_ids[3]
+                        ],
+                    ]
+                ]
             ],
-            'entities_id_destination' => $test_entity,
-            'transfer_options'        => ['keep_software' => 1],
-            'expected_softwares_after_transfer' => [
-               'Computer' => [
-                  getItemByTypeName('Computer', 'test_transfer_pc_1', true) => [
-                     $item_softwareversion_ids[0],
-                     $item_softwareversion_ids[1]
-                  ],
-                  getItemByTypeName('Computer', 'test_transfer_pc_2', true) => [
-                     $item_softwareversion_ids[2],
-                     $item_softwareversion_ids[3]
-                  ],
-               ]
+            [
+                'items' => [
+                    'Computer' => [
+                        getItemByTypeName('Computer', 'test_transfer_pc_3', true),
+                        getItemByTypeName('Computer', 'test_transfer_pc_4', true),
+                    ]
+                ],
+                'entities_id_destination' => $test_entity,
+                'transfer_options'        => ['keep_software' => 0],
+                'expected_softwares_after_transfer' => [
+                    'Computer' => [
+                        getItemByTypeName('Computer', 'test_transfer_pc_3', true) => [],
+                        getItemByTypeName('Computer', 'test_transfer_pc_4', true) => [],
+                    ]
+                ]
             ]
-         ],
-         [
-            'items' => [
-               'Computer' => [
-                  getItemByTypeName('Computer', 'test_transfer_pc_3', true),
-                  getItemByTypeName('Computer', 'test_transfer_pc_4', true),
-               ]
-            ],
-            'entities_id_destination' => $test_entity,
-            'transfer_options'        => ['keep_software' => 0],
-            'expected_softwares_after_transfer' => [
-               'Computer' => [
-                  getItemByTypeName('Computer', 'test_transfer_pc_3', true) => [],
-                  getItemByTypeName('Computer', 'test_transfer_pc_4', true) => [],
-               ]
-            ]
-         ]
         ];
     }
 
@@ -396,8 +396,8 @@ class Transfer extends DbTestCase
             foreach ($ids as $id) {
                 $item_softwareversion = new Item_SoftwareVersion();
                 $data = $item_softwareversion->find([
-                 'items_id' => $id,
-                 'itemtype' => $itemtype
+                    'items_id' => $id,
+                    'itemtype' => $itemtype
                 ]);
                 $found_ids = array_column($data, 'id');
                 $this->array($found_ids)->isEqualTo($expected_softwares_after_transfer[$itemtype][$id]);
@@ -412,32 +412,32 @@ class Transfer extends DbTestCase
 
        // Create test computers
         $computers_to_create = [
-         'test_transfer_pc_1',
-         'test_transfer_pc_2',
-         'test_transfer_pc_3',
-         'test_transfer_pc_4',
+            'test_transfer_pc_1',
+            'test_transfer_pc_2',
+            'test_transfer_pc_3',
+            'test_transfer_pc_4',
         ];
         foreach ($computers_to_create as $computer_name) {
             $computer = new Computer();
             $computers_id = $computer->add([
-            'name'        => $computer_name,
-            'entities_id' => $test_entity,
+                'name'        => $computer_name,
+                'entities_id' => $test_entity,
             ]);
             $this->integer($computers_id)->isGreaterThan(0);
         }
 
        // Create test certificates
         $certificates_to_create = [
-         'test_transfer_certificate_1',
-         'test_transfer_certificate_2',
-         'test_transfer_certificate_3',
-         'test_transfer_certificate_4',
+            'test_transfer_certificate_1',
+            'test_transfer_certificate_2',
+            'test_transfer_certificate_3',
+            'test_transfer_certificate_4',
         ];
         foreach ($certificates_to_create as $certificate_name) {
             $certificate = new Certificate();
             $certificates_id = $certificate->add([
-            'name'        => $certificate_name,
-            'entities_id' => $test_entity,
+                'name'        => $certificate_name,
+                'entities_id' => $test_entity,
             ]);
             $this->integer($certificates_id)->isGreaterThan(0);
         }
@@ -445,59 +445,59 @@ class Transfer extends DbTestCase
        // Link certificates and computers
         $certificate_item_ids = [];
         $certificate_item_to_create = [
-         'test_transfer_pc_1' => 'test_transfer_certificate_1',
-         'test_transfer_pc_2' => 'test_transfer_certificate_2',
-         'test_transfer_pc_3' => 'test_transfer_certificate_3',
-         'test_transfer_pc_4' => 'test_transfer_certificate_4',
+            'test_transfer_pc_1' => 'test_transfer_certificate_1',
+            'test_transfer_pc_2' => 'test_transfer_certificate_2',
+            'test_transfer_pc_3' => 'test_transfer_certificate_3',
+            'test_transfer_pc_4' => 'test_transfer_certificate_4',
         ];
         foreach ($certificate_item_to_create as $computer_name => $certificate) {
             $certificate_item = new Certificate_Item();
             $certificate_items_id = $certificate_item->add([
-            'items_id'     => getItemByTypeName('Computer', $computer_name, true),
-            'itemtype'     => 'Computer',
-            'certificates_id' => getItemByTypeName('Certificate', $certificate, true)
+                'items_id'     => getItemByTypeName('Computer', $computer_name, true),
+                'itemtype'     => 'Computer',
+                'certificates_id' => getItemByTypeName('Certificate', $certificate, true)
             ]);
             $this->integer($certificate_items_id)->isGreaterThan(0);
             $certificate_item_ids[] = $certificate_items_id;
         }
 
         return [
-         [
-            'items' => [
-               'Computer' => [
-                  getItemByTypeName('Computer', 'test_transfer_pc_1', true),
-                  getItemByTypeName('Computer', 'test_transfer_pc_2', true),
-               ]
+            [
+                'items' => [
+                    'Computer' => [
+                        getItemByTypeName('Computer', 'test_transfer_pc_1', true),
+                        getItemByTypeName('Computer', 'test_transfer_pc_2', true),
+                    ]
+                ],
+                'entities_id_destination' => $test_entity,
+                'transfer_options'        => ['keep_certificate' => 1],
+                'expected_certificates_after_transfer' => [
+                    'Computer' => [
+                        getItemByTypeName('Computer', 'test_transfer_pc_1', true) => [
+                            $certificate_item_ids[0]
+                        ],
+                        getItemByTypeName('Computer', 'test_transfer_pc_2', true) => [
+                            $certificate_item_ids[1]
+                        ],
+                    ]
+                ]
             ],
-            'entities_id_destination' => $test_entity,
-            'transfer_options'        => ['keep_certificate' => 1],
-            'expected_certificates_after_transfer' => [
-               'Computer' => [
-                  getItemByTypeName('Computer', 'test_transfer_pc_1', true) => [
-                     $certificate_item_ids[0]
-                  ],
-                  getItemByTypeName('Computer', 'test_transfer_pc_2', true) => [
-                     $certificate_item_ids[1]
-                  ],
-               ]
+            [
+                'items' => [
+                    'Computer' => [
+                        getItemByTypeName('Computer', 'test_transfer_pc_3', true),
+                        getItemByTypeName('Computer', 'test_transfer_pc_4', true),
+                    ]
+                ],
+                'entities_id_destination' => $test_entity,
+                'transfer_options'        => ['keep_certificate' => 0],
+                'expected_certificates_after_transfer' => [
+                    'Computer' => [
+                        getItemByTypeName('Computer', 'test_transfer_pc_3', true) => [],
+                        getItemByTypeName('Computer', 'test_transfer_pc_4', true) => [],
+                    ]
+                ]
             ]
-         ],
-         [
-            'items' => [
-               'Computer' => [
-                  getItemByTypeName('Computer', 'test_transfer_pc_3', true),
-                  getItemByTypeName('Computer', 'test_transfer_pc_4', true),
-               ]
-            ],
-            'entities_id_destination' => $test_entity,
-            'transfer_options'        => ['keep_certificate' => 0],
-            'expected_certificates_after_transfer' => [
-               'Computer' => [
-                  getItemByTypeName('Computer', 'test_transfer_pc_3', true) => [],
-                  getItemByTypeName('Computer', 'test_transfer_pc_4', true) => [],
-               ]
-            ]
-         ]
         ];
     }
 
@@ -517,8 +517,8 @@ class Transfer extends DbTestCase
             foreach ($ids as $id) {
                 $certificate_item = new Certificate_Item();
                 $data = $certificate_item->find([
-                 'items_id' => $id,
-                 'itemtype' => $itemtype
+                    'items_id' => $id,
+                    'itemtype' => $itemtype
                 ]);
                 $found_ids = array_column($data, 'id');
                 $this->array($found_ids)->isEqualTo($expected_certificates_after_transfer[$itemtype][$id]);

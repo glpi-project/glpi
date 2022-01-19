@@ -107,10 +107,10 @@ class RuleCollection extends CommonDBTM
         global $DB;
 
         $restrict = $this->getRuleListCriteria([
-         'condition' => $condition,
-         'active'    => false,
-         'inherited' => $recursive,
-         'childrens' => $children,
+            'condition' => $condition,
+            'active'    => false,
+            'inherited' => $recursive,
+            'childrens' => $children,
         ]);
 
         $iterator = $DB->request($restrict);
@@ -139,11 +139,11 @@ class RuleCollection extends CommonDBTM
         }
 
         $criteria = [
-         'SELECT' => Rule::getTable() . '.*',
-         'FROM'   => Rule::getTable(),
-         'ORDER'  => [
-            $this->orderby . ' ASC'
-         ]
+            'SELECT' => Rule::getTable() . '.*',
+            'FROM'   => Rule::getTable(),
+            'ORDER'  => [
+                $this->orderby . ' ASC'
+            ]
         ];
 
         $where = [];
@@ -159,12 +159,12 @@ class RuleCollection extends CommonDBTM
         $where['sub_type'] = $this->getRuleClassName();
         if ($this->isRuleRecursive()) {
             $criteria['LEFT JOIN'] = [
-            Entity::getTable() => [
-               'ON' => [
-                  Entity::getTable()   => 'id',
-                  Rule::getTable()     => 'entities_id'
-               ]
-            ]
+                Entity::getTable() => [
+                    'ON' => [
+                        Entity::getTable()   => 'id',
+                        Rule::getTable()     => 'entities_id'
+                    ]
+                ]
             ];
 
             if (!$p['childrens']) {
@@ -180,8 +180,8 @@ class RuleCollection extends CommonDBTM
             }
 
             $criteria['ORDER'] = [
-            Entity::getTable() . '.level ASC',
-            $this->orderby . ' ASC'
+                Entity::getTable() . '.level ASC',
+                $this->orderby . ' ASC'
             ];
         }
 
@@ -495,8 +495,9 @@ class RuleCollection extends CommonDBTM
             echo "<tr class='tab_bg_1'><td class='center' width='50%'>";
             echo __('Rules used for') . "</td><td>";
             $rule->dropdownConditions(['value' => $p['condition'],
-                                         'on_change'  => 'reloadTab("start=0&inherited=' . $p['inherited']
-                                                         . '&childrens=' . $p['childrens'] . '&condition="+this.value)']);
+                'on_change'  => 'reloadTab("start=0&inherited=' . $p['inherited']
+                                                         . '&childrens=' . $p['childrens'] . '&condition="+this.value)'
+            ]);
             echo "</td></tr></table>";
         }
 
@@ -517,11 +518,13 @@ class RuleCollection extends CommonDBTM
 
         if ($canedit && $nb) {
             $massiveactionparams = ['num_displayed' => min($p['limit'], $nb),
-                                      'container'     => 'mass' . __CLASS__ . $rand,
-                                      'extraparams'   => ['entity' => $this->entity,
-                                                               'condition' => $p['condition'],
-                                                               'rule_class_name'
-                                                                 => $this->getRuleClassName()]];
+                'container'     => 'mass' . __CLASS__ . $rand,
+                'extraparams'   => ['entity' => $this->entity,
+                    'condition' => $p['condition'],
+                    'rule_class_name'
+                                                                 => $this->getRuleClassName()
+                ]
+            ];
             Html::showMassiveActions($massiveactionparams);
         }
 
@@ -688,9 +691,9 @@ JAVASCRIPT;
         global $DB;
 
         $criteria = [
-         'SELECT' => 'ranking',
-         'FROM'   => 'glpi_rules',
-         'WHERE'  => ['id' => $ID]
+            'SELECT' => 'ranking',
+            'FROM'   => 'glpi_rules',
+            'WHERE'  => ['id' => $ID]
         ];
 
         $add_condition = [];
@@ -704,12 +707,12 @@ JAVASCRIPT;
             $current_rank = $result['ranking'];
            // Search rules to switch
             $criteria = [
-            'SELECT' => ['id', 'ranking'],
-            'FROM'   => 'glpi_rules',
-            'WHERE'  => [
-               'sub_type'  => $this->getRuleClassName()
-            ] + $add_condition,
-            'LIMIT'  => 1
+                'SELECT' => ['id', 'ranking'],
+                'FROM'   => 'glpi_rules',
+                'WHERE'  => [
+                    'sub_type'  => $this->getRuleClassName()
+                ] + $add_condition,
+                'LIMIT'  => 1
             ];
 
             switch ($action) {
@@ -738,9 +741,9 @@ JAVASCRIPT;
                 $rule = $this->getRuleClass();
                 $result = false;
                 $criteria = [
-                'SELECT' => ['id', 'ranking'],
-                'FROM'   => 'glpi_rules',
-                'WHERE'  => ['sub_type' => $this->getRuleClassName()]
+                    'SELECT' => ['id', 'ranking'],
+                    'FROM'   => 'glpi_rules',
+                    'WHERE'  => ['sub_type' => $this->getRuleClassName()]
                 ];
                 $diff = $new_rank - $current_rank;
                 switch ($action) {
@@ -748,8 +751,8 @@ JAVASCRIPT;
                         $criteria['WHERE'] = array_merge(
                             $criteria['WHERE'],
                             [
-                            ['ranking' => ['>', $new_rank]],
-                            ['ranking' => ['<=', $current_rank]]
+                                ['ranking' => ['>', $new_rank]],
+                                ['ranking' => ['<=', $current_rank]]
                             ]
                         );
                         $diff += 1;
@@ -759,8 +762,8 @@ JAVASCRIPT;
                         $criteria['WHERE'] = array_merge(
                             $criteria['WHERE'],
                             [
-                            ['ranking' => ['>=', $current_rank]],
-                            ['ranking' => ['<', $new_rank]]
+                                ['ranking' => ['>=', $current_rank]],
+                                ['ranking' => ['<', $new_rank]]
                             ]
                         );
                         $diff -= 1;
@@ -780,16 +783,16 @@ JAVASCRIPT;
                 } else {
                    // Only move one
                     $result = $rule->update([
-                    'id'      => $ID,
-                    'ranking' => $new_rank
+                        'id'      => $ID,
+                        'ranking' => $new_rank
                     ]);
                 }
 
                // Update reference
                 if ($result) {
                     $result = $rule->update([
-                    'id'      => $other_ID,
-                    'ranking' => $current_rank
+                        'id'      => $other_ID,
+                        'ranking' => $current_rank
                     ]);
                 }
                 return $result;
@@ -813,11 +816,11 @@ JAVASCRIPT;
         $result = $DB->update(
             'glpi_rules',
             [
-            'ranking' => new \QueryExpression($DB->quoteName('ranking') . ' - 1')
+                'ranking' => new \QueryExpression($DB->quoteName('ranking') . ' - 1')
             ],
             [
-            'sub_type'  => $this->getRuleClassName(),
-            'ranking'   => ['>', $ranking]
+                'sub_type'  => $this->getRuleClassName(),
+                'ranking'   => ['>', $ranking]
             ]
         );
         return $result;
@@ -850,9 +853,9 @@ JAVASCRIPT;
         } else if ($type == self::MOVE_AFTER) {
            // Move after all
             $result = $DB->request([
-            'SELECT' => ['MAX' => 'ranking AS maxi'],
-            'FROM'   => 'glpi_rules',
-            'WHERE'  => ['sub_type' => $this->getRuleClassName()]
+                'SELECT' => ['MAX' => 'ranking AS maxi'],
+                'FROM'   => 'glpi_rules',
+                'WHERE'  => ['sub_type' => $this->getRuleClassName()]
             ])->current();
             $rank   = $result['maxi'];
         } else {
@@ -872,13 +875,13 @@ JAVASCRIPT;
 
            // Move back all rules between old and new rank
             $iterator = $DB->request([
-            'SELECT' => ['id', 'ranking'],
-            'FROM'   => 'glpi_rules',
-            'WHERE'  => [
-               'sub_type'  => $this->getRuleClassName(),
-               ['ranking'  => ['>', $old_rank]],
-               ['ranking'  => ['<=', $rank]]
-            ]
+                'SELECT' => ['id', 'ranking'],
+                'FROM'   => 'glpi_rules',
+                'WHERE'  => [
+                    'sub_type'  => $this->getRuleClassName(),
+                    ['ranking'  => ['>', $old_rank]],
+                    ['ranking'  => ['<=', $rank]]
+                ]
             ]);
             foreach ($iterator as $data) {
                 $data['ranking']--;
@@ -891,13 +894,13 @@ JAVASCRIPT;
 
            // Move forward all rule  between old and new rank
             $iterator = $DB->request([
-            'SELECT' => ['id', 'ranking'],
-            'FROM'   => 'glpi_rules',
-            'WHERE'  => [
-               'sub_type'  => $this->getRuleClassName(),
-               ['ranking'  => ['>=', $rank]],
-               ['ranking'  => ['<', $old_rank]]
-            ]
+                'SELECT' => ['id', 'ranking'],
+                'FROM'   => 'glpi_rules',
+                'WHERE'  => [
+                    'sub_type'  => $this->getRuleClassName(),
+                    ['ranking'  => ['>=', $rank]],
+                    ['ranking'  => ['<', $old_rank]]
+                ]
             ]);
             foreach ($iterator as $data) {
                 $data['ranking']++;
@@ -910,8 +913,8 @@ JAVASCRIPT;
        // Move the rule
         if ($result && ($old_rank != $rank)) {
             $result = $rule->update([
-            'id'      => $ID,
-            'ranking' => $rank
+                'id'      => $ID,
+                'ranking' => $rank
             ]);
         }
         return ($result ? true : false);
@@ -931,9 +934,9 @@ JAVASCRIPT;
 
         $base_url = "{$CFG_GLPI["root_doc"]}/front/rule.backup.php";
         $buttons  = [
-         "{$base_url}?action=import" =>
+            "{$base_url}?action=import" =>
             "<i class='fas fa-upload'></i><span>" . _x('button', 'Import') . "</span>",
-         "{$base_url}?action=export" =>
+            "{$base_url}?action=export" =>
             "<i class='fas fa-download'></i><span>" . _x('button', 'Export') . "</span>",
         ];
 
@@ -1314,8 +1317,9 @@ JAVASCRIPT;
                     Dropdown::show(
                         'Entity',
                         ['comments' => false,
-                                    'name'     => "new_entities[" .
-                        $rules['rule'][$k_rule]['uuid'] . "]"]
+                            'name'     => "new_entities[" .
+                        $rules['rule'][$k_rule]['uuid'] . "]"
+                        ]
                     );
                     echo "</td>";
                     echo "</tr>";
@@ -1645,7 +1649,7 @@ JAVASCRIPT;
             $rule->criterias = [];
             foreach ($input as $criteria) {
                 $rule->criterias[] = (object)[
-                'fields' => ['criteria' => $criteria],
+                    'fields' => ['criteria' => $criteria],
                 ];
             }
             $rule->showSpecificCriteriasForPreview($_POST);
@@ -1760,8 +1764,10 @@ JAVASCRIPT;
                         $plugin,
                         'ruleCollectionPrepareInputDataForProcess',
                         ['rule_itemtype' => $this->getRuleClassName(),
-                                                   'values'        => ['input' => $input,
-                        'params' => $params]]
+                            'values'        => ['input' => $input,
+                                'params' => $params
+                            ]
+                        ]
                     );
                     if (is_array($results)) {
                         foreach ($results as $id => $result) {
@@ -1793,21 +1799,21 @@ JAVASCRIPT;
         $input = [];
 
         $iterator = $DB->request([
-         'SELECT'          => 'glpi_rulecriterias.criteria',
-         'DISTINCT'        => true,
-         'FROM'            => 'glpi_rulecriterias',
-         'INNER JOIN'      => [
-            'glpi_rules'   => [
-               'ON' => [
-                  'glpi_rulecriterias' => 'rules_id',
-                  'glpi_rules'         => 'id'
-               ]
-            ]
-         ],
-         'WHERE'           => [
-            'glpi_rules.is_active'  => 1,
-            'glpi_rules.sub_type'   => $this->getRuleClassName()
-         ] + $limit
+            'SELECT'          => 'glpi_rulecriterias.criteria',
+            'DISTINCT'        => true,
+            'FROM'            => 'glpi_rulecriterias',
+            'INNER JOIN'      => [
+                'glpi_rules'   => [
+                    'ON' => [
+                        'glpi_rulecriterias' => 'rules_id',
+                        'glpi_rules'         => 'id'
+                    ]
+                ]
+            ],
+            'WHERE'           => [
+                'glpi_rules.is_active'  => 1,
+                'glpi_rules.sub_type'   => $this->getRuleClassName()
+            ] + $limit
         ]);
 
         foreach ($iterator as $data) {
@@ -1951,7 +1957,8 @@ JAVASCRIPT;
                         $plugin,
                         "preProcessRuleCollectionPreviewResults",
                         ['output' => $output,
-                        'params' => $params]
+                            'params' => $params
+                        ]
                     );
                     if (is_array($results)) {
                         foreach ($results as $id => $result) {
@@ -2032,21 +2039,21 @@ JAVASCRIPT;
         $params = [];
 
         $iterator = $DB->request([
-         'SELECT'          => 'glpi_rulecriterias.criteria',
-         'DISTINCT'        => true,
-         'FROM'            => 'glpi_rulecriterias',
-         'INNER JOIN'      => [
-            'glpi_rules'   => [
-               'ON' => [
-                  'glpi_rulecriterias' => 'rules_id',
-                  'glpi_rules'         => 'id'
-               ]
+            'SELECT'          => 'glpi_rulecriterias.criteria',
+            'DISTINCT'        => true,
+            'FROM'            => 'glpi_rulecriterias',
+            'INNER JOIN'      => [
+                'glpi_rules'   => [
+                    'ON' => [
+                        'glpi_rulecriterias' => 'rules_id',
+                        'glpi_rules'         => 'id'
+                    ]
+                ]
+            ],
+            'WHERE'           => [
+                'glpi_rules.is_active'  => 1,
+                'glpi_rules.sub_type'   => $this->getRuleClassName()
             ]
-         ],
-         'WHERE'           => [
-            'glpi_rules.is_active'  => 1,
-            'glpi_rules.sub_type'   => $this->getRuleClassName()
-         ]
         ]);
 
         foreach ($iterator as $data) {
@@ -2184,9 +2191,9 @@ JAVASCRIPT;
                 $ruleClassName = $rulecollection->getRuleClassName();
 
                 $rules[] = [
-                'label' => $title,
-                'link'  => $ruleClassName::getSearchURL(),
-                'icon'  => $ruleClassName::getIcon(),
+                    'label' => $title,
+                    'link'  => $ruleClassName::getSearchURL(),
+                    'icon'  => $ruleClassName::getIcon(),
                 ];
             }
         }
@@ -2196,17 +2203,17 @@ JAVASCRIPT;
             && Session::isMultiEntitiesMode()
         ) {
             $rules[] = [
-            'label' => __('Transfer'),
-            'link'  => Transfer::getSearchURL(),
-            'icon'  => Transfer::getIcon(),
+                'label' => __('Transfer'),
+                'link'  => Transfer::getSearchURL(),
+                'icon'  => Transfer::getIcon(),
             ];
         }
 
         if (Session::haveRight("config", READ)) {
             $rules[] = [
-            'label' => _n('Blacklist', 'Blacklists', Session::getPluralNumber()),
-            'link'  => Blacklist::getSearchURL(),
-            'icon'  => Blacklist::getIcon(),
+                'label' => _n('Blacklist', 'Blacklists', Session::getPluralNumber()),
+                'link'  => Blacklist::getSearchURL(),
+                'icon'  => Blacklist::getIcon(),
             ];
         }
 
@@ -2227,123 +2234,123 @@ JAVASCRIPT;
 
         if (Session::haveRight("rule_dictionnary_software", READ)) {
             $entries[] = [
-            'label'  => Software::getTypeName(Session::getPluralNumber()),
-            'link'   => 'ruledictionnarysoftware.php',
-            'icon'   => Software::getIcon(),
+                'label'  => Software::getTypeName(Session::getPluralNumber()),
+                'link'   => 'ruledictionnarysoftware.php',
+                'icon'   => Software::getIcon(),
             ];
         }
 
         if (Session::haveRight("rule_dictionnary_dropdown", READ)) {
             $entries[] = [
-            'label'  => Manufacturer::getTypeName(Session::getPluralNumber()),
-            'link'   => 'ruledictionnarymanufacturer.php',
-            'icon'   => Manufacturer::getIcon(),
+                'label'  => Manufacturer::getTypeName(Session::getPluralNumber()),
+                'link'   => 'ruledictionnarymanufacturer.php',
+                'icon'   => Manufacturer::getIcon(),
             ];
         }
 
         if (Session::haveRight("rule_dictionnary_printer", READ)) {
             $entries[] = [
-            'label'  => Printer::getTypeName(Session::getPluralNumber()),
-            'link'   => 'ruledictionnaryprinter.php',
-            'icon'   => Printer::getIcon(),
+                'label'  => Printer::getTypeName(Session::getPluralNumber()),
+                'link'   => 'ruledictionnaryprinter.php',
+                'icon'   => Printer::getIcon(),
             ];
         }
 
         if (count($entries)) {
             $dictionnaries[] = [
-            'type'      => __('Global dictionary'),
-            'entries'   => $entries
+                'type'      => __('Global dictionary'),
+                'entries'   => $entries
             ];
         }
 
         if (Session::haveRight("rule_dictionnary_dropdown", READ)) {
             $dictionnaries[] = [
-            'type'      => _n('Model', 'Models', Session::getPluralNumber()),
-            'entries'   => [
-               [
-                  'label'  => ComputerModel::getTypeName(Session::getPluralNumber()),
-                  'link'   => 'ruledictionnarycomputermodel.php',
-                  'icon'   => ComputerModel::getIcon(),
-               ], [
-                  'label'  => MonitorModel::getTypeName(Session::getPluralNumber()),
-                  'link'   => 'ruledictionnarymonitormodel.php',
-                  'icon'   => MonitorModel::getIcon(),
-               ], [
-                  'label'  => PrinterModel::getTypeName(Session::getPluralNumber()),
-                  'link'   => 'ruledictionnaryprintermodel.php',
-                  'icon'   => PrinterModel::getIcon(),
-               ], [
-                  'label'  => CommonDeviceModel::getTypeName(Session::getPluralNumber()),
-                  'link'   => 'ruledictionnaryperipheralmodel.php',
-                  'icon'   => CommonDeviceModel::getIcon(),
-               ], [
-                  'label'  => NetworkEquipmentModel::getTypeName(Session::getPluralNumber()),
-                  'link'   => 'ruledictionnarynetworkequipmentmodel.php',
-                  'icon'   => NetworkEquipmentModel::getIcon(),
-               ], [
-                  'label'  => PhoneModel::getTypeName(Session::getPluralNumber()),
-                  'link'   => 'ruledictionnaryphonemodel.php',
-                  'icon'   => PhoneModel::getIcon(),
-               ]
-            ]
+                'type'      => _n('Model', 'Models', Session::getPluralNumber()),
+                'entries'   => [
+                    [
+                        'label'  => ComputerModel::getTypeName(Session::getPluralNumber()),
+                        'link'   => 'ruledictionnarycomputermodel.php',
+                        'icon'   => ComputerModel::getIcon(),
+                    ], [
+                        'label'  => MonitorModel::getTypeName(Session::getPluralNumber()),
+                        'link'   => 'ruledictionnarymonitormodel.php',
+                        'icon'   => MonitorModel::getIcon(),
+                    ], [
+                        'label'  => PrinterModel::getTypeName(Session::getPluralNumber()),
+                        'link'   => 'ruledictionnaryprintermodel.php',
+                        'icon'   => PrinterModel::getIcon(),
+                    ], [
+                        'label'  => CommonDeviceModel::getTypeName(Session::getPluralNumber()),
+                        'link'   => 'ruledictionnaryperipheralmodel.php',
+                        'icon'   => CommonDeviceModel::getIcon(),
+                    ], [
+                        'label'  => NetworkEquipmentModel::getTypeName(Session::getPluralNumber()),
+                        'link'   => 'ruledictionnarynetworkequipmentmodel.php',
+                        'icon'   => NetworkEquipmentModel::getIcon(),
+                    ], [
+                        'label'  => PhoneModel::getTypeName(Session::getPluralNumber()),
+                        'link'   => 'ruledictionnaryphonemodel.php',
+                        'icon'   => PhoneModel::getIcon(),
+                    ]
+                ]
             ];
         }
 
         if (Session::haveRight("rule_dictionnary_dropdown", READ)) {
             $dictionnaries[] = [
-            'type'      => _n('Type', 'Types', Session::getPluralNumber()),
-            'entries'   => [
-               [
-                  'label'  => ComputerType::getTypeName(Session::getPluralNumber()),
-                  'link'   => 'ruledictionnarycomputertype.php',
-                  'icon'   => ComputerType::getIcon(),
-               ], [
-                  'label'  => MonitorType::getTypeName(Session::getPluralNumber()),
-                  'link'   => 'ruledictionnarymonitortype.php',
-                  'icon'   => MonitorType::getIcon(),
-               ], [
-                  'label'  => PrinterType::getTypeName(Session::getPluralNumber()),
-                  'link'   => 'ruledictionnaryprintertype.php',
-                  'icon'   => PrinterType::getIcon(),
-               ], [
-                  'label'  => CommonDeviceType::getTypeName(Session::getPluralNumber()),
-                  'link'   => 'ruledictionnaryperipheraltype.php',
-                  'icon'   => CommonDeviceType::getIcon(),
-               ], [
-                  'label'  => NetworkEquipmentType::getTypeName(Session::getPluralNumber()),
-                  'link'   => 'ruledictionnarynetworkequipmenttype.php',
-                  'icon'   => NetworkEquipmentType::getIcon(),
-               ], [
-                  'label'  => PhoneType::getTypeName(Session::getPluralNumber()),
-                  'link'   => 'ruledictionnaryphonetype.php',
-                  'icon'   => PhoneType::getIcon(),
-               ]
-            ]
+                'type'      => _n('Type', 'Types', Session::getPluralNumber()),
+                'entries'   => [
+                    [
+                        'label'  => ComputerType::getTypeName(Session::getPluralNumber()),
+                        'link'   => 'ruledictionnarycomputertype.php',
+                        'icon'   => ComputerType::getIcon(),
+                    ], [
+                        'label'  => MonitorType::getTypeName(Session::getPluralNumber()),
+                        'link'   => 'ruledictionnarymonitortype.php',
+                        'icon'   => MonitorType::getIcon(),
+                    ], [
+                        'label'  => PrinterType::getTypeName(Session::getPluralNumber()),
+                        'link'   => 'ruledictionnaryprintertype.php',
+                        'icon'   => PrinterType::getIcon(),
+                    ], [
+                        'label'  => CommonDeviceType::getTypeName(Session::getPluralNumber()),
+                        'link'   => 'ruledictionnaryperipheraltype.php',
+                        'icon'   => CommonDeviceType::getIcon(),
+                    ], [
+                        'label'  => NetworkEquipmentType::getTypeName(Session::getPluralNumber()),
+                        'link'   => 'ruledictionnarynetworkequipmenttype.php',
+                        'icon'   => NetworkEquipmentType::getIcon(),
+                    ], [
+                        'label'  => PhoneType::getTypeName(Session::getPluralNumber()),
+                        'link'   => 'ruledictionnaryphonetype.php',
+                        'icon'   => PhoneType::getIcon(),
+                    ]
+                ]
             ];
         }
 
         if (Session::haveRight("rule_dictionnary_dropdown", READ)) {
             $dictionnaries[] = [
-            'type'      => OperatingSystem::getTypeName(Session::getPluralNumber()),
-            'entries'   => [
-               [
-                  'label'  => OperatingSystem::getTypeName(Session::getPluralNumber()),
-                  'link'   => 'ruledictionnaryoperatingsystem.php',
-                  'icon'   => OperatingSystem::getIcon(),
-               ], [
-                  'label'  => OperatingSystemServicePack::getTypeName(Session::getPluralNumber()),
-                  'link'   => 'ruledictionnaryoperatingsystemservicepack.php',
-                  'icon'   => OperatingSystemServicePack::getIcon(),
-               ], [
-                  'label'  => OperatingSystemVersion::getTypeName(Session::getPluralNumber()),
-                  'link'   => 'ruledictionnaryoperatingsystemversion.php',
-                  'icon'   => OperatingSystemVersion::getIcon(),
-               ], [
-                  'label'  => OperatingSystemArchitecture::getTypeName(Session::getPluralNumber()),
-                  'link'   => 'ruledictionnaryoperatingsystemarchitecture.php',
-                  'icon'   => OperatingSystemArchitecture::getIcon(),
-               ]
-            ]
+                'type'      => OperatingSystem::getTypeName(Session::getPluralNumber()),
+                'entries'   => [
+                    [
+                        'label'  => OperatingSystem::getTypeName(Session::getPluralNumber()),
+                        'link'   => 'ruledictionnaryoperatingsystem.php',
+                        'icon'   => OperatingSystem::getIcon(),
+                    ], [
+                        'label'  => OperatingSystemServicePack::getTypeName(Session::getPluralNumber()),
+                        'link'   => 'ruledictionnaryoperatingsystemservicepack.php',
+                        'icon'   => OperatingSystemServicePack::getIcon(),
+                    ], [
+                        'label'  => OperatingSystemVersion::getTypeName(Session::getPluralNumber()),
+                        'link'   => 'ruledictionnaryoperatingsystemversion.php',
+                        'icon'   => OperatingSystemVersion::getIcon(),
+                    ], [
+                        'label'  => OperatingSystemArchitecture::getTypeName(Session::getPluralNumber()),
+                        'link'   => 'ruledictionnaryoperatingsystemarchitecture.php',
+                        'icon'   => OperatingSystemArchitecture::getIcon(),
+                    ]
+                ]
             ];
         }
 

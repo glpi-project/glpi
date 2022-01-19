@@ -100,22 +100,22 @@ class Impact extends CommonGLPI
         } else if ($is_enabled_asset) {
            // If on an asset, get the number of its direct dependencies
             $total = count($DB->request([
-            'FROM'  => ImpactRelation::getTable(),
-            'WHERE' => [
-               'OR' => [
-                  [
+                'FROM'  => ImpactRelation::getTable(),
+                'WHERE' => [
+                    'OR' => [
+                        [
                      // Source item is our item
-                     'itemtype_source' => get_class($item),
-                     'items_id_source' => $item->fields['id'],
-                  ],
-                  [
+                            'itemtype_source' => get_class($item),
+                            'items_id_source' => $item->fields['id'],
+                        ],
+                        [
                      // Impacted item is our item AND source item is enabled
-                     'itemtype_impacted' => get_class($item),
-                     'items_id_impacted' => $item->fields['id'],
-                     'itemtype_source'   => self::getEnabledItemtypes()
-                  ]
-               ]
-            ]
+                            'itemtype_impacted' => get_class($item),
+                            'items_id_impacted' => $item->fields['id'],
+                            'itemtype_source'   => self::getEnabledItemtypes()
+                        ]
+                    ]
+                ]
             ]));
         }
 
@@ -169,9 +169,9 @@ class Impact extends CommonGLPI
                              continue;
                         }
                         $items_data[] = [
-                        'itemtype' => $itemtype,
-                        'items_id' => $linked_item_id,
-                        'name'     => $item->getNameID(),
+                            'itemtype' => $itemtype,
+                            'items_id' => $linked_item_id,
+                            'name'     => $item->getNameID(),
                         ];
                     }
                 }
@@ -259,8 +259,8 @@ class Impact extends CommonGLPI
 
        // One table will be printed for each direction
         $lists = [
-         __("Impact")      => self::DIRECTION_FORWARD,
-         __("Impacted by") => self::DIRECTION_BACKWARD,
+            __("Impact")      => self::DIRECTION_FORWARD,
+            __("Impacted by") => self::DIRECTION_BACKWARD,
         ];
         $has_impact = false;
 
@@ -382,22 +382,22 @@ class Impact extends CommonGLPI
             $setting_dialog .= '<tr>';
             $setting_dialog .= '<td><label for="impact_max_depth_' . $rand . '">' . __("Max depth") . '</label></td>';
             $setting_dialog .= '<td>' . Html::input("max_depth", [
-            'id'    => "impact_max_depth_$rand",
-            'value' => $max_depth >= self::MAX_DEPTH ? '' : $max_depth,
+                'id'    => "impact_max_depth_$rand",
+                'value' => $max_depth >= self::MAX_DEPTH ? '' : $max_depth,
             ]) . '</td>';
             $setting_dialog .= '</tr>';
             $setting_dialog .= '<tr>';
             $setting_dialog .= '<td><label for="check_no_limit_' . $rand . '">' . __("No limit") . '</label></td>';
             $setting_dialog .= '<td>' . Html::getCheckbox([
-             'name'    => 'no_limit',
-             'id'      => "check_no_limit_$rand",
-             'checked' => $max_depth >= self::MAX_DEPTH,
+                'name'    => 'no_limit',
+                'id'      => "check_no_limit_$rand",
+                'checked' => $max_depth >= self::MAX_DEPTH,
             ]) . '</td>';
             $setting_dialog .= '</tr>';
             $setting_dialog .= '</table>';
             $setting_dialog .= Html::input('id', [
-             'type'  => "hidden",
-             'value' => $impact_context->fields['id'],
+                'type'  => "hidden",
+                'value' => $impact_context->fields['id'],
             ]);
             $setting_dialog .=  Html::submit(__('Save'), ['name' => 'update']);
             $setting_dialog .= Html::closeForm(false);
@@ -627,8 +627,8 @@ class Impact extends CommonGLPI
             $itemtype_item = new $itemtype();
             $itemtype_item->getFromDB($items_id);
             $data[$itemtype][] = [
-            'stored' => $itemtype_item,
-            'node'   => $node,
+                'stored' => $itemtype_item,
+                'node'   => $node,
             ];
         }
 
@@ -646,8 +646,8 @@ class Impact extends CommonGLPI
     public static function filterGraph(array $graph, int $direction)
     {
         $new_graph = [
-         'edges' => [],
-         'nodes' => [],
+            'edges' => [],
+            'nodes' => [],
         ];
 
        // For each edge in the graph
@@ -893,8 +893,8 @@ class Impact extends CommonGLPI
        // Return empty result if the user doesn't have READ rights
         if (!Session::haveRight($itemtype::$rightname, READ)) {
             return [
-            "items" => [],
-            "total" => 0
+                "items" => [],
+                "total" => 0
             ];
         }
 
@@ -906,12 +906,12 @@ class Impact extends CommonGLPI
        // Search for items
         $table = $itemtype::getTable();
         $base_request = [
-         'FROM'   => $table,
-         'WHERE'  => [
-            'NOT' => [
-               "$table.id" => $used
+            'FROM'   => $table,
+            'WHERE'  => [
+                'NOT' => [
+                    "$table.id" => $used
+                ],
             ],
-         ],
         ];
 
        // Add friendly name search criteria
@@ -944,14 +944,14 @@ class Impact extends CommonGLPI
         }
 
         $select = [
-         'SELECT' => ["$table.id", $itemtype::getFriendlyNameFields()],
+            'SELECT' => ["$table.id", $itemtype::getFriendlyNameFields()],
         ];
         $limit = [
-         'START' => $page * 20,
-         'LIMIT' => "20",
+            'START' => $page * 20,
+            'LIMIT' => "20",
         ];
         $count = [
-         'COUNT' => "total",
+            'COUNT' => "total",
         ];
 
        // Get items
@@ -961,8 +961,8 @@ class Impact extends CommonGLPI
         $total = $DB->request($base_request + $count);
 
         return [
-         "items" => iterator_to_array($rows, false),
-         "total" => iterator_to_array($total, false)[0]['total'],
+            "items" => iterator_to_array($rows, false),
+            "total" => iterator_to_array($total, false)[0]['total'],
         ];
     }
 
@@ -995,8 +995,8 @@ class Impact extends CommonGLPI
         echo '<div class="impact-side-select-itemtype">';
 
         echo Html::input("impact-side-filter-itemtypes", [
-         'id' => 'impact-side-filter-itemtypes',
-         'placeholder' => __('Filter itemtypes...'),
+            'id' => 'impact-side-filter-itemtypes',
+            'placeholder' => __('Filter itemtypes...'),
         ]);
 
         echo '<div class="impact-side-filter-itemtypes-items">';
@@ -1029,8 +1029,8 @@ class Impact extends CommonGLPI
         echo '<div class="impact-side-search">';
         echo '<h4><i class="fas fa-chevron-left"></i><img><span></span></h4>';
         echo Html::input("impact-side-filter-assets", [
-         'id' => 'impact-side-filter-assets',
-         'placeholder' => __('Filter assets...'),
+            'id' => 'impact-side-filter-assets',
+            'placeholder' => __('Filter assets...'),
         ]);
 
         echo '<div class="impact-side-search-panel">';
@@ -1060,18 +1060,18 @@ class Impact extends CommonGLPI
         echo '<h4>' . __('Visibility') . '</h4>';
         echo '<div class="impact-side-settings-item">';
         echo Html::getCheckbox([
-         'id'      => "toggle_impact",
-         'name'    => "toggle_impact",
-         'checked' => "true",
+            'id'      => "toggle_impact",
+            'name'    => "toggle_impact",
+            'checked' => "true",
         ]);
         echo '<span class="impact-checkbox-label">' . __("Show impact") . '</span>';
         echo '</div>';
 
         echo '<div class="impact-side-settings-item">';
         echo Html::getCheckbox([
-         'id'      => "toggle_depends",
-         'name'    => "toggle_depends",
-         'checked' => "true",
+            'id'      => "toggle_depends",
+            'name'    => "toggle_depends",
+            'checked' => "true",
         ]);
         echo '<span class="impact-checkbox-label">' . __("Show depends") . '</span>';
         echo '</div>';
@@ -1152,8 +1152,8 @@ class Impact extends CommonGLPI
         $nodes[self::getNodeID($item)]['start'] = 1;
 
         return [
-         'nodes' => $nodes,
-         'edges' => $edges
+            'nodes' => $nodes,
+            'edges' => $edges
         ];
     }
 
@@ -1201,11 +1201,11 @@ class Impact extends CommonGLPI
 
        // Get relations of the current node
         $relations = $DB->request([
-         'FROM'   => ImpactRelation::getTable(),
-         'WHERE'  => [
-            'itemtype_' . $target => get_class($node),
-            'items_id_' . $target => $node->fields['id']
-         ]
+            'FROM'   => ImpactRelation::getTable(),
+            'WHERE'  => [
+                'itemtype_' . $target => get_class($node),
+                'items_id_' . $target => $node->fields['id']
+            ]
         ]);
 
        // Add current code to the graph if we found at least one impact relation
@@ -1294,10 +1294,10 @@ class Impact extends CommonGLPI
 
        // Define basic data of the new node
         $new_node = [
-         'id'          => $key,
-         'label'       => $item->getFriendlyName(),
-         'image'       => $CFG_GLPI['root_doc'] . "/$image_name",
-         'ITILObjects' => $item->getITILTickets(true),
+            'id'          => $key,
+            'label'       => $item->getFriendlyName(),
+            'image'       => $CFG_GLPI['root_doc'] . "/$image_name",
+            'ITILObjects' => $item->getITILTickets(true),
         ];
 
        // Only set GOTO link if the user have READ rights
@@ -1333,9 +1333,9 @@ class Impact extends CommonGLPI
             $user->getFromDB(Session::getLoginUserID());
             $user->computePreferences();
             $new_node['badge'] = [
-            'color'  => $user->fields["priority_$priority"],
-            'count'  => $nb_incidents + $nb_problems,
-            'target' => $target,
+                'color'  => $user->fields["priority_$priority"],
+                'count'  => $nb_incidents + $nb_problems,
+                'target' => $target,
             ];
         }
 
@@ -1360,9 +1360,9 @@ class Impact extends CommonGLPI
 
             if (!isset($nodes[$new_node['parent']])) {
                 $nodes[$new_node['parent']] = [
-                'id'    => $compound->fields['id'],
-                'label' => $compound->fields['name'],
-                'color' => $compound->fields['color'],
+                    'id'    => $compound->fields['id'],
+                    'label' => $compound->fields['name'],
+                    'color' => $compound->fields['color'],
                 ];
             }
         }
@@ -1418,10 +1418,10 @@ class Impact extends CommonGLPI
 
        // Add the new edge
         $edges[$key] = [
-         'id'     => $key,
-         'source' => $from,
-         'target' => $to,
-         'flag'   => $direction
+            'id'     => $key,
+            'source' => $from,
+            'target' => $to,
+            'flag'   => $direction
         ];
     }
 
@@ -1458,9 +1458,9 @@ class Impact extends CommonGLPI
         $impact_item = ImpactItem::findForItem($item);
 
         $params = array_intersect_key($impact_item->fields, [
-         'parent_id'         => 1,
-         'impactcontexts_id' => 1,
-         'is_slave'          => 1,
+            'parent_id'         => 1,
+            'impactcontexts_id' => 1,
+            'is_slave'          => 1,
         ]);
 
        // Load context if exist
@@ -1471,16 +1471,16 @@ class Impact extends CommonGLPI
                 $params = $params + array_intersect_key(
                     $impact_context->fields,
                     [
-                    'positions'                => 1,
-                    'zoom'                     => 1,
-                    'pan_x'                    => 1,
-                    'pan_y'                    => 1,
-                    'impact_color'             => 1,
-                    'depends_color'            => 1,
-                    'impact_and_depends_color' => 1,
-                    'show_depends'             => 1,
-                    'show_impact'              => 1,
-                    'max_depth'                => 1,
+                        'positions'                => 1,
+                        'zoom'                     => 1,
+                        'pan_x'                    => 1,
+                        'pan_y'                    => 1,
+                        'impact_color'             => 1,
+                        'depends_color'            => 1,
+                        'impact_and_depends_color' => 1,
+                        'show_depends'             => 1,
+                        'show_impact'              => 1,
+                        'max_depth'                => 1,
                     ]
                 );
             }
@@ -1503,15 +1503,15 @@ class Impact extends CommonGLPI
 
         foreach ($graph['nodes'] as $node) {
             $data[] = [
-            'group'    => 'nodes',
-            'data'     => $node,
+                'group'    => 'nodes',
+                'data'     => $node,
             ];
         }
 
         foreach ($graph['edges'] as $edge) {
             $data[] = [
-            'group' => 'edges',
-            'data'  => $edge,
+                'group' => 'edges',
+                'data'  => $edge,
             ];
         }
 
@@ -1666,16 +1666,16 @@ class Impact extends CommonGLPI
 
        // Remove each relations
         $DB->delete(\ImpactRelation::getTable(), [
-         'OR' => [
-            [
-               'itemtype_source' => get_class($item),
-               'items_id_source' => $item->fields['id']
-            ],
-            [
-               'itemtype_impacted' => get_class($item),
-               'items_id_impacted' => $item->fields['id']
-            ],
-         ]
+            'OR' => [
+                [
+                    'itemtype_source' => get_class($item),
+                    'items_id_source' => $item->fields['id']
+                ],
+                [
+                    'itemtype_impacted' => get_class($item),
+                    'items_id_impacted' => $item->fields['id']
+                ],
+            ]
         ]);
 
        // Remove associated ImpactItem
@@ -1694,31 +1694,31 @@ class Impact extends CommonGLPI
             && $impact_item->fields['is_slave'] != 0
         ) {
             $DB->update(ImpactItem::getTable(), [
-               'impactcontexts_id' => 0,
+                'impactcontexts_id' => 0,
             ], [
-               'impactcontexts_id' => $impact_item->fields['impactcontexts_id'],
+                'impactcontexts_id' => $impact_item->fields['impactcontexts_id'],
             ]);
 
             $DB->delete(ImpactContext::getTable(), [
-             'id' => $impact_item->fields['impactcontexts_id']
+                'id' => $impact_item->fields['impactcontexts_id']
             ]);
         }
 
        // Delete group if less than two children remaining
         if ($impact_item->fields['parent_id'] != 0) {
             $count = countElementsInTable(ImpactItem::getTable(), [
-            'parent_id' => $impact_item->fields['parent_id']
+                'parent_id' => $impact_item->fields['parent_id']
             ]);
 
             if ($count < 2) {
                 $DB->update(ImpactItem::getTable(), [
-                  'parent_id' => 0,
+                    'parent_id' => 0,
                 ], [
-                  'parent_id' => $impact_item->fields['parent_id']
+                    'parent_id' => $impact_item->fields['parent_id']
                 ]);
 
                  $DB->delete(ImpactCompound::getTable(), [
-                   'id' => $impact_item->fields['parent_id']
+                     'id' => $impact_item->fields['parent_id']
                  ]);
             }
         }
@@ -1805,8 +1805,8 @@ class Impact extends CommonGLPI
         $db_values = importArrayFromDB($core_config[self::CONF_ENABLED]);
         echo '<td>';
         Dropdown::showFromArray($input_name, $values, [
-         'multiple' => true,
-         'values'   => $db_values
+            'multiple' => true,
+            'values'   => $db_values
         ]);
         echo "</td>";
 

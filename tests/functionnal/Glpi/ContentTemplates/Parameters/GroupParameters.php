@@ -40,16 +40,16 @@ class GroupParameters extends AbstractParameters
         $test_entity_id = getItemByTypeName('Entity', '_test_child_2', true);
 
         $this->createItem('Group', [
-         'name'        => 'group_testGetValues',
-         'entities_id' => $test_entity_id
+            'name'        => 'group_testGetValues',
+            'entities_id' => $test_entity_id
         ]);
 
         $parameters = $this->newTestedInstance();
         $values = $parameters->getValues(getItemByTypeName('Group', 'group_testGetValues'));
         $this->array($values)->isEqualTo([
-         'id'           => getItemByTypeName('Group', 'group_testGetValues', true),
-         'name'         => 'group_testGetValues',
-         'completename' => 'group_testGetValues',
+            'id'           => getItemByTypeName('Group', 'group_testGetValues', true),
+            'name'         => 'group_testGetValues',
+            'completename' => 'group_testGetValues',
         ]);
 
         $this->testGetAvailableParameters($values, $parameters->getAvailableParameters());

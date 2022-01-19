@@ -48,48 +48,48 @@ class Profile extends DbTestCase
     {
 
         return [
-         [
-            'user'     => [
-               'login'    => 'post-only',
-               'password' => 'postonly',
+            [
+                'user'     => [
+                    'login'    => 'post-only',
+                    'password' => 'postonly',
+                ],
+                'rightset' => [
+                    ['name' => \Computer::$rightname, 'value' => CREATE, 'expected' => false],
+                    ['name' => \Computer::$rightname, 'value' => DELETE, 'expected' => false],
+                    ['name' => \Ticket::$rightname, 'value' => CREATE, 'expected' => true],
+                    ['name' => \Ticket::$rightname, 'value' => DELETE, 'expected' => false],
+                    ['name' => \ITILFollowup::$rightname, 'value' => \ITILFollowup::ADDMYTICKET, 'expected' => true],
+                    ['name' => \ITILFollowup::$rightname, 'value' => \ITILFollowup::ADDALLTICKET, 'expected' => false],
+                ],
             ],
-            'rightset' => [
-               ['name' => \Computer::$rightname, 'value' => CREATE, 'expected' => false],
-               ['name' => \Computer::$rightname, 'value' => DELETE, 'expected' => false],
-               ['name' => \Ticket::$rightname, 'value' => CREATE, 'expected' => true],
-               ['name' => \Ticket::$rightname, 'value' => DELETE, 'expected' => false],
-               ['name' => \ITILFollowup::$rightname, 'value' => \ITILFollowup::ADDMYTICKET, 'expected' => true],
-               ['name' => \ITILFollowup::$rightname, 'value' => \ITILFollowup::ADDALLTICKET, 'expected' => false],
+            [
+                'user'     => [
+                    'login'    => 'glpi',
+                    'password' => 'glpi',
+                ],
+                'rightset' => [
+                    ['name' => \Computer::$rightname, 'value' => CREATE, 'expected' => true],
+                    ['name' => \Computer::$rightname, 'value' => DELETE, 'expected' => true],
+                    ['name' => \Ticket::$rightname, 'value' => CREATE, 'expected' => true],
+                    ['name' => \Ticket::$rightname, 'value' => DELETE, 'expected' => true],
+                    ['name' => \ITILFollowup::$rightname, 'value' => \ITILFollowup::ADDMYTICKET, 'expected' => true],
+                    ['name' => \ITILFollowup::$rightname, 'value' => \ITILFollowup::ADDALLTICKET, 'expected' => true],
+                ],
             ],
-         ],
-         [
-            'user'     => [
-               'login'    => 'glpi',
-               'password' => 'glpi',
+            [
+                'user'     => [
+                    'login'    => 'tech',
+                    'password' => 'tech',
+                ],
+                'rightset' => [
+                    ['name' => \Computer::$rightname, 'value' => CREATE, 'expected' => true],
+                    ['name' => \Computer::$rightname, 'value' => DELETE, 'expected' => true],
+                    ['name' => \Ticket::$rightname, 'value' => CREATE, 'expected' => true],
+                    ['name' => \Ticket::$rightname, 'value' => DELETE, 'expected' => false],
+                    ['name' => \ITILFollowup::$rightname, 'value' => \ITILFollowup::ADDMYTICKET, 'expected' => true],
+                    ['name' => \ITILFollowup::$rightname, 'value' => \ITILFollowup::ADDALLTICKET, 'expected' => true],
+                ],
             ],
-            'rightset' => [
-               ['name' => \Computer::$rightname, 'value' => CREATE, 'expected' => true],
-               ['name' => \Computer::$rightname, 'value' => DELETE, 'expected' => true],
-               ['name' => \Ticket::$rightname, 'value' => CREATE, 'expected' => true],
-               ['name' => \Ticket::$rightname, 'value' => DELETE, 'expected' => true],
-               ['name' => \ITILFollowup::$rightname, 'value' => \ITILFollowup::ADDMYTICKET, 'expected' => true],
-               ['name' => \ITILFollowup::$rightname, 'value' => \ITILFollowup::ADDALLTICKET, 'expected' => true],
-            ],
-         ],
-         [
-            'user'     => [
-               'login'    => 'tech',
-               'password' => 'tech',
-            ],
-            'rightset' => [
-               ['name' => \Computer::$rightname, 'value' => CREATE, 'expected' => true],
-               ['name' => \Computer::$rightname, 'value' => DELETE, 'expected' => true],
-               ['name' => \Ticket::$rightname, 'value' => CREATE, 'expected' => true],
-               ['name' => \Ticket::$rightname, 'value' => DELETE, 'expected' => false],
-               ['name' => \ITILFollowup::$rightname, 'value' => \ITILFollowup::ADDMYTICKET, 'expected' => true],
-               ['name' => \ITILFollowup::$rightname, 'value' => \ITILFollowup::ADDALLTICKET, 'expected' => true],
-            ],
-         ],
         ];
     }
 
@@ -131,9 +131,9 @@ class Profile extends DbTestCase
         $this->login('tech', 'tech');
 
         $iterator = $DB->request([
-         'FROM'   => \Profile::getTable(),
-         'WHERE'  => \Profile::getUnderActiveProfileRestrictCriteria(),
-         'ORDER'  => 'name'
+            'FROM'   => \Profile::getTable(),
+            'WHERE'  => \Profile::getUnderActiveProfileRestrictCriteria(),
+            'ORDER'  => 'name'
         ]);
 
         foreach ($iterator as $profile_found) {
@@ -153,8 +153,8 @@ class Profile extends DbTestCase
        //create a temporay standard profile
         $profile = new \Profile();
         $profiles_id = $profile->add([
-         'name'      => "test switch profile",
-         'interface' => "standard",
+            'name'      => "test switch profile",
+            'interface' => "standard",
         ]);
 
        // retrieve all tickets rights
@@ -164,14 +164,14 @@ class Profile extends DbTestCase
 
        // add all ticket rights to this profile
         $profile->update([
-         'id'      => $profiles_id,
-         '_ticket' => $all_rights
+            'id'      => $profiles_id,
+            '_ticket' => $all_rights
         ]);
 
        // switch to self-service interface
         $profile->update([
-         'id'        => $profiles_id,
-         'interface' => 'helpdesk'
+            'id'        => $profiles_id,
+            'interface' => 'helpdesk'
         ]);
 
        // retrieve self-service tickets rights
