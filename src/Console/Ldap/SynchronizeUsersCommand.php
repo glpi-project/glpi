@@ -40,7 +40,6 @@ use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Question\ConfirmationQuestion;
 use User;
 
 class SynchronizeUsersCommand extends AbstractCommand
@@ -247,20 +246,7 @@ class SynchronizeUsersCommand extends AbstractCommand
             $informations->addRow([__('End date'), $end_date]);
             $informations->render();
 
-           /** @var \Symfony\Component\Console\Helper\QuestionHelper $question_helper */
-            $question_helper = $this->getHelper('question');
-            $run = $question_helper->ask(
-                $input,
-                $output,
-                new ConfirmationQuestion(__('Do you want to continue?') . ' [Yes/no]', true)
-            );
-            if (!$run) {
-                $output->writeln(
-                    '<comment>' . __('Synchronization aborted.') . '</comment>',
-                    OutputInterface::VERBOSITY_VERBOSE
-                );
-                 return 0;
-            }
+            $this->askForConfirmation();
         }
 
         foreach ($servers_id as $server_id) {
@@ -448,7 +434,7 @@ class SynchronizeUsersCommand extends AbstractCommand
     *
     * @return void
     *
-    * @throws InvalidArgumentException
+    * @throws \Symfony\Component\Console\Exception\InvalidArgumentException
     */
     private function validateInput(InputInterface $input)
     {

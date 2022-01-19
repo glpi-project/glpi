@@ -50,13 +50,8 @@ class ConfigureCommand extends AbstractConfigureCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $this->configureDatabase($input, $output);
 
-        $result = $this->configureDatabase($input, $output);
-
-        if (self::ABORTED_BY_USER === $result) {
-            return 0; // Considered as success
-        }
-
-        return $result;
+        return 0; // Success if configuration throw no EarlyExitException
     }
 }

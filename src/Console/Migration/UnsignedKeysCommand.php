@@ -35,11 +35,9 @@ namespace Glpi\Console\Migration;
 
 use DBConnection;
 use Glpi\Console\AbstractCommand;
-use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Question\ConfirmationQuestion;
 
 class UnsignedKeysCommand extends AbstractCommand
 {
@@ -60,8 +58,6 @@ class UnsignedKeysCommand extends AbstractCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $no_interaction = $input->getOption('no-interaction');
-
         $columns = $this->db->getSignedKeysColumns();
 
         $output->writeln(
@@ -76,23 +72,7 @@ class UnsignedKeysCommand extends AbstractCommand
         if ($columns->count() === 0) {
             $output->writeln('<info>' . __('No migration needed.') . '</info>');
         } else {
-            if (!$no_interaction) {
-                // Ask for confirmation (unless --no-interaction)
-                /** @var QuestionHelper $question_helper */
-                $question_helper = $this->getHelper('question');
-                $run = $question_helper->ask(
-                    $input,
-                    $output,
-                    new ConfirmationQuestion(__('Do you want to continue ?') . ' [Yes/no]', true)
-                );
-                if (!$run) {
-                    $output->writeln(
-                        '<comment>' . __('Migration aborted.') . '</comment>',
-                        OutputInterface::VERBOSITY_VERBOSE
-                    );
-                     return 0;
-                }
-            }
+            $this->askForConfirmation();
 
             $foreign_keys = $this->db->getForeignKeysContraints();
 

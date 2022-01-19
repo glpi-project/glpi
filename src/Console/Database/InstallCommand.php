@@ -170,17 +170,11 @@ class InstallCommand extends AbstractConfigureCommand
         }
 
         if (!$this->isDbAlreadyConfigured() || $input->getOption('reconfigure')) {
-            $result = $this->configureDatabase($input, $output, false, true, false, false, false);
+            $this->configureDatabase($input, $output, false, true, false, false, false);
 
             // Ensure global $DB is updated (used by GLPIKey)
             global $DB;
             $DB = $this->db;
-
-            if (self::ABORTED_BY_USER === $result) {
-                return 0; // Considered as success
-            } else if (self::SUCCESS !== $result) {
-                return $result; // Fail with error code
-            }
 
             $db_host     = $input->getOption('db-host');
             $db_port     = $input->getOption('db-port');
@@ -209,20 +203,13 @@ class InstallCommand extends AbstractConfigureCommand
             $db_user = $DB->dbuser;
             $db_pass = rawurldecode($DB->dbpassword); //rawurldecode as in DBmysql::connect()
 
-            $run = $this->askForDbConfigConfirmation(
+            $this->askForDbConfigConfirmation(
                 $input,
                 $output,
                 $db_hostport,
                 $db_name,
                 $db_user
             );
-            if (!$run) {
-                $output->writeln(
-                    '<comment>' . __('Installation aborted.') . '</comment>',
-                    OutputInterface::VERBOSITY_VERBOSE
-                );
-                return 0;
-            }
 
             $this->db = $DB;
         }

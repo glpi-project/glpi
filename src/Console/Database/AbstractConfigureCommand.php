@@ -45,18 +45,10 @@ use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Console\Question\Question;
 
 abstract class AbstractConfigureCommand extends AbstractCommand implements ForceNoPluginsOptionCommandInterface
 {
-    /**
-     * Error code returned if DB configuration is aborted by user.
-     *
-     * @var integer
-     */
-    const ABORTED_BY_USER = -1;
-
     /**
      * Error code returned if DB configuration succeed.
      *
@@ -190,7 +182,7 @@ abstract class AbstractConfigureCommand extends AbstractCommand implements Force
      *
      * @throws InvalidArgumentException
      *
-     * @return string
+     * @return void
      */
     protected function configureDatabase(
         InputInterface $input,
@@ -210,28 +202,21 @@ abstract class AbstractConfigureCommand extends AbstractCommand implements Force
 
         if (file_exists(GLPI_CONFIG_DIR . '/config_db.php') && !$reconfigure) {
             // Prevent overriding of existing DB
-            $output->writeln(
-                '<error>' . __('Database configuration already exists. Use --reconfigure option to override existing configuration.') . '</error>'
+            throw new \Glpi\Console\Exception\EarlyExitException(
+                '<error>' . __('Database configuration already exists. Use --reconfigure option to override existing configuration.') . '</error>',
+                self::ERROR_DB_CONFIG_ALREADY_SET
             );
-            return self::ERROR_DB_CONFIG_ALREADY_SET;
         }
 
         $this->validateConfigInput($input);
 
-        $run = $this->askForDbConfigConfirmation(
+        $this->askForDbConfigConfirmation(
             $input,
             $output,
             $db_hostport,
             $db_name,
             $db_user
         );
-        if (!$run) {
-            $output->writeln(
-                '<comment>' . __('Configuration aborted.') . '</comment>',
-                OutputInterface::VERBOSITY_VERBOSE
-            );
-            return self::ABORTED_BY_USER;
-        }
 
         mysqli_report(MYSQLI_REPORT_OFF);
         $mysqli = new mysqli();
@@ -249,8 +234,10 @@ abstract class AbstractConfigureCommand extends AbstractCommand implements Force
                 $mysqli->connect_errno,
                 $mysqli->connect_error
             );
-            $output->writeln('<error>' . $message . '</error>', OutputInterface::VERBOSITY_QUIET);
-            return self::ERROR_DB_CONNECTION_FAILED;
+            throw new \Glpi\Console\Exception\EarlyExitException(
+                '<error>' . $message . '</error>',
+                self::ERROR_DB_CONNECTION_FAILED
+            );
         }
 
         $db_exists = @$mysqli->select_db($db_name);
@@ -260,8 +247,10 @@ abstract class AbstractConfigureCommand extends AbstractCommand implements Force
         $checkdb = Config::displayCheckDbEngine(false, $db_version_data[0]);
         $message = ob_get_clean();
         if ($checkdb > 0) {
-            $output->writeln('<error>' . $message . '</error>', OutputInterface::VERBOSITY_QUIET);
-            return self::ERROR_DB_ENGINE_UNSUPPORTED;
+            throw new \Glpi\Console\Exception\EarlyExitException(
+                '<error>' . $message . '</error>',
+                self::ERROR_DB_ENGINE_UNSUPPORTED
+            );
         }
 
         if (!$db_exists || $strict_configuration || !$compute_flags_from_db) {
@@ -318,11 +307,10 @@ abstract class AbstractConfigureCommand extends AbstractCommand implements Force
                 __('Cannot write configuration file "%s".'),
                 GLPI_CONFIG_DIR . DIRECTORY_SEPARATOR . 'config_db.php'
             );
-            $output->writeln(
+            throw new \Glpi\Console\Exception\EarlyExitException(
                 '<error>' . $message . '</error>',
-                OutputInterface::VERBOSITY_QUIET
+                self::ERROR_DB_CONFIG_FILE_NOT_SAVED
             );
-            return self::ERROR_DB_CONFIG_FILE_NOT_SAVED;
         }
 
         // Set $db instance to use new connection properties
@@ -366,8 +354,6 @@ abstract class AbstractConfigureCommand extends AbstractCommand implements Force
                   $this->clearSchemaCache();
             }
         };
-
-        return self::SUCCESS;
     }
 
     public function getNoPluginsOptionValue()
@@ -430,7 +416,7 @@ abstract class AbstractConfigureCommand extends AbstractCommand implements Force
      * @param string $db_name DB name
      * @param string $db_user DB username
      *
-     * @return boolean
+     * @return void
      */
     protected function askForDbConfigConfirmation(
         InputInterface $input,
@@ -446,18 +432,7 @@ abstract class AbstractConfigureCommand extends AbstractCommand implements Force
         $informations->addRow([__('Database user'), $db_user]);
         $informations->render();
 
-        if ($input->getOption('no-interaction')) {
-            // Consider that config is validated if user require no interaction
-            return true;
-        }
-
-        /** @var \Symfony\Component\Console\Helper\QuestionHelper $question_helper */
-        $question_helper = $this->getHelper('question');
-        return $question_helper->ask(
-            $input,
-            $output,
-            new ConfirmationQuestion(__('Do you want to continue?') . ' [Yes/no]', true)
-        );
+        $this->askForConfirmation();
     }
 
     /**
@@ -494,19 +469,7 @@ abstract class AbstractConfigureCommand extends AbstractCommand implements Force
                  );
                  $this->output->writeln('<comment>' . $message . '</comment>', OutputInterface::VERBOSITY_QUIET);
             } else {
-                /** @var \Symfony\Component\Console\Helper\QuestionHelper $question_helper */
-                $question_helper = $this->getHelper('question');
-                $continue = $question_helper->ask(
-                    $this->input,
-                    $this->output,
-                    new ConfirmationQuestion(__('Do you want to continue?') . ' [Yes/no]', true)
-                );
-                if (!$continue) {
-                    throw new \Glpi\Console\Exception\EarlyExitException(
-                        '<comment>' . __('Configuration aborted.') . '</comment>',
-                        self::ABORTED_BY_USER
-                    );
-                }
+                $this->askForConfirmation();
             }
         }
 

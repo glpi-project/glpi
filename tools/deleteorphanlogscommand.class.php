@@ -33,11 +33,9 @@
 
 use Glpi\Console\AbstractCommand;
 use Symfony\Component\Console\Helper\ProgressBar;
-use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Question\ConfirmationQuestion;
 
 class DeleteOrphanLogsCommand extends AbstractCommand
 {
@@ -68,25 +66,7 @@ class DeleteOrphanLogsCommand extends AbstractCommand
            // Ask for confirmation (unless --no-interaction)
             $output->writeln(__('You are about to delete orphan logs of GLPI log table (glpi_logs).'));
 
-           /**
-            * @var QuestionHelper $question_helper
-            */
-            $question_helper = $this->getHelper('question');
-            $run = $question_helper->ask(
-                $input,
-                $output,
-                new ConfirmationQuestion(
-                    '<comment>' . __('Do you want to launch operation?') . ' [yes/No]</comment>',
-                    false
-                )
-            );
-            if (!$run) {
-                 $output->writeln(
-                     '<comment>' . __('Operation aborted.') . '</comment>',
-                     OutputInterface::VERBOSITY_VERBOSE
-                 );
-                 return 0;
-            }
+            $this->askForConfirmation();
         }
 
         $globalCount = 0;
