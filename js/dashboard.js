@@ -650,7 +650,7 @@ var Dashboard = {
    refreshCardsImpactedByFilter: function(filter_id) {
       $('.dashboard .card.filter-'+filter_id).each(function () {
          var gridstack_item = $(this).closest(".grid-stack-item");
-         var card_id = gridstack_item.data('gs-id');
+         var card_id = gridstack_item.attr('gs-id');
          Dashboard.getCardsAjax("[gs-id="+card_id+"]");
       });
    },
@@ -951,8 +951,8 @@ var Dashboard = {
       $(".grid-stack-item:not(.lock-bottom)"+specific_one).each(function() {
          var card         = $(this);
          var card_opt     = card.data('card-options');
-         var gridstack_id = card.data('gs-id');
-         var card_id      = card_opt.card_id || card.data('gs-id');
+         var gridstack_id = card.attr('gs-id');
+         var card_id      = card_opt.card_id || card.attr('gs-id');
 
          card_opt.gridstack_id = gridstack_id;
 
@@ -1164,7 +1164,9 @@ var Dashboard = {
          data: {
             action:    'save_filter_data',
             dashboard: Dashboard.current_name,
-            filters:   JSON.stringify(filters[Dashboard.current_name]),
+            filters:   JSON.stringify(filters[Dashboard.current_name], function(k, v) {
+               return v === undefined ? null : v;
+            }),
          }
       });
 

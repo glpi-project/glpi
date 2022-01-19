@@ -404,6 +404,11 @@ $break_tablet: 1400px;
                   content: "\f133";
                   right: 5px;
                }
+
+               .input-group-text {
+                  background-color: transparent;
+                  border: none;
+               }
             }
 
             .select2 {
