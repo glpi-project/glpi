@@ -309,7 +309,7 @@
       margin-bottom: -0.5rem;
 
       .badge {
-        @include tabler-badge-fix;
+         @include tabler-badge-fix;
       }
    }
 }
