@@ -56,11 +56,9 @@ use Network;
 use Profile;
 use Symfony\Component\Console\Exception\RuntimeException;
 use Symfony\Component\Console\Helper\ProgressBar;
-use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Question\ConfirmationQuestion;
 
 class AppliancesPluginToCoreCommand extends AbstractCommand
 {
@@ -162,25 +160,7 @@ class AppliancesPluginToCoreCommand extends AbstractCommand
                __('It is better to make a backup of your existing data before continuing.')
             ]);
 
-           /**
-            * @var QuestionHelper $question_helper
-            */
-            $question_helper = $this->getHelper('question');
-            $run = $question_helper->ask(
-                $input,
-                $output,
-                new ConfirmationQuestion(
-                    '<comment>' . __('Do you want to launch migration?') . ' [yes/No]</comment>',
-                    false
-                )
-            );
-            if (!$run) {
-                 $output->writeln(
-                     '<comment>' . __('Migration aborted.') . '</comment>',
-                     OutputInterface::VERBOSITY_VERBOSE
-                 );
-                 return 0;
-            }
+            $this->askForConfirmation();
         }
 
         if (!$this->checkPlugin()) {

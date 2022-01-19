@@ -44,7 +44,6 @@ use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Update;
 
 class UpdateCommand extends AbstractCommand implements ForceNoPluginsOptionCommandInterface
@@ -169,23 +168,7 @@ class UpdateCommand extends AbstractCommand implements ForceNoPluginsOptionComma
             }
         }
 
-        if (!$no_interaction) {
-           // Ask for confirmation (unless --no-interaction)
-           /** @var \Symfony\Component\Console\Helper\QuestionHelper $question_helper */
-            $question_helper = $this->getHelper('question');
-            $run = $question_helper->ask(
-                $input,
-                $output,
-                new ConfirmationQuestion(__('Do you want to continue?') . ' [Yes/no]', true)
-            );
-            if (!$run) {
-                $output->writeln(
-                    '<comment>' . __('Update aborted.') . '</comment>',
-                    OutputInterface::VERBOSITY_VERBOSE
-                );
-                 return 0;
-            }
-        }
+        $this->askForConfirmation();
 
         $update->doUpdates($current_version, $force);
         $output->writeln('<info>' . __('Migration done.') . '</info>');

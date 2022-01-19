@@ -37,7 +37,6 @@ use Glpi\Console\AbstractCommand;
 use GLPIKey;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Question\ConfirmationQuestion;
 
 class ChangekeyCommand extends AbstractCommand
 {
@@ -75,22 +74,7 @@ class ChangekeyCommand extends AbstractCommand
             )
         );
 
-        if (!$input->getOption('no-interaction')) {
-           // Ask for confirmation (unless --no-interaction)
-            $question_helper = $this->getHelper('question');
-            $run = $question_helper->ask(
-                $input,
-                $output,
-                new ConfirmationQuestion(__('Do you want to continue?') . ' [Yes/no]', true)
-            );
-            if (!$run) {
-                 $output->writeln(
-                     '<comment>' . __('Aborted.') . '</comment>',
-                     OutputInterface::VERBOSITY_VERBOSE
-                 );
-                 return 0;
-            }
-        }
+        $this->askForConfirmation();
 
         $created = $glpikey->generate();
         if (!$created) {

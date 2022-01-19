@@ -39,7 +39,6 @@ use Glpi\System\Requirement\DbTimezones;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Question\ConfirmationQuestion;
 
 class TimestampsCommand extends AbstractCommand
 {
@@ -84,23 +83,7 @@ class TimestampsCommand extends AbstractCommand
         if ($tbl_iterator->count() === 0) {
             $output->writeln('<info>' . __('No migration needed.') . '</info>');
         } else {
-            if (!$input->getOption('no-interaction')) {
-               // Ask for confirmation (unless --no-interaction)
-               /** @var \Symfony\Component\Console\Helper\QuestionHelper $question_helper */
-                $question_helper = $this->getHelper('question');
-                $run = $question_helper->ask(
-                    $input,
-                    $output,
-                    new ConfirmationQuestion(__('Do you want to continue?') . ' [Yes/no]', true)
-                );
-                if (!$run) {
-                     $output->writeln(
-                         '<comment>' . __('Migration aborted.') . '</comment>',
-                         OutputInterface::VERBOSITY_VERBOSE
-                     );
-                       return 0;
-                }
-            }
+            $this->askForConfirmation();
 
             $progress_bar = new ProgressBar($output);
 
