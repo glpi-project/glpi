@@ -56,49 +56,49 @@
  *                                  }]
  */
 var glpi_html_dialog = function({
-   title       = "",
-   body        = "",
-   footer      = "",
-   modalclass  = "",
-   dialogclass = "",
-   id          = "modal_" + Math.random().toString(36).substring(7),
-   appendTo    = "body",
-   autoShow    = true,
-   show        = () => {},
-   close       = () => {},
-   buttons     = [],
+    title       = "",
+    body        = "",
+    footer      = "",
+    modalclass  = "",
+    dialogclass = "",
+    id          = "modal_" + Math.random().toString(36).substring(7),
+    appendTo    = "body",
+    autoShow    = true,
+    show        = () => {},
+    close       = () => {},
+    buttons     = [],
 } = {}) {
-   if (buttons.length > 0) {
-      var buttons_html = "";
-      buttons.forEach(button => {
-         var bid    = ("id" in button)    ? button.id    : "button_"+Math.random().toString(36).substring(7);
-         var label  = ("label" in button) ? button.label : __("OK");
-         var bclass = ("class" in button) ? button.class : 'btn-secondary';
+    if (buttons.length > 0) {
+        var buttons_html = "";
+        buttons.forEach(button => {
+            var bid    = ("id" in button)    ? button.id    : "button_"+Math.random().toString(36).substring(7);
+            var label  = ("label" in button) ? button.label : __("OK");
+            var bclass = ("class" in button) ? button.class : 'btn-secondary';
 
-         buttons_html+= `
+            buttons_html+= `
             <button type="button" id="${bid}"
                     class="btn ${bclass}" data-bs-dismiss="modal">
                ${label}
             </button>`;
 
-         // add click event on button
-         if ('click' in button) {
-            $(document).on('click', '#'+bid, function(event) {
-               button.click(event);
-            });
-         }
-      });
+            // add click event on button
+            if ('click' in button) {
+                $(document).on('click', '#'+bid, function(event) {
+                    button.click(event);
+                });
+            }
+        });
 
-      footer+= buttons_html;
-   }
+        footer+= buttons_html;
+    }
 
-   if (footer.length > 0) {
-      footer = `<div class="modal-footer">
+    if (footer.length > 0) {
+        footer = `<div class="modal-footer">
          ${footer}
       </div>`;
-   }
+    }
 
-   var modal = `<div class="modal fade ${modalclass}" id="${id}" role="dialog">';
+    var modal = `<div class="modal fade ${modalclass}" id="${id}" role="dialog">';
          <div class="modal-dialog ${dialogclass}">
             <div class="modal-content">
                <div class="modal-header">
@@ -112,37 +112,37 @@ var glpi_html_dialog = function({
          </div>
       </div>`;
 
-   // remove old modal
-   glpi_close_all_dialogs();
+    // remove old modal
+    glpi_close_all_dialogs();
 
-   // create new one
-   $(appendTo).append(modal);
+    // create new one
+    $(appendTo).append(modal);
 
-   var myModalEl = document.getElementById(id);
-   var myModal = new bootstrap.Modal(myModalEl, {});
+    var myModalEl = document.getElementById(id);
+    var myModal = new bootstrap.Modal(myModalEl, {});
 
-   // show modal
-   if (autoShow) {
-      myModal.show();
-   }
+    // show modal
+    if (autoShow) {
+        myModal.show();
+    }
 
-   // create global events
-   myModalEl.addEventListener('shown.bs.modal', function(event) {
-      // focus first element in modal
-      $('#'+id).find("input, textearea, select").first().trigger("focus");
+    // create global events
+    myModalEl.addEventListener('shown.bs.modal', function(event) {
+        // focus first element in modal
+        $('#'+id).find("input, textearea, select").first().trigger("focus");
 
-      // call show event
-      show(event);
-   });
-   myModalEl.addEventListener('hidden.bs.modal', function(event) {
-      // call close event
-      close(event);
+        // call show event
+        show(event);
+    });
+    myModalEl.addEventListener('hidden.bs.modal', function(event) {
+        // call close event
+        close(event);
 
-      // remove html on modal close
-      $('#'+id).remove();
-   });
+        // remove html on modal close
+        $('#'+id).remove();
+    });
 
-   return id;
+    return id;
 };
 
 
@@ -175,56 +175,56 @@ var glpi_html_dialog = function({
  *                                  }]
  */
 var glpi_ajax_dialog = function({
-   url         = "",
-   params      = {},
-   method      = 'post',
-   title       = "",
-   footer      = "",
-   modalclass  = "",
-   dialogclass = "",
-   id          = "modal_" + Math.random().toString(36).substring(7),
-   appendTo    = 'body',
-   autoShow    = true,
-   done        = () => {},
-   fail        = () => {},
-   show        = () => {},
-   close       = () => {},
-   buttons     = [],
+    url         = "",
+    params      = {},
+    method      = 'post',
+    title       = "",
+    footer      = "",
+    modalclass  = "",
+    dialogclass = "",
+    id          = "modal_" + Math.random().toString(36).substring(7),
+    appendTo    = 'body',
+    autoShow    = true,
+    done        = () => {},
+    fail        = () => {},
+    show        = () => {},
+    close       = () => {},
+    buttons     = [],
 } = {}) {
-   if (url.length == 0) {
-      return;
-   }
+    if (url.length == 0) {
+        return;
+    }
 
-   // remove old modal
-   glpi_close_all_dialogs();
+    // remove old modal
+    glpi_close_all_dialogs();
 
-   // AJAX request
-   $.ajax({
-      url: url,
-      type: method,
-      data: params,
-      success: function(response){
-         glpi_html_dialog({
-            title: title,
-            body: response,
-            footer: footer,
-            id: id,
-            appendTo: appendTo,
-            modalclass: modalclass,
-            dialogclass: dialogclass,
-            autoShow: autoShow,
-            buttons: buttons,
-            show: show,
-            close: close,
-         });
-      }
-   }).done(function(data) {
-      done(data);
-   }).fail(function (jqXHR, textStatus) {
-      fail(jqXHR, textStatus);
-   });
+    // AJAX request
+    $.ajax({
+        url: url,
+        type: method,
+        data: params,
+        success: function(response){
+            glpi_html_dialog({
+                title: title,
+                body: response,
+                footer: footer,
+                id: id,
+                appendTo: appendTo,
+                modalclass: modalclass,
+                dialogclass: dialogclass,
+                autoShow: autoShow,
+                buttons: buttons,
+                show: show,
+                close: close,
+            });
+        }
+    }).done(function(data) {
+        done(data);
+    }).fail(function (jqXHR, textStatus) {
+        fail(jqXHR, textStatus);
+    });
 
-   return id;
+    return id;
 };
 
 
@@ -238,24 +238,24 @@ var glpi_ajax_dialog = function({
  * @param {function} alert.ok_callback - callback function called when "ok" button called
  */
 var glpi_alert = function({
-   title    = _n('Information', 'Information', 1),
-   message  = "",
-   id       = "modal_" + Math.random().toString(36).substring(7),
-   ok_callback = () => {},
+    title    = _n('Information', 'Information', 1),
+    message  = "",
+    id       = "modal_" + Math.random().toString(36).substring(7),
+    ok_callback = () => {},
 } = {}) {
-   glpi_html_dialog({
-      title: title,
-      body: message,
-      id: id,
-      buttons: [{
-         label: __("OK"),
-         click: function(event) {
-            ok_callback(event);
-         }
-      }]
-   });
+    glpi_html_dialog({
+        title: title,
+        body: message,
+        id: id,
+        buttons: [{
+            label: __("OK"),
+            click: function(event) {
+                ok_callback(event);
+            }
+        }]
+    });
 
-   return id;
+    return id;
 };
 
 
@@ -272,33 +272,33 @@ var glpi_alert = function({
  * @param {string} alert.cancel_label - change "cancel" button label
  */
 var glpi_confirm = function({
-   title         = _n('Information', 'Information', 1),
-   message       = "",
-   id            = "modal_" + Math.random().toString(36).substring(7),
-   confirm_callback = () => {},
-   confirm_label = _x('button', 'Confirm'),
-   cancel_callback  = () => {},
-   cancel_label  = _x('button', 'Cancel'),
+    title         = _n('Information', 'Information', 1),
+    message       = "",
+    id            = "modal_" + Math.random().toString(36).substring(7),
+    confirm_callback = () => {},
+    confirm_label = _x('button', 'Confirm'),
+    cancel_callback  = () => {},
+    cancel_label  = _x('button', 'Cancel'),
 } = {}) {
 
-   glpi_html_dialog({
-      title: title,
-      body: message,
-      id: id,
-      buttons: [{
-         label: confirm_label,
-         click: function(event) {
-            confirm_callback(event);
-         }
-      }, {
-         label: cancel_label,
-         click: function(event) {
-            cancel_callback(event);
-         }
-      }]
-   });
+    glpi_html_dialog({
+        title: title,
+        body: message,
+        id: id,
+        buttons: [{
+            label: confirm_label,
+            click: function(event) {
+                confirm_callback(event);
+            }
+        }, {
+            label: cancel_label,
+            click: function(event) {
+                cancel_callback(event);
+            }
+        }]
+    });
 
-   return id;
+    return id;
 };
 
 
@@ -306,7 +306,7 @@ var glpi_confirm = function({
  * Remove from dom all opened glpi dialog
  */
 var glpi_close_all_dialogs = function() {
-   $('.modal.show').modal('hide').remove();
+    $('.modal.show').modal('hide').remove();
 };
 
 var toast_id = 0;
@@ -323,17 +323,17 @@ var toast_id = 0;
  * @param {ToastOptions} options Toast options
  */
 const glpi_toast = (title, message, css_class, options = {}) => {
-   toast_id++;
+    toast_id++;
 
-   options = Object.assign({
-      delay: 10000,
-      animated: true,
-      animation: 'animate__tada',
-      animation_extra_classes: 'animate__delay-2s animate__slow'
-   }, options);
+    options = Object.assign({
+        delay: 10000,
+        animated: true,
+        animation: 'animate__tada',
+        animation_extra_classes: 'animate__delay-2s animate__slow'
+    }, options);
 
-   const animation_classes = options.animated ? `animate_animated ${options.animation} ${options.animation_extra_classes}` : '';
-   const html = `<div class='toast-container bottom-0 end-0 p-3 messages_after_redirect'>
+    const animation_classes = options.animated ? `animate_animated ${options.animation} ${options.animation_extra_classes}` : '';
+    const html = `<div class='toast-container bottom-0 end-0 p-3 messages_after_redirect'>
       <div id='toast_js_${toast_id}' class='toast ${css_class} ${animation_classes}' role='alert' aria-live='assertive' aria-atomic='true'>
          <div class='toast-header'>
             <strong class='me-auto'>${title}</strong>
@@ -344,12 +344,12 @@ const glpi_toast = (title, message, css_class, options = {}) => {
          </div>
       </div>
    </div>`;
-   $('body').append(html);
+    $('body').append(html);
 
-   const toast = new bootstrap.Toast(document.querySelector('#toast_js_' + toast_id), {
-      delay: options.delay,
-   });
-   toast.show();
+    const toast = new bootstrap.Toast(document.querySelector('#toast_js_' + toast_id), {
+        delay: options.delay,
+    });
+    toast.show();
 };
 
 /**
@@ -360,7 +360,7 @@ const glpi_toast = (title, message, css_class, options = {}) => {
  * @param {ToastOptions} options Toast options
  */
 const glpi_toast_success = (message, caption, options = {}) => {
-   glpi_toast(caption || __('Success'), message, 'bg-success text-white border-0', options);
+    glpi_toast(caption || __('Success'), message, 'bg-success text-white border-0', options);
 };
 
 /**
@@ -371,7 +371,7 @@ const glpi_toast_success = (message, caption, options = {}) => {
  * @param {ToastOptions} options Toast options
  */
 const glpi_toast_info = function(message, caption, options = {}) {
-   glpi_toast(caption || _n("Information", "Informations", 1), message, 'bg-info text-white border-0', options);
+    glpi_toast(caption || _n("Information", "Informations", 1), message, 'bg-info text-white border-0', options);
 };
 
 /**
@@ -382,7 +382,7 @@ const glpi_toast_info = function(message, caption, options = {}) {
  * @param {ToastOptions} options Toast options
  */
 const glpi_toast_warning = (message, caption, options = {}) => {
-   glpi_toast(caption || __('Warning'), message, 'bg-warning text-white border-0', options);
+    glpi_toast(caption || __('Warning'), message, 'bg-warning text-white border-0', options);
 };
 
 /**
@@ -393,6 +393,6 @@ const glpi_toast_warning = (message, caption, options = {}) => {
  * @param {ToastOptions} options Toast options
  */
 const glpi_toast_error = (message, caption, options = {}) => {
-   glpi_toast(caption || __('Error'), message, 'bg-danger text-white border-0', options);
+    glpi_toast(caption || __('Error'), message, 'bg-danger text-white border-0', options);
 };
 

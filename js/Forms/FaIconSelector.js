@@ -39,74 +39,74 @@ GLPI.Forms = GLPI.Forms || {};
  */
 GLPI.Forms.FaIconSelector = class {
 
-   /**
+    /**
     * @param {HTMLSelectElement} selectElement
     */
-   constructor(selectElement) {
-      this.selectElement = selectElement;
-   }
+    constructor(selectElement) {
+        this.selectElement = selectElement;
+    }
 
-   /**
+    /**
     * Initialize the component.
     *
     * @returns {void}
     */
-   init() {
-      const icons = this.fetchAvailableIcons();
-      $(this.selectElement).select2(
-         {
-            data: icons,
-            templateResult: this.renderIcon,
-            templateSelection: this.renderIcon
-         }
-      );
-   }
+    init() {
+        const icons = this.fetchAvailableIcons();
+        $(this.selectElement).select2(
+            {
+                data: icons,
+                templateResult: this.renderIcon,
+                templateSelection: this.renderIcon
+            }
+        );
+    }
 
-   /**
+    /**
     * Fetch available icons list from declared CSS.
     *
     * @private
     *
     * @returns {array}
     */
-   fetchAvailableIcons() {
-      var icons = [];
+    fetchAvailableIcons() {
+        var icons = [];
 
-      for (let i = 0; i < document.styleSheets.length; i++) {
-         const rules = document.styleSheets[i].cssRules;
-         for(var j = 0; j < rules.length; j++) {
-            const rule = rules[j];
-            if (rule.constructor.name !== 'CSSStyleRule') {
-               continue;
+        for (let i = 0; i < document.styleSheets.length; i++) {
+            const rules = document.styleSheets[i].cssRules;
+            for(var j = 0; j < rules.length; j++) {
+                const rule = rules[j];
+                if (rule.constructor.name !== 'CSSStyleRule') {
+                    continue;
+                }
+                let matches = rule.selectorText.match(/^\.(fa-[a-z-]+)::before$/);
+                if (matches !== null) {
+                    const cls = matches[1];
+                    const entry = {
+                        id: cls,
+                        text: cls
+                    };
+                    if (!icons.includes(entry)) {
+                        icons.push(entry);
+                    }
+                }
             }
-            let matches = rule.selectorText.match(/^\.(fa-[a-z-]+)::before$/);
-            if (matches !== null) {
-               const cls = matches[1];
-               const entry = {
-                  id: cls,
-                  text: cls
-               };
-               if (!icons.includes(entry)) {
-                  icons.push(entry);
-               }
-            }
-         }
-      }
+        }
 
-      return icons;
-   }
+        return icons;
+    }
 
-   /**
+    /**
     * Render an icon entry..
     *
     * @private
     *
     * @returns {HTMLElement}
     */
-   renderIcon(option) {
-      const faFontFamilies = '\'Font Awesome 5 Free\', \'Font Awesome 5 Brands\'';
-      let container = document.createElement('span');
-      container.innerHTML = `<i class="fa-lg fa-fw fas ${option.id}" style="font-family:${faFontFamilies};"></i> ${option.id}`;
-      return container;
-   }
+    renderIcon(option) {
+        const faFontFamilies = '\'Font Awesome 5 Free\', \'Font Awesome 5 Brands\'';
+        let container = document.createElement('span');
+        container.innerHTML = `<i class="fa-lg fa-fw fas ${option.id}" style="font-family:${faFontFamilies};"></i> ${option.id}`;
+        return container;
+    }
 };

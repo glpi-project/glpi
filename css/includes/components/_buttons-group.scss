@@ -35,28 +35,28 @@ which broke styles of btn-group > .btn-check
 */
 
 @mixin button-check(
-   $color,
-   $color-hover: color-contrast($color),
-   $active-background: $color,
-   $active-border: $color,
-   $active-color: color-contrast($active-background)
+    $color,
+    $color-hover: color-contrast($color),
+    $active-background: $color,
+    $active-border: $color,
+    $active-color: color-contrast($active-background)
 ) {
-   .btn-check:checked + &,
-   .btn-check:active + & {
-      color: $active-color;
-      background-color: $active-background;
-      border-color: $active-border;
-   }
+    .btn-check:checked + &,
+    .btn-check:active + & {
+        color: $active-color;
+        background-color: $active-background;
+        border-color: $active-border;
+    }
 }
 
 @each $color, $value in $theme-colors {
-   .btn-#{$color} {
-      @include button-check($value, $value);
-   }
+    .btn-#{$color} {
+        @include button-check($value, $value);
+    }
 }
 
 @each $color, $value in $theme-colors {
-   .btn-outline-#{$color} {
-      @include button-check($value);
-   }
+    .btn-outline-#{$color} {
+        @include button-check($value);
+    }
 }

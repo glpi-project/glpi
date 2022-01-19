@@ -30,30 +30,30 @@
  */
 
 body.mce-content-body {
-   margin: 15px 10px;
+    margin: 15px 10px;
 
-   @if not $is-dark {
-      background: transparent;
-   }
+    @if not $is-dark {
+        background: transparent;
+    }
 
-   [data-user-mention="true"] {
-      cursor: default !important; // Overrides "not-allowed" cursor on noneditable content
-   }
+    [data-user-mention="true"] {
+        cursor: default !important; // Overrides "not-allowed" cursor on noneditable content
+    }
 }
 
 #page .tox .tox-statusbar {
-   border-top: transparent;
+    border-top: transparent;
 }
 
 .rich_text_container {
-   img {
-      max-width: 100%;
-   }
+    img {
+        max-width: 100%;
+    }
 }
 
 .user-mention,
 [data-user-mention="true"] {
-   background: rgba(0, 0, 0, 20%);
-   border-radius: 3px;
-   padding: 5px;
+    background: rgba(0, 0, 0, 20%);
+    border-radius: 3px;
+    padding: 5px;
 }

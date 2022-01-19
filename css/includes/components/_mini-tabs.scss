@@ -30,70 +30,70 @@
  */
 
 #switchview {
-   font-size: 2em;
-   text-align: right;
-   float: right;
+    font-size: 2em;
+    text-align: right;
+    float: right;
 
-   i {
-      margin-left: 0.5em;
+    i {
+        margin-left: 0.5em;
 
-      &.selected {
-         color: green;
-      }
-   }
+        &.selected {
+            color: green;
+        }
+    }
 }
 
 #viewlist {
-   display: none;
+    display: none;
 }
 
 #viewgraph {
-   width: calc(100% - 80px);
-   overflow-x: auto;
+    width: calc(100% - 80px);
+    overflow-x: auto;
 
-   table {
-      width: 100%;
-      table-layout: fixed;
-      border-collapse: collapse;
-   }
+    table {
+        width: 100%;
+        table-layout: fixed;
+        border-collapse: collapse;
+    }
 
-   .tipcontent {
-      display: none;
-   }
+    .tipcontent {
+        display: none;
+    }
 
-   th,
-   td {
-      height: 2em;
-      text-align: center;
-      padding: 0;
-   }
+    th,
+    td {
+        height: 2em;
+        text-align: center;
+        padding: 0;
+    }
 
-   .mini_toggle {
-      font-size: 11px;
-      opacity: 0.5;
-      cursor: pointer;
-      position: relative;
-      padding-left: 20px;
-      margin: 15px 5px;
-      float: left;
+    .mini_toggle {
+        font-size: 11px;
+        opacity: 0.5;
+        cursor: pointer;
+        position: relative;
+        padding-left: 20px;
+        margin: 15px 5px;
+        float: left;
 
-      &::before {
-         content: "\f204";
-         left: 0;
-         top: 0;
-         font-size: 15px;
-         font-family: "Font Awesome 5 Free";
-         position: absolute;
-         font-weight: 900;
-      }
+        &::before {
+            content: "\f204";
+            left: 0;
+            top: 0;
+            font-size: 15px;
+            font-family: "Font Awesome 5 Free";
+            position: absolute;
+            font-weight: 900;
+        }
 
-      &.active::before {
-         content: "\f205";
-         font-weight: 900;
-      }
+        &.active::before {
+            content: "\f205";
+            font-weight: 900;
+        }
 
-      &:hover {
-         opacity: 1;
-      }
-   }
+        &:hover {
+            opacity: 1;
+        }
+    }
 }

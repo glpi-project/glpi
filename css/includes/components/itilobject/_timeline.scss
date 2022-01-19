@@ -30,517 +30,517 @@
  */
 
 .timeline-item {
-   min-width: 65%;
+    min-width: 65%;
 
-   .timeline-header {
-      margin-top: -0.5rem;
-      margin-bottom: 1rem;
+    .timeline-header {
+        margin-top: -0.5rem;
+        margin-bottom: 1rem;
 
-      .creator {
-         .badge {
-            height: inherit;
-            background-color: $timeline-badge-bg;
-            color: $timeline-badge-fg;
+        .creator {
+            .badge {
+                height: inherit;
+                background-color: $timeline-badge-bg;
+                color: $timeline-badge-fg;
 
-            @include tabler-badge-fix;
-         }
-      }
+                @include tabler-badge-fix;
+            }
+        }
 
-      .timeline-item-buttons {
-         .is-private {
-            color: rgba(43, 43, 43, 70%);
-         }
-      }
-   }
+        .timeline-item-buttons {
+            .is-private {
+                color: rgba(43, 43, 43, 70%);
+            }
+        }
+    }
 
-   .state {
-      float: left;
-      width: 20px;
-      height: 20px;
-      margin-right: 3px;
-      background-repeat: no-repeat;
-      vertical-align: middle;
+    .state {
+        float: left;
+        width: 20px;
+        height: 20px;
+        margin-right: 3px;
+        background-repeat: no-repeat;
+        vertical-align: middle;
 
-      &.state_0 {
-         background-image: url("../pics/timeline/information.png");
-      }
+        &.state_0 {
+            background-image: url("../pics/timeline/information.png");
+        }
 
-      &.state_1 {
-         cursor: pointer;
-         background-image: url("../pics/timeline/todo.png");
-      }
+        &.state_1 {
+            cursor: pointer;
+            background-image: url("../pics/timeline/todo.png");
+        }
 
-      &.state_2 {
-         cursor: pointer;
-         background-image: url("../pics/timeline/done.png");
-      }
-   }
+        &.state_2 {
+            cursor: pointer;
+            background-image: url("../pics/timeline/done.png");
+        }
+    }
 
-   .timeline-more-actions {
-      visibility: hidden;
-   }
+    .timeline-more-actions {
+        visibility: hidden;
+    }
 
-   &:hover {
-      .timeline-more-actions {
-         visibility: visible;
-      }
-   }
+    &:hover {
+        .timeline-more-actions {
+            visibility: visible;
+        }
+    }
 
-   .timeline-content {
-      position: relative;
-      border-top-left-radius: 0;
-      max-width: 100%;
-      word-break: break-word;
+    .timeline-content {
+        position: relative;
+        border-top-left-radius: 0;
+        max-width: 100%;
+        word-break: break-word;
 
-      @include media-breakpoint-up(sm) {
-         &::before {
-            content: " ";
-            position: absolute;
-            width: 0;
-            height: 0;
-            left: -14px;
-            right: auto;
-            top: -1px;
-            bottom: auto;
-            border: 7px solid;
-            border-color: transparent;
-         }
-
-         &::after {
-            content: " ";
-            position: absolute;
-            width: 0;
-            height: 0;
-            left: -12px;
-            right: auto;
-            top: 0;
-            bottom: auto;
-            border: 6px solid;
-            border-color: transparent;
-         }
-
-         &.t-right {
-            border-top-right-radius: 0;
-
+        @include media-breakpoint-up(sm) {
             &::before {
-               left: auto;
-               right: -14px;
+                content: " ";
+                position: absolute;
+                width: 0;
+                height: 0;
+                left: -14px;
+                right: auto;
+                top: -1px;
+                bottom: auto;
+                border: 7px solid;
+                border-color: transparent;
             }
 
             &::after {
-               left: auto;
-               right: -12px;
+                content: " ";
+                position: absolute;
+                width: 0;
+                height: 0;
+                left: -12px;
+                right: auto;
+                top: 0;
+                bottom: auto;
+                border: 6px solid;
+                border-color: transparent;
             }
-         }
-      }
-   }
 
-   &.ITILContent,
-   &.ITILValidation {
-      .timeline-content {
-         background-color: $timeline-itilc-bg;
-         color: $timeline-itilc-fg;
-         border-color: $timeline-itilc-border;
+            &.t-right {
+                border-top-right-radius: 0;
 
-         &::before {
-            border-color: $timeline-itilc-border $timeline-itilc-border transparent transparent;
-         }
+                &::before {
+                    left: auto;
+                    right: -14px;
+                }
 
-         &::after {
-            border-color: $timeline-itilc-bg $timeline-itilc-bg transparent transparent;
-         }
+                &::after {
+                    left: auto;
+                    right: -12px;
+                }
+            }
+        }
+    }
 
-         &.t-right::before {
-            border-color: $timeline-itilc-border transparent transparent $timeline-itilc-border;
-         }
+    &.ITILContent,
+    &.ITILValidation {
+        .timeline-content {
+            background-color: $timeline-itilc-bg;
+            color: $timeline-itilc-fg;
+            border-color: $timeline-itilc-border;
 
-         &.t-right::after {
-            border-color: $timeline-itilc-bg transparent transparent $timeline-itilc-bg;
-         }
-      }
-   }
+            &::before {
+                border-color: $timeline-itilc-border $timeline-itilc-border transparent transparent;
+            }
 
-   &.ITILFollowup,
-   &.KnowbaseItemComment {
-      .timeline-content {
-         background-color: $timeline-fup-bg;
-         color: $timeline-fup-fg;
-         border-color: $timeline-fup-border;
-         background-image: url("../pics/timeline/followup.png");
-         background-repeat: no-repeat;
+            &::after {
+                border-color: $timeline-itilc-bg $timeline-itilc-bg transparent transparent;
+            }
 
-         &::before {
-            border-color: $timeline-fup-border $timeline-fup-border transparent transparent;
-         }
+            &.t-right::before {
+                border-color: $timeline-itilc-border transparent transparent $timeline-itilc-border;
+            }
 
-         &::after {
-            border-color: $timeline-fup-bg $timeline-fup-bg transparent transparent;
-         }
+            &.t-right::after {
+                border-color: $timeline-itilc-bg transparent transparent $timeline-itilc-bg;
+            }
+        }
+    }
 
-         &.t-right::before {
-            border-color: $timeline-fup-border transparent transparent $timeline-fup-border;
-         }
+    &.ITILFollowup,
+    &.KnowbaseItemComment {
+        .timeline-content {
+            background-color: $timeline-fup-bg;
+            color: $timeline-fup-fg;
+            border-color: $timeline-fup-border;
+            background-image: url("../pics/timeline/followup.png");
+            background-repeat: no-repeat;
 
-         &.t-right::after {
-            border-color: $timeline-fup-bg transparent transparent $timeline-fup-bg;
-         }
-      }
-   }
+            &::before {
+                border-color: $timeline-fup-border $timeline-fup-border transparent transparent;
+            }
 
-   &.ITILTask {
-      .timeline-content {
-         background-color: $timeline-task-bg;
-         color: $timeline-task-fg;
-         border-color: $timeline-task-border;
-         background-image: url("../pics/timeline/task.png");
-         background-repeat: no-repeat;
+            &::after {
+                border-color: $timeline-fup-bg $timeline-fup-bg transparent transparent;
+            }
 
-         &::before {
-            border-color: $timeline-task-border $timeline-task-border transparent transparent;
-         }
+            &.t-right::before {
+                border-color: $timeline-fup-border transparent transparent $timeline-fup-border;
+            }
 
-         &::after {
-            border-color: $timeline-task-bg $timeline-task-bg transparent transparent;
-         }
+            &.t-right::after {
+                border-color: $timeline-fup-bg transparent transparent $timeline-fup-bg;
+            }
+        }
+    }
 
-         &.t-right::before {
-            border-color: $timeline-task-border transparent transparent $timeline-task-border;
-         }
+    &.ITILTask {
+        .timeline-content {
+            background-color: $timeline-task-bg;
+            color: $timeline-task-fg;
+            border-color: $timeline-task-border;
+            background-image: url("../pics/timeline/task.png");
+            background-repeat: no-repeat;
 
-         &.t-right::after {
-            border-color: $timeline-task-bg transparent transparent $timeline-task-bg;
-         }
-      }
-   }
+            &::before {
+                border-color: $timeline-task-border $timeline-task-border transparent transparent;
+            }
 
-   &.ITILSolution {
-      .timeline-content {
-         background-color: $timeline-sol-bg;
-         color: $timeline-sol-fg;
-         border-color: $timeline-sol-border;
-         border-left: 1em transparent solid;
+            &::after {
+                border-color: $timeline-task-bg $timeline-task-bg transparent transparent;
+            }
 
-         &.waiting {
-            border-left-color: rgb(221, 157, 39);
-         }
+            &.t-right::before {
+                border-color: $timeline-task-border transparent transparent $timeline-task-border;
+            }
 
-         &.accepted {
-            border-left-color: rgb(52, 143, 52);
-         }
+            &.t-right::after {
+                border-color: $timeline-task-bg transparent transparent $timeline-task-bg;
+            }
+        }
+    }
 
-         &.refused {
-            border-left: 1em rgb(226, 80, 80) solid;
-         }
+    &.ITILSolution {
+        .timeline-content {
+            background-color: $timeline-sol-bg;
+            color: $timeline-sol-fg;
+            border-color: $timeline-sol-border;
+            border-left: 1em transparent solid;
 
-         .solimg {
-            position: absolute;
-            color: rgba(66, 91, 100, 10%);
-            pointer-events: none;
-         }
+            &.waiting {
+                border-left-color: rgb(221, 157, 39);
+            }
 
-         &::before {
-            border-color: $timeline-sol-border $timeline-sol-border transparent transparent;
-         }
+            &.accepted {
+                border-left-color: rgb(52, 143, 52);
+            }
 
-         &::after {
-            border-color: $timeline-sol-bg $timeline-sol-bg transparent transparent;
-         }
+            &.refused {
+                border-left: 1em rgb(226, 80, 80) solid;
+            }
 
-         &.t-right::before {
-            border-color: $timeline-sol-border transparent transparent $timeline-sol-border;
-         }
+            .solimg {
+                position: absolute;
+                color: rgba(66, 91, 100, 10%);
+                pointer-events: none;
+            }
 
-         &.t-right::after {
-            border-color: $timeline-sol-bg transparent transparent $timeline-sol-bg;
-         }
-      }
-   }
+            &::before {
+                border-color: $timeline-sol-border $timeline-sol-border transparent transparent;
+            }
 
-   &.Document_Item {
-      .timeline-content {
-         border: 0;
-         box-shadow: none;
-      }
-   }
+            &::after {
+                border-color: $timeline-sol-bg $timeline-sol-bg transparent transparent;
+            }
 
-   &.Log {
-      width: 100%;
+            &.t-right::before {
+                border-color: $timeline-sol-border transparent transparent $timeline-sol-border;
+            }
 
-      .user-part {
-         display: none !important;
-      }
+            &.t-right::after {
+                border-color: $timeline-sol-bg transparent transparent $timeline-sol-bg;
+            }
+        }
+    }
 
-      .content-part {
-         flex-direction: row-reverse !important;
-         justify-content: flex-end;
-         margin-left: 75px;
-         margin-right: 83px;
-
-         .timeline-content {
+    &.Document_Item {
+        .timeline-content {
             border: 0;
             box-shadow: none;
-            margin-top: 0 !important;
-            flex-grow: 0 !important;
-            background: transparent;
+        }
+    }
 
-            .card-body {
-               padding: 0;
-               display: flex;
-               flex-direction: row-reverse;
+    &.Log {
+        width: 100%;
 
-               .timeline-header {
-                  margin-left: 1rem;
-                  margin-top: 0;
-               }
-            }
-         }
-
-         .user_link {
+        .user-part {
             display: none !important;
-         }
+        }
 
-         .itil-date-creation {
-            margin-left: 1rem !important;
-         }
-      }
-   }
+        .content-part {
+            flex-direction: row-reverse !important;
+            justify-content: flex-end;
+            margin-left: 75px;
+            margin-right: 83px;
 
-   .timeline-badges {
-      margin-bottom: -0.5rem;
+            .timeline-content {
+                border: 0;
+                box-shadow: none;
+                margin-top: 0 !important;
+                flex-grow: 0 !important;
+                background: transparent;
 
-      .badge {
-         @include tabler-badge-fix;
-      }
-   }
+                .card-body {
+                    padding: 0;
+                    display: flex;
+                    flex-direction: row-reverse;
+
+                    .timeline-header {
+                        margin-left: 1rem;
+                        margin-top: 0;
+                    }
+                }
+            }
+
+            .user_link {
+                display: none !important;
+            }
+
+            .itil-date-creation {
+                margin-left: 1rem !important;
+            }
+        }
+    }
+
+    .timeline-badges {
+        margin-bottom: -0.5rem;
+
+        .badge {
+            @include tabler-badge-fix;
+        }
+    }
 }
 
 #new-itilobject-form {
-   min-width: 65%;
-   max-width: 100%;
+    min-width: 65%;
+    max-width: 100%;
 
-   .timeline-item {
-      min-width: 100%;
-   }
+    .timeline-item {
+        min-width: 100%;
+    }
 }
 
 .filter-timeline-popover {
-   .form-check {
-      .form-check-input:checked {
-         background-color: $timeline-fup-bg;
-         border-color: $timeline-fup-border;
-      }
+    .form-check {
+        .form-check-input:checked {
+            background-color: $timeline-fup-bg;
+            border-color: $timeline-fup-border;
+        }
 
-      &.ITILContent,
-      &.ITILValidation {
-         .form-check-input:checked {
-            background-color: $timeline-itilc-bg;
-            border-color: $timeline-itilc-border;
-         }
-      }
+        &.ITILContent,
+        &.ITILValidation {
+            .form-check-input:checked {
+                background-color: $timeline-itilc-bg;
+                border-color: $timeline-itilc-border;
+            }
+        }
 
-      &.ITILTask {
-         .form-check-input:checked {
-            background-color: $timeline-task-bg;
-            border-color: $timeline-task-border;
-         }
-      }
+        &.ITILTask {
+            .form-check-input:checked {
+                background-color: $timeline-task-bg;
+                border-color: $timeline-task-border;
+            }
+        }
 
-      &.ITILSolution {
-         .form-check-input:checked {
-            background-color: $timeline-sol-bg;
-            border-color: $timeline-sol-border;
-         }
-      }
-   }
+        &.ITILSolution {
+            .form-check-input:checked {
+                background-color: $timeline-sol-bg;
+                border-color: $timeline-sol-border;
+            }
+        }
+    }
 }
 
 .timeline-todo-list {
-   .itil-left-side {
-      padding-right: 0.4rem !important;
-      transition: none;
+    .itil-left-side {
+        padding-right: 0.4rem !important;
+        transition: none;
 
-      .timeline-item {
-         &.ITILContent,
-         &.ITILSolution,
-         &.ITILFollowup,
-         &.ITILTask.info,
-         &.Document_Item,
-         &.Log,
-         &.KnowbaseItemComment {
-            display: none;
-         }
-
-         &.tasks-title {
-            order: 1;
-            display: block !important;
-         }
-
-         &.timeline_stats {
-            order: 2;
-         }
-
-         &.ITILTask {
-            order: 3;
-         }
-
-         &.validations-title {
-            order: 4;
-            display: block !important;
-         }
-
-         &.ITILValidation:not(.expanded) {
-            order: 5;
-            padding-left: 23px;
-
-            & ~ .ITILValidation {
-               margin-top: 0;
+        .timeline-item {
+            &.ITILContent,
+            &.ITILSolution,
+            &.ITILFollowup,
+            &.ITILTask.info,
+            &.Document_Item,
+            &.Log,
+            &.KnowbaseItemComment {
+                display: none;
             }
 
-            &.validation-answer,
-            &.validation-accepted,
-            &.validation-refused {
-               display: none;
+            &.tasks-title {
+                order: 1;
+                display: block !important;
             }
 
-            hr,
-            .comment-part,
-            .validation-label {
-               display: none;
+            &.timeline_stats {
+                order: 2;
             }
 
-            .validation-footer {
-               position: absolute;
-               left: -45px;
-               display: none;
-               flex-direction: column;
-               top: 3px;
-               width: 30px;
-
-               .btn {
-                  padding: 0.2rem 0.5rem;
-                  font-size: 0.75rem;
-                  border-radius: 2px;
-                  margin-bottom: 0.3rem;
-
-                  &:not(:hover) {
-                     border-color: transparent;
-                  }
-               }
-            }
-         }
-
-         &:hover {
-            &.ITILValidation {
-               .validation-footer {
-                  display: flex;
-               }
-            }
-         }
-
-         margin-left: 0 !important;
-         margin-right: 0 !important;
-         margin-bottom: 0 !important;
-         width: 99.9%;
-         transition: all 200ms ease;
-
-         .todo-list-state {
-            display: inline-block !important;
-            margin-top: 1.5rem;
-            margin-left: 0.5rem;
-         }
-
-         .creator,
-         .user-part {
-            display: none !important;
-         }
-
-         .content-part {
-            flex-direction: row-reverse !important;
-            flex-wrap: wrap;
-
-            .timeline-item-buttons {
-               flex-direction: column;
-               margin-top: 1rem;
-
-               .is-private {
-                  display: none;
-               }
+            &.ITILTask {
+                order: 3;
             }
 
-            .timeline-content {
-               border-radius: 0;
+            &.validations-title {
+                order: 4;
+                display: block !important;
+            }
 
-               .card-body {
-                  padding: 0.5rem;
-                  display: flex;
-                  flex-direction: row-reverse;
-                  justify-content: space-between;
+            &.ITILValidation:not(.expanded) {
+                order: 5;
+                padding-left: 23px;
 
-                  .read-only-content {
-                     .state {
+                & ~ .ITILValidation {
+                    margin-top: 0;
+                }
+
+                &.validation-answer,
+                &.validation-accepted,
+                &.validation-refused {
+                    display: none;
+                }
+
+                hr,
+                .comment-part,
+                .validation-label {
+                    display: none;
+                }
+
+                .validation-footer {
+                    position: absolute;
+                    left: -45px;
+                    display: none;
+                    flex-direction: column;
+                    top: 3px;
+                    width: 30px;
+
+                    .btn {
+                        padding: 0.2rem 0.5rem;
+                        font-size: 0.75rem;
+                        border-radius: 2px;
+                        margin-bottom: 0.3rem;
+
+                        &:not(:hover) {
+                            border-color: transparent;
+                        }
+                    }
+                }
+            }
+
+            &:hover {
+                &.ITILValidation {
+                    .validation-footer {
+                        display: flex;
+                    }
+                }
+            }
+
+            margin-left: 0 !important;
+            margin-right: 0 !important;
+            margin-bottom: 0 !important;
+            width: 99.9%;
+            transition: all 200ms ease;
+
+            .todo-list-state {
+                display: inline-block !important;
+                margin-top: 1.5rem;
+                margin-left: 0.5rem;
+            }
+
+            .creator,
+            .user-part {
+                display: none !important;
+            }
+
+            .content-part {
+                flex-direction: row-reverse !important;
+                flex-wrap: wrap;
+
+                .timeline-item-buttons {
+                    flex-direction: column;
+                    margin-top: 1rem;
+
+                    .is-private {
                         display: none;
-                     }
+                    }
+                }
 
-                     .text-content {
-                        max-height: 1.2rem;
-                        text-overflow: ellipsis;
-                        overflow: hidden;
-                     }
+                .timeline-content {
+                    border-radius: 0;
 
-                     &.done {
-                        text-decoration: line-through;
-                     }
-                  }
-               }
+                    .card-body {
+                        padding: 0.5rem;
+                        display: flex;
+                        flex-direction: row-reverse;
+                        justify-content: space-between;
 
-               &::before,
-               &::after {
-                  display: none;
-               }
+                        .read-only-content {
+                            .state {
+                                display: none;
+                            }
+
+                            .text-content {
+                                max-height: 1.2rem;
+                                text-overflow: ellipsis;
+                                overflow: hidden;
+                            }
+
+                            &.done {
+                                text-decoration: line-through;
+                            }
+                        }
+                    }
+
+                    &::before,
+                    &::after {
+                        display: none;
+                    }
+                }
+
+                .sub-documents {
+                    width: 100%;
+
+                    .list-group-item {
+                        width: max-content;
+                    }
+                }
             }
+        }
+    }
 
-            .sub-documents {
-               width: 100%;
+    .main-actions,
+    .open-timeline-filter-popover {
+        display: none;
+    }
 
-               .list-group-item {
-                  width: max-content;
-               }
-            }
-         }
-      }
-   }
-
-   .main-actions,
-   .open-timeline-filter-popover {
-      display: none;
-   }
-
-   .timeline_stats,
-   .todo-list-tooltip {
-      display: block;
-   }
+    .timeline_stats,
+    .todo-list-tooltip {
+        display: block;
+    }
 }
 
 .timeline_stats,
 .todo-list-tooltip {
-   display: none;
+    display: none;
 }
 
 ul.legacy-timeline-actions {
-   padding-left: 5px;
-   list-style: none;
-   display: inline-flex;
-   margin-bottom: 0;
+    padding-left: 5px;
+    list-style: none;
+    display: inline-flex;
+    margin-bottom: 0;
 
-   li {
-      display: inline;
-      margin-left: 5px;
-      border: $input-border-width solid $input-border-color;
-      border-radius: 5px;
-      padding: 5px;
+    li {
+        display: inline;
+        margin-left: 5px;
+        border: $input-border-width solid $input-border-color;
+        border-radius: 5px;
+        padding: 5px;
 
-      i {
-         padding-right: 1em;
-      }
-   }
+        i {
+            padding-right: 1em;
+        }
+    }
 }

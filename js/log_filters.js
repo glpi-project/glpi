@@ -32,43 +32,43 @@
 /* global reloadTab */
 
 $(function() {
-   var bindShowFiltersBtn = function () {
-      $('.show_log_filters').on('click', showFilters);
-   };
+    var bindShowFiltersBtn = function () {
+        $('.show_log_filters').on('click', showFilters);
+    };
 
-   var showFilters = function (event) {
-      event.preventDefault();
+    var showFilters = function (event) {
+        event.preventDefault();
 
-      // Toggle filters
-      if ($('.show_log_filters').hasClass('active')) {
-         reloadTab('');
-      } else {
-         reloadTab('filters[active]=1');
-      }
-   };
+        // Toggle filters
+        if ($('.show_log_filters').hasClass('active')) {
+            reloadTab('');
+        } else {
+            reloadTab('filters[active]=1');
+        }
+    };
 
-   var bindFilterChange = function () {
-      // Workaround to prevent opening of dropdown when removing item using the "x" button.
-      // Without this workaround, orphan dropdowns remains in page when reloading tab.
-      $(document).on('select2:unselecting', '.log_history_filter_row .select2-hidden-accessible', function(ev) {
-         if (ev.params.args.originalEvent) {
-            ev.params.args.originalEvent.stopPropagation();
-         }
-      });
+    var bindFilterChange = function () {
+        // Workaround to prevent opening of dropdown when removing item using the "x" button.
+        // Without this workaround, orphan dropdowns remains in page when reloading tab.
+        $(document).on('select2:unselecting', '.log_history_filter_row .select2-hidden-accessible', function(ev) {
+            if (ev.params.args.originalEvent) {
+                ev.params.args.originalEvent.stopPropagation();
+            }
+        });
 
-      $('.log_history_filter_row [name^="filters\\["]').on('input', handleFilterChange);
-      $('.log_history_filter_row select[name^="filters\\["]').on('change', handleFilterChange);
-   };
+        $('.log_history_filter_row [name^="filters\\["]').on('input', handleFilterChange);
+        $('.log_history_filter_row select[name^="filters\\["]').on('change', handleFilterChange);
+    };
 
-   var handleFilterChange = function () {
-      // Prevent dropdown to remain in page after tab has been reload.
-      $('.log_history_filter_row .select2-hidden-accessible').select2('close');
+    var handleFilterChange = function () {
+        // Prevent dropdown to remain in page after tab has been reload.
+        $('.log_history_filter_row .select2-hidden-accessible').select2('close');
 
-      reloadTab($('[name^="filters\\["]').serialize());
-   };
+        reloadTab($('[name^="filters\\["]').serialize());
+    };
 
-   $('main').on('glpi.tab.loaded', function() {
-      bindShowFiltersBtn();
-      bindFilterChange();
-   });
+    $('main').on('glpi.tab.loaded', function() {
+        bindShowFiltersBtn();
+        bindFilterChange();
+    });
 });

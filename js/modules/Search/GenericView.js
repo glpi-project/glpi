@@ -35,53 +35,53 @@ window.GLPI.Search = window.GLPI.Search || {};
 
 window.GLPI.Search.GenericView = class GenericView {
 
-   constructor(element_id) {
-      this.element_id = element_id;
+    constructor(element_id) {
+        this.element_id = element_id;
 
-      if (this.getElement()) {
-         this.registerListeners();
-      }
-   }
+        if (this.getElement()) {
+            this.registerListeners();
+        }
+    }
 
-   postInit() {}
+    postInit() {}
 
-   getElement() {
-      return $('#'+this.element_id);
-   }
+    getElement() {
+        return $('#'+this.element_id);
+    }
 
-   getResultsView() {
-      return this.getElement().closest('.ajax-container.search-display-data').data('js_class');
-   }
+    getResultsView() {
+        return this.getElement().closest('.ajax-container.search-display-data').data('js_class');
+    }
 
-   showLoadingSpinner() {
-      const el = this.getElement();
-      const container = el.parent();
-      let loading_overlay = container.find('div.spinner-overlay');
+    showLoadingSpinner() {
+        const el = this.getElement();
+        const container = el.parent();
+        let loading_overlay = container.find('div.spinner-overlay');
 
-      if (loading_overlay.length === 0) {
-         container.append(`
+        if (loading_overlay.length === 0) {
+            container.append(`
             <div class="spinner-overlay text-center">
                 <div class="spinner-border" role="status">
                     <span class="sr-only">${__('Loading...')}</span>
                 </div>
             </div>`);
-         loading_overlay = container.find('div.spinner-overlay');
-      } else {
-         loading_overlay.css('visibility', 'visible');
-      }
-   }
+            loading_overlay = container.find('div.spinner-overlay');
+        } else {
+            loading_overlay.css('visibility', 'visible');
+        }
+    }
 
-   hideLoadingSpinner() {
-      const loading_overlay = this.getElement().parent().find('div.spinner-overlay');
-      loading_overlay.css('visibility', 'hidden');
-   }
+    hideLoadingSpinner() {
+        const loading_overlay = this.getElement().parent().find('div.spinner-overlay');
+        loading_overlay.css('visibility', 'hidden');
+    }
 
-   registerListeners() {}
+    registerListeners() {}
 
-   onSearch() {
-      this.refreshResults();
-   }
+    onSearch() {
+        this.refreshResults();
+    }
 
-   refreshResults() {}
+    refreshResults() {}
 };
 export default window.GLPI.Search.GenericView;

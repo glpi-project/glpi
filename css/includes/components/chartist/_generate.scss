@@ -33,47 +33,47 @@ $ct-series-names: () !default;
 $ct-series-colors: () !default;
 
 @function setColor($color) {
-   @if (lightness($color) > 40) {
-      @return darken($color, 30%);
-   } @else {
-      @return lighten($color, 30%);
-   }
+    @if (lightness($color) > 40) {
+        @return darken($color, 30%);
+    } @else {
+        @return lighten($color, 30%);
+    }
 }
 
 @for $i from 0 to length($ct-series-names) {
-   $color: nth($ct-series-colors, $i + 1);
+    $color: nth($ct-series-colors, $i + 1);
 
-   .ct-series-#{nth($ct-series-names, $i + 1)} {
-      .ct-point,
-      .ct-line,
-      .ct-bar,
-      .ct-slice-donut {
-         stroke: $color;
-      }
+    .ct-series-#{nth($ct-series-names, $i + 1)} {
+        .ct-point,
+        .ct-line,
+        .ct-bar,
+        .ct-slice-donut {
+            stroke: $color;
+        }
 
-      .ct-bar + .ct-barlabel {
-         fill: setcolor($color);
-      }
+        .ct-bar + .ct-barlabel {
+            fill: setcolor($color);
+        }
 
-      .ct-circle {
-         fill: $color;
-
-         & + .ct-label {
+        .ct-circle {
             fill: $color;
-         }
-      }
 
-      .ct-slice-pie,
-      .ct-area,
-      .ct-slice-donut-solid {
-         fill: $color;
-         stroke: setcolor($color);
-      }
-   }
+            & + .ct-label {
+                fill: $color;
+            }
+        }
 
-   // legend
-   .ct-series-#{$i}:before {
-      background-color: $color;
-      border-color: $color;
-   }
+        .ct-slice-pie,
+        .ct-area,
+        .ct-slice-donut-solid {
+            fill: $color;
+            stroke: setcolor($color);
+        }
+    }
+
+    // legend
+    .ct-series-#{$i}:before {
+        background-color: $color;
+        border-color: $color;
+    }
 }

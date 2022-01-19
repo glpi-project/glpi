@@ -30,123 +30,123 @@
  */
 
 .dates_timelines {
-   width: 100%;
-   max-width: 950px;
-   margin: 0 auto;
-   text-align: left;
+    width: 100%;
+    max-width: 950px;
+    margin: 0 auto;
+    text-align: left;
 
-   ul {
-      position: relative;
+    ul {
+        position: relative;
 
-      &::before {
-         content: "";
-         position: absolute;
-         top: 23px;
-         bottom: 23px;
-         left: 170px;
-         width: 3px;
-         background-color: #a8a8a8;
-      }
-   }
+        &::before {
+            content: "";
+            position: absolute;
+            top: 23px;
+            bottom: 23px;
+            left: 170px;
+            width: 3px;
+            background-color: #a8a8a8;
+        }
+    }
 
-   li {
-      margin: 35px 0;
-      display: block;
-   }
+    li {
+        margin: 35px 0;
+        display: block;
+    }
 
-   time {
-      height: 30px;
-      position: absolute;
-      left: 0;
-      text-align: right;
-      width: 145px;
-      color: #999;
-   }
+    time {
+        height: 30px;
+        position: absolute;
+        left: 0;
+        text-align: right;
+        width: 145px;
+        color: #999;
+    }
 
-   .dot {
-      position: absolute;
-      left: 160px;
-      display: inline-block;
-      width: 20px;
-      height: 20px;
-      border-radius: 50%;
-      background-color: #fff;
-      border: 2px solid #696969;
-      box-sizing: content-box;
+    .dot {
+        position: absolute;
+        left: 160px;
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background-color: #fff;
+        border: 2px solid #696969;
+        box-sizing: content-box;
 
-      &::before {
-         color: #929292;
-         font-family: "Font Awesome 5 Free";
-         padding-left: 3px;
-      }
-   }
+        &::before {
+            color: #929292;
+            font-family: "Font Awesome 5 Free";
+            padding-left: 3px;
+        }
+    }
 
-   .now {
-      font-weight: bold;
-      color: inherit !important;
+    .now {
+        font-weight: bold;
+        color: inherit !important;
 
-      time {
-         font-weight: bold;
-         color: inherit !important;
-      }
+        time {
+            font-weight: bold;
+            color: inherit !important;
+        }
 
-      .dot {
-         background-color: #49baf6;
-         border-color: #4a9bc5;
-      }
-   }
+        .dot {
+            background-color: #49baf6;
+            border-color: #4a9bc5;
+        }
+    }
 
-   .creation .dot {
-      border: 0;
-      font-size: 15px;
-      height: 18px;
-      left: 161px;
+    .creation .dot {
+        border: 0;
+        font-size: 15px;
+        height: 18px;
+        left: 161px;
 
-      &::before {
-         content: "\f069";
-         font-weight: 900;
-      }
-   }
-
-   .passed {
-      time,
-      label {
-         border-color: #ff0014;
-         color: #ff0014;
-      }
-
-      .dot {
-         border-color: #ff0014;
-         color: #ff0014;
-
-         &::before {
-            content: "\f12a";
-            padding-left: 8px;
-            color: #e54e5a;
+        &::before {
+            content: "\f069";
             font-weight: 900;
-         }
-      }
-   }
+        }
+    }
 
-   .checked .dot::before {
-      content: "\f00c";
-      font-weight: 900;
-   }
+    .passed {
+        time,
+        label {
+            border-color: #ff0014;
+            color: #ff0014;
+        }
 
-   .end .dot {
-      border: 0;
-      font-size: 15px;
-      left: 163px;
+        .dot {
+            border-color: #ff0014;
+            color: #ff0014;
 
-      &::before {
-         content: "\f024";
-         font-weight: 900;
-      }
-   }
+            &::before {
+                content: "\f12a";
+                padding-left: 8px;
+                color: #e54e5a;
+                font-weight: 900;
+            }
+        }
+    }
 
-   label {
-      position: absolute;
-      left: 190px;
-      text-align: right;
-   }
+    .checked .dot::before {
+        content: "\f00c";
+        font-weight: 900;
+    }
+
+    .end .dot {
+        border: 0;
+        font-size: 15px;
+        left: 163px;
+
+        &::before {
+            content: "\f024";
+            font-weight: 900;
+        }
+    }
+
+    label {
+        position: absolute;
+        left: 190px;
+        text-align: right;
+    }
 }
