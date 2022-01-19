@@ -29,49 +29,10 @@
  * ---------------------------------------------------------------------
  */
 
-.asset {
-   .card-header {
-      background-color: $header-bg;
-      color: $header-fg;
-      border-color: $header-border-color;
-
-      &:not(.main-header) {
-         border-top: 1px solid $header-border-color;
-      }
-
-      .badge {
-         @include tabler-badge-fix;
-
-         &.entity-name {
-            background-color: $header-badge-bg;
-            color: $header-badge-fg;
-         }
-      }
-
-      .badge .ribbon {
-         left: 0.5rem;
-      }
-   }
-
-   &.asset-deleted {
-      .card-header {
-         background-color: tint-color($header-danger-bg, 30%);
-         color: shade-color($header-danger-bg, 50%);
-         border-color: shade-color($header-danger-bg, 50%);
-
-         .badge.entity-name {
-            background-color: tint-color($header-danger-bg, 80%);
-            color: shade-color($header-danger-bg, 50%);
-         }
-      }
-   }
-
-   .asset-pictures {
-      max-height: 40em;
-      overflow-y: auto;
-   }
-}
-
-#page > .asset {
-   margin-top: 15px; // Fix top of form when embedded in iframe (Usually positioned properly because of .tab-content)
+// reset change in tabler : https://github.com/tabler/tabler/commit/a9075f6717958300afad13fe51311f7e78bb7e91#diff-340d6988403d25d9ca8e073d798e79a801f5c4fcf9a67366dee207d2ed9fef54L2
+@mixin tabler-badge-fix {
+   display: inline-flex;
+   font-size: 0.625rem;
+   height: 1.25rem;
+   vertical-align: inherit;
 }
