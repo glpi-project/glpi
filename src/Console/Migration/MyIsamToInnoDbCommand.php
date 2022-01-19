@@ -36,6 +36,7 @@ namespace Glpi\Console\Migration;
 use DBConnection;
 use DBmysql;
 use Glpi\Console\AbstractCommand;
+use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -79,6 +80,8 @@ class MyIsamToInnoDbCommand extends AbstractCommand
             )
         );
 
+        $errors = false;
+
         if (0 === $myisam_tables->count()) {
             $output->writeln('<info>' . __('No migration needed.') . '</info>');
         } else {
@@ -100,34 +103,47 @@ class MyIsamToInnoDbCommand extends AbstractCommand
                 }
             }
 
-            foreach ($myisam_tables as $table) {
+            $progress_bar = new ProgressBar($output);
+
+            foreach ($progress_bar->iterate($myisam_tables) as $table) {
                 $table_name = DBmysql::quoteName($table['TABLE_NAME']);
-                $output->writeln(
+                $this->writelnOutputWithProgressBar(
                     '<comment>' . sprintf(__('Migrating table "%s"...'), $table_name) . '</comment>',
+                    $progress_bar,
                     OutputInterface::VERBOSITY_VERBOSE
                 );
                 $result = $this->db->query(sprintf('ALTER TABLE %s ENGINE = InnoDB', $table_name));
 
                 if (false === $result) {
-                     $message = sprintf(
-                         __('Migration of table "%s"  failed with message "(%s) %s".'),
-                         $table_name,
-                         $this->db->errno(),
-                         $this->db->error()
-                     );
-                     $output->writeln(
-                         '<error>' . $message . '</error>',
-                         OutputInterface::VERBOSITY_QUIET
-                     );
-                     return self::ERROR_TABLE_MIGRATION_FAILED;
+                    $message = sprintf(
+                        __('Migration of table "%s"  failed with message "(%s) %s".'),
+                        $table_name,
+                        $this->db->errno(),
+                        $this->db->error()
+                    );
+                    $this->writelnOutputWithProgressBar(
+                        '<error>' . $message . '</error>',
+                        $progress_bar,
+                        OutputInterface::VERBOSITY_QUIET
+                    );
+                    $errors = true;
                 }
             }
+
+            $this->output->write(PHP_EOL);
         }
 
         if (!DBConnection::updateConfigProperty(DBConnection::PROPERTY_ALLOW_MYISAM, false)) {
             throw new \Glpi\Console\Exception\EarlyExitException(
                 '<error>' . __('Unable to update DB configuration file.') . '</error>',
                 self::ERROR_UNABLE_TO_UPDATE_CONFIG
+            );
+        }
+
+        if ($errors) {
+            throw new \Glpi\Console\Exception\EarlyExitException(
+                '<error>' . __('Errors occured during migration.') . '</error>',
+                self::ERROR_TABLE_MIGRATION_FAILED
             );
         }
 

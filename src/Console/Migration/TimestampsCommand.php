@@ -79,6 +79,8 @@ class TimestampsCommand extends AbstractCommand
             )
         );
 
+        $errors = false;
+
         if ($tbl_iterator->count() === 0) {
             $output->writeln('<info>' . __('No migration needed.') . '</info>');
         } else {
@@ -100,12 +102,9 @@ class TimestampsCommand extends AbstractCommand
                 }
             }
 
-            $progress_bar = new ProgressBar($output, $tbl_iterator->count());
-            $progress_bar->start();
+            $progress_bar = new ProgressBar($output);
 
-            foreach ($tbl_iterator as $table) {
-                $progress_bar->advance(1);
-
+            foreach ($progress_bar->iterate($tbl_iterator) as $table) {
                 $tablealter = ''; // init by default
 
                // get accurate info from information_schema to perform correct alter
@@ -196,11 +195,10 @@ class TimestampsCommand extends AbstractCommand
                          $progress_bar,
                          OutputInterface::VERBOSITY_QUIET
                      );
-                     return self::ERROR_TABLE_MIGRATION_FAILED;
+                     $errors = true;
                 }
             }
 
-            $progress_bar->finish();
             $this->output->write(PHP_EOL);
         }
 
@@ -233,6 +231,13 @@ class TimestampsCommand extends AbstractCommand
             throw new \Glpi\Console\Exception\EarlyExitException(
                 '<error>' . __('Unable to update DB configuration file.') . '</error>',
                 self::ERROR_UNABLE_TO_UPDATE_CONFIG
+            );
+        }
+
+        if ($errors) {
+            throw new \Glpi\Console\Exception\EarlyExitException(
+                '<error>' . __('Errors occured during migration.') . '</error>',
+                self::ERROR_TABLE_MIGRATION_FAILED
             );
         }
 

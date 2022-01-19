@@ -126,7 +126,7 @@ class DynamicRowFormatCommand extends AbstractCommand
         sort($tables);
 
         $progress_bar = new ProgressBar($this->output);
-        $errors = 0;
+        $errors = false;
 
         foreach ($progress_bar->iterate($tables) as $table) {
             $this->writelnOutputWithProgressBar(
@@ -145,7 +145,7 @@ class DynamicRowFormatCommand extends AbstractCommand
                     $progress_bar,
                     OutputInterface::VERBOSITY_QUIET
                 );
-                 $errors++;
+                 $errors = true;
             }
         }
 
