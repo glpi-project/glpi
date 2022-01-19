@@ -30,68 +30,68 @@
  */
 
 .itil-object {
-   @include media-breakpoint-up(sm) {
-      height: calc(100vh - 178px);
+    @include media-breakpoint-up(sm) {
+        height: calc(100vh - 178px);
 
-      .itil-left-side,
-      .itil-right-side {
-         overflow-y: auto;
-         transition: all 400ms ease;
-      }
+        .itil-left-side,
+        .itil-right-side {
+            overflow-y: auto;
+            transition: all 400ms ease;
+        }
 
-      .itil-left-side {
-         height: 100%;
-         border-top: 0 !important;
-         left: 0;
-      }
+        .itil-left-side {
+            height: 100%;
+            border-top: 0 !important;
+            left: 0;
+        }
 
-      .itil-right-side {
-         height: calc(100% + 4px);
-         position: relative;
-         border: 0;
-         border-left: 1px solid $border-color;
+        .itil-right-side {
+            height: calc(100% + 4px);
+            position: relative;
+            border: 0;
+            border-left: 1px solid $border-color;
 
-         .accordion-item {
-            background: none;
+            .accordion-item {
+                background: none;
 
-            .accordion-button {
-               background-color: $accordion-button-bg;
+                .accordion-button {
+                    background-color: $accordion-button-bg;
+                }
             }
-         }
-      }
-   }
+        }
+    }
 
-   // fix entity and sla badge long display
-   .badge.itil-badge {
-      white-space: normal;
-      line-height: inherit;
-      height: auto;
-      text-align: left;
-      display: inline-flex;
-      flex-wrap: wrap;
-      align-items: flex-start;
-      justify-content: left;
-      gap: 0.5rem;
-      text-transform: none;
-      overflow: inherit;
+    // fix entity and sla badge long display
+    .badge.itil-badge {
+        white-space: normal;
+        line-height: inherit;
+        height: auto;
+        text-align: left;
+        display: inline-flex;
+        flex-wrap: wrap;
+        align-items: flex-start;
+        justify-content: left;
+        gap: 0.5rem;
+        text-transform: none;
+        overflow: inherit;
 
-      .badge {
-         text-transform: none;
-         margin: calc(-0.25rem + 1px) -0.25rem;
-      }
-   }
+        .badge {
+            text-transform: none;
+            margin: calc(-0.25rem + 1px) -0.25rem;
+        }
+    }
 }
 
 .horizontal-layout {
-   .itil-object {
-      @include media-breakpoint-up(sm) {
-         height: calc(100vh - 257px);
-      }
-   }
+    .itil-object {
+        @include media-breakpoint-up(sm) {
+            height: calc(100vh - 257px);
+        }
+    }
 }
 
 #itil-object-container ~ #debugajax {
-   position: fixed;
-   bottom: 10px;
-   left: 45%;
+    position: fixed;
+    bottom: 10px;
+    left: 45%;
 }

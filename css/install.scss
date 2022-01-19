@@ -40,124 +40,124 @@ $is-dark: false !default;
 /*  ############# Definition des styles de l'install et de l'update ############# */
 
 body {
-   background-color: #1b2f62;
+    background-color: #1b2f62;
 }
 
 #principal {
-   width: 760px;
-   text-align: center;
-   margin: auto;
-   padding: 40px;
-   color: #fff;
+    width: 760px;
+    text-align: center;
+    margin: auto;
+    padding: 40px;
+    color: #fff;
 }
 
 a {
-   color: #fec95c;
-   font-weight: bold;
+    color: #fec95c;
+    font-weight: bold;
 }
 
 #bloc {
-   width: 760px;
-   margin: 0 auto;
-   text-align: left;
-   position: relative;
-   padding: 10px;
-   background: #3a5693;
+    width: 760px;
+    margin: 0 auto;
+    text-align: left;
+    position: relative;
+    padding: 10px;
+    background: #3a5693;
 }
 
 #logo_bloc {
-   position: absolute;
-   top: -25px;
-   padding: 0;
-   margin: 0;
-   width: 145px;
-   height: 80px;
-   background: url("../pics/login_logo_glpi.png")  no-repeat;
+    position: absolute;
+    top: -25px;
+    padding: 0;
+    margin: 0;
+    width: 145px;
+    height: 80px;
+    background: url("../pics/login_logo_glpi.png")  no-repeat;
 }
 
 p {
-   padding-left: 20px;
-   padding-right: 20px;
+    padding-left: 20px;
+    padding-right: 20px;
 }
 
 .tab_check {
-   padding: 10px;
-   background-color: #fff;
-   color: #000;
+    padding: 10px;
+    background-color: #fff;
+    color: #000;
 }
 
 .tab_check th {
-   font-size: 14px;
-   font-weight: bold;
+    font-size: 14px;
+    font-weight: bold;
 }
 
 .tab_check td {
-   font-size: 12px;
-   border-bottom: 1px solid #bbb;
+    font-size: 12px;
+    border-bottom: 1px solid #bbb;
 }
 
 .tab_check td i.fas {
-   font-size: 12px;
-   margin-right: 3px;
+    font-size: 12px;
+    margin-right: 3px;
 }
 
 .tab_check td i.fa-check {
-   color: #008e2c;
+    color: #008e2c;
 }
 
 .tab_check td i.fa-exclamation-triangle {
-   color: #ffa500;
+    color: #ffa500;
 }
 
 .red {
-   color: red;
+    color: red;
 }
 
 .migred {
-   color: white;
-   background-color: red;
+    color: white;
+    background-color: red;
 }
 
 .green {
-   color: green;
+    color: green;
 }
 
 h2 {
-   text-align: center;
-   color: #fec95c;
+    text-align: center;
+    color: #fec95c;
 }
 
 h3 {
-   text-align: center;
+    text-align: center;
 }
 
 .block {
-   display: inline-block;
-   width: 300px;
-   color: #000;
+    display: inline-block;
+    width: 300px;
+    color: #000;
 }
 
 #license {
-   color: rgb(32, 32, 32);
-   text-align: left;
-   width: 520px;
-   margin: 20px auto;
+    color: rgb(32, 32, 32);
+    text-align: left;
+    width: 520px;
+    margin: 20px auto;
 }
 
 .alert:not(.alert-important) {
-   color: #000;
+    color: #000;
 }
 
 /** Tabler override for install **/
 .form-selectgroup-boxes .form-selectgroup-label {
-   color: 000;
+    color: 000;
 }
 
 .form-control {
-   color: rgb(32, 32, 32) !important;
+    color: rgb(32, 32, 32) !important;
 }
 
 .popover.validation-messages {
-   max-width: none;
-   white-space: nowrap;
+    max-width: none;
+    white-space: nowrap;
 }

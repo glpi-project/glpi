@@ -36,26 +36,26 @@
  */
 window.old_alert = window.alert;
 window.alert = function(message, caption) {
-   // Don't apply methods on undefined objects... ;-) #3866
-   if(typeof message == 'string') {
-      message = message.replace("\n", '<br>');
-   }
-   caption = caption || _n('Information', 'Information', 1);
+    // Don't apply methods on undefined objects... ;-) #3866
+    if(typeof message == 'string') {
+        message = message.replace("\n", '<br>');
+    }
+    caption = caption || _n('Information', 'Information', 1);
 
-   glpi_alert({
-      title: caption,
-      message: message,
-   });
+    glpi_alert({
+        title: caption,
+        message: message,
+    });
 };
 
 window.displayAjaxMessageAfterRedirect = function() {
-   // attach MESSAGE_AFTER_REDIRECT to body
-   $('.message_after_redirect').remove();
-   $('[id^="message_after_redirect_"]').remove();
-   $.ajax({
-      url: CFG_GLPI.root_doc+ '/ajax/displayMessageAfterRedirect.php',
-      success: function(html) {
-         $('body').append(html);
-      }
-   });
+    // attach MESSAGE_AFTER_REDIRECT to body
+    $('.message_after_redirect').remove();
+    $('[id^="message_after_redirect_"]').remove();
+    $.ajax({
+        url: CFG_GLPI.root_doc+ '/ajax/displayMessageAfterRedirect.php',
+        success: function(html) {
+            $('body').append(html);
+        }
+    });
 };

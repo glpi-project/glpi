@@ -38,25 +38,25 @@ window.GLPI_TEST_ENV = true;
 
 // Set faux CFG_GLPI variable. We cannot get the real values since they are set inline in PHP.
 window.CFG_GLPI = {
-   root_doc: '/'
+    root_doc: '/'
 };
 
 // Mock localization
 // eslint-disable-next-line no-unused-vars
 window.__ = function (msgid, domain /* , extra */) {
-   return msgid;
+    return msgid;
 };
 // eslint-disable-next-line no-unused-vars
 window._n = function (msgid, msgid_plural, n = 1, domain /* , extra */) {
-   return n === 1 ? msgid : msgid_plural;
+    return n === 1 ? msgid : msgid_plural;
 };
 // eslint-disable-next-line no-unused-vars
 window._x = function (msgctxt, msgid, domain /* , extra */) {
-   return msgid;
+    return msgid;
 };
 // eslint-disable-next-line no-unused-vars
 window._nx = function (msgctxt, msgid, msgid_plural, n = 1, domain /* , extra */) {
-   return n === 1 ? msgid : msgid_plural;
+    return n === 1 ? msgid : msgid_plural;
 };
 
 require('../../js/common.js');

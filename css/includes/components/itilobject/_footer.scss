@@ -30,35 +30,35 @@
  */
 
 .itil-footer {
-   position: sticky;
-   bottom: 0;
+    position: sticky;
+    bottom: 0;
 
-   .action-task {
-      background-color: $timeline-task-bg;
-      color: $timeline-task-fg;
-   }
+    .action-task {
+        background-color: $timeline-task-bg;
+        color: $timeline-task-fg;
+    }
 
-   .action-solution {
-      background-color: $timeline-sol-bg;
-      color: $timeline-sol-fg;
-   }
+    .action-solution {
+        background-color: $timeline-sol-bg;
+        color: $timeline-sol-fg;
+    }
 
-   #debugajax {
-      position: absolute;
-      top: 10px;
-      left: 50%;
-   }
+    #debugajax {
+        position: absolute;
+        top: 10px;
+        left: 50%;
+    }
 
-   .buttons-bar {
-      background-color: $itil-secondary-bg;
+    .buttons-bar {
+        background-color: $itil-secondary-bg;
 
-      .form-buttons {
-         background-color: inherit;
-         border-left: 1px solid $card-border-color;
+        .form-buttons {
+            background-color: inherit;
+            border-left: 1px solid $card-border-color;
 
-         @include media-breakpoint-down(md) {
-            border-left: 0 !important;
-         }
-      }
-   }
+            @include media-breakpoint-down(md) {
+                border-left: 0 !important;
+            }
+        }
+    }
 }

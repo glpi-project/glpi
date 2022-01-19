@@ -30,39 +30,39 @@
  */
 
 :root {
-   --is-dark: #{$is-dark};
-   --animate-duration: 0.3s;
-   --light: #{$light};
-   --dark: #{$dark};
-   --logo: #{$logo};
-   --contrast-light: #{$color-contrast-light};
-   --contrast-dark: #{$color-contrast-dark};
-   --light-mix: #{rgba(mix($light, $dark, 64%), 0.24)};
-   --hover-bg: #{$hover-bg};
-   --btn-disabled-opacity: #{$btn-disabled-opacity};
+    --is-dark: #{$is-dark};
+    --animate-duration: 0.3s;
+    --light: #{$light};
+    --dark: #{$dark};
+    --logo: #{$logo};
+    --contrast-light: #{$color-contrast-light};
+    --contrast-dark: #{$color-contrast-dark};
+    --light-mix: #{rgba(mix($light, $dark, 64%), 0.24)};
+    --hover-bg: #{$hover-bg};
+    --btn-disabled-opacity: #{$btn-disabled-opacity};
 
-   // Dark mode
-   --dark-mode-darken: #{$dark-mode-darken};
-   --dark-mode-text: #{$dark-mode-text};
+    // Dark mode
+    --dark-mode-darken: #{$dark-mode-darken};
+    --dark-mode-text: #{$dark-mode-text};
 
-   // Form elements
-   --input-bg: #{$input-bg};
-   --input-color: #{$input-color};
-   --input-border: #{$input-border};
-   --input-border-color: #{$input-border-color};
-   --input-border-radius: #{$border-radius};
-   --input-border-width: #{$input-border-width};
+    // Form elements
+    --input-bg: #{$input-bg};
+    --input-color: #{$input-color};
+    --input-border: #{$input-border};
+    --input-border-color: #{$input-border-color};
+    --input-border-radius: #{$border-radius};
+    --input-border-width: #{$input-border-width};
 
-   // headers
-   --header-fg: #{$header-fg};
-   --header-bg: #{$header-bg};
-   --header-border-color: #{$header-border-color};
+    // headers
+    --header-fg: #{$header-fg};
+    --header-bg: #{$header-bg};
+    --header-border-color: #{$header-border-color};
 
-   // card
-   --card-border-color: #{$card-border-color};
+    // card
+    --card-border-color: #{$card-border-color};
 
-   // table
-   --table-head-border-color: #{$table-head-border-color};
-   --table-head-color: #{$table-head-color};
-   --table-head-bg: #{$table-head-bg};
+    // table
+    --table-head-border-color: #{$table-head-border-color};
+    --table-head-color: #{$table-head-color};
+    --table-head-bg: #{$table-head-bg};
 }

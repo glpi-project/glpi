@@ -30,30 +30,30 @@
  */
 
 .picture_gallery {
-   max-height: 300px;
-   justify-content: space-between;
+    max-height: 300px;
+    justify-content: space-between;
 }
 
 .pswp-horizontal-gallery {
-   figure {
-      max-height: 8em;
-      width: auto;
-      max-width: 200px;
-      min-width: 100px;
-      justify-content: flex-end;
+    figure {
+        max-height: 8em;
+        width: auto;
+        max-width: 200px;
+        min-width: 100px;
+        justify-content: flex-end;
 
-      span.pswp-trigger {
-         height: 50px;
-         background-color: var(--dark);
-         color: var(--light);
-      }
+        span.pswp-trigger {
+            height: 50px;
+            background-color: var(--dark);
+            color: var(--light);
+        }
 
-      img {
-         max-height: 7em;
-      }
+        img {
+            max-height: 7em;
+        }
 
-      figcaption {
-         min-height: 1em;
-      }
-   }
+        figcaption {
+            min-height: 1em;
+        }
+    }
 }

@@ -41,42 +41,42 @@ GLPI.RichText = GLPI.RichText || {};
  */
 GLPI.RichText.UserMention = class {
 
-   /**
+    /**
     * @param {Editor} editor
     * @param {number} activeEntity
     * @param {string} idorToken
     */
-   constructor(editor, activeEntity, idorToken) {
-      this.editor = editor;
-      this.activeEntity = activeEntity;
-      this.idorToken = idorToken;
-   }
+    constructor(editor, activeEntity, idorToken) {
+        this.editor = editor;
+        this.activeEntity = activeEntity;
+        this.idorToken = idorToken;
+    }
 
-   /**
+    /**
     * Register as autocompleter to editor.
     *
     * @returns {void}
     */
-   register() {
-      const that = this;
+    register() {
+        const that = this;
 
-      // Register autocompleter
-      this.editor.ui.registry.addAutocompleter(
-         'user_mention',
-         {
-            ch: '@',
-            minChars: 0,
-            fetch: function (pattern) {
-               return that.fetchItems(pattern);
-            },
-            onAction: function (autocompleteApi, range, value) {
-               that.mentionUser(autocompleteApi, range, value);
+        // Register autocompleter
+        this.editor.ui.registry.addAutocompleter(
+            'user_mention',
+            {
+                ch: '@',
+                minChars: 0,
+                fetch: function (pattern) {
+                    return that.fetchItems(pattern);
+                },
+                onAction: function (autocompleteApi, range, value) {
+                    that.mentionUser(autocompleteApi, range, value);
+                }
             }
-         }
-      );
-   }
+        );
+    }
 
-   /**
+    /**
     * Fetch autocompleter items.
     *
     * @private
@@ -85,39 +85,39 @@ GLPI.RichText.UserMention = class {
     *
     * @returns {tinymce.util.Promise}
     */
-   fetchItems(pattern) {
-      const that = this;
-      return new tinymce.util.Promise(
-         function (resolve) {
-            $.post(
-               CFG_GLPI.root_doc + '/ajax/getDropdownUsers.php',
-               {
-                  entity_restrict: that.activeEntity,
-                  right: 'all',
-                  display_emptychoice: 0,
-                  searchText: pattern,
-                  _idor_token: that.idorToken,
-               }
-            ).done(
-               function(data) {
-                  const items = data.results.map(
-                     function (user) {
-                        return {
-                           type: 'autocompleteitem',
-                           value: JSON.stringify({id: user.id, name: user.text}),
-                           text: user.text,
-                           // TODO user picture icon: ''
-                        };
-                     }
-                  );
-                  resolve(items);
-               }
-            );
-         }
-      );
-   }
+    fetchItems(pattern) {
+        const that = this;
+        return new tinymce.util.Promise(
+            function (resolve) {
+                $.post(
+                    CFG_GLPI.root_doc + '/ajax/getDropdownUsers.php',
+                    {
+                        entity_restrict: that.activeEntity,
+                        right: 'all',
+                        display_emptychoice: 0,
+                        searchText: pattern,
+                        _idor_token: that.idorToken,
+                    }
+                ).done(
+                    function(data) {
+                        const items = data.results.map(
+                            function (user) {
+                                return {
+                                    type: 'autocompleteitem',
+                                    value: JSON.stringify({id: user.id, name: user.text}),
+                                    text: user.text,
+                                    // TODO user picture icon: ''
+                                };
+                            }
+                        );
+                        resolve(items);
+                    }
+                );
+            }
+        );
+    }
 
-   /**
+    /**
     * Add mention to selected user in editor.
     *
     * @private
@@ -128,16 +128,16 @@ GLPI.RichText.UserMention = class {
     *
     * @returns {void}
     */
-   mentionUser(autocompleteApi, range, value) {
-      const user = JSON.parse(value);
+    mentionUser(autocompleteApi, range, value) {
+        const user = JSON.parse(value);
 
-      this.editor.selection.setRng(range);
-      this.editor.insertContent(this.generateUserMentionHtml(user));
+        this.editor.selection.setRng(range);
+        this.editor.insertContent(this.generateUserMentionHtml(user));
 
-      autocompleteApi.hide();
-   }
+        autocompleteApi.hide();
+    }
 
-   /**
+    /**
     * Generates HTML code to insert in editor.
     *
     * @private
@@ -146,9 +146,9 @@ GLPI.RichText.UserMention = class {
     *
     * @returns {string}
     */
-   generateUserMentionHtml(user) {
-      return `<span contenteditable="false"
+    generateUserMentionHtml(user) {
+        return `<span contenteditable="false"
                     data-user-mention="true"
                     data-user-id="${user.id}">@${user.name}</span>&nbsp;`;
-   }
+    }
 };
