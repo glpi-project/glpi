@@ -1605,7 +1605,7 @@ class Migration
 
         $this->addPreQuery("
             CREATE TABLE `$table` (
-                `id` int unsigned NOT NULL AUTO_INCREMENT,
+                `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
                 `$fk_1` int {$default_key_sign} NOT NULL DEFAULT '0',
                 `$fk_2` int {$default_key_sign} NOT NULL DEFAULT '0',
                 PRIMARY KEY (`id`),
