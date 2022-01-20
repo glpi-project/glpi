@@ -3985,8 +3985,7 @@ HTML
         string $commondb_relation,
         string $field,
         array $extra_input
-    ): void
-    {
+    ): void {
         // Keep track of the linked items
         $linked = $item->input[$field];
         $this->array($linked);

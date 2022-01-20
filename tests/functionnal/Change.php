@@ -196,7 +196,7 @@ class Change extends DbTestCase
     {
         $this->login();
         // Create a change
-        $change = new \Change;
+        $change = new \Change();
         $changes_id = $change->add([
             'name' => "test automatic status change",
             'content' => "test automatic status change",
