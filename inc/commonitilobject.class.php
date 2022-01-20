@@ -7148,7 +7148,7 @@ abstract class CommonITILObject extends CommonDBTM {
                   echo $user->getLink()."&nbsp;";
                   echo Html::showToolTip(
                      $userdata["comment"],
-                     ['link' => $userdata['link']]
+                     Session::getCurrentInterface() != 'helpdesk' ? ['link' => $userdata['link']] : []
                   );
                }
                echo "</span>";
@@ -7515,7 +7515,7 @@ abstract class CommonITILObject extends CommonDBTM {
          $reqdata = getUserName($user->getID(), 2);
          echo Html::showToolTip(
             $reqdata["comment"],
-            ['link' => $reqdata['link']]
+            Session::getCurrentInterface() != 'helpdesk' ? ['link' => $userdata['link']] : []
          );
       } else {
          echo _n('Requester', 'Requesters', count($requesters));
