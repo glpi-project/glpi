@@ -303,13 +303,10 @@ var glpi_confirm = function({
 
 
 /**
- * Close and remove from dom all opened glpi dialog
+ * Remove from dom all opened glpi dialog
  */
 var glpi_close_all_dialogs = function() {
-   document.querySelectorAll('.modal').forEach(function(modalElem) {
-      const myModal = new bootstrap.Modal(modalElem);
-      myModal.hide();
-   });
+   $('.modal.show').modal('hide').remove();
 };
 
 var toast_id = 0;
