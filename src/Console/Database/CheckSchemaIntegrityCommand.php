@@ -62,9 +62,9 @@ class CheckSchemaIntegrityCommand extends AbstractCommand
         $this->setName('glpi:database:check_schema_integrity');
         $this->setAliases(
             [
-            'db:check_schema_integrity',
-            'glpi:database:check', // old name
-            'db:check', // old alias
+                'db:check_schema_integrity',
+                'glpi:database:check', // old name
+                'db:check', // old alias
             ]
         );
         $this->setDescription(__('Check for schema differences between current database and installation file.'));
@@ -77,38 +77,45 @@ class CheckSchemaIntegrityCommand extends AbstractCommand
         );
 
         $this->addOption(
-            'ignore-innodb-migration',
+            'check-all-migrations',
             null,
             InputOption::VALUE_NONE,
-            __('Do not check tokens related to migration from "MyISAM" to "InnoDB".')
+            __('Check tokens related to all databases migrations.')
         );
 
         $this->addOption(
-            'ignore-timestamps-migration',
+            'check-innodb-migration',
             null,
             InputOption::VALUE_NONE,
-            __('Do not check tokens related to migration from "datetime" to "timestamp".')
+            __('Check tokens related to migration from "MyISAM" to "InnoDB".')
         );
 
         $this->addOption(
-            'ignore-utf8mb4-migration',
+            'check-timestamps-migration',
             null,
             InputOption::VALUE_NONE,
-            __('Do not check tokens related to migration from "utf8" to "utf8mb4".')
+            __('Check tokens related to migration from "datetime" to "timestamp".')
         );
 
         $this->addOption(
-            'ignore-dynamic-row-format-migration',
+            'check-utf8mb4-migration',
             null,
             InputOption::VALUE_NONE,
-            __('Do not check tokens related to "DYNAMIC" row format migration.')
+            __('Check tokens related to migration from "utf8" to "utf8mb4".')
         );
 
         $this->addOption(
-            'ignore-unsigned-keys-migration',
+            'check-dynamic-row-format-migration',
             null,
             InputOption::VALUE_NONE,
-            __('Do not check tokens related to migration from signed to unsigned integers in primary/foreign keys.')
+            __('Check tokens related to "DYNAMIC" row format migration.')
+        );
+
+        $this->addOption(
+            'check-unsigned-keys-migration',
+            null,
+            InputOption::VALUE_NONE,
+            __('Check tokens related to migration from signed to unsigned integers in primary/foreign keys.')
         );
     }
 
@@ -118,11 +125,11 @@ class CheckSchemaIntegrityCommand extends AbstractCommand
         $checker = new DatabaseSchemaIntegrityChecker(
             $this->db,
             $input->getOption('strict'),
-            $input->getOption('ignore-innodb-migration'),
-            $input->getOption('ignore-timestamps-migration'),
-            $input->getOption('ignore-utf8mb4-migration'),
-            $input->getOption('ignore-dynamic-row-format-migration'),
-            $input->getOption('ignore-unsigned-keys-migration')
+            !$input->getOption('check-all-migrations') && !$input->getOption('check-innodb-migration'),
+            !$input->getOption('check-all-migrations') && !$input->getOption('check-timestamps-migration'),
+            !$input->getOption('check-all-migrations') && !$input->getOption('check-utf8mb4-migration'),
+            !$input->getOption('check-all-migrations') && !$input->getOption('check-dynamic-row-format-migration'),
+            !$input->getOption('check-all-migrations') && !$input->getOption('check-unsigned-keys-migration')
         );
 
         if (
