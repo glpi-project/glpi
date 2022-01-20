@@ -1076,7 +1076,7 @@ class Item_SoftwareVersion extends CommonDBRelation
 
                 Html::showMassiveActions($massiveactionparams);
             }
-            echo "<table class='tab_cadre_fixehov'>";
+            echo "<table class='table table-hover table-striped border my-2'>";
 
             $header_begin  = "<tr>";
             $header_top    = '';
@@ -1127,7 +1127,9 @@ class Item_SoftwareVersion extends CommonDBRelation
                 $iterator->next();
             }
 
+            echo "<tfoot>";
             echo $header_begin . $header_bottom . $header_end;
+            echo "</tfoot>";
             echo "</table>";
             echo "</div>";
             if ($canedit) {
@@ -1138,7 +1140,7 @@ class Item_SoftwareVersion extends CommonDBRelation
         } else {
             echo "<p class='center b'>" . __('No item found') . "</p>";
         }
-        echo "</div>\n";
+        echo "</div>";
         if (
             (empty($withtemplate) || ($withtemplate != 2))
             && $canedit
@@ -1154,8 +1156,8 @@ class Item_SoftwareVersion extends CommonDBRelation
             Software::dropdownLicenseToInstall("softwarelicenses_id", $entities_id);
             echo "</td><td width='20%'>";
             echo "<input type='submit' name='add' value=\"" . _sx('button', 'Add') . "\" class='btn btn-primary'>";
-            echo "</td></tr>\n";
-            echo "</table></div>\n";
+            echo "</td></tr>";
+            echo "</table></div>";
             Html::closeForm();
         }
         echo "<div class='spaced'>";
