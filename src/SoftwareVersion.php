@@ -367,7 +367,7 @@ class SoftwareVersion extends CommonDBChild
                 );
                 echo "</td>";
                 echo "<td class='numeric'>$nb</td>";
-                echo "<td>" . nl2br($data['comment']) . "</td></tr>\n";
+                echo "<td>" . nl2br($data['comment'] ?? "") . "</td></tr>\n";
 
                 $tot += $nb;
             }
