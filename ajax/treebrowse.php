@@ -42,7 +42,7 @@ switch ($_REQUEST['action']) {
             'is_deleted'         => $_REQUEST['is_deleted'],
             'browse'             => 1,
             'as_map'             => 0,
-            'showmassiveactions' => false,
+            'showmassiveactions' => true,
             'criteria'           => $_REQUEST['criteria'],
         ];
 
