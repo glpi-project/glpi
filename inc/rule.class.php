@@ -68,6 +68,8 @@ class Rule extends CommonDBTM {
    public $regex_results         = [];
    public $criterias_results     = [];
 
+   public $options               = [];
+
    static $rightname             = 'config';
 
    const RULE_NOT_IN_CACHE       = -1;
@@ -1417,6 +1419,7 @@ class Rule extends CommonDBTM {
          if ($this->checkCriterias($input)) {
             unset($output["_no_rule_matches"]);
             $refoutput = $output;
+            $this->options = $options;
             $output    = $this->executeActions($output, $params, $input);
 
             $this->updateOnlyCriteria($options, $refoutput, $output);
