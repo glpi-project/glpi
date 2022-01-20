@@ -204,7 +204,7 @@ class Change extends DbTestCase
         ]);
 
         // Initial status is new (incoming)
-        $this->integer($change->fields['status'])->isIdenticalTo(CommonITILObject::INCOMING);
+        $this->integer($change->fields['status'])->isIdenticalTo(\CommonITILObject::INCOMING);
 
         $change->update([
             'id' => $changes_id,
@@ -218,23 +218,23 @@ class Change extends DbTestCase
 
         // Verify user was assigned and status doesn't change
         $change->loadActors();
-        $this->integer($change->countUsers(CommonITILActor::ASSIGN))->isIdenticalTo(1);
-        $this->integer($change->fields['status'])->isIdenticalTo(CommonITILObject::INCOMING);
+        $this->integer($change->countUsers(\CommonITILActor::ASSIGN))->isIdenticalTo(1);
+        $this->integer($change->fields['status'])->isIdenticalTo(\CommonITILObject::INCOMING);
 
         // Change status to accepted
         $change->update([
             'id' => $changes_id,
-            'status' => CommonITILObject::ACCEPTED,
+            'status' => \CommonITILObject::ACCEPTED,
         ]);
         // Unassign change and expect the status to stay accepted
-        $change_user = new Change_User();
+        $change_user = new \Change_User();
         $change_user->deleteByCriteria([
             'changes_id' => $changes_id,
-            'type' => CommonITILActor::ASSIGN,
+            'type' => \CommonITILActor::ASSIGN,
             'users_id' => getItemByTypeName('User', TU_USER, true),
         ]);
         $change->getFromDB($changes_id);
-        $this->integer($change->countUsers(CommonITILActor::ASSIGN))->isIdenticalTo(0);
-        $this->integer($change->fields['status'])->isIdenticalTo(CommonITILObject::ACCEPTED);
+        $this->integer($change->countUsers(\CommonITILActor::ASSIGN))->isIdenticalTo(0);
+        $this->integer($change->fields['status'])->isIdenticalTo(\CommonITILObject::ACCEPTED);
     }
 }

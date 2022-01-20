@@ -4024,40 +4024,40 @@ HTML
 
         // Check ticket status is new
         $this->boolean($ticket->getFromDB($tickets_id))->isTrue();
-        $this->integer($ticket->countUsers(CommonITILActor::ASSIGN))->isEqualTo(0);
-        $this->integer($ticket->fields['status'])->isEqualTo(CommonITILObject::INCOMING);
+        $this->integer($ticket->countUsers(\CommonITILActor::ASSIGN))->isEqualTo(0);
+        $this->integer($ticket->fields['status'])->isEqualTo(\CommonITILObject::INCOMING);
 
         // Set status to solved
         $this->boolean($ticket->update([
             'id' => $tickets_id,
-            'status' => CommonITILObject::SOLVED,
+            'status' => \CommonITILObject::SOLVED,
             '_skip_auto_assign' => true,
         ]))->isTrue();
 
         // Check ticket status is solved
         $this->boolean($ticket->getFromDB($tickets_id))->isTrue();
-        $this->integer($ticket->fields['status'])->isEqualTo(CommonITILObject::SOLVED);
+        $this->integer($ticket->fields['status'])->isEqualTo(\CommonITILObject::SOLVED);
 
         // Set status to new
         $this->boolean($ticket->update([
             'id' => $tickets_id,
-            'status' => CommonITILObject::INCOMING,
+            'status' => \CommonITILObject::INCOMING,
             '_skip_auto_assign' => true,
         ]))->isTrue();
 
         // Check ticket status is new
         $this->boolean($ticket->getFromDB($tickets_id))->isTrue();
-        $this->integer($ticket->fields['status'])->isEqualTo(CommonITILObject::INCOMING);
+        $this->integer($ticket->fields['status'])->isEqualTo(\CommonITILObject::INCOMING);
 
         // Set status to closed
         $this->boolean($ticket->update([
             'id' => $tickets_id,
-            'status' => CommonITILObject::CLOSED,
+            'status' => \CommonITILObject::CLOSED,
             '_skip_auto_assign' => true,
         ]))->isTrue();
 
         // Check ticket status is closed
         $this->boolean($ticket->getFromDB($tickets_id))->isTrue();
-        $this->integer($ticket->fields['status'])->isEqualTo(CommonITILObject::CLOSED);
+        $this->integer($ticket->fields['status'])->isEqualTo(\CommonITILObject::CLOSED);
     }
 }
