@@ -50,13 +50,13 @@ class ConfigExtension extends AbstractExtension
         ];
     }
 
-   /**
-    * Get GLPI configuration value.
-    *
-    * @param string $key
-    *
-    * @return mixed
-    */
+    /**
+     * Get GLPI configuration value.
+     *
+     * @param string $key
+     *
+     * @return mixed
+     */
     public function config(string $key)
     {
         global $CFG_GLPI;
@@ -64,16 +64,16 @@ class ConfigExtension extends AbstractExtension
         return $CFG_GLPI[$key] ?? null;
     }
 
-   /**
-    * Get entity configuration value.
-    *
-    * @param string        $key              Configuration key.
-    * @param null|int      $entity_id        Entity ID, defaults to current entity.
-    * @param mixed         $default_value    Default value.
-    * @param null|string   $inheritence_key  Key to use for inheritence check if different than key used to get value.
-    *
-    * @return mixed
-    */
+    /**
+     * Get entity configuration value.
+     *
+     * @param string        $key              Configuration key.
+     * @param null|int      $entity_id        Entity ID, defaults to current entity.
+     * @param mixed         $default_value    Default value.
+     * @param null|string   $inheritence_key  Key to use for inheritence check if different than key used to get value.
+     *
+     * @return mixed
+     */
     public function getEntityConfig(string $key, ?int $entity_id = null, $default_value = -2, ?string $inheritence_key = null)
     {
         if ($inheritence_key === null) {

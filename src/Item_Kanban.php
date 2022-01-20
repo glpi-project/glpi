@@ -39,19 +39,19 @@ class Item_Kanban extends CommonDBRelation
     public static $items_id_2 = 'users_id';
     public static $checkItem_1_Rights = self::DONT_CHECK_ITEM_RIGHTS;
 
-   /**
-    * Save the state of a Kanban's columns for a specific item for the current user or globally.
-    * @since 9.5.0
-    * @param string $itemtype Type of the item.
-    * @param int $items_id ID of the item.
-    * @param array $state Array of Kanban column state data.
-    * @return bool
-    */
+    /**
+     * Save the state of a Kanban's columns for a specific item for the current user or globally.
+     * @since 9.5.0
+     * @param string $itemtype Type of the item.
+     * @param int $items_id ID of the item.
+     * @param array $state Array of Kanban column state data.
+     * @return bool
+     */
     public static function saveStateForItem($itemtype, $items_id, $state)
     {
         global $DB;
 
-       /** @var Kanban|CommonDBTM $item */
+        /** @var Kanban|CommonDBTM $item */
         $item = new $itemtype();
         $item->getFromDB($items_id);
         $force_global = $item->forceGlobalState();
@@ -95,21 +95,21 @@ class Item_Kanban extends CommonDBRelation
         return true;
     }
 
-   /**
-    * Load the state of a Kanban's columns for a specific item for the current user or globally.
-    * @since 9.5.0
-    * @param string $itemtype Type of the item.
-    * @param int $items_id ID of the item.
-    * @param string $timestamp Timestamp string of last check or null to always get the state.
-    * @return array Array of Kanban column state data.
-    *       Null is returned if $timestamp is specified, but no changes have been made to the state since then
-    *       An empty array is returned if the state is not in the DB.
-    */
+    /**
+     * Load the state of a Kanban's columns for a specific item for the current user or globally.
+     * @since 9.5.0
+     * @param string $itemtype Type of the item.
+     * @param int $items_id ID of the item.
+     * @param string $timestamp Timestamp string of last check or null to always get the state.
+     * @return array Array of Kanban column state data.
+     *       Null is returned if $timestamp is specified, but no changes have been made to the state since then
+     *       An empty array is returned if the state is not in the DB.
+     */
     public static function loadStateForItem($itemtype, $items_id, $timestamp = null)
     {
         global $DB;
 
-       /** @var Kanban|CommonDBTM $item */
+        /** @var Kanban|CommonDBTM $item */
         $item = new $itemtype();
         $item->getFromDB($items_id);
         $force_global = $item->forceGlobalState();

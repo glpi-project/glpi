@@ -231,13 +231,13 @@ class Principal extends AbstractBackend
         throw new \Sabre\DAV\Exception\NotImplemented('Group member set update is not implemented');
     }
 
-   /**
-    * Get principal object based on item.
-    *
-    * @param \CommonDBTM $item
-    *
-    * @return null|array
-    */
+    /**
+     * Get principal object based on item.
+     *
+     * @param \CommonDBTM $item
+     *
+     * @return null|array
+     */
     private function getPrincipalFromItem(\CommonDBTM $item)
     {
 
@@ -255,13 +255,13 @@ class Principal extends AbstractBackend
         return $principal;
     }
 
-   /**
-    * Get principal object based on user fields.
-    *
-    * @param array $user_fields
-    *
-    * @return array
-    */
+    /**
+     * Get principal object based on user fields.
+     *
+     * @param array $user_fields
+     *
+     * @return array
+     */
     private function getPrincipalFromUserFields(array $user_fields)
     {
         return [
@@ -279,13 +279,13 @@ class Principal extends AbstractBackend
         ];
     }
 
-   /**
-    * Get principal object based on user fields.
-    *
-    * @param array $group_fields
-    *
-    * @return array
-    */
+    /**
+     * Get principal object based on user fields.
+     *
+     * @param array $group_fields
+     *
+     * @return array
+     */
     private function getPrincipalFromGroupFields(array $group_fields)
     {
         return [

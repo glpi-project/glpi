@@ -39,7 +39,7 @@ use Glpi\Toolbox\Sanitizer;
 
 /**
  * CommonITILObject Class
-**/
+ **/
 abstract class CommonITILObject extends CommonDBTM
 {
     use \Glpi\Features\Clonable;
@@ -101,9 +101,9 @@ abstract class CommonITILObject extends CommonDBTM
     }
 
 
-   /**
-    * @since 0.84
-   **/
+    /**
+     * @since 0.84
+     **/
     public function loadActors()
     {
 
@@ -124,35 +124,35 @@ abstract class CommonITILObject extends CommonDBTM
     }
 
 
-   /**
-    * Return the number of actors currently assigned to the object
-    *
-    * @since 10.0
-    *
-    * @return int
-    */
+    /**
+     * Return the number of actors currently assigned to the object
+     *
+     * @since 10.0
+     *
+     * @return int
+     */
     public function countActors(): int
     {
         return count($this->groups) + count($this->users) + count($this->suppliers);
     }
 
 
-   /**
-    * Return the list of actors for a given actor type
-    * We try to retrieve them by:
-    * - in case new ticket
-    *  - from virtual _actor field (present after a reload)
-    *  - from template (predefined actor field)
-    *  - from default actor if setting is defined in user preference
-    * - for existing ticket (with an id > 0), directly from saved actors
-    *
-    * @since 10.0
-    *
-    * @param int $actortype 1=requester, 2=assign, 3=observer
-    * @param array $params posted data of itil object
-    *
-    * @return array of actors
-    */
+    /**
+     * Return the list of actors for a given actor type
+     * We try to retrieve them by:
+     * - in case new ticket
+     *  - from virtual _actor field (present after a reload)
+     *  - from template (predefined actor field)
+     *  - from default actor if setting is defined in user preference
+     * - for existing ticket (with an id > 0), directly from saved actors
+     *
+     * @since 10.0
+     *
+     * @param int $actortype 1=requester, 2=assign, 3=observer
+     * @param array $params posted data of itil object
+     *
+     * @return array of actors
+     */
     public function getActorsForType(int $actortype = 1, array $params = []): array
     {
         $actors = [];
@@ -288,18 +288,18 @@ abstract class CommonITILObject extends CommonDBTM
     }
 
 
-   /**
-    * Retrieve all possible entities for an itilobject posted data.
-    * We try to retrieve requesters in the data:
-    * - from `_users_id_requester` (data from template or default actor)
-    * - from `_actors` (virtual field when the form is reloaded)
-    * By default, if none of these fields are present, entities are get from current active entity.
-    *
-    * @since 10.0
-    *
-    * @param array $params posted data by an itil object
-    * @return array of possible entities_id
-    */
+    /**
+     * Retrieve all possible entities for an itilobject posted data.
+     * We try to retrieve requesters in the data:
+     * - from `_users_id_requester` (data from template or default actor)
+     * - from `_actors` (virtual field when the form is reloaded)
+     * By default, if none of these fields are present, entities are get from current active entity.
+     *
+     * @since 10.0
+     *
+     * @param array $params posted data by an itil object
+     * @return array of possible entities_id
+     */
     public function getEntitiesForRequesters(array $params = [])
     {
         $requesters = [];
@@ -324,13 +324,13 @@ abstract class CommonITILObject extends CommonDBTM
     }
 
 
-   /**
-    * Retrieve an item from the database with datas associated (hardwares)
-    *
-    * @param integer $ID ID of the item to get
-    *
-    * @return boolean true if succeed else false
-   **/
+    /**
+     * Retrieve an item from the database with datas associated (hardwares)
+     *
+     * @param integer $ID ID of the item to get
+     *
+     * @return boolean true if succeed else false
+     **/
     public function getFromDBwithData($ID)
     {
 
@@ -347,11 +347,11 @@ abstract class CommonITILObject extends CommonDBTM
     }
 
 
-   /**
-    * Can manage actors
-    *
-    * @return boolean
-    */
+    /**
+     * Can manage actors
+     *
+     * @return boolean
+     */
     public function canAdminActors()
     {
         if (isset($this->fields['is_deleted']) && $this->fields['is_deleted'] == 1) {
@@ -361,11 +361,11 @@ abstract class CommonITILObject extends CommonDBTM
     }
 
 
-   /**
-    * Can assign object
-    *
-    * @return boolean
-    */
+    /**
+     * Can assign object
+     *
+     * @return boolean
+     */
     public function canAssign()
     {
         if (
@@ -378,11 +378,11 @@ abstract class CommonITILObject extends CommonDBTM
     }
 
 
-   /**
-    * Can be assigned to me
-    *
-    * @return boolean
-    */
+    /**
+     * Can be assigned to me
+     *
+     * @return boolean
+     */
     public function canAssignToMe()
     {
         if (
@@ -395,13 +395,13 @@ abstract class CommonITILObject extends CommonDBTM
     }
 
 
-   /**
-    * Is the current user have right to approve solution of the current ITIL object.
-    *
-    * @since 9.4.0
-    *
-    * @return boolean
-    */
+    /**
+     * Is the current user have right to approve solution of the current ITIL object.
+     *
+     * @since 9.4.0
+     *
+     * @return boolean
+     */
     public function canApprove()
     {
 
@@ -411,13 +411,13 @@ abstract class CommonITILObject extends CommonDBTM
                   && $this->haveAGroup(CommonITILActor::REQUESTER, $_SESSION["glpigroups"])));
     }
 
-   /**
-    * Is the current user have right to add followups to the current ITIL Object ?
-    *
-    * @since 9.4.0
-    *
-    * @return boolean
-    */
+    /**
+     * Is the current user have right to add followups to the current ITIL Object ?
+     *
+     * @since 9.4.0
+     *
+     * @return boolean
+     */
     public function canAddFollowups()
     {
         return (
@@ -450,11 +450,11 @@ abstract class CommonITILObject extends CommonDBTM
         );
     }
 
-   /**
-    * Check if the given users is a validator
-    * @param int $users_id
-    * @return bool
-    */
+    /**
+     * Check if the given users is a validator
+     * @param int $users_id
+     * @return bool
+     */
     public function isValidator($users_id): bool
     {
         if (!$users_id) {
@@ -478,11 +478,11 @@ abstract class CommonITILObject extends CommonDBTM
     }
 
 
-   /**
-    * Does current user have right to solve the current item?
-    *
-    * @return boolean
-   **/
+    /**
+     * Does current user have right to solve the current item?
+     *
+     * @return boolean
+     **/
     public function canSolve()
     {
 
@@ -495,11 +495,11 @@ abstract class CommonITILObject extends CommonDBTM
               && !in_array($this->fields['status'], $this->getClosedStatusArray()));
     }
 
-   /**
-    * Does current user have right to solve the current item; if it was not closed?
-    *
-    * @return boolean
-   **/
+    /**
+     * Does current user have right to solve the current item; if it was not closed?
+     *
+     * @return boolean
+     **/
     public function maySolve()
     {
 
@@ -511,27 +511,27 @@ abstract class CommonITILObject extends CommonDBTM
     }
 
 
-   /**
-    * Get the ITIL object closed, solved or waiting status list
-    *
-    * @since 9.4.0
-    *
-    * @return array
-    */
+    /**
+     * Get the ITIL object closed, solved or waiting status list
+     *
+     * @since 9.4.0
+     *
+     * @return array
+     */
     public static function getReopenableStatusArray()
     {
         return [self::CLOSED, self::SOLVED, self::WAITING];
     }
 
 
-   /**
-    * Is a user linked to the object ?
-    *
-    * @param integer $type     type to search (see constants)
-    * @param integer $users_id user ID
-    *
-    * @return boolean
-   **/
+    /**
+     * Is a user linked to the object ?
+     *
+     * @param integer $type     type to search (see constants)
+     * @param integer $users_id user ID
+     *
+     * @return boolean
+     **/
     public function isUser($type, $users_id)
     {
 
@@ -547,14 +547,14 @@ abstract class CommonITILObject extends CommonDBTM
     }
 
 
-   /**
-    * Is a group linked to the object ?
-    *
-    * @param integer $type      type to search (see constants)
-    * @param integer $groups_id group ID
-    *
-    * @return boolean
-   **/
+    /**
+     * Is a group linked to the object ?
+     *
+     * @param integer $type      type to search (see constants)
+     * @param integer $groups_id group ID
+     *
+     * @return boolean
+     **/
     public function isGroup($type, $groups_id)
     {
 
@@ -569,16 +569,16 @@ abstract class CommonITILObject extends CommonDBTM
     }
 
 
-   /**
-    * Is a supplier linked to the object ?
-    *
-    * @since 0.84
-    *
-    * @param integer $type         type to search (see constants)
-    * @param integer $suppliers_id supplier ID
-    *
-    * @return boolean
-   **/
+    /**
+     * Is a supplier linked to the object ?
+     *
+     * @since 0.84
+     *
+     * @param integer $type         type to search (see constants)
+     * @param integer $suppliers_id supplier ID
+     *
+     * @return boolean
+     **/
     public function isSupplier($type, $suppliers_id)
     {
 
@@ -593,13 +593,13 @@ abstract class CommonITILObject extends CommonDBTM
     }
 
 
-   /**
-    * get users linked to a object
-    *
-    * @param integer $type type to search (see constants)
-    *
-    * @return array
-   **/
+    /**
+     * get users linked to a object
+     *
+     * @param integer $type type to search (see constants)
+     *
+     * @return array
+     **/
     public function getUsers($type)
     {
 
@@ -611,13 +611,13 @@ abstract class CommonITILObject extends CommonDBTM
     }
 
 
-   /**
-    * get groups linked to a object
-    *
-    * @param integer $type type to search (see constants)
-    *
-    * @return array
-   **/
+    /**
+     * get groups linked to a object
+     *
+     * @param integer $type type to search (see constants)
+     *
+     * @return array
+     **/
     public function getGroups($type)
     {
 
@@ -629,15 +629,15 @@ abstract class CommonITILObject extends CommonDBTM
     }
 
 
-   /**
-    * get users linked to an object including groups ones
-    *
-    * @since 0.85
-    *
-    * @param integer $type type to search (see constants)
-    *
-    * @return array
-   **/
+    /**
+     * get users linked to an object including groups ones
+     *
+     * @since 0.85
+     *
+     * @param integer $type type to search (see constants)
+     *
+     * @return array
+     **/
     public function getAllUsers($type)
     {
 
@@ -657,15 +657,15 @@ abstract class CommonITILObject extends CommonDBTM
     }
 
 
-   /**
-    * get suppliers linked to a object
-    *
-    * @since 0.84
-    *
-    * @param integer $type type to search (see constants)
-    *
-    * @return array
-   **/
+    /**
+     * get suppliers linked to a object
+     *
+     * @since 0.84
+     *
+     * @param integer $type type to search (see constants)
+     *
+     * @return array
+     **/
     public function getSuppliers($type)
     {
 
@@ -677,13 +677,13 @@ abstract class CommonITILObject extends CommonDBTM
     }
 
 
-   /**
-    * count users linked to object by type or global
-    *
-    * @param integer $type type to search (see constants) / 0 for all (default 0)
-    *
-    * @return integer
-   **/
+    /**
+     * count users linked to object by type or global
+     *
+     * @param integer $type type to search (see constants) / 0 for all (default 0)
+     *
+     * @return integer
+     **/
     public function countUsers($type = 0)
     {
 
@@ -704,13 +704,13 @@ abstract class CommonITILObject extends CommonDBTM
     }
 
 
-   /**
-    * count groups linked to object by type or global
-    *
-    * @param integer $type type to search (see constants) / 0 for all (default 0)
-    *
-    * @return integer
-   **/
+    /**
+     * count groups linked to object by type or global
+     *
+     * @param integer $type type to search (see constants) / 0 for all (default 0)
+     *
+     * @return integer
+     **/
     public function countGroups($type = 0)
     {
 
@@ -731,15 +731,15 @@ abstract class CommonITILObject extends CommonDBTM
     }
 
 
-   /**
-    * count suppliers linked to object by type or global
-    *
-    * @since 0.84
-    *
-    * @param integer $type type to search (see constants) / 0 for all (default 0)
-    *
-    * @return integer
-   **/
+    /**
+     * count suppliers linked to object by type or global
+     *
+     * @since 0.84
+     *
+     * @param integer $type type to search (see constants) / 0 for all (default 0)
+     *
+     * @return integer
+     **/
     public function countSuppliers($type = 0)
     {
 
@@ -760,14 +760,14 @@ abstract class CommonITILObject extends CommonDBTM
     }
 
 
-   /**
-    * Is one of groups linked to the object ?
-    *
-    * @param integer $type   type to search (see constants)
-    * @param array   $groups groups IDs
-    *
-    * @return boolean
-   **/
+    /**
+     * Is one of groups linked to the object ?
+     *
+     * @param integer $type   type to search (see constants)
+     * @param array   $groups groups IDs
+     *
+     * @return boolean
+     **/
     public function haveAGroup($type, array $groups)
     {
 
@@ -787,13 +787,13 @@ abstract class CommonITILObject extends CommonDBTM
     }
 
 
-   /**
-    * Get Default actor when creating the object
-    *
-    * @param integer $type type to search (see constants)
-    *
-    * @return boolean
-   **/
+    /**
+     * Get Default actor when creating the object
+     *
+     * @param integer $type type to search (see constants)
+     *
+     * @return boolean
+     **/
     public function getDefaultActor($type)
     {
 
@@ -807,13 +807,13 @@ abstract class CommonITILObject extends CommonDBTM
     }
 
 
-   /**
-    * Get Default actor when creating the object
-    *
-    * @param integer $type type to search (see constants)
-    *
-    * @return boolean
-   **/
+    /**
+     * Get Default actor when creating the object
+     *
+     * @param integer $type type to search (see constants)
+     *
+     * @return boolean
+     **/
     public function getDefaultActorRightSearch($type)
     {
 
@@ -824,17 +824,17 @@ abstract class CommonITILObject extends CommonDBTM
     }
 
 
-   /**
-    * Count active ITIL Objects
-    *
-    * @since 9.3.1
-    *
-    * @param CommonITILActor $linkclass Link class instance
-    * @param integer         $id        Item ID
-    * @param integer         $role      ITIL role
-    *
-    * @return integer
-   **/
+    /**
+     * Count active ITIL Objects
+     *
+     * @since 9.3.1
+     *
+     * @param CommonITILActor $linkclass Link class instance
+     * @param integer         $id        Item ID
+     * @param integer         $role      ITIL role
+     *
+     * @return integer
+     **/
     private function countActiveObjectsFor(CommonITILActor $linkclass, $id, $role)
     {
 
@@ -863,15 +863,15 @@ abstract class CommonITILObject extends CommonDBTM
 
 
 
-   /**
-    * Count active ITIL Objects requested by a user
-    *
-    * @since 0.83
-    *
-    * @param integer $users_id ID of the User
-    *
-    * @return integer
-   **/
+    /**
+     * Count active ITIL Objects requested by a user
+     *
+     * @since 0.83
+     *
+     * @param integer $users_id ID of the User
+     *
+     * @return integer
+     **/
     public function countActiveObjectsForUser($users_id)
     {
         $linkclass = new $this->userlinkclass();
@@ -883,15 +883,15 @@ abstract class CommonITILObject extends CommonDBTM
     }
 
 
-   /**
-    * Count active ITIL Objects assigned to a user
-    *
-    * @since 0.83
-    *
-    * @param integer $users_id ID of the User
-    *
-    * @return integer
-   **/
+    /**
+     * Count active ITIL Objects assigned to a user
+     *
+     * @since 0.83
+     *
+     * @param integer $users_id ID of the User
+     *
+     * @return integer
+     **/
     public function countActiveObjectsForTech($users_id)
     {
         $linkclass = new $this->userlinkclass();
@@ -903,15 +903,15 @@ abstract class CommonITILObject extends CommonDBTM
     }
 
 
-   /**
-    * Count active ITIL Objects assigned to a group
-    *
-    * @since 0.84
-    *
-    * @param integer $groups_id ID of the User
-    *
-    * @return integer
-   **/
+    /**
+     * Count active ITIL Objects assigned to a group
+     *
+     * @since 0.84
+     *
+     * @param integer $groups_id ID of the User
+     *
+     * @return integer
+     **/
     public function countActiveObjectsForTechGroup($groups_id)
     {
         $linkclass = new $this->grouplinkclass();
@@ -923,15 +923,15 @@ abstract class CommonITILObject extends CommonDBTM
     }
 
 
-   /**
-    * Count active ITIL Objects assigned to a supplier
-    *
-    * @since 0.85
-    *
-    * @param integer $suppliers_id ID of the Supplier
-    *
-    * @return integer
-    **/
+    /**
+     * Count active ITIL Objects assigned to a supplier
+     *
+     * @since 0.85
+     *
+     * @param integer $suppliers_id ID of the Supplier
+     *
+     * @return integer
+     **/
     public function countActiveObjectsForSupplier($suppliers_id)
     {
         $linkclass = new $this->supplierlinkclass();
@@ -967,13 +967,13 @@ abstract class CommonITILObject extends CommonDBTM
         $this->deleteChildrenAndRelationsFromDb($link_classes);
     }
 
-   /**
-    * Handle template mandatory fields on update
-    *
-    * @param array $input Input
-    *
-    * @return array
-    */
+    /**
+     * Handle template mandatory fields on update
+     *
+     * @param array $input Input
+     *
+     * @return array
+     */
     protected function handleTemplateFields(array $input)
     {
        //// check mandatory fields
@@ -2149,13 +2149,13 @@ abstract class CommonITILObject extends CommonDBTM
         return $input;
     }
 
-   /**
-    * Check input fields consistency.
-    *
-    * @param array $input
-    *
-    * @return bool
-    */
+    /**
+     * Check input fields consistency.
+     *
+     * @param array $input
+     *
+     * @return bool
+     */
     private function checkFieldsConsistency(array $input): bool
     {
         if (
@@ -2169,16 +2169,16 @@ abstract class CommonITILObject extends CommonDBTM
         return true;
     }
 
-   /**
-    * Compute default values for Add
-    * (to be passed in prepareInputForAdd before and after rules if needed)
-    *
-    * @since 0.84
-    *
-    * @param $input
-    *
-    * @return string
-   **/
+    /**
+     * Compute default values for Add
+     * (to be passed in prepareInputForAdd before and after rules if needed)
+     *
+     * @since 0.84
+     *
+     * @param $input
+     *
+     * @return string
+     **/
     public function computeDefaultValuesForAdd($input)
     {
 
@@ -2522,9 +2522,9 @@ abstract class CommonITILObject extends CommonDBTM
         parent::post_addItem();
     }
 
-   /**
-    * @see Glpi\Features\Clonable::post_clone
-    */
+    /**
+     * @see Glpi\Features\Clonable::post_clone
+     */
     public function post_clone($source, $history)
     {
         global $DB;
@@ -2547,10 +2547,10 @@ abstract class CommonITILObject extends CommonDBTM
         return [];
     }
 
-   /**
-    * @since 0.84
-    * @since 0.85 must have param $input
-   **/
+    /**
+     * @since 0.84
+     * @since 0.85 must have param $input
+     **/
     private function addAdditionalActors($input)
     {
 
@@ -2739,16 +2739,16 @@ abstract class CommonITILObject extends CommonDBTM
     }
 
 
-   /**
-    * Compute Priority
-    *
-    * @since 0.84
-    *
-    * @param $urgency   integer from 1 to 5
-    * @param $impact    integer from 1 to 5
-    *
-    * @return integer from 1 to 5 (priority)
-   **/
+    /**
+     * Compute Priority
+     *
+     * @since 0.84
+     *
+     * @param $urgency   integer from 1 to 5
+     * @param $impact    integer from 1 to 5
+     *
+     * @return integer from 1 to 5 (priority)
+     **/
     public static function computePriority($urgency, $impact)
     {
         global $CFG_GLPI;
@@ -2761,20 +2761,20 @@ abstract class CommonITILObject extends CommonDBTM
     }
 
 
-   /**
-    * Dropdown of ITIL object priority
-    *
-    * @since  version 0.84 new proto
-    *
-    * @param $options array of options
-    *       - name     : select name (default is urgency)
-    *       - value    : default value (default 0)
-    *       - showtype : list proposed : normal, search (default normal)
-    *       - wthmajor : boolean with major priority ?
-    *       - display  : boolean if false get string
-    *
-    * @return string id of the select
-   **/
+    /**
+     * Dropdown of ITIL object priority
+     *
+     * @since  version 0.84 new proto
+     *
+     * @param $options array of options
+     *       - name     : select name (default is urgency)
+     *       - value    : default value (default 0)
+     *       - showtype : list proposed : normal, search (default normal)
+     *       - wthmajor : boolean with major priority ?
+     *       - display  : boolean if false get string
+     *
+     * @return string id of the select
+     **/
     public static function dropdownPriority(array $options = [])
     {
 
@@ -2821,11 +2821,11 @@ abstract class CommonITILObject extends CommonDBTM
     }
 
 
-   /**
-    * Get ITIL object priority Name
-    *
-    * @param integer $value priority ID
-   **/
+    /**
+     * Get ITIL object priority Name
+     *
+     * @param integer $value priority ID
+     **/
     public static function getPriorityName($value)
     {
 
@@ -2869,19 +2869,19 @@ abstract class CommonITILObject extends CommonDBTM
     }
 
 
-   /**
-    * Dropdown of ITIL object Urgency
-    *
-    * @since 0.84 new proto
-    *
-    * @param $options array of options
-    *       - name     : select name (default is urgency)
-    *       - value    : default value (default 0)
-    *       - showtype : list proposed : normal, search (default normal)
-    *       - display  : boolean if false get string
-    *
-    * @return string id of the select
-   **/
+    /**
+     * Dropdown of ITIL object Urgency
+     *
+     * @since 0.84 new proto
+     *
+     * @param $options array of options
+     *       - name     : select name (default is urgency)
+     *       - value    : default value (default 0)
+     *       - showtype : list proposed : normal, search (default normal)
+     *       - display  : boolean if false get string
+     *
+     * @return string id of the select
+     **/
     public static function dropdownUrgency(array $options = [])
     {
         global $CFG_GLPI;
@@ -2946,11 +2946,11 @@ abstract class CommonITILObject extends CommonDBTM
     }
 
 
-   /**
-    * Get ITIL object Urgency Name
-    *
-    * @param integer $value urgency ID
-   **/
+    /**
+     * Get ITIL object Urgency Name
+     *
+     * @param integer $value urgency ID
+     **/
     public static function getUrgencyName($value)
     {
 
@@ -2991,20 +2991,20 @@ abstract class CommonITILObject extends CommonDBTM
     }
 
 
-   /**
-    * Dropdown of ITIL object Impact
-    *
-    * @since 0.84 new proto
-    *
-    * @param $options   array of options
-    *  - name     : select name (default is impact)
-    *  - value    : default value (default 0)
-    *  - showtype : list proposed : normal, search (default normal)
-    *  - display  : boolean if false get string
-    *
-    * \
-    * @return string id of the select
-   **/
+    /**
+     * Dropdown of ITIL object Impact
+     *
+     * @since 0.84 new proto
+     *
+     * @param $options   array of options
+     *  - name     : select name (default is impact)
+     *  - value    : default value (default 0)
+     *  - showtype : list proposed : normal, search (default normal)
+     *  - display  : boolean if false get string
+     *
+     * \
+     * @return string id of the select
+     **/
     public static function dropdownImpact(array $options = [])
     {
         global $CFG_GLPI;
@@ -3068,11 +3068,11 @@ abstract class CommonITILObject extends CommonDBTM
     }
 
 
-   /**
-    * Get ITIL object Impact Name
-    *
-    * @param integer $value impact ID
-   **/
+    /**
+     * Get ITIL object Impact Name
+     *
+     * @param integer $value impact ID
+     **/
     public static function getImpactName($value)
     {
 
@@ -3113,13 +3113,13 @@ abstract class CommonITILObject extends CommonDBTM
     }
 
 
-   /**
-    * Get the ITIL object status list
-    *
-    * @param $withmetaforsearch boolean (false by default)
-    *
-    * @return array
-   **/
+    /**
+     * Get the ITIL object status list
+     *
+     * @param $withmetaforsearch boolean (false by default)
+     *
+     * @return array
+     **/
     public static function getAllStatusArray($withmetaforsearch = false)
     {
 
@@ -3130,13 +3130,13 @@ abstract class CommonITILObject extends CommonDBTM
     }
 
 
-   /**
-    * Get the ITIL object closed status list
-    *
-    * @since 0.83
-    *
-    * @return array
-   **/
+    /**
+     * Get the ITIL object closed status list
+     *
+     * @since 0.83
+     *
+     * @return array
+     **/
     public static function getClosedStatusArray()
     {
 
@@ -3146,13 +3146,13 @@ abstract class CommonITILObject extends CommonDBTM
     }
 
 
-   /**
-    * Get the ITIL object solved status list
-    *
-    * @since 0.83
-    *
-    * @return array
-   **/
+    /**
+     * Get the ITIL object solved status list
+     *
+     * @since 0.83
+     *
+     * @return array
+     **/
     public static function getSolvedStatusArray()
     {
 
@@ -3161,13 +3161,13 @@ abstract class CommonITILObject extends CommonDBTM
         return $tab;
     }
 
-   /**
-    * Get the ITIL object all status list without solved and closed status
-    *
-    * @since 9.2.1
-    *
-    * @return array
-   **/
+    /**
+     * Get the ITIL object all status list without solved and closed status
+     *
+     * @since 9.2.1
+     *
+     * @return array
+     **/
     public static function getNotSolvedStatusArray()
     {
         $all = static::getAllStatusArray();
@@ -3187,13 +3187,13 @@ abstract class CommonITILObject extends CommonDBTM
     }
 
 
-   /**
-    * Get the ITIL object new status list
-    *
-    * @since 0.83.8
-    *
-    * @return array
-   **/
+    /**
+     * Get the ITIL object new status list
+     *
+     * @since 0.83.8
+     *
+     * @return array
+     **/
     public static function getNewStatusArray()
     {
 
@@ -3203,13 +3203,13 @@ abstract class CommonITILObject extends CommonDBTM
     }
 
 
-   /**
-    * Get the ITIL object process status list
-    *
-    * @since 0.83
-    *
-    * @return array
-   **/
+    /**
+     * Get the ITIL object process status list
+     *
+     * @since 0.83
+     *
+     * @return array
+     **/
     public static function getProcessStatus()
     {
 
@@ -3219,16 +3219,16 @@ abstract class CommonITILObject extends CommonDBTM
     }
 
 
-   /**
-    * check is the user can change from / to a status
-    *
-    * @since 0.84
-    *
-    * @param integer $old value of old/current status
-    * @param integer $new value of target status
-    *
-    * @return boolean
-   **/
+    /**
+     * check is the user can change from / to a status
+     *
+     * @since 0.84
+     *
+     * @param integer $old value of old/current status
+     * @param integer $new value of target status
+     *
+     * @return boolean
+     **/
     public static function isAllowedStatus($old, $new)
     {
 
@@ -3252,13 +3252,13 @@ abstract class CommonITILObject extends CommonDBTM
     }
 
 
-   /**
-    * Check if an itil object is still in an open status
-    *
-    * @since 10.0
-    *
-    * @return bool
-    */
+    /**
+     * Check if an itil object is still in an open status
+     *
+     * @since 10.0
+     *
+     * @return bool
+     */
     public function isNotSolved()
     {
         return !in_array(
@@ -3270,15 +3270,15 @@ abstract class CommonITILObject extends CommonDBTM
         );
     }
 
-   /**
-    * Check if an itil object has a solved status
-    *
-    * @since 10.0
-    *
-    * @param bool $include_closed do we want ticket with closed status also ?
-    *
-    * @return bool
-    */
+    /**
+     * Check if an itil object has a solved status
+     *
+     * @since 10.0
+     *
+     * @param bool $include_closed do we want ticket with closed status also ?
+     *
+     * @return bool
+     */
     public function isSolved(bool $include_closed = false)
     {
         $status = $this->getSolvedStatusArray();
@@ -3292,13 +3292,13 @@ abstract class CommonITILObject extends CommonDBTM
         );
     }
 
-   /**
-    * Check if an itil object has a closed status
-    *
-    * @since 10.0
-    *
-    * @return bool
-    */
+    /**
+     * Check if an itil object has a closed status
+     *
+     * @since 10.0
+     *
+     * @return bool
+     */
     public function isClosed()
     {
         return in_array(
@@ -3308,15 +3308,15 @@ abstract class CommonITILObject extends CommonDBTM
     }
 
 
-   /**
-    * Get the ITIL object status allowed for a current status
-    *
-    * @since 0.84 new proto
-    *
-    * @param integer $current   status
-    *
-    * @return array
-   **/
+    /**
+     * Get the ITIL object status allowed for a current status
+     *
+     * @since 0.84 new proto
+     *
+     * @param integer $current   status
+     *
+     * @return array
+     **/
     public static function getAllowedStatusArray($current)
     {
 
@@ -3336,15 +3336,15 @@ abstract class CommonITILObject extends CommonDBTM
         return $tab;
     }
 
-   /**
-    * Is the ITIL object status exists for the object
-    *
-    * @since 0.85
-    *
-    * @param integer $status   status
-    *
-    * @return boolean
-   **/
+    /**
+     * Is the ITIL object status exists for the object
+     *
+     * @since 0.85
+     *
+     * @param integer $status   status
+     *
+     * @return boolean
+     **/
     public static function isStatusExists($status)
     {
 
@@ -3353,20 +3353,20 @@ abstract class CommonITILObject extends CommonDBTM
         return isset($tab[$status]);
     }
 
-   /**
-    * Dropdown of object status
-    *
-    * @since 0.84 new proto
-    *
-    * @param $options   array of options
-    *  - name     : select name (default is status)
-    *  - value    : default value (default self::INCOMING)
-    *  - showtype : list proposed : normal, search or allowed (default normal)
-    *  - display  : boolean if false get string
-    *
-    * @return string|integer Output string if display option is set to false,
-    *                        otherwise random part of dropdown id
-   **/
+    /**
+     * Dropdown of object status
+     *
+     * @since 0.84 new proto
+     *
+     * @param $options   array of options
+     *  - name     : select name (default is status)
+     *  - value    : default value (default self::INCOMING)
+     *  - showtype : list proposed : normal, search or allowed (default normal)
+     *  - display  : boolean if false get string
+     *
+     * @return string|integer Output string if display option is set to false,
+     *                        otherwise random part of dropdown id
+     **/
     public static function dropdownStatus(array $options = [])
     {
 
@@ -3406,13 +3406,13 @@ abstract class CommonITILObject extends CommonDBTM
     }
 
 
-   /**
-    * Get ITIL object status Name
-    *
-    * @since 0.84
-    *
-    * @param integer $value     status ID
-   **/
+    /**
+     * Get ITIL object status Name
+     *
+     * @since 0.84
+     *
+     * @param integer $value     status ID
+     **/
     public static function getStatus($value)
     {
 
@@ -3422,15 +3422,15 @@ abstract class CommonITILObject extends CommonDBTM
     }
 
 
-   /**
-    * get field part name corresponding to actor type
-    *
-    * @param $type      integer : user type
-    *
-    * @since 0.84.6
-    *
-    * @return string|boolean Field part or false if not applicable
-   **/
+    /**
+     * get field part name corresponding to actor type
+     *
+     * @param $type      integer : user type
+     *
+     * @since 0.84.6
+     *
+     * @return string|boolean Field part or false if not applicable
+     **/
     public static function getActorFieldNameType($type)
     {
 
@@ -3449,17 +3449,17 @@ abstract class CommonITILObject extends CommonDBTM
         }
     }
 
-   /**
-    * display a value according to a field
-    *
-    * @since 0.83
-    *
-    * @param $field     String         name of the field
-    * @param $values    String / Array with the value to display
-    * @param $options   Array          of option
-    *
-    * @return a string
-   **/
+    /**
+     * display a value according to a field
+     *
+     * @since 0.83
+     *
+     * @param $field     String         name of the field
+     * @param $values    String / Array with the value to display
+     * @param $options   Array          of option
+     *
+     * @return a string
+     **/
     public static function getSpecificValueToDisplay($field, $values, array $options = [])
     {
 
@@ -3486,14 +3486,14 @@ abstract class CommonITILObject extends CommonDBTM
     }
 
 
-   /**
-    * @since 0.84
-    *
-    * @param $field
-    * @param $name            (default '')
-    * @param $values          (default '')
-    * @param $options   array
-   **/
+    /**
+     * @since 0.84
+     *
+     * @param $field
+     * @param $name            (default '')
+     * @param $values          (default '')
+     * @param $options   array
+     **/
     public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
     {
 
@@ -3532,11 +3532,11 @@ abstract class CommonITILObject extends CommonDBTM
     }
 
 
-   /**
-    * @since 0.85
-    *
-    * @see CommonDBTM::showMassiveActionsSubForm()
-   **/
+    /**
+     * @since 0.85
+     *
+     * @see CommonDBTM::showMassiveActionsSubForm()
+     **/
     public static function showMassiveActionsSubForm(MassiveAction $ma)
     {
         global $CFG_GLPI;
@@ -3580,11 +3580,11 @@ abstract class CommonITILObject extends CommonDBTM
     }
 
 
-   /**
-    * @since 0.85
-    *
-    * @see CommonDBTM::processMassiveActionsForOneItemtype()
-   **/
+    /**
+     * @since 0.85
+     *
+     * @see CommonDBTM::processMassiveActionsForOneItemtype()
+     **/
     public static function processMassiveActionsForOneItemtype(
         MassiveAction $ma,
         CommonDBTM $item,
@@ -3686,9 +3686,9 @@ abstract class CommonITILObject extends CommonDBTM
     }
 
 
-   /**
-    * @since 0.85
-   **/
+    /**
+     * @since 0.85
+     **/
     public function getSearchOptionsMain()
     {
         global $DB;
@@ -3938,9 +3938,9 @@ abstract class CommonITILObject extends CommonDBTM
     }
 
 
-   /**
-    * @since 0.85
-   **/
+    /**
+     * @since 0.85
+     **/
     public function getSearchOptionsSolution()
     {
         global $DB;
@@ -4331,13 +4331,13 @@ abstract class CommonITILObject extends CommonDBTM
         }
     }
 
-   /**
-    * Get status icon
-    *
-    * @since 9.3
-    *
-    * @return string
-    */
+    /**
+     * Get status icon
+     *
+     * @since 9.3
+     *
+     * @return string
+     */
     public static function getStatusIcon($status)
     {
         $class = static::getStatusClass($status);
@@ -4345,13 +4345,13 @@ abstract class CommonITILObject extends CommonDBTM
         return "<i class='$class me-1' title='$label' data-bs-toggle='tooltip'></i>";
     }
 
-   /**
-    * Get status class
-    *
-    * @since 9.3
-    *
-    * @return string
-    */
+    /**
+     * Get status class
+     *
+     * @since 9.3
+     *
+     * @return string
+     */
     public static function getStatusClass($status)
     {
         $class = null;
@@ -4414,13 +4414,13 @@ abstract class CommonITILObject extends CommonDBTM
          " " . static::getStatusKey($status);
     }
 
-   /**
-    * Get status key
-    *
-    * @since 9.3
-    *
-    * @return string
-    */
+    /**
+     * Get status key
+     *
+     * @since 9.3
+     *
+     * @return string
+     */
     public static function getStatusKey($status)
     {
         $key = '';
@@ -4466,20 +4466,20 @@ abstract class CommonITILObject extends CommonDBTM
     }
 
 
-   /**
-    * show actor add div
-    *
-    * @param $type         string   actor type
-    * @param $rand_type    integer  rand value of div to use
-    * @param $entities_id  integer  entity ID
-    * @param $is_hidden    array    of hidden fields (if empty consider as not hidden)
-    * @param $withgroup    boolean  allow adding a group (true by default)
-    * @param $withsupplier boolean  allow adding a supplier (only one possible in ASSIGN case)
-    *                               (false by default)
-    * @param $inobject     boolean  display in ITIL object ? (true by default)
-    *
-    * @return void|boolean Nothing if displayed, false if not applicable
-   **/
+    /**
+     * show actor add div
+     *
+     * @param $type         string   actor type
+     * @param $rand_type    integer  rand value of div to use
+     * @param $entities_id  integer  entity ID
+     * @param $is_hidden    array    of hidden fields (if empty consider as not hidden)
+     * @param $withgroup    boolean  allow adding a group (true by default)
+     * @param $withsupplier boolean  allow adding a supplier (only one possible in ASSIGN case)
+     *                               (false by default)
+     * @param $inobject     boolean  display in ITIL object ? (true by default)
+     *
+     * @return void|boolean Nothing if displayed, false if not applicable
+     **/
     public function showActorAddForm(
         $type,
         $rand_type,
@@ -4571,14 +4571,14 @@ abstract class CommonITILObject extends CommonDBTM
     }
 
 
-   /**
-    * show user add div on creation
-    *
-    * @param $type      integer  actor type
-    * @param $options   array    options for default values ($options of showForm)
-    *
-    * @return integer Random part of inputs ids
-   **/
+    /**
+     * show user add div on creation
+     *
+     * @param $type      integer  actor type
+     * @param $options   array    options for default values ($options of showForm)
+     *
+     * @return integer Random part of inputs ids
+     **/
     public function showActorAddFormOnCreate($type, array $options)
     {
         global $CFG_GLPI;
@@ -4747,20 +4747,20 @@ abstract class CommonITILObject extends CommonDBTM
     }
 
 
-   /**
-    * @param $actiontime
-   **/
+    /**
+     * @param $actiontime
+     **/
     public static function getActionTime($actiontime)
     {
         return Html::timestampToString($actiontime, false);
     }
 
 
-   /**
-    * @param $ID
-    * @param $itemtype
-    * @param $link      (default 0)
-   **/
+    /**
+     * @param $ID
+     * @param $itemtype
+     * @param $link      (default 0)
+     **/
     public static function getAssignName($ID, $itemtype, $link = 0)
     {
 
@@ -4784,16 +4784,16 @@ abstract class CommonITILObject extends CommonDBTM
         }
     }
 
-   /**
-    * Form to add a solution to an ITIL object
-    *
-    * @since 0.84
-    * @since 9.2 Signature has changed
-    *
-    * @param CommonITILObject $item item instance
-    *
-    * @param $entities_id
-   **/
+    /**
+     * Form to add a solution to an ITIL object
+     *
+     * @since 0.84
+     * @since 9.2 Signature has changed
+     *
+     * @param CommonITILObject $item item instance
+     *
+     * @param $entities_id
+     **/
     public static function showMassiveSolutionForm(CommonITILObject $item)
     {
         $solution = new ITILSolution();
@@ -4809,13 +4809,13 @@ abstract class CommonITILObject extends CommonDBTM
     }
 
 
-   /**
-    * Update date mod of the ITIL object
-    *
-    * @param $ID                    integer  ID of the ITIL object
-    * @param $no_stat_computation   boolean  do not cumpute take into account stat (false by default)
-    * @param $users_id_lastupdater  integer  to force last_update id (default 0 = not used)
-   **/
+    /**
+     * Update date mod of the ITIL object
+     *
+     * @param $ID                    integer  ID of the ITIL object
+     * @param $no_stat_computation   boolean  do not cumpute take into account stat (false by default)
+     * @param $users_id_lastupdater  integer  to force last_update id (default 0 = not used)
+     **/
     public function updateDateMod($ID, $no_stat_computation = false, $users_id_lastupdater = 0)
     {
         global $DB;
@@ -4840,13 +4840,13 @@ abstract class CommonITILObject extends CommonDBTM
     }
 
 
-   /**
-    * Update actiontime of the object based on actiontime of the tasks
-    *
-    * @param integer $ID ID of the object
-    *
-    * @return boolean : success
-   **/
+    /**
+     * Update actiontime of the object based on actiontime of the tasks
+     *
+     * @param integer $ID ID of the object
+     *
+     * @return boolean : success
+     **/
     public function updateActionTime($ID)
     {
         global $DB;
@@ -4877,9 +4877,9 @@ abstract class CommonITILObject extends CommonDBTM
     }
 
 
-   /**
-    * Get all available types to which an ITIL object can be assigned
-   **/
+    /**
+     * Get all available types to which an ITIL object can be assigned
+     **/
     public static function getAllTypesForHelpdesk()
     {
         global $PLUGIN_HOOKS, $CFG_GLPI;
@@ -4927,13 +4927,13 @@ abstract class CommonITILObject extends CommonDBTM
     }
 
 
-   /**
-    * Check if it's possible to assign ITIL object to a type (core or plugin)
-    *
-    * @param string $itemtype the object's type
-    *
-    * @return true if ticket can be assign to this type, false if not
-   **/
+    /**
+     * Check if it's possible to assign ITIL object to a type (core or plugin)
+     *
+     * @param string $itemtype the object's type
+     *
+     * @return true if ticket can be assign to this type, false if not
+     **/
     public static function isPossibleToAssignType($itemtype)
     {
 
@@ -4944,9 +4944,9 @@ abstract class CommonITILObject extends CommonDBTM
     }
 
 
-   /**
-    * Compute solve delay stat of the current ticket
-   **/
+    /**
+     * Compute solve delay stat of the current ticket
+     **/
     public function computeSolveDelayStat()
     {
 
@@ -4977,9 +4977,9 @@ abstract class CommonITILObject extends CommonDBTM
     }
 
 
-   /**
-    * Compute close delay stat of the current ticket
-   **/
+    /**
+     * Compute close delay stat of the current ticket
+     **/
     public function computeCloseDelayStat()
     {
 
@@ -5098,13 +5098,13 @@ abstract class CommonITILObject extends CommonDBTM
     }
 
 
-   /** Get users_ids of itil object between 2 dates
-    *
-    * @param string $date1 begin date
-    * @param string $date2 end date
-    *
-    * @return array contains the distinct users_ids which have itil object
-   **/
+    /** Get users_ids of itil object between 2 dates
+     *
+     * @param string $date1 begin date
+     * @param string $date2 end date
+     *
+     * @return array contains the distinct users_ids which have itil object
+     **/
     public function getUsedAuthorBetween($date1 = '', $date2 = '')
     {
         global $DB;
@@ -5179,13 +5179,13 @@ abstract class CommonITILObject extends CommonDBTM
     }
 
 
-   /** Get recipient of itil object between 2 dates
-    *
-    * @param string $date1 begin date
-    * @param string $date2 end date
-    *
-    * @return array contains the distinct recipents which have itil object
-   **/
+    /** Get recipient of itil object between 2 dates
+     *
+     * @param string $date1 begin date
+     * @param string $date2 end date
+     *
+     * @return array contains the distinct recipents which have itil object
+     **/
     public function getUsedRecipientBetween($date1 = '', $date2 = '')
     {
         global $DB;
@@ -5246,13 +5246,13 @@ abstract class CommonITILObject extends CommonDBTM
     }
 
 
-   /** Get groups which have itil object between 2 dates
-    *
-    * @param string $date1 begin date
-    * @param string $date2 end date
-    *
-    * @return array contains the distinct groups of tickets
-   **/
+    /** Get groups which have itil object between 2 dates
+     *
+     * @param string $date1 begin date
+     * @param string $date2 end date
+     *
+     * @return array contains the distinct groups of tickets
+     **/
     public function getUsedGroupBetween($date1 = '', $date2 = '')
     {
         global $DB;
@@ -5318,14 +5318,14 @@ abstract class CommonITILObject extends CommonDBTM
     }
 
 
-   /** Get recipient of itil object between 2 dates
-    *
-    * @param string  $date1 begin date
-    * @param string  $date2 end date
-    * @param boolean $title indicates if stat if by title (true) or type (false)
-    *
-    * @return array contains the distinct recipents which have tickets
-   **/
+    /** Get recipient of itil object between 2 dates
+     *
+     * @param string  $date1 begin date
+     * @param string  $date2 end date
+     * @param boolean $title indicates if stat if by title (true) or type (false)
+     *
+     * @return array contains the distinct recipents which have tickets
+     **/
     public function getUsedUserTitleOrTypeBetween($date1 = '', $date2 = '', $title = true)
     {
         global $DB;
@@ -5397,14 +5397,14 @@ abstract class CommonITILObject extends CommonDBTM
     }
 
 
-   /**
-    * Get priorities of itil object between 2 dates
-    *
-    * @param string $date1 begin date
-    * @param string $date2 end date
-    *
-    * @return array contains the distinct priorities of tickets
-   **/
+    /**
+     * Get priorities of itil object between 2 dates
+     *
+     * @param string $date1 begin date
+     * @param string $date2 end date
+     *
+     * @return array contains the distinct priorities of tickets
+     **/
     public function getUsedPriorityBetween($date1 = '', $date2 = '')
     {
         global $DB;
@@ -5441,14 +5441,14 @@ abstract class CommonITILObject extends CommonDBTM
     }
 
 
-   /**
-    * Get urgencies of itil object between 2 dates
-    *
-    * @param string $date1 begin date
-    * @param string $date2 end date
-    *
-    * @return array contains the distinct priorities of tickets
-   **/
+    /**
+     * Get urgencies of itil object between 2 dates
+     *
+     * @param string $date1 begin date
+     * @param string $date2 end date
+     *
+     * @return array contains the distinct priorities of tickets
+     **/
     public function getUsedUrgencyBetween($date1 = '', $date2 = '')
     {
         global $DB;
@@ -5486,14 +5486,14 @@ abstract class CommonITILObject extends CommonDBTM
     }
 
 
-   /**
-    * Get impacts of itil object between 2 dates
-    *
-    * @param string $date1 begin date
-    * @param string $date2 end date
-    *
-    * @return array contains the distinct priorities of tickets
-   **/
+    /**
+     * Get impacts of itil object between 2 dates
+     *
+     * @param string $date1 begin date
+     * @param string $date2 end date
+     *
+     * @return array contains the distinct priorities of tickets
+     **/
     public function getUsedImpactBetween($date1 = '', $date2 = '')
     {
         global $DB;
@@ -5531,14 +5531,14 @@ abstract class CommonITILObject extends CommonDBTM
     }
 
 
-   /**
-    * Get request types of itil object between 2 dates
-    *
-    * @param string $date1 begin date
-    * @param string $date2 end date
-    *
-    * @return array contains the distinct request types of tickets
-   **/
+    /**
+     * Get request types of itil object between 2 dates
+     *
+     * @param string $date1 begin date
+     * @param string $date2 end date
+     *
+     * @return array contains the distinct request types of tickets
+     **/
     public function getUsedRequestTypeBetween($date1 = '', $date2 = '')
     {
         global $DB;
@@ -5575,14 +5575,14 @@ abstract class CommonITILObject extends CommonDBTM
     }
 
 
-   /**
-    * Get solution types of itil object between 2 dates
-    *
-    * @param string $date1 begin date
-    * @param string $date2 end date
-    *
-    * @return array contains the distinct request types of tickets
-   **/
+    /**
+     * Get solution types of itil object between 2 dates
+     *
+     * @param string $date1 begin date
+     * @param string $date2 end date
+     *
+     * @return array contains the distinct request types of tickets
+     **/
     public function getUsedSolutionTypeBetween($date1 = '', $date2 = '')
     {
         global $DB;
@@ -5628,13 +5628,13 @@ abstract class CommonITILObject extends CommonDBTM
     }
 
 
-   /** Get users which have intervention assigned to  between 2 dates
-    *
-    * @param string $date1 begin date
-    * @param string $date2 end date
-    *
-    * @return array contains the distinct users which have any intervention assigned to.
-   **/
+    /** Get users which have intervention assigned to  between 2 dates
+     *
+     * @param string $date1 begin date
+     * @param string $date2 end date
+     *
+     * @return array contains the distinct users which have any intervention assigned to.
+     **/
     public function getUsedTechBetween($date1 = '', $date2 = '')
     {
         global $DB;
@@ -5703,13 +5703,13 @@ abstract class CommonITILObject extends CommonDBTM
     }
 
 
-   /** Get users which have followup assigned to  between 2 dates
-    *
-    * @param string $date1 begin date
-    * @param string $date2 end date
-    *
-    * @return array contains the distinct users which have any followup assigned to.
-   **/
+    /** Get users which have followup assigned to  between 2 dates
+     *
+     * @param string $date1 begin date
+     * @param string $date2 end date
+     *
+     * @return array contains the distinct users which have any followup assigned to.
+     **/
     public function getUsedTechTaskBetween($date1 = '', $date2 = '')
     {
         global $DB;
@@ -5795,13 +5795,13 @@ abstract class CommonITILObject extends CommonDBTM
     }
 
 
-   /** Get enterprises which have itil object assigned to between 2 dates
-    *
-    * @param string $date1 begin date
-    * @param string $date2 end date
-    *
-    * @return array contains the distinct enterprises which have any tickets assigned to.
-   **/
+    /** Get enterprises which have itil object assigned to between 2 dates
+     *
+     * @param string $date1 begin date
+     * @param string $date2 end date
+     *
+     * @return array contains the distinct enterprises which have any tickets assigned to.
+     **/
     public function getUsedSupplierBetween($date1 = '', $date2 = '')
     {
         global $DB;
@@ -5864,13 +5864,13 @@ abstract class CommonITILObject extends CommonDBTM
     }
 
 
-   /** Get groups assigned to itil object between 2 dates
-    *
-    * @param string $date1 begin date
-    * @param string $date2 end date
-    *
-    * @return array contains the distinct groups assigned to a tickets
-   **/
+    /** Get groups assigned to itil object between 2 dates
+     *
+     * @param string $date1 begin date
+     * @param string $date2 end date
+     *
+     * @return array contains the distinct groups assigned to a tickets
+     **/
     public function getUsedAssignGroupBetween($date1 = '', $date2 = '')
     {
         global $DB;
@@ -5933,20 +5933,20 @@ abstract class CommonITILObject extends CommonDBTM
     }
 
 
-   /**
-    * Display a line for an object
-    *
-    * @since 0.85 (befor in each object with differents parameters)
-    *
-    * @param $id                 Integer  ID of the object
-    * @param $options            array of options
-    *      output_type            : Default output type (see Search class / default Search::HTML_OUTPUT)
-    *      row_num                : row num used for display
-    *      type_for_massiveaction : itemtype for massive action
-    *      id_for_massaction      : default 0 means no massive action
-    *
-    * @since 10.0.0 "followups" option has been dropped
-    */
+    /**
+     * Display a line for an object
+     *
+     * @since 0.85 (befor in each object with differents parameters)
+     *
+     * @param $id                 Integer  ID of the object
+     * @param $options            array of options
+     *      output_type            : Default output type (see Search class / default Search::HTML_OUTPUT)
+     *      row_num                : row num used for display
+     *      type_for_massiveaction : itemtype for massive action
+     *      id_for_massaction      : default 0 means no massive action
+     *
+     * @since 10.0.0 "followups" option has been dropped
+     */
     public static function showShort($id, $options = [])
     {
         global $DB;
@@ -6325,10 +6325,10 @@ abstract class CommonITILObject extends CommonDBTM
         }
     }
 
-   /**
-    * @param integer $output_type Output type
-    * @param string  $mass_id     id of the form to check all
-    */
+    /**
+     * @param integer $output_type Output type
+     * @param string  $mass_id     id of the form to check all
+     */
     public static function commonListHeader(
         $output_type = Search::HTML_OUTPUT,
         $mass_id = '',
@@ -6379,12 +6379,12 @@ abstract class CommonITILObject extends CommonDBTM
     }
 
 
-   /**
-    * Get correct Calendar: Entity or Sla
-    *
-    * @since 0.90.4
-    *
-    **/
+    /**
+     * Get correct Calendar: Entity or Sla
+     *
+     * @since 0.90.4
+     *
+     **/
     public function getCalendar()
     {
         return Entity::getUsedConfig(
@@ -6396,15 +6396,15 @@ abstract class CommonITILObject extends CommonDBTM
     }
 
 
-   /**
-    * Summary of getTimelinePosition
-    * Returns the position of the $sub_type for the $user_id in the timeline
-    *
-    * @param int $items_id is the id of the ITIL object
-    * @param string $sub_type is ITILFollowup, Document_Item, TicketTask, TicketValidation or Solution
-    * @param int $users_id
-    * @since 9.2
-    */
+    /**
+     * Summary of getTimelinePosition
+     * Returns the position of the $sub_type for the $user_id in the timeline
+     *
+     * @param int $items_id is the id of the ITIL object
+     * @param string $sub_type is ITILFollowup, Document_Item, TicketTask, TicketValidation or Solution
+     * @param int $users_id
+     * @since 9.2
+     */
     public static function getTimelinePosition($items_id, $sub_type, $users_id)
     {
         $itilobject = new static();
@@ -6458,7 +6458,7 @@ abstract class CommonITILObject extends CommonDBTM
     {
         global $PLUGIN_HOOKS;
 
-       /** @var CommonITILObject $obj_type */
+        /** @var CommonITILObject $obj_type */
         $obj_type = static::getType();
         $foreign_key = static::getForeignKeyField();
 
@@ -6546,11 +6546,11 @@ abstract class CommonITILObject extends CommonDBTM
         return $itemtypes;
     }
 
-   /**
-    * Get an HTML string of all timeline actions/buttons provided by plugins via the {@link Hooks::TIMELINE_ACTIONS}  hook.
-    * @return string
-    * @since 10.0.0
-    */
+    /**
+     * Get an HTML string of all timeline actions/buttons provided by plugins via the {@link Hooks::TIMELINE_ACTIONS}  hook.
+     * @return string
+     * @since 10.0.0
+     */
     public function getLegacyTimelineActionsHTML(): string
     {
         global $PLUGIN_HOOKS;
@@ -6567,22 +6567,22 @@ abstract class CommonITILObject extends CommonDBTM
         return $legacy_actions;
     }
 
-   /**
-    * Retrieves all timeline items for this ITILObject
-    *
-    * @param array $options Possible options:
-    * - with_documents    : include documents elements
-    * - with_logs         : include log entries
-    * - with_validations  : include validation elements
-    * - expose_private    : force presence of private items (followup/tasks), even if session does not allow it
-    * - bypass_rights     : bypass current session rights
-    * - sort_by_date_desc : false,
-    * @since 9.4.0
-    *
-    * @param bool $with_logs include logs ?
-    *
-    * @return mixed[] Timeline items
-    */
+    /**
+     * Retrieves all timeline items for this ITILObject
+     *
+     * @param array $options Possible options:
+     * - with_documents    : include documents elements
+     * - with_logs         : include log entries
+     * - with_validations  : include validation elements
+     * - expose_private    : force presence of private items (followup/tasks), even if session does not allow it
+     * - bypass_rights     : bypass current session rights
+     * - sort_by_date_desc : false,
+     * @since 9.4.0
+     *
+     * @param bool $with_logs include logs ?
+     *
+     * @return mixed[] Timeline items
+     */
     public function getTimelineItems(array $options = [])
     {
 
@@ -6850,15 +6850,15 @@ abstract class CommonITILObject extends CommonDBTM
     }
 
 
-   /**
-    * @since 9.4.0
-    *
-    * @param CommonDBTM $item The item whose form should be shown
-    * @param integer $id ID of the item
-    * @param mixed[] $params Array of extra parameters
-    *
-    * @return void
-    */
+    /**
+     * @since 9.4.0
+     *
+     * @param CommonDBTM $item The item whose form should be shown
+     * @param integer $id ID of the item
+     * @param mixed[] $params Array of extra parameters
+     *
+     * @return void
+     */
     public static function showSubForm(CommonDBTM $item, $id, $params)
     {
 
@@ -6887,15 +6887,15 @@ abstract class CommonITILObject extends CommonDBTM
         ]);
     }
 
-   /**
-    * Summary of getITILActors
-    * Get the list of actors for the current Change
-    * will return an assoc array of users_id => array of roles.
-    *
-    * @since 9.4.0
-    *
-    * @return array[] of array[] of users and roles
-    */
+    /**
+     * Summary of getITILActors
+     * Get the list of actors for the current Change
+     * will return an assoc array of users_id => array of roles.
+     *
+     * @since 9.4.0
+     *
+     * @return array[] of array[] of users and roles
+     */
     public function getITILActors()
     {
         global $DB;
@@ -6977,13 +6977,13 @@ abstract class CommonITILObject extends CommonDBTM
     }
 
 
-   /**
-    * Number of followups of the object
-    *
-    * @param boolean $with_private true : all followups / false : only public ones (default 1)
-    *
-    * @return integer followup count
-   **/
+    /**
+     * Number of followups of the object
+     *
+     * @param boolean $with_private true : all followups / false : only public ones (default 1)
+     *
+     * @return integer followup count
+     **/
     public function numberOfFollowups($with_private = true)
     {
         global $DB;
@@ -7006,13 +7006,13 @@ abstract class CommonITILObject extends CommonDBTM
         return $result['cpt'];
     }
 
-   /**
-    * Number of tasks of the object
-    *
-    * @param boolean $with_private true : all followups / false : only public ones (default 1)
-    *
-    * @return integer
-   **/
+    /**
+     * Number of tasks of the object
+     *
+     * @param boolean $with_private true : all followups / false : only public ones (default 1)
+     *
+     * @return integer
+     **/
     public function numberOfTasks($with_private = true)
     {
         global $DB;
@@ -7036,13 +7036,13 @@ abstract class CommonITILObject extends CommonDBTM
         return (int)$row['cpt'];
     }
 
-   /**
-    * Check if input contains a flag set to prevent 'takeintoaccount' delay computation.
-    *
-    * @param array $input
-    *
-    * @return boolean
-    */
+    /**
+     * Check if input contains a flag set to prevent 'takeintoaccount' delay computation.
+     *
+     * @param array $input
+     *
+     * @return boolean
+     */
     public function isTakeIntoAccountComputationBlocked($input)
     {
         return array_key_exists('_do_not_compute_takeintoaccount', $input)
@@ -7050,13 +7050,13 @@ abstract class CommonITILObject extends CommonDBTM
     }
 
 
-   /**
-    * Check if input contains a flag set to prevent status computation.
-    *
-    * @param array $input
-    *
-    * @return boolean
-    */
+    /**
+     * Check if input contains a flag set to prevent status computation.
+     *
+     * @param array $input
+     *
+     * @return boolean
+     */
     public function isStatusComputationBlocked(array $input)
     {
         return array_key_exists('_do_not_compute_status', $input)
@@ -7079,11 +7079,11 @@ abstract class CommonITILObject extends CommonDBTM
     }
 
 
-   /**
-    * @see CommonGLPI::getAdditionalMenuOptions()
-    *
-    * @since 0.85
-   **/
+    /**
+     * @see CommonGLPI::getAdditionalMenuOptions()
+     *
+     * @since 0.85
+     **/
     public static function getAdditionalMenuOptions()
     {
         $tplclass = self::getTemplateClass();
@@ -7108,11 +7108,11 @@ abstract class CommonITILObject extends CommonDBTM
     }
 
 
-   /**
-    * @see CommonGLPI::getAdditionalMenuLinks()
-    *
-    * @since 9.5.0
-   **/
+    /**
+     * @see CommonGLPI::getAdditionalMenuLinks()
+     *
+     * @since 9.5.0
+     **/
     public static function getAdditionalMenuLinks()
     {
         $links = [];
@@ -7126,21 +7126,21 @@ abstract class CommonITILObject extends CommonDBTM
     }
 
 
-   /**
-    * Get template to use
-    * Use force_template first, then try on template define for type and category
-    * then use default template of active profile of connected user and then use default entity one
-    *
-    * @param integer      $force_template     itiltemplate_id to use (case of preview for example)
-    * @param integer|null $type               type of the ticket
-    *                                         (use Ticket::INCIDENT_TYPE or Ticket::DEMAND_TYPE constants value)
-    * @param integer      $itilcategories_id  ticket category
-    * @param integer      $entities_id
-    *
-    * @return ITILTemplate
-    *
-    * @since 9.5.0
-   **/
+    /**
+     * Get template to use
+     * Use force_template first, then try on template define for type and category
+     * then use default template of active profile of connected user and then use default entity one
+     *
+     * @param integer      $force_template     itiltemplate_id to use (case of preview for example)
+     * @param integer|null $type               type of the ticket
+     *                                         (use Ticket::INCIDENT_TYPE or Ticket::DEMAND_TYPE constants value)
+     * @param integer      $itilcategories_id  ticket category
+     * @param integer      $entities_id
+     *
+     * @return ITILTemplate
+     *
+     * @since 9.5.0
+     **/
     public function getITILTemplateToUse(
         $force_template = 0,
         $type = null,
@@ -7254,13 +7254,13 @@ abstract class CommonITILObject extends CommonDBTM
         return $tt;
     }
 
-   /**
-    * Get template field name
-    *
-    * @param string $type Type, if any
-    *
-    * @return string
-    */
+    /**
+     * Get template field name
+     *
+     * @param string $type Type, if any
+     *
+     * @return string
+     */
     public function getTemplateFieldName($type = null): string
     {
         $field = strtolower(static::getType()) . 'templates_id';
@@ -7288,44 +7288,44 @@ abstract class CommonITILObject extends CommonDBTM
         return $field;
     }
 
-   /**
-    * @since 9.5.0
-    *
-    * @param integer $entity entities_id usefull if function called by cron (default 0)
-   **/
+    /**
+     * @since 9.5.0
+     *
+     * @param integer $entity entities_id usefull if function called by cron (default 0)
+     **/
     abstract public static function getDefaultValues($entity = 0);
 
-   /**
-    * Get template class name.
-    *
-    * @since 9.5.0
-    *
-    * @return string
-    */
+    /**
+     * Get template class name.
+     *
+     * @since 9.5.0
+     *
+     * @return string
+     */
     public static function getTemplateClass()
     {
         return static::getType() . 'Template';
     }
 
-   /**
-    * Get template form field name
-    *
-    * @since 9.5.0
-    *
-    * @return string
-    */
+    /**
+     * Get template form field name
+     *
+     * @since 9.5.0
+     *
+     * @return string
+     */
     public static function getTemplateFormFieldName()
     {
         return '_' . strtolower(static::getType()) . 'template';
     }
 
-   /**
-    * Get common request criteria
-    *
-    * @since 9.5.0
-    *
-    * @return array
-    */
+    /**
+     * Get common request criteria
+     *
+     * @since 9.5.0
+     *
+     * @return array
+     */
     public static function getCommonCriteria()
     {
         $fk = self::getForeignKeyField();
@@ -7416,11 +7416,11 @@ abstract class CommonITILObject extends CommonDBTM
         return $excluded;
     }
 
-   /**
-    * Returns criteria that can be used to get documents related to current instance.
-    *
-    * @return array
-    */
+    /**
+     * Returns criteria that can be used to get documents related to current instance.
+     *
+     * @return array
+     */
     public function getAssociatedDocumentsCriteria($bypass_rights = false): array
     {
         $task_class = $this->getType() . 'Task';
@@ -7515,11 +7515,11 @@ abstract class CommonITILObject extends CommonDBTM
         return ['OR' => $or_crits];
     }
 
-   /**
-    * Check if this item is new
-    *
-    * @return bool
-    */
+    /**
+     * Check if this item is new
+     *
+     * @return bool
+     */
     protected function isNew()
     {
         if (isset($this->input['status'])) {
@@ -7533,13 +7533,13 @@ abstract class CommonITILObject extends CommonDBTM
         return $status == CommonITILObject::INCOMING;
     }
 
-   /**
-    * Retrieve linked items table name
-    *
-    * @since 9.5.0
-    *
-    * @return string
-    */
+    /**
+     * Retrieve linked items table name
+     *
+     * @since 9.5.0
+     *
+     * @return string
+     */
     public static function getItemsTable()
     {
         switch (static::getType()) {
@@ -7579,11 +7579,11 @@ abstract class CommonITILObject extends CommonDBTM
         return $tab;
     }
 
-   /**
-    * Should impact tab be displayed? Check if there is a valid linked item
-    *
-    * @return boolean
-    */
+    /**
+     * Should impact tab be displayed? Check if there is a valid linked item
+     *
+     * @return boolean
+     */
     protected function hasImpactTab()
     {
         foreach ($this->getLinkedItems() as $itemtype => $items) {
@@ -7595,12 +7595,12 @@ abstract class CommonITILObject extends CommonDBTM
         return false;
     }
 
-   /**
-    * Get criteria needed to match objets with an "open" status (= not resolved
-    * or closed)
-    *
-    * @return array
-    */
+    /**
+     * Get criteria needed to match objets with an "open" status (= not resolved
+     * or closed)
+     *
+     * @return array
+     */
     public static function getOpenCriteria(): array
     {
         $table = static::getTable();
@@ -7634,9 +7634,9 @@ abstract class CommonITILObject extends CommonDBTM
     }
 
     abstract public static function getItemLinkClass(): string;
-   /**
-    * Handle "_tasktemplates_id" special input
-    */
+    /**
+     * Handle "_tasktemplates_id" special input
+     */
     public function handleTaskTemplateInput()
     {
        // Check input is valid
@@ -7677,9 +7677,9 @@ abstract class CommonITILObject extends CommonDBTM
         }
     }
 
-   /**
-    * Handle "_itilfollowuptemplates_id" special input
-    */
+    /**
+     * Handle "_itilfollowuptemplates_id" special input
+     */
     public function handleITILFollowupTemplateInput(): void
     {
        // Check input is valid
@@ -7719,15 +7719,15 @@ abstract class CommonITILObject extends CommonDBTM
         }
     }
 
-   /**
-    * Manage actors posted by itil form
-    * New way to do it with a general array containing all item actors.
-    * We compare to old actors (in case of items's update) to know which we need to remove/add/update
-    *
-    * @since 10.0.0
-
-    * @return void
-    */
+    /**
+     * Manage actors posted by itil form
+     * New way to do it with a general array containing all item actors.
+     * We compare to old actors (in case of items's update) to know which we need to remove/add/update
+     *
+     * @since 10.0.0
+     *
+     * @return void
+     */
     protected function updateActors()
     {
         if (
@@ -7837,11 +7837,11 @@ abstract class CommonITILObject extends CommonDBTM
     }
 
 
-   /**
-    * Fill the tech and the group from the category
-    * @param array $input
-    * @return array
-    */
+    /**
+     * Fill the tech and the group from the category
+     * @param array $input
+     * @return array
+     */
     protected function setTechAndGroupFromItilCategory($input)
     {
         if (
@@ -7869,11 +7869,11 @@ abstract class CommonITILObject extends CommonDBTM
     }
 
 
-   /**
-    * Fill the tech and the group from the hardware
-    * @param array $input
-    * @return array
-    */
+    /**
+     * Fill the tech and the group from the hardware
+     * @param array $input
+     * @return array
+     */
     protected function setTechAndGroupFromHardware($input, $item)
     {
         if ($item != null) {
@@ -7896,14 +7896,14 @@ abstract class CommonITILObject extends CommonDBTM
         return $input;
     }
 
-   /**
-    * Replay setting auto assign if set in rules engine or by auto_assign_mode
-    * Do not force status if status has been set by rules
-    *
-    * @param array $input
-    *
-    * @return array
-    */
+    /**
+     * Replay setting auto assign if set in rules engine or by auto_assign_mode
+     * Do not force status if status has been set by rules
+     *
+     * @param array $input
+     *
+     * @return array
+     */
     protected function assign(array $input)
     {
         if (
@@ -7925,10 +7925,10 @@ abstract class CommonITILObject extends CommonDBTM
         return $input;
     }
 
-   /**
-    * Parameter class to be use for this item (user templates)
-    * @return string class name
-    */
+    /**
+     * Parameter class to be use for this item (user templates)
+     * @return string class name
+     */
     abstract public static function getContentTemplatesParametersClass(): string;
 
     public static function getDataToDisplayOnKanban($ID, $criteria = [])
@@ -8329,7 +8329,7 @@ abstract class CommonITILObject extends CommonDBTM
     {
         $role = $params['role'] ?? CommonITILActor::ASSIGN;
 
-       /** @var CommonDBTM $link_class */
+        /** @var CommonDBTM $link_class */
         $link_class = null;
         switch ($itemtype) {
             case 'User':
@@ -8348,7 +8348,7 @@ abstract class CommonITILObject extends CommonDBTM
         }
 
         $link_item = new $link_class();
-       /** @var CommonDBTM $itemtype */
+        /** @var CommonDBTM $itemtype */
         $result = $link_item->add([
          static::getForeignKeyField()     => $this->getID(),
          $itemtype::getForeignKeyField()  => $items_id,
@@ -8361,7 +8361,7 @@ abstract class CommonITILObject extends CommonDBTM
     {
         $role = $params['role'] ?? CommonITILActor::ASSIGN;
 
-       /** @var CommonDBTM $link_class */
+        /** @var CommonDBTM $link_class */
         $link_class = null;
         switch ($itemtype) {
             case 'User':
@@ -8380,7 +8380,7 @@ abstract class CommonITILObject extends CommonDBTM
         }
 
         $link_item = new $link_class();
-       /** @var CommonDBTM $itemtype */
+        /** @var CommonDBTM $itemtype */
         $result = $link_item->deleteByCriteria([
          static::getForeignKeyField()     => $this->getID(),
          $itemtype::getForeignKeyField()  => $items_id,
@@ -8397,9 +8397,9 @@ abstract class CommonITILObject extends CommonDBTM
 
         $team_itemtypes = static::getTeamItemtypes();
 
-       /** @var CommonDBTM $itemtype */
+        /** @var CommonDBTM $itemtype */
         foreach ($team_itemtypes as $itemtype) {
-           /** @var CommonDBTM $link_class */
+            /** @var CommonDBTM $link_class */
             $link_class = null;
             switch ($itemtype) {
                 case 'User':
@@ -8502,11 +8502,11 @@ abstract class CommonITILObject extends CommonDBTM
         return $stats;
     }
 
-   /**
-    * Returns an instance of validation class, if it exists.
-    *
-    * @return CommonITILValidation|null
-    */
+    /**
+     * Returns an instance of validation class, if it exists.
+     *
+     * @return CommonITILValidation|null
+     */
     public static function getValidationClassInstance(): ?CommonITILValidation
     {
         $validation_class = static::class . 'Validation';

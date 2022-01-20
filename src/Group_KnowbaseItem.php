@@ -45,13 +45,13 @@ class Group_KnowbaseItem extends CommonDBRelation
     public static $logs_for_item_2     = false;
 
 
-   /**
-    * Get groups for a knowbaseitem
-    *
-    * @param integer $knowbaseitems_id ID of the knowbaseitem
-    *
-    * @return array of groups linked to a knowbaseitem
-   **/
+    /**
+     * Get groups for a knowbaseitem
+     *
+     * @param integer $knowbaseitems_id ID of the knowbaseitem
+     *
+     * @return array of groups linked to a knowbaseitem
+     **/
     public static function getGroups($knowbaseitems_id)
     {
         global $DB;

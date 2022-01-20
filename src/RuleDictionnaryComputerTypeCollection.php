@@ -39,9 +39,9 @@ class RuleDictionnaryComputerTypeCollection extends RuleDictionnaryDropdownColle
     public $item_table  = "glpi_computertypes";
     public $menu_option = "type.computer";
 
-   /**
-    * @see RuleCollection::getTitle()
-   **/
+    /**
+     * @see RuleCollection::getTitle()
+     **/
     public function getTitle()
     {
         return __('Dictionnary of computer types');

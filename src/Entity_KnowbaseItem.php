@@ -45,13 +45,13 @@ class Entity_KnowbaseItem extends CommonDBRelation
     public static $logs_for_item_2     = false;
 
 
-   /**
-    * Get entities for a knowbaseitem
-    *
-    * @param integer $knowbaseitems_id ID of the knowbaseitem
-    *
-    * @return array of entities linked to a knowbaseitem
-   **/
+    /**
+     * Get entities for a knowbaseitem
+     *
+     * @param integer $knowbaseitems_id ID of the knowbaseitem
+     *
+     * @return array of entities linked to a knowbaseitem
+     **/
     public static function getEntities($knowbaseitems_id)
     {
         global $DB;

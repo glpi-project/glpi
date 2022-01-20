@@ -33,7 +33,7 @@
 
 /**
  * @since 0.84
-**/
+ **/
 class HTMLTableCell extends HTMLTableEntity
 {
     private $row;
@@ -45,13 +45,13 @@ class HTMLTableCell extends HTMLTableEntity
    // List of rows that have specific attributs
     private $attributForTheRow = false;
 
-   /**
-    * @param HTMLTableHeader $row
-    * @param HTMLTableHeader $header
-    * @param string          $content  see HTMLTableEntity#__construct()
-    * @param HTMLTableCell   $father   HTMLTableCell object (default NULL)
-    * @param CommonDBTM      $item     The item associated with the current cell (default NULL)
-   **/
+    /**
+     * @param HTMLTableHeader $row
+     * @param HTMLTableHeader $header
+     * @param string          $content  see HTMLTableEntity#__construct()
+     * @param HTMLTableCell   $father   HTMLTableCell object (default NULL)
+     * @param CommonDBTM      $item     The item associated with the current cell (default NULL)
+     **/
     public function __construct(
         $row,
         $header,
@@ -119,9 +119,9 @@ class HTMLTableCell extends HTMLTableEntity
     }
 
 
-   /**
-    * @param $attributForTheRow
-   **/
+    /**
+     * @param $attributForTheRow
+     **/
     public function setAttributForTheRow($attributForTheRow)
     {
         $this->attributForTheRow = $attributForTheRow;
@@ -144,10 +144,10 @@ class HTMLTableCell extends HTMLTableEntity
     }
 
 
-   /**
-    * @param $son          HTMLTableCell object
-    * @param $sons_header  HTMLTableHeader object
-   **/
+    /**
+     * @param $son          HTMLTableCell object
+     * @param $sons_header  HTMLTableHeader object
+     **/
     public function addSon(HTMLTableCell $son, HTMLTableHeader $sons_header)
     {
 
@@ -185,19 +185,19 @@ class HTMLTableCell extends HTMLTableEntity
     }
 
 
-   /**
-    * @param $value
-   **/
+    /**
+     * @param $value
+     **/
     public function addToNumberOfLines($value)
     {
         $this->numberOfLines += $value;
     }
 
 
-   /**
-    * @param $cells                 array
-    * @param $totalNumberOflines
-   **/
+    /**
+     * @param $cells                 array
+     * @param $totalNumberOflines
+     **/
     public static function updateCellSteps(array $cells, $totalNumberOflines)
     {
 
@@ -218,9 +218,9 @@ class HTMLTableCell extends HTMLTableEntity
     }
 
 
-   /**
-    * @param &$start
-   **/
+    /**
+     * @param &$start
+     **/
     public function computeStartEnd(&$start)
     {
 
@@ -244,10 +244,10 @@ class HTMLTableCell extends HTMLTableEntity
     }
 
 
-   /**
-    * @param $index
-    * @param $options   array
-   **/
+    /**
+     * @param $index
+     * @param $options   array
+     **/
     public function displayCell($index, array $options = [])
     {
 

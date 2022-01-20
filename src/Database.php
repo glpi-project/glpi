@@ -33,7 +33,7 @@
 
 /**
  * Database Class
-**/
+ **/
 class Database extends CommonDBChild
 {
    // From CommonDBTM
@@ -353,13 +353,13 @@ class Database extends CommonDBChild
         self::showForInstance($item);
     }
 
-   /**
-    * Display instances for database
-    *
-    * @param DatabaseInstance $instance Database object
-    *
-    * @return void|boolean
-    **/
+    /**
+     * Display instances for database
+     *
+     * @param DatabaseInstance $instance Database object
+     *
+     * @return void|boolean
+     **/
     public static function showForInstance(DatabaseInstance $instance)
     {
 

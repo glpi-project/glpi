@@ -61,11 +61,11 @@ class Item_Enclosure extends CommonDBRelation
         self::showItems($item, $withtemplate);
     }
 
-   /**
-    * Print enclosure items
-    *
-    * @return void
-   **/
+    /**
+     * Print enclosure items
+     *
+     * @return void
+     **/
     public static function showItems(Enclosure $enclosure)
     {
         global $DB;
@@ -295,13 +295,13 @@ class Item_Enclosure extends CommonDBRelation
         return $this->prepareInput($input);
     }
 
-   /**
-    * Prepares input (for update and add)
-    *
-    * @param array $input Input data
-    *
-    * @return array
-    */
+    /**
+     * Prepares input (for update and add)
+     *
+     * @param array $input Input data
+     *
+     * @return array
+     */
     private function prepareInput($input)
     {
         $error_detected = [];

@@ -45,11 +45,11 @@ use Rack;
  **/
 trait DCBreadcrumb
 {
-   /**
-    * Get datacenter element breadcrumb
-    *
-    * @return array
-    */
+    /**
+     * Get datacenter element breadcrumb
+     *
+     * @return array
+     */
     public function getDcBreadcrumb()
     {
         global $CFG_GLPI;
@@ -117,15 +117,15 @@ trait DCBreadcrumb
         return $breadcrumb;
     }
 
-   /**
-    * Check if an item is part of an Enclosure
-    *
-    * @param string  $itemtype Item type
-    * @param integer $items_id Item ID
-    * @param boolean $getobj   Whether to return enclosure object
-    *
-    * @return false|Enclosure
-    */
+    /**
+     * Check if an item is part of an Enclosure
+     *
+     * @param string  $itemtype Item type
+     * @param integer $items_id Item ID
+     * @param boolean $getobj   Whether to return enclosure object
+     *
+     * @return false|Enclosure
+     */
     public function isEnclosurePart($itemtype, $items_id, $getobj = false)
     {
         $ien = new Item_Enclosure();
@@ -147,14 +147,14 @@ trait DCBreadcrumb
         return $found;
     }
 
-   /**
-    * get item position from Enclosure
-    *
-    * @param string  $itemtype Item type
-    * @param integer $items_id Item ID
-    *
-    * @return string
-    */
+    /**
+     * get item position from Enclosure
+     *
+     * @param string  $itemtype Item type
+     * @param integer $items_id Item ID
+     *
+     * @return string
+     */
     private function getItemEnclosurePosition($itemtype, $items_id)
     {
         $position = 0;
@@ -173,14 +173,14 @@ trait DCBreadcrumb
         return $position;
     }
 
-   /**
-    * get item position from Rack
-    *
-    * @param string  $itemtype Item type
-    * @param integer $items_id Item ID
-    *
-    * @return string
-    */
+    /**
+     * get item position from Rack
+     *
+     * @param string  $itemtype Item type
+     * @param integer $items_id Item ID
+     *
+     * @return string
+     */
     private function getItemRackPosition($itemtype, $items_id)
     {
         $position = 0;
@@ -199,15 +199,15 @@ trait DCBreadcrumb
         return $position;
     }
 
-   /**
-    * Check if an item is part of a rack
-    *
-    * @param string  $itemtype Item type
-    * @param integer $items_id Item ID
-    * @param boolean $getobj   Whether to return rack object
-    *
-    * @return false|Rack
-    */
+    /**
+     * Check if an item is part of a rack
+     *
+     * @param string  $itemtype Item type
+     * @param integer $items_id Item ID
+     * @param boolean $getobj   Whether to return rack object
+     *
+     * @return false|Rack
+     */
     public function isRackPart($itemtype, $items_id, $getobj = false)
     {
         $ira = new Item_Rack();
@@ -228,11 +228,11 @@ trait DCBreadcrumb
         return $found;
     }
 
-   /**
-    * Specific value for "Data center position".
-    *
-    * @return array
-    */
+    /**
+     * Specific value for "Data center position".
+     *
+     * @return array
+     */
     public static function getDcBreadcrumbSpecificValueToDisplay($items_id)
     {
 

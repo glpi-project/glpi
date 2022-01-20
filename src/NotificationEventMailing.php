@@ -401,15 +401,15 @@ class NotificationEventMailing extends NotificationEventAbstract implements Noti
         return count($processed);
     }
 
-   /**
-    * Attach documents to message.
-    * Documents will not be attached if configuration says they should not be.
-    *
-    * @param GLPIMailer $mmail
-    * @param array      $documents_ids
-    *
-    * @return void
-    */
+    /**
+     * Attach documents to message.
+     * Documents will not be attached if configuration says they should not be.
+     *
+     * @param GLPIMailer $mmail
+     * @param array      $documents_ids
+     *
+     * @return void
+     */
     private static function attachDocuments(GLPIMailer $mmail, array $documents_ids)
     {
         global $CFG_GLPI;

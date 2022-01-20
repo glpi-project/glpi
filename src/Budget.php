@@ -107,16 +107,16 @@ class Budget extends CommonDropdown
     }
 
 
-   /**
-    * Print the contact form
-    *
-    * @param integer $ID      Integer ID of the item
-    * @param array  $options  Array of possible options:
-    *     - target for the Form
-    *     - withtemplate : template or basic item
-    *
-    * @return void|boolean (display) Returns false if there is a rights error.
-    **/
+    /**
+     * Print the contact form
+     *
+     * @param integer $ID      Integer ID of the item
+     * @param array  $options  Array of possible options:
+     *     - target for the Form
+     *     - withtemplate : template or basic item
+     *
+     * @return void|boolean (display) Returns false if there is a rights error.
+     **/
     public function showForm($ID, array $options = [])
     {
 
@@ -309,11 +309,11 @@ class Budget extends CommonDropdown
     }
 
 
-   /**
-    * Print the HTML array of Items on a budget
-    *
-    * @return void
-   **/
+    /**
+     * Print the HTML array of Items on a budget
+     *
+     * @return void
+     **/
     public function showItems()
     {
         global $DB;
@@ -649,11 +649,11 @@ class Budget extends CommonDropdown
     }
 
 
-   /**
-    * Print the HTML array of value consumed for a budget
-    *
-    * @return void
-   **/
+    /**
+     * Print the HTML array of value consumed for a budget
+     *
+     * @return void
+     **/
     public function showValuesByEntity()
     {
         global $DB;

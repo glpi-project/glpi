@@ -39,9 +39,9 @@ use Mpdf\Mpdf;
  */
 class GLPIPDF extends Mpdf
 {
-   /**
-    * @var int
-    */
+    /**
+     * @var int
+     */
     private $total_count;
 
     private static $default_config = [
@@ -80,11 +80,11 @@ class GLPIPDF extends Mpdf
         $this->defineHeaderTemplate();
     }
 
-   /**
-    * Get the list of available fonts.
-    *
-    * @return Array of "font key" => "font name"
-   **/
+    /**
+     * Get the list of available fonts.
+     *
+     * @return Array of "font key" => "font name"
+     **/
     public static function getFontList()
     {
 
@@ -119,13 +119,13 @@ class GLPIPDF extends Mpdf
         return $list;
     }
 
-   /**
-    * Set total results count
-    *
-    * @param integer $count Total number of results
-    *
-    * @return GLPIPDF
-    */
+    /**
+     * Set total results count
+     *
+     * @param integer $count Total number of results
+     *
+     * @return GLPIPDF
+     */
     public function setTotalCount($count)
     {
         $this->total_count = $count;
@@ -133,11 +133,11 @@ class GLPIPDF extends Mpdf
         return $this;
     }
 
-   /**
-    * Defines the header template.
-    *
-    * @return void
-    */
+    /**
+     * Defines the header template.
+     *
+     * @return void
+     */
     private function defineHeaderTemplate(): void
     {
 
@@ -154,11 +154,11 @@ HTML;
         $this->SetHTMLHeader($html);
     }
 
-   /**
-    * Defines the footer template.
-    *
-    * @return void
-    */
+    /**
+     * Defines the footer template.
+     *
+     * @return void
+     */
     private function definesFooterTemplate(): void
     {
 

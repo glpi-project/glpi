@@ -46,11 +46,11 @@ abstract class CommonDCModelDropdown extends CommonDropdown
         return _n('Model', 'Models', 1);
     }
 
-   /**
-    * Return Additional Fields for this type
-    *
-    * @return array
-   **/
+    /**
+     * Return Additional Fields for this type
+     *
+     * @return array
+     **/
     public function getAdditionalFields()
     {
         global $DB;

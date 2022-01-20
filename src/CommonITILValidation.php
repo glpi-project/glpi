@@ -38,7 +38,7 @@ use Glpi\RichText\RichText;
  * CommonITILValidation Class
  *
  * @since 0.85
-**/
+ **/
 abstract class CommonITILValidation extends CommonDBChild
 {
    // From CommonDBTM
@@ -104,11 +104,11 @@ abstract class CommonITILValidation extends CommonDBChild
     }
 
 
-   /**
-   * Is the current user have right to delete the current validation ?
-   *
-   * @return boolean
-   **/
+    /**
+     * Is the current user have right to delete the current validation ?
+     *
+     * @return boolean
+     **/
     public function canCreateItem()
     {
 
@@ -149,11 +149,11 @@ abstract class CommonITILValidation extends CommonDBChild
     }
 
 
-   /**
-   * Is the current user have right to delete the current validation ?
-   *
-   * @return boolean
-   **/
+    /**
+     * Is the current user have right to delete the current validation ?
+     *
+     * @return boolean
+     **/
     public function canDeleteItem()
     {
 
@@ -167,11 +167,11 @@ abstract class CommonITILValidation extends CommonDBChild
     }
 
 
-   /**
-    * Is the current user have right to update the current validation ?
-    *
-    * @return boolean
-    */
+    /**
+     * Is the current user have right to update the current validation ?
+     *
+     * @return boolean
+     */
     public function canUpdateItem()
     {
 
@@ -185,9 +185,9 @@ abstract class CommonITILValidation extends CommonDBChild
     }
 
 
-   /**
-    * @param integer $items_id ID of the item
-   **/
+    /**
+     * @param integer $items_id ID of the item
+     **/
     public static function canValidate($items_id)
     {
         global $DB;
@@ -466,9 +466,9 @@ abstract class CommonITILValidation extends CommonDBChild
     }
 
 
-   /**
-    * @see CommonDBConnexity::getHistoryChangeWhenUpdateField
-   **/
+    /**
+     * @see CommonDBConnexity::getHistoryChangeWhenUpdateField
+     **/
     public function getHistoryChangeWhenUpdateField($field)
     {
 
@@ -489,9 +489,9 @@ abstract class CommonITILValidation extends CommonDBChild
     }
 
 
-   /**
-    * @see CommonDBChild::getHistoryNameForItem
-   **/
+    /**
+     * @see CommonDBChild::getHistoryNameForItem
+     **/
     public function getHistoryNameForItem(CommonDBTM $item, $case)
     {
 
@@ -508,15 +508,15 @@ abstract class CommonITILValidation extends CommonDBChild
     }
 
 
-   /**
-    * get the Ticket validation status list
-    *
-    * @param $withmetaforsearch  boolean (false by default)
-    * @param $global             boolean (true for global status, with "no validation" option)
-    *                                    (false by default)
-    *
-    * @return array
-   **/
+    /**
+     * get the Ticket validation status list
+     *
+     * @param $withmetaforsearch  boolean (false by default)
+     * @param $global             boolean (true for global status, with "no validation" option)
+     *                                    (false by default)
+     *
+     * @return array
+     **/
     public static function getAllStatusArray($withmetaforsearch = false, $global = false)
     {
 
@@ -540,19 +540,19 @@ abstract class CommonITILValidation extends CommonDBChild
     }
 
 
-   /**
-    * Dropdown of validation status
-    *
-    * @param string $name    select name
-    * @param array  $options possible options:
-    *      - value    : default value (default waiting)
-    *      - all      : boolean display all (default false)
-    *      - global   : for global validation (default false)
-    *      - display  : boolean display or get string ? (default true)
-    *
-    * @return string|integer Output string if display option is set to false,
-    *                        otherwise random part of dropdown id
-   **/
+    /**
+     * Dropdown of validation status
+     *
+     * @param string $name    select name
+     * @param array  $options possible options:
+     *      - value    : default value (default waiting)
+     *      - all      : boolean display all (default false)
+     *      - global   : for global validation (default false)
+     *      - display  : boolean display or get string ? (default true)
+     *
+     * @return string|integer Output string if display option is set to false,
+     *                        otherwise random part of dropdown id
+     **/
     public static function dropdownStatus($name, $options = [])
     {
 
@@ -582,11 +582,11 @@ abstract class CommonITILValidation extends CommonDBChild
     }
 
 
-   /**
-    * Get Ticket validation status Name
-    *
-    * @param integer $value status ID
-   **/
+    /**
+     * Get Ticket validation status Name
+     *
+     * @param integer $value status ID
+     **/
     public static function getStatus($value)
     {
 
@@ -596,11 +596,11 @@ abstract class CommonITILValidation extends CommonDBChild
     }
 
 
-   /**
-    * Get Ticket validation status Color
-    *
-    * @param integer $value status ID
-   **/
+    /**
+     * Get Ticket validation status Color
+     *
+     * @param integer $value status ID
+     **/
     public static function getStatusColor($value)
     {
 
@@ -624,11 +624,11 @@ abstract class CommonITILValidation extends CommonDBChild
     }
 
 
-   /**
-    * Get item validation demands count for a user
-    *
-    * @param $users_id  integer  User ID
-   **/
+    /**
+     * Get item validation demands count for a user
+     *
+     * @param $users_id  integer  User ID
+     **/
     public static function getNumberToValidate($users_id)
     {
         global $DB;
@@ -646,12 +646,12 @@ abstract class CommonITILValidation extends CommonDBChild
     }
 
 
-   /**
-    * Get the number of validations attached to an item having a specified status
-    *
-    * @param integer $items_id item ID
-    * @param integer $status   status
-   **/
+    /**
+     * Get the number of validations attached to an item having a specified status
+     *
+     * @param integer $items_id item ID
+     * @param integer $status   status
+     **/
     public static function getTicketStatusNumber($items_id, $status)
     {
         global $DB;
@@ -669,16 +669,16 @@ abstract class CommonITILValidation extends CommonDBChild
     }
 
 
-   /**
-    * Check if validation already exists
-    *
-    * @param $items_id   integer  item ID
-    * @param $users_id   integer  user ID
-    *
-    * @since 0.85
-    *
-    * @return boolean
-   **/
+    /**
+     * Check if validation already exists
+     *
+     * @param $items_id   integer  item ID
+     * @param $users_id   integer  user ID
+     *
+     * @since 0.85
+     *
+     * @return boolean
+     **/
     public static function alreadyExists($items_id, $users_id)
     {
         global $DB;
@@ -700,9 +700,9 @@ abstract class CommonITILValidation extends CommonDBChild
     }
 
 
-   /**
-    * Form for Followup on Massive action
-   **/
+    /**
+     * Form for Followup on Massive action
+     **/
     public static function showFormMassiveAction()
     {
 
@@ -733,11 +733,11 @@ abstract class CommonITILValidation extends CommonDBChild
     }
 
 
-   /**
-    * @since 0.85
-    *
-    * @see CommonDBTM::showMassiveActionsSubForm()
-   **/
+    /**
+     * @since 0.85
+     *
+     * @see CommonDBTM::showMassiveActionsSubForm()
+     **/
     public static function showMassiveActionsSubForm(MassiveAction $ma)
     {
 
@@ -751,11 +751,11 @@ abstract class CommonITILValidation extends CommonDBChild
     }
 
 
-   /**
-    * @since 0.85
-    *
-    * @see CommonDBTM::processMassiveActionsForOneItemtype()
-   **/
+    /**
+     * @since 0.85
+     *
+     * @see CommonDBTM::processMassiveActionsForOneItemtype()
+     **/
     public static function processMassiveActionsForOneItemtype(
         MassiveAction $ma,
         CommonDBTM $item,
@@ -803,11 +803,11 @@ abstract class CommonITILValidation extends CommonDBChild
     }
 
 
-   /**
-    * Print the validation list into item
-    *
-    * @param CommonDBTM $item
-   **/
+    /**
+     * Print the validation list into item
+     *
+     * @param CommonDBTM $item
+     **/
     public function showSummary(CommonDBTM $item)
     {
         global $DB, $CFG_GLPI;
@@ -1016,12 +1016,12 @@ abstract class CommonITILValidation extends CommonDBChild
     }
 
 
-   /**
-    * Print the validation form
-    *
-    * @param $ID        integer  ID of the item
-    * @param $options   array    options used
-    **/
+    /**
+     * Print the validation form
+     *
+     * @param $ID        integer  ID of the item
+     * @param $options   array    options used
+     **/
     public function showForm($ID, array $options = [])
     {
 
@@ -1264,11 +1264,11 @@ abstract class CommonITILValidation extends CommonDBChild
     }
 
 
-   /**
-    * @param $field
-    * @param $values
-    * @param $options   array
-   **/
+    /**
+     * @param $field
+     * @param $values
+     * @param $options   array
+     **/
     public static function getSpecificValueToDisplay($field, $values, array $options = [])
     {
 
@@ -1283,12 +1283,12 @@ abstract class CommonITILValidation extends CommonDBChild
     }
 
 
-   /**
-    * @param $field
-    * @param $name              (default '')
-    * @param $values            (default '')
-    * @param $options   array
-   **/
+    /**
+     * @param $field
+     * @param $name              (default '')
+     * @param $values            (default '')
+     * @param $options   array
+     **/
     public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
     {
 
@@ -1306,9 +1306,9 @@ abstract class CommonITILValidation extends CommonDBChild
     }
 
 
-   /**
-    * @see commonDBTM::getRights()
-    **/
+    /**
+     * @see commonDBTM::getRights()
+     **/
     public function getRights($interface = 'central')
     {
 
@@ -1321,20 +1321,20 @@ abstract class CommonITILValidation extends CommonDBChild
     }
 
 
-   /**
-    * Dropdown of validator
-    *
-    * @param $options   array of options
-    *  - name                    : select name
-    *  - id                      : ID of object > 0 Update, < 0 New
-    *  - entity                  : ID of entity
-    *  - right                   : validation rights
-    *  - groups_id               : ID of group validator
-    *  - users_id_validate       : ID of user validator
-    *  - applyto
-    *
-    * @return void Output is printed
-   **/
+    /**
+     * Dropdown of validator
+     *
+     * @param $options   array of options
+     *  - name                    : select name
+     *  - id                      : ID of object > 0 Update, < 0 New
+     *  - entity                  : ID of entity
+     *  - right                   : validation rights
+     *  - groups_id               : ID of group validator
+     *  - users_id_validate       : ID of user validator
+     *  - applyto
+     *
+     * @return void Output is printed
+     **/
     public static function dropdownValidator(array $options = [])
     {
         global $CFG_GLPI;
@@ -1410,16 +1410,16 @@ abstract class CommonITILValidation extends CommonDBChild
     }
 
 
-   /**
-    * Get list of users from a group which have validation rights
-    *
-    * @param $options   array   possible:
-    *       groups_id
-    *       right
-    *       entity
-    *
-    * @return array
-   **/
+    /**
+     * Get list of users from a group which have validation rights
+     *
+     * @param $options   array   possible:
+     *       groups_id
+     *       right
+     *       entity
+     *
+     * @return array
+     **/
     public static function getGroupUserHaveRights(array $options = [])
     {
         $params = [
@@ -1452,13 +1452,13 @@ abstract class CommonITILValidation extends CommonDBChild
     }
 
 
-   /**
-    * Compute the validation status
-    *
-    * @param $item CommonITILObject
-    *
-    * @return integer
-   **/
+    /**
+     * Compute the validation status
+     *
+     * @param $item CommonITILObject
+     *
+     * @return integer
+     **/
     public static function computeValidationStatus(CommonITILObject $item)
     {
 
@@ -1488,16 +1488,16 @@ abstract class CommonITILValidation extends CommonDBChild
         );
     }
 
-   /**
-    * Compute the validation status from the percentage of acceptation, the
-    * percentage of refusals and the target acceptation threshold
-    *
-    * @param int $accepted             0-100 (percentage of acceptation)
-    * @param int $refused              0-100 (percentage of refusals)
-    * @param int $validation_percent   0-100 (target accepation threshold)
-    *
-    * @return int the validation status : ACCEPTED|REFUSED|WAITING
-    */
+    /**
+     * Compute the validation status from the percentage of acceptation, the
+     * percentage of refusals and the target acceptation threshold
+     *
+     * @param int $accepted             0-100 (percentage of acceptation)
+     * @param int $refused              0-100 (percentage of refusals)
+     * @param int $validation_percent   0-100 (target accepation threshold)
+     *
+     * @return int the validation status : ACCEPTED|REFUSED|WAITING
+     */
     public static function computeValidation(
         int $accepted,
         int $refused,
@@ -1524,13 +1524,13 @@ abstract class CommonITILValidation extends CommonDBChild
     }
 
 
-   /**
-    * Get the validation statistics
-    *
-    * @param integer $tID tickets id
-    *
-    * @return string
-   **/
+    /**
+     * Get the validation statistics
+     *
+     * @param integer $tID tickets id
+     *
+     * @return string
+     **/
     public static function getValidationStats($tID)
     {
 
@@ -1560,10 +1560,10 @@ abstract class CommonITILValidation extends CommonDBChild
     }
 
 
-   /**
-    * @param $item       CommonITILObject
-    * @param $type
-    */
+    /**
+     * @param $item       CommonITILObject
+     * @param $type
+     */
     public static function alertValidation(CommonITILObject $item, $type)
     {
         global $CFG_GLPI;
@@ -1638,26 +1638,26 @@ abstract class CommonITILValidation extends CommonDBChild
     }
 
 
-   /**
-    * Get the ITIL object can validation status list
-    *
-    * @since 0.85
-    *
-    * @return array
-    **/
+    /**
+     * Get the ITIL object can validation status list
+     *
+     * @since 0.85
+     *
+     * @return array
+     **/
     public static function getCanValidationStatusArray()
     {
         return [self::NONE, self::ACCEPTED];
     }
 
 
-   /**
-    * Get the ITIL object all validation status list
-    *
-    * @since 0.85
-    *
-    * @return array
-    **/
+    /**
+     * Get the ITIL object all validation status list
+     *
+     * @since 0.85
+     *
+     * @return array
+     **/
     public static function getAllValidationStatusArray()
     {
         return [self::NONE, self::WAITING, self::REFUSED, self::ACCEPTED];

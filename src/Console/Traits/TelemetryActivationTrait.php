@@ -43,13 +43,13 @@ use Telemetry;
 
 trait TelemetryActivationTrait
 {
-   /**
-    * Register options related to Telemetry service enablement.
-    *
-    * @param InputDefinition $definition
-    *
-    * @return void
-    */
+    /**
+     * Register options related to Telemetry service enablement.
+     *
+     * @param InputDefinition $definition
+     *
+     * @return void
+     */
     protected function registerTelemetryActivationOptions(InputDefinition $definition): void
     {
         $definition->addOption(
@@ -71,14 +71,14 @@ trait TelemetryActivationTrait
         );
     }
 
-   /**
-    * Handle telemetry service enablement, depending on
-    *
-    * @param InputInterface $input
-    * @param OutputInterface $output
-    *
-    * @return void
-    */
+    /**
+     * Handle telemetry service enablement, depending on
+     *
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     *
+     * @return void
+     */
     protected function handTelemetryActivation(InputInterface $input, OutputInterface $output): void
     {
 

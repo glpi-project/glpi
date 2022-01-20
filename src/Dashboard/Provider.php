@@ -56,23 +56,23 @@ use User;
 
 /**
  * Provider class
-**/
+ **/
 class Provider
 {
-   /**
-    * Retrieve the number of element for a given item
-    *
-    * @param CommonDBTM|null object to count
-    *
-    * @param array $params default values for
-    * - 'apply_filters' values from dashboard filters
-    *
-    * @return array :
-    * - 'number'
-    * - 'url'
-    * - 'label'
-    * - 'icon'
-    */
+    /**
+     * Retrieve the number of element for a given item
+     *
+     * @param CommonDBTM|null object to count
+     *
+     * @param array $params default values for
+     * - 'apply_filters' values from dashboard filters
+     *
+     * @return array :
+     * - 'number'
+     * - 'url'
+     * - 'label'
+     * - 'icon'
+     */
     public static function bigNumberItem(CommonDBTM $item = null, array $params = []): array
     {
         $DB = DBConnection::getReadConnection();
@@ -131,10 +131,10 @@ class Provider
     }
 
 
-   /**
-    * @method self::bigNumberItem
-    * @method self::nbItemByFk
-    */
+    /**
+     * @method self::bigNumberItem
+     * @method self::nbItemByFk
+     */
     public static function __callStatic(string $name = "", array $arguments = [])
     {
         if (strpos($name, 'bigNumber') !== false) {
@@ -176,30 +176,30 @@ class Provider
     }
 
 
-   /**
-    * Count number of tickets for a given case
-    *
-    * @param string $case:
-    * - 'notold': not closed or solved tickets
-    * - 'late': late tickets
-    * - 'waiting_validation': tickets waiting validation for connected user
-    * - 'incoming': ticket with incoming status
-    * - 'waiting': ticket with waiting status
-    * - 'assigned': ticket with assigned status
-    * - 'planned': ticket with planned status
-    * - 'solved': ticket with solved status
-    * - 'closed': ticket with closed status
-    * @param array $params default values for
-    * - 'title' of the card
-    * - 'icon' of the card
-    * - 'apply_filters' values from dashboard filters
-    *
-    * @return array :
-    * - 'number'
-    * - 'url'
-    * - 'label'
-    * - 'icon'
-    */
+    /**
+     * Count number of tickets for a given case
+     *
+     * @param string $case:
+     * - 'notold': not closed or solved tickets
+     * - 'late': late tickets
+     * - 'waiting_validation': tickets waiting validation for connected user
+     * - 'incoming': ticket with incoming status
+     * - 'waiting': ticket with waiting status
+     * - 'assigned': ticket with assigned status
+     * - 'planned': ticket with planned status
+     * - 'solved': ticket with solved status
+     * - 'closed': ticket with closed status
+     * @param array $params default values for
+     * - 'title' of the card
+     * - 'icon' of the card
+     * - 'apply_filters' values from dashboard filters
+     *
+     * @return array :
+     * - 'number'
+     * - 'url'
+     * - 'label'
+     * - 'icon'
+     */
     public static function nbTicketsGeneric(
         string $case = "",
         array $params = []
@@ -720,28 +720,28 @@ class Provider
     }
 
 
-   /**
-    * Get multiple counts of computer by a specific foreign key
-    *
-    * @param CommonDBTM $item main item to count
-    * @param CommonDBTM $fk_item groupby by this item (we will find the foreign key in the main item)
-    * @param array $params values for:
-    * - 'title' of the card
-    * - 'icon' of the card
-    * - 'searchoption_id' id corresponding to FK search option
-    * - 'limit' max data to return
-    * - 'join_key' LEFT, INNER, etc JOIN
-    * - 'apply_filters' values from dashboard filters
-    *
-    * @return array :
-    * - 'data': [
-    *    'url'
-    *    'number'
-    *    'label'
-    * ]
-    * - 'label'
-    * - 'icon'
-    */
+    /**
+     * Get multiple counts of computer by a specific foreign key
+     *
+     * @param CommonDBTM $item main item to count
+     * @param CommonDBTM $fk_item groupby by this item (we will find the foreign key in the main item)
+     * @param array $params values for:
+     * - 'title' of the card
+     * - 'icon' of the card
+     * - 'searchoption_id' id corresponding to FK search option
+     * - 'limit' max data to return
+     * - 'join_key' LEFT, INNER, etc JOIN
+     * - 'apply_filters' values from dashboard filters
+     *
+     * @return array :
+     * - 'data': [
+     *    'url'
+     *    'number'
+     *    'label'
+     * ]
+     * - 'label'
+     * - 'icon'
+     */
     public static function nbItemByFk(
         CommonDBTM $item = null,
         CommonDBTM $fk_item = null,
@@ -853,16 +853,16 @@ class Provider
     }
 
 
-   /**
-    * Get a list of article for an compatible item (with date,name,text fields)
-    *
-    * @param CommonDBTM $item the itemtype to list
-    * @param array   $params default values for
-    * - 'icon' of the card
-    * - 'apply_filters' values from dashboard filters
-    *
-    * @return array
-    */
+    /**
+     * Get a list of article for an compatible item (with date,name,text fields)
+     *
+     * @param CommonDBTM $item the itemtype to list
+     * @param array   $params default values for
+     * - 'icon' of the card
+     * - 'apply_filters' values from dashboard filters
+     *
+     * @return array
+     */
     public static function articleListItem(CommonDBTM $item = null, array $params = []): array
     {
         $DB = DBConnection::getReadConnection();
@@ -911,16 +911,16 @@ class Provider
     }
 
 
-   /**
-    * get multiple count of ticket by month
-    *
-    * @param array $params default values for
-    * - 'title' of the card
-    * - 'icon' of the card
-    * - 'apply_filters' values from dashboard filters
-    *
-    * @return array
-    */
+    /**
+     * get multiple count of ticket by month
+     *
+     * @param array $params default values for
+     * - 'title' of the card
+     * - 'icon' of the card
+     * - 'apply_filters' values from dashboard filters
+     *
+     * @return array
+     */
     public static function ticketsOpened(array $params = []): array
     {
         $DB = DBConnection::getReadConnection();
@@ -990,16 +990,16 @@ class Provider
     }
 
 
-   /**
-    * Get ticket evolution by opened, solved, closed, late series and months group
-    *
-    * @param array $params default values for
-    * - 'title' of the card
-    * - 'icon' of the card
-    * - 'apply_filters' values from dashboard filters
-    *
-    * @return array
-    */
+    /**
+     * Get ticket evolution by opened, solved, closed, late series and months group
+     *
+     * @param array $params default values for
+     * - 'title' of the card
+     * - 'icon' of the card
+     * - 'apply_filters' values from dashboard filters
+     *
+     * @return array
+     */
     public static function getTicketsEvolution(array $params = []): array
     {
         $default_params = [
@@ -1159,16 +1159,16 @@ class Provider
     }
 
 
-   /**
-    * get ticket by their curent status and their opening date
-    *
-    * @param array $params default values for
-    * - 'title' of the card
-    * - 'icon' of the card
-    * - 'apply_filters' values from dashboard filters
-    *
-    * @return array
-    */
+    /**
+     * get ticket by their curent status and their opening date
+     *
+     * @param array $params default values for
+     * - 'title' of the card
+     * - 'icon' of the card
+     * - 'apply_filters' values from dashboard filters
+     *
+     * @return array
+     */
     public static function getTicketsStatus(array $params = []): array
     {
         $DB = DBConnection::getReadConnection();
@@ -1292,23 +1292,23 @@ class Provider
     }
 
 
-   /**
-    * Get numbers of tickets grouped by actors
-    *
-    * @param string $case cound be:
-    * - user_requester
-    * - group_requester
-    * - user_observer
-    * - group_observer
-    * - user_assign
-    * - group_assign
-    * @param array $params default values for
-    * - 'title' of the card
-    * - 'icon' of the card
-    * - 'apply_filters' values from dashboard filters
-    *
-    * @return array
-    */
+    /**
+     * Get numbers of tickets grouped by actors
+     *
+     * @param string $case cound be:
+     * - user_requester
+     * - group_requester
+     * - user_observer
+     * - group_observer
+     * - user_assign
+     * - group_assign
+     * @param array $params default values for
+     * - 'title' of the card
+     * - 'icon' of the card
+     * - 'apply_filters' values from dashboard filters
+     *
+     * @return array
+     */
     public static function nbTicketsActor(
         string $case = "",
         array $params = []
@@ -1438,16 +1438,16 @@ class Provider
     }
 
 
-   /**
-    * get average stats (takeintoaccoutn, solve/close delay, waiting) of ticket by month
-    *
-    * @param array $params default values for
-    * - 'title' of the card
-    * - 'icon' of the card
-    * - 'apply_filters' values from dashboard filters
-    *
-    * @return array
-    */
+    /**
+     * get average stats (takeintoaccoutn, solve/close delay, waiting) of ticket by month
+     *
+     * @param array $params default values for
+     * - 'title' of the card
+     * - 'icon' of the card
+     * - 'apply_filters' values from dashboard filters
+     *
+     * @return array
+     */
     public static function averageTicketTimes(array $params = [])
     {
         $DBread = DBConnection::getReadConnection();
@@ -1517,16 +1517,16 @@ class Provider
     }
 
 
-   /**
-    * get multiple count of ticket by status and month
-    *
-    * @param array $params default values for
-    * - 'title' of the card
-    * - 'icon' of the card
-    * - 'apply_filters' values from dashboard filters
-    *
-    * @return array
-    */
+    /**
+     * get multiple count of ticket by status and month
+     *
+     * @param array $params default values for
+     * - 'title' of the card
+     * - 'icon' of the card
+     * - 'apply_filters' values from dashboard filters
+     *
+     * @return array
+     */
     public static function getTicketSummary(array $params = [])
     {
         $default_params = [

@@ -356,12 +356,12 @@ class Server extends DbTestCase
         return $dataset;
     }
 
-   /**
-    * Test PROPFIND method on main endpoints (principals, calendars collections and calendars).
-    * Tests only validates that response is ok and endpoints href and resourcetypes are correctly set.
-    *
-    * @dataProvider propfindMainEndpointsProvider
-    */
+    /**
+     * Test PROPFIND method on main endpoints (principals, calendars collections and calendars).
+     * Tests only validates that response is ok and endpoints href and resourcetypes are correctly set.
+     *
+     * @dataProvider propfindMainEndpointsProvider
+     */
     public function testPropfindOnMainEndpoints(string $path, array $expected_results, string $login, string $pass)
     {
         $this->login($login, $pass);
@@ -405,10 +405,10 @@ class Server extends DbTestCase
         }
     }
 
-   /**
-    * Test PROPFIND method on calendar endpoints.
-    * Tests validates that mandatory properties are correctly set.
-    */
+    /**
+     * Test PROPFIND method on calendar endpoints.
+     * Tests validates that mandatory properties are correctly set.
+     */
     public function testPropfindOnPrincipalCalendar()
     {
 
@@ -494,9 +494,9 @@ class Server extends DbTestCase
         }
     }
 
-   /**
-    * Test ACL on main objects.
-    */
+    /**
+     * Test ACL on main objects.
+     */
     public function testAcl()
     {
 
@@ -551,10 +551,10 @@ class Server extends DbTestCase
         }
     }
 
-   /**
-    * Test PROPFIND, GET, DELETE, PUT methods on calendar events.
-    * Tests validates that mandatory properties are correctly set.
-    */
+    /**
+     * Test PROPFIND, GET, DELETE, PUT methods on calendar events.
+     * Tests validates that mandatory properties are correctly set.
+     */
     public function testMethodsCalendarEvents()
     {
 
@@ -711,10 +711,10 @@ VCALENDAR
          ->string['end']->isEqualTo('2019-10-10 12:00:00');
     }
 
-   /**
-    * Test reading VEVENT object from PlanningExternalEvent class.
-    * Tests validates that different properties are correctly handled.
-    */
+    /**
+     * Test reading VEVENT object from PlanningExternalEvent class.
+     * Tests validates that different properties are correctly handled.
+     */
     public function testReadVEventFromPlanningExternalEvent()
     {
 
@@ -766,10 +766,10 @@ VCALENDAR
          ->array['byday']->isEqualTo(['MO', 'TU', 'WE', 'TH', 'FR']);
     }
 
-   /**
-    * Test writing a VEVENT object to PlanningExternalEvent class.
-    * Tests validates that different properties are correctly handled.
-    */
+    /**
+     * Test writing a VEVENT object to PlanningExternalEvent class.
+     * Tests validates that different properties are correctly handled.
+     */
     public function testWriteVEventToPlanningExternalEvent()
     {
 
@@ -827,10 +827,10 @@ VCALENDAR
          ->array['byday']->isEqualTo(['MO','FR']);
     }
 
-   /**
-    * Test reading VTODO object from PlanningExternalEvent class.
-    * Tests validates that different properties are correctly handled.
-    */
+    /**
+     * Test reading VTODO object from PlanningExternalEvent class.
+     * Tests validates that different properties are correctly handled.
+     */
     public function testReadVTodoFromPlanningExternalEvent()
     {
 
@@ -909,10 +909,10 @@ VCALENDAR
          ->string['freq']->isEqualTo('MONTHLY');
     }
 
-   /**
-    * Test writing a VTODO object to PlanningExternalEvent class.
-    * Tests validates that different properties are correctly handled.
-    */
+    /**
+     * Test writing a VTODO object to PlanningExternalEvent class.
+     * Tests validates that different properties are correctly handled.
+     */
     public function testWriteVTodoToPlanningExternalEvent()
     {
 
@@ -1007,10 +1007,10 @@ VCALENDAR
         $this->variable($event->fields['rrule'])->isNull();
     }
 
-   /**
-    * Test reading VJOURNAL object from PlanningExternalEvent class.
-    * Tests validates that different properties are correctly handled.
-    */
+    /**
+     * Test reading VJOURNAL object from PlanningExternalEvent class.
+     * Tests validates that different properties are correctly handled.
+     */
     public function testReadVJournalFromPlanningExternalEvent()
     {
 
@@ -1052,10 +1052,10 @@ VCALENDAR
         $this->variable($vcomp->DUE)->isNull();
     }
 
-   /**
-    * Test writing a VJOURNAL object to PlanningExternalEvent class.
-    * Tests validates that different properties are correctly handled.
-    */
+    /**
+     * Test writing a VJOURNAL object to PlanningExternalEvent class.
+     * Tests validates that different properties are correctly handled.
+     */
     public function testWriteVJournalToPlanningExternalEvent()
     {
 
@@ -1105,10 +1105,10 @@ VCALENDAR
         $this->variable($event->fields['rrule'])->isNull();
     }
 
-   /**
-    * Test reading and writing VTODO object from Reminder class.
-    * Tests validates that different properties are correctly handled.
-    */
+    /**
+     * Test reading and writing VTODO object from Reminder class.
+     * Tests validates that different properties are correctly handled.
+     */
     public function testReadWriteVTodoFromReminder()
     {
 
@@ -1180,10 +1180,10 @@ VCALENDAR
          ->integer['state']->isEqualTo(\Planning::INFO);
     }
 
-   /**
-    * Test reading and writing VJOURNAL object from Reminder class.
-    * Tests validates that different properties are correctly handled.
-    */
+    /**
+     * Test reading and writing VJOURNAL object from Reminder class.
+     * Tests validates that different properties are correctly handled.
+     */
     public function testReadWriteVJournalFromReminder()
     {
 
@@ -1265,10 +1265,10 @@ VCALENDAR
          ->string['end']->isEqualTo('2019-11-01 08:15:00'); // 1 hour offset between Europe/Paris and UTC
     }
 
-   /**
-    * Test reading and writing VTODO object from TicketTask class.
-    * Tests validates that different properties are correctly handled.
-    */
+    /**
+     * Test reading and writing VTODO object from TicketTask class.
+     * Tests validates that different properties are correctly handled.
+     */
     public function testReadWriteVTodoFromTicketTask()
     {
 
@@ -1386,10 +1386,10 @@ VCALENDAR
          ->string['end']->isEqualTo('2019-11-01 08:15:00'); // 1 hour offset between Europe/Paris and UTC
     }
 
-   /**
-    * Test reading and writing VTODO object from ProjectTask class.
-    * Tests validates that different properties are correctly handled.
-    */
+    /**
+     * Test reading and writing VTODO object from ProjectTask class.
+     * Tests validates that different properties are correctly handled.
+     */
     public function testReadWriteVTodoFromProjectTask()
     {
 
@@ -1518,9 +1518,9 @@ VCALENDAR
          ->string['plan_end_date']->isEqualTo('2019-11-01 08:15:00'); // 1 hour offset between Europe/Paris and UTC
     }
 
-   /**
-    * Test that not handled properties are persistent when reading a previously saved object.
-    */
+    /**
+     * Test that not handled properties are persistent when reading a previously saved object.
+     */
     public function testPersistenceOfNotHandledProps()
     {
 
@@ -1585,12 +1585,12 @@ VCALENDAR
         $this->string($vcomp->LOCATION->getValue())->isEqualTo('Here');
     }
 
-   /**
-    * Validate that method invocation on server will result in a
-    * NotAuthenticated exception.
-    *
-    * @param \Glpi\CalDAV\Server $server
-    */
+    /**
+     * Validate that method invocation on server will result in a
+     * NotAuthenticated exception.
+     *
+     * @param \Glpi\CalDAV\Server $server
+     */
     private function validateThatAuthenticationIsRequired(\Glpi\CalDAV\Server $server)
     {
         $this->exception(
@@ -1601,13 +1601,13 @@ VCALENDAR
         )->isInstanceOf(\Sabre\DAV\Exception\NotAuthenticated::class);
     }
 
-   /**
-    * Validate that response is OK.
-    *
-    * @param \Sabre\HTTP\Response $response
-    * @param integer              $status
-    * @param string|null          $content_type
-    */
+    /**
+     * Validate that response is OK.
+     *
+     * @param \Sabre\HTTP\Response $response
+     * @param integer              $status
+     * @param string|null          $content_type
+     */
     private function validateResponseIsOk(\Sabre\HTTP\Response $response, int $status, string $content_type)
     {
         $this->integer($response->getStatus())->isEqualTo($status);
@@ -1619,14 +1619,14 @@ VCALENDAR
         $response->setBody($response_body);
     }
 
-   /**
-    * Get a server instance.
-    *
-    * @param string $http_method
-    * @param string $path
-    *
-    * @return \Glpi\CalDAV\Server
-    */
+    /**
+     * Get a server instance.
+     *
+     * @param string $http_method
+     * @param string $path
+     *
+     * @return \Glpi\CalDAV\Server
+     */
     private function getServerInstance(string $http_method, string $path): \Glpi\CalDAV\Server
     {
         $base_url = '/caldav.php';
@@ -1639,13 +1639,13 @@ VCALENDAR
         return $server;
     }
 
-   /**
-    * Get a XPath object from response.
-    *
-    * @param \Sabre\HTTP\Response $response
-    *
-    * @return \DOMXPath
-    */
+    /**
+     * Get a XPath object from response.
+     *
+     * @param \Sabre\HTTP\Response $response
+     *
+     * @return \DOMXPath
+     */
     private function getXpathFromResponse(\Sabre\HTTP\Response $response): \DOMXPath
     {
         $xml = new \DOMDocument();
@@ -1653,12 +1653,12 @@ VCALENDAR
         return new \DOMXPath($xml);
     }
 
-   /**
-    * Validate common VComponent properies based on object fields.
-    *
-    * @param \Sabre\VObject\Component $vcomp
-    * @param array $fields
-    */
+    /**
+     * Validate common VComponent properies based on object fields.
+     *
+     * @param \Sabre\VObject\Component $vcomp
+     * @param array $fields
+     */
     private function validateCommonVComponentProperties(\Sabre\VObject\Component $vcomp, array $fields)
     {
 

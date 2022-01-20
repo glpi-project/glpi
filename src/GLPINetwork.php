@@ -130,11 +130,11 @@ class GLPINetwork extends CommonGLPI
         Html::closeForm();
     }
 
-   /**
-    * Get GLPI User Agent in expected format from GLPI Network services.
-    *
-    * @return string
-    */
+    /**
+     * Get GLPI User Agent in expected format from GLPI Network services.
+     *
+     * @return string
+     */
     public static function getGlpiUserAgent(): string
     {
         $version = VersionParser::getNormalizedVersion(GLPI_VERSION, false);
@@ -146,41 +146,41 @@ class GLPINetwork extends CommonGLPI
         return sprintf('GLPI/%s (%s)', $version, $comments);
     }
 
-   /**
-    * Get GLPI Network UID to pass in requests to GLPI Network Services.
-    *
-    * @return string
-    */
+    /**
+     * Get GLPI Network UID to pass in requests to GLPI Network Services.
+     *
+     * @return string
+     */
     public static function getGlpiNetworkUid(): string
     {
         return Config::getUuid('glpi_network');
     }
 
-   /**
-    * Get GLPI Network registration key.
-    *
-    * A registration key is a base64 encoded JSON string with a key 'signature' containing the binary
-    * signature of the whole.
-    *
-    * @return string
-    */
+    /**
+     * Get GLPI Network registration key.
+     *
+     * A registration key is a base64 encoded JSON string with a key 'signature' containing the binary
+     * signature of the whole.
+     *
+     * @return string
+     */
     public static function getRegistrationKey(): string
     {
         global $CFG_GLPI;
         return (new GLPIKey())->decrypt($CFG_GLPI['glpinetwork_registration_key'] ?? '');
     }
 
-   /**
-    * Get GLPI Network registration information.
-    *
-    * @param bool $force_refresh
-    *
-    * @return array  Registration data:
-    *    - is_valid (boolean):          indicates if key is valid;
-    *    - validation_message (string): message related to validation state;
-    *    - owner (array):               owner attributes;
-    *    - subscription (array):        subscription attributes.
-    */
+    /**
+     * Get GLPI Network registration information.
+     *
+     * @param bool $force_refresh
+     *
+     * @return array  Registration data:
+     *    - is_valid (boolean):          indicates if key is valid;
+     *    - validation_message (string): message related to validation state;
+     *    - owner (array):               owner attributes;
+     *    - subscription (array):        subscription attributes.
+     */
     public static function getRegistrationInformations(bool $force_refresh = false)
     {
         global $GLPI_CACHE;
@@ -255,11 +255,11 @@ class GLPINetwork extends CommonGLPI
         return $informations;
     }
 
-   /**
-    * Check if GLPI Network registration is existing and valid.
-    *
-    * @return boolean
-    */
+    /**
+     * Check if GLPI Network registration is existing and valid.
+     *
+     * @return boolean
+     */
     public static function isRegistered(): bool
     {
         return self::getRegistrationInformations()['is_valid'];
@@ -291,13 +291,13 @@ class GLPINetwork extends CommonGLPI
         Session::addMessageAfterRedirect(self::getSupportPromoteMessage(), false, ERROR);
     }
 
-   /**
-    * Executes a curl call
-    *
-    * @param string $curl_error  will contains original curl error string if an error occurs
-    *
-    * @return boolean
-    */
+    /**
+     * Executes a curl call
+     *
+     * @param string $curl_error  will contains original curl error string if an error occurs
+     *
+     * @return boolean
+     */
     public static function isServicesAvailable(&$curl_error = null)
     {
         $error_msg = null;

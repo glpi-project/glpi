@@ -166,11 +166,11 @@ class OperatingSystem extends InventoryAsset
         return true;
     }
 
-   /**
-    * Get current OS id
-    *
-    * @return integer
-    */
+    /**
+     * Get current OS id
+     *
+     * @return integer
+     */
     public function getId()
     {
         return $this->operatingsystems_id;

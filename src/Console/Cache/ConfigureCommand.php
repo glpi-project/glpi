@@ -44,19 +44,19 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class ConfigureCommand extends AbstractCommand
 {
-   /**
-    * Error code returned if cache configuration file cannot be write.
-    *
-    * @var int
-    */
+    /**
+     * Error code returned if cache configuration file cannot be write.
+     *
+     * @var int
+     */
     const ERROR_UNABLE_TO_WRITE_CONFIG = 1;
 
     protected $requires_db = false;
 
-   /**
-    * Cache manager.
-    * @var CacheManager
-    */
+    /**
+     * Cache manager.
+     * @var CacheManager
+     */
     private $cache_manager;
 
     public function __construct(string $name = null)

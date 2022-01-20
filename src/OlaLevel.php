@@ -38,7 +38,7 @@
 
 /**
  * OlaLevel class
-**/
+ **/
 class OlaLevel extends LevelAgreementLevel
 {
     protected $rules_id_field     = 'olalevels_id';
@@ -72,11 +72,11 @@ class OlaLevel extends LevelAgreementLevel
     }
 
 
-   /**
-    * @param $ola OLA object
-    *
-    * @since 9.1 (before showForOLA)
-   **/
+    /**
+     * @param $ola OLA object
+     *
+     * @since 9.1 (before showForOLA)
+     **/
     public function showForOLA(OLA $ola)
     {
         global $DB;
@@ -219,14 +219,14 @@ class OlaLevel extends LevelAgreementLevel
     }
 
 
-   /**
-    * Show the rule
-    *
-    * @param $ID              ID of the rule
-    * @param $options   array of possible options
-    *
-    * @return void
-   **/
+    /**
+     * Show the rule
+     *
+     * @param $ID              ID of the rule
+     * @param $options   array of possible options
+     *
+     * @return void
+     **/
     public function showForm($ID, array $options = [])
     {
 
@@ -273,15 +273,15 @@ class OlaLevel extends LevelAgreementLevel
     }
 
 
-   /**
-    * Get first level for a OLA
-    *
-    * @param $olas_id   integer  id of the OLA
-    *
-    * @since 9.1 (before getFirst OlaLevel)
-    *
-    * @return id of the ola level : 0 if not exists
-   **/
+    /**
+     * Get first level for a OLA
+     *
+     * @param $olas_id   integer  id of the OLA
+     *
+     * @since 9.1 (before getFirst OlaLevel)
+     *
+     * @return id of the ola level : 0 if not exists
+     **/
     public static function getFirstOlaLevel($olas_id)
     {
         global $DB;
@@ -305,14 +305,14 @@ class OlaLevel extends LevelAgreementLevel
     }
 
 
-   /**
-    * Get next level for a OLA
-    *
-    * @param $olas_id         integer id of the OLA
-    * @param $olalevels_id    integer id of the current OLA level
-    *
-    * @return id of the ola level : 0 if not exists
-   **/
+    /**
+     * Get next level for a OLA
+     *
+     * @param $olas_id         integer id of the OLA
+     * @param $olalevels_id    integer id of the current OLA level
+     *
+     * @return id of the ola level : 0 if not exists
+     **/
     public static function getNextOlaLevel($olas_id, $olalevels_id)
     {
         global $DB;

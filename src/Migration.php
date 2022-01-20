@@ -38,7 +38,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  * Migration Class
  *
  * @since 0.80
-**/
+ **/
 class Migration
 {
     private $change    = [];
@@ -55,32 +55,32 @@ class Migration
       'post'   => []
     ];
 
-   /**
-    * List (name => value) of configuration options to add, if they're missing
-    * @var array
-    */
+    /**
+     * List (name => value) of configuration options to add, if they're missing
+     * @var array
+     */
     private $configs = [];
 
-   /**
-    * Configuration context
-    * @var string
-    */
+    /**
+     * Configuration context
+     * @var string
+     */
     private $context = 'core';
 
     const PRE_QUERY = 'pre';
     const POST_QUERY = 'post';
 
-   /**
-    * Output handler to use. If not set, output will be directly echoed on a format depending on
-    * execution context (Web VS CLI).
-    *
-    * @var OutputInterface|null
-    */
+    /**
+     * Output handler to use. If not set, output will be directly echoed on a format depending on
+     * execution context (Web VS CLI).
+     *
+     * @var OutputInterface|null
+     */
     protected $output_handler;
 
-   /**
-    * @param integer $ver Version number
-   **/
+    /**
+     * @param integer $ver Version number
+     **/
     public function __construct($ver)
     {
 
@@ -94,15 +94,15 @@ class Migration
         }
     }
 
-   /**
-    * Set version
-    *
-    * @since 0.84
-    *
-    * @param integer $ver Version number
-    *
-    * @return void
-   **/
+    /**
+     * Set version
+     *
+     * @since 0.84
+     *
+     * @param integer $ver Version number
+     *
+     * @return void
+     **/
     public function setVersion($ver)
     {
 
@@ -111,15 +111,15 @@ class Migration
     }
 
 
-   /**
-    * Add new message
-    *
-    * @since 0.84
-    *
-    * @param string $id Area ID
-    *
-    * @return void
-   **/
+    /**
+     * Add new message
+     *
+     * @since 0.84
+     *
+     * @param string $id Area ID
+     *
+     * @return void
+     **/
     public function addNewMessageArea($id)
     {
 
@@ -132,13 +132,13 @@ class Migration
     }
 
 
-   /**
-    * Flush previous displayed message in log file
-    *
-    * @since 0.84
-    *
-    * @return void
-   **/
+    /**
+     * Flush previous displayed message in log file
+     *
+     * @since 0.84
+     *
+     * @return void
+     **/
     public function flushLogDisplayMessage()
     {
 
@@ -150,13 +150,13 @@ class Migration
     }
 
 
-   /**
-    * Additional message in global message
-    *
-    * @param string $msg text  to display
-    *
-    * @return void
-   **/
+    /**
+     * Additional message in global message
+     *
+     * @param string $msg text  to display
+     *
+     * @return void
+     **/
     public function displayMessage($msg)
     {
 
@@ -172,16 +172,16 @@ class Migration
     }
 
 
-   /**
-    * Log message for this migration
-    *
-    * @since 0.84
-    *
-    * @param string  $message Message to display
-    * @param boolean $warning Is a warning
-    *
-    * @return void
-   **/
+    /**
+     * Log message for this migration
+     *
+     * @since 0.84
+     *
+     * @param string  $message Message to display
+     * @param boolean $warning Is a warning
+     *
+     * @return void
+     **/
     public function log($message, $warning)
     {
 
@@ -201,13 +201,13 @@ class Migration
     }
 
 
-   /**
-    * Display a title
-    *
-    * @param string $title Title to display
-    *
-    * @return void
-   **/
+    /**
+     * Display a title
+     *
+     * @param string $title Title to display
+     *
+     * @return void
+     **/
     public function displayTitle($title)
     {
         $this->flushLogDisplayMessage();
@@ -216,14 +216,14 @@ class Migration
     }
 
 
-   /**
-    * Display a Warning
-    *
-    * @param string  $msg Message to display
-    * @param boolean $red Displays with red class (false by default)
-    *
-    * @return void
-   **/
+    /**
+     * Display a Warning
+     *
+     * @param string  $msg Message to display
+     * @param boolean $red Displays with red class (false by default)
+     *
+     * @return void
+     **/
     public function displayWarning($msg, $red = false)
     {
         $this->outputMessage($msg, $red ? 'warning' : 'strong');
@@ -231,13 +231,13 @@ class Migration
     }
 
 
-   /**
-    * Display an error
-    *
-    * @param string  $msg Message to display
-    *
-    * @return void
-   **/
+    /**
+     * Display an error
+     *
+     * @param string  $msg Message to display
+     *
+     * @return void
+     **/
     public function displayError(string $message): void
     {
         $this->outputMessage($message, 'error');
@@ -245,16 +245,16 @@ class Migration
     }
 
 
-   /**
-    * Define field's format
-    *
-    * @param string  $type          can be bool, char, string, integer, date, datetime, text, longtext or autoincrement
-    * @param string  $default_value new field's default value,
-    *                               if a specific default value needs to be used
-    * @param boolean $nodefault     No default value (false by default)
-    *
-    * @return string
-   **/
+    /**
+     * Define field's format
+     *
+     * @param string  $type          can be bool, char, string, integer, date, datetime, text, longtext or autoincrement
+     * @param string  $default_value new field's default value,
+     *                               if a specific default value needs to be used
+     * @param boolean $nodefault     No default value (false by default)
+     *
+     * @return string
+     **/
     private function fieldFormat($type, $default_value, $nodefault = false)
     {
 
@@ -378,24 +378,24 @@ class Migration
     }
 
 
-   /**
-    * Add a new GLPI normalized field
-    *
-    * @param string $table   Table name
-    * @param string $field   Field name
-    * @param string $type    Field type, @see Migration::fieldFormat()
-    * @param array  $options Options:
-    *                         - update    : if not empty = value of $field (must be protected)
-    *                         - condition : if needed
-    *                         - value     : default_value new field's default value, if a specific default value needs to be used
-    *                         - nodefault : do not define default value (default false)
-    *                         - comment   : comment to be added during field creation
-    *                         - first     : add the new field at first column
-    *                         - after     : where adding the new field
-    *                         - null      : value could be NULL (default false)
-    *
-    * @return boolean
-   **/
+    /**
+     * Add a new GLPI normalized field
+     *
+     * @param string $table   Table name
+     * @param string $field   Field name
+     * @param string $type    Field type, @see Migration::fieldFormat()
+     * @param array  $options Options:
+     *                         - update    : if not empty = value of $field (must be protected)
+     *                         - condition : if needed
+     *                         - value     : default_value new field's default value, if a specific default value needs to be used
+     *                         - nodefault : do not define default value (default false)
+     *                         - comment   : comment to be added during field creation
+     *                         - first     : add the new field at first column
+     *                         - after     : where adding the new field
+     *                         - null      : value could be NULL (default false)
+     *
+     * @return boolean
+     **/
     public function addField($table, $field, $type, $options = [])
     {
         global $DB;
@@ -450,23 +450,23 @@ class Migration
     }
 
 
-   /**
-    * Modify field for migration
-    *
-    * @param string $table    Table name
-    * @param string $oldfield Old name of the field
-    * @param string $newfield New name of the field
-    * @param string $type     Field type, {@see Migration::fieldFormat()}
-    * @param array  $options  Options:
-    *                         - value     : new field's default value, if a specific default value needs to be used
-    *                         - first     : add the new field at first column
-    *                         - after     : where adding the new field
-    *                         - null      : value could be NULL (default false)
-    *                         - comment comment to be added during field creation
-    *                         - nodefault : do not define default value (default false)
-    *
-    * @return boolean
-   **/
+    /**
+     * Modify field for migration
+     *
+     * @param string $table    Table name
+     * @param string $oldfield Old name of the field
+     * @param string $newfield New name of the field
+     * @param string $type     Field type, {@see Migration::fieldFormat()}
+     * @param array  $options  Options:
+     *                         - value     : new field's default value, if a specific default value needs to be used
+     *                         - first     : add the new field at first column
+     *                         - after     : where adding the new field
+     *                         - null      : value could be NULL (default false)
+     *                         - comment comment to be added during field creation
+     *                         - nodefault : do not define default value (default false)
+     *
+     * @return boolean
+     **/
     public function changeField($table, $oldfield, $newfield, $type, $options = [])
     {
         global $DB;
@@ -521,14 +521,14 @@ class Migration
     }
 
 
-   /**
-    * Drop field for migration
-    *
-    * @param string $table Table name
-    * @param string $field Field name
-    *
-    * @return void
-   **/
+    /**
+     * Drop field for migration
+     *
+     * @param string $table Table name
+     * @param string $field Field name
+     *
+     * @return void
+     **/
     public function dropField($table, $field)
     {
         global $DB;
@@ -539,13 +539,13 @@ class Migration
     }
 
 
-   /**
-    * Drop immediatly a table if it exists
-    *
-    * @param string $table Table name
-    *
-    * @return void
-   **/
+    /**
+     * Drop immediatly a table if it exists
+     *
+     * @param string $table Table name
+     *
+     * @return void
+     **/
     public function dropTable($table)
     {
         global $DB;
@@ -556,17 +556,17 @@ class Migration
     }
 
 
-   /**
-    * Add index for migration
-    *
-    * @param string       $table     Table name
-    * @param string|array $fields    Field(s) name(s)
-    * @param string       $indexname Index name, $fields if empty, defaults to empty
-    * @param string       $type      Index type (index or unique - default 'INDEX')
-    * @param integer      $len       Field length (default 0)
-    *
-    * @return void
-   **/
+    /**
+     * Add index for migration
+     *
+     * @param string       $table     Table name
+     * @param string|array $fields    Field(s) name(s)
+     * @param string       $indexname Index name, $fields if empty, defaults to empty
+     * @param string       $type      Index type (index or unique - default 'INDEX')
+     * @param integer      $len       Field length (default 0)
+     *
+     * @return void
+     **/
     public function addKey($table, $fields, $indexname = '', $type = 'INDEX', $len = 0)
     {
 
@@ -603,14 +603,14 @@ class Migration
     }
 
 
-   /**
-    * Drop index for migration
-    *
-    * @param string $table     Table name
-    * @param string $indexname Index name
-    *
-    * @return void
-   **/
+    /**
+     * Drop index for migration
+     *
+     * @param string $table     Table name
+     * @param string $indexname Index name
+     *
+     * @return void
+     **/
     public function dropKey($table, $indexname)
     {
 
@@ -620,14 +620,14 @@ class Migration
     }
 
 
-   /**
-    * Drop foreign key for migration
-    *
-    * @param string $table
-    * @param string $keyname
-    *
-    * @return void
-   **/
+    /**
+     * Drop foreign key for migration
+     *
+     * @param string $table
+     * @param string $keyname
+     *
+     * @return void
+     **/
     public function dropForeignKeyContraint($table, $keyname)
     {
 
@@ -637,14 +637,14 @@ class Migration
     }
 
 
-   /**
-    * Rename table for migration
-    *
-    * @param string $oldtable Old table name
-    * @param string $newtable new table name
-    *
-    * @return void
-   **/
+    /**
+     * Rename table for migration
+     *
+     * @param string $oldtable Old table name
+     * @param string $newtable new table name
+     *
+     * @return void
+     **/
     public function renameTable($oldtable, $newtable)
     {
         global $DB;
@@ -697,17 +697,17 @@ class Migration
     }
 
 
-   /**
-    * Copy table for migration
-    *
-    * @since 0.84
-    *
-    * @param string $oldtable The name of the table already inside the database
-    * @param string $newtable The copy of the old table
-    * @param bool   $insert   Copy content ? True by default
-    *
-    * @return void
-   **/
+    /**
+     * Copy table for migration
+     *
+     * @since 0.84
+     *
+     * @param string $oldtable The name of the table already inside the database
+     * @param string $newtable The copy of the old table
+     * @param bool   $insert   Copy content ? True by default
+     *
+     * @return void
+     **/
     public function copyTable($oldtable, $newtable, bool $insert = true)
     {
         global $DB;
@@ -732,16 +732,16 @@ class Migration
     }
 
 
-   /**
-    * Insert an entry inside a table
-    *
-    * @since 0.84
-    *
-    * @param string $table The table to alter
-    * @param array  $input The elements to add inside the table
-    *
-    * @return integer id of the last item inserted by mysql
-   **/
+    /**
+     * Insert an entry inside a table
+     *
+     * @since 0.84
+     *
+     * @param string $table The table to alter
+     * @param array  $input The elements to add inside the table
+     *
+     * @return integer id of the last item inserted by mysql
+     **/
     public function insertInTable($table, array $input)
     {
         global $DB;
@@ -764,13 +764,13 @@ class Migration
     }
 
 
-   /**
-    * Execute migration for only one table
-    *
-    * @param string $table Table name
-    *
-    * @return void
-   **/
+    /**
+     * Execute migration for only one table
+     *
+     * @param string $table Table name
+     *
+     * @return void
+     **/
     public function migrationOneTable($table)
     {
         global $DB;
@@ -802,11 +802,11 @@ class Migration
     }
 
 
-   /**
-    * Execute global migration
-    *
-    * @return void
-   **/
+    /**
+     * Execute global migration
+     *
+     * @return void
+     **/
     public function executeMigration()
     {
         global $DB;
@@ -838,17 +838,17 @@ class Migration
     }
 
 
-   /**
-    * Register a new rule
-    *
-    * @since 0.84
-    *
-    * @param array $rule     Array of fields of glpi_rules
-    * @param array $criteria Array of Array of fields of glpi_rulecriterias
-    * @param array $actions  Array of Array of fields of glpi_ruleactions
-    *
-    * @return integer new rule id
-   **/
+    /**
+     * Register a new rule
+     *
+     * @since 0.84
+     *
+     * @param array $rule     Array of fields of glpi_rules
+     * @param array $criteria Array of Array of fields of glpi_rulecriterias
+     * @param array $actions  Array of Array of fields of glpi_ruleactions
+     *
+     * @return integer new rule id
+     **/
     public function createRule(array $rule, array $criteria, array $actions)
     {
         global $DB;
@@ -900,16 +900,16 @@ class Migration
     }
 
 
-   /**
-    * Update display preferences
-    *
-    * @since 0.85
-    *
-    * @param array $toadd items to add : itemtype => array of values
-    * @param array $todel items to del : itemtype => array of values
-    *
-    * @return void
-   **/
+    /**
+     * Update display preferences
+     *
+     * @since 0.85
+     *
+     * @param array $toadd items to add : itemtype => array of values
+     * @param array $todel items to del : itemtype => array of values
+     *
+     * @return void
+     **/
     public function updateDisplayPrefs($toadd = [], $todel = [])
     {
         global $DB;
@@ -989,15 +989,15 @@ class Migration
         }
     }
 
-   /**
-    * Add a migration SQL query
-    *
-    * @param string $type    Either self::PRE_QUERY or self::POST_QUERY
-    * @param string $query   Query to execute
-    * @param string $message Mesage to display on error, defaults to null
-    *
-    * @return Migration
-    */
+    /**
+     * Add a migration SQL query
+     *
+     * @param string $type    Either self::PRE_QUERY or self::POST_QUERY
+     * @param string $query   Query to execute
+     * @param string $message Mesage to display on error, defaults to null
+     *
+     * @return Migration
+     */
     private function addQuery($type, $query, $message = null)
     {
         $this->queries[$type][] =  [
@@ -1007,39 +1007,39 @@ class Migration
         return $this;
     }
 
-   /**
-    * Add a pre migration SQL query
-    *
-    * @param string $query   Query to execute
-    * @param string $message Mesage to display on error, defaults to null
-    *
-    * @return Migration
-    */
+    /**
+     * Add a pre migration SQL query
+     *
+     * @param string $query   Query to execute
+     * @param string $message Mesage to display on error, defaults to null
+     *
+     * @return Migration
+     */
     public function addPreQuery($query, $message = null)
     {
         return $this->addQuery(self::PRE_QUERY, $query, $message);
     }
 
-   /**
-    * Add a post migration SQL query
-    *
-    * @param string $query   Query to execute
-    * @param string $message Mesage to display on error, defaults to null
-    *
-    * @return Migration
-    */
+    /**
+     * Add a post migration SQL query
+     *
+     * @param string $query   Query to execute
+     * @param string $message Mesage to display on error, defaults to null
+     *
+     * @return Migration
+     */
     public function addPostQuery($query, $message = null)
     {
         return $this->addQuery(self::POST_QUERY, $query, $message);
     }
 
-   /**
-    * Backup existing tables
-    *
-    * @param array $tables Existing tables to backup
-    *
-    * @return boolean
-    */
+    /**
+     * Backup existing tables
+     *
+     * @param array $tables Existing tables to backup
+     *
+     * @return boolean
+     */
     public function backupTables($tables)
     {
         global $DB;
@@ -1064,16 +1064,16 @@ class Migration
         return $backup_tables;
     }
 
-   /**
-    * Add configuration value(s) to current context; @see Migration::addConfig()
-    *
-    * @since 9.2
-    *
-    * @param string|array $values  Value(s) to add
-    * @param string       $context Context to add on (optional)
-    *
-    * @return Migration
-    */
+    /**
+     * Add configuration value(s) to current context; @see Migration::addConfig()
+     *
+     * @since 9.2
+     *
+     * @param string|array $values  Value(s) to add
+     * @param string       $context Context to add on (optional)
+     *
+     * @return Migration
+     */
     public function addConfig($values, $context = null)
     {
         $context = $context ?? $this->context;
@@ -1084,13 +1084,13 @@ class Migration
         return $this;
     }
 
-   /**
-    * Store configuration values that does not exists
-    *
-    * @since 9.2
-    *
-    * @return boolean
-    */
+    /**
+     * Store configuration values that does not exists
+     *
+     * @since 9.2
+     *
+     * @return boolean
+     */
     private function storeConfig()
     {
         global $DB;
@@ -1121,19 +1121,19 @@ class Migration
     }
 
 
-   /**
-    * Add new right to profiles that match rights requirements
-    *    Default is to give rights to profiles with READ and UPDATE rights on config
-    *
-    * @param string  $name   Right name
-    * @param integer $rights Right to set (defaults to ALLSTANDARDRIGHT)
-    * @param array   $requiredrights Array of right name => value
-    *                   A profile must have these rights in order to get the new right.
-    *                   This array can be empty to add the right to every profile.
-    *                   Default is ['config' => READ | UPDATE].
-    *
-    * @return void
-    */
+    /**
+     * Add new right to profiles that match rights requirements
+     *    Default is to give rights to profiles with READ and UPDATE rights on config
+     *
+     * @param string  $name   Right name
+     * @param integer $rights Right to set (defaults to ALLSTANDARDRIGHT)
+     * @param array   $requiredrights Array of right name => value
+     *                   A profile must have these rights in order to get the new right.
+     *                   This array can be empty to add the right to every profile.
+     *                   Default is ['config' => READ | UPDATE].
+     *
+     * @return void
+     */
     public function addRight($name, $rights = ALLSTANDARDRIGHT, $requiredrights = ['config' => READ | UPDATE])
     {
         global $DB;
@@ -1215,15 +1215,15 @@ class Migration
         $this->output_handler = $output_handler;
     }
 
-   /**
-    * Output a message.
-    *
-    * @param string $msg      Message to output.
-    * @param string $style    Style to use, value can be 'title', 'warning', 'strong' or null.
-    * @param string $area_id  Display area to use.
-    *
-    * @return void
-    */
+    /**
+     * Output a message.
+     *
+     * @param string $msg      Message to output.
+     * @param string $style    Style to use, value can be 'title', 'warning', 'strong' or null.
+     * @param string $area_id  Display area to use.
+     *
+     * @return void
+     */
     protected function outputMessage($msg, $style = null, $area_id = null)
     {
         if (isCommandLine()) {
@@ -1233,14 +1233,14 @@ class Migration
         }
     }
 
-   /**
-    * Output a message in console output.
-    *
-    * @param string $msg    Message to output.
-    * @param string $style  Style to use, see self::outputMessage() for possible values.
-    *
-    * @return void
-    */
+    /**
+     * Output a message in console output.
+     *
+     * @param string $msg    Message to output.
+     * @param string $style  Style to use, see self::outputMessage() for possible values.
+     *
+     * @return void
+     */
     private function outputMessageToCli($msg, $style = null)
     {
 
@@ -1284,15 +1284,15 @@ class Migration
         }
     }
 
-   /**
-    * Output a message in html page.
-    *
-    * @param string $msg      Message to output.
-    * @param string $style    Style to use, see self::outputMessage() for possible values.
-    * @param string $area_id  Display area to use.
-    *
-    * @return void
-    */
+    /**
+     * Output a message in html page.
+     *
+     * @param string $msg      Message to output.
+     * @param string $style    Style to use, see self::outputMessage() for possible values.
+     * @param string $area_id  Display area to use.
+     *
+     * @return void
+     */
     private function outputMessageToHtml($msg, $style = null, $area_id = null)
     {
 
@@ -1324,22 +1324,22 @@ class Migration
         }
     }
 
-   /**
-    * Rename an itemtype an update database structure and data to use the new itemtype name.
-    * Changes done by this method:
-    *  - renaming of itemtype table;
-    *  - renaming of foreign key fields corresponding to this itemtype;
-    *  - update of "itemtype" column values in all tables.
-    *
-    * @param string  $old_itemtype
-    * @param string  $new_itemtype
-    * @param boolean $update_structure
-    *    Whether to update or not DB structure (itemtype table name and foreign key fields)
-    *
-    * @return void
-    *
-    * @since 9.5.0
-    */
+    /**
+     * Rename an itemtype an update database structure and data to use the new itemtype name.
+     * Changes done by this method:
+     *  - renaming of itemtype table;
+     *  - renaming of foreign key fields corresponding to this itemtype;
+     *  - update of "itemtype" column values in all tables.
+     *
+     * @param string  $old_itemtype
+     * @param string  $new_itemtype
+     * @param boolean $update_structure
+     *    Whether to update or not DB structure (itemtype table name and foreign key fields)
+     *
+     * @return void
+     *
+     * @since 9.5.0
+     */
     public function renameItemtype($old_itemtype, $new_itemtype, $update_structure = true)
     {
         global $DB;
@@ -1470,18 +1470,18 @@ class Migration
         }
     }
 
-   /**
-    * Migrate search option values in various locations in the database.
-    * This does not change the actual search option ID. This must still be changed manually in the itemtype's class file.
-    * The changes made by this function will only be applied when the migration is finalized through {@link Migration::executeMigration()}.
-    *
-    * @param string $itemtype The itemtype
-    * @param int    $old_search_opt The old search option ID
-    * @param int    $new_search_opt The new search option ID
-    *
-    * @return void
-    * @since 9.5.6
-    */
+    /**
+     * Migrate search option values in various locations in the database.
+     * This does not change the actual search option ID. This must still be changed manually in the itemtype's class file.
+     * The changes made by this function will only be applied when the migration is finalized through {@link Migration::executeMigration()}.
+     *
+     * @param string $itemtype The itemtype
+     * @param int    $old_search_opt The old search option ID
+     * @param int    $new_search_opt The new search option ID
+     *
+     * @return void
+     * @since 9.5.6
+     */
     public function changeSearchOption(string $itemtype, int $old_search_opt, int $new_search_opt)
     {
         if (!isset($this->search_opts[$itemtype])) {
@@ -1493,12 +1493,12 @@ class Migration
         ];
     }
 
-   /**
-    * Finalize search option migrations
-    *
-    * @return void
-    * @since 9.5.6
-    */
+    /**
+     * Finalize search option migrations
+     *
+     * @return void
+     * @since 9.5.6
+     */
     private function migrateSearchOptions()
     {
         global $DB;

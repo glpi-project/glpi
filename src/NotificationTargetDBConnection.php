@@ -34,11 +34,11 @@
 // Class NotificationTarget
 class NotificationTargetDBConnection extends NotificationTarget
 {
-   /**
-    * Overwrite the function in NotificationTarget because there's only one target to be notified
-    *
-    * @see NotificationTarget::addNotificationTargets()
-   **/
+    /**
+     * Overwrite the function in NotificationTarget because there's only one target to be notified
+     *
+     * @see NotificationTarget::addNotificationTargets()
+     **/
     public function addNotificationTargets($entity)
     {
 

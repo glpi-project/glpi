@@ -68,11 +68,11 @@ class DatabaseInstance extends InventoryAsset
         return $this->data;
     }
 
-   /**
-    * Get existing entries from database
-    *
-    * @return array
-    */
+    /**
+     * Get existing entries from database
+     *
+     * @return array
+     */
     protected function getExisting(): array
     {
         global $DB;

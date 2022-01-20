@@ -86,7 +86,7 @@ $valeurgraphtot      = [];
  * @param string $itemtype  item type
  * @param string $begin     begin date
  * @param string $end       end date
-**/
+ **/
 function display_infocoms_report($itemtype, $begin, $end)
 {
     global $DB, $valeurtot, $valeurnettetot, $valeurnettegraphtot, $valeurgraphtot, $CFG_GLPI, $stat, $chart_opts;

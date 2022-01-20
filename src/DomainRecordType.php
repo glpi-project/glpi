@@ -277,13 +277,13 @@ class DomainRecordType extends CommonDropdown
         }
     }
 
-   /**
-    * Validate fields descriptor.
-    *
-    * @param string $fields_str  Value of "fields" field (should be a JSON encoded string).
-    *
-    * @return bool
-    */
+    /**
+     * Validate fields descriptor.
+     *
+     * @param string $fields_str  Value of "fields" field (should be a JSON encoded string).
+     *
+     * @return bool
+     */
     private function validateFieldsDescriptor($fields_str): bool
     {
         if (!is_string($fields_str)) {
@@ -319,15 +319,15 @@ class DomainRecordType extends CommonDropdown
         return true;
     }
 
-   /**
-    * Decode JSON encoded fields.
-    * Handle decoding of sanitized value.
-    * Returns null if unable to decode.
-    *
-    * @param string $json_encoded_fields
-    *
-    * @return array|null
-    */
+    /**
+     * Decode JSON encoded fields.
+     * Handle decoding of sanitized value.
+     * Returns null if unable to decode.
+     *
+     * @param string $json_encoded_fields
+     *
+     * @return array|null
+     */
     public static function decodeFields(string $json_encoded_fields): ?array
     {
         $fields = json_decode($json_encoded_fields, true);
@@ -359,12 +359,12 @@ class DomainRecordType extends CommonDropdown
         );
     }
 
-   /**
-    * Display ajax form used to fill record data.
-    *
-    * @param string $str_input_id    Id of input used to get/store record data as string.
-    * @param string $obj_input_id    Id of input used to get/store record data as object.
-    */
+    /**
+     * Display ajax form used to fill record data.
+     *
+     * @param string $str_input_id    Id of input used to get/store record data as string.
+     * @param string $obj_input_id    Id of input used to get/store record data as object.
+     */
     public function showDataAjaxForm(string $str_input_id, string $obj_input_id)
     {
         $rand = mt_rand();

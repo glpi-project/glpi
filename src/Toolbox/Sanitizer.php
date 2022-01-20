@@ -46,16 +46,16 @@ class Sanitizer
       '>'  => '&gt;',
     ];
 
-   /**
-    * Sanitize a value. Resulting value will have its HTML special chars converted into entities
-    * and would be printable in a HTML document without having to be escaped.
-    * Also, DB special chars can be escaped to prevent SQL injections.
-    *
-    * @param mixed $value
-    * @param bool  $db_escape
-    *
-    * @return mixed
-    */
+    /**
+     * Sanitize a value. Resulting value will have its HTML special chars converted into entities
+     * and would be printable in a HTML document without having to be escaped.
+     * Also, DB special chars can be escaped to prevent SQL injections.
+     *
+     * @param mixed $value
+     * @param bool  $db_escape
+     *
+     * @return mixed
+     */
     public static function sanitize($value, bool $db_escape = true)
     {
         if (is_array($value)) {
@@ -83,13 +83,13 @@ class Sanitizer
         return self::encodeHtmlSpecialChars($value);
     }
 
-   /**
-    * Unsanitize a value. Reverts self::sanitize() transformation.
-    *
-    * @param mixed $value
-    *
-    * @return mixed
-    */
+    /**
+     * Unsanitize a value. Reverts self::sanitize() transformation.
+     *
+     * @param mixed $value
+     *
+     * @return mixed
+     */
     public static function unsanitize($value)
     {
         if (is_array($value)) {
@@ -115,13 +115,13 @@ class Sanitizer
         return $value;
     }
 
-   /**
-    * Check if value is sanitized.
-    *
-    * @param string $value
-    *
-    * @return bool
-    */
+    /**
+     * Check if value is sanitized.
+     *
+     * @param string $value
+     *
+     * @return bool
+     */
     public static function isHtmlEncoded(string $value): bool
     {
        // A value is Html Encoded if it does not contains
@@ -140,14 +140,14 @@ class Sanitizer
          && preg_match($sanitized_chars_pattern, $value) === 1;
     }
 
-   /**
-    * Check if value is escaped for DB usage.
-    * A value is considered as escaped if it special char (NULL, \n, \r, \, ', " and EOF) that has been escaped.
-    *
-    * @param string $value
-    *
-    * @return string
-    */
+    /**
+     * Check if value is escaped for DB usage.
+     * A value is considered as escaped if it special char (NULL, \n, \r, \, ', " and EOF) that has been escaped.
+     *
+     * @param string $value
+     *
+     * @return string
+     */
     public static function isDbEscaped(string $value): bool
     {
         $value_length = strlen($value);
@@ -220,39 +220,39 @@ class Sanitizer
         return $has_special_chars;
     }
 
-   /**
-    * Return verbatim value for an itemtype field.
-    * Returned value will be unsanitized if it has been transformed by GLPI sanitizing process.
-    *
-    * @param string $value
-    *
-    * @return string
-    */
+    /**
+     * Return verbatim value for an itemtype field.
+     * Returned value will be unsanitized if it has been transformed by GLPI sanitizing process.
+     *
+     * @param string $value
+     *
+     * @return string
+     */
     public static function getVerbatimValue(string $value): string
     {
         return Sanitizer::unsanitize($value);
     }
 
-   /**
-    * Encode HTML special chars, to prevent XSS when value is printed without using any filter.
-    *
-    * @param string $value
-    *
-    * @return string
-    */
+    /**
+     * Encode HTML special chars, to prevent XSS when value is printed without using any filter.
+     *
+     * @param string $value
+     *
+     * @return string
+     */
     private static function encodeHtmlSpecialChars(string $value): string
     {
         $mapping = self::CHARS_MAPPING;
         return str_replace(array_keys($mapping), array_values($mapping), $value);
     }
 
-   /**
-    * Decode HTML special chars.
-    *
-    * @param string $value
-    *
-    * @return string
-    */
+    /**
+     * Decode HTML special chars.
+     *
+     * @param string $value
+     *
+     * @return string
+     */
     private static function decodeHtmlSpecialChars(string $value): string
     {
         $mapping = null;
@@ -271,27 +271,27 @@ class Sanitizer
         return str_replace(array_values($mapping), array_keys($mapping), $value);
     }
 
-   /**
-    * Escape special chars to protect DB queries.
-    *
-    * @param string $value
-    *
-    * @return string
-    */
+    /**
+     * Escape special chars to protect DB queries.
+     *
+     * @param string $value
+     *
+     * @return string
+     */
     private static function dbEscape(string $value): string
     {
         global $DB;
         return $DB->escape($value);
     }
 
-   /**
-    * Revert `mysqli::real_escape_string()` transformation.
-    * Inspired by https://stackoverflow.com/a/38769977
-    *
-    * @param string $value
-    *
-    * @return string
-    */
+    /**
+     * Revert `mysqli::real_escape_string()` transformation.
+     * Inspired by https://stackoverflow.com/a/38769977
+     *
+     * @param string $value
+     *
+     * @return string
+     */
     private static function dbUnescape(string $value): string
     {
        // stripslashes cannot be used here as it would produce "r" and "n" instead of "\r" and \n".

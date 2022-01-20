@@ -38,7 +38,7 @@
 
 /**
  * SLM Class
-**/
+ **/
 class SLM extends CommonDBTM
 {
    // From CommonDBTM
@@ -56,11 +56,11 @@ class SLM extends CommonDBTM
         return _n('Service level', 'Service levels', $nb);
     }
 
-   /**
-    * Force calendar of the SLM if value -1: calendar of the entity
-    *
-    * @param integer $calendars_id calendars_id of the ticket
-   **/
+    /**
+     * Force calendar of the SLM if value -1: calendar of the entity
+     *
+     * @param integer $calendars_id calendars_id of the ticket
+     **/
     public function setTicketCalendar($calendars_id)
     {
 
@@ -93,16 +93,16 @@ class SLM extends CommonDBTM
         );
     }
 
-   /**
-    * Print the slm form
-    *
-    * @param integer $ID ID of the item
-    * @param array   $options of possible options:
-    *     - target filename : where to go when done.
-    *     - withtemplate boolean : template or basic item
-    *
-    * @return boolean item found
-   **/
+    /**
+     * Print the slm form
+     *
+     * @param integer $ID ID of the item
+     * @param array   $options of possible options:
+     *     - target filename : where to go when done.
+     *     - withtemplate boolean : template or basic item
+     *
+     * @return boolean item found
+     **/
     public function showForm($ID, array $options = [])
     {
 

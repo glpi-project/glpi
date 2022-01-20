@@ -32,14 +32,14 @@
  */
 
 /** @file
-* @brief
-*/
+ * @brief
+ */
 
 /**
  * Update from 9.3.1 to 9.3.2
  *
  * @return bool for success (will die for most error)
-**/
+ **/
 function update931to932()
 {
     global $DB, $migration;
@@ -52,7 +52,7 @@ function update931to932()
     $migration->displayTitle(sprintf(__('Update to %s'), '9.3.2'));
     $migration->setVersion('9.3.2');
 
-   /** Clean rack/enclosure items corrupted relations */
+    /** Clean rack/enclosure items corrupted relations */
     $corrupted_criteria = [
       'OR' => [
          'itemtype' => 0,
@@ -61,7 +61,7 @@ function update931to932()
     ];
     $DB->delete(Item_Rack::getTable(), $corrupted_criteria);
     $DB->delete(Item_Enclosure::getTable(), $corrupted_criteria);
-   /** /Clean rack/enclosure items corrupted relations */
+    /** /Clean rack/enclosure items corrupted relations */
 
    // limit state visibility for enclosures and pdus
     $migration->addField('glpi_states', 'is_visible_enclosure', 'bool', [

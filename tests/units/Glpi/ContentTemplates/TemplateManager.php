@@ -110,9 +110,9 @@ class TemplateManager extends GLPITestCase
         ];
     }
 
-   /**
-    * @dataProvider testTemplatesProvider
-    */
+    /**
+     * @dataProvider testTemplatesProvider
+     */
     public function testRender(
         string $content,
         array $params,
@@ -137,9 +137,9 @@ class TemplateManager extends GLPITestCase
         $this->string($html)->isEqualTo($expected);
     }
 
-   /**
-    * @dataProvider testTemplatesProvider
-    */
+    /**
+     * @dataProvider testTemplatesProvider
+     */
     public function testValidate(
         string $content,
         array $params,

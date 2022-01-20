@@ -35,7 +35,7 @@ use Glpi\Application\View\TemplateRenderer;
 
 /**
  * Rack Class
-**/
+ **/
 class Rack extends CommonDBTM
 {
     use Glpi\Features\DCBreadcrumb;
@@ -81,16 +81,16 @@ class Rack extends CommonDBTM
     }
 
 
-   /**
-    * Print the rack form
-    *
-    * @param $ID integer ID of the item
-    * @param $options array
-    *     - target filename : where to go when done.
-    *     - withtemplate boolean : template or basic item
-    *
-    * @return boolean item found
-   **/
+    /**
+     * Print the rack form
+     *
+     * @param $ID integer ID of the item
+     * @param $options array
+     *     - target filename : where to go when done.
+     *     - withtemplate boolean : template or basic item
+     *
+     * @return boolean item found
+     **/
     public function showForm($ID, array $options = [])
     {
         $this->initForm($ID, $options);
@@ -286,13 +286,13 @@ class Rack extends CommonDBTM
         }
     }
 
-   /**
-    * Print room's racks
-    *
-    * @param DCRoom $room DCRoom object
-    *
-    * @return void
-   **/
+    /**
+     * Print room's racks
+     *
+     * @param DCRoom $room DCRoom object
+     *
+     * @return void
+     **/
     public static function showForRoom(DCRoom $room)
     {
         global $DB, $CFG_GLPI;
@@ -670,13 +670,13 @@ JAVASCRIPT;
         $this->fields['bgcolor'] = '#FEC95C';
     }
 
-   /**
-    * Prepares input (for update and add)
-    *
-    * @param array $input Input data
-    *
-    * @return array
-    */
+    /**
+     * Prepares input (for update and add)
+     *
+     * @param array $input Input data
+     *
+     * @return array
+     */
     private function prepareInput($input)
     {
 
@@ -720,13 +720,13 @@ JAVASCRIPT;
         return $input;
     }
 
-   /**
-    * Get already filled places
-    *
-    * @param string $current Current position to exclude; defaults to null
-    *
-    * @return array [x => [left => [depth, depth, depth, depth]], [right => [depth, depth, depth, depth]]]
-    */
+    /**
+     * Get already filled places
+     *
+     * @param string $current Current position to exclude; defaults to null
+     *
+     * @return array [x => [left => [depth, depth, depth, depth]], [right => [depth, depth, depth, depth]]]
+     */
     public function getFilled($itemtype = null, $items_id = null)
     {
         global $DB;
@@ -828,14 +828,14 @@ JAVASCRIPT;
         );
     }
 
-   /**
-    * Get cell content
-    *
-    * @param Rack  $rack Rack instance
-    * @param mixed $cell Rack cell (array or false)
-    *
-    * @return string
-    */
+    /**
+     * Get cell content
+     *
+     * @param Rack  $rack Rack instance
+     * @param mixed $cell Rack cell (array or false)
+     *
+     * @return string
+     */
     private static function getCell(Rack $rack, $cell)
     {
         $bgcolor = $rack->getField('bgcolor');

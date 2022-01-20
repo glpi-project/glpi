@@ -59,26 +59,26 @@ class PhpExtension extends AbstractExtension
         ];
     }
 
-   /**
-    * Get PHP configuration value.
-    *
-    * @param string $name
-    *
-    * @return mixed
-    */
+    /**
+     * Get PHP configuration value.
+     *
+     * @param string $name
+     *
+     * @return mixed
+     */
     public function phpConfig(string $name)
     {
         return ini_get($name);
     }
 
-   /**
-    * Call function of static method.
-    *
-    * @param string $callable
-    * @param array $parameters
-    *
-    * @return mixed
-    */
+    /**
+     * Call function of static method.
+     *
+     * @param string $callable
+     * @param array $parameters
+     *
+     * @return mixed
+     */
     public function call(string $callable, array $parameters = [])
     {
         if (is_callable($callable)) {
@@ -87,27 +87,27 @@ class PhpExtension extends AbstractExtension
         return null;
     }
 
-   /**
-    * Checks if a given value is an instance of given class name.
-    *
-    * @param mixed  $value
-    * @param string $classname
-    *
-    * @return bool
-    */
+    /**
+     * Checks if a given value is an instance of given class name.
+     *
+     * @param mixed  $value
+     * @param string $classname
+     *
+     * @return bool
+     */
     public function isInstanceof($value, $classname): bool
     {
         return is_object($value) && $value instanceof $classname;
     }
 
-   /**
-    * Checks if a given value is an instance of class using given trait name.
-    *
-    * @param mixed  $value
-    * @param string $trait
-    *
-    * @return bool
-    */
+    /**
+     * Checks if a given value is an instance of class using given trait name.
+     *
+     * @param mixed  $value
+     * @param string $trait
+     *
+     * @return bool
+     */
     public function isUsingTrait($value, $trait): bool
     {
         return is_object($value) && Toolbox::hasTrait($value, $trait);

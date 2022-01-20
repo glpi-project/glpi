@@ -39,11 +39,11 @@ use DbTestCase;
 
 class Profile extends DbTestCase
 {
-   /**
-    * @see self::testHaveUserRight()
-    *
-    * @return array
-    */
+    /**
+     * @see self::testHaveUserRight()
+     *
+     * @return array
+     */
     protected function haveUserRightProvider()
     {
 
@@ -93,14 +93,14 @@ class Profile extends DbTestCase
         ];
     }
 
-   /**
-    * Tests user rights checking.
-    *
-    * @param array   $user     Array containing 'login' and 'password' fields of tested user.
-    * @param array   $rightset Array of arrays containing 'name', 'value' and 'expected' result of a right.
-    *
-    * @dataProvider haveUserRightProvider
-    */
+    /**
+     * Tests user rights checking.
+     *
+     * @param array   $user     Array containing 'login' and 'password' fields of tested user.
+     * @param array   $rightset Array of arrays containing 'name', 'value' and 'expected' result of a right.
+     *
+     * @dataProvider haveUserRightProvider
+     */
     public function testHaveUserRight(array $user, array $rightset)
     {
 
@@ -121,9 +121,9 @@ class Profile extends DbTestCase
         }
     }
 
-   /**
-    * We try to login with tech profile and check if we can get a super-admin profile
-    */
+    /**
+     * We try to login with tech profile and check if we can get a super-admin profile
+     */
     public function testGetUnderActiveProfileRestrictCriteria()
     {
         global $DB;
@@ -142,10 +142,10 @@ class Profile extends DbTestCase
         }
     }
 
-   /**
-    * Check we keep only necessary rights (at least for ticket)
-    * when passing a profile from standard to self-service interface
-    */
+    /**
+     * Check we keep only necessary rights (at least for ticket)
+     * when passing a profile from standard to self-service interface
+     */
     public function testSwitchingInterface()
     {
         $ticket = new \Ticket();

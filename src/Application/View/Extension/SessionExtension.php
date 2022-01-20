@@ -62,21 +62,21 @@ class SessionExtension extends AbstractExtension
         ];
     }
 
-   /**
-    * Returns current interface.
-    *
-    * @return User|null
-    */
+    /**
+     * Returns current interface.
+     *
+     * @return User|null
+     */
     public function getCurrentInterface(): ?string
     {
         return $_SESSION['glpiactiveprofile']['interface'] ?? null;
     }
 
-   /**
-    * Returns current connected user.
-    *
-    * @return User|null
-    */
+    /**
+     * Returns current connected user.
+     *
+     * @return User|null
+     */
     public function getCurrentUser(): ?User
     {
         if (($user = User::getById(Session::getLoginUserID())) !== false) {
@@ -85,14 +85,14 @@ class SessionExtension extends AbstractExtension
         return null;
     }
 
-   /**
-    * Check global right on itemtype.
-    *
-    * @param string   $itemtype
-    * @param int      $right
-    *
-    * @return bool
-    */
+    /**
+     * Check global right on itemtype.
+     *
+     * @param string   $itemtype
+     * @param int      $right
+     *
+     * @return bool
+     */
     public function hasItemtypeRight(string $itemtype, int $right): bool
     {
         if (!is_a($itemtype, CommonGLPI::class, true)) {
@@ -103,14 +103,14 @@ class SessionExtension extends AbstractExtension
         return $item->canGlobal($right);
     }
 
-   /**
-    * Get user preference.
-    *
-    * @param string $name
-    * @param bool   $decode
-    *
-    * @return null|mixed
-    */
+    /**
+     * Get user preference.
+     *
+     * @param string $name
+     * @param bool   $decode
+     *
+     * @return null|mixed
+     */
     public function userPref(string $name, bool $decode = false)
     {
         global $CFG_GLPI;
@@ -123,37 +123,37 @@ class SessionExtension extends AbstractExtension
         return $data;
     }
 
-   /**
-    * Get session value.
-    *
-    * @param string $name
-    *
-    * @return mixed
-    */
+    /**
+     * Get session value.
+     *
+     * @param string $name
+     *
+     * @return mixed
+     */
     public function session(string $name)
     {
 
         return $_SESSION[$name] ?? null;
     }
 
-   /**
-    * Check if a current user have access has access to given user entities.
-    *
-    * @param int $users_id
-    *
-    * @return bool
-    */
+    /**
+     * Check if a current user have access has access to given user entities.
+     *
+     * @param int $users_id
+     *
+     * @return bool
+     */
     public function hasAccessToUserEntities(int $users_id): bool
     {
         return Session::haveAccessToOneOfEntities(Profile_User::getUserEntities($users_id, false));
     }
 
 
-   /**
-    * Return MESSAGE_AFTER_REDIRECT session var and clear it.
-    *
-    * @return string[]
-    */
+    /**
+     * Return MESSAGE_AFTER_REDIRECT session var and clear it.
+     *
+     * @return string[]
+     */
     public function pullMessages(): array
     {
         $messages = $_SESSION['MESSAGE_AFTER_REDIRECT'] ?? [];

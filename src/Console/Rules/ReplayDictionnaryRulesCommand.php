@@ -73,7 +73,7 @@ class ReplayDictionnaryRulesCommand extends AbstractCommand
 
         if (empty($input->getOption('dictionnary'))) {
            // Ask for dictionnary argument is empty
-           /** @var \Symfony\Component\Console\Helper\QuestionHelper $question_helper */
+            /** @var \Symfony\Component\Console\Helper\QuestionHelper $question_helper */
             $question_helper = $this->getHelper('question');
             $question = new ChoiceQuestion(
                 __('Which dictionnary do you want to replay?'),
@@ -116,11 +116,11 @@ class ReplayDictionnaryRulesCommand extends AbstractCommand
         return 0; // Success
     }
 
-   /**
-    * Return list of available disctionnary types.
-    *
-    * @return string[]
-    */
+    /**
+     * Return list of available disctionnary types.
+     *
+     * @return string[]
+     */
     private function getDictionnaryTypes(): array
     {
         global $CFG_GLPI;

@@ -37,7 +37,7 @@
  * Predefined fields for change template class
  *
  * @since 0.83
-**/
+ **/
 class ChangeTemplatePredefinedField extends ITILTemplatePredefinedField
 {
    // From CommonDBChild

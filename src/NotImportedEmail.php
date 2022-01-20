@@ -33,7 +33,7 @@
 
 /**
  * NotImportedEmail Class
-**/
+ **/
 class NotImportedEmail extends CommonDBTM
 {
     public static $rightname = 'config';
@@ -62,9 +62,9 @@ class NotImportedEmail extends CommonDBTM
     }
 
 
-   /**
-    * @see CommonDBTM::getSpecificMassiveActions()
-    **/
+    /**
+     * @see CommonDBTM::getSpecificMassiveActions()
+     **/
     public function getSpecificMassiveActions($checkitem = null)
     {
 
@@ -80,11 +80,11 @@ class NotImportedEmail extends CommonDBTM
     }
 
 
-   /**
-    * @since 0.85
-    *
-    * @see CommonDBTM::showMassiveActionsSubForm()
-   **/
+    /**
+     * @since 0.85
+     *
+     * @see CommonDBTM::showMassiveActionsSubForm()
+     **/
     public static function showMassiveActionsSubForm(MassiveAction $ma)
     {
 
@@ -99,11 +99,11 @@ class NotImportedEmail extends CommonDBTM
     }
 
 
-   /**
-    * @since 0.85
-    *
-    * @see CommonDBTM::processMassiveActionsForOneItemtype()
-   **/
+    /**
+     * @since 0.85
+     *
+     * @see CommonDBTM::processMassiveActionsForOneItemtype()
+     **/
     public static function processMassiveActionsForOneItemtype(
         MassiveAction $ma,
         CommonDBTM $item,
@@ -220,9 +220,9 @@ class NotImportedEmail extends CommonDBTM
     }
 
 
-   /**
-    * @param $reason_id
-   **/
+    /**
+     * @param $reason_id
+     **/
     public static function getReason($reason_id)
     {
 
@@ -234,11 +234,11 @@ class NotImportedEmail extends CommonDBTM
     }
 
 
-   /**
-    * @since versin 0.84
-    *
-    * Get All possible reasons array
-   **/
+    /**
+     * @since versin 0.84
+     *
+     * Get All possible reasons array
+     **/
     public static function getAllReasons()
     {
 
@@ -251,13 +251,13 @@ class NotImportedEmail extends CommonDBTM
     }
 
 
-   /**
-    * @since 0.84
-    *
-    * @param $field
-    * @param $values
-    * @param $options   array
-   **/
+    /**
+     * @since 0.84
+     *
+     * @param $field
+     * @param $values
+     * @param $options   array
+     **/
     public static function getSpecificValueToDisplay($field, $values, array $options = [])
     {
 
@@ -277,14 +277,14 @@ class NotImportedEmail extends CommonDBTM
     }
 
 
-   /**
-    * @since 0.84
-    *
-    * @param $field
-    * @param $name               (default '')
-    * @param $values             (default '')
-    * @param $options      array
-   **/
+    /**
+     * @since 0.84
+     *
+     * @param $field
+     * @param $name               (default '')
+     * @param $values             (default '')
+     * @param $options      array
+     **/
     public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
     {
 

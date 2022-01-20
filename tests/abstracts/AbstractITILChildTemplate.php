@@ -106,9 +106,9 @@ HTML
         ];
     }
 
-   /**
-    * @dataProvider prepareInputProvider
-    */
+    /**
+     * @dataProvider prepareInputProvider
+     */
     public function testPrepareInputForAdd(string $content, bool $is_valid, ?string $error = null)
     {
         $this->login();
@@ -124,9 +124,9 @@ HTML
         }
     }
 
-   /**
-    * @dataProvider prepareInputProvider
-    */
+    /**
+     * @dataProvider prepareInputProvider
+     */
     public function testPrepareInputForUpdate(string $content, bool $is_valid, ?string $error = null)
     {
         $this->login();

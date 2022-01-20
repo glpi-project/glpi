@@ -116,9 +116,9 @@ class Sanitizer extends \GLPITestCase
         ];
     }
 
-   /**
-    * @dataProvider rawValueProvider
-    */
+    /**
+     * @dataProvider rawValueProvider
+     */
     public function testSanitize(
         $value,
         $sanitized_value,
@@ -148,9 +148,9 @@ class Sanitizer extends \GLPITestCase
         ];
     }
 
-   /**
-    * @dataProvider sanitizedValueProvider
-    */
+    /**
+     * @dataProvider sanitizedValueProvider
+     */
     public function testUnanitize(
         $value,
         $unsanitized_value
@@ -194,9 +194,9 @@ class Sanitizer extends \GLPITestCase
         ];
     }
 
-   /**
-    * @dataProvider isHtmlEncodedValueProvider
-    */
+    /**
+     * @dataProvider isHtmlEncodedValueProvider
+     */
     public function testIsHtmlEncoded(string $value, bool $is_encoded)
     {
         $sanitizer = $this->newTestedInstance();
@@ -356,9 +356,9 @@ TXT;
         ];
     }
 
-   /**
-    * @dataProvider isEscapedValueProvider
-    */
+    /**
+     * @dataProvider isEscapedValueProvider
+     */
     public function testIsDbEscaped(string $value, bool $is_escaped)
     {
         $sanitizer = $this->newTestedInstance();
@@ -366,9 +366,9 @@ TXT;
         $this->boolean($sanitizer->isDbEscaped($value))->isEqualTo($is_escaped, $value);
     }
 
-   /**
-    * @dataProvider rawValueProvider
-    */
+    /**
+     * @dataProvider rawValueProvider
+     */
     public function testSanitizationReversibility(
         $value,
         $sanitized_value,

@@ -47,7 +47,7 @@ use Unmanaged;
  */
 class Request extends AbstractRequest
 {
-   /** @var Inventory */
+    /** @var Inventory */
     private $inventory;
 
 
@@ -103,7 +103,7 @@ class Request extends AbstractRequest
         return true;
     }
 
-   /**
+    /**
      * Handle Task
      *
      * @param string $task  Task (one of self::*_TASK)
@@ -151,13 +151,13 @@ class Request extends AbstractRequest
     }
 
 
-   /**
-    * Handle agent GETPARAMS request
-    *
-    * @param mixed $data Inventory input following specs
-    *
-    * @return void
-    */
+    /**
+     * Handle agent GETPARAMS request
+     *
+     * @param mixed $data Inventory input following specs
+     *
+     * @return void
+     */
     public function getParams($data)
     {
         $this->inventory = new Inventory();
@@ -182,13 +182,13 @@ class Request extends AbstractRequest
     }
 
 
-   /**
-    * Handle agent prolog request
-    *
-    * @param mixed $data Inventory input following specs
-    *
-    * @return void
-    */
+    /**
+     * Handle agent prolog request
+     *
+     * @param mixed $data Inventory input following specs
+     *
+     * @return void
+     */
     public function prolog($data)
     {
         if ($this->headers->hasHeader('GLPI-Agent-ID')) {
@@ -220,13 +220,13 @@ class Request extends AbstractRequest
     }
 
 
-   /**
-    * Handle agent network discovery request
-    *
-    * @param mixed $data Inventory input following specs
-    *
-    * @return void
-    */
+    /**
+     * Handle agent network discovery request
+     *
+     * @param mixed $data Inventory input following specs
+     *
+     * @return void
+     */
     public function networkDiscovery($data)
     {
         $this->inventory = new Inventory();
@@ -263,13 +263,13 @@ class Request extends AbstractRequest
     }
 
 
-   /**
-    * Handle agent network inventory request
-    *
-    * @param mixed $data Inventory input following specs
-    *
-    * @return void
-    */
+    /**
+     * Handle agent network inventory request
+     *
+     * @param mixed $data Inventory input following specs
+     *
+     * @return void
+     */
     public function networkInventory($data)
     {
         $this->inventory = new Inventory();
@@ -306,13 +306,13 @@ class Request extends AbstractRequest
     }
 
 
-   /**
-    * Handle agent CONTACT request
-    *
-    * @param mixed $data Inventory input following specs
-    *
-    * @return void
-    */
+    /**
+     * Handle agent CONTACT request
+     *
+     * @param mixed $data Inventory input following specs
+     *
+     * @return void
+     */
     public function contact($data)
     {
         $this->inventory = new Inventory();
@@ -343,13 +343,13 @@ class Request extends AbstractRequest
         $this->addToResponse($response);
     }
 
-   /**
-    * Handle agent inventory request
-    *
-    * @param mixed $data Inventory input following specs
-    *
-    * @return void
-    */
+    /**
+     * Handle agent inventory request
+     *
+     * @param mixed $data Inventory input following specs
+     *
+     * @return void
+     */
     public function inventory($data)
     {
         $this->inventory = new Inventory();
@@ -377,13 +377,13 @@ class Request extends AbstractRequest
         }
     }
 
-   /**
-    * Handle agent enabled inventory task support on contact request
-    *
-    * @param array $params Required hooks params
-    *
-    * @return array
-    */
+    /**
+     * Handle agent enabled inventory task support on contact request
+     *
+     * @param array $params Required hooks params
+     *
+     * @return array
+     */
     public function handleInventoryTask(array $params): array
     {
        // Preset response as glpi supports native inventory by default
@@ -397,13 +397,13 @@ class Request extends AbstractRequest
         return $params['options']['response'][self::INVENT_TASK] ?? [];
     }
 
-   /**
-    * Handle agent enabled netdiscovery task support on contact request
-    *
-    * @param array $params Required hooks params
-    *
-    * @return array
-    */
+    /**
+     * Handle agent enabled netdiscovery task support on contact request
+     *
+     * @param array $params Required hooks params
+     *
+     * @return array
+     */
     public function handleNetDiscoveryTask(array $params): array
     {
         $params = Plugin::doHookFunction(Hooks::HANDLE_NETDISCOVERY_TASK, $params);
@@ -411,13 +411,13 @@ class Request extends AbstractRequest
         return $params['options']['response'][self::NETDISCOVERY_TASK] ?? [];
     }
 
-   /**
-    * Handle agent enabled netinventory task support on contact request
-    *
-    * @param array $params Required hooks params
-    *
-    * @return array
-    */
+    /**
+     * Handle agent enabled netinventory task support on contact request
+     *
+     * @param array $params Required hooks params
+     *
+     * @return array
+     */
     public function handleNetInventoryTask(array $params): array
     {
         $params = Plugin::doHookFunction(Hooks::HANDLE_NETINVENTORY_TASK, $params);
@@ -425,13 +425,13 @@ class Request extends AbstractRequest
         return $params['options']['response'][self::NETINV_TASK] ?? [];
     }
 
-   /**
-    * Handle agent enabled ESX task support on contact request
-    *
-    * @param array $params Required hooks params
-    *
-    * @return array
-    */
+    /**
+     * Handle agent enabled ESX task support on contact request
+     *
+     * @param array $params Required hooks params
+     *
+     * @return array
+     */
     public function handleESXTask(array $params): array
     {
         $params = Plugin::doHookFunction(Hooks::HANDLE_ESX_TASK, $params);
@@ -439,13 +439,13 @@ class Request extends AbstractRequest
         return $params['options']['response'][self::ESX_TASK] ?? [];
     }
 
-   /**
-    * Handle agent enabled collect task support on contact request
-    *
-    * @param array $params Required hooks params
-    *
-    * @return array
-    */
+    /**
+     * Handle agent enabled collect task support on contact request
+     *
+     * @param array $params Required hooks params
+     *
+     * @return array
+     */
     public function handleCollectTask(array $params): array
     {
         $params = Plugin::doHookFunction(Hooks::HANDLE_COLLECT_TASK, $params);
@@ -453,13 +453,13 @@ class Request extends AbstractRequest
         return $params['options']['response'][self::COLLECT_TASK] ?? [];
     }
 
-   /**
-    * Handle agent enabled deploy task support on contact request
-    *
-    * @param array $params Required hooks params
-    *
-    * @return array
-    */
+    /**
+     * Handle agent enabled deploy task support on contact request
+     *
+     * @param array $params Required hooks params
+     *
+     * @return array
+     */
     public function handleDeployTask(array $params): array
     {
         $params = Plugin::doHookFunction(Hooks::HANDLE_DEPLOY_TASK, $params);
@@ -467,13 +467,13 @@ class Request extends AbstractRequest
         return $params['options']['response'][self::DEPLOY_TASK] ?? [];
     }
 
-   /**
-    * Handle agent enabled wakeonlan task support on contact request
-    *
-    * @param array $params Required hooks params
-    *
-    * @return array
-    */
+    /**
+     * Handle agent enabled wakeonlan task support on contact request
+     *
+     * @param array $params Required hooks params
+     *
+     * @return array
+     */
     public function handleWakeOnLanTask(array $params): array
     {
         $params = Plugin::doHookFunction(Hooks::HANDLE_WAKEONLAN_TASK, $params);
@@ -481,13 +481,13 @@ class Request extends AbstractRequest
         return $params['options']['response'][self::WAKEONLAN_TASK] ?? [];
     }
 
-   /**
-    * Handle agent enabled remoteinventory task support on contact request
-    *
-    * @param array $params Required hooks params
-    *
-    * @return array
-    */
+    /**
+     * Handle agent enabled remoteinventory task support on contact request
+     *
+     * @param array $params Required hooks params
+     *
+     * @return array
+     */
     public function handleRemoteInventoryTask(array $params): array
     {
         $params = Plugin::doHookFunction(Hooks::HANDLE_REMOTEINV_TASK, $params);
@@ -495,11 +495,11 @@ class Request extends AbstractRequest
         return $params['options']['response'][self::REMOTEINV_TASK] ?? [];
     }
 
-   /**
-    * Get inventory request status
-    *
-    * @return array
-    */
+    /**
+     * Get inventory request status
+     *
+     * @return array
+     */
     public function getInventoryStatus(): array
     {
         $items = $this->inventory->getItems();

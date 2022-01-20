@@ -39,17 +39,17 @@ use Monolog\Logger;
 
 /**
  *  GLPI (instantiation and so on)
-**/
+ **/
 class GLPI
 {
     private $error_handler;
     private $log_level;
 
-   /**
-    * Init logger
-    *
-    * @return void
-    */
+    /**
+     * Init logger
+     *
+     * @return void
+     */
     public function initLogger()
     {
         global $PHPLOGGER, $PHP_LOG_HANDLER, $SQLLOGGER, $SQL_LOG_HANDLER;
@@ -92,21 +92,21 @@ class GLPI
         }
     }
 
-   /**
-    * Get log level
-    *
-    * @return string
-    */
+    /**
+     * Get log level
+     *
+     * @return string
+     */
     public function getLogLevel()
     {
         return $this->log_level;
     }
 
-   /**
-    * Init and register error handler.
-    *
-    * @return ErrorHandler
-    */
+    /**
+     * Init and register error handler.
+     *
+     * @return ErrorHandler
+     */
     public function initErrorHandler()
     {
         $this->error_handler = ErrorHandler::getInstance();
@@ -115,11 +115,11 @@ class GLPI
         return $this->error_handler;
     }
 
-   /**
-    * Get registered error handler.
-    *
-    * @return null|ErrorHandler
-    */
+    /**
+     * Get registered error handler.
+     *
+     * @return null|ErrorHandler
+     */
     public function getErrorHandler()
     {
         return $this->error_handler;

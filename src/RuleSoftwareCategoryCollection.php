@@ -45,16 +45,16 @@ class RuleSoftwareCategoryCollection extends RuleCollection
     }
 
 
-   /**
-    * Get the attributes needed for processing the rules
-    *
-    * @see RuleCollection::prepareInputDataForProcess()
-    *
-    * @param $input     input data
-    * @param $software  software data array
-    *
-    * @return an array of attributes
-   **/
+    /**
+     * Get the attributes needed for processing the rules
+     *
+     * @see RuleCollection::prepareInputDataForProcess()
+     *
+     * @param $input     input data
+     * @param $software  software data array
+     *
+     * @return an array of attributes
+     **/
     public function prepareInputDataForProcess($input, $software)
     {
 

@@ -38,11 +38,11 @@ class Telemetry extends CommonGLPI
         return __('Telemetry');
     }
 
-   /**
-    * Grab telemetry information
-    *
-    * @return array
-    */
+    /**
+     * Grab telemetry information
+     *
+     * @return array
+     */
     public static function getTelemetryInfos()
     {
         $data = [
@@ -58,11 +58,11 @@ class Telemetry extends CommonGLPI
         return $data;
     }
 
-   /**
-    * Grab GLPI part information
-    *
-    * @return array
-    */
+    /**
+     * Grab GLPI part information
+     *
+     * @return array
+     */
     public static function grabGlpiInfos()
     {
         global $CFG_GLPI;
@@ -108,11 +108,11 @@ class Telemetry extends CommonGLPI
         return $glpi;
     }
 
-   /**
-    * Grab DB part information
-    *
-    * @return array
-    */
+    /**
+     * Grab DB part information
+     *
+     * @return array
+     */
     public static function grabDbInfos()
     {
         global $DB;
@@ -136,11 +136,11 @@ class Telemetry extends CommonGLPI
         return $db;
     }
 
-   /**
-    * Grab web server part information
-    *
-    * @return array
-    */
+    /**
+     * Grab web server part information
+     *
+     * @return array
+     */
     public static function grabWebserverInfos()
     {
         global $CFG_GLPI;
@@ -177,11 +177,11 @@ class Telemetry extends CommonGLPI
         return $server;
     }
 
-   /**
-    * Grab PHP part information
-    *
-    * @return array
-    */
+    /**
+     * Grab PHP part information
+     *
+     * @return array
+     */
     public static function grabPhpInfos()
     {
         $php = [
@@ -200,11 +200,11 @@ class Telemetry extends CommonGLPI
         return $php;
     }
 
-   /**
-    * Grab OS part information
-    *
-    * @return array
-    */
+    /**
+     * Grab OS part information
+     *
+     * @return array
+     */
     public static function grabOsInfos()
     {
         $distro = false;
@@ -220,13 +220,13 @@ class Telemetry extends CommonGLPI
     }
 
 
-   /**
-    * Calculate average for itemtype
-    *
-    * @param string $itemtype Item type
-    *
-    * @return string
-    */
+    /**
+     * Calculate average for itemtype
+     *
+     * @param string $itemtype Item type
+     *
+     * @return string
+     */
     public static function getAverage($itemtype)
     {
         $count = (int)countElementsInTable(getTableForItemType($itemtype));
@@ -260,13 +260,13 @@ class Telemetry extends CommonGLPI
         return [];
     }
 
-   /**
-    * Send telemetry information
-    *
-    * @param CronTask $task CronTask instance
-    *
-    * @return void
-    */
+    /**
+     * Send telemetry information
+     *
+     * @param CronTask $task CronTask instance
+     *
+     * @return void
+     */
     public static function cronTelemetry($task)
     {
         $data = self::getTelemetryInfos();
@@ -294,52 +294,52 @@ class Telemetry extends CommonGLPI
         }
     }
 
-   /**
-    * Get instance UUID
-    *
-    * @return string
-    */
+    /**
+     * Get instance UUID
+     *
+     * @return string
+     */
     final public static function getInstanceUuid()
     {
         return Config::getUuid('instance');
     }
 
-   /**
-    * Get registration UUID
-    *
-    * @return string
-    */
+    /**
+     * Get registration UUID
+     *
+     * @return string
+     */
     final public static function getRegistrationUuid()
     {
         return Config::getUuid('registration');
     }
 
-   /**
-    * Generates an unique identifier for current instance and store it
-    *
-    * @return string
-    */
+    /**
+     * Generates an unique identifier for current instance and store it
+     *
+     * @return string
+     */
     final public static function generateInstanceUuid()
     {
         return Config::generateUuid('instance');
     }
 
-   /**
-    * Generates an unique identifier for current instance and store it
-    *
-    * @return string
-    */
+    /**
+     * Generates an unique identifier for current instance and store it
+     *
+     * @return string
+     */
     final public static function generateRegistrationUuid()
     {
         return Config::generateUuid('registration');
     }
 
 
-   /**
-    * Get view data link along with popup script
-    *
-    * @return string
-    */
+    /**
+     * Get view data link along with popup script
+     *
+     * @return string
+     */
     public static function getViewLink()
     {
         global $CFG_GLPI;
@@ -360,11 +360,11 @@ class Telemetry extends CommonGLPI
         return $out;
     }
 
-   /**
-    * Enable telemetry
-    *
-    * @return void
-    */
+    /**
+     * Enable telemetry
+     *
+     * @return void
+     */
     public static function enable()
     {
         global $DB;
@@ -375,11 +375,11 @@ class Telemetry extends CommonGLPI
         );
     }
 
-   /**
-    * Disable telemetry
-    *
-    * @return void
-    */
+    /**
+     * Disable telemetry
+     *
+     * @return void
+     */
     public static function disable(): void
     {
         global $DB;
@@ -390,11 +390,11 @@ class Telemetry extends CommonGLPI
         );
     }
 
-   /**
-    * Is telemetry currently enabled
-    *
-    * @return boolean
-    */
+    /**
+     * Is telemetry currently enabled
+     *
+     * @return boolean
+     */
     public static function isEnabled()
     {
         global $DB;
@@ -411,11 +411,11 @@ class Telemetry extends CommonGLPI
     }
 
 
-   /**
-    * Display telemetry information
-    *
-    * @return string
-    */
+    /**
+     * Display telemetry information
+     *
+     * @return string
+     */
     public static function showTelemetry()
     {
         $out = "<div class='form-check'>
@@ -433,11 +433,11 @@ class Telemetry extends CommonGLPI
         return $out;
     }
 
-   /**
-    * Display reference information
-    *
-    * @return string
-    */
+    /**
+     * Display reference information
+     *
+     * @return string
+     */
     public static function showReference()
     {
         $out = "<h3>" . __('Reference your GLPI') . "</h3>";

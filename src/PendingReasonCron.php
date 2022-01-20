@@ -38,11 +38,11 @@ class PendingReasonCron extends CommonDBTM
 {
     const TASK_NAME = 'pendingreason_autobump_autosolve';
 
-   /**
-    * Get task description
-    *
-    * @return string
-    */
+    /**
+     * Get task description
+     *
+     * @return string
+     */
     public static function getTaskDescription(): string
     {
         return __("Send automated follow-ups on pending tickets and solve them if necessary");
@@ -55,11 +55,11 @@ class PendingReasonCron extends CommonDBTM
         ];
     }
 
-   /**
-    * Run from cronTask
-    *
-    * @param CronTask $task
-    */
+    /**
+     * Run from cronTask
+     *
+     * @param CronTask $task
+     */
     public static function cronPendingreason_autobump_autosolve(CronTask $task)
     {
         global $DB;
@@ -181,14 +181,14 @@ class PendingReasonCron extends CommonDBTM
         return 1;
     }
 
-   /**
-    * Return the localized name of the current Type
-    * Should be overloaded in each new class
-    *
-    * @param integer $nb Number of items
-    *
-    * @return string
-   **/
+    /**
+     * Return the localized name of the current Type
+     * Should be overloaded in each new class
+     *
+     * @param integer $nb Number of items
+     *
+     * @return string
+     **/
     public static function getTypeName($nb = 0)
     {
         return __('Automatic followups / resolution');

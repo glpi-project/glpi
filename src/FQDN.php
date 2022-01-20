@@ -60,15 +60,15 @@ class FQDN extends CommonDropdown
     }
 
 
-   /**
-    * \brief Prepare the input before adding or updating
-    * Checking suppose that each FQDN is compose of dot separated array of labels and its unique
-    * \see (FQDNLabel)
-    *
-    * @param array $input fields of the record to check
-    *
-    * @return boolean|array  false or fields checked and updated (lowercase for the fqdn field)
-   **/
+    /**
+     * \brief Prepare the input before adding or updating
+     * Checking suppose that each FQDN is compose of dot separated array of labels and its unique
+     * \see (FQDNLabel)
+     *
+     * @param array $input fields of the record to check
+     *
+     * @return boolean|array  false or fields checked and updated (lowercase for the fqdn field)
+     **/
     public function prepareInput($input)
     {
 
@@ -119,9 +119,9 @@ class FQDN extends CommonDropdown
     }
 
 
-   /**
-    * @return string the FQDN of the element, or "" if invalid FQDN
-   **/
+    /**
+     * @return string the FQDN of the element, or "" if invalid FQDN
+     **/
     public function getFQDN()
     {
 
@@ -132,16 +132,16 @@ class FQDN extends CommonDropdown
     }
 
 
-   /**
-    * Search FQDN id from string FDQDN
-    *
-    * @param string  $fqdn             value of the fdqn (for instance : indeptnet.net)
-    * @param boolean $wildcard_search  true if we search with wildcard (false by default)
-    *
-    * @return integer|integer[]
-    *    if $wildcard_search == false : the id of the fqdn, -1 if not found or several answers
-    *    if $wildcard_search == true : an array of the id of the fqdn
-   **/
+    /**
+     * Search FQDN id from string FDQDN
+     *
+     * @param string  $fqdn             value of the fdqn (for instance : indeptnet.net)
+     * @param boolean $wildcard_search  true if we search with wildcard (false by default)
+     *
+     * @return integer|integer[]
+     *    if $wildcard_search == false : the id of the fqdn, -1 if not found or several answers
+     *    if $wildcard_search == true : an array of the id of the fqdn
+     **/
     public static function getFQDNIDByFQDN($fqdn, $wildcard_search = false)
     {
         global $DB;
@@ -184,11 +184,11 @@ class FQDN extends CommonDropdown
     }
 
 
-   /**
-    * @param integer $ID  id of the FQDN
-    *
-    * @return string  the FQDN of the element, or "" if invalid FQDN
-   **/
+    /**
+     * @param integer $ID  id of the FQDN
+     *
+     * @return string  the FQDN of the element, or "" if invalid FQDN
+     **/
     public static function getFQDNFromID($ID)
     {
 
@@ -216,13 +216,13 @@ class FQDN extends CommonDropdown
     }
 
 
-   /**
-    * Check FQDN Validity
-    *
-    * @param string $fqdn  the FQDN to check
-    *
-    * @return boolean  true if the FQDN is valid
-   **/
+    /**
+     * Check FQDN Validity
+     *
+     * @param string $fqdn  the FQDN to check
+     *
+     * @return boolean  true if the FQDN is valid
+     **/
     public static function checkFQDN($fqdn)
     {
 

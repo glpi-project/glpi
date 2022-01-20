@@ -60,9 +60,9 @@ class XHProf
     private static $run = false;
 
 
-   /**
-    * @param $msg (default '')
-   **/
+    /**
+     * @param $msg (default '')
+     **/
     public function __construct($msg = '')
     {
         $this->start($msg);
@@ -75,9 +75,9 @@ class XHProf
     }
 
 
-   /**
-    * @param $msg (default '')
-   **/
+    /**
+     * @param $msg (default '')
+     **/
     public function start($msg = '')
     {
 

@@ -35,7 +35,7 @@
  * Group_User Class
  *
  *  Relation between Group and User
-**/
+ **/
 class Group_User extends CommonDBRelation
 {
    // From CommonDBRelation
@@ -45,16 +45,16 @@ class Group_User extends CommonDBRelation
     public static $itemtype_2                 = 'Group';
     public static $items_id_2                 = 'groups_id';
 
-   /**
-   * Check if a user belongs to a group
-   *
-   * @since 9.4
-   *
-   * @param integer $users_id  the user ID
-   * @param integer $groups_id the group ID
-   *
-   * @return boolean true if the user belongs to the group
-   */
+    /**
+     * Check if a user belongs to a group
+     *
+     * @since 9.4
+     *
+     * @param integer $users_id  the user ID
+     * @param integer $groups_id the group ID
+     *
+     * @return boolean true if the user belongs to the group
+     */
     public static function isUserInGroup($users_id, $groups_id)
     {
         return countElementsInTable(
@@ -66,14 +66,14 @@ class Group_User extends CommonDBRelation
         ) > 0;
     }
 
-   /**
-    * Get groups for a user
-    *
-    * @param integer $users_id  User id
-    * @param array   $condition Query extra condition (default [])
-    *
-    * @return array
-   **/
+    /**
+     * Get groups for a user
+     *
+     * @param integer $users_id  User id
+     * @param array   $condition Query extra condition (default [])
+     *
+     * @return array
+     **/
     public static function getUserGroups($users_id, $condition = [])
     {
         global $DB;
@@ -110,16 +110,16 @@ class Group_User extends CommonDBRelation
     }
 
 
-   /**
-    * Get users for a group
-    *
-    * @since 0.84
-    *
-    * @param integer $groups_id Group ID
-    * @param array   $condition Query extra condition (default [])
-    *
-    * @return array
-   **/
+    /**
+     * Get users for a group
+     *
+     * @since 0.84
+     *
+     * @param integer $groups_id Group ID
+     * @param array   $condition Query extra condition (default [])
+     *
+     * @return array
+     **/
     public static function getGroupUsers($groups_id, $condition = [])
     {
         global $DB;
@@ -157,10 +157,10 @@ class Group_User extends CommonDBRelation
     }
 
 
-   /**  Show groups of a user
-    *
-    * @param $user   User object
-   **/
+    /**  Show groups of a user
+     *
+     * @param $user   User object
+     **/
     public static function showForUser(User $user)
     {
         global $CFG_GLPI;
@@ -305,16 +305,16 @@ class Group_User extends CommonDBRelation
     }
 
 
-   /**
-    * Show form to add a user in current group
-    *
-    * @since 0.83
-    *
-    * @param $group                    Group object
-    * @param $used_ids        Array    of already add users
-    * @param $entityrestrict  Array    of entities
-    * @param $crit            String   for criteria (for default dropdown)
-   **/
+    /**
+     * Show form to add a user in current group
+     *
+     * @since 0.83
+     *
+     * @param $group                    Group object
+     * @param $used_ids        Array    of already add users
+     * @param $entityrestrict  Array    of entities
+     * @param $crit            String   for criteria (for default dropdown)
+     **/
     private static function showAddUserForm(Group $group, $used_ids, $entityrestrict, $crit)
     {
         $rand = mt_rand();
@@ -353,19 +353,19 @@ class Group_User extends CommonDBRelation
     }
 
 
-   /**
-    * Retrieve list of member of a Group
-    *
-    * @since 0.83
-    *
-    * @param Group           $group    Group object
-    * @param array           $members  Array filled on output of member (filtered)
-    * @param array           $ids      Array of ids (not filtered)
-    * @param string          $crit     Filter (is_manager, is_userdelegate) (default '')
-    * @param boolean|integer $tree     True to include member of sub-group (default 0)
-    *
-    * @return String tab of entity for restriction
-   **/
+    /**
+     * Retrieve list of member of a Group
+     *
+     * @since 0.83
+     *
+     * @param Group           $group    Group object
+     * @param array           $members  Array filled on output of member (filtered)
+     * @param array           $ids      Array of ids (not filtered)
+     * @param string          $crit     Filter (is_manager, is_userdelegate) (default '')
+     * @param boolean|integer $tree     True to include member of sub-group (default 0)
+     *
+     * @return String tab of entity for restriction
+     **/
     public static function getDataForGroup(Group $group, &$members, &$ids, $crit = '', $tree = 0)
     {
         global $DB;
@@ -446,13 +446,13 @@ class Group_User extends CommonDBRelation
     }
 
 
-   /**
-    * Show users of a group
-    *
-    * @since 0.83
-    *
-    * @param $group  Group object: the group
-   **/
+    /**
+     * Show users of a group
+     *
+     * @since 0.83
+     *
+     * @param $group  Group object: the group
+     **/
     public static function showForGroup(Group $group)
     {
         global $CFG_GLPI;
@@ -637,11 +637,11 @@ class Group_User extends CommonDBRelation
     }
 
 
-   /**
-    * @since 0.85
-    *
-    * @see CommonDBRelation::getRelationMassiveActionsSpecificities()
-   **/
+    /**
+     * @since 0.85
+     *
+     * @see CommonDBRelation::getRelationMassiveActionsSpecificities()
+     **/
     public static function getRelationMassiveActionsSpecificities()
     {
         $specificities                           = parent::getRelationMassiveActionsSpecificities();
@@ -684,11 +684,11 @@ class Group_User extends CommonDBRelation
     }
 
 
-   /**
-    * Get search function for the class
-    *
-    * @return array of search option
-   **/
+    /**
+     * Get search function for the class
+     *
+     * @return array of search option
+     **/
     public function rawSearchOptions()
     {
         $tab = [];
@@ -755,10 +755,10 @@ class Group_User extends CommonDBRelation
     }
 
 
-   /**
-    * @param $user_ID
-    * @param $only_dynamic (false by default
-   **/
+    /**
+     * @param $user_ID
+     * @param $only_dynamic (false by default
+     **/
     public static function deleteGroups($user_ID, $only_dynamic = false)
     {
         $crit['users_id'] = $user_ID;
@@ -814,16 +814,16 @@ class Group_User extends CommonDBRelation
         return true;
     }
 
-   /**
-    * Get linked items list for specified item
-    *
-    * @since 9.3.1
-    *
-    * @param CommonDBTM $item  Item instance
-    * @param boolean    $noent Flag to not compute entity information (see Document_Item::getListForItemParams)
-    *
-    * @return array
-    */
+    /**
+     * Get linked items list for specified item
+     *
+     * @since 9.3.1
+     *
+     * @param CommonDBTM $item  Item instance
+     * @param boolean    $noent Flag to not compute entity information (see Document_Item::getListForItemParams)
+     *
+     * @return array
+     */
     protected static function getListForItemParams(CommonDBTM $item, $noent = false)
     {
         $params = parent::getListForItemParams($item, $noent);

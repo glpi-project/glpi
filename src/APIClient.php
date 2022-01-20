@@ -177,14 +177,14 @@ class APIClient extends CommonDBTM
         return parent::getSpecificValueToDisplay($field, $values, $options);
     }
 
-   /**
-    * Show form
-    *
-    * @param integer $ID      Item ID
-    * @param array   $options Options
-    *
-    * @return void
-    */
+    /**
+     * Show form
+     *
+     * @param integer $ID      Item ID
+     * @param array   $options Options
+     *
+     * @return void
+     */
     public function showForm($ID, $options = [])
     {
 
@@ -303,11 +303,11 @@ class APIClient extends CommonDBTM
         return $input;
     }
 
-   /**
-    * Get log methods
-    *
-    * @return array
-    */
+    /**
+     * Get log methods
+     *
+     * @return array
+     */
     public static function getLogMethod()
     {
 
@@ -320,11 +320,11 @@ class APIClient extends CommonDBTM
                    )];
     }
 
-   /**
-    * Get app token checking that it is unique
-    *
-    * @return string app token
-    */
+    /**
+     * Get app token checking that it is unique
+     *
+     * @return string app token
+     */
     public static function getUniqueAppToken()
     {
 

@@ -116,9 +116,9 @@ class DeviceSensor extends CommonDevice
     }
 
 
-   /**
-    * Criteria used for import function
-    */
+    /**
+     * Criteria used for import function
+     */
     public function getImportCriteria()
     {
 

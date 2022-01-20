@@ -39,7 +39,7 @@ use Glpi\Toolbox\Sanitizer;
 
 /**
  * Session Class
-**/
+ **/
 class Session
 {
    // GLPI MODE
@@ -48,11 +48,11 @@ class Session
     const DEBUG_MODE        = 2;
 
 
-   /**
-    * Destroy the current session
-    *
-    * @return void
-   **/
+    /**
+     * Destroy the current session
+     *
+     * @return void
+     **/
     public static function destroy()
     {
 
@@ -66,13 +66,13 @@ class Session
 
 
 
-   /**
-    * Init session for the user is defined
-    *
-    * @param Auth $auth Auth object to init session
-    *
-    * @return void
-   **/
+    /**
+     * Init session for the user is defined
+     *
+     * @param Auth $auth Auth object to init session
+     *
+     * @return void
+     **/
     public static function init(Auth $auth)
     {
         global $CFG_GLPI;
@@ -189,11 +189,11 @@ class Session
     }
 
 
-   /**
-    * Set the directory where are store the session file
-    *
-    * @return void
-   **/
+    /**
+     * Set the directory where are store the session file
+     *
+     * @return void
+     **/
     public static function setPath()
     {
 
@@ -206,11 +206,11 @@ class Session
     }
 
 
-   /**
-    * Start the GLPI php session
-    *
-    * @return void
-   **/
+    /**
+     * Start the GLPI php session
+     *
+     * @return void
+     **/
     public static function start()
     {
 
@@ -228,13 +228,13 @@ class Session
     }
 
 
-   /**
-    * Get root entity name
-    *
-    * @since 0.84
-    *
-    * @return string
-   **/
+    /**
+     * Get root entity name
+     *
+     * @since 0.84
+     *
+     * @return string
+     **/
     public function getRootEntityName()
     {
 
@@ -252,11 +252,11 @@ class Session
     }
 
 
-   /**
-    * Is GLPI used in multi-entities mode?
-    *
-    * @return boolean
-   **/
+    /**
+     * Is GLPI used in multi-entities mode?
+     *
+     * @return boolean
+     **/
     public static function isMultiEntitiesMode()
     {
 
@@ -272,13 +272,13 @@ class Session
     }
 
 
-   /**
-    * Does user have right to see all entities?
-    *
-    * @since 9.3.2
-    *
-    * @return boolean
-   **/
+    /**
+     * Does user have right to see all entities?
+     *
+     * @since 9.3.2
+     *
+     * @return boolean
+     **/
     public static function canViewAllEntities()
     {
        // Command line can see all entities
@@ -287,22 +287,22 @@ class Session
     }
 
 
-   /** Add an item to the navigate through search results list
-    *
-    * @param string  $itemtype Device type
-    * @param integer $ID       ID of the item
-   **/
+    /** Add an item to the navigate through search results list
+     *
+     * @param string  $itemtype Device type
+     * @param integer $ID       ID of the item
+     **/
     public static function addToNavigateListItems($itemtype, $ID)
     {
         $_SESSION['glpilistitems'][$itemtype][] = $ID;
     }
 
 
-   /** Initialise a list of items to use navigate through search results
-    *
-    * @param string $itemtype Device type
-    * @param string $title    List title (default '')
-   **/
+    /** Initialise a list of items to use navigate through search results
+     *
+     * @param string $itemtype Device type
+     * @param string $title    List title (default '')
+     **/
     public static function initNavigateListItems($itemtype, $title = "")
     {
         global $AJAX_INCLUDE;
@@ -329,16 +329,16 @@ class Session
     }
 
 
-   /**
-    * Change active entity to the $ID one. Update glpiactiveentities session variable.
-    * Reload groups related to this entity.
-    *
-    * @param integer|'All' $ID           ID of the new active entity ("all"=>load all possible entities)
-    *                                    (default 'all')
-    * @param boolean       $is_recursive Also display sub entities of the active entity? (false by default)
-    *
-    * @return boolean true on success, false on failure
-   **/
+    /**
+     * Change active entity to the $ID one. Update glpiactiveentities session variable.
+     * Reload groups related to this entity.
+     *
+     * @param integer|'All' $ID           ID of the new active entity ("all"=>load all possible entities)
+     *                                    (default 'all')
+     * @param boolean       $is_recursive Also display sub entities of the active entity? (false by default)
+     *
+     * @return boolean true on success, false on failure
+     **/
     public static function changeActiveEntities($ID = "all", $is_recursive = false)
     {
 
@@ -445,13 +445,13 @@ class Session
     }
 
 
-   /**
-    * Change active profile to the $ID one. Update glpiactiveprofile session variable.
-    *
-    * @param integer $ID ID of the new profile
-    *
-    * @return void
-   **/
+    /**
+     * Change active profile to the $ID one. Update glpiactiveprofile session variable.
+     *
+     * @param integer $ID ID of the new profile
+     *
+     * @return void
+     **/
     public static function changeProfile($ID)
     {
 
@@ -496,13 +496,13 @@ class Session
     }
 
 
-   /**
-    * Set the entities session variable. Load all entities from DB
-    *
-    * @param integer $userID ID of the user
-    *
-    * @return void
-   **/
+    /**
+     * Set the entities session variable. Load all entities from DB
+     *
+     * @param integer $userID ID of the user
+     *
+     * @return void
+     **/
     public static function initEntityProfiles($userID)
     {
         global $DB;
@@ -580,11 +580,11 @@ class Session
     }
 
 
-   /**
-    * Load current user's group on active entity
-    *
-    * @return void
-   **/
+    /**
+     * Load current user's group on active entity
+     *
+     * @return void
+     **/
     public static function loadGroups()
     {
         global $DB;
@@ -618,17 +618,17 @@ class Session
     }
 
 
-   /**
-    * Include the good language dict.
-    *
-    * Get the default language from current user in $_SESSION["glpilanguage"].
-    * And load the dict that correspond.
-    *
-    * @param string  $forcelang     Force to load a specific lang
-    * @param boolean $with_plugins  Whether to load plugin languages or not
-    *
-    * @return void
-   **/
+    /**
+     * Include the good language dict.
+     *
+     * Get the default language from current user in $_SESSION["glpilanguage"].
+     * And load the dict that correspond.
+     *
+     * @param string  $forcelang     Force to load a specific lang
+     * @param boolean $with_plugins  Whether to load plugin languages or not
+     *
+     * @return void
+     **/
     public static function loadLanguage($forcelang = '', $with_plugins = true)
     {
         global $CFG_GLPI, $TRANSLATE;
@@ -719,11 +719,11 @@ class Session
         return $trytoload;
     }
 
-   /**
-    * Return preffered language (from HTTP headers, fallback to default GLPI lang).
-    *
-    * @return string
-    */
+    /**
+     * Return preffered language (from HTTP headers, fallback to default GLPI lang).
+     *
+     * @return string
+     */
     public static function getPreferredLanguage(): string
     {
         global $CFG_GLPI;
@@ -757,11 +757,11 @@ class Session
         return 'en_GB';
     }
 
-   /**
-    * Get plural form number
-    *
-    * @return integer
-    */
+    /**
+     * Get plural form number
+     *
+     * @return integer
+     */
     public static function getPluralNumber()
     {
         global $DEFAULT_PLURAL_NUMBER;
@@ -773,13 +773,13 @@ class Session
         }
     }
 
-   /**
-    * Detect cron mode or interactive
-    *
-    * @since 0.84
-    *
-    * @return boolean
-   **/
+    /**
+     * Detect cron mode or interactive
+     *
+     * @since 0.84
+     *
+     * @return boolean
+     **/
     public static function isCron()
     {
 
@@ -788,11 +788,11 @@ class Session
                   || strpos($_SERVER['PHP_SELF'], '/cron.php')));
     }
 
-   /**
-    * Detect inventory mode
-    *
-    * @return boolean
-   **/
+    /**
+     * Detect inventory mode
+     *
+     * @return boolean
+     **/
     public static function isInventory(): bool
     {
 
@@ -800,14 +800,14 @@ class Session
               && (strpos($_SERVER['PHP_SELF'], '/inventory.php') || defined('TU_USER')));
     }
 
-   /**
-    * Get the Login User ID or return cron user ID for cron jobs
-    *
-    * @param boolean $force_human Force human / do not return cron user (true by default)
-    *
-    * @return false|int|string false if user is not logged in
-    *                          int for user id, string for cron jobs
-   **/
+    /**
+     * Get the Login User ID or return cron user ID for cron jobs
+     *
+     * @param boolean $force_human Force human / do not return cron user (true by default)
+     *
+     * @return false|int|string false if user is not logged in
+     *                          int for user id, string for cron jobs
+     **/
     public static function getLoginUserID($force_human = true)
     {
         if (self::isInventory()) { // Check inventory
@@ -828,13 +828,13 @@ class Session
     }
 
 
-   /**
-    * Redirect User to login if not logged in
-    *
-    * @since 0.85
-    *
-    * @return void
-   **/
+    /**
+     * Redirect User to login if not logged in
+     *
+     * @since 0.85
+     *
+     * @return void
+     **/
     public static function redirectIfNotLoggedIn()
     {
 
@@ -844,15 +844,15 @@ class Session
     }
 
 
-   /**
-    * Global check of session to prevent PHP vulnerability
-    *
-    * @since 0.85
-    *
-    * @see https://wiki.php.net/rfc/strict_sessions
-    *
-    * @return void|true
-   **/
+    /**
+     * Global check of session to prevent PHP vulnerability
+     *
+     * @since 0.85
+     *
+     * @see https://wiki.php.net/rfc/strict_sessions
+     *
+     * @return void|true
+     **/
     public static function checkValidSessionId()
     {
 
@@ -866,11 +866,11 @@ class Session
     }
 
 
-   /**
-    * Check if I have access to the central interface
-    *
-    * @return void
-   **/
+    /**
+     * Check if I have access to the central interface
+     *
+     * @return void
+     **/
     public static function checkCentralAccess()
     {
         self::checkValidSessionId();
@@ -882,11 +882,11 @@ class Session
     }
 
 
-   /**
-    * Check if I have the right to access to the FAQ (profile or anonymous FAQ)
-    *
-    * @return void
-   **/
+    /**
+     * Check if I have the right to access to the FAQ (profile or anonymous FAQ)
+     *
+     * @return void
+     **/
     public static function checkFaqAccess()
     {
         global $CFG_GLPI;
@@ -900,11 +900,11 @@ class Session
     }
 
 
-   /**
-    * Check if I have access to the helpdesk interface
-    *
-    * @return void
-   **/
+    /**
+     * Check if I have access to the helpdesk interface
+     *
+     * @return void
+     **/
     public static function checkHelpdeskAccess()
     {
         self::checkValidSessionId();
@@ -915,11 +915,11 @@ class Session
         }
     }
 
-   /**
-    * Check if I am logged in
-    *
-    * @return void
-   **/
+    /**
+     * Check if I am logged in
+     *
+     * @return void
+     **/
     public static function checkLoginUser()
     {
         self::checkValidSessionId();
@@ -931,14 +931,14 @@ class Session
     }
 
 
-   /**
-    * Check if I have the right $right to module $module (conpare to session variable)
-    *
-    * @param string  $module Module to check
-    * @param integer $right  Right to check
-    *
-    * @return void
-   **/
+    /**
+     * Check if I have the right $right to module $module (conpare to session variable)
+     *
+     * @param string  $module Module to check
+     * @param integer $right  Right to check
+     *
+     * @return void
+     **/
     public static function checkRight($module, $right)
     {
         self::checkValidSessionId();
@@ -949,14 +949,14 @@ class Session
         }
     }
 
-   /**
-    * Check if I one right of array $rights to module $module (conpare to session variable)
-    *
-    * @param string $module Module to check
-    * @param array  $rights Rights to check
-    *
-    * @return void
-    **/
+    /**
+     * Check if I one right of array $rights to module $module (conpare to session variable)
+     *
+     * @param string $module Module to check
+     * @param array  $rights Rights to check
+     *
+     * @return void
+     **/
     public static function checkRightsOr($module, $rights = [])
     {
         self::checkValidSessionId();
@@ -967,15 +967,15 @@ class Session
     }
 
 
-   /**
-    * Check if I have one of the right specified
-    *
-    * You can't use this function if several rights for same module name
-    *
-    * @param array $modules Array of modules where keys are modules and value are right
-    *
-    * @return void
-   **/
+    /**
+     * Check if I have one of the right specified
+     *
+     * You can't use this function if several rights for same module name
+     *
+     * @param array $modules Array of modules where keys are modules and value are right
+     *
+     * @return void
+     **/
     public static function checkSeveralRightsOr($modules)
     {
         self::checkValidSessionId();
@@ -1004,13 +1004,13 @@ class Session
     }
 
 
-   /**
-    * Check if you could access to ALL the entities of an list
-    *
-    * @param array $tab List ID of entities
-    *
-    * @return boolean
-   **/
+    /**
+     * Check if you could access to ALL the entities of an list
+     *
+     * @param array $tab List ID of entities
+     *
+     * @return boolean
+     **/
     public static function haveAccessToAllOfEntities($tab)
     {
 
@@ -1025,14 +1025,14 @@ class Session
     }
 
 
-   /**
-    * Check if you could access (read) to the entity of id = $ID
-    *
-    * @param integer $ID           ID of the entity
-    * @param boolean $is_recursive if recursive item (default 0)
-    *
-    * @return boolean
-   **/
+    /**
+     * Check if you could access (read) to the entity of id = $ID
+     *
+     * @param integer $ID           ID of the entity
+     * @param boolean $is_recursive if recursive item (default 0)
+     *
+     * @return boolean
+     **/
     public static function haveAccessToEntity($ID, $is_recursive = 0)
     {
 
@@ -1058,14 +1058,14 @@ class Session
     }
 
 
-   /**
-    * Check if you could access to one entity of an list
-    *
-    * @param array   $tab          list ID of entities
-    * @param boolean $is_recursive if recursive item (default 0)
-    *
-    * @return boolean
-   **/
+    /**
+     * Check if you could access to one entity of an list
+     *
+     * @param array   $tab          list ID of entities
+     * @param boolean $is_recursive if recursive item (default 0)
+     *
+     * @return boolean
+     **/
     public static function haveAccessToOneOfEntities($tab, $is_recursive = 0)
     {
 
@@ -1080,13 +1080,13 @@ class Session
     }
 
 
-   /**
-    * Check if you could create recursive object in the entity of id = $ID
-    *
-    * @param integer $ID ID of the entity
-    *
-    * @return boolean
-   **/
+    /**
+     * Check if you could create recursive object in the entity of id = $ID
+     *
+     * @param integer $ID ID of the entity
+     *
+     * @return boolean
+     **/
     public static function haveRecursiveAccessToEntity($ID)
     {
 
@@ -1104,14 +1104,14 @@ class Session
     }
 
 
-   /**
-    * Have I the right $right to module $module (conpare to session variable)
-    *
-    * @param string  $module Module to check
-    * @param integer $right  Right to check
-    *
-    * @return boolean
-   **/
+    /**
+     * Have I the right $right to module $module (conpare to session variable)
+     *
+     * @param string  $module Module to check
+     * @param integer $right  Right to check
+     *
+     * @return boolean
+     **/
     public static function haveRight($module, $right)
     {
         global $DB;
@@ -1132,14 +1132,14 @@ class Session
     }
 
 
-   /**
-    * Have I all rights of array $rights to module $module (conpare to session variable)
-    *
-    * @param string    $module Module to check
-    * @param integer[] $rights Rights to check
-    *
-    * @return boolean
-    **/
+    /**
+     * Have I all rights of array $rights to module $module (conpare to session variable)
+     *
+     * @param string    $module Module to check
+     * @param integer[] $rights Rights to check
+     *
+     * @return boolean
+     **/
     public static function haveRightsAnd($module, $rights = [])
     {
 
@@ -1152,14 +1152,14 @@ class Session
     }
 
 
-   /**
-    * Have I one right of array $rights to module $module (conpare to session variable)
-    *
-    * @param string    $module Module to check
-    * @param integer[] $rights Rights to check
-    *
-    * @return boolean
-    **/
+    /**
+     * Have I one right of array $rights to module $module (conpare to session variable)
+     *
+     * @param string    $module Module to check
+     * @param integer[] $rights Rights to check
+     *
+     * @return boolean
+     **/
     public static function haveRightsOr($module, $rights = [])
     {
 
@@ -1172,13 +1172,13 @@ class Session
     }
 
 
-   /**
-    *  Get active Tab for an itemtype
-    *
-    * @param string $itemtype item type
-    *
-    * @return string
-   **/
+    /**
+     *  Get active Tab for an itemtype
+     *
+     * @param string $itemtype item type
+     *
+     * @return string
+     **/
     public static function getActiveTab($itemtype)
     {
 
@@ -1189,16 +1189,16 @@ class Session
     }
 
 
-   /**
-    * Add a message to be displayed after redirect
-    *
-    * @param string  $msg          Message to add
-    * @param boolean $check_once   Check if the message is not already added (false by default)
-    * @param integer $message_type Message type (INFO, WARNING, ERROR) (default INFO)
-    * @param boolean $reset        Clear previous added message (false by default)
-    *
-    * @return void
-   **/
+    /**
+     * Add a message to be displayed after redirect
+     *
+     * @param string  $msg          Message to add
+     * @param boolean $check_once   Check if the message is not already added (false by default)
+     * @param integer $message_type Message type (INFO, WARNING, ERROR) (default INFO)
+     * @param boolean $reset        Clear previous added message (false by default)
+     *
+     * @return void
+     **/
     public static function addMessageAfterRedirect(
         $msg,
         $check_once = false,
@@ -1236,32 +1236,32 @@ class Session
     }
 
 
-   /**
-    *  Force active Tab for an itemtype
-    *
-    * @param string  $itemtype item type
-    * @param integer $tab      ID of the tab
-    *
-    * @return void
-   **/
+    /**
+     *  Force active Tab for an itemtype
+     *
+     * @param string  $itemtype item type
+     * @param integer $tab      ID of the tab
+     *
+     * @return void
+     **/
     public static function setActiveTab($itemtype, $tab)
     {
         $_SESSION['glpi_tabs'][strtolower($itemtype)] = $tab;
     }
 
 
-   /**
-    * Get a saved option from request or session
-    * if get from request, save it
-    *
-    * @since 0.83
-    *
-    * @param string $itemtype  name of itemtype
-    * @param string $name      name of the option
-    * @param mixed  $defvalue  mixed default value for option
-    *
-    * @return mixed
-   **/
+    /**
+     * Get a saved option from request or session
+     * if get from request, save it
+     *
+     * @since 0.83
+     *
+     * @param string $itemtype  name of itemtype
+     * @param string $name      name of the option
+     * @param mixed  $defvalue  mixed default value for option
+     *
+     * @return mixed
+     **/
     public static function getSavedOption($itemtype, $name, $defvalue)
     {
 
@@ -1276,13 +1276,13 @@ class Session
     }
 
 
-   /**
-    * Is the current account read-only
-    *
-    * @since 0.83
-    *
-    * @return boolean
-   **/
+    /**
+     * Is the current account read-only
+     *
+     * @since 0.83
+     *
+     * @return boolean
+     **/
     public static function isReadOnlyAccount()
     {
 
@@ -1300,16 +1300,16 @@ class Session
 
 
 
-   /**
-    * Get new CSRF token
-    *
-    * @param bool $standalone
-    *    Generates a standalone token that will not be shared with other component of current request.
-    *
-    * @since 0.83.3
-    *
-    * @return string
-   **/
+    /**
+     * Get new CSRF token
+     *
+     * @param bool $standalone
+     *    Generates a standalone token that will not be shared with other component of current request.
+     *
+     * @since 0.83.3
+     *
+     * @return string
+     **/
     public static function getNewCSRFToken(bool $standalone = false)
     {
         global $CURRENTCSRFTOKEN;
@@ -1335,13 +1335,13 @@ class Session
     }
 
 
-   /**
-    * Clean expired CSRF tokens
-    *
-    * @since 0.83.3
-    *
-    * @return void
-   **/
+    /**
+     * Clean expired CSRF tokens
+     *
+     * @since 0.83.3
+     *
+     * @return void
+     **/
     public static function cleanCSRFTokens()
     {
 
@@ -1367,17 +1367,17 @@ class Session
     }
 
 
-   /**
-    * Validate that the page has a CSRF token in the POST data
-    * and that the token is legit/not expired.  If the token is valid
-    * it will be removed from the list of valid tokens.
-    *
-    * @since 0.83.3
-    *
-    * @param array $data $_POST data
-    *
-    * @return boolean
-   **/
+    /**
+     * Validate that the page has a CSRF token in the POST data
+     * and that the token is legit/not expired.  If the token is valid
+     * it will be removed from the list of valid tokens.
+     *
+     * @since 0.83.3
+     *
+     * @param array $data $_POST data
+     *
+     * @return boolean
+     **/
     public static function validateCSRF($data)
     {
 
@@ -1401,15 +1401,15 @@ class Session
     }
 
 
-   /**
-    * Check CSRF data
-    *
-    * @since 0.84.2
-    *
-    * @param array $data $_POST data
-    *
-    * @return void
-   **/
+    /**
+     * Check CSRF data
+     *
+     * @since 0.84.2
+     *
+     * @param array $data $_POST data
+     *
+     * @return void
+     **/
     public static function checkCSRF($data)
     {
 
@@ -1428,19 +1428,19 @@ class Session
     }
 
 
-   /**
-    * Get new IDOR token
-    * This token validates the itemtype used by an ajax request is the one asked by a dropdown.
-    * So, we avoid IDOR request where an attacker asks for an another itemtype
-    * than the originaly indtended
-    *
-    * @since 9.5.3
-    *
-    * @param string $itemtype
-    * @param array  $add_params more criteria to check validy of idor tokens
-    *
-    * @return string
-   **/
+    /**
+     * Get new IDOR token
+     * This token validates the itemtype used by an ajax request is the one asked by a dropdown.
+     * So, we avoid IDOR request where an attacker asks for an another itemtype
+     * than the originaly indtended
+     *
+     * @since 9.5.3
+     *
+     * @param string $itemtype
+     * @param array  $add_params more criteria to check validy of idor tokens
+     *
+     * @return string
+     **/
     public static function getNewIDORToken(string $itemtype = "", array $add_params = []): string
     {
         $token = "";
@@ -1461,18 +1461,18 @@ class Session
     }
 
 
-   /**
-    * Validate that the page has a IDOR token in the POST data
-    * and that the token is legit/not expired.
-    * Tokens are kept in session until their time is expired (by default 2h)
-    * to permits multiple ajax calls for a dropdown
-    *
-    * @since 9.5.3
-    *
-    * @param array $data $_POST data
-    *
-    * @return boolean
-   **/
+    /**
+     * Validate that the page has a IDOR token in the POST data
+     * and that the token is legit/not expired.
+     * Tokens are kept in session until their time is expired (by default 2h)
+     * to permits multiple ajax calls for a dropdown
+     *
+     * @since 9.5.3
+     *
+     * @param array $data $_POST data
+     *
+     * @return boolean
+     **/
     public static function validateIDOR(array $data = []): bool
     {
         self::cleanIDORTokens();
@@ -1516,13 +1516,13 @@ class Session
         return false;
     }
 
-   /**
-    * Clean expired IDOR tokens
-    *
-    * @since 9.5.3
-    *
-    * @return void
-   **/
+    /**
+     * Clean expired IDOR tokens
+     *
+     * @since 9.5.3
+     *
+     * @return void
+     **/
     public static function cleanIDORTokens()
     {
         $now = time();
@@ -1536,16 +1536,16 @@ class Session
     }
 
 
-   /**
-    * Is field having translations ?
-    *
-    * @since 0.85
-    *
-    * @param string $itemtype itemtype
-    * @param string $field    field
-    *
-    * @return boolean
-   **/
+    /**
+     * Is field having translations ?
+     *
+     * @since 0.85
+     *
+     * @param string $itemtype itemtype
+     * @param string $field    field
+     *
+     * @return boolean
+     **/
     public static function haveTranslations($itemtype, $field)
     {
 
@@ -1553,13 +1553,13 @@ class Session
               && isset($_SESSION['glpi_dropdowntranslations'][$itemtype][$field]));
     }
 
-   /**
-    * Get current interface name extracted from session var (if exists)
-    *
-    * @since  9.2.2
-    *
-    * @return false or [helpdesk|central]
-    */
+    /**
+     * Get current interface name extracted from session var (if exists)
+     *
+     * @since  9.2.2
+     *
+     * @return false or [helpdesk|central]
+     */
     public static function getCurrentInterface()
     {
         if (isset($_SESSION['glpiactiveprofile']['interface'])) {
@@ -1569,13 +1569,13 @@ class Session
         return false;
     }
 
-   /**
-    * Check if current user can impersonate another user having given id.
-    *
-    * @param integer $user_id
-    *
-    * @return boolean
-    */
+    /**
+     * Check if current user can impersonate another user having given id.
+     *
+     * @param integer $user_id
+     *
+     * @return boolean
+     */
     public static function canImpersonate($user_id)
     {
 
@@ -1592,13 +1592,13 @@ class Session
         return self::haveRight(Config::$rightname, UPDATE);
     }
 
-   /**
-    * Impersonate user having given id.
-    *
-    * @param integer $user_id
-    *
-    * @return boolean
-    */
+    /**
+     * Impersonate user having given id.
+     *
+     * @param integer $user_id
+     *
+     * @return boolean
+     */
     public static function startImpersonating($user_id)
     {
 
@@ -1642,11 +1642,11 @@ class Session
         return true;
     }
 
-   /**
-    * Stop impersonating any user.
-    *
-    * @return boolean
-    */
+    /**
+     * Stop impersonating any user.
+     *
+     * @return boolean
+     */
     public static function stopImpersonating()
     {
 
@@ -1676,69 +1676,69 @@ class Session
         return true;
     }
 
-   /**
-    * Check if impersonate feature is currently used.
-    *
-    * @return boolean
-    */
+    /**
+     * Check if impersonate feature is currently used.
+     *
+     * @return boolean
+     */
     public static function isImpersonateActive()
     {
 
         return array_key_exists('impersonator_id', $_SESSION);
     }
 
-   /**
-    * Return impersonator user id.
-    *
-    * @return string|null
-    */
+    /**
+     * Return impersonator user id.
+     *
+     * @return string|null
+     */
     public static function getImpersonatorId()
     {
 
         return self::isImpersonateActive() ? $_SESSION['impersonator_id'] : null;
     }
 
-   /**
-    * Check if current connected user password has expired.
-    *
-    * @return boolean
-    */
+    /**
+     * Check if current connected user password has expired.
+     *
+     * @return boolean
+     */
     public static function mustChangePassword()
     {
         return array_key_exists('glpi_password_expired', $_SESSION);
     }
 
-   /**
-    * Get active entity id.
-    *
-    * @since 9.5
-    *
-    * @return int
-    */
+    /**
+     * Get active entity id.
+     *
+     * @since 9.5
+     *
+     * @return int
+     */
     public static function getActiveEntity()
     {
         return $_SESSION['glpiactive_entity'] ?? 0;
     }
 
-   /**
-    * Get recursive state of active entity selection.
-    *
-    * @since 9.5.5
-    *
-    * @return bool
-    */
+    /**
+     * Get recursive state of active entity selection.
+     *
+     * @since 9.5.5
+     *
+     * @return bool
+     */
     public static function getIsActiveEntityRecursive(): bool
     {
         return $_SESSION['glpiactive_entity_recursive'] ?? false;
     }
 
-   /**
-    * Start session for a given user
-    *
-    * @param int $users_id ID of the user
-    *
-    * @return User|bool
-    */
+    /**
+     * Start session for a given user
+     *
+     * @param int $users_id ID of the user
+     *
+     * @return User|bool
+     */
     public static function authWithToken(
         string $token,
         string $token_type,
@@ -1764,14 +1764,14 @@ class Session
         return $user;
     }
 
-   /**
-    * Load given entity.
-    *
-    * @param integer $entities_id  Entity to use
-    * @param boolean $is_recursive Whether to load entities recursivly or not
-    *
-    * @return void
-    */
+    /**
+     * Load given entity.
+     *
+     * @param integer $entities_id  Entity to use
+     * @param boolean $is_recursive Whether to load entities recursivly or not
+     *
+     * @return void
+     */
     public static function loadEntity($entities_id, $is_recursive): void
     {
         $_SESSION["glpiactive_entity"]           = $entities_id;

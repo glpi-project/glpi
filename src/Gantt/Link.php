@@ -59,9 +59,9 @@ class Link
         $this->lead = 0;
     }
 
-   /**
-    * Enables Json serialization of Link objects
-    */
+    /**
+     * Enables Json serialization of Link objects
+     */
     public function jsonSerialize()
     {
         return (array)$this;

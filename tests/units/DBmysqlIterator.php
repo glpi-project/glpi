@@ -90,9 +90,9 @@ class DBmysqlIterator extends DbTestCase
     }
 
 
-   /**
-    * This is really an error, no table but a WHERE clase
-    */
+    /**
+     * This is really an error, no table but a WHERE clase
+     */
     public function testNoTableWithWhere()
     {
         $this->when(
@@ -107,9 +107,9 @@ class DBmysqlIterator extends DbTestCase
     }
 
 
-   /**
-    * Temporarily, this is an error, will be allowed later
-    */
+    /**
+     * Temporarily, this is an error, will be allowed later
+     */
     public function testNoTableWithoutWhere()
     {
         $this->when(
@@ -124,9 +124,9 @@ class DBmysqlIterator extends DbTestCase
     }
 
 
-   /**
-    * Temporarily, this is an error, will be allowed later
-    */
+    /**
+     * Temporarily, this is an error, will be allowed later
+     */
     public function testNoTableWithoutWhereBis()
     {
         $this->when(
@@ -1416,11 +1416,11 @@ class DBmysqlIterator extends DbTestCase
         )->isInstanceOf('OutOfBoundsException');
     }
 
-   /**
-    * Returns a fake users table that can be used to test iterator.
-    *
-    * @return \QueryExpression
-    */
+    /**
+     * Returns a fake users table that can be used to test iterator.
+     *
+     * @return \QueryExpression
+     */
     private function getUsersFakeTable(): \QueryExpression
     {
         global $DB;

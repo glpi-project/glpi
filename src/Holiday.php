@@ -33,7 +33,7 @@
 
 /**
  * Holiday Class
-**/
+ **/
 class Holiday extends CommonDropdown
 {
     public static $rightname = 'calendar';
@@ -152,11 +152,11 @@ class Holiday extends CommonDropdown
         );
     }
 
-   /**
-    * Invalidate holidays cache on linked calendars.
-    *
-    * @return void
-    */
+    /**
+     * Invalidate holidays cache on linked calendars.
+     *
+     * @return void
+     */
     private function invalidateCalendarHolidayCache(): void
     {
         $calendar_holiday = new Calendar_Holiday();

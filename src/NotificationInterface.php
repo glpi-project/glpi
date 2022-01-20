@@ -36,29 +36,29 @@
  */
 interface NotificationInterface
 {
-   /**
-    * Send notifications
-    *
-    * @return 0|1
-   **/
+    /**
+     * Send notifications
+     *
+     * @return 0|1
+     **/
     public function sendNotification();
 
 
-   /**
-    * Check data
-    *
-    * @param mixed $value   The data to check (may differ for every notification mode)
-    * @param array $options Optionnal special options (may be needed)
-    *
-    * @return boolean
-   **/
+    /**
+     * Check data
+     *
+     * @param mixed $value   The data to check (may differ for every notification mode)
+     * @param array $options Optionnal special options (may be needed)
+     *
+     * @return boolean
+     **/
     public static function check($value, $options = []);
 
 
-   /**
-    * Method to test notification
-    *
-    * @return mixed
-   **/
+    /**
+     * Method to test notification
+     *
+     * @return mixed
+     **/
     public static function testNotification();
 }

@@ -40,7 +40,7 @@ use Glpi\RichText\RichText;
 
 /**
  * Ticket Class
-**/
+ **/
 class Ticket extends CommonITILObject
 {
    // From CommonDBTM
@@ -237,11 +237,11 @@ class Ticket extends CommonITILObject
     }
 
 
-   /**
-    * Is the current user have right to show the current ticket ?
-    *
-    * @return boolean
-   **/
+    /**
+     * Is the current user have right to show the current ticket ?
+     *
+     * @return boolean
+     **/
     public function canViewItem()
     {
 
@@ -268,11 +268,11 @@ class Ticket extends CommonITILObject
     }
 
 
-   /**
-    * Is the current user have right to approve solution of the current ticket ?
-    *
-    * @return boolean
-   **/
+    /**
+     * Is the current user have right to approve solution of the current ticket ?
+     *
+     * @return boolean
+     **/
     public function canApprove()
     {
 
@@ -301,11 +301,11 @@ class Ticket extends CommonITILObject
         return true;
     }
 
-   /**
-    * Check if current user can take into account the ticket.
-    *
-    * @return boolean
-    */
+    /**
+     * Check if current user can take into account the ticket.
+     *
+     * @return boolean
+     */
     public function canTakeIntoAccount()
     {
 
@@ -342,11 +342,11 @@ class Ticket extends CommonITILObject
         return $canAddTask || $canAddFollowup;
     }
 
-   /**
-    * Check if ticket has already been taken into account.
-    *
-    * @return boolean
-    */
+    /**
+     * Check if ticket has already been taken into account.
+     *
+     * @return boolean
+     */
     public function isAlreadyTakenIntoAccount()
     {
 
@@ -354,18 +354,18 @@ class Ticket extends CommonITILObject
           && $this->fields['takeintoaccount_delay_stat'] != 0;
     }
 
-   /**
-    * Get Datas to be added for SLA add
-    *
-    * @param $slas_id      SLA id
-    * @param $entities_id  entity ID of the ticket
-    * @param $date         begin date of the ticket
-    * @param $type         type of SLA
-    *
-    * @since 9.1 (before getDatasToAddSla without type parameter)
-    *
-    * @return array of datas to add in ticket
-   **/
+    /**
+     * Get Datas to be added for SLA add
+     *
+     * @param $slas_id      SLA id
+     * @param $entities_id  entity ID of the ticket
+     * @param $date         begin date of the ticket
+     * @param $type         type of SLA
+     *
+     * @since 9.1 (before getDatasToAddSla without type parameter)
+     *
+     * @return array of datas to add in ticket
+     **/
     public function getDatasToAddSLA($slas_id, $entities_id, $date, $type)
     {
 
@@ -396,18 +396,18 @@ class Ticket extends CommonITILObject
         return $data;
     }
 
-   /**
-    * Get Datas to be added for OLA add
-    *
-    * @param $olas_id      OLA id
-    * @param $entities_id  entity ID of the ticket
-    * @param $date         begin date of the ticket
-    * @param $type         type of OLA
-    *
-    * @since 9.2 (before getDatasToAddOla without type parameter)
-    *
-    * @return array of datas to add in ticket
-    **/
+    /**
+     * Get Datas to be added for OLA add
+     *
+     * @param $olas_id      OLA id
+     * @param $entities_id  entity ID of the ticket
+     * @param $date         begin date of the ticket
+     * @param $type         type of OLA
+     *
+     * @since 9.2 (before getDatasToAddOla without type parameter)
+     *
+     * @return array of datas to add in ticket
+     **/
     public function getDatasToAddOLA($olas_id, $entities_id, $date, $type)
     {
 
@@ -440,18 +440,18 @@ class Ticket extends CommonITILObject
     }
 
 
-   /**
-    * Delete Level Agreement for the ticket
-    *
-    * @since 9.2
-    *
-    * @param string  $laType (SLA | OLA)
-    * @param integer $id the sla/ola id
-    * @param integer $subtype (SLM::TTR | SLM::TTO)
-    * @param bool    $delete_date (default false)
-    *
-    * @return bool
-    **/
+    /**
+     * Delete Level Agreement for the ticket
+     *
+     * @since 9.2
+     *
+     * @param string  $laType (SLA | OLA)
+     * @param integer $id the sla/ola id
+     * @param integer $subtype (SLM::TTR | SLM::TTO)
+     * @param bool    $delete_date (default false)
+     *
+     * @return bool
+     **/
     public function deleteLevelAgreement($laType, $la_id, $subtype, $delete_date = false)
     {
         switch ($laType) {
@@ -492,11 +492,11 @@ class Ticket extends CommonITILObject
     }
 
 
-   /**
-    * Is the current user have right to create the current ticket ?
-    *
-    * @return boolean
-   **/
+    /**
+     * Is the current user have right to create the current ticket ?
+     *
+     * @return boolean
+     **/
     public function canCreateItem()
     {
 
@@ -507,11 +507,11 @@ class Ticket extends CommonITILObject
     }
 
 
-   /**
-    * Is the current user have right to update the current ticket ?
-    *
-    * @return boolean
-   **/
+    /**
+     * Is the current user have right to update the current ticket ?
+     *
+     * @return boolean
+     **/
     public function canUpdateItem()
     {
         if (!$this->checkEntity()) {
@@ -544,11 +544,11 @@ class Ticket extends CommonITILObject
     }
 
 
-   /**
-    * Is the current user is a requester of the current ticket and have the right to update it ?
-    *
-    * @return boolean
-    */
+    /**
+     * Is the current user is a requester of the current ticket and have the right to update it ?
+     *
+     * @return boolean
+     */
     public function canRequesterUpdateItem()
     {
         return ($this->isUser(CommonITILActor::REQUESTER, Session::getLoginUserID())
@@ -559,11 +559,11 @@ class Ticket extends CommonITILObject
               && $this->numberOfTasks() == 0;
     }
 
-   /**
-    * Is the current user have OWN right and is the assigned to the ticket
-    *
-    * @return boolean
-    */
+    /**
+     * Is the current user have OWN right and is the assigned to the ticket
+     *
+     * @return boolean
+     */
     public function ownItem()
     {
         return Session::haveRight(self::$rightname, self::OWN)
@@ -571,9 +571,9 @@ class Ticket extends CommonITILObject
     }
 
 
-   /**
-    * @since 0.85
-   **/
+    /**
+     * @since 0.85
+     **/
     public static function canDelete()
     {
 
@@ -584,11 +584,11 @@ class Ticket extends CommonITILObject
         return Session::haveRight(self::$rightname, DELETE);
     }
 
-   /**
-    * is the current user could reopen the current ticket
-    * @since  9.2
-    * @return boolean
-    */
+    /**
+     * is the current user could reopen the current ticket
+     * @since  9.2
+     * @return boolean
+     */
     public function canReopen()
     {
         return Session::haveRight('followup', CREATE)
@@ -598,11 +598,11 @@ class Ticket extends CommonITILObject
     }
 
 
-   /**
-    * Is the current user have right to delete the current ticket ?
-    *
-    * @return boolean
-   **/
+    /**
+     * Is the current user have right to delete the current ticket ?
+     *
+     * @return boolean
+     **/
     public function canDeleteItem()
     {
 
@@ -625,9 +625,9 @@ class Ticket extends CommonITILObject
         return static::canDelete();
     }
 
-   /**
-    * @see CommonITILObject::getDefaultActor()
-   **/
+    /**
+     * @see CommonITILObject::getDefaultActor()
+     **/
     public function getDefaultActor($type)
     {
 
@@ -651,9 +651,9 @@ class Ticket extends CommonITILObject
     }
 
 
-   /**
-    * @see CommonITILObject::getDefaultActorRightSearch()
-   **/
+    /**
+     * @see CommonITILObject::getDefaultActorRightSearch()
+     **/
     public function getDefaultActorRightSearch($type)
     {
 
@@ -902,11 +902,11 @@ class Ticket extends CommonITILObject
     }
 
 
-   /**
-    * Retrieve data of the hardware linked to the ticket if exists
-    *
-    * @return void
-   **/
+    /**
+     * Retrieve data of the hardware linked to the ticket if exists
+     *
+     * @return void
+     **/
     public function getAdditionalDatas()
     {
 
@@ -1279,17 +1279,17 @@ class Ticket extends CommonITILObject
     }
 
 
-   /**
-    *  SLA affect by rules : reset time_to_resolve and time_to_own
-    *  Manual SLA defined : reset time_to_resolve and time_to_own
-    *  No manual SLA and due date defined : reset auto SLA
-    *
-    *  @since 9.1
-    *
-    * @param $type
-    * @param $input
-    * @param $manual_slas_id
-    */
+    /**
+     *  SLA affect by rules : reset time_to_resolve and time_to_own
+     *  Manual SLA defined : reset time_to_resolve and time_to_own
+     *  No manual SLA and due date defined : reset auto SLA
+     *
+     *  @since 9.1
+     *
+     * @param $type
+     * @param $input
+     * @param $manual_slas_id
+     */
     public function slaAffect($type, &$input, $manual_slas_id)
     {
 
@@ -1371,17 +1371,17 @@ class Ticket extends CommonITILObject
         }
     }
 
-   /**
-    *  OLA affect by rules : reset internal_time_to_resolve and internal_time_to_own
-    *  Manual OLA defined : reset internal_time_to_resolve and internal_time_to_own
-    *  No manual OLA and due date defined : reset auto OLA
-    *
-    *  @since 9.1
-    *
-    * @param $type
-    * @param $input
-    * @param $manual_olas_id
-    */
+    /**
+     *  OLA affect by rules : reset internal_time_to_resolve and internal_time_to_own
+     *  Manual OLA defined : reset internal_time_to_resolve and internal_time_to_own
+     *  No manual OLA and due date defined : reset auto OLA
+     *
+     *  @since 9.1
+     *
+     * @param $type
+     * @param $input
+     * @param $manual_olas_id
+     */
     public function olaAffect($type, &$input, $manual_olas_id)
     {
 
@@ -1462,13 +1462,13 @@ class Ticket extends CommonITILObject
     }
 
 
-   /**
-    * Manage SLA level escalation
-    *
-    * @since 9.1
-    *
-    * @param $slas_id
-   **/
+    /**
+     * Manage SLA level escalation
+     *
+     * @since 9.1
+     *
+     * @param $slas_id
+     **/
     public function manageSlaLevel($slas_id)
     {
 
@@ -1489,13 +1489,13 @@ class Ticket extends CommonITILObject
         SlaLevel_Ticket::replayForTicket($this->getID(), $sla->getField('type'));
     }
 
-   /**
-    * Manage OLA level escalation
-    *
-    * @since 9.1
-    *
-    * @param $slas_id
-   **/
+    /**
+     * Manage OLA level escalation
+     *
+     * @since 9.1
+     *
+     * @param $slas_id
+     **/
     public function manageOlaLevel($slas_id)
     {
 
@@ -1534,9 +1534,9 @@ class Ticket extends CommonITILObject
     }
 
 
-   /**
-    * Compute take into account stat of the current ticket
-   **/
+    /**
+     * Compute take into account stat of the current ticket
+     **/
     public function computeTakeIntoAccountDelayStat()
     {
 
@@ -2153,15 +2153,15 @@ class Ticket extends CommonITILObject
     }
 
 
-   /**
-    * Manage Validation add from input
-    *
-    * @since 0.85
-    *
-    * @param $input array : input array
-    *
-    * @return boolean
-   **/
+    /**
+     * Manage Validation add from input
+     *
+     * @since 0.85
+     *
+     * @param $input array : input array
+     *
+     * @return boolean
+     **/
     public function manageValidationAdd($input)
     {
 
@@ -2351,17 +2351,17 @@ class Ticket extends CommonITILObject
     }
 
 
-   /**
-    * Get active or solved tickets for an hardware last X days
-    *
-    * @since 0.83
-    *
-    * @param $itemtype  string   Item type
-    * @param $items_id  integer  ID of the Item
-    * @param $days      integer  day number
-    *
-    * @return array
-   **/
+    /**
+     * Get active or solved tickets for an hardware last X days
+     *
+     * @since 0.83
+     *
+     * @param $itemtype  string   Item type
+     * @param $items_id  integer  ID of the Item
+     * @param $days      integer  day number
+     *
+     * @return array
+     **/
     public function getActiveOrSolvedLastDaysTicketsForItem($itemtype, $items_id, $days)
     {
         global $DB;
@@ -2409,16 +2409,16 @@ class Ticket extends CommonITILObject
     }
 
 
-   /**
-    * Count active tickets for an hardware
-    *
-    * @since 0.83
-    *
-    * @param $itemtype  string   Item type
-    * @param $items_id  integer  ID of the Item
-    *
-    * @return integer
-   **/
+    /**
+     * Count active tickets for an hardware
+     *
+     * @since 0.83
+     *
+     * @param $itemtype  string   Item type
+     * @param $items_id  integer  ID of the Item
+     *
+     * @return integer
+     **/
     public function countActiveTicketsForItem($itemtype, $items_id)
     {
         global $DB;
@@ -2448,17 +2448,17 @@ class Ticket extends CommonITILObject
         return $result['cpt'];
     }
 
-   /**
-    * Get active tickets for an item
-    *
-    * @since 9.5
-    *
-    * @param string $itemtype     Item type
-    * @param integer $items_id    ID of the Item
-    * @param string $type         Type of the tickets (incident or request)
-    *
-    * @return DBmysqlIterator
-    */
+    /**
+     * Get active tickets for an item
+     *
+     * @since 9.5
+     *
+     * @param string $itemtype     Item type
+     * @param integer $items_id    ID of the Item
+     * @param string $type         Type of the tickets (incident or request)
+     *
+     * @return DBmysqlIterator
+     */
     public function getActiveTicketsForItem($itemtype, $items_id, $type)
     {
         global $DB;
@@ -2493,17 +2493,17 @@ class Ticket extends CommonITILObject
         ]);
     }
 
-   /**
-    * Count solved tickets for an hardware last X days
-    *
-    * @since 0.83
-    *
-    * @param $itemtype  string   Item type
-    * @param $items_id  integer  ID of the Item
-    * @param $days      integer  day number
-    *
-    * @return integer
-   **/
+    /**
+     * Count solved tickets for an hardware last X days
+     *
+     * @since 0.83
+     *
+     * @param $itemtype  string   Item type
+     * @param $items_id  integer  ID of the Item
+     * @param $days      integer  day number
+     *
+     * @return integer
+     **/
     public function countSolvedTicketsForItemLastDays($itemtype, $items_id, $days)
     {
         global $DB;
@@ -2538,15 +2538,15 @@ class Ticket extends CommonITILObject
     }
 
 
-   /**
-    * Update date mod of the ticket
-    *
-    * @since 0.83.3 new proto
-    *
-    * @param $ID                           ID of the ticket
-    * @param $no_stat_computation  boolean do not cumpute take into account stat (false by default)
-    * @param $users_id_lastupdater integer to force last_update id (default 0 = not used)
-   **/
+    /**
+     * Update date mod of the ticket
+     *
+     * @since 0.83.3 new proto
+     *
+     * @param $ID                           ID of the ticket
+     * @param $no_stat_computation  boolean do not cumpute take into account stat (false by default)
+     * @param $users_id_lastupdater integer to force last_update id (default 0 = not used)
+     **/
     public function updateDateMod($ID, $no_stat_computation = false, $users_id_lastupdater = 0)
     {
 
@@ -2570,15 +2570,15 @@ class Ticket extends CommonITILObject
     }
 
 
-   /**
-    * Overloaded from commonDBTM
-    *
-    * @since 0.83
-    *
-    * @param $type itemtype of object to add
-    *
-    * @return rights
-   **/
+    /**
+     * Overloaded from commonDBTM
+     *
+     * @since 0.83
+     *
+     * @param $type itemtype of object to add
+     *
+     * @return rights
+     **/
     public function canAddItem($type)
     {
 
@@ -2601,13 +2601,13 @@ class Ticket extends CommonITILObject
     }
 
 
-   /**
-    * Check if user can add followups to the ticket.
-    *
-    * @param integer $user_id
-    *
-    * @return boolean
-    */
+    /**
+     * Check if user can add followups to the ticket.
+     *
+     * @param integer $user_id
+     *
+     * @return boolean
+     */
     public function canUserAddFollowups($user_id)
     {
 
@@ -2645,17 +2645,17 @@ class Ticket extends CommonITILObject
     }
 
 
-   /**
-    * Check current user can create a ticket for another given user
-    *
-    * @since 9.5.4
-    *
-    * @param int $requester_id the user for which we want to create the ticket
-    * @param int $entity_restrict check entity when search users
-    *            (keep null to check with current session entities)
-    *
-    * @return bool
-    */
+    /**
+     * Check current user can create a ticket for another given user
+     *
+     * @since 9.5.4
+     *
+     * @param int $requester_id the user for which we want to create the ticket
+     * @param int $entity_restrict check entity when search users
+     *            (keep null to check with current session entities)
+     *
+     * @return bool
+     */
     public static function canDelegateeCreateTicket(int $requester_id, ?int $entity_restrict = null): bool
     {
        // if the user is a technician, no need to check delegates
@@ -2692,9 +2692,9 @@ class Ticket extends CommonITILObject
     }
 
 
-   /**
-    * Get default values to search engine to override
-   **/
+    /**
+     * Get default values to search engine to override
+     **/
     public static function getDefaultSearchRequest()
     {
 
@@ -2711,9 +2711,9 @@ class Ticket extends CommonITILObject
     }
 
 
-   /**
-    * @see CommonDBTM::getSpecificMassiveActions()
-   **/
+    /**
+     * @see CommonDBTM::getSpecificMassiveActions()
+     **/
     public function getSpecificMassiveActions($checkitem = null)
     {
 
@@ -3836,18 +3836,18 @@ JAVASCRIPT;
     }
 
 
-   /**
-    * Dropdown of ticket type
-    *
-    * @param string $name     Select name
-    * @param array  $options  Array of options:
-    *    - value     : integer / preselected value (default 0)
-    *    - toadd     : array / array of specific values to add at the beginning
-    *    - on_change : string / value to transmit to "onChange"
-    *    - display   : boolean / display or get string (default true)
-    *
-    * @return string id of the select
-   **/
+    /**
+     * Dropdown of ticket type
+     *
+     * @param string $name     Select name
+     * @param array  $options  Array of options:
+     *    - value     : integer / preselected value (default 0)
+     *    - toadd     : array / array of specific values to add at the beginning
+     *    - on_change : string / value to transmit to "onChange"
+     *    - display   : boolean / display or get string (default true)
+     *
+     * @return string id of the select
+     **/
     public static function dropdownType($name, $options = [])
     {
 
@@ -3875,11 +3875,11 @@ JAVASCRIPT;
     }
 
 
-   /**
-    * Get ticket types
-    *
-    * @return array Array of types
-   **/
+    /**
+     * Get ticket types
+     *
+     * @return array Array of types
+     **/
     public static function getTypes()
     {
 
@@ -3892,11 +3892,11 @@ JAVASCRIPT;
     }
 
 
-   /**
-    * Get ticket type Name
-    *
-    * @param integer $value Type ID
-   **/
+    /**
+     * Get ticket type Name
+     *
+     * @param integer $value Type ID
+     **/
     public static function getTicketTypeName($value)
     {
 
@@ -3914,13 +3914,13 @@ JAVASCRIPT;
     }
 
 
-   /**
-    * get the Ticket status list
-    *
-    * @param boolean $withmetaforsearch  (false by default)
-    *
-    * @return array
-   **/
+    /**
+     * get the Ticket status list
+     *
+     * @param boolean $withmetaforsearch  (false by default)
+     *
+     * @return array
+     **/
     public static function getAllStatusArray($withmetaforsearch = false)
     {
 
@@ -3943,63 +3943,63 @@ JAVASCRIPT;
     }
 
 
-   /**
-    * Get the ITIL object closed status list
-    *
-    * @since 0.83
-    *
-    * @return array
-   **/
+    /**
+     * Get the ITIL object closed status list
+     *
+     * @since 0.83
+     *
+     * @return array
+     **/
     public static function getClosedStatusArray()
     {
         return [self::CLOSED];
     }
 
 
-   /**
-    * Get the ITIL object solved status list
-    *
-    * @since 0.83
-    *
-    * @return array
-   **/
+    /**
+     * Get the ITIL object solved status list
+     *
+     * @since 0.83
+     *
+     * @return array
+     **/
     public static function getSolvedStatusArray()
     {
         return [self::SOLVED];
     }
 
-   /**
-    * Get the ITIL object new status list
-    *
-    * @since 0.83.8
-    *
-    * @return array
-   **/
+    /**
+     * Get the ITIL object new status list
+     *
+     * @since 0.83.8
+     *
+     * @return array
+     **/
     public static function getNewStatusArray()
     {
         return [self::INCOMING];
     }
 
-   /**
-    * Get the ITIL object assign or plan status list
-    *
-    * @since 0.83
-    *
-    * @return array
-   **/
+    /**
+     * Get the ITIL object assign or plan status list
+     *
+     * @since 0.83
+     *
+     * @return array
+     **/
     public static function getProcessStatusArray()
     {
         return [self::ASSIGNED, self::PLANNED];
     }
 
 
-   /**
-    * Calculate Ticket TCO for an item
-    *
-    *@param CommonDBTM $item  Object of the item
-    *
-    *@return float
-   **/
+    /**
+     * Calculate Ticket TCO for an item
+     *
+     *@param CommonDBTM $item  Object of the item
+     *
+     *@return float
+     **/
     public static function computeTco(CommonDBTM $item)
     {
         global $DB;
@@ -4040,15 +4040,15 @@ JAVASCRIPT;
     }
 
 
-   /**
-    * Print the helpdesk form
-    *
-    * @param integer $ID               ID of the user who want to display the Helpdesk
-    * @param boolean $ticket_template  Ticket template for preview : false if not used for preview
-    *                                  (false by default)
-    *
-    * @return boolean|void
-   **/
+    /**
+     * Print the helpdesk form
+     *
+     * @param integer $ID               ID of the user who want to display the Helpdesk
+     * @param boolean $ticket_template  Ticket template for preview : false if not used for preview
+     *                                  (false by default)
+     *
+     * @return boolean|void
+     **/
     public function showFormHelpdesk($ID, $ticket_template = false)
     {
         global $CFG_GLPI;
@@ -4189,11 +4189,11 @@ JAVASCRIPT;
         ]);
     }
 
-   /**
-    * Display a single observer selector
-    *
-    * @param array $options  Options for default values ($options of showActorAddFormOnCreate)
-   **/
+    /**
+     * Display a single observer selector
+     *
+     * @param array $options  Options for default values ($options of showActorAddFormOnCreate)
+     **/
     public static function showFormHelpdeskObserver($options = [])
     {
         global $CFG_GLPI;
@@ -4646,12 +4646,12 @@ JAVASCRIPT;
     }
 
 
-   /**
-    * @param integer $start
-    * @param string  $status             (default ''process)
-    * @param boolean $showgrouptickets   (true by default)
-    * @param boolean $display            set to false to returne html
-    */
+    /**
+     * @param integer $start
+     * @param string  $status             (default ''process)
+     * @param boolean $showgrouptickets   (true by default)
+     * @param boolean $display            set to false to returne html
+     */
     public static function showCentralList($start, $status = "process", bool $showgrouptickets = true, bool $display = true)
     {
         global $DB;
@@ -5339,12 +5339,12 @@ JAVASCRIPT;
         }
     }
 
-   /**
-    * Get tickets count
-    *
-    * @param boolean $foruser  Only for current login user as requester (false by default)
-    * @param boolean $display  il false return html
-   **/
+    /**
+     * Get tickets count
+     *
+     * @param boolean $foruser  Only for current login user as requester (false by default)
+     * @param boolean $display  il false return html
+     **/
     public static function showCentralCount(bool $foruser = false, bool $display = true)
     {
         global $DB, $CFG_GLPI;
@@ -5572,16 +5572,16 @@ JAVASCRIPT;
         }
     }
 
-   /**
-   * Display tickets for an item
-    *
-    * Will also display tickets of linked items
-    *
-    * @param CommonDBTM $item         CommonDBTM object
-    * @param integer    $withtemplate (default 0)
-    *
-    * @return void (display a table)
-   **/
+    /**
+     * Display tickets for an item
+     *
+     * Will also display tickets of linked items
+     *
+     * @param CommonDBTM $item         CommonDBTM object
+     * @param integer    $withtemplate (default 0)
+     *
+     * @return void (display a table)
+     **/
     public static function showListForItem(CommonDBTM $item, $withtemplate = 0)
     {
         global $DB;
@@ -5851,10 +5851,10 @@ JAVASCRIPT;
         }
     }
 
-   /**
-    * @param $ID
-    * @param $forcetab  string   name of the tab to force at the display (default '')
-   **/
+    /**
+     * @param $ID
+     * @param $forcetab  string   name of the tab to force at the display (default '')
+     **/
     public static function showVeryShort($ID, $forcetab = '')
     {
        // Prints a job in short form
@@ -5983,9 +5983,9 @@ JAVASCRIPT;
     }
 
 
-   /**
-    * @param $output
-   **/
+    /**
+     * @param $output
+     **/
     public static function showPreviewAssignAction($output)
     {
 
@@ -6013,13 +6013,13 @@ JAVASCRIPT;
     }
 
 
-   /**
-    * Give cron information
-    *
-    * @param string $name  Task's name
-    *
-    * @return array Array of information
-   **/
+    /**
+     * Give cron information
+     *
+     * @param string $name  Task's name
+     *
+     * @return array Array of information
+     **/
     public static function cronInfo($name)
     {
 
@@ -6040,13 +6040,13 @@ JAVASCRIPT;
     }
 
 
-   /**
-    * Cron for ticket's automatic close
-    *
-    * @param CronTask $task
-    *
-    * @return integer (0 : nothing done - 1 : done)
-   **/
+    /**
+     * Cron for ticket's automatic close
+     *
+     * @param CronTask $task
+     *
+     * @return integer (0 : nothing done - 1 : done)
+     **/
     public static function cronCloseTicket($task)
     {
         global $DB;
@@ -6121,13 +6121,13 @@ JAVASCRIPT;
     }
 
 
-   /**
-    * Cron for alert old tickets which are not solved
-    *
-    * @param CronTask $task
-    *
-    * @return integer (0 : nothing done - 1 : done)
-   **/
+    /**
+     * Cron for alert old tickets which are not solved
+     *
+     * @param CronTask $task
+     *
+     * @return integer (0 : nothing done - 1 : done)
+     **/
     public static function cronAlertNotClosed($task)
     {
         global $DB, $CFG_GLPI;
@@ -6182,13 +6182,13 @@ JAVASCRIPT;
     }
 
 
-   /**
-    * Cron for ticketsatisfaction's automatic generated
-    *
-    * @param CronTask $task
-    *
-    * @return integer (0 : nothing done - 1 : done)
-   **/
+    /**
+     * Cron for ticketsatisfaction's automatic generated
+     *
+     * @param CronTask $task
+     *
+     * @return integer (0 : nothing done - 1 : done)
+     **/
     public static function cronCreateInquest($task)
     {
         global $DB;
@@ -6303,13 +6303,13 @@ JAVASCRIPT;
     }
 
 
-   /**
-    * Cron for ticket's automatic purge
-    *
-    * @param CronTask $task CronTask object
-    *
-    * @return integer (0 : nothing done - 1 : done)
-   **/
+    /**
+     * Cron for ticket's automatic purge
+     *
+     * @param CronTask $task CronTask object
+     *
+     * @return integer (0 : nothing done - 1 : done)
+     **/
     public static function cronPurgeTicket(CronTask $task)
     {
         global $DB;
@@ -6367,20 +6367,20 @@ JAVASCRIPT;
         return ($tot > 0 ? 1 : 0);
     }
 
-   /**
-    * Display debug information for current object
-   **/
+    /**
+     * Display debug information for current object
+     **/
     public function showDebug()
     {
         NotificationEvent::debugEvent($this);
     }
 
 
-   /**
-    * @since 0.85
-    *
-    * @see commonDBTM::getRights()
-    **/
+    /**
+     * @since 0.85
+     *
+     * @see commonDBTM::getRights()
+     **/
     public function getRights($interface = 'central')
     {
 
@@ -6414,17 +6414,17 @@ JAVASCRIPT;
         return $values;
     }
 
-   /**
-    * Convert img of the collector for ticket
-    *
-    * @since 0.85
-    *
-    * @param string $html  html content of input
-    * @param array  $files filenames
-    * @param array  $tags  image tags
-    *
-    * @return string html content
-   **/
+    /**
+     * Convert img of the collector for ticket
+     *
+     * @since 0.85
+     *
+     * @param string $html  html content of input
+     * @param array  $files filenames
+     * @param array  $tags  image tags
+     *
+     * @return string html content
+     **/
     public static function convertContentForTicket($html, $files, $tags)
     {
 
@@ -6445,12 +6445,12 @@ JAVASCRIPT;
         return $html;
     }
 
-   /**
-    * Get correct Calendar: Entity or Sla
-    *
-    * @since 0.90.4
-    *
-   **/
+    /**
+     * Get correct Calendar: Entity or Sla
+     *
+     * @since 0.90.4
+     *
+     **/
     public function getCalendar()
     {
 
@@ -6467,11 +6467,11 @@ JAVASCRIPT;
     }
 
 
-   /**
-    * Select a field using standard system
-    *
-    * @since 9.1
-    */
+    /**
+     * Select a field using standard system
+     *
+     * @since 9.1
+     */
     public function getValueToSelect($field_id_or_search_options, $name = '', $values = '', $options = [])
     {
         if (isset($field_id_or_search_options['linkfield'])) {
@@ -6606,13 +6606,13 @@ JAVASCRIPT;
         ]);
     }
 
-   /**
-    * Fill input with values related to business rules.
-    *
-    * @param array $input
-    *
-    * @return void
-    */
+    /**
+     * Fill input with values related to business rules.
+     *
+     * @param array $input
+     *
+     * @return void
+     */
     private function fillInputForBusinessRules(array &$input)
     {
         global $DB;
@@ -6645,13 +6645,13 @@ JAVASCRIPT;
         }
     }
 
-   /**
-    * Build parent condition for search
-    *
-    * @param string $fieldID field used in the condition: tickets_id, items_id
-    *
-    * @return string
-    */
+    /**
+     * Build parent condition for search
+     *
+     * @param string $fieldID field used in the condition: tickets_id, items_id
+     *
+     * @return string
+     */
     public static function buildCanViewCondition($fieldID)
     {
 
@@ -6768,27 +6768,27 @@ JAVASCRIPT;
         return $whitelist;
     }
 
-   /**
-    * Merge one or more tickets into another existing ticket.
-    * Optionally sub-items like followups, documents, and tasks can be copied into the merged ticket.
-    * If a ticket cannot be merged, the process continues on to the next ticket.
-    * @param int   $merge_target_id The ID of the ticket that the other tickets will be merged into
-    * @param array $ticket_ids Array of IDs of tickets to merge into the ticket with ID $merge_target_id
-    * @param array $params Array of parameters for the ticket merge.
-    *       linktypes - Array of itemtypes that will be duplicated into the ticket $merge_target_id.
-    *                By default, no sub-items are copied. Currently supported link types are ITILFollowup, Document, and TicketTask.
-    *       full_transaction - Boolean value indicating if the entire merge must complete successfully, or if partial merges are allowed.
-    *                By default, the full merge must complete. On failure, all database operations performed are rolled back.
-    *       link_type - Integer indicating the link type of the merged tickets (See types in Ticket_Ticket).
-    *                By default, this is Ticket_Ticket::SON_OF. To disable linking, use 0 or a negative value.
-    *       append_actors - Array of actor types to migrate into the ticket $merge_ticket. See types in CommonITILActor.
-    *                By default, all actors are added to the ticket.
-    * @param array $status Reference array that this function uses to store the status of each ticket attempted to be merged.
-    *                   id => status (0 = Success, 1 = Error, 2 = Insufficient Rights).
-    * @return boolean  True if the merge was successful if "full_transaction" is true.
-    *                      Otherwise, true if any ticket was successfully merged.
-    * @since 9.5.0
-    */
+    /**
+     * Merge one or more tickets into another existing ticket.
+     * Optionally sub-items like followups, documents, and tasks can be copied into the merged ticket.
+     * If a ticket cannot be merged, the process continues on to the next ticket.
+     * @param int   $merge_target_id The ID of the ticket that the other tickets will be merged into
+     * @param array $ticket_ids Array of IDs of tickets to merge into the ticket with ID $merge_target_id
+     * @param array $params Array of parameters for the ticket merge.
+     *       linktypes - Array of itemtypes that will be duplicated into the ticket $merge_target_id.
+     *                By default, no sub-items are copied. Currently supported link types are ITILFollowup, Document, and TicketTask.
+     *       full_transaction - Boolean value indicating if the entire merge must complete successfully, or if partial merges are allowed.
+     *                By default, the full merge must complete. On failure, all database operations performed are rolled back.
+     *       link_type - Integer indicating the link type of the merged tickets (See types in Ticket_Ticket).
+     *                By default, this is Ticket_Ticket::SON_OF. To disable linking, use 0 or a negative value.
+     *       append_actors - Array of actor types to migrate into the ticket $merge_ticket. See types in CommonITILActor.
+     *                By default, all actors are added to the ticket.
+     * @param array $status Reference array that this function uses to store the status of each ticket attempted to be merged.
+     *                   id => status (0 = Success, 1 = Error, 2 = Insufficient Rights).
+     * @return boolean  True if the merge was successful if "full_transaction" is true.
+     *                      Otherwise, true if any ticket was successfully merged.
+     * @since 9.5.0
+     */
     public static function merge(int $merge_target_id, array $ticket_ids, array &$status, array $params = [])
     {
         global $DB;
@@ -7073,11 +7073,11 @@ JAVASCRIPT;
     }
 
 
-   /**
-    * Check profiles and detect where criteria from existing rights
-    *
-    * @return array criteria to apply to an iterator query
-    */
+    /**
+     * Check profiles and detect where criteria from existing rights
+     *
+     * @return array criteria to apply to an iterator query
+     */
     public static function getCriteriaFromProfile()
     {
         if (Session::haveRight("ticket", Ticket::READALL)) {

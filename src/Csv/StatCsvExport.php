@@ -35,10 +35,10 @@ namespace Glpi\Csv;
 
 class StatCsvExport implements ExportToCsvInterface
 {
-   /** @var array */
+    /** @var array */
     protected $headers;
 
-   /** @var array */
+    /** @var array */
     protected $content;
 
     public function __construct(array $series, array $options = [])
@@ -47,12 +47,12 @@ class StatCsvExport implements ExportToCsvInterface
         $this->parseSeries($series, $options);
     }
 
-   /**
-    * Parse values from $series into header and content
-    *
-    * @param array $series
-    * @param array $options
-    */
+    /**
+     * Parse values from $series into header and content
+     *
+     * @param array $series
+     * @param array $options
+     */
     protected function parseSeries(array $series, array $options): void
     {
         $values  = [];

@@ -149,16 +149,16 @@ class Contract extends CommonDBTM
         }
     }
 
-   /**
-    * Print the contract form
-    *
-    * @param $ID        integer ID of the item
-    * @param $options   array
-    *     - target filename : where to go when done.
-    *     - withtemplate boolean : template or basic item
-    *
-    *@return boolean item found
-    */
+    /**
+     * Print the contract form
+     *
+     * @param $ID        integer ID of the item
+     * @param $options   array
+     *     - target filename : where to go when done.
+     *     - withtemplate boolean : template or basic item
+     *
+     *@return boolean item found
+     */
     public function showForm($ID, array $options = [])
     {
         $this->initForm($ID, $options);
@@ -839,14 +839,14 @@ class Contract extends CommonDBTM
     }
 
 
-   /**
-    * Show central contract resume
-    * HTML array
-    *
-    * @param bool $display if false, return html
-    *
-    * @return void
-    **/
+    /**
+     * Show central contract resume
+     * HTML array
+     *
+     * @param bool $display if false, return html
+     *
+     * @return void
+     **/
     public static function showCentral(bool $display = true)
     {
         global $DB,$CFG_GLPI;
@@ -999,11 +999,11 @@ class Contract extends CommonDBTM
     }
 
 
-   /**
-    * Get the entreprise name  for the contract
-    *
-    *@return string of names (HTML)
-   **/
+    /**
+     * Get the entreprise name  for the contract
+     *
+     *@return string of names (HTML)
+     **/
     public function getSuppliersNames()
     {
         global $DB;
@@ -1035,13 +1035,13 @@ class Contract extends CommonDBTM
     }
 
 
-   /**
-    * Cron action on contracts : alert depending of the config : on notice and expire
-    *
-    * @param CronTask $task CronTask for log, if NULL display (default NULL)
-    *
-    * @return integer
-   **/
+    /**
+     * Cron action on contracts : alert depending of the config : on notice and expire
+     *
+     * @param CronTask $task CronTask for log, if NULL display (default NULL)
+     *
+     * @return integer
+     **/
     public static function cronContract(CronTask $task = null)
     {
         global $DB, $CFG_GLPI;
@@ -1227,9 +1227,9 @@ class Contract extends CommonDBTM
 
                    // For the todo...
                     foreach ($todo as $type => $event) {
-                       /**
-                        * Previous alert
-                        */
+                        /**
+                         * Previous alert
+                         */
                        // Get previous alerts from DB
                         $previous_alert = [
                         $type => Alert::getAlertDate(__CLASS__, $data['id'], $event),
@@ -1240,9 +1240,9 @@ class Contract extends CommonDBTM
                             $previous_alert[$type] = date('Y-m-d', 0);
                         }
 
-                       /**
-                        * Next alert
-                        */
+                        /**
+                         * Next alert
+                         */
                        // Computation of first alert : Contract [begin date + initial duration] - Config [alert xxx days before]
                         $initial_duration = $data['duration'] != 0 ? $data['duration'] : $data['periodicity'];
                         $next_alert = [
@@ -1344,28 +1344,28 @@ class Contract extends CommonDBTM
     }
 
 
-   /**
-    * Print a select with contracts
-    *
-    * Print a select named $name with contracts options and selected value $value
-    * @param array $options
-    *    - name          : string / name of the select (default is contracts_id)
-    *    - value         : integer / preselected value (default 0)
-    *    - entity        : integer or array / restrict to a defined entity or array of entities
-    *                      (default -1 : no restriction)
-    *    - rand          : (defauolt mt_rand)
-    *    - entity_sons   : boolean / if entity restrict specified auto select its sons
-    *                      only available if entity is a single value not an array (default false)
-    *    - used          : array / Already used items ID: not to display in dropdown (default empty)
-    *    - nochecklimit  : boolean / disable limit for nomber of device (for supplier, default false)
-    *    - on_change     : string / value to transmit to "onChange"
-    *    - display       : boolean / display or return string (default true)
-    *    - expired       : boolean / display expired contract (default false)
-    *    - toadd         : array / array of specific values to add at the beginning
-    *    - hide_if_no_elements  : boolean / hide dropdown if there is no elements (default false)
-    *
-    * @return string|integer HTML output, or random part of dropdown ID.
-   **/
+    /**
+     * Print a select with contracts
+     *
+     * Print a select named $name with contracts options and selected value $value
+     * @param array $options
+     *    - name          : string / name of the select (default is contracts_id)
+     *    - value         : integer / preselected value (default 0)
+     *    - entity        : integer or array / restrict to a defined entity or array of entities
+     *                      (default -1 : no restriction)
+     *    - rand          : (defauolt mt_rand)
+     *    - entity_sons   : boolean / if entity restrict specified auto select its sons
+     *                      only available if entity is a single value not an array (default false)
+     *    - used          : array / Already used items ID: not to display in dropdown (default empty)
+     *    - nochecklimit  : boolean / disable limit for nomber of device (for supplier, default false)
+     *    - on_change     : string / value to transmit to "onChange"
+     *    - display       : boolean / display or return string (default true)
+     *    - expired       : boolean / display expired contract (default false)
+     *    - toadd         : array / array of specific values to add at the beginning
+     *    - hide_if_no_elements  : boolean / hide dropdown if there is no elements (default false)
+     *
+     * @return string|integer HTML output, or random part of dropdown ID.
+     **/
     public static function dropdown($options = [])
     {
         global $DB;
@@ -1484,17 +1484,17 @@ class Contract extends CommonDBTM
     }
 
 
-   /**
-    * Print a select with contract renewal
-    *
-    * Print a select named $name with contract renewal options and selected value $value
-    *
-    * @param string  $name    HTML select name
-    * @param integer $value   HTML select selected value (default = 0)
-    * @param boolean $display get or display string ? (true by default)
-    *
-    * @return string|integer HTML output, or random part of dropdown ID.
-   **/
+    /**
+     * Print a select with contract renewal
+     *
+     * Print a select named $name with contract renewal options and selected value $value
+     *
+     * @param string  $name    HTML select name
+     * @param integer $value   HTML select selected value (default = 0)
+     * @param boolean $display get or display string ? (true by default)
+     *
+     * @return string|integer HTML output, or random part of dropdown ID.
+     **/
     public static function dropdownContractRenewal($name, $value = 0, $display = true)
     {
 
@@ -1508,13 +1508,13 @@ class Contract extends CommonDBTM
     }
 
 
-   /**
-    * Get the renewal type name
-    *
-    * @param $value integer   HTML select selected value
-    *
-    * @return string
-   **/
+    /**
+     * Get the renewal type name
+     *
+     * @param $value integer   HTML select selected value
+     *
+     * @return string
+     **/
     public static function getContractRenewalName($value)
     {
 
@@ -1534,13 +1534,13 @@ class Contract extends CommonDBTM
     }
 
 
-   /**
-    * Get renewal ID by name
-    *
-    * @param string $value the name of the renewal
-    *
-    * @return integer ID of the renewal
-   **/
+    /**
+     * Get renewal ID by name
+     *
+     * @param string $value the name of the renewal
+     *
+     * @return integer ID of the renewal
+     **/
     public static function getContractRenewalIDByName($value)
     {
 
@@ -1554,11 +1554,11 @@ class Contract extends CommonDBTM
     }
 
 
-   /**
-    * @param array $options
-    *
-    * @return string|integer HTML output, or random part of dropdown ID.
-   **/
+    /**
+     * @param array $options
+     *
+     * @return string|integer HTML output, or random part of dropdown ID.
+     **/
     public static function dropdownAlert(array $options)
     {
 
@@ -1586,15 +1586,15 @@ class Contract extends CommonDBTM
     }
 
 
-   /**
-    * Get the possible value for contract alert
-    *
-    * @since 0.83
-    *
-    * @param string|integer|null $val if not set, ask for all values, else for 1 value (default NULL)
-    *
-    * @return string|string[]
-   **/
+    /**
+     * Get the possible value for contract alert
+     *
+     * @since 0.83
+     *
+     * @param string|integer|null $val if not set, ask for all values, else for 1 value (default NULL)
+     *
+     * @return string|string[]
+     **/
     public static function getAlertName($val = null)
     {
 
@@ -1624,9 +1624,9 @@ class Contract extends CommonDBTM
     }
 
 
-   /**
-    * Display debug information for current object
-   **/
+    /**
+     * Display debug information for current object
+     **/
     public function showDebug()
     {
 
@@ -1670,10 +1670,10 @@ class Contract extends CommonDBTM
         }
     }
 
-   /**
-    * @param integer $output_type Output type
-    * @param string  $mass_id     id of the form to check all
-    */
+    /**
+     * @param integer $output_type Output type
+     * @param string  $mass_id     id of the form to check all
+     */
     public static function commonListHeader(
         $output_type = Search::HTML_OUTPUT,
         $mass_id = '',
@@ -1700,17 +1700,17 @@ class Contract extends CommonDBTM
         echo Search::showEndLine($output_type);
     }
 
-   /**
-    * Display a line for an object
-    *
-    * @param $id                 Integer  ID of the object
-    * @param $options            array of options
-    *      output_type            : Default output type (see Search class / default Search::HTML_OUTPUT)
-    *      row_num                : row num used for display
-    *      type_for_massiveaction : itemtype for massive action
-    *      id_for_massaction      : default 0 means no massive action
-    *      followups              : show followup columns
-    */
+    /**
+     * Display a line for an object
+     *
+     * @param $id                 Integer  ID of the object
+     * @param $options            array of options
+     *      output_type            : Default output type (see Search class / default Search::HTML_OUTPUT)
+     *      row_num                : row num used for display
+     *      type_for_massiveaction : itemtype for massive action
+     *      id_for_massaction      : default 0 means no massive action
+     *      followups              : show followup columns
+     */
     public static function showShort($id, $options = [])
     {
         $p = [

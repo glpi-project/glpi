@@ -35,7 +35,7 @@
  * Update from 9.4.2 to 9.4.3
  *
  * @return bool for success (will die for most error)
-**/
+ **/
 function update942to943()
 {
     global $DB, $migration;
@@ -46,7 +46,7 @@ function update942to943()
     $migration->displayTitle(sprintf(__('Update to %s'), '9.4.3'));
     $migration->setVersion('9.4.3');
 
-   /** Fix URL of images inside ITIL objects contents */
+    /** Fix URL of images inside ITIL objects contents */
    // This is an exact copy of the same process used in "update940to941()" and "update941to942()"
    // which was not working for elements having a simple quote in their content.
    // It has been fixed there for people who had not yet updated to 9.4.1 / 9.4.2 but have to
@@ -124,7 +124,7 @@ function update942to943()
             $DB->update($task_table, $data, ['id' => $data['id']]);
         }
     }
-   /** /Fix URL of images inside ITIL objects contents */
+    /** /Fix URL of images inside ITIL objects contents */
 
    // add is_private field to change and problems
     $migration->addField('glpi_changetasks', 'is_private', 'bool');
@@ -132,7 +132,7 @@ function update942to943()
     $migration->addKey('glpi_changetasks', 'is_private');
     $migration->addKey('glpi_problemtasks', 'is_private');
 
-   /** Crontask missing from fresh install */
+    /** Crontask missing from fresh install */
     CronTask::Register(
         'PurgeLogs',
         'PurgeLogs',
@@ -142,7 +142,7 @@ function update942to943()
          'mode' => CronTask::MODE_EXTERNAL
         ]
     );
-   /** /Crontask missing from fresh install */
+    /** /Crontask missing from fresh install */
 
    // ************ Keep it at the end **************
     $migration->executeMigration();

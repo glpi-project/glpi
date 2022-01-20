@@ -38,7 +38,7 @@ use Glpi\Plugin\Hooks;
  *   - description
  *   - criterias
  *   - actions
-**/
+ **/
 class Rule extends CommonDBTM
 {
     use Glpi\Features\Clonable;
@@ -113,13 +113,13 @@ class Rule extends CommonDBTM
     }
 
 
-   /**
-    *  Get correct Rule object for specific rule
-    *
-    *  @since 0.84
-    *
-    *  @param $rules_id ID of the rule
-   **/
+    /**
+     *  Get correct Rule object for specific rule
+     *
+     *  @since 0.84
+     *
+     *  @param $rules_id ID of the rule
+     **/
     public static function getRuleObjectByID($rules_id)
     {
 
@@ -133,38 +133,38 @@ class Rule extends CommonDBTM
         return null;
     }
 
-   /**
-    *  Get condition array for rule. If empty array no condition used
-    *  maybe overridden to define conditions using binary combination :
-    *   example array(1 => Condition1,
-    *                 2 => Condition2,
-    *                 3 => Condition1&Condition2)
-    *
-    *  @since 0.85
-    *
-    *  @return array of conditions
-   **/
+    /**
+     *  Get condition array for rule. If empty array no condition used
+     *  maybe overridden to define conditions using binary combination :
+     *   example array(1 => Condition1,
+     *                 2 => Condition2,
+     *                 3 => Condition1&Condition2)
+     *
+     *  @since 0.85
+     *
+     *  @return array of conditions
+     **/
     public static function getConditionsArray()
     {
         return [];
     }
 
-   /**
-   * Is this rule use condition
-   *
-   **/
+    /**
+     * Is this rule use condition
+     *
+     **/
     public function useConditions()
     {
         return (count($this->getConditionsArray()) > 0);
     }
 
-   /**
-    * Display a dropdown with all the rule conditions
-    *
-    * @since 0.85
-    *
-    * @param $options      array of parameters
-   **/
+    /**
+     * Display a dropdown with all the rule conditions
+     *
+     * @since 0.85
+     *
+     * @param $options      array of parameters
+     **/
     public static function dropdownConditions($options = [])
     {
 
@@ -186,11 +186,11 @@ class Rule extends CommonDBTM
         return false;
     }
 
-   /**
-    * Get rule condition type Name
-    *
-    * @param $value condition ID
-   **/
+    /**
+     * Get rule condition type Name
+     *
+     * @param $value condition ID
+     **/
     public static function getConditionName($value)
     {
 
@@ -203,11 +203,11 @@ class Rule extends CommonDBTM
         return NOT_AVAILABLE;
     }
 
-   /**
-    *  @see CommonGLPI::getMenuContent()
-    *
-    *  @since 0.85
-   **/
+    /**
+     *  @see CommonGLPI::getMenuContent()
+     *
+     *  @since 0.85
+     **/
     public static function getMenuContent()
     {
         global $CFG_GLPI;
@@ -510,27 +510,27 @@ class Rule extends CommonDBTM
     }
 
 
-   /**
-    * @since versin 0.84
-   **/
+    /**
+     * @since versin 0.84
+     **/
     public function getRuleActionClass()
     {
         return $this->ruleactionclass;
     }
 
 
-   /**
-    * @since versin 0.84
-   **/
+    /**
+     * @since versin 0.84
+     **/
     public function getRuleCriteriaClass()
     {
         return $this->rulecriteriaclass;
     }
 
 
-   /**
-    * @since versin 0.84
-   **/
+    /**
+     * @since versin 0.84
+     **/
     public function getRuleIdField()
     {
         return $this->rules_id_field;
@@ -549,31 +549,31 @@ class Rule extends CommonDBTM
     }
 
 
-   /**
-    * Get title used in rule
-    *
-    * @return Title of the rule
-   **/
+    /**
+     * Get title used in rule
+     *
+     * @return Title of the rule
+     **/
     public function getTitle()
     {
         return __('Rules management');
     }
 
 
-   /**
-    * @since 0.84
-    *
-    * @return string
-   **/
+    /**
+     * @since 0.84
+     *
+     * @return string
+     **/
     public function getCollectionClassName()
     {
         return $this->getType() . 'Collection';
     }
 
 
-   /**
-    * @see CommonDBTM::getSpecificMassiveActions()
-   **/
+    /**
+     * @see CommonDBTM::getSpecificMassiveActions()
+     **/
     public function getSpecificMassiveActions($checkitem = null)
     {
 
@@ -598,11 +598,11 @@ class Rule extends CommonDBTM
     }
 
 
-   /**
-    * @since 0.85
-    *
-    * @see CommonDBTM::showMassiveActionsSubForm()
-   **/
+    /**
+     * @since 0.85
+     *
+     * @see CommonDBTM::showMassiveActionsSubForm()
+     **/
     public static function showMassiveActionsSubForm(MassiveAction $ma)
     {
 
@@ -644,11 +644,11 @@ class Rule extends CommonDBTM
     }
 
 
-   /**
-    * @since 0.85
-    *
-    * @see CommonDBTM::processMassiveActionsForOneItemtype()
-   **/
+    /**
+     * @since 0.85
+     *
+     * @see CommonDBTM::processMassiveActionsForOneItemtype()
+     **/
     public static function processMassiveActionsForOneItemtype(
         MassiveAction $ma,
         CommonDBTM $item,
@@ -795,13 +795,13 @@ class Rule extends CommonDBTM
     }
 
 
-   /**
-    * @param  $field
-    * @param  $values
-    * @param  $options   array
-    *
-    * @return string
-   **/
+    /**
+     * @param  $field
+     * @param  $values
+     * @param  $options   array
+     *
+     * @return string
+     **/
     public static function getSpecificValueToDisplay($field, $values, array $options = [])
     {
 
@@ -832,12 +832,12 @@ class Rule extends CommonDBTM
     }
 
 
-   /**
-    * @param  $field
-    * @param  $name              (default '')
-    * @param  $values            (default '')
-    * @param  $options   array
-   **/
+    /**
+     * @param  $field
+     * @param  $name              (default '')
+     * @param  $values            (default '')
+     * @param  $options   array
+     **/
     public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
     {
 
@@ -865,16 +865,16 @@ class Rule extends CommonDBTM
     }
 
 
-   /**
-    * Show the rule
-    *
-    * @param $ID              ID of the rule
-    * @param $options   array of possible options:
-    *     - target filename : where to go when done.
-    *     - withtemplate boolean : template or basic item
-    *
-    * @return void
-   **/
+    /**
+     * Show the rule
+     *
+     * @param $ID              ID of the rule
+     * @param $options   array of possible options:
+     *     - target filename : where to go when done.
+     *     - withtemplate boolean : template or basic item
+     *
+     * @return void
+     **/
     public function showForm($ID, array $options = [])
     {
         global $CFG_GLPI;
@@ -965,13 +965,13 @@ class Rule extends CommonDBTM
     }
 
 
-   /**
-    * Display a dropdown with all the rule matching
-    *
-    * @since 0.84 new proto
-    *
-    * @param $options      array of parameters
-   **/
+    /**
+     * Display a dropdown with all the rule matching
+     *
+     * @since 0.84 new proto
+     *
+     * @param $options      array of parameters
+     **/
     public function dropdownRulesMatch($options = [])
     {
 
@@ -998,13 +998,13 @@ class Rule extends CommonDBTM
     }
 
 
-   /**
-    * Get all criterias for a given rule
-    *
-    * @param $ID              the rule_description ID
-    * @param $withcriterias   1 to retrieve all the criterias for a given rule (default 0)
-    * @param $withactions     1 to retrive all the actions for a given rule (default 0)
-   **/
+    /**
+     * Get all criterias for a given rule
+     *
+     * @param $ID              the rule_description ID
+     * @param $withcriterias   1 to retrieve all the criterias for a given rule (default 0)
+     * @param $withactions     1 to retrive all the actions for a given rule (default 0)
+     **/
     public function getRuleWithCriteriasAndActions($ID, $withcriterias = 0, $withactions = 0)
     {
 
@@ -1033,9 +1033,9 @@ class Rule extends CommonDBTM
     }
 
 
-   /**
-    * display title for action form
-   **/
+    /**
+     * display title for action form
+     **/
     public function getTitleAction()
     {
 
@@ -1056,11 +1056,11 @@ class Rule extends CommonDBTM
     }
 
 
-   /**
-    * Get maximum number of Actions of the Rule (0 = unlimited)
-    *
-    * @return the maximum number of actions
-   **/
+    /**
+     * Get maximum number of Actions of the Rule (0 = unlimited)
+     *
+     * @return the maximum number of actions
+     **/
     public function maxActionsCount()
     {
         return count(array_filter($this->getAllActions(), function ($action_obj) {
@@ -1069,12 +1069,12 @@ class Rule extends CommonDBTM
     }
 
 
-   /**
-    * Display all rules actions
-    *
-    * @param $rules_id        rule ID
-    * @param $options   array of options : may be readonly
-   **/
+    /**
+     * Display all rules actions
+     *
+     * @param $rules_id        rule ID
+     * @param $options   array of options : may be readonly
+     **/
     public function showActionsList($rules_id, $options = [])
     {
         global $CFG_GLPI;
@@ -1183,12 +1183,12 @@ class Rule extends CommonDBTM
     }
 
 
-   /**
-    * Display all rules criterias
-    *
-    * @param $rules_id
-    * @param $options   array of options : may be readonly
-   **/
+    /**
+     * Display all rules criterias
+     *
+     * @param $rules_id
+     * @param $options   array of options : may be readonly
+     **/
     public function showCriteriasList($rules_id, $options = [])
     {
         global $CFG_GLPI;
@@ -1290,15 +1290,15 @@ class Rule extends CommonDBTM
 
 
 
-   /**
-    * Display the dropdown of the criteria for the rule
-    *
-    * @since 0.84 new proto
-    *
-    * @param $options   array of options : may be readonly
-    *
-    * @return the initial value (first)
-   **/
+    /**
+     * Display the dropdown of the criteria for the rule
+     *
+     * @since 0.84 new proto
+     *
+     * @param $options   array of options : may be readonly
+     *
+     * @return the initial value (first)
+     **/
     public function dropdownCriteria($options = [])
     {
         $p['name']                = 'criteria';
@@ -1335,13 +1335,13 @@ class Rule extends CommonDBTM
     }
 
 
-   /**
-    * Display the dropdown of the actions for the rule
-    *
-    * @param $options already used actions
-    *
-    * @return the initial value (first non used)
-   **/
+    /**
+     * Display the dropdown of the actions for the rule
+     *
+     * @param $options already used actions
+     *
+     * @return the initial value (first non used)
+     **/
     public function dropdownActions($options = [])
     {
         $p['name']                = 'field';
@@ -1397,13 +1397,13 @@ class Rule extends CommonDBTM
     }
 
 
-   /**
-    * Get a criteria description by his ID
-    *
-    * @param $ID the criteria's ID
-    *
-    * @return the criteria array
-   **/
+    /**
+     * Get a criteria description by his ID
+     *
+     * @param $ID the criteria's ID
+     *
+     * @return the criteria array
+     **/
     public function getCriteria($ID)
     {
 
@@ -1415,13 +1415,13 @@ class Rule extends CommonDBTM
     }
 
 
-   /**
-    * Get a action description by his ID
-    *
-    * @param $ID the action's ID
-    *
-    * @return the action array
-   **/
+    /**
+     * Get a action description by his ID
+     *
+     * @param $ID the action's ID
+     *
+     * @return the action array
+     **/
     public function getAction($ID)
     {
 
@@ -1433,13 +1433,13 @@ class Rule extends CommonDBTM
     }
 
 
-   /**
-    * Get a criteria description by his ID
-    *
-    * @param $ID the criteria's ID
-    *
-    * @return the criteria's description
-   **/
+    /**
+     * Get a criteria description by his ID
+     *
+     * @param $ID the criteria's ID
+     *
+     * @return the criteria's description
+     **/
 
     public function getCriteriaName($ID)
     {
@@ -1452,13 +1452,13 @@ class Rule extends CommonDBTM
     }
 
 
-   /**
-    * Get a action description by his ID
-    *
-    * @param $ID the action's ID
-    *
-    * @return the action's description
-   **/
+    /**
+     * Get a action description by his ID
+     *
+     * @param $ID the action's ID
+     *
+     * @return the action's description
+     **/
     public function getActionName($ID)
     {
 
@@ -1470,18 +1470,18 @@ class Rule extends CommonDBTM
     }
 
 
-   /**
-    * Process the rule
-    *
-    * @param &$input          the input data used to check criteria
-    * @param &$output         the initial output array used to be manipulate by actions
-    * @param &$params         parameters for all internal functions
-    * @param &options   array options:
-    *                     - only_criteria : only react on specific criteria
-    *
-    * @return the output array updated by actions.
-    *         If rule matched add field _rule_process to return value
-   **/
+    /**
+     * Process the rule
+     *
+     * @param &$input          the input data used to check criteria
+     * @param &$output         the initial output array used to be manipulate by actions
+     * @param &$params         parameters for all internal functions
+     * @param &options   array options:
+     *                     - only_criteria : only react on specific criteria
+     *
+     * @return the output array updated by actions.
+     *         If rule matched add field _rule_process to return value
+     **/
     public function process(&$input, &$output, &$params, &$options = [])
     {
 
@@ -1508,16 +1508,16 @@ class Rule extends CommonDBTM
     }
 
 
-   /**
-    * Update Only criteria options if needed
-    *
-    * @param &options   options :
-    *                     - only_criteria : only react on specific criteria
-    * @param $refoutput   the initial output array used to be manipulate by actions
-    * @param $newoutput   the output array after actions process
-    *
-    * @return the options array updated.
-   **/
+    /**
+     * Update Only criteria options if needed
+     *
+     * @param &options   options :
+     *                     - only_criteria : only react on specific criteria
+     * @param $refoutput   the initial output array used to be manipulate by actions
+     * @param $newoutput   the output array after actions process
+     *
+     * @return the options array updated.
+     **/
     public function updateOnlyCriteria(&$options, $refoutput, $newoutput)
     {
 
@@ -1557,15 +1557,15 @@ class Rule extends CommonDBTM
     }
 
 
-   /**
-    *  Are criteria valid to be processed
-    *
-    *  @since 0.85
-    *
-    * @param array $options
-    *
-    * @return boolean
-   **/
+    /**
+     *  Are criteria valid to be processed
+     *
+     *  @since 0.85
+     *
+     * @param array $options
+     *
+     * @return boolean
+     **/
     public function validateCriterias($options)
     {
 
@@ -1589,13 +1589,13 @@ class Rule extends CommonDBTM
     }
 
 
-   /**
-    * Check criteria
-    *
-    * @param aray $input the input data used to check criteri
-    *
-    * @return boolean if criteria match
-   **/
+    /**
+     * Check criteria
+     *
+     * @param aray $input the input data used to check criteri
+     *
+     * @return boolean if criteria match
+     **/
     public function checkCriterias($input)
     {
 
@@ -1638,14 +1638,14 @@ class Rule extends CommonDBTM
     }
 
 
-   /**
-    * Check criteria
-    *
-    * @param array $input          the input data used to check criteria
-    * @param array &$check_results
-    *
-    * @return boolean if criteria match
-   **/
+    /**
+     * Check criteria
+     *
+     * @param array $input          the input data used to check criteria
+     * @param array &$check_results
+     *
+     * @return boolean if criteria match
+     **/
     public function testCriterias($input, &$check_results)
     {
 
@@ -1661,12 +1661,12 @@ class Rule extends CommonDBTM
     }
 
 
-   /**
-    * Process a criteria of a rule
-    *
-    * @param &$criteria  criteria to check
-    * @param &$input     the input data used to check criteria
-   **/
+    /**
+     * Process a criteria of a rule
+     *
+     * @param &$criteria  criteria to check
+     * @param &$input     the input data used to check criteria
+     **/
     public function checkCriteria(&$criteria, &$input)
     {
 
@@ -1757,38 +1757,38 @@ class Rule extends CommonDBTM
     }
 
 
-   /**
-    * @param $input
-   **/
+    /**
+     * @param $input
+     **/
     public function findWithGlobalCriteria($input)
     {
         return true;
     }
 
 
-   /**
-    * Specific prepare input datas for the rule
-    *
-    * @param $input  the input data used to check criteria
-    * @param $params parameters
-    *
-    * @return the updated input datas
-   **/
+    /**
+     * Specific prepare input datas for the rule
+     *
+     * @param $input  the input data used to check criteria
+     * @param $params parameters
+     *
+     * @return the updated input datas
+     **/
     public function prepareInputDataForProcess($input, $params)
     {
         return $input;
     }
 
 
-   /**
-    * Get all data needed to process rules (core + plugins)
-    *
-    * @since 0.84
-    * @param $input  the input data used to check criteria
-    * @param $params parameters
-    *
-    * @return the updated input datas
-   **/
+    /**
+     * Get all data needed to process rules (core + plugins)
+     *
+     * @since 0.84
+     * @param $input  the input data used to check criteria
+     * @param $params parameters
+     *
+     * @return the updated input datas
+     **/
     public function prepareAllInputDataForProcess($input, $params)
     {
         global $PLUGIN_HOOKS;
@@ -1818,19 +1818,19 @@ class Rule extends CommonDBTM
     }
 
 
-   /**
-    * Execute plugins actions if needed.
-    *
-    * @since 9.3.2 Added $input parameter
-    * @since 0.84
-    *
-    * @param RuleAction $action
-    * @param array      $output  rule execution output
-    * @param array      $params  parameters
-    * @param array      $input   the input data
-    *
-    * @return array Updated output
-    */
+    /**
+     * Execute plugins actions if needed.
+     *
+     * @since 9.3.2 Added $input parameter
+     * @since 0.84
+     *
+     * @param RuleAction $action
+     * @param array      $output  rule execution output
+     * @param array      $params  parameters
+     * @param array      $input   the input data
+     *
+     * @return array Updated output
+     */
     public function executePluginsActions($action, $output, $params, array $input = [])
     {
         global $PLUGIN_HOOKS;
@@ -1859,17 +1859,17 @@ class Rule extends CommonDBTM
     }
 
 
-   /**
-    * Execute the actions as defined in the rule.
-    *
-    * @since 9.3.2 Added $input parameter
-    *
-    * @param array $output  the fields to manipulate
-    * @param array $params  parameters
-    * @param array $input   the input data
-    *
-    * @return array Updated output
-   **/
+    /**
+     * Execute the actions as defined in the rule.
+     *
+     * @since 9.3.2 Added $input parameter
+     *
+     * @param array $output  the fields to manipulate
+     * @param array $params  parameters
+     * @param array $input   the input data
+     *
+     * @return array Updated output
+     **/
     public function executeActions($output, $params, array $input = [])
     {
 
@@ -1949,15 +1949,15 @@ class Rule extends CommonDBTM
     }
 
 
-   /**
-    * Show the minimal form for the rule
-    *
-    * @param $target             link to the form page
-    * @param $first              is it the first rule ?(false by default)
-    * @param $last               is it the last rule ? (false by default)
-    * @param $display_entities   display entities / make it read only display (false by default)
-    * @param $active_condition   active condition used (default 0)
-   **/
+    /**
+     * Show the minimal form for the rule
+     *
+     * @param $target             link to the form page
+     * @param $first              is it the first rule ?(false by default)
+     * @param $last               is it the last rule ? (false by default)
+     * @param $display_entities   display entities / make it read only display (false by default)
+     * @param $active_condition   active condition used (default 0)
+     **/
     public function showMinimalForm($target, $first = false, $last = false, $display_entities = false, $active_condition = 0)
     {
         $canedit = (self::canUpdate() && !$display_entities);
@@ -2012,9 +2012,9 @@ class Rule extends CommonDBTM
     }
 
 
-   /**
-    * @see CommonDBTM::prepareInputForAdd()
-   **/
+    /**
+     * @see CommonDBTM::prepareInputForAdd()
+     **/
     public function prepareInputForAdd($input)
     {
 
@@ -2046,9 +2046,9 @@ class Rule extends CommonDBTM
     }
 
 
-   /**
-    * Get the next ranking for a specified rule
-   **/
+    /**
+     * Get the next ranking for a specified rule
+     **/
     public function getNextRanking()
     {
         global $DB;
@@ -2067,13 +2067,13 @@ class Rule extends CommonDBTM
     }
 
 
-   /**
-    * Show the minimal form for the action rule
-    *
-    * @param $fields    datas used to display the action
-    * @param $canedit   can edit the actions rule ?
-    * @param $rand      random value of the form
-   **/
+    /**
+     * Show the minimal form for the action rule
+     *
+     * @param $fields    datas used to display the action
+     * @param $canedit   can edit the actions rule ?
+     * @param $rand      random value of the form
+     **/
     public function showMinimalActionForm($fields, $canedit, $rand)
     {
         global $CFG_GLPI;
@@ -2105,13 +2105,13 @@ class Rule extends CommonDBTM
     }
 
 
-   /**
-    * Show preview result of a rule
-    *
-    * @param $target    where to go if action
-    * @param $input     input data array
-    * @param $params    params used (see addSpecificParamsForPreview)
-   **/
+    /**
+     * Show preview result of a rule
+     *
+     * @param $target    where to go if action
+     * @param $input     input data array
+     * @param $params    params used (see addSpecificParamsForPreview)
+     **/
     public function showRulePreviewResultsForm($target, $input, $params)
     {
 
@@ -2196,13 +2196,13 @@ class Rule extends CommonDBTM
     }
 
 
-   /**
-    * Show the minimal form for the criteria rule
-    *
-    * @param $fields    datas used to display the criteria
-    * @param $canedit   can edit the criteria rule?
-    * @param $rand      random value of the form
-   **/
+    /**
+     * Show the minimal form for the criteria rule
+     *
+     * @param $fields    datas used to display the criteria
+     * @param $canedit   can edit the criteria rule?
+     * @param $rand      random value of the form
+     **/
     public function showMinimalCriteriaForm($fields, $canedit, $rand)
     {
         global $CFG_GLPI;
@@ -2235,10 +2235,10 @@ class Rule extends CommonDBTM
     }
 
 
-   /**
-    * @param $fields
-    * @param $addtotd   (default '')
-   **/
+    /**
+     * @param $fields
+     * @param $addtotd   (default '')
+     **/
     public function getMinimalCriteriaText($fields, $addtotd = '')
     {
 
@@ -2257,10 +2257,10 @@ class Rule extends CommonDBTM
     }
 
 
-   /**
-    * @param $fields
-    * @param $addtotd   (default '')
-   **/
+    /**
+     * @param $fields
+     * @param $addtotd   (default '')
+     **/
     public function getMinimalActionText($fields, $addtotd = '')
     {
 
@@ -2279,13 +2279,13 @@ class Rule extends CommonDBTM
     }
 
 
-   /**
-    * Return a value associated with a pattern associated to a criteria to display it
-    *
-    * @param $ID        the given criteria
-    * @param $condition condition used
-    * @param $pattern   the pattern
-   **/
+    /**
+     * Return a value associated with a pattern associated to a criteria to display it
+     *
+     * @param $ID        the given criteria
+     * @param $condition condition used
+     * @param $pattern   the pattern
+     **/
     public function getCriteriaDisplayPattern($ID, $condition, $pattern)
     {
 
@@ -2370,30 +2370,30 @@ class Rule extends CommonDBTM
     }
 
 
-   /**
-    * Used to get specific criteria patterns
-    *
-    * @param $ID        the given criteria
-    * @param $condition condition used
-    * @param $pattern   the pattern
-    *
-    * @return a value associated with the criteria, or false otherwise
-   **/
+    /**
+     * Used to get specific criteria patterns
+     *
+     * @param $ID        the given criteria
+     * @param $condition condition used
+     * @param $pattern   the pattern
+     *
+     * @return a value associated with the criteria, or false otherwise
+     **/
     public function getAdditionalCriteriaDisplayPattern($ID, $condition, $pattern)
     {
         return false;
     }
 
 
-   /**
-    * Display item used to select a pattern for a criteria
-    *
-    * @param $name      criteria name
-    * @param $ID        the given criteria
-    * @param $condition condition used
-    * @param $value     the pattern (default '')
-    * @param $test      Is to test rule ? (false by default)
-   **/
+    /**
+     * Display item used to select a pattern for a criteria
+     *
+     * @param $name      criteria name
+     * @param $ID        the given criteria
+     * @param $condition condition used
+     * @param $value     the pattern (default '')
+     * @param $test      Is to test rule ? (false by default)
+     **/
     public function displayCriteriaSelectPattern($name, $ID, $condition, $value = "", $test = false)
     {
         global $CFG_GLPI;
@@ -2529,13 +2529,13 @@ class Rule extends CommonDBTM
     }
 
 
-   /**
-    * Return a "display" value associated with a pattern associated to a criteria
-    *
-    * @param $ID     the given action
-    * @param $type   the type of action
-    * @param $value  the value
-   **/
+    /**
+     * Return a "display" value associated with a pattern associated to a criteria
+     *
+     * @param $ID     the given action
+     * @param $type   the type of action
+     * @param $value  the value
+     **/
     public function getActionValue($ID, $type, $value)
     {
 
@@ -2601,13 +2601,13 @@ class Rule extends CommonDBTM
     }
 
 
-   /**
-    * Return a value associated with a pattern associated to a criteria to display it
-    *
-    * @param $ID        the given criteria
-    * @param $condition condition used
-    * @param $value     the pattern
-   **/
+    /**
+     * Return a value associated with a pattern associated to a criteria to display it
+     *
+     * @param $ID        the given criteria
+     * @param $condition condition used
+     * @param $value     the pattern
+     **/
     public function getCriteriaValue($ID, $condition, $value)
     {
 
@@ -2654,35 +2654,35 @@ class Rule extends CommonDBTM
     }
 
 
-   /**
-    * Function used to display type specific criteria during rule's preview
-    *
-    * @param $fields fields values
-   **/
+    /**
+     * Function used to display type specific criteria during rule's preview
+     *
+     * @param $fields fields values
+     **/
     public function showSpecificCriteriasForPreview($fields)
     {
     }
 
 
-   /**
-    * Function used to add specific params before rule processing
-    *
-    * @param array $params parameters
-    *
-    * @return array
-   **/
+    /**
+     * Function used to add specific params before rule processing
+     *
+     * @param array $params parameters
+     *
+     * @return array
+     **/
     public function addSpecificParamsForPreview($params)
     {
         return $params;
     }
 
 
-   /**
-    * Criteria form used to preview rule
-    *
-    * @param $target    target of the form
-    * @param $rules_id  ID of the rule
-   **/
+    /**
+     * Criteria form used to preview rule
+     *
+     * @param $target    target of the form
+     * @param $rules_id  ID of the rule
+     **/
     public function showRulePreviewCriteriasForm($target, $rules_id)
     {
         $criteria = $this->getAllCriteria();
@@ -2746,9 +2746,9 @@ class Rule extends CommonDBTM
     }
 
 
-   /**
-    * @param $output
-   **/
+    /**
+     * @param $output
+     **/
     public function preProcessPreviewResults($output)
     {
         global $PLUGIN_HOOKS;
@@ -2779,14 +2779,14 @@ class Rule extends CommonDBTM
     }
 
 
-   /**
-    * Dropdown rules for a defined sub_type of rule
-    *
-    * @param $options   array of possible options:
-    *    - name : string / name of the select (default is depending itemtype)
-    *    - sub_type : integer / sub_type of rule
-    *    - hide_if_no_elements  : boolean / hide dropdown if there is no elements (default false)
-   **/
+    /**
+     * Dropdown rules for a defined sub_type of rule
+     *
+     * @param $options   array of possible options:
+     *    - name : string / name of the select (default is depending itemtype)
+     *    - sub_type : integer / sub_type of rule
+     *    - hide_if_no_elements  : boolean / hide dropdown if there is no elements (default false)
+     **/
     public static function dropdown($options = [])
     {
         $p = [
@@ -2819,9 +2819,9 @@ class Rule extends CommonDBTM
     }
 
 
-   /**
-    * @since 0.84
-   **/
+    /**
+     * @since 0.84
+     **/
     public function getAllCriteria()
     {
 
@@ -2839,10 +2839,10 @@ class Rule extends CommonDBTM
     }
 
 
-   /**
-    * @since 0.84
-    * @return array
-   */
+    /**
+     * @since 0.84
+     * @return array
+     */
     public function getAllActions()
     {
         return self::doHookAndMergeResults("getRuleActions", $this->getActions(), $this->getType());
@@ -2855,17 +2855,17 @@ class Rule extends CommonDBTM
     }
 
 
-   /**
-    *  Execute a hook if necessary and merge results
-    *
-    *  @since 0.84
-    *
-    * @param $hook            the hook to execute
-    * @param $params   array  input parameters
-    * @param $itemtype        (default '')
-    *
-    * @return input parameters merged with hook parameters
-   **/
+    /**
+     *  Execute a hook if necessary and merge results
+     *
+     *  @since 0.84
+     *
+     * @param $hook            the hook to execute
+     * @param $params   array  input parameters
+     * @param $itemtype        (default '')
+     *
+     * @return input parameters merged with hook parameters
+     **/
     public static function doHookAndMergeResults($hook, $params = [], $itemtype = '')
     {
         global $PLUGIN_HOOKS;
@@ -2896,9 +2896,9 @@ class Rule extends CommonDBTM
     }
 
 
-   /**
-    * @param $sub_type
-   **/
+    /**
+     * @param $sub_type
+     **/
     public static function getActionsByType($sub_type)
     {
 
@@ -2909,13 +2909,13 @@ class Rule extends CommonDBTM
     }
 
 
-   /**
-    * Return all rules from database
-    *
-    * @param $crit array of criteria (at least, 'field' and 'value')
-    *
-    * @return array of Rule objects
-   **/
+    /**
+     * Return all rules from database
+     *
+     * @param $crit array of criteria (at least, 'field' and 'value')
+     *
+     * @return array of Rule objects
+     **/
     public function getRulesForCriteria($crit)
     {
         global $DB;
@@ -2953,9 +2953,9 @@ class Rule extends CommonDBTM
     }
 
 
-   /**
-    * @param $ID
-   **/
+    /**
+     * @param $ID
+     **/
     public function showNewRuleForm($ID)
     {
 
@@ -2981,9 +2981,9 @@ class Rule extends CommonDBTM
     }
 
 
-   /**
-    * @param $item
-   **/
+    /**
+     * @param $item
+     **/
     public function showAndAddRuleForm($item)
     {
 
@@ -3082,9 +3082,9 @@ class Rule extends CommonDBTM
     }
 
 
-   /**
-    * @see CommonGLPI::defineTabs()
-   **/
+    /**
+     * @see CommonGLPI::defineTabs()
+     **/
     public function defineTabs($options = [])
     {
 
@@ -3097,59 +3097,59 @@ class Rule extends CommonDBTM
     }
 
 
-   /**
-    * Add more criteria specific to this type of rule
-   **/
+    /**
+     * Add more criteria specific to this type of rule
+     **/
     public static function addMoreCriteria()
     {
         return [];
     }
 
 
-   /**
-    * Add more actions specific to this type of rule
-    *
-    * @param $value
-   **/
+    /**
+     * Add more actions specific to this type of rule
+     *
+     * @param $value
+     **/
     public function displayAdditionRuleActionValue($value)
     {
         return $value;
     }
 
 
-   /**
-    * @param $condition
-    * @param $criteria
-    * @param $name
-    * @param $value
-    * @param $test         (false by default)
-   **/
+    /**
+     * @param $condition
+     * @param $criteria
+     * @param $name
+     * @param $value
+     * @param $test         (false by default)
+     **/
     public function displayAdditionalRuleCondition($condition, $criteria, $name, $value, $test = false)
     {
         return false;
     }
 
 
-   /**
-    * @param $action array
-    * @param $value          value to display (default '')
-   **/
+    /**
+     * @param $action array
+     * @param $value          value to display (default '')
+     **/
     public function displayAdditionalRuleAction(array $action, $value = '')
     {
         return false;
     }
 
 
-   /**
-    * Clean Rule with Action or Criteria linked to an item
-    *
-    * @param $item                  Object
-    * @param $field        string   name (default is FK to item)
-    * @param $ruleitem              object (instance of Rules of SlaLevel)
-    * @param $table        string   (glpi_ruleactions, glpi_rulescriterias or glpi_slalevelcriterias)
-    * @param $valfield     string   (value or pattern)
-    * @param $fieldfield   string   (criteria of field)
-   **/
+    /**
+     * Clean Rule with Action or Criteria linked to an item
+     *
+     * @param $item                  Object
+     * @param $field        string   name (default is FK to item)
+     * @param $ruleitem              object (instance of Rules of SlaLevel)
+     * @param $table        string   (glpi_ruleactions, glpi_rulescriterias or glpi_slalevelcriterias)
+     * @param $valfield     string   (value or pattern)
+     * @param $fieldfield   string   (criteria of field)
+     **/
     private static function cleanForItemActionOrCriteria(
         $item,
         $field,
@@ -3203,12 +3203,12 @@ class Rule extends CommonDBTM
     }
 
 
-   /**
-    * Clean Rule with Action is assign to an item
-    *
-    * @param $item            Object
-    * @param $field  string   name (default is FK to item) (default '')
-   **/
+    /**
+     * Clean Rule with Action is assign to an item
+     *
+     * @param $item            Object
+     * @param $field  string   name (default is FK to item) (default '')
+     **/
     public static function cleanForItemAction($item, $field = '')
     {
 
@@ -3241,12 +3241,12 @@ class Rule extends CommonDBTM
     }
 
 
-   /**
-    * Clean Rule with Criteria on an item
-    *
-    * @param $item            Object
-    * @param $field  string   name (default is FK to item) (default '')
-   **/
+    /**
+     * Clean Rule with Criteria on an item
+     *
+     * @param $item            Object
+     * @param $field  string   name (default is FK to item) (default '')
+     **/
     public static function cleanForItemCriteria($item, $field = '')
     {
 
@@ -3261,9 +3261,9 @@ class Rule extends CommonDBTM
     }
 
 
-   /**
-    * @see CommonGLPI::getTabNameForItem()
-   **/
+    /**
+     * @see CommonGLPI::getTabNameForItem()
+     **/
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
 
@@ -3342,11 +3342,11 @@ class Rule extends CommonDBTM
     }
 
 
-   /**
-    * @param $item         CommonGLPI object
-    * @param $tabnum       (default 1)
-    * @param $withtemplate (default 0)
-   **/
+    /**
+     * @param $item         CommonGLPI object
+     * @param $tabnum       (default 1)
+     * @param $withtemplate (default 0)
+     **/
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
 
@@ -3387,13 +3387,13 @@ class Rule extends CommonDBTM
     }
 
 
-   /**
-    * Generate unique id for rule based on server name, glpi directory and basetime
-    *
-    * @since 0.85
-    *
-    * @return uuid
-   **/
+    /**
+     * Generate unique id for rule based on server name, glpi directory and basetime
+     *
+     * @since 0.85
+     *
+     * @return uuid
+     **/
     public static function getUuid()
     {
 
@@ -3406,11 +3406,11 @@ class Rule extends CommonDBTM
     }
 
 
-   /**
-    * Display debug information for current object
-    *
-    * @since 0.85
-   **/
+    /**
+     * Display debug information for current object
+     *
+     * @since 0.85
+     **/
     public function showDebug()
     {
 

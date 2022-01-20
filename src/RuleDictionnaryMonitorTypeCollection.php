@@ -39,9 +39,9 @@ class RuleDictionnaryMonitorTypeCollection extends RuleDictionnaryDropdownCollec
     public $item_table  = "glpi_monitortypes";
     public $menu_option = "type.monitor";
 
-   /**
-    * @see RuleCollection::getTitle()
-   **/
+    /**
+     * @see RuleCollection::getTitle()
+     **/
     public function getTitle()
     {
         return __('Dictionnary of monitor types');

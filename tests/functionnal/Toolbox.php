@@ -74,9 +74,9 @@ class Toolbox extends DbTestCase
         ];
     }
 
-   /**
-    * @dataProvider slugifyProvider
-    */
+    /**
+     * @dataProvider slugifyProvider
+     */
     public function testSlugify($string, $expected)
     {
         $this->string(\Toolbox::slugify($string))->isIdenticalTo($expected);
@@ -126,9 +126,9 @@ class Toolbox extends DbTestCase
         ];
     }
 
-   /**
-    * @dataProvider filenameProvider
-    */
+    /**
+     * @dataProvider filenameProvider
+     */
     public function testFilename($name, $expected)
     {
         $this->string(\Toolbox::filename($name))->isIdenticalTo($expected);
@@ -146,9 +146,9 @@ class Toolbox extends DbTestCase
         ];
     }
 
-   /**
-    * @dataProvider dataGetSize
-    */
+    /**
+     * @dataProvider dataGetSize
+     */
     public function testGetSize($input, $expected)
     {
         $this->string(\Toolbox::getSize($input))->isIdenticalTo($expected);
@@ -206,9 +206,9 @@ class Toolbox extends DbTestCase
         ];
     }
 
-   /**
-    * @dataProvider cleanIntegerProvider
-    */
+    /**
+     * @dataProvider cleanIntegerProvider
+     */
     public function testCleanInteger($value, $expected)
     {
         $this->variable(\Toolbox::cleanInteger($value))->isIdenticalTo($expected);
@@ -227,9 +227,9 @@ class Toolbox extends DbTestCase
         ];
     }
 
-   /**
-    * @dataProvider jsonDecodeProvider
-    */
+    /**
+     * @dataProvider jsonDecodeProvider
+     */
     public function testJsonDecode($json, $expected)
     {
         $this
@@ -259,9 +259,9 @@ class Toolbox extends DbTestCase
         ];
     }
 
-   /**
-    * @dataProvider ucProvider
-    */
+    /**
+     * @dataProvider ucProvider
+     */
     public function testUcfirst($in, $out)
     {
         $this->string(\Toolbox::ucfirst($in))->isIdenticalTo($out);
@@ -277,9 +277,9 @@ class Toolbox extends DbTestCase
         ];
     }
 
-   /**
-    * @dataProvider shortcutProvider
-    */
+    /**
+     * @dataProvider shortcutProvider
+     */
     public function testShortcut($string, $letter, $expected)
     {
         $this->string(\Toolbox::shortcut($string, $letter))->isIdenticalTo($expected);
@@ -300,9 +300,9 @@ class Toolbox extends DbTestCase
         ];
     }
 
-   /**
-    * @dataProvider strposProvider
-    */
+    /**
+     * @dataProvider strposProvider
+     */
     public function testStrpos($string, $search, $offset, $expected)
     {
         $this->variable(\Toolbox::strpos($string, $search, $offset))->isIdenticalTo($expected);
@@ -321,9 +321,9 @@ class Toolbox extends DbTestCase
         ];
     }
 
-   /**
-    * @dataProvider padProvider
-    */
+    /**
+     * @dataProvider padProvider
+     */
     public function testStr_pad($string, $length, $char, $pad, $expected)
     {
         $this->string(\Toolbox::str_pad($string, $length, $char, $pad))
@@ -338,9 +338,9 @@ class Toolbox extends DbTestCase
         ];
     }
 
-   /**
-    * @dataProvider strlenProvider
-    */
+    /**
+     * @dataProvider strlenProvider
+     */
     public function testStrlen($string, $length)
     {
         $this->integer(\Toolbox::strlen($string))->isIdenticalTo($length);
@@ -358,9 +358,9 @@ class Toolbox extends DbTestCase
         ];
     }
 
-   /**
-    * @dataProvider substrProvider
-    */
+    /**
+     * @dataProvider substrProvider
+     */
     public function testSubstr($string, $start, $length, $expected)
     {
         $this->string(\Toolbox::substr($string, $start, $length))
@@ -376,9 +376,9 @@ class Toolbox extends DbTestCase
         ];
     }
 
-   /**
-    * @dataProvider lowercaseProvider
-    */
+    /**
+     * @dataProvider lowercaseProvider
+     */
     public function testStrtolower($upper, $lower)
     {
         $this->string(\Toolbox::strtolower($upper))->isIdenticalTo($lower);
@@ -393,9 +393,9 @@ class Toolbox extends DbTestCase
         ];
     }
 
-   /**
-    * @dataProvider uppercaseProvider
-    */
+    /**
+     * @dataProvider uppercaseProvider
+     */
     public function testStrtoupper($lower, $upper)
     {
         $this->string(\Toolbox::strtoupper($lower))->isIdenticalTo($upper);
@@ -411,9 +411,9 @@ class Toolbox extends DbTestCase
         ];
     }
 
-   /**
-    * @dataProvider utfProvider
-    */
+    /**
+     * @dataProvider utfProvider
+     */
     public function testSeems_utf8($string, $utf)
     {
         $this->boolean(\Toolbox::seems_utf8($string))->isIdenticalTo($utf);
@@ -466,17 +466,17 @@ class Toolbox extends DbTestCase
         ];
     }
 
-   /**
-    * @dataProvider getPictureUrlProvider
-    */
+    /**
+     * @dataProvider getPictureUrlProvider
+     */
     public function testGetPictureUrl($path, $url)
     {
         $this->variable(\Toolbox::getPictureUrl($path))->isIdenticalTo($url);
     }
 
-   /**
-    * Data provider for self::testConvertTagToImage().
-    */
+    /**
+     * Data provider for self::testConvertTagToImage().
+     */
     protected function convertTagToImageProvider()
     {
         $data = [];
@@ -523,11 +523,11 @@ class Toolbox extends DbTestCase
         return $data;
     }
 
-   /**
-    * Check conversion of tags to images.
-    *
-    * @dataProvider convertTagToImageProvider
-    */
+    /**
+     * Check conversion of tags to images.
+     *
+     * @dataProvider convertTagToImageProvider
+     */
     public function testConvertTagToImage($item, $expected_url)
     {
 
@@ -556,9 +556,9 @@ class Toolbox extends DbTestCase
         )->isEqualTo($expected_result);
     }
 
-   /**
-    * Data provider for self::testBaseUrlInConvertTagToImage().
-    */
+    /**
+     * Data provider for self::testBaseUrlInConvertTagToImage().
+     */
     protected function convertTagToImageBaseUrlProvider()
     {
         $item = new \Ticket();
@@ -581,11 +581,11 @@ class Toolbox extends DbTestCase
         ];
     }
 
-   /**
-    * Check base url handling in conversion of tags to images.
-    *
-    * @dataProvider convertTagToImageBaseUrlProvider
-    */
+    /**
+     * Check base url handling in conversion of tags to images.
+     *
+     * @dataProvider convertTagToImageBaseUrlProvider
+     */
     public function testBaseUrlInConvertTagToImage($url_base, $item, $expected_url)
     {
 
@@ -624,9 +624,9 @@ class Toolbox extends DbTestCase
         $this->string($result)->isEqualTo($expected_result);
     }
 
-   /**
-    * Check conversion of tags to images when contents contains multiple inlined images.
-    */
+    /**
+     * Check conversion of tags to images when contents contains multiple inlined images.
+     */
     public function testConvertTagToImageWithMultipleInlinedImg()
     {
 
@@ -688,9 +688,9 @@ class Toolbox extends DbTestCase
         )->isEqualTo($expected_result);
     }
 
-   /**
-    * Check conversion of tags to images when multiple document matches same tag.
-    */
+    /**
+     * Check conversion of tags to images when multiple document matches same tag.
+     */
     public function testConvertTagToImageWithMultipleDocMatchesSameTag()
     {
 
@@ -738,9 +738,9 @@ class Toolbox extends DbTestCase
         )->isEqualTo($expected_result_2);
     }
 
-   /**
-    * Check conversion of tags to images when content contains multiple times same inlined image.
-    */
+    /**
+     * Check conversion of tags to images when content contains multiple times same inlined image.
+     */
     public function testConvertTagToImageWithDuplicatedInlinedImg()
     {
 
@@ -813,9 +813,9 @@ class Toolbox extends DbTestCase
         ];
     }
 
-   /**
-    * @dataProvider shortenNumbers
-    */
+    /**
+     * @dataProvider shortenNumbers
+     */
     public function testShortenNumber($number, int $precision, string $expected)
     {
         $this->string(\Toolbox::shortenNumber($number, $precision, false))
@@ -845,9 +845,9 @@ class Toolbox extends DbTestCase
         ];
     }
 
-   /**
-    * @dataProvider colors
-    */
+    /**
+     * @dataProvider colors
+     */
     public function testGetFgColor(string $bg_color, int $offset, string $fg_color)
     {
         $this->string(\Toolbox::getFgColor($bg_color, $offset))
@@ -876,9 +876,9 @@ class Toolbox extends DbTestCase
         ];
     }
 
-   /**
-    * @dataProvider testIsCommonDBTMProvider
-    */
+    /**
+     * @dataProvider testIsCommonDBTMProvider
+     */
     public function testIsCommonDBTM(string $class, bool $is_commondbtm)
     {
         $this->boolean(\Toolbox::isCommonDBTM($class))->isEqualTo($is_commondbtm);
@@ -906,9 +906,9 @@ class Toolbox extends DbTestCase
         ];
     }
 
-   /**
-    * @dataProvider testIsAPIDeprecatedProvider
-    */
+    /**
+     * @dataProvider testIsAPIDeprecatedProvider
+     */
     public function testIsAPIDeprecated(string $class, bool $is_deprecated)
     {
         $this->boolean(\Toolbox::isAPIDeprecated($class))->isEqualTo($is_deprecated);
@@ -960,9 +960,9 @@ class Toolbox extends DbTestCase
         ];
     }
 
-   /**
-    * @dataProvider urlProvider
-    */
+    /**
+     * @dataProvider urlProvider
+     */
     public function testIsValidWebUrl($url, $result)
     {
         $this->boolean(\Toolbox::isValidWebUrl($url))->isIdenticalTo((bool)$result, $url);
@@ -997,9 +997,9 @@ class Toolbox extends DbTestCase
         ];
     }
 
-   /**
-    * @dataProvider hasTraitProvider
-    */
+    /**
+     * @dataProvider hasTraitProvider
+     */
     public function testHasTrait($class, $trait, $result)
     {
         $this->boolean(\Toolbox::hasTrait($class, $trait))->isIdenticalTo((bool)$result);
@@ -1077,9 +1077,9 @@ class Toolbox extends DbTestCase
         ];
     }
 
-   /**
-    * @dataProvider appendParametersProvider
-    */
+    /**
+     * @dataProvider appendParametersProvider
+     */
     public function testAppendParameters(array $params, string $separator, string $expected)
     {
         $this->string(\Toolbox::append_params($params, $separator))->isEqualTo($expected);

@@ -44,60 +44,60 @@ use Toolbox;
 
 class CacheManager
 {
-   /**
-    * GLPI core cache context.
-    * @var string
-    */
+    /**
+     * GLPI core cache context.
+     * @var string
+     */
     public const CONTEXT_CORE = 'core';
 
-   /**
-    * GLPI translations cache context.
-    * @var string
-    */
+    /**
+     * GLPI translations cache context.
+     * @var string
+     */
     public const CONTEXT_TRANSLATIONS = 'translations';
 
-   /**
-    * GLPI installer cache context.
-    * @var string
-    */
+    /**
+     * GLPI installer cache context.
+     * @var string
+     */
     public const CONTEXT_INSTALLER = 'installer';
 
-   /**
-    * Memcached scheme.
-    * @var string
-    */
+    /**
+     * Memcached scheme.
+     * @var string
+     */
     public const SCHEME_MEMCACHED  = 'memcached';
 
-   /**
-    * Redis scheme (TCP connection).
-    * @var string
-    */
+    /**
+     * Redis scheme (TCP connection).
+     * @var string
+     */
     public const SCHEME_REDIS      = 'redis';
 
-   /**
-    * Redis scheme (TLS connection).
-    * @var string
-    */
+    /**
+     * Redis scheme (TLS connection).
+     * @var string
+     */
     public const SCHEME_REDISS     = 'rediss';
 
-   /**
-    * Core cache configuration filename.
-    * @var string
-    */
+    /**
+     * Core cache configuration filename.
+     * @var string
+     */
     public const CONFIG_FILENAME = 'cache.php';
 
-   /**
-    * Configuration directory.
-    *
-    * @var string
-    */
+    /**
+     * Configuration directory.
+     *
+     * @var string
+     */
     private $config_dir;
 
-   /**
-    * Cache directory.
-    *
-    * @var string
-    */
+    /**
+     * Cache directory.
+     *
+     * @var string
+     */
     private $cache_dir;
 
     public function __construct(string $config_dir = GLPI_CONFIG_DIR, string $cache_dir = GLPI_CACHE_DIR)
@@ -106,13 +106,13 @@ class CacheManager
         $this->cache_dir = $cache_dir;
     }
 
-   /**
-    * Defines cache namespace prefix.
-    *
-    * @param string $namespace_prefix
-    *
-    * @return bool
-    */
+    /**
+     * Defines cache namespace prefix.
+     *
+     * @param string $namespace_prefix
+     *
+     * @return bool
+     */
     public function setNamespacePrefix(string $namespace_prefix): bool
     {
         $config = $this->getRawConfig();
@@ -121,15 +121,15 @@ class CacheManager
         return $this->writeConfig($config);
     }
 
-   /**
-    * Defines cache configuration for given context.
-    *
-    * @param string          $context
-    * @param string|string[] $dsn
-    * @param array           $options
-    *
-    * @return bool
-    */
+    /**
+     * Defines cache configuration for given context.
+     *
+     * @param string          $context
+     * @param string|string[] $dsn
+     * @param array           $options
+     *
+     * @return bool
+     */
     public function setConfiguration(string $context, $dsn, array $options = []): bool
     {
         if (!$this->isContextValid($context, true)) {
@@ -148,13 +148,13 @@ class CacheManager
         return $this->writeConfig($config);
     }
 
-   /**
-    * Unset cache configuration for given context.
-    *
-    * @param string $context
-    *
-    * @return bool
-    */
+    /**
+     * Unset cache configuration for given context.
+     *
+     * @param string $context
+     *
+     * @return bool
+     */
     public function unsetConfiguration(string $context): bool
     {
         if (!$this->isContextValid($context, true)) {
@@ -167,14 +167,14 @@ class CacheManager
         return $this->writeConfig($config);
     }
 
-   /**
-    * Test connection to given DSN. Conection failure will trigger an exception.
-    *
-    * @param string|string[] $dsn
-    * @param array           $options
-    *
-    * @return array
-    */
+    /**
+     * Test connection to given DSN. Conection failure will trigger an exception.
+     *
+     * @param string|string[] $dsn
+     * @param array           $options
+     *
+     * @return array
+     */
     public function testConnection($dsn, array $options = []): void
     {
         switch ($this->extractScheme($dsn)) {
@@ -198,23 +198,23 @@ class CacheManager
         }
     }
 
-   /**
-    * Get cache instance for given context.
-    *
-    * @param string $context
-    *
-    * @return CacheInterface
-    */
+    /**
+     * Get cache instance for given context.
+     *
+     * @param string $context
+     *
+     * @return CacheInterface
+     */
     public function getCacheInstance(string $context): CacheInterface
     {
         return new SimpleCache($this->getCacheStorageAdapter($context));
     }
 
-   /**
-    * Get cache storage adapter for given context.
-    *
-    * @return \Psr\Cache\CacheItemPoolInterface
-    */
+    /**
+     * Get cache storage adapter for given context.
+     *
+     * @return \Psr\Cache\CacheItemPoolInterface
+     */
     public function getCacheStorageAdapter(string $context): CacheItemPoolInterface
     {
         if (!$this->isContextValid($context)) {
@@ -273,42 +273,42 @@ class CacheManager
         return $storage;
     }
 
-   /**
-    * Get core cache instance.
-    *
-    * @return CacheInterface
-    */
+    /**
+     * Get core cache instance.
+     *
+     * @return CacheInterface
+     */
     public function getCoreCacheInstance(): CacheInterface
     {
 
         return $this->getCacheInstance(self::CONTEXT_CORE);
     }
 
-   /**
-    * Get translations cache instance.
-    *
-    * @return CacheInterface
-    */
+    /**
+     * Get translations cache instance.
+     *
+     * @return CacheInterface
+     */
     public function getTranslationsCacheInstance(): CacheInterface
     {
         return $this->getCacheInstance(self::CONTEXT_TRANSLATIONS);
     }
 
-   /**
-    * Get installer cache instance.
-    *
-    * @return CacheInterface
-    */
+    /**
+     * Get installer cache instance.
+     *
+     * @return CacheInterface
+     */
     public function getInstallerCacheInstance(): CacheInterface
     {
         return $this->getCacheInstance(self::CONTEXT_INSTALLER);
     }
 
-   /**
-    * Reset all caches.
-    *
-    * @return bool
-    */
+    /**
+     * Reset all caches.
+     *
+     * @return bool
+     */
     public function resetAllCaches(): bool
     {
 
@@ -337,11 +337,11 @@ class CacheManager
         return $success;
     }
 
-   /**
-    * Return list of all know cache contexts.
-    *
-    * @return string[]
-    */
+    /**
+     * Return list of all know cache contexts.
+     *
+     * @return string[]
+     */
     public function getKnownContexts(): array
     {
        // Core contexts
@@ -373,13 +373,13 @@ class CacheManager
         return array_unique($contexts);
     }
 
-   /**
-    * Extract scheme from DSN.
-    *
-    * @param string|string[] $dsn
-    *
-    * @return string|null
-    */
+    /**
+     * Extract scheme from DSN.
+     *
+     * @param string|string[] $dsn
+     *
+     * @return string|null
+     */
     public function extractScheme($dsn): ?string
     {
         if (is_array($dsn)) {
@@ -414,11 +414,11 @@ class CacheManager
         return in_array($scheme, array_keys($this->getAvailableAdapters())) ? $scheme : null;
     }
 
-   /**
-    * Returns raw configuration from configuration file.
-    *
-    * @return array
-    */
+    /**
+     * Returns raw configuration from configuration file.
+     *
+     * @return array
+     */
     private function getRawConfig(): array
     {
         $config_file = $this->config_dir . DIRECTORY_SEPARATOR . self::CONFIG_FILENAME;
@@ -449,13 +449,13 @@ class CacheManager
         return $config;
     }
 
-   /**
-    * Write cache configuration to disk.
-    *
-    * @param array $config
-    *
-    * @return bool
-    */
+    /**
+     * Write cache configuration to disk.
+     *
+     * @param array $config
+     *
+     * @return bool
+     */
     private function writeConfig(array $config): bool
     {
         $config_export = var_export($config, true);
@@ -468,14 +468,14 @@ PHP;
         return Toolbox::writeConfig(self::CONFIG_FILENAME, $config_file_contents, $this->config_dir);
     }
 
-   /**
-    * Check if context key is valid.
-    *
-    * @param string $context
-    * @param bool $only_configurable
-    *
-    * @return bool
-    */
+    /**
+     * Check if context key is valid.
+     *
+     * @param string $context
+     * @param bool $only_configurable
+     *
+     * @return bool
+     */
     public function isContextValid(string $context, bool $only_configurable = false): bool
     {
         $core_contexts = ['core'];
@@ -489,13 +489,13 @@ PHP;
         return in_array($context, $core_contexts, true) || preg_match('/^plugin:\w+$/', $context) === 1;
     }
 
-   /**
-    * Check if DSN is valid.
-    *
-    * @param string|string[] $dsn
-    *
-    * @return bool
-    */
+    /**
+     * Check if DSN is valid.
+     *
+     * @param string|string[] $dsn
+     *
+     * @return bool
+     */
     public function isDsnValid($dsn): bool
     {
         if (is_array($dsn)) {
@@ -520,13 +520,13 @@ PHP;
         return in_array($this->extractScheme($dsn), array_keys($this->getAvailableAdapters()));
     }
 
-   /**
-    * Normalize namespace to prevent usage of reserved chars.
-    *
-    * @param string $namespace
-    *
-    * @return string
-    */
+    /**
+     * Normalize namespace to prevent usage of reserved chars.
+     *
+     * @param string $namespace
+     *
+     * @return string
+     */
     private function normalizeNamespace(string $namespace): string
     {
         return preg_replace(
@@ -536,13 +536,13 @@ PHP;
         );
     }
 
-   /**
-    * Returns a list of available adapters.
-    * Keys are adapter schemes (see self::SCHEME_*).
-    * Values are translated names.
-    *
-    * @return array
-    */
+    /**
+     * Returns a list of available adapters.
+     * Keys are adapter schemes (see self::SCHEME_*).
+     * Values are translated names.
+     *
+     * @return array
+     */
     public static function getAvailableAdapters(): array
     {
         return [

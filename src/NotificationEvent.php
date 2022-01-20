@@ -33,7 +33,7 @@
 
 /**
  * Class which manages notification events
-**/
+ **/
 class NotificationEvent extends CommonDBTM
 {
     protected static $notable = true;
@@ -44,12 +44,12 @@ class NotificationEvent extends CommonDBTM
     }
 
 
-   /**
-    * @param string $itemtype Item type
-    * @param array  $options  array to pass to showFromArray or $value
-    *
-    * @return string
-   **/
+    /**
+     * @param string $itemtype Item type
+     * @param array  $options  array to pass to showFromArray or $value
+     *
+     * @return string
+     **/
     public static function dropdownEvents($itemtype, $options = [])
     {
 
@@ -73,16 +73,16 @@ class NotificationEvent extends CommonDBTM
     }
 
 
-   /**
-    * retrieve the label for an event
-    *
-    * @since 0.83
-    *
-    * @param string $itemtype name of the type
-    * @param string $event    name of the event
-    *
-    * @return string
-   **/
+    /**
+     * retrieve the label for an event
+     *
+     * @since 0.83
+     *
+     * @param string $itemtype name of the type
+     * @param string $event    name of the event
+     *
+     * @return string
+     **/
     public static function getEventName($itemtype, $event)
     {
 
@@ -98,16 +98,16 @@ class NotificationEvent extends CommonDBTM
     }
 
 
-   /**
-    * Raise a notification event
-    *
-    * @param string     $event   the event raised for the itemtype
-    * @param CommonGLPI $item    the object which raised the event
-    * @param array      $options array   of options used
-    * @param string     $label   used for debugEvent() (default '')
-    *
-    * @return boolean
-   **/
+    /**
+     * Raise a notification event
+     *
+     * @param string     $event   the event raised for the itemtype
+     * @param CommonGLPI $item    the object which raised the event
+     * @param array      $options array   of options used
+     * @param string     $label   used for debugEvent() (default '')
+     *
+     * @return boolean
+     **/
     public static function raiseEvent($event, $item, $options = [], $label = '')
     {
         global $CFG_GLPI;
@@ -211,14 +211,14 @@ class NotificationEvent extends CommonDBTM
     }
 
 
-   /**
-    * Display debug information for an object
-    *
-    * @param CommonDBTM $item    Object instance
-    * @param array      $options Options
-    *
-    * @return void
-   **/
+    /**
+     * Display debug information for an object
+     *
+     * @param CommonDBTM $item    Object instance
+     * @param array      $options Options
+     *
+     * @return void
+     **/
     public static function debugEvent($item, $options = [])
     {
 

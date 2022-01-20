@@ -52,7 +52,7 @@ class Software extends InventoryAsset
     private $current_versions = [];
     private $entities_id_software;
 
-   /** @var array */
+    /** @var array */
     protected $extra_data = [
       OperatingSystem::class => null
     ];
@@ -348,27 +348,27 @@ class Software extends InventoryAsset
         }
     }
 
-   /**
-    * Get software comparison key
-    *
-    * @param string  $name             Software name
-    * @param integer $manufacturers_id Manufacturers id
-    *
-    * @return string
-    */
+    /**
+     * Get software comparison key
+     *
+     * @param string  $name             Software name
+     * @param integer $manufacturers_id Manufacturers id
+     *
+     * @return string
+     */
     protected function getSoftwareKey($name, $manufacturers_id): string
     {
         return $this->getCompareKey([Toolbox::slugify($name), $manufacturers_id]);
     }
 
-   /**
-    * Get software version comparison key
-    *
-    * @param stdClass $val          Version name
-    * @param integer   $softwares_id Software id
-    *
-    * @return string
-    */
+    /**
+     * Get software version comparison key
+     *
+     * @param stdClass $val          Version name
+     * @param integer   $softwares_id Software id
+     *
+     * @return string
+     */
     protected function getVersionKey($val, $softwares_id): string
     {
         return $this->getCompareKey([
@@ -379,13 +379,13 @@ class Software extends InventoryAsset
         ]);
     }
 
-   /**
-    * Get full comparison keys for a software (including manufacturer and operating system)
-    *
-    * @param \stdClass $val Object values
-    *
-    * @return string
-    */
+    /**
+     * Get full comparison keys for a software (including manufacturer and operating system)
+     *
+     * @param \stdClass $val Object values
+     *
+     * @return string
+     */
     protected function getFullCompareKey(\stdClass $val): string
     {
         return $this->getCompareKey([
@@ -398,13 +398,13 @@ class Software extends InventoryAsset
         ]);
     }
 
-   /**
-    * Get full comparison keys for a software (including operating system but not manufacturer)
-    *
-    * @param \stdClass $val Object values
-    *
-    * @return string
-    */
+    /**
+     * Get full comparison keys for a software (including operating system but not manufacturer)
+     *
+     * @param \stdClass $val Object values
+     *
+     * @return string
+     */
     protected function getSimpleCompareKey(\stdClass $val): string
     {
         return $this->getCompareKey([
@@ -416,13 +416,13 @@ class Software extends InventoryAsset
         ]);
     }
 
-   /**
-    * Build comparison key from values
-    *
-    * @param array $parts Values parts
-    *
-    * @return string
-    */
+    /**
+     * Build comparison key from values
+     *
+     * @param array $parts Values parts
+     *
+     * @return string
+     */
     protected function getCompareKey(array $parts): string
     {
         return implode(
@@ -431,11 +431,11 @@ class Software extends InventoryAsset
         );
     }
 
-   /**
-    * Populates software list
-    *
-    * @return  void
-    */
+    /**
+     * Populates software list
+     *
+     * @return  void
+     */
     private function populateSoftware()
     {
         global $DB;
@@ -482,11 +482,11 @@ class Software extends InventoryAsset
         $stmt->close();
     }
 
-   /**
-    * Populates software versions list
-    *
-    * @return  void
-    */
+    /**
+     * Populates software versions list
+     *
+     * @return  void
+     */
     private function populateVersions()
     {
         global $DB;
@@ -555,11 +555,11 @@ class Software extends InventoryAsset
         $stmt->close();
     }
 
-   /**
-    * Store software
-    *
-    * @return void
-    */
+    /**
+     * Store software
+     *
+     * @return void
+     */
     private function storeSoftware()
     {
         global $DB;
@@ -600,11 +600,11 @@ class Software extends InventoryAsset
         }
     }
 
-   /**
-    * Store software versions
-    *
-    * @return void
-    */
+    /**
+     * Store software versions
+     *
+     * @return void
+     */
     private function storeVersions()
     {
         global $DB;
@@ -658,14 +658,14 @@ class Software extends InventoryAsset
         }
     }
 
-   /**
-    * Clean input data
-    *
-    * @param array $input        Input data
-    * @param array $known_fields Table fields
-    *
-    * @return array
-    */
+    /**
+     * Clean input data
+     *
+     * @param array $input        Input data
+     * @param array $known_fields Table fields
+     *
+     * @return array
+     */
     private function cleanInputToPrepare(array $input, array $known_fields)
     {
         foreach (array_keys($input) as $column) {
@@ -677,11 +677,11 @@ class Software extends InventoryAsset
         return $input;
     }
 
-   /**
-    * Store asset link to software
-    *
-    * @return void
-    */
+    /**
+     * Store asset link to software
+     *
+     * @return void
+     */
     private function storeAssetLink()
     {
         global $DB;

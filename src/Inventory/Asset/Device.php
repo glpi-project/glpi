@@ -40,24 +40,24 @@ abstract class Device extends InventoryAsset
 {
     protected $id_class;
 
-   /**
-    * Constructor
-    *
-    * @param CommonDBTM $item    Item instance
-    * @param array      $data    Data part
-    * @param string     $idclass Item device class
-    */
+    /**
+     * Constructor
+     *
+     * @param CommonDBTM $item    Item instance
+     * @param array      $data    Data part
+     * @param string     $idclass Item device class
+     */
     public function __construct(CommonDBTM $item, array $data = null, $id_class)
     {
         parent::__construct($item, $data);
         $this->id_class = $id_class;
     }
 
-   /**
-    * Get existing entries from database
-    *
-    * @return array
-    */
+    /**
+     * Get existing entries from database
+     *
+     * @return array
+     */
     protected function getExisting($itemdevicetable, $fk): array
     {
         global $DB;

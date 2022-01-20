@@ -99,13 +99,13 @@ class DeviceSimcard extends CommonDevice
         return $tab;
     }
 
-   /**
-    * Criteria used for import function
-    *
-    * @see CommonDevice::getImportCriteria()
-    *
-    * @since 9.2
-    **/
+    /**
+     * Criteria used for import function
+     *
+     * @see CommonDevice::getImportCriteria()
+     *
+     * @since 9.2
+     **/
     public function getImportCriteria()
     {
 

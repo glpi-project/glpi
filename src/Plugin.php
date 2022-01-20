@@ -44,69 +44,69 @@ use Glpi\Toolbox\VersionParser;
 class Plugin extends CommonDBTM
 {
    // Class constant : Plugin state
-   /**
-    * @var int Unknown plugin state
-    */
+    /**
+     * @var int Unknown plugin state
+     */
     const UNKNOWN        = -1;
 
-   /**
-    * @var int Plugin was discovered but not installed
-    *
-    * @note Plugins are never actually set to this status?
-    */
+    /**
+     * @var int Plugin was discovered but not installed
+     *
+     * @note Plugins are never actually set to this status?
+     */
     const ANEW           = 0;
 
-   /**
-    * @var int Plugin is installed and enabled
-    */
+    /**
+     * @var int Plugin is installed and enabled
+     */
     const ACTIVATED      = 1;
 
-   /**
-    * @var int Plugin is not installed
-    */
+    /**
+     * @var int Plugin is not installed
+     */
     const NOTINSTALLED   = 2;
 
-   /**
-    * @var int Plugin is installed but needs configured before it can be enabled
-    */
+    /**
+     * @var int Plugin is installed but needs configured before it can be enabled
+     */
     const TOBECONFIGURED = 3;
 
-   /**
-    * @var int Plugin is installed but not enabled
-    */
+    /**
+     * @var int Plugin is installed but not enabled
+     */
     const NOTACTIVATED   = 4;
 
-   /**
-    * @var int Plugin was previously discovered, but the plugin directory is missing now. The DB needs cleaned.
-    */
+    /**
+     * @var int Plugin was previously discovered, but the plugin directory is missing now. The DB needs cleaned.
+     */
     const TOBECLEANED    = 5;
 
-   /**
-    * @var int The plugin's files are for a newer version than installed. An update is needed.
-    */
+    /**
+     * @var int The plugin's files are for a newer version than installed. An update is needed.
+     */
     const NOTUPDATED     = 6;
 
     public static $rightname = 'config';
 
-   /**
-    * Plugin init state.
-    *
-    * @var boolean
-    */
+    /**
+     * Plugin init state.
+     *
+     * @var boolean
+     */
     private static $plugins_init = false;
 
-   /**
-    * Activated plugin list
-    *
-    * @var string[]
-    */
+    /**
+     * Activated plugin list
+     *
+     * @var string[]
+     */
     private static $activated_plugins = [];
 
-   /**
-    * Loaded plugin list
-    *
-    * @var string[]
-    */
+    /**
+     * Loaded plugin list
+     *
+     * @var string[]
+     */
     private static $loaded_plugins = [];
 
     public static function getTypeName($nb = 0)
@@ -175,27 +175,27 @@ class Plugin extends CommonDBTM
     }
 
 
-   /**
-    * Retrieve an item from the database using its directory
-    *
-    * @param string $dir directory of the plugin
-    *
-    * @return boolean
-   **/
+    /**
+     * Retrieve an item from the database using its directory
+     *
+     * @param string $dir directory of the plugin
+     *
+     * @return boolean
+     **/
     public function getFromDBbyDir($dir)
     {
         return $this->getFromDBByCrit([$this->getTable() . '.directory' => $dir]);
     }
 
 
-   /**
-    * Init plugins list.
-    *
-    * @param boolean $load_plugins     Whether to load active/configurable plugins or not.
-    * @param array $excluded_plugins   List of plugins to exclude
-    *
-    * @return void
-   **/
+    /**
+     * Init plugins list.
+     *
+     * @param boolean $load_plugins     Whether to load active/configurable plugins or not.
+     * @param array $excluded_plugins   List of plugins to exclude
+     *
+     * @return void
+     **/
     public function init(bool $load_plugins = false, array $excluded_plugins = [])
     {
         global $DB;
@@ -238,15 +238,15 @@ class Plugin extends CommonDBTM
     }
 
 
-   /**
-    * Init a plugin including setup.php file
-    * launching plugin_init_NAME function  after checking compatibility
-    *
-    * @param string  $plugin_key        System name (Plugin directory)
-    * @param boolean $withhook   Load hook functions (false by default)
-    *
-    * @return void
-   **/
+    /**
+     * Init a plugin including setup.php file
+     * launching plugin_init_NAME function  after checking compatibility
+     *
+     * @param string  $plugin_key        System name (Plugin directory)
+     * @param boolean $withhook   Load hook functions (false by default)
+     *
+     * @return void
+     **/
     public static function load($plugin_key, $withhook = false)
     {
         $loaded = false;
@@ -288,13 +288,13 @@ class Plugin extends CommonDBTM
         }
     }
 
-   /**
-    * Unload a plugin.
-    *
-    * @param string  $plugin_key  System name (Plugin directory)
-    *
-    * @return void
-    */
+    /**
+     * Unload a plugin.
+     *
+     * @param string  $plugin_key  System name (Plugin directory)
+     *
+     * @return void
+     */
     private function unload($plugin_key)
     {
         if (($key = array_search($plugin_key, self::$activated_plugins)) !== false) {
@@ -307,15 +307,15 @@ class Plugin extends CommonDBTM
     }
 
 
-   /**
-    * Load lang file for a plugin
-    *
-    * @param string $plugin_key    System name (Plugin directory)
-    * @param string $forcelang     Force a specific lang (default '')
-    * @param string $coretrytoload Lang trying to be loaded from core (default '')
-    *
-    * @return void
-   **/
+    /**
+     * Load lang file for a plugin
+     *
+     * @param string $plugin_key    System name (Plugin directory)
+     * @param string $forcelang     Force a specific lang (default '')
+     * @param string $coretrytoload Lang trying to be loaded from core (default '')
+     *
+     * @return void
+     **/
     public static function loadLang($plugin_key, $forcelang = '', $coretrytoload = '')
     {
         global $CFG_GLPI, $TRANSLATE;
@@ -401,14 +401,14 @@ class Plugin extends CommonDBTM
     }
 
 
-   /**
-    * Check plugins states and detect new plugins.
-    *
-    * @param boolean $scan_inactive_and_new_plugins
-    * @param array $excluded_plugins   List of plugins to exclude
-    *
-    * @return void
-    */
+    /**
+     * Check plugins states and detect new plugins.
+     *
+     * @param boolean $scan_inactive_and_new_plugins
+     * @param array $excluded_plugins   List of plugins to exclude
+     *
+     * @return void
+     */
     public function checkStates($scan_inactive_and_new_plugins = false, array $excluded_plugins = [])
     {
 
@@ -452,13 +452,13 @@ class Plugin extends CommonDBTM
     }
 
 
-   /**
-    * Check plugin state.
-    *
-    * @param string $plugin_key System name (Plugin directory)
-    *
-    * return void
-    */
+    /**
+     * Check plugin state.
+     *
+     * @param string $plugin_key System name (Plugin directory)
+     *
+     * return void
+     */
     public function checkPluginState($plugin_key)
     {
 
@@ -622,18 +622,18 @@ class Plugin extends CommonDBTM
     }
 
 
-   /**
-    * Get plugin information based on its old name.
-    *
-    * @param string $oldname
-    *
-    * @return null|array If a new directory is found, returns an array containing 'directory' and 'informations' keys.
-    */
+    /**
+     * Get plugin information based on its old name.
+     *
+     * @param string $oldname
+     *
+     * @return null|array If a new directory is found, returns an array containing 'directory' and 'informations' keys.
+     */
     private function getNewInfoAndDirBasedOnOldName($oldname)
     {
 
         $plugins_directories = new DirectoryIterator(GLPI_ROOT . '/plugins');
-       /** @var SplFileInfo $plugin_directory */
+        /** @var SplFileInfo $plugin_directory */
         foreach ($plugins_directories as $plugin_directory) {
             if (
                 in_array($plugin_directory->getFilename(), ['.svn', '.', '..'])
@@ -655,14 +655,14 @@ class Plugin extends CommonDBTM
         return null;
     }
 
-   /**
-    * Get list of all plugins
-    *
-    * @param array $fields Fields to retrieve
-    * @param array $order  Query ORDER clause
-    *
-    * @return array
-    */
+    /**
+     * Get list of all plugins
+     *
+     * @param array $fields Fields to retrieve
+     * @param array $order  Query ORDER clause
+     *
+     * @return array
+     */
     public function getList(array $fields = [], array $order = ['name', 'directory'])
     {
         global $DB;
@@ -684,11 +684,11 @@ class Plugin extends CommonDBTM
     }
 
 
-   /**
-    * Uninstall a plugin
-    *
-    * @param integer $ID ID of the plugin (The `id` field, not directory)
-   **/
+    /**
+     * Uninstall a plugin
+     *
+     * @param integer $ID ID of the plugin (The `id` field, not directory)
+     **/
     public function uninstall($ID)
     {
         $message = '';
@@ -733,16 +733,16 @@ class Plugin extends CommonDBTM
     }
 
 
-   /**
-    * Install a plugin
-    *
-    * @param integer $ID      ID of the plugin (The `id` field, not directory)
-    * @param array   $params  Additional params to pass to install hook.
-    *
-    * @return void
-    *
-    * @since 9.5.0 Added $param parameter
-   **/
+    /**
+     * Install a plugin
+     *
+     * @param integer $ID      ID of the plugin (The `id` field, not directory)
+     * @param array   $params  Additional params to pass to install hook.
+     *
+     * @return void
+     *
+     * @since 9.5.0 Added $param parameter
+     **/
     public function install($ID, array $params = [])
     {
 
@@ -803,13 +803,13 @@ class Plugin extends CommonDBTM
     }
 
 
-   /**
-    * activate a plugin
-    *
-    * @param integer $ID ID of the plugin (The `id` field, not directory)
-    *
-    * @return boolean about success
-   **/
+    /**
+     * activate a plugin
+     *
+     * @param integer $ID ID of the plugin (The `id` field, not directory)
+     *
+     * @return boolean about success
+     **/
     public function activate($ID)
     {
         global $PLUGIN_HOOKS;
@@ -907,13 +907,13 @@ class Plugin extends CommonDBTM
     }
 
 
-   /**
-    * Unactivate a plugin
-    *
-    * @param integer $ID ID of the plugin (The `id` field, not directory)
-    *
-    * @return boolean
-   **/
+    /**
+     * Unactivate a plugin
+     *
+     * @param integer $ID ID of the plugin (The `id` field, not directory)
+     *
+     * @return boolean
+     **/
     public function unactivate($ID)
     {
 
@@ -949,10 +949,10 @@ class Plugin extends CommonDBTM
     }
 
 
-   /**
-    * Unactivate all activated plugins for update process.
-    * This will prevent any plugin class to be available through autoloader.
-   **/
+    /**
+     * Unactivate all activated plugins for update process.
+     * This will prevent any plugin class to be available through autoloader.
+     **/
     public function unactivateAll()
     {
         global $DB;
@@ -982,11 +982,11 @@ class Plugin extends CommonDBTM
     }
 
 
-   /**
-    * clean a plugin
-    *
-    * @param $ID ID of the plugin
-   **/
+    /**
+     * clean a plugin
+     *
+     * @param $ID ID of the plugin
+     **/
     public function clean($ID)
     {
 
@@ -1001,13 +1001,13 @@ class Plugin extends CommonDBTM
     }
 
 
-   /**
-    * Is a plugin activated ?
-    *
-    * @param string $directory  Plugin directory
-    *
-    * @return boolean
-    */
+    /**
+     * Is a plugin activated ?
+     *
+     * @param string $directory  Plugin directory
+     *
+     * @return boolean
+     */
     public function isActivated($directory)
     {
        // Make a lowercase comparison, as sometime this function is called based on
@@ -1027,13 +1027,13 @@ class Plugin extends CommonDBTM
     }
 
 
-   /**
-    * Is a plugin updatable ?
-    *
-    * @param string $directory  Plugin directory
-    *
-    * @return boolean
-    */
+    /**
+     * Is a plugin updatable ?
+     *
+     * @param string $directory  Plugin directory
+     *
+     * @return boolean
+     */
     public function isUpdatable($directory)
     {
        // Make a lowercase comparison, as sometime this function is called based on
@@ -1053,26 +1053,26 @@ class Plugin extends CommonDBTM
     }
 
 
-   /**
-    * Is a plugin loadable ?
-    *
-    * @param string $directory  Plugin directory
-    *
-    * @return boolean
-    */
+    /**
+     * Is a plugin loadable ?
+     *
+     * @param string $directory  Plugin directory
+     *
+     * @return boolean
+     */
     public function isLoadable($directory)
     {
         return !empty($this->getInformationsFromDirectory($directory));
     }
 
 
-   /**
-    * Is a plugin installed ?
-    *
-    * @param string $directory  Plugin directory
-    *
-    * @return boolean
-    */
+    /**
+     * Is a plugin installed ?
+     *
+     * @param string $directory  Plugin directory
+     *
+     * @return boolean
+     */
     public function isInstalled($directory)
     {
 
@@ -1091,15 +1091,15 @@ class Plugin extends CommonDBTM
     }
 
 
-   /**
-    * Migrate itemtype from integer (0.72) to string (0.80)
-    *
-    * @param array $types        Array of (num=>name) of type manage by the plugin
-    * @param array $glpitables   Array of GLPI table name used by the plugin
-    * @param array $plugtables   Array of Plugin table name which have an itemtype
-    *
-    * @return void
-   **/
+    /**
+     * Migrate itemtype from integer (0.72) to string (0.80)
+     *
+     * @param array $types        Array of (num=>name) of type manage by the plugin
+     * @param array $glpitables   Array of GLPI table name used by the plugin
+     * @param array $plugtables   Array of Plugin table name which have an itemtype
+     *
+     * @return void
+     **/
     public static function migrateItemType($types = [], $glpitables = [], $plugtables = [])
     {
         global $DB;
@@ -1283,9 +1283,9 @@ class Plugin extends CommonDBTM
     }
 
 
-   /**
-    * @param integer $width
-   **/
+    /**
+     * @param integer $width
+     **/
     public function showSystemInformations($width)
     {
 
@@ -1314,15 +1314,15 @@ class Plugin extends CommonDBTM
     }
 
 
-   /**
-    * Define a new class managed by a plugin
-    *
-    * @param string $itemtype Class name
-    * @param array  $attrib   Array of attributes, a hashtable with index in
-    *                         (classname, typename, reservation_types)
-    *
-    * @return bool
-   **/
+    /**
+     * Define a new class managed by a plugin
+     *
+     * @param string $itemtype Class name
+     * @param array  $attrib   Array of attributes, a hashtable with index in
+     *                         (classname, typename, reservation_types)
+     *
+     * @return bool
+     **/
     public static function registerClass($itemtype, $attrib = [])
     {
         global $CFG_GLPI;
@@ -1401,14 +1401,14 @@ class Plugin extends CommonDBTM
     }
 
 
-   /**
-    * This function executes a hook.
-    *
-    * @param string  $name   Name of hook to fire
-    * @param mixed   $param  Parameters if needed : if object limit to the itemtype (default NULL)
-    *
-    * @return mixed $data
-   **/
+    /**
+     * This function executes a hook.
+     *
+     * @param string  $name   Name of hook to fire
+     * @param mixed   $param  Parameters if needed : if object limit to the itemtype (default NULL)
+     *
+     * @return mixed $data
+     **/
     public static function doHook($name, $param = null)
     {
         global $PLUGIN_HOOKS;
@@ -1456,14 +1456,14 @@ class Plugin extends CommonDBTM
     }
 
 
-   /**
-    * This function executes a hook.
-    *
-    * @param string $name   Name of hook to fire
-    * @param mixed  $parm   Parameters (default NULL)
-    *
-    * @return mixed $data
-   **/
+    /**
+     * This function executes a hook.
+     *
+     * @param string $name   Name of hook to fire
+     * @param mixed  $parm   Parameters (default NULL)
+     *
+     * @return mixed $data
+     **/
     public static function doHookFunction($name, $parm = null)
     {
         global $PLUGIN_HOOKS;
@@ -1487,16 +1487,16 @@ class Plugin extends CommonDBTM
     }
 
 
-   /**
-    * This function executes a hook for 1 plugin.
-    *
-    * @param string          $plugin_key System name of the plugin
-    * @param string|callable $hook     suffix used to build function to be called ("plugin_myplugin_{$hook}")
-    *                                  or callable function
-    * @param mixed           ...$args  [optional] One or more arguments passed to hook function
-    *
-    * @return mixed $data
-   **/
+    /**
+     * This function executes a hook for 1 plugin.
+     *
+     * @param string          $plugin_key System name of the plugin
+     * @param string|callable $hook     suffix used to build function to be called ("plugin_myplugin_{$hook}")
+     *                                  or callable function
+     * @param mixed           ...$args  [optional] One or more arguments passed to hook function
+     *
+     * @return mixed $data
+     **/
     public static function doOneHook($plugin_key, $hook, ...$args)
     {
 
@@ -1518,11 +1518,11 @@ class Plugin extends CommonDBTM
     }
 
 
-   /**
-    * Get dropdowns for plugins
-    *
-    * @return array Array containing plugin dropdowns
-   **/
+    /**
+     * Get dropdowns for plugins
+     *
+     * @return array Array containing plugin dropdowns
+     **/
     public static function getDropdowns()
     {
 
@@ -1537,16 +1537,16 @@ class Plugin extends CommonDBTM
     }
 
 
-   /**
-    * Get information from a plugin
-    *
-    * @param string $plugin System name (Plugin directory)
-    * @param string $info   Wanted info (name, version, ...), NULL for all
-    *
-    * @since 0.84
-    *
-    * @return string|array The specific information value requested or an array of all information if $info is null.
-   **/
+    /**
+     * Get information from a plugin
+     *
+     * @param string $plugin System name (Plugin directory)
+     * @param string $info   Wanted info (name, version, ...), NULL for all
+     *
+     * @since 0.84
+     *
+     * @return string|array The specific information value requested or an array of all information if $info is null.
+     **/
     public static function getInfo($plugin, $info = null)
     {
 
@@ -1566,13 +1566,13 @@ class Plugin extends CommonDBTM
         return $res;
     }
 
-   /**
-    * Returns plugin information from directory.
-    *
-    * @param string $directory
-    *
-    * @return array
-    */
+    /**
+     * Returns plugin information from directory.
+     *
+     * @param string $directory
+     *
+     * @return array
+     */
     public function getInformationsFromDirectory($directory)
     {
 
@@ -1604,11 +1604,11 @@ class Plugin extends CommonDBTM
     }
 
 
-   /**
-    * Get database relations for plugins
-    *
-    * @return array Array containing plugin database relations
-   **/
+    /**
+     * Get database relations for plugins
+     *
+     * @return array Array containing plugin database relations
+     **/
     public static function getDatabaseRelations()
     {
 
@@ -1624,13 +1624,13 @@ class Plugin extends CommonDBTM
     }
 
 
-   /**
-    * Get additional search options managed by plugins
-    *
-    * @param $itemtype
-    *
-    * @return array Array containing plugin search options for given type
-   **/
+    /**
+     * Get additional search options managed by plugins
+     *
+     * @param $itemtype
+     *
+     * @return array Array containing plugin search options for given type
+     **/
     public static function getAddSearchOptions($itemtype)
     {
 
@@ -1649,11 +1649,11 @@ class Plugin extends CommonDBTM
     }
 
 
-   /**
-    * Include the hook file for a plugin
-    *
-    * @param string $plugin_key
-    */
+    /**
+     * Include the hook file for a plugin
+     *
+     * @param string $plugin_key
+     */
     public static function includeHook(string $plugin_key = "")
     {
         foreach (PLUGINS_DIRECTORIES as $base_dir) {
@@ -1665,17 +1665,17 @@ class Plugin extends CommonDBTM
     }
 
 
-   /**
-    * Get additional search options managed by plugins
-    *
-    * @since 9.2
-    *
-    * @param string $itemtype Item type
-    *
-    * @return array An *indexed* array of search options
-    *
-    * @see https://glpi-developer-documentation.rtfd.io/en/master/devapi/search.html
-   **/
+    /**
+     * Get additional search options managed by plugins
+     *
+     * @since 9.2
+     *
+     * @param string $itemtype Item type
+     *
+     * @return array An *indexed* array of search options
+     *
+     * @see https://glpi-developer-documentation.rtfd.io/en/master/devapi/search.html
+     **/
     public static function getAddSearchOptionsNew($itemtype)
     {
         $options = [];
@@ -1708,13 +1708,13 @@ class Plugin extends CommonDBTM
         return $options;
     }
 
-   /**
-    * Check if there is a plugin enabled that supports importing items
-    *
-    * @return boolean
-    *
-    * @since 0.84
-   **/
+    /**
+     * Check if there is a plugin enabled that supports importing items
+     *
+     * @return boolean
+     *
+     * @since 0.84
+     **/
     public static function haveImport()
     {
         global $PLUGIN_HOOKS;
@@ -1722,17 +1722,17 @@ class Plugin extends CommonDBTM
         return (isset($PLUGIN_HOOKS['import_item']) && count($PLUGIN_HOOKS['import_item']));
     }
 
-   /**
-    * Get an internationalized message for incompatible plugins (either core or php version)
-    *
-    * @param string $type Either 'php' or 'core', defaults to 'core'
-    * @param string $min  Minimal required version
-    * @param string $max  Maximal required version
-    *
-    * @since 9.2
-    *
-    * @return string
-    */
+    /**
+     * Get an internationalized message for incompatible plugins (either core or php version)
+     *
+     * @param string $type Either 'php' or 'core', defaults to 'core'
+     * @param string $min  Minimal required version
+     * @param string $max  Maximal required version
+     *
+     * @since 9.2
+     *
+     * @return string
+     */
     public static function messageIncompatible($type = 'core', $min = null, $max = null)
     {
         $type = ($type === 'core' ? __('GLPI') : __('PHP'));
@@ -1758,20 +1758,20 @@ class Plugin extends CommonDBTM
         }
     }
 
-   /**
-    * Get an internationalized message for missing requirement (extension, other plugin, ...)
-    *
-    * @param string $type Type of what is missing, one of:
-    *                     - ext (PHP module)
-    *                     - plugin (other plugin)
-    *                     - compil (compilation option)
-    *                     - param (GLPI configuration parameter)
-    * @param string $name Missing name
-    *
-    * @since 9.2
-    *
-    * @return string
-    */
+    /**
+     * Get an internationalized message for missing requirement (extension, other plugin, ...)
+     *
+     * @param string $type Type of what is missing, one of:
+     *                     - ext (PHP module)
+     *                     - plugin (other plugin)
+     *                     - compil (compilation option)
+     *                     - param (GLPI configuration parameter)
+     * @param string $name Missing name
+     *
+     * @since 9.2
+     *
+     * @return string
+     */
     public static function messageMissingRequirement($type, $name)
     {
         switch ($type) {
@@ -1810,15 +1810,15 @@ class Plugin extends CommonDBTM
         }
     }
 
-   /**
-    * Check declared versions (GLPI, PHP, ...)
-    *
-    * @since 9.2
-    *
-    * @param string $name System name (Plugin directory)
-    *
-    * @return boolean
-    */
+    /**
+     * Check declared versions (GLPI, PHP, ...)
+     *
+     * @since 9.2
+     *
+     * @param string $name System name (Plugin directory)
+     *
+     * @return boolean
+     */
     public function checkVersions($name)
     {
         $infos = self::getInfo($name);
@@ -1852,19 +1852,19 @@ class Plugin extends CommonDBTM
         return $ret;
     }
 
-   /**
-    * Check for GLPI version
-    *
-    * @since 9.2
-    * @since 9.3 Removed the 'dev' key of $info parameter.
-    *
-    * @param array $infos Requirements infos:
-    *                     - min: minimal supported version,
-    *                     - max: maximal supported version
-    *                     One of min or max is required.
-    *
-    * @return boolean
-    */
+    /**
+     * Check for GLPI version
+     *
+     * @since 9.2
+     * @since 9.3 Removed the 'dev' key of $info parameter.
+     *
+     * @param array $infos Requirements infos:
+     *                     - min: minimal supported version,
+     *                     - max: maximal supported version
+     *                     One of min or max is required.
+     *
+     * @return boolean
+     */
     public function checkGlpiVersion($infos)
     {
         if (!isset($infos['min']) && !isset($infos['max'])) {
@@ -1892,18 +1892,18 @@ class Plugin extends CommonDBTM
         return $compat;
     }
 
-   /**
-    * Check for PHP version
-    *
-    * @since 9.2
-    *
-    * @param array $infos Requirements infos:
-    *                     - min: minimal supported version,
-    *                     - max: maximal supported version.
-    *                     One of min or max is required.
-    *
-    * @return boolean
-    */
+    /**
+     * Check for PHP version
+     *
+     * @since 9.2
+     *
+     * @param array $infos Requirements infos:
+     *                     - min: minimal supported version,
+     *                     - max: maximal supported version.
+     *                     One of min or max is required.
+     *
+     * @return boolean
+     */
     public function checkPhpVersion($infos)
     {
         $compat = true;
@@ -1930,15 +1930,15 @@ class Plugin extends CommonDBTM
     }
 
 
-   /**
-    * Check fo required PHP extensions
-    *
-    * @since 9.2
-    *
-    * @param array $exts Extensions lists/config @see Config::checkExtensions()
-    *
-    * @return boolean
-    */
+    /**
+     * Check fo required PHP extensions
+     *
+     * @since 9.2
+     *
+     * @param array $exts Extensions lists/config @see Config::checkExtensions()
+     *
+     * @return boolean
+     */
     public function checkPhpExtensions($exts)
     {
         $report = Config::checkExtensions($exts);
@@ -1952,15 +1952,15 @@ class Plugin extends CommonDBTM
     }
 
 
-   /**
-    * Check expected GLPI parameters
-    *
-    * @since 9.2
-    *
-    * @param array $params Expected parameters to be setup
-    *
-    * @return boolean
-    */
+    /**
+     * Check expected GLPI parameters
+     *
+     * @since 9.2
+     *
+     * @param array $params Expected parameters to be setup
+     *
+     * @return boolean
+     */
     public function checkGlpiParameters($params)
     {
         global $CFG_GLPI;
@@ -1977,15 +1977,15 @@ class Plugin extends CommonDBTM
     }
 
 
-   /**
-    * Check expected PHP parameters
-    *
-    * @since 9.2
-    *
-    * @param array $params Expected parameters to be setup
-    *
-    * @return boolean
-    */
+    /**
+     * Check expected PHP parameters
+     *
+     * @since 9.2
+     *
+     * @param array $params Expected parameters to be setup
+     *
+     * @return boolean
+     */
     public function checkPhpParameters($params)
     {
         $compat = true;
@@ -2000,15 +2000,15 @@ class Plugin extends CommonDBTM
     }
 
 
-   /**
-    * Check expected GLPI plugins
-    *
-    * @since 9.2
-    *
-    * @param array $plugins Expected plugins
-    *
-    * @return boolean
-    */
+    /**
+     * Check expected GLPI plugins
+     *
+     * @since 9.2
+     *
+     * @param array $plugins Expected plugins
+     *
+     * @return boolean
+     */
     public function checkGlpiPlugins($plugins)
     {
         $compat = true;
@@ -2023,40 +2023,40 @@ class Plugin extends CommonDBTM
     }
 
 
-   /**
-    * Get GLPI version
-    * Used from unit tests to mock.
-    *
-    * @since 9.2
-    *
-    * @return string
-    */
+    /**
+     * Get GLPI version
+     * Used from unit tests to mock.
+     *
+     * @since 9.2
+     *
+     * @return string
+     */
     public function getGlpiVersion()
     {
         return VersionParser::getNormalizedVersion(GLPI_VERSION, false);
     }
 
-   /**
-    * Get PHP version
-    * Used from unit tests to mock.
-    *
-    * @since 9.2
-    *
-    * @return string
-    */
+    /**
+     * Get PHP version
+     * Used from unit tests to mock.
+     *
+     * @since 9.2
+     *
+     * @return string
+     */
     public function getPhpVersion()
     {
         return PHP_VERSION;
     }
 
-   /**
-    * Return label for an integer plugin state
-    *
-    * @since 9.3
-    *
-    * @param  integer $state see this class constants (ex self::ANEW, self::ACTIVATED)
-    * @return string  the label
-    */
+    /**
+     * Return label for an integer plugin state
+     *
+     * @since 9.3
+     *
+     * @param  integer $state see this class constants (ex self::ANEW, self::ACTIVATED)
+     * @return string  the label
+     */
     public static function getState($state = 0)
     {
         switch ($state) {
@@ -2083,15 +2083,15 @@ class Plugin extends CommonDBTM
     }
 
 
-   /**
-    * Return key for an integer plugin state
-    * purpose is to have a corresponding css class name
-    *
-    * @since 9.5
-    *
-    * @param  integer $state see this class constants (ex self::ANEW, self::ACTIVATED)
-    * @return string  the key
-    */
+    /**
+     * Return key for an integer plugin state
+     * purpose is to have a corresponding css class name
+     *
+     * @since 9.5
+     *
+     * @param  integer $state see this class constants (ex self::ANEW, self::ACTIVATED)
+     * @return string  the key
+     */
     public static function getStateKey(int $state = 0): string
     {
         switch ($state) {
@@ -2117,27 +2117,27 @@ class Plugin extends CommonDBTM
         return "";
     }
 
-   /**
-    * Get plugins list
-    *
-    * @since 9.3.2
-    *
-    * @return array
-    */
+    /**
+     * Get plugins list
+     *
+     * @since 9.3.2
+     *
+     * @return array
+     */
     public static function getPlugins()
     {
         return self::$activated_plugins;
     }
 
-   /**
-    * Check if a plugin is loaded
-    *
-    * @since 9.3.2
-    *
-    * @param string $plugin_key  System name (Plugin directory)
-    *
-    * @return boolean
-    */
+    /**
+     * Check if a plugin is loaded
+     *
+     * @since 9.3.2
+     *
+     * @param string $plugin_key  System name (Plugin directory)
+     *
+     * @return boolean
+     */
     public static function isPluginLoaded($plugin_key)
     {
        // Make a lowercase comparison, as sometime this function is called based on
@@ -2146,15 +2146,15 @@ class Plugin extends CommonDBTM
         return in_array(strtolower($plugin_key), $loadedPlugins);
     }
 
-   /**
-    * Check if a plugin is active
-    *
-    * @since 9.5.0
-    *
-    * @param string $plugin_key  System name (Plugin directory)
-    *
-    * @return boolean
-    */
+    /**
+     * Check if a plugin is active
+     *
+     * @since 9.5.0
+     *
+     * @param string $plugin_key  System name (Plugin directory)
+     *
+     * @return boolean
+     */
     public static function isPluginActive($plugin_key)
     {
         $plugin = new self();
@@ -2489,16 +2489,16 @@ class Plugin extends CommonDBTM
     }
 
 
-   /**
-    * Return the system path for a given plugin key
-    *
-    * @since 9.5
-    *
-    * @param string $plugin_key plugin system key
-    * @param bool $full true for absolute path
-    *
-    * @return false|string the path
-    */
+    /**
+     * Return the system path for a given plugin key
+     *
+     * @since 9.5
+     *
+     * @param string $plugin_key plugin system key
+     * @param bool $full true for absolute path
+     *
+     * @return false|string the path
+     */
     public static function getPhpDir(string $plugin_key = "", $full = true)
     {
         $directory = false;
@@ -2517,17 +2517,17 @@ class Plugin extends CommonDBTM
     }
 
 
-   /**
-    * Return the web path for a given plugin key
-    *
-    * @since 9.5
-    *
-    * @param string $plugin_key plugin system key
-    * @param bool $full if true, append root_doc from config
-    * @param bool $use_url_base if true, url_base instead root_doc
-    *
-    * @return false|string the web path
-    */
+    /**
+     * Return the web path for a given plugin key
+     *
+     * @since 9.5
+     *
+     * @param string $plugin_key plugin system key
+     * @param bool $full if true, append root_doc from config
+     * @param bool $use_url_base if true, url_base instead root_doc
+     *
+     * @return false|string the web path
+     */
     public static function getWebDir(string $plugin_key = "", $full = true, $use_url_base = false)
     {
         global $CFG_GLPI;

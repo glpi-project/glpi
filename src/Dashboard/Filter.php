@@ -45,18 +45,18 @@ use User;
 
 /**
  * Filter class
-**/
+ **/
 class Filter extends \CommonDBChild
 {
     public static $itemtype = "Glpi\\Dashboard\\Dashboard";
     public static $items_id = 'dashboards_dashboards_id';
 
-   /**
-    * Return all available filters
-    * Plugins can hooks on this functions to add their own filters
-    *
-    * @return array of filters
-    */
+    /**
+     * Return all available filters
+     * Plugins can hooks on this functions to add their own filters
+     *
+     * @return array of filters
+     */
     public static function getAll(): array
     {
         $filters = [
@@ -78,15 +78,15 @@ class Filter extends \CommonDBChild
         return $filters;
     }
 
-   /**
-    * Get HTML for a dates range filter
-    *
-    * @param string|array $values init the input with these values, will be a string if empty values
-    * @param string $fieldname how is named the current date field
-    *                         (used to specify creation date or last update)
-    *
-    * @return string
-    */
+    /**
+     * Get HTML for a dates range filter
+     *
+     * @param string|array $values init the input with these values, will be a string if empty values
+     * @param string $fieldname how is named the current date field
+     *                         (used to specify creation date or last update)
+     *
+     * @return string
+     */
     public static function dates($values = "", string $fieldname = 'dates'): string
     {
        // string mean empty value
@@ -122,13 +122,13 @@ JAVASCRIPT;
         return self::field($fieldname, $field, $label, is_array($values) && count($values) > 0);
     }
 
-   /**
-    * Get HTML for a dates range filter. Same as date but for last update field
-    *
-    * @param string|array $values init the input with these values, will be a string if empty values
-    *
-    * @return string
-    */
+    /**
+     * Get HTML for a dates range filter. Same as date but for last update field
+     *
+     * @param string|array $values init the input with these values, will be a string if empty values
+     *
+     * @return string
+     */
     public static function dates_mod($values): string
     {
         return self::dates($values, "dates_mod");
@@ -211,16 +211,16 @@ JAVASCRIPT;
         return self::field($fieldname, $field, $label, $value !== null);
     }
 
-   /**
-    * Get generic HTML for a filter
-    *
-    * @param string $id system name of the filter (ex "dates")
-    * @param string $field html of the filter
-    * @param string $label displayed label for the filter
-    * @param bool   $filled
-    *
-    * @return string the html for the complete field
-    */
+    /**
+     * Get generic HTML for a filter
+     *
+     * @param string $id system name of the filter (ex "dates")
+     * @param string $field html of the filter
+     * @param string $label displayed label for the filter
+     * @param bool   $filled
+     *
+     * @return string the html for the complete field
+     */
     public static function field(
         string $id = "",
         string $field = "",
@@ -267,13 +267,13 @@ HTML;
         return $html;
     }
 
-   /**
-    * Return filters for the provided dashboard
-    *
-    * @param int $dashboards_id
-    *
-    * @return array the JSON representation of the filter data
-    */
+    /**
+     * Return filters for the provided dashboard
+     *
+     * @param int $dashboards_id
+     *
+     * @return array the JSON representation of the filter data
+     */
     public static function getForDashboard(int $dashboards_id = 0): string
     {
         global $DB;
@@ -291,14 +291,14 @@ HTML;
         return is_string($settings) ? $settings : '{}';
     }
 
-   /**
-    * Save filter in DB for the provided dashboard
-    *
-    * @param int $dashboards_id id (not key) of the dashboard
-    * @param array $settings contains a JSON representation of the filter data
-    *
-    * @return void
-    */
+    /**
+     * Save filter in DB for the provided dashboard
+     *
+     * @param int $dashboards_id id (not key) of the dashboard
+     * @param array $settings contains a JSON representation of the filter data
+     *
+     * @return void
+     */
     public static function addForDashboard(int $dashboards_id = 0, string $settings = '')
     {
         global $DB;

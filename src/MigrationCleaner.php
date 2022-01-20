@@ -33,7 +33,7 @@
 
 /**
  * @since 0.85 (before migration_cleaner)
-**/
+ **/
 class MigrationCleaner extends CommonGLPI
 {
     public static $rightname = 'networking';
@@ -45,9 +45,9 @@ class MigrationCleaner extends CommonGLPI
     }
 
 
-   /**
-    * @see CommonGLPI::getAdditionalMenuOptions()
-   **/
+    /**
+     * @see CommonGLPI::getAdditionalMenuOptions()
+     **/
     public static function getAdditionalMenuOptions()
     {
 

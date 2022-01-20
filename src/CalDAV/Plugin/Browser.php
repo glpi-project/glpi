@@ -56,14 +56,14 @@ class Browser extends Plugin
         return parent::httpGet($request, $response);
     }
 
-   /**
-    * Check if connected user can display the HTML frontend.
-    *
-    * @return boolean
-    */
+    /**
+     * Check if connected user can display the HTML frontend.
+     *
+     * @return boolean
+     */
     private function canDisplayDebugInterface()
     {
-       /** @var $authPlugin \Sabre\DAV\Auth\Plugin */
+        /** @var $authPlugin \Sabre\DAV\Auth\Plugin */
         $authPlugin = $this->server->getPlugin('auth');
         if (!$authPlugin) {
             return false;

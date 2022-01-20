@@ -38,7 +38,7 @@
 
 /**
  * Relation between item and devices
-**/
+ **/
 class Item_DeviceMemory extends Item_Devices
 {
     public static $itemtype_2 = 'DeviceMemory';

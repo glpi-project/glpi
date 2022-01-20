@@ -86,23 +86,23 @@ abstract class AbstractRequest
     const COMPRESS_BR   = 3;
     const COMPRESS_DEFLATE = 4;
 
-   /** @var integer */
+    /** @var integer */
     protected $mode;
-   /** @var string */
+    /** @var string */
     private $deviceid;
-   /** @var DOMDocument */
+    /** @var DOMDocument */
     private $response;
     /** @var integer */
     private $compression;
-   /** @var boolean */
+    /** @var boolean */
     private $error = false;
-   /** @var boolean */
+    /** @var boolean */
     protected $test_rules = false;
-   /** @var Glpi\Agent\Communication\Headers\Common */
+    /** @var Glpi\Agent\Communication\Headers\Common */
     protected $headers;
-   /** @var int */
+    /** @var int */
     private $http_response_code = 200;
-   /** @var string */
+    /** @var string */
     protected $query;
 
     public function __construct()
@@ -113,15 +113,15 @@ abstract class AbstractRequest
 
     abstract protected function initHeaders(): Common;
 
-   /**
-    * Set mode and initialize response
-    *
-    * @param integer $mode Expected mode. One of *_MODE constants
-    *
-    * @return void
-    *
-    * @throw RuntimeException
-    */
+    /**
+     * Set mode and initialize response
+     *
+     * @param integer $mode Expected mode. One of *_MODE constants
+     *
+     * @return void
+     *
+     * @throw RuntimeException
+     */
     protected function setMode($mode)
     {
         $this->mode = $mode;
@@ -141,11 +141,11 @@ abstract class AbstractRequest
         $this->prepareHeaders();
     }
 
-   /**
-    * Guess import mode
-    *
-    * @return boolean
-    */
+    /**
+     * Guess import mode
+     *
+     * @return boolean
+     */
     private function guessMode($contents)
     {
        // In the case handleContentType() didn't set mode, just check $contents first char
@@ -179,13 +179,13 @@ abstract class AbstractRequest
         $this->headers->setHeaders($req_headers);
     }
 
-   /**
-    * Handle agent request
-    *
-    * @param mixed $data Sent data
-    *
-    * @return boolean
-    */
+    /**
+     * Handle agent request
+     *
+     * @param mixed $data Sent data
+     *
+     * @return boolean
+     */
     public function handleRequest($data): bool
     {
         if ($this->compression !== self::COMPRESS_NONE) {
@@ -230,22 +230,22 @@ abstract class AbstractRequest
      */
     abstract protected function handleAction($action, $content = null): bool;
 
-   /**
-   * Handle Task
-   *
-   * @param string $task  Task (one of self::*_TASK)
-   *
-   * @return array
-   */
+    /**
+     * Handle Task
+     *
+     * @param string $task  Task (one of self::*_TASK)
+     *
+     * @return array
+     */
     abstract protected function handleTask($task): array;
 
-   /**
-    * Handle XML request
-    *
-    * @param string $data Sent XML
-    *
-    * @return boolean
-    */
+    /**
+     * Handle XML request
+     *
+     * @param string $data Sent XML
+     *
+     * @return boolean
+     */
     public function handleXMLRequest($data): bool
     {
         libxml_use_internal_errors(true);
@@ -278,13 +278,13 @@ abstract class AbstractRequest
         return $this->handleAction($action, $xml);
     }
 
-   /**
-    * Handle JSON request
-    *
-    * @param string $data Sent JSON
-    *
-    * @return boolean
-    */
+    /**
+     * Handle JSON request
+     *
+     * @param string $data Sent JSON
+     *
+     * @return boolean
+     */
     public function handleJSONRequest($data): bool
     {
         $jdata = json_decode($data);
@@ -342,13 +342,13 @@ abstract class AbstractRequest
         }
     }
 
-   /**
-    * Add elements to response
-    *
-    * @param array $entries Array of key => values entries
-    *
-    * @return void
-    */
+    /**
+     * Add elements to response
+     *
+     * @param array $entries Array of key => values entries
+     *
+     * @return void
+     */
     public function addToResponse(array $entries)
     {
         if ($this->mode === self::XML_MODE) {
@@ -369,15 +369,15 @@ abstract class AbstractRequest
         }
     }
 
-   /**
-    * Add node to response for XML_MODE
-    *
-    * @param DOMElement        $parent  Parent element
-    * @param string            $name    Element name to create
-    * @param string|array|null $content Element contents, if any
-    *
-    * @return void
-    */
+    /**
+     * Add node to response for XML_MODE
+     *
+     * @param DOMElement        $parent  Parent element
+     * @param string            $name    Element name to create
+     * @param string|array|null $content Element contents, if any
+     *
+     * @return void
+     */
     private function addNode(DOMElement $parent, $name, $content)
     {
         if (is_array($content) && !isset($content['content']) && !isset($content['attributes'])) {
@@ -412,7 +412,7 @@ abstract class AbstractRequest
     }
 
 
-   /**
+    /**
      * Get content-type
      *
      * @return string
@@ -444,11 +444,11 @@ abstract class AbstractRequest
         }
     }
 
-   /**
-    * Get response
-    *
-    * @return string
-    */
+    /**
+     * Get response
+     *
+     * @return string
+     */
     public function getResponse(): string
     {
         // Default to return empty response on no response set
@@ -541,11 +541,11 @@ abstract class AbstractRequest
         }
     }
 
-   /**
-    * Is current request in error?
-    *
-    * @return boolean
-    */
+    /**
+     * Is current request in error?
+     *
+     * @return boolean
+     */
     public function inError()
     {
         return $this->error;
@@ -576,11 +576,11 @@ abstract class AbstractRequest
         return $encodings;
     }
 
-   /**
-    * Prepare HTTP headers
-    *
-    * @return void
-    */
+    /**
+     * Prepare HTTP headers
+     *
+     * @return void
+     */
     private function prepareHeaders()
     {
         $headers = [

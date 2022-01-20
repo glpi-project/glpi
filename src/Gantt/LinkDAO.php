@@ -54,13 +54,13 @@ class LinkDAO
         return $links;
     }
 
-   /**
-    * Populates a Link object with data
-    *
-    * @param $data Database record
-    *
-    * @return Link object
-    */
+    /**
+     * Populates a Link object with data
+     *
+     * @param $data Database record
+     *
+     * @return Link object
+     */
     public function populateFromDB($data)
     {
         $link = new Link();

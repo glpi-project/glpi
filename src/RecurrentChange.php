@@ -33,14 +33,14 @@
 
 class RecurrentChange extends CommonITILRecurrent
 {
-   /**
-    * @var string CommonDropdown
-    */
+    /**
+     * @var string CommonDropdown
+     */
     public $second_level_menu = "recurrentchange";
 
-   /**
-    * @var string Right managements
-    */
+    /**
+     * @var string Right managements
+     */
     public static $rightname = 'recurrentchange';
 
     public static function getTypeName($nb = 0)

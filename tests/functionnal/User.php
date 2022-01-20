@@ -51,9 +51,9 @@ class User extends \DbTestCase
         $this->string($user->fields['personal_token_date'])->isIdenticalTo($_SESSION['glpi_currenttime']);
     }
 
-   /**
-    *
-    */
+    /**
+     *
+     */
     public function testLostPassword()
     {
        //would not be logical to login here
@@ -295,9 +295,9 @@ class User extends \DbTestCase
         ];
     }
 
-   /**
-    * @dataProvider prepareInputForTimezoneUpdateProvider
-    */
+    /**
+     * @dataProvider prepareInputForTimezoneUpdateProvider
+     */
     public function testPrepareInputForUpdateTimezone(array $input, $expected)
     {
         $this->login();
@@ -354,9 +354,9 @@ class User extends \DbTestCase
         ];
     }
 
-   /**
-    * @dataProvider prepareInputForUpdatePasswordProvider
-    */
+    /**
+     * @dataProvider prepareInputForUpdatePasswordProvider
+     */
     public function testPrepareInputForUpdatePassword(array $input, $expected, array $messages = null)
     {
         $this->login();
@@ -636,9 +636,9 @@ class User extends \DbTestCase
         ];
     }
 
-   /**
-    * @dataProvider rawNameProvider
-    */
+    /**
+     * @dataProvider rawNameProvider
+     */
     public function testGetFriendlyName($input, $rawname)
     {
         $user = $this->newTestedInstance;
@@ -812,9 +812,9 @@ class User extends \DbTestCase
         ];
     }
 
-   /**
-    * @dataProvider passwordExpirationMethodsProvider
-    */
+    /**
+     * @dataProvider passwordExpirationMethodsProvider
+     */
     public function testPasswordExpirationMethods(
         string $last_update,
         int $expiration_delay,
@@ -954,9 +954,9 @@ class User extends \DbTestCase
         ];
     }
 
-   /**
-    * @dataProvider cronPasswordExpirationNotificationsProvider
-    */
+    /**
+     * @dataProvider cronPasswordExpirationNotificationsProvider
+     */
     public function testCronPasswordExpirationNotifications(
         int $expiration_delay,
         int $notice_delay,

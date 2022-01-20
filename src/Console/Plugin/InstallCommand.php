@@ -87,7 +87,7 @@ class InstallCommand extends AbstractPluginCommand
         parent::interact($input, $output);
 
         if (null === $input->getOption('username')) {
-           /** @var \Symfony\Component\Console\Helper\QuestionHelper $question_helper */
+            /** @var \Symfony\Component\Console\Helper\QuestionHelper $question_helper */
             $question_helper = $this->getHelper('question');
             $value = $question_helper->ask(
                 $input,
@@ -209,14 +209,14 @@ class InstallCommand extends AbstractPluginCommand
         return $choices;
     }
 
-   /**
-    * Load user in session.
-    *
-    * @param string $username
-    * @return void
-    *
-    * @throws InvalidArgumentException
-    */
+    /**
+     * Load user in session.
+     *
+     * @param string $username
+     * @return void
+     *
+     * @throws InvalidArgumentException
+     */
     private function loadUserSession($username)
     {
 
@@ -242,13 +242,13 @@ class InstallCommand extends AbstractPluginCommand
         }
     }
 
-   /**
-    * Check if plugin is already installed.
-    *
-    * @param string $directory
-    *
-    * @return array
-    */
+    /**
+     * Check if plugin is already installed.
+     *
+     * @param string $directory
+     *
+     * @return array
+     */
     private function isAlreadyInstalled($directory)
     {
 
@@ -263,14 +263,14 @@ class InstallCommand extends AbstractPluginCommand
         return $is_already_known && in_array($plugin->fields['state'], $installed_states);
     }
 
-   /**
-    * Check if install method can be run for given plugin.
-    *
-    * @param string  $directory
-    * @param boolean $allow_reinstall
-    *
-    * @return boolean
-    */
+    /**
+     * Check if install method can be run for given plugin.
+     *
+     * @param string  $directory
+     * @param boolean $allow_reinstall
+     *
+     * @return boolean
+     */
     private function canRunInstallMethod($directory, $allow_reinstall)
     {
 
@@ -344,13 +344,13 @@ class InstallCommand extends AbstractPluginCommand
         return true;
     }
 
-   /**
-    * Extract additionnal parameters from input.
-    *
-    * @param InputInterface $input
-    *
-    * @return array
-    */
+    /**
+     * Extract additionnal parameters from input.
+     *
+     * @param InputInterface $input
+     *
+     * @return array
+     */
     private function getAdditionnalParameters(InputInterface $input)
     {
 

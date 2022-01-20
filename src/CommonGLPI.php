@@ -37,7 +37,7 @@ use Glpi\Toolbox\Sanitizer;
 
 /**
  *  Common GLPI object
-**/
+ **/
 class CommonGLPI implements CommonGLPIInterface
 {
    /// GLPI Item type cache : set dynamically calling getType
@@ -49,25 +49,25 @@ class CommonGLPI implements CommonGLPIInterface
    /// Show Debug
     public $showdebug               = false;
 
-   /**
-    * Tab orientation : horizontal or vertical.
-    *
-    * @var string
-    */
+    /**
+     * Tab orientation : horizontal or vertical.
+     *
+     * @var string
+     */
     public $taborientation          = 'horizontal';
 
-   /**
-    * Rightname used to check rights to do actions on item.
-    *
-    * @var string
-    */
+    /**
+     * Rightname used to check rights to do actions on item.
+     *
+     * @var string
+     */
     public static $rightname = '';
 
     /**
-    * Need to get item to show tab
-    *
-    * @var boolean
-    */
+     * Need to get item to show tab
+     *
+     * @var boolean
+     */
     public $get_item_to_display_tab = false;
     protected static $othertabs     = [];
 
@@ -76,55 +76,55 @@ class CommonGLPI implements CommonGLPIInterface
     {
     }
 
-   /**
-    * Return the localized name of the current Type
-    * Should be overloaded in each new class
-    *
-    * @param integer $nb Number of items
-    *
-    * @return string
-   **/
+    /**
+     * Return the localized name of the current Type
+     * Should be overloaded in each new class
+     *
+     * @param integer $nb Number of items
+     *
+     * @return string
+     **/
     public static function getTypeName($nb = 0)
     {
         return __('General');
     }
 
 
-   /**
-    * Return the simplified localized label of the current Type in the context of a form.
-    * Avoid to recall the type in the label (Computer status -> Status)
-    *
-    * Should be overloaded in each new class
-    *
-    * @return string
-   **/
+    /**
+     * Return the simplified localized label of the current Type in the context of a form.
+     * Avoid to recall the type in the label (Computer status -> Status)
+     *
+     * Should be overloaded in each new class
+     *
+     * @return string
+     **/
     public static function getFieldLabel()
     {
         return static::getTypeName();
     }
 
 
-   /**
-    * Return the type of the object : class name
-    *
-    * @return string
-   **/
+    /**
+     * Return the type of the object : class name
+     *
+     * @return string
+     **/
     public static function getType()
     {
         return get_called_class();
     }
 
-   /**
-    * Check rights on CommonGLPI Object (without corresponding table)
-    * Same signature as CommonDBTM::can but in case of this class, we don't check instance rights
-    * so, id and input parameters are unused.
-    *
-    * @param integer $ID    ID of the item (-1 if new item)
-    * @param mixed   $right Right to check : r / w / recursive / READ / UPDATE / DELETE
-    * @param array   $input array of input data (used for adding item) (default NULL)
-    *
-    * @return boolean
-   **/
+    /**
+     * Check rights on CommonGLPI Object (without corresponding table)
+     * Same signature as CommonDBTM::can but in case of this class, we don't check instance rights
+     * so, id and input parameters are unused.
+     *
+     * @param integer $ID    ID of the item (-1 if new item)
+     * @param mixed   $right Right to check : r / w / recursive / READ / UPDATE / DELETE
+     * @param array   $input array of input data (used for adding item) (default NULL)
+     *
+     * @return boolean
+     **/
     public function can($ID, $right, array &$input = null)
     {
         switch ($right) {
@@ -147,12 +147,12 @@ class CommonGLPI implements CommonGLPIInterface
     }
 
 
-   /**
-    * Have I the global right to "create" the Object
-    * May be overloaded if needed (ex KnowbaseItem)
-    *
-    * @return boolean
-   **/
+    /**
+     * Have I the global right to "create" the Object
+     * May be overloaded if needed (ex KnowbaseItem)
+     *
+     * @return boolean
+     **/
     public static function canCreate()
     {
         if (static::$rightname) {
@@ -162,15 +162,15 @@ class CommonGLPI implements CommonGLPIInterface
     }
 
 
-   /**
-    * Have I the global right to "view" the Object
-    *
-    * Default is true and check entity if the objet is entity assign
-    *
-    * May be overloaded if needed
-    *
-    * @return boolean
-   **/
+    /**
+     * Have I the global right to "view" the Object
+     *
+     * Default is true and check entity if the objet is entity assign
+     *
+     * May be overloaded if needed
+     *
+     * @return boolean
+     **/
     public static function canView()
     {
         if (static::$rightname) {
@@ -180,14 +180,14 @@ class CommonGLPI implements CommonGLPIInterface
     }
 
 
-   /**
-    * Have I the global right to "update" the Object
-    *
-    * Default is calling canCreate
-    * May be overloaded if needed
-    *
-    * @return boolean
-   **/
+    /**
+     * Have I the global right to "update" the Object
+     *
+     * Default is calling canCreate
+     * May be overloaded if needed
+     *
+     * @return boolean
+     **/
     public static function canUpdate()
     {
         if (static::$rightname) {
@@ -196,13 +196,13 @@ class CommonGLPI implements CommonGLPIInterface
     }
 
 
-   /**
-    * Have I the global right to "delete" the Object
-    *
-    * May be overloaded if needed
-    *
-    * @return boolean
-   **/
+    /**
+     * Have I the global right to "delete" the Object
+     *
+     * May be overloaded if needed
+     *
+     * @return boolean
+     **/
     public static function canDelete()
     {
         if (static::$rightname) {
@@ -212,13 +212,13 @@ class CommonGLPI implements CommonGLPIInterface
     }
 
 
-   /**
-    * Have I the global right to "purge" the Object
-    *
-    * May be overloaded if needed
-    *
-    * @return boolean
-   **/
+    /**
+     * Have I the global right to "purge" the Object
+     *
+     * May be overloaded if needed
+     *
+     * @return boolean
+     **/
     public static function canPurge()
     {
         if (static::$rightname) {
@@ -228,16 +228,16 @@ class CommonGLPI implements CommonGLPIInterface
     }
 
 
-   /**
-    * Register tab on an objet
-    *
-    * @since 0.83
-    *
-    * @param string $typeform object class name to add tab on form
-    * @param string $typetab  object class name which manage the tab
-    *
-    * @return void
-   **/
+    /**
+     * Register tab on an objet
+     *
+     * @since 0.83
+     *
+     * @param string $typeform object class name to add tab on form
+     * @param string $typetab  object class name which manage the tab
+     *
+     * @return void
+     **/
     public static function registerStandardTab($typeform, $typetab)
     {
 
@@ -249,16 +249,16 @@ class CommonGLPI implements CommonGLPIInterface
     }
 
 
-   /**
-    * Get the array of Tab managed by other types
-    * Getter for plugin (ex PDF) to access protected property
-    *
-    * @since 0.83
-    *
-    * @param string $typeform object class name to add tab on form
-    *
-    * @return array array of types
-   **/
+    /**
+     * Get the array of Tab managed by other types
+     * Getter for plugin (ex PDF) to access protected property
+     *
+     * @since 0.83
+     *
+     * @param string $typeform object class name to add tab on form
+     *
+     * @return array array of types
+     **/
     public static function getOtherTabs($typeform)
     {
 
@@ -269,16 +269,16 @@ class CommonGLPI implements CommonGLPIInterface
     }
 
 
-   /**
-    * Define tabs to display
-    *
-    * NB : Only called for existing object
-    *
-    * @param array $options Options
-    *     - withtemplate is a template view ?
-    *
-    * @return array array containing the tabs
-   **/
+    /**
+     * Define tabs to display
+     *
+     * NB : Only called for existing object
+     *
+     * @param array $options Options
+     *     - withtemplate is a template view ?
+     *
+     * @return array array containing the tabs
+     **/
     public function defineTabs($options = [])
     {
 
@@ -290,16 +290,16 @@ class CommonGLPI implements CommonGLPIInterface
     }
 
 
-   /**
-    * return all the tabs for current object
-    *
-    * @since 0.83
-    *
-    * @param array $options Options
-    *     - withtemplate is a template view ?
-    *
-    * @return array array containing the tabs
-   **/
+    /**
+     * return all the tabs for current object
+     *
+     * @since 0.83
+     *
+     * @param array $options Options
+     *     - withtemplate is a template view ?
+     *
+     * @return array array containing the tabs
+     **/
     final public function defineAllTabs($options = [])
     {
         global $CFG_GLPI;
@@ -336,15 +336,15 @@ class CommonGLPI implements CommonGLPIInterface
     }
 
 
-   /**
-    * Add standard define tab
-    *
-    * @param string $itemtype itemtype link to the tab
-    * @param array  $ong      defined tabs
-    * @param array  $options  options (for withtemplate)
-    *
-    * @return CommonGLPI
-   **/
+    /**
+     * Add standard define tab
+     *
+     * @param string $itemtype itemtype link to the tab
+     * @param array  $ong      defined tabs
+     * @param array  $options  options (for withtemplate)
+     *
+     * @return CommonGLPI
+     **/
     public function addStandardTab($itemtype, array &$ong, array $options)
     {
 
@@ -375,14 +375,14 @@ class CommonGLPI implements CommonGLPIInterface
         return $this;
     }
 
-   /**
-    * Add the impact tab if enabled for this item type
-    *
-    * @param array  $ong      defined tabs
-    * @param array  $options  options (for withtemplate)
-    *
-    * @return CommonGLPI
-   **/
+    /**
+     * Add the impact tab if enabled for this item type
+     *
+     * @param array  $ong      defined tabs
+     * @param array  $options  options (for withtemplate)
+     *
+     * @return CommonGLPI
+     **/
     public function addImpactTab(array &$ong, array $options)
     {
         global $CFG_GLPI;
@@ -395,15 +395,15 @@ class CommonGLPI implements CommonGLPIInterface
         return $this;
     }
 
-   /**
-    * Add default tab for form
-    *
-    * @since 0.85
-    *
-    * @param array $ong Tabs
-    *
-    * @return CommonGLPI
-   **/
+    /**
+     * Add default tab for form
+     *
+     * @since 0.85
+     *
+     * @param array $ong Tabs
+     *
+     * @return CommonGLPI
+     **/
     public function addDefaultFormTab(array &$ong)
     {
 
@@ -412,13 +412,13 @@ class CommonGLPI implements CommonGLPIInterface
     }
 
 
-   /**
-    * get menu content
-    *
-    * @since 0.85
-    *
-    * @return array array for menu
-   **/
+    /**
+     * get menu content
+     *
+     * @since 0.85
+     *
+     * @return array array for menu
+     **/
     public static function getMenuContent()
     {
 
@@ -493,130 +493,130 @@ class CommonGLPI implements CommonGLPIInterface
     }
 
 
-   /**
-    * get additional menu content
-    *
-    * @since 0.85
-    *
-    * @return array array for menu
-   **/
+    /**
+     * get additional menu content
+     *
+     * @since 0.85
+     *
+     * @return array array for menu
+     **/
     public static function getAdditionalMenuContent()
     {
         return false;
     }
 
 
-   /**
-    * Get forbidden actions for menu : may be add / template
-    *
-    * @since 0.85
-    *
-    * @return array array of forbidden actions
-   **/
+    /**
+     * Get forbidden actions for menu : may be add / template
+     *
+     * @since 0.85
+     *
+     * @return array array of forbidden actions
+     **/
     public static function getForbiddenActionsForMenu()
     {
         return [];
     }
 
 
-   /**
-    * Get additional menu options
-    *
-    * @since 0.85
-    *
-    * @return array array of additional options
-   **/
+    /**
+     * Get additional menu options
+     *
+     * @since 0.85
+     *
+     * @return array array of additional options
+     **/
     public static function getAdditionalMenuOptions()
     {
         return false;
     }
 
 
-   /**
-    * Get additional menu links
-    *
-    * @since 0.85
-    *
-    * @return array array of additional options
-   **/
+    /**
+     * Get additional menu links
+     *
+     * @since 0.85
+     *
+     * @return array array of additional options
+     **/
     public static function getAdditionalMenuLinks()
     {
         return false;
     }
 
 
-   /**
-    * Get menu shortcut
-    *
-    * @since 0.85
-    *
-    * @return string character menu shortcut key
-   **/
+    /**
+     * Get menu shortcut
+     *
+     * @since 0.85
+     *
+     * @return string character menu shortcut key
+     **/
     public static function getMenuShorcut()
     {
         return '';
     }
 
 
-   /**
-    * Get menu name
-    *
-    * @since 0.85
-    *
-    * @return string character menu shortcut key
-   **/
+    /**
+     * Get menu name
+     *
+     * @since 0.85
+     *
+     * @return string character menu shortcut key
+     **/
     public static function getMenuName()
     {
         return static::getTypeName(Session::getPluralNumber());
     }
 
 
-   /**
-    * Get Tab Name used for itemtype
-    *
-    * NB : Only called for existing object
-    *      Must check right on what will be displayed + template
-    *
-    * @since 0.83
-    *
-    * @param CommonGLPI $item         Item on which the tab need to be displayed
-    * @param boolean    $withtemplate is a template object ? (default 0)
-    *
-    *  @return string tab name
-   **/
+    /**
+     * Get Tab Name used for itemtype
+     *
+     * NB : Only called for existing object
+     *      Must check right on what will be displayed + template
+     *
+     * @since 0.83
+     *
+     * @param CommonGLPI $item         Item on which the tab need to be displayed
+     * @param boolean    $withtemplate is a template object ? (default 0)
+     *
+     *  @return string tab name
+     **/
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         return '';
     }
 
 
-   /**
-    * show Tab content
-    *
-    * @since 0.83
-    *
-    * @param CommonGLPI $item         Item on which the tab need to be displayed
-    * @param integer    $tabnum       tab number (default 1)
-    * @param boolean    $withtemplate is a template object ? (default 0)
-    *
-    * @return boolean
-   **/
+    /**
+     * show Tab content
+     *
+     * @since 0.83
+     *
+     * @param CommonGLPI $item         Item on which the tab need to be displayed
+     * @param integer    $tabnum       tab number (default 1)
+     * @param boolean    $withtemplate is a template object ? (default 0)
+     *
+     * @return boolean
+     **/
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
         return false;
     }
 
 
-   /**
-    * display standard tab contents
-    *
-    * @param CommonGLPI $item         Item on which the tab need to be displayed
-    * @param string     $tab          tab name
-    * @param boolean    $withtemplate is a template object ? (default 0)
-    * @param array      $options      additional options to pass
-    *
-    * @return boolean true
-   **/
+    /**
+     * display standard tab contents
+     *
+     * @param CommonGLPI $item         Item on which the tab need to be displayed
+     * @param string     $tab          tab name
+     * @param boolean    $withtemplate is a template object ? (default 0)
+     * @param array      $options      additional options to pass
+     *
+     * @return boolean true
+     **/
     public static function displayStandardTab(CommonGLPI $item, $tab, $withtemplate = 0, $options = [])
     {
         switch ($tab) {
@@ -694,14 +694,14 @@ JAVASCRIPT;
     }
 
 
-   /**
-    * create tab text entry
-    *
-    * @param string  $text text to display
-    * @param integer $nb   number of items (default 0)
-    *
-    *  @return array array containing the onglets
-   **/
+    /**
+     * create tab text entry
+     *
+     * @param string  $text text to display
+     * @param integer $nb   number of items (default 0)
+     *
+     *  @return array array containing the onglets
+     **/
     public static function createTabEntry($text, $nb = 0)
     {
 
@@ -713,12 +713,12 @@ JAVASCRIPT;
     }
 
 
-   /**
-    * Redirect to the list page from which the item was selected
-    * Default to the search engine for the type
-    *
-    * @return void
-   **/
+    /**
+     * Redirect to the list page from which the item was selected
+     * Default to the search engine for the type
+     *
+     * @return void
+     **/
     public function redirectToList()
     {
         global $CFG_GLPI;
@@ -740,13 +740,13 @@ JAVASCRIPT;
     }
 
 
-   /**
-    * is the current object a new  one - Always false here (virtual Objet)
-    *
-    * @since 0.83
-    *
-    * @return boolean
-   **/
+    /**
+     * is the current object a new  one - Always false here (virtual Objet)
+     *
+     * @since 0.83
+     *
+     * @return boolean
+     **/
     public function isNewItem()
     {
         return false;
@@ -754,69 +754,69 @@ JAVASCRIPT;
 
 
     /**
-    * is the current object a new one - Always true here (virtual Objet)
-    *
-    * @since 0.84
-    *
-    * @param integer $ID Id to check
-    *
-    * @return boolean
-   **/
+     * is the current object a new one - Always true here (virtual Objet)
+     *
+     * @since 0.84
+     *
+     * @param integer $ID Id to check
+     *
+     * @return boolean
+     **/
     public static function isNewID($ID)
     {
         return true;
     }
 
 
-   /**
-    * Get the search page URL for the current classe
-    *
-    * @param boolean $full path or relative one (true by default)
-    *
-    * @return string
-   **/
+    /**
+     * Get the search page URL for the current classe
+     *
+     * @param boolean $full path or relative one (true by default)
+     *
+     * @return string
+     **/
     public static function getTabsURL($full = true)
     {
         return Toolbox::getItemTypeTabsURL(get_called_class(), $full);
     }
 
 
-   /**
-    * Get the search page URL for the current class
-    *
-    * @param boolean $full path or relative one (true by default)
-    *
-    * @return string
-   **/
+    /**
+     * Get the search page URL for the current class
+     *
+     * @param boolean $full path or relative one (true by default)
+     *
+     * @return string
+     **/
     public static function getSearchURL($full = true)
     {
         return Toolbox::getItemTypeSearchURL(get_called_class(), $full);
     }
 
 
-   /**
-    * Get the form page URL for the current class
-    *
-    * @param boolean $full path or relative one (true by default)
-    *
-    * @return string
-   **/
+    /**
+     * Get the form page URL for the current class
+     *
+     * @param boolean $full path or relative one (true by default)
+     *
+     * @return string
+     **/
     public static function getFormURL($full = true)
     {
         return Toolbox::getItemTypeFormURL(get_called_class(), $full);
     }
 
 
-   /**
-    * Get the form page URL for the current class and point to a specific ID
-    *
-    * @since 0.90
-    *
-    * @param integer $id   Id (default 0)
-    * @param boolean $full Full path or relative one (true by default)
-    *
-    * @return string
-   **/
+    /**
+     * Get the form page URL for the current class and point to a specific ID
+     *
+     * @since 0.90
+     *
+     * @param integer $id   Id (default 0)
+     * @param boolean $full Full path or relative one (true by default)
+     *
+     * @return string
+     **/
     public static function getFormURLWithID($id = 0, $full = true)
     {
 
@@ -827,16 +827,16 @@ JAVASCRIPT;
     }
 
 
-   /**
-    * Show tabs content
-    *
-    * @since 0.85
-    *
-    * @param array $options parameters to add to URLs and ajax
-    *     - withtemplate is a template view ?
-    *
-    * @return void
-   **/
+    /**
+     * Show tabs content
+     *
+     * @since 0.85
+     *
+     * @param array $options parameters to add to URLs and ajax
+     *     - withtemplate is a template view ?
+     *
+     * @return void
+     **/
     public function showTabsContent($options = [])
     {
 
@@ -922,14 +922,14 @@ JAVASCRIPT;
     }
 
 
-   /**
-    * Show tabs
-    *
-    * @param array $options parameters to add to URLs and ajax
-    *     - withtemplate is a template view ?
-    *
-    * @return void
-   **/
+    /**
+     * Show tabs
+     *
+     * @param array $options parameters to add to URLs and ajax
+     *     - withtemplate is a template view ?
+     *
+     * @return void
+     **/
     public function showNavigationHeader($options = [])
     {
         global $CFG_GLPI;
@@ -1102,15 +1102,15 @@ JAVASCRIPT;
         return Sanitizer::unsanitize($name);
     }
 
-   /**
-    * Display item with tabs
-    *
-    * @since 0.85
-    *
-    * @param array $options Options
-    *
-    * @return void
-   **/
+    /**
+     * Display item with tabs
+     *
+     * @since 0.85
+     *
+     * @param array $options Options
+     *
+     * @return void
+     **/
     public function display($options = [])
     {
         global $CFG_GLPI;
@@ -1164,11 +1164,11 @@ JAVASCRIPT;
     }
 
 
-   /**
-    * List infos in debug tab
-    *
-    * @return void
-   **/
+    /**
+     * List infos in debug tab
+     *
+     * @return void
+     **/
     public function showDebugInfo()
     {
         global $CFG_GLPI;
@@ -1195,16 +1195,16 @@ JAVASCRIPT;
     }
 
 
-   /**
-    * Update $_SESSION to set the display options.
-    *
-    * @since 0.84
-    *
-    * @param array  $input        data to update
-    * @param string $sub_itemtype sub itemtype if needed (default '')
-    *
-    * @return void
-   **/
+    /**
+     * Update $_SESSION to set the display options.
+     *
+     * @since 0.84
+     *
+     * @param array  $input        data to update
+     * @param string $sub_itemtype sub itemtype if needed (default '')
+     *
+     * @return void
+     **/
     public static function updateDisplayOptions($input = [], $sub_itemtype = '')
     {
 
@@ -1246,15 +1246,15 @@ JAVASCRIPT;
     }
 
 
-   /**
-    * Load display options to $_SESSION
-    *
-    * @since 0.84
-    *
-    * @param string $sub_itemtype sub itemtype if needed (default '')
-    *
-    * @return void
-   **/
+    /**
+     * Load display options to $_SESSION
+     *
+     * @since 0.84
+     *
+     * @param string $sub_itemtype sub itemtype if needed (default '')
+     *
+     * @return void
+     **/
     public static function getDisplayOptions($sub_itemtype = '')
     {
 
@@ -1297,15 +1297,15 @@ JAVASCRIPT;
 
 
 
-   /**
-    * Show display options
-    *
-    * @since 0.84
-    *
-    * @param string $sub_itemtype sub_itemtype if needed (default '')
-    *
-    * @return void
-   **/
+    /**
+     * Show display options
+     *
+     * @since 0.84
+     *
+     * @param string $sub_itemtype sub_itemtype if needed (default '')
+     *
+     * @return void
+     **/
     public static function showDislayOptions($sub_itemtype = '')
     {
         global $CFG_GLPI;
@@ -1354,28 +1354,28 @@ JAVASCRIPT;
     }
 
 
-   /**
-    * Get available display options array
-    *
-    * @since 0.84
-    *
-    * @return array all the options
-   **/
+    /**
+     * Get available display options array
+     *
+     * @since 0.84
+     *
+     * @return array all the options
+     **/
     public static function getAvailableDisplayOptions()
     {
         return [];
     }
 
 
-   /**
-    * Get link for display options
-    *
-    * @since 0.84
-    *
-    * @param string $sub_itemtype sub itemtype if needed for display options
-    *
-    * @return string
-   **/
+    /**
+     * Get link for display options
+     *
+     * @since 0.84
+     *
+     * @param string $sub_itemtype sub itemtype if needed for display options
+     *
+     * @return string
+     **/
     public static function getDisplayOptionsLink($sub_itemtype = '')
     {
         global $CFG_GLPI;
@@ -1401,16 +1401,16 @@ JAVASCRIPT;
     }
 
 
-   /**
-    * Get error message for item
-    *
-    * @since 0.85
-    *
-    * @param integer $error  error type see define.php for ERROR_*
-    * @param string  $object string to use instead of item link (default '')
-    *
-    * @return string
-   **/
+    /**
+     * Get error message for item
+     *
+     * @since 0.85
+     *
+     * @param integer $error  error type see define.php for ERROR_*
+     * @param string  $object string to use instead of item link (default '')
+     *
+     * @return string
+     **/
     public function getErrorMessage($error, $object = '')
     {
 
@@ -1435,9 +1435,9 @@ JAVASCRIPT;
         }
     }
 
-   /**
-    * Get links to Faq
-   **/
+    /**
+     * Get links to Faq
+     **/
     public function getKBLinks()
     {
         global $CFG_GLPI, $DB;

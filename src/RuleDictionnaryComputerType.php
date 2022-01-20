@@ -33,9 +33,9 @@
 
 class RuleDictionnaryComputerType extends RuleDictionnaryDropdown
 {
-   /**
-    * Constructor
-   **/
+    /**
+     * Constructor
+     **/
     public function __construct()
     {
         parent::__construct('RuleDictionnaryComputerType');
@@ -59,9 +59,9 @@ class RuleDictionnaryComputerType extends RuleDictionnaryDropdown
     }
 
 
-   /**
-    * @see Rule::getActions()
-   **/
+    /**
+     * @see Rule::getActions()
+     **/
     public function getActions()
     {
 

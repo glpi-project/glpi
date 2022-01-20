@@ -36,39 +36,39 @@ use Glpi\Toolbox\Sanitizer;
 
 /**
  *  GLPI security key
-**/
+ **/
 class GLPIKey
 {
-   /**
-    * Key file path.
-    *
-    * @var string
-    */
+    /**
+     * Key file path.
+     *
+     * @var string
+     */
     private $keyfile;
 
-   /**
-    * Legacy key file path.
-    *
-    * @var string
-    */
+    /**
+     * Legacy key file path.
+     *
+     * @var string
+     */
     private $legacykeyfile;
 
-   /**
-    * List of crypted DB fields.
-    *
-    * @var array
-    */
+    /**
+     * List of crypted DB fields.
+     *
+     * @var array
+     */
     protected $fields = [
       'glpi_mailcollectors.passwd',
       'glpi_authldaps.rootdn_passwd'
     ];
 
-   /**
-    * List of crypted configuration values.
-    * Each key corresponds to a configuration context, and contains list of configs names.
-    *
-    * @var array
-    */
+    /**
+     * List of crypted configuration values.
+     * Each key corresponds to a configuration context, and contains list of configs names.
+     *
+     * @var array
+     */
     protected $configs = [
       'core'   => [
          'glpinetwork_registration_key',
@@ -83,14 +83,14 @@ class GLPIKey
         $this->legacykeyfile = $config_dir . '/glpi.key';
     }
 
-   /**
-    * Returns expected key path for given GLPI version.
-    * Will return null for GLPI versions that was not yet handling a custom security key.
-    *
-    * @param string $glpi_version
-    *
-    * @return string|null
-    */
+    /**
+     * Returns expected key path for given GLPI version.
+     * Will return null for GLPI versions that was not yet handling a custom security key.
+     *
+     * @param string $glpi_version
+     *
+     * @return string|null
+     */
     public function getExpectedKeyPath(string $glpi_version): ?string
     {
         if (version_compare($glpi_version, '9.4.6', '<')) {
@@ -102,21 +102,21 @@ class GLPIKey
         }
     }
 
-   /**
-    * Check if GLPI security key used for decryptable passwords exists
-    *
-    * @return string
-    */
+    /**
+     * Check if GLPI security key used for decryptable passwords exists
+     *
+     * @return string
+     */
     public function keyExists()
     {
         return file_exists($this->keyfile);
     }
 
-   /**
-    * Get GLPI security key used for decryptable passwords
-    *
-    * @return string|null
-    */
+    /**
+     * Get GLPI security key used for decryptable passwords
+     *
+     * @return string|null
+     */
     public function get(): ?string
     {
         if (!file_exists($this->keyfile)) {
@@ -134,12 +134,12 @@ class GLPIKey
         return $key;
     }
 
-   /**
-    * Get GLPI security legacy key that was used for decryptable passwords.
-    * Usage of this key should only be used during migration from GLPI < 9.5 to GLPI >= 9.5.0.
-    *
-    * @return string|null
-    */
+    /**
+     * Get GLPI security legacy key that was used for decryptable passwords.
+     * Usage of this key should only be used during migration from GLPI < 9.5 to GLPI >= 9.5.0.
+     *
+     * @return string|null
+     */
     public function getLegacyKey(): ?string
     {
         if (!file_exists($this->legacykeyfile)) {
@@ -153,12 +153,12 @@ class GLPIKey
         return $key;
     }
 
-   /**
-    * Generate GLPI security key used for decryptable passwords
-    * and update values in DB if necessary.
-    *
-    * @return bool
-    */
+    /**
+     * Generate GLPI security key used for decryptable passwords
+     * and update values in DB if necessary.
+     *
+     * @return bool
+     */
     public function generate(): bool
     {
         global $DB;
@@ -202,11 +202,11 @@ class GLPIKey
         return true;
     }
 
-   /**
-    * Get fields
-    *
-    * @return array
-    */
+    /**
+     * Get fields
+     *
+     * @return array
+     */
     public function getFields(): array
     {
         global $PLUGIN_HOOKS;
@@ -221,11 +221,11 @@ class GLPIKey
         return $fields;
     }
 
-   /**
-    * Get configs
-    *
-    * @return array
-    */
+    /**
+     * Get configs
+     *
+     * @return array
+     */
     public function getConfigs(): array
     {
         global $PLUGIN_HOOKS;
@@ -241,14 +241,14 @@ class GLPIKey
         return $configs;
     }
 
-   /**
-    * Check if configuration is secured.
-    *
-    * @param string $context
-    * @param string $name
-    *
-    * @return bool
-    */
+    /**
+     * Check if configuration is secured.
+     *
+     * @param string $context
+     * @param string $name
+     *
+     * @return bool
+     */
     public function isConfigSecured(string $context, string $name): bool
     {
 
@@ -258,13 +258,13 @@ class GLPIKey
          && in_array($name, $secured_configs[$context]);
     }
 
-   /**
-    * Migrate fields in database
-    *
-    * @param string|null   $sodium_key Previous key. If null, legacy key will be used.
-    *
-    * @return bool
-    */
+    /**
+     * Migrate fields in database
+     *
+     * @param string|null   $sodium_key Previous key. If null, legacy key will be used.
+     *
+     * @return bool
+     */
     protected function migrateFieldsInDb(?string $sodium_key): bool
     {
         global $DB;
@@ -302,13 +302,13 @@ class GLPIKey
         return $success;
     }
 
-   /**
-    * Migrate configurations in database
-    *
-    * @param string|null   $sodium_key Previous key. If null, legacy key will be used.
-    *
-    * @return bool
-    */
+    /**
+     * Migrate configurations in database
+     *
+     * @param string|null   $sodium_key Previous key. If null, legacy key will be used.
+     *
+     * @return bool
+     */
     protected function migrateConfigsInDb($sodium_key): bool
     {
         global $DB;
@@ -347,14 +347,14 @@ class GLPIKey
         return $success;
     }
 
-   /**
-    * Encrypt a string.
-    *
-    * @param string        $string  String to encrypt.
-    * @param string|null   $key     Key to use, fallback to default key if null.
-    *
-    * @return string
-    */
+    /**
+     * Encrypt a string.
+     *
+     * @param string        $string  String to encrypt.
+     * @param string|null   $key     Key to use, fallback to default key if null.
+     *
+     * @return string
+     */
     public function encrypt(string $string, ?string $key = null): string
     {
         if ($key === null) {
@@ -377,14 +377,14 @@ class GLPIKey
         return base64_encode($nonce . $encrypted);
     }
 
-   /**
-    * Descrypt a string.
-    *
-    * @param string|null   $string  String to decrypt.
-    * @param string|null   $key     Key to use, fallback to default key if null.
-    *
-    * @return string|null
-    */
+    /**
+     * Descrypt a string.
+     *
+     * @param string|null   $string  String to decrypt.
+     * @param string|null   $key     Key to use, fallback to default key if null.
+     *
+     * @return string|null
+     */
     public function decrypt(?string $string, $key = null): ?string
     {
         if (empty($string)) {
@@ -430,15 +430,15 @@ class GLPIKey
         return $plaintext;
     }
 
-   /**
-    * Decrypt a string using a legacy key.
-    * If key is not provided, the default legacy key will be used.
-    *
-    * @param string $string
-    * @param string|null $key
-    *
-    * @return string
-    */
+    /**
+     * Decrypt a string using a legacy key.
+     * If key is not provided, the default legacy key will be used.
+     *
+     * @param string $string
+     * @param string|null $key
+     *
+     * @return string
+     */
     public function decryptUsingLegacyKey(string $string, ?string $key = null): string
     {
 

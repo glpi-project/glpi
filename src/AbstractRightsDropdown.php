@@ -35,42 +35,42 @@ use Glpi\Toolbox\Sanitizer;
 
 abstract class AbstractRightsDropdown
 {
-   /**
-    * Max limit per itemtype
-    */
+    /**
+     * Max limit per itemtype
+     */
     const LIMIT = 50;
 
-   /**
-    * To be redefined by subclasses, specify enabled types
-    *
-    * @return array
-    */
+    /**
+     * To be redefined by subclasses, specify enabled types
+     *
+     * @return array
+     */
     protected static function getTypes(): array
     {
         return [];
     }
 
-   /**
-    * Check if a given type is enabled
-    *
-    * @param string $type Class to check
-    *
-    * @return bool
-    */
+    /**
+     * Check if a given type is enabled
+     *
+     * @param string $type Class to check
+     *
+     * @return bool
+     */
     protected static function isTypeEnabled(string $type): bool
     {
         $types = array_flip(static::getTypes());
         return isset($types[$type]);
     }
 
-   /**
-    * Get possible data for profiles
-    *
-    * @param string $name  Field name
-    * @param array $values Selected values
-    *
-    * @return array
-    */
+    /**
+     * Get possible data for profiles
+     *
+     * @param string $name  Field name
+     * @param array $values Selected values
+     *
+     * @return array
+     */
     public static function show(string $name, array $values): string
     {
         global $CFG_GLPI;
@@ -91,13 +91,13 @@ abstract class AbstractRightsDropdown
         return Html::jsAjaxDropdown($name, $field_id, $url, $params);
     }
 
-   /**
-    * Get possible data for profiles
-    *
-    * @param string $text Search string
-    *
-    * @return array
-    */
+    /**
+     * Get possible data for profiles
+     *
+     * @param string $text Search string
+     *
+     * @return array
+     */
     public static function fetchValues(string $text = ""): array
     {
         $possible_rights = [];
@@ -146,13 +146,13 @@ abstract class AbstractRightsDropdown
         return $ret;
     }
 
-   /**
-    * Get names for each selected values
-    *
-    * @param array $values Selected values
-    *
-    * @return array
-    */
+    /**
+     * Get names for each selected values
+     *
+     * @param array $values Selected values
+     *
+     * @return array
+     */
     protected static function getValueNames(array $values): array
     {
         return array_map(function ($value) {
@@ -168,13 +168,13 @@ abstract class AbstractRightsDropdown
         }, $values);
     }
 
-   /**
-    * Get possible values for profiles
-    *
-    * @param string $text Search string
-    *
-    * @return array
-    */
+    /**
+     * Get possible values for profiles
+     *
+     * @param string $text Search string
+     *
+     * @return array
+     */
     protected static function getProfiles(string $text): array
     {
         $profile_item = new Profile();
@@ -190,13 +190,13 @@ abstract class AbstractRightsDropdown
         return $profiles_items;
     }
 
-   /**
-    * Get possible values for entities
-    *
-    * @param string $text Search string
-    *
-    * @return array
-    */
+    /**
+     * Get possible values for entities
+     *
+     * @param string $text Search string
+     *
+     * @return array
+     */
     protected static function getEntities(string $text): array
     {
         $entity_item = new Entity();
@@ -216,13 +216,13 @@ abstract class AbstractRightsDropdown
         return $entities_items;
     }
 
-   /**
-    * Get possible values for users
-    *
-    * @param string $text Search string
-    *
-    * @return array
-    */
+    /**
+     * Get possible values for users
+     *
+     * @param string $text Search string
+     *
+     * @return array
+     */
     protected static function getUsers(string $text): array
     {
         $users = User::getSqlSearchResult(false, "all", -1, 0, [], $text, 0, self::LIMIT);
@@ -235,13 +235,13 @@ abstract class AbstractRightsDropdown
         return $users_items;
     }
 
-   /**
-    * Get possible values for groups
-    *
-    * @param string $text Search string
-    *
-    * @return array
-    */
+    /**
+     * Get possible values for groups
+     *
+     * @param string $text Search string
+     *
+     * @return array
+     */
     protected static function getGroups(string $text): array
     {
         $group_item = new Group();

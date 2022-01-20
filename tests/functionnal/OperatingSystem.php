@@ -62,11 +62,11 @@ class OperatingSystem extends CommonDropdown
         ];
     }
 
-   /**
-    * Create new Operating system in database
-    *
-    * @return void
-    */
+    /**
+     * Create new Operating system in database
+     *
+     * @return void
+     */
     protected function newInstance()
     {
         $this->newTestedInstance();

@@ -32,14 +32,14 @@
  */
 
 /** @file
-* @brief
-*/
+ * @brief
+ */
 
 /**
  * Update from 9.3.0 to 9.3.1
  *
  * @return bool for success (will die for most error)
-**/
+ **/
 function update930to931()
 {
     global $migration;
@@ -52,14 +52,14 @@ function update930to931()
     $migration->displayTitle(sprintf(__('Update to %s'), '9.3.1'));
     $migration->setVersion('9.3.1');
 
-   /** Change field type */
+    /** Change field type */
     $migration->changeField(
         'glpi_notifications_notificationtemplates',
         'notifications_id',
         'notifications_id',
         'integer'
     );
-   /** /Change field type */
+    /** /Change field type */
 
    // add option to hide/show source on login page
     $migration->addConfig(['display_login_source' => 1]);

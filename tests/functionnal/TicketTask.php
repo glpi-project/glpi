@@ -39,13 +39,13 @@ use DbTestCase;
 
 class TicketTask extends DbTestCase
 {
-   /**
-    * Create a new ticket
-    *
-    * @param boolean $as_object Return Ticket object or its id
-    *
-    * @return integer|Ticket
-    */
+    /**
+     * Create a new ticket
+     *
+     * @param boolean $as_object Return Ticket object or its id
+     *
+     * @return integer|Ticket
+     */
     private function getNewTicket($as_object = false)
     {
        //create reference ticket

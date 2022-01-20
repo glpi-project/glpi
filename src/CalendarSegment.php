@@ -44,9 +44,9 @@ class CalendarSegment extends CommonDBChild
     public static $items_id = 'calendars_id';
 
 
-   /**
-    * @since 0.84
-   **/
+    /**
+     * @since 0.84
+     **/
     public function getForbiddenStandardMassiveAction()
     {
 
@@ -107,15 +107,15 @@ class CalendarSegment extends CommonDBChild
     }
 
 
-   /**
-    * Get segments of a calendar between 2 date
-    *
-    * @param integer $calendars_id    id of the calendar
-    * @param integer $begin_day       begin day number
-    * @param string  $begin_time      begin time to check
-    * @param integer $end_day         end day number
-    * @param string  $end_time        end time to check
-   **/
+    /**
+     * Get segments of a calendar between 2 date
+     *
+     * @param integer $calendars_id    id of the calendar
+     * @param integer $begin_day       begin day number
+     * @param string  $begin_time      begin time to check
+     * @param integer $end_day         end day number
+     * @param string  $end_time        end time to check
+     **/
     public static function getSegmentsBetween($calendars_id, $begin_day, $begin_time, $end_day, $end_time)
     {
 
@@ -139,16 +139,16 @@ class CalendarSegment extends CommonDBChild
     }
 
 
-   /**
-    * Get active time between begin and end time in a day
-    *
-    * @param integer $calendars_id    id of the calendar
-    * @param integer $day             day number
-    * @param string  $begin_time      begin time to check
-    * @param string  $end_time        end time to check
-    *
-    * @return integer Time in seconds
-   **/
+    /**
+     * Get active time between begin and end time in a day
+     *
+     * @param integer $calendars_id    id of the calendar
+     * @param integer $day             day number
+     * @param string  $begin_time      begin time to check
+     * @param string  $end_time        end time to check
+     *
+     * @return integer Time in seconds
+     **/
     public static function getActiveTimeBetween($calendars_id, $day, $begin_time, $end_time)
     {
         global $DB;
@@ -180,16 +180,16 @@ class CalendarSegment extends CommonDBChild
     }
 
 
-   /**
-    * Add a delay of a starting hour in a specific day
-    *
-    * @param integer $calendars_id    id of the calendar
-    * @param integer $day             day number
-    * @param string  $begin_time      begin time
-    * @param integer $delay           timestamp delay to add
-    *
-    * @return string|false Ending timestamp (HH:mm:dd) of delay or false if not applicable.
-   **/
+    /**
+     * Add a delay of a starting hour in a specific day
+     *
+     * @param integer $calendars_id    id of the calendar
+     * @param integer $day             day number
+     * @param string  $begin_time      begin time
+     * @param integer $delay           timestamp delay to add
+     *
+     * @return string|false Ending timestamp (HH:mm:dd) of delay or false if not applicable.
+     **/
     public static function addDelayInDay($calendars_id, $day, $begin_time, $delay)
     {
         global $DB;
@@ -234,14 +234,14 @@ class CalendarSegment extends CommonDBChild
     }
 
 
-   /**
-    * Get first working hour of a day
-    *
-    * @param integer $calendars_id    id of the calendar
-    * @param integer $day             day number
-    *
-    * @return string Timestamp (HH:mm:dd) of first working hour
-   **/
+    /**
+     * Get first working hour of a day
+     *
+     * @param integer $calendars_id    id of the calendar
+     * @param integer $day             day number
+     *
+     * @return string Timestamp (HH:mm:dd) of first working hour
+     **/
     public static function getFirstWorkingHour($calendars_id, $day)
     {
         global $DB;
@@ -259,14 +259,14 @@ class CalendarSegment extends CommonDBChild
     }
 
 
-   /**
-    * Get last working hour of a day
-    *
-    * @param integer $calendars_id    id of the calendar
-    * @param integer $day             day number
-    *
-    * @return string Timestamp (HH:mm:dd) of last working hour
-   **/
+    /**
+     * Get last working hour of a day
+     *
+     * @param integer $calendars_id    id of the calendar
+     * @param integer $day             day number
+     *
+     * @return string Timestamp (HH:mm:dd) of last working hour
+     **/
     public static function getLastWorkingHour($calendars_id, $day)
     {
         global $DB;
@@ -284,15 +284,15 @@ class CalendarSegment extends CommonDBChild
     }
 
 
-   /**
-    * Is the hour passed is a working hour ?
-    *
-    * @param integer $calendars_id    id of the calendar
-    * @param integer $day             day number
-    * @param string  $hour            hour (Format HH:MM::SS)
-    *
-    * @return boolean
-   **/
+    /**
+     * Is the hour passed is a working hour ?
+     *
+     * @param integer $calendars_id    id of the calendar
+     * @param integer $day             day number
+     * @param string  $hour            hour (Format HH:MM::SS)
+     *
+     * @return boolean
+     **/
     public static function isAWorkingHour($calendars_id, $day, $hour)
     {
         global $DB;
@@ -312,11 +312,11 @@ class CalendarSegment extends CommonDBChild
     }
 
 
-   /**
-    * Show segments of a calendar
-    *
-    * @param $calendar Calendar object
-   **/
+    /**
+     * Show segments of a calendar
+     *
+     * @param $calendar Calendar object
+     **/
     public static function showForCalendar(Calendar $calendar)
     {
         global $DB;

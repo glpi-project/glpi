@@ -452,11 +452,11 @@ class Config extends DbTestCase
             ->isIdenticalTo($expected);
     }
 
-   /**
-    * Database engines data provider
-    *
-    * @return array
-    */
+    /**
+     * Database engines data provider
+     *
+     * @return array
+     */
     protected function dbEngineProvider()
     {
         return [
@@ -496,9 +496,9 @@ class Config extends DbTestCase
         ];
     }
 
-   /**
-    * @dataProvider dbEngineProvider
-    */
+    /**
+     * @dataProvider dbEngineProvider
+     */
     public function testCheckDbEngine($raw, $version, $compat)
     {
         global $DB;
@@ -528,11 +528,11 @@ class Config extends DbTestCase
                ->isIdenticalTo('');
     }
 
-   /**
-    * Provides list of classes that can be linked to configuration.
-    *
-    * @return array
-    */
+    /**
+     * Provides list of classes that can be linked to configuration.
+     *
+     * @return array
+     */
     protected function itemtypeLinkedToConfigurationProvider()
     {
         return [
@@ -559,14 +559,14 @@ class Config extends DbTestCase
         ];
     }
 
-   /**
-    * Check that relation between items and configuration are correctly cleaned.
-    *
-    * @param string $key
-    * @param string $itemtype
-    *
-    * @dataProvider itemtypeLinkedToConfigurationProvider
-    */
+    /**
+     * Check that relation between items and configuration are correctly cleaned.
+     *
+     * @param string $key
+     * @param string $itemtype
+     *
+     * @dataProvider itemtypeLinkedToConfigurationProvider
+     */
     public function testCleanRelationDataOfLinkedItems($key, $itemtype)
     {
 
@@ -656,9 +656,9 @@ class Config extends DbTestCase
         );
     }
 
-   /**
-    * Test password expiration delay configuration update.
-    */
+    /**
+     * Test password expiration delay configuration update.
+     */
     public function testPasswordExpirationDelayUpdate()
     {
         global $DB;
@@ -801,9 +801,9 @@ class Config extends DbTestCase
         ];
     }
 
-   /**
-    * @dataProvider logConfigChangeProvider
-    */
+    /**
+     * @dataProvider logConfigChangeProvider
+     */
     public function testLogConfigChange(string $context, string $name, bool $is_secured, string $old_value_prefix)
     {
         $history_crit = ['itemtype' => \Config::getType(), 'old_value' => ['LIKE', $name . ' %']];

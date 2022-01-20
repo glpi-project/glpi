@@ -35,17 +35,17 @@ use Glpi\Toolbox\Sanitizer;
 
 /**
  *  NotificationAjax
-**/
+ **/
 class NotificationAjax implements NotificationInterface
 {
-   /**
-    * Check data
-    *
-    * @param mixed $value   The data to check (may differ for every notification mode)
-    * @param array $options Optionnal special options (may be needed)
-    *
-    * @return boolean
-   **/
+    /**
+     * Check data
+     *
+     * @param mixed $value   The data to check (may differ for every notification mode)
+     * @param array $options Optionnal special options (may be needed)
+     *
+     * @return boolean
+     **/
     public static function check($value, $options = [])
     {
        //waiting for a user ID
@@ -109,11 +109,11 @@ class NotificationAjax implements NotificationInterface
         return true;
     }
 
-   /**
-    * Get users own notifications
-    *
-    * @return array|false
-    */
+    /**
+     * Get users own notifications
+     *
+     * @return array|false
+     */
     public static function getMyNotifications()
     {
         global $DB, $CFG_GLPI;
@@ -157,13 +157,13 @@ class NotificationAjax implements NotificationInterface
         }
     }
 
-   /**
-    * Mark raised notification as deleted
-    *
-    * @param integer $id Notification id
-    *
-    * @return void
-    */
+    /**
+     * Mark raised notification as deleted
+     *
+     * @param integer $id Notification id
+     *
+     * @return void
+     */
     public static function raisedNotification($id)
     {
         global $DB;

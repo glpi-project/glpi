@@ -41,7 +41,7 @@ use PHPMailer\PHPMailer\PHPMailer;
 
 /**
  *  Config class
-**/
+ **/
 class Config extends CommonDBTM
 {
     const DELETE_ALL = -1;
@@ -295,11 +295,11 @@ class Config extends CommonDBTM
         }
     }
 
-   /**
-    * Print the config form for display
-    *
-    * @return void
-   **/
+    /**
+     * Print the config form for display
+     *
+     * @return void
+     **/
     public function showFormDisplay()
     {
         global $CFG_GLPI;
@@ -510,11 +510,11 @@ class Config extends CommonDBTM
     }
 
 
-   /**
-    * Print the config form for restrictions
-    *
-    * @return void
-   **/
+    /**
+     * Print the config form for restrictions
+     *
+     * @return void
+     **/
     public function showFormInventory()
     {
         global $CFG_GLPI;
@@ -710,11 +710,11 @@ class Config extends CommonDBTM
     }
 
 
-   /**
-    * Print the config form for restrictions
-    *
-    * @return void
-   **/
+    /**
+     * Print the config form for restrictions
+     *
+     * @return void
+     **/
     public function showFormAuthentication()
     {
         global $CFG_GLPI;
@@ -760,11 +760,11 @@ class Config extends CommonDBTM
     }
 
 
-   /**
-    * Print the config form for slave DB
-    *
-    * @return void
-   **/
+    /**
+     * Print the config form for slave DB
+     *
+     * @return void
+     **/
     public function showFormDBSlave()
     {
         global $DB, $CFG_GLPI, $DBslave;
@@ -832,12 +832,12 @@ class Config extends CommonDBTM
     }
 
 
-   /**
-    * Print the config form for External API
-    *
-    * @since 9.1
-    * @return void
-   **/
+    /**
+     * Print the config form for External API
+     *
+     * @since 9.1
+     * @return void
+     **/
     public function showFormAPI()
     {
         global $CFG_GLPI;
@@ -919,11 +919,11 @@ class Config extends CommonDBTM
     }
 
 
-   /**
-    * Print the config form for connections
-    *
-    * @return void
-   **/
+    /**
+     * Print the config form for connections
+     *
+     * @return void
+     **/
     public function showFormHelpdesk()
     {
         global $CFG_GLPI;
@@ -1103,14 +1103,14 @@ class Config extends CommonDBTM
     }
 
 
-   /**
-    * Print the config form for default user prefs
-    *
-    * @param $data array containing datas
-    * (CFG_GLPI for global config / glpi_users fields for user prefs)
-    *
-    * @return void
-   **/
+    /**
+     * Print the config form for default user prefs
+     *
+     * @param $data array containing datas
+     * (CFG_GLPI for global config / glpi_users fields for user prefs)
+     *
+     * @return void
+     **/
     public function showFormUserPrefs($data = [])
     {
         global $CFG_GLPI, $DB;
@@ -1595,13 +1595,13 @@ class Config extends CommonDBTM
     }
 
 
-   /**
-    * Display security checks on password
-    *
-    * @param $field string id of the field containing password to check (default 'password')
-    *
-    * @since 0.84
-   **/
+    /**
+     * Display security checks on password
+     *
+     * @param $field string id of the field containing password to check (default 'password')
+     *
+     * @since 0.84
+     **/
     public static function displayPasswordSecurityChecks($field = 'password')
     {
         global $CFG_GLPI;
@@ -1682,18 +1682,18 @@ class Config extends CommonDBTM
     }
 
 
-   /**
-    * Validate password based on security rules
-    *
-    * @since 0.84
-    *
-    * @param $password  string   password to validate
-    * @param $display   boolean  display errors messages? (true by default)
-    *
-    * @throws PasswordTooWeakException when $display is false and the password does not matches the requirements
-    *
-    * @return boolean is password valid?
-   **/
+    /**
+     * Validate password based on security rules
+     *
+     * @since 0.84
+     *
+     * @param $password  string   password to validate
+     * @param $display   boolean  display errors messages? (true by default)
+     *
+     * @throws PasswordTooWeakException when $display is false and the password does not matches the requirements
+     *
+     * @return boolean is password valid?
+     **/
     public static function validatePassword($password, $display = true)
     {
         global $CFG_GLPI;
@@ -1777,14 +1777,14 @@ class Config extends CommonDBTM
     }
 
 
-   /**
-    * Display a report about system performance
-    * - opcode cache (opcache)
-    * - core cache
-    * - translations cache
-    *
-    * @since 9.1
-   **/
+    /**
+     * Display a report about system performance
+     * - opcode cache (opcache)
+     * - core cache
+     * - translations cache
+     *
+     * @since 9.1
+     **/
     public function showPerformanceInformations()
     {
         if (!Config::canUpdate()) {
@@ -1944,7 +1944,7 @@ class Config extends CommonDBTM
             $dir = getcwd();
             chdir(GLPI_ROOT);
             $returnCode = 1;
-           /** @var array $output */
+            /** @var array $output */
             $gitrev = @exec('git show --format="%h" --no-patch 2>&1', $output, $returnCode);
             $gitbranch = '';
             if (!$returnCode) {
@@ -2058,9 +2058,9 @@ class Config extends CommonDBTM
         echo "</table>";
     }
 
-   /**
-    * Display a HTML report about systeme information / configuration
-   **/
+    /**
+     * Display a HTML report about systeme information / configuration
+     **/
     public function showSystemInformations()
     {
         global $DB, $CFG_GLPI;
@@ -2174,13 +2174,13 @@ HTML;
     }
 
 
-   /**
-    * Retrieve full directory of a lib
-    * @param  $libstring  object, class or function
-    * @return string       the path or false
-    *
-    * @since 9.1
-    */
+    /**
+     * Retrieve full directory of a lib
+     * @param  $libstring  object, class or function
+     * @return string       the path or false
+     *
+     * @since 9.1
+     */
     public static function getLibraryDir($libstring)
     {
         if (is_object($libstring)) {
@@ -2196,14 +2196,14 @@ HTML;
     }
 
 
-   /**
-    * get libraries list
-    *
-    * @param $all   (default false)
-    * @return array dependencies list
-    *
-    * @since 9.4
-    */
+    /**
+     * get libraries list
+     *
+     * @param $all   (default false)
+     * @return array dependencies list
+     *
+     * @since 9.4
+     */
     public static function getLibraries($all = false)
     {
         $pm = new PHPMailer();
@@ -2311,11 +2311,11 @@ HTML;
     }
 
 
-   /**
-    * show Libraries information in system information
-    *
-    * @since 0.84
-   **/
+    /**
+     * show Libraries information in system information
+     *
+     * @since 0.84
+     **/
     public static function showLibrariesInformation()
     {
 
@@ -2341,13 +2341,13 @@ HTML;
     }
 
 
-   /**
-    * Dropdown for global management config
-    *
-    * @param string       $name   select name
-    * @param string       $value  default value
-    * @param integer|null $rand   rand
-   **/
+    /**
+     * Dropdown for global management config
+     *
+     * @param string       $name   select name
+     * @param string       $value  default value
+     * @param integer|null $rand   rand
+     **/
     public static function dropdownGlobalManagement($name, $value, $rand = null)
     {
 
@@ -2360,14 +2360,14 @@ HTML;
     }
 
 
-   /**
-    * Get language in GLPI associated with the value coming from LDAP/SSO
-    * Value can be, for example : English, en_EN, en-EN or en
-    *
-    * @param string $lang the value coming from LDAP/SSO
-    *
-    * @return string locale's php page in GLPI or '' is no language associated with the value
-   **/
+    /**
+     * Get language in GLPI associated with the value coming from LDAP/SSO
+     * Value can be, for example : English, en_EN, en-EN or en
+     *
+     * @param string $lang the value coming from LDAP/SSO
+     *
+     * @return string locale's php page in GLPI or '' is no language associated with the value
+     **/
     public static function getLanguage($lang)
     {
         global $CFG_GLPI;
@@ -2440,9 +2440,9 @@ HTML;
     }
 
 
-   /**
-    * Display debug information for dbslave
-   **/
+    /**
+     * Display debug information for dbslave
+     **/
     public function showDebug()
     {
 
@@ -2454,9 +2454,9 @@ HTML;
     }
 
 
-   /**
-    * Display field unicity criterias form
-   **/
+    /**
+     * Display field unicity criterias form
+     **/
     public function showFormFieldUnicity()
     {
 
@@ -2585,16 +2585,16 @@ HTML;
         return true;
     }
 
-   /**
-    * Display database engine checks report
-    *
-    * @since 9.3
-    *
-    * @param boolean $fordebug display for debug (no html required) (false by default)
-    * @param string  $version  Version to check (mainly from install), defaults to null
-    *
-    * @return integer 2: missing extension,  1: missing optionnal extension, 0: OK,
-    **/
+    /**
+     * Display database engine checks report
+     *
+     * @since 9.3
+     *
+     * @param boolean $fordebug display for debug (no html required) (false by default)
+     * @param string  $version  Version to check (mainly from install), defaults to null
+     *
+     * @return integer 2: missing extension,  1: missing optionnal extension, 0: OK,
+     **/
     public static function displayCheckDbEngine($fordebug = false, $version = null)
     {
         global $CFG_GLPI;
@@ -2633,15 +2633,15 @@ HTML;
     }
 
 
-   /**
-    * Check for needed extensions
-    *
-    * @since 9.3
-    *
-    * @param string $raw Raw version to check (mainly from install), defaults to null
-    *
-    * @return array
-   **/
+    /**
+     * Check for needed extensions
+     *
+     * @since 9.3
+     *
+     * @param string $raw Raw version to check (mainly from install), defaults to null
+     *
+     * @return array
+     **/
     public static function checkDbEngine($raw = null)
     {
         if ($raw === null) {
@@ -2661,20 +2661,20 @@ HTML;
     }
 
 
-   /**
-    * Check for needed extensions
-    *
-    * @since 9.2 Method signature and return has changed
-    *
-    * @param null|array $list     Extensions list (from plugins)
-    *
-    * @return array [
-    *                'error'     => integer 2: missing extension,  1: missing optionnal extension, 0: OK,
-    *                'good'      => [ext => message],
-    *                'missing'   => [ext => message],
-    *                'may'       => [ext => message]
-    *               ]
-   **/
+    /**
+     * Check for needed extensions
+     *
+     * @since 9.2 Method signature and return has changed
+     *
+     * @param null|array $list     Extensions list (from plugins)
+     *
+     * @return array [
+     *                'error'     => integer 2: missing extension,  1: missing optionnal extension, 0: OK,
+     *                'good'      => [ext => message],
+     *                'missing'   => [ext => message],
+     *                'may'       => [ext => message]
+     *               ]
+     **/
     public static function checkExtensions($list = null)
     {
         if ($list === null) {
@@ -2784,13 +2784,13 @@ HTML;
     }
 
 
-   /**
-    * Get current DB version (compatible with all version of GLPI)
-    *
-    * @since 0.85
-    *
-    * @return DB version
-   **/
+    /**
+     * Get current DB version (compatible with all version of GLPI)
+     *
+     * @since 0.85
+     *
+     * @return DB version
+     **/
     public static function getCurrentDBVersion()
     {
         global $DB;
@@ -2822,16 +2822,16 @@ HTML;
     }
 
 
-   /**
-    * Get config values
-    *
-    * @since 0.85
-    *
-    * @param $context  string   context to get values (default for glpi is core)
-    * @param $names    array    of config names to get
-    *
-    * @return array of config values
-   **/
+    /**
+     * Get config values
+     *
+     * @since 0.85
+     *
+     * @param $context  string   context to get values (default for glpi is core)
+     * @param $names    array    of config names to get
+     *
+     * @return array of config values
+     **/
     public static function getConfigurationValues($context, array $names = [])
     {
         global $DB;
@@ -2855,13 +2855,13 @@ HTML;
         return $result;
     }
 
-   /**
-    * Load legacy configuration into $CFG_GLPI global variable.
-    *
-    * @return boolean True for success, false if an error occured
-    *
-    * @since 10.0.0 Parameter $older_to_latest is not longer used.
-    */
+    /**
+     * Load legacy configuration into $CFG_GLPI global variable.
+     *
+     * @return boolean True for success, false if an error occured
+     *
+     * @since 10.0.0 Parameter $older_to_latest is not longer used.
+     */
     public static function loadLegacyConfiguration()
     {
 
@@ -2926,16 +2926,16 @@ HTML;
     }
 
 
-   /**
-    * Set config values : create or update entry
-    *
-    * @since 0.85
-    *
-    * @param $context  string context to get values (default for glpi is core)
-    * @param $values   array  of config names to set
-    *
-    * @return void
-   **/
+    /**
+     * Set config values : create or update entry
+     *
+     * @since 0.85
+     *
+     * @param $context  string context to get values (default for glpi is core)
+     * @param $values   array  of config names to set
+     *
+     * @return void
+     **/
     public static function setConfigurationValues($context, array $values = [])
     {
 
@@ -2969,16 +2969,16 @@ HTML;
         }
     }
 
-   /**
-    * Delete config entries
-    *
-    * @since 0.85
-    *
-    * @param $context string  context to get values (default for glpi is core)
-    * @param $values  array   of config names to delete
-    *
-    * @return void
-   **/
+    /**
+     * Delete config entries
+     *
+     * @since 0.85
+     *
+     * @param $context string  context to get values (default for glpi is core)
+     * @param $values  array   of config names to delete
+     *
+     * @return void
+     **/
     public static function deleteConfigurationValues($context, array $values = [])
     {
 
@@ -3009,13 +3009,13 @@ HTML;
         return $values;
     }
 
-   /**
-    * Get message that informs the user he is using an unstable version.
-    *
-    * @param bool $is_dev
-    *
-    * @return void
-    */
+    /**
+     * Get message that informs the user he is using an unstable version.
+     *
+     * @param bool $is_dev
+     *
+     * @return void
+     */
     public static function agreeUnstableMessage(bool $is_dev)
     {
         $msg = $is_dev
@@ -3043,11 +3043,11 @@ HTML;
         return $out;
     }
 
-   /**
-    * Get available palettes
-    *
-    * @return array
-    */
+    /**
+     * Get available palettes
+     *
+     * @return array
+     */
     public function getPalettes()
     {
         $themes_files = scandir(GLPI_ROOT . "/css/palettes/");
@@ -3061,13 +3061,13 @@ HTML;
         return $themes;
     }
 
-   /**
-    * Logs purge form
-    *
-    * @since 9.3
-    *
-    * @return void|boolean (display) Returns false if there is a rights error.
-    */
+    /**
+     * Logs purge form
+     *
+     * @since 9.3
+     *
+     * @return void|boolean (display) Returns false if there is a rights error.
+     */
     public function showFormLogs()
     {
         global $CFG_GLPI;
@@ -3235,17 +3235,17 @@ HTML;
         Html::closeForm();
     }
 
-   /**
-    * Show intervals for logs purge
-    *
-    * @since 9.3
-    *
-    * @param string $name    Parameter name
-    * @param mixed  $value   Parameter value
-    * @param array  $options Options
-    *
-    * @return void
-    */
+    /**
+     * Show intervals for logs purge
+     *
+     * @since 9.3
+     *
+     * @param string $name    Parameter name
+     * @param mixed  $value   Parameter value
+     * @param array  $options Options
+     *
+     * @return void
+     */
     public static function showLogsInterval($name, $value, $options = [])
     {
 
@@ -3276,13 +3276,13 @@ HTML;
         echo $out;
     }
 
-   /**
-    * Security policy form
-    *
-    * @since 9.5.0
-    *
-    * @return void|boolean (display) Returns false if there is a rights error.
-    */
+    /**
+     * Security policy form
+     *
+     * @since 9.5.0
+     *
+     * @return void|boolean (display) Returns false if there is a rights error.
+     */
     public function showFormSecurity()
     {
         global $CFG_GLPI;
@@ -3477,13 +3477,13 @@ HTML;
         Html::closeForm();
     }
 
-   /**
-    * Security form related to management entries.
-    *
-    * @since 10.0.0
-    *
-    * @return void|boolean (display) Returns false if there is a rights error.
-    */
+    /**
+     * Security form related to management entries.
+     *
+     * @since 10.0.0
+     *
+     * @return void|boolean (display) Returns false if there is a rights error.
+     */
     public function showFormManagement()
     {
         global $CFG_GLPI;
@@ -3609,16 +3609,16 @@ HTML;
         $this->logConfigChange($this->fields['context'], $this->fields['name'], '', (string)$this->fields['value']);
     }
 
-   /**
-    * Log config change in history.
-    *
-    * @param string $context
-    * @param string $name
-    * @param string $newvalue
-    * @param string $oldvalue
-    *
-    * @return void
-    */
+    /**
+     * Log config change in history.
+     *
+     * @param string $context
+     * @param string $name
+     * @param string $newvalue
+     * @param string $oldvalue
+     *
+     * @return void
+     */
     private function logConfigChange(string $context, string $name, string $newvalue, string $oldvalue): void
     {
         $glpi_key = new GLPIKey();
@@ -3629,14 +3629,14 @@ HTML;
         Log::constructHistory($this, ['value' => $oldvalue], ['value' => $newvalue]);
     }
 
-   /**
-    * Get the GLPI Config without unsafe keys like passwords and emails (true on $safer)
-    *
-    * @param boolean $safer do we need to clean more (avoid emails disclosure)
-    * @return array of $CFG_GLPI without unsafe keys
-    *
-    * @since 9.5
-    */
+    /**
+     * Get the GLPI Config without unsafe keys like passwords and emails (true on $safer)
+     *
+     * @param boolean $safer do we need to clean more (avoid emails disclosure)
+     * @return array of $CFG_GLPI without unsafe keys
+     *
+     * @since 9.5
+     */
     public static function getSafeConfig($safer = false)
     {
         global $CFG_GLPI;
@@ -3658,13 +3658,13 @@ HTML;
         return "ti ti-adjustments";
     }
 
-   /**
-    * Get UUID
-    *
-    * @param string $type UUID type (e.g. 'instance' or 'registration')
-    *
-    * @return string
-    */
+    /**
+     * Get UUID
+     *
+     * @param string $type UUID type (e.g. 'instance' or 'registration')
+     *
+     * @return string
+     */
     final public static function getUuid($type)
     {
         $conf = self::getConfigurationValues('core', [$type . '_uuid']);
@@ -3677,13 +3677,13 @@ HTML;
         return $uuid;
     }
 
-   /**
-    * Generates an unique identifier and store it
-    *
-    * @param string $type UUID type (e.g. 'instance' or 'registration')
-    *
-    * @return string
-    */
+    /**
+     * Generates an unique identifier and store it
+     *
+     * @param string $type UUID type (e.g. 'instance' or 'registration')
+     *
+     * @return string
+     */
     final public static function generateUuid($type)
     {
         $uuid = Toolbox::getRandomString(40);

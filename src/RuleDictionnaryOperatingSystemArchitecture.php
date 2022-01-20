@@ -33,18 +33,18 @@
 
 class RuleDictionnaryOperatingSystemArchitecture extends RuleDictionnaryDropdown
 {
-   /**
-    * Constructor
-   **/
+    /**
+     * Constructor
+     **/
     public function __construct()
     {
         parent::__construct('RuleDictionnaryOperatingSystemArchitecture');
     }
 
 
-   /**
-    * @see Rule::getCriterias()
-   **/
+    /**
+     * @see Rule::getCriterias()
+     **/
     public function getCriterias()
     {
 
@@ -62,9 +62,9 @@ class RuleDictionnaryOperatingSystemArchitecture extends RuleDictionnaryDropdown
     }
 
 
-   /**
-    * @see Rule::getActions()
-   **/
+    /**
+     * @see Rule::getActions()
+     **/
     public function getActions()
     {
 

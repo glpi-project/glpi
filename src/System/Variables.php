@@ -38,11 +38,11 @@ namespace Glpi\System;
  */
 class Variables
 {
-   /**
-    * Returns list of directories that contains custom data.
-    *
-    * @return string[]
-    */
+    /**
+     * Returns list of directories that contains custom data.
+     *
+     * @return string[]
+     */
     public static function getDataDirectories()
     {
         return [

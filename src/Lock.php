@@ -53,11 +53,11 @@ class Lock extends CommonGLPI
     }
 
 
-   /**
-    * Display form to unlock fields and links
-    *
-    * @param CommonDBTM $item the source item
-   **/
+    /**
+     * Display form to unlock fields and links
+     *
+     * @param CommonDBTM $item the source item
+     **/
     public static function showForItem(CommonDBTM $item)
     {
         global $DB;
@@ -104,7 +104,7 @@ class Lock extends CommonGLPI
                 $params['FIELDS'] = ['id', 'items_id'];
                 $first  = true;
                 foreach ($DB->request('glpi_computers_items', $params) as $line) {
-                   /** @var CommonDBTM $asset */
+                    /** @var CommonDBTM $asset */
                     $asset = new $type();
                     $asset->getFromDB($line['items_id']);
                     if ($first) {
@@ -524,12 +524,12 @@ class Lock extends CommonGLPI
     }
 
 
-   /**
-    * @see CommonGLPI::getTabNameForItem()
-    *
-    * @param $item               CommonGLPI object
-    * @param $withtemplate       (default 0)
-   **/
+    /**
+     * @see CommonGLPI::getTabNameForItem()
+     *
+     * @param $item               CommonGLPI object
+     * @param $withtemplate       (default 0)
+     **/
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
 
@@ -540,11 +540,11 @@ class Lock extends CommonGLPI
     }
 
 
-   /**
-    * @param $item            CommonGLPI object
-    * @param $tabnum          (default 1)
-    * @param $withtemplate    (default 0)
-   **/
+    /**
+     * @param $item            CommonGLPI object
+     * @param $tabnum          (default 1)
+     * @param $withtemplate    (default 0)
+     **/
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
 
@@ -555,14 +555,14 @@ class Lock extends CommonGLPI
     }
 
 
-   /**
-    * Get infos to build an SQL query to get locks fields in a table
-    *
-    * @param string $itemtype      itemtype of the item to look for locked fields
-    * @param string $baseitemtype  itemtype of the based item
-    *
-    * @return array  which contains necessary information to build the SQL query
-   **/
+    /**
+     * Get infos to build an SQL query to get locks fields in a table
+     *
+     * @param string $itemtype      itemtype of the item to look for locked fields
+     * @param string $baseitemtype  itemtype of the based item
+     *
+     * @return array  which contains necessary information to build the SQL query
+     **/
     public static function getLocksQueryInfosByItemType($itemtype, $baseitemtype)
     {
         global $DB;
@@ -669,11 +669,11 @@ class Lock extends CommonGLPI
     }
 
 
-   /**
-    * @since 0.85
-    *
-    * @see CommonDBTM::getMassiveActionsForItemtype()
-    **/
+    /**
+     * @since 0.85
+     *
+     * @see CommonDBTM::getMassiveActionsForItemtype()
+     **/
     public static function getMassiveActionsForItemtype(
         array &$actions,
         $itemtype,
@@ -692,11 +692,11 @@ class Lock extends CommonGLPI
     }
 
 
-   /**
-    * @since 0.85
-    *
-    * @see CommonDBTM::showMassiveActionsSubForm()
-    **/
+    /**
+     * @since 0.85
+     *
+     * @see CommonDBTM::showMassiveActionsSubForm()
+     **/
     public static function showMassiveActionsSubForm(MassiveAction $ma)
     {
 
@@ -731,11 +731,11 @@ class Lock extends CommonGLPI
     }
 
 
-   /**
-    * @since 0.85
-    *
-    * @see CommonDBTM::processMassiveActionsForOneItemtype()
-    **/
+    /**
+     * @since 0.85
+     *
+     * @see CommonDBTM::processMassiveActionsForOneItemtype()
+     **/
     public static function processMassiveActionsForOneItemtype(
         MassiveAction $ma,
         CommonDBTM $baseitem,

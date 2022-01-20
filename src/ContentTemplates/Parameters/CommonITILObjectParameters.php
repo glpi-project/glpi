@@ -83,7 +83,7 @@ abstract class CommonITILObjectParameters extends AbstractParameters
 
     protected function defineValues(CommonDBTM $commonitil): array
     {
-       /** @var CommonITILObject $commonitil  */
+        /** @var CommonITILObject $commonitil  */
 
        // Output "unsanitized" values
         $fields = Sanitizer::unsanitize($commonitil->fields);

@@ -42,9 +42,9 @@ use Group_User;
 
 class AuthLDAP extends DbTestCase
 {
-   /**
-    * @var \AuthLDAP
-    */
+    /**
+     * @var \AuthLDAP
+     */
     private $ldap;
 
     public function beforeTestMethod($method)
@@ -654,13 +654,13 @@ class AuthLDAP extends DbTestCase
         $this->string($result['rootdn_passwd'])->isEmpty();
     }
 
-   /**
-    * Test LDAP connection
-    *
-    * @extensions ldap
-    *
-    * @return void
-    */
+    /**
+     * Test LDAP connection
+     *
+     * @extensions ldap
+     *
+     * @return void
+     */
     public function testTestLDAPConnection()
     {
         $this->boolean(\AuthLDAP::testLDAPConnection(-1))->isFalse();
@@ -671,13 +671,13 @@ class AuthLDAP extends DbTestCase
         $this->checkLdapConnection($ldap->connect());
     }
 
-   /**
-    * Test get users
-    *
-    * @extensions ldap
-    *
-    * @return void
-    */
+    /**
+     * Test get users
+     *
+     * @extensions ldap
+     *
+     * @return void
+     */
     public function testGetAllUsers()
     {
         $ldap = $this->ldap;
@@ -729,13 +729,13 @@ class AuthLDAP extends DbTestCase
         $this->array($results)->hasSize(0);
     }
 
-   /**
-    * Test get groups
-    *
-    * @extensions ldap
-    *
-    * @return void
-    */
+    /**
+     * Test get groups
+     *
+     * @extensions ldap
+     *
+     * @return void
+     */
     public function testGetAllGroups()
     {
         $ldap = $this->ldap;
@@ -754,13 +754,13 @@ class AuthLDAP extends DbTestCase
        /** TODO: filter search... I do not know how to do. */
     }
 
-   /**
-    * Test import user
-    *
-    * @extensions ldap
-    *
-    * @return void
-    */
+    /**
+     * Test import user
+     *
+     * @extensions ldap
+     *
+     * @return void
+     */
     public function testLdapImportUserByServerId()
     {
         $ldap = $this->ldap;
@@ -817,13 +817,13 @@ class AuthLDAP extends DbTestCase
         $this->integer((int)$user->fields['usercategories_id'])->isGreaterThan(0);
     }
 
-   /**
-    * Test get groups
-    *
-    * @extensions ldap
-    *
-    * @return void
-    */
+    /**
+     * Test get groups
+     *
+     * @extensions ldap
+     *
+     * @return void
+     */
     public function testGetGroupCNByDn()
     {
         $ldap = $this->ldap;
@@ -838,13 +838,13 @@ class AuthLDAP extends DbTestCase
         $this->string($cn)->isIdenticalTo('glpi2-group1');
     }
 
-   /**
-    * Test get user by dn
-    *
-    * @extensions ldap
-    *
-    * @return void
-    */
+    /**
+     * Test get user by dn
+     *
+     * @extensions ldap
+     *
+     * @return void
+     */
     public function testGetUserByDn()
     {
         $ldap = $this->ldap;
@@ -860,13 +860,13 @@ class AuthLDAP extends DbTestCase
          ->hasKeys(['userpassword', 'uid', 'objectclass', 'sn']);
     }
 
-   /**
-    * Test get group
-    *
-    * @extensions ldap
-    *
-    * @return void
-    */
+    /**
+     * Test get group
+     *
+     * @extensions ldap
+     *
+     * @return void
+     */
     public function testGetGroupByDn()
     {
         $ldap = $this->ldap;
@@ -887,13 +887,13 @@ class AuthLDAP extends DbTestCase
         ]);
     }
 
-   /**
-    * Test import group
-    *
-    * @extensions ldap
-    *
-    * @return void
-    */
+    /**
+     * Test import group
+     *
+     * @extensions ldap
+     *
+     * @return void
+     */
     public function testLdapImportGroup()
     {
         $ldap = $this->ldap;
@@ -920,13 +920,13 @@ class AuthLDAP extends DbTestCase
          ->string['ldap_group_dn']->isIdenticalTo('cn=glpi2-group1,ou=groups,ou=usa,ou=ldap2,dc=glpi,dc=org');
     }
 
-   /**
-    * Test import group and user
-    *
-    * @extensions ldap
-    *
-    * @return void
-    */
+    /**
+     * Test import group and user
+     *
+     * @extensions ldap
+     *
+     * @return void
+     */
     public function testLdapImportUserGroup()
     {
         $ldap = $this->ldap;
@@ -972,13 +972,13 @@ class AuthLDAP extends DbTestCase
     }
 
 
-   /**
-    * Test sync user
-    *
-    * @extensions ldap
-    *
-    * @return void
-    */
+    /**
+     * Test sync user
+     *
+     * @extensions ldap
+     *
+     * @return void
+     */
     public function testSyncUser()
     {
         $ldap = $this->ldap;
@@ -1177,13 +1177,13 @@ class AuthLDAP extends DbTestCase
         );
     }
 
-   /**
-    * Test ldap authentication
-    *
-    * @extensions ldap
-    *
-    * @return void
-    */
+    /**
+     * Test ldap authentication
+     *
+     * @extensions ldap
+     *
+     * @return void
+     */
     public function testLdapAuth()
     {
        //try to login from a user that does not exists yet
@@ -1299,13 +1299,13 @@ class AuthLDAP extends DbTestCase
         );
     }
 
-   /**
-    * Test LDAP authentication when specify the auth source (local, LDAP...)
-    *
-    * @extensions ldap
-    *
-    * @return void
-    */
+    /**
+     * Test LDAP authentication when specify the auth source (local, LDAP...)
+     *
+     * @extensions ldap
+     *
+     * @return void
+     */
     public function testLdapAuthSpecifyAuth()
     {
         $_SESSION['glpicronuserrunning'] = "cron_phpunit";
@@ -1348,13 +1348,13 @@ class AuthLDAP extends DbTestCase
         $this->integer($auth->user->fields['id'])->isNotEqualTo($user_ldap_id);
     }
 
-   /**
-    * Test get users
-    *
-    * @extensions ldap
-    *
-    * @return void
-    */
+    /**
+     * Test get users
+     *
+     * @extensions ldap
+     *
+     * @return void
+     */
     public function testGetUsers()
     {
         $ldap = $this->ldap;
@@ -1417,13 +1417,13 @@ class AuthLDAP extends DbTestCase
         ]);
     }
 
-   /**
-    * Test removed users
-    *
-    * @extensions ldap
-    *
-    * @return void
-    */
+    /**
+     * Test removed users
+     *
+     * @extensions ldap
+     *
+     * @return void
+     */
     public function testRemovedUser()
     {
         global $CFG_GLPI;
@@ -1519,13 +1519,13 @@ class AuthLDAP extends DbTestCase
         $this->boolean((bool)$user->fields['is_deleted'])->isTrue();
     }
 
-   /**
-    * Test restoring users from LDAP
-    *
-    * @extensions ldap
-    *
-    * @return void
-    */
+    /**
+     * Test restoring users from LDAP
+     *
+     * @extensions ldap
+     *
+     * @return void
+     */
     public function testRestoredUser()
     {
         global $CFG_GLPI;
@@ -1639,9 +1639,9 @@ class AuthLDAP extends DbTestCase
         return $sso_vars;
     }
 
-   /**
-    * @dataProvider ssoVariablesProvider
-    */
+    /**
+     * @dataProvider ssoVariablesProvider
+     */
     public function testOtherAuth($sso_field_id, $sso_field_name)
     {
         global $CFG_GLPI;
@@ -1923,9 +1923,9 @@ class AuthLDAP extends DbTestCase
         }, $dns, array_keys($dns));
     }
 
-   /**
-    * @dataProvider testSyncWithManagerProvider
-    */
+    /**
+     * @dataProvider testSyncWithManagerProvider
+     */
     public function testSyncWithManager($manager_dn, array $manager_entry)
     {
        // Static conf
@@ -2022,11 +2022,11 @@ class AuthLDAP extends DbTestCase
         $this->boolean($user->delete(['id' => $manager->fields['id']], 1))->isTrue();
     }
 
-   /**
-    * Test if rules targeting ldap criteria are working
-    *
-    * @return void
-    */
+    /**
+     * Test if rules targeting ldap criteria are working
+     *
+     * @return void
+     */
     public function testRuleRight()
     {
        //prepare rules

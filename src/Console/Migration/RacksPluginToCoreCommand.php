@@ -68,87 +68,87 @@ use Symfony\Component\Console\Question\ChoiceQuestion;
 
 class RacksPluginToCoreCommand extends AbstractCommand
 {
-   /**
-    * Error code returned if plugin version or plugin data is invalid.
-    *
-    * @var integer
-    */
+    /**
+     * Error code returned if plugin version or plugin data is invalid.
+     *
+     * @var integer
+     */
     const ERROR_PLUGIN_VERSION_OR_DATA_INVALID = 1;
 
-   /**
-    * Error code returned if import failed.
-    *
-    * @var integer
-    */
+    /**
+     * Error code returned if import failed.
+     *
+     * @var integer
+     */
     const ERROR_PLUGIN_IMPORT_FAILED = 1;
 
-   /**
-    * Version of Racks plugin required for this migration.
-    * @var string
-    */
+    /**
+     * Version of Racks plugin required for this migration.
+     * @var string
+     */
     const RACKS_REQUIRED_VERSION = '1.8.0';
 
-   /**
-    * Choice value for other type: ignore.
-    * @var string
-    */
+    /**
+     * Choice value for other type: ignore.
+     * @var string
+     */
     const OTHER_TYPE_CHOICE_IGNORE = 'i';
 
-   /**
-    * Choice value for other type: computer.
-    * @var string
-    */
+    /**
+     * Choice value for other type: computer.
+     * @var string
+     */
     const OTHER_TYPE_CHOICE_COMPUTER = 'c';
 
-   /**
-    * Choice value for other type: network equipment.
-    * @var string
-    */
+    /**
+     * Choice value for other type: network equipment.
+     * @var string
+     */
     const OTHER_TYPE_CHOICE_NETWORKEQUIPEMENT = 'n';
 
-   /**
-    * Choice value for other type: peripheral.
-    * @var string
-    */
+    /**
+     * Choice value for other type: peripheral.
+     * @var string
+     */
     const OTHER_TYPE_CHOICE_PERIPHERAL = 'p';
 
-   /**
-    * Choice value for other type: pdu.
-    * @var string
-    */
+    /**
+     * Choice value for other type: pdu.
+     * @var string
+     */
     const OTHER_TYPE_CHOICE_PDU = 'u';
 
-   /**
-    * Choice value for other type: monitor.
-    * @var string
-    */
+    /**
+     * Choice value for other type: monitor.
+     * @var string
+     */
     const OTHER_TYPE_CHOICE_MONITOR = 'm';
 
-   /**
-    * Choice value for other type: passive device.
-    * @var string
-    */
+    /**
+     * Choice value for other type: passive device.
+     * @var string
+     */
     const OTHER_TYPE_CHOICE_PASSIVEDCEQUIPEMENT = 'd';
 
-   /**
-    * Datacenter on which rooms will be created.
-    *
-    * @var integer
-    */
+    /**
+     * Datacenter on which rooms will be created.
+     *
+     * @var integer
+     */
     private $datacenter_id;
 
-   /**
-    * Room on which racks will be placed if no corresponding room found.
-    *
-    * @var integer
-    */
+    /**
+     * Room on which racks will be placed if no corresponding room found.
+     *
+     * @var integer
+     */
     private $fallback_room_id;
 
-   /**
-    * Imported elements mapping.
-    *
-    * @var array
-    */
+    /**
+     * Imported elements mapping.
+     *
+     * @var array
+     */
     private $elements_mapping;
 
     protected function configure()
@@ -236,13 +236,13 @@ class RacksPluginToCoreCommand extends AbstractCommand
         return 0; // Success
     }
 
-   /**
-    * Check that plugin state and existing data are OK for migration.
-    *
-    * @throws LogicException
-    *
-    * @return boolean
-    */
+    /**
+     * Check that plugin state and existing data are OK for migration.
+     *
+     * @throws LogicException
+     *
+     * @return boolean
+     */
     private function checkPlugin()
     {
 
@@ -381,11 +381,11 @@ class RacksPluginToCoreCommand extends AbstractCommand
         return true;
     }
 
-   /**
-    * Clean data from core tables.
-    *
-    * @throws RuntimeException
-    */
+    /**
+     * Clean data from core tables.
+     *
+     * @throws RuntimeException
+     */
     private function cleanCoreTables()
     {
 
@@ -451,11 +451,11 @@ class RacksPluginToCoreCommand extends AbstractCommand
         return !$failure;
     }
 
-   /**
-    * Create temporary datacenter.
-    *
-    * @return null|integer Datacenter id, or null in case of failure
-    */
+    /**
+     * Create temporary datacenter.
+     *
+     * @return null|integer Datacenter id, or null in case of failure
+     */
     private function createDatacenter()
     {
 
@@ -484,13 +484,13 @@ class RacksPluginToCoreCommand extends AbstractCommand
         return $dc_id;
     }
 
-   /**
-    * Import other models and items.
-    *
-    * @throws LogicException
-    *
-    * @return boolean True in case of success, false in case of errors.
-    */
+    /**
+     * Import other models and items.
+     *
+     * @throws LogicException
+     *
+     * @return boolean True in case of success, false in case of errors.
+     */
     private function importOtherElements()
     {
 
@@ -685,11 +685,11 @@ class RacksPluginToCoreCommand extends AbstractCommand
         return !$has_errors;
     }
 
-   /**
-    * Import items specifications.
-    *
-    * @return boolean True in case of success, false in case of errors.
-    */
+    /**
+     * Import items specifications.
+     *
+     * @return boolean True in case of success, false in case of errors.
+     */
     private function importItemsSpecifications()
     {
 
@@ -779,11 +779,11 @@ class RacksPluginToCoreCommand extends AbstractCommand
         return !$has_errors;
     }
 
-   /**
-    * Import rack models.
-    *
-    * @return boolean True in case of success, false in case of errors.
-    */
+    /**
+     * Import rack models.
+     *
+     * @return boolean True in case of success, false in case of errors.
+     */
     private function importRackModels()
     {
 
@@ -860,11 +860,11 @@ class RacksPluginToCoreCommand extends AbstractCommand
         return !$has_errors;
     }
 
-   /**
-    * Import rack types.
-    *
-    * @return boolean True in case of success, false in case of errors.
-    */
+    /**
+     * Import rack types.
+     *
+     * @return boolean True in case of success, false in case of errors.
+     */
     private function importRackTypes()
     {
 
@@ -943,11 +943,11 @@ class RacksPluginToCoreCommand extends AbstractCommand
         return !$has_errors;
     }
 
-   /**
-    * Import rack states.
-    *
-    * @return boolean True in case of success, false in case of errors.
-    */
+    /**
+     * Import rack states.
+     *
+     * @return boolean True in case of success, false in case of errors.
+     */
     private function importRackStates()
     {
 
@@ -1027,11 +1027,11 @@ class RacksPluginToCoreCommand extends AbstractCommand
         return !$has_errors;
     }
 
-   /**
-    * Import rooms.
-    *
-    * @return boolean True in case of success, false in case of errors.
-    */
+    /**
+     * Import rooms.
+     *
+     * @return boolean True in case of success, false in case of errors.
+     */
     private function importRooms()
     {
 
@@ -1112,11 +1112,11 @@ class RacksPluginToCoreCommand extends AbstractCommand
         return !$has_errors;
     }
 
-   /**
-    * Import racks.
-    *
-    * @return boolean True in case of success, false in case of errors.
-    */
+    /**
+     * Import racks.
+     *
+     * @return boolean True in case of success, false in case of errors.
+     */
     private function importRacks()
     {
 
@@ -1241,11 +1241,11 @@ class RacksPluginToCoreCommand extends AbstractCommand
         return !$has_errors;
     }
 
-   /**
-    * Import rack items.
-    *
-    * @return boolean True in case of success, false in case of errors.
-    */
+    /**
+     * Import rack items.
+     *
+     * @return boolean True in case of success, false in case of errors.
+     */
     private function importRackItems()
     {
 
@@ -1371,16 +1371,16 @@ class RacksPluginToCoreCommand extends AbstractCommand
         return !$has_errors;
     }
 
-   /**
-    * Add an element to mapping.
-    *
-    * @param string  $old_itemtype
-    * @param integer $old_id
-    * @param string  $new_itemtype
-    * @param integer $new_id
-    *
-    * @return void
-    */
+    /**
+     * Add an element to mapping.
+     *
+     * @param string  $old_itemtype
+     * @param integer $old_id
+     * @param string  $new_itemtype
+     * @param integer $new_id
+     *
+     * @return void
+     */
     private function addElementToMapping($old_itemtype, $old_id, $new_itemtype, $new_id)
     {
 
@@ -1393,15 +1393,15 @@ class RacksPluginToCoreCommand extends AbstractCommand
         ];
     }
 
-   /**
-    * Returns item corresponding to itemtype and id.
-    * If item has been migrated to another itemtype, il will return the new item.
-    *
-    * @param string  $itemtype
-    * @param integer $id
-    *
-    * @return null|CommonDBTM
-    */
+    /**
+     * Returns item corresponding to itemtype and id.
+     * If item has been migrated to another itemtype, il will return the new item.
+     *
+     * @param string  $itemtype
+     * @param integer $id
+     *
+     * @return null|CommonDBTM
+     */
     private function getCorrespondingItem($itemtype, $id)
     {
 
@@ -1427,11 +1427,11 @@ class RacksPluginToCoreCommand extends AbstractCommand
         return $item;
     }
 
-   /**
-    * Returns fallback room id.
-    *
-    * @return number
-    */
+    /**
+     * Returns fallback room id.
+     *
+     * @return number
+     */
     private function getFallbackRoomId()
     {
 
@@ -1461,11 +1461,11 @@ class RacksPluginToCoreCommand extends AbstractCommand
         return $this->fallback_room_id;
     }
 
-   /**
-    * Returns verbosity level for import errors.
-    *
-    * @return number
-    */
+    /**
+     * Returns verbosity level for import errors.
+     *
+     * @return number
+     */
     private function getImportErrorsVerbosity()
     {
 
@@ -1474,14 +1474,14 @@ class RacksPluginToCoreCommand extends AbstractCommand
          : OutputInterface::VERBOSITY_QUIET;
     }
 
-   /**
-    * Output import error message.
-    *
-    * @param string           $message
-    * @param ProgressBar|null $progress_bar
-    *
-    * @return void
-    */
+    /**
+     * Output import error message.
+     *
+     * @param string           $message
+     * @param ProgressBar|null $progress_bar
+     *
+     * @return void
+     */
     private function outputImportError($message, ProgressBar $progress_bar = null)
     {
 

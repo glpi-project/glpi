@@ -82,11 +82,11 @@ class Item_Rack extends CommonDBRelation
         return $forbidden;
     }
 
-   /**
-    * Print racks items
-    * @param  Rack   $rack the current rack instance
-    * @return void
-    */
+    /**
+     * Print racks items
+     * @param  Rack   $rack the current rack instance
+     * @return void
+     */
     public static function showItems(Rack $rack)
     {
         global $DB, $CFG_GLPI;
@@ -397,11 +397,11 @@ JAVASCRIPT;
         echo Html::scriptBlock($js);
     }
 
-   /**
-    * Display a mini stats block (wiehgt, power, etc) for the current rack instance
-    * @param  Rack   $rack the current rack instance
-    * @return void
-    */
+    /**
+     * Display a mini stats block (wiehgt, power, etc) for the current rack instance
+     * @param  Rack   $rack the current rack instance
+     * @return void
+     */
     public static function showStats(Rack $rack)
     {
         global $DB;
@@ -724,13 +724,13 @@ JAVASCRIPT;
         $this->fields['bgcolor'] = '#69CEBA';
     }
 
-   /**
-    * Get cell content
-    *
-    * @param mixed $cell Rack cell (array or false)
-    *
-    * @return string
-    */
+    /**
+     * Get cell content
+     *
+     * @param mixed $cell Rack cell (array or false)
+     *
+     * @return string
+     */
     private static function getCell($cell, $readonly = false)
     {
         if ($cell) {
@@ -851,11 +851,11 @@ JAVASCRIPT;
     }
 
 
-   /**
-    * Return an i html tag with a dedicated icon for the itemtype
-    * @param  string $itemtype  A rackable itemtype
-    * @return string           The i html tag
-    */
+    /**
+     * Return an i html tag with a dedicated icon for the itemtype
+     * @param  string $itemtype  A rackable itemtype
+     * @return string           The i html tag
+     */
     private static function getItemIcon($itemtype = "")
     {
         $icon = "";
@@ -889,13 +889,13 @@ JAVASCRIPT;
         return $this->prepareInput($input);
     }
 
-   /**
-    * Prepares input (for update and add)
-    *
-    * @param array $input Input data
-    *
-    * @return array
-    */
+    /**
+     * Prepares input (for update and add)
+     *
+     * @param array $input Input data
+     *
+     * @return array
+     */
     private function prepareInput($input)
     {
         $error_detected = [];

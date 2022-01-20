@@ -216,10 +216,10 @@ class StatusChecker extends DbTestCase
         ];
     }
 
-   /**
-    * @dataProvider getCalculatedGlobalStatusProvider
-    * @param $status
-    */
+    /**
+     * @dataProvider getCalculatedGlobalStatusProvider
+     * @param $status
+     */
     public function testGetCalculateGlobalStatus($status, $expected)
     {
         $this->string(GlpiStatusChecker::calculateGlobalStatus($status))->isEqualTo($expected);

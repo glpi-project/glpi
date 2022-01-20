@@ -91,7 +91,7 @@ class TicketParameters extends CommonITILObjectParameters
 
     protected function defineValues(CommonDBTM $ticket): array
     {
-       /** @var Ticket $ticket  */
+        /** @var Ticket $ticket  */
 
        // Output "unsanitized" values
         $fields = Sanitizer::unsanitize($ticket->fields);

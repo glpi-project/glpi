@@ -32,11 +32,11 @@
  */
 
 /**
-* Rule class store all information about a GLPI rule :
-*   - description
-*   - criterias
-*   - actions
-**/
+ * Rule class store all information about a GLPI rule :
+ *   - description
+ *   - criterias
+ *   - actions
+ **/
 class RuleDictionnaryPrinter extends Rule
 {
    // From Rule
@@ -51,17 +51,17 @@ class RuleDictionnaryPrinter extends Rule
     }
 
 
-   /**
-    * @see Rule::maxActionsCount()
-   **/
+    /**
+     * @see Rule::maxActionsCount()
+     **/
     public function maxActionsCount()
     {
         return 4;
     }
 
-   /**
-    * @see Rule::getCriterias()
-   **/
+    /**
+     * @see Rule::getCriterias()
+     **/
     public function getCriterias()
     {
 
@@ -87,9 +87,9 @@ class RuleDictionnaryPrinter extends Rule
     }
 
 
-   /**
-    * @see Rule::getActions()
-   **/
+    /**
+     * @see Rule::getActions()
+     **/
     public function getActions()
     {
 

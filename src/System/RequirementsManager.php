@@ -52,13 +52,13 @@ use Glpi\System\Requirement\SessionsConfiguration;
  */
 class RequirementsManager
 {
-   /**
-    * Returns core requirement list.
-    *
-    * @param \DBmysql $db  DB instance (if null BD requirements will not be returned).
-    *
-    * @return RequirementsList
-    */
+    /**
+     * Returns core requirement list.
+     *
+     * @param \DBmysql $db  DB instance (if null BD requirements will not be returned).
+     *
+     * @return RequirementsList
+     */
     public function getCoreRequirementList(\DBmysql $db = null): RequirementsList
     {
         $requirements = [];

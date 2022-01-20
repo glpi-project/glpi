@@ -195,11 +195,11 @@ class CommonDBTM extends DbTestCase
          ->integer['entities_id']->isIdenticalTo(12);
     }
 
-   /**
-    * Provider for self::testGetTable().
-    *
-    * @return array
-    */
+    /**
+     * Provider for self::testGetTable().
+     *
+     * @return array
+     */
     protected function getTableProvider()
     {
 
@@ -212,12 +212,12 @@ class CommonDBTM extends DbTestCase
         ];
     }
 
-   /**
-    * Test CommonDBTM::getTable() method.
-    *
-    * @dataProvider getTableProvider
-    * @return void
-    */
+    /**
+     * Test CommonDBTM::getTable() method.
+     *
+     * @dataProvider getTableProvider
+     * @return void
+     */
     public function testGetTable($classname, $tablename)
     {
 
@@ -226,11 +226,11 @@ class CommonDBTM extends DbTestCase
          ->isEqualTo($tablename);
     }
 
-   /**
-    * Test CommonDBTM::getTableField() method.
-    *
-    * @return void
-    */
+    /**
+     * Test CommonDBTM::getTableField() method.
+     *
+     * @return void
+     */
     public function testGetTableField()
     {
 
@@ -428,11 +428,11 @@ class CommonDBTM extends DbTestCase
         );
         $this->boolean($res)->isTrue();
     }
-   /**
-    * Check right on Recursive object
-    *
-    * @return void
-    */
+    /**
+     * Check right on Recursive object
+     *
+     * @return void
+     */
     public function testRecursiveObjectChecks()
     {
         $this->login();
@@ -528,9 +528,9 @@ class CommonDBTM extends DbTestCase
         $this->boolean($printer->canEdit($id[3]))->isTrue("Fail can write Printer 4");
     }
 
-   /**
-    * Check right on CommonDBRelation object
-    */
+    /**
+     * Check right on CommonDBRelation object
+     */
     public function testContact_Supplier()
     {
 
@@ -783,9 +783,9 @@ class CommonDBTM extends DbTestCase
         $this->boolean($rel->canEdit($idr[8]))->isTrue();
     }
 
-   /**
-    * Entity right check
-    */
+    /**
+     * Entity right check
+     */
     public function testEntity()
     {
         $this->login();
@@ -1018,9 +1018,9 @@ class CommonDBTM extends DbTestCase
         ];
     }
 
-   /**
-    * @dataProvider relationConfigProvider
-    */
+    /**
+     * @dataProvider relationConfigProvider
+     */
     public function testCleanRelationTableBasedOnConfiguredTypes(
         $relation_itemtype,
         $config_name,
@@ -1140,9 +1140,9 @@ class CommonDBTM extends DbTestCase
         ];
     }
 
-   /**
-    * @dataProvider testCheckTemplateEntityProvider
-    */
+    /**
+     * @dataProvider testCheckTemplateEntityProvider
+     */
     public function testCheckTemplateEntity(
         array $data,
         $parent_id,

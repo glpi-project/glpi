@@ -36,34 +36,34 @@
  */
 class RuleMatchedLog extends CommonDBTM
 {
-   /**
-    * The right name for this class
-    *
-    * @var string
-    */
+    /**
+     * The right name for this class
+     *
+     * @var string
+     */
     public static $rightname = 'inventory';
 
 
-   /**
-    * Get name of this type by language of the user connected
-    *
-    * @param integer $nb number of elements
-    *
-    * @return string name of this type
-    */
+    /**
+     * Get name of this type by language of the user connected
+     *
+     * @param integer $nb number of elements
+     *
+     * @return string name of this type
+     */
     public static function getTypeName($nb = 0)
     {
         return __('Matched rules');
     }
 
 
-   /**
-    * Count number of elements
-    *
-    * @param object $item
-    *
-    * @return integer
-    */
+    /**
+     * Count number of elements
+     *
+     * @param object $item
+     *
+     * @return integer
+     */
     public static function countForItem(CommonDBTM $item)
     {
         return countElementsInTable(
@@ -76,13 +76,13 @@ class RuleMatchedLog extends CommonDBTM
     }
 
 
-   /**
-    * Get the tab name used for item
-    *
-    * @param object $item the item object
-    * @param integer $withtemplate 1 if is a template form
-    * @return string|array name of the tab
-    */
+    /**
+     * Get the tab name used for item
+     *
+     * @param object $item the item object
+     * @param integer $withtemplate 1 if is a template form
+     * @return string|array name of the tab
+     */
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
 
@@ -125,14 +125,14 @@ class RuleMatchedLog extends CommonDBTM
     }
 
 
-   /**
-    * Display the content of the tab
-    *
-    * @param object $item
-    * @param integer $tabnum number of the tab to display
-    * @param integer $withtemplate 1 if is a template form
-    * @return boolean
-    */
+    /**
+     * Display the content of the tab
+     *
+     * @param object $item
+     * @param integer $tabnum number of the tab to display
+     * @param integer $withtemplate 1 if is a template form
+     * @return boolean
+     */
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
 
@@ -152,13 +152,13 @@ class RuleMatchedLog extends CommonDBTM
     }
 
 
-   /**
-    * Clean old data
-    *
-    * @global object $DB
-    * @param integer $items_id
-    * @param string $itemtype
-    */
+    /**
+     * Clean old data
+     *
+     * @global object $DB
+     * @param integer $items_id
+     * @param string $itemtype
+     */
     public function cleanOlddata($items_id, $itemtype)
     {
         global $DB;
@@ -180,13 +180,13 @@ class RuleMatchedLog extends CommonDBTM
     }
 
 
-   /**
-    * Display form
-    *
-    * @param integer $items_id
-    * @param string $itemtype
-    * @return true
-    */
+    /**
+     * Display form
+     *
+     * @param integer $items_id
+     * @param string $itemtype
+     * @return true
+     */
     public function showItemForm($items_id, $itemtype)
     {
         global $DB;
@@ -280,11 +280,11 @@ class RuleMatchedLog extends CommonDBTM
     }
 
 
-   /**
-    * Display form for agent
-    *
-    * @param integer $agents_id
-    */
+    /**
+     * Display form for agent
+     *
+     * @param integer $agents_id
+     */
     public function showFormAgent($agents_id)
     {
 

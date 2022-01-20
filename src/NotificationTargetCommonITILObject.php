@@ -35,18 +35,18 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
 {
     public $private_profiles = [];
 
-   /**
-    * Keep track of profiles who have acces to the "central" interface
-    * Will only be loaded if the source item's entity is using anonymisation
-    */
+    /**
+     * Keep track of profiles who have acces to the "central" interface
+     * Will only be loaded if the source item's entity is using anonymisation
+     */
     public $central_profiles = [];
 
-   /**
-    * @param $entity          (default '')
-    * @param $event           (default '')
-    * @param $object          (default null)
-    * @param $options   array
-   **/
+    /**
+     * @param $entity          (default '')
+     * @param $event           (default '')
+     * @param $object          (default null)
+     * @param $options   array
+     **/
     public function __construct($entity = '', $event = '', $object = null, $options = [])
     {
 
@@ -86,13 +86,13 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
         return true;
     }
 
-   /**
-    * Get notification subject prefix
-    *
-    * @param $event Event name (default '')
-    *
-    * @return string
-    **/
+    /**
+     * Get notification subject prefix
+     *
+     * @param $event Event name (default '')
+     *
+     * @return string
+     **/
     public function getSubjectPrefix($event = '')
     {
 
@@ -109,13 +109,13 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
         return sprintf("[$perso_tag #%07d] ", $this->obj->getField('id'));
     }
 
-   /**
-    * Get events related to Itil Object
-    *
-    * @since 9.2
-    *
-    * @return array of events (event key => event label)
-   **/
+    /**
+     * Get events related to Itil Object
+     *
+     * @since 9.2
+     *
+     * @return array of events (event key => event label)
+     **/
     public function getEvents()
     {
 
@@ -141,13 +141,13 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
     }
 
 
-   /**
-    * Add linked users to the notified users list
-    *
-    * @param integer $type type of linked users
-    *
-    * @return void
-    */
+    /**
+     * Add linked users to the notified users list
+     *
+     * @param integer $type type of linked users
+     *
+     * @return void
+     */
     public function addLinkedUserByType($type)
     {
         global $DB, $CFG_GLPI;
@@ -233,13 +233,13 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
     }
 
 
-   /**
-    * Add linked group to the notified user list
-    *
-    * @param integer $type type of linked groups
-    *
-    * @return void
-    */
+    /**
+     * Add linked group to the notified user list
+     *
+     * @param integer $type type of linked groups
+     *
+     * @return void
+     */
     public function addLinkedGroupByType($type)
     {
         global $DB;
@@ -265,15 +265,15 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
 
 
 
-   /**
-    * Add linked group without supervisor to the notified user list
-    *
-    * @since 0.84.1
-    *
-    * @param integer $type type of linked groups
-    *
-    * @return void
-    */
+    /**
+     * Add linked group without supervisor to the notified user list
+     *
+     * @since 0.84.1
+     *
+     * @param integer $type type of linked groups
+     *
+     * @return void
+     */
     public function addLinkedGroupWithoutSupervisorByType($type)
     {
         global $DB;
@@ -297,13 +297,13 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
     }
 
 
-   /**
-    * Add linked group supervisor to the notified user list
-    *
-    * @param integer $type type of linked groups
-    *
-    * @return void
-    */
+    /**
+     * Add linked group supervisor to the notified user list
+     *
+     * @param integer $type type of linked groups
+     *
+     * @return void
+     */
     public function addLinkedGroupSupervisorByType($type)
     {
         global $DB;
@@ -327,20 +327,20 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
     }
 
 
-   /**
-    * Get the email of the item's user : Overloaded manual address used
-   **/
+    /**
+     * Get the email of the item's user : Overloaded manual address used
+     **/
     public function addItemAuthor()
     {
         $this->addLinkedUserByType(CommonITILActor::REQUESTER);
     }
 
 
-   /**
-    * Add previous technician in charge (before reassign)
-    *
-    * @return void
-    */
+    /**
+     * Add previous technician in charge (before reassign)
+     *
+     * @return void
+     */
     public function addOldAssignTechnician()
     {
         global $CFG_GLPI;
@@ -383,24 +383,24 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
     }
 
 
-   /**
-    * Add recipient
-    *
-    * @return void
-    */
+    /**
+     * Add recipient
+     *
+     * @return void
+     */
     public function addRecipientAddress()
     {
         return $this->addUserByField("users_id_recipient");
     }
 
 
-   /**
-    * Get supplier related to the ITIL object
-    *
-    * @param boolean $sendprivate (false by default)
-    *
-    * @return void
-    */
+    /**
+     * Get supplier related to the ITIL object
+     *
+     * @param boolean $sendprivate (false by default)
+     *
+     * @return void
+     */
     public function addSupplier($sendprivate = false)
     {
         global $DB;
@@ -440,13 +440,13 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
     }
 
 
-   /**
-    * Add approver related to the ITIL object validation
-    *
-    * @param $options array
-    *
-    * @return void
-    */
+    /**
+     * Add approver related to the ITIL object validation
+     *
+     * @param $options array
+     *
+     * @return void
+     */
     public function addValidationApprover($options = [])
     {
         global $DB;
@@ -472,13 +472,13 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
         }
     }
 
-   /**
-    * Add requester related to the ITIL object validation
-    *
-    * @param array $options Options
-    *
-    * @return void
-   **/
+    /**
+     * Add requester related to the ITIL object validation
+     *
+     * @param array $options Options
+     *
+     * @return void
+     **/
     public function addValidationRequester($options = [])
     {
         global $DB;
@@ -505,13 +505,13 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
     }
 
 
-   /**
-    * Add author related to the followup
-    *
-    * @param array $options Options
-    *
-    * @return void
-    */
+    /**
+     * Add author related to the followup
+     *
+     * @param array $options Options
+     *
+     * @return void
+     */
     public function addFollowupAuthor($options = [])
     {
         global $DB;
@@ -541,13 +541,13 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
     }
 
 
-   /**
-    * Add task author
-    *
-    * @param array $options Options
-    *
-    * @return void
-    */
+    /**
+     * Add task author
+     *
+     * @param array $options Options
+     *
+     * @return void
+     */
     public function addTaskAuthor($options = [])
     {
         global $DB;
@@ -587,13 +587,13 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
     }
 
 
-   /**
-    * Add user assigned to task
-    *
-    * @param array $options Options
-    *
-    * @return void
-    */
+    /**
+     * Add user assigned to task
+     *
+     * @param array $options Options
+     *
+     * @return void
+     */
     public function addTaskAssignUser($options = [])
     {
         global $DB;
@@ -633,15 +633,15 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
     }
 
 
-   /**
-    * Add group assigned to the task
-    *
-    * @since 9.1
-    *
-    * @param array $options Options
-    *
-    * @return void
-    */
+    /**
+     * Add group assigned to the task
+     *
+     * @since 9.1
+     *
+     * @param array $options Options
+     *
+     * @return void
+     */
     public function addTaskAssignGroup($options = [])
     {
         global $DB;
@@ -791,13 +791,13 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
     }
 
 
-   /**
-    * Add additionnals targets for ITIL objects
-    *
-    * @param string $event specif event to get additional targets (default '')
-    *
-    * @return void
-   **/
+    /**
+     * Add additionnals targets for ITIL objects
+     *
+     * @param string $event specif event to get additional targets (default '')
+     *
+     * @return void
+     **/
     public function addAdditionalTargets($event = '')
     {
 
@@ -875,14 +875,14 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
     }
 
 
-   /**
-    * Get specifics targets for ITIL objects
-    *
-    * @param array $data    Data
-    * @param array $options Options
-    *
-    * @return void
-   **/
+    /**
+     * Get specifics targets for ITIL objects
+     *
+     * @param array $data    Data
+     * @param array $options Options
+     *
+     * @return void
+     **/
     public function addSpecificTargets($data, $options)
     {
 
@@ -994,13 +994,13 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
         }
     }
 
-   /**
-    * Add mentionned user to recipients.
-    *
-    * @param array $options
-    *
-    * @return void
-    */
+    /**
+     * Add mentionned user to recipients.
+     *
+     * @param array $options
+     *
+     * @return void
+     */
     protected function addMentionnedUser(array $options): void
     {
         $user = new User();
@@ -1070,15 +1070,15 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
     }
 
 
-   /**
-    * Get data from an item
-    *
-    * @param CommonDBTM $item    Object instance
-    * @param array      $options Options
-    * @param boolean    $simple  (false by default)
-    *
-    * @return array
-   **/
+    /**
+     * Get data from an item
+     *
+     * @param CommonDBTM $item    Object instance
+     * @param array      $options Options
+     * @param boolean    $simple  (false by default)
+     *
+     * @return array
+     **/
     public function getDataForObject(CommonDBTM $item, array $options, $simple = false)
     {
         global $CFG_GLPI, $DB;

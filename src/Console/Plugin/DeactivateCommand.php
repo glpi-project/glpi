@@ -94,13 +94,13 @@ class DeactivateCommand extends AbstractPluginCommand
         return 0; // Success
     }
 
-   /**
-    * Check if deactivate method can be run for given plugin.
-    *
-    * @param string  $directory
-    *
-    * @return boolean
-    */
+    /**
+     * Check if deactivate method can be run for given plugin.
+     *
+     * @param string  $directory
+     *
+     * @return boolean
+     */
     private function canRunDeactivateMethod($directory)
     {
 

@@ -35,7 +35,7 @@
  *  Report class
  *
  * @ since version 0.84
-**/
+ **/
 class Report extends CommonGLPI
 {
     protected static $notable = false;
@@ -48,20 +48,20 @@ class Report extends CommonGLPI
     }
 
 
-   /**
-    * @see CommonGLPI::getMenuShorcut()
-    *
-    *  @since 0.85
-   **/
+    /**
+     * @see CommonGLPI::getMenuShorcut()
+     *
+     *  @since 0.85
+     **/
     public static function getMenuShorcut()
     {
         return 'e';
     }
 
 
-   /**
-    * Show report title
-   **/
+    /**
+     * Show report title
+     **/
     public static function title()
     {
         global $PLUGIN_HOOKS, $CFG_GLPI;
@@ -172,11 +172,11 @@ class Report extends CommonGLPI
     }
 
 
-   /**
-    * Show Default Report
-    *
-    * @since 0.84
-   **/
+    /**
+     * Show Default Report
+     *
+     * @since 0.84
+     **/
     public static function showDefaultReport()
     {
         global $DB, $CFG_GLPI;
@@ -314,22 +314,22 @@ class Report extends CommonGLPI
     }
 
 
-   /**
-    * Get report information
-    *
-    * @param string $from      From table
-    * @param array  $joincrit  Join criteria
-    * @param array  $where     Where clause
-    * @param array  $select    Extra select clause
-    * @param array  $leftjoin  Extra LEFT JOIN clause
-    * @param array  $innerjoin Extra INNER JOIN clause
-    * @param array  $order     Order clause
-    * @param string $extra     ?
-    *
-    * @return void
-    *
-    * @since 10.0.0
-   **/
+    /**
+     * Get report information
+     *
+     * @param string $from      From table
+     * @param array  $joincrit  Join criteria
+     * @param array  $where     Where clause
+     * @param array  $select    Extra select clause
+     * @param array  $leftjoin  Extra LEFT JOIN clause
+     * @param array  $innerjoin Extra INNER JOIN clause
+     * @param array  $order     Order clause
+     * @param string $extra     ?
+     *
+     * @return void
+     *
+     * @since 10.0.0
+     **/
     public static function reportForNetworkInformations(
         $from,
         array $joincrit,
@@ -543,11 +543,11 @@ class Report extends CommonGLPI
     }
 
 
-   /**
-    * @since 0.85
-    *
-    * @see commonDBTM::getRights()
-   **/
+    /**
+     * @since 0.85
+     *
+     * @see commonDBTM::getRights()
+     **/
     public function getRights($interface = 'central')
     {
 

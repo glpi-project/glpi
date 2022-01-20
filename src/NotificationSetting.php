@@ -45,11 +45,11 @@ abstract class NotificationSetting extends CommonDBTM
         throw new \RuntimeException('getTypeName must be implemented');
     }
 
-   /**
-    * Get associated mode
-    *
-    * @return string
-    */
+    /**
+     * Get associated mode
+     *
+     * @return string
+     */
     public static function getMode()
     {
        //For PHP 5.x; a method cannot be abstract and static
@@ -57,18 +57,18 @@ abstract class NotificationSetting extends CommonDBTM
     }
 
 
-   /**
-    * Get label for enable configuration
-    *
-    * @return string
-    */
+    /**
+     * Get label for enable configuration
+     *
+     * @return string
+     */
     abstract public function getEnableLabel();
 
-   /**
-    * Print the config form
-    *
-    * @return void
-    */
+    /**
+     * Print the config form
+     *
+     * @return void
+     */
     abstract protected function showFormConfig();
 
 
@@ -111,11 +111,11 @@ abstract class NotificationSetting extends CommonDBTM
     }
 
 
-   /**
-    * Disable (temporary) all notifications
-    *
-    * @return void
-    */
+    /**
+     * Disable (temporary) all notifications
+     *
+     * @return void
+     */
     public static function disableAll()
     {
         global $CFG_GLPI;

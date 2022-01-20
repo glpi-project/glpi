@@ -968,9 +968,9 @@ SQL
         ];
     }
 
-   /**
-    * @dataProvider sqlProvider
-    */
+    /**
+     * @dataProvider sqlProvider
+     */
     public function testDifferences(
         string $proper_sql,
         string $effective_sql,

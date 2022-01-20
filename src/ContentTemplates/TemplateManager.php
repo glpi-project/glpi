@@ -52,14 +52,14 @@ use Twig\Source;
  */
 class TemplateManager
 {
-   /**
-    * Boiler plate code to render a template
-    *
-    * @param string $content  Template content (html + twig)
-    * @param array $params    Variables to be exposed to the templating engine
-    *
-    * @return string The rendered HTML
-    */
+    /**
+     * Boiler plate code to render a template
+     *
+     * @param string $content  Template content (html + twig)
+     * @param array $params    Variables to be exposed to the templating engine
+     *
+     * @return string The rendered HTML
+     */
     public static function render(
         string $content,
         array $params
@@ -82,14 +82,14 @@ class TemplateManager
         return $html;
     }
 
-   /**
-    * Boiler plate for rendering a commonitilobject content from a template
-    *
-    * @param CommonITILObject $itil_item
-    * @param string $template
-    *
-    * @return string|null
-    */
+    /**
+     * Boiler plate for rendering a commonitilobject content from a template
+     *
+     * @param CommonITILObject $itil_item
+     * @param string $template
+     *
+     * @return string|null
+     */
     public static function renderContentForCommonITIL(
         CommonITILObject $itil_item,
         string $template
@@ -112,14 +112,14 @@ class TemplateManager
         }
         return $html;
     }
-   /**
-    * Boiler plate code to validate a template that user is trying to submit
-    *
-    * @param string $content        Template content (html + twig)
-    * @param null|string $err_msg   Reference to variable that will be filled by error message if validation fails
-    *
-    * @return bool
-    */
+    /**
+     * Boiler plate code to validate a template that user is trying to submit
+     *
+     * @param string $content        Template content (html + twig)
+     * @param null|string $err_msg   Reference to variable that will be filled by error message if validation fails
+     *
+     * @return bool
+     */
     public static function validate(string $content, ?string &$err_msg = null): bool
     {
         $content = Sanitizer::getVerbatimValue($content);
@@ -151,11 +151,11 @@ class TemplateManager
         return true;
     }
 
-   /**
-    * Define our security policies for the sandbox extension
-    *
-    * @return SecurityPolicy
-    */
+    /**
+     * Define our security policies for the sandbox extension
+     *
+     * @return SecurityPolicy
+     */
     public static function getSecurityPolicy(): SecurityPolicy
     {
         $tags = ['if', 'for'];
@@ -166,13 +166,13 @@ class TemplateManager
         return new SecurityPolicy($tags, $filters, $methods, $properties, $functions);
     }
 
-   /**
-    * Generate the documentation of the given parameters
-    *
-    * @param string $preset_parameters_key
-    *
-    * @return string
-    */
+    /**
+     * Generate the documentation of the given parameters
+     *
+     * @param string $preset_parameters_key
+     *
+     * @return string
+     */
     public static function generateMarkdownDocumentation(
         string $preset_parameters_key
     ): string {
@@ -184,13 +184,13 @@ class TemplateManager
         return $documentation->build();
     }
 
-   /**
-    * Compute the given parameters
-    *
-    * @param array $parameters
-    *
-    * @return array
-    */
+    /**
+     * Compute the given parameters
+     *
+     * @param array $parameters
+     *
+     * @return array
+     */
     public static function computeParameters(array $parameters)
     {
         return array_map(function ($parameter) {

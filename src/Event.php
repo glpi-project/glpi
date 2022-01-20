@@ -46,7 +46,7 @@ use Toolbox;
 
 /**
  * Event Class
-**/
+ **/
 class Event extends CommonDBTM
 {
     public static $rightname = 'logs';
@@ -88,18 +88,18 @@ class Event extends CommonDBTM
     }
 
 
-   /**
-    * Log an event.
-    *
-    * Log the event $event on the glpi_event table with all the others args, if
-    * $level is above or equal to setting from configuration.
-    *
-    * @param $items_id
-    * @param $type
-    * @param $level
-    * @param $service
-    * @param $event
-   **/
+    /**
+     * Log an event.
+     *
+     * Log the event $event on the glpi_event table with all the others args, if
+     * $level is above or equal to setting from configuration.
+     *
+     * @param $items_id
+     * @param $type
+     * @param $level
+     * @param $service
+     * @param $event
+     **/
     public static function log($items_id, $type, $level, $service, $event)
     {
         global $DB;
@@ -115,13 +115,13 @@ class Event extends CommonDBTM
     }
 
 
-   /**
-    * Clean old event - Call by cron
-    *
-    * @param $day integer
-    *
-    * @return integer number of events deleted
-   **/
+    /**
+     * Clean old event - Call by cron
+     *
+     * @param $day integer
+     *
+     * @return integer number of events deleted
+     **/
     public static function cleanOld($day)
     {
         global $DB;
@@ -138,9 +138,9 @@ class Event extends CommonDBTM
     }
 
 
-   /**
-    * Return arrays for function showEvent et lastEvent
-   **/
+    /**
+     * Return arrays for function showEvent et lastEvent
+     **/
     public static function logArray()
     {
 
@@ -177,10 +177,10 @@ class Event extends CommonDBTM
     }
 
 
-   /**
-    * @param $type
-    * @param $items_id
-   **/
+    /**
+     * @param $type
+     * @param $items_id
+     **/
     public static function displayItemLogID($type, $items_id)
     {
         global $CFG_GLPI;
@@ -230,14 +230,14 @@ class Event extends CommonDBTM
     }
 
 
-   /**
-    * Print a nice tab for last event from inventory section
-    *
-    * Print a great tab to present lasts events occured on glpi
-    *
-    * @param string $user  name user to search on message (default '')
-    * @param bool $display if false, return html
-    **/
+    /**
+     * Print a nice tab for last event from inventory section
+     *
+     * Print a great tab to present lasts events occured on glpi
+     *
+     * @param string $user  name user to search on message (default '')
+     * @param bool $display if false, return html
+     **/
     public static function showForUser(string $user = "", bool $display = true)
     {
         global $DB, $CFG_GLPI;
@@ -351,16 +351,16 @@ class Event extends CommonDBTM
     }
 
 
-   /**
-    * Print a nice tab for last event
-    *
-    * Print a great tab to present lasts events occured on glpi
-    *
-    * @param string  $target  where to go when complete
-    * @param string  $order   order by clause occurences (eg: ) (default 'DESC')
-    * @param string  $sort    order by clause occurences (eg: date) (defaut 'date')
-    * @param integer $start   (default 0)
-   **/
+    /**
+     * Print a nice tab for last event
+     *
+     * Print a great tab to present lasts events occured on glpi
+     *
+     * @param string  $target  where to go when complete
+     * @param string  $order   order by clause occurences (eg: ) (default 'DESC')
+     * @param string  $sort    order by clause occurences (eg: date) (defaut 'date')
+     * @param integer $start   (default 0)
+     **/
     public static function showList($target, $order = 'DESC', $sort = 'date', $start = 0)
     {
         $DBread = DBConnection::getReadConnection();

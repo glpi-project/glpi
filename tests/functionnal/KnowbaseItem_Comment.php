@@ -77,14 +77,14 @@ class KnowbaseItem_Comment extends DbTestCase
         $this->array($comments[1]['answers'])->hasSize(0);
     }
 
-   /**
-    * Add comments into database
-    *
-    * @param KnowbaseItem $kb   KB item instance
-    * @param string       $lang KB item language, defaults to null
-    *
-    * @return void
-    */
+    /**
+     * Add comments into database
+     *
+     * @param KnowbaseItem $kb   KB item instance
+     * @param string       $lang KB item language, defaults to null
+     *
+     * @return void
+     */
     private function addComments(\KnowbaseItem $kb, $lang = 'NULL')
     {
         $this->login();

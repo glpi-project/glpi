@@ -59,11 +59,11 @@ class Transfer extends CommonDBTM
     }
 
 
-   /**
-    * @see CommonGLPI::defineTabs()
-    *
-    * @since 0.85
-   **/
+    /**
+     * @see CommonGLPI::defineTabs()
+     *
+     * @since 0.85
+     **/
     public function defineTabs($options = [])
     {
 
@@ -122,13 +122,13 @@ class Transfer extends CommonDBTM
     }
 
 
-   /**
-    * Transfer items
-    *
-    *@param $items      items to transfer
-    *@param $to         entity destination ID
-    *@param $options    options used to transfer
-   **/
+    /**
+     * Transfer items
+     *
+     *@param $items      items to transfer
+     *@param $to         entity destination ID
+     *@param $options    options used to transfer
+     **/
     public function moveItems($items, $to, $options)
     {
         global $DB;
@@ -261,12 +261,12 @@ class Transfer extends CommonDBTM
     }
 
 
-   /**
-    * Add an item in the needtobe_transfer list
-    *
-    * @param $itemtype  of the item
-    * @param $ID        of the item
-   **/
+    /**
+     * Add an item in the needtobe_transfer list
+     *
+     * @param $itemtype  of the item
+     * @param $ID        of the item
+     **/
     public function addToBeTransfer($itemtype, $ID)
     {
 
@@ -283,12 +283,12 @@ class Transfer extends CommonDBTM
     }
 
 
-   /**
-    * Add an item in the noneedtobe_transfer list
-    *
-    * @param $itemtype  of the item
-    * @param $ID        of the item
-   **/
+    /**
+     * Add an item in the noneedtobe_transfer list
+     *
+     * @param $itemtype  of the item
+     * @param $ID        of the item
+     **/
     public function addNotToBeTransfer($itemtype, $ID)
     {
 
@@ -303,11 +303,11 @@ class Transfer extends CommonDBTM
     }
 
 
-   /**
-    * simulate the transfer to know which items need to be transfer
-    *
-    * @param $items Array of the items to transfer
-   **/
+    /**
+     * simulate the transfer to know which items need to be transfer
+     *
+     * @param $items Array of the items to transfer
+     **/
     public function simulateTransfer($items)
     {
         global $DB, $CFG_GLPI;
@@ -1151,17 +1151,17 @@ class Transfer extends CommonDBTM
     }
 
 
-   /**
-    * transfer an item to another item (may be the same) in the new entity
-    *
-    * @param $itemtype     item type to transfer
-    * @param $ID           ID of the item to transfer
-    * @param $newID        new ID of the ite
-    *
-    * Transfer item to a new Item if $ID==$newID : only update entities_id field :
-    *                                $ID!=$new ID -> copy datas (like template system)
-    * @return void
-   **/
+    /**
+     * transfer an item to another item (may be the same) in the new entity
+     *
+     * @param $itemtype     item type to transfer
+     * @param $ID           ID of the item to transfer
+     * @param $newID        new ID of the ite
+     *
+     * Transfer item to a new Item if $ID==$newID : only update entities_id field :
+     *                                $ID!=$new ID -> copy datas (like template system)
+     * @return void
+     **/
     public function transferItem($itemtype, $ID, $newID)
     {
         global $CFG_GLPI;
@@ -1305,13 +1305,13 @@ class Transfer extends CommonDBTM
     }
 
 
-   /**
-    * Add an item to already transfer array
-    *
-    * @param $itemtype  item type
-    * @param $ID        item original ID
-    * @param $newID     item new ID
-   **/
+    /**
+     * Add an item to already transfer array
+     *
+     * @param $itemtype  item type
+     * @param $ID        item original ID
+     * @param $newID     item new ID
+     **/
     public function addToAlreadyTransfer($itemtype, $ID, $newID)
     {
 
@@ -1322,13 +1322,13 @@ class Transfer extends CommonDBTM
     }
 
 
-   /**
-    * Transfer location
-    *
-    * @param $locID location ID
-    *
-    * @return new location ID
-   **/
+    /**
+     * Transfer location
+     *
+     * @param $locID location ID
+     *
+     * @return new location ID
+     **/
     public function transferDropdownLocation($locID)
     {
         if ($locID > 0) {
@@ -1357,13 +1357,13 @@ class Transfer extends CommonDBTM
     }
 
 
-   /**
-    * Transfer socket
-    *
-    * @param $sockets_id socket ID
-    *
-    * @return new socket ID
-   **/
+    /**
+     * Transfer socket
+     *
+     * @param $sockets_id socket ID
+     *
+     * @return new socket ID
+     **/
     public function transferDropdownSocket($sockets_id)
     {
         global $DB;
@@ -1413,12 +1413,12 @@ class Transfer extends CommonDBTM
     }
 
 
-   /**
-    * Transfer cartridges of a printer
-    *
-    * @param $ID     original ID of the printer
-    * @param $newID  new ID of the printer
-   **/
+    /**
+     * Transfer cartridges of a printer
+     *
+     * @param $ID     original ID of the printer
+     * @param $newID  new ID of the printer
+     **/
     public function transferPrinterCartridges($ID, $newID)
     {
         global $DB;
@@ -1557,13 +1557,13 @@ class Transfer extends CommonDBTM
     }
 
 
-   /**
-    * Copy (if needed) One software to the destination entity
-    *
-    * @param $ID of the software
-    *
-    * @return $ID of the new software (could be the same)
-   **/
+    /**
+     * Copy (if needed) One software to the destination entity
+     *
+     * @param $ID of the software
+     *
+     * @return $ID of the new software (could be the same)
+     **/
     public function copySingleSoftware($ID)
     {
         global $DB;
@@ -1621,13 +1621,13 @@ class Transfer extends CommonDBTM
     }
 
 
-   /**
-    * Copy (if needed) One softwareversion to the Dest Entity
-    *
-    * @param $ID of the version
-    *
-    * @return $ID of the new version (could be the same)
-   **/
+    /**
+     * Copy (if needed) One softwareversion to the Dest Entity
+     *
+     * @param $ID of the version
+     *
+     * @return $ID of the new version (could be the same)
+     **/
     public function copySingleVersion($ID)
     {
         global $DB;
@@ -1674,12 +1674,12 @@ class Transfer extends CommonDBTM
     }
 
 
-   /**
-    * Transfer disks of an item
-    *
-    * @param string  $itemtype Item type
-    * @param integer $ID       ID of the item
-    */
+    /**
+     * Transfer disks of an item
+     *
+     * @param string  $itemtype Item type
+     * @param integer $ID       ID of the item
+     */
     public function transferItem_Disks($itemtype, $ID)
     {
         if (!$this->options['keep_disk']) {
@@ -1688,12 +1688,12 @@ class Transfer extends CommonDBTM
         }
     }
 
-   /**
-    * Transfer software of an item
-    *
-    * @param string $itemtype  Type of the item
-    * @param int    $ID        ID of the item
-   **/
+    /**
+     * Transfer software of an item
+     *
+     * @param string $itemtype  Type of the item
+     * @param int    $ID        ID of the item
+     **/
     public function transferItemSoftwares($itemtype, $ID)
     {
         global $DB;
@@ -1761,11 +1761,11 @@ class Transfer extends CommonDBTM
     }
 
 
-   /**
-    * Transfer affected licenses to an item
-    *
-    * @param $ID ID of the License
-   **/
+    /**
+     * Transfer affected licenses to an item
+     *
+     * @param $ID ID of the License
+     **/
     public function transferAffectedLicense($ID)
     {
         global $DB;
@@ -1843,11 +1843,11 @@ class Transfer extends CommonDBTM
     }
 
 
-   /**
-    * Transfer License and Version of a Software
-    *
-    * @param $ID ID of the Software
-   **/
+    /**
+     * Transfer License and Version of a Software
+     *
+     * @param $ID ID of the Software
+     **/
     public function transferSoftwareLicensesAndVersions($ID)
     {
         global $DB;
@@ -1920,13 +1920,13 @@ class Transfer extends CommonDBTM
         }
     }
 
-   /**
-    * Transfer certificates
-    *
-    * @param $itemtype  original type of transfered item
-    * @param $ID        original ID of the certificate
-    * @param $newID     new ID of the certificate
-   **/
+    /**
+     * Transfer certificates
+     *
+     * @param $itemtype  original type of transfered item
+     * @param $ID        original ID of the certificate
+     * @param $newID     new ID of the certificate
+     **/
     public function transferCertificates($itemtype, $ID, $newID)
     {
         global $DB;
@@ -2107,13 +2107,13 @@ class Transfer extends CommonDBTM
     }
 
 
-   /**
-    * Transfer contracts
-    *
-    * @param $itemtype  original type of transfered item
-    * @param $ID        original ID of the contract
-    * @param $newID     new ID of the contract
-   **/
+    /**
+     * Transfer contracts
+     *
+     * @param $itemtype  original type of transfered item
+     * @param $ID        original ID of the contract
+     * @param $newID     new ID of the contract
+     **/
     public function transferContracts($itemtype, $ID, $newID)
     {
         global $DB;
@@ -2294,13 +2294,13 @@ class Transfer extends CommonDBTM
     }
 
 
-   /**
-    * Transfer documents
-    *
-    * @param $itemtype  original type of transfered item
-    * @param $ID        original ID of the document
-    * @param $newID     new ID of the document
-   **/
+    /**
+     * Transfer documents
+     *
+     * @param $itemtype  original type of transfered item
+     * @param $ID        original ID of the document
+     * @param $newID     new ID of the document
+     **/
     public function transferDocuments($itemtype, $ID, $newID)
     {
         global $DB;
@@ -2490,13 +2490,13 @@ class Transfer extends CommonDBTM
     }
 
 
-   /**
-    * Delete direct connection for a linked item
-    *
-    * @param $itemtype        original type of transfered item
-    * @param $ID              ID of the item
-    * @param $link_type       type of the linked items to transfer
-   **/
+    /**
+     * Delete direct connection for a linked item
+     *
+     * @param $itemtype        original type of transfered item
+     * @param $ID              ID of the item
+     * @param $link_type       type of the linked items to transfer
+     **/
     public function transferDirectConnection($itemtype, $ID, $link_type)
     {
         global $DB;
@@ -2693,14 +2693,14 @@ class Transfer extends CommonDBTM
     }
 
 
-   /**
-    * Delete direct connection beetween an item and a computer when transfering the item
-    *
-    * @param $itemtype        itemtype to tranfer
-    * @param $ID              ID of the item
-    *
-    * @since 0.84.4
-    **/
+    /**
+     * Delete direct connection beetween an item and a computer when transfering the item
+     *
+     * @param $itemtype        itemtype to tranfer
+     * @param $ID              ID of the item
+     *
+     * @since 0.84.4
+     **/
     public function manageConnectionComputer($itemtype, $ID)
     {
         global $DB;
@@ -2737,13 +2737,13 @@ class Transfer extends CommonDBTM
     }
 
 
-   /**
-    * Transfer tickets
-    *
-    * @param $itemtype  type of transfered item
-    * @param $ID        original ID of the ticket
-    * @param $newID     new ID of the ticket
-   **/
+    /**
+     * Transfer tickets
+     *
+     * @param $itemtype  type of transfered item
+     * @param $ID        original ID of the ticket
+     * @param $newID     new ID of the ticket
+     **/
     public function transferTickets($itemtype, $ID, $newID)
     {
         global $DB;
@@ -2818,15 +2818,15 @@ class Transfer extends CommonDBTM
         }
     }
 
-   /**
-    * Transfer suppliers for specified tickets or problems
-    *
-    * @since 0.84
-    *
-    * @param $itemtype  itemtype : Problem / Ticket
-    * @param $ID        original ticket ID
-    * @param $newID     new ticket ID
-   **/
+    /**
+     * Transfer suppliers for specified tickets or problems
+     *
+     * @since 0.84
+     *
+     * @param $itemtype  itemtype : Problem / Ticket
+     * @param $ID        original ticket ID
+     * @param $newID     new ticket ID
+     **/
     public function transferLinkedSuppliers($itemtype, $ID, $newID)
     {
         global $DB;
@@ -2897,15 +2897,15 @@ class Transfer extends CommonDBTM
     }
 
 
-   /**
-    * Transfer task categories for specified tickets
-    *
-    * @since 0.83
-    *
-    * @param $itemtype  itemtype : Problem / Ticket
-    * @param $ID        original ticket ID
-    * @param $newID     new ticket ID
-   **/
+    /**
+     * Transfer task categories for specified tickets
+     *
+     * @since 0.83
+     *
+     * @param $itemtype  itemtype : Problem / Ticket
+     * @param $ID        original ticket ID
+     * @param $newID     new ticket ID
+     **/
     public function transferTaskCategory($itemtype, $ID, $newID)
     {
         global $DB;
@@ -2958,13 +2958,13 @@ class Transfer extends CommonDBTM
     }
 
 
-   /**
-    * Transfer ticket/problem infos
-    *
-    * @param $data ticket data fields
-    *
-    * @since 0.85 (before transferTicketAdditionalInformations)
-   **/
+    /**
+     * Transfer ticket/problem infos
+     *
+     * @param $data ticket data fields
+     *
+     * @since 0.85 (before transferTicketAdditionalInformations)
+     **/
     public function transferHelpdeskAdditionalInformations($data)
     {
 
@@ -2995,13 +2995,13 @@ class Transfer extends CommonDBTM
     }
 
 
-   /**
-    * Transfer history
-    *
-    * @param $itemtype  original type of transfered item
-    * @param $ID        original ID of the history
-    * @param $newID     new ID of the history
-   **/
+    /**
+     * Transfer history
+     *
+     * @param $itemtype  original type of transfered item
+     * @param $ID        original ID of the history
+     * @param $newID     new ID of the history
+     **/
     public function transferHistory($itemtype, $ID, $newID)
     {
         global $DB;
@@ -3050,12 +3050,12 @@ class Transfer extends CommonDBTM
     }
 
 
-   /**
-    * Transfer compatible printers for a cartridge type
-    *
-    * @param $ID     original ID of the cartridge type
-    * @param $newID  new ID of the cartridge type
-   **/
+    /**
+     * Transfer compatible printers for a cartridge type
+     *
+     * @param $ID     original ID of the cartridge type
+     * @param $newID  new ID of the cartridge type
+     **/
     public function transferCompatiblePrinters($ID, $newID)
     {
         global $DB;
@@ -3078,13 +3078,13 @@ class Transfer extends CommonDBTM
     }
 
 
-   /**
-    * Transfer infocoms of an item
-    *
-    * @param $itemtype  type of the item to transfer
-    * @param $ID        original ID of the item
-    * @param $newID     new ID of the item
-   **/
+    /**
+     * Transfer infocoms of an item
+     *
+     * @param $itemtype  type of the item to transfer
+     * @param $ID        original ID of the item
+     * @param $newID     new ID of the item
+     **/
     public function transferInfocoms($itemtype, $ID, $newID)
     {
         global $DB;
@@ -3142,11 +3142,11 @@ class Transfer extends CommonDBTM
     }
 
 
-   /**
-    * Transfer an enterprise
-    *
-    * @param $ID ID of the enterprise
-   **/
+    /**
+     * Transfer an enterprise
+     *
+     * @param $ID ID of the enterprise
+     **/
     public function transferSingleSupplier($ID)
     {
         global $DB;
@@ -3249,12 +3249,12 @@ class Transfer extends CommonDBTM
     }
 
 
-   /**
-    * Transfer contacts of an enterprise
-    *
-    * @param $ID     original ID of the enterprise
-    * @param $newID  new ID of the enterprise
-   **/
+    /**
+     * Transfer contacts of an enterprise
+     *
+     * @param $ID     original ID of the enterprise
+     * @param $newID  new ID of the enterprise
+     **/
     public function transferSupplierContacts($ID, $newID)
     {
         global $DB;
@@ -3418,13 +3418,13 @@ class Transfer extends CommonDBTM
     }
 
 
-   /**
-    * Transfer reservations of an item
-    *
-    * @param $itemtype  original type of transfered item
-    * @param $ID        original ID of the item
-    * @param $newID     new ID of the item
-   **/
+    /**
+     * Transfer reservations of an item
+     *
+     * @param $itemtype  original type of transfered item
+     * @param $ID        original ID of the item
+     * @param $newID     new ID of the item
+     **/
     public function transferReservations($itemtype, $ID, $newID)
     {
         $ri = new ReservationItem();
@@ -3457,13 +3457,13 @@ class Transfer extends CommonDBTM
     }
 
 
-   /**
-    * Transfer devices of an item
-    *
-    * @param $itemtype        original type of transfered item
-    * @param $ID              ID of the item
-    * @param $newID           new ID of the item
-   **/
+    /**
+     * Transfer devices of an item
+     *
+     * @param $itemtype        original type of transfered item
+     * @param $ID              ID of the item
+     * @param $newID           new ID of the item
+     **/
     public function transferDevices($itemtype, $ID, $newID)
     {
         global $DB;
@@ -3627,13 +3627,13 @@ class Transfer extends CommonDBTM
     }
 
 
-   /**
-    * Transfer network links
-    *
-    * @param $itemtype     original type of transfered item
-    * @param $ID           original ID of the item
-    * @param $newID        new ID of the item
-   **/
+    /**
+     * Transfer network links
+     *
+     * @param $itemtype     original type of transfered item
+     * @param $ID           original ID of the item
+     * @param $newID        new ID of the item
+     **/
     public function transferNetworkLink($itemtype, $ID, $newID)
     {
         global $DB;
@@ -3747,16 +3747,16 @@ class Transfer extends CommonDBTM
     }
 
 
-   /**
-    * Print the transfer form
-    *
-    * @param $ID        integer : Id of the contact to print
-    * @param $options   array
-    *     - target filename : where to go when done.
-    *     - withtemplate boolean : template or basic item
-    *
-    * @return boolean item found
-   **/
+    /**
+     * Print the transfer form
+     *
+     * @param $ID        integer : Id of the contact to print
+     * @param $options   array
+     *     - target filename : where to go when done.
+     *     - withtemplate boolean : template or basic item
+     *
+     * @return boolean item found
+     **/
     public function showForm($ID, array $options = [])
     {
         $edit_form = true;
@@ -4104,11 +4104,11 @@ class Transfer extends CommonDBTM
     }
 
 
-   /**
-    * Check if used as automatic transfer model.
-    *
-    * @return boolean
-    */
+    /**
+     * Check if used as automatic transfer model.
+     *
+     * @return boolean
+     */
     private function isUsedAsAutomaticTransferModel()
     {
 

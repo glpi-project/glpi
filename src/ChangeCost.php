@@ -35,7 +35,7 @@
  * ChangeCost Class
  *
  * @since 0.85
-**/
+ **/
 class ChangeCost extends CommonITILCost
 {
    // From CommonDBChild

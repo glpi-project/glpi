@@ -40,15 +40,15 @@ use CommonDBTM;
  */
 class DatabaseKeysChecker extends AbstractDatabaseChecker
 {
-   /**
-    * Get list of missing keys, basing detection on column names.
-    *
-    * Array keys are expected key names, and array values are fields that should be contained in these keys.
-    *
-    * @param string $table_name
-    *
-    * @return array
-    */
+    /**
+     * Get list of missing keys, basing detection on column names.
+     *
+     * Array keys are expected key names, and array values are fields that should be contained in these keys.
+     *
+     * @param string $table_name
+     *
+     * @return array
+     */
     public function getMissingKeys(string $table_name): array
     {
         $missing_keys = [];
@@ -104,15 +104,15 @@ class DatabaseKeysChecker extends AbstractDatabaseChecker
         return $missing_keys;
     }
 
-   /**
-    * Get list of keys having a name that mismatch conventions.
-    *
-    * Array keys are misnamed key names, and array values are expected key names.
-    *
-    * @param string $table_name
-    *
-    * @return array
-    */
+    /**
+     * Get list of keys having a name that mismatch conventions.
+     *
+     * Array keys are misnamed key names, and array values are expected key names.
+     *
+     * @param string $table_name
+     *
+     * @return array
+     */
     public function getMisnamedKeys(string $table_name): array
     {
         $misnamed_keys = [];
@@ -139,15 +139,15 @@ class DatabaseKeysChecker extends AbstractDatabaseChecker
         return $misnamed_keys;
     }
 
-   /**
-    * Get list of keys that are included in larger keys.
-    *
-    * Array keys are useless key names, and array values are expected larger key names.
-    *
-    * @param string $table_name
-    *
-    * @return array
-    */
+    /**
+     * Get list of keys that are included in larger keys.
+     *
+     * Array keys are useless key names, and array values are expected larger key names.
+     *
+     * @param string $table_name
+     *
+     * @return array
+     */
     public function getUselessKeys(string $table_name): array
     {
         $useless_keys = [];
@@ -181,15 +181,15 @@ class DatabaseKeysChecker extends AbstractDatabaseChecker
         return $useless_keys;
     }
 
-   /**
-    * Check if fields are correctly indexed.
-    *
-    * @param string $table_name
-    * @param array $fields
-    * @param string $expected_key
-    *
-    * @return bool
-    */
+    /**
+     * Check if fields are correctly indexed.
+     *
+     * @param string $table_name
+     * @param array $fields
+     * @param string $expected_key
+     *
+     * @return bool
+     */
     private function areFieldsCorrecltyIndexed(string $table_name, array $fields, string $expected_key): bool
     {
         $index = $this->getIndex($table_name);

@@ -502,12 +502,12 @@ class Search extends DbTestCase
         $this->integer($data['data']['totalcount'])->isIdenticalTo(1);
     }
 
-   /**
-    * This test will add all searchoptions in each itemtype and check if the
-    * search give a SQL error
-    *
-    * @return void
-    */
+    /**
+     * This test will add all searchoptions in each itemtype and check if the
+     * search give a SQL error
+     *
+     * @return void
+     */
     public function testSearchOptions()
     {
         $classes = $this->getSearchableClasses();
@@ -552,11 +552,11 @@ class Search extends DbTestCase
         }
     }
 
-   /**
-    * Test search with all meta to not have SQL errors
-    *
-    * @return void
-    */
+    /**
+     * Test search with all meta to not have SQL errors
+     *
+     * @return void
+     */
     public function testSearchAllMeta()
     {
 
@@ -624,14 +624,14 @@ class Search extends DbTestCase
         }
     }
 
-   /**
-    * Get criterion params for corresponding SO.
-    *
-    * @param CommonDBTM $item
-    * @param int $so_key
-    * @param array $so_data
-    * @return null|array
-    */
+    /**
+     * Get criterion params for corresponding SO.
+     *
+     * @param CommonDBTM $item
+     * @param int $so_key
+     * @param array $so_data
+     * @return null|array
+     */
     private function getCriterionParams(CommonDBTM $item, int $so_key, array $so_data): ?array
     {
         global $DB;
@@ -771,11 +771,11 @@ class Search extends DbTestCase
         $this->integer($data['data']['totalcount'])->isIdenticalTo(0);
     }
 
-   /**
-    * Test that searchOptions throws an exception when it finds a duplicate
-    *
-    * @return void
-    */
+    /**
+     * Test that searchOptions throws an exception when it finds a duplicate
+     *
+     * @return void
+     */
     public function testGetSearchOptionsWException()
     {
         $error = 'Duplicate key 12 (One search option/Any option) in tests\units\DupSearchOpt searchOptions!';
@@ -939,9 +939,9 @@ class Search extends DbTestCase
         ];
     }
 
-   /**
-    * @dataProvider addSelectProvider
-    */
+    /**
+     * @dataProvider addSelectProvider
+     */
     public function testAddSelect($provider)
     {
         $sql_select = \Search::addSelect($provider['itemtype'], $provider['ID']);
@@ -1001,9 +1001,9 @@ class Search extends DbTestCase
         ];
     }
 
-   /**
-    * @dataProvider addLeftJoinProvider
-    */
+    /**
+     * @dataProvider addLeftJoinProvider
+     */
     public function testAddLeftJoin($lj_provider)
     {
         $already_link_tables = [];
@@ -1166,9 +1166,9 @@ class Search extends DbTestCase
         ];
     }
 
-   /**
-    * @dataProvider addOrderByBCProvider
-    */
+    /**
+     * @dataProvider addOrderByBCProvider
+     */
     public function testAddOrderByBC($itemtype, $id, $order, $expected)
     {
         $result = null;
@@ -1239,9 +1239,9 @@ class Search extends DbTestCase
                                  `$table_addtable`.`name` DESC ");
     }
 
-   /**
-    * @dataProvider addOrderByProvider
-    */
+    /**
+     * @dataProvider addOrderByProvider
+     */
     public function testAddOrderBy($itemtype, $sort_fields, $expected)
     {
         $result = \Search::addOrderBy($itemtype, $sort_fields);
@@ -1528,9 +1528,9 @@ class Search extends DbTestCase
         ];
     }
 
-   /**
-    * @dataProvider dataInfocomOptions
-    */
+    /**
+     * @dataProvider dataInfocomOptions
+     */
     public function testIsInfocomOption($index, $expected)
     {
         $this->boolean(\Search::isInfocomOption('Computer', $index))->isIdenticalTo($expected);
@@ -1560,9 +1560,9 @@ class Search extends DbTestCase
         ];
     }
 
-   /**
-    * @dataProvider makeTextSearchValueProvider
-    */
+    /**
+     * @dataProvider makeTextSearchValueProvider
+     */
     public function testMakeTextSearchValue($value, $expected)
     {
         $this->variable(\Search::makeTextSearchValue($value))->isIdenticalTo($expected);
@@ -1594,9 +1594,9 @@ class Search extends DbTestCase
         ];
     }
 
-   /**
-    * @dataProvider providerAddWhere
-    */
+    /**
+     * @dataProvider providerAddWhere
+     */
     public function testAddWhere($link, $nott, $itemtype, $ID, $searchtype, $val, $meta, $expected)
     {
         $output = \Search::addWhere($link, $nott, $itemtype, $ID, $searchtype, $val, $meta);
@@ -1796,11 +1796,11 @@ class Search extends DbTestCase
         ]);
     }
 
-   /**
-    * Check that search result is valid.
-    *
-    * @param array $result
-    */
+    /**
+     * Check that search result is valid.
+     *
+     * @param array $result
+     */
     private function checkSearchResult($result)
     {
         $this->array($result)->hasKey('data');
@@ -1822,11 +1822,11 @@ class Search extends DbTestCase
         $this->string($result['sql']['search']);
     }
 
-   /**
-    * Returns list of searchable classes.
-    *
-    * @return array
-    */
+    /**
+     * Returns list of searchable classes.
+     *
+     * @return array
+     */
     private function getSearchableClasses(): array
     {
         $classes = $this->getClasses(
@@ -1897,9 +1897,9 @@ class Search extends DbTestCase
         ];
     }
 
-   /**
-    * @dataProvider testNamesOutputProvider
-    */
+    /**
+     * @dataProvider testNamesOutputProvider
+     */
     public function testNamesOutput(array $params, array $expected)
     {
         $this->login();
@@ -2007,13 +2007,13 @@ class Search extends DbTestCase
         ];
     }
 
-   /**
-    * Functionnal test for the 'myself' search criteria.
-    * We use the output type "Search::NAMES_OUTPUT" during the test as it make
-    * it easy to parse the results.
-    *
-    * @dataProvider testMyselfSearchCriteriaProvider
-    */
+    /**
+     * Functionnal test for the 'myself' search criteria.
+     * We use the output type "Search::NAMES_OUTPUT" during the test as it make
+     * it easy to parse the results.
+     *
+     * @dataProvider testMyselfSearchCriteriaProvider
+     */
     public function testMyselfSearchCriteria(array $criteria, array $expected)
     {
         $this->login();

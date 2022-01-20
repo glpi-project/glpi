@@ -38,7 +38,7 @@ use Glpi\Application\View\TemplateRenderer;
  * Saved searches class
  *
  * @since 9.2
-**/
+ **/
 class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
 {
     public static $rightname               = 'bookmark_public';
@@ -290,13 +290,13 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
         return $tab;
     }
 
-   /**
-    * Prepare Search url before saving it do db on creation or update
-    *
-    * @param array $input
-    *
-    * @return array $input
-    */
+    /**
+     * Prepare Search url before saving it do db on creation or update
+     *
+     * @param array $input
+     *
+     * @return array $input
+     */
     public function prepareSearchUrlForDB(array $input): array
     {
         $taburl = parse_url(rawurldecode($input['url']));
@@ -371,18 +371,18 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
     }
 
 
-   /**
-    * Print the saved search form
-    *
-    * @param integer $ID      ID of the item
-    * @param array   $options possible options:
-    *                         - target for the Form
-    *                         - type when adding
-    *                         - url when adding
-    *                         - itemtype when adding
-    *
-    * @return void
-   **/
+    /**
+     * Print the saved search form
+     *
+     * @param integer $ID      ID of the item
+     * @param array   $options possible options:
+     *                         - target for the Form
+     *                         - type when adding
+     *                         - url when adding
+     *                         - itemtype when adding
+     *
+     * @return void
+     **/
     public function showForm($ID, array $options = [])
     {
 
@@ -507,14 +507,14 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
     }
 
 
-   /**
-    * Prepare query to store depending of the type
-    *
-    * @param integer $type      Saved search type (self::SEARCH, self::URI or self::ALERT)
-    * @param array   $query_tab Parameters
-    *
-    * @return clean query array
-   **/
+    /**
+     * Prepare query to store depending of the type
+     *
+     * @param integer $type      Saved search type (self::SEARCH, self::URI or self::ALERT)
+     * @param array   $query_tab Parameters
+     *
+     * @return clean query array
+     **/
     protected function prepareQueryToStore($type, $query_tab)
     {
 
@@ -539,15 +539,15 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
     }
 
 
-   /**
-    * Prepare query to use depending of the type
-    *
-    * @param integer $type      Saved search type (see SavedSearch constants)
-    * @param array   $query_tab Parameters array
-    * @param bool    $enable_partial_warnings display warning messages about partial loading
-    *
-    * @return array prepared query array
-   **/
+    /**
+     * Prepare query to use depending of the type
+     *
+     * @param integer $type      Saved search type (see SavedSearch constants)
+     * @param array   $query_tab Parameters array
+     * @param bool    $enable_partial_warnings display warning messages about partial loading
+     *
+     * @return array prepared query array
+     **/
     public function prepareQueryToUse($type, $query_tab, $enable_partial_warnings = true)
     {
 
@@ -619,13 +619,13 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
     }
 
 
-   /**
-    * Load a saved search
-    *
-    * @param integer $ID ID of the saved search
-    *
-    * @return void
-   **/
+    /**
+     * Load a saved search
+     *
+     * @param integer $ID ID of the saved search
+     *
+     * @return void
+     **/
     public function load($ID)
     {
         if (($params = $this->getParameters($ID)) === false) {
@@ -642,13 +642,13 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
     }
 
 
-   /**
-    * Get saved search parameters
-    *
-    * @param integer $ID ID of the saved search
-    *
-    * @return array|false
-   **/
+    /**
+     * Get saved search parameters
+     *
+     * @param integer $ID ID of the saved search
+     *
+     * @return array|false
+     **/
     public function getParameters($ID)
     {
 
@@ -666,13 +666,13 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
     }
 
 
-   /**
-    * Mark saved search as default view for the currect user
-    *
-    * @param integer $ID ID of the saved search
-    *
-    * @return void
-   **/
+    /**
+     * Mark saved search as default view for the currect user
+     *
+     * @param integer $ID ID of the saved search
+     *
+     * @return void
+     **/
     public function markDefault($ID)
     {
         global $DB;
@@ -710,13 +710,13 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
     }
 
 
-   /**
-    * Unmark savedsearch as default view for the current user
-    *
-    * @param integer $ID ID of the saved search
-    *
-    * @return void
-   **/
+    /**
+     * Unmark savedsearch as default view for the current user
+     *
+     * @param integer $ID ID of the saved search
+     *
+     * @return void
+     **/
     public function unmarkDefault($ID)
     {
         global $DB;
@@ -746,13 +746,13 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
     }
 
 
-   /**
-    * Unmark savedsearch as default view
-    *
-    * @param array $ids IDs of the saved searches
-    *
-    * @return boolean
-   **/
+    /**
+     * Unmark savedsearch as default view
+     *
+     * @param array $ids IDs of the saved searches
+     *
+     * @return boolean
+     **/
     public function unmarkDefaults(array $ids)
     {
         global $DB;
@@ -768,15 +768,15 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
     }
 
 
-   /**
-    * return an array of saved searches for a given itemtype
-    *
-    * @param string $itemtype if given filter saved search by only this one
-    * @param bool   $inverse if true, the `itemtype` params filter by "not" criteria
-    * @param bool   $enable_partial_warnings display warning messages about partial loading
-    *
-    * @return array
-    */
+    /**
+     * return an array of saved searches for a given itemtype
+     *
+     * @param string $itemtype if given filter saved search by only this one
+     * @param bool   $inverse if true, the `itemtype` params filter by "not" criteria
+     * @param bool   $enable_partial_warnings display warning messages about partial loading
+     *
+     * @return array
+     */
     public function getMine(string $itemtype = null, bool $inverse = false, bool $enable_partial_warnings = true): array
     {
         global $DB;
@@ -862,15 +862,15 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
         return $searches;
     }
 
-   /**
-    * return Html list of saved searches for a given itemtype
-    *
-    * @param string $itemtype
-    * @param bool   $inverse
-    * @param bool   $enable_partial_warnings display warning messages about partial loading
-    *
-    * @return void
-    */
+    /**
+     * return Html list of saved searches for a given itemtype
+     *
+     * @param string $itemtype
+     * @param bool   $inverse
+     * @param bool   $enable_partial_warnings display warning messages about partial loading
+     *
+     * @return void
+     */
     public function displayMine(string $itemtype = null, bool $inverse = false, bool $enable_partial_warnings = true)
     {
         TemplateRenderer::getInstance()->display('layout/parts/saved_searches_list.html.twig', [
@@ -880,13 +880,13 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
     }
 
 
-   /**
-    * Save order
-    *
-    * @param array $items Ordered ids
-    *
-    * @return boolean
-    */
+    /**
+     * Save order
+     *
+     * @param array $items Ordered ids
+     *
+     * @return boolean
+     */
     public function saveOrder(array $items)
     {
         if (count($items)) {
@@ -900,15 +900,15 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
         return false;
     }
 
-   /**
-    * Display buttons
-    *
-    * @param integer $type     SavedSearch type to use
-    * @param integer $itemtype Device type of item where is the bookmark (default 0)
-    * @param bool    $active   Should the icon be displayed as active ?
-    *
-    * @return void
-   **/
+    /**
+     * Display buttons
+     *
+     * @param integer $type     SavedSearch type to use
+     * @param integer $itemtype Device type of item where is the bookmark (default 0)
+     * @param bool    $active   Should the icon be displayed as active ?
+     *
+     * @return void
+     **/
     public static function showSaveButton($type, $itemtype = 0, bool $active = false)
     {
         global $CFG_GLPI;
@@ -941,22 +941,22 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
     }
 
 
-   /**
-    * Get personal order field name
-    *
-    * @return string
-   **/
+    /**
+     * Get personal order field name
+     *
+     * @return string
+     **/
     protected function getPersonalOrderField()
     {
         return 'privatebookmarkorder';
     }
 
 
-   /**
-    * Get all itemtypes used
-    *
-    * @return array of itemtypes
-   **/
+    /**
+     * Get all itemtypes used
+     *
+     * @return array of itemtypes
+     **/
     public static function getUsedItemtypes()
     {
         global $DB;
@@ -974,14 +974,14 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
     }
 
 
-   /**
-    * Update bookmark execution time after it has been loaded
-    *
-    * @param integer $id   Saved search ID
-    * @param integer $time Execution time, in milliseconds
-    *
-    * @return void
-   **/
+    /**
+     * Update bookmark execution time after it has been loaded
+     *
+     * @param integer $id   Saved search ID
+     * @param integer $time Execution time, in milliseconds
+     *
+     * @return void
+     **/
     public static function updateExecutionTime($id, $time)
     {
         global $DB;
@@ -1044,16 +1044,16 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
     }
 
 
-   /**
-    * Dropdown of do_count possible values
-    *
-    * @param array $options array of options:
-    *                       - name     : select name (default is do_count)
-    *                       - value    : default value (default self::COUNT_AUTO)
-    *                       - display  : boolean if false get string
-    *
-    * @return void|string
-   **/
+    /**
+     * Dropdown of do_count possible values
+     *
+     * @param array $options array of options:
+     *                       - name     : select name (default is do_count)
+     *                       - value    : default value (default self::COUNT_AUTO)
+     *                       - display  : boolean if false get string
+     *
+     * @return void|string
+     **/
     public static function dropdownDoCount(array $options = [])
     {
 
@@ -1075,14 +1075,14 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
     }
 
 
-   /**
-    * Set do_count from massive actions
-    *
-    * @param array   $ids      Items IDs
-    * @param integer $do_count One of self::COUNT_*
-    *
-    * @return boolean
-    */
+    /**
+     * Set do_count from massive actions
+     *
+     * @param array   $ids      Items IDs
+     * @param integer $do_count One of self::COUNT_*
+     *
+     * @return boolean
+     */
     public function setDoCount(array $ids, $do_count)
     {
         global $DB;
@@ -1100,15 +1100,15 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
     }
 
 
-   /**
-    * Set entity and recursivity from massive actions
-    *
-    * @param array   $ids   Items IDs
-    * @param integer $eid   Entityy ID
-    * @param boolean $recur Recursivity
-    *
-    * @return boolean
-    */
+    /**
+     * Set entity and recursivity from massive actions
+     *
+     * @param array   $ids   Items IDs
+     * @param integer $eid   Entityy ID
+     * @param boolean $recur Recursivity
+     *
+     * @return boolean
+     */
     public function setEntityRecur(array $ids, $eid, $recur)
     {
         global $DB;
@@ -1138,13 +1138,13 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
     }
 
 
-   /**
-    * Update all bookmarks execution time
-    *
-    * @param CronTask $task CronTask instance
-    *
-    * @return void
-   **/
+    /**
+     * Update all bookmarks execution time
+     *
+     * @param CronTask $task CronTask instance
+     *
+     * @return void
+     **/
     public static function croncountAll($task)
     {
         global $DB, $CFG_GLPI;
@@ -1218,17 +1218,17 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
     }
 
 
-   /**
-    * Execute current saved search and return results
-    *
-    * @param boolean $force Force query execution even if it should not be executed
-    *                       (default false)
-    * @param boolean $enable_partial_warnings display warning messages about partial loading
-    *
-    * @throws RuntimeException
-    *
-    * @return array
-   **/
+    /**
+     * Execute current saved search and return results
+     *
+     * @param boolean $force Force query execution even if it should not be executed
+     *                       (default false)
+     * @param boolean $enable_partial_warnings display warning messages about partial loading
+     *
+     * @throws RuntimeException
+     *
+     * @return array
+     **/
     public function execute($force = false, bool $enable_partial_warnings = true)
     {
         global $CFG_GLPI;
@@ -1270,11 +1270,11 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
     }
 
 
-   /**
-    * Create specific notification for a public saved search
-    *
-    * @return void
-    */
+    /**
+     * Create specific notification for a public saved search
+     *
+     * @return void
+     */
     public function createNotif()
     {
 
@@ -1295,11 +1295,11 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
         }
     }
 
-   /**
-    * Return visibility SQL restriction to add
-    *
-    * @return string restrict to add
-   **/
+    /**
+     * Return visibility SQL restriction to add
+     *
+     * @return string restrict to add
+     **/
     public static function addVisibilityRestrict()
     {
        //not deprecated because used in Search
@@ -1321,15 +1321,15 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
         return $sql;
     }
 
-   /**
-    * Return visibility joins to add to DBIterator parameters
-    *
-    * @since 9.4
-    *
-    * @param boolean $forceall force all joins (false by default)
-    *
-    * @return array
-    */
+    /**
+     * Return visibility joins to add to DBIterator parameters
+     *
+     * @since 9.4
+     *
+     * @param boolean $forceall force all joins (false by default)
+     *
+     * @return array
+     */
     public static function getVisibilityCriteria(bool $forceall = false): array
     {
         $criteria = ['WHERE' => []];

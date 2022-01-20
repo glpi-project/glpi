@@ -71,11 +71,11 @@ class Item_Cluster extends CommonDBRelation
         return $forbidden;
     }
 
-   /**
-    * Print enclosure items
-    *
-    * @return void
-   **/
+    /**
+     * Print enclosure items
+     *
+     * @return void
+     **/
     public static function showItems(Cluster $cluster)
     {
         global $DB;
@@ -273,13 +273,13 @@ class Item_Cluster extends CommonDBRelation
         return $this->prepareInput($input);
     }
 
-   /**
-    * Prepares input (for update and add)
-    *
-    * @param array $input Input data
-    *
-    * @return array
-    */
+    /**
+     * Prepares input (for update and add)
+     *
+     * @param array $input Input data
+     *
+     * @return array
+     */
     private function prepareInput($input)
     {
         $error_detected = [];

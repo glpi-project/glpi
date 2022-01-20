@@ -47,13 +47,13 @@ class NetworkPort_NetworkPort extends CommonDBRelation
     public static $log_history_2_delete = Log::HISTORY_DISCONNECT_DEVICE;
 
 
-   /**
-    * Retrieve an item from the database
-    *
-    * @param integer $ID ID of the item to get
-    *
-    * @return boolean  true if succeed else false
-   **/
+    /**
+     * Retrieve an item from the database
+     *
+     * @param integer $ID ID of the item to get
+     *
+     * @return boolean  true if succeed else false
+     **/
     public function getFromDBForNetworkPort($ID)
     {
 
@@ -66,13 +66,13 @@ class NetworkPort_NetworkPort extends CommonDBRelation
     }
 
 
-   /**
-    * Get port opposite port ID
-    *
-    * @param integer $ID networking port ID
-    *
-    * @return integer|false  ID of opposite port. false if not found
-   **/
+    /**
+     * Get port opposite port ID
+     *
+     * @param integer $ID networking port ID
+     *
+     * @return integer|false  ID of opposite port. false if not found
+     **/
     public function getOppositeContact($ID)
     {
         if ($this->getFromDBForNetworkPort($ID)) {
@@ -86,14 +86,14 @@ class NetworkPort_NetworkPort extends CommonDBRelation
         }
     }
 
-   /**
-    * Creates a new hub
-    *
-    * @param integer $netports_id Network port id
-    * @param integer $entities_id Entity id
-    *
-    * @return integer
-    */
+    /**
+     * Creates a new hub
+     *
+     * @param integer $netports_id Network port id
+     * @param integer $entities_id Entity id
+     *
+     * @return integer
+     */
     public function createHub($netports_id, $entities_id = 0)
     {
         $netport = new NetworkPort();
@@ -120,12 +120,12 @@ class NetworkPort_NetworkPort extends CommonDBRelation
         return $hubs_id;
     }
 
-   /**
-    * Connects to a hub
-    *
-    * @param integer $ports_id Port to link
-    * @param integer $hubs_id  Hub to link
-    */
+    /**
+     * Connects to a hub
+     *
+     * @param integer $ports_id Port to link
+     * @param integer $hubs_id  Hub to link
+     */
     public function connectToHub($ports_id, $hubs_id)
     {
 
@@ -171,13 +171,13 @@ class NetworkPort_NetworkPort extends CommonDBRelation
         return $free_id;
     }
 
-   /**
-    * Disconnect a port
-    *
-    * @param integer $id Hub id
-    *
-    * @return boolean
-    */
+    /**
+     * Disconnect a port
+     *
+     * @param integer $id Hub id
+     *
+     * @return boolean
+     */
     public function disconnectFrom($ports_id)
     {
         $opposite_id = $this->getOppositeContact($ports_id);
@@ -188,12 +188,12 @@ class NetworkPort_NetworkPort extends CommonDBRelation
         }
     }
 
-   /**
-    * Cleans hub ports
-    * If remove connection of a hub port (unknown device), we must delete this port too
-    *
-    * @return void
-    */
+    /**
+     * Cleans hub ports
+     * If remove connection of a hub port (unknown device), we must delete this port too
+     *
+     * @return void
+     */
     public function cleanHubPorts()
     {
         $netport = new \NetworkPort();
@@ -282,13 +282,13 @@ class NetworkPort_NetworkPort extends CommonDBRelation
         return true;
     }
 
-   /**
-    * Store connection log.
-    *
-    * @param string action Either add or remove
-    *
-    * @return void
-    */
+    /**
+     * Store connection log.
+     *
+     * @param string action Either add or remove
+     *
+     * @return void
+     */
     public function storeConnectionLog($action)
     {
         $netports_id = null;

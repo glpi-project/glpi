@@ -33,37 +33,37 @@
 
 /**
  *  Sub query class
-**/
+ **/
 abstract class AbstractQuery
 {
     protected $alias = null;
 
-   /**
-    * Create a query
-    *
-    * @param string $alias Alias for the whole subquery
-    */
+    /**
+     * Create a query
+     *
+     * @param string $alias Alias for the whole subquery
+     */
     public function __construct($alias = null)
     {
         $this->alias = $alias;
     }
 
-   /**
-    * Get alias
-    *
-    * @return string|null
-    */
+    /**
+     * Get alias
+     *
+     * @return string|null
+     */
     public function getAlias()
     {
         return $this->alias;
     }
 
-   /**
-    *
-    * Get SQL query
-    *
-    * @return string
-    */
+    /**
+     *
+     * Get SQL query
+     *
+     * @return string
+     */
     abstract public function getQuery();
 
     public function __toString()

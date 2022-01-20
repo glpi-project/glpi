@@ -46,9 +46,9 @@ class OlaLevelCriteria extends RuleCriteria
     public $dohistory        = true;
 
 
-   /**
-   * Constructor
-   **/
+    /**
+     * Constructor
+     **/
     public function __construct()
     {
        // Override in order not to use glpi_rules table.

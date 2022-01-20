@@ -97,9 +97,9 @@ class MassiveAction extends DbTestCase
         ];
     }
 
-   /**
-    * @dataProvider actionsProvider
-    */
+    /**
+     * @dataProvider actionsProvider
+     */
     public function testGetAllMassiveActions($itemtype, $items_id, $allcount, $singlecount)
     {
         $this->login();
@@ -206,9 +206,9 @@ class MassiveAction extends DbTestCase
         ];
     }
 
-   /**
-    * @dataProvider amendCommentProvider
-    */
+    /**
+     * @dataProvider amendCommentProvider
+     */
     public function testProcessMassiveActionsForOneItemtype_AmendComment(
         CommonDBTM $item,
         bool $itemtype_is_compatible,
@@ -286,9 +286,9 @@ class MassiveAction extends DbTestCase
         ];
     }
 
-   /**
-    * @dataProvider addNoteProvider
-    */
+    /**
+     * @dataProvider addNoteProvider
+     */
     public function testProcessMassiveActionsForOneItemtype_AddNote(
         CommonDBTM $item,
         bool $has_right
@@ -381,9 +381,9 @@ class MassiveAction extends DbTestCase
         ];
     }
 
-   /**
-    * @dataProvider linkToProblemProvider
-    */
+    /**
+     * @dataProvider linkToProblemProvider
+     */
     public function testProcessMassiveActionsForOneItemtype_linkToProblem(
         CommonDBTM $item,
         array $input,
@@ -477,9 +477,9 @@ class MassiveAction extends DbTestCase
         ];
     }
 
-   /**
-    * @dataProvider resolveTicketsProvider
-    */
+    /**
+     * @dataProvider resolveTicketsProvider
+     */
     public function testProcessMassiveActionsForOneItemtype_resolveTickets(
         CommonDBTM $item,
         array $input,
@@ -577,9 +577,9 @@ class MassiveAction extends DbTestCase
         ];
     }
 
-   /**
-    * @dataProvider addContractProvider
-    */
+    /**
+     * @dataProvider addContractProvider
+     */
     public function testProcessMassiveActionsForOneItemtype_addContract(
         CommonDBTM $item,
         array $input,

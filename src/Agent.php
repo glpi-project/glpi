@@ -41,23 +41,23 @@ use GuzzleHttp\Psr7\Response;
  **/
 class Agent extends CommonDBTM
 {
-   /** @var integer */
+    /** @var integer */
     public const DEFAULT_PORT = 62354;
 
-   /** @var string */
+    /** @var string */
     public const ACTION_STATUS = 'status';
 
-   /** @var string */
+    /** @var string */
     public const ACTION_INVENTORY = 'inventory';
 
 
-   /** @var integer */
+    /** @var integer */
     protected const TIMEOUT  = 5;
 
-   /** @var boolean */
+    /** @var boolean */
     public $dohistory = true;
 
-   /** @var string */
+    /** @var string */
     public static $rightname = 'computer';
    //static $rightname = 'inventory';
 
@@ -145,12 +145,12 @@ class Agent extends CommonDBTM
         return $tab;
     }
 
-   /**
-    * Define tabs to display on form page
-    *
-    * @param array $options
-    * @return array containing the tabs name
-    */
+    /**
+     * Define tabs to display on form page
+     *
+     * @param array $options
+     * @return array containing the tabs name
+     */
     public function defineTabs($options = [])
     {
 
@@ -161,14 +161,14 @@ class Agent extends CommonDBTM
         return $ong;
     }
 
-   /**
-    * Display form for agent configuration
-    *
-    * @param integer $id      ID of the agent
-    * @param array   $options Options
-    *
-    * @return boolean
-    */
+    /**
+     * Display form for agent configuration
+     *
+     * @param integer $id      ID of the agent
+     * @param array   $options Options
+     *
+     * @return boolean
+     */
     public function showForm($id, array $options = [])
     {
         global $CFG_GLPI;
@@ -333,13 +333,13 @@ class Agent extends CommonDBTM
         return true;
     }
 
-   /**
-    * Handle agent
-    *
-    * @param array $metadata Agents metadata from Inventory
-    *
-    * @return integer
-    */
+    /**
+     * Handle agent
+     *
+     * @param array $metadata Agents metadata from Inventory
+     *
+     * @return integer
+     */
     public function handleAgent($metadata)
     {
         $deviceid = $metadata['deviceid'];
@@ -390,13 +390,13 @@ class Agent extends CommonDBTM
         return $aid;
     }
 
-   /**
-    * Prepare input for add and update
-    *
-    * @param array $input Input
-    *
-    * @return array|false
-    */
+    /**
+     * Prepare input for add and update
+     *
+     * @param array $input Input
+     *
+     * @return array|false
+     */
     public function prepareInputs(array $input)
     {
         if ($this->isNewItem() && (!isset($input['deviceid']) || empty($input['deviceid']))) {
@@ -431,11 +431,11 @@ class Agent extends CommonDBTM
         return $this->prepareInputs($input);
     }
 
-   /**
-    * Get item linked to current agent
-    *
-    * @return CommonDBTM
-    */
+    /**
+     * Get item linked to current agent
+     *
+     * @return CommonDBTM
+     */
     public function getLinkedItem(): CommonDBTM
     {
         $itemtype = $this->fields['itemtype'];
@@ -444,11 +444,11 @@ class Agent extends CommonDBTM
         return $item;
     }
 
-   /**
-    * Guess possible adresses the agent should answer on
-    *
-    * @return array
-    */
+    /**
+     * Guess possible adresses the agent should answer on
+     *
+     * @return array
+     */
     public function guessAddresses(): array
     {
         global $DB;
@@ -544,11 +544,11 @@ class Agent extends CommonDBTM
         return $adresses;
     }
 
-   /**
-    * Get agent URLs
-    *
-    * @return array
-    */
+    /**
+     * Get agent URLs
+     *
+     * @return array
+     */
     public function getAgentURLs(): array
     {
         $adresses = $this->guessAddresses();
@@ -573,13 +573,13 @@ class Agent extends CommonDBTM
         return $urls;
     }
 
-   /**
-    * Send agent an HTTP request
-    *
-    * @param string $endpoint Endpoint to reach
-    *
-    * @return Response
-    */
+    /**
+     * Send agent an HTTP request
+     *
+     * @param string $endpoint Endpoint to reach
+     *
+     * @return Response
+     */
     public function requestAgent($endpoint): Response
     {
         global $CFG_GLPI;
@@ -619,11 +619,11 @@ class Agent extends CommonDBTM
         return $response;
     }
 
-   /**
-    * Request status from agent
-    *
-    * @return array
-    */
+    /**
+     * Request status from agent
+     *
+     * @return array
+     */
     public function requestStatus()
     {
        //must return json
@@ -631,11 +631,11 @@ class Agent extends CommonDBTM
         return $this->handleAgentResponse($response, self::ACTION_STATUS);
     }
 
-   /**
-    * Request inventory from agent
-    *
-    * @return array
-    */
+    /**
+     * Request inventory from agent
+     *
+     * @return array
+     */
     public function requestInventory()
     {
        //must return json
@@ -649,14 +649,14 @@ class Agent extends CommonDBTM
         }
     }
 
-   /**
-    * Handle agent response and returns an array to be serialized as json
-    *
-    * @param Response $response Response
-    * @param string   $request  Request type (either status or now)
-    *
-    * @return array
-    */
+    /**
+     * Handle agent response and returns an array to be serialized as json
+     *
+     * @param Response $response Response
+     * @param string   $request  Request type (either status or now)
+     *
+     * @return array
+     */
     private function handleAgentResponse(Response $response, $request): array
     {
         $data = [];

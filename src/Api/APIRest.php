@@ -51,24 +51,24 @@ class APIRest extends API
     protected $debug           = 0;
     protected $format          = "json";
 
-   /**
-    *
-    * @param integer $nb Unused value
-    *
-    * @return string
-    *
-    * @see CommonGLPI::GetTypeName()
-    */
+    /**
+     *
+     * @param integer $nb Unused value
+     *
+     * @return string
+     *
+     * @see CommonGLPI::GetTypeName()
+     */
     public static function getTypeName($nb = 0)
     {
         return __('Rest API');
     }
 
-   /**
-    * Upload and validate files from request and append to $this->parameters['input']
-    *
-    * @return void
-    */
+    /**
+     * Upload and validate files from request and append to $this->parameters['input']
+     *
+     * @return void
+     */
     public function manageUploadedFiles()
     {
         foreach (array_keys($_FILES) as $filename) {
@@ -89,17 +89,17 @@ class APIRest extends API
         }
     }
 
-   /**
-    * Parse url and http body to retrieve :
-    *  - HTTP VERB (GET/POST/DELETE/PUT)
-    *  - Resource : Rest endpoint
-    *  - Identifier
-    *  - and parameters
-    *
-    *  And send to method corresponding identified resource
-    *
-    * @return mixed json with response or error
-    */
+    /**
+     * Parse url and http body to retrieve :
+     *  - HTTP VERB (GET/POST/DELETE/PUT)
+     *  - Resource : Rest endpoint
+     *  - Identifier
+     *  - and parameters
+     *
+     *  And send to method corresponding identified resource
+     *
+     * @return mixed json with response or error
+     */
     public function call()
     {
 
@@ -345,17 +345,17 @@ class APIRest extends API
     }
 
 
-   /**
-    * Retrieve and check itemtype from $this->url_elements
-    *
-    * @param integer $index      we'll find itemtype in this index of $this->url_elements
-    *                            (default o)
-    * @param boolean $recursive  can we go depper or we trigger an http error if we fail to find itemtype?
-    *                            (default true)
-    * @param boolean $all_assets if we can have allasset virtual type (default false)
-    *
-    * @return boolean
-    */
+    /**
+     * Retrieve and check itemtype from $this->url_elements
+     *
+     * @param integer $index      we'll find itemtype in this index of $this->url_elements
+     *                            (default o)
+     * @param boolean $recursive  can we go depper or we trigger an http error if we fail to find itemtype?
+     *                            (default true)
+     * @param boolean $all_assets if we can have allasset virtual type (default false)
+     *
+     * @return boolean
+     */
     private function getItemtype($index = 0, $recursive = true, $all_assets = false)
     {
 
@@ -403,12 +403,12 @@ class APIRest extends API
     }
 
 
-   /**
-    * Retrieve in url_element the current id. If we have a multiple id (ex /Ticket/1/TicketFollwup/2),
-    * it always find the second
-    *
-    * @return integer|boolean id of current itemtype (or false if not found)
-    */
+    /**
+     * Retrieve in url_element the current id. If we have a multiple id (ex /Ticket/1/TicketFollwup/2),
+     * it always find the second
+     *
+     * @return integer|boolean id of current itemtype (or false if not found)
+     */
     private function getId()
     {
 
@@ -428,14 +428,14 @@ class APIRest extends API
     }
 
 
-   /**
-    * Construct this->parameters from query string and http body
-    *
-    * @param boolean $is_inline_doc Is the current request asks to display inline documentation
-    *  This will remove the default behavior who set content-type to application/json
-    *
-    * @return void
-    */
+    /**
+     * Construct this->parameters from query string and http body
+     *
+     * @param boolean $is_inline_doc Is the current request asks to display inline documentation
+     *  This will remove the default behavior who set content-type to application/json
+     *
+     * @return void
+     */
     public function parseIncomingParams($is_inline_doc = false)
     {
 
@@ -513,7 +513,7 @@ class APIRest extends API
             $parameters['input']->_filename = [];
             $parameters['input']->_prefix_filename = [];
         } else if (strpos($content_type, "application/x-www-form-urlencoded") !== false) {
-           /** @var array $postvars */
+            /** @var array $postvars */
             parse_str($body, $postvars);
             foreach ($postvars as $field => $value) {
                 $parameters[$field] = $value;
@@ -633,13 +633,13 @@ class APIRest extends API
     }
 
 
-   /**
-    * Display the APIRest Documentation in Html (parsed from markdown)
-    *
-    * @param string $file relative path of documentation file (default 'apirest.md')
-    *
-    * @return void
-    */
+    /**
+     * Display the APIRest Documentation in Html (parsed from markdown)
+     *
+     * @param string $file relative path of documentation file (default 'apirest.md')
+     *
+     * @return void
+     */
     public function inlineDocumentation($file = "apirest.md")
     {
 

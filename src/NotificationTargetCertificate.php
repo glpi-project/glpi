@@ -32,14 +32,14 @@
  */
 
 /**
-* @since 9.2
-*/
+ * @since 9.2
+ */
 
 
 
 /**
  * NotificationTargetSoftwareLicense Class
-**/
+ **/
 class NotificationTargetCertificate extends NotificationTarget
 {
     public function getEvents()

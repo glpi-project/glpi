@@ -39,17 +39,17 @@ use DbTestCase;
 
 abstract class CommonDropdown extends DbTestCase
 {
-   /**
-    * Get object class name
-    *
-    */
+    /**
+     * Get object class name
+     *
+     */
     abstract protected function getObjectClass();
 
     abstract protected function typenameProvider();
 
-   /**
-    * @dataprovider typenameProvider
-    */
+    /**
+     * @dataprovider typenameProvider
+     */
     public function testGetTypeName($string, $expected)
     {
         $this->string($string)->isIdenticalTo($expected);
@@ -130,11 +130,11 @@ abstract class CommonDropdown extends DbTestCase
          ->isIdenticalTo($input + ['entities_id' => $input['entities_id']]);
     }
 
-   /**
-    * Create new object in database
-    *
-    * @return void
-    */
+    /**
+     * Create new object in database
+     *
+     * @return void
+     */
     abstract protected function newInstance();
 
     public function testGetDropdownName()

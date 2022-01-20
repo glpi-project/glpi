@@ -38,9 +38,9 @@ class Link_Itemtype extends CommonDBChild
     public static $items_id = 'links_id';
 
 
-   /**
-    * @since 0.84
-   **/
+    /**
+     * @since 0.84
+     **/
     public function getForbiddenStandardMassiveAction()
     {
 
@@ -50,13 +50,13 @@ class Link_Itemtype extends CommonDBChild
     }
 
 
-   /**
-    * Print the HTML array for device on link
-    *
-    * @param $link : Link
-    *
-    * @return void
-   **/
+    /**
+     * Print the HTML array for device on link
+     *
+     * @param $link : Link
+     *
+     * @return void
+     **/
     public static function showForLink($link)
     {
         global $DB,$CFG_GLPI;
@@ -187,14 +187,14 @@ class Link_Itemtype extends CommonDBChild
     }
 
 
-   /**
-    *
-    * Remove all associations for an itemtype
-    *
-    * @since 0.85
-    *
-    * @param string $itemtype  itemtype for which all link associations must be removed
-    */
+    /**
+     *
+     * Remove all associations for an itemtype
+     *
+     * @since 0.85
+     *
+     * @param string $itemtype  itemtype for which all link associations must be removed
+     */
     public static function deleteForItemtype($itemtype)
     {
         global $DB;

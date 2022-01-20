@@ -38,10 +38,10 @@ class IPNetmask extends IPAddress
     protected static $notable = true;
 
 
-   /**
-    * @param $ipnetmask (default '')
-    * @param $version   (default 0)
-   **/
+    /**
+     * @param $ipnetmask (default '')
+     * @param $version   (default 0)
+     **/
     public function __construct($ipnetmask = '', $version = 0)
     {
 
@@ -72,17 +72,17 @@ class IPNetmask extends IPAddress
     }
 
 
-   /**
-    * \brief Create a Netmask from string
-    *
-    * Create a binary Netmask from dot notation (for instance : 255.255.255.0) or
-    * integer (for instance /24). Rely on setAddressFromString()
-    *
-    * @param $netmask   string   netmask defined as textual
-    * @param $version   integer  =4 or =6 : version of IP protocol
-    *
-    * @return false if the netmask is not valid or if it does not correspond to version
-   **/
+    /**
+     * \brief Create a Netmask from string
+     *
+     * Create a binary Netmask from dot notation (for instance : 255.255.255.0) or
+     * integer (for instance /24). Rely on setAddressFromString()
+     *
+     * @param $netmask   string   netmask defined as textual
+     * @param $version   integer  =4 or =6 : version of IP protocol
+     *
+     * @return false if the netmask is not valid or if it does not correspond to version
+     **/
     public function setNetmaskFromString($netmask, $version)
     {
 

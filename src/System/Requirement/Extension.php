@@ -38,18 +38,18 @@ namespace Glpi\System\Requirement;
  */
 class Extension extends AbstractRequirement
 {
-   /**
-    * Required extension name.
-    *
-    * @var string
-    */
+    /**
+     * Required extension name.
+     *
+     * @var string
+     */
     protected $name;
 
-   /**
-    * @param string      $name         Required extension name.
-    * @param bool        $optional     Indicate if extension is optional.
-    * @param string|null $description  Describe usage of the extension.
-    */
+    /**
+     * @param string      $name         Required extension name.
+     * @param bool        $optional     Indicate if extension is optional.
+     * @param string|null $description  Describe usage of the extension.
+     */
     public function __construct(string $name, bool $optional = false, ?string $description = null)
     {
         $this->title = sprintf(__('%s extension'), $name);
@@ -64,11 +64,11 @@ class Extension extends AbstractRequirement
         $this->buildValidationMessage();
     }
 
-   /**
-    * Defines the validation message based on self properties.
-    *
-    * @return void
-    */
+    /**
+     * Defines the validation message based on self properties.
+     *
+     * @return void
+     */
     protected function buildValidationMessage()
     {
         if ($this->validated) {

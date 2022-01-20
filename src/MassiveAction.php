@@ -39,7 +39,7 @@ use Glpi\Features\Clonable;
  * @todo all documentation !
  *
  * @since 0.85
-**/
+ **/
 class MassiveAction
 {
     const CLASS_ACTION_SEPARATOR  = ':';
@@ -50,20 +50,20 @@ class MassiveAction
     const ACTION_NORIGHT          = 3;
 
 
-   /**
-    * Constructor of massive actions.
-    * There is three stages and each one have its own objectives:
-    * - initial: propose the actions and filter the checkboxes (only once)
-    * - specialize: add action specific fields and filter items. There can be as many as needed!
-    * - process: process the massive action (only once, but can be reload to avoid timeout)
-    *
-    * We trust all previous stages: we don't redo the checks
-    *
-    * @param array   $POST    something like $_POST
-    * @param array   $GET     something like $_GET
-    * @param string  $stage   the current stage
-    * @param boolean $single  Get actions for a single item
-   **/
+    /**
+     * Constructor of massive actions.
+     * There is three stages and each one have its own objectives:
+     * - initial: propose the actions and filter the checkboxes (only once)
+     * - specialize: add action specific fields and filter items. There can be as many as needed!
+     * - process: process the massive action (only once, but can be reload to avoid timeout)
+     *
+     * We trust all previous stages: we don't redo the checks
+     *
+     * @param array   $POST    something like $_POST
+     * @param array   $GET     something like $_GET
+     * @param string  $stage   the current stage
+     * @param boolean $single  Get actions for a single item
+     **/
     public function __construct(array $POST, array $GET, $stage, $single = false)
     {
         global $CFG_GLPI;
@@ -296,12 +296,12 @@ class MassiveAction
     }
 
 
-   /**
-    * Get the fields provided by previous stage through $_POST.
-    * Beware that the fields that are common (items, action ...) are not provided
-    *
-    * @return array of the elements
-   **/
+    /**
+     * Get the fields provided by previous stage through $_POST.
+     * Beware that the fields that are common (items, action ...) are not provided
+     *
+     * @return array of the elements
+     **/
     public function getInput()
     {
 
@@ -312,11 +312,11 @@ class MassiveAction
     }
 
 
-   /**
-    * Get current action
-    *
-    * @return a string with the current action or NULL if we are at initial stage
-   **/
+    /**
+     * Get current action
+     *
+     * @return a string with the current action or NULL if we are at initial stage
+     **/
     public function getAction()
     {
 
@@ -327,11 +327,11 @@ class MassiveAction
     }
 
 
-   /**
-    * Get all items on which this action must work
-    *
-    * @return array of the items (empty if initial state)
-   **/
+    /**
+     * Get all items on which this action must work
+     *
+     * @return array of the items (empty if initial state)
+     **/
     public function getItems()
     {
 
@@ -342,11 +342,11 @@ class MassiveAction
     }
 
 
-   /**
-    * Get remaining items
-    *
-    * @return array of the remaining items (empty if not in process state)
-   **/
+    /**
+     * Get remaining items
+     *
+     * @return array of the remaining items (empty if not in process state)
+     **/
     public function getRemainings()
     {
 
@@ -357,10 +357,10 @@ class MassiveAction
     }
 
 
-   /**
-    * Destructor of the object
-    * It is used when reloading the page during process to store information in $_SESSION.
-   **/
+    /**
+     * Destructor of the object
+     * It is used when reloading the page during process to store information in $_SESSION.
+     **/
     public function __destruct()
     {
 
@@ -374,9 +374,9 @@ class MassiveAction
     }
 
 
-   /**
-    * @param $POST
-   **/
+    /**
+     * @param $POST
+     **/
     public function getCheckItem($POST)
     {
 
@@ -400,11 +400,11 @@ class MassiveAction
     }
 
 
-   /**
-    * Add hidden fields containing all the checked items to the current form
-    *
-    * @return void
-   **/
+    /**
+     * Add hidden fields containing all the checked items to the current form
+     *
+     * @return void
+     **/
     public function addHiddenFields()
     {
 
@@ -427,16 +427,16 @@ class MassiveAction
     }
 
 
-   /**
-    * Extract itemtype from the input (ie.: $input['itemtype'] is defined or $input['item'] only
-    * contains one type of item. If none is available and we can display selector (inside the modal
-    * window), then display a dropdown to select the itemtype.
-    * This is only usefull in case of itemtype specific massive actions (update, ...)
-    *
-    * @param boolean $display_selector  can we display the itemtype selector ?
-    *
-    * @return string|boolean  the itemtype or false if we cannot define it (and we cannot display the selector)
-   **/
+    /**
+     * Extract itemtype from the input (ie.: $input['itemtype'] is defined or $input['item'] only
+     * contains one type of item. If none is available and we can display selector (inside the modal
+     * window), then display a dropdown to select the itemtype.
+     * This is only usefull in case of itemtype specific massive actions (update, ...)
+     *
+     * @param boolean $display_selector  can we display the itemtype selector ?
+     *
+     * @return string|boolean  the itemtype or false if we cannot define it (and we cannot display the selector)
+     **/
     public function getItemtype($display_selector)
     {
 
@@ -476,11 +476,11 @@ class MassiveAction
     }
 
 
-   /**
-    * Get 'add to transfer list' action when needed
-    *
-    * @param $actions   array
-   **/
+    /**
+     * Get 'add to transfer list' action when needed
+     *
+     * @param $actions   array
+     **/
     public static function getAddTransferList(array &$actions)
     {
 
@@ -495,16 +495,16 @@ class MassiveAction
     }
 
 
-   /**
-    * Get the standard massive actions
-    *
-    * @param string|CommonDBTM $item        the item for which we want the massive actions
-    * @param boolean           $is_deleted  massive action for deleted items ?   (default 0)
-    * @param CommonDBTM        $checkitem   link item to check right              (default NULL)
-    * @param integer|boolean   $single      Get actions for a single item
-    *
-    * @return array of massive actions or false if $item is not valid
-   **/
+    /**
+     * Get the standard massive actions
+     *
+     * @param string|CommonDBTM $item        the item for which we want the massive actions
+     * @param boolean           $is_deleted  massive action for deleted items ?   (default 0)
+     * @param CommonDBTM        $checkitem   link item to check right              (default NULL)
+     * @param integer|boolean   $single      Get actions for a single item
+     *
+     * @return array of massive actions or false if $item is not valid
+     **/
     public static function getAllMassiveActions($item, $is_deleted = 0, CommonDBTM $checkitem = null, $single = false)
     {
         global $PLUGIN_HOOKS;
@@ -681,11 +681,11 @@ class MassiveAction
     }
 
 
-   /**
-    * Main entry of the modal window for massive actions
-    *
-    * @return void
-   **/
+    /**
+     * Main entry of the modal window for massive actions
+     *
+     * @return void
+     **/
     public function showSubForm()
     {
         $processor = $this->processor;
@@ -699,10 +699,10 @@ class MassiveAction
 
 
     /**
-    * Class-specific method used to show the fields to specify the massive action
-    *
-    * @return void
-   **/
+     * Class-specific method used to show the fields to specify the massive action
+     *
+     * @return void
+     **/
     public function showDefaultSubForm()
     {
         echo Html::submit("<i class='fas fa-save'></i><span>" . _x('button', 'Post') . "</span>", [
@@ -1076,13 +1076,13 @@ class MassiveAction
     }
 
 
-   /**
-    * Update the progress bar
-    *
-    * Display and update the progress bar. If the delay is more than 1 second, then activate it
-    *
-    * @return void
-   **/
+    /**
+     * Update the progress bar
+     *
+     * Display and update the progress bar. If the delay is more than 1 second, then activate it
+     *
+     * @return void
+     **/
     public function updateProgressBars()
     {
 
@@ -1123,12 +1123,12 @@ class MassiveAction
     }
 
 
-   /**
-    * Process the massive actions for all passed items. This a switch between different methods:
-    * new system, old one and plugins ...
-    *
-    * @return array of results (ok, ko, noright counts, redirect ...)
-   **/
+    /**
+     * Process the massive actions for all passed items. This a switch between different methods:
+     * new system, old one and plugins ...
+     *
+     * @return array of results (ok, ko, noright counts, redirect ...)
+     **/
     public function process()
     {
 
@@ -1155,10 +1155,10 @@ class MassiveAction
     }
 
 
-   /**
-    * Process the specific massive actions for severl itemtypes
-    * @return array of the results for the actions
-   **/
+    /**
+     * Process the specific massive actions for severl itemtypes
+     * @return array of the results for the actions
+     **/
     public function processForSeveralItemtypes()
     {
 
@@ -1532,45 +1532,45 @@ class MassiveAction
     }
 
 
-   /**
-    * Set the page to redirect for specific actions. By default, call previous page.
-    * This should be call once for the given action.
-    *
-    * @param $redirect link to the page
-    *
-    * @return void
-   **/
+    /**
+     * Set the page to redirect for specific actions. By default, call previous page.
+     * This should be call once for the given action.
+     *
+     * @param $redirect link to the page
+     *
+     * @return void
+     **/
     public function setRedirect($redirect)
     {
         $this->redirect = $redirect;
     }
 
 
-   /**
-    * add a message to display when action is done.
-    *
-    * @param string $message  the message to add
-    *
-    * @return void
-   **/
+    /**
+     * add a message to display when action is done.
+     *
+     * @param string $message  the message to add
+     *
+     * @return void
+     **/
     public function addMessage($message)
     {
         $this->results['messages'][] = $message;
     }
 
 
-   /**
-    * Set an item as done. If the delay is too long, then reload the page to continue the action.
-    * Update the progress if necessary.
-    *
-    * @param string  $itemtype    the type of the item that has been done
-    * @param integer $id          id or array of ids of the item(s) that have been done.
-    * @param integer $result
-    *                self::NO_ACTION      in case of no specific action (used internally for older actions)
-    *                MassiveAction::ACTION_OK      everything is OK for the action
-    *                MassiveAction::ACTION_KO      something went wrong for the action
-    *                MassiveAction::ACTION_NORIGHT not anough right for the action
-   **/
+    /**
+     * Set an item as done. If the delay is too long, then reload the page to continue the action.
+     * Update the progress if necessary.
+     *
+     * @param string  $itemtype    the type of the item that has been done
+     * @param integer $id          id or array of ids of the item(s) that have been done.
+     * @param integer $result
+     *                self::NO_ACTION      in case of no specific action (used internally for older actions)
+     *                MassiveAction::ACTION_OK      everything is OK for the action
+     *                MassiveAction::ACTION_KO      something went wrong for the action
+     *                MassiveAction::ACTION_NORIGHT not anough right for the action
+     **/
     public function itemDone($itemtype, $id, $result)
     {
 

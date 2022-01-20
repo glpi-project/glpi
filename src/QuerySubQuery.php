@@ -33,17 +33,17 @@
 
 /**
  *  Sub query class
-**/
+ **/
 class QuerySubQuery extends AbstractQuery
 {
     private $dbiterator;
 
-   /**
-    * Create a sub query
-    *
-    * @param array  $crit      Array of query criteria. Any valid DBmysqlIterator parameters are valid.
-    * @param string $alias     Alias for the whole subquery
-    */
+    /**
+     * Create a sub query
+     *
+     * @param array  $crit      Array of query criteria. Any valid DBmysqlIterator parameters are valid.
+     * @param string $alias     Alias for the whole subquery
+     */
     public function __construct(array $crit, $alias = null)
     {
         global $DB;
@@ -57,12 +57,12 @@ class QuerySubQuery extends AbstractQuery
         $this->dbiterator->buildQuery($crit);
     }
 
-   /**
-    *
-    * Get SQL query
-    *
-    * @return string
-    */
+    /**
+     *
+     * Get SQL query
+     *
+     * @return string
+     */
     public function getQuery()
     {
         global $DB;

@@ -33,7 +33,7 @@
 
 /**
  * DeviceControl Class
-**/
+ **/
 class DeviceControl extends CommonDevice
 {
     protected static $forward_entity_to = ['Item_DeviceControl', 'Infocom'];

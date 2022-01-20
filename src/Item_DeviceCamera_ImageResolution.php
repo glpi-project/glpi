@@ -77,11 +77,11 @@ class Item_DeviceCamera_ImageResolution extends CommonDBRelation
         return $forbidden;
     }
 
-   /**
-    * Print items
-    * @param  DeviceCamera $camera the current camera instance
-    * @return void
-    */
+    /**
+     * Print items
+     * @param  DeviceCamera $camera the current camera instance
+     * @return void
+     */
     public static function showItems(DeviceCamera $camera)
     {
         global $DB, $CFG_GLPI;

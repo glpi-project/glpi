@@ -42,39 +42,39 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class Utf8mb4Command extends AbstractCommand
 {
-   /**
-    * Error code returned if migration failed on, at least, one table.
-    *
-    * @var integer
-    */
+    /**
+     * Error code returned if migration failed on, at least, one table.
+     *
+     * @var integer
+     */
     const ERROR_MIGRATION_FAILED_FOR_SOME_TABLES = 1;
 
-   /**
-    * Error code returned if DB configuration file cannot be updated.
-    *
-    * @var integer
-    */
+    /**
+     * Error code returned if DB configuration file cannot be updated.
+     *
+     * @var integer
+     */
     const ERROR_UNABLE_TO_UPDATE_CONFIG = 2;
 
-   /**
-    * Error code returned if some tables are still using MyISAM engine.
-    *
-    * @var integer
-    */
+    /**
+     * Error code returned if some tables are still using MyISAM engine.
+     *
+     * @var integer
+     */
     const ERROR_INNODB_REQUIRED = 3;
 
-   /**
-    * Error code returned if some tables are still using Redundant/Compact row format.
-    *
-    * @var integer
-    */
+    /**
+     * Error code returned if some tables are still using Redundant/Compact row format.
+     *
+     * @var integer
+     */
     const ERROR_DYNAMIC_ROW_FORMAT_REQUIRED = 4;
 
-   /**
-    * Error code returned if DB configuration is not compatible with large indexes.
-    *
-    * @var integer
-    */
+    /**
+     * Error code returned if DB configuration is not compatible with large indexes.
+     *
+     * @var integer
+     */
     const ERROR_INCOMPATIBLE_DB_CONFIG = 5;
 
     protected function configure()
@@ -93,11 +93,11 @@ class Utf8mb4Command extends AbstractCommand
         return 0; // Success
     }
 
-   /**
-    * Check for migration prerequisites.
-    *
-    * @return void
-    */
+    /**
+     * Check for migration prerequisites.
+     *
+     * @return void
+     */
     private function checkForPrerequisites(): void
     {
        // Check that DB configuration is compatible
@@ -127,11 +127,11 @@ class Utf8mb4Command extends AbstractCommand
         }
     }
 
-   /**
-    * Migrate tables to utf8mb4.
-    *
-    * @return void
-    */
+    /**
+     * Migrate tables to utf8mb4.
+     *
+     * @return void
+     */
     private function migrateToUtf8mb4(): void
     {
 

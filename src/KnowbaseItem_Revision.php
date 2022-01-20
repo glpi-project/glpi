@@ -75,12 +75,12 @@ class KnowbaseItem_Revision extends CommonDBTM
         return true;
     }
 
-   /**
-    * Show linked items of a knowbase item
-    *
-    * @param $item                     CommonDBTM object
-    * @param $withtemplate    integer  withtemplate param (default 0)
-   **/
+    /**
+     * Show linked items of a knowbase item
+     *
+     * @param $item                     CommonDBTM object
+     * @param $withtemplate    integer  withtemplate param (default 0)
+     **/
     public static function showForItem(CommonDBTM $item, $withtemplate = 0)
     {
         global $DB, $CFG_GLPI;
@@ -304,13 +304,13 @@ class KnowbaseItem_Revision extends CommonDBTM
         Html::printAjaxPager(self::getTypeName(1), $start, $number);
     }
 
-   /**
-    * Populate and create a new revision from KnowbaseItem information
-    *
-    * @param KnowbaseItem $item Knowledge base item
-    *
-    * @return boolean
-    */
+    /**
+     * Populate and create a new revision from KnowbaseItem information
+     *
+     * @param KnowbaseItem $item Knowledge base item
+     *
+     * @return boolean
+     */
     public function createNew(KnowbaseItem $item)
     {
         $this->getEmpty();
@@ -324,13 +324,13 @@ class KnowbaseItem_Revision extends CommonDBTM
         $this->addToDB();
     }
 
-   /**
-    * Populate and create a new revision from KnowbaseItem information
-    *
-    * @param KnowbaseItemTranslation $item Knowledge base item translation
-    *
-    * @return boolean
-    */
+    /**
+     * Populate and create a new revision from KnowbaseItem information
+     *
+     * @param KnowbaseItemTranslation $item Knowledge base item translation
+     *
+     * @return boolean
+     */
     public function createNewTranslated(KnowbaseItemTranslation $item)
     {
         $this->getEmpty();
@@ -345,11 +345,11 @@ class KnowbaseItem_Revision extends CommonDBTM
         $this->addToDB();
     }
 
-   /**
-    * Get new revision number for item
-    *
-    * @return integer
-    */
+    /**
+     * Get new revision number for item
+     *
+     * @return integer
+     */
     private function getNewRevision()
     {
         global $DB;

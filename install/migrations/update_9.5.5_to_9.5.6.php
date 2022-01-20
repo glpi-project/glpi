@@ -38,7 +38,7 @@
  **/
 function update955to956()
 {
-   /** @global Migration $migration */
+    /** @global Migration $migration */
     global $DB, $migration, $CFG_GLPI;
 
     $current_config   = Config::getConfigurationValues('core');

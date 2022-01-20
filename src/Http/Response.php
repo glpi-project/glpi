@@ -40,30 +40,30 @@ use Toolbox;
  */
 class Response
 {
-   /**
-    * "application/json" content type.
-    */
+    /**
+     * "application/json" content type.
+     */
     const CONTENT_TYPE_JSON = 'application/json';
 
-   /**
-    * "text/html" content type.
-    */
+    /**
+     * "text/html" content type.
+     */
     const CONTENT_TYPE_TEXT_HTML = 'text/html';
 
-   /**
-    * "text/plain" content type.
-    */
+    /**
+     * "text/plain" content type.
+     */
     const CONTENT_TYPE_TEXT_PLAIN = 'text/plain';
 
-   /**
-    * Send the given HTTP code then die with the error message in the given format.
-    *
-    * @param int     $code          HTTP code to set for the response
-    * @param string  $message       Error message to send
-    * @param string  $content_type  Response content type
-    *
-    * @return void
-    */
+    /**
+     * Send the given HTTP code then die with the error message in the given format.
+     *
+     * @param int     $code          HTTP code to set for the response
+     * @param string  $message       Error message to send
+     * @param string  $content_type  Response content type
+     *
+     * @return void
+     */
     public static function sendError(int $code, string $message, string $content_type = self::CONTENT_TYPE_JSON): void
     {
 

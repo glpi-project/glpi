@@ -50,13 +50,13 @@ class DocumentExtension extends AbstractExtension
         ];
     }
 
-   /**
-    * Returns icon URL for given document filename.
-    *
-    * @param string $filename
-    *
-    * @return string
-    */
+    /**
+     * Returns icon URL for given document filename.
+     *
+     * @param string $filename
+     *
+     * @return string
+     */
     public function getDocumentIcon(string $filename): string
     {
         global $CFG_GLPI;
@@ -66,13 +66,13 @@ class DocumentExtension extends AbstractExtension
         return $CFG_GLPI['root_doc'] . (file_exists(GLPI_ROOT . $icon) ? $icon : '/pics/timeline/file.png');
     }
 
-   /**
-    * Returns human readable size of file matching given path (relative to GLPI_DOC_DIR).
-    *
-    * @param string $filepath
-    *
-    * @return null|string
-    */
+    /**
+     * Returns human readable size of file matching given path (relative to GLPI_DOC_DIR).
+     *
+     * @param string $filepath
+     *
+     * @return null|string
+     */
     public function getDocumentSize(string $filepath): ?string
     {
         $fullpath = GLPI_DOC_DIR . '/' . $filepath;

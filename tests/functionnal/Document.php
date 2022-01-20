@@ -67,9 +67,9 @@ class Document extends DbTestCase
         ];
     }
 
-   /**
-    * @dataProvider canApplyOnProvider
-    */
+    /**
+     * @dataProvider canApplyOnProvider
+     */
     public function testCanApplyOn($item, $can)
     {
         $this
@@ -150,34 +150,34 @@ class Document extends DbTestCase
          ->string['name']->isIdenticalTo('Document: Computer - Documented Computer');
     }
 
-   /** Cannot work without a real document uploaded.
-    *  Mock would be a solution but GLPI will try to use
-    *  a table based on mocked class name, this is wrong.
-   public function testPost_addItem() {
-      $this->login();
-      $item = new \Computer();
-      $cid = (int)$item->add([
-         'name'         => 'Documented Computer',
-         'entities_id'  => 0
-      ]);
-      $this->integer($cid)->isGreaterThan(0);
-
-      $mdoc = new \mock\Document();
-      $this->calling($mdoc)->moveUploadedDocument = true;
-      $input['upload_file'] = 'filename.ext';
-      $input['itemtype'] = $item->getType();
-      $input['items_id'] = $cid;
-
-      $docid = (int)$mdoc->add($input);
-      $this->integer($docid)->isGreaterThan(0);
-
-      $doc_item = new \Document_Item();
-      $this->boolean($doc_item->getFromDBByCrit(['documents_id' => $docid]))->isTrue();
-
-      $this->array($doc_item->fields)
-         ->string['itemtype']->isIdenticalTo('Computer')
-         ->variable['items_id']->isEqualTo($cid);
-   }*/
+    /** Cannot work without a real document uploaded.
+     *  Mock would be a solution but GLPI will try to use
+     *  a table based on mocked class name, this is wrong.
+     * public function testPost_addItem() {
+     * $this->login();
+     * $item = new \Computer();
+     * $cid = (int)$item->add([
+     * 'name'         => 'Documented Computer',
+     * 'entities_id'  => 0
+     * ]);
+     * $this->integer($cid)->isGreaterThan(0);
+     *
+     * $mdoc = new \mock\Document();
+     * $this->calling($mdoc)->moveUploadedDocument = true;
+     * $input['upload_file'] = 'filename.ext';
+     * $input['itemtype'] = $item->getType();
+     * $input['items_id'] = $cid;
+     *
+     * $docid = (int)$mdoc->add($input);
+     * $this->integer($docid)->isGreaterThan(0);
+     *
+     * $doc_item = new \Document_Item();
+     * $this->boolean($doc_item->getFromDBByCrit(['documents_id' => $docid]))->isTrue();
+     *
+     * $this->array($doc_item->fields)
+     * ->string['itemtype']->isIdenticalTo('Computer')
+     * ->variable['items_id']->isEqualTo($cid);
+     * }*/
 
     protected function validDocProvider()
     {
@@ -195,9 +195,9 @@ class Document extends DbTestCase
         ];
     }
 
-   /**
-    * @dataProvider validDocProvider
-    */
+    /**
+     * @dataProvider validDocProvider
+     */
     public function testIsValidDoc($filename, $expected)
     {
         $this->string(\Document::isValidDoc($filename))->isIdenticalTo($expected);
@@ -236,17 +236,17 @@ class Document extends DbTestCase
         ];
     }
 
-   /**
-    * @dataProvider isImageProvider
-    */
+    /**
+     * @dataProvider isImageProvider
+     */
     public function testIsImage($file, $expected)
     {
         $this->boolean(\Document::isImage($file))->isIdenticalTo($expected);
     }
 
-   /**
-    * Check visibility of documents files that are not attached to anything.
-    */
+    /**
+     * Check visibility of documents files that are not attached to anything.
+     */
     public function testCanViewDocumentFile()
     {
 
@@ -288,9 +288,9 @@ class Document extends DbTestCase
         $this->boolean($document->canViewFile())->isTrue();
     }
 
-   /**
-    * Check visibility of document attached to reminders.
-    */
+    /**
+     * Check visibility of document attached to reminders.
+     */
     public function testCanViewReminderFile()
     {
 
@@ -375,9 +375,9 @@ class Document extends DbTestCase
         $this->boolean($inlinedDocument->canViewFile())->isTrue();
     }
 
-   /**
-    * Check visibility of document attached to KB items.
-    */
+    /**
+     * Check visibility of document attached to KB items.
+     */
     public function testCanViewKnowbaseItemFile()
     {
 
@@ -490,9 +490,9 @@ class Document extends DbTestCase
         $this->boolean($inlinedDocument->canViewFile())->isFalse();
     }
 
-   /**
-    * Data provider for self::testCanViewItilFile().
-    */
+    /**
+     * Data provider for self::testCanViewItilFile().
+     */
     protected function itilTypeProvider()
     {
         return [
@@ -508,11 +508,11 @@ class Document extends DbTestCase
         ];
     }
 
-   /**
-    * Check visibility of document attached to ITIL objects.
-    *
-    * @dataProvider itilTypeProvider
-    */
+    /**
+     * Check visibility of document attached to ITIL objects.
+     *
+     * @dataProvider itilTypeProvider
+     */
     public function testCanViewItilFile($itemtype)
     {
 
@@ -588,9 +588,9 @@ class Document extends DbTestCase
         $this->boolean($inlinedDocument->canViewFile([$fkey => $item->getID()]))->isTrue();
     }
 
-   /**
-    * Data provider for self::testCanViewTicketChildFile().
-    */
+    /**
+     * Data provider for self::testCanViewTicketChildFile().
+     */
     protected function ticketChildClassProvider()
     {
         return [
@@ -633,11 +633,11 @@ class Document extends DbTestCase
         ];
     }
 
-   /**
-    * Check visibility of document inlined in ITIL followup, tasks, solutions.
-    *
-    * @dataProvider ticketChildClassProvider
-    */
+    /**
+     * Check visibility of document inlined in ITIL followup, tasks, solutions.
+     *
+     * @dataProvider ticketChildClassProvider
+     */
     public function testCanViewTicketChildFile($itil_itemtype, $child_itemtype)
     {
 

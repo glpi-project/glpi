@@ -86,9 +86,9 @@ class DbEngine extends \GLPITestCase
         ];
     }
 
-   /**
-    * @dataProvider versionProvider
-    */
+    /**
+     * @dataProvider versionProvider
+     */
     public function testCheck(string $version, bool $validated, array $messages)
     {
 

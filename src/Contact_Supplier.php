@@ -95,11 +95,11 @@ class Contact_Supplier extends CommonDBRelation
     }
 
 
-   /**
-    * Print the HTML array for entreprises on the current contact
-    *
-    * @return void
-    */
+    /**
+     * Print the HTML array for entreprises on the current contact
+     *
+     * @return void
+     */
     public static function showForContact(Contact $contact)
     {
 
@@ -225,13 +225,13 @@ class Contact_Supplier extends CommonDBRelation
         echo "</div>";
     }
 
-   /**
-    * Show contacts associated to an enterprise
-    *
-    * @param Supplier $supplier
-    *
-    * @return void
-    */
+    /**
+     * Show contacts associated to an enterprise
+     *
+     * @param Supplier $supplier
+     *
+     * @return void
+     */
     public static function showForSupplier(Supplier $supplier)
     {
 

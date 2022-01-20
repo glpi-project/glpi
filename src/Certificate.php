@@ -65,9 +65,9 @@ class Certificate extends CommonDBTM
         return _n('Certificate', 'Certificates', $nb);
     }
 
-   /**
-    * Clean certificate items
-    */
+    /**
+     * Clean certificate items
+     */
     public function cleanDBonPurge()
     {
 
@@ -443,10 +443,10 @@ class Certificate extends CommonDBTM
         return $tab;
     }
 
-   /**
-    * @param array $options
-    * @return array
-    */
+    /**
+     * @param array $options
+     * @return array
+     */
     public function defineTabs($options = [])
     {
         $ong = [];
@@ -482,16 +482,16 @@ class Certificate extends CommonDBTM
     }
 
 
-   /**
-    * Print the certificate form
-    *
-    * @param $ID integer ID of the item
-    * @param $options array
-    *     - target filename : where to go when done.
-    *     - withtemplate boolean : template or basic item
-    *
-    * @return boolean item found
-   **/
+    /**
+     * Print the certificate form
+     *
+     * @param $ID integer ID of the item
+     * @param $options array
+     *     - target filename : where to go when done.
+     *     - withtemplate boolean : template or basic item
+     *
+     * @return boolean item found
+     **/
     public function showForm($ID, array $options = [])
     {
         $this->initForm($ID, $options);
@@ -503,13 +503,13 @@ class Certificate extends CommonDBTM
     }
 
 
-   /**
-    * @since 0.85
-    *
-    * @see CommonDBTM::getSpecificMassiveActions()
-    * @param null $checkitem
-    * @return array
-    */
+    /**
+     * @since 0.85
+     *
+     * @see CommonDBTM::getSpecificMassiveActions()
+     * @param null $checkitem
+     * @return array
+     */
     public function getSpecificMassiveActions($checkitem = null)
     {
         $actions = parent::getSpecificMassiveActions($checkitem);
@@ -526,13 +526,13 @@ class Certificate extends CommonDBTM
     }
 
 
-   /**
-    * @since 0.85
-    *
-    * @see CommonDBTM::showMassiveActionsSubForm()
-    * @param MassiveAction $ma
-    * @return bool|false
-    */
+    /**
+     * @since 0.85
+     *
+     * @see CommonDBTM::showMassiveActionsSubForm()
+     * @param MassiveAction $ma
+     * @return bool|false
+     */
     public static function showMassiveActionsSubForm(MassiveAction $ma)
     {
 
@@ -560,15 +560,15 @@ class Certificate extends CommonDBTM
     }
 
 
-   /**
-    * @since 0.85
-    *
-    * @see CommonDBTM::processMassiveActionsForOneItemtype()
-    * @param MassiveAction $ma
-    * @param CommonDBTM $item
-    * @param array $ids
-    * @return void
-    */
+    /**
+     * @since 0.85
+     *
+     * @see CommonDBTM::processMassiveActionsForOneItemtype()
+     * @param MassiveAction $ma
+     * @param CommonDBTM $item
+     * @param array $ids
+     * @return void
+     */
     public static function processMassiveActionsForOneItemtype(
         MassiveAction $ma,
         CommonDBTM $item,
@@ -631,13 +631,13 @@ class Certificate extends CommonDBTM
         parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
     }
 
-   /**
-    * Type than could be linked to a certificate
-    *
-    * @param boolean $all Get all possible types or only allowed ones
-    *
-    * @return array of types
-    **/
+    /**
+     * Type than could be linked to a certificate
+     *
+     * @param boolean $all Get all possible types or only allowed ones
+     *
+     * @return array of types
+     **/
     public static function getTypes($all = false)
     {
         global $CFG_GLPI;
@@ -655,25 +655,25 @@ class Certificate extends CommonDBTM
         return $types;
     }
 
-   /**
-    * Give cron information
-    *
-    * @param $name : task's name
-    *
-    * @return array
-   **/
+    /**
+     * Give cron information
+     *
+     * @param $name : task's name
+     *
+     * @return array
+     **/
     public static function cronInfo($name)
     {
         return ['description' => __('Send alarms on expired certificate')];
     }
 
-   /**
-    * Cron action on certificates : alert on expired certificates
-    *
-    * @param CronTask $task CronTask to log, if NULL display (default NULL)
-    *
-    * @return integer 0 : nothing to do 1 : done with success
-   **/
+    /**
+     * Cron action on certificates : alert on expired certificates
+     *
+     * @param CronTask $task CronTask to log, if NULL display (default NULL)
+     *
+     * @return integer 0 : nothing to do 1 : done with success
+     **/
     public static function cronCertificate($task = null)
     {
         global $DB, $CFG_GLPI;
@@ -786,9 +786,9 @@ class Certificate extends CommonDBTM
         return $cron_status;
     }
 
-   /**
-    * Display debug information for current object
-   **/
+    /**
+     * Display debug information for current object
+     **/
     public function showDebug()
     {
         NotificationEvent::debugEvent($this);

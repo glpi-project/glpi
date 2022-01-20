@@ -37,7 +37,7 @@
  * Predefined fields for ITIL template class
  *
  * @since 9.5.0
-**/
+ **/
 abstract class ITILTemplatePredefinedField extends ITILTemplateField
 {
     public static function getTypeName($nb = 0)
@@ -136,16 +136,16 @@ abstract class ITILTemplatePredefinedField extends ITILTemplateField
     }
 
 
-   /**
-    * Get predefined fields for a template
-    *
-    * @since 0.83
-    *
-    * @param integer $ID                   the template ID
-    * @param boolean $withtypeandcategory  with type and category (false by default)
-    *
-    * @return array of predefined fields
-   **/
+    /**
+     * Get predefined fields for a template
+     *
+     * @since 0.83
+     *
+     * @param integer $ID                   the template ID
+     * @param boolean $withtypeandcategory  with type and category (false by default)
+     *
+     * @return array of predefined fields
+     **/
     public function getPredefinedFields($ID, $withtypeandcategory = false)
     {
         global $DB;
@@ -179,9 +179,9 @@ abstract class ITILTemplatePredefinedField extends ITILTemplateField
     }
 
 
-   /**
-    * @since 0.85
-   **/
+    /**
+     * @since 0.85
+     **/
     public static function getMultiplePredefinedValues()
     {
 
@@ -212,13 +212,13 @@ abstract class ITILTemplatePredefinedField extends ITILTemplateField
         return $fields;
     }
 
-   /**
-    * Return fields who doesn't need to be used for this part of template
-    *
-    * @since 9.2
-    *
-    * @return array the excluded fields (keys and values are equals)
-    */
+    /**
+     * Return fields who doesn't need to be used for this part of template
+     *
+     * @since 9.2
+     *
+     * @return array the excluded fields (keys and values are equals)
+     */
     public static function getExcludedFields()
     {
         return [
@@ -227,16 +227,16 @@ abstract class ITILTemplatePredefinedField extends ITILTemplateField
     }
 
 
-   /**
-    * Print the predefined fields
-    *
-    * @since 0.83
-    *
-    * @param ITILTemplate $tt            ITIL Template
-    * @param boolean      $withtemplate  Template or basic item (default 0)
-    *
-    * @return void
-   **/
+    /**
+     * Print the predefined fields
+     *
+     * @since 0.83
+     *
+     * @param ITILTemplate $tt            ITIL Template
+     * @param boolean      $withtemplate  Template or basic item (default 0)
+     *
+     * @return void
+     **/
     public static function showForITILTemplate(ITILTemplate $tt, $withtemplate = 0)
     {
         global $DB, $CFG_GLPI;

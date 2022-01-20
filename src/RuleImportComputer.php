@@ -52,9 +52,9 @@ class RuleImportComputer extends Rule
     }
 
 
-   /**
-    * @see Rule::maxActionsCount()
-   **/
+    /**
+     * @see Rule::maxActionsCount()
+     **/
     public function maxActionsCount()
     {
        // Unlimited
@@ -135,15 +135,15 @@ class RuleImportComputer extends Rule
     }
 
 
-   /**
-    * Add more action values specific to this type of rule
-    *
-    * @see Rule::displayAdditionRuleActionValue()
-    *
-    * @param value the value for this action
-    *
-    * @return the label's value or ''
-   **/
+    /**
+     * Add more action values specific to this type of rule
+     *
+     * @see Rule::displayAdditionRuleActionValue()
+     *
+     * @param value the value for this action
+     *
+     * @return the label's value or ''
+     **/
     public function displayAdditionRuleActionValue($value)
     {
 
@@ -155,11 +155,11 @@ class RuleImportComputer extends Rule
     }
 
 
-   /**
-    * @param $criteria
-    * @param $name
-    * @param $value
-   **/
+    /**
+     * @param $criteria
+     * @param $name
+     * @param $value
+     **/
     public function manageSpecificCriteriaValues($criteria, $name, $value)
     {
 
@@ -175,9 +175,9 @@ class RuleImportComputer extends Rule
     }
 
 
-   /**
-    * Add more criteria specific to this type of rule
-   **/
+    /**
+     * Add more criteria specific to this type of rule
+     **/
     public static function addMoreCriteria()
     {
 
@@ -186,9 +186,9 @@ class RuleImportComputer extends Rule
     }
 
 
-   /**
-    * @see Rule::getAdditionalCriteriaDisplayPattern()
-   **/
+    /**
+     * @see Rule::getAdditionalCriteriaDisplayPattern()
+     **/
     public function getAdditionalCriteriaDisplayPattern($ID, $condition, $pattern)
     {
 
@@ -199,9 +199,9 @@ class RuleImportComputer extends Rule
     }
 
 
-   /**
-    * @see Rule::displayAdditionalRuleCondition()
-   **/
+    /**
+     * @see Rule::displayAdditionalRuleCondition()
+     **/
     public function displayAdditionalRuleCondition($condition, $criteria, $name, $value, $test = false)
     {
 
@@ -220,9 +220,9 @@ class RuleImportComputer extends Rule
     }
 
 
-   /**
-    * @see Rule::displayAdditionalRuleAction()
-   **/
+    /**
+     * @see Rule::displayAdditionalRuleAction()
+     **/
     public function displayAdditionalRuleAction(array $action, $value = '')
     {
 
@@ -235,9 +235,9 @@ class RuleImportComputer extends Rule
     }
 
 
-   /**
-    * @param $ID
-   **/
+    /**
+     * @param $ID
+     **/
     public function getCriteriaByID($ID)
     {
 
@@ -251,9 +251,9 @@ class RuleImportComputer extends Rule
     }
 
 
-   /**
-    * @see Rule::findWithGlobalCriteria()
-   **/
+    /**
+     * @see Rule::findWithGlobalCriteria()
+     **/
     public function findWithGlobalCriteria($input)
     {
         global $DB, $PLUGIN_HOOKS;
@@ -440,11 +440,11 @@ class RuleImportComputer extends Rule
         return $output;
     }
 
-   /**
-    * Function used to display type specific criterias during rule's preview
-    *
-    * @see Rule::showSpecificCriteriasForPreview()
-   **/
+    /**
+     * Function used to display type specific criterias during rule's preview
+     *
+     * @see Rule::showSpecificCriteriasForPreview()
+     **/
     public function showSpecificCriteriasForPreview($fields)
     {
 

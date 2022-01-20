@@ -38,7 +38,7 @@ use Glpi\RichText\RichText;
  * KnowbaseItemTranslation Class
  *
  * @since 0.85
-**/
+ **/
 class KnowbaseItemTranslation extends CommonDBChild
 {
     public static $itemtype = 'KnowbaseItem';
@@ -104,11 +104,11 @@ class KnowbaseItemTranslation extends CommonDBChild
     }
 
 
-   /**
-    * @param $item            CommonGLPI object
-    * @param $tabnum          (default 1)
-    * @param $withtemplate    (default 0)
-   **/
+    /**
+     * @param $item            CommonGLPI object
+     * @param $tabnum          (default 1)
+     * @param $withtemplate    (default 0)
+     **/
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
 
@@ -132,13 +132,13 @@ class KnowbaseItemTranslation extends CommonDBChild
         return true;
     }
 
-   /**
-    * Print out (html) show item : question and answer
-    *
-    * @param $options      array of options
-    *
-    * @return void
-   **/
+    /**
+     * Print out (html) show item : question and answer
+     *
+     * @param $options      array of options
+     *
+     * @return void
+     **/
     public function showFull($options = [])
     {
         global $CFG_GLPI;
@@ -174,13 +174,13 @@ class KnowbaseItemTranslation extends CommonDBChild
         return true;
     }
 
-   /**
-    * Display all translated field for an KnowbaseItem
-    *
-    * @param $item a KnowbaseItem item
-    *
-    * @return true;
-   **/
+    /**
+     * Display all translated field for an KnowbaseItem
+     *
+     * @param $item a KnowbaseItem item
+     *
+     * @return true;
+     **/
     public static function showTranslations(KnowbaseItem $item)
     {
         global $CFG_GLPI;
@@ -266,12 +266,12 @@ class KnowbaseItemTranslation extends CommonDBChild
     }
 
 
-   /**
-    * Display translation form
-    *
-    * @param integer $ID
-    * @param array   $options
-    */
+    /**
+     * Display translation form
+     *
+     * @param integer $ID
+     * @param array   $options
+     */
     public function showForm($ID = -1, array $options = [])
     {
         if (isset($options['parent']) && !empty($options['parent'])) {
@@ -330,14 +330,14 @@ class KnowbaseItemTranslation extends CommonDBChild
     }
 
 
-   /**
-    * Get a translation for a value
-    *
-    * @param KnowbaseItem $item   item to translate
-    * @param string       $field  field to return (default 'name')
-    *
-    * @return string  the field translated if a translation is available, or the original field if not
-   **/
+    /**
+     * Get a translation for a value
+     *
+     * @param KnowbaseItem $item   item to translate
+     * @param string       $field  field to return (default 'name')
+     *
+     * @return string  the field translated if a translation is available, or the original field if not
+     **/
     public static function getTranslatedValue(KnowbaseItem $item, $field = "name")
     {
         $obj   = new self();
@@ -357,11 +357,11 @@ class KnowbaseItemTranslation extends CommonDBChild
     }
 
 
-   /**
-    * Is kb item translation functionnality active
-    *
-    * @return true if active, false if not
-   **/
+    /**
+     * Is kb item translation functionnality active
+     *
+     * @return true if active, false if not
+     **/
     public static function isKbTranslationActive()
     {
         global $CFG_GLPI;
@@ -370,15 +370,15 @@ class KnowbaseItemTranslation extends CommonDBChild
     }
 
 
-   /**
-    * Check if an item can be translated
-    * It be translated if translation if globally on and item is an instance of CommonDropdown
-    * or CommonTreeDropdown and if translation is enabled for this class
-    *
-    * @param item the item to check
-    *
-    * @return true if item can be translated, false otherwise
-   **/
+    /**
+     * Check if an item can be translated
+     * It be translated if translation if globally on and item is an instance of CommonDropdown
+     * or CommonTreeDropdown and if translation is enabled for this class
+     *
+     * @param item the item to check
+     *
+     * @return true if item can be translated, false otherwise
+     **/
     public static function canBeTranslated(CommonGLPI $item)
     {
 
@@ -387,13 +387,13 @@ class KnowbaseItemTranslation extends CommonDBChild
     }
 
 
-   /**
-    * Return the number of translations for an item
-    *
-    * @param KnowbaseItem $item
-    *
-    * @return integer  the number of translations for this item
-   **/
+    /**
+     * Return the number of translations for an item
+     *
+     * @param KnowbaseItem $item
+     *
+     * @return integer  the number of translations for this item
+     **/
     public static function getNumberOfTranslationsForItem($item)
     {
 
@@ -404,13 +404,13 @@ class KnowbaseItemTranslation extends CommonDBChild
     }
 
 
-   /**
-    * Get already translated languages for item
-    *
-    * @param item
-    *
-    * @return array of already translated languages
-   **/
+    /**
+     * Get already translated languages for item
+     *
+     * @param item
+     *
+     * @return array of already translated languages
+     **/
     public static function getAlreadyTranslatedForItem($item)
     {
         global $DB;
@@ -436,13 +436,13 @@ class KnowbaseItemTranslation extends CommonDBChild
         $revision->createNewTranslated($translation);
     }
 
-   /**
-    * Reverts item translation contents to specified revision
-    *
-    * @param integer $revid Revision ID
-    *
-    * @return boolean
-    */
+    /**
+     * Reverts item translation contents to specified revision
+     *
+     * @param integer $revid Revision ID
+     *
+     * @return boolean
+     */
     public function revertTo($revid)
     {
         $revision = new KnowbaseItem_Revision();

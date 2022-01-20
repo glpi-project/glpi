@@ -35,10 +35,10 @@ use Glpi\Event;
 
 //!  Consumable Class
 /**
-  This class is used to manage the consumables.
-  @see ConsumableItem
-  @author Julien Dombre
-**/
+ * This class is used to manage the consumables.
+ * @see ConsumableItem
+ * @author Julien Dombre
+ **/
 class Consumable extends CommonDBChild
 {
     use Glpi\Features\Clonable;
@@ -121,14 +121,14 @@ class Consumable extends CommonDBChild
     }
 
 
-   /**
-    * send back to stock
-    *
-    * @param array $input Array of item fields. Only the ID field is used here.
-    * @param int $history Not used
-    *
-    * @return bool
-    */
+    /**
+     * send back to stock
+     *
+     * @param array $input Array of item fields. Only the ID field is used here.
+     * @param int $history Not used
+     *
+     * @return bool
+     */
     public function backToStock(array $input, $history = 1)
     {
         global $DB;
@@ -160,17 +160,17 @@ class Consumable extends CommonDBChild
     }
 
 
-   /**
-    * UnLink a consumable linked to a printer
-    *
-    * UnLink the consumable identified by $ID
-    *
-    * @param integer $ID       consumable identifier
-    * @param string  $itemtype itemtype of who we give the consumable
-    * @param integer $items_id ID of the item giving the consumable
-    *
-    * @return boolean
-   **/
+    /**
+     * UnLink a consumable linked to a printer
+     *
+     * UnLink the consumable identified by $ID
+     *
+     * @param integer $ID       consumable identifier
+     * @param string  $itemtype itemtype of who we give the consumable
+     * @param integer $items_id ID of the item giving the consumable
+     *
+     * @return boolean
+     **/
     public function out($ID, $itemtype = '', $items_id = 0)
     {
         global $DB;
@@ -283,13 +283,13 @@ class Consumable extends CommonDBChild
     }
 
 
-   /**
-    * count how many consumable for the consumable item $tID
-    *
-    * @param integer $tID consumable item identifier.
-    *
-    * @return integer number of consumable counted.
-    **/
+    /**
+     * count how many consumable for the consumable item $tID
+     *
+     * @param integer $tID consumable item identifier.
+     *
+     * @return integer number of consumable counted.
+     **/
     public static function getTotalNumber($tID)
     {
         global $DB;
@@ -303,13 +303,13 @@ class Consumable extends CommonDBChild
     }
 
 
-   /**
-    * count how many old consumable for the consumable item $tID
-    *
-    * @param integer $tID consumable item identifier.
-    *
-    * @return integer number of old consumable counted.
-   **/
+    /**
+     * count how many old consumable for the consumable item $tID
+     *
+     * @param integer $tID consumable item identifier.
+     *
+     * @return integer number of old consumable counted.
+     **/
     public static function getOldNumber($tID)
     {
         global $DB;
@@ -326,13 +326,13 @@ class Consumable extends CommonDBChild
     }
 
 
-   /**
-    * count how many consumable unused for the consumable item $tID
-    *
-    * @param integer $tID consumable item identifier.
-    *
-    * @return integer number of consumable unused counted.
-   **/
+    /**
+     * count how many consumable unused for the consumable item $tID
+     *
+     * @param integer $tID consumable item identifier.
+     *
+     * @return integer number of consumable unused counted.
+     **/
     public static function getUnusedNumber($tID)
     {
         global $DB;
@@ -348,13 +348,13 @@ class Consumable extends CommonDBChild
         return(int) $result['cpt'];
     }
 
-   /**
-    * The desired stock level
-    *
-    * This is used when the alarm threshold is reached to know how many to order.
-    * @param integer $tID Consumable item ID
-    * @return integer
-    */
+    /**
+     * The desired stock level
+     *
+     * This is used when the alarm threshold is reached to know how many to order.
+     * @param integer $tID Consumable item ID
+     * @return integer
+     */
     public static function getStockTarget(int $tID): int
     {
         global $DB;
@@ -372,12 +372,12 @@ class Consumable extends CommonDBChild
         return 0;
     }
 
-   /**
-    * The lower threshold for the stock amount before an alarm is triggered
-    *
-    * @param integer $tID Consumable item ID
-    * @return integer
-    */
+    /**
+     * The lower threshold for the stock amount before an alarm is triggered
+     *
+     * @param integer $tID Consumable item ID
+     * @return integer
+     */
     public static function getAlarmThreshold(int $tID): int
     {
         global $DB;
@@ -395,15 +395,15 @@ class Consumable extends CommonDBChild
         return 0;
     }
 
-   /**
-    * Get the consumable count HTML array for a defined consumable type
-    *
-    * @param integer $tID             consumable item identifier.
-    * @param integer $alarm_threshold threshold alarm value.
-    * @param boolean $nohtml          Return value without HTML tags.
-    *
-    * @return string to display
-   **/
+    /**
+     * Get the consumable count HTML array for a defined consumable type
+     *
+     * @param integer $tID             consumable item identifier.
+     * @param integer $alarm_threshold threshold alarm value.
+     * @param boolean $nohtml          Return value without HTML tags.
+     *
+     * @return string to display
+     **/
     public static function getCount($tID, $alarm_threshold, $nohtml = 0)
     {
 
@@ -436,13 +436,13 @@ class Consumable extends CommonDBChild
     }
 
 
-   /**
-    * Check if a Consumable is New (not used, in stock)
-    *
-    * @param integer $cID consumable ID.
-    *
-    * @return boolean
-   **/
+    /**
+     * Check if a Consumable is New (not used, in stock)
+     *
+     * @param integer $cID consumable ID.
+     *
+     * @return boolean
+     **/
     public static function isNew($cID)
     {
         global $DB;
@@ -459,13 +459,13 @@ class Consumable extends CommonDBChild
     }
 
 
-   /**
-    * Check if a consumable is Old (used, not in stock)
-    *
-    * @param integer $cID consumable ID.
-    *
-    * @return boolean
-   **/
+    /**
+     * Check if a consumable is Old (used, not in stock)
+     *
+     * @param integer $cID consumable ID.
+     *
+     * @return boolean
+     **/
     public static function isOld($cID)
     {
         global $DB;
@@ -482,13 +482,13 @@ class Consumable extends CommonDBChild
     }
 
 
-   /**
-    * Get the localized string for the status of a consumable
-    *
-    * @param integer $cID consumable ID.
-    *
-    * @return string
-   **/
+    /**
+     * Get the localized string for the status of a consumable
+     *
+     * @param integer $cID consumable ID.
+     *
+     * @return string
+     **/
     public static function getStatus($cID)
     {
 
@@ -500,13 +500,13 @@ class Consumable extends CommonDBChild
     }
 
 
-   /**
-    * Print out a link to add directly a new consumable from a consumable item.
-    *
-    * @param ConsumableItem $consitem
-    *
-    * @return void
-   **/
+    /**
+     * Print out a link to add directly a new consumable from a consumable item.
+     *
+     * @param ConsumableItem $consitem
+     *
+     * @return void
+     **/
     public static function showAddForm(ConsumableItem $consitem)
     {
 
@@ -535,14 +535,14 @@ class Consumable extends CommonDBChild
     }
 
 
-   /**
-    * Print out the consumables of a defined type
-    *
-    * @param ConsumableItem $consitem
-    * @param boolean        $show_old show old consumables or not. (default 0)
-    *
-    * @return void
-   **/
+    /**
+     * Print out the consumables of a defined type
+     *
+     * @param ConsumableItem $consitem
+     * @param boolean        $show_old show old consumables or not. (default 0)
+     *
+     * @return void
+     **/
     public static function showForConsumableItem(ConsumableItem $consitem, $show_old = 0)
     {
         global $DB;
@@ -683,11 +683,11 @@ class Consumable extends CommonDBChild
     }
 
 
-   /**
-    * Show the usage summary of consumables by user
-    *
-    * @return void
-    **/
+    /**
+     * Show the usage summary of consumables by user
+     *
+     * @return void
+     **/
     public static function showSummary()
     {
         global $DB;
@@ -836,11 +836,11 @@ class Consumable extends CommonDBChild
     }
 
 
-   /**
-    * @param ConsumableItem $item
-    *
-    * @return integer
-   **/
+    /**
+     * @param ConsumableItem $item
+     *
+     * @return integer
+     **/
     public static function countForConsumableItem(ConsumableItem $item)
     {
 

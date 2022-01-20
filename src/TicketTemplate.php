@@ -35,7 +35,7 @@
  * Ticket Template class
  *
  * since version 0.83
-**/
+ **/
 class TicketTemplate extends ITILTemplate
 {
     use Glpi\Features\Clonable;
@@ -158,13 +158,13 @@ class TicketTemplate extends ITILTemplate
     }
 
 
-   /**
-    * Print preview for Ticket template
-    *
-    * @param $tt ITILTemplate object
-    *
-    * @return void
-   **/
+    /**
+     * Print preview for Ticket template
+     *
+     * @param $tt ITILTemplate object
+     *
+     * @return void
+     **/
     public static function showHelpdeskPreview(ITILTemplate $tt)
     {
 

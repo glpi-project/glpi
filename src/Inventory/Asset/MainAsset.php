@@ -49,30 +49,30 @@ abstract class MainAsset extends InventoryAsset
 {
     use InventoryNetworkPort;
 
-   /** @var array */
+    /** @var array */
     protected $extra_data = [
       'hardware'     => null,
       'bios'         => null,
       'users'        => null,
       '\Glpi\Inventory\Asset\NetworkCard' => null
     ];
-   /** @var mixed */
+    /** @var mixed */
     protected $raw_data;
    /* @var array */
     protected $hardware;
-   /** @var integer */
+    /** @var integer */
     protected $states_id_default;
-   /** @var \stdClass */
+    /** @var \stdClass */
     private $current_data;
-   /** @var array */
+    /** @var array */
     protected $assets = [];
-   /** @var Conf */
+    /** @var Conf */
     protected $conf;
-   /** @var array */
+    /** @var array */
     protected $refused = [];
-   /** @var array */
+    /** @var array */
     protected $inventoried = [];
-   /** @var boolean */
+    /** @var boolean */
     protected $partial = false;
 
     public function __construct(CommonDBTM $item, $data)
@@ -84,18 +84,18 @@ abstract class MainAsset extends InventoryAsset
         $this->raw_data = $data;
     }
 
-   /**
-    * Get model foregien key field name
-    *
-    * @return string
-    */
+    /**
+     * Get model foregien key field name
+     *
+     * @return string
+     */
     abstract protected function getModelsFieldName();
 
-   /**
-    * Get model foregien key field name
-    *
-    * @return string
-    */
+    /**
+     * Get model foregien key field name
+     *
+     * @return string
+     */
     abstract protected function getTypesFieldName();
 
     public function prepare(): array
@@ -137,13 +137,13 @@ abstract class MainAsset extends InventoryAsset
         return $this->data;
     }
 
-   /**
-    * Prepare hardware information
-    *
-    * @param stdClass $val
-    *
-    * @return void
-    */
+    /**
+     * Prepare hardware information
+     *
+     * @param stdClass $val
+     *
+     * @return void
+     */
     protected function prepareForHardware($val)
     {
         $hardware = (object)$this->extra_data['hardware'];
@@ -205,13 +205,13 @@ abstract class MainAsset extends InventoryAsset
         }
     }
 
-   /**
-    * Prepare users information
-    *
-    * @param stdClass $val
-    *
-    * @return void
-    */
+    /**
+     * Prepare users information
+     *
+     * @param stdClass $val
+     *
+     * @return void
+     */
     protected function prepareForUsers($val)
     {
         global $DB;
@@ -369,13 +369,13 @@ abstract class MainAsset extends InventoryAsset
         }
     }
 
-   /**
-    * Prepare input rules input, for both Entities rules and Import ones
-    *
-    * @param \stdClass $val Current data values
-    *
-    * @return array
-    */
+    /**
+     * Prepare input rules input, for both Entities rules and Import ones
+     *
+     * @param \stdClass $val Current data values
+     *
+     * @return array
+     */
     public function prepareAllRulesInput(\stdClass $val): array
     {
         $input = [];
@@ -460,14 +460,14 @@ abstract class MainAsset extends InventoryAsset
         return $input;
     }
 
-   /**
-    * Prepare input for Entities rules
-    *
-    * @param \stdClass $val   Current data values
-    * @param array     $input Input processed or all rules
-    *
-    * @return array
-    */
+    /**
+     * Prepare input for Entities rules
+     *
+     * @param \stdClass $val   Current data values
+     * @param array     $input Input processed or all rules
+     *
+     * @return array
+     */
     public function prepareEntitiesRulesInput(\stdClass $val, array $input): array
     {
         if (property_exists($val, 'domains_id') && (!empty($val->domains_id))) {
@@ -570,14 +570,14 @@ abstract class MainAsset extends InventoryAsset
         return true;
     }
 
-   /**
-    * After rule engine passed, update task (log) and create item if required
-    *
-    * @param integer $items_id id of the item (0 if new)
-    * @param string  $itemtype Item type
-    * @param integer $rules_id Matched rule id, if any
-    * @param integer $ports_id Matched port id, if any
-    */
+    /**
+     * After rule engine passed, update task (log) and create item if required
+     *
+     * @param integer $items_id id of the item (0 if new)
+     * @param string  $itemtype Item type
+     * @param integer $rules_id Matched rule id, if any
+     * @param integer $ports_id Matched port id, if any
+     */
     public function rulepassed($items_id, $itemtype, $rules_id, $ports_id = 0)
     {
         global $DB;
@@ -712,21 +712,21 @@ abstract class MainAsset extends InventoryAsset
         }
     }
 
-   /**
-    * Get modified hardware
-    *
-    * @return \stdClass
-    */
+    /**
+     * Get modified hardware
+     *
+     * @return \stdClass
+     */
     public function getHardware()
     {
         return $this->hardware;
     }
 
-   /**
-    * Retrieve computer entities id
-    *
-    * @return integer
-    */
+    /**
+     * Retrieve computer entities id
+     *
+     * @return integer
+     */
     public function getEntityID()
     {
         return $this->entities_id;
@@ -773,13 +773,13 @@ abstract class MainAsset extends InventoryAsset
         }
     }
 
-   /**
-    * Set prepared assets
-    *
-    * @param array $assets Prepared assets list
-    *
-    * @return MainAsset
-    */
+    /**
+     * Set prepared assets
+     *
+     * @param array $assets Prepared assets list
+     *
+     * @return MainAsset
+     */
     public function setAssets(array $assets): MainAsset
     {
         $this->assets = $assets;
@@ -787,63 +787,63 @@ abstract class MainAsset extends InventoryAsset
         return $this;
     }
 
-   /**
-    * Get current item
-    *
-    * @return CommonDBTM
-    */
+    /**
+     * Get current item
+     *
+     * @return CommonDBTM
+     */
     public function getItem(): CommonDBTM
     {
         return $this->item;
     }
 
-   /**
-    * Get inventoried assets
-    *
-    * @return CommonDBTM[]
-    */
+    /**
+     * Get inventoried assets
+     *
+     * @return CommonDBTM[]
+     */
     public function getInventoried(): array
     {
         return $this->inventoried;
     }
 
-   /**
-    * Get refused entries
-    *
-    * @return RefusedEquipment[]
-    */
+    /**
+     * Get refused entries
+     *
+     * @return RefusedEquipment[]
+     */
     public function getRefused(): array
     {
         return $this->refused;
     }
 
-   /**
-    * Set partial inventory
-    *
-    * @return Inventory
-    */
+    /**
+     * Set partial inventory
+     *
+     * @return Inventory
+     */
     protected function setPartial(): self
     {
         $this->partial = true;
         return $this;
     }
 
-   /**
-    * Is inventory partial
-    *
-    * @return boolean
-    */
+    /**
+     * Is inventory partial
+     *
+     * @return boolean
+     */
     public function isPartial(): bool
     {
         return $this->partial;
     }
 
 
-   /**
-    * Is an access point
-    *
-    * @return boolean
-    */
+    /**
+     * Is an access point
+     *
+     * @return boolean
+     */
     protected function isAccessPoint($object): bool
     {
         return property_exists($object, 'is_ap') && $object->is_ap == true;

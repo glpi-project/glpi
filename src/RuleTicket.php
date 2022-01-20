@@ -69,9 +69,9 @@ class RuleTicket extends Rule
     }
 
 
-   /**
-    * @since 0.85
-   **/
+    /**
+     * @since 0.85
+     **/
     public static function getConditionsArray()
     {
 
@@ -85,11 +85,11 @@ class RuleTicket extends Rule
     }
 
 
-   /**
-    * display title for action form
-    *
-    * @since 0.84.3
-   **/
+    /**
+     * display title for action form
+     *
+     * @since 0.84.3
+     **/
     public function getTitleAction()
     {
 
@@ -114,9 +114,9 @@ class RuleTicket extends Rule
     }
 
 
-   /**
-    * @param $params
-   **/
+    /**
+     * @param $params
+     **/
     public function addSpecificParamsForPreview($params)
     {
 
@@ -127,11 +127,11 @@ class RuleTicket extends Rule
     }
 
 
-   /**
-    * Function used to display type specific criterias during rule's preview
-    *
-    * @param $fields fields values
-   **/
+    /**
+     * Function used to display type specific criterias during rule's preview
+     *
+     * @param $fields fields values
+     **/
     public function showSpecificCriteriasForPreview($fields)
     {
 
@@ -478,9 +478,9 @@ class RuleTicket extends Rule
     }
 
 
-   /**
-    * @param $output
-   **/
+    /**
+     * @param $output
+     **/
     public function preProcessPreviewResults($output)
     {
 
@@ -953,11 +953,11 @@ class RuleTicket extends Rule
     }
 
 
-   /**
-    * @since 0.85
-    *
-    * @see commonDBTM::getRights()
-   **/
+    /**
+     * @since 0.85
+     *
+     * @see commonDBTM::getRights()
+     **/
     public function getRights($interface = 'central')
     {
 

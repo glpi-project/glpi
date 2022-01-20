@@ -42,9 +42,9 @@ class RuleDictionnarySoftwareCollection extends RuleCollection
 
     public static $rightname           = 'rule_dictionnary_software';
 
-   /**
-    * @see RuleCollection::getTitle()
-   **/
+    /**
+     * @see RuleCollection::getTitle()
+     **/
     public function getTitle()
     {
        //TRANS: software in plural
@@ -52,9 +52,9 @@ class RuleDictionnarySoftwareCollection extends RuleCollection
     }
 
 
-   /**
-    * @see RuleCollection::cleanTestOutputCriterias()
-   **/
+    /**
+     * @see RuleCollection::cleanTestOutputCriterias()
+     **/
     public function cleanTestOutputCriterias(array $output)
     {
 
@@ -68,9 +68,9 @@ class RuleDictionnarySoftwareCollection extends RuleCollection
     }
 
 
-   /**
-    * @see RuleCollection::warningBeforeReplayRulesOnExistingDB()
-   **/
+    /**
+     * @see RuleCollection::warningBeforeReplayRulesOnExistingDB()
+     **/
     public function warningBeforeReplayRulesOnExistingDB($target)
     {
         global $CFG_GLPI;
@@ -105,9 +105,9 @@ class RuleDictionnarySoftwareCollection extends RuleCollection
     }
 
 
-   /**
-    * @see RuleCollection::replayRulesOnExistingDB()
-   **/
+    /**
+     * @see RuleCollection::replayRulesOnExistingDB()
+     **/
     public function replayRulesOnExistingDB($offset = 0, $maxtime = 0, $items = [], $params = [])
     {
         global $DB;
@@ -239,14 +239,14 @@ class RuleDictionnarySoftwareCollection extends RuleCollection
     }
 
 
-   /**
-    * Replay dictionary on several software
-    *
-    * @param $IDs       array of software IDs to replay
-    * @param $res_rule  array of rule results
-    *
-    * @return Query result handler
-   **/
+    /**
+     * Replay dictionary on several software
+     *
+     * @param $IDs       array of software IDs to replay
+     * @param $res_rule  array of rule results
+     *
+     * @return Query result handler
+     **/
     public function replayDictionnaryOnSoftwaresByID(array $IDs, $res_rule = [])
     {
         global $DB;
@@ -299,17 +299,17 @@ class RuleDictionnarySoftwareCollection extends RuleCollection
     }
 
 
-   /**
-    * Replay dictionnary on one software
-    *
-    * @param &$new_softs      array containing new software already computed
-    * @param $res_rule        array of rule results
-    * @param $ID                    ID of the software
-    * @param $entity                working entity ID
-    * @param $name                  softwrae name
-    * @param $manufacturer          manufacturer name
-    * @param &$soft_ids       array containing replay software need to be put in trashbin
-   **/
+    /**
+     * Replay dictionnary on one software
+     *
+     * @param &$new_softs      array containing new software already computed
+     * @param $res_rule        array of rule results
+     * @param $ID                    ID of the software
+     * @param $entity                working entity ID
+     * @param $name                  softwrae name
+     * @param $manufacturer          manufacturer name
+     * @param &$soft_ids       array containing replay software need to be put in trashbin
+     **/
     public function replayDictionnaryOnOneSoftware(
         array &$new_softs,
         array $res_rule,
@@ -425,11 +425,11 @@ class RuleDictionnarySoftwareCollection extends RuleCollection
     }
 
 
-   /**
-    * Delete a list of software
-    *
-    * @param $soft_ids array containing replay software need to be put in trashbin
-   **/
+    /**
+     * Delete a list of software
+     *
+     * @param $soft_ids array containing replay software need to be put in trashbin
+     **/
     public function putOldSoftsInTrash(array $soft_ids)
     {
         global $DB;
@@ -467,17 +467,17 @@ class RuleDictionnarySoftwareCollection extends RuleCollection
     }
 
 
-   /**
-    * Change software's name, and move versions if needed
-    *
-    * @param int $ID                    old software ID
-    * @param int $new_software_id       new software ID
-    * @param int $version_id            version ID to move
-    * @param string $old_version        old version name
-    * @param string $new_version        new version name
-    * @param int $entity                entity ID
-    * @return void
-   */
+    /**
+     * Change software's name, and move versions if needed
+     *
+     * @param int $ID                    old software ID
+     * @param int $new_software_id       new software ID
+     * @param int $version_id            version ID to move
+     * @param string $old_version        old version name
+     * @param string $new_version        new version name
+     * @param int $entity                entity ID
+     * @return void
+     */
     public function moveVersions($ID, $new_software_id, $version_id, $old_version, $new_version, $entity)
     {
         global $DB;
@@ -571,13 +571,13 @@ class RuleDictionnarySoftwareCollection extends RuleCollection
     }
 
 
-   /**
-    * Move licenses from a software to another
-    *
-    * @param $old_software_id    old software ID
-    * @param $new_software_id    new software ID
-    * @return true if move was successful
-   **/
+    /**
+     * Move licenses from a software to another
+     *
+     * @param $old_software_id    old software ID
+     * @param $new_software_id    new software ID
+     * @return true if move was successful
+     **/
     public function moveLicenses($old_software_id, $new_software_id)
     {
         global $DB;
@@ -606,12 +606,12 @@ class RuleDictionnarySoftwareCollection extends RuleCollection
     }
 
 
-   /**
-    * Check if a version exists
-    *
-    * @param $software_id  software ID
-    * @param $version      version name
-   **/
+    /**
+     * Check if a version exists
+     *
+     * @param $software_id  software ID
+     * @param $version      version name
+     **/
     public function versionExists($software_id, $version)
     {
         global $DB;

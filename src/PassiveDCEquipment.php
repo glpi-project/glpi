@@ -35,7 +35,7 @@ use Glpi\Socket;
 
 /**
  * PassiveDCEquipment Class
-**/
+ **/
 class PassiveDCEquipment extends CommonDBTM
 {
     use Glpi\Features\DCBreadcrumb;

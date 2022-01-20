@@ -173,10 +173,10 @@ class APIRest extends APIBaseClass
         return $data;
     }
 
-   /**
-    * @tags   api
-    * @covers API::cors
-   **/
+    /**
+     * @tags   api
+     * @covers API::cors
+     **/
     public function testCORS()
     {
         $res = $this->doHttpRequest(
@@ -211,10 +211,10 @@ class APIRest extends APIBaseClass
          ->contains('authorization');
     }
 
-   /**
-    * @tags   api
-    * @covers API::inlineDocumentation
-   **/
+    /**
+     * @tags   api
+     * @covers API::inlineDocumentation
+     **/
     public function testInlineDocumentation()
     {
         $res = $this->doHttpRequest('GET');
@@ -225,10 +225,10 @@ class APIRest extends APIBaseClass
         $this->string($headers['Content-Type'][0])->isIdenticalTo('text/html; charset=UTF-8');
     }
 
-   /**
-    * @tags   api
-    * @covers API::initSession
-   **/
+    /**
+     * @tags   api
+     * @covers API::initSession
+     **/
     public function initSessionCredentials()
     {
         $res = $this->doHttpRequest('GET', 'initSession/', ['auth' => [TU_USER, TU_PASS]]);
@@ -244,10 +244,10 @@ class APIRest extends APIBaseClass
         $this->session_token = $data['session_token'];
     }
 
-   /**
-    * @tags   api
-    * @covers API::initSession
-   **/
+    /**
+     * @tags   api
+     * @covers API::initSession
+     **/
     public function testInitSessionUserToken()
     {
        // retrieve personnal token of TU_USER user
@@ -278,9 +278,9 @@ class APIRest extends APIBaseClass
         $this->integer((int) $data['session']['glpiID'])->isEqualTo($uid);
     }
 
-   /**
-    * @tags    api
-    */
+    /**
+     * @tags    api
+     */
     public function testBadEndpoint()
     {
         parent::badEndpoint(400, 'ERROR_RESOURCE_NOT_FOUND_NOR_COMMONDBTM');
@@ -297,7 +297,7 @@ class APIRest extends APIBaseClass
         );
     }
 
-   /**
+    /**
      * @tags    api
      */
     public function testUpdateItemWithIdInQueryString()
@@ -334,9 +334,9 @@ class APIRest extends APIBaseClass
     }
 
 
-   /**
-    * @tags    api
-    */
+    /**
+     * @tags    api
+     */
     public function testUploadDocument()
     {
        // we will try to upload the README.md file
@@ -390,10 +390,10 @@ class APIRest extends APIBaseClass
         $this->string($document->fields['filepath'])->contains('MD/');
     }
 
-   /**
-    * @tags    api
-    * @covers  API::updateItems
-    */
+    /**
+     * @tags    api
+     * @covers  API::updateItems
+     */
     public function testUpdateItem()
     {
        //parent::testUpdateItem($session_token, $computers_id);
@@ -410,10 +410,10 @@ class APIRest extends APIBaseClass
         );
     }
 
-   /**
-    * @tags    api
-    * @covers  API::getItems
-    */
+    /**
+     * @tags    api
+     * @covers  API::getItems
+     */
     public function testGetItemsCommonDBChild()
     {
        // test the case have DBChild not have entities_id
@@ -446,10 +446,10 @@ class APIRest extends APIBaseClass
         $this->integer(count($data))->isEqualTo(1);
     }
 
-   /**
-    * @tags   api
-    * @covers API::userPicture
-    */
+    /**
+     * @tags   api
+     * @covers API::userPicture
+     */
     public function testUserPicture()
     {
         $pic = "test_picture.png";
@@ -457,9 +457,9 @@ class APIRest extends APIBaseClass
         $id = getItemByTypeName('User', 'glpi', true);
         $user = new \User();
 
-       /**
-        * Case 1: normal execution
-        */
+        /**
+         * Case 1: normal execution
+         */
 
        // Copy pic to tmp folder so it can be set to a user
         copy("tests/$pic", GLPI_TMP_DIR . "/$pic");
@@ -487,18 +487,18 @@ class APIRest extends APIBaseClass
         $response = $this->query("User/$id/Picture", $params, 200, '', true);
         $this->string($response->__toString())->isEqualTo($file_content);
 
-       /**
-        * Case 2: user doens't exist
-        */
+        /**
+         * Case 2: user doens't exist
+         */
 
        // Request
         $response = $this->query("User/99999999/Picture", $params, 400, "ERROR");
         $this->array($response)->hasSize(2);
         $this->string($response[1])->contains("Bad request: user with id '99999999' not found");
 
-       /**
-        * Case 3: user with no pictures
-        */
+        /**
+         * Case 3: user with no pictures
+         */
 
        // Remove pic URL
         $success = $user->update([
@@ -521,9 +521,9 @@ class APIRest extends APIBaseClass
         ];
     }
 
-   /**
-    * @dataProvider deprecatedProvider
-    */
+    /**
+     * @dataProvider deprecatedProvider
+     */
     public function testDeprecatedGetItem(string $provider)
     {
        // Get params from provider
@@ -551,9 +551,9 @@ class APIRest extends APIBaseClass
         $item->delete(['id' => $item_id], true);
     }
 
-   /**
-    * @dataProvider deprecatedProvider
-    */
+    /**
+     * @dataProvider deprecatedProvider
+     */
     public function testDeprecatedGetItems(string $provider)
     {
        // Get params from provider
@@ -586,9 +586,9 @@ class APIRest extends APIBaseClass
         $item->delete(['id' => $item_id], true);
     }
 
-   /**
-    * @dataProvider deprecatedProvider
-    */
+    /**
+     * @dataProvider deprecatedProvider
+     */
     public function testDeprecatedCreateItems(string $provider)
     {
        // Get params from provider
@@ -619,9 +619,9 @@ class APIRest extends APIBaseClass
         $item->delete(['id' => $data['id']], true);
     }
 
-   /**
-    * @dataProvider deprecatedProvider
-    */
+    /**
+     * @dataProvider deprecatedProvider
+     */
     public function testDeprecatedUpdateItems(string $provider)
     {
        // Get params from provider
@@ -656,9 +656,9 @@ class APIRest extends APIBaseClass
         $item->delete(['id' => $item_id], true);
     }
 
-   /**
-    * @dataProvider deprecatedProvider
-    */
+    /**
+     * @dataProvider deprecatedProvider
+     */
     public function testDeprecatedDeleteItems(string $provider)
     {
        // Get params from provider
@@ -682,9 +682,9 @@ class APIRest extends APIBaseClass
         $this->boolean($item->getFromDB($item_id))->isFalse();
     }
 
-   /**
-    * @dataProvider deprecatedProvider
-    */
+    /**
+     * @dataProvider deprecatedProvider
+     */
     public function testDeprecatedListSearchOptions(string $provider)
     {
        // Get params from provider
@@ -706,9 +706,9 @@ class APIRest extends APIBaseClass
         $this->string($json_data)->isEqualTo($expected);
     }
 
-   /**
-    * @dataProvider deprecatedProvider
-    */
+    /**
+     * @dataProvider deprecatedProvider
+     */
     public function testDeprecatedSearch(string $provider)
     {
        // Get params from provider
@@ -834,11 +834,11 @@ class APIRest extends APIBaseClass
         ];
     }
 
-   /**
-    * Tests for the "getMassiveActions" endpoint
-    *
-    * @dataProvider testGetMassiveActionsProvider
-    */
+    /**
+     * Tests for the "getMassiveActions" endpoint
+     *
+     * @dataProvider testGetMassiveActionsProvider
+     */
     public function testGetMassiveActions(
         string $url,
         int $status,
@@ -989,11 +989,11 @@ class APIRest extends APIBaseClass
         ];
     }
 
-   /**
-    * Tests for the "getMassiveActionParameters" endpoint
-    *
-    * @dataProvider testGetMassiveActionParametersProvider
-    */
+    /**
+     * Tests for the "getMassiveActionParameters" endpoint
+     *
+     * @dataProvider testGetMassiveActionParametersProvider
+     */
     public function testGetMassiveActionParameters(
         string $url,
         int $status,
@@ -1145,11 +1145,11 @@ class APIRest extends APIBaseClass
         ];
     }
 
-   /**
-    * Tests for the "applyMassiveAction" endpoint
-    *
-    * @dataProvider testApplyMassiveActionProvider
-    */
+    /**
+     * Tests for the "applyMassiveAction" endpoint
+     *
+     * @dataProvider testApplyMassiveActionProvider
+     */
     public function testApplyMassiveAction(
         string $url,
         array $payload,

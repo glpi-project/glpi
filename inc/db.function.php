@@ -41,7 +41,7 @@ if (!defined('GLPI_ROOT')) {
  * @param $table string table name
  *
  * @return string field name used for a foreign key to the parameter table
-**/
+ **/
 function getForeignKeyFieldForTable($table)
 {
     $dbu = new DbUtils();
@@ -57,7 +57,7 @@ function getForeignKeyFieldForTable($table)
  * @param $field string field name
  *
  * @return boolean
-**/
+ **/
 function isForeignKeyField($field)
 {
     $dbu = new DbUtils();
@@ -71,7 +71,7 @@ function isForeignKeyField($field)
  * @param $itemtype string itemtype
  *
  * @return string field name used for a foreign key to the parameter itemtype
-**/
+ **/
 function getForeignKeyFieldForItemType($itemtype)
 {
     return getForeignKeyFieldForTable(getTableForItemType($itemtype));
@@ -84,7 +84,7 @@ function getForeignKeyFieldForItemType($itemtype)
  * @param $fkname   string   foreign key name
  *
  * @return string table name corresponding to a foreign key name
-**/
+ **/
 function getTableNameForForeignKeyField($fkname)
 {
     $dbu = new DbUtils();
@@ -98,7 +98,7 @@ function getTableNameForForeignKeyField($fkname)
  * @param $table string table name
  *
  * @return string itemtype corresponding to a table name parameter
-**/
+ **/
 function getItemTypeForTable($table)
 {
     $dbu = new DbUtils();
@@ -124,7 +124,7 @@ function getItemtypeForForeignKeyField($fkname)
  * @param $itemtype   string   itemtype
  *
  * @return string table name corresponding to the itemtype  parameter
-**/
+ **/
 function getTableForItemType($itemtype)
 {
     $dbu = new DbUtils();
@@ -140,7 +140,7 @@ function getTableForItemType($itemtype)
  * @param $itemtype   string   itemtype
  *
  * @return CommonDBTM|boolean itemtype object or false if class does not exists
-**/
+ **/
 function getItemForItemtype($itemtype)
 {
     $dbu = new DbUtils();
@@ -154,7 +154,7 @@ function getItemForItemtype($itemtype)
  * @param $string   string   input string
  *
  * @return string plural of the parameter string
-**/
+ **/
 function getPlural($string)
 {
     $dbu = new DbUtils();
@@ -168,7 +168,7 @@ function getPlural($string)
  * @param $string   string   input string
  *
  * @return string singular of the parameter string
-**/
+ **/
 function getSingular($string)
 {
     $dbu = new DbUtils();
@@ -183,7 +183,7 @@ function getSingular($string)
  * @param array        $condition condition to use (default [])
  *
  * @return int nb of elements in table
-**/
+ **/
 function countElementsInTable($table, $condition = [])
 {
     $dbu = new DbUtils();
@@ -198,7 +198,7 @@ function countElementsInTable($table, $condition = [])
  * @param array        $condition condition to use (default [])
  *
  * @return int nb of elements in table
-**/
+ **/
 function countDistinctElementsInTable($table, $field, $condition = [])
 {
     $dbu = new DbUtils();
@@ -212,7 +212,7 @@ function countDistinctElementsInTable($table, $field, $condition = [])
  * @param array  $condition additional criteria, defaults to []
  *
  * @return int nb of elements in table
-**/
+ **/
 function countElementsInTableForMyEntities($table, $condition = [])
 {
     $dbu = new DbUtils();
@@ -229,7 +229,7 @@ function countElementsInTableForMyEntities($table, $condition = [])
  * @param boolean $recursive Whether to recurse or not. If true, will be conditionned on item recursivity
  *
  * @return int nb of elements in table
-**/
+ **/
 function countElementsInTableForEntity($table, $entity, $condition = [], $recursive = true)
 {
     $dbu = new DbUtils();
@@ -248,7 +248,7 @@ function countElementsInTableForEntity($table, $entity, $condition = [], $recurs
  * @return array containing all the datas
  *
  * @since 9.5.0
-**/
+ **/
 function getAllDataFromTable($table, $criteria = [], $usecache = false, $order = '')
 {
     $dbu = new DbUtils();
@@ -265,7 +265,7 @@ function getAllDataFromTable($table, $criteria = [], $usecache = false, $order =
  * @return string : name of the element
  *
  * @see getTreeValueCompleteName()
-**/
+ **/
 function getTreeLeafValueName($table, $ID, $withcomment = false, $translate = true)
 {
     $dbu = new DbUtils();
@@ -286,7 +286,7 @@ function getTreeLeafValueName($table, $ID, $withcomment = false, $translate = tr
  * @return string : completename of the element
  *
  * @see getTreeLeafValueName()
-**/
+ **/
 function getTreeValueCompleteName($table, $ID, $withcomment = false, $translate = true, $tooltip = true, string $default = '&nbsp;')
 {
     $dbu = new DbUtils();
@@ -304,7 +304,7 @@ function getTreeValueCompleteName($table, $ID, $withcomment = false, $translate 
  * @param $level        integer  current level of recursion (default 0)
  *
  * @return string name
-**/
+ **/
 function getTreeValueName($table, $ID, $wholename = "", $level = 0)
 {
     $dbu = new DbUtils();
@@ -319,7 +319,7 @@ function getTreeValueName($table, $ID, $wholename = "", $level = 0)
  * @param array|string $items_id The IDs of the items
  *
  * @return array of IDs of the ancestors
-**/
+ **/
 function getAncestorsOf($table, $items_id)
 {
     $dbu = new DbUtils();
@@ -334,7 +334,7 @@ function getAncestorsOf($table, $items_id)
  * @param $IDf    integer  The ID of the father
  *
  * @return array of IDs of the sons
-**/
+ **/
 function getSonsOf($table, $IDf)
 {
     $dbu = new DbUtils();
@@ -351,7 +351,7 @@ function getSonsOf($table, $IDf)
  * @param $IDf    integer  The ID of the father
  *
  * @return array of IDs of the sons and the ancestors
-**/
+ **/
 function getSonsAndAncestorsOf($table, $IDf)
 {
     $dbu = new DbUtils();
@@ -366,7 +366,7 @@ function getSonsAndAncestorsOf($table, $IDf)
  * @param $IDf    integer  The ID of the father
  *
  * @return array of IDs of the sons
-**/
+ **/
 function getTreeForItem($table, $IDf)
 {
     $dbu = new DbUtils();
@@ -381,7 +381,7 @@ function getTreeForItem($table, $IDf)
  * @param integer $root root of the tree
  *
  * @return array list of items in the tree
-**/
+ **/
 function contructTreeFromList($list, $root)
 {
     $dbu = new DbUtils();
@@ -396,7 +396,7 @@ function contructTreeFromList($list, $root)
  * @param integer $parent root of the tree (default =0)
  *
  * @return array list of items in the tree
-**/
+ **/
 function contructListFromTree($tree, $parent = 0)
 {
     $dbu = new DbUtils();
@@ -410,7 +410,7 @@ function contructListFromTree($tree, $parent = 0)
  * @param $table : dropdown tree table to compute
  *
  * @return void
-**/
+ **/
 function regenerateTreeCompleteName($table)
 {
     $dbu = new DbUtils();
@@ -430,7 +430,7 @@ function regenerateTreeCompleteName($table)
  *@param $force_config   boolean force order and id_visible to use common config (false by default)
  *
  *@return string : formatted username
-**/
+ **/
 function formatUserName($ID, $login, $realname, $firstname, $link = 0, $cut = 0, $force_config = false)
 {
     $dbu = new DbUtils();
@@ -446,7 +446,7 @@ function formatUserName($ID, $login, $realname, $firstname, $link = 0, $cut = 0,
  *                      (default =0)
  *
  *@return string : username string (realname if not empty and name if realname is empty).
-**/
+ **/
 function getUserName($ID, $link = 0)
 {
     $dbu = new DbUtils();
@@ -461,7 +461,7 @@ function getUserName($ID, $link = 0)
  * @param $field  string  name of the index
  *
  * @return boolean : index exists ?
-**/
+ **/
 function isIndex($table, $field)
 {
     $dbu = new DbUtils();
@@ -506,7 +506,7 @@ function autoName($objectName, $field, $isTemplate, $itemtype, $entities_id = -1
  * Close active DB connections
  *
  * @return void
-**/
+ **/
 function closeDBConnections()
 {
     $dbu = new DbUtils();
@@ -521,7 +521,7 @@ function closeDBConnections()
  * @param string $end    end date
  *
  * @return string
-**/
+ **/
 function getDateCriteria($field, $begin, $end)
 {
     $dbu = new DbUtils();
@@ -534,7 +534,7 @@ function getDateCriteria($field, $begin, $end)
  * @param $TAB Array to export / encode (one level depth)
  *
  * @return string containing encoded array
-**/
+ **/
 function exportArrayToDB($TAB)
 {
     $dbu = new DbUtils();
@@ -562,7 +562,7 @@ function importArrayFromDB($DATA)
  * @param $time datetime: time
  *
  * @return  array
-**/
+ **/
 function get_hour_from_sql($time)
 {
     $dbu = new DbUtils();

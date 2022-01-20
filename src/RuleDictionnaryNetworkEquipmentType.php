@@ -33,18 +33,18 @@
 
 class RuleDictionnaryNetworkEquipmentType extends RuleDictionnaryDropdown
 {
-   /**
-    * Constructor
-   **/
+    /**
+     * Constructor
+     **/
     public function __construct()
     {
         parent::__construct('RuleDictionnaryNetworkEquipmentType');
     }
 
 
-   /**
-    * @see Rule::getCriterias()
-   **/
+    /**
+     * @see Rule::getCriterias()
+     **/
     public function getCriterias()
     {
 
@@ -62,9 +62,9 @@ class RuleDictionnaryNetworkEquipmentType extends RuleDictionnaryDropdown
     }
 
 
-   /**
-    * @see Rule::getActions()
-   **/
+    /**
+     * @see Rule::getActions()
+     **/
     public function getActions()
     {
 

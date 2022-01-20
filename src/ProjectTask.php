@@ -43,7 +43,7 @@ use Sabre\VObject\Property\IntegerValue;
  * ProjectTask Class
  *
  * @since 0.85
-**/
+ **/
 class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
 {
     use Glpi\Features\PlanningEvent;
@@ -93,11 +93,11 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
     }
 
 
-   /**
-    * Is the current user have right to show the current task ?
-    *
-    * @return boolean
-   **/
+    /**
+     * Is the current user have right to show the current task ?
+     *
+     * @return boolean
+     **/
     public function canViewItem()
     {
         if (!Session::haveAccessToEntity($this->getEntityID(), $this->isRecursive())) {
@@ -132,11 +132,11 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
     }
 
 
-   /**
-    * Is the current user have right to edit the current task ?
-    *
-    * @return boolean
-   **/
+    /**
+     * Is the current user have right to edit the current task ?
+     *
+     * @return boolean
+     **/
     public function canUpdateItem()
     {
 
@@ -171,9 +171,9 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
     }
 
 
-   /**
-    * @see commonDBTM::getRights()
-    **/
+    /**
+     * @see commonDBTM::getRights()
+     **/
     public function getRights($interface = 'central')
     {
 
@@ -312,11 +312,11 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
     }
 
 
-   /**
-    * Is the current user in the team?
-    *
-    * @return boolean
-   **/
+    /**
+     * Is the current user in the team?
+     *
+     * @return boolean
+     **/
     public function isInTheTeam()
     {
 
@@ -344,11 +344,11 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
     }
 
 
-   /**
-    * Get team member count
-    *
-    * @return number
-    */
+    /**
+     * Get team member count
+     *
+     * @return number
+     */
     public function getTeamCount()
     {
 
@@ -459,13 +459,13 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
     }
 
 
-   /**
-    * Get all tasks for a project
-    *
-    * @param $ID        integer  Id of the project
-    *
-    * @return array of tasks ordered by dates
-   **/
+    /**
+     * Get all tasks for a project
+     *
+     * @param $ID        integer  Id of the project
+     *
+     * @return array of tasks ordered by dates
+     **/
     public static function getAllForProject($ID)
     {
         global $DB;
@@ -486,13 +486,13 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
     }
 
 
-   /**
-    * Get all sub-tasks for a project task
-    * @since 9.5.0
-    * @param $ID        integer  Id of the project task
-    *
-    * @return array of tasks ordered by dates
-   **/
+    /**
+     * Get all sub-tasks for a project task
+     * @since 9.5.0
+     * @param $ID        integer  Id of the project task
+     *
+     * @return array of tasks ordered by dates
+     **/
     public static function getAllForProjectTask($ID)
     {
         global $DB;
@@ -514,12 +514,12 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
 
 
     /**
-    * Get all linked tickets for a project
-    *
-    * @param $ID        integer  Id of the project
-    *
-    * @return array of tickets
-   **/
+     * Get all linked tickets for a project
+     *
+     * @param $ID        integer  Id of the project
+     *
+     * @return array of tickets
+     **/
     public static function getAllTicketsForProject($ID)
     {
         global $DB;
@@ -548,16 +548,16 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
     }
 
 
-   /**
-    * Print the Project task form
-    *
-    * @param $ID        integer  Id of the project task
-    * @param $options   array    of possible options:
-    *     - target form target
-    *     - projects_id ID of the software for add process
-    *
-    * @return true if displayed  false if item not found or not right to display
-   **/
+    /**
+     * Print the Project task form
+     *
+     * @param $ID        integer  Id of the project task
+     * @param $options   array    of possible options:
+     *     - target form target
+     *     - projects_id ID of the software for add process
+     *
+     * @return true if displayed  false if item not found or not right to display
+     **/
     public function showForm($ID, array $options = [])
     {
         global $CFG_GLPI;
@@ -864,13 +864,13 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
     }
 
 
-   /**
-    * Get total effective duration of a project task (sum of effective duration + sum of action time of tickets)
-    *
-    * @param $projecttasks_id    integer    $projecttasks_id ID of the project task
-    *
-    * @return integer total effective duration
-   **/
+    /**
+     * Get total effective duration of a project task (sum of effective duration + sum of action time of tickets)
+     *
+     * @param $projecttasks_id    integer    $projecttasks_id ID of the project task
+     *
+     * @return integer total effective duration
+     **/
     public static function getTotalEffectiveDuration($projecttasks_id)
     {
         global $DB;
@@ -909,13 +909,13 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
     }
 
 
-   /**
-    * Get total effective duration of a project (sum of effective duration + sum of action time of tickets)
-    *
-    * @param $projects_id    integer    $project_id ID of the project
-    *
-    * @return integer total effective duration
-   **/
+    /**
+     * Get total effective duration of a project (sum of effective duration + sum of action time of tickets)
+     *
+     * @param $projects_id    integer    $project_id ID of the project
+     *
+     * @return integer total effective duration
+     **/
     public static function getTotalEffectiveDurationForProject($projects_id)
     {
         global $DB;
@@ -933,13 +933,13 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
     }
 
 
-   /**
-    * Get total planned duration of a project
-    *
-    * @param $projects_id    integer    $project_id ID of the project
-    *
-    * @return integer total effective duration
-   **/
+    /**
+     * Get total planned duration of a project
+     *
+     * @param $projects_id    integer    $project_id ID of the project
+     *
+     * @return integer total effective duration
+     **/
     public static function getTotalPlannedDurationForProject($projects_id)
     {
         global $DB;
@@ -1168,13 +1168,13 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
     }
 
 
-   /**
-    * Show tasks of a project
-    *
-    * @param $item Project or ProjectTask object
-    *
-    * @return void
-   **/
+    /**
+     * Show tasks of a project
+     *
+     * @param $item Project or ProjectTask object
+     *
+     * @return void
+     **/
     public static function showFor($item)
     {
         global $DB;
@@ -1452,13 +1452,13 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
     }
 
 
-   /**
-    * Show team for a project task
-    *
-    * @param $task   ProjectTask object
-    *
-    * @return boolean
-   **/
+    /**
+     * Show team for a project task
+     *
+     * @param $task   ProjectTask object
+     *
+     * @return boolean
+     **/
     public function showTeam(ProjectTask $task)
     {
        /// TODO : permit to simple add member of project team ?
@@ -1556,10 +1556,10 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
     }
 
 
-   /** Get data to display on GANTT for a project task
-    *
-   * @param $ID ID of the project task
-   */
+    /** Get data to display on GANTT for a project task
+     *
+     * @param $ID ID of the project task
+     */
     public static function getDataToDisplayOnGantt($ID)
     {
         global $DB;
@@ -1667,10 +1667,10 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
     }
 
 
-   /** Get data to display on GANTT for a project
-    *
-   * @param $ID ID of the project
-   */
+    /** Get data to display on GANTT for a project
+     *
+     * @param $ID ID of the project
+     */
     public static function getDataToDisplayOnGanttForProject($ID)
     {
         global $DB;
@@ -1697,29 +1697,29 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
     }
 
 
-   /**
-    * Display debug information for current object
-   **/
+    /**
+     * Display debug information for current object
+     **/
     public function showDebug()
     {
         NotificationEvent::debugEvent($this);
     }
 
-   /**
-    * Populate the planning with planned project tasks
-    *
-    * @since 9.1
-    *
-    * @param $options  array of possible options:
-    *    - who         ID of the user (0 = undefined)
-    *    - whogroup    ID of the group of users (0 = undefined)
-    *    - begin       Date
-    *    - end         Date
-    *    - color
-    *    - event_type_color
-    *
-    * @return array of planning item
-   **/
+    /**
+     * Populate the planning with planned project tasks
+     *
+     * @since 9.1
+     *
+     * @param $options  array of possible options:
+     *    - who         ID of the user (0 = undefined)
+     *    - whogroup    ID of the group of users (0 = undefined)
+     *    - begin       Date
+     *    - end         Date
+     *    - color
+     *    - event_type_color
+     *
+     * @return array of planning item
+     **/
     public static function populatePlanning($options = []): array
     {
         global $DB, $CFG_GLPI;
@@ -1906,21 +1906,21 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
     }
 
 
-   /**
-    * Populate the planning with not planned project tasks
-    *
-    * @since 9.1
-    *
-    * @param $options  array of possible options:
-    *    - who         ID of the user (0 = undefined)
-    *    - whogroup    ID of the group of users (0 = undefined)
-    *    - begin       Date
-    *    - end         Date
-    *    - color
-    *    - event_type_color
-    *
-    * @return array of planning item
-   **/
+    /**
+     * Populate the planning with not planned project tasks
+     *
+     * @since 9.1
+     *
+     * @param $options  array of possible options:
+     *    - who         ID of the user (0 = undefined)
+     *    - whogroup    ID of the group of users (0 = undefined)
+     *    - begin       Date
+     *    - end         Date
+     *    - color
+     *    - event_type_color
+     *
+     * @return array of planning item
+     **/
     public static function populateNotPlanned($options = []): array
     {
         $options['not_planned'] = true;
@@ -1928,19 +1928,19 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
     }
 
 
-   /**
-    * Display a Planning Item
-    *
-    * @since 9.1
-    *
-    * @param $val       array of the item to display
-    * @param $who             ID of the user (0 if all)
-    * @param $type            position of the item in the time block (in, through, begin or end)
-    *                         (default '')
-    * @param $complete        complete display (more details) (default 0)
-    *
-    * @return string
-    **/
+    /**
+     * Display a Planning Item
+     *
+     * @since 9.1
+     *
+     * @param $val       array of the item to display
+     * @param $who             ID of the user (0 if all)
+     * @param $type            position of the item in the time block (in, through, begin or end)
+     *                         (default '')
+     * @param $complete        complete display (more details) (default 0)
+     *
+     * @return string
+     **/
     public static function displayPlanningItem(array $val, $who, $type = "", $complete = 0)
     {
         global $CFG_GLPI;
@@ -1999,13 +1999,13 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         return $html;
     }
 
-   /**
-    * Update the specified project task's percent_done based on the percent_done of sub-tasks.
-    * This function indirectly updates the percent done for all parent tasks if they are set to automatically update.
-    * The parent project's percent_done is not updated here to avoid duplicate updates.
-    * @since 9.5.0
-    * @return boolean False if the specified project task is not set to automatically update the percent done.
-    */
+    /**
+     * Update the specified project task's percent_done based on the percent_done of sub-tasks.
+     * This function indirectly updates the percent done for all parent tasks if they are set to automatically update.
+     * The parent project's percent_done is not updated here to avoid duplicate updates.
+     * @since 9.5.0
+     * @return boolean False if the specified project task is not set to automatically update the percent done.
+     */
     public static function recalculatePercentDone($ID)
     {
         global $DB;
@@ -2059,13 +2059,13 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         );
     }
 
-   /**
-    * Returns items as VCalendar objects.
-    *
-    * @param array $criteria
-    *
-    * @return \Sabre\VObject\Component\VCalendar[]
-    */
+    /**
+     * Returns items as VCalendar objects.
+     *
+     * @param array $criteria
+     *
+     * @return \Sabre\VObject\Component\VCalendar[]
+     */
     private static function getItemsAsVCalendars(array $criteria)
     {
 

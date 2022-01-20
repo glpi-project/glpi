@@ -37,11 +37,11 @@ use League\Csv\Writer;
 
 class CsvResponse
 {
-   /**
-    * Output a CSV file using League\Csv
-    *
-    * @param ExportToCsvInterface $export
-    */
+    /**
+     * Output a CSV file using League\Csv
+     *
+     * @param ExportToCsvInterface $export
+     */
     public static function output(ExportToCsvInterface $export): void
     {
         $csv = Writer::createFromString('');

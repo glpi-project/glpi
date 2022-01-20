@@ -35,7 +35,7 @@
  *  NetworkAlias Class
  *
  * @since 0.84
-**
+ **
  */
 class NetworkAlias extends FQDNLabel
 {
@@ -63,13 +63,13 @@ class NetworkAlias extends FQDNLabel
     }
 
 
-   /**
-    * Get the full name (internet name) of a NetworkName
-    *
-    * @param integer $ID  ID of the NetworkName
-    *
-    * @return string  its internet name, or empty string if invalid NetworkName
-   **/
+    /**
+     * Get the full name (internet name) of a NetworkName
+     *
+     * @param integer $ID  ID of the NetworkName
+     *
+     * @return string  its internet name, or empty string if invalid NetworkName
+     **/
     public static function getInternetNameFromID($ID)
     {
 
@@ -84,16 +84,16 @@ class NetworkAlias extends FQDNLabel
     }
 
 
-   /**
-    * Print the network alias form
-    *
-    * @param $ID        integer ID of the item
-    * @param $options   array
-    *     - target for the Form
-    *     - withtemplate template or basic computer
-    *
-    * @return void
-   **/
+    /**
+     * Print the network alias form
+     *
+     * @param $ID        integer ID of the item
+     * @param $options   array
+     *     - target for the Form
+     *     - withtemplate template or basic computer
+     *
+     * @return void
+     **/
     public function showForm($ID, $options = [])
     {
 
@@ -147,15 +147,15 @@ class NetworkAlias extends FQDNLabel
     }
 
 
-   /**
-    * @since 0.84
-    *
-    * @param $itemtype
-    * @param $base                  HTMLTableBase object
-    * @param $super                 HTMLTableSuperHeader object (default NULL)
-    * @param $father                HTMLTableHeader object (default NULL)
-    * @param $options      array
-   **/
+    /**
+     * @since 0.84
+     *
+     * @param $itemtype
+     * @param $base                  HTMLTableBase object
+     * @param $super                 HTMLTableSuperHeader object (default NULL)
+     * @param $father                HTMLTableHeader object (default NULL)
+     * @param $options      array
+     **/
     public static function getHTMLTableHeader(
         $itemtype,
         HTMLTableBase $base,
@@ -182,14 +182,14 @@ class NetworkAlias extends FQDNLabel
     }
 
 
-   /**
-    * @since 0.84
-    *
-    * @param $row                HTMLTableRow object (default NULL)
-    * @param $item               CommonDBTM object (default NULL)
-    * @param $father             HTMLTableCell object (default NULL)
-    * @param $options   array
-   **/
+    /**
+     * @since 0.84
+     *
+     * @param $row                HTMLTableRow object (default NULL)
+     * @param $item               CommonDBTM object (default NULL)
+     * @param $father             HTMLTableCell object (default NULL)
+     * @param $options   array
+     **/
     public static function getHTMLTableCellsForItem(
         HTMLTableRow $row = null,
         CommonDBTM $item = null,
@@ -242,15 +242,15 @@ class NetworkAlias extends FQDNLabel
     }
 
 
-   /**
-    * \brief Show aliases for an item from its form
-    * Beware that the rendering can be different if readden from direct item form (ie : add new
-    * NetworkAlias, remove, ...) or if readden from item of the item (for instance from the computer
-    * form through NetworkPort::ShowForItem and NetworkName::ShowForItem).
-    *
-    * @param $item                     NetworkName object
-    * @param $withtemplate   integer   withtemplate param (default 0)
-   **/
+    /**
+     * \brief Show aliases for an item from its form
+     * Beware that the rendering can be different if readden from direct item form (ie : add new
+     * NetworkAlias, remove, ...) or if readden from item of the item (for instance from the computer
+     * form through NetworkPort::ShowForItem and NetworkName::ShowForItem).
+     *
+     * @param $item                     NetworkName object
+     * @param $withtemplate   integer   withtemplate param (default 0)
+     **/
     public static function showForNetworkName(NetworkName $item, $withtemplate = 0)
     {
         global $DB, $CFG_GLPI;
@@ -375,12 +375,12 @@ class NetworkAlias extends FQDNLabel
     }
 
 
-   /**
-    * Show the aliases contained by the alias
-    *
-    * @param CommonGLPI $item          the FQDN owning the aliases
-    * @param integer    $withtemplate  withtemplate param
-   **/
+    /**
+     * Show the aliases contained by the alias
+     *
+     * @param CommonGLPI $item          the FQDN owning the aliases
+     * @param integer    $withtemplate  withtemplate param
+     **/
     public static function showForFQDN(CommonGLPI $item, $withtemplate)
     {
         global $DB;

@@ -61,9 +61,9 @@ class Common extends GLPITestCase
         ];
     }
 
-   /**
-    * @dataProvider namesProvider
-    */
+    /**
+     * @dataProvider namesProvider
+     */
     public function testHeaders($propname, $headername)
     {
         $this

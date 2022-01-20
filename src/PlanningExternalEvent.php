@@ -112,11 +112,11 @@ class PlanningExternalEvent extends CommonDBTM implements CalDAVCompatibleItemIn
         return parent::canPurgeItem();
     }
 
-   /**
-    * do we have the right to manage background events
-    *
-    * @return bool
-    */
+    /**
+     * do we have the right to manage background events
+     *
+     * @return bool
+     */
     public function canUpdateBGEvents()
     {
         if (
@@ -408,13 +408,13 @@ JAVASCRIPT;
         ]);
     }
 
-   /**
-    * Returns items as VCalendar objects.
-    *
-    * @param array $criteria
-    *
-    * @return \Sabre\VObject\Component\VCalendar[]
-    */
+    /**
+     * Returns items as VCalendar objects.
+     *
+     * @param array $criteria
+     *
+     * @return \Sabre\VObject\Component\VCalendar[]
+     */
     private static function getItemsAsVCalendars(array $criteria)
     {
 

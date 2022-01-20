@@ -251,13 +251,13 @@ class Calendar extends AbstractBackend
         }
     }
 
-   /**
-    * Convert a VCalendar object to an object served by CalDAV server.
-    *
-    * @param VCalendar $vcalendar
-    *
-    * @return array
-    */
+    /**
+     * Convert a VCalendar object to an object served by CalDAV server.
+     *
+     * @param VCalendar $vcalendar
+     *
+     * @return array
+     */
     private function convertVCalendarToCalendarObject(VCalendar $vcalendar)
     {
 
@@ -278,16 +278,16 @@ class Calendar extends AbstractBackend
         ];
     }
 
-   /**
-    * Store calendar object into given item.
-    * If no item is specified, a new one (PlanningExternalEvent) will be created.
-    *
-    * @param string                             $calendarId    Calendar identifier
-    * @param string                             $calendarData  Seialized VCalendar object
-    * @param CalDAVCompatibleItemInterface|null $item          Item on which input will be stored
-    *
-    * @return boolean
-    */
+    /**
+     * Store calendar object into given item.
+     * If no item is specified, a new one (PlanningExternalEvent) will be created.
+     *
+     * @param string                             $calendarId    Calendar identifier
+     * @param string                             $calendarData  Seialized VCalendar object
+     * @param CalDAVCompatibleItemInterface|null $item          Item on which input will be stored
+     *
+     * @return boolean
+     */
     private function storeCalendarObject($calendarId, $calendarData, CalDAVCompatibleItemInterface $item = null)
     {
 
@@ -366,15 +366,15 @@ class Calendar extends AbstractBackend
         return $this->storeVCalendarData($calendarData, $item->fields['id'], $item->getType());
     }
 
-   /**
-    * Store raw VCalendar data and attach it to given item.
-    *
-    * @param string  $calendarData
-    * @param integer $items_id
-    * @param string  $itemtype
-    *
-    * @return boolean
-    */
+    /**
+     * Store raw VCalendar data and attach it to given item.
+     *
+     * @param string  $calendarData
+     * @param integer $items_id
+     * @param string  $itemtype
+     *
+     * @return boolean
+     */
     private function storeVCalendarData($calendarData, $items_id, $itemtype)
     {
 

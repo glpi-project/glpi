@@ -43,7 +43,7 @@ class CommonITILValidation extends DbTestCase
     {
         $this->login();
 
-       /** Create a group with two users */
+        /** Create a group with two users */
         $group = new \Group();
         $gid = (int)$group->add([
          'name'   => 'Test group'
@@ -90,8 +90,8 @@ class CommonITILValidation extends DbTestCase
             ])
         )->isGreaterThan(0);
 
-       /** Create a rule on ticket creation and update that will
-           request an approval from previouly created group */
+        /** Create a rule on ticket creation and update that will
+         * request an approval from previouly created group */
         $ruleticket = new \RuleTicket();
         $rulecrit   = new \RuleCriteria();
         $condition  = \RuleTicket::ONUPDATE + \RuleTicket::ONADD;
@@ -123,7 +123,7 @@ class CommonITILValidation extends DbTestCase
         ]);
         $this->checkInput($ruleaction, $act_id, $act_input);
 
-       /** Create a ticket, no approval requested */
+        /** Create a ticket, no approval requested */
         $ticket = new \Ticket();
         $tickets_id = $ticket->add($ticket_input = [
          'name'    => "test ticket, will not trigger on rule",
@@ -138,7 +138,7 @@ class CommonITILValidation extends DbTestCase
             ['tickets_id' => $tickets_id]
         ))->isEqualTo(0);
 
-       /** Create a ticket, approval requested */
+        /** Create a ticket, approval requested */
         $ticket = new \Ticket();
         $tickets_id = $ticket->add($ticket_input = [
          'name'               => "test ticket, approval will be added",
@@ -255,7 +255,7 @@ class CommonITILValidation extends DbTestCase
         $this->integer((int)$ticket->getField('global_validation'))->isEqualTo(\CommonITILValidation::REFUSED);
 
        //require 100% for global status to be changed
-       /** Create a ticket, approval requested */
+        /** Create a ticket, approval requested */
         $ticket = new \Ticket();
         $tickets_id = $ticket->add($ticket_input = [
          'name'               => "test ticket, approval will be added",
@@ -390,9 +390,9 @@ class CommonITILValidation extends DbTestCase
         ];
     }
 
-   /**
-    * @dataprovider testComputeValidationProvider
-    */
+    /**
+     * @dataprovider testComputeValidationProvider
+     */
     public function testComputeValidation(
         int $accepted,
         int $refused,

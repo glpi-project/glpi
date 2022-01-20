@@ -102,9 +102,9 @@ class Ticket extends DbTestCase
         ];
     }
 
-   /**
-    * @dataProvider ticketProvider
-    */
+    /**
+     * @dataProvider ticketProvider
+     */
     public function testCreateTicketWithActors($ticketActors)
     {
         $ticket = new \Ticket();
@@ -737,18 +737,18 @@ class Ticket extends DbTestCase
         $this->boolean((bool)$ticket->canUserAddFollowups(\Session::getLoginUserID()))->isFalse();
     }
 
-   /**
-    * Checks showForm() output
-    *
-    * @param \Ticket $ticket   Ticket instance
-    * @param boolean $name     Name is editable
-    * @param boolean $textarea Content is editable
-    * @param boolean $priority Priority can be changed
-    * @param boolean $save     Save button is present
-    * @param boolean $assign   Can assign
-    *
-    * @return void
-    */
+    /**
+     * Checks showForm() output
+     *
+     * @param \Ticket $ticket   Ticket instance
+     * @param boolean $name     Name is editable
+     * @param boolean $textarea Content is editable
+     * @param boolean $priority Priority can be changed
+     * @param boolean $save     Save button is present
+     * @param boolean $assign   Can assign
+     *
+     * @return void
+     */
     private function checkFormOutput(
         \Ticket $ticket,
         $name = true,
@@ -1627,9 +1627,9 @@ class Ticket extends DbTestCase
         ];
     }
 
-   /**
-    * @dataProvider inputProvider
-    */
+    /**
+     * @dataProvider inputProvider
+     */
     public function testPrepareInputForAdd($input, $expected)
     {
         $this
@@ -1815,9 +1815,9 @@ class Ticket extends DbTestCase
         ];
     }
 
-   /**
-    * @dataProvider computePriorityProvider
-    */
+    /**
+     * @dataProvider computePriorityProvider
+     */
     public function testComputePriority($input, $urgency, $impact, $priority)
     {
         $this->login();
@@ -1890,9 +1890,9 @@ class Ticket extends DbTestCase
         $this->array($input['_tag_filename'])->size->isEqualTo(0);
     }
 
-   /**
-    * @see self::testCanTakeIntoAccount()
-    */
+    /**
+     * @see self::testCanTakeIntoAccount()
+     */
     protected function canTakeIntoAccountProvider()
     {
         return [
@@ -2013,16 +2013,16 @@ class Ticket extends DbTestCase
         ];
     }
 
-   /**
-    * Tests ability to take a ticket into account.
-    *
-    * @param array   $input    Input used to create the ticket
-    * @param array   $user     Array containing 'login' and 'password' fields of tested user,
-    *                          and a 'rights' array if rights have to be forced
-    * @param boolean $expected Expected result of "Ticket::canTakeIntoAccount()" method
-    *
-    * @dataProvider canTakeIntoAccountProvider
-    */
+    /**
+     * Tests ability to take a ticket into account.
+     *
+     * @param array   $input    Input used to create the ticket
+     * @param array   $user     Array containing 'login' and 'password' fields of tested user,
+     *                          and a 'rights' array if rights have to be forced
+     * @param boolean $expected Expected result of "Ticket::canTakeIntoAccount()" method
+     *
+     * @dataProvider canTakeIntoAccountProvider
+     */
     public function testCanTakeIntoAccount(array $input, array $user, $expected)
     {
        // Create a ticket
@@ -2081,9 +2081,9 @@ class Ticket extends DbTestCase
         }
     }
 
-   /**
-    * Tests taken into account state.
-    */
+    /**
+     * Tests taken into account state.
+     */
     public function testIsAlreadyTakenIntoAccount()
     {
 
@@ -2173,10 +2173,10 @@ class Ticket extends DbTestCase
         $this->integer((int)$ticket->fields['status'])->isEqualTo(\CommonITILObject::SOLVED);
     }
 
-   /**
-    * @see self::testTakeIntoAccountDelayComputationOnCreate()
-    * @see self::testTakeIntoAccountDelayComputationOnUpdate()
-    */
+    /**
+     * @see self::testTakeIntoAccountDelayComputationOnCreate()
+     * @see self::testTakeIntoAccountDelayComputationOnUpdate()
+     */
     protected function takeIntoAccountDelayComputationProvider()
     {
         $this->login();
@@ -2308,14 +2308,14 @@ class Ticket extends DbTestCase
         return $test_cases;
     }
 
-   /**
-    * Tests that "takeintoaccount_delay_stat" is computed (or not) as expected on ticket creation.
-    *
-    * @param array   $input    Input used to create the ticket
-    * @param boolean $computed Expected computation state
-    *
-    * @dataProvider takeIntoAccountDelayComputationProvider
-    */
+    /**
+     * Tests that "takeintoaccount_delay_stat" is computed (or not) as expected on ticket creation.
+     *
+     * @param array   $input    Input used to create the ticket
+     * @param boolean $computed Expected computation state
+     *
+     * @dataProvider takeIntoAccountDelayComputationProvider
+     */
     public function testTakeIntoAccountDelayComputationOnCreate(array $input, $computed)
     {
 
@@ -2341,14 +2341,14 @@ class Ticket extends DbTestCase
         }
     }
 
-   /**
-    * Tests that "takeintoaccount_delay_stat" is computed (or not) as expected on ticket update.
-    *
-    * @param array   $input     Input used to update the ticket
-    * @param boolean $computed  Expected computation state
-    *
-    * @dataProvider takeIntoAccountDelayComputationProvider
-    */
+    /**
+     * Tests that "takeintoaccount_delay_stat" is computed (or not) as expected on ticket update.
+     *
+     * @param array   $input     Input used to update the ticket
+     * @param boolean $computed  Expected computation state
+     *
+     * @dataProvider takeIntoAccountDelayComputationProvider
+     */
     public function testTakeIntoAccountDelayComputationOnUpdate(array $input, $computed)
     {
 
@@ -2392,9 +2392,9 @@ class Ticket extends DbTestCase
         }
     }
 
-   /**
-    * @see self::testStatusComputationOnCreate()
-    */
+    /**
+     * @see self::testStatusComputationOnCreate()
+     */
     protected function statusComputationOnCreateProvider()
     {
 
@@ -2472,14 +2472,14 @@ class Ticket extends DbTestCase
         ];
     }
 
-   /**
-    * Check computed status on ticket creation..
-    *
-    * @param array   $input     Input used to create the ticket
-    * @param boolean $expected  Expected status
-    *
-    * @dataProvider statusComputationOnCreateProvider
-    */
+    /**
+     * Check computed status on ticket creation..
+     *
+     * @param array   $input     Input used to create the ticket
+     * @param boolean $expected  Expected status
+     *
+     * @dataProvider statusComputationOnCreateProvider
+     */
     public function testStatusComputationOnCreate(array $input, $expected)
     {
 
@@ -2887,9 +2887,9 @@ class Ticket extends DbTestCase
         $this->integer((int)$supplier_count)->isEqualTo(3);
     }
 
-   /**
-    * @see self::testGetAssociatedDocumentsCriteria()
-    */
+    /**
+     * @see self::testGetAssociatedDocumentsCriteria()
+     */
     protected function getAssociatedDocumentsCriteriaProvider()
     {
         $ticket = new \Ticket();
@@ -2996,9 +2996,9 @@ class Ticket extends DbTestCase
         ];
     }
 
-   /**
-    * @dataProvider getAssociatedDocumentsCriteriaProvider
-    */
+    /**
+     * @dataProvider getAssociatedDocumentsCriteriaProvider
+     */
     public function testGetAssociatedDocumentsCriteria($rights, $ticket_id, $bypass_rights, $expected_where)
     {
         $this->login();
@@ -3686,9 +3686,9 @@ HTML
         ];
     }
 
-   /**
-    * @dataProvider convertContentForTicketProvider
-    */
+    /**
+     * @dataProvider convertContentForTicketProvider
+     */
     public function testConvertContentForTicket(string $content, array $files, array $tags, string $expected)
     {
         $this->newTestedInstance();
@@ -3756,9 +3756,9 @@ HTML
         ];
     }
 
-   /**
-    * @dataProvider testIsValidatorProvider
-    */
+    /**
+     * @dataProvider testIsValidatorProvider
+     */
     public function testIsValidator(
         int $tickets_id,
         int $users_id,
@@ -3787,9 +3787,9 @@ HTML
         }
     }
 
-   /**
-    * Tests addTeamMember, deleteTeamMember, and getTeamMembers methods
-    */
+    /**
+     * Tests addTeamMember, deleteTeamMember, and getTeamMembers methods
+     */
     public function testTeamManagement(): void
     {
 

@@ -33,7 +33,7 @@
 
 /**
  * DCRoom Class
-**/
+ **/
 class DCRoom extends CommonDBTM
 {
     use Glpi\Features\DCBreadcrumb;
@@ -202,11 +202,11 @@ class DCRoom extends CommonDBTM
         Toolbox::deletePicture($this->fields['blueprint']);
     }
 
-   /**
-    * Add/remove blueprint picture
-    * @param  array $input the form input
-    * @return array        the altered input
-    */
+    /**
+     * Add/remove blueprint picture
+     * @param  array $input the form input
+     * @return array        the altered input
+     */
     public function manageBlueprint($input)
     {
         if (
@@ -351,13 +351,13 @@ class DCRoom extends CommonDBTM
         self::showForDatacenter($item);
     }
 
-   /**
-    * Print datacenter's roms
-    *
-    * @param Datacenter $datacenter Datacenter object
-    *
-    * @return void|boolean (display) Returns false if there is a rights error.
-   **/
+    /**
+     * Print datacenter's roms
+     *
+     * @param Datacenter $datacenter Datacenter object
+     *
+     * @return void|boolean (display) Returns false if there is a rights error.
+     **/
     public static function showForDatacenter(Datacenter $datacenter)
     {
         global $DB;
@@ -449,13 +449,13 @@ class DCRoom extends CommonDBTM
         }
     }
 
-   /**
-    * Get already filled places
-    *
-    * @param string $current Current position to exclude; defaults to null
-    *
-    * @return array [x => [pos_x], y => [pos_y]]]
-    */
+    /**
+     * Get already filled places
+     *
+     * @param string $current Current position to exclude; defaults to null
+     *
+     * @return array [x => [pos_x], y => [pos_y]]]
+     */
     public function getFilled($current = null)
     {
         global $DB;
@@ -481,11 +481,11 @@ class DCRoom extends CommonDBTM
         return $filled;
     }
 
-   /**
-    * Get all possible positions for current room
-    *
-    * @return array
-    */
+    /**
+     * Get all possible positions for current room
+     *
+     * @return array
+     */
     public function getAllPositions()
     {
         $positions = [];

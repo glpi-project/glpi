@@ -76,9 +76,9 @@ class Dropdown extends DbTestCase
         ];
     }
 
-   /**
-    * @dataProvider dataTestImport
-    */
+    /**
+     * @dataProvider dataTestImport
+     */
     public function testImport($input, $result, $msg)
     {
         $id = \Dropdown::import('UserTitle', $input);
@@ -111,9 +111,9 @@ class Dropdown extends DbTestCase
         ];
     }
 
-   /**
-    * @dataProvider dataTestTreeImport
-    */
+    /**
+     * @dataProvider dataTestTreeImport
+     */
     public function testTreeImport($input, $result, $complete, $msg)
     {
         $input['entities_id'] = getItemByTypeName('Entity', '_test_root_entity', true);
@@ -283,9 +283,9 @@ class Dropdown extends DbTestCase
         ];
     }
 
-   /**
-    * @dataProvider dataGetValueWithUnit
-    */
+    /**
+     * @dataProvider dataGetValueWithUnit
+     */
     public function testGetValueWithUnit($input, $unit, $decimals, $expected)
     {
         $value = $decimals !== null
@@ -766,9 +766,9 @@ class Dropdown extends DbTestCase
         ];
     }
 
-   /**
-    * @dataProvider getDropdownValueProvider
-    */
+    /**
+     * @dataProvider getDropdownValueProvider
+     */
     public function testGetDropdownValue($params, $expected, $session_params = [])
     {
         $this->login();
@@ -933,9 +933,9 @@ class Dropdown extends DbTestCase
         ];
     }
 
-   /**
-    * @dataProvider getDropdownConnectProvider
-    */
+    /**
+     * @dataProvider getDropdownConnectProvider
+     */
     public function testGetDropdownConnect($params, $expected, $session_params = [])
     {
         $this->login();
@@ -1112,9 +1112,9 @@ class Dropdown extends DbTestCase
         ];
     }
 
-   /**
-    * @dataProvider getDropdownNumberProvider
-    */
+    /**
+     * @dataProvider getDropdownNumberProvider
+     */
     public function testGetDropdownNumber($params, $expected)
     {
         global $CFG_GLPI;
@@ -1223,9 +1223,9 @@ class Dropdown extends DbTestCase
         ];
     }
 
-   /**
-    * @dataProvider getDropdownUsersProvider
-    */
+    /**
+     * @dataProvider getDropdownUsersProvider
+     */
     public function testGetDropdownUsers($params, $expected)
     {
         $this->login();
@@ -1235,12 +1235,12 @@ class Dropdown extends DbTestCase
         $this->array($result)->isIdenticalTo($expected);
     }
 
-   /**
-    * Test getDropdownValue with paginated results on
-    * an CommonTreeDropdown
-    *
-    * @return void
-    */
+    /**
+     * Test getDropdownValue with paginated results on
+     * an CommonTreeDropdown
+     *
+     * @return void
+     */
     public function testGetDropdownValuePaginate()
     {
        //let's add some content in Locations

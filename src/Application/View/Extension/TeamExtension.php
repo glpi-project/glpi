@@ -52,7 +52,7 @@ class TeamExtension extends AbstractExtension
     public function getTeamRoleName($itemtype, int $role, int $nb = 1): string
     {
         if (\Toolbox::hasTrait($itemtype, Teamwork::class)) {
-           /** @var Teamwork $itemtype */
+            /** @var Teamwork $itemtype */
             return $itemtype::getTeamRoleName($role, $nb);
         }
         return '';

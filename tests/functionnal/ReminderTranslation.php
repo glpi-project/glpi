@@ -81,15 +81,15 @@ class ReminderTranslation extends DbTestCase
         $this->string($text)->isIdenticalTo($text_fr);
     }
 
-   /**
-    * Add translation into database
-    *
-    * @param \Reminder $reminder
-    * @param string    $name Reminder name
-    * @param string    $lang Reminder language, defaults to null
-    *
-    * @return void
-    */
+    /**
+     * Add translation into database
+     *
+     * @param \Reminder $reminder
+     * @param string    $name Reminder name
+     * @param string    $lang Reminder language, defaults to null
+     *
+     * @return void
+     */
     private function addTranslation(\Reminder $reminder, $text, $lang = 'NULL')
     {
         $this->login();

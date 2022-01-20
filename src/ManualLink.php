@@ -190,11 +190,11 @@ JAVASCRIPT
         return $this->prepareInput($input);
     }
 
-   /**
-    * Prepare input (for add/update).
-    *
-    * @return array|false
-    */
+    /**
+     * Prepare input (for add/update).
+     *
+     * @return array|false
+     */
     private function prepareInput(array $input)
     {
         if (array_key_exists('url', $input) && !empty($input['url']) && !Toolbox::isValidWebUrl($input['url'])) {
@@ -209,11 +209,11 @@ JAVASCRIPT
         return $input;
     }
 
-   /**
-    * Show manual links for an item.
-    *
-    * @return void
-    */
+    /**
+     * Show manual links for an item.
+     *
+     * @return void
+     */
     private static function showForItem(CommonDBTM $item): void
     {
         global $DB;
@@ -344,13 +344,13 @@ JAVASCRIPT
         return parent::getSpecificValueToDisplay($field, $values, $options);
     }
 
-   /**
-    * Returns link HTML code.
-    *
-    * @param array $fields
-    *
-    * @return string
-    */
+    /**
+     * Returns link HTML code.
+     *
+     * @param array $fields
+     *
+     * @return string
+     */
     private static function getLinkHtml(array $fields): string
     {
 

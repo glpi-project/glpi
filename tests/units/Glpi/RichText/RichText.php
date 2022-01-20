@@ -317,9 +317,9 @@ HTML,
         ];
     }
 
-   /**
-    * @dataProvider getSafeHtmlProvider
-    */
+    /**
+     * @dataProvider getSafeHtmlProvider
+     */
     public function testGetSafeHtml(
         ?string $content,
         bool $encode_output_entities,
@@ -437,9 +437,9 @@ PLAINTEXT,
         ];
     }
 
-   /**
-    * @dataProvider getTextFromHtmlProvider
-    */
+    /**
+     * @dataProvider getTextFromHtmlProvider
+     */
     public function testGetTextFromHtml(
         string $content,
         bool $keep_presentation,
@@ -478,9 +478,9 @@ HTML,
         ];
     }
 
-   /**
-    * @dataProvider isRichTextHtmlContentProvider
-    */
+    /**
+     * @dataProvider isRichTextHtmlContentProvider
+     */
     public function testIsRichTextHtmlContent(string $content, bool $expected_result)
     {
         $richtext = $this->newTestedInstance();

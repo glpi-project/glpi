@@ -33,7 +33,7 @@
 
 /**
  * SolutionTemplate Class
-**/
+ **/
 class SolutionTemplate extends AbstractITILChildTemplate
 {
    // From CommonDBTM

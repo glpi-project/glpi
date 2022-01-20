@@ -273,16 +273,16 @@ class Item_SoftwareLicense extends CommonDBRelation
     }
 
 
-   /**
-    * Get number of installed licenses of a license
-    *
-    * @param integer $softwarelicenses_id license ID
-    * @param integer $entity              to search for item in (default = all entities)
-    *                                     (default '') -1 means no entity restriction
-    * @param string $itemtype             Item type to filter on. Use null for all itemtypes
-    *
-    * @return integer number of installations
-   **/
+    /**
+     * Get number of installed licenses of a license
+     *
+     * @param integer $softwarelicenses_id license ID
+     * @param integer $entity              to search for item in (default = all entities)
+     *                                     (default '') -1 means no entity restriction
+     * @param string $itemtype             Item type to filter on. Use null for all itemtypes
+     *
+     * @return integer number of installations
+     **/
     public static function countForLicense($softwarelicenses_id, $entity = '', $itemtype = null)
     {
         global $DB;
@@ -344,13 +344,13 @@ class Item_SoftwareLicense extends CommonDBRelation
     }
 
 
-   /**
-    * Get number of installed licenses of a software
-    *
-    * @param integer $softwares_id software ID
-    *
-    * @return integer number of installations
-   **/
+    /**
+     * Get number of installed licenses of a software
+     *
+     * @param integer $softwares_id software ID
+     *
+     * @return integer number of installations
+     **/
     public static function countForSoftware($softwares_id)
     {
         global $DB;
@@ -422,13 +422,13 @@ class Item_SoftwareLicense extends CommonDBRelation
     }
 
 
-   /**
-    * Show number of installation per entity
-    *
-    * @param SoftwareLicense $license SoftwareLicense instance
-    *
-    * @return void
-   **/
+    /**
+     * Show number of installation per entity
+     *
+     * @param SoftwareLicense $license SoftwareLicense instance
+     *
+     * @return void
+     **/
     public static function showForLicenseByEntity(SoftwareLicense $license)
     {
         global $DB;
@@ -501,13 +501,13 @@ class Item_SoftwareLicense extends CommonDBRelation
     }
 
 
-   /**
-    * Show items linked to a License
-    *
-    * @param SoftwareLicense $license SoftwareLicense instance
-    *
-    * @return void
-   **/
+    /**
+     * Show items linked to a License
+     *
+     * @param SoftwareLicense $license SoftwareLicense instance
+     *
+     * @return void
+     **/
     public static function showForLicense(SoftwareLicense $license)
     {
         global $DB, $CFG_GLPI;
@@ -905,14 +905,14 @@ JAVASCRIPT;
     }
 
 
-   /**
-    * Update license associated on a computer
-    *
-    * @param integer $licID               ID of the install software lienk
-    * @param integer $softwarelicenses_id ID of the new license
-    *
-    * @return void
-   **/
+    /**
+     * Update license associated on a computer
+     *
+     * @param integer $licID               ID of the install software lienk
+     * @param integer $softwarelicenses_id ID of the new license
+     *
+     * @return void
+     **/
     public function upgrade($licID, $softwarelicenses_id)
     {
 
@@ -928,15 +928,15 @@ JAVASCRIPT;
     }
 
 
-   /**
-    * Get licenses list corresponding to an installation
-    *
-    * @param string $itemtype          Type of item
-    * @param integer $items_id         ID of the item
-    * @param integer $softwareversions_id ID of the version
-    *
-    * @return void
-   **/
+    /**
+     * Get licenses list corresponding to an installation
+     *
+     * @param string $itemtype          Type of item
+     * @param integer $items_id         ID of the item
+     * @param integer $softwareversions_id ID of the version
+     *
+     * @return void
+     **/
     public static function getLicenseForInstallation($itemtype, $items_id, $softwareversions_id)
     {
         global $DB;
@@ -1023,15 +1023,15 @@ JAVASCRIPT;
     }
 
 
-   /**
-    * Count number of licenses for a software
-    *
-    * @since 0.85
-    *
-    * @param integer $softwares_id Software ID
-    *
-    * @return void
-    **/
+    /**
+     * Count number of licenses for a software
+     *
+     * @since 0.85
+     *
+     * @param integer $softwares_id Software ID
+     *
+     * @return void
+     **/
     public static function countLicenses($softwares_id)
     {
         global $DB;

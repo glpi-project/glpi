@@ -278,14 +278,14 @@ class Item_SoftwareVersion extends CommonDBRelation
         return false;
     }
 
-   /**
-    * Get number of installed licenses of a version
-    *
-    * @param integer          $softwareversions_id version ID
-    * @param string|integer[] $entity              to search for item in ('' = all active entities)
-    *
-    * @return integer number of installations
-   **/
+    /**
+     * Get number of installed licenses of a version
+     *
+     * @param integer          $softwareversions_id version ID
+     * @param string|integer[] $entity              to search for item in ('' = all active entities)
+     *
+     * @return integer number of installations
+     **/
     public static function countForVersion($softwareversions_id, $entity = '')
     {
         global $DB;
@@ -341,13 +341,13 @@ class Item_SoftwareVersion extends CommonDBRelation
     }
 
 
-   /**
-    * Get number of installed versions of a software
-    *
-    * @param $softwares_id software ID
-    *
-    * @return number of installations
-   **/
+    /**
+     * Get number of installed versions of a software
+     *
+     * @param $softwares_id software ID
+     *
+     * @return number of installations
+     **/
     public static function countForSoftware($softwares_id)
     {
         global $DB;
@@ -416,40 +416,40 @@ class Item_SoftwareVersion extends CommonDBRelation
     }
 
 
-   /**
-    * Show installation of a Software
-    *
-    * @param $software Software object
-    *
-    * @return void
-   **/
+    /**
+     * Show installation of a Software
+     *
+     * @param $software Software object
+     *
+     * @return void
+     **/
     public static function showForSoftware(Software $software)
     {
         self::showInstallations($software->getField('id'), 'softwares_id');
     }
 
 
-   /**
-    * Show installation of a Version
-    *
-    * @param $version SoftwareVersion object
-    *
-    * @return void
-   **/
+    /**
+     * Show installation of a Version
+     *
+     * @param $version SoftwareVersion object
+     *
+     * @return void
+     **/
     public static function showForVersion(SoftwareVersion $version)
     {
         self::showInstallations($version->getField('id'), 'id');
     }
 
 
-   /**
-    * Show installations of a software
-    *
-    * @param integer $searchID  value of the ID to search
-    * @param string  $crit      to search : softwares_id (software) or id (version)
-    *
-    * @return void
-   **/
+    /**
+     * Show installations of a software
+     *
+     * @param integer $searchID  value of the ID to search
+     * @param string  $crit      to search : softwares_id (software) or id (version)
+     *
+     * @return void
+     **/
     private static function showInstallations($searchID, $crit)
     {
         global $DB, $CFG_GLPI;
@@ -842,13 +842,13 @@ class Item_SoftwareVersion extends CommonDBRelation
     }
 
 
-   /**
-    * Show number of installations per entity
-    *
-    * @param $version SoftwareVersion object
-    *
-    * @return void
-   **/
+    /**
+     * Show number of installations per entity
+     *
+     * @param $version SoftwareVersion object
+     *
+     * @return void
+     **/
     public static function showForVersionByEntity(SoftwareVersion $version)
     {
         global $DB;
@@ -893,15 +893,15 @@ class Item_SoftwareVersion extends CommonDBRelation
     }
 
 
-   /**
-    * Get software related to a given item
-    *
-    * @param CommonDBTM $item  Item instance
-    * @param string     $sort  Field to sort on
-    * @param string     $order Sort order
-    *
-    * @return DBmysqlIterator
-    */
+    /**
+     * Get software related to a given item
+     *
+     * @param CommonDBTM $item  Item instance
+     * @param string     $sort  Field to sort on
+     * @param string     $order Sort order
+     *
+     * @return DBmysqlIterator
+     */
     public static function getFromItem(CommonDBTM $item, $sort = null, $order = null): DBmysqlIterator
     {
         global $DB;
@@ -964,14 +964,14 @@ class Item_SoftwareVersion extends CommonDBRelation
         return $iterator;
     }
 
-   /**
-    * Show software installed on a computer
-    *
-    * @param Computer $comp         Computer object
-    * @param boolean  $withtemplate template case of the view process
-    *
-    * @return void
-   **/
+    /**
+     * Show software installed on a computer
+     *
+     * @param Computer $comp         Computer object
+     * @param boolean  $withtemplate template case of the view process
+     *
+     * @return void
+     **/
     public static function showForItem(CommonDBTM $item, $withtemplate = 0)
     {
         global $DB;
@@ -1266,18 +1266,18 @@ class Item_SoftwareVersion extends CommonDBRelation
     }
 
 
-   /**
-    * Display a installed software for a category
-    *
-    * @param array   $data         data used to display
-    * @param string  $itemtype     Type of the item
-    * @param integer $items_id     ID of the item
-    * @param boolean $withtemplate template case of the view process
-    * @param boolean $canedit      user can edit software ?
-    * @param boolean $display      display and calculate if true or just calculate
-    *
-    * @return integer[] Found licenses ids
-   **/
+    /**
+     * Display a installed software for a category
+     *
+     * @param array   $data         data used to display
+     * @param string  $itemtype     Type of the item
+     * @param integer $items_id     ID of the item
+     * @param boolean $withtemplate template case of the view process
+     * @param boolean $canedit      user can edit software ?
+     * @param boolean $display      display and calculate if true or just calculate
+     *
+     * @return integer[] Found licenses ids
+     **/
     private static function softwareByCategory(
         $data,
         $itemtype,
@@ -1398,15 +1398,15 @@ class Item_SoftwareVersion extends CommonDBRelation
     }
 
 
-   /**
-    * Display a software for a License (not installed)
-    *
-    * @param array   $data         data used to display
-    * @param boolean $withtemplate template case of the view process
-    * @param boolean $canedit      user can edit software ?
-    *
-    * @return void
-   */
+    /**
+     * Display a software for a License (not installed)
+     *
+     * @param array   $data         data used to display
+     * @param boolean $withtemplate template case of the view process
+     * @param boolean $canedit      user can edit software ?
+     *
+     * @return void
+     */
     private static function displaySoftwareByLicense($data, $withtemplate, $canedit)
     {
 
@@ -1460,15 +1460,15 @@ class Item_SoftwareVersion extends CommonDBRelation
     }
 
 
-   /**
-    * Update version installed on a item
-    *
-    * @param integer $instID              ID of the installed software link
-    * @param integer $softwareversions_id ID of the new version
-    * @param boolean $dohistory           Do history ? (default 1)
-    *
-    * @return void
-   **/
+    /**
+     * Update version installed on a item
+     *
+     * @param integer $instID              ID of the installed software link
+     * @param integer $softwareversions_id ID of the new version
+     * @param boolean $dohistory           Do history ? (default 1)
+     *
+     * @return void
+     **/
     public function upgrade($instID, $softwareversions_id, $dohistory = 1)
     {
 

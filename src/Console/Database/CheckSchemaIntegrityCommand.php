@@ -41,18 +41,18 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class CheckSchemaIntegrityCommand extends AbstractCommand
 {
-   /**
-    * Error code returned when failed to read empty SQL file.
-    *
-    * @var integer
-    */
+    /**
+     * Error code returned when failed to read empty SQL file.
+     *
+     * @var integer
+     */
     const ERROR_UNABLE_TO_READ_EMPTYSQL = 1;
 
-   /**
-    * Error code returned when differences are found.
-    *
-    * @var integer
-    */
+    /**
+     * Error code returned when differences are found.
+     *
+     * @var integer
+     */
     const ERROR_FOUND_DIFFERENCES = 2;
 
     protected function configure()

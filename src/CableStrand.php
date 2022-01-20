@@ -94,11 +94,11 @@ class CableStrand extends CommonDropdown
         return true;
     }
 
-   /**
-    * Print the HTML array of items related to cable strand.
-    *
-    * @return void
-    */
+    /**
+     * Print the HTML array of items related to cable strand.
+     *
+     * @return void
+     */
     public function showItems()
     {
         global $DB;

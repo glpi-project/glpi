@@ -40,11 +40,11 @@ use DBmysql;
  */
 class DbConfiguration extends AbstractRequirement
 {
-   /**
-    * DB instance.
-    *
-    * @var DBmysql
-    */
+    /**
+     * DB instance.
+     *
+     * @var DBmysql
+     */
     private $db;
 
     public function __construct(DBmysql $db)

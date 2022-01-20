@@ -35,7 +35,7 @@
  * Update from 9.4.5 to 9.4.6
  *
  * @return bool for success (will die for most error)
-**/
+ **/
 function update945to946()
 {
     global $DB, $migration;

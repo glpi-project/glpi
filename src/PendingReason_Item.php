@@ -67,14 +67,14 @@ class PendingReason_Item extends CommonDBRelation
         return self::getById($row_found['id']);
     }
 
-   /**
-    * Create a pendingreason_item for a given item
-    *
-    * @param CommonDBTM $item
-    * @param array      $fields field to insert (pendingreasons_id, followup_frequency
-    *                           and followups_before_resolution)
-    * @return bool true on success
-    */
+    /**
+     * Create a pendingreason_item for a given item
+     *
+     * @param CommonDBTM $item
+     * @param array      $fields field to insert (pendingreasons_id, followup_frequency
+     *                           and followups_before_resolution)
+     * @return bool true on success
+     */
     public static function createForItem(CommonDBTM $item, array $fields): bool
     {
         $em = new self();
@@ -103,13 +103,13 @@ class PendingReason_Item extends CommonDBRelation
         return $success;
     }
 
-   /**
-    * Update a pendingreason_item for a given item
-    *
-    * @param CommonDBTM $item
-    * @param array      $fields fields to update
-    * @return bool true on success
-    */
+    /**
+     * Update a pendingreason_item for a given item
+     *
+     * @param CommonDBTM $item
+     * @param array      $fields fields to update
+     * @return bool true on success
+     */
     public static function updateForItem(CommonDBTM $item, array $fields): bool
     {
         $em = new self();
@@ -133,12 +133,12 @@ class PendingReason_Item extends CommonDBRelation
         return $success;
     }
 
-   /**
-    * Delete a pendingreason_item for a given item
-    *
-    * @param CommonDBTM $item
-    * @return bool true on success
-    */
+    /**
+     * Delete a pendingreason_item for a given item
+     *
+     * @param CommonDBTM $item
+     * @return bool true on success
+     */
     public static function deleteForItem(CommonDBTM $item): bool
     {
         $em = new self();
@@ -164,11 +164,11 @@ class PendingReason_Item extends CommonDBRelation
         return $success;
     }
 
-   /**
-    * Get auto resolve date
-    *
-    * @return string|bool date (Y-m-d H:i:s) or false
-    */
+    /**
+     * Get auto resolve date
+     *
+     * @return string|bool date (Y-m-d H:i:s) or false
+     */
     public function getNextFollowupDate()
     {
         if (empty($this->fields['followup_frequency'])) {
@@ -184,11 +184,11 @@ class PendingReason_Item extends CommonDBRelation
         return $date->format("Y-m-d H:i:s");
     }
 
-   /**
-    * Get auto resolve date
-    *
-    * @return string|bool date (Y-m-d H:i:s) or false
-    */
+    /**
+     * Get auto resolve date
+     *
+     * @return string|bool date (Y-m-d H:i:s) or false
+     */
     public function getAutoResolvedate()
     {
         if (empty($this->fields['followup_frequency']) || empty($this->fields['followups_before_resolution'])) {
@@ -202,14 +202,14 @@ class PendingReason_Item extends CommonDBRelation
         return $date->format("Y-m-d H:i:s");
     }
 
-   /**
-    * Check that the given timeline event is the lastest "pending" action for
-    * the given item
-    *
-    * @param CommonITILObject $item
-    * @param CommonDBTM       $timeline_item
-    * @return boolean
-    */
+    /**
+     * Check that the given timeline event is the lastest "pending" action for
+     * the given item
+     *
+     * @param CommonITILObject $item
+     * @param CommonDBTM       $timeline_item
+     * @return boolean
+     */
     public static function isLastPendingForItem(
         CommonITILObject $item,
         CommonDBTM $timeline_item
@@ -258,13 +258,13 @@ class PendingReason_Item extends CommonDBRelation
         return $pending_item->fields['items_id'] == $timeline_item->fields['id'] && $pending_item->fields['itemtype'] == $timeline_item::getType();
     }
 
-   /**
-    * Check that the given timeline_item is the last one added in it's
-    * parent timeline
-    *
-    * @param CommonDBTM $timeline_item
-    * @return boolean
-    */
+    /**
+     * Check that the given timeline_item is the last one added in it's
+     * parent timeline
+     *
+     * @param CommonDBTM $timeline_item
+     * @return boolean
+     */
     public static function isLastTimelineItem(CommonDBTM $timeline_item): bool
     {
         global $DB;
@@ -321,12 +321,12 @@ class PendingReason_Item extends CommonDBRelation
         return $row['max_date_creation'] == $timeline_item->fields['date_creation'];
     }
 
-   /**
-    * Handle edit on a "pending action" from an item the timeline
-    *
-    * @param CommonDBTM $timeline_item
-    * @return array
-    */
+    /**
+     * Handle edit on a "pending action" from an item the timeline
+     *
+     * @param CommonDBTM $timeline_item
+     * @return array
+     */
     public static function handleTimelineEdits(CommonDBTM $timeline_item): array
     {
 

@@ -84,11 +84,11 @@ class Drive extends Device
         return $this->data;
     }
 
-   /**
-    * Is current data a drive
-    *
-    * @return boolean
-    */
+    /**
+     * Is current data a drive
+     *
+     * @return boolean
+     */
     public function isDrive($data)
     {
         $drives_regex = [
@@ -129,11 +129,11 @@ class Drive extends Device
         return $conf->component_drive == 1;
     }
 
-   /**
-    * Get harddrives data
-    *
-    * @return HardDrive
-    */
+    /**
+     * Get harddrives data
+     *
+     * @return HardDrive
+     */
     public function getPreparedHarddrives(): array
     {
         return $this->prepared_harddrives;

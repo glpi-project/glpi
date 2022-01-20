@@ -35,7 +35,7 @@
  * Update from 0.84 to 0.85
  *
  * @return bool for success (will die for most error)
-**/
+ **/
 function update084xto0850()
 {
     global $DB, $migration;

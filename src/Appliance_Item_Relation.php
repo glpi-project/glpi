@@ -46,13 +46,13 @@ class Appliance_Item_Relation extends CommonDBRelation
         return _nx('appliance', 'Relation', 'Relations', $nb);
     }
 
-   /**
-    * Get item types that can be linked to an appliance item
-    *
-    * @param boolean $all Get all possible types or only allowed ones
-    *
-    * @return array
-    */
+    /**
+     * Get item types that can be linked to an appliance item
+     *
+     * @param boolean $all Get all possible types or only allowed ones
+     *
+     * @return array
+     */
     public static function getTypes($all = false): array
     {
         global $CFG_GLPI;
@@ -95,13 +95,13 @@ class Appliance_Item_Relation extends CommonDBRelation
         return $this->prepareInput($input);
     }
 
-   /**
-    * Prepares input (for update and add)
-    *
-    * @param array $input Input data
-    *
-    * @return array
-    */
+    /**
+     * Prepares input (for update and add)
+     *
+     * @param array $input Input data
+     *
+     * @return array
+     */
     private function prepareInput($input)
     {
         $error_detected = [];
@@ -140,14 +140,14 @@ class Appliance_Item_Relation extends CommonDBRelation
         return $input;
     }
 
-   /**
-    * count number of appliance's items relations for a give item
-    *
-    * @param CommonDBTM $item the give item
-    * @param array $extra_types_where additional criteria to pass to the count function
-    *
-    * @return int number of relations
-    */
+    /**
+     * count number of appliance's items relations for a give item
+     *
+     * @param CommonDBTM $item the give item
+     * @param array $extra_types_where additional criteria to pass to the count function
+     *
+     * @return int number of relations
+     */
     public static function countForMainItem(CommonDBTM $item, $extra_types_where = [])
     {
         $types = self::getTypes();
@@ -165,13 +165,13 @@ class Appliance_Item_Relation extends CommonDBRelation
     }
 
 
-   /**
-    * return an array of relations for a given Appliance_Item's id
-    *
-    * @param int $appliances_items_id
-    *
-    * @return array array of string with icons and names
-    */
+    /**
+     * return an array of relations for a given Appliance_Item's id
+     *
+     * @param int $appliances_items_id
+     *
+     * @return array array of string with icons and names
+     */
     public static function getForApplianceItem(int $appliances_items_id = 0)
     {
         global $DB;
@@ -197,17 +197,17 @@ class Appliance_Item_Relation extends CommonDBRelation
     }
 
 
-   /**
-    * return a mini list of relation for a given Appliance_Item's id
-    * It's need the javascript return by self::getListJSForApplianceItem
-    * we separate in two function because the list is usually displayed in a form tag
-    * and we need to display an additionnal form.
-    *
-    * @param int $appliances_items_id the id of Appliance_Item
-    * @param bool $canedit do we have the right to edit
-    *
-    * @return string the html for the list
-    */
+    /**
+     * return a mini list of relation for a given Appliance_Item's id
+     * It's need the javascript return by self::getListJSForApplianceItem
+     * we separate in two function because the list is usually displayed in a form tag
+     * and we need to display an additionnal form.
+     *
+     * @param int $appliances_items_id the id of Appliance_Item
+     * @param bool $canedit do we have the right to edit
+     *
+     * @return string the html for the list
+     */
     public static function showListForApplianceItem(int $appliances_items_id = 0, bool $canedit = true)
     {
         $relations_str = "";
@@ -229,16 +229,16 @@ class Appliance_Item_Relation extends CommonDBRelation
     }
 
 
-   /**
-    * Return the corresponding javascript to an mini html list of relation
-    * see self::showListForApplianceItem docblock
-    *
-    * @param CommonDBTM $item the item where the mini list will be displayed,
-    *                         we use this to check entities/is_recursive attributes
-    * @param bool $canedit do we have the right to edit
-    *
-    * @return string the javascript
-    */
+    /**
+     * Return the corresponding javascript to an mini html list of relation
+     * see self::showListForApplianceItem docblock
+     *
+     * @param CommonDBTM $item the item where the mini list will be displayed,
+     *                         we use this to check entities/is_recursive attributes
+     * @param bool $canedit do we have the right to edit
+     *
+     * @return string the javascript
+     */
     public static function getListJSForApplianceItem(
         CommonDBTM $item = null,
         bool $canedit = true

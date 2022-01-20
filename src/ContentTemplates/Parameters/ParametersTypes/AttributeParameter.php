@@ -44,21 +44,21 @@ use Glpi\ContentTemplates\Parameters\TemplatesParametersInterface;
  */
 class AttributeParameter extends AbstractParameterType
 {
-   /**
-    * Suggested twig filter to use when displaying the value of this parameter
-    * This may be a 'raw" filter when the value is raw html, a 'date' filter
-    * when dealing with timestamp so the user know how to reformat the date as
-    * needed, ...
-    *
-    * @var string
-    */
+    /**
+     * Suggested twig filter to use when displaying the value of this parameter
+     * This may be a 'raw" filter when the value is raw html, a 'date' filter
+     * when dealing with timestamp so the user know how to reformat the date as
+     * needed, ...
+     *
+     * @var string
+     */
     protected $filter;
 
-   /**
-    * @param string $key    Key to access this value
-    * @param string $label  Label to display in the autocompletion widget
-    * @param string $filter Recommanded twig filter to apply on this value
-    */
+    /**
+     * @param string $key    Key to access this value
+     * @param string $label  Label to display in the autocompletion widget
+     * @param string $filter Recommanded twig filter to apply on this value
+     */
     public function __construct(string $key, string $label, string $filter = "")
     {
         parent::__construct($key, $label);

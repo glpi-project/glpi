@@ -36,9 +36,9 @@ class RuleDictionnaryOperatingSystemArchitectureCollection extends RuleDictionna
     public $item_table  = "glpi_operatingsystemarchitectures";
     public $menu_option = "os_arch";
 
-   /**
-    * @see RuleCollection::getTitle()
-   **/
+    /**
+     * @see RuleCollection::getTitle()
+     **/
     public function getTitle()
     {
         return __('Dictionnary of operating system architectures');

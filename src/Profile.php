@@ -33,7 +33,7 @@
 
 /**
  * Profile class
-**/
+ **/
 class Profile extends CommonDBTM
 {
    // Specific ones
@@ -400,13 +400,13 @@ class Profile extends CommonDBTM
     }
 
 
-   /**
-    * check right before delete
-    *
-    * @since 0.85
-    *
-    * @return boolean
-   **/
+    /**
+     * check right before delete
+     *
+     * @since 0.85
+     *
+     * @return boolean
+     **/
     public function pre_deleteItem()
     {
         if (
@@ -466,9 +466,9 @@ class Profile extends CommonDBTM
     }
 
 
-   /**
-    * Unset unused rights for helpdesk
-   **/
+    /**
+     * Unset unused rights for helpdesk
+     **/
     public function cleanProfile()
     {
 
@@ -529,13 +529,13 @@ class Profile extends CommonDBTM
     }
 
 
-   /**
-    * Get SQL restrict criteria to determine profiles with less rights than the active one
-    *
-    * @since 9.3.1
-    *
-    * @return array
-   **/
+    /**
+     * Get SQL restrict criteria to determine profiles with less rights than the active one
+     *
+     * @since 9.3.1
+     *
+     * @return array
+     **/
     public static function getUnderActiveProfileRestrictCriteria()
     {
 
@@ -593,13 +593,13 @@ class Profile extends CommonDBTM
     }
 
 
-   /**
-    * Is the current user have more right than all profiles in parameters
-    *
-    * @param $IDs array of profile ID to test
-    *
-    * @return boolean true if have more right
-   **/
+    /**
+     * Is the current user have more right than all profiles in parameters
+     *
+     * @param $IDs array of profile ID to test
+     *
+     * @return boolean true if have more right
+     **/
     public static function currentUserHaveMoreRightThan($IDs = [])
     {
         global $DB;
@@ -665,16 +665,16 @@ class Profile extends CommonDBTM
         $this->fields = array_merge($this->fields, ProfileRight::getProfileRights($this->getID()));
     }
 
-   /**
-    * Print the profile form headers
-    *
-    * @param $ID        integer : Id of the item to print
-    * @param $options   array of possible options
-    *     - target filename : where to go when done.
-    *     - withtemplate boolean : template or basic item
-    *
-    * @return boolean item found
-    **/
+    /**
+     * Print the profile form headers
+     *
+     * @param $ID        integer : Id of the item to print
+     * @param $options   array of possible options
+     *     - target filename : where to go when done.
+     *     - withtemplate boolean : template or basic item
+     *
+     * @return boolean item found
+     **/
     public function showForm($ID, array $options = [])
     {
 
@@ -732,11 +732,11 @@ class Profile extends CommonDBTM
     }
 
 
-   /**
-    * Print the helpdesk right form for the current profile
-    *
-    * @since 0.85
-   **/
+    /**
+     * Print the helpdesk right form for the current profile
+     *
+     * @since 0.85
+     **/
     public function showFormTrackingHelpdesk()
     {
         if (!self::canView()) {
@@ -872,11 +872,11 @@ class Profile extends CommonDBTM
     }
 
 
-   /**
-    * Print the helpdesk right form for the current profile
-    *
-    * @since 0.85
-   **/
+    /**
+     * Print the helpdesk right form for the current profile
+     *
+     * @since 0.85
+     **/
     public function showFormToolsHelpdesk()
     {
         if (!self::canView()) {
@@ -922,15 +922,15 @@ class Profile extends CommonDBTM
 
 
 
-   /**
-    * Print the Asset rights form for the current profile
-    *
-    * @since 0.85
-    *
-    * @param $openform  boolean open the form (true by default)
-    * @param $closeform boolean close the form (true by default)
-    *
-   **/
+    /**
+     * Print the Asset rights form for the current profile
+     *
+     * @since 0.85
+     *
+     * @param $openform  boolean open the form (true by default)
+     * @param $closeform boolean close the form (true by default)
+     *
+     **/
     public function showFormAsset($openform = true, $closeform = true)
     {
 
@@ -1004,14 +1004,14 @@ class Profile extends CommonDBTM
     }
 
 
-   /**
-    * Print the Management rights form for the current profile
-    *
-    * @since 0.85 (before showFormInventory)
-    *
-    * @param $openform  boolean open the form (true by default)
-    * @param $closeform boolean close the form (true by default)
-   **/
+    /**
+     * Print the Management rights form for the current profile
+     *
+     * @since 0.85 (before showFormInventory)
+     *
+     * @param $openform  boolean open the form (true by default)
+     * @param $closeform boolean close the form (true by default)
+     **/
     public function showFormManagement($openform = true, $closeform = true)
     {
 
@@ -1119,14 +1119,14 @@ class Profile extends CommonDBTM
     }
 
 
-   /**
-    * Print the Tools rights form for the current profile
-    *
-    * @since 0.85
-    *
-    * @param $openform  boolean open the form (true by default)
-    * @param $closeform boolean close the form (true by default)
-   **/
+    /**
+     * Print the Tools rights form for the current profile
+     *
+     * @since 0.85
+     *
+     * @param $openform  boolean open the form (true by default)
+     * @param $closeform boolean close the form (true by default)
+     **/
     public function showFormTools($openform = true, $closeform = true)
     {
 
@@ -1193,12 +1193,12 @@ class Profile extends CommonDBTM
     }
 
 
-   /**
-    * Print the Tracking right form for the current profile
-    *
-    * @param $openform     boolean  open the form (true by default)
-    * @param $closeform    boolean  close the form (true by default)
-   **/
+    /**
+     * Print the Tracking right form for the current profile
+     *
+     * @param $openform     boolean  open the form (true by default)
+     * @param $closeform    boolean  close the form (true by default)
+     **/
     public function showFormTracking($openform = true, $closeform = true)
     {
         if (!self::canView()) {
@@ -1392,19 +1392,19 @@ class Profile extends CommonDBTM
     }
 
 
-   /**
-    * Display the matrix of the elements lifecycle of the elements
-    *
-    * @since 0.85
-    *
-    * @param $title          the kind of lifecycle
-    * @param $html_field     field that is sent to _POST
-    * @param $db_field       field inside the DB (to get current state)
-    * @param $statuses       all available statuses for the given cycle (obj::getAllStatusArray())
-    * @param $canedit        can we edit the elements ?
-    *
-    * @return void
-   **/
+    /**
+     * Display the matrix of the elements lifecycle of the elements
+     *
+     * @since 0.85
+     *
+     * @param $title          the kind of lifecycle
+     * @param $html_field     field that is sent to _POST
+     * @param $db_field       field inside the DB (to get current state)
+     * @param $statuses       all available statuses for the given cycle (obj::getAllStatusArray())
+     * @param $canedit        can we edit the elements ?
+     *
+     * @return void
+     **/
     public function displayLifeCycleMatrix($title, $html_field, $db_field, $statuses, $canedit)
     {
 
@@ -1439,12 +1439,12 @@ class Profile extends CommonDBTM
     }
 
 
-   /**
-   * Print the Life Cycles form for the current profile
-   *
-   * @param $openform   boolean  open the form (true by default)
-   * @param $closeform  boolean  close the form (true by default)
-   **/
+    /**
+     * Print the Life Cycles form for the current profile
+     *
+     * @param $openform   boolean  open the form (true by default)
+     * @param $closeform  boolean  close the form (true by default)
+     **/
     public function showFormLifeCycle($openform = true, $closeform = true)
     {
 
@@ -1502,18 +1502,18 @@ class Profile extends CommonDBTM
     }
 
 
-   /**
-    * Display the matrix of the elements lifecycle of the elements
-    *
-    * @since 0.85
-    *
-    * @param $title          the kind of lifecycle
-    * @param $html_field     field that is sent to _POST
-    * @param $db_field       field inside the DB (to get current state)
-    * @param $canedit        can we edit the elements ?
-    *
-    * @return void
-   **/
+    /**
+     * Display the matrix of the elements lifecycle of the elements
+     *
+     * @since 0.85
+     *
+     * @param $title          the kind of lifecycle
+     * @param $html_field     field that is sent to _POST
+     * @param $db_field       field inside the DB (to get current state)
+     * @param $canedit        can we edit the elements ?
+     *
+     * @return void
+     **/
     public function displayLifeCycleMatrixTicketHelpdesk($title, $html_field, $db_field, $canedit)
     {
 
@@ -1567,14 +1567,14 @@ class Profile extends CommonDBTM
     }
 
 
-   /**
-   * Print the Life Cycles form for the current profile
-   *
-   *  @since 0.85
-   *
-   * @param $openform   boolean  open the form (true by default)
-   * @param $closeform  boolean  close the form (true by default)
-   **/
+    /**
+     * Print the Life Cycles form for the current profile
+     *
+     *  @since 0.85
+     *
+     * @param $openform   boolean  open the form (true by default)
+     * @param $closeform  boolean  close the form (true by default)
+     **/
     public function showFormLifeCycleHelpdesk($openform = true, $closeform = true)
     {
 
@@ -1615,12 +1615,12 @@ class Profile extends CommonDBTM
     }
 
 
-   /**
-    * Print the central form for a profile
-    *
-    * @param $openform     boolean  open the form (true by default)
-    * @param $closeform    boolean  close the form (true by default)
-   **/
+    /**
+     * Print the central form for a profile
+     *
+     * @param $openform     boolean  open the form (true by default)
+     * @param $closeform    boolean  close the form (true by default)
+     **/
     public function showFormAdmin($openform = true, $closeform = true)
     {
         if (!self::canView()) {
@@ -1730,12 +1730,12 @@ class Profile extends CommonDBTM
         $this->showLegend();
     }
 
-   /**
-    * Print the central form for a profile
-    *
-    * @param $openform     boolean  open the form (true by default)
-    * @param $closeform    boolean  close the form (true by default)
-   **/
+    /**
+     * Print the central form for a profile
+     *
+     * @param $openform     boolean  open the form (true by default)
+     * @param $closeform    boolean  close the form (true by default)
+     **/
     public function showFormSetup($openform = true, $closeform = true)
     {
 
@@ -1875,17 +1875,17 @@ class Profile extends CommonDBTM
     }
 
 
-   /**
-    * Print the Setup rights form for a helpdesk profile
-    *
-    * @since 9.4.0
-    *
-    * @param boolean $openform  open the form (true by default)
-    * @param boolean $closeform close the form (true by default)
-    *
-    * @return void
-    *
-   **/
+    /**
+     * Print the Setup rights form for a helpdesk profile
+     *
+     * @since 9.4.0
+     *
+     * @param boolean $openform  open the form (true by default)
+     * @param boolean $closeform close the form (true by default)
+     *
+     * @return void
+     *
+     **/
     public function showFormSetupHelpdesk($openform = true, $closeform = true)
     {
 
@@ -2854,13 +2854,13 @@ class Profile extends CommonDBTM
     }
 
 
-   /**
-    * @since 0.84
-    *
-    * @param $field
-    * @param $values
-    * @param $options   array
-    **/
+    /**
+     * @since 0.84
+     *
+     * @param $field
+     * @param $values
+     * @param $options   array
+     **/
     public static function getSpecificValueToDisplay($field, $values, array $options = [])
     {
 
@@ -2888,14 +2888,14 @@ class Profile extends CommonDBTM
     }
 
 
-   /**
-    * @since 0.84
-    *
-    * @param $field
-    * @param $name               (default '')
-    * @param $values             (default '')
-    * @param $options      array
-   **/
+    /**
+     * @since 0.84
+     *
+     * @param $field
+     * @param $name               (default '')
+     * @param $values             (default '')
+     * @param $options      array
+     **/
     public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
     {
 
@@ -2921,16 +2921,16 @@ class Profile extends CommonDBTM
     }
 
 
-   /**
-    * Make a select box for rights
-    *
-    * @since 0.85
-    *
-    * @param $values    array    of values to display
-    * @param $name      integer  name of the dropdown
-    * @param $current   integer  value in database (sum of rights)
-    * @param $options   array
-   **/
+    /**
+     * Make a select box for rights
+     *
+     * @since 0.85
+     *
+     * @param $values    array    of values to display
+     * @param $name      integer  name of the dropdown
+     * @param $current   integer  value in database (sum of rights)
+     * @param $options   array
+     **/
     public static function dropdownRights(array $values, $name, $current, $options = [])
     {
 
@@ -2968,24 +2968,24 @@ class Profile extends CommonDBTM
 
 
 
-   /**
-    * Make a select box for a None Read Write choice
-    *
-    * @since 0.84
-    *
-    * @param $name          select name
-    * @param $options array of possible options:
-    *       - value   : preselected value.
-    *       - nonone  : hide none choice ? (default false)
-    *       - noread  : hide read choice ? (default false)
-    *       - nowrite : hide write choice ? (default false)
-    *       - display : display or get string (default true)
-    *       - rand    : specific rand (default is generated one)
-    *
-    * @return integer|string
-    *    integer if option display=true (random part of elements id)
-    *    string if option display=false (HTML code)
-   **/
+    /**
+     * Make a select box for a None Read Write choice
+     *
+     * @since 0.84
+     *
+     * @param $name          select name
+     * @param $options array of possible options:
+     *       - value   : preselected value.
+     *       - nonone  : hide none choice ? (default false)
+     *       - noread  : hide read choice ? (default false)
+     *       - nowrite : hide write choice ? (default false)
+     *       - display : display or get string (default true)
+     *       - rand    : specific rand (default is generated one)
+     *
+     * @return integer|string
+     *    integer if option display=true (random part of elements id)
+     *    string if option display=false (HTML code)
+     **/
     public static function dropdownRight($name, $options = [])
     {
 
@@ -3022,14 +3022,14 @@ class Profile extends CommonDBTM
     }
 
 
-   /**
-    * Dropdown profiles which have rights under the active one
-    *
-    * @param $options array of possible options:
-    *    - name : string / name of the select (default is profiles_id)
-    *    - value : integer / preselected value (default 0)
-    *
-   **/
+    /**
+     * Dropdown profiles which have rights under the active one
+     *
+     * @param $options array of possible options:
+     *    - name : string / name of the select (default is profiles_id)
+     *    - value : integer / preselected value (default 0)
+     *
+     **/
     public static function dropdownUnder($options = [])
     {
         global $DB;
@@ -3064,11 +3064,11 @@ class Profile extends CommonDBTM
     }
 
 
-   /**
-    * Get the default Profile for new user
-    *
-    * @return integer profiles_id
-   **/
+    /**
+     * Get the default Profile for new user
+     *
+     * @return integer profiles_id
+     **/
     public static function getDefault()
     {
         global $DB;
@@ -3080,9 +3080,9 @@ class Profile extends CommonDBTM
     }
 
 
-   /**
-    * @since 0.84
-   **/
+    /**
+     * @since 0.84
+     **/
     public static function getInterfaces()
     {
 
@@ -3091,9 +3091,9 @@ class Profile extends CommonDBTM
     }
 
 
-   /**
-    * @param $value
-   **/
+    /**
+     * @param $value
+     **/
     public static function getInterfaceName($value)
     {
 
@@ -3105,11 +3105,11 @@ class Profile extends CommonDBTM
     }
 
 
-   /**
-    * @since 0.84
-    *
-    * @param $rights   boolean   (false by default)
-   **/
+    /**
+     * @since 0.84
+     *
+     * @param $rights   boolean   (false by default)
+     **/
     public static function getHelpdeskHardwareTypes($rights = false)
     {
 
@@ -3126,11 +3126,11 @@ class Profile extends CommonDBTM
     }
 
 
-   /**
-    * @since 0.84
-    *
-    * @param $value
-   **/
+    /**
+     * @since 0.84
+     *
+     * @param $value
+     **/
     public static function getHelpdeskHardwareTypeName($value)
     {
 
@@ -3142,9 +3142,9 @@ class Profile extends CommonDBTM
     }
 
 
-   /**
-    * @since 0.85
-   **/
+    /**
+     * @since 0.85
+     **/
     public static function getHelpdeskItemtypes()
     {
         global $CFG_GLPI;
@@ -3161,11 +3161,11 @@ class Profile extends CommonDBTM
     }
 
 
-   /**
-    * Get domains records types
-    *
-    * @return array
-    */
+    /**
+     * Get domains records types
+     *
+     * @return array
+     */
     public function getDomainRecordTypes()
     {
         global $DB;
@@ -3181,15 +3181,15 @@ class Profile extends CommonDBTM
         return $types;
     }
 
-   /**
-    * Dropdown profiles which have rights under the active one
-    *
-    * @since 0.84
-    *
-    * @param $options array of possible options:
-    *    - name : string / name of the select (default is profiles_id)
-    *    - values : array of values
-   **/
+    /**
+     * Dropdown profiles which have rights under the active one
+     *
+     * @since 0.84
+     *
+     * @param $options array of possible options:
+     *    - name : string / name of the select (default is profiles_id)
+     *    - values : array of values
+     **/
     public static function dropdownHelpdeskItemtypes($options)
     {
         $p['name']    = 'helpdesk_item_type';
@@ -3210,18 +3210,18 @@ class Profile extends CommonDBTM
     }
 
 
-   /**
-    * Check if user has given right.
-    *
-    * @since 0.84
-    *
-    * @param $user_id    integer  id of the user
-    * @param $rightname  string   name of right to check
-    * @param $rightvalue integer  value of right to check
-    * @param $entity_id  integer  id of the entity
-    *
-    * @return boolean
-    */
+    /**
+     * Check if user has given right.
+     *
+     * @since 0.84
+     *
+     * @param $user_id    integer  id of the user
+     * @param $rightname  string   name of right to check
+     * @param $rightvalue integer  value of right to check
+     * @param $entity_id  integer  id of the entity
+     *
+     * @return boolean
+     */
     public static function haveUserRight($user_id, $rightname, $rightvalue, $entity_id)
     {
         global $DB;
@@ -3262,16 +3262,16 @@ class Profile extends CommonDBTM
     }
 
 
-   /**
-    * Get rights for an itemtype
-    *
-    * @since 0.85
-    *
-    * @param $itemtype   string   itemtype
-    * @param $interface  string   (default 'central')
-    *
-    * @return rights
-   **/
+    /**
+     * Get rights for an itemtype
+     *
+     * @since 0.85
+     *
+     * @param $itemtype   string   itemtype
+     * @param $interface  string   (default 'central')
+     *
+     * @return rights
+     **/
     public static function getRightsFor($itemtype, $interface = 'central')
     {
 
@@ -3282,24 +3282,24 @@ class Profile extends CommonDBTM
     }
 
 
-   /**
-    * Display rights choice matrix
-    *
-    * @since 0.85
-    *
-    * @param $rights array    possible:
-    *             'itemtype'   => the type of the item to check (as passed to self::getRightsFor())
-    *             'rights'     => when use of self::getRightsFor() is impossible
-    *             'label'      => the label for the right
-    *             'field'      => the name of the field inside the DB and HTML form (prefixed by '_')
-    *             'html_field' => when $html_field != '_'.$field
-    * @param $options array   possible:
-    *             'title'         the title of the matrix
-    *             'canedit'
-    *             'default_class' the default CSS class used for the row
-    *
-    * @return random value used to generate the ids
-   **/
+    /**
+     * Display rights choice matrix
+     *
+     * @since 0.85
+     *
+     * @param $rights array    possible:
+     *             'itemtype'   => the type of the item to check (as passed to self::getRightsFor())
+     *             'rights'     => when use of self::getRightsFor() is impossible
+     *             'label'      => the label for the right
+     *             'field'      => the name of the field inside the DB and HTML form (prefixed by '_')
+     *             'html_field' => when $html_field != '_'.$field
+     * @param $options array   possible:
+     *             'title'         the title of the matrix
+     *             'canedit'
+     *             'default_class' the default CSS class used for the row
+     *
+     * @return random value used to generate the ids
+     **/
     public function displayRightsChoiceMatrix(array $rights, array $options = [])
     {
 
@@ -3419,25 +3419,25 @@ class Profile extends CommonDBTM
     }
 
 
-   /**
-    * Get right linear right choice.
-    *
-    * @since 0.85
-    *
-    * @param $elements  array   all pair identifier => label
-    * @param $options   array   possible:
-    *             'canedit'
-    *             'field'         name of the HTML field
-    *             'value'         the value inside the database
-    *             'max_per_line'  maximum number of elements per line
-    *             'check_all'     add a checkbox to check or uncheck every checkbox
-    *             'rand'          random value used to generate the ids
-    *             'zero_on_empty' do we send 0 when checkbox is not checked ?
-    *             'display'
-    *             'check_method'  method used to check the right
-    *
-    * @return content if !display
-   **/
+    /**
+     * Get right linear right choice.
+     *
+     * @since 0.85
+     *
+     * @param $elements  array   all pair identifier => label
+     * @param $options   array   possible:
+     *             'canedit'
+     *             'field'         name of the HTML field
+     *             'value'         the value inside the database
+     *             'max_per_line'  maximum number of elements per line
+     *             'check_all'     add a checkbox to check or uncheck every checkbox
+     *             'rand'          random value used to generate the ids
+     *             'zero_on_empty' do we send 0 when checkbox is not checked ?
+     *             'display'
+     *             'check_method'  method used to check the right
+     *
+     * @return content if !display
+     **/
     public static function getLinearRightChoice(array $elements, array $options = [])
     {
 

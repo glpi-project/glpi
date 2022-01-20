@@ -36,7 +36,7 @@ use Glpi\Socket;
 
 /**
  * Printer Class
-**/
+ **/
 class Printer extends CommonDBTM
 {
     use Glpi\Features\Clonable;
@@ -65,22 +65,22 @@ class Printer extends CommonDBTM
         ];
     }
 
-   /**
-    * Name of the type
-    *
-    * @param $nb : number of item in the type
-   **/
+    /**
+     * Name of the type
+     *
+     * @param $nb : number of item in the type
+     **/
     public static function getTypeName($nb = 0)
     {
         return _n('Printer', 'Printers', $nb);
     }
 
 
-   /**
-    * @see CommonDBTM::useDeletedToLockIfDynamic()
-    *
-    * @since 0.84
-   **/
+    /**
+     * @see CommonDBTM::useDeletedToLockIfDynamic()
+     *
+     * @since 0.84
+     **/
     public function useDeletedToLockIfDynamic()
     {
         return false;
@@ -122,14 +122,14 @@ class Printer extends CommonDBTM
     }
 
 
-   /**
-    * Can I change recusvive flag to false
-    * check if there is "linked" object in another entity
-    *
-    * Overloaded from CommonDBTM
-    *
-    * @return boolean
-   **/
+    /**
+     * Can I change recusvive flag to false
+     * check if there is "linked" object in another entity
+     *
+     * Overloaded from CommonDBTM
+     *
+     * @return boolean
+     **/
     public function canUnrecurs()
     {
         global $DB;
@@ -271,16 +271,16 @@ class Printer extends CommonDBTM
     }
 
 
-   /**
-    * Print the printer form
-    *
-    * @param $ID integer ID of the item
-    * @param $options array
-    *     - target filename : where to go when done.
-    *     - withtemplate boolean : template or basic item
-    *
-    * @return boolean item found
-   **/
+    /**
+     * Print the printer form
+     *
+     * @param $ID integer ID of the item
+     * @param $options array
+     *     - target filename : where to go when done.
+     *     - withtemplate boolean : template or basic item
+     *
+     * @return boolean item found
+     **/
     public function showForm($ID, array $options = [])
     {
         $this->initForm($ID, $options);
@@ -292,12 +292,12 @@ class Printer extends CommonDBTM
     }
 
 
-   /**
-    * Return the linked items (in computers_items)
-    *
-    * @return an array of linked items  like array('Computer' => array(1,2), 'Printer' => array(5,6))
-    * @since 0.84.4
-   **/
+    /**
+     * Return the linked items (in computers_items)
+     *
+     * @return an array of linked items  like array('Computer' => array(1,2), 'Printer' => array(5,6))
+     * @since 0.84.4
+     **/
     public function getLinkedItems()
     {
         global $DB;
@@ -318,9 +318,9 @@ class Printer extends CommonDBTM
     }
 
 
-   /**
-    * @see CommonDBTM::getSpecificMassiveActions()
-   **/
+    /**
+     * @see CommonDBTM::getSpecificMassiveActions()
+     **/
     public function getSpecificMassiveActions($checkitem = null)
     {
 
@@ -637,14 +637,14 @@ class Printer extends CommonDBTM
     }
 
 
-   /**
-    * Add a printer. If already exist in trashbin restore it
-    *
-    * @param $name          the printer's name (need to be addslashes)
-    * @param $manufacturer  the software's manufacturer (need to be addslashes)
-    * @param $entity        the entity in which the software must be added
-    * @param $comment       comment (default '')
-   **/
+    /**
+     * Add a printer. If already exist in trashbin restore it
+     *
+     * @param $name          the printer's name (need to be addslashes)
+     * @param $manufacturer  the software's manufacturer (need to be addslashes)
+     * @param $entity        the entity in which the software must be added
+     * @param $comment       comment (default '')
+     **/
     public function addOrRestoreFromTrash($name, $manufacturer, $entity, $comment = '')
     {
         global $DB;
@@ -680,16 +680,16 @@ class Printer extends CommonDBTM
     }
 
 
-   /**
-    * Create a new printer
-    *
-    * @param $name         the printer's name (need to be addslashes)
-    * @param $manufacturer the printer's manufacturer (need to be addslashes)
-    * @param $entity       the entity in which the printer must be added
-    * @param $comment      (default '')
-    *
-    * @return the printer's ID
-   **/
+    /**
+     * Create a new printer
+     *
+     * @param $name         the printer's name (need to be addslashes)
+     * @param $manufacturer the printer's manufacturer (need to be addslashes)
+     * @param $entity       the entity in which the printer must be added
+     * @param $comment      (default '')
+     *
+     * @return the printer's ID
+     **/
     public function addPrinter($name, $manufacturer, $entity, $comment = '')
     {
         global $DB;
@@ -722,13 +722,13 @@ class Printer extends CommonDBTM
     }
 
 
-   /**
-    * Restore a software from trashbin
-    *
-    * @param $ID  the ID of the software to put in trashbin
-    *
-    * @return boolean (success)
-   **/
+    /**
+     * Restore a software from trashbin
+     *
+     * @param $ID  the ID of the software to put in trashbin
+     *
+     * @return boolean (success)
+     **/
     public function removeFromTrash($ID)
     {
         return $this->restore(["id" => $ID]);

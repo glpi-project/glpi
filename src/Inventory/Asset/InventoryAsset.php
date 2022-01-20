@@ -44,33 +44,33 @@ use OperatingSystemKernelVersion;
 
 abstract class InventoryAsset
 {
-   /** @var array */
+    /** @var array */
     protected $data = [];
-   /** @var CommonDBTM */
+    /** @var CommonDBTM */
     protected $item;
-   /** @var string */
+    /** @var string */
     protected $itemtype;
-   /** @var array */
+    /** @var array */
     protected $extra_data = [];
-   /** @var \Agent */
+    /** @var \Agent */
     protected $agent;
-   /** @var integer */
+    /** @var integer */
     protected $entities_id = 0;
-   /** @var boolean */
+    /** @var boolean */
     protected $links_handled = false;
-   /** @var boolean */
+    /** @var boolean */
     protected $with_history = true;
-   /** @var InventoryAsset */
+    /** @var InventoryAsset */
     protected $main_asset;
-   /** @var string */
+    /** @var string */
     protected $request_query;
 
-   /**
-    * Constructor
-    *
-    * @param CommonDBTM $item Item instance
-    * @param array|null $data Data part, optional
-    */
+    /**
+     * Constructor
+     *
+     * @param CommonDBTM $item Item instance
+     * @param array|null $data Data part, optional
+     */
     public function __construct(CommonDBTM $item, array $data = null)
     {
         $this->item = $item;
@@ -79,51 +79,51 @@ abstract class InventoryAsset
         }
     }
 
-   /**
-    * Set data from raw data part
-    *
-    * @param array $data Data part
-    *
-    * @return InventoryAsset
-    */
+    /**
+     * Set data from raw data part
+     *
+     * @param array $data Data part
+     *
+     * @return InventoryAsset
+     */
     public function setData(array $data): InventoryAsset
     {
         $this->data = $data;
         return $this;
     }
 
-   /**
-    * Get current data
-    *
-    * @return array
-    */
+    /**
+     * Get current data
+     *
+     * @return array
+     */
     public function getData(): array
     {
         return $this->data;
     }
 
-   /**
-    * Prepare data from raw data part
-    *
-    * @return array
-    */
+    /**
+     * Prepare data from raw data part
+     *
+     * @return array
+     */
     abstract public function prepare(): array;
 
-   /**
-    * Handle in database
-    *
-    * @return void
-    */
+    /**
+     * Handle in database
+     *
+     * @return void
+     */
     abstract public function handle();
 
-   /**
-    * Set extra sub parts of interest
-    * Only declared types in subclass extra_data are handled
-    *
-    * @param array $data Processed data
-    *
-    * @return InventoryAsset
-    */
+    /**
+     * Set extra sub parts of interest
+     * Only declared types in subclass extra_data are handled
+     *
+     * @param array $data Processed data
+     *
+     * @return InventoryAsset
+     */
     public function setExtraData($data): InventoryAsset
     {
         foreach (array_keys($this->extra_data) as $extra) {
@@ -134,32 +134,32 @@ abstract class InventoryAsset
         return $this;
     }
 
-   /**
-    * Get ignore list declared from asset
-    *
-    * @param string $type Ignore type ("controllers" only for now)
-    *
-    * @return array
-    */
+    /**
+     * Get ignore list declared from asset
+     *
+     * @param string $type Ignore type ("controllers" only for now)
+     *
+     * @return array
+     */
     public function getIgnored($type): array
     {
         return $this->ignored[$type] ?? [];
     }
 
-   /**
-    * Check if configuration allows that part
-    *
-    * @param Conf $conf Conf instance
-    *
-    * @return boolean
-    */
+    /**
+     * Check if configuration allows that part
+     *
+     * @param Conf $conf Conf instance
+     *
+     * @return boolean
+     */
     abstract public function checkConf(Conf $conf): bool;
 
-   /**
-    * Handle links (manufacturers, models, users, ...), create items if needed
-    *
-    * @return array
-    */
+    /**
+     * Handle links (manufacturers, models, users, ...), create items if needed
+     *
+     * @return array
+     */
     public function handleLinks()
     {
         $knowns = [];
@@ -237,72 +237,72 @@ abstract class InventoryAsset
         return $this->data;
     }
 
-   /**
-    * Set agent
-    *
-    * @param Agent $agent Agent instance
-    *
-    * @return $this
-    */
+    /**
+     * Set agent
+     *
+     * @param Agent $agent Agent instance
+     *
+     * @return $this
+     */
     public function setAgent(Agent $agent): InventoryAsset
     {
         $this->agent = $agent;
         return $this;
     }
 
-   /**
-    * Get agent
-    *
-    * @return Agent
-    */
+    /**
+     * Get agent
+     *
+     * @return Agent
+     */
     public function getAgent(): Agent
     {
         return $this->agent;
     }
 
-   /**
-    * Set entity id from main asset
-    *
-    * @param integer $id Entity ID
-    *
-    * @return $this
-    */
+    /**
+     * Set entity id from main asset
+     *
+     * @param integer $id Entity ID
+     *
+     * @return $this
+     */
     public function setEntityID($id): InventoryAsset
     {
         $this->entities_id = $id;
         return $this;
     }
 
-   /**
-    * Set request query
-    *
-    * @param string $query Requested query
-    *
-    * @return $this
-    */
+    /**
+     * Set request query
+     *
+     * @param string $query Requested query
+     *
+     * @return $this
+     */
     public function setRequestQuery($query = Request::INVENT_QUERY): InventoryAsset
     {
         $this->request_query = $query;
         return $this;
     }
 
-   /**
-    * Are link handled already (call to handleLinks should happen only once
-    *
-    * @return boolean
-    */
+    /**
+     * Are link handled already (call to handleLinks should happen only once
+     *
+     * @return boolean
+     */
     public function areLinksHandled(): bool
     {
         return $this->links_handled;
     }
 
-   /**
-    * Is history enabled on this asset?
-    *
-    * @param boolean|null $bool To change with_history
-    *
-    * @return boolean
-    */
+    /**
+     * Is history enabled on this asset?
+     *
+     * @param boolean|null $bool To change with_history
+     *
+     * @return boolean
+     */
     public function withHistory($bool = null): bool
     {
         if ($bool !== null) {
@@ -311,13 +311,13 @@ abstract class InventoryAsset
         return $this->with_history;
     }
 
-   /**
-    * Set item and itemtype
-    *
-    * @param CommonDBTM $item Item instance
-    *
-    * @return InventoryAsset
-    */
+    /**
+     * Set item and itemtype
+     *
+     * @param CommonDBTM $item Item instance
+     *
+     * @return InventoryAsset
+     */
     protected function setItem(CommonDBTM $item): self
     {
         $this->item = $item;
@@ -325,37 +325,37 @@ abstract class InventoryAsset
         return $this;
     }
 
-   /**
-    * Set inventory item
-    *
-    * @param InventoryAsset $mainasset Main inventory asset instance
-    *
-    * @return InventoryAsset
-    */
+    /**
+     * Set inventory item
+     *
+     * @param InventoryAsset $mainasset Main inventory asset instance
+     *
+     * @return InventoryAsset
+     */
     public function setMainAsset(InventoryAsset $mainasset): self
     {
         $this->main_asset = $mainasset;
         return $this;
     }
 
-   /**
-    * Get main inventory asset
-    *
-    * @return InventoryAsset
-    */
+    /**
+     * Get main inventory asset
+     *
+     * @return InventoryAsset
+     */
     public function getMainAsset(): InventoryAsset
     {
         return $this->main_asset;
     }
 
-   /**
-    * Add or move a computer_item.
-    * If the computer is item is already linked to another computer, existing link will be replaced by new link.
-    *
-    * @param array $input
-    *
-    * @return void
-    */
+    /**
+     * Add or move a computer_item.
+     * If the computer is item is already linked to another computer, existing link will be replaced by new link.
+     *
+     * @param array $input
+     *
+     * @return void
+     */
     protected function addOrMoveItem(array $input): void
     {
         $citem = new \Computer_Item();

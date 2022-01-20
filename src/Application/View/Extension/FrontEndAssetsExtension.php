@@ -57,25 +57,25 @@ class FrontEndAssetsExtension extends AbstractExtension
         ];
     }
 
-   /**
-    * Return domain-relative path of an asset.
-    *
-    * @param string $path
-    *
-    * @return string
-    */
+    /**
+     * Return domain-relative path of an asset.
+     *
+     * @param string $path
+     *
+     * @return string
+     */
     public function assetPath(string $path): string
     {
         return Html::getPrefixedUrl($path);
     }
 
-   /**
-    * Return domain-relative path of a CSS file.
-    *
-    * @param string $path
-    *
-    * @return string
-    */
+    /**
+     * Return domain-relative path of a CSS file.
+     *
+     * @param string $path
+     *
+     * @return string
+     */
     public function cssPath(string $path): string
     {
         $is_debug = isset($_SESSION['glpi_use_mode']) && $_SESSION['glpi_use_mode'] === Session::DEBUG_MODE;
@@ -102,13 +102,13 @@ class FrontEndAssetsExtension extends AbstractExtension
         return $path;
     }
 
-   /**
-    * Return domain-relative path of a JS file.
-    *
-    * @param string $path
-    *
-    * @return string
-    */
+    /**
+     * Return domain-relative path of a JS file.
+     *
+     * @param string $path
+     *
+     * @return string
+     */
     public function jsPath(string $path): string
     {
         $is_debug = isset($_SESSION['glpi_use_mode']) && $_SESSION['glpi_use_mode'] === Session::DEBUG_MODE;
@@ -125,13 +125,13 @@ class FrontEndAssetsExtension extends AbstractExtension
         return $path;
     }
 
-   /**
-    * Get path suffixed with asset version.
-    *
-    * @param string $path
-    *
-    * @return string
-    */
+    /**
+     * Get path suffixed with asset version.
+     *
+     * @param string $path
+     *
+     * @return string
+     */
     private function getVersionnedPath(string $path): string
     {
        // @TODO Adapt version to plugin version if path is related to a specific plugin
@@ -141,11 +141,11 @@ class FrontEndAssetsExtension extends AbstractExtension
         return $path;
     }
 
-   /**
-    * Return custom CSS for active entity.
-    *
-    * @return string
-    */
+    /**
+     * Return custom CSS for active entity.
+     *
+     * @return string
+     */
     public function customCss(): string
     {
         global $DB;
@@ -167,11 +167,11 @@ class FrontEndAssetsExtension extends AbstractExtension
         return $css;
     }
 
-   /**
-    * Return locales JS code.
-    *
-    * @return string
-    */
+    /**
+     * Return locales JS code.
+     *
+     * @return string
+     */
     public function localesJs(): string
     {
         if (!isset($_SESSION['glpilanguage'])) {

@@ -186,11 +186,11 @@ class User extends CommonDBTM
     }
 
 
-   /**
-    * Compute preferences for the current user mixing config and user data.
-    *
-    * @return void
-    */
+    /**
+     * Compute preferences for the current user mixing config and user data.
+     *
+     * @return void
+     */
     public function computePreferences()
     {
         global $CFG_GLPI;
@@ -209,16 +209,16 @@ class User extends CommonDBTM
     }
 
 
-   /**
-    * Load minimal session for user.
-    *
-    * @param integer $entities_id  Entity to use
-    * @param boolean $is_recursive Whether to load entities recursivly or not
-    *
-    * @return void
-    *
-    * @since 0.83.7
-    */
+    /**
+     * Load minimal session for user.
+     *
+     * @param integer $entities_id  Entity to use
+     * @param boolean $is_recursive Whether to load entities recursivly or not
+     *
+     * @return void
+     *
+     * @since 0.83.7
+     */
     public function loadMinimalSession($entities_id, $is_recursive)
     {
         global $CFG_GLPI;
@@ -440,27 +440,27 @@ class User extends CommonDBTM
     }
 
 
-   /**
-    * Retrieve a user from the database using its login.
-    *
-    * @param string $name Login of the user
-    *
-    * @return boolean
-    */
+    /**
+     * Retrieve a user from the database using its login.
+     *
+     * @param string $name Login of the user
+     *
+     * @return boolean
+     */
     public function getFromDBbyName($name)
     {
         return $this->getFromDBByCrit(['name' => $name]);
     }
 
-   /**
-    * Retrieve a user from the database using its login.
-    *
-    * @param string  $name     Login of the user
-    * @param integer $authtype Auth type (see Auth constants)
-    * @param integer $auths_id ID of auth server
-    *
-    * @return boolean
-    */
+    /**
+     * Retrieve a user from the database using its login.
+     *
+     * @param string  $name     Login of the user
+     * @param integer $authtype Auth type (see Auth constants)
+     * @param integer $auths_id ID of auth server
+     *
+     * @return boolean
+     */
     public function getFromDBbyNameAndAuth($name, $authtype, $auths_id)
     {
         return $this->getFromDBByCrit([
@@ -470,43 +470,43 @@ class User extends CommonDBTM
          ]);
     }
 
-   /**
-    * Retrieve a user from the database using value of the sync field.
-    *
-    * @param string $value Value of the sync field
-    *
-    * @return boolean
-    */
+    /**
+     * Retrieve a user from the database using value of the sync field.
+     *
+     * @param string $value Value of the sync field
+     *
+     * @return boolean
+     */
     public function getFromDBbySyncField($value)
     {
         return $this->getFromDBByCrit(['sync_field' => $value]);
     }
 
-   /**
-    * Retrieve a user from the database using it's dn.
-    *
-    * @since 0.84
-    *
-    * @param string $user_dn dn of the user
-    *
-    * @return boolean
-    */
+    /**
+     * Retrieve a user from the database using it's dn.
+     *
+     * @since 0.84
+     *
+     * @param string $user_dn dn of the user
+     *
+     * @return boolean
+     */
     public function getFromDBbyDn($user_dn)
     {
         return $this->getFromDBByCrit(['user_dn' => $user_dn]);
     }
 
 
-   /**
-    * Retrieve a user from the database using its email.
-    *
-    * @since 9.3 Can pass condition as a parameter
-    *
-    * @param string $email     user email
-    * @param array  $condition add condition
-    *
-    * @return boolean
-    */
+    /**
+     * Retrieve a user from the database using its email.
+     *
+     * @since 9.3 Can pass condition as a parameter
+     *
+     * @param string $email     user email
+     * @param array  $condition add condition
+     *
+     * @return boolean
+     */
     public function getFromDBbyEmail($email, $condition = [])
     {
         global $DB;
@@ -534,11 +534,11 @@ class User extends CommonDBTM
     }
 
 
-   /**
-    * Get the default email of the user.
-    *
-    * @return string
-    */
+    /**
+     * Get the default email of the user.
+     *
+     * @return string
+     */
     public function getDefaultEmail()
     {
 
@@ -550,11 +550,11 @@ class User extends CommonDBTM
     }
 
 
-   /**
-    * Get all emails of the user.
-    *
-    * @return string[]
-    */
+    /**
+     * Get all emails of the user.
+     *
+     * @return string[]
+     */
     public function getAllEmails()
     {
 
@@ -565,13 +565,13 @@ class User extends CommonDBTM
     }
 
 
-   /**
-    * Check if the email is attached to the current user.
-    *
-    * @param string $email
-    *
-    * @return boolean
-    */
+    /**
+     * Check if the email is attached to the current user.
+     *
+     * @param string $email
+     *
+     * @return boolean
+     */
     public function isEmail($email)
     {
 
@@ -582,14 +582,14 @@ class User extends CommonDBTM
     }
 
 
-   /**
-    * Retrieve a user from the database using its personal token.
-    *
-    * @param string $token user token
-    * @param string $field the field storing the token
-    *
-    * @return boolean
-    */
+    /**
+     * Retrieve a user from the database using its personal token.
+     *
+     * @param string $token user token
+     * @param string $field the field storing the token
+     *
+     * @return boolean
+     */
     public function getFromDBbyToken($token, $field = 'personal_token')
     {
         $fields = ['personal_token', 'api_token'];
@@ -1029,11 +1029,11 @@ class User extends CommonDBTM
 
 
 
-   /**
-    * Apply rules to determine dynamic rights of the user.
-    *
-    * @return boolean true if rules are applied, false otherwise
-    */
+    /**
+     * Apply rules to determine dynamic rights of the user.
+     *
+     * @return boolean true if rules are applied, false otherwise
+     */
     public function applyRightRules()
     {
 
@@ -1189,11 +1189,11 @@ class User extends CommonDBTM
     }
 
 
-   /**
-    * Synchronise LDAP group of the user.
-    *
-    * @return void
-    */
+    /**
+     * Synchronise LDAP group of the user.
+     *
+     * @return void
+     */
     public function syncLdapGroups()
     {
         global $DB;
@@ -1261,13 +1261,13 @@ class User extends CommonDBTM
     }
 
 
-   /**
-    * Synchronize picture (photo) of the user.
-    *
-    * @since 0.85
-    *
-    * @return string|boolean Filename to be stored in user picture field, false if no picture found
-    */
+    /**
+     * Synchronize picture (photo) of the user.
+     *
+     * @since 0.85
+     *
+     * @return string|boolean Filename to be stored in user picture field, false if no picture found
+     */
     public function syncLdapPhoto()
     {
 
@@ -1349,12 +1349,12 @@ class User extends CommonDBTM
     }
 
 
-   /**
-    * Update emails of the user.
-    * Uses _useremails set from UI, not _emails set from LDAP.
-    *
-    * @return void
-    */
+    /**
+     * Update emails of the user.
+     * Uses _useremails set from UI, not _emails set from LDAP.
+     *
+     * @return void
+     */
     public function updateUserEmails()
     {
        // Update emails  (use _useremails set from UI, not _emails set from LDAP)
@@ -1416,12 +1416,12 @@ class User extends CommonDBTM
     }
 
 
-   /**
-    * Synchronise Dynamics emails of the user.
-    * Uses _emails (set from getFromLDAP), not _usermails set from UI.
-    *
-    * @return void
-    */
+    /**
+     * Synchronise Dynamics emails of the user.
+     * Uses _emails (set from getFromLDAP), not _usermails set from UI.
+     *
+     * @return void
+     */
     public function syncDynamicEmails()
     {
         global $DB;
@@ -1526,17 +1526,17 @@ class User extends CommonDBTM
     }
 
 
-   /**
-    * Function that tries to load the user membership from LDAP
-    * by searching in the attributes of the User.
-    *
-    * @param resource $ldap_connection LDAP connection
-    * @param array    $ldap_method     LDAP method
-    * @param string   $userdn          Basedn of the user
-    * @param string   $login           User login
-    *
-    * @return string|boolean Basedn of the user / false if not found
-    */
+    /**
+     * Function that tries to load the user membership from LDAP
+     * by searching in the attributes of the User.
+     *
+     * @param resource $ldap_connection LDAP connection
+     * @param array    $ldap_method     LDAP method
+     * @param string   $userdn          Basedn of the user
+     * @param string   $login           User login
+     *
+     * @return string|boolean Basedn of the user / false if not found
+     */
     private function getFromLDAPGroupVirtual($ldap_connection, array $ldap_method, $userdn, $login)
     {
         global $DB;
@@ -1628,17 +1628,17 @@ class User extends CommonDBTM
     }
 
 
-   /**
-    * Function that tries to load the user membership from LDAP
-    * by searching in the attributes of the Groups.
-    *
-    * @param resource $ldap_connection    LDAP connection
-    * @param array    $ldap_method        LDAP method
-    * @param string   $userdn             Basedn of the user
-    * @param string   $login              User login
-    *
-    * @return boolean true if search is applicable, false otherwise
-    */
+    /**
+     * Function that tries to load the user membership from LDAP
+     * by searching in the attributes of the Groups.
+     *
+     * @param resource $ldap_connection    LDAP connection
+     * @param array    $ldap_method        LDAP method
+     * @param string   $userdn             Basedn of the user
+     * @param string   $login              User login
+     *
+     * @return boolean true if search is applicable, false otherwise
+     */
     private function getFromLDAPGroupDiscret($ldap_connection, array $ldap_method, $userdn, $login)
     {
         global $DB;
@@ -1685,17 +1685,17 @@ class User extends CommonDBTM
     }
 
 
-   /**
-    * Function that tries to load the user information from LDAP.
-    *
-    * @param resource $ldap_connection LDAP connection
-    * @param array    $ldap_method     LDAP method
-    * @param string   $userdn          Basedn of the user
-    * @param string   $login           User Login
-    * @param boolean  $import          true for import, false for update
-    *
-    * @return boolean true if found / false if not
-    */
+    /**
+     * Function that tries to load the user information from LDAP.
+     *
+     * @param resource $ldap_connection LDAP connection
+     * @param array    $ldap_method     LDAP method
+     * @param string   $userdn          Basedn of the user
+     * @param string   $login           User Login
+     * @param boolean  $import          true for import, false for update
+     *
+     * @return boolean true if found / false if not
+     */
     public function getFromLDAP($ldap_connection, array $ldap_method, $userdn, $login, $import = true)
     {
         global $DB, $CFG_GLPI;
@@ -1915,19 +1915,19 @@ class User extends CommonDBTM
     }
 
 
-   /**
-    * Get all groups a user belongs to.
-    *
-    * @param resource $ds                 ldap connection
-    * @param string   $ldap_base_dn       Basedn used
-    * @param string   $user_dn            Basedn of the user
-    * @param string   $group_condition    group search condition
-    * @param string   $group_member_field group field member in a user object
-    * @param boolean  $use_dn             search dn of user ($login_field=$user_dn) in group_member_field
-    * @param string   $login_field        user login field
-    *
-    * @return array Groups of the user located in [0][$group_member_field] in returned array
-    */
+    /**
+     * Get all groups a user belongs to.
+     *
+     * @param resource $ds                 ldap connection
+     * @param string   $ldap_base_dn       Basedn used
+     * @param string   $user_dn            Basedn of the user
+     * @param string   $group_condition    group search condition
+     * @param string   $group_member_field group field member in a user object
+     * @param boolean  $use_dn             search dn of user ($login_field=$user_dn) in group_member_field
+     * @param string   $login_field        user login field
+     *
+     * @return array Groups of the user located in [0][$group_member_field] in returned array
+     */
     public function ldap_get_user_groups(
         $ds,
         $ldap_base_dn,
@@ -1980,14 +1980,14 @@ class User extends CommonDBTM
     }
 
 
-   /**
-    * Function that tries to load the user information from IMAP.
-    *
-    * @param array  $mail_method  mail method description array
-    * @param string $name         login of the user
-    *
-    * @return boolean true if method is applicable, false otherwise
-    */
+    /**
+     * Function that tries to load the user information from IMAP.
+     *
+     * @param array  $mail_method  mail method description array
+     * @param string $name         login of the user
+     *
+     * @return boolean true if method is applicable, false otherwise
+     */
     public function getFromIMAP(array $mail_method, $name)
     {
         global $DB;
@@ -2037,13 +2037,13 @@ class User extends CommonDBTM
     }
 
 
-   /**
-    * Function that tries to load the user information from the SSO server.
-    *
-    * @since 0.84
-    *
-    * @return boolean true if method is applicable, false otherwise
-    */
+    /**
+     * Function that tries to load the user information from the SSO server.
+     *
+     * @since 0.84
+     *
+     * @return boolean true if method is applicable, false otherwise
+     */
     public function getFromSSO()
     {
         global $DB, $CFG_GLPI;
@@ -2137,12 +2137,12 @@ class User extends CommonDBTM
     }
 
 
-   /**
-    * Blank passwords field of a user in the DB.
-    * Needed for external auth users.
-    *
-    * @return void
-    */
+    /**
+     * Blank passwords field of a user in the DB.
+     * Needed for external auth users.
+     *
+     * @return void
+     */
     public function blankPassword()
     {
         global $DB;
@@ -2161,11 +2161,11 @@ class User extends CommonDBTM
     }
 
 
-   /**
-    * Print a good title for user pages.
-    *
-    * @return void
-    */
+    /**
+     * Print a good title for user pages.
+     *
+     * @return void
+     */
     public function title()
     {
         global $CFG_GLPI;
@@ -2202,13 +2202,13 @@ class User extends CommonDBTM
     }
 
 
-   /**
-    * Check if current user have more right than the specified one.
-    *
-    * @param integer $ID ID of the user
-    *
-    * @return boolean
-    */
+    /**
+     * Check if current user have more right than the specified one.
+     *
+     * @param integer $ID ID of the user
+     *
+     * @return boolean
+     */
     public function currentUserHaveMoreRightThan($ID)
     {
 
@@ -2216,16 +2216,16 @@ class User extends CommonDBTM
         return Profile::currentUserHaveMoreRightThan($user_prof);
     }
 
-   /**
-    * Print the user form.
-    *
-    * @param integer $ID    ID of the user
-    * @param array $options Options
-    *     - string   target        Form target
-    *     - boolean  withtemplate  Template or basic item
-    *
-    * @return boolean true if user found, false otherwise
-    */
+    /**
+     * Print the user form.
+     *
+     * @param integer $ID    ID of the user
+     * @param array $options Options
+     *     - string   target        Form target
+     *     - boolean  withtemplate  Template or basic item
+     *
+     * @return boolean true if user found, false otherwise
+     */
     public function showForm($ID, array $options = [])
     {
         global $CFG_GLPI, $DB;
@@ -2736,14 +2736,14 @@ JAVASCRIPT;
     }
 
 
-   /**
-    * Print the user preference form.
-    *
-    * @param string  $target Form target
-    * @param integer $ID     ID of the user
-    *
-    * @return boolean true if user found, false otherwise
-    */
+    /**
+     * Print the user preference form.
+     *
+     * @param string  $target Form target
+     * @param integer $ID     ID of the user
+     *
+     * @return boolean true if user found, false otherwise
+     */
     public function showMyForm($target, $ID)
     {
         global $CFG_GLPI, $DB;
@@ -3134,11 +3134,11 @@ JAVASCRIPT;
     }
 
 
-   /**
-    * Get all the authentication method parameters for the current user.
-    *
-    * @return array
-    */
+    /**
+     * Get all the authentication method parameters for the current user.
+     *
+     * @return array
+     */
     public function getAuthMethodsByID()
     {
         return Auth::getMethodsByID($this->fields["authtype"], $this->fields["auths_id"]);
@@ -3795,15 +3795,15 @@ JAVASCRIPT;
     }
 
 
-   /**
-    * Get all groups where the current user have delegating.
-    *
-    * @since 0.83
-    *
-    * @param integer|string $entities_id ID of the entity to restrict
-    *
-    * @return integer[]
-    */
+    /**
+     * Get all groups where the current user have delegating.
+     *
+     * @since 0.83
+     *
+     * @param integer|string $entities_id ID of the entity to restrict
+     *
+     * @return integer[]
+     */
     public static function getDelegateGroupsForUser($entities_id = '')
     {
         global $DB;
@@ -3834,23 +3834,23 @@ JAVASCRIPT;
     }
 
 
-   /**
-    * Execute the query to select box with all glpi users where select key = name
-    *
-    * Internaly used by showGroup_Users, dropdownUsers and ajax/getDropdownUsers.php
-    *
-    * @param boolean         $count            true if execute an count(*) (true by default)
-    * @param string|string[] $right            limit user who have specific right (default 'all')
-    * @param integer         $entity_restrict  Restrict to a defined entity (default -1)
-    * @param integer         $value            default value (default 0)
-    * @param integer[]       $used             Already used items ID: not to display in dropdown
-    * @param string          $search           pattern (default '')
-    * @param integer         $start            start LIMIT value (default 0)
-    * @param integer         $limit            limit LIMIT value (default -1 no limit)
-    * @param boolean         $inactive_deleted true to retreive also inactive or deleted users
-    *
-    * @return mysqli_result|boolean
-    */
+    /**
+     * Execute the query to select box with all glpi users where select key = name
+     *
+     * Internaly used by showGroup_Users, dropdownUsers and ajax/getDropdownUsers.php
+     *
+     * @param boolean         $count            true if execute an count(*) (true by default)
+     * @param string|string[] $right            limit user who have specific right (default 'all')
+     * @param integer         $entity_restrict  Restrict to a defined entity (default -1)
+     * @param integer         $value            default value (default 0)
+     * @param integer[]       $used             Already used items ID: not to display in dropdown
+     * @param string          $search           pattern (default '')
+     * @param integer         $start            start LIMIT value (default 0)
+     * @param integer         $limit            limit LIMIT value (default -1 no limit)
+     * @param boolean         $inactive_deleted true to retreive also inactive or deleted users
+     *
+     * @return mysqli_result|boolean
+     */
     public static function getSqlSearchResult(
         $count = true,
         $right = "all",
@@ -4212,47 +4212,47 @@ JAVASCRIPT;
     }
 
 
-   /**
-    * Make a select box with all glpi users where select key = name
-    *
-    * @param $options array of possible options:
-    *    - name             : string / name of the select (default is users_id)
-    *    - value
-    *    - values           : in case of select[multiple], pass the array of multiple values
-    *    - right            : string / limit user who have specific right :
-    *                             id -> only current user (default case);
-    *                             interface -> central;
-    *                             all -> all users;
-    *                             specific right like Ticket::READALL, CREATE.... (is array passed one of all passed right is needed)
-    *    - comments         : boolean / is the comments displayed near the dropdown (default true)
-    *    - entity           : integer or array / restrict to a defined entity or array of entities
-    *                          (default -1 : no restriction)
-    *    - entity_sons      : boolean / if entity restrict specified auto select its sons
-    *                          only available if entity is a single value not an array(default false)
-    *    - all              : Nobody or All display for none selected
-    *                             all=0 (default) -> Nobody
-    *                             all=1 -> All
-    *                             all=-1-> nothing
-    *    - rand             : integer / already computed rand value
-    *    - toupdate         : array / Update a specific item on select change on dropdown
-    *                          (need value_fieldname, to_update, url
-    *                          (see Ajax::updateItemOnSelectEvent for information)
-    *                          and may have moreparams)
-    *    - used             : array / Already used items ID: not to display in dropdown (default empty)
-    *    - ldap_import
-    *    - on_change        : string / value to transmit to "onChange"
-    *    - display          : boolean / display or get string (default true)
-    *    - width            : specific width needed
-    *    - specific_tags    : array of HTML5 tags to add to the field
-    *    - class            : class to pass to html select
-    *    - url              : url of the ajax php code which should return the json data to show in
-    *                         the dropdown (default /ajax/getDropdownUsers.php)
-    *    - inactive_deleted : retreive also inactive or deleted users
-    *    - hide_if_no_elements  : boolean / hide dropdown if there is no elements (default false)
-    *    - readonly         : boolean / return getUserName is true (default false)
-    *
-    * @return integer|string Random value if displayed, string otherwise
-    */
+    /**
+     * Make a select box with all glpi users where select key = name
+     *
+     * @param $options array of possible options:
+     *    - name             : string / name of the select (default is users_id)
+     *    - value
+     *    - values           : in case of select[multiple], pass the array of multiple values
+     *    - right            : string / limit user who have specific right :
+     *                             id -> only current user (default case);
+     *                             interface -> central;
+     *                             all -> all users;
+     *                             specific right like Ticket::READALL, CREATE.... (is array passed one of all passed right is needed)
+     *    - comments         : boolean / is the comments displayed near the dropdown (default true)
+     *    - entity           : integer or array / restrict to a defined entity or array of entities
+     *                          (default -1 : no restriction)
+     *    - entity_sons      : boolean / if entity restrict specified auto select its sons
+     *                          only available if entity is a single value not an array(default false)
+     *    - all              : Nobody or All display for none selected
+     *                             all=0 (default) -> Nobody
+     *                             all=1 -> All
+     *                             all=-1-> nothing
+     *    - rand             : integer / already computed rand value
+     *    - toupdate         : array / Update a specific item on select change on dropdown
+     *                          (need value_fieldname, to_update, url
+     *                          (see Ajax::updateItemOnSelectEvent for information)
+     *                          and may have moreparams)
+     *    - used             : array / Already used items ID: not to display in dropdown (default empty)
+     *    - ldap_import
+     *    - on_change        : string / value to transmit to "onChange"
+     *    - display          : boolean / display or get string (default true)
+     *    - width            : specific width needed
+     *    - specific_tags    : array of HTML5 tags to add to the field
+     *    - class            : class to pass to html select
+     *    - url              : url of the ajax php code which should return the json data to show in
+     *                         the dropdown (default /ajax/getDropdownUsers.php)
+     *    - inactive_deleted : retreive also inactive or deleted users
+     *    - hide_if_no_elements  : boolean / hide dropdown if there is no elements (default false)
+     *    - readonly         : boolean / return getUserName is true (default false)
+     *
+     * @return integer|string Random value if displayed, string otherwise
+     */
     public static function dropdown($options = [])
     {
         global $CFG_GLPI;
@@ -4487,12 +4487,12 @@ JAVASCRIPT;
     }
 
 
-   /**
-    * Show simple add user form for external auth.
-    *
-    * @return void|boolean false if user does not have rights to import users from external sources,
-    *    print form otherwise
-    */
+    /**
+     * Show simple add user form for external auth.
+     *
+     * @return void|boolean false if user does not have rights to import users from external sources,
+     *    print form otherwise
+     */
     public static function showAddExtAuthForm()
     {
 
@@ -4527,15 +4527,15 @@ JAVASCRIPT;
     }
 
 
-   /**
-    * Change auth method for given users.
-    *
-    * @param integer[] $IDs      IDs of users
-    * @param integer   $authtype Auth type (see Auth constants)
-    * @param integer   $server   ID of auth server
-    *
-    * @return boolean
-    */
+    /**
+     * Change auth method for given users.
+     *
+     * @param integer[] $IDs      IDs of users
+     * @param integer   $authtype Auth type (see Auth constants)
+     * @param integer   $server   ID of auth server
+     *
+     * @return boolean
+     */
     public static function changeAuthMethod(array $IDs = [], $authtype = 1, $server = -1)
     {
         global $DB;
@@ -4583,11 +4583,11 @@ JAVASCRIPT;
     }
 
 
-   /**
-    * Generate vcard for the current user.
-    *
-    * @return void
-    */
+    /**
+     * Generate vcard for the current user.
+     *
+     * @return void
+     */
     public function generateVcard()
     {
 
@@ -4641,13 +4641,13 @@ JAVASCRIPT;
     }
 
 
-   /**
-    * Show items of the current user.
-    *
-    * @param boolean $tech false to display items owned by user, true to display items managed by user
-    *
-    * @return void
-    */
+    /**
+     * Show items of the current user.
+     *
+     * @param boolean $tech false to display items owned by user, true to display items managed by user
+     *
+     * @return void
+     */
     public function showItems($tech)
     {
         global $DB, $CFG_GLPI;
@@ -4863,13 +4863,13 @@ JAVASCRIPT;
     }
 
 
-   /**
-    * Get user by email, importing it from LDAP if not existing.
-    *
-    * @param string $email
-    *
-    * @return integer ID of user, 0 if not found nor imported
-    */
+    /**
+     * Get user by email, importing it from LDAP if not existing.
+     *
+     * @param string $email
+     *
+     * @return integer ID of user, 0 if not found nor imported
+     */
     public static function getOrImportByEmail($email = '')
     {
         global $DB, $CFG_GLPI;
@@ -4922,13 +4922,13 @@ JAVASCRIPT;
     }
 
 
-   /**
-    * Handle user deleted in LDAP using configured policy.
-    *
-    * @param integer $users_id
-    *
-    * @return void
-    */
+    /**
+     * Handle user deleted in LDAP using configured policy.
+     *
+     * @param integer $users_id
+     *
+     * @return void
+     */
     public static function manageDeletedUserInLdap($users_id)
     {
         global $CFG_GLPI;
@@ -4995,14 +4995,14 @@ JAVASCRIPT;
        Log::history($users_id, 'User', $changes, 0, Log::HISTORY_LOG_SIMPLE_MESSAGE);*/
     }
 
-   /**
-    * Handle user restored in LDAP using configured policy.
-    *
-    * @since 10.0.0
-    * @param $users_id
-    *
-    * @return void
-    */
+    /**
+     * Handle user restored in LDAP using configured policy.
+     *
+     * @since 10.0.0
+     * @param $users_id
+     *
+     * @return void
+     */
     public static function manageRestoredUserInLdap($users_id): void
     {
         global $CFG_GLPI;
@@ -5049,29 +5049,29 @@ JAVASCRIPT;
         }
     }
 
-   /**
-    * Get user ID from its name.
-    *
-    * @param string $name User name
-    *
-    * @return integer
-    */
+    /**
+     * Get user ID from its name.
+     *
+     * @param string $name User name
+     *
+     * @return integer
+     */
     public static function getIdByName($name)
     {
         return self::getIdByField('name', $name);
     }
 
 
-   /**
-    * Get user ID from a field
-    *
-    * @since 0.84
-    *
-    * @param string $field Field name
-    * @param string $value Field value
-    *
-    * @return integer
-    */
+    /**
+     * Get user ID from a field
+     *
+     * @since 0.84
+     *
+     * @param string $field Field name
+     * @param string $value Field value
+     *
+     * @return integer
+     */
     public static function getIdByField($field, $value, $escape = true)
     {
         global $DB;
@@ -5094,13 +5094,13 @@ JAVASCRIPT;
     }
 
 
-   /**
-    * Show password update form for current user.
-    *
-    * @param array $error_messages
-    *
-    * @return void
-    */
+    /**
+     * Show password update form for current user.
+     *
+     * @param array $error_messages
+     *
+     * @return void
+     */
     public function showPasswordUpdateForm(array $error_messages = [])
     {
         global $CFG_GLPI;
@@ -5181,13 +5181,13 @@ JAVASCRIPT;
     }
 
 
-   /**
-    * Show new password form of password recovery process.
-    *
-    * @param $token
-    *
-    * @return void
-    */
+    /**
+     * Show new password form of password recovery process.
+     *
+     * @param $token
+     *
+     * @return void
+     */
     public static function showPasswordForgetChangeForm($token)
     {
         global $DB;
@@ -5209,11 +5209,11 @@ JAVASCRIPT;
     }
 
 
-   /**
-    * Show request form of password recovery process.
-    *
-    * @return void
-    */
+    /**
+     * Show request form of password recovery process.
+     *
+     * @return void
+     */
     public static function showPasswordForgetRequestForm()
     {
         TemplateRenderer::getInstance()->display('password_form.html.twig', [
@@ -5222,15 +5222,15 @@ JAVASCRIPT;
     }
 
 
-   /**
-    * Handle password recovery form submission.
-    *
-    * @param array $input
-    *
-    * @throws ForgetPasswordException when requirements are not met
-    *
-    * @return boolean true if password successfully changed, false otherwise
-    */
+    /**
+     * Handle password recovery form submission.
+     *
+     * @param array $input
+     *
+     * @throws ForgetPasswordException when requirements are not met
+     *
+     * @return boolean true if password successfully changed, false otherwise
+     */
     public function updateForgottenPassword(array $input)
     {
         $condition = [
@@ -5283,13 +5283,13 @@ JAVASCRIPT;
     }
 
 
-   /**
-    * Displays password recovery result.
-    *
-    * @param array $input
-    *
-    * @return void
-    */
+    /**
+     * Displays password recovery result.
+     *
+     * @param array $input
+     *
+     * @return void
+     */
     public function showUpdateForgottenPassword(array $input)
     {
         try {
@@ -5312,13 +5312,13 @@ JAVASCRIPT;
     }
 
 
-   /**
-    * Send password recovery for a user and display result message.
-    *
-    * @param string $email email of the user
-    *
-    * @return void
-    */
+    /**
+     * Send password recovery for a user and display result message.
+     *
+     * @param string $email email of the user
+     *
+     * @return void
+     */
     public function showForgetPassword($email)
     {
         try {
@@ -5335,15 +5335,15 @@ JAVASCRIPT;
         ]);
     }
 
-   /**
-    * Send password recovery email for a user.
-    *
-    * @param string $email
-    *
-    * @throws ForgetPasswordException when requirements are not met
-    *
-    * @return boolean true if notification successfully created, false if user not found
-    */
+    /**
+     * Send password recovery email for a user.
+     *
+     * @param string $email
+     *
+     * @throws ForgetPasswordException when requirements are not met
+     *
+     * @return boolean true if notification successfully created, false if user not found
+     */
     public function forgetPassword($email)
     {
         $condition = [
@@ -5390,11 +5390,11 @@ JAVASCRIPT;
     }
 
 
-   /**
-    * Display information from LDAP server for user.
-    *
-    * @return void
-    */
+    /**
+     * Display information from LDAP server for user.
+     *
+     * @return void
+     */
     private function showLdapDebug()
     {
 
@@ -5439,11 +5439,11 @@ JAVASCRIPT;
     }
 
 
-   /**
-    * Display debug information for current object.
-    *
-    * @return void
-    */
+    /**
+     * Display debug information for current object.
+     *
+     * @return void
+     */
     public function showDebug()
     {
 
@@ -5469,13 +5469,13 @@ JAVASCRIPT;
     }
 
 
-   /**
-    * Get a unique generated token.
-    *
-    * @param string $field Field storing the token
-    *
-    * @return string
-    */
+    /**
+     * Get a unique generated token.
+     *
+     * @param string $field Field storing the token
+     *
+     * @return string
+     */
     public static function getUniqueToken($field = 'personal_token')
     {
         global $DB;
@@ -5496,14 +5496,14 @@ JAVASCRIPT;
     }
 
 
-   /**
-    * Get token of a user. If not exists generate it.
-    *
-    * @param integer $ID    User ID
-    * @param string  $field Field storing the token
-    *
-    * @return string|boolean User token, false if user does not exist
-    */
+    /**
+     * Get token of a user. If not exists generate it.
+     *
+     * @param integer $ID    User ID
+     * @param string  $field Field storing the token
+     *
+     * @return string|boolean User token, false if user does not exist
+     */
     public static function getToken($ID, $field = 'personal_token')
     {
 
@@ -5515,16 +5515,16 @@ JAVASCRIPT;
         return false;
     }
 
-   /**
-    * Get token of a user. If it does not exists  then generate it.
-    *
-    * @since 9.4
-    *
-    * @param string $field the field storing the token
-    * @param boolean $force_new force generation of a new token
-    *
-    * @return string|false token or false in case of error
-    */
+    /**
+     * Get token of a user. If it does not exists  then generate it.
+     *
+     * @since 9.4
+     *
+     * @param string $field the field storing the token
+     * @param boolean $force_new force generation of a new token
+     *
+     * @return string|false token or false in case of error
+     */
     public function getAuthToken($field = 'personal_token', $force_new = false)
     {
         global $CFG_GLPI;
@@ -5571,11 +5571,11 @@ JAVASCRIPT;
     }
 
 
-   /**
-    * Get name of users using default passwords
-    *
-    * @return string[]
-    */
+    /**
+     * Get name of users using default passwords
+     *
+     * @return string[]
+     */
     public static function checkDefaultPasswords()
     {
         global $DB;
@@ -5601,16 +5601,16 @@ JAVASCRIPT;
     }
 
 
-   /**
-    * Get picture URL from picture field.
-    *
-    * @since 0.85
-    *
-    * @param string $picture Picture field value
-    * @param bool  bool get full path
-    *
-    * @return string
-    */
+    /**
+     * Get picture URL from picture field.
+     *
+     * @since 0.85
+     *
+     * @param string $picture Picture field value
+     * @param bool  bool get full path
+     *
+     * @return string
+     */
     public static function getURLForPicture($picture, $full = true)
     {
         global $CFG_GLPI;
@@ -5624,15 +5624,15 @@ JAVASCRIPT;
     }
 
 
-   /**
-    * Get thumbnail URL from picture field.
-    *
-    * @since 0.85
-    *
-    * @param string $picture Picture field value
-    *
-    * @return string
-    */
+    /**
+     * Get thumbnail URL from picture field.
+     *
+     * @since 0.85
+     *
+     * @param string $picture Picture field value
+     *
+     * @return string
+     */
     public static function getThumbnailURLForPicture(string $picture = null)
     {
         global $CFG_GLPI;
@@ -5652,15 +5652,15 @@ JAVASCRIPT;
     }
 
 
-   /**
-    * Drop existing files for user picture.
-    *
-    * @since 0.85
-    *
-    * @param string $picture Picture field value
-    *
-    * @return void
-    */
+    /**
+     * Drop existing files for user picture.
+     *
+     * @since 0.85
+     *
+     * @param string $picture Picture field value
+     *
+     * @return void
+     */
     public static function dropPictureFiles($picture)
     {
 
@@ -5697,22 +5697,22 @@ JAVASCRIPT;
     }
 
 
-   /**
-    * Retrieve the list of LDAP field names from a list of fields
-    * allow pattern substitution, e.g. %{name}.
-    *
-    * @since 9.1
-    *
-    * @param string[] $map array of fields
-    *
-    * @return string[]
-    */
+    /**
+     * Retrieve the list of LDAP field names from a list of fields
+     * allow pattern substitution, e.g. %{name}.
+     *
+     * @since 9.1
+     *
+     * @param string[] $map array of fields
+     *
+     * @return string[]
+     */
     private static function getLdapFieldNames(array $map)
     {
 
         $ret =  [];
         foreach ($map as $v) {
-           /** @var array $reg */
+            /** @var array $reg */
             if (preg_match_all('/%{(.*)}/U', $v, $reg)) {
                 // e.g. "%{country} > %{city} > %{site}"
                 foreach ($reg [1] as $f) {
@@ -5727,16 +5727,16 @@ JAVASCRIPT;
     }
 
 
-   /**
-    * Retrieve the value of a fields from a LDAP result applying needed substitution of %{value}.
-    *
-    * @since 9.1
-    *
-    * @param string $map String with field format
-    * @param array  $res LDAP result
-    *
-    * @return string
-    */
+    /**
+     * Retrieve the value of a fields from a LDAP result applying needed substitution of %{value}.
+     *
+     * @since 9.1
+     *
+     * @param string $map String with field format
+     * @param array  $res LDAP result
+     *
+     * @return string
+     */
     private static function getLdapFieldValue($map, array $res)
     {
 
@@ -5752,11 +5752,11 @@ JAVASCRIPT;
         return $ret == $map ? (isset($res[0][$map][0]) ? $res[0][$map][0] : '') : $ret;
     }
 
-   /**
-    * Print the switch language form.
-    *
-    * @return void
-    */
+    /**
+     * Print the switch language form.
+     *
+     * @return void
+     */
     public static function showSwitchLangForm()
     {
         $params = [
@@ -5772,11 +5772,11 @@ JAVASCRIPT;
         return $out;
     }
 
-   /**
-    * Get list of entities ids for current user.
-    *
-    * @return integer[]
-    */
+    /**
+     * Get list of entities ids for current user.
+     *
+     * @return integer[]
+     */
     private function getEntities()
     {
        //get user entities
@@ -5787,13 +5787,13 @@ JAVASCRIPT;
     }
 
 
-   /**
-    * Give cron information.
-    *
-    * @param string $name Task's name
-    *
-    * @return array
-    */
+    /**
+     * Give cron information.
+     *
+     * @param string $name Task's name
+     *
+     * @return array
+     */
     public static function cronInfo(string $name): array
     {
 
@@ -5809,14 +5809,14 @@ JAVASCRIPT;
         return $info;
     }
 
-   /**
-    * Cron that notify users about when their password expire and deactivate their account
-    * depending on password expiration policy.
-    *
-    * @param CronTask $task
-    *
-    * @return integer
-    */
+    /**
+     * Cron that notify users about when their password expire and deactivate their account
+     * depending on password expiration policy.
+     *
+     * @param CronTask $task
+     *
+     * @return integer
+     */
     public static function cronPasswordExpiration(CronTask $task)
     {
         global $CFG_GLPI, $DB;
@@ -5955,11 +5955,11 @@ JAVASCRIPT;
          : 1; // 1 for fully process
     }
 
-   /**
-    * Get password expiration time.
-    *
-    * @return null|int Password expiration time, or null if expiration mechanism is not active.
-    */
+    /**
+     * Get password expiration time.
+     *
+     * @return null|int Password expiration time, or null if expiration mechanism is not active.
+     */
     public function getPasswordExpirationTime()
     {
         global $CFG_GLPI;
@@ -5980,11 +5980,11 @@ JAVASCRIPT;
         );
     }
 
-   /**
-    * Check if password should be changed (if it expires soon).
-    *
-    * @return boolean
-    */
+    /**
+     * Check if password should be changed (if it expires soon).
+     *
+     * @return boolean
+     */
     public function shouldChangePassword()
     {
         global $CFG_GLPI;
@@ -6008,11 +6008,11 @@ JAVASCRIPT;
         return $notice_time < time();
     }
 
-   /**
-    * Check if password expired.
-    *
-    * @return boolean
-    */
+    /**
+     * Check if password expired.
+     *
+     * @return boolean
+     */
     public function hasPasswordExpired()
     {
 
@@ -6072,9 +6072,9 @@ JAVASCRIPT;
         return "ti ti-user";
     }
 
-   /**
-    * Add groups stored in "_ldap_rules/groups_id" special input
-    */
+    /**
+     * Add groups stored in "_ldap_rules/groups_id" special input
+     */
     public function applyGroupsRules()
     {
         if (!isset($this->input["_ldap_rules"]['groups_id'])) {
@@ -6096,14 +6096,14 @@ JAVASCRIPT;
         }
     }
 
-   /**
-    * Get anonymized name for user instance.
-    *
-    * @param int $users_id
-    * @param int $entities_id
-    *
-    * @return string|null
-    */
+    /**
+     * Get anonymized name for user instance.
+     *
+     * @param int $users_id
+     * @param int $entities_id
+     *
+     * @return string|null
+     */
     public function getAnonymizedName(?int $entities_id = null): ?string
     {
         switch (Entity::getAnonymizeConfig($entities_id)) {
@@ -6121,14 +6121,14 @@ JAVASCRIPT;
         return null;
     }
 
-   /**
-    * Get anonymized name for user having given ID.
-    *
-    * @param int $users_id
-    * @param int $entities_id
-    *
-    * @return string|null
-    */
+    /**
+     * Get anonymized name for user having given ID.
+     *
+     * @param int $users_id
+     * @param int $entities_id
+     *
+     * @return string|null
+     */
     public static function getAnonymizedNameForUser(int $users_id, ?int $entities_id = null): ?string
     {
         switch (Entity::getAnonymizeConfig($entities_id)) {
@@ -6151,16 +6151,16 @@ JAVASCRIPT;
         return null;
     }
 
-   /**
-    * Print a simplified user form.
-    *
-    * @param integer $ID    ID of the user
-    * @param array $options Options
-    *     - string   target        Form target
-    *     - boolean  withtemplate  Template or basic item
-    *
-    * @return boolean true
-    */
+    /**
+     * Print a simplified user form.
+     *
+     * @param integer $ID    ID of the user
+     * @param array $options Options
+     *     - string   target        Form target
+     *     - boolean  withtemplate  Template or basic item
+     *
+     * @return boolean true
+     */
     public function showSystemUserForm($ID, array $options = []): bool
     {
         $this->initForm($ID, $options);
@@ -6236,13 +6236,13 @@ JAVASCRIPT;
         return $output;
     }
 
-   /**
-    * Get user link.
-    *
-    * @param bool $enable_anonymization
-    *
-    * @return string
-    */
+    /**
+     * Get user link.
+     *
+     * @param bool $enable_anonymization
+     *
+     * @return string
+     */
     public function getUserLink(bool $enable_anonymization = false): string
     {
         if (
@@ -6258,13 +6258,13 @@ JAVASCRIPT;
         return $this->getLink();
     }
 
-   /**
-    * Get user picture path.
-    *
-    * @param bool $enable_anonymization
-    *
-    * @return string
-    */
+    /**
+     * Get user picture path.
+     *
+     * @param bool $enable_anonymization
+     *
+     * @return string
+     */
     public function getPicturePath(bool $enable_anonymization = false): string
     {
 
@@ -6280,13 +6280,13 @@ JAVASCRIPT;
         return '/pics/picture.png';
     }
 
-   /**
-    * Get user thumbnail picture path.
-    *
-    * @param bool $enable_anonymization
-    *
-    * @return null|string
-    */
+    /**
+     * Get user thumbnail picture path.
+     *
+     * @param bool $enable_anonymization
+     *
+     * @return null|string
+     */
     public function getThumbnailPicturePath(bool $enable_anonymization = false): ?string
     {
 
@@ -6302,13 +6302,13 @@ JAVASCRIPT;
         return null;
     }
 
-   /**
-    * Get user initials.
-    *
-    * @param bool $enable_anonymization
-    *
-    * @return string
-    */
+    /**
+     * Get user initials.
+     *
+     * @param bool $enable_anonymization
+     *
+     * @return string
+     */
     public function getUserInitials(bool $enable_anonymization = false): string
     {
 
@@ -6324,13 +6324,13 @@ JAVASCRIPT;
         return mb_strtoupper($initials);
     }
 
-   /**
-    * Return background color corresponding to user initials.
-    *
-    * @param bool $enable_anonymization
-    *
-    * @return string
-    */
+    /**
+     * Return background color corresponding to user initials.
+     *
+     * @param bool $enable_anonymization
+     *
+     * @return string
+     */
     public function getUserInitialsBgColor(bool $enable_anonymization = false): string
     {
         return Toolbox::getColorForString($this->getUserInitials($enable_anonymization));

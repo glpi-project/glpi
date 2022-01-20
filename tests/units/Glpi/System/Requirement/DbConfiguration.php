@@ -234,9 +234,9 @@ class DbConfiguration extends \GLPITestCase
         ];
     }
 
-   /**
-    * @dataProvider configurationProvider
-    */
+    /**
+     * @dataProvider configurationProvider
+     */
     public function testCheck(string $version, array $variables, bool $validated, array $messages)
     {
 

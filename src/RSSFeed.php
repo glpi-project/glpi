@@ -59,7 +59,7 @@ use Glpi\RichText\RichText;
  * RSSFeed Class
  *
  * @since 0.84
-**/
+ **/
 class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
 {
    // From CommonDBTM
@@ -127,31 +127,31 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
     }
 
 
-   /**
-    * @since 0.85
-    * for personal rss feed
-   **/
+    /**
+     * @since 0.85
+     * for personal rss feed
+     **/
     public static function canUpdate()
     {
         return (Session::getCurrentInterface() != 'helpdesk');
     }
 
 
-   /**
-    * @since 0.85
-    * for personal rss feed
-   **/
+    /**
+     * @since 0.85
+     * for personal rss feed
+     **/
     public static function canPurge()
     {
         return (Session::getCurrentInterface() != 'helpdesk');
     }
 
 
-   /**
-    * @since 0.85
-    *
-    * @see CommonDBTM::canPurgeItem()
-   **/
+    /**
+     * @since 0.85
+     *
+     * @see CommonDBTM::canPurgeItem()
+     **/
     public function canPurgeItem()
     {
 
@@ -178,9 +178,9 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
     }
 
 
-   /**
-    * @see CommonDBTM::cleanDBonPurge()
-   **/
+    /**
+     * @see CommonDBTM::cleanDBonPurge()
+     **/
     public function cleanDBonPurge()
     {
 
@@ -203,13 +203,13 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
         return parent::haveVisibilityAccess();
     }
 
-   /**
-    * Return visibility joins to add to SQL
-    *
-    * @param $forceall force all joins (false by default)
-    *
-    * @return string joins to add
-   **/
+    /**
+     * Return visibility joins to add to SQL
+     *
+     * @param $forceall force all joins (false by default)
+     *
+     * @return string joins to add
+     **/
     public static function addVisibilityJoins($forceall = false)
     {
        //not deprecated because used in Search
@@ -232,11 +232,11 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
     }
 
 
-   /**
-    * Return visibility SQL restriction to add
-    *
-    * @return string restrict to add
-   **/
+    /**
+     * Return visibility SQL restriction to add
+     *
+     * @return string restrict to add
+     **/
     public static function addVisibilityRestrict()
     {
        //not deprecated because used in Search
@@ -254,15 +254,15 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
         return $sql;
     }
 
-   /**
-    * Return visibility joins to add to DBIterator parameters
-    *
-    * @since 9.4
-    *
-    * @param boolean $forceall force all joins (false by default)
-    *
-    * @return array
-    */
+    /**
+     * Return visibility joins to add to DBIterator parameters
+     *
+     * @since 9.4
+     *
+     * @param boolean $forceall force all joins (false by default)
+     *
+     * @return array
+     */
     public static function getVisibilityCriteria(bool $forceall = false): array
     {
         $where = [self::getTable() . '.users_id' => Session::getLoginUserID()];
@@ -377,11 +377,11 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
         return $criteria;
     }
 
-   /**
-    * @param $field
-    * @param $values
-    * @param $options   array
-   **/
+    /**
+     * @param $field
+     * @param $values
+     * @param $options   array
+     **/
     public static function getSpecificValueToDisplay($field, $values, array $options = [])
     {
 
@@ -396,12 +396,12 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
     }
 
 
-   /**
-    * @param $field
-    * @param $name               (default '')
-    * @param $values             (default '')
-    * @param $options      array
-    **/
+    /**
+     * @param $field
+     * @param $name               (default '')
+     * @param $values             (default '')
+     * @param $options      array
+     **/
     public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
     {
 
@@ -540,9 +540,9 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
     }
 
 
-   /**
-    * @see CommonGLPI::getTabNameForItem()
-   **/
+    /**
+     * @see CommonGLPI::getTabNameForItem()
+     **/
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
 
@@ -568,9 +568,9 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
     }
 
 
-   /**
-    * @see CommonGLPI::defineTabs()
-   **/
+    /**
+     * @see CommonGLPI::defineTabs()
+     **/
     public function defineTabs($options = [])
     {
 
@@ -583,11 +583,11 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
     }
 
 
-   /**
-    * @param $item         CommonGLPI object
-    * @param $tabnum       (default 1)
-    * @param $withtemplate (default 0)
-   **/
+    /**
+     * @param $item         CommonGLPI object
+     * @param $tabnum       (default 1)
+     * @param $withtemplate (default 0)
+     **/
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
 
@@ -607,9 +607,9 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
     }
 
 
-   /**
-    * @see CommonDBTM::prepareInputForAdd()
-   **/
+    /**
+     * @see CommonDBTM::prepareInputForAdd()
+     **/
     public function prepareInputForAdd($input)
     {
 
@@ -632,9 +632,9 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
     }
 
 
-   /**
-    * @see CommonDBTM::prepareInputForAdd()
-   **/
+    /**
+     * @see CommonDBTM::prepareInputForAdd()
+     **/
     public function prepareInputForUpdate($input)
     {
 
@@ -676,13 +676,13 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
     }
 
 
-   /**
-    * Print the rssfeed form
-    *
-    * @param $ID        integer  Id of the item to print
-    * @param $options   array    of possible options:
-    *     - target filename : where to go when done.
-    **/
+    /**
+     * Print the rssfeed form
+     *
+     * @param $ID        integer  Id of the item to print
+     * @param $options   array    of possible options:
+     *     - target filename : where to go when done.
+     **/
     public function showForm($ID, array $options = [])
     {
        // Test _rss cache directory. I permission trouble : unable to edit
@@ -787,11 +787,11 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
     }
 
 
-   /**
-    * Set error field
-    *
-    * @param $error   (false by default
-    **/
+    /**
+     * Set error field
+     *
+     * @param $error   (false by default
+     **/
     public function setError($error = false)
     {
 
@@ -812,9 +812,9 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
     }
 
 
-   /**
-    * Show the feed content
-    **/
+    /**
+     * Show the feed content
+     **/
     public function showFeedContent()
     {
 
@@ -848,11 +848,11 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
     }
 
 
-   /**
-    * Show discovered feeds
-    *
-    * @return nothin
-    **/
+    /**
+     * Show discovered feeds
+     *
+     * @return nothin
+     **/
     public function showDiscoveredFeeds()
     {
 
@@ -888,14 +888,14 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
     }
 
 
-   /**
-    * Get a specific RSS feed
-    *
-    * @param $url             string/array   URL of the feed or array of URL
-    * @param $cache_duration  timestamp      cache duration (default DAY_TIMESTAMP)
-    *
-    * @return feed object
-   **/
+    /**
+     * Get a specific RSS feed
+     *
+     * @param $url             string/array   URL of the feed or array of URL
+     * @param $cache_duration  timestamp      cache duration (default DAY_TIMESTAMP)
+     *
+     * @return feed object
+     **/
     public static function getRSSFeed($url, $cache_duration = DAY_TIMESTAMP)
     {
         global $CFG_GLPI;
@@ -935,14 +935,14 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
     }
 
 
-   /**
-    * Show list for central view
-    *
-    * @param $personal boolean   display rssfeeds created by me ?
-    * @param $personal $display  if false, return html
-    *
-    * @return void
-    **/
+    /**
+     * Show list for central view
+     *
+     * @param $personal boolean   display rssfeeds created by me ?
+     * @param $personal $display  if false, return html
+     *
+     * @return void
+     **/
     public static function showListForCentral(bool $personal = true, bool $display = true)
     {
         global $DB, $CFG_GLPI;
@@ -1064,11 +1064,11 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
         }
     }
 
-   /**
-    * @since 0.85
-    *
-    * @see commonDBTM::getRights()
-   **/
+    /**
+     * @since 0.85
+     *
+     * @see commonDBTM::getRights()
+     **/
     public function getRights($interface = 'central')
     {
 

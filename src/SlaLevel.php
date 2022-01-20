@@ -33,7 +33,7 @@
 
 /**
  * SlaLevel class
-**/
+ **/
 class SlaLevel extends LevelAgreementLevel
 {
     protected $rules_id_field     = 'slalevels_id';
@@ -66,11 +66,11 @@ class SlaLevel extends LevelAgreementLevel
     }
 
 
-   /**
-    * @param $sla SLA object
-    *
-    * @since 9.1 (before showForSLA)
-   **/
+    /**
+     * @param $sla SLA object
+     *
+     * @since 9.1 (before showForSLA)
+     **/
     public function showForSLA(SLA $sla)
     {
         global $DB;
@@ -216,14 +216,14 @@ class SlaLevel extends LevelAgreementLevel
     }
 
 
-   /**
-    * Show the rule
-    *
-    * @param $ID              ID of the rule
-    * @param $options   array of possible options
-    *
-    * @return void
-   **/
+    /**
+     * Show the rule
+     *
+     * @param $ID              ID of the rule
+     * @param $options   array of possible options
+     *
+     * @return void
+     **/
     public function showForm($ID, array $options = [])
     {
 
@@ -276,15 +276,15 @@ class SlaLevel extends LevelAgreementLevel
         $this->showFormButtons($options);
     }
 
-   /**
-    * Get first level for a SLA
-    *
-    * @param $slas_id   integer  id of the SLA
-    *
-    * @since 9.1 (before getFirst SlaLevel)
-    *
-    * @return id of the sla level : 0 if not exists
-   **/
+    /**
+     * Get first level for a SLA
+     *
+     * @param $slas_id   integer  id of the SLA
+     *
+     * @since 9.1 (before getFirst SlaLevel)
+     *
+     * @return id of the sla level : 0 if not exists
+     **/
     public static function getFirstSlaLevel($slas_id)
     {
         global $DB;
@@ -307,14 +307,14 @@ class SlaLevel extends LevelAgreementLevel
     }
 
 
-   /**
-    * Get next level for a SLA
-    *
-    * @param $slas_id         integer id of the SLA
-    * @param $slalevels_id    integer id of the current SLA level
-    *
-    * @return id of the sla level : 0 if not exists
-   **/
+    /**
+     * Get next level for a SLA
+     *
+     * @param $slas_id         integer id of the SLA
+     * @param $slalevels_id    integer id of the current SLA level
+     *
+     * @return id of the sla level : 0 if not exists
+     **/
     public static function getNextSlaLevel($slas_id, $slalevels_id)
     {
         global $DB;

@@ -35,7 +35,7 @@
  * Relation between Itil items and Projects
  *
  * @since 9.4.0
-**/
+ **/
 class Itil_Project extends CommonDBRelation
 {
     public static $itemtype_1 = 'itemtype';
@@ -113,12 +113,12 @@ class Itil_Project extends CommonDBRelation
     }
 
 
-   /**
-    * Show ITIL items for a project.
-    *
-    * @param Project $project
-    * @return void
-    **/
+    /**
+     * Show ITIL items for a project.
+     *
+     * @param Project $project
+     * @return void
+     **/
     public static function showForProject(Project $project)
     {
         global $DB;
@@ -130,7 +130,7 @@ class Itil_Project extends CommonDBRelation
 
         $canedit = $project->canEdit($ID);
 
-       /** @var CommonITILObject $itemtype */
+        /** @var CommonITILObject $itemtype */
         foreach ([Change::class, Problem::class, Ticket::class] as $itemtype) {
             $rand    = mt_rand();
 
@@ -262,12 +262,12 @@ class Itil_Project extends CommonDBRelation
         }
     }
 
-   /**
-    * Show projects for an ITIL item.
-    *
-    * @param CommonITILObject $itil
-    * @return void
-   **/
+    /**
+     * Show projects for an ITIL item.
+     *
+     * @param CommonITILObject $itil
+     * @return void
+     **/
     public static function showForItil(CommonITILObject $itil)
     {
         global $DB;

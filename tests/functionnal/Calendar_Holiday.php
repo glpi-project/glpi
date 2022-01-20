@@ -74,9 +74,9 @@ class Calendar_Holiday extends DbTestCase
         $this->array($holidays)->isEqualTo([]);
     }
 
-   /**
-    * @tags cache
-    */
+    /**
+     * @tags cache
+     */
     public function testHolidaysCache()
     {
         global $GLPI_CACHE;
@@ -150,13 +150,13 @@ class Calendar_Holiday extends DbTestCase
        */
     }
 
-   /**
-    * Add some holidays on given calendar.
-    *
-    * @param int $calendar_id
-    *
-    * @return void
-    */
+    /**
+     * Add some holidays on given calendar.
+     *
+     * @param int $calendar_id
+     *
+     * @return void
+     */
     private function addHolidaysToCalendar(int $calendar_id): void
     {
         $holiday = new Holiday();
@@ -239,13 +239,13 @@ class Calendar_Holiday extends DbTestCase
         $this->integer($calendar_holiday_id)->isGreaterThan(0);
     }
 
-   /**
-    * Validate that holidays cache for given calendar matches "getHolidaysForCalendar" method result.
-    *
-    * @param int $calendar_id
-    *
-    * @return void
-    */
+    /**
+     * Validate that holidays cache for given calendar matches "getHolidaysForCalendar" method result.
+     *
+     * @param int $calendar_id
+     *
+     * @return void
+     */
     private function validateHolidayCacheMatchesMethodResult(int $calendar_id): void
     {
         global $GLPI_CACHE;

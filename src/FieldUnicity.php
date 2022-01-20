@@ -33,7 +33,7 @@
 
 /**
  * FieldUnicity Class
-**/
+ **/
 class FieldUnicity extends CommonDropdown
 {
    // From CommonDBTM
@@ -57,9 +57,9 @@ class FieldUnicity extends CommonDropdown
     }
 
 
-   /**
-    * @since 0.85
-   **/
+    /**
+     * @since 0.85
+     **/
     public static function canPurge()
     {
         return static::canUpdate();
@@ -92,11 +92,11 @@ class FieldUnicity extends CommonDropdown
     }
 
 
-   /**
-    * Define tabs to display
-    *
-    * @param $options array
-   **/
+    /**
+     * Define tabs to display
+     *
+     * @param $options array
+     **/
     public function defineTabs($options = [])
     {
 
@@ -145,14 +145,14 @@ class FieldUnicity extends CommonDropdown
     }
 
 
-   /**
-    * Display a dropdown which contains all the available itemtypes
-    *
-    * @param integer $ID     The field unicity item id
-    * @param integer $value  The selected value (default 0)
-    *
-    * @return void
-   **/
+    /**
+     * Display a dropdown which contains all the available itemtypes
+     *
+     * @param integer $ID     The field unicity item id
+     * @param integer $value  The selected value (default 0)
+     *
+     * @return void
+     **/
     public function showItemtype($ID, $value = 0)
     {
         global $CFG_GLPI;
@@ -188,15 +188,15 @@ class FieldUnicity extends CommonDropdown
     }
 
 
-   /**
-    * Return criteria unicity for an itemtype, in an entity
-    *
-    * @param string  itemtype       the itemtype for which unicity must be checked
-    * @param integer entities_id    the entity for which configuration must be retrivied
-    * @param boolean $check_active
-    *
-    * @return array an array of fields to check, or an empty array if no
-   **/
+    /**
+     * Return criteria unicity for an itemtype, in an entity
+     *
+     * @param string  itemtype       the itemtype for which unicity must be checked
+     * @param integer entities_id    the entity for which configuration must be retrivied
+     * @param boolean $check_active
+     *
+     * @return array an array of fields to check, or an empty array if no
+     **/
     public static function getUnicityFieldsConfig($itemtype, $entities_id = 0, $check_active = true)
     {
         global $DB;
@@ -232,13 +232,13 @@ class FieldUnicity extends CommonDropdown
     }
 
 
-   /**
-    * Display a list of available fields for unicity checks
-    *
-    * @param CommonDBTM $unicity
-    *
-    * @return void
-   **/
+    /**
+     * Display a list of available fields for unicity checks
+     *
+     * @param CommonDBTM $unicity
+     *
+     * @return void
+     **/
     public static function selectCriterias(CommonDBTM $unicity)
     {
         echo "<span id='span_fields'>";
@@ -263,13 +263,13 @@ class FieldUnicity extends CommonDropdown
     }
 
 
-   /** Dropdown fields for a specific itemtype
-    *
-    * @since 0.84
-    *
-    * @param string $itemtype
-    * @param array  $options
-   **/
+    /** Dropdown fields for a specific itemtype
+     *
+     * @since 0.84
+     *
+     * @param string $itemtype
+     * @param array  $options
+     **/
     public static function dropdownFields($itemtype, $options = [])
     {
         global $DB;
@@ -412,13 +412,13 @@ class FieldUnicity extends CommonDropdown
     }
 
 
-   /**
-    * @since 0.84
-    *
-    * @param $field
-    * @param $values
-    * @param $options   array
-   **/
+    /**
+     * @since 0.84
+     *
+     * @param $field
+     * @param $values
+     * @param $options   array
+     **/
     public static function getSpecificValueToDisplay($field, $values, array $options = [])
     {
 
@@ -451,14 +451,14 @@ class FieldUnicity extends CommonDropdown
     }
 
 
-   /**
-    * @since 0.84
-    *
-    * @param $field
-    * @param $name               (default '')
-    * @param $values             (default '')
-    * @param $options      array
-   **/
+    /**
+     * @since 0.84
+     *
+     * @param $field
+     * @param $name               (default '')
+     * @param $values             (default '')
+     * @param $options      array
+     **/
     public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
     {
         if (!is_array($values)) {
@@ -481,13 +481,13 @@ class FieldUnicity extends CommonDropdown
     }
 
 
-   /**
-    * Perform checks to be sure that an itemtype and at least a field are selected
-    *
-    * @param array $input  the values to insert in DB
-    *
-    * @return array the input values to insert, but modified
-   **/
+    /**
+     * Perform checks to be sure that an itemtype and at least a field are selected
+     *
+     * @param array $input  the values to insert in DB
+     *
+     * @return array the input values to insert, but modified
+     **/
     public static function checkBeforeInsert($input)
     {
 
@@ -525,13 +525,13 @@ class FieldUnicity extends CommonDropdown
     }
 
 
-   /**
-    * Delete all criterias for an itemtype
-    *
-    * @param itemtype
-    *
-    * @return void
-   **/
+    /**
+     * Delete all criterias for an itemtype
+     *
+     * @param itemtype
+     *
+     * @return void
+     **/
     public static function deleteForItemtype($itemtype)
     {
         global $DB;
@@ -545,11 +545,11 @@ class FieldUnicity extends CommonDropdown
     }
 
 
-   /**
-    * List doubles
-    *
-    * @param FieldUnicity $unicity
-   **/
+    /**
+     * List doubles
+     *
+     * @param FieldUnicity $unicity
+     **/
     public static function showDoubles(FieldUnicity $unicity)
     {
         global $DB;
@@ -642,9 +642,9 @@ class FieldUnicity extends CommonDropdown
     }
 
 
-   /**
-    * Display debug information for current object
-   **/
+    /**
+     * Display debug information for current object
+     **/
     public function showDebug()
     {
 

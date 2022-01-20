@@ -67,9 +67,9 @@ HTML, false),
         ];
     }
 
-   /**
-    * @dataProvider normalizeValueForTextExportProvider
-    */
+    /**
+     * @dataProvider normalizeValueForTextExportProvider
+     */
     public function testNormalizeValueForTextExport(string $value, string $expected_result)
     {
         $dataexport = $this->newTestedInstance();

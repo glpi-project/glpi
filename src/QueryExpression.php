@@ -33,16 +33,16 @@
 
 /**
  *  Query expression class
-**/
+ **/
 class QueryExpression
 {
     private $expression;
 
-   /**
-    * Create a query expression
-    *
-    * @param string $value Query parameter value, defaults to '?'
-    */
+    /**
+     * Create a query expression
+     *
+     * @param string $value Query parameter value, defaults to '?'
+     */
     public function __construct($expression)
     {
         if (empty($expression)) {
@@ -51,11 +51,11 @@ class QueryExpression
         $this->expression = $expression;
     }
 
-   /**
-    * Query expression value
-    *
-    * @return string
-    */
+    /**
+     * Query expression value
+     *
+     * @return string
+     */
     public function getValue()
     {
         return $this->expression;

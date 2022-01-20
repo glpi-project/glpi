@@ -44,11 +44,11 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class CheckTwigTemplatesSyntaxCommand extends Command
 {
-   /**
-    * Error code returned when some templates have invalid yntax.
-    *
-    * @var integer
-    */
+    /**
+     * Error code returned when some templates have invalid yntax.
+     *
+     * @var integer
+     */
     const ERROR_INVALID_TEMPLATES = 1;
 
     protected function configure()

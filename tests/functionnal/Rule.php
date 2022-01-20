@@ -348,9 +348,9 @@ class Rule extends DbTestCase
         ];
     }
 
-   /**
-    * @dataProvider actionsNamesProvider
-    */
+    /**
+     * @dataProvider actionsNamesProvider
+     */
     public function testGetActionName($label, $field)
     {
         $ruleTicket = new \RuleTicket();

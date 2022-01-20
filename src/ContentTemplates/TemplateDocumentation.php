@@ -41,27 +41,27 @@ use Glpi\Toolbox\MarkdownBuilder;
  */
 class TemplateDocumentation
 {
-   /**
-    * Documentation summary, keep link to all the sections
-    *
-    * @var array
-    */
+    /**
+     * Documentation summary, keep link to all the sections
+     *
+     * @var array
+     */
     protected $summary;
 
-   /**
-    * Sections of the documentations.
-    * The first section contains the available parameters, the followings
-    * sections contains any extra references needed to work on this parameters
-    *
-    * @var array
-    */
+    /**
+     * Sections of the documentations.
+     * The first section contains the available parameters, the followings
+     * sections contains any extra references needed to work on this parameters
+     *
+     * @var array
+     */
     protected $sections;
 
-   /**
-    * Context of the displayed variables
-    *
-    * @var string
-    */
+    /**
+     * Context of the displayed variables
+     *
+     * @var string
+     */
     protected $context;
 
     public function __construct(string $context)
@@ -71,11 +71,11 @@ class TemplateDocumentation
         $this->summary = [];
     }
 
-   /**
-    * Build the documentation as markdown
-    *
-    * @return string
-    */
+    /**
+     * Build the documentation as markdown
+     *
+     * @return string
+     */
     public function build(): string
     {
         $content = "";
@@ -101,13 +101,13 @@ class TemplateDocumentation
         return $content;
     }
 
-   /**
-    * Add a section to the documentation.
-    *
-    * @param string $title              Section's title
-    * @param array $parameters          Parameters to be displayed in this section
-    * @param string|null $fields_prefix Prefix to happen to the parameters fields name
-    */
+    /**
+     * Add a section to the documentation.
+     *
+     * @param string $title              Section's title
+     * @param array $parameters          Parameters to be displayed in this section
+     * @param string|null $fields_prefix Prefix to happen to the parameters fields name
+     */
     public function addSection(
         string $title,
         array $parameters,
@@ -138,7 +138,7 @@ class TemplateDocumentation
 
        // Add a row for each parameters
         foreach ($parameters as $parameter) {
-           /** @var \Glpi\ContentTemplates\Parameters\ParametersTypes\ParameterTypeInterface $parameter */
+            /** @var \Glpi\ContentTemplates\Parameters\ParametersTypes\ParameterTypeInterface $parameter */
             $row = [
             $parameter->getDocumentationField(),
             $parameter->getDocumentationLabel(),

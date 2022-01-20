@@ -97,15 +97,15 @@ class PlanningRecall extends CommonDBChild
     }
 
 
-   /**
-    * Retrieve an item from the database
-    *
-    * @param $itemtype     string   itemtype to get
-    * @param $items_id     integer  id of the item
-    * @param $users_id     integer  id of the user
-    *
-    * @return true if succeed else false
-   **/
+    /**
+     * Retrieve an item from the database
+     *
+     * @param $itemtype     string   itemtype to get
+     * @param $items_id     integer  id of the item
+     * @param $users_id     integer  id of the user
+     *
+     * @return true if succeed else false
+     **/
     public function getFromDBForItemAndUser($itemtype, $items_id, $users_id)
     {
 
@@ -117,9 +117,9 @@ class PlanningRecall extends CommonDBChild
     }
 
 
-   /**
-    * @see CommonDBTM::post_updateItem()
-   **/
+    /**
+     * @see CommonDBTM::post_updateItem()
+     **/
     public function post_updateItem($history = 1)
     {
 
@@ -129,11 +129,11 @@ class PlanningRecall extends CommonDBChild
         parent::post_updateItem($history);
     }
 
-   /**
-    * Manage recall set
-    *
-    * @param $data array of data to manage
-   **/
+    /**
+     * Manage recall set
+     *
+     * @param $data array of data to manage
+     **/
     public static function manageDatas(array $data)
     {
 
@@ -208,15 +208,15 @@ class PlanningRecall extends CommonDBChild
     }
 
 
-   /**
-    * Update planning recal date when changing begin of planning
-    *
-    * @param $itemtype  string   itemtype to get
-    * @param $items_id  integer  id of the item
-    * @param $begin     datetime new begin date
-    *
-    * @return true if succeed else false
-   **/
+    /**
+     * Update planning recal date when changing begin of planning
+     *
+     * @param $itemtype  string   itemtype to get
+     * @param $items_id  integer  id of the item
+     * @param $begin     datetime new begin date
+     *
+     * @return true if succeed else false
+     **/
     public static function managePlanningUpdates($itemtype, $items_id, $begin)
     {
         global $DB;
@@ -242,20 +242,20 @@ class PlanningRecall extends CommonDBChild
     }
 
 
-   /**
-    * Make a select box with recall times
-    *
-    * Mandatory options : itemtype, items_id
-    *
-    * @param $options array of possible options:
-    *    - itemtype : string itemtype
-    *    - items_id : integer id of the item
-    *    - users_id : integer id of the user (if not set used login user)
-    *    - value    : integer preselected value for before_time
-    *    - field    : string  field used as time mark (default begin)
-    *
-    * @return void|boolean print out an HTML select box or return false if mandatory fields are not ok
-   **/
+    /**
+     * Make a select box with recall times
+     *
+     * Mandatory options : itemtype, items_id
+     *
+     * @param $options array of possible options:
+     *    - itemtype : string itemtype
+     *    - items_id : integer id of the item
+     *    - users_id : integer id of the user (if not set used login user)
+     *    - value    : integer preselected value for before_time
+     *    - field    : string  field used as time mark (default begin)
+     *
+     * @return void|boolean print out an HTML select box or return false if mandatory fields are not ok
+     **/
     public static function dropdown($options = [])
     {
        // Default values
@@ -319,20 +319,20 @@ class PlanningRecall extends CommonDBChild
     }
 
 
-   /**
-    * Dispaly specific form when no edit right
-    *
-    * Mandatory options : itemtype, items_id
-    *
-    * @param $options array of possible options:
-    *    - itemtype : string itemtype
-    *    - items_id : integer id of the item
-    *    - users_id : integer id of the user (if not set used login user)
-    *    - value    : integer preselected value for before_time
-    *    - field    : string  field used as time mark (default begin)
-    *
-    * @return void|boolean print out an HTML select box or return false if mandatory fields are not ok
-   **/
+    /**
+     * Dispaly specific form when no edit right
+     *
+     * Mandatory options : itemtype, items_id
+     *
+     * @param $options array of possible options:
+     *    - itemtype : string itemtype
+     *    - items_id : integer id of the item
+     *    - users_id : integer id of the user (if not set used login user)
+     *    - value    : integer preselected value for before_time
+     *    - field    : string  field used as time mark (default begin)
+     *
+     * @return void|boolean print out an HTML select box or return false if mandatory fields are not ok
+     **/
     public static function specificForm($options = [])
     {
        // Default values
@@ -361,13 +361,13 @@ class PlanningRecall extends CommonDBChild
     }
 
 
-   /**
-    * Give cron information
-    *
-    * @param $name : task's name
-    *
-    * @return array of information
-   **/
+    /**
+     * Give cron information
+     *
+     * @param $name : task's name
+     *
+     * @return array of information
+     **/
     public static function cronInfo($name)
     {
 
@@ -379,11 +379,11 @@ class PlanningRecall extends CommonDBChild
     }
 
 
-   /**
-    * Cron action on contracts : alert depending of the config : on notice and expire
-    *
-    * @param $task for log, if NULL display (default NULL)
-   **/
+    /**
+     * Cron action on contracts : alert depending of the config : on notice and expire
+     *
+     * @param $task for log, if NULL display (default NULL)
+     **/
     public static function cronPlanningRecall($task = null)
     {
         global $DB, $CFG_GLPI;

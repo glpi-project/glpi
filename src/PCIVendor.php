@@ -82,11 +82,11 @@ class PCIVendor extends CommonDropdown implements CacheableListInterface
         return $tab;
     }
 
-   /**
-    * Get list of all known PCIIDs
-    *
-    * @return array
-    */
+    /**
+     * Get list of all known PCIIDs
+     *
+     * @return array
+     */
     public static function getList(): array
     {
         global $GLPI_CACHE;
@@ -105,11 +105,11 @@ class PCIVendor extends CommonDropdown implements CacheableListInterface
         return $pciids;
     }
 
-   /**
-    * Get PCIIDs from database
-    *
-    * @return array
-    */
+    /**
+     * Get PCIIDs from database
+     *
+     * @return array
+     */
     private function getDbList(): array
     {
         global $DB;
@@ -132,11 +132,11 @@ class PCIVendor extends CommonDropdown implements CacheableListInterface
         return $this->cache_key;
     }
 
-   /**
-    * Clean cache
-    *
-    * @return void
-    */
+    /**
+     * Clean cache
+     *
+     * @return void
+     */
     public function invalidateListCache(): void
     {
         global $GLPI_CACHE;
@@ -146,13 +146,13 @@ class PCIVendor extends CommonDropdown implements CacheableListInterface
         }
     }
 
-   /**
-    * Get manufacturer from vendorid
-    *
-    * @param string $vendorid Vendor ID to look for
-    *
-    * @return string|false
-    */
+    /**
+     * Get manufacturer from vendorid
+     *
+     * @param string $vendorid Vendor ID to look for
+     *
+     * @return string|false
+     */
     public function getManufacturer($vendorid)
     {
         $pciids = $this->getList();
@@ -164,14 +164,14 @@ class PCIVendor extends CommonDropdown implements CacheableListInterface
         return false;
     }
 
-   /**
-    * Get product name from  vendoreid and deviceid
-    *
-    * @param string $vendorid Vendor ID to look for
-    * @param string $deviceid Device ID to look for
-    *
-    * @return string|false
-    */
+    /**
+     * Get product name from  vendoreid and deviceid
+     *
+     * @param string $vendorid Vendor ID to look for
+     * @param string $deviceid Device ID to look for
+     *
+     * @return string|false
+     */
     public function getProductName($vendorid, $deviceid)
     {
         $pciids = $this->getList();

@@ -37,7 +37,7 @@ use Glpi\Application\View\TemplateRenderer;
  * Item_Ticket Class
  *
  *  Relation between Tickets and Items
-**/
+ **/
 class Item_Ticket extends CommonItilObject_Item
 {
    // From CommonDBRelation
@@ -50,9 +50,9 @@ class Item_Ticket extends CommonItilObject_Item
 
 
 
-   /**
-    * @since 0.84
-   **/
+    /**
+     * @since 0.84
+     **/
     public function getForbiddenStandardMassiveAction()
     {
 
@@ -62,10 +62,10 @@ class Item_Ticket extends CommonItilObject_Item
     }
 
 
-   /**
-    * @since 0.85.5
-    * @see CommonDBRelation::canCreateItem()
-   **/
+    /**
+     * @since 0.85.5
+     * @see CommonDBRelation::canCreateItem()
+     **/
     public function canCreateItem()
     {
 
@@ -167,17 +167,17 @@ class Item_Ticket extends CommonItilObject_Item
     }
 
 
-   /**
-    * Print the HTML ajax associated item add
-    *
-    * @param $ticket Ticket object
-    * @param $options   array of possible options:
-    *    - id                  : ID of the ticket
-    *    - _users_id_requester : ID of the requester user
-    *    - items_id            : array of elements (itemtype => array(id1, id2, id3, ...))
-    *
-    * @return void
-   **/
+    /**
+     * Print the HTML ajax associated item add
+     *
+     * @param $ticket Ticket object
+     * @param $options   array of possible options:
+     *    - id                  : ID of the ticket
+     *    - _users_id_requester : ID of the requester user
+     *    - items_id            : array of elements (itemtype => array(id1, id2, id3, ...))
+     *
+     * @return void
+     **/
     public static function itemAddForm(Ticket $ticket, $options = [])
     {
         global $CFG_GLPI;
@@ -353,13 +353,13 @@ class Item_Ticket extends CommonItilObject_Item
         return $result;
     }
 
-   /**
-    * Print the HTML array for Items linked to a ticket
-    *
-    * @param $ticket Ticket object
-    *
-    * @return void
-   **/
+    /**
+     * Print the HTML array for Items linked to a ticket
+     *
+     * @param $ticket Ticket object
+     *
+     * @return void
+     **/
     public static function showForTicket(Ticket $ticket)
     {
         $instID = $ticket->fields['id'];
@@ -552,19 +552,19 @@ class Item_Ticket extends CommonItilObject_Item
         return true;
     }
 
-   /**
-    * Make a select box for Ticket my devices
-    *
-    * @param integer $userID           User ID for my device section (default 0)
-    * @param integer $entity_restrict  restrict to a specific entity (default -1)
-    * @param string  $itemtype         of selected item (default 0)
-    * @param integer $items_id         of selected item (default 0)
-    * @param array   $options          array of possible options:
-    *    - used     : ID of the requester user
-    *    - multiple : allow multiple choice
-    *
-    * @return void
-   **/
+    /**
+     * Make a select box for Ticket my devices
+     *
+     * @param integer $userID           User ID for my device section (default 0)
+     * @param integer $entity_restrict  restrict to a specific entity (default -1)
+     * @param string  $itemtype         of selected item (default 0)
+     * @param integer $items_id         of selected item (default 0)
+     * @param array   $options          array of possible options:
+     *    - used     : ID of the requester user
+     *    - multiple : allow multiple choice
+     *
+     * @return void
+     **/
     public static function dropdownMyDevices($userID = 0, $entity_restrict = -1, $itemtype = 0, $items_id = 0, $options = [])
     {
         global $DB, $CFG_GLPI;
@@ -886,29 +886,29 @@ class Item_Ticket extends CommonItilObject_Item
         }
     }
 
-   /**
-    * Make a select box with all glpi items
-    *
-    * @param $options array of possible options:
-    *    - name         : string / name of the select (default is users_id)
-    *    - value
-    *    - comments     : boolean / is the comments displayed near the dropdown (default true)
-    *    - entity       : integer or array / restrict to a defined entity or array of entities
-    *                      (default -1 : no restriction)
-    *    - entity_sons  : boolean / if entity restrict specified auto select its sons
-    *                      only available if entity is a single value not an array(default false)
-    *    - rand         : integer / already computed rand value
-    *    - toupdate     : array / Update a specific item on select change on dropdown
-    *                      (need value_fieldname, to_update, url
-    *                      (see Ajax::updateItemOnSelectEvent for information)
-    *                      and may have moreparams)
-    *    - used         : array / Already used items ID: not to display in dropdown (default empty)
-    *    - on_change    : string / value to transmit to "onChange"
-    *    - display      : boolean / display or get string (default true)
-    *    - width        : specific width needed
-    *    - hide_if_no_elements  : boolean / hide dropdown if there is no elements (default false)
-    *
-   **/
+    /**
+     * Make a select box with all glpi items
+     *
+     * @param $options array of possible options:
+     *    - name         : string / name of the select (default is users_id)
+     *    - value
+     *    - comments     : boolean / is the comments displayed near the dropdown (default true)
+     *    - entity       : integer or array / restrict to a defined entity or array of entities
+     *                      (default -1 : no restriction)
+     *    - entity_sons  : boolean / if entity restrict specified auto select its sons
+     *                      only available if entity is a single value not an array(default false)
+     *    - rand         : integer / already computed rand value
+     *    - toupdate     : array / Update a specific item on select change on dropdown
+     *                      (need value_fieldname, to_update, url
+     *                      (see Ajax::updateItemOnSelectEvent for information)
+     *                      and may have moreparams)
+     *    - used         : array / Already used items ID: not to display in dropdown (default empty)
+     *    - on_change    : string / value to transmit to "onChange"
+     *    - display      : boolean / display or get string (default true)
+     *    - width        : specific width needed
+     *    - hide_if_no_elements  : boolean / hide dropdown if there is no elements (default false)
+     *
+     **/
     public static function dropdown($options = [])
     {
         global $DB;
@@ -969,13 +969,13 @@ class Item_Ticket extends CommonItilObject_Item
         return Dropdown::showFromArray($p['name'], $output, $p);
     }
 
-   /**
-    * Return used items for a ticket
-    *
-    * @param integer type $tickets_id
-    *
-    * @return array
-    */
+    /**
+     * Return used items for a ticket
+     *
+     * @param integer type $tickets_id
+     *
+     * @return array
+     */
     public static function getUsedItems($tickets_id)
     {
 
@@ -990,9 +990,9 @@ class Item_Ticket extends CommonItilObject_Item
         return $used;
     }
 
-   /**
-    * Form for Followup on Massive action
-   **/
+    /**
+     * Form for Followup on Massive action
+     **/
     public static function showFormMassiveAction($ma)
     {
         global $CFG_GLPI;
@@ -1021,11 +1021,11 @@ class Item_Ticket extends CommonItilObject_Item
         }
     }
 
-   /**
-    * @since 0.85
-    *
-    * @see CommonDBTM::showMassiveActionsSubForm()
-   **/
+    /**
+     * @since 0.85
+     *
+     * @see CommonDBTM::showMassiveActionsSubForm()
+     **/
     public static function showMassiveActionsSubForm(MassiveAction $ma)
     {
 
@@ -1162,9 +1162,9 @@ class Item_Ticket extends CommonItilObject_Item
         return $tab;
     }
 
-   /**
-    * Add a message on add action
-   **/
+    /**
+     * Add a message on add action
+     **/
     public function addMessageOnAddAction()
     {
         $addMessAfterRedirect = false;
@@ -1209,9 +1209,9 @@ class Item_Ticket extends CommonItilObject_Item
         }
     }
 
-   /**
-    * Add a message on delete action
-   **/
+    /**
+     * Add a message on delete action
+     **/
     public function addMessageOnPurgeAction()
     {
 

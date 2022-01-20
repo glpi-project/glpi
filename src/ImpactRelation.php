@@ -95,15 +95,15 @@ class ImpactRelation extends CommonDBRelation
         return $input;
     }
 
-   /**
-    * Get an impact id from an input form
-    *
-    * @param array $input   Array containing the impact to be deleted
-    * @param array $options
-    * @param bool  $history
-    *
-    * @return bool false on failure
-    */
+    /**
+     * Get an impact id from an input form
+     *
+     * @param array $input   Array containing the impact to be deleted
+     * @param array $options
+     * @param bool  $history
+     *
+     * @return bool false on failure
+     */
     public static function getIDFromInput(array $input)
     {
         global $DB;

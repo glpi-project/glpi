@@ -76,10 +76,10 @@ abstract class APIBaseClass extends atoum
                             'enable_api_login_external_token' => true]);
     }
 
-   /**
-    * @tags   api
-    * @covers API::initSession
-    */
+    /**
+     * @tags   api
+     * @covers API::initSession
+     */
     public function testInitSessionUserToken()
     {
        // retrieve personnal token of TU_USER user
@@ -99,10 +99,10 @@ abstract class APIBaseClass extends atoum
         $this->array($data)->hasKey('session_token');
     }
 
-   /**
-    * @tags   api
-    * @covers API::initSession
-    */
+    /**
+     * @tags   api
+     * @covers API::initSession
+     */
     public function testAppToken()
     {
         $apiclient = new APIClient();
@@ -142,10 +142,10 @@ abstract class APIBaseClass extends atoum
         );
     }
 
-   /**
-    * @tags    api
-    * @covers  API::changeActiveEntities
-    */
+    /**
+     * @tags    api
+     * @covers  API::changeActiveEntities
+     */
     public function testChangeActiveEntities()
     {
         $res = $this->query(
@@ -159,10 +159,10 @@ abstract class APIBaseClass extends atoum
         );
     }
 
-   /**
-    * @tags    api
-    * @covers  API::getMyEntities
-    */
+    /**
+     * @tags    api
+     * @covers  API::getMyEntities
+     */
     public function testGetMyEntities()
     {
         $data = $this->query(
@@ -179,10 +179,10 @@ abstract class APIBaseClass extends atoum
                   ->isEqualTo(0); // check presence of root entity
     }
 
-   /**
-    * @tags    api
-    * @covers  API::getActiveEntities
-    */
+    /**
+     * @tags    api
+     * @covers  API::getActiveEntities
+     */
     public function testGetActiveEntities()
     {
         $data = $this->query(
@@ -201,10 +201,10 @@ abstract class APIBaseClass extends atoum
          ->array['active_entities'];
     }
 
-   /**
-    * @tags    api
-    * @covers  API::changeActiveProfile
-    */
+    /**
+     * @tags    api
+     * @covers  API::changeActiveProfile
+     */
     public function testChangeActiveProfile()
     {
        // test change to an existing and available profile
@@ -236,10 +236,10 @@ abstract class APIBaseClass extends atoum
         );
     }
 
-   /**
-    * @tags    api
-    * @covers  API::getMyProfiles
-    */
+    /**
+     * @tags    api
+     * @covers  API::getMyProfiles
+     */
     public function testGetMyProfiles()
     {
         $data = $this->query(
@@ -254,10 +254,10 @@ abstract class APIBaseClass extends atoum
          ->hasKey('id'); // check presence of id key in first profile
     }
 
-   /**
-    * @tags    api
-    * @covers  API::getActiveProfile
-    */
+    /**
+     * @tags    api
+     * @covers  API::getActiveProfile
+     */
     public function testGetActiveProfile()
     {
         $data = $this->query(
@@ -274,10 +274,10 @@ abstract class APIBaseClass extends atoum
          ->hasKey('interface');
     }
 
-   /**
-    * @tags    api
-    * @covers  API::getFullSession
-    */
+    /**
+     * @tags    api
+     * @covers  API::getFullSession
+     */
     public function testGetFullSession()
     {
         $data = $this->query(
@@ -296,10 +296,10 @@ abstract class APIBaseClass extends atoum
          ->hasKey('glpilist_limit');
     }
 
-   /**
-    * @tags    api
-    * @covers  API::getMultipleItems
-    */
+    /**
+     * @tags    api
+     * @covers  API::getMultipleItems
+     */
     public function testGetMultipleItems()
     {
        // Get the User TU_USER and the entity in the same query
@@ -334,10 +334,10 @@ abstract class APIBaseClass extends atoum
         }
     }
 
-   /**
-    * @tags    api
-    * @covers  API::listSearchOptions
-    */
+    /**
+     * @tags    api
+     * @covers  API::listSearchOptions
+     */
     public function testListSearchOptions()
     {
        // test retrieve all users
@@ -361,10 +361,10 @@ abstract class APIBaseClass extends atoum
          ->isIdenticalTo(['contains', 'notcontains', 'equals', 'notequals']);
     }
 
-   /**
-    * @tags    api
-    * @covers  API::searchItems
-    */
+    /**
+     * @tags    api
+     * @covers  API::searchItems
+     */
     public function testListSearch()
     {
        // test retrieve all users
@@ -408,10 +408,10 @@ abstract class APIBaseClass extends atoum
         $this->checkContentRange($data, $headers);
     }
 
-   /**
-    * @tags    api
-    * @covers  API::searchItems
-    */
+    /**
+     * @tags    api
+     * @covers  API::searchItems
+     */
     public function testListSearchPartial()
     {
        // test retrieve partial users
@@ -448,10 +448,10 @@ abstract class APIBaseClass extends atoum
         $this->checkContentRange($data, $data['headers']);
     }
 
-   /**
-    * @tags    api
-    * @covers  API::searchItems
-    */
+    /**
+     * @tags    api
+     * @covers  API::searchItems
+     */
     public function testListSearchEmpty()
     {
        // test retrieve partial users
@@ -495,10 +495,10 @@ abstract class APIBaseClass extends atoum
         $this->checkEmptyContentRange($data, $data['headers']);
     }
 
-   /**
-    * @tags    api
-    * @covers  API::searchItems
-    */
+    /**
+     * @tags    api
+     * @covers  API::searchItems
+     */
     public function testSearchWithBadCriteria()
     {
        // test retrieve all users
@@ -555,9 +555,9 @@ abstract class APIBaseClass extends atoum
         );
     }
 
-   /**
-    * @tags    api
-    */
+    /**
+     * @tags    api
+     */
     protected function badEndpoint($expected_code = null, $expected_symbol = null)
     {
         $data = $this->query(
@@ -569,11 +569,11 @@ abstract class APIBaseClass extends atoum
         );
     }
 
-   /**
-    * Create a computer
-    *
-    * @return Computer
-    */
+    /**
+     * Create a computer
+     *
+     * @return Computer
+     */
     protected function createComputer()
     {
         $data = $this->query(
@@ -601,13 +601,13 @@ abstract class APIBaseClass extends atoum
         return $computer;
     }
 
-   /**
-    * Create a network port
-    *
-    * @param integer $computers_id Computer ID
-    *
-    * @return void
-    */
+    /**
+     * Create a network port
+     *
+     * @param integer $computers_id Computer ID
+     *
+     * @return void
+     */
     protected function createNetworkPort($computers_id)
     {
         $data = $this->query(
@@ -640,13 +640,13 @@ abstract class APIBaseClass extends atoum
          ->hasKey('message');
     }
 
-   /**
-    * Create a note
-    *
-    * @param integer $computers_id Computer ID
-    *
-    * @return void
-    */
+    /**
+     * Create a note
+     *
+     * @param integer $computers_id Computer ID
+     *
+     * @return void
+     */
     protected function createNote($computers_id)
     {
         $data = $this->query(
@@ -669,10 +669,10 @@ abstract class APIBaseClass extends atoum
          ->hasKey('message');
     }
 
-   /**
-    * @tags    api
-    * @covers  API::CreateItems
-    */
+    /**
+     * @tags    api
+     * @covers  API::CreateItems
+     */
     public function testCreateItem()
     {
         $computer = $this->createComputer();
@@ -685,10 +685,10 @@ abstract class APIBaseClass extends atoum
         $this->createNote($computers_id);
     }
 
-   /**
-    * @tags    api
-    * @covers  API::CreateItems
-    */
+    /**
+     * @tags    api
+     * @covers  API::CreateItems
+     */
     public function testCreateItems()
     {
         $data = $this->query(
@@ -732,10 +732,10 @@ abstract class APIBaseClass extends atoum
         return $data;
     }
 
-   /**
-    * @tags    apit
-    * @covers  API::getItem
-    */
+    /**
+     * @tags    apit
+     * @covers  API::getItem
+     */
     public function testGetItem()
     {
         $computer = $this->createComputer();
@@ -818,10 +818,10 @@ abstract class APIBaseClass extends atoum
         $this->string($networkname['IPAddress'][0]['name'])->isIdenticalTo('1.2.3.4');
     }
 
-   /**
-    * @tags    api
-    * @covers  API::getItem
-    */
+    /**
+     * @tags    api
+     * @covers  API::getItem
+     */
     public function testGetItemWithNotes()
     {
         $computer = $this->createComputer();
@@ -854,10 +854,10 @@ abstract class APIBaseClass extends atoum
          ->hasKey('content');
     }
 
-   /**
-    * @tags    api
-    * @covers  API::getItem
-    */
+    /**
+     * @tags    api
+     * @covers  API::getItem
+     */
     public function testGetItems()
     {
        // test retrieve all users
@@ -972,13 +972,13 @@ abstract class APIBaseClass extends atoum
         }
     }
 
-   /**
-    * try to retrieve invalid range of users
-    * We expect a http code 400
-    *
-    * @tags    api
-    * @covers  API::getItem
-    */
+    /**
+     * try to retrieve invalid range of users
+     * We expect a http code 400
+     *
+     * @tags    api
+     * @covers  API::getItem
+     */
     public function testgetItemsInvalidRange()
     {
         $data = $this->query(
@@ -993,14 +993,14 @@ abstract class APIBaseClass extends atoum
         );
     }
 
-   /**
-    * This function test https://github.com/glpi-project/glpi/issues/1103
-    * A post-only user could retrieve tickets of others users when requesting itemtype
-    * without first letter in uppercase
-    *
-    * @tags    api
-    * @covers  API::getItem
-    */
+    /**
+     * This function test https://github.com/glpi-project/glpi/issues/1103
+     * A post-only user could retrieve tickets of others users when requesting itemtype
+     * without first letter in uppercase
+     *
+     * @tags    api
+     * @covers  API::getItem
+     */
     public function testgetItemsForPostonly()
     {
        // init session for postonly
@@ -1047,10 +1047,10 @@ abstract class APIBaseClass extends atoum
         $ticket->delete(['id' => $tickets_id], true);
     }
 
-   /**
-    * @tags    api
-    * @covers  API::updateItems
-    */
+    /**
+     * @tags    api
+     * @covers  API::updateItems
+     */
     public function testUpdateItem()
     {
         $computer = $this->createComputer();
@@ -1080,10 +1080,10 @@ abstract class APIBaseClass extends atoum
         $this->string($computer->fields['serial'])->isIdenticalTo('abcdef');
     }
 
-   /**
-    * @tags    api
-    * @covers  API::updateItems
-    */
+    /**
+     * @tags    api
+     * @covers  API::updateItems
+     */
     public function testUpdateItems()
     {
         $computers_id_collection = $this->testCreateItems();
@@ -1117,10 +1117,10 @@ abstract class APIBaseClass extends atoum
     }
 
 
-   /**
-    * @tags    api
-    * @covers  API::deleteItems
-    */
+    /**
+     * @tags    api
+     * @covers  API::deleteItems
+     */
     public function testDeleteItem()
     {
         $eid = getItemByTypeName('Entity', '_test_root_entity', true);
@@ -1157,10 +1157,10 @@ abstract class APIBaseClass extends atoum
     }
 
 
-   /**
-    * @tags    api
-    * @covers  API::deleteItems
-    */
+    /**
+     * @tags    api
+     * @covers  API::deleteItems
+     */
     public function testDeleteItems()
     {
         $computers_id_collection = $this->testCreateItems();
@@ -1220,9 +1220,9 @@ abstract class APIBaseClass extends atoum
         $this->array($data[1][1])->hasKey('message');
     }
 
-   /**
-    * @tags    api
-    */
+    /**
+     * @tags    api
+     */
     public function testInjection()
     {
         $data = $this->query(
@@ -1266,9 +1266,9 @@ abstract class APIBaseClass extends atoum
         $computer->delete(['id' => $new_id], true);
     }
 
-   /**
-    * @tags    api
-    */
+    /**
+     * @tags    api
+     */
     public function testProtectedConfigSettings()
     {
         $sensitiveSettings = [
@@ -1333,9 +1333,9 @@ abstract class APIBaseClass extends atoum
         }
     }
 
-   /**
-    * @tags    api
-    */
+    /**
+     * @tags    api
+     */
     public function testProtectedDeviceSimcardFields()
     {
         global $DB;
@@ -1447,10 +1447,10 @@ abstract class APIBaseClass extends atoum
         );
     }
 
-   /**
-    * @tags    api
-    * @covers  API::getGlpiConfig
-    */
+    /**
+     * @tags    api
+     * @covers  API::getGlpiConfig
+     */
     public function testGetGlpiConfig()
     {
         $data = $this->query(
@@ -1508,10 +1508,10 @@ abstract class APIBaseClass extends atoum
     }
 
 
-   /**
-    * @tags    api
-    * @covers  API::killSession
-    */
+    /**
+     * @tags    api
+     * @covers  API::killSession
+     */
     public function testKillSession()
     {
        // test retrieve all users
@@ -1527,10 +1527,10 @@ abstract class APIBaseClass extends atoum
         );
     }
 
-   /**
-    * @tags api
-    * @engine inline
-    */
+    /**
+     * @tags api
+     * @engine inline
+     */
     public function testLostPasswordRequest()
     {
         global $CFG_GLPI;
@@ -1663,14 +1663,14 @@ abstract class APIBaseClass extends atoum
         ]);
     }
 
-   /**
-    * Check consistency of Content-Range header
-    *
-    * @param array $data    Data
-    * @param array $headers Headers
-    *
-    * @return void
-    */
+    /**
+     * Check consistency of Content-Range header
+     *
+     * @param array $data    Data
+     * @param array $headers Headers
+     *
+     * @return void
+     */
     protected function checkContentRange($data, $headers)
     {
         $this->integer($data['count'])->isLessThanOrEqualTo($data['totalcount']);
@@ -1679,14 +1679,14 @@ abstract class APIBaseClass extends atoum
         $this->string($headers['Content-Range'][0])->isIdenticalTo($expectedContentRange);
     }
 
-   /**
-    * Check consistency of empty Content-Range header
-    *
-    * @param array $data    Data
-    * @param array $headers Headers
-    *
-    * @return void
-    */
+    /**
+     * Check consistency of empty Content-Range header
+     *
+     * @param array $data    Data
+     * @param array $headers Headers
+     *
+     * @return void
+     */
     protected function checkEmptyContentRange($data, $headers)
     {
         $this->integer($data['count'])->isLessThanOrEqualTo($data['totalcount']);

@@ -39,11 +39,11 @@ use DbTestCase;
 
 class Item_Cluster extends DbTestCase
 {
-   /**
-    * Computers provider
-    *
-    * @return array
-    */
+    /**
+     * Computers provider
+     *
+     * @return array
+     */
     protected function computersProvider()
     {
         return [
@@ -55,11 +55,11 @@ class Item_Cluster extends DbTestCase
         ];
     }
 
-   /**
-    * Create computers
-    *
-    * @return void
-    */
+    /**
+     * Create computers
+     *
+     * @return void
+     */
     protected function createComputers()
     {
         $computer = new \Computer();
@@ -71,11 +71,11 @@ class Item_Cluster extends DbTestCase
         }
     }
 
-   /**
-    * Test for adding items into rack
-    *
-    * @return void
-    */
+    /**
+     * Test for adding items into rack
+     *
+     * @return void
+     */
     public function testAdd()
     {
         $this->createComputers();

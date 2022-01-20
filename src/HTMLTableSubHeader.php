@@ -33,19 +33,19 @@
 
 /**
  * @since 0.84
-**/
+ **/
 class HTMLTableSubHeader extends HTMLTableHeader
 {
    // The headers of each column
     private $header;
 
 
-   /**
-    * @param HTMLTableSuperHeader $header
-    * @param string               $name
-    * @param string               $content
-    * @param HTMLTableHeader      $father
-   **/
+    /**
+     * @param HTMLTableSuperHeader $header
+     * @param string               $name
+     * @param string               $content
+     * @param HTMLTableHeader      $father
+     **/
     public function __construct(
         HTMLTableSuperHeader $header,
         $name,
@@ -91,9 +91,9 @@ class HTMLTableSubHeader extends HTMLTableHeader
     }
 
 
-   /**
-    * @param $numberOfSubHeaders
-   **/
+    /**
+     * @param $numberOfSubHeaders
+     **/
     public function updateColSpan($numberOfSubHeaders)
     {
         $this->setColSpan($this->header->getColSpan() / $numberOfSubHeaders);

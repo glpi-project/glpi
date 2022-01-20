@@ -39,7 +39,7 @@ use Toolbox;
 
 class Volume extends InventoryAsset
 {
-   /** @var @var Conf */
+    /** @var @var Conf */
     private $conf;
 
     public function prepare(): array
@@ -110,11 +110,11 @@ class Volume extends InventoryAsset
         return $this->data;
     }
 
-   /**
-    * Get existing entries from database
-    *
-    * @return array
-    */
+    /**
+     * Get existing entries from database
+     *
+     * @return array
+     */
     protected function getExisting(): array
     {
         global $DB;
@@ -190,13 +190,13 @@ class Volume extends InventoryAsset
         }
     }
 
-   /**
-    * Check if asset is a network drive, based on its filesystem
-    *
-    * @param \stdClass $raw_data Raw data from inventory
-    *
-    * @return bool
-    */
+    /**
+     * Check if asset is a network drive, based on its filesystem
+     *
+     * @param \stdClass $raw_data Raw data from inventory
+     *
+     * @return bool
+     */
     public function isNetworkDrive(\stdClass $raw_data): bool
     {
         return strtolower($raw_data->type ?? '') == 'network drive'

@@ -35,7 +35,7 @@ use Glpi\Application\View\TemplateRenderer;
 
 /**
  * Enclosure Class
-**/
+ **/
 class Enclosure extends CommonDBTM
 {
     use Glpi\Features\DCBreadcrumb;
@@ -78,16 +78,16 @@ class Enclosure extends CommonDBTM
     }
 
 
-   /**
-    * Print the enclosure form
-    *
-    * @param $ID integer ID of the item
-    * @param $options array
-    *     - target filename : where to go when done.
-    *     - withtemplate boolean : template or basic item
-    *
-    * @return boolean item found
-   **/
+    /**
+     * Print the enclosure form
+     *
+     * @param $ID integer ID of the item
+     * @param $options array
+     *     - target filename : where to go when done.
+     *     - withtemplate boolean : template or basic item
+     *
+     * @return boolean item found
+     **/
     public function showForm($ID, array $options = [])
     {
         $this->initForm($ID, $options);
@@ -227,16 +227,16 @@ class Enclosure extends CommonDBTM
         return $tab;
     }
 
-   /**
-    * Get already filled places
-    *
-    * @param string  $itemtype  The item type
-    * @param integer $items_id  The item's ID
-    *
-    * @return array [x => ['depth' => 1, 'orientation' => 0, 'width' => 1, 'hpos' =>0]]
-    *               orientation will not be available if depth is > 0.5; hpos will not be available
-    *               if width is = 1
-    */
+    /**
+     * Get already filled places
+     *
+     * @param string  $itemtype  The item type
+     * @param integer $items_id  The item's ID
+     *
+     * @return array [x => ['depth' => 1, 'orientation' => 0, 'width' => 1, 'hpos' =>0]]
+     *               orientation will not be available if depth is > 0.5; hpos will not be available
+     *               if width is = 1
+     */
     public function getFilled($itemtype = null, $items_id = null)
     {
         global $DB;

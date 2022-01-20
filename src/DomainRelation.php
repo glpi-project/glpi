@@ -67,16 +67,16 @@ class DomainRelation extends CommonDropdown
         return $ong;
     }
 
-   /**
-    * Print the form
-    *
-    * @param integer $ID       Integer ID of the item
-    * @param array   $options  Array of possible options:
-    *     - target for the Form
-    *     - withtemplate : template or basic item
-    *
-    * @return void|boolean (display) Returns false if there is a rights error.
-    **/
+    /**
+     * Print the form
+     *
+     * @param integer $ID       Integer ID of the item
+     * @param array   $options  Array of possible options:
+     *     - target for the Form
+     *     - withtemplate : template or basic item
+     *
+     * @return void|boolean (display) Returns false if there is a rights error.
+     **/
     public function showForm($ID, array $options = [])
     {
 

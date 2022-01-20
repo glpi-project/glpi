@@ -38,7 +38,7 @@ use Sabre\VObject;
 
 /**
  * Contact class
-**/
+ **/
 class Contact extends CommonDBTM
 {
     use AssetImage;
@@ -96,11 +96,11 @@ class Contact extends CommonDBTM
     }
 
 
-   /**
-    * Get address of the contact (company one)
-    *
-    *@return string containing the address
-   **/
+    /**
+     * Get address of the contact (company one)
+     *
+     *@return string containing the address
+     **/
     public function getAddress()
     {
         global $DB;
@@ -132,11 +132,11 @@ class Contact extends CommonDBTM
     }
 
 
-   /**
-    * Get website of the contact (company one)
-    *
-    *@return string containing the website
-   **/
+    /**
+     * Get website of the contact (company one)
+     *
+     *@return string containing the website
+     **/
     public function getWebsite()
     {
         global $DB;
@@ -419,11 +419,11 @@ class Contact extends CommonDBTM
     }
 
 
-   /**
-    * Generate the Vcard for the current Contact
-    *
-    * @return void
-    */
+    /**
+     * Generate the Vcard for the current Contact
+     *
+     * @return void
+     */
     public function generateVcard()
     {
 

@@ -74,7 +74,7 @@ class Blacklist extends DbTestCase
         ];
     }
 
-   /** @dataProvider processProvider */
+    /** @dataProvider processProvider */
     public function testProcess($input, $expected)
     {
         $blacklist = new \Blacklist();

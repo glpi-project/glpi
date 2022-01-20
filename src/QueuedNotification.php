@@ -36,7 +36,7 @@ use Glpi\Toolbox\Sanitizer;
 /** QueuedNotification class
  *
  * @since 0.85
-**/
+ **/
 class QueuedNotification extends CommonDBTM
 {
     public static $rightname = 'queuednotification';
@@ -70,9 +70,9 @@ class QueuedNotification extends CommonDBTM
     }
 
 
-   /**
-    * @see CommonDBTM::getSpecificMassiveActions()
-   **/
+    /**
+     * @see CommonDBTM::getSpecificMassiveActions()
+     **/
     public function getSpecificMassiveActions($checkitem = null, $is_deleted = false)
     {
 
@@ -87,9 +87,9 @@ class QueuedNotification extends CommonDBTM
     }
 
 
-   /**
-    * @see CommonDBTM::processMassiveActionsForOneItemtype()
-   **/
+    /**
+     * @see CommonDBTM::processMassiveActionsForOneItemtype()
+     **/
     public static function processMassiveActionsForOneItemtype(
         MassiveAction $ma,
         CommonDBTM $item,
@@ -392,11 +392,11 @@ class QueuedNotification extends CommonDBTM
     }
 
 
-   /**
-    * @param $field
-    * @param $values
-    * @param $options   array
-   **/
+    /**
+     * @param $field
+     * @param $values
+     * @param $options   array
+     **/
     public static function getSpecificValueToDisplay($field, $values, array $options = [])
     {
 
@@ -440,13 +440,13 @@ class QueuedNotification extends CommonDBTM
     }
 
 
-   /**
-    * Send notification in queue
-    *
-    * @param integer $ID Id
-    *
-    * @return boolean
-    */
+    /**
+     * Send notification in queue
+     *
+     * @param integer $ID Id
+     *
+     * @return boolean
+     */
     public function sendById($ID)
     {
         if ($this->getFromDB($ID)) {
@@ -466,13 +466,13 @@ class QueuedNotification extends CommonDBTM
     }
 
 
-   /**
-    * Give cron information
-    *
-    * @param $name : task's name
-    *
-    * @return array of information
-   **/
+    /**
+     * Give cron information
+     *
+     * @param $name : task's name
+     *
+     * @return array of information
+     **/
     public static function cronInfo($name)
     {
 
@@ -489,16 +489,16 @@ class QueuedNotification extends CommonDBTM
     }
 
 
-   /**
-    * Get pending notifications in queue
-    *
-    * @param string  $send_time   Maximum sent_time
-    * @param integer $limit       Query limit clause
-    * @param array   $limit_modes Modes to limit to
-    * @param array   $extra_where Extra params to add to the where clause
-    *
-    * @return array
-    */
+    /**
+     * Get pending notifications in queue
+     *
+     * @param string  $send_time   Maximum sent_time
+     * @param integer $limit       Query limit clause
+     * @param array   $limit_modes Modes to limit to
+     * @param array   $extra_where Extra params to add to the where clause
+     *
+     * @return array
+     */
     public static function getPendings($send_time = null, $limit = 20, $limit_modes = null, $extra_where = [])
     {
         global $DB, $CFG_GLPI;
@@ -552,13 +552,13 @@ class QueuedNotification extends CommonDBTM
     }
 
 
-   /**
-    * Cron action on notification queue: send notifications in queue
-    *
-    * @param CommonDBTM $task for log (default NULL)
-    *
-    * @return integer either 0 or 1
-   **/
+    /**
+     * Cron action on notification queue: send notifications in queue
+     *
+     * @param CommonDBTM $task for log (default NULL)
+     *
+     * @return integer either 0 or 1
+     **/
     public static function cronQueuedNotification($task = null)
     {
         if (!Notification_NotificationTemplate::hasActiveMode()) {
@@ -596,13 +596,13 @@ class QueuedNotification extends CommonDBTM
     }
 
 
-   /**
-    * Cron action on queued notification: clean notification queue
-    *
-    * @param CommonDBTM $task for log (default NULL)
-    *
-    * @return integer either 0 or 1
-   **/
+    /**
+     * Cron action on queued notification: clean notification queue
+     *
+     * @param CommonDBTM $task for log (default NULL)
+     *
+     * @return integer either 0 or 1
+     **/
     public static function cronQueuedNotificationClean($task = null)
     {
         global $DB;
@@ -628,14 +628,14 @@ class QueuedNotification extends CommonDBTM
     }
 
 
-   /**
-    * Force sending all mails in queue for a specific item
-    *
-    * @param string  $itemtype item type
-    * @param integer $items_id id of the item
-    *
-    * @return void
-   **/
+    /**
+     * Force sending all mails in queue for a specific item
+     *
+     * @param string  $itemtype item type
+     * @param integer $items_id id of the item
+     *
+     * @return void
+     **/
     public static function forceSendFor($itemtype, $items_id)
     {
         if (
@@ -662,14 +662,14 @@ class QueuedNotification extends CommonDBTM
     }
 
 
-   /**
-    * Print the queued mail form
-    *
-    * @param integer $ID      ID of the item
-    * @param array   $options Options
-    *
-    * @return true if displayed  false if item not found or not right to display
-   **/
+    /**
+     * Print the queued mail form
+     *
+     * @param integer $ID      ID of the item
+     * @param array   $options Options
+     *
+     * @return true if displayed  false if item not found or not right to display
+     **/
     public function showForm($ID, array $options = [])
     {
         if (!Session::haveRight("queuednotification", READ)) {
@@ -781,11 +781,11 @@ class QueuedNotification extends CommonDBTM
     }
 
 
-   /**
-    * @since 0.85
-    *
-    * @param $string
-    **/
+    /**
+     * @since 0.85
+     *
+     * @param $string
+     **/
     public static function cleanHtml($string)
     {
 

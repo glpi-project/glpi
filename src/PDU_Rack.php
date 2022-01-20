@@ -76,13 +76,13 @@ class PDU_Rack extends CommonDBRelation
         return $this->prepareInput($input);
     }
 
-   /**
-    * Prepares and check validity of input (for update and add) and
-    *
-    * @param array $input Input data
-    *
-    * @return array
-    */
+    /**
+     * Prepares and check validity of input (for update and add) and
+     *
+     * @param array $input Input data
+     *
+     * @return array
+     */
     private function prepareInput($input)
     {
         $error_detected = [];
@@ -176,12 +176,12 @@ class PDU_Rack extends CommonDBRelation
         return $input;
     }
 
-   /**
-    * Get already filled places
-    * @param  Rack    $rack The current rack
-    * @param  integer $side The side of rack to check
-    * @return Array   [position -> racks_id | 0]
-    */
+    /**
+     * Get already filled places
+     * @param  Rack    $rack The current rack
+     * @param  integer $side The side of rack to check
+     * @return Array   [position -> racks_id | 0]
+     */
     public static function getFilled(Rack $rack, $side = 0)
     {
         $pdu    = new PDU();
@@ -659,10 +659,10 @@ JAVASCRIPT;
         }
     }
 
-   /**
-    * Return all possible side in a rack where a pdu can be placed
-    * @return Array (int => label)
-    */
+    /**
+     * Return all possible side in a rack where a pdu can be placed
+     * @return Array (int => label)
+     */
     public static function getSides()
     {
         return [
@@ -673,22 +673,22 @@ JAVASCRIPT;
         ];
     }
 
-   /**
-    * Get a side name from its index
-    * @param  integer $side See class constants and above `getSides`` method
-    * @return string        the side name
-    */
+    /**
+     * Get a side name from its index
+     * @param  integer $side See class constants and above `getSides`` method
+     * @return string        the side name
+     */
     public static function getSideName($side)
     {
         return self::getSides()[$side];
     }
 
-   /**
-    * Return an iterator for all pdu used in a side of a rack
-    * @param  Rack    $rack
-    * @param  integer $side
-    * @return Iterator
-    */
+    /**
+     * Return an iterator for all pdu used in a side of a rack
+     * @param  Rack    $rack
+     * @param  integer $side
+     * @return Iterator
+     */
     public static function getForRackSide(Rack $rack, $side)
     {
         global $DB;
@@ -703,11 +703,11 @@ JAVASCRIPT;
         ]);
     }
 
-   /**
-    * Return an iterator for all used pdu in all racks
-    *
-    * @return  Iterator
-    */
+    /**
+     * Return an iterator for all used pdu in all racks
+     *
+     * @return  Iterator
+     */
     public static function getUsed()
     {
         global $DB;
@@ -717,11 +717,11 @@ JAVASCRIPT;
         ]);
     }
 
-   /**
-    * Return the opposite side from a passed side
-    * @param  integer $side
-    * @return integer       the oposite side
-    */
+    /**
+     * Return the opposite side from a passed side
+     * @param  integer $side
+     * @return integer       the oposite side
+     */
     public static function getOtherSide($side)
     {
         switch ($side) {

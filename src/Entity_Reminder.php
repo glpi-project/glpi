@@ -45,13 +45,13 @@ class Entity_Reminder extends CommonDBRelation
     public static $logs_for_item_2     = false;
 
 
-   /**
-    * Get entities for a reminder
-    *
-    * @param Reminder $reminder Reminder instance
-    *
-    * @return array of entities linked to a reminder
-   **/
+    /**
+     * Get entities for a reminder
+     *
+     * @param Reminder $reminder Reminder instance
+     *
+     * @return array of entities linked to a reminder
+     **/
     public static function getEntities($reminder)
     {
         global $DB;

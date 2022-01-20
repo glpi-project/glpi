@@ -44,9 +44,9 @@ class RuleCriteria extends CommonDBChild
 
 
 
-   /**
-    * @since 0.84
-   **/
+    /**
+     * @since 0.84
+     **/
     public function getForbiddenStandardMassiveAction()
     {
 
@@ -56,20 +56,20 @@ class RuleCriteria extends CommonDBChild
     }
 
 
-   /**
-    * @param $rule_type (default 'Rule)
-   **/
+    /**
+     * @param $rule_type (default 'Rule)
+     **/
     public function __construct($rule_type = 'Rule')
     {
         static::$itemtype = $rule_type;
     }
 
 
-   /**
-    * @since 0.84.3
-    *
-    * @see CommonDBTM::post_getFromDB()
-    */
+    /**
+     * @since 0.84.3
+     *
+     * @see CommonDBTM::post_getFromDB()
+     */
     public function post_getFromDB()
     {
 
@@ -83,13 +83,13 @@ class RuleCriteria extends CommonDBChild
     }
 
 
-   /**
-    * Get title used in rule
-    *
-    * @param $nb  integer  for singular or plural (default 0)
-    *
-    * @return Title of the rule
-   **/
+    /**
+     * Get title used in rule
+     *
+     * @param $nb  integer  for singular or plural (default 0)
+     *
+     * @return Title of the rule
+     **/
     public static function getTypeName($nb = 0)
     {
         return _n('Criterion', 'Criteria', $nb);
@@ -104,11 +104,11 @@ class RuleCriteria extends CommonDBChild
         return '';
     }
 
-   /**
-    * @since 0.84
-    *
-    * @see CommonDBChild::post_addItem()
-   **/
+    /**
+     * @since 0.84
+     *
+     * @see CommonDBChild::post_addItem()
+     **/
     public function post_addItem()
     {
 
@@ -123,11 +123,11 @@ class RuleCriteria extends CommonDBChild
     }
 
 
-   /**
-    * @since 0.84
-    *
-    * @see CommonDBTM::post_purgeItem()
-   **/
+    /**
+     * @since 0.84
+     *
+     * @see CommonDBTM::post_purgeItem()
+     **/
     public function post_purgeItem()
     {
 
@@ -142,9 +142,9 @@ class RuleCriteria extends CommonDBChild
     }
 
 
-   /**
-    * @since 0.84
-   **/
+    /**
+     * @since 0.84
+     **/
     public function prepareInputForAdd($input)
     {
 
@@ -193,13 +193,13 @@ class RuleCriteria extends CommonDBChild
     }
 
 
-   /**
-    * @since 0.84
-    *
-    * @param $field
-    * @param $values
-    * @param $options   array
-   **/
+    /**
+     * @since 0.84
+     *
+     * @param $field
+     * @param $values
+     * @param $options   array
+     **/
     public static function getSpecificValueToDisplay($field, $values, array $options = [])
     {
 
@@ -258,14 +258,14 @@ class RuleCriteria extends CommonDBChild
     }
 
 
-   /**
-    * @since 0.84
-    *
-    * @param $field
-    * @param $name               (default '')
-    * @param $values             (default '')
-    * @param $options      array
-   **/
+    /**
+     * @since 0.84
+     *
+     * @param $field
+     * @param $name               (default '')
+     * @param $values             (default '')
+     * @param $options      array
+     **/
     public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
     {
         if (!is_array($values)) {
@@ -330,13 +330,13 @@ class RuleCriteria extends CommonDBChild
     }
 
 
-   /**
-    * Get all criterias for a given rule
-    *
-    * @param $rules_id the rule ID
-    *
-    * @return an array of RuleCriteria objects
-   **/
+    /**
+     * Get all criterias for a given rule
+     *
+     * @param $rules_id the rule ID
+     *
+     * @return an array of RuleCriteria objects
+     **/
     public function getRuleCriterias($rules_id)
     {
         global $DB;
@@ -355,16 +355,16 @@ class RuleCriteria extends CommonDBChild
     }
 
 
-   /**
-    * Try to match a defined rule
-    *
-    * @param &$criterion         RuleCriteria object
-    * @param $field              the field to match
-    * @param &$criterias_results
-    * @param &$regex_result
-    *
-    * @return true if the field match the rule, false if it doesn't match
-   **/
+    /**
+     * Try to match a defined rule
+     *
+     * @param &$criterion         RuleCriteria object
+     * @param $field              the field to match
+     * @param &$criterias_results
+     * @param &$regex_result
+     *
+     * @return true if the field match the rule, false if it doesn't match
+     **/
     public static function match(RuleCriteria &$criterion, $field, &$criterias_results, &$regex_result)
     {
 
@@ -517,15 +517,15 @@ class RuleCriteria extends CommonDBChild
     }
 
 
-   /**
-    * Return the condition label by giving his ID
-    *
-    * @param $ID        condition's ID
-    * @param $itemtype  itemtype
-    * @param $criterion (default '')
-    *
-    * @return condition's label
-   **/
+    /**
+     * Return the condition label by giving his ID
+     *
+     * @param $ID        condition's ID
+     * @param $itemtype  itemtype
+     * @param $criterion (default '')
+     *
+     * @return condition's label
+     **/
     public static function getConditionByID($ID, $itemtype, $criterion = '')
     {
 
@@ -537,12 +537,12 @@ class RuleCriteria extends CommonDBChild
     }
 
 
-   /**
-    * @param $itemtype  itemtype
-    * @param $criterion (default '')
-    *
-    * @return array of criteria
-   **/
+    /**
+     * @param $itemtype  itemtype
+     * @param $criterion (default '')
+     *
+     * @return array of criteria
+     **/
     public static function getConditions($itemtype, $criterion = '')
     {
 
@@ -584,12 +584,12 @@ class RuleCriteria extends CommonDBChild
     }
 
 
-   /**
-    * Display a dropdown with all the criterias
-    *
-    * @param $itemtype
-    * @param $params    array
-   **/
+    /**
+     * Display a dropdown with all the criterias
+     *
+     * @param $itemtype
+     * @param $params    array
+     **/
     public static function dropdownConditions($itemtype, $params = [])
     {
 
@@ -615,14 +615,14 @@ class RuleCriteria extends CommonDBChild
     }
 
 
-   /** form for rule criteria
-    *
-    * @since 0.85
-    *
-    * @param $ID      integer  Id of the criteria
-    * @param $options array    of possible options:
-    *     - rule Object : the rule
-   **/
+    /** form for rule criteria
+     *
+     * @since 0.85
+     *
+     * @param $ID      integer  Id of the criteria
+     * @param $options array    of possible options:
+     *     - rule Object : the rule
+     **/
     public function showForm($ID, array $options = [])
     {
         global $CFG_GLPI;

@@ -240,11 +240,11 @@ class Computer extends DbTestCase
         $CFG_GLPI = $saveconf;
     }
 
-   /**
-    * Checks that newly created links inherits locations, status, and so on
-    *
-    * @return void
-    */
+    /**
+     * Checks that newly created links inherits locations, status, and so on
+     *
+     * @return void
+     */
     public function testCreateLinks()
     {
         global $CFG_GLPI;

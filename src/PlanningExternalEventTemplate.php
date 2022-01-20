@@ -34,7 +34,7 @@
 /**
  * Template for PlanningExternalEvent
  * @since 9.5
-**/
+ **/
 class PlanningExternalEventTemplate extends CommonDropdown
 {
     use Glpi\Features\PlanningEvent {

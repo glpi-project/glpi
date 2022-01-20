@@ -48,7 +48,7 @@ use Glpi\Socket;
  *
  * @since 0.84
  *
-**/
+ **/
 class NetworkPortInstantiation extends CommonDBChild
 {
    // From CommonDBTM
@@ -70,15 +70,15 @@ class NetworkPortInstantiation extends CommonDBChild
     }
 
 
-   /**
-    * Show the instanciation element for the form of the NetworkPort
-    * By default, just print that there is no parameter for this type of NetworkPort
-    *
-    * @param NetworkPort $netport         the port that owns this instantiation
-    *                                     (usefull, for instance to get network port attributs
-    * @param array       $options         array of options given to NetworkPort::showForm
-    * @param array       $recursiveItems  list of the items on which this port is attached
-   **/
+    /**
+     * Show the instanciation element for the form of the NetworkPort
+     * By default, just print that there is no parameter for this type of NetworkPort
+     *
+     * @param NetworkPort $netport         the port that owns this instantiation
+     *                                     (usefull, for instance to get network port attributs
+     * @param array       $options         array of options given to NetworkPort::showForm
+     * @param array       $recursiveItems  list of the items on which this port is attached
+     **/
     public function showInstantiationForm(NetworkPort $netport, $options, $recursiveItems)
     {
 
@@ -138,22 +138,22 @@ class NetworkPortInstantiation extends CommonDBChild
         }
     }
 
-   /**
-    * Get all the instantiation specific options to display
-    *
-    * @return array containing the options
-   **/
+    /**
+     * Get all the instantiation specific options to display
+     *
+     * @return array containing the options
+     **/
     public static function getInstantiationNetworkPortDisplayOptions()
     {
         return [];
     }
 
 
-   /**
-    * Get the instantiation specific options to display that applies for all instantiations
-    *
-    * @return array containing the options
-   **/
+    /**
+     * Get the instantiation specific options to display that applies for all instantiations
+     *
+     * @return array containing the options
+     **/
     public static function getGlobalInstantiationNetworkPortDisplayOptions()
     {
         return ['mac'           => ['name'    => __('MAC'),
@@ -167,19 +167,19 @@ class NetworkPortInstantiation extends CommonDBChild
     }
 
 
-   /**
-    * Get HTMLTable columns headers for a given item type
-    * Beware : the internet information are "sons" of each instantiation ...
-    *
-    * @param HTMLTableSuperHeader $group           HTMLTableGroup object
-    * @param HTMLTableSuperHeader $super           HTMLTableSuperHeader object
-    * @param HTMLTableSuperHeader $internet_super  HTMLTableSuperHeader object for the internet sub part (default NULL)
-    * @param HTMLTableHeader      $father          HTMLTableHeader object (default NULL)
-    * @param array                $options   array of possible options:
-    *       - 'dont_display' : array of the columns that must not be display
-    *
-    * @return null
-   **/
+    /**
+     * Get HTMLTable columns headers for a given item type
+     * Beware : the internet information are "sons" of each instantiation ...
+     *
+     * @param HTMLTableSuperHeader $group           HTMLTableGroup object
+     * @param HTMLTableSuperHeader $super           HTMLTableSuperHeader object
+     * @param HTMLTableSuperHeader $internet_super  HTMLTableSuperHeader object for the internet sub part (default NULL)
+     * @param HTMLTableHeader      $father          HTMLTableHeader object (default NULL)
+     * @param array                $options   array of possible options:
+     *       - 'dont_display' : array of the columns that must not be display
+     *
+     * @return null
+     **/
     public function getInstantiationHTMLTableHeaders(
         HTMLTableGroup $group,
         HTMLTableSuperHeader $super,
@@ -215,19 +215,19 @@ class NetworkPortInstantiation extends CommonDBChild
     }
 
 
-   /**
-    * Get HTMLTable row for a given network port and a given extremity when two ports are
-    * existing on a link (NetworkPort_NetworkPort).
-    *
-    * @param NetworkPort   $netport  NetworkPort object (contains item)
-    * @param HTMLTableRow  $row      HTMLTableRow object
-    * @param HTMLTableCell $father   HTMLTableCell object (default NULL)
-    * @param array         $options  array of possible options:
-    *       - 'dont_display' : array of the elements that must not be display
-    *       - 'withtemplate' : integer withtemplate param
-    *
-    * @return null
-   **/
+    /**
+     * Get HTMLTable row for a given network port and a given extremity when two ports are
+     * existing on a link (NetworkPort_NetworkPort).
+     *
+     * @param NetworkPort   $netport  NetworkPort object (contains item)
+     * @param HTMLTableRow  $row      HTMLTableRow object
+     * @param HTMLTableCell $father   HTMLTableCell object (default NULL)
+     * @param array         $options  array of possible options:
+     *       - 'dont_display' : array of the elements that must not be display
+     *       - 'withtemplate' : integer withtemplate param
+     *
+     * @return null
+     **/
     protected function getPeerInstantiationHTMLTable(
         NetworkPort $netport,
         HTMLTableRow $row,
@@ -240,21 +240,21 @@ class NetworkPortInstantiation extends CommonDBChild
     }
 
 
-   /**
-    * Replacement of NetworkPortInstantiation::getInstantiationHTMLTable() method when two ports
-    * share the same link (NetworkPort_NetworkPort). Used, for instance by Dialup and Ethernet.
-    *
-    * @see NetworkPortInstantiation::getInstantiationHTMLTable()
-    *
-    * @param NetworkPort   $netport  NetworkPort object (contains item)
-    * @param HTMLTableRow  $row      HTMLTableRow object
-    * @param HTMLTableCell $father   HTMLTableCell object (default NULL)
-    * @param array         $options  array of possible options:
-    *       - 'dont_display' : array of the elements that must not be display
-    *       - 'withtemplate' : integer withtemplate param
-    *
-    * @return HTMLTableCell  the father cell for the Internet Information ...
-   **/
+    /**
+     * Replacement of NetworkPortInstantiation::getInstantiationHTMLTable() method when two ports
+     * share the same link (NetworkPort_NetworkPort). Used, for instance by Dialup and Ethernet.
+     *
+     * @see NetworkPortInstantiation::getInstantiationHTMLTable()
+     *
+     * @param NetworkPort   $netport  NetworkPort object (contains item)
+     * @param HTMLTableRow  $row      HTMLTableRow object
+     * @param HTMLTableCell $father   HTMLTableCell object (default NULL)
+     * @param array         $options  array of possible options:
+     *       - 'dont_display' : array of the elements that must not be display
+     *       - 'withtemplate' : integer withtemplate param
+     *
+     * @return HTMLTableCell  the father cell for the Internet Information ...
+     **/
     public function getInstantiationHTMLTableWithPeer(
         NetworkPort $netport,
         HTMLTableRow $row,
@@ -310,18 +310,18 @@ class NetworkPortInstantiation extends CommonDBChild
     }
 
 
-   /**
-    * Get HTMLTable row for a given item
-    *
-    * @param NetworkPort    $netport  NetworkPort object (contains item)
-    * @param HTMLTableRow   $row      HTMLTableRow object
-    * @param HTMLTableCell  $father   HTMLTableCell object (default NULL)
-    * @param array          $options  array of possible options:
-    *       - 'dont_display' : array of the elements that must not be display
-    *       - 'withtemplate' : integer withtemplate param
-    *
-    * @return null
-   **/
+    /**
+     * Get HTMLTable row for a given item
+     *
+     * @param NetworkPort    $netport  NetworkPort object (contains item)
+     * @param HTMLTableRow   $row      HTMLTableRow object
+     * @param HTMLTableCell  $father   HTMLTableCell object (default NULL)
+     * @param array          $options  array of possible options:
+     *       - 'dont_display' : array of the elements that must not be display
+     *       - 'withtemplate' : integer withtemplate param
+     *
+     * @return null
+     **/
     public function getInstantiationHTMLTable(
         NetworkPort $netport,
         HTMLTableRow $row,
@@ -412,15 +412,15 @@ class NetworkPortInstantiation extends CommonDBChild
     }
 
 
-   /**
-    * Get all NetworkPort and NetworkEquipments that have a specific MAC address
-    *
-    * @param string  $mac              address to search
-    * @param boolean $wildcard_search  true if we search with wildcard (false by default)
-    *
-    * @return array  each value of the array (corresponding to one NetworkPort) is an array of the
-    *                items from the master item to the NetworkPort
-   **/
+    /**
+     * Get all NetworkPort and NetworkEquipments that have a specific MAC address
+     *
+     * @param string  $mac              address to search
+     * @param boolean $wildcard_search  true if we search with wildcard (false by default)
+     *
+     * @return array  each value of the array (corresponding to one NetworkPort) is an array of the
+     *                items from the master item to the NetworkPort
+     **/
     public static function getItemsByMac($mac, $wildcard_search = false)
     {
         global $DB;
@@ -466,15 +466,15 @@ class NetworkPortInstantiation extends CommonDBChild
     }
 
 
-   /**
-    * Get an Object ID by its MAC address (only if one result is found in the entity)
-    *
-    * @param string  $value   the mac address
-    * @param integer $entity  the entity to look for
-    *
-    * @return array containing the object ID
-    *         or an empty array is no value of serverals ID where found
-   **/
+    /**
+     * Get an Object ID by its MAC address (only if one result is found in the entity)
+     *
+     * @param string  $value   the mac address
+     * @param integer $entity  the entity to look for
+     *
+     * @return array containing the object ID
+     *         or an empty array is no value of serverals ID where found
+     **/
     public static function getUniqueItemByMac($value, $entity)
     {
 
@@ -509,28 +509,28 @@ class NetworkPortInstantiation extends CommonDBChild
     }
 
 
-   /**
-    * In case of NetworkPort attached to a network card, list the fields that must be duplicate
-    * from the network card to the network port (mac address, port type, ...)
-    *
-    * @return array with SQL field (for instance : device.type) => form field (type)
-   **/
+    /**
+     * In case of NetworkPort attached to a network card, list the fields that must be duplicate
+     * from the network card to the network port (mac address, port type, ...)
+     *
+     * @return array with SQL field (for instance : device.type) => form field (type)
+     **/
     public function getNetworkCardInterestingFields()
     {
         return [];
     }
 
 
-   /**
-    * Select which network card to attach to the current NetworkPort (for the moment, only ethernet
-    * and wifi ports). Whenever a card is attached, its information (mac, type, ...) are
-    * autmatically set to the required field.
-    *
-    * @param NetworkPort $netport   NetworkPort object :the port that owns this instantiation
-    *                               (usefull, for instance to get network port attributs
-    * @param array $options         array of options given to NetworkPort::showForm
-    * @param array $recursiveItems  list of the items on which this port is attached
-   **/
+    /**
+     * Select which network card to attach to the current NetworkPort (for the moment, only ethernet
+     * and wifi ports). Whenever a card is attached, its information (mac, type, ...) are
+     * autmatically set to the required field.
+     *
+     * @param NetworkPort $netport   NetworkPort object :the port that owns this instantiation
+     *                               (usefull, for instance to get network port attributs
+     * @param array $options         array of options given to NetworkPort::showForm
+     * @param array $recursiveItems  list of the items on which this port is attached
+     **/
     public function showNetworkCardField(NetworkPort $netport, $options = [], $recursiveItems = [])
     {
         global $DB;
@@ -634,13 +634,13 @@ class NetworkPortInstantiation extends CommonDBChild
     }
 
 
-   /**
-    * Display the MAC field. Used by Ethernet, Wifi, Aggregate and alias NetworkPorts
-    *
-    * @param $netport         NetworkPort object : the port that owns this instantiation
-    *                         (usefull, for instance to get network port attributs
-    * @param $options   array of options given to NetworkPort::showForm
-   **/
+    /**
+     * Display the MAC field. Used by Ethernet, Wifi, Aggregate and alias NetworkPorts
+     *
+     * @param $netport         NetworkPort object : the port that owns this instantiation
+     *                         (usefull, for instance to get network port attributs
+     * @param $options   array of options given to NetworkPort::showForm
+     **/
     public function showMacField(NetworkPort $netport, $options = [])
     {
 
@@ -651,14 +651,14 @@ class NetworkPortInstantiation extends CommonDBChild
     }
 
 
-   /**
-    * Display the Socket field. Used by Ethernet, and Migration
-    *
-    * @param NetworkPort $netport         NetworkPort object :the port that owns this instantiation
-    *                                     (usefull, for instance to get network port attributs
-    * @param array       $options         array of options given to NetworkPort::showForm
-    * @param array       $recursiveItems  list of the items on which this port is attached
-   **/
+    /**
+     * Display the Socket field. Used by Ethernet, and Migration
+     *
+     * @param NetworkPort $netport         NetworkPort object :the port that owns this instantiation
+     *                                     (usefull, for instance to get network port attributs
+     * @param array       $options         array of options given to NetworkPort::showForm
+     * @param array       $recursiveItems  list of the items on which this port is attached
+     **/
     public function showSocketField(NetworkPort $netport, $options = [], $recursiveItems = [])
     {
 
@@ -684,12 +684,12 @@ class NetworkPortInstantiation extends CommonDBChild
     }
 
 
-   /**
-    * \brief display the attached NetworkPort
-    *
-    * NetworkPortAlias and NetworkPortAggregate are based on other physical network ports
-    * (Ethernet or Wifi). This method displays the physical network ports.
-   **/
+    /**
+     * \brief display the attached NetworkPort
+     *
+     * NetworkPortAlias and NetworkPortAggregate are based on other physical network ports
+     * (Ethernet or Wifi). This method displays the physical network ports.
+     **/
     public function getInstantiationNetworkPortHTMLTable()
     {
 
@@ -722,16 +722,16 @@ class NetworkPortInstantiation extends CommonDBChild
     }
 
 
-   /**
-    * \brief select which NetworkPort to attach
-    *
-    * NetworkPortAlias and NetworkPortAggregate ara based on other physical network ports
-    * (Ethernet or Wifi). This method Allows us to select which one to select.
-    *
-    * @param $recursiveItems
-    * @param $origin          NetworkPortAlias are based on one NetworkPort wherever
-    *                         NetworkPortAggregate are based on several NetworkPort.
-   **/
+    /**
+     * \brief select which NetworkPort to attach
+     *
+     * NetworkPortAlias and NetworkPortAggregate ara based on other physical network ports
+     * (Ethernet or Wifi). This method Allows us to select which one to select.
+     *
+     * @param $recursiveItems
+     * @param $origin          NetworkPortAlias are based on one NetworkPort wherever
+     *                         NetworkPortAggregate are based on several NetworkPort.
+     **/
     public function showNetworkPortSelector($recursiveItems, $origin)
     {
         global $DB;
@@ -862,21 +862,21 @@ class NetworkPortInstantiation extends CommonDBChild
     }
 
 
-   /**
-    * @param $tab          array
-    * @param $joinparams   array
-    **/
+    /**
+     * @param $tab          array
+     * @param $joinparams   array
+     **/
     public static function getSearchOptionsToAddForInstantiation(array &$tab, array $joinparams)
     {
     }
 
 
-   /**
-    * Display a connection of a networking port
-    *
-    * @param NetworkPort $netport  to be displayed
-    * @param boolean     $edit     permit to edit ? (false by default)
-   **/
+    /**
+     * Display a connection of a networking port
+     *
+     * @param NetworkPort $netport  to be displayed
+     * @param boolean     $edit     permit to edit ? (false by default)
+     **/
     public static function showConnection($netport, $edit = false)
     {
 
@@ -972,20 +972,20 @@ class NetworkPortInstantiation extends CommonDBChild
     }
 
 
-   /**
-    * Make a select box for  connected port
-    *
-    * @param integer $ID        ID of the current port to connect
-    * @param array   $options   array of possible options:
-    *    - name : string / name of the select (default is networkports_id)
-    *    - comments : boolean / is the comments displayed near the dropdown (default true)
-    *    - entity : integer or array / restrict to a defined entity or array of entities
-    *                   (default -1 : no restriction)
-    *    - entity_sons : boolean / if entity restrict specified auto select its sons
-    *                   only available if entity is a single value not an array (default false)
-    *
-    * @return integer random part of elements id
-   **/
+    /**
+     * Make a select box for  connected port
+     *
+     * @param integer $ID        ID of the current port to connect
+     * @param array   $options   array of possible options:
+     *    - name : string / name of the select (default is networkports_id)
+     *    - comments : boolean / is the comments displayed near the dropdown (default true)
+     *    - entity : integer or array / restrict to a defined entity or array of entities
+     *                   (default -1 : no restriction)
+     *    - entity_sons : boolean / if entity restrict specified auto select its sons
+     *                   only available if entity is a single value not an array (default false)
+     *
+     * @return integer random part of elements id
+     **/
     public static function dropdownConnect($ID, $options = [])
     {
         global $CFG_GLPI;

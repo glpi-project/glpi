@@ -33,9 +33,9 @@
 
 class RuleDictionnaryOperatingSystem extends RuleDictionnaryDropdown
 {
-   /**
-    * Constructor
-   **/
+    /**
+     * Constructor
+     **/
     public function __construct()
     {
         parent::__construct('RuleDictionnaryOperatingSystem');
@@ -58,9 +58,9 @@ class RuleDictionnaryOperatingSystem extends RuleDictionnaryDropdown
     }
 
 
-   /**
-    * @see Rule::getActions()
-   **/
+    /**
+     * @see Rule::getActions()
+     **/
     public function getActions()
     {
 

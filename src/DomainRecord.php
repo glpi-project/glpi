@@ -246,14 +246,14 @@ class DomainRecord extends CommonDBChild
         return $ong;
     }
 
-   /**
-    * Prepare input for add and update
-    *
-    * @param array   $input Input values
-    * @param boolean $add   True when we're adding a record
-    *
-    * @return aray|false
-    */
+    /**
+     * Prepare input for add and update
+     *
+     * @param array   $input Input values
+     * @param boolean $add   True when we're adding a record
+     *
+     * @return aray|false
+     */
     private function prepareInput($input, $add = false)
     {
 
@@ -489,13 +489,13 @@ JAVASCRIPT;
         return true;
     }
 
-   /**
-    * Show records for a domain
-    *
-    * @param Domain $domain Domain object
-    *
-    * @return void|boolean (display) Returns false if there is a rights error.
-    **/
+    /**
+     * Show records for a domain
+     *
+     * @param Domain $domain Domain object
+     *
+     * @return void|boolean (display) Returns false if there is a rights error.
+     **/
     public static function showForDomain(Domain $domain)
     {
         global $DB;

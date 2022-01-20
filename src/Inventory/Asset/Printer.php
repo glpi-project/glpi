@@ -163,11 +163,11 @@ class Printer extends NetworkEquipment
         $this->handleMetrics();
     }
 
-   /**
-    * Handle a printer connecter to a computer
-    *
-    * @return void
-    */
+    /**
+     * Handle a printer connecter to a computer
+     *
+     * @return void
+     */
     protected function handleConnectedPrinter()
     {
         global $DB;
@@ -284,21 +284,21 @@ class Printer extends NetworkEquipment
         }
     }
 
-   /**
-    * Get printer counters
-    *
-    * @return \stdClass
-    */
+    /**
+     * Get printer counters
+     *
+     * @return \stdClass
+     */
     public function getCounters(): \stdClass
     {
         return $this->counters;
     }
 
-   /**
-    * Handle printer metrics
-    *
-    * @return void
-    */
+    /**
+     * Handle printer metrics
+     *
+     * @return void
+     */
     public function handleMetrics()
     {
         if ($this->counters === null) {

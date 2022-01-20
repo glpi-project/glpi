@@ -40,24 +40,24 @@ namespace Glpi\ContentTemplates\Parameters\ParametersTypes;
  */
 abstract class AbstractParameterType implements ParameterTypeInterface
 {
-   /**
-    * The parameter key that need to be used to retrieve its value in a template.
-    *
-    * @var string
-    */
+    /**
+     * The parameter key that need to be used to retrieve its value in a template.
+     *
+     * @var string
+     */
     protected $key;
 
-   /**
-    * The parameter label, to be displayed in the client side autocompletion.
-    *
-    * @var string
-    */
+    /**
+     * The parameter label, to be displayed in the client side autocompletion.
+     *
+     * @var string
+     */
     protected $label;
 
-   /**
-    * @param string  $key     Key to access this value
-    * @param string  $label   Label to display in the autocompletion widget
-    */
+    /**
+     * @param string  $key     Key to access this value
+     * @param string  $label   Label to display in the autocompletion widget
+     */
     public function __construct(string $key, string $label)
     {
         $this->key = $key;

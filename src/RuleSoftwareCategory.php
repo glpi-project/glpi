@@ -32,12 +32,12 @@
  */
 
 /**
-* Rule class store all information about a GLPI rule :
-*   - description
-*   - criterias
-*   - actions
-*
-**/
+ * Rule class store all information about a GLPI rule :
+ *   - description
+ *   - criterias
+ *   - actions
+ *
+ **/
 class RuleSoftwareCategory extends Rule
 {
    // From Rule
@@ -51,9 +51,9 @@ class RuleSoftwareCategory extends Rule
     }
 
 
-   /**
-    * @see Rule::maxActionsCount()
-   **/
+    /**
+     * @see Rule::maxActionsCount()
+     **/
     public function maxActionsCount()
     {
         return 1;

@@ -121,12 +121,12 @@ class DeviceGraphicCard extends CommonDevice
     }
 
 
-   /**
-    * @since 0.85
-    * @param  $input
-    *
-    * @return number
-   **/
+    /**
+     * @since 0.85
+     * @param  $input
+     *
+     * @return number
+     **/
     public function prepareInputForAddOrUpdate($input)
     {
 

@@ -38,25 +38,25 @@ use Glpi\Csv\ExportToCsvInterface;
 /* Test for inc/log.class.php */
 abstract class CsvTestCase extends DbTestCase
 {
-   /**
-    * Get data to test.
-    *
-    * Format: [
-    *    'export'   => ExportToCsvInterface
-    *    'expected' => array of parameters (see below)
-    * ]
-    *
-    * Mandatory params for 'expected' :
-    *    - filename (expected name of the csv file)
-    *    - cols     (expected number of cols of the csv file)
-    *    - rows     (expected number of rows of the csv file)
-    *
-    * Optionnals params for 'expected' :
-    *    - header   (exact expected content of the header array)
-    *    - content  (exact expected content of the content array)
-    *
-    * @return array
-    */
+    /**
+     * Get data to test.
+     *
+     * Format: [
+     *    'export'   => ExportToCsvInterface
+     *    'expected' => array of parameters (see below)
+     * ]
+     *
+     * Mandatory params for 'expected' :
+     *    - filename (expected name of the csv file)
+     *    - cols     (expected number of cols of the csv file)
+     *    - rows     (expected number of rows of the csv file)
+     *
+     * Optionnals params for 'expected' :
+     *    - header   (exact expected content of the header array)
+     *    - content  (exact expected content of the content array)
+     *
+     * @return array
+     */
     abstract protected function getTestData(): array;
 
     protected function csvTestProvider(): array
@@ -64,9 +64,9 @@ abstract class CsvTestCase extends DbTestCase
         return $this->getTestData();
     }
 
-   /**
-    * @dataprovider csvTestProvider
-    */
+    /**
+     * @dataprovider csvTestProvider
+     */
     public function testGetFileName(
         ExportToCsvInterface $export,
         array $expected
@@ -75,9 +75,9 @@ abstract class CsvTestCase extends DbTestCase
         $this->string($filename)->isEqualTo($expected['filename']);
     }
 
-   /**
-    * @dataprovider csvTestProvider
-    */
+    /**
+     * @dataprovider csvTestProvider
+     */
     public function testGetFileHeader(
         ExportToCsvInterface $export,
         array $expected
@@ -90,9 +90,9 @@ abstract class CsvTestCase extends DbTestCase
         }
     }
 
-   /**
-    * @dataprovider csvTestProvider
-    */
+    /**
+     * @dataprovider csvTestProvider
+     */
     public function testGetFileContent(
         ExportToCsvInterface $export,
         array $expected

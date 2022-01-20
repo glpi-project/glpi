@@ -113,13 +113,13 @@ class DeviceGeneric extends CommonDevice
     }
 
 
-   /**
-    * Criteria used for import function
-    *
-    * @see CommonDevice::getImportCriteria()
-    *
-    * @since 0.84
-   **/
+    /**
+     * Criteria used for import function
+     *
+     * @see CommonDevice::getImportCriteria()
+     *
+     * @since 0.84
+     **/
     public function getImportCriteria()
     {
 

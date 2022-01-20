@@ -54,11 +54,11 @@ class DCBreadcrumb extends \DbTestCase
         ];
     }
 
-   /**
-   * @param $class
-   * @param $result
-   * @dataProvider DCBreadcrumbProvider
-   */
+    /**
+     * @param $class
+     * @param $result
+     * @dataProvider DCBreadcrumbProvider
+     */
     public function testDCBreadcrumbProvider($class, $result)
     {
         $this->login();
@@ -66,9 +66,9 @@ class DCBreadcrumb extends \DbTestCase
     }
 
 
-   /**
-   * Test DCBreadCrumb
-   */
+    /**
+     * Test DCBreadCrumb
+     */
     public function testDCBreadcrumb()
     {
         $this->login();

@@ -187,9 +187,9 @@ class ContractCost extends CommonDBChild
 
 
 
-   /**
-    * Init cost for creation based on previous cost
-   **/
+    /**
+     * Init cost for creation based on previous cost
+     **/
     public function initBasedOnPrevious()
     {
 
@@ -217,11 +217,11 @@ class ContractCost extends CommonDBChild
         }
     }
 
-   /**
-    * Get last datas for a contract
-    *
-    * @param $contracts_id        integer  ID of the contract
-   **/
+    /**
+     * Get last datas for a contract
+     *
+     * @param $contracts_id        integer  ID of the contract
+     **/
     public function getLastCostForContract($contracts_id)
     {
         global $DB;
@@ -238,12 +238,12 @@ class ContractCost extends CommonDBChild
         return [];
     }
 
-   /**
-    * Print the contract cost form
-    *
-    * @param $ID        integer  ID of the item
-    * @param $options   array    options used
-   **/
+    /**
+     * Print the contract cost form
+     *
+     * @param $ID        integer  ID of the item
+     * @param $options   array    options used
+     **/
     public function showForm($ID, array $options = [])
     {
 
@@ -296,14 +296,14 @@ class ContractCost extends CommonDBChild
     }
 
 
-   /**
-    * Print the contract costs
-    *
-    * @param Contract $contract
-    * @param integer  $withtemplate Template or basic item
-    *
-    * @return void
-   **/
+    /**
+     * Print the contract costs
+     *
+     * @param Contract $contract
+     * @param integer  $withtemplate Template or basic item
+     *
+     * @return void
+     **/
     public static function showForContract(Contract $contract, $withtemplate = 0)
     {
         global $DB, $CFG_GLPI;

@@ -33,7 +33,7 @@
 
 /**
  * UserEmail class
-**/
+ **/
 class UserEmail extends CommonDBChild
 {
    // From CommonDBTM
@@ -51,13 +51,13 @@ class UserEmail extends CommonDBChild
     }
 
 
-   /**
-    * Get default email for user. If no default email get first one
-    *
-    * @param int $users_id user ID
-    *
-    * @return string default email, empty if no email set
-   **/
+    /**
+     * Get default email for user. If no default email get first one
+     *
+     * @param int $users_id user ID
+     *
+     * @return string default email, empty if no email set
+     **/
     public static function getDefaultForUser($users_id)
     {
         global $DB;
@@ -80,13 +80,13 @@ class UserEmail extends CommonDBChild
     }
 
 
-   /**
-    * Get all emails for user.
-    *
-    * @param $users_id user ID
-    *
-    * @return array of emails
-   **/
+    /**
+     * Get all emails for user.
+     *
+     * @param $users_id user ID
+     *
+     * @return array of emails
+     **/
     public static function getAllForUser($users_id)
     {
         global $DB;
@@ -108,14 +108,14 @@ class UserEmail extends CommonDBChild
     }
 
 
-   /**
-    * is an email of the user
-    *
-    * @param $users_id           user ID
-    * @param $email     string   email to check user ID
-    *
-    * @return boolean is this email set for the user ?
-   **/
+    /**
+     * is an email of the user
+     *
+     * @param $users_id           user ID
+     * @param $email     string   email to check user ID
+     *
+     * @return boolean is this email set for the user ?
+     **/
     public static function isEmailForUser($users_id, $email)
     {
         global $DB;
@@ -137,14 +137,14 @@ class UserEmail extends CommonDBChild
     }
 
 
-   /**
-    * @since 0.84
-    *
-    * @param $field_name
-    * @param $child_count_js_var
-    *
-    * @return string
-   **/
+    /**
+     * @since 0.84
+     *
+     * @param $field_name
+     * @param $child_count_js_var
+     *
+     * @return string
+     **/
     public static function getJSCodeToAddForItemChild($field_name, $child_count_js_var)
     {
 
@@ -155,13 +155,13 @@ class UserEmail extends CommonDBChild
     }
 
 
-   /**
-    * @since 0.85 (since 0.85 but param $id since 0.85)
-    *
-    * @param $canedit
-    * @param $field_name
-    * @param $id
-   **/
+    /**
+     * @since 0.85 (since 0.85 but param $id since 0.85)
+     *
+     * @param $canedit
+     * @param $field_name
+     * @param $id
+     **/
     public function showChildForItemForm($canedit, $field_name, $id)
     {
 
@@ -192,13 +192,13 @@ class UserEmail extends CommonDBChild
     }
 
 
-   /**
-    * Show emails of a user
-    *
-    * @param $user User object
-    *
-    * @return void
-   **/
+    /**
+     * Show emails of a user
+     *
+     * @param $user User object
+     *
+     * @return void
+     **/
     public static function showForUser(User $user)
     {
 
@@ -216,9 +216,9 @@ class UserEmail extends CommonDBChild
     }
 
 
-   /**
-    * @param $user
-   **/
+    /**
+     * @param $user
+     **/
     public static function showAddEmailButton(User $user)
     {
 
@@ -251,13 +251,13 @@ class UserEmail extends CommonDBChild
     }
 
 
-   /**
-    * @since 0.84
-    *
-    * @see CommonDBTM::getNameField
-    *
-    * @return string
-   **/
+    /**
+     * @since 0.84
+     *
+     * @see CommonDBTM::getNameField
+     *
+     * @return string
+     **/
     public static function getNameField()
     {
         return 'email';

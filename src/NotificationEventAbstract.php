@@ -33,20 +33,20 @@
 
 abstract class NotificationEventAbstract
 {
-   /**
-    * Raise an ajax notification event
-    *
-    * @param string               $event              Event
-    * @param CommonGLPI           $item               Notification data
-    * @param array                $options            Options
-    * @param string               $label              Label
-    * @param array                $data               Notification data
-    * @param NotificationTarget   $notificationtarget Target
-    * @param NotificationTemplate $template           Template
-    * @param boolean              $notify_me          Whether to notify current user
-    *
-    * @return void
-    */
+    /**
+     * Raise an ajax notification event
+     *
+     * @param string               $event              Event
+     * @param CommonGLPI           $item               Notification data
+     * @param array                $options            Options
+     * @param string               $label              Label
+     * @param array                $data               Notification data
+     * @param NotificationTarget   $notificationtarget Target
+     * @param NotificationTemplate $template           Template
+     * @param boolean              $notify_me          Whether to notify current user
+     *
+     * @return void
+     */
     public static function raise(
         $event,
         CommonGLPI $item,
@@ -175,13 +175,13 @@ abstract class NotificationEventAbstract
         }
     }
 
-   /**
-    * Extra steps raising
-    *
-    * @param array $params All parameters send to raise() method
-    *
-    * @return void
-    */
+    /**
+     * Extra steps raising
+     *
+     * @param array $params All parameters send to raise() method
+     *
+     * @return void
+     */
     protected static function extraRaise($params)
     {
        //does nothing; designed to be overriden

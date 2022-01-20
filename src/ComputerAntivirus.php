@@ -226,14 +226,14 @@ class ComputerAntivirus extends CommonDBChild
         return $tab;
     }
 
-   /**
-    * Display form for antivirus
-    *
-    * @param integer $ID      id of the antivirus
-    * @param array   $options
-    *
-    * @return boolean TRUE if form is ok
-   **/
+    /**
+     * Display form for antivirus
+     *
+     * @param integer $ID      id of the antivirus
+     * @param array   $options
+     *
+     * @return boolean TRUE if form is ok
+     **/
     public function showForm($ID, array $options = [])
     {
 
@@ -307,14 +307,14 @@ class ComputerAntivirus extends CommonDBChild
     }
 
 
-   /**
-    * Print the computers antiviruses
-    *
-    * @param Computer $comp          Computer object
-    * @param integer  $withtemplate  Template or basic item (default 0)
-    *
-    * @return void
-   **/
+    /**
+     * Print the computers antiviruses
+     *
+     * @param Computer $comp          Computer object
+     * @param integer  $withtemplate  Template or basic item (default 0)
+     *
+     * @return void
+     **/
     public static function showForComputer(Computer $comp, $withtemplate = 0)
     {
         global $DB;

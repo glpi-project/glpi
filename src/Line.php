@@ -53,11 +53,11 @@ class Line extends CommonDBTM
     }
 
 
-   /**
-    * @see CommonDBTM::useDeletedToLockIfDynamic()
-    *
-    * @since 0.84
-    **/
+    /**
+     * @see CommonDBTM::useDeletedToLockIfDynamic()
+     *
+     * @since 0.84
+     **/
     public function useDeletedToLockIfDynamic()
     {
         return false;
@@ -80,16 +80,16 @@ class Line extends CommonDBTM
     }
 
 
-   /**
-    * Print the line form
-    *
-    * @param $ID integer ID of the item
-    * @param $options array
-    *     - target filename : where to go when done.
-    *     - withtemplate boolean : template or basic item
-    *
-    * @return boolean item found
-   **/
+    /**
+     * Print the line form
+     *
+     * @param $ID integer ID of the item
+     * @param $options array
+     *     - target filename : where to go when done.
+     *     - withtemplate boolean : template or basic item
+     *
+     * @return boolean item found
+     **/
     public function showForm($ID, array $options = [])
     {
         $this->initForm($ID, $options);

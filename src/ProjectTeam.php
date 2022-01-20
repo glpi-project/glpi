@@ -57,9 +57,9 @@ class ProjectTeam extends CommonDBRelation
     public static $available_types     = ['User', 'Group', 'Supplier', 'Contact'];
 
 
-   /**
-    * @see CommonDBTM::getNameField()
-   **/
+    /**
+     * @see CommonDBTM::getNameField()
+     **/
     public static function getNameField()
     {
         return 'id';
@@ -81,9 +81,9 @@ class ProjectTeam extends CommonDBRelation
     }
 
 
-   /**
-    * @see CommonGLPI::getTabNameForItem()
-   **/
+    /**
+     * @see CommonGLPI::getTabNameForItem()
+     **/
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
 
@@ -111,14 +111,14 @@ class ProjectTeam extends CommonDBRelation
         }
     }
 
-   /**
-    * Add additional data about the individual members to an array of team members for a Project or ProjectTask.
-    *
-    * The additional information includes data in the specific itemtype's table rather than the ProjectTeam or ProjectTaskTeam tables.
-    * @param array $team Team members. The keys should correspond to the Itemtype and each sub-array should have at least the 'id' property.
-    * @return array The array of team members with additional information
-    * @since 10.0.0
-    */
+    /**
+     * Add additional data about the individual members to an array of team members for a Project or ProjectTask.
+     *
+     * The additional information includes data in the specific itemtype's table rather than the ProjectTeam or ProjectTaskTeam tables.
+     * @param array $team Team members. The keys should correspond to the Itemtype and each sub-array should have at least the 'id' property.
+     * @return array The array of team members with additional information
+     * @since 10.0.0
+     */
     public static function expandTeamData(array $team)
     {
         global $DB;
@@ -205,13 +205,13 @@ class ProjectTeam extends CommonDBRelation
         return $team;
     }
 
-   /**
-    * Get team for a project
-    *
-    * @param $projects_id
-    * @param bool $expand If true, the team member data is expanded to include specific properties like firstname, realname, ...
-    * @return array
-    */
+    /**
+     * Get team for a project
+     *
+     * @param $projects_id
+     * @param bool $expand If true, the team member data is expanded to include specific properties like firstname, realname, ...
+     * @return array
+     */
     public static function getTeamFor($projects_id, bool $expand = false)
     {
         global $DB;

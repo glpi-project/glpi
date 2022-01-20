@@ -184,9 +184,9 @@ HTML
         }
     }
 
-   /**
-    * @dataProvider itilProvider
-    */
+    /**
+     * @dataProvider itilProvider
+     */
     public function testHandleUserMentions(
         string $itemtype,
         string $main_itemtype,
@@ -439,11 +439,11 @@ HTML
         ];
     }
 
-   /**
-    * Specific tests on TicketValidation that contains 2 content fields.
-    *
-    * @dataProvider ticketValidationProvider
-    */
+    /**
+     * Specific tests on TicketValidation that contains 2 content fields.
+     *
+     * @dataProvider ticketValidationProvider
+     */
     public function testHandleUserMentionsOnTicketValidation(
         ?string $submission_add,
         ?string $validation_add,
@@ -542,13 +542,13 @@ HTML
         $this->array($notifications)->hasSize(count($add_expected_notified) + count($update_expected_notified));
     }
 
-   /**
-    * Create user_mention notification / template / targets for given itemtype.
-    *
-    * @param string $itemtype
-    *
-    * @return void
-    */
+    /**
+     * Create user_mention notification / template / targets for given itemtype.
+     *
+     * @param string $itemtype
+     *
+     * @return void
+     */
     private function createNotification(string $itemtype): void
     {
         $notification = new Notification();

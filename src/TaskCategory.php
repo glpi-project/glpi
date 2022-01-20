@@ -33,7 +33,7 @@
 
 /**
  * TaskCategory class
-**/
+ **/
 class TaskCategory extends CommonTreeDropdown
 {
    // From CommonDBTM

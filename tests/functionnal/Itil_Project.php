@@ -39,11 +39,11 @@ use DbTestCase;
 
 class Itil_Project extends DbTestCase
 {
-   /**
-    * Test ability to link ITIL items to a project.
-    *
-    * @return void
-    */
+    /**
+     * Test ability to link ITIL items to a project.
+     *
+     * @return void
+     */
     public function testLink()
     {
 

@@ -34,7 +34,7 @@
 /** GLPIUploadHandler class
  *
  * @since 9.2
-**/
+ **/
 class GLPIUploadHandler extends UploadHandler
 {
     protected function get_error_message($error)

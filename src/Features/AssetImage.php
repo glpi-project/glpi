@@ -41,11 +41,11 @@ use Toolbox;
  **/
 trait AssetImage
 {
-   /**
-    * Add/remove front, rear, and miscellaneous images
-    * @param  array $input the form input
-    * @return array        the altered input
-    */
+    /**
+     * Add/remove front, rear, and miscellaneous images
+     * @param  array $input the form input
+     * @return array        the altered input
+     */
     public function managePictures($input)
     {
         foreach (['picture_front', 'picture_rear'] as $name) {

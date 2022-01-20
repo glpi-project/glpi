@@ -38,11 +38,11 @@
  */
 class CommonITILRecurrentCron extends CommonDBTM
 {
-   /**
-    * Get cron task's description
-    *
-    * @return array
-    */
+    /**
+     * Get cron task's description
+     *
+     * @return array
+     */
     public static function cronInfo(): array
     {
         return [
@@ -50,13 +50,13 @@ class CommonITILRecurrentCron extends CommonDBTM
         ];
     }
 
-   /**
-    * Run the cron task
-    *
-    * @param CronTask $task
-    *
-    * @return int task status (0: no work to do, 1: work done)
-    */
+    /**
+     * Run the cron task
+     *
+     * @param CronTask $task
+     *
+     * @return int task status (0: no work to do, 1: work done)
+     */
     public static function cronRecurrentItems(CronTask $task)
     {
         global $DB;

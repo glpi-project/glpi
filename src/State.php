@@ -33,7 +33,7 @@
 
 /**
  * State Class
-**/
+ **/
 class State extends CommonTreeDropdown
 {
     public $can_be_translated       = true;
@@ -54,11 +54,11 @@ class State extends CommonTreeDropdown
     }
 
 
-   /**
-    * @since 0.85
-    *
-    * @see CommonTreeDropdown::getAdditionalFields()
-   **/
+    /**
+     * @since 0.85
+     *
+     * @see CommonTreeDropdown::getAdditionalFields()
+     **/
     public function getAdditionalFields()
     {
 
@@ -77,13 +77,13 @@ class State extends CommonTreeDropdown
     }
 
 
-   /**
-    * Dropdown of states for behaviour config
-    *
-    * @param $name            select name
-    * @param $lib    string   to add for -1 value (default '')
-    * @param $value           default value (default 0)
-   **/
+    /**
+     * Dropdown of states for behaviour config
+     *
+     * @param $name            select name
+     * @param $lib    string   to add for -1 value (default '')
+     * @param $value           default value (default 0)
+     **/
     public static function dropdownBehaviour($name, $lib = "", $value = 0)
     {
         global $DB;
@@ -234,11 +234,11 @@ class State extends CommonTreeDropdown
     }
 
 
-   /**
-    * @since 0.85
-    *
-    * @see CommonDBTM::getEmpty()
-   **/
+    /**
+     * @since 0.85
+     *
+     * @see CommonDBTM::getEmpty()
+     **/
     public function getEmpty()
     {
 
@@ -257,11 +257,11 @@ class State extends CommonTreeDropdown
     }
 
 
-   /**
-    * @since 0.85
-    *
-    * @see CommonTreeDropdown::prepareInputForAdd()
-   **/
+    /**
+     * @since 0.85
+     *
+     * @see CommonTreeDropdown::prepareInputForAdd()
+     **/
     public function prepareInputForAdd($input)
     {
         if (!isset($input['states_id'])) {
@@ -519,14 +519,14 @@ class State extends CommonTreeDropdown
         return parent::prepareInputForUpdate($input);
     }
 
-   /**
-    * Checks that this state is unique given the new field values.
-    *    Unique fields checked:
-    *       - states_id
-    *       - name
-    * @param array $input Array of field names and values
-    * @return boolean True if the new/updated record will be unique
-    */
+    /**
+     * Checks that this state is unique given the new field values.
+     *    Unique fields checked:
+     *       - states_id
+     *       - name
+     * @param array $input Array of field names and values
+     * @return boolean True if the new/updated record will be unique
+     */
     public function isUnique($input)
     {
         global $DB;
@@ -560,9 +560,9 @@ class State extends CommonTreeDropdown
         return (int)$row['cpt'] == 0;
     }
 
-   /**
-    * Get visibility fields from conf
-    */
+    /**
+     * Get visibility fields from conf
+     */
     protected function getvisibilityFields(): array
     {
         global $CFG_GLPI;

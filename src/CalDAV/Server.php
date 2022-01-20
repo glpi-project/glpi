@@ -83,10 +83,10 @@ class Server extends DAV\Server
         $this->addPlugin(new Browser(false));
     }
 
-   /**
-    *
-    * @param \Throwable $exception
-    */
+    /**
+     *
+     * @param \Throwable $exception
+     */
     public function logException(\Throwable $exception)
     {
         if ($exception instanceof \Sabre\DAV\Exception && $exception->getHTTPCode() < 500) {

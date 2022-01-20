@@ -39,9 +39,9 @@ class RuleRightParameter extends CommonDropdown
     public $can_be_translated = false;
 
 
-   /**
-    * @see CommonDBTM::prepareInputForAdd()
-   **/
+    /**
+     * @see CommonDBTM::prepareInputForAdd()
+     **/
     public function prepareInputForAdd($input)
     {
 

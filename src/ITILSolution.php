@@ -36,7 +36,7 @@ use Glpi\ContentTemplates\TemplateManager;
 
 /**
  * ITILSolution Class
-**/
+ **/
 class ITILSolution extends CommonDBChild
 {
    // From CommonDBTM
@@ -113,16 +113,16 @@ class ITILSolution extends CommonDBChild
         $this->item->getFromDB($this->fields['items_id']);
     }
 
-   /**
-    * Print the phone form
-    *
-    * @param $ID integer ID of the item
-    * @param $options array
-    *     - item: CommonITILObject instance
-    *     - kb_id_toload: load new item content from KB entry
-    *
-    * @return boolean item found
-   **/
+    /**
+     * Print the phone form
+     *
+     * @param $ID integer ID of the item
+     * @param $options array
+     *     - item: CommonITILObject instance
+     *     - kb_id_toload: load new item content from KB entry
+     *
+     * @return boolean item found
+     **/
     public function showForm($ID, array $options = [])
     {
         if ($this->isNewItem()) {
@@ -143,14 +143,14 @@ class ITILSolution extends CommonDBChild
         ]);
     }
 
-   /**
-    * Count solutions for specific item
-    *
-    * @param string  $itemtype Item type
-    * @param integer $items_id Item ID
-    *
-    * @return integer
-    */
+    /**
+     * Count solutions for specific item
+     *
+     * @param string  $itemtype Item type
+     * @param integer $items_id Item ID
+     *
+     * @return integer
+     */
     public static function countFor($itemtype, $items_id)
     {
         return countElementsInTable(
@@ -320,10 +320,10 @@ class ITILSolution extends CommonDBChild
     }
 
 
-   /**
-    * {@inheritDoc}
-    * @see CommonDBTM::getSpecificValueToDisplay()
-    */
+    /**
+     * {@inheritDoc}
+     * @see CommonDBTM::getSpecificValueToDisplay()
+     */
     public static function getSpecificValueToDisplay($field, $values, array $options = [])
     {
 
@@ -343,10 +343,10 @@ class ITILSolution extends CommonDBChild
         return parent::getSpecificValueToDisplay($field, $values, $options);
     }
 
-   /**
-    * {@inheritDoc}
-    * @see CommonDBTM::getSpecificValueToSelect()
-    */
+    /**
+     * {@inheritDoc}
+     * @see CommonDBTM::getSpecificValueToSelect()
+     */
     public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
     {
 
@@ -365,12 +365,12 @@ class ITILSolution extends CommonDBChild
         return parent::getSpecificValueToSelect($field, $name, $values, $options);
     }
 
-   /**
-    * Return list of statuses.
-    * Key as status values, values as labels.
-    *
-    * @return string[]
-    */
+    /**
+     * Return list of statuses.
+     * Key as status values, values as labels.
+     *
+     * @return string[]
+     */
     public static function getStatuses()
     {
         return [

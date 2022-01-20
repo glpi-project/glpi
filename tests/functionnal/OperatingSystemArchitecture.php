@@ -62,11 +62,11 @@ class OperatingSystemArchitecture extends CommonDropdown
         ];
     }
 
-   /**
-    * Create new Architecture system in database
-    *
-    * @return void
-    */
+    /**
+     * Create new Architecture system in database
+     *
+     * @return void
+     */
     protected function newInstance()
     {
         $this->newTestedInstance();

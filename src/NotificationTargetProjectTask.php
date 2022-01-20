@@ -35,14 +35,14 @@
  * NotificationTargetTicket Class
  *
  * @since 0.85
-**/
+ **/
 class NotificationTargetProjectTask extends NotificationTarget
 {
-   /**
-    * Get events related to tickets
-    *
-    * @return array
-   **/
+    /**
+     * Get events related to tickets
+     *
+     * @return array
+     **/
     public function getEvents()
     {
 
@@ -110,11 +110,11 @@ class NotificationTargetProjectTask extends NotificationTarget
     }
 
 
-   /**
-    * Add team users to the notified user list
-    *
-    * @return void
-   **/
+    /**
+     * Add team users to the notified user list
+     *
+     * @return void
+     **/
     public function addTeamUsers()
     {
         global $DB;
@@ -138,13 +138,13 @@ class NotificationTargetProjectTask extends NotificationTarget
     }
 
 
-   /**
-    * Add team groups to the notified user list
-    *
-    * @param integer $manager 0 all users, 1 only supervisors, 2 all users without supervisors
-    *
-    * @return void
-   **/
+    /**
+     * Add team groups to the notified user list
+     *
+     * @param integer $manager 0 all users, 1 only supervisors, 2 all users without supervisors
+     *
+     * @return void
+     **/
     public function addTeamGroups($manager)
     {
         global $DB;
@@ -164,11 +164,11 @@ class NotificationTargetProjectTask extends NotificationTarget
     }
 
 
-   /**
-    * Add team contacts to the notified user list
-    *
-    * @return void
-   **/
+    /**
+     * Add team contacts to the notified user list
+     *
+     * @return void
+     **/
     public function addTeamContacts()
     {
         global $DB, $CFG_GLPI;
@@ -194,11 +194,11 @@ class NotificationTargetProjectTask extends NotificationTarget
     }
 
 
-   /**
-    * Add team suppliers to the notified user list
-    *
-    * @return void
-   **/
+    /**
+     * Add team suppliers to the notified user list
+     *
+     * @return void
+     **/
     public function addTeamSuppliers()
     {
         global $DB, $CFG_GLPI;

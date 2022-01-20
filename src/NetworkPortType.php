@@ -144,13 +144,13 @@ class NetworkPortType extends CommonDropdown
         return $defaults;
     }
 
-   /**
-    * Get instantiation type for a port type
-    *
-    * @param mixed $type Requested type
-    *
-    * @return false|string
-    */
+    /**
+     * Get instantiation type for a port type
+     *
+     * @param mixed $type Requested type
+     *
+     * @return false|string
+     */
     public static function getInstantiationType($type)
     {
         global $DB, $GLPI_CACHE;

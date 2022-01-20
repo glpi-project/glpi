@@ -40,16 +40,16 @@ class SlaLevel_Ticket extends CommonDBTM
     }
 
 
-   /**
-    * Retrieve an item from the database
-    *
-    * @param $ID        ID of the item to get
-    * @param $slatype
-    *
-    * @since 9.1 2 mandatory parameters
-    *
-    * @return true if succeed else false
-   **/
+    /**
+     * Retrieve an item from the database
+     *
+     * @param $ID        ID of the item to get
+     * @param $slatype
+     *
+     * @since 9.1 2 mandatory parameters
+     *
+     * @return true if succeed else false
+     **/
     public function getFromDBForTicket($ID, $slaType)
     {
         global $DB;
@@ -85,16 +85,16 @@ class SlaLevel_Ticket extends CommonDBTM
     }
 
 
-   /**
-    * Delete entries for a ticket
-    *
-    * @param $tickets_id    Ticket ID
-    * @param $type          Type of SLA
-    *
-    * @since 9.1 2 parameters mandatory
-    *
-    * @return void
-   **/
+    /**
+     * Delete entries for a ticket
+     *
+     * @param $tickets_id    Ticket ID
+     * @param $type          Type of SLA
+     *
+     * @since 9.1 2 parameters mandatory
+     *
+     * @return void
+     **/
     public function deleteForTicket($tickets_id, $slaType)
     {
         global $DB;
@@ -128,13 +128,13 @@ class SlaLevel_Ticket extends CommonDBTM
     }
 
 
-   /**
-    * Give cron information
-    *
-    * @param $name : task's name
-    *
-    * @return array of information
-   **/
+    /**
+     * Give cron information
+     *
+     * @param $name : task's name
+     *
+     * @return array of information
+     **/
     public static function cronInfo($name)
     {
 
@@ -146,13 +146,13 @@ class SlaLevel_Ticket extends CommonDBTM
     }
 
 
-   /**
-    * Cron for ticket's automatic close
-    *
-    * @param $task : CronTask object
-    *
-    * @return integer (0 : nothing done - 1 : done)
-   **/
+    /**
+     * Cron for ticket's automatic close
+     *
+     * @param $task : CronTask object
+     *
+     * @return integer (0 : nothing done - 1 : done)
+     **/
     public static function cronSlaTicket(CronTask $task)
     {
         global $DB;
@@ -194,16 +194,16 @@ class SlaLevel_Ticket extends CommonDBTM
     }
 
 
-   /**
-    * Do a specific SLAlevel for a ticket
-    *
-    * @param $data          array data of an entry of slalevels_tickets
-    * @param $slaType             Type of sla
-    *
-    * @since 9.1   2 parameters mandatory
-    *
-    * @return void
-   **/
+    /**
+     * Do a specific SLAlevel for a ticket
+     *
+     * @param $data          array data of an entry of slalevels_tickets
+     * @param $slaType             Type of sla
+     *
+     * @since 9.1   2 parameters mandatory
+     *
+     * @return void
+     **/
     public static function doLevelForTicket(array $data, $slaType)
     {
 
@@ -301,15 +301,15 @@ class SlaLevel_Ticket extends CommonDBTM
     }
 
 
-   /**
-    * Replay all task needed for a specific ticket
-    *
-    * @param $tickets_id Ticket ID
-    * @param $slaType Type of sla
-    *
-    * @since 9.1    2 parameters mandatory
-    *
-    */
+    /**
+     * Replay all task needed for a specific ticket
+     *
+     * @param $tickets_id Ticket ID
+     * @param $slaType Type of sla
+     *
+     * @since 9.1    2 parameters mandatory
+     *
+     */
     public static function replayForTicket($tickets_id, $slaType)
     {
         global $DB;

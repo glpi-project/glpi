@@ -50,15 +50,15 @@ class Request extends \GLPITestCase
         parent::beforeTestMethod($method);
     }
 
-   /**
-    * Check a XML response
-    *
-    * @param Response $res   Request response
-    * @param string   $reply Reply tag contents
-    * @param integer  $reply Reply HTTP code
-    *
-    * @return void
-    */
+    /**
+     * Check a XML response
+     *
+     * @param Response $res   Request response
+     * @param string   $reply Reply tag contents
+     * @param integer  $reply Reply HTTP code
+     *
+     * @return void
+     */
     private function checkXmlResponse(GuzzleHttp\Psr7\Response $res, $reply, $code)
     {
         $this->integer($res->getStatusCode())->isIdenticalTo($code);

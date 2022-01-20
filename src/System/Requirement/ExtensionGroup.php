@@ -38,19 +38,19 @@ namespace Glpi\System\Requirement;
  */
 class ExtensionGroup extends AbstractRequirement
 {
-   /**
-    * Required extensions names.
-    *
-    * @var string[]
-    */
+    /**
+     * Required extensions names.
+     *
+     * @var string[]
+     */
     protected $extensions;
 
-   /**
-    * @param string      $name         Extension group title.
-    * @param string[]    $extensions   Required extensions names.
-    * @param bool        $optional     Indicate if extension is optional.
-    * @param string|null $description  Describe usage of the extension.
-    */
+    /**
+     * @param string      $name         Extension group title.
+     * @param string[]    $extensions   Required extensions names.
+     * @param bool        $optional     Indicate if extension is optional.
+     * @param string|null $description  Describe usage of the extension.
+     */
     public function __construct(string $title, array $extensions, bool $optional = false, ?string $description = null)
     {
         $this->title = $title;

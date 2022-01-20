@@ -84,9 +84,9 @@ class DB extends \GLPITestCase
         ];
     }
 
-   /**
-    * @dataProvider dataName
-    */
+    /**
+     * @dataProvider dataName
+     */
     public function testQuoteName($raw, $quoted)
     {
         $this->string(\DB::quoteName($raw))->isIdenticalTo($quoted);
@@ -109,9 +109,9 @@ class DB extends \GLPITestCase
         ];
     }
 
-   /**
-    * @dataProvider dataValue
-    */
+    /**
+     * @dataProvider dataValue
+     */
     public function testQuoteValue($raw, $expected)
     {
         $this->string(\DB::quoteValue($raw))->isIdenticalTo($expected);
@@ -149,9 +149,9 @@ class DB extends \GLPITestCase
         ];
     }
 
-   /**
-    * @dataProvider dataInsert
-    */
+    /**
+     * @dataProvider dataInsert
+     */
     public function testBuildInsert($table, $values, $expected)
     {
         $this
@@ -250,9 +250,9 @@ class DB extends \GLPITestCase
         ];
     }
 
-   /**
-    * @dataProvider dataUpdate
-    */
+    /**
+     * @dataProvider dataUpdate
+     */
     public function testBuildUpdate($table, $values, $where, array $joins, $expected)
     {
         $this
@@ -334,9 +334,9 @@ class DB extends \GLPITestCase
         ];
     }
 
-   /**
-    * @dataProvider dataDelete
-    */
+    /**
+     * @dataProvider dataDelete
+     */
     public function testBuildDelete($table, $where, array $joins, $expected)
     {
         $this
@@ -427,9 +427,9 @@ OTHER EXPRESSION;"
         ];
     }
 
-   /**
-    * @dataProvider commentsProvider
-    */
+    /**
+     * @dataProvider commentsProvider
+     */
     public function testRemoveSqlComments($sql, $expected)
     {
         $this
@@ -438,9 +438,9 @@ OTHER EXPRESSION;"
             ->string($this->testedInstance->removeSqlComments($sql))->isIdenticalTo($expected);
     }
 
-   /**
-    * Sql expressions provider
-    */
+    /**
+     * Sql expressions provider
+     */
     protected function sqlProvider()
     {
         return array_merge([
@@ -451,9 +451,9 @@ OTHER EXPRESSION;"
         ], $this->commentsProvider());
     }
 
-   /**
-    * @dataProvider sqlProvider
-    */
+    /**
+     * @dataProvider sqlProvider
+     */
     public function testRemoveSqlRemarks($sql, $expected)
     {
         $this
@@ -662,9 +662,9 @@ OTHER EXPRESSION;"
         }
     }
 
-   /**
-    * @dataProvider tableOptionProvider
-    */
+    /**
+     * @dataProvider tableOptionProvider
+     */
     public function testAlterOrCreateTableWarnings(
         string $sql,
         array $db_properties,

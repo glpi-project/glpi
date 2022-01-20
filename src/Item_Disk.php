@@ -33,7 +33,7 @@
 
 /**
  * Disk Class
-**/
+ **/
 class Item_Disk extends CommonDBChild
 {
    // From CommonDBChild
@@ -81,11 +81,11 @@ class Item_Disk extends CommonDBChild
     }
 
 
-   /**
-    * @param $item            CommonGLPI object
-    * @param $tabnum          (default 1)
-    * @param $withtemplate    (default 0)
-    */
+    /**
+     * @param $item            CommonGLPI object
+     * @param $tabnum          (default 1)
+     * @param $withtemplate    (default 0)
+     */
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
 
@@ -105,17 +105,17 @@ class Item_Disk extends CommonDBChild
     }
 
 
-   /**
-    * Print the version form
-    *
-    * @param $ID        integer ID of the item
-    * @param $options   array
-    *     - target for the Form
-    *     - itemtype type of the item for add process
-    *     - items_id ID of the item for add process
-    *
-    * @return true if displayed  false if item not found or not right to display
-   **/
+    /**
+     * Print the version form
+     *
+     * @param $ID        integer ID of the item
+     * @param $options   array
+     *     - target for the Form
+     *     - itemtype type of the item for add process
+     *     - items_id ID of the item for add process
+     *
+     * @return true if displayed  false if item not found or not right to display
+     **/
     public function showForm($ID, array $options = [])
     {
         $itemtype = null;
@@ -207,15 +207,15 @@ class Item_Disk extends CommonDBChild
         return true;
     }
 
-   /**
-    * Get disks related to a given item
-    *
-    * @param CommonDBTM $item  Item instance
-    * @param string     $sort  Field to sort on
-    * @param string     $order Sort order
-    *
-    * @return DBmysqlIterator
-    */
+    /**
+     * Get disks related to a given item
+     *
+     * @param CommonDBTM $item  Item instance
+     * @param string     $sort  Field to sort on
+     * @param string     $order Sort order
+     *
+     * @return DBmysqlIterator
+     */
     public static function getFromItem(CommonDBTM $item, $sort = null, $order = null): DBmysqlIterator
     {
         global $DB;
@@ -242,14 +242,14 @@ class Item_Disk extends CommonDBChild
         return $iterator;
     }
 
-   /**
-    * Print the disks
-    *
-    * @param CommonDBTM $item          Item object
-    * @param boolean    $withtemplate  Template or basic item (default 0)
-    *
-    * @return void
-   **/
+    /**
+     * Print the disks
+     *
+     * @param CommonDBTM $item          Item object
+     * @param boolean    $withtemplate  Template or basic item (default 0)
+     *
+     * @return void
+     **/
     public static function showForItem(CommonDBTM $item, $withtemplate = 0)
     {
         global $DB;
@@ -600,11 +600,11 @@ class Item_Disk extends CommonDBChild
         return $tab;
     }
 
-   /**
-    * Get all the possible value for the "encryption_status" field
-    *
-    * @return array The list of possible values
-    */
+    /**
+     * Get all the possible value for the "encryption_status" field
+     *
+     * @return array The list of possible values
+     */
     public static function getAllEncryptionStatus()
     {
         return [
@@ -614,11 +614,11 @@ class Item_Disk extends CommonDBChild
         ];
     }
 
-   /**
-    * Get the correct label for each encryption status
-    *
-    * @return string The appropriate label
-    */
+    /**
+     * Get the correct label for each encryption status
+     *
+     * @return string The appropriate label
+     */
     public static function getEncryptionStatus($status)
     {
         $all = self::getAllEncryptionStatus();
@@ -635,15 +635,15 @@ class Item_Disk extends CommonDBChild
         return $all[$status];
     }
 
-   /**
-    * Print the encryption status dropdown
-    *
-    * @param integer $value   Current value (defaut self::ENCRYPTION_STATUS_NO)
-    * @param array   $options Array of possible options:
-    *    - name : name of the dropdown (default encryption_status)
-    *
-    * @return string the string to display
-    */
+    /**
+     * Print the encryption status dropdown
+     *
+     * @param integer $value   Current value (defaut self::ENCRYPTION_STATUS_NO)
+     * @param array   $options Array of possible options:
+     *    - name : name of the dropdown (default encryption_status)
+     *
+     * @return string the string to display
+     */
     public static function getEncryptionStatusDropdown($value = self::ENCRYPTION_STATUS_NO, $options = [])
     {
         $name = 'encryption_status';
@@ -662,16 +662,16 @@ class Item_Disk extends CommonDBChild
         );
     }
 
-   /**
-    * List specifics value for selection
-    *
-    * @param string       $field   Name of the field
-    * @param string       $name    Name of the select (if empty use linkfield) (default '')
-    * @param string|array $values  Value(s) to select (default '')
-    * @param array        $options Array of options
-    *
-    * @return string the string to display
-    */
+    /**
+     * List specifics value for selection
+     *
+     * @param string       $field   Name of the field
+     * @param string       $name    Name of the select (if empty use linkfield) (default '')
+     * @param string|array $values  Value(s) to select (default '')
+     * @param array        $options Array of options
+     *
+     * @return string the string to display
+     */
     public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
     {
         if (!is_array($values)) {
@@ -696,7 +696,7 @@ class Item_Disk extends CommonDBChild
      * @param array        $options Array of options
      *
      * @return string the string to display
-    **/
+     **/
     public static function getSpecificValueToDisplay($field, $values, array $options = [])
     {
         if (!is_array($values)) {

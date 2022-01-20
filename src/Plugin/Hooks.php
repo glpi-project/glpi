@@ -127,11 +127,11 @@ class Hooks
    // Debug / Development hooks
     const DEBUG_TABS = 'debug_tabs';
 
-   /**
-    * Get file hooks
-    *
-    * @return array
-    */
+    /**
+     * Get file hooks
+     *
+     * @return array
+     */
     public static function getFileHooks(): array
     {
         return [
@@ -140,11 +140,11 @@ class Hooks
         ];
     }
 
-   /**
-    * Get functionnals hooks
-    *
-    * @return array
-    */
+    /**
+     * Get functionnals hooks
+     *
+     * @return array
+     */
     public static function getFunctionalHooks(): array
     {
         return [
@@ -168,11 +168,11 @@ class Hooks
         ];
     }
 
-   /**
-    * Get items hooks
-    *
-    * @return array
-    */
+    /**
+     * Get items hooks
+     *
+     * @return array
+     */
     public static function getItemHooks(): array
     {
         return [

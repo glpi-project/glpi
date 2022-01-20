@@ -35,7 +35,7 @@
  * Update from 9.1.1 to 9.1.3
  *
  * @return bool for success (will die for most error)
-**/
+ **/
 function update911to913()
 {
     global $DB, $migration;

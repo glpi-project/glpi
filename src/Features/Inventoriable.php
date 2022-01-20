@@ -46,7 +46,7 @@ use RefusedEquipment;
 
 trait Inventoriable
 {
-   /** @var CommonDBTM|null */
+    /** @var CommonDBTM|null */
     protected ?CommonDBTM $agent = null;
 
     public function pre_purgeInventory()
@@ -61,13 +61,13 @@ trait Inventoriable
     }
 
 
-   /**
-    * Get inventory file name.
-    *
-    * @param bool $prepend_dir_path Indicated wether the GLPI_INVENTORY_DIR have to be prepend to returned value.
-    *
-    * @return void|string
-    */
+    /**
+     * Get inventory file name.
+     *
+     * @param bool $prepend_dir_path Indicated wether the GLPI_INVENTORY_DIR have to be prepend to returned value.
+     *
+     * @return void|string
+     */
     public function getInventoryFileName(bool $prepend_dir_path = true): ?string
     {
         $source = new \AutoUpdateSystem();
@@ -95,11 +95,11 @@ trait Inventoriable
         return ($prepend_dir_path ? $inventory_dir_path : '') . $filename;
     }
 
-   /**
-    * Display information on inventory
-    *
-    * @return void
-    */
+    /**
+     * Display information on inventory
+     *
+     * @return void
+     */
     protected function showInventoryInfo()
     {
         global $CFG_GLPI, $DB;
@@ -168,9 +168,9 @@ trait Inventoriable
         }
     }
 
-   /**
-    * Display agent information
-    */
+    /**
+     * Display agent information
+     */
     protected function displayAgentInformation()
     {
         global $CFG_GLPI;

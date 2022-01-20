@@ -36,7 +36,7 @@ use Glpi\Socket;
 
 /**
  * Phone Class
-**/
+ **/
 class Phone extends CommonDBTM
 {
     use Glpi\Features\Clonable;
@@ -76,11 +76,11 @@ class Phone extends CommonDBTM
     }
 
 
-   /**
-    * @see CommonDBTM::useDeletedToLockIfDynamic()
-    *
-    * @since 0.84
-   **/
+    /**
+     * @see CommonDBTM::useDeletedToLockIfDynamic()
+     *
+     * @since 0.84
+     **/
     public function useDeletedToLockIfDynamic()
     {
         return false;
@@ -150,16 +150,16 @@ class Phone extends CommonDBTM
     }
 
 
-   /**
-    * Print the phone form
-    *
-    * @param $ID integer ID of the item
-    * @param $options array
-    *     - target filename : where to go when done.
-    *     - withtemplate boolean : template or basic item
-    *
-    * @return boolean item found
-   **/
+    /**
+     * Print the phone form
+     *
+     * @param $ID integer ID of the item
+     * @param $options array
+     *     - target filename : where to go when done.
+     *     - withtemplate boolean : template or basic item
+     *
+     * @return boolean item found
+     **/
     public function showForm($ID, array $options = [])
     {
         $this->initForm($ID, $options);
@@ -171,12 +171,12 @@ class Phone extends CommonDBTM
     }
 
 
-   /**
-    * Return the linked items (in computers_items)
-    *
-    * @return an array of linked items  like array('Computer' => array(1,2), 'Printer' => array(5,6))
-    * @since 0.84.4
-   **/
+    /**
+     * Return the linked items (in computers_items)
+     *
+     * @return an array of linked items  like array('Computer' => array(1,2), 'Printer' => array(5,6))
+     * @since 0.84.4
+     **/
     public function getLinkedItems()
     {
         global $DB;
@@ -197,9 +197,9 @@ class Phone extends CommonDBTM
     }
 
 
-   /**
-    * @see CommonDBTM::getSpecificMassiveActions()
-   **/
+    /**
+     * @see CommonDBTM::getSpecificMassiveActions()
+     **/
     public function getSpecificMassiveActions($checkitem = null)
     {
 

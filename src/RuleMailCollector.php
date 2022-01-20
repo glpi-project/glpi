@@ -40,27 +40,27 @@ class RuleMailCollector extends Rule
     public $can_sort  = true;
 
 
-   /**
-    * @see Rule::maxActionsCount()
-   **/
+    /**
+     * @see Rule::maxActionsCount()
+     **/
     public function maxActionsCount()
     {
         return 1;
     }
 
 
-   /**
-    * @see Rule::getTitle()
-   **/
+    /**
+     * @see Rule::getTitle()
+     **/
     public function getTitle()
     {
         return __('Rules for assigning a ticket created through a mails receiver');
     }
 
 
-   /**
-    * @see Rule::getCriterias()
-   **/
+    /**
+     * @see Rule::getCriterias()
+     **/
     public function getCriterias()
     {
 
@@ -172,9 +172,9 @@ class RuleMailCollector extends Rule
     }
 
 
-   /**
-    * @see Rule::getActions()
-   **/
+    /**
+     * @see Rule::getActions()
+     **/
     public function getActions()
     {
 

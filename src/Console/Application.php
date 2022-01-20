@@ -58,39 +58,39 @@ use Update;
 
 class Application extends BaseApplication
 {
-   /**
-    * Error code returned when system requirements are missing.
-    *
-    * @var integer
-    */
+    /**
+     * Error code returned when system requirements are missing.
+     *
+     * @var integer
+     */
     const ERROR_MISSING_REQUIREMENTS = 128; // start application codes at 128 be sure to be different from commands codes
 
-   /**
-    * Error code returned when DB is not up-to-date.
-    *
-    * @var integer
-    */
+    /**
+     * Error code returned when DB is not up-to-date.
+     *
+     * @var integer
+     */
     const ERROR_DB_OUTDATED = 129;
 
-   /**
-    * Pointer to $CFG_GLPI.
-    * @var array
-    */
+    /**
+     * Pointer to $CFG_GLPI.
+     * @var array
+     */
     private $config;
 
-   /**
-    * @var ErrorHandler
-    */
+    /**
+     * @var ErrorHandler
+     */
     private $error_handler;
 
-   /**
-    * @var DB
-    */
+    /**
+     * @var DB
+     */
     private $db;
 
-   /**
-    * @var OutputInterface
-    */
+    /**
+     * @var OutputInterface
+     */
     private $output;
 
     public function __construct()
@@ -218,11 +218,11 @@ class Application extends BaseApplication
         }
     }
 
-   /**
-    * Returns output handler.
-    *
-    * @return OutputInterface
-    */
+    /**
+     * Returns output handler.
+     *
+     * @return OutputInterface
+     */
     public function getOutput()
     {
         return $this->output;
@@ -275,14 +275,14 @@ class Application extends BaseApplication
         return $result;
     }
 
-   /**
-    * Initalize GLPI.
-    *
-    * @global array $CFG_GLPI
-    * @global GLPI  $GLPI
-    *
-    * @return void
-    */
+    /**
+     * Initalize GLPI.
+     *
+     * @global array $CFG_GLPI
+     * @global GLPI  $GLPI
+     *
+     * @return void
+     */
     private function initApplication()
     {
 
@@ -304,15 +304,15 @@ class Application extends BaseApplication
         Config::detectRootDoc();
     }
 
-   /**
-    * Initialize database connection.
-    *
-    * @global DB $DB
-    *
-    * @return void
-    *
-    * @throws RuntimeException
-    */
+    /**
+     * Initialize database connection.
+     *
+     * @global DB $DB
+     *
+     * @return void
+     *
+     * @throws RuntimeException
+     */
     private function initDb()
     {
 
@@ -336,14 +336,14 @@ class Application extends BaseApplication
         }
     }
 
-   /**
-    * Initialize GLPI session.
-    * This is mandatory to init cache and load languages.
-    *
-    * @TODO Do not use session for console.
-    *
-    * @return void
-    */
+    /**
+     * Initialize GLPI session.
+     * This is mandatory to init cache and load languages.
+     *
+     * @TODO Do not use session for console.
+     *
+     * @return void
+     */
     private function initSession()
     {
 
@@ -361,13 +361,13 @@ class Application extends BaseApplication
         $_SESSION['glpiname'] = 'cli';
     }
 
-   /**
-    * Initialize GLPI cache.
-    *
-    * @global \Psr\SimpleCache\CacheInterface $GLPI_CACHE
-    *
-    * @return void
-    */
+    /**
+     * Initialize GLPI cache.
+     *
+     * @global \Psr\SimpleCache\CacheInterface $GLPI_CACHE
+     *
+     * @return void
+     */
     private function initCache()
     {
 
@@ -376,13 +376,13 @@ class Application extends BaseApplication
         $GLPI_CACHE = $cache_manager->getCoreCacheInstance();
     }
 
-   /**
-    * Initialize GLPI configuration.
-    *
-    * @global array $CFG_GLPI
-    *
-    * @return void
-    */
+    /**
+     * Initialize GLPI configuration.
+     *
+     * @global array $CFG_GLPI
+     *
+     * @return void
+     */
     private function initConfig()
     {
 
@@ -396,13 +396,13 @@ class Application extends BaseApplication
         Config::loadLegacyConfiguration();
     }
 
-   /**
-    * Compute and load output language.
-    *
-    * @return void
-    *
-    * @throws RuntimeException
-    */
+    /**
+     * Compute and load output language.
+     *
+     * @return void
+     *
+     * @throws RuntimeException
+     */
     private function computeAndLoadOutputLang()
     {
 
@@ -433,13 +433,13 @@ class Application extends BaseApplication
         Session::loadLanguage('', $this->usePlugins());
     }
 
-   /**
-    * Check if a language is valid.
-    *
-    * @param string $language
-    *
-    * @return boolean
-    */
+    /**
+     * Check if a language is valid.
+     *
+     * @param string $language
+     *
+     * @return boolean
+     */
     private function isLanguageValid($language)
     {
         return is_array($this->config)
@@ -447,11 +447,11 @@ class Application extends BaseApplication
          && array_key_exists($language, $this->config['languages']);
     }
 
-   /**
-    * Whether or not plugins have to be used.
-    *
-    * @return boolean
-    */
+    /**
+     * Whether or not plugins have to be used.
+     *
+     * @return boolean
+     */
     private function usePlugins()
     {
         if (!($this->db instanceof DB) || !$this->db->connected) {
@@ -473,11 +473,11 @@ class Application extends BaseApplication
         return !$input->hasParameterOption('--no-plugins', true);
     }
 
-   /**
-    * Check if core mandatory requirements are OK.
-    *
-    * @return boolean  true if requirements are OK, false otherwise
-    */
+    /**
+     * Check if core mandatory requirements are OK.
+     *
+     * @return boolean  true if requirements are OK, false otherwise
+     */
     private function checkCoreMandatoryRequirements(): bool
     {
         $db = property_exists($this, 'db') ? $this->db : null;

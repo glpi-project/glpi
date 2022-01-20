@@ -35,7 +35,7 @@
  * Update from 9.4.3 to 9.4.5
  *
  * @return bool for success (will die for most error)
-**/
+ **/
 function update943to945()
 {
     global $DB, $migration;
@@ -46,7 +46,7 @@ function update943to945()
     $migration->displayTitle(sprintf(__('Update to %s'), '9.4.5'));
     $migration->setVersion('9.4.5');
 
-   /** Add OLA TTR begin date field to Tickets */
+    /** Add OLA TTR begin date field to Tickets */
     $iterator = new DBmysqlIterator(null);
     $migration->addField(
         'glpi_tickets',
@@ -58,9 +58,9 @@ function update943to945()
          'condition' => 'WHERE ' . $iterator->analyseCrit(['NOT' => ['olas_id_ttr' => '0']])
         ]
     );
-   /** /Add OLA TTR begin date field to Tickets */
+    /** /Add OLA TTR begin date field to Tickets */
 
-   /** Fix language fields */
+    /** Fix language fields */
     $translatable_tables = [
       'glpi_dropdowntranslations'             => 'DEFAULT NULL',
       'glpi_knowbaseitemtranslations'         => 'DEFAULT NULL',
@@ -83,7 +83,7 @@ function update943to945()
             )
         );
     }
-   /** /Fix language fields */
+    /** /Fix language fields */
 
    // ************ Keep it at the end **************
     $migration->executeMigration();

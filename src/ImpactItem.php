@@ -36,15 +36,15 @@
  */
 class ImpactItem extends CommonDBTM
 {
-   /**
-    * Find ImpactItem for a given CommonDBTM item
-    *
-    * @param CommonDBTM $item                The given item
-    * @param bool       $create_if_missing   Should we create a new ImpactItem
-    *                                        if none found ?
-    * @return ImpactItem|bool ImpactItem object or false if not found and
-    *                         creation is disabled
-    */
+    /**
+     * Find ImpactItem for a given CommonDBTM item
+     *
+     * @param CommonDBTM $item                The given item
+     * @param bool       $create_if_missing   Should we create a new ImpactItem
+     *                                        if none found ?
+     * @return ImpactItem|bool ImpactItem object or false if not found and
+     *                         creation is disabled
+     */
     public static function findForItem(
         CommonDBTM $item,
         bool $create_if_missing = true

@@ -35,7 +35,7 @@
  * Update from 9.4.1 to 9.4.2
  *
  * @return bool for success (will die for most error)
-**/
+ **/
 function update941to942()
 {
     global $DB, $migration;
@@ -63,7 +63,7 @@ function update941to942()
     );
    /* /Remove trailing slash from 'url_base' config */
 
-   /** Fix URL of images inside ITIL objects contents */
+    /** Fix URL of images inside ITIL objects contents */
    // This is an exact copy of the same process used in "update940to941()" which was working
    // on MariaDB but not on MySQL due to usage of "\d" in a REGEXP expression.
    // It has been fixed there for people who had not yet updated to 9.4.1 but have to
@@ -141,7 +141,7 @@ function update941to942()
             $DB->update($task_table, $data, ['id' => $data['id']]);
         }
     }
-   /** /Fix URL of images inside ITIL objects contents */
+    /** /Fix URL of images inside ITIL objects contents */
 
    // ************ Keep it at the end **************
     $migration->executeMigration();

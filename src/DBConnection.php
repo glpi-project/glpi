@@ -33,7 +33,7 @@
 
 /**
  *  Database class for Mysql
-**/
+ **/
 class DBConnection extends CommonDBTM
 {
     /**
@@ -81,25 +81,25 @@ class DBConnection extends CommonDBTM
     }
 
 
-   /**
-    * Create GLPI main configuration file
-    *
-    * @since 9.1
-    *
-    * @param string  $host                      The DB host
-    * @param string  $user                      The DB user
-    * @param string  $password                  The DB password
-    * @param string  $dbname                    The name of the DB
-    * @param boolean $use_timezones             Flag that indicates if timezones usage should be activated
-    * @param boolean $log_deprecation_warnings  Flag that indicates if DB deprecation warnings should be logged
-    * @param boolean $use_utf8mb4               Flag that indicates if utf8mb4 charset/collation should be used
-    * @param boolean $allow_myisam              Flag that indicates if MyISAM engine usage should be allowed
-    * @param boolean $allow_datetime            Flag that indicates if datetime fields usage should be allowed
-    * @param boolean $allow_signed_keys         Flag that indicates if signed integers in primary/foreign keys usage should be allowed
-    * @param string  $config_dir
-    *
-    * @return boolean
-    */
+    /**
+     * Create GLPI main configuration file
+     *
+     * @since 9.1
+     *
+     * @param string  $host                      The DB host
+     * @param string  $user                      The DB user
+     * @param string  $password                  The DB password
+     * @param string  $dbname                    The name of the DB
+     * @param boolean $use_timezones             Flag that indicates if timezones usage should be activated
+     * @param boolean $log_deprecation_warnings  Flag that indicates if DB deprecation warnings should be logged
+     * @param boolean $use_utf8mb4               Flag that indicates if utf8mb4 charset/collation should be used
+     * @param boolean $allow_myisam              Flag that indicates if MyISAM engine usage should be allowed
+     * @param boolean $allow_datetime            Flag that indicates if datetime fields usage should be allowed
+     * @param boolean $allow_signed_keys         Flag that indicates if signed integers in primary/foreign keys usage should be allowed
+     * @param string  $config_dir
+     *
+     * @return boolean
+     */
     public static function createMainConfig(
         string $host,
         string $user,
@@ -149,35 +149,35 @@ class DBConnection extends CommonDBTM
     }
 
 
-   /**
-    * Change a variable value in config(s) file.
-    *
-    * @param string $name
-    * @param string $value
-    * @param bool   $update_slave
-    * @param string $config_dir
-    *
-    * @return boolean
-    *
-    * @since 10.0.0
-    */
+    /**
+     * Change a variable value in config(s) file.
+     *
+     * @param string $name
+     * @param string $value
+     * @param bool   $update_slave
+     * @param string $config_dir
+     *
+     * @return boolean
+     *
+     * @since 10.0.0
+     */
     public static function updateConfigProperty($name, $value, $update_slave = true, string $config_dir = GLPI_CONFIG_DIR): bool
     {
         return self::updateConfigProperties([$name => $value], $update_slave, $config_dir);
     }
 
 
-   /**
-    * Change variables value in config(s) file.
-    *
-    * @param array  $properties
-    * @param bool   $update_slave
-    * @param string $config_dir
-    *
-    * @return boolean
-    *
-    * @since 10.0.0
-    */
+    /**
+     * Change variables value in config(s) file.
+     *
+     * @param array  $properties
+     * @param bool   $update_slave
+     * @param string $config_dir
+     *
+     * @return boolean
+     *
+     * @since 10.0.0
+     */
     public static function updateConfigProperties(array $properties, $update_slave = true, string $config_dir = GLPI_CONFIG_DIR): bool
     {
         $main_config_file = 'config_db.php';
@@ -227,23 +227,23 @@ class DBConnection extends CommonDBTM
     }
 
 
-   /**
-    * Create slave DB configuration file
-    *
-    * @param string  $host                      The DB host
-    * @param string  $user                      The DB user
-    * @param string  $password                  The DB password
-    * @param string  $dbname                    The name of the DB
-    * @param boolean $use_timezones             Flag that indicates if timezones usage should be activated
-    * @param boolean $log_deprecation_warnings  Flag that indicates if DB deprecation warnings should be logged
-    * @param boolean $use_utf8mb4               Flag that indicates if utf8mb4 charset/collation should be used
-    * @param boolean $allow_myisam              Flag that indicates if MyISAM engine usage should be allowed
-    * @param boolean $allow_datetime            Flag that indicates if datetime fields usage should be allowed
-    * @param boolean $allow_signed_keys         Flag that indicates if signed integers in primary/foreign keys usage should be allowed
-    * @param string  $config_dir
-    *
-    * @return boolean for success
-   **/
+    /**
+     * Create slave DB configuration file
+     *
+     * @param string  $host                      The DB host
+     * @param string  $user                      The DB user
+     * @param string  $password                  The DB password
+     * @param string  $dbname                    The name of the DB
+     * @param boolean $use_timezones             Flag that indicates if timezones usage should be activated
+     * @param boolean $log_deprecation_warnings  Flag that indicates if DB deprecation warnings should be logged
+     * @param boolean $use_utf8mb4               Flag that indicates if utf8mb4 charset/collation should be used
+     * @param boolean $allow_myisam              Flag that indicates if MyISAM engine usage should be allowed
+     * @param boolean $allow_datetime            Flag that indicates if datetime fields usage should be allowed
+     * @param boolean $allow_signed_keys         Flag that indicates if signed integers in primary/foreign keys usage should be allowed
+     * @param string  $config_dir
+     *
+     * @return boolean for success
+     **/
     public static function createSlaveConnectionFile(
         string $host,
         string $user,
@@ -300,24 +300,24 @@ class DBConnection extends CommonDBTM
     }
 
 
-   /**
-    * Indicates is the DB replicate is active or not
-    *
-    * @return true if active / false if not active
-   **/
+    /**
+     * Indicates is the DB replicate is active or not
+     *
+     * @return true if active / false if not active
+     **/
     public static function isDBSlaveActive()
     {
         return file_exists(GLPI_CONFIG_DIR . "/config_db_slave.php");
     }
 
 
-   /**
-    * Read slave DB configuration file
-    *
-    * @param integer $choice  Host number (default NULL)
-    *
-    * @return DBmysql object
-   **/
+    /**
+     * Read slave DB configuration file
+     *
+     * @param integer $choice  Host number (default NULL)
+     *
+     * @return DBmysql object
+     **/
     public static function getDBSlaveConf($choice = null)
     {
 
@@ -328,9 +328,9 @@ class DBConnection extends CommonDBTM
     }
 
 
-   /**
-    * Create a default slave DB configuration file
-   **/
+    /**
+     * Create a default slave DB configuration file
+     **/
     public static function createDBSlaveConfig()
     {
         global $DB;
@@ -349,14 +349,14 @@ class DBConnection extends CommonDBTM
     }
 
 
-   /**
-    * Save changes to the slave DB configuration file
-    *
-    * @param $host
-    * @param $user
-    * @param $password
-    * @param $DBname
-   **/
+    /**
+     * Save changes to the slave DB configuration file
+     *
+     * @param $host
+     * @param $user
+     * @param $password
+     * @param $DBname
+     **/
     public static function saveDBSlaveConf($host, $user, $password, $DBname)
     {
         global $DB;
@@ -375,18 +375,18 @@ class DBConnection extends CommonDBTM
     }
 
 
-   /**
-    * Delete slave DB configuration file
-    */
+    /**
+     * Delete slave DB configuration file
+     */
     public static function deleteDBSlaveConfig()
     {
         unlink(GLPI_CONFIG_DIR . "/config_db_slave.php");
     }
 
 
-   /**
-    * Switch database connection to slave
-   **/
+    /**
+     * Switch database connection to slave
+     **/
     public static function switchToSlave()
     {
         global $DB;
@@ -400,9 +400,9 @@ class DBConnection extends CommonDBTM
     }
 
 
-   /**
-    * Switch database connection to master
-   **/
+    /**
+     * Switch database connection to master
+     **/
     public static function switchToMaster()
     {
         global $DB;
@@ -412,12 +412,12 @@ class DBConnection extends CommonDBTM
     }
 
 
-   /**
-    * Get Connection to slave, if exists,
-    * and if configured to be used for read only request
-    *
-    * @return DBmysql object
-   **/
+    /**
+     * Get Connection to slave, if exists,
+     * and if configured to be used for read only request
+     *
+     * @return DBmysql object
+     **/
     public static function getReadConnection()
     {
         global $DB, $CFG_GLPI;
@@ -477,16 +477,16 @@ class DBConnection extends CommonDBTM
     }
 
 
-   /**
-    *  Establish a connection to a mysql server (main or replicate)
-    *
-    * @param boolean $use_slave try to connect to slave server first not to main server
-    * @param boolean $required  connection to the specified server is required
-    *                           (if connection failed, do not try to connect to the other server)
-    * @param boolean $display   display error message (true by default)
-    *
-    * @return boolean True if successfull, false otherwise
-   **/
+    /**
+     *  Establish a connection to a mysql server (main or replicate)
+     *
+     * @param boolean $use_slave try to connect to slave server first not to main server
+     * @param boolean $required  connection to the specified server is required
+     *                           (if connection failed, do not try to connect to the other server)
+     * @param boolean $display   display error message (true by default)
+     *
+     * @return boolean True if successfull, false otherwise
+     **/
     public static function establishDBConnection($use_slave, $required, $display = true)
     {
         global $DB;
@@ -537,13 +537,13 @@ class DBConnection extends CommonDBTM
     }
 
 
-   /**
-    * Get delay between slave and master
-    *
-    * @param integer $choice  Host number (default NULL)
-    *
-    * @return integer
-   **/
+    /**
+     * Get delay between slave and master
+     *
+     * @param integer $choice  Host number (default NULL)
+     *
+     * @return integer
+     **/
     public static function getReplicateDelay($choice = null)
     {
 
@@ -553,13 +553,13 @@ class DBConnection extends CommonDBTM
     }
 
 
-   /**
-    *  Get history max date of a GLPI DB
-    *
-    * @param DBMysql $DBconnection DB connection used
-    *
-    * @return int|mixed|null
-    */
+    /**
+     *  Get history max date of a GLPI DB
+     *
+     * @param DBMysql $DBconnection DB connection used
+     *
+     * @return int|mixed|null
+     */
     public static function getHistoryMaxDate($DBconnection)
     {
 
@@ -574,9 +574,9 @@ class DBConnection extends CommonDBTM
     }
 
 
-   /**
-    *  Display a common mysql connection error
-   **/
+    /**
+     *  Display a common mysql connection error
+     **/
     public static function displayMySQLError()
     {
         global $DB;
@@ -606,9 +606,9 @@ class DBConnection extends CommonDBTM
     }
 
 
-   /**
-    * @param $name
-   **/
+    /**
+     * @param $name
+     **/
     public static function cronInfo($name)
     {
 
@@ -617,13 +617,13 @@ class DBConnection extends CommonDBTM
     }
 
 
-   /**
-    * Cron process to check DB replicate state
-    *
-    * @param CronTask $task to log and get param
-    *
-    * @return integer
-   **/
+    /**
+     * Cron process to check DB replicate state
+     *
+     * @param CronTask $task to log and get param
+     *
+     * @return integer
+     **/
     public static function cronCheckDBreplicate(CronTask $task)
     {
         global $DB;
@@ -669,10 +669,10 @@ class DBConnection extends CommonDBTM
     }
 
 
-   /**
-    * Display in HTML, delay between master and slave
-    * 1 line per slave is multiple
-   **/
+    /**
+     * Display in HTML, delay between master and slave
+     * 1 line per slave is multiple
+     **/
     public static function showAllReplicateDelay()
     {
 
@@ -704,9 +704,9 @@ class DBConnection extends CommonDBTM
     }
 
 
-   /**
-    * @param $width
-   **/
+    /**
+     * @param $width
+     **/
     public function showSystemInformations($width)
     {
 
@@ -725,11 +725,11 @@ class DBConnection extends CommonDBTM
     }
 
 
-   /**
-    * Enable or disable db replication check cron task
-    *
-    * @param boolean $enable Enable or disable cron task (true by default)
-   **/
+    /**
+     * Enable or disable db replication check cron task
+     *
+     * @param boolean $enable Enable or disable cron task (true by default)
+     **/
     public static function changeCronTaskStatus($enable = true)
     {
 
@@ -743,16 +743,16 @@ class DBConnection extends CommonDBTM
     }
 
 
-   /**
-    * Set charset to use for DB connection handler.
-    *
-    * @param mysqli $dbh
-    * @param bool   $use_utf8mb4
-    *
-    * @return void
-    *
-    * @since 10.0.0
-    */
+    /**
+     * Set charset to use for DB connection handler.
+     *
+     * @param mysqli $dbh
+     * @param bool   $use_utf8mb4
+     *
+     * @return void
+     *
+     * @since 10.0.0
+     */
     public static function setConnectionCharset(mysqli $dbh, bool $use_utf8mb4): void
     {
         $charset = $use_utf8mb4 ? 'utf8mb4' : 'utf8';
@@ -775,13 +775,13 @@ class DBConnection extends CommonDBTM
         }
     }
 
-   /**
-    * Return default charset to use.
-    *
-    * @return string
-    *
-    * @since 10.0.0
-    */
+    /**
+     * Return default charset to use.
+     *
+     * @return string
+     *
+     * @since 10.0.0
+     */
     public static function getDefaultCharset(): string
     {
         global $DB;
@@ -793,13 +793,13 @@ class DBConnection extends CommonDBTM
         return 'utf8mb4';
     }
 
-   /**
-    * Return default collation to use.
-    *
-    * @return string
-    *
-    * @since 10.0.0
-    */
+    /**
+     * Return default collation to use.
+     *
+     * @return string
+     *
+     * @since 10.0.0
+     */
     public static function getDefaultCollation(): string
     {
         global $DB;
@@ -811,13 +811,13 @@ class DBConnection extends CommonDBTM
         return 'utf8mb4_unicode_ci';
     }
 
-   /**
-    * Return default sign option to use for primary (and foreign) key fields.
-    *
-    * @return string
-    *
-    * @since 10.0.0
-    */
+    /**
+     * Return default sign option to use for primary (and foreign) key fields.
+     *
+     * @return string
+     *
+     * @since 10.0.0
+     */
     public static function getDefaultPrimaryKeySignOption(): string
     {
         global $DB;

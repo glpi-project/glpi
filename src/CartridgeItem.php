@@ -38,7 +38,7 @@ use Glpi\Features\AssetImage;
  * CartridgeItem Class
  * This class is used to manage the various types of cartridges.
  * \see Cartridge
-**/
+ **/
 class CartridgeItem extends CommonDBTM
 {
     use AssetImage;
@@ -56,22 +56,22 @@ class CartridgeItem extends CommonDBTM
     }
 
 
-   /**
-    * @see CommonGLPI::getMenuName()
-    *
-    * @since 0.85
-   **/
+    /**
+     * @see CommonGLPI::getMenuName()
+     *
+     * @since 0.85
+     **/
     public static function getMenuName()
     {
         return Cartridge::getTypeName(Session::getPluralNumber());
     }
 
 
-   /**
-    * @since 0.84
-    *
-    * @see CommonDBTM::getPostAdditionalInfosForName
-   **/
+    /**
+     * @since 0.84
+     *
+     * @see CommonDBTM::getPostAdditionalInfosForName
+     **/
     public function getPostAdditionalInfosForName()
     {
 
@@ -140,15 +140,15 @@ class CartridgeItem extends CommonDBTM
 
    ///// SPECIFIC FUNCTIONS
 
-   /**
-    * Count cartridge of the cartridge type
-    *
-    * @param integer $id Item id
-    *
-    * @return number of cartridges
-    *
-    * @since 9.2 add $id parameter
-    **/
+    /**
+     * Count cartridge of the cartridge type
+     *
+     * @param integer $id Item id
+     *
+     * @return number of cartridges
+     *
+     * @since 9.2 add $id parameter
+     **/
     public static function getCount($id)
     {
         global $DB;
@@ -162,14 +162,14 @@ class CartridgeItem extends CommonDBTM
     }
 
 
-   /**
-    * Add a compatible printer type for a cartridge type
-    *
-    * @param $cartridgeitems_id  integer: cartridge type identifier
-    * @param printermodels_id    integer: printer type identifier
-    *
-    * @return boolean : true for success
-   **/
+    /**
+     * Add a compatible printer type for a cartridge type
+     *
+     * @param $cartridgeitems_id  integer: cartridge type identifier
+     * @param printermodels_id    integer: printer type identifier
+     *
+     * @return boolean : true for success
+     **/
     public function addCompatibleType($cartridgeitems_id, $printermodels_id)
     {
         global $DB;
@@ -368,13 +368,13 @@ class CartridgeItem extends CommonDBTM
     }
 
 
-   /**
-    * Cron action on cartridges : alert if a stock is behind the threshold
-    *
-    * @param CronTask $task CronTask for log, display information if NULL? (default NULL)
-    *
-    * @return void
-   **/
+    /**
+     * Cron action on cartridges : alert if a stock is behind the threshold
+     *
+     * @param CronTask $task CronTask for log, display information if NULL? (default NULL)
+     *
+     * @return void
+     **/
     public static function cronCartridge($task = null)
     {
         global $DB, $CFG_GLPI;
@@ -492,13 +492,13 @@ class CartridgeItem extends CommonDBTM
     }
 
 
-   /**
-    * Print a select with compatible cartridge
-    *
-    * @param $printer Printer object
-    *
-    * @return string|boolean
-   **/
+    /**
+     * Print a select with compatible cartridge
+     *
+     * @param $printer Printer object
+     *
+     * @return string|boolean
+     **/
     public static function dropdownForPrinter(Printer $printer)
     {
         global $DB;
@@ -565,9 +565,9 @@ class CartridgeItem extends CommonDBTM
     }
 
 
-   /**
-    * Display debug information for current object
-   **/
+    /**
+     * Display debug information for current object
+     **/
     public function showDebug()
     {
 

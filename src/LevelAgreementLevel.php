@@ -37,23 +37,23 @@
  * Abstract class for common code in SlaLevel & OlaLevel
  *
  * @since  9.2.1
-**/
+ **/
 abstract class LevelAgreementLevel extends RuleTicket
 {
     public static $rightname            = 'slm';
 
-   /**
-    * Constructor
-   **/
+    /**
+     * Constructor
+     **/
     public function __construct()
     {
        // Override in order not to use glpi_rules table.
     }
 
 
-   /**
-    * @since 0.85
-   **/
+    /**
+     * @since 0.85
+     **/
     public static function getConditionsArray()
     {
        // Override ruleticket one
@@ -61,9 +61,9 @@ abstract class LevelAgreementLevel extends RuleTicket
     }
 
 
-   /**
-    * @since 0.84
-   **/
+    /**
+     * @since 0.84
+     **/
     public function getForbiddenStandardMassiveAction()
     {
 
@@ -208,11 +208,11 @@ abstract class LevelAgreementLevel extends RuleTicket
         return $actions;
     }
 
-   /**
-    * @since 0.84
-    *
-    * @see RuleTicket::getCriterias()
-   **/
+    /**
+     * @since 0.84
+     *
+     * @see RuleTicket::getCriterias()
+     **/
     public function getCriterias()
     {
 
@@ -300,19 +300,19 @@ abstract class LevelAgreementLevel extends RuleTicket
     }
 
 
-   /**
-    * Dropdown execution time for SLA
-    *
-    * @param $name      string   name of the select
-    * @param $options   array    of possible options:
-    *       - value : default value
-    *       - max_time : max time to use
-    *       - used : already used values
-    *
-    * @return integer|string
-    *    integer if option display=true (random part of elements id)
-    *    string if option display=false (HTML code)
-   **/
+    /**
+     * Dropdown execution time for SLA
+     *
+     * @param $name      string   name of the select
+     * @param $options   array    of possible options:
+     *       - value : default value
+     *       - max_time : max time to use
+     *       - used : already used values
+     *
+     * @return integer|string
+     *    integer if option display=true (random part of elements id)
+     *    string if option display=false (HTML code)
+     **/
     public static function dropdownExecutionTime($name, $options = [])
     {
         $p = [
@@ -337,13 +337,13 @@ abstract class LevelAgreementLevel extends RuleTicket
         return Dropdown::showFromArray($name, $possible_values, $p);
     }
 
-   /**
-    * Get already used execution time for a OLA
-    *
-    * @param $olas_id   integer  id of the OLA
-    *
-    * @return array of already used execution times
-   **/
+    /**
+     * Get already used execution time for a OLA
+     *
+     * @param $olas_id   integer  id of the OLA
+     *
+     * @return array of already used execution times
+     **/
     public static function getAlreadyUsedExecutionTime($las_id)
     {
         global $DB;

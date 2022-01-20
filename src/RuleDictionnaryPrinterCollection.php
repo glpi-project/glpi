@@ -42,18 +42,18 @@ class RuleDictionnaryPrinterCollection extends RuleCollection
 
     public static $rightname           = 'rule_dictionnary_printer';
 
-   /**
-    * @see RuleCollection::getTitle()
-   **/
+    /**
+     * @see RuleCollection::getTitle()
+     **/
     public function getTitle()
     {
         return __('Dictionnary of printers');
     }
 
 
-   /**
-    * @see RuleCollection::cleanTestOutputCriterias()
-   **/
+    /**
+     * @see RuleCollection::cleanTestOutputCriterias()
+     **/
     public function cleanTestOutputCriterias(array $output)
     {
 
@@ -67,9 +67,9 @@ class RuleDictionnaryPrinterCollection extends RuleCollection
     }
 
 
-   /**
-    * @see RuleCollection::replayRulesOnExistingDB()
-   **/
+    /**
+     * @see RuleCollection::replayRulesOnExistingDB()
+     **/
     public function replayRulesOnExistingDB($offset = 0, $maxtime = 0, $items = [], $params = [])
     {
         global $DB;
@@ -185,10 +185,10 @@ class RuleDictionnaryPrinterCollection extends RuleCollection
     }
 
 
-   /**
-    * @param $res_rule  array
-    * @param $input     array
-   **/
+    /**
+     * @param $res_rule  array
+     * @param $input     array
+     **/
     public static function somethingHasChanged(array $res_rule, array $input)
     {
 
@@ -203,14 +203,14 @@ class RuleDictionnaryPrinterCollection extends RuleCollection
     }
 
 
-   /**
-    * Replay dictionnary on several printers
-    *
-    * @param $IDs       array of printers IDs to replay
-    * @param $res_rule  array of rule results
-    *
-    * @return Query result handler
-   **/
+    /**
+     * Replay dictionnary on several printers
+     *
+     * @param $IDs       array of printers IDs to replay
+     * @param $res_rule  array of rule results
+     *
+     * @return Query result handler
+     **/
     public function replayDictionnaryOnPrintersByID(array $IDs, $res_rule = [])
     {
         global $DB;
@@ -251,9 +251,9 @@ class RuleDictionnaryPrinterCollection extends RuleCollection
     }
 
 
-   /**
-    * @param $IDS array
-   */
+    /**
+     * @param $IDS array
+     */
     public function putOldPrintersInTrash($IDS = [])
     {
 
@@ -264,14 +264,14 @@ class RuleDictionnaryPrinterCollection extends RuleCollection
     }
 
 
-   /**
-    * Replay dictionnary on one printer
-    *
-    * @param &$new_printers   array containing new printers already computed
-    * @param $res_rule        array of rule results
-    * @param $params          array
-    * @param &$printers_ids   array containing replay printer need to be put in trashbin
-   **/
+    /**
+     * Replay dictionnary on one printer
+     *
+     * @param &$new_printers   array containing new printers already computed
+     * @param $res_rule        array of rule results
+     * @param $params          array
+     * @param &$printers_ids   array containing replay printer need to be put in trashbin
+     **/
     public function replayDictionnaryOnOnePrinter(
         array &$new_printers,
         array $res_rule,
@@ -347,14 +347,14 @@ class RuleDictionnaryPrinterCollection extends RuleCollection
     }
 
 
-   /**
-    * Move direct connections from old printer to the new one
-    *
-    * @param $ID                 the old printer's id
-    * @param $new_printers_id    the new printer's id
-    *
-    * @return void
-   **/
+    /**
+     * Move direct connections from old printer to the new one
+     *
+     * @param $ID                 the old printer's id
+     * @param $new_printers_id    the new printer's id
+     *
+     * @return void
+     **/
     public function moveDirectConnections($ID, $new_printers_id)
     {
         $computeritem = new Computer_Item();

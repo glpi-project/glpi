@@ -37,7 +37,7 @@ use Glpi\RichText\RichText;
 
 /**
  * Change Class
-**/
+ **/
 class Change extends CommonITILObject
 {
    // From CommonDBTM
@@ -94,11 +94,11 @@ class Change extends CommonITILObject
     }
 
 
-   /**
-    * Is the current user have right to show the current change ?
-    *
-    * @return boolean
-   **/
+    /**
+     * Is the current user have right to show the current change ?
+     *
+     * @return boolean
+     **/
     public function canViewItem()
     {
 
@@ -124,11 +124,11 @@ class Change extends CommonITILObject
     }
 
 
-   /**
-    * Is the current user have right to create the current change ?
-    *
-    * @return boolean
-   **/
+    /**
+     * Is the current user have right to create the current change ?
+     *
+     * @return boolean
+     **/
     public function canCreateItem()
     {
 
@@ -139,13 +139,13 @@ class Change extends CommonITILObject
     }
 
 
-   /**
-    * is the current user could reopen the current change
-    *
-    * @since 9.4.0
-    *
-    * @return boolean
-    */
+    /**
+     * is the current user could reopen the current change
+     *
+     * @since 9.4.0
+     *
+     * @return boolean
+     */
     public function canReopen()
     {
         return Session::haveRight('followup', CREATE)
@@ -425,9 +425,9 @@ class Change extends CommonITILObject
     }
 
 
-   /**
-    * Get default values to search engine to override
-   **/
+    /**
+     * Get default values to search engine to override
+     **/
     public static function getDefaultSearchRequest()
     {
 
@@ -561,14 +561,14 @@ class Change extends CommonITILObject
     }
 
 
-   /**
-    * get the change status list
-    * To be overridden by class
-    *
-    * @param $withmetaforsearch boolean (default false)
-    *
-    * @return array
-   **/
+    /**
+     * get the change status list
+     * To be overridden by class
+     *
+     * @param $withmetaforsearch boolean (default false)
+     *
+     * @return array
+     **/
     public static function getAllStatusArray($withmetaforsearch = false)
     {
 
@@ -597,13 +597,13 @@ class Change extends CommonITILObject
     }
 
 
-   /**
-    * Get the ITIL object closed status list
-    *
-    * @since 0.83
-    *
-    * @return array
-   **/
+    /**
+     * Get the ITIL object closed status list
+     *
+     * @since 0.83
+     *
+     * @return array
+     **/
     public static function getClosedStatusArray()
     {
 
@@ -617,13 +617,13 @@ class Change extends CommonITILObject
     }
 
 
-   /**
-    * Get the ITIL object solved or observe status list
-    *
-    * @since 0.83
-    *
-    * @return array
-   **/
+    /**
+     * Get the ITIL object solved or observe status list
+     *
+     * @since 0.83
+     *
+     * @return array
+     **/
     public static function getSolvedStatusArray()
     {
        // To be overridden by class
@@ -631,26 +631,26 @@ class Change extends CommonITILObject
         return $tab;
     }
 
-   /**
-    * Get the ITIL object new status list
-    *
-    * @since 0.83.8
-    *
-    * @return array
-   **/
+    /**
+     * Get the ITIL object new status list
+     *
+     * @since 0.83.8
+     *
+     * @return array
+     **/
     public static function getNewStatusArray()
     {
         return [self::INCOMING, self::ACCEPTED, self::EVALUATION, self::APPROVAL];
     }
 
-   /**
-    * Get the ITIL object test, qualification or accepted status list
-    * To be overridden by class
-    *
-    * @since 0.83
-    *
-    * @return array
-   **/
+    /**
+     * Get the ITIL object test, qualification or accepted status list
+     * To be overridden by class
+     *
+     * @since 0.83
+     *
+     * @return array
+     **/
     public static function getProcessStatusArray()
     {
 
@@ -864,16 +864,16 @@ class Change extends CommonITILObject
         return $values;
     }
 
-   /**
-    * Display changes for an item
-    *
-    * Will also display changes of linked items
-    *
-    * @param CommonDBTM      $item
-    * @param boolean|integer $withtemplate
-    *
-    * @return boolean|void
-   **/
+    /**
+     * Display changes for an item
+     *
+     * Will also display changes of linked items
+     *
+     * @param CommonDBTM      $item
+     * @param boolean|integer $withtemplate
+     *
+     * @return boolean|void
+     **/
     public static function showListForItem(CommonDBTM $item, $withtemplate = 0)
     {
         global $DB;
@@ -1063,11 +1063,11 @@ class Change extends CommonITILObject
     }
 
 
-   /**
-    * Display debug information for current object
-    *
-    * @since 0.90.2
-    **/
+    /**
+     * Display debug information for current object
+     *
+     * @since 0.90.2
+     **/
     public function showDebug()
     {
         NotificationEvent::debugEvent($this);
@@ -1120,16 +1120,16 @@ class Change extends CommonITILObject
         ];
     }
 
-   /**
-    * Get active changes for an item
-    *
-    * @since 9.5
-    *
-    * @param string $itemtype     Item type
-    * @param integer $items_id    ID of the Item
-    *
-    * @return DBmysqlIterator
-    */
+    /**
+     * Get active changes for an item
+     *
+     * @since 9.5
+     *
+     * @param string $itemtype     Item type
+     * @param integer $items_id    ID of the Item
+     *
+     * @return DBmysqlIterator
+     */
     public function getActiveChangesForItem($itemtype, $items_id)
     {
         global $DB;
@@ -1216,13 +1216,13 @@ class Change extends CommonITILObject
         return ChangeParameters::class;
     }
 
-   /**
-    * @param $start
-    * @param $status             (default 'process')
-    * @param $showgroupchanges  (true by default)
-    * @since 10.0.0
-    *
-    */
+    /**
+     * @param $start
+     * @param $status             (default 'process')
+     * @param $showgroupchanges  (true by default)
+     * @since 10.0.0
+     *
+     */
     public static function showCentralList($start, $status = "process", $showgroupchanges = true)
     {
         global $DB, $CFG_GLPI;
@@ -1528,14 +1528,14 @@ class Change extends CommonITILObject
     }
 
 
-   /**
-    * Get changes count
-    *
-    * @since 10.0.0
-    *
-    * @param bool $foruser only for current login user as requester
-    * @param bool $display if false, return html
-    **/
+    /**
+     * Get changes count
+     *
+     * @since 10.0.0
+     *
+     * @param bool $foruser only for current login user as requester
+     * @param bool $display if false, return html
+     **/
     public static function showCentralCount(bool $foruser = false, bool $display = true)
     {
         global $DB, $CFG_GLPI;
@@ -1656,12 +1656,12 @@ class Change extends CommonITILObject
         }
     }
 
-   /**
-    * @since 10.0.0
-    *
-    * @param $ID
-    * @param $forcetab  string   name of the tab to force at the display (default '')
-    **/
+    /**
+     * @since 10.0.0
+     *
+     * @param $ID
+     * @param $forcetab  string   name of the tab to force at the display (default '')
+     **/
     public static function showVeryShort($ID, $forcetab = '')
     {
        // Prints a job in short form

@@ -33,7 +33,7 @@
 
 /**
  * SoftwareVersion Class
-**/
+ **/
 class SoftwareVersion extends CommonDBChild
 {
    // From CommonDBTM
@@ -73,11 +73,11 @@ class SoftwareVersion extends CommonDBChild
     }
 
 
-   /**
-    * @since 0.84
-    *
-    * @see CommonDBTM::getPreAdditionalInfosForName
-   **/
+    /**
+     * @since 0.84
+     *
+     * @see CommonDBTM::getPreAdditionalInfosForName
+     **/
     public function getPreAdditionalInfosForName()
     {
 
@@ -89,17 +89,17 @@ class SoftwareVersion extends CommonDBChild
     }
 
 
-   /**
-    * Print the Software / version form
-    *
-    * @param $ID        integer  Id of the version or the template to print
-    * @param $options   array    of possible options:
-    *     - target form target
-    *     - softwares_id ID of the software for add process
-    *
-    * @return true if displayed  false if item not found or not right to display
-    *
-   **/
+    /**
+     * Print the Software / version form
+     *
+     * @param $ID        integer  Id of the version or the template to print
+     * @param $options   array    of possible options:
+     *     - target form target
+     *     - softwares_id ID of the software for add process
+     *
+     * @return true if displayed  false if item not found or not right to display
+     *
+     **/
     public function showForm($ID, array $options = [])
     {
         if ($ID > 0) {
@@ -209,19 +209,19 @@ class SoftwareVersion extends CommonDBChild
     }
 
 
-   /**
-    * Make a select box for  software to install
-    *
-    * @param $options array of possible options:
-    *    - name          : string / name of the select (default is softwareversions_id)
-    *    - softwares_id  : integer / ID of the software (mandatory)
-    *    - value         : integer / value of the selected version
-    *    - used          : array / already used items
-    *
-    * @return integer|string
-    *    integer if option display=true (random part of elements id)
-    *    string if option display=false (HTML code)
-   **/
+    /**
+     * Make a select box for  software to install
+     *
+     * @param $options array of possible options:
+     *    - name          : string / name of the select (default is softwareversions_id)
+     *    - softwares_id  : integer / ID of the software (mandatory)
+     *    - value         : integer / value of the selected version
+     *    - used          : array / already used items
+     *
+     * @return integer|string
+     *    integer if option display=true (random part of elements id)
+     *    string if option display=false (HTML code)
+     **/
     public static function dropdownForOneSoftware($options = [])
     {
         global $DB;
@@ -284,13 +284,13 @@ class SoftwareVersion extends CommonDBChild
     }
 
 
-   /**
-    * Show Versions of a software
-    *
-    * @param $soft Software object
-    *
-    * @return void
-   **/
+    /**
+     * Show Versions of a software
+     *
+     * @param $soft Software object
+     *
+     * @return void
+     **/
     public static function showForSoftware(Software $soft)
     {
         global $DB;

@@ -75,11 +75,11 @@ class TicketTask extends CommonITILTask
     }
 
 
-   /**
-    * Does current user have right to show the current task?
-    *
-    * @return boolean
-   **/
+    /**
+     * Does current user have right to show the current task?
+     *
+     * @return boolean
+     **/
     public function canViewItem()
     {
 
@@ -119,11 +119,11 @@ class TicketTask extends CommonITILTask
     }
 
 
-   /**
-    * Does current user have right to create the current task?
-    *
-    * @return boolean
-   **/
+    /**
+     * Does current user have right to create the current task?
+     *
+     * @return boolean
+     **/
     public function canCreateItem()
     {
 
@@ -149,11 +149,11 @@ class TicketTask extends CommonITILTask
     }
 
 
-   /**
-    * Does current user have right to update the current task?
-    *
-    * @return boolean
-   **/
+    /**
+     * Does current user have right to update the current task?
+     *
+     * @return boolean
+     **/
     public function canUpdateItem()
     {
 
@@ -180,11 +180,11 @@ class TicketTask extends CommonITILTask
     }
 
 
-   /**
-    * Does current user have right to purge the current task?
-    *
-    * @return boolean
-   **/
+    /**
+     * Does current user have right to purge the current task?
+     *
+     * @return boolean
+     **/
     public function canPurgeItem()
     {
         $ticket = new Ticket();
@@ -199,61 +199,61 @@ class TicketTask extends CommonITILTask
     }
 
 
-   /**
-    * Populate the planning with planned ticket tasks
-    *
-    * @param $options   array of possible options:
-    *    - who          ID of the user (0 = undefined)
-    *    - whogroup     ID of the group of users (0 = undefined)
-    *    - begin        Date
-    *    - end          Date
-    *
-    * @return array of planning item
-   **/
+    /**
+     * Populate the planning with planned ticket tasks
+     *
+     * @param $options   array of possible options:
+     *    - who          ID of the user (0 = undefined)
+     *    - whogroup     ID of the group of users (0 = undefined)
+     *    - begin        Date
+     *    - end          Date
+     *
+     * @return array of planning item
+     **/
     public static function populatePlanning($options = []): array
     {
         return parent::genericPopulatePlanning(__CLASS__, $options);
     }
 
 
-   /**
-    * Populate the planning with planned ticket tasks
-    *
-    * @param $options   array of possible options:
-    *    - who          ID of the user (0 = undefined)
-    *    - whogroup     ID of the group of users (0 = undefined)
-    *    - begin        Date
-    *    - end          Date
-    *
-    * @return array of planning item
-   **/
+    /**
+     * Populate the planning with planned ticket tasks
+     *
+     * @param $options   array of possible options:
+     *    - who          ID of the user (0 = undefined)
+     *    - whogroup     ID of the group of users (0 = undefined)
+     *    - begin        Date
+     *    - end          Date
+     *
+     * @return array of planning item
+     **/
     public static function populateNotPlanned($options = []): array
     {
         return parent::genericPopulateNotPlanned(__CLASS__, $options);
     }
 
 
-   /**
-    * Display a Planning Item
-    *
-    * @param array           $val       array of the item to display
-    * @param integer         $who       ID of the user (0 if all)
-    * @param string          $type      position of the item in the time block (in, through, begin or end)
-    * @param integer|boolean $complete  complete display (more details)
-    *
-    * @return string
-    */
+    /**
+     * Display a Planning Item
+     *
+     * @param array           $val       array of the item to display
+     * @param integer         $who       ID of the user (0 if all)
+     * @param string          $type      position of the item in the time block (in, through, begin or end)
+     * @param integer|boolean $complete  complete display (more details)
+     *
+     * @return string
+     */
     public static function displayPlanningItem(array $val, $who, $type = "", $complete = 0)
     {
         return parent::genericDisplayPlanningItem(__CLASS__, $val, $who, $type, $complete);
     }
 
 
-   /**
-    * @since 0.85
-    *
-    * @see commonDBTM::getRights()
-    **/
+    /**
+     * @since 0.85
+     *
+     * @see commonDBTM::getRights()
+     **/
     public function getRights($interface = 'central')
     {
 
@@ -275,11 +275,11 @@ class TicketTask extends CommonITILTask
         return $values;
     }
 
-   /**
-    * Build parent condition for search
-    *
-    * @return string
-    */
+    /**
+     * Build parent condition for search
+     *
+     * @return string
+     */
     public static function buildParentCondition()
     {
         return "(0 = 1 " . Ticket::buildCanViewCondition("tickets_id") . ") ";

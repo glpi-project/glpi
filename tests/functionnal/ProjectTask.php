@@ -210,9 +210,9 @@ class ProjectTask extends DbTestCase
         }
     }
 
-   /**
-    * Tests addTeamMember, deleteTeamMember, and getTeamMembers methods
-    */
+    /**
+     * Tests addTeamMember, deleteTeamMember, and getTeamMembers methods
+     */
     public function testTeamManagement(): void
     {
 

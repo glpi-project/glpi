@@ -39,20 +39,20 @@ use ReflectionProperty;
 class Common
 {
    //Global headers
-   /**
-    * "Content-Type" HTTP header
-    *
-    * @var string
-    */
+    /**
+     * "Content-Type" HTTP header
+     *
+     * @var string
+     */
     protected $content_type;
 
-   /**
-    * "Accept" HTTP header
-    *
-    * Must follow RFC7231 - https://tools.ietf.org/html/rfc7231#page-38
-    *
-    * @var string
-    */
+    /**
+     * "Accept" HTTP header
+     *
+     * Must follow RFC7231 - https://tools.ietf.org/html/rfc7231#page-38
+     *
+     * @var string
+     */
     protected $accept;
 
     /**
@@ -71,52 +71,52 @@ class Common
      */
     protected $connection = 'close';
 
-   /**
-    * "Pragma" HTTP header
-    * Required
-    *
-    * Avoid any caching done by the server
-    *
-    * @var string
-    */
+    /**
+     * "Pragma" HTTP header
+     * Required
+     *
+     * Avoid any caching done by the server
+     *
+     * @var string
+     */
     protected $pragma = 'no-cache';
 
    //GLPI agent headers
-   /**
-    * "GLPI-Agent-ID" HTTP header
-    * Required
-    *
-    * Plain text UUID which can be reduced in a 128 bits raw id (ex. 3a609a2e-947f-4e6a-9af9-32c024ac3944)
-    *
-    * @var string
-    */
+    /**
+     * "GLPI-Agent-ID" HTTP header
+     * Required
+     *
+     * Plain text UUID which can be reduced in a 128 bits raw id (ex. 3a609a2e-947f-4e6a-9af9-32c024ac3944)
+     *
+     * @var string
+     */
     protected $glpi_agent_id;
 
-   /**
-    * "GLPI-Request-ID" HTTP header
-    *
-    * 8 digit hexadecimal string in higher case like 2E6A9AF1
-    *
-    * @var string
-    */
+    /**
+     * "GLPI-Request-ID" HTTP header
+     *
+     * 8 digit hexadecimal string in higher case like 2E6A9AF1
+     *
+     * @var string
+     */
     protected $glpi_request_id;
 
-   /**
-    * "GLPI-CryptoKey-ID" HTTP header
-    *
-    * List of agentid separated by commas
-    *
-    * @var string
-    */
+    /**
+     * "GLPI-CryptoKey-ID" HTTP header
+     *
+     * List of agentid separated by commas
+     *
+     * @var string
+     */
     protected $glpi_cryptokey_id;
 
-   /**
-    * "GLPI-Proxy-ID" HTTP header
-    *
-    * List of agentid separated by commas
-    *
-    * @var string
-    */
+    /**
+     * "GLPI-Proxy-ID" HTTP header
+     *
+     * List of agentid separated by commas
+     *
+     * @var string
+     */
     protected $glpi_proxy_id;
 
     public function getRequireds(): array
@@ -137,13 +137,13 @@ class Common
         ];
     }
 
-   /**
-    * Get HTTP headers
-    *
-    * @param boolean $legacy Set to true to shunt required headers checks
-    *
-    * @return array
-    */
+    /**
+     * Get HTTP headers
+     *
+     * @param boolean $legacy Set to true to shunt required headers checks
+     *
+     * @return array
+     */
     public function getHeaders($legacy = true): array
     {
        //parse class attributes and normalize key name
@@ -183,13 +183,13 @@ class Common
         return $this->$propname;
     }
 
-   /**
-    * Return HTTP header name from class property name
-    *
-    * @param string $prop Property name
-    *
-    * @return string
-    */
+    /**
+     * Return HTTP header name from class property name
+     *
+     * @param string $prop Property name
+     *
+     * @return string
+     */
     final public function getHeaderName($prop): string
     {
         $name = $prop;
@@ -215,13 +215,13 @@ class Common
         return implode('-', $exploded);
     }
 
-   /**
-    * Set multiple HTTP header values at once
-    *
-    * @param $headers Array of HTTP header name as key and value
-    *
-    * @return $this
-    */
+    /**
+     * Set multiple HTTP header values at once
+     *
+     * @param $headers Array of HTTP header name as key and value
+     *
+     * @return $this
+     */
     public function setHeaders($headers): self
     {
         foreach ($headers as $header => $value) {
@@ -230,14 +230,14 @@ class Common
 
         return $this;
     }
-   /**
-    * Set HTTP header value
-    *
-    * @param $name HTTP header name
-    * @param $value Value to set
-    *
-    * @return $this
-    */
+    /**
+     * Set HTTP header value
+     *
+     * @param $name HTTP header name
+     * @param $value Value to set
+     *
+     * @return $this
+     */
     public function setHeader($name, $value): self
     {
         $propname = strtolower(str_replace('-', '_', $name));

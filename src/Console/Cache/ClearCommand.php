@@ -41,11 +41,11 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class ClearCommand extends Command
 {
-   /**
-    * Error code returned when failed to clear chache.
-    *
-    * @var integer
-    */
+    /**
+     * Error code returned when failed to clear chache.
+     *
+     * @var integer
+     */
     const ERROR_CACHE_CLEAR_FAILURE = 1;
 
     protected $requires_db_up_to_date = false;

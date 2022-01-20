@@ -225,9 +225,9 @@ class NetworkCard extends AbstractInventoryAsset
         ];
     }
 
-   /**
-    * @dataProvider assetProvider
-    */
+    /**
+     * @dataProvider assetProvider
+     */
     public function testPrepare($xml, $expected, $virtual)
     {
         $converter = new \Glpi\Inventory\Converter();
@@ -243,9 +243,9 @@ class NetworkCard extends AbstractInventoryAsset
         $this->object($result[0])->isEqualTo(json_decode($expected));
     }
 
-   /**
-    * @dataProvider assetProvider
-    */
+    /**
+     * @dataProvider assetProvider
+     */
     public function testNoVirtuals($xml, $expected, $virtual)
     {
         $this->login();

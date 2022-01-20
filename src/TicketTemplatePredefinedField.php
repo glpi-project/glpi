@@ -37,7 +37,7 @@
  * Predefined fields for ticket template class
  *
  * @since 0.83
-**/
+ **/
 class TicketTemplatePredefinedField extends ITILTemplatePredefinedField
 {
    // From CommonDBChild

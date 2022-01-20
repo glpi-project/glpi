@@ -70,9 +70,9 @@ class CacheManager extends \GLPITestCase
         ];
     }
 
-   /**
-    * @dataProvider contextProvider
-    */
+    /**
+     * @dataProvider contextProvider
+     */
     public function testIsContextValid(string $context, bool $is_valid, bool $is_configurable): void
     {
 
@@ -191,9 +191,9 @@ class CacheManager extends \GLPITestCase
         }
     }
 
-   /**
-    * @dataProvider configurationProvider
-    */
+    /**
+     * @dataProvider configurationProvider
+     */
     public function testSetConfiguration(
         string $context,
         $dsn,
@@ -289,9 +289,9 @@ class CacheManager extends \GLPITestCase
         $this->array(include($config_file))->isEqualTo($expected_config);
     }
 
-   /**
-    * @dataProvider configurationProvider
-    */
+    /**
+     * @dataProvider configurationProvider
+     */
     public function testGetConfigurableCache(
         string $context,
         $dsn,
@@ -343,9 +343,9 @@ class CacheManager extends \GLPITestCase
         }
     }
 
-   /**
-    * @dataProvider contextProvider
-    */
+    /**
+     * @dataProvider contextProvider
+     */
     public function testGetCacheInstanceDefault(string $context, bool $is_valid, bool $is_configurable): void
     {
         if (!$is_valid) {
@@ -410,9 +410,9 @@ class CacheManager extends \GLPITestCase
         ];
     }
 
-   /**
-    * @dataProvider dsnProvider
-    */
+    /**
+     * @dataProvider dsnProvider
+     */
     public function testIsDsnValid($dsn, bool $is_valid, ?string $scheme = null): void
     {
 
@@ -423,9 +423,9 @@ class CacheManager extends \GLPITestCase
         $this->boolean($this->testedInstance->isDsnValid($dsn))->isIdenticalTo($is_valid);
     }
 
-   /**
-    * @dataProvider dsnProvider
-    */
+    /**
+     * @dataProvider dsnProvider
+     */
     public function testExtractScheme($dsn, bool $is_valid, ?string $scheme = null): void
     {
 

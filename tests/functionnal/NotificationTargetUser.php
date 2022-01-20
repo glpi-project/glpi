@@ -95,9 +95,9 @@ class NotificationTargetUser extends DbTestCase
         ];
     }
 
-   /**
-    * @dataProvider addDataForPasswordExpiresTemplateProvider
-    */
+    /**
+     * @dataProvider addDataForPasswordExpiresTemplateProvider
+     */
     public function testAddDataForPasswordExpiresTemplate(int $expiration_time, int $lock_delay, array $expected)
     {
         global $CFG_GLPI;

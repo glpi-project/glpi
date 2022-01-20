@@ -33,7 +33,7 @@
 
 /**
  * ITILCategory class
-**/
+ **/
 class PendingReason extends CommonDropdown
 {
    // From CommonDBTM
@@ -127,14 +127,14 @@ class PendingReason extends CommonDropdown
         return $tab;
     }
 
-   /**
-    * Display specific "followup_frequency" field
-    *
-    * @param $value
-    * @param $name
-    * @param $options
-    * @param $long_label If false give less details in the default label
-    */
+    /**
+     * Display specific "followup_frequency" field
+     *
+     * @param $value
+     * @param $name
+     * @param $options
+     * @param $long_label If false give less details in the default label
+     */
     public static function displayFollowupFrequencyfield(
         $value = null,
         $name = "",
@@ -170,10 +170,10 @@ class PendingReason extends CommonDropdown
         return Dropdown::showFromArray($name, $values, $options);
     }
 
-   /**
-    * Get possibles followup frequency values for pending reasons
-    * @return array timestamp before each bump => label
-    */
+    /**
+     * Get possibles followup frequency values for pending reasons
+     * @return array timestamp before each bump => label
+     */
     public static function getFollowupFrequencyValues(): array
     {
         return [
@@ -184,14 +184,14 @@ class PendingReason extends CommonDropdown
         ];
     }
 
-   /**
-    * Display specific "followups_before_resolution" field
-    *
-    * @param $value
-    * @param $name
-    * @param $options
-    * @param $long_label If false give less details in the default label
-    */
+    /**
+     * Display specific "followups_before_resolution" field
+     *
+     * @param $value
+     * @param $name
+     * @param $options
+     * @param $long_label If false give less details in the default label
+     */
     public static function displayFollowupsNumberBeforeResolutionField(
         $value = null,
         $name = "",
@@ -227,10 +227,10 @@ class PendingReason extends CommonDropdown
         return Dropdown::showFromArray($name, $values, $options);
     }
 
-   /**
-    * Get possibles values for 'followups_before_resolution' field of pending reasons
-    * @return array number of bump before resolution => label
-    */
+    /**
+     * Get possibles values for 'followups_before_resolution' field of pending reasons
+     * @return array number of bump before resolution => label
+     */
     public static function getFollowupsBeforeResolutionValues(): array
     {
         return [

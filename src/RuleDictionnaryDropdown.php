@@ -38,9 +38,9 @@ class RuleDictionnaryDropdown extends Rule
 
     public static $rightname     = 'rule_dictionnary_dropdown';
 
-   /**
-    * @see Rule::maxActionsCount()
-   **/
+    /**
+     * @see Rule::maxActionsCount()
+     **/
     public function maxActionsCount()
     {
         return 1;

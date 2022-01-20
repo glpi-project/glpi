@@ -44,7 +44,7 @@
  * @author Olivier Moron
  * @since 9.1
  *
-**/
+ **/
 class ObjectLock extends CommonDBTM
 {
     private $itemtype     = "";
@@ -54,21 +54,21 @@ class ObjectLock extends CommonDBTM
     private static $shutdownregistered = false;
 
 
-   /**
-    * @see CommonGLPI::getTypeName()
-    */
+    /**
+     * @see CommonGLPI::getTypeName()
+     */
     public static function getTypeName($nb = 0)
     {
         return _n('Object Lock', 'Object Locks', $nb);
     }
 
 
-   /**
-    * Summary of __construct
-    *
-    * @param $locitemtype       (default ObjectLoc
-    * @param $locitemid         (default 0)
-   **/
+    /**
+     * Summary of __construct
+     *
+     * @param $locitemtype       (default ObjectLoc
+     * @param $locitemid         (default 0)
+     **/
     public function __construct($locitemtype = 'ObjectLock', $locitemid = 0)
     {
 
@@ -78,21 +78,21 @@ class ObjectLock extends CommonDBTM
     }
 
 
-   /**
-    * Summary of getEntityID
-    * @return 0
-   **/
+    /**
+     * Summary of getEntityID
+     * @return 0
+     **/
     public function getEntityID()
     {
         return 0;
     }
 
 
-   /**
-    * Summary of getLockableObjects
-    *
-    * @return array of lockable objects 'itemtype' => 'plural itemtype'
-   **/
+    /**
+     * Summary of getLockableObjects
+     *
+     * @return array of lockable objects 'itemtype' => 'plural itemtype'
+     **/
     public static function getLockableObjects()
     {
         global $CFG_GLPI;
@@ -106,12 +106,12 @@ class ObjectLock extends CommonDBTM
     }
 
 
-   /**
-    * Summary of autoLockMode
-    * Manages autolock mode
-    *
-    * @return bool: true if read-only profile lock has been set
-   **/
+    /**
+     * Summary of autoLockMode
+     * Manages autolock mode
+     *
+     * @return bool: true if read-only profile lock has been set
+     **/
     private function autoLockMode()
     {
        // if !autolock mode then we are going to view the item with read-only profile
@@ -133,9 +133,9 @@ class ObjectLock extends CommonDBTM
     }
 
 
-   /**
-    * Summary of getScriptToUnlock
-    */
+    /**
+     * Summary of getScriptToUnlock
+     */
     private function getScriptToUnlock()
     {
         global $CFG_GLPI;
@@ -168,11 +168,11 @@ class ObjectLock extends CommonDBTM
         return $ret;
     }
 
-   /**
-    * Summary of getForceUnlockMessage
-    * @return string '' if no rights to unlock type,
-    *                else html @see getForceUnlockButton
-    */
+    /**
+     * Summary of getForceUnlockMessage
+     * @return string '' if no rights to unlock type,
+     *                else html @see getForceUnlockButton
+     */
     private function getForceUnlockMessage()
     {
 
@@ -195,10 +195,10 @@ class ObjectLock extends CommonDBTM
     }
 
 
-   /**
-    * Summary of setLockedByYouMessage
-    * Shows 'Locked by You!' message and proposes to unlock it
-   **/
+    /**
+     * Summary of setLockedByYouMessage
+     * Shows 'Locked by You!' message and proposes to unlock it
+     **/
     private function setLockedByYouMessage()
     {
 
@@ -213,10 +213,10 @@ class ObjectLock extends CommonDBTM
     }
 
 
-   /**
-    * Summary of setLockedByMessage
-    * Shows 'Locked by ' message and proposes to request unlock from locker
-   **/
+    /**
+     * Summary of setLockedByMessage
+     * Shows 'Locked by ' message and proposes to request unlock from locker
+     **/
     private function setLockedByMessage()
     {
         global $CFG_GLPI;
@@ -303,11 +303,11 @@ class ObjectLock extends CommonDBTM
     }
 
 
-   /**
-    * Summary of setReadOnlyMessage
-    * Shows 'Read-only!' message and propose to request a lock on the item
-    * This function is used by autoLockMode function
-   **/
+    /**
+     * Summary of setReadOnlyMessage
+     * Shows 'Read-only!' message and propose to request a lock on the item
+     * This function is used by autoLockMode function
+     **/
     private function setReadOnlyMessage()
     {
 
@@ -325,13 +325,13 @@ class ObjectLock extends CommonDBTM
     }
 
 
-   /**
-    * Summary of lockObject
-    * Tries to lock object and if yes output code to auto unlock it when leaving browser page.
-    * If lock can't be set (i.e.: someone has already locked it), LockedBy message is shown accordingly,
-    * and read-only profile is set
-    * @return bool: true if locked
-   **/
+    /**
+     * Summary of lockObject
+     * Tries to lock object and if yes output code to auto unlock it when leaving browser page.
+     * If lock can't be set (i.e.: someone has already locked it), LockedBy message is shown accordingly,
+     * and read-only profile is set
+     * @return bool: true if locked
+     **/
     private function lockObject()
     {
         global $CFG_GLPI;
@@ -403,11 +403,11 @@ class ObjectLock extends CommonDBTM
     }
 
 
-   /**
-    * Summary of getLockedObjectInfo
-    *
-    * @return bool: true if object is locked, and $this is filled with record from DB
-   **/
+    /**
+     * Summary of getLockedObjectInfo
+     *
+     * @return bool: true if object is locked, and $this is filled with record from DB
+     **/
     private function getLockedObjectInfo()
     {
         global $CFG_GLPI;
@@ -427,14 +427,14 @@ class ObjectLock extends CommonDBTM
     }
 
 
-   /**
-    * Summary of isLocked
-    *
-    * @param $itemtype
-    * @param $items_id
-    *
-    * @return bool|ObjectLock: returns ObjectLock if locked, else false
-   **/
+    /**
+     * Summary of isLocked
+     *
+     * @param $itemtype
+     * @param $items_id
+     *
+     * @return bool|ObjectLock: returns ObjectLock if locked, else false
+     **/
     public static function isLocked($itemtype, $items_id)
     {
 
@@ -443,12 +443,12 @@ class ObjectLock extends CommonDBTM
     }
 
 
-   /**
-    * Summary of setReadOnlyProfile
-    * Switches current profile with read-only profile
-    * Registers a shutdown function to be sure that even in case of die() calls,
-    * the switch back will be done: to ensure correct reset of normal profile
-   **/
+    /**
+     * Summary of setReadOnlyProfile
+     * Switches current profile with read-only profile
+     * Registers a shutdown function to be sure that even in case of die() calls,
+     * the switch back will be done: to ensure correct reset of normal profile
+     **/
     public static function setReadOnlyProfile()
     {
         global $CFG_GLPI, $_SESSION;
@@ -482,10 +482,10 @@ class ObjectLock extends CommonDBTM
     }
 
 
-   /**
-    * Summary of revertProfile
-    * Will revert normal user profile
-   **/
+    /**
+     * Summary of revertProfile
+     * Will revert normal user profile
+     **/
     public static function revertProfile()
     {
         global $_SESSION;
@@ -497,13 +497,13 @@ class ObjectLock extends CommonDBTM
     }
 
 
-   /**
-    * Summary of manageObjectLock
-    * Is the main function to be called in order to lock an item
-    *
-    * @param  $itemtype
-    * @param  $options
-   **/
+    /**
+     * Summary of manageObjectLock
+     * Is the main function to be called in order to lock an item
+     *
+     * @param  $itemtype
+     * @param  $options
+     **/
     public static function manageObjectLock($itemtype, &$options)
     {
         global $CFG_GLPI;
@@ -531,14 +531,14 @@ class ObjectLock extends CommonDBTM
     }
 
 
-   /**
-    * Summary of displayLockMessage
-    * Shows a short message top-left of screen
-    * This message is permanent, and can't be closed
-    *
-    * @param  $msg      : message to be shown
-    * @param  $title    : if $title is '' then title bar it is not shown (default '')
-   **/
+    /**
+     * Summary of displayLockMessage
+     * Shows a short message top-left of screen
+     * This message is permanent, and can't be closed
+     *
+     * @param  $msg      : message to be shown
+     * @param  $title    : if $title is '' then title bar it is not shown (default '')
+     **/
     private function displayLockMessage($msg, $title = '')
     {
 
@@ -556,9 +556,9 @@ class ObjectLock extends CommonDBTM
     }
 
 
-   /**
-    * @see CommonDBTM::processMassiveActionsForOneItemtype
-   **/
+    /**
+     * @see CommonDBTM::processMassiveActionsForOneItemtype
+     **/
     public static function processMassiveActionsForOneItemtype(
         MassiveAction $ma,
         CommonDBTM $item,
@@ -621,14 +621,14 @@ class ObjectLock extends CommonDBTM
     }
 
 
-   /**
-    * Summary of getRightsToAdd
-    *
-    * @param  $itemtype
-    * @param  $interface   (default 'central')
-    *
-    * @return array: empty array if itemtype is not lockable; else returns UNLOCK right
-   **/
+    /**
+     * Summary of getRightsToAdd
+     *
+     * @param  $itemtype
+     * @param  $interface   (default 'central')
+     *
+     * @return array: empty array if itemtype is not lockable; else returns UNLOCK right
+     **/
     public static function getRightsToAdd($itemtype, $interface = 'central')
     {
         global $CFG_GLPI;
@@ -646,13 +646,13 @@ class ObjectLock extends CommonDBTM
     }
 
 
-   /**
-    * Give cron information
-    *
-    * @param $name : task's name
-    *
-    * @return array of information
-   **/
+    /**
+     * Give cron information
+     *
+     * @param $name : task's name
+     *
+     * @return array of information
+     **/
     public static function cronInfo($name)
     {
 
@@ -665,16 +665,16 @@ class ObjectLock extends CommonDBTM
     }
 
 
-   /**
-    * Cron for unlocking forgotten locks
-    *
-    * @param $task : crontask object
-    *
-    * @return integer
-    *    >0 : done
-    *    <0 : to be run again (not finished)
-    *     0 : nothing to do
-   **/
+    /**
+     * Cron for unlocking forgotten locks
+     *
+     * @param $task : crontask object
+     *
+     * @return integer
+     *    >0 : done
+     *    <0 : to be run again (not finished)
+     *     0 : nothing to do
+     **/
     public static function cronUnlockObject($task)
     {
        // here we have to delete old locks

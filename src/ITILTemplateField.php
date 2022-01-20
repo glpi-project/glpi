@@ -37,7 +37,7 @@
  * Predefined fields for ITIL template class
  *
  * @since 9.5.0
-**/
+ **/
 abstract class ITILTemplateField extends CommonDBChild
 {
     public static $itemtype; //to be filled in subclass
@@ -60,13 +60,13 @@ abstract class ITILTemplateField extends CommonDBChild
     }
 
 
-   /**
-    * Get fields list
-    *
-    * @param ITILTemplate $tt ITIL Template
-    *
-    * @return array
-    */
+    /**
+     * Get fields list
+     *
+     * @param ITILTemplate $tt ITIL Template
+     *
+     * @return array
+     */
     public function getAllFields(ITILTemplate $tt)
     {
         $this->all_fields = $tt->getAllowedFieldsNames(true);
@@ -95,37 +95,37 @@ abstract class ITILTemplateField extends CommonDBChild
     }
 
 
-   /**
-    * Return fields who doesn't need to be used for this part of template
-    *
-    * @since 9.2
-    *
-    * @return array the excluded fields (keys and values are equals)
-    */
+    /**
+     * Return fields who doesn't need to be used for this part of template
+     *
+     * @since 9.2
+     *
+     * @return array the excluded fields (keys and values are equals)
+     */
     abstract public static function getExcludedFields();
 
 
-   /**
-    * Print the fields
-    *
-    * @since 0.83
-    *
-    * @param ITILTemplate $tt           ITIL Template
-    * @param boolean      $withtemplate Template or basic item (default 0)
-    *
-    * @return void
-   **/
+    /**
+     * Print the fields
+     *
+     * @since 0.83
+     *
+     * @param ITILTemplate $tt           ITIL Template
+     * @param boolean      $withtemplate Template or basic item (default 0)
+     *
+     * @return void
+     **/
     abstract public static function showForITILTemplate(ITILTemplate $tt, $withtemplate = 0);
 
 
-   /**
-    * Get field num from its name
-    *
-    * @param ITILTemplate $tt   ITIL Template
-    * @param string       $name Field name to look for
-    *
-    * @return integer|false
-    */
+    /**
+     * Get field num from its name
+     *
+     * @param ITILTemplate $tt   ITIL Template
+     * @param string       $name Field name to look for
+     *
+     * @return integer|false
+     */
     public function getFieldNum(ITILTemplate $tt, $name)
     {
         if ($this->all_fields === null) {

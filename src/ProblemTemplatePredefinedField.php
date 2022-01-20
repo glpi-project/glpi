@@ -37,7 +37,7 @@
  * Predefined fields for problem template class
  *
  * @since 0.83
-**/
+ **/
 class ProblemTemplatePredefinedField extends ITILTemplatePredefinedField
 {
    // From CommonDBChild

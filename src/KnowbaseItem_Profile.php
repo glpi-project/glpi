@@ -45,13 +45,13 @@ class KnowbaseItem_Profile extends CommonDBRelation
     public static $logs_for_item_2     = false;
 
 
-   /**
-    * Get profiles for a knowbaseitem
-    *
-    * @param integer $knowbaseitems_id  ID of the knowbaseitem
-    *
-    * @return array of profiles linked to a knowbaseitem
-   **/
+    /**
+     * Get profiles for a knowbaseitem
+     *
+     * @param integer $knowbaseitems_id  ID of the knowbaseitem
+     *
+     * @return array of profiles linked to a knowbaseitem
+     **/
     public static function getProfiles($knowbaseitems_id)
     {
         global $DB;

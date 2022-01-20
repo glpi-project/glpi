@@ -41,25 +41,25 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class EnableTimezonesCommand extends AbstractCommand
 {
-   /**
-    * Error code returned if DB configuration file cannot be updated.
-    *
-    * @var integer
-    */
+    /**
+     * Error code returned if DB configuration file cannot be updated.
+     *
+     * @var integer
+     */
     const ERROR_UNABLE_TO_UPDATE_CONFIG = 1;
 
-   /**
-    * Error code returned if prerequisites are missing.
-    *
-    * @var integer
-    */
+    /**
+     * Error code returned if prerequisites are missing.
+     *
+     * @var integer
+     */
     const ERROR_MISSING_PREREQUISITES = 2;
 
-   /**
-    * Error code returned if some tables are still using datetime field type.
-    *
-    * @var integer
-    */
+    /**
+     * Error code returned if some tables are still using datetime field type.
+     *
+     * @var integer
+     */
     const ERROR_TIMESTAMP_FIELDS_REQUIRED = 3;
 
     protected function configure()

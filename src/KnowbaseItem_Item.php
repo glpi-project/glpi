@@ -95,13 +95,13 @@ class KnowbaseItem_Item extends CommonDBRelation
         return true;
     }
 
-   /**
-    * Show linked items of a knowbase item
-    *
-    * @param $item                     CommonDBTM object
-    * @param $withtemplate    integer  withtemplate param (default 0)
-
-   **/
+    /**
+     * Show linked items of a knowbase item
+     *
+     * @param $item                     CommonDBTM object
+     * @param $withtemplate    integer  withtemplate param (default 0)
+     *
+     **/
     public static function showForItem(CommonDBTM $item, $withtemplate = 0)
     {
         $item_id = $item->getID();
@@ -277,14 +277,14 @@ class KnowbaseItem_Item extends CommonDBRelation
         Html::printAjaxPager($type_name, $start, $number);
     }
 
-   /**
-    * Displays linked dropdowns to add linked items
-    *
-    * @param CommonDBTM $item Item instance
-    * @param string     $name Field name
-    *
-    * @return string
-    */
+    /**
+     * Displays linked dropdowns to add linked items
+     *
+     * @param CommonDBTM $item Item instance
+     * @param string     $name Field name
+     *
+     * @return string
+     */
     public static function dropdownAllTypes(CommonDBTM $item, $name)
     {
         global $CFG_GLPI;
@@ -304,16 +304,16 @@ class KnowbaseItem_Item extends CommonDBRelation
         return $rand;
     }
 
-   /**
-    * Retrieve items for a knowbase item
-    *
-    * @param CommonDBTM $item      CommonDBTM object
-    * @param integer    $start     first line to retrieve (default 0)
-    * @param integer    $limit     max number of line to retrive (0 for all) (default 0)
-    * @param boolean    $used      whether to retrieve data for "used" records
-    *
-    * @return array of linked items
-   **/
+    /**
+     * Retrieve items for a knowbase item
+     *
+     * @param CommonDBTM $item      CommonDBTM object
+     * @param integer    $start     first line to retrieve (default 0)
+     * @param integer    $limit     max number of line to retrive (0 for all) (default 0)
+     * @param boolean    $used      whether to retrieve data for "used" records
+     *
+     * @return array of linked items
+     **/
     public static function getItems(CommonDBTM $item, $start = 0, $limit = 0, $used = false)
     {
         global $DB;

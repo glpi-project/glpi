@@ -33,7 +33,7 @@
 
 /**
  * PDU Class
-**/
+ **/
 class PDU extends CommonDBTM
 {
     use Glpi\Features\DCBreadcrumb;

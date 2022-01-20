@@ -71,39 +71,39 @@ class ItemtypeExtension extends AbstractExtension
         ];
     }
 
-   /**
-    * Returns class instance of given itemtype.
-    *
-    * @param string $itemtype
-    *
-    * @return CommonGLPI|null
-    */
+    /**
+     * Returns class instance of given itemtype.
+     *
+     * @param string $itemtype
+     *
+     * @return CommonGLPI|null
+     */
     public function getItemtypeClass(string $itemtype): ?CommonGLPI
     {
         return is_a($itemtype, CommonGLPI::class, true) ? new $itemtype() : null;
     }
 
-   /**
-    * Returns dropdwon HTML code for given itemtype.
-    *
-    * @param string $itemtype
-    *
-    * @return CommonGLPI|null
-    */
+    /**
+     * Returns dropdwon HTML code for given itemtype.
+     *
+     * @param string $itemtype
+     *
+     * @return CommonGLPI|null
+     */
     public function getItemtypeDropdown($itemtype, array $options = []): ?string
     {
         $options['display'] = false;
         return is_a($itemtype, CommonDBTM::class, true) ? $itemtype::dropdown($options) : null;
     }
 
-   /**
-    * Returns domain relative path of given itemtype form.
-    *
-    * @param string $itemtype
-    * @param null|int $id
-    *
-    * @return string|null
-    */
+    /**
+     * Returns domain relative path of given itemtype form.
+     *
+     * @param string $itemtype
+     * @param null|int $id
+     *
+     * @return string|null
+     */
     public function getItemtypeFormPath(string $itemtype, ?int $id = null): ?string
     {
         if (!is_a($itemtype, CommonGLPI::class, true)) {
@@ -113,51 +113,51 @@ class ItemtypeExtension extends AbstractExtension
         return $id !== null ? $itemtype::getFormURLWithID($id) : $itemtype::getFormURL();
     }
 
-   /**
-    * Returns typename of given itemtype.
-    *
-    * @param string $itemtype
-    *
-    * @return string|null
-    */
+    /**
+     * Returns typename of given itemtype.
+     *
+     * @param string $itemtype
+     *
+     * @return string|null
+     */
     public function getItemtypeIcon(string $itemtype): ?string
     {
         return is_a($itemtype, CommonDBTM::class, true) ? $itemtype::getIcon() : null;
     }
 
-   /**
-    * Returns typename of given itemtype.
-    *
-    * @param string $itemtype
-    * @param number $count
-    *
-    * @return string|null
-    */
+    /**
+     * Returns typename of given itemtype.
+     *
+     * @param string $itemtype
+     * @param number $count
+     *
+     * @return string|null
+     */
     public function getItemtypeName(string $itemtype, $count = 1): ?string
     {
         return is_a($itemtype, CommonGLPI::class, true) ? $itemtype::getTypeName($count) : null;
     }
 
-   /**
-    * Returns domain relative path of given itemtype search.
-    *
-    * @param string $itemtype
-    *
-    * @return string|null
-    */
+    /**
+     * Returns domain relative path of given itemtype search.
+     *
+     * @param string $itemtype
+     *
+     * @return string|null
+     */
     public function getItemtypeSearchPath(string $itemtype): ?string
     {
         return is_a($itemtype, CommonGLPI::class, true) ? $itemtype::getSearchURL() : null;
     }
 
-   /**
-    * Returns item from given itemtype having given ID.
-    *
-    * @param string  $itemtype Itemtype of the item.
-    * @param int     $id       ID of the item.
-    *
-    * @return CommonDBTM|null
-    */
+    /**
+     * Returns item from given itemtype having given ID.
+     *
+     * @param string  $itemtype Itemtype of the item.
+     * @param int     $id       ID of the item.
+     *
+     * @return CommonDBTM|null
+     */
     public function getItem($itemtype, int $id): ?CommonDBTM
     {
         if (is_a($itemtype, CommonDBTM::class, true) && ($item = $itemtype::getById($id)) !== false) {
@@ -166,15 +166,15 @@ class ItemtypeExtension extends AbstractExtension
         return null;
     }
 
-   /**
-    * Returns name of the given item.
-    * In case of a dropdown, it returns the translated name, otherwise, it returns the friendly name.
-    *
-    * @param CommonDBTM|string $item   Item instance of itemtype of the item.
-    * @param int|null $id              ID of the item, useless first argument is an already loaded item instance.
-    *
-    * @return string|null
-    */
+    /**
+     * Returns name of the given item.
+     * In case of a dropdown, it returns the translated name, otherwise, it returns the friendly name.
+     *
+     * @param CommonDBTM|string $item   Item instance of itemtype of the item.
+     * @param int|null $id              ID of the item, useless first argument is an already loaded item instance.
+     *
+     * @return string|null
+     */
     public function getItemName($item, ?int $id = null): ?string
     {
         if (is_a($item, CommonDropdown::class, true)) {
@@ -190,15 +190,15 @@ class ItemtypeExtension extends AbstractExtension
         return Sanitizer::getVerbatimValue($instance->getFriendlyName());
     }
 
-   /**
-    * Returns comment of the given item.
-    * In case of a dropdown, it returns the translated comment.
-    *
-    * @param CommonDBTM|string $item   Item instance of itemtype of the item.
-    * @param int|null $id              ID of the item, useless first argument is an already loaded item instance.
-    *
-    * @return string|null
-    */
+    /**
+     * Returns comment of the given item.
+     * In case of a dropdown, it returns the translated comment.
+     *
+     * @param CommonDBTM|string $item   Item instance of itemtype of the item.
+     * @param int|null $id              ID of the item, useless first argument is an already loaded item instance.
+     *
+     * @return string|null
+     */
     public function getItemComment($item, ?int $id = null): ?string
     {
         if (is_a($item, CommonDropdown::class, true)) {
@@ -216,16 +216,16 @@ class ItemtypeExtension extends AbstractExtension
         return $comment !== null ? Sanitizer::getVerbatimValue($comment) : null;
     }
 
-   /**
-    * Returns link of the given item.
-    *
-    * @param CommonDBTM|string   $item    Item instance of itemtype of the item.
-    * @param int|null            $id      ID of the item, useless first argument is an already loaded item instance.
-    * @param array               $options Available options:
-    *    - enable_anonymization (bool) Enable anonymization of helpdesk actors;
-    *
-    * @return string|null
-    */
+    /**
+     * Returns link of the given item.
+     *
+     * @param CommonDBTM|string   $item    Item instance of itemtype of the item.
+     * @param int|null            $id      ID of the item, useless first argument is an already loaded item instance.
+     * @param array               $options Available options:
+     *    - enable_anonymization (bool) Enable anonymization of helpdesk actors;
+     *
+     * @return string|null
+     */
     public function getItemLink($item, ?int $id = null, array $options = []): ?string
     {
         if (($instance = $this->getItemInstance($item, $id)) === null) {
@@ -242,14 +242,14 @@ class ItemtypeExtension extends AbstractExtension
         return $instance->getLink();
     }
 
-   /**
-    * Returns instance of item with given ID.
-    *
-    * @param CommonDBTM|string $item   Item instance of itemtype of the item.
-    * @param int|null $id              ID of the item, useless first argument is an already loaded item instance.
-    *
-    * @return CommonDBTM|null
-    */
+    /**
+     * Returns instance of item with given ID.
+     *
+     * @param CommonDBTM|string $item   Item instance of itemtype of the item.
+     * @param int|null $id              ID of the item, useless first argument is an already loaded item instance.
+     *
+     * @return CommonDBTM|null
+     */
     private function getItemInstance($item, ?int $id = null): ?CommonDBTM
     {
         if (!is_a($item, CommonDBTM::class, true)) {

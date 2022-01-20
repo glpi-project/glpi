@@ -33,7 +33,7 @@
 
 /**
  * @since 0.84
-**/
+ **/
 class HTMLTableRow extends HTMLTableEntity
 {
     private $group;
@@ -43,9 +43,9 @@ class HTMLTableRow extends HTMLTableEntity
     private $linesWithAttributs = [];
 
 
-   /**
-    * @param $group
-   **/
+    /**
+     * @param $group
+     **/
     public function __construct($group)
     {
         $this->group = $group;
@@ -76,22 +76,22 @@ class HTMLTableRow extends HTMLTableEntity
     }
 
 
-   /**
-    * @param $lineIndex
-    * @param $attributs
-   **/
+    /**
+     * @param $lineIndex
+     * @param $attributs
+     **/
     public function addAttributForLine($lineIndex, $attributs)
     {
         $this->linesWithAttributs[$lineIndex] = $attributs;
     }
 
 
-   /**
-    * @param $header    HTMLTableHeader object
-    * @param $content
-    * @param $father    HTMLTableCell object (default NULL)
-    * @param $item      CommonDBTM object: The item associated with the current cell (default NULL)
-   **/
+    /**
+     * @param $header    HTMLTableHeader object
+     * @param $content
+     * @param $father    HTMLTableCell object (default NULL)
+     * @param $item      CommonDBTM object: The item associated with the current cell (default NULL)
+     **/
     public function addCell(
         HTMLTableHeader $header,
         $content,
@@ -161,9 +161,9 @@ class HTMLTableRow extends HTMLTableEntity
     }
 
 
-   /**
-    * @param $headers
-   **/
+    /**
+     * @param $headers
+     **/
     public function displayRow($headers)
     {
 
@@ -201,10 +201,10 @@ class HTMLTableRow extends HTMLTableEntity
     }
 
 
-   /**
-    * @param $name
-    * @param $sub_name  (default NULL)
-   */
+    /**
+     * @param $name
+     * @param $sub_name  (default NULL)
+     */
     public function getHeaderByName($name, $sub_name = null)
     {
         return $this->group->getHeaderByName($name, $sub_name);

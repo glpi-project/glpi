@@ -32,11 +32,11 @@
  */
 
 /**
-* Rule class store all information about a GLPI rule :
-*   - description
-*   - criterias
-*   - actions
-**/
+ * Rule class store all information about a GLPI rule :
+ *   - description
+ *   - criterias
+ *   - actions
+ **/
 class RuleDictionnarySoftware extends Rule
 {
     public $additional_fields_for_dictionnary = ['manufacturer'];
@@ -46,9 +46,9 @@ class RuleDictionnarySoftware extends Rule
 
 
 
-   /**
-    * @see Rule::getTitle()
-   **/
+    /**
+     * @see Rule::getTitle()
+     **/
     public function getTitle()
     {
        //TRANS: plural for software
@@ -56,17 +56,17 @@ class RuleDictionnarySoftware extends Rule
     }
 
 
-   /**
-    * @see Rule::maxActionsCount()
-   **/
+    /**
+     * @see Rule::maxActionsCount()
+     **/
     public function maxActionsCount()
     {
         return 4;
     }
 
-   /**
-    * @see Rule::getCriterias()
-   **/
+    /**
+     * @see Rule::getCriterias()
+     **/
     public function getCriterias()
     {
 
@@ -96,9 +96,9 @@ class RuleDictionnarySoftware extends Rule
     }
 
 
-   /**
-    * @see Rule::getActions()
-   **/
+    /**
+     * @see Rule::getActions()
+     **/
     public function getActions()
     {
 
@@ -135,9 +135,9 @@ class RuleDictionnarySoftware extends Rule
     }
 
 
-   /**
-    * @see Rule::addSpecificParamsForPreview()
-   **/
+    /**
+     * @see Rule::addSpecificParamsForPreview()
+     **/
     public function addSpecificParamsForPreview($params)
     {
 
@@ -148,9 +148,9 @@ class RuleDictionnarySoftware extends Rule
     }
 
 
-   /**
-    * @see Rule::showSpecificCriteriasForPreview()
-   **/
+    /**
+     * @see Rule::showSpecificCriteriasForPreview()
+     **/
     public function showSpecificCriteriasForPreview($fields)
     {
 

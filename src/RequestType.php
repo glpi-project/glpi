@@ -170,9 +170,9 @@ class RequestType extends CommonDropdown
     }
 
 
-   /**
-    * @see CommonDBTM::post_updateItem()
-   **/
+    /**
+     * @see CommonDBTM::post_updateItem()
+     **/
     public function post_updateItem($history = 1)
     {
         global $DB;
@@ -222,13 +222,13 @@ class RequestType extends CommonDropdown
     }
 
 
-   /**
-    * Get the default request type for a given source (mail, helpdesk)
-    *
-    * @param $source string
-    *
-    * @return requesttypes_id
-   **/
+    /**
+     * Get the default request type for a given source (mail, helpdesk)
+     *
+     * @param $source string
+     *
+     * @return requesttypes_id
+     **/
     public static function getDefault($source)
     {
         global $DB;
@@ -279,11 +279,11 @@ class RequestType extends CommonDropdown
     }
 
 
-   /**
-    * Check if type is used as default for new tickets.
-    *
-    * @return boolean
-    */
+    /**
+     * Check if type is used as default for new tickets.
+     *
+     * @return boolean
+     */
     private function isUsedAsDefaultRequestType()
     {
 

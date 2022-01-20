@@ -62,14 +62,14 @@ class Dashboard extends \CommonDBTM
     }
 
 
-   /**
-    * Retrieve the current dashboard from the DB (or from cache)
-    * with its rights and items
-    *
-    * @param bool $force if true, don't use cache
-    *
-    * @return false|int Id of the loaded dashboard, or false on failure
-    */
+    /**
+     * Retrieve the current dashboard from the DB (or from cache)
+     * with its rights and items
+     *
+     * @param bool $force if true, don't use cache
+     *
+     * @return false|int Id of the loaded dashboard, or false on failure
+     */
     public function load(bool $force = false)
     {
         $loaded = true;
@@ -123,22 +123,22 @@ class Dashboard extends \CommonDBTM
     }
 
 
-   /**
-    * Return the title of the current dasbhoard
-    *
-    * @return string
-    */
+    /**
+     * Return the title of the current dasbhoard
+     *
+     * @return string
+     */
     public function getTitle(): string
     {
         $this->load();
         return $this->fields['name'] ?? "";
     }
 
-   /**
-    * Do we have the right to view the current dashboard
-    *
-    * @return bool
-    */
+    /**
+     * Do we have the right to view the current dashboard
+     *
+     * @return bool
+     */
     public function canViewCurrent(): bool
     {
        // check global (admin) right
@@ -154,16 +154,16 @@ class Dashboard extends \CommonDBTM
     }
 
 
-   /**
-    * Save the current dashboard instance to DB
-    *
-    * @param string $title label of the dasbhoard, will be suglified to have a corresponding key
-    * @param string $context of the dasbhoard, filter the dasboard collection by a key
-    * @param array $items cards for the dashboard
-    * @param array $rights for the dasbhoard
-    *
-    * @return string
-    */
+    /**
+     * Save the current dashboard instance to DB
+     *
+     * @param string $title label of the dasbhoard, will be suglified to have a corresponding key
+     * @param string $context of the dasbhoard, filter the dasboard collection by a key
+     * @param array $items cards for the dashboard
+     * @param array $rights for the dasbhoard
+     *
+     * @return string
+     */
     public function saveNew(
         string $title = "",
         string $context = "core",
@@ -182,13 +182,13 @@ class Dashboard extends \CommonDBTM
     }
 
 
-   /**
-    * Save current dashboard
-    *
-    * @param bool $skip_child skip saving rights and items
-    *
-    * @return void
-    */
+    /**
+     * Save current dashboard
+     *
+     * @param bool $skip_child skip saving rights and items
+     *
+     * @return void
+     */
     public function save(bool $skip_child = false)
     {
         global $DB, $GLPI_CACHE;
@@ -229,20 +229,20 @@ class Dashboard extends \CommonDBTM
         ]);
     }
 
-   /**
-    * Save items in DB for the current dashboard
-    *
-    * @param array $items cards of the dashboard, contains:
-    *    - gridstack_id: unique id of the card in the grid, usually build like card_id.uuidv4
-    *    - card_id: key of array return by getAllDasboardCards
-    *    - x: position in grid
-    *    - y: position in grid
-    *    - width: size in grid
-    *    - height: size in grid
-    *    - card_options, sub array, depends on the card, contains at least a key color
-    *
-    * @return void
-    */
+    /**
+     * Save items in DB for the current dashboard
+     *
+     * @param array $items cards of the dashboard, contains:
+     *    - gridstack_id: unique id of the card in the grid, usually build like card_id.uuidv4
+     *    - card_id: key of array return by getAllDasboardCards
+     *    - x: position in grid
+     *    - y: position in grid
+     *    - width: size in grid
+     *    - height: size in grid
+     *    - card_options, sub array, depends on the card, contains at least a key color
+     *
+     * @return void
+     */
     public function saveItems(array $items = [])
     {
         $this->load();
@@ -255,13 +255,13 @@ class Dashboard extends \CommonDBTM
         Item::addForDashboard($this->fields['id'], $items);
     }
 
-   /**
-    * Save title DB for the current dashboard
-    *
-    * @param string $title of the current dashboard
-    *
-    * @return void
-    */
+    /**
+     * Save title DB for the current dashboard
+     *
+     * @param string $title of the current dashboard
+     *
+     * @return void
+     */
     public function saveTitle(string $title = "")
     {
         if (!strlen($title)) {
@@ -274,17 +274,17 @@ class Dashboard extends \CommonDBTM
     }
 
 
-   /**
-    * Save rights (share) in DB for the current dashboard
-    *
-    * @param array $rights contains these data:
-    * - 'users_id'    => [items_id]
-    * - 'groups_id'   => [items_id]
-    * - 'entities_id' => [items_id]
-    * - 'profiles_id' => [items_id]
-    *
-    * @return void
-    */
+    /**
+     * Save rights (share) in DB for the current dashboard
+     *
+     * @param array $rights contains these data:
+     * - 'users_id'    => [items_id]
+     * - 'groups_id'   => [items_id]
+     * - 'entities_id' => [items_id]
+     * - 'profiles_id' => [items_id]
+     *
+     * @return void
+     */
     public function saveRights(array $rights = [])
     {
         $this->load();
@@ -297,13 +297,13 @@ class Dashboard extends \CommonDBTM
         Right::addForDashboard($this->fields['id'], $rights);
     }
 
-   /**
-    * Save filter in DB for the  curent dashboard
-    *
-    * @param string $filter filter parameters in JSON format
-    *
-    * @return void
-    */
+    /**
+     * Save filter in DB for the  curent dashboard
+     *
+     * @param string $filter filter parameters in JSON format
+     *
+     * @return void
+     */
     public function saveFilter(string $filters = ''): void
     {
         $this->load();
@@ -312,13 +312,13 @@ class Dashboard extends \CommonDBTM
         Filter::addForDashboard($this->fields['id'], $filters);
     }
 
-   /**
-    * Save filter in DB for the  curent dashboard
-    *
-    * @param string $filter filter parameters in JSON format
-    *
-    * @return string
-    */
+    /**
+     * Save filter in DB for the  curent dashboard
+     *
+     * @param string $filter filter parameters in JSON format
+     *
+     * @return string
+     */
     public function getFilter(): string
     {
         $this->load();
@@ -326,12 +326,12 @@ class Dashboard extends \CommonDBTM
         return $this->filters;
     }
 
-   /**
-    * Clone current Dashboard.
-    * (Clean gridstack_id-id in new one)
-    *
-    * @return array with [title, key]
-    */
+    /**
+     * Clone current Dashboard.
+     * (Clean gridstack_id-id in new one)
+     *
+     * @return array with [title, key]
+     */
     public function cloneCurrent(): array
     {
         $this->load();
@@ -358,15 +358,15 @@ class Dashboard extends \CommonDBTM
     }
 
 
-   /**
-    * Retrieve all dashboards and store them into a static var
-    *
-    * @param bool   $force don't check dashboard are already loaded and force their load
-    * @param bool   $check_rights use to remove rights checking (use in embed)
-    * @param string $context only dashboard for given context
-    *
-    * @return array dasboards
-    */
+    /**
+     * Retrieve all dashboards and store them into a static var
+     *
+     * @param bool   $force don't check dashboard are already loaded and force their load
+     * @param bool   $check_rights use to remove rights checking (use in embed)
+     * @param string $context only dashboard for given context
+     *
+     * @return array dasboards
+     */
     public static function getAll(
         bool $force = false,
         bool $check_rights = true,
@@ -419,31 +419,31 @@ class Dashboard extends \CommonDBTM
     }
 
 
-   /**
-    * Convert right from DB entries to a array with type foreign keys.
-    * Ex:
-    * IN
-    * [
-    *    [
-    *       'itemtype' => 'Entity'
-    *       'items_id' => yyy
-    *    ], [
-    *       ...
-    *    ],
-    * ]
-    *
-    * OUT
-    * [
-    *   'entities_id' => [...]
-    *   'profiles_id' => [...]
-    *   'users_id'    => [...]
-    *   'groups_id'   => [...]
-    * ]
-    *
-    * @param array $raw_rights right from DB
-    *
-    * @return array converter rights
-    */
+    /**
+     * Convert right from DB entries to a array with type foreign keys.
+     * Ex:
+     * IN
+     * [
+     *    [
+     *       'itemtype' => 'Entity'
+     *       'items_id' => yyy
+     *    ], [
+     *       ...
+     *    ],
+     * ]
+     *
+     * OUT
+     * [
+     *   'entities_id' => [...]
+     *   'profiles_id' => [...]
+     *   'users_id'    => [...]
+     *   'groups_id'   => [...]
+     * ]
+     *
+     * @param array $raw_rights right from DB
+     *
+     * @return array converter rights
+     */
     public static function convertRights(array $raw_rights = []): array
     {
         $rights = [
@@ -461,13 +461,13 @@ class Dashboard extends \CommonDBTM
     }
 
 
-   /**
-    * Check a current set of rights
-    *
-    * @param array $rights
-    *
-    * @return bool
-    */
+    /**
+     * Check a current set of rights
+     *
+     * @param array $rights
+     *
+     * @return bool
+     */
     public static function checkRights(array $rights = []): bool
     {
         $default_rights = [
@@ -492,22 +492,22 @@ class Dashboard extends \CommonDBTM
     }
 
 
-   /**
-    * Import dashboards from a variable
-
-    * @param string|array $import json or php array representing the dashboards collection
-    * [
-    *    dashboard_key => [
-    *       'title'  => '...',
-    *       'items'  => [...],
-    *       'rights' => [...],
-    *    ], [
-    *       ...
-    *    ]
-    * ]
-    *
-    * @return bool
-    */
+    /**
+     * Import dashboards from a variable
+     *
+     * @param string|array $import json or php array representing the dashboards collection
+     * [
+     *    dashboard_key => [
+     *       'title'  => '...',
+     *       'items'  => [...],
+     *       'rights' => [...],
+     *    ], [
+     *       ...
+     *    ]
+     * ]
+     *
+     * @return bool
+     */
     public static function importFromJson($import = null)
     {
         if (!is_array($import)) {
@@ -550,11 +550,11 @@ class Dashboard extends \CommonDBTM
         return $this->fields['users_id'] != '0' ? '1' : '0';
     }
 
-   /**
-    * Is this dashboard private ?
-    *
-    * @return bool true if private; false otherwise
-    */
+    /**
+     * Is this dashboard private ?
+     *
+     * @return bool true if private; false otherwise
+     */
     public function isPrivate(): bool
     {
         $this->load();

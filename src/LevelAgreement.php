@@ -34,7 +34,7 @@
 /**
  * LevelAgreement base Class for OLA & SLA
  * @since 9.2
-**/
+ **/
 
 abstract class LevelAgreement extends CommonDBChild
 {
@@ -52,28 +52,28 @@ abstract class LevelAgreement extends CommonDBChild
     protected static $levelticketclass  = '';
 
 
-   /**
-    * Display a specific OLA or SLA warning.
-    * Called into the above showForm() function
-    *
-    * @return void
-    */
+    /**
+     * Display a specific OLA or SLA warning.
+     * Called into the above showForm() function
+     *
+     * @return void
+     */
     abstract public function showFormWarning();
 
-   /**
-    * Return the text needed for a confirmation of adding level agreement to a ticket
-    *
-    * @return array of strings
-    */
+    /**
+     * Return the text needed for a confirmation of adding level agreement to a ticket
+     *
+     * @return array of strings
+     */
     abstract public function getAddConfirmation();
 
-   /**
-    * Get table fields
-    *
-    * @param integer $subtype of OLA/SLA, can be SLM::TTO or SLM::TTR
-    *
-    * @return array of 'date' and 'sla' field names
-    */
+    /**
+     * Get table fields
+     *
+     * @param integer $subtype of OLA/SLA, can be SLM::TTO or SLM::TTR
+     *
+     * @return array of 'date' and 'sla' field names
+     */
     public static function getFieldNames($subtype)
     {
 
@@ -106,11 +106,11 @@ abstract class LevelAgreement extends CommonDBChild
         return $ong;
     }
 
-   /**
-    * Define calendar of the ticket using the SLA/OLA when using this calendar as sla/ola-s calendar
-    *
-    * @param integer $calendars_id calendars_id of the ticket
-   **/
+    /**
+     * Define calendar of the ticket using the SLA/OLA when using this calendar as sla/ola-s calendar
+     *
+     * @param integer $calendars_id calendars_id of the ticket
+     **/
     public function setTicketCalendar($calendars_id)
     {
 
@@ -134,16 +134,16 @@ abstract class LevelAgreement extends CommonDBChild
         $this->fields['definition_time'] = 'hour';
     }
 
-   /**
-    * Print the form
-    *
-    * @param $ID        integer  ID of the item
-    * @param $options   array    of possible options:
-    *     - target filename : where to go when done.
-    *     - withtemplate boolean : template or basic item
-    *
-    *@return boolean item found
-   **/
+    /**
+     * Print the form
+     *
+     * @param $ID        integer  ID of the item
+     * @param $options   array    of possible options:
+     *     - target filename : where to go when done.
+     *     - withtemplate boolean : template or basic item
+     *
+     *@return boolean item found
+     **/
     public function showForm($ID, array $options = [])
     {
         $rowspan = 3;
@@ -245,13 +245,13 @@ abstract class LevelAgreement extends CommonDBChild
         return true;
     }
 
-   /**
-    * Get possibles keys and labels for the definition_time field
-    *
-    * @return string
-    *
-    * @since 10.0.0
-    */
+    /**
+     * Get possibles keys and labels for the definition_time field
+     *
+     * @return string
+     *
+     * @since 10.0.0
+     */
     public static function getDefinitionTimeValues(): array
     {
         return [
@@ -262,30 +262,30 @@ abstract class LevelAgreement extends CommonDBChild
         ];
     }
 
-   /**
-    * Get the matching label for a given key (definition_time field)
-    *
-    * @param string $value
-    *
-    * @return string
-    *
-    * @since 10.0.0
-    */
+    /**
+     * Get the matching label for a given key (definition_time field)
+     *
+     * @param string $value
+     *
+     * @return string
+     *
+     * @since 10.0.0
+     */
     public static function getDefinitionTimeLabel(string $value): string
     {
         return self::getDefinitionTimeValues()[$value] ?? "";
     }
 
 
-   /**
-    * Get a level for a given action
-    *
-    * since 10.0
-    *
-    * @param mixed $nextaction
-    *
-    * @return false|LevelAgreementLevel
-    */
+    /**
+     * Get a level for a given action
+     *
+     * since 10.0
+     *
+     * @param mixed $nextaction
+     *
+     * @return false|LevelAgreementLevel
+     */
     public function getLevelFromAction($nextaction)
     {
         if ($nextaction === false) {
@@ -302,16 +302,16 @@ abstract class LevelAgreement extends CommonDBChild
     }
 
 
-   /**
-    * Get then next levelagreement action for a given ticket and "LA" type
-    *
-    * since 10.0
-    *
-    * @param Ticket $ticket
-    * @param int $type
-    *
-    * @return false|OlaLevel_Ticket|SlaLevel_Ticket
-    */
+    /**
+     * Get then next levelagreement action for a given ticket and "LA" type
+     *
+     * since 10.0
+     *
+     * @param Ticket $ticket
+     * @param int $type
+     *
+     * @return false|OlaLevel_Ticket|SlaLevel_Ticket
+     */
     public function getNextActionForTicket(Ticket $ticket, int $type)
     {
         $nextaction = new static::$levelticketclass();
@@ -323,11 +323,11 @@ abstract class LevelAgreement extends CommonDBChild
     }
 
 
-   /**
-    * Print the HTML for a SLM
-    *
-    * @param SLM $slm Slm item
-    */
+    /**
+     * Print the HTML for a SLM
+     *
+     * @param SLM $slm Slm item
+     */
     public static function showForSLM(SLM $slm)
     {
         global $CFG_GLPI;
@@ -457,10 +457,10 @@ abstract class LevelAgreement extends CommonDBChild
         echo "</div>";
     }
 
-   /**
-    * Display a list of rule for the current sla/ola
-    * @return void
-    */
+    /**
+     * Display a list of rule for the current sla/ola
+     * @return void
+     */
     public function showRulesList()
     {
         global $DB;
@@ -584,12 +584,12 @@ abstract class LevelAgreement extends CommonDBChild
     }
 
 
-   /**
-    * Get data by type and ticket
-    *
-    * @param $tickets_id
-    * @param $type
-    */
+    /**
+     * Get data by type and ticket
+     *
+     * @param $tickets_id
+     * @param $type
+     */
     public function getDataForTicket($tickets_id, $type)
     {
         global $DB;
@@ -693,11 +693,11 @@ abstract class LevelAgreement extends CommonDBChild
     }
 
 
-   /**
-    * @param $field
-    * @param $values
-    * @param $options   array
-   **/
+    /**
+     * @param $field
+     * @param $values
+     * @param $options   array
+     **/
     public static function getSpecificValueToDisplay($field, $values, array $options = [])
     {
 
@@ -725,14 +725,14 @@ abstract class LevelAgreement extends CommonDBChild
     }
 
 
-   /**
-    * @param $field
-    * @param $name            (default '')
-    * @param $values          (default '')
-    * @param $options   array
-    *
-    * @return string
-   **/
+    /**
+     * @param $field
+     * @param $name            (default '')
+     * @param $values          (default '')
+     * @param $options   array
+     *
+     * @return string
+     **/
     public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
     {
 
@@ -749,11 +749,11 @@ abstract class LevelAgreement extends CommonDBChild
     }
 
 
-   /**
-    * Get computed resolution time
-    *
-    * @return integer resolution time (default 0)
-   **/
+    /**
+     * Get computed resolution time
+     *
+     * @return integer resolution time (default 0)
+     **/
     public function getTime()
     {
 
@@ -775,14 +775,14 @@ abstract class LevelAgreement extends CommonDBChild
     }
 
 
-   /**
-    * Get active time between to date time for the active calendar
-    *
-    * @param datetime $start begin
-    * @param datetime $end end
-    *
-    * @return integer timestamp of delay
-    **/
+    /**
+     * Get active time between to date time for the active calendar
+     *
+     * @param datetime $start begin
+     * @param datetime $end end
+     *
+     * @return integer timestamp of delay
+     **/
     public function getActiveTimeBetween($start, $end)
     {
 
@@ -809,14 +809,14 @@ abstract class LevelAgreement extends CommonDBChild
     }
 
 
-   /**
-    * Get date for current agreement
-    *
-    * @param string  $start_date        datetime start date
-    * @param integer $additional_delay  integer  additional delay to add or substract (for waiting time)
-    *
-    * @return string|null  due date time (NULL if sla/ola not exists)
-   **/
+    /**
+     * Get date for current agreement
+     *
+     * @param string  $start_date        datetime start date
+     * @param integer $additional_delay  integer  additional delay to add or substract (for waiting time)
+     *
+     * @return string|null  due date time (NULL if sla/ola not exists)
+     **/
     public function computeDate($start_date, $additional_delay = 0)
     {
 
@@ -850,15 +850,15 @@ abstract class LevelAgreement extends CommonDBChild
     }
 
 
-   /**
-    * Get execution date of a level
-    *
-    * @param string  $start_date        start date
-    * @param integer $levels_id         sla/ola level id
-    * @param integer $additional_delay  additional delay to add or substract (for waiting time)
-    *
-    * @return string|null  execution date time (NULL if ola/sla not exists)
-   **/
+    /**
+     * Get execution date of a level
+     *
+     * @param string  $start_date        start date
+     * @param integer $levels_id         sla/ola level id
+     * @param integer $additional_delay  additional delay to add or substract (for waiting time)
+     *
+     * @return string|null  execution date time (NULL if ola/sla not exists)
+     **/
     public function computeExecutionDate($start_date, $levels_id, $additional_delay = 0)
     {
 
@@ -895,11 +895,11 @@ abstract class LevelAgreement extends CommonDBChild
     }
 
 
-   /**
-    * Get types
-    *
-    * @return array array of types
-    **/
+    /**
+     * Get types
+     *
+     * @return array array of types
+     **/
     public static function getTypes()
     {
         return [SLM::TTO => __('Time to own'),
@@ -907,12 +907,12 @@ abstract class LevelAgreement extends CommonDBChild
     }
 
 
-   /**
-    * Get types name
-    *
-    * @param  integer $type
-    * @return string  name
-    **/
+    /**
+     * Get types name
+     *
+     * @param  integer $type
+     * @return string  name
+     **/
     public static function getOneTypeName($type)
     {
 
@@ -925,13 +925,13 @@ abstract class LevelAgreement extends CommonDBChild
     }
 
 
-   /**
-    * Get SLA types dropdown
-    *
-    * @param array $options
-    *
-    * @return string
-    */
+    /**
+     * Get SLA types dropdown
+     *
+     * @param array $options
+     *
+     * @return string
+     */
     public static function getTypeDropdown($options)
     {
 
@@ -971,14 +971,14 @@ abstract class LevelAgreement extends CommonDBChild
     }
 
 
-   /**
-    * Add a level to do for a ticket
-    *
-    * @param Ticket  $ticket Ticket object
-    * @param integer $levels_id SlaLevel or OlaLevel ID
-    *
-    * @return void
-    **/
+    /**
+     * Add a level to do for a ticket
+     *
+     * @param Ticket  $ticket Ticket object
+     * @param integer $levels_id SlaLevel or OlaLevel ID
+     *
+     * @return void
+     **/
     public function addLevelToDo(Ticket $ticket, $levels_id = 0)
     {
 
@@ -1006,13 +1006,13 @@ abstract class LevelAgreement extends CommonDBChild
     }
 
 
-   /**
-    * remove a level to do for a ticket
-    *
-    * @param $ticket Ticket object
-    *
-    * @return void
-   **/
+    /**
+     * remove a level to do for a ticket
+     *
+     * @param $ticket Ticket object
+     *
+     * @return void
+     **/
     public static function deleteLevelsToDo(Ticket $ticket)
     {
         global $DB;

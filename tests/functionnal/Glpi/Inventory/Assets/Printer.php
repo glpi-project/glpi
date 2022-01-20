@@ -69,9 +69,9 @@ class Printer extends AbstractInventoryAsset
         ];
     }
 
-   /**
-    * @dataProvider assetProvider
-    */
+    /**
+     * @dataProvider assetProvider
+     */
     public function testPrepare($xml, $expected)
     {
         $date_now = date('Y-m-d H:i:s');
