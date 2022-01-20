@@ -348,6 +348,7 @@ class SoftwareVersion extends CommonDBChild
             echo "<th>" . self::getTypeName(Session::getPluralNumber()) . "</th>";
             echo "<th>" . __('Status') . "</th>";
             echo "<th>" . OperatingSystem::getTypeName(1) . "</th>";
+            echo "<th>" . __('Architecture') . "</th>";
             echo "<th>" . _n('Installation', 'Installations', Session::getPluralNumber()) . "</th>";
             echo "<th>" . __('Comments') . "</th>";
             echo "</tr>\n";
@@ -366,6 +367,7 @@ class SoftwareVersion extends CommonDBChild
                     $data['operatingsystems_id']
                 );
                 echo "</td>";
+                echo "<td>{$data['arch']}</td>";
                 echo "<td>$nb</td>";
                 echo "<td>" . nl2br($data['comment'] ?? "") . "</td></tr>\n";
 
@@ -373,7 +375,7 @@ class SoftwareVersion extends CommonDBChild
             }
 
             echo "<tfoot>";
-            echo "<tr class='tab_bg_1 noHover'><td class='right b' colspan='3'>" . __('Total') . "</td>";
+            echo "<tr class='tab_bg_1 noHover'><td class='right b' colspan='4'>" . __('Total') . "</td>";
             echo "<td class='b'>$tot</td><td></td>";
             echo "</tr>";
             echo "</tfoot>";

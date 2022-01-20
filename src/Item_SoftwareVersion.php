@@ -921,6 +921,7 @@ class Item_SoftwareVersion extends CommonDBRelation
             'glpi_softwareversions.id AS verid',
             'glpi_softwareversions.softwares_id',
             'glpi_softwareversions.name AS version',
+            'glpi_softwareversions.arch AS arch',
             'glpi_softwares.is_valid AS softvalid',
             'glpi_items_softwareversions.date_install AS dateinstall',
             "$selftable.is_dynamic"
@@ -1090,6 +1091,7 @@ class Item_SoftwareVersion extends CommonDBRelation
             $header_end .= "<th>" . __('Name') . "</th><th>" . __('Status') . "</th>";
             $header_end .= "<th>" . _n('Version', 'Versions', 1) . "</th><th>" . SoftwareLicense::getTypeName(1) . "</th>";
             $header_end .= "<th>" . __('Installation date') . "</th>";
+            $header_end .= "<th>" . __('Architecture') . "</th>";
             $header_end .= "<th>" . __('Automatic inventory') . "</th>";
             $header_end .= "<th>" . SoftwareCategory::getTypeName(1) . "</th>";
             $header_end .= "<th>" . __('Valid license') . "</th>";
@@ -1389,6 +1391,7 @@ class Item_SoftwareVersion extends CommonDBRelation
             echo "</td>";
 
             echo "<td>" . Html::convDate($data['dateinstall']) . "</td>";
+            echo "<td>" . $data['arch'] . "</td>";
 
             if (isset($data['is_dynamic'])) {
                 echo "<td>" . Dropdown::getYesNo($data['is_dynamic']) . "</td>";
