@@ -39,6 +39,7 @@ use Glpi\Features\AssetImage;
 class Software extends CommonDBTM
 {
     use Glpi\Features\Clonable;
+    use Glpi\Features\TreeBrowse;
     use AssetImage;
 
    // From CommonDBTM
