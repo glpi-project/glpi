@@ -7448,9 +7448,11 @@ abstract class CommonITILObject extends CommonDBTM {
                );
             }
             echo "<span class='buttons'>";
-            echo "<a href='".Document::getFormURLWithID($item_i['id'])."' class='edit_document fa fa-eye pointer' title='".
-                   _sx("button", "Show")."'>";
-            echo "<span class='sr-only'>" . _sx('button', 'Show') . "</span></a>";
+            if (Session::getCurrentInterface() != 'helpdesk') {
+               echo "<a href='".Document::getFormURLWithID($item_i['id'])."' class='edit_document fa fa-eye pointer' title='".
+                     _sx("button", "Show")."'>";
+               echo "<span class='sr-only'>" . _sx('button', 'Show') . "</span></a>";
+            }
 
             $doc = new Document();
             $doc->getFromDB($item_i['id']);
