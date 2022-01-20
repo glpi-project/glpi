@@ -38,27 +38,24 @@ use CommonTreeDropdown;
 use DB;
 use DropdownTranslation;
 use Html;
+use ITILCategory;
 use QuerySubQuery;
 use QueryExpression;
 use Search;
 
 /**
  * TreeBrowse
- **/
+ *
+ * @since 10.0.0
+ */
 trait TreeBrowse
 {
-   /**
-    * Show the document browse view
-   **/
-    public static function showBrowseView($itemtype, $params)
+    /**
+     * Show the document browse view
+     */
+    public static function showBrowseView(string $itemtype, array $params)
     {
         global $CFG_GLPI;
-
-        $cat_field   = strtolower($itemtype) . "categories_id";
-        $item = new $itemtype();
-        if ($item instanceof CommonITILObject) {
-            $cat_field   = "itilcategories_id";
-        }
 
         $rand        = mt_rand();
         $ajax_url    = $CFG_GLPI["root_doc"] . "/ajax/treebrowse.php";
@@ -74,7 +71,7 @@ trait TreeBrowse
                             : 0;
         $criteria    = json_encode($params['criteria']);
 
-        $category_list = json_encode(self::getTreeCategoryList($itemtype, $cat_field, $params));
+        $category_list = json_encode(self::getTreeCategoryList($itemtype, $params));
         $no_cat_found  = __("No category found");
 
         $JS = <<<JAVASCRIPT
@@ -119,7 +116,6 @@ trait TreeBrowse
                 $('#items_list$rand').load('$ajax_url', {
                     'action': 'getItemslist',
                     'cat_id': cat_id,
-                    'cat_field': '$cat_field',
                     'itemtype': '$itemtype',
                     'start': $start,
                     'browse': $browse,
@@ -146,19 +142,19 @@ trait TreeBrowse
         </div>";
     }
 
-     /**
-    * Get list of document categories in fancytree format.
-    *
-    * @since 10
-    *
-    * @return array
-    */
-    public static function getTreeCategoryList($itemtype, $cat_field, $params)
+    /**
+     * Get list of document categories in fancytree format.
+     *
+     * @param string $itemtype
+     * @param array $params
+     *
+     * @return array
+     */
+    public static function getTreeCategoryList(string $itemtype, array $params): array
     {
-
         global $DB;
 
-        $cat_itemtype = getItemtypeForForeignKeyField($cat_field);
+        $cat_itemtype = static::getCategoryItemType($itemtype);
         $cat_item     = new $cat_itemtype();
         $data = Search::getDatas($itemtype, $params);
 
@@ -299,5 +295,19 @@ trait TreeBrowse
         $newtree = $buildtree($nodes);
 
         return $newtree;
+    }
+
+    /**
+     * Return category itemtype for given itemtype.
+     *
+     * @param string $itemtype
+     *
+     * @return string|null
+     */
+    public static function getCategoryItemType(string $itemtype): ?string
+    {
+        return is_a($itemtype, CommonITILObject::class, true)
+            ? ITILCategory::class
+            : $itemtype . 'Category';
     }
 }

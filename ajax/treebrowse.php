@@ -47,14 +47,15 @@ switch ($_REQUEST['action']) {
         ];
 
         $itemtype = $_REQUEST['itemtype'];
-        $cat_table = getTableNameForForeignKeyField($_REQUEST['cat_field']);
+        $category_itemtype = $itemtype::getCategoryItemType($itemtype);
+        $category_table = $category_itemtype::getTable();
         $item = new $itemtype();
         $so = $item->rawSearchOptions();
 
         $field = 0;
         foreach ($so as $value) {
             if (isset($value['field'])) {
-                if (($value['field'] == 'name' || $value['field'] == 'completename') &&  $value['table'] == $cat_table) {
+                if (($value['field'] == 'name' || $value['field'] == 'completename') && $value['table'] == $category_table) {
                     $field = $value['id'];
                 }
             }
