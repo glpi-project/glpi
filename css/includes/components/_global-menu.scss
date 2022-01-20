@@ -206,7 +206,7 @@
                   z-index: 1060;
 
                   & + .dropdown-menu {
-                     &.animate__fadeInLeft:before {
+                     &.animate__fadeInLeft::before {
                         left: -2px;
                         height: 100%;
                         width: 4px;
@@ -214,6 +214,7 @@
                         position: absolute;
                         background: transparent;
                      }
+
                      background-color: $mainmenu-fg;
                      color: $mainmenu-bg;
                      top: 0;
