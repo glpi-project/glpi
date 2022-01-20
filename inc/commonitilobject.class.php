@@ -1404,7 +1404,7 @@ abstract class CommonITILObject extends CommonDBTM {
                }
 
             } else { // Not calendar defined
-               if ($this->fields['time_to_resolve'] > 0) {
+               if ((int)$this->fields['time_to_resolve'] > 0) {
                   // compute new due date : no calendar so add computed delay_time
                   $this->updates[]                 = "time_to_resolve";
                   $this->fields['time_to_resolve'] = date('Y-m-d H:i:s',
@@ -1437,7 +1437,7 @@ abstract class CommonITILObject extends CommonDBTM {
             if (($calendars_id > 0)
                 && $calendar->getFromDB($calendars_id)
                 && $calendar->hasAWorkingDay()) {
-               if ($this->fields['internal_time_to_resolve'] > 0) {
+               if ((int)$this->fields['internal_time_to_resolve'] > 0) {
                   // compute new internal_time_to_resolve using calendar
                   $this->updates[]                          = "internal_time_to_resolve";
                   $this->fields['internal_time_to_resolve'] = $calendar->computeEndDate(
@@ -1446,7 +1446,7 @@ abstract class CommonITILObject extends CommonDBTM {
                }
 
             } else { // Not calendar defined
-               if ($this->fields['internal_time_to_resolve'] > 0) {
+               if ((int)$this->fields['internal_time_to_resolve'] > 0) {
                   // compute new internal_time_to_resolve : no calendar so add computed delay_time
                   $this->updates[]                          = "internal_time_to_resolve";
                   $this->fields['internal_time_to_resolve'] = date('Y-m-d H:i:s',
