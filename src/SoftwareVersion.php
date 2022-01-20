@@ -344,7 +344,7 @@ class SoftwareVersion extends CommonDBChild
         );
 
         if (count($iterator)) {
-            echo "<table class='tab_cadre_fixehov'><tr>";
+            echo "<table class='table border table-striped'><tr>";
             echo "<th>" . self::getTypeName(Session::getPluralNumber()) . "</th>";
             echo "<th>" . __('Status') . "</th>";
             echo "<th>" . OperatingSystem::getTypeName(1) . "</th>";
@@ -361,20 +361,23 @@ class SoftwareVersion extends CommonDBChild
                 echo "<td><a href='" . SoftwareVersion::getFormURLWithID($data['id']) . "'>";
                 echo $data['name'] . (empty($data['name']) ? "(" . $data['id'] . ")" : "") . "</a></td>";
                 echo "<td>" . $data['sname'] . "</td>";
-                echo "<td class='right'>" . Dropdown::getDropdownName(
+                echo "<td>" . Dropdown::getDropdownName(
                     'glpi_operatingsystems',
                     $data['operatingsystems_id']
                 );
                 echo "</td>";
-                echo "<td class='numeric'>$nb</td>";
+                echo "<td>$nb</td>";
                 echo "<td>" . nl2br($data['comment'] ?? "") . "</td></tr>\n";
 
                 $tot += $nb;
             }
 
+            echo "<tfoot>";
             echo "<tr class='tab_bg_1 noHover'><td class='right b' colspan='3'>" . __('Total') . "</td>";
-            echo "<td class='numeric b'>$tot</td><td></td></tr>";
-            echo "</table>\n";
+            echo "<td class='b'>$tot</td><td></td>";
+            echo "</tr>";
+            echo "</tfoot>";
+            echo "</table>";
         } else {
             echo "<table class='tab_cadre_fixe'>";
             echo "<tr><th>" . __('No item found') . "</th></tr>";
