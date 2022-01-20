@@ -1578,4 +1578,39 @@ class Migration
             }
         }
     }
+
+    /**
+     * Helper to create a simple link table between two itemtypes
+     * The table will contain 3 columns :
+     * - id (primary key)
+     * - foreign key 1 (first itemtype)
+     * - foreign key 2 (second itemtype)
+     *
+     * @param string $table Table name
+     * @param string $class_1 First itemtype (CommonDBTM)
+     * @param string $class_2 Second itemtype (CommonDBTM)
+     */
+    public function createLinkTable(
+        string $table,
+        string $class_1,
+        string $class_2
+    ) {
+        $fk_1 = $class_1::getForeignKeyField();
+        $fk_2 = $class_2::getForeignKeyField();
+
+        $default_charset = DBConnection::getDefaultCharset();
+        $default_collation = DBConnection::getDefaultCollation();
+        $default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
+
+        $this->addPreQuery("
+            CREATE TABLE `$table` (
+                `id` int unsigned NOT NULL AUTO_INCREMENT,
+                `$fk_1` int {$default_key_sign} NOT NULL DEFAULT '0',
+                `$fk_2` int {$default_key_sign} NOT NULL DEFAULT '0',
+                PRIMARY KEY (`id`),
+                KEY `$fk_1` (`$fk_1`),
+                KEY `$fk_2` (`$fk_2`)
+            ) ENGINE=InnoDB DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation} ROW_FORMAT=DYNAMIC;
+        ", "Create link table between $class_1 and $class_2");
+    }
 }

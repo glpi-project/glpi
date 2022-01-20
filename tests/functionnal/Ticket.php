@@ -33,11 +33,14 @@
 
 namespace tests\units;
 
+use CommonDBTM;
+use CommonITILActor;
 use CommonITILObject;
 use DbTestCase;
 use Glpi\Team\Team;
 use Glpi\Toolbox\Sanitizer;
 use Symfony\Component\DomCrawler\Crawler;
+use Ticket_User;
 use TicketValidation;
 use User;
 
@@ -3838,5 +3841,165 @@ HTML
         $this->string($team[0]['itemtype'])->isEqualTo(\Group::class);
         $this->integer($team[0]['items_id'])->isEqualTo(5);
         $this->integer($team[0]['role'])->isEqualTo(Team::ROLE_ASSIGNED);
+    }
+
+    protected function testUpdateLoad1NTableDataProvider(): \Generator
+    {
+        // Build test data
+        $ticket = $this->createItem('Ticket', [
+            'name'    => 'testUpdate1NTableData ticket',
+            'content' => 'testUpdate1NTableData ticket',
+        ]);
+
+        // Build test params
+        $user1 = getItemByTypeName('User', 'glpi', true);
+        $user2 = getItemByTypeName('User', 'tech', true);
+        $user3 = getItemByTypeName('User', 'post-only', true);
+        $user4 = getItemByTypeName('User', 'normal', true);
+
+        $tickets_base_params = [
+            'item'              => $ticket,
+            'commondb_relation' => Ticket_User::class,
+            'field'             => 'assigned_users',
+            'extra_input'       => ['type' => CommonITILActor::ASSIGN]
+        ];
+
+        // Add two users
+        $ticket->input = [
+            'id' => $ticket->getID(),
+            'assigned_users' => [$user1, $user2]
+        ];
+        yield $tickets_base_params;
+
+        // Remove one user
+        $ticket->input = [
+            'id' => $ticket->getID(),
+            'assigned_users' => [$user1]
+        ];
+        yield $tickets_base_params;
+
+        // Add one user
+        $ticket->input = [
+            'id' => $ticket->getID(),
+            'assigned_users' => [$user1, $user3]
+        ];
+        yield $tickets_base_params;
+
+        // Change both users
+        $ticket->input = [
+            'id' => $ticket->getID(),
+            'assigned_users' => [$user2, $user4]
+        ];
+        yield $tickets_base_params;
+
+        // Remove all users
+        $ticket->input = [
+            'id' => $ticket->getID(),
+            'assigned_users' => []
+        ];
+        yield $tickets_base_params;
+
+        // Try from the opposite side of the relation
+        $user = getItemByTypeName('User', 'glpi');
+
+        // Build test data
+        $this->createItems('Ticket', [
+            [
+                'name'    => 'testUpdate1NTableData1',
+                'content' => 'testUpdate1NTableData1',
+            ],
+            [
+                'name'    => 'testUpdate1NTableData2',
+                'content' => 'testUpdate1NTableData2',
+            ],
+            [
+                'name'    => 'testUpdate1NTableData3',
+                'content' => 'testUpdate1NTableData3',
+            ],
+            [
+                'name'    => 'testUpdate1NTableData4',
+                'content' => 'testUpdate1NTableData4',
+            ],
+        ]);
+        $ticket1 = getItemByTypeName('Ticket', 'testUpdate1NTableData1', true);
+        $ticket2 = getItemByTypeName('Ticket', 'testUpdate1NTableData2', true);
+        $ticket3 = getItemByTypeName('Ticket', 'testUpdate1NTableData3', true);
+        $ticket4 = getItemByTypeName('Ticket', 'testUpdate1NTableData4', true);
+
+        $user_base_params = [
+            'item'              => $user,
+            'commondb_relation' => Ticket_User::class,
+            'field'             => 'linked_tickets',
+            'extra_input'       => ['type' => CommonITILActor::ASSIGN]
+        ];
+
+        // Add two tickets
+        $user->input = [
+            'id' => $user->getID(),
+            'linked_tickets' => [$ticket1, $ticket2]
+        ];
+        yield $user_base_params;
+
+        // Remove one ticket
+        $user->input = [
+            'id' => $user->getID(),
+            'linked_tickets' => [$ticket1]
+        ];
+        yield $user_base_params;
+
+        // Add one tickett
+        $user->input = [
+            'id' => $user->getID(),
+            'linked_tickets' => [$ticket1, $ticket3]
+        ];
+        yield $user_base_params;
+
+        // Change both tickets
+        $user->input = [
+            'id' => $user->getID(),
+            'linked_tickets' => [$ticket2, $ticket4]
+        ];
+        yield $user_base_params;
+
+        // Remove all tickets
+        $user->input = [
+            'id' => $user->getID(),
+            'linked_tickets' => []
+        ];
+        yield $user_base_params;
+    }
+
+    /**
+     * Functionnal tests for update1NTableData and load1NTableData
+     *
+     * @dataProvider testUpdateLoad1NTableDataProvider
+     */
+    public function testUpdateLoad1NTableData(
+        CommonDBTM $item,
+        string $commondb_relation,
+        string $field,
+        array $extra_input
+    ): void {
+        // Keep track of the linked items
+        $linked = $item->input[$field];
+        $this->array($linked);
+
+        // Allow protected calls on update1NTableData and load1NTableData
+        // Needed as these methods are not used in GLPI core yet, there is
+        // no itemtype calling them in their post_update and post_load process
+        // -> we need to be able to call them directly in this test
+        $update1NTableData = new \ReflectionMethod($item, "update1NTableData");
+        $update1NTableData->setAccessible(true);
+        $load1NTableData = new \ReflectionMethod($item, "load1NTableData");
+        $load1NTableData->setAccessible(true);
+
+        // Update DB
+        $update1NTableData->invoke($item, $commondb_relation, $field, $extra_input);
+
+        // Load values
+        $load1NTableData->invoke($item, $commondb_relation, $field, $extra_input);
+
+        // Compare values
+        $this->array($item->fields[$field])->isEqualTo($linked);
     }
 }

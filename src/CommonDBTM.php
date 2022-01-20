@@ -1521,7 +1521,7 @@ class CommonDBTM extends CommonGLPI
                 $this->oldvalues = [];
 
                 foreach (array_keys($this->input) as $key) {
-                    if (array_key_exists($key, $this->fields)) {
+                    if ($DB->fieldExists(static::getTable(), $key)) {
                       // Prevent history for date statement (for date for example)
                         if (
                             is_null($this->fields[$key])
@@ -5911,5 +5911,167 @@ class CommonDBTM extends CommonGLPI
         }
 
         return new MassiveAction($params, [], 'initial', true);
+    }
+
+    /**
+     * Automatically update 1-N links tables for the current item.
+     *
+     * @param string $commondb_relation Valid class extending CommonDBRelation
+     * @param string $field             Target field in the item input
+     * @param array  $extra_input       Fixed value to be used when searching
+     *                                  for existing values or inserting new ones
+     *
+     * @return void
+     */
+    protected function update1NTableData(
+        string $commondb_relation,
+        string $field,
+        array $extra_input
+    ): void {
+        // Check $commondb_connexity parameter
+        if (!is_a($commondb_relation, CommonDBRelation::class, true)) {
+            $error = "$commondb_relation is not a CommonDBRelation item";
+            throw new InvalidArgumentException($error);
+        }
+
+        /** @var CommonDBRelation */
+        $commondb_relation = new $commondb_relation();
+
+        // Compute which item is item_1 and item_2
+        $relation_position = $commondb_relation::getMemberPosition(static::class);
+        if ($relation_position == 1) {
+            $item_1_fk = $commondb_relation::$items_id_1;
+            $item_1_id = $this->getID();
+            $item_2_fk = $commondb_relation::$items_id_2;
+        } elseif ($relation_position == 2) {
+            $item_1_fk = $commondb_relation::$items_id_2;
+            $item_1_id = $this->getID();
+            $item_2_fk = $commondb_relation::$items_id_1;
+        } else {
+            $error = static::class . " is not part of the " . get_class($commondb_relation) . " relation";
+            throw new InvalidArgumentException($error);
+        }
+
+        // Get input value
+        $input_value = $this->input[$field] ?? null;
+
+        // See dropdownField twig macro, needed for empty values as an empty
+        // array wont be sent in the HTML form
+        $input_defined = (bool) ($this->input["_{$field}_defined"] ?? false);
+
+        // Load existing value
+        $existing_relations = $commondb_relation->find(
+            array_merge($extra_input, [
+                $item_1_fk => $item_1_id,
+            ])
+        );
+
+        // Case 1: no updates -> do nothing
+        if ($input_value === null && !$input_defined) {
+            return;
+        }
+
+        // Case 2: input was emptied -> remove all values
+        if (
+            ($input_value === null && $input_defined)
+            || (is_array($input_value) && ! count($input_value))
+        ) {
+            foreach ($existing_relations as $relation) {
+                $success = $commondb_relation->delete([
+                    'id' => $relation['id']
+                ]);
+                if (!$success) {
+                    $warning = "Failed to delete " . get_class($commondb_relation);
+                    trigger_error($warning, E_USER_WARNING);
+                }
+            }
+            return;
+        }
+
+        // Case 3: input was maybe modified -> delete missing values and add new ones
+        foreach ($existing_relations as $relation) {
+            $item_2_id = $relation[$item_2_fk];
+            // Delete missing value
+            if (!in_array($item_2_id, $input_value)) {
+                $success = $commondb_relation->delete([
+                    'id' => $relation['id']
+                ]);
+                if (!$success) {
+                    $warning = "Failed to delete " . get_class($commondb_relation);
+                    trigger_error($warning, E_USER_WARNING);
+                }
+            }
+        }
+
+        // Get existing values
+        $item_2_ids_db = array_column($existing_relations, $item_2_fk);
+
+        // Add new values
+        foreach ($input_value as $item_2_id) {
+            if (in_array($item_2_id, $item_2_ids_db)) {
+                // Value exist
+                continue;
+            }
+
+            $success = $commondb_relation->add(array_merge($extra_input, [
+                $item_1_fk => $item_1_id,
+                $item_2_fk => $item_2_id
+            ]));
+            if (!$success) {
+                $warning = "Failed to add " . get_class($commondb_relation);
+                trigger_error($warning, E_USER_WARNING);
+            }
+        }
+
+        unset($this->input[$field]);
+    }
+
+    /**
+     * Automatically load 1-N links values for the current item.
+     *
+     * @param string $commondb_relation Valid class extending CommonDBRelation
+     * @param string $field             Target field in the item input
+     * @param array  $extra_input       Fixed value to be used when searching
+     *                                  for existing valuess
+     *
+     * @return void
+     */
+    protected function load1NTableData(
+        string $commondb_relation,
+        string $field,
+        array $extra_input
+    ): void {
+        // Check $commondb_connexity parameter
+        if (!is_a($commondb_relation, CommonDBRelation::class, true)) {
+            $error = "$commondb_relation is not a CommonDBRelation item";
+            throw new InvalidArgumentException($error);
+        }
+
+        /** @var CommonDBRelation */
+        $commondb_relation = new $commondb_relation();
+
+        // Compute which item is item_1 and item_2
+        $relation_position = $commondb_relation::getMemberPosition(static::class);
+        if ($relation_position == 1) {
+            $item_1_fk = $commondb_relation::$items_id_1;
+            $item_1_id = $this->getID();
+            $item_2_fk = $commondb_relation::$items_id_2;
+        } elseif ($relation_position == 2) {
+            $item_1_fk = $commondb_relation::$items_id_2;
+            $item_1_id = $this->getID();
+            $item_2_fk = $commondb_relation::$items_id_1;
+        } else {
+            $error = static::class . " is not part of the " . get_class($commondb_relation) . " relation";
+            throw new InvalidArgumentException($error);
+        }
+
+        // Load existing value
+        $existing_relations = $commondb_relation->find(
+            array_merge($extra_input, [
+                $item_1_fk => $item_1_id,
+            ])
+        );
+
+        $this->fields[$field] = array_column($existing_relations, $item_2_fk);
     }
 }

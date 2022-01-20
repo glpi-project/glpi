@@ -595,6 +595,14 @@
 {% endmacro %}
 
 {% macro dropdownField(itemtype, name, value, label = '', options = {}) %}
+   {% if options.multiple %}
+      {# Needed for empty value as the input wont be sent in this case... we need something to know the input was displayed AND empty #}
+      {% set defined_input_name = "_#{name}_defined" %}
+      <input type="hidden" name="{{ defined_input_name }}" value="1"></input>
+
+      {# Multiple values will be set, input need to be an array #}
+      {% set name = "#{name}[]" %}
+   {% endif %}
    {% set options = {'rand': random()}|merge(options) %}
    {% if options.fields_template.isMandatoryField(name) %}
       {% set options = {'specific_tags': {'required': true}}|merge(options) %}

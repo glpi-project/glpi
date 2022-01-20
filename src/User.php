@@ -4285,6 +4285,7 @@ JAVASCRIPT;
          'toadd'               => [],
          'hide_if_no_elements' => false,
          'readonly'            => false,
+         'multiple'            => false,
         ];
 
         if (is_array($options) && count($options)) {
@@ -4293,14 +4294,21 @@ JAVASCRIPT;
             }
         }
 
+        if ($p['multiple']) {
+            $p['display_emptychoice'] = false;
+            $p['values'] = $p['value'] ?? [];
+            $p['comments'] = false;
+            unset($p['value']);
+        }
+
        // check default value (in case of multiple observers)
-        if (is_array($p['value'])) {
+        if (isset($p['value']) && is_array($p['value'])) {
             $p['value'] = $p['value'][$p['_user_index']] ?? 0;
         }
 
        // Check default value for dropdown : need to be a numeric (or null)
         if (
-            $p['value'] !== null
+            isset($p['value'])
             && ((strlen($p['value']) == 0) || !is_numeric($p['value']) && $p['value'] != 'myself')
         ) {
             $p['value'] = 0;
@@ -4315,8 +4323,10 @@ JAVASCRIPT;
             }
         }
 
-       // Make a select box with all glpi users
-        $user = getUserName($p['value'], 2);
+        // Make a select box with all glpi users
+        if (!$p['multiple']) {
+            $user = getUserName($p['value'], 2);
+        }
 
         if ($p['readonly']) {
             return $user["name"];
@@ -4324,33 +4334,33 @@ JAVASCRIPT;
 
         $view_users = self::canView();
 
-        if ($p['value'] === 'myself') {
-            $default = __("Myself");
-        } else if (!empty($p['value']) && ($p['value'] > 0)) {
-            $default = $user["name"];
-        } else {
-            if ($p['all']) {
-                $default = __('All');
+        if (!$p['multiple']) {
+            if ($p['value'] === 'myself') {
+                $default = __("Myself");
+            } else if (!empty($p['value']) && ($p['value'] > 0)) {
+                $default = $user["name"];
             } else {
-                $default = $p['emptylabel'];
+                if ($p['all']) {
+                    $default = __('All');
+                } else {
+                    $default = $p['emptylabel'];
+                }
+            }
+        } else {
+            // get multiple values name
+            $valuesnames = [];
+            foreach ($p['values'] as $value) {
+                if (!empty($value) && ($value > 0)) {
+                    $user = getUserName($value, 2);
+                    $valuesnames[] = $user["name"];
+                }
             }
         }
 
-       // get multiple values name
-        $valuesnames = [];
-        foreach ($p['values'] as $value) {
-            if (!empty($value) && ($value > 0)) {
-                $user = getUserName($value, 2);
-                $valuesnames[] = $user["name"];
-            }
-        }
 
         $field_id = Html::cleanId("dropdown_" . $p['name'] . $p['rand']);
         $param    = [
-         'value'               => $p['value'],
-         'values'              => $p['values'],
-         'valuename'           => $default,
-         'valuesnames'         => $valuesnames,
+         'multiple'            => $p['multiple'],
          'width'               => $p['width'],
          'all'                 => $p['all'],
          'display_emptychoice' => $p['display_emptychoice'],
@@ -4369,6 +4379,14 @@ JAVASCRIPT;
             'entity_restrict' => $entity_restrict,
          ]),
         ];
+
+        if ($p['multiple']) {
+            $param['values'] = $p['values'];
+            $param['valuesnames'] = $valuesnames;
+        } else {
+            $param['value'] = $p['value'];
+            $param['valuename'] = $default;
+        }
 
         if ($p['hide_if_no_elements']) {
             $result = Dropdown::getDropdownUsers(
