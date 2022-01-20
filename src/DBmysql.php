@@ -36,7 +36,7 @@ use Glpi\System\Requirement\DbTimezones;
 
 /**
  *  Database class for Mysql
-**/
+ **/
 class DBmysql
 {
    //! Database Host - string or Array of string (round robin)
@@ -48,10 +48,10 @@ class DBmysql
    //! Default Database
     public $dbdefault          = "";
 
-   /**
-    * The database handler
-    * @var mysqli
-    */
+    /**
+     * The database handler
+     * @var mysqli
+     */
     protected $dbh;
 
    //! Database Error
@@ -61,107 +61,107 @@ class DBmysql
     public $slave              = false;
     private $in_transaction;
 
-   /**
-    * Defines if connection must use SSL.
-    *
-    * @var boolean
-    */
+    /**
+     * Defines if connection must use SSL.
+     *
+     * @var boolean
+     */
     public $dbssl              = false;
 
-   /**
-    * The path name to the key file (used in case of SSL connection).
-    *
-    * @see mysqli::ssl_set()
-    * @var string|null
-    */
+    /**
+     * The path name to the key file (used in case of SSL connection).
+     *
+     * @see mysqli::ssl_set()
+     * @var string|null
+     */
     public $dbsslkey           = null;
 
-   /**
-    * The path name to the certificate file (used in case of SSL connection).
-    *
-    * @see mysqli::ssl_set()
-    * @var string|null
-    */
+    /**
+     * The path name to the certificate file (used in case of SSL connection).
+     *
+     * @see mysqli::ssl_set()
+     * @var string|null
+     */
     public $dbsslcert          = null;
 
-   /**
-    * The path name to the certificate authority file (used in case of SSL connection).
-    *
-    * @see mysqli::ssl_set()
-    * @var string|null
-    */
+    /**
+     * The path name to the certificate authority file (used in case of SSL connection).
+     *
+     * @see mysqli::ssl_set()
+     * @var string|null
+     */
     public $dbsslca            = null;
 
-   /**
-    * The pathname to a directory that contains trusted SSL CA certificates in PEM format
-    * (used in case of SSL connection).
-    *
-    * @see mysqli::ssl_set()
-    * @var string|null
-    */
+    /**
+     * The pathname to a directory that contains trusted SSL CA certificates in PEM format
+     * (used in case of SSL connection).
+     *
+     * @see mysqli::ssl_set()
+     * @var string|null
+     */
     public $dbsslcapath        = null;
 
-   /**
-    * A list of allowable ciphers to use for SSL encryption (used in case of SSL connection).
-    *
-    * @see mysqli::ssl_set()
-    * @var string|null
-    */
+    /**
+     * A list of allowable ciphers to use for SSL encryption (used in case of SSL connection).
+     *
+     * @see mysqli::ssl_set()
+     * @var string|null
+     */
     public $dbsslcacipher      = null;
 
-   /**
-    * Determine if timezones should be used for timestamp fields.
-    * Defaults to false to keep backward compatibility with old DB.
-    *
-    * @var bool
-    */
+    /**
+     * Determine if timezones should be used for timestamp fields.
+     * Defaults to false to keep backward compatibility with old DB.
+     *
+     * @var bool
+     */
     public $use_timezones = false;
 
-   /**
-    * Determine if warnings related to MySQL deprecations should be logged too.
-    * Defaults to false as this option should only on development/test environment.
-    *
-    * @var bool
-    */
+    /**
+     * Determine if warnings related to MySQL deprecations should be logged too.
+     * Defaults to false as this option should only on development/test environment.
+     *
+     * @var bool
+     */
     public $log_deprecation_warnings = false;
 
-   /**
-    * Determine if utf8mb4 should be used for DB connection and tables altering operations.
-    * Defaults to false to keep backward compatibility with old DB.
-    *
-    * @var bool
-    */
+    /**
+     * Determine if utf8mb4 should be used for DB connection and tables altering operations.
+     * Defaults to false to keep backward compatibility with old DB.
+     *
+     * @var bool
+     */
     public $use_utf8mb4 = false;
 
-   /**
-    * Determine if MyISAM engine usage should be allowed for tables creation/altering operations.
-    * Defaults to true to keep backward compatibility with old DB.
-    *
-    * @var bool
-    */
+    /**
+     * Determine if MyISAM engine usage should be allowed for tables creation/altering operations.
+     * Defaults to true to keep backward compatibility with old DB.
+     *
+     * @var bool
+     */
     public $allow_myisam = true;
 
-   /**
-    * Determine if datetime fields usage should be allowed for tables creation/altering operations.
-    * Defaults to true to keep backward compatibility with old DB.
-    *
-    * @var bool
-    */
+    /**
+     * Determine if datetime fields usage should be allowed for tables creation/altering operations.
+     * Defaults to true to keep backward compatibility with old DB.
+     *
+     * @var bool
+     */
     public $allow_datetime = true;
 
-   /**
-    * Determine if signed integers in primary/foreign keys usage should be allowed for tables creation/altering operations.
-    * Defaults to true to keep backward compatibility with old DB.
-    *
-    * @var bool
-    */
+    /**
+     * Determine if signed integers in primary/foreign keys usage should be allowed for tables creation/altering operations.
+     * Defaults to true to keep backward compatibility with old DB.
+     *
+     * @var bool
+     */
     public $allow_signed_keys = true;
 
 
-   /** Is it a first connection ?
-    * Indicates if the first connection attempt is successful or not
-    * if first attempt fail -> display a warning which indicates that glpi is in readonly
-   **/
+    /** Is it a first connection ?
+     * Indicates if the first connection attempt is successful or not
+     * if first attempt fail -> display a warning which indicates that glpi is in readonly
+     **/
     public $first_connection   = true;
    // Is connected to the DB ?
     public $connected          = false;
@@ -171,42 +171,42 @@ class DBmysql
 
     private $cache_disabled = false;
 
-   /**
-    * Cached list fo tables.
-    *
-    * @var array
-    * @see self::tableExists()
-    */
+    /**
+     * Cached list fo tables.
+     *
+     * @var array
+     * @see self::tableExists()
+     */
     private $table_cache = [];
 
-   /**
-    * Cached list of fields.
-    *
-    * @var array
-    * @see self::listFields()
-    */
+    /**
+     * Cached list of fields.
+     *
+     * @var array
+     * @see self::listFields()
+     */
     private $field_cache = [];
 
-   /**
-    * Constructor / Connect to the MySQL Database
-    *
-    * @param integer $choice host number (default NULL)
-    *
-    * @return void
-    */
+    /**
+     * Constructor / Connect to the MySQL Database
+     *
+     * @param integer $choice host number (default NULL)
+     *
+     * @return void
+     */
     public function __construct($choice = null)
     {
         $this->connect($choice);
     }
 
-   /**
-    * Connect using current database settings
-    * Use dbhost, dbuser, dbpassword and dbdefault
-    *
-    * @param integer $choice host number (default NULL)
-    *
-    * @return void
-    */
+    /**
+     * Connect using current database settings
+     * Use dbhost, dbuser, dbpassword and dbdefault
+     *
+     * @param integer $choice host number (default NULL)
+     *
+     * @return void
+     */
     public function connect($choice = null)
     {
         $this->connected = false;
@@ -266,16 +266,16 @@ class DBmysql
         }
     }
 
-   /**
-    * Guess timezone
-    *
-    * Will  check for an existing loaded timezone from user,
-    * then will check in preferences and finally will fallback to system one.
-    *
-    * @return string
-    *
-    * @since 9.5.0
-    */
+    /**
+     * Guess timezone
+     *
+     * Will  check for an existing loaded timezone from user,
+     * then will check in preferences and finally will fallback to system one.
+     *
+     * @return string
+     *
+     * @since 9.5.0
+     */
     public function guessTimezone()
     {
         if ($this->use_timezones) {
@@ -305,16 +305,16 @@ class DBmysql
         return $zone;
     }
 
-   /**
-    * Escapes special characters in a string for use in an SQL statement,
-    * taking into account the current charset of the connection
-    *
-    * @since 0.84
-    *
-    * @param string $string String to escape
-    *
-    * @return string escaped string
-    */
+    /**
+     * Escapes special characters in a string for use in an SQL statement,
+     * taking into account the current charset of the connection
+     *
+     * @since 0.84
+     *
+     * @param string $string String to escape
+     *
+     * @return string escaped string
+     */
     public function escape($string)
     {
         if (!is_string($string)) {
@@ -323,17 +323,17 @@ class DBmysql
         return $this->dbh->real_escape_string($string);
     }
 
-   /**
-    * Execute a MySQL query
-    *
-    * @param string $query Query to execute
-    *
-    * @var array   $CFG_GLPI
-    * @var array   $DEBUG_SQL
-    * @var integer $SQL_TOTAL_REQUEST
-    *
-    * @return mysqli_result|boolean Query result handler
-    */
+    /**
+     * Execute a MySQL query
+     *
+     * @param string $query Query to execute
+     *
+     * @var array   $CFG_GLPI
+     * @var array   $DEBUG_SQL
+     * @var integer $SQL_TOTAL_REQUEST
+     *
+     * @return mysqli_result|boolean Query result handler
+     */
     public function query($query)
     {
         global $CFG_GLPI, $DEBUG_SQL, $SQL_TOTAL_REQUEST;
@@ -391,17 +391,17 @@ class DBmysql
         return $res;
     }
 
-   /**
-    * Execute a MySQL query and die
-    * (optionnaly with a message) if it fails
-    *
-    * @since 0.84
-    *
-    * @param string $query   Query to execute
-    * @param string $message Explanation of query (default '')
-    *
-    * @return mysqli_result Query result handler
-    */
+    /**
+     * Execute a MySQL query and die
+     * (optionnaly with a message) if it fails
+     *
+     * @since 0.84
+     *
+     * @param string $query   Query to execute
+     * @param string $message Explanation of query (default '')
+     *
+     * @return mysqli_result Query result handler
+     */
     public function queryOrDie($query, $message = '')
     {
         $res = $this->query($query);
@@ -423,13 +423,13 @@ class DBmysql
         return $res;
     }
 
-   /**
-    * Prepare a MySQL query
-    *
-    * @param string $query Query to prepare
-    *
-    * @return mysqli_stmt|boolean statement object or FALSE if an error occurred.
-    */
+    /**
+     * Prepare a MySQL query
+     *
+     * @param string $query Query to prepare
+     *
+     * @return mysqli_stmt|boolean statement object or FALSE if an error occurred.
+     */
     public function prepare($query)
     {
         global $CFG_GLPI, $DEBUG_SQL, $SQL_TOTAL_REQUEST;
@@ -457,15 +457,15 @@ class DBmysql
         return $res;
     }
 
-   /**
-    * Give result from a sql result
-    *
-    * @param mysqli_result $result MySQL result handler
-    * @param int           $i      Row offset to give
-    * @param string        $field  Field to give
-    *
-    * @return mixed Value of the Row $i and the Field $field of the Mysql $result
-    */
+    /**
+     * Give result from a sql result
+     *
+     * @param mysqli_result $result MySQL result handler
+     * @param int           $i      Row offset to give
+     * @param string        $field  Field to give
+     *
+     * @return mixed Value of the Row $i and the Field $field of the Mysql $result
+     */
     public function result($result, $i, $field)
     {
         if (
@@ -478,110 +478,110 @@ class DBmysql
         return null;
     }
 
-   /**
-    * Number of rows
-    *
-    * @param mysqli_result $result MySQL result handler
-    *
-    * @return integer number of rows
-    */
+    /**
+     * Number of rows
+     *
+     * @param mysqli_result $result MySQL result handler
+     *
+     * @return integer number of rows
+     */
     public function numrows($result)
     {
         return $result->num_rows;
     }
 
-   /**
-    * Fetch array of the next row of a Mysql query
-    * Please prefer fetchRow or fetchAssoc
-    *
-    * @param mysqli_result $result MySQL result handler
-    *
-    * @return string[]|null array results
-    */
+    /**
+     * Fetch array of the next row of a Mysql query
+     * Please prefer fetchRow or fetchAssoc
+     *
+     * @param mysqli_result $result MySQL result handler
+     *
+     * @return string[]|null array results
+     */
     public function fetchArray($result)
     {
         return $result->fetch_array();
     }
 
-   /**
-    * Fetch row of the next row of a Mysql query
-    *
-    * @param mysqli_result $result MySQL result handler
-    *
-    * @return mixed|null result row
-    */
+    /**
+     * Fetch row of the next row of a Mysql query
+     *
+     * @param mysqli_result $result MySQL result handler
+     *
+     * @return mixed|null result row
+     */
     public function fetchRow($result)
     {
         return $result->fetch_row();
     }
 
-   /**
-    * Fetch assoc of the next row of a Mysql query
-    *
-    * @param mysqli_result $result MySQL result handler
-    *
-    * @return string[]|null result associative array
-    */
+    /**
+     * Fetch assoc of the next row of a Mysql query
+     *
+     * @param mysqli_result $result MySQL result handler
+     *
+     * @return string[]|null result associative array
+     */
     public function fetchAssoc($result)
     {
         return $result->fetch_assoc();
     }
 
-   /**
-    * Fetch object of the next row of an SQL query
-    *
-    * @param mysqli_result $result MySQL result handler
-    *
-    * @return object|null
-    */
+    /**
+     * Fetch object of the next row of an SQL query
+     *
+     * @param mysqli_result $result MySQL result handler
+     *
+     * @return object|null
+     */
     public function fetchObject($result)
     {
         return $result->fetch_object();
     }
 
-   /**
-    * Move current pointer of a Mysql result to the specific row
-    *
-    * @param mysqli_result $result MySQL result handler
-    * @param integer       $num    Row to move current pointer
-    *
-    * @return boolean
-    */
+    /**
+     * Move current pointer of a Mysql result to the specific row
+     *
+     * @param mysqli_result $result MySQL result handler
+     * @param integer       $num    Row to move current pointer
+     *
+     * @return boolean
+     */
     public function dataSeek($result, $num)
     {
         return $result->data_seek($num);
     }
 
-   /**
-    * Give ID of the last inserted item by Mysql
-    *
-    * @return mixed
-    */
+    /**
+     * Give ID of the last inserted item by Mysql
+     *
+     * @return mixed
+     */
     public function insertId()
     {
         return $this->dbh->insert_id;
     }
 
-   /**
-    * Give number of fields of a Mysql result
-    *
-    * @param mysqli_result $result MySQL result handler
-    *
-    * @return int number of fields
-    */
+    /**
+     * Give number of fields of a Mysql result
+     *
+     * @param mysqli_result $result MySQL result handler
+     *
+     * @return int number of fields
+     */
     public function numFields($result)
     {
         return $result->field_count;
     }
 
-   /**
-    * Give name of a field of a Mysql result
-    *
-    * @param mysqli_result $result MySQL result handler
-    * @param integer       $nb     ID of the field
-    *
-    * @return string name of the field
-    */
+    /**
+     * Give name of a field of a Mysql result
+     *
+     * @param mysqli_result $result MySQL result handler
+     * @param integer       $nb     ID of the field
+     *
+     * @return string name of the field
+     */
     public function fieldName($result, $nb)
     {
         $finfo = $result->fetch_fields();
@@ -589,14 +589,14 @@ class DBmysql
     }
 
 
-   /**
-    * List tables in database
-    *
-    * @param string $table Table name condition (glpi_% as default to retrieve only glpi tables)
-    * @param array  $where Where clause to append
-    *
-    * @return DBmysqlIterator
-    */
+    /**
+     * List tables in database
+     *
+     * @param string $table Table name condition (glpi_% as default to retrieve only glpi tables)
+     * @param array  $where Where clause to append
+     *
+     * @return DBmysqlIterator
+     */
     public function listTables($table = 'glpi\_%', array $where = [])
     {
         $iterator = $this->request([
@@ -611,13 +611,13 @@ class DBmysql
         return $iterator;
     }
 
-   /**
-    * Returns tables using "MyIsam" engine.
-    *
-    * @param bool $exclude_plugins
-    *
-    * @return DBmysqlIterator
-    */
+    /**
+     * Returns tables using "MyIsam" engine.
+     *
+     * @param bool $exclude_plugins
+     *
+     * @return DBmysqlIterator
+     */
     public function getMyIsamTables(bool $exclude_plugins = false): DBmysqlIterator
     {
         $criteria = [
@@ -632,13 +632,13 @@ class DBmysql
         return $iterator;
     }
 
-   /**
-    * Returns tables not using "utf8mb4_unicode_ci" collation.
-    *
-    * @param bool $exclude_plugins
-    *
-    * @return DBmysqlIterator
-    */
+    /**
+     * Returns tables not using "utf8mb4_unicode_ci" collation.
+     *
+     * @param bool $exclude_plugins
+     *
+     * @return DBmysqlIterator
+     */
     public function getNonUtf8mb4Tables(bool $exclude_plugins = false): DBmysqlIterator
     {
 
@@ -699,15 +699,15 @@ class DBmysql
         return $iterator;
     }
 
-   /**
-    * Returns tables not compatible with timezone usage, i.e. having "datetime" columns.
-    *
-    * @param bool $exclude_plugins
-    *
-    * @return DBmysqlIterator
-    *
-    * @since 10.0.0
-    */
+    /**
+     * Returns tables not compatible with timezone usage, i.e. having "datetime" columns.
+     *
+     * @param bool $exclude_plugins
+     *
+     * @return DBmysqlIterator
+     *
+     * @since 10.0.0
+     */
     public function getTzIncompatibleTables(bool $exclude_plugins = false): DBmysqlIterator
     {
 
@@ -837,14 +837,14 @@ class DBmysql
         return $iterator;
     }
 
-   /**
-    * List fields of a table
-    *
-    * @param string  $table    Table name condition
-    * @param boolean $usecache If use field list cache (default true)
-    *
-    * @return mixed list of fields
-    */
+    /**
+     * List fields of a table
+     *
+     * @param string  $table    Table name condition
+     * @param boolean $usecache If use field list cache (default true)
+     *
+     * @return mixed list of fields
+     */
     public function listFields($table, $usecache = true)
     {
 
@@ -865,15 +865,15 @@ class DBmysql
         return false;
     }
 
-   /**
-    * Get field of a table
-    *
-    * @param string  $table
-    * @param string  $field
-    * @param boolean $usecache
-    *
-    * @return array|null Field characteristics
-    */
+    /**
+     * Get field of a table
+     *
+     * @param string  $table
+     * @param string  $field
+     * @param boolean $usecache
+     *
+     * @return array|null Field characteristics
+     */
     public function getField(string $table, string $field, $usecache = true): ?array
     {
 
@@ -881,53 +881,53 @@ class DBmysql
         return $fields[$field] ?? null;
     }
 
-   /**
-    * Get number of affected rows in previous MySQL operation
-    *
-    * @return int number of affected rows on success, and -1 if the last query failed.
-    */
+    /**
+     * Get number of affected rows in previous MySQL operation
+     *
+     * @return int number of affected rows on success, and -1 if the last query failed.
+     */
     public function affectedRows()
     {
         return $this->dbh->affected_rows;
     }
 
-   /**
-    * Free result memory
-    *
-    * @param mysqli_result $result MySQL result handler
-    *
-    * @return boolean
-    */
+    /**
+     * Free result memory
+     *
+     * @param mysqli_result $result MySQL result handler
+     *
+     * @return boolean
+     */
     public function freeResult($result)
     {
         return $result->free();
     }
 
-   /**
-    * Returns the numerical value of the error message from previous MySQL operation
-    *
-    * @return int error number from the last MySQL function, or 0 (zero) if no error occurred.
-    */
+    /**
+     * Returns the numerical value of the error message from previous MySQL operation
+     *
+     * @return int error number from the last MySQL function, or 0 (zero) if no error occurred.
+     */
     public function errno()
     {
         return $this->dbh->errno;
     }
 
-   /**
-    * Returns the text of the error message from previous MySQL operation
-    *
-    * @return string error text from the last MySQL function, or '' (empty string) if no error occurred.
-    */
+    /**
+     * Returns the text of the error message from previous MySQL operation
+     *
+     * @return string error text from the last MySQL function, or '' (empty string) if no error occurred.
+     */
     public function error()
     {
         return $this->dbh->error;
     }
 
-   /**
-    * Close MySQL connection
-    *
-    * @return boolean TRUE on success or FALSE on failure.
-    */
+    /**
+     * Close MySQL connection
+     *
+     * @return boolean TRUE on success or FALSE on failure.
+     */
     public function close()
     {
         if ($this->connected && $this->dbh) {
@@ -936,23 +936,23 @@ class DBmysql
         return false;
     }
 
-   /**
-    * is a slave database ?
-    *
-    * @return boolean
-    */
+    /**
+     * is a slave database ?
+     *
+     * @return boolean
+     */
     public function isSlave()
     {
         return $this->slave;
     }
 
-   /**
-    * Execute all the request in a file
-    *
-    * @param string $path with file full path
-    *
-    * @return boolean true if all query are successfull
-    */
+    /**
+     * Execute all the request in a file
+     *
+     * @param string $path with file full path
+     *
+     * @return boolean true if all query are successfull
+     */
     public function runFile($path)
     {
         $script = fopen($path, 'r');
@@ -988,33 +988,33 @@ class DBmysql
         return true;
     }
 
-   /**
-    * Instanciate a Simple DBIterator
-    *
-    * Examples =
-    *  foreach ($DB->request("select * from glpi_states") as $data) { ... }
-    *  foreach ($DB->request("glpi_states") as $ID => $data) { ... }
-    *  foreach ($DB->request("glpi_states", "ID=1") as $ID => $data) { ... }
-    *  foreach ($DB->request("glpi_states", "", "name") as $ID => $data) { ... }
-    *  foreach ($DB->request("glpi_computers",array("name"=>"SBEI003W","entities_id"=>1),array("serial","otherserial")) { ... }
-    *
-    * Examples =
-    *   array("id"=>NULL)
-    *   array("OR"=>array("id"=>1, "NOT"=>array("state"=>3)));
-    *   array("AND"=>array("id"=>1, array("NOT"=>array("state"=>array(3,4,5),"toto"=>2))))
-    *
-    * FIELDS name or array of field names
-    * ORDER name or array of field names
-    * LIMIT max of row to retrieve
-    * START first row to retrieve
-    *
-    * @param string|string[] $tableorsql Table name, array of names or SQL query
-    * @param string|string[] $crit       String or array of filed/values, ex array("id"=>1), if empty => all rows
-    *                                    (default '')
-    * @param boolean         $debug      To log the request (default false)
-    *
-    * @return DBmysqlIterator
-    */
+    /**
+     * Instanciate a Simple DBIterator
+     *
+     * Examples =
+     *  foreach ($DB->request("select * from glpi_states") as $data) { ... }
+     *  foreach ($DB->request("glpi_states") as $ID => $data) { ... }
+     *  foreach ($DB->request("glpi_states", "ID=1") as $ID => $data) { ... }
+     *  foreach ($DB->request("glpi_states", "", "name") as $ID => $data) { ... }
+     *  foreach ($DB->request("glpi_computers",array("name"=>"SBEI003W","entities_id"=>1),array("serial","otherserial")) { ... }
+     *
+     * Examples =
+     *   array("id"=>NULL)
+     *   array("OR"=>array("id"=>1, "NOT"=>array("state"=>3)));
+     *   array("AND"=>array("id"=>1, array("NOT"=>array("state"=>array(3,4,5),"toto"=>2))))
+     *
+     * FIELDS name or array of field names
+     * ORDER name or array of field names
+     * LIMIT max of row to retrieve
+     * START first row to retrieve
+     *
+     * @param string|string[] $tableorsql Table name, array of names or SQL query
+     * @param string|string[] $crit       String or array of filed/values, ex array("id"=>1), if empty => all rows
+     *                                    (default '')
+     * @param boolean         $debug      To log the request (default false)
+     *
+     * @return DBmysqlIterator
+     */
     public function request($tableorsql, $crit = "", $debug = false)
     {
         $iterator = new DBmysqlIterator($this);
@@ -1023,13 +1023,13 @@ class DBmysql
     }
 
 
-   /**
-    * Get information about DB connection for showSystemInformation
-    *
-    * @since 0.84
-    *
-    * @return string[] Array of label / value
-    */
+    /**
+     * Get information about DB connection for showSystemInformation
+     *
+     * @since 0.84
+     *
+     * @return string[] Array of label / value
+     */
     public function getInfo()
     {
        // No translation, used in sysinfo
@@ -1057,15 +1057,15 @@ class DBmysql
         return $ret;
     }
 
-   /**
-    * Get a global DB lock
-    *
-    * @since 0.84
-    *
-    * @param string $name lock's name
-    *
-    * @return boolean
-    */
+    /**
+     * Get a global DB lock
+     *
+     * @since 0.84
+     *
+     * @param string $name lock's name
+     *
+     * @return boolean
+     */
     public function getLock($name)
     {
         $name          = addslashes($this->dbdefault . '.' . $name);
@@ -1076,15 +1076,15 @@ class DBmysql
         return (bool)$lock_ok;
     }
 
-   /**
-    * Release a global DB lock
-    *
-    * @since 0.84
-    *
-    * @param string $name lock's name
-    *
-    * @return boolean
-    */
+    /**
+     * Release a global DB lock
+     *
+     * @since 0.84
+     *
+     * @param string $name lock's name
+     *
+     * @return boolean
+     */
     public function releaseLock($name)
     {
         $name          = addslashes($this->dbdefault . '.' . $name);
@@ -1096,17 +1096,17 @@ class DBmysql
     }
 
 
-   /**
-    * Check if a table exists
-    *
-    * @since 9.2
-    * @since 9.5 Added $usecache parameter.
-    *
-    * @param string  $tablename Table name
-    * @param boolean $usecache  If use table list cache
-    *
-    * @return boolean
-    **/
+    /**
+     * Check if a table exists
+     *
+     * @since 9.2
+     * @since 9.5 Added $usecache parameter.
+     *
+     * @param string  $tablename Table name
+     * @param boolean $usecache  If use table list cache
+     *
+     * @return boolean
+     **/
     public function tableExists($tablename, $usecache = true)
     {
 
@@ -1135,17 +1135,17 @@ class DBmysql
         return false;
     }
 
-   /**
-    * Check if a field exists
-    *
-    * @since 9.2
-    *
-    * @param string  $table    Table name for the field we're looking for
-    * @param string  $field    Field name
-    * @param Boolean $usecache Use cache; @see DBmysql::listFields(), defaults to true
-    *
-    * @return boolean
-    **/
+    /**
+     * Check if a field exists
+     *
+     * @since 9.2
+     *
+     * @param string  $table    Table name for the field we're looking for
+     * @param string  $field    Field name
+     * @param Boolean $usecache Use cache; @see DBmysql::listFields(), defaults to true
+     *
+     * @return boolean
+     **/
     public function fieldExists($table, $field, $usecache = true)
     {
         if (!$this->tableExists($table, $usecache)) {
@@ -1162,25 +1162,25 @@ class DBmysql
         return false;
     }
 
-   /**
-    * Disable table cache globally; usefull for migrations
-    *
-    * @return void
-    */
+    /**
+     * Disable table cache globally; usefull for migrations
+     *
+     * @return void
+     */
     public function disableTableCaching()
     {
         $this->cache_disabled = true;
     }
 
-   /**
-    * Quote field name
-    *
-    * @since 9.3
-    *
-    * @param string $name of field to quote (or table.field)
-    *
-    * @return string
-    */
+    /**
+     * Quote field name
+     *
+     * @since 9.3
+     *
+     * @param string $name of field to quote (or table.field)
+     *
+     * @return string
+     */
     public static function quoteName($name)
     {
        //handle verbatim names
@@ -1209,13 +1209,13 @@ class DBmysql
         }
     }
 
-   /**
-    * Quote value for insert/update
-    *
-    * @param mixed $value Value
-    *
-    * @return mixed
-    */
+    /**
+     * Quote value for insert/update
+     *
+     * @param mixed $value Value
+     *
+     * @return mixed
+     */
     public static function quoteValue($value)
     {
         if ($value instanceof QueryParam || $value instanceof QueryExpression) {
@@ -1233,16 +1233,16 @@ class DBmysql
         return $value;
     }
 
-   /**
-    * Builds an insert statement
-    *
-    * @since 9.3
-    *
-    * @param string $table  Table name
-    * @param array  $params Query parameters ([field name => field value)
-    *
-    * @return string
-    */
+    /**
+     * Builds an insert statement
+     *
+     * @since 9.3
+     *
+     * @param string $table  Table name
+     * @param array  $params Query parameters ([field name => field value)
+     *
+     * @return string
+     */
     public function buildInsert($table, $params)
     {
         $query = "INSERT INTO " . self::quoteName($table) . " (";
@@ -1261,16 +1261,16 @@ class DBmysql
         return $query;
     }
 
-   /**
-    * Insert a row in the database
-    *
-    * @since 9.3
-    *
-    * @param string $table  Table name
-    * @param array  $params Query parameters ([field name => field value)
-    *
-    * @return mysqli_result|boolean Query result handler
-    */
+    /**
+     * Insert a row in the database
+     *
+     * @since 9.3
+     *
+     * @param string $table  Table name
+     * @param array  $params Query parameters ([field name => field value)
+     *
+     * @return mysqli_result|boolean Query result handler
+     */
     public function insert($table, $params)
     {
         $result = $this->query(
@@ -1279,18 +1279,18 @@ class DBmysql
         return $result;
     }
 
-   /**
-    * Insert a row in the database and die
-    * (optionnaly with a message) if it fails
-    *
-    * @since 9.3
-    *
-    * @param string $table  Table name
-    * @param array  $params  Query parameters ([field name => field value)
-    * @param string $message Explanation of query (default '')
-    *
-    * @return mysqli_result|boolean Query result handler
-    */
+    /**
+     * Insert a row in the database and die
+     * (optionnaly with a message) if it fails
+     *
+     * @since 9.3
+     *
+     * @param string $table  Table name
+     * @param array  $params  Query parameters ([field name => field value)
+     * @param string $message Explanation of query (default '')
+     *
+     * @return mysqli_result|boolean Query result handler
+     */
     public function insertOrDie($table, $params, $message = '')
     {
         $insert = $this->buildInsert($table, $params);
@@ -1313,19 +1313,19 @@ class DBmysql
         return $res;
     }
 
-   /**
-    * Builds an update statement
-    *
-    * @since 9.3
-    *
-    * @param string $table   Table name
-    * @param array  $params  Query parameters ([field name => field value)
-    * @param array  $clauses Clauses to use. If not 'WHERE' key specified, will b the WHERE clause (@see DBmysqlIterator capabilities)
-    * @param array  $joins  JOINS criteria array
-    *
-    * @since 9.4.0 $joins parameter added
-    * @return string
-    */
+    /**
+     * Builds an update statement
+     *
+     * @since 9.3
+     *
+     * @param string $table   Table name
+     * @param array  $params  Query parameters ([field name => field value)
+     * @param array  $clauses Clauses to use. If not 'WHERE' key specified, will b the WHERE clause (@see DBmysqlIterator capabilities)
+     * @param array  $joins  JOINS criteria array
+     *
+     * @since 9.4.0 $joins parameter added
+     * @return string
+     */
     public function buildUpdate($table, $params, $clauses, array $joins = [])
     {
        //when no explicit "WHERE", we only have a WHEre clause.
@@ -1377,19 +1377,19 @@ class DBmysql
         return $query;
     }
 
-   /**
-    * Update a row in the database
-    *
-    * @since 9.3
-    *
-    * @param string $table  Table name
-    * @param array  $params Query parameters ([:field name => field value)
-    * @param array  $where  WHERE clause
-    * @param array  $joins  JOINS criteria array
-    *
-    * @since 9.4.0 $joins parameter added
-    * @return mysqli_result|boolean Query result handler
-    */
+    /**
+     * Update a row in the database
+     *
+     * @since 9.3
+     *
+     * @param string $table  Table name
+     * @param array  $params Query parameters ([:field name => field value)
+     * @param array  $where  WHERE clause
+     * @param array  $joins  JOINS criteria array
+     *
+     * @since 9.4.0 $joins parameter added
+     * @return mysqli_result|boolean Query result handler
+     */
     public function update($table, $params, $where, array $joins = [])
     {
         $query = $this->buildUpdate($table, $params, $where, $joins);
@@ -1397,21 +1397,21 @@ class DBmysql
         return $result;
     }
 
-   /**
-    * Update a row in the database or die
-    * (optionnaly with a message) if it fails
-    *
-    * @since 9.3
-    *
-    * @param string $table   Table name
-    * @param array  $params  Query parameters ([:field name => field value)
-    * @param array  $where   WHERE clause
-    * @param string $message Explanation of query (default '')
-    * @param array  $joins   JOINS criteria array
-    *
-    * @since 9.4.0 $joins parameter added
-    * @return mysqli_result|boolean Query result handler
-    */
+    /**
+     * Update a row in the database or die
+     * (optionnaly with a message) if it fails
+     *
+     * @since 9.3
+     *
+     * @param string $table   Table name
+     * @param array  $params  Query parameters ([:field name => field value)
+     * @param array  $where   WHERE clause
+     * @param string $message Explanation of query (default '')
+     * @param array  $joins   JOINS criteria array
+     *
+     * @since 9.4.0 $joins parameter added
+     * @return mysqli_result|boolean Query result handler
+     */
     public function updateOrDie($table, $params, $where, $message = '', array $joins = [])
     {
         $update = $this->buildUpdate($table, $params, $where, $joins);
@@ -1434,18 +1434,18 @@ class DBmysql
         return $res;
     }
 
-   /**
-    * Update a row in the database or insert a new one
-    *
-    * @since 9.4
-    *
-    * @param string  $table   Table name
-    * @param array   $params  Query parameters ([:field name => field value)
-    * @param array   $where   WHERE clause
-    * @param boolean $onlyone Do the update only one one element, defaults to true
-    *
-    * @return mysqli_result|boolean Query result handler
-    */
+    /**
+     * Update a row in the database or insert a new one
+     *
+     * @since 9.4
+     *
+     * @param string  $table   Table name
+     * @param array   $params  Query parameters ([:field name => field value)
+     * @param array   $where   WHERE clause
+     * @param boolean $onlyone Do the update only one one element, defaults to true
+     *
+     * @return mysqli_result|boolean Query result handler
+     */
     public function updateOrInsert($table, $params, $where, $onlyone = true)
     {
         $req = $this->request($table, $where);
@@ -1460,19 +1460,19 @@ class DBmysql
         }
     }
 
-   /**
-    * Builds a delete statement
-    *
-    * @since 9.3
-    *
-    * @param string $table  Table name
-    * @param array  $params Query parameters ([field name => field value)
-    * @param array  $where  WHERE clause (@see DBmysqlIterator capabilities)
-    * @param array  $joins  JOINS criteria array
-    *
-    * @since 9.4.0 $joins parameter added
-    * @return string
-    */
+    /**
+     * Builds a delete statement
+     *
+     * @since 9.3
+     *
+     * @param string $table  Table name
+     * @param array  $params Query parameters ([field name => field value)
+     * @param array  $where  WHERE clause (@see DBmysqlIterator capabilities)
+     * @param array  $joins  JOINS criteria array
+     *
+     * @since 9.4.0 $joins parameter added
+     * @return string
+     */
     public function buildDelete($table, $where, array $joins = [])
     {
 
@@ -1489,18 +1489,18 @@ class DBmysql
         return $query;
     }
 
-   /**
-    * Delete rows in the database
-    *
-    * @since 9.3
-    *
-    * @param string $table  Table name
-    * @param array  $where  WHERE clause
-    * @param array  $joins  JOINS criteria array
-    *
-    * @since 9.4.0 $joins parameter added
-    * @return mysqli_result|boolean Query result handler
-    */
+    /**
+     * Delete rows in the database
+     *
+     * @since 9.3
+     *
+     * @param string $table  Table name
+     * @param array  $where  WHERE clause
+     * @param array  $joins  JOINS criteria array
+     *
+     * @since 9.4.0 $joins parameter added
+     * @return mysqli_result|boolean Query result handler
+     */
     public function delete($table, $where, array $joins = [])
     {
         $query = $this->buildDelete($table, $where, $joins);
@@ -1508,20 +1508,20 @@ class DBmysql
         return $result;
     }
 
-   /**
-    * Delete a row in the database and die
-    * (optionnaly with a message) if it fails
-    *
-    * @since 9.3
-    *
-    * @param string $table   Table name
-    * @param array  $where   WHERE clause
-    * @param string $message Explanation of query (default '')
-    * @param array  $joins   JOINS criteria array
-    *
-    * @since 9.4.0 $joins parameter added
-    * @return mysqli_result|boolean Query result handler
-    */
+    /**
+     * Delete a row in the database and die
+     * (optionnaly with a message) if it fails
+     *
+     * @since 9.3
+     *
+     * @param string $table   Table name
+     * @param array  $where   WHERE clause
+     * @param string $message Explanation of query (default '')
+     * @param array  $joins   JOINS criteria array
+     *
+     * @since 9.4.0 $joins parameter added
+     * @return mysqli_result|boolean Query result handler
+     */
     public function deleteOrDie($table, $where, $message = '', array $joins = [])
     {
         $update = $this->buildDelete($table, $where, $joins);
@@ -1545,32 +1545,32 @@ class DBmysql
     }
 
 
-   /**
-    * Truncate table in the database
-    *
-    * @since 10.0.0
-    *
-    * @param string $table  Table name
-    *
-    * @return mysqli_result|boolean Query result handler
-    */
+    /**
+     * Truncate table in the database
+     *
+     * @since 10.0.0
+     *
+     * @param string $table  Table name
+     *
+     * @return mysqli_result|boolean Query result handler
+     */
     public function truncate($table)
     {
         $table_name = $this::quoteName($table);
         return $this->query("TRUNCATE $table_name");
     }
 
-   /**
-    * Truncate table in the database or die
-    * (optionally with a message) if it fails
-    *
-    * @since 10.0.0
-    *
-    * @param string $table   Table name
-    * @param string $message Explanation of query (default '')
-    *
-    * @return mysqli_result|boolean Query result handler
-    */
+    /**
+     * Truncate table in the database or die
+     * (optionally with a message) if it fails
+     *
+     * @since 10.0.0
+     *
+     * @param string $table   Table name
+     * @param string $message Explanation of query (default '')
+     *
+     * @return mysqli_result|boolean Query result handler
+     */
     public function truncateOrDie($table, $message = '')
     {
         $table_name = $this::quoteName($table);
@@ -1592,11 +1592,11 @@ class DBmysql
         return $res;
     }
 
-   /**
-    * Get database raw version
-    *
-    * @return string
-    */
+    /**
+     * Get database raw version
+     *
+     * @return string
+     */
     public function getVersion()
     {
         $req = $this->request('SELECT version()')->current();
@@ -1604,11 +1604,11 @@ class DBmysql
         return $raw;
     }
 
-   /**
-    * Starts a transaction
-    *
-    * @return boolean
-    */
+    /**
+     * Starts a transaction
+     *
+     * @return boolean
+     */
     public function beginTransaction()
     {
         if ($this->in_transaction === true) {
@@ -1631,22 +1631,22 @@ class DBmysql
         }
     }
 
-   /**
-    * Commits a transaction
-    *
-    * @return boolean
-    */
+    /**
+     * Commits a transaction
+     *
+     * @return boolean
+     */
     public function commit()
     {
         $this->in_transaction = false;
         return $this->dbh->commit();
     }
 
-   /**
-    * Rollbacks a transaction completely or to a specified savepoint
-    *
-    * @return boolean
-    */
+    /**
+     * Rollbacks a transaction completely or to a specified savepoint
+     *
+     * @return boolean
+     */
     public function rollBack($savepoint = null)
     {
         if (!$savepoint) {
@@ -1663,23 +1663,23 @@ class DBmysql
         $this->query('ROLLBACK TO ' . self::quoteName($name));
     }
 
-   /**
-    * Are we in a transaction?
-    *
-    * @return boolean
-    */
+    /**
+     * Are we in a transaction?
+     *
+     * @return boolean
+     */
     public function inTransaction()
     {
         return $this->in_transaction;
     }
 
-   /**
-    * Defines timezone to use.
-    *
-    * @param string $timezone
-    *
-    * @return DBmysql
-    */
+    /**
+     * Defines timezone to use.
+     *
+     * @param string $timezone
+     *
+     * @return DBmysql
+     */
     public function setTimezone($timezone)
     {
        //setup timezone
@@ -1691,13 +1691,13 @@ class DBmysql
         return $this;
     }
 
-   /**
-    * Returns list of timezones.
-    *
-    * @return string[]
-    *
-    * @since 9.5.0
-    */
+    /**
+     * Returns list of timezones.
+     *
+     * @return string[]
+     *
+     * @since 9.5.0
+     */
     public function getTimezones()
     {
         if (!$this->use_timezones) {
@@ -1723,70 +1723,70 @@ class DBmysql
         return $list;
     }
 
-   /**
-    * Clear cached schema information.
-    *
-    * @return void
-    */
+    /**
+     * Clear cached schema information.
+     *
+     * @return void
+     */
     public function clearSchemaCache()
     {
         $this->table_cache = [];
         $this->field_cache = [];
     }
 
-   /**
-    * Quote a value for a specified type
-    * Should be used for PDO, but this will prevent heavy
-    * replacements in the source code in the future.
-    *
-    * @param mixed   $value Value to quote
-    * @param integer $type  Value type, defaults to PDO::PARAM_STR
-    *
-    * @return mixed
-    *
-    * @since 9.5.0
-    */
+    /**
+     * Quote a value for a specified type
+     * Should be used for PDO, but this will prevent heavy
+     * replacements in the source code in the future.
+     *
+     * @param mixed   $value Value to quote
+     * @param integer $type  Value type, defaults to PDO::PARAM_STR
+     *
+     * @return mixed
+     *
+     * @since 9.5.0
+     */
     public function quote($value, int $type = 2/*\PDO::PARAM_STR*/)
     {
         return "'" . $this->escape($value) . "'";
        //return $this->dbh->quote($value, $type);
     }
 
-   /**
-    * Get character used to quote names for current database engine
-    *
-    * @return string
-    *
-    * @since 9.5.0
-    */
+    /**
+     * Get character used to quote names for current database engine
+     *
+     * @return string
+     *
+     * @since 9.5.0
+     */
     public static function getQuoteNameChar(): string
     {
         return '`';
     }
 
-   /**
-    * Is value quoted as database field/expression?
-    *
-    * @param string|\QueryExpression $value Value to check
-    *
-    * @return boolean
-    *
-    * @since 9.5.0
-    */
+    /**
+     * Is value quoted as database field/expression?
+     *
+     * @param string|\QueryExpression $value Value to check
+     *
+     * @return boolean
+     *
+     * @since 9.5.0
+     */
     public static function isNameQuoted($value): bool
     {
         $quote = static::getQuoteNameChar();
         return is_string($value) && trim($value, $quote) != $value;
     }
 
-   /**
-    * Remove SQL comments
-    * © 2011 PHPBB Group
-    *
-    * @param string $output SQL statements
-    *
-    * @return string
-    */
+    /**
+     * Remove SQL comments
+     * © 2011 PHPBB Group
+     *
+     * @param string $output SQL statements
+     *
+     * @return string
+     */
     public function removeSqlComments($output)
     {
         $lines = explode("\n", $output);
@@ -1814,15 +1814,15 @@ class DBmysql
         return trim($output);
     }
 
-   /**
-    * Remove remarks and comments from SQL
-    * @see DBmysql::removeSqlComments()
-    * © 2011 PHPBB Group
-    *
-    * @param $string $sql SQL statements
-    *
-    * @return string
-    */
+    /**
+     * Remove remarks and comments from SQL
+     * @see DBmysql::removeSqlComments()
+     * © 2011 PHPBB Group
+     *
+     * @param $string $sql SQL statements
+     *
+     * @return string
+     */
     public function removeSqlRemarks($sql)
     {
         $lines = explode("\n", $sql);
@@ -1849,11 +1849,11 @@ class DBmysql
         return trim($this->removeSqlComments($output));
     }
 
-   /**
-    * Get MySQL warnings.
-    *
-    * @return string[]
-    */
+    /**
+     * Get MySQL warnings.
+     *
+     * @return string[]
+     */
     private function getWarnings()
     {
         $warnings = [];
@@ -1885,23 +1885,23 @@ class DBmysql
         return $warnings;
     }
 
-   /**
-    * Set charset to use for DB connection.
-    *
-    * @return void
-    */
+    /**
+     * Set charset to use for DB connection.
+     *
+     * @return void
+     */
     public function setConnectionCharset(): void
     {
         DBConnection::setConnectionCharset($this->dbh, $this->use_utf8mb4);
     }
 
-   /**
-    * Executes a prepared statement
-    *
-    * @param mysqli_stmt $stmt STatement to execute
-    *
-    * @return void
-    */
+    /**
+     * Executes a prepared statement
+     *
+     * @param mysqli_stmt $stmt STatement to execute
+     *
+     * @return void
+     */
     public function executeStatement(mysqli_stmt $stmt): void
     {
         if (!$stmt->execute()) {
@@ -1909,13 +1909,13 @@ class DBmysql
         }
     }
 
-   /**
-    * Check for deprecated table options during ALTER/CREATE TABLE queries.
-    *
-    * @param string $query
-    *
-    * @return void
-    */
+    /**
+     * Check for deprecated table options during ALTER/CREATE TABLE queries.
+     *
+     * @param string $query
+     *
+     * @return void
+     */
     private function checkForDeprecatedTableOptions(string $query): void
     {
         $table_matches = [];
@@ -1982,11 +1982,11 @@ class DBmysql
         }
     }
 
-   /**
-    * Return configuration boolean properties computed using current state of tables.
-    *
-    * @return array
-    */
+    /**
+     * Return configuration boolean properties computed using current state of tables.
+     *
+     * @return array
+     */
     public function getComputedConfigBooleanFlags(): array
     {
         $config_flags = [];

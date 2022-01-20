@@ -121,14 +121,14 @@ class Entity extends DbTestCase
          ->integer['entities_id']->isIdenticalTo(0);
     }
 
-   /**
-    * Run getSonsOf tests
-    *
-    * @param boolean $cache Is cache enabled?
-    * @param boolean $hit   Do we expect a cache hit? (ie. data already exists)
-    *
-    * @return void
-    */
+    /**
+     * Run getSonsOf tests
+     *
+     * @param boolean $cache Is cache enabled?
+     * @param boolean $hit   Do we expect a cache hit? (ie. data already exists)
+     *
+     * @return void
+     */
     private function runChangeEntityParent($cache = false, $hit = false)
     {
         global $GLPI_CACHE;
@@ -252,9 +252,9 @@ class Entity extends DbTestCase
         $this->runChangeEntityParent();
     }
 
-   /**
-    * @tags cache
-    */
+    /**
+     * @tags cache
+     */
     public function testChangeEntityParentCached()
     {
        //run with cache
@@ -521,9 +521,9 @@ class Entity extends DbTestCase
         ];
     }
 
-   /**
-    * @dataProvider getUsedConfigProvider
-    */
+    /**
+     * @dataProvider getUsedConfigProvider
+     */
     public function testGetUsedConfig(
         array $root_values,
         array $child_values,
@@ -646,9 +646,9 @@ class Entity extends DbTestCase
         ];
     }
 
-   /**
-    * @dataProvider customCssProvider
-    */
+    /**
+     * @dataProvider customCssProvider
+     */
     public function testGetCustomCssTag(
         int $entity_id,
         int $root_enable_custom_css,
@@ -722,9 +722,9 @@ class Entity extends DbTestCase
         ];
     }
 
-   /**
-    * @dataProvider testAnonymizeSettingProvider
-    */
+    /**
+     * @dataProvider testAnonymizeSettingProvider
+     */
     public function testAnonymizeSetting(
         string $interface,
         int $setting,

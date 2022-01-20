@@ -35,7 +35,7 @@ use Glpi\Features\AssetImage;
 
 /**
  * Supplier class (suppliers)
-**/
+ **/
 class Supplier extends CommonDBTM
 {
     use AssetImage;
@@ -48,11 +48,11 @@ class Supplier extends CommonDBTM
 
 
 
-   /**
-    * Name of the type
-    *
-    * @param $nb : number of item in the type
-   **/
+    /**
+     * Name of the type
+     *
+     * @param $nb : number of item in the type
+     **/
     public static function getTypeName($nb = 0)
     {
         return _n('Supplier', 'Suppliers', $nb);
@@ -118,9 +118,9 @@ class Supplier extends CommonDBTM
         return Dropdown::show(get_called_class(), $options);
     }
 
-   /**
-    * @see CommonDBTM::getSpecificMassiveActions()
-   **/
+    /**
+     * @see CommonDBTM::getSpecificMassiveActions()
+     **/
     public function getSpecificMassiveActions($checkitem = null)
     {
 
@@ -357,11 +357,11 @@ class Supplier extends CommonDBTM
     }
 
 
-   /**
-    * Get links for an enterprise (website / edit)
-    *
-    * @param $withname boolean : also display name ? (false by default)
-   **/
+    /**
+     * Get links for an enterprise (website / edit)
+     *
+     * @param $withname boolean : also display name ? (false by default)
+     **/
     public function getLinks($withname = false)
     {
         global $CFG_GLPI;
@@ -388,12 +388,12 @@ class Supplier extends CommonDBTM
     }
 
 
-   /**
-    * Print the HTML array for infocoms linked
-    *
-    *@return void
-    *
-   **/
+    /**
+     * Print the HTML array for infocoms linked
+     *
+     *@return void
+     *
+     **/
     public function showInfocoms()
     {
         global $DB;
@@ -577,13 +577,13 @@ class Supplier extends CommonDBTM
         echo "</table></div>";
     }
 
-   /**
-    * Get suppliers matching a given email
-    *
-    * @since 9.5
-    *
-    * @param $email boolean : also display name ? (false by default)
-   **/
+    /**
+     * Get suppliers matching a given email
+     *
+     * @since 9.5
+     *
+     * @param $email boolean : also display name ? (false by default)
+     **/
     public static function getSuppliersByEmail($email)
     {
         global $DB;

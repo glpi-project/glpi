@@ -49,39 +49,39 @@ class InstallCommand extends AbstractConfigureCommand
 {
     use TelemetryActivationTrait;
 
-   /**
-    * Error code returned when failing to create database.
-    *
-    * @var integer
-    */
+    /**
+     * Error code returned when failing to create database.
+     *
+     * @var integer
+     */
     const ERROR_DB_CREATION_FAILED = 5;
 
-   /**
-    * Error code returned when trying to install and having a DB already containing glpi_* tables.
-    *
-    * @var integer
-    */
+    /**
+     * Error code returned when trying to install and having a DB already containing glpi_* tables.
+     *
+     * @var integer
+     */
     const ERROR_DB_ALREADY_CONTAINS_TABLES = 6;
 
-   /**
-    * Error code returned when failing to create database schema.
-    *
-    * @var integer
-    */
+    /**
+     * Error code returned when failing to create database schema.
+     *
+     * @var integer
+     */
     const ERROR_SCHEMA_CREATION_FAILED = 7;
 
-   /**
-    * Error code returned when failing to create encryption key file.
-    *
-    * @var integer
-    */
+    /**
+     * Error code returned when failing to create encryption key file.
+     *
+     * @var integer
+     */
     const ERROR_CANNOT_CREATE_ENCRYPTION_KEY_FILE = 8;
 
-   /**
-    * Error code returned if DB configuration is not compatible with large indexes.
-    *
-    * @var integer
-    */
+    /**
+     * Error code returned if DB configuration is not compatible with large indexes.
+     *
+     * @var integer
+     */
     const ERROR_INCOMPATIBLE_DB_CONFIG = 9;
 
     protected function configure()
@@ -130,7 +130,7 @@ class InstallCommand extends AbstractConfigureCommand
             && $this->isInputContainingConfigValues($input, $output)
             && !$input->getOption('reconfigure')
         ) {
-           /** @var \Symfony\Component\Console\Helper\QuestionHelper $question_helper */
+            /** @var \Symfony\Component\Console\Helper\QuestionHelper $question_helper */
             $question_helper = $this->getHelper('question');
             $reconfigure = $question_helper->ask(
                 $input,
@@ -318,28 +318,28 @@ class InstallCommand extends AbstractConfigureCommand
         return 0; // Success
     }
 
-   /**
-    * Check if DB config should be set by current command run.
-    *
-    * @param InputInterface $input
-    * @param OutputInterface $output
-    *
-    * @return boolean
-    */
+    /**
+     * Check if DB config should be set by current command run.
+     *
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     *
+     * @return boolean
+     */
     private function shouldSetDBConfig(InputInterface $input, OutputInterface $output)
     {
 
         return $input->getOption('reconfigure') || !file_exists(GLPI_CONFIG_DIR . '/config_db.php');
     }
 
-   /**
-    * Check if input contains DB config options.
-    *
-    * @param InputInterface $input
-    * @param OutputInterface $output
-    *
-    * @return boolean
-    */
+    /**
+     * Check if input contains DB config options.
+     *
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     *
+     * @return boolean
+     */
     private function isInputContainingConfigValues(InputInterface $input, OutputInterface $output)
     {
 

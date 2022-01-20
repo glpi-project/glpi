@@ -76,16 +76,16 @@ class RuleImportAsset extends DbTestCase
         );
     }
 
-   /**
-    * Adds a new rule
-    *
-    * @param string $name          New rule name
-    * @param array  $criteria      Rule criteria
-    * @param array  $actions       Rule actions
-    * @param string $afterRuleName Rule name to insert after.
-    *
-    * @return void
-    */
+    /**
+     * Adds a new rule
+     *
+     * @param string $name          New rule name
+     * @param array  $criteria      Rule criteria
+     * @param array  $actions       Rule actions
+     * @param string $afterRuleName Rule name to insert after.
+     *
+     * @return void
+     */
     protected function addRule($name, array $criteria, array $action, $afterRuleName = null)
     {
         global $DB;
@@ -220,10 +220,10 @@ class RuleImportAsset extends DbTestCase
         $this->string($this->itemtype)->isIdenticalTo('Computer');
     }
 
-   /**
-    * case 1 :
-    *   no computer in DB
-    */
+    /**
+     * case 1 :
+     *   no computer in DB
+     */
     public function testCreateComputerSerial_UUID_case1()
     {
         $input = [
@@ -248,10 +248,10 @@ class RuleImportAsset extends DbTestCase
         $this->string($this->itemtype)->isIdenticalTo('Computer');
     }
 
-   /**
-    * case 2 :
-    *   computer in DB with this UUID and another name
-    */
+    /**
+     * case 2 :
+     *   computer in DB with this UUID and another name
+     */
     public function testCreateComputerSerial_UUID_case2()
     {
         $input = [
@@ -377,11 +377,11 @@ class RuleImportAsset extends DbTestCase
         $this->integer($this->ports_id)->isIdenticalTo($ports_id);
     }
 
-   /**
-    * Create rules for Computer based on IP
-    *
-    * @return void
-    */
+    /**
+     * Create rules for Computer based on IP
+     *
+     * @return void
+     */
     private function addComputerIPRules()
     {
        // Create rules
@@ -507,11 +507,11 @@ class RuleImportAsset extends DbTestCase
     }
 
 
-   /**
-    * Create rules for Computer based on IP
-    *
-    * @return void
-    */
+    /**
+     * Create rules for Computer based on IP
+     *
+     * @return void
+     */
     private function addComputerIPLinkOnlyRules()
     {
        // Create rules
@@ -615,9 +615,9 @@ class RuleImportAsset extends DbTestCase
         $this->integer($this->ports_id)->isIdenticalTo($ports_id);
     }
 
-   /**
-    * Case when all rules are disabled
-    */
+    /**
+     * Case when all rules are disabled
+     */
     public function testCreateComputerNoRules()
     {
         global $DB;
@@ -664,14 +664,14 @@ class RuleImportAsset extends DbTestCase
         ];
     }
 
-   /**
-    * With default rules, refuse import in theses cases
-    *
-    * @param array  $rdata  Rules data to use
-    * @param string $rname  Expected rule name
-    *
-    * @dataProvider refuseProvider
-    */
+    /**
+     * With default rules, refuse import in theses cases
+     *
+     * @param array  $rdata  Rules data to use
+     * @param string $rname  Expected rule name
+     *
+     * @dataProvider refuseProvider
+     */
     public function testRefuseImport($rdata, $rname)
     {
         $ruleCollection = new \RuleImportAssetCollection();
@@ -688,9 +688,9 @@ class RuleImportAsset extends DbTestCase
         $this->variable($this->items_id)->isNull();
     }
 
-   /**
-    * Search device based on MAC + ifnumber (logicial number)
-    */
+    /**
+     * Search device based on MAC + ifnumber (logicial number)
+     */
     public function testCreateMacIfnumber()
     {
         $input = [
@@ -715,9 +715,9 @@ class RuleImportAsset extends DbTestCase
         $this->integer($this->ports_id)->isIdenticalTo(0);
     }
 
-   /**
-    * Search device based on MAC + ifnumber (logicial number)
-    */
+    /**
+     * Search device based on MAC + ifnumber (logicial number)
+     */
     public function testUpdateMacIfnumber()
     {
         $input = [
@@ -771,9 +771,9 @@ class RuleImportAsset extends DbTestCase
     }
 
    //Above commented tests are related to SNMP inventory
-   /**
-    * Search device based on IP + ifdescr restricted on same port
-    */
+    /**
+     * Search device based on IP + ifdescr restricted on same port
+     */
     public function testUpdateIPIfdescrRestrictport()
     {
         $input = [
@@ -857,9 +857,9 @@ class RuleImportAsset extends DbTestCase
         $this->string($rule->fields['name'])->isNotEqualTo("Device update (by ip+ifdescr restricted port)");
     }
 
-   /**
-    * Search device based on IP + ifdescr not restricted on same port
-    */
+    /**
+     * Search device based on IP + ifdescr not restricted on same port
+     */
     public function testUpdateIPIfdescrNotRestrictport()
     {
         $input = [
@@ -925,9 +925,9 @@ class RuleImportAsset extends DbTestCase
         $this->integer($this->ports_id)->isIdenticalTo($ports_id);
     }
 
-   /**
-    * Case have only the mac address (mac found on switches)
-    */
+    /**
+     * Case have only the mac address (mac found on switches)
+     */
     public function testSearchMac_nomoredata()
     {
         $input = [
@@ -1052,14 +1052,14 @@ class RuleImportAsset extends DbTestCase
         return $values;
     }
 
-   /**
-    * @dataProvider ruleactionProvider
-    *
-    * @param integer $value    Value to test
-    * @param string  $expected Excpected result
-    *
-    * @return void
-    */
+    /**
+     * @dataProvider ruleactionProvider
+     *
+     * @param integer $value    Value to test
+     * @param string  $expected Excpected result
+     *
+     * @return void
+     */
     public function testDisplayAdditionRuleActionValue($value, $expected)
     {
         $this
@@ -1097,14 +1097,14 @@ class RuleImportAsset extends DbTestCase
         ];
     }
 
-   /**
-    * @dataProvider moreCritProvider
-    *
-    * @param string $criterion Criterion to test
-    * @param array $expected   Expected result
-    *
-    * @return void
-    */
+    /**
+     * @dataProvider moreCritProvider
+     *
+     * @param string $criterion Criterion to test
+     * @param array $expected   Expected result
+     *
+     * @return void
+     */
     public function testAddMoreCriteria($criterion, $expected)
     {
         $this

@@ -47,11 +47,11 @@ class Item_OperatingSystem extends DbTestCase
         $this->string(\Item_OperatingSystem::getTypeName(1))->isIdenticalTo('Item operating system');
     }
 
-   /**
-    * Create dropdown objects to be used
-    *
-    * @return array
-    */
+    /**
+     * Create dropdown objects to be used
+     *
+     * @return array
+     */
     private function createDdObjects()
     {
         $objects = [];

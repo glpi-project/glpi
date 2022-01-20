@@ -253,9 +253,9 @@ class Update extends \GLPITestCase
         ];
     }
 
-   /**
-    * @dataProvider migrationsProvider
-    */
+    /**
+     * @dataProvider migrationsProvider
+     */
     public function testGetMigrationsToDo(string $current_version, bool $force_latest, array $expected_migrations)
     {
         global $DB;

@@ -157,9 +157,9 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         ];
     }
 
-   /**
-    * @dataProvider assetProvider
-    */
+    /**
+     * @dataProvider assetProvider
+     */
     public function testPrepare($xml, $asset)
     {
         $date_now = date('Y-m-d H:i:s');

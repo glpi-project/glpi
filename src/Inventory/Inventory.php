@@ -50,40 +50,40 @@ class Inventory
     const FULL_MODE = 0;
     const INCR_MODE = 1;
 
-   /** @var integer */
+    /** @var integer */
     protected $mode;
-   /** @var \stdClass */
+    /** @var \stdClass */
     protected $raw_data = null;
-   /** @var array */
+    /** @var array */
     protected $data = [];
-   /** @var array */
+    /** @var array */
     private $metadata = [];
-   /** @var array */
+    /** @var array */
     private $errors = [];
-   /** @var CommonDBTM */
+    /** @var CommonDBTM */
     protected $item;
-   /** @var Agent */
+    /** @var Agent */
     private $agent;
-   /** @var InventoryAsset[] */
+    /** @var InventoryAsset[] */
     protected $assets = [];
-   /** @var Conf */
+    /** @var Conf */
     protected $conf;
-   /** @var array */
+    /** @var array */
     private $benchs = [];
-   /** @var string */
+    /** @var string */
     private $inventory_id;
-   /** @var integer */
+    /** @var integer */
     private $inventory_format;
-   /** @var InventoryAsset */
+    /** @var InventoryAsset */
     private $mainasset;
-   /** @var string */
+    /** @var string */
     private $request_query;
 
-   /**
-    * @param mixed   $data   Inventory data, optional
-    * @param integer $mode   One of self::*_MODE
-    * @param integer $format One of Request::*_MODE
-    */
+    /**
+     * @param mixed   $data   Inventory data, optional
+     * @param integer $mode   One of self::*_MODE
+     * @param integer $format One of Request::*_MODE
+     */
     public function __construct($data = null, $mode = self::FULL_MODE, $format = Request::JSON_MODE)
     {
         $this->mode = $mode;
@@ -102,14 +102,14 @@ class Inventory
         return $this;
     }
 
-   /**
-    * Set data, and convert them if we're using legacy format
-    *
-    * @param mixed   $data   Inventory data, optional
-    * @param integer $format One of self::*_FORMAT
-    *
-    * @return boolean
-    */
+    /**
+     * Set data, and convert them if we're using legacy format
+     *
+     * @param mixed   $data   Inventory data, optional
+     * @param integer $format One of self::*_FORMAT
+     *
+     * @return boolean
+     */
     public function setData($data, $format = Request::JSON_MODE): bool
     {
 
@@ -147,21 +147,21 @@ class Inventory
         return true;
     }
 
-   /**
-    * @param string $query
-    * @return $this
-    */
+    /**
+     * @param string $query
+     * @return $this
+     */
     public function setRequestQuery(string $query): self
     {
         $this->request_query = $query;
         return $this;
     }
 
-   /**
-    * Prepare inventory data
-    *
-    * @return array
-    */
+    /**
+     * Prepare inventory data
+     *
+     * @return array
+     */
     public function extractMetadata(): array
     {
        //check
@@ -197,13 +197,13 @@ class Inventory
         $this->agent->handleAgent($this->metadata);
     }
 
-   /**
-    * Do inventory
-    *
-    * @param boolean $test_rules Only to test rules, do not store anything
-    *
-    * @return array
-    */
+    /**
+     * Do inventory
+     *
+     * @param boolean $test_rules Only to test rules, do not store anything
+     *
+     * @return array
+     */
     public function doInventory($test_rules = false)
     {
         global $DB;
@@ -355,11 +355,11 @@ class Inventory
         return [];
     }
 
-   /**
-    * Get inventoried items
-    *
-    * @return array
-    */
+    /**
+     * Get inventoried items
+     *
+     * @return array
+     */
     public function getItems(): array
     {
         $items = $this->mainasset->getInventoried();
@@ -372,22 +372,22 @@ class Inventory
     }
 
 
-   /**
-    * Get rawdata
-    *
-    * @return array
-    */
+    /**
+     * Get rawdata
+     *
+     * @return array
+     */
     public function getRawData(): ?object
     {
         return $this->raw_data;
     }
 
 
-   /**
-    * Handle inventory file
-    *
-    * @return void
-    */
+    /**
+     * Handle inventory file
+     *
+     * @return void
+     */
     private function handleInventoryFile()
     {
         $ext = (Request::XML_MODE === $this->inventory_format ? 'xml' : 'json');
@@ -415,21 +415,21 @@ class Inventory
         }
     }
 
-   /**
-    * Get error
-    *
-    * @return array
-    */
+    /**
+     * Get error
+     *
+     * @return array
+     */
     public function getErrors(): array
     {
         return $this->errors;
     }
 
-   /**
-    * Check if erorrs has been throwed
-    *
-    * @return boolean
-    */
+    /**
+     * Check if erorrs has been throwed
+     *
+     * @return boolean
+     */
     public function inError(): bool
     {
         return (bool)count($this->errors);
@@ -507,11 +507,11 @@ class Inventory
         return false;
     }
 
-   /**
-    * Retrieve main inventoried object class
-    *
-    * @return string
-    */
+    /**
+     * Retrieve main inventoried object class
+     *
+     * @return string
+     */
     public function getMainClass()
     {
         $agent = $this->getAgent();
@@ -519,11 +519,11 @@ class Inventory
         return $main_class;
     }
 
-   /**
-    * Process and enhance data
-    *
-    * @return void
-    */
+    /**
+     * Process and enhance data
+     *
+     * @return void
+     */
     final public function processInventoryData()
     {
        //map existing keys in inventory format to their respective Inventory\Asset class if needed.
@@ -663,11 +663,11 @@ class Inventory
         }
     }
 
-   /**
-    * Main item handling, including links
-    *
-    * @return void;
-    */
+    /**
+     * Main item handling, including links
+     *
+     * @return void;
+     */
     public function handleItem()
     {
        //inject converted assets
@@ -681,26 +681,26 @@ class Inventory
         return;
     }
 
-   /**
-    * Get agent
-    *
-    * @return \Agent
-    */
+    /**
+     * Get agent
+     *
+     * @return \Agent
+     */
     public function getAgent()
     {
         return $this->agent;
     }
 
-   /**
-    * Add bench value
-    *
-    * @param string  $asset Asset
-    * @param string  $type Either prepare or handle
-    * @param integer $start Start time
-    * @param string  $extra Extra value to be used as label
-    *
-    * @return void
-    */
+    /**
+     * Add bench value
+     *
+     * @param string  $asset Asset
+     * @param string  $type Either prepare or handle
+     * @param integer $start Start time
+     * @param string  $extra Extra value to be used as label
+     *
+     * @return void
+     */
     protected function addBench($asset, $type, $start, $extra = null)
     {
         $exec_time = round(microtime(true) - $start, 5);
@@ -714,11 +714,11 @@ class Inventory
         ];
     }
 
-   /**
-    * Display bench results
-    *
-    * @return void
-    */
+    /**
+     * Display bench results
+     *
+     * @return void
+     */
     public function printBenchResults()
     {
         $output = '';
@@ -797,13 +797,13 @@ class Inventory
         return [];
     }
 
-   /**
-    * Clean temporary inventory files
-    *
-    * @param \CronTask $task CronTask instance
-    *
-    * @return void
-   **/
+    /**
+     * Clean temporary inventory files
+     *
+     * @param \CronTask $task CronTask instance
+     *
+     * @return void
+     **/
     public static function cronCleantemp($task)
     {
         $cron_status = 0;
@@ -831,13 +831,13 @@ class Inventory
         return $cron_status;
     }
 
-   /**
-    * Clean orphan inventory files
-    *
-    * @param \CronTask $task CronTask instance
-    *
-    * @return void
-   **/
+    /**
+     * Clean orphan inventory files
+     *
+     * @param \CronTask $task CronTask instance
+     *
+     * @return void
+     **/
     public static function cronCleanorphans($task)
     {
         global $DB;

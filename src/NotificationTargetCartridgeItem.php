@@ -35,7 +35,7 @@
  * NotificationTargetCartridgeItem Class
  *
  * @since 0.84
-**/
+ **/
 class NotificationTargetCartridgeItem extends NotificationTarget
 {
     public function getEvents()

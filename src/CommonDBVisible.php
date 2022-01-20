@@ -36,14 +36,14 @@
  */
 abstract class CommonDBVisible extends CommonDBTM
 {
-   /**
-    * Is the login user have access to item based on visibility configuration
-    *
-    * @since 0.83
-    * @since 9.2 moved from each class to parent class
-    *
-    * @return boolean
-   **/
+    /**
+     * Is the login user have access to item based on visibility configuration
+     *
+     * @since 0.83
+     * @since 9.2 moved from each class to parent class
+     *
+     * @return boolean
+     **/
     public function haveVisibilityAccess()
     {
        // Author
@@ -113,14 +113,14 @@ abstract class CommonDBVisible extends CommonDBTM
         return false;
     }
 
-   /**
-    * Count visibilities
-    *
-    * @since 0.83
-    * @since 9.2 moved from each class to parent class
-    *
-    * @return integer
-    */
+    /**
+     * Count visibilities
+     *
+     * @since 0.83
+     * @since 9.2 moved from each class to parent class
+     *
+     * @return integer
+     */
     public function countVisibilities()
     {
 
@@ -130,13 +130,13 @@ abstract class CommonDBVisible extends CommonDBTM
               + count($this->profiles));
     }
 
-   /**
-    * Show visibility configuration
-    *
-    * @since 9.2 moved from each class to parent class
-    *
-    * @return void
-   **/
+    /**
+     * Show visibility configuration
+     *
+     * @since 9.2 moved from each class to parent class
+     *
+     * @return void
+     **/
     public function showVisibility()
     {
         global $CFG_GLPI;
@@ -353,11 +353,11 @@ abstract class CommonDBVisible extends CommonDBTM
         return true;
     }
 
-   /**
-    * Get dropdown parameters from showVisibility method
-    *
-    * @return array
-    */
+    /**
+     * Get dropdown parameters from showVisibility method
+     *
+     * @return array
+     */
     protected function getShowVisibilityDropdownParams()
     {
         return [

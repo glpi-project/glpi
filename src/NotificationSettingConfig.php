@@ -72,11 +72,11 @@ class NotificationSettingConfig extends CommonDBTM
         }
     }
 
-   /**
-    * Show configuration form
-    *
-    * @return string|void
-    */
+    /**
+     * Show configuration form
+     *
+     * @return string|void
+     */
     public function showConfigForm($options = [])
     {
         global $CFG_GLPI;

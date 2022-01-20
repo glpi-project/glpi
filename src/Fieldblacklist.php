@@ -33,7 +33,7 @@
 
 /**
  * Fieldblacklist Class
-**/
+ **/
 class Fieldblacklist extends CommonDropdown
 {
     public static $rightname         = 'config';
@@ -52,9 +52,9 @@ class Fieldblacklist extends CommonDropdown
         return static::canUpdate();
     }
 
-   /**
-    * @since 0.85
-   **/
+    /**
+     * @since 0.85
+     **/
     public static function canPurge()
     {
         return static::canUpdate();
@@ -77,11 +77,11 @@ class Fieldblacklist extends CommonDropdown
     }
 
 
-   /**
-    * Get search function for the class
-    *
-    * @return array of search option
-   **/
+    /**
+     * Get search function for the class
+     *
+     * @return array of search option
+     **/
     public function rawSearchOptions()
     {
         $tab = parent::rawSearchOptions();
@@ -154,14 +154,14 @@ class Fieldblacklist extends CommonDropdown
     }
 
 
-   /**
-    * @since 0.84
-    *
-    * @param $field
-    * @param $name               (default '')
-    * @param $values             (default '')
-    * @param $options      array
-   **/
+    /**
+     * @since 0.84
+     *
+     * @param $field
+     * @param $name               (default '')
+     * @param $values             (default '')
+     * @param $options      array
+     **/
     public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
     {
 
@@ -233,11 +233,11 @@ class Fieldblacklist extends CommonDropdown
     }
 
 
-   /**
-    * Display a dropdown which contains all the available itemtypes
-    *
-    * @return void
-   **/
+    /**
+     * Display a dropdown which contains all the available itemtypes
+     *
+     * @return void
+     **/
     public function showItemtype()
     {
         global $CFG_GLPI;
@@ -311,13 +311,13 @@ class Fieldblacklist extends CommonDropdown
     }
 
 
-   /** Dropdown fields for a specific itemtype
-    *
-    * @since 0.84
-    *
-    * @param string $itemtype
-    * @param array  $options
-   **/
+    /** Dropdown fields for a specific itemtype
+     *
+     * @since 0.84
+     *
+     * @param string $itemtype
+     * @param array  $options
+     **/
     public static function dropdownField($itemtype, $options = [])
     {
         global $DB;
@@ -358,9 +358,9 @@ class Fieldblacklist extends CommonDropdown
     }
 
 
-   /**
-    * @param $field  (default '')
-   **/
+    /**
+     * @param $field  (default '')
+     **/
     public function selectValues($field = '')
     {
         if ($field == '') {
@@ -382,16 +382,16 @@ class Fieldblacklist extends CommonDropdown
     }
 
 
-   /**
-    * Check if a field & value are blacklisted or not
-    *
-    * @param itemtype      itemtype of the blacklisted field
-    * @param entities_id   the entity in which the field must be saved
-    * @param field         the field to check
-    * @param value         the field's value
-    *
-    * @return true is value if blacklisted, false otherwise
-   **/
+    /**
+     * Check if a field & value are blacklisted or not
+     *
+     * @param itemtype      itemtype of the blacklisted field
+     * @param entities_id   the entity in which the field must be saved
+     * @param field         the field to check
+     * @param value         the field's value
+     *
+     * @return true is value if blacklisted, false otherwise
+     **/
     public static function isFieldBlacklisted($itemtype, $entities_id, $field, $value)
     {
         global $DB;

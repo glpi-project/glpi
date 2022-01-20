@@ -33,7 +33,7 @@
 
 /**
  * Profile_User Class
-**/
+ **/
 class Profile_User extends CommonDBRelation
 {
    // From CommonDBTM
@@ -57,11 +57,11 @@ class Profile_User extends CommonDBRelation
     public static $disableAutoEntityForwarding   = true;
 
 
-   /**
-    * @since 0.84
-    *
-    * @see CommonDBTM::getForbiddenStandardMassiveAction()
-   **/
+    /**
+     * @since 0.84
+     *
+     * @see CommonDBTM::getForbiddenStandardMassiveAction()
+     **/
     public function getForbiddenStandardMassiveAction()
     {
 
@@ -109,11 +109,11 @@ class Profile_User extends CommonDBRelation
     }
 
 
-   /**
-    * Show rights of a user
-    *
-    * @param $user User object
-   **/
+    /**
+     * Show rights of a user
+     *
+     * @param $user User object
+     **/
     public static function showForUser(User $user)
     {
         $ID = $user->getField('id');
@@ -257,11 +257,11 @@ class Profile_User extends CommonDBRelation
     }
 
 
-   /**
-    * Show users of an entity
-    *
-    * @param $entity Entity object
-   **/
+    /**
+     * Show users of an entity
+     *
+     * @param $entity Entity object
+     **/
     public static function showForEntity(Entity $entity)
     {
         global $DB;
@@ -446,11 +446,11 @@ class Profile_User extends CommonDBRelation
     }
 
 
-   /**
-    * Show the User having a profile, in allowed Entity
-    *
-    * @param $prof Profile object
-   **/
+    /**
+     * Show the User having a profile, in allowed Entity
+     *
+     * @param $prof Profile object
+     **/
     public static function showForProfile(Profile $prof)
     {
         global $DB;
@@ -632,15 +632,15 @@ class Profile_User extends CommonDBRelation
     }
 
 
-   /**
-    * Get entities for which a user have a right
-    *
-    * @param $user_ID         user ID
-    * @param $is_recursive    check also using recursive rights (true by default)
-    * @param $default_first   user default entity first (false by default)
-    *
-    * @return array of entities ID
-   **/
+    /**
+     * Get entities for which a user have a right
+     *
+     * @param $user_ID         user ID
+     * @param $is_recursive    check also using recursive rights (true by default)
+     * @param $default_first   user default entity first (false by default)
+     *
+     * @return array of entities ID
+     **/
     public static function getUserEntities($user_ID, $is_recursive = true, $default_first = false)
     {
         global $DB;
@@ -680,20 +680,20 @@ class Profile_User extends CommonDBRelation
     }
 
 
-   /**
-    * Get entities for which a user have a right
-    *
-    * @since 0.84
-    * @since 9.2  Add $rightname parameter
-    *
-    * @param integer $user_ID      user ID
-    * @param string  $rightname    name of the rights to check (CommonDBTM::$rightname)
-    * @param integer $rights       rights to check (may be a OR combinaison of several rights)
-    *                              (exp: CommonDBTM::READ | CommonDBTM::UPDATE ...)
-    * @param boolean $is_recursive check also using recursive rights (true by default)
-    *
-    * @return array of entities ID
-   **/
+    /**
+     * Get entities for which a user have a right
+     *
+     * @since 0.84
+     * @since 9.2  Add $rightname parameter
+     *
+     * @param integer $user_ID      user ID
+     * @param string  $rightname    name of the rights to check (CommonDBTM::$rightname)
+     * @param integer $rights       rights to check (may be a OR combinaison of several rights)
+     *                              (exp: CommonDBTM::READ | CommonDBTM::UPDATE ...)
+     * @param boolean $is_recursive check also using recursive rights (true by default)
+     *
+     * @return array of entities ID
+     **/
     public static function getUserEntitiesForRight($user_ID, $rightname, $rights, $is_recursive = true)
     {
         global $DB;
@@ -748,16 +748,16 @@ class Profile_User extends CommonDBRelation
     }
 
 
-   /**
-    * Get user profiles (no entity association, use sqlfilter if needed)
-    *
-    * @since 9.3 can pass sqlfilter as a parameter
-    *
-    * @param $user_ID            user ID
-    * @param $sqlfilter  string  additional filter (default [])
-    *
-    * @return array of the IDs of the profiles
-   **/
+    /**
+     * Get user profiles (no entity association, use sqlfilter if needed)
+     *
+     * @since 9.3 can pass sqlfilter as a parameter
+     *
+     * @param $user_ID            user ID
+     * @param $sqlfilter  string  additional filter (default [])
+     *
+     * @return array of the IDs of the profiles
+     **/
     public static function getUserProfiles($user_ID, $sqlfilter = [])
     {
         global $DB;
@@ -784,16 +784,16 @@ class Profile_User extends CommonDBRelation
     }
 
 
-   /**
-    * retrieve the entities allowed to a user for a profile
-    *
-    * @param $users_id     Integer  ID of the user
-    * @param $profiles_id  Integer  ID of the profile
-    * @param $child        Boolean  when true, include child entity when recursive right
-    *                               (false by default)
-    *
-    * @return Array of entity ID
-   **/
+    /**
+     * retrieve the entities allowed to a user for a profile
+     *
+     * @param $users_id     Integer  ID of the user
+     * @param $profiles_id  Integer  ID of the profile
+     * @param $child        Boolean  when true, include child entity when recursive right
+     *                               (false by default)
+     *
+     * @return Array of entity ID
+     **/
     public static function getEntitiesForProfileByUser($users_id, $profiles_id, $child = false)
     {
         global $DB;
@@ -824,17 +824,17 @@ class Profile_User extends CommonDBRelation
     }
 
 
-   /**
-    * retrieve the entities associated to a user
-    *
-    * @param $users_id     Integer  ID of the user
-    * @param $child        Boolean  when true, include child entity when recursive right
-    *                               (false by default)
-    *
-    * @since 0.85
-    *
-    * @return Array of entity ID
-   **/
+    /**
+     * retrieve the entities associated to a user
+     *
+     * @param $users_id     Integer  ID of the user
+     * @param $child        Boolean  when true, include child entity when recursive right
+     *                               (false by default)
+     *
+     * @since 0.85
+     *
+     * @return Array of entity ID
+     **/
     public static function getEntitiesForUser($users_id, $child = false)
     {
         global $DB;
@@ -862,14 +862,14 @@ class Profile_User extends CommonDBRelation
     }
 
 
-   /**
-    * Get entities for which a user have a right
-    *
-    * @param $user_ID         user ID
-    * @param $only_dynamic    get only recursive rights (false by default)
-    *
-    * @return array of entities ID
-   **/
+    /**
+     * Get entities for which a user have a right
+     *
+     * @param $user_ID         user ID
+     * @param $only_dynamic    get only recursive rights (false by default)
+     *
+     * @return array of entities ID
+     **/
     public static function getForUser($user_ID, $only_dynamic = false)
     {
         $condition = ['users_id' => $user_ID];
@@ -882,10 +882,10 @@ class Profile_User extends CommonDBRelation
     }
 
 
-   /**
-    * @param $user_ID
-    * @param $profile_id
-   **/
+    /**
+     * @param $user_ID
+     * @param $profile_id
+     **/
     public static function haveUniqueRight($user_ID, $profile_id)
     {
         global $DB;
@@ -902,10 +902,10 @@ class Profile_User extends CommonDBRelation
     }
 
 
-   /**
-    * @param $user_ID
-    * @param $only_dynamic    (false by default)
-   **/
+    /**
+     * @param $user_ID
+     * @param $only_dynamic    (false by default)
+     **/
     public static function deleteRights($user_ID, $only_dynamic = false)
     {
 
@@ -1093,11 +1093,11 @@ class Profile_User extends CommonDBRelation
     }
 
 
-   /**
-    * @since 0.85
-    *
-    * @see CommonDBRelation::getRelationMassiveActionsSpecificities()
-   **/
+    /**
+     * @since 0.85
+     *
+     * @see CommonDBRelation::getRelationMassiveActionsSpecificities()
+     **/
     public static function getRelationMassiveActionsSpecificities()
     {
         $specificities                            = parent::getRelationMassiveActionsSpecificities();
@@ -1109,11 +1109,11 @@ class Profile_User extends CommonDBRelation
     }
 
 
-   /**
-    * @since 0.85
-    *
-    * @see CommonDBRelation::showRelationMassiveActionsSubForm()
-   **/
+    /**
+     * @since 0.85
+     *
+     * @see CommonDBRelation::showRelationMassiveActionsSubForm()
+     **/
     public static function showRelationMassiveActionsSubForm(MassiveAction $ma, $peer_number)
     {
 
@@ -1129,11 +1129,11 @@ class Profile_User extends CommonDBRelation
     }
 
 
-   /**
-    * @since 0.85
-    *
-    * @see CommonDBRelation::getRelationInputForProcessingOfMassiveActions()
-   **/
+    /**
+     * @since 0.85
+     *
+     * @see CommonDBRelation::getRelationInputForProcessingOfMassiveActions()
+     **/
     public static function getRelationInputForProcessingOfMassiveActions(
         $action,
         CommonDBTM $item,
@@ -1151,16 +1151,16 @@ class Profile_User extends CommonDBRelation
         return $result;
     }
 
-   /**
-    * Get linked items list for specified item
-    *
-    * @since 9.3.1
-    *
-    * @param CommonDBTM $item  Item instance
-    * @param boolean    $noent Flag to not compute entity information (see Document_Item::getListForItemParams)
-    *
-    * @return array
-    */
+    /**
+     * Get linked items list for specified item
+     *
+     * @since 9.3.1
+     *
+     * @param CommonDBTM $item  Item instance
+     * @param boolean    $noent Flag to not compute entity information (see Document_Item::getListForItemParams)
+     *
+     * @return array
+     */
     protected static function getListForItemParams(CommonDBTM $item, $noent = false)
     {
         $params = parent::getListForItemParams($item, $noent);

@@ -78,11 +78,11 @@ class SoftwareCategory extends CommonTreeDropdown
     }
 
 
-   /**
-    * Check if type is used as category for software deleted by rules.
-    *
-    * @return boolean
-    */
+    /**
+     * Check if type is used as category for software deleted by rules.
+     *
+     * @return boolean
+     */
     private function isUsedAsCategoryOnSoftwareDeletion()
     {
 

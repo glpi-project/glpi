@@ -52,16 +52,16 @@ class DbTestCase extends \GLPITestCase
     }
 
 
-   /**
-    * Connect (using the test user per default)
-    *
-    * @param string $user_name User name (defaults to TU_USER)
-    * @param string $user_pass user password (defaults to TU_PASS)
-    * @param bool $noauto disable autologin (from CAS by example)
-    * @param bool $expected bool result expected from login return
-    *
-    * @return \Auth
-    */
+    /**
+     * Connect (using the test user per default)
+     *
+     * @param string $user_name User name (defaults to TU_USER)
+     * @param string $user_pass user password (defaults to TU_PASS)
+     * @param bool $noauto disable autologin (from CAS by example)
+     * @param bool $expected bool result expected from login return
+     *
+     * @return \Auth
+     */
     protected function login(
         string $user_name = TU_USER,
         string $user_pass = TU_PASS,
@@ -77,14 +77,14 @@ class DbTestCase extends \GLPITestCase
         return $auth;
     }
 
-   /**
-    * change current entity
-    *
-    * @param int|string $entityname Name of the entity (or its id)
-    * @param boolean $subtree   Recursive load
-    *
-    * @return void
-    */
+    /**
+     * change current entity
+     *
+     * @param int|string $entityname Name of the entity (or its id)
+     * @param boolean $subtree   Recursive load
+     *
+     * @return void
+     */
     protected function setEntity($entityname, $subtree)
     {
         $entity_id = is_int($entityname) ? $entityname : getItemByTypeName('Entity', $entityname, true);
@@ -92,15 +92,15 @@ class DbTestCase extends \GLPITestCase
         $this->boolean($res)->isTrue();
     }
 
-   /**
-    * Generic method to test if an added object is corretly inserted
-    *
-    * @param  Object $object The object to test
-    * @param  int    $id     The id of added object
-    * @param  array  $input  the input used for add object (optionnal)
-    *
-    * @return void
-    */
+    /**
+     * Generic method to test if an added object is corretly inserted
+     *
+     * @param  Object $object The object to test
+     * @param  int    $id     The id of added object
+     * @param  array  $input  the input used for add object (optionnal)
+     *
+     * @return void
+     */
     protected function checkInput(CommonDBTM $object, $id = 0, $input = [])
     {
         $input = \Toolbox::stripslashes_deep($input); // slashes in input should not be stored in DB
@@ -121,14 +121,14 @@ class DbTestCase extends \GLPITestCase
         }
     }
 
-   /**
-    * Get all classes in folder inc/
-    *
-    * @param boolean $function Whether to look for a function
-    * @param array   $excludes List of classes to exclude
-    *
-    * @return array
-    */
+    /**
+     * Get all classes in folder inc/
+     *
+     * @param boolean $function Whether to look for a function
+     * @param array   $excludes List of classes to exclude
+     *
+     * @return array
+     */
     protected function getClasses($function = false, array $excludes = [])
     {
        // Add deprecated classes to excludes to prevent test failure
@@ -178,14 +178,14 @@ class DbTestCase extends \GLPITestCase
         return array_unique($classes);
     }
 
-   /**
-    * Create an item of the given class
-    *
-    * @param string $itemtype
-    * @param array $input
-    *
-    * @return CommonDBTM
-    */
+    /**
+     * Create an item of the given class
+     *
+     * @param string $itemtype
+     * @param array $input
+     *
+     * @return CommonDBTM
+     */
     protected function createItem($itemtype, $input): CommonDBTM
     {
         $item = new $itemtype();
@@ -203,12 +203,12 @@ class DbTestCase extends \GLPITestCase
         return $item;
     }
 
-   /**
-    * Create an item of the given class
-    *
-    * @param string $itemtype
-    * @param array $input
-    */
+    /**
+     * Create an item of the given class
+     *
+     * @param string $itemtype
+     * @param array $input
+     */
     protected function updateItem($itemtype, $id, $input)
     {
         $item = new $itemtype();
@@ -225,12 +225,12 @@ class DbTestCase extends \GLPITestCase
         $this->checkInput($item, $id, $input);
     }
 
-   /**
-    * Create multiples items of the given class
-    *
-    * @param string $itemtype
-    * @param array $inputs
-    */
+    /**
+     * Create multiples items of the given class
+     *
+     * @param string $itemtype
+     * @param array $inputs
+     */
     protected function createItems($itemtype, $inputs)
     {
         foreach ($inputs as $input) {

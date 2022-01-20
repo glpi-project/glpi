@@ -40,17 +40,17 @@ use Psr\Log\LoggerInterface;
  */
 class LogsWriteAccess extends AbstractRequirement
 {
-   /**
-    * Logger.
-    *
-    * @var LoggerInterface
-    */
+    /**
+     * Logger.
+     *
+     * @var LoggerInterface
+     */
     private $logger;
 
-   /**
-    *
-    * @param LoggerInterface $logger
-    */
+    /**
+     *
+     * @param LoggerInterface $logger
+     */
     public function __construct(LoggerInterface $logger)
     {
         $this->logger = $logger;

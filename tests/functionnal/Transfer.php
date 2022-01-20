@@ -380,9 +380,9 @@ class Transfer extends DbTestCase
         ];
     }
 
-   /**
-    * @dataProvider testKeepSoftwareOptionProvider
-    */
+    /**
+     * @dataProvider testKeepSoftwareOptionProvider
+     */
     public function testKeepSoftwareOption(
         array $items,
         int $entities_id_destination,
@@ -501,9 +501,9 @@ class Transfer extends DbTestCase
         ];
     }
 
-   /**
-    * @dataProvider testKeepCertificateOptionProvider
-    */
+    /**
+     * @dataProvider testKeepCertificateOptionProvider
+     */
     public function testKeepCertificateOption(
         array $items,
         int $entities_id_destination,

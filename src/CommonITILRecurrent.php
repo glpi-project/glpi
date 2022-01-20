@@ -38,39 +38,39 @@
  */
 abstract class CommonITILRecurrent extends CommonDropdown
 {
-   /**
-    * @var bool From CommonDBTM
-    */
+    /**
+     * @var bool From CommonDBTM
+     */
     public $dohistory = true;
 
-   /**
-    * @var string From CommonDropdown
-    */
+    /**
+     * @var string From CommonDropdown
+     */
     public $first_level_menu = "helpdesk";
 
-   /**
-    * @var bool From CommonDropdown
-    */
+    /**
+     * @var bool From CommonDropdown
+     */
     public $display_dropdowntitle = false;
 
-   /**
-    * @var bool From CommonDropdown
-    */
+    /**
+     * @var bool From CommonDropdown
+     */
     public $can_be_translated = false;
 
-   /**
-    * Concrete items to be instanciated
-    */
+    /**
+     * Concrete items to be instanciated
+     */
     abstract public static function getConcreteClass();
 
-   /**
-    * Template class to use to create the concrete items
-    */
+    /**
+     * Template class to use to create the concrete items
+     */
     abstract public static function getTemplateClass();
 
-   /**
-    * Predefined field class to use to set the concrete items's data
-    */
+    /**
+     * Predefined field class to use to set the concrete items's data
+     */
     abstract public static function getPredefinedFieldsClass();
 
     public static function displayTabContentForItem(
@@ -236,14 +236,14 @@ abstract class CommonITILRecurrent extends CommonDropdown
         return parent::getSpecificValueToDisplay($field, $values, $options);
     }
 
-   /**
-    * Display periodicity field
-    * The displayed dropdown offer the following options:
-    *    1 to 24 hours
-    *    1 to 30 days
-    *    1 to 11 months
-    *    1 to 10 years
-    */
+    /**
+     * Display periodicity field
+     * The displayed dropdown offer the following options:
+     *    1 to 24 hours
+     *    1 to 30 days
+     *    1 to 11 months
+     *    1 to 10 years
+     */
     public function displayPeriodicityInput(): void
     {
         $possible_values = [];
@@ -336,9 +336,9 @@ abstract class CommonITILRecurrent extends CommonDropdown
         return $tab;
     }
 
-   /**
-    * Show next creation date
-    */
+    /**
+     * Show next creation date
+     */
     public function showInfos(): void
     {
         if (!is_null($this->fields['next_creation_date'])) {
@@ -352,21 +352,21 @@ abstract class CommonITILRecurrent extends CommonDropdown
         }
     }
 
-   /**
-    * Compute next creation date of an item.
-    *
-    * @param string         $begin_date     Begin date of the recurrent item in 'Y-m-d H:i:s' format.
-    * @param string         $end_date       End date of the recurrent item in 'Y-m-d H:i:s' format,
-    *                                       or 'NULL' or empty value.
-    * @param string|integer $periodicity    Periodicity of creation, could be:
-    *                                        - an integer corresponding to seconds,
-    *                                        - a string using "/([0-9]+)(MONTH|YEAR)/" pattern.
-    * @param int            $create_before  Anticipated creation delay in seconds.
-    * @param int|null       $calendars_id   ID of the calendar to use to restrict creation to working hours,
-    *                                       or 0 / null for no calendar.
-    *
-    * @return string  Next creation date in 'Y-m-d H:i:s' format.
-    */
+    /**
+     * Compute next creation date of an item.
+     *
+     * @param string         $begin_date     Begin date of the recurrent item in 'Y-m-d H:i:s' format.
+     * @param string         $end_date       End date of the recurrent item in 'Y-m-d H:i:s' format,
+     *                                       or 'NULL' or empty value.
+     * @param string|integer $periodicity    Periodicity of creation, could be:
+     *                                        - an integer corresponding to seconds,
+     *                                        - a string using "/([0-9]+)(MONTH|YEAR)/" pattern.
+     * @param int            $create_before  Anticipated creation delay in seconds.
+     * @param int|null       $calendars_id   ID of the calendar to use to restrict creation to working hours,
+     *                                       or 0 / null for no calendar.
+     *
+     * @return string  Next creation date in 'Y-m-d H:i:s' format.
+     */
     public function computeNextCreationDate(
         ?string $begin_date,
         ?string $end_date,
@@ -491,24 +491,24 @@ abstract class CommonITILRecurrent extends CommonDropdown
         return date("Y-m-d H:i:s", $creation_time);
     }
 
-   /**
-    * Get create time
-    *
-    * @return int|false
-    */
+    /**
+     * Get create time
+     *
+     * @return int|false
+     */
     public function getCreateTime()
     {
         return strtotime($this->fields['next_creation_date']) + $this->fields['create_before'];
     }
 
-   /**
-    * Handle predefined fields
-    *
-    * @param array $predefined
-    * @param array $input
-    *
-    * @return array The modified $input
-    */
+    /**
+     * Handle predefined fields
+     *
+     * @param array $predefined
+     * @param array $input
+     *
+     * @return array The modified $input
+     */
     public function handlePredefinedFields(
         array $predefined,
         array $input
@@ -541,11 +541,11 @@ abstract class CommonITILRecurrent extends CommonDropdown
         return $input;
     }
 
-   /**
-    * Create an item based on the specified template
-    *
-    * @return boolean
-    */
+    /**
+     * Create an item based on the specified template
+     *
+     * @return boolean
+     */
     public function createItem()
     {
         $result = false;
@@ -554,7 +554,7 @@ abstract class CommonITILRecurrent extends CommonDropdown
         $fields_class = static::getPredefinedFieldsClass();
         $tmpl_fk = $template_class::getForeignKeyField();
 
-       /** @var ITILTemplate */
+        /** @var ITILTemplate */
         $template = new $template_class();
 
        // Create item based on specified template and entity information
@@ -563,7 +563,7 @@ abstract class CommonITILRecurrent extends CommonDropdown
             $input = $concrete_class::getDefaultValues($this->fields['entities_id']);
 
            // Apply itiltemplates predefined values
-           /** @var ITILTemplatePredefinedField */
+            /** @var ITILTemplatePredefinedField */
             $fields = new $fields_class();
             $predefined = $fields->getPredefinedFields($this->fields[$tmpl_fk], true);
             $input = $this->handlePredefinedFields($predefined, $input);
@@ -572,7 +572,7 @@ abstract class CommonITILRecurrent extends CommonDropdown
             $input['entities_id'] = $this->fields['entities_id'];
             $input['_auto_import'] = true;
 
-           /** @var CommonITILObject */
+            /** @var CommonITILObject */
             $item = new $concrete_class();
             $input  = Toolbox::addslashes_deep($input);
 

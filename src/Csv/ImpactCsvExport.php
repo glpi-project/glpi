@@ -40,7 +40,7 @@ use ImpactItem;
 
 class ImpactCsvExport implements ExportToCsvInterface
 {
-   /** @var CommonDBTM */
+    /** @var CommonDBTM */
     protected $item;
 
     public function __construct(CommonDBTM $item)

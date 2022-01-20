@@ -104,10 +104,10 @@ class APIXmlrpc extends APIBaseClass
         return $data;
     }
 
-   /**
-    * @tags   api
-    * @covers API::initSession
-    */
+    /**
+     * @tags   api
+     * @covers API::initSession
+     */
     public function initSessionCredentials()
     {
         $uid = getItemByTypeName('User', TU_USER, true);
@@ -123,18 +123,18 @@ class APIXmlrpc extends APIBaseClass
         $this->session_token = $data['session_token'];
     }
 
-   /**
-    * @tags    api
-    */
+    /**
+     * @tags    api
+     */
     public function testBadEndpoint()
     {
         parent::badEndpoint(405, 'ERROR_METHOD_NOT_ALLOWED');
     }
 
-   /**
-    * @tags    api
-    * @covers  API::updateItems
-    */
+    /**
+     * @tags    api
+     * @covers  API::updateItems
+     */
     public function testUpdateItem()
     {
        //:parent::testUpdateItem($session_token, $computers_id);

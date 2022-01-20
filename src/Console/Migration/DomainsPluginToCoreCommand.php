@@ -48,31 +48,31 @@ use Toolbox;
 
 class DomainsPluginToCoreCommand extends AbstractCommand
 {
-   /**
-    * Error code returned if plugin version or plugin data is invalid.
-    *
-    * @var integer
-    */
+    /**
+     * Error code returned if plugin version or plugin data is invalid.
+     *
+     * @var integer
+     */
     const ERROR_PLUGIN_VERSION_OR_DATA_INVALID = 1;
 
-   /**
-    * Error code returned if import failed.
-    *
-    * @var integer
-    */
+    /**
+     * Error code returned if import failed.
+     *
+     * @var integer
+     */
     const ERROR_PLUGIN_IMPORT_FAILED = 1;
 
-   /**
-    * Version of Domains plugin required for this migration.
-    * @var string
-    */
+    /**
+     * Version of Domains plugin required for this migration.
+     * @var string
+     */
     const DOMAINS_REQUIRED_VERSION = '2.1.0';
 
-   /**
-    * Imported elements mapping.
-    *
-    * @var array
-    */
+    /**
+     * Imported elements mapping.
+     *
+     * @var array
+     */
     private $elements_mapping;
 
     protected function configure()
@@ -135,13 +135,13 @@ class DomainsPluginToCoreCommand extends AbstractCommand
         return 0; // Success
     }
 
-   /**
-    * Check that plugin state and existing data are OK for migration.
-    *
-    * @throws LogicException
-    *
-    * @return boolean
-    */
+    /**
+     * Check that plugin state and existing data are OK for migration.
+     *
+     * @throws LogicException
+     *
+     * @return boolean
+     */
     private function checkPlugin()
     {
 
@@ -286,11 +286,11 @@ class DomainsPluginToCoreCommand extends AbstractCommand
         return !$failure;
     }
 
-   /**
-    * Migrate domain types
-    *
-    * @return boolean
-    */
+    /**
+     * Migrate domain types
+     *
+     * @return boolean
+     */
     protected function importDomainTypes()
     {
         $has_errors = false;
@@ -391,13 +391,13 @@ class DomainsPluginToCoreCommand extends AbstractCommand
         return !$has_errors;
     }
 
-   /**
-    * Migrate domains
-    *
-    * @throws LogicException
-    *
-    * @return boolean
-    */
+    /**
+     * Migrate domains
+     *
+     * @throws LogicException
+     *
+     * @return boolean
+     */
     protected function importDomains()
     {
         $has_errors = false;
@@ -543,11 +543,11 @@ class DomainsPluginToCoreCommand extends AbstractCommand
         return !$has_errors;
     }
 
-   /**
-    * Migrate domain items
-    *
-    * @return boolean
-    */
+    /**
+     * Migrate domain items
+     *
+     * @return boolean
+     */
     protected function importDomainItems()
     {
         $has_errors = false;
@@ -655,16 +655,16 @@ class DomainsPluginToCoreCommand extends AbstractCommand
     }
 
 
-   /**
-    * Add an element to mapping.
-    *
-    * @param string  $old_itemtype
-    * @param integer $old_id
-    * @param string  $new_itemtype
-    * @param integer $new_id
-    *
-    * @return void
-    */
+    /**
+     * Add an element to mapping.
+     *
+     * @param string  $old_itemtype
+     * @param integer $old_id
+     * @param string  $new_itemtype
+     * @param integer $new_id
+     *
+     * @return void
+     */
     private function addElementToMapping($old_itemtype, $old_id, $new_itemtype, $new_id)
     {
 
@@ -677,15 +677,15 @@ class DomainsPluginToCoreCommand extends AbstractCommand
         ];
     }
 
-   /**
-    * Returns item corresponding to itemtype and id.
-    * If item has been migrated to another itemtype, il will return the new item.
-    *
-    * @param string  $itemtype
-    * @param integer $id
-    *
-    * @return null|CommonDBTM
-    */
+    /**
+     * Returns item corresponding to itemtype and id.
+     * If item has been migrated to another itemtype, il will return the new item.
+     *
+     * @param string  $itemtype
+     * @param integer $id
+     *
+     * @return null|CommonDBTM
+     */
     private function getCorrespondingItem($itemtype, $id)
     {
 
@@ -711,14 +711,14 @@ class DomainsPluginToCoreCommand extends AbstractCommand
         return $item;
     }
 
-   /**
-    * Output import error message.
-    *
-    * @param string           $message
-    * @param ProgressBar|null $progress_bar
-    *
-    * @return void
-    */
+    /**
+     * Output import error message.
+     *
+     * @param string           $message
+     * @param ProgressBar|null $progress_bar
+     *
+     * @return void
+     */
     private function outputImportError($message, ProgressBar $progress_bar = null)
     {
 

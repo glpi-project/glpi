@@ -39,19 +39,19 @@ namespace tests\units;
  */
 class Migration extends \GLPITestCase
 {
-   /**
-    * @var \DB
-    */
+    /**
+     * @var \DB
+     */
     private $db;
 
-   /**
-    * @var \Migration
-    */
+    /**
+     * @var \Migration
+     */
     private $migration;
 
-   /**
-    * @var string[]
-    */
+    /**
+     * @var string[]
+     */
     private $queries;
 
     public function beforeTestMethod($method)
@@ -574,9 +574,9 @@ class Migration extends \GLPITestCase
         ];
     }
 
-   /**
-    * @dataProvider fieldsFormatsProvider
-    */
+    /**
+     * @dataProvider fieldsFormatsProvider
+     */
     public function testAddField($table, $field, $format, $options, $sql, array $db_properties = [])
     {
         global $DB;
@@ -784,10 +784,10 @@ class Migration extends \GLPITestCase
         );
     }
 
-   /**
-    * Test Migration::renameItemtype().
-    * Case: failure as source table does not exists.
-    */
+    /**
+     * Test Migration::renameItemtype().
+     * Case: failure as source table does not exists.
+     */
     public function testRenameItemtypeWhenSourceTableDoesNotExists()
     {
         global $DB;
@@ -805,10 +805,10 @@ class Migration extends \GLPITestCase
         ->contains('Table "glpi_someoldtypes" does not exists.');
     }
 
-   /**
-    * Test Migration::renameItemtype().
-    * Case: failure as destination table already exists.
-    */
+    /**
+     * Test Migration::renameItemtype().
+     * Case: failure as destination table already exists.
+     */
     public function testRenameItemtypeWhenDestinationTableAlreadyExists()
     {
         global $DB;
@@ -825,10 +825,10 @@ class Migration extends \GLPITestCase
         ->contains('Table "glpi_someoldtypes" cannot be renamed as table "glpi_newnames" already exists.');
     }
 
-   /**
-    * Test Migration::renameItemtype().
-    * Case: failure as foreign key field already in use somewhere.
-    */
+    /**
+     * Test Migration::renameItemtype().
+     * Case: failure as foreign key field already in use somewhere.
+     */
     public function testRenameItemtypeWhenDestinationFieldAlreadyExists()
     {
         global $DB;
@@ -853,10 +853,10 @@ class Migration extends \GLPITestCase
         ->contains('Field "someoldtypes_id" cannot be renamed in table "glpi_item_with_fkey" as "newnames_id" is field already exists.');
     }
 
-   /**
-    * Test Migration::renameItemtype().
-    * Case: success.
-    */
+    /**
+     * Test Migration::renameItemtype().
+     * Case: success.
+     */
     public function testRenameItemtype()
     {
         global $DB;

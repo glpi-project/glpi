@@ -69,13 +69,13 @@ class Pdu_Plug extends CommonDBRelation
         self::showItems($item, $withtemplate);
     }
 
-   /**
-    * Print items
-    *
-    * @param  PDU $pdu PDU instance
-    *
-    * @return void
-    */
+    /**
+     * Print items
+     *
+     * @param  PDU $pdu PDU instance
+     *
+     * @return void
+     */
     public static function showItems(PDU $pdu)
     {
         global $DB;

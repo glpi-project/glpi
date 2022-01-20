@@ -40,13 +40,13 @@ use Glpi\RichText\RichText;
  */
 class DataFactory
 {
-   /**
-    * Recursive function used to get all subitems of a project, when $id > 0.
-    * Returns all projects with their subitems if $id == -1 (for global gantt view).
-    *
-    * @param array $itemArray Array holding the result
-    * @param integer $id ID of the parent project
-    */
+    /**
+     * Recursive function used to get all subitems of a project, when $id > 0.
+     * Returns all projects with their subitems if $id == -1 (for global gantt view).
+     *
+     * @param array $itemArray Array holding the result
+     * @param integer $id ID of the parent project
+     */
     public function getItemsForProject(&$itemArray, $id)
     {
         global $DB;
@@ -73,13 +73,13 @@ class DataFactory
         }
     }
 
-   /**
-    * Function used to get project task links
-    *
-    * @param array $itemArray Input array holding project and task items
-    *
-    * @return array $links Array of Link objects
-    */
+    /**
+     * Function used to get project task links
+     *
+     * @param array $itemArray Input array holding project and task items
+     *
+     * @return array $links Array of Link objects
+     */
     public function getProjectTaskLinks($itemArray)
     {
         $links = [];
@@ -99,13 +99,13 @@ class DataFactory
         return $links;
     }
 
-   /**
-    * Recursive function used to get all subprojects and tasks of a project
-    *
-    * @param array $itemArray Array holding the items
-    * @param integer $projectId ID of the parent project
-    *
-    */
+    /**
+     * Recursive function used to get all subprojects and tasks of a project
+     *
+     * @param array $itemArray Array holding the items
+     * @param integer $projectId ID of the parent project
+     *
+     */
     public function getSubprojects(&$itemArray, $projectId)
     {
         global $DB;
@@ -123,12 +123,12 @@ class DataFactory
         }
     }
 
-   /**
-    * Function used to get all tasks of a project
-    *
-    * @param array @itemArray Array holding the task items
-    * @param integer @projectId ID of the project
-    */
+    /**
+     * Function used to get all tasks of a project
+     *
+     * @param array @itemArray Array holding the task items
+     * @param integer @projectId ID of the project
+     */
     public function getProjectTasks(&$itemArray, $projectId)
     {
         $taskRecords[] = \ProjectTask::getAllForProject($projectId);
@@ -142,12 +142,12 @@ class DataFactory
         }
     }
 
-   /**
-    * Function used to get all subtasks of a task
-    *
-    * @param array @itemArray Array holding the task items
-    * @param integer @taskId ID of the parent task
-    */
+    /**
+     * Function used to get all subtasks of a task
+     *
+     * @param array @itemArray Array holding the task items
+     * @param integer @taskId ID of the parent task
+     */
     public function getSubtasks(&$itemArray, $taskId)
     {
         $taskRecords[] = \ProjectTask::getAllForProjectTask($taskId);
@@ -163,14 +163,14 @@ class DataFactory
         }
     }
 
-   /**
-    * Function used to populate gantt Item objects with projects/tasks/milestones data
-    *
-    * @param $record Project or task record from database
-    * @param string $type Specifies the type of the record (project, task or milestone)
-    *
-    * @return Item instance
-    */
+    /**
+     * Function used to populate gantt Item objects with projects/tasks/milestones data
+     *
+     * @param $record Project or task record from database
+     * @param string $type Specifies the type of the record (project, task or milestone)
+     *
+     * @return Item instance
+     */
     public function populateGanttItem($record, $type)
     {
         if (isset($record['is_milestone']) && $record['is_milestone'] > 0) {

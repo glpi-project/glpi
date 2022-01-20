@@ -93,9 +93,9 @@ class Calendar extends DbTestCase
         ];
     }
 
-   /**
-    * @dataProvider activeProvider
-    */
+    /**
+     * @dataProvider activeProvider
+     */
     public function testGetActiveTimeBetween($start, $end, $value, $days = false)
     {
         $calendar = new \Calendar();
@@ -122,9 +122,9 @@ class Calendar extends DbTestCase
         ];
     }
 
-   /**
-    * @dataProvider workingdayProvider
-    */
+    /**
+     * @dataProvider workingdayProvider
+     */
     public function testIsAWorkingDay($date, $expected)
     {
         $calendar = new \Calendar();
@@ -159,9 +159,9 @@ class Calendar extends DbTestCase
         ];
     }
 
-   /**
-    * @dataProvider workinghourProvider
-    */
+    /**
+     * @dataProvider workinghourProvider
+     */
     public function testIsAWorkingHour($date, $expected)
     {
         $calendar = new \Calendar();

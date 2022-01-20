@@ -36,7 +36,7 @@ use Glpi\Plugin\Hooks;
 
 /**
  * Saved search alerts
-**/
+ **/
 class SavedSearch_Alert extends CommonDBChild
 {
    // From CommonDBChild
@@ -97,16 +97,16 @@ class SavedSearch_Alert extends CommonDBChild
     }
 
 
-   /**
-    * Print the form
-    *
-    * @param integer $ID      integer ID of the item
-    * @param array   $options array
-    *     - target for the Form
-    *     - computers_id ID of the computer for add process
-    *
-    * @return true if displayed  false if item not found or not right to display
-   **/
+    /**
+     * Print the form
+     *
+     * @param integer $ID      integer ID of the item
+     * @param array   $options array
+     *     - target for the Form
+     *     - computers_id ID of the computer for add process
+     *
+     * @return true if displayed  false if item not found or not right to display
+     **/
     public function showForm($ID, array $options = [])
     {
 
@@ -186,14 +186,14 @@ class SavedSearch_Alert extends CommonDBChild
     }
 
 
-   /**
-    * Print the searches alerts
-    *
-    * @param SavedSearch $search       Object instance
-    * @param boolean     $withtemplate Template or basic item (default '')
-    *
-    * @return void
-   **/
+    /**
+     * Print the searches alerts
+     *
+     * @param SavedSearch $search       Object instance
+     * @param boolean     $withtemplate Template or basic item (default '')
+     *
+     * @return void
+     **/
     public static function showForSavedSearch(SavedSearch $search, $withtemplate = 0)
     {
         global $DB;
@@ -295,13 +295,13 @@ class SavedSearch_Alert extends CommonDBChild
         echo "</div>";
     }
 
-   /**
-    * Get operators
-    *
-    * @param integer $id ID for the operator to retrieve, or null for the full list
-    *
-    * @return string|array
-    */
+    /**
+     * Get operators
+     *
+     * @param integer $id ID for the operator to retrieve, or null for the full list
+     *
+     * @return string|array
+     */
     public static function getOperators($id = null)
     {
         $ops = [
@@ -324,13 +324,13 @@ class SavedSearch_Alert extends CommonDBChild
         return [];
     }
 
-   /**
-    * Summary of saveContext
-    *
-    * Save $_SESSION and $CFG_GLPI into the returned array
-    *
-    * @return array[] which contains a copy of $_SESSION and $CFG_GLPI
-    */
+    /**
+     * Summary of saveContext
+     *
+     * Save $_SESSION and $CFG_GLPI into the returned array
+     *
+     * @return array[] which contains a copy of $_SESSION and $CFG_GLPI
+     */
     private static function saveContext()
     {
         global $CFG_GLPI;
@@ -340,15 +340,15 @@ class SavedSearch_Alert extends CommonDBChild
         return $context;
     }
 
-   /**
-    * Summary of restoreContext
-    *
-    * restore former $_SESSION and $CFG_GLPI
-    * to be sure that logs will be in GLPI default datetime and language
-    * and that session is restored for the next crontaskaction
-    *
-    * @param mixed $context is the array returned by saveContext
-    */
+    /**
+     * Summary of restoreContext
+     *
+     * restore former $_SESSION and $CFG_GLPI
+     * to be sure that logs will be in GLPI default datetime and language
+     * and that session is restored for the next crontaskaction
+     *
+     * @param mixed $context is the array returned by saveContext
+     */
     private static function restoreContext($context)
     {
         global $CFG_GLPI;
@@ -358,13 +358,13 @@ class SavedSearch_Alert extends CommonDBChild
         Plugin::doHook(Hooks::INIT_SESSION);
     }
 
-   /**
-    * Send saved searches alerts
-    *
-    * @param CronTask $task CronTask instance
-    *
-    * @return int : <0 : need to run again, 0:nothing to do, >0:ok
-    */
+    /**
+     * Send saved searches alerts
+     *
+     * @param CronTask $task CronTask instance
+     *
+     * @return int : <0 : need to run again, 0:nothing to do, >0:ok
+     */
     public static function cronSavedSearchesAlerts($task)
     {
         global $DB;

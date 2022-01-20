@@ -57,9 +57,9 @@ class ProjectTaskTeam extends CommonDBRelation
     public static $available_types     = ['User', 'Group', 'Supplier', 'Contact'];
 
 
-   /**
-    * @see CommonDBTM::getNameField()
-   **/
+    /**
+     * @see CommonDBTM::getNameField()
+     **/
     public static function getNameField()
     {
         return 'id';
@@ -122,13 +122,13 @@ class ProjectTaskTeam extends CommonDBRelation
     }
 
 
-   /**
-    * Get team for a project task
-    *
-    * @param $tasks_id
-    * @param bool $expand If true, the team member data is expanded to include specific properties like firstname, realname, ...
-    * @return array
-   **/
+    /**
+     * Get team for a project task
+     *
+     * @param $tasks_id
+     * @param bool $expand If true, the team member data is expanded to include specific properties like firstname, realname, ...
+     * @return array
+     **/
     public static function getTeamFor($tasks_id, bool $expand = false)
     {
         global $DB;

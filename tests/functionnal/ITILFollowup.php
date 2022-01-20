@@ -44,12 +44,12 @@ use User;
 
 class ITILFollowup extends DbTestCase
 {
-   /**
-    * Create a new ITILObject and return its id
-    *
-    * @param string $itemtype ITILObject parent to test followups on
-    * @return integer
-    */
+    /**
+     * Create a new ITILObject and return its id
+     *
+     * @param string $itemtype ITILObject parent to test followups on
+     * @return integer
+     */
     private function getNewITILObject($itemtype)
     {
        //create reference ITILObject
@@ -217,9 +217,9 @@ class ITILFollowup extends DbTestCase
         $this->boolean((bool) $fup->getFromDB($fup_id))->isFalse();
     }
 
-   /**
-    * Test _do_not_compute_takeintoaccount flag
-    */
+    /**
+     * Test _do_not_compute_takeintoaccount flag
+     */
     public function testDoNotComputeTakeintoaccount()
     {
         $this->login();
@@ -321,9 +321,9 @@ class ITILFollowup extends DbTestCase
         ];
     }
 
-   /**
-    * @dataprovider testIsFromSupportAgentProvider
-    */
+    /**
+     * @dataprovider testIsFromSupportAgentProvider
+     */
     public function testIsFromSupportAgent(
         array $roles,
         string $profile,

@@ -46,9 +46,9 @@ class RuleMailCollectorCollection extends RuleCollection
     }
 
 
-   /**
-    * @see RuleCollection::prepareInputDataForProcess()
-   **/
+    /**
+     * @see RuleCollection::prepareInputDataForProcess()
+     **/
     public function prepareInputDataForProcess($input, $params)
     {
 
@@ -129,9 +129,9 @@ class RuleMailCollectorCollection extends RuleCollection
     }
 
 
-   /**
-    * @see RuleCollection::canList()
-   **/
+    /**
+     * @see RuleCollection::canList()
+     **/
     public function canList()
     {
 

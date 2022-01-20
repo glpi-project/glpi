@@ -35,7 +35,7 @@
  * Blacklist Class
  *
  * @since 0.84
-**/
+ **/
 class Blacklist extends CommonDropdown
 {
    // From CommonDBTM
@@ -65,9 +65,9 @@ class Blacklist extends CommonDropdown
     }
 
 
-   /**
-    * @since 0.85
-    */
+    /**
+     * @since 0.85
+     */
     public static function canPurge()
     {
         return static::canUpdate();
@@ -94,11 +94,11 @@ class Blacklist extends CommonDropdown
     }
 
 
-   /**
-    * Get search function for the class
-    *
-    * @return array of search option
-    */
+    /**
+     * Get search function for the class
+     *
+     * @return array of search option
+     */
     public function rawSearchOptions()
     {
         $tab = parent::rawSearchOptions();
@@ -180,18 +180,18 @@ class Blacklist extends CommonDropdown
     }
 
 
-   /**
-    * Dropdown of blacklist types
-    *
-    * @param string $name   select name
-    * @param array  $options possible options:
-    *    - value       : integer / preselected value (default 0)
-    *    - toadd       : array / array of specific values to add at the beginning
-    *    - on_change   : string / value to transmit to "onChange"
-    *    - display
-    *
-    * @return string ID of the select
-   **/
+    /**
+     * Dropdown of blacklist types
+     *
+     * @param string $name   select name
+     * @param array  $options possible options:
+     *    - value       : integer / preselected value (default 0)
+     *    - toadd       : array / array of specific values to add at the beginning
+     *    - on_change   : string / value to transmit to "onChange"
+     *    - display
+     *
+     * @return string ID of the select
+     **/
     public static function dropdownType($name, $options = [])
     {
 
@@ -219,11 +219,11 @@ class Blacklist extends CommonDropdown
     }
 
 
-   /**
-    * Get blacklist types
-    *
-    * @return array Array of types
-   **/
+    /**
+     * Get blacklist types
+     *
+     * @return array Array of types
+     **/
     public static function getTypes()
     {
 
@@ -262,13 +262,13 @@ class Blacklist extends CommonDropdown
         return $this->blacklists;
     }
 
-   /**
-    * Get blacklisted items for a specific type
-    *
-    * @param string $type type to get (see constants)
-    *
-    * @return array Array of blacklisted items
-   **/
+    /**
+     * Get blacklisted items for a specific type
+     *
+     * @param string $type type to get (see constants)
+     *
+     * @return array Array of blacklisted items
+     **/
     public static function getBlacklistedItems($type)
     {
 
@@ -282,55 +282,55 @@ class Blacklist extends CommonDropdown
         return $items;
     }
 
-   /**
-    * Get blacklisted IP
-    *
-    * @return array Array of blacklisted IP
-   **/
+    /**
+     * Get blacklisted IP
+     *
+     * @return array Array of blacklisted IP
+     **/
     public static function getIPs()
     {
         return self::getBlacklistedItems(self::IP);
     }
 
 
-   /**
-    * Get blacklisted MAC
-    *
-    * @return array Array of blacklisted MAC
-   **/
+    /**
+     * Get blacklisted MAC
+     *
+     * @return array Array of blacklisted MAC
+     **/
     public static function getMACs()
     {
         return self::getBlacklistedItems(self::MAC);
     }
 
 
-   /**
-    * Get blacklisted Serial number
-    *
-    * @return array Array of blacklisted Serial number
-   **/
+    /**
+     * Get blacklisted Serial number
+     *
+     * @return array Array of blacklisted Serial number
+     **/
     public static function getSerialNumbers()
     {
         return self::getBlacklistedItems(self::SERIAL);
     }
 
 
-   /**
-    * Get blacklisted UUID
-    *
-    * @return array Array of blacklisted UUID
-   **/
+    /**
+     * Get blacklisted UUID
+     *
+     * @return array Array of blacklisted UUID
+     **/
     public static function getUUIDs()
     {
         return self::getBlacklistedItems(self::UUID);
     }
 
 
-   /**
-    * Get blacklisted Emails
-    *
-    * @return array Array of blacklisted Emails
-   **/
+    /**
+     * Get blacklisted Emails
+     *
+     * @return array Array of blacklisted Emails
+     **/
     public static function getEmails()
     {
         return self::getBlacklistedItems(self::EMAIL);

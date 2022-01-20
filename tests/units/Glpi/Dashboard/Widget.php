@@ -94,9 +94,9 @@ class Widget extends DbTestCase
         ];
     }
 
-   /**
-    * @dataProvider palettes
-    */
+    /**
+     * @dataProvider palettes
+     */
     public function testGetGradientPalette(
         string $bg_color,
         int $nb_series,

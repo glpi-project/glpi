@@ -44,17 +44,17 @@ use Glpi\ContentTemplates\TemplateManager;
  */
 class ObjectParameter extends AbstractParameterType
 {
-   /**
-    * Parameters availables in the item that will be linked.
-    *
-    * @var TemplatesParametersInterface
-    */
+    /**
+     * Parameters availables in the item that will be linked.
+     *
+     * @var TemplatesParametersInterface
+     */
     protected $template_parameters;
 
-   /**
-    * @param TemplatesParametersInterface $template_parameters Parameters to add
-    * @param null|string                  $key                 Key to access this value
-    */
+    /**
+     * @param TemplatesParametersInterface $template_parameters Parameters to add
+     * @param null|string                  $key                 Key to access this value
+     */
     public function __construct(TemplatesParametersInterface $template_parameters, ?string $key = null)
     {
         parent::__construct(

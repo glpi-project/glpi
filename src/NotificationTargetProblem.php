@@ -33,14 +33,14 @@
 
 /**
  * NotificationTargetProblem Class
-**/
+ **/
 class NotificationTargetProblem extends NotificationTargetCommonITILObject
 {
     public $private_profiles = [];
 
-   /**
-    * Get events related to tickets
-   **/
+    /**
+     * Get events related to tickets
+     **/
     public function getEvents()
     {
 

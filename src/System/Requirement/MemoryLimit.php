@@ -38,16 +38,16 @@ namespace Glpi\System\Requirement;
  */
 class MemoryLimit extends AbstractRequirement
 {
-   /**
-    * Minimal allocated memory size.
-    *
-    * @var int
-    */
+    /**
+     * Minimal allocated memory size.
+     *
+     * @var int
+     */
     private $min;
 
-   /**
-    * @param int $min  Minimal allocated memory.
-    */
+    /**
+     * @param int $min  Minimal allocated memory.
+     */
     public function __construct(int $min)
     {
         $this->title = __('Allocated memory');

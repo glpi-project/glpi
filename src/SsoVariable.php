@@ -33,7 +33,7 @@
 
 /**
  * @since 0.84
-**/
+ **/
 class SsoVariable extends CommonDropdown
 {
     public static $rightname = 'config';
@@ -58,9 +58,9 @@ class SsoVariable extends CommonDropdown
     }
 
 
-   /**
-    * @since 0.85
-   **/
+    /**
+     * @since 0.85
+     **/
     public static function canPurge()
     {
         return static::canUpdate();
@@ -96,11 +96,11 @@ class SsoVariable extends CommonDropdown
     }
 
 
-   /**
-    * Check if variable is used in auth process.
-    *
-    * @return boolean
-    */
+    /**
+     * Check if variable is used in auth process.
+     *
+     * @return boolean
+     */
     private function isUsedInAuth()
     {
 

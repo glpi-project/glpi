@@ -38,7 +38,7 @@
 
 /**
  * SLA Class
-**/
+ **/
 class SLA extends LevelAgreement
 {
     protected static $prefix            = 'sla';

@@ -39,11 +39,11 @@ use DbTestCase;
 
 class Item_Rack extends DbTestCase
 {
-   /**
-    * Models provider
-    *
-    * @return array
-    */
+    /**
+     * Models provider
+     *
+     * @return array
+     */
     protected function modelsProvider()
     {
         return [
@@ -86,11 +86,11 @@ class Item_Rack extends DbTestCase
         ];
     }
 
-   /**
-    * Create models
-    *
-    * @return void
-    */
+    /**
+     * Create models
+     *
+     * @return void
+     */
     protected function createModels()
     {
         $model = new \ComputerModel();
@@ -101,11 +101,11 @@ class Item_Rack extends DbTestCase
         }
     }
 
-   /**
-    * Computers provider
-    *
-    * @return array
-    */
+    /**
+     * Computers provider
+     *
+     * @return array
+     */
     protected function computersProvider()
     {
         return [
@@ -155,11 +155,11 @@ class Item_Rack extends DbTestCase
         ];
     }
 
-   /**
-    * Create computers
-    *
-    * @return void
-    */
+    /**
+     * Create computers
+     *
+     * @return void
+     */
     protected function createComputers()
     {
         $computer = new \Computer();
@@ -175,11 +175,11 @@ class Item_Rack extends DbTestCase
     }
 
 
-   /**
-    * Test for adding items into rack
-    *
-    * @return void
-    */
+    /**
+     * Test for adding items into rack
+     *
+     * @return void
+     */
     public function testAdd()
     {
         $this->createModels();

@@ -37,7 +37,7 @@ use Glpi\Toolbox\Sanitizer;
  * RuleRight Class
  *
  * Rule class for Rights management
-**/
+ **/
 class RuleRight extends Rule
 {
    // From Rule
@@ -45,9 +45,9 @@ class RuleRight extends Rule
     public $orderby             = "name";
     public $specific_parameters = true;
 
-   /**
-    * @see Rule::showNewRuleForm()
-   **/
+    /**
+     * @see Rule::showNewRuleForm()
+     **/
     public function showNewRuleForm($ID)
     {
 
@@ -225,9 +225,9 @@ class RuleRight extends Rule
     }
 
 
-   /**
-    * @see Rule::getCriterias()
-   **/
+    /**
+     * @see Rule::getCriterias()
+     **/
     public function getCriterias()
     {
         static $criterias = [];
@@ -307,9 +307,9 @@ class RuleRight extends Rule
     }
 
 
-   /**
-    * @see Rule::getActions()
-   **/
+    /**
+     * @see Rule::getActions()
+     **/
     public function getActions()
     {
 
@@ -405,11 +405,11 @@ class RuleRight extends Rule
 
 
 
-   /**
-    * Get all ldap rules criteria from the DB and add them into the RULES_CRITERIAS
-    *
-    * @param &$criteria
-   **/
+    /**
+     * Get all ldap rules criteria from the DB and add them into the RULES_CRITERIAS
+     *
+     * @param &$criteria
+     **/
     public function addSpecificCriteriasToArray(&$criteria)
     {
 

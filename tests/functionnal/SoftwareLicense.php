@@ -82,11 +82,11 @@ class SoftwareLicense extends DbTestCase
         $this->array($license->prepareInputForAdd($input))->isIdenticalTo($expected);
     }
 
-   /**
-    * Creates a new software
-    *
-    * @return \Software
-    */
+    /**
+     * Creates a new software
+     *
+     * @return \Software
+     */
     private function createSoft()
     {
         $software     = new \Software();

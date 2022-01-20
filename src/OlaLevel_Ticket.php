@@ -45,16 +45,16 @@ class OlaLevel_Ticket extends CommonDBTM
     }
 
 
-   /**
-    * Retrieve an item from the database
-    *
-    * @param $ID        ID of the item to get
-    * @param $olatype
-    *
-    * @since 9.1 2 mandatory parameters
-    *
-    * @return true if succeed else false
-   **/
+    /**
+     * Retrieve an item from the database
+     *
+     * @param $ID        ID of the item to get
+     * @param $olatype
+     *
+     * @since 9.1 2 mandatory parameters
+     *
+     * @return true if succeed else false
+     **/
     public function getFromDBForTicket($ID, $olaType)
     {
         global $DB;
@@ -90,16 +90,16 @@ class OlaLevel_Ticket extends CommonDBTM
     }
 
 
-   /**
-    * Delete entries for a ticket
-    *
-    * @param $tickets_id    Ticket ID
-    * @param $type          Type of OLA
-    *
-    * @since 9.1 2 parameters mandatory
-    *
-    * @return void
-   **/
+    /**
+     * Delete entries for a ticket
+     *
+     * @param $tickets_id    Ticket ID
+     * @param $type          Type of OLA
+     *
+     * @since 9.1 2 parameters mandatory
+     *
+     * @return void
+     **/
     public function deleteForTicket($tickets_id, $olaType)
     {
         global $DB;
@@ -133,13 +133,13 @@ class OlaLevel_Ticket extends CommonDBTM
     }
 
 
-   /**
-    * Give cron information
-    *
-    * @param $name : task's name
-    *
-    * @return array of information
-   **/
+    /**
+     * Give cron information
+     *
+     * @param $name : task's name
+     *
+     * @return array of information
+     **/
     public static function cronInfo($name)
     {
 
@@ -151,13 +151,13 @@ class OlaLevel_Ticket extends CommonDBTM
     }
 
 
-   /**
-    * Cron for ticket's automatic close
-    *
-    * @param $task : CronTask object
-    *
-    * @return integer (0 : nothing done - 1 : done)
-   **/
+    /**
+     * Cron for ticket's automatic close
+     *
+     * @param $task : CronTask object
+     *
+     * @return integer (0 : nothing done - 1 : done)
+     **/
     public static function cronOlaTicket(CronTask $task)
     {
         global $DB;
@@ -199,16 +199,16 @@ class OlaLevel_Ticket extends CommonDBTM
     }
 
 
-   /**
-    * Do a specific OLAlevel for a ticket
-    *
-    * @param $data          array data of an entry of olalevels_tickets
-    * @param $olaType             Type of ola
-    *
-    * @since 9.1   2 parameters mandatory
-    *
-    * @return void
-   **/
+    /**
+     * Do a specific OLAlevel for a ticket
+     *
+     * @param $data          array data of an entry of olalevels_tickets
+     * @param $olaType             Type of ola
+     *
+     * @since 9.1   2 parameters mandatory
+     *
+     * @return void
+     **/
     public static function doLevelForTicket(array $data, $olaType)
     {
 
@@ -308,15 +308,15 @@ class OlaLevel_Ticket extends CommonDBTM
     }
 
 
-   /**
-    * Replay all task needed for a specific ticket
-    *
-    * @param $tickets_id Ticket ID
-    * @param $olaType Type of ola
-    *
-    * @since 9.1    2 parameters mandatory
-    *
-    */
+    /**
+     * Replay all task needed for a specific ticket
+     *
+     * @param $tickets_id Ticket ID
+     * @param $olaType Type of ola
+     *
+     * @since 9.1    2 parameters mandatory
+     *
+     */
     public static function replayForTicket($tickets_id, $olaType)
     {
         global $DB;

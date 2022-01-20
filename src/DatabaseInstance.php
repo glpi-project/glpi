@@ -435,13 +435,13 @@ class DatabaseInstance extends CommonDBTM
         return $tab;
     }
 
-   /**
-    * Get item types that can be linked to a database
-    *
-    * @param boolean $all Get all possible types or only allowed ones
-    *
-    * @return array
-    */
+    /**
+     * Get item types that can be linked to a database
+     *
+     * @param boolean $all Get all possible types or only allowed ones
+     *
+     * @return array
+     */
     public static function getTypes($all = false): array
     {
         global $CFG_GLPI;

@@ -35,7 +35,7 @@ use Glpi\Toolbox\VersionParser;
 
 /**
  *  Update class
-**/
+ **/
 class Update
 {
     private $args = [];
@@ -45,23 +45,23 @@ class Update
     private $dbversion;
     private $language;
 
-   /**
-    * Constructor
-    *
-    * @param object $DB   Database instance
-    * @param array  $args Command line arguments; default to empty array
-    */
+    /**
+     * Constructor
+     *
+     * @param object $DB   Database instance
+     * @param array  $args Command line arguments; default to empty array
+     */
     public function __construct($DB, $args = [])
     {
         $this->DB = $DB;
         $this->args = $args;
     }
 
-   /**
-    * Initialize session for update
-    *
-    * @return void
-    */
+    /**
+     * Initialize session for update
+     *
+     * @return void
+     */
     public function initSession()
     {
         if (is_writable(GLPI_SESSION_DIR)) {
@@ -84,11 +84,11 @@ class Update
         Toolbox::setDebugMode(Session::DEBUG_MODE, 0, 0, 1);
     }
 
-   /**
-    * Get current values (versions, lang, ...)
-    *
-    * @return array
-    */
+    /**
+     * Get current values (versions, lang, ...)
+     *
+     * @return array
+     */
     public function getCurrents()
     {
         $currents = [];
@@ -142,14 +142,14 @@ class Update
     }
 
 
-   /**
-    * Run updates
-    *
-    * @param string $current_version  Current version
-    * @param bool   $force_latest     Force replay of latest migration
-    *
-    * @return void
-    */
+    /**
+     * Run updates
+     *
+     * @param string $current_version  Current version
+     * @param bool   $force_latest     Force replay of latest migration
+     *
+     * @return void
+     */
     public function doUpdates($current_version = null, bool $force_latest = false)
     {
         if ($current_version === null) {
@@ -265,24 +265,24 @@ class Update
         }
     }
 
-   /**
-    * Set migration
-    *
-    * @param Migration $migration Migration instance
-    *
-    * @return Update
-    */
+    /**
+     * Set migration
+     *
+     * @param Migration $migration Migration instance
+     *
+     * @return Update
+     */
     public function setMigration(Migration $migration)
     {
         $this->migration = $migration;
         return $this;
     }
 
-   /**
-    * Check if expected security key file is missing.
-    *
-    * @return bool
-    */
+    /**
+     * Check if expected security key file is missing.
+     *
+     * @return bool
+     */
     public function isExpectedSecurityKeyFileMissing(): bool
     {
         $expected_key_path = $this->getExpectedSecurityKeyFilePath();
@@ -294,26 +294,26 @@ class Update
         return !file_exists($expected_key_path);
     }
 
-   /**
-    * Returns expected security key file path.
-    * Will return null for GLPI versions that was not yet handling a custom security key.
-    *
-    * @return string|null
-    */
+    /**
+     * Returns expected security key file path.
+     * Will return null for GLPI versions that was not yet handling a custom security key.
+     *
+     * @return string|null
+     */
     public function getExpectedSecurityKeyFilePath(): ?string
     {
         $glpikey = new GLPIKey();
         return $glpikey->getExpectedKeyPath($this->getCurrents()['version']);
     }
 
-   /**
-    * Get migrations that have to be ran.
-    *
-    * @param string $current_version
-    * @param bool $force_latest
-    *
-    * @return array
-    */
+    /**
+     * Get migrations that have to be ran.
+     *
+     * @param string $current_version
+     * @param bool $force_latest
+     *
+     * @return array
+     */
     public function getMigrationsToDo(string $current_version, bool $force_latest = false): array
     {
         $migrations = [];

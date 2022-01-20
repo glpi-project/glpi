@@ -34,7 +34,7 @@
 /**
  * RegisteredID class
  * @since 0.85
-**/
+ **/
 class RegisteredID extends CommonDBChild
 {
    // From CommonDBTM
@@ -60,12 +60,12 @@ class RegisteredID extends CommonDBChild
     }
 
 
-   /**
-    * @param $field_name
-    * @param $child_count_js_var
-    *
-    * @return string
-   **/
+    /**
+     * @param $field_name
+     * @param $child_count_js_var
+     *
+     * @return string
+     **/
     public static function getJSCodeToAddForItemChild($field_name, $child_count_js_var)
     {
 
@@ -81,9 +81,9 @@ class RegisteredID extends CommonDBChild
     }
 
 
-   /**
-    * @see CommonDBChild::showChildForItemForm()
-   **/
+    /**
+     * @see CommonDBChild::showChildForItemForm()
+     **/
     public function showChildForItemForm($canedit, $field_name, $id)
     {
 

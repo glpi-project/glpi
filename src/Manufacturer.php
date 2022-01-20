@@ -70,9 +70,9 @@ class Manufacturer extends CommonDropdown
     }
 
 
-   /**
-    * @since 0.85
-   **/
+    /**
+     * @since 0.85
+     **/
     public function post_workOnItem()
     {
 
@@ -128,11 +128,11 @@ class Manufacturer extends CommonDropdown
     }
 
 
-   /**
-    * @param null|string $old_name  Old name (need to be addslashes)
-    *
-    * @return null|string new addslashes name
-   **/
+    /**
+     * @param null|string $old_name  Old name (need to be addslashes)
+     *
+     * @return null|string new addslashes name
+     **/
     public static function processName($old_name)
     {
 
@@ -161,15 +161,15 @@ class Manufacturer extends CommonDropdown
     }
 
 
-   /**
-    * @since 0.84
-    *
-    * @param $itemtype
-    * @param $base                  HTMLTableBase object
-    * @param $super                 HTMLTableSuperHeader object (default NULL)
-    * @param $father                HTMLTableHeader object (default NULL)
-    * @param $options      array
-   **/
+    /**
+     * @since 0.84
+     *
+     * @param $itemtype
+     * @param $base                  HTMLTableBase object
+     * @param $super                 HTMLTableSuperHeader object (default NULL)
+     * @param $father                HTMLTableHeader object (default NULL)
+     * @param $options      array
+     **/
     public static function getHTMLTableHeader(
         $itemtype,
         HTMLTableBase $base,
@@ -188,14 +188,14 @@ class Manufacturer extends CommonDropdown
     }
 
 
-   /**
-    * @since 0.84
-    *
-    * @param $row                HTMLTableRow object (default NULL)
-    * @param $item               CommonDBTM object (default NULL)
-    * @param $father             HTMLTableCell object (default NULL)
-    * @param $options   array
-   **/
+    /**
+     * @since 0.84
+     *
+     * @param $row                HTMLTableRow object (default NULL)
+     * @param $item               CommonDBTM object (default NULL)
+     * @param $father             HTMLTableCell object (default NULL)
+     * @param $options   array
+     **/
     public static function getHTMLTableCellsForItem(
         HTMLTableRow $row = null,
         CommonDBTM $item = null,

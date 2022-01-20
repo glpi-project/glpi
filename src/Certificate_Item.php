@@ -45,10 +45,10 @@ class Certificate_Item extends CommonDBRelation
     public static $items_id_2    = 'items_id';
     public static $take_entity_2 = true;
 
-   /**
-    * @since 9.2
-    *
-   **/
+    /**
+     * @since 9.2
+     *
+     **/
     public function getForbiddenStandardMassiveAction()
     {
         $forbidden   = parent::getForbiddenStandardMassiveAction();
@@ -57,9 +57,9 @@ class Certificate_Item extends CommonDBRelation
     }
 
 
-   /**
-    * @param CommonDBTM $item
-    */
+    /**
+     * @param CommonDBTM $item
+     */
     public static function cleanForItem(CommonDBTM $item)
     {
         $temp = new self();
@@ -67,11 +67,11 @@ class Certificate_Item extends CommonDBRelation
                                'items_id' => $item->getField('id')]);
     }
 
-   /**
-    * @param CommonGLPI $item
-    * @param int $withtemplate
-    * @return string
-    */
+    /**
+     * @param CommonGLPI $item
+     * @param int $withtemplate
+     * @return string
+     */
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
 
@@ -104,12 +104,12 @@ class Certificate_Item extends CommonDBRelation
     }
 
 
-   /**
-    * @param CommonGLPI $item
-    * @param int $tabnum
-    * @param int $withtemplate
-    * @return bool
-    */
+    /**
+     * @param CommonGLPI $item
+     * @param int $tabnum
+     * @param int $withtemplate
+     * @return bool
+     */
     public static function displayTabContentForItem(
         CommonGLPI $item,
         $tabnum = 1,
@@ -125,12 +125,12 @@ class Certificate_Item extends CommonDBRelation
     }
 
 
-   /**
-    * @param $certificates_id
-    * @param $items_id
-    * @param $itemtype
-    * @return bool
-    */
+    /**
+     * @param $certificates_id
+     * @param $items_id
+     * @param $itemtype
+     * @return bool
+     */
     public function getFromDBbyCertificatesAndItem($certificates_id, $items_id, $itemtype)
     {
 
@@ -150,12 +150,12 @@ class Certificate_Item extends CommonDBRelation
         return true;
     }
 
-   /**
-   * Link a certificate to an item
-   *
-   * @since 9.2
-   * @param $values
-   */
+    /**
+     * Link a certificate to an item
+     *
+     * @since 9.2
+     * @param $values
+     */
     public function addItem($values)
     {
 
@@ -164,15 +164,15 @@ class Certificate_Item extends CommonDBRelation
                   'itemtype'        => $values["itemtype"]]);
     }
 
-   /**
-   * Delete a certificate link to an item
-   *
-   * @since 9.2
-   *
-   * @param integer $certificates_id the certificate ID
-   * @param integer $items_id the item's id
-   * @param string $itemtype the itemtype
-   */
+    /**
+     * Delete a certificate link to an item
+     *
+     * @since 9.2
+     *
+     * @param integer $certificates_id the certificate ID
+     * @param integer $items_id the item's id
+     * @param string $itemtype the itemtype
+     */
     public function deleteItemByCertificatesAndItem($certificates_id, $items_id, $itemtype)
     {
 
@@ -187,15 +187,15 @@ class Certificate_Item extends CommonDBRelation
         }
     }
 
-   /**
-    * Show items linked to a certificate
-    *
-    * @since 9.2
-    *
-    * @param Certificate $certificate Certificate object
-    *
-    * @return void|boolean (display) Returns false if there is a rights error.
-    **/
+    /**
+     * Show items linked to a certificate
+     *
+     * @since 9.2
+     *
+     * @param Certificate $certificate Certificate object
+     *
+     * @return void|boolean (display) Returns false if there is a rights error.
+     **/
     public static function showForCertificate(Certificate $certificate)
     {
 
@@ -329,16 +329,16 @@ class Certificate_Item extends CommonDBRelation
         echo "</div>";
     }
 
-   /**
-    * Show certificates associated to an item
-    *
-    * @since 9.2
-    *
-    * @param $item  CommonDBTM object for which associated certificates must be displayed
-    * @param $withtemplate (default 0)
-    *
-    * @return bool
-    */
+    /**
+     * Show certificates associated to an item
+     *
+     * @since 9.2
+     *
+     * @param $item  CommonDBTM object for which associated certificates must be displayed
+     * @param $withtemplate (default 0)
+     *
+     * @return bool
+     */
     public static function showForItem(CommonDBTM $item, $withtemplate = 0)
     {
 

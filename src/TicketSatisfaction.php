@@ -45,9 +45,9 @@ class TicketSatisfaction extends CommonDBTM
     }
 
 
-   /**
-    * for use showFormHeader
-   **/
+    /**
+     * for use showFormHeader
+     **/
     public static function getIndexName()
     {
         return 'tickets_id';
@@ -66,11 +66,11 @@ class TicketSatisfaction extends CommonDBTM
     }
 
 
-   /**
-    * Is the current user have right to update the current satisfaction
-    *
-    * @return boolean
-   **/
+    /**
+     * Is the current user have right to update the current satisfaction
+     *
+     * @return boolean
+     **/
     public function canUpdateItem()
     {
 
@@ -99,11 +99,11 @@ class TicketSatisfaction extends CommonDBTM
     }
 
 
-   /**
-    * form for satisfaction
-    *
-    * @param $ticket Object : the ticket
-   **/
+    /**
+     * form for satisfaction
+     *
+     * @param $ticket Object : the ticket
+     **/
     public function showSatisactionForm($ticket)
     {
 
@@ -190,9 +190,9 @@ class TicketSatisfaction extends CommonDBTM
     }
 
 
-   /**
-    * @since 0.85
-   **/
+    /**
+     * @since 0.85
+     **/
     public function post_UpdateItem($history = 1)
     {
         global $CFG_GLPI;
@@ -206,11 +206,11 @@ class TicketSatisfaction extends CommonDBTM
     }
 
 
-   /**
-    * display satisfaction value
-    *
-    * @param $value decimal between 0 and 5
-   **/
+    /**
+     * display satisfaction value
+     *
+     * @param $value decimal between 0 and 5
+     **/
     public static function displaySatisfaction($value)
     {
 
@@ -228,11 +228,11 @@ class TicketSatisfaction extends CommonDBTM
     }
 
 
-   /**
-    * Get name of inquest type
-    *
-    * @param $value status ID
-   **/
+    /**
+     * Get name of inquest type
+     *
+     * @param $value status ID
+     **/
     public static function getTypeInquestName($value)
     {
 
@@ -250,13 +250,13 @@ class TicketSatisfaction extends CommonDBTM
     }
 
 
-   /**
-    * @since 0.84
-    *
-    * @param $field
-    * @param $values
-    * @param $options   array
-   **/
+    /**
+     * @since 0.84
+     *
+     * @param $field
+     * @param $values
+     * @param $options   array
+     **/
     public static function getSpecificValueToDisplay($field, $values, array $options = [])
     {
 
@@ -271,14 +271,14 @@ class TicketSatisfaction extends CommonDBTM
     }
 
 
-   /**
-    * @since 0.84
-    *
-    * @param $field
-    * @param $name                  (default '')
-    * @param $values                (default '')
-    * @param $options   array
-   **/
+    /**
+     * @since 0.84
+     *
+     * @param $field
+     * @param $name                  (default '')
+     * @param $values                (default '')
+     * @param $options   array
+     **/
     public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
     {
 

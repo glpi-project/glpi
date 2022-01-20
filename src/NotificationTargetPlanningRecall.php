@@ -35,7 +35,7 @@
  * NotificationTargetPlanningRecall Class
  *
  * @since 0.84
-**/
+ **/
 class NotificationTargetPlanningRecall extends NotificationTarget
 {
     public function getEvents()
@@ -44,9 +44,9 @@ class NotificationTargetPlanningRecall extends NotificationTarget
     }
 
 
-   /**
-    * @see NotificationTarget::addNotificationTargets()
-   **/
+    /**
+     * @see NotificationTarget::addNotificationTargets()
+     **/
     public function addNotificationTargets($entity)
     {
         $this->addTarget(Notification::AUTHOR, _n('Requester', 'Requesters', 1));
@@ -56,9 +56,9 @@ class NotificationTargetPlanningRecall extends NotificationTarget
     }
 
 
-   /**
-    * @see NotificationTarget::addSpecificTargets()
-   **/
+    /**
+     * @see NotificationTarget::addSpecificTargets()
+     **/
     public function addSpecificTargets($data, $options)
     {
         switch ($data['type']) {
@@ -83,9 +83,9 @@ class NotificationTargetPlanningRecall extends NotificationTarget
     }
 
 
-   /**
-    * Get group assigned to the task
-    */
+    /**
+     * Get group assigned to the task
+     */
     public function addTaskAssignGroup()
     {
         $item = new $this->obj->fields['itemtype']();
@@ -98,9 +98,9 @@ class NotificationTargetPlanningRecall extends NotificationTarget
     }
 
 
-   /**
-    * Get tech related to the task
-   **/
+    /**
+     * Get tech related to the task
+     **/
     public function addTaskAssignUser()
     {
         $item = new $this->obj->fields['itemtype']();
@@ -126,9 +126,9 @@ class NotificationTargetPlanningRecall extends NotificationTarget
     }
 
 
-   /**
-    * Get guests related to external events
-   **/
+    /**
+     * Get guests related to external events
+     **/
     public function addGuests()
     {
         $item = new $this->obj->fields['itemtype']();
@@ -261,15 +261,15 @@ class NotificationTargetPlanningRecall extends NotificationTarget
     }
 
 
-   /**
-    * Get item associated with the object on which the event was raised
-    *
-    * @see NotificationTarget::getObjectItem()
-    *
-    * @param $event  (default '')
-    *
-    * @return the object associated with the itemtype
-   **/
+    /**
+     * Get item associated with the object on which the event was raised
+     *
+     * @see NotificationTarget::getObjectItem()
+     *
+     * @param $event  (default '')
+     *
+     * @return the object associated with the itemtype
+     **/
     public function getObjectItem($event = '')
     {
 

@@ -60,9 +60,9 @@ class Entity extends CommonTreeDropdown
     const AUTO_ASSIGN_HARDWARE_CATEGORY  = 1;
     const AUTO_ASSIGN_CATEGORY_HARDWARE  = 2;
 
-   /**
-    * Possible values for "anonymize_support_agents" setting
-    */
+    /**
+     * Possible values for "anonymize_support_agents" setting
+     */
     const ANONYMIZE_DISABLED     = 0;
     const ANONYMIZE_USE_GENERIC  = 1;
     const ANONYMIZE_USE_NICKNAME = 2;
@@ -139,9 +139,9 @@ class Entity extends CommonTreeDropdown
         return $forbidden;
     }
 
-   /**
-    * @since 0.84
-   **/
+    /**
+     * @since 0.84
+     **/
     public function pre_deleteItem()
     {
         global $GLPI_CACHE;
@@ -173,9 +173,9 @@ class Entity extends CommonTreeDropdown
     }
 
 
-   /**
-   * @since 0.84
-   **/
+    /**
+     * @since 0.84
+     **/
     public static function canUpdate()
     {
 
@@ -203,27 +203,27 @@ class Entity extends CommonTreeDropdown
         return (($ID < 0) || !strlen($ID));
     }
 
-   /**
-    * Can object have a location
-    *
-    * @since 9.3
-    *
-    * @return boolean
-    */
+    /**
+     * Can object have a location
+     *
+     * @since 9.3
+     *
+     * @return boolean
+     */
     public function maybeLocated()
     {
         return true;
     }
 
-   /**
-    * Check right on each field before add / update
-    *
-    * @since 0.84 (before in entitydata.class)
-    *
-    * @param $input array (form)
-    *
-    * @return array (filtered input)
-   **/
+    /**
+     * Check right on each field before add / update
+     *
+     * @since 0.84 (before in entitydata.class)
+     *
+     * @param $input array (form)
+     *
+     * @return array (filtered input)
+     **/
     private function checkRightDatas($input)
     {
 
@@ -263,9 +263,9 @@ class Entity extends CommonTreeDropdown
     }
 
 
-   /**
-    * @since 0.84 (before in entitydata.class)
-   **/
+    /**
+     * @since 0.84 (before in entitydata.class)
+     **/
     public function prepareInputForAdd($input)
     {
         global $DB;
@@ -312,9 +312,9 @@ class Entity extends CommonTreeDropdown
     }
 
 
-   /**
-    * @since 0.84 (before in entitydata.class)
-   **/
+    /**
+     * @since 0.84 (before in entitydata.class)
+     **/
     public function prepareInputForUpdate($input)
     {
 
@@ -396,9 +396,9 @@ class Entity extends CommonTreeDropdown
     }
 
 
-   /**
-    * @since 0.84 (before in entitydata.class)
-   **/
+    /**
+     * @since 0.84 (before in entitydata.class)
+     **/
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
 
@@ -432,9 +432,9 @@ class Entity extends CommonTreeDropdown
     }
 
 
-   /**
-    * @since 0.84 (before in entitydata.class)
-   **/
+    /**
+     * @since 0.84 (before in entitydata.class)
+     **/
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
 
@@ -473,11 +473,11 @@ class Entity extends CommonTreeDropdown
     }
 
 
-   /**
-    * Print a good title for entity pages
-    *
-    *@return void
-    **/
+    /**
+     * Print a good title for entity pages
+     *
+     *@return void
+     **/
     public function title()
     {
        // Empty title for entities
@@ -490,13 +490,13 @@ class Entity extends CommonTreeDropdown
     }
 
 
-   /**
-    * Get the ID of entity assigned to the object
-    *
-    * simply return ID
-    *
-    * @return integer ID of the entity
-   **/
+    /**
+     * Get the ID of entity assigned to the object
+     *
+     * simply return ID
+     *
+     * @return integer ID of the entity
+     **/
     public function getEntityID()
     {
 
@@ -519,13 +519,13 @@ class Entity extends CommonTreeDropdown
     }
 
 
-   /**
-    * Is the object recursive
-    *
-    * Entity are always recursive
-    *
-    * @return integer (0/1)
-   **/
+    /**
+     * Is the object recursive
+     *
+     * Entity are always recursive
+     *
+     * @return integer (0/1)
+     **/
     public function isRecursive()
     {
         return true;
@@ -599,13 +599,13 @@ class Entity extends CommonTreeDropdown
     }
 
 
-   /**
-    * Clean caches related to entity selector.
-    *
-    * @since 10.0
-    *
-    * @return void
-    */
+    /**
+     * Clean caches related to entity selector.
+     *
+     * @since 10.0
+     *
+     * @return void
+     */
     public function cleanEntitySelectorCache()
     {
         global $GLPI_CACHE;
@@ -1290,11 +1290,11 @@ class Entity extends CommonTreeDropdown
     }
 
 
-   /**
-    * @since 0.83 (before addRule)
-    *
-    * @param $input array of values
-   **/
+    /**
+     * @since 0.83 (before addRule)
+     *
+     * @param $input array of values
+     **/
     public function executeAddRule($input)
     {
 
@@ -1348,14 +1348,14 @@ class Entity extends CommonTreeDropdown
     }
 
 
-   /**
-    * get all entities with a notification option set
-    * manage CONFIG_PARENT (or NULL) value
-    *
-    * @param $field  String name of the field to search (>0)
-    *
-    * @return Array of id => value
-   **/
+    /**
+     * get all entities with a notification option set
+     * manage CONFIG_PARENT (or NULL) value
+     *
+     * @param $field  String name of the field to search (>0)
+     *
+     * @return Array of id => value
+     **/
     public static function getEntitiesToNotify($field)
     {
         global $DB;
@@ -1400,11 +1400,11 @@ class Entity extends CommonTreeDropdown
     }
 
 
-   /**
-    * @since 0.84
-    *
-    * @param $entity Entity object
-   **/
+    /**
+     * @since 0.84
+     *
+     * @param $entity Entity object
+     **/
     public static function showStandardOptions(Entity $entity)
     {
 
@@ -1526,11 +1526,11 @@ class Entity extends CommonTreeDropdown
     }
 
 
-   /**
-    * @since 0.84 (before in entitydata.class)
-    *
-    * @param $entity Entity object
-   **/
+    /**
+     * @since 0.84 (before in entitydata.class)
+     *
+     * @param $entity Entity object
+     **/
     public static function showAdvancedOptions(Entity $entity)
     {
         $con_spotted = false;
@@ -1613,11 +1613,11 @@ class Entity extends CommonTreeDropdown
     }
 
 
-   /**
-    * @since 0.84 (before in entitydata.class)
-    *
-    * @param $entity Entity object
-   **/
+    /**
+     * @since 0.84 (before in entitydata.class)
+     *
+     * @param $entity Entity object
+     **/
     public static function showInventoryOptions(Entity $entity)
     {
 
@@ -1836,11 +1836,11 @@ class Entity extends CommonTreeDropdown
     }
 
 
-   /**
-    * @since 0.84 (before in entitydata.class)
-    *
-    * @param $entity Entity object
-   **/
+    /**
+     * @since 0.84 (before in entitydata.class)
+     *
+     * @param $entity Entity object
+     **/
     public static function showNotificationOptions(Entity $entity)
     {
 
@@ -2290,15 +2290,15 @@ class Entity extends CommonTreeDropdown
         echo "</div>";
     }
 
-   /**
-    * UI customization configuration form.
-    *
-    * @param $entity Entity object
-    *
-    * @return void
-    *
-    * @since 9.5.0
-    */
+    /**
+     * UI customization configuration form.
+     *
+     * @param $entity Entity object
+     *
+     * @return void
+     *
+     * @since 9.5.0
+     */
     public static function showUiCustomizationOptions(Entity $entity)
     {
 
@@ -2390,11 +2390,11 @@ class Entity extends CommonTreeDropdown
         echo "</div>";
     }
 
-   /**
-    * Returns tag containing custom CSS code applied to entity.
-    *
-    * @return string
-    */
+    /**
+     * Returns tag containing custom CSS code applied to entity.
+     *
+     * @return string
+     */
     public function getCustomCssTag()
     {
 
@@ -2420,12 +2420,12 @@ class Entity extends CommonTreeDropdown
         return '<style>' . strip_tags($custom_css_code) . '</style>';
     }
 
-   /**
-    * @since 0.84 (before in entitydata.class)
-    *
-    * @param string $field
-    * @param string $value  must be addslashes
-   **/
+    /**
+     * @since 0.84 (before in entitydata.class)
+     *
+     * @param string $field
+     * @param string $value  must be addslashes
+     **/
     private static function getEntityIDByField($field, $value)
     {
         global $DB;
@@ -2444,55 +2444,55 @@ class Entity extends CommonTreeDropdown
     }
 
 
-   /**
-    * @since 0.84 (before in entitydata.class)
-    *
-    * @param $value
-   **/
+    /**
+     * @since 0.84 (before in entitydata.class)
+     *
+     * @param $value
+     **/
     public static function getEntityIDByDN($value)
     {
         return self::getEntityIDByField("ldap_dn", $value);
     }
 
 
-   /**
-    * @since 0.84
-    *
-    * @param $value
-   **/
+    /**
+     * @since 0.84
+     *
+     * @param $value
+     **/
     public static function getEntityIDByCompletename($value)
     {
         return self::getEntityIDByField("completename", $value);
     }
 
 
-   /**
-    * @since 0.84 (before in entitydata.class)
-    *
-    * @param $value
-   **/
+    /**
+     * @since 0.84 (before in entitydata.class)
+     *
+     * @param $value
+     **/
     public static function getEntityIDByTag($value)
     {
         return self::getEntityIDByField("tag", $value);
     }
 
 
-   /**
-    * @since 0.84 (before in entitydata.class)
-    *
-    * @param $value
-   **/
+    /**
+     * @since 0.84 (before in entitydata.class)
+     *
+     * @param $value
+     **/
     public static function getEntityIDByDomain($value)
     {
         return self::getEntityIDByField("mail_domain", $value);
     }
 
 
-   /**
-    * @since 0.84 (before in entitydata.class)
-    *
-    * @param $entities_id
-   **/
+    /**
+     * @since 0.84 (before in entitydata.class)
+     *
+     * @param $entities_id
+     **/
     public static function isEntityDirectoryConfigured($entities_id)
     {
 
@@ -2513,11 +2513,11 @@ class Entity extends CommonTreeDropdown
     }
 
 
-   /**
-    * @since 0.84 (before in entitydata.class)
-    *
-    * @param $entity Entity object
-   **/
+    /**
+     * @since 0.84 (before in entitydata.class)
+     *
+     * @param $entity Entity object
+     **/
     public static function showHelpdeskOptions(Entity $entity)
     {
         global $CFG_GLPI;
@@ -3005,16 +3005,16 @@ class Entity extends CommonTreeDropdown
     }
 
 
-   /**
-    * Retrieve data of current entity or parent entity
-    *
-    * @since 0.84 (before in entitydata.class)
-    *
-    * @param string  $fieldref       name of the referent field to know if we look at parent entity
-    * @param integer $entities_id
-    * @param string  $fieldval       name of the field that we want value (default '')
-    * @param mixed   $default_value  value to return (default -2)
-   **/
+    /**
+     * Retrieve data of current entity or parent entity
+     *
+     * @since 0.84 (before in entitydata.class)
+     *
+     * @param string  $fieldref       name of the referent field to know if we look at parent entity
+     * @param integer $entities_id
+     * @param string  $fieldval       name of the field that we want value (default '')
+     * @param mixed   $default_value  value to return (default -2)
+     **/
     public static function getUsedConfig($fieldref, $entities_id = null, $fieldval = '', $default_value = -2)
     {
         $id_using_strategy = [
@@ -3088,15 +3088,15 @@ class Entity extends CommonTreeDropdown
     }
 
 
-   /**
-    * Generate link for ticket satisfaction
-    *
-    * @since 0.84 (before in entitydata.class)
-    *
-    * @param $ticket ticket object
-    *
-    * @return string url contents
-   **/
+    /**
+     * Generate link for ticket satisfaction
+     *
+     * @since 0.84 (before in entitydata.class)
+     *
+     * @param $ticket ticket object
+     *
+     * @return string url contents
+     **/
     public static function generateLinkSatisfaction($ticket)
     {
         $url = self::getUsedConfig('inquest_config', $ticket->fields['entities_id'], 'inquest_URL');
@@ -3234,15 +3234,15 @@ class Entity extends CommonTreeDropdown
         return $url;
     }
 
-   /**
-    * get value for auto_assign_mode
-    *
-    * @since 0.84 (created in version 0.83 in entitydata.class)
-    *
-    * @param integer|null $val if not set, ask for all values, else for 1 value (default NULL)
-    *
-    * @return string|array
-   **/
+    /**
+     * get value for auto_assign_mode
+     *
+     * @since 0.84 (created in version 0.83 in entitydata.class)
+     *
+     * @param integer|null $val if not set, ask for all values, else for 1 value (default NULL)
+     *
+     * @return string|array
+     **/
     public static function getAutoAssignMode($val = null)
     {
 
@@ -3262,15 +3262,15 @@ class Entity extends CommonTreeDropdown
         return NOT_AVAILABLE;
     }
 
-   /**
-    * get value for suppliers_as_private
-    *
-    * @since 9.5
-    *
-    * @param integer|null $val if not set, ask for all values, else for 1 value (default NULL)
-    *
-    * @return string|array
-   **/
+    /**
+     * get value for suppliers_as_private
+     *
+     * @since 9.5
+     *
+     * @param integer|null $val if not set, ask for all values, else for 1 value (default NULL)
+     *
+     * @return string|array
+     **/
     public static function getSuppliersAsPrivateValues()
     {
 
@@ -3281,13 +3281,13 @@ class Entity extends CommonTreeDropdown
         ];
     }
 
-   /**
-    * Get values for anonymize_support_agents
-    *
-    * @since 9.5
-    *
-    * @return array
-   **/
+    /**
+     * Get values for anonymize_support_agents
+     *
+     * @since 9.5
+     *
+     * @return array
+     **/
     public static function getAnonymizeSupportAgentsValues()
     {
 
@@ -3299,11 +3299,11 @@ class Entity extends CommonTreeDropdown
         ];
     }
 
-   /**
-    * @since 0.84
-    *
-    * @param $options array
-   **/
+    /**
+     * @since 0.84
+     *
+     * @param $options array
+     **/
     public static function dropdownAutoAssignMode(array $options)
     {
 
@@ -3322,13 +3322,13 @@ class Entity extends CommonTreeDropdown
     }
 
 
-   /**
-    * @since 0.84 (before in entitydata.class)
-    *
-    * @param $field
-    * @param $values
-    * @param $options   array
-   **/
+    /**
+     * @since 0.84 (before in entitydata.class)
+     *
+     * @param $field
+     * @param $values
+     * @param $options   array
+     **/
     public static function getSpecificValueToDisplay($field, $values, array $options = [])
     {
 
@@ -3505,14 +3505,14 @@ class Entity extends CommonTreeDropdown
     }
 
 
-   /**
-    * @since 0.84
-    *
-    * @param $field
-    * @param $name               (default '')
-    * @param $values             (default '')
-    * @param $options      array
-   **/
+    /**
+     * @since 0.84
+     *
+     * @param $field
+     * @param $name               (default '')
+     * @param $values             (default '')
+     * @param $options      array
+     **/
     public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
     {
         if (!is_array($values)) {
@@ -3672,13 +3672,13 @@ class Entity extends CommonTreeDropdown
         return "ti ti-stack";
     }
 
-   /**
-    * Get values for contracts_id_default field
-    *
-    * @since 10.0.0
-    *
-    * @return array
-    */
+    /**
+     * Get values for contracts_id_default field
+     *
+     * @since 10.0.0
+     *
+     * @return array
+     */
     public static function getDefaultContractValues($entities_id): array
     {
         $values = [

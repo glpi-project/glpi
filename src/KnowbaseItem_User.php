@@ -45,13 +45,13 @@ class KnowbaseItem_User extends CommonDBRelation
     public static $logs_for_item_2     = false;
 
 
-   /**
-    * Get users for a knowbaseitem
-    *
-    * @param integer $knowbaseitems_id  ID of the knowbaseitem
-    *
-    * @return array of users linked to a knowbaseitem
-   **/
+    /**
+     * Get users for a knowbaseitem
+     *
+     * @param integer $knowbaseitems_id  ID of the knowbaseitem
+     *
+     * @return array of users linked to a knowbaseitem
+     **/
     public static function getUsers($knowbaseitems_id)
     {
         global $DB;

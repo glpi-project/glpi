@@ -34,7 +34,7 @@
 /**
  * Template for task
  * @since 9.1
-**/
+ **/
 class TaskTemplate extends AbstractITILChildTemplate
 {
    // From CommonDBTM

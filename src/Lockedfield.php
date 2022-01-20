@@ -33,10 +33,10 @@
 
 /**
  *  Locked fields for inventory
-**/
+ **/
 class Lockedfield extends CommonDBTM
 {
-   /** @var CommonDBTM */
+    /** @var CommonDBTM */
     private $item;
 
    // From CommonDBTM
@@ -112,13 +112,13 @@ class Lockedfield extends CommonDBTM
         return "ti ti-lock";
     }
 
-   /**
-    * Can item have locked fields
-    *
-    * @param CommonDBTM $item Item instance
-    *
-    * @retrun boolean
-    */
+    /**
+     * Can item have locked fields
+     *
+     * @param CommonDBTM $item Item instance
+     *
+     * @retrun boolean
+     */
     public function isHandled(CommonGLPI $item)
     {
         if (!$item instanceof CommonDBTM) {
@@ -128,14 +128,14 @@ class Lockedfield extends CommonDBTM
         return (bool)$item->isDynamic();
     }
 
-   /**
-    * Get locked fields
-    *
-    * @param string  $itemtype Item type
-    * @param integer $items_id Item ID
-    *
-    * return array
-    */
+    /**
+     * Get locked fields
+     *
+     * @param string  $itemtype Item type
+     * @param integer $items_id Item ID
+     *
+     * return array
+     */
     public function getLocks($itemtype, $items_id)
     {
         global $DB;
@@ -155,11 +155,11 @@ class Lockedfield extends CommonDBTM
         return $locks;
     }
 
-   /**
-    * Item has been deleted, remove all locks
-    *
-    * @return boolean
-    */
+    /**
+     * Item has been deleted, remove all locks
+     *
+     * @return boolean
+     */
     public function itemDeleted()
     {
         global $DB;
@@ -172,11 +172,11 @@ class Lockedfield extends CommonDBTM
         );
     }
 
-   /**
-    * Store value from inventory on locked fields
-    *
-    * @return boolean
-    */
+    /**
+     * Store value from inventory on locked fields
+     *
+     * @return boolean
+     */
     public function setLastValue($itemtype, $items_id, $field, $value)
     {
         global $DB;

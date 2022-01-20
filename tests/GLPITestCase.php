@@ -115,9 +115,9 @@ class GLPITestCase extends atoum
         $this->has_failed = false;
     }
 
-   /**
-    * Get a unique random string
-    */
+    /**
+     * Get a unique random string
+     */
     protected function getUniqueString()
     {
         if (is_null($this->str)) {
@@ -126,9 +126,9 @@ class GLPITestCase extends atoum
         return $this->str .= 'x';
     }
 
-   /**
-    * Get a unique random integer
-    */
+    /**
+     * Get a unique random integer
+     */
     protected function getUniqueInteger()
     {
         if (is_null($this->int)) {

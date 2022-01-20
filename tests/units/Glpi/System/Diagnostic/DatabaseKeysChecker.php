@@ -308,9 +308,9 @@ SQL
         ];
     }
 
-   /**
-    * @dataProvider sqlProvider
-    */
+    /**
+     * @dataProvider sqlProvider
+     */
     public function testMissingMisnamedUseless(
         string $create_table_sql,
         array $expected_missing,

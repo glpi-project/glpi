@@ -39,7 +39,7 @@
 /**
  * Relation between item and devices
  * We completely relies on CommonDBConnexity to manage the can* and the history and the deletion ...
-**/
+ **/
 class Item_Devices extends CommonDBRelation
 {
     public static $itemtype_1            = 'itemtype';
@@ -90,13 +90,13 @@ class Item_Devices extends CommonDBRelation
     }
 
 
-   /**
-    * Get type name for device (used in Log)
-    *
-    * @param integer $nb Count
-    *
-    * @return string
-    */
+    /**
+     * Get type name for device (used in Log)
+     *
+     * @param integer $nb Count
+     *
+     * @return string
+     */
     public static function getDeviceTypeName($nb = 0)
     {
         $device_type = static::getDeviceType();
@@ -322,17 +322,17 @@ class Item_Devices extends CommonDBRelation
     }
 
 
-   /**
-    * Get the specificities of the given device. For instance, the
-    * serial number, the size of the memory, the frequency of the CPUs ...
-    *
-    * @param $specif   string   specificity to display
-    *
-    * Should be overloaded by Item_Device*
-    *
-    * @return array of the specificities: index is the field name and the values are the attributs
-    *                                     of the specificity (long name, short name, size)
-   **/
+    /**
+     * Get the specificities of the given device. For instance, the
+     * serial number, the size of the memory, the frequency of the CPUs ...
+     *
+     * @param $specif   string   specificity to display
+     *
+     * Should be overloaded by Item_Device*
+     *
+     * @return array of the specificities: index is the field name and the values are the attributs
+     *                                     of the specificity (long name, short name, size)
+     **/
     public static function getSpecificities($specif = '')
     {
 
@@ -373,19 +373,19 @@ class Item_Devices extends CommonDBRelation
     }
 
 
-   /**
-    * Get the items on which this Item_Device can be attached. For instance, a computer can have
-    * any kind of device. Conversely, a soundcard does not concern a NetworkEquipment
-    * A configuration entry is automatically checked in $CFG_GLPI (must be the name of
-    * the class, lowercase, without "_" with extra "_types" at the end; for example
-    * "itemdevicesoundcard_types").
-    *
-    * Alternatively, it could be overloaded from subclasses
-    *
-    * @since 0.85
-    *
-    * @return array of the itemtype that can have this Item_Device
-   **/
+    /**
+     * Get the items on which this Item_Device can be attached. For instance, a computer can have
+     * any kind of device. Conversely, a soundcard does not concern a NetworkEquipment
+     * A configuration entry is automatically checked in $CFG_GLPI (must be the name of
+     * the class, lowercase, without "_" with extra "_types" at the end; for example
+     * "itemdevicesoundcard_types").
+     *
+     * Alternatively, it could be overloaded from subclasses
+     *
+     * @since 0.85
+     *
+     * @return array of the itemtype that can have this Item_Device
+     **/
     public static function itemAffinity()
     {
         global $CFG_GLPI;
@@ -399,12 +399,12 @@ class Item_Devices extends CommonDBRelation
     }
 
 
-   /**
-    * Get all the kind of devices available inside the system.
-    * This method is equivalent to getItemAffinities('')
-    *
-    * @return array of the types of Item_Device* available
-   **/
+    /**
+     * Get all the kind of devices available inside the system.
+     * This method is equivalent to getItemAffinities('')
+     *
+     * @return array of the types of Item_Device* available
+     **/
     public static function getDeviceTypes()
     {
         global $CFG_GLPI;
@@ -426,15 +426,15 @@ class Item_Devices extends CommonDBRelation
     }
 
 
-   /**
-    * Get the Item_Device* a given item type can have
-    *
-    * @param string $itemtype the type of the item that we want to know its devices
-    *
-    * @since 0.85
-    *
-    * @return array of Item_Device*
-   **/
+    /**
+     * Get the Item_Device* a given item type can have
+     *
+     * @param string $itemtype the type of the item that we want to know its devices
+     *
+     * @since 0.85
+     *
+     * @return array of Item_Device*
+     **/
     public static function getItemAffinities($itemtype)
     {
         global $GLPI_CACHE;
@@ -459,13 +459,13 @@ class Item_Devices extends CommonDBRelation
     }
 
 
-   /**
-    * Get all kind of items that can be used by Item_Device*
-    *
-    * @since 0.85
-    *
-    * @return array of the available items
-   **/
+    /**
+     * Get all kind of items that can be used by Item_Device*
+     *
+     * @since 0.85
+     *
+     * @return array of the available items
+     **/
     public static function getConcernedItems()
     {
         global $CFG_GLPI;
@@ -481,13 +481,13 @@ class Item_Devices extends CommonDBRelation
     }
 
 
-   /**
-    * Get associated device to the current item_device
-    *
-    * @since 0.85
-    *
-    * @return string containing the device
-   **/
+    /**
+     * Get associated device to the current item_device
+     *
+     * @since 0.85
+     *
+     * @return string containing the device
+     **/
     public static function getDeviceType()
     {
 
@@ -499,13 +499,13 @@ class Item_Devices extends CommonDBRelation
     }
 
     /**
-    * get items associated to the given one (defined by $itemtype and $items_id)
-    *
-    * @param string  $itemtype          the type of the item we want the resulting items to be associated to
-    * @param string  $items_id          the name of the item we want the resulting items to be associated to
-    *
-    * @return array the items associated to the given one (empty if none was found)
-   **/
+     * get items associated to the given one (defined by $itemtype and $items_id)
+     *
+     * @param string  $itemtype          the type of the item we want the resulting items to be associated to
+     * @param string  $items_id          the name of the item we want the resulting items to be associated to
+     *
+     * @return array the items associated to the given one (empty if none was found)
+     **/
     public static function getItemsAssociatedTo($itemtype, $items_id)
     {
         global $DB;
@@ -797,24 +797,24 @@ class Item_Devices extends CommonDBRelation
         return $criteria;
     }
 
-   /**
-    * Get the group of elements regarding given item.
-    * Two kind of item :
-    *              - Device* feed by a link to the attached item (Computer, Printer ...)
-    *              - Computer, Printer ...: feed by the "global" properties of the CommonDevice
-    * Then feed with the specificities of the Item_Device elements
-    * In cas of $item is an instance, then $options contains the type of the item (Computer,
-    * Printer ...).
-    *
-    * @param $item
-    * @param $table
-    * @param $options            array
-    * @param $delete_all_column
-    * @param $common_column
-    * @param $specific_column
-    * @param $delete_column
-    * @param $dynamic_column
-   **/
+    /**
+     * Get the group of elements regarding given item.
+     * Two kind of item :
+     *              - Device* feed by a link to the attached item (Computer, Printer ...)
+     *              - Computer, Printer ...: feed by the "global" properties of the CommonDevice
+     * Then feed with the specificities of the Item_Device elements
+     * In cas of $item is an instance, then $options contains the type of the item (Computer,
+     * Printer ...).
+     *
+     * @param $item
+     * @param $table
+     * @param $options            array
+     * @param $delete_all_column
+     * @param $common_column
+     * @param $specific_column
+     * @param $delete_column
+     * @param $dynamic_column
+     **/
     public function getTableGroup(
         CommonDBTM $item,
         HTMLTableMain $table,
@@ -1095,13 +1095,13 @@ class Item_Devices extends CommonDBRelation
     }
 
 
-   /**
-    * @param $numberToAdd
-    * @param $itemtype
-    * @param $items_id
-    * @param $devices_id
-    * @param $input          array to complete (permit to define values)
-   **/
+    /**
+     * @param $numberToAdd
+     * @param $itemtype
+     * @param $items_id
+     * @param $devices_id
+     * @param $input          array to complete (permit to define values)
+     **/
     public function addDevices($numberToAdd, $itemtype, $items_id, $devices_id, $input = [])
     {
         if ($numberToAdd == 0) {
@@ -1130,13 +1130,13 @@ class Item_Devices extends CommonDBRelation
     }
 
 
-   /**
-    * Add one or several device(s) from front/item_devices.form.php.
-    *
-    * @param $input array of input: should be $_POST
-    *
-    * @since 0.85
-   **/
+    /**
+     * Add one or several device(s) from front/item_devices.form.php.
+     *
+     * @param $input array of input: should be $_POST
+     *
+     * @since 0.85
+     **/
     public static function addDevicesFromPOST($input)
     {
         if (isset($input['devicetype']) && !$input['devicetype']) {
@@ -1204,9 +1204,9 @@ class Item_Devices extends CommonDBRelation
     }
 
 
-   /**
-    * @param $input array of input: should be $_POST
-   **/
+    /**
+     * @param $input array of input: should be $_POST
+     **/
     public static function updateAll($input)
     {
 
@@ -1293,15 +1293,15 @@ class Item_Devices extends CommonDBRelation
     }
 
 
-   /**
-    * @since 0.85
-    *
-    * @param $item_devices_id
-    * @param $items_id
-    * @param $itemtype
-    *
-    * @return boolean
-   **/
+    /**
+     * @since 0.85
+     *
+     * @param $item_devices_id
+     * @param $items_id
+     * @param $itemtype
+     *
+     * @return boolean
+     **/
     public static function affectItem_Device($item_devices_id, $items_id, $itemtype)
     {
 
@@ -1312,11 +1312,11 @@ class Item_Devices extends CommonDBRelation
     }
 
 
-   /**
-    * @param $itemtype
-    * @param $items_id
-    * @param $unaffect
-   **/
+    /**
+     * @param $itemtype
+     * @param $items_id
+     * @param $unaffect
+     **/
     public static function cleanItemDeviceDBOnItemDelete($itemtype, $items_id, $unaffect)
     {
         global $DB;
@@ -1352,11 +1352,11 @@ class Item_Devices extends CommonDBRelation
     }
 
 
-   /**
-    * @since 0.85
-    *
-    * @see CommonDBConnexity::getConnexityMassiveActionsSpecificities()
-   **/
+    /**
+     * @since 0.85
+     *
+     * @see CommonDBConnexity::getConnexityMassiveActionsSpecificities()
+     **/
     public static function getConnexityMassiveActionsSpecificities()
     {
 
@@ -1383,9 +1383,9 @@ class Item_Devices extends CommonDBRelation
     }
 
 
-   /**
-    * @since 0.85
-   **/
+    /**
+     * @since 0.85
+     **/
     public function showForm($ID, array $options = [])
     {
         if (!$this->isNewID($ID)) {
@@ -1396,9 +1396,9 @@ class Item_Devices extends CommonDBRelation
         }
         $this->showFormHeader($options);
 
-       /** @var CommonDBTM  */
+        /** @var CommonDBTM  */
         $item   = $this->getOnePeer(0);
-       /** @var CommonDBTM  */
+        /** @var CommonDBTM  */
         $device = $this->getOnePeer(1);
 
         echo "<tr class='tab_bg_1'><td>" . _n('Item', 'Items', 1) . "</td>";

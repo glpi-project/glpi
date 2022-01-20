@@ -99,15 +99,15 @@ class Contract_Supplier extends CommonDBRelation
     }
 
 
-   /**
-    * Print an HTML array with contracts associated to the enterprise
-    *
-    * @since 0.84
-    *
-    * @param Supplier $supplier
-    *
-    * @return void
-   **/
+    /**
+     * Print an HTML array with contracts associated to the enterprise
+     *
+     * @since 0.84
+     *
+     * @param Supplier $supplier
+     *
+     * @return void
+     **/
     public static function showForSupplier(Supplier $supplier)
     {
 
@@ -229,15 +229,15 @@ class Contract_Supplier extends CommonDBRelation
     }
 
 
-   /**
-    * Print the HTML array of suppliers for this contract
-    *
-    * @since 0.84
-    *
-    * @param $contract Contract object
-    *
-    * @return void
-    **/
+    /**
+     * Print the HTML array of suppliers for this contract
+     *
+     * @since 0.84
+     *
+     * @param $contract Contract object
+     *
+     * @return void
+     **/
     public static function showForContract(Contract $contract)
     {
 

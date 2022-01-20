@@ -61,9 +61,9 @@ class TicketValidation extends CommonITILValidation
     }
 
 
-   /**
-    * @since 0.85
-   **/
+    /**
+     * @since 0.85
+     **/
     public function canCreateItem()
     {
 
@@ -85,11 +85,11 @@ class TicketValidation extends CommonITILValidation
         }
     }
 
-   /**
-    * @since 0.85
-    *
-    * @see commonDBTM::getRights()
-    **/
+    /**
+     * @since 0.85
+     *
+     * @see commonDBTM::getRights()
+     **/
     public function getRights($interface = 'central')
     {
 

@@ -38,18 +38,18 @@ namespace Glpi\System\Requirement;
  */
 class DirectoriesWriteAccess extends AbstractRequirement
 {
-   /**
-    * Directories paths.
-    *
-    * @var string[]
-    */
+    /**
+     * Directories paths.
+     *
+     * @var string[]
+     */
     private $paths;
 
-   /**
-    * @param string   $title     Requirement title.
-    * @param string[] $paths     Directories paths.
-    * @param bool     $optional  Indicated if write access is optional.
-    */
+    /**
+     * @param string   $title     Requirement title.
+     * @param string[] $paths     Directories paths.
+     * @param bool     $optional  Indicated if write access is optional.
+     */
     public function __construct(string $title, array $paths, bool $optional = false)
     {
         $this->title = $title;

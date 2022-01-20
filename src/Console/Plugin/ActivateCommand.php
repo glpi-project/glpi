@@ -94,13 +94,13 @@ class ActivateCommand extends AbstractPluginCommand
         return 0; // Success
     }
 
-   /**
-    * Check if activate method can be run for given plugin.
-    *
-    * @param string  $directory
-    *
-    * @return boolean
-    */
+    /**
+     * Check if activate method can be run for given plugin.
+     *
+     * @param string  $directory
+     *
+     * @return boolean
+     */
     private function canRunActivateMethod($directory)
     {
 

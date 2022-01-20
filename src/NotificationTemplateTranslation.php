@@ -36,7 +36,7 @@ use Glpi\Toolbox\Sanitizer;
 
 /**
  * NotificationTemplateTranslation Class
-**/
+ **/
 class NotificationTemplateTranslation extends CommonDBChild
 {
    // From CommonDBChild
@@ -52,9 +52,9 @@ class NotificationTemplateTranslation extends CommonDBChild
     }
 
 
-   /**
-    * @since 0.84
-   **/
+    /**
+     * @since 0.84
+     **/
     public function getForbiddenStandardMassiveAction()
     {
 
@@ -175,10 +175,10 @@ class NotificationTemplateTranslation extends CommonDBChild
     }
 
 
-   /**
-    * @param $template        NotificationTemplate object
-    * @param $options   array
-   **/
+    /**
+     * @param $template        NotificationTemplate object
+     * @param $options   array
+     **/
     public function showSummary(NotificationTemplate $template, $options = [])
     {
         global $DB, $CFG_GLPI;
@@ -258,9 +258,9 @@ class NotificationTemplateTranslation extends CommonDBChild
     }
 
 
-   /**
-    * @param $input  array
-   */
+    /**
+     * @param $input  array
+     */
     public static function cleanContentHtml(array $input)
     {
 
@@ -346,9 +346,9 @@ class NotificationTemplateTranslation extends CommonDBChild
     }
 
 
-   /**
-    * @param $language_id
-   **/
+    /**
+     * @param $language_id
+     **/
     public static function getAllUsedLanguages($language_id)
     {
 
@@ -368,9 +368,9 @@ class NotificationTemplateTranslation extends CommonDBChild
     }
 
 
-   /**
-    * @param $itemtype
-   **/
+    /**
+     * @param $itemtype
+     **/
     public static function showAvailableTags($itemtype)
     {
         $target = NotificationTarget::getInstanceByType(stripslashes($itemtype));
@@ -462,12 +462,12 @@ class NotificationTemplateTranslation extends CommonDBChild
     }
 
 
-   /**
-    * Display debug information for current object
-    * NotificationTemplateTranslation => translation preview
-    *
-    * @since 0.84
-   **/
+    /**
+     * Display debug information for current object
+     * NotificationTemplateTranslation => translation preview
+     *
+     * @since 0.84
+     **/
     public function showDebug()
     {
 

@@ -41,25 +41,25 @@ class NetworkPortConnectionLog extends CommonDBChild
     public $dohistory              = false;
 
 
-   /**
-    * Get name of this type by language of the user connected
-    *
-    * @param integer $nb number of elements
-    *
-    * @return string name of this type
-    */
+    /**
+     * Get name of this type by language of the user connected
+     *
+     * @param integer $nb number of elements
+     *
+     * @return string name of this type
+     */
     public static function getTypeName($nb = 0)
     {
         return __('Port connection history');
     }
 
-   /**
-    * Get the tab name used for item
-    *
-    * @param object $item the item object
-    * @param integer $withtemplate 1 if is a template form
-    * @return string|array name of the tab
-    */
+    /**
+     * Get the tab name used for item
+     *
+     * @param object $item the item object
+     * @param integer $withtemplate 1 if is a template form
+     * @return string|array name of the tab
+     */
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
 
@@ -82,14 +82,14 @@ class NetworkPortConnectionLog extends CommonDBChild
         ];
     }
 
-   /**
-    * Display the content of the tab
-    *
-    * @param object $item
-    * @param integer $tabnum number of the tab to display
-    * @param integer $withtemplate 1 if is a template form
-    * @return boolean
-    */
+    /**
+     * Display the content of the tab
+     *
+     * @param object $item
+     * @param integer $tabnum number of the tab to display
+     * @param integer $withtemplate 1 if is a template form
+     * @return boolean
+     */
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
         if ($item->getType() == NetworkPort::getType() && $item->getID() > 0) {

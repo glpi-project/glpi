@@ -37,9 +37,9 @@ use Psr\Log\LogLevel;
 
 class ErrorHandler extends \GLPITestCase
 {
-   /**
-    * @return array
-    */
+    /**
+     * @return array
+     */
     protected function errorProvider(): array
     {
 
@@ -125,14 +125,14 @@ class ErrorHandler extends \GLPITestCase
         return $data;
     }
 
-   /**
-    * Test that errors trigerred are correctly processed by registered error handler.
-    *
-    * Nota: Fatal errors cannot be tested that way, as they will result in exiting current execution.
-    * Related constants are E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR.
-    *
-    * @dataProvider errorProvider
-    */
+    /**
+     * Test that errors trigerred are correctly processed by registered error handler.
+     *
+     * Nota: Fatal errors cannot be tested that way, as they will result in exiting current execution.
+     * Related constants are E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR.
+     *
+     * @dataProvider errorProvider
+     */
     public function testRegisteredErrorHandler(
         callable $error_call,
         string $expected_log_level,
@@ -167,9 +167,9 @@ class ErrorHandler extends \GLPITestCase
         $this->output->matches($expected_msg_pattern);
     }
 
-   /**
-    * @return array
-    */
+    /**
+     * @return array
+     */
     protected function handleErrorProvider(): array
     {
 
@@ -256,11 +256,11 @@ class ErrorHandler extends \GLPITestCase
         ];
     }
 
-   /**
-    * Test error handler and fatal error handler methods.
-    *
-    * @dataProvider handleErrorProvider
-    */
+    /**
+     * Test error handler and fatal error handler methods.
+     *
+     * @dataProvider handleErrorProvider
+     */
     public function testHandleErrorAndHandleFatalError(
         int $error_code,
         string $expected_log_level,
@@ -312,9 +312,9 @@ class ErrorHandler extends \GLPITestCase
         $this->output->matches($expected_msg_pattern);
     }
 
-   /**
-    * Test exception handler.
-    */
+    /**
+     * Test exception handler.
+     */
     public function testHandleException()
     {
         $handler = $this->newMockInstance('Monolog\Handler\TestHandler');

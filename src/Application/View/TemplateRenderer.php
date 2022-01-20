@@ -59,9 +59,9 @@ use Twig\Loader\FilesystemLoader;
  */
 class TemplateRenderer
 {
-   /**
-    * @var Environment
-    */
+    /**
+     * @var Environment
+     */
     private $environment;
 
     public function __construct(string $rootdir = GLPI_ROOT, string $cachedir = GLPI_CACHE_DIR)
@@ -119,11 +119,11 @@ class TemplateRenderer
         $this->environment->addGlobal('_request', $_REQUEST);
     }
 
-   /**
-    * Return singleton instance of self.
-    *
-    * @return TemplateRenderer
-    */
+    /**
+     * Return singleton instance of self.
+     *
+     * @return TemplateRenderer
+     */
     public static function getInstance(): TemplateRenderer
     {
         static $instance = null;
@@ -135,24 +135,24 @@ class TemplateRenderer
         return $instance;
     }
 
-   /**
-    * Return Twig environment used to handle templates.
-    *
-    * @return Environment
-    */
+    /**
+     * Return Twig environment used to handle templates.
+     *
+     * @return Environment
+     */
     public function getEnvironment(): Environment
     {
         return $this->environment;
     }
 
-   /**
-    * Renders a template.
-    *
-    * @param string $template
-    * @param array  $variables
-    *
-    * @return string
-    */
+    /**
+     * Renders a template.
+     *
+     * @param string $template
+     * @param array  $variables
+     *
+     * @return string
+     */
     public function render(string $template, array $variables = []): string
     {
         try {
@@ -163,14 +163,14 @@ class TemplateRenderer
         return '';
     }
 
-   /**
-    * Displays a template.
-    *
-    * @param string $template
-    * @param array  $variables
-    *
-    * @return void
-    */
+    /**
+     * Displays a template.
+     *
+     * @param string $template
+     * @param array  $variables
+     *
+     * @return void
+     */
     public function display(string $template, array $variables = []): void
     {
         try {

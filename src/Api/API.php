@@ -83,49 +83,49 @@ abstract class API
     protected $apiclients_id = 0;
     protected $deprecated_item = null;
 
-   /**
-    * First function used on api call
-    * Parse sended query/parameters and call the corresponding API::method
-    *
-    * @return void self::returnResponse called for output
-    */
+    /**
+     * First function used on api call
+     * Parse sended query/parameters and call the corresponding API::method
+     *
+     * @return void self::returnResponse called for output
+     */
     abstract public function call();
 
-   /**
-    * Needed to transform params of called api in $this->parameters attribute
-    *
-    * @return string endpoint called
-    */
+    /**
+     * Needed to transform params of called api in $this->parameters attribute
+     *
+     * @return string endpoint called
+     */
     abstract protected function parseIncomingParams();
 
-   /**
-    * Generic messages
-    *
-    * @since 9.1
-    *
-    * @param mixed   $response          string message or array of data to send
-    * @param integer $httpcode          http code (see : https://en.wikipedia.org/wiki/List_of_HTTP_status_codes)
-    * @param array   $additionalheaders headers to send with http response (must be an array(key => value))
-    *
-    * @return void
-    */
+    /**
+     * Generic messages
+     *
+     * @since 9.1
+     *
+     * @param mixed   $response          string message or array of data to send
+     * @param integer $httpcode          http code (see : https://en.wikipedia.org/wiki/List_of_HTTP_status_codes)
+     * @param array   $additionalheaders headers to send with http response (must be an array(key => value))
+     *
+     * @return void
+     */
     abstract protected function returnResponse($response, $httpcode = 200, $additionalheaders = []);
 
-   /**
-    * Upload and validate files from request and append to $this->parameters['input']
-    *
-    * @return void
-    */
+    /**
+     * Upload and validate files from request and append to $this->parameters['input']
+     *
+     * @return void
+     */
     abstract protected function manageUploadedFiles();
 
-   /**
-    * Constructor
-    *
-    * @var array $CFG_GLPI
-    * @var DBmysql $DB
-    *
-    * @return void
-    */
+    /**
+     * Constructor
+     *
+     * @var array $CFG_GLPI
+     * @var DBmysql $DB
+     *
+     * @return void
+     */
     public function initApi()
     {
         global $CFG_GLPI;
@@ -194,13 +194,13 @@ abstract class API
         $this->app_tokens = array_combine($apiclients_id, $app_tokens);
     }
 
-   /**
-    * Set headers according to cross origin ressource sharing
-    *
-    * @param string $verb Http verb (GET, POST, PUT, DELETE, OPTIONS)
-    *
-    * @return void
-    */
+    /**
+     * Set headers according to cross origin ressource sharing
+     *
+     * @param string $verb Http verb (GET, POST, PUT, DELETE, OPTIONS)
+     *
+     * @return void
+     */
     protected function cors($verb = 'GET')
     {
         if (isset($_SERVER['HTTP_ORIGIN'])) {
@@ -225,16 +225,16 @@ abstract class API
     }
 
 
-   /**
-    * Init GLPI Session
-    *
-    * @param array $params array with theses options :
-    *    - a couple 'name' & 'password' : 2 parameters to login with user authentication
-    *         OR
-    *    - an 'user_token' defined in User Configuration
-    *
-    * @return array with session_token
-    */
+    /**
+     * Init GLPI Session
+     *
+     * @param array $params array with theses options :
+     *    - a couple 'name' & 'password' : 2 parameters to login with user authentication
+     *         OR
+     *    - an 'user_token' defined in User Configuration
+     *
+     * @return array with session_token
+     */
     protected function initSession($params = [])
     {
         global $CFG_GLPI;
@@ -310,12 +310,12 @@ abstract class API
     }
 
 
-   /**
-    * Kill GLPI Session
-    * Use 'session_token' param in $this->parameters
-    *
-    * @return boolean
-    */
+    /**
+     * Kill GLPI Session
+     * Use 'session_token' param in $this->parameters
+     *
+     * @return boolean
+     */
     protected function killSession()
     {
 
@@ -324,12 +324,12 @@ abstract class API
     }
 
 
-   /**
-    * Retrieve GLPI Session initialised by initSession function
-    * Use 'session_token' param in $this->parameters
-    *
-    * @return void
-    */
+    /**
+     * Retrieve GLPI Session initialised by initSession function
+     * Use 'session_token' param in $this->parameters
+     *
+     * @return void
+     */
     protected function retrieveSession()
     {
 
@@ -354,15 +354,15 @@ abstract class API
     }
 
 
-   /**
-    * Change active entity to the entities_id one.
-    *
-    * @param array $params array with theses options :
-    *   - 'entities_id': (default 'all') ID of the new active entity ("all" = load all possible entities). Optionnal
-    *   - 'is_recursive': (default false) Also display sub entities of the active entity.  Optionnal
-    *
-    * @return array|bool
-    */
+    /**
+     * Change active entity to the entities_id one.
+     *
+     * @param array $params array with theses options :
+     *   - 'entities_id': (default 'all') ID of the new active entity ("all" = load all possible entities). Optionnal
+     *   - 'is_recursive': (default false) Also display sub entities of the active entity.  Optionnal
+     *
+     * @return array|bool
+     */
     protected function changeActiveEntities($params = [])
     {
 
@@ -388,14 +388,14 @@ abstract class API
     }
 
 
-   /**
-    * Return all the possible entity of the current logged user (and for current active profile)
-    *
-    * @param array $params array with theses options :
-    *   - 'is_recursive': (default false) Also display sub entities of the active entity. Optionnal
-    *
-    * @return array of entities (with id and name)
-    */
+    /**
+     * Return all the possible entity of the current logged user (and for current active profile)
+     *
+     * @param array $params array with theses options :
+     *   - 'is_recursive': (default false) Also display sub entities of the active entity. Optionnal
+     *
+     * @return array of entities (with id and name)
+     */
     protected function getMyEntities($params = [])
     {
 
@@ -431,14 +431,14 @@ abstract class API
 
 
 
-   /**
-    * return active entities of current logged user
-    *
-    * @return array with 3 keys :
-    *  - active_entity : current set entity
-    *  - active_entity_recursive : boolean, if we see sons of this entity
-    *  - active_entities : array all active entities (active_entity and its sons)
-    */
+    /**
+     * return active entities of current logged user
+     *
+     * @return array with 3 keys :
+     *  - active_entity : current set entity
+     *  - active_entity_recursive : boolean, if we see sons of this entity
+     *  - active_entities : array all active entities (active_entity and its sons)
+     */
     protected function getActiveEntities()
     {
 
@@ -458,14 +458,14 @@ abstract class API
 
 
 
-   /**
-    * set a profile to active
-    *
-    * @param array $params with theses options :
-    *    - profiles_id : identifier of profile to set
-    *
-    * @return boolean
-    */
+    /**
+     * set a profile to active
+     *
+     * @param array $params with theses options :
+     *    - profiles_id : identifier of profile to set
+     *
+     * @return boolean
+     */
     protected function changeActiveProfile($params = [])
     {
 
@@ -486,11 +486,11 @@ abstract class API
 
 
 
-   /**
-    * Return all the profiles associated to logged user
-    *
-    * @return array of profiles (with associated rights)
-    */
+    /**
+     * Return all the profiles associated to logged user
+     *
+     * @return array of profiles (with associated rights)
+     */
     protected function getMyProfiles()
     {
 
@@ -513,11 +513,11 @@ abstract class API
 
 
 
-   /**
-    * Return the current active profile
-    *
-    * @return integer the profiles_id
-    */
+    /**
+     * Return the current active profile
+     *
+     * @return integer the profiles_id
+     */
     protected function getActiveProfile()
     {
 
@@ -528,11 +528,11 @@ abstract class API
 
 
 
-   /**
-    * Return the current php $_SESSION
-    *
-    * @return array
-    */
+    /**
+     * Return the current php $_SESSION
+     *
+     * @return array
+     */
     protected function getFullSession()
     {
 
@@ -542,10 +542,10 @@ abstract class API
 
 
 
-   /**
-    * Return the current $CFG_GLPI
-    *
-    * @return array
+    /**
+     * Return the current $CFG_GLPI
+     *
+     * @return array
      */
     protected function getGlpiConfig()
     {
@@ -555,32 +555,32 @@ abstract class API
     }
 
 
-   /**
-    * Return the instance fields of itemtype identified by id
-    *
-    * @param string  $itemtype itemtype (class) of object
-    * @param integer $id       identifier of object
-    * @param array   $params   with theses options :
-    *    - 'expand_dropdowns': Show dropdown's names instead of id. default: false. Optionnal
-    *    - 'get_hateoas':      Show relation of current item in a links attribute. default: true. Optionnal
-    *    - 'get_sha1':         Get a sha1 signature instead of the full answer. default: false. Optionnal
-    *    - 'with_devices':  Only for [Computer, NetworkEquipment, Peripheral, Phone, Printer], Optionnal.
-    *    - 'with_disks':       Only for Computer, retrieve the associated filesystems. Optionnal.
-    *    - 'with_softwares':   Only for Computer, retrieve the associated software installations. Optionnal.
-    *    - 'with_connections': Only for Computer, retrieve the associated direct connections (like peripherals and printers) .Optionnal.
-    *    - 'with_networkports':Retrieve all network connections and advanced informations. Optionnal.
-    *    - 'with_infocoms':    Retrieve financial and administrative informations. Optionnal.
-    *    - 'with_contracts':   Retrieve associated contracts. Optionnal.
-    *    - 'with_documents':   Retrieve associated external documents. Optionnal.
-    *    - 'with_tickets':     Retrieve associated itil tickets. Optionnal.
-    *    - 'with_problems':    Retrieve associated itil problems. Optionnal.
-    *    - 'with_changes':     Retrieve associated itil changes. Optionnal.
-    *    - 'with_notes':       Retrieve Notes (if exists, not all itemtypes have notes). Optionnal.
-    *    - 'with_logs':        Retrieve historical. Optionnal.
-    *    - 'add_keys_names':   Get friendly names. Optionnal.
-    *
-    * @return array    fields of found object
-    */
+    /**
+     * Return the instance fields of itemtype identified by id
+     *
+     * @param string  $itemtype itemtype (class) of object
+     * @param integer $id       identifier of object
+     * @param array   $params   with theses options :
+     *    - 'expand_dropdowns': Show dropdown's names instead of id. default: false. Optionnal
+     *    - 'get_hateoas':      Show relation of current item in a links attribute. default: true. Optionnal
+     *    - 'get_sha1':         Get a sha1 signature instead of the full answer. default: false. Optionnal
+     *    - 'with_devices':  Only for [Computer, NetworkEquipment, Peripheral, Phone, Printer], Optionnal.
+     *    - 'with_disks':       Only for Computer, retrieve the associated filesystems. Optionnal.
+     *    - 'with_softwares':   Only for Computer, retrieve the associated software installations. Optionnal.
+     *    - 'with_connections': Only for Computer, retrieve the associated direct connections (like peripherals and printers) .Optionnal.
+     *    - 'with_networkports':Retrieve all network connections and advanced informations. Optionnal.
+     *    - 'with_infocoms':    Retrieve financial and administrative informations. Optionnal.
+     *    - 'with_contracts':   Retrieve associated contracts. Optionnal.
+     *    - 'with_documents':   Retrieve associated external documents. Optionnal.
+     *    - 'with_tickets':     Retrieve associated itil tickets. Optionnal.
+     *    - 'with_problems':    Retrieve associated itil problems. Optionnal.
+     *    - 'with_changes':     Retrieve associated itil changes. Optionnal.
+     *    - 'with_notes':       Retrieve Notes (if exists, not all itemtypes have notes). Optionnal.
+     *    - 'with_logs':        Retrieve historical. Optionnal.
+     *    - 'add_keys_names':   Get friendly names. Optionnal.
+     *
+     * @return array    fields of found object
+     */
     protected function getItem($itemtype, $id, $params = [])
     {
         global $CFG_GLPI, $DB;
@@ -1036,11 +1036,11 @@ abstract class API
 
 
 
-   /**
-    * Fill a sub array with a right error
-    *
-    * @return array
-    */
+    /**
+     * Fill a sub array with a right error
+     *
+     * @return array
+     */
     protected function arrayRightError()
     {
 
@@ -1052,27 +1052,27 @@ abstract class API
 
 
 
-   /**
-    * Return a collection of rows of the desired itemtype
-    *
-    * @param string  $itemtype   itemtype (class) of object
-    * @param array   $params     with theses options :
-    * - 'expand_dropdowns' (default: false): show dropdown's names instead of id. Optionnal
-    * - 'get_hateoas'      (default: true): show relations of items in a links attribute. Optionnal
-    * - 'only_id'          (default: false): keep only id in fields list. Optionnal
-    * - 'range'            (default: 0-50): limit the list to start-end attributes
-    * - 'sort'             (default: id): sort by the field.
-    * - 'order'            (default: ASC): ASC(ending) or DESC(ending).
-    * - 'searchText'       (default: NULL): array of filters to pass on the query (with key = field and value the search)
-    * - 'is_deleted'       (default: false): show trashbin. Optionnal
-    * - 'add_keys_names'   (default: []): insert raw name(s) for given itemtype(s) and fkey(s)
-    * - 'with_networkports'(default: false): Retrieve all network connections and advanced informations. Optional.
-    * @param integer $totalcount output parameter who receive the total count of the query resulat.
-    *                            As this function paginate results (with a mysql LIMIT),
-    *                            we can have the full range. (default 0)
-    *
-    * @return array collection of fields
-    */
+    /**
+     * Return a collection of rows of the desired itemtype
+     *
+     * @param string  $itemtype   itemtype (class) of object
+     * @param array   $params     with theses options :
+     * - 'expand_dropdowns' (default: false): show dropdown's names instead of id. Optionnal
+     * - 'get_hateoas'      (default: true): show relations of items in a links attribute. Optionnal
+     * - 'only_id'          (default: false): keep only id in fields list. Optionnal
+     * - 'range'            (default: 0-50): limit the list to start-end attributes
+     * - 'sort'             (default: id): sort by the field.
+     * - 'order'            (default: ASC): ASC(ending) or DESC(ending).
+     * - 'searchText'       (default: NULL): array of filters to pass on the query (with key = field and value the search)
+     * - 'is_deleted'       (default: false): show trashbin. Optionnal
+     * - 'add_keys_names'   (default: []): insert raw name(s) for given itemtype(s) and fkey(s)
+     * - 'with_networkports'(default: false): Retrieve all network connections and advanced informations. Optional.
+     * @param integer $totalcount output parameter who receive the total count of the query resulat.
+     *                            As this function paginate results (with a mysql LIMIT),
+     *                            we can have the full range. (default 0)
+     *
+     * @return array collection of fields
+     */
     protected function getItems($itemtype, $params = [], &$totalcount = 0)
     {
         global $DB;
@@ -1316,37 +1316,37 @@ abstract class API
         return array_values($found);
     }
 
-   /**
-    * Return a collection of items queried in input ($items)
-    *
-    * Call self::getItem for each line of $items
-    *
-    * @param array $params with theses options :
-    *    - items:               array containing lines with itemtype and items_id keys
-    *                               Ex: [
-    *                                      [itemtype => 'Ticket', id => 102],
-    *                                      [itemtype => 'User',   id => 10],
-    *                                      [itemtype => 'User',   id => 11],
-    *                                   ]
-    *    - 'expand_dropdowns':  Show dropdown's names instead of id. default: false. Optionnal
-    *    - 'get_hateoas':       Show relation of current item in a links attribute. default: true. Optionnal
-    *    - 'get_sha1':          Get a sha1 signature instead of the full answer. default: false. Optionnal
-    *    - 'with_devices':   Only for [Computer, NetworkEquipment, Peripheral, Phone, Printer], Optionnal.
-    *    - 'with_disks':        Only for Computer, retrieve the associated filesystems. Optionnal.
-    *    - 'with_softwares':    Only for Computer, retrieve the associated software installations. Optionnal.
-    *    - 'with_connections':  Only for Computer, retrieve the associated direct connections (like peripherals and printers) .Optionnal.
-    *    - 'with_networkports': Retrieve all network connections and advanced informations. Optionnal.
-    *    - 'with_infocoms':     Retrieve financial and administrative informations. Optionnal.
-    *    - 'with_contracts':    Retrieve associated contracts. Optionnal.
-    *    - 'with_documents':    Retrieve associated external documents. Optionnal.
-    *    - 'with_tickets':      Retrieve associated itil tickets. Optionnal.
-    *    - 'with_problems':     Retrieve associated itil problems. Optionnal.
-    *    - 'with_changes':      Retrieve associated itil changes. Optionnal.
-    *    - 'with_notes':        Retrieve Notes (if exists, not all itemtypes have notes). Optionnal.
-    *    - 'with_logs':         Retrieve historical. Optionnal.
-    *
-    * @return array collection of glpi object's fields
-    */
+    /**
+     * Return a collection of items queried in input ($items)
+     *
+     * Call self::getItem for each line of $items
+     *
+     * @param array $params with theses options :
+     *    - items:               array containing lines with itemtype and items_id keys
+     *                               Ex: [
+     *                                      [itemtype => 'Ticket', id => 102],
+     *                                      [itemtype => 'User',   id => 10],
+     *                                      [itemtype => 'User',   id => 11],
+     *                                   ]
+     *    - 'expand_dropdowns':  Show dropdown's names instead of id. default: false. Optionnal
+     *    - 'get_hateoas':       Show relation of current item in a links attribute. default: true. Optionnal
+     *    - 'get_sha1':          Get a sha1 signature instead of the full answer. default: false. Optionnal
+     *    - 'with_devices':   Only for [Computer, NetworkEquipment, Peripheral, Phone, Printer], Optionnal.
+     *    - 'with_disks':        Only for Computer, retrieve the associated filesystems. Optionnal.
+     *    - 'with_softwares':    Only for Computer, retrieve the associated software installations. Optionnal.
+     *    - 'with_connections':  Only for Computer, retrieve the associated direct connections (like peripherals and printers) .Optionnal.
+     *    - 'with_networkports': Retrieve all network connections and advanced informations. Optionnal.
+     *    - 'with_infocoms':     Retrieve financial and administrative informations. Optionnal.
+     *    - 'with_contracts':    Retrieve associated contracts. Optionnal.
+     *    - 'with_documents':    Retrieve associated external documents. Optionnal.
+     *    - 'with_tickets':      Retrieve associated itil tickets. Optionnal.
+     *    - 'with_problems':     Retrieve associated itil problems. Optionnal.
+     *    - 'with_changes':      Retrieve associated itil changes. Optionnal.
+     *    - 'with_notes':        Retrieve Notes (if exists, not all itemtypes have notes). Optionnal.
+     *    - 'with_logs':         Retrieve historical. Optionnal.
+     *
+     * @return array collection of glpi object's fields
+     */
     protected function getMultipleItems($params = [])
     {
 
@@ -1368,17 +1368,17 @@ abstract class API
     }
 
 
-   /**
-    * List the searchoptions of provided itemtype. To use with searchItems function
-    *
-    * @param string $itemtype             itemtype (class) of object
-    * @param array  $params               parameters
-    * @param bool   $check_depreciation   disable depreciation check, useful
-    *                                     if depreciation have already been
-    *                                     handled by a parent call (e.g. search)
-    *
-    * @return array all searchoptions of specified itemtype
-    */
+    /**
+     * List the searchoptions of provided itemtype. To use with searchItems function
+     *
+     * @param string $itemtype             itemtype (class) of object
+     * @param array  $params               parameters
+     * @param bool   $check_depreciation   disable depreciation check, useful
+     *                                     if depreciation have already been
+     *                                     handled by a parent call (e.g. search)
+     *
+     * @return array all searchoptions of specified itemtype
+     */
     protected function listSearchOptions(
         $itemtype,
         $params = [],
@@ -1433,20 +1433,20 @@ abstract class API
     }
 
 
-   /**
-    * Generate an unique id of a searchoption based on:
-    *  - itemtype
-    *  - linkfield
-    *  - joinparams
-    *  - field
-    *
-    * It permits to identify a searchoption with an named index instead a numeric one
-    *
-    * @param CommonDBTM $itemtype current itemtype called on ressource listSearchOption
-    * @param array      $option   current option to generate an unique id
-    *
-    * @return string the unique id
-    */
+    /**
+     * Generate an unique id of a searchoption based on:
+     *  - itemtype
+     *  - linkfield
+     *  - joinparams
+     *  - field
+     *
+     * It permits to identify a searchoption with an named index instead a numeric one
+     *
+     * @param CommonDBTM $itemtype current itemtype called on ressource listSearchOption
+     * @param array      $option   current option to generate an unique id
+     *
+     * @return string the unique id
+     */
     private function getSearchOptionUniqID($itemtype, $option = [])
     {
 
@@ -1485,13 +1485,13 @@ abstract class API
     }
 
 
-   /**
-    * Generate subpart of a unique id of a search option with parsing joinparams recursively
-    *
-    * @param array $option ['joinparams']['beforejoin'] subpart of a searchoption
-    *
-    * @return array unique id parts
-    */
+    /**
+     * Generate subpart of a unique id of a search option with parsing joinparams recursively
+     *
+     * @param array $option ['joinparams']['beforejoin'] subpart of a searchoption
+     *
+     * @return array unique id parts
+     */
     private function getSearchOptionUniqIDJoins($option)
     {
 
@@ -1509,39 +1509,39 @@ abstract class API
     }
 
 
-   /**
-    * Expose the GLPI searchEngine
-    *
-    * @param string $itemtype itemtype (class) of object
-    * @param array  $params   with theses options :
-    *    - 'criteria': array of criterion object to filter search.
-    *        Optionnal.
-    *        Each criterion object must provide :
-    *           - link: (optionnal for 1st element) logical operator in [AND, OR, AND NOT, AND NOT].
-    *           - field: id of searchoptions.
-    *           - searchtype: type of search in [contains, equals, notequals, lessthan, morethan, under, notunder].
-    *           - value : value to search.
-    *    - 'metacriteria' (optionnal): array of metacriterion object to filter search.
-    *                                  Optionnal.
-    *                                  A meta search is a link with another itemtype
-    *                                  (ex: Computer with software).
-    *         Each metacriterion object must provide :
-    *            - link: logical operator in [AND, OR, AND NOT, AND NOT]. Mandatory
-    *            - itemtype: second itemtype to link.
-    *            - field: id of searchoptions.
-    *            - searchtype: type of search in [contains, equals, notequals, lessthan, morethan, under, notunder].
-    *            - value : value to search.
-    *    - 'sort' :  id of searchoption to sort by (default 1). Optionnal.
-    *    - 'order' : ASC - Ascending sort / DESC Descending sort (default ASC). Optionnal.
-    *    - 'range' : a string with a couple of number for start and end of pagination separated by a '-'. Ex : 150-200. (default 0-50)
-    *                Optionnal.
-    *    - 'forcedisplay': array of columns to display (default empty = empty use display pref and search criterias).
-    *                      Some columns will be always presents (1-id, 2-name, 80-Entity).
-    *                      Optionnal.
-    *    - 'rawdata': boolean for displaying raws data of Search engine of glpi (like sql request, and full searchoptions)
-    *
-    * @return array of raw rows from Search class
-    */
+    /**
+     * Expose the GLPI searchEngine
+     *
+     * @param string $itemtype itemtype (class) of object
+     * @param array  $params   with theses options :
+     *    - 'criteria': array of criterion object to filter search.
+     *        Optionnal.
+     *        Each criterion object must provide :
+     *           - link: (optionnal for 1st element) logical operator in [AND, OR, AND NOT, AND NOT].
+     *           - field: id of searchoptions.
+     *           - searchtype: type of search in [contains, equals, notequals, lessthan, morethan, under, notunder].
+     *           - value : value to search.
+     *    - 'metacriteria' (optionnal): array of metacriterion object to filter search.
+     *                                  Optionnal.
+     *                                  A meta search is a link with another itemtype
+     *                                  (ex: Computer with software).
+     *         Each metacriterion object must provide :
+     *            - link: logical operator in [AND, OR, AND NOT, AND NOT]. Mandatory
+     *            - itemtype: second itemtype to link.
+     *            - field: id of searchoptions.
+     *            - searchtype: type of search in [contains, equals, notequals, lessthan, morethan, under, notunder].
+     *            - value : value to search.
+     *    - 'sort' :  id of searchoption to sort by (default 1). Optionnal.
+     *    - 'order' : ASC - Ascending sort / DESC Descending sort (default ASC). Optionnal.
+     *    - 'range' : a string with a couple of number for start and end of pagination separated by a '-'. Ex : 150-200. (default 0-50)
+     *                Optionnal.
+     *    - 'forcedisplay': array of columns to display (default empty = empty use display pref and search criterias).
+     *                      Some columns will be always presents (1-id, 2-name, 80-Entity).
+     *                      Optionnal.
+     *    - 'rawdata': boolean for displaying raws data of Search engine of glpi (like sql request, and full searchoptions)
+     *
+     * @return array of raw rows from Search class
+     */
     protected function searchItems($itemtype, $params = [])
     {
         global $DEBUG_SQL;
@@ -1776,17 +1776,17 @@ abstract class API
     }
 
 
-   /**
-    * Add an object to GLPI
-    *
-    * @param string $itemtype itemtype (class) of object
-    * @param array  $params   with theses options :
-    *    - 'input' : object with fields of itemtype to be inserted.
-    *                You can add several items in one action by passing array of input object.
-    *                Mandatory.
-    *
-    * @return array of id
-    */
+    /**
+     * Add an object to GLPI
+     *
+     * @param string $itemtype itemtype (class) of object
+     * @param array  $params   with theses options :
+     *    - 'input' : object with fields of itemtype to be inserted.
+     *                You can add several items in one action by passing array of input object.
+     *                Mandatory.
+     *
+     * @return array of id
+     */
     protected function createItems($itemtype, $params = [])
     {
         $this->initEndpoint();
@@ -1873,15 +1873,15 @@ abstract class API
         }
     }
 
-   /**
-    * Transform all stdobject retrieved from a json_decode into arrays
-    *
-    * @since 9.1
-    *
-    * @param  mixed $input can be an object or array
-    *
-    * @return array the cleaned input
-    */
+    /**
+     * Transform all stdobject retrieved from a json_decode into arrays
+     *
+     * @since 9.1
+     *
+     * @param  mixed $input can be an object or array
+     *
+     * @return array the cleaned input
+     */
     private function inputObjectToArray($input)
     {
         if (is_object($input)) {
@@ -1898,17 +1898,17 @@ abstract class API
     }
 
 
-   /**
-    * Update an object to GLPI
-    *
-    * @param string $itemtype itemtype (class) of object
-    * @param array  $params   with theses options :
-    *    - 'input' : Array of objects with fields of itemtype to be updated.
-    *                Mandatory.
-    *                You must provide in each object a key named 'id' to identify item to update.
-    *
-    * @return   array of boolean
-    */
+    /**
+     * Update an object to GLPI
+     *
+     * @param string $itemtype itemtype (class) of object
+     * @param array  $params   with theses options :
+     *    - 'input' : Array of objects with fields of itemtype to be updated.
+     *                Mandatory.
+     *                You must provide in each object a key named 'id' to identify item to update.
+     *
+     * @return   array of boolean
+     */
     protected function updateItems($itemtype, $params = [])
     {
         $this->initEndpoint();
@@ -2006,21 +2006,21 @@ abstract class API
     }
 
 
-   /**
-    * Delete one or more objects in GLPI
-    *
-    * @param string $itemtype itemtype (class) of object
-    * @param array  $params   with theses options :
-    *    - 'input' : Array of objects with fields of itemtype to be updated.
-    *                Mandatory.
-    *                You must provide in each object a key named 'id' to identify item to delete.*
-    *    - 'force_purge' : boolean, if itemtype have a trashbin, you can force purge (delete finally).
-    *                      Optionnal.
-    *    - 'history' : boolean, default true, false to disable saving of deletion in global history.
-    *                  Optionnal.
-    *
-    * @return boolean|boolean[]
-    */
+    /**
+     * Delete one or more objects in GLPI
+     *
+     * @param string $itemtype itemtype (class) of object
+     * @param array  $params   with theses options :
+     *    - 'input' : Array of objects with fields of itemtype to be updated.
+     *                Mandatory.
+     *                You must provide in each object a key named 'id' to identify item to delete.*
+     *    - 'force_purge' : boolean, if itemtype have a trashbin, you can force purge (delete finally).
+     *                      Optionnal.
+     *    - 'history' : boolean, default true, false to disable saving of deletion in global history.
+     *                  Optionnal.
+     *
+     * @return boolean|boolean[]
+     */
     protected function deleteItems($itemtype, $params = [])
     {
 
@@ -2167,20 +2167,20 @@ abstract class API
     }
 
 
-   /**
-    * Function called by each common function of the API.
-    *
-    * We need for each of these to :
-    *  - checks app_token
-    *  - log
-    *  - check session token
-    *  - unlock session if needed (set ip to read-only to permit concurrent calls)
-    *
-    * @param boolean $unlock_session do we need to unlock session (default true)
-    * @param string  $endpoint       name of the current function (default '')
-    *
-    * @return void
-    */
+    /**
+     * Function called by each common function of the API.
+     *
+     * We need for each of these to :
+     *  - checks app_token
+     *  - log
+     *  - check session token
+     *  - unlock session if needed (set ip to read-only to permit concurrent calls)
+     *
+     * @param boolean $unlock_session do we need to unlock session (default true)
+     * @param string  $endpoint       name of the current function (default '')
+     *
+     * @return void
+     */
     private function initEndpoint($unlock_session = true, $endpoint = "")
     {
 
@@ -2197,11 +2197,11 @@ abstract class API
     }
 
 
-   /**
-    * Check if the app_toke in case of config ask to
-    *
-    * @return void
-    */
+    /**
+     * Check if the app_toke in case of config ask to
+     *
+     * @return void
+     */
     private function checkAppToken()
     {
 
@@ -2227,15 +2227,15 @@ abstract class API
     }
 
 
-   /**
-    * Log usage of the api into glpi historical or log files (defined by api config)
-    *
-    * It stores the ip and the username of the current session.
-    *
-    * @param string $endpoint function called by api to log (default '')
-    *
-    * @return void
-    */
+    /**
+     * Log usage of the api into glpi historical or log files (defined by api config)
+     *
+     * It stores the ip and the username of the current session.
+     *
+     * @param string $endpoint function called by api to log (default '')
+     *
+     * @return void
+     */
     private function logEndpointUsage($endpoint = "")
     {
 
@@ -2271,11 +2271,11 @@ abstract class API
     }
 
 
-   /**
-    * Check that the session_token is provided and match to a valid php session
-    *
-    * @return boolean
-    */
+    /**
+     * Check that the session_token is provided and match to a valid php session
+     *
+     * @return boolean
+     */
     protected function checkSessionToken()
     {
 
@@ -2297,11 +2297,11 @@ abstract class API
     }
 
 
-   /**
-    * Unlock the current session (readonly) to permit concurrent call
-    *
-    * @return void
-    */
+    /**
+     * Unlock the current session (readonly) to permit concurrent call
+     *
+     * @return void
+     */
     private function unlockSessionIfPossible()
     {
 
@@ -2311,11 +2311,11 @@ abstract class API
     }
 
 
-   /**
-    * Get last message added in $_SESSION by Session::addMessageAfterRedirect
-    *
-    * @return array  of messages
-    */
+    /**
+     * Get last message added in $_SESSION by Session::addMessageAfterRedirect
+     *
+     * @return array  of messages
+     */
     private function getGlpiLastMessage()
     {
         global $DEBUG_SQL;
@@ -2355,28 +2355,28 @@ abstract class API
     }
 
 
-   /**
-    * Show API Debug
-    *
-    * @return void
-    */
+    /**
+     * Show API Debug
+     *
+     * @return void
+     */
     protected function showDebug()
     {
         Html::printCleanArray($this);
     }
 
 
-   /**
-    * Show API header
-    *
-    * in debug, it add body and some libs (essentialy to colorise markdown)
-    * otherwise, it change only Content-Type of the page
-    *
-    * @param boolean $html  (default false)
-    * @param string  $title (default '')
-    *
-    * @return void
-    */
+    /**
+     * Show API header
+     *
+     * in debug, it add body and some libs (essentialy to colorise markdown)
+     * otherwise, it change only Content-Type of the page
+     *
+     * @param boolean $html  (default false)
+     * @param string  $title (default '')
+     *
+     * @return void
+     */
     protected function header($html = false, $title = "")
     {
 
@@ -2404,13 +2404,13 @@ abstract class API
     }
 
 
-   /**
-    * Display the API Documentation in Html (parsed from markdown)
-    *
-    * @param string $file relative path of documentation file
-    *
-    * @return void
-    */
+    /**
+     * Display the API Documentation in Html (parsed from markdown)
+     *
+     * @param string $file relative path of documentation file
+     *
+     * @return void
+     */
     public function inlineDocumentation($file)
     {
         $this->header(true, __("API Documentation"));
@@ -2432,18 +2432,18 @@ abstract class API
     }
 
 
-   /**
-    * Transform array of fields passed in parameter :
-    * change value from  integer id to string name of foreign key
-    * You can pass an array of array, this method is recursive.
-    *
-    * @param array   $fields to check and transform
-    * @param array   $params array of option to enable, could be :
-    *                                 - expand_dropdowns (default false)
-    *                                 - get_hateoas      (default true)
-    *
-    * @return array altered $fields
-    */
+    /**
+     * Transform array of fields passed in parameter :
+     * change value from  integer id to string name of foreign key
+     * You can pass an array of array, this method is recursive.
+     *
+     * @param array   $fields to check and transform
+     * @param array   $params array of option to enable, could be :
+     *                                 - expand_dropdowns (default false)
+     *                                 - get_hateoas      (default true)
+     *
+     * @return array altered $fields
+     */
     protected static function parseDropdowns($fields, $params = [])
     {
 
@@ -2503,13 +2503,13 @@ abstract class API
     }
 
 
-   /**
-    * Retrieve all child class for itemtype parameter
-    *
-    * @param string $itemtype Item type
-    *
-    * @return array child classes
-    */
+    /**
+     * Retrieve all child class for itemtype parameter
+     *
+     * @param string $itemtype Item type
+     *
+     * @return array child classes
+     */
     public static function getHatoasClasses($itemtype)
     {
         global $CFG_GLPI;
@@ -2607,13 +2607,13 @@ abstract class API
     }
 
 
-   /**
-    * Send 404 error to client
-    *
-    * @param boolean $return_error (default true)
-    *
-    * @return void
-    */
+    /**
+     * Send 404 error to client
+     *
+     * @param boolean $return_error (default true)
+     *
+     * @return void
+     */
     public function messageNotfoundError($return_error = true)
     {
 
@@ -2627,13 +2627,13 @@ abstract class API
     }
 
 
-   /**
-    * Send 400 error to client
-    *
-    * @param boolean $return_error (default true)
-    *
-    * @return void
-    */
+    /**
+     * Send 400 error to client
+     *
+     * @param boolean $return_error (default true)
+     *
+     * @return void
+     */
     public function messageBadArrayError($return_error = true)
     {
 
@@ -2647,13 +2647,13 @@ abstract class API
     }
 
 
-   /**
-    * Send 405 error to client
-    *
-    * @param boolean $return_error (default true)
-    *
-    * @return void
-    */
+    /**
+     * Send 405 error to client
+     *
+     * @param boolean $return_error (default true)
+     *
+     * @return void
+     */
     public function messageLostError($return_error = true)
     {
 
@@ -2667,13 +2667,13 @@ abstract class API
     }
 
 
-   /**
-    * Send 401 error to client
-    *
-    * @param boolean $return_error (default true)
-    *
-    * @return void
-    */
+    /**
+     * Send 401 error to client
+     *
+     * @param boolean $return_error (default true)
+     *
+     * @return void
+     */
     public function messageRightError($return_error = true)
     {
 
@@ -2687,13 +2687,13 @@ abstract class API
     }
 
 
-   /**
-    * Session Token KO
-    *
-    * @param boolean $return_error (default true)
-    *
-    * @return void
-    */
+    /**
+     * Session Token KO
+     *
+     * @param boolean $return_error (default true)
+     *
+     * @return void
+     */
     public function messageSessionError($return_error = true)
     {
         $this->returnError(
@@ -2706,13 +2706,13 @@ abstract class API
     }
 
 
-   /**
-    * Session Token missing
-    *
-    * @param boolean $return_error (default true)
-    *
-    * @return void
-    */
+    /**
+     * Session Token missing
+     *
+     * @param boolean $return_error (default true)
+     *
+     * @return void
+     */
     public function messageSessionTokenMissing($return_error = true)
     {
 
@@ -2726,23 +2726,23 @@ abstract class API
     }
 
 
-   /**
-    * Generic function to send a error message and an error code to client
-    *
-    * @param string  $message         message to send (human readable)(default 'Bad Request')
-    * @param integer $httpcode        http code (see : https://en.wikipedia.org/wiki/List_of_HTTP_status_codes)
-    *                                      (default 400)
-    * @param string  $statuscode      API status (to represent more precisely the current error)
-    *                                      (default ERROR)
-    * @param boolean $docmessage      if true, add a link to inline document in message
-    *                                      (default true)
-    * @param boolean $return_response if true, the error will be send to returnResponse function
-    *                                      (who may exit after sending data), otherwise,
-    *                                      we will return an array with the error
-    *                                      (default true)
-    *
-    * @return array
-    */
+    /**
+     * Generic function to send a error message and an error code to client
+     *
+     * @param string  $message         message to send (human readable)(default 'Bad Request')
+     * @param integer $httpcode        http code (see : https://en.wikipedia.org/wiki/List_of_HTTP_status_codes)
+     *                                      (default 400)
+     * @param string  $statuscode      API status (to represent more precisely the current error)
+     *                                      (default ERROR)
+     * @param boolean $docmessage      if true, add a link to inline document in message
+     *                                      (default true)
+     * @param boolean $return_response if true, the error will be send to returnResponse function
+     *                                      (who may exit after sending data), otherwise,
+     *                                      we will return an array with the error
+     *                                      (default true)
+     *
+     * @return array
+     */
     public function returnError(
         $message = "Bad Request",
         $httpcode = 400,
@@ -2771,27 +2771,27 @@ abstract class API
     }
 
 
-   /**
-    * Get the raw HTTP request body
-    *
-    * @return string
-    */
+    /**
+     * Get the raw HTTP request body
+     *
+     * @return string
+     */
     protected function getHttpBody()
     {
         return file_get_contents('php://input');
     }
 
-   /**
-    * Get raw names
-    *
-    * @since 9.5
-    *
-    * @param array  $data           A raw from the database
-    * @param array  $params         API parameters
-    * @param string $self_itemtype  Itemtype the API was called on
-    *
-    * @return array
-    */
+    /**
+     * Get raw names
+     *
+     * @since 9.5
+     *
+     * @param array  $data           A raw from the database
+     * @param array  $params         API parameters
+     * @param string $self_itemtype  Itemtype the API was called on
+     *
+     * @return array
+     */
     protected function getFriendlyNames(
         array $data,
         array $params,
@@ -2829,16 +2829,16 @@ abstract class API
         return $_names;
     }
 
-   /**
-    * Get network ports
-    *
-    * @since 10.0.0
-    *
-    * @param int    $id         Id of the source item
-    * @param string  $itemtype  Type of the source item
-    *
-    * @return array
-    */
+    /**
+     * Get network ports
+     *
+     * @since 10.0.0
+     *
+     * @param int    $id         Id of the source item
+     * @param string  $itemtype  Type of the source item
+     *
+     * @return array
+     */
     protected function getNetworkPorts(
         int $id,
         string $itemtype
@@ -3010,13 +3010,13 @@ abstract class API
         return $_networkports;
     }
 
-   /**
-    * Get the profile picture of the given user
-    *
-    * @since 9.5
-    *
-    * @param int|boolean $user_id
-    */
+    /**
+     * Get the profile picture of the given user
+     *
+     * @since 9.5
+     *
+     * @param int|boolean $user_id
+     */
     public function userPicture($user_id)
     {
         $this->initEndpoint();
@@ -3038,14 +3038,14 @@ abstract class API
         die;
     }
 
-   /**
-    * If the given itemtype is deprecated, replace it by it's current
-    * equivalent and keep a reference to the deprecation logic so we can convert
-    * the API input and/or output to the exêcted format.
-    *
-    * @param string  $itemtype
-    * @return string The corrected itemtype.
-    */
+    /**
+     * If the given itemtype is deprecated, replace it by it's current
+     * equivalent and keep a reference to the deprecation logic so we can convert
+     * the API input and/or output to the exêcted format.
+     *
+     * @param string  $itemtype
+     * @return string The corrected itemtype.
+     */
     public function handleDepreciation(string $itemtype): string
     {
         $deprecated = Toolbox::isAPIDeprecated($itemtype);
@@ -3062,25 +3062,25 @@ abstract class API
         return $itemtype;
     }
 
-   /**
-    * Check if the current call is using a deprecated item
-    *
-    * @return bool
-    */
+    /**
+     * Check if the current call is using a deprecated item
+     *
+     * @return bool
+     */
     public function isDeprecated(): bool
     {
         return $this->deprecated_item !== null;
     }
 
-   /**
-    * "getMassiveActions" endpoint.
-    * Return possible massive actions for a given item or itemtype.
-    *
-    * @param string $itemtype    Itemtype for which to show possible massive actions
-    * @param int    $id          If >0, will load given item and restrict massive actions to this item
-    * @param bool   $is_deleted  Should we show massive action in "deleted" mode ?
-    * @return array
-    */
+    /**
+     * "getMassiveActions" endpoint.
+     * Return possible massive actions for a given item or itemtype.
+     *
+     * @param string $itemtype    Itemtype for which to show possible massive actions
+     * @param int    $id          If >0, will load given item and restrict massive actions to this item
+     * @param bool   $is_deleted  Should we show massive action in "deleted" mode ?
+     * @return array
+     */
     public function getMassiveActions(
         string $itemtype,
         ?int $id = null,
@@ -3119,13 +3119,13 @@ abstract class API
         $this->returnResponse($response);
     }
 
-   /**
-    * Return possible massive actions for a given itemtype.
-    *
-    * @param string $itemtype    Itemtype for which to show possible massive actions
-    * @param bool   $is_deleted  Should we show massive action in "deleted" mode ?
-    * @return array
-    */
+    /**
+     * Return possible massive actions for a given itemtype.
+     *
+     * @param string $itemtype    Itemtype for which to show possible massive actions
+     * @param bool   $is_deleted  Should we show massive action in "deleted" mode ?
+     * @return array
+     */
     public function getMassiveActionsForItemtype(
         string $itemtype,
         bool $is_deleted = false
@@ -3134,12 +3134,12 @@ abstract class API
         return MassiveAction::getAllMassiveActions($itemtype, $is_deleted);
     }
 
-   /**
-    * Return possible massive actions for a given item.
-    *
-    * @param CommonDBTM $item    Item for which to show possible massive actions
-    * @return array
-    */
+    /**
+     * Return possible massive actions for a given item.
+     *
+     * @param CommonDBTM $item    Item for which to show possible massive actions
+     * @return array
+     */
     public function getMassiveActionsForItem(CommonDBTM $item): array
     {
        // Return massive actions for a given item
@@ -3151,15 +3151,15 @@ abstract class API
         );
     }
 
-   /**
-    * "getMassiveActionParameters" endpoint.
-    * Return required parameters for a given massive action key.
-    *
-    * @param string        $itemtype      Target itemtype
-    * @param string|null   $action_key    Target massive action
-    * @param bool          $is_deleted    Is this massive action to be used on items in the trashbin ?
-    * @return array
-    */
+    /**
+     * "getMassiveActionParameters" endpoint.
+     * Return required parameters for a given massive action key.
+     *
+     * @param string        $itemtype      Target itemtype
+     * @param string|null   $action_key    Target massive action
+     * @param bool          $is_deleted    Is this massive action to be used on items in the trashbin ?
+     * @return array
+     */
     public function getMassiveActionParameters(
         string $itemtype,
         ?string $action_key,
@@ -3233,16 +3233,16 @@ abstract class API
     }
 
 
-   /**
-    * "applyMassiveAction" endpoint.
-    * Execute the given massive action
-    *
-    * @param string        $itemtype      Target itemtype
-    * @param string|null   $action_key    Target massive action
-    * @param array         $ids           Ids of items to execute the action on
-    * @param array         $params        Action parameters
-    * @return array
-    */
+    /**
+     * "applyMassiveAction" endpoint.
+     * Execute the given massive action
+     *
+     * @param string        $itemtype      Target itemtype
+     * @param string|null   $action_key    Target massive action
+     * @param array         $ids           Ids of items to execute the action on
+     * @param array         $params        Action parameters
+     * @return array
+     */
     public function applyMassiveAction(
         string $itemtype,
         ?string $action_key,

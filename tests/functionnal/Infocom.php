@@ -183,9 +183,9 @@ class Infocom extends \GLPITestCase
     }
 
 
-   /**
-    * @dataProvider dataLinearAmortise
-    */
+    /**
+     * @dataProvider dataLinearAmortise
+     */
     public function testLinearAmortise($value, $duration, $fiscaldate, $buydate, $usedate, $expected, $oldmft)
     {
         $amortise = \Infocom::linearAmortise(

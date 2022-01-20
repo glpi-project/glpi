@@ -47,12 +47,12 @@ use User;
 
 final class UserMention
 {
-   /**
-    * Handle user mentions.
-    * Add newly mention users to observers and send them a notification.
-    *
-    * @return void
-    */
+    /**
+     * Handle user mentions.
+     * Add newly mention users to observers and send them a notification.
+     *
+     * @return void
+     */
     public static function handleUserMentions(CommonDBTM $item): void
     {
 
@@ -175,13 +175,13 @@ final class UserMention
         }
     }
 
-   /**
-    * Extract ids of mentioned users.
-    *
-    * @param string $content
-    *
-    * @return int[]
-    */
+    /**
+     * Extract ids of mentioned users.
+     *
+     * @param string $content
+     *
+     * @return int[]
+     */
     public static function getUserIdsFromUserMentions(string $content)
     {
         $ids = [];
@@ -204,14 +204,14 @@ final class UserMention
         return $ids;
     }
 
-   /**
-    * Refresh user mentions HTML in order to display them.
-    * User name is updated, and a link to user page could be added on mention.
-    *
-    * @param string $content
-    *
-    * @return string
-    */
+    /**
+     * Refresh user mentions HTML in order to display them.
+     * User name is updated, and a link to user page could be added on mention.
+     *
+     * @param string $content
+     *
+     * @return string
+     */
     public static function refreshUserMentionsHtmlToDisplay(string $content): string
     {
 

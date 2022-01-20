@@ -35,7 +35,7 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\Features\AssetImage;
 
 /** Software Class
-**/
+ **/
 class Software extends CommonDBTM
 {
     use Glpi\Features\Clonable;
@@ -65,11 +65,11 @@ class Software extends CommonDBTM
     }
 
 
-   /**
-    * @see CommonGLPI::getMenuShorcut()
-    *
-    *  @since 0.85
-   **/
+    /**
+     * @see CommonGLPI::getMenuShorcut()
+     *
+     *  @since 0.85
+     **/
     public static function getMenuShorcut()
     {
         return 's';
@@ -180,15 +180,15 @@ class Software extends CommonDBTM
     }
 
 
-   /**
-    * Update validity indicator of a specific software
-    *
-    * @param $ID ID of the licence
-    *
-    * @since 0.85
-    *
-    * @return void
-   **/
+    /**
+     * Update validity indicator of a specific software
+     *
+     * @param $ID ID of the licence
+     *
+     * @since 0.85
+     *
+     * @return void
+     **/
     public static function updateValidityIndicator($ID)
     {
 
@@ -212,16 +212,16 @@ class Software extends CommonDBTM
     }
 
 
-   /**
-    * Print the software form
-    *
-    * @param $ID integer ID of the item
-    * @param $options array
-    *     - target filename : where to go when done.
-    *     - withtemplate boolean : template or basic item
-    *
-    * @return boolean item found
-   **/
+    /**
+     * Print the software form
+     *
+     * @param $ID integer ID of the item
+     * @param $options array
+     *     - target filename : where to go when done.
+     *     - withtemplate boolean : template or basic item
+     *
+     * @return boolean item found
+     **/
     public function showForm($ID, array $options = [])
     {
         $this->initForm($ID, $options);
@@ -242,9 +242,9 @@ class Software extends CommonDBTM
     }
 
 
-   /**
-    * @see CommonDBTM::getSpecificMassiveActions()
-   **/
+    /**
+     * @see CommonDBTM::getSpecificMassiveActions()
+     **/
     public function getSpecificMassiveActions($checkitem = null)
     {
 
@@ -276,11 +276,11 @@ class Software extends CommonDBTM
     }
 
 
-   /**
-    * @since 0.85
-    *
-    * @see CommonDBTM::processMassiveActionsForOneItemtype()
-   **/
+    /**
+     * @since 0.85
+     *
+     * @see CommonDBTM::processMassiveActionsForOneItemtype()
+     **/
     public static function processMassiveActionsForOneItemtype(
         MassiveAction $ma,
         CommonDBTM $item,
@@ -636,14 +636,14 @@ class Software extends CommonDBTM
     }
 
 
-   /**
-    * Make a select box for  software to install
-    *
-    * @param $myname          select name
-    * @param $entity_restrict restrict to a defined entity
-    *
-    * @return integer random part of elements id
-   **/
+    /**
+     * Make a select box for  software to install
+     *
+     * @param $myname          select name
+     * @param $entity_restrict restrict to a defined entity
+     *
+     * @return integer random part of elements id
+     **/
     public static function dropdownSoftwareToInstall($myname, $entity_restrict)
     {
         global $CFG_GLPI;
@@ -674,14 +674,14 @@ class Software extends CommonDBTM
     }
 
 
-   /**
-    * Make a select box for license software to associate
-    *
-    * @param $myname          select name
-    * @param $entity_restrict restrict to a defined entity
-    *
-    * @return integer random part of elements id
-   **/
+    /**
+     * Make a select box for license software to associate
+     *
+     * @param $myname          select name
+     * @param $entity_restrict restrict to a defined entity
+     *
+     * @return integer random part of elements id
+     **/
     public static function dropdownLicenseToInstall($myname, $entity_restrict)
     {
         global $CFG_GLPI, $DB;
@@ -732,18 +732,18 @@ class Software extends CommonDBTM
     }
 
 
-   /**
-    * Create a new software
-    *
-    * @param name                          the software's name (need to be addslashes)
-    * @param manufacturer_id               id of the software's manufacturer
-    * @param entity                        the entity in which the software must be added
-    * @param comment                       (default '')
-    * @param is_recursive         boolean  must the software be recursive (false by default)
-    * @param is_helpdesk_visible           show in helpdesk, default : from config (false by default)
-    *
-    * @return the software's ID
-   **/
+    /**
+     * Create a new software
+     *
+     * @param name                          the software's name (need to be addslashes)
+     * @param manufacturer_id               id of the software's manufacturer
+     * @param entity                        the entity in which the software must be added
+     * @param comment                       (default '')
+     * @param is_recursive         boolean  must the software be recursive (false by default)
+     * @param is_helpdesk_visible           show in helpdesk, default : from config (false by default)
+     *
+     * @return the software's ID
+     **/
     public function addSoftware(
         $name,
         $manufacturer_id,
@@ -787,16 +787,16 @@ class Software extends CommonDBTM
     }
 
 
-   /**
-    * Add a software. If already exist in trashbin restore it
-    *
-    * @param name                            the software's name
-    * @param manufacturer                    the software's manufacturer
-    * @param entity                          the entity in which the software must be added
-    * @param comment                         comment (default '')
-    * @param is_recursive           boolean  must the software be recursive (false by default)
-    * @param is_helpdesk_visible             show in helpdesk, default = config value (false by default)
-   */
+    /**
+     * Add a software. If already exist in trashbin restore it
+     *
+     * @param name                            the software's name
+     * @param manufacturer                    the software's manufacturer
+     * @param entity                          the entity in which the software must be added
+     * @param comment                         comment (default '')
+     * @param is_recursive           boolean  must the software be recursive (false by default)
+     * @param is_helpdesk_visible             show in helpdesk, default = config value (false by default)
+     */
     public function addOrRestoreFromTrash(
         $name,
         $manufacturer,
@@ -853,14 +853,14 @@ class Software extends CommonDBTM
     }
 
 
-   /**
-    * Put software in trashbin because it's been removed by GLPI software dictionnary
-    *
-    * @param $ID        the ID of the software to put in trashbin
-    * @param $comment   the comment to add to the already existing software's comment (default '')
-    *
-    * @return boolean (success)
-   **/
+    /**
+     * Put software in trashbin because it's been removed by GLPI software dictionnary
+     *
+     * @param $ID        the ID of the software to put in trashbin
+     * @param $comment   the comment to add to the already existing software's comment (default '')
+     *
+     * @return boolean (success)
+     **/
     public function putInTrash($ID, $comment = '')
     {
         global $CFG_GLPI;
@@ -884,13 +884,13 @@ class Software extends CommonDBTM
     }
 
 
-   /**
-    * Restore a software from trashbin
-    *
-    * @param $ID  the ID of the software to put in trashbin
-    *
-    * @return boolean (success)
-   **/
+    /**
+     * Restore a software from trashbin
+     *
+     * @param $ID  the ID of the software to put in trashbin
+     *
+     * @return boolean (success)
+     **/
     public function removeFromTrash($ID)
     {
 
@@ -911,11 +911,11 @@ class Software extends CommonDBTM
     }
 
 
-   /**
-    * Show software candidates to be merged with the current
-    *
-    * @return void
-   **/
+    /**
+     * Show software candidates to be merged with the current
+     *
+     * @return void
+     **/
     public function showMergeCandidates()
     {
         global $DB;
@@ -996,14 +996,14 @@ class Software extends CommonDBTM
     }
 
 
-   /**
-    * Merge software with current
-    *
-    * @param $item array of software ID to be merged
-    * @param boolean display html progress bar
-    *
-    * @return boolean about success
-   **/
+    /**
+     * Merge software with current
+     *
+     * @param $item array of software ID to be merged
+     * @param boolean display html progress bar
+     *
+     * @return boolean about success
+     **/
     public function merge($item, $html = true)
     {
         global $DB;

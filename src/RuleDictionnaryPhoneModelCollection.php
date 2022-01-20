@@ -36,9 +36,9 @@ class RuleDictionnaryPhoneModelCollection extends RuleDictionnaryDropdownCollect
     public $item_table  = "glpi_phonemodels";
     public $menu_option = "model.phone";
 
-   /**
-    * @see RuleCollection::getTitle()
-   **/
+    /**
+     * @see RuleCollection::getTitle()
+     **/
     public function getTitle()
     {
         return __('Dictionnary of phone models');

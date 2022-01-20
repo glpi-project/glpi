@@ -36,7 +36,7 @@
  *
  * @since 0.84
  *
-**/
+ **/
 class Problem_Supplier extends CommonITILActor
 {
    // From CommonDBRelation

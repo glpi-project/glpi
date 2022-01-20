@@ -50,15 +50,15 @@ class RuleImportAsset extends Rule
 
     public static $rightname         = 'rule_import';
 
-   /** @var bool */
+    /** @var bool */
     private $restrict_entity = false;
-   /** @var integer */
+    /** @var integer */
     private $found_criteria = 0;
-   /** @var array */
+    /** @var array */
     private $complex_criteria = [];
-   /** @var boolean */
+    /** @var boolean */
     private $only_these_criteria = false;
-   /** @var boolean */
+    /** @var boolean */
     private $link_criteria_port = false;
 
 
@@ -260,12 +260,12 @@ class RuleImportAsset extends Rule
     }
 
 
-   /**
-    * Add more criteria
-    *
-    * @param string $criterion
-    * @return array
-    */
+    /**
+     * Add more criteria
+     *
+     * @param string $criterion
+     * @return array
+     */
     public static function addMoreCriteria($criterion = '')
     {
         switch ($criterion) {
@@ -363,13 +363,13 @@ class RuleImportAsset extends Rule
         return $criteria;
     }
 
-   /**
-    * Pre compute criteria to detect rules specificities
-    *
-    * @param array $input Input
-    *
-    * @return boolean
-    */
+    /**
+     * Pre compute criteria to detect rules specificities
+     *
+     * @param array $input Input
+     *
+     * @return boolean
+     */
     public function preComputeCriteria(array $input): bool
     {
         $global_criteria   = $this->getGlobalCriteria();
@@ -571,14 +571,14 @@ class RuleImportAsset extends Rule
         return false;
     }
 
-   /**
-    * ?
-    *
-    * @param CommonDBTM $item         Item instance
-    * @param array      &$it_criteria Iterator criteria
-    *
-    * @return void
-    */
+    /**
+     * ?
+     *
+     * @param CommonDBTM $item         Item instance
+     * @param array      &$it_criteria Iterator criteria
+     *
+     * @return void
+     */
     public function handleLinkCriteriaPort(CommonDBTM $item, array &$it_criteria)
     {
         $is_ip          = false;
@@ -632,14 +632,14 @@ class RuleImportAsset extends Rule
         }
     }
 
-   /**
-    * ?
-    *
-    * @param CommonDBTM $item         Item instance
-    * @param array      &$it_criteria Iterator criteria
-    *
-    * @return void
-    */
+    /**
+     * ?
+     *
+     * @param CommonDBTM $item         Item instance
+     * @param array      &$it_criteria Iterator criteria
+     *
+     * @return void
+     */
     public function handleOneJoinPerCriteria(CommonDBTM $item, array &$it_criteria)
     {
         $itemtable      = $item->getTable();
@@ -686,15 +686,15 @@ class RuleImportAsset extends Rule
         }
     }
 
-   /**
-    * Handle fields criteria
-    *
-    * @param CommonDBTM $item         Item instance
-    * @param array      &$it_criteria Iterator criteria
-    * @param array      $input        Input
-    *
-    * @return void
-    */
+    /**
+     * Handle fields criteria
+     *
+     * @param CommonDBTM $item         Item instance
+     * @param array      &$it_criteria Iterator criteria
+     * @param array      $input        Input
+     *
+     * @return void
+     */
     public function handleFieldsCriteria(CommonDBTM $item, &$it_criteria, $input)
     {
         $itemtable      = $item->getTable();
@@ -1001,16 +1001,16 @@ class RuleImportAsset extends Rule
         echo "</td></tr>";
     }
 
-   /**
-    * Create rules (initialisation)
-    *
-    *
-    * @param boolean $reset        Whether to reset before adding new rules, defaults to true
-    * @param boolean $with_plugins Use plugins rules or not
-    * @param boolean $check        Check if rule exists before creating
-    *
-    * @return boolean
-    */
+    /**
+     * Create rules (initialisation)
+     *
+     *
+     * @param boolean $reset        Whether to reset before adding new rules, defaults to true
+     * @param boolean $with_plugins Use plugins rules or not
+     * @param boolean $check        Check if rule exists before creating
+     *
+     * @return boolean
+     */
     public static function initRules($reset = true, $with_plugins = true, $check = false): bool
     {
         global $PLUGIN_HOOKS;
@@ -2327,12 +2327,12 @@ class RuleImportAsset extends Rule
         return true;
     }
 
-   /**
-    * Get itemtypes have state_type and unmanaged devices
-    *
-    * @global array $CFG_GLPI
-    * @return array
-    */
+    /**
+     * Get itemtypes have state_type and unmanaged devices
+     *
+     * @global array $CFG_GLPI
+     * @return array
+     */
     public static function getItemTypesForRules()
     {
         global $CFG_GLPI;
@@ -2359,11 +2359,11 @@ class RuleImportAsset extends Rule
         return $params + ['class' => $class];
     }
 
-   /**
-    * Get criteria related to network ports
-    *
-    * @return array
-    */
+    /**
+     * Get criteria related to network ports
+     *
+     * @return array
+     */
     public function getNetportCriteria(): array
     {
         return [
@@ -2374,11 +2374,11 @@ class RuleImportAsset extends Rule
         ];
     }
 
-   /**
-    * Get global criteria
-    *
-    * @return array
-    */
+    /**
+     * Get global criteria
+     *
+     * @return array
+     */
     public function getGlobalCriteria(): array
     {
         global $PLUGIN_HOOKS;
@@ -2418,13 +2418,13 @@ class RuleImportAsset extends Rule
         return $criteria;
     }
 
-   /**
-    * Check if criterion is related to network ports
-    *
-    * @param string $criterion Criterion to check
-    *
-    * @return boolean
-    */
+    /**
+     * Check if criterion is related to network ports
+     *
+     * @param string $criterion Criterion to check
+     *
+     * @return boolean
+     */
     public function isNetPort($criterion): bool
     {
         return in_array($criterion, $this->getNetportCriteria());

@@ -40,7 +40,7 @@ use Glpi\Team\Team;
  * Project Class
  *
  * @since 0.85
-**/
+ **/
 class Project extends CommonDBTM implements ExtraVisibilityCriteria
 {
     use Glpi\Features\Kanban;
@@ -72,11 +72,11 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
         ];
     }
 
-   /**
-    * Name of the type
-    *
-    * @param $nb : number of item in the type (default 0)
-   **/
+    /**
+     * Name of the type
+     *
+     * @param $nb : number of item in the type (default 0)
+     **/
     public static function getTypeName($nb = 0)
     {
         return _n('Project', 'Projects', $nb);
@@ -89,11 +89,11 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
     }
 
 
-   /**
-    * Is the current user have right to show the current project ?
-    *
-    * @return boolean
-   **/
+    /**
+     * Is the current user have right to show the current project ?
+     *
+     * @return boolean
+     **/
     public function canViewItem()
     {
 
@@ -110,11 +110,11 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
     }
 
 
-   /**
-    * Is the current user have right to create the current change ?
-    *
-    * @return boolean
-   **/
+    /**
+     * Is the current user have right to create the current change ?
+     *
+     * @return boolean
+     **/
     public function canCreateItem()
     {
 
@@ -125,11 +125,11 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
     }
 
 
-   /**
-    * @since 0.85
-    *
-    * @see commonDBTM::getRights()
-    **/
+    /**
+     * @since 0.85
+     *
+     * @see commonDBTM::getRights()
+     **/
     public function getRights($interface = 'central')
     {
 
@@ -248,9 +248,9 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
     }
 
 
-   /**
-    * @see CommonGLPI::getAdditionalMenuLinks()
-   **/
+    /**
+     * @see CommonGLPI::getAdditionalMenuLinks()
+     **/
     public static function getAdditionalMenuLinks()
     {
         global $CFG_GLPI;
@@ -390,15 +390,15 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
     }
 
 
-   /**
-    * Return visibility joins to add to DBIterator parameters
-    *
-    * @since 9.4
-    *
-    * @param boolean $forceall force all joins (false by default)
-    *
-    * @return array
-    */
+    /**
+     * Return visibility joins to add to DBIterator parameters
+     *
+     * @since 9.4
+     *
+     * @param boolean $forceall force all joins (false by default)
+     *
+     * @return array
+     */
     public static function getVisibilityCriteria(bool $forceall = false): array
     {
         if (Session::haveRight('project', self::READALL)) {
@@ -445,11 +445,11 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
 
         return $criteria;
     }
-   /**
-    * Is the current user in the team?
-    *
-    * @return boolean
-   **/
+    /**
+     * Is the current user in the team?
+     *
+     * @return boolean
+     **/
     public function isInTheTeam()
     {
 
@@ -477,11 +477,11 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
     }
 
 
-   /**
-    * Is the current user in manager group?
-    *
-    * @return boolean
-   **/
+    /**
+     * Is the current user in manager group?
+     *
+     * @return boolean
+     **/
     public function isInTheManagerGroup()
     {
 
@@ -499,11 +499,11 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
     }
 
 
-   /**
-    * Get team member count
-    *
-    * @return number
-   **/
+    /**
+     * Get team member count
+     *
+     * @return number
+     **/
     public function getTeamCount()
     {
 
@@ -1138,10 +1138,10 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
     }
 
 
-   /**
-    * @param $output_type     (default 'Search::HTML_OUTPUT')
-    * @param $mass_id         id of the form to check all (default '')
-    */
+    /**
+     * @param $output_type     (default 'Search::HTML_OUTPUT')
+     * @param $mass_id         id of the form to check all (default '')
+     */
     public static function commonListHeader($output_type = Search::HTML_OUTPUT, $mass_id = '')
     {
 
@@ -1176,19 +1176,19 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
     }
 
 
-   /**
-    * Display a line for an object
-    *
-    * @since 0.85 (befor in each object with differents parameters)
-    *
-    * @param $id                 Integer  ID of the object
-    * @param $options            array    of options
-    *      output_type            : Default output type (see Search class / default Search::HTML_OUTPUT)
-    *      row_num                : row num used for display
-    *      type_for_massiveaction : itemtype for massive action
-    *      id_for_massaction      : default 0 means no massive action
-    *      followups              : only for Tickets : show followup columns
-    */
+    /**
+     * Display a line for an object
+     *
+     * @since 0.85 (befor in each object with differents parameters)
+     *
+     * @param $id                 Integer  ID of the object
+     * @param $options            array    of options
+     *      output_type            : Default output type (see Search class / default Search::HTML_OUTPUT)
+     *      row_num                : row num used for display
+     *      type_for_massiveaction : itemtype for massive action
+     *      id_for_massaction      : default 0 means no massive action
+     *      followups              : only for Tickets : show followup columns
+     */
     public static function showShort($id, $options = [])
     {
         global $DB;
@@ -1451,11 +1451,11 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
     }
 
 
-   /**
-    * Print the HTML array children of a TreeDropdown
-    *
-    * @return void
-    **/
+    /**
+     * Print the HTML array children of a TreeDropdown
+     *
+     * @return void
+     **/
     public function showChildren()
     {
         global $DB;
@@ -1514,16 +1514,16 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
     }
 
 
-   /**
-    * Print the computer form
-    *
-    * @param $ID        integer ID of the item
-    * @param $options   array
-    *     - target for the Form
-    *     - withtemplate template or basic computer
-    *
-    *@return void
-   **/
+    /**
+     * Print the computer form
+     *
+     * @param $ID        integer ID of the item
+     * @param $options   array
+     *     - target for the Form
+     *     - withtemplate template or basic computer
+     *
+     *@return void
+     **/
     public function showForm($ID, array $options = [])
     {
         $this->initForm($ID, $options);
@@ -1715,14 +1715,14 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
     }
 
 
-   /**
-    * @since 0.85
-    *
-    * @param $field
-    * @param $name            (default '')
-    * @param $values          (default '')
-    * @param $options   array
-   **/
+    /**
+     * @since 0.85
+     *
+     * @param $field
+     * @param $name            (default '')
+     * @param $values          (default '')
+     * @param $options   array
+     **/
     public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
     {
 
@@ -1742,9 +1742,9 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
     }
 
 
-   /**
-    * Show team for a project
-   **/
+    /**
+     * Show team for a project
+     **/
     public function showTeam(Project $project)
     {
         $ID      = $project->fields['id'];
@@ -1844,11 +1844,11 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
     }
 
 
-   /** Get data to display on GANTT
-    *
-   * @param $ID        integer   ID of the project
-   * @param $showall   boolean   show all sub items (projects / tasks) (true by default)
-   */
+    /** Get data to display on GANTT
+     *
+     * @param $ID        integer   ID of the project
+     * @param $showall   boolean   show all sub items (projects / tasks) (true by default)
+     */
     public static function getDataToDisplayOnGantt($ID, $showall = true)
     {
         global $DB;
@@ -1953,10 +1953,10 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
         return $todisplay;
     }
 
-   /**
+    /**
      * Show GANTT diagram for a project
      * @param $ID ID of the project
-   */
+     */
     public static function showGantt($ID)
     {
         TemplateRenderer::getInstance()->display('pages/tools/project/gantt.html.twig', [
@@ -2389,11 +2389,11 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
         return $this->getID() > 0;
     }
 
-   /**
-    * Show Kanban view.
-    * @param int $ID ID of the parent Project or -1 for a global view.
-    * @return bool|void False if the Kanban cannot be shown.
-    */
+    /**
+     * Show Kanban view.
+     * @param int $ID ID of the parent Project or -1 for a global view.
+     * @return bool|void False if the Kanban cannot be shown.
+     */
     public static function showKanban($ID)
     {
         $project = new Project();
@@ -2637,20 +2637,20 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
         return $result;
     }
 
-   /**
-    * Display debug information for current object
-   **/
+    /**
+     * Display debug information for current object
+     **/
     public function showDebug()
     {
         NotificationEvent::debugEvent($this);
     }
 
-   /**
-    * Update the specified project's percent_done based on the percent_done of subprojects and tasks.
-    * This function indirectly updates the percent done for all parents if they are set to automatically update.
-    * @since 9.5.0
-    * @return boolean False if the specified project is not set to automatically update the percent done.
-    */
+    /**
+     * Update the specified project's percent_done based on the percent_done of subprojects and tasks.
+     * This function indirectly updates the percent done for all parents if they are set to automatically update.
+     * @since 9.5.0
+     * @return boolean False if the specified project is not set to automatically update the percent done.
+     */
     public static function recalculatePercentDone($ID)
     {
         global $DB;

@@ -143,13 +143,13 @@ class NetworkPort extends InventoryAsset
         return $this->data;
     }
 
-   /**
-    * Prepare network ports connections
-    *
-    * @param \stdClass $port Port instance
-    *
-    * @return array
-    */
+    /**
+     * Prepare network ports connections
+     *
+     * @param \stdClass $port Port instance
+     *
+     * @return array
+     */
     private function prepareConnections(\stdClass $port)
     {
         $results = [];
@@ -185,13 +185,13 @@ class NetworkPort extends InventoryAsset
         return $results;
     }
 
-   /**
-    * Prepare network ports vlans
-    *
-    * @param array $vlans Port vlans
-    *
-    * @return array
-    */
+    /**
+     * Prepare network ports vlans
+     *
+     * @param array $vlans Port vlans
+     *
+     * @return array
+     */
     private function prepareVlans($vlans, $ifnumber)
     {
         $results = [];
@@ -552,14 +552,14 @@ class NetworkPort extends InventoryAsset
         $this->prepareAggregations($port, $netports_id);
     }
 
-   /**
-    * After rule engine passed, update task (log) and create item if required
-    *
-    * @param integer $items_id id of the item (0 if new)
-    * @param string  $itemtype Item type
-    * @param integer $rules_id Matched rule id, if any
-    * @param integer $ports_id Matched port id, if any
-    */
+    /**
+     * After rule engine passed, update task (log) and create item if required
+     *
+     * @param integer $items_id id of the item (0 if new)
+     * @param string  $itemtype Item type
+     * @param integer $rules_id Matched rule id, if any
+     * @param integer $ports_id Matched port id, if any
+     */
     public function rulepassed($items_id, $itemtype, $rules_id, $ports_id = 0)
     {
         $netport = new \NetworkPort();
@@ -636,13 +636,13 @@ class NetworkPort extends InventoryAsset
         $this->connection_ports[$itemtype][$ports_id] = $ports_id;
     }
 
-   /**
-    * Get port manufacturer name from OUIs database
-    *
-    * @param string $mac MAC address
-    *
-    * @return string|false
-    */
+    /**
+     * Get port manufacturer name from OUIs database
+     *
+     * @param string $mac MAC address
+     *
+     * @return string|false
+     */
     public function getNameForMac($mac)
     {
         global $GLPI_CACHE;
@@ -664,13 +664,13 @@ class NetworkPort extends InventoryAsset
         return false;
     }
 
-   /**
-    * Check if port connections are LLDP
-    *
-    * @param \stdClass $port Port
-    *
-    * @return boolean
-    */
+    /**
+     * Check if port connections are LLDP
+     *
+     * @param \stdClass $port Port
+     *
+     * @return boolean
+     */
     protected function isLLDP($port): bool
     {
         if (!property_exists($port, 'lldp') && !property_exists($port, 'cdp')) {
@@ -705,14 +705,14 @@ class NetworkPort extends InventoryAsset
         }
     }
 
-   /**
-    * Handle a hub (many MAC on a port means we face a hub)
-    *
-    * @param array   $found_macs  ID of ports foudn by mac
-    * @param integer $netports_id Network port id
-    *
-    * @return void
-    */
+    /**
+     * Handle a hub (many MAC on a port means we face a hub)
+     *
+     * @param array   $found_macs  ID of ports foudn by mac
+     * @param integer $netports_id Network port id
+     *
+     * @return void
+     */
     public function handleHub($found_macs, $netports_id)
     {
         $hubs_id = 0;

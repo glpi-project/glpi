@@ -33,7 +33,7 @@
 
 /**
  * DeviceNetworkCard Class
-**/
+ **/
 class DeviceNetworkCard extends CommonDevice
 {
     protected static $forward_entity_to = ['Item_DeviceNetworkCard', 'Infocom'];
@@ -44,11 +44,11 @@ class DeviceNetworkCard extends CommonDevice
     }
 
 
-   /**
-    * Criteria used for import function
-    *
-    * @since 0.84
-   **/
+    /**
+     * Criteria used for import function
+     *
+     * @since 0.84
+     **/
     public function getImportCriteria()
     {
 

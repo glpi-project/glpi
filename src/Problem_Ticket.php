@@ -41,9 +41,9 @@ class Problem_Ticket extends CommonDBRelation
     public static $items_id_2   = 'tickets_id';
 
 
-   /**
-    * @since 0.84
-   **/
+    /**
+     * @since 0.84
+     **/
     public function getForbiddenStandardMassiveAction()
     {
 
@@ -59,9 +59,9 @@ class Problem_Ticket extends CommonDBRelation
     }
 
 
-   /**
-    * @see CommonGLPI::getTabNameForItem()
-   **/
+    /**
+     * @see CommonGLPI::getTabNameForItem()
+     **/
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
 
@@ -103,9 +103,9 @@ class Problem_Ticket extends CommonDBRelation
     }
 
 
-   /**
-    * @since 0.84
-   **/
+    /**
+     * @since 0.84
+     **/
     public function post_addItem()
     {
         global $CFG_GLPI;
@@ -124,9 +124,9 @@ class Problem_Ticket extends CommonDBRelation
     }
 
 
-   /**
-    * @since 0.84
-   **/
+    /**
+     * @since 0.84
+     **/
     public function post_deleteFromDB()
     {
         global $CFG_GLPI;
@@ -145,11 +145,11 @@ class Problem_Ticket extends CommonDBRelation
     }
 
 
-   /**
-    * @since 0.85
-    *
-    * @see CommonDBTM::showMassiveActionsSubForm()
-   **/
+    /**
+     * @since 0.85
+     *
+     * @see CommonDBTM::showMassiveActionsSubForm()
+     **/
     public static function showMassiveActionsSubForm(MassiveAction $ma)
     {
         switch ($ma->getAction()) {
@@ -179,11 +179,11 @@ class Problem_Ticket extends CommonDBRelation
     }
 
 
-   /**
-    * @since 0.85
-    *
-    * @see CommonDBTM::processMassiveActionsForOneItemtype()
-   **/
+    /**
+     * @since 0.85
+     *
+     * @see CommonDBTM::processMassiveActionsForOneItemtype()
+     **/
     public static function processMassiveActionsForOneItemtype(
         MassiveAction $ma,
         CommonDBTM $item,
@@ -265,11 +265,11 @@ class Problem_Ticket extends CommonDBRelation
     }
 
 
-   /**
-    * Show tickets for a problem
-    *
-    * @param $problem Problem object
-   **/
+    /**
+     * Show tickets for a problem
+     *
+     * @param $problem Problem object
+     **/
     public static function showForProblem(Problem $problem)
     {
 
@@ -375,11 +375,11 @@ class Problem_Ticket extends CommonDBRelation
     }
 
 
-   /**
-    * Show problems for a ticket
-    *
-    * @param $ticket Ticket object
-   **/
+    /**
+     * Show problems for a ticket
+     *
+     * @param $ticket Ticket object
+     **/
     public static function showForTicket(Ticket $ticket)
     {
 
@@ -471,14 +471,14 @@ class Problem_Ticket extends CommonDBRelation
         echo "</div>";
     }
 
-   /**
-    * Returns problems data for given ticket.
-    * Returned data is usable by `Problem::showShort()` method.
-    *
-    * @param integer $tickets_id
-    *
-    * @return array
-    */
+    /**
+     * Returns problems data for given ticket.
+     * Returned data is usable by `Problem::showShort()` method.
+     *
+     * @param integer $tickets_id
+     *
+     * @return array
+     */
     private static function getTicketProblemsData($tickets_id)
     {
 
@@ -498,14 +498,14 @@ class Problem_Ticket extends CommonDBRelation
         return $problems;
     }
 
-   /**
-    * Returns tickets data for given problem.
-    * Returned data is usable by `Ticket::showShort()` method.
-    *
-    * @param integer $problems_id
-    *
-    * @return array
-    */
+    /**
+     * Returns tickets data for given problem.
+     * Returned data is usable by `Ticket::showShort()` method.
+     *
+     * @param integer $problems_id
+     *
+     * @return array
+     */
     private static function getProblemTicketsData($problems_id)
     {
 

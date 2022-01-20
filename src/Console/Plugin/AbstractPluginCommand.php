@@ -43,11 +43,11 @@ use Symfony\Component\Console\Question\ChoiceQuestion;
 
 abstract class AbstractPluginCommand extends AbstractCommand implements ForceNoPluginsOptionCommandInterface
 {
-   /**
-    * Wildcard value to target all directories.
-    *
-    * @var string
-    */
+    /**
+     * Wildcard value to target all directories.
+     *
+     * @var string
+     */
     const DIRECTORY_ALL = '*';
 
     protected function configure()
@@ -92,7 +92,7 @@ abstract class AbstractPluginCommand extends AbstractCommand implements ForceNoP
             );
 
             if (!empty($choices)) {
-               /** @var \Symfony\Component\Console\Helper\QuestionHelper $question_helper */
+                /** @var \Symfony\Component\Console\Helper\QuestionHelper $question_helper */
                 $question_helper = $this->getHelper('question');
                 $question = new ChoiceQuestion(
                     $this->getDirectoryChoiceQuestion(),
@@ -117,13 +117,13 @@ abstract class AbstractPluginCommand extends AbstractCommand implements ForceNoP
         return true;
     }
 
-   /**
-    * Normalize input to symplify handling of specific arguments/options values.
-    *
-    * @param InputInterface $input
-    *
-    * @return void
-    */
+    /**
+     * Normalize input to symplify handling of specific arguments/options values.
+     *
+     * @param InputInterface $input
+     *
+     * @return void
+     */
     protected function normalizeInput(InputInterface $input)
     {
 
@@ -132,19 +132,19 @@ abstract class AbstractPluginCommand extends AbstractCommand implements ForceNoP
         }
     }
 
-   /**
-    * Returns question to ask if no directory argument has been passed.
-    *
-    * @return string
-    */
+    /**
+     * Returns question to ask if no directory argument has been passed.
+     *
+     * @return string
+     */
     abstract protected function getDirectoryChoiceQuestion();
 
 
-   /**
-    * Returns possible directory choices to suggest if no directory argument has been passed.
-    * Returns an array usable in a ChoiceQuestion object.
-    *
-    * @return string[]
-    */
+    /**
+     * Returns possible directory choices to suggest if no directory argument has been passed.
+     * Returns an array usable in a ChoiceQuestion object.
+     *
+     * @return string[]
+     */
     abstract protected function getDirectoryChoiceChoices();
 }

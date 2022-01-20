@@ -35,7 +35,7 @@
  * CommonITILCost Class
  *
  * @since 0.85
-**/
+ **/
 abstract class CommonITILCost extends CommonDBChild
 {
     public $dohistory        = true;
@@ -53,9 +53,9 @@ abstract class CommonITILCost extends CommonDBChild
     }
 
 
-   /**
-    * @see CommonGLPI::getTabNameForItem()
-   **/
+    /**
+     * @see CommonGLPI::getTabNameForItem()
+     **/
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
 
@@ -77,11 +77,11 @@ abstract class CommonITILCost extends CommonDBChild
     }
 
 
-   /**
-    * @param $item            CommonGLPI object
-    * @param $tabnum          (default 1)
-    * @param $withtemplate    (default 0)
-   **/
+    /**
+     * @param $item            CommonGLPI object
+     * @param $tabnum          (default 1)
+     * @param $withtemplate    (default 0)
+     **/
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
 
@@ -304,9 +304,9 @@ abstract class CommonITILCost extends CommonDBChild
     }
 
 
-   /**
-    * Init cost for creation based on previous cost
-   **/
+    /**
+     * Init cost for creation based on previous cost
+     **/
     public function initBasedOnPrevious()
     {
 
@@ -345,11 +345,11 @@ abstract class CommonITILCost extends CommonDBChild
     }
 
 
-   /**
-    * Get total actiNULL        11400   0.0000  0.0000  0.0000  on time used on costs for an item
-    *
-    * @param $items_id        integer  ID of the item
-   **/
+    /**
+     * Get total actiNULL        11400   0.0000  0.0000  0.0000  on time used on costs for an item
+     *
+     * @param $items_id        integer  ID of the item
+     **/
     public function getTotalActionTimeForItem($items_id)
     {
         global $DB;
@@ -363,11 +363,11 @@ abstract class CommonITILCost extends CommonDBChild
     }
 
 
-   /**
-    * Get last datas for an item
-    *
-    * @param $items_id        integer  ID of the item
-   **/
+    /**
+     * Get last datas for an item
+     *
+     * @param $items_id        integer  ID of the item
+     **/
     public function getLastCostForItem($items_id)
     {
         global $DB;
@@ -386,12 +386,12 @@ abstract class CommonITILCost extends CommonDBChild
     }
 
 
-   /**
-    * Print the item cost form
-    *
-    * @param $ID        integer  ID of the item
-    * @param $options   array    options used
-   **/
+    /**
+     * Print the item cost form
+     *
+     * @param $ID        integer  ID of the item
+     * @param $options   array    options used
+     **/
     public function showForm($ID, array $options = [])
     {
 
@@ -483,14 +483,14 @@ abstract class CommonITILCost extends CommonDBChild
     }
 
 
-   /**
-    * Print the item costs
-    *
-    * @param $item                  CommonITILObject object or Project
-    * @param $withtemplate boolean  Template or basic item (default 0)
-    *
-    * @return number total cost
-   **/
+    /**
+     * Print the item costs
+     *
+     * @param $item                  CommonITILObject object or Project
+     * @param $withtemplate boolean  Template or basic item (default 0)
+     *
+     * @return number total cost
+     **/
     public static function showForObject($item, $withtemplate = 0)
     {
         global $DB, $CFG_GLPI;
@@ -683,14 +683,14 @@ abstract class CommonITILCost extends CommonDBChild
     }
 
 
-   /**
-    * Get costs summary values
-    *
-    * @param $type    string  type
-    * @param $ID      integer ID of the ticket
-    *
-    * @return array of costs and actiontime
-   **/
+    /**
+     * Get costs summary values
+     *
+     * @param $type    string  type
+     * @param $ID      integer ID of the ticket
+     *
+     * @return array of costs and actiontime
+     **/
     public static function getCostsSummary($type, $ID)
     {
         global $DB;
@@ -733,17 +733,17 @@ abstract class CommonITILCost extends CommonDBChild
     }
 
 
-   /**
-    * Computer total cost of a item
-    *
-    * @param $actiontime      float    actiontime
-    * @param $cost_time       float    time cost
-    * @param $cost_fixed      float    fixed cost
-    * @param $cost_material   float    material cost
-    * @param $edit            boolean  used for edit of computation ? (true by default)
-    *
-    * @return string total cost formatted string
-   **/
+    /**
+     * Computer total cost of a item
+     *
+     * @param $actiontime      float    actiontime
+     * @param $cost_time       float    time cost
+     * @param $cost_fixed      float    fixed cost
+     * @param $cost_material   float    material cost
+     * @param $edit            boolean  used for edit of computation ? (true by default)
+     *
+     * @return string total cost formatted string
+     **/
     public static function computeTotalCost(
         $actiontime,
         $cost_time,

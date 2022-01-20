@@ -45,13 +45,13 @@ class Profile_RSSFeed extends CommonDBRelation
     public static $logs_for_item_2     = false;
 
 
-   /**
-    * Get profiles for a rssfeed
-    *
-    * @param $rssfeeds_id ID of the rssfeed
-    *
-    * @return array of profiles linked to a rssfeed
-   **/
+    /**
+     * Get profiles for a rssfeed
+     *
+     * @param $rssfeeds_id ID of the rssfeed
+     *
+     * @return array of profiles linked to a rssfeed
+     **/
     public static function getProfiles($rssfeeds_id)
     {
         global $DB;

@@ -419,9 +419,9 @@ class Log extends DbTestCase
         ];
     }
 
-   /**
-    * @dataProvider dataLogToAffectedField
-    */
+    /**
+     * @dataProvider dataLogToAffectedField
+     */
     public function testValuesComputationForGetDistinctAffectedFieldValuesInItemLog($log_data, $expected_result)
     {
         $computer = $this->createComputer();
@@ -485,17 +485,17 @@ class Log extends DbTestCase
         ];
     }
 
-   /**
-    * @dataProvider dataLinkedActionLabel
-    */
+    /**
+     * @dataProvider dataLinkedActionLabel
+     */
     public function testGetLinkedActionLabel($linked_action, $expected_label)
     {
         $this->variable(\Log::getLinkedActionLabel($linked_action))->isIdenticalTo($expected_label);
     }
 
-   /**
-    * @dataProvider dataLinkedActionLabel
-    */
+    /**
+     * @dataProvider dataLinkedActionLabel
+     */
     public function testValuesComputationForGetDistinctLinkedActionValuesInItemLog($linked_action, $expected_value)
     {
         $computer = $this->createComputer();
@@ -730,9 +730,9 @@ class Log extends DbTestCase
     }
 
 
-   /**
-    * @dataProvider dataFiltersValuesToSqlCriteria
-    */
+    /**
+     * @dataProvider dataFiltersValuesToSqlCriteria
+     */
     public function testConvertFiltersValuesToSqlCriteria($filters_values, $expected_result)
     {
         $this->array(\Log::convertFiltersValuesToSqlCriteria($filters_values))->isIdenticalTo($expected_result);

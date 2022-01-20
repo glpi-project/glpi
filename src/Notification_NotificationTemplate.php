@@ -35,7 +35,7 @@
  * Notification_NotificationTemplate Class
  *
  * @since 9.2
-**/
+ **/
 class Notification_NotificationTemplate extends CommonDBRelation
 {
    // From CommonDBRelation
@@ -104,14 +104,14 @@ class Notification_NotificationTemplate extends CommonDBRelation
     }
 
 
-   /**
-    * Print the notification templates
-    *
-    * @param Notification $notif        Notification object
-    * @param boolean      $withtemplate Template or basic item (default '')
-    *
-    * @return void
-   **/
+    /**
+     * Print the notification templates
+     *
+     * @param Notification $notif        Notification object
+     * @param boolean      $withtemplate Template or basic item (default '')
+     *
+     * @return void
+     **/
     public static function showForNotification(Notification $notif, $withtemplate = 0)
     {
         global $DB;
@@ -203,14 +203,14 @@ class Notification_NotificationTemplate extends CommonDBRelation
     }
 
 
-   /**
-    * Print associated notifications
-    *
-    * @param NotificationTemplate $template     Notification template object
-    * @param boolean              $withtemplate Template or basic item (default '')
-    *
-    * @return void
-    */
+    /**
+     * Print associated notifications
+     *
+     * @param NotificationTemplate $template     Notification template object
+     * @param boolean              $withtemplate Template or basic item (default '')
+     *
+     * @return void
+     */
     public static function showForNotificationTemplate(NotificationTemplate $template, $withtemplate = 0)
     {
         global $DB;
@@ -280,9 +280,9 @@ class Notification_NotificationTemplate extends CommonDBRelation
     }
 
 
-   /**
-    * Form for Notification on Massive action
-   **/
+    /**
+     * Form for Notification on Massive action
+     **/
     public static function showFormMassiveAction()
     {
 
@@ -308,16 +308,16 @@ class Notification_NotificationTemplate extends CommonDBRelation
     }
 
 
-   /**
-    * Print the form
-    *
-    * @param integer $ID      ID of the item
-    * @param array   $options array
-    *     - target for the Form
-    *     - computers_id ID of the computer for add process
-    *
-    * @return true if displayed  false if item not found or not right to display
-   **/
+    /**
+     * Print the form
+     *
+     * @param integer $ID      ID of the item
+     * @param array   $options array
+     *     - target for the Form
+     *     - computers_id ID of the computer for add process
+     *
+     * @return true if displayed  false if item not found or not right to display
+     **/
     public function showForm($ID, array $options = [])
     {
         if (!Session::haveRight("notification", UPDATE)) {
@@ -366,13 +366,13 @@ class Notification_NotificationTemplate extends CommonDBRelation
     }
 
 
-   /**
-    * Get notification method label
-    *
-    * @param string $mode the mode to use
-    *
-    * @return array
-   **/
+    /**
+     * Get notification method label
+     *
+     * @param string $mode the mode to use
+     *
+     * @return array
+     **/
     public static function getMode($mode)
     {
         $tab = self::getModes();
@@ -382,15 +382,15 @@ class Notification_NotificationTemplate extends CommonDBRelation
         return NOT_AVAILABLE;
     }
 
-   /**
-    * Register a new notification mode (for plugins)
-    *
-    * @param string $mode  Mode
-    * @param string $label Mode's label
-    * @param strign $from  Plugin which registers the mode
-    *
-    * @return void
-    */
+    /**
+     * Register a new notification mode (for plugins)
+     *
+     * @param string $mode  Mode
+     * @param string $label Mode's label
+     * @param strign $from  Plugin which registers the mode
+     *
+     * @return void
+     */
     public static function registerMode($mode, $label, $from)
     {
         global $CFG_GLPI;
@@ -402,13 +402,13 @@ class Notification_NotificationTemplate extends CommonDBRelation
         ];
     }
 
-   /**
-    * Get notification method label
-    *
-    * @since 0.84
-    *
-    * @return the mode's label
-   **/
+    /**
+     * Get notification method label
+     *
+     * @since 0.84
+     *
+     * @return the mode's label
+     **/
     public static function getModes()
     {
         global $CFG_GLPI;
@@ -484,13 +484,13 @@ class Notification_NotificationTemplate extends CommonDBRelation
     }
 
 
-   /**
-    * Display a dropdown with all the available notification modes
-    *
-    * @param array $options array of options
-    *
-    * @return void
-    */
+    /**
+     * Display a dropdown with all the available notification modes
+     *
+     * @param array $options array of options
+     *
+     * @return void
+     */
     public static function dropdownMode($options)
     {
         $p['name']     = 'modes';
@@ -511,14 +511,14 @@ class Notification_NotificationTemplate extends CommonDBRelation
         return Dropdown::showFromArray($p['name'], $modes, $p);
     }
 
-   /**
-    * Get class name for specified mode
-    *
-    * @param string $mode      Requested mode
-    * @param string $extratype Extra type (either 'event' or 'setting')
-    *
-    * @return string
-    */
+    /**
+     * Get class name for specified mode
+     *
+     * @param string $mode      Requested mode
+     * @param string $extratype Extra type (either 'event' or 'setting')
+     *
+     * @return string
+     */
     public static function getModeClass($mode, $extratype = '')
     {
         if ($extratype == 'event') {
@@ -538,11 +538,11 @@ class Notification_NotificationTemplate extends CommonDBRelation
         return $classname;
     }
 
-   /**
-    * Check if at least one mode is currently enabled
-    *
-    * @return boolean
-    */
+    /**
+     * Check if at least one mode is currently enabled
+     *
+     * @return boolean
+     */
     public static function hasActiveMode()
     {
         global $CFG_GLPI;

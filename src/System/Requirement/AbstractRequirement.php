@@ -38,70 +38,70 @@ namespace Glpi\System\Requirement;
  */
 abstract class AbstractRequirement implements RequirementInterface
 {
-   /**
-    * Flag that indicates if requirement check has already been done.
-    *
-    * @var bool
-    */
+    /**
+     * Flag that indicates if requirement check has already been done.
+     *
+     * @var bool
+     */
     private $has_been_checked = false;
 
-   /**
-    * Flag that indicates if requirement is considered as optional.
-    *
-    * @var bool
-    */
+    /**
+     * Flag that indicates if requirement is considered as optional.
+     *
+     * @var bool
+     */
     protected $optional = false;
 
-   /**
-    * Flag that indicates if requirement is considered as out of context.
-    *
-    * @var bool
-    */
+    /**
+     * Flag that indicates if requirement is considered as out of context.
+     *
+     * @var bool
+     */
     protected $out_of_context = false;
 
-   /**
-    * Requirement title.
-    *
-    * @var string
-    */
+    /**
+     * Requirement title.
+     *
+     * @var string
+     */
     protected $title;
 
-   /**
-    * Requirement description.
-    *
-    * @var string
-    */
+    /**
+     * Requirement description.
+     *
+     * @var string
+     */
     protected $description;
 
-   /**
-    * Flag that indicates if requirement is validated on system.
-    *
-    * @var bool
-    */
+    /**
+     * Flag that indicates if requirement is validated on system.
+     *
+     * @var bool
+     */
     protected $validated;
 
-   /**
-    * Requirement validation message.
-    *
-    * @var string[]
-    */
+    /**
+     * Requirement validation message.
+     *
+     * @var string[]
+     */
     protected $validation_messages = [];
 
-   /**
-    * Check requirement.
-    *
-    * This method will be called once before access to any RequirementInterface method
-    * and should be used to compute  $validated and $validation_messages properties.
-    *
-    * @return void
-    */
+    /**
+     * Check requirement.
+     *
+     * This method will be called once before access to any RequirementInterface method
+     * and should be used to compute  $validated and $validation_messages properties.
+     *
+     * @return void
+     */
     abstract protected function check();
 
-   /**
-    * Run requirement check once.
-    *
-    * @return void
-    */
+    /**
+     * Run requirement check once.
+     *
+     * @return void
+     */
     private function doCheck()
     {
         if (!$this->has_been_checked) {

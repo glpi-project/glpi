@@ -224,14 +224,14 @@ class Cartridge extends CommonDBRelation
     }
 
 
-   /**
-    * Send the cartridge back to stock.
-    *
-    * @since 0.85 (before name was restore)
-    * @param array   $input
-    * @param integer $history
-    * @return bool
-    */
+    /**
+     * Send the cartridge back to stock.
+     *
+     * @since 0.85 (before name was restore)
+     * @param array   $input
+     * @param integer $history
+     * @return bool
+     */
     public function backToStock(array $input, $history = 1)
     {
         global $DB;
@@ -256,16 +256,16 @@ class Cartridge extends CommonDBRelation
 
    // SPECIFIC FUNCTIONS
 
-   /**
-    * Link a cartridge to a printer.
-    *
-    * Link the first unused cartridge of type $Tid to the printer $pID.
-    *
-    * @param integer $tID ID of the cartridge
-    * @param integer $pID : ID of the printer
-    *
-    * @return boolean True if successful
-   **/
+    /**
+     * Link a cartridge to a printer.
+     *
+     * Link the first unused cartridge of type $Tid to the printer $pID.
+     *
+     * @param integer $tID ID of the cartridge
+     * @param integer $pID : ID of the printer
+     *
+     * @return boolean True if successful
+     **/
     public function install($pID, $tID)
     {
         global $DB;
@@ -312,13 +312,13 @@ class Cartridge extends CommonDBRelation
     }
 
 
-   /**
-    * Unlink a cartridge from a printer by cartridge ID.
-    *
-    * @param integer $ID ID of the cartridge
-    *
-    * @return boolean
-   **/
+    /**
+     * Unlink a cartridge from a printer by cartridge ID.
+     *
+     * @param integer $ID ID of the cartridge
+     *
+     * @return boolean
+     **/
     public function uninstall($ID)
     {
         global $DB;
@@ -364,15 +364,15 @@ class Cartridge extends CommonDBRelation
     }
 
 
-   /**
-    * Print the cartridge count HTML array for the cartridge item $tID
-    *
-    * @param integer         $tID      ID of the cartridge item
-    * @param integer         $alarm_threshold Alarm threshold value
-    * @param integer|boolean $nohtml          True if the return value should be without HTML tags (default 0/false)
-    *
-    * @return string String to display
-   **/
+    /**
+     * Print the cartridge count HTML array for the cartridge item $tID
+     *
+     * @param integer         $tID      ID of the cartridge item
+     * @param integer         $alarm_threshold Alarm threshold value
+     * @param integer|boolean $nohtml          True if the return value should be without HTML tags (default 0/false)
+     *
+     * @return string String to display
+     **/
     public static function getCount($tID, $alarm_threshold, $nohtml = 0)
     {
 
@@ -421,16 +421,16 @@ class Cartridge extends CommonDBRelation
     }
 
 
-   /**
-    * Print the cartridge count HTML array for the printer $pID
-    *
-    * @since 0.85
-    *
-    * @param integer         $pID    ID of the printer
-    * @param integer|boolean $nohtml True if the return value should be without HTML tags (default 0/false)
-    *
-    * @return string String to display
-   **/
+    /**
+     * Print the cartridge count HTML array for the printer $pID
+     *
+     * @since 0.85
+     *
+     * @param integer         $pID    ID of the printer
+     * @param integer|boolean $nohtml True if the return value should be without HTML tags (default 0/false)
+     *
+     * @return string String to display
+     **/
     public static function getCountForPrinter($pID, $nohtml = 0)
     {
 
@@ -470,13 +470,13 @@ class Cartridge extends CommonDBRelation
     }
 
 
-   /**
-    * Count the total number of cartridges for the cartridge item $tID.
-    *
-    * @param integer $tID ID of cartridge item.
-    *
-    * @return integer Number of cartridges counted.
-   **/
+    /**
+     * Count the total number of cartridges for the cartridge item $tID.
+     *
+     * @param integer $tID ID of cartridge item.
+     *
+     * @return integer Number of cartridges counted.
+     **/
     public static function getTotalNumber($tID)
     {
         global $DB;
@@ -490,15 +490,15 @@ class Cartridge extends CommonDBRelation
     }
 
 
-   /**
-    * Count the number of cartridges used for the printer $pID
-    *
-    * @since 0.85
-    *
-    * @param integer $pID ID of the printer.
-    *
-    * @return integer Number of cartridges counted.
-   **/
+    /**
+     * Count the number of cartridges used for the printer $pID
+     *
+     * @since 0.85
+     *
+     * @param integer $pID ID of the printer.
+     *
+     * @return integer Number of cartridges counted.
+     **/
     public static function getTotalNumberForPrinter($pID)
     {
         global $DB;
@@ -512,13 +512,13 @@ class Cartridge extends CommonDBRelation
     }
 
 
-   /**
-    * Count the number of used cartridges for the cartridge item $tID.
-    *
-    * @param integer $tID ID of the cartridge item.
-    *
-    * @return integer Number of used cartridges counted.
-   **/
+    /**
+     * Count the number of used cartridges for the cartridge item $tID.
+     *
+     * @param integer $tID ID of the cartridge item.
+     *
+     * @return integer Number of used cartridges counted.
+     **/
     public static function getUsedNumber($tID)
     {
         global $DB;
@@ -539,15 +539,15 @@ class Cartridge extends CommonDBRelation
     }
 
 
-   /**
-    * Count the number of used cartridges used for the printer $pID.
-    *
-    * @since 0.85
-    *
-    * @param integer $pID ID of the printer.
-    *
-    * @return integer Number of used cartridge counted.
-   **/
+    /**
+     * Count the number of used cartridges used for the printer $pID.
+     *
+     * @since 0.85
+     *
+     * @param integer $pID ID of the printer.
+     *
+     * @return integer Number of used cartridge counted.
+     **/
     public static function getUsedNumberForPrinter($pID)
     {
         global $DB;
@@ -565,13 +565,13 @@ class Cartridge extends CommonDBRelation
     }
 
 
-   /**
-    * Count the number of old cartridges for the cartridge item $tID.
-    *
-    * @param integer $tID ID of the cartridge item.
-    *
-    * @return integer Number of old cartridges counted.
-   **/
+    /**
+     * Count the number of old cartridges for the cartridge item $tID.
+     *
+     * @param integer $tID ID of the cartridge item.
+     *
+     * @return integer Number of old cartridges counted.
+     **/
     public static function getOldNumber($tID)
     {
         global $DB;
@@ -588,15 +588,15 @@ class Cartridge extends CommonDBRelation
     }
 
 
-   /**
-    * count how many old cartbridge for theprinter $pID
-    *
-    * @since 0.85
-    *
-    * @param $pID integer: printer identifier.
-    *
-    * @return integer : number of old cartridge counted.
-   **/
+    /**
+     * count how many old cartbridge for theprinter $pID
+     *
+     * @since 0.85
+     *
+     * @param $pID integer: printer identifier.
+     *
+     * @return integer : number of old cartridge counted.
+     **/
     public static function getOldNumberForPrinter($pID)
     {
         global $DB;
@@ -613,13 +613,13 @@ class Cartridge extends CommonDBRelation
     }
 
 
-   /**
-    * count how many cartbridge unused for the cartridge item $tID
-    *
-    * @param $tID integer: cartridge item identifier.
-    *
-    * @return integer : number of cartridge unused counted.
-   **/
+    /**
+     * count how many cartbridge unused for the cartridge item $tID
+     *
+     * @param $tID integer: cartridge item identifier.
+     *
+     * @return integer : number of cartridge unused counted.
+     **/
     public static function getUnusedNumber($tID)
     {
         global $DB;
@@ -635,13 +635,13 @@ class Cartridge extends CommonDBRelation
         return $result['cpt'];
     }
 
-   /**
-    * The desired stock level
-    *
-    * This is used when the alarm threshold is reached to know how many to order.
-    * @param integer $tID Cartridge item ID
-    * @return integer
-    */
+    /**
+     * The desired stock level
+     *
+     * This is used when the alarm threshold is reached to know how many to order.
+     * @param integer $tID Cartridge item ID
+     * @return integer
+     */
     public static function getStockTarget(int $tID): int
     {
         global $DB;
@@ -659,12 +659,12 @@ class Cartridge extends CommonDBRelation
         return 0;
     }
 
-   /**
-    * The lower threshold for the stock amount before an alarm is triggered
-    *
-    * @param integer $tID Cartridge item ID
-    * @return integer
-    */
+    /**
+     * The lower threshold for the stock amount before an alarm is triggered
+     *
+     * @param integer $tID Cartridge item ID
+     * @return integer
+     */
     public static function getAlarmThreshold(int $tID): int
     {
         global $DB;
@@ -682,14 +682,14 @@ class Cartridge extends CommonDBRelation
         return 0;
     }
 
-   /**
-    * Get the translated value for the status of a cartridge based on the use and out date (if any).
-    *
-    * @param string $date_use  Date of use (May be null or empty)
-    * @param string $date_out  Date of delete (May be null or empty)
-    *
-    * @return string : Translated value for the cartridge status.
-   **/
+    /**
+     * Get the translated value for the status of a cartridge based on the use and out date (if any).
+     *
+     * @param string $date_use  Date of use (May be null or empty)
+     * @param string $date_out  Date of delete (May be null or empty)
+     *
+     * @return string : Translated value for the cartridge status.
+     **/
     public static function getStatus($date_use, $date_out)
     {
 
@@ -703,14 +703,14 @@ class Cartridge extends CommonDBRelation
     }
 
 
-   /**
-    * Print out the cartridges of a defined type
-    *
-    * @param CartridgeItem   $cartitem  The cartridge item
-    * @param boolean|integer $show_old  Show old cartridges or not (default 0/false)
-    *
-    * @return boolean|void
-   **/
+    /**
+     * Print out the cartridges of a defined type
+     *
+     * @param CartridgeItem   $cartitem  The cartridge item
+     * @param boolean|integer $show_old  Show old cartridges or not (default 0/false)
+     *
+     * @return boolean|void
+     **/
     public static function showForCartridgeItem(CartridgeItem $cartitem, $show_old = 0)
     {
         global $DB;
@@ -919,13 +919,13 @@ class Cartridge extends CommonDBRelation
     }
 
 
-   /**
-    * Print out a link to add directly a new cartridge from a cartridge item.
-    *
-    * @param $cartitem  CartridgeItem object
-    *
-    * @return boolean|void
-   **/
+    /**
+     * Print out a link to add directly a new cartridge from a cartridge item.
+     *
+     * @param $cartitem  CartridgeItem object
+     *
+     * @return boolean|void
+     **/
     public static function showAddForm(CartridgeItem $cartitem)
     {
 
@@ -953,16 +953,16 @@ class Cartridge extends CommonDBRelation
     }
 
 
-   /**
-    * Show installed cartridges
-    *
-    * @since 0.84 (before showInstalled)
-    *
-    * @param Printer         $printer Printer object
-    * @param boolean|integer $old     Old cartridges or not? (default 0/false)
-    *
-    * @return boolean|void
-   **/
+    /**
+     * Show installed cartridges
+     *
+     * @since 0.84 (before showInstalled)
+     *
+     * @param Printer         $printer Printer object
+     * @param boolean|integer $old     Old cartridges or not? (default 0/false)
+     *
+     * @return boolean|void
+     **/
     public static function showForPrinter(Printer $printer, $old = 0)
     {
         global $DB, $CFG_GLPI;
@@ -1202,16 +1202,16 @@ class Cartridge extends CommonDBRelation
     }
 
 
-   /**
-    * Show form for Cartridge
-    * @since 0.84
-    *
-    * @param integer $ID       Id of the cartridge
-    * @param array   $options  Array of possible options:
-    *     - parent Object : the printers where the cartridge is used
-    *
-    * @return boolean False if there was a rights issue. Otherwise, returns true.
-    */
+    /**
+     * Show form for Cartridge
+     * @since 0.84
+     *
+     * @param integer $ID       Id of the cartridge
+     * @param array   $options  Array of possible options:
+     *     - parent Object : the printers where the cartridge is used
+     *
+     * @return boolean False if there was a rights issue. Otherwise, returns true.
+     */
     public function showForm($ID, array $options = [])
     {
 
@@ -1278,12 +1278,12 @@ class Cartridge extends CommonDBRelation
     }
 
 
-   /**
-    * Get notification parameters by entity
-    *
-    * @param integer $entity The entity (default 0)
-    * @return array Array of notification parameters
-    */
+    /**
+     * Get notification parameters by entity
+     *
+     * @param integer $entity The entity (default 0)
+     * @return array Array of notification parameters
+     */
     public static function getNotificationParameters($entity = 0)
     {
         global $DB, $CFG_GLPI;
@@ -1333,11 +1333,11 @@ class Cartridge extends CommonDBRelation
     }
 
 
-   /**
-    * Count the number of cartridges associated with the given cartridge item.
-    * @param CartridgeItem $item CartridgeItem object
-    * @return integer
-    */
+    /**
+     * Count the number of cartridges associated with the given cartridge item.
+     * @param CartridgeItem $item CartridgeItem object
+     * @return integer
+     */
     public static function countForCartridgeItem(CartridgeItem $item)
     {
 
@@ -1345,11 +1345,11 @@ class Cartridge extends CommonDBRelation
     }
 
 
-   /**
-    * Count the number of cartridges associated with the given printer.
-    * @param Printer $item Printer object
-    * @return integer
-    */
+    /**
+     * Count the number of cartridges associated with the given printer.
+     * @param Printer $item Printer object
+     * @return integer
+     */
     public static function countForPrinter(Printer $item)
     {
 

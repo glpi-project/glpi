@@ -73,24 +73,24 @@ class Grid
     }
 
 
-   /**
-    * Return the instance of current dasbhoard
-    *
-    * @return Dashboard
-    */
+    /**
+     * Return the instance of current dasbhoard
+     *
+     * @return Dashboard
+     */
     public function getDashboard()
     {
         return $this->dashboard;
     }
 
 
-   /**
-    * load all existing dashboards from DB into a static property for caching data
-    *
-    * @param bool $force, if false, don't use cache
-    *
-    * @return bool
-    */
+    /**
+     * load all existing dashboards from DB into a static property for caching data
+     *
+     * @param bool $force, if false, don't use cache
+     *
+     * @return bool
+     */
     public static function loadAllDashboards(bool $force = true): bool
     {
         if (
@@ -105,16 +105,16 @@ class Grid
     }
 
 
-   /**
-    * Init dashboards cards
-    * A define.php constant (GLPI_AJAX_DASHBOARD) exists to control how the cards should be loaded
-    *  - if true: only the parent block will be initialized and the content will be load by ajax
-    *    pros: if a widget fails, only this one will crash
-    * - else: load all html
-    *    pros: better perfs
-    *
-    * @return void
-    */
+    /**
+     * Init dashboards cards
+     * A define.php constant (GLPI_AJAX_DASHBOARD) exists to control how the cards should be loaded
+     *  - if true: only the parent block will be initialized and the content will be load by ajax
+     *    pros: if a widget fails, only this one will crash
+     * - else: load all html
+     *    pros: better perfs
+     *
+     * @return void
+     */
     public function getCards()
     {
         self::loadAllDashboards();
@@ -166,11 +166,11 @@ HTML;
     }
 
 
-   /**
-    * Do we have the right to view at least one dashboard int the current collection
-    *
-    * @return bool
-    */
+    /**
+     * Do we have the right to view at least one dashboard int the current collection
+     *
+     * @return bool
+     */
     public function canViewCurrent(): bool
     {
        // check global (admin) right
@@ -182,11 +182,11 @@ HTML;
     }
 
 
-   /**
-    * Do we have the right to view at least one dashboard in the current collection
-    *
-    * @return bool
-    */
+    /**
+     * Do we have the right to view at least one dashboard in the current collection
+     *
+     * @return bool
+     */
     public static function canViewOneDashboard(): bool
     {
        // check global (admin) right
@@ -200,14 +200,14 @@ HTML;
     }
 
 
-   /**
-    * Do we have the right to view the specified dashboard int the current collection
-    *
-    * @param string $key the dashboard to check
-    * @param bool   $canViewAll Right to view all dashboards
-    *
-    * @return bool
-    */
+    /**
+     * Do we have the right to view the specified dashboard int the current collection
+     *
+     * @param string $key the dashboard to check
+     * @param bool   $canViewAll Right to view all dashboards
+     *
+     * @return bool
+     */
     public static function canViewSpecificicDashboard($key, $canViewAll = false): bool
     {
         self::loadAllDashboards();
@@ -223,11 +223,11 @@ HTML;
     }
 
 
-   /**
-    * Display grid for the current dashboard
-    *
-    * @return void display html of the grid
-    */
+    /**
+     * Display grid for the current dashboard
+     *
+     * @return void display html of the grid
+     */
     public function show(bool $mini = false)
     {
         $rand = mt_rand();
@@ -433,18 +433,18 @@ JAVASCRIPT;
     }
 
 
-   /**
-    * Show an embeded dashboard.
-    * We must check token validity to avoid displaying dashboard to invalid users
-    *
-    * @param array $params contains theses keys:
-    * - dashboard: the dashboard system name
-    * - entities_id: entity to init in session
-    * - is_recursive: do we need to display sub entities
-    * - token: the token to check
-    *
-    * @return void (display)
-    */
+    /**
+     * Show an embeded dashboard.
+     * We must check token validity to avoid displaying dashboard to invalid users
+     *
+     * @param array $params contains theses keys:
+     * - dashboard: the dashboard system name
+     * - entities_id: entity to init in session
+     * - is_recursive: do we need to display sub entities
+     * - token: the token to check
+     *
+     * @return void (display)
+     */
     public function embed(array $params = [])
     {
         $defaults = [
@@ -488,17 +488,17 @@ JAVASCRIPT;
         return $token;
     }
 
-   /**
-    * Check token variables (compare it to `dashboard`, `entities_id` and `is_recursive` paramater)
-    *
-    * @param array $params contains theses keys:
-    * - dashboard: the dashboard system name
-    * - entities_id: entity to init in session
-    * - is_recursive: do we need to display sub entities
-    * - token: the token to check
-    *
-    * @return bool
-    */
+    /**
+     * Check token variables (compare it to `dashboard`, `entities_id` and `is_recursive` paramater)
+     *
+     * @param array $params contains theses keys:
+     * - dashboard: the dashboard system name
+     * - entities_id: entity to init in session
+     * - is_recursive: do we need to display sub entities
+     * - token: the token to check
+     *
+     * @return bool
+     */
     public static function checkToken(array $params = []): bool
     {
         $defaults = [
@@ -525,13 +525,13 @@ JAVASCRIPT;
     }
 
 
-   /**
-    * Return the html for all items for the current dashboard
-    *
-    * @param bool $with_lock if true, return also a locked bottom item (to fix grid height)
-    *
-    * @return string html of the grid items
-    */
+    /**
+     * Return the html for all items for the current dashboard
+     *
+     * @param bool $with_lock if true, return also a locked bottom item (to fix grid height)
+     *
+     * @return string html of the grid items
+     */
     public function getGridItemsHtml(bool $with_lock = true, bool $embed = false): string
     {
         if ($embed) {
@@ -557,19 +557,19 @@ HTML;
     }
 
 
-   /**
-    * Add a new grid item
-    *
-    * @param string $html content of the card
-    * @param string $gridstack_id unique id identifying the card (used in gridstack)
-    * @param int $x position in the grid
-    * @param int $y position in the grid
-    * @param int $width size in the grid
-    * @param int $height size in the grid
-    * @param array $data_option aditional options passed to the widget, contains at least thses keys:
-    *                             - string 'color'
-    * @return void
-    */
+    /**
+     * Add a new grid item
+     *
+     * @param string $html content of the card
+     * @param string $gridstack_id unique id identifying the card (used in gridstack)
+     * @param int $x position in the grid
+     * @param int $y position in the grid
+     * @param int $width size in the grid
+     * @param int $height size in the grid
+     * @param array $data_option aditional options passed to the widget, contains at least thses keys:
+     *                             - string 'color'
+     * @return void
+     */
     public function addGridItem(
         string $html = "",
         string $gridstack_id = "",
@@ -621,11 +621,11 @@ HTML;
     }
 
 
-   /**
-    * Display a mini form fo adding a new dashboard
-    *
-    * @return void (display)
-    */
+    /**
+     * Display a mini form fo adding a new dashboard
+     *
+     * @return void (display)
+     */
     public function displayAddDashboardForm()
     {
         $rand = mt_rand();
@@ -648,23 +648,23 @@ HTML;
     }
 
 
-   /**
-    * Display mini configuration form to add or edit a widget
-    *
-    * @param array $params with these keys:
-    * - int    'gridstack_id': unique identifier of the card
-    * - int    'x': position in the grid
-    * - int    'y: position in the grid
-    * - int    'width': size in the grid
-    * - int    'height': size in the grid
-    * - string 'rand': unique identifier for the dom
-    * - string 'action': [display_add_widget|display_edit_widget] current action for the form
-    * - array  'card_options': aditionnal options for the card, contains at least:
-    *     - string 'card_id': identifier return by @see self::getAllDasboardCards
-    *     - string 'color'
-    *
-    * @return void
-    */
+    /**
+     * Display mini configuration form to add or edit a widget
+     *
+     * @param array $params with these keys:
+     * - int    'gridstack_id': unique identifier of the card
+     * - int    'x': position in the grid
+     * - int    'y: position in the grid
+     * - int    'width': size in the grid
+     * - int    'height': size in the grid
+     * - string 'rand': unique identifier for the dom
+     * - string 'action': [display_add_widget|display_edit_widget] current action for the form
+     * - array  'card_options': aditionnal options for the card, contains at least:
+     *     - string 'card_id': identifier return by @see self::getAllDasboardCards
+     *     - string 'color'
+     *
+     * @return void
+     */
     public function displayWidgetForm(array $params = [])
     {
         $gridstack_id = $params['gridstack_id'] ?? "";
@@ -724,14 +724,14 @@ HTML;
     }
 
 
-   /**
-    * Display mini form to add filter to the current dashboard
-    *
-    * @param array $params default values for
-    * - 'used' already used filters
-    *
-    * @return void
-    */
+    /**
+     * Display mini form to add filter to the current dashboard
+     *
+     * @param array $params default values for
+     * - 'used' already used filters
+     *
+     * @return void
+     */
     public function displayFilterForm(array $params = [])
     {
         $default_params = [
@@ -762,12 +762,12 @@ HTML;
     }
 
 
-   /**
-    * Display a mini form for embedding current dashboard in another application.
-    * Also, display a select for sharing current dashboard to another users/groups/entities/profiles
-    *
-    * @return void
-    */
+    /**
+     * Display a mini form for embedding current dashboard in another application.
+     * Also, display a select for sharing current dashboard to another users/groups/entities/profiles
+     *
+     * @return void
+     */
     public function displayEmbedForm()
     {
         global $CFG_GLPI;
@@ -804,11 +804,11 @@ HTML;
     }
 
 
-   /**
-    * Display a mini form for sharing current dashboard to another users/groups/entities/profiles.
-    *
-    * @return void
-    */
+    /**
+     * Display a mini form for sharing current dashboard to another users/groups/entities/profiles.
+     *
+     * @return void
+     */
     public function displayEditRightsForm()
     {
         self::loadAllDashboards();
@@ -859,18 +859,18 @@ HTML;
     }
 
 
-   /**
-    * Return the html for the given card_id
-    *
-    * @param string $card_id identifier return by @see self::getAllDasboardCards
-    * @param array $card_options contains these keys:
-    * - array 'args':
-    *    - string 'gridstack_id' unique identifier of the card in the grid, used to return html by cache
-    *    - bool 'force' if true, cache will be bypassed
-    *    - bool 'embed' is the dashboard emebeded or not
-    *
-    * @return string html of the card
-    */
+    /**
+     * Return the html for the given card_id
+     *
+     * @param string $card_id identifier return by @see self::getAllDasboardCards
+     * @param array $card_options contains these keys:
+     * - array 'args':
+     *    - string 'gridstack_id' unique identifier of the card in the grid, used to return html by cache
+     *    - bool 'force' if true, cache will be bypassed
+     *    - bool 'embed' is the dashboard emebeded or not
+     *
+     * @return string html of the card
+     */
     public function getCardHtml(string $card_id = "", array $card_options = []): string
     {
         global $GLPI_CACHE;
@@ -998,12 +998,12 @@ HTML;
     }
 
 
-   /**
-    * Return Html for a provided set of filters
-    * @param array $filter_names
-    *
-    * @return string the html
-    */
+    /**
+     * Return Html for a provided set of filters
+     * @param array $filter_names
+     *
+     * @return string the html
+     */
     public function getFiltersSetHtml(array $filters = []): string
     {
         $html = "";
@@ -1016,15 +1016,15 @@ HTML;
     }
 
 
-   /**
-    * Return Html for a provided filter name
-    *
-    * @param string $filter_id the system name of a filter (ex dates)
-    * @param string|array $filter_values init the input with these values,
-    *                     will be a string if empty values
-    *
-    * @return string the html
-    */
+    /**
+     * Return Html for a provided filter name
+     *
+     * @param string $filter_id the system name of a filter (ex dates)
+     * @param string|array $filter_values init the input with these values,
+     *                     will be a string if empty values
+     *
+     * @return string the html
+     */
     public function getFilterHtml(string $filter_id = "", $filter_values = ""): string
     {
         if (method_exists("Glpi\Dashboard\Filter", $filter_id)) {
@@ -1035,12 +1035,12 @@ HTML;
     }
 
 
-   /**
-    * Return all itemtypes possible for constructing cards.
-    * User in @see self::getAllDasboardCards
-    *
-    * @return array [itemtype1, itemtype2]
-    */
+    /**
+     * Return all itemtypes possible for constructing cards.
+     * User in @see self::getAllDasboardCards
+     *
+     * @return array [itemtype1, itemtype2]
+     */
     protected function getMenuItemtypes(): array
     {
         $menu_itemtypes = [];
@@ -1073,13 +1073,13 @@ HTML;
         return $menu_itemtypes;
     }
 
-   /**
-    * Construct catalog of all possible cards addable in a dashboard.
-    *
-    * @param bool $force Force rebuild the catalog of cards
-    *
-    * @return array
-    */
+    /**
+     * Construct catalog of all possible cards addable in a dashboard.
+     *
+     * @param bool $force Force rebuild the catalog of cards
+     *
+     * @return array
+     */
     public function getAllDasboardCards($force = false): array
     {
         global $CFG_GLPI;
@@ -1396,25 +1396,25 @@ HTML;
     }
 
 
-   /**
-    * Save last dashboard viewed
-    *
-    * @param string $page current page
-    * @param string $dashboard current dashboard
-    *
-    * @return void
-    */
+    /**
+     * Save last dashboard viewed
+     *
+     * @param string $page current page
+     * @param string $dashboard current dashboard
+     *
+     * @return void
+     */
     public function setLastDashboard(string $page = "", string $dashboard = "")
     {
         $_SESSION['last_dashboards'][$page] = $dashboard;
     }
 
 
-   /**
-    * Restore last viewed dashboard
-    *
-    * @return string the dashboard key
-    */
+    /**
+     * Restore last viewed dashboard
+     *
+     * @return string the dashboard key
+     */
     public function restoreLastDashboard(): string
     {
         global $CFG_GLPI;
@@ -1439,17 +1439,17 @@ HTML;
     }
 
 
-   /**
-    * Retrieve the default dashboard for a specific menu entry
-    * First try from session
-    * then on config
-    * And Fallback on the first dashboard found
-    *
-    * @param string $menu
-    * @param bool $strict if true, do not provide a fallback
-    *
-    * @return string the dashboard key
-    */
+    /**
+     * Retrieve the default dashboard for a specific menu entry
+     * First try from session
+     * then on config
+     * And Fallback on the first dashboard found
+     *
+     * @param string $menu
+     * @param bool $strict if true, do not provide a fallback
+     *
+     * @return string the dashboard key
+     */
     public static function getDefaultDashboardForMenu(string $menu = "", bool $strict = false): string
     {
         $grid = new self();

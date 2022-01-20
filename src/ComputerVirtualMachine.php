@@ -40,7 +40,7 @@
  * ComputerVirtualMachine Class
  *
  * Class to manage virtual machines
-**/
+ **/
 class ComputerVirtualMachine extends CommonDBChild
 {
    // From CommonDBChild
@@ -103,16 +103,16 @@ class ComputerVirtualMachine extends CommonDBChild
     }
 
 
-   /**
-    * Print the version form
-    *
-    * @param $ID        integer ID of the item
-    * @param $options   array
-    *     - target for the Form
-    *     - computers_id ID of the computer for add process
-    *
-    * @return true if displayed  false if item not found or not right to display
-   **/
+    /**
+     * Print the version form
+     *
+     * @param $ID        integer ID of the item
+     * @param $options   array
+     *     - target for the Form
+     *     - computers_id ID of the computer for add process
+     *
+     * @return true if displayed  false if item not found or not right to display
+     **/
     public function showForm($ID, array $options = [])
     {
 
@@ -219,13 +219,13 @@ class ComputerVirtualMachine extends CommonDBChild
     }
 
 
-   /**
-    * Show hosts for a virtualmachine
-    *
-    * @param $comp   Computer object that represents the virtual machine
-    *
-    * @return void
-   **/
+    /**
+     * Show hosts for a virtualmachine
+     *
+     * @param $comp   Computer object that represents the virtual machine
+     *
+     * @return void
+     **/
     public static function showForVirtualMachine(Computer $comp)
     {
 
@@ -289,13 +289,13 @@ class ComputerVirtualMachine extends CommonDBChild
     }
 
 
-   /**
-    * Print the computers disks
-    *
-    * @param Computer $comp Computer object
-    *
-    * @return void|boolean (display) Returns false if there is a rights error.
-   **/
+    /**
+     * Print the computers disks
+     *
+     * @param Computer $comp Computer object
+     *
+     * @return void|boolean (display) Returns false if there is a rights error.
+     **/
     public static function showForComputer(Computer $comp)
     {
 
@@ -415,16 +415,16 @@ class ComputerVirtualMachine extends CommonDBChild
     }
 
 
-   /**
-    * Get correct uuid sql search for virtualmachines
-    *
-    * @since 9.3.1
-    *
-    * @param string $uuid the uuid given
-    *
-    * @return array the restrict SQL clause which contains uuid, uuid with first block flipped,
-    * uuid with 3 first block flipped
-   **/
+    /**
+     * Get correct uuid sql search for virtualmachines
+     *
+     * @since 9.3.1
+     *
+     * @param string $uuid the uuid given
+     *
+     * @return array the restrict SQL clause which contains uuid, uuid with first block flipped,
+     * uuid with 3 first block flipped
+     **/
     public static function getUUIDRestrictCriteria($uuid)
     {
 
@@ -461,13 +461,13 @@ class ComputerVirtualMachine extends CommonDBChild
     }
 
 
-   /**
-    * Find a virtual machine by uuid
-    *
-    * @param array $fields  Array of virtualmachine fields
-    *
-    * @return integer|boolean ID of the computer that have this uuid or false otherwise
-   **/
+    /**
+     * Find a virtual machine by uuid
+     *
+     * @param array $fields  Array of virtualmachine fields
+     *
+     * @return integer|boolean ID of the computer that have this uuid or false otherwise
+     **/
     public static function findVirtualMachine($fields = [])
     {
         global $DB;

@@ -62,11 +62,11 @@ class OperatingSystemKernel extends CommonDropdown
         ];
     }
 
-   /**
-    * Create new Kernel in database
-    *
-    * @return void
-    */
+    /**
+     * Create new Kernel in database
+     *
+     * @return void
+     */
     protected function newInstance()
     {
         $this->newTestedInstance();

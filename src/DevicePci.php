@@ -33,7 +33,7 @@
 
 /**
  * DevicePci Class
-**/
+ **/
 class DevicePci extends CommonDevice
 {
     protected static $forward_entity_to = ['Item_DevicePci', 'Infocom'];
@@ -44,10 +44,10 @@ class DevicePci extends CommonDevice
     }
 
 
-   /**
-    * @see CommonDevice::getAdditionalFields()
-    * @since 0.85
-    */
+    /**
+     * @see CommonDevice::getAdditionalFields()
+     * @since 0.85
+     */
     public function getAdditionalFields()
     {
 

@@ -33,7 +33,7 @@
 
 /**
  * NotificationTargetSoftwareLicense Class
-**/
+ **/
 class NotificationTargetSoftwareLicense extends NotificationTarget
 {
     public function getEvents()

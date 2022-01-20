@@ -71,13 +71,13 @@ class CleanSoftwareCommand extends AbstractCommand
         return 0;
     }
 
-   /**
-    * Validate command input.
-    *
-    * @param InputInterface $input
-    *
-    * @throws InvalidArgumentException
-    */
+    /**
+     * Validate command input.
+     *
+     * @param InputInterface $input
+     *
+     * @throws InvalidArgumentException
+     */
     private function validateInput(InputInterface $input)
     {
         $max = $input->getOption('max');

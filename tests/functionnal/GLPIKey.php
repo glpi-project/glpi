@@ -57,9 +57,9 @@ class GLPIKey extends \DbTestCase
         ];
     }
 
-   /**
-    * @dataProvider getExpectedKeyPathProvider
-    */
+    /**
+     * @dataProvider getExpectedKeyPathProvider
+     */
     public function testGetExpectedKeyPath($glpi_version, $expected_path)
     {
         $this
@@ -111,9 +111,9 @@ class GLPIKey extends \DbTestCase
         ];
     }
 
-   /**
-    * @dataProvider legacyEncryptedProvider
-    */
+    /**
+     * @dataProvider legacyEncryptedProvider
+     */
     public function testDecryptUsingLegacyKey(string $encrypted, string $decrypted, ?string $key)
     {
         $this
@@ -376,9 +376,9 @@ class GLPIKey extends \DbTestCase
         ];
     }
 
-   /**
-    * @dataProvider encryptDecryptProvider
-    */
+    /**
+     * @dataProvider encryptDecryptProvider
+     */
     public function testEncryptUsingSpecificKey(?string $string, ?string $encrypted, ?string $key = null)
     {
         vfsStream::setup('glpi', null, ['config' => []]);
@@ -396,9 +396,9 @@ class GLPIKey extends \DbTestCase
         $this->string($decrypted)->isEqualTo($string);
     }
 
-   /**
-    * @dataProvider encryptDecryptProvider
-    */
+    /**
+     * @dataProvider encryptDecryptProvider
+     */
     public function testDecryptUsingSpecificKey(?string $string, ?string $encrypted, ?string $key = null)
     {
         vfsStream::setup('glpi', null, ['config' => []]);
@@ -409,9 +409,9 @@ class GLPIKey extends \DbTestCase
         $this->string($decrypted)->isEqualTo($string);
     }
 
-   /**
-    * @dataProvider encryptDecryptProvider
-    */
+    /**
+     * @dataProvider encryptDecryptProvider
+     */
     public function testDecryptEmptyValue(?string $string, ?string $encrypted, ?string $key = null)
     {
         $structure = vfsStream::setup('glpi', null, ['config' => []]);

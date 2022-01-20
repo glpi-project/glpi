@@ -35,7 +35,7 @@ use Glpi\Application\View\TemplateRenderer;
 
 /**
  * Infocom class
-**/
+ **/
 class Infocom extends CommonDBChild
 {
    // From CommonDBChild
@@ -55,16 +55,16 @@ class Infocom extends CommonDBChild
     const ON_ASSET_IMPORT    = 5;
 
 
-   /**
-    * Check if given object can have Infocom
-    *
-    * @since 0.85
-    *
-    * @param string|object $item  an object or a string
-    *
-    * @return boolean true if $object is an object that can have Infocom
-    *
-   **/
+    /**
+     * Check if given object can have Infocom
+     *
+     * @since 0.85
+     *
+     * @param string|object $item  an object or a string
+     *
+     * @return boolean true if $object is an object that can have Infocom
+     *
+     **/
     public static function canApplyOn($item)
     {
         global $CFG_GLPI;
@@ -87,13 +87,13 @@ class Infocom extends CommonDBChild
     }
 
 
-   /**
-    * Get all the types that can have an infocom
-    *
-    * @since 0.85
-    *
-    * @return array of the itemtypes
-   **/
+    /**
+     * Get all the types that can have an infocom
+     *
+     * @since 0.85
+     *
+     * @return array of the itemtypes
+     **/
     public static function getItemtypesThatCanHave()
     {
         global $CFG_GLPI;
@@ -158,11 +158,11 @@ class Infocom extends CommonDBChild
     }
 
 
-   /**
-    * @param $item            CommonGLPI object
-    * @param $tabnum          (default 1)
-    * @param $withtemplate    (default 0)
-   **/
+    /**
+     * @param $item            CommonGLPI object
+     * @param $tabnum          (default 1)
+     * @param $withtemplate    (default 0)
+     **/
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
 
@@ -178,9 +178,9 @@ class Infocom extends CommonDBChild
     }
 
 
-   /**
-    * @param $item   Supplier  object
-   **/
+    /**
+     * @param $item   Supplier  object
+     **/
     public static function countForSupplier(Supplier $item)
     {
 
@@ -210,14 +210,14 @@ class Infocom extends CommonDBChild
     }
 
 
-   /**
-    * @since 0.84
-    *
-    * @param $field
-    * @param $name               (default '')
-    * @param $values             (default '')
-    * @param $options      array
-   **/
+    /**
+     * @since 0.84
+     *
+     * @param $field
+     * @param $name               (default '')
+     * @param $values             (default '')
+     * @param $options      array
+     **/
     public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
     {
 
@@ -238,14 +238,14 @@ class Infocom extends CommonDBChild
     }
 
 
-   /**
-    * Retrieve an item from the database for a device
-    *
-    * @param string  $itemtype  type of the device to retrieve infocom
-    * @param integer $ID        ID of the device to retrieve infocom
-    *
-    * @return boolean true if succeed else false
-   **/
+    /**
+     * Retrieve an item from the database for a device
+     *
+     * @param string  $itemtype  type of the device to retrieve infocom
+     * @param integer $ID        ID of the device to retrieve infocom
+     *
+     * @return boolean true if succeed else false
+     **/
     public function getFromDBforDevice($itemtype, $ID)
     {
 
@@ -276,14 +276,14 @@ class Infocom extends CommonDBChild
     }
 
 
-   /**
-    * Fill, if necessary, automatically some dates when status changes
-    *
-    * @param item          CommonDBTM object: the item whose status have changed
-    * @param action_add    true if object is added, false if updated (true by default)
-    *
-    * @return void
-   **/
+    /**
+     * Fill, if necessary, automatically some dates when status changes
+     *
+     * @param item          CommonDBTM object: the item whose status have changed
+     * @param action_add    true if object is added, false if updated (true by default)
+     *
+     * @return void
+     **/
     public static function manageDateOnStatusChange(CommonDBTM $item, $action_add = true)
     {
         $itemtype = get_class($item);
@@ -323,16 +323,16 @@ class Infocom extends CommonDBChild
     }
 
 
-   /**
-    * Automatically manage copying one date to another is necessary
-    *
-    * @param infocoms   array of item's infocom to modify
-    * @param field            the date to modify (default '')
-    * @param action           the action to peform (copy from another date) (default 0)
-    * @param params     array of additional parameters needed to perform the task
-    *
-    * @return void
-   **/
+    /**
+     * Automatically manage copying one date to another is necessary
+     *
+     * @param infocoms   array of item's infocom to modify
+     * @param field            the date to modify (default '')
+     * @param action           the action to peform (copy from another date) (default 0)
+     * @param params     array of additional parameters needed to perform the task
+     *
+     * @return void
+     **/
     public static function autofillDates(&$infocoms = [], $field = '', $action = 0, $params = [])
     {
 
@@ -370,11 +370,11 @@ class Infocom extends CommonDBChild
     }
 
 
-   /**
-    * Return all infocom dates that could be automaticall filled
-    *
-    * @return array with all dates (configuration field & real field)
-   **/
+    /**
+     * Return all infocom dates that could be automaticall filled
+     *
+     * @return array with all dates (configuration field & real field)
+     **/
     public static function getAutoManagemendDatesFields()
     {
 
@@ -446,9 +446,9 @@ class Infocom extends CommonDBChild
         }
     }
 
-   /**
-    * @since 0.84
-   **/
+    /**
+     * @since 0.84
+     **/
     public function cleanDBonPurge()
     {
 
@@ -457,22 +457,22 @@ class Infocom extends CommonDBChild
     }
 
 
-   /**
-    * @param $name
-   **/
+    /**
+     * @param $name
+     **/
     public static function cronInfo($name)
     {
         return ['description' => __('Send alarms on financial and administrative information')];
     }
 
 
-   /**
-    * Cron action on infocom : alert on expired warranty
-    *
-    * @param CronTask $task to log, if NULL use display (default NULL)
-    *
-    * @return integer 0 : nothing to do 1 : done with success
-   **/
+    /**
+     * Cron action on infocom : alert on expired warranty
+     *
+     * @param CronTask $task to log, if NULL use display (default NULL)
+     *
+     * @return integer 0 : nothing to do 1 : done with success
+     **/
     public static function cronInfocom($task = null)
     {
         global $DB, $CFG_GLPI;
@@ -600,15 +600,15 @@ class Infocom extends CommonDBChild
     }
 
 
-   /**
-    * Get the possible value for infocom alert
-    *
-    * @since 0.84 (before in alert.class)
-    *
-    * @param integer|string|null $val if not set, ask for all values, else for 1 value (default NULL)
-    *
-    * @return array|string
-   **/
+    /**
+     * Get the possible value for infocom alert
+     *
+     * @since 0.84 (before in alert.class)
+     *
+     * @param integer|string|null $val if not set, ask for all values, else for 1 value (default NULL)
+     *
+     * @return array|string
+     **/
     public static function getAlertName($val = null)
     {
 
@@ -632,9 +632,9 @@ class Infocom extends CommonDBChild
     }
 
 
-   /**
-    * @param $options array
-   **/
+    /**
+     * @param $options array
+     **/
     public static function dropdownAlert($options)
     {
 
@@ -660,13 +660,13 @@ class Infocom extends CommonDBChild
     }
 
 
-   /**
-    * Dropdown of amortissement type for infocoms
-    *
-    * @param string  $name      select name
-    * @param integer $value     default value (default 0)
-    * @param boolean $display   display or get string (true by default)
-   **/
+    /**
+     * Dropdown of amortissement type for infocoms
+     *
+     * @param string  $name      select name
+     * @param integer $value     default value (default 0)
+     * @param boolean $display   display or get string (true by default)
+     **/
     public static function dropdownAmortType($name, $value = 0, $display = true)
     {
 
@@ -684,11 +684,11 @@ class Infocom extends CommonDBChild
     }
 
 
-   /**
-    * Get amortissement type name for infocoms
-    *
-    * @param integer $value status ID
-   **/
+    /**
+     * Get amortissement type name for infocoms
+     *
+     * @param integer $value status ID
+     **/
     public static function getAmortTypeName($value)
     {
 
@@ -705,15 +705,15 @@ class Infocom extends CommonDBChild
     }
 
 
-   /**
-    * Calculate TCO and TCO by month for an item
-    *
-    * @param string|number $ticket_tco    Tco part of tickets
-    * @param number        $value
-    * @param string        $date_achat    (default '')
-    *
-    * @return float
-   **/
+    /**
+     * Calculate TCO and TCO by month for an item
+     *
+     * @param string|number $ticket_tco    Tco part of tickets
+     * @param number        $value
+     * @param string        $date_achat    (default '')
+     *
+     * @return float
+     **/
     public static function showTco($ticket_tco, $value, $date_achat = "")
     {
         if ($ticket_tco == NOT_AVAILABLE) {
@@ -743,14 +743,14 @@ class Infocom extends CommonDBChild
     }
 
 
-   /**
-    * Show infocom link to display modal
-    *
-    * @param $itemtype   integer  item type
-    * @param $device_id  integer  item ID
-    *
-    * @return float
-   **/
+    /**
+     * Show infocom link to display modal
+     *
+     * @param $itemtype   integer  item type
+     * @param $device_id  integer  item ID
+     *
+     * @return float
+     **/
     public static function showDisplayLink($itemtype, $device_id)
     {
         global $DB, $CFG_GLPI;
@@ -794,17 +794,17 @@ class Infocom extends CommonDBChild
     }
 
 
-   /**
-    * Calculate amortization values
-    *
-    * @param number $value       Purchase value
-    * @param number $duration    Amortise duration
-    * @param string $fiscaldate  Begin of fiscal excercise
-    * @param number $buydate     Buy date
-    * @param number $usedate     Date of use
-    *
-    * @return array|boolean
-    */
+    /**
+     * Calculate amortization values
+     *
+     * @param number $value       Purchase value
+     * @param number $duration    Amortise duration
+     * @param string $fiscaldate  Begin of fiscal excercise
+     * @param number $buydate     Buy date
+     * @param number $usedate     Date of use
+     *
+     * @return array|boolean
+     */
     public static function linearAmortise($value, $duration, $fiscaldate, $buydate = '', $usedate = '')
     {
        //Set timezone to UTC; see https://stackoverflow.com/a/40358744
@@ -891,15 +891,15 @@ class Infocom extends CommonDBChild
         return $years;
     }
 
-   /**
-    * Maps new amortise format to old one...
-    * To not rewrite all the old method.
-    *
-    * @param array $values New format amortise values
-    * @param boolean $current True to get only current year, false to get the whole array
-    *
-    * @return array|double
-    */
+    /**
+     * Maps new amortise format to old one...
+     * To not rewrite all the old method.
+     *
+     * @param array $values New format amortise values
+     * @param boolean $current True to get only current year, false to get the whole array
+     *
+     * @return array|double
+     */
     public static function mapOldAmortiseFormat($values, $current = true)
     {
 
@@ -923,20 +923,20 @@ class Infocom extends CommonDBChild
         return $old;
     }
 
-   /**
-    * Calculate amortissement for an item
-    *
-    * @param integer $type_amort    type d'amortisssment "lineaire=2" ou "degressif=1"
-    * @param number  $va            valeur d'acquisition
-    * @param number  $duree         duree d'amortissement
-    * @param number  $coef          coefficient d'amortissement
-    * @param string  $date_achat    Date d'achat
-    * @param string  $date_use      Date d'utilisation
-    * @param string  $date_tax      date du debut de l'annee fiscale
-    * @param string  $view          "n" pour l'annee en cours ou "all" pour le tableau complet (default 'n')
-    *
-    * @return float|array
-   **/
+    /**
+     * Calculate amortissement for an item
+     *
+     * @param integer $type_amort    type d'amortisssment "lineaire=2" ou "degressif=1"
+     * @param number  $va            valeur d'acquisition
+     * @param number  $duree         duree d'amortissement
+     * @param number  $coef          coefficient d'amortissement
+     * @param string  $date_achat    Date d'achat
+     * @param string  $date_use      Date d'utilisation
+     * @param string  $date_tax      date du debut de l'annee fiscale
+     * @param string  $view          "n" pour l'annee en cours ou "all" pour le tableau complet (default 'n')
+     *
+     * @return float|array
+     **/
     public static function Amort(
         $type_amort,
         $va,
@@ -1091,12 +1091,12 @@ class Infocom extends CommonDBChild
     }
 
 
-   /**
-    * Show Infocom form for an item (not a standard showForm)
-    *
-    * @param $item                  CommonDBTM object
-    * @param $withtemplate integer  template or basic item (default 0)
-   **/
+    /**
+     * Show Infocom form for an item (not a standard showForm)
+     *
+     * @param $item                  CommonDBTM object
+     * @param $withtemplate integer  template or basic item (default 0)
+     **/
     public static function showForItem(CommonDBTM $item, $withtemplate = 0)
     {
        // Show Infocom or blank form
@@ -1142,9 +1142,9 @@ class Infocom extends CommonDBChild
         Plugin::doHookFunction("infocom", $item);
     }
 
-   /**
-    * @param $itemtype
-   **/
+    /**
+     * @param $itemtype
+     **/
     public static function rawSearchOptionsToAdd($itemtype = null)
     {
         $specific_itemtype = '';
@@ -1691,9 +1691,9 @@ class Infocom extends CommonDBChild
     }
 
 
-   /**
-    * Display debug information for infocom of current object
-   **/
+    /**
+     * Display debug information for infocom of current object
+     **/
     public function showDebug()
     {
 
@@ -1708,17 +1708,17 @@ class Infocom extends CommonDBChild
     }
 
 
-   /**
-    * Get date using a begin date and a period in month
-    *
-    * @param string  $from          begin date
-    * @param integer $addwarranty   period in months
-    * @param integer $deletenotice  period in months of notice (default 0)
-    * @param boolean $color         if show expire date in red color (false by default)
-    * @param boolean $auto_renew
-    *
-    * @return string expiration date
-   **/
+    /**
+     * Get date using a begin date and a period in month
+     *
+     * @param string  $from          begin date
+     * @param integer $addwarranty   period in months
+     * @param integer $deletenotice  period in months of notice (default 0)
+     * @param boolean $color         if show expire date in red color (false by default)
+     * @param boolean $auto_renew
+     *
+     * @return string expiration date
+     **/
     public static function getWarrantyExpir($from, $addwarranty, $deletenotice = 0, $color = false, $auto_renew = false)
     {
 
@@ -1808,44 +1808,44 @@ class Infocom extends CommonDBChild
     }
 
 
-   /**
-    * @since 9.1.7
-    * @see CommonDBChild::canUpdateItem()
-   **/
+    /**
+     * @since 9.1.7
+     * @see CommonDBChild::canUpdateItem()
+     **/
     public function canUpdateItem()
     {
         return Session::haveRight(static::$rightname, UPDATE);
     }
 
 
-   /**
-    * @since 9.1.7
-    * @see CommonDBChild::canPurgeItem()
-   **/
+    /**
+     * @since 9.1.7
+     * @see CommonDBChild::canPurgeItem()
+     **/
     public function canPurgeItem()
     {
         return Session::haveRight(static::$rightname, PURGE);
     }
 
 
-   /**
-    * @since 9.1.7
-    * @see CommonDBChild::canCreateItem()
-   **/
+    /**
+     * @since 9.1.7
+     * @see CommonDBChild::canCreateItem()
+     **/
     public function canCreateItem()
     {
         return Session::haveRight(static::$rightname, CREATE);
     }
 
-   /**
-    * Get item types
-    *
-    * @since 9.3.1
-    *
-    * @param array $where Where clause
-    *
-    * @return DBmysqlIterator
-    */
+    /**
+     * Get item types
+     *
+     * @since 9.3.1
+     *
+     * @param array $where Where clause
+     *
+     * @return DBmysqlIterator
+     */
     public static function getTypes($where)
     {
         global $DB;
@@ -1863,13 +1863,13 @@ class Infocom extends CommonDBChild
     }
 
 
-   /**
-    * Get excluded itemtypes
-    *
-    * @since 9.3.1
-    *
-    * @return array
-    */
+    /**
+     * Get excluded itemtypes
+     *
+     * @since 9.3.1
+     *
+     * @return array
+     */
     public static function getExcludedTypes()
     {
         return ['ConsumableItem', 'CartridgeItem', 'Software'];

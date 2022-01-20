@@ -69,13 +69,13 @@ class HTMLTableMain extends HTMLTableBase
     }
 
 
-   /**
-    * We can define a global name for the table : this will print as header that colspan all columns
-    *
-    * @param string $name  the name to print inside the header
-    *
-    * @return void
-   **/
+    /**
+     * We can define a global name for the table : this will print as header that colspan all columns
+     *
+     * @param string $name  the name to print inside the header
+     *
+     * @return void
+     **/
     public function setTitle($name)
     {
         $this->title = $name;
@@ -91,16 +91,16 @@ class HTMLTableMain extends HTMLTableBase
     }
 
 
-   /**
-    * @param $name      string   The name of the group, to be able to retrieve the group
-    *                            later with HTMLTableMain::getHeaderByName()
-    * @param $content            (@see HTMLTableEntity::content)
-    *                             The title of the group : display before the group itself
-    *
-    * TODO : study to be sure that the order is the one we have defined ...
-    *
-    * @return boolean|HTMLTableGroup
-   **/
+    /**
+     * @param $name      string   The name of the group, to be able to retrieve the group
+     *                            later with HTMLTableMain::getHeaderByName()
+     * @param $content            (@see HTMLTableEntity::content)
+     *                             The title of the group : display before the group itself
+     *
+     * TODO : study to be sure that the order is the one we have defined ...
+     *
+     * @return boolean|HTMLTableGroup
+     **/
     public function createGroup($name, $content)
     {
 
@@ -113,23 +113,23 @@ class HTMLTableMain extends HTMLTableBase
     }
 
 
-   /**
-    * @param $itemtype
-    * @param $title
-   **/
+    /**
+     * @param $itemtype
+     * @param $title
+     **/
     public function addItemType($itemtype, $title)
     {
         $this->itemtypes[$itemtype] = $title;
     }
 
 
-   /**
-    * Retrieve a group by its name
-    *
-    * @param $group_name (string) the group name
-    *
-    * @return boolean|HTMLTableGroup
-   **/
+    /**
+     * Retrieve a group by its name
+     *
+     * @param $group_name (string) the group name
+     *
+     * @return boolean|HTMLTableGroup
+     **/
     public function getGroup($group_name)
     {
 
@@ -140,9 +140,9 @@ class HTMLTableMain extends HTMLTableBase
     }
 
 
-   /**
-    * Display the super headers, for the global table, or the groups
-   **/
+    /**
+     * Display the super headers, for the global table, or the groups
+     **/
     public function displaySuperHeader()
     {
 
@@ -157,13 +157,13 @@ class HTMLTableMain extends HTMLTableBase
     }
 
 
-   /**
-    * get the total number of rows (ie.: the sum of each group number of rows)
-    *
-    * Beware that a row is counted only if it is not empty (ie.: at least one addCell)
-    *
-    * @return integer the total number of rows
-   **/
+    /**
+     * get the total number of rows (ie.: the sum of each group number of rows)
+     *
+     * Beware that a row is counted only if it is not empty (ie.: at least one addCell)
+     *
+     * @return integer the total number of rows
+     **/
     public function getNumberOfRows()
     {
 
@@ -175,20 +175,20 @@ class HTMLTableMain extends HTMLTableBase
     }
 
 
-   /**
-    * Display the table itself
-    *
-    * @param $params    array of possible options:
-    *    'html_id'                                the global HTML ID of the table
-    *    'display_thead'                          display the header before the first group
-    *    'display_tfoot'                          display the header at the end of the table
-    *    'display_header_for_each_group'          display the header of each group
-    *    'display_header_on_foot_for_each_group'  repeat group header on foot of group
-    *    'display_super_for_each_group'           display the super header befor each group
-    *    'display_title_for_each_group'           display the title of each group
-    *
-    * @return void
-   **/
+    /**
+     * Display the table itself
+     *
+     * @param $params    array of possible options:
+     *    'html_id'                                the global HTML ID of the table
+     *    'display_thead'                          display the header before the first group
+     *    'display_tfoot'                          display the header at the end of the table
+     *    'display_header_for_each_group'          display the header of each group
+     *    'display_header_on_foot_for_each_group'  repeat group header on foot of group
+     *    'display_super_for_each_group'           display the super header befor each group
+     *    'display_title_for_each_group'           display the title of each group
+     *
+     * @return void
+     **/
     public function display(array $params)
     {
 

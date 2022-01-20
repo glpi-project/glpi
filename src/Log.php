@@ -35,7 +35,7 @@ use Glpi\Application\View\TemplateRenderer;
 
 /**
  * Log Class
-**/
+ **/
 class Log extends CommonDBTM
 {
     const HISTORY_ADD_DEVICE         = 1;
@@ -101,15 +101,15 @@ class Log extends CommonDBTM
     }
 
 
-   /**
-    * Construct  history for an item
-    *
-    * @param $item               CommonDBTM object
-    * @param $oldvalues    array of old values updated
-    * @param $values       array of all values of the item
-    *
-    * @return boolean for success (at least 1 log entry added)
-   **/
+    /**
+     * Construct  history for an item
+     *
+     * @param $item               CommonDBTM object
+     * @param $oldvalues    array of old values updated
+     * @param $values       array of all values of the item
+     *
+     * @return boolean for success (at least 1 log entry added)
+     **/
     public static function constructHistory(CommonDBTM $item, $oldvalues, $values)
     {
 
@@ -190,17 +190,17 @@ class Log extends CommonDBTM
     }
 
 
-   /**
-    * Log history
-    *
-    * @param $items_id
-    * @param $itemtype
-    * @param $changes
-    * @param $itemtype_link   (default '')
-    * @param $linked_action   (default '0')
-    *
-    * @return boolean success
-   **/
+    /**
+     * Log history
+     *
+     * @param $items_id
+     * @param $itemtype
+     * @param $changes
+     * @param $itemtype_link   (default '')
+     * @param $linked_action   (default '0')
+     *
+     * @return boolean success
+     **/
     public static function history($items_id, $itemtype, $changes, $itemtype_link = '', $linked_action = '0')
     {
         global $DB;
@@ -265,13 +265,13 @@ class Log extends CommonDBTM
     }
 
 
-   /**
-    * Show History of an item
-    *
-    * @param $item                     CommonDBTM object
-    * @param $withtemplate    integer  withtemplate param (default 0)
-
-   **/
+    /**
+     * Show History of an item
+     *
+     * @param $item                     CommonDBTM object
+     * @param $withtemplate    integer  withtemplate param (default 0)
+     *
+     **/
     public static function showForItem(CommonDBTM $item, $withtemplate = 0)
     {
         global $CFG_GLPI;
@@ -318,16 +318,16 @@ class Log extends CommonDBTM
         ;
     }
 
-   /**
-    * Retrieve last history Data for an item
-    *
-    * @param CommonDBTM $item       Object instance
-    * @param integer    $start      First line to retrieve (default 0)
-    * @param integer    $limit      Max number of line to retrieve (0 for all) (default 0)
-    * @param array      $sqlfilters SQL filters applied to history (default [])
-    *
-    * @return array of localized log entry (TEXT only, no HTML)
-   **/
+    /**
+     * Retrieve last history Data for an item
+     *
+     * @param CommonDBTM $item       Object instance
+     * @param integer    $start      First line to retrieve (default 0)
+     * @param integer    $limit      Max number of line to retrieve (0 for all) (default 0)
+     * @param array      $sqlfilters SQL filters applied to history (default [])
+     *
+     * @return array of localized log entry (TEXT only, no HTML)
+     **/
     public static function getHistoryData(CommonDBTM $item, $start = 0, $limit = 0, array $sqlfilters = [])
     {
         $DBread = DBConnection::getReadConnection();
@@ -749,16 +749,16 @@ class Log extends CommonDBTM
         return $changes;
     }
 
-   /**
-    * Retrieve distinct values for user_name field in item log.
-    * Return is made to be used as select tag options.
-    *
-    * @param CommonDBTM $item  Object instance
-    *
-    * @return array
-    *
-    * @since 9.3
-    **/
+    /**
+     * Retrieve distinct values for user_name field in item log.
+     * Return is made to be used as select tag options.
+     *
+     * @param CommonDBTM $item  Object instance
+     *
+     * @return array
+     *
+     * @since 9.3
+     **/
     public static function getDistinctUserNamesValuesInItemLog(CommonDBTM $item)
     {
         global $DB;
@@ -790,16 +790,16 @@ class Log extends CommonDBTM
         return $values;
     }
 
-   /**
-    * Retrieve distinct values for affected field in item log.
-    * Return is made to be used as select tag options.
-    *
-    * @param CommonDBTM $item  Object instance
-    *
-    * @return array
-    *
-    * @since 9.3
-    **/
+    /**
+     * Retrieve distinct values for affected field in item log.
+     * Return is made to be used as select tag options.
+     *
+     * @param CommonDBTM $item  Object instance
+     *
+     * @return array
+     *
+     * @since 9.3
+     **/
     public static function getDistinctAffectedFieldValuesInItemLog(CommonDBTM $item)
     {
         global $DB;
@@ -963,16 +963,16 @@ class Log extends CommonDBTM
         return $values;
     }
 
-   /**
-    * Retrieve distinct values for action in item log.
-    * Return is made to be used as select tag options.
-    *
-    * @param CommonDBTM $item  Object instance
-    *
-    * @return array
-    *
-    * @since 9.3
-    **/
+    /**
+     * Retrieve distinct values for action in item log.
+     * Return is made to be used as select tag options.
+     *
+     * @param CommonDBTM $item  Object instance
+     *
+     * @return array
+     *
+     * @since 9.3
+     **/
     public static function getDistinctLinkedActionValuesInItemLog(CommonDBTM $item)
     {
         global $DB;
@@ -1030,15 +1030,15 @@ class Log extends CommonDBTM
         return $values;
     }
 
-   /**
-    * Returns label corresponding to the linked action of a log entry.
-    *
-    * @param integer $linked_action  Linked action value of a log entry.
-    *
-    * @return string
-    *
-    * @since 9.3
-    **/
+    /**
+     * Returns label corresponding to the linked action of a log entry.
+     *
+     * @param integer $linked_action  Linked action value of a log entry.
+     *
+     * @return string
+     *
+     * @since 9.3
+     **/
     public static function getLinkedActionLabel($linked_action)
     {
         $label = null;
@@ -1148,20 +1148,20 @@ class Log extends CommonDBTM
         return $label;
     }
 
-   /**
-    * Convert filters values into SQL filters usable in 'WHERE' condition of request build with 'DBmysqlIterator'.
-    *
-    * @param array $filters  Filters values.
-    *    Filters values must be passed as indexed array using following rules :
-    *     - 'affected_fields' key for values corresponding to values built in 'self::getDistinctAffectedFieldValuesInItemLog()',
-    *     - 'date' key for a date value in 'Y-m-d H:i:s' format,
-    *     - 'linked_actions' key for values corresponding to values built in 'self::getDistinctLinkedActionValuesInItemLog()',
-    *     - 'users_names' key for values corresponding to values built in 'self::getDistinctUserNamesValuesInItemLog()'.
-    *
-    * @return array
-    *
-    * @since 9.3
-    **/
+    /**
+     * Convert filters values into SQL filters usable in 'WHERE' condition of request build with 'DBmysqlIterator'.
+     *
+     * @param array $filters  Filters values.
+     *    Filters values must be passed as indexed array using following rules :
+     *     - 'affected_fields' key for values corresponding to values built in 'self::getDistinctAffectedFieldValuesInItemLog()',
+     *     - 'date' key for a date value in 'Y-m-d H:i:s' format,
+     *     - 'linked_actions' key for values corresponding to values built in 'self::getDistinctLinkedActionValuesInItemLog()',
+     *     - 'users_names' key for values corresponding to values built in 'self::getDistinctUserNamesValuesInItemLog()'.
+     *
+     * @return array
+     *
+     * @since 9.3
+     **/
     public static function convertFiltersValuesToSqlCriteria(array $filters)
     {
         global $DB;
@@ -1224,13 +1224,13 @@ class Log extends CommonDBTM
         return $sql_filters;
     }
 
-   /**
-    * Actions done after the ADD of the item in the database
-    *
-    * @since 0.83
-    *
-    * @see CommonDBTM::post_addItem()
-   **/
+    /**
+     * Actions done after the ADD of the item in the database
+     *
+     * @since 0.83
+     *
+     * @see CommonDBTM::post_addItem()
+     **/
     public function post_addItem()
     {
         $_SESSION['glpi_maxhistory'] = $this->fields['id'];

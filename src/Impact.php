@@ -217,11 +217,11 @@ class Impact extends CommonGLPI
         return true;
     }
 
-   /**
-    * Display the impact analysis as an interactive graph
-    *
-    * @param CommonDBTM $item    starting point of the graph
-    */
+    /**
+     * Display the impact analysis as an interactive graph
+     *
+     * @param CommonDBTM $item    starting point of the graph
+     */
     public static function displayGraphView(
         CommonDBTM $item
     ) {
@@ -232,12 +232,12 @@ class Impact extends CommonGLPI
         echo '</div>';
     }
 
-   /**
-    * Display the impact analysis as a list
-    *
-    * @param CommonDBTM $item   starting point of the graph
-    * @param string     $graph  array containing the graph nodes and egdes
-    */
+    /**
+     * Display the impact analysis as a list
+     *
+     * @param CommonDBTM $item   starting point of the graph
+     * @param string     $graph  array containing the graph nodes and egdes
+     */
     public static function displayListView(
         CommonDBTM $item,
         array $graph,
@@ -489,16 +489,16 @@ class Impact extends CommonGLPI
         }
     }
 
-   /**
-    * Display "number" cell in list view
-    * The cell is empty if no itilobjets are found, else it contains the
-    * number of iitilobjets found, use the highest priority as it's background
-    * color and is a link to matching search result
-    *
-    * @param array   $itil_objects
-    * @param string  $type
-    * @param string  $node_id
-    */
+    /**
+     * Display "number" cell in list view
+     * The cell is empty if no itilobjets are found, else it contains the
+     * number of iitilobjets found, use the highest priority as it's background
+     * color and is a link to matching search result
+     *
+     * @param array   $itil_objects
+     * @param string  $type
+     * @param string  $node_id
+     */
     private static function displayListNumber($itil_objects, $type, $node_id)
     {
         $user = new User();
@@ -559,17 +559,17 @@ class Impact extends CommonGLPI
         echo '<td class="center" ' . $extra . '><div>' . $count . '</div></td>';
     }
 
-   /**
-    * Build the data used to represent the impact graph as a semi-flat list
-    *
-    * @param array      $graph        array containing the graph nodes and egdes
-    * @param int        $direction    should the list be build for item that are
-    *                                 impacted by $item or that impact $item ?
-    * @param CommonDBTM $item         starting point of the graph
-    * @param int        $max_depth    max depth from context
-    *
-    * @return array
-    */
+    /**
+     * Build the data used to represent the impact graph as a semi-flat list
+     *
+     * @param array      $graph        array containing the graph nodes and egdes
+     * @param int        $direction    should the list be build for item that are
+     *                                 impacted by $item or that impact $item ?
+     * @param CommonDBTM $item         starting point of the graph
+     * @param int        $max_depth    max depth from context
+     *
+     * @return array
+     */
     public static function buildListData(
         array $graph,
         int $direction,
@@ -635,14 +635,14 @@ class Impact extends CommonGLPI
         return $data;
     }
 
-   /**
-    * Return a subgraph matching the given direction
-    *
-    * @param array $graph      array containing the graph nodes and egdes
-    * @param int   $direction  direction to match
-    *
-    * @return array
-    */
+    /**
+     * Return a subgraph matching the given direction
+     *
+     * @param array $graph      array containing the graph nodes and egdes
+     * @param int   $direction  direction to match
+     *
+     * @return array
+     */
     public static function filterGraph(array $graph, int $direction)
     {
         $new_graph = [
@@ -667,14 +667,14 @@ class Impact extends CommonGLPI
         return $new_graph;
     }
 
-   /**
-    * Evaluate the path from one node to another using BFS algorithm
-    *
-    * @param array  $graph          array containing the graph nodes and egdes
-    * @param array  $a              a node of the graph
-    * @param array  $b              a node of the graph
-    * @param int    $direction      direction used to travel the graph
-    */
+    /**
+     * Evaluate the path from one node to another using BFS algorithm
+     *
+     * @param array  $graph          array containing the graph nodes and egdes
+     * @param array  $a              a node of the graph
+     * @param array  $b              a node of the graph
+     * @param int    $direction      direction used to travel the graph
+     */
     public static function bfs(array $graph, array $a, array $b, int $direction)
     {
         switch ($direction) {
@@ -737,13 +737,13 @@ class Impact extends CommonGLPI
         }
     }
 
-   /**
-    * Print the title and view switch
-    *
-    * @param string  $graph      The network graph (json)
-    * @param string  $params     Params of the graph (json)
-    * @param bool    $readonly   Is the graph editable ?
-    */
+    /**
+     * Print the title and view switch
+     *
+     * @param string  $graph      The network graph (json)
+     * @param string  $params     Params of the graph (json)
+     * @param bool    $readonly   Is the graph editable ?
+     */
     public static function printHeader(
         string $graph,
         string $params,
@@ -788,25 +788,25 @@ class Impact extends CommonGLPI
       ");
     }
 
-   /**
-    * Load the cytoscape library
-    *
-    * @since 9.5
-    */
+    /**
+     * Load the cytoscape library
+     *
+     * @since 9.5
+     */
     public static function loadLibs()
     {
         echo Html::css('public/lib/cytoscape.css');
         echo Html::script("public/lib/cytoscape.js");
     }
 
-   /**
-    * Print the asset selection form used in the impact tab of ITIL objects
-    *
-    * @param array $items
-    *    Each array should contains "itemtype", "items_id" and "name".
-    *
-    * @since 9.5
-    */
+    /**
+     * Print the asset selection form used in the impact tab of ITIL objects
+     *
+     * @param array $items
+     *    Each array should contains "itemtype", "items_id" and "name".
+     *
+     * @since 9.5
+     */
     public static function printAssetSelectionForm(array $items)
     {
         global $CFG_GLPI;
@@ -860,14 +860,14 @@ class Impact extends CommonGLPI
       ');
     }
 
-   /**
-    * Search asset by itemtype and name
-    *
-    * @param string  $itemtype   type
-    * @param array   $used       ids to exlude from the search
-    * @param string  $filter     filter on name
-    * @param int     $page       page offset
-    */
+    /**
+     * Search asset by itemtype and name
+     *
+     * @param string  $itemtype   type
+     * @param array   $used       ids to exlude from the search
+     * @param string  $filter     filter on name
+     * @param int     $page       page offset
+     */
     public static function searchAsset(
         string $itemtype,
         array $used,
@@ -966,11 +966,11 @@ class Impact extends CommonGLPI
         ];
     }
 
-   /**
-    * Load the impact network container
-    *
-    * @since 9.5
-    */
+    /**
+     * Load the impact network container
+     *
+     * @since 9.5
+     */
     public static function printImpactNetworkContainer()
     {
         global $CFG_GLPI;
@@ -1123,15 +1123,15 @@ class Impact extends CommonGLPI
         Html::closeForm();
     }
 
-   /**
-    * Build the impact graph starting from a node
-    *
-    * @since 9.5
-    *
-    * @param CommonDBTM $item Current item
-    *
-    * @return array Array containing edges and nodes
-    */
+    /**
+     * Build the impact graph starting from a node
+     *
+     * @since 9.5
+     *
+     * @param CommonDBTM $item Current item
+     *
+     * @return array Array containing edges and nodes
+     */
     public static function buildGraph(CommonDBTM $item)
     {
         $nodes = [];
@@ -1157,22 +1157,22 @@ class Impact extends CommonGLPI
         ];
     }
 
-   /**
-    * Explore dependencies of the current item, subfunction of buildGraph()
-    *
-    * @since 9.5
-    *
-    * @param array      $edges          Edges of the graph
-    * @param array      $nodes          Nodes of the graph
-    * @param CommonDBTM $node           Current node
-    * @param int        $direction      The direction in which the graph
-    *                                   is being explored : DIRECTION_FORWARD
-    *                                   or DIRECTION_BACKWARD
-    * @param array      $explored_nodes List of nodes that have already been
-    *                                   explored
-    *
-    * @throws InvalidArgumentException
-    */
+    /**
+     * Explore dependencies of the current item, subfunction of buildGraph()
+     *
+     * @since 9.5
+     *
+     * @param array      $edges          Edges of the graph
+     * @param array      $nodes          Nodes of the graph
+     * @param CommonDBTM $node           Current node
+     * @param int        $direction      The direction in which the graph
+     *                                   is being explored : DIRECTION_FORWARD
+     *                                   or DIRECTION_BACKWARD
+     * @param array      $explored_nodes List of nodes that have already been
+     *                                   explored
+     *
+     * @throws InvalidArgumentException
+     */
     private static function buildGraphFromNode(
         array &$nodes,
         array &$edges,
@@ -1245,12 +1245,12 @@ class Impact extends CommonGLPI
         }
     }
 
-   /**
-    * Check if the icon path is valid, if not return a fallback path
-    *
-    * @param string $icon_path
-    * @return string
-    */
+    /**
+     * Check if the icon path is valid, if not return a fallback path
+     *
+     * @param string $icon_path
+     * @return string
+     */
     private static function checkIcon(string $icon_path): string
     {
        // Special case for images returned dynamicly
@@ -1268,16 +1268,16 @@ class Impact extends CommonGLPI
         return "pics/impact/default.png";
     }
 
-   /**
-    * Add a node to the node list if missing
-    *
-    * @param array      $nodes  Nodes of the graph
-    * @param CommonDBTM $item   Node to add
-    *
-    * @since 9.5
-    *
-    * @return bool true if the node was missing, else false
-    */
+    /**
+     * Add a node to the node list if missing
+     *
+     * @param array      $nodes  Nodes of the graph
+     * @param CommonDBTM $item   Node to add
+     *
+     * @since 9.5
+     *
+     * @return bool true if the node was missing, else false
+     */
     private static function addNode(array &$nodes, CommonDBTM $item)
     {
         global $CFG_GLPI;
@@ -1372,21 +1372,21 @@ class Impact extends CommonGLPI
         return true;
     }
 
-   /**
-    * Add an edge to the edge list if missing, else update it's direction
-    *
-    * @param array      $edges      Edges of the graph
-    * @param string     $key        ID of the new edge
-    * @param CommonDBTM $itemA      One of the node connected to this edge
-    * @param CommonDBTM $itemB      The other node connected to this edge
-    * @param int        $direction  Direction of the edge : A to B or B to A ?
-    *
-    * @since 9.5
-    *
-    * @return bool true if the node was missing, else false
-    *
-    * @throws InvalidArgumentException
-    */
+    /**
+     * Add an edge to the edge list if missing, else update it's direction
+     *
+     * @param array      $edges      Edges of the graph
+     * @param string     $key        ID of the new edge
+     * @param CommonDBTM $itemA      One of the node connected to this edge
+     * @param CommonDBTM $itemB      The other node connected to this edge
+     * @param int        $direction  Direction of the edge : A to B or B to A ?
+     *
+     * @since 9.5
+     *
+     * @return bool true if the node was missing, else false
+     *
+     * @throws InvalidArgumentException
+     */
     private static function addEdge(
         array &$edges,
         string $key,
@@ -1425,15 +1425,15 @@ class Impact extends CommonGLPI
         ];
     }
 
-   /**
-    * Build the graph and the cytoscape object
-    *
-    * @since 9.5
-    *
-    * @param string  $graph      The network graph (json)
-    * @param string  $params     Params of the graph (json)
-    * @param bool    $readonly   Is the graph editable ?
-    */
+    /**
+     * Build the graph and the cytoscape object
+     *
+     * @since 9.5
+     *
+     * @param string  $graph      The network graph (json)
+     * @param string  $params     Params of the graph (json)
+     * @param bool    $readonly   Is the graph editable ?
+     */
     public static function buildNetwork(
         string $graph,
         string $params,
@@ -1446,13 +1446,13 @@ class Impact extends CommonGLPI
       ");
     }
 
-   /**
-    * Get saved graph params for the current item
-    *
-    * @param CommonDBTM $item
-    *
-    * @return string $item
-    */
+    /**
+     * Get saved graph params for the current item
+     *
+     * @param CommonDBTM $item
+     *
+     * @return string $item
+     */
     public static function prepareParams(CommonDBTM $item)
     {
         $impact_item = ImpactItem::findForItem($item);
@@ -1489,14 +1489,14 @@ class Impact extends CommonGLPI
         return json_encode($params);
     }
 
-   /**
-    * Convert the php array reprensenting the graph into the format required by
-    * the Cytoscape library
-    *
-    * @param array $graph
-    *
-    * @return string json data
-    */
+    /**
+     * Convert the php array reprensenting the graph into the format required by
+     * the Cytoscape library
+     *
+     * @param array $graph
+     *
+     * @return string json data
+     */
     public static function makeDataForCytoscape(array $graph)
     {
         $data = [];
@@ -1518,34 +1518,34 @@ class Impact extends CommonGLPI
         return json_encode($data);
     }
 
-   /**
-    * Load the "show ongoing tickets" dialog
-    *
-    * @since 9.5
-    */
+    /**
+     * Load the "show ongoing tickets" dialog
+     *
+     * @since 9.5
+     */
     public static function printShowOngoingDialog()
     {
        // This dialog will be built dynamically by the front end
         TemplateRenderer::getInstance()->display('impact/ongoing_modal.html.twig');
     }
 
-   /**
-    * Load the "edit compound" dialog
-    *
-    * @since 9.5
-    */
+    /**
+     * Load the "edit compound" dialog
+     *
+     * @since 9.5
+     */
     public static function printEditCompoundDialog()
     {
         TemplateRenderer::getInstance()->display('impact/edit_compound_modal.html.twig');
     }
 
-   /**
-    * Prepare the impact network
-    *
-    * @since 9.5
-    *
-    * @param CommonDBTM $item The specified item
-    */
+    /**
+     * Prepare the impact network
+     *
+     * @since 9.5
+     *
+     * @param CommonDBTM $item The specified item
+     */
     public static function prepareImpactNetwork(CommonDBTM $item)
     {
        // Load requirements
@@ -1578,12 +1578,12 @@ class Impact extends CommonGLPI
       ");
     }
 
-   /**
-    * Check that a given asset exist in the DB
-    *
-    * @param string $itemtype Class of the asset
-    * @param string $items_id id of the asset
-    */
+    /**
+     * Check that a given asset exist in the DB
+     *
+     * @param string $itemtype Class of the asset
+     * @param string $items_id id of the asset
+     */
     public static function assetExist(string $itemtype, string $items_id)
     {
         try {
@@ -1607,29 +1607,29 @@ class Impact extends CommonGLPI
         }
     }
 
-   /**
-    * Create an ID for a node (itemtype::items_id)
-    *
-    * @param CommonDBTM  $item Name of the node
-    *
-    * @return string
-    */
+    /**
+     * Create an ID for a node (itemtype::items_id)
+     *
+     * @param CommonDBTM  $item Name of the node
+     *
+     * @return string
+     */
     public static function getNodeID(CommonDBTM $item)
     {
         return get_class($item) . self::NODE_ID_DELIMITER . $item->fields['id'];
     }
 
-   /**
-    * Create an ID for an edge (NodeID->NodeID)
-    *
-    * @param CommonDBTM  $itemA     First node of the edge
-    * @param CommonDBTM  $itemB     Second node of the edge
-    * @param int         $direction Direction of the edge : A to B or B to A ?
-    *
-    * @return string|null
-    *
-    * @throws InvalidArgumentException
-    */
+    /**
+     * Create an ID for an edge (NodeID->NodeID)
+     *
+     * @param CommonDBTM  $itemA     First node of the edge
+     * @param CommonDBTM  $itemB     Second node of the edge
+     * @param int         $direction Direction of the edge : A to B or B to A ?
+     *
+     * @return string|null
+     *
+     * @throws InvalidArgumentException
+     */
     public static function getEdgeID(
         CommonDBTM $itemA,
         CommonDBTM $itemB,
@@ -1650,11 +1650,11 @@ class Impact extends CommonGLPI
     }
 
 
-   /**
-    * Clean impact records for a given item that has been purged form the db
-    *
-    * @param CommonDBTM $item The item being purged
-    */
+    /**
+     * Clean impact records for a given item that has been purged form the db
+     *
+     * @param CommonDBTM $item The item being purged
+     */
     public static function clean(\CommonDBTM $item)
     {
         global $DB;
@@ -1724,22 +1724,22 @@ class Impact extends CommonGLPI
         }
     }
 
-   /**
-    * Check if the given itemtype is enabled in impact config
-    *
-    * @param string $itemtype
-    * @return bool
-    */
+    /**
+     * Check if the given itemtype is enabled in impact config
+     *
+     * @param string $itemtype
+     * @return bool
+     */
     public static function isEnabled(string $itemtype): bool
     {
         return in_array($itemtype, self::getEnabledItemtypes());
     }
 
-   /**
-    * Return enabled itemtypes
-    *
-    * @return array
-    */
+    /**
+     * Return enabled itemtypes
+     *
+     * @return array
+     */
     public static function getEnabledItemtypes(): array
     {
        // Get configured values
@@ -1759,11 +1759,11 @@ class Impact extends CommonGLPI
         });
     }
 
-   /**
-    * Return default itemtypes
-    *
-    * @return array
-    */
+    /**
+     * Return default itemtypes
+     *
+     * @return array
+     */
     public static function getDefaultItemtypes()
     {
         global $CFG_GLPI;
@@ -1772,9 +1772,9 @@ class Impact extends CommonGLPI
         return array_keys($values);
     }
 
-   /**
-    * Print the impact config tab
-    */
+    /**
+     * Print the impact config tab
+     */
     public static function showConfigForm()
     {
         global $CFG_GLPI;

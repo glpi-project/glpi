@@ -62,36 +62,36 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class AppliancesPluginToCoreCommand extends AbstractCommand
 {
-   /**
-    * Error code returned if plugin version or plugin data is invalid.
-    *
-    * @var integer
-    */
+    /**
+     * Error code returned if plugin version or plugin data is invalid.
+     *
+     * @var integer
+     */
     const ERROR_PLUGIN_VERSION_OR_DATA_INVALID = 1;
 
-   /**
-    * Error code returned if import failed.
-    *
-    * @var integer
-    */
+    /**
+     * Error code returned if import failed.
+     *
+     * @var integer
+     */
     const ERROR_PLUGIN_IMPORT_FAILED = 2;
 
-   /**
-    * list of possible relations of the plugin indexed by their correspond integer in the plugin
-    *
-    * @var array
-    */
+    /**
+     * list of possible relations of the plugin indexed by their correspond integer in the plugin
+     *
+     * @var array
+     */
     const PLUGIN_RELATION_TYPES = [
       1 => Location::class,
       2 => Network::class,
       3 => Domain::class,
     ];
 
-   /**
-    * list of usefull plugin tables and fields
-    *
-    * @var array
-    */
+    /**
+     * list of usefull plugin tables and fields
+     *
+     * @var array
+     */
     const PLUGIN_APPLIANCE_TABLES = [
       "glpi_plugin_appliances_appliances"       => [
          "id",
@@ -120,18 +120,18 @@ class AppliancesPluginToCoreCommand extends AbstractCommand
       "glpi_plugin_appliances_relations"        => ["id","plugin_appliances_appliances_items_id","relations_id"]
     ];
 
-   /**
-    * itemtype corresponding to appliance in plugin
-    *
-    * @var string
-    */
+    /**
+     * itemtype corresponding to appliance in plugin
+     *
+     * @var string
+     */
     const PLUGIN_APPLIANCE_ITEMTYPE = "PluginAppliancesAppliance";
 
-   /**
-    * itemtype corresponding to appliance in core
-    *
-    * @var string
-    */
+    /**
+     * itemtype corresponding to appliance in core
+     *
+     * @var string
+     */
     const CORE_APPLIANCE_ITEMTYPE = "Appliance";
 
     protected function configure()
@@ -175,11 +175,11 @@ class AppliancesPluginToCoreCommand extends AbstractCommand
         return 0; // Success
     }
 
-   /**
-    * Check that required tables exists and fields are OK for migration.
-    *
-    * @return bool
-    */
+    /**
+     * Check that required tables exists and fields are OK for migration.
+     *
+     * @return bool
+     */
     private function checkPlugin(): bool
     {
         $missing_tables = false;
@@ -213,11 +213,11 @@ class AppliancesPluginToCoreCommand extends AbstractCommand
         return true;
     }
 
-   /**
-   * Clean data from core tables.
-   *
-   * @throws RuntimeException
-   */
+    /**
+     * Clean data from core tables.
+     *
+     * @throws RuntimeException
+     */
     private function cleanCoreTables()
     {
         $core_tables = [
@@ -250,11 +250,11 @@ class AppliancesPluginToCoreCommand extends AbstractCommand
     }
 
 
-   /**
-    * Copy plugin tables to backup tables from plugin to core keeping same ID.
-    *
-    * @return bool
-    */
+    /**
+     * Copy plugin tables to backup tables from plugin to core keeping same ID.
+     *
+     * @return bool
+     */
     private function migratePlugin(): bool
     {
         global $CFG_GLPI;
@@ -274,11 +274,11 @@ class AppliancesPluginToCoreCommand extends AbstractCommand
          && $this->updateProfilesApplianceRights();
     }
 
-   /**
-    * Update profile rights (Associable items to a ticket).
-    *
-    * @return bool
-    */
+    /**
+     * Update profile rights (Associable items to a ticket).
+     *
+     * @return bool
+     */
     private function updateProfilesApplianceRights(): bool
     {
         $this->output->writeln(
@@ -307,11 +307,11 @@ class AppliancesPluginToCoreCommand extends AbstractCommand
         return true;
     }
 
-   /**
-    * Rename itemtype in core tables.
-    *
-    * @return bool
-    */
+    /**
+     * Rename itemtype in core tables.
+     *
+     * @return bool
+     */
     private function updateItemtypes(): bool
     {
         $this->output->writeln(
@@ -355,11 +355,11 @@ class AppliancesPluginToCoreCommand extends AbstractCommand
         return true;
     }
 
-   /**
-    * Create appliance items.
-    *
-    * @return bool
-    */
+    /**
+     * Create appliance items.
+     *
+     * @return bool
+     */
     private function createApplianceItems(): bool
     {
         $this->output->writeln(
@@ -415,11 +415,11 @@ class AppliancesPluginToCoreCommand extends AbstractCommand
         return true;
     }
 
-   /**
-    * Create appliance environments.
-    *
-    * @return bool
-    */
+    /**
+     * Create appliance environments.
+     *
+     * @return bool
+     */
     private function createApplianceEnvironments(): bool
     {
         $this->output->writeln(
@@ -474,11 +474,11 @@ class AppliancesPluginToCoreCommand extends AbstractCommand
         return true;
     }
 
-   /**
-    * Create appliances.
-    *
-    * @return bool
-    */
+    /**
+     * Create appliances.
+     *
+     * @return bool
+     */
     private function createAppliances(): bool
     {
         $this->output->writeln(
@@ -549,11 +549,11 @@ class AppliancesPluginToCoreCommand extends AbstractCommand
         return true;
     }
 
-   /**
-    * Create appliance types.
-    *
-    * @return bool
-    */
+    /**
+     * Create appliance types.
+     *
+     * @return bool
+     */
     private function createApplianceTypes(): bool
     {
         $this->output->writeln(
@@ -611,11 +611,11 @@ class AppliancesPluginToCoreCommand extends AbstractCommand
         return true;
     }
 
-   /**
-    * Create appliance relations.
-    *
-    * @return bool
-    */
+    /**
+     * Create appliance relations.
+     *
+     * @return bool
+     */
     private function createApplianceRelations(): bool
     {
         $this->output->writeln(
@@ -704,14 +704,14 @@ class AppliancesPluginToCoreCommand extends AbstractCommand
     }
 
 
-   /**
-    * Output import error message.
-    *
-    * @param string           $message
-    * @param ProgressBar|null $progress_bar
-    *
-    * @return void
-    */
+    /**
+     * Output import error message.
+     *
+     * @param string           $message
+     * @param ProgressBar|null $progress_bar
+     *
+     * @return void
+     */
     private function outputImportError($message, ProgressBar $progress_bar = null)
     {
 

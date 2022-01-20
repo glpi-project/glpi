@@ -246,14 +246,14 @@ class NetworkPortFiberchannel extends NetworkPortInstantiation
     }
 
 
-   /**
-    * Transform a port speed from string to integerer and vice-versa
-    *
-    * @param integer|string $val        port speed
-    * @param boolean        $to_string  true if we must transform the speed to string
-    *
-    * @return integer|string (regarding what is requested)
-   **/
+    /**
+     * Transform a port speed from string to integerer and vice-versa
+     *
+     * @param integer|string $val        port speed
+     * @param boolean        $to_string  true if we must transform the speed to string
+     *
+     * @return integer|string (regarding what is requested)
+     **/
     public static function transformPortSpeed($val, $to_string)
     {
 
@@ -292,13 +292,13 @@ class NetworkPortFiberchannel extends NetworkPortInstantiation
     }
 
 
-   /**
-    * Get the possible value for Ethernet port speed
-    *
-    * @param integer|null $val  if not set, ask for all values, else for 1 value (default NULL)
-    *
-    * @return array|string
-   **/
+    /**
+     * Get the possible value for Ethernet port speed
+     *
+     * @param integer|null $val  if not set, ask for all values, else for 1 value (default NULL)
+     *
+     * @return array|string
+     **/
     public static function getPortSpeed($val = null)
     {
 
@@ -320,11 +320,11 @@ class NetworkPortFiberchannel extends NetworkPortInstantiation
     }
 
 
-   /**
-    * @param $field
-    * @param $values
-    * @param $options   array
-   **/
+    /**
+     * @param $field
+     * @param $values
+     * @param $options   array
+     **/
     public static function getSpecificValueToDisplay($field, $values, array $options = [])
     {
 
@@ -339,12 +339,12 @@ class NetworkPortFiberchannel extends NetworkPortInstantiation
     }
 
 
-   /**
-    * @param $field
-    * @param $name            (default '')
-    * @param $values          (defaul '')
-    * @param $options   array
-    */
+    /**
+     * @param $field
+     * @param $name            (default '')
+     * @param $values          (defaul '')
+     * @param $options   array
+     */
     public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
     {
 
@@ -362,10 +362,10 @@ class NetworkPortFiberchannel extends NetworkPortInstantiation
     }
 
 
-   /**
-    * @param $tab         array
-    * @param $joinparams  array
-   **/
+    /**
+     * @param $tab         array
+     * @param $joinparams  array
+     **/
     public static function getSearchOptionsToAddForInstantiation(array &$tab, array $joinparams)
     {
         $tab[] = [

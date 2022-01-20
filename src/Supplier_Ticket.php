@@ -35,7 +35,7 @@
  * Class Supplier_Ticket
  *
  * @since 0.84
-**/
+ **/
 class Supplier_Ticket extends CommonITILActor
 {
    // From CommonDBRelation
@@ -45,12 +45,12 @@ class Supplier_Ticket extends CommonITILActor
     public static $items_id_2 = 'suppliers_id';
 
 
-   /**
-    * @param $items_id
-    * @param $email
-    *
-    * @since 0.85
-   **/
+    /**
+     * @param $items_id
+     * @param $email
+     *
+     * @since 0.85
+     **/
     public function isSupplierEmail($items_id, $email)
     {
         global $DB;

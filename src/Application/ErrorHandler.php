@@ -43,11 +43,11 @@ use Twig\Error\Error;
  */
 class ErrorHandler
 {
-   /**
-    * Map between error codes and log levels.
-    *
-    * @var array
-    */
+    /**
+     * Map between error codes and log levels.
+     *
+     * @var array
+     */
     const ERROR_LEVEL_MAP = [
       E_ERROR             => LogLevel::CRITICAL,
       E_WARNING           => LogLevel::WARNING,
@@ -66,11 +66,11 @@ class ErrorHandler
       E_USER_DEPRECATED   => LogLevel::NOTICE,
     ];
 
-   /**
-    * Fatal errors list.
-    *
-    * @var array
-    */
+    /**
+     * Fatal errors list.
+     *
+     * @var array
+     */
     const FATAL_ERRORS = [
       E_ERROR,
       E_PARSE,
@@ -80,76 +80,76 @@ class ErrorHandler
       E_RECOVERABLE_ERROR,
     ];
 
-   /**
-    * Exit code to use on shutdown.
-    *
-    * @var int|null
-    */
+    /**
+     * Exit code to use on shutdown.
+     *
+     * @var int|null
+     */
     private $exit_code = null;
 
-   /**
-    * Flag to indicate if error should be forwarded to PHP internal error handler.
-    *
-    * @var boolean
-    */
+    /**
+     * Flag to indicate if error should be forwarded to PHP internal error handler.
+     *
+     * @var boolean
+     */
     private $forward_to_internal_handler = true;
 
-   /**
-    * Logger instance.
-    *
-    * @var LoggerInterface
-    */
+    /**
+     * Logger instance.
+     *
+     * @var LoggerInterface
+     */
     private $logger;
 
-   /**
-    * Last fatal error trace.
-    *
-    * @var string
-    */
+    /**
+     * Last fatal error trace.
+     *
+     * @var string
+     */
     private $last_fatal_trace;
 
-   /**
-    * Indicates wether output is disabled.
-    *
-    * @var bool
-    */
+    /**
+     * Indicates wether output is disabled.
+     *
+     * @var bool
+     */
     private $output_disabled = false;
 
-   /**
-    * Indicates wether output is suspended (temporarly disabled).
-    *
-    * @var bool
-    */
+    /**
+     * Indicates wether output is suspended (temporarly disabled).
+     *
+     * @var bool
+     */
     private $output_suspended = false;
 
-   /**
-    * Output handler to use. If not set, output will be directly echoed on a format depending on
-    * execution context (Web VS CLI).
-    *
-    * @var OutputInterface|null
-    */
+    /**
+     * Output handler to use. If not set, output will be directly echoed on a format depending on
+     * execution context (Web VS CLI).
+     *
+     * @var OutputInterface|null
+     */
     private $output_handler;
 
-   /**
-    * Reserved memory that will be used in case of an "out of memory" error.
-    *
-    * @var string
-    */
+    /**
+     * Reserved memory that will be used in case of an "out of memory" error.
+     *
+     * @var string
+     */
     private $reserved_memory;
 
-   /**
-    * @param LoggerInterface|null $logger
-    */
+    /**
+     * @param LoggerInterface|null $logger
+     */
     public function __construct(LoggerInterface $logger = null)
     {
         $this->logger = $logger;
     }
 
-   /**
-    * Return singleton instance of self.
-    *
-    * @return ErrorHandler
-    */
+    /**
+     * Return singleton instance of self.
+     *
+     * @return ErrorHandler
+     */
     public static function getInstance(): ErrorHandler
     {
         static $instance = null;
@@ -162,21 +162,21 @@ class ErrorHandler
         return $instance;
     }
 
-   /**
-    * Enable output.
-    *
-    * @return void
-    */
+    /**
+     * Enable output.
+     *
+     * @return void
+     */
     public function enableOutput(): void
     {
         $this->output_disabled = false;
     }
 
-   /**
-    * Disable output.
-    *
-    * @return void
-    */
+    /**
+     * Disable output.
+     *
+     * @return void
+     */
     public function disableOutput(): void
     {
         $this->output_disabled = true;
@@ -202,23 +202,23 @@ class ErrorHandler
         $this->output_suspended = false;
     }
 
-   /**
-    * Defines output handler.
-    *
-    * @param OutputInterface $output_handler
-    *
-    * @return void
-    */
+    /**
+     * Defines output handler.
+     *
+     * @param OutputInterface $output_handler
+     *
+     * @return void
+     */
     public function setOutputHandler(OutputInterface $output_handler): void
     {
         $this->output_handler = $output_handler;
     }
 
-   /**
-    * Register error handler callbacks.
-    *
-    * @return void
-    */
+    /**
+     * Register error handler callbacks.
+     *
+     * @return void
+     */
     public function register(): void
     {
         set_error_handler([$this, 'handleError']);
@@ -227,16 +227,16 @@ class ErrorHandler
         $this->reserved_memory = str_repeat('x', 50 * 1024); // reserve 50 kB of memory space
     }
 
-   /**
-    * Error handler.
-    *
-    * @param integer $error_code
-    * @param string  $error_message
-    * @param string  $filename
-    * @param integer $line_number
-    *
-    * @return boolean
-    */
+    /**
+     * Error handler.
+     *
+     * @param integer $error_code
+     * @param string  $error_message
+     * @param string  $filename
+     * @param integer $line_number
+     *
+     * @return boolean
+     */
     public function handleError(int $error_code, string $error_message, string $filename, int $line_number)
     {
 
@@ -281,15 +281,15 @@ class ErrorHandler
         return $return;
     }
 
-   /**
-    * Twig error handler.
-    *
-    * This handler is manually called by application when an error occured during Twig template rendering.
-    *
-    * @param \Twig\Error\Error $error
-    *
-    * @return void
-    */
+    /**
+     * Twig error handler.
+     *
+     * This handler is manually called by application when an error occured during Twig template rendering.
+     *
+     * @param \Twig\Error\Error $error
+     *
+     * @return void
+     */
     public function handleTwigError(Error $error): void
     {
         $context = $error->getSourceContext();
@@ -311,17 +311,17 @@ class ErrorHandler
         $this->outputDebugMessage($error_type, $error_description, $log_level, isCommandLine());
     }
 
-   /**
-    * SQL error handler.
-    *
-    * This handler is manually called by application when a SQL error occured.
-    *
-    * @param integer $error_code
-    * @param string  $error_message
-    * @param string  $query
-    *
-    * @return void
-    */
+    /**
+     * SQL error handler.
+     *
+     * This handler is manually called by application when a SQL error occured.
+     *
+     * @param integer $error_code
+     * @param string  $error_message
+     * @param string  $query
+     *
+     * @return void
+     */
     public function handleSqlError(int $error_code, string $error_message, string $query)
     {
         $this->outputDebugMessage(
@@ -332,16 +332,16 @@ class ErrorHandler
         );
     }
 
-   /**
-    * SQL warnings handler.
-    *
-    * This handler is manually called by application when warnings are triggered by a SQL query.
-    *
-    * @param string[] $warnings
-    * @param string   $query
-    *
-    * @return void
-    */
+    /**
+     * SQL warnings handler.
+     *
+     * This handler is manually called by application when warnings are triggered by a SQL query.
+     *
+     * @param string[] $warnings
+     * @param string   $query
+     *
+     * @return void
+     */
     public function handleSqlWarnings(array $warnings, string $query)
     {
         $this->outputDebugMessage(
@@ -351,17 +351,17 @@ class ErrorHandler
         );
     }
 
-   /**
-    * Exception handler.
-    *
-    * This handler is called by PHP prior to exiting, when an Exception is not catched,
-    * or manually called by the application to log exception details.
-    *
-    * @param \Throwable $exception
-    * @param bool $quiet
-    *
-    * @return void
-    */
+    /**
+     * Exception handler.
+     *
+     * This handler is called by PHP prior to exiting, when an Exception is not catched,
+     * or manually called by the application to log exception details.
+     *
+     * @param \Throwable $exception
+     * @param bool $quiet
+     *
+     * @return void
+     */
     public function handleException(\Throwable $exception, bool $quiet = false): void
     {
         $this->exit_code = 255;
@@ -386,11 +386,11 @@ class ErrorHandler
         }
     }
 
-   /**
-    * Handle fatal errors.
-    *
-    * @retun void
-    */
+    /**
+     * Handle fatal errors.
+     *
+     * @retun void
+     */
     public function handleFatalError(): void
     {
        // Free reserved memory to be able to handle "out of memory" errors
@@ -435,28 +435,28 @@ class ErrorHandler
         }
     }
 
-   /**
-    * Defines if errors should be forward to PHP internal error handler.
-    *
-    * @param bool $forward_to_internal_handler
-    *
-    * @return void
-    */
+    /**
+     * Defines if errors should be forward to PHP internal error handler.
+     *
+     * @param bool $forward_to_internal_handler
+     *
+     * @return void
+     */
     public function setForwardToInternalHandler(bool $forward_to_internal_handler): void
     {
         $this->forward_to_internal_handler = $forward_to_internal_handler;
     }
 
-   /**
-    * Log message related to error.
-    *
-    * @param string $type
-    * @param string $description
-    * @param string $trace
-    * @param string $log_level
-    *
-    * @return void
-    */
+    /**
+     * Log message related to error.
+     *
+     * @param string $type
+     * @param string $description
+     * @param string $trace
+     * @param string $log_level
+     *
+     * @return void
+     */
     private function logErrorMessage(string $type, string $description, string $trace, string $log_level): void
     {
         if (!($this->logger instanceof LoggerInterface)) {
@@ -469,16 +469,16 @@ class ErrorHandler
         );
     }
 
-   /**
-    * Output debug message related to error.
-    *
-    * @param string  $error_type
-    * @param string  $message
-    * @param string  $log_level
-    * @param boolean $force
-    *
-    * @return void
-    */
+    /**
+     * Output debug message related to error.
+     *
+     * @param string  $error_type
+     * @param string  $message
+     * @param string  $log_level
+     * @param boolean $force
+     *
+     * @return void
+     */
     private function outputDebugMessage(string $error_type, string $message, string $log_level, bool $force = false): void
     {
 
@@ -528,13 +528,13 @@ class ErrorHandler
         }
     }
 
-   /**
-    * Get error type as string from error code.
-    *
-    * @param int $error_code
-    *
-    * @return string
-    */
+    /**
+     * Get error type as string from error code.
+     *
+     * @param int $error_code
+     *
+     * @return string
+     */
     private function codeToString(int $error_code): string
     {
         $map = [
@@ -558,13 +558,13 @@ class ErrorHandler
         return $map[$error_code] ?? 'Unknown error';
     }
 
-   /**
-    * Get trace as string.
-    *
-    * @param array $trace
-    *
-    * @return string
-    */
+    /**
+     * Get trace as string.
+     *
+     * @param array $trace
+     *
+     * @return string
+     */
     private function getTraceAsString(array $trace): string
     {
         if (empty($trace)) {

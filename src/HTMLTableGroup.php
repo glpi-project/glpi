@@ -33,7 +33,7 @@
 
 /**
  * @since 0.84
-**/
+ **/
 class HTMLTableGroup extends HTMLTableBase
 {
     private $name;
@@ -43,11 +43,11 @@ class HTMLTableGroup extends HTMLTableBase
     private $rows = [];
 
 
-   /**
-    * @param $table     HTMLTableMain object
-    * @param $name
-    * @param $content
-   **/
+    /**
+     * @param $table     HTMLTableMain object
+     * @param $name
+     * @param $content
+     **/
     public function __construct(HTMLTableMain $table, $name, $content)
     {
 
@@ -70,9 +70,9 @@ class HTMLTableGroup extends HTMLTableBase
     }
 
 
-   /**
-    * @param $header    HTMLTableHeader object
-   **/
+    /**
+     * @param $header    HTMLTableHeader object
+     **/
     public function haveHeader(HTMLTableHeader $header)
     {
 
@@ -172,20 +172,20 @@ class HTMLTableGroup extends HTMLTableBase
     }
 
 
-   /**
-    * Display the current group (with headers and rows)
-    *
-    * @param integer $totalNumberOfColumn  Total number of columns : to span correctly the title
-    * @param array   $params               array of possible options:
-    *     'display_super_for_each_group'           display the super header (ie.: big header of the table)
-    *                                              before the group specific headers
-    *     'display_title_for_each_group'           display the title of the header before the group
-    *                                              specific headers
-    *     'display_header_for_each_group'          display the header of each group
-    *     'display_header_on_foot_for_each_group'  repeat group header on foot of group
-    *
-    * @return void
-   **/
+    /**
+     * Display the current group (with headers and rows)
+     *
+     * @param integer $totalNumberOfColumn  Total number of columns : to span correctly the title
+     * @param array   $params               array of possible options:
+     *     'display_super_for_each_group'           display the super header (ie.: big header of the table)
+     *                                              before the group specific headers
+     *     'display_title_for_each_group'           display the title of the header before the group
+     *                                              specific headers
+     *     'display_header_for_each_group'          display the header of each group
+     *     'display_header_on_foot_for_each_group'  repeat group header on foot of group
+     *
+     * @return void
+     **/
     public function displayGroup($totalNumberOfColumn, array $params)
     {
 

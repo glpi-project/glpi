@@ -51,10 +51,10 @@ class SLM extends DbTestCase
     }
 
 
-   /**
-    * Create a full SLM with all level filled (slm/sla/ola/levels/action/criterias)
-    * And Delete IT to check clean os sons objects
-    */
+    /**
+     * Create a full SLM with all level filled (slm/sla/ola/levels/action/criterias)
+     * And Delete IT to check clean os sons objects
+     */
     public function testLifecyle()
     {
         $this->login();
@@ -275,10 +275,10 @@ class SLM extends DbTestCase
     }
 
 
-   /**
-    * Create a full SLM by month with all level filled (slm/sla/ola/levels/action/criterias)
-    * And Delete IT to check clean os sons objects
-    */
+    /**
+     * Create a full SLM by month with all level filled (slm/sla/ola/levels/action/criterias)
+     * And Delete IT to check clean os sons objects
+     */
     public function testLifecylebyMonth()
     {
         $this->login();
@@ -494,9 +494,9 @@ class SLM extends DbTestCase
         $this->boolean($oaction->getFromDB($oaction_id))->isFalse();
     }
 
-   /**
-    * Check 'internal_time_to_resolve' computed dates.
-    */
+    /**
+     * Check 'internal_time_to_resolve' computed dates.
+     */
     public function testInternalTtrComputation()
     {
         $this->login();
@@ -622,9 +622,9 @@ class SLM extends DbTestCase
         $this->variable($ticket->fields['internal_time_to_resolve'])->isEqualTo($tomorrow_2pm);
     }
 
-      /**
-    * Check 'internal_time_to_resolve' computed dates.
-    */
+    /**
+     * Check 'internal_time_to_resolve' computed dates.
+     */
     public function testComputationByMonth()
     {
         $this->login();

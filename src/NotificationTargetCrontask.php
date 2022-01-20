@@ -33,7 +33,7 @@
 
 /**
  * NotificationTargetCrontask Class
-**/
+ **/
 class NotificationTargetCrontask extends NotificationTarget
 {
     public function getEvents()

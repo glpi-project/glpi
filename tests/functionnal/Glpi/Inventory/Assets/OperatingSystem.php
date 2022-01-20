@@ -75,9 +75,9 @@ class OperatingSystem extends AbstractInventoryAsset
         ] + $this->fusionProvider();
     }
 
-   /**
-    * @dataProvider assetProvider
-    */
+    /**
+     * @dataProvider assetProvider
+     */
     public function testPrepare($nodes, $expected)
     {
         $xml = $this->buildXml($nodes);

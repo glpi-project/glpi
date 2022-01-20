@@ -34,7 +34,7 @@
 /**
  * Template for followups
  * @since 9.5
-**/
+ **/
 class ITILFollowupTemplate extends AbstractITILChildTemplate
 {
    // From CommonDBTM

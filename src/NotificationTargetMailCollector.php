@@ -35,7 +35,7 @@
  * NotificationTargetMailCollector Class
  *
  * @since 0.85
-**/
+ **/
 class NotificationTargetMailCollector extends NotificationTarget
 {
     public function getEvents()

@@ -41,30 +41,30 @@ use Glpi\Toolbox\Sanitizer;
  */
 class Auth extends CommonGLPI
 {
-   /** @var array Array of errors */
+    /** @var array Array of errors */
     private $errors = [];
-   /** @var User User class variable */
+    /** @var User User class variable */
     public $user;
-   /** @var int External authentication variable */
+    /** @var int External authentication variable */
     public $extauth = 0;
-   /** @var array External authentication methods */
+    /** @var array External authentication methods */
     public $authtypes;
-   /** @var int Indicates if the user is authenticated or not */
+    /** @var int Indicates if the user is authenticated or not */
     public $auth_succeded = 0;
-   /** @var int Indicates if the user is already present in database */
+    /** @var int Indicates if the user is already present in database */
     public $user_present = 0;
-   /** @var int Indicates if the user password expired */
+    /** @var int Indicates if the user password expired */
     public $password_expired = false;
 
-   /**
-    * Indicated if user was found in the directory.
-    * @var boolean
-    */
+    /**
+     * Indicated if user was found in the directory.
+     * @var boolean
+     */
     public $user_found = false;
 
-   /** @var resource|boolean LDAP connection descriptor */
+    /** @var resource|boolean LDAP connection descriptor */
     public $ldap_connection;
-   /** @var bool Store user LDAP dn */
+    /** @var bool Store user LDAP dn */
     public $user_dn = false;
 
     const DB_GLPI  = 1;
@@ -81,11 +81,11 @@ class Auth extends CommonGLPI
     const USER_EXISTS_WITH_PWD    = 1;
     const USER_EXISTS_WITHOUT_PWD = 2;
 
-   /**
-    * Constructor
-    *
-    * @return void
-    */
+    /**
+     * Constructor
+     *
+     * @return void
+     */
     public function __construct()
     {
         $this->user = new User();
@@ -123,15 +123,15 @@ class Auth extends CommonGLPI
         return false;
     }
 
-   /**
-    * Check user existence in DB
-    *
-    * @global DBmysql $DB
-    * @param  array   $options conditions : array('name'=>'glpi')
-    *                                    or array('email' => 'test at test.com')
-    *
-    * @return integer {@link Auth::USER_DOESNT_EXIST}, {@link Auth::USER_EXISTS_WITHOUT_PWD} or {@link Auth::USER_EXISTS_WITH_PWD}
-    */
+    /**
+     * Check user existence in DB
+     *
+     * @global DBmysql $DB
+     * @param  array   $options conditions : array('name'=>'glpi')
+     *                                    or array('email' => 'test at test.com')
+     *
+     * @return integer {@link Auth::USER_DOESNT_EXIST}, {@link Auth::USER_EXISTS_WITHOUT_PWD} or {@link Auth::USER_EXISTS_WITH_PWD}
+     */
     public function userExists($options = [])
     {
         global $DB;
@@ -162,15 +162,15 @@ class Auth extends CommonGLPI
         }
     }
 
-   /**
-    * Try a IMAP/POP connection
-    *
-    * @param string $host  IMAP/POP host to connect
-    * @param string $login Login to try
-    * @param string $pass  Password to try
-    *
-    * @return boolean connection success
-    */
+    /**
+     * Try a IMAP/POP connection
+     *
+     * @param string $host  IMAP/POP host to connect
+     * @param string $login Login to try
+     * @param string $pass  Password to try
+     *
+     * @return boolean connection success
+     */
     public function connection_imap($host, $login, $pass)
     {
 
@@ -216,16 +216,16 @@ class Auth extends CommonGLPI
         return false;
     }
 
-   /**
-    * Find a user in a LDAP and return is BaseDN
-    * Based on GRR auth system
-    *
-    * @param string $ldap_method ldap_method array to use
-    * @param string $login       User Login
-    * @param string $password    User Password
-    *
-    * @return string basedn of the user / false if not founded
-    */
+    /**
+     * Find a user in a LDAP and return is BaseDN
+     * Based on GRR auth system
+     *
+     * @param string $ldap_method ldap_method array to use
+     * @param string $login       User Login
+     * @param string $password    User Password
+     *
+     * @return string basedn of the user / false if not founded
+     */
     public function connection_ldap($ldap_method, $login, $password)
     {
 
@@ -288,16 +288,16 @@ class Auth extends CommonGLPI
         }
     }
 
-   /**
-    * Check is a password match the stored hash
-    *
-    * @since 0.85
-    *
-    * @param string $pass Password (pain-text)
-    * @param string $hash Hash
-    *
-    * @return boolean
-    */
+    /**
+     * Check is a password match the stored hash
+     *
+     * @since 0.85
+     *
+     * @param string $pass Password (pain-text)
+     * @param string $hash Hash
+     *
+     * @return boolean
+     */
     public static function checkPassword($pass, $hash)
     {
 
@@ -317,51 +317,51 @@ class Auth extends CommonGLPI
         return $ok;
     }
 
-   /**
-    * Is the hash stored need to be regenerated
-    *
-    * @since 0.85
-    *
-    * @param string $hash Hash
-    *
-    * @return boolean
-    */
+    /**
+     * Is the hash stored need to be regenerated
+     *
+     * @since 0.85
+     *
+     * @param string $hash Hash
+     *
+     * @return boolean
+     */
     public static function needRehash($hash)
     {
 
         return password_needs_rehash($hash, PASSWORD_DEFAULT);
     }
 
-   /**
-    * Compute the hash for a password
-    *
-    * @since 0.85
-    *
-    * @param string $pass Password
-    *
-    * @return string
-    */
+    /**
+     * Compute the hash for a password
+     *
+     * @since 0.85
+     *
+     * @param string $pass Password
+     *
+     * @return string
+     */
     public static function getPasswordHash($pass)
     {
 
         return password_hash($pass, PASSWORD_DEFAULT);
     }
 
-   /**
-    * Find a user in the GLPI DB
-    *
-    * try to connect to DB
-    * update the instance variable user with the user who has the name $name
-    * and the password is $password in the DB.
-    * If not found or can't connect to DB updates the instance variable err
-    * with an eventual error message
-    *
-    * @global DBmysql $DB
-    * @param string $name     User Login
-    * @param string $password User Password
-    *
-    * @return boolean user in GLPI DB with the right password
-    */
+    /**
+     * Find a user in the GLPI DB
+     *
+     * try to connect to DB
+     * update the instance variable user with the user who has the name $name
+     * and the password is $password in the DB.
+     * If not found or can't connect to DB updates the instance variable err
+     * with an eventual error message
+     *
+     * @global DBmysql $DB
+     * @param string $name     User Login
+     * @param string $password User Password
+     *
+     * @return boolean user in GLPI DB with the right password
+     */
     public function connection_db($name, $password)
     {
         global $CFG_GLPI, $DB;
@@ -468,13 +468,13 @@ class Auth extends CommonGLPI
         return false;
     }
 
-   /**
-    * Try to get login of external auth method
-    *
-    * @param integer $authtype external auth type (default 0)
-    *
-    * @return boolean user login success
-    */
+    /**
+     * Try to get login of external auth method
+     *
+     * @param integer $authtype external auth type (default 0)
+     *
+     * @return boolean user login success
+     */
     public function getAlternateAuthSystemsUserLogin($authtype = 0)
     {
         global $CFG_GLPI;
@@ -635,44 +635,44 @@ class Auth extends CommonGLPI
         return false;
     }
 
-   /**
-    * Get the current identification error
-    *
-    * @return string current identification error
-    */
+    /**
+     * Get the current identification error
+     *
+     * @return string current identification error
+     */
     public function getErr()
     {
         return implode("<br>\n", $this->getErrors());
     }
 
-   /**
-    * Get errors
-    *
-    * @since 9.4
-    *
-    * @return array
-    */
+    /**
+     * Get errors
+     *
+     * @since 9.4
+     *
+     * @return array
+     */
     public function getErrors()
     {
         return $this->errors;
     }
 
-   /**
-    * Get the current user object
-    *
-    * @return object current user
-    */
+    /**
+     * Get the current user object
+     *
+     * @return object current user
+     */
     public function getUser()
     {
         return $this->user;
     }
 
-   /**
-    * Get all the authentication methods parameters
-    * and return it as an array
-    *
-    * @return void
-    */
+    /**
+     * Get all the authentication methods parameters
+     * and return it as an array
+     *
+     * @return void
+     */
     public function getAuthMethods()
     {
 
@@ -683,13 +683,13 @@ class Auth extends CommonGLPI
         ];
     }
 
-   /**
-    * Add a message to the global identification error message
-    *
-    * @param string $message the message to add
-    *
-    * @return void
-    */
+    /**
+     * Add a message to the global identification error message
+     *
+     * @param string $message the message to add
+     *
+     * @return void
+     */
     public function addToError($message)
     {
         if (!in_array($message, $this->errors)) {
@@ -697,17 +697,17 @@ class Auth extends CommonGLPI
         }
     }
 
-   /**
-    * Manage use authentication and initialize the session
-    *
-    * @param string  $login_name      Login
-    * @param string  $login_password  Password
-    * @param boolean $noauto          (false by default)
-    * @param bool    $remember_me
-    * @param string  $login_auth      Type of auth - id of the auth
-    *
-    * @return boolean (success)
-    */
+    /**
+     * Manage use authentication and initialize the session
+     *
+     * @param string  $login_name      Login
+     * @param string  $login_password  Password
+     * @param boolean $noauto          (false by default)
+     * @param bool    $remember_me
+     * @param string  $login_auth      Type of auth - id of the auth
+     *
+     * @return boolean (success)
+     */
     public function login($login_name, $login_password, $noauto = false, $remember_me = false, $login_auth = '')
     {
         global $DB, $CFG_GLPI;
@@ -1053,18 +1053,18 @@ class Auth extends CommonGLPI
         return $this->auth_succeded;
     }
 
-   /**
-    * Print all the authentication methods
-    *
-    * @param array $options Possible options:
-    * - name : Name of the select (default is auths_id)
-    * - value : Selected value (default 0)
-    * - display : If true, the dropdown is displayed instead of returned (default true)
-    * - display_emptychoice : If true, an empty option is added (default true)
-    * - hide_if_no_elements  : boolean / hide dropdown if there is no elements (default false)
-    *
-    * @return void|string (Based on 'display' option)
-    */
+    /**
+     * Print all the authentication methods
+     *
+     * @param array $options Possible options:
+     * - name : Name of the select (default is auths_id)
+     * - value : Selected value (default 0)
+     * - display : If true, the dropdown is displayed instead of returned (default true)
+     * - display_emptychoice : If true, an empty option is added (default true)
+     * - hide_if_no_elements  : boolean / hide dropdown if there is no elements (default false)
+     *
+     * @return void|string (Based on 'display' option)
+     */
     public static function dropdown($options = [])
     {
         global $DB;
@@ -1115,12 +1115,12 @@ class Auth extends CommonGLPI
         return Dropdown::showFromArray($p['name'], $methods, $p);
     }
 
-   /**
-   * Builds CAS versions dropdown
-   * @param string $value (default 'CAS_VERSION_2_0')
-   *
-   * @return string
-   */
+    /**
+     * Builds CAS versions dropdown
+     * @param string $value (default 'CAS_VERSION_2_0')
+     *
+     * @return string
+     */
     public static function dropdownCasVersion($value = 'CAS_VERSION_2_0')
     {
         $options['CAS_VERSION_1_0'] = __('Version 1');
@@ -1129,16 +1129,16 @@ class Auth extends CommonGLPI
         return Dropdown::showFromArray('cas_version', $options, ['value' => $value]);
     }
 
-   /**
-    * Get name of an authentication method
-    *
-    * @param integer $authtype Authentication method
-    * @param integer $auths_id Authentication method ID
-    * @param integer $link     show links to config page? (default 0)
-    * @param string  $name     override the name if not empty (default '')
-    *
-    * @return string
-    */
+    /**
+     * Get name of an authentication method
+     *
+     * @param integer $authtype Authentication method
+     * @param integer $auths_id Authentication method ID
+     * @param integer $link     show links to config page? (default 0)
+     * @param string  $name     override the name if not empty (default '')
+     *
+     * @return string
+     */
     public static function getMethodName($authtype, $auths_id, $link = 0, $name = '')
     {
 
@@ -1222,15 +1222,15 @@ class Auth extends CommonGLPI
         return '';
     }
 
-   /**
-    * Get all the authentication methods parameters for a specific authtype
-    *  and auths_id and return it as an array
-    *
-    * @param integer $authtype Authentication method
-    * @param integer $auths_id Authentication method ID
-    *
-    * @return mixed
-    */
+    /**
+     * Get all the authentication methods parameters for a specific authtype
+     *  and auths_id and return it as an array
+     *
+     * @param integer $authtype Authentication method
+     * @param integer $auths_id Authentication method ID
+     *
+     * @return mixed
+     */
     public static function getMethodsByID($authtype, $auths_id)
     {
 
@@ -1255,11 +1255,11 @@ class Auth extends CommonGLPI
         return [];
     }
 
-   /**
-    * Is an external authentication used?
-    *
-    * @return boolean
-    */
+    /**
+     * Is an external authentication used?
+     *
+     * @return boolean
+     */
     public static function useAuthExt()
     {
 
@@ -1296,27 +1296,27 @@ class Auth extends CommonGLPI
         return false;
     }
 
-   /**
-    * Is an alternate auth?
-    *
-    * @param integer $authtype auth type
-    *
-    * @return boolean
-    */
+    /**
+     * Is an alternate auth?
+     *
+     * @param integer $authtype auth type
+     *
+     * @return boolean
+     */
     public static function isAlternateAuth($authtype)
     {
         return in_array($authtype, [self::X509, self::CAS, self::EXTERNAL, self::API, self::COOKIE]);
     }
 
-   /**
-    * Check alternate authentication systems
-    *
-    * @param boolean $redirect        need to redirect (true) or get type of Auth system which match
-    *                                (false by default)
-    * @param string  $redirect_string redirect string if exists (default '')
-    *
-    * @return void|integer nothing if redirect is true, else Auth system ID
-    */
+    /**
+     * Check alternate authentication systems
+     *
+     * @param boolean $redirect        need to redirect (true) or get type of Auth system which match
+     *                                (false by default)
+     * @param string  $redirect_string redirect string if exists (default '')
+     *
+     * @return void|integer nothing if redirect is true, else Auth system ID
+     */
     public static function checkAlternateAuthSystems($redirect = false, $redirect_string = '')
     {
         global $CFG_GLPI;
@@ -1382,13 +1382,13 @@ class Auth extends CommonGLPI
         return false;
     }
 
-   /**
-    * Redirect user to page if authenticated
-    *
-    * @param string $redirect redirect string if exists, if null, check in $_POST or $_GET
-    *
-    * @return void|boolean nothing if redirect is true, else false
-    */
+    /**
+     * Redirect user to page if authenticated
+     *
+     * @param string $redirect redirect string if exists, if null, check in $_POST or $_GET
+     *
+     * @return void|boolean nothing if redirect is true, else false
+     */
     public static function redirectIfAuthenticated($redirect = null)
     {
         global $CFG_GLPI;
@@ -1428,13 +1428,13 @@ class Auth extends CommonGLPI
         }
     }
 
-   /**
-    * Display refresh button in the user page
-    *
-    * @param User $user User object
-    *
-    * @return void
-    */
+    /**
+     * Display refresh button in the user page
+     *
+     * @param User $user User object
+     *
+     * @return void
+     */
     public static function showSynchronizationForm(User $user)
     {
         global $DB, $CFG_GLPI;
@@ -1494,13 +1494,13 @@ class Auth extends CommonGLPI
         }
     }
 
-   /**
-    * Check if a login is valid
-    *
-    * @param string $login login to check
-    *
-    * @return boolean
-    */
+    /**
+     * Check if a login is valid
+     *
+     * @param string $login login to check
+     *
+     * @return boolean
+     */
     public static function isValidLogin($login)
     {
         return $login !== null && preg_match("/^[[:alnum:]'@.\-_ ]+$/iu", $login);
@@ -1521,17 +1521,17 @@ class Auth extends CommonGLPI
         return '';
     }
 
-   /**
-    * Show Tab content
-    *
-    * @since 0.83
-    *
-    * @param CommonGLPI $item         Item instance
-    * @param integer    $tabnum       Unused (default 0)
-    * @param integer    $withtemplate Unused (default 0)
-    *
-    * @return boolean
-    */
+    /**
+     * Show Tab content
+     *
+     * @since 0.83
+     *
+     * @param CommonGLPI $item         Item instance
+     * @param integer    $tabnum       Unused (default 0)
+     * @param integer    $withtemplate Unused (default 0)
+     *
+     * @return boolean
+     */
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
 
@@ -1541,11 +1541,11 @@ class Auth extends CommonGLPI
         return true;
     }
 
-   /**
-    * Show form for authentication configuration.
-    *
-    * @return void|boolean False if the form is not shown due to right error. Form is directly printed.
-    */
+    /**
+     * Show form for authentication configuration.
+     *
+     * @return void|boolean False if the form is not shown due to right error. Form is directly printed.
+     */
     public static function showOtherAuthList()
     {
         global $CFG_GLPI;
@@ -1746,11 +1746,11 @@ class Auth extends CommonGLPI
         Html::closeForm();
     }
 
-   /**
-    * Get authentication methods available
-    *
-    * @return array
-    */
+    /**
+     * Get authentication methods available
+     *
+     * @return array
+     */
     public static function getLoginAuthMethods()
     {
         global $DB;
@@ -1792,9 +1792,9 @@ class Auth extends CommonGLPI
         return $elements;
     }
 
-   /**
-    * Display the authentication source dropdown for login form
-    */
+    /**
+     * Display the authentication source dropdown for login form
+     */
     public static function dropdownLogin(bool $display = true)
     {
         $out = "";
@@ -1823,13 +1823,13 @@ class Auth extends CommonGLPI
         return "ti ti-login";
     }
 
-   /**
-    * Defines "rememberme" cookie.
-    *
-    * @param string $cookie_value
-    *
-    * @return void
-    */
+    /**
+     * Defines "rememberme" cookie.
+     *
+     * @param string $cookie_value
+     *
+     * @return void
+     */
     public static function setRememberMeCookie(string $cookie_value): void
     {
         global $CFG_GLPI;

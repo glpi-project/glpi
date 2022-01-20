@@ -35,7 +35,7 @@
  * Update from 9.4.0 to 9.4.1
  *
  * @return bool for success (will die for most error)
-**/
+ **/
 function update940to941()
 {
     global $DB, $migration;
@@ -46,7 +46,7 @@ function update940to941()
     $migration->displayTitle(sprintf(__('Update to %s'), '9.4.1'));
     $migration->setVersion('9.4.1');
 
-   /** Add a search option for profile id */
+    /** Add a search option for profile id */
     $migration->addPostQuery($DB->buildUpdate(
         'glpi_displaypreferences',
         [
@@ -80,9 +80,9 @@ function update940to941()
             ]
         )
     );
-   /** /Add a search option for profile id */
+    /** /Add a search option for profile id */
 
-   /** Fix URL of images inside ITIL objects contents */
+    /** Fix URL of images inside ITIL objects contents */
    // There is an exact copy of this process in "update941to942()".
    // First version of this migration was working
    // on MariaDB but not on MySQL due to usage of "\d" in a REGEXP expression.
@@ -161,7 +161,7 @@ function update940to941()
             $DB->update($task_table, $data, ['id' => $data['id']]);
         }
     }
-   /** /Fix URL of images inside ITIL objects contents */
+    /** /Fix URL of images inside ITIL objects contents */
 
    // Create a dedicated token for rememberme process
     if (!$DB->fieldExists('glpi_users', 'cookie_token')) {

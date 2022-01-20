@@ -42,7 +42,7 @@
  * Notifications for ObjectLock
  *
  * @since 9.1
-**/
+ **/
 class NotificationTargetObjectLock extends NotificationTarget
 {
     public function getEvents()
@@ -75,18 +75,18 @@ class NotificationTargetObjectLock extends NotificationTarget
     }
 
 
-   /**
-    * @see NotificationTarget::addNotificationTargets()
-   **/
+    /**
+     * @see NotificationTarget::addNotificationTargets()
+     **/
     public function addNotificationTargets($entity)
     {
         $this->addTarget(Notification::USER, __('Locking User'));
     }
 
 
-   /**
-    * @see NotificationTarget::addSpecificTargets()
-    **/
+    /**
+     * @see NotificationTarget::addSpecificTargets()
+     **/
     public function addSpecificTargets($data, $options)
     {
 

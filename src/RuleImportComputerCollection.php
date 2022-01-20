@@ -41,11 +41,11 @@ class RuleImportComputerCollection extends RuleCollection
     public $menu_option         = 'linkcomputer';
 
 
-   /**
-    * @since 0.84
-    *
-    * @return boolean
-   **/
+    /**
+     * @since 0.84
+     *
+     * @return boolean
+     **/
     public function canList()
     {
         if (Plugin::haveImport()) {

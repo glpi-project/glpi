@@ -43,7 +43,7 @@ use Sabre\VObject\Reader;
 
 /**
  * Planning Class
-**/
+ **/
 class Planning extends CommonGLPI
 {
     public static $rightname = 'planning';
@@ -70,11 +70,11 @@ class Planning extends CommonGLPI
     const TODO = 1;
     const DONE = 2;
 
-   /**
-    * @since 0.85
-    *
-    * @param $nb
-   **/
+    /**
+     * @since 0.85
+     *
+     * @param $nb
+     **/
     public static function getTypeName($nb = 0)
     {
         return __('Planning');
@@ -160,20 +160,20 @@ class Planning extends CommonGLPI
     }
 
 
-   /**
-    * @see CommonGLPI::getMenuShorcut()
-    *
-    * @since 0.85
-   **/
+    /**
+     * @see CommonGLPI::getMenuShorcut()
+     *
+     * @since 0.85
+     **/
     public static function getMenuShorcut()
     {
         return 'p';
     }
 
 
-   /**
-    * @since 0.85
-   **/
+    /**
+     * @since 0.85
+     **/
     public static function canView()
     {
 
@@ -220,11 +220,11 @@ class Planning extends CommonGLPI
     }
 
 
-   /**
-    * Get planning state name
-    *
-    * @param $value status ID
-   **/
+    /**
+     * Get planning state name
+     *
+     * @param $value status ID
+     **/
     public static function getState($value)
     {
 
@@ -241,14 +241,14 @@ class Planning extends CommonGLPI
     }
 
 
-   /**
-    * Dropdown of planning state
-    *
-    * @param $name   select name
-    * @param $value  default value (default '')
-    * @param $display  display of send string ? (true by default)
-    * @param $options  options
-   **/
+    /**
+     * Dropdown of planning state
+     *
+     * @param $name   select name
+     * @param $value  default value (default '')
+     * @param $display  display of send string ? (true by default)
+     * @param $options  options
+     **/
     public static function dropdownState($name, $value = '', $display = true, $options = [])
     {
 
@@ -261,14 +261,14 @@ class Planning extends CommonGLPI
     }
 
 
-   /**
-    * Check already planned user for a period
-    *
-    * @param integer $users_id user id
-    * @param string  $begin    begin date
-    * @param string  $end      end date
-    * @param array   $except   items which not be into account ['Reminder' => [1, 2, id_of_items]]
-   **/
+    /**
+     * Check already planned user for a period
+     *
+     * @param integer $users_id user id
+     * @param string  $begin    begin date
+     * @param string  $end      end date
+     * @param array   $except   items which not be into account ['Reminder' => [1, 2, id_of_items]]
+     **/
     public static function checkAlreadyPlanned($users_id, $begin, $end, $except = [])
     {
         global $CFG_GLPI;
@@ -325,22 +325,22 @@ class Planning extends CommonGLPI
     }
 
 
-   /**
-    * Show the availability of a user
-    *
-    * @since 0.83
-    *
-    * @param $params   array of params
-    *    must contain :
-    *          - begin: begin date to check (default '')
-    *          - end: end date to check (default '')
-    *          - itemtype : User or Object type (Ticket...)
-    *          - foreign key field of the itemtype to define which item to used
-    *    optional :
-    *          - limitto : limit display to a specific user
-    *
-    * @return void
-   **/
+    /**
+     * Show the availability of a user
+     *
+     * @since 0.83
+     *
+     * @param $params   array of params
+     *    must contain :
+     *          - begin: begin date to check (default '')
+     *          - end: end date to check (default '')
+     *          - itemtype : User or Object type (Ticket...)
+     *          - foreign key field of the itemtype to define which item to used
+     *    optional :
+     *          - limitto : limit display to a specific user
+     *
+     * @return void
+     **/
     public static function checkAvailability($params = [])
     {
         global $CFG_GLPI;
@@ -614,14 +614,14 @@ class Planning extends CommonGLPI
     }
 
 
-   /**
-    * Show the planning
-    *
-    * Function name change since version 0.84 show() => showPlanning
-    * Function prototype changes in 9.1 (no more parameters)
-    *
-    * @return void
-   **/
+    /**
+     * Show the planning
+     *
+     * Function name change since version 0.84 show() => showPlanning
+     * Function prototype changes in 9.1 (no more parameters)
+     *
+     * @return void
+     **/
     public static function showPlanning($fullview = true)
     {
         if (!static::canView()) {
@@ -740,13 +740,13 @@ class Planning extends CommonGLPI
         return $resources;
     }
 
-   /**
-    * Return a palette array (for example self::$palette_bg)
-    * @param  string $palette_name  the short name for palette (bg, fg, ev)
-    * @return mixed                 the palette array or false
-    *
-    * @since  9.1.1
-    */
+    /**
+     * Return a palette array (for example self::$palette_bg)
+     * @param  string $palette_name  the short name for palette (bg, fg, ev)
+     * @return mixed                 the palette array or false
+     *
+     * @since  9.1.1
+     */
     public static function getPalette($palette_name = 'bg')
     {
         if (in_array($palette_name, ['bg', 'fg', 'ev'])) {
@@ -757,14 +757,14 @@ class Planning extends CommonGLPI
     }
 
 
-   /**
-    * Return an hexa color from a palette
-    * @param  string  $palette_name the short name for palette (bg, fg, ev)
-    * @param  integer $color_index  The color index in this palette
-    * @return mixed                 the color in hexa (ex: #FFFFFF) or false
-    *
-    * @since  9.1.1
-    */
+    /**
+     * Return an hexa color from a palette
+     * @param  string  $palette_name the short name for palette (bg, fg, ev)
+     * @param  integer $color_index  The color index in this palette
+     * @return mixed                 the color in hexa (ex: #FFFFFF) or false
+     *
+     * @since  9.1.1
+     */
     public static function getPaletteColor($palette_name = 'bg', $color_index = 0)
     {
         if ($palette = self::getPalette($palette_name)) {
@@ -788,17 +788,17 @@ class Planning extends CommonGLPI
         );
     }
 
-   /**
-    * Init $_SESSION['glpi_plannings'] var with thses keys :
-    *  - 'filters' : type of planning available (ChangeTask, Reminder, etc)
-    *  - 'plannings' : all plannings definided for current user.
-    *
-    * If currently logged user, has no plannings or filter, this function wiil init them
-    *
-    * Also manage color index in $_SESSION['glpi_plannings_color_index']
-    *
-    * @return void
-    */
+    /**
+     * Init $_SESSION['glpi_plannings'] var with thses keys :
+     *  - 'filters' : type of planning available (ChangeTask, Reminder, etc)
+     *  - 'plannings' : all plannings definided for current user.
+     *
+     * If currently logged user, has no plannings or filter, this function wiil init them
+     *
+     * Also manage color index in $_SESSION['glpi_plannings_color_index']
+     *
+     * @return void
+     */
     public static function initSessionForCurrentUser()
     {
        // new user in planning, init session
@@ -838,13 +838,13 @@ class Planning extends CommonGLPI
     }
 
 
-   /**
-    * Display left part of planning who contains filters and planning with delete/toggle buttons
-    * and color choosing.
-    * Call self::showSingleLinePlanningFilter for each filters and plannings
-    *
-    * @return void
-    */
+    /**
+     * Display left part of planning who contains filters and planning with delete/toggle buttons
+     * and color choosing.
+     * Call self::showSingleLinePlanningFilter for each filters and plannings
+     *
+     * @return void
+     */
     public static function showPlanningFilter()
     {
         global $CFG_GLPI;
@@ -890,18 +890,18 @@ class Planning extends CommonGLPI
     }
 
 
-   /**
-    * Display a single line of planning filter.
-    * See self::showPlanningFilter function
-    *
-    * @param $filter_key  : identify curent line of filter
-    * @param $filter_data : array of filter date, must contains :
-    *   * 'show_delete' (boolean): show delete button
-    *   * 'filter_color_index' (integer): index of the color to use in self::$palette_bg
-    * @param $options
-    *
-    * @return void
-    */
+    /**
+     * Display a single line of planning filter.
+     * See self::showPlanningFilter function
+     *
+     * @param $filter_key  : identify curent line of filter
+     * @param $filter_data : array of filter date, must contains :
+     *   * 'show_delete' (boolean): show delete button
+     *   * 'filter_color_index' (integer): index of the color to use in self::$palette_bg
+     * @param $options
+     *
+     * @return void
+     */
     public static function showSingleLinePlanningFilter($filter_key, $filter_data, $options = [])
     {
         global $CFG_GLPI;
@@ -1065,11 +1065,11 @@ class Planning extends CommonGLPI
     }
 
 
-   /**
-    * Display ajax form to add actor on planning
-    *
-    * @return void
-    */
+    /**
+     * Display ajax form to add actor on planning
+     *
+     * @return void
+     */
     public static function showAddPlanningForm()
     {
         global $CFG_GLPI;
@@ -1107,12 +1107,12 @@ class Planning extends CommonGLPI
     }
 
 
-   /**
-    * Display 'User' part of self::showAddPlanningForm spcified by planning type dropdown.
-    * Actually called by ajax/planning.php
-    *
-    * @return void
-    */
+    /**
+     * Display 'User' part of self::showAddPlanningForm spcified by planning type dropdown.
+     * Actually called by ajax/planning.php
+     *
+     * @return void
+     */
     public static function showAddUserForm()
     {
         $used = [];
@@ -1148,11 +1148,11 @@ class Planning extends CommonGLPI
     }
 
 
-   /**
-    * Recieve 'User' data from self::showAddPlanningForm and save them to session and DB
-    *
-    * @param $params (array) : must contais form data (typically $_REQUEST)
-    */
+    /**
+     * Recieve 'User' data from self::showAddPlanningForm and save them to session and DB
+     *
+     * @param $params (array) : must contais form data (typically $_REQUEST)
+     */
     public static function sendAddUserForm($params = [])
     {
         $_SESSION['glpi_plannings']['plannings']["user_" . $params['users_id']]
@@ -1164,12 +1164,12 @@ class Planning extends CommonGLPI
     }
 
 
-   /**
-    * Display 'All users of a group' part of self::showAddPlanningForm spcified by planning type dropdown.
-    * Actually called by ajax/planning.php
-    *
-    * @return void
-    */
+    /**
+     * Display 'All users of a group' part of self::showAddPlanningForm spcified by planning type dropdown.
+     * Actually called by ajax/planning.php
+     *
+     * @return void
+     */
     public static function showAddGroupUsersForm()
     {
         echo Group::getTypeName(1) . " : <br>";
@@ -1191,13 +1191,13 @@ class Planning extends CommonGLPI
     }
 
 
-   /**
-    * Recieve 'All users of a group' data from self::showAddGroupUsersForm and save them to session and DB
-    *
-    * @since 9.1
-    *
-    * @param $params (array) : must contais form data (typically $_REQUEST)
-    */
+    /**
+     * Recieve 'All users of a group' data from self::showAddGroupUsersForm and save them to session and DB
+     *
+     * @since 9.1
+     *
+     * @param $params (array) : must contais form data (typically $_REQUEST)
+     */
     public static function sendAddGroupUsersForm($params = [])
     {
         $current_group = &$_SESSION['glpi_plannings']['plannings']["group_" . $params['groups_id'] . "_users"];
@@ -1260,14 +1260,14 @@ class Planning extends CommonGLPI
     }
 
 
-   /**
-    * Display 'Group' part of self::showAddPlanningForm spcified by planning type dropdown.
-    * Actually called by ajax/planning.php
-    *
-    * @since 9.1
-    *
-    * @return void
-    */
+    /**
+     * Display 'Group' part of self::showAddPlanningForm spcified by planning type dropdown.
+     * Actually called by ajax/planning.php
+     *
+     * @since 9.1
+     *
+     * @return void
+     */
     public static function showAddGroupForm()
     {
 
@@ -1289,13 +1289,13 @@ class Planning extends CommonGLPI
     }
 
 
-   /**
-    * Recieve 'Group' data from self::showAddGroupForm and save them to session and DB
-    *
-    * @since 9.1
-    *
-    * @param $params (array) : must contais form data (typically $_REQUEST)
-    */
+    /**
+     * Recieve 'Group' data from self::showAddGroupForm and save them to session and DB
+     *
+     * @since 9.1
+     *
+     * @param $params (array) : must contais form data (typically $_REQUEST)
+     */
     public static function sendAddGroupForm($params = [])
     {
         $_SESSION['glpi_plannings']['plannings']["group_" . $params['groups_id']]
@@ -1310,14 +1310,14 @@ class Planning extends CommonGLPI
     }
 
 
-   /**
-    * Display 'External' part of self::showAddPlanningForm specified by planning type dropdown.
-    * Actually called by ajax/planning.php
-    *
-    * @since 9.5
-    *
-    * @return void
-    */
+    /**
+     * Display 'External' part of self::showAddPlanningForm specified by planning type dropdown.
+     * Actually called by ajax/planning.php
+     *
+     * @since 9.5
+     *
+     * @return void
+     */
     public static function showAddExternalForm()
     {
 
@@ -1345,15 +1345,15 @@ class Planning extends CommonGLPI
     }
 
 
-   /**
-    * Receive 'External' data from self::showAddExternalForm and save them to session and DB
-    *
-    * @since 9.5
-    *
-    * @param array $params Form data
-    *
-    * @return void
-    */
+    /**
+     * Receive 'External' data from self::showAddExternalForm and save them to session and DB
+     *
+     * @since 9.5
+     *
+     * @param array $params Form data
+     *
+     * @return void
+     */
     public static function sendAddExternalForm($params = [])
     {
         $_SESSION['glpi_plannings']['plannings']['external_' . md5($params['url'])] = [
@@ -1406,19 +1406,19 @@ class Planning extends CommonGLPI
     }
 
 
-   /**
-    * Display form after selecting date range in planning
-    *
-    * @since 9.1
-    *
-    * @param $params (array): must contains this keys :
-    *  - begin : start of selection range.
-    *       (should be an ISO_8601 date, but could be anything wo can be parsed by strtotime)
-    *  - end : end of selection range.
-    *       (should be an ISO_8601 date, but could be anything wo can be parsed by strtotime)
-    *
-    * @return void
-    */
+    /**
+     * Display form after selecting date range in planning
+     *
+     * @since 9.1
+     *
+     * @param $params (array): must contains this keys :
+     *  - begin : start of selection range.
+     *       (should be an ISO_8601 date, but could be anything wo can be parsed by strtotime)
+     *  - end : end of selection range.
+     *       (should be an ISO_8601 date, but could be anything wo can be parsed by strtotime)
+     *
+     * @return void
+     */
     public static function showAddEventSubForm($params = [])
     {
 
@@ -1444,21 +1444,21 @@ class Planning extends CommonGLPI
     }
 
 
-   /**
-    * Former front/planning.php before 9.1.
-    * Display a classic form to plan an event (with begin fiel and duration)
-    *
-    * @since 9.1
-    *
-    * @param $params (array): array of parameters whou should contain :
-    *   - id (integer): id of item who receive the planification
-    *   - itemtype (string): itemtype of item who receive the planification
-    *   - begin (string) : start date of event
-    *   - _display_dates (bool) : display dates fields (default true)
-    *   - end (optionnal) (string) : end date of event. Ifg missing, it will computerd from begin+1hour
-    *   - rand_user (integer) : users_id to check planning avaibility
-    *   - rand : specific rand if needed (default is generated one)
-    */
+    /**
+     * Former front/planning.php before 9.1.
+     * Display a classic form to plan an event (with begin fiel and duration)
+     *
+     * @since 9.1
+     *
+     * @param $params (array): array of parameters whou should contain :
+     *   - id (integer): id of item who receive the planification
+     *   - itemtype (string): itemtype of item who receive the planification
+     *   - begin (string) : start date of event
+     *   - _display_dates (bool) : display dates fields (default true)
+     *   - end (optionnal) (string) : end date of event. Ifg missing, it will computerd from begin+1hour
+     *   - rand_user (integer) : users_id to check planning avaibility
+     *   - rand : specific rand if needed (default is generated one)
+     */
     public static function showAddEventClassicForm($params = [])
     {
         global $CFG_GLPI;
@@ -1578,15 +1578,15 @@ class Planning extends CommonGLPI
     }
 
 
-   /**
-    * Clone an event
-    *
-    * @since 9.5
-    *
-    * @param array $event the event to clone
-    *
-    * @return mixed the id (integer) or false if it failed
-    */
+    /**
+     * Clone an event
+     *
+     * @since 9.5
+     *
+     * @param array $event the event to clone
+     *
+     * @return mixed the id (integer) or false if it failed
+     */
     public static function cloneEvent(array $event = [])
     {
         $item = new $event['old_itemtype']();
@@ -1648,15 +1648,15 @@ class Planning extends CommonGLPI
         return $new_items_id;
     }
 
-   /**
-    * Delete an event
-    *
-    * @since 9.5
-    *
-    * @param array $event the event to clone (with itemtype and items_id keys)
-    *
-    * @return bool
-    */
+    /**
+     * Delete an event
+     *
+     * @since 9.5
+     *
+     * @param array $event the event to clone (with itemtype and items_id keys)
+     *
+     * @return bool
+     */
     public static function deleteEvent(array $event = []): bool
     {
         $item = new $event['itemtype']();
@@ -1676,18 +1676,18 @@ class Planning extends CommonGLPI
     }
 
 
-   /**
-    * toggle display for selected line of $_SESSION['glpi_plannings']
-    *
-    * @since 9.1
-    *
-    * @param  array $options: should contains :
-    *  - type : event type, can be event_filter, user, group or group_users
-    *  - parent : in case of type=users_group, must contains the id of the group
-    *  - name : contains a string with type and id concatened with a '_' char (ex user_41).
-    *  - display : boolean value to set to his line
-    * @return void
-    */
+    /**
+     * toggle display for selected line of $_SESSION['glpi_plannings']
+     *
+     * @since 9.1
+     *
+     * @param  array $options: should contains :
+     *  - type : event type, can be event_filter, user, group or group_users
+     *  - parent : in case of type=users_group, must contains the id of the group
+     *  - name : contains a string with type and id concatened with a '_' char (ex user_41).
+     *  - display : boolean value to set to his line
+     * @return void
+     */
     public static function toggleFilter($options = [])
     {
 
@@ -1710,18 +1710,18 @@ class Planning extends CommonGLPI
     }
 
 
-   /**
-    * change color for selected line of $_SESSION['glpi_plannings']
-    *
-    * @since 9.1
-    *
-    * @param  array $options: should contains :
-    *  - type : event type, can be event_filter, user, group or group_users
-    *  - parent : in case of type=users_group, must contains the id of the group
-    *  - name : contains a string with type and id concatened with a '_' char (ex user_41).
-    *  - color : rgb color (preceded by '#'' char)
-    * @return void
-    */
+    /**
+     * change color for selected line of $_SESSION['glpi_plannings']
+     *
+     * @since 9.1
+     *
+     * @param  array $options: should contains :
+     *  - type : event type, can be event_filter, user, group or group_users
+     *  - parent : in case of type=users_group, must contains the id of the group
+     *  - name : contains a string with type and id concatened with a '_' char (ex user_41).
+     *  - color : rgb color (preceded by '#'' char)
+     * @return void
+     */
     public static function colorFilter($options = [])
     {
         $key = 'filters';
@@ -1741,16 +1741,16 @@ class Planning extends CommonGLPI
     }
 
 
-   /**
-    * delete selected line in $_SESSION['glpi_plannings']
-    *
-    * @since 9.1
-    *
-    * @param  array $options: should contains :
-    *  - type : event type, can be event_filter, user, group or group_users
-    *  - filter : contains a string with type and id concatened with a '_' char (ex user_41).
-    * @return void
-    */
+    /**
+     * delete selected line in $_SESSION['glpi_plannings']
+     *
+     * @since 9.1
+     *
+     * @param  array $options: should contains :
+     *  - type : event type, can be event_filter, user, group or group_users
+     *  - filter : contains a string with type and id concatened with a '_' char (ex user_41).
+     * @return void
+     */
     public static function deleteFilter($options = [])
     {
 
@@ -1775,21 +1775,21 @@ class Planning extends CommonGLPI
     }
 
 
-   /**
-    * Prepare a set of events for jquery fullcalendar.
-    * Call populatePlanning functions for all $CFG_GLPI['planning_types'] types
-    *
-    * @since 9.1
-    *
-    * @param array $options with this keys:
-    *  - begin: mandatory, planning start.
-    *       (should be an ISO_8601 date, but could be anything wo can be parsed by strtotime)
-    *  - end: mandatory, planning end.
-    *       (should be an ISO_8601 date, but could be anything wo can be parsed by strtotime)
-    *  - display_done_events: default true, show also events tagged as done
-    *  - force_all_events: even if the range is big, don't reduce the returned set
-    * @return array $events : array with events in fullcalendar.io format
-    */
+    /**
+     * Prepare a set of events for jquery fullcalendar.
+     * Call populatePlanning functions for all $CFG_GLPI['planning_types'] types
+     *
+     * @since 9.1
+     *
+     * @param array $options with this keys:
+     *  - begin: mandatory, planning start.
+     *       (should be an ISO_8601 date, but could be anything wo can be parsed by strtotime)
+     *  - end: mandatory, planning end.
+     *       (should be an ISO_8601 date, but could be anything wo can be parsed by strtotime)
+     *  - display_done_events: default true, show also events tagged as done
+     *  - force_all_events: even if the range is big, don't reduce the returned set
+     * @return array $events : array with events in fullcalendar.io format
+     */
     public static function constructEventsArray($options = [])
     {
         global $CFG_GLPI;
@@ -2028,24 +2028,24 @@ class Planning extends CommonGLPI
     }
 
 
-   /**
-    * construct a single line for self::constructEventsArray()
-    * Recursively called to construct $raw_events param.
-    *
-    * @since 9.1
-    *
-    * @param string $actor: a type and id concaneted separated by '_' char, ex 'user_41'
-    * @param array  $params: must contains this keys :
-    *  - display: boolean for pass or not the consstruction of this line (a group of users can be displayed but its users not).
-    *  - type: event type, can be event_filter, user, group or group_users
-    *  - who: integer for identify user
-    *  - whogroup: integer for identify group
-    *  - color: string with #rgb color for event's foreground color.
-    *  - event_type_color : string with #rgb color for event's foreground color.
-    * @param array  $raw_events: (passed by reference) the events array in construction
-    * @param array  $not_planned (passed by references) not planned events array in construction
-    * @return void
-    */
+    /**
+     * construct a single line for self::constructEventsArray()
+     * Recursively called to construct $raw_events param.
+     *
+     * @since 9.1
+     *
+     * @param string $actor: a type and id concaneted separated by '_' char, ex 'user_41'
+     * @param array  $params: must contains this keys :
+     *  - display: boolean for pass or not the consstruction of this line (a group of users can be displayed but its users not).
+     *  - type: event type, can be event_filter, user, group or group_users
+     *  - who: integer for identify user
+     *  - whogroup: integer for identify group
+     *  - color: string with #rgb color for event's foreground color.
+     *  - event_type_color : string with #rgb color for event's foreground color.
+     * @param array  $raw_events: (passed by reference) the events array in construction
+     * @param array  $not_planned (passed by references) not planned events array in construction
+     * @return void
+     */
     public static function constructEventsArraySingleLine($actor, $params = [], &$raw_events = [], &$not_planned = [])
     {
 
@@ -2103,11 +2103,11 @@ class Planning extends CommonGLPI
         }
     }
 
-   /**
-    * Return events fetched from user external calendars.
-    *
-    * @return array
-    */
+    /**
+     * Return events fetched from user external calendars.
+     *
+     * @return array
+     */
     private static function getExternalCalendarRawEvents(string $limit_begin, string $limit_end): array
     {
         ErrorHandler::getInstance()->suspendOutput(); // Suspend error output to prevent warnings to corrupr JSON output
@@ -2190,21 +2190,21 @@ class Planning extends CommonGLPI
     }
 
 
-   /**
-    * Change dates of a selected event.
-    * Called from a drag&drop in planning
-    *
-    * @since 9.1
-    *
-    * @param array $options: must contains this keys :
-    *  - items_id : integer to identify items
-    *  - itemtype : string to identify items
-    *  - begin : planning start .
-    *       (should be an ISO_8601 date, but could be anything wo can be parsed by strtotime)
-    *  - end : planning end .
-    *       (should be an ISO_8601 date, but could be anything wo can be parsed by strtotime)
-    * @return bool
-    */
+    /**
+     * Change dates of a selected event.
+     * Called from a drag&drop in planning
+     *
+     * @since 9.1
+     *
+     * @param array $options: must contains this keys :
+     *  - items_id : integer to identify items
+     *  - itemtype : string to identify items
+     *  - begin : planning start .
+     *       (should be an ISO_8601 date, but could be anything wo can be parsed by strtotime)
+     *  - end : planning end .
+     *       (should be an ISO_8601 date, but could be anything wo can be parsed by strtotime)
+     * @return bool
+     */
     public static function updateEventTimes($params = [])
     {
         if ($item = getItemForItemtype($params['itemtype'])) {
@@ -2343,18 +2343,18 @@ class Planning extends CommonGLPI
         }
     }
 
-   /**
-    * Clean timezone information from dates fields,
-    * as fullcalendar doesn't support easily timezones, let's consider it sends raw dates
-    * (remove timezone suffix), we will manage timezone directy on database
-    * see https://fullcalendar.io/docs/timeZone
-    *
-    * @since 9.5
-    *
-    * @param array $params parameters send by fullcalendar
-    *
-    * @return array cleaned $params
-    */
+    /**
+     * Clean timezone information from dates fields,
+     * as fullcalendar doesn't support easily timezones, let's consider it sends raw dates
+     * (remove timezone suffix), we will manage timezone directy on database
+     * see https://fullcalendar.io/docs/timeZone
+     *
+     * @since 9.5
+     *
+     * @param array $params parameters send by fullcalendar
+     *
+     * @return array cleaned $params
+     */
     public static function cleanDates(array $params = []): array
     {
         $dates_fields = [
@@ -2372,17 +2372,17 @@ class Planning extends CommonGLPI
 
 
 
-   /**
-    * Display a Planning Item
-    *
-    * @param $val       Array of the item to display
-    * @param $who             ID of the user (0 if all)
-    * @param $type            position of the item in the time block (in, through, begin or end)
-    *                         (default '')
-    * @param $complete        complete display (more details) (default 0)
-    *
-    * @return string
-   **/
+    /**
+     * Display a Planning Item
+     *
+     * @param $val       Array of the item to display
+     * @param $who             ID of the user (0 if all)
+     * @param $type            position of the item in the time block (in, through, begin or end)
+     *                         (default '')
+     * @param $complete        complete display (more details) (default 0)
+     *
+     * @return string
+     **/
     public static function displayPlanningItem(array $val, $who, $type = "", $complete = 0)
     {
         $html = "";
@@ -2405,13 +2405,13 @@ class Planning extends CommonGLPI
         return $html;
     }
 
-   /**
-    * Show the planning for the central page of a user
-    *
-    * @param $who ID of the user
-    *
-    * @return void
-   **/
+    /**
+     * Show the planning for the central page of a user
+     *
+     * @param $who ID of the user
+     *
+     * @return void
+     **/
     public static function showCentral($who)
     {
         global $CFG_GLPI;
@@ -2445,15 +2445,15 @@ class Planning extends CommonGLPI
    // *********************************** Implementation ICAL ***************************************************************
    //*******************************************************************************************************************************
 
-   /**
-    *  Generate ical file content
-    *
-    * @param $who             user ID
-    * @param $whogroup        group ID
-    * @param $limititemtype   itemtype only display this itemtype (default '')
-    *
-    * @return icalendar string
-   **/
+    /**
+     *  Generate ical file content
+     *
+     * @param $who             user ID
+     * @param $whogroup        group ID
+     * @param $limititemtype   itemtype only display this itemtype (default '')
+     *
+     * @return icalendar string
+     **/
     public static function generateIcal($who, $whogroup, $limititemtype = '')
     {
         global $CFG_GLPI;
@@ -2555,9 +2555,9 @@ class Planning extends CommonGLPI
         echo $output;
     }
 
-   /**
-    * @since 0.85
-   **/
+    /**
+     * @since 0.85
+     **/
     public function getRights($interface = 'central')
     {
 
@@ -2568,26 +2568,26 @@ class Planning extends CommonGLPI
         return $values;
     }
 
-   /**
-    * Save the last view used in fullcalendar
-    *
-    * @since 9.5
-    *
-    * @param string $view_name
-    * @return void
-    */
+    /**
+     * Save the last view used in fullcalendar
+     *
+     * @since 9.5
+     *
+     * @param string $view_name
+     * @return void
+     */
     public static function viewChanged($view_name = "ListView")
     {
         $_SESSION['glpi_plannings']['lastview'] = $view_name;
     }
 
-   /**
-    * Returns actor type from 'planning' key (key comes from user 'plannings' field).
-    *
-    * @param string $key
-    *
-    * @return string|null
-    */
+    /**
+     * Returns actor type from 'planning' key (key comes from user 'plannings' field).
+     *
+     * @param string $key
+     *
+     * @return string|null
+     */
     public static function getActorTypeFromPlanningKey($key)
     {
         if (preg_match('/group_\d+_users/', $key)) {
@@ -2597,27 +2597,27 @@ class Planning extends CommonGLPI
         return class_exists($itemtype) ? $itemtype : null;
     }
 
-   /**
-    * Returns actor id from 'planning' key (key comes from user 'plannings' field).
-    *
-    * @param string $key
-    *
-    * @return integer|null
-    */
+    /**
+     * Returns actor id from 'planning' key (key comes from user 'plannings' field).
+     *
+     * @param string $key
+     *
+     * @return integer|null
+     */
     public static function getActorIdFromPlanningKey($key)
     {
         $items_id = preg_replace('/^[a-z]+_(\d+)(?:_[a-z]+)?$/', '$1', $key);
         return is_numeric($items_id) ? (int)$items_id : null;
     }
 
-   /**
-    * Returns planning key for given actor (key is used in user 'plannings' field).
-    *
-    * @param string  $itemtype
-    * @param integer $items_id
-    *
-    * @return string
-    */
+    /**
+     * Returns planning key for given actor (key is used in user 'plannings' field).
+     *
+     * @param string  $itemtype
+     * @param integer $items_id
+     *
+     * @return string
+     */
     public static function getPlanningKeyForActor($itemtype, $items_id)
     {
         if ('Group_User' === $itemtype) {
@@ -2627,13 +2627,13 @@ class Planning extends CommonGLPI
         return strtolower($itemtype) . '_' . $items_id;
     }
 
-   /**
-    * Get CalDAV base calendar URL for given actor.
-    *
-    * @param CommonDBTM $item
-    *
-    * @return string|null
-    */
+    /**
+     * Get CalDAV base calendar URL for given actor.
+     *
+     * @param CommonDBTM $item
+     *
+     * @return string|null
+     */
     private static function getCaldavBaseCalendarUrl(\CommonDBTM $item)
     {
 

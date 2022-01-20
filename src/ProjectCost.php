@@ -47,9 +47,9 @@ class ProjectCost extends CommonDBChild
     }
 
 
-   /**
-    * @see CommonDBChild::prepareInputForAdd()
-   **/
+    /**
+     * @see CommonDBChild::prepareInputForAdd()
+     **/
     public function prepareInputForAdd($input)
     {
 
@@ -65,9 +65,9 @@ class ProjectCost extends CommonDBChild
     }
 
 
-   /**
-    * @see CommonDBTM::prepareInputForUpdate()
-   **/
+    /**
+     * @see CommonDBTM::prepareInputForUpdate()
+     **/
     public function prepareInputForUpdate($input)
     {
 
@@ -83,9 +83,9 @@ class ProjectCost extends CommonDBChild
     }
 
 
-   /**
-    * @see CommonGLPI::getTabNameForItem()
-   **/
+    /**
+     * @see CommonGLPI::getTabNameForItem()
+     **/
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
 
@@ -101,11 +101,11 @@ class ProjectCost extends CommonDBChild
     }
 
 
-   /**
-    * @param $item            CommonGLPI object
-    * @param $tabnum          (default 1)
-    * @param $withtemplate    (default 0)
-    */
+    /**
+     * @param $item            CommonGLPI object
+     * @param $tabnum          (default 1)
+     * @param $withtemplate    (default 0)
+     */
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
 
@@ -195,9 +195,9 @@ class ProjectCost extends CommonDBChild
     }
 
 
-   /**
-    * Init cost for creation based on previous cost
-   **/
+    /**
+     * Init cost for creation based on previous cost
+     **/
     public function initBasedOnPrevious()
     {
 
@@ -225,11 +225,11 @@ class ProjectCost extends CommonDBChild
         }
     }
 
-   /**
-    * Get last datas for a project
-    *
-    * @param $projects_id        integer  ID of the project
-   **/
+    /**
+     * Get last datas for a project
+     *
+     * @param $projects_id        integer  ID of the project
+     **/
     public function getLastCostForProject($projects_id)
     {
         global $DB;
@@ -247,12 +247,12 @@ class ProjectCost extends CommonDBChild
         return [];
     }
 
-   /**
-    * Print the project cost form
-    *
-    * @param $ID        integer  ID of the item
-    * @param $options   array    options used
-   **/
+    /**
+     * Print the project cost form
+     *
+     * @param $ID        integer  ID of the item
+     * @param $options   array    options used
+     **/
     public function showForm($ID, array $options = [])
     {
 
@@ -305,14 +305,14 @@ class ProjectCost extends CommonDBChild
     }
 
 
-   /**
-    * Print the project costs
-    *
-    * @param $project               Project object
-    * @param $withtemplate  boolean  Template or basic item (default 0)
-    *
-    * @return void
-   **/
+    /**
+     * Print the project costs
+     *
+     * @param $project               Project object
+     * @param $withtemplate  boolean  Template or basic item (default 0)
+     *
+     * @return void
+     **/
     public static function showForProject(Project $project, $withtemplate = 0)
     {
         global $DB, $CFG_GLPI;

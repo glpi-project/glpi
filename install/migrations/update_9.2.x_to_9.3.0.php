@@ -35,7 +35,7 @@
  * Update from 9.2 to 9.3
  *
  * @return bool for success (will die for most error)
-**/
+ **/
 function update92xto930()
 {
     global $DB, $migration;
@@ -202,7 +202,7 @@ function update92xto930()
     $migration->dropKey('glpi_itilsolutions', 'migration_unicity');
     $migration->migrationOneTable('glpi_itilsolutions');
 
-   /** Datacenters */
+    /** Datacenters */
     if (!$DB->tableExists('glpi_datacenters')) {
         $query = "CREATE TABLE `glpi_datacenters` (
                   `id` int NOT NULL AUTO_INCREMENT,
@@ -639,9 +639,9 @@ function update92xto930()
     $ADDTODISPLAYPREF['PDU']        = [31, 23, 5];
     $ADDTODISPLAYPREF['Enclosure']  = [31, 23, 5];
 
-   /** /Datacenters */
+    /** /Datacenters */
 
-   /** Add address to locations */
+    /** Add address to locations */
     if (!$DB->fieldExists('glpi_locations', 'address')) {
         $migration->addField(
             'glpi_locations',
@@ -686,9 +686,9 @@ function update92xto930()
             ['after' => 'state']
         );
     }
-   /** /Add address to locations */
+    /** /Add address to locations */
 
-   /** Innodb */
+    /** Innodb */
     foreach (['glpi_knowbaseitemtranslations', 'glpi_knowbaseitems'] as $table) {
         foreach (['name', 'answer'] as $key) {
             $migration->addKey(
@@ -700,7 +700,7 @@ function update92xto930()
         }
     }
 
-   /** Migrate computerdisks to items_disks */
+    /** Migrate computerdisks to items_disks */
     if (!$DB->tableExists('glpi_items_disks') && $DB->tableExists('glpi_computerdisks')) {
         $migration->renameTable('glpi_computerdisks', 'glpi_items_disks');
     }
@@ -727,9 +727,9 @@ function update92xto930()
             ['itemtype' => null]
         )
     );
-   /** /Migrate computerdisks to items_disks */
+    /** /Migrate computerdisks to items_disks */
 
-   /** Add Item_Device* display preferences */
+    /** Add Item_Device* display preferences */
     $itemDeviceTypes = Item_Devices::getDeviceTypes();
     foreach ($itemDeviceTypes as $itemDeviceType) {
         $optToAdd = [];
@@ -749,7 +749,7 @@ function update92xto930()
 
         $ADDTODISPLAYPREF[$itemDeviceType] = $optToAdd;
     }
-   /** /Add Item_Device* display preferences */
+    /** /Add Item_Device* display preferences */
 
     foreach ($ADDTODISPLAYPREF as $type => $tab) {
         $rank = 1;
@@ -786,7 +786,7 @@ function update92xto930()
    //Permit same license several times on same computer
     $migration->dropKey('glpi_computers_softwarelicenses', 'unicity');
 
-   /** Logs purge */
+    /** Logs purge */
     $purge_params = [
       'purge_computer_software_install',
       'purge_software_computer_install',
@@ -847,9 +847,9 @@ function update92xto930()
          'mode' => CronTask::MODE_EXTERNAL
         ]
     );
-   /** /Logs purge */
+    /** /Logs purge */
 
-   /** Clean item rack relation on deleted items */
+    /** Clean item rack relation on deleted items */
     $iterator = $DB->request(['FROM' => Item_Rack::getTable()]);
     foreach ($iterator as $row) {
         $exists = $DB->request([
@@ -865,7 +865,7 @@ function update92xto930()
             );
         }
     }
-   /** /Clean item rack relation on deleted items */
+    /** /Clean item rack relation on deleted items */
 
    // ************ Keep it at the end **************
     $migration->executeMigration();

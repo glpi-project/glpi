@@ -52,11 +52,11 @@ class RoutingExtension extends AbstractExtension
         ];
     }
 
-   /**
-    * Return index path.
-    *
-    * @return string
-    */
+    /**
+     * Return index path.
+     *
+     * @return string
+     */
     public function indexPath(): string
     {
         $index = '/index.php';
@@ -68,25 +68,25 @@ class RoutingExtension extends AbstractExtension
         return Html::getPrefixedUrl($index);
     }
 
-   /**
-    * Return domain-relative path of a resource.
-    *
-    * @param string $resource
-    *
-    * @return string
-    */
+    /**
+     * Return domain-relative path of a resource.
+     *
+     * @param string $resource
+     *
+     * @return string
+     */
     public function path(string $resource): string
     {
         return Html::getPrefixedUrl($resource);
     }
 
-   /**
-    * Return absolute URL of a resource.
-    *
-    * @param string $resource
-    *
-    * @return string
-    */
+    /**
+     * Return absolute URL of a resource.
+     *
+     * @param string $resource
+     *
+     * @return string
+     */
     public function url(string $resource): string
     {
         global $CFG_GLPI;

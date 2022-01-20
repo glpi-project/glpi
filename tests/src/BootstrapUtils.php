@@ -35,11 +35,11 @@ namespace Glpi\Tests;
 
 class BootstrapUtils
 {
-   /**
-    * Create subdirectories of GLPI_VAR_DIR based on defined constants.
-    *
-    * @return void
-    */
+    /**
+     * Create subdirectories of GLPI_VAR_DIR based on defined constants.
+     *
+     * @return void
+     */
     public static function initVarDirectories(): void
     {
         foreach (get_defined_constants() as $name => $value) {

@@ -37,7 +37,7 @@
  *  Relation between Projects and Items
  *
  *  @since 0.85
-**/
+ **/
 class Item_Project extends CommonDBRelation
 {
    // From CommonDBRelation
@@ -74,13 +74,13 @@ class Item_Project extends CommonDBRelation
     }
 
 
-   /**
-    * Print the HTML array for Items linked to a project
-    *
-    * @param $project Project object
-    *
-    * @return void
-   **/
+    /**
+     * Print the HTML array for Items linked to a project
+     *
+     * @param $project Project object
+     *
+     * @return void
+     **/
     public static function showForProject(Project $project)
     {
         global $CFG_GLPI;

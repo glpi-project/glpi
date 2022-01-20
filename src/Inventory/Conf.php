@@ -88,11 +88,11 @@ class Conf extends CommonGLPI
       'component_powersupply'          => 1
     ];
 
-   /**
-    * Display form for import the XML
-    *
-    * @return void
-    */
+    /**
+     * Display form for import the XML
+     *
+     * @return void
+     */
     public function showUploadForm()
     {
         echo "<form action='' method='post' enctype='multipart/form-data'>";
@@ -125,11 +125,11 @@ class Conf extends CommonGLPI
         Html::closeForm();
     }
 
-   /**
-    * Accepted file extension for inventories
-    *
-    * @return array
-    */
+    /**
+     * Accepted file extension for inventories
+     *
+     * @return array
+     */
     public function knownInventoryExtensions(): array
     {
         return [
@@ -139,13 +139,13 @@ class Conf extends CommonGLPI
         ];
     }
 
-   /**
-    * Import inventory file
-    *
-    * @param array $files $_FILES
-    *
-    * @return Request
-    */
+    /**
+     * Import inventory file
+     *
+     * @param array $files $_FILES
+     *
+     * @return Request
+     */
     public function importFile($files): Request
     {
         ini_set("memory_limit", "-1");
@@ -186,25 +186,25 @@ class Conf extends CommonGLPI
         return $inventory_request;
     }
 
-   /**
-    * Is an inventory known file
-    *
-    * @return boolean
-    */
+    /**
+     * Is an inventory known file
+     *
+     * @return boolean
+     */
     public function isInventoryFile($name): bool
     {
         return preg_match('/\.(' . implode('|', $this->knownInventoryExtensions()) . ')/i', $name);
     }
 
-   /**
-    * Import contents of a file
-    *
-    * @param Request $inventory_request Inventory request instance
-    * @param string  $path              File path
-    * @param string  $contents          File contents
-    *
-    * @return void
-    */
+    /**
+     * Import contents of a file
+     *
+     * @param Request $inventory_request Inventory request instance
+     * @param string  $path              File path
+     * @param string  $contents          File contents
+     *
+     * @return void
+     */
     protected function importContentFile(Request $inventory_request, $path, $contents)
     {
         try {
@@ -273,11 +273,11 @@ class Conf extends CommonGLPI
         return true;
     }
 
-   /**
-    * Print the config form for display
-    *
-    * @return void
-   **/
+    /**
+     * Print the config form for display
+     *
+     * @return void
+     **/
     public function showConfigForm()
     {
         global $CFG_GLPI;
@@ -692,13 +692,13 @@ class Conf extends CommonGLPI
         return true;
     }
 
-   /**
-    * Save configuration
-    *
-    * @param array $values Configuration values
-    *
-    * @return boolean
-    */
+    /**
+     * Save configuration
+     *
+     * @param array $values Configuration values
+     *
+     * @return boolean
+     */
     public function saveConf(array $values)
     {
         if (!\Config::canUpdate()) {
@@ -730,13 +730,13 @@ class Conf extends CommonGLPI
         return true;
     }
 
-   /**
-    * Getter for direct access to conf properties
-    *
-    * @param string $name Property name
-    *
-    * @return mixed
-    */
+    /**
+     * Getter for direct access to conf properties
+     *
+     * @param string $name Property name
+     *
+     * @return mixed
+     */
     public function __get($name)
     {
         if (!count($this->currents)) {
@@ -767,15 +767,15 @@ class Conf extends CommonGLPI
         return [ READ => __('Read')];
     }
 
-   /**
-    * Build inventroy file name
-    *
-    * @param string $itemtype Item type
-    * @param int    $items_id Item ID
-    * @param string $ext      File extension
-    *
-    * @return string
-    */
+    /**
+     * Build inventroy file name
+     *
+     * @param string $itemtype Item type
+     * @param int    $items_id Item ID
+     * @param string $ext      File extension
+     *
+     * @return string
+     */
     public function buildInventoryFileName($itemtype, $items_id, $ext): string
     {
         $files_per_dir = 1000;

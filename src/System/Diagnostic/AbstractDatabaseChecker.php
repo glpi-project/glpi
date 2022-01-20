@@ -40,42 +40,42 @@ use DBmysql;
  */
 abstract class AbstractDatabaseChecker
 {
-   /**
-    * DB instance.
-    *
-    * @var DBmysql
-    */
+    /**
+     * DB instance.
+     *
+     * @var DBmysql
+     */
     protected $db;
 
-   /**
-    * Local cache for tables columns.
-    *
-    * @var array
-    */
+    /**
+     * Local cache for tables columns.
+     *
+     * @var array
+     */
     private $columns = [];
 
-   /**
-    * Local cache for tables indexes.
-    *
-    * @var array
-    */
+    /**
+     * Local cache for tables indexes.
+     *
+     * @var array
+     */
     private $indexes = [];
 
-   /**
-    * @param DBmysql $db   DB instance.
-    */
+    /**
+     * @param DBmysql $db   DB instance.
+     */
     public function __construct(DBmysql $db)
     {
         $this->db = $db;
     }
 
-   /**
-    * Return list of column names for given table.
-    *
-    * @param string $table_name
-    *
-    * @return array
-    */
+    /**
+     * Return list of column names for given table.
+     *
+     * @param string $table_name
+     *
+     * @return array
+     */
     protected function getColumnsNames(string $table_name): array
     {
         $this->fetchTableColumns($table_name);
@@ -83,14 +83,14 @@ abstract class AbstractDatabaseChecker
         return array_column($this->columns[$table_name], 'Field');
     }
 
-   /**
-    * Return column type.
-    *
-    * @param string $table_name
-    * @param string $column_name
-    *
-    * @return null|string
-    */
+    /**
+     * Return column type.
+     *
+     * @param string $table_name
+     * @param string $column_name
+     *
+     * @return null|string
+     */
     protected function getColumnType(string $table_name, string $column_name): ?string
     {
         $this->fetchTableColumns($table_name);
@@ -104,13 +104,13 @@ abstract class AbstractDatabaseChecker
         return null;
     }
 
-   /**
-    * Return column type.
-    *
-    * @param string $table_name
-    *
-    * @return void
-    */
+    /**
+     * Return column type.
+     *
+     * @param string $table_name
+     *
+     * @return void
+     */
     private function fetchTableColumns(string $table_name): void
     {
         if (!array_key_exists($table_name, $this->columns)) {
@@ -122,14 +122,14 @@ abstract class AbstractDatabaseChecker
         }
     }
 
-   /**
-    * Return index for given table.
-    * Array keys are index key, and values are fields related to this key.
-    *
-    * @param string $table_name
-    *
-    * @return array
-    */
+    /**
+     * Return index for given table.
+     * Array keys are index key, and values are fields related to this key.
+     *
+     * @param string $table_name
+     *
+     * @return array
+     */
     protected function getIndex(string $table_name): array
     {
         if (!array_key_exists($table_name, $this->indexes)) {

@@ -502,7 +502,7 @@ Session::loadLanguage('', false);
 
 /**
  * @since 0.84.2
-**/
+ **/
 function checkConfigFile()
 {
     global $CFG_GLPI;

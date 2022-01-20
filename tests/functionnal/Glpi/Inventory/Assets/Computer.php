@@ -171,9 +171,9 @@ class Computer extends AbstractInventoryAsset
         ];
     }
 
-   /**
-    * @dataProvider assetProvider
-    */
+    /**
+     * @dataProvider assetProvider
+     */
     public function testPrepare($xml, $asset)
     {
         $date_now = date('Y-m-d H:i:s');

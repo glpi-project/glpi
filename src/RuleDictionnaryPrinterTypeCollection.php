@@ -36,9 +36,9 @@ class RuleDictionnaryPrinterTypeCollection extends RuleDictionnaryDropdownCollec
     public $item_table  = "glpi_printertypes";
     public $menu_option = "type.printer";
 
-   /**
-    * @see RuleCollection::getTitle()
-   **/
+    /**
+     * @see RuleCollection::getTitle()
+     **/
     public function getTitle()
     {
         return __('Dictionnary of printer types');

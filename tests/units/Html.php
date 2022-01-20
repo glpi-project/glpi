@@ -874,9 +874,9 @@ class Html extends \GLPITestCase
         ];
     }
 
-   /**
-    * @dataProvider providerGetBackUrl
-    */
+    /**
+     * @dataProvider providerGetBackUrl
+     */
     public function testGetBackUrl($url_in, $url_out)
     {
         $this->string(\Html::getBackUrl($url_in), $url_out);
@@ -1017,9 +1017,9 @@ SCSS
         ];
     }
 
-   /**
-    * @dataProvider testGetGenericDateTimeSearchItemsProvider
-    */
+    /**
+     * @dataProvider testGetGenericDateTimeSearchItemsProvider
+     */
     public function testGetGenericDateTimeSearchItems(
         array $options,
         array $check_values,

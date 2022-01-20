@@ -50,11 +50,11 @@ class Clonable extends \DbTestCase
         ];
     }
 
-   /**
-    * @param $class
-    * @param $result
-    * @dataProvider massiveActionTargetingProvider
-    */
+    /**
+     * @param $class
+     * @param $result
+     * @dataProvider massiveActionTargetingProvider
+     */
     public function testMassiveActionTargeting($class, $result)
     {
         $this->login();

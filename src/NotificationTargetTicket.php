@@ -33,7 +33,7 @@
 
 /**
  * NotificationTargetTicket Class
-**/
+ **/
 class NotificationTargetTicket extends NotificationTargetCommonITILObject
 {
     const HEADERTAG = '=-=-=-=';
@@ -70,9 +70,9 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject
         return parent::getSubjectPrefix();
     }
 
-   /**
-   * Get header to add to content
-   **/
+    /**
+     * Get header to add to content
+     **/
     public function getContentHeader()
     {
 
@@ -89,9 +89,9 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject
     }
 
 
-   /**
-   * Get footer to add to content
-   **/
+    /**
+     * Get footer to add to content
+     **/
     public function getContentFooter()
     {
 
@@ -108,13 +108,13 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject
     }
 
 
-   /**
-    * Get item associated with the object on which the event was raised
-    *
-    * @param $event  (default '')
-    *
-    * @return the object associated with the itemtype
-   **/
+    /**
+     * Get item associated with the object on which the event was raised
+     *
+     * @param $event  (default '')
+     *
+     * @return the object associated with the itemtype
+     **/
     public function getObjectItem($event = '')
     {
 
@@ -134,9 +134,9 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject
         }
     }
 
-   /**
-    *Get events related to tickets
-   **/
+    /**
+     *Get events related to tickets
+     **/
     public function getEvents()
     {
 

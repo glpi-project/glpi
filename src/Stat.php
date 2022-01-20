@@ -35,7 +35,7 @@ use Glpi\Stat\StatData;
 
 /**
  *  Stat class
-**/
+ **/
 class Stat extends CommonGLPI
 {
     public static $rightname = 'statistic';
@@ -48,24 +48,24 @@ class Stat extends CommonGLPI
     }
 
 
-   /**
-    * @see CommonGLPI::getMenuShorcut()
-    *
-    * @since 0.85
-   **/
+    /**
+     * @see CommonGLPI::getMenuShorcut()
+     *
+     * @since 0.85
+     **/
     public static function getMenuShorcut()
     {
         return 'a';
     }
 
 
-   /**
-    * @param $itemtype
-    * @param $date1
-    * @param $date2
-    * @param $type
-    * @param $parent    (default 0)
-   **/
+    /**
+     * @param $itemtype
+     * @param $date1
+     * @param $date2
+     * @param $type
+     * @param $parent    (default 0)
+     **/
     public static function getItems($itemtype, $date1, $date2, $type, $parent = 0)
     {
         global $DB;
@@ -294,15 +294,15 @@ class Stat extends CommonGLPI
     }
 
 
-   /**
-    * @param $itemtype
-    * @param $type
-    * @param $date1
-    * @param $date2
-    * @param $start
-    * @param $value     array
-    * @param $value2             (default '')
-   **/
+    /**
+     * @param $itemtype
+     * @param $type
+     * @param $date1
+     * @param $date2
+     * @param $start
+     * @param $value     array
+     * @param $value2             (default '')
+     **/
     public static function getData($itemtype, $type, $date1, $date2, $start, array $value, $value2 = "")
     {
         $hash = md5(serialize(func_get_args()));
@@ -396,17 +396,17 @@ class Stat extends CommonGLPI
     }
 
 
-   /**
-    * @param $itemtype
-    * @param $type
-    * @param $date1
-    * @param $date2
-    * @param $start
-    * @param $value     array
-    * @param $value2          (default '')
-    *
-    * @since 0.85 (before show with same parameters)
-   **/
+    /**
+     * @param $itemtype
+     * @param $type
+     * @param $date1
+     * @param $date2
+     * @param $start
+     * @param $value     array
+     * @param $value2          (default '')
+     *
+     * @since 0.85 (before show with same parameters)
+     **/
     public static function showTable($itemtype, $type, $date1, $date2, $start, array $value, $value2 = "")
     {
         global $CFG_GLPI;
@@ -905,16 +905,16 @@ class Stat extends CommonGLPI
     }
 
 
-   /**
-    * @param $itemtype
-    * @param $type
-    * @param $begin              (default '')
-    * @param $end                (default '')
-    * @param $param              (default '')
-    * @param $value              (default '')
-    * @param $value2             (default '')
-    * @param $add_criteria          (default [''])
-    */
+    /**
+     * @param $itemtype
+     * @param $type
+     * @param $begin              (default '')
+     * @param $end                (default '')
+     * @param $param              (default '')
+     * @param $value              (default '')
+     * @param $value2             (default '')
+     * @param $add_criteria          (default [''])
+     */
     public static function constructEntryValues(
         $itemtype,
         $type,
@@ -1537,12 +1537,12 @@ class Stat extends CommonGLPI
         return $entrees;
     }
 
-   /**
-    * @param $target
-    * @param $date1
-    * @param $date2
-    * @param $start
-   **/
+    /**
+     * @param $target
+     * @param $date1
+     * @param $date2
+     * @param $start
+     **/
     public static function showItems($target, $date1, $date2, $start)
     {
         global $DB;
@@ -1686,9 +1686,9 @@ class Stat extends CommonGLPI
     }
 
 
-   /**
-    * @since 0.84
-   **/
+    /**
+     * @since 0.84
+     **/
     public static function title()
     {
         global $PLUGIN_HOOKS, $CFG_GLPI;
@@ -1792,9 +1792,9 @@ class Stat extends CommonGLPI
     }
 
 
-   /**
-    * @since 0.85
-   **/
+    /**
+     * @since 0.85
+     **/
     public function getRights($interface = 'central')
     {
 
@@ -1802,9 +1802,9 @@ class Stat extends CommonGLPI
         return $values;
     }
 
-   /**
-    * Call displayLineGraph with arguments from a StatData object
-    */
+    /**
+     * Call displayLineGraph with arguments from a StatData object
+     */
     public function displayLineGraphFromData(StatData $stat_data)
     {
         if ($stat_data->isEmpty()) {
@@ -1821,22 +1821,22 @@ class Stat extends CommonGLPI
         );
     }
 
-   /**
-    * Display line graph
-    *
-    * @param string   $title  Graph title
-    * @param string[] $labels Labels to display
-    * @param array    $series Series data. An array of the form:
-    *                 [
-    *                    ['name' => 'a name', 'data' => []],
-    *                    ['name' => 'another name', 'data' => []]
-    *                 ]
-    * @param array    $options  Options
-    * @param boolean  $display  Whether to display directly; defauts to true
-    * @param string   $csv_link Link to download the dataset as csv
-    *
-    * @return void
-    */
+    /**
+     * Display line graph
+     *
+     * @param string   $title  Graph title
+     * @param string[] $labels Labels to display
+     * @param array    $series Series data. An array of the form:
+     *                 [
+     *                    ['name' => 'a name', 'data' => []],
+     *                    ['name' => 'another name', 'data' => []]
+     *                 ]
+     * @param array    $options  Options
+     * @param boolean  $display  Whether to display directly; defauts to true
+     * @param string   $csv_link Link to download the dataset as csv
+     *
+     * @return void
+     */
     public function displayLineGraph(
         $title,
         $labels,
@@ -1948,9 +1948,9 @@ class Stat extends CommonGLPI
         return $out;
     }
 
-   /**
-    * Call displayPieGraph with arguments from a StatData object
-    */
+    /**
+     * Call displayPieGraph with arguments from a StatData object
+     */
     public function displayPieGraphFromData(StatData $stat_data)
     {
         if ($stat_data->isEmpty()) {
@@ -1967,22 +1967,22 @@ class Stat extends CommonGLPI
         );
     }
 
-   /**
-    * Display pie graph
-    *
-    * @param string   $title  Graph title
-    * @param string[] $labels Labels to display
-    * @param array    $series Series data. An array of the form:
-    *                 [
-    *                    ['name' => 'a name', 'data' => []],
-    *                    ['name' => 'another name', 'data' => []]
-    *                 ]
-    * @param array    $options  Options
-    * @param boolean  $display  Whether to display directly; defauts to true
-    * @param string   $csv_link Link to download the dataset as csv
-    *
-    * @return void
-    */
+    /**
+     * Display pie graph
+     *
+     * @param string   $title  Graph title
+     * @param string[] $labels Labels to display
+     * @param array    $series Series data. An array of the form:
+     *                 [
+     *                    ['name' => 'a name', 'data' => []],
+     *                    ['name' => 'another name', 'data' => []]
+     *                 ]
+     * @param array    $options  Options
+     * @param boolean  $display  Whether to display directly; defauts to true
+     * @param string   $csv_link Link to download the dataset as csv
+     *
+     * @return void
+     */
     public function displayPieGraph(
         $title,
         $labels,
@@ -2088,16 +2088,16 @@ class Stat extends CommonGLPI
         return $out;
     }
 
-   /**
-    * Display search form
-    *
-    * @param string  $itemtype Item type
-    * @param string  $date1    First date
-    * @param string  $date2    Second date
-    * @param boolean $display  Whether to display directly; defauts to true
-    *
-    * @return void|string
-    */
+    /**
+     * Display search form
+     *
+     * @param string  $itemtype Item type
+     * @param string  $date1    First date
+     * @param string  $date2    Second date
+     * @param boolean $display  Whether to display directly; defauts to true
+     *
+     * @return void|string
+     */
     public function displaySearchForm($itemtype, $date1, $date2, $display = true)
     {
         $out = "<form method='get' name='form' action='stat.global.php'><div class='center'>";
@@ -2136,13 +2136,13 @@ class Stat extends CommonGLPI
         return $out;
     }
 
-   /**
-    * Check and replace empty labels
-    *
-    * @param array $labels Labels
-    *
-    * @return void
-    */
+    /**
+     * Check and replace empty labels
+     *
+     * @param array $labels Labels
+     *
+     * @return void
+     */
     private function checkEmptyLabels(&$labels)
     {
         foreach ($labels as &$label) {

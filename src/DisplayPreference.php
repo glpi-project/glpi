@@ -104,14 +104,14 @@ class DisplayPreference extends CommonDBTM
     }
 
 
-   /**
-    * Get display preference for a user for an itemtype
-    *
-    * @param string  $itemtype  itemtype
-    * @param integer $user_id   user ID
-    *
-    * @return array
-   **/
+    /**
+     * Get display preference for a user for an itemtype
+     *
+     * @param string  $itemtype  itemtype
+     * @param integer $user_id   user ID
+     *
+     * @return array
+     **/
     public static function getForTypeUser($itemtype, $user_id)
     {
         global $DB;
@@ -143,11 +143,11 @@ class DisplayPreference extends CommonDBTM
     }
 
 
-   /**
-    * Active personal config based on global one
-    *
-    * @param $input  array parameter (itemtype,users_id)
-   **/
+    /**
+     * Active personal config based on global one
+     *
+     * @param $input  array parameter (itemtype,users_id)
+     **/
     public function activatePerso(array $input)
     {
         global $DB;
@@ -198,12 +198,12 @@ class DisplayPreference extends CommonDBTM
     }
 
 
-   /**
-    * Order to move an item
-    *
-    * @param array  $input  array parameter (id,itemtype,users_id)
-    * @param string $action       up or down
-   **/
+    /**
+     * Order to move an item
+     *
+     * @param array  $input  array parameter (id,itemtype,users_id)
+     * @param string $action       up or down
+     **/
     public function orderItem(array $input, $action)
     {
         global $DB;
@@ -263,14 +263,14 @@ class DisplayPreference extends CommonDBTM
     }
 
 
-   /**
-    * Print the search config form
-    *
-    * @param string $target    form target
-    * @param string $itemtype  item type
-    *
-    * @return void|boolean (display) Returns false if there is a rights error.
-   **/
+    /**
+     * Print the search config form
+     *
+     * @param string $target    form target
+     * @param string $itemtype  item type
+     *
+     * @return void|boolean (display) Returns false if there is a rights error.
+     **/
     public function showFormPerso($target, $itemtype)
     {
         global $CFG_GLPI, $DB;
@@ -429,14 +429,14 @@ class DisplayPreference extends CommonDBTM
     }
 
 
-   /**
-    * Print the search config form
-    *
-    * @param string $target    form target
-    * @param string $itemtype  item type
-    *
-    * @return void|boolean (display) Returns false if there is a rights error.
-   **/
+    /**
+     * Print the search config form
+     *
+     * @param string $target    form target
+     * @param string $itemtype  item type
+     *
+     * @return void|boolean (display) Returns false if there is a rights error.
+     **/
     public function showFormGlobal($target, $itemtype)
     {
         global $CFG_GLPI, $DB;
@@ -589,11 +589,11 @@ class DisplayPreference extends CommonDBTM
     }
 
 
-   /**
-    * show defined display preferences for a user
-    *
-    * @param $users_id integer user ID
-   **/
+    /**
+     * show defined display preferences for a user
+     *
+     * @param $users_id integer user ID
+     **/
     public static function showForUser($users_id)
     {
         global $DB;
@@ -656,11 +656,11 @@ class DisplayPreference extends CommonDBTM
     }
 
 
-   /**
-    * For tab management : force isNewItem
-    *
-    * @since 0.83
-   **/
+    /**
+     * For tab management : force isNewItem
+     *
+     * @since 0.83
+     **/
     public function isNewItem()
     {
         return false;

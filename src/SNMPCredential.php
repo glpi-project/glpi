@@ -63,12 +63,12 @@ class SNMPCredential extends CommonDBTM
         return $tab;
     }
 
-   /**
-    * Define tabs to display on form page
-    *
-    * @param array $options
-    * @return array containing the tabs name
-    */
+    /**
+     * Define tabs to display on form page
+     *
+     * @param array $options
+     * @return array containing the tabs name
+     */
     public function defineTabs($options = [])
     {
 
@@ -90,11 +90,11 @@ class SNMPCredential extends CommonDBTM
         return true;
     }
 
-   /**
-    * Real version of SNMP
-    *
-    * @return string
-    */
+    /**
+     * Real version of SNMP
+     *
+     * @return string
+     */
     public function getRealVersion(): string
     {
         switch ($this->fields['snmpversion']) {
@@ -108,11 +108,11 @@ class SNMPCredential extends CommonDBTM
         }
     }
 
-   /**
-    * Get SNMP authentication protocol
-    *
-    * @return string
-    */
+    /**
+     * Get SNMP authentication protocol
+     *
+     * @return string
+     */
     public function getAuthProtocol(): string
     {
         switch ($this->fields['authentication']) {
@@ -126,11 +126,11 @@ class SNMPCredential extends CommonDBTM
         return '';
     }
 
-   /**
-    * Get SNMP encryption protocol
-    *
-    * @return string
-    */
+    /**
+     * Get SNMP encryption protocol
+     *
+     * @return string
+     */
     public function getEncryption(): string
     {
         switch ($this->fields['encryption']) {

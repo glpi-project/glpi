@@ -59,23 +59,23 @@ trait InventoryNetworkPort
         $this->handlePorts();
     }
 
-   /**
-    * Get network ports
-    *
-    * @return array
-    */
+    /**
+     * Get network ports
+     *
+     * @return array
+     */
     public function getNetworkPorts(): array
     {
         return $this->ports;
     }
 
-   /**
-    * Add network ports
-    *
-    * @param $ports
-    *
-    * @return $this
-    */
+    /**
+     * Add network ports
+     *
+     * @param $ports
+     *
+     * @return $this
+     */
     public function addNetworkPorts($ports): self
     {
         $this->ports += $ports;
@@ -95,14 +95,14 @@ trait InventoryNetworkPort
         return false;
     }
 
-   /**
-    * Manage network ports
-    *
-    * @param string  $itemtype Item type, will take current item per default
-    * @param integer $items_id Item ID, will take current item per default
-    *
-    * @return void
-    */
+    /**
+     * Manage network ports
+     *
+     * @param string  $itemtype Item type, will take current item per default
+     * @param integer $items_id Item ID, will take current item per default
+     *
+     * @return void
+     */
     public function handlePorts($itemtype = null, $items_id = null)
     {
         $this->itemtype = $itemtype ?? $this->item->getType();
@@ -122,11 +122,11 @@ trait InventoryNetworkPort
         $this->items_id = null;
     }
 
-   /**
-    * Handle devices that would no longer be unmanaged
-    *
-    * @return void
-    */
+    /**
+     * Handle devices that would no longer be unmanaged
+     *
+     * @return void
+     */
     private function cleanUnmanageds()
     {
         global $DB;
@@ -174,11 +174,11 @@ trait InventoryNetworkPort
         }
     }
 
-   /**
-    * Store IP networks and prepare ports to manage later
-    *
-    * @return void
-    */
+    /**
+     * Store IP networks and prepare ports to manage later
+     *
+     * @return void
+     */
     private function handleIpNetworks()
     {
         global $DB;
@@ -237,13 +237,13 @@ trait InventoryNetworkPort
         }
     }
 
-   /**
-    * Add a network port into dtaabase
-    *
-    * @param \stdClass $port Port data
-    *
-    * @return integer
-    */
+    /**
+     * Add a network port into dtaabase
+     *
+     * @param \stdClass $port Port data
+     *
+     * @return integer
+     */
     private function addNetworkPort(\stdClass $port)
     {
         $networkport = new NetworkPort();
@@ -273,14 +273,14 @@ trait InventoryNetworkPort
         return $netports_id;
     }
 
-   /**
-    * Add a network name into database
-    *
-    * @param integer $items_id Port id
-    * @param string  $name     Network name name
-    *
-    * @return integer
-    */
+    /**
+     * Add a network name into database
+     *
+     * @param integer $items_id Port id
+     * @param string  $name     Network name name
+     *
+     * @return integer
+     */
     protected function addNetworkName($items_id, $name = null)
     {
         $networkname = new NetworkName();
@@ -300,14 +300,14 @@ trait InventoryNetworkPort
         return $netname_id;
     }
 
-   /**
-    * Add several ip addresses into database
-    *
-    * @param array   $ips      IP adresses to add
-    * @param integer $items_id NetworkName id
-    *
-    * @return void
-    */
+    /**
+     * Add several ip addresses into database
+     *
+     * @param array   $ips      IP adresses to add
+     * @param integer $items_id NetworkName id
+     *
+     * @return void
+     */
     private function addIPAddresses(array $ips, $items_id)
     {
         $ipaddress = new IPAddress();
@@ -322,11 +322,11 @@ trait InventoryNetworkPort
         }
     }
 
-   /**
-    * Hanlde network instantiation
-    *
-    * @return void
-    */
+    /**
+     * Hanlde network instantiation
+     *
+     * @return void
+     */
     private function handleUpdates()
     {
         global $DB;
@@ -503,16 +503,16 @@ trait InventoryNetworkPort
        //does nothing
     }
 
-   /**
-    * Handle network port instantiation
-    *
-    * @param string    $type     Instantiation class name
-    * @param \stdClass $data     Data
-    * @param integer   $ports_id NetworkPort id
-    * @param boolean   $load     Whether to load db results
-    *
-    * @return void
-    */
+    /**
+     * Handle network port instantiation
+     *
+     * @param string    $type     Instantiation class name
+     * @param \stdClass $data     Data
+     * @param integer   $ports_id NetworkPort id
+     * @param boolean   $load     Whether to load db results
+     *
+     * @return void
+     */
     private function handleInstantiation($type, $data, $ports_id, $load)
     {
         global $DB;
@@ -578,11 +578,11 @@ trait InventoryNetworkPort
         }
     }
 
-   /**
-    * Handle network ports, name and instantiation creation
-    *
-    * @return void
-    */
+    /**
+     * Handle network ports, name and instantiation creation
+     *
+     * @return void
+     */
     private function handleCreates()
     {
         $ports = $this->ports;

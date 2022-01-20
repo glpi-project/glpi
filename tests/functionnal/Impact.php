@@ -484,9 +484,9 @@ class Impact extends \DbTestCase
         ];
     }
 
-   /**
-    * @dataProvider bfsProvider
-    */
+    /**
+     * @dataProvider bfsProvider
+     */
     public function testBfs($a, $b, $direction, $result)
     {
         $path = \Impact::bfs($this->graph, $a, $b, $direction);

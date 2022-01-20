@@ -35,7 +35,7 @@
  * Objects that has been renamed, but are used in upgrade scripts
  *
  * @since 9.2
-**/
+ **/
 
 if (!class_exists('Bookmark')) {
     class Bookmark extends SavedSearch

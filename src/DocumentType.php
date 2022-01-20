@@ -33,7 +33,7 @@
 
 /**
  * DocumentType Class
-**/
+ **/
 class DocumentType extends CommonDropdown
 {
     public static $rightname      = 'typedoc';
@@ -64,11 +64,11 @@ class DocumentType extends CommonDropdown
     }
 
 
-   /**
-    * Get search function for the class
-    *
-    * @return array of search option
-   **/
+    /**
+     * Get search function for the class
+     *
+     * @return array of search option
+     **/
     public function rawSearchOptions()
     {
         $tab = parent::rawSearchOptions();
@@ -129,14 +129,14 @@ class DocumentType extends CommonDropdown
     }
 
 
-   /**
-    * @since 0.84
-    *
-    * @param $field
-    * @param $name               (default '')
-    * @param $values             (default '')
-    * @param $options      array
-   **/
+    /**
+     * @since 0.84
+     *
+     * @param $field
+     * @param $name               (default '')
+     * @param $values             (default '')
+     * @param $options      array
+     **/
     public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
     {
 
@@ -157,12 +157,12 @@ class DocumentType extends CommonDropdown
     }
 
 
-   /**
-    * @since 0.85
-    *
-    * @param array $options list of options with theses possible keys:
-    *                        - bool 'display', echo the generated html or return it
-   **/
+    /**
+     * @since 0.85
+     *
+     * @param array $options list of options with theses possible keys:
+     *                        - bool 'display', echo the generated html or return it
+     **/
     public static function showAvailableTypesLink($options = [])
     {
         global $CFG_GLPI;
@@ -190,11 +190,11 @@ class DocumentType extends CommonDropdown
         }
     }
 
-   /**
-    * Return pattern that can be used to validate that name of an uploaded file matches accepted extensions.
-    *
-    * @return string
-    */
+    /**
+     * Return pattern that can be used to validate that name of an uploaded file matches accepted extensions.
+     *
+     * @return string
+     */
     public static function getUploadableFilePattern(): string
     {
         global $DB;

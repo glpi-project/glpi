@@ -40,16 +40,16 @@ namespace Glpi\System\Requirement;
  */
 class ProtectedWebAccess extends AbstractRequirement
 {
-   /**
-    * Paths of directories to check.
-    *
-    * @var string[]
-    */
+    /**
+     * Paths of directories to check.
+     *
+     * @var string[]
+     */
     private $directories;
 
-   /**
-    * @param array $directories  Paths of directories to check.
-    */
+    /**
+     * @param array $directories  Paths of directories to check.
+     */
     public function __construct(array $directories)
     {
         $this->title = __('Protected access to files directory');

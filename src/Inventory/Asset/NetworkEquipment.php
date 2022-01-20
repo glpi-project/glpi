@@ -174,14 +174,14 @@ class NetworkEquipment extends MainAsset
         return $this->data;
     }
 
-   /**
-    * After rule engine passed, update task (log) and create item if required
-    *
-    * @param integer $items_id id of the item (0 if new)
-    * @param string  $itemtype Item type
-    * @param integer $rules_id Matched rule id, if any
-    * @param integer $ports_id Matched port id, if any
-    */
+    /**
+     * After rule engine passed, update task (log) and create item if required
+     *
+     * @param integer $items_id id of the item (0 if new)
+     * @param string  $itemtype Item type
+     * @param integer $rules_id Matched rule id, if any
+     * @param integer $ports_id Matched port id, if any
+     */
     public function rulepassed($items_id, $itemtype, $rules_id, $ports_id = 0)
     {
         if (property_exists($this->data[$this->current_key], 'is_ap')) {
@@ -266,14 +266,14 @@ class NetworkEquipment extends MainAsset
         return $this;
     }
 
-   /**
-    * Is device a stacked switch
-    * Relies on level/dependencies of network_components
-    *
-    * @param integer $parent_index Parent index for recursive calls
-    *
-    * @return boolean
-    */
+    /**
+     * Is device a stacked switch
+     * Relies on level/dependencies of network_components
+     *
+     * @param integer $parent_index Parent index for recursive calls
+     *
+     * @return boolean
+     */
     public function isStackedSwitch($parent_index = 0): bool
     {
         $components = $this->extra_data['network_components'] ?? [];
@@ -303,11 +303,11 @@ class NetworkEquipment extends MainAsset
         return $elt_count >= 2;
     }
 
-   /**
-    * Get detected switches (osrted by their index)
-    *
-    * @return array
-    */
+    /**
+     * Get detected switches (osrted by their index)
+     *
+     * @return array
+     */
     public function getStackedSwitches($parent_index = 0): array
     {
         $components = $this->extra_data['network_components'] ?? [];
@@ -336,14 +336,14 @@ class NetworkEquipment extends MainAsset
         return $switches;
     }
 
-   /**
-    * Is device a wireless controller
-    * Relies on level/dependencies of network_components
-    *
-    * @param integer $parent_index Parent index for recursive calls
-    *
-    * @return boolean
-    */
+    /**
+     * Is device a wireless controller
+     * Relies on level/dependencies of network_components
+     *
+     * @param integer $parent_index Parent index for recursive calls
+     *
+     * @return boolean
+     */
     public function isWirelessController($parent_index = 0): bool
     {
         $components = $this->extra_data['network_components'] ?? [];
@@ -363,11 +363,11 @@ class NetworkEquipment extends MainAsset
         return false;
     }
 
-   /**
-    * Get wireless controller access points
-    *
-    * @return array
-    */
+    /**
+     * Get wireless controller access points
+     *
+     * @return array
+     */
     public function getAccessPoints(): array
     {
         $components = $this->extra_data['network_components'] ?? [];

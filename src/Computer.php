@@ -35,7 +35,7 @@ use Glpi\Socket;
 
 /**
  *  Computer class
-**/
+ **/
 class Computer extends CommonDBTM
 {
     use Glpi\Features\DCBreadcrumb;

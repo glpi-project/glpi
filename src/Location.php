@@ -398,13 +398,13 @@ class Location extends CommonTreeDropdown
     }
 
 
-   /**
-    * Print the HTML array of items for a location
-    *
-    * @since 0.85
-    *
-    * @return void
-   **/
+    /**
+     * Print the HTML array of items for a location
+     *
+     * @since 0.85
+     *
+     * @return void
+     **/
     public function showItems()
     {
         global $DB, $CFG_GLPI;

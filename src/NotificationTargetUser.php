@@ -43,9 +43,9 @@ class NotificationTargetUser extends NotificationTarget
     }
 
 
-   /**
-    * @see NotificationTarget::addNotificationTargets()
-   **/
+    /**
+     * @see NotificationTarget::addNotificationTargets()
+     **/
     public function addNotificationTargets($entity)
     {
         $this->addTarget(Notification::USER, User::getTypeName(1));
@@ -56,9 +56,9 @@ class NotificationTargetUser extends NotificationTarget
     }
 
 
-   /**
-    * @see NotificationTarget::addSpecificTargets()
-   **/
+    /**
+     * @see NotificationTarget::addSpecificTargets()
+     **/
     public function addSpecificTargets($data, $options)
     {
 
@@ -168,13 +168,13 @@ class NotificationTargetUser extends NotificationTarget
         return $this->tag_descriptions;
     }
 
-   /**
-    * Add tags for given event.
-    *
-    * @param string $event
-    *
-    * @return void
-    */
+    /**
+     * Add tags for given event.
+     *
+     * @param string $event
+     *
+     * @return void
+     */
     private function addTagsForEvent($event)
     {
         $lang_tags = [];

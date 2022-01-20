@@ -55,9 +55,9 @@ class Autoload extends DbTestCase
         ];
     }
 
-   /**
-    * @dataProvider dataItemType
-    **/
+    /**
+     * @dataProvider dataItemType
+     **/
     public function testIsPluginItemType($type, $plug, $class)
     {
         $res = isPluginItemType($type);
@@ -72,9 +72,9 @@ class Autoload extends DbTestCase
         }
     }
 
-   /**
-    * Checks autoload of some class located in Glpi namespace.
-    */
+    /**
+     * Checks autoload of some class located in Glpi namespace.
+     */
     public function testAutoloadGlpiEvent()
     {
         $this->boolean(class_exists('Glpi\\Event'))->isTrue();

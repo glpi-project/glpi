@@ -71,11 +71,11 @@ class PurgeLogs extends CommonDBTM
         return ['description' => __("Purge history")];
     }
 
-   /**
-    * Purge software logs
-    *
-    * @return void
-    */
+    /**
+     * Purge software logs
+     *
+     * @return void
+     */
     public static function purgeSoftware()
     {
         global $DB, $CFG_GLPI;
@@ -126,11 +126,11 @@ class PurgeLogs extends CommonDBTM
         }
     }
 
-   /**
-    * Purge infocom logs
-    *
-    * @return void
-    */
+    /**
+     * Purge infocom logs
+     *
+     * @return void
+     */
     public static function purgeInfocom()
     {
         global $DB, $CFG_GLPI;
@@ -157,11 +157,11 @@ class PurgeLogs extends CommonDBTM
         }
     }
 
-   /**
-    * Purge users logs
-    *
-    * @return void
-    */
+    /**
+     * Purge users logs
+     *
+     * @return void
+     */
     public static function purgeUserinfos()
     {
         global $DB, $CFG_GLPI;
@@ -226,11 +226,11 @@ class PurgeLogs extends CommonDBTM
     }
 
 
-   /**
-    * Purge devices logs
-    *
-    * @return void
-    */
+    /**
+     * Purge devices logs
+     *
+     * @return void
+     */
     public static function purgeDevices()
     {
         global $DB, $CFG_GLPI;
@@ -256,11 +256,11 @@ class PurgeLogs extends CommonDBTM
         }
     }
 
-   /**
-    * Purge relations logs
-    *
-    * @return void
-    */
+    /**
+     * Purge relations logs
+     *
+     * @return void
+     */
     public static function purgeRelations()
     {
         global $DB, $CFG_GLPI;
@@ -284,11 +284,11 @@ class PurgeLogs extends CommonDBTM
         }
     }
 
-   /**
-    * Purge items logs
-    *
-    * @return void
-    */
+    /**
+     * Purge items logs
+     *
+     * @return void
+     */
     public static function purgeItems()
     {
         global $DB, $CFG_GLPI;
@@ -315,11 +315,11 @@ class PurgeLogs extends CommonDBTM
         }
     }
 
-   /**
-    * Purge refused equipments logs
-    *
-    * @return void
-    */
+    /**
+     * Purge refused equipments logs
+     *
+     * @return void
+     */
     public static function purgeRefusedLogs()
     {
         global $DB, $CFG_GLPI;
@@ -340,11 +340,11 @@ class PurgeLogs extends CommonDBTM
     }
 
 
-   /**
-    * Purge othr logs
-    *
-    * @return void
-    */
+    /**
+     * Purge othr logs
+     *
+     * @return void
+     */
     public static function purgeOthers()
     {
         global $DB, $CFG_GLPI;
@@ -367,11 +367,11 @@ class PurgeLogs extends CommonDBTM
     }
 
 
-   /**
-    * Purge plugins logs
-    *
-    * @return void
-    */
+    /**
+     * Purge plugins logs
+     *
+     * @return void
+     */
     public static function purgePlugins()
     {
         global $DB, $CFG_GLPI;
@@ -388,11 +388,11 @@ class PurgeLogs extends CommonDBTM
     }
 
 
-   /**
-    * Purge all logs
-    *
-    * @return void
-    */
+    /**
+     * Purge all logs
+     *
+     * @return void
+     */
     public static function purgeAll()
     {
         global $DB, $CFG_GLPI;
@@ -406,13 +406,13 @@ class PurgeLogs extends CommonDBTM
         }
     }
 
-   /**
-    * Get modification date restriction clause
-    *
-    * @param integer $month Number of months
-    *
-    * @return array|false
-    */
+    /**
+     * Get modification date restriction clause
+     *
+     * @param integer $month Number of months
+     *
+     * @return array|false
+     */
     public static function getDateModRestriction($month)
     {
         if ($month > 0) {
@@ -424,11 +424,11 @@ class PurgeLogs extends CommonDBTM
         }
     }
 
-   /**
-    * Count logs
-    *
-    * @return integer
-    */
+    /**
+     * Count logs
+     *
+     * @return integer
+     */
     public static function getLogsCount()
     {
         return countElementsInTable('glpi_logs');

@@ -37,7 +37,7 @@
  * The base entity for the table. The entity is the base of kind of cell (header or not). It
  * provides facilities to manage the cells such as attributs or specific content (mixing of strings
  * and call of method during table display)
-**/
+ **/
 abstract class HTMLTableEntity
 {
     private $html_id    = '';
@@ -47,25 +47,25 @@ abstract class HTMLTableEntity
     private $content;
 
 
-   /**
-    * Constructor of an entity
-    *
-    * @param string $content
-    *    The content of a cell, header, ... Can simply be a string. But it can also
-    *    be a call to a specific function during the rendering of the table in case
-    *    of direct display function (for instance: Dropdown::showNumber). A function
-    *    call is an array containing two elements : 'function', the name the function
-    *    and 'parameters', an array of the parameters given to the function.
-   **/
+    /**
+     * Constructor of an entity
+     *
+     * @param string $content
+     *    The content of a cell, header, ... Can simply be a string. But it can also
+     *    be a call to a specific function during the rendering of the table in case
+     *    of direct display function (for instance: Dropdown::showNumber). A function
+     *    call is an array containing two elements : 'function', the name the function
+     *    and 'parameters', an array of the parameters given to the function.
+     **/
     public function __construct($content)
     {
         $this->content = $content;
     }
 
 
-   /**
-    * @param $origin
-   **/
+    /**
+     * @param $origin
+     **/
     public function copyAttributsFrom(HTMLTableEntity $origin)
     {
 
@@ -75,20 +75,20 @@ abstract class HTMLTableEntity
     }
 
 
-   /**
-    * @param $html_id
-   **/
+    /**
+     * @param $html_id
+     **/
     public function setHTMLID($html_id)
     {
         $this->html_id = $html_id;
     }
 
 
-   /**
-    * userfull ? function never called
-    *
-    * @param $html_style
-   **/
+    /**
+     * userfull ? function never called
+     *
+     * @param $html_style
+     **/
     public function setHTMLStyle($html_style)
     {
         if (is_array($html_style)) {
@@ -99,9 +99,9 @@ abstract class HTMLTableEntity
     }
 
 
-   /**
-    * @param $html_class
-   **/
+    /**
+     * @param $html_class
+     **/
     public function setHTMLClass($html_class)
     {
         if (is_array($html_class)) {
@@ -112,9 +112,9 @@ abstract class HTMLTableEntity
     }
 
 
-   /**
-    * @param $options   array
-   **/
+    /**
+     * @param $options   array
+     **/
     public function displayEntityAttributs(array $options = [])
     {
 
@@ -152,9 +152,9 @@ abstract class HTMLTableEntity
     }
 
 
-   /**
-    * @param $content
-   **/
+    /**
+     * @param $content
+     **/
     public function setContent($content)
     {
         $this->content = $content;

@@ -826,14 +826,14 @@ class RuleCriteria extends DbTestCase
         $this->string($condition)->isIdenticalTo("not under");
     }
 
-   /**
-    * Update rule modification date
-    *
-    * @param integer $rules_id Rule ID
-    * @param string  $time     Time to set modification date to
-    *
-    * @return void
-    */
+    /**
+     * Update rule modification date
+     *
+     * @param integer $rules_id Rule ID
+     * @param string  $time     Time to set modification date to
+     *
+     * @return void
+     */
     private function updateDateMod($rules_id, $time)
     {
         global $DB;

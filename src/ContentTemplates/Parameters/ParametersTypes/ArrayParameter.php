@@ -44,18 +44,18 @@ use Glpi\ContentTemplates\Parameters\TemplatesParametersInterface;
  */
 class ArrayParameter extends AbstractParameterType
 {
-   /**
-    * Parameters of each item contained in this array.
-    *
-    * @var TemplatesParametersInterface
-    */
+    /**
+     * Parameters of each item contained in this array.
+     *
+     * @var TemplatesParametersInterface
+     */
     protected $template_parameters;
 
-   /**
-    * @param string                       $key        Key to access this value
-    * @param TemplatesParametersInterface $parameters Parameters of each item contained in this array
-    * @param string                       $label      Label to display in the autocompletion widget
-    */
+    /**
+     * @param string                       $key        Key to access this value
+     * @param TemplatesParametersInterface $parameters Parameters of each item contained in this array
+     * @param string                       $label      Label to display in the autocompletion widget
+     */
     public function __construct(
         string $key,
         TemplatesParametersInterface $parameters,

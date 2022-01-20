@@ -473,13 +473,13 @@ class NetworkPortMigration extends CommonDBChild
     }
 
 
-   /**
-    * @param $group           HTMLTableGroup object
-    * @param $super           HTMLTableSuperHeader object
-    * @param $options   array
-    * @param $internet_super
-    * @param $father
-   **/
+    /**
+     * @param $group           HTMLTableGroup object
+     * @param $super           HTMLTableSuperHeader object
+     * @param $options   array
+     * @param $internet_super
+     * @param $father
+     **/
     public static function getMigrationInstantiationHTMLTableHeaders(
         HTMLTableGroup $group,
         HTMLTableSuperHeader $super,

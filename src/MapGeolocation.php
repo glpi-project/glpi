@@ -36,9 +36,9 @@
  **/
 trait MapGeolocation
 {
-   /**
-    * get openstreetmap
-    */
+    /**
+     * get openstreetmap
+     */
     public function showMap()
     {
         $rand = mt_rand();

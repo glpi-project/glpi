@@ -42,23 +42,23 @@ use CommonDBTM;
  */
 abstract class AbstractParameters implements TemplatesParametersInterface
 {
-   /**
-    * To by defined in each subclasses, get the exposed values for a given item
-    * These values will be used as parameters when rendering a twig template.
-    *
-    * Result will be returned by `self::getValues()`.
-    *
-    * @param CommonDBTM $item
-    *
-    * @return array
-    */
+    /**
+     * To by defined in each subclasses, get the exposed values for a given item
+     * These values will be used as parameters when rendering a twig template.
+     *
+     * Result will be returned by `self::getValues()`.
+     *
+     * @param CommonDBTM $item
+     *
+     * @return array
+     */
     abstract protected function defineValues(CommonDBTM $item): array;
 
-   /**
-    * Get supported classes by this parameter type.
-    *
-    * @return array
-    */
+    /**
+     * Get supported classes by this parameter type.
+     *
+     * @return array
+     */
     abstract protected function getTargetClasses(): array;
 
     public function getValues(CommonDBTM $item): array

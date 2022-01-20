@@ -72,9 +72,9 @@ class Conf extends \GLPITestCase
         ];
     }
 
-   /**
-    * @dataProvider inventoryfilesProvider
-    */
+    /**
+     * @dataProvider inventoryfilesProvider
+     */
     public function testIsInventoryFile(string $file, bool $expected)
     {
         $this
@@ -98,9 +98,9 @@ class Conf extends \GLPITestCase
         return $provider;
     }
 
-   /**
-    * @dataProvider confProvider
-    */
+    /**
+     * @dataProvider confProvider
+     */
     public function testGetter($key, $value)
     {
         $this

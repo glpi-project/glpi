@@ -63,7 +63,7 @@
  * prepareInputForAdd). You can find an example with UserEmail::prepareInputForAdd($input).
  *
  * @since 0.84
-**/
+ **/
 abstract class CommonDBConnexity extends CommonDBTM
 {
     use Glpi\Features\Clonable;
@@ -83,31 +83,31 @@ abstract class CommonDBConnexity extends CommonDBTM
         ];
     }
 
-   /**
-    * Return the SQL request to get all the connexities corresponding to $itemtype[$items_id]
-    * That is used by cleanDBOnItem : the only interesting field is static::getIndexName()
-    * But CommonDBRelation also use it to get more complex result
-    *
-    * @since 9.4
-    *
-    * @param string  $itemtype the type of the item to look for
-    * @param integer $items_id the id of the item to look for
-    *
-    * @return array|null
-    */
+    /**
+     * Return the SQL request to get all the connexities corresponding to $itemtype[$items_id]
+     * That is used by cleanDBOnItem : the only interesting field is static::getIndexName()
+     * But CommonDBRelation also use it to get more complex result
+     *
+     * @since 9.4
+     *
+     * @param string  $itemtype the type of the item to look for
+     * @param integer $items_id the id of the item to look for
+     *
+     * @return array|null
+     */
     public static function getSQLCriteriaToSearchForItem($itemtype, $items_id)
     {
         return null;
     }
 
 
-   /**
-    * Clean the Connecity Table when item of the relation is deleted
-    * To be call from the cleanDBonPurge of each Item class
-    *
-    * @param string  $itemtype  type of the item
-    * @param integer $items_id  id of the item
-   **/
+    /**
+     * Clean the Connecity Table when item of the relation is deleted
+     * To be call from the cleanDBonPurge of each Item class
+     *
+     * @param string  $itemtype  type of the item
+     * @param integer $items_id  id of the item
+     **/
     public function cleanDBonItemDelete($itemtype, $items_id)
     {
         global $DB;
@@ -128,19 +128,19 @@ abstract class CommonDBConnexity extends CommonDBTM
     }
 
 
-   /**
-    * get associated item (defined by $itemtype and $items_id)
-    *
-    * @see CommonDBConnexity::getItemFromArray()
-    *
-    * @param string  $itemtype          the name of the field of the type of the item to get
-    * @param string  $items_id          the name of the field of the id of the item to get
-    * @param boolean $getFromDB         do we have to load the item from the DB ?
-    * @param boolean $getEmpty          else : do we have to load an empty item ?
-    * @param boolean $getFromDBOrEmpty  get from DB if possible, else, getEmpty
-    *
-    * @return CommonDBTM|boolean the item or false if we cannot load the item
-   **/
+    /**
+     * get associated item (defined by $itemtype and $items_id)
+     *
+     * @see CommonDBConnexity::getItemFromArray()
+     *
+     * @param string  $itemtype          the name of the field of the type of the item to get
+     * @param string  $items_id          the name of the field of the id of the item to get
+     * @param boolean $getFromDB         do we have to load the item from the DB ?
+     * @param boolean $getEmpty          else : do we have to load an empty item ?
+     * @param boolean $getFromDBOrEmpty  get from DB if possible, else, getEmpty
+     *
+     * @return CommonDBTM|boolean the item or false if we cannot load the item
+     **/
     public function getConnexityItem(
         $itemtype,
         $items_id,
@@ -159,17 +159,17 @@ abstract class CommonDBConnexity extends CommonDBTM
         );
     }
 
-   /**
-    * get items associated to the given one (defined by $itemtype and $items_id)
-    *
-    * @see CommonDBConnexity::getItemsAssociationRequest()
-    * @since 9.5
-    *
-    * @param string  $itemtype          the type of the item we want the resulting items to be associated to
-    * @param string  $items_id          the name of the item we want the resulting items to be associated to
-    *
-    * @return array the items associated to the given one (empty if none was found)
-   **/
+    /**
+     * get items associated to the given one (defined by $itemtype and $items_id)
+     *
+     * @see CommonDBConnexity::getItemsAssociationRequest()
+     * @since 9.5
+     *
+     * @param string  $itemtype          the type of the item we want the resulting items to be associated to
+     * @param string  $items_id          the name of the item we want the resulting items to be associated to
+     *
+     * @return array the items associated to the given one (empty if none was found)
+     **/
     public static function getItemsAssociatedTo($itemtype, $items_id)
     {
         $res = [];
@@ -184,43 +184,43 @@ abstract class CommonDBConnexity extends CommonDBTM
         return $res;
     }
 
-   /**
-    * get the request results to get items associated to the given one (defined by $itemtype and $items_id)
-    *
-    * @since 9.5
-    *
-    * @param string  $itemtype          the type of the item we want the resulting items to be associated to
-    * @param string  $items_id          the name of the item we want the resulting items to be associated to
-    *
-    * @return array the items associated to the given one (empty if none was found)
-    */
+    /**
+     * get the request results to get items associated to the given one (defined by $itemtype and $items_id)
+     *
+     * @since 9.5
+     *
+     * @param string  $itemtype          the type of the item we want the resulting items to be associated to
+     * @param string  $items_id          the name of the item we want the resulting items to be associated to
+     *
+     * @return array the items associated to the given one (empty if none was found)
+     */
     public static function getItemsAssociationRequest($itemtype, $items_id)
     {
         global $DB;
         return $DB->request(static::getSQLCriteriaToSearchForItem($itemtype, $items_id));
     }
 
-   /**
-    * Get item field name for cloning
-    *
-    * @param string $itemtype Item type
-    *
-    * @return string
-    */
+    /**
+     * Get item field name for cloning
+     *
+     * @param string $itemtype Item type
+     *
+     * @return string
+     */
     abstract public static function getItemField($itemtype): string;
 
-   /**
-    * get associated item (defined by $itemtype and $items_id)
-    *
-    * @param string  $itemtype          the name of the field of the type of the item to get
-    * @param string  $items_id          the name of the field of the id of the item to get
-    * @param array   $array             the array in we have to search ($input, $this->fields ...)
-    * @param boolean $getFromDB         do we have to load the item from the DB ?
-    * @param boolean $getEmpty          else : do we have to load an empty item ?
-    * @param boolean $getFromDBOrEmpty  get from DB if possible, else, getEmpty
-    *
-    * @return CommonDBTM|boolean the item or false if we cannot load the item
-   **/
+    /**
+     * get associated item (defined by $itemtype and $items_id)
+     *
+     * @param string  $itemtype          the name of the field of the type of the item to get
+     * @param string  $items_id          the name of the field of the id of the item to get
+     * @param array   $array             the array in we have to search ($input, $this->fields ...)
+     * @param boolean $getFromDB         do we have to load the item from the DB ?
+     * @param boolean $getEmpty          else : do we have to load an empty item ?
+     * @param boolean $getFromDBOrEmpty  get from DB if possible, else, getEmpty
+     *
+     * @return CommonDBTM|boolean the item or false if we cannot load the item
+     **/
     public static function getItemFromArray(
         $itemtype,
         $items_id,
@@ -271,17 +271,17 @@ abstract class CommonDBConnexity extends CommonDBTM
     }
 
 
-   /**
-    * Factorization of prepareInputForUpdate for CommonDBRelation and CommonDBChild. Just check if
-    * we can change the item
-    *
-    * @warning if the update is not possible (right problem), then $input become false
-    *
-    * @param $input   array   the new values for the current item
-    * @param $fields  array   list of fields that define the attached items
-    *
-    * @return true if the attached item has changed, false if the attached items has not changed
-    **/
+    /**
+     * Factorization of prepareInputForUpdate for CommonDBRelation and CommonDBChild. Just check if
+     * we can change the item
+     *
+     * @warning if the update is not possible (right problem), then $input become false
+     *
+     * @param $input   array   the new values for the current item
+     * @param $fields  array   list of fields that define the attached items
+     *
+     * @return true if the attached item has changed, false if the attached items has not changed
+     **/
     public function checkAttachedItemChangesAllowed(array $input, array $fields)
     {
 
@@ -329,36 +329,36 @@ abstract class CommonDBConnexity extends CommonDBTM
         return true;
     }
 
-   /**
-    * Is auto entityForwarding needed ?
-    *
-    * @return boolean
-    **/
+    /**
+     * Is auto entityForwarding needed ?
+     *
+     * @return boolean
+     **/
     public function tryEntityForwarding()
     {
         return (!static::$disableAutoEntityForwarding && $this->isEntityAssign());
     }
 
 
-   /**
-    * Factorization of canCreate, canView, canUpate and canDelete. It checks the ability to
-    * create, view, update or delete the item if it is possible (ie : $itemtype != 'itemtype')
-    *
-    * The aim is that the rights are driven by the attached item : if we can do the action on the
-    * item, then we can do the action of the CommonDBChild or the CommonDBRelation. Thus, it is the
-    * inverse of CommonDBTM's behaviour, that, by default forbid any action (cf.
-    * CommonDBTM::canCreate and CommonDBTM::canView)
-    *
-    * @warning By default, if the action is possible regarding the attaching item, then it is
-    * possible on the CommonDBChild and the CommonDBRelation.
-    *
-    * @param string  $method     the method to check (canCreate, canView, canUpdate of canDelete)
-    * @param integer $item_right the right to check (DONT_CHECK_ITEM_RIGHTS, HAVE_VIEW_RIGHT_ON_ITEM ...)
-    * @param string  $itemtype   the name of the field of the type of the item to get
-    * @param string  $items_id   the name of the field of the id of the item to get
-    *
-    * @return boolean true if we have absolute right to create the current connexity
-   **/
+    /**
+     * Factorization of canCreate, canView, canUpate and canDelete. It checks the ability to
+     * create, view, update or delete the item if it is possible (ie : $itemtype != 'itemtype')
+     *
+     * The aim is that the rights are driven by the attached item : if we can do the action on the
+     * item, then we can do the action of the CommonDBChild or the CommonDBRelation. Thus, it is the
+     * inverse of CommonDBTM's behaviour, that, by default forbid any action (cf.
+     * CommonDBTM::canCreate and CommonDBTM::canView)
+     *
+     * @warning By default, if the action is possible regarding the attaching item, then it is
+     * possible on the CommonDBChild and the CommonDBRelation.
+     *
+     * @param string  $method     the method to check (canCreate, canView, canUpdate of canDelete)
+     * @param integer $item_right the right to check (DONT_CHECK_ITEM_RIGHTS, HAVE_VIEW_RIGHT_ON_ITEM ...)
+     * @param string  $itemtype   the name of the field of the type of the item to get
+     * @param string  $items_id   the name of the field of the id of the item to get
+     *
+     * @return boolean true if we have absolute right to create the current connexity
+     **/
     public static function canConnexity($method, $item_right, $itemtype, $items_id)
     {
 
@@ -377,21 +377,21 @@ abstract class CommonDBConnexity extends CommonDBTM
     }
 
 
-   /**
-    * Factorization of canCreateItem, canViewItem, canUpateItem and canDeleteItem. It checks the
-    * ability to create, view, update or delete the item. If we cannot check the item (none is
-    * existing), then we can do the action of the current connexity
-    *
-    * @param string          $methodItem    the method to check (canCreateItem, canViewItem,
-                                            canUpdateItem or canDeleteItem)
-    * @param string          $methodNotItem the method to check (canCreate, canView, canUpdate of canDelete)
-    * @param integer         $item_right    the right to check (DONT_CHECK_ITEM_RIGHTS, HAVE_VIEW_RIGHT_ON_ITEM ...)
-    * @param string          $itemtype      the name of the field of the type of the item to get
-    * @param string          $items_id      the name of the field of the id of the item to get
-    * @param CommonDBTM|null &$item         the item concerned by the item
-    *
-    * @return true if we have absolute right to create the current connexity
-   **/
+    /**
+     * Factorization of canCreateItem, canViewItem, canUpateItem and canDeleteItem. It checks the
+     * ability to create, view, update or delete the item. If we cannot check the item (none is
+     * existing), then we can do the action of the current connexity
+     *
+     * @param string          $methodItem    the method to check (canCreateItem, canViewItem,
+     * canUpdateItem or canDeleteItem)
+     * @param string          $methodNotItem the method to check (canCreate, canView, canUpdate of canDelete)
+     * @param integer         $item_right    the right to check (DONT_CHECK_ITEM_RIGHTS, HAVE_VIEW_RIGHT_ON_ITEM ...)
+     * @param string          $itemtype      the name of the field of the type of the item to get
+     * @param string          $items_id      the name of the field of the id of the item to get
+     * @param CommonDBTM|null &$item         the item concerned by the item
+     *
+     * @return true if we have absolute right to create the current connexity
+     **/
     public function canConnexityItem(
         $methodItem,
         $methodNotItem,
@@ -433,17 +433,17 @@ abstract class CommonDBConnexity extends CommonDBTM
     }
 
 
-   /**
-    * @since 0.84
-    *
-    * Get the change values for history when only the fields of the CommonDBChild are updated
-    * @warning can be call as many time as fields are updated
-    *
-    * @param string $field the name of the field that has changed
-    *
-    * @return array as the third parameter of Log::history() method or false if we don't want to
-    *         log for the given field
-   **/
+    /**
+     * @since 0.84
+     *
+     * Get the change values for history when only the fields of the CommonDBChild are updated
+     * @warning can be call as many time as fields are updated
+     *
+     * @param string $field the name of the field that has changed
+     *
+     * @return array as the third parameter of Log::history() method or false if we don't want to
+     *         log for the given field
+     **/
     public function getHistoryChangeWhenUpdateField($field)
     {
 
@@ -451,16 +451,16 @@ abstract class CommonDBConnexity extends CommonDBTM
     }
 
 
-   /**
-    * Factorized method to search difference when updating a connexity : return both previous
-    * item and new item if both are different. Otherwise returns new items
-    *
-    * @param string $itemtype  the name of the field of the type of the item to get
-    * @param string $items_id  the name of the field of the id of the item to get
-    *
-    * @return array containing "previous" (if exists) and "new". Beware that both can be equal
-    *         to false
-   **/
+    /**
+     * Factorized method to search difference when updating a connexity : return both previous
+     * item and new item if both are different. Otherwise returns new items
+     *
+     * @param string $itemtype  the name of the field of the type of the item to get
+     * @param string $items_id  the name of the field of the id of the item to get
+     *
+     * @return array containing "previous" (if exists) and "new". Beware that both can be equal
+     *         to false
+     **/
     public function getItemsForLog($itemtype, $items_id)
     {
 
@@ -492,17 +492,17 @@ abstract class CommonDBConnexity extends CommonDBTM
         return $result;
     }
 
-   /**
-    * Get all specificities of the current itemtype concerning the massive actions
-    *
-    * @since 0.85
-    *
-    * @return array of the specificities:
-    *        'reaffect'   is it possible to reaffect the connexity (1 or 2 for CommonDBRelation)
-    *        'itemtypes'  the types of the item in cas of reaffectation
-    *        'normalized' array('affect', 'unaffect') of arrays containing each action
-    *        'button_labels'          array of the labels of the button indexed by the action name
-   **/
+    /**
+     * Get all specificities of the current itemtype concerning the massive actions
+     *
+     * @since 0.85
+     *
+     * @return array of the specificities:
+     *        'reaffect'   is it possible to reaffect the connexity (1 or 2 for CommonDBRelation)
+     *        'itemtypes'  the types of the item in cas of reaffectation
+     *        'normalized' array('affect', 'unaffect') of arrays containing each action
+     *        'button_labels'          array of the labels of the button indexed by the action name
+     **/
     public static function getConnexityMassiveActionsSpecificities()
     {
 
@@ -515,11 +515,11 @@ abstract class CommonDBConnexity extends CommonDBTM
     }
 
 
-   /**
-    * @since 0.85
-    *
-    * @see CommonDBTM::getMassiveActionsForItemtype()
-   **/
+    /**
+     * @since 0.85
+     *
+     * @see CommonDBTM::getMassiveActionsForItemtype()
+     **/
     public static function getMassiveActionsForItemtype(
         array &$actions,
         $itemtype,
@@ -563,11 +563,11 @@ abstract class CommonDBConnexity extends CommonDBTM
     }
 
 
-   /**
-    * @since 0.85
-    *
-    * @see CommonDBTM::showMassiveActionsSubForm()
-   **/
+    /**
+     * @since 0.85
+     *
+     * @see CommonDBTM::showMassiveActionsSubForm()
+     **/
     public static function showMassiveActionsSubForm(MassiveAction $ma)
     {
 
@@ -689,19 +689,19 @@ abstract class CommonDBConnexity extends CommonDBTM
     }
 
 
-   /**
-    * @since 0.85
-    *
-    * Set based array for static::add or static::update in case of massive actions are doing
-    * something.
-    *
-    * @param string     $action  the name of the action
-    * @param CommonDBTM $item    the item on which apply the massive action
-    * @param integer[]  $ids     the ids of the item on which apply the action
-    * @param array      $input   the input provided by the form ($_POST, $_GET ...)
-    *
-    * @return array containing the elements
-   **/
+    /**
+     * @since 0.85
+     *
+     * Set based array for static::add or static::update in case of massive actions are doing
+     * something.
+     *
+     * @param string     $action  the name of the action
+     * @param CommonDBTM $item    the item on which apply the massive action
+     * @param integer[]  $ids     the ids of the item on which apply the action
+     * @param array      $input   the input provided by the form ($_POST, $_GET ...)
+     *
+     * @return array containing the elements
+     **/
     public static function getConnexityInputForProcessingOfMassiveActions(
         $action,
         CommonDBTM $item,
@@ -712,11 +712,11 @@ abstract class CommonDBConnexity extends CommonDBTM
     }
 
 
-   /**
-    * @since 0.85
-    *
-    * @see CommonDBTM::processMassiveActionsForOneItemtype()
-   **/
+    /**
+     * @since 0.85
+     *
+     * @see CommonDBTM::processMassiveActionsForOneItemtype()
+     **/
     public static function processMassiveActionsForOneItemtype(
         MassiveAction $ma,
         CommonDBTM $item,

@@ -75,12 +75,12 @@ class KnowbaseItem_Comment extends CommonDBTM
         return true;
     }
 
-   /**
-    * Show linked items of a knowbase item
-    *
-    * @param $item                     CommonDBTM object
-    * @param $withtemplate    integer  withtemplate param (default 0)
-   **/
+    /**
+     * Show linked items of a knowbase item
+     *
+     * @param $item                     CommonDBTM object
+     * @param $withtemplate    integer  withtemplate param (default 0)
+     **/
     public static function showForItem(CommonDBTM $item, $withtemplate = 0)
     {
         global $CFG_GLPI;
@@ -221,15 +221,15 @@ class KnowbaseItem_Comment extends CommonDBTM
             echo "</div>";
     }
 
-   /**
-    * Gat all comments for specified KB entry
-    *
-    * @param integer $kbitem_id KB entry ID
-    * @param string  $lang      Requested language
-    * @param integer $parent    Parent ID (defaults to 0)
-    *
-    * @return array
-    */
+    /**
+     * Gat all comments for specified KB entry
+     *
+     * @param integer $kbitem_id KB entry ID
+     * @param string  $lang      Requested language
+     * @param integer $parent    Parent ID (defaults to 0)
+     *
+     * @return array
+     */
     public static function getCommentsForKbItem($kbitem_id, $lang, $parent = null)
     {
         global $DB;
@@ -254,15 +254,15 @@ class KnowbaseItem_Comment extends CommonDBTM
         return $comments;
     }
 
-   /**
-    * Display comments
-    *
-    * @param array   $comments   Comments
-    * @param boolean $cancomment Whether user can comment or not
-    * @param integer $level      Current level, defaults to 0
-    *
-    * @return string
-    */
+    /**
+     * Display comments
+     *
+     * @param array   $comments   Comments
+     * @param boolean $cancomment Whether user can comment or not
+     * @param integer $level      Current level, defaults to 0
+     *
+     * @return string
+     */
     public static function displayComments($comments, $cancomment, $level = 0)
     {
         $html = '';
@@ -334,15 +334,15 @@ class KnowbaseItem_Comment extends CommonDBTM
         return $html;
     }
 
-   /**
-    * Get comment form
-    *
-    * @param integer       $kbitem_id Knowbase item ID
-    * @param string        $lang      Related item language
-    * @param false|integer $edit      Comment id to edit, or false
-    * @param false|integer $answer    Comment id to answer to, or false
-    * @return string
-    */
+    /**
+     * Get comment form
+     *
+     * @param integer       $kbitem_id Knowbase item ID
+     * @param string        $lang      Related item language
+     * @param false|integer $edit      Comment id to edit, or false
+     * @param false|integer $answer    Comment id to answer to, or false
+     * @return string
+     */
     public static function getCommentForm($kbitem_id, $lang = null, $edit = false, $answer = false)
     {
         $rand   = mt_rand();

@@ -50,38 +50,38 @@ use Symfony\Component\Console\CommandLoader\CommandLoaderInterface;
  */
 class CommandLoader implements CommandLoaderInterface
 {
-   /**
-    * Indicates if plugin commands should be included.
-    *
-    * @var bool
-    */
+    /**
+     * Indicates if plugin commands should be included.
+     *
+     * @var bool
+     */
     private $include_plugins;
 
-   /**
-    * Root directory path to search on.
-    * @var string
-    */
+    /**
+     * Root directory path to search on.
+     * @var string
+     */
     private $rootdir;
 
-   /**
-    * Found commands.
-    *
-    * @var Command[]|null
-    */
+    /**
+     * Found commands.
+     *
+     * @var Command[]|null
+     */
     private $commands = null;
 
-   /**
-    * Plugins info services
-    *
-    * @var Plugin|null
-    */
+    /**
+     * Plugins info services
+     *
+     * @var Plugin|null
+     */
     private $plugin = null;
 
-   /**
-    * @param bool          $include_plugins
-    * @param string        $rootdir         Root directory path of application.
-    * @param Plugin|null   $plugin          Needed for units test as we lack DI.
-    */
+    /**
+     * @param bool          $include_plugins
+     * @param string        $rootdir         Root directory path of application.
+     * @param Plugin|null   $plugin          Needed for units test as we lack DI.
+     */
     public function __construct($include_plugins = true, $rootdir = GLPI_ROOT, ?Plugin $plugin = null)
     {
         $this->include_plugins = $include_plugins;
@@ -114,13 +114,13 @@ class CommandLoader implements CommandLoaderInterface
         return array_keys($commands);
     }
 
-   /**
-    * Indicates if plugin commands should be included.
-    *
-    * @param bool $include_plugins
-    *
-    * @return void
-    */
+    /**
+     * Indicates if plugin commands should be included.
+     *
+     * @param bool $include_plugins
+     *
+     * @return void
+     */
     public function setIncludePlugins(bool $include_plugins)
     {
         $this->include_plugins = $include_plugins;
@@ -128,11 +128,11 @@ class CommandLoader implements CommandLoaderInterface
         $this->commands = null; // Reset registered command list to force (un)registration of plugins commands
     }
 
-   /**
-    * Get registered commands.
-    *
-    * @return Command[]
-    */
+    /**
+     * Get registered commands.
+     *
+     * @return Command[]
+     */
     private function getCommands()
     {
         if ($this->commands === null) {
@@ -147,11 +147,11 @@ class CommandLoader implements CommandLoaderInterface
         return $this->commands;
     }
 
-   /**
-    * Find all core commands.
-    *
-    * return void
-    */
+    /**
+     * Find all core commands.
+     *
+     * return void
+     */
     private function findCoreCommands()
     {
 
@@ -161,7 +161,7 @@ class CommandLoader implements CommandLoaderInterface
             new RecursiveDirectoryIterator($basedir),
             RecursiveIteratorIterator::SELF_FIRST
         );
-       /** @var SplFileInfo $file */
+        /** @var SplFileInfo $file */
         foreach ($core_files as $file) {
             if (!$file->isReadable() || !$file->isFile()) {
                 continue;
@@ -181,11 +181,11 @@ class CommandLoader implements CommandLoaderInterface
         }
     }
 
-   /**
-    * Find all plugins (active or not) commands.
-    *
-    * @return void
-    */
+    /**
+     * Find all plugins (active or not) commands.
+     *
+     * @return void
+     */
     private function findPluginCommands()
     {
 
@@ -201,7 +201,7 @@ class CommandLoader implements CommandLoaderInterface
 
         $already_loaded = [];
 
-       /** @var SplFileInfo $plugin_directory */
+        /** @var SplFileInfo $plugin_directory */
         foreach ($plugins_directories as $plugin_directory) {
             if (in_array($plugin_directory->getFilename(), ['.', '..'])) {
                 continue;
@@ -228,7 +228,7 @@ class CommandLoader implements CommandLoaderInterface
                     RecursiveIteratorIterator::SELF_FIRST
                 );
 
-               /** @var SplFileInfo $file */
+                /** @var SplFileInfo $file */
                 foreach ($plugin_files as $file) {
                     if (!$file->isReadable() || !$file->isFile()) {
                         continue;
@@ -260,11 +260,11 @@ class CommandLoader implements CommandLoaderInterface
         }
     }
 
-   /**
-    * Find all "tools" commands.
-    *
-    * return void
-    */
+    /**
+     * Find all "tools" commands.
+     *
+     * return void
+     */
     private function findToolsCommands()
     {
 
@@ -275,7 +275,7 @@ class CommandLoader implements CommandLoaderInterface
         }
 
         $tools_files = new DirectoryIterator($basedir);
-       /** @var SplFileInfo $file */
+        /** @var SplFileInfo $file */
         foreach ($tools_files as $file) {
             if (!$file->isReadable() || !$file->isFile()) {
                 continue;
@@ -294,13 +294,13 @@ class CommandLoader implements CommandLoaderInterface
         }
     }
 
-   /**
-    * Register a command on self.
-    *
-    * @param Command $command
-    *
-    * @return void
-    */
+    /**
+     * Register a command on self.
+     *
+     * @param Command $command
+     *
+     * @return void
+     */
     private function registerCommand(Command $command)
     {
 
@@ -312,15 +312,15 @@ class CommandLoader implements CommandLoaderInterface
         }
     }
 
-   /**
-    * Return classname of command contained in file, if file contains one.
-    *
-    * @param SplFileInfo $file      File to inspect
-    * @param string      $basedir   Directory containing classes (eg GLPI_ROOT . '/inc')
-    * @param array       $prefixes  Possible prefixes to add to classname (eg 'PluginExample', 'GlpiPlugin\Example')
-    *
-    * @return null|string
-    */
+    /**
+     * Return classname of command contained in file, if file contains one.
+     *
+     * @param SplFileInfo $file      File to inspect
+     * @param string      $basedir   Directory containing classes (eg GLPI_ROOT . '/inc')
+     * @param array       $prefixes  Possible prefixes to add to classname (eg 'PluginExample', 'GlpiPlugin\Example')
+     *
+     * @return null|string
+     */
     private function getCommandClassnameFromFile(SplFileInfo $file, $basedir, array $prefixes = [])
     {
 
@@ -367,13 +367,13 @@ class CommandLoader implements CommandLoaderInterface
         return null;
     }
 
-   /**
-    * Returns path relative to basedir.
-    *
-    * @param string $basedir
-    * @param string $filepath
-    * @return string
-    */
+    /**
+     * Returns path relative to basedir.
+     *
+     * @param string $basedir
+     * @param string $filepath
+     * @return string
+     */
     private function getRelativePath($basedir, $filepath)
     {
 

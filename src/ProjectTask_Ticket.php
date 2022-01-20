@@ -39,7 +39,7 @@ use Glpi\RichText\RichText;
  * Relation between ProjectTasks and Tickets
  *
  * @since 0.85
-**/
+ **/
 class ProjectTask_Ticket extends CommonDBRelation
 {
    // From CommonDBRelation
@@ -105,13 +105,13 @@ class ProjectTask_Ticket extends CommonDBRelation
     }
 
 
-   /**
-    * Get total duration of tickets linked to a project task
-    *
-    * @param $projecttasks_id    integer    $projecttasks_id ID of the project task
-    *
-    * @return integer total actiontime
-   **/
+    /**
+     * Get total duration of tickets linked to a project task
+     *
+     * @param $projecttasks_id    integer    $projecttasks_id ID of the project task
+     *
+     * @return integer total actiontime
+     **/
     public static function getTicketsTotalActionTime($projecttasks_id)
     {
         global $DB;
@@ -137,11 +137,11 @@ class ProjectTask_Ticket extends CommonDBRelation
     }
 
 
-   /**
-    * Show tickets for a projecttask
-    *
-    * @param $projecttask ProjectTask object
-   **/
+    /**
+     * Show tickets for a projecttask
+     *
+     * @param $projecttask ProjectTask object
+     **/
     public static function showForProjectTask(ProjectTask $projecttask)
     {
         $ID = $projecttask->getField('id');
@@ -249,11 +249,11 @@ class ProjectTask_Ticket extends CommonDBRelation
     }
 
 
-   /**
-    * Show projecttasks for a ticket
-    *
-    * @param $ticket Ticket object
-    **/
+    /**
+     * Show projecttasks for a ticket
+     *
+     * @param $ticket Ticket object
+     **/
     public static function showForTicket(Ticket $ticket)
     {
         global $DB, $CFG_GLPI;

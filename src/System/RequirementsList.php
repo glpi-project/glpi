@@ -41,16 +41,16 @@ use Traversable;
  */
 class RequirementsList implements \IteratorAggregate
 {
-   /**
-    * Requirements.
-    *
-    * @var RequirementInterface[]
-    */
+    /**
+     * Requirements.
+     *
+     * @var RequirementInterface[]
+     */
     private $requirements;
 
-   /**
-    * @param RequirementInterface[] $requirements
-    */
+    /**
+     * @param RequirementInterface[] $requirements
+     */
     public function __construct(array $requirements = [])
     {
         $this->requirements = $requirements;
@@ -61,11 +61,11 @@ class RequirementsList implements \IteratorAggregate
         return new \ArrayIterator($this->requirements);
     }
 
-   /**
-    * Indicates if a mandatory requirement is missing.
-    *
-    * @return boolean
-    */
+    /**
+     * Indicates if a mandatory requirement is missing.
+     *
+     * @return boolean
+     */
     public function hasMissingMandatoryRequirements()
     {
         foreach ($this->requirements as $requirement) {
@@ -76,11 +76,11 @@ class RequirementsList implements \IteratorAggregate
         return false;
     }
 
-   /**
-    * Indicates if an optional requirement is missing.
-    *
-    * @return boolean
-    */
+    /**
+     * Indicates if an optional requirement is missing.
+     *
+     * @return boolean
+     */
     public function hasMissingOptionalRequirements()
     {
         foreach ($this->requirements as $requirement) {

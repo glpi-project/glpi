@@ -38,11 +38,11 @@ namespace Glpi\System\Requirement;
  */
 class DbTimezones extends AbstractRequirement
 {
-   /**
-    * DB instance.
-    *
-    * @var \DBmysql
-    */
+    /**
+     * DB instance.
+     *
+     * @var \DBmysql
+     */
     private $db;
 
     public function __construct(\DBmysql $db)

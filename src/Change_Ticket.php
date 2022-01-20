@@ -35,7 +35,7 @@
  * Change_Ticket Class
  *
  * Relation between Changes and Tickets
-**/
+ **/
 class Change_Ticket extends CommonDBRelation
 {
    // From CommonDBRelation
@@ -214,11 +214,11 @@ class Change_Ticket extends CommonDBRelation
     }
 
 
-   /**
-    * Show tickets for a change
-    *
-    * @param $change Change object
-   **/
+    /**
+     * Show tickets for a change
+     *
+     * @param $change Change object
+     **/
     public static function showForChange(Change $change)
     {
         global $DB;
@@ -347,11 +347,11 @@ class Change_Ticket extends CommonDBRelation
     }
 
 
-   /**
-    * Show changes for a ticket
-    *
-    * @param $ticket Ticket object
-   **/
+    /**
+     * Show changes for a ticket
+     *
+     * @param $ticket Ticket object
+     **/
     public static function showForTicket(Ticket $ticket)
     {
         global $DB;

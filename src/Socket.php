@@ -93,10 +93,10 @@ class Socket extends CommonDBChild
     }
 
 
-   /**
-   * NetworkPort Form
-   * @return string ID of the select
-   **/
+    /**
+     * NetworkPort Form
+     * @return string ID of the select
+     **/
     public static function showNetworkPortForm($itemtype, $items_id, $networkports_id = 0, $options = [])
     {
 
@@ -164,17 +164,17 @@ class Socket extends CommonDBChild
       ");
     }
 
-   /**
-    * Print the version form
-    *
-    * @param $ID        integer ID of the item
-    * @param $options   array
-    *     - target for the Form
-    *     - itemtype type of the item for add process
-    *     - items_id ID of the item for add process
-    *
-    * @return true if displayed  false if item not found or not right to display
-   **/
+    /**
+     * Print the version form
+     *
+     * @param $ID        integer ID of the item
+     * @param $options   array
+     *     - target for the Form
+     *     - itemtype type of the item for add process
+     *     - items_id ID of the item for add process
+     *
+     * @return true if displayed  false if item not found or not right to display
+     **/
     public function showForm($ID, array $options = [])
     {
 
@@ -236,10 +236,10 @@ class Socket extends CommonDBChild
     }
 
 
-   /**
-    * Get possible itemtype
-    * @return array Array of types
-   **/
+    /**
+     * Get possible itemtype
+     * @return array Array of types
+     **/
     public static function getSocketLinkTypes()
     {
         global $CFG_GLPI;
@@ -253,15 +253,15 @@ class Socket extends CommonDBChild
     }
 
 
-   /**
-    * Dropdown of Wiring Side
-    *
-    * @param string $name   select name
-    * @param array  $options possible options:
-    *    - value       : integer / preselected value (default 0)
-    *    - display
-    * @return string ID of the select
-   **/
+    /**
+     * Dropdown of Wiring Side
+     *
+     * @param string $name   select name
+     * @param array  $options possible options:
+     *    - value       : integer / preselected value (default 0)
+     *    - display
+     * @return string ID of the select
+     **/
     public static function dropdownWiringSide($name, $options = [])
     {
         $params = [
@@ -279,10 +279,10 @@ class Socket extends CommonDBChild
     }
 
 
-   /**
-    * Get sides
-    * @return array Array of types
-   **/
+    /**
+     * Get sides
+     * @return array Array of types
+     **/
     public static function getSides()
     {
         return [
@@ -299,13 +299,13 @@ class Socket extends CommonDBChild
     }
 
 
-   /**
-    * Get wiring side name
-    *
-    * @since 0.84
-    *
-    * @param integer $value     status ID
-   **/
+    /**
+     * Get wiring side name
+     *
+     * @since 0.84
+     *
+     * @param integer $value     status ID
+     **/
     public static function getWiringSideName($value)
     {
         $tab  = static::getSides();
@@ -443,16 +443,16 @@ class Socket extends CommonDBChild
         return $tab;
     }
 
-   /**
-    * @since 0.84
-    *
-    * @param $field
-    * @param $name            (default '')
-    * @param $values          (default '')
-    * @param $options   array
-    *
-    * @return string
-   **/
+    /**
+     * @since 0.84
+     *
+     * @param $field
+     * @param $name            (default '')
+     * @param $values          (default '')
+     * @param $options   array
+     *
+     * @return string
+     **/
     public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
     {
 
@@ -476,13 +476,13 @@ class Socket extends CommonDBChild
         return parent::getSpecificValueToSelect($field, $name, $values, $options);
     }
 
-   /**
-    * @since 0.84
-    *
-    * @param $field
-    * @param $values
-    * @param $options   array
-   **/
+    /**
+     * @since 0.84
+     *
+     * @param $field
+     * @param $values
+     * @param $options   array
+     **/
     public static function getSpecificValueToDisplay($field, $values, array $options = [])
     {
 
@@ -509,13 +509,13 @@ class Socket extends CommonDBChild
     }
 
 
-   /**
-    * check if a socket already exists (before import)
-    *
-    * @param $input array of value to import (name, locations_id)
-    *
-    * @return integer the ID of the new (or -1 if not found)
-   **/
+    /**
+     * check if a socket already exists (before import)
+     *
+     * @param $input array of value to import (name, locations_id)
+     *
+     * @return integer the ID of the new (or -1 if not found)
+     **/
     public function findID(array &$input)
     {
         global $DB;
@@ -632,13 +632,13 @@ class Socket extends CommonDBChild
     }
 
 
-   /**
-    * Print the HTML array of the Socket associated to a Location
-    *
-    * @param $item Location
-    *
-    * @return void
-   **/
+    /**
+     * Print the HTML array of the Socket associated to a Location
+     *
+     * @param $item Location
+     *
+     * @return void
+     **/
     public static function showListForItem($item)
     {
 
@@ -774,13 +774,13 @@ class Socket extends CommonDBChild
     }
 
 
-   /**
-    * Print the HTML array of the Socket associated to a Location
-    *
-    * @param $item Location
-    *
-    * @return void
-   **/
+    /**
+     * Print the HTML array of the Socket associated to a Location
+     *
+     * @param $item Location
+     *
+     * @return void
+     **/
     public static function showForLocation($item)
     {
         global $DB;
@@ -969,13 +969,13 @@ class Socket extends CommonDBChild
         echo "</div>\n";
     }
 
-   /**
-    * Handled Multi add item
-    *
-    * @since 0.83 (before addMulti)
-    *
-    * @param $input array of values
-   **/
+    /**
+     * Handled Multi add item
+     *
+     * @since 0.83 (before addMulti)
+     *
+     * @param $input array of values
+     **/
     public function executeAddMulti(array $input)
     {
         $this->check(-1, CREATE, $input);
@@ -986,14 +986,14 @@ class Socket extends CommonDBChild
     }
 
 
-   /**
-    * @since 0.84
-    *
-    * @param $row             HTMLTableRow object (default NULL)
-    * @param $item            CommonDBTM object (default NULL)
-    * @param $father          HTMLTableCell object (default NULL)
-    * @param $options   array
-   **/
+    /**
+     * @since 0.84
+     *
+     * @param $row             HTMLTableRow object (default NULL)
+     * @param $item            CommonDBTM object (default NULL)
+     * @param $father          HTMLTableCell object (default NULL)
+     * @param $options   array
+     **/
     public static function getHTMLTableCellsForItem(
         HTMLTableRow $row = null,
         CommonDBTM $item = null,

@@ -33,7 +33,7 @@
 
 /**
  * Notification Class
-**/
+ **/
 class Notification extends CommonDBTM
 {
    // MAILING TYPE
@@ -144,11 +144,11 @@ class Notification extends CommonDBTM
     }
 
 
-   /**
-    *  @see CommonGLPI::getMenuContent()
-    *
-    *  @since 0.85
-   **/
+    /**
+     *  @see CommonGLPI::getMenuContent()
+     *
+     *  @since 0.85
+     **/
     public static function getMenuContent()
     {
         $menu = [];
@@ -275,13 +275,13 @@ class Notification extends CommonDBTM
     }
 
 
-   /**
-    * @since 0.84
-    *
-    * @param $field
-    * @param $values
-    * @param $options   array
-   **/
+    /**
+     * @since 0.84
+     *
+     * @param $field
+     * @param $values
+     * @param $options   array
+     **/
     public static function getSpecificValueToDisplay($field, $values, array $options = [])
     {
 
@@ -299,14 +299,14 @@ class Notification extends CommonDBTM
     }
 
 
-   /**
-    * @since 0.84
-    *
-    * @param $field
-    * @param $name               (default '')
-    * @param $values             (default '')
-    * @param $options      array
-   **/
+    /**
+     * @since 0.84
+     *
+     * @param $field
+     * @param $name               (default '')
+     * @param $values             (default '')
+     * @param $options      array
+     **/
     public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
     {
 
@@ -463,12 +463,12 @@ class Notification extends CommonDBTM
         return $tab;
     }
 
-   /**
-    * Get the massive actions for this object
-    *
-    * @param object|null $checkitem
-    * @return array list of actions
-    */
+    /**
+     * Get the massive actions for this object
+     *
+     * @param object|null $checkitem
+     * @return array list of actions
+     */
     public function getSpecificMassiveActions($checkitem = null)
     {
 
@@ -563,11 +563,11 @@ class Notification extends CommonDBTM
     }
 
 
-   /**
-    * Is the current user have right to update the current notification ?
-    *
-    * @return boolean
-   **/
+    /**
+     * Is the current user have right to update the current notification ?
+     *
+     * @return boolean
+     **/
     public function canCreateItem()
     {
 
@@ -594,13 +594,13 @@ class Notification extends CommonDBTM
     }
 
 
-   /**
-    * Send notification
-    *
-    * @param array $options Options
-    *
-    * @return void
-   **/
+    /**
+     * Send notification
+     *
+     * @param array $options Options
+     *
+     * @return void
+     **/
     public static function send($options)
     {
         $classname = Notification_NotificationTemplate::getModeClass($options['mode']);
@@ -609,11 +609,11 @@ class Notification extends CommonDBTM
     }
 
 
-   /**
-    * Get the mailing signature for the entity
-    *
-    * @param $entity
-   **/
+    /**
+     * Get the mailing signature for the entity
+     *
+     * @param $entity
+     **/
     public static function getMailingSignature($entity)
     {
         global $CFG_GLPI;
@@ -627,13 +627,13 @@ class Notification extends CommonDBTM
     }
 
 
-   /**
-    * @param string $event    Event name
-    * @param string $itemtype Item type
-    * @param int    $entity   Restrict to entity
-    *
-    * @return ResultSet
-   **/
+    /**
+     * @param string $event    Event name
+     * @param string $itemtype Item type
+     * @param int    $entity   Restrict to entity
+     *
+     * @return ResultSet
+     **/
     public static function getNotificationsByEventAndType($event, $itemtype, $entity)
     {
         global $DB, $CFG_GLPI;

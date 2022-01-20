@@ -38,11 +38,11 @@ namespace Glpi\System\Requirement;
  */
 class PhpVersion extends AbstractRequirement
 {
-   /**
-    * Minimal required PHP version.
-    *
-    * @var string
-    */
+    /**
+     * Minimal required PHP version.
+     *
+     * @var string
+     */
     private $min_version;
 
     /**
@@ -52,10 +52,10 @@ class PhpVersion extends AbstractRequirement
      */
     private $max_version;
 
-   /**
-    * @param string $min_version  Minimal required PHP version
-    * @param string $max_version  Maximum required PHP version (exclusive)
-    */
+    /**
+     * @param string $min_version  Minimal required PHP version
+     * @param string $max_version  Maximum required PHP version (exclusive)
+     */
     public function __construct(string $min_version, string $max_version)
     {
         $this->title = __('PHP Parser');

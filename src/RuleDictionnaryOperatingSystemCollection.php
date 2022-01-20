@@ -36,9 +36,9 @@ class RuleDictionnaryOperatingSystemCollection extends RuleDictionnaryDropdownCo
     public $item_table  = "glpi_operatingsystems";
     public $menu_option = "os";
 
-   /**
-    * @see RuleCollection::getTitle()
-   **/
+    /**
+     * @see RuleCollection::getTitle()
+     **/
     public function getTitle()
     {
         return __('Dictionnary of operating systems');

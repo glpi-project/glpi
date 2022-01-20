@@ -41,16 +41,16 @@ use Toolbox;
 
 final class RichText
 {
-   /**
-    * Get safe HTML string based on user input content.
-    *
-    * @since 10.0.0
-    *
-    * @param null|string   $content                HTML string to be made safe
-    * @param boolean       $encode_output_entities Indicates whether the output should be encoded (encoding of HTML special chars)
-    *
-    * @return string
-    */
+    /**
+     * Get safe HTML string based on user input content.
+     *
+     * @since 10.0.0
+     *
+     * @param null|string   $content                HTML string to be made safe
+     * @param boolean       $encode_output_entities Indicates whether the output should be encoded (encoding of HTML special chars)
+     *
+     * @return string
+     */
     public static function getSafeHtml(?string $content, bool $encode_output_entities = false): string
     {
 
@@ -85,18 +85,18 @@ final class RichText
         return $content;
     }
 
-   /**
-    * Get text from HTML string based on user input content.
-    *
-    * @since 10.0.0
-    *
-    * @param string  $content                HTML string to be made safe
-    * @param boolean $keep_presentation      Indicates whether the presentation elements have to be replaced by plaintext equivalents
-    * @param boolean $compact                Indicates whether the output should be compact (limited line length, no links URL, ...)
-    * @param boolean $encode_output_entities Indicates whether the output should be encoded (encoding of HTML special chars)
-    *
-    * @return string
-    */
+    /**
+     * Get text from HTML string based on user input content.
+     *
+     * @since 10.0.0
+     *
+     * @param string  $content                HTML string to be made safe
+     * @param boolean $keep_presentation      Indicates whether the presentation elements have to be replaced by plaintext equivalents
+     * @param boolean $compact                Indicates whether the output should be compact (limited line length, no links URL, ...)
+     * @param boolean $encode_output_entities Indicates whether the output should be encoded (encoding of HTML special chars)
+     *
+     * @return string
+     */
     public static function getTextFromHtml(
         string $content,
         bool $keep_presentation = true,
@@ -147,13 +147,13 @@ final class RichText
         return $content;
     }
 
-   /**
-    * Check if provided content is rich-text HTML content.
-    *
-    * @param string $content
-    *
-    * @return bool
-    */
+    /**
+     * Check if provided content is rich-text HTML content.
+     *
+     * @param string $content
+     *
+     * @return bool
+     */
     public static function isRichTextHtmlContent(string $content): bool
     {
         $html_tags = [
@@ -186,14 +186,14 @@ final class RichText
         return preg_match('/<(' . implode('|', $html_tags) . ')(\s+[^>]*)?>/', $content) === 1;
     }
 
-   /**
-    * Normalize HTML content.
-    *
-    * @param string $content
-    * @param bool   $enhanced_html  Apply optionnal transformations to enhance produced HTML (autolink for instance)
-    *
-    * @return string
-    */
+    /**
+     * Normalize HTML content.
+     *
+     * @param string $content
+     * @param bool   $enhanced_html  Apply optionnal transformations to enhance produced HTML (autolink for instance)
+     *
+     * @return string
+     */
     private static function normalizeHtmlContent(string $content, bool $enhanced_html = false)
     {
 
@@ -241,16 +241,16 @@ final class RichText
         return $content;
     }
 
-   /**
-    * Get enhanced HTML string based on user input content.
-    *
-    * @since 10.0.0
-    *
-    * @param null|string   $content HTML string to enahnce
-    * @param array         $params  Enhancement parameters
-    *
-    * @return string
-    */
+    /**
+     * Get enhanced HTML string based on user input content.
+     *
+     * @since 10.0.0
+     *
+     * @param null|string   $content HTML string to enahnce
+     * @param array         $params  Enhancement parameters
+     *
+     * @return string
+     */
     public static function getEnhancedHtml(?string $content, array $params = []): string
     {
         $p = [
@@ -273,15 +273,15 @@ final class RichText
         return $content;
     }
 
-   /**
-    * Replace images by gallery component in rich text.
-    *
-    * @since 10.0.0
-    *
-    * @param string  $content
-    *
-    * @return string
-    */
+    /**
+     * Replace images by gallery component in rich text.
+     *
+     * @since 10.0.0
+     *
+     * @param string  $content
+     *
+     * @return string
+     */
     private static function replaceImagesByGallery(string $content): string
     {
 
@@ -317,18 +317,18 @@ final class RichText
     }
 
 
-   /**
-    * Creates a PhotoSwipe image gallery.
-    *
-    * @since 10.0.0
-    *
-    * @param array $imgs  Array of image info
-    *                      - src The public path of img
-    *                      - w   The width of img
-    *                      - h   The height of img
-    * @param array $options
-    * @return string completed gallery
-    */
+    /**
+     * Creates a PhotoSwipe image gallery.
+     *
+     * @since 10.0.0
+     *
+     * @param array $imgs  Array of image info
+     *                      - src The public path of img
+     *                      - w   The width of img
+     *                      - h   The height of img
+     * @param array $options
+     * @return string completed gallery
+     */
     private static function imageGallery(array $imgs, array $options = []): string
     {
         $p = [

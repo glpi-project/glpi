@@ -102,11 +102,11 @@ class Request extends \GLPITestCase
         ];
     }
 
-   /**
-    * Test known queries
-    *
-    * @dataProvider queriesProvider
-    */
+    /**
+     * Test known queries
+     *
+     * @dataProvider queriesProvider
+     */
     public function testSnmpQuery($query)
     {
         $data = "<?xml version=\"1.0\"?>\n<REQUEST><DEVICEID>atoumized-device</DEVICEID><CONTENT><DEVICE></DEVICE></CONTENT><QUERY>$query</QUERY></REQUEST>";
@@ -131,11 +131,11 @@ class Request extends \GLPITestCase
         ];
     }
 
-   /**
-    * Test unknown queries
-    *
-    * @dataProvider unhandledQueriesProvider
-    */
+    /**
+     * Test unknown queries
+     *
+     * @dataProvider unhandledQueriesProvider
+     */
     public function testWrongQuery($query)
     {
         $data = "<?xml version=\"1.0\"?>\n<REQUEST><DEVICEID>atoumized-device</DEVICEID><QUERY>$query</QUERY></REQUEST>";
@@ -239,16 +239,16 @@ class Request extends \GLPITestCase
         ];
     }
 
-   /**
-    * Test request compression
-    *
-    * @param string $function Compression method to use
-    * @param string $mime     Mime type to set
-    *
-    * @dataProvider compressionProvider
-    *
-    * @return void
-    */
+    /**
+     * Test request compression
+     *
+     * @param string $function Compression method to use
+     * @param string $mime     Mime type to set
+     *
+     * @dataProvider compressionProvider
+     *
+     * @return void
+     */
     public function testCompression(string $function, string $mime)
     {
         $data = "<?xml version=\"1.0\"?>\n<REQUEST><DEVICEID>atoumized-device</DEVICEID><QUERY>PROLOG</QUERY></REQUEST>";

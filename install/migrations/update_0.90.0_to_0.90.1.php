@@ -35,7 +35,7 @@
  * Update from 0.90 to 0.90.1
  *
  * @return bool for success (will die for most error)
-**/
+ **/
 function update0900to0901()
 {
     global $DB, $migration;

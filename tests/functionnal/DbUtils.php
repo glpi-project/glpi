@@ -71,9 +71,9 @@ class DbUtils extends DbTestCase
         ];
     }
 
-   /**
-    * @dataProvider dataTableKey
-   **/
+    /**
+     * @dataProvider dataTableKey
+     **/
     public function testGetForeignKeyFieldForTable($table, $key)
     {
         $this
@@ -86,9 +86,9 @@ class DbUtils extends DbTestCase
         $this->string(getForeignKeyFieldForTable($table))->isIdenticalTo($key);
     }
 
-   /**
-    * @dataProvider dataTableForeignKey
-   **/
+    /**
+     * @dataProvider dataTableForeignKey
+     **/
     public function testIsForeignKeyFieldBase($table, $key)
     {
         $this
@@ -122,9 +122,9 @@ class DbUtils extends DbTestCase
     }
 
 
-   /**
-    * @dataProvider dataTableForeignKey
-   **/
+    /**
+     * @dataProvider dataTableForeignKey
+     **/
     public function testGetTableNameForForeignKeyField($table, $key)
     {
         $this
@@ -159,9 +159,9 @@ class DbUtils extends DbTestCase
         ];
     }
 
-   /**
-    * @dataProvider dataTableType
-   **/
+    /**
+     * @dataProvider dataTableType
+     **/
     public function testGetTableForItemType($table, $type, $is_valid_type)
     {
         $this
@@ -173,9 +173,9 @@ class DbUtils extends DbTestCase
         $this->string(getTableForItemType($type))->isIdenticalTo($table);
     }
 
-   /**
-    * @dataProvider dataTableType
-   **/
+    /**
+     * @dataProvider dataTableType
+     **/
     public function testGetItemTypeForTable($table, $type, $is_valid_type)
     {
         if ($is_valid_type) {
@@ -198,9 +198,9 @@ class DbUtils extends DbTestCase
         }
     }
 
-   /**
-    * @dataProvider dataTableType
-   **/
+    /**
+     * @dataProvider dataTableType
+     **/
     public function testGetItemForItemtype($table, $itemtype, $is_valid_type)
     {
         if ($is_valid_type) {
@@ -274,9 +274,9 @@ class DbUtils extends DbTestCase
         ];
     }
 
-   /**
-    * @dataProvider dataPlural
-    */
+    /**
+     * @dataProvider dataPlural
+     */
     public function testGetPlural($singular, $plural)
     {
         $this
@@ -296,9 +296,9 @@ class DbUtils extends DbTestCase
         $this->string(getPlural(getPlural($singular)))->isIdenticalTo($plural);
     }
 
-   /**
-    * @dataProvider dataPlural
-   **/
+    /**
+     * @dataProvider dataPlural
+     **/
     public function testGetSingular($singular, $plural)
     {
         $this
@@ -391,9 +391,9 @@ class DbUtils extends DbTestCase
         ];
     }
 
-   /**
-    * @dataProvider dataCountMyEntities
-    */
+    /**
+     * @dataProvider dataCountMyEntities
+     */
     public function testCountElementsInTableForMyEntities(
         $entity,
         $recursive,
@@ -427,9 +427,9 @@ class DbUtils extends DbTestCase
     }
 
 
-   /**
-    * @dataProvider dataCountEntities
-    */
+    /**
+     * @dataProvider dataCountEntities
+     */
     public function testCountElementsInTableForEntity(
         $entity,
         $table,
@@ -670,14 +670,14 @@ class DbUtils extends DbTestCase
          ->isIdenticalTo('SELECT * FROM `glpi_entities` WHERE (`glpi_entities`.`id` = \'7\')');
     }
 
-   /**
-    * Run getAncestorsOf tests
-    *
-    * @param boolean $cache Is cache enabled?
-    * @param boolean $hit   Do we expect a cache hit? (ie. data already exists)
-    *
-    * @return void
-    */
+    /**
+     * Run getAncestorsOf tests
+     *
+     * @param boolean $cache Is cache enabled?
+     * @param boolean $hit   Do we expect a cache hit? (ie. data already exists)
+     *
+     * @return void
+     */
     private function runGetAncestorsOf($cache = false, $hit = false)
     {
         global $GLPI_CACHE;
@@ -826,9 +826,9 @@ class DbUtils extends DbTestCase
         $this->runGetAncestorsOf();
     }
 
-   /**
-    * @tags cache
-    */
+    /**
+     * @tags cache
+     */
     public function testGetAncestorsOfCached()
     {
         $this->login();
@@ -844,14 +844,14 @@ class DbUtils extends DbTestCase
     }
 
 
-   /**
-    * Run getSonsOf tests
-    *
-    * @param boolean $cache Is cache enabled?
-    * @param boolean $hit   Do we expect a cache hit? (ie. data already exists)
-    *
-    * @return void
-    */
+    /**
+     * Run getSonsOf tests
+     *
+     * @param boolean $cache Is cache enabled?
+     * @param boolean $hit   Do we expect a cache hit? (ie. data already exists)
+     *
+     * @return void
+     */
     private function runGetSonsOf($cache = false, $hit = false)
     {
         global $GLPI_CACHE;
@@ -997,9 +997,9 @@ class DbUtils extends DbTestCase
         $this->runGetSonsOf();
     }
 
-   /**
-    * @tags cache
-    */
+    /**
+     * @tags cache
+     */
     public function testGetSonsOfCached()
     {
         $this->login();
@@ -1014,9 +1014,9 @@ class DbUtils extends DbTestCase
         $this->runGetSonsOf(true, true);
     }
 
-   /**
-    * Validates that relation mapping is based on existing tables and fields.
-    */
+    /**
+     * Validates that relation mapping is based on existing tables and fields.
+     */
     public function testRelationsValidity()
     {
 
@@ -1065,11 +1065,11 @@ class DbUtils extends DbTestCase
         }
     }
 
-   /**
-    * Test getDateCriteria
-    *
-    * @return void
-    */
+    /**
+     * Test getDateCriteria
+     *
+     * @return void
+     */
     public function testGetDateCriteria()
     {
         $this->newTestedInstance();
@@ -1223,9 +1223,9 @@ class DbUtils extends DbTestCase
         ];
     }
 
-   /**
-    * @dataProvider autoNameProvider
-    */
+    /**
+     * @dataProvider autoNameProvider
+     */
     public function testAutoName($name, $field, $is_template, $itemtype, $entities_id, $expected, bool $deprecated = false)
     {
         $this->newTestedInstance;
@@ -1253,9 +1253,9 @@ class DbUtils extends DbTestCase
     }
 
 
-   /**
-    * Data provider for self::testGetItemtypeWithFixedCase().
-    */
+    /**
+     * Data provider for self::testGetItemtypeWithFixedCase().
+     */
     protected function fixItemtypeCaseProvider()
     {
         return [
@@ -1301,9 +1301,9 @@ class DbUtils extends DbTestCase
         ];
     }
 
-   /**
-    * @dataProvider fixItemtypeCaseProvider
-    */
+    /**
+     * @dataProvider fixItemtypeCaseProvider
+     */
     public function testGetItemtypeWithFixedCase($itemtype, $expected)
     {
 

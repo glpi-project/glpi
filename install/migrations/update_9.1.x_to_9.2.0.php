@@ -35,7 +35,7 @@
  * Update from 9.1 to 9.2
  *
  * @return bool for success (will die for most error)
-**/
+ **/
 function update91xto920()
 {
     global $DB, $migration;
@@ -711,7 +711,7 @@ function update91xto920()
     $migration->addField('glpi_states', 'is_visible_certificate', 'bool', ['value' => 1]);
     $migration->addKey('glpi_states', 'is_visible_certificate');
 
-   /** ************ New SLM structure ************ */
+    /** ************ New SLM structure ************ */
     if (!$DB->tableExists('glpi_olas')) {
         $query = "CREATE TABLE `glpi_olas` (
                   `id` int NOT NULL AUTO_INCREMENT,
@@ -1070,7 +1070,7 @@ function update91xto920()
     );
 
     if (isset($current_config['use_mailing']) && !isset($current_config['use_notifications'])) {
-       /** Notifications modes */
+        /** Notifications modes */
         $migration->addConfig([
          'use_notifications'                 => $current_config['use_mailing'],
                                       'notifications_mailing'    => $current_config['use_mailing'],

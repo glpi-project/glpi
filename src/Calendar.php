@@ -33,7 +33,7 @@
 
 /**
  * Calendar Class
-**/
+ **/
 class Calendar extends CommonDropdown
 {
     use Glpi\Features\Clonable;
@@ -56,9 +56,9 @@ class Calendar extends CommonDropdown
     }
 
 
-   /**
-    * @since 0.84
-   **/
+    /**
+     * @since 0.84
+     **/
     public function getForbiddenStandardMassiveAction()
     {
 
@@ -201,9 +201,9 @@ class Calendar extends CommonDropdown
         parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
     }
 
-   /**
-    * @see Glpi\Features\Clonable::post_clone
-    */
+    /**
+     * @see Glpi\Features\Clonable::post_clone
+     */
     public function post_clone($source, $history)
     {
         $this->updateDurationCache($this->getID());
@@ -221,13 +221,13 @@ class Calendar extends CommonDropdown
         );
     }
 
-   /**
-    * Check if the given date is a holiday
-    *
-    * @param string $date Date of the day to check
-    *
-    * @return boolean
-   **/
+    /**
+     * Check if the given date is a holiday
+     *
+     * @param string $date Date of the day to check
+     *
+     * @return boolean
+     **/
     public function isHoliday($date)
     {
         $calendar_holiday = new Calendar_Holiday();
@@ -255,15 +255,15 @@ class Calendar extends CommonDropdown
     }
 
 
-   /**
-    * Get active time between to date time for the active calendar
-    *
-    * @param $start           datetime begin
-    * @param $end             datetime end
-    * @param $work_in_days    boolean  force working in days (false by default)
-    *
-    * @return integer timestamp of delay
-    */
+    /**
+     * Get active time between to date time for the active calendar
+     *
+     * @param $start           datetime begin
+     * @param $end             datetime end
+     * @param $work_in_days    boolean  force working in days (false by default)
+     *
+     * @return integer timestamp of delay
+     */
     public function getActiveTimeBetween($start, $end, $work_in_days = false)
     {
 
@@ -328,15 +328,15 @@ class Calendar extends CommonDropdown
     }
 
 
-   /**
-    * Check if the given time is on a working day (does not check working hours)
-    *
-    * @since 0.84
-    *
-    * @param integer $time Time to check
-    *
-    * @return boolean
-    */
+    /**
+     * Check if the given time is on a working day (does not check working hours)
+     *
+     * @since 0.84
+     *
+     * @param integer $time Time to check
+     *
+     * @return boolean
+     */
     public function isAWorkingDay($time)
     {
 
@@ -347,13 +347,13 @@ class Calendar extends CommonDropdown
     }
 
 
-   /**
-    * Determines if calendar has, at least, one working day.
-    *
-    * @since 9.4.3
-    *
-    * @return boolean
-    */
+    /**
+     * Determines if calendar has, at least, one working day.
+     *
+     * @since 9.4.3
+     *
+     * @return boolean
+     */
     public function hasAWorkingDay()
     {
 
@@ -362,16 +362,16 @@ class Calendar extends CommonDropdown
     }
 
 
-   /**
-    *
-    * Check if the given time is in a working hour
-    *
-    * @since 0.85
-    *
-    * @param integer $time Time to check
-    *
-    * @return boolean
-    */
+    /**
+     *
+     * Check if the given time is in a working hour
+     *
+     * @since 0.85
+     *
+     * @param integer $time Time to check
+     *
+     * @return boolean
+     */
     public function isAWorkingHour($time)
     {
 
@@ -387,20 +387,20 @@ class Calendar extends CommonDropdown
     }
 
 
-   /**
-    * Add a delay to a date using the active calendar
-    *
-    * if delay >= DAY_TIMESTAMP : work in days
-    * else work in minutes
-    *
-    * @param datetime $start               begin
-    * @param integer  $delay               delay to add (in seconds)
-    * @param integer  $additional_delay    delay to add (default 0)
-    * @param boolean  $work_in_days        force working in days (false by default)
-    * @param boolean  $end_of_working_day  end of working day (false by default)
-    *
-    * @return boolean|string end date
-   **/
+    /**
+     * Add a delay to a date using the active calendar
+     *
+     * if delay >= DAY_TIMESTAMP : work in days
+     * else work in minutes
+     *
+     * @param datetime $start               begin
+     * @param integer  $delay               delay to add (in seconds)
+     * @param integer  $additional_delay    delay to add (default 0)
+     * @param boolean  $work_in_days        force working in days (false by default)
+     * @param boolean  $end_of_working_day  end of working day (false by default)
+     *
+     * @return boolean|string end date
+     **/
     public function computeEndDate($start, $delay, $additional_delay = 0, $work_in_days = false, $end_of_working_day = false)
     {
 
@@ -601,11 +601,11 @@ class Calendar extends CommonDropdown
     }
 
 
-   /**
-    * Get days durations including all segments of the current calendar
-    *
-    * @return boolean|array
-   **/
+    /**
+     * Get days durations including all segments of the current calendar
+     *
+     * @return boolean|array
+     **/
     public function getDurationsCache()
     {
 
@@ -624,11 +624,11 @@ class Calendar extends CommonDropdown
     }
 
 
-   /**
-    * Get days durations including all segments of the current calendar
-    *
-    * @return boolean|array
-   **/
+    /**
+     * Get days durations including all segments of the current calendar
+     *
+     * @return boolean|array
+     **/
     public function getDaysDurations()
     {
 
@@ -649,13 +649,13 @@ class Calendar extends CommonDropdown
     }
 
 
-   /**
-    * Update the calendar cache
-    *
-    * @param integer $calendars_id ID of the calendar
-    *
-    * @return bool True if successful in updating the cache, otherwise returns false.
-    */
+    /**
+     * Update the calendar cache
+     *
+     * @param integer $calendars_id ID of the calendar
+     *
+     * @return bool True if successful in updating the cache, otherwise returns false.
+     */
     public function updateDurationCache($calendars_id)
     {
 
@@ -670,13 +670,13 @@ class Calendar extends CommonDropdown
     }
 
 
-   /**
-    * Get day number (in week) for a date.
-    *
-    * @param integer $date Date as a UNIX timestamp
-    *
-    * @return integer
-    */
+    /**
+     * Get day number (in week) for a date.
+     *
+     * @param integer $date Date as a UNIX timestamp
+     *
+     * @return integer
+     */
     public static function getDayNumberInWeek($date)
     {
         return (int)date('w', $date);

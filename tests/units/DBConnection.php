@@ -55,9 +55,9 @@ class DBConnection extends \GLPITestCase
         ];
     }
 
-   /**
-    * @dataProvider setConnectionCharsetProvider
-    */
+    /**
+     * @dataProvider setConnectionCharsetProvider
+     */
     public function testSetConnectionCharset(bool $utf8mb4, string $expected_charset, string $expected_query)
     {
         $this->mockGenerator->orphanize('__construct');
@@ -152,9 +152,9 @@ PHP
         ];
     }
 
-   /**
-    * @dataProvider mainConfigPropertiesProvider
-    */
+    /**
+     * @dataProvider mainConfigPropertiesProvider
+     */
     public function testCreateMainConfig(
         string $host,
         string $user,
@@ -275,9 +275,9 @@ PHP
         ];
     }
 
-   /**
-    * @dataProvider slaveConfigPropertiesProvider
-    */
+    /**
+     * @dataProvider slaveConfigPropertiesProvider
+     */
     public function testCreateSlaveConnectionFile(
         string $host,
         string $user,
@@ -484,9 +484,9 @@ PHP
         ];
     }
 
-   /**
-    * @dataProvider updatePropertiesProvider
-    */
+    /**
+     * @dataProvider updatePropertiesProvider
+     */
     public function testUpdateConfigProperty(
         array $init_config_files,
         array $properties,
@@ -508,9 +508,9 @@ PHP
         }
     }
 
-   /**
-    * @dataProvider updatePropertiesProvider
-    */
+    /**
+     * @dataProvider updatePropertiesProvider
+     */
     public function testUpdateConfigProperties(
         array $init_config_files,
         array $properties,

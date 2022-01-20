@@ -34,7 +34,7 @@
 /**
  * OLA Class
  * @since 9.2
-**/
+ **/
 class OLA extends LevelAgreement
 {
     protected static $prefix            = 'ola';

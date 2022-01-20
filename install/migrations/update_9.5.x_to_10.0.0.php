@@ -35,7 +35,7 @@
  * Update from 9.5.x to 10.0.0
  *
  * @return bool for success (will die for most error)
-**/
+ **/
 function update95xto1000()
 {
     global $DB, $migration;

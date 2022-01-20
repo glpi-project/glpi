@@ -50,18 +50,18 @@ class UpdateCommand extends AbstractCommand implements ForceNoPluginsOptionComma
 {
     use TelemetryActivationTrait;
 
-   /**
-    * Error code returned when trying to update from an unstable version.
-    *
-    * @var integer
-    */
+    /**
+     * Error code returned when trying to update from an unstable version.
+     *
+     * @var integer
+     */
     const ERROR_NO_UNSTABLE_UPDATE = 1;
 
-   /**
-    * Error code returned when security key file is missing.
-    *
-    * @var integer
-    */
+    /**
+     * Error code returned when security key file is missing.
+     *
+     * @var integer
+     */
     const ERROR_MISSING_SECURITY_KEY_FILE = 2;
 
     protected $requires_db_up_to_date = false;

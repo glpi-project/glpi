@@ -35,7 +35,7 @@ use Glpi\Application\View\TemplateRenderer;
 
 /**
  * Appliances Class
-**/
+ **/
 class Appliance extends CommonDBTM
 {
     use Glpi\Features\Clonable;
@@ -86,16 +86,16 @@ class Appliance extends CommonDBTM
     }
 
 
-   /**
-    * Print the appliance form
-    *
-    * @param $ID        integer ID of the item
-    * @param $options   array
-    *     - target filename : where to go when done.
-    *     - withtemplate boolean : template or basic item
-    *
-    * @return boolean item found
-    */
+    /**
+     * Print the appliance form
+     *
+     * @param $ID        integer ID of the item
+     * @param $options   array
+     *     - target filename : where to go when done.
+     *     - withtemplate boolean : template or basic item
+     *
+     * @return boolean item found
+     */
     public function showForm($ID, array $options = [])
     {
         $this->initForm($ID, $options);
@@ -380,13 +380,13 @@ class Appliance extends CommonDBTM
         return "ti ti-versions";
     }
 
-   /**
-    * Get item types that can be linked to an appliance
-    *
-    * @param boolean $all Get all possible types or only allowed ones
-    *
-    * @return array
-    */
+    /**
+     * Get item types that can be linked to an appliance
+     *
+     * @param boolean $all Get all possible types or only allowed ones
+     *
+     * @return array
+     */
     public static function getTypes($all = false): array
     {
         global $CFG_GLPI;

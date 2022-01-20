@@ -43,7 +43,7 @@ use Glpi\Socket;
  * load its instantiation from the instantiation database to display the elements.
  * Moreover, in NetworkPort form, if there is no more than one NetworkName attached to the current
  * port, then, the fields of NetworkName are display. Thus, NetworkPort UI remain similar to 0.83
-**/
+ **/
 class NetworkPort extends CommonDBChild
 {
    // From CommonDBChild
@@ -67,11 +67,11 @@ class NetworkPort extends CommonDBChild
     }
 
 
-   /**
-    * @since 0.84
-    *
-    * @see CommonDBTM::getPreAdditionalInfosForName
-   **/
+    /**
+     * @since 0.84
+     *
+     * @see CommonDBTM::getPreAdditionalInfosForName
+     **/
     public function getPreAdditionalInfosForName()
     {
 
@@ -82,13 +82,13 @@ class NetworkPort extends CommonDBChild
     }
 
 
-   /**
-    * \brief get the list of available network port type.
-    *
-    * @since 0.84
-    *
-    * @return array of available type of network ports
-   **/
+    /**
+     * \brief get the list of available network port type.
+     *
+     * @since 0.84
+     *
+     * @return array of available type of network ports
+     **/
     public static function getNetworkPortInstantiations()
     {
         global $CFG_GLPI;
@@ -115,15 +115,15 @@ class NetworkPort extends CommonDBChild
     }
 
 
-   /**
-    * \brief get the instantiation of the current NetworkPort
-    * The instantiation rely on the instantiation_type field and the id of the NetworkPort. If the
-    * network port exists, but not its instantiation, then, the instantiation will be empty.
-    *
-    * @since 0.84
-    *
-    * @return NetworkPortInstantiation|false  the instantiation object or false if the type of instantiation is not known
-   **/
+    /**
+     * \brief get the instantiation of the current NetworkPort
+     * The instantiation rely on the instantiation_type field and the id of the NetworkPort. If the
+     * network port exists, but not its instantiation, then, the instantiation will be empty.
+     *
+     * @since 0.84
+     *
+     * @return NetworkPortInstantiation|false  the instantiation object or false if the type of instantiation is not known
+     **/
     public function getInstantiation()
     {
 
@@ -145,18 +145,18 @@ class NetworkPort extends CommonDBChild
     }
 
 
-   /**
-    * Change the instantion type of a NetworkPort : check validity of the new type of
-    * instantiation and that it is not equal to current ones. Update the NetworkPort and delete
-    * the previous instantiation. It is up to the caller to create the new instantiation !
-    *
-    * @since 0.84
-    *
-    * @param string $new_instantiation_type  the name of the new instaniation type
-    *
-    * @return boolean false on error, true if the previous instantiation is not available
-    *                 (ie.: invalid instantiation type) or the object of the previous instantiation.
-   **/
+    /**
+     * Change the instantion type of a NetworkPort : check validity of the new type of
+     * instantiation and that it is not equal to current ones. Update the NetworkPort and delete
+     * the previous instantiation. It is up to the caller to create the new instantiation !
+     *
+     * @since 0.84
+     *
+     * @param string $new_instantiation_type  the name of the new instaniation type
+     *
+     * @return boolean false on error, true if the previous instantiation is not available
+     *                 (ie.: invalid instantiation type) or the object of the previous instantiation.
+     **/
     public function switchInstantiationType($new_instantiation_type)
     {
 
@@ -254,29 +254,29 @@ class NetworkPort extends CommonDBChild
     }
 
 
-   /**
-    * \brief split input fields when validating a port
-    *
-    * The form of the NetworkPort can contain the details of the NetworkPortInstantiation as well as
-    * NetworkName elements (if no more than one name is attached to this port). Feilds from both
-    * NetworkPortInstantiation and NetworkName must not be process by the NetworkPort::add or
-    * NetworkPort::update. But they must be kept for adding or updating these elements. This is
-    * done after creating or updating the current port. Otherwise, its ID may not be known (in case
-    * of new port).
-    * To keep the unused fields, we check each field key. If it is owned by NetworkPort (ie :
-    * exists inside the $this->fields array), then they remain inside $input. If they are prefix by
-    * "Networkname_", then they are added to $this->input_for_NetworkName. Else, they are for the
-    * instantiation and added to $this->input_for_instantiation.
-    *
-    * This method must be call before NetworkPort::add or NetworkPort::update in case of NetworkPort
-    * form. Otherwise, the entry of the database may contain wrong values.
-    *
-    * @since 0.84
-    *
-    * @param $input
-    *
-    * @see self::updateDependencies() for the update
-   **/
+    /**
+     * \brief split input fields when validating a port
+     *
+     * The form of the NetworkPort can contain the details of the NetworkPortInstantiation as well as
+     * NetworkName elements (if no more than one name is attached to this port). Feilds from both
+     * NetworkPortInstantiation and NetworkName must not be process by the NetworkPort::add or
+     * NetworkPort::update. But they must be kept for adding or updating these elements. This is
+     * done after creating or updating the current port. Otherwise, its ID may not be known (in case
+     * of new port).
+     * To keep the unused fields, we check each field key. If it is owned by NetworkPort (ie :
+     * exists inside the $this->fields array), then they remain inside $input. If they are prefix by
+     * "Networkname_", then they are added to $this->input_for_NetworkName. Else, they are for the
+     * instantiation and added to $this->input_for_instantiation.
+     *
+     * This method must be call before NetworkPort::add or NetworkPort::update in case of NetworkPort
+     * form. Otherwise, the entry of the database may contain wrong values.
+     *
+     * @since 0.84
+     *
+     * @param $input
+     *
+     * @see self::updateDependencies() for the update
+     **/
     public function splitInputForElements($input)
     {
 
@@ -316,20 +316,20 @@ class NetworkPort extends CommonDBChild
     }
 
 
-   /**
-    * \brief update all related elements after adding or updating an element
-    *
-    * splitInputForElements() prepare the data for adding or updating NetworkPortInstantiation and
-    * NetworkName. This method will update NetworkPortInstantiation and NetworkName. I must be call
-    * after NetworkPort::add or NetworkPort::update otherwise, the networkport ID will not be known
-    * and the dependencies won't have a valid items_id field.
-    *
-    * @since 0.84
-    *
-    * @param $history   (default 1)
-    *
-    * @see splitInputForElements() for preparing the input
-   **/
+    /**
+     * \brief update all related elements after adding or updating an element
+     *
+     * splitInputForElements() prepare the data for adding or updating NetworkPortInstantiation and
+     * NetworkName. This method will update NetworkPortInstantiation and NetworkName. I must be call
+     * after NetworkPort::add or NetworkPort::update otherwise, the networkport ID will not be known
+     * and the dependencies won't have a valid items_id field.
+     *
+     * @since 0.84
+     *
+     * @param $history   (default 1)
+     *
+     * @see splitInputForElements() for preparing the input
+     **/
     public function updateDependencies($history = true)
     {
 
@@ -463,13 +463,13 @@ class NetworkPort extends CommonDBChild
     }
 
 
-   /**
-    * Get port opposite port ID if linked item
-    *
-    * @param integer $ID  networking port ID
-    *
-    * @return integer|false  ID of the NetworkPort found, false if not found
-   **/
+    /**
+     * Get port opposite port ID if linked item
+     *
+     * @param integer $ID  networking port ID
+     *
+     * @return integer|false  ID of the NetworkPort found, false if not found
+     **/
     public function getContact($ID)
     {
 
@@ -498,25 +498,25 @@ class NetworkPort extends CommonDBChild
     }
 
 
-   /**
-    * Delete All connection of the given network port
-    *
-    * @param integer $ID ID of the port
-    *
-    * @return boolean true on success
-   **/
+    /**
+     * Delete All connection of the given network port
+     *
+     * @param integer $ID ID of the port
+     *
+     * @return boolean true on success
+     **/
     public function resetConnections($ID)
     {
     }
 
 
-   /**
-    * Get available display options array
-    *
-    * @since 0.84
-    *
-    * @return array  all the options
-   **/
+    /**
+     * Get available display options array
+     *
+     * @since 0.84
+     *
+     * @return array  all the options
+     **/
     public static function getAvailableDisplayOptions()
     {
 
@@ -548,12 +548,12 @@ class NetworkPort extends CommonDBChild
     }
 
 
-   /**
-    * Show ports for an item
-    *
-    * @param $item                     CommonDBTM object
-    * @param $withtemplate   integer   withtemplate param (default 0)
-   **/
+    /**
+     * Show ports for an item
+     *
+     * @param $item                     CommonDBTM object
+     * @param $withtemplate   integer   withtemplate param (default 0)
+     **/
     public static function showForItem(CommonDBTM $item, $withtemplate = 0)
     {
         global $DB, $CFG_GLPI;
@@ -844,19 +844,19 @@ class NetworkPort extends CommonDBChild
         }
     }
 
-   /**
-    * Display port row
-    *
-    * @param array $port    Port entry in db
-    * @param array $dprefs  Display preferences
-    * @param array $so      Search options
-    * @param bool  $canedit Can edit ACL
-    * @param bool  $agg     Is an aggregated port
-    * @param int   $rand    Random value
-    * @param bool  $with_ma Flag massive actions
-    *
-    * @return string
-    */
+    /**
+     * Display port row
+     *
+     * @param array $port    Port entry in db
+     * @param array $dprefs  Display preferences
+     * @param array $so      Search options
+     * @param bool  $canedit Can edit ACL
+     * @param bool  $agg     Is an aggregated port
+     * @param int   $rand    Random value
+     * @param bool  $with_ma Flag massive actions
+     *
+     * @return string
+     */
     protected function showPort(array $port, $dprefs, $so, $canedit, $agg, $rand, $with_ma = true)
     {
         global $DB;
@@ -1308,9 +1308,9 @@ class NetworkPort extends CommonDBChild
     }
 
 
-   /**
-    * @param $itemtype
-   **/
+    /**
+     * @param $itemtype
+     **/
     public static function rawSearchOptionsToAdd($itemtype = null)
     {
         $tab = [];
@@ -1644,9 +1644,9 @@ class NetworkPort extends CommonDBChild
     }
 
 
-   /**
-    * @param CommonDBTM $item
-   **/
+    /**
+     * @param CommonDBTM $item
+     **/
     public static function countForItem(CommonDBTM $item)
     {
 
@@ -1673,11 +1673,11 @@ class NetworkPort extends CommonDBChild
     }
 
 
-   /**
-    * @since 0.85
-    *
-    * @see CommonDBConnexity::getConnexityMassiveActionsSpecificities()
-   **/
+    /**
+     * @since 0.85
+     *
+     * @see CommonDBConnexity::getConnexityMassiveActionsSpecificities()
+     **/
     public static function getConnexityMassiveActionsSpecificities()
     {
 
@@ -1709,13 +1709,13 @@ class NetworkPort extends CommonDBChild
         return parent::computeFriendlyName();
     }
 
-   /**
-    * Is port connected to a hub?
-    *
-    * @param integer $networkports_id Port ID
-    *
-    * @return boolean
-    */
+    /**
+     * Is port connected to a hub?
+     *
+     * @param integer $networkports_id Port ID
+     *
+     * @return boolean
+     */
     public function isHubConnected($networkports_id): bool
     {
         global $DB;

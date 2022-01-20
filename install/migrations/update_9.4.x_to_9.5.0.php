@@ -35,7 +35,7 @@
  * Update from 9.4.x to 9.5.0
  *
  * @return bool for success (will die for most error)
-**/
+ **/
 function update94xto950()
 {
     global $CFG_GLPI, $DB, $migration;
@@ -47,7 +47,7 @@ function update94xto950()
     $migration->displayTitle(sprintf(__('Update to %s'), '9.5.0'));
     $migration->setVersion('9.5.0');
 
-   /** Encrypted FS support  */
+    /** Encrypted FS support  */
     if (!$DB->fieldExists("glpi_items_disks", "encryption_status")) {
         $migration->addField("glpi_items_disks", "encryption_status", "integer", [
             'after'  => "is_dynamic",
@@ -72,9 +72,9 @@ function update94xto950()
             'after'  => "encryption_algorithm"
          ]);
     }
-   /** /Encrypted FS support  */
+    /** /Encrypted FS support  */
 
-   /** Suppliers restriction */
+    /** Suppliers restriction */
     if (!$DB->fieldExists('glpi_suppliers', 'is_active')) {
         $migration->addField(
             'glpi_suppliers',
@@ -91,9 +91,9 @@ function update94xto950()
             )
         );
     }
-   /** /Suppliers restriction */
+    /** /Suppliers restriction */
 
-   /** Timezones */
+    /** Timezones */
    //User timezone
     if (!$DB->fieldExists('glpi_users', 'timezone')) {
         $migration->addField("glpi_users", "timezone", "varchar(50) DEFAULT NULL");
@@ -102,7 +102,7 @@ function update94xto950()
 
    // Add a config entry for app timezone setting
     $migration->addConfig(['timezone' => null]);
-   /** /Timezones */
+    /** /Timezones */
 
    // Fix search Softwares performance
     $migration->dropKey('glpi_softwarelicenses', 'softwares_id_expire');
@@ -112,7 +112,7 @@ function update94xto950()
       'number'
     ], 'softwares_id_expire_number');
 
-   /** Private supplier followup in glpi_entities */
+    /** Private supplier followup in glpi_entities */
     if (!$DB->fieldExists('glpi_entities', 'suppliers_as_private')) {
         $migration->addField(
             "glpi_entities",
@@ -125,9 +125,9 @@ function update94xto950()
             ]
         );
     }
-   /** /Private supplier followup in glpi_entities */
+    /** /Private supplier followup in glpi_entities */
 
-   /** Entities Custom CSS configuration fields */
+    /** Entities Custom CSS configuration fields */
    // Add 'custom_css' entities configuration fields
     if (!$DB->fieldExists('glpi_entities', 'enable_custom_css')) {
         $migration->addField(
@@ -144,9 +144,9 @@ function update94xto950()
     if (!$DB->fieldExists('glpi_entities', 'custom_css_code')) {
         $migration->addField('glpi_entities', 'custom_css_code', 'text');
     }
-   /** /Entities Custom CSS configuration fields */
+    /** /Entities Custom CSS configuration fields */
 
-   /** Clusters */
+    /** Clusters */
     if (!$DB->tableExists('glpi_clustertypes')) {
         $query = "CREATE TABLE `glpi_clustertypes` (
          `id` int NOT NULL AUTO_INCREMENT,
@@ -218,9 +218,9 @@ function update94xto950()
     $migration->addRight('cluster', ALLSTANDARDRIGHT);
 
     $ADDTODISPLAYPREF['Cluster'] = [31, 19];
-   /** /Clusters */
+    /** /Clusters */
 
-   /** ITIL templates */
+    /** ITIL templates */
    //rename tables -- usefull only for 9.5 rolling release
     foreach (
         [
@@ -337,9 +337,9 @@ function update94xto950()
             $migration->dropKey("glpi_{$itiltype}templatepredefinedfields", 'unicity');
         }
     }
-   /** /ITIL templates */
+    /** /ITIL templates */
 
-   /** add templates for followups */
+    /** add templates for followups */
     if (!$DB->tableExists('glpi_itilfollowuptemplates')) {
         $query = "CREATE TABLE `glpi_itilfollowuptemplates` (
          `id`              INT NOT NULL AUTO_INCREMENT,
@@ -363,9 +363,9 @@ function update94xto950()
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
         $DB->queryOrDie($query, "add table glpi_itilfollowuptemplates");
     }
-   /** /add templates for followups */
+    /** /add templates for followups */
 
-   /** Add "date_creation" field on document_items */
+    /** Add "date_creation" field on document_items */
     if (!$DB->fieldExists('glpi_documents_items', 'date_creation')) {
         $migration->addField('glpi_documents_items', 'date_creation', 'timestamp', ['null' => true]);
         $migration->addPostQuery(
@@ -381,9 +381,9 @@ function update94xto950()
         );
         $migration->addKey('glpi_documents_items', 'date_creation');
     }
-   /** /Add "date_creation" field on document_items */
+    /** /Add "date_creation" field on document_items */
 
-   /** Make datacenter pictures path relative */
+    /** Make datacenter pictures path relative */
     $doc_send_url = '/front/document.send.php?file=_pictures/';
 
     $fix_picture_fct = function ($path) use ($doc_send_url) {
@@ -432,9 +432,9 @@ function update94xto950()
         $data['blueprint'] = $DB->escape($fix_picture_fct($data['blueprint']));
         $DB->update('glpi_dcrooms', $data, ['id' => $data['id']]);
     }
-   /** /Make datacenter pictures path relative */
+    /** /Make datacenter pictures path relative */
 
-   /** ITIL templates */
+    /** ITIL templates */
     if (!$DB->fieldExists('glpi_itilcategories', 'changetemplates_id')) {
         $migration->addField("glpi_itilcategories", "changetemplates_id", "integer", [
             'after'  => "tickettemplates_id_demand",
@@ -453,9 +453,9 @@ function update94xto950()
     $migration->addKey('glpi_tickettemplatehiddenfields', 'tickettemplates_id');
     $migration->addKey('glpi_tickettemplatemandatoryfields', 'tickettemplates_id');
     $migration->addKey('glpi_tickettemplatepredefinedfields', 'tickettemplates_id');
-   /** /ITiL templates */
+    /** /ITiL templates */
 
-   /** /Add Externals events for planning */
+    /** /Add Externals events for planning */
     if (!$DB->tableExists('glpi_planningexternalevents')) {
         $query = "CREATE TABLE `glpi_planningexternalevents` (
          `id` int NOT NULL AUTO_INCREMENT,
@@ -565,7 +565,7 @@ function update94xto950()
        ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
         $DB->queryOrDie($query, "add table glpi_planningexternaleventtemplates");
     }
-   /** /Add Externals events for planning */
+    /** /Add Externals events for planning */
 
     if (!$DB->fieldExists('glpi_entities', 'autopurge_delay')) {
         $migration->addField("glpi_entities", "autopurge_delay", "integer", [
@@ -583,9 +583,9 @@ function update94xto950()
          'state' => CronTask::STATE_DISABLE
         ]
     );
-   /** /Add purge delay per entity */
+    /** /Add purge delay per entity */
 
-   /** Clean oprhans documents crontask */
+    /** Clean oprhans documents crontask */
     CronTask::Register(
         'Document',
         'cleanorphans',
@@ -595,11 +595,11 @@ function update94xto950()
          'state' => CronTask::STATE_DISABLE
         ]
     );
-   /** /Clean oprhans documents crontask */
+    /** /Clean oprhans documents crontask */
 
-   /** Item devices menu config */
+    /** Item devices menu config */
     $migration->addConfig(['devices_in_menu' => exportArrayToDB(['Item_DeviceSimcard'])]);
-   /** /Item devices menu config */
+    /** /Item devices menu config */
 
     if (!$DB->fieldExists("glpi_projects", "auto_percent_done")) {
         $migration->addField("glpi_projects", "auto_percent_done", "bool", [
@@ -611,13 +611,13 @@ function update94xto950()
             'after'  => "percent_done"
          ]);
     }
-   /** /Add "code" field on glpi_itilcategories */
+    /** /Add "code" field on glpi_itilcategories */
     if (!$DB->fieldExists("glpi_itilcategories", "code")) {
         $migration->addField("glpi_itilcategories", "code", "string", [
             'after'  => "groups_id"
          ]);
     }
-   /** /Add "code" field on glpi_itilcategories */
+    /** /Add "code" field on glpi_itilcategories */
 
    //Add over-quota option to software licenses to allow assignment after all alloted licenses are used
     if (!$DB->fieldExists('glpi_softwarelicenses', 'allow_overquota')) {
@@ -626,7 +626,7 @@ function update94xto950()
         }
     }
 
-   /** Make software linkable to other itemtypes besides Computers */
+    /** Make software linkable to other itemtypes besides Computers */
     $migration->displayWarning('Updating software tables. This may take several minutes.');
     if (!$DB->tableExists('glpi_items_softwareversions')) {
         $migration->renameTable('glpi_computers_softwareversions', 'glpi_items_softwareversions');
@@ -703,17 +703,17 @@ function update94xto950()
             ['name' => 'purge_software_computer_install', 'context' => 'core']
         )
     );
-   /** /Make software linkable to other itemtypes besides Computers */
+    /** /Make software linkable to other itemtypes besides Computers */
 
-   /** Add source item id to TicketTask. Used by tasks created by merging tickets */
+    /** Add source item id to TicketTask. Used by tasks created by merging tickets */
     if (!$DB->fieldExists('glpi_tickettasks', 'sourceitems_id')) {
         if ($migration->addField('glpi_tickettasks', 'sourceitems_id', "int NOT NULL DEFAULT '0'")) {
             $migration->addKey('glpi_tickettasks', 'sourceitems_id');
         }
     }
-   /** /Add source item id to TicketTask. Used by tasks created by merging tickets */
+    /** /Add source item id to TicketTask. Used by tasks created by merging tickets */
 
-   /** Impact analysis */
+    /** Impact analysis */
    // Impact config
     $migration->addConfig(['impact_assets_list' => '[]']);
 
@@ -777,9 +777,9 @@ function update94xto950()
          ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
         $DB->queryOrDie($query, "add table glpi_impacts_parent");
     }
-   /** /Impact analysis */
+    /** /Impact analysis */
 
-   /** Default template configuration for changes and problems */
+    /** Default template configuration for changes and problems */
     $migration->addKey('glpi_entities', 'tickettemplates_id');
     if (!$DB->fieldExists('glpi_entities', 'changetemplates_id')) {
         $migration->addField(
@@ -831,21 +831,21 @@ function update94xto950()
         );
     }
     $migration->addKey('glpi_profiles', 'problemtemplates_id');
-   /** /Default template configuration for changes and problems */
+    /** /Default template configuration for changes and problems */
 
-   /** Add Apple File System (All Apple devices since 2017) */
+    /** Add Apple File System (All Apple devices since 2017) */
     if (countElementsInTable('glpi_filesystems', ['name' => 'APFS']) === 0) {
         $DB->insertOrDie('glpi_filesystems', [
          'name'   => 'APFS'
         ]);
     }
-   /** /Add Apple File System (All Apple devices since 2017) */
+    /** /Add Apple File System (All Apple devices since 2017) */
 
-   /** Fix indexes */
+    /** Fix indexes */
     $migration->dropKey('glpi_tickettemplatepredefinedfields', 'tickettemplates_id_id_num');
-   /** /Fix indexes */
+    /** /Fix indexes */
 
-   /** Kanban */
+    /** Kanban */
     if (!$DB->tableExists('glpi_items_kanbans')) {
         $query = "CREATE TABLE `glpi_items_kanbans` (
          `id` int NOT NULL AUTO_INCREMENT,
@@ -870,9 +870,9 @@ function update94xto950()
             ['name' => 'refresh_ticket_list', 'context' => 'core']
         )
     );
-   /** /Kanban */
+    /** /Kanban */
 
-   /** Add uuid on planning items */
+    /** Add uuid on planning items */
     $planning_items_tables = [
       'glpi_planningexternalevents',
       'glpi_reminders',
@@ -905,9 +905,9 @@ function update94xto950()
             )
         );
     }
-   /** /Add uuid on planning items */
+    /** /Add uuid on planning items */
 
-   /** Add glpi_vobjects table for CalDAV server */
+    /** Add glpi_vobjects table for CalDAV server */
     if (!$DB->tableExists('glpi_vobjects')) {
         $query = "CREATE TABLE `glpi_vobjects` (
             `id` INT NOT NULL AUTO_INCREMENT,
@@ -924,9 +924,9 @@ function update94xto950()
          ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
         $DB->queryOrDie($query, "add table glpi_vobjects");
     }
-   /** /Add glpi_vobjects table for CalDAV server */
+    /** /Add glpi_vobjects table for CalDAV server */
 
-   /** Fix mixed classes case in DB */
+    /** Fix mixed classes case in DB */
     $mixed_case_classes = [
       'AuthLdap' => 'AuthLDAP',
       'Crontask' => 'CronTask',
@@ -935,15 +935,15 @@ function update94xto950()
     foreach ($mixed_case_classes as $bad_case_classname => $classname) {
         $migration->renameItemtype($bad_case_classname, $classname, false);
     }
-   /** /Fix mixed classes case in DB */
+    /** /Fix mixed classes case in DB */
 
-   /** Add geolocation to entity */
+    /** Add geolocation to entity */
     $migration->addField("glpi_entities", "latitude", "string");
     $migration->addField("glpi_entities", "longitude", "string");
     $migration->addField("glpi_entities", "altitude", "string");
-   /** Add geolocation to entity */
+    /** Add geolocation to entity */
 
-   /** Dashboards */
+    /** Dashboards */
     $migration->addRight('dashboard', READ | UPDATE | CREATE | PURGE, [
       'config' => UPDATE
     ]);
@@ -1066,9 +1066,9 @@ function update94xto950()
             }
         }
     }
-   /** /Dashboards */
+    /** /Dashboards */
 
-   /** Domains */
+    /** Domains */
     if (!$DB->tableExists('glpi_domaintypes')) {
         $query = "CREATE TABLE `glpi_domaintypes` (
             `id` int NOT NULL        AUTO_INCREMENT,
@@ -1187,9 +1187,9 @@ function update94xto950()
             ]
         )
     );
-   /** /Domains */
+    /** /Domains */
 
-   /** Domains relations */
+    /** Domains relations */
     if (!$DB->tableExists('glpi_domainrelations')) {
         $query = "CREATE TABLE `glpi_domainrelations` (
             `id` int NOT NULL        AUTO_INCREMENT,
@@ -1216,9 +1216,9 @@ function update94xto950()
         $migration->addField('glpi_domains_items', 'domainrelations_id', 'integer');
         $migration->addKey('glpi_domains_items', 'domainrelations_id');
     }
-   /** /Domains relations */
+    /** /Domains relations */
 
-   /** Domain records */
+    /** Domain records */
     if (!$DB->tableExists('glpi_domainrecordtypes')) {
         $query = "CREATE TABLE `glpi_domainrecordtypes` (
             `id` int NOT NULL        AUTO_INCREMENT,
@@ -1276,9 +1276,9 @@ function update94xto950()
         $migration->dropField('glpi_domainrecords', 'status');
     }
 
-   /** /Domain records */
+    /** /Domain records */
 
-   /** Domains expiration notifications */
+    /** Domains expiration notifications */
     if (countElementsInTable('glpi_notifications', ['itemtype' => 'Domain']) === 0) {
         $DB->insertOrDie(
             'glpi_notificationtemplates',
@@ -1374,9 +1374,9 @@ HTML
             );
         }
     }
-   /** /Domains expiration notifications */
+    /** /Domains expiration notifications */
 
-   /** Impact context */
+    /** Impact context */
 
    // Create new impact_context table
     if (!$DB->tableExists('glpi_impactcontexts')) {
@@ -1412,13 +1412,13 @@ HTML
         $migration->addField("glpi_impactitems", "is_slave", "bool", ['value' => 1]);
         $migration->addKey("glpi_impactitems", "impactcontexts_id", "impactcontexts_id");
     }
-   /** /Impact context */
+    /** /Impact context */
 
-   /** SSO logout URL */
+    /** SSO logout URL */
     $migration->addConfig(['ssologout_url' => '']);
-   /** SSO logout URL */
+    /** SSO logout URL */
 
-   /** Document_Item unicity */
+    /** Document_Item unicity */
     $migration->dropKey('glpi_documents_items', 'unicity');
     $migration->migrationOneTable('glpi_documents_items');
     $migration->addKey(
@@ -1428,13 +1428,13 @@ HTML
         'UNIQUE'
     );
     $migration->migrationOneTable('glpi_documents_items');
-   /** /Document_Item unicity */
+    /** /Document_Item unicity */
 
-   /** Appliances & webapps */
+    /** Appliances & webapps */
     require __DIR__ . '/update_9.4.x_to_9.5.0/appliances.php';
-   /** /Appliances & webapps */
+    /** /Appliances & webapps */
 
-   /** update project and itil task templates to tinymce content **/
+    /** update project and itil task templates to tinymce content **/
     $template_types = [
       'ProjectTaskTemplate' => 'description',
       'TaskTemplate'        => 'content'
@@ -1463,13 +1463,13 @@ HTML
             $stmt->execute();
         }
     }
-   /** /update project and itil task templates **/
+    /** /update project and itil task templates **/
 
-   /** Add new option to mailcollector */
+    /** Add new option to mailcollector */
     $migration->addField("glpi_mailcollectors", "add_cc_to_observer", "boolean");
-   /** /add new option to mailcollector */
+    /** /add new option to mailcollector */
 
-   /** Password expiration policy */
+    /** Password expiration policy */
     $migration->addConfig(
         [
          'password_expiration_delay'      => '-1',
@@ -1598,9 +1598,9 @@ HTML
          'param' => 100,
         ]
     );
-   /** /Password expiration policy */
+    /** /Password expiration policy */
 
-   /** Marketplace */
+    /** Marketplace */
    // crontask
     CronTask::Register(
         'Glpi\\Marketplace\\Controller',
@@ -1691,9 +1691,9 @@ HTML
             'Add domains expiration notification targets'
         );
     }
-   /** /Marketplace */
+    /** /Marketplace */
 
-   /** Update default right assignement rule (only it exactly match previous default rule) */
+    /** Update default right assignement rule (only it exactly match previous default rule) */
     $prev_rule = [
       'entities_id'  => 0,
       'sub_type'     => 'RuleRight',
@@ -1788,9 +1788,9 @@ HTML
             );
         }
     }
-   /** /Update default right assignement rule */
+    /** /Update default right assignement rule */
 
-   /** Passive Datacenter equipments */
+    /** Passive Datacenter equipments */
     if (!$DB->tableExists('glpi_passivedcequipments')) {
         $query = "CREATE TABLE `glpi_passivedcequipments` (
          `id` int NOT NULL AUTO_INCREMENT,
@@ -1872,7 +1872,7 @@ HTML
         ]);
         $migration->addKey('glpi_states', 'is_visible_passivedcequipment');
     }
-   /** /Passive Datacenter equipments */
+    /** /Passive Datacenter equipments */
 
     if (!$DB->fieldExists('glpi_profiles', 'managed_domainrecordtypes')) {
         $migration->addField(
@@ -1912,7 +1912,7 @@ HTML
         );
     }
 
-   /**  Reminders translations */
+    /**  Reminders translations */
     $migration->addConfig(['translate_reminders' => 0]);
    //Create remindertranslations table
     if (!$DB->tableExists('glpi_remindertranslations')) {
@@ -1931,12 +1931,12 @@ HTML
                ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
         $DB->queryOrDie($query, "add table glpi_remindertranslations");
     }
-   /**  Reminders translations */
+    /**  Reminders translations */
 
-   /**  Add default impact itemtypes */
+    /**  Add default impact itemtypes */
     $impact_default = exportArrayToDB(Impact::getDefaultItemtypes());
     $migration->addConfig([Impact::CONF_ENABLED => $impact_default]);
-   /**  /Add default impact itemtypes */
+    /**  /Add default impact itemtypes */
 
    // Add new field states in contract
     if (!$DB->fieldExists('glpi_states', 'is_visible_contract')) {

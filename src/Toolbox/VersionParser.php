@@ -35,20 +35,20 @@ namespace Glpi\Toolbox;
 
 class VersionParser
 {
-   /**
-    * Pattern used to detect/extract unstable flag.
-    * @var string
-    */
+    /**
+     * Pattern used to detect/extract unstable flag.
+     * @var string
+     */
     private const UNSTABLE_FLAG_PATTERN = '(dev|alpha\d*|beta\d*|rc\d*)';
 
-   /**
-    * Normalize version number.
-    *
-    * @param string $version
-    * @param bool $keep_stability_flag
-    *
-    * @return string
-    */
+    /**
+     * Normalize version number.
+     *
+     * @param string $version
+     * @param bool $keep_stability_flag
+     *
+     * @return string
+     */
     public static function getNormalizedVersion(string $version, bool $keep_stability_flag = true): string
     {
         $version_pattern = implode(
@@ -74,25 +74,25 @@ class VersionParser
         return $version;
     }
 
-   /**
-    * Check if given version is a stable release (i.e. does not contains a stability flag refering to unstable state).
-    *
-    * @param string $version
-    *
-    * @return bool
-    */
+    /**
+     * Check if given version is a stable release (i.e. does not contains a stability flag refering to unstable state).
+     *
+     * @param string $version
+     *
+     * @return bool
+     */
     public static function isStableRelease(string $version): bool
     {
         return preg_match('/-' . self::UNSTABLE_FLAG_PATTERN . '$/', $version) !== 1;
     }
 
-   /**
-    * Check if given version is a dev version (i.e. ends with `-dev`).
-    *
-    * @param string $version
-    *
-    * @return bool
-    */
+    /**
+     * Check if given version is a dev version (i.e. ends with `-dev`).
+     *
+     * @param string $version
+     *
+     * @return bool
+     */
     public static function isDevVersion(string $version): bool
     {
         return preg_match('/-dev$/', $version) === 1;

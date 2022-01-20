@@ -44,9 +44,9 @@ class Calendar_Holiday extends CommonDBRelation
     public static $checkItem_2_Rights = self::DONT_CHECK_ITEM_RIGHTS;
 
 
-   /**
-    * @since 0.84
-   **/
+    /**
+     * @since 0.84
+     **/
     public function getForbiddenStandardMassiveAction()
     {
 
@@ -56,13 +56,13 @@ class Calendar_Holiday extends CommonDBRelation
     }
 
 
-   /**
-    * Show holidays for a calendar
-    *
-    * @param $calendar Calendar object
-    *
-    * @return void|boolean (HTML display) False if there is a rights error.
-    */
+    /**
+     * Show holidays for a calendar
+     *
+     * @param $calendar Calendar object
+     *
+     * @return void|boolean (HTML display) False if there is a rights error.
+     */
     public static function showForCalendar(Calendar $calendar)
     {
         global $DB;
@@ -242,13 +242,13 @@ class Calendar_Holiday extends CommonDBRelation
         parent::post_deleteFromDB();
     }
 
-   /**
-    * Return holidays related to given calendar.
-    *
-    * @param int $calendars_id
-    *
-    * @return array
-    */
+    /**
+     * Return holidays related to given calendar.
+     *
+     * @param int $calendars_id
+     *
+     * @return array
+     */
     public function getHolidaysForCalendar(int $calendars_id): array
     {
         global $DB, $GLPI_CACHE;
@@ -279,13 +279,13 @@ class Calendar_Holiday extends CommonDBRelation
         return $holidays;
     }
 
-   /**
-    * Invalidate cache for given holiday.
-    *
-    * @param int $holidays_id
-    *
-    * @return bool
-    */
+    /**
+     * Invalidate cache for given holiday.
+     *
+     * @param int $holidays_id
+     *
+     * @return bool
+     */
     public function invalidateHolidayCache(int $holidays_id): bool
     {
         global $DB;
@@ -308,25 +308,25 @@ class Calendar_Holiday extends CommonDBRelation
         return $success;
     }
 
-   /**
-    * Get cache key of cache entry containing holidays of given calendar.
-    *
-    * @param int $calendars_id
-    *
-    * @return string
-    */
+    /**
+     * Get cache key of cache entry containing holidays of given calendar.
+     *
+     * @param int $calendars_id
+     *
+     * @return string
+     */
     private function getCalendarHolidaysCacheKey(int $calendars_id): string
     {
         return sprintf('calendar-%s-holidays', $calendars_id);
     }
 
-   /**
-    * Invalidate holidays cache of given calendar.
-    *
-    * @param int $calendars_id
-    *
-    * @return bool
-    */
+    /**
+     * Invalidate holidays cache of given calendar.
+     *
+     * @param int $calendars_id
+     *
+     * @return bool
+     */
     private function invalidateCalendarCache(int $calendars_id): bool
     {
         global $GLPI_CACHE;

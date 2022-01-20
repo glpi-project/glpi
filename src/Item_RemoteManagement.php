@@ -74,15 +74,15 @@ class Item_RemoteManagement extends CommonDBChild
     }
 
 
-   /**
-    * Get remote managements related to a given item
-    *
-    * @param CommonDBTM $item  Item instance
-    * @param string     $sort  Field to sort on
-    * @param string     $order Sort order
-    *
-    * @return DBmysqlIterator
-    */
+    /**
+     * Get remote managements related to a given item
+     *
+     * @param CommonDBTM $item  Item instance
+     * @param string     $sort  Field to sort on
+     * @param string     $order Sort order
+     *
+     * @return DBmysqlIterator
+     */
     public static function getFromItem(CommonDBTM $item, $sort = null, $order = null): DBmysqlIterator
     {
         global $DB;
@@ -97,14 +97,14 @@ class Item_RemoteManagement extends CommonDBChild
         return $iterator;
     }
 
-   /**
-    * Print the remote management
-    *
-    * @param CommonDBTM $item          Item object
-    * @param boolean    $withtemplate  Template or basic item (default 0)
-    *
-    * @return void
-   **/
+    /**
+     * Print the remote management
+     *
+     * @param CommonDBTM $item          Item object
+     * @param boolean    $withtemplate  Template or basic item (default 0)
+     *
+     * @return void
+     **/
     public static function showForItem(CommonDBTM $item, $withtemplate = 0)
     {
         $ID = $item->fields['id'];
@@ -193,11 +193,11 @@ class Item_RemoteManagement extends CommonDBChild
     }
 
 
-   /**
-    * Get remote management system link
-    *
-    * @return string
-    */
+    /**
+     * Get remote management system link
+     *
+     * @return string
+     */
     public function getRemoteLink(): string
     {
         $link = '<a href="%s" target="_blank">%s</a>';

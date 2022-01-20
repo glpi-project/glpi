@@ -91,9 +91,9 @@ class ImpactItem extends \DbTestCase
         ];
     }
 
-   /**
-    * @dataProvider prepareInputForUpdateProvider
-    */
+    /**
+     * @dataProvider prepareInputForUpdateProvider
+     */
     public function testPrepareInputForUpdate($input, $result)
     {
         $impact_item = new \ImpactItem();

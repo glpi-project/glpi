@@ -35,7 +35,7 @@
  * Item_Problem Class
  *
  *  Relation between Problems and Items
-**/
+ **/
 class Item_Problem extends CommonItilObject_Item
 {
    // From CommonDBRelation
@@ -72,13 +72,13 @@ class Item_Problem extends CommonItilObject_Item
     }
 
 
-   /**
-    * Print the HTML array for Items linked to a problem
-    *
-    * @param $problem Problem object
-    *
-    * @return void
-   **/
+    /**
+     * Print the HTML array for Items linked to a problem
+     *
+     * @param $problem Problem object
+     *
+     * @return void
+     **/
     public static function showForProblem(Problem $problem)
     {
         $instID = $problem->fields['id'];

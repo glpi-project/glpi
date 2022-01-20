@@ -41,9 +41,9 @@ abstract class CommonITILRecurrent extends DbTestCase
 {
     abstract protected function getChildClass();
 
-   /**
-    * Data provider for self::testConvertTagToImage().
-    */
+    /**
+     * Data provider for self::testConvertTagToImage().
+     */
     protected function computeNextCreationDateProvider()
     {
         $calendar    = new \Calendar();
@@ -429,17 +429,17 @@ abstract class CommonITILRecurrent extends DbTestCase
         return $data;
     }
 
-   /**
-    * @param string         $begin_date
-    * @param string         $end_date
-    * @param string|integer $periodicity
-    * @param integer        $create_before
-    * @param integer        $calendars_id
-    * @param string         $expected_value
-    * @param array          $messages
-    *
-    * @dataProvider computeNextCreationDateProvider
-    */
+    /**
+     * @param string         $begin_date
+     * @param string         $end_date
+     * @param string|integer $periodicity
+     * @param integer        $create_before
+     * @param integer        $calendars_id
+     * @param string         $expected_value
+     * @param array          $messages
+     *
+     * @dataProvider computeNextCreationDateProvider
+     */
     public function testComputeNextCreationDate(
         $begin_date,
         $end_date,
@@ -468,15 +468,15 @@ abstract class CommonITILRecurrent extends DbTestCase
         }
     }
 
-   /**
-    * Get next working day for reference date.
-    *
-    * @param array  $working_days    List of working days (0 for sunday, 6 for saturday).
-    * @param string $reference_date  Reference date.
-    * @param string $format          Date return format.
-    *
-    * @return string
-    */
+    /**
+     * Get next working day for reference date.
+     *
+     * @param array  $working_days    List of working days (0 for sunday, 6 for saturday).
+     * @param string $reference_date  Reference date.
+     * @param string $format          Date return format.
+     *
+     * @return string
+     */
     private function getNextWorkingDayDate(array $working_days, $reference_date, $format)
     {
         $reference_date = date('Y-m-d H:i:s', strtotime($reference_date)); // normalize reference date

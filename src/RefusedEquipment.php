@@ -148,11 +148,11 @@ class RefusedEquipment extends CommonDBTM
         return $tab;
     }
 
-   /**
-    * Get search parameters for default search / display list
-    *
-    * @return array
-    */
+    /**
+     * Get search parameters for default search / display list
+     *
+     * @return array
+     */
     public static function getDefaultSearchRequest()
     {
         return [
@@ -246,11 +246,11 @@ class RefusedEquipment extends CommonDBTM
         return static::canUpdate();
     }
 
-   /**
-    * Handle inventory request, and returns redirection url
-    *
-    * @return string
-    */
+    /**
+     * Handle inventory request, and returns redirection url
+     *
+     * @return string
+     */
     public function handleInventoryRequest(Request $request)
     {
         $status = $request->getInventoryStatus();

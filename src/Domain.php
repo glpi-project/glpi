@@ -361,19 +361,19 @@ class Domain extends CommonDropdown
     }
 
 
-   /**
-    * Make a select box for link domains
-    *
-    * Parameters which could be used in options array :
-    *    - name : string / name of the select (default is documents_id)
-    *    - entity : integer or array / restrict to a defined entity or array of entities
-    *                   (default -1 : no restriction)
-    *    - used : array / Already used items ID: not to display in dropdown (default empty)
-    *
-    * @param $options array of possible options
-    *
-    * @return void
-    * */
+    /**
+     * Make a select box for link domains
+     *
+     * Parameters which could be used in options array :
+     *    - name : string / name of the select (default is documents_id)
+     *    - entity : integer or array / restrict to a defined entity or array of entities
+     *                   (default -1 : no restriction)
+     *    - used : array / Already used items ID: not to display in dropdown (default empty)
+     *
+     * @param $options array of possible options
+     *
+     * @return void
+     * */
     public static function dropdownDomains($options = [])
     {
         global $DB;
@@ -564,13 +564,13 @@ class Domain extends CommonDropdown
         return [];
     }
 
-   /**
-    * Criteria for expired domains
-    *
-    * @param integer $entities_id Entity ID
-    *
-    * @return array
-    */
+    /**
+     * Criteria for expired domains
+     *
+     * @param integer $entities_id Entity ID
+     *
+     * @return array
+     */
     public static function expiredDomainsCriteria($entities_id): array
     {
         global $DB;
@@ -587,13 +587,13 @@ class Domain extends CommonDropdown
         ];
     }
 
-   /**
-    * Criteria for domains closed expiries
-    *
-    * @param integer $entities_id Entity ID
-    *
-    * @return array
-    */
+    /**
+     * Criteria for domains closed expiries
+     *
+     * @param integer $entities_id Entity ID
+     *
+     * @return array
+     */
     public static function closeExpiriesDomainsCriteria($entities_id): array
     {
         global $DB;
@@ -610,14 +610,14 @@ class Domain extends CommonDropdown
         ];
     }
 
-   /**
-    * Cron action on domains : ExpiredDomains or DomainsWhichExpire
-    *
-    * @param CronTask $task CronTask for log, if NULL display
-    *
-    *
-    * @return int
-    */
+    /**
+     * Cron action on domains : ExpiredDomains or DomainsWhichExpire
+     *
+     * @param CronTask $task CronTask for log, if NULL display
+     *
+     *
+     * @return int
+     */
     public static function cronDomainsAlert($task = null)
     {
         global $DB, $CFG_GLPI;
@@ -692,13 +692,13 @@ class Domain extends CommonDropdown
         return $cron_status;
     }
 
-   /**
-    * Type than could be linked to a Rack
-    *
-    * @param $all boolean, all type, or only allowed ones
-    *
-    * @return array of types
-    * */
+    /**
+     * Type than could be linked to a Rack
+     *
+     * @param $all boolean, all type, or only allowed ones
+     *
+     * @return array of types
+     * */
     public static function getTypes($all = false)
     {
         global $CFG_GLPI;

@@ -53,11 +53,11 @@ abstract class AbstractInventoryAsset extends \InventoryTestCase
         $this->integer($log_entries)->isIdenticalTo($this->log_entries + $this->new_log_entries);
     }
 
-   /**
-    * Data provider for asset
-    *
-    * @return array
-    */
+    /**
+     * Data provider for asset
+     *
+     * @return array
+     */
     abstract protected function assetProvider(): array;
 
    /**

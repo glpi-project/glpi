@@ -36,7 +36,7 @@ use Glpi\Toolbox\Sanitizer;
 
 /**
  * Document class
-**/
+ **/
 class Document extends CommonDBTM
 {
    // From CommonDBTM
@@ -55,15 +55,15 @@ class Document extends CommonDBTM
     }
 
 
-   /**
-    * Check if given object can have Document
-    *
-    * @since 0.85
-    *
-    * @param string|object $item An object or a string
-    *
-    * @return boolean
-   **/
+    /**
+     * Check if given object can have Document
+     *
+     * @since 0.85
+     *
+     * @param string|object $item An object or a string
+     *
+     * @return boolean
+     **/
     public static function canApplyOn($item)
     {
         global $CFG_GLPI;
@@ -89,13 +89,13 @@ class Document extends CommonDBTM
     }
 
 
-   /**
-    * Get all the types that can have a document
-    *
-    * @since 0.85
-    *
-    * @return array of the itemtypes
-   **/
+    /**
+     * Get all the types that can have a document
+     *
+     * @since 0.85
+     *
+     * @return array of the itemtypes
+     **/
     public static function getItemtypesThatCanHave()
     {
         global $CFG_GLPI;
@@ -108,11 +108,11 @@ class Document extends CommonDBTM
     }
 
 
-   /**
-    * @see CommonGLPI::getMenuShorcut()
-    *
-    * @since 0.85
-   **/
+    /**
+     * @see CommonGLPI::getMenuShorcut()
+     *
+     * @since 0.85
+     **/
     public static function getMenuShorcut()
     {
         return 'd';
@@ -402,16 +402,16 @@ class Document extends CommonDBTM
     }
 
 
-   /**
-    * Print the document form
-    *
-    * @param $ID        integer ID of the item
-    * @param $options   array
-    *     - target filename : where to go when done.
-    *     - withtemplate boolean : template or basic item
-    *
-    * @return void
-   **/
+    /**
+     * Print the document form
+     *
+     * @param $ID        integer ID of the item
+     * @param $options   array
+     *     - target filename : where to go when done.
+     *     - withtemplate boolean : template or basic item
+     *
+     * @return void
+     **/
     public function showForm($ID, array $options = [])
     {
         $this->initForm($ID, $options);
@@ -507,9 +507,9 @@ class Document extends CommonDBTM
     }
 
 
-   /**
-    * Get max upload size from php config
-   **/
+    /**
+     * Get max upload size from php config
+     **/
     public static function getMaxUploadSize()
     {
         global $CFG_GLPI;
@@ -519,11 +519,11 @@ class Document extends CommonDBTM
     }
 
 
-   /**
-    * Send a document to navigator
-    *
-    * @param string $context Context to resize image, if any
-   **/
+    /**
+     * Send a document to navigator
+     *
+     * @param string $context Context to resize image, if any
+     **/
     public function send($context = null)
     {
         $file = GLPI_DOC_DIR . "/" . $this->fields['filepath'];
@@ -534,13 +534,13 @@ class Document extends CommonDBTM
     }
 
 
-   /**
-    * Get download link for a document
-    *
-    * @param string  $params    additonal parameters to be added to the link (default '')
-    * @param integer $len       maximum length of displayed string (default 20)
-    *
-   **/
+    /**
+     * Get download link for a document
+     *
+     * @param string  $params    additonal parameters to be added to the link (default '')
+     * @param integer $len       maximum length of displayed string (default 20)
+     *
+     **/
     public function getDownloadLink($params = '', $len = 20)
     {
         global $DB,$CFG_GLPI;
@@ -602,14 +602,14 @@ class Document extends CommonDBTM
     }
 
 
-   /**
-    * find a document with a file attached
-    *
-    * @param integer $entity    entity of the document
-    * @param string  $path      path of the searched file
-    *
-    * @return boolean
-   **/
+    /**
+     * find a document with a file attached
+     *
+     * @param integer $entity    entity of the document
+     * @param string  $path      path of the searched file
+     *
+     * @return boolean
+     **/
     public function getFromDBbyContent($entity, $path)
     {
 
@@ -645,13 +645,13 @@ class Document extends CommonDBTM
     }
 
 
-   /**
-    * Check is the curent user is allowed to see the file
-    *
-    * @param array $options Options (only 'tickets_id' used)
-    *
-    * @return boolean
-   **/
+    /**
+     * Check is the curent user is allowed to see the file
+     *
+     * @param array $options Options (only 'tickets_id' used)
+     *
+     * @return boolean
+     **/
     public function canViewFile(array $options = [])
     {
 
@@ -699,11 +699,11 @@ class Document extends CommonDBTM
         return false;
     }
 
-   /**
-    * Try to load the session from the API Tolen
-    *
-    * @since 9.5
-    */
+    /**
+     * Try to load the session from the API Tolen
+     *
+     * @since 9.5
+     */
     private static function loadAPISessionIfExist()
     {
         $session_token = \Toolbox::getHeader('Session-Token');
@@ -725,14 +725,14 @@ class Document extends CommonDBTM
         Session::start();
     }
 
-   /**
-    * Check if file of current instance can be viewed from a Reminder.
-    *
-    * @global DBmysql $DB
-    * @return boolean
-    *
-    * @TODO Use DBmysqlIterator instead of raw SQL
-    */
+    /**
+     * Check if file of current instance can be viewed from a Reminder.
+     *
+     * @global DBmysql $DB
+     * @return boolean
+     *
+     * @TODO Use DBmysqlIterator instead of raw SQL
+     */
     private function canViewFileFromReminder()
     {
 
@@ -769,13 +769,13 @@ class Document extends CommonDBTM
         return $result['cpt'] > 0;
     }
 
-   /**
-    * Check if file of current instance can be viewed from a KnowbaseItem.
-    *
-    * @global array $CFG_GLPI
-    * @global DBmysql $DB
-    * @return boolean
-    */
+    /**
+     * Check if file of current instance can be viewed from a KnowbaseItem.
+     *
+     * @global array $CFG_GLPI
+     * @global DBmysql $DB
+     * @return boolean
+     */
     private function canViewFileFromKnowbaseItem()
     {
 
@@ -825,14 +825,14 @@ class Document extends CommonDBTM
         return $result['cpt'] > 0;
     }
 
-   /**
-    * Check if file of current instance can be viewed from a CommonITILObject.
-    *
-    * @global DBmysql $DB
-    * @param string  $itemtype
-    * @param integer $items_id
-    * @return boolean
-    */
+    /**
+     * Check if file of current instance can be viewed from a CommonITILObject.
+     *
+     * @global DBmysql $DB
+     * @param string  $itemtype
+     * @param integer $items_id
+     * @return boolean
+     */
     private function canViewFileFromItilObject($itemtype, $items_id)
     {
 
@@ -1034,15 +1034,15 @@ class Document extends CommonDBTM
     }
 
 
-   /**
-    * Move a file to a new location
-    * Work even if dest file already exists
-    *
-    * @param string $srce   source file path
-    * @param string $dest   destination file path
-    *
-    * @return boolean : success
-   **/
+    /**
+     * Move a file to a new location
+     * Work even if dest file already exists
+     *
+     * @param string $srce   source file path
+     * @param string $dest   destination file path
+     *
+     * @return boolean : success
+     **/
     public static function renameForce($srce, $dest)
     {
 
@@ -1057,14 +1057,14 @@ class Document extends CommonDBTM
     }
 
 
-   /**
-    * Move an uploadd document (files in GLPI_DOC_DIR."/_uploads" dir)
-    *
-    * @param array  $input     array of datas used in adding process (need current_filepath)
-    * @param string $filename  filename to move
-    *
-    * @return boolean for success / $input array is updated
-   **/
+    /**
+     * Move an uploadd document (files in GLPI_DOC_DIR."/_uploads" dir)
+     *
+     * @param array  $input     array of datas used in adding process (need current_filepath)
+     * @param string $filename  filename to move
+     *
+     * @return boolean for success / $input array is updated
+     **/
     public function moveUploadedDocument(array &$input, $filename)
     {
         $prefix = '';
@@ -1157,14 +1157,14 @@ class Document extends CommonDBTM
         return true;
     }
 
-   /**
-    * Move a document (files in GLPI_DOC_DIR."/_tmp" dir)
-    *
-    * @param array  $input     array of datas used in adding process (need current_filepath)
-    * @param string $filename  filename to move
-    *
-    * @return boolean for success / $input array is updated
-   **/
+    /**
+     * Move a document (files in GLPI_DOC_DIR."/_tmp" dir)
+     *
+     * @param array  $input     array of datas used in adding process (need current_filepath)
+     * @param string $filename  filename to move
+     *
+     * @return boolean for success / $input array is updated
+     **/
     public static function moveDocument(array &$input, $filename)
     {
         $prefix = '';
@@ -1257,14 +1257,14 @@ class Document extends CommonDBTM
     }
 
 
-   /**
-    * Upload a new file
-    *
-    * @param &$input    array of datas need for add/update (will be completed)
-    * @param $FILEDESC        FILE descriptor
-    *
-    * @return true on success
-   **/
+    /**
+     * Upload a new file
+     *
+     * @param &$input    array of datas need for add/update (will be completed)
+     * @param $FILEDESC        FILE descriptor
+     *
+     * @return true on success
+     **/
     public static function uploadDocument(array &$input, $FILEDESC)
     {
 
@@ -1349,14 +1349,14 @@ class Document extends CommonDBTM
     }
 
 
-   /**
-    * Find a valid path for the new file
-    *
-    * @param string $dir      dir to search a free path for the file
-    * @param string $sha1sum  SHA1 of the file
-    *
-    * @return string
-   **/
+    /**
+     * Find a valid path for the new file
+     *
+     * @param string $dir      dir to search a free path for the file
+     * @param string $sha1sum  SHA1 of the file
+     *
+     * @return string
+     **/
     public static function getUploadFileValidLocationName($dir, $sha1sum)
     {
         if (empty($dir)) {
@@ -1409,11 +1409,11 @@ class Document extends CommonDBTM
     }
 
 
-   /**
-    * Show dropdown of uploaded files
-    *
-    * @param $myname dropdown name
-   **/
+    /**
+     * Show dropdown of uploaded files
+     *
+     * @param $myname dropdown name
+     **/
     public static function showUploadedFilesDropdown($myname)
     {
         if (is_dir(GLPI_UPLOAD_DIR)) {
@@ -1441,11 +1441,11 @@ class Document extends CommonDBTM
     }
 
 
-   /**
-    * Is this file a valid file ? check based on file extension
-    *
-    * @param string $filename filename to clean
-   **/
+    /**
+     * Is this file a valid file ? check based on file extension
+     *
+     * @param string $filename filename to clean
+     **/
     public static function isValidDoc($filename)
     {
         global $DB;
@@ -1483,22 +1483,22 @@ class Document extends CommonDBTM
         return "";
     }
 
-   /**
-    * Make a select box for link document
-    *
-    * Parameters which could be used in options array :
-    *    - name : string / name of the select (default is documents_id)
-    *    - entity : integer or array / restrict to a defined entity or array of entities
-    *                   (default -1 : no restriction)
-    *    - used : array / Already used items ID: not to display in dropdown (default empty)
-    *    - hide_if_no_elements  : boolean / hide dropdown if there is no elements (default false)
-    *
-    * @param $options array of possible options
-    *
-    * @return integer|string
-    *    integer if option display=true (random part of elements id)
-    *    string if option display=false (HTML code)
-   **/
+    /**
+     * Make a select box for link document
+     *
+     * Parameters which could be used in options array :
+     *    - name : string / name of the select (default is documents_id)
+     *    - entity : integer or array / restrict to a defined entity or array of entities
+     *                   (default -1 : no restriction)
+     *    - used : array / Already used items ID: not to display in dropdown (default empty)
+     *    - hide_if_no_elements  : boolean / hide dropdown if there is no elements (default false)
+     *
+     * @param $options array of possible options
+     *
+     * @return integer|string
+     *    integer if option display=true (random part of elements id)
+     *    string if option display=false (HTML code)
+     **/
     public static function dropdown($options = [])
     {
         global $DB, $CFG_GLPI;
@@ -1606,27 +1606,27 @@ class Document extends CommonDBTM
     }
 
 
-   /**
-    * @since 0.85
-    *
-    * @param $string
-    *
-    * @return string
-   **/
+    /**
+     * @since 0.85
+     *
+     * @param $string
+     *
+     * @return string
+     **/
     public static function getImageTag($string)
     {
         return self::$tag_prefix . $string . self::$tag_prefix;
     }
 
-   /**
-    * Is file an image
-    *
-    * @since 9.2.1
-    *
-    * @param string $file File name
-    *
-    * @return boolean
-    */
+    /**
+     * Is file an image
+     *
+     * @since 9.2.1
+     *
+     * @param string $file File name
+     *
+     * @return boolean
+     */
     public static function isImage($file)
     {
         if (!file_exists($file)) {
@@ -1651,19 +1651,19 @@ class Document extends CommonDBTM
         }
     }
 
-   /**
-    * Get image path for a specified context.
-    * Will call image resize if needed.
-    *
-    * @since 9.2.1
-    *
-    * @param string  $path    Original path
-    * @param string  $context Context
-    * @param integer $mwidth  Maximal width
-    * @param integer $mheight Maximal height
-    *
-    * @return string Image path on disk
-    */
+    /**
+     * Get image path for a specified context.
+     * Will call image resize if needed.
+     *
+     * @since 9.2.1
+     *
+     * @param string  $path    Original path
+     * @param string  $context Context
+     * @param integer $mwidth  Maximal width
+     * @param integer $mheight Maximal height
+     *
+     * @return string Image path on disk
+     */
     public static function getImage($path, $context, $mwidth = null, $mheight = null)
     {
         if ($mwidth === null || $mheight === null) {
@@ -1719,13 +1719,13 @@ class Document extends CommonDBTM
         return ($result ? $context_path : $path);
     }
 
-   /**
-    * Give cron information
-    *
-    * @param string $name task's name
-    *
-    * @return array of information
-   **/
+    /**
+     * Give cron information
+     *
+     * @param string $name task's name
+     *
+     * @return array of information
+     **/
     public static function cronInfo($name)
     {
 
@@ -1736,13 +1736,13 @@ class Document extends CommonDBTM
         return [];
     }
 
-   /**
-    * Cron for clean orphan documents (without Document_Item)
-    *
-    * @param CronTask $task CronTask object
-    *
-    * @return integer (0 : nothing done - 1 : done)
-   **/
+    /**
+     * Cron for clean orphan documents (without Document_Item)
+     *
+     * @param CronTask $task CronTask object
+     *
+     * @return integer (0 : nothing done - 1 : done)
+     **/
     public static function cronCleanOrphans(CronTask $task)
     {
         global $DB;
@@ -1790,14 +1790,14 @@ class Document extends CommonDBTM
     }
 
 
-   /**
-    * find and load a document which is a duplicate of a file, with respect of blacklisting
-    *
-    * @param integer $entity    entity of the document
-    * @param string  $path      path of the searched file
-    *
-    * @return boolean
-    */
+    /**
+     * find and load a document which is a duplicate of a file, with respect of blacklisting
+     *
+     * @param integer $entity    entity of the document
+     * @param string  $path      path of the searched file
+     *
+     * @return boolean
+     */
     public function getDuplicateOf(int $entities_id, string $filename): bool
     {
         if (!$this->getFromDBbyContent($entities_id, $filename)) {

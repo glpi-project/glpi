@@ -77,11 +77,11 @@ class OperatingSystemKernelVersion extends CommonDropdown
         ];
     }
 
-   /**
-    * Create new kernel version in database
-    *
-    * @return void
-    */
+    /**
+     * Create new kernel version in database
+     *
+     * @return void
+     */
     protected function newInstance()
     {
         $kernel = new \OperatingSystemKernel();

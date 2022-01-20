@@ -33,7 +33,7 @@
 
 /**
  * CommonITILActor Class
-**/
+ **/
 abstract class CommonITILActor extends CommonDBRelation
 {
    // items_id_1, items_id_2, itemtype_1 and itemtype_2 are defined inside the inherited classes
@@ -61,13 +61,13 @@ abstract class CommonITILActor extends CommonDBRelation
     }
 
 
-   /**
-    * @since 0.84
-    *
-    * @param $input  array of data to be added
-    *
-    * @see CommonDBRelation::isAttach2Valid()
-   **/
+    /**
+     * @since 0.84
+     *
+     * @param $input  array of data to be added
+     *
+     * @see CommonDBRelation::isAttach2Valid()
+     **/
     public function isAttach2Valid(array &$input)
     {
 
@@ -89,9 +89,9 @@ abstract class CommonITILActor extends CommonDBRelation
     }
 
 
-   /**
-    * @param $items_id
-   **/
+    /**
+     * @param $items_id
+     **/
     public function getActors($items_id)
     {
         global $DB;
@@ -109,10 +109,10 @@ abstract class CommonITILActor extends CommonDBRelation
     }
 
 
-   /**
-    * @param $items_id
-    * @param $email
-   **/
+    /**
+     * @param $items_id
+     * @param $email
+     **/
     public function isAlternateEmailForITILObject($items_id, $email)
     {
         global $DB;
@@ -142,9 +142,9 @@ abstract class CommonITILActor extends CommonDBRelation
     }
 
 
-   /**
-    * @since 0.84
-   **/
+    /**
+     * @since 0.84
+     **/
     public function canDeleteItem()
     {
 
@@ -153,14 +153,14 @@ abstract class CommonITILActor extends CommonDBRelation
                   && ($this->fields['users_id'] == Session::getLoginUserID())));
     }
 
-   /**
-    * Print the object user form for notification
-    *
-    * @param $ID              integer ID of the item
-    * @param $options   array
-    *
-    * @return void
-   **/
+    /**
+     * Print the object user form for notification
+     *
+     * @param $ID              integer ID of the item
+     * @param $options   array
+     *
+     * @return void
+     **/
     public function showUserNotificationForm($ID, $options = [])
     {
 
@@ -233,16 +233,16 @@ abstract class CommonITILActor extends CommonDBRelation
     }
 
 
-   /**
-    * Print the object user form for notification
-    *
-    * @since 0.85
-    *
-    * @param $ID              integer ID of the item
-    * @param $options   array
-    *
-    * @return void
-   **/
+    /**
+     * Print the object user form for notification
+     *
+     * @since 0.85
+     *
+     * @param $ID              integer ID of the item
+     * @param $options   array
+     *
+     * @return void
+     **/
     public function showSupplierNotificationForm($ID, $options = [])
     {
 
@@ -335,11 +335,11 @@ abstract class CommonITILActor extends CommonDBRelation
     }
 
 
-   /**
-    * @since 0.85
-    *
-    * @see CommonDBRelation::prepareInputForAdd()
-   **/
+    /**
+     * @since 0.85
+     *
+     * @see CommonDBRelation::prepareInputForAdd()
+     **/
     public function prepareInputForAdd($input)
     {
 

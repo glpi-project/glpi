@@ -79,13 +79,13 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
     }
 
 
-   /**
-    * Get the item associated with the current object.
-    *
-    * @since 0.84
-    *
-    * @return object of the concerned item or false on error
-   **/
+    /**
+     * Get the item associated with the current object.
+     *
+     * @since 0.84
+     *
+     * @return object of the concerned item or false on error
+     **/
     public function getItem()
     {
 
@@ -98,11 +98,11 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
     }
 
 
-   /**
-    * can read the parent ITIL Object ?
-    *
-    * @return boolean
-   **/
+    /**
+     * can read the parent ITIL Object ?
+     *
+     * @return boolean
+     **/
     public function canReadITILItem()
     {
 
@@ -115,13 +115,13 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
     }
 
 
-   /**
-    * can update the parent ITIL Object ?
-    *
-    * @since 0.85
-    *
-    * @return boolean
-   **/
+    /**
+     * can update the parent ITIL Object ?
+     *
+     * @since 0.85
+     *
+     * @return boolean
+     **/
     public function canUpdateITILItem()
     {
 
@@ -134,24 +134,24 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
     }
 
 
-   /**
-    * Name of the type
-    *
-    * @param $nb : number of item in the type (default 0)
-   **/
+    /**
+     * Name of the type
+     *
+     * @param $nb : number of item in the type (default 0)
+     **/
     public static function getTypeName($nb = 0)
     {
         return _n('Task', 'Tasks', $nb);
     }
 
 
-   /**
-    * @since 0.84
-    *
-    * @param $field
-    * @param $values
-    * @param $options   array
-   **/
+    /**
+     * @since 0.84
+     *
+     * @param $field
+     * @param $values
+     * @param $options   array
+     **/
     public static function getSpecificValueToDisplay($field, $values, array $options = [])
     {
 
@@ -167,16 +167,16 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
     }
 
 
-   /**
-    * @since 0.84
-    *
-    * @param $field
-    * @param $name            (default '')
-    * @param $values          (default '')
-    * @param $options   array
-    *
-    * @return string
-   **/
+    /**
+     * @since 0.84
+     *
+     * @param $field
+     * @param $name            (default '')
+     * @param $values          (default '')
+     * @param $options   array
+     *
+     * @return string
+     **/
     public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
     {
 
@@ -680,11 +680,11 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
     }
 
 
-   /**
-    * @see CommonDBTM::cleanDBonPurge()
-    *
-    * @since 0.84
-   **/
+    /**
+     * @see CommonDBTM::cleanDBonPurge()
+     *
+     * @since 0.84
+     **/
     public function cleanDBonPurge()
     {
 
@@ -788,9 +788,9 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
     }
 
 
-   /**
-    * @since 0.85
-   **/
+    /**
+     * @since 0.85
+     **/
     public static function rawSearchOptionsToAdd($itemtype = null)
     {
 
@@ -1040,13 +1040,13 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
     }
 
 
-   /**
-    * Current dates are valid ? begin before end
-    *
-    * @param $input
-    *
-    *@return boolean
-   **/
+    /**
+     * Current dates are valid ? begin before end
+     *
+     * @param $input
+     *
+     *@return boolean
+     **/
     public function test_valid_date($input)
     {
 
@@ -1056,21 +1056,21 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
     }
 
 
-   /**
-    * Populate the planning with planned tasks
-    *
-    * @param string $itemtype itemtype
-    * @param array $options   options must contains :
-    *    - who                ID of the user (0 = undefined)
-    *    - whogroup           ID of the group of users (0 = undefined)
-    *    - begin              Date
-    *    - end                Date
-    *    - color
-    *    - event_type_color
-    *    - display_done_events (boolean)
-    *
-    * @return array of planning item
-   **/
+    /**
+     * Populate the planning with planned tasks
+     *
+     * @param string $itemtype itemtype
+     * @param array $options   options must contains :
+     *    - who                ID of the user (0 = undefined)
+     *    - whogroup           ID of the group of users (0 = undefined)
+     *    - begin              Date
+     *    - end                Date
+     *    - color
+     *    - event_type_color
+     *    - display_done_events (boolean)
+     *
+     * @return array of planning item
+     **/
     public static function genericPopulatePlanning($itemtype, $options = [])
     {
         global $DB, $CFG_GLPI;
@@ -1306,38 +1306,38 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
         return $interv;
     }
 
-   /**
-    * Populate the planning with not planned tasks
-    *
-    * @param string $itemtype itemtype
-    * @param array $options   options must contains :
-    *    - who                ID of the user (0 = undefined)
-    *    - whogroup           ID of the group of users (0 = undefined)
-    *    - begin              Date
-    *    - end                Date
-    *    - color
-    *    - event_type_color
-    *    - display_done_events (boolean)
-    *
-    * @return array of planning item
-   **/
+    /**
+     * Populate the planning with not planned tasks
+     *
+     * @param string $itemtype itemtype
+     * @param array $options   options must contains :
+     *    - who                ID of the user (0 = undefined)
+     *    - whogroup           ID of the group of users (0 = undefined)
+     *    - begin              Date
+     *    - end                Date
+     *    - color
+     *    - event_type_color
+     *    - display_done_events (boolean)
+     *
+     * @return array of planning item
+     **/
     public static function genericPopulateNotPlanned($itemtype, $options = [])
     {
         $options['not_planned'] = true;
         return self::genericPopulatePlanning($itemtype, $options);
     }
 
-   /**
-    * Display a Planning Item
-    *
-    * @param string          $itemtype  itemtype
-    * @param array           $val       the item to display
-    * @param integer         $who       ID of the user (0 if all)
-    * @param string          $type      position of the item in the time block (in, through, begin or end)
-    * @param integer|boolean $complete  complete display (more details) (default 0)
-    *
-    * @return string Output
-   **/
+    /**
+     * Display a Planning Item
+     *
+     * @param string          $itemtype  itemtype
+     * @param array           $val       the item to display
+     * @param integer         $who       ID of the user (0 if all)
+     * @param string          $type      position of the item in the time block (in, through, begin or end)
+     * @param integer|boolean $complete  complete display (more details) (default 0)
+     *
+     * @return string Output
+     **/
     public static function genericDisplayPlanningItem($itemtype, array $val, $who, $type = "", $complete = 0)
     {
         global $CFG_GLPI;
@@ -1418,12 +1418,12 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
     }
 
 
-   /** form for Task
-    *
-    * @param $ID        Integer : Id of the task
-    * @param $options   array
-    *     -  parent Object : the object
-   **/
+    /** form for Task
+     *
+     * @param $ID        Integer : Id of the task
+     * @param $options   array
+     *     -  parent Object : the object
+     **/
     public function showForm($ID, array $options = [])
     {
         TemplateRenderer::getInstance()->display('components/itilobject/timeline/form_task.html.twig', [
@@ -1433,9 +1433,9 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
     }
 
 
-   /**
-    * Form for Ticket or Problem Task on Massive action
-    */
+    /**
+     * Form for Ticket or Problem Task on Massive action
+     */
     public function showMassiveActionAddTaskForm()
     {
         echo "<table class='tab_cadre_fixe'>";
@@ -1487,13 +1487,13 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
         echo "</table>";
     }
 
-   /**
-    * Get tasks list
-    *
-    * @since 9.2
-    *
-    * @return DBmysqlIterator
-    */
+    /**
+     * Get tasks list
+     *
+     * @since 9.2
+     *
+     * @return DBmysqlIterator
+     */
     public static function getTaskList($status, $showgrouptickets, $start = null, $limit = null)
     {
         global $DB;
@@ -1547,17 +1547,17 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
     }
 
 
-   /**
-    * Display tasks in homepage
-    *
-    * @since 9.2
-    *
-    * @param integer $start            Start number to display
-    * @param string  $status           The task status to filter
-    * @param boolean $showgrouptickets As we display for group defined in task or not?
-    *
-    * @return void
-    */
+    /**
+     * Display tasks in homepage
+     *
+     * @since 9.2
+     *
+     * @param integer $start            Start number to display
+     * @param string  $status           The task status to filter
+     * @param boolean $showgrouptickets As we display for group defined in task or not?
+     *
+     * @return void
+     */
     public static function showCentralList($start, $status = 'todo', $showgrouptickets = true)
     {
         global $CFG_GLPI;
@@ -1648,16 +1648,16 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
 
 
 
-   /**
-    * Very short table to display the task
-    *
-    * @since 9.2
-    *
-    * @param integer $ID       The ID of the task
-    * @param string  $itemtype The itemtype (TicketTask, ProblemTask)
-    *
-    * @return void
-    */
+    /**
+     * Very short table to display the task
+     *
+     * @since 9.2
+     *
+     * @param integer $ID       The ID of the task
+     * @param string  $itemtype The itemtype (TicketTask, ProblemTask)
+     *
+     * @return void
+     */
     public static function showVeryShort($ID, $itemtype)
     {
         global $DB;
@@ -1723,13 +1723,13 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
         return self::getItemsAsVCalendars([static::getTableField('users_id_tech') => $users_id]);
     }
 
-   /**
-    * Returns items as VCalendar objects.
-    *
-    * @param array $criteria
-    *
-    * @return \Sabre\VObject\Component\VCalendar[]
-    */
+    /**
+     * Returns items as VCalendar objects.
+     *
+     * @param array $criteria
+     *
+     * @return \Sabre\VObject\Component\VCalendar[]
+     */
     private static function getItemsAsVCalendars(array $criteria)
     {
 

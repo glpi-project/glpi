@@ -61,13 +61,13 @@ class DataHelpersExtension extends AbstractExtension
         ];
     }
 
-   /**
-    * Return date formatted to user preferred format.
-    *
-    * @param mixed $datetime
-    *
-    * @return string|null
-    */
+    /**
+     * Return date formatted to user preferred format.
+     *
+     * @param mixed $datetime
+     *
+     * @return string|null
+     */
     public function getFormattedDatetime($datetime): ?string
     {
         if (!is_string($datetime)) {
@@ -76,13 +76,13 @@ class DataHelpersExtension extends AbstractExtension
         return Html::convDateTime($datetime);
     }
 
-   /**
-    * Return relative representation of given date.
-    *
-    * @param mixed $datetime
-    *
-    * @return string|null
-    */
+    /**
+     * Return relative representation of given date.
+     *
+     * @param mixed $datetime
+     *
+     * @return string|null
+     */
     public function getRelativeDatetime($datetime): ?string
     {
         if (!is_string($datetime)) {
@@ -91,13 +91,13 @@ class DataHelpersExtension extends AbstractExtension
         return Html::timestampToRelativeStr($datetime);
     }
 
-   /**
-    * Return human readable duration.
-    *
-    * @param mixed $duration
-    *
-    * @return string|null
-    */
+    /**
+     * Return human readable duration.
+     *
+     * @param mixed $duration
+     *
+     * @return string|null
+     */
     public function getFormattedDuration($duration): ?string
     {
         if (!is_numeric($duration)) {
@@ -106,25 +106,25 @@ class DataHelpersExtension extends AbstractExtension
         return Html::timestampToString($duration);
     }
 
-   /**
-    * Return number formatted to user preferred format.
-    *
-    * @param mixed $number
-    *
-    * @return string
-    */
+    /**
+     * Return number formatted to user preferred format.
+     *
+     * @param mixed $number
+     *
+     * @return string
+     */
     public function getFormattedNumber($number): string
     {
         return Html::formatNumber($number);
     }
 
-   /**
-    * Return URL for given picture.
-    *
-    * @param mixed $path
-    *
-    * @return null|string
-    */
+    /**
+     * Return URL for given picture.
+     *
+     * @param mixed $path
+     *
+     * @return null|string
+     */
     public function getPictureUrl($path): ?string
     {
         if (!is_string($path)) {
@@ -134,14 +134,14 @@ class DataHelpersExtension extends AbstractExtension
         return Toolbox::getPictureUrl($path, true);
     }
 
-   /**
-    * Return string having its shortcut letter underlined.
-    *
-    * @param string $string
-    * @param string $shortcut
-    *
-    * @return string
-    */
+    /**
+     * Return string having its shortcut letter underlined.
+     *
+     * @param string $string
+     * @param string $shortcut
+     *
+     * @return string
+     */
     public function underlineShortcutLetter(string $string, string $shortcut_letter): string
     {
         if (empty($shortcut_letter)) {
@@ -150,15 +150,15 @@ class DataHelpersExtension extends AbstractExtension
         return Toolbox::shortcut($string, $shortcut_letter);
     }
 
-   /**
-    * Return plain text from HTML (rich text).
-    *
-    * @param mixed $string             HTML string to be made safe
-    * @param bool  $keep_presentation  Indicates whether the presentation elements have to be replaced by plaintext equivalents
-    * @param bool  $compact            Indicates whether the output should be compact (limited line length, no links URL, ...)
-    *
-    * @return mixed
-    */
+    /**
+     * Return plain text from HTML (rich text).
+     *
+     * @param mixed $string             HTML string to be made safe
+     * @param bool  $keep_presentation  Indicates whether the presentation elements have to be replaced by plaintext equivalents
+     * @param bool  $compact            Indicates whether the output should be compact (limited line length, no links URL, ...)
+     *
+     * @return mixed
+     */
     public function getTextFromHtml($string, bool $keep_presentation = true, bool $compact = false)
     {
         if (!is_string($string)) {
@@ -168,16 +168,16 @@ class DataHelpersExtension extends AbstractExtension
         return RichText::getTextFromHtml($string, $keep_presentation, $compact);
     }
 
-   /**
-    * Return safe HTML (rich text).
-    * Value will be made safe, whenever it has been sanitize (value fetched from DB),
-    * or not (value computed during runtime).
-    * Result will not be escaped, to prevent having to use `|raw` filter.
-    *
-    * @param mixed $string
-    *
-    * @return mixed
-    */
+    /**
+     * Return safe HTML (rich text).
+     * Value will be made safe, whenever it has been sanitize (value fetched from DB),
+     * or not (value computed during runtime).
+     * Result will not be escaped, to prevent having to use `|raw` filter.
+     *
+     * @param mixed $string
+     *
+     * @return mixed
+     */
     public function getSafeHtml($string)
     {
         if (!is_string($string)) {
@@ -187,16 +187,16 @@ class DataHelpersExtension extends AbstractExtension
         return RichText::getSafeHtml($string);
     }
 
-   /**
-    * Return enhanced HTML (rich text).
-    * Value will be made safe, whenever it has been sanitize (value fetched from DB),
-    * or not (value computed during runtime).
-    * Result will not be escaped, to prevent having to use `|raw` filter.
-    *
-    * @param mixed $string
-    *
-    * @return mixed
-    */
+    /**
+     * Return enhanced HTML (rich text).
+     * Value will be made safe, whenever it has been sanitize (value fetched from DB),
+     * or not (value computed during runtime).
+     * Result will not be escaped, to prevent having to use `|raw` filter.
+     *
+     * @param mixed $string
+     *
+     * @return mixed
+     */
     public function getEnhancedHtml($string, array $params = [])
     {
         if (!is_string($string)) {
@@ -206,15 +206,15 @@ class DataHelpersExtension extends AbstractExtension
         return RichText::getEnhancedHtml($string, $params);
     }
 
-   /**
-    * Return verbatim value for an itemtype field.
-    * Returned value will be unsanitized if it has been transformed by GLPI sanitizing process (value fetched from DB).
-    * Twig autoescaping system will then ensure that value is correctly escaped in redered HTML.
-    *
-    * @param mixed  $string
-    *
-    * @return mixed
-    */
+    /**
+     * Return verbatim value for an itemtype field.
+     * Returned value will be unsanitized if it has been transformed by GLPI sanitizing process (value fetched from DB).
+     * Twig autoescaping system will then ensure that value is correctly escaped in redered HTML.
+     *
+     * @param mixed  $string
+     *
+     * @return mixed
+     */
     public function getVerbatimValue($string)
     {
         if (!is_string($string)) {

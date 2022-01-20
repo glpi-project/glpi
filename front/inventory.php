@@ -47,10 +47,10 @@ if (isset($_GET['refused'])) {
     $contents = file_get_contents($refused->getInventoryFileName());
 } else if ($_SERVER['REQUEST_METHOD'] != 'POST') {
     if (isset($_GET['action']) && $_GET['action'] == 'getConfig') {
-       /**
-        * Even if Fusion protocol is not supported for getConfig requests, they
-        * should be handled and answered with a json content type
-        */
+        /**
+         * Even if Fusion protocol is not supported for getConfig requests, they
+         * should be handled and answered with a json content type
+         */
         $inventory_request->handleContentType('application/json');
         $inventory_request->addError('Protocol not supported', 400);
     } else {

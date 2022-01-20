@@ -36,9 +36,9 @@ class RuleDictionnaryOperatingSystemVersionCollection extends RuleDictionnaryDro
     public $item_table  = "glpi_operatingsystemversions";
     public $menu_option = "os_version";
 
-   /**
-    * @see RuleCollection::getTitle()
-   **/
+    /**
+     * @see RuleCollection::getTitle()
+     **/
     public function getTitle()
     {
         return __('Dictionnary of operating system versions');

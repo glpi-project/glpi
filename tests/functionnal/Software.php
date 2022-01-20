@@ -311,11 +311,11 @@ class Software extends DbTestCase
        //TODO : test Change_Item, Item_Problem, Item_Project
     }
 
-   /**
-    * Creates a new software
-    *
-    * @return \Software
-    */
+    /**
+     * Creates a new software
+     *
+     * @return \Software
+     */
     private function createSoft()
     {
         $software     = new \Software();

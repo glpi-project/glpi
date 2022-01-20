@@ -33,7 +33,7 @@
 
 /**
  * Alert class
-**/
+ **/
 class Alert extends CommonDBTM
 {
    // ALERTS TYPE
@@ -54,15 +54,15 @@ class Alert extends CommonDBTM
     }
 
 
-   /**
-    * Clear all alerts of an alert type for an item
-    *
-    * @param string  $itemtype   ID of the type to clear
-    * @param string  $ID         ID of the item to clear
-    * @param integer $alert_type ID of the alert type to clear
-    *
-    * @return boolean
-    */
+    /**
+     * Clear all alerts of an alert type for an item
+     *
+     * @param string  $itemtype   ID of the type to clear
+     * @param string  $ID         ID of the item to clear
+     * @param integer $alert_type ID of the alert type to clear
+     *
+     * @return boolean
+     */
     public function clear($itemtype, $ID, $alert_type)
     {
 
@@ -70,16 +70,16 @@ class Alert extends CommonDBTM
     }
 
 
-   /**
-    * Clear all alerts  for an item
-    *
-    * @since 0.84
-    *
-    * @param string  $itemtype ID of the type to clear
-    * @param integer $ID       ID of the item to clear
-    *
-    * @return boolean
-    */
+    /**
+     * Clear all alerts  for an item
+     *
+     * @since 0.84
+     *
+     * @param string  $itemtype ID of the type to clear
+     * @param integer $ID       ID of the item to clear
+     *
+     * @return boolean
+     */
     public function cleanDBonItemDelete($itemtype, $ID)
     {
 
@@ -117,13 +117,13 @@ class Alert extends CommonDBTM
     }
 
 
-   /**
-    * Builds a Yes/No dropdown
-    *
-    * @param array $options Display options
-    *
-    * @return void|string (see $options['display'])
-    */
+    /**
+     * Builds a Yes/No dropdown
+     *
+     * @param array $options Display options
+     *
+     * @return void|string (see $options['display'])
+     */
     public static function dropdownYesNo($options = [])
     {
 
@@ -153,15 +153,15 @@ class Alert extends CommonDBTM
     }
 
 
-   /**
-    * ?
-    *
-    * @param string $name    Dropdown name
-    * @param string $value   Dropdown selected value
-    * @param array  $options Display options
-    *
-    * @return void|string (see $options['display'])
-    */
+    /**
+     * ?
+     *
+     * @param string $name    Dropdown name
+     * @param string $value   Dropdown selected value
+     * @param array  $options Display options
+     *
+     * @return void|string (see $options['display'])
+     */
     public static function dropdownIntegerNever($name, $value, $options = [])
     {
 
@@ -196,16 +196,16 @@ class Alert extends CommonDBTM
     }
 
 
-   /**
-    * Does alert exists
-    *
-    * @since 9.5.0 Made all params required. Dropped invalid defaults.
-    * @param string  $itemtype The item type
-    * @param integer $items_id The item's ID
-    * @param integer $type     The type of alert (see constants in {@link \Alert} class)
-    *
-    * @return integer|boolean
-    */
+    /**
+     * Does alert exists
+     *
+     * @since 9.5.0 Made all params required. Dropped invalid defaults.
+     * @param string  $itemtype The item type
+     * @param integer $items_id The item's ID
+     * @param integer $type     The type of alert (see constants in {@link \Alert} class)
+     *
+     * @return integer|boolean
+     */
     public static function alertExists($itemtype, $items_id, $type)
     {
         global $DB;
@@ -221,18 +221,18 @@ class Alert extends CommonDBTM
     }
 
 
-   /**
-    * Get date of alert
-    *
-    * @since 0.84
-    * @since 9.5.0 Made all params required. Dropped invalid defaults.
-    *
-    * @param string  $itemtype The item type
-    * @param integer $items_id The item's ID
-    * @param integer $type     The type of alert (see constants in {@link \Alert} class)
-    *
-    * @return mixed|boolean
-    */
+    /**
+     * Get date of alert
+     *
+     * @since 0.84
+     * @since 9.5.0 Made all params required. Dropped invalid defaults.
+     *
+     * @param string  $itemtype The item type
+     * @param integer $items_id The item's ID
+     * @param integer $type     The type of alert (see constants in {@link \Alert} class)
+     *
+     * @return mixed|boolean
+     */
     public static function getAlertDate($itemtype, $items_id, $type)
     {
         global $DB;
@@ -248,14 +248,14 @@ class Alert extends CommonDBTM
     }
 
 
-   /**
-    * Display last alert
-    *
-    * @param string  $itemtype The item type
-    * @param integer $items_id The item's ID
-    *
-    * @return void
-    */
+    /**
+     * Display last alert
+     *
+     * @param string  $itemtype The item type
+     * @param integer $items_id The item's ID
+     *
+     * @return void
+     */
     public static function displayLastAlert($itemtype, $items_id)
     {
         global $DB;

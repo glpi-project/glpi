@@ -39,7 +39,7 @@ use Glpi\Features\AssetImage;
  * This class is used to manage the various types of consumables.
  * @see Consumable
  * @author Julien Dombre
-*/
+ */
 class ConsumableItem extends CommonDBTM
 {
     use AssetImage;
@@ -288,13 +288,13 @@ class ConsumableItem extends CommonDBTM
     }
 
 
-   /**
-    * Cron action on consumables : alert if a stock is behind the threshold
-    *
-    * @param CronTask|null $task to log, if NULL display (default NULL)
-    *
-    * @return integer 0 : nothing to do 1 : done with success
-   **/
+    /**
+     * Cron action on consumables : alert if a stock is behind the threshold
+     *
+     * @param CronTask|null $task to log, if NULL display (default NULL)
+     *
+     * @return integer 0 : nothing to do 1 : done with success
+     **/
     public static function cronConsumable(CronTask $task = null)
     {
         global $DB, $CFG_GLPI;
@@ -424,9 +424,9 @@ class ConsumableItem extends CommonDBTM
     }
 
 
-   /**
-    * Display debug information for current object
-   **/
+    /**
+     * Display debug information for current object
+     **/
     public function showDebug()
     {
 

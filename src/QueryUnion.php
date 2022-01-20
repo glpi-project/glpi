@@ -33,22 +33,22 @@
 
 /**
  * UNION query class
-**/
+ **/
 class QueryUnion extends AbstractQuery
 {
     private $queries = [];
     private $distinct = false;
 
-   /**
-    * Create a sub query
-    *
-    * @param array   $queries  An array of queries to union. Either SubQuery objects
-    *                          or an array of criteria to build them.
-    *                          You can also add later using @see addQuery
-    * @param boolean $distinct Include duplicatesi or not. Turning on may has
-    *                          huge cost on queries performances.
-    * @param string  $alias    Union ALIAS. Defaults to null.
-    */
+    /**
+     * Create a sub query
+     *
+     * @param array   $queries  An array of queries to union. Either SubQuery objects
+     *                          or an array of criteria to build them.
+     *                          You can also add later using @see addQuery
+     * @param boolean $distinct Include duplicatesi or not. Turning on may has
+     *                          huge cost on queries performances.
+     * @param string  $alias    Union ALIAS. Defaults to null.
+     */
     public function __construct(array $queries = [], $distinct = false, $alias = null)
     {
         parent::__construct($alias);
@@ -59,12 +59,12 @@ class QueryUnion extends AbstractQuery
         }
     }
 
-   /**
-    * Add a query
-    *
-    * @param QuerySubQuery|array $query Either a SubQuery object
-    *                                   or an array of criteria to build it.
-    */
+    /**
+     * Add a query
+     *
+     * @param QuerySubQuery|array $query Either a SubQuery object
+     *                                   or an array of criteria to build it.
+     */
     public function addQuery($query)
     {
         if (!$query instanceof \QuerySubQuery) {
@@ -74,22 +74,22 @@ class QueryUnion extends AbstractQuery
     }
 
 
-   /**
-    * Get queries
-    *
-    * @return array
-    */
+    /**
+     * Get queries
+     *
+     * @return array
+     */
     public function getQueries()
     {
         return $this->queries;
     }
 
-   /**
-    *
-    * Get SQL query
-    *
-    * @return string
-    */
+    /**
+     *
+     * Get SQL query
+     *
+     * @return string
+     */
     public function getQuery()
     {
         $union_queries = $this->getQueries();

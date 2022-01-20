@@ -33,7 +33,7 @@
 
 /**
  * ITILCategory class
-**/
+ **/
 class ITILCategory extends CommonTreeDropdown
 {
    // From CommonDBTM
@@ -294,22 +294,22 @@ class ITILCategory extends CommonTreeDropdown
         Rule::cleanForItemCriteria($this);
     }
 
-   /**
-    * @since 9.5.0
-    *
-    * @param $value
-   **/
+    /**
+     * @since 9.5.0
+     *
+     * @param $value
+     **/
     public static function getITILCategoryIDByCode($value)
     {
         return self::getITILCategoryIDByField("code", $value);
     }
 
-   /**
-    * @since 9.5.0
-    *
-    * @param string $field
-    * @param mixed  $value must be addslashes
-   **/
+    /**
+     * @since 9.5.0
+     *
+     * @param string $field
+     * @param mixed  $value must be addslashes
+     **/
     private static function getITILCategoryIDByField($field, $value)
     {
         global $DB;
@@ -366,12 +366,12 @@ class ITILCategory extends CommonTreeDropdown
         return $input;
     }
 
-   /**
-    * @since 0.84
-    *
-    * @param $item         CommonGLPI object
-    * @param $withtemplate (default 0)
-   **/
+    /**
+     * @since 0.84
+     *
+     * @param $item         CommonGLPI object
+     * @param $withtemplate (default 0)
+     **/
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
 
@@ -395,10 +395,10 @@ class ITILCategory extends CommonTreeDropdown
     }
 
 
-   /**
-    * @param $tt           ITILTemplate object
-    * @param $withtemplate (default 0)
-   **/
+    /**
+     * @param $tt           ITILTemplate object
+     * @param $withtemplate (default 0)
+     **/
     public static function showForITILTemplate(ITILTemplate $tt, $withtemplate = 0)
     {
         global $DB, $CFG_GLPI;

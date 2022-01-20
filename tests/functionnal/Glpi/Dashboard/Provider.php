@@ -47,9 +47,9 @@ class Provider extends DbTestCase
         ];
     }
 
-   /**
-    * @dataProvider itemProvider
-    */
+    /**
+     * @dataProvider itemProvider
+     */
     public function testBigNumber(\CommonDBTM $item)
     {
         $this->login();
@@ -93,9 +93,9 @@ class Provider extends DbTestCase
     }
 
 
-   /**
-    * @dataProvider ticketsCaseProvider
-    */
+    /**
+     * @dataProvider ticketsCaseProvider
+     */
     public function testNbTicketsGeneric(string $case)
     {
         $result = \Glpi\Dashboard\Provider::nbTicketsGeneric($case);
@@ -127,9 +127,9 @@ class Provider extends DbTestCase
     }
 
 
-   /**
-    * @dataProvider itemFKProvider
-    */
+    /**
+     * @dataProvider itemFKProvider
+     */
     public function testNbItemByFk(\CommonDBTM $item, \CommonDBTM $fk_item)
     {
         $this->login();
@@ -296,9 +296,9 @@ class Provider extends DbTestCase
     }
 
 
-   /**
-    * @dataProvider monthYearProvider
-    */
+    /**
+     * @dataProvider monthYearProvider
+     */
     public function testFormatMonthyearDates(string $monthyear, array $expected)
     {
         $this->array(\Glpi\Dashboard\Provider::formatMonthyearDates($monthyear))

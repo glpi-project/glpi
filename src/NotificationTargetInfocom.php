@@ -33,7 +33,7 @@
 
 /**
  * NotificationTargetInfocom Class
-**/
+ **/
 class NotificationTargetInfocom extends NotificationTarget
 {
     public function getEvents()

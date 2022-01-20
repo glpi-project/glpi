@@ -35,7 +35,7 @@ use Glpi\Application\View\TemplateRenderer;
 
 /**
  * Monitor Class
-**/
+ **/
 class Monitor extends CommonDBTM
 {
     use Glpi\Features\DCBreadcrumb;
@@ -63,22 +63,22 @@ class Monitor extends CommonDBTM
         ];
     }
 
-   /**
-    * Name of the type
-    *
-    * @param $nb  string   number of item in the type
-   **/
+    /**
+     * Name of the type
+     *
+     * @param $nb  string   number of item in the type
+     **/
     public static function getTypeName($nb = 0)
     {
         return _n('Monitor', 'Monitors', $nb);
     }
 
 
-   /**
-    * @see CommonDBTM::useDeletedToLockIfDynamic()
-    *
-    * @since 0.84
-   **/
+    /**
+     * @see CommonDBTM::useDeletedToLockIfDynamic()
+     *
+     * @since 0.84
+     **/
     public function useDeletedToLockIfDynamic()
     {
         return false;
@@ -148,16 +148,16 @@ class Monitor extends CommonDBTM
     }
 
 
-   /**
-    * Print the monitor form
-    *
-    * @param $ID integer ID of the item
-    * @param $options array
-    *     - target filename : where to go when done.
-    *     - withtemplate boolean : template or basic item
-    *
-    * @return boolean item found
-   **/
+    /**
+     * Print the monitor form
+     *
+     * @param $ID integer ID of the item
+     * @param $options array
+     *     - target filename : where to go when done.
+     *     - withtemplate boolean : template or basic item
+     *
+     * @return boolean item found
+     **/
     public function showForm($ID, array $options = [])
     {
         $this->initForm($ID, $options);
@@ -169,12 +169,12 @@ class Monitor extends CommonDBTM
     }
 
 
-   /**
-    * Return the linked items (in computers_items)
-    *
-    * @return array of linked items  like array('Computer' => array(1,2), 'Printer' => array(5,6))
-    * @since 0.84.4
-   **/
+    /**
+     * Return the linked items (in computers_items)
+     *
+     * @return array of linked items  like array('Computer' => array(1,2), 'Printer' => array(5,6))
+     * @since 0.84.4
+     **/
     public function getLinkedItems()
     {
         global $DB;

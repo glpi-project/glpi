@@ -33,35 +33,35 @@
 
 /**
  *  Database iterator class for Mysql
-**/
+ **/
 class DBmysqlIterator implements SeekableIterator, Countable
 {
-   /**
-    * DBmysql object
-    * @var DBmysql
-    */
+    /**
+     * DBmysql object
+     * @var DBmysql
+     */
     private $conn;
    // Current SQL query
     private $sql;
    // Current result
     private $res = false;
 
-   /**
-    * Total number of rows.
-    * @var int
-    */
+    /**
+     * Total number of rows.
+     * @var int
+     */
     private $count;
 
-   /**
-    * Current row value.
-    * @var mixed
-    */
+    /**
+     * Current row value.
+     * @var mixed
+     */
     private $row;
 
-   /**
-    * Current pointer position.
-    * @var int
-    */
+    /**
+     * Current pointer position.
+     * @var int
+     */
     private $position = null;
 
    //Known query operators
@@ -81,27 +81,27 @@ class DBmysqlIterator implements SeekableIterator, Countable
       '|'
     ];
 
-   /**
-    * Constructor
-    *
-    * @param DBmysql $dbconnexion Database Connnexion (must be a CommonDBTM object)
-    *
-    * @return void
-    */
+    /**
+     * Constructor
+     *
+     * @param DBmysql $dbconnexion Database Connnexion (must be a CommonDBTM object)
+     *
+     * @return void
+     */
     public function __construct($dbconnexion)
     {
         $this->conn = $dbconnexion;
     }
 
-   /**
-    * Executes the query
-    *
-    * @param string|array $table       Table name (optional when $crit have FROM entry)
-    * @param string|array $crit        Fields/values, ex array("id"=>1), if empty => all rows (default '')
-    * @param boolean      $debug       To log the request (default false)
-    *
-    * @return DBmysqlIterator
-    */
+    /**
+     * Executes the query
+     *
+     * @param string|array $table       Table name (optional when $crit have FROM entry)
+     * @param string|array $crit        Fields/values, ex array("id"=>1), if empty => all rows (default '')
+     * @param boolean      $debug       To log the request (default false)
+     *
+     * @return DBmysqlIterator
+     */
     public function execute($table, $crit = "", $debug = false)
     {
         $this->buildQuery($table, $crit, $debug);
@@ -111,15 +111,15 @@ class DBmysqlIterator implements SeekableIterator, Countable
         return $this;
     }
 
-   /**
-    * Builds the query
-    *
-    * @param string|array $table       Table name (optional when $crit have FROM entry)
-    * @param string|array $crit        Fields/values, ex array("id"=>1), if empty => all rows (default '')
-    * @param boolean      $log         To log the request (default false)
-    *
-    * @return void
-    */
+    /**
+     * Builds the query
+     *
+     * @param string|array $table       Table name (optional when $crit have FROM entry)
+     * @param string|array $crit        Fields/values, ex array("id"=>1), if empty => all rows (default '')
+     * @param boolean      $log         To log the request (default false)
+     *
+     * @return void
+     */
     public function buildQuery($table, $crit = "", $log = false)
     {
         $this->sql = null;
@@ -343,13 +343,13 @@ class DBmysqlIterator implements SeekableIterator, Countable
         }
     }
 
-   /**
-    * Handle "ORDER BY" SQL clause
-    *
-    * @param string|array $clause Clause parameters
-    *
-    * @reutn string
-    */
+    /**
+     * Handle "ORDER BY" SQL clause
+     *
+     * @param string|array $clause Clause parameters
+     *
+     * @reutn string
+     */
     public function handleOrderClause($clause)
     {
         if (!is_array($clause)) {
@@ -381,14 +381,14 @@ class DBmysqlIterator implements SeekableIterator, Countable
     }
 
 
-   /**
-    * Handle LIMIT and OFFSET
-    *
-    * @param integer $limit  SQL LIMIT
-    * @param integer $offset Start OFFSET (defaults to null)
-    *
-    * @return string
-    */
+    /**
+     * Handle LIMIT and OFFSET
+     *
+     * @param integer $limit  SQL LIMIT
+     * @param integer $offset Start OFFSET (defaults to null)
+     *
+     * @return string
+     */
     public function handleLimits($limit, $offset = null)
     {
         $limits = '';
@@ -401,14 +401,14 @@ class DBmysqlIterator implements SeekableIterator, Countable
         return $limits;
     }
 
-   /**
-    * Handle fields
-    *
-    * @param integer|string $t Table name or function
-    * @param array|string   $f Field(s) name(s)
-    *
-    * @return void
-    */
+    /**
+     * Handle fields
+     *
+     * @param integer|string $t Table name or function
+     * @param array|string   $f Field(s) name(s)
+     *
+     * @return void
+     */
     private function handleFields($t, $f)
     {
         if (is_numeric($t)) {
@@ -463,15 +463,15 @@ class DBmysqlIterator implements SeekableIterator, Countable
         }
     }
 
-   /**
-    * Handle alias on fields
-    *
-    * @param string $t      Function name
-    * @param string $f      Field name (with alias if any)
-    * @param string $suffix Suffix to append, defaults to ''
-    *
-    * @return string
-    */
+    /**
+     * Handle alias on fields
+     *
+     * @param string $t      Function name
+     * @param string $f      Field name (with alias if any)
+     * @param string $suffix Suffix to append, defaults to ''
+     *
+     * @return string
+     */
     private function handleFieldsAlias($t, $f, $suffix = '')
     {
         $names = preg_split('/\s+AS\s+/i', $f);
@@ -483,23 +483,23 @@ class DBmysqlIterator implements SeekableIterator, Countable
         return $expr;
     }
 
-   /**
-    * Retrieve the SQL statement
-    *
-    * @since 9.1
-    *
-    * @return string
-    */
+    /**
+     * Retrieve the SQL statement
+     *
+     * @since 9.1
+     *
+     * @return string
+     */
     public function getSql()
     {
         return preg_replace('/ +/', ' ', $this->sql);
     }
 
-   /**
-    * Destructor
-    *
-    * @return void
-    */
+    /**
+     * Destructor
+     *
+     * @return void
+     */
     public function __destruct()
     {
         if ($this->res instanceof \mysqli_result) {
@@ -507,14 +507,14 @@ class DBmysqlIterator implements SeekableIterator, Countable
         }
     }
 
-   /**
-    * Generate the SQL statement for a array of criteria
-    *
-    * @param string[] $crit Criteria
-    * @param string   $bool Boolean operator (default AND)
-    *
-    * @return string
-    */
+    /**
+     * Generate the SQL statement for a array of criteria
+     *
+     * @param string[] $crit Criteria
+     * @param string   $bool Boolean operator (default AND)
+     *
+     * @return string
+     */
     public function analyseCrit($crit, $bool = "AND")
     {
 
@@ -559,15 +559,15 @@ class DBmysqlIterator implements SeekableIterator, Countable
         return $ret;
     }
 
-   /**
-    * analyse a criterion
-    *
-    * @since 9.3.1
-    *
-    * @param mixed $value Value to analyse
-    *
-    * @return string
-    */
+    /**
+     * analyse a criterion
+     *
+     * @since 9.3.1
+     *
+     * @param mixed $value Value to analyse
+     *
+     * @return string
+     */
     private function analyseCriterion($value)
     {
         $criterion = null;
@@ -597,20 +597,20 @@ class DBmysqlIterator implements SeekableIterator, Countable
         return $criterion;
     }
 
-   /**
-    * Handle a criterion value
-    *
-    * @since 9.5.0
-    *
-    * @param mixed $value The value to handle. This may be:
-    *                      - an instance of AbstractQuery
-    *                      - a QueryExpression
-    *                      - a value quoted as a name in the db engine
-    *                      - a QueryParam
-    *                      - a value or an array of values
-    *
-    * @return string
-    */
+    /**
+     * Handle a criterion value
+     *
+     * @since 9.5.0
+     *
+     * @param mixed $value The value to handle. This may be:
+     *                      - an instance of AbstractQuery
+     *                      - a QueryExpression
+     *                      - a value quoted as a name in the db engine
+     *                      - a QueryParam
+     *                      - a value or an array of values
+     *
+     * @return string
+     */
     private function getCriterionValue($value)
     {
         if ($value instanceof \AbstractQuery) {
@@ -638,16 +638,16 @@ class DBmysqlIterator implements SeekableIterator, Countable
         return $crit_value;
     }
 
-   /**
-    * analyse an array of joins criteria
-    *
-    * @since 9.4.0
-    *
-    * @param array $joinarray Array of joins to analyse
-    *       [jointype => [table => criteria]]
-    *
-    * @return string
-    */
+    /**
+     * analyse an array of joins criteria
+     *
+     * @since 9.4.0
+     *
+     * @param array $joinarray Array of joins to analyse
+     *       [jointype => [table => criteria]]
+     *
+     * @return string
+     */
     public function analyseJoins(array $joinarray)
     {
         $query = '';
@@ -686,13 +686,13 @@ class DBmysqlIterator implements SeekableIterator, Countable
         return $query;
     }
 
-   /**
-    * Analyse foreign keys
-    *
-    * @param mixed $values Values for Foreign keys
-    *
-    * @return string
-    */
+    /**
+     * Analyse foreign keys
+     *
+     * @param mixed $values Values for Foreign keys
+     *
+     * @return string
+     */
     private function analyseFkey($values)
     {
         if (is_array($values)) {
@@ -718,75 +718,75 @@ class DBmysqlIterator implements SeekableIterator, Countable
         trigger_error("BAD FOREIGN KEY, should be [ table1 => key1, table2 => key2 ] or [ table1 => key1, table2 => key2, [criteria]]", E_USER_ERROR);
     }
 
-   /**
-    * Rewind the Iterator to the first element
-    *
-    * @return void
-    */
+    /**
+     * Rewind the Iterator to the first element
+     *
+     * @return void
+     */
     public function rewind(): void
     {
         $this->setPosition(0);
     }
 
-   /**
-    * Return the current element
-    *
-    * @return mixed
-    */
+    /**
+     * Return the current element
+     *
+     * @return mixed
+     */
     #[ReturnTypeWillChange]
     public function current()
     {
         return $this->row;
     }
 
-   /**
-    * Return the key of the current element
-    *
-    * @return mixed
-    */
+    /**
+     * Return the key of the current element
+     *
+     * @return mixed
+     */
     #[ReturnTypeWillChange]
     public function key()
     {
         return $this->row !== null ? ($this->row["id"] ?? $this->position) : null;
     }
 
-   /**
-    * Move forward to next element
-    *
-    * @return void
-    */
+    /**
+     * Move forward to next element
+     *
+     * @return void
+     */
     public function next(): void
     {
         $this->setPosition($this->position + 1);
     }
 
-   /**
-    * Checks if current position is valid
-    *
-    * @return bool
-    */
+    /**
+     * Checks if current position is valid
+     *
+     * @return bool
+     */
     public function valid(): bool
     {
         return $this->res instanceof \mysqli_result && $this->position < $this->count;
     }
 
-   /**
-    * Number of rows on a result
-    *
-    * @return integer
-    */
+    /**
+     * Number of rows on a result
+     *
+     * @return integer
+     */
     public function numrows()
     {
         return $this->count;
     }
 
-   /**
-    * Number of rows on a result
-    *
-    * @since 9.2
-    *
-    * @return int
-    */
+    /**
+     * Number of rows on a result
+     *
+     * @since 9.2
+     *
+     * @return int
+     */
     public function count(): int
     {
         return $this->count;
@@ -800,13 +800,13 @@ class DBmysqlIterator implements SeekableIterator, Countable
         $this->setPosition($position);
     }
 
-   /**
-    * Change pointer position, and fetch corresponding row value.
-    *
-    * @param int $position
-    *
-    * @return void
-    */
+    /**
+     * Change pointer position, and fetch corresponding row value.
+     *
+     * @param int $position
+     *
+     * @return void
+     */
     private function setPosition(int $position): void
     {
         if (!($this->res instanceof \mysqli_result)) {
@@ -830,13 +830,13 @@ class DBmysqlIterator implements SeekableIterator, Countable
         $this->row = $this->conn->fetchAssoc($this->res);
     }
 
-   /**
-    * Do we have an operator?
-    *
-    * @param string $value Value to check
-    *
-    * @return boolean
-    */
+    /**
+     * Do we have an operator?
+     *
+     * @param string $value Value to check
+     *
+     * @return boolean
+     */
     public function isOperator($value)
     {
         return in_array($value, $this->allowed_operators, true);

@@ -35,7 +35,7 @@
  * Change_Item Class
  *
  * Relation between Changes and Items
-**/
+ **/
 class Change_Item extends CommonItilObject_Item
 {
    // From CommonDBRelation
@@ -77,13 +77,13 @@ class Change_Item extends CommonItilObject_Item
     }
 
 
-   /**
-    * Print the HTML array for Items linked to a change
-    *
-    * @param $change Change object
-    *
-    * @return boolean|void
-   **/
+    /**
+     * Print the HTML array for Items linked to a change
+     *
+     * @param $change Change object
+     *
+     * @return boolean|void
+     **/
     public static function showForChange(Change $change)
     {
 

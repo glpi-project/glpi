@@ -55,10 +55,10 @@ class ITILFollowup extends CommonDBChild
     const ADDALLTICKET    = 4096;
     const SEEPRIVATE      = 8192;
 
-   /**
-    * Right allowing the user to add a follow-up as soon as he is an observer of an ITIL object.
-    * @var integer
-    */
+    /**
+     * Right allowing the user to add a follow-up as soon as he is an observer of an ITIL object.
+     * @var integer
+     */
     const ADD_AS_OBSERVER = 16384;
 
     public static $itemtype = 'itemtype';
@@ -77,11 +77,11 @@ class ITILFollowup extends CommonDBChild
     }
 
 
-   /**
-    * can read the parent ITIL Object ?
-    *
-    * @return boolean
-    */
+    /**
+     * can read the parent ITIL Object ?
+     *
+     * @return boolean
+     */
     public function canReadITILItem()
     {
 
@@ -817,12 +817,12 @@ class ITILFollowup extends CommonDBChild
     }
 
 
-   /** form for Followup
-    *
-    *@param $ID      integer : Id of the followup
-    *@param $options array of possible options:
-    *     - item Object : the ITILObject parent
-   **/
+    /** form for Followup
+     *
+     *@param $ID      integer : Id of the followup
+     *@param $options array of possible options:
+     *     - item Object : the ITILObject parent
+     **/
     public function showForm($ID, array $options = [])
     {
         if ($this->isNewItem()) {
@@ -952,18 +952,18 @@ class ITILFollowup extends CommonDBChild
         parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
     }
 
-   /**
-    * Build parent condition for ITILFollowup, used in addDefaultWhere
-    *
-    * @param string $itemtype
-    * @param string $target
-    * @param string $user_table
-    * @param string $group_table keys
-    *
-    * @return string
-    *
-    * @throws InvalidArgumentException
-    */
+    /**
+     * Build parent condition for ITILFollowup, used in addDefaultWhere
+     *
+     * @param string $itemtype
+     * @param string $target
+     * @param string $user_table
+     * @param string $group_table keys
+     *
+     * @return string
+     *
+     * @throws InvalidArgumentException
+     */
     public static function buildParentCondition(
         $itemtype,
         $target = "",
@@ -1037,11 +1037,11 @@ class ITILFollowup extends CommonDBChild
         return 'id';
     }
 
-   /**
-    * Check if this item author is a support agent
-    *
-    * @return bool
-    */
+    /**
+     * Check if this item author is a support agent
+     *
+     * @return bool
+     */
     public function isFromSupportAgent()
     {
         global $DB;

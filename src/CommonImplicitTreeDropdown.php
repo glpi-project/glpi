@@ -49,24 +49,24 @@ class CommonImplicitTreeDropdown extends CommonTreeDropdown
     }
 
 
-   /**
-    * Method that must be overloaded. This method provides the ancestor of the current item
-    * according to $this->input
-    *
-    * @return integer the id of the current object ancestor
-   **/
+    /**
+     * Method that must be overloaded. This method provides the ancestor of the current item
+     * according to $this->input
+     *
+     * @return integer the id of the current object ancestor
+     **/
     public function getNewAncestor()
     {
         return 0; // By default, we rattach to the root element
     }
 
 
-   /**
-    * Method that must be overloaded. This method provides the list of all potential sons of the
-    * current item according to $this->fields.
-    *
-    * @return array of IDs of the potential sons
-   **/
+    /**
+     * Method that must be overloaded. This method provides the list of all potential sons of the
+     * current item according to $this->fields.
+     *
+     * @return array of IDs of the potential sons
+     **/
     public function getPotentialSons()
     {
         return []; // By default, we don't have any son
@@ -110,10 +110,10 @@ class CommonImplicitTreeDropdown extends CommonTreeDropdown
     }
 
 
-   /**
-    * The haveChildren=false must be define to be sure that CommonDropdown allows the deletion of a
-    * node of the tree
-   **/
+    /**
+     * The haveChildren=false must be define to be sure that CommonDropdown allows the deletion of a
+     * node of the tree
+     **/
     public function haveChildren()
     {
         return false;
@@ -143,13 +143,13 @@ class CommonImplicitTreeDropdown extends CommonTreeDropdown
                 break;
         }
 
-       /** Here :
-        * $oldParent contains the old parent, to check its sons to attach them to it
-        * $newParent contains the new parent, to check its sons to potentially attach them to this
-        *            item.
-        * $potentialSons list ALL potential childrens (sons as well as grandsons). That is use to
-        *                update them. (See getPotentialSons())
-       **/
+        /** Here :
+         * $oldParent contains the old parent, to check its sons to attach them to it
+         * $newParent contains the new parent, to check its sons to potentially attach them to this
+         *            item.
+         * $potentialSons list ALL potential childrens (sons as well as grandsons). That is use to
+         *                update them. (See getPotentialSons())
+         **/
 
         if ($step != "add" && count($potentialSons)) { // Because there is no old sons of new node
            // First, get all my current direct sons (old ones) that are not new potential sons

@@ -81,13 +81,13 @@ abstract class AbstractITILChildTemplate extends CommonDropdown
         return $input;
     }
 
-   /**
-    * Validate 'content' field from input.
-    *
-    * @param array $input
-    *
-    * @return bool
-    */
+    /**
+     * Validate 'content' field from input.
+     *
+     * @param array $input
+     *
+     * @return bool
+     */
     protected function validateContentInput(array $input): bool
     {
         if (!isset($input['content'])) {
@@ -108,13 +108,13 @@ abstract class AbstractITILChildTemplate extends CommonDropdown
         return true;
     }
 
-   /**
-    * Get content rendered by template engine, using given ITIL item to build parameters.
-    *
-    * @param CommonITILObject $itil_item
-    *
-    * @return string
-    */
+    /**
+     * Get content rendered by template engine, using given ITIL item to build parameters.
+     *
+     * @param CommonITILObject $itil_item
+     *
+     * @return string
+     */
     public function getRenderedContent(CommonITILObject $itil_item): string
     {
         $html = TemplateManager::renderContentForCommonITIL(

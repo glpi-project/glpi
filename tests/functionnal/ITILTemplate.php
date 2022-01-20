@@ -47,9 +47,9 @@ class ITILTemplate extends DbTestCase
         ];
     }
 
-   /**
-    * @dataProvider itilProvider
-    */
+    /**
+     * @dataProvider itilProvider
+     */
     public function testTemplateUsage($itiltype)
     {
         $this->login();
@@ -150,9 +150,9 @@ class ITILTemplate extends DbTestCase
         $this->integer($tid)->isGreaterThan(0);
     }
 
-   /**
-    * @dataProvider itilProvider
-    */
+    /**
+     * @dataProvider itilProvider
+     */
     public function testGetAllowedFields($itiltype)
     {
         $class = $itiltype . 'Template';
@@ -168,14 +168,14 @@ class ITILTemplate extends DbTestCase
         }
     }
 
-   /**
-    * Check one field
-    *
-    * @param string $itiltype ITIL type
-    * @param string $field    Field name
-    *
-    * @return void
-    */
+    /**
+     * Check one field
+     *
+     * @param string $itiltype ITIL type
+     * @param string $field    Field name
+     *
+     * @return void
+     */
     private function checkField($itiltype, $field)
     {
         global $DB;
@@ -283,9 +283,9 @@ class ITILTemplate extends DbTestCase
         ];
     }
 
-   /**
-    * @dataProvider fieldsProvider
-    * */
+    /**
+     * @dataProvider fieldsProvider
+     * */
     public function testGetFields($itemtype, $fields)
     {
         $tpl_class = '\\' . $itemtype . 'Template';
@@ -296,9 +296,9 @@ class ITILTemplate extends DbTestCase
         $this->array($result)->isIdenticalTo($fields);
     }
 
-   /**
-    * @dataProvider itilProvider
-    */
+    /**
+     * @dataProvider itilProvider
+     */
     public function testGetTabNameForItem($itiltype)
     {
         $this->login();
@@ -322,9 +322,9 @@ class ITILTemplate extends DbTestCase
         $this->array($tpl->getTabNameForItem($tpl))->isIdenticalTo($expected);
     }
 
-   /**
-    * @dataProvider itilProvider
-    */
+    /**
+     * @dataProvider itilProvider
+     */
     public function testTasks($itiltype)
     {
         $this->login();
@@ -420,9 +420,9 @@ class ITILTemplate extends DbTestCase
         $this->integer(count($iterator))->isIdenticalTo(2);
     }
 
-   /**
-    * @dataProvider itilProvider
-    */
+    /**
+     * @dataProvider itilProvider
+     */
     public function testGetITILTemplateToUse($itiltype)
     {
         $this->login('tech', 'tech');

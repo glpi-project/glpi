@@ -37,7 +37,7 @@
  * Predefined fields for ITIL template class
  *
  * @since 9.5.0
-**/
+ **/
 abstract class ITILTemplateMandatoryField extends ITILTemplateField
 {
     public static function getTypeName($nb = 0)
@@ -97,16 +97,16 @@ abstract class ITILTemplateMandatoryField extends ITILTemplateField
     }
 
 
-   /**
-    * Get mandatory fields for a template
-    *
-    * @since 0.83
-    *
-    * @param integer $ID                   the template ID
-    * @param boolean $withtypeandcategory  with type and category (true by default)
-    *
-    * @return array of mandatory fields
-   **/
+    /**
+     * Get mandatory fields for a template
+     *
+     * @since 0.83
+     *
+     * @param integer $ID                   the template ID
+     * @param boolean $withtypeandcategory  with type and category (true by default)
+     *
+     * @return array of mandatory fields
+     **/
     public function getMandatoryFields($ID, $withtypeandcategory = true)
     {
         global $DB;
@@ -131,13 +131,13 @@ abstract class ITILTemplateMandatoryField extends ITILTemplateField
     }
 
 
-   /**
-    * Return fields who doesn't need to be used for this part of template
-    *
-    * @since 9.2
-    *
-    * @return array the excluded fields (keys and values are equals)
-    */
+    /**
+     * Return fields who doesn't need to be used for this part of template
+     *
+     * @since 9.2
+     *
+     * @return array the excluded fields (keys and values are equals)
+     */
     public static function getExcludedFields()
     {
         return [
@@ -145,16 +145,16 @@ abstract class ITILTemplateMandatoryField extends ITILTemplateField
         ];
     }
 
-   /**
-    * Print the mandatory fields
-    *
-    * @since 0.83
-    *
-    * @param ITILTemplate $tt           ITIL Template
-    * @param boolean      $withtemplate Template or basic item (default 0)
-    *
-    * @return void
-   **/
+    /**
+     * Print the mandatory fields
+     *
+     * @since 0.83
+     *
+     * @param ITILTemplate $tt           ITIL Template
+     * @param boolean      $withtemplate Template or basic item (default 0)
+     *
+     * @return void
+     **/
     public static function showForITILTemplate(ITILTemplate $tt, $withtemplate = 0)
     {
         global $DB;

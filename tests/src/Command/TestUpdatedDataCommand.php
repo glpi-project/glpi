@@ -97,7 +97,7 @@ class TestUpdatedDataCommand extends Command
     {
 
         if (null === $input->getOption('pass')) {
-           /** @var \Symfony\Component\Console\Helper\QuestionHelper $question_helper */
+            /** @var \Symfony\Component\Console\Helper\QuestionHelper $question_helper */
             $question_helper = $this->getHelper('question');
             $value = $question_helper->ask($input, $output, new Question('Database password:', ''));
             $input->setOption('pass', $value);
@@ -197,11 +197,11 @@ class TestUpdatedDataCommand extends Command
         return $missing ? 1 : 0;
     }
 
-   /**
-    * Return list of tables to exclude from comparison.
-    *
-    * @return array
-    */
+    /**
+     * Return list of tables to exclude from comparison.
+     *
+     * @return array
+     */
     private function getExcludedTables(): array
     {
         return [
@@ -222,13 +222,13 @@ class TestUpdatedDataCommand extends Command
         ];
     }
 
-   /**
-    * Return list of fields to exclude from comparison.
-    * Keys are table name (or * for fields that should be excluded for all tables).
-    * Values are an array of fields identifiers.
-    *
-    * @return array
-    */
+    /**
+     * Return list of fields to exclude from comparison.
+     * Keys are table name (or * for fields that should be excluded for all tables).
+     * Values are an array of fields identifiers.
+     *
+     * @return array
+     */
     private function getExcludedFields(string $table_name): array
     {
         $excluded_fields = [
@@ -272,15 +272,15 @@ class TestUpdatedDataCommand extends Command
         );
     }
 
-   /**
-    * Return field type.
-    *
-    * @param DBmysql $db
-    * @param string $table
-    * @param string $field
-    *
-    * @return string|null
-    */
+    /**
+     * Return field type.
+     *
+     * @param DBmysql $db
+     * @param string $table
+     * @param string $field
+     *
+     * @return string|null
+     */
     private function getFieldType(DBmysql $db, string $table, string $field): ?string
     {
         static $types;

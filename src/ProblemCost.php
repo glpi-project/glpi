@@ -35,7 +35,7 @@
  * ProblemCost Class
  *
  * @since 0.85
-**/
+ **/
 class ProblemCost extends CommonITILCost
 {
    // From CommonDBChild

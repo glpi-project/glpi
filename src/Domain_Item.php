@@ -152,13 +152,13 @@ class Domain_Item extends CommonDBRelation
         }
     }
 
-   /**
-    * Show items linked to a domain
-    *
-    * @param Domain $domain Domain object
-    *
-    * @return void|boolean (display) Returns false if there is a rights error.
-    **/
+    /**
+     * Show items linked to a domain
+     *
+     * @param Domain $domain Domain object
+     *
+     * @return void|boolean (display) Returns false if there is a rights error.
+     **/
     public static function showForDomain(Domain $domain)
     {
         global $DB;
@@ -342,14 +342,14 @@ class Domain_Item extends CommonDBRelation
         echo "</div>";
     }
 
-   /**
-    * Show domains associated to an item
-    *
-    * @param $item            CommonDBTM object for which associated domains must be displayed
-    * @param $withtemplate (default '')
-    *
-    * @return bool
-    */
+    /**
+     * Show domains associated to an item
+     *
+     * @param $item            CommonDBTM object for which associated domains must be displayed
+     * @param $withtemplate (default '')
+     *
+     * @return bool
+     */
     public static function showForItem(CommonDBTM $item, $withtemplate = '')
     {
         global $DB;

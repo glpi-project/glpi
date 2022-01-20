@@ -35,7 +35,7 @@
  * Knowbase Class
  *
  * @since 0.84
-**/
+ **/
 class Knowbase extends CommonGLPI
 {
     public static function getTypeName($nb = 0)
@@ -95,9 +95,9 @@ class Knowbase extends CommonGLPI
     }
 
 
-   /**
-    * Show the knowbase search view
-   **/
+    /**
+     * Show the knowbase search view
+     **/
     public static function showSearchView()
     {
 
@@ -139,9 +139,9 @@ class Knowbase extends CommonGLPI
     }
 
 
-   /**
-    * Show the knowbase browse view
-   **/
+    /**
+     * Show the knowbase browse view
+     **/
     public static function showBrowseView()
     {
         global $CFG_GLPI;
@@ -219,13 +219,13 @@ JAVASCRIPT;
       </div>";
     }
 
-   /**
-    * Get list of knowbase categories in fancytree format.
-    *
-    * @since 9.4
-    *
-    * @return array
-    */
+    /**
+     * Get list of knowbase categories in fancytree format.
+     *
+     * @since 9.4
+     *
+     * @return array
+     */
     public static function getTreeCategoryList()
     {
 
@@ -381,9 +381,9 @@ JAVASCRIPT;
         return $newtree;
     }
 
-   /**
-    * Show the knowbase Manage view
-   **/
+    /**
+     * Show the knowbase Manage view
+     **/
     public static function showManageView()
     {
 

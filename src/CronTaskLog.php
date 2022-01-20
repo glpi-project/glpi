@@ -33,7 +33,7 @@
 
 /**
  * CronTaskLog class
-**/
+ **/
 class CronTaskLog extends CommonDBTM
 {
    // Class constant
@@ -43,14 +43,14 @@ class CronTaskLog extends CommonDBTM
     const STATE_ERROR = 3;
 
 
-   /**
-    * Clean old event for a task
-    *
-    * @param $id     integer  ID of the CronTask
-    * @param $days   integer  number of day to keep
-    *
-    * @return integer number of events deleted
-   **/
+    /**
+     * Clean old event for a task
+     *
+     * @param $id     integer  ID of the CronTask
+     * @param $days   integer  number of day to keep
+     *
+     * @return integer number of events deleted
+     **/
     public static function cleanOld($id, $days)
     {
         global $DB;

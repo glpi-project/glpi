@@ -37,13 +37,13 @@ use PHPMailer\PHPMailer\SMTP;
 /** GLPIPhpMailer class
  *
  * @since 0.85
-**/
+ **/
 class GLPIMailer extends PHPMailer
 {
-   /**
-    * Constructor
-    *
-   **/
+    /**
+     * Constructor
+     *
+     **/
     public function __construct()
     {
         global $CFG_GLPI;

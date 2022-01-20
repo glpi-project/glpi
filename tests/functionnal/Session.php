@@ -284,9 +284,9 @@ class Session extends \DbTestCase
         return $tests;
     }
 
-   /**
-    * @dataProvider mustChangePasswordProvider
-    */
+    /**
+     * @dataProvider mustChangePasswordProvider
+     */
     public function testMustChangePassword(string $last_update, int $expiration_delay, bool $expected_result)
     {
         global $CFG_GLPI;
@@ -353,9 +353,9 @@ class Session extends \DbTestCase
         ];
     }
 
-   /**
-    * @dataProvider preferredLanguageProvider
-    */
+    /**
+     * @dataProvider preferredLanguageProvider
+     */
     public function testGetPreferredLanguage(?string $header, ?string $config, ?string $legacy_config, string $expected)
     {
         global $CFG_GLPI;
@@ -390,9 +390,9 @@ class Session extends \DbTestCase
         ];
     }
 
-   /**
-    * @dataProvider idorProvider
-    */
+    /**
+     * @dataProvider idorProvider
+     */
     public function testIDORToken(string $itemtype = "", array $add_params = [])
     {
        // generate token

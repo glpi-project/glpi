@@ -41,7 +41,7 @@
  *  but not its network information)
  *
  * @since 0.84
-**/
+ **/
 class NetworkName extends FQDNLabel
 {
    // From CommonDBChild
@@ -78,16 +78,16 @@ class NetworkName extends FQDNLabel
     }
 
 
-   /**
-    * Print the network name form
-    *
-    * @param $ID        integer ID of the item
-    * @param $options   array
-    *     - target for the Form
-    *     - withtemplate template or basic computer
-    *
-    *@return void
-   **/
+    /**
+     * Print the network name form
+     *
+     * @param $ID        integer ID of the item
+     * @param $options   array
+     *     - target for the Form
+     *     - withtemplate template or basic computer
+     *
+     *@return void
+     **/
     public function showForm($ID, array $options = [])
     {
         $this->initForm($ID, $options);
@@ -211,10 +211,10 @@ class NetworkName extends FQDNLabel
     }
 
 
-   /**
-    * @param $tab          array   the array to fill
-    * @param $joinparams   array
-   **/
+    /**
+     * @param $tab          array   the array to fill
+     * @param $joinparams   array
+     **/
     public static function rawSearchOptionsToAdd(array &$tab, array $joinparams)
     {
         $tab[] = [
@@ -258,10 +258,10 @@ class NetworkName extends FQDNLabel
     }
 
 
-   /**
-    * \brief Update IPAddress database
-    * Update IPAddress database to remove old IPs and add new ones.
-   **/
+    /**
+     * \brief Update IPAddress database
+     * Update IPAddress database to remove old IPs and add new ones.
+     **/
     public function post_workOnItem()
     {
 
@@ -342,14 +342,14 @@ class NetworkName extends FQDNLabel
     }
 
 
-   /**
-    * \brief dettach an address from an item
-    *
-    * The address can be unaffected, and remain "free"
-    *
-    * @param integer $items_id  the id of the item
-    * @param string  $itemtype  the type of the item
-   **/
+    /**
+     * \brief dettach an address from an item
+     *
+     * The address can be unaffected, and remain "free"
+     *
+     * @param integer $items_id  the id of the item
+     * @param string  $itemtype  the type of the item
+     **/
     public static function unaffectAddressesOfItem($items_id, $itemtype)
     {
         global $DB;
@@ -369,24 +369,24 @@ class NetworkName extends FQDNLabel
     }
 
 
-   /**
-    * \brief dettach an address from an item
-    *
-    * The address can be unaffected, and remain "free"
-    *
-    * @param integer $networkNameID the id of the NetworkName
-   **/
+    /**
+     * \brief dettach an address from an item
+     *
+     * The address can be unaffected, and remain "free"
+     *
+     * @param integer $networkNameID the id of the NetworkName
+     **/
     public static function unaffectAddressByID($networkNameID)
     {
         return self::affectAddress($networkNameID, 0, '');
     }
 
 
-   /**
-    * @param $networkNameID
-    * @param $items_id
-    * @param $itemtype
-   **/
+    /**
+     * @param $networkNameID
+     * @param $items_id
+     * @param $itemtype
+     **/
     public static function affectAddress($networkNameID, $items_id, $itemtype)
     {
         $networkName = new self();
@@ -396,13 +396,13 @@ class NetworkName extends FQDNLabel
     }
 
 
-   /**
-    * Get the full name (internet name) of a NetworkName
-    *
-    * @param integer $ID  ID of the NetworkName
-    *
-    * @return string  its internet name, or empty string if invalid NetworkName
-   **/
+    /**
+     * Get the full name (internet name) of a NetworkName
+     *
+     * @param integer $ID  ID of the NetworkName
+     *
+     * @return string  its internet name, or empty string if invalid NetworkName
+     **/
     public static function getInternetNameFromID($ID)
     {
 
@@ -418,9 +418,9 @@ class NetworkName extends FQDNLabel
     }
 
 
-   /**
-    * @param $networkPortID
-   **/
+    /**
+     * @param $networkPortID
+     **/
     public static function showFormForNetworkPort($networkPortID)
     {
         global $DB, $CFG_GLPI;
@@ -516,15 +516,15 @@ class NetworkName extends FQDNLabel
     }
 
 
-   /**
-    * @since 0.84
-    *
-    * @param $itemtype
-    * @param $base            HTMLTableBase object
-    * @param $super           HTMLTableSuperHeader object (default NULL
-    * @param $father          HTMLTableHeader object (default NULL)
-    * @param $options   array
-   **/
+    /**
+     * @since 0.84
+     *
+     * @param $itemtype
+     * @param $base            HTMLTableBase object
+     * @param $super           HTMLTableSuperHeader object (default NULL
+     * @param $father          HTMLTableHeader object (default NULL)
+     * @param $options   array
+     **/
     public static function getHTMLTableHeader(
         $itemtype,
         HTMLTableBase $base,
@@ -570,14 +570,14 @@ class NetworkName extends FQDNLabel
     }
 
 
-   /**
-    * @since 0.84
-    *
-    * @param $row             HTMLTableRow object (default NULL)
-    * @param $item            CommonDBTM object (default NULL)
-    * @param $father          HTMLTableCell object (default NULL)
-    * @param $options   array
-   **/
+    /**
+     * @since 0.84
+     *
+     * @param $row             HTMLTableRow object (default NULL)
+     * @param $item            CommonDBTM object (default NULL)
+     * @param $father          HTMLTableCell object (default NULL)
+     * @param $options   array
+     **/
     public static function getHTMLTableCellsForItem(
         HTMLTableRow $row = null,
         CommonDBTM $item = null,
@@ -748,15 +748,15 @@ class NetworkName extends FQDNLabel
     }
 
 
-   /**
-    * \brief Show names for an item from its form
-    * Beware that the rendering can be different if readden from direct item form (ie : add new
-    * NetworkName, remove, ...) or if readden from item of the item (for instance from the computer
-    * form through NetworkPort::ShowForItem).
-    *
-    * @param $item                     CommonGLPI object
-    * @param $withtemplate   integer   withtemplate param (default 0)
-   **/
+    /**
+     * \brief Show names for an item from its form
+     * Beware that the rendering can be different if readden from direct item form (ie : add new
+     * NetworkName, remove, ...) or if readden from item of the item (for instance from the computer
+     * form through NetworkPort::ShowForItem).
+     *
+     * @param $item                     CommonGLPI object
+     * @param $withtemplate   integer   withtemplate param (default 0)
+     **/
     public static function showForItem(CommonDBTM $item, $withtemplate = 0)
     {
         $ID = $item->getID();
@@ -915,9 +915,9 @@ class NetworkName extends FQDNLabel
     }
 
 
-   /**
-    * @param $item      CommonDBTM object
-   **/
+    /**
+     * @param $item      CommonDBTM object
+     **/
     public static function countForItem(CommonDBTM $item)
     {
         global $DB;

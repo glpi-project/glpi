@@ -158,15 +158,15 @@ class UnlockCommand extends AbstractCommand
         return 0; // Success
     }
 
-   /**
-    * Validate command input.
-    *
-    * @param InputInterface $input
-    *
-    * @return void
-    *
-    * @throws InvalidArgumentException
-    */
+    /**
+     * Validate command input.
+     *
+     * @param InputInterface $input
+     *
+     * @return void
+     *
+     * @throws InvalidArgumentException
+     */
     private function validateInput(InputInterface $input)
     {
 

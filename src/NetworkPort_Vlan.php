@@ -42,9 +42,9 @@ class NetworkPort_Vlan extends CommonDBRelation
     public static $checkItem_2_Rights  = self::HAVE_VIEW_RIGHT_ON_ITEM;
 
 
-   /**
-    * @since 0.84
-   **/
+    /**
+     * @since 0.84
+     **/
     public function getForbiddenStandardMassiveAction()
     {
 
@@ -54,10 +54,10 @@ class NetworkPort_Vlan extends CommonDBRelation
     }
 
 
-   /**
-    * @param $portID
-    * @param $vlanID
-   **/
+    /**
+     * @param $portID
+     * @param $vlanID
+     **/
     public function unassignVlan($portID, $vlanID)
     {
 
@@ -70,11 +70,11 @@ class NetworkPort_Vlan extends CommonDBRelation
     }
 
 
-   /**
-    * @param $port
-    * @param $vlan
-    * @param $tagged
-   **/
+    /**
+     * @param $port
+     * @param $vlan
+     * @param $tagged
+     **/
     public function assignVlan($port, $vlan, $tagged)
     {
         $input = ['networkports_id' => $port,
@@ -84,9 +84,9 @@ class NetworkPort_Vlan extends CommonDBRelation
         return $this->add($input);
     }
 
-   /**
-    * @param $port   NetworkPort object
-   **/
+    /**
+     * @param $port   NetworkPort object
+     **/
     public static function showForNetworkPort(NetworkPort $port)
     {
         global $DB, $CFG_GLPI;
@@ -298,9 +298,9 @@ class NetworkPort_Vlan extends CommonDBRelation
         }
         echo "</div>";
     }
-   /**
-    * @param $portID
-   **/
+    /**
+     * @param $portID
+     **/
     public static function getVlansForNetworkPort($portID)
     {
         global $DB;
@@ -361,11 +361,11 @@ class NetworkPort_Vlan extends CommonDBRelation
     }
 
 
-   /**
-    * @since 0.85
-    *
-    * @see CommonDBRelation::getRelationMassiveActionsSpecificities()
-   **/
+    /**
+     * @since 0.85
+     *
+     * @see CommonDBRelation::getRelationMassiveActionsSpecificities()
+     **/
     public static function getRelationMassiveActionsSpecificities()
     {
         $specificities = parent::getRelationMassiveActionsSpecificities();

@@ -33,7 +33,7 @@
 
 /**
  * @since 0.84
-**/
+ **/
 abstract class HTMLTableBase
 {
     private $headers = [];
@@ -42,19 +42,19 @@ abstract class HTMLTableBase
     private $super;
 
 
-   /**
-    * @param $super
-   **/
+    /**
+     * @param $super
+     **/
     public function __construct($super)
     {
         $this->super = $super;
     }
 
 
-   /**
-    * @param $header_object         HTMLTableHeader object
-    * @param $allow_super_header    (false by default
-   **/
+    /**
+     * @param $header_object         HTMLTableHeader object
+     * @param $allow_super_header    (false by default
+     **/
     public function appendHeader(HTMLTableHeader $header_object, $allow_super_header = false)
     {
 
@@ -97,33 +97,33 @@ abstract class HTMLTableBase
     }
 
 
-   /**
-    * Internal test to see if we can add an header. For instance, we can only add a super header
-    * to a table if there is no group defined. And we can only create a sub Header to a group if
-    * it contains no row
-   **/
+    /**
+     * Internal test to see if we can add an header. For instance, we can only add a super header
+     * to a table if there is no group defined. And we can only create a sub Header to a group if
+     * it contains no row
+     **/
     abstract public function tryAddHeader();
 
 
-   /**
-    * create a new HTMLTableHeader
-    *
-    * Depending of "$this" type, this head will be an HTMLTableSuperHeader of a HTMLTableSubHeader
-    *
-    * @param string               $name     The name that can be refered by getHeaderByName()
-    * @param string|array         $content  The content (see HTMLTableEntity#content) of the header
-    * @param HTMLTableSuperHeader $super    HTMLTableSuperHeader object:
-    *                                       the header that contains this new header only used
-    *                                       for HTMLTableSubHeader (default NULL)
-    *                                       (ie: $this instanceof HTMLTableGroup)
-    * @param HTMLTableHeader      $father   HTMLTableHeader object: the father of the current header
-    *                                       (default NULL)
-    *
-    * @exception Exception                  If there is no super header while creating a sub
-    *                                       header or a super header while creating a super one
-    *
-    * @return HTMLTableHeader               table header that have been created
-   **/
+    /**
+     * create a new HTMLTableHeader
+     *
+     * Depending of "$this" type, this head will be an HTMLTableSuperHeader of a HTMLTableSubHeader
+     *
+     * @param string               $name     The name that can be refered by getHeaderByName()
+     * @param string|array         $content  The content (see HTMLTableEntity#content) of the header
+     * @param HTMLTableSuperHeader $super    HTMLTableSuperHeader object:
+     *                                       the header that contains this new header only used
+     *                                       for HTMLTableSubHeader (default NULL)
+     *                                       (ie: $this instanceof HTMLTableGroup)
+     * @param HTMLTableHeader      $father   HTMLTableHeader object: the father of the current header
+     *                                       (default NULL)
+     *
+     * @exception Exception                  If there is no super header while creating a sub
+     *                                       header or a super header while creating a super one
+     *
+     * @return HTMLTableHeader               table header that have been created
+     **/
     public function addHeader(
         $name,
         $content,
@@ -150,19 +150,19 @@ abstract class HTMLTableBase
     }
 
 
-   /**
-    * @param $name
-   **/
+    /**
+     * @param $name
+     **/
     public function getSuperHeaderByName($name)
     {
         return $this->getHeaderByName($name, '');
     }
 
 
-   /**
-    * @param $name
-    * @param $sub_name (default NULL)
-   **/
+    /**
+     * @param $name
+     * @param $sub_name (default NULL)
+     **/
     public function getHeaderByName($name, $sub_name = null)
     {
 
@@ -182,9 +182,9 @@ abstract class HTMLTableBase
     }
 
 
-   /**
-    * @param $header_name  (default '')
-   **/
+    /**
+     * @param $header_name  (default '')
+     **/
     public function getHeaders($header_name = '')
     {
 
@@ -198,9 +198,9 @@ abstract class HTMLTableBase
     }
 
 
-   /**
-    * @param $header_name  (default '')
-   **/
+    /**
+     * @param $header_name  (default '')
+     **/
     public function getHeaderOrder($header_name = '')
     {
 

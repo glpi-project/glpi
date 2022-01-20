@@ -40,11 +40,11 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class ChangekeyCommand extends AbstractCommand
 {
-   /**
-    * Error code returned when unable to renew key.
-    *
-    * @var integer
-    */
+    /**
+     * Error code returned when unable to renew key.
+     *
+     * @var integer
+     */
     const ERROR_UNABLE_TO_RENEW_KEY = 1;
 
     protected function configure()

@@ -35,14 +35,14 @@ class InventoryTestCase extends \DbTestCase
 {
     protected const INV_FIXTURES = GLPI_ROOT . '/vendor/glpi-project/inventory_format/examples/';
 
-   /**
-    * Path to use to test inventory archive manipulations.
-    * File will be removed before/after tests.
-    * @var string
-    */
+    /**
+     * Path to use to test inventory archive manipulations.
+     * File will be removed before/after tests.
+     * @var string
+     */
     protected const INVENTORY_ARCHIVE_PATH = GLPI_TMP_DIR . '/to_inventory.zip';
 
-   /** @var int */
+    /** @var int */
     protected int $nblogs;
 
     public function beforeTestMethod($method)
@@ -107,14 +107,14 @@ class InventoryTestCase extends \DbTestCase
         }
     }
 
-   /**
-    * Execute an inventory
-    *
-    * @param mixed   $source Source as JSON or XML
-    * @param boolean $is_xml XML or JSON
-    *
-    * @return \Glpi\Inventory\Inventory
-    */
+    /**
+     * Execute an inventory
+     *
+     * @param mixed   $source Source as JSON or XML
+     * @param boolean $is_xml XML or JSON
+     *
+     * @return \Glpi\Inventory\Inventory
+     */
     protected function doInventory($source, bool $is_xml = false)
     {
         if ($is_xml === true) {

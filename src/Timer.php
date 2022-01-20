@@ -40,11 +40,11 @@ class Timer
     public $timer = 0;
 
 
-   /**
-    * Start the Timer
-    *
-    * @return true
-    */
+    /**
+     * Start the Timer
+     *
+     * @return true
+     */
     public function start()
     {
 
@@ -53,14 +53,14 @@ class Timer
     }
 
 
-   /**
-    * Get the current time of the timer
-    *
-    * @param integer $decimals Number of decimal of the result (default 3)
-    * @param boolean $raw      Get raw time
-    *
-    * @return time past from start
-   **/
+    /**
+     * Get the current time of the timer
+     *
+     * @param integer $decimals Number of decimal of the result (default 3)
+     * @param boolean $raw      Get raw time
+     *
+     * @return time past from start
+     **/
     public function getTime($decimals = 3, $raw = false)
     {
         $elapsed = microtime(true) - $this->timer;

@@ -37,7 +37,7 @@ use Glpi\RichText\RichText;
 
 /**
  * Problem class
-**/
+ **/
 class Problem extends CommonITILObject
 {
    // From CommonDBTM
@@ -62,11 +62,11 @@ class Problem extends CommonITILObject
     const READALL              = 1024;
 
 
-   /**
-    * Name of the type
-    *
-    * @param $nb : number of item in the type
-   **/
+    /**
+     * Name of the type
+     *
+     * @param $nb : number of item in the type
+     **/
     public static function getTypeName($nb = 0)
     {
         return _n('Problem', 'Problems', $nb);
@@ -96,11 +96,11 @@ class Problem extends CommonITILObject
     }
 
 
-   /**
-    * Is the current user have right to show the current problem ?
-    *
-    * @return boolean
-   **/
+    /**
+     * Is the current user have right to show the current problem ?
+     *
+     * @return boolean
+     **/
     public function canViewItem()
     {
 
@@ -126,11 +126,11 @@ class Problem extends CommonITILObject
     }
 
 
-   /**
-    * Is the current user have right to create the current problem ?
-    *
-    * @return boolean
-   **/
+    /**
+     * Is the current user have right to create the current problem ?
+     *
+     * @return boolean
+     **/
     public function canCreateItem()
     {
 
@@ -141,13 +141,13 @@ class Problem extends CommonITILObject
     }
 
 
-   /**
-    * is the current user could reopen the current problem
-    *
-    * @since 9.4.0
-    *
-    * @return boolean
-    */
+    /**
+     * is the current user could reopen the current problem
+     *
+     * @since 9.4.0
+     *
+     * @return boolean
+     */
     public function canReopen()
     {
         return Session::haveRight('followup', CREATE)
@@ -391,9 +391,9 @@ class Problem extends CommonITILObject
         $this->handleItemsIdInput();
     }
 
-   /**
-    * Get default values to search engine to override
-   **/
+    /**
+     * Get default values to search engine to override
+     **/
     public static function getDefaultSearchRequest()
     {
 
@@ -646,13 +646,13 @@ class Problem extends CommonITILObject
         return $tab;
     }
 
-      /**
-    * @since 0.84
-    *
-    * @param $field
-    * @param $values
-    * @param $options   array
-   **/
+    /**
+     * @since 0.84
+     *
+     * @param $field
+     * @param $values
+     * @param $options   array
+     **/
     public static function getSpecificValueToDisplay($field, $values, array $options = [])
     {
 
@@ -668,16 +668,16 @@ class Problem extends CommonITILObject
     }
 
 
-   /**
-    * @since 0.84
-    *
-    * @param $field
-    * @param $name            (default '')
-    * @param $values          (default '')
-    * @param $options   array
-    *
-    * @return string
-   **/
+    /**
+     * @since 0.84
+     *
+     * @param $field
+     * @param $name            (default '')
+     * @param $values          (default '')
+     * @param $options   array
+     *
+     * @return string
+     **/
     public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
     {
 
@@ -695,13 +695,13 @@ class Problem extends CommonITILObject
         return parent::getSpecificValueToSelect($field, $name, $values, $options);
     }
 
-   /**
-    * get the problem status list
-    *
-    * @param $withmetaforsearch  boolean  (false by default)
-    *
-    * @return array
-   **/
+    /**
+     * get the problem status list
+     *
+     * @param $withmetaforsearch  boolean  (false by default)
+     *
+     * @return array
+     **/
     public static function getAllStatusArray($withmetaforsearch = false)
     {
 
@@ -726,13 +726,13 @@ class Problem extends CommonITILObject
     }
 
 
-   /**
-    * Get the ITIL object closed status list
-    *
-    * @since 0.83
-    *
-    * @return array
-   **/
+    /**
+     * Get the ITIL object closed status list
+     *
+     * @since 0.83
+     *
+     * @return array
+     **/
     public static function getClosedStatusArray()
     {
 
@@ -742,13 +742,13 @@ class Problem extends CommonITILObject
     }
 
 
-   /**
-    * Get the ITIL object solved or observe status list
-    *
-    * @since 0.83
-    *
-    * @return array
-   **/
+    /**
+     * Get the ITIL object solved or observe status list
+     *
+     * @since 0.83
+     *
+     * @return array
+     **/
     public static function getSolvedStatusArray()
     {
        // To be overridden by class
@@ -756,25 +756,25 @@ class Problem extends CommonITILObject
         return $tab;
     }
 
-   /**
-    * Get the ITIL object new status list
-    *
-    * @since 0.83.8
-    *
-    * @return array
-   **/
+    /**
+     * Get the ITIL object new status list
+     *
+     * @since 0.83.8
+     *
+     * @return array
+     **/
     public static function getNewStatusArray()
     {
         return [self::INCOMING, self::ACCEPTED];
     }
 
-   /**
-    * Get the ITIL object assign, plan or accepted status list
-    *
-    * @since 0.83
-    *
-    * @return array
-   **/
+    /**
+     * Get the ITIL object assign, plan or accepted status list
+     *
+     * @since 0.83
+     *
+     * @return array
+     **/
     public static function getProcessStatusArray()
     {
 
@@ -785,13 +785,13 @@ class Problem extends CommonITILObject
     }
 
 
-   /**
-    * @since 0.84
-    *
-    * @param $start
-    * @param $status             (default 'proces)
-    * @param $showgroupproblems  (true by default)
-   **/
+    /**
+     * @since 0.84
+     *
+     * @param $start
+     * @param $status             (default 'proces)
+     * @param $showgroupproblems  (true by default)
+     **/
     public static function showCentralList($start, $status = "process", $showgroupproblems = true)
     {
         global $DB, $CFG_GLPI;
@@ -1104,14 +1104,14 @@ class Problem extends CommonITILObject
     }
 
 
-   /**
-    * Get problems count
-    *
-    * @since 0.84
-    *
-    * @param bool $foruser only for current login user as requester
-    * @param bool $display if false, return html
-   **/
+    /**
+     * Get problems count
+     *
+     * @since 0.84
+     *
+     * @param bool $foruser only for current login user as requester
+     * @param bool $display if false, return html
+     **/
     public static function showCentralCount(bool $foruser = false, bool $display = true)
     {
         global $DB, $CFG_GLPI;
@@ -1233,12 +1233,12 @@ class Problem extends CommonITILObject
     }
 
 
-   /**
-    * @since 0.84
-    *
-    * @param $ID
-    * @param $forcetab  string   name of the tab to force at the display (default '')
-   **/
+    /**
+     * @since 0.84
+     *
+     * @param $ID
+     * @param $forcetab  string   name of the tab to force at the display (default '')
+     **/
     public static function showVeryShort($ID, $forcetab = '')
     {
        // Prints a job in short form
@@ -1327,10 +1327,10 @@ class Problem extends CommonITILObject
         }
     }
 
-   /**
-    * @param $ID
-    * @param $options   array
-   **/
+    /**
+     * @param $ID
+     * @param $options   array
+     **/
     public function showForm($ID, array $options = [])
     {
         global $CFG_GLPI;
@@ -1499,16 +1499,16 @@ class Problem extends CommonITILObject
         return true;
     }
 
-   /**
-    * Display problems for an item
-    *
-    * Will also display problems of linked items
-    *
-    * @param CommonDBTM $item
-    * @param boolean    $withtemplate
-    *
-    * @return void
-   **/
+    /**
+     * Display problems for an item
+     *
+     * Will also display problems of linked items
+     *
+     * @param CommonDBTM $item
+     * @param boolean    $withtemplate
+     *
+     * @return void
+     **/
     public static function showListForItem(CommonDBTM $item, $withtemplate = 0)
     {
         global $DB;
@@ -1700,11 +1700,11 @@ class Problem extends CommonITILObject
     }
 
 
-   /**
-    * @since 0.85
-    *
-    * @see commonDBTM::getRights()
-   **/
+    /**
+     * @since 0.85
+     *
+     * @see commonDBTM::getRights()
+     **/
     public function getRights($interface = 'central')
     {
 
@@ -1759,16 +1759,16 @@ class Problem extends CommonITILObject
         ];
     }
 
-   /**
-    * get active problems for an item
-    *
-    * @since 9.5
-    *
-    * @param string $itemtype     Item type
-    * @param integer $items_id    ID of the Item
-    *
-    * @return DBmysqlIterator
-    */
+    /**
+     * get active problems for an item
+     *
+     * @since 9.5
+     *
+     * @param string $itemtype     Item type
+     * @param integer $items_id    ID of the Item
+     *
+     * @return DBmysqlIterator
+     */
     public function getActiveProblemsForItem($itemtype, $items_id)
     {
         global $DB;

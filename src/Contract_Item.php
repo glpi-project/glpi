@@ -35,7 +35,7 @@
  * Contract_Item Class
  *
  * Relation between Contracts and Items
-**/
+ **/
 class Contract_Item extends CommonDBRelation
 {
    // From CommonDBRelation
@@ -175,14 +175,14 @@ class Contract_Item extends CommonDBRelation
     }
 
 
-   /**
-    * @since 0.84
-    *
-    * @param $contract_id   contract ID
-    * @param $entities_id   entity ID
-    *
-    * @return array of items linked to contracts
-   **/
+    /**
+     * @since 0.84
+     *
+     * @param $contract_id   contract ID
+     * @param $entities_id   entity ID
+     *
+     * @return array of items linked to contracts
+     **/
     public static function getItemsForContract($contract_id, $entities_id)
     {
 
@@ -252,16 +252,16 @@ class Contract_Item extends CommonDBRelation
     }
 
 
-   /**
-    * Print an HTML array of contract associated to an object
-    *
-    * @since 0.84
-    *
-    * @param CommonDBTM $item         CommonDBTM object wanted
-    * @param integer    $withtemplate
-    *
-    * @return void
-   **/
+    /**
+     * Print an HTML array of contract associated to an object
+     *
+     * @since 0.84
+     *
+     * @param CommonDBTM $item         CommonDBTM object wanted
+     * @param integer    $withtemplate
+     *
+     * @return void
+     **/
     public static function showForItem(CommonDBTM $item, $withtemplate = 0)
     {
 
@@ -421,16 +421,16 @@ class Contract_Item extends CommonDBRelation
     }
 
 
-   /**
-    * Print the HTML array for Items linked to current contract
-    *
-    * @since 0.84
-    *
-    * @param Contract $contract     Contract object
-    * @param integer  $withtemplate (default 0)
-    *
-    * @return void|boolean (display) Returns false if there is a rights error.
-   **/
+    /**
+     * Print the HTML array for Items linked to current contract
+     *
+     * @since 0.84
+     *
+     * @param Contract $contract     Contract object
+     * @param integer  $withtemplate (default 0)
+     *
+     * @return void|boolean (display) Returns false if there is a rights error.
+     **/
     public static function showForContract(Contract $contract, $withtemplate = 0)
     {
         global $DB, $CFG_GLPI;

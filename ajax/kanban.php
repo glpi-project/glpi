@@ -59,7 +59,7 @@ if (isset($_REQUEST['itemtype'])) {
        // For all actions, except those in $nonkanban_actions, we expect to be manipulating the Kanban itself.
         Response::sendError(400, "Invalid itemtype parameter", Response::CONTENT_TYPE_TEXT_HTML);
     }
-   /** @var CommonDBTM $item */
+    /** @var CommonDBTM $item */
     $itemtype = $_REQUEST['itemtype'];
     $item = new $itemtype();
 }
@@ -140,7 +140,7 @@ if (($_POST['action'] ?? null) === 'update') {
     }
 } else if (($_POST['action'] ?? null) === 'move_item') {
     $checkParams(['card', 'column', 'position', 'kanban']);
-   /** @var Kanban|CommonDBTM $kanban */
+    /** @var Kanban|CommonDBTM $kanban */
     $kanban = new $_POST['kanban']['itemtype']();
     $can_move = $kanban->canOrderKanbanCard($_POST['kanban']['items_id']);
     if ($can_move) {

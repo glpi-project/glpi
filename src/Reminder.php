@@ -39,7 +39,7 @@ use Sabre\VObject\Component\VTodo;
 
 /**
  * Reminder Class
-**/
+ **/
 class Reminder extends CommonDBVisible implements
     CalDAVCompatibleItemInterface,
     ExtraVisibilityCriteria
@@ -114,11 +114,11 @@ class Reminder extends CommonDBVisible implements
     }
 
 
-   /**
-    * @since 0.85
-    *
-    * @see CommonDBTM::canPurgeItem()
-   **/
+    /**
+     * @since 0.85
+     *
+     * @see CommonDBTM::canPurgeItem()
+     **/
     public function canPurgeItem()
     {
 
@@ -128,20 +128,20 @@ class Reminder extends CommonDBVisible implements
     }
 
 
-   /**
-    * @since 0.85
-    * for personnal reminder
-   **/
+    /**
+     * @since 0.85
+     * for personnal reminder
+     **/
     public static function canUpdate()
     {
         return (Session::getCurrentInterface() != 'helpdesk');
     }
 
 
-   /**
-    * @since 0.85
-    * for personnal reminder
-   **/
+    /**
+     * @since 0.85
+     * for personnal reminder
+     **/
     public static function canPurge()
     {
         return (Session::getCurrentInterface() != 'helpdesk');
@@ -165,11 +165,11 @@ class Reminder extends CommonDBVisible implements
     }
 
 
-   /**
-    * @see CommonDBTM::cleanDBonPurge()
-    *
-    * @since 0.83.1
-   **/
+    /**
+     * @see CommonDBTM::cleanDBonPurge()
+     *
+     * @since 0.83.1
+     **/
     public function cleanDBonPurge()
     {
 
@@ -195,13 +195,13 @@ class Reminder extends CommonDBVisible implements
         return parent::haveVisibilityAccess();
     }
 
-   /**
-    * Return visibility joins to add to SQL
-    *
-    * @param $forceall force all joins (false by default)
-    *
-    * @return string joins to add
-   **/
+    /**
+     * Return visibility joins to add to SQL
+     *
+     * @param $forceall force all joins (false by default)
+     *
+     * @return string joins to add
+     **/
     public static function addVisibilityJoins($forceall = false)
     {
        //not deprecated because used in Search
@@ -223,11 +223,11 @@ class Reminder extends CommonDBVisible implements
         return $sql;
     }
 
-   /**
-    * Return visibility SQL restriction to add
-    *
-    * @return string restrict to add
-   **/
+    /**
+     * Return visibility SQL restriction to add
+     *
+     * @return string restrict to add
+     **/
     public static function addVisibilityRestrict()
     {
        //not deprecated because used in Search
@@ -245,15 +245,15 @@ class Reminder extends CommonDBVisible implements
         return $sql;
     }
 
-   /**
-    * Return visibility joins to add to DBIterator parameters
-    *
-    * @since 9.4
-    *
-    * @param boolean $forceall force all joins (false by default)
-    *
-    * @return array
-    */
+    /**
+     * Return visibility joins to add to DBIterator parameters
+     *
+     * @since 9.4
+     *
+     * @param boolean $forceall force all joins (false by default)
+     *
+     * @return array
+     */
     public static function getVisibilityCriteria(bool $forceall = false): array
     {
         if (!Session::haveRight(self::$rightname, READ)) {
@@ -476,13 +476,13 @@ class Reminder extends CommonDBVisible implements
     }
 
 
-   /**
-    * @since 0.84
-    *
-    * @param $field
-    * @param $values
-    * @param $options   array
-   **/
+    /**
+     * @since 0.84
+     *
+     * @param $field
+     * @param $values
+     * @param $options   array
+     **/
     public static function getSpecificValueToDisplay($field, $values, array $options = [])
     {
 
@@ -497,14 +497,14 @@ class Reminder extends CommonDBVisible implements
     }
 
 
-   /**
-    * @since 0.84
-    *
-    * @param $field
-    * @param $name               (default '')
-    * @param $values             (default '')
-    * @param $options      array
-    **/
+    /**
+     * @since 0.84
+     *
+     * @param $field
+     * @param $name               (default '')
+     * @param $values             (default '')
+     * @param $options      array
+     **/
     public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
     {
 
@@ -521,9 +521,9 @@ class Reminder extends CommonDBVisible implements
     }
 
 
-   /**
-    * @see CommonGLPI::getTabNameForItem()
-   **/
+    /**
+     * @see CommonGLPI::getTabNameForItem()
+     **/
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
 
@@ -547,9 +547,9 @@ class Reminder extends CommonDBVisible implements
     }
 
 
-   /**
-    * @see CommonGLPI::defineTabs()
-   **/
+    /**
+     * @see CommonGLPI::defineTabs()
+     **/
     public function defineTabs($options = [])
     {
 
@@ -564,11 +564,11 @@ class Reminder extends CommonDBVisible implements
     }
 
 
-   /**
-    * @param $item         CommonGLPI object
-    * @param $tabnum       (default 1)
-    * @param $withtemplate (default 0)
-   **/
+    /**
+     * @param $item         CommonGLPI object
+     * @param $tabnum       (default 1)
+     * @param $withtemplate (default 0)
+     **/
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
 
@@ -589,14 +589,14 @@ class Reminder extends CommonDBVisible implements
     }
 
 
-   /**
-    * Print the reminder form
-    *
-    * @param $ID        integer  Id of the item to print
-    * @param $options   array of possible options:
-    *     - target filename : where to go when done.
-    *     - from_planning_ajax : set to disable planning form part
-    **/
+    /**
+     * Print the reminder form
+     *
+     * @param $ID        integer  Id of the item to print
+     * @param $options   array of possible options:
+     *     - target filename : where to go when done.
+     *     - from_planning_ajax : set to disable planning form part
+     **/
     public function showForm($ID, array $options = [])
     {
         global $CFG_GLPI;
@@ -781,17 +781,17 @@ class Reminder extends CommonDBVisible implements
 
 
 
-   /**
-    * Display a Planning Item
-    *
-    * @param $val       array of the item to display
-    * @param $who             ID of the user (0 if all)
-    * @param $type            position of the item in the time block (in, through, begin or end)
-    *                         (default '')
-    * @param $complete        complete display (more details) (default 0)
-    *
-    * @return string
-   **/
+    /**
+     * Display a Planning Item
+     *
+     * @param $val       array of the item to display
+     * @param $who             ID of the user (0 if all)
+     * @param $type            position of the item in the time block (in, through, begin or end)
+     *                         (default '')
+     * @param $complete        complete display (more details) (default 0)
+     *
+     * @return string
+     **/
     public static function displayPlanningItem(array $val, $who, $type = "", $complete = 0)
     {
         global $CFG_GLPI;
@@ -849,14 +849,14 @@ class Reminder extends CommonDBVisible implements
     }
 
 
-   /**
-    * Show list for central view
-    *
-    * @param $personal boolean  : display reminders created by me ?
-    * @param $personal $display : if false return html
-    *
-    * @return void
-    **/
+    /**
+     * Show list for central view
+     *
+     * @param $personal boolean  : display reminders created by me ?
+     * @param $personal $display : if false return html
+     *
+     * @return void
+     **/
     public static function showListForCentral(bool $personal = true, bool $display = true)
     {
         global $DB, $CFG_GLPI;
@@ -1018,11 +1018,11 @@ class Reminder extends CommonDBVisible implements
         }
     }
 
-   /**
-    * @since 0.85
-    *
-    * @see commonDBTM::getRights()
-   **/
+    /**
+     * @since 0.85
+     *
+     * @see commonDBTM::getRights()
+     **/
     public function getRights($interface = 'central')
     {
 
@@ -1069,13 +1069,13 @@ class Reminder extends CommonDBVisible implements
         );
     }
 
-   /**
-    * Returns items as VCalendar objects.
-    *
-    * @param array $query
-    *
-    * @return \Sabre\VObject\Component\VCalendar[]
-    */
+    /**
+     * Returns items as VCalendar objects.
+     *
+     * @param array $query
+     *
+     * @return \Sabre\VObject\Component\VCalendar[]
+     */
     private static function getItemsAsVCalendars(array $query)
     {
 

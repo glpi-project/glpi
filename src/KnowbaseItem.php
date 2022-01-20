@@ -37,7 +37,7 @@ use Glpi\Toolbox\Sanitizer;
 
 /**
  * KnowbaseItem Class
-**/
+ **/
 class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
 {
    // From CommonDBTM
@@ -64,11 +64,11 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
     }
 
 
-   /**
-    * @see CommonGLPI::getMenuShorcut()
-    *
-    * @since 0.85
-   **/
+    /**
+     * @see CommonGLPI::getMenuShorcut()
+     *
+     * @since 0.85
+     **/
     public static function getMenuShorcut()
     {
         return 'b';
@@ -85,11 +85,11 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
     }
 
 
-   /**
-    * @see CommonGLPI::getMenuName()
-    *
-    * @since 0.85
-   **/
+    /**
+     * @see CommonGLPI::getMenuName()
+     *
+     * @since 0.85
+     **/
     public static function getMenuName()
     {
         if (!Session::haveRight('knowbase', READ)) {
@@ -118,9 +118,9 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
     }
 
 
-   /**
-    * @since 0.85
-   **/
+    /**
+     * @since 0.85
+     **/
     public static function canUpdate()
     {
         return Session::haveRightsOr(self::$rightname, [UPDATE, self::KNOWBASEADMIN]);
@@ -166,23 +166,23 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
                   && $this->haveVisibilityAccess()));
     }
 
-   /**
-    * Check if current user can comment on KB entries
-    *
-    * @return boolean
-    */
+    /**
+     * Check if current user can comment on KB entries
+     *
+     * @return boolean
+     */
     public function canComment()
     {
         return $this->canViewItem() && Session::haveRight(self::$rightname, self::COMMENTS);
     }
 
-   /**
-    * Get the search page URL for the current classe
-    *
-    * @since 0.84
-    *
-    * @param boolean $full  path or relative one
-   **/
+    /**
+     * Get the search page URL for the current classe
+     *
+     * @since 0.84
+     *
+     * @param boolean $full  path or relative one
+     **/
     public static function getSearchURL($full = true)
     {
         global $CFG_GLPI;
@@ -195,11 +195,11 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
         return "$dir/front/helpdesk.faq.php";
     }
 
-   /**
-    * Get the form page URL for the current classe
-    *
-    * @param boolean $full  path or relative one
-   **/
+    /**
+     * Get the form page URL for the current classe
+     *
+     * @param boolean $full  path or relative one
+     **/
     public static function getFormURL($full = true)
     {
         global $CFG_GLPI;
@@ -212,11 +212,11 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
         return "$dir/front/helpdesk.faq.php";
     }
 
-   /**
-    * Get the form page URL for the current classe
-    *
-    * @param boolean $full  path or relative one
-   **/
+    /**
+     * Get the form page URL for the current classe
+     *
+     * @param boolean $full  path or relative one
+     **/
     public static function getFormURLWithParam($params = [], $full = true)
     {
         $url = self::getFormURL($full) . '?';
@@ -297,11 +297,11 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
     }
 
 
-   /**
-    * Actions done at the end of the getEmpty function
-    *
-    *@return void
-   **/
+    /**
+     * Actions done at the end of the getEmpty function
+     *
+     *@return void
+     **/
     public function post_getEmpty()
     {
 
@@ -314,10 +314,10 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
     }
 
 
-   /**
-    * @since 0.85
-    * @see CommonDBTM::post_addItem()
-   **/
+    /**
+     * @since 0.85
+     * @see CommonDBTM::post_addItem()
+     **/
     public function post_addItem()
     {
 
@@ -399,9 +399,9 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
     }
 
 
-   /**
-    * @since 0.83
-   **/
+    /**
+     * @since 0.83
+     **/
     public function post_getFromDB()
     {
 
@@ -425,11 +425,11 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
     }
 
 
-   /**
-    * @see CommonDBTM::cleanDBonPurge()
-    *
-    * @since 0.83.1
-   **/
+    /**
+     * @see CommonDBTM::cleanDBonPurge()
+     *
+     * @since 0.83.1
+     **/
     public function cleanDBonPurge()
     {
 
@@ -454,13 +454,13 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
         $kbir->deleteByCriteria(['knowbaseitems_id' => $this->fields['id']]);
     }
 
-   /**
-    * Check is this item if visible to everybody (anonymous users)
-    *
-    * @since 0.83
-    *
-    * @return Boolean
-   **/
+    /**
+     * Check is this item if visible to everybody (anonymous users)
+     *
+     * @since 0.83
+     *
+     * @return Boolean
+     **/
     public function isPubliclyVisible()
     {
         global $CFG_GLPI;
@@ -494,15 +494,15 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
         return parent::haveVisibilityAccess();
     }
 
-   /**
-   * Return visibility joins to add to SQL
-   *
-   * @since 0.83
-   *
-   * @param boolean $forceall  force all joins
-   *
-   * @return string joins to add
-   **/
+    /**
+     * Return visibility joins to add to SQL
+     *
+     * @since 0.83
+     *
+     * @param boolean $forceall  force all joins
+     *
+     * @return string joins to add
+     **/
     public static function addVisibilityJoins($forceall = false)
     {
        //not deprecated because used in self::getListRequest and self::showRecentPopular
@@ -525,13 +525,13 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
         return $sql;
     }
 
-   /**
-    * Return visibility SQL restriction to add
-    *
-    * @since 0.83
-    *
-    * @return string restrict to add
-   **/
+    /**
+     * Return visibility SQL restriction to add
+     *
+     * @since 0.83
+     *
+     * @return string restrict to add
+     **/
     public static function addVisibilityRestrict()
     {
        //not deprecated because used in self::getListRequest and self::showRecentPopular
@@ -560,15 +560,15 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
         return $sql;
     }
 
-   /**
-    * Return visibility joins to add to DBIterator parameters
-    *
-    * @since 9.2
-    *
-    * @param boolean $forceall force all joins (false by default)
-    *
-    * @return array
-    */
+    /**
+     * Return visibility joins to add to DBIterator parameters
+     *
+     * @since 9.2
+     *
+     * @param boolean $forceall force all joins (false by default)
+     *
+     * @return array
+     */
     public static function getVisibilityCriteria(bool $forceall = false): array
     {
         global $CFG_GLPI;
@@ -746,15 +746,15 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
     }
 
 
-   /**
-    * Print out an HTML "<form>" for knowbase item
-    *
-    * @param $ID
-    * @param $options array
-    *     - target for the Form
-    *
-    * @return void
-   **/
+    /**
+     * Print out an HTML "<form>" for knowbase item
+     *
+     * @param $ID
+     * @param $options array
+     *     - target for the Form
+     *
+     * @return void
+     **/
     public function showForm($ID, array $options = [])
     {
         global $CFG_GLPI;
@@ -955,11 +955,11 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
     }
 
 
-   /**
-    * Add kb item to the public FAQ
-    *
-    * @return void
-   **/
+    /**
+     * Add kb item to the public FAQ
+     *
+     * @return void
+     **/
     public function addToFaq()
     {
         global $DB;
@@ -975,11 +975,11 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
         );
     }
 
-   /**
-    * Increase the view counter of the current knowbaseitem
-    *
-    * @since 0.83
-    */
+    /**
+     * Increase the view counter of the current knowbaseitem
+     *
+     * @since 0.83
+     */
     public function updateCounter()
     {
         global $DB;
@@ -997,15 +997,15 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
     }
 
 
-   /**
-    * Print out (html) show item : question and answer
-    *
-    * @param $options      array of options
-    *
-    * @return void|string
-    *    void if option display=true
-    *    string if option display=false (HTML code)
-   **/
+    /**
+     * Print out (html) show item : question and answer
+     *
+     * @param $options      array of options
+     *
+     * @return void|string
+     *    void if option display=true
+     *    string if option display=false (HTML code)
+     **/
     public function showFull($options = [])
     {
         global $CFG_GLPI, $DB;
@@ -1168,13 +1168,13 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
     }
 
 
-   /**
-    * Print out an HTML form for Search knowbase item
-    *
-    * @param $options   $_GET
-    *
-    * @return void
-   **/
+    /**
+     * Print out an HTML form for Search knowbase item
+     *
+     * @param $options   $_GET
+     *
+     * @return void
+     **/
     public function searchForm($options)
     {
         global $CFG_GLPI;
@@ -1212,15 +1212,15 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
     }
 
 
-   /**
-    * Print out an HTML "<form>" for Search knowbase item
-    *
-    * @since 0.84
-    *
-    * @param $options   $_GET
-    *
-    * @return void
-   **/
+    /**
+     * Print out an HTML "<form>" for Search knowbase item
+     *
+     * @since 0.84
+     *
+     * @param $options   $_GET
+     *
+     * @return void
+     **/
     public function showBrowseForm($options)
     {
         global $CFG_GLPI;
@@ -1268,15 +1268,15 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
     }
 
 
-   /**
-    * Print out an HTML form for Search knowbase item
-    *
-    * @since 0.84
-    *
-    * @param $options   $_GET
-    *
-    * @return void
-   **/
+    /**
+     * Print out an HTML form for Search knowbase item
+     *
+     * @since 0.84
+     *
+     * @param $options   $_GET
+     *
+     * @return void
+     **/
     public function showManageForm($options)
     {
         if (
@@ -1313,16 +1313,16 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
     }
 
 
-   /**
-    * Build request for showList
-    *
-    * @since 0.83
-    *
-    * @param $params array  (contains, knowbaseitemcategories_id, faq)
-    * @param $type   string search type : browse / search (default search)
-    *
-    * @return array : SQL request
-   **/
+    /**
+     * Build request for showList
+     *
+     * @since 0.83
+     *
+     * @param $params array  (contains, knowbaseitemcategories_id, faq)
+     * @param $type   string search type : browse / search (default search)
+     *
+     * @return array : SQL request
+     **/
     public static function getListRequest(array $params, $type = 'search')
     {
         global $DB;
@@ -1592,12 +1592,12 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
     }
 
 
-   /**
-    * Print out list kb item
-    *
-    * @param $options            $_GET
-    * @param $type      string   search type : browse / search (default search)
-   **/
+    /**
+     * Print out list kb item
+     *
+     * @param $options            $_GET
+     * @param $type      string   search type : browse / search (default search)
+     **/
     public static function showList($options, $type = 'search')
     {
         global $CFG_GLPI;
@@ -1909,14 +1909,14 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
     }
 
 
-   /**
-    * Print out list recent or popular kb/faq
-    *
-    * @param string $type    type : recent / popular / not published
-    * @param bool   $display if false, return html
-    *
-    * @return void
-   **/
+    /**
+     * Print out list recent or popular kb/faq
+     *
+     * @param string $type    type : recent / popular / not published
+     * @param bool   $display if false, return html
+     *
+     * @return void
+     **/
     public static function showRecentPopular(string $type = "", bool $display = true)
     {
         global $DB;
@@ -2161,11 +2161,11 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
         $revision->createNew($kb);
     }
 
-   /**
-    * Get KB answer, with id on titles to set anchors
-    *
-    * @return string
-    */
+    /**
+     * Get KB answer, with id on titles to set anchors
+     *
+     * @return string
+     */
     public function getAnswer()
     {
         if (KnowbaseItemTranslation::canBeTranslated($this)) {
@@ -2199,11 +2199,11 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
         return $answer;
     }
 
-   /**
-    * Get dropdown parameters from showVisibility method
-    *
-    * @return array
-    */
+    /**
+     * Get dropdown parameters from showVisibility method
+     *
+     * @return array
+     */
     protected function getShowVisibilityDropdownParams()
     {
         $params = parent::getShowVisibilityDropdownParams();
@@ -2212,13 +2212,13 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
         return $params;
     }
 
-   /**
-    * Reverts item contents to specified revision
-    *
-    * @param integer $revid Revision ID
-    *
-    * @return boolean
-    */
+    /**
+     * Reverts item contents to specified revision
+     *
+     * @param integer $revid Revision ID
+     *
+     * @return boolean
+     */
     public function revertTo($revid)
     {
         $revision = new KnowbaseItem_Revision();
@@ -2245,14 +2245,14 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
         }
     }
 
-   /**
-    * Get ids of KBI in given category
-    *
-    * @param int           $category_id   id of the parent category
-    * @param KnowbaseItem  $kbi           used only for unit tests
-    *
-    * @return array        Array of ids
-    */
+    /**
+     * Get ids of KBI in given category
+     *
+     * @param int           $category_id   id of the parent category
+     * @param KnowbaseItem  $kbi           used only for unit tests
+     *
+     * @return array        Array of ids
+     */
     public static function getForCategory($category_id, $kbi = null)
     {
         global $DB;

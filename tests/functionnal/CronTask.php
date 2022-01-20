@@ -70,9 +70,9 @@ class CronTask extends DbTestCase
         ];
     }
 
-   /**
-    * @dataProvider registerProvider
-    */
+    /**
+     * @dataProvider registerProvider
+     */
     public function testRegister(string $itemtype, string $name, bool $should_register)
     {
         $result = \CronTask::register($itemtype, $name, 30);
@@ -108,9 +108,9 @@ class CronTask extends DbTestCase
         ];
     }
 
-   /**
-    * @dataProvider unregisterProvider
-    */
+    /**
+     * @dataProvider unregisterProvider
+     */
     public function testUnregister(string $plugin_name, string $itemtype, string $name, bool $should_unregister)
     {
         global $DB;
@@ -171,9 +171,9 @@ class CronTask extends DbTestCase
         ];
     }
 
-   /**
-    * @dataProvider getNeedToRunProvider
-    */
+    /**
+     * @dataProvider getNeedToRunProvider
+     */
     public function testGetNeedToRun(string $itemtype, string $name, bool $should_run)
     {
         global $DB;

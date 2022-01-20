@@ -33,16 +33,16 @@
 
 /**
  *  Database iterator class for Mysql
-**/
+ **/
 class QueryParam
 {
     private $value;
 
-   /**
-    * Create a query param with a value
-    *
-    * @param string $value Query parameter value, defaults to '?'
-    */
+    /**
+     * Create a query param with a value
+     *
+     * @param string $value Query parameter value, defaults to '?'
+     */
     public function __construct($value = '?')
     {
         if ($value == null || trim($value) == '') {
@@ -54,11 +54,11 @@ class QueryParam
         $this->value = $value;
     }
 
-   /**
-    * Query parameter value
-    *
-    * @return string
-    */
+    /**
+     * Query parameter value
+     *
+     * @return string
+     */
     public function getValue()
     {
         return $this->value;

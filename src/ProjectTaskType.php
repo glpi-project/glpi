@@ -35,7 +35,7 @@
  * ProjectTaskType Class
  *
  * @since 0.85
-**/
+ **/
 class ProjectTaskType extends CommonDropdown
 {
     public static function getTypeName($nb = 0)

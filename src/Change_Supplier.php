@@ -37,7 +37,7 @@
  * Relation between Changes and Suppliers
  *
  * @since 0.84
-**/
+ **/
 class Change_Supplier extends CommonITILActor
 {
    // From CommonDBRelation

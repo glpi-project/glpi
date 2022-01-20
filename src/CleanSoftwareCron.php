@@ -42,21 +42,21 @@ class CleanSoftwareCron extends CommonDBTM
 
     protected static $notable = true;
 
-   /**
-    * Get task description
-    *
-    * @return string
-    */
+    /**
+     * Get task description
+     *
+     * @return string
+     */
     public static function getTaskDescription(): string
     {
         return __("Remove software versions with no installation and software with no version");
     }
 
-   /**
-    * Get task's parameter description
-    *
-    * @return string
-    */
+    /**
+     * Get task's parameter description
+     *
+     * @return string
+     */
     public static function getParameterDescription(): string
     {
         return __('Max items to handle in one execution');
@@ -70,12 +70,12 @@ class CleanSoftwareCron extends CommonDBTM
         ];
     }
 
-   /**
-    * Clean unused software and software versions
-    *
-    * @param int $max Max items to handle
-    * @return int Number of deleted items
-    */
+    /**
+     * Clean unused software and software versions
+     *
+     * @param int $max Max items to handle
+     * @return int Number of deleted items
+     */
     public static function run(?int $max): int
     {
         $total = 0;
@@ -97,11 +97,11 @@ class CleanSoftwareCron extends CommonDBTM
         return $total;
     }
 
-   /**
-    * Run from cronTask
-    *
-    * @param CronTask $task
-    */
+    /**
+     * Run from cronTask
+     *
+     * @param CronTask $task
+     */
     public static function cronCleanSoftware(CronTask $task)
     {
         $max = $task->fields['param'];
@@ -111,11 +111,11 @@ class CleanSoftwareCron extends CommonDBTM
         return 1;
     }
 
-   /**
-    * Get all software versions which are not installed
-    *
-    * @return array
-    */
+    /**
+     * Get all software versions which are not installed
+     *
+     * @return array
+     */
     protected static function getVersionsWithNoInstallationCriteria(): array
     {
         return [
@@ -148,11 +148,11 @@ class CleanSoftwareCron extends CommonDBTM
         ];
     }
 
-   /**
-    * Get all software with no versions
-    *
-    * @return array
-    */
+    /**
+     * Get all software with no versions
+     *
+     * @return array
+     */
     protected static function getSoftwareWithNoVersionsCriteria(): array
     {
         return [
@@ -170,15 +170,15 @@ class CleanSoftwareCron extends CommonDBTM
         ];
     }
 
-   /**
-    * Delete given items
-    *
-    * @param array         $scope   Items to delete
-    * @param CommonDBTM    $em      EM for this itemtype
-    * @param int           $max     Max number of items to handle
-    *
-    * @return int Number of items deleted
-    */
+    /**
+     * Delete given items
+     *
+     * @param array         $scope   Items to delete
+     * @param CommonDBTM    $em      EM for this itemtype
+     * @param int           $max     Max number of items to handle
+     *
+     * @return int Number of items deleted
+     */
     protected static function deleteItems(
         array $scope,
         CommonDBTM $em,

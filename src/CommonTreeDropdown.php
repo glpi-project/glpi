@@ -35,7 +35,7 @@
  * CommonTreeDropdown Class
  *
  * Hierarchical and cross entities
-**/
+ **/
 abstract class CommonTreeDropdown extends CommonDropdown
 {
     public $can_be_translated = false;
@@ -101,21 +101,21 @@ abstract class CommonTreeDropdown extends CommonDropdown
     }
 
 
-   /**
-    * Compute completename based on parent one
-    *
-    * @param $parentCompleteName string parent complete name (need to be stripslashes / comes from DB)
-    * @param $thisName           string item name (need to be addslashes : comes from input)
-   **/
+    /**
+     * Compute completename based on parent one
+     *
+     * @param $parentCompleteName string parent complete name (need to be stripslashes / comes from DB)
+     * @param $thisName           string item name (need to be addslashes : comes from input)
+     **/
     public static function getCompleteNameFromParents($parentCompleteName, $thisName)
     {
         return addslashes($parentCompleteName) . " > " . $thisName;
     }
 
 
-   /**
-    * @param $input
-   **/
+    /**
+     * @param $input
+     **/
     public function adaptTreeFieldsFromUpdateOrAdd($input)
     {
 
@@ -219,11 +219,11 @@ abstract class CommonTreeDropdown extends CommonDropdown
     }
 
 
-   /**
-    * @param $ID
-    * @param $updateName
-    * @param $changeParent
-   **/
+    /**
+     * @param $ID
+     * @param $updateName
+     * @param $changeParent
+     **/
     public function regenerateTreeUnderID($ID, $updateName, $changeParent)
     {
         global $DB, $GLPI_CACHE;
@@ -289,14 +289,14 @@ abstract class CommonTreeDropdown extends CommonDropdown
     }
 
 
-   /**
-    * Clean sons of all parents from caches
-    *
-    * @param null|integer $id    Parent id to clean. Default to current id
-    * @param boolean      $cache Whether to clean cache (defaults to true)
-    *
-    * @return void
-    */
+    /**
+     * Clean sons of all parents from caches
+     *
+     * @param null|integer $id    Parent id to clean. Default to current id
+     * @param boolean      $cache Whether to clean cache (defaults to true)
+     *
+     * @return void
+     */
     protected function cleanParentsSons($id = null, $cache = true)
     {
         global $DB, $GLPI_CACHE;
@@ -339,11 +339,11 @@ abstract class CommonTreeDropdown extends CommonDropdown
     }
 
 
-   /**
-    * Add new son in its parent in cache
-    *
-    * @return void
-    */
+    /**
+     * Add new son in its parent in cache
+     *
+     * @return void
+     */
     protected function addSonInParents()
     {
         global $GLPI_CACHE;
@@ -484,11 +484,11 @@ abstract class CommonTreeDropdown extends CommonDropdown
     }
 
 
-   /**
-    * Get the this for all the current item and all its parent
-    *
-    * @return string
-   **/
+    /**
+     * Get the this for all the current item and all its parent
+     *
+     * @return string
+     **/
     public function getTreeLink()
     {
 
@@ -504,11 +504,11 @@ abstract class CommonTreeDropdown extends CommonDropdown
     }
 
 
-   /**
-    * Print the HTML array children of a TreeDropdown
-    *
-    * @return void
-    */
+    /**
+     * Print the HTML array children of a TreeDropdown
+     *
+     * @return void
+     */
     public function showChildren()
     {
         global $DB;
@@ -838,13 +838,13 @@ abstract class CommonTreeDropdown extends CommonDropdown
     }
 
 
-   /**
-    * reformat text field describing a tree (such as completename)
-    *
-    * @param $value string
-    *
-    * @return string
-   **/
+    /**
+     * reformat text field describing a tree (such as completename)
+     *
+     * @param $value string
+     *
+     * @return string
+     **/
     public static function cleanTreeText($value)
     {
 

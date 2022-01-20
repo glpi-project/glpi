@@ -65,15 +65,15 @@ class Item_OperatingSystem extends CommonDBRelation
         self::showForItem($item, $withtemplate);
     }
 
-   /**
-    * Get operating systems related to a given item
-    *
-    * @param CommonDBTM $item  Item instance
-    * @param string     $sort  Field to sort on
-    * @param string     $order Sort order
-    *
-    * @return DBmysqlIterator
-    */
+    /**
+     * Get operating systems related to a given item
+     *
+     * @param CommonDBTM $item  Item instance
+     * @param string     $sort  Field to sort on
+     * @param string     $order Sort order
+     *
+     * @return DBmysqlIterator
+     */
     public static function getFromItem(CommonDBTM $item, $sort = null, $order = null): DBmysqlIterator
     {
         global $DB;
@@ -129,15 +129,15 @@ class Item_OperatingSystem extends CommonDBRelation
         return $iterator;
     }
 
-   /**
-    * Print the item's operating system form
-    *
-    * @param CommonDBTM $item Item instance
-    *
-    * @since 9.2
-    *
-    * @return void
-   **/
+    /**
+     * Print the item's operating system form
+     *
+     * @param CommonDBTM $item Item instance
+     *
+     * @since 9.2
+     *
+     * @return void
+     **/
     public static function showForItem(CommonDBTM $item, $withtemplate = 0)
     {
         global $DB;

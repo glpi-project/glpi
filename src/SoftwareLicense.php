@@ -36,7 +36,7 @@ use Glpi\Features\AssetImage;
 
 /**
  * SoftwareLicense Class
-**/
+ **/
 class SoftwareLicense extends CommonTreeDropdown
 {
     use Glpi\Features\Clonable;
@@ -77,9 +77,9 @@ class SoftwareLicense extends CommonTreeDropdown
     }
 
 
-   /**
-    * @see CommonDBTM::prepareInputForAdd()
-   **/
+    /**
+     * @see CommonDBTM::prepareInputForAdd()
+     **/
     public function prepareInputForAdd($input)
     {
 
@@ -110,10 +110,10 @@ class SoftwareLicense extends CommonTreeDropdown
         return $input;
     }
 
-   /**
-    * @since 0.85
-    * @see CommonDBTM::prepareInputForUpdate()
-   **/
+    /**
+     * @since 0.85
+     * @see CommonDBTM::prepareInputForUpdate()
+     **/
     public function prepareInputForUpdate($input)
     {
 
@@ -129,16 +129,16 @@ class SoftwareLicense extends CommonTreeDropdown
     }
 
 
-   /**
-    * Compute licence validity indicator.
-    *
-    * @param $ID        ID of the licence
-    * @param $number    licence count to check (default -1)
-    *
-    * @since 0.85
-    *
-    * @return int validity indicator
-   **/
+    /**
+     * Compute licence validity indicator.
+     *
+     * @param $ID        ID of the licence
+     * @param $number    licence count to check (default -1)
+     *
+     * @since 0.85
+     *
+     * @return int validity indicator
+     **/
     public static function computeValidityIndicator($ID, $number = -1)
     {
 
@@ -153,14 +153,14 @@ class SoftwareLicense extends CommonTreeDropdown
     }
 
 
-   /**
-    * Update validity indicator of a specific license
-    * @param $ID ID of the licence
-    *
-    * @since 0.85
-    *
-    * @return void
-   **/
+    /**
+     * Update validity indicator of a specific license
+     * @param $ID ID of the licence
+     *
+     * @since 0.85
+     *
+     * @return void
+     **/
     public static function updateValidityIndicator($ID)
     {
 
@@ -175,9 +175,9 @@ class SoftwareLicense extends CommonTreeDropdown
     }
 
 
-   /**
-    * @since 0.84
-   **/
+    /**
+     * @since 0.84
+     **/
     public function cleanDBonPurge()
     {
 
@@ -213,10 +213,10 @@ class SoftwareLicense extends CommonTreeDropdown
         Software::updateValidityIndicator($this->fields["softwares_id"]);
     }
 
-   /**
-    * @since 0.85
-    * @see CommonDBTM::post_updateItem()
-   **/
+    /**
+     * @since 0.85
+     * @see CommonDBTM::post_updateItem()
+     **/
     public function post_updateItem($history = 1)
     {
 
@@ -226,21 +226,21 @@ class SoftwareLicense extends CommonTreeDropdown
     }
 
 
-   /**
-    * @since 0.85
-    * @see CommonDBTM::post_deleteFromDB()
-   **/
+    /**
+     * @since 0.85
+     * @see CommonDBTM::post_deleteFromDB()
+     **/
     public function post_deleteFromDB()
     {
         Software::updateValidityIndicator($this->fields["softwares_id"]);
     }
 
 
-   /**
-    * @since 0.84
-    *
-    * @see CommonDBTM::getPreAdditionalInfosForName
-   **/
+    /**
+     * @since 0.84
+     *
+     * @see CommonDBTM::getPreAdditionalInfosForName
+     **/
     public function getPreAdditionalInfosForName()
     {
 
@@ -305,11 +305,11 @@ class SoftwareLicense extends CommonTreeDropdown
         return true;
     }
 
-   /**
-    * Is the license may be recursive
-    *
-    * @return boolean
-   **/
+    /**
+     * Is the license may be recursive
+     *
+     * @return boolean
+     **/
     public function maybeRecursive()
     {
 
@@ -677,26 +677,26 @@ class SoftwareLicense extends CommonTreeDropdown
     }
 
 
-   /**
-    * Give cron information
-    *
-    * @param $name : task's name
-    *
-    * @return array of information
-   **/
+    /**
+     * Give cron information
+     *
+     * @param $name : task's name
+     *
+     * @return array of information
+     **/
     public static function cronInfo($name)
     {
         return ['description' => __('Send alarms on expired licenses')];
     }
 
 
-   /**
-    * Cron action on software: alert on expired licences
-    *
-    * @param $task to log, if NULL display (default NULL)
-    *
-    * @return 0 : nothing to do 1 : done with success
-   **/
+    /**
+     * Cron action on software: alert on expired licences
+     *
+     * @param $task to log, if NULL display (default NULL)
+     *
+     * @return 0 : nothing to do 1 : done with success
+     **/
     public static function cronSoftware($task = null)
     {
         global $DB, $CFG_GLPI;
@@ -810,15 +810,15 @@ class SoftwareLicense extends CommonTreeDropdown
     }
 
 
-   /**
-    * Get number of bought licenses of a version
-    *
-    * @param $softwareversions_id   version ID
-    * @param $entity                to search for licenses in (default = all active entities)
-    *                               (default '')
-    *
-    * @return number of installations
-   */
+    /**
+     * Get number of bought licenses of a version
+     *
+     * @param $softwareversions_id   version ID
+     * @param $entity                to search for licenses in (default = all active entities)
+     *                               (default '')
+     *
+     * @return number of installations
+     */
     public static function countForVersion($softwareversions_id, $entity = '')
     {
         global $DB;
@@ -835,13 +835,13 @@ class SoftwareLicense extends CommonTreeDropdown
     }
 
 
-   /**
-    * Get number of licenses of a software
-    *
-    * @param $softwares_id software ID
-    *
-    * @return number of licenses
-   **/
+    /**
+     * Get number of licenses of a software
+     *
+     * @param $softwares_id software ID
+     *
+     * @return number of licenses
+     **/
     public static function countForSoftware($softwares_id)
     {
         global $DB;
@@ -889,13 +889,13 @@ class SoftwareLicense extends CommonTreeDropdown
     }
 
 
-   /**
-    * Show Licenses of a software
-    *
-    * @param $software Software object
-    *
-    * @return void
-   **/
+    /**
+     * Show Licenses of a software
+     *
+     * @param $software Software object
+     *
+     * @return void
+     **/
     public static function showForSoftware(Software $software)
     {
         global $DB;
@@ -1144,9 +1144,9 @@ class SoftwareLicense extends CommonTreeDropdown
     }
 
 
-   /**
-    * Display debug information for current object
-   **/
+    /**
+     * Display debug information for current object
+     **/
     public function showDebug()
     {
 
@@ -1161,11 +1161,11 @@ class SoftwareLicense extends CommonTreeDropdown
     }
 
 
-   /**
-    * Get fields to display in the unicity error message
-    *
-    * @return an array which contains field => label
-   */
+    /**
+     * Get fields to display in the unicity error message
+     *
+     * @return an array which contains field => label
+     */
     public function getUnicityFieldsToDisplayInErrorMessage()
     {
 

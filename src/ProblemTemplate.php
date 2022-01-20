@@ -35,7 +35,7 @@
  * Problem template class
  *
  * since version 9.5.0
-**/
+ **/
 class ProblemTemplate extends ITILTemplate
 {
     use Glpi\Features\Clonable;

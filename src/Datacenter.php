@@ -35,7 +35,7 @@ use Glpi\Features\AssetImage;
 
 /**
  * Datacenter Class
-**/
+ **/
 class Datacenter extends CommonDBTM
 {
     use AssetImage;

@@ -157,14 +157,14 @@ class AuthMail extends CommonDBTM
         return $tab;
     }
 
-   /**
-    * Print the auth mail form
-    *
-    * @param integer $ID      ID of the item
-    * @param array   $options Options
-    *
-    * @return void|boolean (display) Returns false if there is a rights error.
-    */
+    /**
+     * Print the auth mail form
+     *
+     * @param integer $ID      ID of the item
+     * @param array   $options Options
+     *
+     * @return void|boolean (display) Returns false if there is a rights error.
+     */
     public function showForm($ID, array $options = [])
     {
 
@@ -211,11 +211,11 @@ class AuthMail extends CommonDBTM
         $this->showFormButtons($options);
     }
 
-   /**
-    * Show test mail form
-    *
-    * @return void
-    */
+    /**
+     * Show test mail form
+     *
+     * @return void
+     */
     public function showFormTestMail()
     {
 
@@ -243,26 +243,26 @@ class AuthMail extends CommonDBTM
     }
 
 
-   /**
-    * Is the Mail authentication used?
-    *
-    * @return boolean
-    */
+    /**
+     * Is the Mail authentication used?
+     *
+     * @return boolean
+     */
     public static function useAuthMail()
     {
         return (countElementsInTable('glpi_authmails', ['is_active' => 1]) > 0);
     }
 
 
-   /**
-    * Test a connexion to the IMAP/POP server
-    *
-    * @param string $connect_string mail server
-    * @param string $login          user login
-    * @param string $password       user password
-    *
-    * @return boolean Authentication succeeded?
-    */
+    /**
+     * Test a connexion to the IMAP/POP server
+     *
+     * @param string $connect_string mail server
+     * @param string $login          user login
+     * @param string $password       user password
+     *
+     * @return boolean Authentication succeeded?
+     */
     public static function testAuth($connect_string, $login, $password)
     {
 
@@ -275,16 +275,16 @@ class AuthMail extends CommonDBTM
     }
 
 
-   /**
-    * Authenticate a user by checking a specific mail server
-    *
-    * @param object $auth        identification object
-    * @param string $login       user login
-    * @param string $password    user password
-    * @param string $mail_method mail_method array to use
-    *
-    * @return object identification object
-    */
+    /**
+     * Authenticate a user by checking a specific mail server
+     *
+     * @param object $auth        identification object
+     * @param string $login       user login
+     * @param string $password    user password
+     * @param string $mail_method mail_method array to use
+     *
+     * @return object identification object
+     */
     public static function mailAuth($auth, $login, $password, $mail_method)
     {
 
@@ -307,18 +307,18 @@ class AuthMail extends CommonDBTM
     }
 
 
-   /**
-    * Try to authenticate a user by checking all the mail server
-    *
-    * @param object  $auth     identification object
-    * @param string  $login    user login
-    * @param string  $password user password
-    * @param integer $auths_id auths_id already used for the user (default 0)
-    * @param boolean $break    if user is not found in the first directory,
-    *                          stop searching or try the following ones (true by default)
-    *
-    * @return object identification object
-    */
+    /**
+     * Try to authenticate a user by checking all the mail server
+     *
+     * @param object  $auth     identification object
+     * @param string  $login    user login
+     * @param string  $password user password
+     * @param integer $auths_id auths_id already used for the user (default 0)
+     * @param boolean $break    if user is not found in the first directory,
+     *                          stop searching or try the following ones (true by default)
+     *
+     * @return object identification object
+     */
     public static function tryMailAuth($auth, $login, $password, $auths_id = 0, $break = true)
     {
 

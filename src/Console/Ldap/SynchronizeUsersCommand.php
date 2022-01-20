@@ -44,18 +44,18 @@ use User;
 
 class SynchronizeUsersCommand extends AbstractCommand
 {
-   /**
-    * Error code returned if LDAP connection failed.
-    *
-    * @var integer
-    */
+    /**
+     * Error code returned if LDAP connection failed.
+     *
+     * @var integer
+     */
     const ERROR_LDAP_CONNECTION_FAILED = 1;
 
-   /**
-    * Error code returned if LDAP limit exceeded.
-    *
-    * @var integer
-    */
+    /**
+     * Error code returned if LDAP limit exceeded.
+     *
+     * @var integer
+     */
     const ERROR_LDAP_LIMIT_EXCEEDED = 2;
 
     protected function configure()
@@ -427,15 +427,15 @@ class SynchronizeUsersCommand extends AbstractCommand
         return 0; // Success
     }
 
-   /**
-    * Validate command input.
-    *
-    * @param InputInterface $input
-    *
-    * @return void
-    *
-    * @throws \Symfony\Component\Console\Exception\InvalidArgumentException
-    */
+    /**
+     * Validate command input.
+     *
+     * @param InputInterface $input
+     *
+     * @return void
+     *
+     * @throws \Symfony\Component\Console\Exception\InvalidArgumentException
+     */
     private function validateInput(InputInterface $input)
     {
 

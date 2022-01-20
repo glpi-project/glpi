@@ -48,9 +48,9 @@ class RuleImportEntity extends Rule
     }
 
 
-   /**
-    * @see Rule::maxActionsCount()
-   **/
+    /**
+     * @see Rule::maxActionsCount()
+     **/
     public function maxActionsCount()
     {
        // Unlimited
@@ -133,11 +133,11 @@ class RuleImportEntity extends Rule
     }
 
 
-   /**
-    * @since 0.84
-    *
-    * @see Rule::displayAdditionalRuleCondition()
-   **/
+    /**
+     * @since 0.84
+     *
+     * @see Rule::displayAdditionalRuleCondition()
+     **/
     public function displayAdditionalRuleCondition($condition, $criteria, $name, $value, $test = false)
     {
         global $PLUGIN_HOOKS;
@@ -174,11 +174,11 @@ class RuleImportEntity extends Rule
     }
 
 
-   /**
-    * @since 0.84
-    *
-    * @see Rule::getAdditionalCriteriaDisplayPattern()
-   **/
+    /**
+     * @since 0.84
+     *
+     * @see Rule::getAdditionalCriteriaDisplayPattern()
+     **/
     public function getAdditionalCriteriaDisplayPattern($ID, $condition, $pattern)
     {
 
@@ -196,12 +196,12 @@ class RuleImportEntity extends Rule
         }
     }
 
-   /**
-    * Add more criteria
-    *
-    * @param string $criterion
-    * @return array
-    */
+    /**
+     * Add more criteria
+     *
+     * @param string $criterion
+     * @return array
+     */
     public static function addMoreCriteria($criterion = '')
     {
         if ($criterion == 'ip' || $criterion == 'subnet') {
@@ -214,13 +214,13 @@ class RuleImportEntity extends Rule
     }
 
 
-   /**
-    * Check the criteria
-    *
-    * @param object $criteria
-    * @param array $input
-    * @return boolean
-    */
+    /**
+     * Check the criteria
+     *
+     * @param object $criteria
+     * @param array $input
+     * @return boolean
+     */
     public function checkCriteria(&$criteria, &$input)
     {
 
@@ -292,18 +292,18 @@ class RuleImportEntity extends Rule
     }
 
 
-   /**
-    * Process the rule
-    *
-    * @param array &$input the input data used to check criterias
-    * @param array &$output the initial ouput array used to be manipulate by actions
-    * @param array &$params parameters for all internal functions
-    * @param array &options array options:
-    *                     - only_criteria : only react on specific criteria
-    *
-    * @return array the output updated by actions.
-    *         If rule matched add field _rule_process to return value
-    */
+    /**
+     * Process the rule
+     *
+     * @param array &$input the input data used to check criterias
+     * @param array &$output the initial ouput array used to be manipulate by actions
+     * @param array &$params parameters for all internal functions
+     * @param array &options array options:
+     *                     - only_criteria : only react on specific criteria
+     *
+     * @return array the output updated by actions.
+     *         If rule matched add field _rule_process to return value
+     */
     public function process(&$input, &$output, &$params, &$options = [])
     {
 

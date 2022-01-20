@@ -43,11 +43,11 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class CompileScssCommand extends Command
 {
-   /**
-    * Error code returned if unable to write compiled CSS.
-    *
-    * @var integer
-    */
+    /**
+     * Error code returned if unable to write compiled CSS.
+     *
+     * @var integer
+     */
     const ERROR_UNABLE_TO_WRITE_COMPILED_FILE = 1;
 
     protected function configure()
@@ -101,7 +101,7 @@ class CompileScssCommand extends Command
                 new RecursiveDirectoryIterator($root_path . '/css'),
                 RecursiveIteratorIterator::SELF_FIRST
             );
-           /** @var \SplFileInfo $file */
+            /** @var \SplFileInfo $file */
             foreach ($css_dir_iterator as $file) {
                 if (
                     !$file->isReadable() || !$file->isFile() || $file->getExtension() !== 'scss'
@@ -160,11 +160,11 @@ class CompileScssCommand extends Command
         return 0; // Success
     }
 
-   /**
-    * Get lincence header string.
-    *
-    * @return string
-    */
+    /**
+     * Get lincence header string.
+     *
+     * @return string
+     */
     private function getLicenceHeaderString(): string
     {
        // Extract header lines

@@ -33,7 +33,7 @@
 
 /**
  * Cluster Class
-**/
+ **/
 class Cluster extends CommonDBTM
 {
     use Glpi\Features\Clonable;

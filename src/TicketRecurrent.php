@@ -35,17 +35,17 @@
  * Ticket Recurrent class
  *
  * @since 0.83
-**/
+ **/
 class TicketRecurrent extends CommonITILRecurrent
 {
-   /**
-    * @var string CommonDropdown
-    */
+    /**
+     * @var string CommonDropdown
+     */
     public $second_level_menu = "ticketrecurrent";
 
-   /**
-    * @var string Right managements
-    */
+    /**
+     * @var string Right managements
+     */
     public static $rightname = 'ticketrecurrent';
 
     public static function getTypeName($nb = 0)

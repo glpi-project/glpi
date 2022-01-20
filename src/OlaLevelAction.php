@@ -45,9 +45,9 @@ class OlaLevelAction extends RuleAction
     public static $items_id  = 'olalevels_id';
     public $dohistory = true;
 
-   /**
-   * Constructor
-   **/
+    /**
+     * Constructor
+     **/
     public function __construct()
     {
        // Override in order not to use glpi_rules table.

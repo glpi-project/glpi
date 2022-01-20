@@ -45,33 +45,33 @@ use Symfony\Component\Console\Question\ConfirmationQuestion;
 
 abstract class AbstractCommand extends Command implements GlpiCommandInterface
 {
-   /**
-    * @var DB
-    */
+    /**
+     * @var DB
+     */
     protected $db;
 
-   /**
-    * @var InputInterface
-    */
+    /**
+     * @var InputInterface
+     */
     protected $input;
 
-   /**
-    * @var OutputInterface
-    */
+    /**
+     * @var OutputInterface
+     */
     protected $output;
 
-   /**
-    * Flag to indicate if command requires a DB connection.
-    *
-    * @var boolean
-    */
+    /**
+     * Flag to indicate if command requires a DB connection.
+     *
+     * @var boolean
+     */
     protected $requires_db = true;
 
-   /**
-    * Flag to indicate if command requires an up-to-date DB.
-    *
-    * @var boolean
-    */
+    /**
+     * Flag to indicate if command requires an up-to-date DB.
+     *
+     * @var boolean
+     */
     protected $requires_db_up_to_date = true;
 
     protected function initialize(InputInterface $input, OutputInterface $output)
@@ -83,13 +83,13 @@ abstract class AbstractCommand extends Command implements GlpiCommandInterface
         $this->initDbConnection();
     }
 
-   /**
-    * Check database connection.
-    *
-    * @throws RuntimeException
-    *
-    * @return void
-    */
+    /**
+     * Check database connection.
+     *
+     * @throws RuntimeException
+     *
+     * @return void
+     */
     protected function initDbConnection()
     {
 
@@ -102,15 +102,15 @@ abstract class AbstractCommand extends Command implements GlpiCommandInterface
         $this->db = $DB;
     }
 
-   /**
-    * Correctly write output messages when a progress bar is displayed.
-    *
-    * @param string|array $messages
-    * @param ProgressBar  $progress_bar
-    * @param integer      $verbosity
-    *
-    * @return void
-    */
+    /**
+     * Correctly write output messages when a progress bar is displayed.
+     *
+     * @param string|array $messages
+     * @param ProgressBar  $progress_bar
+     * @param integer      $verbosity
+     *
+     * @return void
+     */
     protected function writelnOutputWithProgressBar(
         $messages,
         ProgressBar $progress_bar,
@@ -129,13 +129,13 @@ abstract class AbstractCommand extends Command implements GlpiCommandInterface
         $progress_bar->display();
     }
 
-   /**
-    * Output session buffered messages.
-    *
-    * @param array $levels_to_output
-    *
-    * @return void
-    */
+    /**
+     * Output session buffered messages.
+     *
+     * @param array $levels_to_output
+     *
+     * @return void
+     */
     protected function outputSessionBufferedMessages($levels_to_output = [INFO, WARNING, ERROR])
     {
 
@@ -177,11 +177,11 @@ abstract class AbstractCommand extends Command implements GlpiCommandInterface
         }
     }
 
-   /**
-    * Output a warning in an optionnal requirement is missing.
-    *
-    * @return void
-    */
+    /**
+     * Output a warning in an optionnal requirement is missing.
+     *
+     * @return void
+     */
     protected function outputWarningOnMissingOptionnalRequirements()
     {
         if ($this->output->isQuiet()) {
@@ -217,11 +217,11 @@ abstract class AbstractCommand extends Command implements GlpiCommandInterface
         return $this->requires_db && $this->requires_db_up_to_date;
     }
 
-   /**
-    * Ask for user confirmation before continuing command execution.
-    *
-    * @return void
-    */
+    /**
+     * Ask for user confirmation before continuing command execution.
+     *
+     * @return void
+     */
     protected function askForConfirmation(): void
     {
         if (!$this->input->getOption('no-interaction')) {

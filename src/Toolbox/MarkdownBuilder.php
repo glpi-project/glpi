@@ -40,30 +40,30 @@ use Toolbox;
  */
 class MarkdownBuilder
 {
-   /**
-    * Generated markdown content
-    *
-    * @var string
-    */
+    /**
+     * Generated markdown content
+     *
+     * @var string
+     */
     protected $content = "";
 
-   /**
-    * Get the generated markdown content
-    *
-    * @return string
-    */
+    /**
+     * Get the generated markdown content
+     *
+     * @return string
+     */
     public function getMarkdown(): string
     {
         return $this->content;
     }
 
-   /**
-    * Add a header to the markdown content
-    *
-    * @param string $prefix Header type (#, ##, ...)
-    * @param string $content Header content
-    * @param string|null $css_class Css class to add to this header
-    */
+    /**
+     * Add a header to the markdown content
+     *
+     * @param string $prefix Header type (#, ##, ...)
+     * @param string $content Header content
+     * @param string|null $css_class Css class to add to this header
+     */
     protected function addHeader(
         string $prefix,
         string $content,
@@ -73,87 +73,87 @@ class MarkdownBuilder
         $this->content .= sprintf("%s %s %s \n", $prefix, $content, $css_class);
     }
 
-   /**
-    * Add a h1 header
-    *
-    * @param string $content Header content
-    * @param string|null $css_class Css class to add to this header
-    */
+    /**
+     * Add a h1 header
+     *
+     * @param string $content Header content
+     * @param string|null $css_class Css class to add to this header
+     */
     public function addH1(string $content, ?string $css_class = null)
     {
         $this->addHeader("#", $content, $css_class);
     }
 
-   /**
-    * Add a h2 header
-    *
-    * @param string $content Header content
-    * @param string|null $css_class Css class to add to this header
-    */
+    /**
+     * Add a h2 header
+     *
+     * @param string $content Header content
+     * @param string|null $css_class Css class to add to this header
+     */
     public function addH2(string $content, ?string $css_class = null)
     {
         $this->addHeader("##", $content, $css_class);
     }
 
-   /**
-    * Add a h3 header
-    *
-    * @param string $content Header content
-    * @param string|null $css_class Css class to add to this header
-    */
+    /**
+     * Add a h3 header
+     *
+     * @param string $content Header content
+     * @param string|null $css_class Css class to add to this header
+     */
     public function addH3(string $content, ?string $css_class = null)
     {
         $this->addHeader("###", $content, $css_class);
     }
 
-   /**
-    * Add a h4 header
-    *
-    * @param string $content Header content
-    * @param string|null $css_class Css class to add to this header
-    */
+    /**
+     * Add a h4 header
+     *
+     * @param string $content Header content
+     * @param string|null $css_class Css class to add to this header
+     */
     public function addH4(string $content, ?string $css_class = null)
     {
         $this->addHeader("####", $content, $css_class);
     }
 
-   /**
-    * Add a h5 header
-    *
-    * @param string $content Header content
-    * @param string|null $css_class Css class to add to this header
-    */
+    /**
+     * Add a h5 header
+     *
+     * @param string $content Header content
+     * @param string|null $css_class Css class to add to this header
+     */
     public function addH5(string $content, ?string $css_class = null)
     {
         $this->addHeader("#####", $content, $css_class);
     }
 
-   /**
-    * Add a h6 header
-    *
-    * @param string $content Header content
-    * @param string|null $css_class Css class to add to this header
-    */
+    /**
+     * Add a h6 header
+     *
+     * @param string $content Header content
+     * @param string|null $css_class Css class to add to this header
+     */
     public function addH6(string $content, ?string $css_class = null)
     {
         $this->addHeader("######", $content, $css_class);
     }
 
-   /**
-    * Add a table row
-    *
-    * @param array $values
-    */
+    /**
+     * Add a table row
+     *
+     * @param array $values
+     */
     public function addTableRow(array $values)
     {
         $this->content .= "|" . implode("|", $values) . "\n";
     }
 
-   /**
-    * Add a table header
-    *
-    * @param array $values
-    */
+    /**
+     * Add a table header
+     *
+     * @param array $values
+     */
     public function addTableHeader(array $headers)
     {
         $separator = array_fill(0, count($headers), '------');
@@ -161,32 +161,32 @@ class MarkdownBuilder
         $this->addTableRow($separator);
     }
 
-   /**
-    * Helper function to encapsulate single line code
-    *
-    * @return string
-    */
+    /**
+     * Helper function to encapsulate single line code
+     *
+     * @return string
+     */
     public static function code($code): string
     {
         return sprintf("```%s```", $code);
     }
 
-   /**
-    * Helper function create a navigation link
-    *
-    * @return string
-    */
+    /**
+     * Helper function create a navigation link
+     *
+     * @return string
+     */
     public static function navigationLink($label)
     {
         $link = Toolbox::slugify($label, '');
         return "[$label](#$link)";
     }
 
-   /**
-    * Helper function create a summary entry
-    *
-    * @return string
-    */
+    /**
+     * Helper function create a summary entry
+     *
+     * @return string
+     */
     public function addSummaryEntry($label)
     {
         $link = self::navigationLink($label);

@@ -175,11 +175,11 @@ class VirtualMachine extends InventoryAsset
         return $this->data;
     }
 
-   /**
-    * Get existing entries from database
-    *
-    * @return array
-    */
+    /**
+     * Get existing entries from database
+     *
+     * @return array
+     */
     protected function getExisting(): array
     {
         global $DB;
@@ -260,11 +260,11 @@ class VirtualMachine extends InventoryAsset
         }
     }
 
-   /**
-    * Create computer asset from VM informaiton
-    *
-    * @return void
-    */
+    /**
+     * Create computer asset from VM informaiton
+     *
+     * @return void
+     */
     protected function createVmComputer()
     {
         global $DB;

@@ -354,9 +354,9 @@ class KnowbaseItem extends DbTestCase
         ];
     }
 
-   /**
-    * @dataprovider testGetListRequestProvider
-    */
+    /**
+     * @dataprovider testGetListRequestProvider
+     */
     public function testGetListRequest(array $params, string $type): void
     {
         global $DB;
@@ -380,7 +380,7 @@ class KnowbaseItem extends DbTestCase
         $this->createItems('KnowbaseItem', [$input]);
 
        // Load KB
-       /** @var \KnowbaseItem */
+        /** @var \KnowbaseItem */
         $kbi = getItemByTypeName("KnowbaseItem", $kb_name);
         $answer = $kbi->getAnswer();
 

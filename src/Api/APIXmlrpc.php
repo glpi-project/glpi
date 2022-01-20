@@ -51,27 +51,27 @@ class APIXmlrpc extends API
         return __('XMLRPC API');
     }
 
-   /**
-    * Upload and validate files from request and append to $this->parameters['input']
-    *
-    * @return void
-    */
+    /**
+     * Upload and validate files from request and append to $this->parameters['input']
+     *
+     * @return void
+     */
     public function manageUploadedFiles()
     {
     }
 
-   /**
-    * parse POST var to retrieve
-    *  - Resource
-    *  - Identifier
-    *  - and parameters
-    *
-    *  And send to method corresponding identified resource
-    *
-    * @since 9.1
-    *
-    * @return mixed xmlrpc response
-    */
+    /**
+     * parse POST var to retrieve
+     *  - Resource
+     *  - Identifier
+     *  - and parameters
+     *
+     *  And send to method corresponding identified resource
+     *
+     * @since 9.1
+     *
+     * @return mixed xmlrpc response
+     */
     public function call()
     {
         Toolbox::logInfo('Deprecated: Usage of XML-RPC has been deprecated. Please use REST API.');
@@ -246,13 +246,13 @@ class APIXmlrpc extends API
     }
 
 
-   /**
-    * Construct this->parameters from POST data
-    *
-    * @since 9.1
-    *
-    * @return string
-    */
+    /**
+     * Construct this->parameters from POST data
+     *
+     * @since 9.1
+     *
+     * @return string
+     */
     public function parseIncomingParams()
     {
         $parameters = [];
@@ -320,16 +320,16 @@ class APIXmlrpc extends API
         exit;
     }
 
-   /**
-    * Add a space before all numeric keys to prevent their deletion by xmlrpc_encode_request function
-    * see https://bugs.php.net/bug.php?id=21949
-    *
-    * @since 9.1
-    *
-    * @param  array $response the response array to escape
-    *
-    * @return array the escaped response.
-    */
+    /**
+     * Add a space before all numeric keys to prevent their deletion by xmlrpc_encode_request function
+     * see https://bugs.php.net/bug.php?id=21949
+     *
+     * @since 9.1
+     *
+     * @param  array $response the response array to escape
+     *
+     * @return array the escaped response.
+     */
     protected function escapekeys($response = [])
     {
         if (is_array($response)) {

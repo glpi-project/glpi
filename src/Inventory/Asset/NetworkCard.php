@@ -40,7 +40,7 @@ class NetworkCard extends Device
 {
     use InventoryNetworkPort;
 
-   /** @var Conf */
+    /** @var Conf */
     private $conf;
 
     protected $extra_data = ['controllers' => null];

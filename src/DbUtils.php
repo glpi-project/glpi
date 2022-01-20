@@ -41,13 +41,13 @@ use Glpi\Toolbox\Sanitizer;
  */
 final class DbUtils
 {
-   /**
-    * Return foreign key field name for a table
-    *
-    * @param string $table table name
-    *
-    * @return string field name used for a foreign key to the parameter table
-    */
+    /**
+     * Return foreign key field name for a table
+     *
+     * @param string $table table name
+     *
+     * @return string field name used for a foreign key to the parameter table
+     */
     public function getForeignKeyFieldForTable($table)
     {
         if (!str_starts_with($table, 'glpi_')) {
@@ -57,13 +57,13 @@ final class DbUtils
     }
 
 
-   /**
-    * Check if field is a foreign key field
-    *
-    * @param string $field field name
-    *
-    * @return boolean
-    */
+    /**
+     * Check if field is a foreign key field
+     *
+     * @param string $field field name
+     *
+     * @return boolean
+     */
     public function isForeignKeyField($field)
     {
        //check empty, then strpos, then regexp; for performances
@@ -71,13 +71,13 @@ final class DbUtils
     }
 
 
-   /**
-    * Return table name for a given foreign key name
-    *
-    * @param string $fkname foreign key name
-    *
-    * @return string table name corresponding to a foreign key name
-    */
+    /**
+     * Return table name for a given foreign key name
+     *
+     * @param string $fkname foreign key name
+     *
+     * @return string table name corresponding to a foreign key name
+     */
     public function getTableNameForForeignKeyField($fkname)
     {
         if (!$this->isForeignKeyField($fkname)) {
@@ -92,13 +92,13 @@ final class DbUtils
         return "glpi_" . preg_replace("/_id.*/", "", $fkname);
     }
 
-   /**
-    * Return the plural of a string
-    *
-    * @param string $string input string
-    *
-    * @return string plural of the parameter string
-    */
+    /**
+     * Return the plural of a string
+     *
+     * @param string $string input string
+     *
+     * @return string plural of the parameter string
+     */
     public function getPlural($string)
     {
         $rules = [
@@ -135,13 +135,13 @@ final class DbUtils
         return $string;
     }
 
-   /**
-    * Return the singular of a string
-    *
-    * @param string $string input string
-    *
-    * @return string singular of the parameter string
-    */
+    /**
+     * Return the singular of a string
+     *
+     * @param string $string input string
+     *
+     * @return string singular of the parameter string
+     */
     public function getSingular($string)
     {
 
@@ -176,13 +176,13 @@ final class DbUtils
     }
 
 
-   /**
-    * Return table name for an item type
-    *
-    * @param string $itemtype itemtype
-    *
-    * @return string table name corresponding to the itemtype  parameter
-    */
+    /**
+     * Return table name for an item type
+     *
+     * @param string $itemtype itemtype
+     *
+     * @return string table name corresponding to the itemtype  parameter
+     */
     public function getTableForItemType($itemtype)
     {
         global $CFG_GLPI;
@@ -225,13 +225,13 @@ final class DbUtils
     }
 
 
-   /**
-    * Return ItemType  for a table
-    *
-    * @param string $table table name
-    *
-    * @return string itemtype corresponding to a table name parameter
-    */
+    /**
+     * Return ItemType  for a table
+     *
+     * @param string $table table name
+     *
+     * @return string itemtype corresponding to a table name parameter
+     */
     public function getItemTypeForTable($table)
     {
         global $CFG_GLPI;
@@ -304,15 +304,15 @@ final class DbUtils
         }
     }
 
-   /**
-    * Try to fix itemtype case.
-    * PSR-4 loading requires classnames to be used with their correct case.
-    *
-    * @param string $itemtype
-    * @param string $root_dir
-    *
-    * @return string
-    */
+    /**
+     * Try to fix itemtype case.
+     * PSR-4 loading requires classnames to be used with their correct case.
+     *
+     * @param string $itemtype
+     * @param string $root_dir
+     *
+     * @return string
+     */
     public function fixItemtypeCase(string $itemtype, $root_dir = GLPI_ROOT)
     {
 
@@ -348,7 +348,7 @@ final class DbUtils
                 new RecursiveDirectoryIterator($srcdir),
                 RecursiveIteratorIterator::SELF_FIRST
             );
-           /** @var SplFileInfo $file */
+            /** @var SplFileInfo $file */
             foreach ($files_iterator as $file) {
                 if (!$file->isReadable() || !$file->isFile() || '.php' === !$file->getExtension()) {
                     continue;
@@ -383,13 +383,13 @@ final class DbUtils
     }
 
 
-   /**
-    * Get new item objet for an itemtype
-    *
-    * @param string $itemtype itemtype
-    *
-    * @return object|false itemtype instance or false if class does not exists
-    */
+    /**
+     * Get new item objet for an itemtype
+     *
+     * @param string $itemtype itemtype
+     *
+     * @return object|false itemtype instance or false if class does not exists
+     */
     public function getItemForItemtype($itemtype)
     {
         if (empty($itemtype)) {
@@ -429,14 +429,14 @@ final class DbUtils
         return new $itemtype();
     }
 
-   /**
-    * Count the number of elements in a table.
-    *
-    * @param string|array $table     table name(s)
-    * @param array        $condition array of criteria
-    *
-    * @return integer Number of elements in table
-    */
+    /**
+     * Count the number of elements in a table.
+     *
+     * @param string|array $table     table name(s)
+     * @param array        $condition array of criteria
+     *
+     * @return integer Number of elements in table
+     */
     public function countElementsInTable($table, $condition = [])
     {
         global $DB;
@@ -462,15 +462,15 @@ final class DbUtils
         return ($row ? (int)$row['cpt'] : 0);
     }
 
-   /**
-    * Count the number of elements in a table.
-    *
-    * @param string|array $table     table name(s)
-    * @param string       $field     field name
-    * @param array        $condition array of criteria
-    *
-    * @return int nb of elements in table
-    */
+    /**
+     * Count the number of elements in a table.
+     *
+     * @param string|array $table     table name(s)
+     * @param string       $field     field name
+     * @param array        $condition array of criteria
+     *
+     * @return int nb of elements in table
+     */
     public function countDistinctElementsInTable($table, $field, $condition = [])
     {
 
@@ -486,14 +486,14 @@ final class DbUtils
         return $this->countElementsInTable($table, $condition);
     }
 
-   /**
-    * Count the number of elements in a table for a specific entity
-    *
-    * @param string|array $table     table name(s)
-    * @param array        $condition array of criteria
-    *
-    * @return integer Number of elements in table
-    */
+    /**
+     * Count the number of elements in a table for a specific entity
+     *
+     * @param string|array $table     table name(s)
+     * @param array        $condition array of criteria
+     *
+     * @return integer Number of elements in table
+     */
     public function countElementsInTableForMyEntities($table, $condition = [])
     {
 
@@ -507,16 +507,16 @@ final class DbUtils
     }
 
 
-   /**
-    * Count the number of elements in a table for a specific entity
-    *
-    * @param string|array $table     table name(s)
-    * @param integer      $entity    the entity ID
-    * @param array        $condition condition to use (default '') or array of criteria
-    * @param boolean      $recursive Whether to recurse or not. If true, will be conditionned on item recursivity
-    *
-    * @return integer number of elements in table
-    */
+    /**
+     * Count the number of elements in a table for a specific entity
+     *
+     * @param string|array $table     table name(s)
+     * @param integer      $entity    the entity ID
+     * @param array        $condition condition to use (default '') or array of criteria
+     * @param boolean      $recursive Whether to recurse or not. If true, will be conditionned on item recursivity
+     *
+     * @return integer number of elements in table
+     */
     public function countElementsInTableForEntity($table, $entity, $condition = [], $recursive = true)
     {
 
@@ -533,17 +533,17 @@ final class DbUtils
         return $this->countElementsInTable($table, $criteria);
     }
 
-   /**
-    * Get data from a table in an array :
-    * CAUTION TO USE ONLY FOR SMALL TABLES OR USING A STRICT CONDITION
-    *
-    * @param string  $table    Table name
-    * @param array   $criteria Request criteria
-    * @param boolean $usecache Use cache (false by default)
-    * @param string  $order    Result order (default '')
-    *
-    * @return array containing all the datas
-    */
+    /**
+     * Get data from a table in an array :
+     * CAUTION TO USE ONLY FOR SMALL TABLES OR USING A STRICT CONDITION
+     *
+     * @param string  $table    Table name
+     * @param array   $criteria Request criteria
+     * @param boolean $usecache Use cache (false by default)
+     * @param string  $order    Result order (default '')
+     *
+     * @return array containing all the datas
+     */
     public function getAllDataFromTable($table, $criteria = [], $usecache = false, $order = '')
     {
         global $DB;
@@ -580,14 +580,14 @@ final class DbUtils
         return $data;
     }
 
-   /**
-    * Determine if an index exists in database
-    *
-    * @param string $table table of the index
-    * @param string $field name of the index
-    *
-    * @return boolean
-    */
+    /**
+     * Determine if an index exists in database
+     *
+     * @param string $table table of the index
+     * @param string $field name of the index
+     *
+     * @return boolean
+     */
     public function isIndex($table, $field)
     {
         global $DB;
@@ -635,23 +635,23 @@ final class DbUtils
         return $iterator->count() > 0;
     }
 
-   /**
-    * Get SQL request to restrict to current entities of the user
-    *
-    * @param string  $separator        separator in the begin of the request (default AND)
-    * @param string  $table            table where apply the limit (if needed, multiple tables queries)
-    *                                  (default '')
-    * @param string  $field            field where apply the limit (id != entities_id) (default '')
-    * @param mixed   $value            entity to restrict (if not set use $_SESSION['glpiactiveentities_string']).
-    *                                  single item or array (default '')
-    * @param boolean $is_recursive     need to use recursive process to find item
-    *                                  (field need to be named recursive) (false by default)
-    * @param boolean $complete_request need to use a complete request and not a simple one
-    *                                  when have acces to all entities (used for reminders)
-    *                                  (false by default)
-    *
-    * @return string the WHERE clause to restrict
-    */
+    /**
+     * Get SQL request to restrict to current entities of the user
+     *
+     * @param string  $separator        separator in the begin of the request (default AND)
+     * @param string  $table            table where apply the limit (if needed, multiple tables queries)
+     *                                  (default '')
+     * @param string  $field            field where apply the limit (id != entities_id) (default '')
+     * @param mixed   $value            entity to restrict (if not set use $_SESSION['glpiactiveentities_string']).
+     *                                  single item or array (default '')
+     * @param boolean $is_recursive     need to use recursive process to find item
+     *                                  (field need to be named recursive) (false by default)
+     * @param boolean $complete_request need to use a complete request and not a simple one
+     *                                  when have acces to all entities (used for reminders)
+     *                                  (false by default)
+     *
+     * @return string the WHERE clause to restrict
+     */
     public function getEntitiesRestrictRequest(
         $separator = "AND",
         $table = "",
@@ -741,24 +741,24 @@ final class DbUtils
         return $query;
     }
 
-   /**
-    * Get criteria to restrict to current entities of the user
-    *
-    * @since 9.2
-    *
-    * @param string $table             table where apply the limit (if needed, multiple tables queries)
-    *                                  (default '')
-    * @param string $field             field where apply the limit (id != entities_id) (default '')
-    * @param mixed $value              entity to restrict (if not set use $_SESSION['glpiactiveentities']).
-    *                                  single item or array (default '')
-    * @param boolean $is_recursive     need to use recursive process to find item
-    *                                  (field need to be named recursive) (false by default, set to auto to automatic detection)
-    * @param boolean $complete_request need to use a complete request and not a simple one
-    *                                  when have acces to all entities (used for reminders)
-    *                                  (false by default)
-    *
-    * @return array of criteria
-    */
+    /**
+     * Get criteria to restrict to current entities of the user
+     *
+     * @since 9.2
+     *
+     * @param string $table             table where apply the limit (if needed, multiple tables queries)
+     *                                  (default '')
+     * @param string $field             field where apply the limit (id != entities_id) (default '')
+     * @param mixed $value              entity to restrict (if not set use $_SESSION['glpiactiveentities']).
+     *                                  single item or array (default '')
+     * @param boolean $is_recursive     need to use recursive process to find item
+     *                                  (field need to be named recursive) (false by default, set to auto to automatic detection)
+     * @param boolean $complete_request need to use a complete request and not a simple one
+     *                                  when have acces to all entities (used for reminders)
+     *                                  (false by default)
+     *
+     * @return array of criteria
+     */
     public function getEntitiesRestrictCriteria(
         $table = '',
         $field = '',
@@ -837,14 +837,14 @@ final class DbUtils
         return $crit;
     }
 
-   /**
-    * Get the sons of an item in a tree dropdown. Get datas in cache if available
-    *
-    * @param string  $table table name
-    * @param integer $IDf   The ID of the father
-    *
-    * @return array of IDs of the sons
-    */
+    /**
+     * Get the sons of an item in a tree dropdown. Get datas in cache if available
+     *
+     * @param string  $table table name
+     * @param integer $IDf   The ID of the father
+     *
+     * @return array of IDs of the sons
+     */
     public function getSonsOf($table, $IDf)
     {
         global $DB, $GLPI_CACHE;
@@ -948,14 +948,14 @@ final class DbUtils
         return $sons;
     }
 
-   /**
-    * Get the ancestors of an item in a tree dropdown
-    *
-    * @param string       $table    Table name
-    * @param array|string $items_id The IDs of the items
-    *
-    * @return array of IDs of the ancestors
-    */
+    /**
+     * Get the ancestors of an item in a tree dropdown
+     *
+     * @param string       $table    Table name
+     * @param array|string $items_id The IDs of the items
+     *
+     * @return array of IDs of the ancestors
+     */
     public function getAncestorsOf($table, $items_id)
     {
         global $DB, $GLPI_CACHE;
@@ -1065,33 +1065,33 @@ final class DbUtils
         return $ancestors;
     }
 
-   /**
-    * Get the sons and the ancestors of an item in a tree dropdown. Rely on getSonsOf and getAncestorsOf
-    *
-    * @since 0.84
-    *
-    * @param string $table table name
-    * @param string $IDf   The ID of the father
-    *
-    * @return array of IDs of the sons and the ancestors
-    */
+    /**
+     * Get the sons and the ancestors of an item in a tree dropdown. Rely on getSonsOf and getAncestorsOf
+     *
+     * @since 0.84
+     *
+     * @param string $table table name
+     * @param string $IDf   The ID of the father
+     *
+     * @return array of IDs of the sons and the ancestors
+     */
     public function getSonsAndAncestorsOf($table, $IDf)
     {
         return $this->getAncestorsOf($table, $IDf) + $this->getSonsOf($table, $IDf);
     }
 
-   /**
-    * Get the Name of the element of a Dropdown Tree table
-    *
-    * @param string  $table       Dropdown Tree table
-    * @param integer $ID          ID of the element
-    * @param boolean $withcomment 1 if you want to give the array with the comments (false by default)
-    * @param boolean $translate   (true by default)
-    *
-    * @return string name of the element
-    *
-    * @see DbUtils::getTreeValueCompleteName
-    */
+    /**
+     * Get the Name of the element of a Dropdown Tree table
+     *
+     * @param string  $table       Dropdown Tree table
+     * @param integer $ID          ID of the element
+     * @param boolean $withcomment 1 if you want to give the array with the comments (false by default)
+     * @param boolean $translate   (true by default)
+     *
+     * @return string name of the element
+     *
+     * @see DbUtils::getTreeValueCompleteName
+     */
     public function getTreeLeafValueName($table, $ID, $withcomment = false, $translate = true)
     {
         global $DB;
@@ -1180,20 +1180,20 @@ final class DbUtils
         return $name;
     }
 
-   /**
-    * Get completename of a Dropdown Tree table
-    *
-    * @param string  $table       Dropdown Tree table
-    * @param integer $ID          ID of the element
-    * @param boolean $withcomment 1 if you want to give the array with the comments (false by default)
-    * @param boolean $translate   (true by default)
-    * @param boolean $tooltip     (true by default) returns a tooltip, else returns only 'comment'
-    * @param string  $default     default value returned when item not exists
-    *
-    * @return string completename of the element
-    *
-    * @see DbUtils::getTreeLeafValueName
-    */
+    /**
+     * Get completename of a Dropdown Tree table
+     *
+     * @param string  $table       Dropdown Tree table
+     * @param integer $ID          ID of the element
+     * @param boolean $withcomment 1 if you want to give the array with the comments (false by default)
+     * @param boolean $translate   (true by default)
+     * @param boolean $tooltip     (true by default) returns a tooltip, else returns only 'comment'
+     * @param string  $default     default value returned when item not exists
+     *
+     * @return string completename of the element
+     *
+     * @see DbUtils::getTreeLeafValueName
+     */
     public function getTreeValueCompleteName($table, $ID, $withcomment = false, $translate = true, $tooltip = true, string $default = '&nbsp;')
     {
         global $DB;
@@ -1337,17 +1337,17 @@ final class DbUtils
     }
 
 
-   /**
-    * show name category
-    * DO NOT DELETE THIS FUNCTION : USED IN THE UPDATE
-    *
-    * @param string  $table     table name
-    * @param integer $ID        integer  value ID
-    * @param string  $wholename current name to complete (use for recursivity) (default '')
-    * @param integer $level     current level of recursion (default 0)
-    *
-    * @return string name
-    */
+    /**
+     * show name category
+     * DO NOT DELETE THIS FUNCTION : USED IN THE UPDATE
+     *
+     * @param string  $table     table name
+     * @param integer $ID        integer  value ID
+     * @param string  $wholename current name to complete (use for recursivity) (default '')
+     * @param integer $level     current level of recursion (default 0)
+     *
+     * @return string name
+     */
     public function getTreeValueName($table, $ID, $wholename = "", $level = 0)
     {
         global $DB;
@@ -1378,14 +1378,14 @@ final class DbUtils
         return [$name, $level];
     }
 
-   /**
-    * Get the sons of an item in a tree dropdown
-    *
-    * @param string  $table table name
-    * @param integer $IDf   The ID of the father
-    *
-    * @return array of IDs of the sons
-    */
+    /**
+     * Get the sons of an item in a tree dropdown
+     *
+     * @param string  $table table name
+     * @param integer $IDf   The ID of the father
+     *
+     * @return array of IDs of the sons
+     */
     public function getTreeForItem($table, $IDf)
     {
         global $DB;
@@ -1440,14 +1440,14 @@ final class DbUtils
         return $tree;
     }
 
-   /**
-    * Construct a tree from a list structure
-    *
-    * @param array   $list the list
-    * @param integer $root root of the tree
-    *
-    * @return array list of items in the tree
-    */
+    /**
+     * Construct a tree from a list structure
+     *
+     * @param array   $list the list
+     * @param integer $root root of the tree
+     *
+     * @return array list of items in the tree
+     */
     public function constructTreeFromList($list, $root)
     {
 
@@ -1462,14 +1462,14 @@ final class DbUtils
         return $tree;
     }
 
-   /**
-    * Construct a list from a tree structure
-    *
-    * @param array   $tree   the tree
-    * @param integer $parent root of the tree (default =0)
-    *
-    * @return array list of items in the tree
-    */
+    /**
+     * Construct a list from a tree structure
+     *
+     * @param array   $tree   the tree
+     * @param integer $parent root of the tree (default =0)
+     *
+     * @return array list of items in the tree
+     */
     public function constructListFromTree($tree, $parent = 0)
     {
         $list = [];
@@ -1490,13 +1490,13 @@ final class DbUtils
     }
 
 
-   /**
-    * Compute all completenames of Dropdown Tree table
-    *
-    * @param string $table dropdown tree table to compute
-    *
-    * @return void
-    **/
+    /**
+     * Compute all completenames of Dropdown Tree table
+     *
+     * @param string $table dropdown tree table to compute
+     *
+     * @return void
+     **/
     public function regenerateTreeCompleteName($table)
     {
         global $DB;
@@ -1522,19 +1522,19 @@ final class DbUtils
     }
 
 
-   /**
-    * Format a user name
-    *
-    * @param integer $ID           ID of the user.
-    * @param string  $login        login of the user
-    * @param string  $realname     realname of the user
-    * @param string  $firstname    firstname of the user
-    * @param integer $link         include link (only if $link==1) (default =0)
-    * @param integer $cut          limit string length (0 = no limit) (default =0)
-    * @param boolean $force_config force order and id_visible to use common config (false by default)
-    *
-    * @return string formatted username
-    */
+    /**
+     * Format a user name
+     *
+     * @param integer $ID           ID of the user.
+     * @param string  $login        login of the user
+     * @param string  $realname     realname of the user
+     * @param string  $firstname    firstname of the user
+     * @param integer $link         include link (only if $link==1) (default =0)
+     * @param integer $cut          limit string length (0 = no limit) (default =0)
+     * @param boolean $force_config force order and id_visible to use common config (false by default)
+     *
+     * @return string formatted username
+     */
     public function formatUserName($ID, $login, $realname, $firstname, $link = 1, $cut = 0, $force_config = false)
     {
         global $CFG_GLPI;
@@ -1594,15 +1594,15 @@ final class DbUtils
     }
 
 
-   /**
-    * Get name of the user with ID=$ID (optional with link to user.form.php)
-    *
-    * @param integer|string $ID   ID of the user.
-    * @param integer $link 1 = Show link to user.form.php 2 = return array with comments and link
-    *                      (default =0)
-    *
-    * @return string username string (realname if not empty and name if realname is empty).
-    */
+    /**
+     * Get name of the user with ID=$ID (optional with link to user.form.php)
+     *
+     * @param integer|string $ID   ID of the user.
+     * @param integer $link 1 = Show link to user.form.php 2 = return array with comments and link
+     *                      (default =0)
+     *
+     * @return string username string (realname if not empty and name if realname is empty).
+     */
     public function getUserName($ID, $link = 0)
     {
         global $DB;
@@ -1690,17 +1690,17 @@ final class DbUtils
         return $user;
     }
 
-   /**
-    * Create a new name using a autoname field defined in a template
-    *
-    * @param string  $objectName  autoname template
-    * @param string  $field       field to autoname
-    * @param boolean $isTemplate  true if create an object from a template
-    * @param string  $itemtype    item type
-    * @param integer $entities_id limit generation to an entity (default -1)
-    *
-    * @return string new auto string
-    */
+    /**
+     * Create a new name using a autoname field defined in a template
+     *
+     * @param string  $objectName  autoname template
+     * @param string  $field       field to autoname
+     * @param boolean $isTemplate  true if create an object from a template
+     * @param string  $itemtype    item type
+     * @param integer $entities_id limit generation to an entity (default -1)
+     *
+     * @return string new auto string
+     */
     public function autoName($objectName, $field, $isTemplate, $itemtype, $entities_id = -1)
     {
         global $DB, $CFG_GLPI;
@@ -1861,11 +1861,11 @@ final class DbUtils
         return $objectName;
     }
 
-   /**
-    * Close active DB connections
-    *
-    * @return void
-    */
+    /**
+     * Close active DB connections
+     *
+     * @return void
+     */
     public function closeDBConnections()
     {
         global $DB;
@@ -1876,15 +1876,15 @@ final class DbUtils
         }
     }
 
-   /**
-    * Get dates conditions to use in 'WHERE' clause
-    *
-    * @param string $field table.field to request
-    * @param string $begin begin date
-    * @param string $end   end date
-    *
-    * @return array
-    */
+    /**
+     * Get dates conditions to use in 'WHERE' clause
+     *
+     * @param string $field table.field to request
+     * @param string $begin begin date
+     * @param string $end   end date
+     *
+     * @return array
+     */
     public function getDateCriteria($field, $begin, $end)
     {
         $criteria = [];
@@ -1903,25 +1903,25 @@ final class DbUtils
     }
 
 
-   /**
-    * Export an array to be stored in a simple field in the database
-    *
-    * @param array $array Array to export / encode (one level depth)
-    *
-    * @return string containing encoded array
-    */
+    /**
+     * Export an array to be stored in a simple field in the database
+     *
+     * @param array $array Array to export / encode (one level depth)
+     *
+     * @return string containing encoded array
+     */
     public function exportArrayToDB($array)
     {
         return json_encode($array);
     }
 
-   /**
-    * Import an array encoded in a simple field in the database
-    *
-    * @param string $data data readed in DB to import
-    *
-    * @return array containing datas
-    */
+    /**
+     * Import an array encoded in a simple field in the database
+     *
+     * @param string $data data readed in DB to import
+     *
+     * @return array containing datas
+     */
     public function importArrayFromDB($data)
     {
         if ($data === null) {
@@ -1948,13 +1948,13 @@ final class DbUtils
         return $tab;
     }
 
-   /**
-    * Get hour from sql
-    *
-    * @param string $time datetime time
-    *
-    * @return  array
-    */
+    /**
+     * Get hour from sql
+     *
+     * @param string $time datetime time
+     *
+     * @return  array
+     */
     public function getHourFromSql($time)
     {
         $t = explode(" ", $time);
@@ -1962,12 +1962,12 @@ final class DbUtils
         return $p[0] . ":" . $p[1];
     }
 
-   /**
-    * Get the $RELATION array. It defines all relations between tables in the DB;
-    * plugins may add their own stuff
-    *
-    * @return array the $RELATION array
-    */
+    /**
+     * Get the $RELATION array. It defines all relations between tables in the DB;
+     * plugins may add their own stuff
+     *
+     * @return array the $RELATION array
+     */
     public function getDbRelations()
     {
 
@@ -1981,13 +1981,13 @@ final class DbUtils
         return $RELATION;
     }
 
-   /**
-    * Return ItemType for a foreign key
-    *
-    * @param string $fkname Foreign key
-    *
-    * @return string ItemType name for the fkname parameter
-    */
+    /**
+     * Return ItemType for a foreign key
+     *
+     * @param string $fkname Foreign key
+     *
+     * @return string ItemType name for the fkname parameter
+     */
     public function getItemtypeForForeignKeyField($fkname)
     {
         $table = $this->getTableNameForForeignKeyField($fkname);

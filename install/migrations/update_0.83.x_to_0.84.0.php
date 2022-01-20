@@ -35,7 +35,7 @@
  * Update from 0.83.1 to 0.84
  *
  * @return bool for success (will die for most error)
-**/
+ **/
 function update083xto0840()
 {
     global $DB, $migration;
@@ -1749,7 +1749,7 @@ function update083xto0840()
  * @param $itemtype
  * @param $items_id
  * @param $error
-**/
+ **/
 function logNetworkPortError($origin, $id, $itemtype, $items_id, $error)
 {
     global $migration;
@@ -1768,7 +1768,7 @@ function logNetworkPortError($origin, $id, $itemtype, $items_id, $error)
  * @param $main_itemtype
  * @param $entities_id
  * @param $IP
-**/
+ **/
 function createNetworkNameFromItem(
     $itemtype,
     $items_id,
@@ -1837,7 +1837,7 @@ function createNetworkNameFromItem(
  * @param $port
  * @param $fields
  * @param $setNetworkCard
-**/
+ **/
 function updateNetworkPortInstantiation($port, $fields, $setNetworkCard)
 {
     global $DB, $migration;
@@ -1913,7 +1913,7 @@ function updateNetworkPortInstantiation($port, $fields, $setNetworkCard)
 /**
  * @param $networkports_id
  * @param $motive
-**/
+ **/
 function addNetworkPortMigrationError($networkports_id, $motive)
 {
     global $DB;
@@ -1937,7 +1937,7 @@ function addNetworkPortMigrationError($networkports_id, $motive)
  * Update all Network Organisation
  *
  * @param $ADDTODISPLAYPREF
-**/
+ **/
 function updateNetworkFramework(&$ADDTODISPLAYPREF)
 {
     global $DB, $migration;

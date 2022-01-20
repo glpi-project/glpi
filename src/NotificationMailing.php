@@ -35,31 +35,31 @@ use Glpi\Toolbox\Sanitizer;
 
 /**
  *  NotificationMailing class implements the NotificationInterface
-**/
+ **/
 class NotificationMailing implements NotificationInterface
 {
-   /**
-    * Check data
-    *
-    * @param mixed $value   The data to check (may differ for every notification mode)
-    * @param array $options Optionnal special options (may be needed)
-    *
-    * @return boolean
-   **/
+    /**
+     * Check data
+     *
+     * @param mixed $value   The data to check (may differ for every notification mode)
+     * @param array $options Optionnal special options (may be needed)
+     *
+     * @return boolean
+     **/
     public static function check($value, $options = [])
     {
         return self::isUserAddressValid($value, $options);
     }
 
-   /**
-    * Determine if email is valid
-    *
-    * @param string $address email to check
-    * @param array  $options options used (by default 'checkdns'=>false)
-    *     - checkdns :check dns entry
-    *
-    * @return boolean
-   **/
+    /**
+     * Determine if email is valid
+     *
+     * @param string $address email to check
+     * @param array  $options options used (by default 'checkdns'=>false)
+     *     - checkdns :check dns entry
+     *
+     * @return boolean
+     **/
     public static function isUserAddressValid($address, $options = ['checkdns' => false])
     {
        //drop sanitize...

@@ -68,9 +68,9 @@ class GLPIMailer extends DbTestCase
         ];
     }
 
-   /**
-    * @dataProvider valideAddressProvider
-    */
+    /**
+     * @dataProvider valideAddressProvider
+     */
     public function testValidateAddress($address, $is_valid)
     {
         $mailer = new \GLPIMailer();

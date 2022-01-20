@@ -50,14 +50,14 @@ use LitEmoji\LitEmoji;
  * Original class ReceiveMail 1.0 by Mitul Koradia Created: 01-03-2006
  * Description: Reciving mail With Attechment
  * Email: mitulkoradia@gmail.com
-**/
+ **/
 class MailCollector extends CommonDBTM
 {
    // Specific one
-   /**
-    * IMAP / POP connection
-    * @var Laminas\Mail\Storage\AbstractStorage
-    */
+    /**
+     * IMAP / POP connection
+     * @var Laminas\Mail\Storage\AbstractStorage
+     */
     private $storage;
    /// UID of the current message
     public $uid             = -1;
@@ -78,10 +78,10 @@ class MailCollector extends CommonDBTM
    /// Max size for attached files
     public $filesize_max    = 0;
 
-   /**
-    * Flag that tells wheter the body is in HTML format or not.
-    * @var string
-    */
+    /**
+     * Flag that tells wheter the body is in HTML format or not.
+     * @var string
+     */
     private $body_is_html   = false;
 
     public $dohistory       = true;
@@ -201,11 +201,11 @@ class MailCollector extends CommonDBTM
     }
 
 
-   /**
-    * @param $item         CommonGLPI object
-    * @param $tabnum       (default 1
-    * @param $withtemplate (default 0)
-   **/
+    /**
+     * @param $item         CommonGLPI object
+     * @param $tabnum       (default 1
+     * @param $withtemplate (default 0)
+     **/
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
         if ($item->getType() == __CLASS__) {
@@ -215,15 +215,15 @@ class MailCollector extends CommonDBTM
     }
 
 
-   /**
-    * Print the mailgate form
-    *
-    * @param $ID        integer  Id of the item to print
-    * @param $options   array
-    *     - target filename : where to go when done.
-    *
-    * @return boolean item found
-   **/
+    /**
+     * Print the mailgate form
+     *
+     * @param $ID        integer  Id of the item to print
+     * @param $options   array
+     *     - target filename : where to go when done.
+     *
+     * @return boolean item found
+     **/
     public function showForm($ID, array $options = [])
     {
         global $CFG_GLPI;
@@ -370,15 +370,15 @@ class MailCollector extends CommonDBTM
         return true;
     }
 
-   /**
-    * Display the list of folder for current connections
-    *
-    * @since 9.3.1
-    *
-    * @param string $input_id dom id where to insert folder name
-    *
-    * @return void
-    */
+    /**
+     * Display the list of folder for current connections
+     *
+     * @since 9.3.1
+     *
+     * @param string $input_id dom id where to insert folder name
+     *
+     * @return void
+     */
     public function displayFoldersList($input_id = "")
     {
         try {
@@ -409,14 +409,14 @@ class MailCollector extends CommonDBTM
     }
 
 
-   /**
-    * Display recursively a folder and its children
-    *
-    * @param \Laminas\Mail\Storage\Folder $folder   Current folder
-    * @param string                       $input_id Input ID
-    *
-    * @return void
-    */
+    /**
+     * Display recursively a folder and its children
+     *
+     * @param \Laminas\Mail\Storage\Folder $folder   Current folder
+     * @param string                       $input_id Input ID
+     *
+     * @return void
+     */
     private function displayFolder($folder, $input_id)
     {
         $fname = mb_convert_encoding($folder->getLocalName(), "UTF-8", "UTF7-IMAP");
@@ -548,11 +548,11 @@ class MailCollector extends CommonDBTM
     }
 
 
-   /**
-    * @param $emails_ids   array
-    * @param $action                (default 0)
-    * @param $entity                (default 0)
-   **/
+    /**
+     * @param $emails_ids   array
+     * @param $action                (default 0)
+     * @param $entity                (default 0)
+     **/
     public function deleteOrImportSeveralEmails($emails_ids = [], $action = 0, $entity = 0)
     {
         global $DB;
@@ -670,14 +670,14 @@ class MailCollector extends CommonDBTM
     }
 
 
-   /**
-    * Do collect
-    *
-    * @param integer $mailgateID  ID of the mailgate
-    * @param boolean $display     display messages in MessageAfterRedirect or just return error (default 0=)
-    *
-    * @return string|void
-   **/
+    /**
+     * Do collect
+     *
+     * @param integer $mailgateID  ID of the mailgate
+     * @param boolean $display     display messages in MessageAfterRedirect or just return error (default 0=)
+     *
+     * @return string|void
+     **/
     public function collect($mailgateID, $display = 0)
     {
         global $CFG_GLPI, $GLPI;
@@ -960,15 +960,15 @@ class MailCollector extends CommonDBTM
     }
 
 
-   /**
-    * Builds and returns the main structure of the ticket to be created
-    *
-    * @param string                        $uid     UID of the message
-    * @param \Laminas\Mail\Storage\Message $message  Messge
-    * @param array                         $options  Possible options
-    *
-    * @return array ticket fields
-    */
+    /**
+     * Builds and returns the main structure of the ticket to be created
+     *
+     * @param string                        $uid     UID of the message
+     * @param \Laminas\Mail\Storage\Message $message  Messge
+     * @param array                         $options  Possible options
+     *
+     * @return array ticket fields
+     */
     public function buildTicket($uid, \Laminas\Mail\Storage\Message $message, $options = [])
     {
         global $CFG_GLPI, $DB;
@@ -1250,15 +1250,15 @@ class MailCollector extends CommonDBTM
     }
 
 
-   /**
-    * Clean blacklisted content
-    *
-    * @since 0.85
-    *
-    * @param string $string text to clean
-    *
-    * @return string cleaned text
-   **/
+    /**
+     * Clean blacklisted content
+     *
+     * @since 0.85
+     *
+     * @param string $string text to clean
+     *
+     * @return string cleaned text
+     **/
     public function cleanContent($string)
     {
         global $DB;
@@ -1297,13 +1297,13 @@ class MailCollector extends CommonDBTM
     }
 
 
-   /**
-    * Strip out unwanted/unprintable characters from the subject
-    *
-    * @param string $text text to clean
-    *
-    * @return string clean text
-   **/
+    /**
+     * Strip out unwanted/unprintable characters from the subject
+     *
+     * @param string $text text to clean
+     *
+     * @return string clean text
+     **/
     public function cleanSubject($text)
     {
         $text = str_replace("=20", "\n", $text);
@@ -1331,11 +1331,11 @@ class MailCollector extends CommonDBTM
     }
 
 
-   /**
-    * Connect to the mail box
-    *
-    * @return void
-    */
+    /**
+     * Connect to the mail box
+     *
+     * @return void
+     */
     public function connect()
     {
         $config = Toolbox::parseMailServerConnectString($this->fields['host']);
@@ -1386,13 +1386,13 @@ class MailCollector extends CommonDBTM
     }
 
 
-   /**
-    * Get extra headers
-    *
-    * @param \Laminas\Mail\Storage\Message $message Message
-    *
-    * @return array
-   **/
+    /**
+     * Get extra headers
+     *
+     * @param \Laminas\Mail\Storage\Message $message Message
+     *
+     * @return array
+     **/
     public function getAdditionnalHeaders(\Laminas\Mail\Storage\Message $message)
     {
         $head   = [];
@@ -1421,19 +1421,19 @@ class MailCollector extends CommonDBTM
     }
 
 
-   /**
-    * Get full headers infos from particular mail
-    *
-    * @param \Laminas\Mail\Storage\Message $message Message
-    *
-    * @return array Associative array with following keys
-    *                subject   => Subject of Mail
-    *                to        => To Address of that mail
-    *                toOth     => Other To address of mail
-    *                toNameOth => To Name of Mail
-    *                from      => From address of mail
-    *                fromName  => Form Name of Mail
-   **/
+    /**
+     * Get full headers infos from particular mail
+     *
+     * @param \Laminas\Mail\Storage\Message $message Message
+     *
+     * @return array Associative array with following keys
+     *                subject   => Subject of Mail
+     *                to        => To Address of that mail
+     *                toOth     => Other To address of mail
+     *                toNameOth => To Name of Mail
+     *                from      => From address of mail
+     *                fromName  => Form Name of Mail
+     **/
     public function getHeaders(\Laminas\Mail\Storage\Message $message)
     {
 
@@ -1506,29 +1506,29 @@ class MailCollector extends CommonDBTM
     }
 
 
-   /**
-    * Number of entries in the mailbox
-    *
-    * @return integer
-   **/
+    /**
+     * Number of entries in the mailbox
+     *
+     * @return integer
+     **/
     public function getTotalMails()
     {
         return $this->storage->countMessages();
     }
 
 
-   /**
-    * Recursivly get attached documents
-    * Result is stored in $this->files
-    *
-    * @param \Laminas\Mail\Storage\Part $part     Message part
-    * @param string                     $path     Temporary path
-    * @param integer                    $maxsize  Maximum size of document to be retrieved
-    * @param string                     $subject  Message subject
-    * @param string                     $subpart  Subpart index (used in document filenames)
-    *
-    * @return void
-   **/
+    /**
+     * Recursivly get attached documents
+     * Result is stored in $this->files
+     *
+     * @param \Laminas\Mail\Storage\Part $part     Message part
+     * @param string                     $path     Temporary path
+     * @param integer                    $maxsize  Maximum size of document to be retrieved
+     * @param string                     $subject  Message subject
+     * @param string                     $subpart  Subpart index (used in document filenames)
+     *
+     * @return void
+     **/
     private function getRecursiveAttached(\Laminas\Mail\Storage\Part $part, $path, $maxsize, $subject, $subpart = "")
     {
         if ($part->isMultipart()) {
@@ -1686,15 +1686,15 @@ class MailCollector extends CommonDBTM
     }
 
 
-   /**
-    * Get attached documents in a mail
-    *
-    * @param \Laminas\Mail\Storage\Message $message  Message
-    * @param string                        $path     Temporary path
-    * @param integer                       $maxsize  Maximaum size of document to be retrieved
-    *
-    * @return array containing extracted filenames in file/_tmp
-   **/
+    /**
+     * Get attached documents in a mail
+     *
+     * @param \Laminas\Mail\Storage\Message $message  Message
+     * @param string                        $path     Temporary path
+     * @param integer                       $maxsize  Maximaum size of document to be retrieved
+     *
+     * @return array containing extracted filenames in file/_tmp
+     **/
     public function getAttached(\Laminas\Mail\Storage\Message $message, $path, $maxsize)
     {
         $this->files     = [];
@@ -1713,11 +1713,11 @@ class MailCollector extends CommonDBTM
     }
 
 
-   /**
-    * Get The actual mail content from this mail
-    *
-    * @param \Laminas\Mail\Storage\Message $message Message
-   **/
+    /**
+     * Get The actual mail content from this mail
+     *
+     * @param \Laminas\Mail\Storage\Message $message Message
+     **/
     public function getBody(\Laminas\Mail\Storage\Message $message)
     {
         $content = null;
@@ -1753,14 +1753,14 @@ class MailCollector extends CommonDBTM
     }
 
 
-   /**
-    * Delete mail from that mail box
-    *
-    * @param string $uid    mail UID
-    * @param string $folder Folder to move (delete if empty) (default '')
-    *
-    * @return boolean
-   **/
+    /**
+     * Delete mail from that mail box
+     *
+     * @param string $uid    mail UID
+     * @param string $folder Folder to move (delete if empty) (default '')
+     *
+     * @return boolean
+     **/
     public function deleteMails($uid, $folder = '')
     {
 
@@ -1791,13 +1791,13 @@ class MailCollector extends CommonDBTM
     }
 
 
-   /**
-    * Cron action on mailgate : retrieve mail and create tickets
-    *
-    * @param $task
-    *
-    * @return -1 : done but not finish 1 : done with success
-   **/
+    /**
+     * Cron action on mailgate : retrieve mail and create tickets
+     *
+     * @param $task
+     *
+     * @return -1 : done but not finish 1 : done with success
+     **/
     public static function cronMailgate($task)
     {
         global $DB;
@@ -1856,13 +1856,13 @@ class MailCollector extends CommonDBTM
     }
 
 
-   /**
-    * Send Alarms on mailgate errors
-    *
-    * @since 0.85
-    *
-    * @param CronTask $task for log
-   **/
+    /**
+     * Send Alarms on mailgate errors
+     *
+     * @since 0.85
+     *
+     * @param CronTask $task for log
+     **/
     public static function cronMailgateError($task)
     {
         global $DB, $CFG_GLPI;
@@ -1948,10 +1948,10 @@ class MailCollector extends CommonDBTM
     }
 
 
-   /**
-    * @param $to        (default '')
-    * @param $subject   (default '')
-   **/
+    /**
+     * @param $to        (default '')
+     * @param $subject   (default '')
+     **/
     public function sendMailRefusedResponse($to = '', $subject = '')
     {
         global $CFG_GLPI;
@@ -1999,13 +1999,13 @@ class MailCollector extends CommonDBTM
     }
 
 
-   /**
-    * Count collectors
-    *
-    * @param boolean $active Count active only, defaults to false
-    *
-    * @return integer
-    */
+    /**
+     * Count collectors
+     *
+     * @param boolean $active Count active only, defaults to false
+     *
+     * @return integer
+     */
     public static function countCollectors($active = false)
     {
         global $DB;
@@ -2024,26 +2024,26 @@ class MailCollector extends CommonDBTM
         return (int)$result['cpt'];
     }
 
-   /**
-    * Count active collectors
-    *
-    * @return integer
-    */
+    /**
+     * Count active collectors
+     *
+     * @return integer
+     */
     public static function countActiveCollectors()
     {
         return self::countCollectors(true);
     }
 
-   /**
-    * Try to retrieve an existing item from references in message headers.
-    * References corresponds to original MessageId sent by GLPI.
-    *
-    * @param Message $message
-    *
-    * @since 9.5.4
-    *
-    * @return CommonDBTM|null
-    */
+    /**
+     * Try to retrieve an existing item from references in message headers.
+     * References corresponds to original MessageId sent by GLPI.
+     *
+     * @param Message $message
+     *
+     * @since 9.5.4
+     *
+     * @return CommonDBTM|null
+     */
     public function getItemFromHeaders(Message $message): ?CommonDBTM
     {
         if ($this->isResponseToMessageSentByAnotherGlpi($message)) {
@@ -2080,16 +2080,16 @@ class MailCollector extends CommonDBTM
         return null;
     }
 
-   /**
-    * Check if message was sent by current instance of GLPI.
-    * This can be verified by checking the MessageId header.
-    *
-    * @param Message $message
-    *
-    * @since 9.5.4
-    *
-    * @return bool
-    */
+    /**
+     * Check if message was sent by current instance of GLPI.
+     * This can be verified by checking the MessageId header.
+     *
+     * @param Message $message
+     *
+     * @since 9.5.4
+     *
+     * @return bool
+     */
     public function isMessageSentByGlpi(Message $message): bool
     {
         $pattern = $this->getMessageIdExtractPattern();
@@ -2117,17 +2117,17 @@ class MailCollector extends CommonDBTM
         return $uuid == Config::getUuid('notification');
     }
 
-   /**
-    * Check if message is a response to a message sent by another Glpi instance.
-    * Responses to GLPI messages should contains a InReplyTo or a References header
-    * that matches the MessageId from original message.
-    *
-    * @param Message $message
-    *
-    * @since 10.0.0
-    *
-    * @return bool
-    */
+    /**
+     * Check if message is a response to a message sent by another Glpi instance.
+     * Responses to GLPI messages should contains a InReplyTo or a References header
+     * that matches the MessageId from original message.
+     *
+     * @param Message $message
+     *
+     * @since 10.0.0
+     *
+     * @return bool
+     */
     public function isResponseToMessageSentByAnotherGlpi(Message $message): bool
     {
         $pattern = $this->getMessageIdExtractPattern();
@@ -2157,13 +2157,13 @@ class MailCollector extends CommonDBTM
         return !$has_uuid_from_current_glpi && $has_uuid_from_another_glpi;
     }
 
-   /**
-    * Get pattern that can be used to extract information from a GLPI MessageId (uuid, itemtype and items_id).
-    *
-    * @see NotificationTarget::getMessageID()
-    *
-    * @return string
-    */
+    /**
+     * Get pattern that can be used to extract information from a GLPI MessageId (uuid, itemtype and items_id).
+     *
+     * @see NotificationTarget::getMessageID()
+     *
+     * @return string
+     */
     private function getMessageIdExtractPattern(): string
     {
        // old format for tickets:           GLPI-{$items_id}.{$time}.{$rand}@{$uname}
@@ -2182,11 +2182,11 @@ class MailCollector extends CommonDBTM
          . '/i'; // insensitive
     }
 
-   /**
-    * @param $name
-    * @param $value  (default 0)
-    * @param $rand
-   **/
+    /**
+     * @param $name
+     * @param $value  (default 0)
+     * @param $rand
+     **/
     public static function showMaxFilesize($name, $value = 0, $rand = null)
     {
 
@@ -2210,13 +2210,13 @@ class MailCollector extends CommonDBTM
         Rule::cleanForItemCriteria($this, '_mailgate');
     }
 
-   /**
-    * Get the requester email address.
-    *
-    * @param Message $message
-    *
-    * @return string|null
-    */
+    /**
+     * Get the requester email address.
+     *
+     * @param Message $message
+     *
+     * @return string|null
+     */
     private function getRequesterEmail(Message $message): ?string
     {
         $email = null;
@@ -2234,14 +2234,14 @@ class MailCollector extends CommonDBTM
         return $email;
     }
 
-   /**
-    * Get the email address from given header.
-    *
-    * @param Message $message
-    * @param string  $header_name
-    *
-    * @return string|null
-    */
+    /**
+     * Get the email address from given header.
+     *
+     * @param Message $message
+     * @param string  $header_name
+     *
+     * @return string|null
+     */
     private function getEmailFromHeader(Message $message, string $header_name): ?string
     {
         if (!$message->getHeaders()->has($header_name)) {
@@ -2255,13 +2255,13 @@ class MailCollector extends CommonDBTM
     }
 
 
-   /**
-    * Retrieve properly decoded content
-    *
-    * @param \Laminas\Mail\Storage\Message $part Message Part
-    *
-    * @return string
-    */
+    /**
+     * Retrieve properly decoded content
+     *
+     * @param \Laminas\Mail\Storage\Message $part Message Part
+     *
+     * @return string
+     */
     public function getDecodedContent(\Laminas\Mail\Storage\Part $part)
     {
         $contents = $part->getContent();

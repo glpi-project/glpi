@@ -39,25 +39,25 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class CheckDatabaseKeysCommand extends AbstractCommand
 {
-   /**
-    * Error code returned when missing keys are found.
-    *
-    * @var integer
-    */
+    /**
+     * Error code returned when missing keys are found.
+     *
+     * @var integer
+     */
     const ERROR_FOUND_MISSING_KEYS = 1;
 
-   /**
-    * Error code returned when misnamed keys are found.
-    *
-    * @var integer
-    */
+    /**
+     * Error code returned when misnamed keys are found.
+     *
+     * @var integer
+     */
     const ERROR_FOUND_MISNAMED_KEYS = 2;
 
-   /**
-    * Error code returned when useless keys are found.
-    *
-    * @var integer
-    */
+    /**
+     * Error code returned when useless keys are found.
+     *
+     * @var integer
+     */
     const ERROR_FOUND_USELESS_KEYS = 3;
 
     protected function configure()

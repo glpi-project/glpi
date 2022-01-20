@@ -129,12 +129,12 @@ class DeviceHardDrive extends CommonDevice
     }
 
 
-   /**
-    * @since 0.85
-    * @param $input
-    *
-    * @return number
-   **/
+    /**
+     * @since 0.85
+     * @param $input
+     *
+     * @return number
+     **/
     public function prepareInputForAddOrUpdate($input)
     {
 
@@ -217,13 +217,13 @@ class DeviceHardDrive extends CommonDevice
     }
 
 
-   /**
-    * Criteria used for import function
-    *
-    * @see CommonDevice::getImportCriteria()
-    *
-    * @since 0.84
-   **/
+    /**
+     * Criteria used for import function
+     *
+     * @see CommonDevice::getImportCriteria()
+     *
+     * @since 0.84
+     **/
     public function getImportCriteria()
     {
 

@@ -98,9 +98,9 @@ class MailCollector extends DbTestCase
         ];
     }
 
-   /**
-    * @dataProvider subjectProvider
-    */
+    /**
+     * @dataProvider subjectProvider
+     */
     public function testCleanSubject($raw, $expected)
     {
         $this
@@ -282,9 +282,9 @@ class MailCollector extends DbTestCase
         ];
     }
 
-   /**
-    * @dataProvider messageIdHeaderProvider
-    */
+    /**
+     * @dataProvider messageIdHeaderProvider
+     */
     public function testIsMessageSentByGlpi(array $headers, bool $expected)
     {
         $this->newTestedInstance();
@@ -455,9 +455,9 @@ class MailCollector extends DbTestCase
         ];
     }
 
-   /**
-    * @dataProvider itemReferenceHeaderProvider
-    */
+    /**
+     * @dataProvider itemReferenceHeaderProvider
+     */
     public function testGetItemFromHeader(
         array $headers,
         ?string $expected_itemtype,
@@ -483,9 +483,9 @@ class MailCollector extends DbTestCase
         }
     }
 
-   /**
-    * @dataProvider itemReferenceHeaderProvider
-    */
+    /**
+     * @dataProvider itemReferenceHeaderProvider
+     */
     public function testIsResponseToMessageSentByAnotherGlpi(
         array $headers,
         ?string $expected_itemtype,
@@ -886,9 +886,9 @@ HTML,
         ];
     }
 
-   /**
-    * @dataProvider mailServerProtocolsProvider
-    */
+    /**
+     * @dataProvider mailServerProtocolsProvider
+     */
     public function testGetMailServerProtocols(
         string $cnx_string,
         string $expected_type,
@@ -1034,9 +1034,9 @@ CLASS
         ];
     }
 
-   /**
-    * @dataProvider mailServerProtocolsHookProvider
-    */
+    /**
+     * @dataProvider mailServerProtocolsHookProvider
+     */
     public function testGetAdditionnalMailServerProtocols(
         $hook_result,
         string $type,

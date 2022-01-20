@@ -294,25 +294,25 @@ trait PlanningEvent
         }
     }
 
-   /**
-    * Delete a specific instance of a serie
-    * Add an exception into the serie
-    *
-    * @see addInstanceException
-    */
+    /**
+     * Delete a specific instance of a serie
+     * Add an exception into the serie
+     *
+     * @see addInstanceException
+     */
     public function deleteInstance(int $id = 0, string $day = "")
     {
         $this->addInstanceException($id, $day);
     }
 
-   /**
-    * Add an exception into a serie
-    *
-    * @param int $id of the serie
-    * @param string $day the exception
-    *
-    * @return bool
-    */
+    /**
+     * Add an exception into a serie
+     *
+     * @param int $id of the serie
+     * @param string $day the exception
+     *
+     * @return bool
+     */
     public function addInstanceException(int $id = 0, string $day = "")
     {
         $this->getFromDB($id);
@@ -330,15 +330,15 @@ trait PlanningEvent
     }
 
 
-   /**
-    * Clone recurrent event into a non recurrent event
-    * (and add an exception to the orginal one)
-    *
-    * @param int $id of the serie
-    * @param string $start the new start for the event (in case of dragging)
-    *
-    * @return object the new object
-    */
+    /**
+     * Clone recurrent event into a non recurrent event
+     * (and add an exception to the orginal one)
+     *
+     * @param int $id of the serie
+     * @param string $start the new start for the event (in case of dragging)
+     *
+     * @return object the new object
+     */
     public function createInstanceClone(int $id = 0, string $start = "")
     {
         $this->getFromDB($id);
@@ -361,21 +361,21 @@ trait PlanningEvent
     }
 
 
-   /**
-    * Populate the planning with planned event
-    *
-    * @param $options   array of possible options:
-    *    - who          ID of the user (0 = undefined)
-    *    - whogroup     ID of the group of users (0 = undefined)
-    *    - begin        Date
-    *    - end          Date
-    *    - color
-    *    - event_type_color
-    *    - check_planned (boolean)
-    *    - display_done_events (boolean)
-    *
-    * @return array of planning item
-   **/
+    /**
+     * Populate the planning with planned event
+     *
+     * @param $options   array of possible options:
+     *    - who          ID of the user (0 = undefined)
+     *    - whogroup     ID of the group of users (0 = undefined)
+     *    - begin        Date
+     *    - end          Date
+     *    - color
+     *    - event_type_color
+     *    - check_planned (boolean)
+     *    - display_done_events (boolean)
+     *
+     * @return array of planning item
+     **/
     public static function populatePlanning($options = []): array
     {
         global $DB, $CFG_GLPI;
@@ -639,17 +639,17 @@ trait PlanningEvent
     }
 
 
-   /**
-    * Display a Planning Item
-    *
-    * @param $val        array of the item to display
-    * @param $who        ID of the user (0 if all)
-    * @param $type       position of the item in the time block (in, through, begin or end)
-    *                    default '')
-    * @param $complete   complete display (more details) (default 0)
-    *
-    * @return Nothing (display function)
-   **/
+    /**
+     * Display a Planning Item
+     *
+     * @param $val        array of the item to display
+     * @param $who        ID of the user (0 if all)
+     * @param $type       position of the item in the time block (in, through, begin or end)
+     *                    default '')
+     * @param $complete   complete display (more details) (default 0)
+     *
+     * @return Nothing (display function)
+     **/
     public static function displayPlanningItem(array $val, $who, $type = "", $complete = 0)
     {
         global $CFG_GLPI;
@@ -707,15 +707,15 @@ trait PlanningEvent
     }
 
 
-   /**
-    * Display a mini form html for setup a reccuring event
-    * to construct an rrule array
-    *
-    * @param string $rrule  existing rrule entry with ical format (https://www.kanzaki.com/docs/ical/rrule.html)
-    * @param array $options can contains theses keys:
-    *                        - 'rand' => random string for generated inputs
-    * @return string        the generated html
-    */
+    /**
+     * Display a mini form html for setup a reccuring event
+     * to construct an rrule array
+     *
+     * @param string $rrule  existing rrule entry with ical format (https://www.kanzaki.com/docs/ical/rrule.html)
+     * @param array $options can contains theses keys:
+     *                        - 'rand' => random string for generated inputs
+     * @return string        the generated html
+     */
     public static function showRepetitionForm(string $rrule = "", array $options = []): string
     {
         $rrule = json_decode($rrule, true) ?? [];
@@ -847,13 +847,13 @@ trait PlanningEvent
     }
 
 
-   /**
-    * Display a Planning Item
-    *
-    * @param array $val the item to display
-    *
-    * @return string
-   **/
+    /**
+     * Display a Planning Item
+     *
+     * @param array $val the item to display
+     *
+     * @return string
+     **/
     public function getAlreadyPlannedInformation(array $val)
     {
         $itemtype = $this->getType();
@@ -878,14 +878,14 @@ trait PlanningEvent
         }
     }
 
-   /**
-    * Returns RSet occurence corresponding to rrule field value.
-    *
-    * @param array  $rrule    RRule field value
-    * @param string $dtstart  Start of first occurence
-    *
-    * @return \RRule\RSet
-    */
+    /**
+     * Returns RSet occurence corresponding to rrule field value.
+     *
+     * @param array  $rrule    RRule field value
+     * @param string $dtstart  Start of first occurence
+     *
+     * @return \RRule\RSet
+     */
     public static function getRsetFromRRuleField(array $rrule, $dtstart): RSet
     {
         $dtstart_datetime  = new DateTime($dtstart);

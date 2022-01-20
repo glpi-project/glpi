@@ -55,9 +55,9 @@ class RuleRightCollection extends RuleCollection
     }
 
 
-   /**
-    * @see RuleCollection::cleanTestOutputCriterias()
-   */
+    /**
+     * @see RuleCollection::cleanTestOutputCriterias()
+     */
     public function cleanTestOutputCriterias(array $output)
     {
 
@@ -68,9 +68,9 @@ class RuleRightCollection extends RuleCollection
     }
 
 
-   /**
-    * @see RuleCollection::showTestResults()
-   */
+    /**
+     * @see RuleCollection::showTestResults()
+     */
     public function showTestResults($rule, array $output, $global_result)
     {
 
@@ -141,12 +141,12 @@ class RuleRightCollection extends RuleCollection
     }
 
 
-   /**
-    * Display action using its name
-    *
-    * @param $name   action name
-    * @param $value  default value
-   **/
+    /**
+     * Display action using its name
+     *
+     * @param $name   action name
+     * @param $value  default value
+     **/
     public function displayActionByName($name, $value)
     {
 
@@ -171,11 +171,11 @@ class RuleRightCollection extends RuleCollection
     }
 
 
-   /**
-    * Get all the fields needed to perform the rule
-    *
-    * @see RuleCollection::getFieldsToLookFor()
-   **/
+    /**
+     * Get all the fields needed to perform the rule
+     *
+     * @see RuleCollection::getFieldsToLookFor()
+     **/
     public function getFieldsToLookFor()
     {
         global $DB;
@@ -212,16 +212,16 @@ class RuleRightCollection extends RuleCollection
     }
 
 
-   /**
-    * Get the attributes needed for processing the rules
-    *
-    * @see RuleCollection::prepareInputDataForProcess()
-    *
-    * @param $input  input datas
-    * @param $params extra parameters given
-    *
-    * @return an array of attributes
-   **/
+    /**
+     * Get the attributes needed for processing the rules
+     *
+     * @see RuleCollection::prepareInputDataForProcess()
+     *
+     * @param $input  input datas
+     * @param $params extra parameters given
+     *
+     * @return an array of attributes
+     **/
     public function prepareInputDataForProcess($input, $params)
     {
         $groups = [];
@@ -291,9 +291,9 @@ class RuleRightCollection extends RuleCollection
     }
 
 
-   /**
-    * Get the list of fields to be retreived to process rules
-   **/
+    /**
+     * Get the list of fields to be retreived to process rules
+     **/
     public function getFieldsForQuery()
     {
 

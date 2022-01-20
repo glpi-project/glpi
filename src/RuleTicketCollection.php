@@ -39,18 +39,18 @@ class RuleTicketCollection extends RuleCollection
     public $menu_option                           = 'ticket';
 
 
-   /**
-    * @param $entity (default 0)
-   **/
+    /**
+     * @param $entity (default 0)
+     **/
     public function __construct($entity = 0)
     {
         $this->entity = $entity;
     }
 
 
-   /**
-    * @since 0.84
-    **/
+    /**
+     * @since 0.84
+     **/
     public static function canView()
     {
         return Session::haveRightsOr(self::$rightname, [READ, RuleTicket::PARENT]);
@@ -69,9 +69,9 @@ class RuleTicketCollection extends RuleCollection
     }
 
 
-   /**
-    * @see RuleCollection::preProcessPreviewResults()
-   **/
+    /**
+     * @see RuleCollection::preProcessPreviewResults()
+     **/
     public function preProcessPreviewResults($output)
     {
 
@@ -80,18 +80,18 @@ class RuleTicketCollection extends RuleCollection
     }
 
 
-   /**
-    * @see RuleCollection::showInheritedTab()
-   **/
+    /**
+     * @see RuleCollection::showInheritedTab()
+     **/
     public function showInheritedTab()
     {
         return (Session::haveRight(self::$rightname, RuleTicket::PARENT) && ($this->entity));
     }
 
 
-   /**
-    * @see RuleCollection::showChildrensTab()
-   **/
+    /**
+     * @see RuleCollection::showChildrensTab()
+     **/
     public function showChildrensTab()
     {
 
@@ -100,9 +100,9 @@ class RuleTicketCollection extends RuleCollection
     }
 
 
-   /**
-    * @see RuleCollection::prepareInputDataForProcess()
-   **/
+    /**
+     * @see RuleCollection::prepareInputDataForProcess()
+     **/
     public function prepareInputDataForProcess($input, $params)
     {
 

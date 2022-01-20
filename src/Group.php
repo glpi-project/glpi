@@ -33,7 +33,7 @@
 
 /**
  * Group class
-**/
+ **/
 class Group extends CommonTreeDropdown
 {
     public $dohistory       = true;
@@ -49,11 +49,11 @@ class Group extends CommonTreeDropdown
     }
 
 
-   /**
-    * @see CommonGLPI::getAdditionalMenuOptions()
-    *
-    * @since 0.85
-   **/
+    /**
+     * @see CommonGLPI::getAdditionalMenuOptions()
+     *
+     * @since 0.85
+     **/
     public static function getAdditionalMenuOptions()
     {
 
@@ -66,11 +66,11 @@ class Group extends CommonTreeDropdown
     }
 
 
-   /**
-    * @see CommonGLPI::getMenuShorcut()
-    *
-    * @since 0.85
-   **/
+    /**
+     * @see CommonGLPI::getMenuShorcut()
+     *
+     * @since 0.85
+     **/
     public static function getMenuShorcut()
     {
         return 'g';
@@ -212,16 +212,16 @@ class Group extends CommonTreeDropdown
     }
 
 
-   /**
-   * Print the group form
-   *
-   * @param integer $ID  ID of the item
-   * @param array   $options
-   *     - target filename : where to go when done.
-   *     - withtemplate boolean : template or basic item
-   *
-   * @return void|boolean (display) Returns false if there is a rights error.
-   **/
+    /**
+     * Print the group form
+     *
+     * @param integer $ID  ID of the item
+     * @param array   $options
+     *     - target filename : where to go when done.
+     *     - withtemplate boolean : template or basic item
+     *
+     * @return void|boolean (display) Returns false if there is a rights error.
+     **/
     public function showForm($ID, array $options = [])
     {
 
@@ -309,11 +309,11 @@ class Group extends CommonTreeDropdown
     }
 
 
-   /**
-    * Print a good title for group pages
-    *
-    *@return void
-    **/
+    /**
+     * Print a good title for group pages
+     *
+     *@return void
+     **/
     public function title()
     {
         $buttons = [];
@@ -563,9 +563,9 @@ class Group extends CommonTreeDropdown
     }
 
 
-   /**
-    * @param $ID
-   **/
+    /**
+     * @param $ID
+     **/
     public function showLDAPForm($ID)
     {
         $options = [];
@@ -612,20 +612,20 @@ class Group extends CommonTreeDropdown
     }
 
 
-   /**
-    * get list of Computers in a group
-    *
-    * @since 0.83
-    *
-    * @param $types  Array    of types
-    * @param $field  String   field name
-    * @param $tree   Boolean  include child groups
-    * @param $user   Boolean  include members (users)
-    * @param $start  Integer  (first row to retrieve)
-    * @param $res    Array    result filled on ouput
-    *
-    * @return integer total of items
-   **/
+    /**
+     * get list of Computers in a group
+     *
+     * @since 0.83
+     *
+     * @param $types  Array    of types
+     * @param $field  String   field name
+     * @param $tree   Boolean  include child groups
+     * @param $user   Boolean  include members (users)
+     * @param $start  Integer  (first row to retrieve)
+     * @param $res    Array    result filled on ouput
+     *
+     * @return integer total of items
+     **/
     public function getDataItems(array $types, $field, $tree, $user, $start, array &$res)
     {
         global $DB;
@@ -763,11 +763,11 @@ class Group extends CommonTreeDropdown
     }
 
 
-   /**
-    * Show items for the group
-    *
-    * @param $tech   boolean  false search groups_id, true, search groups_id_tech
-   **/
+    /**
+     * Show items for the group
+     *
+     * @param $tech   boolean  false search groups_id, true, search groups_id_tech
+     **/
     public function showItems($tech)
     {
         global $CFG_GLPI;
@@ -988,11 +988,11 @@ class Group extends CommonTreeDropdown
     }
 
 
-   /**
-    * Check if group is used in consumables.
-    *
-    * @return boolean
-    */
+    /**
+     * Check if group is used in consumables.
+     *
+     * @return boolean
+     */
     private function isUsedInConsumables()
     {
 
@@ -1049,13 +1049,13 @@ class Group extends CommonTreeDropdown
         return "ti ti-users";
     }
 
-   /**
-    * Get group link.
-    *
-    * @param bool $enable_anonymization
-    *
-    * @return string
-    */
+    /**
+     * Get group link.
+     *
+     * @param bool $enable_anonymization
+     *
+     * @return string
+     */
     public function getGroupLink(bool $enable_anonymization = false): string
     {
 

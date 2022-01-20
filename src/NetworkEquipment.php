@@ -35,7 +35,7 @@ use Glpi\Socket;
 
 /**
  * Network equipment Class
-**/
+ **/
 class NetworkEquipment extends CommonDBTM
 {
     use Glpi\Features\DCBreadcrumb;
@@ -50,7 +50,7 @@ class NetworkEquipment extends CommonDBTM
     public static $rightname                   = 'networking';
     protected $usenotepad               = true;
 
-   /** RELATIONS */
+    /** RELATIONS */
     public function getCloneRelations(): array
     {
         return [
@@ -63,25 +63,25 @@ class NetworkEquipment extends CommonDBTM
          KnowbaseItem_Item::class
         ];
     }
-   /** /RELATIONS */
+    /** /RELATIONS */
 
 
-   /**
-    * Name of the type
-    *
-    * @param $nb  integer  number of item in the type (default 0)
-   **/
+    /**
+     * Name of the type
+     *
+     * @param $nb  integer  number of item in the type (default 0)
+     **/
     public static function getTypeName($nb = 0)
     {
         return _n('Network device', 'Network devices', $nb);
     }
 
 
-   /**
-    * @see CommonGLPI::getAdditionalMenuOptions()
-    *
-    * @since 0.85
-   **/
+    /**
+     * @see CommonGLPI::getAdditionalMenuOptions()
+     *
+     * @since 0.85
+     **/
     public static function getAdditionalMenuOptions()
     {
 
@@ -98,11 +98,11 @@ class NetworkEquipment extends CommonDBTM
     }
 
 
-   /**
-    * @since 0.84
-    *
-    * @see CommonDBTM::cleanDBonPurge()
-   **/
+    /**
+     * @since 0.84
+     *
+     * @see CommonDBTM::cleanDBonPurge()
+     **/
     public function cleanDBonPurge()
     {
 
@@ -121,11 +121,11 @@ class NetworkEquipment extends CommonDBTM
     }
 
 
-   /**
-    * @see CommonDBTM::useDeletedToLockIfDynamic()
-    *
-    * @since 0.84
-   **/
+    /**
+     * @see CommonDBTM::useDeletedToLockIfDynamic()
+     *
+     * @since 0.84
+     **/
     public function useDeletedToLockIfDynamic()
     {
         return false;
@@ -178,14 +178,14 @@ class NetworkEquipment extends CommonDBTM
     }
 
 
-   /**
-    * Can I change recursive flag to false
-    * check if there is "linked" object in another entity
-    *
-    * Overloaded from CommonDBTM
-    *
-    * @return boolean
-   **/
+    /**
+     * Can I change recursive flag to false
+     * check if there is "linked" object in another entity
+     *
+     * Overloaded from CommonDBTM
+     *
+     * @return boolean
+     **/
     public function canUnrecurs()
     {
         global $DB;

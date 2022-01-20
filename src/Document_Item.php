@@ -35,7 +35,7 @@
  * Document_Item Class
  *
  *  Relation between Documents and Items
-**/
+ **/
 class Document_Item extends CommonDBRelation
 {
    // From CommonDBRelation
@@ -116,7 +116,7 @@ class Document_Item extends CommonDBRelation
             $input['users_id'] = Session::getLoginUserID();
         }
 
-       /** FIXME: should not this be handled on CommonITILObject side? */
+        /** FIXME: should not this be handled on CommonITILObject side? */
         if (is_subclass_of($input['itemtype'], 'CommonITILObject') && !isset($input['timeline_position'])) {
             $input['timeline_position'] = CommonITILObject::TIMELINE_LEFT;
             if (isset($input["users_id"])) {
@@ -133,15 +133,15 @@ class Document_Item extends CommonDBRelation
         return parent::prepareInputForAdd($input);
     }
 
-   /**
-    * Check if relation already exists.
-    *
-    * @param array $input
-    *
-    * @return boolean
-    *
-    * @since 9.5.0
-    */
+    /**
+     * Check if relation already exists.
+     *
+     * @param array $input
+     *
+     * @return boolean
+     *
+     * @since 9.5.0
+     */
     public function alreadyExists(array $input): bool
     {
         $criteria = [
@@ -157,11 +157,11 @@ class Document_Item extends CommonDBRelation
     }
 
 
-   /**
-    * @since 0.90.2
-    *
-    * @see CommonDBTM::pre_deleteItem()
-   **/
+    /**
+     * @since 0.90.2
+     *
+     * @see CommonDBTM::pre_deleteItem()
+     **/
     public function pre_deleteItem()
     {
        // fordocument mandatory
@@ -221,11 +221,11 @@ class Document_Item extends CommonDBRelation
     }
 
 
-   /**
-    * @since 0.83
-    *
-    * @see CommonDBTM::post_purgeItem()
-   **/
+    /**
+     * @since 0.83
+     *
+     * @see CommonDBTM::post_purgeItem()
+     **/
     public function post_purgeItem()
     {
 
@@ -324,15 +324,15 @@ class Document_Item extends CommonDBRelation
     }
 
 
-   /**
-    * Show items links to a document
-    *
-    * @since 0.84
-    *
-    * @param $doc Document object
-    *
-    * @return void
-   **/
+    /**
+     * Show items links to a document
+     *
+     * @since 0.84
+     *
+     * @param $doc Document object
+     *
+     * @return void
+     **/
     public static function showForDocument(Document $doc)
     {
         $instID = $doc->fields['id'];
@@ -511,14 +511,14 @@ class Document_Item extends CommonDBRelation
         echo "</div>";
     }
 
-   /**
-    * Show documents associated to an item
-    *
-    * @since 0.84
-    *
-    * @param $item            CommonDBTM object for which associated documents must be displayed
-    * @param $withtemplate    (default 0)
-   **/
+    /**
+     * Show documents associated to an item
+     *
+     * @since 0.84
+     *
+     * @param $item            CommonDBTM object for which associated documents must be displayed
+     * @param $withtemplate    (default 0)
+     **/
     public static function showForItem(CommonDBTM $item, $withtemplate = 0)
     {
         $ID = $item->getField('id');
@@ -544,13 +544,13 @@ class Document_Item extends CommonDBRelation
     }
 
 
-   /**
-    * @since 0.90
-    *
-    * @param $item
-    * @param $withtemplate   (default 0)
-    * @param $colspan
-   */
+    /**
+     * @since 0.90
+     *
+     * @param $item
+     * @param $withtemplate   (default 0)
+     * @param $colspan
+     */
     public static function showSimpleAddForItem(CommonDBTM $item, $withtemplate = 0, $colspan = 1)
     {
 
@@ -578,15 +578,15 @@ class Document_Item extends CommonDBRelation
     }
 
 
-   /**
-    * @since 0.90
-    *
-    * @param $item
-    * @param $withtemplate    (default 0)
-    * @param $options         array
-    *
-    * @return boolean
-   **/
+    /**
+     * @since 0.90
+     *
+     * @param $item
+     * @param $withtemplate    (default 0)
+     * @param $options         array
+     *
+     * @return boolean
+     **/
     public static function showAddFormForItem(CommonDBTM $item, $withtemplate = 0, $options = [])
     {
         global $DB, $CFG_GLPI;
@@ -715,13 +715,13 @@ class Document_Item extends CommonDBRelation
     }
 
 
-   /**
-    * @since 0.90
-    *
-    * @param $item
-    * @param $withtemplate   (default 0)
-    * @param $options        array
-    */
+    /**
+     * @since 0.90
+     *
+     * @param $item
+     * @param $withtemplate   (default 0)
+     * @param $options        array
+     */
     public static function showListForItem(CommonDBTM $item, $withtemplate = 0, $options = [])
     {
         global $DB;
@@ -948,18 +948,18 @@ class Document_Item extends CommonDBRelation
         return $specificities;
     }
 
-   /**
-    * Get items for an itemtype
-    *
-    * @since 9.3.1
-    *
-    * @param integer $items_id Object id to restrict on
-    * @param string  $itemtype Type for items to retrieve
-    * @param boolean $noent    Flag to not compute enitty information (see Document_Item::getTypeItemsQueryParams)
-    * @param array   $where    Inital WHERE clause. Defaults to []
-    *
-    * @return DBmysqlIterator
-    */
+    /**
+     * Get items for an itemtype
+     *
+     * @since 9.3.1
+     *
+     * @param integer $items_id Object id to restrict on
+     * @param string  $itemtype Type for items to retrieve
+     * @param boolean $noent    Flag to not compute enitty information (see Document_Item::getTypeItemsQueryParams)
+     * @param array   $where    Inital WHERE clause. Defaults to []
+     *
+     * @return DBmysqlIterator
+     */
     protected static function getTypeItemsQueryParams($items_id, $itemtype, $noent = false, $where = [])
     {
         $commonwhere = ['OR'  => [
@@ -992,16 +992,16 @@ class Document_Item extends CommonDBRelation
         return $params;
     }
 
-   /**
-    * Get linked items list for specified item
-    *
-    * @since 9.3.1
-    *
-    * @param CommonDBTM $item  Item instance
-    * @param boolean    $noent Flag to not compute entity information (see Document_Item::getTypeItemsQueryParams)
-    *
-    * @return array
-    */
+    /**
+     * Get linked items list for specified item
+     *
+     * @since 9.3.1
+     *
+     * @param CommonDBTM $item  Item instance
+     * @param boolean    $noent Flag to not compute entity information (see Document_Item::getTypeItemsQueryParams)
+     *
+     * @return array
+     */
     protected static function getListForItemParams(CommonDBTM $item, $noent = false)
     {
 
@@ -1016,16 +1016,16 @@ class Document_Item extends CommonDBRelation
         return $params;
     }
 
-   /**
-    * Get distinct item types query parameters
-    *
-    * @since 9.3.1
-    *
-    * @param integer $items_id    Object id to restrict on
-    * @param array   $extra_where Extra where clause
-    *
-    * @return array
-    */
+    /**
+     * Get distinct item types query parameters
+     *
+     * @since 9.3.1
+     *
+     * @param integer $items_id    Object id to restrict on
+     * @param array   $extra_where Extra where clause
+     *
+     * @return array
+     */
     public static function getDistinctTypesParams($items_id, $extra_where = [])
     {
         $commonwhere = ['OR'  => [
@@ -1045,11 +1045,11 @@ class Document_Item extends CommonDBRelation
         return $params;
     }
 
-   /**
-    * Check if this item author is a support agent
-    *
-    * @return bool
-    */
+    /**
+     * Check if this item author is a support agent
+     *
+     * @return bool
+     */
     public function isFromSupportAgent()
     {
        // If not a CommonITILObject

@@ -51,9 +51,9 @@ class QueryParam extends DbTestCase
         ];
     }
 
-   /**
-    * @dataProvider dataParams
-    */
+    /**
+     * @dataProvider dataParams
+     */
     public function testQueryParam($value, $expected)
     {
         $qpa = new \QueryParam($value);

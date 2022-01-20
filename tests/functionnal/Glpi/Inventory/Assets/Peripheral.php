@@ -64,9 +64,9 @@ class Peripheral extends AbstractInventoryAsset
         ];
     }
 
-   /**
-    * @dataProvider assetProvider
-    */
+    /**
+     * @dataProvider assetProvider
+     */
     public function testPrepare($xml, $expected)
     {
         $converter = new \Glpi\Inventory\Converter();

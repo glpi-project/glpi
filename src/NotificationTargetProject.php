@@ -35,12 +35,12 @@
  * NotificationTargetTicket Class
  *
  * @since 0.85
-**/
+ **/
 class NotificationTargetProject extends NotificationTarget
 {
-   /**
-    * Get events related to tickets
-   **/
+    /**
+     * Get events related to tickets
+     **/
     public function getEvents()
     {
 
@@ -74,9 +74,9 @@ class NotificationTargetProject extends NotificationTarget
     }
 
 
-   /**
-    * @see NotificationTarget::addSpecificTargets()
-   **/
+    /**
+     * @see NotificationTarget::addSpecificTargets()
+     **/
     public function addSpecificTargets($data, $options)
     {
 
@@ -137,11 +137,11 @@ class NotificationTargetProject extends NotificationTarget
     }
 
 
-   /**
-    * Add team users to the notified user list
-    *
-    * @return void
-    **/
+    /**
+     * Add team users to the notified user list
+     *
+     * @return void
+     **/
     public function addTeamUsers()
     {
         global $DB;
@@ -164,13 +164,13 @@ class NotificationTargetProject extends NotificationTarget
     }
 
 
-   /**
-    * Add team groups to the notified user list
-    *
-    * @param integer $manager 0 all users, 1 only supervisors, 2 all users without supervisors
-    *
-    * @return void
-    **/
+    /**
+     * Add team groups to the notified user list
+     *
+     * @param integer $manager 0 all users, 1 only supervisors, 2 all users without supervisors
+     *
+     * @return void
+     **/
     public function addTeamGroups($manager)
     {
         global $DB;
@@ -190,11 +190,11 @@ class NotificationTargetProject extends NotificationTarget
     }
 
 
-   /**
-    * Add team contacts to the notified user list
-    *
-    * @return void
-    **/
+    /**
+     * Add team contacts to the notified user list
+     *
+     * @return void
+     **/
     public function addTeamContacts()
     {
         global $DB, $CFG_GLPI;
@@ -220,11 +220,11 @@ class NotificationTargetProject extends NotificationTarget
     }
 
 
-   /**
-    * Add team suppliers to the notified user list
-    *
-    * @return void
-    **/
+    /**
+     * Add team suppliers to the notified user list
+     *
+     * @return void
+     **/
     public function addTeamSuppliers()
     {
         global $DB, $CFG_GLPI;

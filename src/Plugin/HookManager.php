@@ -42,40 +42,40 @@ class HookManager
         $this->plugin = $plugin;
     }
 
-   /**
-    * Enable CSRF
-    */
+    /**
+     * Enable CSRF
+     */
     public function enableCSRF(): void
     {
         $PLUGIN_HOOKS[Hooks::CSRF_COMPLIANT][$this->plugin] = true;
     }
 
-   /**
-    * Add a given javascript file
-    *
-    * @param string $file
-    */
+    /**
+     * Add a given javascript file
+     *
+     * @param string $file
+     */
     public function registerJavascriptFile(string $file): void
     {
         $this->registerFile(Hooks::ADD_JAVASCRIPT, $file);
     }
 
-   /**
-    * Add a given CSS file
-    *
-    * @param string $file
-    */
+    /**
+     * Add a given CSS file
+     *
+     * @param string $file
+     */
     public function registerCSSFile(string $file): void
     {
         $this->registerFile(Hooks::ADD_CSS, $file);
     }
 
-   /**
-    * Add a given file for the given hook
-    *
-    * @param string $hook
-    * @param string $file
-    */
+    /**
+     * Add a given file for the given hook
+     *
+     * @param string $hook
+     * @param string $file
+     */
     protected function registerFile(string $hook, string $file): void
     {
         global $PLUGIN_HOOKS;
@@ -95,12 +95,12 @@ class HookManager
         $PLUGIN_HOOKS[$hook][$this->plugin][] = $file;
     }
 
-   /**
-    * Add a functionnal hook
-    *
-    * @param string $hook
-    * @param string $file
-    */
+    /**
+     * Add a functionnal hook
+     *
+     * @param string $hook
+     * @param string $file
+     */
     public function registerFunctionalHook(
         string $hook,
         callable $function
@@ -116,13 +116,13 @@ class HookManager
         $PLUGIN_HOOKS[$hook][$this->plugin] = $function;
     }
 
-   /**
-    * Add an item hook
-    *
-    * @param string $hook
-    * @param string $itemtype
-    * @param string $file
-    */
+    /**
+     * Add an item hook
+     *
+     * @param string $hook
+     * @param string $itemtype
+     * @param string $file
+     */
     public function registerItemHook(
         string $hook,
         string $itemtype,
@@ -139,11 +139,11 @@ class HookManager
         $PLUGIN_HOOKS[$hook][$this->plugin][$itemtype] = $function;
     }
 
-   /**
-    * Register fields that need to be encrypted
-    *
-    * @param array $fields array of table.field
-    */
+    /**
+     * Register fields that need to be encrypted
+     *
+     * @param array $fields array of table.field
+     */
     public function registerSecureFields(array $fields): void
     {
         global $PLUGIN_HOOKS;
@@ -151,11 +151,11 @@ class HookManager
         $PLUGIN_HOOKS[Hooks::SECURED_FIELDS][$this->plugin] = $fields;
     }
 
-   /**
-    * Register configuration values that need to be encrypted
-    *
-    * @param array $configs
-    */
+    /**
+     * Register configuration values that need to be encrypted
+     *
+     * @param array $configs
+     */
     public function registerSecureConfigs(array $configs): void
     {
         global $PLUGIN_HOOKS;

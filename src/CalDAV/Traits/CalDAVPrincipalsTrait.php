@@ -47,13 +47,13 @@ use User;
  */
 trait CalDAVPrincipalsTrait
 {
-   /**
-    * Check if principal objects are visible for current session.
-    *
-    * @param string $path
-    *
-    * @return bool
-    */
+    /**
+     * Check if principal objects are visible for current session.
+     *
+     * @param string $path
+     *
+     * @return bool
+     */
     protected function canViewPrincipalObjects(string $path): bool
     {
         $principal_type = $this->getPrincipalItemtypeFromUri($path);
@@ -72,13 +72,13 @@ trait CalDAVPrincipalsTrait
         return $can_view;
     }
 
-   /**
-    * Check if group objects are visible for current session.
-    *
-    * @param int $group_id
-    *
-    * @return bool
-    */
+    /**
+     * Check if group objects are visible for current session.
+     *
+     * @param int $group_id
+     *
+     * @return bool
+     */
     protected function canViewGroupObjects(int $group_id): bool
     {
         $groups_iterator = $this->getVisibleGroupsIterator();
@@ -91,13 +91,13 @@ trait CalDAVPrincipalsTrait
         return false;
     }
 
-   /**
-    * Check if user objects are visible for current session.
-    *
-    * @param string $username
-    *
-    * @return bool
-    */
+    /**
+     * Check if user objects are visible for current session.
+     *
+     * @param string $username
+     *
+     * @return bool
+     */
     protected function canViewUserObjects(string $username): bool
     {
         $users_iterator = $this->getVisibleUsersIterator();
@@ -110,11 +110,11 @@ trait CalDAVPrincipalsTrait
         return false;
     }
 
-   /**
-    * Get visible groups for current session.
-    *
-    * @return array
-    */
+    /**
+     * Get visible groups for current session.
+     *
+     * @return array
+     */
     protected function getVisibleGroupsIterator(): Iterator
     {
 
@@ -153,11 +153,11 @@ trait CalDAVPrincipalsTrait
         return $groups_iterator;
     }
 
-   /**
-    * Get visible users for current session.
-    *
-    * @return array
-    */
+    /**
+     * Get visible users for current session.
+     *
+     * @return array
+     */
     protected function getVisibleUsersIterator(): Iterator
     {
 

@@ -33,7 +33,7 @@
 
 /**
  * Reservation Class
-**/
+ **/
 class Reservation extends CommonDBChild
 {
    // From CommonDBChild
@@ -44,18 +44,18 @@ class Reservation extends CommonDBChild
     public static $checkParentRights = self::HAVE_VIEW_RIGHT_ON_ITEM;
 
 
-   /**
-    * @param $nb  integer  for singular or plural
-   **/
+    /**
+     * @param $nb  integer  for singular or plural
+     **/
     public static function getTypeName($nb = 0)
     {
         return _n('Reservation', 'Reservations', $nb);
     }
 
 
-   /**
-    * @see CommonGLPI::getTabNameForItem()
-   **/
+    /**
+     * @see CommonGLPI::getTabNameForItem()
+     **/
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
 
@@ -69,11 +69,11 @@ class Reservation extends CommonDBChild
     }
 
 
-   /**
-    * @param $item         CommonGLPI object
-    * @param $tabnum       (default1)
-    * @param $withtemplate (default0)
-   **/
+    /**
+     * @param $item         CommonGLPI object
+     * @param $tabnum       (default1)
+     * @param $withtemplate (default0)
+     **/
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
 
@@ -107,9 +107,9 @@ class Reservation extends CommonDBChild
     }
 
 
-   /**
-    * @see CommonDBChild::prepareInputForUpdate()
-   **/
+    /**
+     * @see CommonDBChild::prepareInputForUpdate()
+     **/
     public function prepareInputForUpdate($input)
     {
 
@@ -145,9 +145,9 @@ class Reservation extends CommonDBChild
     }
 
 
-   /**
-    * @see CommonDBTM::post_updateItem()
-   **/
+    /**
+     * @see CommonDBTM::post_updateItem()
+     **/
     public function post_updateItem($history = 1)
     {
         global $CFG_GLPI;
@@ -166,9 +166,9 @@ class Reservation extends CommonDBChild
     }
 
 
-   /**
-    * @see CommonDBChild::prepareInputForAdd()
-   **/
+    /**
+     * @see CommonDBChild::prepareInputForAdd()
+     **/
     public function prepareInputForAdd($input)
     {
 
@@ -210,9 +210,9 @@ class Reservation extends CommonDBChild
 
    // SPECIFIC FUNCTIONS
 
-   /**
-    * @param $reservationitems_id
-   **/
+    /**
+     * @param $reservationitems_id
+     **/
     public function getUniqueGroupFor($reservationitems_id)
     {
         global $DB;
@@ -235,11 +235,11 @@ class Reservation extends CommonDBChild
     }
 
 
-   /**
-    * Is the item already reserved ?
-    *
-    *@return boolean
-   **/
+    /**
+     * Is the item already reserved ?
+     *
+     *@return boolean
+     **/
     public function is_reserved()
     {
         global $DB;
@@ -270,11 +270,11 @@ class Reservation extends CommonDBChild
     }
 
 
-   /**
-    * Current dates are valid ? begin before end
-    *
-    *@return boolean
-   **/
+    /**
+     * Current dates are valid ? begin before end
+     *
+     *@return boolean
+     **/
     public function test_valid_date()
     {
 
@@ -284,14 +284,14 @@ class Reservation extends CommonDBChild
     }
 
 
-   /**
-    * display error message
-    *
-    * @param $type   error type : date / is_res / other
-    * @param $ID     ID of the item
-    *
-    * @return void
-   **/
+    /**
+     * display error message
+     *
+     * @param $type   error type : date / is_res / other
+     * @param $ID     ID of the item
+     *
+     * @return void
+     **/
     public function displayError($type, $ID)
     {
 
@@ -314,37 +314,37 @@ class Reservation extends CommonDBChild
     }
 
 
-   /**
-    * @since 0.84
-   **/
+    /**
+     * @since 0.84
+     **/
     public static function canCreate()
     {
         return (Session::haveRight(self::$rightname, ReservationItem::RESERVEANITEM));
     }
 
 
-   /**
-    * @since 0.84
-   **/
+    /**
+     * @since 0.84
+     **/
     public static function canUpdate()
     {
         return (Session::haveRight(self::$rightname, ReservationItem::RESERVEANITEM));
     }
 
 
-   /**
-    * @since 0.84
-   **/
+    /**
+     * @since 0.84
+     **/
     public static function canDelete()
     {
         return (Session::haveRight(self::$rightname, ReservationItem::RESERVEANITEM));
     }
 
 
-   /**
-    * Overload canChildItem to make specific checks
-    * @since 0.84
-   **/
+    /**
+     * Overload canChildItem to make specific checks
+     * @since 0.84
+     **/
     public function canChildItem($methodItem, $methodNotItem)
     {
 
@@ -391,11 +391,11 @@ class Reservation extends CommonDBChild
     }
 
 
-   /**
-    * Show reservation calendar
-    *
-    * @param $ID   ID of the reservation item (if 0 display all) (default '')
-   **/
+    /**
+     * Show reservation calendar
+     *
+     * @param $ID   ID of the reservation item (if 0 display all) (default '')
+     **/
     public static function showCalendar(int $ID = 0)
     {
         global $CFG_GLPI;
@@ -607,18 +607,18 @@ JAVASCRIPT;
     }
 
 
-   /**
-    * Change dates of a selected reservation.
-    * Called from a drag&drop in planning
-    *
-    * @param array $options: must contains this keys :
-    *  - id : integer to identify reservation
-    *  - begin : planning start .
-    *       (should be an ISO_8601 date, but could be anything wo can be parsed by strtotime)
-    *  - end : planning end .
-    *       (should be an ISO_8601 date, but could be anything wo can be parsed by strtotime)
-    * @return bool
-    */
+    /**
+     * Change dates of a selected reservation.
+     * Called from a drag&drop in planning
+     *
+     * @param array $options: must contains this keys :
+     *  - id : integer to identify reservation
+     *  - begin : planning start .
+     *       (should be an ISO_8601 date, but could be anything wo can be parsed by strtotime)
+     *  - end : planning end .
+     *       (should be an ISO_8601 date, but could be anything wo can be parsed by strtotime)
+     * @return bool
+     */
     public static function updateEvent(array $event = []): bool
     {
 
@@ -635,14 +635,14 @@ JAVASCRIPT;
     }
 
 
-   /**
-    * Display for reservation
-    *
-    * @param $ID              ID of the reservation (empty for create new)
-    * @param $options   array of possibles options:
-    *     - item  reservation items ID for creation process
-    *     - date date for creation process
-   **/
+    /**
+     * Display for reservation
+     *
+     * @param $ID              ID of the reservation (empty for create new)
+     * @param $options   array of possibles options:
+     *     - item  reservation items ID for creation process
+     *     - date date for creation process
+     **/
     public function showForm($ID, array $options = [])
     {
         global $CFG_GLPI;
@@ -865,15 +865,15 @@ JAVASCRIPT;
     }
 
 
-   /**
-    * compute periodicities for reservation
-    *
-    * @since 0.84
-    *
-    * @param $begin             begin of the initial reservation
-    * @param $end               begin of the initial reservation
-    * @param $options   array   periodicity parameters : must contain : type (day/week/month), end
-   **/
+    /**
+     * compute periodicities for reservation
+     *
+     * @since 0.84
+     *
+     * @param $begin             begin of the initial reservation
+     * @param $end               begin of the initial reservation
+     * @param $options   array   periodicity parameters : must contain : type (day/week/month), end
+     **/
     public static function computePeriodicities($begin, $end, $options = [])
     {
         $toadd = [];
@@ -980,12 +980,12 @@ JAVASCRIPT;
     }
 
 
-   /**
-    * Display reservations for an item
-    *
-    * @param $item            CommonDBTM object for which the reservation tab need to be displayed
-    * @param $withtemplate    withtemplate param (default 0)
-   **/
+    /**
+     * Display reservations for an item
+     *
+     * @param $item            CommonDBTM object for which the reservation tab need to be displayed
+     * @param $withtemplate    withtemplate param (default 0)
+     **/
     public static function showForItem(CommonDBTM $item, $withtemplate = 0)
     {
         if (!Session::haveRight("reservation", READ)) {
@@ -1038,11 +1038,11 @@ JAVASCRIPT;
     }
 
 
-   /**
-    * Display reservations for a user
-    *
-    * @param $ID ID a the user
-   **/
+    /**
+     * Display reservations for a user
+     *
+     * @param $ID ID a the user
+     **/
     public static function showForUser($ID)
     {
         global $DB, $CFG_GLPI;

@@ -35,7 +35,7 @@
  * ProjectState Class
  *
  * @since 0.85
-**/
+ **/
 class ProjectState extends CommonDropdown
 {
     public static function getTypeName($nb = 0)

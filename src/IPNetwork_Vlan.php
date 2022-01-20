@@ -33,7 +33,7 @@
 
 /**
  * @since 0.84
-**/
+ **/
 class IPNetwork_Vlan extends CommonDBRelation
 {
    // From CommonDBRelation
@@ -54,10 +54,10 @@ class IPNetwork_Vlan extends CommonDBRelation
     }
 
 
-   /**
-    * @param $portID
-    * @param $vlanID
-   **/
+    /**
+     * @param $portID
+     * @param $vlanID
+     **/
     public function unassignVlan($portID, $vlanID)
     {
 
@@ -70,10 +70,10 @@ class IPNetwork_Vlan extends CommonDBRelation
     }
 
 
-   /**
-    * @param $port
-    * @param $vlan
-   **/
+    /**
+     * @param $port
+     * @param $vlan
+     **/
     public function assignVlan($port, $vlan)
     {
 
@@ -84,9 +84,9 @@ class IPNetwork_Vlan extends CommonDBRelation
     }
 
 
-   /**
-    * @param $port   IPNetwork object
-   **/
+    /**
+     * @param $port   IPNetwork object
+     **/
     public static function showForIPNetwork(IPNetwork $port)
     {
         global $DB, $CFG_GLPI;
@@ -200,9 +200,9 @@ class IPNetwork_Vlan extends CommonDBRelation
     }
 
 
-   /**
-    * @param $portID
-   **/
+    /**
+     * @param $portID
+     **/
     public static function getVlansForIPNetwork($portID)
     {
         global $DB;

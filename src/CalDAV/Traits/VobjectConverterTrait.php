@@ -54,14 +54,14 @@ use Sabre\VObject\Reader;
  */
 trait VobjectConverterTrait
 {
-   /**
-    * Get VCalendar object for given item.
-    *
-    * @param \CommonDBTM $item
-    * @param string      $component_type  Base component type (i.e. VEVENT, VTODO, ...).
-    *
-    * @return VCalendar
-    */
+    /**
+     * Get VCalendar object for given item.
+     *
+     * @param \CommonDBTM $item
+     * @param string      $component_type  Base component type (i.e. VEVENT, VTODO, ...).
+     *
+     * @return VCalendar
+     */
     protected function getVCalendarForItem(\CommonDBTM $item, $component_type): VCalendar
     {
         global $CFG_GLPI;
@@ -178,14 +178,14 @@ trait VobjectConverterTrait
         return $vcalendar;
     }
 
-   /**
-    * Return the most relevant caldav component according to configuration.
-    *
-    * @param boolean $is_planned
-    * @param boolean $is_task
-    *
-    * @return string|null
-    */
+    /**
+     * Return the most relevant caldav component according to configuration.
+     *
+     * @param boolean $is_planned
+     * @param boolean $is_task
+     *
+     * @return string|null
+     */
     protected function getTargetCaldavComponent(bool $is_planned, bool $is_task)
     {
         global $CFG_GLPI;
@@ -209,14 +209,14 @@ trait VobjectConverterTrait
         return null;
     }
 
-   /**
-    * Get common item input for given component.
-    *
-    * @param Component $vcomponent
-    * @param bool      $is_new_item
-    *
-    * @return array
-    */
+    /**
+     * Get common item input for given component.
+     *
+     * @param Component $vcomponent
+     * @param bool      $is_new_item
+     *
+     * @return array
+     */
     protected function getCommonInputFromVcomponent(Component $vcomponent, bool $is_new_item = true)
     {
         if (
@@ -265,13 +265,13 @@ trait VobjectConverterTrait
         return $input;
     }
 
-   /**
-    * Get content input from component converted into HTML format.
-    *
-    * @param Component $vcomponent
-    *
-    * @return string|null
-    */
+    /**
+     * Get content input from component converted into HTML format.
+     *
+     * @param Component $vcomponent
+     *
+     * @return string|null
+     */
     private function getContentRichTextInputFromVComponent(Component $vcomponent)
     {
         if (!($vcomponent->DESCRIPTION instanceof FlatText)) {
@@ -287,13 +287,13 @@ trait VobjectConverterTrait
         return $content;
     }
 
-   /**
-    * Get state input from component (see Planning constants).
-    *
-    * @param Component $vcomponent
-    *
-    * @return integer|null
-    */
+    /**
+     * Get state input from component (see Planning constants).
+     *
+     * @param Component $vcomponent
+     *
+     * @return integer|null
+     */
     private function getStateInputFromVComponent(Component $vcomponent)
     {
         if (!($vcomponent->STATUS instanceof FlatText)) {
@@ -303,16 +303,16 @@ trait VobjectConverterTrait
         return 'COMPLETED' === $vcomponent->STATUS->getValue() ? \Planning::DONE : \Planning::TODO;
     }
 
-   /**
-    * Return begin/end date from component as an array object containing:
-    *  - 'begin': begin date in 'Y-m-d H:i:s' format;
-    *  - 'end':   end date in 'Y-m-d H:i:s' format.
-    * If object does not contain plan information, return null.
-    *
-    * @param Component $vcomponent
-    *
-    * @return array|null
-    */
+    /**
+     * Return begin/end date from component as an array object containing:
+     *  - 'begin': begin date in 'Y-m-d H:i:s' format;
+     *  - 'end':   end date in 'Y-m-d H:i:s' format.
+     * If object does not contain plan information, return null.
+     *
+     * @param Component $vcomponent
+     *
+     * @return array|null
+     */
     private function getPlanInputFromVComponent(Component $vcomponent)
     {
         if (!($vcomponent->DTSTART instanceof DateTime)) {
@@ -350,13 +350,13 @@ trait VobjectConverterTrait
         ];
     }
 
-   /**
-    * Get rrule input from component in format expected by events methods.
-    *
-    * @param Component $vcomponent
-    *
-    * @return array|null
-    */
+    /**
+     * Get rrule input from component in format expected by events methods.
+     *
+     * @param Component $vcomponent
+     *
+     * @return array|null
+     */
     private function getRRuleInputFromVComponent(Component $vcomponent)
     {
         if (!($vcomponent->RRULE instanceof Recur)) {

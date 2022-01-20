@@ -43,13 +43,13 @@ use Glpi\CalDAV\Contracts\CalDAVCompatibleItemInterface;
  */
 trait CalDAVUriUtilTrait
 {
-   /**
-    * Get principal URI, relative to CalDAV server root.
-    *
-    * @param \CommonDBTM $item
-    *
-    * @return string|null
-    */
+    /**
+     * Get principal URI, relative to CalDAV server root.
+     *
+     * @param \CommonDBTM $item
+     *
+     * @return string|null
+     */
     protected function getPrincipalUri(\CommonDBTM $item)
     {
 
@@ -67,38 +67,38 @@ trait CalDAVUriUtilTrait
         return $principal_uri;
     }
 
-   /**
-    * Get principal URI for a group, relative to CalDAV server root.
-    *
-    * @param integer $group_id
-    *
-    * @return string
-    */
+    /**
+     * Get principal URI for a group, relative to CalDAV server root.
+     *
+     * @param integer $group_id
+     *
+     * @return string
+     */
     protected function getGroupPrincipalUri($group_id)
     {
         return Principal::PREFIX_GROUPS . '/' . $group_id;
     }
 
-   /**
-    * Get principal URI for a user, relative to CalDAV server root.
-    *
-    * @param string $username
-    *
-    * @return string|null
-    */
+    /**
+     * Get principal URI for a user, relative to CalDAV server root.
+     *
+     * @param string $username
+     *
+     * @return string|null
+     */
     protected function getUserPrincipalUri($username)
     {
         return Principal::PREFIX_USERS . '/' . $username;
         ;
     }
 
-   /**
-    * Return item corresponding to given URI.
-    *
-    * @param string $uri
-    *
-    * @return \CommonDBTM|null
-    */
+    /**
+     * Return item corresponding to given URI.
+     *
+     * @param string $uri
+     *
+     * @return \CommonDBTM|null
+     */
     protected function getPrincipalItemFromUri($uri)
     {
         $principal_itemtype = $this->getPrincipalItemtypeFromUri($uri);
@@ -123,13 +123,13 @@ trait CalDAVUriUtilTrait
         return $found ? $item : null;
     }
 
-   /**
-    * Return itemtype corresponding to given URI.
-    *
-    * @param string $uri
-    *
-    * @return string|null
-    */
+    /**
+     * Return itemtype corresponding to given URI.
+     *
+     * @param string $uri
+     *
+     * @return string|null
+     */
     protected function getPrincipalItemtypeFromUri($uri)
     {
         $uri_parts = \Sabre\Uri\split($uri);
@@ -149,39 +149,39 @@ trait CalDAVUriUtilTrait
         return $itemtype;
     }
 
-   /**
-    * Return group id corresponding to given principal URI.
-    *
-    * @param string $uri
-    *
-    * @return string|null
-    */
+    /**
+     * Return group id corresponding to given principal URI.
+     *
+     * @param string $uri
+     *
+     * @return string|null
+     */
     protected function getGroupIdFromPrincipalUri($uri)
     {
         $uri_parts = \Sabre\Uri\split($uri);
         return \Group::class === $this->getPrincipalItemtypeFromUri($uri) ? $uri_parts[1] : null;
     }
 
-   /**
-    * Return user name corresponding to given principal URI.
-    *
-    * @param string $uri
-    *
-    * @return string|null
-    */
+    /**
+     * Return user name corresponding to given principal URI.
+     *
+     * @param string $uri
+     *
+     * @return string|null
+     */
     protected function getUsernameFromPrincipalUri($uri)
     {
         $uri_parts = \Sabre\Uri\split($uri);
         return \User::class === $this->getPrincipalItemtypeFromUri($uri) ? $uri_parts[1] : null;
     }
 
-   /**
-    * Returns calendar item for given UID.
-    *
-    * @param string  $uid
-    *
-    * @return CalDAVCompatibleItemInterface|null
-    */
+    /**
+     * Returns calendar item for given UID.
+     *
+     * @param string  $uid
+     *
+     * @return CalDAVCompatibleItemInterface|null
+     */
     protected function getCalendarItemForUid($uid)
     {
 
@@ -251,13 +251,13 @@ trait CalDAVUriUtilTrait
         return $item;
     }
 
-   /**
-    * Returns calendar item for given path.
-    *
-    * @param string  $path
-    *
-    * @return CalDAVCompatibleItemInterface|null
-    */
+    /**
+     * Returns calendar item for given path.
+     *
+     * @param string  $path
+     *
+     * @return CalDAVCompatibleItemInterface|null
+     */
     protected function getCalendarItemForPath($path)
     {
         return $this->getCalendarItemForUid(preg_replace('/\.ics$/', '', $path));

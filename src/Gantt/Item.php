@@ -60,11 +60,11 @@ class Item implements \JsonSerializable
         $this->open = 1;
     }
 
-   /**
-    * Populates Item instances with Json data
-    *
-    * @param $json Json data
-    */
+    /**
+     * Populates Item instances with Json data
+     *
+     * @param $json Json data
+     */
     public function populateFrom($json)
     {
         if (isset($json["id"])) {
@@ -90,9 +90,9 @@ class Item implements \JsonSerializable
         }
     }
 
-   /**
-    * Enables Json serialization of Item objects
-    */
+    /**
+     * Enables Json serialization of Item objects
+     */
     #[ReturnTypeWillChange]
     public function jsonSerialize()
     {

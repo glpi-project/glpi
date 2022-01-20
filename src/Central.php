@@ -37,7 +37,7 @@ use Glpi\Plugin\Hooks;
 
 /**
  * Central class
-**/
+ **/
 class Central extends CommonGLPI
 {
     public static function getTypeName($nb = 0)
@@ -125,9 +125,9 @@ class Central extends CommonGLPI
     }
 
 
-   /**
-    * Show the central global view
-   **/
+    /**
+     * Show the central global view
+     **/
     public static function showGlobalView()
     {
 
@@ -162,9 +162,9 @@ class Central extends CommonGLPI
     }
 
 
-   /**
-    * Show the central personal view
-   **/
+    /**
+     * Show the central personal view
+     **/
     public static function showMyView()
     {
         $showticket  = Session::haveRightsOr(
@@ -307,11 +307,11 @@ class Central extends CommonGLPI
     }
 
 
-   /**
-    * Show the central RSS view
-    *
-    * @since 0.84
-   **/
+    /**
+     * Show the central RSS view
+     *
+     * @since 0.84
+     **/
     public static function showRSSView()
     {
 
@@ -348,9 +348,9 @@ class Central extends CommonGLPI
     }
 
 
-   /**
-    * Show the central group view
-   **/
+    /**
+     * Show the central group view
+     **/
     public static function showGroupView()
     {
 

@@ -37,7 +37,7 @@ use Glpi\RichText\RichText;
  * ReminderTranslation Class
  *
  * @since 9.5
-**/
+ **/
 class ReminderTranslation extends CommonDBChild
 {
     public static $itemtype = 'Reminder';
@@ -64,13 +64,13 @@ class ReminderTranslation extends CommonDBChild
     }
 
 
-   /**
-    * @param \CommonGLPI $item
-    * @param int         $withtemplate
-    *
-    * @return array|string
-    * @see CommonGLPI::getTabNameForItem()
-    */
+    /**
+     * @param \CommonGLPI $item
+     * @param int         $withtemplate
+     *
+     * @return array|string
+     * @see CommonGLPI::getTabNameForItem()
+     */
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
 
@@ -89,14 +89,14 @@ class ReminderTranslation extends CommonDBChild
     }
 
 
-   /**
-    * @param $item            CommonGLPI object
-    * @param $tabnum (default 1)
-    * @param $withtemplate (default 0)
-    **
-    *
-    * @return bool
-    */
+    /**
+     * @param $item            CommonGLPI object
+     * @param $tabnum (default 1)
+     * @param $withtemplate (default 0)
+     **
+     *
+     * @return bool
+     */
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
 
@@ -110,13 +110,13 @@ class ReminderTranslation extends CommonDBChild
     }
 
 
-   /**
-    * Display all translated field for an Reminder
-    *
-    * @param $item a Reminder item
-    *
-    * @return true;
-   **/
+    /**
+     * Display all translated field for an Reminder
+     *
+     * @param $item a Reminder item
+     *
+     * @return true;
+     **/
     public static function showTranslations(Reminder $item)
     {
         global $CFG_GLPI;
@@ -202,12 +202,12 @@ class ReminderTranslation extends CommonDBChild
     }
 
 
-   /**
-    * Display translation form
-    *
-    * @param integer $ID
-    * @param array   $options
-    */
+    /**
+     * Display translation form
+     *
+     * @param integer $ID
+     * @param array   $options
+     */
     public function showForm($ID = -1, array $options = [])
     {
 
@@ -258,14 +258,14 @@ class ReminderTranslation extends CommonDBChild
     }
 
 
-   /**
-    * Get a translation for a value
-    *
-    * @param Reminder $item   item to translate
-    * @param string       $field  field to return (default 'name')
-    *
-    * @return string  the field translated if a translation is available, or the original field if not
-   **/
+    /**
+     * Get a translation for a value
+     *
+     * @param Reminder $item   item to translate
+     * @param string       $field  field to return (default 'name')
+     *
+     * @return string  the field translated if a translation is available, or the original field if not
+     **/
     public static function getTranslatedValue(Reminder $item, $field = "name")
     {
         $obj   = new self();
@@ -285,11 +285,11 @@ class ReminderTranslation extends CommonDBChild
     }
 
 
-   /**
-    * Is kb item translation functionnality active
-    *
-    * @return boolean
-   **/
+    /**
+     * Is kb item translation functionnality active
+     *
+     * @return boolean
+     **/
     public static function isReminderTranslationActive()
     {
         global $CFG_GLPI;
@@ -298,15 +298,15 @@ class ReminderTranslation extends CommonDBChild
     }
 
 
-   /**
-    * Check if an item can be translated
-    * It be translated if translation if globally on and item is an instance of CommonDropdown
-    * or CommonTreeDropdown and if translation is enabled for this class
-    *
-    * @param item the item to check
-    *
-    * @return true if item can be translated, false otherwise
-   **/
+    /**
+     * Check if an item can be translated
+     * It be translated if translation if globally on and item is an instance of CommonDropdown
+     * or CommonTreeDropdown and if translation is enabled for this class
+     *
+     * @param item the item to check
+     *
+     * @return true if item can be translated, false otherwise
+     **/
     public static function canBeTranslated(CommonGLPI $item)
     {
 
@@ -315,13 +315,13 @@ class ReminderTranslation extends CommonDBChild
     }
 
 
-   /**
-    * Return the number of translations for an item
-    *
-    * @param Reminder $item
-    *
-    * @return integer  the number of translations for this item
-   **/
+    /**
+     * Return the number of translations for an item
+     *
+     * @param Reminder $item
+     *
+     * @return integer  the number of translations for this item
+     **/
     public static function getNumberOfTranslationsForItem($item)
     {
 
@@ -332,13 +332,13 @@ class ReminderTranslation extends CommonDBChild
     }
 
 
-   /**
-    * Get already translated languages for item
-    *
-    * @param item
-    *
-    * @return array of already translated languages
-   **/
+    /**
+     * Get already translated languages for item
+     *
+     * @param item
+     *
+     * @return array of already translated languages
+     **/
     public static function getAlreadyTranslatedForItem($item)
     {
         global $DB;

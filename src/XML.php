@@ -105,9 +105,9 @@ class XML
       </dataxml>
     */
 
-   /**
-    * Do XML export
-   **/
+    /**
+     * Do XML export
+     **/
     public function DoXML()
     {
         global $DB;

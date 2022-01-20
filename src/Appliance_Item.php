@@ -93,13 +93,13 @@ class Appliance_Item extends CommonDBRelation
         return true;
     }
 
-   /**
-    * Print enclosure items
-    *
-    * @param Appliance $appliance  Appliance object wanted
-    *
-    * @return void|boolean (display) Returns false if there is a rights error.
-   **/
+    /**
+     * Print enclosure items
+     *
+     * @param Appliance $appliance  Appliance object wanted
+     *
+     * @return void|boolean (display) Returns false if there is a rights error.
+     **/
     public static function showItems(Appliance $appliance)
     {
         global $DB;
@@ -229,16 +229,16 @@ class Appliance_Item extends CommonDBRelation
         }
     }
 
-   /**
-    * Print an HTML array of appliances associated to an object
-    *
-    * @since 9.5.2
-    *
-    * @param CommonDBTM $item         CommonDBTM object wanted
-    * @param boolean    $withtemplate not used (to be deleted)
-    *
-    * @return void
-   **/
+    /**
+     * Print an HTML array of appliances associated to an object
+     *
+     * @since 9.5.2
+     *
+     * @param CommonDBTM $item         CommonDBTM object wanted
+     * @param boolean    $withtemplate not used (to be deleted)
+     *
+     * @return void
+     **/
     public static function showForItem(CommonDBTM $item, $withtemplate = 0)
     {
 
@@ -378,13 +378,13 @@ class Appliance_Item extends CommonDBRelation
         return $this->prepareInput($input);
     }
 
-   /**
-    * Prepares input (for update and add)
-    *
-    * @param array $input Input data
-    *
-    * @return array
-    */
+    /**
+     * Prepares input (for update and add)
+     *
+     * @param array $input Input data
+     *
+     * @return array
+     */
     private function prepareInput($input)
     {
         $error_detected = [];

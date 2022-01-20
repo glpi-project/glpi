@@ -35,7 +35,7 @@
  * Profile class
  *
  * @since 0.85
-**/
+ **/
 class ProfileRight extends CommonDBChild
 {
    // From CommonDBChild:
@@ -44,11 +44,11 @@ class ProfileRight extends CommonDBChild
     public $dohistory       = true;
 
 
-   /**
-    * Get possible rights
-    *
-    * @return array
-    */
+    /**
+     * Get possible rights
+     *
+     * @return array
+     */
     public static function getAllPossibleRights()
     {
         global $DB, $GLPI_CACHE;
@@ -82,10 +82,10 @@ class ProfileRight extends CommonDBChild
         $GLPI_CACHE->delete('all_possible_rights');
     }
 
-   /**
-    * @param $profiles_id
-    * @param $rights         array
-   **/
+    /**
+     * @param $profiles_id
+     * @param $rights         array
+     **/
     public static function getProfileRights($profiles_id, array $rights = [])
     {
         global $DB;
@@ -111,11 +111,11 @@ class ProfileRight extends CommonDBChild
     }
 
 
-   /**
-    * @param $rights   array
-    *
-    * @return boolean
-   **/
+    /**
+     * @param $rights   array
+     *
+     * @return boolean
+     **/
     public static function addProfileRights(array $rights)
     {
         global $DB, $GLPI_CACHE;
@@ -147,11 +147,11 @@ class ProfileRight extends CommonDBChild
     }
 
 
-   /**
-    * @param $rights   array
-    *
-    * @return boolean
-   **/
+    /**
+     * @param $rights   array
+     *
+     * @return boolean
+     **/
     public static function deleteProfileRights(array $rights)
     {
         global $DB, $GLPI_CACHE;
@@ -173,13 +173,13 @@ class ProfileRight extends CommonDBChild
     }
 
 
-   /**
-    * @param $right
-    * @param $value
-    * @param $condition
-    *
-    * @return boolean
-   **/
+    /**
+     * @param $right
+     * @param $value
+     * @param $condition
+     *
+     * @return boolean
+     **/
     public static function updateProfileRightAsOtherRight($right, $value, $condition)
     {
         global $DB;
@@ -208,15 +208,15 @@ class ProfileRight extends CommonDBChild
     }
 
 
-   /**
-    * @since 0.85
-    *
-    * @param $newright      string   new right name
-    * @param $initialright  string   right name to check
-    * @param $condition              (default '')
-    *
-    * @return boolean
-   **/
+    /**
+     * @since 0.85
+     *
+     * @param $newright      string   new right name
+     * @param $initialright  string   right name to check
+     * @param $condition              (default '')
+     *
+     * @return boolean
+     **/
     public static function updateProfileRightsAsOtherRights($newright, $initialright, array $condition = [])
     {
         global $DB;
@@ -253,9 +253,9 @@ class ProfileRight extends CommonDBChild
         return $ok;
     }
 
-   /**
-    * @param $profiles_id
-   **/
+    /**
+     * @param $profiles_id
+     **/
     public static function fillProfileRights($profiles_id)
     {
         global $DB;
@@ -297,12 +297,12 @@ class ProfileRight extends CommonDBChild
     }
 
 
-   /**
-    * Update the rights of a profile (static since 0.90.1)
-    *
-    * @param $profiles_id
-    * @param $rights         array
-    */
+    /**
+     * Update the rights of a profile (static since 0.90.1)
+     *
+     * @param $profiles_id
+     * @param $rights         array
+     */
     public static function updateProfileRights($profiles_id, array $rights = [])
     {
 
@@ -330,11 +330,11 @@ class ProfileRight extends CommonDBChild
     }
 
 
-   /**
-    * To avoid log out and login when rights change (very useful in debug mode)
-    *
-    * @see CommonDBChild::post_updateItem()
-   **/
+    /**
+     * To avoid log out and login when rights change (very useful in debug mode)
+     *
+     * @see CommonDBChild::post_updateItem()
+     **/
     public function post_updateItem($history = 1)
     {
 
@@ -351,13 +351,13 @@ class ProfileRight extends CommonDBChild
     }
 
 
-   /**
-    * @since 085
-    *
-    * @param $field
-    * @param $values
-    * @param $options   array
-   **/
+    /**
+     * @since 085
+     *
+     * @param $field
+     * @param $values
+     * @param $options   array
+     **/
     public static function getSpecificValueToDisplay($field, $values, array $options = [])
     {
 
@@ -383,11 +383,11 @@ class ProfileRight extends CommonDBChild
     }
 
 
-   /**
-    * @since 0.85
-    *
-    * @see CommonDBTM::getLogTypeID()
-   **/
+    /**
+     * @since 0.85
+     *
+     * @see CommonDBTM::getLogTypeID()
+     **/
     public function getLogTypeID()
     {
         return ['Profile', $this->fields['profiles_id']];

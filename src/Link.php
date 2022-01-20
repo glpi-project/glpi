@@ -32,7 +32,7 @@
  */
 
 /** Link Class
-**/
+ **/
 class Link extends CommonDBTM
 {
    // From CommonDBTM
@@ -50,11 +50,11 @@ class Link extends CommonDBTM
     }
 
 
-   /**
-    * For plugins, add a tag to the links tags
-    *
-    * @param $tag    string    class name
-   **/
+    /**
+     * For plugins, add a tag to the links tags
+     *
+     * @param $tag    string    class name
+     **/
     public static function registerTag($tag)
     {
 
@@ -121,11 +121,11 @@ class Link extends CommonDBTM
     }
 
 
-   /**
-    * @since 0.85
-    *
-    * @see CommonDBTM::getEmpty()
-   **/
+    /**
+     * @since 0.85
+     *
+     * @see CommonDBTM::getEmpty()
+     **/
     public function getEmpty()
     {
 
@@ -135,15 +135,15 @@ class Link extends CommonDBTM
     }
 
 
-   /**
-   * Print the link form
-   *
-   * @param $ID      integer ID of the item
-   * @param $options array
-   *     - target filename : where to go when done.
-   *
-   * @return void
-   **/
+    /**
+     * Print the link form
+     *
+     * @param $ID      integer ID of the item
+     * @param $options array
+     *     - target filename : where to go when done.
+     *
+     * @return void
+     **/
     public function showForm($ID, array $options = [])
     {
 
@@ -257,14 +257,14 @@ class Link extends CommonDBTM
     }
 
 
-   /**
-    * Generate link
-    *
-    * @param $link    string   original string content
-    * @param $item             CommonDBTM object: item used to make replacements
-    *
-    * @return array of link contents (may have several when item have several IP / MAC cases)
-   **/
+    /**
+     * Generate link
+     *
+     * @param $link    string   original string content
+     * @param $item             CommonDBTM object: item used to make replacements
+     *
+     * @return array of link contents (may have several when item have several IP / MAC cases)
+     **/
     public static function generateLinkContents($link, CommonDBTM $item)
     {
         global $DB, $CFG_GLPI;
@@ -560,12 +560,12 @@ class Link extends CommonDBTM
     }
 
 
-   /**
-    * Show Links for an item
-    *
-    * @param $item                     CommonDBTM object
-    * @param $withtemplate    integer  withtemplate param (default 0)
-   **/
+    /**
+     * Show Links for an item
+     *
+     * @param $item                     CommonDBTM object
+     * @param $withtemplate    integer  withtemplate param (default 0)
+     **/
     public static function showForItem(CommonDBTM $item, $withtemplate = 0)
     {
         global $DB;
@@ -608,14 +608,14 @@ class Link extends CommonDBTM
         echo "</table></div>";
     }
 
-   /**
-    * Show Links for an item
-    *
-    * @since 0.85
-    *
-    * @param $item                        CommonDBTM object
-    * @param $params    array of params : must contain id / name / link / data
-   **/
+    /**
+     * Show Links for an item
+     *
+     * @since 0.85
+     *
+     * @param $item                        CommonDBTM object
+     * @param $params    array of params : must contain id / name / link / data
+     **/
     public static function getAllLinksFor($item, $params = [])
     {
         global $CFG_GLPI;

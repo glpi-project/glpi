@@ -35,7 +35,7 @@
  * Chang Template class
  *
  * since version 9.5.0
-**/
+ **/
 class ChangeTemplate extends ITILTemplate
 {
     use Glpi\Features\Clonable;

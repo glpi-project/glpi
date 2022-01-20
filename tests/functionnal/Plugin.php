@@ -231,20 +231,20 @@ class Plugin extends DbTestCase
         )->isEmpty();
     }
 
-   /**
-    * Test state checking on an invalid directory corresponding to an unknown plugin.
-    * Should have no effect.
-    */
+    /**
+     * Test state checking on an invalid directory corresponding to an unknown plugin.
+     * Should have no effect.
+     */
     public function testCheckPluginStateForInvalidUnknownPlugin()
     {
 
         $this->doTestCheckPluginState(null, null, null);
     }
 
-   /**
-    * Test state checking on an invalid directory corresponding to a known plugin.
-    * Should results in no change in plugin state, as "TOBECLEANED" state is realtime computed.
-    */
+    /**
+     * Test state checking on an invalid directory corresponding to a known plugin.
+     * Should results in no change in plugin state, as "TOBECLEANED" state is realtime computed.
+     */
     public function testCheckPluginStateForInvalidKnownPlugin()
     {
 
@@ -268,10 +268,10 @@ class Plugin extends DbTestCase
         $this->boolean($plugin_inst->isActivated($this->test_plugin_directory));
     }
 
-   /**
-    * Test state checking on a valid directory corresponding to an unknown plugin.
-    * Should results in creating plugin with "NOTINSTALLED" state.
-    */
+    /**
+     * Test state checking on a valid directory corresponding to an unknown plugin.
+     * Should results in creating plugin with "NOTINSTALLED" state.
+     */
     public function testCheckPluginStateForNewPlugin()
     {
 
@@ -294,11 +294,11 @@ class Plugin extends DbTestCase
         );
     }
 
-   /**
-    * Test state checking on a valid directory corresponding to a known and installed plugin
-    * with a different version.
-    * Should results in changing plugin state to "NOTUPDATED".
-    */
+    /**
+     * Test state checking on a valid directory corresponding to a known and installed plugin
+     * with a different version.
+     * Should results in changing plugin state to "NOTUPDATED".
+     */
     public function testCheckPluginStateForInstalledAndUpdatablePlugin()
     {
 
@@ -332,11 +332,11 @@ class Plugin extends DbTestCase
         $this->boolean($plugin_inst->isUpdatable($this->test_plugin_directory));
     }
 
-   /**
-    * Test state checking on a valid directory corresponding to a known and NOT installed plugin
-    * with a different version.
-    * Should results in keeping plugin state to "NOTINSTALLED".
-    */
+    /**
+     * Test state checking on a valid directory corresponding to a known and NOT installed plugin
+     * with a different version.
+     * Should results in keeping plugin state to "NOTINSTALLED".
+     */
     public function testCheckPluginStateForNotInstalledAndUpdatablePlugin()
     {
 
@@ -365,11 +365,11 @@ class Plugin extends DbTestCase
         );
     }
 
-   /**
-    * Test state checking on a valid directory corresponding to a known and NOT UPDATED plugin
-    * with a different version.
-    * Should results in keeping plugin state to "NOTUPDATED".
-    */
+    /**
+     * Test state checking on a valid directory corresponding to a known and NOT UPDATED plugin
+     * with a different version.
+     * Should results in keeping plugin state to "NOTUPDATED".
+     */
     public function testCheckPluginStateForNotUpdatededAndUpdatablePlugin()
     {
 
@@ -398,11 +398,11 @@ class Plugin extends DbTestCase
         );
     }
 
-   /**
-    * Test state checking on a valid directory corresponding to a plugin that has been renamed and is now located
-    * into a different directory.
-    * Should results in changing plugin directory to new value and state to "NOTUPDATED".
-    */
+    /**
+     * Test state checking on a valid directory corresponding to a plugin that has been renamed and is now located
+     * into a different directory.
+     * Should results in changing plugin directory to new value and state to "NOTUPDATED".
+     */
     public function testCheckPluginStateForPluginThatHasBeenRenamed()
     {
 
@@ -451,10 +451,10 @@ class Plugin extends DbTestCase
         $this->integer((int)$plugin->fields['state'])->isIdenticalTo(\Plugin::NOTUPDATED);
     }
 
-   /**
-    * Test state checking on a valid directory corresponding to a plugin that is known with its old name.
-    * Should results in changing plugin directory to new value and state to "NOTUPDATED".
-    */
+    /**
+     * Test state checking on a valid directory corresponding to a plugin that is known with its old name.
+     * Should results in changing plugin directory to new value and state to "NOTUPDATED".
+     */
     public function testCheckPluginStateForPluginKnownWithItsOldName()
     {
 
@@ -489,10 +489,10 @@ class Plugin extends DbTestCase
         $this->boolean($plugin_inst->isUpdatable($this->test_plugin_directory));
     }
 
-   /**
-    * Test state checking on a valid directory corresponding to a known inactive plugin with no modifications.
-    * Should results in no changes.
-    */
+    /**
+     * Test state checking on a valid directory corresponding to a known inactive plugin with no modifications.
+     * Should results in no changes.
+     */
     public function testCheckPluginStateForInactiveAndNotUpdatedPlugin()
     {
 
@@ -515,11 +515,11 @@ class Plugin extends DbTestCase
         );
     }
 
-   /**
-    * Test state checking on a valid directory corresponding to a known inactive plugin with no modifications
-    * but not validating config.
-    * Should results in changing plugin state to "TOBECONFIGURED".
-    */
+    /**
+     * Test state checking on a valid directory corresponding to a known inactive plugin with no modifications
+     * but not validating config.
+     * Should results in changing plugin state to "TOBECONFIGURED".
+     */
     public function testCheckPluginStateForInactiveAndNotUpdatedPluginNotValidatingConfig()
     {
 
@@ -550,11 +550,11 @@ class Plugin extends DbTestCase
         );
     }
 
-   /**
-    * Test state checking on a valid directory corresponding to a known active plugin with no modifications
-    * but not matching versions.
-    * Should results in changing plugin state to "NOTACTIVATED".
-    */
+    /**
+     * Test state checking on a valid directory corresponding to a known active plugin with no modifications
+     * but not matching versions.
+     * Should results in changing plugin state to "NOTACTIVATED".
+     */
     public function testCheckPluginStateForActiveAndNotUpdatedPluginNotMatchingVersions()
     {
 
@@ -592,11 +592,11 @@ class Plugin extends DbTestCase
         $this->boolean($plugin_inst->isUpdatable($this->test_plugin_directory));
     }
 
-   /**
-    * Test state checking on a valid directory corresponding to a known active plugin with no modifications
-    * but not matching prerequisites.
-    * Should results in changing plugin state to "NOTACTIVATED".
-    */
+    /**
+     * Test state checking on a valid directory corresponding to a known active plugin with no modifications
+     * but not matching prerequisites.
+     * Should results in changing plugin state to "NOTACTIVATED".
+     */
     public function testCheckPluginStateForActiveAndNotUpdatedPluginNotMatchingPrerequisites()
     {
 
@@ -627,11 +627,11 @@ class Plugin extends DbTestCase
         );
     }
 
-   /**
-    * Test state checking on a valid directory corresponding to a known active plugin with no modifications
-    * but not validating config.
-    * Should results in changing plugin state to "TOBECONFIGURED".
-    */
+    /**
+     * Test state checking on a valid directory corresponding to a known active plugin with no modifications
+     * but not validating config.
+     * Should results in changing plugin state to "TOBECONFIGURED".
+     */
     public function testCheckPluginStateForActiveAndNotUpdatedPluginNotValidatingConfig()
     {
 
@@ -662,11 +662,11 @@ class Plugin extends DbTestCase
         );
     }
 
-   /**
-    * Test state checking on a valid directory corresponding to a known active plugin with no modifications,
-    * matching prerequisites and validating config.
-    * Should results in no changes.
-    */
+    /**
+     * Test state checking on a valid directory corresponding to a known active plugin with no modifications,
+     * matching prerequisites and validating config.
+     * Should results in no changes.
+     */
     public function testCheckPluginStateForActiveAndNotUpdatedPluginMatchingPrerequisitesAndConfig()
     {
 
@@ -692,11 +692,11 @@ class Plugin extends DbTestCase
         );
     }
 
-   /**
-    * Test state checking on a valid directory corresponding to a known active plugin with no modifications
-    * having nor check_prerequisites nor check_config function.
-    * Should results in no changes.
-    */
+    /**
+     * Test state checking on a valid directory corresponding to a known active plugin with no modifications
+     * having nor check_prerequisites nor check_config function.
+     * Should results in no changes.
+     */
     public function testCheckPluginStateForActiveAndNotUpdatedPluginHavingNoCheckFunctions()
     {
 
@@ -723,20 +723,20 @@ class Plugin extends DbTestCase
         $this->boolean($plugin_inst->isActivated($this->test_plugin_directory));
     }
 
-   /**
-    * Test that state checking on a plugin directory.
-    *
-    * /!\ Each iteration on this method has to be done on a different test method, unless you change
-    * the plugin directory on each time. Not doing this will prevent updating the `init` function of
-    * the plugin on each test.
-    *
-    * @param array|null  $initial_data       Initial data in DB, null for none.
-    * @param array|null  $setup_informations Information hosted by setup file, null for none.
-    * @param array|null  $expected_data      Expected data in DB, null for none.
-    * @param string|null $expected_warning   Expected warning message, null for none.
-    *
-    * @return void
-    */
+    /**
+     * Test that state checking on a plugin directory.
+     *
+     * /!\ Each iteration on this method has to be done on a different test method, unless you change
+     * the plugin directory on each time. Not doing this will prevent updating the `init` function of
+     * the plugin on each test.
+     *
+     * @param array|null  $initial_data       Initial data in DB, null for none.
+     * @param array|null  $setup_informations Information hosted by setup file, null for none.
+     * @param array|null  $expected_data      Expected data in DB, null for none.
+     * @param string|null $expected_warning   Expected warning message, null for none.
+     *
+     * @return void
+     */
     private function doTestCheckPluginState($initial_data, $setup_informations, $expected_data, $expected_warning = null)
     {
 
@@ -788,13 +788,13 @@ class Plugin extends DbTestCase
         }
     }
 
-   /**
-    * Returns test plugin files path.
-    *
-    * @param string $directory
-    *
-    * @return string
-    */
+    /**
+     * Returns test plugin files path.
+     *
+     * @param string $directory
+     *
+     * @return string
+     */
     private function getTestPluginPath($directory)
     {
 
@@ -804,15 +804,15 @@ class Plugin extends DbTestCase
         );
     }
 
-   /**
-    * Create test plugin files.
-    *
-    * @param boolean     $withsetup     Include setup file ?
-    * @param array       $informations  Information to put in setup files.
-    * @param null|string $directory     Directory where to create files, null to use default location.
-    *
-    * @return void
-    */
+    /**
+     * Create test plugin files.
+     *
+     * @param boolean     $withsetup     Include setup file ?
+     * @param array       $informations  Information to put in setup files.
+     * @param null|string $directory     Directory where to create files, null to use default location.
+     *
+     * @return void
+     */
     private function createTestPluginFiles($withsetup = true, array $informations = [], $directory = null)
     {
 

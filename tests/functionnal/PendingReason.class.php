@@ -88,9 +88,9 @@ class PendingReason extends DbTestCase
         ];
     }
 
-   /**
-    * @dataprovider testGetNextFollowupDateProvider
-    */
+    /**
+     * @dataprovider testGetNextFollowupDateProvider
+     */
     public function testGetNextFollowupDate(array $fields, $expected)
     {
         $pending_reason_item = new \PendingReason_Item();
@@ -181,9 +181,9 @@ class PendingReason extends DbTestCase
         ];
     }
 
-   /**
-    * @dataprovider testGetAutoResolvedateProvider
-    */
+    /**
+     * @dataprovider testGetAutoResolvedateProvider
+     */
     public function testGetAutoResolvedate(array $fields, $expected)
     {
         $pending_reason_item = new \PendingReason_Item();
@@ -238,12 +238,12 @@ class PendingReason extends DbTestCase
         return [];
     }
 
-   /**
-    * Test that a PendingReason_Item object is created when an item is marked as
-    * pending
-    *
-    * @dataprovider itemtypeAndActionProvider
-    */
+    /**
+     * Test that a PendingReason_Item object is created when an item is marked as
+     * pending
+     *
+     * @dataprovider itemtypeAndActionProvider
+     */
     public function testPendingItemCreation($itemtype, $action_itemtype)
     {
         $this->login();
@@ -278,12 +278,12 @@ class PendingReason extends DbTestCase
         $this->integer($item->fields['status'])->isEqualTo(CommonITILObject::WAITING);
     }
 
-   /**
-    * A status change from pending to any other should delete any linked
-    * PendingReason_Item objects
-    *
-    * @dataprovider itemtypeProvider
-    */
+    /**
+     * A status change from pending to any other should delete any linked
+     * PendingReason_Item objects
+     *
+     * @dataprovider itemtypeProvider
+     */
     public function testStatusChangeNoLongerPending($itemtype)
     {
         $this->login();

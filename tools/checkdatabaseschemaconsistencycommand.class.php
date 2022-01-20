@@ -38,11 +38,11 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class CheckDatabaseSchemaConsistencyCommand extends AbstractCommand
 {
-   /**
-    * Error code returned when missing fields are found.
-    *
-    * @var integer
-    */
+    /**
+     * Error code returned when missing fields are found.
+     *
+     * @var integer
+     */
     const ERROR_FOUND_MISSING_FIELDS = 1;
 
     protected function configure()

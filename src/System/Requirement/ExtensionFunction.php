@@ -38,18 +38,18 @@ namespace Glpi\System\Requirement;
  */
 class ExtensionFunction extends Extension
 {
-   /**
-    * Required function name.
-    *
-    * @var string
-    */
+    /**
+     * Required function name.
+     *
+     * @var string
+     */
     private $function_name;
 
-   /**
-    * @param string $name           Extension name.
-    * @param string $function_name  Required function name.
-    * @param bool $optional         Indicated if extension is optional.
-    */
+    /**
+     * @param string $name           Extension name.
+     * @param string $function_name  Required function name.
+     * @param bool $optional         Indicated if extension is optional.
+     */
     public function __construct(string $name, string $function_name, bool $optional = false)
     {
         parent::__construct($name, $optional);

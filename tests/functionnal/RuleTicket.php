@@ -208,9 +208,9 @@ class RuleTicket extends DbTestCase
         $this->checkInput($ruleaction, $act_id, $act_input);
     }
 
-   /**
-    * Test status criterion in rules.
-    */
+    /**
+     * Test status criterion in rules.
+     */
     public function testStatusCriterion()
     {
         $this->login();
@@ -266,9 +266,9 @@ class RuleTicket extends DbTestCase
         $this->integer((int)$ticket->getField('status'))->isEqualTo(\Ticket::WAITING);
     }
 
-   /**
-    * Test that new status setting by rules is not overrided when an actor is assigned at the same time.
-    */
+    /**
+     * Test that new status setting by rules is not overrided when an actor is assigned at the same time.
+     */
     public function testStatusAssignNewFromRule()
     {
         $this->login();
@@ -1779,9 +1779,9 @@ class RuleTicket extends DbTestCase
         $this->integer($ticket->fields['impact'])->isNotEqualTo(1);
     }
 
-   /**
-    * Test contract type criteria
-    */
+    /**
+     * Test contract type criteria
+     */
     public function testContractType()
     {
         $this->login();

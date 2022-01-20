@@ -35,7 +35,7 @@
  * NotificationTargetConsumableItem Class
  *
  * @since 0.84
-**/
+ **/
 class NotificationTargetConsumableItem extends NotificationTarget
 {
     public function getEvents()

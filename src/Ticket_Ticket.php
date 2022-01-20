@@ -55,11 +55,11 @@ class Ticket_Ticket extends CommonDBRelation
     }
 
 
-   /**
-    * @since 0.85
-    *
-    * @see CommonDBTM::showMassiveActionsSubForm()
-   **/
+    /**
+     * @since 0.85
+     *
+     * @see CommonDBTM::showMassiveActionsSubForm()
+     **/
     public static function showMassiveActionsSubForm(MassiveAction $ma)
     {
 
@@ -77,11 +77,11 @@ class Ticket_Ticket extends CommonDBRelation
     }
 
 
-   /**
-    * @since 0.85
-    *
-    * @see CommonDBTM::processMassiveActionsForOneItemtype()
-   **/
+    /**
+     * @since 0.85
+     *
+     * @see CommonDBTM::processMassiveActionsForOneItemtype()
+     **/
     public static function processMassiveActionsForOneItemtype(
         MassiveAction $ma,
         CommonDBTM $item,
@@ -123,13 +123,13 @@ class Ticket_Ticket extends CommonDBRelation
     }
 
 
-   /**
-    * Get linked tickets to a ticket
-    *
-    * @param $ID ID of the ticket id
-    *
-    * @return array of linked tickets  array(id=>linktype)
-   **/
+    /**
+     * Get linked tickets to a ticket
+     *
+     * @param $ID ID of the ticket id
+     *
+     * @return array of linked tickets  array(id=>linktype)
+     **/
     public static function getLinkedTicketsTo($ID)
     {
         global $DB;
@@ -170,14 +170,14 @@ class Ticket_Ticket extends CommonDBRelation
     }
 
 
-   /**
-    * Dropdown for links between tickets
-    *
-    * @param string  $myname select name
-    * @param integer $value  default value (default self::LINK_TO)
-    *
-    * @return void
-   **/
+    /**
+     * Dropdown for links between tickets
+     *
+     * @param string  $myname select name
+     * @param integer $value  default value (default self::LINK_TO)
+     *
+     * @return void
+     **/
     public static function dropdownLinks($myname, $value = self::LINK_TO)
     {
 
@@ -189,15 +189,15 @@ class Ticket_Ticket extends CommonDBRelation
     }
 
 
-   /**
-    * Get Link Name
-    *
-    * @param integer $value     Current value
-    * @param boolean $inverted  Whether to invert label
-    * @param boolean $with_icon prefix label with an icon
-    *
-    * @return string
-   **/
+    /**
+     * Get Link Name
+     *
+     * @param integer $value     Current value
+     * @param boolean $inverted  Whether to invert label
+     * @param boolean $with_icon prefix label with an icon
+     *
+     * @return string
+     **/
     public static function getLinkName($value, bool $inverted = false, bool $with_icon = false): string
     {
         $tmp = [];
@@ -278,13 +278,13 @@ class Ticket_Ticket extends CommonDBRelation
     }
 
 
-   /**
-    * Check for parent relation (inverse of son)
-    *
-    * @param array $input Input
-    *
-    * @return void
-    */
+    /**
+     * Check for parent relation (inverse of son)
+     *
+     * @param array $input Input
+     *
+     * @return void
+     */
     public function checkParentSon(&$input)
     {
         if (isset($input['link']) && $input['link'] == Ticket_Ticket::PARENT_OF) {
@@ -336,13 +336,13 @@ class Ticket_Ticket extends CommonDBRelation
     }
 
 
-   /**
-    * Count number of open children for a parent
-    *
-    * @param integer $pid Parent ID
-    *
-    * @return integer
-    */
+    /**
+     * Count number of open children for a parent
+     *
+     * @param integer $pid Parent ID
+     *
+     * @return integer
+     */
     public static function countOpenChildren($pid)
     {
         global $DB;
@@ -370,14 +370,14 @@ class Ticket_Ticket extends CommonDBRelation
     }
 
 
-   /**
-    * Affect the same solution/status for duplicates tickets.
-    *
-    * @param integer           $ID        ID of the ticket id
-    * @param ITILSolution|null $solution  Ticket's solution
-    *
-    * @return void
-   **/
+    /**
+     * Affect the same solution/status for duplicates tickets.
+     *
+     * @param integer           $ID        ID of the ticket id
+     * @param ITILSolution|null $solution  Ticket's solution
+     *
+     * @return void
+     **/
     public static function manageLinkedTicketsOnSolved($ID, $solution = null)
     {
 

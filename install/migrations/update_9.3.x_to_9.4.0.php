@@ -35,7 +35,7 @@
  * Update from 9.3 to 9.4
  *
  * @return bool for success (will die for most error)
-**/
+ **/
 function update93xto940()
 {
     global $DB, $migration;
@@ -50,30 +50,30 @@ function update93xto940()
     $migration->displayTitle(sprintf(__('Update to %s'), '9.4.0'));
     $migration->setVersion('9.4.0');
 
-   /** Add otherserial field on ConsumableItem */
+    /** Add otherserial field on ConsumableItem */
     if (!$DB->fieldExists('glpi_consumableitems', 'otherserial')) {
         $migration->addField("glpi_consumableitems", "otherserial", "varchar(255) NULL DEFAULT NULL");
         $migration->addKey("glpi_consumableitems", 'otherserial');
     }
-   /** /Add otherserial field on ConsumableItem */
+    /** /Add otherserial field on ConsumableItem */
 
-   /** Add default group for a user */
+    /** Add default group for a user */
     if ($migration->addField('glpi_users', 'groups_id', 'integer')) {
         $migration->addKey('glpi_users', 'groups_id');
     }
-   /** /Add default group for a user */
+    /** /Add default group for a user */
 
-   /** Add requester field on glpi_mailcollectors */
+    /** Add requester field on glpi_mailcollectors */
     $migration->addField("glpi_mailcollectors", "requester_field", "integer", [
       'value' => '0'
     ]);
-   /** /Add requester field on glpi_mailcollectors */
+    /** /Add requester field on glpi_mailcollectors */
 
-   /** Increase value length for criteria */
+    /** Increase value length for criteria */
     $migration->changeField('glpi_rulecriterias', 'pattern', 'pattern', 'text');
-   /** /Increase value length for criteria */
+    /** /Increase value length for criteria */
 
-   /** Add business rules on assets */
+    /** Add business rules on assets */
     $rule = ['name'         => 'Domain user assignation',
             'is_active'    => 1,
             'is_recursive' => 1,
@@ -131,20 +131,20 @@ function update93xto940()
          'rights'       => "255",
         ]);
     }
-   /** /Add business rules on assets */
+    /** /Add business rules on assets */
 
-   /** Drop use_rich_text parameter */
+    /** Drop use_rich_text parameter */
     $config_to_drop[] = 'use_rich_text';
-   /** /Drop use_rich_text parameter */
+    /** /Drop use_rich_text parameter */
 
-   /** Drop ticket_timeline* parameters */
+    /** Drop ticket_timeline* parameters */
     $config_to_drop[] = 'ticket_timeline';
     $config_to_drop[] = 'ticket_timeline_keep_replaced_tabs';
     $migration->dropField('glpi_users', 'ticket_timeline');
     $migration->dropField('glpi_users', 'ticket_timeline_keep_replaced_tabs');
-   /** /Drop ticket_timeline* parameters */
+    /** /Drop ticket_timeline* parameters */
 
-   /** Replacing changes_projects by itils_projects */
+    /** Replacing changes_projects by itils_projects */
     if ($DB->tableExists('glpi_changes_projects')) {
         $migration->renameTable('glpi_changes_projects', 'glpi_itils_projects');
 
@@ -177,32 +177,32 @@ function update93xto940()
         );
         $migration->migrationOneTable('glpi_itils_projects');
     }
-   /** /Replacing changes_projects by itils_projects */
+    /** /Replacing changes_projects by itils_projects */
 
-   /** Rename non fkey field */
+    /** Rename non fkey field */
     $migration->changeField(
         'glpi_items_operatingsystems',
         'license_id',
         'licenseid',
         "string"
     );
-   /** Rename non fkey field */
+    /** Rename non fkey field */
 
-   /** Add watcher visibility to groups */
+    /** Add watcher visibility to groups */
     if (!$DB->fieldExists('glpi_groups', 'is_watcher')) {
         if ($migration->addField('glpi_groups', 'is_watcher', "tinyint NOT NULL DEFAULT '1'", ['after' => 'is_requester'])) {
             $migration->addKey('glpi_groups', 'is_watcher');
             $migration->migrationOneTable('glpi_groups');
         }
     }
-   /** Add watcher visibility to groups */
+    /** Add watcher visibility to groups */
 
     Config::deleteConfigurationValues('core', $config_to_drop);
 
    // Add a config entry for the CAS version
     $migration->addConfig(['cas_version' => 'CAS_VERSION_2_0']);
 
-   /** Drop old embed ocs search options */
+    /** Drop old embed ocs search options */
     $DB->deleteOrDie(
         'glpi_displaypreferences',
         [
@@ -220,9 +220,9 @@ function update93xto940()
          ]
         ]
     );
-   /** /Drop old embed ocs search options */
+    /** /Drop old embed ocs search options */
 
-   /** Factorize components search options on Computers, Printers and NetworkEquipments */
+    /** Factorize components search options on Computers, Printers and NetworkEquipments */
     $so_maping = [
       '10'  => '110',
       '35'  => '111',
@@ -245,9 +245,9 @@ function update93xto940()
             ]
         );
     }
-   /** /Factorize components search options on Computers, Printers and NetworkEquipments */
+    /** /Factorize components search options on Computers, Printers and NetworkEquipments */
 
-   /** Add followup tables for new ITILFollowup class */
+    /** Add followup tables for new ITILFollowup class */
     if (!$DB->tableExists('glpi_itilfollowups')) {
        //Migrate ticket followups
         $migration->renameTable('glpi_ticketfollowups', 'glpi_itilfollowups');
@@ -322,15 +322,15 @@ function update93xto940()
         );
     }
 
-   /** Add timeline_position to Change and Problem items */
+    /** Add timeline_position to Change and Problem items */
     $migration->addField("glpi_changetasks", "timeline_position", "tinyint NOT NULL DEFAULT '0'");
     $migration->addField("glpi_changevalidations", "timeline_position", "tinyint NOT NULL DEFAULT '0'");
     $migration->addField("glpi_problemtasks", "timeline_position", "tinyint NOT NULL DEFAULT '0'");
 
-   /** Give all existing profiles access to personalizations for legacy functionality */
+    /** Give all existing profiles access to personalizations for legacy functionality */
     $migration->addRight('personalization', READ | UPDATE, []);
 
-   /** Search engine on plugins */
+    /** Search engine on plugins */
     $ADDTODISPLAYPREF['Plugin'] = [2, 3, 4, 5, 6, 7, 8];
 
     foreach ($ADDTODISPLAYPREF as $type => $tab) {
@@ -346,7 +346,7 @@ function update93xto940()
         }
     }
 
-   /** Renaming olas / slas foreign keys that does not match naming conventions */
+    /** Renaming olas / slas foreign keys that does not match naming conventions */
     $olas_slas_mapping = [
       'olas_tto_id'      => 'olas_id_tto',
       'olas_ttr_id'      => 'olas_id_ttr',
@@ -387,7 +387,7 @@ function update93xto940()
         );
     }
 
-   /** Adding the responsible field */
+    /** Adding the responsible field */
     if (!$DB->fieldExists('glpi_users', 'users_id_supervisor')) {
         if ($migration->addField('glpi_users', 'users_id_supervisor', 'integer')) {
             $migration->addKey('glpi_users', 'users_id_supervisor');
@@ -402,14 +402,14 @@ function update93xto940()
         );
     }
 
-   /** Add source item id to ITILFollowups. Used by followups created by merging tickets */
+    /** Add source item id to ITILFollowups. Used by followups created by merging tickets */
     if (!$DB->fieldExists('glpi_itilfollowups', 'sourceitems_id')) {
         if ($migration->addField('glpi_itilfollowups', 'sourceitems_id', "int NOT NULL DEFAULT '0'")) {
             $migration->addKey('glpi_itilfollowups', 'sourceitems_id');
         }
     }
 
-   /** Add sourceof item id to ITILFollowups. Used to link to tickets created by promotion */
+    /** Add sourceof item id to ITILFollowups. Used to link to tickets created by promotion */
     if (!$DB->fieldExists('glpi_itilfollowups', 'sourceof_items_id')) {
         if ($migration->addField('glpi_itilfollowups', 'sourceof_items_id', "int NOT NULL DEFAULT '0'")) {
             $migration->addKey('glpi_itilfollowups', 'sourceof_items_id');

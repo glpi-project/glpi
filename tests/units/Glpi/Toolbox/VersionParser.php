@@ -149,27 +149,27 @@ class VersionParser extends \GLPITestCase
         ];
     }
 
-   /**
-    * @dataProvider versionsProvider
-    */
+    /**
+     * @dataProvider versionsProvider
+     */
     public function testGetNormalizeVersion(string $version, bool $keep_stability_flag, string $normalized, bool $stable, bool $dev): void
     {
         $version_parser = $this->newTestedInstance();
         $this->string($version_parser->getNormalizedVersion($version, $keep_stability_flag))->isEqualTo($normalized);
     }
 
-   /**
-    * @dataProvider versionsProvider
-    */
+    /**
+     * @dataProvider versionsProvider
+     */
     public function testIsStableRelease(string $version, bool $keep_stability_flag, string $normalized, bool $stable, bool $dev): void
     {
         $version_parser = $this->newTestedInstance();
         $this->boolean($version_parser->isStableRelease($version))->isEqualTo($stable);
     }
 
-   /**
-    * @dataProvider versionsProvider
-    */
+    /**
+     * @dataProvider versionsProvider
+     */
     public function testIsDevVersion(string $version, bool $keep_stability_flag, string $normalized, bool $stable, bool $dev): void
     {
         $version_parser = $this->newTestedInstance();
