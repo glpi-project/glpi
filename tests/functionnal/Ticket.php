@@ -3985,7 +3985,8 @@ HTML
         string $commondb_relation,
         string $field,
         array $extra_input
-    ): void {
+    ): void
+    {
         // Keep track of the linked items
         $linked = $item->input[$field];
         $this->array($linked);
@@ -4007,5 +4008,56 @@ HTML
 
         // Compare values
         $this->array($item->fields[$field])->isEqualTo($linked);
+    }
+
+    public function testNewToSolvedUnassigned()
+    {
+        $this->login();
+        // Create ticket without automatic assignment
+        $ticket = new \Ticket();
+        $tickets_id = $ticket->add([
+            'name' => 'testNewToSolvedUnassigned',
+            'content' => 'testNewToSolvedUnassigned',
+            '_skip_auto_assign' => true,
+        ]);
+        $this->integer($tickets_id)->isGreaterThan(0);
+
+        // Check ticket status is new
+        $this->boolean($ticket->getFromDB($tickets_id))->isTrue();
+        $this->integer($ticket->countUsers(CommonITILActor::ASSIGN))->isEqualTo(0);
+        $this->integer($ticket->fields['status'])->isEqualTo(CommonITILObject::INCOMING);
+
+        // Set status to solved
+        $this->boolean($ticket->update([
+            'id' => $tickets_id,
+            'status' => CommonITILObject::SOLVED,
+            '_skip_auto_assign' => true,
+        ]))->isTrue();
+
+        // Check ticket status is solved
+        $this->boolean($ticket->getFromDB($tickets_id))->isTrue();
+        $this->integer($ticket->fields['status'])->isEqualTo(CommonITILObject::SOLVED);
+
+        // Set status to new
+        $this->boolean($ticket->update([
+            'id' => $tickets_id,
+            'status' => CommonITILObject::INCOMING,
+            '_skip_auto_assign' => true,
+        ]))->isTrue();
+
+        // Check ticket status is new
+        $this->boolean($ticket->getFromDB($tickets_id))->isTrue();
+        $this->integer($ticket->fields['status'])->isEqualTo(CommonITILObject::INCOMING);
+
+        // Set status to closed
+        $this->boolean($ticket->update([
+            'id' => $tickets_id,
+            'status' => CommonITILObject::CLOSED,
+            '_skip_auto_assign' => true,
+        ]))->isTrue();
+
+        // Check ticket status is closed
+        $this->boolean($ticket->getFromDB($tickets_id))->isTrue();
+        $this->integer($ticket->fields['status'])->isEqualTo(CommonITILObject::CLOSED);
     }
 }

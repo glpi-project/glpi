@@ -191,4 +191,50 @@ class Change extends DbTestCase
             $this->string(\Change::getTeamRoleName($role))->isNotEmpty();
         }
     }
+
+    public function testAutomaticStatusChange()
+    {
+        $this->login();
+        // Create a change
+        $change = new \Change;
+        $changes_id = $change->add([
+            'name' => "test automatic status change",
+            'content' => "test automatic status change",
+            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+        ]);
+
+        // Initial status is new (incoming)
+        $this->integer($change->fields['status'])->isIdenticalTo(CommonITILObject::INCOMING);
+
+        $change->update([
+            'id' => $changes_id,
+            '_itil_assign' => [
+                '_type' => "user",
+                'users_id' => getItemByTypeName('User', TU_USER, true),
+            ],
+        ]);
+        $test_users_id = getItemByTypeName('User', TU_USER, true);
+        $this->integer($test_users_id)->isGreaterThan(0);
+
+        // Verify user was assigned and status doesn't change
+        $change->loadActors();
+        $this->integer($change->countUsers(CommonITILActor::ASSIGN))->isIdenticalTo(1);
+        $this->integer($change->fields['status'])->isIdenticalTo(CommonITILObject::INCOMING);
+
+        // Change status to accepted
+        $change->update([
+            'id' => $changes_id,
+            'status' => CommonITILObject::ACCEPTED,
+        ]);
+        // Unassign change and expect the status to stay accepted
+        $change_user = new Change_User();
+        $change_user->deleteByCriteria([
+            'changes_id' => $changes_id,
+            'type' => CommonITILActor::ASSIGN,
+            'users_id' => getItemByTypeName('User', TU_USER, true),
+        ]);
+        $change->getFromDB($changes_id);
+        $this->integer($change->countUsers(CommonITILActor::ASSIGN))->isIdenticalTo(0);
+        $this->integer($change->fields['status'])->isIdenticalTo(CommonITILObject::ACCEPTED);
+    }
 }
