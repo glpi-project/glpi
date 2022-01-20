@@ -310,17 +310,19 @@ class Problem extends CommonITILObject {
          $ticket = new Ticket();
          if ($ticket->getFromDB($this->input['_tickets_id'])) {
             $pt = new Problem_Ticket();
-            $pt->add(['tickets_id'  => $this->input['_tickets_id'],
-                           'problems_id' => $this->fields['id'],
-                           /*'_no_notif'   => true*/]);
+            $pt->add([
+                'tickets_id'  => $this->input['_tickets_id'],
+                'problems_id' => $this->fields['id'],
+            ]);
 
             if (!empty($ticket->fields['itemtype'])
                 && ($ticket->fields['items_id'] > 0)) {
                $it = new Item_Problem();
-               $it->add(['problems_id' => $this->fields['id'],
-                              'itemtype'    => $ticket->fields['itemtype'],
-                              'items_id'    => $ticket->fields['items_id'],
-                              /*'_no_notif'   => true*/]);
+               $it->add([
+                   'problems_id' => $this->fields['id'],
+                   'itemtype'    => $ticket->fields['itemtype'],
+                   'items_id'    => $ticket->fields['items_id'],
+               ]);
             }
 
             //Copy associated elements
