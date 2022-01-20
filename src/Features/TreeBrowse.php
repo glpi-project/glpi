@@ -246,7 +246,7 @@ trait TreeBrowse
         )->current();
         if ($no_cat_count['cpt'] > 0) {
             $categories[] = [
-                'id'          => '-1',
+                'id'          => -1,
                 'name'        => __('Without Category'),
                 'items_count' => $no_cat_count['cpt'],
                 $cat_fk       => 0,
@@ -256,7 +256,7 @@ trait TreeBrowse
         // construct flat data
         $nodes   = [];
         foreach ($categories as $category) {
-            $cat_id = intval($category['id']);
+            $cat_id = $category['id'];
             $node = [
                 'key'    => $cat_id,
                 'title'  => $category['name'],
