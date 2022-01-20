@@ -1091,7 +1091,7 @@ class Item_SoftwareVersion extends CommonDBRelation
             $header_end .= "<th>" . __('Name') . "</th><th>" . __('Status') . "</th>";
             $header_end .= "<th>" . _n('Version', 'Versions', 1) . "</th><th>" . SoftwareLicense::getTypeName(1) . "</th>";
             $header_end .= "<th>" . __('Installation date') . "</th>";
-            $header_end .= "<th>" . __('Architecture') . "</th>";
+            $header_end .= "<th>" . _n('Architecture', 'Architectures', 1) . "</th>";
             $header_end .= "<th>" . __('Automatic inventory') . "</th>";
             $header_end .= "<th>" . SoftwareCategory::getTypeName(1) . "</th>";
             $header_end .= "<th>" . __('Valid license') . "</th>";
