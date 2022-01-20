@@ -1130,57 +1130,13 @@ class NotificationTarget extends CommonDBChild
      * Get admin which sends the notification
      *
      * @return array [email => sender address, name => sender name]
-     **/
+     */
     public function getSender()
     {
-        global $CFG_GLPI;
-
-        $sender = [
-            'email'  => null,
-            'name'   => null
-        ];
-
-        if (
-            isset($CFG_GLPI['from_email'])
-            && !empty($CFG_GLPI['from_email'])
-            && NotificationMailing::isUserAddressValid($CFG_GLPI['from_email'])
-        ) {
-           //generic from, if defined
-            $sender['email'] = $CFG_GLPI['from_email'];
-            $sender['name']  = $CFG_GLPI['from_email_name'];
-        } else {
-            $admin_email      = trim(Entity::getUsedConfig('admin_email', $this->getEntity(), '', ''));
-            $admin_email_name = trim(Entity::getUsedConfig('admin_email_name', $this->getEntity(), '', ''));
-
-            if (NotificationMailing::isUserAddressValid($admin_email)) {
-               //If the entity administrator's address is defined, return it
-                $sender['email'] = $admin_email;
-                $sender['name']  = $admin_email_name;
-            } else {
-               //Entity admin is not defined, return the global admin's address
-                $sender['email'] = $CFG_GLPI['admin_email'];
-                $sender['name']  = $CFG_GLPI['admin_email_name'];
-            }
-        }
-
-        if (
-            !$this->allowResponse()
-            && isset($CFG_GLPI['admin_email_noreply'])
-            && !empty($CFG_GLPI['admin_email_noreply'])
-        ) {
-           // Override with no reply email if defined
-            $sender['email'] = $CFG_GLPI['admin_email_noreply'];
-
-            if (
-                isset($CFG_GLPI['admin_email_noreply_name'])
-                && !empty($CFG_GLPI['admin_email_noreply_name'])
-            ) {
-               // Override name with no replay name if defined
-                $sender['name']  = $CFG_GLPI['admin_email_noreply_name'];
-            }
-        }
-
-        return $sender;
+        return Config::getSender(
+            $this->getEntity(),
+            $this->allowResponse()
+        );
     }
 
 

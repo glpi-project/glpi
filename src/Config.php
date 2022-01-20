@@ -3750,4 +3750,66 @@ HTML;
         self::setConfigurationValues('core', [$type . '_uuid' => $uuid]);
         return $uuid;
     }
+
+    /**
+     * Get email and name to be used as "From" in our email notifications
+     *
+     * @param int  $entities_id
+     * @param bool $allow_response
+     *
+     * @return array [email => sender address, name => sender name]
+     */
+    public static function getSender(
+        int $entities_id,
+        bool $allow_response
+    ): array {
+        global $CFG_GLPI;
+
+        $sender = [
+            'email'  => null,
+            'name'   => null
+        ];
+
+        if (
+            isset($CFG_GLPI['from_email'])
+            && !empty($CFG_GLPI['from_email'])
+            && NotificationMailing::isUserAddressValid($CFG_GLPI['from_email'])
+        ) {
+            //generic from, if defined
+            $sender['email'] = $CFG_GLPI['from_email'];
+            $sender['name']  = $CFG_GLPI['from_email_name'];
+        } else {
+            $admin_email      = trim(Entity::getUsedConfig('admin_email', $entities_id, '', ''));
+            $admin_email_name = trim(Entity::getUsedConfig('admin_email_name', $entities_id, '', ''));
+
+            if (NotificationMailing::isUserAddressValid($admin_email)) {
+                // If the entity administrator's address is defined, return it
+                $sender['email'] = $admin_email;
+                $sender['name']  = $admin_email_name;
+            } else {
+                // Entity admin is not defined, return the global admin's address
+                $sender['email'] = $CFG_GLPI['admin_email'];
+                $sender['name']  = $CFG_GLPI['admin_email_name'];
+            }
+        }
+
+        if (
+            !$allow_response()
+            && isset($CFG_GLPI['admin_email_noreply'])
+            && !empty($CFG_GLPI['admin_email_noreply'])
+        ) {
+            // Override with no reply email if defined
+            $sender['email'] = $CFG_GLPI['admin_email_noreply'];
+
+            if (
+                isset($CFG_GLPI['admin_email_noreply_name'])
+                && !empty($CFG_GLPI['admin_email_noreply_name'])
+            ) {
+                // Override name with no replay name if defined
+                $sender['name']  = $CFG_GLPI['admin_email_noreply_name'];
+            }
+        }
+
+        return $sender;
+    }
 }
