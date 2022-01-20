@@ -29,18 +29,18 @@
  * ---------------------------------------------------------------------
  */
 
-#kb_browse {
+#tree_browse {
     display: flex;
     align-items: stretch;
     height: 100%;
 
-    .kb_tree {
+    .browser_tree {
         flex-basis: 250px;
         flex-shrink: 0;
         padding-right: 10px;
         padding-left: 2px;
 
-        .kb-tree-container {
+        .browser-tree-container {
             overflow-x: hidden;
             overflow-y: auto;
             flex: 1;
@@ -55,7 +55,7 @@
             }
         }
 
-        .kb_tree_search {
+        .browser_tree_search {
             width: 100%;
             margin-bottom: 5px;
             padding: 10px 5px;
@@ -64,7 +64,7 @@
         }
     }
 
-    .kb_items {
+    .browser_items {
         width: 100%;
         margin-left: 5px;
 
