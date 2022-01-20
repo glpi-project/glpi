@@ -3794,7 +3794,7 @@ HTML;
         }
 
         if (
-            !$allow_response()
+            !$allow_response
             && isset($CFG_GLPI['admin_email_noreply'])
             && !empty($CFG_GLPI['admin_email_noreply'])
         ) {
