@@ -1596,6 +1596,11 @@ class Migration
         string $class_1,
         string $class_2
     ) {
+        global $DB;
+        if ($DB->tableExists($table)) {
+            return;
+        }
+
         $fk_1 = $class_1::getForeignKeyField();
         $fk_2 = $class_2::getForeignKeyField();
 
