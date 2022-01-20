@@ -203,19 +203,19 @@ class Knowbase extends CommonGLPI
             };
             loadNode(0);
 
-            $(document).on('keyup', '#kb_tree_search$rand', function() {
+            $(document).on('keyup', '#browser_tree_search$rand', function() {
                var search_text = $(this).val();
                $.ui.fancytree.getTree("#tree_category$rand").filterNodes(search_text);
             });
          });
 JAVASCRIPT;
         echo Html::scriptBlock($JS);
-        echo "<div id='kb_browse'>
-         <div class='kb_tree'>
-            <input type='text' class='kb_tree_search' id='kb_tree_search$rand'>
+        echo "<div id='tree_browse'>
+         <div class='browser_tree'>
+            <input type='text' class='browser_tree_search' id='browser_tree_search$rand'>
             <div id='tree_category$rand'></div>
          </div>
-         <div id='items_list$rand' class='kb_items'></div>
+         <div id='items_list$rand' class='browser_items'></div>
       </div>";
     }
 
