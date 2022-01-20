@@ -1531,27 +1531,6 @@ abstract class CommonITILObject extends CommonDBTM
         }
 
         if (isset($this->input["status"])) {
-            if (
-                ($this->input["status"] != self::WAITING)
-                && ($this->countSuppliers(CommonITILActor::ASSIGN) == 0)
-                && ($this->countUsers(CommonITILActor::ASSIGN) == 0)
-                && ($this->countGroups(CommonITILActor::ASSIGN) == 0)
-                && !$this->isNotSolved()
-            ) {
-                if (!in_array('status', $this->updates)) {
-                    $this->oldvalues['status'] = $this->fields['status'];
-                    $this->updates[] = 'status';
-                }
-
-               // $this->fields['status'] = self::INCOMING;
-               // Don't change status if it's a new status allow
-                if (
-                    in_array($this->oldvalues['status'], $this->getNewStatusArray())
-                    && !in_array($this->input['status'], $this->getNewStatusArray())
-                ) {
-                    $this->fields['status'] = $this->oldvalues['status'];
-                }
-            }
 
             if (
                 in_array("status", $this->updates)
