@@ -1160,6 +1160,21 @@ abstract class CommonITILObject extends CommonDBTM {
          }
          $this->input = $this->addFiles($this->input, $options);
       }
+
+      // Handle deferred solution addition (for solution templates added by rule)
+      if (isset($this->input['_solutiontemplates_id'])) {
+         $template = new SolutionTemplate();
+         if ($template->getFromDB($this->input['_solutiontemplates_id'])) {
+            $solution = new ITILSolution();
+            $solution->add([
+               "itemtype" => static::getType(),
+               "solutiontypes_id" => $template->getField("solutiontypes_id"),
+               "content" => Toolbox::addslashes_deep($template->getField('content')),
+               "status" => CommonITILValidation::WAITING,
+               "items_id" => $this->fields['id']
+            ]);
+         }
+      }
    }
 
 
@@ -1834,7 +1849,7 @@ abstract class CommonITILObject extends CommonDBTM {
          }
       }
 
-      // Handle deferred solution addition (for solution templates added by rule on ticket Add)
+      // Handle deferred solution addition (for solution templates added by rule)
       if (isset($this->input['_solutiontemplates_id'])) {
          $template = new SolutionTemplate();
          if ($template->getFromDB($this->input['_solutiontemplates_id'])) {
