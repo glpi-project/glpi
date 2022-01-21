@@ -1160,6 +1160,21 @@ abstract class CommonITILObject extends CommonDBTM {
          }
          $this->input = $this->addFiles($this->input, $options);
       }
+
+      // Handle deferred solution addition (for solution templates added by rule)
+      if (isset($this->input['_solutiontemplates_id'])) {
+         $template = new SolutionTemplate();
+         if ($template->getFromDB($this->input['_solutiontemplates_id'])) {
+            $solution = new ITILSolution();
+            $solution->add([
+               "itemtype" => static::getType(),
+               "solutiontypes_id" => $template->fields['solutiontypes_id'],
+               "content" => Toolbox::addslashes_deep($template->fields['content']),
+               "status" => CommonITILValidation::WAITING,
+               "items_id" => $this->fields['id']
+            ]);
+         }
+      }
    }
 
 
@@ -1830,6 +1845,21 @@ abstract class CommonITILObject extends CommonDBTM {
                'users_id_tech'               => $tasktemplate->fields['users_id_tech'],
                'groups_id_tech'              => $tasktemplate->fields['groups_id_tech'],
                '_disablenotif'               => true
+            ]);
+         }
+      }
+
+      // Handle deferred solution addition (for solution templates added by rule)
+      if (isset($this->input['_solutiontemplates_id'])) {
+         $template = new SolutionTemplate();
+         if ($template->getFromDB($this->input['_solutiontemplates_id'])) {
+            $solution = new ITILSolution();
+            $solution->add([
+               "itemtype" => static::getType(),
+               "solutiontypes_id" => $template->fields['solutiontypes_id'],
+               "content" => Toolbox::addslashes_deep($template->fields['content']),
+               "status" => CommonITILValidation::WAITING,
+               "items_id" => $this->fields['id']
             ]);
          }
       }

@@ -224,18 +224,8 @@ class RuleTicket extends Rule {
                   }
 
                   // special case of itil solution template
-                  if ($action->fields["field"] == 'solution_template') {
-                     //load template
-                     $template = new SolutionTemplate();
-                     if ($template->getFromDB($action->fields["value"]) && $output['id'] != null) {
-                        $solution = new ITILSolution();
-                        $solution->add([
-                           "itemtype" => "Ticket",
-                           "solutiontypes_id" => $template->getField("solutiontypes_id"),
-                           "content" => Toolbox::addslashes_deep($template->getField('content')),
-                           "status" => CommonITILValidation::WAITING,
-                           "items_id" => $output['id']]);
-                     }
+                  if ($action->fields["field"] === 'solution_template') {
+                     $output['_solutiontemplates_id'] = $action->fields["value"];
                   }
 
                   // Remove values that may have been added by any "append" rule action on same actor field.
