@@ -76,9 +76,24 @@ trait TreeBrowse
 
         $JS = <<<JAVASCRIPT
         $(function() {
+            var loadingindicator  = $("<div class='loadingindicator'>$loading_txt</div>");
+            $('#items_list$rand').html(loadingindicator); // loadingindicator on doc ready
+            var loadNode = function(cat_id) {
+                $('#items_list$rand').html(loadingindicator);
+                $('#items_list$rand').load('$ajax_url', {
+                    'action': 'getItemslist',
+                    'cat_id': cat_id,
+                    'itemtype': '$itemtype',
+                    'start': $start,
+                    'browse': $browse,
+                    'is_deleted': $is_deleted,
+                    'criteria': $criteria
+                });
+            };
+            loadNode(0);
             $('#tree_category$rand').fancytree({
                 // load plugins
-                extensions: ['filter', 'glyph'],
+                extensions: ['filter', 'glyph', 'persist'],
 
                 // Scroll node into visible area, when focused by keyboard
                 autoScroll: true,
@@ -87,6 +102,13 @@ trait TreeBrowse
                 glyph: {
                     preset: "awesome5",
                     map: {}
+                },
+
+                persist: {
+                    cookiePrefix: '$itemtype',
+                    expandLazy: true,
+                    overrideSource: true,
+                    store: "auto"
                 },
 
                 // load json data
@@ -108,22 +130,6 @@ trait TreeBrowse
                 },
 
             });
-
-            var loadingindicator  = $("<div class='loadingindicator'>$loading_txt</div>");
-            $('#items_list$rand').html(loadingindicator); // loadingindicator on doc ready
-            var loadNode = function(cat_id) {
-                $('#items_list$rand').html(loadingindicator);
-                $('#items_list$rand').load('$ajax_url', {
-                    'action': 'getItemslist',
-                    'cat_id': cat_id,
-                    'itemtype': '$itemtype',
-                    'start': $start,
-                    'browse': $browse,
-                    'is_deleted': $is_deleted,
-                    'criteria': $criteria
-                });
-            };
-            loadNode(0);
 
             $(document).on('keyup', '#browser_tree_search$rand', function() {
                 var search_text = $(this).val();
