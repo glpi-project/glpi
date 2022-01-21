@@ -56,7 +56,13 @@ $(function() {
             }
         });
 
-        $('.log_history_filter_row [name^="filters\\["]').on('input', handleFilterChange);
+        var delay_timer = null;
+        $('.log_history_filter_row [name^="filters\\["]').on('input', function() {
+            clearTimeout(delay_timer);
+            delay_timer = setTimeout(function() {
+                handleFilterChange();
+            }, 800);
+        });
         $('.log_history_filter_row select[name^="filters\\["]').on('change', handleFilterChange);
     };
 
