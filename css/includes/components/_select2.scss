@@ -72,6 +72,10 @@
             &::before {
                 content: "\200E"; // left-to-right mark: be sure that content is displayed in ltr way
             }
+
+            > * {
+                unicode-bidi: plaintext;
+            }
         }
 
         &.select2-selection--single {
