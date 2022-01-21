@@ -1531,7 +1531,6 @@ abstract class CommonITILObject extends CommonDBTM
         }
 
         if (isset($this->input["status"])) {
-
             if (
                 in_array("status", $this->updates)
                 && in_array($this->input["status"], $this->getSolvedStatusArray())
