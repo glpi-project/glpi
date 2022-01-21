@@ -1168,8 +1168,8 @@ abstract class CommonITILObject extends CommonDBTM {
             $solution = new ITILSolution();
             $solution->add([
                "itemtype" => static::getType(),
-               "solutiontypes_id" => $template->getField("solutiontypes_id"),
-               "content" => Toolbox::addslashes_deep($template->getField('content')),
+               "solutiontypes_id" => $template->fields['solutiontypes_id'],
+               "content" => Toolbox::addslashes_deep($template->fields['content']),
                "status" => CommonITILValidation::WAITING,
                "items_id" => $this->fields['id']
             ]);
@@ -1856,8 +1856,8 @@ abstract class CommonITILObject extends CommonDBTM {
             $solution = new ITILSolution();
             $solution->add([
                "itemtype" => static::getType(),
-               "solutiontypes_id" => $template->getField("solutiontypes_id"),
-               "content" => Toolbox::addslashes_deep($template->getField('content')),
+               "solutiontypes_id" => $template->fields['solutiontypes_id'],
+               "content" => Toolbox::addslashes_deep($template->fields['content']),
                "status" => CommonITILValidation::WAITING,
                "items_id" => $this->fields['id']
             ]);
