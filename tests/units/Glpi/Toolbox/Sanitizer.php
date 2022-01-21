@@ -146,6 +146,12 @@ class Sanitizer extends \GLPITestCase
             'value'             => [null, '&lt;strong&gt;string&lt;/strong&gt;', 3.2, 'string', true, '&lt;p&gt;my&lt;/p&gt;', 9798],
             'unsanitized_value' => [null, '<strong>string</strong>', 3.2, 'string', true, '<p>my</p>', 9798],
         ];
+
+        // Data misencoded found in some ITIL followups
+        yield [
+            'value'             => '&lt;img src=&quot;/front/document.send.php?docid=24&amp;tickets_id=12&quot; /&gt; ...',
+            'unsanitized_value' => '<img src="/front/document.send.php?docid=24&amp;tickets_id=12" /> ...',
+        ];
     }
 
     /**
