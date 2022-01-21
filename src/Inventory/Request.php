@@ -478,7 +478,7 @@ class Request extends AbstractRequest
     {
         $params = Plugin::doHookFunction(Hooks::HANDLE_WAKEONLAN_TASK, $params);
 
-        return $params['options']['response'][self::WAKEONLAN_TASK] ?? [];
+        return $params['options']['response'][self::WOL_TASK] ?? [];
     }
 
     /**
