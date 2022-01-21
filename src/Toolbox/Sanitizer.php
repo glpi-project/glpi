@@ -265,6 +265,14 @@ class Sanitizer
         }
         if ($mapping === null) {
             $mapping = self::LEGACY_CHARS_MAPPING; // Fallback to legacy chars mapping
+
+            if (preg_match('/&lt;img\s+(alt|src|width)=&quot;/', $value)) {
+                // In some cases (at least on some ITIL followups, quotes have been converted too,
+                // probably due to a misusage of encoding process.
+                // Result is that quotes were encoded too (i.e. `&lt:img src=&quot;/front/document.send.php`)
+                // and should be decoded too.
+                $mapping['"'] = '&quot;';
+            }
         }
 
         $mapping = array_reverse($mapping);
