@@ -162,6 +162,7 @@ trait TreeBrowse
 
         $cat_itemtype = static::getCategoryItemType($itemtype);
         $cat_item     = new $cat_itemtype();
+        $params['list_limit'] = 99999;
         $data = Search::getDatas($itemtype, $params);
 
         if ($data['data']['count'] > 0) {
@@ -220,23 +221,6 @@ trait TreeBrowse
                 }
             }
             $categories[] = $category;
-        }
-
-        // Remove categories that have no items and no children
-        // Requires category list to be sorted by level DESC
-        foreach ($categories as $index => $category) {
-            $children = array_filter(
-                $categories,
-                function ($element) use ($category, $cat_fk, $cat_item) {
-                    if ($cat_item instanceof CommonTreeDropdown) {
-                        return $category['id'] == $element[$cat_fk];
-                    }
-                }
-            );
-
-            if (empty($children) && 0 == $category['items_count']) {
-                unset($categories[$index]);
-            }
         }
 
         // Without category
