@@ -112,8 +112,11 @@ class Search
      *
      * @return void
      **/
-    public static function showList($itemtype, $params, $forcedisplay = [])
-    {
+    public static function showList(
+        $itemtype,
+        $params,
+        array $forcedisplay = []
+    ) {
         $data = self::getDatas($itemtype, $params, $forcedisplay);
 
         switch ($data['display_type']) {
