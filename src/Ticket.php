@@ -1343,12 +1343,21 @@ class Ticket extends CommonITILObject
                 }
             }
         } else { // Ticket add
+            if (($input[$dateField] ?? null) === 'NULL') {
+                Toolbox::deprecated(
+                    sprintf(
+                        '%s should not have a "NULL" string value',
+                        $dateField
+                    )
+                );
+                $input[$dateField] = null;
+            }
             if (
                 !isset($manual_slas_id[$type])
-                && isset($input[$dateField]) && ($input[$dateField] != 'NULL')
+                && !empty($input[$dateField])
             ) {
                // Valid due date
-                if ($input[$dateField] >= $input['date']) {
+                if (($input[$dateField] ?? null) >= $input['date']) {
                     if (isset($input[$slaField])) {
                         unset($input[$slaField]);
                     }
@@ -1433,12 +1442,22 @@ class Ticket extends CommonITILObject
                 }
             }
         } else { // Ticket add
+            if (($input[$dateField] ?? null) === 'NULL') {
+                Toolbox::deprecated(
+                    sprintf(
+                        '%s should not have a "NULL" string value',
+                        $dateField
+                    )
+                );
+                $input[$dateField] = null;
+            }
+
             if (
                 !isset($manual_olas_id[$type])
-                && isset($input[$dateField]) && ($input[$dateField] != 'NULL')
+                && !empty($input[$dateField] ?? null)
             ) {
                // Valid due date
-                if ($input[$dateField] >= $input['date']) {
+                if (($input[$dateField] ?? null) >= $input['date']) {
                     if (isset($input[$olaField])) {
                         unset($input[$olaField]);
                     }
@@ -1663,9 +1682,19 @@ class Ticket extends CommonITILObject
             ) {
                 $mailtype = "closed";
             }
-           // to know if a solution is approved or not
+            // to know if a solution is approved or not
+
+            if (($input['solvedate'] ?? null) === 'NULL') {
+                Toolbox::deprecated(
+                    sprintf(
+                        '%s should not have a "NULL" string value',
+                        $key
+                    )
+                );
+                $input[$key] = null;
+            }
             if (
-                (isset($this->input['solvedate']) && ($this->input['solvedate'] == 'NULL')
+                (!empty($this->input['solvedate'] ?? null)
                 && isset($this->oldvalues['solvedate']) && $this->oldvalues['solvedate'])
                 && (isset($this->input['status'])
                  && ($this->input['status'] != $this->oldvalues['status'])
@@ -4351,12 +4380,12 @@ JAVASCRIPT;
             'locations_id'              => 0,
             'plan'                      => [],
             'global_validation'         => CommonITILValidation::NONE,
-            'time_to_resolve'           => 'NULL',
-            'time_to_own'               => 'NULL',
+            'time_to_resolve'           => null,
+            'time_to_own'               => null,
             'slas_id_tto'               => 0,
             'slas_id_ttr'               => 0,
-            'internal_time_to_resolve'  => 'NULL',
-            'internal_time_to_own'      => 'NULL',
+            'internal_time_to_resolve'  => null,
+            'internal_time_to_own'      => null,
             'olas_id_tto'               => 0,
             'olas_id_ttr'               => 0,
             '_add_validation'           => 0,

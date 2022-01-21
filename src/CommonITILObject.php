@@ -1080,11 +1080,18 @@ abstract class CommonITILObject extends CommonDBTM
             $mandatory_missing = [];
             $fieldsname        = $tt->getAllowedFieldsNames(true);
             foreach ($tt->mandatory as $key => $val) {
+                if (($input[$key] ?? null) === 'NULL') {
+                    Toolbox::deprecated(
+                        sprintf(
+                            '%s should not have a "NULL" string value',
+                            $key
+                        )
+                    );
+                    $input[$key] = null;
+                }
                 if (
                     (!$check_allowed_fields_for_template || in_array($key, $allowed_fields))
-                    && (isset($input[$key])
-                    && (empty($input[$key]) || ($input[$key] == 'NULL'))
-                    )
+                    && ((empty($input[$key]) ?? null) && empty($this->fields[$key]))
                 ) {
                     $mandatory_missing[$key] = $fieldsname[$val];
                 }
@@ -1421,11 +1428,11 @@ abstract class CommonITILObject extends CommonDBTM
             isset($input["status"])
             && !in_array($input["status"], $solvedclosed)
         ) {
-            $input['solvedate'] = 'NULL';
+            $input['solvedate'] = null;
         }
 
         if (isset($input["status"]) && !in_array($input["status"], $this->getClosedStatusArray())) {
-            $input['closedate'] = 'NULL';
+            $input['closedate'] = null;
         }
 
        // Setting a solution type means the ticket is solved
@@ -1826,7 +1833,7 @@ abstract class CommonITILObject extends CommonDBTM
 
            // Reset begin_waiting_date
             $this->updates[]                    = "begin_waiting_date";
-            $this->fields["begin_waiting_date"] = 'NULL';
+            $this->fields["begin_waiting_date"] = null;
         }
 
        // Set begin waiting date if needed
@@ -2078,8 +2085,17 @@ abstract class CommonITILObject extends CommonDBTM
                                     }
                                 }
 
+                                if ($input[$key] === 'NULL') {
+                                    Toolbox::deprecated(
+                                        sprintf(
+                                            '%s should not have a "NULL" string value',
+                                            $key
+                                        )
+                                    );
+                                    $input[$key] = null;
+                                }
                                 if (
-                                    empty($input[$key]) || ($input[$key] == 'NULL')
+                                    empty($input[$key])
                                     || (is_array($input[$key])
                                     && ($input[$key] === [0 => "0"]))
                                 ) {
