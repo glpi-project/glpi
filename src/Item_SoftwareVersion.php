@@ -1143,33 +1143,32 @@ class Item_SoftwareVersion extends CommonDBRelation
                         <input type='hidden' name='filters[active]' value='1'>
                     </td>
                     <td>
-                        <input type='text' class='form-control' name='filters[name]' value='".($filters['name'] ?? '')."'>
+                        <input type='text' class='form-control' name='filters[name]' value='" . ($filters['name'] ?? '') . "'>
                     </td>
                     <td>
-                        <input type='text' class='form-control' name='filters[state]' value='".($filters['state'] ?? '')."'>
+                        <input type='text' class='form-control' name='filters[state]' value='" . ($filters['state'] ?? '') . "'>
                     </td>
                     <td>
-                        <input type='text' class='form-control' name='filters[version]' value='".($filters['version'] ?? '')."'>
+                        <input type='text' class='form-control' name='filters[version]' value='" . ($filters['version'] ?? '') . "'>
                     </td>
                     <td></td>
                     <td>
-                        ".Html::showDateField("filters[date_install]", [
+                        " . Html::showDateField("filters[date_install]", [
                             'value'   => ($filters['date_install'] ?? ''),
                             'display' => false,
-                        ])."
+                        ]) . "
                     </td>
                     <td>
-                        <input type='text' class='form-control' name='filters[arch]' value='".($filters['arch'] ?? '')."'>
+                        <input type='text' class='form-control' name='filters[arch]' value='" . ($filters['arch'] ?? '') . "'>
                     </td>
-                    <td>".
-                        Dropdown::showFromArray("filters[is_dynamic]", [
+                    <td>" . Dropdown::showFromArray("filters[is_dynamic]", [
                             null => "",
                             '1'  => __('Yes'),
                             '0'  => __('No'),
                         ], [
                             'value'   => ($filters['is_dynamic'] ?? null),
                             'display' => false,
-                        ])."
+                        ]) . "
                     </td>
                     <td>
                         <input type='text' class='form-control' name='filters[software_category]'>
