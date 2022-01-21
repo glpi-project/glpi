@@ -1130,9 +1130,9 @@ class Item_SoftwareVersion extends CommonDBRelation
             $header_end .= "<th>" . SoftwareCategory::getTypeName(1) . "</th>";
             $header_end .= "<th>" . __('Valid license') . "</th>";
             $header_end .= "<th>
-                <button class='btn btn-sm show_log_filters ".($is_filtered ? "btn-secondary" : "btn-outline-secondary")."'>
+                <button class='btn btn-sm show_log_filters " . ($is_filtered ? "btn-secondary" : "btn-outline-secondary") . "'>
                     <i class='fas fa-filter'></i>
-                    <span class='d-none d-xl-block'>".__('Filter')."</span>
+                    <span class='d-none d-xl-block'>" . __('Filter') . "</span>
                 </button></th>";
             $header_end .= "</tr>";
             echo $header_begin . $header_top . $header_end;
