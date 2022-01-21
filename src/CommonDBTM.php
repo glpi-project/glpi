@@ -5960,7 +5960,7 @@ class CommonDBTM extends CommonGLPI
     protected function update1NTableData(
         string $commondb_relation,
         string $field,
-        array $extra_input
+        array $extra_input = []
     ): void {
         // Check $commondb_connexity parameter
         if (!is_a($commondb_relation, CommonDBRelation::class, true)) {
@@ -6073,7 +6073,7 @@ class CommonDBTM extends CommonGLPI
     protected function load1NTableData(
         string $commondb_relation,
         string $field,
-        array $extra_input
+        array $extra_input = []
     ): void {
         // Check $commondb_connexity parameter
         if (!is_a($commondb_relation, CommonDBRelation::class, true)) {

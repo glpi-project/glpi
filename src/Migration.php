@@ -1596,6 +1596,11 @@ class Migration
         string $class_1,
         string $class_2
     ) {
+        global $DB;
+        if ($DB->tableExists($table)) {
+            return;
+        }
+
         $fk_1 = $class_1::getForeignKeyField();
         $fk_2 = $class_2::getForeignKeyField();
 
@@ -1605,7 +1610,7 @@ class Migration
 
         $this->addPreQuery("
             CREATE TABLE `$table` (
-                `id` int unsigned NOT NULL AUTO_INCREMENT,
+                `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
                 `$fk_1` int {$default_key_sign} NOT NULL DEFAULT '0',
                 `$fk_2` int {$default_key_sign} NOT NULL DEFAULT '0',
                 PRIMARY KEY (`id`),
