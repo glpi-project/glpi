@@ -118,7 +118,7 @@ class ITILTemplate extends DbTestCase
             'itilcategories_id'     => $cat_id,
             $tpl_key                => $tpl_id,
             'entities_id'           => 0,
-            'locations_id'          => 'NULL'
+            'locations_id'          => 0
         ];
         if ($itiltype === \Ticket::getType()) {
             $content['type'] = \Ticket::INCIDENT_TYPE;

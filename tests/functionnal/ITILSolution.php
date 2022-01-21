@@ -49,7 +49,7 @@ class ITILSolution extends DbTestCase
         $this->integer((int)$ticket->add([
             'name'               => 'ticket title',
             'description'        => 'a description',
-            'content'            => '',
+            'content'            => 'a content',
             '_users_id_assign'   => $uid
         ]))->isGreaterThan(0);
 

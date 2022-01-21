@@ -98,7 +98,7 @@ class NotificationEventAjax extends DbTestCase
                 'name'                  => '',
                 'description'           => 'My ticket to be notified.',
                 '_users_id_requester'   => $uid,
-                'content'               => ''
+                'content'               => 'a content'
             ])
         )->isGreaterThan(0);
 
@@ -139,7 +139,7 @@ class NotificationEventAjax extends DbTestCase
                 'name'                  => '',
                 'description'           => 'My ticket to be notified.',
                 '_users_id_requester'   => $uid,
-                'content'               => ''
+                'content'               => 'a content'
             ])
         )->isGreaterThan(0);
 
@@ -169,7 +169,7 @@ class NotificationEventAjax extends DbTestCase
             'is_deleted' => 0,
             'sent_try' => 0,
             'sent_time' => null,
-            'name' => '[GLPI #' . str_pad($ticket ->getID(), 7, '0', STR_PAD_LEFT) . '] New ticket ',
+            'name' => '[GLPI #' . str_pad($ticket ->getID(), 7, '0', STR_PAD_LEFT) . '] New ticket a content',
             'sender' => null,
             'sendername' => '',
             'recipient' => (string) $uid,
@@ -184,7 +184,7 @@ class NotificationEventAjax extends DbTestCase
 
  Ticket: Description
 
- Title : 
+ Title : a content
  Requesters :  _test_user  
  Opening date OPENING
  Closing date : 
@@ -200,7 +200,7 @@ Associated item :
  Priority : Medium
 
   No defined category 
- Description : 
+ Description : a content
  
 
 

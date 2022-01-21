@@ -67,7 +67,7 @@ class PlanningCsv extends CsvTestCase
         $tid = (int)$ticket->add([
             'name'         => 'ticket title',
             'description'  => 'a description',
-            'content'      => '',
+            'content'      => 'a content',
             'entities_id'  => getItemByTypeName('Entity', '_test_root_entity', true)
         ]);
         $this->integer($tid)->isGreaterThan(0);

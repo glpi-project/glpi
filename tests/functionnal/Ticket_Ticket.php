@@ -49,7 +49,7 @@ class Ticket_Ticket extends DbTestCase
             (int)$tone->add([
                 'name'         => 'Linked ticket 01',
                 'description'  => 'Linked ticket 01',
-                'content'            => '',
+                'content'            => 'a content',
             ])
         )->isGreaterThan(0);
         $this->boolean($tone->getFromDB($tone->getID()))->isTrue();
@@ -60,7 +60,7 @@ class Ticket_Ticket extends DbTestCase
             (int)$ttwo->add([
                 'name'         => 'Linked ticket 02',
                 'description'  => 'Linked ticket 02',
-                'content'            => '',
+                'content'            => 'linked ticket content',
             ])
         )->isGreaterThan(0);
         $this->boolean($ttwo->getFromDB($ttwo->getID()))->isTrue();

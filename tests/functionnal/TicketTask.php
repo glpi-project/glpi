@@ -54,7 +54,7 @@ class TicketTask extends DbTestCase
             (int)$ticket->add([
                 'name'               => 'ticket title',
                 'description'        => 'a description',
-                'content'            => '',
+                'content'            => 'a content',
                 'entities_id'        => getItemByTypeName('Entity', '_test_root_entity', true),
                 '_users_id_assign'   => getItemByTypeName('User', 'tech', true)
             ])

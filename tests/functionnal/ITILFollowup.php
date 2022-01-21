@@ -57,7 +57,7 @@ class ITILFollowup extends DbTestCase
         $this->integer((int)$itilobject->add([
             'name'         => "$itemtype title",
             'description'  => 'a description',
-            'content'      => '',
+            'content'      => 'a content',
             'entities_id'  => getItemByTypeName('Entity', '_test_root_entity', true),
         ]))->isGreaterThan(0);
 
