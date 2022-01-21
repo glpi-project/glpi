@@ -1153,22 +1153,29 @@ class Item_SoftwareVersion extends CommonDBRelation
                     </td>
                     <td></td>
                     <td>
-                        " . Html::showDateField("filters[date_install]", [
-                            'value'   => ($filters['date_install'] ?? ''),
-                            'display' => false,
-                        ]) . "
+                        " . Html::showDateField(
+                            "filters[date_install]",
+                            [
+                                'value'   => ($filters['date_install'] ?? ''),
+                                'display' => false,
+                            ]
+                        ) . "
                     </td>
                     <td>
                         <input type='text' class='form-control' name='filters[arch]' value='" . ($filters['arch'] ?? '') . "'>
                     </td>
-                    <td>" . Dropdown::showFromArray("filters[is_dynamic]", [
-                            null => "",
-                            '1'  => __('Yes'),
-                            '0'  => __('No'),
-                        ], [
-                            'value'   => ($filters['is_dynamic'] ?? null),
-                            'display' => false,
-                        ]) . "
+                    <td>" . Dropdown::showFromArray(
+                            "filters[is_dynamic]",
+                            [
+                                null => "",
+                                '1'  => __('Yes'),
+                                '0'  => __('No'),
+                            ],
+                            [
+                                'value'   => ($filters['is_dynamic'] ?? null),
+                                'display' => false,
+                            ]
+                        ) . "
                     </td>
                     <td>
                         <input type='text' class='form-control' name='filters[software_category]'>
