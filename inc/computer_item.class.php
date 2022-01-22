@@ -326,8 +326,11 @@ class Computer_Item extends CommonDBRelation{
          if (!empty($withtemplate)) {
             echo "<input type='hidden' name='_no_history' value='1'>";
          }
-         self::dropdownAllConnect('Computer', "items_id", $comp->fields["entities_id"],
-                                  $withtemplate, $used);
+         $entities = $comp->fields["entities_id"];
+         if ($comp->isRecursive()) {
+            $entities = getSonsOf("glpi_entities", $comp->getEntityID());
+         }
+         self::dropdownAllConnect('Computer', "items_id", $entities, $withtemplate, $used);
          echo "</td><td class='center' width='20%'>";
          echo "<input type='submit' name='add' value=\""._sx('button', 'Connect')."\" class='submit'>";
          echo "<input type='hidden' name='computers_id' value='".$comp->fields['id']."'>";
