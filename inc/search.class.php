@@ -4989,7 +4989,7 @@ JAVASCRIPT;
           && !$is_fkey_composite_on_self) {
          $transitemtype = getItemTypeForTable($new_table);
          if (Session::haveTranslations($transitemtype, $field)) {
-            $transAS            = $nt.'_trans';
+            $transAS            = $nt.'_trans_'.$field;
             return self::joinDropdownTranslations(
                $transAS,
                $nt,
@@ -5221,7 +5221,7 @@ JAVASCRIPT;
                                               $addcondition)";
                   $transitemtype = getItemTypeForTable($new_table);
                   if (Session::haveTranslations($transitemtype, $field)) {
-                     $transAS            = $nt.'_trans';
+                     $transAS            = $nt.'_trans'.$field;
                      $specific_leftjoin .= self::joinDropdownTranslations(
                         $transAS,
                         $nt,
