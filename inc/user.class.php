@@ -1650,7 +1650,7 @@ class User extends CommonDBTM {
                      // use import to build the location tree
                      $this->fields[$k] = Dropdown::import('Location',
                                                           ['completename' => $val,
-                                                           'entities_id'  => 0,
+                                                           'entities_id'  => $import ? 0 : $this->fields['entities_id'],
                                                            'is_recursive' => 1]);
                     break;
 
