@@ -114,10 +114,10 @@ if (($_POST['action'] ?? null) === 'change_task_state') {
       if ($id) {
          $validation->getFromDB($id);
       }
-       $ol = ObjectLock::isLocked( $_REQUEST['parenttype'], $parent->getID() );
-       if ($ol && (Session::getLoginUserID() != $ol->fields['users_id'])) {
-           ObjectLock::setReadOnlyProfile();
-       }
+      $ol = ObjectLock::isLocked( $_REQUEST['parenttype'], $parent->getID() );
+      if ($ol && (Session::getLoginUserID() != $ol->fields['users_id'])) {
+         ObjectLock::setReadOnlyProfile();
+      }
       $validation->showForm($id, ['parent' => $parent]);
    } else if (isset($_REQUEST[$parent->getForeignKeyField()])
          && isset($_REQUEST["id"])
