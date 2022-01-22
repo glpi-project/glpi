@@ -1105,7 +1105,8 @@ class CommonGLPI {
                      width: 500,
                      height: 'auto',
                      modal: true,
-                     appendTo: '#dialog_container_$rand'
+                     appendTo: '#dialog_container_$rand',
+                     close: function() { $(this).remove(); },
                   }).load(
                      '".$CFG_GLPI['root_doc']. "/ajax/dropdownMassiveAction.php',
                      Object.assign(
