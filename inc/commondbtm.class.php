@@ -2345,6 +2345,12 @@ class CommonDBTM extends CommonGLPI {
     * @return boolean
    **/
    function canMassiveAction($action, $field, $value) {
+
+      if (static::maybeRecursive()) {
+         if ($field === 'is_recursive' && (int) $value === 0) {
+            return $this->canUnrecurs();
+         }
+      }
       return true;
    }
 
