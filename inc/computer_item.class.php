@@ -869,7 +869,6 @@ class Computer_Item extends CommonDBRelation{
          }
       }
 
-
       return true;
    }
 
