@@ -581,6 +581,11 @@ var langSwitch = function(elt) {
          $('#language_link')
             .html(html);
          $('#debugajax').remove();
+
+         window.setTimeout(() => {
+            // focus and open new select2. In a timeout because select2 takes a while to load
+            $('#language_link select[name="language"]').select2('open');
+         }, 100);
       }
    });
 };
