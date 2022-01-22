@@ -2212,6 +2212,12 @@ class Config extends CommonDBTM {
                                    str_replace('\\', '/', $currentdir));
          chdir($currentdir);
          $globaldir  = Html::cleanParametersURL($_SERVER['REQUEST_URI']);
+
+         // cron exception (running in CLI. Expect front slash to be missing)
+         if (strpos($globaldir, 'front/cron.php') !== false) {
+            $globaldir = preg_replace("/front\/cron.php/", "", $globaldir);
+         }
+
          $globaldir  = preg_replace("/\/[0-9a-zA-Z\.\-\_]+\.php/", "", $globaldir);
 
          // api exception
