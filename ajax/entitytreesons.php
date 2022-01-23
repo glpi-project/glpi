@@ -59,7 +59,7 @@ $entitiestree = [];
 foreach ($_SESSION['glpiactiveprofile']['entities'] as $default_entity) {
     $default_entity_id = $default_entity['id'];
 
-    $entitytree  = getTreeForItem('glpi_entities', $default_entity_id);
+    $entitytree  = $default_entity['is_recursive'] ? getTreeForItem('glpi_entities', $default_entity_id) : [$default_entity['id'] => $default_entity];
     $adapt_tree = function (&$entities) use (&$adapt_tree, $base_path, $ancestors) {
         foreach ($entities as $entities_id => &$entity) {
             $entity['key']   = $entities_id;
@@ -76,7 +76,7 @@ foreach ($_SESSION['glpiactiveprofile']['entities'] as $default_entity) {
                 $entity['selected'] = 'true';
             }
 
-            if (count($entity['tree']) > 0) {
+            if (isset($entity['tree']) && count($entity['tree']) > 0) {
                 $entity['folder'] = true;
 
                 $entity['title'] .= "<a href='$base_path?active_entity={$entities_id}&is_recursive=1'>
