@@ -159,15 +159,38 @@ class SNMPCredential extends CommonDBTM
         return $input;
     }
 
+    private function checkRequiredFields($input): bool
+    {
+        // Require a snmpversion
+        if (!isset($input['snmpversion']) || $input['snmpversion'] == '0') {
+            Session::addMessageAfterRedirect(__('You must select an SNMP version'), false, ERROR);
+            return false;
+        }
+
+        // Require username if using version 3
+        if ($input['snmpversion'] == 3) {
+            if (empty($input['username'])) {
+                Session::addMessageAfterRedirect(__('You must enter a username'), false, ERROR);
+                return false;
+            }
+        }
+    }
+
     public function prepareInputForAdd($input)
     {
         $input = parent::prepareInputForAdd($input);
+        if (!$this->checkRequiredFields($input)) {
+            return false;
+        }
         return $this->prepareInputs($input);
     }
 
     public function prepareInputForUpdate($input)
     {
         $input = parent::prepareInputForUpdate($input);
+        if (!$this->checkRequiredFields($input)) {
+            return false;
+        }
         return $this->prepareInputs($input);
     }
 
