@@ -4147,7 +4147,8 @@ JAVASCRIPT;
                 'glpi_useremails'       => [
                     'ON' => [
                         'glpi_useremails' => 'users_id',
-                        'glpi_users'      => 'id'
+                        'glpi_users'      => 'id',
+                        ['AND' => ['glpi_useremails.is_default' => 1]]
                     ]
                 ],
                 'glpi_profiles_users'   => [
@@ -4221,7 +4222,6 @@ JAVASCRIPT;
                     'glpi_users.realname ASC',
                     'glpi_users.firstname ASC',
                     'glpi_users.name ASC',
-                    'glpi_useremails.is_default DESC'
                 ];
             }
 
