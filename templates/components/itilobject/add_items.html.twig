@@ -64,7 +64,13 @@
    }
 
    function itemAction{{ rand }}(action, itemtype, items_id) {
-      if (itemtype === undefined || items_id === undefined) {
+      if (itemtype === undefined) {
+         itemtype = $('#dropdown_itemtype{{ rand }}').val();
+      }
+      if (items_id === undefined) {
+         items_id = $('#dropdown_add_items_id{{ rand }}').val()
+      }
+      if (!itemtype || !items_id) {
          glpi_toast_error(__('Please select an item to add'));
          return;
       }
@@ -72,12 +78,13 @@
          url: CFG_GLPI.root_doc + '/ajax/itemTicket.php',
          dataType: 'html',
          data: {
-            'action'     : action,
-            'rand'       : {{ rand }},
-            'params'     : {{ opt|json_encode|raw }},
-            'my_items'   : $('#dropdown_my_items{{ rand }}').val(),
-            'itemtype'   : (itemtype === undefined) ? $('#dropdown_itemtype{{ rand }}').val() : itemtype,
-            'items_id'   : (items_id === undefined) ? $('#dropdown_add_items_id{{ rand }}').val() : items_id},
+            'action': action,
+            'rand': {{ rand }},
+            'params': {{ opt|json_encode|raw }},
+            'my_items': $('#dropdown_my_items{{ rand }}').val(),
+            'itemtype': itemtype,
+            'items_id': items_id,
+         },
          success: function(response) {
             $("#itemAddForm{{ rand }}").replaceWith(response);
             refreshItemCounter{{ rand }}();
