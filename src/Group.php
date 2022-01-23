@@ -1031,7 +1031,7 @@ class Group extends CommonTreeDropdown
     {
         if (
             Session::getCurrentInterface() == 'helpdesk'
-            && ($anon = $this->getAnonymizedName()) !== null
+            && ($anon = $this->getAnonymizedName()) !== ""
         ) {
             return $anon;
         }
