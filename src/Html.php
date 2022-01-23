@@ -1824,9 +1824,11 @@ HTML;
      * Print a nice HTML head for help page
      *
      * @param string $title  title of the page
-     * @param string $url    not used anymore
+     * @param string $sector  sector in which the page displayed is
+     * @param string $item    item corresponding to the page displayed
+     * @param string $option  option corresponding to the page displayed
      **/
-    public static function helpHeader($title, $url = '')
+    public static function helpHeader($title, string $sector = "self-service", string $item = "none", string $option = "")
     {
         global $HEADER_LOADED, $PLUGIN_HOOKS;
 
@@ -1836,7 +1838,7 @@ HTML;
         }
         $HEADER_LOADED = true;
 
-        self::includeHeader($title, 'self-service');
+        self::includeHeader($title, $sector, $item, $option);
 
         $menu = [
             'home' => [
@@ -1863,6 +1865,14 @@ HTML;
                 'default' => '/front/ticket.php',
                 'title'   => _n('Ticket', 'Tickets', Session::getPluralNumber()),
                 'icon'    => Ticket::getIcon(),
+                'content' => [
+                    'ticket' => [
+                        'links' => [
+                            'search'    => Ticket::getSearchURL(),
+                            'lists'     => ''
+                        ]
+                    ]
+                ]
             ];
         }
 
@@ -1910,12 +1920,24 @@ HTML;
 
         $menu = Plugin::doHookFunction("redefine_menus", $menu);
 
-        TemplateRenderer::getInstance()->display(
-            'layout/parts/page_header.html.twig',
-            [
-                'menu' => $menu,
-            ] + self::getPageHeaderTplVars()
-        );
+        $tmp_active_item = explode("/", $item);
+        $active_item     = array_pop($tmp_active_item);
+        $menu_active     = $menu[$sector]['content'][$active_item]['title'] ?? "";
+        $tpl_vars = [
+            'menu'        => $menu,
+            'sector'      => $sector,
+            'item'        => $item,
+            'option'      => $option,
+            'menu_active' => $menu_active,
+        ];
+        $tpl_vars += self::getPageHeaderTplVars();
+
+        $help_url_key = Session::getCurrentInterface() === 'central' ? 'central_doc_url' : 'helpdesk_doc_url';
+        $help_url = !empty($CFG_GLPI[$help_url_key]) ? $CFG_GLPI[$help_url_key] : 'http://glpi-project.org/help-central';
+
+        $tpl_vars['help_url'] = $help_url;
+
+        TemplateRenderer::getInstance()->display('layout/parts/page_header.html.twig', $tpl_vars);
 
        // call static function callcron() every 5min
         CronTask::callCron();
