@@ -38,7 +38,16 @@
 {% for firstlevel in menu %}
    {% set firstlevel_active = menu[sector]['title'] == firstlevel['title'] %}
    {% set firstlevel_shown = (menu[sector]['title'] == firstlevel['title'] and is_vertical and is_menu_folded == false) %}
+   {% set has_subitems = false %}
    {% if firstlevel['content'] is defined %}
+      {# Are there any items under contents with a page property? #}
+      {% for secondlevel in firstlevel['content'] %}
+         {% if secondlevel['page'] is defined %}
+            {% set has_subitems = true %}
+         {% endif %}
+      {% endfor %}
+   {% endif %}
+   {% if has_subitems %}
    <li class="nav-item dropdown {{ firstlevel_active ? 'active' : '' }}"
        title="{{ firstlevel['title'] }}">
       <a class="nav-link dropdown-toggle {{ firstlevel_active ? 'active' : '' }} {{ firstlevel_shown ? 'show' : '' }}"
