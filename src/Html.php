@@ -5871,10 +5871,10 @@ JAVASCRIPT
         return "glpi_confirm({
          title: '" . Toolbox::addslashes_deep($title) . "',
          message: '" . Toolbox::addslashes_deep($msg) . "',
-         confirm_event: function() {
+         confirm_callback: function() {
             " . ($yesCallback !== null ? '(' . $yesCallback . ')()' : '') . "
          },
-         cancel_event: function() {
+         cancel_callback: function() {
             " . ($noCallback !== null ? '(' . $noCallback . ')()' : '') . "
          },
       });
