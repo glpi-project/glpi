@@ -896,6 +896,7 @@ JAVASCRIPT;
             array_merge($params, [
                 'legend'   => true,
                 'multiple' => true,
+                'cache_key' => mt_rand(),
             ]),
             $params['data']['labels'],
             $params['data']['series']
