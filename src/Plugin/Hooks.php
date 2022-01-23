@@ -127,6 +127,10 @@ class Hooks
    // Debug / Development hooks
     const DEBUG_TABS = 'debug_tabs';
 
+    // Helpdesk Menu Hooks
+    const HELPDESK_MENU_ENTRY = 'helpdesk_menu_entry';
+    const HELPDESK_MENU_ENTRY_ICON = 'helpdesk_menu_entry_icon';
+
     /**
      * Get file hooks
      *
@@ -203,6 +207,14 @@ class Hooks
             self::POST_PREPAREADD,
             self::SHOW_ITEM_STATS,
             self::TIMELINE_ACTIONS,
+        ];
+    }
+
+    public static function getHelpdeskMenuHooks(): array
+    {
+        return [
+            self::HELPDESK_MENU_ENTRY,
+            self::HELPDESK_MENU_ENTRY_ICON,
         ];
     }
 }
