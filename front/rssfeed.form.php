@@ -135,7 +135,7 @@ if (isset($_POST["add"])) {
     Html::back();
 } else {
     if (Session::getCurrentInterface() == "helpdesk") {
-        Html::helpHeader(RSSFeed::getTypeName(Session::getPluralNumber()), '', $_SESSION["glpiname"]);
+        Html::helpHeader(RSSFeed::getTypeName(Session::getPluralNumber()));
     } else {
         Html::header(RSSFeed::getTypeName(Session::getPluralNumber()), '', "tools", "rssfeed");
     }

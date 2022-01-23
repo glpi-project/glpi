@@ -41,7 +41,7 @@ switch (Session::getCurrentInterface()) {
         Html::header(__('Update password'), $_SERVER['PHP_SELF']);
         break;
     case 'helpdesk':
-        Html::helpHeader(__('Update password'), $_SERVER['PHP_SELF']);
+        Html::helpHeader(__('Update password'));
         break;
     default:
         Html::simpleHeader(__('Update password'));
