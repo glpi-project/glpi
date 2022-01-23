@@ -4501,6 +4501,15 @@ JAVASCRIPT;
                 $nott = !$nott;
                //negated, use contains case
             case "contains":
+                if ($searchopt[$ID]["datatype"] === 'decimal') {
+                    $matches = [];
+                    preg_match('/^(\d+.?\d?)/', $val, $matches);
+                    $val = $matches[1];
+                    if (!str_contains($val, '.')) {
+                        $val .= '.';
+                    }
+                    $val = $val . "%";
+                }
                 $SEARCH = self::makeTextSearch($val, $nott);
                 break;
 
