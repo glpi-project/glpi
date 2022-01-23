@@ -76,7 +76,7 @@ if ($isValidItemtype) {
         'itemtype'            => $itemtype,
         'entity_restrict'     => $_POST['entity_restrict'],
         'table'               => $table,
-        'multiple'            => $_POST["multiple"],
+        'multiple'            => (int) ($_POST["multiple"] ?? 0) !== 0,
         'myname'              => $_POST["myname"],
         'rand'                => $_POST["rand"],
         'width'               => 'calc(100% - 25px)',
