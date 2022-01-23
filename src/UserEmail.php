@@ -150,7 +150,7 @@ class UserEmail extends CommonDBChild
 
         return "<input title=\'" . __s('Default email') . "\' type=\'radio\' name=\'_default_email\'" .
              " value=\'-'+$child_count_js_var+'\'>&nbsp;" .
-             "<input type=\'text\' size=\'30\' class='form-control' " . "name=\'" . $field_name .
+             "<input type=\'text\' size=\'30\' class=\'form-control\' " . "name=\'" . $field_name .
              "[-'+$child_count_js_var+']\'>";
     }
 
