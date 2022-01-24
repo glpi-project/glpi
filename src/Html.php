@@ -1903,6 +1903,9 @@ HTML;
                     }
                     $infos['page'] = $link;
                     $infos['title'] = $infos['name'];
+                    if (isset($PLUGIN_HOOKS["helpdesk_menu_entry_icon"][$plugin])) {
+                        $infos['icon'] = $PLUGIN_HOOKS["helpdesk_menu_entry_icon"][$plugin];
+                    }
                     $menu['plugins']['content'][$plugin] = $infos;
                 }
             }
