@@ -209,12 +209,4 @@ class Hooks
             self::TIMELINE_ACTIONS,
         ];
     }
-
-    public static function getHelpdeskMenuHooks(): array
-    {
-        return [
-            self::HELPDESK_MENU_ENTRY,
-            self::HELPDESK_MENU_ENTRY_ICON,
-        ];
-    }
 }
