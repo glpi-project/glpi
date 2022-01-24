@@ -141,6 +141,7 @@ abstract class ITILTemplateMandatoryField extends ITILTemplateField
     public static function getExcludedFields()
     {
         return [
+            52  => 52, // global_validation
             175 => 175, // ticket's tasks
         ];
     }

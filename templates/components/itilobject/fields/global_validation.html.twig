@@ -64,23 +64,15 @@
 
       <input type="hidden" name="_add_validation" value="{{ params['_add_validation'] }}" />
    {% else %}
-      {% set required = {} %}
-      {% if field_options.fields_template.isMandatoryField('global_validation') %}
-         {% set required = {
-            'required': true,
-         } %}
-      {% endif %}
-
-      {{ fields.field(
-         'global_validation',
-         call('TicketValidation::dropdownStatus', ['global_validation', {
-            'global': true,
-            'value': item.fields['global_validation'],
-            'display': false,
-            'disabled': (not canupdate),
-         }|merge(required)]),
-         "CommonITILValidation"|itemtype_name,
-         field_options
-      ) }}
+        {% if not itiltemplate.isHiddenField('global_validation') %}
+            {{ fields.htmlField(
+                'global_validation',
+                call('TicketValidation::getStatus', [item.fields['global_validation'], true]),
+                "CommonITILValidation"|itemtype_name,
+                {
+                    'full_width': true,
+                }
+            ) }}
+        {% endif %}
    {% endif %}
 {% endif %}

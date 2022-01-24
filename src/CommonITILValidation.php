@@ -589,14 +589,34 @@ abstract class CommonITILValidation extends CommonDBChild
     /**
      * Get Ticket validation status Name
      *
-     * @param integer $value status ID
+     * @param integer   $value
+     * @param bool      $decorated
      **/
-    public static function getStatus($value)
+    public static function getStatus($value, bool $decorated = false)
     {
+        $statuses = self::getAllStatusArray(true, true);
 
-        $tab = self::getAllStatusArray(true, true);
-       // Return $value if not define
-        return (isset($tab[$value]) ? $tab[$value] : $value);
+        $label = $statuses[$value] ?? $value;
+
+        if ($decorated) {
+            $color   = self::getStatusColor($value);
+            $classes = null;
+            switch ($value) {
+                case self::WAITING:
+                    $classes = 'waiting far fa-clock';
+                    break;
+                case self::ACCEPTED:
+                    $classes = 'accepted fas fa-check';
+                    break;
+                case self::REFUSED:
+                    $classes = 'refused fas fa-times';
+                    break;
+            }
+
+            return sprintf('<span><i class="validationstatus %s"></i> %s</span>', $classes, $label);
+        }
+
+        return $label;
     }
 
 
@@ -850,14 +870,7 @@ abstract class CommonITILValidation extends CommonDBChild
         echo "<tr class='tab_bg_1'>";
         echo "<td>" . __('Global approval status') . "</td>";
         echo "<td colspan='2'>";
-        if (Session::haveRightsOr(static::$rightname, TicketValidation::getValidateRights())) {
-            self::dropdownStatus(
-                "global_validation",
-                ['value'    => $item->fields["global_validation"]]
-            );
-        } else {
-            echo TicketValidation::getStatus($item->fields["global_validation"]);
-        }
+        echo TicketValidation::getStatus($item->fields["global_validation"], true);
         echo "</td></tr>";
 
         echo "<tr>";

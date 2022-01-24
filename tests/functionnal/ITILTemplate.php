@@ -226,7 +226,6 @@ class ITILTemplate extends DbTestCase
                     180 => 'Internal time to resolve',
                     185 => 'Internal time to own',
                     45 => 'Total duration',
-                    52 => 'Approval',
                     193 => 'Contract',
                     14 => 'Type',
                 ]
@@ -286,7 +285,7 @@ class ITILTemplate extends DbTestCase
     /**
      * @dataProvider fieldsProvider
      * */
-    public function testGetFields($itemtype, $fields)
+    public function testGetMandatoryFields($itemtype, $fields)
     {
         $tpl_class = '\\' . $itemtype . 'Template';
         $tpl = new $tpl_class();
