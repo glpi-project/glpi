@@ -1427,6 +1427,10 @@ class Search
                 return;
             }
 
+            if ($data['search']['start'] > $data['data']['totalcount']) {
+                $data['search']['start'] = 0;
+            }
+
            // Search case
             $data['data']['begin'] = $data['search']['start'];
             $data['data']['end']   = min(
@@ -1668,6 +1672,10 @@ class Search
         $itemtype   = $data['itemtype'];
         $item       = $data['item'];
         $is_deleted = $search['is_deleted'];
+
+        if (isset($search['criteria'][$search['treecriteria']])) {
+            unset($search['criteria'][$search['treecriteria']]);
+        }
 
        // Contruct parameters
         $globallinkto  = Toolbox::append_params([
