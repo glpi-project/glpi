@@ -6722,7 +6722,10 @@ abstract class CommonITILObject extends CommonDBTM
                 $validation['status'] == CommonITILValidation::WAITING);
                 $user = new User();
                 $user->getFromDB($validation['users_id_validate']);
-                $timeline[$valitation_obj::getType() . "_" . $validations_id] = [
+
+                $request_key = $valitation_obj::getType() . '_' . $validations_id
+                    . (empty($validation['validation_date']) ? '' : '_request'); // If no answer, no suffix to see attached documents on request
+                $timeline[$request_key] = [
                     'type' => $validation_class,
                     'item' => [
                         'id'        => $validations_id,
