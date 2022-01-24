@@ -103,6 +103,7 @@ if (($_POST['action'] ?? null) === 'change_task_state') {
         $template = 'form_task';
     } else if (is_subclass_of($_REQUEST['type'], CommonITILValidation::class)) {
         $template = 'form_validation';
+        $params['form_mode'] = $_REQUEST['item_action'] === 'validation-answer' ? 'answer' : 'request';
     } else if ($id !== null && $parent->getID() >= 0) {
         $ol = ObjectLock::isLocked($_REQUEST['parenttype'], $parent->getID());
         if ($ol && (Session::getLoginUserID() != $ol->fields['users_id'])) {

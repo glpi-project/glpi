@@ -96,7 +96,8 @@
       {% endif %}
 
       <div class="timeline-item mb-3 {{ itiltype }} {{ state_class }} {{ entry['class'] }} {{ 'right' in item_position ? 'ms-auto' : '' }}"
-            data-itemtype="{{ entry['type'] }}" data-items-id="{{ entry_i['id'] }}">
+            data-itemtype="{{ entry['type'] }}" data-items-id="{{ entry_i['id'] }}"
+            {% if entry['item_action'] is defined %}data-item-action="{{ entry['item_action'] }}"{% endif %}>
          <div class="row">
             <div class="col-auto todo-list-state d-none">
                {% if entry_i['state'] is constant('Planning::TODO') %}
@@ -192,17 +193,19 @@ $(function() {
       var content_block = timeline_item.find(".timeline-content");
       var itemtype      = timeline_item.data('itemtype');
       var items_id      = timeline_item.data('items-id');
+      var item_action   = timeline_item.data('item-action');
 
       content_block.find(".read-only-content").hide();
       content_block.find(".edit-content").show()
          .find(".ajax-content")
          .html('<i class="fas fa-3x fa-spinner fa-spin ms-auto"></i>')
          .load("{{ path('/ajax/timeline.php') }}", {
-            'action'    : 'viewsubitem',
-            'type'      : itemtype,
-            'parenttype': '{{ item.getType() }}',
+            'action'     : 'viewsubitem',
+            'type'       : itemtype,
+            'parenttype' : '{{ item.getType() }}',
             '{{ item.getForeignKeyField() }}': {{ item.fields['id'] }},
-            'id'        : items_id
+            'id'         : items_id,
+            'item_action': item_action
          });
 
       timeline_item.find('.timeline-item-buttons').addClass('d-none');

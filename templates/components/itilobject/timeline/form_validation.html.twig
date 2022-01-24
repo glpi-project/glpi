@@ -105,6 +105,43 @@
             </form>
          {% endif %}
       </div>
+   {% elseif form_mode == 'answer' %}
+      <form name="asset_form" style="width: 100%;" class="d-flex flex-column" method="post"
+            action="{{ subitem.getFormURL() }}" enctype="multipart/form-data" data-track-changes="true" data-submit-once>
+
+         <input type="hidden" name="id" value="{{ subitem.fields['id'] }}" />
+         <input type="hidden" name="users_id_validate" value="{{ subitem.fields['users_id_validate'] }}" />
+         <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
+
+         {{ call_plugin_hook('pre_item_form', {"item": subitem, 'options': params}) }}
+
+         <div class="mb-3 comment-part">
+            {{ fields.textareaField(
+               'comment_validation',
+               subitem.fields['comment_validation'],
+               _n('Comment', 'Comments', 1),
+               {
+                  'full_width': true,
+                  'enable_richtext': true,
+                  'is_horizontal': false,
+                  'enable_fileupload': true,
+                  'enable_mentions': true,
+                  'rand': rand,
+               }
+            ) }}
+         </div>
+
+         <div class="validation-footer">
+            <button type="submit" class="btn btn-outline-green" name="approval_action" value="approve">
+               <i class="fas fa-thumbs-up"></i>
+               <span class="validation-label">{{ __('Approve') }}</span>
+            </button>
+            <button type="submit" class="btn btn-outline-red" name="approval_action" value="refuse">
+               <i class="fas fa-thumbs-down"></i>
+               <span class="validation-label">{{ __('Refuse') }}</span>
+            </button>
+         </div>
+      </form>
    {% else %}
       <div class="itilvalidation">
          <form name="asset_form" style="width: 100%;" class="d-flex flex-column" method="post"
