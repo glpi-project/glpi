@@ -907,7 +907,7 @@ class Item_SoftwareVersion extends CommonDBRelation
      *
      * @return DBmysqlIterator
      */
-    public static function getFromItem(CommonDBTM $item, $sort = null, $order = null): DBmysqlIterator
+    public static function getFromItem(CommonDBTM $item, $sort = null, $order = null, array $filters = []): DBmysqlIterator
     {
         global $DB;
 
@@ -921,6 +921,7 @@ class Item_SoftwareVersion extends CommonDBRelation
             'glpi_softwareversions.id AS verid',
             'glpi_softwareversions.softwares_id',
             'glpi_softwareversions.name AS version',
+            'glpi_softwareversions.arch AS arch',
             'glpi_softwares.is_valid AS softvalid',
             'glpi_items_softwareversions.date_install AS dateinstall',
             "$selftable.is_dynamic"
@@ -947,14 +948,44 @@ class Item_SoftwareVersion extends CommonDBRelation
                         'glpi_softwareversions' => 'softwares_id',
                         'glpi_softwares'        => 'id'
                     ]
+                ],
+                'glpi_softwarecategories' => [
+                    'FKEY'   => [
+                        'glpi_softwares'          => 'softwarecategories_id',
+                        'glpi_softwarecategories' => 'id'
+                    ]
                 ]
             ],
             'WHERE'     => [
-                "{$selftable}.items_id"  => $item->getField('id'),
-                "{$selftable}.itemtype"    => $item->getType()
+                "{$selftable}.items_id" => $item->getField('id'),
+                "{$selftable}.itemtype" => $item->getType()
             ] + getEntitiesRestrictCriteria('glpi_softwares', '', '', true),
             'ORDER'     => ['softname', 'version']
         ];
+
+        if (count($filters)) {
+            if (strlen(($filters['name'] ?? ""))) {
+                $request['WHERE']['glpi_softwares.name'] = ['LIKE', '%' . $filters['name'] . '%'];
+            }
+            if (strlen(($filters['state'] ?? ""))) {
+                $request['WHERE']['glpi_states.name'] = ['LIKE', '%' . $filters['state'] . '%'];
+            }
+            if (strlen(($filters['version'] ?? ""))) {
+                $request['WHERE']['glpi_softwareversions.name'] = ['LIKE', '%' . $filters['version'] . '%'];
+            }
+            if (strlen(($filters['arch'] ?? ""))) {
+                $request['WHERE']['glpi_softwareversions.arch'] = ['LIKE', '%' . $filters['arch'] . '%'];
+            }
+            if (isset($filters['is_dynamic']) && $filters['is_dynamic'] != '') {
+                $request['WHERE']["$selftable.is_dynamic"] = $filters['is_dynamic'];
+            }
+            if (strlen(($filters['software_category'] ?? ""))) {
+                $request['WHERE']['glpi_softwarecategories.name'] = ['LIKE', '%' . $filters['software_category'] . '%'];
+            }
+            if (strlen(($filters['date_install'] ?? ""))) {
+                $request['WHERE']['glpi_items_softwareversions.date_install'] = $filters['date_install'];
+            }
+        }
 
         if ($item->maybeDeleted()) {
             $request['WHERE']["{$selftable}.is_deleted"] = 0;
@@ -988,12 +1019,14 @@ class Item_SoftwareVersion extends CommonDBRelation
         $items_id      = $item->getField('id');
         $itemtype      = $item->getType();
         $rand          = mt_rand();
+        $filters       = $_GET['filters'] ?? [];
+        $is_filtered   = count($filters) > 0;
         $canedit       = Session::haveRightsOr("software", [CREATE, UPDATE, DELETE, PURGE]);
         $entities_id   = $item->fields["entities_id"];
 
         $crit         = Session::getSavedOption(__CLASS__, 'criterion', -1);
 
-        $iterator = self::getFromItem($item);
+        $iterator = self::getFromItem($item, null, null, $filters);
 
         if (
             (empty($withtemplate) || ($withtemplate != 2))
@@ -1056,7 +1089,7 @@ class Item_SoftwareVersion extends CommonDBRelation
 
         $installed = [];
 
-        if ($number) {
+        if ($number || $is_filtered) {
             echo "<div class='spaced'>";
             Html::printAjaxPager('', $start, $number);
 
@@ -1075,7 +1108,7 @@ class Item_SoftwareVersion extends CommonDBRelation
 
                 Html::showMassiveActions($massiveactionparams);
             }
-            echo "<table class='tab_cadre_fixehov'>";
+            echo "<table class='table table-hover table-striped border my-2'>";
 
             $header_begin  = "<tr>";
             $header_top    = '';
@@ -1087,14 +1120,70 @@ class Item_SoftwareVersion extends CommonDBRelation
                 $header_bottom .= Html::getCheckAllAsCheckbox('mass' . __CLASS__ . $rand);
                 $header_end    .= "</th>";
             }
-            $header_end .= "<th>" . __('Name') . "</th><th>" . __('Status') . "</th>";
-            $header_end .= "<th>" . _n('Version', 'Versions', 1) . "</th><th>" . SoftwareLicense::getTypeName(1) . "</th>";
+            $header_end .= "<th>" . __('Name') . "</th>";
+            $header_end .= "<th>" . __('Status') . "</th>";
+            $header_end .= "<th>" . _n('Version', 'Versions', 1) . "</th>";
+            $header_end .= "<th>" . SoftwareLicense::getTypeName(1) . "</th>";
             $header_end .= "<th>" . __('Installation date') . "</th>";
+            $header_end .= "<th>" . _n('Architecture', 'Architectures', 1) . "</th>";
             $header_end .= "<th>" . __('Automatic inventory') . "</th>";
             $header_end .= "<th>" . SoftwareCategory::getTypeName(1) . "</th>";
             $header_end .= "<th>" . __('Valid license') . "</th>";
-            $header_end .= "</tr>\n";
+            $header_end .= "<th>
+                <button class='btn btn-sm show_log_filters " . ($is_filtered ? "btn-secondary" : "btn-outline-secondary") . "'>
+                    <i class='fas fa-filter'></i>
+                    <span class='d-none d-xl-block'>" . __('Filter') . "</span>
+                </button></th>";
+            $header_end .= "</tr>";
             echo $header_begin . $header_top . $header_end;
+
+            if ($is_filtered) {
+                echo "<tr class='log_history_filter_row'>
+                    <td>
+                        <input type='hidden' name='filters[active]' value='1'>
+                    </td>
+                    <td>
+                        <input type='text' class='form-control' name='filters[name]' value='" . ($filters['name'] ?? '') . "'>
+                    </td>
+                    <td>
+                        <input type='text' class='form-control' name='filters[state]' value='" . ($filters['state'] ?? '') . "'>
+                    </td>
+                    <td>
+                        <input type='text' class='form-control' name='filters[version]' value='" . ($filters['version'] ?? '') . "'>
+                    </td>
+                    <td></td>
+                    <td>
+                        " . Html::showDateField(
+                            "filters[date_install]",
+                            [
+                                'value'   => ($filters['date_install'] ?? ''),
+                                'display' => false,
+                            ]
+                        ) . "
+                    </td>
+                    <td>
+                        <input type='text' class='form-control' name='filters[arch]' value='" . ($filters['arch'] ?? '') . "'>
+                    </td>
+                    <td>" . Dropdown::showFromArray(
+                            "filters[is_dynamic]",
+                            [
+                                null => "",
+                                '1'  => __('Yes'),
+                                '0'  => __('No'),
+                            ],
+                            [
+                                'value'   => ($filters['is_dynamic'] ?? null),
+                                'display' => false,
+                            ]
+                        ) . "
+                    </td>
+                    <td>
+                        <input type='text' class='form-control' name='filters[software_category]'>
+                    </td>
+                    <td></td>
+                    <td></td>
+                </tr>";
+            }
 
             for ($row = 0; $data = $iterator->current(); $row++) {
                 if (($row >= $start) && ($row < ($start + $_SESSION['glpilist_limit']))) {
@@ -1125,7 +1214,9 @@ class Item_SoftwareVersion extends CommonDBRelation
                 $iterator->next();
             }
 
+            echo "<tfoot>";
             echo $header_begin . $header_bottom . $header_end;
+            echo "</tfoot>";
             echo "</table>";
             echo "</div>";
             if ($canedit) {
@@ -1136,7 +1227,7 @@ class Item_SoftwareVersion extends CommonDBRelation
         } else {
             echo "<p class='center b'>" . __('No item found') . "</p>";
         }
-        echo "</div>\n";
+        echo "</div>";
         if (
             (empty($withtemplate) || ($withtemplate != 2))
             && $canedit
@@ -1152,8 +1243,8 @@ class Item_SoftwareVersion extends CommonDBRelation
             Software::dropdownLicenseToInstall("softwarelicenses_id", $entities_id);
             echo "</td><td width='20%'>";
             echo "<input type='submit' name='add' value=\"" . _sx('button', 'Add') . "\" class='btn btn-primary'>";
-            echo "</td></tr>\n";
-            echo "</table></div>\n";
+            echo "</td></tr>";
+            echo "</table></div>";
             Html::closeForm();
         }
         echo "<div class='spaced'>";
@@ -1389,6 +1480,7 @@ class Item_SoftwareVersion extends CommonDBRelation
             echo "</td>";
 
             echo "<td>" . Html::convDate($data['dateinstall']) . "</td>";
+            echo "<td>" . $data['arch'] . "</td>";
 
             if (isset($data['is_dynamic'])) {
                 echo "<td>" . Dropdown::getYesNo($data['is_dynamic']) . "</td>";
@@ -1400,6 +1492,7 @@ class Item_SoftwareVersion extends CommonDBRelation
             );
             echo "</td>";
             echo "<td>" . Dropdown::getYesNo($data["softvalid"]) . "</td>";
+            echo "<td></td>"; // empty td for filter column
             echo "</tr>\n";
         }
 
