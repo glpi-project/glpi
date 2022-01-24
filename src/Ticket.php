@@ -4113,7 +4113,6 @@ JAVASCRIPT;
             'items_id'                  => [],
             'entities_id'               => $_SESSION['glpiactive_entity'],
             'plan'                      => [],
-            'global_validation'         => CommonITILValidation::NONE,
             '_add_validation'           => 0,
             'type'                      => Entity::getUsedConfig(
                 'tickettype',

@@ -1024,16 +1024,10 @@ abstract class CommonITILObject extends CommonDBTM
                     $allowed_fields[] = 'status';
                     $allowed_fields[] = '_accepted';
                 }
-               // for post-only with validate right or validation created by rules
+               // for validation created by rules
                 $validation_class = static::getType() . 'Validation';
-                if (class_exists($validation_class)) {
-                    if (
-                        $validation_class::canValidate($this->fields['id'])
-                        || $validation_class::canCreate()
-                        || isset($input["_rule_process"])
-                    ) {
-                        $allowed_fields[] = 'global_validation';
-                    }
+                if (class_exists($validation_class) && isset($input["_rule_process"])) {
+                    $allowed_fields[] = 'global_validation';
                 }
                // Manage assign and steal right
                 if (static::getType() === Ticket::getType() && Session::haveRightsOr(static::$rightname, [Ticket::ASSIGN, Ticket::STEAL])) {
