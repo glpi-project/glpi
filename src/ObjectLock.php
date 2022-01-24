@@ -544,16 +544,9 @@ class ObjectLock extends CommonDBTM
      **/
     private function displayLockMessage($msg, $title = '')
     {
-
-        echo "<div id='message_after_lock' class='objectlockmessage' style='display:inline-block;' >";
-        echo $msg;
-        echo "</div>";
-        echo Html::scriptBlock("$('#message_after_lock').hide();");
-
         echo Html::scriptBlock("
          $(function() {
-            $('#message_after_lock').insertAfter('.navigationheader');
-            $('#message_after_lock').show('slide', {direction: 'up'}, 1000);
+            $(`<div id='message_after_lock' class='objectlockmessage' style='display: inline-block;'>$msg</div>`).insertAfter('.navigationheader');
          });
       ");
     }
