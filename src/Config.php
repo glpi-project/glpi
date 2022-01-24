@@ -3759,7 +3759,7 @@ HTML;
      *
      * @return array [email => sender address, name => sender name]
      */
-    public static function getSender(
+    public static function getAdminEmailSender(
         int $entities_id,
         bool $allow_response
     ): array {

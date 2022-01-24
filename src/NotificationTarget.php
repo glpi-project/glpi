@@ -1133,7 +1133,7 @@ class NotificationTarget extends CommonDBChild
      */
     public function getSender()
     {
-        return Config::getSender(
+        return Config::getAdminEmailSender(
             $this->getEntity(),
             $this->allowResponse()
         );
