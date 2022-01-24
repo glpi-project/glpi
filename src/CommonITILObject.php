@@ -6722,7 +6722,7 @@ abstract class CommonITILObject extends CommonDBTM
                 $validation['status'] == CommonITILValidation::WAITING);
                 $user = new User();
                 $user->getFromDB($validation['users_id_validate']);
-                $timeline["CommonITILValidation__" . $validations_id] = [
+                $timeline[$valitation_obj::getType() . "_" . $validations_id] = [
                     'type' => $validation_class,
                     'item' => [
                         'id'        => $validations_id,
@@ -6744,7 +6744,7 @@ abstract class CommonITILObject extends CommonDBTM
                 ];
 
                 if (!empty($validation['validation_date'])) {
-                    $timeline["CommonITILValidation_" . $validations_id] = [
+                    $timeline[$valitation_obj::getType() . "_" . $validations_id] = [
                         'type' => $validation_class,
                         'item' => [
                             'id'        => $validations_id,

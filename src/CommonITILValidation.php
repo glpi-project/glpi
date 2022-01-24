@@ -291,19 +291,34 @@ abstract class CommonITILValidation extends CommonDBChild
     {
         global $CFG_GLPI;
 
-       // Add screenshots if needed, without notification
-        $this->input = $this->addFiles($this->input, [
-            'force_update'  => true,
-            'name'          => 'comment_submission',
-            'content_field' => 'comment_submission',
-        ]);
 
-       // Add documents if needed, without notification
-        $this->input = $this->addFiles($this->input, [
-            'force_update'  => true,
-            'name'          => 'filename',
-            'content_field' => 'comment_validation',
-        ]);
+        if (array_key_exists('comment_submission', $this->input)) {
+            // Add screenshots if needed, without notification
+            $this->input = $this->addFiles($this->input, [
+                'force_update'  => true,
+                'name'          => 'filename',
+                'content_field' => 'comment_submission',
+            ]);
+            // Add documents if needed, without notification
+            $this->input = $this->addFiles($this->input, [
+                'force_update'  => true,
+                'name'          => 'comment_submission',
+                'content_field' => 'comment_submission',
+            ]);
+        } else {
+            // Add screenshots if needed, without notification
+            $this->input = $this->addFiles($this->input, [
+                'force_update'  => true,
+                'name'          => 'filename',
+                'content_field' => 'comment_validation',
+            ]);
+            // Add documents if needed, without notification
+            $this->input = $this->addFiles($this->input, [
+                'force_update'  => true,
+                'name'          => 'comment_validation',
+                'content_field' => 'comment_validation',
+            ]);
+        }
 
         $item     = new static::$itemtype();
         $mailsend = false;
@@ -1048,7 +1063,6 @@ abstract class CommonITILValidation extends CommonDBChild
      **/
     public function showForm($ID, array $options = [])
     {
-
         if ($ID > 0) {
             $this->canEdit($ID);
         } else {
