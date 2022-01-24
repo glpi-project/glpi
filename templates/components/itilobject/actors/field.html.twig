@@ -206,7 +206,7 @@
                return {
                   action: 'getActors',
                   actortype: actorytype,
-                  users_right: actorytype === 'assign' ? 'own_ticket' : 'all',
+                  users_right: '{{ users_right }}' ?? 'all',
                   entity_restrict: {{ entities_id }},
                   searchText: params.term,
                   _idor_token: '{{ idor_token() }}',
