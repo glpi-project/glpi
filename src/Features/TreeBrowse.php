@@ -90,7 +90,7 @@ trait TreeBrowse
                     'criteria': $criteria
                 });
             };
-            loadNode(0);
+
             $('#tree_category$rand').fancytree({
                 // load plugins
                 extensions: ['filter', 'glyph', 'persist'],
@@ -131,6 +131,10 @@ trait TreeBrowse
 
             });
 
+            var tree = $.ui.fancytree.getTree("#tree_category$rand")
+            if (tree.activeNode === null) {
+                tree.activateKey(-1);
+            }
             $(document).on('keyup', '#browser_tree_search$rand', function() {
                 var search_text = $(this).val();
                 $.ui.fancytree.getTree("#tree_category$rand").filterNodes(search_text);
@@ -162,13 +166,13 @@ trait TreeBrowse
 
         $cat_itemtype = static::getCategoryItemType($itemtype);
         $cat_item     = new $cat_itemtype();
-        $params['list_limit'] = 99999;
-        $data = Search::getDatas($itemtype, $params);
 
-        if ($data['data']['count'] > 0) {
-            $ids = array_keys($data['data']['items']);
-        } else {
-            $ids = 0;
+        $params['export_all'] = true;
+        $data = Search::prepareDatasForSearch($itemtype, $params, ['id']);
+        Search::constructSQL($data);
+        $ids = [0];
+        foreach ($DB->query($data['sql']['search']) as $row) {
+            $ids[] = $row['id'];
         }
 
         $cat_table = $cat_itemtype::getTable();

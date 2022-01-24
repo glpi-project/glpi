@@ -61,6 +61,7 @@ switch ($_REQUEST['action']) {
             }
         }
 
+        $params['treecriteria'] = count($params['criteria']);
         $params['criteria'][] = [
             'link'   => "AND",
             'field'  => $field,
