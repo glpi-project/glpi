@@ -174,6 +174,8 @@ class SNMPCredential extends CommonDBTM
                 return false;
             }
         }
+
+        return true;
     }
 
     public function prepareInputForAdd($input)
