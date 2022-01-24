@@ -189,7 +189,7 @@ class Event extends CommonDBTM
         global $CFG_GLPI;
 
         // If ID less than or equal to 0 (or Entity with ID less than 0 since Root Entity is 0)
-        if (($items_id <= 0 && $type !== \Entity::class) || ($type === \Entity::class && $items_id < 0)) {
+        if ($items_id < 0 || ($type !== \Entity::class && $items_id == 0)) {
             echo "&nbsp;";//$item;
         } else {
             switch ($type) {
