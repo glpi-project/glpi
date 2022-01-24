@@ -437,6 +437,49 @@ class User extends CommonDBTM {
       return $this->getFromDBByCrit(['user_dn' => $user_dn]);
    }
 
+   /**
+    * Get users ids matching the given email
+    *
+    * @param string $email     Email to search for
+    * @param array  $condition Extra conditions
+    *
+    * @return array Found users ids
+    */
+   public static function getUsersIdByEmails(
+      string $email,
+      array $condition = []
+   ): array {
+      global $DB;
+
+      $query = [
+         'SELECT'    => self::getTable() . '.id',
+         'FROM'      => self::getTable(),
+         'LEFT JOIN' => [
+            UserEmail::getTable() => [
+               'FKEY' => [
+                  self::getTable()      => 'id',
+                  UserEmail::getTable() => self::getForeignKeyField()
+               ]
+            ]
+         ],
+         'WHERE' => [UserEmail::getTable() . '.email' => $email] + $condition
+      ];
+
+      $data = iterator_to_array($DB->request($query));
+      return array_column($data, self::getTable() . '.id');
+   }
+
+   /**
+    * Get the number of users using the given email
+    *
+    * @param string $email     Email to search for
+    * @param array  $condition Extra conditions
+    *
+    * @return int Number of users found
+    */
+   public static function countUsersByEmail($email, $condition = []): int {
+      return count(self::getUsersIdByEmails($email, $condition));
+   }
 
    /**
     * Retrieve a user from the database using its email.
@@ -449,27 +492,12 @@ class User extends CommonDBTM {
     * @return boolean
     */
    function getFromDBbyEmail($email, $condition = []) {
-      global $DB;
+      $ids = self::getUsersIdByEmails($email, $condition);
 
-      $crit = [
-         'SELECT'    => $this->getTable() . '.id',
-         'FROM'      => $this->getTable(),
-         'LEFT JOIN'  => [
-            'glpi_useremails' => [
-               'FKEY' => [
-                  $this->getTable() => 'id',
-                  'glpi_useremails' => 'users_id'
-               ]
-            ]
-         ],
-         'WHERE'     => ['glpi_useremails.email' => $email] + $condition
-      ];
-
-      $iter = $DB->request($crit);
-      if ($iter->numrows()==1) {
-         $row = $iter->next();
-         return $this->getFromDB($row['id']);
+      if (count($ids) == 1) {
+         return $this->getFromDB(current($ids));
       }
+
       return false;
    }
 
@@ -4854,7 +4882,11 @@ JAVASCRIPT;
          }
 
       } else {
-         throw new ForgetPasswordException(__('Email address not found.'));
+         if (self::countUsersByEmail($input['email'], $condition) > 1) {
+            throw new ForgetPasswordException(__('Multiple users were found for this email address. Please contact your administrator.'));
+         } else {
+            throw new ForgetPasswordException(__('Email address not found.'));
+         }
       }
 
       return false;
@@ -4965,7 +4997,11 @@ JAVASCRIPT;
 
       }
 
-      throw new ForgetPasswordException(__('Email address not found.'));
+      if (self::countUsersByEmail($email, $condition) > 1) {
+         throw new ForgetPasswordException(__('Multiple users were found for this email address. Please contact your administrator.'));
+      } else {
+         throw new ForgetPasswordException(__('Email address not found.'));
+      }
    }
 
 
