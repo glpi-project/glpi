@@ -6746,6 +6746,7 @@ abstract class CommonITILObject extends CommonDBTM
                     ($validation['status'] == CommonITILValidation::WAITING  ? "validation-waiting"  : "") .
                     ($validation['status'] == CommonITILValidation::ACCEPTED ? "validation-accepted" : "") .
                     ($validation['status'] == CommonITILValidation::REFUSED  ? "validation-refused"  : ""),
+                    'item_action' => 'validation-request',
                 ];
 
                 if (!empty($validation['validation_date'])) {
@@ -6759,11 +6760,12 @@ abstract class CommonITILObject extends CommonDBTM
                             'comment_validation' => $validation['comment_validation'],
                             'users_id'  => $validation['users_id_validate'],
                             'status'    => "status_" . $validation['status'],
-                            'can_edit'  => $canedit,
+                            'can_edit'  => $validation['users_id_validate'] === Session::getLoginUserID(),
                             'timeline_position' => $validation['timeline_position'],
                         ],
                         'class'    => 'validation-answer',
-                        'itiltype' => 'Validation'
+                        'itiltype' => 'Validation',
+                        'item_action' => 'validation-answer',
                     ];
                 }
             }
