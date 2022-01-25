@@ -3781,7 +3781,8 @@ HTML;
      *
      * @return array [email => sender address, name => sender name]
      */
-    public static function getAdminEmail(int $entities_id): array{
+    public static function getAdminEmail(int $entities_id): array
+    {
         global $CFG_GLPI;
 
         // Read config data for generic from email
