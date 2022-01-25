@@ -8411,4 +8411,60 @@ abstract class CommonITILObject extends CommonDBTM {
    }
 
    abstract public static function getItemLinkClass(): string;
+
+   protected function handleFileUploadField(ITILTemplate $template, array $options = []): void {
+      $options = array_replace([
+         'colwidth' => 13,
+      ], $options);
+
+      if (!in_array($this->fields['status'], $this->getClosedStatusArray())) {
+         // View files added
+         echo "<tr class='tab_bg_1'>";
+         // Permit to add doc when creating a ticket
+         echo "<th style='width:{$options['colwidth']}%'>";
+         echo $template->getBeginHiddenFieldText('_documents_id');
+         $doctitle =  sprintf(__('File (%s)'), Document::getMaxUploadSize());
+         printf(__('%1$s%2$s'), $doctitle, $template->getMandatoryMark('_documents_id'));
+         // Do not show if hidden.
+         if (!$template->isHiddenField('_documents_id')) {
+            DocumentType::showAvailableTypesLink();
+         }
+         echo $template->getEndHiddenFieldText('_documents_id');
+         echo "</th>";
+         echo "<td colspan='3'>";
+         // Do not set values
+         echo $template->getEndHiddenFieldValue('_documents_id');
+         if ($template->isPredefinedField('_documents_id')) {
+            if (isset($options['_documents_id'])
+               && is_array($options['_documents_id'])
+               && count($options['_documents_id'])) {
+
+               echo "<span class='b'>".__('Default documents:').'</span>';
+               echo "<br>";
+               $doc = new Document();
+               foreach ($options['_documents_id'] as $key => $val) {
+                  if ($doc->getFromDB($val)) {
+                     echo "<input type='hidden' name='_documents_id[$key]' value='$val'>";
+                     echo "- ".$doc->getNameID()."<br>";
+                  }
+               }
+            }
+         }
+         if (!$template->isHiddenField('_documents_id')) {
+            $uploads = [];
+            if (isset($this->input['_filename'])) {
+               $uploads['_filename'] = $this->input['_filename'];
+               $uploads['_tag_filename'] = $this->input['_tag_filename'];
+            }
+            Html::file([
+               'filecontainer' => 'fileupload_info_'.(strtolower(static::class)),
+               'showtitle'     => false,
+               'multiple'      => true,
+               'uploads'       => $uploads,
+            ]);
+         }
+         echo "</td>";
+         echo "</tr>";
+      }
+   }
 }

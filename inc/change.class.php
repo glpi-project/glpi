@@ -1166,6 +1166,10 @@ class Change extends CommonITILObject {
       echo "</div>";
 
       echo $tt->getEndHiddenFieldValue('content', $this);
+      $this->handleFileUploadField($tt, [
+         'colwidth' => $colsize1
+      ]);
+
       echo "</td></tr>";
 
       if (!$ID) {

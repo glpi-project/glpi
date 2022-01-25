@@ -1660,6 +1660,10 @@ class Problem extends CommonITILObject {
 
       echo $tt->getEndHiddenFieldValue('content', $this);
 
+      $this->handleFileUploadField($tt, [
+         'colwidth' => $colsize1
+      ]);
+
       $options['colspan'] = 2;
       if (!$options['template_preview']) {
          if ($tt->isField('id') && ($tt->fields['id'] > 0)) {
