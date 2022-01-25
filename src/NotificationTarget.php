@@ -1159,20 +1159,7 @@ class NotificationTarget extends CommonDBChild
      **/
     public function getReplyTo(): array
     {
-        $replyto = Config::getReplyToEmail($this->getEntity());
-        if ($replyto['email'] !== null) {
-            return $replyto;
-        } else {
-            trigger_error('Reply-To address is not defined in notifications configuration.', E_USER_WARNING);
-        }
-
-        // No replyto defined, try to use admin email as a replacement
-        $admin = Config::getAdminEmail($this->getEntity());
-        if ($admin['email'] === null) {
-            trigger_error('Admin email address is not defined in notifications configuration.', E_USER_WARNING);
-        }
-
-        return $admin;
+        return Config::getReplyToEmail($this->getEntity());
     }
 
 
