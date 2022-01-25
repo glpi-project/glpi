@@ -33,7 +33,11 @@
 
 namespace tests\units;
 
+use Config;
 use DbTestCase;
+use Entity;
+use Generator;
+use Session;
 
 /* Test for inc/notificationtarget.class.php */
 
@@ -207,5 +211,122 @@ class NotificationTarget extends DbTestCase
             'email' => 'test@child2.tld',
             'name'  => 'test child2'
         ]);
+    }
+
+    /**
+     * Provider for testGetSender
+     *
+     * @return Generator
+     */
+    public function testGetSenderProvider(): Generator
+    {
+        global $CFG_GLPI;
+
+        $this->login();
+
+        // Case 1: default post install values no reply
+        yield [
+            'allow_response' => false,
+            'email'          => "admsys@localhost",
+            'name'           => "",
+            'warning'        => 'No-Reply address is not defined in notifications configuration.'
+        ];
+
+        // Case 2: no reply with global config
+        $CFG_GLPI['admin_email_noreply'] = "noreply@localhost";
+        $CFG_GLPI['admin_email_noreply_name'] = "No reply";
+
+        yield [
+            'allow_response' => false,
+            'email'          => "noreply@localhost",
+            'name'           => "No reply",
+        ];
+
+        // Case 3: default post install values with admin
+        yield [
+            'allow_response' => true,
+            'email'          => "admsys@localhost",
+            'name'           => "",
+        ];
+
+        // Case 4: default post install values with global admin config
+        $CFG_GLPI['admin_email'] = "globaladmin@localhost";
+        $CFG_GLPI['admin_email_name'] = "Global admin";
+
+        yield [
+            'allow_response' => true,
+            'email'          => "globaladmin@localhost",
+            'name'           => "Global admin",
+        ];
+
+        // Case 5: default post install values with global from config
+        $CFG_GLPI['from_email'] = "globalfrom@localhost";
+        $CFG_GLPI['from_email_name'] = "Global from";
+
+        yield [
+            'allow_response' => true,
+            'email'          => "globalfrom@localhost",
+            'name'           => "Global from",
+        ];
+
+        // Case 6: default post install values with specific entity config
+        $entity = new Entity();
+        $this->boolean($entity->update([
+            'id'               => Session::getActiveEntity(),
+            'admin_email'      => "specificadmin@localhost",
+            'admin_email_name' => "Specific admin",
+        ]))->isTrue();
+        $this->boolean(
+            $entity->getFromDB(Session::getActiveEntity())
+        )->isTrue();
+        $this->string($entity->fields['admin_email'])->isEqualTo("specificadmin@localhost");
+        $this->string($entity->fields['admin_email_name'])->isEqualTo("Specific admin");
+
+        yield [
+            'allow_response' => true,
+            'email'          => "specificadmin@localhost",
+            'name'           => "Specific admin",
+        ];
+
+    }
+
+    /**
+     * Functionnals tests for the getSender method
+     *
+     * @dataprovider testGetSenderProvider
+     *
+     * @param bool        $allow_response Use reply to or admin email ?
+     * @param string|null $email          Expected email
+     * @param string|null $name           Expected name
+     * @param string|null $warning        Exected warnings (default: none)
+     *
+     * @return void
+     */
+    public function testGetSender(
+        bool $allow_response,
+        ?string $email,
+        ?string $name,
+        ?string $warning = null
+    ): void {
+        $target = new \mock\NotificationTarget();
+        $this->calling($target)->allowResponse = $allow_response;
+
+        if (is_null($warning)) {
+            $this->array($target->getSender())->isEqualTo([
+                'email' => $email,
+                'name'  => $name,
+            ]);
+        } else {
+            $this->when(function () use ($target, $email, $name) {
+                $this->array($target->getSender())->isEqualTo([
+                    'email' => $email,
+                    'name'  => $name,
+                ]);
+            })->error()
+                ->withType(E_USER_WARNING)
+                ->withMessage($warning)
+                ->exists();
+        }
+
     }
 }

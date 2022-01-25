@@ -3752,52 +3752,21 @@ HTML;
     }
 
     /**
-     * Get email and name to be used as "From" in our email notifications
-     *
-     * @param int  $entities_id
-     * @param bool $allow_response
-     *
-     * @return array [email => sender address, name => sender name]
-     */
-    public static function getAdminEmailSender(
-        int $entities_id,
-        bool $allow_response
-    ): array {
-        if ($allow_response) {
-            return self::getAdminEmail($entities_id);
-        } else {
-            return self::getNoReplyEmail();
-        }
-    }
-
-    /**
      * Try to find a valid email to use as a sender for notifications
-     * Form first to last, it will look for :
+     * From first to last, it will look for :
+     * - A valid "admin_email" address defined in the specified entity configuration
      * - A valid "from_email" address defined in the global configuration
-     * - A valid "admin_email" address defined in the current entity configuration
      * - A valid "admin_email" address defined in the global configuration
      *
-     * @param int $entities_id Current entity
+     * @param int|null $entities_id Specified entity (default: current entity)
      *
      * @return array [email => sender address, name => sender name]
      */
-    public static function getAdminEmail(int $entities_id): array
+    public static function getAdminEmail(?int $entities_id = null): array
     {
         global $CFG_GLPI;
 
-        // Read config data for generic from email
-        $from_email      = $CFG_GLPI['from_email']      ?? "";
-        $from_email_name = $CFG_GLPI['from_email_name'] ?? "";
-
-        // Check if generic from email is valid
-        if (NotificationMailing::isUserAddressValid($from_email)) {
-            return [
-                'email' => $from_email,
-                'name'  => $from_email_name,
-            ];
-        }
-
-        // First fallback: check admin email in entity
+        // Check admin email in specified entity
         $entity_admin_email = trim(
             Entity::getUsedConfig('admin_email', $entities_id, '', '')
         );
@@ -3810,6 +3779,18 @@ HTML;
             return [
                 'email' => $entity_admin_email,
                 'name'  => $entity_admin_email_name,
+            ];
+        }
+
+        // First fallback, read config data for generic from email
+        $from_email      = $CFG_GLPI['from_email']      ?? "";
+        $from_email_name = $CFG_GLPI['from_email_name'] ?? "";
+
+        // Check if generic from email is valid
+        if (NotificationMailing::isUserAddressValid($from_email)) {
+            return [
+                'email' => $from_email,
+                'name'  => $from_email_name,
             ];
         }
 
@@ -3835,10 +3816,12 @@ HTML;
     /**
      * Try to find a valid noreply email to use as a sender for notifications
      *
-     * @return array [email => sender address, name => sender name]
+     * @return array [email => noreply address, name => noreply name]
      */
     public static function getNoReplyEmail(): array
     {
+        global $CFG_GLPI;
+
         // Read config data for noreply email
         $noreply_email      = $CFG_GLPI['admin_email_noreply']      ?? "";
         $noreply_email_name = $CFG_GLPI['admin_email_noreply_name'] ?? "";
@@ -3848,6 +3831,54 @@ HTML;
             return [
                 'email' => $noreply_email,
                 'name'  => $noreply_email_name,
+            ];
+        }
+
+        // No valid values found
+        return [
+            'email' => null,
+            'name'  => null,
+        ];
+    }
+
+    /**
+     * Try to find a valid replyto email to be used for notifications
+     * From first to last, it will look for :
+     * - A valid "replyto" address defined in the specified entity configuration
+     * - A valid "replyto" address defined in the global configuration
+     *
+     * @param int|null $entities_id Specified entity (default: current entity)
+     *
+     * @return array [email => replyto address, name => replyto name]
+     */
+    public static function getReplyToEmail(?int $entities_id = null): array
+    {
+        global $CFG_GLPI;
+
+        // Check admin email in specified entity
+        $entity_admin_reply = trim(
+            Entity::getUsedConfig('admin_reply', $entities_id, '', '')
+        );
+        $entity_admin_reply_name = trim(
+            Entity::getUsedConfig('admin_reply_name', $entities_id, '', '')
+        );
+
+        if (NotificationMailing::isUserAddressValid($entity_admin_reply)) {
+            return [
+                'email' => $entity_admin_reply,
+                'name'  => $entity_admin_reply_name,
+            ];
+        }
+
+        // Fallback to global configuration
+        $admin_reply      = $CFG_GLPI['admin_reply']      ?? "";
+        $admin_reply_name = $CFG_GLPI['admin_reply_name'] ?? "";
+
+        // Check if noreply email is valid
+        if (NotificationMailing::isUserAddressValid($admin_reply)) {
+            return [
+                'email' => $admin_reply,
+                'name'  => $admin_reply_name,
             ];
         }
 

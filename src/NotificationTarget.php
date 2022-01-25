@@ -1131,42 +1131,48 @@ class NotificationTarget extends CommonDBChild
      *
      * @return array [email => sender address, name => sender name]
      */
-    public function getSender()
+    public function getSender(): array
     {
-        return Config::getAdminEmailSender(
-            $this->getEntity(),
-            $this->allowResponse()
-        );
+        if (!$this->allowResponse()) {
+            $admin = Config::getNoReplyEmail();
+            if ($admin['email'] !== null) {
+                return $admin;
+            } else {
+                trigger_error('No-Reply address is not defined in notifications configuration.', E_USER_WARNING);
+            }
+        }
+
+        // No noreply defined, try to use admin email as a replacement
+        $admin = Config::getAdminEmail($this->getEntity());
+        if ($admin['email'] === null) {
+            trigger_error('Admin email address is not defined in notifications configuration.', E_USER_WARNING);
+        }
+
+        return $admin;
     }
 
 
     /**
      * Get the reply to address
      *
-     * @param $options   array
-     *
-     * @return the reply to address
+     * @return array [email => replyto address, name => replyto name]
      **/
-    public function getReplyTo($options = [])
+    public function getReplyTo(): array
     {
-        global $CFG_GLPI;
-
-       //If the entity administrator's address is defined, return it
-        $admin_reply      = trim(Entity::getUsedConfig('admin_reply', $this->getEntity(), '', ''));
-        $admin_reply_name = trim(Entity::getUsedConfig('admin_reply_name', $this->getEntity(), '', ''));
-
-        if (NotificationMailing::isUserAddressValid($admin_reply)) {
-            return [
-                'email' => $admin_reply,
-                'name'  => $admin_reply_name,
-            ];
+        $replyto = Config::getReplyToEmail($this->getEntity());
+        if ($replyto['email'] !== null) {
+            return $replyto;
+        } else {
+            trigger_error('Reply-To address is not defined in notifications configuration.', E_USER_WARNING);
         }
 
-       //Entity admin is not defined, return the global admin's address
-        return [
-            'email' => $CFG_GLPI['admin_reply'],
-            'name'  => $CFG_GLPI['admin_reply_name']
-        ];
+        // No replyto defined, try to use admin email as a replacement
+        $admin = Config::getAdminEmail($this->getEntity());
+        if ($admin['email'] === null) {
+            trigger_error('Admin email address is not defined in notifications configuration.', E_USER_WARNING);
+        }
+
+        return $admin;
     }
 
 
