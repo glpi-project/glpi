@@ -202,9 +202,9 @@ class RefusedEquipment extends CommonDBTM
 
         $rand = mt_rand();
         echo sprintf(
-            "<a class='btn btn-primary' style='float:right;' href='#' onClick=\"%s\">%s</a>",
-            Html::jsGetElementbyID('allruletest' . $rand) . ".dialog('open'); return false;",
-            __('Test rules engine')
+            "<a class='btn btn-primary' style='float:right;' href='#'  data-bs-toggle='modal' data-bs-target='#allruletest%s'>%s</a>",
+            $rand,
+            __s('Test rules engine')
         );
         Ajax::createIframeModalWindow(
             'allruletest' . $rand,
