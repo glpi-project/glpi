@@ -686,11 +686,9 @@ class NetworkPort extends CommonDBChild
                 DisplayPreference::GENERAL
             ])
         ) {
-            $options_link = "<span class='fa fa-wrench pointer' title='" .
-            __s('Select default items to show') . "' onClick=\"$('#%id').dialog('open');\">
+            $search_config_top .= "<span class='fa fa-wrench pointer' title='" .
+            __s('Select default items to show') . "' data-bs-toggle='modal' data-bs-target='#search_config_top'>
             <span class='sr-only'>" .  __s('Select default items to show') . "</span></span>";
-
-            $search_config_top .= str_replace('%id', 'search_config_top', $options_link);
 
             $pref_url = $CFG_GLPI["root_doc"] . "/front/displaypreference.form.php?itemtype=" .
                      self::getType();

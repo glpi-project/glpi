@@ -528,9 +528,6 @@ $(function() {
         }
     });
 
-    // prevent jquery ui dialog to keep focus
-    //$.ui.dialog.prototype._focusTabbable = function() {};
-
     $('.reduce-menu').on('click', function(event) {
         event.preventDefault();
         event.stopPropagation();
@@ -549,17 +546,6 @@ $(function() {
     $(document).on('click', '.see_debug', function() {
         $('body > .debug-panel').toggle();
     });
-
-    // permits to have html in dialogs title
-    /*$.widget("ui.dialog", $.extend({}, $.ui.dialog.prototype, {
-      _title: function(title) {
-         if (!this.options.title ) {
-            title.html("&#160;");
-         } else {
-            title.html(this.options.title);
-         }
-      }
-   }));*/
 });
 
 /**
