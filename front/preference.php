@@ -71,7 +71,7 @@ if (
     if (Session::getCurrentInterface() == "central") {
         Html::header(Preference::getTypeName(1), $_SERVER['PHP_SELF'], 'preference');
     } else {
-        Html::helpHeader(Preference::getTypeName(1), $_SERVER['PHP_SELF']);
+        Html::helpHeader(Preference::getTypeName(1));
     }
 
     $pref = new Preference();

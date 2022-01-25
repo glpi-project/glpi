@@ -36,7 +36,7 @@ include('../inc/includes.php');
 Session::checkRightsOr('reservation', [READ, ReservationItem::RESERVEANITEM]);
 
 if (Session::getCurrentInterface() == "helpdesk") {
-    Html::helpHeader(__('Simplified interface'), $_SERVER['PHP_SELF'], $_SESSION["glpiname"]);
+    Html::helpHeader(__('Simplified interface'));
 } else {
     Html::header(Reservation::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "tools", "reservationitem");
 }

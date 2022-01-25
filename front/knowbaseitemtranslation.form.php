@@ -75,9 +75,9 @@ if (isset($_POST['add'])) {
         if (Session::getCurrentInterface() == "central") {
             Html::header(KnowbaseItem::getTypeName(1), $_SERVER['PHP_SELF'], "tools", "knowbaseitemtranslation");
         } else {
-            Html::helpHeader(__('FAQ'), $_SERVER['PHP_SELF']);
+            Html::helpHeader(__('FAQ'));
         }
-        Html::helpHeader(__('FAQ'), $_SERVER['PHP_SELF'], $_SESSION["glpiname"]);
+        Html::helpHeader(__('FAQ'));
     } else {
         $_SESSION["glpilanguage"] = $CFG_GLPI['language'];
        // Anonymous FAQ

@@ -226,7 +226,7 @@ if (isset($_POST["add"])) {
 
 if (isset($_GET["id"]) && ($_GET["id"] > 0)) {
     if (Session::getCurrentInterface() == "helpdesk") {
-        Html::helpHeader(Ticket::getTypeName(Session::getPluralNumber()), '', $_SESSION["glpiname"]);
+        Html::helpHeader(Ticket::getTypeName(Session::getPluralNumber()), 'tickets', 'ticket');
     } else {
         Html::header(Ticket::getTypeName(Session::getPluralNumber()), '', "helpdesk", "ticket");
     }

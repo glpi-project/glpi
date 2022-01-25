@@ -182,7 +182,7 @@ if (isset($_POST["add"])) {
         if (Session::getCurrentInterface() == "central") {
             Html::header(KnowbaseItem::getTypeName(1), $_SERVER['PHP_SELF'], "tools", "knowbaseitem");
         } else {
-            Html::helpHeader(__('FAQ'), $_SERVER['PHP_SELF']);
+            Html::helpHeader(__('FAQ'));
         }
 
         $available_options = ['item_itemtype', 'item_items_id', 'id'];

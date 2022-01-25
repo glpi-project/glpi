@@ -36,7 +36,7 @@ include('../inc/includes.php');
 Session::checkLoginUser();
 
 if (Session::getCurrentInterface() == "helpdesk") {
-    Html::helpHeader(Ticket::getTypeName(Session::getPluralNumber()), '', $_SESSION["glpiname"]);
+    Html::helpHeader(Ticket::getTypeName(Session::getPluralNumber()), 'tickets', 'ticket');
 } else {
     Html::header(Ticket::getTypeName(Session::getPluralNumber()), '', "helpdesk", "ticket");
 }

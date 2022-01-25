@@ -91,11 +91,11 @@ if (
 Session::checkValidSessionId();
 
 if (isset($_GET['create_ticket'])) {
-    Html::helpHeader(__('New ticket'), $_SERVER['PHP_SELF'], $_SESSION["glpiname"]);
+    Html::helpHeader(__('New ticket'));
     $ticket = new Ticket();
     $ticket->showFormHelpdesk(Session::getLoginUserID());
 } else {
-    Html::helpHeader(__('Home'), $_SERVER['PHP_SELF'], $_SESSION["glpiname"]);
+    Html::helpHeader(__('Home'));
 
     $password_alert = "";
     $user = new User();
