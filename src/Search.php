@@ -104,14 +104,20 @@ class Search
     /**
      * Display result table for search engine for an type
      *
-     * @param string $itemtype Item type to manage
-     * @param array  $params   Search params passed to prepareDatasForSearch function
+     * @param string $itemtype     Item type to manage
+     * @param array  $params       Search params passed to
+     *                             prepareDatasForSearch function
+     * @param array  $forcedisplay Array of columns to display (default empty
+     *                             = use display pref and search criteria)
      *
      * @return void
      **/
-    public static function showList($itemtype, $params)
-    {
-        $data = self::getDatas($itemtype, $params);
+    public static function showList(
+        $itemtype,
+        $params,
+        array $forcedisplay = []
+    ) {
+        $data = self::getDatas($itemtype, $params, $forcedisplay);
 
         switch ($data['display_type']) {
             case self::CSV_OUTPUT:
