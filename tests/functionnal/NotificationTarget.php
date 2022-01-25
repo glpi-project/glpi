@@ -33,7 +33,6 @@
 
 namespace tests\units;
 
-use Config;
 use DbTestCase;
 use Entity;
 use Generator;
