@@ -1699,7 +1699,7 @@ JAVASCRIPT;
       Html::displayImpersonateBanner();
 
       echo "<div id='header'>";
-      echo "<header role='banner' id='header_top'>";
+      echo "<header id='header_top'>";
       echo "<div id='c_logo'>";
       echo "<a href='" . $CFG_GLPI["root_doc"] . "/front/central.php'
                accesskey='1'
@@ -1729,7 +1729,7 @@ JAVASCRIPT;
            "<span class='sr-only'>Top of the page</span>".
            "</a></span>";
 
-      echo "<main role='main' id='page'>";
+      echo "<main id='page'>";
 
       if ($DB->isSlave()
           && !$DB->first_connection) {
@@ -1762,9 +1762,9 @@ JAVASCRIPT;
          return;
       }
       $FOOTER_LOADED = true;
-      echo "</main>"; // end of "main role='main'"
+      echo "</main>";
 
-      echo "<footer role='contentinfo' id='footer'>";
+      echo "<footer id='footer'>";
       echo "<table role='presentation'><tr>";
 
       if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) { // mode debug
@@ -1857,7 +1857,7 @@ JAVASCRIPT;
 
       // Main Headline
       echo "<div id='header'>";
-      echo "<header role='banner' id='header_top'>";
+      echo "<header id='header_top'>";
 
       echo "<div id='c_logo'>";
       echo "<a href='".$CFG_GLPI["root_doc"]."/' accesskey='1' title=\"".__s('Home')."\">".
@@ -1951,7 +1951,7 @@ JAVASCRIPT;
 
       // Main Headline
       echo "<div id='header'>";
-      echo "<header role='banner' id='header_top'>";
+      echo "<header id='header_top'>";
 
       echo "<div id='c_logo'>";
       echo "<a href='".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php' accesskey='1' title=\"".
@@ -1966,7 +1966,7 @@ JAVASCRIPT;
       self::displayMainMenu(false);
 
       echo "</div>"; // fin header
-      echo "<main role='main' id='page'>";
+      echo "<main id='page'>";
 
       // call static function callcron() every 5min
       CronTask::callCron();
@@ -1986,9 +1986,9 @@ JAVASCRIPT;
       }
       $FOOTER_LOADED = true;
 
-      echo "</main>"; // end of "main role='main'"
+      echo "</main>";
 
-      echo "<footer role='contentinfo' id='footer'>";
+      echo "<footer id='footer'>";
       echo "<table role='presentation' width='100%'><tr><td class='right'>" . self::getCopyrightMessage(false);
       echo "</td></tr></table></footer>";
 
@@ -2031,7 +2031,7 @@ JAVASCRIPT;
 
       // Body with configured stuff
       echo "<body>";
-      echo "<main role='main' id='page'>";
+      echo "<main id='page'>";
       echo "<br><br>";
       echo "<div id='bloc'>";
       echo "<div id='logo_bloc'></div>";
