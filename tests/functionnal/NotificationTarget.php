@@ -286,7 +286,6 @@ class NotificationTarget extends DbTestCase
             'email'          => "specificadmin@localhost",
             'name'           => "Specific admin",
         ];
-
     }
 
     /**
@@ -326,6 +325,5 @@ class NotificationTarget extends DbTestCase
                 ->withMessage($warning)
                 ->exists();
         }
-
     }
 }
