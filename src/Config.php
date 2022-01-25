@@ -3827,8 +3827,8 @@ HTML;
 
         // Final fallback, no valid values found
         return [
-            'email' => '',
-            'name'  => '',
+            'email' => null,
+            'name'  => null,
         ];
     }
 
@@ -3840,8 +3840,8 @@ HTML;
     public static function getNoReplyEmail(): array
     {
         // Read config data for noreply email
-        $noreply_email      = $CFG_GLPI['admin_email']      ?? "";
-        $noreply_email_name = $CFG_GLPI['admin_email_name'] ?? "";
+        $noreply_email      = $CFG_GLPI['admin_email_noreply']      ?? "";
+        $noreply_email_name = $CFG_GLPI['admin_email_noreply_name'] ?? "";
 
         // Check if noreply email is valid
         if (NotificationMailing::isUserAddressValid($noreply_email)) {
@@ -3853,8 +3853,8 @@ HTML;
 
         // No valid values found
         return [
-            'email' => '',
-            'name'  => '',
+            'email' => null,
+            'name'  => null,
         ];
     }
 }
