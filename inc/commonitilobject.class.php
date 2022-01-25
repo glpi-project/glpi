@@ -8450,7 +8450,7 @@ abstract class CommonITILObject extends CommonDBTM {
                }
             }
          }
-         if (!$tt->isHiddenField('_documents_id')) {
+         if (!$template->isHiddenField('_documents_id')) {
             $uploads = [];
             if (isset($this->input['_filename'])) {
                $uploads['_filename'] = $this->input['_filename'];
