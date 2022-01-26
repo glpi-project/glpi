@@ -1136,7 +1136,7 @@ class NotificationTarget extends CommonDBChild
         // Compute config values
         return Config::getEmailSender(
             $this->getEntity(),
-            $this->allowResponse()
+            !$this->allowResponse()
         );
     }
 

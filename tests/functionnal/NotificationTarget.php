@@ -228,7 +228,7 @@ class NotificationTarget extends DbTestCase
             'allow_response' => false,
             'email'          => "admsys@localhost",
             'name'           => "",
-            'warning'        => 'No-Reply address is not defined in notifications configuration.'
+            'warning'        => 'No-Reply address is not defined in configuration.'
         ];
 
         // Case 2: no reply with global config
