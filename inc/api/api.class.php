@@ -2178,7 +2178,7 @@ abstract class API extends CommonGLPI {
             return $this->returnError($e->getMessage());
          }
          return $this->returnResponse([
-            __("An email has been sent to your email address. The email contains information for reset your password.")
+            __('If the given email address match an exisiting GLPI user, you will receive an email containing the informations required to reset your password. Please contact your administrator if you do not receive any email.')
          ]);
       } else {
          $password = isset($params['password']) ? $params['password'] : '';

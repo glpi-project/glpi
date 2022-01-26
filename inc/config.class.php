@@ -1447,6 +1447,11 @@ class Config extends CommonDBTM {
       Html::closeForm();
    }
 
+   public static function arePasswordSecurityChecksEnabled(): bool {
+      global $CFG_GLPI;
+
+      return $CFG_GLPI["use_password_security"];
+   }
 
    /**
     * Display security checks on password
