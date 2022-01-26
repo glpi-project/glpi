@@ -453,7 +453,7 @@ class APIRest extends API {
          }
 
          // with this content_type, php://input is empty... (see http://php.net/manual/en/wrappers.php.php)
-         if (!$uploadManifest = json_decode(stripcslashes($_REQUEST['uploadManifest']))) {
+         if (!$uploadManifest = json_decode($_REQUEST['uploadManifest'])) {
             $this->returnError("JSON payload seems not valid", 400, "ERROR_JSON_PAYLOAD_INVALID",
                                false);
          }
