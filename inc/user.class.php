@@ -810,8 +810,7 @@ class User extends CommonDBTM {
                        // Permit to change password with token and email
                        || (($input['password_forget_token'] == $this->fields['password_forget_token'])
                            && (abs(strtotime($_SESSION["glpi_currenttime"])
-                               -strtotime($this->fields['password_forget_token_date'])) < DAY_TIMESTAMP)
-                           && $this->isEmail($input['email'])))) {
+                               -strtotime($this->fields['password_forget_token_date'])) < DAY_TIMESTAMP)))) {
                   $input["password"]
                      = Auth::getPasswordHash(Toolbox::unclean_cross_side_scripting_deep(stripslashes($input["password"])));
 
@@ -4884,6 +4883,8 @@ JAVASCRIPT;
          'password_forget_token_date' => 'NULL',
       ]);
 
+      $this->getFromDB($user->fields['id']);
+
       return true;
    }
 
@@ -5738,7 +5739,9 @@ JAVASCRIPT;
          return null;
       }
 
-      $data = array_pop(iterator_to_array($iterator));
+      // Get first row, should use current() when updated to GLPI 10
+      $data = iterator_to_array($iterator);
+      $data = array_pop($data);
 
       // Try to load the user
       $user = new self();
