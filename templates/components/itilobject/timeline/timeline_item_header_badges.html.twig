@@ -61,7 +61,7 @@
       {% endset %}
 
       {% set is_current_editor = (users_id_editor == session('glpiID')) %}
-      {% set anonym_editor = (get_current_interface() == 'helpdesk' and not is_current_editor and entity_config('anonymize_support_agents') != constant('Entity::ANONYMIZE_DISABLED')) %}
+      {% set anonym_editor = (get_current_interface() == 'helpdesk' and not is_current_editor and entity_config('anonymize_support_agents', session('glpiactive_entity')) != constant('Entity::ANONYMIZE_DISABLED')) %}
       {% set editor_span %}
          {{ include('components/user/link_with_tooltip.html.twig', {
             'users_id': users_id_editor,

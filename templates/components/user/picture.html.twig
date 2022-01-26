@@ -31,7 +31,7 @@
 
 {% set enable_anonymization = enable_anonymization ?? false %}
 {% set avatar_size = avatar_size ?? "avatar-md" %}
-{% set anonymized = enable_anonymization and entity_config('anonymize_support_agents') != constant('Entity::ANONYMIZE_DISABLED') %}
+{% set anonymized = enable_anonymization and entity_config('anonymize_support_agents', session('glpiactive_entity')) != constant('Entity::ANONYMIZE_DISABLED') %}
 {% set user = get_item('User', users_id) %}
 {% set user_thumbnail = user.getThumbnailPicturePath(enable_anonymization) %}
 

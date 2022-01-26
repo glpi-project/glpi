@@ -61,7 +61,7 @@
             {% if entry_i['users_id_tech'] %}
                <span class="badge bg-orange-lt">
                   {% set is_current_tech = (entry_i['users_id_tech'] == session('glpiID')) %}
-                  {% set anonym_tech = (get_current_interface() == 'helpdesk' and not is_current_tech and entity_config('anonymize_support_agents') != constant('Entity::ANONYMIZE_DISABLED')) %}
+                  {% set anonym_tech = (get_current_interface() == 'helpdesk' and not is_current_tech and entity_config('anonymize_support_agents', session('glpiactive_entity')) != constant('Entity::ANONYMIZE_DISABLED')) %}
                   {{ include('components/user/link_with_tooltip.html.twig', {
                      'users_id': entry_i['users_id_tech'],
                      'enable_anonymization': anonym_tech

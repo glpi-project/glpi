@@ -3050,7 +3050,7 @@ class Entity extends CommonTreeDropdown
      * @param string  $fieldval       name of the field that we want value (default '')
      * @param mixed   $default_value  value to return (default -2)
      **/
-    public static function getUsedConfig($fieldref, $entities_id = null, $fieldval = '', $default_value = -2)
+    public static function getUsedConfig($fieldref, $entities_id, $fieldval = '', $default_value = -2)
     {
         $id_using_strategy = [
             'calendars_id',
@@ -3072,11 +3072,6 @@ class Entity extends CommonTreeDropdown
                     $fieldref
                 )
             );
-        }
-
-       // Get for current entity
-        if ($entities_id === null) {
-            $entities_id = Session::getActiveEntity();
         }
 
        // for calendar
@@ -3739,6 +3734,9 @@ class Entity extends CommonTreeDropdown
 
     public static function getAnonymizeConfig(?int $entities_id = null)
     {
+        if ($entities_id === null) {
+            $entities_id = Session::getActiveEntity();
+        }
         return Entity::getUsedConfig('anonymize_support_agents', $entities_id);
     }
 
