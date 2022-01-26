@@ -50,7 +50,7 @@ if (!empty($fetch_data_raw)) {
    $fetch_data = json_decode($fetch_data_raw, true);
 }
 
-if (is_array($fetch_data)) {
+if (isset($fetch_data) && is_array($fetch_data)) {
    $fetch_data = Toolbox::sanitize($fetch_data);
    $_POST = array_merge($_POST, $fetch_data);
 }
