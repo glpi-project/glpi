@@ -26,6 +26,7 @@ jobs:
           days-before-issue-stale: 60
           days-before-pr-stale: -1 # PR will be marked as stale manually.
           days-before-close: 10
+          exempt-issue-labels: "bug" # Issues with "bug" label will not be marked as stale
           exempt-all-milestones: true # Do not check issues/PR with defined milestone.
           ascending: true # First check older issues/PR.
           operations-per-run: 750 # Max API calls per run.
