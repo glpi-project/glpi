@@ -1447,6 +1447,11 @@ class Config extends CommonDBTM {
       Html::closeForm();
    }
 
+   /**
+    * Check if the "use_password_security" parameter is enabled
+    *
+    * @return bool
+    */
    public static function arePasswordSecurityChecksEnabled(): bool {
       global $CFG_GLPI;
 
