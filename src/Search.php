@@ -1679,8 +1679,10 @@ class Search
         $item       = $data['item'];
         $is_deleted = $search['is_deleted'];
 
-        if (isset($search['criteria'][$search['treecriteria']])) {
-            unset($search['criteria'][$search['treecriteria']]);
+        foreach ($search['criteria'] as $key => $criteria) {
+            if (isset($criteria['virtual']) && $criteria['virtual']) {
+                unset($search['criteria'][$key]);
+            }
         }
 
        // Contruct parameters
