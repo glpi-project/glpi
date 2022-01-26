@@ -33,6 +33,8 @@
 
 namespace Glpi\Gantt;
 
+use ReturnTypeWillChange;
+
 /**
  * Generic class for holding Gantt item details.
  * Used to exchange Json data between client-server functions with Ajax calls.
