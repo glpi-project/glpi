@@ -61,11 +61,11 @@ switch ($_REQUEST['action']) {
             }
         }
 
-        $params['treecriteria'] = count($params['criteria']);
         $params['criteria'][] = [
             'link'   => "AND",
             'field'  => $field,
             'searchtype'   => "equals",
+            'virtual'      => true,
             'value'  => ($_REQUEST['cat_id'] > 0) ? $_REQUEST['cat_id'] : 0,
         ];
         Search::showList($itemtype, $params);
