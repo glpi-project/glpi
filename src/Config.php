@@ -3752,17 +3752,94 @@ HTML;
     }
 
     /**
-     * Try to find a valid email to use as a sender for notifications
-     * From first to last, it will look for :
-     * - A valid "admin_email" address defined in the specified entity configuration
-     * - A valid "from_email" address defined in the global configuration
-     * - A valid "admin_email" address defined in the global configuration
+     * Try to find a valid sender email to be used for notifications
+     *
+     * @param int|null $entities_id    Specified entity (default: current entity)
+     * @param bool     $allow_response Should we expect a response for this
+     *                                 notification ? If not, then we will try
+     *                                 to use the configured "noreply" address
+     *
+     * @return array [email => sender address, name => sender name]
+     */
+    public static function getEmailSender(
+        ?int $entities_id,
+        bool $allow_response
+    ): array {
+        // Try to use the configured noreply address if no response is expected
+        // for this notification
+        if (!$allow_response) {
+            $sender = Config::getNoReplyEmailSender();
+            if ($sender['email'] !== null) {
+                return $sender;
+            } else {
+                trigger_error('No-Reply address is not defined in notifications configuration.', E_USER_WARNING);
+            }
+        }
+
+        // Try to use the configured "from" email address
+        $sender = Config::getFromEmailSender();
+        if ($sender['email'] !== null) {
+            return $sender;
+        }
+
+        // Try to use the configured "admin" email address
+        $sender = Config::getAdminEmailSender($entities_id);
+        if ($sender['email'] !== null) {
+            return $sender;
+        }
+
+        // No valid email was found, the notification will fail
+        trigger_error(
+            'No email address is not defined in notifications configuration.',
+            E_USER_WARNING
+        );
+
+        // No values found
+        return [
+            'email' => null,
+            'name'  => null,
+        ];
+    }
+
+    /**
+     * Try to find a valid "from" email from the GLPI configuration
+     * TODO: Add an entity configuration to be consistent with the behavior of
+     * getAdminEmailSender() and getReplyToEmailSender()
+     *
+     * @return array [email => sender address, name => sender name]
+     */
+    public static function getFromEmailSender(?int $entities_id = null): array
+    {
+        global $CFG_GLPI;
+
+        // Read global config data
+        $from_email      = $CFG_GLPI['from_email']      ?? "";
+        $from_email_name = $CFG_GLPI['from_email_name'] ?? "";
+
+        // Check if generic from email is valid
+        if (NotificationMailing::isUserAddressValid($from_email)) {
+            return [
+                'email' => $from_email,
+                'name'  => $from_email_name,
+            ];
+        }
+
+        // No valid values found
+        return [
+            'email' => null,
+            'name'  => null,
+        ];
+    }
+
+    /**
+     * Try to find a valid "admin_email" email to use as a sender for
+     * notifications
      *
      * @param int|null $entities_id Specified entity (default: current entity)
      *
      * @return array [email => sender address, name => sender name]
      */
-    public static function getAdminEmail(?int $entities_id = null): array
+    public static function getAdminEmailSender(?int $entities_id = null): array
     {
         global $CFG_GLPI;
 
@@ -3782,19 +3859,7 @@ HTML;
             ];
         }
 
-        // First fallback, read config data for generic from email
-        $from_email      = $CFG_GLPI['from_email']      ?? "";
-        $from_email_name = $CFG_GLPI['from_email_name'] ?? "";
-
-        // Check if generic from email is valid
-        if (NotificationMailing::isUserAddressValid($from_email)) {
-            return [
-                'email' => $from_email,
-                'name'  => $from_email_name,
-            ];
-        }
-
-        // Second fallback: read config for the global admin email
+        // Fallback: read global config data
         $admin_email      = $CFG_GLPI['admin_email']      ?? "";
         $admin_email_name = $CFG_GLPI['admin_email_name'] ?? "";
 
@@ -3806,7 +3871,7 @@ HTML;
             ];
         }
 
-        // Final fallback, no valid values found
+        // No valid values found
         return [
             'email' => null,
             'name'  => null,
@@ -3815,10 +3880,12 @@ HTML;
 
     /**
      * Try to find a valid noreply email to use as a sender for notifications
+     * TODO: Add an entity configuration to be consistent with the behavior of
+     * getAdminEmailSender() and getReplyToEmailSender()
      *
      * @return array [email => noreply address, name => noreply name]
      */
-    public static function getNoReplyEmail(): array
+    public static function getNoReplyEmailSender(): array
     {
         global $CFG_GLPI;
 
@@ -3851,7 +3918,7 @@ HTML;
      *
      * @return array [email => replyto address, name => replyto name]
      */
-    public static function getReplyToEmail(?int $entities_id = null): array
+    public static function getReplyToEmailSender(?int $entities_id = null): array
     {
         global $CFG_GLPI;
 

@@ -258,17 +258,7 @@ class NotificationTarget extends DbTestCase
             'name'           => "Global admin",
         ];
 
-        // Case 5: default post install values with global from config
-        $CFG_GLPI['from_email'] = "globalfrom@localhost";
-        $CFG_GLPI['from_email_name'] = "Global from";
-
-        yield [
-            'allow_response' => true,
-            'email'          => "globalfrom@localhost",
-            'name'           => "Global from",
-        ];
-
-        // Case 6: default post install values with specific entity config
+        // Case 5: default post install values with specific entity config
         $entity = new Entity();
         $this->boolean($entity->update([
             'id'               => Session::getActiveEntity(),
@@ -285,6 +275,16 @@ class NotificationTarget extends DbTestCase
             'allow_response' => true,
             'email'          => "specificadmin@localhost",
             'name'           => "Specific admin",
+        ];
+
+        // Case 6: default post install values with global from config
+        $CFG_GLPI['from_email'] = "globalfrom@localhost";
+        $CFG_GLPI['from_email_name'] = "Global from";
+
+        yield [
+            'allow_response' => true,
+            'email'          => "globalfrom@localhost",
+            'name'           => "Global from",
         ];
     }
 

@@ -1127,28 +1127,17 @@ class NotificationTarget extends CommonDBChild
 
 
     /**
-     * Get admin which sends the notification
+     * Get email to use as a sender for the notifications
      *
      * @return array [email => sender address, name => sender name]
      */
     public function getSender(): array
     {
-        if (!$this->allowResponse()) {
-            $admin = Config::getNoReplyEmail();
-            if ($admin['email'] !== null) {
-                return $admin;
-            } else {
-                trigger_error('No-Reply address is not defined in notifications configuration.', E_USER_WARNING);
-            }
-        }
-
-        // No noreply defined, try to use admin email as a replacement
-        $admin = Config::getAdminEmail($this->getEntity());
-        if ($admin['email'] === null) {
-            trigger_error('Admin email address is not defined in notifications configuration.', E_USER_WARNING);
-        }
-
-        return $admin;
+        // Compute config values
+        return Config::getEmailSender(
+            $this->getEntity(),
+            $this->allowResponse()
+        );
     }
 
 
@@ -1159,7 +1148,7 @@ class NotificationTarget extends CommonDBChild
      **/
     public function getReplyTo(): array
     {
-        return Config::getReplyToEmail($this->getEntity());
+        return Config::getReplyToEmailSender($this->getEntity());
     }
 
 
