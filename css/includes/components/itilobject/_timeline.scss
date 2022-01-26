@@ -531,11 +531,12 @@ ul.legacy-timeline-actions {
     list-style: none;
     display: inline-flex;
     margin-bottom: 0;
+    position: relative;
+    top: -3px;
 
     li {
         display: inline;
         margin-left: 5px;
-        border: $input-border-width solid $input-border-color;
         border-radius: 5px;
         padding: 5px;
 
