@@ -2457,9 +2457,10 @@ class GLPIKanbanRights {
                 const panel = $(e.target).closest('.item-details-panel');
                 const itemtype = panel.attr('data-itemtype');
                 const items_id = panel.attr('data-items_id');
+                const role = list_item.closest('.list-group').attr('data-role');
 
                 if (itemtype && items_id) {
-                    removeTeamMember(itemtype, items_id, member_itemtype, member_items_id);
+                    removeTeamMember(itemtype, items_id, member_itemtype, member_items_id, role);
                     list_item.remove();
                 }
             });
