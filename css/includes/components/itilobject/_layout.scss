@@ -102,50 +102,52 @@
 }
 
 #itil-object-container {
-    &.right-expanded {
-        .itil-footer {
-            .collapse-panel {
-                display: none;
-            }
-        }
-    }
-    &.right-collapsed {
-        .itil-left-side {
-            width: calc(100% - 90px);
-        }
-
-        .itil-right-side {
-            overflow: hidden;
-            width: 90px;
-
-            #itil-data { //accordion
-                .item-title {
-                    display: none;
-                }
-
-                .accordion-collapse {
-                    display: none;
-                }
-
-                .accordion-button::after {
+    @include media-breakpoint-up(sm) {
+        &.right-expanded {
+            .itil-footer {
+                .collapse-panel {
                     display: none;
                 }
             }
-
-            .switch-panel-width {
-                display: inline-block;
-            }
         }
+        &.right-collapsed {
+            .itil-left-side {
+                width: calc(100% - 90px);
+            }
 
-        .itil-footer {
-            .timeline-buttons {
-                flex: 1 1 auto;
+            .itil-right-side {
+                overflow: hidden;
+                width: 90px;
+
+                #itil-data { //accordion
+                    .item-title {
+                        display: none;
+                    }
+
+                    .accordion-collapse {
+                        display: none;
+                    }
+
+                    .accordion-button::after {
+                        display: none;
+                    }
+                }
+
+                .switch-panel-width {
+                    display: inline-block;
+                }
             }
-            .form-buttons {
-                flex: inherit;
-            }
-            .switch-panel-width, .collapse-panel {
-                display: none;
+
+            .itil-footer {
+                .timeline-buttons {
+                    flex: 1 1 auto;
+                }
+                .form-buttons {
+                    flex: inherit;
+                }
+                .switch-panel-width, .collapse-panel {
+                    display: none;
+                }
             }
         }
     }
