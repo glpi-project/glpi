@@ -76,7 +76,7 @@ class NotificationTargetDBConnection extends NotificationTarget
     public function getTags()
     {
 
-        $tags = ['dbconnection.delay' => __('Difference between master and slave')];
+        $tags = ['dbconnection.delay' => __('Difference between main and replica')];
 
         foreach ($tags as $tag => $label) {
             $this->addTagToList(['tag'   => $tag,
@@ -88,9 +88,9 @@ class NotificationTargetDBConnection extends NotificationTarget
 
        //Tags with just lang
         $tags = ['dbconnection.title'
-                                 => __('Slave database out of sync!'),
+                                 => __('Replica database out of sync!'),
             'dbconnection.delay'
-                                 => __('The slave database is desynchronized. The difference is of:')
+                                 => __('The replica database is desynchronized. The difference is of:')
         ];
 
         foreach ($tags as $tag => $label) {

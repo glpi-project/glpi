@@ -799,7 +799,7 @@ class Config extends CommonDBTM
         echo "</td></tr>";
 
         echo "<tr class='tab_bg_2'>";
-        echo "<td>" . __('Use the slave for the search engine') . "</td><td>";
+        echo "<td>" . __('Use the replica for the search engine') . "</td><td>";
         $values = [0 => __('Never'),
             1 => __('If synced (all changes)'),
             2 => __('If synced (current user changes)'),

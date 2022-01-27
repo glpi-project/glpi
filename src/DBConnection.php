@@ -613,7 +613,7 @@ class DBConnection extends CommonDBTM
     {
 
         return ['description' => __('Check the SQL replica'),
-            'parameter'   => __('Max delay between master and slave (minutes)')
+            'parameter'   => __('Max delay between main and replica (minutes)')
         ];
     }
 
@@ -650,7 +650,7 @@ class DBConnection extends CommonDBTM
                 } else {
                                   //TRANS: %1$s is the server name, %2$s is the time
                     $task->log(sprintf(
-                        __('SQL server: %1$s, difference between master and slave: %2$s'),
+                        __('SQL server: %1$s, difference between main and replica: %2$s'),
                         $name,
                         Html::timestampToString($diff, true)
                     ));
@@ -696,11 +696,11 @@ class DBConnection extends CommonDBTM
             } else if ($diff) {
                 printf(
                     __('%1$s: %2$s') . "<br>",
-                    __('Difference between master and slave'),
+                    __('Difference between main and replica'),
                     Html::timestampToString($diff, 1)
                 );
             } else {
-                printf(__('%1$s: %2$s') . "<br>", __('Difference between master and slave'), __('None'));
+                printf(__('%1$s: %2$s') . "<br>", __('Difference between main and replica'), __('None'));
             }
         }
     }
