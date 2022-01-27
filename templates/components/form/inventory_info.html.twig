@@ -53,11 +53,6 @@
          </span>
       {% endif %}
    </div>
-   {% if item.fields['id'] > 0 and item.isField('is_dynamic') %}
-      <div class="card-body row">
-         {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::AUTOINVENTORY_INFORMATION'), item) }}
-      </div>
-   {% endif %}
    {% set agent = item is usingtrait('Glpi\\Features\\Inventoriable') ? item.getInventoryAgent() : null %}
    {% if agent is not null %}
       <div class="card-body row">
@@ -99,6 +94,11 @@
             </label>
             <span id='inventory_status'>{{ __('Unknown') }}</span>
          </div>
+
+         {% if item.fields['id'] > 0 and item.isField('is_dynamic') %}
+            {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::AUTOINVENTORY_INFORMATION'), item) }}
+         {% endif %}
+
       </div>
 
       <script>
