@@ -1427,7 +1427,7 @@ abstract class APIBaseClass extends atoum {
             'email'  => 'nonexistent@localhost.local'
          ],
          'server_errors' => [
-            "PHP Warning:  Failed to find a single user for 'nonexistent@localhost.local', 0 user(s) found."
+            "Failed to find a single user for 'nonexistent@localhost.local', 0 user(s) found."
          ]
       ], 200);
 

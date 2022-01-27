@@ -47,15 +47,17 @@ use ITILFollowup;
  */
 class APIRest extends APIBaseClass {
 
+   protected function getLogFilePath(): string {
+      return __DIR__ . "/../../files/_log/php-errors.log";
+   }
+
    public function beforeTestMethod($method) {
       global $CFG_GLPI;
 
-      // Clear test server log
-      if (!file_exists(__DIR__ . '/error.log')) {
-         $file_created = touch(__DIR__ . '/error.log');
-         $this->boolean($file_created)->isTrue();
-      }
-      $file_updated = file_put_contents(__DIR__ . '/error.log', "");
+      $logfile = $this->getLogFilePath();
+
+      // Empty log file
+      $file_updated = file_put_contents($logfile, "");
       $this->variable($file_updated)->isNotIdenticalTo(false);
 
       $this->http_client = new GuzzleHttp\Client();
@@ -65,8 +67,10 @@ class APIRest extends APIBaseClass {
    }
 
    public function afterTestMethod($method) {
+      $logfile = $this->getLogFilePath();
+
       // Check that no errors occured on the test server
-      $this->string(file_get_contents(__DIR__ . '/error.log'))->isEmpty();
+      $this->string(file_get_contents($logfile))->isEmpty();
    }
 
    /**
@@ -78,14 +82,15 @@ class APIRest extends APIBaseClass {
     * @return void
     */
    protected function checkServerSideError(array $expected_errors): void {
-      $errors = file_get_contents(__DIR__ . '/error.log');
+      $logfile = $this->getLogFilePath();
+      $errors = file_get_contents($logfile);
 
       foreach ($expected_errors as $error) {
          $this->string($errors)->contains($error);
       }
 
       // Clear error file
-      file_put_contents(__DIR__ . '/error.log', "");
+      file_put_contents($logfile, "");
    }
 
    protected function doHttpRequest($verb = "get", $relative_uri = "", $params = []) {
