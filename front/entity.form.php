@@ -41,7 +41,8 @@ if (isset($_GET['id']) && ($_GET['id'] == 0)) {
 }
 
 if (array_key_exists('custom_css_code', $_POST)) {
-   $_POST['custom_css_code'] = $_UPOST['custom_css_code'];
+   // Prevent sanitize process to alter '<', '>' and '&' chars.
+   $_POST['custom_css_code'] = $DB->escape($_UPOST['custom_css_code']);
 }
 
 include (GLPI_ROOT . "/front/dropdown.common.form.php");
