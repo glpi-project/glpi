@@ -4501,7 +4501,7 @@ JAVASCRIPT;
                 $nott = !$nott;
                //negated, use contains case
             case "contains":
-                if ($searchopt[$ID]["datatype"] === 'decimal') {
+                if (isset($searchopt[$ID]["datatype"]) && ($searchopt[$ID]["datatype"] === 'decimal')) {
                     $matches = [];
                     preg_match('/^(\d+.?\d?)/', $val, $matches);
                     $val = $matches[1];
