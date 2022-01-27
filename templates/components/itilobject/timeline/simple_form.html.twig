@@ -50,7 +50,9 @@
          'name',
          item.fields['name'],
          __('Title'),
-         field_options
+         field_options|merge({
+             maxlenght: 255,
+         })
       ) }}
 
       {% set uploads = [] %}
