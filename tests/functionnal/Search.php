@@ -1641,7 +1641,7 @@ class Search extends DbTestCase
                 'searchtype' => 'contains',
                 'val' => '70',
                 'meta' => false,
-                'expected' => "  AND  (`glpi_monitors`.`size`  LIKE '%70.%%'  ) ",
+                'expected' => "  AND  (`glpi_monitors`.`size`  LIKE '%70.%'  )",
             ],
             [
                 'link' => ' AND ',
@@ -1651,7 +1651,7 @@ class Search extends DbTestCase
                 'searchtype' => 'contains',
                 'val' => '70.5',
                 'meta' => false,
-                'expected' => "  AND  (`glpi_monitors`.`size`  LIKE '%70.5%%'  ) ",
+                'expected' => "  AND  (`glpi_monitors`.`size`  LIKE '%70.5%'  )",
             ],
             [
                 'link' => ' AND ',
@@ -1661,7 +1661,7 @@ class Search extends DbTestCase
                 'searchtype' => 'contains',
                 'val' => '70.5%',
                 'meta' => false,
-                'expected' => "  AND  (`glpi_monitors`.`size`  LIKE '%70.5%%'  ) ",
+                'expected' => "  AND  (`glpi_monitors`.`size`  LIKE '%70.5%'  )",
             ]
         ];
     }
