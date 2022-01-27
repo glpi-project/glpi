@@ -173,7 +173,7 @@ final class StatusChecker
                     'servers' => []
                 ]
             ];
-           // Check slave server connection
+           // Check replica SQL server connection
             if (DBConnection::isDBSlaveActive()) {
                 $DBslave = DBConnection::getDBSlaveConf();
                 if (is_array($DBslave->dbhost)) {
@@ -220,6 +220,10 @@ final class StatusChecker
             }
         }
 
+        // Set new properties. Master and slave are deprecated given their implications in English.
+        $status['main'] = $status['master'];
+        $status['replicas'] = $status['slaves'];
+
         return $status;
     }
 
@@ -229,7 +233,7 @@ final class StatusChecker
 
         if ($db_ok === null) {
             $status = self::getDBStatus();
-            $db_ok = ($status['master']['status'] === self::STATUS_OK || $status['slaves']['status'] === self::STATUS_OK);
+            $db_ok = ($status['main']['status'] === self::STATUS_OK || $status['replicas']['status'] === self::STATUS_OK);
         }
 
         return $db_ok;
@@ -560,7 +564,7 @@ final class StatusChecker
                 $output .= "GLPI_DBSLAVE_{$num}_{$slave_info['status']}\n";
             }
         } else {
-            $output .= "No slave DB\n";
+            $output .= "No slave DB\n"; // Leave as "slave" since plain text is already deprecated
         }
         $output .= "GLPI_DB_{$status['db']['master']['status']}\n";
         $output .= "GLPI_SESSION_DIR_{$status['filesystem']['session_dir']['status']}\n";

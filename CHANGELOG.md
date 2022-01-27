@@ -14,9 +14,12 @@ The present file will list all changes made to the project; according to the
 - PDF export library has been changed from `TCPDF` to `mPDF`.
 - The search engine and search results page now support sorting by multiple fields.
 - The search result lists now refresh/update without triggering a full page reload.
+- Replaced user-facing cases of master/slave usage replaced with main/replica.
 
 ### Deprecated
 - Usage of XML-RPC API is deprecated.
+- The database "slaves" property in the status checker (/status.php and glpi:system:status) is deprecated. Use "replicas" instead,
+- The database "master" property in the status checker (/status.php and glpi:system:status) is deprecated. Use "main" instead,
 
 ### Removed
 - Autocomplete feature on text fields.
