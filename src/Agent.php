@@ -552,7 +552,7 @@ class Agent extends CommonDBTM
     public function getAgentURLs(): array
     {
         $adresses = $this->guessAddresses();
-        $protocols = ['https', 'http'];
+        $protocols = ['http', 'https'];
         $port = (int)$this->fields['port'];
         if ($port === 0) {
             $port = self::DEFAULT_PORT;
