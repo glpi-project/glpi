@@ -479,7 +479,12 @@ class Agent extends CommonDBTM
                     'netports.items_id'  => $item->getID(),
                     'NOT'       => [
                         'OR'  => [
-                            'netports.instantiation_type' => 'NetworkPortLocal',
+                            'AND' => [
+                                'NOT' => [
+                                    'netports.instantiation_type' => 'NULL'
+                                ],
+                                'netports.instantiation_type' => 'NetworkPortLocal'
+                            ],
                             'ips.name'                    => ['127.0.0.1', '::1']
                         ]
                     ]
