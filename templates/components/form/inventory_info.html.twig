@@ -109,15 +109,17 @@
             $.ajax({
                type: 'POST',
                url: '{{ path('/ajax/agent.php') }}',
-               timeout: 3000, //3 seconds timeout
+               timeout: 30000, // 30 seconds timeout
                dataType: 'json',
                data: {
                   action: '{{ constant('Agent::ACTION_STATUS') }}',
                   id: '{{ agent.fields['id'] }}'
                },
                success: function(json) {
-                  icon.removeClass('fa-spin');
                   $('#agent_status').html(json.answer);
+               },
+               complete: function() {
+                  icon.removeClass('fa-spin');
                }
             });
          });
@@ -128,15 +130,17 @@
             $.ajax({
                type: 'POST',
                url: '{{ path('/ajax/agent.php') }}',
-               timeout: 3000, //3 seconds timeout
+               timeout: 30000, // 30 seconds timeout
                dataType: 'json',
                data: {
                   action: '{{ constant('Agent::ACTION_INVENTORY') }}',
                   id: '{{ agent.fields['id'] }}'
                },
                success: function(json) {
-                  icon.removeClass('fa-spin');
                   $('#inventory_status').html(json.answer);
+               },
+               complete: function() {
+                  icon.removeClass('fa-spin');
                }
             });
          });
