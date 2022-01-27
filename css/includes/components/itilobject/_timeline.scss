@@ -29,6 +29,36 @@
  * ---------------------------------------------------------------------
  */
 
+.itil-title {
+    position: sticky;
+    top: -0.5rem;
+    z-index: $zindex-sticky;
+    display: block;
+    border: 0 !important;
+    border-bottom: 1px solid $card-border-color !important;
+    padding-bottom: 0.5rem;
+    text-transform: capitalize;
+    border-radius: unset;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    min-height: 30px;
+
+    @include media-breakpoint-up(sm) {
+        margin-right: -2rem !important;
+        max-width: calc(100% + 2rem);
+    }
+
+    @include media-breakpoint-down(sm) {
+        top: 80px;
+        max-width: 100%;
+    }
+}
+
+.itil-timeline {
+    padding-top: 45px;
+}
+
 .timeline-item {
     min-width: 65%;
 

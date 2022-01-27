@@ -45,6 +45,13 @@
             {{ include('components/itilobject/timeline/new_form.html.twig') }}
          {% else %}
             {{ include('components/itilobject/timeline/timeline.html.twig') }}
+
+            {# under the timeline as it is reversed #}
+            {% if not itiltemplate.isHiddenField('name') %}
+            <h3 class="card itil-title" title="{{ item.fields['name'] }}">
+                {{ item.fields['name'] }}
+            </h3>
+            {% endif %}
          {% endif %}
       </div>
       <div class="itil-right-side col-12 col-md-4 mt-0 mt-md-n1 card-footer p-0 rounded-0">
