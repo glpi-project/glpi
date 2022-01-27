@@ -836,6 +836,9 @@ class Computer_Item extends CommonDBRelation{
          ]);
 
          while ($data = $iterator->next()) {
+            if (!class_exists($data['itemtype'])) {
+               continue;
+            }
             if (countElementsInTable($data['itemtype']::getTable(),
                   [
                      'id' => $data['ids'],
