@@ -1633,6 +1633,36 @@ class Search extends DbTestCase
                 'meta' => false,
                 'expected' => "  AND  (`glpi_users_users_id_tech`.`id` = '2') ",
             ],
+            [
+                'link' => ' AND ',
+                'nott' => 0,
+                'itemtype' => \Monitor::class,
+                'ID' => 11, // Search ID 11 (size field)
+                'searchtype' => 'contains',
+                'val' => '70',
+                'meta' => false,
+                'expected' => "  AND  (`glpi_monitors`.`size` LIKE '70.%') ",
+            ],
+            [
+                'link' => ' AND ',
+                'nott' => 0,
+                'itemtype' => \Monitor::class,
+                'ID' => 11, // Search ID 11 (size field)
+                'searchtype' => 'contains',
+                'val' => '70.5',
+                'meta' => false,
+                'expected' => "  AND  (`glpi_monitors`.`size` LIKE '70.5%') ",
+            ],
+            [
+                'link' => ' AND ',
+                'nott' => 0,
+                'itemtype' => \Monitor::class,
+                'ID' => 11, // Search ID 11 (size field)
+                'searchtype' => 'contains',
+                'val' => '70.5%',
+                'meta' => false,
+                'expected' => "  AND  (`glpi_monitors`.`size` LIKE '70.5%') ",
+            ]
         ];
     }
 
