@@ -107,10 +107,6 @@ CommonGLPI::displayStandardTab($item, $_UGET['_glpi_tab'], $_GET["withtemplate"]
 
 
 if (isset($_GET['full_page_tab'])) {
-   echo "<div class='center' id='debugajax'>";
-   echo "<a href='".htmlentities($_SERVER['REQUEST_URI'])."' class='vsubmit'>Reload</a>";
-   echo "</div>";
-
    // I think that we should display this warning, because tabs are not prepare
    // for being used full space ...
    if (!isset($_SESSION['glpi_warned_about_full_page_tab'])) {
