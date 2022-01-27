@@ -1377,21 +1377,21 @@ abstract class APIBaseClass extends atoum {
       $user = getItemByTypeName('User', TU_USER);
       $email = $user->getDefaultEmail();
 
-      // Test the verb POST is not alloxed
+      // Check that the POST method is not allowed
       $res = $this->query('lostPassword',
                           ['verb'    => 'POST',
                           ],
                           400,
                           'ERROR');
 
-      // Test the verb GET is not alloxed
+      // Check that the GET method is not allowed
       $res = $this->query('lostPassword',
                           ['verb'    => 'GET',
                           ],
                           400,
                           'ERROR');
 
-      // Test the verb DELETE is not allowed
+      // Check that the DELETE method is not allowed
       $res = $this->query('lostPassword',
                           ['verb'    => 'DELETE',
                           ],
@@ -1402,7 +1402,7 @@ abstract class APIBaseClass extends atoum {
          ->variable['use_notifications']->isEqualTo(0)
          ->variable['notifications_mailing']->isEqualTo(0);
 
-      // Test disabled notifications make this fail
+      // Check that disabled notifications prevent password changes
       $res = $this->query('lostPassword',
                           ['verb'    => 'PUT',
                            'json'    => [
@@ -1412,21 +1412,24 @@ abstract class APIBaseClass extends atoum {
                           400,
                           'ERROR');
 
-      //enable notifications
+      // Enable notifications
       Config::setConfigurationValues('core', [
          'use_notifications' => '1',
          'notifications_mailing' => '1'
       ]);
 
-      // Test an unknown email is rejected
-      $res = $this->query('lostPassword',
-                          ['verb'    => 'PUT',
-                           'json'    => [
-                            'email'  => 'nonexistent@localhost.local'
-                           ]
-                          ],
-                          400,
-                          'ERROR');
+      // Test an unknown email, query will succeed to avoid exposing whether or
+      // not the email actually exist in our database but there will be a
+      // warning in the server logs
+      $this->query('lostPassword', [
+         'verb'    => 'PUT',
+         'json'    => [
+            'email'  => 'nonexistent@localhost.local'
+         ],
+         'server_errors' => [
+            "Failed to find a single user for 'nonexistent@localhost.local', 0 user(s) found."
+         ]
+      ], 200);
 
       // Test a valid email is accepted
       $res = $this->query('lostPassword',
@@ -1436,7 +1439,6 @@ abstract class APIBaseClass extends atoum {
                            ]
                           ],
                           200);
-
       // get the password recovery token
       $user = getItemByTypeName('User', TU_USER);
       $token = $user->getField('password_forget_token');
@@ -1445,7 +1447,6 @@ abstract class APIBaseClass extends atoum {
       $res = $this->query('lostPassword',
                           ['verb'    => 'PUT',
                            'json'    => [
-                            'email'                 => $email,
                             'password_forget_token' => $token . 'bad',
                             'password'              => 'NewPassword',
                            ]
@@ -1457,7 +1458,6 @@ abstract class APIBaseClass extends atoum {
       $res = $this->query('lostPassword',
                         ['verb'    => 'PATCH',
                          'json'    => [
-                          'email'                 => $email,
                           'password_forget_token' => $token,
                           'password'              => 'NewPassword',
                          ]

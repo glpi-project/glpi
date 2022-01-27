@@ -437,6 +437,49 @@ class User extends CommonDBTM {
       return $this->getFromDBByCrit(['user_dn' => $user_dn]);
    }
 
+   /**
+    * Get users ids matching the given email
+    *
+    * @param string $email     Email to search for
+    * @param array  $condition Extra conditions
+    *
+    * @return array Found users ids
+    */
+   public static function getUsersIdByEmails(
+      string $email,
+      array $condition = []
+   ): array {
+      global $DB;
+
+      $query = [
+         'SELECT'    => self::getTable() . '.id',
+         'FROM'      => self::getTable(),
+         'LEFT JOIN' => [
+            UserEmail::getTable() => [
+               'FKEY' => [
+                  self::getTable()      => 'id',
+                  UserEmail::getTable() => self::getForeignKeyField()
+               ]
+            ]
+         ],
+         'WHERE' => [UserEmail::getTable() . '.email' => $email] + $condition
+      ];
+
+      $data = iterator_to_array($DB->request($query));
+      return array_column($data, 'id');
+   }
+
+   /**
+    * Get the number of users using the given email
+    *
+    * @param string $email     Email to search for
+    * @param array  $condition Extra conditions
+    *
+    * @return int Number of users found
+    */
+   public static function countUsersByEmail($email, $condition = []): int {
+      return count(self::getUsersIdByEmails($email, $condition));
+   }
 
    /**
     * Retrieve a user from the database using its email.
@@ -449,27 +492,12 @@ class User extends CommonDBTM {
     * @return boolean
     */
    function getFromDBbyEmail($email, $condition = []) {
-      global $DB;
+      $ids = self::getUsersIdByEmails($email, $condition);
 
-      $crit = [
-         'SELECT'    => $this->getTable() . '.id',
-         'FROM'      => $this->getTable(),
-         'LEFT JOIN'  => [
-            'glpi_useremails' => [
-               'FKEY' => [
-                  $this->getTable() => 'id',
-                  'glpi_useremails' => 'users_id'
-               ]
-            ]
-         ],
-         'WHERE'     => ['glpi_useremails.email' => $email] + $condition
-      ];
-
-      $iter = $DB->request($crit);
-      if ($iter->numrows()==1) {
-         $row = $iter->next();
-         return $this->getFromDB($row['id']);
+      if (count($ids) == 1) {
+         return $this->getFromDB(current($ids));
       }
+
       return false;
    }
 
@@ -782,8 +810,7 @@ class User extends CommonDBTM {
                        // Permit to change password with token and email
                        || (($input['password_forget_token'] == $this->fields['password_forget_token'])
                            && (abs(strtotime($_SESSION["glpi_currenttime"])
-                               -strtotime($this->fields['password_forget_token_date'])) < DAY_TIMESTAMP)
-                           && $this->isEmail($input['email'])))) {
+                               -strtotime($this->fields['password_forget_token_date'])) < DAY_TIMESTAMP)))) {
                   $input["password"]
                      = Auth::getPasswordHash(Toolbox::unclean_cross_side_scripting_deep(stripslashes($input["password"])));
 
@@ -4712,61 +4739,48 @@ JAVASCRIPT;
     * @return void
     */
    static function showPasswordForgetChangeForm($token) {
-      global $CFG_GLPI, $DB;
+      global $CFG_GLPI;
 
-      // Verif token.
-      $token_ok = false;
-      $iterator = $DB->request([
-         'FROM'   => self::getTable(),
-         'WHERE'  => [
-            'password_forget_token'       => $token,
-            new \QueryExpression('NOW() < ADDDATE(' . $DB->quoteName('password_forget_token_date') . ', INTERVAL 1 DAY)')
-         ]
-      ]);
+      if (!User::getUserByForgottenPasswordToken($token)) {
+         echo "<div class='center'>";
+         echo __('Your password reset request has expired or is invalid. Please renew it.');
+         echo "</div>";
 
-      if (count($iterator) == 1) {
-         $token_ok = true;
+         return;
       }
+
       echo "<div class='center'>";
+      echo "<form method='post' name='forgetpassword' action='".$CFG_GLPI['root_doc'].
+               "/front/lostpassword.php'>";
+      echo "<table class='tab_cadre'>";
+      echo "<tr><th colspan='2'>" . __('Forgotten password?')."</th></tr>";
 
-      if ($token_ok) {
-         echo "<form method='post' name='forgetpassword' action='".$CFG_GLPI['root_doc'].
-                "/front/lostpassword.php'>";
-         echo "<table class='tab_cadre'>";
-         echo "<tr><th colspan='2'>" . __('Forgotten password?')."</th></tr>";
+      echo "<tr class='tab_bg_1'>";
+      echo "<td colspan='2'>". __('Please enter your new password.')."</td></tr>";
 
-         echo "<tr class='tab_bg_1'>";
-         echo "<td colspan='2'>". __('Please confirm your email address and enter your new password.').
-              "</td></tr>";
+      echo "<tr class='tab_bg_1'><td>" . __('Password')."</td>";
+      echo "<td><input id='password' type='password' name='password' value='' size='20'
+                  autocomplete='new-password' onkeyup=\"return passwordCheck();\">";
+      echo "</td></tr>";
 
-         echo "<tr class='tab_bg_1'><td>" . _n('Email', 'Emails', 1)."</td>";
-         echo "<td><input type='text' name='email' value='' size='60'></td></tr>";
+      echo "<tr class='tab_bg_1'><td>" . __('Password confirmation')."</td>";
+      echo "<td><input type='password' name='password2' value='' size='20' autocomplete='new-password'>";
+      echo "</td></tr>";
 
-         echo "<tr class='tab_bg_1'><td>" . __('Password')."</td>";
-         echo "<td><input id='password' type='password' name='password' value='' size='20'
-                    autocomplete='new-password' onkeyup=\"return passwordCheck();\">";
-         echo "</td></tr>";
-
-         echo "<tr class='tab_bg_1'><td>" . __('Password confirmation')."</td>";
-         echo "<td><input type='password' name='password2' value='' size='20' autocomplete='new-password'>";
-         echo "</td></tr>";
-
+      if (Config::arePasswordSecurityChecksEnabled()) {
          echo "<tr class='tab_bg_1'><td>".__('Password security policy')."</td>";
          echo "<td>";
          Config::displayPasswordSecurityChecks();
          echo "</td></tr>";
-
-         echo "<tr class='tab_bg_2 center'><td colspan='2'>";
-         echo "<input type='hidden' name='password_forget_token' value='$token'>";
-         echo "<input type='submit' name='update' value=\"".__s('Save')."\" class='submit'>";
-         echo "</td></tr>";
-
-         echo "</table>";
-         Html::closeForm();
-
-      } else {
-         echo __('Your password reset request has expired or is invalid. Please renew it.');
       }
+
+      echo "<tr class='tab_bg_2 center'><td colspan='2'>";
+      echo "<input type='hidden' name='password_forget_token' value='$token'>";
+      echo "<input type='submit' name='update' value=\"".__s('Save')."\" class='submit'>";
+      echo "</td></tr>";
+
+      echo "</table>";
+      Html::closeForm();
       echo "</div>";
    }
 
@@ -4803,61 +4817,75 @@ JAVASCRIPT;
    /**
     * Handle password recovery form submission.
     *
-    * @param array $input
+    * @param array $input Submitted HTML form content
     *
-    * @throws ForgetPasswordException when requirements are not met
+    * @throws ForgetPasswordException  When the password reset request is invalid
+    * @throws PasswordTooWeakException When the new password does not comply
+    *                                  with the security checks
     *
-    * @return boolean true if password successfully changed, false otherwise
+    * @return boolean True if the password was successfully changed, false otherwise
     */
    public function updateForgottenPassword(array $input) {
-      $condition = [
-         'glpi_users.is_active'  => 1,
-         'glpi_users.is_deleted' => 0, [
-            'OR' => [
-               ['glpi_users.begin_date' => null],
-               ['glpi_users.begin_date' => ['<', new QueryExpression('NOW()')]]
-            ],
-         ], [
-            'OR'  => [
-               ['glpi_users.end_date'   => null],
-               ['glpi_users.end_date'   => ['>', new QueryExpression('NOW()')]]
-            ]
-         ]
-      ];
-      if ($this->getFromDBbyEmail($input['email'], $condition)) {
-         if (($this->fields["authtype"] == Auth::DB_GLPI)
-             || !Auth::useAuthExt()) {
+      // Get user by token
+      $token = $input['password_forget_token'] ?? "";
+      $user = self::getUserByForgottenPasswordToken($token);
 
-            if (($input['password_forget_token'] == $this->fields['password_forget_token'])
-                && (abs(strtotime($_SESSION["glpi_currenttime"])
-                        -strtotime($this->fields['password_forget_token_date'])) < DAY_TIMESTAMP)) {
-
-               $input['id'] = $this->fields['id'];
-               Config::validatePassword($input["password"], false); // Throws exception if password is invalid
-               if (!$this->update($input)) {
-                  return false;
-               }
-               $input2 = [
-                  'password_forget_token'      => '',
-                  'password_forget_token_date' => 'NULL',
-                  'id'                         => $this->fields['id']
-               ];
-               $this->update($input2);
-               return true;
-
-            } else {
-               throw new ForgetPasswordException(__('Your password reset request has expired or is invalid. Please renew it.'));
-            }
-
-         } else {
-            throw new ForgetPasswordException(__("The authentication method configuration doesn't allow you to change your password."));
-         }
-
-      } else {
-         throw new ForgetPasswordException(__('Email address not found.'));
+      // Invalid token
+      if (!$user) {
+         throw new ForgetPasswordException(
+            __('Your password reset request has expired or is invalid. Please renew it.')
+         );
       }
 
-      return false;
+      // Check if the user is no longer active, it might happen if for some
+      // reasons the user is disabled manually after requesting a password reset
+      if ($user->fields['is_active'] == 0 || $user->fields['is_deleted'] == 1) {
+         throw new ForgetPasswordException(
+            __("Unable to reset password, please contact your administrator")
+         );
+      }
+
+      // Same check but for the account activation dates
+      if ((
+            $user->fields['begin_date'] !== null
+            && $user->fields['begin_date'] < $_SESSION['glpi_currenttime']
+         ) || (
+            $user->fields['end_date'] !== null
+            && $user->fields['end_date'] > $_SESSION['glpi_currenttime']
+         )
+      ) {
+         throw new ForgetPasswordException(
+            __("Unable to reset password, please contact your administrator")
+         );
+      }
+
+      // Safety check that the user authentication method support passwords changes
+      if ($user->fields["authtype"] !== Auth::DB_GLPI && Auth::useAuthExt()) {
+         throw new ForgetPasswordException(
+            __("The authentication method configuration doesn't allow you to change your password.")
+         );
+      }
+
+      $input['id'] = $user->fields['id'];
+
+      // Check new password validity, throws exception on failure
+      Config::validatePassword($input["password"], false);
+
+      // Try to set new password
+      if (!$user->update($input)) {
+         return false;
+      }
+
+      // Clear password reset token data
+      $user->update([
+         'id'                         => $user->fields['id'],
+         'password_forget_token'      => '',
+         'password_forget_token_date' => 'NULL',
+      ]);
+
+      $this->getFromDB($user->fields['id']);
+
+      return true;
    }
 
 
@@ -4910,7 +4938,7 @@ JAVASCRIPT;
          echo $e->getMessage();
          return;
       }
-      echo __('An email has been sent to your email address. The email contains information for reset your password.');
+      echo __('If the given email address match an exisiting GLPI user, you will receive an email containing the informations required to reset your password. Please contact your administrator if you do not receive any email.');
    }
 
    /**
@@ -4918,11 +4946,15 @@ JAVASCRIPT;
     *
     * @param string $email
     *
-    * @throws ForgetPasswordException when requirements are not met
+    * @throws ForgetPasswordException If the process failed and the user should
+    *                                 be aware of it (e.g. incorrect email)
     *
-    * @return boolean true if notification successfully created, false if user not found
+    * @return bool Return true if the password reset notification was sent,
+    *              false if the process failed but the user should not be aware
+    *              of it to avoid exposing whether or not the given email exist
+    *              in our database.
     */
-   public function forgetPassword($email) {
+   public function forgetPassword(string $email): bool {
       $condition = [
          'glpi_users.is_active'  => 1,
          'glpi_users.is_deleted' => 0, [
@@ -4938,34 +4970,45 @@ JAVASCRIPT;
          ]
       ];
 
-      if ($this->getFromDBbyEmail($email, $condition)) {
+      // Try to find a single user matching the given email
+      if (!$this->getFromDBbyEmail($email, $condition)) {
+         $count = self::countUsersByEmail($email, $condition);
+         trigger_error(
+            "Failed to find a single user for '$email', $count user(s) found.",
+            E_USER_WARNING
+         );
 
-         // Send token if auth DB or not external auth defined
-         if (($this->fields["authtype"] == Auth::DB_GLPI)
-             || !Auth::useAuthExt()) {
-
-            if (NotificationMailing::isUserAddressValid($email)) {
-               $input = [
-                  'password_forget_token'      => sha1(Toolbox::getRandomString(30)),
-                  'password_forget_token_date' => $_SESSION["glpi_currenttime"],
-                  'id'                         => $this->fields['id'],
-               ];
-               $this->update($input);
-               // Notication on root entity (glpi_users.entities_id is only a pref)
-               NotificationEvent::raiseEvent('passwordforget', $this, ['entities_id' => 0]);
-               QueuedNotification::forceSendFor($this->getType(), $this->fields['id']);
-               return true;
-            } else {
-               throw new ForgetPasswordException(__('Invalid email address'));
-            }
-
-         } else {
-            throw new ForgetPasswordException(__("The authentication method configuration doesn't allow you to change your password."));
-         }
-
+         return false;
       }
 
-      throw new ForgetPasswordException(__('Email address not found.'));
+      // Check that the configuration allow this user to change his password
+      if ($this->fields["authtype"] !== Auth::DB_GLPI && Auth::useAuthExt()) {
+         trigger_error(
+            __("The authentication method configuration doesn't allow the user '$email' to change his password."),
+            E_USER_WARNING
+         );
+
+         return false;
+      }
+
+      // Check that the given email is valid
+      if (!NotificationMailing::isUserAddressValid($email)) {
+         throw new ForgetPasswordException(__('Invalid email address'));
+      }
+
+      // Store password reset token and date
+      $input = [
+         'password_forget_token'      => sha1(Toolbox::getRandomString(30)),
+         'password_forget_token_date' => $_SESSION["glpi_currenttime"],
+         'id'                         => $this->fields['id'],
+      ];
+      $this->update($input);
+
+      // Notication on root entity (glpi_users.entities_id is only a pref)
+      NotificationEvent::raiseEvent('passwordforget', $this, ['entities_id' => 0]);
+      QueuedNotification::forceSendFor($this->getType(), $this->fields['id']);
+
+      return true;
    }
 
 
@@ -5660,5 +5703,52 @@ JAVASCRIPT;
          }
 
       }
+   }
+
+   /**
+    * Find one user which match the given token and asked for a password reset
+    * less than one day ago
+    *
+    * @param string $token password_forget_token
+    *
+    * @return User|null The matching user or null if zero or more than one user
+    *                   were found
+    */
+   public static function getUserByForgottenPasswordToken(
+      string $token
+   ): ?User {
+      global $DB;
+
+      if (empty($token)) {
+         return null;
+      }
+
+      // Find users which match the given token and asked for a password reset
+      // less than one day ago
+      $iterator = $DB->request([
+         'SELECT' => 'id',
+         'FROM'   => self::getTable(),
+         'WHERE'  => [
+            'password_forget_token'       => $token,
+            new \QueryExpression('NOW() < ADDDATE(' . $DB->quoteName('password_forget_token_date') . ', INTERVAL 1 DAY)')
+         ]
+      ]);
+
+      // Check that we found exactly one user
+      if (count($iterator) !== 1) {
+         return null;
+      }
+
+      // Get first row, should use current() when updated to GLPI 10
+      $data = iterator_to_array($iterator);
+      $data = array_pop($data);
+
+      // Try to load the user
+      $user = new self();
+      if (!$user->getFromDB($data['id'])) {
+         return null;
+      }
+
+      return $user;
    }
 }
