@@ -124,18 +124,18 @@ class Agent extends DbTestCase
         ]);
 
         $this->array($this->testedInstance->getAgentURLs())->isIdenticalTo([
-            'https://glpixps:62354',
-            'https://192.168.1.142:62354',
-            'https://[fe80::b283:4fa3:d3f2:96b1]:62354',
-            'https://192.168.1.118:62354',
-            'https://[fe80::92a4:26c6:99dd:2d60]:62354',
-            'https://192.168.122.1:62354',
             'http://glpixps:62354',
             'http://192.168.1.142:62354',
             'http://[fe80::b283:4fa3:d3f2:96b1]:62354',
             'http://192.168.1.118:62354',
             'http://[fe80::92a4:26c6:99dd:2d60]:62354',
-            'http://192.168.122.1:62354'
+            'http://192.168.122.1:62354',
+            'https://glpixps:62354',
+            'https://192.168.1.142:62354',
+            'https://[fe80::b283:4fa3:d3f2:96b1]:62354',
+            'https://192.168.1.118:62354',
+            'https://[fe80::92a4:26c6:99dd:2d60]:62354',
+            'https://192.168.122.1:62354'
         ]);
 
         //link a domain to item and see if adresses are still ok
