@@ -2161,7 +2161,7 @@ abstract class API extends CommonGLPI {
          return $this->returnError(__("Email notifications are disabled"));
       }
 
-      if (!isset($params['email'])) {
+      if (!isset($params['email']) && !$params['password_forget_token']) {
          return $this->returnError(__("email parameter missing"));
       }
 
@@ -2183,7 +2183,6 @@ abstract class API extends CommonGLPI {
       } else {
          $password = isset($params['password']) ? $params['password'] : '';
          $input = [
-            'email'                    => Toolbox::addslashes_deep($params['email']),
             'password_forget_token'    => Toolbox::addslashes_deep($params['password_forget_token']),
             'password'                 => Toolbox::addslashes_deep($password),
             'password2'                => Toolbox::addslashes_deep($password),
