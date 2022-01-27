@@ -821,28 +821,57 @@ class Computer_Item extends CommonDBRelation{
    static function canUnrecursSpecif(CommonDBTM $item, $entities) {
       global $DB;
 
-      // RELATION : computers -> items
-      $iterator = $DB->request([
-         'SELECT' => [
-            'itemtype',
-            new \QueryExpression('GROUP_CONCAT(DISTINCT '.$DB->quoteName('items_id').') AS ids'),
-            'computers_id'
-         ],
-         'FROM'   => self::getTable(),
-         'WHERE'  => [
-            'itemtype'  => $item->getType(),
-            'items_id'  => $item->fields['id']
-         ],
-         'GROUP'  => 'itemtype'
-      ]);
+      if ($item instanceof Computer) {
+         // RELATION : items -> computers
+         $iterator = $DB->request([
+            'SELECT' => [
+               'itemtype',
+               new \QueryExpression('GROUP_CONCAT(DISTINCT ' . $DB->quoteName('items_id') . ') AS ids'),
+            ],
+            'FROM' => self::getTable(),
+            'WHERE' => [
+               'computers_id' => $item->fields['id']
+            ],
+            'GROUP' => 'itemtype'
+         ]);
 
-      while ($data = $iterator->next()) {
-         if (countElementsInTable("glpi_computers",
-                                    ['id' => $data["computers_id"],
-                                    'NOT' => ['entities_id' => $entities]]) > 0) {
-            return false;
+         while ($data = $iterator->next()) {
+            if (!class_exists($data['itemtype'])) {
+               continue;
+            }
+            if (countElementsInTable($data['itemtype']::getTable(),
+                  [
+                     'id' => $data['ids'],
+                     'NOT' => ['entities_id' => $entities]
+                  ]) > 0) {
+               return false;
+            }
+         }
+      } else {
+         // RELATION : computers -> items
+         $iterator = $DB->request([
+            'SELECT' => [
+               'itemtype',
+               new \QueryExpression('GROUP_CONCAT(DISTINCT ' . $DB->quoteName('items_id') . ') AS ids'),
+               'computers_id'
+            ],
+            'FROM' => self::getTable(),
+            'WHERE' => [
+               'itemtype' => $item->getType(),
+               'items_id' => $item->fields['id']
+            ],
+            'GROUP' => 'itemtype'
+         ]);
+
+         while ($data = $iterator->next()) {
+            if (countElementsInTable("glpi_computers",
+                  ['id' => $data["computers_id"],
+                     'NOT' => ['entities_id' => $entities]]) > 0) {
+               return false;
+            }
          }
       }
+
       return true;
    }
 
