@@ -45,16 +45,6 @@ header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 Session::checkLoginUser();
 
-$fetch_data_raw = file_get_contents('php://input');
-if (!empty($fetch_data_raw)) {
-   $fetch_data = json_decode($fetch_data_raw, true);
-}
-
-if (isset($fetch_data) && is_array($fetch_data)) {
-   $fetch_data = Toolbox::sanitize($fetch_data);
-   $_POST = array_merge($_POST, $fetch_data);
-}
-
 $ret = 0;
 if (isset($_POST['unlock']) && isset($_POST["id"])) {
    // then we may have something to unlock
