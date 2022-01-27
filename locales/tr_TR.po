@@ -2656,7 +2656,7 @@ msgstr "Öge türü"
 msgid "Date"
 msgid_plural "Dates"
 msgstr[0] "Tarih"
-msgstr[1] "Tarih"
+msgstr[1] "Tarihler"
 
 #: front/devices.php:37 front/devices.php:41 inc/event.class.php:150
 #: inc/dropdown.class.php:811 inc/commondevice.class.php:53
@@ -2694,7 +2694,7 @@ msgstr[1] "Bileşen"
 msgid "Requester"
 msgid_plural "Requesters"
 msgstr[0] "İsteyen"
-msgstr[1] "İsteyen"
+msgstr[1] "İsteyenler"
 
 #: front/stat.tracking.php:78 inc/notificationtargetprojecttask.class.php:490
 #: inc/notificationtargetcommonitilobject.class.php:738
@@ -3304,7 +3304,7 @@ msgstr "Uygulama eki listesini görüntüle"
 
 #: front/login.php:92
 msgid "Log in again"
-msgstr "Yeniden Oturum Açın"
+msgstr "Yeniden oturum açın"
 
 #. TRANS: %s is a task name
 #: front/crontask.form.php:53
@@ -7932,7 +7932,7 @@ msgstr "Çift kayıtlarda uyarı gönderilsin"
 #: inc/notificationtargetfieldunicity.class.php:49 inc/config.class.php:3380
 #: inc/log.class.php:1081 tests/functionnal/Log.php:468
 msgid "Add the item"
-msgstr "Öge ekle"
+msgstr "Öge eklendi"
 
 #: inc/notificationtargetfieldunicity.class.php:49 inc/config.class.php:3392
 msgid "Update the item"
@@ -11465,7 +11465,7 @@ msgstr "Yapılan işlemler bana bildirilsin"
 msgid "Watcher"
 msgid_plural "Watchers"
 msgstr[0] "İzleyici"
-msgstr[1] "İzleyici"
+msgstr[1] "İzleyiciler"
 
 #: inc/ticket.class.php:3959
 msgid "Submit message"
@@ -13038,7 +13038,7 @@ msgstr[1] "Kümeler"
 #: inc/computer_item.class.php:323 inc/log.class.php:1133
 #: tests/functionnal/Log.php:457
 msgid "Connect an item"
-msgstr "Öge bağla"
+msgstr "Öge bağlandı"
 
 #: inc/computer_item.class.php:475
 msgid "Connect a computer"
@@ -15874,7 +15874,7 @@ msgstr "%s sayısı"
 #: inc/dashboard/grid.class.php:1211
 #, php-format
 msgid "%s by %s"
-msgstr "%s göre %s "
+msgstr "%s / %s "
 
 #: inc/dashboard/grid.class.php:1234
 msgid "New tickets"
@@ -17148,8 +17148,8 @@ msgstr "Eski uygulama eki sürümü"
 #: inc/peripheral.class.php:73
 msgid "Device"
 msgid_plural "Devices"
-msgstr[0] "Aygıt"
-msgstr[1] "Aygıt"
+msgstr[0] "Çevre birimi"
+msgstr[1] "Çevre birimleri"
 
 #: inc/peripheral.class.php:279 inc/peripheral.class.php:468
 #: inc/phone.class.php:271 inc/phone.class.php:494
@@ -18319,7 +18319,7 @@ msgstr "Tüm planlara bakın"
 msgid "Network device"
 msgid_plural "Network devices"
 msgstr[0] "Ağ aygıtı"
-msgstr[1] "Ağ aygıtı"
+msgstr[1] "Ağ aygıtları"
 
 #: inc/networkequipment.class.php:389
 msgid ""
@@ -18894,8 +18894,8 @@ msgid ""
 "Timezones seems not loaded, see https://glpi-"
 "install.readthedocs.io/en/latest/timezones.html."
 msgstr ""
-"Saat dilimleri yüklenmemiş gibi görünüyor. Ayrıntılı bilgi almak için https"
-"://glpi-install.readthedocs.io/en/latest/timezones.html adresine "
+"Saat dilimleri yüklenmemiş gibi görünüyor. Ayrıntılı bilgi almak için "
+"https://glpi-install.readthedocs.io/en/latest/timezones.html adresine "
 "bakabilirsiniz."
 
 #: inc/glpiuploadhandler.class.php:46
@@ -20609,12 +20609,12 @@ msgstr "Ögeler arası ilişkiyi sil"
 #: inc/config.class.php:3383 inc/log.class.php:1085
 #: tests/functionnal/Log.php:461
 msgid "Delete the item"
-msgstr "Ögeyi sil"
+msgstr "Öge silindi"
 
 #: inc/config.class.php:3388 inc/log.class.php:1097
 #: tests/functionnal/Log.php:462
 msgid "Restore the item"
-msgstr "Ögeyi geri yükle"
+msgstr "Öge geri yüklendi"
 
 #: inc/config.class.php:3414
 msgid "Installation/uninstallation of software on items"
@@ -21888,19 +21888,19 @@ msgstr "Alan güncellemesi"
 #: inc/log.class.php:780
 #, php-format
 msgid "Change %1$s to %2$s"
-msgstr "%1$s ögesini %2$s olarak değiştir"
+msgstr "%1$s ögesi %2$s olarak değiştirildi"
 
 #: inc/log.class.php:1042 tests/functionnal/Log.php:499
 msgid "Update a field"
-msgstr "Bir alanı güncelle"
+msgstr "Bir alan güncellendi"
 
 #: inc/log.class.php:1089 tests/functionnal/Log.php:474
 msgid "Lock the item"
-msgstr "Ögeyi kilitle"
+msgstr "Öge kilitlendi"
 
 #: inc/log.class.php:1093 tests/functionnal/Log.php:475
 msgid "Unlock the item"
-msgstr "Ögenin kilidini aç"
+msgstr "Ögenin kilidi açıldı"
 
 #: inc/log.class.php:1101 tests/functionnal/Log.php:451
 msgid "Add a component"
@@ -21932,7 +21932,7 @@ msgstr "Bir uygulama kaldırıldı"
 
 #: inc/log.class.php:1129 tests/functionnal/Log.php:456
 msgid "Disconnect an item"
-msgstr "Bir ögenin bağlantısını kesildi"
+msgstr "Bir öge bağlantısı kesildi"
 
 #: inc/log.class.php:1137 tests/functionnal/Log.php:463
 msgid "Add a link with an item"

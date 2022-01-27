@@ -18705,8 +18705,8 @@ msgstr ""
 #: inc/glpiuploadhandler.class.php:46
 msgid "The uploaded file exceeds the upload_max_filesize directive in php.ini"
 msgstr ""
-"A feltöltött fájl mérete nagyobb mint az upload_max_filesize beállítás a php"
-".ini-ben."
+"A feltöltött fájl mérete nagyobb mint az upload_max_filesize beállítás a "
+"php.ini-ben."
 
 #: inc/glpiuploadhandler.class.php:50
 msgid ""

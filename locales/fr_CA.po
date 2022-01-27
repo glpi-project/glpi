@@ -4,8 +4,8 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # 
 # Translators:
-# Tiago Graça, 2021
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2021
+# Tiago Graça, 2021
 # 
 #, fuzzy
 msgid ""
@@ -14,7 +14,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-10-26 10:07+0200\n"
 "PO-Revision-Date: 2019-04-24 11:58+0000\n"
-"Last-Translator: alexandre delaunay <delaunay.alexandre@gmail.com>, 2021\n"
+"Last-Translator: Tiago Graça, 2021\n"
 "Language-Team: French (Canada) (https://www.transifex.com/glpi/teams/1637/fr_CA/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -2933,8 +2933,8 @@ msgstr "Matériel sous contrat"
 #: inc/notificationtargetcontract.class.php:186 inc/entity.class.php:1951
 msgid "Contract"
 msgid_plural "Contract"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Contrat"
+msgstr[1] "Contrats"
 
 #: front/ldap.group.import.php:71 inc/authldap.class.php:3496
 #: inc/auth.class.php:260 inc/auth.class.php:284
@@ -4870,12 +4870,14 @@ msgstr "Courriel %s introuvable. Import impossible."
 #: inc/mailcollector.class.php:727
 #, php-format
 msgid "Message is invalid (%s). Check in \"%s\" for more details"
-msgstr ""
+msgstr "Message invalide (%s). Consultez \"%s\" pour plus de détails"
 
 #: inc/mailcollector.class.php:781
 #, php-format
 msgid "Error during message parsing (%s). Check in \"%s\" for more details"
 msgstr ""
+"Erreur pendant l'analyse du message (%s). Consultez \"%s\" pour plus de "
+"détails"
 
 #: inc/mailcollector.class.php:920
 #, php-format
@@ -6534,7 +6536,7 @@ msgstr[1] "%1$s gabarits"
 #: inc/itiltemplate.class.php:265 inc/ticket.class.php:2516
 #: inc/ticket.class.php:4671 inc/change.class.php:1057
 msgid "Approval request"
-msgstr "Demande de validation"
+msgstr "Demande d'approbation"
 
 #: inc/itiltemplate.class.php:338 inc/itiltemplatemandatoryfield.class.php:166
 #: inc/itiltemplatemandatoryfield.class.php:200
@@ -9238,6 +9240,8 @@ msgid ""
 "Options --begin-date and --end-date can only be used with --only-create-new "
 "or --only-update-existing option."
 msgstr ""
+"Les options --begin-date et --end-date ne peuvent être utilisées qu'avec "
+"l'option --only-create-new ou --only-update-existing."
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:467
 msgid ""
@@ -10539,8 +10543,8 @@ msgid ""
 "Name of user used during installation script (among other things to set "
 "plugin admin rights)"
 msgstr ""
-"Nom de l'utilisateur utilisé durant le script d'installation (entre autres "
-"choses pour définir les droits d'administration du plugin)"
+"Nom d'utilisateur utilisé lors du script d'installation (entre autres choses"
+" pour définir les droits d'administration du plugin)"
 
 #: inc/console/plugin/installcommand.class.php:83
 msgid "Force execution of installation, even if plugin is already installed"
@@ -10683,7 +10687,7 @@ msgstr[1] "Approbations"
 #: inc/commonitilvalidation.class.php:426
 #, php-format
 msgid "Approval request send to %s"
-msgstr "Demande de validation envoyée à %s"
+msgstr "Demande d'approbation envoyée à %s"
 
 #: inc/commonitilvalidation.class.php:299
 #, php-format
@@ -10708,12 +10712,12 @@ msgstr "Approbation accordée par %s"
 #: inc/commonitilvalidation.class.php:409
 #, php-format
 msgid "Update the approval request to %s"
-msgstr "Mise à jour de la demande de validation à %s"
+msgstr "Mise à jour de la demande d'approbation à %s"
 
 #: inc/commonitilvalidation.class.php:429
 #, php-format
 msgid "Cancel the approval request to %s"
-msgstr "Suppression de la demande de validation à %s"
+msgstr "Suppression de la demande d'approbation à %s"
 
 #: inc/commonitilvalidation.class.php:448
 msgid "Granted"
@@ -11082,32 +11086,32 @@ msgstr "Applicatifs"
 #, php-format
 msgid "%s year"
 msgid_plural "%s years"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%s an"
+msgstr[1] "%s ans"
 
 #. TRANS: %s is a number of months
 #: inc/dropdown.class.php:1535
 #, php-format
 msgid "%s month"
 msgid_plural "%s months"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%s mois"
+msgstr[1] "%s mois"
 
 #. TRANS: %s is a number of days
 #: inc/dropdown.class.php:1539
 #, php-format
 msgid "%s day"
 msgid_plural "%s days"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%s jour"
+msgstr[1] "%s jours"
 
 #. TRANS: %s is a number of minutes
 #: inc/dropdown.class.php:1547
 #, php-format
 msgid "%s minute"
 msgid_plural "%s minutes"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%s minute"
+msgstr[1] "%s minutes"
 
 #. TRANS: %s is a number of seconds
 #: inc/dropdown.class.php:1551 inc/crontask.class.php:1159
@@ -11125,13 +11129,13 @@ msgstr[1] "%s secondes"
 #, php-format
 msgid "%s millisecond"
 msgid_plural "%s milliseconds"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%s milliseconde"
+msgstr[1] "%s millisecondes"
 
 #: inc/dropdown.class.php:1561
 #, php-format
 msgid "%s%%"
-msgstr ""
+msgstr "%s%%"
 
 #. TRANS: %1$d is the number of days, %2$d the number of hours,
 #. %3$s the number of minutes : display 1 day 3h15
@@ -11319,7 +11323,7 @@ msgstr "Lier des tickets"
 #: inc/ticket.class.php:2535
 msgctxt "button"
 msgid "Link project task"
-msgstr ""
+msgstr "Lier une tâche projet"
 
 #: inc/ticket.class.php:2560
 msgid "Merge followups"
@@ -11372,7 +11376,7 @@ msgstr "Temps de prise en charge + progression"
 
 #: inc/ticket.class.php:2683
 msgid "Time to own exceeded"
-msgstr ""
+msgstr "Temps de prise en charge dépassé"
 
 #: inc/ticket.class.php:2693 inc/ticket.class.php:2930
 #: inc/ticket.class.php:4493 inc/ticket.class.php:4495
@@ -11386,7 +11390,7 @@ msgstr "Temps interne de résolution + progression"
 
 #: inc/ticket.class.php:2714
 msgid "Internal time to resolve exceeded"
-msgstr ""
+msgstr "Temps interne de résolution dépassé"
 
 #: inc/ticket.class.php:2724 inc/ticket.class.php:2916
 #: inc/ticket.class.php:4481 inc/ticket.class.php:4483
@@ -11400,7 +11404,7 @@ msgstr "Temps interne de prise en charge + progression"
 
 #: inc/ticket.class.php:2745
 msgid "Internal time to own exceeded"
-msgstr ""
+msgstr "Temps interne de prise en charge dépassé"
 
 #: inc/ticket.class.php:2756
 msgid "Next escalation level"
@@ -14404,8 +14408,7 @@ msgstr "Démarrage"
 #: inc/crontask.class.php:953
 #, php-format
 msgid "Error during %s execution. Check in \"%s\" for more details."
-msgstr ""
-"Erreur durant l'exécution de %s. Vérifiez \"%s\" pour davantage de détails."
+msgstr "Erreur pendant l'exécution de %s. Consultez \"%s\" pour plus de détails."
 
 #: inc/crontask.class.php:971 inc/crontask.class.php:983
 msgid "Can't start"
@@ -14920,14 +14923,14 @@ msgstr[1] "Sans réponse, le ticket sera automatiquement clos dans %s jours"
 #: inc/notificationtargetchange.class.php:211
 #, php-format
 msgid "An approval request has been submitted by %s"
-msgstr "Une demande de validation a été émise par %s"
+msgstr "Une demande d'approbation a été émise par %s"
 
 #. TRANS: %s is the user name
 #: inc/notificationtargetticket.class.php:490
 #: inc/notificationtargetchange.class.php:216
 #, php-format
 msgid "An answer to an approval request was produced by %s"
-msgstr ""
+msgstr "Une réponse à une demande d'approbation a été fournie par %s"
 
 #: inc/notificationtargetticket.class.php:609
 msgid "Location name"
@@ -15703,7 +15706,7 @@ msgstr "Tickets en retard"
 
 #: inc/dashboard/provider.class.php:296
 msgid "Tickets waiting for validation"
-msgstr ""
+msgstr "Tickets en attente de votre validation"
 
 #: inc/dashboard/provider.class.php:339
 msgid "Incoming tickets"
@@ -17045,12 +17048,12 @@ msgstr "renseignez votre clé d'enregistrement dans la configuration."
 #: inc/marketplace/view.class.php:169
 #, php-format
 msgid "Your %1$s subscription has been terminated."
-msgstr ""
+msgstr "Votre souscription %1$s a été résiliée."
 
 #: inc/marketplace/view.class.php:170
 #, php-format
 msgid "Renew it on %1$s."
-msgstr ""
+msgstr "Renouvelez la sur %1$s."
 
 #: inc/marketplace/view.class.php:343
 #, php-format
@@ -17127,7 +17130,7 @@ msgstr "Nettoyer"
 
 #: inc/marketplace/view.class.php:670
 msgid "This plugin is not available for your GLPI version."
-msgstr ""
+msgstr "Ce plugin n'est pas disponible pour votre version de GLPI."
 
 #: inc/marketplace/view.class.php:682
 msgid "The plugin has an available update but its directory is not writable."
@@ -17487,7 +17490,7 @@ msgstr "La clé d'enregistrement est invalide."
 
 #: inc/glpinetwork.class.php:235
 msgid "The registration key refers to a terminated subscription."
-msgstr ""
+msgstr "La clé de souscription fait référence à une souscription résiliée."
 
 #: inc/glpinetwork.class.php:237
 msgid "The registration key is valid."
@@ -18974,7 +18977,8 @@ msgstr "Ou recherche complète"
 #, php-format
 msgid "%1$s - Error during the database query: %2$s - Error is %3$s"
 msgstr ""
-"%1$s - Erreur durant l'éxecution de la requête : %2$s - L'erreur est %3$s"
+"%1$s - Erreur lors d'une requête à la base de données : %2$s - L'erreur est "
+"%3$s"
 
 #: inc/dbmysql.class.php:1572
 msgid "Access to timezone database (mysql) is not allowed."
@@ -21606,7 +21610,7 @@ msgstr "Temps de résolution + Progression"
 
 #: inc/commonitilobject.class.php:3394
 msgid "Time to resolve exceeded"
-msgstr ""
+msgstr "Temps de résolution dépassé"
 
 #: inc/commonitilobject.class.php:3456
 msgid "Last edit by"

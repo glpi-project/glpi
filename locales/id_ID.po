@@ -7,10 +7,10 @@
 # slackycozy <slackycozy@live.com>, 2019
 # DOMBRE Julien <moyo@indepnet.net>, 2019
 # Budi Wins <budiwins@gmail.com>, 2019
-# teguh herwanto <therwanto@gmail.com>, 2020
 # Sohib Hidayat <yoursohib@gmail.com>, 2020
 # M Taufiq Permana Sumarna <taufiqpsumarna@gmail.com>, 2021
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2021
+# Teguh Herwanto <therwanto@gmail.com>, 2021
 # 
 #, fuzzy
 msgid ""
@@ -19,7 +19,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-10-26 10:07+0200\n"
 "PO-Revision-Date: 2019-04-24 11:58+0000\n"
-"Last-Translator: alexandre delaunay <delaunay.alexandre@gmail.com>, 2021\n"
+"Last-Translator: Teguh Herwanto <therwanto@gmail.com>, 2021\n"
 "Language-Team: Indonesian (Indonesia) (https://www.transifex.com/glpi/teams/1637/id_ID/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -2890,7 +2890,7 @@ msgstr "Pesan anda berhasil terkirim, permintaan anda ada di berkas.."
 #: inc/itilcategory.class.php:439 inc/itilcategory.class.php:447
 #: inc/itilcategory.class.php:455
 msgid "OK"
-msgstr ""
+msgstr "Oke"
 
 #: front/tracking.injector.php:75
 msgid "Thank you for using our automatic helpdesk system."
@@ -2945,7 +2945,7 @@ msgstr "Otentifikasi"
 
 #: front/ldap.group.php:66
 msgid "Bulk import groups from a LDAP directory"
-msgstr ""
+msgstr "Impor massal grup dari direktori LDAP"
 
 #: front/ldap.group.php:68
 msgid "Import of new groups"
@@ -3283,7 +3283,7 @@ msgstr "Daftar perangkat keras dalam masa kontrak"
 
 #: front/plugin.php:48
 msgid "See the catalog of plugins"
-msgstr ""
+msgstr "Lihat plugin katalog"
 
 #: front/login.php:92
 msgid "Log in again"
@@ -3302,7 +3302,7 @@ msgstr "Tak ada elemen terpilih atau operasi yang buruk"
 
 #: front/dashboard_assets.php:49
 msgid "Assets Dashboard"
-msgstr ""
+msgstr "Dasbor Aset"
 
 #. TRANS: %s is the user login
 #: front/consumable.form.php:51
@@ -3469,7 +3469,7 @@ msgstr "Pindahkan"
 
 #: inc/rule.class.php:688
 msgid "Ranking"
-msgstr ""
+msgstr "Peringkat"
 
 #: inc/rule.class.php:697 inc/rule.class.php:851 inc/rule.class.php:2771
 #: inc/rule.class.php:2840 inc/problem.class.php:969
@@ -3521,7 +3521,7 @@ msgstr "Deskripsi"
 #: inc/ruleright.class.php:65 inc/levelagreementlevel.class.php:122
 #: inc/olalevel.class.php:253 inc/slalevel.class.php:258
 msgid "Logical operator"
-msgstr ""
+msgstr "Operator logika"
 
 #: inc/rule.class.php:715 inc/rule.class.php:861 inc/rule.class.php:2841
 #: inc/computerantivirus.class.php:198 inc/computerantivirus.class.php:303
@@ -3628,7 +3628,7 @@ msgstr "dan"
 #: inc/link.class.php:160 inc/ajax.class.php:432
 #: inc/massiveaction.class.php:800
 msgid "or"
-msgstr ""
+msgstr "Atau"
 
 #: inc/rule.class.php:868 inc/rulecollection.class.php:496
 #: inc/rulecollection.class.php:527
@@ -3662,7 +3662,7 @@ msgstr ""
 
 #: inc/rule.class.php:1062
 msgid "Add a new action"
-msgstr ""
+msgstr "Tambah tindakan baru"
 
 #: inc/rule.class.php:1095 inc/notificationtargetprojecttask.class.php:522
 #: inc/rulecollection.class.php:1235
@@ -3696,17 +3696,17 @@ msgstr[0] ""
 #: inc/rule.class.php:1201 inc/rule.class.php:2030
 #: inc/rulecollection.class.php:1204 inc/rulecriteria.class.php:164
 msgid "Condition"
-msgstr ""
+msgstr "Kondisi"
 
 #: inc/rule.class.php:1202 inc/rule.class.php:2031
 #: inc/rulecollection.class.php:1205 inc/rulecriteria.class.php:174
 msgid "Reason"
-msgstr ""
+msgstr "Alasan"
 
 #: inc/rule.class.php:1377 inc/planning.class.php:581
 #: tests/functionnal/Rule.php:276
 msgid "Unavailable"
-msgstr ""
+msgstr "Tidak tersedia"
 
 #. TRANS: R for Recursive
 #: inc/rule.class.php:1875 inc/profile_user.class.php:225
@@ -3739,7 +3739,7 @@ msgstr[0] ""
 #: inc/rule.class.php:2051 inc/rulecollection.class.php:1756
 #: inc/rulerightcollection.class.php:79
 msgid "Rule results"
-msgstr ""
+msgstr "Hasil dari aturan"
 
 #: inc/rule.class.php:2075
 msgid "Result of the regular expression"
@@ -3747,7 +3747,7 @@ msgstr ""
 
 #: inc/rule.class.php:2079
 msgid "Key"
-msgstr ""
+msgstr "Kunci"
 
 #: inc/rule.class.php:2175 inc/savedsearch_user.class.php:54
 #: inc/savedsearch_user.class.php:76 inc/mailcollector.class.php:285
@@ -4608,11 +4608,11 @@ msgstr[0] "Versi"
 #: inc/computerantivirus.class.php:148 inc/computerantivirus.class.php:227
 #: inc/computerantivirus.class.php:323 inc/computerantivirus.class.php:399
 msgid "Signature database version"
-msgstr ""
+msgstr "Versi signature basis data"
 
 #: inc/computerantivirus.class.php:213
 msgid "Is up to date"
-msgstr ""
+msgstr "Sudah terbaru"
 
 #: inc/computerantivirus.class.php:240 inc/computerantivirus.class.php:329
 #: inc/computerantivirus.class.php:402 inc/domain.class.php:121
@@ -4640,15 +4640,15 @@ msgstr "Inventori otomatis"
 
 #: inc/computerantivirus.class.php:313 inc/computerantivirus.class.php:401
 msgid "Up to date"
-msgstr ""
+msgstr "Terbaru"
 
 #: inc/computerantivirus.class.php:319 inc/computerantivirus.class.php:398
 msgid "Antivirus version"
-msgstr ""
+msgstr "Versi antivirus"
 
 #: inc/computerantivirus.class.php:367
 msgid "Add an antivirus"
-msgstr ""
+msgstr "Menambah sebuah antivirus"
 
 #: inc/dbconnection.class.php:47 inc/config.class.php:728
 #: inc/config.class.php:1813 inc/config.class.php:2284
@@ -4677,7 +4677,7 @@ msgstr ""
 
 #: inc/dbconnection.class.php:459
 msgid "SQL server"
-msgstr ""
+msgstr "Server SQL"
 
 #: inc/dbconnection.class.php:462
 msgid "can't connect to the database"
@@ -4781,7 +4781,7 @@ msgstr ""
 
 #: inc/mailcollector.class.php:294
 msgid "Collect only unread mail"
-msgstr ""
+msgstr "Hanya kumpulkan email belum dibaca"
 
 #: inc/mailcollector.class.php:379 inc/mailcollector.class.php:692
 msgid "An error occured trying to connect to collector."
@@ -4795,7 +4795,7 @@ msgstr ""
 #: inc/mailcollector.class.php:433
 msgctxt "button"
 msgid "Get email tickets now"
-msgstr ""
+msgstr "Dapatkan tiket email sekarang"
 
 #. TRANS: for mail connection system
 #: inc/mailcollector.class.php:473 inc/authmail.class.php:120
@@ -4806,7 +4806,7 @@ msgstr ""
 #: inc/mailcollector.class.php:650
 #, php-format
 msgid "Email %s not found. Impossible import."
-msgstr ""
+msgstr "Email %s tidak ditemukan. Tidak dapat mengimpor."
 
 #: inc/mailcollector.class.php:727
 #, php-format
@@ -4827,7 +4827,7 @@ msgstr ""
 
 #: inc/mailcollector.class.php:935
 msgid "Could not connect to mailgate server"
-msgstr ""
+msgstr "Tidak dapat terhubung ke server mailgate"
 
 #. TRANS: %s is the ID of the mailgate
 #: inc/mailcollector.class.php:946
@@ -4839,7 +4839,7 @@ msgstr ""
 #: inc/mailcollector.class.php:1006
 #, php-format
 msgid "%s is not writable"
-msgstr ""
+msgstr "%s tidak dapat ditulis"
 
 #: inc/mailcollector.class.php:1114 inc/commonitilobject.class.php:6363
 #: inc/reservation.class.php:1031
@@ -4854,11 +4854,11 @@ msgstr ""
 
 #: inc/mailcollector.class.php:1604
 msgid "Too large attached file"
-msgstr ""
+msgstr "Ukuran file yang dilampirkan terlalu besar"
 
 #: inc/mailcollector.class.php:1612
 msgid "Invalid attached file"
-msgstr ""
+msgstr "File yang dilampirkan tidak valid"
 
 #. TRANS: %1$s is the name of the folder, %2$s is the name of the receiver
 #: inc/mailcollector.class.php:1723
@@ -4876,7 +4876,7 @@ msgstr ""
 
 #: inc/mailcollector.class.php:1790
 msgid "Send alarms on receiver errors"
-msgstr ""
+msgstr "Kirim peringatan ketika menerima error"
 
 #: inc/mailcollector.class.php:1898
 msgid ""
@@ -4886,7 +4886,7 @@ msgstr ""
 
 #: inc/mailcollector.class.php:1909
 msgid "List of not imported emails"
-msgstr ""
+msgstr "Daftar email yang gagal diimpor"
 
 #: inc/mailcollector.class.php:1921
 #, php-format
@@ -4928,7 +4928,7 @@ msgstr ""
 
 #: inc/profile_user.class.php:599
 msgid "No user found"
-msgstr ""
+msgstr "User tidak ditemukan"
 
 #: inc/profile_user.class.php:911 inc/group_user.class.php:240
 #: inc/group_user.class.php:269 inc/group_user.class.php:533
@@ -6569,7 +6569,7 @@ msgstr ""
 #: inc/itilsolution.class.php:455 inc/commonitilvalidation.class.php:447
 #: inc/commonitilobject.class.php:7366
 msgid "Refused"
-msgstr ""
+msgstr "Ditolak"
 
 #: inc/itilsolution.class.php:456 inc/commonitilobject.class.php:7366
 msgid "Accepted"
@@ -9750,7 +9750,7 @@ msgstr ""
 
 #: inc/console/task/unlockcommand.class.php:62
 msgid "Unlock all tasks"
-msgstr ""
+msgstr "Buka semua tugas"
 
 #: inc/console/task/unlockcommand.class.php:69
 msgid ""
@@ -17993,12 +17993,12 @@ msgstr ""
 #: inc/location.class.php:70 inc/location.class.php:156
 #: inc/location.class.php:270 inc/location.class.php:327
 msgid "Town"
-msgstr ""
+msgstr "Kota"
 
 #: inc/location.class.php:96 inc/entity.class.php:1448
 #: inc/entity.class.php:1453
 msgid "Location on map"
-msgstr ""
+msgstr "Lokasi di peta"
 
 #: inc/location.class.php:119
 msgid "Location"
@@ -18057,7 +18057,7 @@ msgstr "Perubahan terakhir"
 
 #: inc/change.class.php:1518
 msgid "New change for this item..."
-msgstr ""
+msgstr "Perubahan baru untuk item ini..."
 
 #. TRANS : %d is the number of problems
 #: inc/change.class.php:1552
@@ -18072,7 +18072,7 @@ msgstr "Tidak ada perubahan yang ditemukan"
 
 #: inc/change.class.php:1592
 msgid "Changes on linked items"
-msgstr ""
+msgstr "Perubahan pada item terkait"
 
 #: inc/item_devices.class.php:80
 #, php-format
@@ -18131,7 +18131,7 @@ msgstr ""
 
 #: inc/item_devices.class.php:1336
 msgid "Copy to clipboard failed"
-msgstr ""
+msgstr "Gagal kopi ke clipboard"
 
 #: inc/item_devices.class.php:1456
 msgid "A device ID is mandatory"
@@ -18139,12 +18139,12 @@ msgstr ""
 
 #: inc/item_devices.class.php:1503
 msgid "Update of "
-msgstr ""
+msgstr "Pembaruan dari"
 
 #: inc/notificationtargetdomain.class.php:41
 #: inc/notificationtargetdomain.class.php:61
 msgid "Expired domains"
-msgstr ""
+msgstr "Domain kedaluwarsa"
 
 #: inc/notificationtargetdomain.class.php:42
 #: inc/notificationtargetdomain.class.php:61

@@ -9,9 +9,9 @@
 # DOMBRE Julien <moyo@indepnet.net>, 2020
 # Akkradet Keawyoo <akkradet7@gmail.com>, 2020
 # kanueng123 <kanueng@csmetal.co.th>, 2020
-# Pattawee Jumpeehom <jumpeehompattawee@gmail.com>, 2021
 # delpiero22 <gooooogels@gmail.com>, 2021
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2021
+# Pattawee Jumpeehom <jumpeehompattawee@gmail.com>, 2021
 # 
 #, fuzzy
 msgid ""
@@ -20,7 +20,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-10-26 10:07+0200\n"
 "PO-Revision-Date: 2019-04-24 11:58+0000\n"
-"Last-Translator: alexandre delaunay <delaunay.alexandre@gmail.com>, 2021\n"
+"Last-Translator: Pattawee Jumpeehom <jumpeehompattawee@gmail.com>, 2021\n"
 "Language-Team: Thai (Thailand) (https://www.transifex.com/glpi/teams/1637/th_TH/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -22007,7 +22007,7 @@ msgstr ""
 
 #: inc/massiveaction.class.php:586
 msgid "Add note"
-msgstr ""
+msgstr "เพิ่มโน๊ต"
 
 #: inc/massiveaction.class.php:793
 msgid "Select the common field that you want to update"
@@ -22032,7 +22032,7 @@ msgstr ""
 
 #: inc/massiveaction.class.php:996
 msgid "New Note"
-msgstr ""
+msgstr "โน๊ตใหม่"
 
 #: inc/massiveaction.class.php:1164
 msgid ""
@@ -22397,7 +22397,7 @@ msgstr "ไม่สามารถสร้างแฟ้มการเชื
 
 #: install/install.php:615
 msgid "Select your language"
-msgstr ""
+msgstr "เลือกภาษาของคุณ"
 
 #: install/install.php:640
 msgid "Beginning of the installation"
@@ -22462,11 +22462,11 @@ msgstr "การเข้าถึงคำถามที่พบบ่อย
 
 #: js/common.js:1187
 msgid "just now"
-msgstr ""
+msgstr "ตอนนี้"
 
 #: js/common.js:1189
 msgid "a minute ago"
-msgstr ""
+msgstr "นาทีที่ผ่านมา"
 
 #: js/common.js:1191
 msgid "an hour ago"

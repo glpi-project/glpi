@@ -5,11 +5,11 @@
 # 
 # Translators:
 # Pruebas, 2020
-# FranciscoFJ <dev-ooo@satel-sa.com>, 2021
 # Javier García, 2021
 # Christophe Ceccon <christophe.ceccon@gmail.com>, 2021
 # Óscar Beiro - TICgal, 2021
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2021
+# FranciscoFJ <dev-ooo@satel-sa.com>, 2021
 # 
 #, fuzzy
 msgid ""
@@ -18,7 +18,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-10-26 10:07+0200\n"
 "PO-Revision-Date: 2019-04-24 11:58+0000\n"
-"Last-Translator: alexandre delaunay <delaunay.alexandre@gmail.com>, 2021\n"
+"Last-Translator: FranciscoFJ <dev-ooo@satel-sa.com>, 2021\n"
 "Language-Team: Spanish (Spain) (https://www.transifex.com/glpi/teams/1637/es_ES/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -4787,6 +4787,8 @@ msgid ""
 "If name is a valid email address, it will be automatically added to "
 "blacklisted senders."
 msgstr ""
+"Si el nombre es una dirección de correo electrónico válida, se agregará "
+"automáticamente a los remitentes de la lista negra."
 
 #: inc/mailcollector.class.php:234 inc/mailcollector.class.php:533
 #: inc/notificationtargetmailcollector.class.php:77
@@ -5270,7 +5272,7 @@ msgstr "Dominios caducados desde hace más"
 #: inc/domain.class.php:673
 #, php-format
 msgid "Domains alerts not send for entity %1$s"
-msgstr ""
+msgstr "Las alertas de dominios no se envían para la entidad %1$s"
 
 #: inc/planningexternaleventtemplate.class.php:54
 msgid "External events template"
@@ -9147,7 +9149,7 @@ msgstr "Sincronización anulada."
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:244
 msgid "Unable to load LDAP server information."
-msgstr ""
+msgstr "No se puede cargar la información del servidor LDAP."
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:249
 #, php-format
@@ -9383,7 +9385,7 @@ msgstr "Convertir el campo \"datetime\" a \"timestamp\" para usar timezones."
 #: inc/console/migration/timestampscommand.class.php:92
 #, php-format
 msgid "Found %s table(s) requiring migration."
-msgstr ""
+msgstr "Se encontraron %s tabla(s) que requieren migración."
 
 #: inc/console/migration/timestampscommand.class.php:198
 #, php-format
@@ -9793,7 +9795,7 @@ msgstr ""
 
 #: inc/console/migration/appliancesplugintocorecommand.class.php:572
 msgid "Creating Appliance types..."
-msgstr ""
+msgstr "Creación de tipos de Accesorios..."
 
 #: inc/console/migration/appliancesplugintocorecommand.class.php:589
 #, php-format
@@ -9822,6 +9824,8 @@ msgstr ""
 #: inc/console/migration/buildmissingtimestampscommand.class.php:52
 msgid "Set missing `date_creation` and `date_mod` values using log entries."
 msgstr ""
+"Establecer valores faltantes `date_creation` y `date_mod` utilizando "
+"entradas de registro."
 
 #: inc/console/migration/buildmissingtimestampscommand.class.php:92
 #, php-format
@@ -9959,7 +9963,7 @@ msgstr ""
 #: inc/console/migration/domainsplugintocorecommand.class.php:654
 #, php-format
 msgid "Unable to add domain item %s."
-msgstr ""
+msgstr "No se puede agregar al dominio el elemento %s."
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:655
 #, php-format
@@ -10016,15 +10020,15 @@ msgstr "Número de tareas desbloqueadas: %d."
 
 #: inc/console/task/unlockcommand.class.php:181
 msgid "Option --cycle is not compatible with option --delay."
-msgstr ""
+msgstr "La opción --cycle no es compatible con la opción --delay."
 
 #: inc/console/task/unlockcommand.class.php:187
 msgid "Option --cycle has to be an integer."
-msgstr ""
+msgstr "La opción --cycle tiene que ser un entero."
 
 #: inc/console/task/unlockcommand.class.php:193
 msgid "Option --delay has to be an integer."
-msgstr ""
+msgstr "La opción --delay tiene que ser un entero."
 
 #: inc/console/task/unlockcommand.class.php:203
 msgid "Option --all is not compatible with option --task."
@@ -10328,6 +10332,9 @@ msgid ""
 "should retrieve it from your previous installation or encrypted data will be"
 " unreadable."
 msgstr ""
+"Falta el archivo de claves \"%s\" utilizado para cifrar/descifrar datos "
+"confidenciales. Debe recuperarlo de una instalación anterior o los datos "
+"cifrados serán ilegibles."
 
 #: inc/console/database/updatecommand.class.php:176
 msgid "Update aborted."
@@ -10542,7 +10549,7 @@ msgstr ""
 #: inc/console/plugin/activatecommand.class.php:91
 #, php-format
 msgid "Plugin \"%1$s\" has been activated."
-msgstr ""
+msgstr "¡El complemento %1$s se ha activado!"
 
 #: inc/console/plugin/activatecommand.class.php:132
 #, php-format
@@ -11027,32 +11034,32 @@ msgstr "Aplicativos"
 #, php-format
 msgid "%s year"
 msgid_plural "%s years"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%s año"
+msgstr[1] "%s años"
 
 #. TRANS: %s is a number of months
 #: inc/dropdown.class.php:1535
 #, php-format
 msgid "%s month"
 msgid_plural "%s months"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%s mes"
+msgstr[1] "%s meses"
 
 #. TRANS: %s is a number of days
 #: inc/dropdown.class.php:1539
 #, php-format
 msgid "%s day"
 msgid_plural "%s days"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%s día"
+msgstr[1] "%s días"
 
 #. TRANS: %s is a number of minutes
 #: inc/dropdown.class.php:1547
 #, php-format
 msgid "%s minute"
 msgid_plural "%s minutes"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%s minuto"
+msgstr[1] "%s minutos"
 
 #. TRANS: %s is a number of seconds
 #: inc/dropdown.class.php:1551 inc/crontask.class.php:1159
@@ -11070,13 +11077,13 @@ msgstr[1] "%s segundos"
 #, php-format
 msgid "%s millisecond"
 msgid_plural "%s milliseconds"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%s milisegundo"
+msgstr[1] "%s milisegundos"
 
 #: inc/dropdown.class.php:1561
 #, php-format
 msgid "%s%%"
-msgstr ""
+msgstr "%s%%"
 
 #. TRANS: %1$d is the number of days, %2$d the number of hours,
 #. %3$s the number of minutes : display 1 day 3h15
@@ -11232,7 +11239,7 @@ msgstr "Dirección de correo electrónico %s no válida"
 
 #: inc/ticket.class.php:1852
 msgid "Auto-created task"
-msgstr ""
+msgstr "Tarea auto-creada"
 
 #: inc/ticket.class.php:1923
 #, php-format
@@ -15740,7 +15747,7 @@ msgstr ""
 
 #: inc/dashboard/widget.class.php:171
 msgid "Horizontal bars"
-msgstr ""
+msgstr "Barras horizontales"
 
 #: inc/dashboard/widget.class.php:181
 msgid "Big number"
@@ -15769,7 +15776,7 @@ msgstr ""
 #: inc/dashboard/widget.class.php:397 inc/dashboard/widget.class.php:503
 #: inc/dashboard/widget.class.php:945 inc/dashboard/widget.class.php:1710
 msgid "No data found"
-msgstr ""
+msgstr "Datos no encontrados"
 
 #: inc/dashboard/widget.class.php:1522
 msgid "Type markdown text here"
@@ -15805,7 +15812,7 @@ msgstr ""
 
 #: inc/dashboard/grid.class.php:277
 msgid "Add filter"
-msgstr ""
+msgstr "Añadir filtro"
 
 #: inc/dashboard/grid.class.php:278 js/dashboard.js:942
 msgid "Add a new dashboard"
@@ -16928,7 +16935,7 @@ msgstr ""
 #: inc/marketplace/controller.class.php:290
 #: inc/marketplace/notificationtargetcontroller.class.php:61
 msgid "Check all plugin updates"
-msgstr ""
+msgstr "Verifique todas las actualizaciones de complementos"
 
 #: inc/marketplace/controller.class.php:315
 #, php-format
@@ -17043,7 +17050,7 @@ msgstr "Página principal"
 
 #: inc/marketplace/view.class.php:500
 msgid "Get help"
-msgstr ""
+msgstr "Consigue ayuda"
 
 #: inc/marketplace/view.class.php:507
 msgid "Readme"
@@ -17055,7 +17062,7 @@ msgstr "Limpiar"
 
 #: inc/marketplace/view.class.php:670
 msgid "This plugin is not available for your GLPI version."
-msgstr ""
+msgstr "Este complemento no está disponible para su versión de GLPI."
 
 #: inc/marketplace/view.class.php:682
 msgid "The plugin has an available update but its directory is not writable."
@@ -17072,7 +17079,7 @@ msgstr ""
 #: inc/marketplace/view.class.php:709
 #, php-format
 msgid "A new version (%s) is available, update ?"
-msgstr ""
+msgstr "Hay una nueva versión (%s) disponible, ¿actualizar?"
 
 #: inc/marketplace/view.class.php:722
 #, php-format
@@ -17106,8 +17113,8 @@ msgstr ""
 #, php-format
 msgid "%s plugin"
 msgid_plural "%s plugins"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%s complemento"
+msgstr[1] "%s complementos"
 
 #: inc/marketplace/view.class.php:988
 msgid "GLPI provides a new marketplace to download and install plugins."
@@ -17476,7 +17483,7 @@ msgstr ""
 #: inc/appliance_item_relation.class.php:212
 #: inc/appliance_item_relation.class.php:213
 msgid "New relation"
-msgstr ""
+msgstr "Nueva relación"
 
 #: inc/ruledictionnaryprinter.class.php:52
 #: inc/ruledictionnaryprintercollection.class.php:51
@@ -18700,7 +18707,7 @@ msgstr "Fallo al suprimir el archivo %s"
 
 #: inc/document.class.php:272 inc/document.class.php:350
 msgid "Invalid link"
-msgstr ""
+msgstr "Enlace inválido"
 
 #: inc/document.class.php:383
 #, php-format
@@ -19450,7 +19457,7 @@ msgstr[1] "%1$s%2$s segundos"
 
 #: inc/html.class.php:791
 msgid "Display GLPI debug information"
-msgstr ""
+msgstr "Mostrar información de depuración GLPI"
 
 #: inc/html.class.php:1156
 msgid "Progress"
@@ -21512,7 +21519,7 @@ msgstr "Tiempo para resolver + En curso"
 
 #: inc/commonitilobject.class.php:3394
 msgid "Time to resolve exceeded"
-msgstr ""
+msgstr "Se superó el tiempo de resolución"
 
 #: inc/commonitilobject.class.php:3456
 msgid "Last edit by"
@@ -21647,12 +21654,12 @@ msgstr "%1$s en %2$s por %3$s"
 #: inc/commonitilobject.class.php:7419
 #, php-format
 msgid "File size: %s"
-msgstr ""
+msgstr "Tamaño del archivo: %s"
 
 #: inc/commonitilobject.class.php:7420
 #, php-format
 msgid "MIME type: %s"
-msgstr ""
+msgstr "Tipo MIME: %s"
 
 #: inc/commonitilobject.class.php:7518
 msgid "Followup promotion source"
@@ -21672,7 +21679,7 @@ msgstr ""
 #: inc/commonitilobject.class.php:7618
 #, php-format
 msgid "New %s"
-msgstr ""
+msgstr "%sNuevo"
 
 #: inc/group.class.php:50
 msgid "Group"

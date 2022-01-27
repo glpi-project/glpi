@@ -10,7 +10,7 @@
 # Boris Pavlinić <bpavlinic@4dva.hr>, 2019
 # Sime Meic-Sidic, 2019
 # Michael Rapajić, 2020
-# milotype <mail@milotype.de>, 2020
+# Ping <mail@milotype.de>, 2020
 # NeoTrinity <tecvisor@yahoo.fr>, 2021
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2021
 # 

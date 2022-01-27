@@ -6,9 +6,9 @@
 # Translators:
 # Munkhbold Booroi <munkhbold611@gmail.com>, 2020
 # Purevjargal Ganbold <purevjargal@altanjoloo.mn>, 2020
-# Odgerel Otgonbat <odgerel0531@gmail.com>, 2020
 # Tsolmonbaatar Adiyasuren <tsoomo.a@gmail.com>, 2021
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2021
+# Odgerel Otgonbat <odgerel0531@gmail.com>, 2021
 # 
 #, fuzzy
 msgid ""
@@ -17,7 +17,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-10-26 10:07+0200\n"
 "PO-Revision-Date: 2019-04-24 11:58+0000\n"
-"Last-Translator: alexandre delaunay <delaunay.alexandre@gmail.com>, 2021\n"
+"Last-Translator: Odgerel Otgonbat <odgerel0531@gmail.com>, 2021\n"
 "Language-Team: Mongolian (Mongolia) (https://www.transifex.com/glpi/teams/1637/mn_MN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -2936,8 +2936,8 @@ msgstr "Гэрээний дагуу тоног төхөөрөмж"
 #: inc/notificationtargetcontract.class.php:186 inc/entity.class.php:1951
 msgid "Contract"
 msgid_plural "Contract"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Гэрээ"
+msgstr[1] "Гэрээ"
 
 #: front/ldap.group.import.php:71 inc/authldap.class.php:3496
 #: inc/auth.class.php:260 inc/auth.class.php:284
@@ -4866,12 +4866,14 @@ msgstr "%s имэйл олдсонгүй. Импортын боломжгүй."
 #: inc/mailcollector.class.php:727
 #, php-format
 msgid "Message is invalid (%s). Check in \"%s\" for more details"
-msgstr ""
+msgstr "Мессэж буруу байна (%s). Дэлгэрэнгүй мэдээллийг \"%s\"-с шалгана уу"
 
 #: inc/mailcollector.class.php:781
 #, php-format
 msgid "Error during message parsing (%s). Check in \"%s\" for more details"
 msgstr ""
+"Мессежийг задлах явцад алдаа гарлаа (%s). Дэлгэрэнгүй мэдээллийг \"%s\"-с "
+"шалгана уу"
 
 #: inc/mailcollector.class.php:920
 #, php-format
@@ -9216,6 +9218,8 @@ msgid ""
 "Options --begin-date and --end-date can only be used with --only-create-new "
 "or --only-update-existing option."
 msgstr ""
+"--эхлэх-огноо ба --дуусан-огноог зөвхөн --only-create-new эсвэл --only-"
+"update-existing сонголтоос ашиглах боломжтой."
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:467
 msgid ""
@@ -11051,32 +11055,32 @@ msgstr "Төхөөрөмж"
 #, php-format
 msgid "%s year"
 msgid_plural "%s years"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%s жил"
+msgstr[1] "%s жил"
 
 #. TRANS: %s is a number of months
 #: inc/dropdown.class.php:1535
 #, php-format
 msgid "%s month"
 msgid_plural "%s months"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%s сар"
+msgstr[1] "%s сар"
 
 #. TRANS: %s is a number of days
 #: inc/dropdown.class.php:1539
 #, php-format
 msgid "%s day"
 msgid_plural "%s days"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%s өдөр"
+msgstr[1] "%s өдөр"
 
 #. TRANS: %s is a number of minutes
 #: inc/dropdown.class.php:1547
 #, php-format
 msgid "%s minute"
 msgid_plural "%s minutes"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%s минут"
+msgstr[1] "%s минут"
 
 #. TRANS: %s is a number of seconds
 #: inc/dropdown.class.php:1551 inc/crontask.class.php:1159
@@ -11094,13 +11098,13 @@ msgstr[1] "%s секунд"
 #, php-format
 msgid "%s millisecond"
 msgid_plural "%s milliseconds"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%s милсекунт"
+msgstr[1] "%s милсекунт"
 
 #: inc/dropdown.class.php:1561
 #, php-format
 msgid "%s%%"
-msgstr ""
+msgstr "%s %%"
 
 #. TRANS: %1$d is the number of days, %2$d the number of hours,
 #. %3$s the number of minutes : display 1 day 3h15
@@ -11289,7 +11293,7 @@ msgstr "Дуудлагуудыг холбох"
 #: inc/ticket.class.php:2535
 msgctxt "button"
 msgid "Link project task"
-msgstr ""
+msgstr "Төслийн ажлыг холбох"
 
 #: inc/ticket.class.php:2560
 msgid "Merge followups"
@@ -11342,7 +11346,7 @@ msgstr "Эзэмших хугацаа +  Үйл явц"
 
 #: inc/ticket.class.php:2683
 msgid "Time to own exceeded"
-msgstr ""
+msgstr "Эзэмших хугацаа хэтэрсэн"
 
 #: inc/ticket.class.php:2693 inc/ticket.class.php:2930
 #: inc/ticket.class.php:4493 inc/ticket.class.php:4495
@@ -11356,7 +11360,7 @@ msgstr "Шийдвэрлэх дотоод хугацаа +  Үйл явц"
 
 #: inc/ticket.class.php:2714
 msgid "Internal time to resolve exceeded"
-msgstr ""
+msgstr "Шийдвэрлэх дотоод хугацаа хэтэрсэн"
 
 #: inc/ticket.class.php:2724 inc/ticket.class.php:2916
 #: inc/ticket.class.php:4481 inc/ticket.class.php:4483
@@ -11370,7 +11374,7 @@ msgstr "Эзэмших дотоод хугацаа + Үйл явц"
 
 #: inc/ticket.class.php:2745
 msgid "Internal time to own exceeded"
-msgstr ""
+msgstr "Эзэмших дотоод хугацаа хэтэрсэн"
 
 #: inc/ticket.class.php:2756
 msgid "Next escalation level"
@@ -14893,7 +14897,7 @@ msgstr "Баталгаажуулах хүсэлтэд %s-г илгээсэн б�
 #: inc/notificationtargetchange.class.php:216
 #, php-format
 msgid "An answer to an approval request was produced by %s"
-msgstr ""
+msgstr "Зөвшөөрөх хүсэлтийн хариуг %s гаргасан"
 
 #: inc/notificationtargetticket.class.php:609
 msgid "Location name"
@@ -15667,7 +15671,7 @@ msgstr "Хоцорсон дуудлагууд"
 
 #: inc/dashboard/provider.class.php:296
 msgid "Tickets waiting for validation"
-msgstr ""
+msgstr "Баталгаажуулахыг хүлээж байгаа дуудлагууд"
 
 #: inc/dashboard/provider.class.php:339
 msgid "Incoming tickets"
@@ -17004,12 +17008,12 @@ msgstr "тохиргоон дээр бүртгэлийн түлхүүрээ ор
 #: inc/marketplace/view.class.php:169
 #, php-format
 msgid "Your %1$s subscription has been terminated."
-msgstr ""
+msgstr "Таны %1$s-н захиалга цуцлагдлаа."
 
 #: inc/marketplace/view.class.php:170
 #, php-format
 msgid "Renew it on %1$s."
-msgstr ""
+msgstr "Үүнийг %1$s дээр шинэчилнэ үү."
 
 #: inc/marketplace/view.class.php:343
 #, php-format
@@ -17086,7 +17090,7 @@ msgstr "Цэвэр"
 
 #: inc/marketplace/view.class.php:670
 msgid "This plugin is not available for your GLPI version."
-msgstr ""
+msgstr "Энэ plugin-г таны GLPI хувилбарт ашиглах боломжгүй."
 
 #: inc/marketplace/view.class.php:682
 msgid "The plugin has an available update but its directory is not writable."
@@ -17446,7 +17450,7 @@ msgstr "Бүртгэлийн түлхүүр буруу байна."
 
 #: inc/glpinetwork.class.php:235
 msgid "The registration key refers to a terminated subscription."
-msgstr ""
+msgstr "Registration key нь дууссан бүртгэл"
 
 #: inc/glpinetwork.class.php:237
 msgid "The registration key is valid."
@@ -21527,7 +21531,7 @@ msgstr "Шийдвэрлэх хугацаа + Үйл явц"
 
 #: inc/commonitilobject.class.php:3394
 msgid "Time to resolve exceeded"
-msgstr ""
+msgstr "Шийдвэрлэх хугацаа хэтэрсэн"
 
 #: inc/commonitilobject.class.php:3456
 msgid "Last edit by"

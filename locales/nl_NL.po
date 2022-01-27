@@ -17,6 +17,7 @@
 # Steven <Nevets82@gmail.com>, 2020
 # Frederik Van Helleputte <transifex.com@goorix.be>, 2021
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2021
+# S. ypie, 2021
 # 
 #, fuzzy
 msgid ""
@@ -25,7 +26,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-10-26 10:07+0200\n"
 "PO-Revision-Date: 2019-04-24 11:58+0000\n"
-"Last-Translator: alexandre delaunay <delaunay.alexandre@gmail.com>, 2021\n"
+"Last-Translator: S. ypie, 2021\n"
 "Language-Team: Dutch (Netherlands) (https://www.transifex.com/glpi/teams/1637/nl_NL/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -5279,7 +5280,7 @@ msgstr ""
 #: inc/planningexternalevent.class.php:313
 #: inc/features/planningevent.class.php:937
 msgid "Repeat"
-msgstr ""
+msgstr "Herhalen"
 
 #: inc/ola.class.php:51 inc/ticket.class.php:2908 inc/ticket.class.php:2916
 #: inc/ticket.class.php:2930 inc/ticket.class.php:2943
@@ -7246,7 +7247,7 @@ msgstr "Administratief nummer"
 #: inc/authldap.class.php:3323
 msgctxt "ldap"
 msgid "Phone"
-msgstr ""
+msgstr "Telefoon"
 
 #: inc/authldap.class.php:817 inc/authldap.class.php:1104
 #: inc/notificationtemplatetranslation.class.php:124
@@ -8319,22 +8320,22 @@ msgstr "Vrije ruimte"
 
 #: inc/item_disk.class.php:225 inc/item_disk.class.php:336
 msgid "Encryption"
-msgstr ""
+msgstr "Encryptie"
 
 #: inc/item_disk.class.php:228 inc/item_disk.class.php:380
 #: inc/item_disk.class.php:604
 msgid "Encryption tool"
-msgstr ""
+msgstr "Encryptieprogramma"
 
 #: inc/item_disk.class.php:234 inc/item_disk.class.php:382
 #: inc/item_disk.class.php:617
 msgid "Encryption algorithm"
-msgstr ""
+msgstr "Encryptie-algoritme"
 
 #: inc/item_disk.class.php:237 inc/item_disk.class.php:384
 #: inc/item_disk.class.php:630
 msgid "Encryption type"
-msgstr ""
+msgstr "Encryptietype"
 
 #: inc/item_disk.class.php:309
 msgid "Add a volume"
@@ -8346,23 +8347,23 @@ msgstr "Vrij percentage"
 
 #: inc/item_disk.class.php:377
 msgid "Partial encryption"
-msgstr ""
+msgstr "Gedeeltelijke encryptie"
 
 #: inc/item_disk.class.php:589
 msgid "Encryption status"
-msgstr ""
+msgstr "Encryptiestatus"
 
 #: inc/item_disk.class.php:649
 msgid "Not encrypted"
-msgstr ""
+msgstr "Versleuteld"
 
 #: inc/item_disk.class.php:650
 msgid "Partially encrypted"
-msgstr ""
+msgstr "Gedeeltelijk versleuteld"
 
 #: inc/item_disk.class.php:651
 msgid "Encrypted"
-msgstr ""
+msgstr "Versleuteld"
 
 #: inc/devicepowersupplymodel.class.php:44
 msgid "Device power supply model"
@@ -9008,7 +9009,7 @@ msgstr "Standaardprofiel"
 
 #: inc/ruleright.class.php:378 inc/config.class.php:1254
 msgid "Timezone"
-msgstr ""
+msgstr "Tijdzone"
 
 #: inc/ruleright.class.php:411
 msgid "LDAP criteria"
@@ -11205,15 +11206,15 @@ msgstr ""
 
 #: inc/ticket.class.php:2560
 msgid "Merge followups"
-msgstr ""
+msgstr "Opvolgingen Samenvoegen"
 
 #: inc/ticket.class.php:2566
 msgid "Merge documents"
-msgstr ""
+msgstr "Documenten Samenvoegen"
 
 #: inc/ticket.class.php:2572
 msgid "Merge tasks"
-msgstr ""
+msgstr "Taken samenvoegen"
 
 #: inc/ticket.class.php:2578
 msgid "Merge actors"
@@ -11221,7 +11222,7 @@ msgstr ""
 
 #: inc/ticket.class.php:2584
 msgid "Link type"
-msgstr ""
+msgstr "Link type"
 
 #: inc/ticket.class.php:2587 inc/ticket_ticket.class.php:213
 #: inc/ticket_ticket.class.php:233 inc/ticket_ticket.class.php:238
@@ -12925,7 +12926,7 @@ msgstr "Auteurs"
 #: inc/plugin.class.php:2269 inc/plugin.class.php:2271
 #: inc/marketplace/view.class.php:774
 msgid "Configure"
-msgstr ""
+msgstr "Configureer"
 
 #: inc/plugin.class.php:2281
 msgctxt "button"
@@ -15720,27 +15721,27 @@ msgstr ""
 
 #: inc/dashboard/grid.class.php:277
 msgid "Add filter"
-msgstr ""
+msgstr "Filter toevoegen"
 
 #: inc/dashboard/grid.class.php:278 js/dashboard.js:942
 msgid "Add a new dashboard"
-msgstr ""
+msgstr "Nieuw dashboard toevoegen"
 
 #: inc/dashboard/grid.class.php:583 js/dashboard.js:589
 msgid "Refresh this card"
-msgstr ""
+msgstr "Deze kaart verversen"
 
 #: inc/dashboard/grid.class.php:584 js/dashboard.js:312 js/dashboard.js:590
 msgid "Edit this card"
-msgstr ""
+msgstr "Deze kaart bewerken"
 
 #: inc/dashboard/grid.class.php:585 js/dashboard.js:591
 msgid "Delete this card"
-msgstr ""
+msgstr "Deze kaart verwijderen"
 
 #: inc/dashboard/grid.class.php:676
 msgid "others"
-msgstr ""
+msgstr "Andere"
 
 #: inc/dashboard/grid.class.php:683 inc/pdu_rack.class.php:280
 #: inc/item_rack.class.php:691 inc/rack.class.php:316
@@ -15765,7 +15766,7 @@ msgstr ""
 
 #: inc/dashboard/grid.class.php:832
 msgid "Filters"
-msgstr ""
+msgstr "Filter"
 
 #: inc/dashboard/grid.class.php:867
 msgid "Embed in another application"
@@ -17176,7 +17177,7 @@ msgstr ""
 
 #: inc/features/planningevent.class.php:765
 msgid "By month"
-msgstr ""
+msgstr "op maand"
 
 #: inc/features/planningevent.class.php:791
 msgid "Exceptions"
@@ -22538,7 +22539,7 @@ msgstr ""
 
 #: inc/massiveaction.class.php:586
 msgid "Add note"
-msgstr ""
+msgstr "Notitie toevoegen"
 
 #: inc/massiveaction.class.php:793
 msgid "Select the common field that you want to update"
@@ -22564,7 +22565,7 @@ msgstr ""
 
 #: inc/massiveaction.class.php:996
 msgid "New Note"
-msgstr ""
+msgstr "Nieuwe notitie"
 
 #: inc/massiveaction.class.php:1164
 msgid ""
@@ -22721,7 +22722,7 @@ msgstr ""
 
 #: install/update.php:533
 msgid "Ignore warning"
-msgstr ""
+msgstr "Waarschuwing negeren"
 
 #: install/update.php:575
 msgid "Impossible to accomplish an update by this way!"
@@ -22793,7 +22794,7 @@ msgstr "Automatische omleiding, of klik"
 
 #: install/update_94_95/dashboards.php:36
 msgid "Central"
-msgstr ""
+msgstr "Centraal"
 
 #: install/update_94_95/dashboards.php:342
 msgid "Mini tickets dashboard"
@@ -22943,7 +22944,7 @@ msgstr ""
 
 #: install/install.php:615
 msgid "Select your language"
-msgstr ""
+msgstr "Selecteer uw taal"
 
 #: install/install.php:640
 msgid "Beginning of the installation"
@@ -23061,7 +23062,7 @@ msgstr ""
 
 #: js/impact.js:1323
 msgid "Group properties..."
-msgstr ""
+msgstr "Groepseigenschappen"
 
 #: js/impact.js:1324
 msgid "Set name and/or color for this group"
@@ -23069,7 +23070,7 @@ msgstr ""
 
 #: js/impact.js:1331
 msgid "Remove from group"
-msgstr ""
+msgstr "Verwijder uit de groep"
 
 #: js/impact.js:1332
 msgid "Remove this asset from the group"

@@ -30,6 +30,8 @@
 # Yild, 2021
 # Przemysław Piskozub <przemyslaw.piskozub@gmail.com>, 2021
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2021
+# Wojciech Warczakowski <w.warczakowski@gmail.com>, 2021
+# wolvverine <wolvverinepld@gmail.com>, 2022
 # 
 #, fuzzy
 msgid ""
@@ -38,7 +40,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-10-26 10:07+0200\n"
 "PO-Revision-Date: 2019-04-24 11:58+0000\n"
-"Last-Translator: alexandre delaunay <delaunay.alexandre@gmail.com>, 2021\n"
+"Last-Translator: wolvverine <wolvverinepld@gmail.com>, 2022\n"
 "Language-Team: Polish (Poland) (https://www.transifex.com/glpi/teams/1637/pl_PL/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -2989,10 +2991,10 @@ msgstr "Sprzęt z umową"
 #: inc/notificationtargetcontract.class.php:186 inc/entity.class.php:1951
 msgid "Contract"
 msgid_plural "Contract"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Umowa"
+msgstr[1] "Umowy"
+msgstr[2] "Umowy"
+msgstr[3] "Umowa"
 
 #: front/ldap.group.import.php:71 inc/authldap.class.php:3496
 #: inc/auth.class.php:260 inc/auth.class.php:284
@@ -13571,7 +13573,7 @@ msgstr "D=Dynamiczna"
 #: inc/appliance_item.class.php:186 inc/printer.class.php:422
 #: inc/printer.class.php:624
 msgid "Serial"
-msgstr "Numer seryjny"
+msgstr "Port szeregowy"
 
 #: inc/appliance_item.class.php:265
 msgid "Add to an appliance"

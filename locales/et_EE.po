@@ -10279,8 +10279,8 @@ msgid ""
 "%s is not a stable release. Please upgrade manually or add --allow-unstable "
 "option."
 msgstr ""
-"%s ei ole stabiilne versioon. Palun uuenda käsitsi kasutades valikut "
-"\"--allow-unstable\"."
+"%s ei ole stabiilne versioon. Palun uuenda käsitsi kasutades valikut \"--"
+"allow-unstable\"."
 
 #: inc/console/database/updatecommand.class.php:154 install/update.php:529
 #, php-format

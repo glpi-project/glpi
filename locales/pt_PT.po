@@ -14,11 +14,12 @@
 # Pedro Rocha <jpnr79@gmail.com>, 2020
 # Emperium <real.emperium@gmail.com>, 2020
 # DOMBRE Julien <moyo@indepnet.net>, 2020
-# Pedro B., 2021
 # Ricardo Jorge Basílio de Almeida <ricardo.j.basilio@gmail.com>, 2021
 # Humberto Chula, 2021
 # Bruno Mendes <bruno.mendes@mcoutinho.pt>, 2021
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2021
+# Pedro B., 2021
+# João Coutinho <jpmcoutinho@gmail.com>, 2021
 # 
 #, fuzzy
 msgid ""
@@ -27,7 +28,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-10-26 10:07+0200\n"
 "PO-Revision-Date: 2019-04-24 11:58+0000\n"
-"Last-Translator: alexandre delaunay <delaunay.alexandre@gmail.com>, 2021\n"
+"Last-Translator: João Coutinho <jpmcoutinho@gmail.com>, 2021\n"
 "Language-Team: Portuguese (Portugal) (https://www.transifex.com/glpi/teams/1637/pt_PT/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -741,7 +742,7 @@ msgstr "Primeiro/último endereço: %1$s/%2$s"
 #: ajax/dropdownShowIPNetwork.php:58
 #, php-format
 msgid "Gateway: %s"
-msgstr "Acesso: %s"
+msgstr "Gateway: %s"
 
 #: ajax/savedsearch.php:47
 msgid "Search has been saved"
@@ -885,7 +886,7 @@ msgstr "Assim que possível"
 
 #: ajax/ticketsatisfaction.php:70
 msgid "Rate to trigger survey"
-msgstr "Classifique para accionar o inquérito"
+msgstr "Classifique para acionar o inquérito"
 
 #: ajax/ticketsatisfaction.php:76 inc/apiclient.class.php:304
 #: inc/notificationajaxsetting.class.php:82 inc/crontask.class.php:804
@@ -904,7 +905,7 @@ msgstr "Não especificada"
 
 #: ajax/ticketsatisfaction.php:91
 msgid "For tickets closed after"
-msgstr "Para ''tickets'' encerrados posteriormente"
+msgstr "Para tickets encerrados posteriormente"
 
 #: ajax/ticketsatisfaction.php:98 inc/link.class.php:147
 msgid "Valid tags"
@@ -1005,7 +1006,7 @@ msgstr "%s remove um anti-vírus"
 #: front/computerantivirus.form.php:79
 #, php-format
 msgid "%s updates an antivirus"
-msgstr "%s actualiza um anti-vírus"
+msgstr "%s atualiza um anti-vírus"
 
 #: front/rulesengine.test.php:61 front/documenttype.list.php:37
 #: front/setup.auth.php:43 front/rule.test.php:60 front/dropdown.php:37
@@ -1050,7 +1051,7 @@ msgstr "%s remove uma tarefa"
 #: front/commonitiltask.form.php:80 front/projecttask.form.php:82
 #, php-format
 msgid "%s updates a task"
-msgstr "%s actualiza a tarefa"
+msgstr "%s atualiza a tarefa"
 
 #: front/setup.auth.php:37 front/auth.settings.php:39 front/auth.others.php:46
 msgid "External authentication sources"
@@ -1166,7 +1167,7 @@ msgstr "%s remove um item"
 #: front/reminder.form.php:73 inc/rulecollection.class.php:1355
 #, php-format
 msgid "%s updates an item"
-msgstr "%s actualizou um item"
+msgstr "%s atualizou um item"
 
 #: front/ipnetwork.form.php:41
 msgid "Successfully recreated network tree"
@@ -1243,7 +1244,7 @@ msgstr "Interface simplificado"
 #: front/olalevel.form.php:61 inc/document.class.php:313
 #, php-format
 msgid "%s adds a link with an item"
-msgstr "%s adiciona um link a este item"
+msgstr "%s adiciona uma ligação a este item"
 
 #: front/find_num.php:73
 msgid "Search the ID of your hardware"
@@ -1461,12 +1462,12 @@ msgstr "%s remove uma máquina virtual"
 #: front/computervirtualmachine.form.php:80
 #, php-format
 msgid "%s updates a virtual machine"
-msgstr "%s actualiza uma máquina virtual"
+msgstr "%s atualiza uma máquina virtual"
 
 #: front/lockedfield.form.php:50
 #, php-format
 msgid "%1$s adds the item %2$s-%3$s:%4$s"
-msgstr "%1$s adicionar o elemento %2$s-%3$s:%4$s"
+msgstr "%1$s adicionar o item %2$s-%3$s:%4$s"
 
 #. TRANS: %s is the user login
 #: front/group.form.php:92 front/dropdown.common.form.php:101
@@ -1482,7 +1483,7 @@ msgstr "%s substitui um item"
 #: front/change_user.form.php:63
 #, php-format
 msgid "%s deletes an actor"
-msgstr "%s elimina um actor"
+msgstr "%s elimina um ator"
 
 #: front/dashboard_helpdesk.php:49
 msgid "Helpdesk Dashboard"
@@ -1547,7 +1548,7 @@ msgstr "Endereço do directório LDAP"
 #: front/updatepassword.php:47 inc/profile.class.php:668
 #: inc/profile.class.php:2588
 msgid "Update password"
-msgstr "Actualizar palavra-passe"
+msgstr "Atualizar palavra-passe"
 
 #: front/updatepassword.php:60
 msgid "Incorrect password"
@@ -1575,7 +1576,7 @@ msgstr "A sua palavra-passe foi atualizada com sucesso."
 
 #: front/updatepassword.php:94
 msgid "Log in"
-msgstr "Conecte-se"
+msgstr "Entrar"
 
 #. TRANS: %s is the user login, %2$s is the license id
 #: front/softwarelicense.form.php:55
@@ -1599,7 +1600,7 @@ msgstr "%1$s remove a licença %2$s"
 #: front/softwarelicense.form.php:93
 #, php-format
 msgid "%1$s updates the license %2$s"
-msgstr "%1$s actualiza a licença %2$s"
+msgstr "%1$s atualiza a licença %2$s"
 
 #. TRANS: %s is the user login
 #: front/networkname.form.php:45 front/networkport.form.php:64
@@ -1669,7 +1670,7 @@ msgstr "Foi redireccionado porque já não tem acesso a este ticket"
 #: front/problem.form.php:111 front/problem.form.php:124
 #, php-format
 msgid "%s adds an actor"
-msgstr "%s adiciona um actor"
+msgstr "%s adiciona um ator"
 
 #: front/ticket.form.php:228 front/change.form.php:147
 #: front/problem.form.php:150
@@ -2041,7 +2042,7 @@ msgstr "%s remove um volume"
 #: front/item_disk.form.php:83
 #, php-format
 msgid "%s updates a volume"
-msgstr "%s actualiza um volume"
+msgstr "%s atualiza um volume"
 
 #. TRANS: %s is the user login
 #: front/user.form.php:116 front/group_user.form.php:50
@@ -2202,7 +2203,7 @@ msgstr "Satisfação"
 #: front/knowbaseitem_item.form.php:52
 #, php-format
 msgid "%s adds a link with an knowledge base"
-msgstr "%s adiciona um link a este item"
+msgstr "%s adiciona uma ligação à base de conhecimento"
 
 #: front/report.infocom.php:58 front/report.infocom.conso.php:58
 #: inc/rule.class.php:1097 inc/rule.class.php:2079
@@ -2266,7 +2267,7 @@ msgstr "Valor Total"
 #: front/contact_supplier.form.php:51 front/contract_supplier.form.php:57
 #, php-format
 msgid "%s adds a link with a supplier"
-msgstr "%s adiciona um link com um fornecedor"
+msgstr "%s adiciona uma ligação com um fornecedor"
 
 #. TRANS: %s is the user login
 #: front/commonitilcost.form.php:66 front/projectcost.form.php:57
@@ -2305,7 +2306,7 @@ msgstr "%s remove um alerta"
 #: front/savedsearch_alert.form.php:78
 #, php-format
 msgid "%s updates an alert"
-msgstr "%s actualiza um alerta"
+msgstr "%s atualiza um alerta"
 
 #: front/ldap.php:45
 msgid "Bulk import users from a LDAP directory"
@@ -2350,8 +2351,8 @@ msgstr "Você não pode solucionar este item!"
 #: tests/functionnal/Item_SoftwareLicense.php:223
 msgid "Item"
 msgid_plural "Items"
-msgstr[0] "Artigo"
-msgstr[1] "Elementos"
+msgstr[0] "Item"
+msgstr[1] "Itens"
 
 #. TRANS: %s is the user login
 #: front/item_softwarelicense.form.php:51
@@ -2596,7 +2597,7 @@ msgstr "%s adiciona uma aprovação"
 #: front/commonitilvalidation.form.php:82
 #, php-format
 msgid "%s updates an approval"
-msgstr "%s actualiza uma aprovação"
+msgstr "%s atualiza uma aprovação"
 
 #. TRANS: %s is the user login
 #: front/commonitilvalidation.form.php:91
@@ -2834,7 +2835,7 @@ msgstr "%s aprova ou rejeita uma solução"
 #: front/itilfollowup.form.php:73
 #, php-format
 msgid "%s updates a followup"
-msgstr "%s actualiza acompanhamento"
+msgstr "%s atualiza acompanhamento"
 
 #. TRANS: %s is the user login
 #: front/itilfollowup.form.php:82
@@ -2927,7 +2928,7 @@ msgstr "Obrigado por estar a usar o nosso Sistema de Helpdesk automático."
 #: front/slalevel.form.php:47
 #, php-format
 msgid "%s updates a sla level"
-msgstr "%s actualiza um nível de sla"
+msgstr "%s atualiza um nível de sla"
 
 #. TRANS: %s is the user login
 #: front/slalevel.form.php:71
@@ -2945,8 +2946,8 @@ msgstr "Hardware sob contrato"
 #: inc/notificationtargetcontract.class.php:186 inc/entity.class.php:1951
 msgid "Contract"
 msgid_plural "Contract"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Contrato"
+msgstr[1] "Contratos"
 
 #: front/ldap.group.import.php:71 inc/authldap.class.php:3496
 #: inc/auth.class.php:260 inc/auth.class.php:284
@@ -2996,7 +2997,7 @@ msgstr "%1$s remove a versão %2$s"
 #: front/softwareversion.form.php:73
 #, php-format
 msgid "%1$s updates the version %2$s"
-msgstr "%1$s actualiza a versão %2$s"
+msgstr "%1$s atualiza a versão %2$s"
 
 #: front/setup.notification.php:38 inc/notificationevent.class.php:222
 #: inc/notification.class.php:143 inc/notification.class.php:157
@@ -3367,7 +3368,7 @@ msgstr "Relatório de rede por tomada: %s"
 #: front/olalevel.form.php:51
 #, php-format
 msgid "%s updates an ola level"
-msgstr "%s actualiza um nível ola"
+msgstr "%s atualiza um nível ola"
 
 #. TRANS: %s is the user login
 #: front/olalevel.form.php:75
@@ -3446,8 +3447,8 @@ msgstr[1] "Tipos de computadores"
 #: inc/monitortype.class.php:42
 msgid "Monitor type"
 msgid_plural "Monitors types"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Tipo de monitor"
+msgstr[1] "Tipos de monitores"
 
 #: inc/rule.class.php:383 inc/rulecollection.class.php:2047
 #: inc/printertype.class.php:42
@@ -3633,7 +3634,7 @@ msgstr "Activo"
 #: inc/rack.class.php:423 inc/notificationtargetproject.class.php:594
 #: inc/notificationtargetproject.class.php:615 filter.class.php:60
 msgid "Last update"
-msgstr "Última actualização"
+msgstr "Última atualização"
 
 #: inc/rule.class.php:758 inc/datacenter.class.php:128
 #: inc/computer.class.php:668 inc/domain.class.php:113
@@ -4454,20 +4455,20 @@ msgid ""
 "User or group updated. The connected items have been moved in the same "
 "values."
 msgstr ""
-"O utilizador ou grupo foram actualizados. Os itens ligados foram movidos com"
-" os mesmos valores."
+"O utilizador ou grupo foram atualizados. Os itens ligados foram movidos com "
+"os mesmos valores."
 
 #: inc/computer.class.php:246 inc/computer_item.class.php:141
 msgid ""
 "Status updated. The connected items have been updated using this status."
 msgstr ""
-"Estado actualizado. Os itens ligados foram actualizados usando este estado."
+"Estado atualizado. Os itens ligados foram atualizados usando este estado."
 
 #: inc/computer.class.php:251 inc/computer_item.class.php:106
 msgid ""
 "Location updated. The connected items have been moved in the same location."
 msgstr ""
-"Localização actualizada. Os itens ligados foram movidos para a mesma "
+"Localização atualizada. Os itens ligados foram movidos para a mesma "
 "licalização."
 
 #: inc/computer.class.php:356 inc/computer.class.php:694
@@ -4679,7 +4680,7 @@ msgstr "Versão da assinatura da base de dados"
 
 #: inc/computerantivirus.class.php:213
 msgid "Is up to date"
-msgstr "Está actualizado"
+msgstr "Está atualizado"
 
 #: inc/computerantivirus.class.php:240 inc/computerantivirus.class.php:329
 #: inc/computerantivirus.class.php:402 inc/domain.class.php:121
@@ -4707,7 +4708,7 @@ msgstr "Inventário automático"
 
 #: inc/computerantivirus.class.php:313 inc/computerantivirus.class.php:401
 msgid "Up to date"
-msgstr "Actualizado"
+msgstr "Atualizado"
 
 #: inc/computerantivirus.class.php:319 inc/computerantivirus.class.php:398
 msgid "Antivirus version"
@@ -4790,6 +4791,8 @@ msgid ""
 "If name is a valid email address, it will be automatically added to "
 "blacklisted senders."
 msgstr ""
+"Se o nome é um endereço de email válido, este será adicionado "
+"automaticamente à lista negra de remetentes."
 
 #: inc/mailcollector.class.php:234 inc/mailcollector.class.php:533
 #: inc/notificationtargetmailcollector.class.php:77
@@ -4880,12 +4883,14 @@ msgstr "Email %s não encontrado. Não foi possivel a sua importação."
 #: inc/mailcollector.class.php:727
 #, php-format
 msgid "Message is invalid (%s). Check in \"%s\" for more details"
-msgstr ""
+msgstr "A mensagem é inválida (%s). Verifique em \"%s\" para mais detalhes"
 
 #: inc/mailcollector.class.php:781
 #, php-format
 msgid "Error during message parsing (%s). Check in \"%s\" for more details"
 msgstr ""
+"Erro durante a análise da mensagem (%s). Verifique em \"%s\" para mais "
+"detalhes"
 
 #: inc/mailcollector.class.php:920
 #, php-format
@@ -5054,7 +5059,7 @@ msgid ""
 "All users having administrators rights have have been updated to 'super-"
 "admin' rights with the creation of his new user type."
 msgstr ""
-"Com a criação deste novo tipo de utilizador, foram actualizados todos os "
+"Com a criação deste novo tipo de utilizador, foram atualizados todos os "
 "utilizadores com permissões de administração para 'super-admin'."
 
 #: inc/update.class.php:505
@@ -5101,7 +5106,7 @@ msgstr "Adicionar"
 #: inc/item_devices.class.php:920 inc/commondbtm.class.php:5110
 #: inc/massiveaction.class.php:989
 msgid "Update"
-msgstr "Actualizar"
+msgstr "Atualizar"
 
 #: inc/ruleasset.class.php:72 inc/commondbvisible.class.php:234
 #: inc/commondbvisible.class.php:294 inc/ipnetwork.class.php:160
@@ -5221,8 +5226,8 @@ msgstr "Técnico responsável"
 #: inc/appliance.class.php:249 inc/notificationtargetproject.class.php:639
 msgid "Associated item"
 msgid_plural "Associated items"
-msgstr[0] "Artigo associado"
-msgstr[1] "Elementos associados"
+msgstr[0] "Item associado"
+msgstr[1] "Itens associados"
 
 #: inc/domain.class.php:150 inc/domain.class.php:309
 #: inc/dashboard/grid.class.php:1395 inc/log.class.php:964
@@ -5272,7 +5277,7 @@ msgstr "Domínios expirados desde"
 #: inc/domain.class.php:673
 #, php-format
 msgid "Domains alerts not send for entity %1$s"
-msgstr ""
+msgstr "Alertas de domínios não enviados para a entidade %1$s"
 
 #: inc/planningexternaleventtemplate.class.php:54
 msgid "External events template"
@@ -5402,7 +5407,7 @@ msgstr "Numero de itens visualizados"
 
 #: inc/rssfeed.class.php:478 inc/rssfeed.class.php:705
 msgid "Refresh rate"
-msgstr "Taxa de actualização"
+msgstr "Taxa de atualização"
 
 #: inc/rssfeed.class.php:533 inc/domainrecord.class.php:509
 #: inc/console/database/updatecommand.class.php:124
@@ -5676,8 +5681,8 @@ msgstr[1] "Modelos de soluções"
 #: inc/appliancetype.class.php:40
 msgid "Appliance type"
 msgid_plural "Appliance types"
-msgstr[0] "Tipo de aparelho"
-msgstr[1] "Tipos de aparelhos"
+msgstr[0] "Tipo de equipamento específico"
+msgstr[1] "Tipos de equipamentos específicos"
 
 #: inc/blacklist.class.php:216 inc/networkname.class.php:216
 msgid "IP"
@@ -5834,7 +5839,7 @@ msgstr "Nova tarefa de projecto"
 
 #: inc/notificationtargetprojecttask.class.php:53
 msgid "Update of a project task"
-msgstr "Actualização de tarefa de projecto"
+msgstr "Atualização de tarefa de projecto"
 
 #: inc/notificationtargetprojecttask.class.php:54
 msgid "Deletion of a project task"
@@ -6008,7 +6013,7 @@ msgstr "Histórico"
 #: inc/notificationtargetproject.class.php:634
 msgctxt "name"
 msgid "Update"
-msgstr "Actualizar"
+msgstr "Atualizar"
 
 #: inc/notificationtargetprojecttask.class.php:527
 #: inc/notificationtargetcommonitilobject.class.php:1496
@@ -7176,7 +7181,7 @@ msgstr "Desreferenciar quando localizar (não durante a procura)"
 #: inc/authldap.class.php:530
 msgid "Domain name used by inventory tool for link the user"
 msgstr ""
-"Nome do domínio utilizado pelo utilitário de inventário para ligar o "
+"Nome do domínio utilizado pelo ferramenta de inventário para ligar o "
 "utilizador"
 
 #: inc/authldap.class.php:536 inc/authldap.class.php:711
@@ -7338,11 +7343,11 @@ msgstr "Sincronizar"
 
 #: inc/authldap.class.php:1563 inc/authldap.class.php:1612
 msgid "Last update in the LDAP directory"
-msgstr "Ultima actualização no directório LDAP"
+msgstr "Ultima atualização no directório LDAP"
 
 #: inc/authldap.class.php:1565 inc/authldap.class.php:1614
 msgid "Last update in GLPI"
-msgstr "Ultima actualização no GLPI"
+msgstr "Ultima atualização no GLPI"
 
 #: inc/authldap.class.php:1626 inc/authldap.class.php:1631
 msgid "No user to be synchronized"
@@ -7579,12 +7584,12 @@ msgstr "A ação solicitada não é permitida."
 #: inc/session.class.php:1523
 #, php-format
 msgid "%1$s starts impersonating user %2$s"
-msgstr ""
+msgstr "%1$s começa a personificar o utilizador %2$s"
 
 #: inc/session.class.php:1553
 #, php-format
 msgid "%1$s stops impersonating user %2$s"
-msgstr ""
+msgstr "%1$s termina de personificar o utilizador %2$s"
 
 #: inc/notificationtemplatetranslation.class.php:50
 msgid "Template translation"
@@ -7952,7 +7957,7 @@ msgstr "Adicionar o item"
 
 #: inc/notificationtargetfieldunicity.class.php:49 inc/config.class.php:3392
 msgid "Update the item"
-msgstr "Actualizar o item"
+msgstr "Atualizar o item"
 
 #: inc/notificationtargetfieldunicity.class.php:64
 #: inc/fieldunicity.class.php:85 inc/fieldunicity.class.php:357
@@ -7980,7 +7985,7 @@ msgstr[1] "Projectos"
 
 #: inc/project.class.php:130 inc/projecttask.class.php:191
 msgid "See (actor)"
-msgstr "Ver (actor)"
+msgstr "Ver (ator)"
 
 #: inc/project.class.php:153
 msgid "GANTT"
@@ -8053,11 +8058,11 @@ msgstr "Encontrada relação circular. Item superior não foi atualizada."
 
 #: inc/project.class.php:1335
 msgid "Invalid planned dates. Dates not updated."
-msgstr "Datas planeadas inválidas. Datas não actualizadas."
+msgstr "Datas planeadas inválidas. Datas não atualizadas."
 
 #: inc/project.class.php:1344
 msgid "Invalid real dates. Dates not updated."
-msgstr "Datas reais inválidas. Datas não actualizadas."
+msgstr "Datas reais inválidas. Datas não atualizadas."
 
 #: inc/project.class.php:1380
 msgid "Create a sub project from this project"
@@ -8562,7 +8567,7 @@ msgstr "Novo problema"
 
 #: inc/notificationtargetproblem.class.php:51
 msgid "Update of a problem"
-msgstr "Actualização de um problema"
+msgstr "Atualização de um problema"
 
 #: inc/notificationtargetproblem.class.php:52
 msgid "Problem solved"
@@ -9029,7 +9034,7 @@ msgstr "Nome Internet inválido: %s"
 #: inc/commondbconnexity.class.php:292
 msgid "Cannot update item: not enough right on the parent(s) item(s)"
 msgstr ""
-"Não é possivel actualizar o item: Sem permissões no(s) item(ns) superior(es)"
+"Não é possivel atualizar o item: Sem permissões no(s) item(ns) superior(es)"
 
 #: inc/commondbconnexity.class.php:572
 msgid "First Item"
@@ -9230,6 +9235,8 @@ msgid ""
 "Options --begin-date and --end-date can only be used with --only-create-new "
 "or --only-update-existing option."
 msgstr ""
+"Opções --begin-date e --end-date só podem ser usados com --only-create-new "
+"ou --only-update-existing option."
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:467
 msgid ""
@@ -9705,7 +9712,7 @@ msgstr "Não foi possível criar sala por omissão."
 
 #: inc/console/migration/appliancesplugintocorecommand.class.php:145
 msgid "Migrate Appliances plugin data into GLPI core tables"
-msgstr ""
+msgstr "Migrar dados do plugin Appliances para as tabelas core do GLPI"
 
 #: inc/console/migration/appliancesplugintocorecommand.class.php:160
 msgid ""
@@ -9717,7 +9724,7 @@ msgstr ""
 
 #: inc/console/migration/appliancesplugintocorecommand.class.php:161
 msgid "Any previous appliance created in core will be lost."
-msgstr "Aparelhos criados previamente serão perdidos."
+msgstr "Qualquer equipamento específico criado previamente será perdido."
 
 #: inc/console/migration/appliancesplugintocorecommand.class.php:209
 #, php-format
@@ -9755,21 +9762,21 @@ msgstr "Falhou migração da tabela \"%s\" com a mensagem \"(%s) %s\"."
 
 #: inc/console/migration/appliancesplugintocorecommand.class.php:381
 msgid "Creating Appliance Items..."
-msgstr "A criar itens de Aparelhos..."
+msgstr "A criar itens de Equipamentos específicos..."
 
 #: inc/console/migration/appliancesplugintocorecommand.class.php:398
 #, php-format
 msgid "Importing Appliance item \"%d\"..."
-msgstr "A importar item de Aparelho \"%d\""
+msgstr "A importar item de Equipamento específico \"%d\""
 
 #: inc/console/migration/appliancesplugintocorecommand.class.php:419
 #, php-format
 msgid "Unable to create Appliance item %d."
-msgstr "Não foi possivel a criação do item de Aparelho %d."
+msgstr "Não foi possivel a criação do item de Equipamento específico %d."
 
 #: inc/console/migration/appliancesplugintocorecommand.class.php:440
 msgid "Creating Appliance Environment..."
-msgstr "A criar Ambiente de Aparelho..."
+msgstr "A criar Ambiente de Equipamento específico..."
 
 #: inc/console/migration/appliancesplugintocorecommand.class.php:457
 #, php-format
@@ -9780,25 +9787,26 @@ msgstr "A importar ambiente \"%s\"..."
 #: inc/console/migration/appliancesplugintocorecommand.class.php:612
 #, php-format
 msgid "Unable to create Appliance environment %s (%d)."
-msgstr "Não foi possivel a criação do ambiente de Aparelho %s (%d)."
+msgstr ""
+"Não foi possivel a criação do ambiente de Equipamento específico %s (%d)."
 
 #: inc/console/migration/appliancesplugintocorecommand.class.php:498
 msgid "Creating Appliances..."
-msgstr "A criar Aparelhos..."
+msgstr "A criar Equipamentos específicos..."
 
 #: inc/console/migration/appliancesplugintocorecommand.class.php:514
 #, php-format
 msgid "Importing appliance \"%s\"..."
-msgstr "A importar aparelho \"%s\"..."
+msgstr "A importar equipamento específico \"%s\"..."
 
 #: inc/console/migration/appliancesplugintocorecommand.class.php:551
 #, php-format
 msgid "Unable to create Appliance %s (%d)."
-msgstr "Não foi possível criar Aparelho %s (%d)."
+msgstr "Não foi possível criar Equipamento específico %s (%d)."
 
 #: inc/console/migration/appliancesplugintocorecommand.class.php:572
 msgid "Creating Appliance types..."
-msgstr "A criar tipos de Aparelho..."
+msgstr "A criar tipos de Equipamento específico..."
 
 #: inc/console/migration/appliancesplugintocorecommand.class.php:589
 #, php-format
@@ -9807,7 +9815,7 @@ msgstr "A importar tipo \"%s\"..."
 
 #: inc/console/migration/appliancesplugintocorecommand.class.php:633
 msgid "Creating Appliance relations..."
-msgstr "A criar relações de Aparelhos..."
+msgstr "A criar relações de Equipamentos específicos..."
 
 #: inc/console/migration/appliancesplugintocorecommand.class.php:665
 #, php-format
@@ -9819,12 +9827,12 @@ msgstr "A importar relação \"%s\"..."
 msgid "Unable to found relation type %s from Appliance Item Relation %d."
 msgstr ""
 "Não foi possivel encontrar tipo de relação %s a partir de Relação de Item de"
-" Aparelho %d."
+" Equipamento específico %d."
 
 #: inc/console/migration/appliancesplugintocorecommand.class.php:703
 #, php-format
 msgid "Unable to create Appliance Item Relation %d."
-msgstr "Não foi possível criar Relação de Item de Aparelho %d."
+msgstr "Não foi possível criar Relação de Item de Equipamento específico %d."
 
 #: inc/console/migration/buildmissingtimestampscommand.class.php:52
 msgid "Set missing `date_creation` and `date_mod` values using log entries."
@@ -9843,24 +9851,29 @@ msgstr "A atualização de '%s'.'%s' falhou com a mensagem \"(%s) %s\"."
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:91
 msgid "Migrate Domains plugin data into GLPI core tables"
-msgstr ""
+msgstr "Migrar dados do plugin Domínios para as tabelas core do GLPI"
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:98
 #, php-format
 msgid "Run Domains plugin update (you need version %s files to do this)"
 msgstr ""
+"Executa atualização do plugin Domínios (necessita dos ficheiros da versão %s"
+" para a sua concretização)"
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:124
 msgid ""
 "You are about to launch migration of Domains plugin data into GLPI core "
 "tables."
 msgstr ""
+"Vai iniciar a migração de dados do plugin Domínios para as tabelas core do "
+"GLPI."
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:182
 msgid ""
 "Domains plugin is not part of GLPI plugin list. It has never been installed "
 "or has been cleaned."
 msgstr ""
+"O plugin Domínios não está disponível. Nunca foi instalado ou foi eliminado."
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:185
 #: inc/console/migration/domainsplugintocorecommand.class.php:200
@@ -9869,6 +9882,8 @@ msgid ""
 "You have to install Domains plugin files in version %s to be able to "
 "continue."
 msgstr ""
+"Tem de instalar os ficheiros da versão %s do plugin Domínios para poder "
+"continuar."
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:248
 #, php-format
@@ -9876,11 +9891,13 @@ msgid ""
 "Domains plugin data has to be updated to %s version. It can be done using "
 "the --update-plugin option."
 msgstr ""
+"Os dados do plugin Domínios tem de ser atualizados para a versão %s. Esta "
+"ação poderá ser concretizada usando a opção --update-plugin."
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:283
 #, php-format
 msgid "Domains plugin table \"%s\" is missing."
-msgstr ""
+msgstr "Não existe a tabela \"%s\" do plugin Domínios."
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:319
 msgid "Importing domains types..."
@@ -9889,26 +9906,26 @@ msgstr "Importando tipos de domínio..."
 #: inc/console/migration/domainsplugintocorecommand.class.php:348
 #, php-format
 msgid "Updating existing domain type %s..."
-msgstr ""
+msgstr "A atualizar o tipo de domínio existente %s..."
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:353
 #, php-format
 msgid "Importing domain type %s..."
-msgstr ""
+msgstr "A importar o tipo de domínio existente %s..."
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:386
 #, php-format
 msgid "Unable to add domain type %s."
-msgstr ""
+msgstr "Não foi possível adicionar o tipo de domínio existente %s..."
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:387
 #, php-format
 msgid "Unable to update domain type %s."
-msgstr ""
+msgstr "Não foi possível atualizar o tipo de domínio existente %s..."
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:406
 msgid "No domains types found."
-msgstr ""
+msgstr "Não foram encontrados tipos de domínio."
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:425
 msgid "Importing domains..."
@@ -9917,7 +9934,7 @@ msgstr "Importando domínios..."
 #: inc/console/migration/domainsplugintocorecommand.class.php:454
 #, php-format
 msgid "Updating existing domain %s..."
-msgstr ""
+msgstr "A atualizar domínio existente %s..."
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:459
 #, php-format
@@ -9927,17 +9944,17 @@ msgstr "Importando domínio %s..."
 #: inc/console/migration/domainsplugintocorecommand.class.php:472
 #, php-format
 msgid "Unable to find mapping for type %s."
-msgstr ""
+msgstr "Não foi possível encontrar mapeamento para o tipo %s."
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:513
 #, php-format
 msgid "Unable to add domain %s."
-msgstr ""
+msgstr "Não foi possível adicionar domínio %s."
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:514
 #, php-format
 msgid "Unable to update domain %s."
-msgstr ""
+msgstr "Não foi possível atualizar domínio %s."
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:557
 msgid "No domains found."
@@ -9945,36 +9962,37 @@ msgstr "Domínios não encontrados."
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:574
 msgid "Importing domains items..."
-msgstr ""
+msgstr "A importar itens do domínios..."
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:601
 #, php-format
 msgid "Unable to find corresponding domain for item %s (%s)."
 msgstr ""
+"Não foi possível encontrar o domínio correspondente para o item %s (%s)."
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:614
 #, php-format
 msgid "Skip existing domain item %s..."
-msgstr ""
+msgstr "A saltar o item existente do domínio %s..."
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:619
 #, php-format
 msgid "Importing domain item %s..."
-msgstr ""
+msgstr "A importar o item do domínio %s..."
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:654
 #, php-format
 msgid "Unable to add domain item %s."
-msgstr ""
+msgstr "Não foi possível adicionar o item do domínio %s."
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:655
 #, php-format
 msgid "Unable to update domain item %s."
-msgstr ""
+msgstr "Não foi possível atualizar o item do domínio %s."
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:667
 msgid "No domains items found."
-msgstr ""
+msgstr "Não foram encontrados itens dos domínios."
 
 #: inc/console/task/unlockcommand.class.php:56
 msgid "Unlock automatic tasks"
@@ -10002,7 +10020,7 @@ msgstr ""
 
 #: inc/console/task/unlockcommand.class.php:85
 msgid "Itemtype::name of task to unlock (e.g: \"MailCollector::mailgate\")"
-msgstr ""
+msgstr "Itemtype::name of task to unlock (e.g: \"MailCollector::mailgate\")"
 
 #: inc/console/task/unlockcommand.class.php:131
 #, php-format
@@ -10026,28 +10044,30 @@ msgstr "Número de tarefas desbloqueadas: %d."
 
 #: inc/console/task/unlockcommand.class.php:181
 msgid "Option --cycle is not compatible with option --delay."
-msgstr ""
+msgstr "Opção --cycle não é compatível com a opção --delay."
 
 #: inc/console/task/unlockcommand.class.php:187
 msgid "Option --cycle has to be an integer."
-msgstr ""
+msgstr "Opção --cycle tem de ser um numero inteiro."
 
 #: inc/console/task/unlockcommand.class.php:193
 msgid "Option --delay has to be an integer."
-msgstr ""
+msgstr "Opção --delay tem de ser um numero inteiro."
 
 #: inc/console/task/unlockcommand.class.php:203
 msgid "Option --all is not compatible with option --task."
-msgstr ""
+msgstr "Opção --all não é compatível com a opção --task."
 
 #: inc/console/task/unlockcommand.class.php:209
 msgid ""
 "You have to specify which tasks to unlock using --all or --task options."
 msgstr ""
+"Tem de especificar que tarefas a desbloquear usando as opções --all ou "
+"--task."
 
 #: inc/console/application.class.php:130
 msgid "The command to execute"
-msgstr ""
+msgstr "O comando a executar"
 
 #: inc/console/application.class.php:137
 msgid "Display this help message"
@@ -10062,6 +10082,8 @@ msgid ""
 "Increase the verbosity of messages: 1 for normal output, 2 for more verbose "
 "output and 3 for debug"
 msgstr ""
+"Aumente o detalhe das mensagens: 1 para normal, 2 para mais detalhe e 3 para"
+" depurar"
 
 #: inc/console/application.class.php:155
 msgid "Display this application version"
@@ -10086,17 +10108,21 @@ msgstr "Diretoria de configuração a usar"
 #: inc/console/application.class.php:185
 msgid "Disable GLPI plugins (unless commands forces plugins loading)"
 msgstr ""
+"Desativar os plugins do GLPI (exceção aos comandos que forçam a leitura dos "
+"plugins)"
 
 #: inc/console/application.class.php:191
 msgid ""
 "Output language (default value is existing GLPI \"language\" configuration "
 "or \"en_GB\")"
 msgstr ""
+"Idioma de saída (valor por defeito é a configuração do idioma do GLPI ou "
+"\"en_GB\") "
 
 #: inc/console/application.class.php:212
 #, php-format
 msgid "Invalid \"--lang\" option value \"%s\"."
-msgstr ""
+msgstr "Valor da opção \"--lang\" inválida \"%s\"."
 
 #: inc/console/application.class.php:238 inc/config.php:172 inc/config.php:226
 msgid ""
@@ -10104,7 +10130,7 @@ msgid ""
 "installed files. An update is necessary."
 msgstr ""
 "A versão da sua base de dados não é compatível com a versão GLPI instalada. "
-"É necessária uma actualização."
+"É necessária uma atualização."
 
 #: inc/console/application.class.php:254
 #, php-format
@@ -10340,11 +10366,11 @@ msgstr ""
 
 #: inc/console/database/updatecommand.class.php:176
 msgid "Update aborted."
-msgstr "Actualização abortada."
+msgstr "Atualização abortada."
 
 #: inc/console/database/updatecommand.class.php:195
 msgid "Last migration replayed."
-msgstr ""
+msgstr "Ultima migração novamente executada."
 
 #: inc/console/config/setcommand.class.php:62
 msgid "Set configuration value"
@@ -10361,38 +10387,42 @@ msgstr "Contexto inválido \"%s\"."
 
 #: inc/console/rules/replaydictionnaryrulescommand.class.php:53
 msgid "Replay dictionnary rules on existing items"
-msgstr ""
+msgstr "Executar novamente as regras do dicionário em itens existentes"
 
 #: inc/console/rules/replaydictionnaryrulescommand.class.php:60
 #, php-format
 msgid "Dictionnary to use. Possible values are: %s"
-msgstr ""
+msgstr "Dicionário a usar. Os valores possíveis são: %s"
 
 #: inc/console/rules/replaydictionnaryrulescommand.class.php:69
 msgid ""
 "If option is set, only items having given manufacturer ID will be processed."
 msgstr ""
+"Se a opção está preenchida, apenas os itens com o ID do fabricante é que "
+"serão processados."
 
 #: inc/console/rules/replaydictionnaryrulescommand.class.php:70
 msgid "Currently only available for Software dictionnary."
-msgstr ""
+msgstr "Atualmente apenas disponível no dicionário de Software."
 
 #: inc/console/rules/replaydictionnaryrulescommand.class.php:81
 msgid "Which dictionnary do you want to replay ?"
-msgstr ""
+msgstr "Que dicionário pretende executar?"
 
 #: inc/console/rules/replaydictionnaryrulescommand.class.php:101
 msgid "Invalid \"dictionnary\" value."
-msgstr ""
+msgstr "Valor inválido de \"dicionário\"."
 
 #: inc/console/rules/processsoftwarecategoryrulescommand.class.php:53
 msgid "Process software category rules"
-msgstr ""
+msgstr "Processar as regras de categoria de software"
 
 #: inc/console/rules/processsoftwarecategoryrulescommand.class.php:59
 msgid ""
 "Process rule for all softwares, even those having already a defined category"
 msgstr ""
+"Processar regra para todos os softwares, mesmo para aqueles que já dispõem "
+"de uma categoria definida"
 
 #: inc/console/rules/processsoftwarecategoryrulescommand.class.php:81
 msgid "No software to process."
@@ -10401,17 +10431,17 @@ msgstr "Nenhuma aplicação para processar"
 #: inc/console/rules/processsoftwarecategoryrulescommand.class.php:93
 #, php-format
 msgid "Processing software having id \"%s\"."
-msgstr ""
+msgstr "A processar software que tem id \"%s\"."
 
 #: inc/console/rules/processsoftwarecategoryrulescommand.class.php:102
 #, php-format
 msgid "Unable to load software having id \"%s\"."
-msgstr ""
+msgstr "Não foi possível ler software com id \"%s\"."
 
 #: inc/console/rules/processsoftwarecategoryrulescommand.class.php:128
 #, php-format
 msgid "Number of softwares processed: %d."
-msgstr ""
+msgstr "Numero de softwares processados: %d."
 
 #: inc/console/plugin/abstractplugincommand.class.php:65
 msgid "Run command on all plugins"
@@ -10424,7 +10454,7 @@ msgstr "Diretório de plugins"
 
 #: inc/console/plugin/abstractplugincommand.class.php:82
 msgid "Option --all is not compatible with usage of directory argument."
-msgstr ""
+msgstr "Opção --all não é compativel com o uso do argumento de diretoria."
 
 #: inc/console/plugin/abstractplugincommand.class.php:93
 msgid "All plugins"
@@ -10435,31 +10465,31 @@ msgstr "Todos os plugins"
 #: inc/console/plugin/activatecommand.class.php:62
 #, php-format
 msgid "Processing plugin \"%s\"..."
-msgstr ""
+msgstr "A processar o plugin \"%s\"..."
 
 #: inc/console/plugin/deactivatecommand.class.php:75
 #: inc/console/plugin/installcommand.class.php:129
 #: inc/console/plugin/activatecommand.class.php:75
 #, php-format
 msgid "Unable to load plugin \"%s\" information."
-msgstr ""
+msgstr "Não foi possível ler informação do plugin \"%s\"."
 
 #: inc/console/plugin/deactivatecommand.class.php:83
 #, php-format
 msgid "Plugin \"%s\" deactivation failed."
-msgstr ""
+msgstr "Falhou a desativação do plugin \"%s\" ."
 
 #: inc/console/plugin/deactivatecommand.class.php:91
 #, php-format
 msgid "Plugin \"%1$s\" has been deactivated."
-msgstr ""
+msgstr "O plugin \"%1$s\" foi desativado."
 
 #: inc/console/plugin/deactivatecommand.class.php:114
 #: inc/console/plugin/installcommand.class.php:275
 #: inc/console/plugin/activatecommand.class.php:114
 #, php-format
 msgid "Invalid plugin directory \"%s\"."
-msgstr ""
+msgstr "Diretoria do plugin inválida \"%s\"."
 
 #: inc/console/plugin/deactivatecommand.class.php:124
 #: inc/console/plugin/activatecommand.class.php:124
@@ -10470,23 +10500,23 @@ msgstr "O plugin \"%s\" ainda não está instalado."
 #: inc/console/plugin/deactivatecommand.class.php:132
 #, php-format
 msgid "Plugin \"%s\" is already inactive."
-msgstr ""
+msgstr "O plugin \"%s\" já se encontra inativo."
 
 #: inc/console/plugin/deactivatecommand.class.php:143
 msgid "Which plugin(s) do you want to deactivate (comma separated values) ?"
-msgstr ""
+msgstr "Que plugin(s) deseja desativar (valores separados por virgulas)?"
 
 #: inc/console/plugin/installcommand.class.php:63
 msgid "Additionnal parameters to pass to the plugin install hook function"
-msgstr ""
+msgstr "Parâmetros adicionais para passar à função de instalação do plugin"
 
 #: inc/console/plugin/installcommand.class.php:65
 msgid "\"-p foo\" will set \"foo\" param value to true"
-msgstr ""
+msgstr "\"-p foo\" colocará o valor do parâmetro \"foo\" para verdadeiro"
 
 #: inc/console/plugin/installcommand.class.php:67
 msgid "\"-p foo=bar\" will set \"foo\" param value to \"bar\""
-msgstr ""
+msgstr "\"-p foo=bar\" colocará o valor do parâmetro \"foo\" para \"bar\""
 
 #: inc/console/plugin/installcommand.class.php:76
 msgid ""
@@ -10499,6 +10529,7 @@ msgstr ""
 #: inc/console/plugin/installcommand.class.php:83
 msgid "Force execution of installation, even if plugin is already installed"
 msgstr ""
+"Forçar execução da instalação, mesmo se o plugin já se encontra instalado"
 
 #: inc/console/plugin/installcommand.class.php:139
 #, php-format
@@ -10508,16 +10539,16 @@ msgstr "Instalação do plugin \"%s\" falhou."
 #: inc/console/plugin/installcommand.class.php:147
 #, php-format
 msgid "Plugin \"%1$s\" has been installed and must be configured."
-msgstr ""
+msgstr "Plugin \"%1$s\" já foi instalado e tem de ser configurado."
 
 #: inc/console/plugin/installcommand.class.php:148
 #, php-format
 msgid "Plugin \"%1$s\" has been installed and can be activated."
-msgstr ""
+msgstr "Plugin \"%1$s\" já foi instalado e tem de ser ativado."
 
 #: inc/console/plugin/installcommand.class.php:161
 msgid "Which plugin(s) do you want to install (comma separated values) ?"
-msgstr ""
+msgstr "Que plugin(s) deseja instalar (valores separados por virgulas)?"
 
 #: inc/console/plugin/installcommand.class.php:234
 msgid "User name defined by --username option is invalid."
@@ -10529,16 +10560,18 @@ msgid ""
 "Plugin \"%s\" is already installed. Use --force option to force "
 "reinstallation."
 msgstr ""
+"Plugin \"%s\" já se encontra instalado. Use a opção --force para forçar a "
+"reinstalação."
 
 #: inc/console/plugin/installcommand.class.php:303
 #, php-format
 msgid "Plugin \"%s\" function \"%s\" is missing."
-msgstr ""
+msgstr "A função \"%s\" do plugin \"%s\" está em falta."
 
 #: inc/console/plugin/installcommand.class.php:326
 #, php-format
 msgid "Plugin \"%s\" requirements not met."
-msgstr ""
+msgstr "Os requisitos do plugin \"%s\" não se encontram preenchidos."
 
 #: inc/console/plugin/activatecommand.class.php:83
 #, php-format
@@ -10558,11 +10591,11 @@ msgstr "O plugin \"%s\" já se encontra ativo."
 #: inc/console/plugin/activatecommand.class.php:140
 #, php-format
 msgid "Plugin \"%s\" have to be installed and configured prior to activation."
-msgstr ""
+msgstr "O plugin \"%s\" tem de ser instalado e configurado antes da sua ativação."
 
 #: inc/console/plugin/activatecommand.class.php:151
 msgid "Which plugin(s) do you want to activate (comma separated values) ?"
-msgstr ""
+msgstr "Que plugin(s) deseja ativar (valores separados por virgulas)?"
 
 #: inc/mapgeolocation.class.php:115
 msgid "Set location here"
@@ -10953,7 +10986,7 @@ msgid ""
 "The action you have requested is not allowed. Reload previous page before "
 "doing action again."
 msgstr ""
-"A acção que solicitou não está disponivel. Volte a actualizar a página "
+"A acção que solicitou não está disponivel. Volte a atualizar a página "
 "anterior antes de repetir a acção."
 
 #: inc/toolbox.class.php:3057
@@ -11025,39 +11058,39 @@ msgstr "Gestão de energia"
 
 #: inc/dropdown.class.php:983
 msgid "Appliances"
-msgstr "Aparelhos"
+msgstr "Equipamentos específicos"
 
 #. TRANS: %s is a number of years
 #: inc/dropdown.class.php:1531
 #, php-format
 msgid "%s year"
 msgid_plural "%s years"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%s ano"
+msgstr[1] "%s anos"
 
 #. TRANS: %s is a number of months
 #: inc/dropdown.class.php:1535
 #, php-format
 msgid "%s month"
 msgid_plural "%s months"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%s mês"
+msgstr[1] "%s meses"
 
 #. TRANS: %s is a number of days
 #: inc/dropdown.class.php:1539
 #, php-format
 msgid "%s day"
 msgid_plural "%s days"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%s dia"
+msgstr[1] "%s dias"
 
 #. TRANS: %s is a number of minutes
 #: inc/dropdown.class.php:1547
 #, php-format
 msgid "%s minute"
 msgid_plural "%s minutes"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%s minuto"
+msgstr[1] "%s minutos"
 
 #. TRANS: %s is a number of seconds
 #: inc/dropdown.class.php:1551 inc/crontask.class.php:1159
@@ -11075,13 +11108,13 @@ msgstr[1] "%s segundos"
 #, php-format
 msgid "%s millisecond"
 msgid_plural "%s milliseconds"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%s millisegundo"
+msgstr[1] "%s millisegundos"
 
 #: inc/dropdown.class.php:1561
 #, php-format
 msgid "%s%%"
-msgstr ""
+msgstr "%s%%"
 
 #. TRANS: %1$d is the number of days, %2$d the number of hours,
 #. %3$s the number of minutes : display 1 day 3h15
@@ -11175,11 +11208,11 @@ msgstr "Convidados"
 
 #: inc/planningexternalevent.class.php:252
 msgid "Each guest will have a read-only copy of this event"
-msgstr ""
+msgstr "Cada convidado terá uma cópia de leitura deste evento"
 
 #: inc/planningexternalevent.class.php:343
 msgid "Delete serie"
-msgstr ""
+msgstr "Apagar série"
 
 #: inc/planningexternalevent.class.php:344
 msgid "Delete instance"
@@ -11228,7 +11261,7 @@ msgstr "Ticket desconhecido"
 
 #: inc/ticket.class.php:1559
 msgid "You cannot create a ticket for this user"
-msgstr ""
+msgstr "Não consegue criar ticket para este utilizador"
 
 #: inc/ticket.class.php:1687
 #, php-format
@@ -11237,7 +11270,7 @@ msgstr "Email inválido %s"
 
 #: inc/ticket.class.php:1852
 msgid "Auto-created task"
-msgstr ""
+msgstr "Tarefa criada automaticamente"
 
 #: inc/ticket.class.php:1923
 #, php-format
@@ -11251,7 +11284,7 @@ msgstr "O seu ticket foi registado."
 #: inc/ticket.class.php:2126
 #, php-format
 msgid "%1$s updates the item %2$s"
-msgstr "%1$s actualiza o item %2$s"
+msgstr "%1$s atualiza o item %2$s"
 
 #: inc/ticket.class.php:2492
 msgid "Merge as Followup"
@@ -11269,7 +11302,7 @@ msgstr "Liga tickets"
 #: inc/ticket.class.php:2535
 msgctxt "button"
 msgid "Link project task"
-msgstr ""
+msgstr "Ligar tarefa do projeto"
 
 #: inc/ticket.class.php:2560
 msgid "Merge followups"
@@ -11322,7 +11355,7 @@ msgstr "Tempo para posse + Progresso"
 
 #: inc/ticket.class.php:2683
 msgid "Time to own exceeded"
-msgstr ""
+msgstr "Excedido tempo para possuir"
 
 #: inc/ticket.class.php:2693 inc/ticket.class.php:2930
 #: inc/ticket.class.php:4493 inc/ticket.class.php:4495
@@ -11336,7 +11369,7 @@ msgstr "Tempo interno para resolver + Progresso"
 
 #: inc/ticket.class.php:2714
 msgid "Internal time to resolve exceeded"
-msgstr ""
+msgstr "Excedido tempo interno para resolver"
 
 #: inc/ticket.class.php:2724 inc/ticket.class.php:2916
 #: inc/ticket.class.php:4481 inc/ticket.class.php:4483
@@ -11350,7 +11383,7 @@ msgstr "Tempo interno para possuir + Progresso"
 
 #: inc/ticket.class.php:2745
 msgid "Internal time to own exceeded"
-msgstr ""
+msgstr "Excedido tempo interno para possuir"
 
 #: inc/ticket.class.php:2756
 msgid "Next escalation level"
@@ -11594,8 +11627,8 @@ msgstr "Não tem permissão para visualizar todos os tickets"
 #: inc/ticket.class.php:6104
 msgid "Ticket on linked items"
 msgid_plural "Tickets on linked items"
-msgstr[0] "Senha em artigo ligado"
-msgstr[1] "Tickets em elementos ligados"
+msgstr[0] "Ticket em itens ligados"
+msgstr[1] "Tickets em itens ligados"
 
 #: inc/ticket.class.php:6216
 msgid "No ticket in progress."
@@ -11717,7 +11750,7 @@ msgstr "Falha ao adicionar documento ao ticket %d"
 #: inc/ticket.class.php:7234
 #, php-format
 msgid "Failed to link tickets %d and %d"
-msgstr "Falha ao vincular tickets %d e %d"
+msgstr "Falha ao ligar tickets %d e %d"
 
 #: inc/ticket.class.php:7318
 #, php-format
@@ -11776,7 +11809,7 @@ msgstr[1] "Pontos de Rede"
 
 #: inc/networkportinstantiation.class.php:595
 msgid "item not linked to an object"
-msgstr "item não se encontra vinculado a um objecto"
+msgstr "item não se encontra ligado a um objeto"
 
 #. TRANS: %1$s and %2$s are links
 #: inc/networkportinstantiation.class.php:807
@@ -11864,7 +11897,7 @@ msgstr[1] "Itens ligados"
 
 #: inc/knowbaseitem_item.class.php:224
 msgid "Update date"
-msgstr "Data da actualização"
+msgstr "Data da atualização"
 
 #: inc/knowbaseitem_item.class.php:258
 msgid "template"
@@ -11882,11 +11915,14 @@ msgstr "Verifique a configuração SELinux"
 #: inc/system/requirement/selinux.class.php:88
 msgid "For security reasons, SELinux mode should be Enforcing."
 msgstr ""
+"Por razões de segurança, o modo SELinux deverá estar em modo Enforcing."
 
 #: inc/system/requirement/selinux.class.php:125
 #, php-format
 msgid "SELinux boolean %s is %s, some features may require this to be on."
 msgstr ""
+"O valor booleno do SELinux %s é %s, e algumas funcionalidades requerem que "
+"seja verdadeiro."
 
 #: inc/system/requirement/selinux.class.php:135
 msgid "SELinux configuration is OK."
@@ -11898,7 +11934,7 @@ msgstr "Testando dados da DB fuso horário"
 
 #: inc/system/requirement/dbtimezones.class.php:66
 msgid "Timezones seems loaded in database"
-msgstr ""
+msgstr "Fusos horários lidos pela base de dados"
 
 #: inc/system/requirement/phpversion.class.php:55
 msgid "Testing PHP Parser"
@@ -11950,7 +11986,7 @@ msgstr "%s extensão não está presente"
 #: inc/system/requirement/mysqlimysqlnd.class.php:61
 #, php-format
 msgid "%s extension is installed but is not using mysqlnd driver"
-msgstr ""
+msgstr "A extensão %s está instalada mas não está a usar o driver mysqlnd"
 
 #: inc/system/requirement/dbengine.class.php:52
 msgid "Testing DB engine version"
@@ -12005,6 +12041,8 @@ msgid ""
 "Checking that web access to files directory is protected cannot be done on "
 "CLI context."
 msgstr ""
+"A verificação de proteção de acesso web à diretoria de ficheiros não pode "
+"ser executada na linha de comandos."
 
 #: inc/system/requirement/protectedwebaccess.class.php:109
 #: inc/config.class.php:2800 inc/config.class.php:2804
@@ -12031,6 +12069,8 @@ msgid ""
 "Make sure access to %s (%s) is forbidden; otherwise review .htaccess file "
 "and web server configuration."
 msgstr ""
+"Verifique que o acesso a %s (%s) é proibido; caso contrário reveja o "
+"ficheiro .htaccess e a configuração do servidor web."
 
 #: inc/system/requirement/protectedwebaccess.class.php:120
 #: inc/config.class.php:2821
@@ -12048,18 +12088,20 @@ msgstr "O interpretador PHP não está instalado com suporte para sessões!"
 #: inc/system/requirement/sessionsconfiguration.class.php:63
 msgid "\"session.auto_start\" and \"session.use_trans_sid\" must be set to off."
 msgstr ""
+"\"session.auto_start\" e \"session.use_trans_sid\" têm de ser configurados "
+"para off."
 
 #: inc/system/requirement/sessionsconfiguration.class.php:65
 msgid "\"session.auto_start\" must be set to off."
-msgstr ""
+msgstr "\"session.auto_start\" tem de ser configurado off."
 
 #: inc/system/requirement/sessionsconfiguration.class.php:67
 msgid "\"session.use_trans_sid\" must be set to off."
-msgstr ""
+msgstr "\"session.use_trans_sid\" tem de ser configurado para off."
 
 #: inc/system/requirement/sessionsconfiguration.class.php:71
 msgid "See .htaccess file in the GLPI root for more information."
-msgstr ""
+msgstr "Verifique o ficheiro .htaccess na raiz do GLPI para mais informação."
 
 #: inc/system/requirement/sessionsconfiguration.class.php:77
 msgid "Sessions support is available - Perfect!"
@@ -12228,7 +12270,7 @@ msgstr "Grupo responsável pelo software"
 #. TRANS: a noun, (ex : this software is an upgrade of..)
 #: inc/software.class.php:293 install/update.php:567
 msgid "Upgrade"
-msgstr "Actualizar"
+msgstr "Atualizar"
 
 #: inc/software.class.php:324
 msgid "Recalculate the category"
@@ -12308,7 +12350,7 @@ msgstr "Nova tarefa"
 
 #: inc/notificationtargetcommonitilobject.class.php:125
 msgid "Update of a task"
-msgstr "Actualização de tarefa"
+msgstr "Atualização de tarefa"
 
 #: inc/notificationtargetcommonitilobject.class.php:126
 msgid "Deletion of a task"
@@ -12320,7 +12362,7 @@ msgstr "Novo acompanhamento"
 
 #: inc/notificationtargetcommonitilobject.class.php:128
 msgid "Update of a followup"
-msgstr "Actualização de um acompanhamento"
+msgstr "Atualização de um acompanhamento"
 
 #: inc/notificationtargetcommonitilobject.class.php:129
 msgid "Deletion of a followup"
@@ -12438,7 +12480,7 @@ msgstr "ID do fornecedor"
 #: inc/notificationtargetcommonitilobject.class.php:1478
 #: inc/notepad.class.php:272
 msgid "Last updater"
-msgstr "Último a actualizar"
+msgstr "Último a atualizar"
 
 #: inc/notificationtargetcommonitilobject.class.php:1479
 msgid "Assigned to technicians"
@@ -12964,7 +13006,7 @@ msgstr "Não instalado"
 
 #: inc/plugin.class.php:2010 inc/plugin.class.php:2445
 msgid "To update"
-msgstr "Para actualizar"
+msgstr "Para atualizar"
 
 #: inc/plugin.class.php:2013 inc/plugin.class.php:2446
 msgctxt "plugin"
@@ -13005,7 +13047,7 @@ msgstr "Não conforme com CSRF"
 #: inc/plugin.class.php:2341 inc/config.php:227 install/install.php:151
 msgctxt "button"
 msgid "Upgrade"
-msgstr "Actualizar"
+msgstr "Atualizar"
 
 #: inc/plugin.class.php:2360 inc/plugin.class.php:2376
 msgid "Non-existent function"
@@ -13131,7 +13173,7 @@ msgstr "Interface série"
 
 #: inc/appliance_item.class.php:265
 msgid "Add to an appliance"
-msgstr "Adicionar a um aparelho"
+msgstr "Adicionar a um equipamento específico"
 
 #: inc/appliance_item.class.php:375 inc/item_enclosure.class.php:301
 #: inc/devicecamera_item_format.class.php:108
@@ -13149,7 +13191,7 @@ msgstr "É necessário um item"
 
 #: inc/appliance_item.class.php:383
 msgid "An appliance is required"
-msgstr "É necessário um aparelho"
+msgstr "É necessário um equipamento específico"
 
 #: inc/notificationtargetobjectlock.class.php:52
 msgid "Unlock Item Request"
@@ -13435,7 +13477,7 @@ msgstr "Fim de vida"
 
 #: inc/cartridge.class.php:952
 msgid "Update printer counter"
-msgstr "Actualizar contadores da impressora"
+msgstr "Atualizar contadores da impressora"
 
 #: inc/cartridge.class.php:966
 msgid "Used cartridges"
@@ -13670,7 +13712,7 @@ msgstr "Se desejar reabrir um ticket, tem de especificar uma razão"
 
 #: inc/itilfollowup.class.php:1076 inc/tickettask.class.php:237
 msgid "Update all"
-msgstr "Actualizar todos"
+msgstr "Atualizar todos"
 
 #: inc/itilfollowup.class.php:1077
 msgid "Add to all tickets"
@@ -13690,7 +13732,7 @@ msgstr "Adicionar um acompanhamento a tickets de grupos associados"
 
 #: inc/itilfollowup.class.php:1084
 msgid "Update followups (author)"
-msgstr "Actualizar acompanhamentos (autor)"
+msgstr "Atualizar acompanhamentos (autor)"
 
 #: inc/itilfollowup.class.php:1085
 msgid "Add followup (requester)"
@@ -13719,7 +13761,7 @@ msgstr "Monitorizar acções automáticas"
 
 #: inc/notificationtargetcrontask.class.php:93
 msgid "Automatic actions list"
-msgstr ""
+msgstr "Lista de ações automáticas"
 
 #: inc/notificationtargetcrontask.class.php:99
 msgid ""
@@ -13794,7 +13836,7 @@ msgstr "%1$s %2$s (%3$s)"
 #: inc/search.class.php:1963 inc/search.class.php:2612
 #: inc/search.class.php:2632 inc/config.class.php:403
 msgid "Items seen"
-msgstr "Elementos vistos"
+msgstr "Itens vistos"
 
 #: inc/search.class.php:2003 inc/search.class.php:2005
 #: inc/search.class.php:2023 inc/search.class.php:2087
@@ -14244,7 +14286,7 @@ msgstr "Acção recusada"
 
 #: inc/crontask.class.php:302
 msgid "Execution error"
-msgstr ""
+msgstr "Erro de execução"
 
 #: inc/crontask.class.php:308
 msgid "Action completed, partially processed"
@@ -14336,7 +14378,7 @@ msgstr "Executar"
 #: inc/crontask.class.php:953
 #, php-format
 msgid "Error during %s execution. Check in \"%s\" for more details."
-msgstr ""
+msgstr "Erro durante a execução %s. Verifique em \"%s\" para mais detalhes."
 
 #: inc/crontask.class.php:971 inc/crontask.class.php:983
 msgid "Can't start"
@@ -14380,8 +14422,8 @@ msgstr[1] "%s paragens"
 #, php-format
 msgid "%s error"
 msgid_plural "%s errors"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%s erro"
+msgstr[1] "%s erros"
 
 #: inc/crontask.class.php:1158
 msgid "Minimal time"
@@ -14487,7 +14529,7 @@ msgstr[1] ""
 
 #: inc/crontask.class.php:1903
 msgid "Check for new updates"
-msgstr "Verificar novas actualizações"
+msgstr "Verificar novas atualizações"
 
 #: inc/crontask.class.php:1906
 msgid "Clean old logs"
@@ -14534,7 +14576,7 @@ msgid ""
 "the database. Please install the correct GLPI files corresponding to the "
 "version of your database."
 msgstr ""
-"Está a tentar usar o GLPI com ficheiros desactualizados, relativamente à "
+"Está a tentar usar o GLPI com ficheiros desatualizados, relativamente à "
 "versão da base de dados. Por favor instale os ficheiros do GLPI "
 "correspondendo à mesma versão da base de dados."
 
@@ -14622,12 +14664,12 @@ msgstr[1] "%d visualizações"
 
 #: inc/knowbaseitem.class.php:788
 msgid "Add link"
-msgstr "Adicionar link"
+msgstr "Adicionar ligação"
 
 #: inc/knowbaseitem.class.php:794
 #, php-format
 msgid "link with %1$s"
-msgstr "link com %1$s"
+msgstr "ligação com %1$s"
 
 #: inc/knowbaseitem.class.php:804
 msgid "Visible since"
@@ -14671,7 +14713,7 @@ msgstr "Entradas recentes"
 
 #: inc/knowbaseitem.class.php:1700
 msgid "Last updated entries"
-msgstr "Ultimas entradas actualizadas"
+msgstr "Ultimas entradas atualizadas"
 
 #: inc/knowbaseitem.class.php:1703
 msgid "Most popular questions"
@@ -14795,7 +14837,7 @@ msgstr "Para responder por email, escreva abaixo desta linha"
 
 #: inc/notificationtargetticket.class.php:144
 msgid "Update of a ticket"
-msgstr "Actualização de um ticket"
+msgstr "Atualização de um ticket"
 
 #: inc/notificationtargetticket.class.php:145
 msgid "Ticket solved"
@@ -14847,9 +14889,9 @@ msgid "Without a reply, the ticket will be automatically closed after %s day"
 msgid_plural ""
 "Without a reply, the ticket will be automatically closed after %s days"
 msgstr[0] ""
-"Sem uma resposta, o ticket será encerrado automaticamente depois do %s dia"
+"Sem uma resposta, o ticket será encerrado automaticamente depois de %s dia"
 msgstr[1] ""
-"Sem uma resposta, o ticket será encerrado automáticamente depois do %s dias"
+"Sem uma resposta, o ticket será encerrado automaticamente depois de %s dias"
 
 #. TRANS: %s is the user name
 #: inc/notificationtargetticket.class.php:486
@@ -14863,7 +14905,7 @@ msgstr "Um pedido de aprovação foi submetido por %s"
 #: inc/notificationtargetchange.class.php:216
 #, php-format
 msgid "An answer to an approval request was produced by %s"
-msgstr ""
+msgstr "Foi produzida uma resposta por %s para um pedido de aprovação"
 
 #: inc/notificationtargetticket.class.php:609
 msgid "Location name"
@@ -15022,11 +15064,11 @@ msgstr "Alarmes em certificados expirados"
 
 #: inc/notificationtargetcertificate.class.php:55
 msgid "Technician in charge of the certificate"
-msgstr ""
+msgstr "Técnico responsável pelo certificado"
 
 #: inc/notificationtargetcertificate.class.php:59
 msgid "Group in charge of the certificate"
-msgstr ""
+msgstr "Grupo responsável pelo certificado"
 
 #: inc/itiltemplatehiddenfield.class.php:48
 msgid "Hidden field"
@@ -15408,8 +15450,8 @@ msgstr "Escolha o item de item que deve ser desbloqueado"
 #: inc/applianceenvironment.class.php:40
 msgid "Appliance environment"
 msgid_plural "Appliance environments"
-msgstr[0] "Ambiente do aparelho"
-msgstr[1] "Ambientes do aparelho"
+msgstr[0] "Ambiente do equipamento específico"
+msgstr[1] "Ambientes do equipamento específico"
 
 #: inc/ruledictionnarynetworkequipmentmodelcollection.class.php:41
 msgid "Dictionnary of networking equipment models"
@@ -15637,7 +15679,7 @@ msgstr "Tickets atrasados"
 
 #: inc/dashboard/provider.class.php:296
 msgid "Tickets waiting for validation"
-msgstr ""
+msgstr "Tickets a aguardar validação"
 
 #: inc/dashboard/provider.class.php:339
 msgid "Incoming tickets"
@@ -15725,7 +15767,7 @@ msgstr "Áreas múltiplas "
 
 #: inc/dashboard/widget.class.php:151
 msgid "Multiple bars"
-msgstr ""
+msgstr "Barras múltiplas "
 
 #: inc/dashboard/widget.class.php:161
 msgid "Stacked bars"
@@ -15950,7 +15992,7 @@ msgstr "Lista de lembretes"
 
 #: inc/dashboard/grid.class.php:1394
 msgid "Editable markdown card"
-msgstr ""
+msgstr "Quadro editável"
 
 #: inc/dashboard/grid.class.php:1397
 msgid "Toggle edit mode to edit content"
@@ -16360,7 +16402,7 @@ msgstr "Telemetria"
 
 #: inc/telemetry.class.php:252
 msgid "Send telemetry information"
-msgstr ""
+msgstr "Enviar informação de telemetria"
 
 #: inc/telemetry.class.php:335
 msgid "See what would be sent..."
@@ -16837,7 +16879,7 @@ msgstr "Nova alteração"
 
 #: inc/notificationtargetchange.class.php:53
 msgid "Update of a change"
-msgstr "Actualização de alteração"
+msgstr "Atualização de alteração"
 
 #: inc/notificationtargetchange.class.php:54
 msgid "Change solved"
@@ -16942,6 +16984,8 @@ msgstr "Descobrir"
 #, php-format
 msgid "%1$s services website seems not available from your network or offline"
 msgstr ""
+"%1$s serviços do website não estão disponíveis a partir da sua rede ou estão"
+" desligados"
 
 #: inc/marketplace/view.class.php:144
 msgid "Maybe you could setup a proxy"
@@ -16972,12 +17016,12 @@ msgstr "preencha sua chave de registo na configuração."
 #: inc/marketplace/view.class.php:169
 #, php-format
 msgid "Your %1$s subscription has been terminated."
-msgstr ""
+msgstr "A sua subscrição %1$s foi terminada."
 
 #: inc/marketplace/view.class.php:170
 #, php-format
 msgid "Renew it on %1$s."
-msgstr ""
+msgstr "Renove em %1$s."
 
 #: inc/marketplace/view.class.php:343
 #, php-format
@@ -17054,7 +17098,7 @@ msgstr "Limpar"
 
 #: inc/marketplace/view.class.php:670
 msgid "This plugin is not available for your GLPI version."
-msgstr ""
+msgstr "Este plugin não está disponível para a sua versão do GLPI."
 
 #: inc/marketplace/view.class.php:682
 msgid "The plugin has an available update but its directory is not writable."
@@ -17400,7 +17444,7 @@ msgstr "Registado por"
 
 #: inc/glpinetwork.class.php:220
 msgid "Unable to fetch registration information."
-msgstr ""
+msgstr "Não foi possível obter informação de registo."
 
 #: inc/glpinetwork.class.php:233
 msgid "The registration key is invalid."
@@ -17408,7 +17452,7 @@ msgstr "A chave de registo é inválida"
 
 #: inc/glpinetwork.class.php:235
 msgid "The registration key refers to a terminated subscription."
-msgstr ""
+msgstr "A chave de registo refere-se a uma subscrição que já terminou."
 
 #: inc/glpinetwork.class.php:237
 msgid "The registration key is valid."
@@ -17467,7 +17511,7 @@ msgstr[1] "Relações"
 #: inc/devicecamera_item_format.class.php:116
 #: inc/appliance_item_relation.class.php:116
 msgid "An appliance item is required"
-msgstr "É necessário um item aparelho"
+msgstr "É necessário um item equipamento específico"
 
 #: inc/devicecamera_item_format.class.php:212
 #: inc/devicecamera_item_format.class.php:213
@@ -17766,11 +17810,11 @@ msgstr "Leve em consideração o atraso"
 #: inc/planningcsv.class.php:63 inc/planning.class.php:1029
 #: inc/commonitilobject.class.php:4552
 msgid "Actor"
-msgstr "Actor"
+msgstr "Ator"
 
 #: inc/planningcsv.class.php:66
 msgid "Item id"
-msgstr "Id. do item"
+msgstr "Id do item"
 
 #: inc/notificationmailing.class.php:91
 msgid "This is a test email."
@@ -17835,11 +17879,11 @@ msgstr "Palavra-chave expira "
 
 #: inc/notificationtargetuser.class.php:184
 msgid "Account lock date if password is not changed"
-msgstr ""
+msgstr "Data de bloqueio da conta se a palavra-passe não for alterada"
 
 #: inc/notificationtargetuser.class.php:185
 msgid "Password expiration date"
-msgstr ""
+msgstr "Data de expiração da palavra-passe"
 
 #: inc/notificationtargetuser.class.php:186
 msgid "Password has expired"
@@ -17855,7 +17899,7 @@ msgstr "Informamos que a sua palavra-chave expirou."
 
 #: inc/notificationtargetuser.class.php:192
 msgid "To update your password, please follow this link:"
-msgstr ""
+msgstr "Para atualizar a sua palavra-passe, siga por favor este link:"
 
 #: inc/notificationtargetuser.class.php:197
 msgid "Token"
@@ -18006,11 +18050,11 @@ msgstr "Normal"
 
 #: inc/user.class.php:2896
 msgid "Unable to update login. A user already exists."
-msgstr "Impossível actualizar login. O utilizador já existe."
+msgstr "Impossível atualizar login. O utilizador já existe."
 
 #: inc/user.class.php:2904
 msgid "The login is not valid. Unable to update login."
-msgstr "O login não é válido. Não foi possivel actualizar login."
+msgstr "O login não é válido. Não foi possivel atualizar login."
 
 #: inc/user.class.php:2963
 msgid "Dissociate from a group"
@@ -18087,7 +18131,7 @@ msgstr "Importar de outras fontes"
 
 #: inc/user.class.php:4184
 msgid "Update authentification method to"
-msgstr "Actualizar método de autenticação para"
+msgstr "Atualizar método de autenticação para"
 
 #: inc/user.class.php:4638
 msgid "Your password has expired. You must change it to be able to login."
@@ -18168,11 +18212,11 @@ msgstr "Ler método de autenticação e sincronização de utilizador"
 #. synchronization
 #: inc/user.class.php:5253
 msgid "Update auth and sync"
-msgstr "Actualizar autenticação e sincronização"
+msgstr "Atualizar autenticação e sincronização"
 
 #: inc/user.class.php:5254
 msgid "Update method for user authentication and synchronization"
-msgstr "Actualizar método para autenticação e sincronização de utilizador"
+msgstr "Atualizar método para autenticação e sincronização de utilizador"
 
 #: inc/user.class.php:5376
 msgid "Handle users passwords expiration policy"
@@ -18211,7 +18255,7 @@ msgstr "as tabelas %1$s não foram migradas para o motor InnoDB."
 #: inc/central.class.php:334
 #, php-format
 msgid "%1$s columns are not compatible with timezones usage."
-msgstr ""
+msgstr "%1$s colunas não são compatíveis com o uso de fuso horários."
 
 #: inc/central.class.php:343 inc/html.class.php:1737
 msgid "SQL replica: read only"
@@ -18264,7 +18308,7 @@ msgstr "O URL do CalDAV foi copiado para a área de transferência "
 
 #: inc/planning.class.php:987
 msgid "Copy CalDAV URL to clipboard"
-msgstr ""
+msgstr "Copiar o URL do CalDAV para a área de transferência"
 
 #: inc/planning.class.php:1034
 msgid "All users of a group"
@@ -18584,7 +18628,7 @@ msgstr "Nenhuma alteração encontrada."
 
 #: inc/change.class.php:1592
 msgid "Changes on linked items"
-msgstr "Alterações nos items ligados"
+msgstr "Alterações nos itens ligados"
 
 #: inc/item_devices.class.php:80
 #, php-format
@@ -18692,7 +18736,7 @@ msgstr "Falha ao eliminar o ficheiro %s"
 
 #: inc/document.class.php:272 inc/document.class.php:350
 msgid "Invalid link"
-msgstr ""
+msgstr "Link inválido"
 
 #: inc/document.class.php:383
 #, php-format
@@ -19000,7 +19044,7 @@ msgstr "Nova reserva"
 
 #: inc/notificationtargetreservation.class.php:46
 msgid "Update of a reservation"
-msgstr "Actualização de uma reserva"
+msgstr "Atualização de uma reserva"
 
 #: inc/notificationtargetreservation.class.php:47
 msgid "Deletion of a reservation"
@@ -19441,7 +19485,7 @@ msgstr[1] "%1$s%2$s segundos"
 
 #: inc/html.class.php:791
 msgid "Display GLPI debug information"
-msgstr ""
+msgstr "Mostrar informação de depuração do GLPI"
 
 #: inc/html.class.php:1156
 msgid "Progress"
@@ -19595,7 +19639,7 @@ msgstr "Array vazio"
 
 #: inc/html.class.php:4344 inc/html.class.php:4349
 msgid "Display (number of items)"
-msgstr "Ver (número de items)"
+msgstr "Ver (número de itens)"
 
 #: inc/html.class.php:4378
 #, php-format
@@ -19689,11 +19733,11 @@ msgstr "Kanban Global"
 #: inc/html.class.php:7614
 #, php-format
 msgid "You are impersonating %s."
-msgstr ""
+msgstr "Está a personificar %s."
 
 #: inc/html.class.php:7617
 msgid "Stop impersonating"
-msgstr ""
+msgstr "Parar de personificar"
 
 #: inc/notificationtemplate.class.php:136
 msgid "CSS"
@@ -19710,7 +19754,7 @@ msgstr "Porta loop local"
 
 #: inc/commondbtm.class.php:1693
 msgid "Item successfully updated"
-msgstr "Item actualizado com sucesso"
+msgstr "Item atualizado com sucesso"
 
 #: inc/commondbtm.class.php:1929
 msgid "Item successfully purged"
@@ -19742,7 +19786,8 @@ msgstr ""
 
 #: inc/commondbtm.class.php:2771
 msgid "Flag change forbidden. Linked items found."
-msgstr "Não é permitido alterar marca. Foram encontrados elementos ligados."
+msgstr ""
+"Não é possível marcar como alteração. Foram encontrados itens ligados."
 
 #: inc/commondbtm.class.php:2775
 msgid "Change visibility in child entities"
@@ -19756,7 +19801,7 @@ msgstr "Desbloquear Itens"
 #: inc/commondbtm.class.php:3929
 msgctxt "button"
 msgid "Associate to an appliance"
-msgstr "Associar a um aparelho"
+msgstr "Associar a um equipamento específico"
 
 #: inc/commondbtm.class.php:4147
 msgid "At least one field has an incorrect value"
@@ -19770,7 +19815,7 @@ msgstr "Registo impossível para %s"
 #: inc/commondbtm.class.php:4211
 #, php-format
 msgid "Item successfully added but duplicate record on %s"
-msgstr "Elemento adicionado com sucesso mas registo duplicado em %s"
+msgstr "Item adicionado com sucesso mas registo duplicado em %s"
 
 #: inc/commondbtm.class.php:4214
 msgid "Other item exist"
@@ -19812,11 +19857,11 @@ msgstr "Ler notas do item"
 
 #: inc/commondbtm.class.php:5123
 msgid "Update notes"
-msgstr "Actualizar notas"
+msgstr "Atualizar notas"
 
 #: inc/commondbtm.class.php:5124
 msgid "Update the item's notes"
-msgstr "Actualiza as notas do item"
+msgstr "Atualiza as notas do item"
 
 #. TRANS: Default document to files attached to tickets : %d is the ticket id
 #: inc/commondbtm.class.php:5239
@@ -20011,8 +20056,7 @@ msgstr "Sem transferência automática"
 
 #: inc/config.class.php:605
 msgid "Automatically update of the elements related to the computers"
-msgstr ""
-"Actualização automática dos elementos relacionados com os computadores"
+msgstr "Atualização automática dos elementos relacionados com os computadores"
 
 #: inc/config.class.php:618
 msgid "When connecting or updating"
@@ -20528,7 +20572,7 @@ msgstr "Texto de manutenção"
 
 #: inc/config.class.php:1835
 msgid "Proxy configuration for upgrade check"
-msgstr "Configuração Proxy para verificação de actualização"
+msgstr "Configuração Proxy para verificação de atualização"
 
 #: inc/config.class.php:1867
 msgid "Information about system installation and configuration"
@@ -20600,11 +20644,11 @@ msgstr "Atualizar tudo"
 
 #: inc/config.class.php:3371
 msgid "Add/update relation between items"
-msgstr "Adicionar/alterar relação entre os items"
+msgstr "Adicionar/alterar relação entre os itens"
 
 #: inc/config.class.php:3375
 msgid "Delete relation between items"
-msgstr "Eliminar relação entre os items"
+msgstr "Eliminar relação entre os itens"
 
 #: inc/config.class.php:3383 inc/log.class.php:1085
 #: tests/functionnal/Log.php:461
@@ -20717,11 +20761,11 @@ msgstr "Política de expiração da palavra-chave"
 
 #: inc/config.class.php:3674
 msgid "Password expiration delay (in days)"
-msgstr ""
+msgstr "Palavra-passe expira em (dias)"
 
 #: inc/config.class.php:3692
 msgid "Password expiration notice time (in days)"
-msgstr ""
+msgstr "Aviso prévio antes de expiração de palavra-passe (em dias)"
 
 #: inc/config.class.php:3703
 msgid "Notification disabled"
@@ -20729,7 +20773,7 @@ msgstr "Notificação disabilitada"
 
 #: inc/config.class.php:3713
 msgid "Delay before account deactivation (in days)"
-msgstr ""
+msgstr "Palavra-passe desativada em (dias)"
 
 #: inc/config.class.php:3724
 msgid "Do not deactivate"
@@ -20744,8 +20788,8 @@ msgstr[1] "Ligações Projecto/Tarefa de projecto"
 #: inc/itil_project.class.php:88
 msgid "Itil item"
 msgid_plural "Itil items"
-msgstr[0] "Item de Itil"
-msgstr[1] "Items de Itil"
+msgstr[0] "Item de ITIL"
+msgstr[1] "Itens de ITIL"
 
 #: inc/itil_project.class.php:326
 msgid "Add a project"
@@ -21192,11 +21236,11 @@ msgstr "Alertas nos tickets que não tenham sido solucionados desde"
 
 #: inc/entity.class.php:2121
 msgid "Alarms on domains expiries"
-msgstr ""
+msgstr "Alarmes em domínios expirados "
 
 #: inc/entity.class.php:2133
 msgid "Domains closes expiries"
-msgstr ""
+msgstr "Domínios perto de expirar"
 
 #: inc/entity.class.php:2149
 msgid "Domains expired"
@@ -21272,11 +21316,11 @@ msgstr "Ler parametros de helpdesk"
 
 #: inc/entity.class.php:3342
 msgid "Update parameters"
-msgstr "Actualizar parametros"
+msgstr "Atualizar parametros"
 
 #: inc/entity.class.php:3343
 msgid "Update helpdesk parameters"
-msgstr "Actualizar parametros de helpdesk"
+msgstr "Atualizar parametros de helpdesk"
 
 #: inc/entity.class.php:3364
 msgid "Value inherited from a parent entity"
@@ -21332,7 +21376,7 @@ msgstr "O código que representa a categoria do ticket já está sendo usado"
 #: inc/commonitilobject.class.php:1289 inc/commonitilobject.class.php:1299
 #: inc/commonitilobject.class.php:1325
 msgid "Invalid dates. Update cancelled."
-msgstr "Datas inválidas. Actualização cancelada."
+msgstr "Datas inválidas. Atualização cancelada."
 
 #: inc/commonitilobject.class.php:1665
 msgid "You cannot use predefined description verbatim"
@@ -21489,11 +21533,11 @@ msgstr "Tempo para resolver + Progresso"
 
 #: inc/commonitilobject.class.php:3394
 msgid "Time to resolve exceeded"
-msgstr ""
+msgstr "Período para resolução excedido"
 
 #: inc/commonitilobject.class.php:3456
 msgid "Last edit by"
-msgstr "Ultima actualização por"
+msgstr "Ultima atualização por"
 
 #: inc/commonitilobject.class.php:3546
 msgid "Any solution status"
@@ -21624,12 +21668,12 @@ msgstr "%1$s de %2$s por%3$s"
 #: inc/commonitilobject.class.php:7419
 #, php-format
 msgid "File size: %s"
-msgstr ""
+msgstr "Tamanho do ficheiro: %s"
 
 #: inc/commonitilobject.class.php:7420
 #, php-format
 msgid "MIME type: %s"
-msgstr ""
+msgstr "tipo MIME: %s"
 
 #: inc/commonitilobject.class.php:7518
 msgid "Followup promotion source"
@@ -21644,7 +21688,7 @@ msgstr "# %s  Descrição"
 #: inc/commonitilobject.class.php:7612
 #, php-format
 msgid "%1$s will be added in entity %2$s"
-msgstr ""
+msgstr "%1$s será adicionado na entidade %2$s"
 
 #: inc/commonitilobject.class.php:7618
 #, php-format
@@ -21727,7 +21771,7 @@ msgstr "É obrigatório um tipo de item"
 
 #: inc/projecttaskteam.class.php:163
 msgid "An item ID is mandatory"
-msgstr "É obrigatório uma Id. de item"
+msgstr "É obrigatório um ID de item"
 
 #: inc/projecttaskteam.class.php:172
 msgid "A project task is mandatory"
@@ -21870,7 +21914,7 @@ msgstr[1] "Tipos de terceiros"
 #: inc/log.class.php:211
 #, php-format
 msgid "%1$s impersonated by %2$s"
-msgstr ""
+msgstr "%1$s personificado por %2$s"
 
 #: inc/log.class.php:276
 msgid "No historical"
@@ -21895,7 +21939,7 @@ msgstr "Mude %1$s para %2$s"
 
 #: inc/log.class.php:1042 tests/functionnal/Log.php:499
 msgid "Update a field"
-msgstr "Actualizar um campo"
+msgstr "Atualizar um campo"
 
 #: inc/log.class.php:1089 tests/functionnal/Log.php:474
 msgid "Lock the item"
@@ -21959,7 +22003,7 @@ msgstr "Desbloqueia uma ligação com um item"
 
 #: inc/log.class.php:1161 tests/functionnal/Log.php:466
 msgid "Update an item"
-msgstr "Actualizar um item"
+msgstr "Atualizar um item"
 
 #: inc/log.class.php:1165 tests/functionnal/Log.php:467
 msgid "Delete an item"
@@ -22005,7 +22049,7 @@ msgstr[1] "Notas"
 #: inc/notepad.class.php:351
 #, php-format
 msgid "Last update by %1$s on %2$s"
-msgstr "Ultima actualização por %1$s a %2$s"
+msgstr "Ultima atualização por %1$s a %2$s"
 
 #: inc/notepad.class.php:357
 #, php-format
@@ -22015,16 +22059,16 @@ msgstr "Criado por %1$s a %2$s"
 #: inc/appliance.class.php:60
 msgid "Appliance"
 msgid_plural "Appliances"
-msgstr[0] "Aparelho"
-msgstr[1] "Aparelhos"
+msgstr[0] "Equipamento específico"
+msgstr[1] "Equipamentos específicos"
 
 #: inc/appliance.class.php:138
 msgid "Technician in charge of the appliance"
-msgstr "Técnico responsável pelo aparelho"
+msgstr "Técnico responsável pelo equipamento específico"
 
 #: inc/appliance.class.php:154
 msgid "Group in charge of the appliance"
-msgstr "Grupo responsável pelo aparelho"
+msgstr "Grupo responsável pelo equipamento específico"
 
 #: inc/appliance.class.php:315
 msgid "Environment"
@@ -22033,12 +22077,12 @@ msgstr "Ambiente"
 #: inc/appliance.class.php:552
 msgctxt "button"
 msgid "Add to an appliance"
-msgstr "Adicionar a um aparelho"
+msgstr "Adicionar a um equipamento específico"
 
 #: inc/appliance.class.php:553
 msgctxt "button"
 msgid "Remove from an appliance"
-msgstr "Remover de um aparelho"
+msgstr "Remover de um equipamento específico"
 
 #: inc/requesttype.class.php:42
 msgid "Request source"
@@ -22343,7 +22387,7 @@ msgstr "Outra autenticação enviada no pedido HTTP"
 
 #: inc/auth.class.php:1543
 msgid "SSO logout url"
-msgstr ""
+msgstr "SSO logout url"
 
 #: inc/auth.class.php:1549
 msgid "Remove the domain of logins like login@domain"
@@ -22357,7 +22401,7 @@ msgstr[1] "Tarefas do projecto"
 
 #: inc/projecttask.class.php:192
 msgid "Update (actor)"
-msgstr "Actualização (actor)"
+msgstr "Atualização (ator)"
 
 #: inc/projecttask.class.php:419
 msgid "A linked project is mandatory"
@@ -22368,6 +22412,8 @@ msgid ""
 "When automatic computation is active, percentage is computed based on the "
 "average of all child task percent done."
 msgstr ""
+"When automatic computation is active, percentage is computed based on the "
+"average of all child task percent done."
 
 #: inc/projecttask.class.php:1238
 msgctxt "button"
@@ -22478,7 +22524,7 @@ msgstr "Novo projecto"
 
 #: inc/notificationtargetproject.class.php:51
 msgid "Update of a project"
-msgstr "Actualização de um projecto"
+msgstr "Atualização de um projecto"
 
 #: inc/notificationtargetproject.class.php:52
 msgid "Deletion of a project"
@@ -22611,7 +22657,7 @@ msgstr "Eliminar permanentemente mesmo se existirem itens ligados"
 
 #: inc/massiveaction.class.php:581
 msgid "Amend comment"
-msgstr ""
+msgstr "Comentário da amenda"
 
 #: inc/massiveaction.class.php:586
 msgid "Add note"
@@ -22619,11 +22665,11 @@ msgstr "Adicionar nota"
 
 #: inc/massiveaction.class.php:793
 msgid "Select the common field that you want to update"
-msgstr "Escolha o campo comum que deseja actualizar"
+msgstr "Escolha o campo comum que deseja atualizar"
 
 #: inc/massiveaction.class.php:795
 msgid "Select the field that you want to update"
-msgstr "Escolha o campo que deseja actualizar"
+msgstr "Escolha o campo que deseja atualizar"
 
 #: inc/massiveaction.class.php:952
 msgid "How many copies do you want to create ?"
@@ -22635,11 +22681,11 @@ msgid_plural "Are you sure you want to add these items to transfer list?"
 msgstr[0] ""
 "Tem a certeza que quer adicionar este item à lista de transferência? "
 msgstr[1] ""
-"Tem a certeza que quer adicionar estes items à lista de transferência? "
+"Tem a certeza que quer adicionar estes itens à lista de transferência? "
 
 #: inc/massiveaction.class.php:983
 msgid "Amendment to insert"
-msgstr ""
+msgstr "Amenda a inserir"
 
 #: inc/massiveaction.class.php:996
 msgid "New Note"
@@ -22693,7 +22739,7 @@ msgstr[1] "Modelos de memória do dispositivo"
 #: install/update_0723_078.php:44 install/update_084_085.php:46
 #, php-format
 msgid "Update to %s"
-msgstr "Actualizar para %s"
+msgstr "Atualizar para %s"
 
 #: install/update_0905_91.php:69 install/update_91_92.php:112
 #: install/update_91_92.php:130 install/update_91_92.php:170
@@ -22746,16 +22792,15 @@ msgstr "Serviço prestado"
 
 #: install/update.php:142
 msgid "Update successful, your database is up to date"
-msgstr "Actualização efectuada, a sua base de dados encontra-se actualizada"
+msgstr "Atualização efectuada, a sua base de dados encontra-se atualizada"
 
 #: install/update.php:143
 msgid "You must now proceed to updating your database content"
-msgstr ""
-"Deverá agora proseguir com a actualização do conteudo da base de dados"
+msgstr "Deverá agora proseguir com a atualização do conteudo da base de dados"
 
 #: install/update.php:359
 msgid "Locations update"
-msgstr "Localizações actualizadas"
+msgstr "Localizações atualizadas"
 
 #: install/update.php:360
 msgid "The new structure is hierarchical"
@@ -22797,15 +22842,15 @@ msgstr "Esta é a nova hierarquia. Se estiver completa, poderá validá-la."
 
 #: install/update.php:525
 msgid "Missing security key file"
-msgstr ""
+msgstr "Falta ficheiro de chave de segurança"
 
 #: install/update.php:533
 msgid "Ignore warning"
-msgstr ""
+msgstr "Ignorar aviso"
 
 #: install/update.php:575
 msgid "Impossible to accomplish an update by this way!"
-msgstr "Impossível efetuar uma actualização desta forma!!"
+msgstr "Impossível efetuar uma atualização desta forma!!"
 
 #: install/update.php:577
 msgid "Go back to GLPI"
@@ -22814,7 +22859,7 @@ msgstr "Voltar para o GLPI"
 #: install/update.php:582
 #, php-format
 msgid "Caution! You will update the GLPI database named: %s"
-msgstr "Atenção! Vai actualizar a base de dados do GLPI com a denominação: %s"
+msgstr "Atenção! Vai atualizar a base de dados do GLPI com a denominação: %s"
 
 #: install/update.php:588 install/install.php:130 install/install.php:171
 #: install/install.php:182 install/install.php:224 install/install.php:308
@@ -22873,7 +22918,7 @@ msgstr "Redirecionamento automático, caso contrário clique"
 
 #: install/update_94_95/dashboards.php:36
 msgid "Central"
-msgstr ""
+msgstr "Central"
 
 #: install/update_94_95/dashboards.php:342
 msgid "Mini tickets dashboard"
@@ -22893,7 +22938,7 @@ msgstr "Eu li e NÃO ACEITO os termos da licença descrita acima"
 
 #: install/install.php:139
 msgid "Installation or update of GLPI"
-msgstr "Instalação ou actualização do GLPI"
+msgstr "Instalação ou atualização do GLPI"
 
 #: install/install.php:140
 msgid "Choose 'Install' for a completely new installation of GLPI."
@@ -22903,7 +22948,7 @@ msgstr "Escolha 'Instalar' para um nova instalação limpa do GLPI."
 msgid ""
 "Select 'Upgrade' to update your version of GLPI from an earlier version"
 msgstr ""
-"Escolha 'Actualização' para actualizar a sua sua versão do GLPI a partir de "
+"Escolha 'Atualização' para atualizar a sua sua versão do GLPI a partir de "
 "uma versão mais antiga"
 
 #: install/install.php:158
@@ -22950,7 +22995,7 @@ msgstr "Criar uma nova base de dados ou usar uma já existente:"
 
 #: install/install.php:313
 msgid "Please select the database to update:"
-msgstr "Por favor seleccione a base de dados a actualizar:"
+msgstr "Por favor seleccione a base de dados a atualizar:"
 
 #: install/install.php:346
 msgid "Initialization of the database"
@@ -23023,7 +23068,7 @@ msgstr ""
 
 #: install/install.php:615
 msgid "Select your language"
-msgstr ""
+msgstr "Selecione o seu idioma"
 
 #: install/install.php:640
 msgid "Beginning of the installation"
@@ -23088,27 +23133,27 @@ msgstr "Aceder às Perguntas Mais Frequentes"
 
 #: js/common.js:1187
 msgid "just now"
-msgstr ""
+msgstr "agora"
 
 #: js/common.js:1189
 msgid "a minute ago"
-msgstr ""
+msgstr "um minuto atrás"
 
 #: js/common.js:1191
 msgid "an hour ago"
-msgstr ""
+msgstr "uma hora atrás"
 
 #: js/common.js:1193
 msgid "yesterday"
-msgstr ""
+msgstr "ontem"
 
 #: js/common.js:1195
 msgid "a year ago"
-msgstr ""
+msgstr "um ano atrás"
 
 #: js/dashboard.js:338
 msgid "Add a card"
-msgstr ""
+msgstr "Adicionar um quadro"
 
 #: js/dashboard.js:371
 msgid "Add a filter"
@@ -23174,14 +23219,15 @@ msgstr "Editar grupo"
 #: js/impact.js:2291
 msgid "Draw a line between two assets to add an impact relation"
 msgstr ""
+"Desenhe uma linha entre dois ativos para adicionar uma relação de impacto"
 
 #: js/impact.js:2298
 msgid "Click on an element to remove it from the network"
-msgstr ""
+msgstr "Clique num elemento para o remover da rede"
 
 #: js/impact.js:2306
 msgid "Draw a square containing the assets you wish to group"
-msgstr ""
+msgstr "Desenhe um quadrado que contenha os ativos que deseja agrupar"
 
 #: js/impact.js:2438
 msgid "Requests"
@@ -23197,7 +23243,7 @@ msgstr "Alterações"
 
 #: js/impact.js:2477
 msgid "You need to select at least 2 assets to make a group"
-msgstr ""
+msgstr "Necessita selecionar pelo menos 2 ativos para fazer um grupo"
 
 #: js/kanban.js:306
 msgid "Bulk add"
@@ -23226,7 +23272,7 @@ msgstr "Um item por linha"
 
 #: js/kanban.js:1518
 msgid "Add a column from existing status"
-msgstr ""
+msgstr "Adicionar uma coluna do estado existente"
 
 #: js/kanban.js:1522
 msgid "Or add a new status"
@@ -23273,13 +23319,17 @@ msgid ""
 "The resized event is a recurring event. Do you want to change the serie or "
 "instance ?"
 msgstr ""
+"O evento alterado é um evento recorrente. Deseja alterar a série ou o evento"
+" isolado?"
 
 #: js/planning.js:486
 msgid "Recurring event dragged"
-msgstr ""
+msgstr "Evento recorrente arrastado"
 
 #: js/planning.js:504
 msgid ""
 "The dragged event is a recurring event. Do you want to move the serie or "
 "instance ?"
 msgstr ""
+"O evento arrastado é um evento recorrente. Deseja mover a série ou o evento "
+"isolado?"

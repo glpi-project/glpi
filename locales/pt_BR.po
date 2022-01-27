@@ -32,7 +32,6 @@
 # DOMBRE Julien <moyo@indepnet.net>, 2020
 # Luiz Eduardo de Castilho Junior <castilhojr86@hotmail.com>, 2020
 # Hélio Guardabaxo <helio.guardabaxo@gmail.com>, 2020
-# Arthur Ramos Schaefer <arthur.r.schaefer@gmail.com>, 2020
 # Diego Nobre <diego@koruma.com.br>, 2021
 # Rodrigo de Almeida Sottomaior Macedo <rmsolucoeseminformatica@protonmail.com>, 2021
 # Paulo Henrique <atual.paulo@gmail.com>, 2021
@@ -40,6 +39,9 @@
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2021
 # Eduardo Mozart de Oliveira <eduardomozart182@gmail.com>, 2021
 # Felipe FelipeBart10, 2021
+# Arthur Ramos Schaefer <arthur.r.schaefer@gmail.com>, 2021
+# Isaque Silva, 2022
+# Diego Rodrigo <diegorodrigo90@gmail.com>, 2022
 # 
 #, fuzzy
 msgid ""
@@ -48,7 +50,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-10-26 10:07+0200\n"
 "PO-Revision-Date: 2019-04-24 11:58+0000\n"
-"Last-Translator: Felipe FelipeBart10, 2021\n"
+"Last-Translator: Diego Rodrigo <diegorodrigo90@gmail.com>, 2022\n"
 "Language-Team: Portuguese (Brazil) (https://www.transifex.com/glpi/teams/1637/pt_BR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -2966,8 +2968,8 @@ msgstr "Hardwares sob contrato"
 #: inc/notificationtargetcontract.class.php:186 inc/entity.class.php:1951
 msgid "Contract"
 msgid_plural "Contract"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Contrato"
+msgstr[1] "Contratos"
 
 #: front/ldap.group.import.php:71 inc/authldap.class.php:3496
 #: inc/auth.class.php:260 inc/auth.class.php:284
@@ -4907,12 +4909,14 @@ msgstr "E-mail %s não encontrado. Impossível importar."
 #: inc/mailcollector.class.php:727
 #, php-format
 msgid "Message is invalid (%s). Check in \"%s\" for more details"
-msgstr ""
+msgstr "A mensagem (%s) é inválida. Verifique em \"%s\" para mais detalhes"
 
 #: inc/mailcollector.class.php:781
 #, php-format
 msgid "Error during message parsing (%s). Check in \"%s\" for more details"
 msgstr ""
+"Erro durante a análise da mensagem (%s). Verifique em \"%s\" para mais "
+"detalhes"
 
 #: inc/mailcollector.class.php:920
 #, php-format
@@ -9257,6 +9261,8 @@ msgid ""
 "Options --begin-date and --end-date can only be used with --only-create-new "
 "or --only-update-existing option."
 msgstr ""
+"As opções --begin-date e --end-date só podem ser usadas com a opção --only-"
+"create-new ou --only-update-existing."
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:467
 msgid ""
@@ -11091,32 +11097,32 @@ msgstr "Aplicações"
 #, php-format
 msgid "%s year"
 msgid_plural "%s years"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%s ano"
+msgstr[1] "%s anos"
 
 #. TRANS: %s is a number of months
 #: inc/dropdown.class.php:1535
 #, php-format
 msgid "%s month"
 msgid_plural "%s months"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%s mes"
+msgstr[1] "%s meses"
 
 #. TRANS: %s is a number of days
 #: inc/dropdown.class.php:1539
 #, php-format
 msgid "%s day"
 msgid_plural "%s days"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%s dia"
+msgstr[1] "%s dias"
 
 #. TRANS: %s is a number of minutes
 #: inc/dropdown.class.php:1547
 #, php-format
 msgid "%s minute"
 msgid_plural "%s minutes"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%s minuto"
+msgstr[1] "%s minutos"
 
 #. TRANS: %s is a number of seconds
 #: inc/dropdown.class.php:1551 inc/crontask.class.php:1159
@@ -11134,13 +11140,13 @@ msgstr[1] "%s segundos"
 #, php-format
 msgid "%s millisecond"
 msgid_plural "%s milliseconds"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%s milissegundo"
+msgstr[1] "%s milissegundos"
 
 #: inc/dropdown.class.php:1561
 #, php-format
 msgid "%s%%"
-msgstr ""
+msgstr "%%%s"
 
 #. TRANS: %1$d is the number of days, %2$d the number of hours,
 #. %3$s the number of minutes : display 1 day 3h15
@@ -11328,7 +11334,7 @@ msgstr "Relacionar chamados"
 #: inc/ticket.class.php:2535
 msgctxt "button"
 msgid "Link project task"
-msgstr ""
+msgstr "Ligar tarefa do projeto"
 
 #: inc/ticket.class.php:2560
 msgid "Merge followups"
@@ -11381,7 +11387,7 @@ msgstr "Tempo para atendimento + Progresso"
 
 #: inc/ticket.class.php:2683
 msgid "Time to own exceeded"
-msgstr ""
+msgstr "Tempo para adquirir excedido"
 
 #: inc/ticket.class.php:2693 inc/ticket.class.php:2930
 #: inc/ticket.class.php:4493 inc/ticket.class.php:4495
@@ -11395,7 +11401,7 @@ msgstr "Tempo interno para solução + Progresso"
 
 #: inc/ticket.class.php:2714
 msgid "Internal time to resolve exceeded"
-msgstr ""
+msgstr "Tempo interno para resolver excedido"
 
 #: inc/ticket.class.php:2724 inc/ticket.class.php:2916
 #: inc/ticket.class.php:4481 inc/ticket.class.php:4483
@@ -11409,7 +11415,7 @@ msgstr "Tempo interno para atendimento + Progresso"
 
 #: inc/ticket.class.php:2745
 msgid "Internal time to own exceeded"
-msgstr ""
+msgstr "Tempo interno para possuir excedido"
 
 #: inc/ticket.class.php:2756
 msgid "Next escalation level"
@@ -11607,7 +11613,7 @@ msgstr "Seus chamados com resolução rejeitada"
 #: inc/ticket.class.php:5765 inc/profile.class.php:2402
 #: inc/html.class.php:7016
 msgid "Create a ticket"
-msgstr "Cria um chamado"
+msgstr "Criar um chamado"
 
 #: inc/ticket.class.php:5768
 msgid "Ticket followup"
@@ -15699,7 +15705,7 @@ msgstr "Chamados atrasados"
 
 #: inc/dashboard/provider.class.php:296
 msgid "Tickets waiting for validation"
-msgstr ""
+msgstr "Chamados aguardando validação"
 
 #: inc/dashboard/provider.class.php:339
 msgid "Incoming tickets"
@@ -17036,12 +17042,12 @@ msgstr "preencha com sua chave de registro na configuração."
 #: inc/marketplace/view.class.php:169
 #, php-format
 msgid "Your %1$s subscription has been terminated."
-msgstr ""
+msgstr "Sua inscrição %1$s foi encerrada."
 
 #: inc/marketplace/view.class.php:170
 #, php-format
 msgid "Renew it on %1$s."
-msgstr ""
+msgstr "Renove em %1$s."
 
 #: inc/marketplace/view.class.php:343
 #, php-format
@@ -17118,7 +17124,7 @@ msgstr "Limpar"
 
 #: inc/marketplace/view.class.php:670
 msgid "This plugin is not available for your GLPI version."
-msgstr ""
+msgstr "Este plugin não está disponível para sua versão GLPI."
 
 #: inc/marketplace/view.class.php:682
 msgid "The plugin has an available update but its directory is not writable."
@@ -17476,7 +17482,7 @@ msgstr "A chave de registro é inválida."
 
 #: inc/glpinetwork.class.php:235
 msgid "The registration key refers to a terminated subscription."
-msgstr ""
+msgstr "A chave de registro refere-se a uma assinatura encerrada."
 
 #: inc/glpinetwork.class.php:237
 msgid "The registration key is valid."
@@ -21552,7 +21558,7 @@ msgstr "Tempo para solução + Progresso"
 
 #: inc/commonitilobject.class.php:3394
 msgid "Time to resolve exceeded"
-msgstr ""
+msgstr "Tempo para resolver excedido"
 
 #: inc/commonitilobject.class.php:3456
 msgid "Last edit by"

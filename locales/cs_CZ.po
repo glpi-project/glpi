@@ -2978,10 +2978,10 @@ msgstr "Hardware ve smlouvě"
 #: inc/notificationtargetcontract.class.php:186 inc/entity.class.php:1951
 msgid "Contract"
 msgid_plural "Contract"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Smlouva"
+msgstr[1] "Smluv"
+msgstr[2] "Smluv"
+msgstr[3] "Smlouva"
 
 #: front/ldap.group.import.php:71 inc/authldap.class.php:3496
 #: inc/auth.class.php:260 inc/auth.class.php:284
@@ -3504,10 +3504,10 @@ msgstr[3] "Typy počítačů"
 #: inc/monitortype.class.php:42
 msgid "Monitor type"
 msgid_plural "Monitors types"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Typ monitorů"
+msgstr[1] "Typů monitorů"
+msgstr[2] "Typů monitorů"
+msgstr[3] "Typy monitorů"
 
 #: inc/rule.class.php:383 inc/rulecollection.class.php:2047
 #: inc/printertype.class.php:42
@@ -5143,10 +5143,10 @@ msgstr[3] "Pověření"
 #: inc/vlan.class.php:48
 msgid "VLAN"
 msgid_plural "VLANs"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "VLANa"
+msgstr[1] "VLAN"
+msgstr[2] "VLAN"
+msgstr[3] "VLANy"
 
 #: inc/vlan.class.php:55 inc/vlan.class.php:78 inc/vlan.class.php:160
 #: inc/networkport_vlan.class.php:171 inc/ipnetwork_vlan.class.php:166
@@ -8495,10 +8495,10 @@ msgstr[3] "Položka operační systémy"
 #: inc/operatingsystemkernel.class.php:42
 msgid "Kernel"
 msgid_plural "Kernels"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Jádro"
+msgstr[1] "Jader"
+msgstr[2] "Jader"
+msgstr[3] "Jádra"
 
 #: inc/item_operatingsystem.class.php:345
 #: inc/item_operatingsystem.class.php:596
@@ -8725,10 +8725,10 @@ msgstr "Port původu"
 #: inc/config.class.php:1723
 msgid "Memory"
 msgid_plural "Memories"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Paměť"
+msgstr[1] "Paměti"
+msgstr[2] "Paměti"
+msgstr[3] "Paměti"
 
 #: inc/operatingsystemarchitecture.class.php:44
 msgid "Operating system architecture"
@@ -11355,40 +11355,40 @@ msgstr "Jednoúčelové systémy"
 #, php-format
 msgid "%s year"
 msgid_plural "%s years"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "%s rok"
+msgstr[1] "%s let"
+msgstr[2] "%s let"
+msgstr[3] "%s roků"
 
 #. TRANS: %s is a number of months
 #: inc/dropdown.class.php:1535
 #, php-format
 msgid "%s month"
 msgid_plural "%s months"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "%s měsíc"
+msgstr[1] "%s měsíců"
+msgstr[2] "%s měsíců"
+msgstr[3] "%s měsíců"
 
 #. TRANS: %s is a number of days
 #: inc/dropdown.class.php:1539
 #, php-format
 msgid "%s day"
 msgid_plural "%s days"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "%s den"
+msgstr[1] "%s dní"
+msgstr[2] "%s dní"
+msgstr[3] "%s dní"
 
 #. TRANS: %s is a number of minutes
 #: inc/dropdown.class.php:1547
 #, php-format
 msgid "%s minute"
 msgid_plural "%s minutes"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "%s minuta"
+msgstr[1] "%s minut"
+msgstr[2] "%s minut"
+msgstr[3] "%s minut"
 
 #. TRANS: %s is a number of seconds
 #: inc/dropdown.class.php:1551 inc/crontask.class.php:1159
@@ -11408,15 +11408,15 @@ msgstr[3] "%s sekundy"
 #, php-format
 msgid "%s millisecond"
 msgid_plural "%s milliseconds"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "%s milisekunda"
+msgstr[1] "%s milisekund"
+msgstr[2] "%s milisekund"
+msgstr[3] "%s milisekund"
 
 #: inc/dropdown.class.php:1561
 #, php-format
 msgid "%s%%"
-msgstr ""
+msgstr "%s%%"
 
 #. TRANS: %1$d is the number of days, %2$d the number of hours,
 #. %3$s the number of minutes : display 1 day 3h15
@@ -11569,7 +11569,7 @@ msgstr "Neznámý požadavek"
 
 #: inc/ticket.class.php:1559
 msgid "You cannot create a ticket for this user"
-msgstr ""
+msgstr "Nemůžete vytvořit požadavek pro tohoto uživatele"
 
 #: inc/ticket.class.php:1687
 #, php-format
@@ -11610,7 +11610,7 @@ msgstr "Propojit požadavky"
 #: inc/ticket.class.php:2535
 msgctxt "button"
 msgid "Link project task"
-msgstr ""
+msgstr "Propojit projektový úkol"
 
 #: inc/ticket.class.php:2560
 msgid "Merge followups"
@@ -11663,7 +11663,7 @@ msgstr "Lhůta na přidělení + stav"
 
 #: inc/ticket.class.php:2683
 msgid "Time to own exceeded"
-msgstr ""
+msgstr "Čas přidělení byl překročen"
 
 #: inc/ticket.class.php:2693 inc/ticket.class.php:2930
 #: inc/ticket.class.php:4493 inc/ticket.class.php:4495
@@ -11677,7 +11677,7 @@ msgstr "Vnitřní lhůta na vyřešení + postup"
 
 #: inc/ticket.class.php:2714
 msgid "Internal time to resolve exceeded"
-msgstr ""
+msgstr "Interní čas na vyřešení byl překročen"
 
 #: inc/ticket.class.php:2724 inc/ticket.class.php:2916
 #: inc/ticket.class.php:4481 inc/ticket.class.php:4483
@@ -11691,7 +11691,7 @@ msgstr "Vnitřní lhůta na přidělení + postup"
 
 #: inc/ticket.class.php:2745
 msgid "Internal time to own exceeded"
-msgstr ""
+msgstr "Interní čas přidělení byl překročen"
 
 #: inc/ticket.class.php:2756
 msgid "Next escalation level"
@@ -12242,7 +12242,7 @@ msgstr "Připojit článek databáze znalostí"
 
 #: inc/system/requirement/selinux.class.php:45
 msgid "Check SELinux configuration"
-msgstr ""
+msgstr "Kontrola nastavení SELinuxu"
 
 #: inc/system/requirement/selinux.class.php:88
 msgid "For security reasons, SELinux mode should be Enforcing."
@@ -14867,10 +14867,10 @@ msgstr[3] "%s zastavení"
 #, php-format
 msgid "%s error"
 msgid_plural "%s errors"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "%s chyba"
+msgstr[1] "%s chyb"
+msgstr[2] "%s chyb"
+msgstr[3] "%s chyb"
 
 #: inc/crontask.class.php:1158
 msgid "Minimal time"
@@ -16174,7 +16174,7 @@ msgstr "Zpožděné požadavky"
 
 #: inc/dashboard/provider.class.php:296
 msgid "Tickets waiting for validation"
-msgstr ""
+msgstr "Požadavky čekající na kontrolu"
 
 #: inc/dashboard/provider.class.php:339
 msgid "Incoming tickets"
@@ -16455,31 +16455,31 @@ msgstr "Top typů řešení požadavku"
 
 #: inc/dashboard/grid.class.php:1345
 msgid "Top ticket's locations"
-msgstr ""
+msgstr "Top umístění požadavků"
 
 #: inc/dashboard/grid.class.php:1361
 msgid "Top ticket's requesters"
-msgstr ""
+msgstr "Top žadatelů požadavků"
 
 #: inc/dashboard/grid.class.php:1362
 msgid "Top ticket's requester groups"
-msgstr ""
+msgstr "Top skupiny žadatelů požadavků"
 
 #: inc/dashboard/grid.class.php:1363
 msgid "Top ticket's observers"
-msgstr ""
+msgstr "Top pozorovatelů požadavků"
 
 #: inc/dashboard/grid.class.php:1364
 msgid "Top ticket's observer groups"
-msgstr ""
+msgstr "Top skupin pozorovatele požadavků"
 
 #: inc/dashboard/grid.class.php:1365
 msgid "Top ticket's assignees"
-msgstr ""
+msgstr "Top příjemců požadavků"
 
 #: inc/dashboard/grid.class.php:1366
 msgid "Top ticket's assignee groups"
-msgstr ""
+msgstr "Top skupin příjemců požadavků"
 
 #: inc/dashboard/grid.class.php:1386
 msgid "List of reminders"
@@ -17331,10 +17331,10 @@ msgstr "Nenalezen žádný síťový port"
 #: inc/networkport.class.php:1016
 msgid "Port number"
 msgid_plural "Port numbers"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Číslo portu"
+msgstr[1] "Čísel portu"
+msgstr[2] "Čísel portu"
+msgstr[3] "Čísla portu"
 
 #: inc/networkport.class.php:930 inc/networkport.class.php:1034
 msgid "Network port type"
@@ -17493,11 +17493,11 @@ msgstr "Nová verze zásuvného modulu 1%s:1%s"
 
 #: inc/marketplace/view.class.php:103
 msgid "Installed"
-msgstr ""
+msgstr "Instalováno"
 
 #: inc/marketplace/view.class.php:104
 msgid "Discover"
-msgstr ""
+msgstr "Najít"
 
 #: inc/marketplace/view.class.php:142 inc/glpinetwork.class.php:80
 #, php-format
@@ -17510,7 +17510,7 @@ msgstr ""
 
 #: inc/marketplace/view.class.php:146
 msgid "or please check later"
-msgstr ""
+msgstr "nebo prosím zkontrolujte později"
 
 #: inc/marketplace/view.class.php:158
 #, php-format
@@ -17528,7 +17528,7 @@ msgstr ""
 
 #: inc/marketplace/view.class.php:162
 msgid "fill your registration key in setup."
-msgstr ""
+msgstr "vyplňte váš registrační klíč v nastavení."
 
 #: inc/marketplace/view.class.php:169
 #, php-format
@@ -17559,11 +17559,11 @@ msgstr ""
 
 #: inc/marketplace/view.class.php:362
 msgid "Alpha ASC"
-msgstr ""
+msgstr "Vzestupně"
 
 #: inc/marketplace/view.class.php:367
 msgid "Alpha DESC"
-msgstr ""
+msgstr "Sestupně"
 
 #: inc/marketplace/view.class.php:372
 msgid "Most popular"
@@ -17571,7 +17571,7 @@ msgstr "Nejoblíbenější"
 
 #: inc/marketplace/view.class.php:377
 msgid "Last updated"
-msgstr ""
+msgstr "Naposledy aktualizováno"
 
 #: inc/marketplace/view.class.php:382
 msgid "Most recent"
@@ -17595,15 +17595,15 @@ msgstr ""
 
 #: inc/marketplace/view.class.php:493
 msgid "Homepage"
-msgstr ""
+msgstr "Domovská stránka"
 
 #: inc/marketplace/view.class.php:500
 msgid "Get help"
-msgstr ""
+msgstr "Získat pomoc"
 
 #: inc/marketplace/view.class.php:507
 msgid "Readme"
-msgstr ""
+msgstr "Čti mě"
 
 #: inc/marketplace/view.class.php:662
 msgid "Clean"
@@ -17611,7 +17611,7 @@ msgstr "Vyčistit"
 
 #: inc/marketplace/view.class.php:670
 msgid "This plugin is not available for your GLPI version."
-msgstr ""
+msgstr "Tento zásuvný modul není dostupný pro vaší verzi GLPI."
 
 #: inc/marketplace/view.class.php:682
 msgid "The plugin has an available update but its directory is not writable."
@@ -17659,10 +17659,10 @@ msgstr ""
 #, php-format
 msgid "%s plugin"
 msgid_plural "%s plugins"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "%s zásuvný modul"
+msgstr[1] "%s zásuvných modulů"
+msgstr[2] "%s zásuvných modulů"
+msgstr[3] "%s zásuvných modulů"
 
 #: inc/marketplace/view.class.php:988
 msgid "GLPI provides a new marketplace to download and install plugins."
@@ -17678,11 +17678,12 @@ msgstr "Později"
 
 #: inc/marketplace/view.class.php:1013
 msgid "Switch to marketplace"
-msgstr ""
+msgstr "Přejít na obchod"
 
 #: inc/marketplace/notificationtargetcontroller.class.php:91
 msgid "Some updates are available for your installed plugins!"
 msgstr ""
+"Jsou dostupné některé aktualizace pro vaše instalované zásuvné moduly!"
 
 #: inc/marketplace/notificationtargetcontroller.class.php:119
 msgid "Plugin name"
@@ -18033,22 +18034,22 @@ msgstr[3] "Modely akumulátorů"
 msgctxt "appliance"
 msgid "Relation"
 msgid_plural "Relations"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Vztah"
+msgstr[1] "Vztahů"
+msgstr[2] "Vztahů"
+msgstr[3] "Vztahy"
 
 #: inc/devicecamera_item_format.class.php:116
 #: inc/appliance_item_relation.class.php:116
 msgid "An appliance item is required"
-msgstr ""
+msgstr "Položka zařízení je povinná"
 
 #: inc/devicecamera_item_format.class.php:212
 #: inc/devicecamera_item_format.class.php:213
 #: inc/appliance_item_relation.class.php:212
 #: inc/appliance_item_relation.class.php:213
 msgid "New relation"
-msgstr ""
+msgstr "Nový vztah"
 
 #: inc/ruledictionnaryprinter.class.php:52
 #: inc/ruledictionnaryprintercollection.class.php:51
@@ -19284,7 +19285,7 @@ msgstr "Nepodařilo se smazat soubor %s"
 
 #: inc/document.class.php:272 inc/document.class.php:350
 msgid "Invalid link"
-msgstr ""
+msgstr "Chybný odkaz"
 
 #: inc/document.class.php:383
 #, php-format
@@ -20074,7 +20075,7 @@ msgstr[3] "%1$s%2$s sekundy"
 
 #: inc/html.class.php:791
 msgid "Display GLPI debug information"
-msgstr ""
+msgstr "Zobrazit ladící informace GLPI"
 
 #: inc/html.class.php:1156
 msgid "Progress"
@@ -20399,7 +20400,7 @@ msgstr "Odemknout položky"
 #: inc/commondbtm.class.php:3929
 msgctxt "button"
 msgid "Associate to an appliance"
-msgstr ""
+msgstr "Přiřadit k zařízení"
 
 #: inc/commondbtm.class.php:4147
 msgid "At least one field has an incorrect value"
@@ -20482,11 +20483,11 @@ msgstr "Obecné"
 
 #: inc/config.class.php:151
 msgid "Invalid base URL!"
-msgstr ""
+msgstr "Chybná základní URL adresa!"
 
 #: inc/config.class.php:158
 msgid "Invalid API base URL!"
-msgstr ""
+msgstr "Chybná základní API URL adresa!"
 
 #: inc/config.class.php:308
 msgid "Text in the login box (HTML tags supported)"
@@ -22150,7 +22151,7 @@ msgstr "Čas na vyřešení + stav"
 
 #: inc/commonitilobject.class.php:3394
 msgid "Time to resolve exceeded"
-msgstr ""
+msgstr "Čas na vyřešení byl překročen"
 
 #: inc/commonitilobject.class.php:3456
 msgid "Last edit by"
@@ -22307,7 +22308,7 @@ msgstr "popis č. %s"
 #: inc/commonitilobject.class.php:7612
 #, php-format
 msgid "%1$s will be added in entity %2$s"
-msgstr ""
+msgstr "%1$s bude přidáno do entity %2$s"
 
 #: inc/commonitilobject.class.php:7618
 #, php-format
@@ -22717,7 +22718,7 @@ msgstr "Přidat do zařízení"
 #: inc/appliance.class.php:553
 msgctxt "button"
 msgid "Remove from an appliance"
-msgstr ""
+msgstr "Odebrat ze zařízení"
 
 #: inc/requesttype.class.php:42
 msgid "Request source"
@@ -23510,11 +23511,11 @@ msgstr "Toto je nová struktura. Potvrďte, zda je v pořádku."
 
 #: install/update.php:525
 msgid "Missing security key file"
-msgstr ""
+msgstr "Chybí soubor s  bezpečnostním klíčem"
 
 #: install/update.php:533
 msgid "Ignore warning"
-msgstr ""
+msgstr "Ignorovat varování"
 
 #: install/update.php:575
 msgid "Impossible to accomplish an update by this way!"
@@ -23733,7 +23734,7 @@ msgstr ""
 
 #: install/install.php:615
 msgid "Select your language"
-msgstr ""
+msgstr "Vyberte svůj jazyk"
 
 #: install/install.php:640
 msgid "Beginning of the installation"
@@ -23822,7 +23823,7 @@ msgstr "Přidat kartu"
 
 #: js/dashboard.js:371
 msgid "Add a filter"
-msgstr ""
+msgstr "Přidat filtr"
 
 #: js/dashboard.js:420
 msgid "Saved"

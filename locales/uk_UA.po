@@ -8,8 +8,8 @@
 # Olexandr <davdta@yandex.ru>, 2019
 # Микола Якименко <yakimuseg@gmail.com>, 2019
 # DOMBRE Julien <moyo@indepnet.net>, 2020
-# Andriy Smilyanets <smile.andriy@gmail.com>, 2020
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2021
+# Andriy Smilyanets <smile.andriy@gmail.com>, 2022
 # 
 #, fuzzy
 msgid ""
@@ -18,7 +18,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-10-26 10:07+0200\n"
 "PO-Revision-Date: 2019-04-24 11:58+0000\n"
-"Last-Translator: alexandre delaunay <delaunay.alexandre@gmail.com>, 2021\n"
+"Last-Translator: Andriy Smilyanets <smile.andriy@gmail.com>, 2022\n"
 "Language-Team: Ukrainian (Ukraine) (https://www.transifex.com/glpi/teams/1637/uk_UA/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -2968,10 +2968,10 @@ msgstr "Обладнання за договором"
 #: inc/notificationtargetcontract.class.php:186 inc/entity.class.php:1951
 msgid "Contract"
 msgid_plural "Contract"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Договор"
+msgstr[1] "Договори"
+msgstr[2] "Договорів"
+msgstr[3] "Договорів"
 
 #: front/ldap.group.import.php:71 inc/authldap.class.php:3496
 #: inc/auth.class.php:260 inc/auth.class.php:284
@@ -3133,7 +3133,7 @@ msgstr "Оберіть рівень нагальності"
 #: front/helpdesk.php:100 inc/commonitilobject.class.php:2491
 msgctxt "urgency"
 msgid "Very high"
-msgstr "Дуже висока"
+msgstr "Найвища"
 
 #: front/helpdesk.php:101 inc/commonitilobject.class.php:2494
 msgctxt "urgency"
@@ -3153,7 +3153,7 @@ msgstr "Низька"
 #: front/helpdesk.php:104 inc/commonitilobject.class.php:2503
 msgctxt "urgency"
 msgid "Very low"
-msgstr "Дуже низька"
+msgstr "Найнижча"
 
 #: front/helpdesk.php:109
 msgid "Describe your issue"
@@ -4882,6 +4882,8 @@ msgid ""
 "If name is a valid email address, it will be automatically added to "
 "blacklisted senders."
 msgstr ""
+"Якщо ім'я є адресою електронної пошти, то воно буде автоматично додане в "
+"чорний список відправників."
 
 #: inc/mailcollector.class.php:234 inc/mailcollector.class.php:533
 #: inc/notificationtargetmailcollector.class.php:77
@@ -4972,12 +4974,12 @@ msgstr "Адреса %s не знайдена. Імпорт неможливий
 #: inc/mailcollector.class.php:727
 #, php-format
 msgid "Message is invalid (%s). Check in \"%s\" for more details"
-msgstr ""
+msgstr "Повідомлення не правильне (%s). Подробиці тут \"%s\""
 
 #: inc/mailcollector.class.php:781
 #, php-format
 msgid "Error during message parsing (%s). Check in \"%s\" for more details"
-msgstr ""
+msgstr "Під час аналізу повідомлення сталась помилка (%s). Подробиці тут \"%s\""
 
 #: inc/mailcollector.class.php:920
 #, php-format
@@ -5128,10 +5130,10 @@ msgstr[3] "Авторизації"
 #: inc/vlan.class.php:48
 msgid "VLAN"
 msgid_plural "VLANs"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "VLAN"
+msgstr[1] "VLANs"
+msgstr[2] "VLANs"
+msgstr[3] "VLANs"
 
 #: inc/vlan.class.php:55 inc/vlan.class.php:78 inc/vlan.class.php:160
 #: inc/networkport_vlan.class.php:171 inc/ipnetwork_vlan.class.php:166
@@ -5375,7 +5377,7 @@ msgstr "Домени застарілі з"
 #: inc/domain.class.php:673
 #, php-format
 msgid "Domains alerts not send for entity %1$s"
-msgstr ""
+msgstr "Domains alerts не відправлені для підрозділу %1$s"
 
 #: inc/planningexternaleventtemplate.class.php:54
 msgid "External events template"
@@ -5806,10 +5808,10 @@ msgstr[3] "Шаблони рішень"
 #: inc/appliancetype.class.php:40
 msgid "Appliance type"
 msgid_plural "Appliance types"
-msgstr[0] "Тип Appliance"
-msgstr[1] "Типи Appliance"
-msgstr[2] "Типів Appliance"
-msgstr[3] "Типи Appliance"
+msgstr[0] "Тип Системи"
+msgstr[1] "Типи Систем"
+msgstr[2] "Типів Систем"
+msgstr[3] "Типи Систем"
 
 #: inc/blacklist.class.php:216 inc/networkname.class.php:216
 msgid "IP"
@@ -7786,7 +7788,7 @@ msgstr ""
 
 #: inc/session.class.php:392 inc/session.class.php:395
 msgid "tree structure"
-msgstr "дерево структури"
+msgstr "повністю"
 
 #: inc/session.class.php:1321 inc/session.class.php:1324
 msgid "The action you have requested is not allowed."
@@ -7795,12 +7797,12 @@ msgstr "Вказана Вами дія не дозволена"
 #: inc/session.class.php:1523
 #, php-format
 msgid "%1$s starts impersonating user %2$s"
-msgstr ""
+msgstr "%1$s починає виконувати роль користувача %2$s"
 
 #: inc/session.class.php:1553
 #, php-format
 msgid "%1$s stops impersonating user %2$s"
-msgstr ""
+msgstr "%1$s припиняє виконувати роль користувача %2$s"
 
 #: inc/notificationtemplatetranslation.class.php:50
 msgid "Template translation"
@@ -9353,7 +9355,7 @@ msgstr "Перевірка з’єднання з сервером електр�
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:76
 msgid "Synchronize users against LDAP server information"
-msgstr ""
+msgstr "Синхронізувати користувачів з LDAP сервером"
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:82
 msgid "Only create new users"
@@ -9431,7 +9433,7 @@ msgstr "Синхронізація перервана."
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:244
 msgid "Unable to load LDAP server information."
-msgstr ""
+msgstr "Неможливо завантажити інформацію LDAP серверу."
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:249
 #, php-format
@@ -9515,6 +9517,8 @@ msgid ""
 "Options --begin-date and --end-date can only be used with --only-create-new "
 "or --only-update-existing option."
 msgstr ""
+"Опції --begin-date і --end-date можуть використовуватись лише з опціями  "
+"--only-create-new або --only-update-existing."
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:467
 msgid ""
@@ -9994,7 +9998,7 @@ msgstr ""
 
 #: inc/console/migration/appliancesplugintocorecommand.class.php:161
 msgid "Any previous appliance created in core will be lost."
-msgstr "Всі попередні appliance, створені в ядрі, будуть втрачені."
+msgstr "Всі попередні системи, створені в ядрі, будуть втрачені."
 
 #: inc/console/migration/appliancesplugintocorecommand.class.php:209
 #, php-format
@@ -10032,21 +10036,21 @@ msgstr "Міграція таблиці \"%s\"  припинена з повід
 
 #: inc/console/migration/appliancesplugintocorecommand.class.php:381
 msgid "Creating Appliance Items..."
-msgstr "Створення елементів Appliances..."
+msgstr "Створення елементів Систем..."
 
 #: inc/console/migration/appliancesplugintocorecommand.class.php:398
 #, php-format
 msgid "Importing Appliance item \"%d\"..."
-msgstr "Імпорт елементу Appliance \"%d\"..."
+msgstr "Імпорт елементу Система \"%d\"..."
 
 #: inc/console/migration/appliancesplugintocorecommand.class.php:419
 #, php-format
 msgid "Unable to create Appliance item %d."
-msgstr "Не можу створити елемент Appliance %d."
+msgstr "Не можу створити елемент Система %d."
 
 #: inc/console/migration/appliancesplugintocorecommand.class.php:440
 msgid "Creating Appliance Environment..."
-msgstr "Створення оточення Appliance..."
+msgstr "Створення оточення Системи..."
 
 #: inc/console/migration/appliancesplugintocorecommand.class.php:457
 #, php-format
@@ -10057,25 +10061,25 @@ msgstr "Імпорт оточення \"%s\"..."
 #: inc/console/migration/appliancesplugintocorecommand.class.php:612
 #, php-format
 msgid "Unable to create Appliance environment %s (%d)."
-msgstr "Не можу створити оточення Appliance %s (%d)."
+msgstr "Не можу створити оточення Системи %s (%d)."
 
 #: inc/console/migration/appliancesplugintocorecommand.class.php:498
 msgid "Creating Appliances..."
-msgstr "Створення Appliances..."
+msgstr "Створення Систем..."
 
 #: inc/console/migration/appliancesplugintocorecommand.class.php:514
 #, php-format
 msgid "Importing appliance \"%s\"..."
-msgstr "Імпорт appliance \"%s\"..."
+msgstr "Імпорт системи \"%s\"..."
 
 #: inc/console/migration/appliancesplugintocorecommand.class.php:551
 #, php-format
 msgid "Unable to create Appliance %s (%d)."
-msgstr "Не можу створити Appliance %s (%d)."
+msgstr "Не можу створити Систему %s (%d)."
 
 #: inc/console/migration/appliancesplugintocorecommand.class.php:572
 msgid "Creating Appliance types..."
-msgstr "Створення типів Appliance..."
+msgstr "Створення типів Систем..."
 
 #: inc/console/migration/appliancesplugintocorecommand.class.php:589
 #, php-format
@@ -10084,7 +10088,7 @@ msgstr "Імпорт типу \"%s\"..."
 
 #: inc/console/migration/appliancesplugintocorecommand.class.php:633
 msgid "Creating Appliance relations..."
-msgstr "Створення зв'язків Appliance..."
+msgstr "Створення зв'язків Систем..."
 
 #: inc/console/migration/appliancesplugintocorecommand.class.php:665
 #, php-format
@@ -10094,12 +10098,12 @@ msgstr "Імпорт зв'язку \"%s\"..."
 #: inc/console/migration/appliancesplugintocorecommand.class.php:676
 #, php-format
 msgid "Unable to found relation type %s from Appliance Item Relation %d."
-msgstr "Не можу знайти тип зв'язку %s зі зв'язку %d елементу Appliance."
+msgstr "Не можу знайти тип зв'язку %s зі зв'язку %d елементу Система."
 
 #: inc/console/migration/appliancesplugintocorecommand.class.php:703
 #, php-format
 msgid "Unable to create Appliance Item Relation %d."
-msgstr "Не можу створити зв'язок елементу Appliance %d."
+msgstr "Не можу створити зв'язок елементу Система %d."
 
 #: inc/console/migration/buildmissingtimestampscommand.class.php:52
 msgid "Set missing `date_creation` and `date_mod` values using log entries."
@@ -10729,7 +10733,7 @@ msgstr "Обробка плугіну \"%s\"..."
 #: inc/console/plugin/activatecommand.class.php:75
 #, php-format
 msgid "Unable to load plugin \"%s\" information."
-msgstr ""
+msgstr "Не можу завантажити інформацію плугіну \"%s\"."
 
 #: inc/console/plugin/deactivatecommand.class.php:83
 #, php-format
@@ -11319,47 +11323,47 @@ msgstr "Керування живленням"
 
 #: inc/dropdown.class.php:983
 msgid "Appliances"
-msgstr "Appliances"
+msgstr "Системи"
 
 #. TRANS: %s is a number of years
 #: inc/dropdown.class.php:1531
 #, php-format
 msgid "%s year"
 msgid_plural "%s years"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "%s років"
+msgstr[1] "%s років"
+msgstr[2] "%s років"
+msgstr[3] "%s років"
 
 #. TRANS: %s is a number of months
 #: inc/dropdown.class.php:1535
 #, php-format
 msgid "%s month"
 msgid_plural "%s months"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "%s місяців"
+msgstr[1] "%s місяців"
+msgstr[2] "%s місяців"
+msgstr[3] "%s місяців"
 
 #. TRANS: %s is a number of days
 #: inc/dropdown.class.php:1539
 #, php-format
 msgid "%s day"
 msgid_plural "%s days"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "%s днів"
+msgstr[1] "%s днів"
+msgstr[2] "%s днів"
+msgstr[3] "%s днів"
 
 #. TRANS: %s is a number of minutes
 #: inc/dropdown.class.php:1547
 #, php-format
 msgid "%s minute"
 msgid_plural "%s minutes"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "%s хвилин"
+msgstr[1] "%s хвилин"
+msgstr[2] "%s хвилин"
+msgstr[3] "%s хвилин"
 
 #. TRANS: %s is a number of seconds
 #: inc/dropdown.class.php:1551 inc/crontask.class.php:1159
@@ -11379,15 +11383,15 @@ msgstr[3] "%s секунд"
 #, php-format
 msgid "%s millisecond"
 msgid_plural "%s milliseconds"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "%s мілісекунд"
+msgstr[1] "%s мілісекунд"
+msgstr[2] "%s мілісекунд"
+msgstr[3] "%s мілісекунд"
 
 #: inc/dropdown.class.php:1561
 #, php-format
 msgid "%s%%"
-msgstr ""
+msgstr "%s%%"
 
 #. TRANS: %1$d is the number of days, %2$d the number of hours,
 #. %3$s the number of minutes : display 1 day 3h15
@@ -11540,7 +11544,7 @@ msgstr "Невідома Заявка"
 
 #: inc/ticket.class.php:1559
 msgid "You cannot create a ticket for this user"
-msgstr ""
+msgstr "Ви не можете створити заявку для цього користувача"
 
 #: inc/ticket.class.php:1687
 #, php-format
@@ -11581,7 +11585,7 @@ msgstr "Зв’язати Заявки"
 #: inc/ticket.class.php:2535
 msgctxt "button"
 msgid "Link project task"
-msgstr ""
+msgstr "Зв'язати завдання проекту"
 
 #: inc/ticket.class.php:2560
 msgid "Merge followups"
@@ -11634,7 +11638,7 @@ msgstr "Час для володіння + Поступ виконання"
 
 #: inc/ticket.class.php:2683
 msgid "Time to own exceeded"
-msgstr ""
+msgstr "Перевищення часу володіння"
 
 #: inc/ticket.class.php:2693 inc/ticket.class.php:2930
 #: inc/ticket.class.php:4493 inc/ticket.class.php:4495
@@ -11648,7 +11652,7 @@ msgstr "Внутрішній час для вирішення + Поступ в�
 
 #: inc/ticket.class.php:2714
 msgid "Internal time to resolve exceeded"
-msgstr ""
+msgstr "Перевищено внутрішній час вирішення"
 
 #: inc/ticket.class.php:2724 inc/ticket.class.php:2916
 #: inc/ticket.class.php:4481 inc/ticket.class.php:4483
@@ -11662,7 +11666,7 @@ msgstr "Внутрішній час для володіння + Поступ в�
 
 #: inc/ticket.class.php:2745
 msgid "Internal time to own exceeded"
-msgstr ""
+msgstr "Перевищено внутрішній час володіння"
 
 #: inc/ticket.class.php:2756
 msgid "Next escalation level"
@@ -12400,7 +12404,7 @@ msgstr "Параметр \"session.use_trans_sid\" має бути вимкне�
 
 #: inc/system/requirement/sessionsconfiguration.class.php:71
 msgid "See .htaccess file in the GLPI root for more information."
-msgstr ""
+msgstr "Дивись .htaccess файл в корені GLPI для додаткової інформації."
 
 #: inc/system/requirement/sessionsconfiguration.class.php:77
 msgid "Sessions support is available - Perfect!"
@@ -13509,7 +13513,7 @@ msgstr "Послідовний інтерфейс"
 
 #: inc/appliance_item.class.php:265
 msgid "Add to an appliance"
-msgstr "Додати в appliance"
+msgstr "Додати в систему"
 
 #: inc/appliance_item.class.php:375 inc/item_enclosure.class.php:301
 #: inc/devicecamera_item_format.class.php:108
@@ -13527,7 +13531,7 @@ msgstr "Необхідно вказати елемент"
 
 #: inc/appliance_item.class.php:383
 msgid "An appliance is required"
-msgstr "Потрібен appliance"
+msgstr "Потрібна система"
 
 #: inc/notificationtargetobjectlock.class.php:52
 msgid "Unlock Item Request"
@@ -14140,7 +14144,7 @@ msgstr "Моніторинг автоматичних задач"
 
 #: inc/notificationtargetcrontask.class.php:93
 msgid "Automatic actions list"
-msgstr ""
+msgstr "Список автоматичних дій"
 
 #: inc/notificationtargetcrontask.class.php:99
 msgid ""
@@ -14696,7 +14700,7 @@ msgstr "Дія припинена"
 
 #: inc/crontask.class.php:302
 msgid "Execution error"
-msgstr ""
+msgstr "Помилка виконання"
 
 #: inc/crontask.class.php:308
 msgid "Action completed, partially processed"
@@ -14788,7 +14792,7 @@ msgstr "Запустити"
 #: inc/crontask.class.php:953
 #, php-format
 msgid "Error during %s execution. Check in \"%s\" for more details."
-msgstr ""
+msgstr "Протягом виконання %s сталась помилка. Дивіться подробиці тут \"%s\"."
 
 #: inc/crontask.class.php:971 inc/crontask.class.php:983
 msgid "Can't start"
@@ -14836,10 +14840,10 @@ msgstr[3] "%s зупинок"
 #, php-format
 msgid "%s error"
 msgid_plural "%s errors"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "%s помилок"
+msgstr[1] "%s помилок"
+msgstr[2] "%s помилок"
+msgstr[3] "%s помилок"
 
 #: inc/crontask.class.php:1158
 msgid "Minimal time"
@@ -15339,7 +15343,7 @@ msgstr "Запит підтвердження направив %s"
 #: inc/notificationtargetchange.class.php:216
 #, php-format
 msgid "An answer to an approval request was produced by %s"
-msgstr ""
+msgstr "На запит схвалення відповів %s"
 
 #: inc/notificationtargetticket.class.php:609
 msgid "Location name"
@@ -15502,11 +15506,11 @@ msgstr "Попередження про закінчення сертифіка�
 
 #: inc/notificationtargetcertificate.class.php:55
 msgid "Technician in charge of the certificate"
-msgstr ""
+msgstr "Інженер, відповідальний за сертифікат"
 
 #: inc/notificationtargetcertificate.class.php:59
 msgid "Group in charge of the certificate"
-msgstr ""
+msgstr "Група, відповідальна за сертифікат"
 
 #: inc/itiltemplatehiddenfield.class.php:48
 msgid "Hidden field"
@@ -15911,7 +15915,7 @@ msgid_plural "Appliance environments"
 msgstr[0] "Оточення Appliance"
 msgstr[1] "Оточення Appliance"
 msgstr[2] "Оточень Appliance"
-msgstr[3] "Оточення Appliance"
+msgstr[3] "Оточення Системи"
 
 #: inc/ruledictionnarynetworkequipmentmodelcollection.class.php:41
 msgid "Dictionnary of networking equipment models"
@@ -16143,7 +16147,7 @@ msgstr "Останні заявки"
 
 #: inc/dashboard/provider.class.php:296
 msgid "Tickets waiting for validation"
-msgstr ""
+msgstr "Заявки, які очікують затвердження"
 
 #: inc/dashboard/provider.class.php:339
 msgid "Incoming tickets"
@@ -16171,7 +16175,7 @@ msgstr "Закриті заявки"
 
 #: inc/dashboard/provider.class.php:531
 msgid "without"
-msgstr "без"
+msgstr "не вказано"
 
 #: inc/dashboard/provider.class.php:1177 inc/commonitilobject.class.php:3617
 msgid "Waiting time"
@@ -16379,7 +16383,7 @@ msgstr "Кількість %s"
 #: inc/dashboard/grid.class.php:1211
 #, php-format
 msgid "%s by %s"
-msgstr "%s через %s"
+msgstr "%s по %s"
 
 #: inc/dashboard/grid.class.php:1234
 msgid "New tickets"
@@ -16876,7 +16880,7 @@ msgstr "Телеметрія"
 
 #: inc/telemetry.class.php:252
 msgid "Send telemetry information"
-msgstr ""
+msgstr "Надіслати телеметричну інформацію"
 
 #: inc/telemetry.class.php:335
 msgid "See what would be sent..."
@@ -17248,10 +17252,10 @@ msgstr "стовпчик: %1$s, рядок: %2$s"
 #: inc/phonepowersupply.class.php:44
 msgid "Phone power supply type"
 msgid_plural "Phone power supply types"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Тип телефонної зарядки"
+msgstr[1] "Типи телефонної зарядки"
+msgstr[2] "Типів телефонної зарядки"
+msgstr[3] "Типи телефонної зарядки"
 
 #: inc/changetask.class.php:43
 msgid "Change task"
@@ -17501,12 +17505,12 @@ msgstr "заповніть ваш ключ реєстрації в налашт�
 #: inc/marketplace/view.class.php:169
 #, php-format
 msgid "Your %1$s subscription has been terminated."
-msgstr ""
+msgstr "Ваша підписка %1$s припинена."
 
 #: inc/marketplace/view.class.php:170
 #, php-format
 msgid "Renew it on %1$s."
-msgstr ""
+msgstr "Оновіть її на %1$s."
 
 #: inc/marketplace/view.class.php:343
 #, php-format
@@ -17582,7 +17586,7 @@ msgstr "Очистити"
 
 #: inc/marketplace/view.class.php:670
 msgid "This plugin is not available for your GLPI version."
-msgstr ""
+msgstr "Цей плугін не доступний для вашої версії GLPI."
 
 #: inc/marketplace/view.class.php:682
 msgid "The plugin has an available update but its directory is not writable."
@@ -17942,7 +17946,7 @@ msgstr "Зареєстровано"
 
 #: inc/glpinetwork.class.php:220
 msgid "Unable to fetch registration information."
-msgstr ""
+msgstr "Не можу отримати інформацію реєстрації."
 
 #: inc/glpinetwork.class.php:233
 msgid "The registration key is invalid."
@@ -17950,7 +17954,7 @@ msgstr "Ключ реєстрації не дійсний."
 
 #: inc/glpinetwork.class.php:235
 msgid "The registration key refers to a terminated subscription."
-msgstr ""
+msgstr "Ключ реєстрації посилається на припинену підписку."
 
 #: inc/glpinetwork.class.php:237
 msgid "The registration key is valid."
@@ -18015,7 +18019,7 @@ msgstr[3] "Зв'язки"
 #: inc/devicecamera_item_format.class.php:116
 #: inc/appliance_item_relation.class.php:116
 msgid "An appliance item is required"
-msgstr "Потрібен елемент appliance"
+msgstr "Потрібен елемент система"
 
 #: inc/devicecamera_item_format.class.php:212
 #: inc/devicecamera_item_format.class.php:213
@@ -19258,7 +19262,7 @@ msgstr "Не вдалося видалити файл %s"
 
 #: inc/document.class.php:272 inc/document.class.php:350
 msgid "Invalid link"
-msgstr ""
+msgstr "Невірне посилання"
 
 #: inc/document.class.php:383
 #, php-format
@@ -20043,7 +20047,7 @@ msgstr[3] "%1$s%2$s секунд"
 
 #: inc/html.class.php:791
 msgid "Display GLPI debug information"
-msgstr ""
+msgstr "Показувати налагоджувальну інформацію GLPI"
 
 #: inc/html.class.php:1156
 msgid "Progress"
@@ -20368,7 +20372,7 @@ msgstr "Розблокувати елементи"
 #: inc/commondbtm.class.php:3929
 msgctxt "button"
 msgid "Associate to an appliance"
-msgstr "Пов'язати з appliance"
+msgstr "Пов'язати з системою"
 
 #: inc/commondbtm.class.php:4147
 msgid "At least one field has an incorrect value"
@@ -21101,7 +21105,7 @@ msgstr "1 - Критичний (тільки помилки входу)"
 
 #: inc/config.class.php:1795
 msgid "2- Severe (not used)"
-msgstr "2 - Дуже важливий (не використовується)"
+msgstr "2 - Найважливіший (не використовується)"
 
 #: inc/config.class.php:1796
 msgid "3- Important (successful logins)"
@@ -21906,7 +21910,7 @@ msgstr "Оновити параметри Служби підтримки"
 
 #: inc/entity.class.php:3364
 msgid "Value inherited from a parent entity"
-msgstr ""
+msgstr "Значення успадковане з батьківського об'єкту"
 
 #: inc/itilcategory.class.php:73 inc/itilcategory.class.php:212
 msgid "Visible in the simplified interface"
@@ -21974,7 +21978,7 @@ msgstr "Найвищий"
 #: inc/commonitilobject.class.php:2378
 msgctxt "priority"
 msgid "Very high"
-msgstr "Дуже високий"
+msgstr "Найвищий"
 
 #: inc/commonitilobject.class.php:2381
 msgctxt "priority"
@@ -21994,7 +21998,7 @@ msgstr "Низький"
 #: inc/commonitilobject.class.php:2390
 msgctxt "priority"
 msgid "Very low"
-msgstr "Дуже низький"
+msgstr "Найнижчий"
 
 #: inc/commonitilobject.class.php:2394
 msgctxt "priority"
@@ -22004,7 +22008,7 @@ msgstr "Всі"
 #: inc/commonitilobject.class.php:2396
 msgctxt "priority"
 msgid "At least very low"
-msgstr "Принаймі дуже низька"
+msgstr "Принаймі найнижчий"
 
 #: inc/commonitilobject.class.php:2398
 msgctxt "priority"
@@ -22024,7 +22028,7 @@ msgstr "Принаймі висока"
 #: inc/commonitilobject.class.php:2404
 msgctxt "priority"
 msgid "At least very high"
-msgstr "Принаймі дуже висока"
+msgstr "Принаймі найвищий"
 
 #: inc/commonitilobject.class.php:2507
 msgctxt "urgency"
@@ -22034,7 +22038,7 @@ msgstr "Всі"
 #: inc/commonitilobject.class.php:2509
 msgctxt "urgency"
 msgid "At least very low"
-msgstr "Принаймі дуже низька"
+msgstr "Принаймі найнижча"
 
 #: inc/commonitilobject.class.php:2511
 msgctxt "urgency"
@@ -22054,12 +22058,12 @@ msgstr "Принаймі висока"
 #: inc/commonitilobject.class.php:2517
 msgctxt "urgency"
 msgid "At least very high"
-msgstr "Принаймі дуже висока"
+msgstr "Принаймі найвища"
 
 #: inc/commonitilobject.class.php:2604
 msgctxt "impact"
 msgid "Very high"
-msgstr "Дуже високий"
+msgstr "Найвищий"
 
 #: inc/commonitilobject.class.php:2607
 msgctxt "impact"
@@ -22079,7 +22083,7 @@ msgstr "Низький"
 #: inc/commonitilobject.class.php:2616
 msgctxt "impact"
 msgid "Very low"
-msgstr "Дуже низький"
+msgstr "Найнижчий"
 
 #: inc/commonitilobject.class.php:2620
 msgctxt "impact"
@@ -22089,7 +22093,7 @@ msgstr "Всі"
 #: inc/commonitilobject.class.php:2622
 msgctxt "impact"
 msgid "At least very low"
-msgstr "Принаймі дуже низька"
+msgstr "Принаймі найнижчий"
 
 #: inc/commonitilobject.class.php:2624
 msgctxt "impact"
@@ -22109,7 +22113,7 @@ msgstr "Принаймі висока"
 #: inc/commonitilobject.class.php:2630
 msgctxt "impact"
 msgid "At least very high"
-msgstr "Принаймі дуже висока"
+msgstr "Принаймі найвищий"
 
 #: inc/commonitilobject.class.php:3384
 msgid "Time to resolve + Progress"
@@ -22117,7 +22121,7 @@ msgstr "Час для вирішення + Поступ виконання"
 
 #: inc/commonitilobject.class.php:3394
 msgid "Time to resolve exceeded"
-msgstr ""
+msgstr "Перевищення часу для вирішення"
 
 #: inc/commonitilobject.class.php:3456
 msgid "Last edit by"
@@ -22254,12 +22258,12 @@ msgstr "%1$s on %2$s by %3$s"
 #: inc/commonitilobject.class.php:7419
 #, php-format
 msgid "File size: %s"
-msgstr ""
+msgstr "Розмір файлу: %s"
 
 #: inc/commonitilobject.class.php:7420
 #, php-format
 msgid "MIME type: %s"
-msgstr ""
+msgstr "Тип MIME: %s"
 
 #: inc/commonitilobject.class.php:7518
 msgid "Followup promotion source"
@@ -22274,7 +22278,7 @@ msgstr "# опис %s"
 #: inc/commonitilobject.class.php:7612
 #, php-format
 msgid "%1$s will be added in entity %2$s"
-msgstr ""
+msgstr "%1$s буде додано до %2$s"
 
 #: inc/commonitilobject.class.php:7618
 #, php-format
@@ -22659,18 +22663,18 @@ msgstr "Створено %1$s %2$s"
 #: inc/appliance.class.php:60
 msgid "Appliance"
 msgid_plural "Appliances"
-msgstr[0] "Appliance"
-msgstr[1] "Appliances"
-msgstr[2] "Appliances"
-msgstr[3] "Appliances"
+msgstr[0] "Система"
+msgstr[1] "Системи"
+msgstr[2] "Систем"
+msgstr[3] "Системи"
 
 #: inc/appliance.class.php:138
 msgid "Technician in charge of the appliance"
-msgstr "Інженер, відповідальний за appliance"
+msgstr "Інженер, відповідальний за систему"
 
 #: inc/appliance.class.php:154
 msgid "Group in charge of the appliance"
-msgstr "Група, відповідальна за appliance"
+msgstr "Група, відповідальна за систему"
 
 #: inc/appliance.class.php:315
 msgid "Environment"
@@ -22679,12 +22683,12 @@ msgstr "Оточення"
 #: inc/appliance.class.php:552
 msgctxt "button"
 msgid "Add to an appliance"
-msgstr "Додати в appliance"
+msgstr "Додати в систему"
 
 #: inc/appliance.class.php:553
 msgctxt "button"
 msgid "Remove from an appliance"
-msgstr "Видалити з appliance"
+msgstr "Видалити з системи"
 
 #: inc/requesttype.class.php:42
 msgid "Request source"

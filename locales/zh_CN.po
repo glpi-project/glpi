@@ -15,8 +15,8 @@
 # Yinian Chin <yinian1992@live.com>, 2020
 # 上官飞鸿 <jackadam@sina.com>, 2021
 # 南 孔, 2021
-# liAnGjiA <liangjia@qq.com>, 2021
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2021
+# liAnGjiA <liangjia@qq.com>, 2021
 # 
 #, fuzzy
 msgid ""
@@ -25,7 +25,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-10-26 10:07+0200\n"
 "PO-Revision-Date: 2019-04-24 11:58+0000\n"
-"Last-Translator: alexandre delaunay <delaunay.alexandre@gmail.com>, 2021\n"
+"Last-Translator: liAnGjiA <liangjia@qq.com>, 2021\n"
 "Language-Team: Chinese (China) (https://www.transifex.com/glpi/teams/1637/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -53,7 +53,7 @@ msgstr "没有限制"
 #: inc/commontreedropdown.class.php:741 inc/commonitilobject.class.php:7625
 #: inc/appliance.class.php:364 inc/projecttask.class.php:1124
 msgid "Child entities"
-msgstr "从属实体"
+msgstr "从属组织"
 
 #: ajax/timeline.php:131 ajax/viewsubitem.php:54 inc/html.class.php:570
 #: inc/html.class.php:573 inc/html.class.php:576 inc/html.class.php:952
@@ -862,7 +862,7 @@ msgstr "克隆"
 
 #: ajax/dcroom_size.php:61 inc/rack.class.php:257
 msgid "No room found or selected"
-msgstr "没空间或选择"
+msgstr "未选择或未找到房间"
 
 #: ajax/ticketsatisfaction.php:58 inc/entity.class.php:1128
 msgid "Create survey after"
@@ -2753,7 +2753,7 @@ msgstr "特征"
 #: inc/commonitilobject.class.php:4769 inc/group.class.php:250
 #: inc/group.class.php:450 inc/log.class.php:601
 msgid "Assigned to"
-msgstr "分配给"
+msgstr "分派给"
 
 #: front/stat.tracking.php:102
 msgid "Technician as assigned"
@@ -2918,7 +2918,7 @@ msgstr "合约内的硬件"
 #: inc/notificationtargetcontract.class.php:186 inc/entity.class.php:1951
 msgid "Contract"
 msgid_plural "Contract"
-msgstr[0] ""
+msgstr[0] "合同"
 
 #: front/ldap.group.import.php:71 inc/authldap.class.php:3496
 #: inc/auth.class.php:260 inc/auth.class.php:284
@@ -3244,7 +3244,7 @@ msgstr "您拥有的自动操作的数量超过每分钟允许的运行量。请
 #: front/profile_user.form.php:47
 #, php-format
 msgid "%s adds a user to an entity"
-msgstr "%s 添加用户到实体中"
+msgstr "%s 添加用户到组织中"
 
 #. TRANS: %s is the user login
 #: front/reservation.form.php:67
@@ -4541,7 +4541,7 @@ msgstr "添加结案时间"
 #: inc/ruleimportentity.class.php:46
 #: inc/ruleimportentitycollection.class.php:61
 msgid "Rules for assigning an item to an entity"
-msgstr "分配项目到实体的规则"
+msgstr "分配项目到组织的规则"
 
 #: inc/ruleimportentity.class.php:106 inc/event.class.php:274
 #: inc/event.class.php:329
@@ -4815,7 +4815,7 @@ msgstr ""
 msgid ""
 "Number of messages: available=%1$d, already imported=%2$d, retrieved=%3$d, "
 "refused=%4$d, errors=%5$d, blacklisted=%6$d"
-msgstr ""
+msgstr "消息数: 有效=%1$d, 已经导入=%2$d, 检索=%3$d, 拒绝=%4$d, 错误=%5$d, 黑名单=%6$d"
 
 #: inc/mailcollector.class.php:935
 msgid "Could not connect to mailgate server"
@@ -4951,7 +4951,7 @@ msgstr[0] "授权"
 #: inc/vlan.class.php:48
 msgid "VLAN"
 msgid_plural "VLANs"
-msgstr[0] ""
+msgstr[0] "VLANs"
 
 #: inc/vlan.class.php:55 inc/vlan.class.php:78 inc/vlan.class.php:160
 #: inc/networkport_vlan.class.php:171 inc/ipnetwork_vlan.class.php:166
@@ -5042,7 +5042,7 @@ msgstr "父级业务"
 
 #: inc/ruleasset.class.php:181 inc/ruleticket.class.php:795
 msgid "Business rules for ticket (entity parent)"
-msgstr "工单业务规则(父级实体)"
+msgstr "工单业务规则(父级组织)"
 
 #: inc/contractcost.class.php:48 inc/contractcost.class.php:158
 #: inc/contractcost.class.php:281 inc/contractcost.class.php:368
@@ -5150,7 +5150,7 @@ msgstr "负责群组"
 
 #: inc/domain.class.php:200
 msgid "Entity-ID"
-msgstr "实体编号"
+msgstr "组织-ID"
 
 #: inc/domain.class.php:332 inc/certificate.class.php:524
 msgid "Empty for infinite"
@@ -5187,19 +5187,19 @@ msgstr ""
 #: inc/planningexternaleventtemplate.class.php:54
 msgid "External events template"
 msgid_plural "External events templates"
-msgstr[0] ""
+msgstr[0] "外部事件模板"
 
 #: inc/planningexternaleventtemplate.class.php:71
 #: inc/planningexternalevent.class.php:289
 #: inc/features/planningevent.class.php:931
 msgid "Background event"
-msgstr ""
+msgstr "后台事件"
 
 #: inc/planningexternaleventtemplate.class.php:79
 #: inc/planningexternalevent.class.php:313
 #: inc/features/planningevent.class.php:937
 msgid "Repeat"
-msgstr "中继器"
+msgstr "重复"
 
 #: inc/ola.class.php:51 inc/ticket.class.php:2908 inc/ticket.class.php:2916
 #: inc/ticket.class.php:2930 inc/ticket.class.php:2943
@@ -5511,7 +5511,7 @@ msgstr "地址"
 #: inc/location.class.php:261 inc/location.class.php:318
 #: inc/entity.class.php:572 inc/entity.class.php:1428
 msgid "Postal code"
-msgstr "邮政编码"
+msgstr "邮编"
 
 #: inc/contact.class.php:210 inc/contact.class.php:376
 #: inc/notificationtargetcommonitilobject.class.php:1472
@@ -5569,7 +5569,7 @@ msgstr[0] "解决方案的模版"
 #: inc/appliancetype.class.php:40
 msgid "Appliance type"
 msgid_plural "Appliance types"
-msgstr[0] "设备类型"
+msgstr[0] "电器类型"
 
 #: inc/blacklist.class.php:216 inc/networkname.class.php:216
 msgid "IP"
@@ -5673,7 +5673,7 @@ msgstr "安装日期"
 #: inc/entity.class.php:3305 inc/entity.class.php:3310
 #: inc/entity.class.php:3328
 msgid "Inheritance of the parent entity"
-msgstr "继承父系实体"
+msgstr "继承父系组织"
 
 #: inc/alert.class.php:110 inc/alert.class.php:177
 #: inc/levelagreement.class.php:186 inc/contract.class.php:1642
@@ -6129,12 +6129,12 @@ msgstr "重量"
 #: inc/commondcmodeldropdown.class.php:78
 #: inc/commondcmodeldropdown.class.php:175
 msgid "Required units"
-msgstr "所需单位"
+msgstr "U数"
 
 #: inc/commondcmodeldropdown.class.php:86
 #: inc/commondcmodeldropdown.class.php:185 inc/rack.class.php:302
 msgid "Depth"
-msgstr "深度"
+msgstr "设备的长度"
 
 #: inc/commondcmodeldropdown.class.php:94
 #: inc/commondcmodeldropdown.class.php:194
@@ -6286,12 +6286,12 @@ msgstr "拒收原因"
 
 #: inc/rulecollection.class.php:1181
 msgid "Entity not found"
-msgstr "实体未找到"
+msgstr "未找到组织"
 
 #: inc/rulecollection.class.php:1185 inc/authldap.class.php:3284
 #: inc/html.class.php:3616 inc/entity.class.php:1187
 msgid "Select the desired entity"
-msgstr "选择所需的实体"
+msgstr "选择所需的组织"
 
 #: inc/rulecollection.class.php:1198
 msgid "Criteria refused"
@@ -6327,7 +6327,7 @@ msgstr "本地规则: %s"
 
 #: inc/rulecollection.class.php:1934
 msgid "Rules applicable in the sub-entities"
-msgstr "规则适用于子实体"
+msgstr "规则适用于子组织"
 
 #: inc/rulecollection.class.php:2004
 msgid "Global dictionary"
@@ -6423,7 +6423,7 @@ msgstr "预览"
 
 #: inc/itiltemplate.class.php:549 inc/commondropdown.class.php:878
 msgid "Merge and assign to current entity"
-msgstr "合并并分配给当前实体"
+msgstr "合并然后分配给当前组织"
 
 #: inc/itiltemplate.class.php:561 inc/ticket.class.php:2593
 #: inc/commondropdown.class.php:895
@@ -6504,15 +6504,15 @@ msgstr "具有单一配置文件的用户"
 
 #: inc/rulemailcollector.class.php:183
 msgid "Entity from domain"
-msgstr "来自域的实体"
+msgstr "来自域的组织"
 
 #: inc/rulemailcollector.class.php:187 inc/ruleright.class.php:324
 msgid "Entity from TAG"
-msgstr "来自TAG的实体"
+msgstr "来自TAG的组织"
 
 #: inc/rulemailcollector.class.php:191
 msgid "Entity based on user's profile"
-msgstr "基于用户配置文件的实体"
+msgstr "基于用户配置文件的组织"
 
 #: inc/rulemailcollector.class.php:195 inc/rulemailcollector.class.php:200
 msgid "Reject email"
@@ -6778,7 +6778,7 @@ msgstr "共计"
 #: inc/planningeventcategory.class.php:41
 msgid "Event category"
 msgid_plural "Event categories"
-msgstr[0] ""
+msgstr[0] "事件类别"
 
 #: inc/planningeventcategory.class.php:48 inc/impact.class.php:1532
 #: inc/projectstate.class.php:58 inc/projectstate.class.php:75
@@ -7099,7 +7099,7 @@ msgstr "管理号码"
 #: inc/authldap.class.php:3323
 msgctxt "ldap"
 msgid "Phone"
-msgstr ""
+msgstr "电话"
 
 #: inc/authldap.class.php:817 inc/authldap.class.php:1104
 #: inc/notificationtemplatetranslation.class.php:124
@@ -7138,15 +7138,15 @@ msgstr "位置举例: %{city} > %{roomnumber}"
 
 #: inc/authldap.class.php:858
 msgid "Import entities from LDAP directory"
-msgstr "从LDAP目录中导入实体"
+msgstr "从LDAP目录中导入组织架构"
 
 #: inc/authldap.class.php:861
 msgid "Attribute representing entity"
-msgstr "代表实体的属性"
+msgstr "体现组织属性"
 
 #: inc/authldap.class.php:866
 msgid "Search filter for entities"
-msgstr "实体的搜索筛选"
+msgstr "组织搜索筛选"
 
 #. TRANS: SMTP port
 #. TRANS: Proxy port
@@ -7201,7 +7201,7 @@ msgstr "群组 DN"
 
 #: inc/authldap.class.php:2028
 msgid "Destination entity"
-msgstr "目标实体"
+msgstr "目标组织"
 
 #: inc/authldap.class.php:2081 inc/authldap.class.php:2084
 msgid "No group to be imported"
@@ -7251,7 +7251,7 @@ msgstr "没有已选择的目录"
 
 #: inc/authldap.class.php:3380
 msgid "No directory associated to entity: impossible search"
-msgstr "没有目录关联的实体：不能筛选"
+msgstr "没有目录关联的组织：不能筛选"
 
 #: inc/authldap.class.php:3563 inc/transfer.class.php:3441
 #: inc/transfer.class.php:3443
@@ -7322,7 +7322,7 @@ msgstr "系统"
 #: inc/reservation.class.php:54 install/update_0723_078.php:4794
 msgid "Reservation"
 msgid_plural "Reservations"
-msgstr[0] "预订"
+msgstr[0] "预借"
 
 #: inc/event.class.php:156 inc/transfer.class.php:3458
 #: inc/profile.class.php:114 inc/profile.class.php:911
@@ -7558,7 +7558,7 @@ msgstr "工单的日历"
 #: inc/levelagreement.class.php:702
 msgctxt "hour"
 msgid "Time"
-msgstr ""
+msgstr "时间"
 
 #: inc/levelagreement.class.php:760 inc/crontask.class.php:1941
 #: inc/crontask.class.php:1945 inc/planningrecall.class.php:263
@@ -7855,7 +7855,7 @@ msgstr "变更数量"
 
 #: inc/project.class.php:1032
 msgid "Planned Duration"
-msgstr ""
+msgstr "计划持续时长"
 
 #: inc/project.class.php:1084 inc/project.class.php:2303
 #: inc/projecttasktemplate.class.php:70 inc/projecttasktemplate.class.php:137
@@ -8025,15 +8025,15 @@ msgstr "星期六"
 
 #: inc/project.class.php:2246
 msgid "No status"
-msgstr ""
+msgstr "无状态"
 
 #: inc/project.class.php:2288
 msgid "Subproject"
-msgstr ""
+msgstr "子项目"
 
 #: inc/project.class.php:2288
 msgid "Subtask"
-msgstr ""
+msgstr "子任务"
 
 #: inc/project.class.php:2292
 #, php-format
@@ -8043,7 +8043,7 @@ msgstr ""
 #: inc/project.class.php:2311
 #, php-format
 msgid "%s / %s tasks complete"
-msgstr ""
+msgstr "%s / %s 任务完成"
 
 #: inc/item_operatingsystem.class.php:47
 msgid "Item operating system"
@@ -8055,7 +8055,7 @@ msgstr[0] "项目操作系统"
 #: inc/operatingsystemkernel.class.php:42
 msgid "Kernel"
 msgid_plural "Kernels"
-msgstr[0] ""
+msgstr[0] "内核"
 
 #: inc/item_operatingsystem.class.php:345
 #: inc/item_operatingsystem.class.php:596
@@ -8104,7 +8104,7 @@ msgstr "管理员"
 
 #: inc/notificationtarget.class.php:891
 msgid "Entity administrator"
-msgstr "实体管理员"
+msgstr "组织架构管理员"
 
 #: inc/notificationtarget.class.php:1267 inc/config.class.php:303
 msgid "URL of the application"
@@ -8267,7 +8267,7 @@ msgstr "原端口"
 #: inc/config.class.php:1723
 msgid "Memory"
 msgid_plural "Memories"
-msgstr[0] ""
+msgstr[0] "内存"
 
 #: inc/operatingsystemarchitecture.class.php:44
 msgid "Operating system architecture"
@@ -8353,7 +8353,7 @@ msgstr "无效的子网掩码"
 
 #: inc/ipnetwork.class.php:276
 msgid "Network already defined in visible entities"
-msgstr "可见实体中已经存在此网络"
+msgstr "可见组织中已经存在此网络"
 
 #: inc/ipnetwork.class.php:322
 msgid "Invalid gateway address"
@@ -8783,20 +8783,20 @@ msgstr "邮件服务器"
 
 #: inc/ruleright.class.php:319
 msgid "Entity based on LDAP information"
-msgstr "基于LDAP信息的实体"
+msgstr "基于LDAP信息的组织"
 
 #: inc/ruleright.class.php:329
 msgid "Entity from mail domain"
-msgstr "来自邮件域的实体"
+msgstr "来自邮件域的组织"
 
 #: inc/ruleright.class.php:334
 msgid "Entity from complete name"
-msgstr "来自完成名称的实体"
+msgstr "来自完成名称的组织"
 
 #: inc/ruleright.class.php:357 inc/user.class.php:2374 inc/user.class.php:2775
 #: inc/user.class.php:3374
 msgid "Default entity"
-msgstr "默认实体"
+msgstr "默认组织"
 
 #: inc/ruleright.class.php:367 inc/user.class.php:2383
 msgid "Default group"
@@ -8900,7 +8900,7 @@ msgstr ""
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:129
 msgid "unknown"
-msgstr ""
+msgstr "未知"
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:131
 msgid "Possible values are:"
@@ -8912,7 +8912,7 @@ msgstr ""
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:219
 msgid "LDAP servers"
-msgstr ""
+msgstr "LDAP 服务器"
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:220
 msgid "LDAP filter"
@@ -8982,11 +8982,11 @@ msgstr ""
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:393
 msgid "LDAP server"
-msgstr ""
+msgstr "LDAP 服务器"
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:394
 msgid "Imported"
-msgstr ""
+msgstr "已导入"
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:395
 msgid "Synchronized"
@@ -9068,11 +9068,11 @@ msgstr ""
 
 #: inc/console/system/checkrequirementscommand.class.php:83
 msgid "WARNING"
-msgstr ""
+msgstr "警告"
 
 #: inc/console/system/checkrequirementscommand.class.php:84
 msgid "ERROR"
-msgstr ""
+msgstr "错误"
 
 #: inc/console/security/changekeycommand.class.php:57
 msgid "Change password storage key and update values in database."
@@ -9116,7 +9116,7 @@ msgstr ""
 #: inc/console/migration/myisamtoinnodbcommand.class.php:71
 #, php-format
 msgid "Found %s table(s) using MyISAM engine."
-msgstr ""
+msgstr "使用 MyISAM 引擎找到 %s 表."
 
 #: inc/console/migration/myisamtoinnodbcommand.class.php:77
 #: inc/console/migration/timestampscommand.class.php:98
@@ -9182,7 +9182,7 @@ msgstr ""
 #: inc/console/migration/racksplugintocorecommand.class.php:175
 #: inc/console/migration/appliancesplugintocorecommand.class.php:151
 msgid "Do not exit on import errors"
-msgstr ""
+msgstr "导入错误时不退出"
 
 #: inc/console/migration/racksplugintocorecommand.class.php:182
 msgid "Remove existing core data"
@@ -9283,7 +9283,7 @@ msgstr ""
 
 #: inc/console/migration/racksplugintocorecommand.class.php:514
 msgid "Importing other models..."
-msgstr ""
+msgstr "导入其他模型..."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:527
 msgid "Other items do not exist in GLPI core."
@@ -9299,7 +9299,7 @@ msgstr ""
 #: inc/console/migration/racksplugintocorecommand.class.php:548
 #, php-format
 msgid "Where do you want to import \"%s\" ?"
-msgstr ""
+msgstr "您想在哪里导入 \"%s\" ?"
 
 #: inc/console/migration/racksplugintocorecommand.class.php:556
 msgid "Ignore (default)"
@@ -9308,17 +9308,17 @@ msgstr ""
 #: inc/console/migration/racksplugintocorecommand.class.php:611
 #, php-format
 msgid "Unable to import other model \"%s\"."
-msgstr ""
+msgstr "无法导入其他模型 \"%s\"."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:628
 #, php-format
 msgid "Importing items from model \"%s\"..."
-msgstr ""
+msgstr "从模型导入项目 \"%s\"..."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:666
 #, php-format
 msgid "Unable to import other item \"%s\"."
-msgstr ""
+msgstr "无法导入其他项目 \"%s\"."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:689
 msgid "No items found."
@@ -9326,12 +9326,12 @@ msgstr ""
 
 #: inc/console/migration/racksplugintocorecommand.class.php:709
 msgid "Importing items specifications..."
-msgstr ""
+msgstr "导入项目规范..."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:728
 #, php-format
 msgid "Importing specifications for model %s (%s)..."
-msgstr ""
+msgstr "导入模型的规范 %s (%s)..."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:742
 #, php-format
@@ -9349,17 +9349,17 @@ msgstr ""
 
 #: inc/console/migration/racksplugintocorecommand.class.php:802
 msgid "Importing rack models..."
-msgstr ""
+msgstr "导入机柜模型..."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:820
 #, php-format
 msgid "Importing rack model \"%s\"..."
-msgstr ""
+msgstr "导入机柜模型 \"%s\"..."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:841
 #, php-format
 msgid "Unable to import rack model \"%s\"."
-msgstr ""
+msgstr "无法导入机柜模型 \"%s\"."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:862
 #: inc/console/migration/racksplugintocorecommand.class.php:942
@@ -9368,31 +9368,31 @@ msgstr ""
 
 #: inc/console/migration/racksplugintocorecommand.class.php:880
 msgid "Importing rack types..."
-msgstr ""
+msgstr "导入机柜类型..."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:898
 #, php-format
 msgid "Importing rack type \"%s\"..."
-msgstr ""
+msgstr "导入机柜类型 \"%s\"..."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:921
 #, php-format
 msgid "Unable to import rack type \"%s\"."
-msgstr ""
+msgstr "无法导入机柜类型 \"%s\"."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:960
 msgid "Importing rack states..."
-msgstr ""
+msgstr "导入机柜状态..."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:978
 #, php-format
 msgid "Importing rack state \"%s\"..."
-msgstr ""
+msgstr "导入机柜状态 \"%s\"..."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:1003
 #, php-format
 msgid "Unable to import rack state \"%s\"."
-msgstr ""
+msgstr "无法导入机柜状态 \"%s\"."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:1025
 msgid "No rack states found."
@@ -9400,17 +9400,17 @@ msgstr ""
 
 #: inc/console/migration/racksplugintocorecommand.class.php:1043
 msgid "Importing rooms..."
-msgstr ""
+msgstr "导入房间..."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:1061
 #, php-format
 msgid "Importing room \"%s\"..."
-msgstr ""
+msgstr "导入房间 \"%s\"..."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:1086
 #, php-format
 msgid "Unable to import room \"%s\"."
-msgstr ""
+msgstr "无法导入房间 \"%s\"."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:1107
 msgid "No rooms found."
@@ -9418,17 +9418,17 @@ msgstr ""
 
 #: inc/console/migration/racksplugintocorecommand.class.php:1125
 msgid "Importing racks..."
-msgstr ""
+msgstr "正在导入机柜..."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:1145
 #, php-format
 msgid "Importing rack \"%s\"..."
-msgstr ""
+msgstr "正在导入机柜 \"%s\"..."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:1213
 #, php-format
 msgid "Unable to import rack \"%s\"."
-msgstr ""
+msgstr "无法导入机柜 \"%s\"."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:1235
 msgid "No racks found."
@@ -9436,12 +9436,12 @@ msgstr ""
 
 #: inc/console/migration/racksplugintocorecommand.class.php:1253
 msgid "Importing rack items..."
-msgstr ""
+msgstr "导入机柜元素..."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:1275
 #, php-format
 msgid "Importing rack item %s (%s)..."
-msgstr ""
+msgstr "正在导入机柜元素 %s (%s)..."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:1287
 #, php-format
@@ -9456,7 +9456,7 @@ msgstr ""
 #: inc/console/migration/racksplugintocorecommand.class.php:1345
 #, php-format
 msgid "Unable to import rack item %s (%s)."
-msgstr ""
+msgstr "无法导入机柜元素 %s (%s)."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:1362
 msgid "No rack items found."
@@ -9521,7 +9521,7 @@ msgstr ""
 #: inc/console/migration/appliancesplugintocorecommand.class.php:398
 #, php-format
 msgid "Importing Appliance item \"%d\"..."
-msgstr ""
+msgstr "导入电器元素 \"%d\"..."
 
 #: inc/console/migration/appliancesplugintocorecommand.class.php:419
 #, php-format
@@ -9535,7 +9535,7 @@ msgstr ""
 #: inc/console/migration/appliancesplugintocorecommand.class.php:457
 #, php-format
 msgid "Importing environment \"%s\"..."
-msgstr ""
+msgstr "导入环境 \"%s\"..."
 
 #: inc/console/migration/appliancesplugintocorecommand.class.php:477
 #: inc/console/migration/appliancesplugintocorecommand.class.php:612
@@ -9545,12 +9545,12 @@ msgstr ""
 
 #: inc/console/migration/appliancesplugintocorecommand.class.php:498
 msgid "Creating Appliances..."
-msgstr ""
+msgstr "创建电器..."
 
 #: inc/console/migration/appliancesplugintocorecommand.class.php:514
 #, php-format
 msgid "Importing appliance \"%s\"..."
-msgstr ""
+msgstr "导入电器 \"%s\"..."
 
 #: inc/console/migration/appliancesplugintocorecommand.class.php:551
 #, php-format
@@ -9559,12 +9559,12 @@ msgstr ""
 
 #: inc/console/migration/appliancesplugintocorecommand.class.php:572
 msgid "Creating Appliance types..."
-msgstr ""
+msgstr "创建电器类型..."
 
 #: inc/console/migration/appliancesplugintocorecommand.class.php:589
 #, php-format
 msgid "Importing type \"%s\"..."
-msgstr ""
+msgstr "导入类型 \"%s\"..."
 
 #: inc/console/migration/appliancesplugintocorecommand.class.php:633
 msgid "Creating Appliance relations..."
@@ -9573,7 +9573,7 @@ msgstr ""
 #: inc/console/migration/appliancesplugintocorecommand.class.php:665
 #, php-format
 msgid "Importing relation \"%s\"..."
-msgstr ""
+msgstr "导入关联关系 \"%s\"..."
 
 #: inc/console/migration/appliancesplugintocorecommand.class.php:676
 #, php-format
@@ -9642,7 +9642,7 @@ msgstr ""
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:319
 msgid "Importing domains types..."
-msgstr ""
+msgstr "导入域名类型..."
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:348
 #, php-format
@@ -9652,7 +9652,7 @@ msgstr ""
 #: inc/console/migration/domainsplugintocorecommand.class.php:353
 #, php-format
 msgid "Importing domain type %s..."
-msgstr ""
+msgstr "正在导入域名类型 %s..."
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:386
 #, php-format
@@ -9670,7 +9670,7 @@ msgstr ""
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:425
 msgid "Importing domains..."
-msgstr ""
+msgstr "导入域名..."
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:454
 #, php-format
@@ -9680,7 +9680,7 @@ msgstr ""
 #: inc/console/migration/domainsplugintocorecommand.class.php:459
 #, php-format
 msgid "Importing domain %s..."
-msgstr ""
+msgstr "导入域名 %s..."
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:472
 #, php-format
@@ -9703,7 +9703,7 @@ msgstr ""
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:574
 msgid "Importing domains items..."
-msgstr ""
+msgstr "导入域名元素..."
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:601
 #, php-format
@@ -9718,7 +9718,7 @@ msgstr ""
 #: inc/console/migration/domainsplugintocorecommand.class.php:619
 #, php-format
 msgid "Importing domain item %s..."
-msgstr ""
+msgstr "导入域名元素 %s..."
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:654
 #, php-format
@@ -9736,11 +9736,11 @@ msgstr ""
 
 #: inc/console/task/unlockcommand.class.php:56
 msgid "Unlock automatic tasks"
-msgstr ""
+msgstr "解锁自动化任务"
 
 #: inc/console/task/unlockcommand.class.php:62
 msgid "Unlock all tasks"
-msgstr ""
+msgstr "解锁所有任务"
 
 #: inc/console/task/unlockcommand.class.php:69
 msgid ""
@@ -9752,7 +9752,7 @@ msgstr ""
 msgid ""
 "Execution time (in seconds) from which the task is considered as stuck "
 "(default: 1800)"
-msgstr ""
+msgstr "判断任务执行被卡住的时间（秒）（默认值：1800）"
 
 #: inc/console/task/unlockcommand.class.php:85
 msgid "Itemtype::name of task to unlock (e.g: \"MailCollector::mailgate\")"
@@ -9776,7 +9776,7 @@ msgstr ""
 #: inc/console/task/unlockcommand.class.php:157
 #, php-format
 msgid "Number of tasks unlocked: %d."
-msgstr ""
+msgstr "解锁的任务数: %d."
 
 #: inc/console/task/unlockcommand.class.php:181
 msgid "Option --cycle is not compatible with option --delay."
@@ -9797,7 +9797,7 @@ msgstr ""
 #: inc/console/task/unlockcommand.class.php:209
 msgid ""
 "You have to specify which tasks to unlock using --all or --task options."
-msgstr ""
+msgstr "您必须使用--all或--task选项指定要解锁的任务。"
 
 #: inc/console/application.class.php:130
 msgid "The command to execute"
@@ -9866,7 +9866,7 @@ msgstr ""
 #: inc/console/application.class.php:260
 #, php-format
 msgid "Memory usage: %s."
-msgstr ""
+msgstr "内存使用: %s."
 
 #: inc/console/application.class.php:340
 #, php-format
@@ -9901,13 +9901,13 @@ msgstr ""
 #: inc/console/database/abstractconfigurecommand.class.php:335
 #: inc/console/database/updatecommand.class.php:125
 msgid "Database host"
-msgstr ""
+msgstr "数据库地址"
 
 #: inc/console/database/abstractconfigurecommand.class.php:118
 #: inc/console/database/abstractconfigurecommand.class.php:336
 #: inc/console/database/updatecommand.class.php:126
 msgid "Database name"
-msgstr ""
+msgstr "数据库名称"
 
 #: inc/console/database/abstractconfigurecommand.class.php:125
 msgid ""
@@ -9917,13 +9917,13 @@ msgstr ""
 
 #: inc/console/database/abstractconfigurecommand.class.php:133
 msgid "Database port"
-msgstr ""
+msgstr "数据库端口"
 
 #: inc/console/database/abstractconfigurecommand.class.php:140
 #: inc/console/database/abstractconfigurecommand.class.php:337
 #: inc/console/database/updatecommand.class.php:127
 msgid "Database user"
-msgstr ""
+msgstr "数据库账号"
 
 #: inc/console/database/abstractconfigurecommand.class.php:147
 msgid "Reconfigure database, override configuration file if it already exists"
@@ -9931,15 +9931,15 @@ msgstr ""
 
 #: inc/console/database/abstractconfigurecommand.class.php:154
 msgid "Database name:"
-msgstr ""
+msgstr "数据库名称:"
 
 #: inc/console/database/abstractconfigurecommand.class.php:155
 msgid "Database user:"
-msgstr ""
+msgstr "数据库账号:"
 
 #: inc/console/database/abstractconfigurecommand.class.php:156
 msgid "Database password:"
-msgstr ""
+msgstr "数据库密码:"
 
 #: inc/console/database/abstractconfigurecommand.class.php:197
 #: inc/console/database/installcommand.class.php:148
@@ -9981,7 +9981,7 @@ msgstr ""
 
 #: inc/console/database/installcommand.class.php:91
 msgid "Default language of GLPI"
-msgstr ""
+msgstr "GLPI默认语言"
 
 #: inc/console/database/installcommand.class.php:99
 msgid "Force execution of installation, overriding existing database"
@@ -10044,15 +10044,15 @@ msgstr ""
 
 #: inc/console/database/updatecommand.class.php:124
 msgid "Current"
-msgstr ""
+msgstr "当前"
 
 #: inc/console/database/updatecommand.class.php:128
 msgid "GLPI version"
-msgstr ""
+msgstr "GLPI版本"
 
 #: inc/console/database/updatecommand.class.php:129
 msgid "GLPI database version"
-msgstr ""
+msgstr "GLPI数据库版本"
 
 #: inc/console/database/updatecommand.class.php:137
 #, php-format
@@ -10118,12 +10118,12 @@ msgstr ""
 
 #: inc/console/rules/processsoftwarecategoryrulescommand.class.php:53
 msgid "Process software category rules"
-msgstr ""
+msgstr "处理软件类别规则"
 
 #: inc/console/rules/processsoftwarecategoryrulescommand.class.php:59
 msgid ""
 "Process rule for all softwares, even those having already a defined category"
-msgstr ""
+msgstr "适用于所有软件的过程规则，即使是那些已经定义了类别的软件"
 
 #: inc/console/rules/processsoftwarecategoryrulescommand.class.php:81
 msgid "No software to process."
@@ -10159,7 +10159,7 @@ msgstr ""
 
 #: inc/console/plugin/abstractplugincommand.class.php:93
 msgid "All plugins"
-msgstr ""
+msgstr "所有插件"
 
 #: inc/console/plugin/deactivatecommand.class.php:62
 #: inc/console/plugin/installcommand.class.php:116
@@ -10735,28 +10735,28 @@ msgstr "电源管理"
 
 #: inc/dropdown.class.php:983
 msgid "Appliances"
-msgstr ""
+msgstr "电器"
 
 #. TRANS: %s is a number of years
 #: inc/dropdown.class.php:1531
 #, php-format
 msgid "%s year"
 msgid_plural "%s years"
-msgstr[0] ""
+msgstr[0] "%s 年"
 
 #. TRANS: %s is a number of months
 #: inc/dropdown.class.php:1535
 #, php-format
 msgid "%s month"
 msgid_plural "%s months"
-msgstr[0] ""
+msgstr[0] "%s 月"
 
 #. TRANS: %s is a number of days
 #: inc/dropdown.class.php:1539
 #, php-format
 msgid "%s day"
 msgid_plural "%s days"
-msgstr[0] ""
+msgstr[0] "%s 日"
 
 #. TRANS: %s is a number of minutes
 #: inc/dropdown.class.php:1547
@@ -10780,12 +10780,12 @@ msgstr[0] "%s 秒"
 #, php-format
 msgid "%s millisecond"
 msgid_plural "%s milliseconds"
-msgstr[0] ""
+msgstr[0] "%s 毫秒"
 
 #: inc/dropdown.class.php:1561
 #, php-format
 msgid "%s%%"
-msgstr ""
+msgstr "%s%%"
 
 #. TRANS: %1$d is the number of days, %2$d the number of hours,
 #. %3$s the number of minutes : display 1 day 3h15
@@ -10793,7 +10793,7 @@ msgstr ""
 #, php-format
 msgid "%1$d day %2$dh%3$s"
 msgid_plural "%1$d days %2$dh%3$s"
-msgstr[0] "%1$d 天 %2$dh%3$s"
+msgstr[0] "%1$d 天 %2$d小时%3$s"
 
 #. TRANS: %1$d the number of hours, %2$s the number of minutes : display 3h15
 #: inc/dropdown.class.php:1687
@@ -10867,17 +10867,17 @@ msgstr "将所有页面保存为CSV"
 #: inc/planningexternalevent.class.php:54
 msgid "External event"
 msgid_plural "External events"
-msgstr[0] ""
+msgstr[0] "外部事件"
 
 #: inc/planningexternalevent.class.php:241
 #: inc/features/planningevent.class.php:986
 #: inc/notificationtargetplanningrecall.class.php:57
 msgid "Guests"
-msgstr ""
+msgstr "访客"
 
 #: inc/planningexternalevent.class.php:252
 msgid "Each guest will have a read-only copy of this event"
-msgstr ""
+msgstr "每位访客都将拥有此活动的只读副本"
 
 #: inc/planningexternalevent.class.php:343
 msgid "Delete serie"
@@ -10889,7 +10889,7 @@ msgstr ""
 
 #: inc/planningexternalevent.class.php:356
 msgid "manage background events"
-msgstr ""
+msgstr "管理后台事件"
 
 #: inc/devicecasemodel.class.php:44
 msgid "Device case model"
@@ -11163,7 +11163,7 @@ msgstr "采取的行动都通知我"
 #: tests/functionnal/Rule.php:290
 msgid "Watcher"
 msgid_plural "Watchers"
-msgstr[0] "监督"
+msgstr[0] "监督者"
 
 #: inc/ticket.class.php:3959
 msgid "Submit message"
@@ -11514,7 +11514,7 @@ msgstr "FQDN"
 msgid ""
 "Fully Qualified Domain Name. Use the classical notation (labels separated by"
 " dots). For example: indepnet.net"
-msgstr "完整的域名.用传统的符号(圆点分隔).例如：indepnet.net"
+msgstr "完整的域名.用传统的符号(圆点分隔).例如：glpi-cn.com"
 
 #: inc/fqdn.class.php:80
 msgid "FQDN must not be empty"
@@ -11661,7 +11661,7 @@ msgstr "测试内存分配"
 #: inc/system/requirement/memorylimit.class.php:70
 #, php-format
 msgid "Allocated memory > %s - Perfect!"
-msgstr ""
+msgstr "分配内存 > %s - 完美！"
 
 #: inc/system/requirement/memorylimit.class.php:71
 msgid "Unlimited memory - Perfect!"
@@ -12341,7 +12341,7 @@ msgstr "光纤通道端口"
 #: inc/networkportfiberchannel.class.php:131
 #: inc/networkportfiberchannel.class.php:194
 msgid "World Wide Name"
-msgstr "WWW全球名称"
+msgstr "WWW"
 
 #: inc/networkportfiberchannel.class.php:96
 #: inc/networkportfiberchannel.class.php:130
@@ -12709,7 +12709,7 @@ msgstr "没有连接"
 #: inc/passivedcequipment.class.php:48
 msgid "Passive device"
 msgid_plural "Passive devices"
-msgstr[0] "哑设备"
+msgstr[0] "无源设备"
 
 #: inc/domain_item.class.php:482
 msgid "Associate a domain"
@@ -12731,11 +12731,11 @@ msgstr[0] "PDU插头"
 
 #: inc/pdu_plug.class.php:120
 msgid "Add a new plug"
-msgstr "添加新插件"
+msgstr "添加新插口"
 
 #: inc/pdu_plug.class.php:142
 msgid "No plug found"
-msgstr "找不到插件"
+msgstr "找不到插口"
 
 #: inc/devicepowersupply.class.php:43
 msgid "Power supply"
@@ -12864,11 +12864,11 @@ msgstr[0] "忽略值的唯一性"
 #: inc/reservationitem.class.php:65
 msgid "Reservable item"
 msgid_plural "Reservable items"
-msgstr[0] "可预订的项目"
+msgstr[0] "可预借的东东"
 
 #: inc/reservationitem.class.php:301 inc/reservation.class.php:652
 msgid "Reserve an item"
-msgstr "预订一个项目"
+msgstr "预借一个东东"
 
 #: inc/reservationitem.class.php:308
 msgid "Make unavailable"
@@ -12880,19 +12880,19 @@ msgstr "设为可用"
 
 #: inc/reservationitem.class.php:318
 msgid "Prohibit reservations"
-msgstr "禁止预订"
+msgstr "禁止预借"
 
 #: inc/reservationitem.class.php:320
 msgid "Are you sure you want to return this non-reservable item?"
-msgstr "您确定要返还此不可预订项目？"
+msgstr "您确定要归还此不可预借的东东？"
 
 #: inc/reservationitem.class.php:321
 msgid "That will remove all the reservations in progress."
-msgstr "这将删除所有进程中的预订"
+msgstr "这将删除所有进程中的预借"
 
 #: inc/reservationitem.class.php:326
 msgid "Authorize reservations"
-msgstr "授权预订"
+msgstr "授权预借"
 
 #: inc/reservationitem.class.php:359 inc/search.class.php:6067
 msgid "Modify the comment"
@@ -12914,19 +12914,19 @@ msgstr "指定一结束日期"
 #: inc/reservationitem.class.php:642 inc/entity.class.php:891
 #: inc/entity.class.php:2090
 msgid "Alerts on reservations"
-msgstr "预订警报"
+msgstr "预借警示"
 
 #: inc/reservationitem.class.php:712
 msgid "Device reservations expiring today"
-msgstr "今天过期的设备预订"
+msgstr "今天过期的预借设备"
 
 #: inc/reservationitem.class.php:753
 msgid "Send reservation alert failed"
-msgstr "发送预订警报失败"
+msgstr "预借警报发送失败"
 
 #: inc/reservationitem.class.php:792
 msgid "Make a reservation"
-msgstr "预订"
+msgstr "预借"
 
 #: inc/levelagreementlevel.class.php:112 inc/olalevel.class.php:105
 #: inc/olalevel.class.php:144 inc/olalevel.class.php:241
@@ -13609,7 +13609,7 @@ msgstr "全局权利"
 
 #: inc/profile.class.php:604
 msgid "Entity right"
-msgstr "实体权利"
+msgstr "组织权利"
 
 #: inc/profile.class.php:673 inc/profile.class.php:1786
 msgid "Ticket creation form on login"
@@ -13673,16 +13673,16 @@ msgstr[0] "公共筛选项"
 
 #: inc/profile.class.php:1062
 msgid "Administration of reservations"
-msgstr "预订管理"
+msgstr "预借管理"
 
 #: inc/profile.class.php:1107
 msgid "ITIL Templates"
-msgstr ""
+msgstr "ITIL 模板"
 
 #: inc/profile.class.php:1112
 #, php-format
 msgid "Default %1$s template"
-msgstr ""
+msgstr "默认 %1$s 模板"
 
 #: inc/profile.class.php:1138
 msgid "ITIL object"
@@ -13729,7 +13729,7 @@ msgstr "变更的生命周期"
 
 #: inc/profile.class.php:1483 inc/profile.class.php:2242
 msgid "Rules for assigning a computer to an entity"
-msgstr "分配电脑到实体的规则"
+msgstr "分配电脑到组织的规则"
 
 #: inc/profile.class.php:1489 inc/profile.class.php:2270
 msgid "Rules for assigning a category to a software"
@@ -13737,7 +13737,7 @@ msgstr "分配类别给软件的规则"
 
 #: inc/profile.class.php:1492
 msgid "Business rules for tickets (entity)"
-msgstr "工单的商业规则（实体）"
+msgstr "工单的商业规则（组织）"
 
 #: inc/profile.class.php:1506 inc/profile.class.php:1514
 #: inc/profile.class.php:2298
@@ -13766,7 +13766,7 @@ msgstr "个性化"
 
 #: inc/profile.class.php:1568
 msgid "All dashboards"
-msgstr ""
+msgstr "全部看板"
 
 #: inc/profile.class.php:1573
 msgid "Search result display"
@@ -13779,7 +13779,7 @@ msgstr[0] "全局下拉"
 
 #: inc/profile.class.php:1586
 msgid "Entity dropdowns"
-msgstr "实体下拉列表"
+msgstr "组织下拉列表"
 
 #: inc/profile.class.php:1594
 msgid "Ticket category"
@@ -13996,7 +13996,7 @@ msgstr[0] "%s 停止"
 #, php-format
 msgid "%s error"
 msgid_plural "%s errors"
-msgstr[0] ""
+msgstr[0] "%s 错误"
 
 #: inc/crontask.class.php:1158
 msgid "Minimal time"
@@ -15207,27 +15207,27 @@ msgstr ""
 
 #: inc/dashboard/provider.class.php:339
 msgid "Incoming tickets"
-msgstr ""
+msgstr "传入中的工单"
 
 #: inc/dashboard/provider.class.php:345 inc/dashboard/grid.class.php:1235
 msgid "Pending tickets"
-msgstr ""
+msgstr "搁置中的工单"
 
 #: inc/dashboard/provider.class.php:352 inc/dashboard/grid.class.php:1236
 msgid "Assigned tickets"
-msgstr ""
+msgstr "已分派工单"
 
 #: inc/dashboard/provider.class.php:359 inc/dashboard/grid.class.php:1237
 msgid "Planned tickets"
-msgstr ""
+msgstr "已计划的工单"
 
 #: inc/dashboard/provider.class.php:366 inc/dashboard/grid.class.php:1238
 msgid "Solved tickets"
-msgstr ""
+msgstr "已解决的工单"
 
 #: inc/dashboard/provider.class.php:373 inc/dashboard/grid.class.php:1239
 msgid "Closed tickets"
-msgstr ""
+msgstr "已关闭的工单"
 
 #: inc/dashboard/provider.class.php:531
 msgid "without"
@@ -15328,7 +15328,7 @@ msgstr ""
 #: inc/dashboard/widget.class.php:397 inc/dashboard/widget.class.php:503
 #: inc/dashboard/widget.class.php:945 inc/dashboard/widget.class.php:1710
 msgid "No data found"
-msgstr ""
+msgstr "空空如也"
 
 #: inc/dashboard/widget.class.php:1522
 msgid "Type markdown text here"
@@ -15344,15 +15344,15 @@ msgstr ""
 
 #: inc/dashboard/grid.class.php:272
 msgid "Toggle auto-refresh"
-msgstr ""
+msgstr "切换至自动刷新"
 
 #: inc/dashboard/grid.class.php:273
 msgid "Toggle night mode"
-msgstr ""
+msgstr "切换至夜间模式"
 
 #: inc/dashboard/grid.class.php:274 inc/html.class.php:5041
 msgid "Toggle fullscreen"
-msgstr "切换全屏"
+msgstr "切换至全屏"
 
 #: inc/dashboard/grid.class.php:275
 msgid "Clone this dashboard"
@@ -15360,7 +15360,7 @@ msgstr ""
 
 #: inc/dashboard/grid.class.php:276
 msgid "Toggle edit mode"
-msgstr ""
+msgstr "切换至编辑模式"
 
 #: inc/dashboard/grid.class.php:277
 msgid "Add filter"
@@ -15384,7 +15384,7 @@ msgstr ""
 
 #: inc/dashboard/grid.class.php:676
 msgid "others"
-msgstr ""
+msgstr "其他"
 
 #: inc/dashboard/grid.class.php:683 inc/pdu_rack.class.php:280
 #: inc/item_rack.class.php:691 inc/rack.class.php:316
@@ -15452,7 +15452,7 @@ msgstr ""
 
 #: inc/dashboard/grid.class.php:1285
 msgid "Number of tickets by month"
-msgstr ""
+msgstr "月度工单数"
 
 #: inc/dashboard/grid.class.php:1297
 msgid "Evolution of ticket in the past year"
@@ -15460,11 +15460,11 @@ msgstr ""
 
 #: inc/dashboard/grid.class.php:1309
 msgid "Tickets status by month"
-msgstr ""
+msgstr "按月份筛选工单状态"
 
 #: inc/dashboard/grid.class.php:1321
 msgid "Tickets times (in hours)"
-msgstr ""
+msgstr "工单时间 (小时)"
 
 #: inc/dashboard/grid.class.php:1333
 msgid "Tickets summary"
@@ -15472,43 +15472,43 @@ msgstr ""
 
 #: inc/dashboard/grid.class.php:1342
 msgid "Top ticket's categories"
-msgstr ""
+msgstr "工单类别TOP榜"
 
 #: inc/dashboard/grid.class.php:1343
 msgid "Top ticket's entities"
-msgstr ""
+msgstr "工单组织TOP榜"
 
 #: inc/dashboard/grid.class.php:1344
 msgid "Top ticket's request types"
-msgstr ""
+msgstr "工单申请类别TOP榜"
 
 #: inc/dashboard/grid.class.php:1345
 msgid "Top ticket's locations"
-msgstr ""
+msgstr "工单位置TOP榜"
 
 #: inc/dashboard/grid.class.php:1361
 msgid "Top ticket's requesters"
-msgstr ""
+msgstr "工单申请TOP榜"
 
 #: inc/dashboard/grid.class.php:1362
 msgid "Top ticket's requester groups"
-msgstr ""
+msgstr "工单申请群组TOP榜"
 
 #: inc/dashboard/grid.class.php:1363
 msgid "Top ticket's observers"
-msgstr ""
+msgstr "工单观察员TOP榜"
 
 #: inc/dashboard/grid.class.php:1364
 msgid "Top ticket's observer groups"
-msgstr ""
+msgstr "工单观察员群组TOP榜"
 
 #: inc/dashboard/grid.class.php:1365
 msgid "Top ticket's assignees"
-msgstr ""
+msgstr "工单受让人TOP榜"
 
 #: inc/dashboard/grid.class.php:1366
 msgid "Top ticket's assignee groups"
-msgstr ""
+msgstr "工单受让人群组TOP榜"
 
 #: inc/dashboard/grid.class.php:1386
 msgid "List of reminders"
@@ -15520,7 +15520,7 @@ msgstr ""
 
 #: inc/dashboard/grid.class.php:1397
 msgid "Toggle edit mode to edit content"
-msgstr ""
+msgstr "切换至编辑模式以编辑内容"
 
 #: inc/dashboard/grid.class.php:1417 inc/commondbtm.class.php:5111
 msgid "Purge"
@@ -15780,7 +15780,7 @@ msgstr "邮件头的Message-ID "
 
 #: inc/notimportedemail.class.php:239
 msgid "Unable to affect the email to an entity"
-msgstr "无法影响实体的电子邮件"
+msgstr "无法影响组织的电子邮件"
 
 #: inc/notimportedemail.class.php:240
 msgid "Email not found. Impossible import"
@@ -15792,7 +15792,7 @@ msgstr "无权限"
 
 #: inc/impact.class.php:65 inc/impact.class.php:119 inc/impact.class.php:755
 msgid "Impact analysis"
-msgstr "影响分析"
+msgstr "拓扑"
 
 #: inc/impact.class.php:353
 msgid "This asset doesn't have any dependencies."
@@ -15800,7 +15800,7 @@ msgstr ""
 
 #: inc/impact.class.php:364
 msgid "Export to csv"
-msgstr ""
+msgstr "导出为 csv"
 
 #: inc/impact.class.php:368 inc/impact.class.php:376 inc/impact.class.php:1057
 #: inc/impact.class.php:1116 inc/preference.class.php:43
@@ -15810,7 +15810,7 @@ msgstr "设置"
 
 #: inc/impact.class.php:380 inc/impact.class.php:1094
 msgid "Max depth"
-msgstr "最大深度"
+msgstr "最大的设备的长度"
 
 #: inc/impact.class.php:387
 msgid "No limit"
@@ -15830,7 +15830,7 @@ msgstr "图表视图"
 
 #: inc/impact.class.php:993
 msgid "Add assets"
-msgstr ""
+msgstr "添加资产"
 
 #: inc/impact.class.php:998
 msgid "Filter itemtypes..."
@@ -15854,7 +15854,7 @@ msgstr "显示影响"
 
 #: inc/impact.class.php:1075
 msgid "Show depends"
-msgstr ""
+msgstr "显示依赖"
 
 #: inc/impact.class.php:1078
 msgid "Colors"
@@ -15862,15 +15862,15 @@ msgstr "色彩"
 
 #: inc/impact.class.php:1081
 msgid "Depends"
-msgstr ""
+msgstr "依赖"
 
 #: inc/impact.class.php:1091
 msgid "Impact and depends"
-msgstr ""
+msgstr "影响和依赖"
 
 #: inc/impact.class.php:1106
 msgid "Undo"
-msgstr ""
+msgstr "撤回"
 
 #: inc/impact.class.php:1107
 msgid "Redo"
@@ -15903,7 +15903,7 @@ msgstr "全屏"
 
 #: inc/impact.class.php:1783
 msgid "Impact analysis configuration"
-msgstr "影响分析配置"
+msgstr "拓扑配置"
 
 #: inc/impact.class.php:1795
 msgid "Enabled itemtypes"
@@ -16106,11 +16106,11 @@ msgstr "如果没设定，则使用超级管理员的。"
 
 #: inc/notificationmailingsetting.class.php:119
 msgid "No-Reply address"
-msgstr ""
+msgstr "不回复地址"
 
 #: inc/notificationmailingsetting.class.php:120
 msgid "Optionnal No-Reply address."
-msgstr ""
+msgstr "选择不回复地址"
 
 #: inc/notificationmailingsetting.class.php:120
 msgid "If set, it will be used for notifications that doesn't expect a reply."
@@ -16118,11 +16118,11 @@ msgstr ""
 
 #: inc/notificationmailingsetting.class.php:128
 msgid "No-Reply name"
-msgstr ""
+msgstr "不回复名称"
 
 #: inc/notificationmailingsetting.class.php:129
 msgid "Optionnal No-Reply name."
-msgstr ""
+msgstr "选择不回复名称"
 
 #: inc/notificationmailingsetting.class.php:138
 msgid "Add documents into ticket notifications"
@@ -16264,7 +16264,7 @@ msgstr "行: %1$s, 列: %2$s"
 #: inc/phonepowersupply.class.php:44
 msgid "Phone power supply type"
 msgid_plural "Phone power supply types"
-msgstr[0] ""
+msgstr[0] "电话电源类型"
 
 #: inc/changetask.class.php:43
 msgid "Change task"
@@ -16309,7 +16309,7 @@ msgstr "未发现网络端口"
 #: inc/networkport.class.php:1016
 msgid "Port number"
 msgid_plural "Port numbers"
-msgstr[0] ""
+msgstr[0] "端口号"
 
 #: inc/networkport.class.php:930 inc/networkport.class.php:1034
 msgid "Network port type"
@@ -16552,7 +16552,7 @@ msgstr ""
 
 #: inc/marketplace/view.class.php:394
 msgid "Refresh plugin list"
-msgstr ""
+msgstr "刷新插件列表"
 
 #: inc/marketplace/view.class.php:395
 msgid "Filter plugin list"
@@ -16624,7 +16624,7 @@ msgstr ""
 #, php-format
 msgid "%s plugin"
 msgid_plural "%s plugins"
-msgstr[0] ""
+msgstr[0] "%s 插件"
 
 #: inc/marketplace/view.class.php:988
 msgid "GLPI provides a new marketplace to download and install plugins."
@@ -16715,7 +16715,7 @@ msgstr "无效"
 
 #: inc/softwarelicense.class.php:457 inc/softwarelicense.class.php:609
 msgid "Allow Over-Quota"
-msgstr ""
+msgstr "允许超出配额"
 
 #: inc/softwarelicense.class.php:468
 msgid "Never expire"
@@ -16765,7 +16765,7 @@ msgstr[0] "PDUs"
 
 #: inc/features/planningevent.class.php:702
 msgid "Each year"
-msgstr ""
+msgstr "每年"
 
 #: inc/features/planningevent.class.php:727
 msgid "Interval"
@@ -16777,7 +16777,7 @@ msgstr ""
 
 #: inc/features/planningevent.class.php:765
 msgid "By month"
-msgstr ""
+msgstr "按月"
 
 #: inc/features/planningevent.class.php:791
 msgid "Exceptions"
@@ -16799,7 +16799,7 @@ msgstr "计划结束日期"
 
 #: inc/ruleimportcomputer.class.php:75
 msgid "Target entity for the computer"
-msgstr "电脑的目标实体"
+msgstr "电脑所属组织"
 
 #: inc/ruleimportcomputer.class.php:81
 msgid "Find computers in GLPI having the status"
@@ -16985,7 +16985,7 @@ msgstr "打印机词典"
 
 #: inc/rulerightcollection.class.php:86
 msgid "Entities assignment"
-msgstr "实体分配"
+msgstr "组织分配"
 
 #: inc/rulerightcollection.class.php:99
 msgid "Rights assignment"
@@ -16993,7 +16993,7 @@ msgstr "权利分配"
 
 #: inc/rulerightcollection.class.php:107
 msgid "Rights and entities assignment"
-msgstr "权利和实体分配"
+msgstr "权限和组织分配"
 
 #: inc/knowbaseitem_revision.class.php:42
 #: inc/knowbaseitem_revision.class.php:132
@@ -17212,7 +17212,7 @@ msgstr "在操作中使用的紧急性或影响，请考虑添加优先级：如
 #: inc/ruleticket.class.php:425 inc/itilcategory.class.php:69
 #: inc/itilcategory.class.php:267
 msgid "Code representing the ticket category"
-msgstr ""
+msgstr "表示工单类别的代码"
 
 #: inc/ruleticket.class.php:442
 msgid "Requester in group"
@@ -17240,7 +17240,7 @@ msgstr "创建日期是日历中的工作时间"
 
 #: inc/ruleticket.class.php:611
 msgid "Ticket category from code"
-msgstr ""
+msgstr "来自工单类别代码"
 
 #: inc/ruleticket.class.php:734
 msgid "Responsible of the requester"
@@ -17670,7 +17670,7 @@ msgstr "群组视图"
 
 #: inc/central.class.php:73
 msgid "Dashboard"
-msgstr ""
+msgstr "看板"
 
 #: inc/central.class.php:314
 #, php-format
@@ -17727,11 +17727,11 @@ msgstr "切换过滤器"
 
 #: inc/planning.class.php:904
 msgid "Not planned tasks"
-msgstr ""
+msgstr "非计划任务"
 
 #: inc/planning.class.php:906
 msgid "Only background events"
-msgstr ""
+msgstr "仅后台事件"
 
 #: inc/planning.class.php:969
 msgid "Ical"
@@ -17755,7 +17755,7 @@ msgstr "组用户"
 
 #: inc/planning.class.php:1038
 msgid "External calendar"
-msgstr ""
+msgstr "外部日历"
 
 #: inc/planning.class.php:1181
 msgid "View this item in his context"
@@ -18454,19 +18454,19 @@ msgstr "处理器频率"
 
 #: inc/notificationtargetreservation.class.php:45
 msgid "New reservation"
-msgstr "新预订"
+msgstr "新建预借"
 
 #: inc/notificationtargetreservation.class.php:46
 msgid "Update of a reservation"
-msgstr "预订更新"
+msgstr "更新预借"
 
 #: inc/notificationtargetreservation.class.php:47
 msgid "Deletion of a reservation"
-msgstr "预订删除"
+msgstr "删除预借"
 
 #: inc/notificationtargetreservation.class.php:48
 msgid "Reservation expired"
-msgstr "预订过期"
+msgstr "预借过期"
 
 #: inc/notificationtargetreservation.class.php:147
 msgid "URL of item reserved"
@@ -18480,7 +18480,7 @@ msgstr "计算机型号词典"
 #: inc/domainrelation.class.php:57
 msgid "Domain relation"
 msgid_plural "Domains relations"
-msgstr[0] ""
+msgstr[0] "域关系"
 
 #: inc/projecttype.class.php:46
 msgid "Project type"
@@ -18555,7 +18555,7 @@ msgstr "主要的"
 
 #: inc/wifinetwork.class.php:72
 msgid "Repeater"
-msgstr "中继器"
+msgstr "重复"
 
 #: inc/wifinetwork.class.php:73
 msgid "Secondary"
@@ -19044,7 +19044,7 @@ msgstr "关闭 (Esc)"
 
 #: inc/html.class.php:5037
 msgid "Share"
-msgstr ""
+msgstr "分享"
 
 #: inc/html.class.php:5045
 msgid "Zoom in/out"
@@ -19056,7 +19056,7 @@ msgstr ""
 
 #: inc/html.class.php:5058
 msgid "Next (arrow right)"
-msgstr ""
+msgstr "下一步（向右箭头）"
 
 #: inc/html.class.php:5580
 msgid "Attach file by drag & drop or copy & paste in editor or "
@@ -19120,7 +19120,7 @@ msgstr "禁用搜索"
 
 #: inc/html.class.php:7326
 msgid "Global Kanban"
-msgstr "全球看板"
+msgstr "全局看板"
 
 #: inc/html.class.php:7614
 #, php-format
@@ -19172,7 +19172,7 @@ msgstr "不能改变此属性。它继承了父对象。"
 
 #: inc/commondbtm.class.php:2767
 msgid "You are not allowed to change the visibility flag for child entities."
-msgstr "您不允许在子实体上改变可见标志"
+msgstr "您不允许在子组织上改变可见标志。"
 
 #: inc/commondbtm.class.php:2771
 msgid "Flag change forbidden. Linked items found."
@@ -19180,7 +19180,7 @@ msgstr "禁止更改标记。发现有连接的项目。"
 
 #: inc/commondbtm.class.php:2775
 msgid "Change visibility in child entities"
-msgstr "改变子实体的可见性"
+msgstr "改变子组织的可见性"
 
 #: inc/commondbtm.class.php:3922
 msgctxt "button"
@@ -19321,7 +19321,7 @@ msgstr "知识库翻译"
 
 #: inc/config.class.php:366
 msgid "Translation of reminders"
-msgstr ""
+msgstr "提醒翻译"
 
 #: inc/config.class.php:372
 msgid "Dynamic display"
@@ -19418,7 +19418,7 @@ msgstr "自动字段（用*标记）"
 
 #: inc/config.class.php:549
 msgid "By entity"
-msgstr "按实体"
+msgstr "按组织"
 
 #: inc/config.class.php:552
 msgid "Restrict printer management"
@@ -19434,7 +19434,7 @@ msgstr "自动传输电脑"
 
 #: inc/config.class.php:593
 msgid "Template for the automatic transfer of computers in another entity"
-msgstr "在其他实体中自动传输电脑的模板"
+msgstr "在其他组织中自动传输电脑的模板"
 
 #: inc/config.class.php:597
 msgid "No automatic transfer"
@@ -19761,23 +19761,23 @@ msgstr "提示（解锁的请求者将是通知发送者）"
 
 #: inc/config.class.php:1408
 msgid "Dashboards"
-msgstr ""
+msgstr "看板"
 
 #: inc/config.class.php:1411
 msgid "Default for central"
-msgstr ""
+msgstr "central默认值"
 
 #: inc/config.class.php:1416
 msgid "Default for Assets"
-msgstr ""
+msgstr "资产默认值"
 
 #: inc/config.class.php:1425
 msgid "Default for Assistance"
-msgstr ""
+msgstr "Assistance默认值 "
 
 #: inc/config.class.php:1430
 msgid "Default for tickets (mini dashboard)"
-msgstr ""
+msgstr "工单默认值 (迷你看板)"
 
 #: inc/config.class.php:1464 inc/config.class.php:3585
 msgid "Password minimum length"
@@ -19998,7 +19998,7 @@ msgstr "文件和目录的创建和删除-完美！"
 
 #: inc/config.class.php:3110
 msgid "You are using a development version, be careful!"
-msgstr "您正使用开发版，请自行折腾或可以加扣群206239089爱好者交流群共同探讨！"
+msgstr "您正使用开发版，请自行折腾或可以加扣群1097440406爱好者交流群共同探讨！"
 
 #: inc/config.class.php:3111
 msgid "I know I am using a unstable version."
@@ -20336,11 +20336,11 @@ msgstr[0] "案例"
 #: inc/entity.class.php:155
 msgid "Entity"
 msgid_plural "Entities"
-msgstr[0] "实体"
+msgstr[0] "组织"
 
 #: inc/entity.class.php:258
 msgid "You can't add an entity without name"
-msgstr "添加的实体必须填写名称"
+msgstr "添加的组织必须填写名称"
 
 #: inc/entity.class.php:353
 msgid "UI customization"
@@ -20348,15 +20348,15 @@ msgstr "用户界面定制"
 
 #: inc/entity.class.php:677 inc/entity.class.php:1529
 msgid "LDAP directory information attribute representing the entity"
-msgstr "实体以LDAP目录信息属性表示"
+msgstr "组织以LDAP目录信息属性表示"
 
 #: inc/entity.class.php:687 inc/entity.class.php:1522
 msgid "Information in inventory tool (TAG) representing the entity"
-msgstr "实体以库存信息工具（TAG）表示"
+msgstr "组织以库存信息工具（TAG）表示"
 
 #: inc/entity.class.php:697 inc/entity.class.php:1547
 msgid "LDAP directory of an entity"
-msgstr "LDAP目录中的一个实体"
+msgstr "LDAP目录中的一个组织"
 
 #: inc/entity.class.php:706
 msgid "Search filter (if needed)"
@@ -20471,15 +20471,15 @@ msgstr "满意度调查的触发率"
 #. TRANS: software in plural
 #: inc/entity.class.php:1149 inc/entity.class.php:1715
 msgid "Entity for software creation"
-msgstr "软件创建的实体"
+msgstr "软件创建的组织"
 
 #: inc/entity.class.php:1188
 msgid "to see the entity and its sub-entities"
-msgstr "显示实体及从属实体"
+msgstr "显示组织及从属组织"
 
 #: inc/entity.class.php:1218
 msgid "Load more entities..."
-msgstr "加载更多实体"
+msgstr "加载更多组织"
 
 #. TRANS: %s is the user login
 #: inc/entity.class.php:1315
@@ -20504,17 +20504,17 @@ msgstr "海拔"
 
 #: inc/entity.class.php:1514
 msgid "Values for the generic rules for assignment to entities"
-msgstr "实体分配值的一般规则。"
+msgstr "组织分配值的一般规则。"
 
 #: inc/entity.class.php:1518
 msgid ""
 "These parameters are used as actions in generic rules for assignment to "
 "entities"
-msgstr "这些参数作为一般规则执行实体指派。"
+msgstr "这些参数作为一般规则执行组织指派。"
 
 #: inc/entity.class.php:1536
 msgid "Mail domain surrogates entity"
-msgstr "邮件域代理实体"
+msgstr "邮件域代理组织"
 
 #: inc/entity.class.php:1543
 msgid "Values used in the interface to search users from a LDAP directory"
@@ -20522,7 +20522,7 @@ msgstr "LDAP目录搜索用户界面中使用的值"
 
 #: inc/entity.class.php:1557
 msgid "LDAP filter associated to the entity (if necessary)"
-msgstr "LDAP筛选关联到实体（如果需要）"
+msgstr "LDAP筛选关联到组织（如果需要）"
 
 #: inc/entity.class.php:1601
 msgid "Autofill dates for financial and administrative information"
@@ -20569,7 +20569,7 @@ msgstr "复制交货日期"
 #: inc/entity.class.php:1718 inc/entity.class.php:3191
 #: inc/entity.class.php:3327
 msgid "No change of entity"
-msgstr "实体没有变化"
+msgstr "组织没有变化"
 
 #: inc/entity.class.php:1874
 msgid "Alarms options"
@@ -20720,11 +20720,11 @@ msgstr ""
 #: inc/itilcategory.class.php:277
 msgid "ITIL category"
 msgid_plural "ITIL categories"
-msgstr[0] ""
+msgstr[0] "ITIL 类别"
 
 #: inc/itilcategory.class.php:332 inc/itilcategory.class.php:346
 msgid "Code representing the ticket category is already used"
-msgstr ""
+msgstr "表示工单类别的代码已被使用"
 
 #: inc/commonitilobject.class.php:1251 inc/commonitilobject.class.php:1269
 #: inc/commonitilobject.class.php:1289 inc/commonitilobject.class.php:1299
@@ -21041,7 +21041,7 @@ msgstr "# %s 描述"
 #: inc/commonitilobject.class.php:7612
 #, php-format
 msgid "%1$s will be added in entity %2$s"
-msgstr ""
+msgstr "%1$s 将添加到组织 %2$s"
 
 #: inc/commonitilobject.class.php:7618
 #, php-format
@@ -21137,7 +21137,7 @@ msgstr "打印机型号词典"
 
 #: inc/reservation.class.php:289
 msgid "The required item is already reserved for this timeframe"
-msgstr "需要的项目在该时段已经被预订"
+msgstr "需要的项目在该时段已经被预借"
 
 #: inc/reservation.class.php:293
 msgid "Unknown error"
@@ -21153,11 +21153,11 @@ msgstr "设备暂时不可用"
 
 #: inc/reservation.class.php:452
 msgid "All reservable devices"
-msgstr "所有可预订设备"
+msgstr "所有可预借的设备"
 
 #: inc/reservation.class.php:569
 msgid "Reserve"
-msgstr "预订"
+msgstr "预借"
 
 #: inc/reservation.class.php:732
 msgid "Repetition"
@@ -21190,17 +21190,17 @@ msgstr "删除所有重复"
 #: inc/reservation.class.php:1096 inc/reservation.class.php:1098
 #: inc/reservation.class.php:1257
 msgid "Current and future reservations"
-msgstr "当前和将来的预订"
+msgstr "当前和未来的预借"
 
 #: inc/reservation.class.php:1104 inc/reservation.class.php:1163
 #: inc/reservation.class.php:1261 inc/reservation.class.php:1345
 msgid "No reservation"
-msgstr "没有预订"
+msgstr "无预借"
 
 #: inc/reservation.class.php:1155 inc/reservation.class.php:1157
 #: inc/reservation.class.php:1341
 msgid "Past reservations"
-msgstr "过去的预订"
+msgstr "过去的预借"
 
 #: inc/state.class.php:90
 msgid "Keep status"
@@ -21402,7 +21402,7 @@ msgstr "创建 %1$s 作者 %2$s"
 #: inc/appliance.class.php:60
 msgid "Appliance"
 msgid_plural "Appliances"
-msgstr[0] "设备"
+msgstr[0] "电器"
 
 #: inc/appliance.class.php:138
 msgid "Technician in charge of the appliance"
@@ -21544,7 +21544,7 @@ msgstr "尝试重新加载"
 #: inc/passivedcequipmentmodel.class.php:41
 msgid "Passive device model"
 msgid_plural "Passive device models"
-msgstr[0] ""
+msgstr[0] "无源设备型号"
 
 #: inc/reminder.class.php:71
 msgid "Reminder"
@@ -21563,7 +21563,7 @@ msgstr "添加到日程表"
 #: inc/passivedcequipmenttype.class.php:42
 msgid "Passive device type"
 msgid_plural "Passive device types"
-msgstr[0] ""
+msgstr[0] "无源设备类别"
 
 #: inc/auth.class.php:144 inc/auth.class.php:278 inc/auth.class.php:461
 msgid "Incorrect username or password"
@@ -21769,7 +21769,7 @@ msgstr[0] "机架"
 
 #: inc/rack.class.php:239
 msgid "Position in room"
-msgstr "空间位置"
+msgstr "房间位置"
 
 #: inc/rack.class.php:263
 msgid "Door orientation in room"
@@ -21978,7 +21978,7 @@ msgstr "即使关联了项目也永久删除"
 
 #: inc/massiveaction.class.php:581
 msgid "Amend comment"
-msgstr ""
+msgstr "修正意见"
 
 #: inc/massiveaction.class.php:586
 msgid "Add note"
@@ -22079,7 +22079,7 @@ msgstr "添加 date_creation 至 %s"
 #: install/empty_data.php:2075 install/empty_data.php:2077
 #: install/update_0831_084.php:270 install/update_0831_084.php:271
 msgid "Root entity"
-msgstr "根实体"
+msgstr "根组织"
 
 #: install/update_051_06.php:149
 msgid "Renting"
@@ -22230,7 +22230,7 @@ msgstr ""
 
 #: install/update_94_95/dashboards.php:342
 msgid "Mini tickets dashboard"
-msgstr ""
+msgstr "迷你工单看板"
 
 #: install/install.php:113
 msgid "Unofficial translations are also available"
@@ -22262,7 +22262,7 @@ msgid ""
 "Checking of the compatibility of your environment with the execution of GLPI"
 msgstr ""
 "以下将逐条检查您的服务器环境是否符合GLPI的运行要求，如遇到依赖环境缺失可尝试登入服务器在命令行下运行composer install --no-"
-"dev自动补全，或加扣群206239089寻求热心爱好者的帮助。"
+"dev自动补全，或加扣群1097440406寻求热心爱好者的帮助。"
 
 #: install/install.php:177 install/install.php:196 install/install.php:562
 msgid "Do you want to continue?"
@@ -22470,7 +22470,7 @@ msgstr ""
 #: js/dashboard.js:918
 #, javascript-format
 msgid "Are you sure you want to delete the dashboard %s ?"
-msgstr ""
+msgstr "您确定要删除这看板 %s ?"
 
 #: js/impact.js:1309
 msgid "Go to"
@@ -22478,15 +22478,15 @@ msgstr ""
 
 #: js/impact.js:1310
 msgid "Open this element in a new tab"
-msgstr ""
+msgstr "在新选项卡中打开此元素"
 
 #: js/impact.js:1316
 msgid "Show ongoing tickets"
-msgstr ""
+msgstr "显示正在进行中的工单"
 
 #: js/impact.js:1317
 msgid "Show ongoing tickets for this item"
-msgstr ""
+msgstr "显示此元素正在进行中的工单"
 
 #: js/impact.js:1323
 msgid "Group properties..."
@@ -22494,7 +22494,7 @@ msgstr ""
 
 #: js/impact.js:1324
 msgid "Set name and/or color for this group"
-msgstr ""
+msgstr "设置此群组的名称和/或颜色"
 
 #: js/impact.js:1331
 msgid "Remove from group"
@@ -22502,11 +22502,11 @@ msgstr ""
 
 #: js/impact.js:1332
 msgid "Remove this asset from the group"
-msgstr ""
+msgstr "从群组中删除此资产"
 
 #: js/impact.js:1358
 msgid "This asset already exists."
-msgstr ""
+msgstr "此资产已存在。"
 
 #: js/impact.js:1377
 msgid "Unexpected error."
@@ -22522,15 +22522,15 @@ msgstr ""
 
 #: js/impact.js:2291
 msgid "Draw a line between two assets to add an impact relation"
-msgstr ""
+msgstr "在两个资产之间画一条线以添加影响关系"
 
 #: js/impact.js:2298
 msgid "Click on an element to remove it from the network"
-msgstr ""
+msgstr "单击某个元素以将其从网络中删除"
 
 #: js/impact.js:2306
 msgid "Draw a square containing the assets you wish to group"
-msgstr ""
+msgstr "绘制一个包含要分组的资产的正方形"
 
 #: js/impact.js:2438
 msgid "Requests"
@@ -22554,7 +22554,7 @@ msgstr ""
 
 #: js/kanban.js:341
 msgid "Search or filter results"
-msgstr ""
+msgstr "搜索或筛选结果"
 
 #: js/kanban.js:343
 msgid "Add column"
@@ -22587,7 +22587,7 @@ msgstr ""
 
 #: js/kanban.js:1683
 msgid "Toggle collapse"
-msgstr ""
+msgstr "切换至折叠"
 
 #: js/planning.js:238
 msgid "Clone"
@@ -22595,15 +22595,15 @@ msgstr "克隆"
 
 #: js/planning.js:312
 msgid "Make a choice"
-msgstr ""
+msgstr "作出选择"
 
 #: js/planning.js:313
 msgid "Delete the whole serie of the recurrent event"
-msgstr ""
+msgstr "删除重复事件的整个系列"
 
 #: js/planning.js:314
 msgid "or just add an exception by deleting this instance?"
-msgstr ""
+msgstr "或者只是通过删除此实例来添加异常？"
 
 #: js/planning.js:322 js/planning.js:443 js/planning.js:491
 msgid "Serie"
@@ -22621,7 +22621,7 @@ msgstr ""
 msgid ""
 "The resized event is a recurring event. Do you want to change the serie or "
 "instance ?"
-msgstr ""
+msgstr "调整大小的事件是一个重复事件。是否要更改序列或实例？"
 
 #: js/planning.js:486
 msgid "Recurring event dragged"
@@ -22631,4 +22631,4 @@ msgstr ""
 msgid ""
 "The dragged event is a recurring event. Do you want to move the serie or "
 "instance ?"
-msgstr ""
+msgstr "拖动的事件是一个重复事件。是否要移动序列或实例？"

@@ -10,6 +10,7 @@
 # DOMBRE Julien <moyo@indepnet.net>, 2020
 # Nikolaos Karanikolas <karanik@gmail.com>, 2021
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2021
+# John Boudouris <johnboudouris@gmail.com>, 2022
 # 
 #, fuzzy
 msgid ""
@@ -18,7 +19,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-10-26 10:07+0200\n"
 "PO-Revision-Date: 2019-04-24 11:58+0000\n"
-"Last-Translator: alexandre delaunay <delaunay.alexandre@gmail.com>, 2021\n"
+"Last-Translator: John Boudouris <johnboudouris@gmail.com>, 2022\n"
 "Language-Team: Greek (Greece) (https://www.transifex.com/glpi/teams/1637/el_GR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -2356,7 +2357,7 @@ msgstr[1] ""
 #: front/item_softwarelicense.form.php:51
 #, php-format
 msgid "%s associates an item and a license"
-msgstr ""
+msgstr "Το %s συσχετίζει ένα αντικείμενο και μια άδεια χρήσης"
 
 #: front/report.networking.php:48 inc/report.class.php:89
 msgid "Network report"
@@ -2605,12 +2606,12 @@ msgstr "%s εκκαθαρίζει μια έγκριση"
 #: front/lock.form.php:56
 #, php-format
 msgid "You do not have rights to restore %s item."
-msgstr ""
+msgstr "Δεν έχετε δικαίωμα να επαναφέρετε το αντικείμενο %s."
 
 #: front/lock.form.php:82
 #, php-format
 msgid "You do not have rights to delete %s item."
-msgstr ""
+msgstr "Δεν έχετε δικαίωμα να διαγράψτε το αντικείμενο %s."
 
 #: front/search.php:36 inc/mapgeolocation.class.php:92
 #: inc/mapgeolocation.class.php:93 inc/html.class.php:6976
@@ -2794,12 +2795,12 @@ msgstr "Δείξε γραφικά"
 #: front/stat.tracking.php:184 front/stat.location.php:175
 #, php-format
 msgid "Opened %1$s (%2$s)"
-msgstr ""
+msgstr "Άνοιξε %1$s (%2$s)"
 
 #: front/stat.tracking.php:210 front/stat.location.php:200
 #, php-format
 msgid "Solved %1$s (%2$s)"
-msgstr ""
+msgstr "Επιλύθηκε %1$s (%2$s)"
 
 #: front/stat.tracking.php:236
 #, php-format
@@ -2809,7 +2810,7 @@ msgstr ""
 #: front/stat.tracking.php:263 front/stat.location.php:250
 #, php-format
 msgid "Closed %1$s (%2$s)"
-msgstr ""
+msgstr "Έκλεισε %1$s (%2$s)"
 
 #: front/stat.tracking.php:290 front/stat.location.php:275
 #, php-format
@@ -2864,11 +2865,11 @@ msgstr "%s εγκαθιστά λογισμικό"
 
 #: front/item_softwareversion.form.php:57
 msgid "Please select a software!"
-msgstr ""
+msgstr "Παρακαλώ επιλέξτε λογισμικό!"
 
 #: front/item_softwareversion.form.php:59
 msgid "Please select a version!"
-msgstr ""
+msgstr "Παρακαλώ επιλέξτε έκδοση!"
 
 #. TRANS: %s is the user login
 #: front/networkport_vlan.form.php:47 front/ipnetwork_vlan.form.php:50
@@ -3123,7 +3124,7 @@ msgstr "Πολύ χαμηλό"
 
 #: front/helpdesk.php:109
 msgid "Describe your issue"
-msgstr ""
+msgstr "Περιγράψτε το πρόβλημα σας"
 
 #: front/helpdesk.php:111 inc/problem.class.php:1599
 #: inc/contractcost.class.php:114 inc/contact.class.php:411
@@ -3169,7 +3170,7 @@ msgstr "Περιεχόμενα"
 #: front/helpdesk.php:120
 msgctxt "button"
 msgid "post"
-msgstr ""
+msgstr "δημοσίευση"
 
 #: front/allassets.php:43 inc/stat.class.php:1466 inc/stat.class.php:1478
 #: inc/stat.class.php:1487 inc/project.class.php:1965
@@ -3289,7 +3290,7 @@ msgstr ""
 
 #: front/impactcsv.php:80 inc/impact.class.php:283
 msgid "Relation"
-msgstr ""
+msgstr "Συσχετισμός"
 
 #: front/impactcsv.php:81 inc/appliance_item.class.php:184
 msgid "Itemtype"
@@ -3301,7 +3302,7 @@ msgstr ""
 
 #: front/impactcsv.php:91 inc/impact.class.php:260
 msgid "Impacted by"
-msgstr ""
+msgstr "Επηρεάζεται από"
 
 #: front/report.contract.list.php:45
 msgid "List of the hardware under contract"
@@ -3971,7 +3972,7 @@ msgstr "Οι κανόνες που χρησιμοποιούν το αντικε�
 #: tests/functionnal/Planning.php:71
 #, php-format
 msgid "Copy of %s"
-msgstr ""
+msgstr "Αντίγραφο του %s"
 
 #: inc/rulemailcollectorcollection.class.php:47
 #: inc/rulemailcollector.class.php:58 inc/profile.class.php:1486
@@ -4399,7 +4400,7 @@ msgstr "Υποομάδες"
 
 #: inc/problem.class.php:1864
 msgid "New problem for this item..."
-msgstr ""
+msgstr "Νέο αίτημα γι' αυτό το στοιχείο..."
 
 #. TRANS : %d is the number of problems
 #: inc/problem.class.php:1898
@@ -4585,7 +4586,7 @@ msgstr ""
 
 #: inc/purgelogs.class.php:70
 msgid "Purge history"
-msgstr ""
+msgstr "Ιστορικό διαγραφών"
 
 #: inc/calendar.class.php:72 inc/planningexternaleventtemplate.class.php:75
 #: inc/levelagreement.class.php:463 inc/dropdown.class.php:926
@@ -4677,7 +4678,7 @@ msgstr ""
 
 #: inc/computerantivirus.class.php:213
 msgid "Is up to date"
-msgstr ""
+msgstr "Είναι ενημερωμένο"
 
 #: inc/computerantivirus.class.php:240 inc/computerantivirus.class.php:329
 #: inc/computerantivirus.class.php:402 inc/domain.class.php:121
@@ -4705,15 +4706,15 @@ msgstr "Αυτοματοποιημένη απογραφή"
 
 #: inc/computerantivirus.class.php:313 inc/computerantivirus.class.php:401
 msgid "Up to date"
-msgstr ""
+msgstr "Ενημερωμένο"
 
 #: inc/computerantivirus.class.php:319 inc/computerantivirus.class.php:398
 msgid "Antivirus version"
-msgstr ""
+msgstr "Έκδοση Antivirus"
 
 #: inc/computerantivirus.class.php:367
 msgid "Add an antivirus"
-msgstr ""
+msgstr "Προσθήκη antivirus"
 
 #: inc/dbconnection.class.php:47 inc/config.class.php:728
 #: inc/config.class.php:1813 inc/config.class.php:2284
@@ -5199,7 +5200,7 @@ msgstr[1] ""
 #: inc/domain_item.class.php:509 inc/commonitiltask.class.php:783
 #: inc/appliance.class.php:287
 msgid "Technician in charge"
-msgstr ""
+msgstr "Υπεύθυνος τεχνικός"
 
 #: inc/domain.class.php:139 inc/notificationtargetproblem.class.php:198
 #: inc/supplier.class.php:478 inc/domain_item.class.php:62
@@ -5230,7 +5231,7 @@ msgstr "Άλλοι"
 #: inc/domain_item.class.php:508 inc/commonitiltask.class.php:804
 #: inc/appliance.class.php:297
 msgid "Group in charge"
-msgstr ""
+msgstr "Υπεύθυνη ομάδα"
 
 #: inc/domain.class.php:200
 msgid "Entity-ID"
@@ -5238,7 +5239,7 @@ msgstr ""
 
 #: inc/domain.class.php:332 inc/certificate.class.php:524
 msgid "Empty for infinite"
-msgstr ""
+msgstr "Κενό για απεριόριστο"
 
 #: inc/domain.class.php:441 inc/networkport_vlan.class.php:140
 #: inc/networkport_vlan.class.php:369 inc/commondbconnexity.class.php:476
@@ -5284,7 +5285,7 @@ msgstr ""
 #: inc/planningexternalevent.class.php:313
 #: inc/features/planningevent.class.php:937
 msgid "Repeat"
-msgstr ""
+msgstr "Επανάληψη"
 
 #: inc/ola.class.php:51 inc/ticket.class.php:2908 inc/ticket.class.php:2916
 #: inc/ticket.class.php:2930 inc/ticket.class.php:2943
@@ -5492,27 +5493,27 @@ msgstr ""
 
 #: inc/savedsearch_alert.class.php:387
 msgid "less than"
-msgstr ""
+msgstr "Μικρότερο από"
 
 #: inc/savedsearch_alert.class.php:391
 msgid "less or equals than"
-msgstr ""
+msgstr "Μικρότερο ή ίσο από"
 
 #: inc/savedsearch_alert.class.php:395
 msgid "equals to"
-msgstr ""
+msgstr "ίσο με"
 
 #: inc/savedsearch_alert.class.php:399
 msgid "not equals to"
-msgstr ""
+msgstr "όχι ίσο με"
 
 #: inc/savedsearch_alert.class.php:403
 msgid "greater or equals than"
-msgstr ""
+msgstr "Μεγαλύτερο ή ίσο από"
 
 #: inc/savedsearch_alert.class.php:407
 msgid "greater than"
-msgstr ""
+msgstr "Μεγαλύτερο από"
 
 #: inc/savedsearch_alert.class.php:417
 #, php-format
@@ -5751,7 +5752,7 @@ msgstr[1] ""
 #: inc/item_softwareversion.class.php:1047
 #: inc/item_softwareversion.class.php:1193
 msgid "Installation date"
-msgstr ""
+msgstr "Ημερομηνία εγκατάστασης"
 
 #: inc/alert.class.php:107 inc/alert.class.php:144 inc/alert.class.php:174
 #: inc/contract.class.php:1717 inc/infocom.class.php:603
@@ -5821,15 +5822,15 @@ msgstr "Λεξικό Service Pack"
 
 #: inc/notificationtargetprojecttask.class.php:52
 msgid "New project task"
-msgstr ""
+msgstr "Νέα εργασία έργου"
 
 #: inc/notificationtargetprojecttask.class.php:53
 msgid "Update of a project task"
-msgstr ""
+msgstr "Ενημέρωση εργασίας έργου"
 
 #: inc/notificationtargetprojecttask.class.php:54
 msgid "Deletion of a project task"
-msgstr ""
+msgstr "Διαγραφή εργασίας έργου"
 
 #: inc/notificationtargetprojecttask.class.php:62
 msgid "Project team user"
@@ -6161,7 +6162,7 @@ msgstr "Λεξικό τύπων τηλεφώνων"
 
 #: inc/ruledictionnaryoperatingsystemarchitecturecollection.class.php:41
 msgid "Dictionnary of operating system architectures"
-msgstr ""
+msgstr "Κατάλογος αρχιτεκτονικών λειτουργικών συστημάτων"
 
 #: inc/contract_supplier.class.php:136 inc/contract_item.class.php:315
 msgid "Add a contract"
@@ -6234,27 +6235,27 @@ msgstr ""
 #: inc/commondcmodeldropdown.class.php:68
 #: inc/commondcmodeldropdown.class.php:165 inc/item_rack.class.php:530
 msgid "Weight"
-msgstr ""
+msgstr "Βάρος"
 
 #: inc/commondcmodeldropdown.class.php:78
 #: inc/commondcmodeldropdown.class.php:175
 msgid "Required units"
-msgstr ""
+msgstr "Αμτικείμενα που απαιτούνται"
 
 #: inc/commondcmodeldropdown.class.php:86
 #: inc/commondcmodeldropdown.class.php:185 inc/rack.class.php:302
 msgid "Depth"
-msgstr ""
+msgstr "Βάθος"
 
 #: inc/commondcmodeldropdown.class.php:94
 #: inc/commondcmodeldropdown.class.php:194
 msgid "Power connections"
-msgstr ""
+msgstr "Συνδέσεις ρεύματος"
 
 #: inc/commondcmodeldropdown.class.php:102
 #: inc/commondcmodeldropdown.class.php:204
 msgid "Power consumption"
-msgstr ""
+msgstr "Ενεργειακή κατανάλωση"
 
 #: inc/commondcmodeldropdown.class.php:103
 #: inc/commondcmodeldropdown.class.php:113
@@ -6263,7 +6264,7 @@ msgstr ""
 
 #: inc/commondcmodeldropdown.class.php:112 inc/rack.class.php:307
 msgid "Max. power (in watts)"
-msgstr ""
+msgstr "Μεγ. ενέργεια (σε watt)"
 
 #: inc/commondcmodeldropdown.class.php:122
 #: inc/commondcmodeldropdown.class.php:214
@@ -6286,19 +6287,19 @@ msgstr ""
 
 #: inc/commondcmodeldropdown.class.php:325
 msgid "1"
-msgstr ""
+msgstr "1"
 
 #: inc/commondcmodeldropdown.class.php:326
 msgid "1/2"
-msgstr ""
+msgstr "1/2"
 
 #: inc/commondcmodeldropdown.class.php:327
 msgid "1/3"
-msgstr ""
+msgstr "1/3"
 
 #: inc/commondcmodeldropdown.class.php:328
 msgid "1/4"
-msgstr ""
+msgstr "1/4"
 
 #: inc/notificationevent.class.php:198
 #, php-format
@@ -6829,11 +6830,11 @@ msgstr ""
 #: inc/apiclient.class.php:124 inc/apiclient.class.php:132
 #: inc/apiclient.class.php:225
 msgid "IPv4 address range"
-msgstr ""
+msgstr "Εύρος διευθύνσεων IPv4"
 
 #: inc/apiclient.class.php:140 inc/apiclient.class.php:236
 msgid "IPv6 address"
-msgstr ""
+msgstr "Διεύθυνση IPv6"
 
 #: inc/apiclient.class.php:149 inc/apiclient.class.php:244
 msgid "Application token"
@@ -6916,7 +6917,7 @@ msgstr[1] ""
 #: inc/planningeventcategory.class.php:48 inc/impact.class.php:1532
 #: inc/projectstate.class.php:58 inc/projectstate.class.php:75
 msgid "Color"
-msgstr ""
+msgstr "Χρώμα"
 
 #: inc/devicegraphiccard.class.php:43
 msgid "Graphics card"
@@ -7011,7 +7012,7 @@ msgstr[1] ""
 #: inc/domainrecord.class.php:102 inc/domainrecord.class.php:378
 #: inc/domainrecord.class.php:508
 msgid "TTL"
-msgstr ""
+msgstr "TTL"
 
 #: inc/domainrecord.class.php:109 inc/domainrecord.class.php:354
 #: inc/dashboard/grid.class.php:693
@@ -7269,7 +7270,7 @@ msgstr "Εικόνα"
 #: inc/authldap.class.php:828 inc/authldap.class.php:1166
 #: inc/user.class.php:2397 inc/user.class.php:3454
 msgid "Responsible"
-msgstr ""
+msgstr "Υπεύθυνος"
 
 #: inc/authldap.class.php:833
 msgid "You can use a field name or an expression using various %{fieldname}"
@@ -7406,7 +7407,7 @@ msgstr "Διαφυλαξη"
 
 #: inc/authldap.class.php:3564
 msgid "Put in trashbin"
-msgstr ""
+msgstr "Στον κάδο απορριμάτων"
 
 #: inc/authldap.class.php:3565 inc/authldap.class.php:3567
 msgid "Withdraw dynamic authorizations and groups"
@@ -7658,7 +7659,7 @@ msgstr ""
 
 #: inc/levelagreement.class.php:196 inc/levelagreement.class.php:462
 msgid "Maximum time"
-msgstr ""
+msgstr "Μέγιστος χρόνος"
 
 #: inc/levelagreement.class.php:200
 msgid "Minute"
@@ -7753,7 +7754,7 @@ msgstr[1] ""
 #: inc/ruleticket.class.php:721 inc/slalevel.class.php:173
 #: tests/functionnal/Rule.php:303
 msgid "Time to own"
-msgstr ""
+msgstr "Χρόνος ανάθεσης"
 
 #: inc/itilfollowuptemplate.class.php:49 inc/itilfollowup.class.php:849
 msgid "Followup template"
@@ -7977,7 +7978,7 @@ msgstr ""
 
 #: inc/project.class.php:224 inc/project.class.php:243
 msgid "My tasks"
-msgstr ""
+msgstr "Οι εργασίες μου"
 
 #: inc/project.class.php:514 inc/project.class.php:1448
 #: inc/notificationtargetproject.class.php:590
@@ -8194,21 +8195,21 @@ msgstr ""
 
 #: inc/project.class.php:2288
 msgid "Subproject"
-msgstr ""
+msgstr "Υποέργο"
 
 #: inc/project.class.php:2288
 msgid "Subtask"
-msgstr ""
+msgstr "Υποεργασία"
 
 #: inc/project.class.php:2292
 #, php-format
 msgid "%s of %s"
-msgstr ""
+msgstr "%s από %s"
 
 #: inc/project.class.php:2311
 #, php-format
 msgid "%s / %s tasks complete"
-msgstr ""
+msgstr "%s / %s ολοκληρωμένες εργασίες"
 
 #: inc/item_operatingsystem.class.php:47
 msgid "Item operating system"
@@ -8241,7 +8242,7 @@ msgstr ""
 
 #: inc/item_operatingsystem.class.php:450
 msgid "Operating System"
-msgstr ""
+msgstr "Λειτουργικό Σύστημα"
 
 #: inc/notificationajax.class.php:90
 msgid "Error inserting browser notification to queue"
@@ -8313,22 +8314,22 @@ msgstr "Ελεύθερος χώρος"
 
 #: inc/item_disk.class.php:225 inc/item_disk.class.php:336
 msgid "Encryption"
-msgstr ""
+msgstr "Κρυπτογράφηση"
 
 #: inc/item_disk.class.php:228 inc/item_disk.class.php:380
 #: inc/item_disk.class.php:604
 msgid "Encryption tool"
-msgstr ""
+msgstr "Εργαλείο κρυπτογράφησης"
 
 #: inc/item_disk.class.php:234 inc/item_disk.class.php:382
 #: inc/item_disk.class.php:617
 msgid "Encryption algorithm"
-msgstr ""
+msgstr "Αλγόριθμος κρυπτογράφησης"
 
 #: inc/item_disk.class.php:237 inc/item_disk.class.php:384
 #: inc/item_disk.class.php:630
 msgid "Encryption type"
-msgstr ""
+msgstr "Τύπος κρυπτογράφησης"
 
 #: inc/item_disk.class.php:309
 msgid "Add a volume"
@@ -8340,23 +8341,23 @@ msgstr "Ελεύθερο ποσοστό"
 
 #: inc/item_disk.class.php:377
 msgid "Partial encryption"
-msgstr ""
+msgstr "Μερική κρυπτογράφηση"
 
 #: inc/item_disk.class.php:589
 msgid "Encryption status"
-msgstr ""
+msgstr "Κατάσταση κρυπτογράφησης"
 
 #: inc/item_disk.class.php:649
 msgid "Not encrypted"
-msgstr ""
+msgstr "Μη κρυπτογραφημένο"
 
 #: inc/item_disk.class.php:650
 msgid "Partially encrypted"
-msgstr ""
+msgstr "Μερικώς κρυπτογραφημένο"
 
 #: inc/item_disk.class.php:651
 msgid "Encrypted"
-msgstr ""
+msgstr "Κρυπτογραφημένο"
 
 #: inc/devicepowersupplymodel.class.php:44
 msgid "Device power supply model"
@@ -8463,11 +8464,11 @@ msgstr[1] ""
 
 #: inc/notification_notificationtemplate.class.php:130
 msgid "Add a template"
-msgstr ""
+msgstr "Προσθήκη πρότυπου"
 
 #: inc/notification_notificationtemplate.class.php:168
 msgid "No template selected"
-msgstr ""
+msgstr "Δεν έχει επιλεγεί πρότυπο"
 
 #: inc/notification_notificationtemplate.class.php:399
 msgid "Browser"
@@ -8988,7 +8989,7 @@ msgstr "Προεπιλεγμένη οντότητα"
 
 #: inc/ruleright.class.php:367 inc/user.class.php:2383
 msgid "Default group"
-msgstr ""
+msgstr "Προεπιλεγμένη ομάδα"
 
 #: inc/ruleright.class.php:374 inc/profile.class.php:657
 #: inc/profile.class.php:1777 inc/ruleticket.class.php:533
@@ -8998,7 +8999,7 @@ msgstr "Προεπιλέγμένο προφιλ"
 
 #: inc/ruleright.class.php:378 inc/config.class.php:1254
 msgid "Timezone"
-msgstr ""
+msgstr "Ζώνη ώρας"
 
 #: inc/ruleright.class.php:411
 msgid "LDAP criteria"
@@ -9093,23 +9094,23 @@ msgstr ""
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:129
 msgid "unknown"
-msgstr ""
+msgstr "άγνωστο"
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:131
 msgid "Possible values are:"
-msgstr ""
+msgstr "Πιθανές τιμές:"
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:193
 msgid "No active LDAP server found."
-msgstr ""
+msgstr "Δε βρέθηκαν ενεργοί LDAP διακομιστές."
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:219
 msgid "LDAP servers"
-msgstr ""
+msgstr "LDAP διακομιστές"
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:220
 msgid "LDAP filter"
-msgstr ""
+msgstr "Φίλτρο LDAP"
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:230
 #: inc/console/security/changekeycommand.class.php:84
@@ -9118,76 +9119,77 @@ msgstr ""
 #: inc/console/database/abstractconfigurecommand.class.php:350
 #: inc/console/database/updatecommand.class.php:172
 msgid "Do you want to continue ?"
-msgstr ""
+msgstr "Θέλετε να συνεχίσετε;"
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:234
 msgid "Synchronization aborted."
-msgstr ""
+msgstr "Ο συγχρονισμός ακυρώθηκε."
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:244
 msgid "Unable to load LDAP server information."
-msgstr ""
+msgstr "Αδυναμία φόρτωσης πληροφοριών LDAP διακομιστή."
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:249
 #, php-format
 msgid ""
 "LDAP server \"%s\" is inactive, no synchronization will be done against it."
 msgstr ""
+"Ο διακομιστής LDAP \"%s\" είναι ανενεργός, δε θα επιχειρηθεί συγχρονισμός."
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:257
 #, php-format
 msgid "Processing LDAP server \"%s\"..."
-msgstr ""
+msgstr "Επεξεργασία διακομιστή LDAP \"%s\"..."
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:285
 #, php-format
 msgid "LDAP server \"%s\" size limit exceeded."
-msgstr ""
+msgstr "Υπέρβαση ορίου μεγέθους διακομιστή LDAP \"%s\"."
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:291
 #, php-format
 msgid "Error while contacting the LDAP server \"%s\"."
-msgstr ""
+msgstr "Σφάλμα επικοινωνίας με τον διακομιστή LDAP \"%s\"."
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:306
 #, php-format
 msgid "Import new users from server \"%s\"..."
-msgstr ""
+msgstr "Εισαγωγή νέων χρηστών από τον διακομιστή \"%s\"..."
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:309
 #, php-format
 msgid "Update existing users with server \"%s\"..."
-msgstr ""
+msgstr "Ενημέρωση υπαρχόντων χρηστών με το διακομιστή \"%s\"..."
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:312
 #, php-format
 msgid "Synchronize users with server \"%s\"..."
-msgstr ""
+msgstr "Συγχρονισμός χρηστών με το διακομιστή \"%s\"..."
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:323
 msgid "No users found."
-msgstr ""
+msgstr "Δε βρέθηκαν χρήστες."
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:379
 #, php-format
 msgid "Unable to synchronize user \"%s\"."
-msgstr ""
+msgstr "Αδυναμία συγχρονισμού του χρήστη \"%s\"."
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:393
 msgid "LDAP server"
-msgstr ""
+msgstr "Διακομιστής LDAP"
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:394
 msgid "Imported"
-msgstr ""
+msgstr "Εισήχθησαν"
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:395
 msgid "Synchronized"
-msgstr ""
+msgstr "Συγχρονίστηκαν"
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:396
 msgid "Deleted from LDAP"
-msgstr ""
+msgstr "Διαγράφηκαν από LDAP"
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:429
 msgid ""
@@ -9261,11 +9263,11 @@ msgstr ""
 
 #: inc/console/system/checkrequirementscommand.class.php:83
 msgid "WARNING"
-msgstr ""
+msgstr "ΠΡΟΕΙΔΟΠΟΙΗΣΗ"
 
 #: inc/console/system/checkrequirementscommand.class.php:84
 msgid "ERROR"
-msgstr ""
+msgstr "ΣΦΑΛΜΑ"
 
 #: inc/console/security/changekeycommand.class.php:57
 msgid "Change password storage key and update values in database."
@@ -9279,19 +9281,19 @@ msgstr ""
 
 #: inc/console/security/changekeycommand.class.php:88
 msgid "Aborted."
-msgstr ""
+msgstr "Ακυρώθηκε."
 
 #: inc/console/security/changekeycommand.class.php:98
 msgid "Unable to change security key!"
-msgstr ""
+msgstr "Αδυναμία αλλαγής κλειδιού ασφαλείας!"
 
 #: inc/console/security/changekeycommand.class.php:106
 msgid "New security key generated; database updated."
-msgstr ""
+msgstr "Δημιουργήθηκε νέο κλειδί ασφαλείας, η βάση ενημερώθηκε."
 
 #: inc/console/abstractcommand.class.php:100
 msgid "Unable to connect to database."
-msgstr ""
+msgstr "Αδυναμία σύνδεσης στη βάση δεδομένων."
 
 #: inc/console/abstractcommand.class.php:195
 msgid "Some optional system requirements are missing."
@@ -11424,7 +11426,7 @@ msgstr "Επιβεβαίωση τελικής διαγραφής;"
 #: inc/massiveaction.class.php:558
 msgctxt "button"
 msgid "Put in trashbin"
-msgstr ""
+msgstr "Στον κάδο απορριμάτων"
 
 #: inc/ticket.class.php:5037
 msgid "Confirm the promotion?"

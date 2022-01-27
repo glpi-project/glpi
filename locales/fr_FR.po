@@ -13,11 +13,12 @@
 # Cyril Damas, 2020
 # DOMBRE Julien <moyo@indepnet.net>, 2020
 # Xavier CAILLAUD <thetsmr@gmail.com>, 2020
-# Legastelois François <flegastelois@teclib.com>, 2021
 # Tiago Graça, 2021
 # Pierre <plebel@teclib.com>, 2021
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2021
 # Johan Cwiklinski <jcwiklinski@teclib.com>, 2021
+# Legastelois François <flegastelois@teclib.com>, 2021
+# CupidSG, 2021
 # 
 #, fuzzy
 msgid ""
@@ -26,7 +27,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-10-26 10:07+0200\n"
 "PO-Revision-Date: 2019-04-24 11:58+0000\n"
-"Last-Translator: Johan Cwiklinski <jcwiklinski@teclib.com>, 2021\n"
+"Last-Translator: CupidSG, 2021\n"
 "Language-Team: French (France) (https://www.transifex.com/glpi/teams/1637/fr_FR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -4880,12 +4881,14 @@ msgstr "Courriel %s introuvable. Import impossible."
 #: inc/mailcollector.class.php:727
 #, php-format
 msgid "Message is invalid (%s). Check in \"%s\" for more details"
-msgstr ""
+msgstr "Message invalide (%s). Consultez \"%s\" pour plus de détails"
 
 #: inc/mailcollector.class.php:781
 #, php-format
 msgid "Error during message parsing (%s). Check in \"%s\" for more details"
 msgstr ""
+"Error pendant l'analyse du message (%s). Consultez \"%s\" pour plus de "
+"détails"
 
 #: inc/mailcollector.class.php:920
 #, php-format
@@ -9242,6 +9245,8 @@ msgid ""
 "Options --begin-date and --end-date can only be used with --only-create-new "
 "or --only-update-existing option."
 msgstr ""
+"Les options --begin-date et --end-date ne peuvent être utilisées qu'avec "
+"l'option --only-create-new ou --only-update-existing."
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:467
 msgid ""
@@ -11323,7 +11328,7 @@ msgstr "Lier des tickets"
 #: inc/ticket.class.php:2535
 msgctxt "button"
 msgid "Link project task"
-msgstr ""
+msgstr "Lien Projet / Tâche"
 
 #: inc/ticket.class.php:2560
 msgid "Merge followups"
@@ -11376,7 +11381,7 @@ msgstr "TTO + progression"
 
 #: inc/ticket.class.php:2683
 msgid "Time to own exceeded"
-msgstr ""
+msgstr "TTO dépassé"
 
 #: inc/ticket.class.php:2693 inc/ticket.class.php:2930
 #: inc/ticket.class.php:4493 inc/ticket.class.php:4495
@@ -11390,7 +11395,7 @@ msgstr "TTR interne + progression"
 
 #: inc/ticket.class.php:2714
 msgid "Internal time to resolve exceeded"
-msgstr ""
+msgstr "TTR interne dépassé"
 
 #: inc/ticket.class.php:2724 inc/ticket.class.php:2916
 #: inc/ticket.class.php:4481 inc/ticket.class.php:4483
@@ -11404,7 +11409,7 @@ msgstr "TTO interne + progression"
 
 #: inc/ticket.class.php:2745
 msgid "Internal time to own exceeded"
-msgstr ""
+msgstr "TTO interne dépassé"
 
 #: inc/ticket.class.php:2756
 msgid "Next escalation level"
@@ -14928,7 +14933,7 @@ msgstr "Une demande de validation a été émise par %s"
 #: inc/notificationtargetchange.class.php:216
 #, php-format
 msgid "An answer to an approval request was produced by %s"
-msgstr ""
+msgstr "%s a apporté une réponse à une demande d'approbation"
 
 #: inc/notificationtargetticket.class.php:609
 msgid "Location name"
@@ -15704,7 +15709,7 @@ msgstr "Tickets en retard"
 
 #: inc/dashboard/provider.class.php:296
 msgid "Tickets waiting for validation"
-msgstr ""
+msgstr "Tickets en attente de votre validation"
 
 #: inc/dashboard/provider.class.php:339
 msgid "Incoming tickets"
@@ -17047,12 +17052,12 @@ msgstr "renseignez votre clé d'enregistrement dans la configuration."
 #: inc/marketplace/view.class.php:169
 #, php-format
 msgid "Your %1$s subscription has been terminated."
-msgstr ""
+msgstr "Votre souscription %1$s a été résilié."
 
 #: inc/marketplace/view.class.php:170
 #, php-format
 msgid "Renew it on %1$s."
-msgstr ""
+msgstr "Renouvelez la sur %1$s."
 
 #: inc/marketplace/view.class.php:343
 #, php-format
@@ -17129,7 +17134,7 @@ msgstr "Nettoyer"
 
 #: inc/marketplace/view.class.php:670
 msgid "This plugin is not available for your GLPI version."
-msgstr ""
+msgstr "Ce plugin n'est pas disponible pour votre version de GLPI."
 
 #: inc/marketplace/view.class.php:682
 msgid "The plugin has an available update but its directory is not writable."
@@ -17490,7 +17495,7 @@ msgstr "La clé d'enregistrement est invalide."
 
 #: inc/glpinetwork.class.php:235
 msgid "The registration key refers to a terminated subscription."
-msgstr ""
+msgstr "La clé de souscription fait référence à une souscription résiliée."
 
 #: inc/glpinetwork.class.php:237
 msgid "The registration key is valid."
@@ -21602,7 +21607,7 @@ msgstr "TTR + Progression"
 
 #: inc/commonitilobject.class.php:3394
 msgid "Time to resolve exceeded"
-msgstr ""
+msgstr "Temps de résolution dépassé"
 
 #: inc/commonitilobject.class.php:3456
 msgid "Last edit by"
