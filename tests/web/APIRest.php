@@ -52,9 +52,11 @@ class APIRest extends APIBaseClass {
 
       // Clear test server log
       if (!file_exists(__DIR__ . '/error.log')) {
-         touch(__DIR__ . '/error.log');
+         $file_created = touch(__DIR__ . '/error.log');
+         $this->boolean($file_created)->isTrue();
       }
-      file_put_contents(__DIR__ . '/error.log', "");
+      $file_updated = file_put_contents(__DIR__ . '/error.log', "");
+      $this->variable($file_updated)->isNotIdenticalTo(false);
 
       $this->http_client = new GuzzleHttp\Client();
       $this->base_uri    = trim($CFG_GLPI['url_base_api'], "/")."/";
