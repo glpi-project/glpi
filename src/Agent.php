@@ -611,11 +611,17 @@ class Agent extends CommonDBTM
                 $response = $httpClient->request('GET', $endpoint, []);
                 self::$found_adress = $adress;
                 break;
-            } catch (\GuzzleHttp\Exception\ConnectException $e) {
+            } catch (Exception $e) {
                 //many adresses will be incorrect
                 $cs = true;
             }
         }
+
+        if (!$response) {
+            // throw last exception on no response
+            throw $e;
+        }
+
         return $response;
     }
 
@@ -627,8 +633,17 @@ class Agent extends CommonDBTM
     public function requestStatus()
     {
        //must return json
-        $response = $this->requestAgent('status');
-        return $this->handleAgentResponse($response, self::ACTION_STATUS);
+        try {
+            $response = $this->requestAgent('status');
+            return $this->handleAgentResponse($response, self::ACTION_STATUS);
+        } catch (\GuzzleHttp\Exception\ClientException $e) {
+            ErrorHandler::getInstance()->handleException($e);
+           //not authorized
+            return ['answer' => __('Not allowed')];
+        } catch (\GuzzleHttp\Exception\ConnectException $e) {
+           //no response
+            return ['answer' => __('Unknown')];
+        }
     }
 
     /**
@@ -646,6 +661,9 @@ class Agent extends CommonDBTM
             ErrorHandler::getInstance()->handleException($e);
            //not authorized
             return ['answer' => __('Not allowed')];
+        } catch (\GuzzleHttp\Exception\ConnectException $e) {
+           //no response
+            return ['answer' => __('Unknown')];
         }
     }
 
