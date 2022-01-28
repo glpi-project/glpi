@@ -4507,6 +4507,14 @@ JAVASCRIPT;
                 $nott = !$nott;
                //negated, use contains case
             case "contains":
+                if (isset($searchopt[$ID]["datatype"]) && ($searchopt[$ID]["datatype"] === 'decimal')) {
+                    $matches = [];
+                    preg_match('/^(\d+.?\d?)/', $val, $matches);
+                    $val = $matches[1];
+                    if (!str_contains($val, '.')) {
+                        $val .= '.';
+                    }
+                }
                 $SEARCH = self::makeTextSearch($val, $nott);
                 break;
 
@@ -5007,6 +5015,7 @@ JAVASCRIPT;
                 case "decimal":
                 case "timestamp":
                 case "progressbar":
+                    $decimal_contains = $searchopt[$ID]["datatype"] === 'decimal' && $searchtype === 'contains';
                     $search  = ["/\&lt;/", "/\&gt;/"];
                     $replace = ["<", ">"];
                     $val     = preg_replace($search, $replace, $val);
@@ -5026,7 +5035,7 @@ JAVASCRIPT;
                         return $link . " ($tocompute " . $regs[1] . " " . $regs[3] . ") ";
                     }
 
-                    if (is_numeric($val)) {
+                    if (is_numeric($val) && !$decimal_contains) {
                         $numeric_val = floatval($val);
 
                         if (in_array($searchtype, ["notequals", "notcontains"])) {
