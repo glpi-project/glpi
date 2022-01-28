@@ -32,6 +32,7 @@
 
 namespace tests\units;
 
+use Generator;
 use Glpi\Api\Deprecated\TicketFollowup;
 use ITILFollowup;
 use Ticket;
@@ -1090,5 +1091,56 @@ class Toolbox extends \GLPITestCase {
     */
    public function testDoubleEncodeEmails(string $source, string $result): void {
       $this->string(\Toolbox::doubleEncodeEmails($source))->isEqualTo($result);
+   }
+
+   /**
+    * Data provider for testIsFloat
+    *
+    * @return Generator
+    */
+   protected function testIsFloatProvider(): Generator {
+      yield [
+         'value'    => "1",
+         'expected' => false,
+      ];
+
+      yield [
+         'value'    => "1.5",
+         'expected' => true,
+      ];
+
+      yield [
+         'value'    => "7.5569569",
+         'expected' => true,
+      ];
+
+      yield [
+         'value'    => "0",
+         'expected' => false,
+      ];
+
+      yield [
+         'value'    => 3.4,
+         'expected' => true,
+      ];
+
+      yield [
+         'value'    => 3,
+         'expected' => false,
+      ];
+   }
+
+   /**
+    * Tests for Toolbox::IsFloat()
+    *
+    * @dataprovider testIsFloatProvider
+    *
+    * @param $value
+    * @param bool $expected
+    *
+    * @return void
+    */
+   public function testIsFloat($value, bool $expected): void {
+      $this->boolean(\Toolbox::isFloat($value))->isEqualTo($expected);
    }
 }
