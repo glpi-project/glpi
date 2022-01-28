@@ -188,23 +188,6 @@ class ObjectLock extends CommonDBTM {
 
 
    /**
-    * Summary of setLockedByYouMessage
-    * Shows 'Locked by You!' message and proposes to unlock it
-   **/
-   private function setLockedByYouMessage() {
-
-      echo $this->getScriptToUnlock();
-
-      $msg  = "<strong class='nowrap'>";
-      $msg .= __("Locked by you!");
-      $msg .= $this->getForceUnlockButton();
-      $msg .= "</strong>";
-
-      $this->displayLockMessage($msg);
-   }
-
-
-   /**
     * Summary of setLockedByMessage
     * Shows 'Locked by ' message and proposes to request unlock from locker
    **/
@@ -372,12 +355,12 @@ class ObjectLock extends CommonDBTM {
                'items_id'  => $this->itemid
             ]);
          }
-         // open the object as read-only as it is already locked by someone
-         self::setReadonlyProfile();
-         if ($this->fields['users_id'] != Session::getLoginUserID()) {
-            $this->setLockedByMessage();
+         if ($this->fields['users_id'] == Session::getLoginUserID()) {
+            $ret = true;
          } else {
-            $this->setLockedByYouMessage();
+            // open the object as read-only as it is already locked by someone else
+            self::setReadonlyProfile();
+            $this->setLockedByMessage();
          }
          // and if autolock was set for this item then unset it
          unset($_SESSION['glpilock_autolock_items'][ $this->itemtype ][ $this->itemid ]);
