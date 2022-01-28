@@ -186,13 +186,10 @@ body.horizontal-layout {
     border: 1px solid transparent;
     padding-right: 6px;
     border-radius: 2px;
-    display: inline-block;
+    display: flex;
 
     span {
         width: 20px;
-        height: 20px;
-        display: inline-block;
-        vertical-align: middle;
     }
 }
 
