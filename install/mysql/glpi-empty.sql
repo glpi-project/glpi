@@ -2759,6 +2759,7 @@ CREATE TABLE `glpi_entities` (
   `autofill_decommission_date` varchar(255) NOT NULL DEFAULT '-2',
   `suppliers_as_private` int NOT NULL DEFAULT '-2',
   `anonymize_support_agents` int NOT NULL DEFAULT '-2',
+  `display_users_initials` int NOT NULL DEFAULT '-2',
   `contracts_strategy_default` tinyint NOT NULL DEFAULT '-2',
   `contracts_id_default` int unsigned NOT NULL DEFAULT '0',
   `enable_custom_css` int NOT NULL DEFAULT '-2',

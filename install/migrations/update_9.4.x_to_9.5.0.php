@@ -1897,7 +1897,7 @@ HTML
         )
     );
 
-   // Add anonymize_support_agents to entity
+    // Add anonymize_support_agents to entity
     if (!$DB->fieldExists("glpi_entities", "anonymize_support_agents")) {
         $migration->addField(
             "glpi_entities",
