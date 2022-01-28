@@ -6298,9 +6298,10 @@ JAVASCRIPT;
      */
     public function getPicturePath(bool $enable_anonymization = false): string
     {
+        global $CFG_GLPI;
 
         if ($enable_anonymization && Session::getCurrentInterface() == 'helpdesk' && Entity::getAnonymizeConfig() !== Entity::ANONYMIZE_DISABLED) {
-            return '/pics/picture.png';
+            return $CFG_GLPI["root_doc"] . '/pics/picture.png';
         }
 
         $path = Toolbox::getPictureUrl($this->fields['picture'], false);
@@ -6308,7 +6309,7 @@ JAVASCRIPT;
             return $path;
         }
 
-        return '/pics/picture.png';
+        return $CFG_GLPI["root_doc"] . '/pics/picture.png';
     }
 
     /**

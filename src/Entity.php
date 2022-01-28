@@ -120,7 +120,7 @@ class Entity extends CommonTreeDropdown
             'inquest_duration','inquest_URL',
             'max_closedate', 'tickettemplates_strategy', 'tickettemplates_id',
             'changetemplates_strategy', 'changetemplates_id', 'problemtemplates_strategy', 'problemtemplates_id',
-            'suppliers_as_private', 'autopurge_delay', 'anonymize_support_agents',
+            'suppliers_as_private', 'autopurge_delay', 'anonymize_support_agents', 'display_users_initials',
             'contracts_strategy_default', 'contracts_id_default'
         ],
       // Configuration
@@ -2781,6 +2781,31 @@ class Entity extends CommonTreeDropdown
         }
         echo "</td></tr>";
 
+        echo "<tr class='tab_bg_1'><td  colspan='2'>" . __("Display initials for users without pictures") . "</td>";
+        echo "<td colspan='2'>";
+        $initialsValues = self::getDisplayUsersInitialsValues();
+        $currentInitialsValue = $entity->fields['display_users_initials'];
+
+        if ($ID == 0) { // Remove parent option for root entity
+            unset($initialsValues[self::CONFIG_PARENT]);
+        }
+
+        Dropdown::showFromArray(
+            'display_users_initials',
+            $initialsValues,
+            ['value' => $currentInitialsValue]
+        );
+
+       // If the entity is using it's parent value, print it
+        if ($currentInitialsValue == self::CONFIG_PARENT && $ID != 0) {
+            $parentSupplierValue = self::getUsedConfig(
+                'display_users_initials',
+                $entity->fields['entities_id']
+            );
+            self::inheritedValue($initialsValues[$parentSupplierValue], true);
+        }
+        echo "</td></tr>";
+
         echo "<tr class='tab_bg_1'><td  colspan='2'>" . __('Default contract') . "</td>";
         echo "<td colspan='2'>";
         $current_default_contract_value = $entity->fields['contracts_id_default'];
@@ -3291,6 +3316,26 @@ class Entity extends CommonTreeDropdown
         }
         return NOT_AVAILABLE;
     }
+
+    /**
+     * get value for display_users_initials
+     *
+     * @since 10.0.0
+     *
+     * @param integer|null $val if not set, ask for all values, else for 1 value (default NULL)
+     *
+     * @return string|array
+     **/
+    public static function getDisplayUsersInitialsValues()
+    {
+
+        return [
+            self::CONFIG_PARENT => __('Inheritance of the parent entity'),
+            0                   => __('No'),
+            1                   => __('Yes'),
+        ];
+    }
+
 
     /**
      * get value for suppliers_as_private

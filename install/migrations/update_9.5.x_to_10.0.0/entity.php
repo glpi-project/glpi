@@ -112,5 +112,20 @@ foreach ($fkey_config_fields as $fkey_config_field) {
         // 'contracts_id_default' and 'transfers_id' fields will only exist if a previous dev install exists
         $migration->changeField('glpi_entities', $fkey_config_field, $fkey_config_field, "int {$default_key_sign} NOT NULL DEFAULT 0");
     }
+
+    // Add display_users_initials to entity
+    if (!$DB->fieldExists("glpi_entities", "display_users_initials")) {
+        $migration->addField(
+            "glpi_entities",
+            "display_users_initials",
+            "integer",
+            [
+                'after'     => "anonymize_support_agents",
+                'value'     => -2,               // Inherit as default value
+                'update'    => '1',              // Enabled for root entity
+                'condition' => 'WHERE `id` = 0'
+            ]
+        );
+    }
 }
 /** /Replace negative values for config foreign keys */
