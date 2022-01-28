@@ -75,7 +75,5 @@ if (isset($_GET['id'])) {
     ];
 }
 
-Html::header(Computer::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "assets", "computer");
-
-$ios->display($params);
-Html::footer();
+$menus = ["assets", "computer"];
+Item_OperatingSystem::displayFullPageForItem($params['id'] ?? 0, $menus, $params);

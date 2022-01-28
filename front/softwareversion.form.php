@@ -87,9 +87,8 @@ if (isset($_POST["add"])) {
     );
     Html::back();
 } else {
-    Html::header(SoftwareVersion::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "assets", "software");
-    $version->display(['id'           => $_GET["id"],
+    $menus = ["assets", "software"];
+    SoftwareVersion::displayFullPageForItem($_GET["id"], $menus, [
         'softwares_id' => $_GET["softwares_id"]
     ]);
-    Html::footer();
 }

@@ -198,8 +198,8 @@ if (isset($_POST["add"])) {
         Html::header(sprintf(__('%s Kanban'), Change::getTypeName(1)), $_SERVER['PHP_SELF'], "helpdesk", "change");
         $change::showKanban(0);
     } else {
-        Html::header(Change::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "helpdesk", "change");
-        $change->display($_REQUEST);
+        $menus = ["helpdesk", "change"];
+        Change::displayFullPageForItem($_REQUEST['id'] ?? 0, $menus, $_REQUEST);
     }
 
     if (isset($_GET['id']) && ($_GET['id'] > 0)) {

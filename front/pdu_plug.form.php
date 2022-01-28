@@ -75,10 +75,9 @@ if (isset($_GET['id'])) {
 }
 $ajax = isset($_REQUEST['ajax']) ? true : false;
 
-if (!$ajax) {
-    Html::header(Pdu_Plug::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "assets", "pdu");
-}
-$pdup->display($params);
-if (!$ajax) {
-    Html::footer();
+if ($ajax) {
+    $pdup->display($params);
+} else {
+    $menus = ["assets", "pdu"];
+    Pdu_Plug::displayFullPageForItem($_GET['id'] ?? 0, $menus, $params);
 }

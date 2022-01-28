@@ -45,8 +45,5 @@ if (!empty($_POST["test_ajax_send"])) {
     Html::back();
 }
 
-Html::header(Notification::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "config", "notification", "config");
-
-$notificationajax->display(['id' => 1]);
-
-Html::footer();
+$menus = ["config", "notification", "config"];
+NotificationAjaxSetting::displayFullPageForItem(1, $menus);

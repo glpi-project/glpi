@@ -49,8 +49,6 @@ if (isset($_POST['add'])) {
     $translation->delete($_POST, true);
     Html::redirect(Reminder::getFormURLWithID($_POST['reminders_id']));
 } else if (isset($_GET["id"])) {
-    $translation->check($_GET["id"], READ);
-    Html::header(Reminder::getTypeName(1), $_SERVER['PHP_SELF'], "tools", "remindertranslation");
-    $translation->display(['id' => $_GET['id']]);
-    Html::footer();
+    $menus = ["tools", "remindertranslation"];
+    ReminderTranslation::displayFullPageForItem($_GET['id'], $menus);
 }

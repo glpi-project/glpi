@@ -165,14 +165,15 @@ if (isset($_POST["add"])) {
     $dropdown->showForm($_GET["id"]);
     Html::popFooter();
 } else {
-    $dropdown->displayHeader();
-
     if (!isset($options)) {
         $options = [];
     }
-    $options['id'] = $_GET['id'];
-    $options['formoptions'] = ($options['formoptions'] ?? '') . ' data-track-changes=true';
-
-    $dropdown->display($options);
-    Html::footer();
+    $menus = [
+        $dropdown->first_level_menu,
+        $dropdown->second_level_menu,
+        $dropdown->third_level_menu,
+    ];
+    $dropdown::displayFullPageForItem($_GET['id'], $menus, [
+        'formoptions' => ($options['formoptions'] ?? '') . ' data-track-changes=true'
+    ]);
 }

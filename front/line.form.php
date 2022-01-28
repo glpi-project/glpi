@@ -115,10 +115,8 @@ if (isset($_POST["add"])) {
     );
     Html::back();
 } else {
-    Html::header(Line::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "management", "line");
-    $line->display([
-        'id'           => $_GET["id"],
+    $menus = ["management", "line"];
+    Line::displayFullPageForItem($_GET["id"], $menus, [
         'formoptions'  => "data-track-changes=true"
     ]);
-    Html::footer();
 }

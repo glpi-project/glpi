@@ -115,11 +115,8 @@ if (isset($_POST["add"])) {
     );
     Html::back();
 } else {
-    Html::header(Database::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "management", "database");
-    $options = [
-        'id'           => $_GET['id'],
+    $menus = ["management", "database"];
+    Database::displayFullPageForItem($_GET['id'], $menus, [
         'databaseinstances_id' => $_GET['databaseinstances_id']
-    ];
-    $database->display($options);
-    Html::footer();
+    ]);
 }

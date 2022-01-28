@@ -43,7 +43,7 @@ class Item_Cluster extends CommonDBRelation
 
     public static function getTypeName($nb = 0)
     {
-        return _n('Item', 'Item', $nb);
+        return _n('Cluster item', 'Cluster items', $nb);
     }
 
 
@@ -53,7 +53,7 @@ class Item_Cluster extends CommonDBRelation
         if ($_SESSION['glpishow_count_on_tabs']) {
             $nb = self::countForMainItem($item);
         }
-        return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
+        return self::createTabEntry(_n('Item', 'Items', $nb));
     }
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)

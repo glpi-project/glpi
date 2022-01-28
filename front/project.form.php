@@ -124,18 +124,19 @@ if (isset($_POST["add"])) {
     $project->showForm($_GET["id"], ['withtemplate' => $_GET["withtemplate"]]);
     Html::popFooter();
 } else {
-    Html::header(Project::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "tools", "project");
-
     if (isset($_GET['showglobalgantt']) && $_GET['showglobalgantt']) {
+        Html::header(Project::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "tools", "project");
         $project->showGantt(-1);
+        Html::footer();
     } else if (isset($_GET['showglobalkanban']) && $_GET['showglobalkanban']) {
+        Html::header(Project::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "tools", "project");
         $project->showKanban(0);
+        Html::footer();
     } else {
-        $project->display([
-            'id'           => $_GET["id"],
+        $menus = ["tools", "project"];
+        Project::displayFullPageForItem($_GET["id"], $menus, [
             'withtemplate' => $_GET["withtemplate"],
             'formoptions'  => "data-track-changes=true"
         ]);
     }
-    Html::footer();
 }

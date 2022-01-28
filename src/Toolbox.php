@@ -3407,4 +3407,20 @@ HTML;
 
         return $tabs;
     }
+
+    /**
+     * Handle redirect after a profile switch.
+     * Must be called after a right check failure.
+     */
+    public static function handleProfileChangeRedirect(): void
+    {
+        global $CFG_GLPI;
+
+        $redirect = $_SESSION['_redirected_from_profile_selector'] ?? false;
+
+        if ($redirect) {
+            unset($_SESSION['_redirected_from_profile_selector']);
+            Html::redirect($CFG_GLPI['root_doc'] . "/front/central.php");
+        }
+    }
 }

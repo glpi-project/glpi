@@ -116,10 +116,8 @@ if (isset($_POST["add"])) {
     );
     $group->redirectToList();
 } else {
-    Html::header(Group::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "admin", "group");
-    $group->display([
-        'id'           => $_GET["id"],
+    $menus = ["admin", "group"];
+    Group::displayFullPageForItem($_GET["id"], $menus, [
         'formoptions'  => "data-track-changes=true"
     ]);
-    Html::footer();
 }

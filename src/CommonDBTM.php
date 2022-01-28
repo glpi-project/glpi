@@ -6108,4 +6108,201 @@ class CommonDBTM extends CommonGLPI
 
         $this->fields[$field] = array_column($existing_relations, $item_2_fk);
     }
+
+    /**
+     * Display an error page (item not found)
+     *
+     * @param array $menus Menu path used to load specific JS file and show
+     *                     breadcumbs, see $CFG_GLPI['javascript'] and
+     *                     Html::includeHeader()
+     *
+     * @return void
+     */
+    public static function displayItemNotFoundPage(array $menus): void
+    {
+        $helpdesk = Session::getCurrentInterface() == "helpdesk";
+
+        if (!$helpdesk) {
+            Html::header(
+                __('Item not found'),
+                $_SERVER['PHP_SELF'],
+                $menus[0] ?? 'none',
+                $menus[1] ?? 'none',
+                $menus[2] ?? '',
+                false
+            );
+        } else {
+            Html::helpHeader(
+                __('Item not found'),
+                $menus[0] ?? 'self-service',
+                $menus[1] ?? 'none',
+                $menus[2] ?? '',
+                false
+            );
+        }
+
+        Html::displayNotFoundError();
+    }
+
+    /**
+     * Display an error page (access denied)
+     *
+     * @param array $menus   Menu path used to load specific JS file and show
+     *                       breadcumbs, see $CFG_GLPI['javascript'] and
+     *                       Html::includeHeader()
+     * @return void
+     */
+    public static function displayAccessDeniedPage(array $menus): void
+    {
+        $helpdesk = Session::getCurrentInterface() == "helpdesk";
+
+        if (!$helpdesk) {
+            Toolbox::handleProfileChangeRedirect();
+            Html::header(
+                __('Access denied'),
+                $_SERVER['PHP_SELF'],
+                $menus[0] ?? 'none',
+                $menus[1] ?? 'none',
+                $menus[2] ?? '',
+                false
+            );
+        } else {
+            Html::helpHeader(
+                __('Access denied'),
+                $menus[0] ?? 'self-service',
+                $menus[1] ?? 'none',
+                $menus[2] ?? '',
+                false
+            );
+        }
+
+        Html::displayRightError();
+    }
+
+    /**
+     * Get the browser tab name for a new item: "{itemtype} - New item"
+     * To be overriden by child classes if they want to display something else
+     *
+     * @return string
+     */
+    public static function getBrowserTabNameForNewItem(): string
+    {
+        return sprintf(
+            __('%1$s - %2$s'),
+            static::getTypeName(1),
+            __("New item")
+        );
+    }
+
+    /**
+     * Get the browser tab name for an item: "{itemtype} - {header name}"
+     * {Header name} is usually the item name (see $this->getName())
+     * To be overriden by child classes if they want to display something else
+     *
+     * @return string
+     */
+    public function getBrowserTabName(): string
+    {
+        return sprintf(
+            __('%1$s - %2$s'),
+            static::getTypeName(1),
+            $this->getHeaderName()
+        );
+    }
+
+    /**
+     * Display a full helpdesk page (header + content + footer) for a given item
+     *
+     * @param int|string $id       Id of the item to be displayed, may be a
+     *                             string due to some weird default values.
+     *                             Will be cast to int straight away.
+     * @param array      $menus    Menu path used to load specific JS file and
+     *                             show breadcumbs, see $CFG_GLPI['javascript']
+     *                             and Html::includeHeader()
+     *                             Two possible formats:
+     *                             - [menu 1, menu 2, menu 3]
+     *                             - [
+     *                                'central'  => [menu 1, menu 2, menu 3],
+     *                                'helpdesk' => [menu 1, menu 2, menu 3],
+     *                               ]
+     * @param array      $options  Display options
+     *
+     * @return void
+     */
+    public static function displayFullPageForItem(
+        $id,
+        array $menus,
+        array $options = []
+    ): void {
+        $id = (int) $id;
+        $item = new static();
+
+        // Check current interface
+        $interface = Session::getCurrentInterface();
+        if (isset($menus[Session::getCurrentInterface()])) {
+            // Load specific menus for this interface
+            $menus = $menus[Session::getCurrentInterface()];
+        }
+
+        if (static::isNewID($id)) {
+            // New item, check create rights
+            if (!static::canCreate()) {
+                static::displayAccessDeniedPage($menus);
+                return;
+            }
+
+            // Tab name will be generic (item isn't saved yet)
+            $title = static::getBrowserTabNameForNewItem();
+        } else {
+            // Existing item, try to load it and check read rights
+            if (!$item->getFromDB($id)) {
+                static::displayItemNotFoundPage($menus);
+                return;
+            }
+
+            if (!$item->can($id, READ)) {
+                static::displayAccessDeniedPage($menus);
+                return;
+            }
+
+            // Tab name will be specific to the loaded item
+            $title = $item->getBrowserTabName();
+        }
+
+        // Show header
+        if ($interface == 'central') {
+            Html::header(
+                $title,
+                $_SERVER['PHP_SELF'],
+                $menus[0] ?? 'none',
+                $menus[1] ?? 'none',
+                $menus[2] ?? '',
+                false
+            );
+        } else {
+            Html::helpHeader(
+                $title,
+                $menus[0] ?? 'self-service',
+                $menus[1] ?? 'none',
+                $menus[2] ?? '',
+                false
+            );
+        }
+
+        // Show item
+        $options['loaded'] = true;
+        $item->display($options);
+
+        // Display extra html if needed
+        if (!empty($options['after_display'] ?? "")) {
+            echo $options['after_display'];
+        }
+
+        // Show footer
+        if ($interface == 'central') {
+            Html::footer();
+        } else {
+            Html::helpFooter();
+        }
+    }
 }

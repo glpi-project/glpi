@@ -115,11 +115,9 @@ if (isset($_POST["add"])) {
     );
     Html::back();
 } else {
-    Html::header(Cluster::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "management", "cluster");
     $options = [
-        'id'           => $_GET['id'],
         'withtemplate' => $_GET['withtemplate'],
-        'formoptions'  => "data-track-changes=true"
+        'formoptions'  => "data-track-changes=true",
     ];
     if (isset($_GET['position'])) {
         $options['position'] = $_GET['position'];
@@ -127,6 +125,6 @@ if (isset($_POST["add"])) {
     if (isset($_GET['room'])) {
         $options['room'] = $_GET['room'];
     }
-    $cluster->display($options);
-    Html::footer();
+    $menus = ["management", "cluster"];
+    Cluster::displayFullPageForItem($_GET['id'], $menus, $options);
 }

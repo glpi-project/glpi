@@ -123,12 +123,9 @@ if (isset($_POST["add"])) {
       $budget->showForm($_GET["id"], ['withtemplate' => $_GET["withtemplate"]]);
       Html::popFooter();
 } else {
-    Html::header(Budget::getTypeName(1), $_SERVER['PHP_SELF'], "management", "budget");
-    $budget->display([
-        'id'           => $_GET["id"],
+    $menus = ["management", "budget"];
+    Budget::displayFullPageForItem($_GET['id'], $menus, [
         'withtemplate' => $_GET["withtemplate"],
         'formoptions'  => "data-track-changes=true"
     ]);
-
-    Html::footer();
 }

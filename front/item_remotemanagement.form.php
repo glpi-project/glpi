@@ -107,11 +107,10 @@ if (isset($_POST["add"])) {
     } else if ($_GET['itemtype'] != '') {
         $itemtype = $_GET['itemtype'];
     }
-    Html::header(Item_RemoteManagement::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "assets", $itemtype);
-    $mgmt->display([
-        'id'        => $_GET["id"],
+
+    $menus = ["assets", $itemtype];
+    Item_RemoteManagement::displayFullPageForItem($_GET["id"], $menus, [
         'items_id'  => $_GET["items_id"],
         'itemtype'  => $_GET['itemtype']
     ]);
-    Html::footer();
 }

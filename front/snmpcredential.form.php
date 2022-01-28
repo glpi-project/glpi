@@ -114,11 +114,9 @@ if (isset($_POST["add"])) {
     );
     Html::back();
 } else {
-    Html::header(SNMPCredential::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "admin", "glpi\inventory\inventory", "snmpcredential");
-    $cred->display([
-        'id'           => $_GET["id"],
+    $menus = ["admin", "glpi\inventory\inventory", "snmpcredential"];
+    SNMPCredential::displayFullPageForItem($_GET["id"], $menus, [
         'withtemplate' => $_GET["withtemplate"],
         'formoptions'  => "data-track-changes=true"
     ]);
-    Html::footer();
 }

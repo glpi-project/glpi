@@ -83,10 +83,7 @@ if (isset($_POST["add"])) {
     Html::back();
 }
 
-Html::header(__('Transfer'), '', 'admin', 'rule', 'transfer');
-
-$transfer->display(['id'     => $_GET["id"],
+$menus = ['admin', 'rule', 'transfer'];
+Transfer::displayFullPageForItem($_GET["id"], $menus, [
     'target' => $transfer->getFormURL()
 ]);
-
-Html::footer();

@@ -115,7 +115,6 @@ if (isset($_POST["add"])) {
     );
     Html::back();
 } else {
-    Html::header(DCRoom::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "management", "datacenter", "dcroom");
     $options = [
         'id' => $_GET["id"],
     ];
@@ -128,6 +127,6 @@ if (isset($_POST["add"])) {
         $datacenter->getFromDB($options['datacenters_id']);
         $options['locations_id'] = $datacenter->fields['locations_id'];
     }
-    $room->display($options);
-    Html::footer();
+    $menus = ["management", "datacenter", "dcroom"];
+    DCRoom::displayFullPageForItem($_GET["id"], $menus, $options);
 }

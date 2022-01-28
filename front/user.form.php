@@ -234,12 +234,9 @@ if (isset($_GET['getvcard'])) {
 
          Html::back();
     } else {
-        Session::checkRight("user", READ);
-        Html::header(User::getTypeName(Session::getPluralNumber()), '', "admin", "user");
-        $user->display([
-            'id'           => $_GET["id"],
+        $menus = ["admin", "user"];
+        User::displayFullPageForItem($_GET["id"], $menus, [
             'formoptions'  => "data-track-changes=true"
         ]);
-        Html::footer();
     }
 }

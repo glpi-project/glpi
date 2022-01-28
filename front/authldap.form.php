@@ -119,7 +119,5 @@ if (isset($_POST["update"])) {
     Html::back();
 }
 
-Html::header(AuthLDAP::getTypeName(1), $_SERVER['PHP_SELF'], 'config', 'auth', 'ldap');
-$config_ldap->display($_GET);
-
-Html::footer();
+$menus = ['config', 'auth', 'ldap'];
+AuthLDAP::displayFullPageForItem($_GET['id'], $menus, $_GET);

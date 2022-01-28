@@ -45,8 +45,5 @@ if (isset($_POST["test_smtp_send"])) {
     Html::back();
 }
 
-Html::header(Notification::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "config", "notification", "config");
-
-$notificationmail->display(['id' => 1]);
-
-Html::footer();
+$menus = ["config", "notification", "config"];
+NotificationMailingSetting::displayFullPageForItem(1, $menus);

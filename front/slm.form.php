@@ -90,8 +90,6 @@ if (isset($_POST["add"])) {
     );
     Html::back();
 } else {
-    Html::header(SLM::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "config", "slm");
-
-    $slm->display(['id' => $_GET["id"]]);
-    Html::footer();
+    $menus = ["config", "slm"];
+    SLM::displayFullPageForItem($_GET["id"], $menus);
 }

@@ -129,11 +129,10 @@ if (isset($_POST["add"])) {
 
     Html::redirect($monitor->getFormURLWithID($_POST["id"]));
 } else {
-    Html::header(Monitor::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "assets", "monitor");
-    $monitor->display([
-        'id'           => $_GET["id"],
+    $menus = ["assets", "monitor"];
+    Monitor::displayFullPageForItem($_GET['id'], $menus, [
+        'loaded'       => true,
         'withtemplate' => $_GET["withtemplate"],
-        'formoptions'  => "data-track-changes=true"
+        'formoptions'  => "data-track-changes=true",
     ]);
-    Html::footer();
 }

@@ -95,9 +95,8 @@ if (isset($_POST["add"])) {
     }
     Html::back();
 } else {
-    Html::header(Computer::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "assets", "computer");
-    $disk->display(['id'           => $_GET["id"],
+    $menus = ["assets", "computer"];
+    ComputerVirtualMachine::displayFullPageForItem($_GET["id"], $menus, [
         'computers_id' => $_GET["computers_id"]
     ]);
-    Html::footer();
 }

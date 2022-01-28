@@ -78,10 +78,9 @@ if (isset($_GET['id'])) {
 }
 $ajax = isset($_REQUEST['ajax']) ? true : false;
 
-if (!$ajax) {
-    Html::header(Rack::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "assets", "rack");
-}
-$ira->display($params);
-if (!$ajax) {
-    Html::footer();
+if ($ajax) {
+    $ira->display($params);
+} else {
+    $menus = ["assets", "rack"];
+    Item_Rack::displayFullPageForItem($params['id'] ?? 0, $menus, $params);
 }

@@ -115,10 +115,6 @@ if (isset($_POST["add"])) {
     );
     Html::back();
 } else {
-    $ajax = isset($_REQUEST['ajax']) ? true : false;
-    if (!$ajax) {
-        Html::header(Rack::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "assets", "rack");
-    }
     $options = [
         'id'           => $_GET['id'],
         'withtemplate' => $_GET['withtemplate'],
@@ -134,8 +130,11 @@ if (isset($_POST["add"])) {
             $options['locations_id'] = $room->fields['locations_id'];
         }
     }
-    $rack->display($options);
-    if (!$ajax) {
-        Html::footer();
+
+    if ($_REQUEST['ajax'] ?? false) {
+        $rack->display($options);
+    } else {
+        $menus = ["assets", "rack"];
+        Rack::displayFullPageForItem($_GET["id"], $menus, $options);
     }
 }

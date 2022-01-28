@@ -96,16 +96,7 @@ if (isset($_POST["add_action"])) {
     $rule->redirectToList();
 }
 
-Html::header(
-    Rule::getTypeName(Session::getPluralNumber()),
-    $_SERVER['PHP_SELF'],
-    'admin',
-    $rulecollection->menu_type,
-    $rulecollection->menu_option
-);
-
-$rule->display([
-    'id'           => $_GET["id"],
+$menus = ['admin', $rulecollection->menu_type, $rulecollection->menu_option];
+$rule::displayFullPageForItem($_GET["id"], $menus, [
     'formoptions'  => " data-track-changes='true'"
 ]);
-Html::footer();

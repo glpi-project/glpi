@@ -115,11 +115,9 @@ if (isset($_POST["add"])) {
     );
     Html::back();
 } else {
-    Html::header(Software::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "assets", "software");
-    $soft->display([
-        'id'           => $_GET["id"],
+    $menus = ["assets", "software"];
+    Software::displayFullPageForItem($_GET["id"], $menus, [
         'withtemplate' => $_GET["withtemplate"],
         'formoptions'  => "data-track-changes=true"
     ]);
-    Html::footer();
 }

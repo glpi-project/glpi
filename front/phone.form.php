@@ -129,11 +129,9 @@ if (isset($_POST["add"])) {
 
     Html::redirect($phone->getFormURLWithID($_POST["id"]));
 } else {
-    Html::header(Phone::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], 'assets', 'phone');
-    $phone->display([
-        'id'           => $_GET["id"],
+    $menus = ['assets', 'phone'];
+    Phone::displayFullPageForItem($_GET["id"], $menus, [
         'withtemplate' => $_GET["withtemplate"],
         'formoptions'  => "data-track-changes=true"
     ]);
-    Html::footer();
 }

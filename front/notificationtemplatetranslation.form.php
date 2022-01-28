@@ -81,20 +81,18 @@ if (isset($_POST["add"])) {
     );
     Html::back();
 } else {
-    Html::header(
-        NotificationTemplate::getTypeName(Session::getPluralNumber()),
-        $_SERVER['PHP_SELF'],
-        "config",
-        "notification",
-        "notificationtemplate"
-    );
-
     if ($_GET["id"] == '') {
-        $options = ["notificationtemplates_id" => $_GET["notificationtemplates_id"]];
+        $options = [
+            "notificationtemplates_id" => $_GET["notificationtemplates_id"]
+        ];
     } else {
         $options = [];
     }
-    $options['id'] = $_GET["id"];
-    $language->display($options);
-    Html::footer();
+
+    $menus = ["config", "notification", "notificationtemplate"];
+    NotificationTemplateTranslation::displayFullPageForItem(
+        $_GET["id"],
+        $menus,
+        $options
+    );
 }

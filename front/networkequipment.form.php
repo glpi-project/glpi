@@ -115,11 +115,9 @@ if (isset($_POST["add"])) {
     );
     Html::back();
 } else {
-    Html::header(NetworkEquipment::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "assets", "networkequipment");
-    $netdevice->display([
-        'id'           => $_GET["id"],
+    $menus = ["assets", "networkequipment"];
+    NetworkEquipment::displayFullPageForItem($_GET["id"], $menus, [
         'withtemplate' => $_GET["withtemplate"],
         'formoptions'  => "data-track-changes=true"
     ]);
-    Html::footer();
 }

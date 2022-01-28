@@ -127,11 +127,9 @@ if (isset($_POST["add"])) {
     );
     Html::redirect($print->getFormURLWithID($_POST["id"]));
 } else {
-    Html::header(Printer::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "assets", "printer");
-    $print->display([
-        'id'           => $_GET["id"],
+    $menus = ["assets", "printer"];
+    Printer::displayFullPageForItem($_GET["id"], $menus, [
         'withtemplate' => $_GET["withtemplate"],
         'formoptions'  => "data-track-changes=true"
     ]);
-    Html::footer();
 }
