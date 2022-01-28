@@ -8168,7 +8168,7 @@ JAVASCRIPT;
                        $values = preg_split('/ > /', $value);
                        foreach ($values as $k => $v) {
                            if ($k === array_key_first($values)) {
-                               $out .= '<span class="lowcontrast">' . $v . ' > ';
+                               $out .= '<span class="text-muted">' . $v . ' > ';
                            } else if ($k === array_key_last($values)) {
                                $out .= '</span>' . $v;
                            } else {
