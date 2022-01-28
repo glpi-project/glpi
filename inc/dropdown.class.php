@@ -1478,7 +1478,8 @@ class Dropdown {
 
       $field_id = Html::cleanId("dropdown_".$myname.$p['rand']);
       if (!isset($p['toadd'][$p['value']])) {
-         $valuename = self::getValueWithUnit($p['value'], $p['unit']);
+         $decimals = Toolbox::isFloat($p['step']) ? null : 0;
+         $valuename = self::getValueWithUnit($p['value'], $p['unit'], $decimals);
       } else {
          $valuename = $p['toadd'][$p['value']];
       }
@@ -1511,13 +1512,15 @@ class Dropdown {
     *
     * @since 0.84
     *
-    * @param integer $value    numeric value
-    * @param string  $unit     unit (maybe year, month, day, hour, % for standard management)
-    * @param integer $decimals number of decimal
-   **/
-   static function getValueWithUnit($value, $unit, $decimals = 0) {
+    * @param integer  $value    numeric value
+    * @param string   $unit     unit (maybe year, month, day, hour, % for standard management)
+    * @param int|null $decimals number of decimal, null to not handle decimals at all
+    *
+    * @return string
+    */
+   static function getValueWithUnit($value, $unit, ?int $decimals = 0): string {
 
-      $formatted_number = is_numeric($value)
+      $formatted_number = !is_null($decimals) && is_numeric($value)
          ? Html::formatNumber($value, false, $decimals)
          : $value;
 
@@ -3518,7 +3521,8 @@ class Dropdown {
          foreach ($tosend as $i) {
             $txt = $i;
             if (isset($post['unit'])) {
-               $txt = Dropdown::getValueWithUnit($i, $post['unit']);
+               $decimals = Toolbox::isFloat($post['step']) ? null : 0;
+               $txt = Dropdown::getValueWithUnit($i, $post['unit'], $decimals);
             }
             $data[] = ['id' => $i,
                'text' => (string)$txt];
@@ -3535,7 +3539,8 @@ class Dropdown {
             }
 
             if (isset($post['unit'])) {
-               $txt = Dropdown::getValueWithUnit($value, $post['unit']);
+               $decimals = Toolbox::isFloat($post['step']) ? null : 0;
+               $txt = Dropdown::getValueWithUnit($value, $post['unit'], $decimals);
             }
             $data[] = [
                'id' => $value,

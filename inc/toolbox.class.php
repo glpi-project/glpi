@@ -3599,4 +3599,15 @@ HTML;
 
       return $tabs;
    }
+
+   /**
+    * Check if a mixed value (possibly a string) is an integer or a float
+    *
+    * @param $value A possible float
+    *
+    * @return bool
+    */
+   public static function isFloat($value) {
+      return (floatval($value) - intval($value)) > 0;
+   }
 }
