@@ -125,6 +125,14 @@
                     }
                 }
 
+                @media (max-width: 1899.98px) {
+                    font-size: 0.75rem;
+
+                    & > :not(caption) > * > * {
+                        padding: 0.25rem;
+                    }
+                }
+
                 &.deleted-results {
                     color: rgb(56, 13, 13);
                 }
