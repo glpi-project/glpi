@@ -8163,7 +8163,21 @@ JAVASCRIPT;
                 } else {
                     $value = preg_replace('/' . self::LBBR . '/', '<br>', $value);
                     $value = preg_replace('/' . self::LBHR . '/', '<hr>', $value);
-                    $out .= $value;
+                    // Print parent elements with less contrasted color
+                    if (preg_match('/ > /', $value)) {
+                       $values = preg_split('/ > /', $value);
+                       foreach ($values as $k => $v) {
+                           if ($k === array_key_first($values)) {
+                               $out .= '<span class="lowcontrast">' . $v . ' > ';
+                           } else if ($k === array_key_last($values)) {
+                               $out .= '</span>' . $v;
+                           } else {
+                               $out .= $v . ' > ';
+                           }
+                       }
+                    } else {
+                       $out .= $value;
+                    }
                 }
                 $out .= "</td>\n";
         }

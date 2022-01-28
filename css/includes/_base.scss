@@ -301,3 +301,8 @@ table {
         background-color: $hover-bg;
     }
 }
+
+.lowcontrast,
+.lowcontrast a {
+    color: darkgray;
+}
