@@ -102,8 +102,7 @@ if (isset($_GET['_in_modal'])) {
     }
 
     Session::checkRight("internet", UPDATE);
-    Html::header(NetworkAlias::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], 'assets');
 
-    $alias->display($_GET);
-    Html::footer();
+    $menus = ['assets'];
+    NetworkAlias::displayFullPageForItem($_GET["id"], $menus, $_GET);
 }

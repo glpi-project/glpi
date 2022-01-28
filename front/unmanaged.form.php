@@ -115,11 +115,9 @@ if (isset($_POST["add"])) {
     );
     Html::back();
 } else {
-    Html::header(Unmanaged::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "assets", "unmanaged");
-    $unmanaged->display([
-        'id'           => $_GET["id"],
+    $menus = ["assets", "unmanaged"];
+    Unmanaged::displayFullPageForItem($_GET["id"], $menus, [
         'withtemplate' => $_GET["withtemplate"],
         'formoptions'  => "data-track-changes=true"
     ]);
-    Html::footer();
 }

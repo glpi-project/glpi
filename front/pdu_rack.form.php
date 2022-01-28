@@ -72,10 +72,9 @@ $_SESSION['glpilisturl'][PDU_Rack::getType()] = $rack->getSearchURL();
 
 $ajax = isset($_REQUEST['ajax']) ? true : false;
 
-if (!$ajax) {
-    Html::header(Rack::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "assets", "rack");
-}
-$pra->display($params);
-if (!$ajax) {
-    Html::footer();
+if ($ajax) {
+    $pra->display($params);
+} else {
+    $menus = ["assets", "rack"];
+    PDU_Rack::displayFullPageForItem($_GET['id'] ?? 0, $menus, $params);
 }

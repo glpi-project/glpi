@@ -115,14 +115,7 @@ if (isset($_POST["add"])) {
     );
     Html::back();
 } else {
-    Html::header(
-        PassiveDCEquipment::getTypeName(Session::getPluralNumber()),
-        $_SERVER['PHP_SELF'],
-        "assets",
-        "passivedcequipment"
-    );
     $options = [
-        'id' => $_GET['id'],
         'withtemplate' => $_GET['withtemplate'],
         'formoptions'  => "data-track-changes=true"
     ];
@@ -132,6 +125,7 @@ if (isset($_POST["add"])) {
     if (isset($_GET['room'])) {
         $options['room'] = $_GET['room'];
     }
-    $passive_equip->display($options);
-    Html::footer();
+
+    $menus = ["assets", "passivedcequipment"];
+    PassiveDCEquipment::displayFullPageForItem($_GET['id'], $menus, $options);
 }

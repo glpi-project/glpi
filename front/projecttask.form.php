@@ -100,7 +100,6 @@ if (isset($_POST["add"])) {
     $task->showForm($_GET["id"], ['withtemplate' => $_GET["withtemplate"]]);
     Html::popFooter();
 } else {
-    Html::header(ProjectTask::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "tools", "project");
-    $task->display($_GET);
-    Html::footer();
+    $menus = ["tools", "project"];
+    ProjectTask::displayFullPageForItem($_GET['id'], $menus, $_GET);
 }

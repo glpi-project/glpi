@@ -3915,4 +3915,15 @@ HTML;
             'name'  => null,
         ];
     }
+
+    /**
+     * Override parent: "{itemtype} - {header name}" -> "{itemtype}"
+     * There is only one config, no need to display the item name
+     *
+     * @return string
+     */
+    public function getBrowserTabName(): string
+    {
+        return self::getTypeName(1);
+    }
 }

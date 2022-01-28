@@ -86,8 +86,6 @@ if (isset($_POST["add"])) {
     );
     Html::back();
 } else {
-    Html::header(SLA::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "config", "slm", "sla");
-
-    $sla->display(['id' => $_GET["id"]]);
-    Html::footer();
+    $menus = ["config", "slm", "sla"];
+    SLA::displayFullPageForItem($_GET["id"], $menus);
 }

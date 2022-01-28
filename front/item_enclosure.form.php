@@ -72,7 +72,5 @@ if (isset($_REQUEST['id'])) {
     ];
 }
 
-Html::header(Enclosure::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "management", "enclosure");
-
-$ien->display($params);
-Html::footer();
+$menus = ["management", "enclosure"];
+Item_Enclosure::displayFullPageForItem($_REQUEST['id'] ?? 0, $menus, $params);

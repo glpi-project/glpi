@@ -90,8 +90,6 @@ if (isset($_POST["add"])) {
     );
     Html::back();
 } else {
-    Html::header(OLA::getTypeName(1), $_SERVER['PHP_SELF'], "config", "slm", "ola");
-
-    $ola->display(['id' => $_GET["id"]]);
-    Html::footer();
+    $menus = ["config", "slm", "ola"];
+    OLA::displayFullPageForItem($_GET["id"], $menus);
 }

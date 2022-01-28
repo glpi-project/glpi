@@ -93,9 +93,8 @@ if (isset($_POST["add"])) {
     }
     Html::back();
 } else {
-    Html::header(SavedSearch::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "tools", "savedsearch");
-    $alert->display(['id'           => $_GET["id"],
+    $menu = ["tools", "savedsearch"];
+    SavedSearch_Alert::displayFullPageForItem($_GET["id"], $menu, [
         'savedsearches_id' => $_GET["savedsearches_id"]
     ]);
-    Html::footer();
 }

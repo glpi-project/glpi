@@ -134,17 +134,9 @@ if (isset($_POST["add"])) {
     }
     Html::back();
 } else {
-    if (Session::getCurrentInterface() == "helpdesk") {
-        Html::helpHeader(RSSFeed::getTypeName(Session::getPluralNumber()));
-    } else {
-        Html::header(RSSFeed::getTypeName(Session::getPluralNumber()), '', "tools", "rssfeed");
-    }
-
-    $rssfeed->display(['id' => $_GET["id"]]);
-
-    if (Session::getCurrentInterface() == "helpdesk") {
-        Html::helpFooter();
-    } else {
-        Html::footer();
-    }
+    $menus = [
+        'central'  => ["tools", "rssfeed"],
+        'helpdesk' => []
+    ];
+    RSSFeed::displayFullPageForItem($_GET["id"], $menus);
 }

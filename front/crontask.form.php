@@ -80,7 +80,6 @@ if (isset($_POST['execute'])) {
     if (!isset($_GET["id"]) || empty($_GET["id"])) {
         exit();
     }
-    Html::header(CronTask::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], 'config', 'crontask');
-    $crontask->display(['id' => $_GET["id"]]);
-    Html::footer();
+    $menus = ['config', 'crontask'];
+    CronTask::displayFullPageForItem($_GET['id'], $menus);
 }

@@ -131,15 +131,6 @@ if (isset($_POST["add"])) {
         $_GET["itemtype"] = "";
     }
 
-    Session::checkRight("internet", READ);
-    Html::header(
-        NetworkName::getTypeName(Session::getPluralNumber()),
-        $_SERVER['PHP_SELF'],
-        'config',
-        'commondropdown',
-        'NetworkName'
-    );
-
-    $nn->display($_GET);
-    Html::footer();
+    $menus = ['config', 'commondropdown', 'NetworkName'];
+    NetworkName::displayFullPageForItem($_GET["id"], $menus, $_GET);
 }

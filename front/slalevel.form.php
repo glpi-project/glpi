@@ -100,9 +100,7 @@ if (isset($_POST["update"])) {
     $criteria->add($_POST);
 
     Html::back();
-} else if (isset($_GET["id"]) && ($_GET["id"] > 0)) { //print computer information
-    Html::header(SlaLevel::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "config", "slm", "slalevel");
-   //show computer form to add
-    $item->display(['id' => $_GET["id"]]);
-    Html::footer();
+} else if (isset($_GET["id"]) && ($_GET["id"] > 0)) {
+    $menus = ["config", "slm", "slalevel"];
+    SlaLevel::displayFullPageForItem($_GET["id"], $menus);
 }

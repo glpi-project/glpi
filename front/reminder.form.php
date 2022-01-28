@@ -134,17 +134,9 @@ if (isset($_POST["add"])) {
     }
     Html::back();
 } else {
-    if (Session::getCurrentInterface() == "helpdesk") {
-        Html::helpHeader(Reminder::getTypeName(Session::getPluralNumber()));
-    } else {
-        Html::header(Reminder::getTypeName(Session::getPluralNumber()), '', "tools", "reminder");
-    }
-
-    $remind->display(['id' => $_GET["id"]]);
-
-    if (Session::getCurrentInterface() == "helpdesk") {
-        Html::helpFooter();
-    } else {
-        Html::footer();
-    }
+    $menus = [
+        'central'  => ["tools", "reminder"],
+        'helpdesk' => [],
+    ];
+    Reminder::displayFullPageForItem($_GET["id"], $menus);
 }

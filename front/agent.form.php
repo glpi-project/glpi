@@ -102,11 +102,9 @@ if (isset($_POST["delete"])) {
     );
     Html::back();
 } else {//print agent information
-    Html::header(Agent::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "admin", "glpi\inventory\inventory", "agent");
-   //show agent form to add
-    $agent->display([
-        'id'           => $_GET["id"],
-        'withtemplate' => $_GET["withtemplate"]
+    $menus = ["admin", "glpi\inventory\inventory", "agent"];
+    Agent::displayFullPageForItem((int) $_GET['id'], $menus, [
+        'withtemplate' => $_GET["withtemplate"],
+        'formoptions'  => "data-track-changes=true",
     ]);
-    Html::footer();
 }

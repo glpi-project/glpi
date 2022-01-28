@@ -69,8 +69,5 @@ if (isset($_POST["update"])) {
     Html::back();
 }
 
-Html::header(AuthMail::getTypeName(1), $_SERVER['PHP_SELF'], "config", "auth", "imap");
-
-$config_mail->display(['id' => $_GET["id"]]);
-
-Html::footer();
+$menus = ["config", "auth", "imap"];
+AuthMail::displayFullPageForItem($_GET['id'], $menus);

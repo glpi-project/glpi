@@ -96,12 +96,9 @@ if (isset($_POST["add"])) {
     $ditem->delete($input);
     Html::back();
 } else {
-    Html::header(Domain::getTypeName(1), $_SERVER['PHP_SELF'], "management", "domain");
-    $domain->display([
-        'id'           => $_GET["id"],
+    $menus = ["management", "domain"];
+    Domain::displayFullPageForItem($_GET["id"], $menus, [
         'withtemplate' => $_GET["withtemplate"],
         'formoptions'  => "data-track-changes=true"
     ]);
-
-    Html::footer();
 }

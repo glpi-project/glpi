@@ -72,7 +72,5 @@ if (isset($_REQUEST['id'])) {
     ];
 }
 
-Html::header(Cluster::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "management", "cluster");
-
-$icl->display($params);
-Html::footer();
+$menus = ["management", "cluster"];
+Item_Cluster::displayFullPageForItem($params['id'] ?? 0, $menus, $params);

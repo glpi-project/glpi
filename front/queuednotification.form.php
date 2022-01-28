@@ -43,8 +43,5 @@ if (!isset($_GET["id"])) {
     $_GET["id"] = "";
 }
 
-$mail = new QueuedNotification();
-
-Html::header(QueuedNotification::getTypeName(), $_SERVER['PHP_SELF'], "admin", "queuednotification");
-$mail->display($_GET);
-Html::footer();
+$menus = ["admin", "queuednotification"];
+QueuedNotification::displayFullPageForItem($_GET["id"], $menus, $_GET);

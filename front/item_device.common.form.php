@@ -104,15 +104,14 @@ if (isset($_POST["add"])) {
     Html::back();
 } else {
     if (in_array($item_device->getType(), $CFG_GLPI['devices_in_menu'])) {
-        Html::header($item_device->getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "assets", strtolower($item_device->getType()));
+        $menus = ["assets", strtolower($item_device->getType())];
     } else {
-        Html::header($item_device->getTypeName(Session::getPluralNumber()), '', "config", "commondevice", $item_device->getDeviceType());
+        $menus = ["config", "commondevice", $item_device->getDeviceType()];
     }
 
     if (!isset($options)) {
         $options = [];
     }
-    $options['id'] = $_GET["id"];
-    $item_device->display($options);
-    Html::footer();
+
+    Item_Devices::displayFullPageForItem($_GET["id"], $menus, $options ?? []);
 }

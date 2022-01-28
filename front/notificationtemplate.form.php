@@ -84,13 +84,6 @@ if (isset($_POST["add"])) {
     );
     Html::back();
 } else {
-    Html::header(
-        NotificationTemplate::getTypeName(Session::getPluralNumber()),
-        $_SERVER['PHP_SELF'],
-        "config",
-        "notification",
-        "notificationtemplate"
-    );
-    $notificationtemplate->display(['id' => $_GET["id"]]);
-    Html::footer();
+    $menus = ["config", "notification", "notificationtemplate"];
+    NotificationTemplate::displayFullPageForItem($_GET["id"], $menus);
 }

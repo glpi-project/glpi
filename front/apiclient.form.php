@@ -51,7 +51,6 @@ if (isset($_POST["add"])) {
     $client->delete($_POST);
     Html::redirect($CFG_GLPI["root_doc"] . "/front/config.form.php");
 } else {
-    Html::header(APIClient::getTypeName(1), $_SERVER['PHP_SELF'], "config", "config", "apiclient");
-    $client->display(['id' => $_GET["id"]]);
-    Html::footer();
+    $menus = ["config", "config", "apiclient"];
+    APIClient::displayFullPageForItem($_GET["id"], $menus);
 }

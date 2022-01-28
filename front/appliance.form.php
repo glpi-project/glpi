@@ -115,11 +115,8 @@ if (isset($_POST["add"])) {
     );
     Html::back();
 } else {
-    Html::header(Appliance::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "management", "appliance");
-    $options = [
-        'id'           => $_GET['id'],
+    $menus = ["management", "appliance"];
+    Appliance::displayFullPageForItem($_GET['id'], $menus, [
         'withtemplate' => $_GET['withtemplate']
-    ];
-    $app->display($options);
-    Html::footer();
+    ]);
 }

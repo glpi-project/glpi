@@ -225,36 +225,34 @@ if (isset($_POST["add"])) {
 }
 
 if (isset($_GET["id"]) && ($_GET["id"] > 0)) {
-    if (Session::getCurrentInterface() == "helpdesk") {
-        Html::helpHeader(Ticket::getTypeName(Session::getPluralNumber()), 'tickets', 'ticket');
-    } else {
-        Html::header(Ticket::getTypeName(Session::getPluralNumber()), '', "helpdesk", "ticket");
-    }
-
     $available_options = ['load_kb_sol', '_openfollowup'];
-    $options           = [];
+    $options = [];
+
     foreach ($available_options as $key) {
         if (isset($_GET[$key])) {
             $options[$key] = $_GET[$key];
         }
     }
 
-
-    $options['id'] = $_GET["id"];
-    $track->display($options);
-
     $url = KnowbaseItem::getFormURLWithParam($_GET) . '&_in_modal=1&item_itemtype=Ticket&item_items_id=' . $_GET['id'];
     if (strpos($url, '_to_kb=') !== false) {
-        Ajax::createIframeModalWindow(
+        $options['after_display'] = Ajax::createIframeModalWindow(
             'savetokb',
             $url,
             [
                 'title'         => __('Save and add to the knowledge base'),
                 'reloadonclose' => false,
                 'autoopen'      => true,
+                'display'       => false,
             ]
         );
     }
+
+    $menus = [
+        'central'  => ['helpdesk', 'ticket'],
+        'helpdesk' => ["tickets", "ticket"],
+    ];
+    Ticket::displayFullPageForItem($_GET["id"], $menus, $options);
 } else {
     if (Session::getCurrentInterface() != 'central') {
         Html::redirect($CFG_GLPI["root_doc"] . "/front/helpdesk.public.php?create_ticket=1");
@@ -265,12 +263,12 @@ if (isset($_GET["id"]) && ($_GET["id"] > 0)) {
     unset($_GET['id']);
     unset($_POST['id']);
 
-   // alternative email must be empty for create ticket
+    // alternative email must be empty for create ticket
     unset($_REQUEST['_users_id_requester_notif']['alternative_email']);
     unset($_REQUEST['_users_id_observer_notif']['alternative_email']);
     unset($_REQUEST['_users_id_assign_notif']['alternative_email']);
     unset($_REQUEST['_suppliers_id_assign_notif']['alternative_email']);
-   // Add a ticket from item : format data
+    // Add a ticket from item : format data
     if (
         isset($_REQUEST['_add_fromitem'])
         && isset($_REQUEST['itemtype'])
@@ -282,15 +280,9 @@ if (isset($_GET["id"]) && ($_GET["id"] > 0)) {
     if (isset($_GET['showglobalkanban']) && $_GET['showglobalkanban']) {
         Html::header(sprintf(__('%s Kanban'), Ticket::getTypeName(1)), '', "helpdesk", "ticket");
         $track::showKanban(0);
+        Html::footer();
     } else {
-        Html::header(__('New ticket'), '', "helpdesk", "ticket");
-        $track->display($_REQUEST);
+        $menus = ["helpdesk", "ticket"];
+        Ticket::displayFullPageForItem($_GET["id"], $menus, $_REQUEST);
     }
-}
-
-
-if (Session::getCurrentInterface() == "helpdesk") {
-    Html::helpFooter();
-} else {
-    Html::footer();
 }

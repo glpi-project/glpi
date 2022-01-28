@@ -80,8 +80,6 @@ if (isset($_POST["add"])) {
     );
     Html::back();
 } else {
-    Html::header(Link::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "config", "link");
-
-    $link->display(['id' => $_GET["id"]]);
-    Html::footer();
+    $menus = ["config", "link"];
+    Link::displayFullPageForItem($_GET["id"], $menus);
 }

@@ -61,19 +61,15 @@ if (isset($_POST["add"])) {
     $notiftpl->update($_POST);
     Html::back();
 } else {
-    Html::header(
-        Notification_NotificationTemplate::getTypeName(Session::getPluralNumber()),
-        $_SERVER['PHP_SELF'],
-        "config",
-        "notification",
-        "notifications_notificationtemplates"
-    );
-    $params = [
-        'id' => $_GET['id'],
-    ];
+    $params = [];
     if (isset($_GET['notifications_id'])) {
         $params['notifications_id'] = $_GET['notifications_id'];
     }
-    $notiftpl->display($params);
-    Html::footer();
+
+    $menus = ["config", "notification", "notifications_notificationtemplates"];
+    Notification_NotificationTemplate::displayFullPageForItem(
+        $_GET['id'],
+        $menus,
+        $params
+    );
 }

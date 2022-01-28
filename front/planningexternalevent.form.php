@@ -71,13 +71,6 @@ if (isset($_POST["add"])) {
     $extevent->update($_POST);
     Html::back();
 } else {
-    Html::header(
-        PlanningExternalEvent::getTypeName(Session::getPluralNumber()),
-        $_SERVER['PHP_SELF'],
-        "helpdesk",
-        "planning",
-        "external"
-    );
-    $extevent->display(['id' => $_GET["id"]]);
-    Html::footer();
+    $menus = ["helpdesk", "planning", "external"];
+    PlanningExternalEvent::displayFullPageForItem($_GET["id"], $menus);
 }

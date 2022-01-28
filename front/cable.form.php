@@ -95,12 +95,9 @@ if (isset($_POST["add"])) {
       $cable->showForm($_GET["id"], ['withtemplate' => $_GET["withtemplate"]]);
       Html::popFooter();
 } else {
-    Html::header(Cable::getTypeName(1), $_SERVER['PHP_SELF'], "assets", "cable");
-    $cable->display([
-        'id'           => $_GET["id"],
+    $menus = ["assets", "cable"];
+    Cable::displayFullPageForItem($_GET['id'], $menus, [
         'withtemplate' => $_GET["withtemplate"],
         'formoptions'  => "data-track-changes=true"
     ]);
-
-    Html::footer();
 }

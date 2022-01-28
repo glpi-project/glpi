@@ -138,10 +138,8 @@ if (isset($_POST["add"])) {
     }
     Html::back();
 } else {
-    Html::header(Document::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "management", "document");
-    $doc->display([
-        'id'           => $_GET["id"],
+    $menus = ["management", "document"];
+    Document::displayFullPageForItem($_GET["id"], $menus, [
         'formoptions'  => "data-track-changes=true"
     ]);
-    Html::footer();
 }

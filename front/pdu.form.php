@@ -115,11 +115,9 @@ if (isset($_POST["add"])) {
     );
     Html::back();
 } else {
-    Html::header(PDU::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "assets", "pdu");
-    $pdu->display([
-        'id'           => $_GET["id"],
+    $menus = ["assets", "pdu"];
+    PDU::displayFullPageForItem($_GET["id"], $menus, [
         'withtemplate' => $_GET["withtemplate"],
         'formoptions'  => "data-track-changes=true"
     ]);
-    Html::footer();
 }

@@ -163,7 +163,6 @@ if (isset($_POST["add"])) {
         ];
     }
 
-    Html::header(Socket::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "assets", "cable", "socket");
-    $socket->display($options);
-    Html::footer();
+    $menus = ["assets", "cable", "socket"];
+    Socket::displayFullPageForItem($_GET["id"], $menus, $options);
 }

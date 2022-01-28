@@ -72,12 +72,9 @@ if (isset($_POST["add"])) {
     $record->showForm($_GET["id"], ['domains_id' => $_GET['domains_id'] ?? null]);
     Html::popFooter();
 } else {
-    Html::header(DomainRecord::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "management", "domain", "domainrecord");
-    $record->display([
-        'id'           => $_GET["id"],
+    $menus = ["management", "domain", "domainrecord"];
+    DomainRecord::displayFullPageForItem($_GET["id"], $menus, [
         'domains_id'   => $_GET['domains_id'] ?? null,
         'withtemplate' => $_GET["withtemplate"]
     ]);
-
-    Html::footer();
 }

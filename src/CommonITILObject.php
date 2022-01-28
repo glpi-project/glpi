@@ -8537,4 +8537,20 @@ abstract class CommonITILObject extends CommonDBTM
         }
         return null;
     }
+
+    /**
+     * Instead of "{itemtype} - {name}" we will use {itemtype} ({id}) - {name}
+     * as the ID of a Ticket/Change/Problem is an important information
+     *
+     * @return string
+     */
+    public function getBrowserTabName(): string
+    {
+        return sprintf(
+            __('%1$s (%2$s) - %3$s'),
+            static::getTypeName(1),
+            $this->getID(),
+            $this->getHeaderName()
+        );
+    }
 }

@@ -1156,15 +1156,21 @@ HTML;
      * @param string $sector  sector in which the page displayed is
      * @param string $item    item corresponding to the page displayed
      * @param string $option  option corresponding to the page displayed
+     * @param bool   $add_id  add current item id to the title ?
      *
      * @return void
-     **/
-    public static function includeHeader($title = '', $sector = 'none', $item = 'none', $option = '')
-    {
+     */
+    public static function includeHeader(
+        $title = '',
+        $sector = 'none',
+        $item = 'none',
+        $option = '',
+        bool $add_id = true
+    ) {
         global $CFG_GLPI, $PLUGIN_HOOKS;
 
        // complete title with id if exist
-        if (isset($_GET['id']) && $_GET['id']) {
+        if ($add_id && isset($_GET['id']) && $_GET['id']) {
             $title = sprintf(__('%1$s - %2$s'), $title, $_GET['id']);
         }
 
@@ -1587,25 +1593,32 @@ HTML;
      * @param string $sector  sector in which the page displayed is
      * @param string $item    item corresponding to the page displayed
      * @param string $option  option corresponding to the page displayed
-     **/
-    public static function header($title, $url = '', $sector = "none", $item = "none", $option = "")
-    {
+     * @param bool   $add_id  add current item id to the title ?
+     */
+    public static function header(
+        $title,
+        $url = '',
+        $sector = "none",
+        $item = "none",
+        $option = "",
+        bool $add_id = true
+    ) {
         global $CFG_GLPI, $HEADER_LOADED, $DB;
 
-       // If in modal : display popHeader
+        // If in modal : display popHeader
         if (isset($_REQUEST['_in_modal']) && $_REQUEST['_in_modal']) {
             return self::popHeader($title, $url, false, $sector, $item, $option);
         }
-       // Print a nice HTML-head for every page
+        // Print a nice HTML-head for every page
         if ($HEADER_LOADED) {
             return;
         }
         $HEADER_LOADED = true;
-       // Force lower case for sector and item
+        // Force lower case for sector and item
         $sector = strtolower($sector);
         $item   = strtolower($item);
 
-        self::includeHeader($title, $sector, $item, $option);
+        self::includeHeader($title, $sector, $item, $option, $add_id);
 
         $tmp_active_item = explode("/", $item);
         $active_item     = array_pop($tmp_active_item);
@@ -1639,7 +1652,7 @@ HTML;
             echo "</div>";
         }
 
-       // call static function callcron() every 5min
+        // call static function callcron() every 5min
         CronTask::callCron();
     }
 
@@ -1827,18 +1840,24 @@ HTML;
      * @param string $sector  sector in which the page displayed is
      * @param string $item    item corresponding to the page displayed
      * @param string $option  option corresponding to the page displayed
-     **/
-    public static function helpHeader($title, string $sector = "self-service", string $item = "none", string $option = "")
-    {
+     * @param bool   $add_id  add current item id to the title ?
+     */
+    public static function helpHeader(
+        $title,
+        string $sector = "self-service",
+        string $item = "none",
+        string $option = "",
+        bool $add_id = true
+    ) {
         global $HEADER_LOADED, $PLUGIN_HOOKS;
 
-       // Print a nice HTML-head for help page
+        // Print a nice HTML-head for help page
         if ($HEADER_LOADED) {
             return;
         }
         $HEADER_LOADED = true;
 
-        self::includeHeader($title, $sector, $item, $option);
+        self::includeHeader($title, $sector, $item, $option, $add_id);
 
         $menu = [
             'home' => [
@@ -1943,7 +1962,7 @@ HTML;
 
         TemplateRenderer::getInstance()->display('layout/parts/page_header.html.twig', $tpl_vars);
 
-       // call static function callcron() every 5min
+        // call static function callcron() every 5min
         CronTask::callCron();
     }
 

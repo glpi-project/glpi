@@ -102,7 +102,6 @@ if (isset($_POST["add"])) {
 
     Html::back();
 } else {
-    Html::header(MailCollector::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "config", "mailcollector");
-    $mailgate->display(['id' => $_GET["id"]]);
-    Html::footer();
+    $menus = ["config", "mailcollector"];
+    MailCollector::displayFullPageForItem($_GET["id"], $menus);
 }

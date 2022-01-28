@@ -122,10 +122,8 @@ if (isset($_GET['getvcard'])) {
     }
     Html::back();
 } else {
-    Html::header(Contact::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "management", "contact");
-    $contact->display([
-        'id'           => $_GET["id"],
+    $menus = ["management", "contact"];
+    Contact::displayFullPageForItem($_GET["id"], $menus, [
         'formoptions'  => "data-track-changes=true"
     ]);
-    Html::footer();
 }

@@ -98,24 +98,12 @@ if (array_key_exists('purge', $_POST) || array_key_exists('delete', $_POST)) {
     $itemtype = $link->isNewItem() ? $_GET['itemtype'] : $link->fields['itemtype'];
     $items_id = $link->isNewItem() ? $_GET['items_id'] : $link->fields['items_id'];
 
-    Html::header(
-        ManualLink::getTypeName(Session::getPluralNumber()),
-        $_SERVER['PHP_SELF'],
-        Html::getMenuSectorForItemtype($itemtype),
-        $itemtype
-    );
-
-    $link->display(
-        [
-            'id'          => $id,
-            'formoptions' => 'data-track-changes=true',
-
-            'itemtype'    => $itemtype,
-            'items_id'    => $items_id
-        ]
-    );
-
-    Html::footer();
+    $menus = [Html::getMenuSectorForItemtype($itemtype), $itemtype];
+    ManualLink::displayFullPageForItem($id ?? 0, $menus, [
+        'formoptions' => 'data-track-changes=true',
+        'itemtype'    => $itemtype,
+        'items_id'    => $items_id
+    ]);
 } else {
     Html::displayErrorAndDie('lost');
 }

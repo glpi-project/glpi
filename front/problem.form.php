@@ -200,24 +200,27 @@ if (isset($_POST["add"])) {
     if (isset($_GET['showglobalkanban']) && $_GET['showglobalkanban']) {
         Html::header(sprintf(__('%s Kanban'), Problem::getTypeName(1)), $_SERVER['PHP_SELF'], "helpdesk", "problem");
         $problem::showKanban(0);
+        Html::footer();
     } else {
-        Html::header(Problem::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "helpdesk", "problem");
-        $problem->display($_REQUEST);
-    }
-
-    if (isset($_GET['id']) && ($_GET['id'] > 0)) {
-        $url = KnowbaseItem::getFormURLWithParam($_GET) . '&_in_modal=1&item_itemtype=Ticket&item_items_id=' . $_GET['id'];
-        if (strpos($url, '_to_kb=') !== false) {
-            Ajax::createIframeModalWindow(
-                'savetokb',
-                $url,
-                [
-                    'title'         => __('Save and add to the knowledge base'),
-                    'reloadonclose' => false,
-                    'autoopen'      => true,
-                ]
-            );
+        $options = $_REQUEST;
+        if (isset($_GET['id']) && ($_GET['id'] > 0)) {
+            $url = KnowbaseItem::getFormURLWithParam($_GET) . '&_in_modal=1&item_itemtype=Ticket&item_items_id=' . $_GET['id'];
+            if (strpos($url, '_to_kb=') !== false) {
+                $options['after_display'] = Ajax::createIframeModalWindow(
+                    'savetokb',
+                    $url,
+                    [
+                        'title'         => __('Save and add to the knowledge base'),
+                        'reloadonclose' => false,
+                        'autoopen'      => true,
+                        'display'       => false,
+                    ]
+                );
+            }
         }
+
+        $menus = ["helpdesk", "problem"];
+        Problem::displayFullPageForItem($_GET['id'] ?? 0, $menus, $options);
     }
 
     Html::footer();

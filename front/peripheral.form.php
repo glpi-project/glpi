@@ -129,11 +129,9 @@ if (isset($_POST["add"])) {
 
     Html::redirect($peripheral->getFormURLWithID($_POST["id"]));
 } else {
-    Html::header(Peripheral::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "assets", "peripheral");
-    $peripheral->display([
-        'id'           => $_GET["id"],
+    $menus = ["assets", "peripheral"];
+    Peripheral::displayFullPageForItem($_GET["id"], $menus, [
         'withtemplate' => $_GET["withtemplate"],
         'formoptions'  => "data-track-changes=true"
     ]);
-    Html::footer();
 }

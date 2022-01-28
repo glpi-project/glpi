@@ -64,11 +64,7 @@ if (isset($_POST["add"])) {
     Html::back();
 }
 
-Html::header(Profile::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "admin", "profile");
-
-$prof->display([
-    'id'           => $_GET["id"],
+$menus = ["admin", "profile"];
+Profile::displayFullPageForItem($_GET["id"], $menus, [
     'formoptions'  => " data-track-changes='true'"
 ]);
-
-Html::footer();
