@@ -64,6 +64,10 @@ class Antivirus extends InventoryAsset
                 $val->antivirus_version = '';
             }
 
+            if (!property_exists($val, 'is_active') || empty($val->is_active)) {
+                $val->is_active = 0;
+            }
+
             $val->is_dynamic = 1;
         }
 
