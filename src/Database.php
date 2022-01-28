@@ -240,6 +240,26 @@ class Database extends CommonDBChild
             'datatype'           => 'dropdown'
         ];
 
+        $tab[] = [
+            'id'                 => '12',
+            'table'              => Computer::getTable(),
+            'field'              => 'name',
+            'datatype'           => 'itemlink',
+            'linkfield'          => 'items_id',
+            'name'               => Computer::getTypeName(0),
+            'forcegroupby'       => true,
+            'massiveaction'      => false,
+            'joinparams'         => [
+                'beforejoin'         => [
+                    'table'              => DatabaseInstance::getTable(),
+                    'joinparams'         => [
+                        'jointype'           => 'itemtype_item',
+                        'specific_itemtype'  => 'Computer'
+                    ]
+                ]
+            ]
+        ];
+
         return $tab;
     }
 
