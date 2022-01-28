@@ -150,7 +150,8 @@
             {% endif %}
 
             {% set cat_params = field_options|merge({
-               'disabled': (not (canupdate or can_requester))
+               'entity': item.fields['entities_id'],
+               'disabled': (not (canupdate or can_requester)),
             }) %}
             {% if item.isNewItem() %}
                {% set cat_params = cat_params|merge({
