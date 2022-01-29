@@ -68,7 +68,8 @@
          column_field: {{ column_field|json_encode|raw }},
          background_refresh_interval: {{ background_refresh_interval|default(session('glpirefresh_views')) }},
          item: {{ item|json_encode|raw }},
-         supported_filters: {{ supported_filters|json_encode|raw }}
+         supported_filters: {{ supported_filters|json_encode|raw }},
+         display_initials: {{ entity_config('display_users_initials', session('glpiactive_entity')) }},
       });
       // Create kanban elements and add data
       kanban.init();
