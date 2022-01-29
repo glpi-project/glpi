@@ -337,6 +337,8 @@ class GLPIKanbanRights {
 
         this.mutation_observer = null;
 
+        this.display_initials = true;
+
         /**
        * Parse arguments and assign them to the object's properties
        * @since 9.5.0
@@ -347,7 +349,7 @@ class GLPIKanbanRights {
                 'element', 'max_team_images', 'team_image_size', 'item',
                 'supported_itemtypes', 'allow_add_item', 'allow_add_column', 'dark_theme', 'background_refresh_interval',
                 'column_field', 'allow_modify_view', 'limit_addcard_columns', 'allow_order_card', 'allow_create_column',
-                'allow_delete_item', 'supported_filters'
+                'allow_delete_item', 'supported_filters', 'display_initials'
             ];
             // Use CSS variable check for dark theme detection by default
             self.dark_theme = $('html').css('--is-dark').trim() === 'true';
@@ -1552,7 +1554,7 @@ class GLPIKanbanRights {
             // Force uppercase initals
             initials = initials.toUpperCase();
 
-            if (initials.length === 0) {
+            if (!self.display_initials || initials.length === 0) {
                 return generateOtherBadge(teammember, 'fa-user');
             }
 
