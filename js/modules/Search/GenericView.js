@@ -29,6 +29,8 @@
  * ---------------------------------------------------------------------
  */
 
+/* global bootstrap */
+
 // Explicitly bind to window so Jest tests work properly
 window.GLPI = window.GLPI || {};
 window.GLPI.Search = window.GLPI.Search || {};
@@ -80,7 +82,7 @@ window.GLPI.Search.GenericView = class GenericView {
         const ajax_container = this.getResultsView().getAJAXContainer();
         const search_container = ajax_container.closest('.search-container');
 
-        $(search_container).on('click', 'a.bookmark_record.save', (e) => {
+        $(search_container).on('click', 'a.bookmark_record.save', () => {
             const modal = $('#savedsearch-modal');
             //move the modal to the body so it can be displayed above the rest of the page
             modal.appendTo('body');
@@ -97,7 +99,6 @@ window.GLPI.Search.GenericView = class GenericView {
             `);
             const bs_modal = new bootstrap.Modal(modal.get(0), {show: false});
             modal.on('show.bs.modal', () => {
-                console.dir(modal.attr('data-url'));
                 const url = modal.attr('data-url')+'&url=' + encodeURIComponent(window.location.pathname + window.location.search);
                 modal.find('.modal-body').load(url, {});
             });
