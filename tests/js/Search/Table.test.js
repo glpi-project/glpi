@@ -150,7 +150,6 @@ describe('Search Table', () => {
     });
     test('getResultsView', () => {
         expect(real_table.getResultsView()).toBeObject();
-        expect(real_table.getResultsView()).toBeInstanceOf(GLPI.Search.ResultsView);
     });
     test('getSortState', () => {
         const verify_initial_sort_state = () => {
