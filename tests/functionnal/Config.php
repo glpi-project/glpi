@@ -824,8 +824,7 @@ class Config extends DbTestCase {
       $this->array($found_history)->isEqualTo($expected_history);
    }
 
-   public function testAutoCreateInfocom()
-   {
+   public function testAutoCreateInfocom() {
       global $CFG_GLPI;
 
       $infocom_types = $CFG_GLPI["infocom_types"];
