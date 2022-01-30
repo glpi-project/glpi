@@ -480,7 +480,10 @@ class Computer extends DbTestCase {
          $this->integer(
             countElementsInTable(
                $relation::getTable(),
-               ['items_id' => $clonedComputer->fields['id']]
+               [
+                  'itemtype'  => 'Computer',
+                  'items_id'  => $clonedComputer->fields['id']
+               ]
             )
          )->isIdenticalTo($expected);
       }
