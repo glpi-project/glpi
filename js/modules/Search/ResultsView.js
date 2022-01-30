@@ -39,7 +39,7 @@ window.GLPI.Search.ResultsView = class ResultsView {
         this.element_id = element_id;
 
         if (this.getElement()) {
-            this.getElement().closest('div.ajax-container.search-display-data').data('js_class', this);
+            this.getAJAXContainer().data('js_class', this);
             this.view = new view_class(this.element_id);
         }
     }
