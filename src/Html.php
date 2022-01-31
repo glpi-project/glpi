@@ -5385,6 +5385,7 @@ JAVASCRIPT
      *    - display             boolean  display or return the generated html (default true)
      *    - only_uploaded_files boolean  show only the uploaded files block, i.e. no title, no dropzone
      *                                   (should be false when upload has to be enable only from rich text editor)
+     *    - required            boolean  display a required mark
      *
      * @return void|string   the html if display parameter is false
      **/
@@ -5409,6 +5410,7 @@ JAVASCRIPT
         $p['uploads']             = [];
         $p['editor_id']           = null;
         $p['only_uploaded_files'] = false;
+        $p['required']            = false;
 
         if (is_array($options) && count($options)) {
             foreach ($options as $key => $val) {
@@ -5426,6 +5428,9 @@ JAVASCRIPT
                 $display .= "<b>";
                 $display .= sprintf(__('%1$s (%2$s)'), __('File(s)'), Document::getMaxUploadSize());
                 $display .= DocumentType::showAvailableTypesLink(['display' => false]);
+                if ($p['required']) {
+                    $display .= '<span class="required">*</span>';
+                }
                 $display .= "</b>";
             }
         }
@@ -5441,12 +5446,18 @@ JAVASCRIPT
         $max_file_size  = $CFG_GLPI['document_max_size'] * 1024 * 1024;
         $max_chunk_size = round(Toolbox::getPhpUploadSizeLimit() * 0.9); // keep some place for extra data
 
+        $required = "";
+        if ($p['required']) {
+            $required = "required='required'";
+        }
+
         if (!$p['only_uploaded_files']) {
            // manage file upload without tinymce editor
             $display .= "<span class='b'>" . __('Drag and drop your file here, or') . '</span><br>';
         }
         $display .= "<input id='fileupload{$p['rand']}' type='file' name='_uploader_" . $p['name'] . "[]'
                       class='form-control'
+                      $required
                       data-url='" . $CFG_GLPI["root_doc"] . "/ajax/fileupload.php'
                       data-form-data='{\"name\": \"_uploader_" . $p['name'] . "\", \"showfilesize\": \"" . $p['showfilesize'] . "\"}'"
                       . ($p['multiple'] ? " multiple='multiple'" : "")
