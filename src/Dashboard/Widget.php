@@ -522,6 +522,7 @@ HTML;
             'rand'         => mt_rand(),
         ];
         $p = array_merge($default, $params);
+        $p['cache_key'] = $p['cache_key'] ?? $p['rand'];
         $default_entry = [
             'url'    => '',
             'icon'   => '',
@@ -995,6 +996,7 @@ JAVASCRIPT;
         ];
         $p = array_merge($defaults, $params);
 
+        $p['cache_key'] = $p['cache_key'] ?? $p['rand'];
         $nb_series = count($series);
         $nb_labels = min($p['limit'], count($labels));
         if ($p['distributed']) {
@@ -1380,7 +1382,6 @@ JAVASCRIPT;
             array_merge($params, [
                 'legend'   => true,
                 'multiple' => true,
-                'cache_key' => mt_rand(),
             ]),
             $params['data']['labels'],
             $params['data']['series']
@@ -1398,7 +1399,6 @@ JAVASCRIPT;
     {
         return self::multipleLines(array_merge($params, [
             'area' => true,
-            'cache_key' => mt_rand(),
         ]));
     }
 
@@ -1449,6 +1449,7 @@ JAVASCRIPT;
             'rand'         => mt_rand(),
         ];
         $p = array_merge($defaults, $params);
+        $p['cache_key'] = $p['cache_key'] ?? $p['rand'];
 
         $nb_series = count($series);
         $nb_labels = min($p['limit'], count($labels));
