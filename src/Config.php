@@ -73,6 +73,7 @@ class Config extends CommonDBTM
             $menu['page']    = Config::getFormURL(false);
             $menu['icon']    = Config::getIcon();
 
+            $menu['options']['apiclient']['icon']            = APIClient::getIcon();
             $menu['options']['apiclient']['title']           = APIClient::getTypeName(Session::getPluralNumber());
             $menu['options']['apiclient']['page']            = Config::getFormURL(false) . '?forcetab=Config$8';
             $menu['options']['apiclient']['links']['search'] = Config::getFormURL(false) . '?forcetab=Config$8';

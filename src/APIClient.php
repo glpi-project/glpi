@@ -337,4 +337,9 @@ class APIClient extends CommonDBTM
             }
         } while (!$ok);
     }
+
+    public static function getIcon()
+    {
+        return "ti ti-browser";
+    }
 }
