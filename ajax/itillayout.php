@@ -39,7 +39,7 @@ Html::header_nocache();
 Session::checkLoginUser();
 
 $itillayout = json_encode($_POST['itil_layout']);
-if (json_last_error() !== JSON_ERROR_NONE) {
+if ($itillayout !== false) {
     exit;
 }
 
