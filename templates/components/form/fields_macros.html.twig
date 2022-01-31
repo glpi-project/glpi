@@ -215,11 +215,22 @@
    {% set add_html = '' %}
    {% if options.enable_fileupload %}
       {% set add_html %}
-         {% do call('Html::file', [{'editor_id': id, 'multiple': true, 'uploads': options.uploads}]) %}
+         {% do call('Html::file', [{
+             'editor_id': id,
+             'multiple': true,
+             'uploads': options.uploads,
+             'required': options.fields_template.isMandatoryField('_documents_id')
+         }]) %}
       {% endset %}
    {% elseif not options.enable_fileupload and options.enable_richtext and options.enable_images %}
       {% set add_html %}
-         {% do call('Html::file', [{'editor_id': id, 'name': name, 'only_uploaded_files': true, 'uploads': options.uploads}]) %}
+         {% do call('Html::file', [{
+             'editor_id': id,
+             'name': name,
+             'only_uploaded_files': true,
+             'uploads': options.uploads,
+             'required': options.fields_template.isMandatoryField('_documents_id')
+         }]) %}
       {% endset %}
    {% endif %}
 
