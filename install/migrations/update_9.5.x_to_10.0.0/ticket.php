@@ -48,3 +48,7 @@ foreach (['glpi_tickettemplatemandatoryfields', 'glpi_tickettemplatepredefinedfi
     );
 }
 /* /Remove global_validation field from templates (should not be defined manually). */
+
+/* Add dedicated right for ITILFollowupTemplate */
+$migration->addRight('itilfollowuptemplate', ALLSTANDARDRIGHT, ['dropdown' => UPDATE]);
+/* Add dedicated right for ITILFollowupTemplate */
