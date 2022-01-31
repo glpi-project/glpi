@@ -468,7 +468,6 @@ class Inventory
                 'title' => Agent::getTypeName(Session::getPluralNumber()),
                 'page'  => Agent::getSearchURL(false),
                 'links' => [
-                    'add'    => '/front/agent.form.php',
                     'search' => '/front/agent.php',
                 ] + $links
             ];
