@@ -56,26 +56,27 @@ class User extends \DbTestCase
      */
     public function testLostPassword()
     {
-       //would not be logical to login here
+        // would not be logical to login here
         $_SESSION['glpicronuserrunning'] = "cron_phpunit";
         $user = getItemByTypeName('User', TU_USER);
 
-       // Test request for a password with invalid email
-        $this->exception(
+        // Test request for a password with invalid email
+        $this->when(
             function () use ($user) {
                 $user->forgetPassword('this-email-does-not-exists@example.com');
             }
-        )
-         ->isInstanceOf(\Glpi\Exception\ForgetPasswordException::class);
+        )->error()
+            ->withType(E_USER_WARNING)
+            ->withMessage("Failed to find a single user for 'this-email-does-not-exists@example.com', 0 user(s) found.")
+            ->exists();
 
-       // Test request for a password
+        // Test request for a password
         $result = $user->forgetPassword($user->getDefaultEmail());
         $this->boolean($result)->isTrue();
 
-       // Test reset password with a bad token
+        // Test reset password with a bad token
         $token = $user->getField('password_forget_token');
         $input = [
-            'email' => $user->getDefaultEmail(),
             'password_forget_token' => $token . 'bad',
             'password'  => TU_PASS,
             'password2' => TU_PASS
@@ -87,25 +88,24 @@ class User extends \DbTestCase
         )
         ->isInstanceOf(\Glpi\Exception\ForgetPasswordException::class);
 
-       // Test reset password with good token
-       // 1 - Refresh the in-memory instance of user and get the current password
+        // Test reset password with good token
+        // 1 - Refresh the in-memory instance of user and get the current password
         $user->getFromDB($user->getID());
 
-       // 2 - Set a new password
+        // 2 - Set a new password
         $input = [
-            'email' => $user->getDefaultEmail(),
             'password_forget_token' => $token,
             'password'  => 'NewPassword',
             'password2' => 'NewPassword'
         ];
 
-       // 3 - check the update succeeds
+        // 3 - check the update succeeds
         $result = $user->updateForgottenPassword($input);
         $this->boolean($result)->isTrue();
         $newHash = $user->getField('password');
 
-       // 4 - Restore the initial password in the DB before checking he updated password
-       // This ensure the original password is restored even if the next test fails
+        // 4 - Restore the initial password in the DB before checking the updated password
+        // This ensure the original password is restored even if the next test fails
         $updateSuccess = $user->update([
             'id'        => $user->getID(),
             'password'  => TU_PASS,
@@ -113,7 +113,7 @@ class User extends \DbTestCase
         ]);
         $this->variable($updateSuccess)->isNotFalse('password update failed');
 
-       // Test the new password was saved
+        // Test the new password was saved
         $this->variable(\Auth::checkPassword('NewPassword', $newHash))->isNotFalse();
     }
 

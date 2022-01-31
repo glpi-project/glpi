@@ -48,15 +48,18 @@ use Notepad;
  */
 class APIRest extends APIBaseClass
 {
+    protected function getLogFilePath(): string
+    {
+        return GLPI_LOG_DIR . "/php-errors.log";
+    }
+
     public function beforeTestMethod($method)
     {
         global $CFG_GLPI;
 
-       // Clear test server log
-        if (!file_exists(__DIR__ . '/error.log')) {
-            touch(__DIR__ . '/error.log');
-        }
-        file_put_contents(__DIR__ . '/error.log', "");
+        // Empty log file
+        $file_updated = file_put_contents($this->getLogFilePath(), "");
+        $this->variable($file_updated)->isNotIdenticalTo(false);
 
         $this->http_client = new GuzzleHttp\Client();
         $this->base_uri    = trim($CFG_GLPI['url_base_api'], "/") . "/";
@@ -66,10 +69,29 @@ class APIRest extends APIBaseClass
 
     public function afterTestMethod($method)
     {
-        global $CFG_GLPI;
+        // Check that no errors occured on the test server
+        $this->string(file_get_contents($this->getLogFilePath()))->isEmpty();
+    }
 
-       // Check that no errors occured on the test server
-        $this->string(file_get_contents(__DIR__ . '/error.log'))->isEmpty();
+    /**
+     * Check errors that are expected to happen on the API server side and thus
+     * can't be caught directly from the unit tests
+     *
+     * @param array $expected_errors
+     *
+     * @return void
+     */
+    protected function checkServerSideError(array $expected_errors): void
+    {
+        $logfile = $this->getLogFilePath();
+        $errors = file_get_contents($logfile);
+
+        foreach ($expected_errors as $error) {
+            $this->string($errors)->contains($error);
+        }
+
+        // Clear error file
+        file_put_contents($logfile, "");
     }
 
     protected function doHttpRequest($verb = "get", $relative_uri = "", $params = [])
@@ -132,12 +154,16 @@ class APIRest extends APIBaseClass
                       (!empty($resource_query)
                          ? '?' . $resource_query
                          : '');
+
+        $expected_errors = $params['server_errors'] ?? [];
+
         unset(
             $params['itemtype'],
             $params['id'],
             $params['parent_itemtype'],
             $params['parent_id'],
-            $params['verb']
+            $params['verb'],
+            $params['server_errors']
         );
        // launch query
         try {
@@ -171,6 +197,7 @@ class APIRest extends APIBaseClass
        // common tests
         $this->variable($res)->isNotNull();
         $this->array($expected_codes)->contains($res->getStatusCode());
+        $this->checkServerSideError($expected_errors);
         return $data;
     }
 
@@ -225,6 +252,9 @@ class APIRest extends APIBaseClass
         $headers = $res->getHeaders();
         $this->array($headers)->hasKey('Content-Type');
         $this->string($headers['Content-Type'][0])->isIdenticalTo('text/html; charset=UTF-8');
+
+        // FIXME Remove this when deprecation notices will be fixed on michelf/php-markdown side
+        $file_updated = file_put_contents($this->getLogFilePath(), "");
     }
 
     /**

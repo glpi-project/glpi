@@ -225,7 +225,6 @@ var Dashboard = {
 
                 // fit again numbers
                 Dashboard.fitNumbers();
-                Dashboard.animateNumbers();
             }, 200);
         });
 

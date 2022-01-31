@@ -2142,7 +2142,7 @@ abstract class API
             return $this->returnError(__("Email notifications are disabled"));
         }
 
-        if (!isset($params['email'])) {
+        if (!isset($params['email']) && !$params['password_forget_token']) {
             return $this->returnError(__("email parameter missing"));
         }
 
@@ -2159,12 +2159,11 @@ abstract class API
                 return $this->returnError($e->getMessage());
             }
             return $this->returnResponse([
-                __("An email has been sent to your email address. The email contains information for reset your password.")
+                __('If the given email address match an exisiting GLPI user, you will receive an email containing the informations required to reset your password. Please contact your administrator if you do not receive any email.')
             ]);
         } else {
             $password = isset($params['password']) ? $params['password'] : '';
             $input = [
-                'email'                    => Toolbox::addslashes_deep($params['email']),
                 'password_forget_token'    => Toolbox::addslashes_deep($params['password_forget_token']),
                 'password'                 => Toolbox::addslashes_deep($password),
                 'password2'                => Toolbox::addslashes_deep($password),

@@ -1623,7 +1623,7 @@ abstract class APIBaseClass extends atoum
         $user = getItemByTypeName('User', TU_USER);
         $email = $user->getDefaultEmail();
 
-       // Test the verb POST is not alloxed
+        // Check that the POST method is not allowed
         $res = $this->query(
             'lostPassword',
             ['verb'    => 'POST',
@@ -1632,7 +1632,7 @@ abstract class APIBaseClass extends atoum
             'ERROR'
         );
 
-       // Test the verb GET is not alloxed
+        // Check that the GET method is not allowed
         $res = $this->query(
             'lostPassword',
             ['verb'    => 'GET',
@@ -1641,7 +1641,7 @@ abstract class APIBaseClass extends atoum
             'ERROR'
         );
 
-       // Test the verb DELETE is not allowed
+        // Check that the DELETE method is not allowed
         $res = $this->query(
             'lostPassword',
             ['verb'    => 'DELETE',
@@ -1654,7 +1654,7 @@ abstract class APIBaseClass extends atoum
          ->variable['use_notifications']->isEqualTo(0)
          ->variable['notifications_mailing']->isEqualTo(0);
 
-       // Test disabled notifications make this fail
+        // Check that disabled notifications prevent password changes
         $res = $this->query(
             'lostPassword',
             ['verb'    => 'PUT',
@@ -1666,25 +1666,26 @@ abstract class APIBaseClass extends atoum
             'ERROR'
         );
 
-       //enable notifications
+        // Enable notifications
         Config::setConfigurationValues('core', [
             'use_notifications' => '1',
             'notifications_mailing' => '1'
         ]);
 
-       // Test an unknown email is rejected
-        $res = $this->query(
-            'lostPassword',
-            ['verb'    => 'PUT',
-                'json'    => [
-                    'email'  => 'nonexistent@localhost.local'
-                ]
+        // Test an unknown email, query will succeed to avoid exposing whether or
+        // not the email actually exist in our database but there will be a
+        // warning in the server logs
+        $this->query('lostPassword', [
+            'verb'    => 'PUT',
+            'json'    => [
+                'email'  => 'nonexistent@localhost.local'
             ],
-            400,
-            'ERROR'
-        );
+            'server_errors' => [
+                "Failed to find a single user for 'nonexistent@localhost.local', 0 user(s) found."
+            ]
+        ], 200);
 
-       // Test a valid email is accepted
+        // Test a valid email is accepted
         $res = $this->query(
             'lostPassword',
             ['verb'    => 'PATCH',
@@ -1695,11 +1696,11 @@ abstract class APIBaseClass extends atoum
             200
         );
 
-       // get the password recovery token
+        // get the password recovery token
         $user = getItemByTypeName('User', TU_USER);
         $token = $user->getField('password_forget_token');
 
-       // Test reset password with a bad token
+        // Test reset password with a bad token
         $res = $this->query(
             'lostPassword',
             ['verb'    => 'PUT',
@@ -1713,7 +1714,7 @@ abstract class APIBaseClass extends atoum
             'ERROR'
         );
 
-       // Test reset password with the good token
+        // Test reset password with the good token
         $res = $this->query(
             'lostPassword',
             ['verb'    => 'PATCH',
@@ -1726,11 +1727,11 @@ abstract class APIBaseClass extends atoum
             200
         );
 
-       // Refresh the in-memory instance of user and get the password
+        // Refresh the in-memory instance of user and get the password
         $user->getFromDB($user->getID());
         $newHash = $user->getField('password');
 
-       // Restore the initial password in the DB
+        // Restore the initial password in the DB
         $updateSuccess = $user->update([
             'id'        => $user->getID(),
             'password'  => TU_PASS,
@@ -1738,10 +1739,10 @@ abstract class APIBaseClass extends atoum
         ]);
         $this->variable($updateSuccess)->isNotFalse('password update failed');
 
-       // Test the new password was saved
+        // Test the new password was saved
         $this->variable(\Auth::checkPassword('NewPassword', $newHash))->isNotFalse();
 
-       //diable notifications
+        //diable notifications
         Config::setConfigurationValues('core', [
             'use_notifications' => '0',
             'notifications_mailing' => '0'

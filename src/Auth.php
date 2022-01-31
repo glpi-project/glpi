@@ -903,7 +903,7 @@ class Auth extends CommonGLPI
                                 $login_password,
                                 $this->user->fields["auths_id"]
                             );
-                            if (!$this->auth_succeded && !$this->user_found) {
+                            if ($this->ldap_connection !== false && (!$this->auth_succeded && !$this->user_found)) {
                                  $search_params = [
                                      'name'     => addslashes($login_name),
                                      'authtype' => $this::LDAP

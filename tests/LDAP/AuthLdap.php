@@ -2108,6 +2108,46 @@ class AuthLDAP extends DbTestCase
         $this->array($gus)->hasSize(1);
     }
 
+    public function testLdapUnavailable()
+    {
+        //Import user that doesn't exist yet
+        $auth = $this->login('brazil5', 'password', false);
+
+        $user = new \User();
+        $user->getFromDBbyName('brazil5');
+        $this->array($user->fields)
+            ->string['name']->isIdenticalTo('brazil5')
+            ->string['user_dn']->isIdenticalTo('uid=brazil5,ou=people,ou=ldap3,dc=glpi,dc=org');
+        $this->boolean($auth->user_present)->isFalse();
+        $this->boolean($auth->user_dn)->isFalse();
+        $this->checkLdapConnection($auth->ldap_connection);
+
+        // Get original LDAP server port
+        $original_port = $this->ldap->fields['port'];
+        // Update LDAP to have inaccessible server
+        $this->boolean(
+            $this->ldap->update([
+                'id'     => $this->ldap->getID(),
+                'port'   => '1234',
+            ])
+        )->isTrue();
+
+        $auth = $this->login('brazil5', 'password', false, false);
+
+        // Restore original port
+        $this->boolean(
+            $this->ldap->update([
+                'id'     => $this->ldap->getID(),
+                'port'   => $original_port,
+            ])
+        )->isTrue();
+
+        $user->getFromDBbyName('brazil5');
+        // Verify trying to log in while LDAP unavailable does not disable user's GLPI account
+        $this->integer($user->fields['is_active'])->isEqualTo(1);
+        $this->integer($user->fields['is_deleted_ldap'])->isEqualTo(0);
+    }
+
     private function checkLdapConnection($ldap_connection)
     {
         if (version_compare(phpversion(), '8.1.0-dev', '<')) {

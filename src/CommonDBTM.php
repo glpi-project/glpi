@@ -2356,7 +2356,7 @@ class CommonDBTM extends CommonGLPI
      **/
     public function canUnrecurs()
     {
-        global $DB;
+        global $DB, $CFG_GLPI;
 
         $ID  = $this->fields['id'];
         if (
@@ -2512,8 +2512,8 @@ class CommonDBTM extends CommonGLPI
        // TODO : do we need to check all relations in $RELATION["_virtual_device"] for this item
 
        // check connections of a computer
-        $connectcomputer = ['Monitor', 'Peripheral', 'Phone', 'Printer'];
-        if (in_array($this->getType(), $connectcomputer)) {
+        $connectcomputer = $CFG_GLPI["directconnect_types"];
+        if ($this->getType() === Computer::class || in_array($this->getType(), $connectcomputer)) {
             return Computer_Item::canUnrecursSpecif($this, $entities);
         }
         return true;
@@ -2533,6 +2533,11 @@ class CommonDBTM extends CommonGLPI
      **/
     public function canMassiveAction($action, $field, $value)
     {
+        if (static::maybeRecursive()) {
+            if ($field === 'is_recursive' && (int) $value === 0) {
+                return $this->canUnrecurs();
+            }
+        }
         return true;
     }
 

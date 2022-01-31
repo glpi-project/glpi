@@ -1457,6 +1457,9 @@ abstract class CommonITILObject extends CommonDBTM
        // Handle "_itilfollowuptemplates_id" special input
         $this->handleITILFollowupTemplateInput();
 
+       // Handle "_solutiontemplates_id" special input
+        $this->handleSolutionTemplateInput();
+
        // Handle files pasted in the file field
         $this->input = $this->addFiles($this->input);
 
@@ -1745,7 +1748,7 @@ abstract class CommonITILObject extends CommonDBTM
                     && $calendar->getFromDB($calendars_id)
                     && $calendar->hasAWorkingDay()
                 ) {
-                    if ($this->fields['time_to_resolve'] > 0) {
+                    if ((int)$this->fields['time_to_resolve'] > 0) {
                        // compute new due date using calendar
                         $this->updates[]                 = "time_to_resolve";
                         $this->fields['time_to_resolve'] = $calendar->computeEndDate(
@@ -1754,7 +1757,7 @@ abstract class CommonITILObject extends CommonDBTM
                         );
                     }
                 } else { // Not calendar defined
-                    if ($this->fields['time_to_resolve'] > 0) {
+                    if ((int)$this->fields['time_to_resolve'] > 0) {
                        // compute new due date : no calendar so add computed delay_time
                         $this->updates[]                 = "time_to_resolve";
                         $this->fields['time_to_resolve'] = date(
@@ -1794,7 +1797,7 @@ abstract class CommonITILObject extends CommonDBTM
                     && $calendar->getFromDB($calendars_id)
                     && $calendar->hasAWorkingDay()
                 ) {
-                    if ($this->fields['internal_time_to_resolve'] > 0) {
+                    if ((int)$this->fields['internal_time_to_resolve'] > 0) {
                        // compute new internal_time_to_resolve using calendar
                         $this->updates[]                          = "internal_time_to_resolve";
                         $this->fields['internal_time_to_resolve'] = $calendar->computeEndDate(
@@ -1803,7 +1806,7 @@ abstract class CommonITILObject extends CommonDBTM
                         );
                     }
                 } else { // Not calendar defined
-                    if ($this->fields['internal_time_to_resolve'] > 0) {
+                    if ((int)$this->fields['internal_time_to_resolve'] > 0) {
                        // compute new internal_time_to_resolve : no calendar so add computed delay_time
                         $this->updates[]                          = "internal_time_to_resolve";
                         $this->fields['internal_time_to_resolve'] = date(
@@ -2219,6 +2222,9 @@ abstract class CommonITILObject extends CommonDBTM
 
        // Handle "_itilfollowuptemplates_id" special input
         $this->handleITILFollowupTemplateInput();
+
+       // Handle "_solutiontemplates_id" special input
+        $this->handleSolutionTemplateInput();
 
        // Add document if needed, without notification for file input
         $this->input = $this->addFiles($this->input, ['force_update' => true]);
@@ -7724,6 +7730,35 @@ abstract class CommonITILObject extends CommonDBTM
                 'is_private'      => $fup_template->fields['is_private'],
                 'requesttypes_id' => $fup_template->fields['requesttypes_id'],
                 '_disablenotif'   => true,
+            ]);
+        }
+    }
+
+    /**
+     * Handle "_solutiontemplates_id" special input
+     */
+    public function handleSolutionTemplateInput(): void
+    {
+        // Check input is valid
+        if (!isset($this->input['_solutiontemplates_id'])) {
+            return;
+        }
+
+        $template = new SolutionTemplate();
+        if ($template->getFromDB($this->input['_solutiontemplates_id'])) {
+            // Parse twig template
+            $solution_content = $template->getRenderedContent($this);
+
+            // Sanitize generated HTML before adding it in DB
+            $solution_content = Sanitizer::sanitize($solution_content);
+
+            $solution = new ITILSolution();
+            $solution->add([
+                'itemtype'          => static::getType(),
+                'solutiontypes_id'  => $template->fields['solutiontypes_id'],
+                'content'           => $solution_content,
+                'status'            => CommonITILValidation::WAITING,
+                'items_id'          => $this->fields['id']
             ]);
         }
     }

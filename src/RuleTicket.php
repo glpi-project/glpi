@@ -241,30 +241,7 @@ class RuleTicket extends Rule
 
                      // special case of itil solution template
                         if ($action->fields["field"] == 'solution_template') {
-                           //load template
-                            $template = new SolutionTemplate();
-                            if ($template->getFromDB($action->fields["value"]) && $output['id'] != null) {
-                              // Load parent item
-                                $parent = new Ticket();
-                                if (!$parent->getFromDB($output['id'])) {
-                                    break;
-                                }
-
-                              // Parse twig template
-                                $solution_content = $template->getRenderedContent($parent);
-
-                              // Sanitize generated HTML before adding it in DB
-                                $solution_content = Sanitizer::sanitize($solution_content);
-
-                                $solution = new ITILSolution();
-                                $solution->add([
-                                    "itemtype" => "Ticket",
-                                    "solutiontypes_id" => $template->getField("solutiontypes_id"),
-                                    "content" => $solution_content,
-                                    "status" => CommonITILValidation::WAITING,
-                                    "items_id" => $output['id']
-                                ]);
-                            }
+                            $output['_solutiontemplates_id'] = $action->fields["value"];
                         }
 
                      // special case of appliance

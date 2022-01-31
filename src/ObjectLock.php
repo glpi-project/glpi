@@ -368,10 +368,10 @@ class ObjectLock extends CommonDBTM
                      cache: 'no-cache',
                      headers: {
                         'Accept': 'application/json',
-                        'Content-Type': 'application/json',
+                        'Content-Type': 'application/x-www-form-urlencoded;',
                         'X-Glpi-Csrf-Token': getAjaxCsrfToken()
                      },
-                     body: JSON.stringify({unlock: 1, id: {$id}})
+                     body: 'unlock=1&id={$id}'
                   }).catch(function(error) {
                      //fallback if fetch fails
                      fallback_request();

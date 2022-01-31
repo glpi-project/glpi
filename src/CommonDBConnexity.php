@@ -116,7 +116,7 @@ abstract class CommonDBConnexity extends CommonDBTM
         if ($criteria !== null) {
             $input = [
                 '_no_history'     => true,
-                '_no_notif'       => true
+                '_disablenotif'       => true
             ];
 
             $iterator = $DB->request($criteria);

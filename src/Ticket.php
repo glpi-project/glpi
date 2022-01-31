@@ -2004,7 +2004,6 @@ class Ticket extends CommonITILObject
             if (isset($this->input["_followup"]['is_private'])) {
                 $toadd["is_private"] = $this->input["_followup"]['is_private'];
             }
-            // $toadd['_no_notif'] = true;
 
             $fup->add($toadd);
         }
@@ -2032,8 +2031,6 @@ class Ticket extends CommonITILObject
             if (isset($_SESSION['glpitask_private'])) {
                 $toadd['is_private'] = $_SESSION['glpitask_private'];
             }
-
-           // $toadd['_no_notif'] = true;
 
             $task->add($toadd);
         }
@@ -2082,7 +2079,6 @@ class Ticket extends CommonITILObject
                 $pt = new ProjectTask_Ticket();
                 $pt->add(['projecttasks_id' => $this->input['_projecttasks_id'],
                     'tickets_id'      => $this->fields['id'],
-                           /*'_no_notif'   => true*/
                 ]);
             }
         }

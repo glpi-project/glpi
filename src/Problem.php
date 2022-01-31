@@ -330,7 +330,6 @@ class Problem extends CommonITILObject
                 $pt = new Problem_Ticket();
                 $pt->add(['tickets_id'  => $this->input['_tickets_id'],
                     'problems_id' => $this->fields['id'],
-                           /*'_no_notif'   => true*/
                 ]);
 
                 if (
@@ -341,7 +340,6 @@ class Problem extends CommonITILObject
                      $it->add(['problems_id' => $this->fields['id'],
                          'itemtype'    => $ticket->fields['itemtype'],
                          'items_id'    => $ticket->fields['items_id'],
-                              /*'_no_notif'   => true*/
                      ]);
                 }
 

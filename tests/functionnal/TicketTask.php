@@ -93,14 +93,12 @@ class TicketTask extends DbTestCase
             'tickets_id'         => $ticketId,
             'tasktemplates_id'   => '0',
             'taskcategories_id'  => '0',
-            'actiontime'         => "172800", //1hours
             'content'            => "Task with schedule and recall",
             'users_id_tech'      => $uid,
-            '_plan'              => ['begin'  => $date_begin_string],
-            'plan'               => ['begin'        => $date_begin_string, //start date
-                'end'          => $date_end_string, //end date auto calculate
-                '_duraction'   => "172800"
-            ],  //period (2 days)
+            'plan'               => [
+                'begin'        => $date_begin_string,
+                'end'          => $date_end_string,
+            ],
             '_planningrecall'    => ['before_time' => '14400', //recall 4 hours
                 'itemtype'    => 'TicketTask',
                 'users_id'    => $uid,
@@ -121,11 +119,13 @@ class TicketTask extends DbTestCase
             'when'         => $when,
         ]))->isTrue();
 
-       //create one task with schedule and without recall
+        //create one task with schedule and without recall
+        $date_begin = new \DateTime();
         $date_begin->add(new \DateInterval('P1M'));
         $date_begin_string = $date_begin->format('Y-m-d H:i:s');
 
-        $date_end->add(new \DateInterval('P1M'));
+        $date_begin = new \DateTime();
+        $date_end->add(new \DateInterval('P1M2D'));
         $date_end_string = $date_end->format('Y-m-d H:i:s');
 
         $task = new \TicketTask();
@@ -134,14 +134,12 @@ class TicketTask extends DbTestCase
             'tickets_id'         => $ticketId,
             'tasktemplates_id'   => '0',
             'taskcategories_id'  => '0',
-            'actiontime'         => "172800", //2 days
             'content'            => "Task with schedule and without recall",
             'users_id_tech'      => $uid,
-            '_plan'              => ['begin' => $date_begin_string],
-            'plan'               => ['begin'       => $date_begin_string, // start date
-                'end'         => $date_end_string, //end date auto calculate
-                '_duraction'  => "172800"
-            ],  //period (2 days)
+            'plan'               => [
+                'begin'       => $date_begin_string,
+                'end'         => $date_end_string,
+            ],
             '_planningrecall' => ['before_time' => '-10', //recall to none
                 'itemtype'    => 'TicketTask',
                 'users_id'    => $uid,
@@ -168,12 +166,10 @@ class TicketTask extends DbTestCase
                 'actiontime'         => "172800", //2 days
                 'content'            => "Task with schedule and without recall",
                 'users_id_tech'      => $uid,
-                'actiontime'         => "172800", //1hours  //period (2 days)
-                '_plan'              => ['begin' => $date_begin_string],
-                'plan'               => ['begin'       => $date_begin_string, // start date
-                    'end'         => $date_end_string, //end date auto calculate
-                    '_duraction'  => "172800"
-                ],  //period (2 days)
+                'plan'               => [
+                    'begin'       => $date_begin_string,
+                    'end'         => $date_end_string,
+                ],
                 '_planningrecall' => ['before_time' => '900',
                     'itemtype'    => 'TicketTask',
                     'users_id'    => $uid,

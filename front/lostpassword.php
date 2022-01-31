@@ -48,7 +48,7 @@ $user = new User();
 // Manage lost password
 // REQUEST needed : GET on first access / POST on submit form
 if (isset($_REQUEST['password_forget_token'])) {
-    if (isset($_POST['email'])) {
+    if (isset($_POST['password'])) {
         $user->showUpdateForgottenPassword($_REQUEST);
     } else {
         User::showPasswordForgetChangeForm($_REQUEST['password_forget_token']);
