@@ -30,8 +30,12 @@
  */
 
 .itil-object {
+    .status-recall {
+        display: none;
+    }
+
     @include media-breakpoint-up(sm) {
-        height: calc(100vh - 178px);
+        height: calc(100vh - 187px);
 
         .itil-left-side,
         .itil-right-side {
@@ -58,6 +62,20 @@
                     background-color: $accordion-button-bg;
                 }
             }
+
+            #heading-main-item .accordion-button.collapsed {
+                .status-recall {
+                    display: inline-block;
+                }
+
+                .item-icon {
+                    display: none;
+                }
+            }
+
+            .switch-panel-width {
+                display: none;
+            }
         }
     }
 
@@ -78,6 +96,62 @@
         .badge {
             text-transform: none;
             margin: calc(-0.25rem + 1px) -0.25rem;
+        }
+    }
+}
+
+#itil-object-container {
+    @include media-breakpoint-up(sm) {
+        &.right-expanded {
+            .itil-footer {
+                .collapse-panel {
+                    display: none;
+                }
+            }
+        }
+
+        &.right-collapsed {
+            .itil-left-side {
+                width: calc(100% - 90px);
+            }
+
+            .itil-right-side {
+                overflow: hidden;
+                width: 90px;
+
+                #itil-data { // accordion
+                    .item-title {
+                        display: none;
+                    }
+
+                    .accordion-collapse {
+                        display: none;
+                    }
+
+                    .accordion-button::after {
+                        display: none;
+                    }
+                }
+
+                .switch-panel-width {
+                    display: inline-block;
+                }
+            }
+
+            .itil-footer {
+                .timeline-buttons {
+                    flex: 1 1 auto;
+                }
+
+                .form-buttons {
+                    flex: inherit;
+                }
+
+                .switch-panel-width,
+                .collapse-panel {
+                    display: none;
+                }
+            }
         }
     }
 }

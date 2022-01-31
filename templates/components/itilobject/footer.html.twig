@@ -29,10 +29,19 @@
  # ---------------------------------------------------------------------
  #}
 
+{% set timeline_btns_cls = "col-md-8" %}
+{% set form_btns_cls     = "col-md" %}
+{% set switch_btn_cls    = "fa-caret-left" %}
+{% if is_expanded %}
+    {% set timeline_btns_cls = "col-md-4" %}
+    {% set form_btns_cls     = "col-md-8" %}
+    {% set switch_btn_cls    = "fa-caret-right" %}
+{% endif %}
+
 <div class="mx-n2 mb-n2 itil-footer itil-footer p-0 border-top" id="itil-footer">
    <div class="buttons-bar d-flex py-2">
       {% if not item.isNewItem() %}
-         <div class="col-md-8 ps-3 timeline-buttons">
+         <div class="{{ timeline_btns_cls }} ps-3 timeline-buttons">
             {% set default_action_data = timeline_itemtypes|first %}
             {% if item.isNotSolved() and default_action_data != false %}
                {% if timeline_itemtypes|length > 1 %}
@@ -71,11 +80,14 @@
          </div>
       {% endif %}
 
-      <div class="form-buttons col-md d-flex justify-content-end ms-auto ms-md-0 my-n2 py-2 pe-3 card-footer border-top-0 position-relative">
+      <div class="form-buttons {{ form_btns_cls }} d-flex justify-content-end ms-auto ms-md-0 my-n2 py-2 pe-3 card-footer border-top-0 position-relative">
          <span class="d-none d-md-block position-absolute top-0 start-0"
                data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('Toggle panels width') }}">
             <button type="button" class="switch-panel-width btn btn-sm btn-square btn-icon btn-ghost-secondary">
-               <i class="fas fa-caret-left"></i>
+               <i class="fas {{ switch_btn_cls }}"></i>
+            </button>
+            <button type="button" class="collapse-panel btn btn-sm btn-square btn-icon btn-ghost-secondary">
+               <i class="fas fa-caret-right"></i>
             </button>
          </span>
 

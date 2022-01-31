@@ -38,7 +38,10 @@
    {% set display_labels = true %}
 {% endif %}
 
-{% set actor_options = field_options|merge({is_horizontal: false}) %}
+{% set actor_options = field_options|merge({
+    is_horizontal: false,
+    add_field_class: (is_expanded ? 'col-sm-4' : ''),
+}) %}
 {% set can_admin = item.canAdminActors() %}
 {% if item.isNewItem() %}
    {% set can_admin = true %}

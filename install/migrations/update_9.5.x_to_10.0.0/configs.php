@@ -68,5 +68,8 @@ Config::setConfigurationValues('core', ['user_restored_ldap' => 0]);
 Config::setConfigurationValues('core', ['timeline_order' => 'natural']);
 $migration->addField("glpi_users", "timeline_order", "char(20) DEFAULT NULL", ['after' => 'savedsearches_pinned']);
 
+Config::setConfigurationValues('core', ['itil_layout' => 0]);
+$migration->addField('glpi_users', 'itil_layout', 'text', ['after' => 'timeline_order']);
+
 $migration->displayMessage('Drop obsolete automatic transfer configuration');
 Config::deleteConfigurationValues('core', ['transfers_id_auto']);
