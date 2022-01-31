@@ -6294,19 +6294,10 @@ JAVASCRIPT;
 
     public function getPictureForUser(int $ID): string
     {
-        $output = "<span class='avatar avatar-md rounded' style='";
-
-        $user_picture  = $this->getThumbnailPicturePath();
-        $user_color  = $this->getUserInitialsBgColor($ID);
-        if ($user_picture) {
-            $output .= "background-image: url($user_picture);";
-        }
-        $output .= "background-color: $user_color'>";
-        if (!$user_picture) {
-            $output .= $this->getUserInitials();
-        }
-        $output .= "</span>";
-        return $output;
+        return TemplateRenderer::getInstance()->render('components/user/picture.html.twig', [
+            'users_id'  => $ID,
+            'with_link' => false,
+        ]);
     }
 
     /**
