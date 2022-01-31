@@ -35,6 +35,7 @@ namespace tests\units;
 use Generator;
 use Glpi\Api\Deprecated\TicketFollowup;
 use ITILFollowup;
+use stdClass;
 use Ticket;
 
 /* Test for inc/toolbox.class.php */
@@ -1128,6 +1129,24 @@ class Toolbox extends \GLPITestCase {
          'value'    => 3,
          'expected' => false,
       ];
+
+      yield [
+         'value'    => "not a float",
+         'expected' => false,
+         'warning'  => "Calling isFloat on string",
+      ];
+
+      yield [
+         'value'    => new stdClass(),
+         'expected' => false,
+         'warning'  => "Calling isFloat on object",
+      ];
+
+      yield [
+         'value'    => [],
+         'expected' => false,
+         'warning'  => "Calling isFloat on array",
+      ];
    }
 
    /**
@@ -1135,12 +1154,123 @@ class Toolbox extends \GLPITestCase {
     *
     * @dataprovider testIsFloatProvider
     *
-    * @param $value
-    * @param bool $expected
+    * @param mixed         $value
+    * @param bool          $expected
+    * @param string|null   $warning
     *
     * @return void
     */
-   public function testIsFloat($value, bool $expected): void {
-      $this->boolean(\Toolbox::isFloat($value))->isEqualTo($expected);
+   public function testIsFloat(
+      $value,
+      bool $expected,
+      ?string $warning = null
+   ): void {
+      $result = null;
+
+      if (!is_null($warning)) {
+         $this->when(function () use ($value, &$result) {
+            $result = \Toolbox::isFloat($value);
+         })->error()
+            ->withType(E_USER_WARNING)
+            ->withMessage($warning)
+            ->exists();
+      } else {
+         $result = \Toolbox::isFloat($value);
+      }
+
+      $this->boolean($result)->isEqualTo($expected);
+   }
+
+   /**
+    * Data provider for testgetDecimalNumbers
+    *
+    * @return Generator
+    */
+   protected function testgetDecimalNumbersProvider(): Generator {
+      yield [
+         'value'    => "1",
+         'decimals' => 0,
+      ];
+
+      yield [
+         'value'    => "1.5",
+         'decimals' => 1,
+      ];
+
+      yield [
+         'value'    => "7.5569569",
+         'decimals' => 7,
+      ];
+
+      yield [
+         'value'    => "0",
+         'decimals' => 0,
+      ];
+
+      yield [
+         'value'    => 3.4,
+         'decimals' => 1,
+      ];
+
+      yield [
+         'value'    => 3,
+         'decimals' => 0,
+      ];
+
+      yield [
+         'value'    => "not a float",
+         'decimals' => 0,
+         'warning'  => "Calling getDecimalNumbers on string",
+      ];
+
+      yield [
+         'value'    => new stdClass(),
+         'decimals' => 0,
+         'warning'  => "Calling getDecimalNumbers on object",
+      ];
+
+      yield [
+         'value'    => [],
+         'decimals' => 0,
+         'warning'  => "Calling getDecimalNumbers on array",
+      ];
+
+      yield [
+         'value'    => 3.141592653589791415926535897914159265358979,
+         'decimals' => 13, // floatval() round up after 13 decimals
+      ];
+
+   }
+
+   /**
+    * Tests for Toolbox::getDecimalNumbers()
+    *
+    * @dataprovider testgetDecimalNumbersProvider
+    *
+    * @param mixed         $value
+    * @param int           $decimals
+    * @param string|null   $warning
+    *
+    * @return void
+    */
+   public function testGetDecimalNumbers(
+      $value,
+      int $decimals,
+      ?string $warning = null
+   ): void {
+      $result = null;
+
+      if (!is_null($warning)) {
+         $this->when(function () use ($value, &$result) {
+            $result = \Toolbox::getDecimalNumbers($value);
+         })->error()
+            ->withType(E_USER_WARNING)
+            ->withMessage($warning)
+            ->exists();
+      } else {
+         $result = \Toolbox::getDecimalNumbers($value);
+      }
+
+      $this->integer($result)->isEqualTo($decimals);
    }
 }

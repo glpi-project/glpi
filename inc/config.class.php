@@ -349,6 +349,7 @@ class Config extends CommonDBTM {
       Dropdown::showNumber("decimal_number", ['value' => $CFG_GLPI["decimal_number"],
                                               'min'   => 1,
                                               'max'   => 4,
+                                              'step'   => 0.5,
                                               'rand'  => $rand]);
       echo "</td>";
       echo "<td colspan='2'></td>";
