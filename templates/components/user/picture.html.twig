@@ -33,12 +33,13 @@
 {% set avatar_size = avatar_size ?? "avatar-md" %}
 {% set anonymized = enable_anonymization and entity_config('anonymize_support_agents', session('glpiactive_entity')) != constant('Entity::ANONYMIZE_DISABLED') %}
 {% set user = get_item('User', users_id) %}
+{% set with_link = with_link ?? true %}
 {% set user_thumbnail = user.getThumbnailPicturePath(enable_anonymization) %}
 {% if user_thumbnail == null and not entity_config('display_users_initials', session('glpiactive_entity')) %}
     {% set user_thumbnail = user.getPicturePath(enable_anonymization) %}
 {% endif %}
 
-{% if not anonymized %}
+{% if with_link and not anonymized %}
    <a href="{{ user.getLinkURL() }}" class="d-flex align-items-center">
 {% endif %}
 
@@ -49,7 +50,7 @@
    {% endif %}
 </span>
 
-{% if not anonymized %}
+{% if with_link and not anonymized %}
    {% if display_login %}
       <span class="ms-2">{{ user.fields['name'] }}</span>
    {% endif %}

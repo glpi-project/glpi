@@ -49,7 +49,12 @@
                   <div>{{ (session('glpiactiveprofile')['name'] ?? '')|verbatim_value|u.truncate(35, '...') }}</div>
                   <div class="mt-1 small text-muted">{{ session('glpiactive_entity_name')|verbatim_value|u.truncate(35, '...') }}</div>
                </div>
-               <span class="avatar" style="background-image: url({{ path(user.getPicturePath()) }})"></span>
+
+                {{ include('components/user/picture.html.twig', {
+                    'users_id': user.fields['id'],
+                    'with_link': false,
+                    'avatar_size': '',
+                }) }}
             </a>
             <div class="dropdown-menu dropdown-menu-end mt-1 dropdown-menu-arrow animate__animated animate__fadeInRight">
                <h6 class="dropdown-header">{{ get_item_name(user) }}</h6>
