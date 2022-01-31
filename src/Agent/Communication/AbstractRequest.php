@@ -423,15 +423,17 @@ abstract class AbstractRequest
             throw new \RuntimeException("Mode has not been set");
         }
 
-        switch (strtolower($this->compression)) {
-            case self::COMPRESS_ZLIB:
-                return 'application/x-compress-zlib';
-            case self::COMPRESS_GZIP:
-                return 'application/x-compress-gzip';
-            case self::COMPRESS_BR:
-                return 'application/x-br';
-            case self::COMPRESS_DEFLATE:
-                return 'application/x-compress-deflate';
+        if ($this->compression !== null) {
+            switch (strtolower($this->compression)) {
+                case self::COMPRESS_ZLIB:
+                    return 'application/x-compress-zlib';
+                case self::COMPRESS_GZIP:
+                    return 'application/x-compress-gzip';
+                case self::COMPRESS_BR:
+                    return 'application/x-br';
+                case self::COMPRESS_DEFLATE:
+                    return 'application/x-compress-deflate';
+            }
         }
 
         switch ($this->mode) {
