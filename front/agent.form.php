@@ -46,26 +46,8 @@ if (!isset($_GET["withtemplate"])) {
 }
 
 $agent = new Agent();
-//Add a new agent
-if (isset($_POST["add"])) {
-    $agent->check(-1, CREATE, $_POST);
-    if ($newID = $agent->add($_POST)) {
-        Event::log(
-            $newID,
-            "agents",
-            4,
-            "inventory",
-            sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["name"])
-        );
-
-        if ($_SESSION['glpibackcreated']) {
-            Html::redirect($agent->getLinkURL());
-        }
-    }
-    Html::back();
-
-   // delete an agent
-} else if (isset($_POST["delete"])) {
+// delete an agent
+if (isset($_POST["delete"])) {
     $agent->check($_POST['id'], DELETE);
     $ok = $agent->delete($_POST);
     if ($ok) {
