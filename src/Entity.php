@@ -94,8 +94,9 @@ class Entity extends CommonTreeDropdown
         ],
       // Notification
         'notification' => [
-            'admin_email', 'admin_reply', 'admin_email_name',
-            'admin_reply_name', 'delay_send_emails',
+            'admin_email', 'replyto_email', 'from_email',
+            'admin_email_name', 'replyto_email_name', 'from_email_name',
+            'delay_send_emails',
             'is_notif_enable_default',
             'default_cartridges_alarm_threshold',
             'default_consumables_alarm_threshold',
@@ -880,7 +881,7 @@ class Entity extends CommonTreeDropdown
             'id'                 => '18',
             'table'              => $this->getTable(),
             'field'              => 'admin_email',
-            'name'               => __('Administrator email'),
+            'name'               => __('Administrator email address'),
             'massiveaction'      => false,
             'datatype'           => 'string',
         ];
@@ -888,8 +889,26 @@ class Entity extends CommonTreeDropdown
         $tab[] = [
             'id'                 => '19',
             'table'              => $this->getTable(),
-            'field'              => 'admin_reply',
-            'name'               => __('Administrator reply-to email (if needed)'),
+            'field'              => 'replyto_email',
+            'name'               => __('Reply-To address'),
+            'massiveaction'      => false,
+            'datatype'           => 'string',
+        ];
+
+        $tab[] = [
+            'id'                 => '62',
+            'table'              => $this->getTable(),
+            'field'              => 'from_email',
+            'name'               => __('Email sender address'),
+            'massiveaction'      => false,
+            'datatype'           => 'string',
+        ];
+
+        $tab[] = [
+            'id'                 => '63',
+            'table'              => $this->getTable(),
+            'field'              => 'noreply_email',
+            'name'               => __('No-Reply address'),
             'massiveaction'      => false,
             'datatype'           => 'string',
         ];
@@ -913,8 +932,26 @@ class Entity extends CommonTreeDropdown
         $tab[] = [
             'id'                 => '23',
             'table'              => $this->getTable(),
-            'field'              => 'admin_reply_name',
-            'name'               => __('Response address (if needed)'),
+            'field'              => 'replyto_email_name',
+            'name'               => __('Reply-To name'),
+            'datatype'           => 'string',
+        ];
+
+        $tab[] = [
+            'id'                 => '64',
+            'table'              => $this->getTable(),
+            'field'              => 'from_email_name',
+            'name'               => __('Email sender name'),
+            'massiveaction'      => false,
+            'datatype'           => 'string',
+        ];
+
+        $tab[] = [
+            'id'                 => '65',
+            'table'              => $this->getTable(),
+            'field'              => 'noreply_email_name',
+            'name'               => __('No-Reply name'),
+            'massiveaction'      => false,
             'datatype'           => 'string',
         ];
 
@@ -1871,10 +1908,10 @@ class Entity extends CommonTreeDropdown
         echo "<tr><th colspan='4'>" . __('Notification options') . "</th></tr>";
 
         echo "<tr class='tab_bg_1'>";
-        echo "<td>" . __('Administrator email') . "</td>";
+        echo "<td>" . __('Administrator email address') . "</td>";
         echo "<td>";
         echo Html::input('admin_email', ['value' => $entity->fields['admin_email']]);
-        if (strlen($entity->fields['admin_email']) == 0) {
+        if (empty($entity->fields['admin_email'])) {
             self::inheritedValue(self::getUsedConfig('admin_email', $ID, '', ''));
         }
         echo "</td>";
@@ -1882,25 +1919,59 @@ class Entity extends CommonTreeDropdown
        // we inherit only if email inherit also
         echo Html::input('admin_email_name', ['value' => $entity->fields['admin_email_name']]);
        // warning, we rely on email field to inherit name field
-        if (strlen($entity->fields['admin_email']) == 0) {
+        if (empty($entity->fields['admin_email']) == 0) {
             self::inheritedValue(self::getUsedConfig('admin_email_name', $ID, '', ''));
         }
         echo "</td></tr>";
 
         echo "<tr class='tab_bg_1'>";
-        echo "<td><label for='admin_reply'>" . __('Reply-to address') . "</label></td>";
+        echo "<td>" . __('Email sender address') . "</td>";
         echo "<td>";
-        echo Html::input('admin_reply', ['value' => $entity->fields['admin_reply']]);
-        if (strlen($entity->fields['admin_reply']) == 0) {
-            self::inheritedValue(self::getUsedConfig('admin_reply', $ID, '', ''));
+        echo Html::input('from_email', ['value' => $entity->fields['from_email']]);
+        if (empty($entity->fields['from_email']) == 0) {
+            self::inheritedValue(self::getUsedConfig('from_email', $ID, '', ''));
         }
         echo "</td>";
-        echo "<td><label for='admin_reply_name'>" . __('Reply-to name') . "</label></td>";
+        echo "<td>" . __('Email sender name') . "</td><td>";
+        // we inherit only if email inherit also
+        echo Html::input('from_email_name', ['value' => $entity->fields['from_email_name']]);
+        // warning, we rely on email field to inherit name field
+        if (empty($entity->fields['from_email']) == 0) {
+            self::inheritedValue(self::getUsedConfig('from_email_name', $ID, '', ''));
+        }
+        echo "</td></tr>";
+
+        echo "<tr class='tab_bg_1'>";
+        echo "<td>" . __('No-Reply address') . "</td>";
         echo "<td>";
-        echo Html::input('admin_reply_name', ['value' => $entity->fields['admin_reply_name']]);
+        echo Html::input('noreply_email', ['value' => $entity->fields['noreply_email']]);
+        if (empty($entity->fields['noreply_email']) == 0) {
+            self::inheritedValue(self::getUsedConfig('noreply_email', $ID, '', ''));
+        }
+        echo "</td>";
+        echo "<td>" . __('No-Reply name') . "</td><td>";
+        // we inherit only if email inherit also
+        echo Html::input('noreply_email_name', ['value' => $entity->fields['noreply_email_name']]);
+        // warning, we rely on email field to inherit name field
+        if (empty($entity->fields['noreply_email']) == 0) {
+            self::inheritedValue(self::getUsedConfig('noreply_email_name', $ID, '', ''));
+        }
+        echo "</td></tr>";
+
+        echo "<tr class='tab_bg_1'>";
+        echo "<td><label for='replyto_email'>" . __('Reply-To address') . "</label></td>";
+        echo "<td>";
+        echo Html::input('replyto_email', ['value' => $entity->fields['replyto_email']]);
+        if (empty($entity->fields['replyto_email']) == 0) {
+            self::inheritedValue(self::getUsedConfig('replyto_email', $ID, '', ''));
+        }
+        echo "</td>";
+        echo "<td><label for='replyto_email_name'>" . __('Reply-To name') . "</label></td>";
+        echo "<td>";
+        echo Html::input('replyto_email_name', ['value' => $entity->fields['replyto_email_name']]);
        // warning, we rely on email field to inherit name field
-        if (strlen($entity->fields['admin_reply']) == 0) {
-            self::inheritedValue(self::getUsedConfig('admin_reply_name', $ID, '', ''));
+        if (empty($entity->fields['replyto_email']) == 0) {
+            self::inheritedValue(self::getUsedConfig('replyto_email_name', $ID, '', ''));
         }
         echo "</td></tr>";
 
@@ -1908,7 +1979,7 @@ class Entity extends CommonTreeDropdown
         echo "<td>" . __('Prefix for notifications') . "</td>";
         echo "<td>";
         echo Html::input('notification_subject_tag', ['value' => $entity->fields['notification_subject_tag']]);
-        if (strlen($entity->fields['notification_subject_tag']) == 0) {
+        if (empty($entity->fields['notification_subject_tag']) == 0) {
             self::inheritedValue(self::getUsedConfig('notification_subject_tag', $ID, '', ''));
         }
         echo "</td>";
@@ -1954,7 +2025,7 @@ class Entity extends CommonTreeDropdown
         echo "<td colspan='3'>";
         echo "<textarea rows='5' name='mailing_signature' class='form-control'>" .
              $entity->fields["mailing_signature"] . "</textarea>";
-        if (strlen($entity->fields['mailing_signature']) == 0) {
+        if (empty($entity->fields['mailing_signature']) == 0) {
             self::inheritedValue(self::getUsedConfig('mailing_signature', $ID, '', ''));
         }
         echo "</td></tr>";

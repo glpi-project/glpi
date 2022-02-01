@@ -113,8 +113,8 @@ class NotificationTarget extends DbTestCase
         $ntarget_child_2 = new \NotificationTarget($child_2);
 
        // test global settings
-        $CFG_GLPI['admin_reply'] = 'test@global.tld';
-        $CFG_GLPI['admin_reply_name'] = 'test global';
+        $CFG_GLPI['replyto_email'] = 'test@global.tld';
+        $CFG_GLPI['replyto_email_name'] = 'test global';
         $CFG_GLPI['from_email'] = '';
 
         $this->array($ntarget_parent->getReplyTo())->isEqualTo([
@@ -133,9 +133,9 @@ class NotificationTarget extends DbTestCase
        // test root entity settings
         $entity  = new \Entity();
         $this->boolean($entity->update([
-            'id'               => $root,
-            'admin_reply'      => "test@root.tld",
-            'admin_reply_name' => "test root",
+            'id'                 => $root,
+            'replyto_email'      => "test@root.tld",
+            'replyto_email_name' => "test root",
         ]))->isTrue();
 
         $this->array($ntarget_parent->getReplyTo())->isEqualTo([
@@ -153,9 +153,9 @@ class NotificationTarget extends DbTestCase
 
        // test parent entity settings
         $this->boolean($entity->update([
-            'id'               => $parent,
-            'admin_reply'      => "test@parent.tld",
-            'admin_reply_name' => "test parent",
+            'id'                 => $parent,
+            'replyto_email'      => "test@parent.tld",
+            'replyto_email_name' => "test parent",
         ]))->isTrue();
 
         $this->array($ntarget_parent->getReplyTo())->isEqualTo([
@@ -173,9 +173,9 @@ class NotificationTarget extends DbTestCase
 
        // test child_1 entity settings
         $this->boolean($entity->update([
-            'id'               => $child_1,
-            'admin_reply'      => "test@child1.tld",
-            'admin_reply_name' => "test child1",
+            'id'                 => $child_1,
+            'replyto_email'      => "test@child1.tld",
+            'replyto_email_name' => "test child1",
         ]))->isTrue();
 
         $this->array($ntarget_parent->getReplyTo())->isEqualTo([
@@ -193,9 +193,9 @@ class NotificationTarget extends DbTestCase
 
        // test child_2 entity settings
         $this->boolean($entity->update([
-            'id'               => $child_2,
-            'admin_reply'      => "test@child2.tld",
-            'admin_reply_name' => "test child2",
+            'id'                 => $child_2,
+            'replyto_email'      => "test@child2.tld",
+            'replyto_email_name' => "test child2",
         ]))->isTrue();
 
         $this->array($ntarget_parent->getReplyTo())->isEqualTo([
@@ -232,8 +232,8 @@ class NotificationTarget extends DbTestCase
         ];
 
         // Case 2: no reply with global config
-        $CFG_GLPI['admin_email_noreply'] = "noreply@localhost";
-        $CFG_GLPI['admin_email_noreply_name'] = "No reply";
+        $CFG_GLPI['noreply_email'] = "noreply@localhost";
+        $CFG_GLPI['noreply_email_name'] = "No reply";
 
         yield [
             'allow_response' => false,

@@ -74,7 +74,7 @@ class NotificationMailingSetting extends NotificationSetting
 
         if ($CFG_GLPI['notifications_mailing']) {
             $out .= "<tr class='tab_bg_2'>";
-            $out .= "<td><label for='admin_email'>" . __('Administrator email') . "</label></td>";
+            $out .= "<td><label for='admin_email'>" . __('Administrator email address') . "</label></td>";
             $out .= "<td><input type='text' class='form-control' name='admin_email' id='admin_email' value='" .
                     $CFG_GLPI["admin_email"] . "'>";
             if (!NotificationMailing::isUserAddressValid($CFG_GLPI["admin_email"])) {
@@ -87,55 +87,55 @@ class NotificationMailingSetting extends NotificationSetting
             $out .= " </td></tr>";
 
             $out .= "<tr class='tab_bg_2'>";
-            $out .= "<td><label for='from_email'>" . __('From email') . " <i class='pointer fa fa-info' title='" .
-            __s('Address to use in from for sent emails.') . "\n" . __s('If not set, main or entity administrator email will be used.')  . "'></i></label></td>";
+            $out .= "<td><label for='from_email'>" . __('Email sender address') . " <i class='pointer fa fa-info' title='" .
+            __s('Address to use in from for sent emails.') . "\n" . __s('If not set, main or entity administrator email address will be used.')  . "'></i></label></td>";
             $out .= "<td><input type='text' class='form-control' name='from_email' id='from_email' value='" .
                     $CFG_GLPI["from_email"] . "'>";
             if (!empty($CFG_GLPI['from_email']) && !NotificationMailing::isUserAddressValid($CFG_GLPI["from_email"])) {
                 $out .= "<br/><span class='red'>&nbsp;" . __('Invalid email address') . "</span>";
             }
             $out .= "</td>";
-            $out .= "<td><label for='from_email_name'>" . __('From name') . " <i class='pointer fa fa-info' title='" .
-            __s('Name to use in from for sent emails.') . "\n" . __s('If not set, main or entity administrator name will be used.')
+            $out .= "<td><label for='from_email_name'>" . __('Email sender name') . " <i class='pointer fa fa-info' title='" .
+            __s('Name to use in from for sent emails.') . "\n" . __s('If not set, main or entity administrator email name will be used.')
             . "'><i></label></td>";
             $out .= "<td><input type='text' class='form-control' name='from_email_name' id='from_email_name' value='" .
                     $CFG_GLPI["from_email_name"] . "'>";
             $out .= " </td></tr>";
 
             $out .= "<tr class='tab_bg_2'>";
-            $out .= "<td><label for='admin_reply'>" . __('Reply-to address') . " <i class='pointer fa fa-info' title='" .
-            __s('Optionnal reply to address.') . "\n" . __s('If not set, main administrator email will be used.') . "'></i></label></td>";
-            $out .= "<td><input type='text' class='form-control' name='admin_reply' id='admin_reply' value='" .
-                    $CFG_GLPI["admin_reply"] . "'>";
+            $out .= "<td><label for='replyto_email'>" . __('Reply-To address') . " <i class='pointer fa fa-info' title='" .
+            __s('Optionnal reply to address.') . "\n" . __s('If not set, main or entity administrator email address will be used.') . "'></i></label></td>";
+            $out .= "<td><input type='text' class='form-control' name='replyto_email' id='replyto_email' value='" .
+                    $CFG_GLPI["replyto_email"] . "'>";
             if (
-                !empty($CFG_GLPI['admin_reply'])
-                && !NotificationMailing::isUserAddressValid($CFG_GLPI["admin_reply"])
+                !empty($CFG_GLPI['replyto_email'])
+                && !NotificationMailing::isUserAddressValid($CFG_GLPI["replyto_email"])
             ) {
                 $out .= "<br/><span class='red'>&nbsp;" . __('Invalid email address') . "</span>";
             }
             $out .= " </td>";
-            $out .= "<td><label for='admin_reply_name'>" . __('Reply-to name') . " <i class='pointer fa fa-info' title='" .
-            __s('Optionnal reply to name.') . "\n" . __s('If not set, main administrator name will be used.') . "'></i></label></td>";
-            $out .= "<td><input type='text' class='form-control' name='admin_reply_name' id='admin_reply_name' value='" .
-                    $CFG_GLPI["admin_reply_name"] . "'>";
+            $out .= "<td><label for='replyto_email_name'>" . __('Reply-To name') . " <i class='pointer fa fa-info' title='" .
+            __s('Optionnal reply to name.') . "\n" . __s('If not set, main or entity administrator name will be used.') . "'></i></label></td>";
+            $out .= "<td><input type='text' class='form-control' name='replyto_email_name' id='replyto_email_name' value='" .
+                    $CFG_GLPI["replyto_email_name"] . "'>";
             $out .= " </td></tr>";
 
             $out .= "<tr class='tab_bg_2'>";
-            $out .= "<td><label for='admin_email_noreply'>" . __('No-Reply address') . " <i class='pointer fa fa-info' title='" .
+            $out .= "<td><label for='noreply_email'>" . __('No-Reply address') . " <i class='pointer fa fa-info' title='" .
             __s('Optionnal No-Reply address.') . "\n" . __s('If set, it will be used for notifications that doesn\'t expect a reply.') . "'></i></label></td>";
-            $out .= "<td><input type='text' class='form-control' name='admin_email_noreply' id='admin_email_noreply' value='" .
-                    $CFG_GLPI["admin_email_noreply"] . "'>";
+            $out .= "<td><input type='text' class='form-control' name='noreply_email' id='noreply_email' value='" .
+                    $CFG_GLPI["noreply_email"] . "'>";
             if (
-                !empty($CFG_GLPI['admin_email_noreply'])
-                && !NotificationMailing::isUserAddressValid($CFG_GLPI["admin_email_noreply"])
+                !empty($CFG_GLPI['noreply_email'])
+                && !NotificationMailing::isUserAddressValid($CFG_GLPI["noreply_email"])
             ) {
                 $out .= "<br/><span class='red'>&nbsp;" . __('Invalid email address') . "</span>";
             }
             $out .= " </td>";
-            $out .= "<td><label for='admin_email_noreply_name'>" . __('No-Reply name') . " <i class='pointer fa fa-info' title='" .
-            __s('Optionnal No-Reply name.') . "\n" . __s('If not set, main administrator name will be used.') . "'></i></label></td>";
-            $out .= "<td><input type='text' class='form-control' name='admin_email_noreply_name' id='admin_email_noreply_name' value='" .
-                    $CFG_GLPI["admin_email_noreply_name"] . "'>";
+            $out .= "<td><label for='noreply_email_name'>" . __('No-Reply name') . " <i class='pointer fa fa-info' title='" .
+            __s('Optionnal No-Reply name.') . "\n" . __s('If not set, main or entity administrator name will be used.') . "'></i></label></td>";
+            $out .= "<td><input type='text' class='form-control' name='noreply_email_name' id='noreply_email_name' value='" .
+                    $CFG_GLPI["noreply_email_name"] . "'>";
             $out .= " </td></tr>";
             $out .= "</tr>";
 
