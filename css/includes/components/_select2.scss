@@ -65,19 +65,6 @@
             cursor: not-allowed;
         }
 
-        .select2-selection__rendered {
-            direction: rtl; // ellipsis on left
-            text-align: left;
-
-            &::before {
-                content: "\200E"; // left-to-right mark: be sure that content is displayed in ltr way
-            }
-
-            > * {
-                unicode-bidi: plaintext;
-            }
-        }
-
         &.select2-selection--single {
             @include font-size($input-font-size);
 
@@ -90,6 +77,16 @@
 
             .select2-selection__rendered {
                 line-height: $input-height;
+                direction: rtl; // ellipsis on left
+                text-align: left;
+
+                &::before {
+                    content: "\200E"; // left-to-right mark: be sure that content is displayed in ltr way
+                }
+
+                > * {
+                    unicode-bidi: plaintext; // preserve text direction
+                }
 
                 @include dark-mode {
                     & {
