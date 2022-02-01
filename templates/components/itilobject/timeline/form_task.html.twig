@@ -43,12 +43,6 @@
 {% block timeline_card %}
    {% if form_mode == 'view' %}
       <div class="read-only-content {{ entry_i['state'] is constant('Planning::DONE') ? 'done' : '' }}">
-         {% if entry_i['state'] is constant('Planning::TODO') %}
-            <span class="state state_1" onclick="change_task_state({{ entry_i['id'] }}, this)" title="{{ __('To do') }}"></span>
-         {% elseif entry_i['state'] is constant('Planning::DONE') %}
-            <span class="state state_2" onclick="change_task_state({{ entry_i['id'] }}, this)" title="{{ __('Done') }}"></span>
-         {% endif %}
-
          <div class="text-content" data-bs-html="true" data-bs-custom-class="todo-list-tooltip"
               title="{{ entry_i['content']|html_to_text }}" data-bs-toggle="tooltip">
             {{ entry_i['content']|enhanced_html({
