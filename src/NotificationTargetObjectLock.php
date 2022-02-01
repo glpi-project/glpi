@@ -142,7 +142,7 @@ class NotificationTargetObjectLock extends NotificationTarget
     }
 
 
-    public function getSender()
+    public function getSender(): array
     {
 
         $mails = new UserEmail();
@@ -171,7 +171,7 @@ class NotificationTargetObjectLock extends NotificationTarget
     }
 
 
-    public function getReplyTo($options = [])
+    public function getReplyTo($options = []): array
     {
 
         return $this->getSender();
