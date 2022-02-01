@@ -45,6 +45,12 @@ $skip_db_check               = true;
 include_once GLPI_ROOT . "/inc/db.function.php";
 include_once GLPI_ROOT . '/inc/config.php';
 
+if (Toolbox::getMemoryLimit() < (128 * 1024 * 1024)) {
+    // Main CSS compilation requires about 90MB of memory.
+    // Increase it a bit to ensure it will not reach memory limit.
+    ini_set('memory_limit', '128M');
+}
+
 // Ensure warnings will not break CSS output.
 ErrorHandler::getInstance()->disableOutput();
 
