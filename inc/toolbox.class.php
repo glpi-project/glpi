@@ -3626,7 +3626,7 @@ HTML;
     *
     * @param mixed $value A possible float
     *
-    * @return bool
+    * @return int
     */
    public static function getDecimalNumbers($value): int {
       if (!is_numeric($value)) {
