@@ -279,7 +279,7 @@ class QueuedNotification extends CommonDBTM
             'id'                 => '9',
             'table'              => $this->getTable(),
             'field'              => 'replyto',
-            'name'               => __('Reply-to email'),
+            'name'               => __('Reply-To email'),
             'datatype'           => 'string',
             'massiveaction'      => false
         ];
@@ -288,7 +288,7 @@ class QueuedNotification extends CommonDBTM
             'id'                 => '10',
             'table'              => $this->getTable(),
             'field'              => 'replytoname',
-            'name'               => __('Reply-to name'),
+            'name'               => __('Reply-To name'),
             'datatype'           => 'string',
             'massiveaction'      => false
         ];
@@ -748,9 +748,9 @@ class QueuedNotification extends CommonDBTM
         echo "</tr>";
 
         echo "<tr class='tab_bg_1'>";
-        echo "<td>" . __('Reply-to email') . "</td>";
+        echo "<td>" . __('Reply-To email') . "</td>";
         echo "<td>" . $this->fields['replyto'] . "</td>";
-        echo "<td>" . __('Reply-to name') . "</td>";
+        echo "<td>" . __('Reply-To name') . "</td>";
         echo "<td>" . $this->fields['replytoname'] . "</td>";
         echo "</tr>";
 

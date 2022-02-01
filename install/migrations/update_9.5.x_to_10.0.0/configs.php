@@ -73,3 +73,12 @@ $migration->addField('glpi_users', 'itil_layout', 'text', ['after' => 'timeline_
 
 $migration->displayMessage('Drop obsolete automatic transfer configuration');
 Config::deleteConfigurationValues('core', ['transfers_id_auto']);
+
+$migration->addConfig([
+    'from_email'         => '',
+    'from_email_name'    => '',
+    'noreply_email'      => '',
+    'noreply_email_name' => '',
+    'replyto_email'      => '',
+    'replyto_email_name' => '',
+]);

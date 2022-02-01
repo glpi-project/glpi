@@ -129,3 +129,12 @@ foreach ($fkey_config_fields as $fkey_config_field) {
     }
 }
 /** /Replace negative values for config foreign keys */
+
+/** Email configuration at entity level */
+$migration->changeField('glpi_entities', 'admin_reply', 'replyto_email', 'string');
+$migration->changeField('glpi_entities', 'admin_reply_name', 'replyto_email_name', 'string');
+$migration->addField('glpi_entities', 'from_email', 'string', ['update' => '', 'condition' => 'WHERE `id` = 0']);
+$migration->addField('glpi_entities', 'from_email_name', 'string', ['update' => '', 'condition' => 'WHERE `id` = 0']);
+$migration->addField('glpi_entities', 'noreply_email', 'string', ['update' => '', 'condition' => 'WHERE `id` = 0']);
+$migration->addField('glpi_entities', 'noreply_email_name', 'string', ['update' => '', 'condition' => 'WHERE `id` = 0']);
+/** /Email configuration at entity level */
