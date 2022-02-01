@@ -33,6 +33,7 @@
 
 namespace Glpi\Features;
 
+use Glpi\Http\Response;
 use Glpi\Plugin\Hooks;
 use Plugin;
 
@@ -153,5 +154,23 @@ trait Kanban
             }
         }
         return $filters;
+    }
+
+    public static function getGlobalKanbanUrl(bool $full = true): string
+    {
+        if (method_exists(static::class, 'getFormUrl')) {
+            return static::getFormURL($full) . '?showglobalkanban=1';
+        }
+        return '';
+    }
+
+    public function getKanbanUrlWithID(int $items_id, bool $full = true): string
+    {
+        $tabs = $this->defineTabs();
+        $tab_id = array_search(__('Kanban'), $tabs);
+        if (false === $tab_id || is_null($tab_id)) {
+            Response::sendError(400, "Itemtype does not have a Kanban tab!", Response::CONTENT_TYPE_TEXT_HTML);
+        }
+        return static::getFormURLWithID($items_id, $full) . "&forcetab={$tab_id}";
     }
 }

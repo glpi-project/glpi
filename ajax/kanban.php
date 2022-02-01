@@ -183,16 +183,11 @@ if (($_POST['action'] ?? null) === 'update') {
 } else if ($_REQUEST['action'] === 'get_url') {
     $checkParams(['items_id']);
     if ($_REQUEST['items_id'] == -1) {
-        echo $itemtype::getFormURL(true) . '?showglobalkanban=1';
+        echo $itemtype::getGlobalKanbanUrl(true);
         return;
     }
     $item->getFromDB($_REQUEST['items_id']);
-    $tabs = $item->defineTabs();
-    $tab_id = array_search(__('Kanban'), $tabs);
-    if (false === $tab_id || is_null($tab_id)) {
-        Response::sendError(400, "Itemtype does not have a Kanban tab!", Response::CONTENT_TYPE_TEXT_HTML);
-    }
-    echo $itemtype::getFormURLWithID($_REQUEST['items_id'], true) . "&forcetab={$tab_id}";
+    echo $item->getKanbanUrlWithID($_REQUEST['items_id'], true);
 } else if (($_POST['action'] ?? null) === 'create_column') {
     $checkParams(['column_field', 'items_id', 'column_name']);
     $column_field = $_POST['column_field'];
