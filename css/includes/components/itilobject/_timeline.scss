@@ -53,26 +53,33 @@
         }
     }
 
-    .state {
-        float: left;
-        width: 20px;
-        height: 20px;
-        margin-right: 3px;
-        background-repeat: no-repeat;
-        vertical-align: middle;
+    .todo-list-state {
+        display: inline-block !important;
+        margin-top: 1.5rem;
+        margin-left: 0.5rem;
+        margin-right: -0.5rem;
 
-        &.state_0 {
-            background-image: url("../pics/timeline/information.png");
-        }
+        .state {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            margin-right: 3px;
+            background-repeat: no-repeat;
+            vertical-align: middle;
 
-        &.state_1 {
-            cursor: pointer;
-            background-image: url("../pics/timeline/todo.png");
-        }
+            &.state_0 {
+                background-image: url("../pics/timeline/information.png");
+            }
 
-        &.state_2 {
-            cursor: pointer;
-            background-image: url("../pics/timeline/done.png");
+            &.state_1 {
+                cursor: pointer;
+                background-image: url("../pics/timeline/todo.png");
+            }
+
+            &.state_2 {
+                cursor: pointer;
+                background-image: url("../pics/timeline/done.png");
+            }
         }
     }
 
@@ -444,9 +451,8 @@
             transition: all 200ms ease;
 
             .todo-list-state {
-                display: inline-block !important;
-                margin-top: 1.5rem;
-                margin-left: 0.5rem;
+                order: inherit !important;
+                margin-left: 0.5rem !important;
             }
 
             .creator,
