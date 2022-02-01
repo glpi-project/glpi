@@ -5074,6 +5074,10 @@ $tables['glpi_profilerights'] = [
         'name'        => 'solutiontemplate',
         'rights'      => '23',
     ], [
+        'profiles_id' => '7',
+        'name'        => 'itilfollowuptemplate',
+        'rights'      => '23',
+    ], [
         'profiles_id' => '1',
         'name'        => 'calendar',
         'rights'      => '0',
@@ -5350,8 +5354,16 @@ $tables['glpi_profilerights'] = [
         'name'        => 'solutiontemplate',
         'rights'      => '0',
     ], [
+        'profiles_id' => '5',
+        'name'        => 'itilfollowuptemplate',
+        'rights'      => '0',
+    ], [
         'profiles_id' => '6',
         'name'        => 'solutiontemplate',
+        'rights'      => '0',
+    ], [
+        'profiles_id' => '6',
+        'name'        => 'itilfollowuptemplate',
         'rights'      => '0',
     ], [
         'profiles_id' => '2',
@@ -5637,9 +5649,17 @@ $tables['glpi_profilerights'] = [
         'profiles_id' => '3',
         'name'        => 'solutiontemplate',
         'rights'      => '23',
+    ],  [
+        'profiles_id' => '3',
+        'name'        => 'itilfollowuptemplate',
+        'rights'      => '23',
     ], [
         'profiles_id' => '4',
         'name'        => 'solutiontemplate',
+        'rights'      => '23',
+    ], [
+        'profiles_id' => '4',
+        'name'        => 'itilfollowuptemplate',
         'rights'      => '23',
     ], [
         'profiles_id' => '3',
@@ -5918,8 +5938,16 @@ $tables['glpi_profilerights'] = [
         'name'        => 'solutiontemplate',
         'rights'      => '0',
     ], [
+        'profiles_id' => '1',
+        'name'        => 'itilfollowuptemplate',
+        'rights'      => '0',
+    ], [
         'profiles_id' => '2',
         'name'        => 'solutiontemplate',
+        'rights'      => '0',
+    ], [
+        'profiles_id' => '2',
+        'name'        => 'itilfollowuptemplate',
         'rights'      => '0',
     ], [
         'profiles_id' => '4',
@@ -7048,6 +7076,10 @@ $tables['glpi_profilerights'] = [
     ], [
         'profiles_id' => '8',
         'name'        => 'solutiontemplate',
+        'rights'      => '1',
+    ], [
+        'profiles_id' => '8',
+        'name'        => 'itilfollowuptemplate',
         'rights'      => '1',
     ], [
         'profiles_id' => '8',

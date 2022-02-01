@@ -1908,6 +1908,11 @@ class Profile extends CommonDBTM
                 'field'     => 'state'
             ],
             [
+                'itemtype'  => 'ITILFollowupTemplate',
+                'label'     => _n('Followup template', 'Followup templates', Session::getPluralNumber()),
+                'field'     => 'itilfollowuptemplate'
+            ],
+            [
                 'itemtype'  => 'SolutionTemplate',
                 'label'     => _n('Solution template', 'Solution templates', Session::getPluralNumber()),
                 'field'     => 'solutiontemplate'
