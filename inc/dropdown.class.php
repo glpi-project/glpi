@@ -1512,10 +1512,10 @@ class Dropdown {
     *
     * @since 0.84
     *
-    * @param integer $value numeric value
-    * @param string $unit unit (maybe year, month, day, hour, % for standard management)
+    * @param integer $value    numeric value
+    * @param string  $unit     unit (maybe year, month, day, hour, % for standard management)
     * @param integer $decimals number of decimal
-    **/
+   **/
    static function getValueWithUnit($value, $unit, $decimals = 0) {
 
       $formatted_number = is_numeric($value)
