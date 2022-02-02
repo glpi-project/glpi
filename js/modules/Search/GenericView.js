@@ -29,6 +29,8 @@
  * ---------------------------------------------------------------------
  */
 
+/* global bootstrap */
+
 // Explicitly bind to window so Jest tests work properly
 window.GLPI = window.GLPI || {};
 window.GLPI.Search = window.GLPI.Search || {};
@@ -76,7 +78,33 @@ window.GLPI.Search.GenericView = class GenericView {
         loading_overlay.css('visibility', 'hidden');
     }
 
-    registerListeners() {}
+    registerListeners() {
+        const ajax_container = this.getResultsView().getAJAXContainer();
+        const search_container = ajax_container.closest('.search-container');
+
+        $(search_container).on('click', 'a.bookmark_record.save', () => {
+            const modal = $('#savedsearch-modal');
+            //move the modal to the body so it can be displayed above the rest of the page
+            modal.appendTo('body');
+            modal.empty();
+            modal.html(`
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header"><h5 class="modal-title">${__('Save current search')}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="${__('Close')}"></button>
+                    </div>
+                    <div class="modal-body"></div>
+                </div>
+            </div>
+            `);
+            const bs_modal = new bootstrap.Modal(modal.get(0), {show: false});
+            modal.on('show.bs.modal', () => {
+                const url = modal.attr('data-url')+'&url=' + encodeURIComponent(window.location.pathname + window.location.search);
+                modal.find('.modal-body').load(url, {});
+            });
+            bs_modal.show();
+        });
+    }
 
     onSearch() {
         this.refreshResults();

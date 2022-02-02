@@ -133,7 +133,18 @@ window.GLPI.Search.Table = class Table extends GenericView {
         const form_el = el.closest('form');
         const ajax_container = el.closest('.ajax-container');
         let search_data = {};
+
         try {
+            const sort_state = this.getSortState();
+            const limit = $(form_el).find('select.search-limit-dropdown').first().val();
+            const search_form_values = $(ajax_container).closest('.search-container').find('.search-form-container').serializeArray();
+            let search_criteria = {};
+            search_form_values.forEach((v) => {
+                search_criteria[v['name']] = v['value'];
+            });
+            const start = $(ajax_container).find('.pagination .page-item.selected .page-link').attr('data-start');
+            search_criteria['start'] = start || 0;
+
             if (search_overrides['reset']) {
                 search_data = {
                     action: 'display_results',
@@ -142,16 +153,6 @@ window.GLPI.Search.Table = class Table extends GenericView {
                     reset: 'reset'
                 };
             } else {
-                const sort_state = this.getSortState();
-                const limit = $(form_el).find('select.search-limit-dropdown').first().val();
-                const search_form_values = $(ajax_container).closest('.search-container').find('.search-form-container').serializeArray();
-                let search_criteria = {};
-                search_form_values.forEach((v) => {
-                    search_criteria[v['name']] = v['value'];
-                });
-                const start = $(ajax_container).find('.pagination .page-item.selected .page-link').attr('data-start');
-                search_criteria['start'] = start || 0;
-
                 search_data = {
                     action: 'display_results',
                     searchform_id: this.element_id,
@@ -167,6 +168,8 @@ window.GLPI.Search.Table = class Table extends GenericView {
             }
 
             $(ajax_container).load(CFG_GLPI.root_doc + '/ajax/search.php', search_data, () => {
+                // Push history state with new query params
+                history.pushState('', '', '?' + $.param(Object.assign(search_criteria, sort_state, search_overrides)));
                 this.getElement().trigger('search_refresh', [this.getElement()]);
                 this.hideLoadingSpinner();
                 this.shiftSelectAllCheckbox();
@@ -182,6 +185,7 @@ window.GLPI.Search.Table = class Table extends GenericView {
     }
 
     registerListeners() {
+        super.registerListeners();
         const ajax_container = this.getResultsView().getAJAXContainer();
         const search_container = ajax_container.closest('.search-container');
 

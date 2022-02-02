@@ -33,6 +33,7 @@
 
 use Glpi\Application\ErrorHandler;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Toolbox\Sanitizer;
 
 /**
  * Saved searches class
@@ -301,7 +302,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
      */
     public function prepareSearchUrlForDB(array $input): array
     {
-        $taburl = parse_url(rawurldecode($input['url']));
+        $taburl = parse_url(rawurldecode(Sanitizer::unsanitize($input['url'])));
 
         $query_tab = [];
 
@@ -918,9 +919,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
     {
         global $CFG_GLPI;
 
-        echo "<a href='#' onClick=\"modal_savesearch.show(); return false;\"
-             class='btn btn-ghost-secondary btn-icon btn-sm me-1 bookmark_record save'
-             data-bs-toggle='tooltip' data-bs-placement='bottom'
+        echo "<a href='#' class='btn btn-ghost-secondary btn-icon btn-sm me-1 bookmark_record save'
              title='" . __s('Save current search') . "'>";
         echo "<i class='ti ti-star " . ($active ? 'active' : '') . "'></i>";
         echo "</a>";
@@ -929,7 +928,6 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
             'action'   => "create",
             'itemtype' => $itemtype,
             'type'     => $type,
-            'url'      => rawurlencode($_SERVER["REQUEST_URI"])
         ];
 
        // If we are on a saved search, add the search id in the query so we can
@@ -940,9 +938,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
 
         $url = $CFG_GLPI['root_doc'] . "/ajax/savedsearch.php?" . http_build_query($params);
 
-        Ajax::createModalWindow('modal_savesearch', $url, [
-            'title' => __('Save current search')
-        ]);
+        echo "<div id='savedsearch-modal' class='modal' data-url='$url'></div>";
     }
 
 

@@ -148,6 +148,9 @@ describe('Search Table', () => {
     test('getItemtype', () => {
         expect(real_table.getItemtype()).toBe('Computer');
     });
+    test('getResultsView', () => {
+        expect(real_table.getResultsView()).toBeObject();
+    });
     test('getSortState', () => {
         const verify_initial_sort_state = () => {
             let state = real_table.getSortState();
