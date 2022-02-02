@@ -302,7 +302,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
      */
     public function prepareSearchUrlForDB(array $input): array
     {
-        $taburl = parse_url(rawurldecode(Sanitizer::unsanitize($input['url'])));
+        $taburl = parse_url(Sanitizer::unsanitize(rawurldecode($input['url'])));
 
         $query_tab = [];
 
