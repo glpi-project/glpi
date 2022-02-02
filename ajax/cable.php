@@ -61,9 +61,9 @@ switch ($action) {
         ) {
             Socket::dropdown(['name'         =>  $_GET['dom_name'],
                 'condition'    => ['socketmodels_id'   => $_GET['socketmodels_id'] ?? 0,
-                'itemtype'           => $_GET['itemtype'],
-                'items_id'           => $_GET['items_id']
-            ],
+                    'itemtype'           => $_GET['itemtype'],
+                    'items_id'           => $_GET['items_id']
+                ],
                 'displaywith'  => ['itemtype', 'items_id', 'networkports_id'],
             ]);
         }
