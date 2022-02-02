@@ -35,13 +35,6 @@
 
 {% block more_fields %}
    {{ fields.dropdownField(
-      'CableType',
-      'cabletypes_id',
-      item.fields['cabletypes_id'],
-      'CableType'|itemtype_name,
-   ) }}
-
-   {{ fields.dropdownField(
       'CableStrand',
       'cablestrands_id',
       item.fields['cablestrands_id'],
