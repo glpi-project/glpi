@@ -60,7 +60,7 @@ switch ($action) {
             && isset($_GET['items_id'])
         ) {
             Socket::dropdown(['name'         =>  $_GET['dom_name'],
-                'condition'    => ['socketmodels_id'   => isset($_GET['socketmodels_id']) ?? 0 ,
+                    'condition'    => ['socketmodels_id'   => isset($_GET['socketmodels_id']) ? $_GET['socketmodels_id'] : 0 ,
                     'itemtype'           => $_GET['itemtype'],
                     'items_id'           => $_GET['items_id']
                 ],
