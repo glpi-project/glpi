@@ -57,7 +57,6 @@ trait TreeBrowse
     {
         global $CFG_GLPI;
 
-        $rand        = mt_rand();
         $ajax_url    = $CFG_GLPI["root_doc"] . "/ajax/treebrowse.php";
         $loading_txt = addslashes(__('Loading...'));
         $start       = isset($_REQUEST['start'])
@@ -77,10 +76,10 @@ trait TreeBrowse
         $JS = <<<JAVASCRIPT
         $(function() {
             var loadingindicator  = $("<div class='loadingindicator'>$loading_txt</div>");
-            $('#items_list$rand').html(loadingindicator); // loadingindicator on doc ready
+            $('#items_list').html(loadingindicator); // loadingindicator on doc ready
             var loadNode = function(cat_id) {
-                $('#items_list$rand').html(loadingindicator);
-                $('#items_list$rand').load('$ajax_url', {
+                $('#items_list').html(loadingindicator);
+                $('#items_list').load('$ajax_url', {
                     'action': 'getItemslist',
                     'cat_id': cat_id,
                     'itemtype': '$itemtype',
@@ -91,7 +90,7 @@ trait TreeBrowse
                 });
             };
 
-            $('#tree_category$rand').fancytree({
+            $('#tree_category').fancytree({
                 // load plugins
                 extensions: ['filter', 'glyph', 'persist'],
 
@@ -131,13 +130,13 @@ trait TreeBrowse
 
             });
 
-            var tree = $.ui.fancytree.getTree("#tree_category$rand")
+            var tree = $.ui.fancytree.getTree("#tree_category")
             if (tree.activeNode === null) {
                 tree.activateKey(-1);
             }
-            $(document).on('keyup', '#browser_tree_search$rand', function() {
+            $(document).on('keyup', '#browser_tree_search', function() {
                 var search_text = $(this).val();
-                $.ui.fancytree.getTree("#tree_category$rand").filterNodes(search_text);
+                $.ui.fancytree.getTree("#tree_category").filterNodes(search_text);
             });
         });
 
@@ -145,10 +144,10 @@ trait TreeBrowse
         echo Html::scriptBlock($JS);
         echo "<div id='tree_browse'>
         <div class='browser_tree d-flex flex-column'>
-            <input type='text' class='browser_tree_search' placeholder='" . __("Search…") . "' id='browser_tree_search$rand'>
-            <div id='tree_category$rand' class='browser-tree-container'></div>
+            <input type='text' class='browser_tree_search' placeholder='" . __("Search…") . "' id='browser_tree_search'>
+            <div id='tree_category' class='browser-tree-container'></div>
         </div>
-        <div id='items_list$rand' class='browser_items'></div>
+        <div id='items_list' class='browser_items'></div>
         </div>";
     }
 
