@@ -411,4 +411,16 @@ class ComputerAntivirus extends CommonDBChild
         echo "</table>";
         echo "</div>";
     }
+
+    public function prepareInputForAdd($input)
+    {
+        $input = parent::prepareInputForAdd($input);
+
+        // Clear date if empty to avoid SQL error
+        if (empty($input['date_expiration'])) {
+            unset($input['date_expiration']);
+        }
+
+        return $input;
+    }
 }
