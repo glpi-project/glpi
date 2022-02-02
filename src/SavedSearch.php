@@ -33,6 +33,7 @@
 
 use Glpi\Application\ErrorHandler;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Toolbox\Sanitizer;
 
 /**
  * Saved searches class
