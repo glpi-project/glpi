@@ -56,7 +56,12 @@ class Config extends CommonDBTM
 
     public static $rightname              = 'config';
 
-    public static $undisclosedFields      = ['proxy_passwd', 'smtp_passwd', 'glpinetwork_registration_key'];
+    public static $undisclosedFields      = [
+        'proxy_passwd',
+        'smtp_passwd',
+        'glpinetwork_registration_key',
+        'ldap_pass', // this one should not exist anymore, but may be present when admin restored config dump after migration
+    ];
     public static $saferUndisclosedFields = ['admin_email', 'replyto_email'];
 
     public static function getTypeName($nb = 0)
