@@ -2689,6 +2689,7 @@ class GLPIKanbanRights {
        * @since 9.5.0
        */
         this.init = function() {
+            $(self.element).data('js_class', self);
             $(self.element).trigger('kanban:pre_init');
             loadState(function() {
                 build();
