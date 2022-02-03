@@ -90,9 +90,12 @@ class Search
             $dashboard = new Glpi\Dashboard\Grid($default, 33, 1, 'mini_core');
             $dashboard->show(true);
         }
+
         self::showGenericSearch($itemtype, $params);
         if ($params['as_map'] == 1) {
             self::showMap($itemtype, $params);
+        } elseif ($params['browse'] == 1) {
+            $itemtype::showBrowseView($itemtype, $params);
         } else {
             self::showList($itemtype, $params);
         }
@@ -1430,6 +1433,10 @@ class Search
                 return;
             }
 
+            if ($data['search']['start'] > $data['data']['totalcount']) {
+                $data['search']['start'] = 0;
+            }
+
            // Search case
             $data['data']['begin'] = $data['search']['start'];
             $data['data']['end']   = min(
@@ -1672,6 +1679,12 @@ class Search
         $item       = $data['item'];
         $is_deleted = $search['is_deleted'];
 
+        foreach ($search['criteria'] as $key => $criteria) {
+            if (isset($criteria['virtual']) && $criteria['virtual']) {
+                unset($search['criteria'][$key]);
+            }
+        }
+
        // Contruct parameters
         $globallinkto  = Toolbox::append_params([
             'criteria'     => Toolbox::stripslashes_deep($search['criteria']),
@@ -1734,6 +1747,7 @@ class Search
             ]),
             'may_be_deleted'      => $item instanceof CommonDBTM && $item->maybeDeleted(),
             'may_be_located'      => $item instanceof CommonDBTM && $item->maybeLocated(),
+            'may_be_browsed'      => Toolbox::hasTrait($item, \Glpi\Features\TreeBrowse::class),
         ]);
 
        // Add items in item list
@@ -2422,6 +2436,7 @@ class Search
         $p['sort']         = '';
         $p['is_deleted']   = 0;
         $p['as_map']       = 0;
+        $p['browse']       = 0;
         $p['criteria']     = [];
         $p['metacriteria'] = [];
         if (class_exists($itemtype)) {
@@ -2724,6 +2739,10 @@ JAVASCRIPT;
                 echo Html::hidden('as_map', [
                     'value' => $p['as_map'],
                     'id'    => 'as_map'
+                ]);
+                echo Html::hidden('browse', [
+                    'value' => $p['browse'],
+                    'id'    => 'browse'
                 ]);
             }
             echo "<div class='col-auto'>";
@@ -7288,6 +7307,7 @@ JAVASCRIPT;
         $default_values["sort"]        = 1;
         $default_values["is_deleted"]  = 0;
         $default_values["as_map"]      = 0;
+        $default_values["browse"]      = 0;
 
         if (isset($params['start'])) {
             $params['start'] = (int)$params['start'];
@@ -7410,7 +7430,7 @@ JAVASCRIPT;
             if (!isset($params[$key])) {
                 if (
                     $usesession
-                    && ($key == 'is_deleted' || $key == 'as_map' || !isset($saved_params['criteria'])) // retrieve session only if not a new request
+                    && ($key == 'is_deleted' || $key == 'as_map' || $key == 'browse' || !isset($saved_params['criteria'])) // retrieve session only if not a new request
                     && isset($_SESSION['glpisearch'][$itemtype][$key])
                 ) {
                     $params[$key] = $_SESSION['glpisearch'][$itemtype][$key];

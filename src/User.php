@@ -40,6 +40,7 @@ use Sabre\VObject;
 class User extends CommonDBTM
 {
     use Glpi\Features\Clonable;
+    use Glpi\Features\TreeBrowse;
 
    // From CommonDBTM
     public $dohistory         = true;

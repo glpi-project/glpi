@@ -1,0 +1,74 @@
+/**
+ * ---------------------------------------------------------------------
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ * Copyright (C) 2015-2022 Teclib' and contributors.
+ *
+ * http://glpi-project.org
+ *
+ * based on GLPI - Gestionnaire Libre de Parc Informatique
+ * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * GLPI is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * GLPI is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * ---------------------------------------------------------------------
+ */
+
+#tree_browse {
+    display: flex;
+    align-items: stretch;
+    height: 100%;
+
+    .browser_tree {
+        flex-basis: 250px;
+        flex-shrink: 0;
+        padding-right: 10px;
+        padding-left: 2px;
+
+        .browser-tree-container {
+            overflow-x: hidden;
+            overflow-y: auto;
+            flex: 1;
+
+            .fancytree-container {
+                overflow-y: auto;
+
+                i.fa.sub_items {
+                    color: #787878;
+                }
+            }
+        }
+
+        .browser_tree_search {
+            width: 100%;
+            margin-bottom: 5px;
+            padding: 10px 5px;
+            border-radius: 0;
+            box-sizing: border-box;
+        }
+    }
+
+    .browser_items {
+        width: 100%;
+        margin-left: 5px;
+
+        .tab_cadre_pager {
+            width: 100%;
+        }
+    }
+}

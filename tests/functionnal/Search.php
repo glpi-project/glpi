@@ -837,18 +837,22 @@ class Search extends DbTestCase
         $search = \Search::manageParams('Ticket', ['reset' => 1], false, false);
         $this->array(
             $search
-        )->isEqualTo(['reset'        => 1,
+        )->isEqualTo([
+            'reset'        => 1,
             'start'        => 0,
             'order'        => 'DESC',
             'sort'         => 19,
             'is_deleted'   => 0,
-            'criteria'     => [0 => ['field' => 12,
-                'searchtype' => 'equals',
-                'value' => 'notold'
-            ],
+            'criteria'     => [
+                0 => [
+                    'field' => 12,
+                    'searchtype' => 'equals',
+                    'value' => 'notold'
+                ],
             ],
             'metacriteria' => [],
-            'as_map'       => 0
+            'as_map'       => 0,
+            'browse'       => 0,
         ]);
 
        // now add a bookmark on Ticket view
@@ -878,27 +882,32 @@ class Search extends DbTestCase
         $search = \Search::manageParams('Ticket', ['reset' => 1], true, false);
         $this->array(
             $search
-        )->isEqualTo(['reset'        => 1,
+        )->isEqualTo([
+            'reset'        => 1,
             'start'        => 0,
             'order'        => 'DESC',
             'sort'         => 2,
             'is_deleted'   => 0,
-            'criteria'     => [0 => ['field' => '5',
-                'searchtype' => 'equals',
-                'value' => $uid
-            ],
+            'criteria'     => [
+                0 => [
+                    'field' => '5',
+                    'searchtype' => 'equals',
+                    'value' => $uid
+                ],
             ],
             'metacriteria' => [],
             'itemtype' => 'Ticket',
             'savedsearches_id' => $bk_id,
-            'as_map'           => 0
+            'as_map'           => 0,
+            'browse'           => 0,
         ]);
 
        // let's test for Computers
         $search = \Search::manageParams('Computer', ['reset' => 1], false, false);
         $this->array(
             $search
-        )->isEqualTo(['reset'        => 1,
+        )->isEqualTo([
+            'reset'        => 1,
             'start'        => 0,
             'order'        => 'ASC',
             'sort'         => 1,
@@ -911,7 +920,8 @@ class Search extends DbTestCase
                 ]
             ],
             'metacriteria' => [],
-            'as_map'       => 0
+            'as_map'       => 0,
+            'browse'       => 0,
         ]);
 
        // now add a bookmark on Computer view
@@ -941,20 +951,24 @@ class Search extends DbTestCase
         $search = \Search::manageParams('Computer', ['reset' => 1], true, false);
         $this->array(
             $search
-        )->isEqualTo(['reset'        => 1,
+        )->isEqualTo([
+            'reset'        => 1,
             'start'        => 0,
             'order'        => 'DESC',
             'sort'         => 31,
             'is_deleted'   => 0,
-            'criteria'     => [0 => ['field' => 'view',
-                'searchtype' => 'contains',
-                'value' => 'test'
-            ],
+            'criteria'     => [
+                0 => [
+                    'field' => 'view',
+                    'searchtype' => 'contains',
+                    'value' => 'test'
+                ],
             ],
             'metacriteria' => [],
             'itemtype' => 'Computer',
             'savedsearches_id' => $bk_id,
-            'as_map'           => 0
+            'as_map'           => 0,
+            'browse'           => 0,
         ]);
     }
 
