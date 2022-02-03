@@ -706,6 +706,6 @@ class Agent extends CommonDBTM
 
     public static function getIcon()
     {
-        return "fas fa-robot";
+        return "ti ti-robot";
     }
 }

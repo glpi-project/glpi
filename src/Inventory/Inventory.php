@@ -456,15 +456,16 @@ class Inventory
         }
 
         $menu = [
-            'title'  => __('Inventory'),
-            'page'   => '/front/inventory.conf.php',
-            'icon'   => static::getIcon(),
-            'options'   => [],
-            'links' => $links,
+            'title'   => __('Inventory'),
+            'page'    => '/front/inventory.conf.php',
+            'icon'    => static::getIcon(),
+            'options' => [],
+            'links'   => $links,
         ];
 
         if (Session::haveRight(Agent::$rightname, READ)) {
             $menu['options']['agent'] = [
+                'icon'  => Agent::getIcon(),
                 'title' => Agent::getTypeName(Session::getPluralNumber()),
                 'page'  => Agent::getSearchURL(false),
                 'links' => [
@@ -475,6 +476,7 @@ class Inventory
 
         if (Session::haveRight(Lockedfield::$rightname, READ)) {
             $menu['options']['lockedfield'] = [
+                'icon'  => Lockedfield::getIcon(),
                 'title' => Lockedfield::getTypeName(Session::getPluralNumber()),
                 'page'  => Lockedfield::getSearchURL(false),
                 'links' => $links
@@ -483,16 +485,18 @@ class Inventory
 
         if (Session::haveRight(RefusedEquipment::$rightname, READ)) {
             $menu['options']['refusedequipment'] = [
+                'icon'  => RefusedEquipment::getIcon(),
                 'title' => RefusedEquipment::getTypeName(Session::getPluralNumber()),
-                'page' => RefusedEquipment::getSearchURL(false),
+                'page'  => RefusedEquipment::getSearchURL(false),
                 'links' => $links
             ];
         }
 
         if (Session::haveRight(SNMPCredential::$rightname, READ)) {
             $menu['options']['snmpcredential'] = [
+                'icon'  => SNMPCredential::getIcon(),
                 'title' => SNMPCredential::getTypeName(Session::getPluralNumber()),
-                'page' => SNMPCredential::getSearchURL(false),
+                'page'  => SNMPCredential::getSearchURL(false),
                 'links' => [
                     'add' => '/front/snmpcredential.form.php',
                     'search' => '/front/snmpcredential.php',

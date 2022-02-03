@@ -4523,4 +4523,10 @@ class AuthLDAP extends CommonDBTM
             }
         }
     }
+
+
+    public static function getIcon()
+    {
+        return "far fa-address-book";
+    }
 }

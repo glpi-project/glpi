@@ -777,6 +777,7 @@ class Domain extends CommonDropdown
         if (static::canView()) {
             return [
                 'domainrecord' => [
+                    'icon'  => DomainRecord::getIcon(),
                     'title' => DomainRecord::getTypeName(Session::getPluralNumber()),
                     'page'  => DomainRecord::getSearchURL(false),
                     'links' => [

@@ -101,19 +101,23 @@ class Auth extends CommonGLPI
             $menu['page']                               = '/front/setup.auth.php';
             $menu['icon']                               = self::getIcon();
 
+            $menu['options']['ldap']['icon']            = AuthLDAP::getIcon();
             $menu['options']['ldap']['title']           = AuthLDAP::getTypeName(Session::getPluralNumber());
             $menu['options']['ldap']['page']            = AuthLDAP::getSearchURL(false);
             $menu['options']['ldap']['links']['search'] = AuthLDAP::getSearchURL(false);
             $menu['options']['ldap']['links']['add']    = AuthLDAP::getFormURL(false);
 
+            $menu['options']['imap']['icon']            = AuthMail::getIcon();
             $menu['options']['imap']['title']           = AuthMail::getTypeName(Session::getPluralNumber());
             $menu['options']['imap']['page']            = AuthMail::getSearchURL(false);
             $menu['options']['imap']['links']['search'] = AuthMail::getSearchURL(false);
             $menu['options']['imap']['links']['add']    = AuthMail::getFormURL(false);
 
+            $menu['options']['others']['icon']          = 'ti ti-login';
             $menu['options']['others']['title']         = __('Others');
             $menu['options']['others']['page']          = '/front/auth.others.php';
 
+            $menu['options']['settings']['icon']        = 'ti ti-adjustments';
             $menu['options']['settings']['title']       = __('Setup');
             $menu['options']['settings']['page']        = '/front/auth.settings.php';
         }

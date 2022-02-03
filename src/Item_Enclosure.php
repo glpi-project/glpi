@@ -345,4 +345,10 @@ class Item_Enclosure extends CommonDBRelation
 
         return $input;
     }
+
+
+    public static function getIcon()
+    {
+        return Enclosure::getIcon();
+    }
 }

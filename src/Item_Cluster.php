@@ -317,4 +317,10 @@ class Item_Cluster extends CommonDBRelation
 
         return $input;
     }
+
+
+    public static function getIcon()
+    {
+        return Cluster::getIcon();
+    }
 }
