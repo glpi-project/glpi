@@ -6981,6 +6981,17 @@ JAVASCRIPT;
                             if ($_SESSION["glpiis_ids_visible"] || empty($data[$ID][$k]['name'])) {
                                  $name = sprintf(__('%1$s (%2$s)'), $name, $data[$ID][$k]['id']);
                             }
+                            if ($field === 'completename') {
+                                $chunks = preg_split('/ > /', $name);
+                                $completename = '';
+                                foreach ($chunks as $key => $element_name) {
+                                    $class = $key === array_key_last($chunks) ? '' : 'class="text-muted"';
+                                    $separator = $key === array_key_last($chunks) ? '' : ' &gt; ';
+                                    $completename .= sprintf('<span %s>%s</span>%s', $class, $element_name, $separator);
+                                }
+                                $name = $completename;
+                            }
+
                             $out  .= "<a id='" . $linkitemtype . "_" . $data['id'] . "_" .
                                 $data[$ID][$k]['id'] . "' href='$page'>" .
                                $name . "</a>";
