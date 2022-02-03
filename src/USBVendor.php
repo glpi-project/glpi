@@ -197,6 +197,6 @@ class USBVendor extends CommonDropdown implements CacheableListInterface
 
     public static function getIcon()
     {
-        return "fab fa-usb";
+        return "ti ti-usb";
     }
 }

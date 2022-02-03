@@ -1064,4 +1064,10 @@ JAVASCRIPT;
 
         return $name;
     }
+
+
+    static function getIcon()
+    {
+        return Rack::getIcon();
+    }
 }

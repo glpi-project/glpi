@@ -662,4 +662,10 @@ JAVASCRIPT;
         }
         return $name_txt;
     }
+
+
+    static function getIcon()
+    {
+        return "ti ti-file-search";
+    }
 }

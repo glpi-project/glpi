@@ -366,4 +366,10 @@ class AuthMail extends CommonDBTM
         }
         return true;
     }
+
+
+    static function getIcon()
+    {
+        return "far fa-envelope";
+    }
 }

@@ -699,4 +699,10 @@ class Item_OperatingSystem extends CommonDBRelation
         $input['is_recursive'] = $item->fields['is_recursive'];
         return $input;
     }
+
+
+    static function getIcon()
+    {
+        return OperatingSystem::getIcon();
+    }
 }

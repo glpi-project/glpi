@@ -46,7 +46,7 @@
 
                {% if can_use_ldap %}
                   <a class="list-group-item list-group-item-action" href="{{ path('front/authldap.php') }}">
-                     <i class="fa-fw far fa-address-book me-1"></i>
+                     <i class="fa-fw {{ call('AuthLDAP::getIcon') }} me-1"></i>
                      <span>{{ 'AuthLDAP'|itemtype_name }}</span>
                   </a>
                {% else %}
@@ -59,7 +59,7 @@
                {% endif %}
 
                <a class="list-group-item list-group-item-action" href="{{ path('front/authmail.php') }}">
-                  <i class="far fa-fw fa-envelope me-1"></i>
+                  <i class="fa-fw {{ call('AuthMail::getIcon') }} me-1"></i>
                   <span>{{ 'AuthMail'|itemtype_name }}</span>
                </a>
 

@@ -95,6 +95,7 @@ class User extends CommonDBTM
         if (Session::haveRight('user', self::IMPORTEXTAUTHUSERS)) {
             return [
                 'ldap' => [
+                    'icon'  => AuthLDAP::getIcon(),
                     'title' => AuthLDAP::getTypeName(Session::getPluralNumber()),
                     'page'  => '/front/ldap.php',
                 ],

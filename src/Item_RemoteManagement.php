@@ -375,4 +375,10 @@ class Item_RemoteManagement extends CommonDBChild
         $forbidden[] = 'update';
         return $forbidden;
     }
+
+
+    static function getIcon()
+    {
+        return "fas fa-laptop-house";
+    }
 }
