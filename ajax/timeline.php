@@ -76,6 +76,13 @@ if (($_POST['action'] ?? null) === 'change_task_state') {
    $item = getItemForItemtype($_REQUEST['type']);
    $parent = getItemForItemtype($_REQUEST['parenttype']);
 
+   $manage_locks = static function($itemtype, $items_id) {
+      $ol = ObjectLock::isLocked($itemtype, $items_id );
+      if ($ol && (Session::getLoginUserID() != $ol->fields['users_id'])) {
+         ObjectLock::setReadOnlyProfile();
+      }
+   };
+
    if ($_REQUEST['type'] == "Solution") {
       $parent->getFromDB($_REQUEST[$parent->getForeignKeyField()]);
 
@@ -93,6 +100,7 @@ if (($_POST['action'] ?? null) === 'change_task_state') {
       if ($id) {
          $solution->getFromDB($id);
       }
+      $manage_locks($_REQUEST['parenttype'], $parent->getID());
       $solution->showForm($id, $sol_params);
    } else if ($_REQUEST['type'] == "ITILFollowup") {
       $parent->getFromDB($_REQUEST[$parent->getForeignKeyField()]);
@@ -106,6 +114,7 @@ if (($_POST['action'] ?? null) === 'change_task_state') {
       if ($id) {
          $fup->getFromDB($id);
       }
+      $manage_locks($_REQUEST['parenttype'], $parent->getID());
       $fup->showForm($id, $fup_params);
    } else if (substr_compare($_REQUEST['type'], 'Validation', -10) === 0) {
       $parent->getFromDB($_REQUEST[$parent->getForeignKeyField()]);
@@ -114,16 +123,13 @@ if (($_POST['action'] ?? null) === 'change_task_state') {
       if ($id) {
          $validation->getFromDB($id);
       }
+      $manage_locks($_REQUEST['parenttype'], $parent->getID());
       $validation->showForm($id, ['parent' => $parent]);
    } else if (isset($_REQUEST[$parent->getForeignKeyField()])
          && isset($_REQUEST["id"])
          && $parent->getFromDB($_REQUEST[$parent->getForeignKeyField()])) {
 
-      $ol = ObjectLock::isLocked( $_REQUEST['parenttype'], $parent->getID() );
-      if ($ol && (Session::getLoginUserID() != $ol->fields['users_id'])) {
-         ObjectLock::setReadOnlyProfile( );
-      }
-
+      $manage_locks($_REQUEST['parenttype'], $parent->getID());
       $foreignKey = $parent->getForeignKeyField();
       $parent::showSubForm($item, $_REQUEST["id"], ['parent' => $parent,
                                                    $foreignKey => $_REQUEST[$foreignKey]]);
