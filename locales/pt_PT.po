@@ -20,6 +20,7 @@
 # Emperium <real.emperium@gmail.com>, 2021
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2021
 # Pedro B., 2021
+# João Coutinho <jpmcoutinho@gmail.com>, 2021
 # 
 #, fuzzy
 msgid ""
@@ -28,7 +29,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-12-14 12:46+0000\n"
 "PO-Revision-Date: 2021-05-26 09:06+0000\n"
-"Last-Translator: Pedro B., 2021\n"
+"Last-Translator: João Coutinho <jpmcoutinho@gmail.com>, 2021\n"
 "Language-Team: Portuguese (Portugal) (https://www.transifex.com/glpi/teams/1637/pt_PT/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -38,11 +39,11 @@ msgstr ""
 
 #: ajax/gantt.php:110
 msgid "Target item must be of project type"
-msgstr ""
+msgstr "O item de destino deve ser do tipo de projeto"
 
 #: ajax/gantt.php:143
 msgid "Item must be of project type"
-msgstr ""
+msgstr "O item deve ser do tipo de projeto"
 
 #: ajax/gantt.php:208
 msgid "Link already exist!"
@@ -221,7 +222,7 @@ msgstr "Adicionar novos dispositivos"
 
 #: ajax/selectUnaffectedOrNewItem_Device.php:79
 msgid "No unaffected device!"
-msgstr ""
+msgstr "Nenhum dispositivo afetado!"
 
 #: ajax/ticketiteminformation.php:72
 #, php-format
@@ -369,7 +370,7 @@ msgstr "URL"
 #: ajax/entitytreesons.php:83
 #: templates/layout/parts/profile_selector.html.twig:74
 msgid "+ sub-entities"
-msgstr ""
+msgstr "+ subentidades"
 
 #: ajax/dropdownItilActors.php:117 ajax/dropdownItilActors.php:214
 #: ajax/uemailUpdate.php:92 front/problem_supplier.form.php:47
@@ -760,6 +761,9 @@ msgid ""
 "responsiveness statistics about user interface features, memory, and "
 "hardware configuration."
 msgstr ""
+"Coletamos apenas os seguintes dados: uso de plug-ins, estatísticas de "
+"desempenho e capacidade de resposta sobre os recursos da interface do "
+"usuário, memória e configuração de hardware."
 
 #: ajax/dcroom_size.php:63 templates/pages/assets/rack.html.twig:76
 #: templates/pages/assets/rack.html.twig:79
@@ -773,7 +777,7 @@ msgstr ""
 
 #: ajax/central.php:87
 msgid "Invalid widget"
-msgstr ""
+msgstr "Widget inválido"
 
 #: ajax/ticketassigninformation.php:75 ajax/ticketassigninformation.php:76
 #: ajax/ticketassigninformation.php:108 ajax/ticketassigninformation.php:109
@@ -1163,7 +1167,7 @@ msgstr "Os campos obrigatórios não foram preenchidos!"
 #: front/knowbaseitem_knowbaseitemcategory.form.php:55
 #, php-format
 msgid "%s adds a link with a category"
-msgstr ""
+msgstr "1%s adiciona um link com uma categoria"
 
 #: front/itiltemplatefield.form.php:64
 msgid "hidden"
@@ -1442,7 +1446,7 @@ msgstr "Inventário"
 
 #: front/inventory.conf.php:53
 msgid "Configuration has been updated"
-msgstr ""
+msgstr "A configuração foi atualizada"
 
 #: front/stat.tracking.php:85 front/stat.tracking.php:107
 #: src/NotImportedEmail.php:188 src/Ticket.php:5194
@@ -8435,23 +8439,23 @@ msgstr "Grupo Helpdesk"
 
 #: src/Inventory/Asset/Cartridge.php:54
 msgid "Toner"
-msgstr ""
+msgstr "Toner"
 
 #: src/Inventory/Asset/Cartridge.php:55
 msgid "Drum"
-msgstr ""
+msgstr "Tambor"
 
 #: src/Inventory/Asset/Cartridge.php:57
 msgid "Waste bin"
-msgstr ""
+msgstr "Reciclagem"
 
 #: src/Inventory/Asset/Cartridge.php:58
 msgid "Maintenance kit"
-msgstr ""
+msgstr "Kit de manutenção"
 
 #: src/Inventory/Asset/Cartridge.php:59
 msgid "Fuser kit"
-msgstr ""
+msgstr "Kit fusor"
 
 #: src/Inventory/Asset/Cartridge.php:60
 msgid "Transfer kit"
@@ -8459,7 +8463,7 @@ msgstr ""
 
 #: src/Inventory/Asset/Cartridge.php:61
 msgid "Cleaning kit"
-msgstr ""
+msgstr "Kit de limpeza"
 
 #: src/Inventory/Asset/Cartridge.php:62
 msgid "Developer"
@@ -8471,39 +8475,39 @@ msgstr ""
 
 #: src/Inventory/Asset/Cartridge.php:70
 msgid "Black"
-msgstr ""
+msgstr "Preto"
 
 #: src/Inventory/Asset/Cartridge.php:71
 msgid "Cyan"
-msgstr ""
+msgstr "Ciano"
 
 #: src/Inventory/Asset/Cartridge.php:72
 msgid "Light cyan"
-msgstr ""
+msgstr "Ciano claro"
 
 #: src/Inventory/Asset/Cartridge.php:73
 msgid "Magenta"
-msgstr ""
+msgstr "Magenta"
 
 #: src/Inventory/Asset/Cartridge.php:74
 msgid "Light magenta"
-msgstr ""
+msgstr "Magenta claro"
 
 #: src/Inventory/Asset/Cartridge.php:75
 msgid "Yellow"
-msgstr ""
+msgstr "Amarelo"
 
 #: src/Inventory/Asset/Cartridge.php:76 src/Inventory/Asset/Cartridge.php:78
 msgid "Grey"
-msgstr ""
+msgstr "Cinzento"
 
 #: src/Inventory/Asset/Cartridge.php:77 src/Inventory/Asset/Cartridge.php:79
 msgid "Dark grey"
-msgstr ""
+msgstr "Cinzento escuro"
 
 #: src/Inventory/Asset/Cartridge.php:83
 msgid "Max"
-msgstr ""
+msgstr "Máximo"
 
 #: src/Inventory/Asset/Cartridge.php:84
 msgid "Used"
@@ -8534,7 +8538,7 @@ msgstr ""
 #: src/Inventory/Asset/Bios.php:70
 #, php-format
 msgid "%1$s BIOS"
-msgstr ""
+msgstr "%1$s BIOS"
 
 #: src/Inventory/Asset/NetworkEquipment.php:102
 #: src/Inventory/Asset/NetworkEquipment.php:153 src/NetworkPort.php:611
@@ -18978,11 +18982,11 @@ msgstr "Alertas nos tickets que não tenham sido solucionados desde"
 
 #: src/Entity.php:2174
 msgid "Alarms on domains expiries"
-msgstr ""
+msgstr "Alarmes em domínios expirados "
 
 #: src/Entity.php:2186
 msgid "Domains closes expiries"
-msgstr ""
+msgstr "Domínios perto de expirar"
 
 #: src/Entity.php:2202
 msgid "Domains expired"
@@ -23948,7 +23952,7 @@ msgstr ""
 
 #: templates/password_form.html.twig:97
 msgid "to the login screen."
-msgstr ""
+msgstr "Para a página de login"
 
 #: templates/anonymous_helpdesk.html.twig:40
 msgid "Helpdesk reporting form"
@@ -23965,7 +23969,7 @@ msgstr "Descreva a sua situação"
 #: templates/layout/parts/context_links.html.twig:58
 #: templates/layout/parts/context_links.html.twig:60
 msgid "Lists"
-msgstr ""
+msgstr "Listas"
 
 #: templates/layout/parts/context_links.html.twig:83
 #: templates/layout/parts/context_links.html.twig:85
@@ -23983,7 +23987,7 @@ msgstr ""
 
 #: templates/layout/parts/goto_button.html.twig:39
 msgid "Find menu"
-msgstr ""
+msgstr "Procurar menu"
 
 #: templates/layout/parts/page_header.html.twig:63
 msgid "Collapse menu"
@@ -24007,7 +24011,7 @@ msgstr ""
 
 #: templates/layout/parts/saved_searches.html.twig:48
 msgid "Manage all saved searches"
-msgstr ""
+msgstr "Gerenciar todas as pesquisas salvas"
 
 #: templates/layout/parts/saved_searches.html.twig:53
 msgid "Pin this panel for the current page"
@@ -24015,7 +24019,7 @@ msgstr ""
 
 #: templates/layout/parts/saved_searches.html.twig:58
 msgid "Close the panel"
-msgstr ""
+msgstr "Fechar painel"
 
 #: templates/layout/parts/saved_searches.html.twig:93
 msgid "Filter list"
@@ -24032,11 +24036,11 @@ msgstr ""
 
 #: templates/layout/parts/profile_selector.html.twig:83
 msgid "Search entity"
-msgstr ""
+msgstr "Procurar entidade"
 
 #: templates/layout/parts/profile_selector.html.twig:89
 msgid "Clear search"
-msgstr ""
+msgstr "Procurar menu"
 
 #: templates/layout/parts/profile_selector.html.twig:93
 msgid "Select all"
@@ -24044,7 +24048,7 @@ msgstr "Selecionar Tudo"
 
 #: templates/layout/parts/profile_selector.html.twig:152
 msgid "No entity found"
-msgstr ""
+msgstr "Nenhuma entidade encontrada"
 
 #: templates/layout/parts/page_footer.html.twig:39
 msgid "Back to top of the page"
@@ -24052,12 +24056,12 @@ msgstr "Voltar ao início da página"
 
 #: templates/layout/parts/page_footer.html.twig:40
 msgid "Top of the page"
-msgstr ""
+msgstr " Início da página"
 
 #: templates/layout/parts/global_search_form.html.twig:35
 #: templates/layout/parts/global_search_form.html.twig:37
 msgid "Search…"
-msgstr ""
+msgstr "Pesquisar"
 
 #: templates/layout/parts/user_header.html.twig:37
 #: templates/layout/parts/user_header.html.twig:38
@@ -24080,7 +24084,7 @@ msgstr "Modo de debug desactivado"
 #: templates/layout/parts/user_header.html.twig:87
 #: templates/layout/parts/user_header.html.twig:113
 msgid "About"
-msgstr ""
+msgstr "Acerca de"
 
 #: templates/layout/parts/user_header.html.twig:101
 #: templates/layout/parts/user_header.html.twig:103

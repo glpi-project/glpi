@@ -6,8 +6,8 @@
 # Translators:
 # Curtis Conard <cconard96@gmail.com>, 2021
 # Shawn Long <webaccounts@kkg.org>, 2021
-# David Paulus <DiodeDave@gmail.com>, 2021
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2021
+# David Paulus <DiodeDave@gmail.com>, 2022
 # 
 #, fuzzy
 msgid ""
@@ -16,7 +16,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-12-14 12:46+0000\n"
 "PO-Revision-Date: 2021-05-26 09:06+0000\n"
-"Last-Translator: alexandre delaunay <delaunay.alexandre@gmail.com>, 2021\n"
+"Last-Translator: David Paulus <DiodeDave@gmail.com>, 2022\n"
 "Language-Team: English (United States) (https://www.transifex.com/glpi/teams/1637/en_US/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -34,7 +34,7 @@ msgstr ""
 
 #: ajax/gantt.php:208
 msgid "Link already exist!"
-msgstr ""
+msgstr "Link already exist!"
 
 #: ajax/dropdownMassiveActionAuthMethods.php:70
 #: ajax/dropdownMassiveActionField.php:54 src/MassiveAction.php:708
@@ -209,7 +209,7 @@ msgstr "Add New Devices"
 
 #: ajax/selectUnaffectedOrNewItem_Device.php:79
 msgid "No unaffected device!"
-msgstr ""
+msgstr "No Selected Device!"
 
 #: ajax/ticketiteminformation.php:72
 #, php-format
@@ -290,7 +290,7 @@ msgstr "My Groups"
 #: ajax/searchoptionvalue.php:85 src/Dashboard/Filter.php:170
 #: src/DbUtils.php:1590 src/Search.php:3266
 msgid "Myself"
-msgstr ""
+msgstr "Myself"
 
 #: ajax/ticketsatisfaction.php:59 src/Entity.php:1194
 msgid "Create survey after"
@@ -746,6 +746,9 @@ msgid ""
 "responsiveness statistics about user interface features, memory, and "
 "hardware configuration."
 msgstr ""
+"We only collected the following data: plugins usage, performance and "
+"responsiveness statistics about the user interface features, memory, and "
+"hardware configurations."
 
 #: ajax/dcroom_size.php:63 templates/pages/assets/rack.html.twig:76
 #: templates/pages/assets/rack.html.twig:79
@@ -1885,8 +1888,8 @@ msgstr "Marketplace"
 #: src/Transfer.php:3970 src/Entity.php:1983
 msgid "Contract"
 msgid_plural "Contract"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Contract"
+msgstr[1] "Contract"
 
 #. TRANS: %s is the user login
 #: front/contract_supplier.form.php:66 front/contact_supplier.form.php:58

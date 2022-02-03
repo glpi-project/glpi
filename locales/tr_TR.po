@@ -7,7 +7,7 @@
 # DOMBRE Julien <moyo@indepnet.net>, 2021
 # Ali AY <alimoonict@gmail.com>, 2021
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2021
-# Kaya Zeren <kayazeren@gmail.com>, 2021
+# Kaya Zeren <kayazeren@gmail.com>, 2022
 # 
 #, fuzzy
 msgid ""
@@ -16,7 +16,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-12-14 12:46+0000\n"
 "PO-Revision-Date: 2021-05-26 09:06+0000\n"
-"Last-Translator: Kaya Zeren <kayazeren@gmail.com>, 2021\n"
+"Last-Translator: Kaya Zeren <kayazeren@gmail.com>, 2022\n"
 "Language-Team: Turkish (Turkey) (https://www.transifex.com/glpi/teams/1637/tr_TR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -68,7 +68,7 @@ msgstr "IP ağı: %1$s/%2$s"
 #: ajax/dropdownShowIPNetwork.php:56
 #, php-format
 msgid "First/last addresses: %1$s/%2$s"
-msgstr "Başlangıç/bitiş adresleri: %1$s/%2$s"
+msgstr "Başlangıç / bitiş adresleri: %1$s/%2$s"
 
 #: ajax/dropdownShowIPNetwork.php:59
 #, php-format
@@ -201,7 +201,7 @@ msgstr "Var olan bir aygıt seçin"
 
 #: ajax/selectUnaffectedOrNewItem_Device.php:76
 msgid "and/or"
-msgstr "ve/veya"
+msgstr "ve / veya"
 
 #: ajax/selectUnaffectedOrNewItem_Device.php:76
 msgid "Add new devices"
@@ -1904,7 +1904,7 @@ msgstr "%s sağlayıcıyla bir bağlantı ekledi"
 #: front/networkport.form.php:98
 #, php-format
 msgid "%s adds several network ports"
-msgstr "%s birkaç bağlantı noktası ekledi"
+msgstr "%s birkaç kapı ekledi"
 
 #: front/ticket.form.php:117 front/commonitiltask.form.php:133
 #: front/itilsolution.form.php:108 front/itilfollowup.form.php:137
@@ -2680,7 +2680,7 @@ msgstr "Parolanızın süresi %s tarihinde dolacak."
 #: front/ldap.group.import.php:71 src/AuthLDAP.php:3898 src/Auth.php:264
 #: src/Auth.php:285
 msgid "Unable to connect to the LDAP directory"
-msgstr "LDAP dizinine bağlanılamadı"
+msgstr "LDAP dizini ile bağlantı kurulamadı"
 
 #. TRANS: %s is the user login
 #: front/cartridge.form.php:56
@@ -3734,7 +3734,7 @@ msgstr "LDAP dizini bağlantısı sınaması"
 
 #: src/AuthLDAP.php:849
 msgid "Binding to the LDAP directory"
-msgstr "LDAP dizinine bağlantı"
+msgstr "LDAP dizini bağlantısı kuruluyor"
 
 #: src/AuthLDAP.php:851 src/AuthLDAP.php:1056 src/AuthLDAP.php:3710
 #: src/Auth.php:1657 src/ContentTemplates/Parameters/UserParameters.php:80
@@ -5046,7 +5046,7 @@ msgstr "Taramalar"
 
 #: src/PrinterLog.php:187
 msgid "Recto/Verso pages"
-msgstr "Ön/arka kapak sayfaları"
+msgstr "Ön / arka kapak sayfaları"
 
 #: src/PrinterLog.php:189
 msgid "Prints"
@@ -5176,7 +5176,7 @@ msgstr[1] "Ekran türleri"
 
 #: src/Ticket_Contract.php:46
 msgid "Tickets / Contracts"
-msgstr "Destek Kayıtları / Sözleşmeler"
+msgstr "Destek kayıtları / sözleşmeler"
 
 #: src/Ticket_Contract.php:79 src/Contract_Supplier.php:141
 #: src/Contract_Item.php:298
@@ -5346,19 +5346,19 @@ msgstr "Toplam maliyet"
 
 #: src/NotificationTargetObjectLock.php:50
 msgid "Unlock Item Request"
-msgstr "Öge Kilidini Açma İsteği"
+msgstr "Öge kilidini açma isteği"
 
 #: src/NotificationTargetObjectLock.php:58
 msgid "Item Name"
-msgstr "Öge Adı"
+msgstr "Öge adı"
 
 #: src/NotificationTargetObjectLock.php:59
 msgid "Item ID"
-msgstr "Öge Kodu"
+msgstr "Öge kodu"
 
 #: src/NotificationTargetObjectLock.php:60
 msgid "Item Type"
-msgstr "Öge Türü"
+msgstr "Öge türü"
 
 #: src/NotificationTargetObjectLock.php:61
 #: src/NotificationTargetObjectLock.php:62
@@ -5379,15 +5379,15 @@ msgstr "İstek sahibinin soyadı"
 
 #: src/NotificationTargetObjectLock.php:66
 msgid "Requester Firstname"
-msgstr "İstek Sahibinin Adı"
+msgstr "İstek sahibinin adı"
 
 #: src/NotificationTargetObjectLock.php:67
 msgid "Item URL"
-msgstr "Öge Adresi"
+msgstr "Öge adresi"
 
 #: src/NotificationTargetObjectLock.php:83
 msgid "Locking User"
-msgstr "Kilitleyen Kullanıcı"
+msgstr "Kilitleyen kullanıcı"
 
 #: src/Item_DeviceSimcard.php:53 src/DeviceSimcard.php:41
 msgid "Simcard"
@@ -5413,7 +5413,7 @@ msgstr "PUK2 kodu"
 
 #: src/Item_DeviceSimcard.php:104
 msgid "Mobile Subscriber Identification Number"
-msgstr "Mobil Abone Kimlik Numarası"
+msgstr "Mobil abone kimlik numarası"
 
 #: src/Item_DeviceSimcard.php:105
 msgid "MSIN"
@@ -6702,11 +6702,11 @@ msgstr "Aşağı taşı"
 #: src/DisplayPreference.php:685 src/DisplayPreference.php:693
 #: src/Central.php:66
 msgid "Personal View"
-msgstr "Kişisel Görünüm"
+msgstr "Kişisel görünüm"
 
 #: src/DisplayPreference.php:691 src/Central.php:68
 msgid "Global View"
-msgstr "Genel Görünüm"
+msgstr "Genel görünüm"
 
 #. TRANS: short for : Search result user display
 #: src/DisplayPreference.php:729
@@ -6750,7 +6750,7 @@ msgstr "MAC adresi"
 #: src/Knowbase.php:65
 msgctxt "button"
 msgid "Browse"
-msgstr "Gözat"
+msgstr "Göz at"
 
 #: src/Knowbase.php:67
 msgctxt "button"
@@ -7243,7 +7243,7 @@ msgstr "%1$s, %2$s ögesini güncelledi"
 
 #: src/Ticket.php:2706
 msgid "Merge as Followup"
-msgstr "İzleme Olarak Birleştir"
+msgstr "İzleme olarak birleştir"
 
 #: src/Ticket.php:2718 src/ITILFollowup.php:871
 msgid "Add a new followup"
@@ -7369,7 +7369,7 @@ msgstr "Herhangi bir sözleşme belirtilmemiş"
 
 #: src/Ticket.php:3163
 msgid "Time to own + Progress"
-msgstr "Ele alınma süresi + İlerleme"
+msgstr "Ele alınma süresi + ilerleme"
 
 #: src/Ticket.php:3173
 msgid "Time to own exceeded"
@@ -7382,7 +7382,7 @@ msgstr "İç çözümlenme süresi"
 
 #: src/Ticket.php:3194
 msgid "Internal time to resolve + Progress"
-msgstr "İç çözümlenme süresi + İlerleme"
+msgstr "İç çözümlenme süresi + ilerleme"
 
 #: src/Ticket.php:3204
 msgid "Internal time to resolve exceeded"
@@ -7395,7 +7395,7 @@ msgstr "İç ele alınma süresi"
 
 #: src/Ticket.php:3225
 msgid "Internal time to own + Progress"
-msgstr "İç ele alınma süresi + İlerleme"
+msgstr "İç ele alınma süresi + ilerleme"
 
 #: src/Ticket.php:3235
 msgid "Internal time to own exceeded"
@@ -7419,7 +7419,7 @@ msgstr "Hizmet düzeyi sözleşmesi"
 #: src/RuleTicket.php:701 src/RuleTicket.php:854 src/RuleTicket.php:865
 #: src/OLA.php:49
 msgid "OLA"
-msgstr "İşletme Sözleşmesi"
+msgstr "İşletme sözleşmesi"
 
 #: src/Ticket.php:3467 src/Ticket.php:5158
 #: src/Stat/Data/Sglobal/StatDataSatisfaction.php:65
@@ -7515,7 +7515,7 @@ msgstr "Bekleyen"
 #: src/Ticket.php:3912 src/Dashboard/Provider.php:1223 src/Problem.php:714
 msgctxt "status"
 msgid "Solved"
-msgstr "Çözülen"
+msgstr "Çözümlenmiş"
 
 #: src/Ticket.php:3913 src/Dashboard/Provider.php:1227 src/Change.php:584
 #: src/Problem.php:716
@@ -7537,7 +7537,7 @@ msgstr "Kapatılmamış"
 #: src/Ticket.php:3919 src/Change.php:593 src/Problem.php:722
 msgctxt "status"
 msgid "Solved + Closed"
-msgstr "Çözümlenmiş ve Kapatılmış"
+msgstr "Çözümlenmiş ve kapatılmış"
 
 #: src/Ticket.php:4903 src/Ticket.php:5108
 msgid "Your tickets to close"
@@ -7698,7 +7698,7 @@ msgstr "Devral"
 
 #: src/Ticket.php:6376
 msgid "Steal a ticket"
-msgstr "Destek kaydını devralın"
+msgstr "Destek kaydını devral"
 
 #. TRANS: short for : To be in charge of a ticket
 #: src/Ticket.php:6378
@@ -7715,7 +7715,7 @@ msgstr "Önceliği değiştir"
 
 #: src/Ticket.php:6381
 msgid "Approve solution/Reply survey (my ticket)"
-msgstr "Çözümü Onayla / Anketi Yanıtla (Destek Kaydım)"
+msgstr "Çözümü onayla / anketi yanıtla (destek kaydım)"
 
 #: src/Ticket.php:6382
 msgid "Approve solution and reply to survey for ticket created by me"
@@ -8148,7 +8148,7 @@ msgstr[1] "Destek kaydı kalıpları"
 #: src/Stat/Data/Location/StatDataSolved.php:49
 #, php-format
 msgid "Solved %1$s (%2$s)"
-msgstr "Çözümlenen %1$s (%2$s)"
+msgstr "Çözümlenmiş %1$s (%2$s)"
 
 #: src/Stat/Data/Location/StatDataOpened.php:49
 #, php-format
@@ -8158,7 +8158,7 @@ msgstr "Açılan %1$s (%2$s)"
 #: src/Stat/Data/Location/StatDataLate.php:49
 #, php-format
 msgid "Late solved %1$s (%2$s)"
-msgstr "Geç Çözümlenen %1$s (%2$s)"
+msgstr "Geç çözümlenen %1$s (%2$s)"
 
 #: src/Stat/Data/Location/StatDataOpenSatisfaction.php:49
 #, php-format
@@ -8185,8 +8185,8 @@ msgstr[1] "Açılan"
 msgctxt "ticket"
 msgid "Solved"
 msgid_plural "Solved"
-msgstr[0] "Çözümlenen"
-msgstr[1] "Çözümlenen"
+msgstr[0] "Çözümlenmiş"
+msgstr[1] "Çözümlenmiş"
 
 #: src/Stat/Data/Sglobal/StatDataTicketNumber.php:62
 #: src/Stat/Data/Graph/StatDataTicketAverageTime.php:59
@@ -8361,7 +8361,7 @@ msgstr "Dakika cinsinden birincil ile ikincil arasındaki gecikme"
 #: src/DBConnection.php:630
 #, php-format
 msgid "SQL server: %s can't connect to the database"
-msgstr "SQL sunucusu: %s veritabanına bağlanamadı"
+msgstr "SQL sunucusu: %s veritabanı ile bağlantı kuramadı"
 
 #: src/DBConnection.php:634
 #, php-format
@@ -8615,7 +8615,7 @@ msgstr "%1$s BIOS"
 #: src/Transfer.php:3937 src/Infocom.php:154 src/Event.php:166
 #: src/Config.php:2478
 msgid "Management"
-msgstr "İdari"
+msgstr "Yönetim"
 
 #: src/Inventory/Asset/NetworkEquipment.php:103
 #: src/Inventory/Asset/NetworkEquipment.php:155
@@ -8692,7 +8692,7 @@ msgstr "Seçenekleri içe aktar"
 
 #: src/Inventory/Conf.php:332
 msgid "Default status"
-msgstr "Öntanımlı durum"
+msgstr "Varsayılan durum"
 
 #: src/Inventory/Conf.php:363
 msgid "Import monitor on serial partial match"
@@ -8954,11 +8954,11 @@ msgstr "Son değişiklik"
 
 #: src/NetworkPort.php:1517
 msgid "Number of I/O bytes"
-msgstr "Giriş/Çıkış bayt sayısı"
+msgstr "Giriş / çıkış bayt sayısı"
 
 #: src/NetworkPort.php:1524
 msgid "Number of I/O errors"
-msgstr "Giriş/Çıkış hata sayısı"
+msgstr "Giriş / çıkış hata sayısı"
 
 #: src/NetworkPort.php:1531
 msgid "Duplex"
@@ -9048,8 +9048,8 @@ msgstr "Kendinize bir tarayıcı bildirimi denemesi gönderin"
 #: src/Contact_Supplier.php:47
 msgid "Link Contact/Supplier"
 msgid_plural "Links Contact/Supplier"
-msgstr[0] "İlgili/sağlayıcı bağlantısı"
-msgstr[1] "İlgili/sağlayıcı bağlantıları"
+msgstr[0] "İlgili  /sağlayıcı bağlantısı"
+msgstr[1] "İlgili / sağlayıcı bağlantıları"
 
 #: src/Contact_Supplier.php:131 src/Contract_Supplier.php:272
 msgid "Add a supplier"
@@ -9140,7 +9140,7 @@ msgstr " Kurulum türü"
 #: src/Dropdown.php:242
 #, php-format
 msgid "Show %1$s"
-msgstr "%1$s Görüntüle"
+msgstr "%1$s görüntüle"
 
 #: src/Dropdown.php:295 js/common.js:761
 msgid "Display on map"
@@ -9409,8 +9409,8 @@ msgstr "Planlama anımsatıcıları gönderilsin"
 #: src/Itil_Project.php:49
 msgid "Link Project/Itil"
 msgid_plural "Links Project/Itil"
-msgstr[0] "Proje/ITIL bağlantısı"
-msgstr[1] "Proje/ITIL bağlantıları"
+msgstr[0] "Proje / ITIL bağlantısı"
+msgstr[1] "Proje / ITIL bağlantıları"
 
 #: src/Itil_Project.php:88
 msgid "Itil item"
@@ -9580,19 +9580,19 @@ msgstr "LDAP diziniyle kimlik doğrulaması"
 
 #: src/Auth.php:1112
 msgid "Authentication on mail server"
-msgstr "Posta sunucusuyla kimlik doğrulaması"
+msgstr "E-posta sunucusunda kimlik doğrulaması"
 
 #: src/Auth.php:1126
 msgid "Version 1"
-msgstr "1. Sürüm"
+msgstr "1. sürüm"
 
 #: src/Auth.php:1127
 msgid "Version 2"
-msgstr "2. Sürüm"
+msgstr "2. sürüm"
 
 #: src/Auth.php:1128
 msgid "Version 3+"
-msgstr "3+. Sürüm"
+msgstr "3+. sürüm"
 
 #: src/Auth.php:1169 src/Auth.php:1186 src/Auth.php:1203
 #: src/CommonGLPI.php:1056 src/ITILTemplateMandatoryField.php:171
@@ -9652,12 +9652,12 @@ msgstr "Etkin"
 #. TRANS: for CAS SSO system
 #: src/Auth.php:1572
 msgid "CAS Host"
-msgstr "CAS Sunucusu"
+msgstr "CAS sunucusu"
 
 #. TRANS: for CAS SSO system
 #: src/Auth.php:1575
 msgid "CAS Version"
-msgstr "CAS Sürümü"
+msgstr "CAS sürümü"
 
 #. TRANS: for CAS SSO system
 #: src/Auth.php:1584
@@ -9671,7 +9671,7 @@ msgstr "Oturum kapatıldığında yönlendirilecek adres"
 
 #: src/Auth.php:1593
 msgid "The CURL extension for your PHP parser isn't installed"
-msgstr "PHP işleyicinize CURL eklentisi kurulmamış"
+msgstr "PHP işleyicinize cURL eklentisi kurulmamış"
 
 #: src/Auth.php:1597
 msgid ""
@@ -9700,7 +9700,7 @@ msgstr "HTTP isteğiyle gönderilen diğer kimlik doğrulaması"
 
 #: src/Auth.php:1643
 msgid "SSO logout url"
-msgstr "Tek Oturum Açma oturum kapatma adresi"
+msgstr "Tek oturum açma oturum kapatma adresi"
 
 #: src/Auth.php:1649
 msgid "Remove the domain of logins like login@domain"
@@ -9989,7 +9989,7 @@ msgstr "Neden"
 
 #: src/RuleCollection.php:1362
 msgid "Actions refused"
-msgstr "İşlemler reddedildi"
+msgstr "Reddedilen işlemler"
 
 #: src/RuleCollection.php:1368 src/Rule.php:1158
 msgid "Action type"
@@ -9997,7 +9997,7 @@ msgstr "İşlem türü"
 
 #: src/RuleCollection.php:1540
 msgid "Successful importation"
-msgstr "İçe aktarma tamamlandı"
+msgstr "Tamamlanan içe aktarımlar"
 
 #: src/RuleCollection.php:1662
 msgid "No element to be tested"
@@ -10995,11 +10995,11 @@ msgstr "Öge - %s bağlantı"
 
 #: src/Item_Devices.php:347
 msgid "Position of the device on its bus"
-msgstr "Aygıtın bus üzerindeki konumu"
+msgstr "Aygıtın veri yolu üzerindeki konumu"
 
 #: src/Item_Devices.php:348
 msgid "bus ID"
-msgstr "bus kodu"
+msgstr "veri yolu kodu"
 
 #: src/Item_Devices.php:624
 msgid "Type of component"
@@ -11561,8 +11561,8 @@ msgstr "Aygıt kodu"
 #: src/ProjectTask_Ticket.php:65
 msgid "Link Ticket/Project task"
 msgid_plural "Links Ticket/Project task"
-msgstr[0] "Destek kaydı/Proje görevi bağlantısı"
-msgstr[1] "Destek kaydı/Proje görevi bağlantıları"
+msgstr[0] "Destek kaydı / proje görevi bağlantısı"
+msgstr[1] "Destek kaydı / proje görevi bağlantıları"
 
 #: src/ProjectTask_Ticket.php:193
 msgid "Create a ticket from this task"
@@ -11651,11 +11651,11 @@ msgstr[1] "Sürümler"
 #: src/Item_OperatingSystem.php:356 src/Item_OperatingSystem.php:413
 #: src/Item_OperatingSystem.php:500
 msgid "Product ID"
-msgstr "Ürün Kodu"
+msgstr "Ürün kodu"
 
 #: src/Item_OperatingSystem.php:426
 msgid "Operating System"
-msgstr "İşletim Sistemi"
+msgstr "İşletim sistemi"
 
 #: src/Item_OperatingSystem.php:554 src/OperatingSystemKernelVersion.php:40
 msgid "Kernel version"
@@ -11710,11 +11710,11 @@ msgstr "Ağ kapı ölçümleri"
 
 #: src/NetworkPortMetrics.php:171
 msgid "Input/Output bytes"
-msgstr "Giren/Çıkan bayt"
+msgstr "Giren / çıkan bayt"
 
 #: src/NetworkPortMetrics.php:188
 msgid "Input/Output errors"
-msgstr "Giriş/Çıkış hataları"
+msgstr "Giriş / çıkış hataları"
 
 #: src/NetworkPortMetrics.php:204
 msgid "Input bytes"
@@ -11825,7 +11825,7 @@ msgstr "Onaylanacak"
 
 #: src/Dashboard/Provider.php:1570
 msgid "Solved"
-msgstr "Çözülen"
+msgstr "Çözümlenmiş"
 
 #: src/Dashboard/Widget.php:66
 msgid "Pie"
@@ -11889,7 +11889,7 @@ msgstr "Çok sayılı"
 
 #: src/Dashboard/Widget.php:214
 msgid "Editable markdown"
-msgstr "Düzenlenebilir markdown"
+msgstr "Düzenlenebilir Markdown"
 
 #: src/Dashboard/Widget.php:221
 msgid "Search result"
@@ -11932,16 +11932,16 @@ msgstr "Bu panoyu sil"
 
 #: src/Dashboard/Grid.php:278
 msgid "Toggle auto-refresh"
-msgstr "Otomatik yenilemeyi aç/kapat"
+msgstr "Otomatik yenilemeyi aç / kapat"
 
 #: src/Dashboard/Grid.php:279
 msgid "Toggle night mode"
-msgstr "Gece kipini aç/kapat"
+msgstr "Gece kipini aç / kapat"
 
 #: src/Dashboard/Grid.php:280 src/RichText/RichText.php:373
 #: templates/components/photoswipe.html.twig:54
 msgid "Toggle fullscreen"
-msgstr "Tam ekranı aç/kapat"
+msgstr "Tam ekranı aç / kapat"
 
 #: src/Dashboard/Grid.php:281
 msgid "Clone this dashboard"
@@ -11949,7 +11949,7 @@ msgstr "Bu panoyu kopyala"
 
 #: src/Dashboard/Grid.php:282
 msgid "Toggle edit mode"
-msgstr "Düzenleme kipini aç/kapat"
+msgstr "Düzenleme kipini aç / kapat"
 
 #: src/Dashboard/Grid.php:283
 msgid "Add filter"
@@ -12101,11 +12101,11 @@ msgstr "Anımsatıcı listesi"
 
 #: src/Dashboard/Grid.php:1368
 msgid "Editable markdown card"
-msgstr "Düzenlenebilir markdown kartı"
+msgstr "Düzenlenebilir Markdown kartı"
 
 #: src/Dashboard/Grid.php:1371
 msgid "Toggle edit mode to edit content"
-msgstr "İçeriği düzenlemek için düzenleme kipini aç/kapat"
+msgstr "İçeriği düzenlemek için düzenleme kipini aç / kapat"
 
 #: src/Dashboard/Grid.php:1392 src/CommonDBTM.php:5159
 msgid "Purge"
@@ -12261,7 +12261,7 @@ msgstr "Planlamanız"
 #: src/Planning.php:2520
 #, php-format
 msgid "Ticket #%1$s %2$s"
-msgstr "Destek Kaydı No %1$s %2$s"
+msgstr "Destek kaydı no %1$s %2$s"
 
 #: src/Planning.php:2559
 msgid "See personnal planning"
@@ -12757,8 +12757,8 @@ msgstr "%s tarayıcı bildirimi sorguya eklendi"
 #: src/Change_Problem.php:63
 msgid "Link Problem/Change"
 msgid_plural "Links Problem/Change"
-msgstr[0] "Sorun/Değişiklik bağlantısı"
-msgstr[1] "Sorun/Değişiklik bağlantıları"
+msgstr[0] "Sorun / değişiklik bağlantısı"
+msgstr[1] "Sorun / değişiklik bağlantıları"
 
 #: src/Change_Problem.php:179
 msgid "Create a change from this problem"
@@ -13035,7 +13035,7 @@ msgstr "Kilit açıldığında beni uyar"
 
 #: src/ObjectLock.php:315
 msgid "Warning: read-only!"
-msgstr "Uyarı: Salt Okunur!"
+msgstr "Uyarı: Salt okunur!"
 
 #: src/ObjectLock.php:321
 msgid "Request write on "
@@ -13047,11 +13047,11 @@ msgstr "Kilitleyen"
 
 #: src/ObjectLock.php:613
 msgid "Locked date"
-msgstr "Kilitleme Tarihi"
+msgstr "Kilitleme tarihi"
 
 #: src/ObjectLock.php:643
 msgid "Unlock"
-msgstr "Kilidi Aç"
+msgstr "Kilidi aç"
 
 #: src/ObjectLock.php:661
 msgid "Unlock forgotten locked objects"
@@ -13151,7 +13151,7 @@ msgstr[1] "Bilgisayarlar"
 
 #: src/Profile.php:980
 msgid "Simcard PIN/PUK"
-msgstr "SIM kart PIN/PUK"
+msgstr "SIM kart PIN / PUK"
 
 #: src/Profile.php:1038 src/Contact.php:56
 msgid "Contact"
@@ -13205,7 +13205,7 @@ msgstr[1] "Projeler"
 
 #: src/Profile.php:1220
 msgid "ITIL Templates"
-msgstr "ITIL Kalıpları"
+msgstr "ITIL kalıpları"
 
 #: src/Profile.php:1227
 #, php-format
@@ -13230,7 +13230,7 @@ msgstr "Yinelenen destek kayıtları"
 
 #: src/Profile.php:1437 src/Profile.php:1565
 msgid "From \\ To"
-msgstr "Kimden \\ Kime"
+msgstr "Kimden \\ kime"
 
 #: src/Profile.php:1465 src/Profile.php:1595 src/Profile.php:2740
 msgid "Life cycle of tickets"
@@ -13311,7 +13311,7 @@ msgstr[1] "Ögelerin durumları"
 
 #: src/Profile.php:1845 src/LevelAgreement.php:185 src/LevelAgreement.php:680
 msgid "SLM"
-msgstr "Hizmet Düzeyi Yönetimi"
+msgstr "Hizmet düzeyi yönetimi"
 
 #: src/Profile.php:1850 src/LineOperator.php:47
 msgid "Line operator"
@@ -13346,7 +13346,7 @@ msgstr "Aygıtlarım ve tüm ögelerim"
 #: src/Profile.php:3516 templates/components/checkbox_matrix.html.twig:61
 #: templates/components/checkbox_matrix.html.twig:136
 msgid "Select/unselect all"
-msgstr "Tümünü seç/bırak"
+msgstr "Tümünü seç / bırak"
 
 #: src/Contract_Supplier.php:178 src/Contract_Item.php:337
 #: src/NotificationTargetContract.php:170 src/Contract.php:483
@@ -13385,8 +13385,8 @@ msgstr[1] "%d ay"
 #: src/Contract_Item.php:86
 msgid "Link Contract/Item"
 msgid_plural "Links Contract/Item"
-msgstr[0] "İlgili/Öge bağlantısı"
-msgstr[1] "İlgili/Öge bağlantıları"
+msgstr[0] "İlgili / öge bağlantısı"
+msgstr[1] "İlgili / öge bağlantıları"
 
 #: src/Contract_Item.php:391 src/Cartridge.php:900 src/Cartridge.php:903
 msgid "month"
@@ -13583,7 +13583,7 @@ msgstr "Hızlı"
 
 #: src/Contract.php:1605
 msgid "End + Notice"
-msgstr "Sonlanma + Bildirim"
+msgstr "Sonlanma + bildirim"
 
 #: src/Contract.php:1606
 msgid "Period end"
@@ -13591,7 +13591,7 @@ msgstr "Süre sonu"
 
 #: src/Contract.php:1607
 msgid "Period end + Notice"
-msgstr "Süre sonu + Bildirim"
+msgstr "Süre sonu + bildirim"
 
 #: src/Contract.php:1667
 msgctxt "button"
@@ -13983,8 +13983,8 @@ msgstr[1] "Çözümler"
 #: src/Change_Ticket.php:61
 msgid "Link Ticket/Change"
 msgid_plural "Links Ticket/Change"
-msgstr[0] "Destek kaydı/Değişiklik bağlantıları"
-msgstr[1] "Destek kaydı/Değişiklik bağlantıları"
+msgstr[0] "Destek kaydı / değişiklik bağlantıları"
+msgstr[1] "Destek kaydı / değişiklik bağlantıları"
 
 #: src/Change_Ticket.php:299 src/Problem_Ticket.php:329
 msgid "Solve tickets"
@@ -13992,7 +13992,7 @@ msgstr "Destek kayıtlarını çözümle"
 
 #: src/Change_Ticket.php:418
 msgid "Create a change from this ticket"
-msgstr "Bu destek kaydı üzerine bir değişiklik oluşturun"
+msgstr "Bu destek kaydından bir değişiklik oluştur"
 
 #: src/Database.php:50 src/Config.php:793
 msgid "Database"
@@ -14159,7 +14159,7 @@ msgstr "Diğer bileşen"
 
 #: src/CommonITILActor.php:195 src/CommonITILActor.php:275
 msgid "Email Followup"
-msgstr "E-posta İzleme"
+msgstr "E-posta izleme"
 
 #: src/CommonITILActor.php:350 src/CommonITILActor.php:380
 #: src/CommonITILObject.php:1184 src/CommonITILObject.php:1254
@@ -14228,7 +14228,7 @@ msgstr "İsteği yapan olarak Yanıt adresi kullanılsın (varsa)"
 
 #: src/MailCollector.php:305
 msgid "Add CC users as observer"
-msgstr "Gizli Kopyadaki kullanıcıları gözlemci olarak ekle"
+msgstr "Gizli kopya kullanıcılarını gözlemci olarak ekle"
 
 #: src/MailCollector.php:310
 msgid "Collect only unread mail"
@@ -14311,7 +14311,7 @@ msgstr "%2$s alıcısındaki %1$s klasörünün yapılandırması geçersiz"
 
 #: src/MailCollector.php:1845
 msgid "Retrieve email (Mails receivers)"
-msgstr "E-posta alınsın (E-posta alıcıları)"
+msgstr "E-posta alınsın (e-posta alıcıları)"
 
 #: src/MailCollector.php:1846
 msgid "Number of emails to retrieve"
@@ -14357,15 +14357,15 @@ msgstr "Kurallı ifadenin sonucunu ekle"
 
 #: src/RuleAction.php:422
 msgid "Assign: equipment by IP address"
-msgstr "Atama: aygıt IP adresiyle"
+msgstr "Atama: Aygıt IP adresi"
 
 #: src/RuleAction.php:423
 msgid "Assign: equipment by name + domain"
-msgstr "Atama: aygıt adı + etki alanıyla"
+msgstr "Atama: Aygıt adı + etki alanı"
 
 #: src/RuleAction.php:424
 msgid "Assign: equipment by MAC address"
-msgstr "Atama: aygıt MAC adresiyle"
+msgstr "Atama: Aygıt MAC adresi"
 
 #: src/RuleAction.php:425
 msgid "Recalculate"
@@ -14412,7 +14412,7 @@ msgstr "İşlem sayısı"
 
 #: src/Item_DeviceProcessor.php:67
 msgid "Threads"
-msgstr "İş Parçacığı"
+msgstr "İşlemler"
 
 #: src/DbUtils.php:1285
 msgid "Address:"
@@ -14449,7 +14449,7 @@ msgid ""
 "Several network names available! Go to the tab 'Network Name' to manage "
 "them."
 msgstr ""
-"Kullanılabilecek bir kaç ağ adı var! Yönetmek için 'Ağ Adı' sekmesine bakın."
+"Kullanılabilecek bir kaç ağ adı var! Yönetmek için 'Ağ adı' sekmesine bakın."
 
 #: src/NetworkName.php:780
 msgid "Add a network name"
@@ -14664,15 +14664,15 @@ msgstr "Aracıdan yeni bir envanter iste"
 
 #: src/CommonDBConnexity.php:314
 msgid "Cannot update item: not enough right on the parent(s) item(s)"
-msgstr "Öge güncellenemedi: alt ögeler için yeterli izin yok"
+msgstr "Öge güncellenemedi: Alt ögeler için yeterli izin yok"
 
 #: src/CommonDBConnexity.php:616
 msgid "First Item"
-msgstr "Birinci Öge"
+msgstr "Birinci öge"
 
 #: src/CommonDBConnexity.php:625
 msgid "Second Item"
-msgstr "İkinci Öge"
+msgstr "İkinci öge"
 
 #: src/CommonDBConnexity.php:630
 #, php-format
@@ -14727,7 +14727,7 @@ msgstr "İmza veritabanının sürümü"
 
 #: src/ComputerAntivirus.php:190
 msgid "Is up to date"
-msgstr "Güncel"
+msgstr "Güncel mi"
 
 #: src/ComputerAntivirus.php:280 src/ComputerAntivirus.php:367
 msgid "Up to date"
@@ -14752,11 +14752,11 @@ msgstr "Bir kerede ele alınacak en fazla öge sayısı"
 
 #: src/LineOperator.php:53 src/LineOperator.php:71
 msgid "Mobile Country Code"
-msgstr "Cep Telefonu Ülke Kodu"
+msgstr "Cep telefonu ülke kodu"
 
 #: src/LineOperator.php:57 src/LineOperator.php:79
 msgid "Mobile Network Code"
-msgstr "Cep Telefonu Ağ Kodu"
+msgstr "Cep telefonu ağ kodu"
 
 #: src/LineOperator.php:111
 msgid "Mobile country code and network code combination must be unique!"
@@ -15234,7 +15234,7 @@ msgstr "... bir dış kaynaktan"
 
 #: src/User.php:2262
 msgid "Download user VCard"
-msgstr "Kullanıcının Sanal Kartını İndir"
+msgstr "Kullanıcının sanal kartını indir"
 
 #: src/VirtualMachineType.php:42
 msgid "Virtualization system"
@@ -15282,7 +15282,7 @@ msgstr "Takvime ekle"
 
 #: src/CommonDropdown.php:152
 msgid "Product Number"
-msgstr "Ürün Numarası"
+msgstr "Ürün numarası"
 
 #: src/CommonDropdown.php:166 src/CommonDropdown.php:479
 msgid "Front picture"
@@ -15390,11 +15390,11 @@ msgstr "%s kullanıcısının onay isteğini iptal et"
 #: src/CommonITILValidation.php:525
 msgctxt "validation"
 msgid "Refused"
-msgstr "Reddedilmiş"
+msgstr "Reddedilen"
 
 #: src/CommonITILValidation.php:526
 msgid "Granted"
-msgstr "Kabul edilen"
+msgstr "İzin verilen"
 
 #: src/CommonITILValidation.php:529
 msgid "Not subject to approval"
@@ -15402,7 +15402,7 @@ msgstr "Onay gerektirmeyen"
 
 #: src/CommonITILValidation.php:532
 msgid "Granted + Not subject to approval"
-msgstr "İzin verilmiş + Onay gerektirmeyen"
+msgstr "İzin verilen + onay gerektirmeyen"
 
 #: src/CommonITILValidation.php:844 src/NotificationTargetTicket.php:670
 #: src/NotificationTargetChange.php:288
@@ -15535,7 +15535,7 @@ msgstr "Destek kaydını silme"
 
 #: src/NotificationTargetTicket.php:152
 msgid "Automatic reminders of SLAs"
-msgstr "Otomatik Hizmet Düzeyi Sözleşmesi anımsatma"
+msgstr "Otomatik hizmet düzeyi sözleşmesi anımsatma"
 
 #: src/NotificationTargetTicket.php:153
 msgid "Automatic reminders of OLAs"
@@ -15639,7 +15639,7 @@ msgstr "Varsayılan kapasite"
 #: src/DeviceHardDrive.php:55 src/DeviceHardDrive.php:87
 #: src/DeviceHardDrive.php:166
 msgid "Rpm"
-msgstr "Rpm"
+msgstr "RPM"
 
 #: src/DeviceHardDrive.php:58 src/DeviceHardDrive.php:95
 #: src/DeviceHardDrive.php:167
@@ -15976,7 +15976,7 @@ msgstr "Kurulum sayısı"
 
 #: src/Software.php:966
 msgid "Merge"
-msgstr "Birleştir"
+msgstr "Aktar"
 
 #: src/Software.php:1121
 msgid "Software deleted after merging"
@@ -15992,7 +15992,7 @@ msgstr "Bir değişikliği güncelle"
 
 #: src/NotificationTargetChange.php:51
 msgid "Change solved"
-msgstr "Çözümlenmiş olarak değiştir"
+msgstr "Çözümlenmiş olarak değiştirme"
 
 #: src/NotificationTargetChange.php:54
 msgid "Closure of a change"
@@ -16145,7 +16145,7 @@ msgstr "Bir kalıp seçin"
 
 #: src/CommonDBTM.php:5033
 msgid "Blank Template"
-msgstr "Boş Kalıp"
+msgstr "Boş kalıp"
 
 #: src/CommonDBTM.php:5040 templates/layout/parts/context_links.html.twig:71
 msgid "Templates"
@@ -16165,7 +16165,7 @@ msgstr "Öge notlarını okuyun"
 
 #: src/CommonDBTM.php:5171
 msgid "Update notes"
-msgstr "Notları güncelle"
+msgstr "Notları güncelleyin"
 
 #: src/CommonDBTM.php:5172
 msgid "Update the item's notes"
@@ -16175,7 +16175,7 @@ msgstr "Öge notlarını güncelleyin"
 #: src/CommonDBTM.php:5291
 #, php-format
 msgid "Document Ticket %d"
-msgstr "Belge Destek Kaydı %d"
+msgstr "Belge destek kaydı %d"
 
 #: src/CommonDBTM.php:5391
 msgid "You can define an autofill template"
@@ -16598,7 +16598,7 @@ msgstr "app_token parametresi eksik"
 
 #: src/Api/API.php:2416
 msgid "API Documentation"
-msgstr "API Belgeleri"
+msgstr "API belgeleri"
 
 #: src/Api/API.php:2641
 msgid "input parameter must be an array of objects"
@@ -16606,7 +16606,7 @@ msgstr "giriş parametresi bir nesne dizisi olmalıdır"
 
 #: src/Api/API.php:2661
 msgid "Method Not Allowed"
-msgstr "Yönteme İzin Verilmiyor"
+msgstr "Yönteme izin verilmiyor"
 
 #: src/Api/API.php:2700
 msgid "session_token seems invalid"
@@ -16750,19 +16750,19 @@ msgstr "Tek değer"
 
 #: src/RuleCriteria.php:549
 msgid "is"
-msgstr "olan"
+msgstr "şu olan"
 
 #: src/RuleCriteria.php:550
 msgid "is not"
-msgstr "olmayan"
+msgstr "şu olmayan"
 
 #: src/RuleCriteria.php:551
 msgid "contains"
-msgstr "içeren"
+msgstr "şunu içeren"
 
 #: src/RuleCriteria.php:552
 msgid "does not contain"
-msgstr "içermeyen"
+msgstr "şunu içermeyen"
 
 #: src/RuleCriteria.php:553
 msgid "starting with"
@@ -16774,27 +16774,27 @@ msgstr "şununla biten"
 
 #: src/RuleCriteria.php:555
 msgid "regular expression matches"
-msgstr "kurallı ifadeye uyan"
+msgstr "şu kurallı ifadeye uyan"
 
 #: src/RuleCriteria.php:556
 msgid "regular expression does not match"
-msgstr "kurallı ifadeye uymayan"
+msgstr "şu kurallı ifadeye uymayan"
 
 #: src/RuleCriteria.php:557
 msgid "exists"
-msgstr "var olan"
+msgstr "şu var olan"
 
 #: src/RuleCriteria.php:558
 msgid "does not exist"
-msgstr "var olmayan"
+msgstr "şu var olmayan"
 
 #: src/RuleCriteria.php:577 src/Search.php:2058 src/Search.php:2198
 msgid "under"
-msgstr "altında olan"
+msgstr "şunun altında olan"
 
 #: src/RuleCriteria.php:578 src/Search.php:2066 src/Search.php:2210
 msgid "not under"
-msgstr "altında olmayan"
+msgstr "şunun altında olmayan"
 
 #: src/RuleCriteria.php:679 src/RuleCriteria.php:681
 msgid "Add a criterion"
@@ -17186,7 +17186,7 @@ msgid ""
 "telemetry website."
 msgstr ""
 "GLPI 9.2 sürümüyle birlikte. vereceğiniz izinle adsız olarak verileri "
-"uzaktan algılama web sitemize gönderen \"Uzaktan Algılama\" adı altında yeni"
+"uzaktan algılama web sitemize gönderen \"Uzaktan algılama\" adı altında yeni"
 " bir istatistik özelliği sunuyoruz."
 
 #: src/Telemetry.php:429 src/Console/Traits/TelemetryActivationTrait.php:100
@@ -17371,7 +17371,7 @@ msgstr "Veriler yüklenirken bir sorun çıktı :("
 
 #: src/Search.php:323
 msgid "Reload"
-msgstr "Yeniden Yükle"
+msgstr "Yeniden yükle"
 
 #: src/Search.php:1382
 msgid ""
@@ -17409,7 +17409,7 @@ msgstr "%1$s > %2$s"
 
 #: src/Search.php:2386
 msgid "NOT"
-msgstr "DEĞİL"
+msgstr "ŞU OLMAYAN"
 
 #: src/Search.php:2391
 msgid "AND"
@@ -17421,11 +17421,11 @@ msgstr "VEYA"
 
 #: src/Search.php:2393
 msgid "AND NOT"
-msgstr "VE ŞU DEĞİL"
+msgstr "VE ŞU OLMAYAN"
 
 #: src/Search.php:2394
 msgid "OR NOT"
-msgstr "VEYA ŞU DEĞİL"
+msgstr "VEYA ŞU OLMAYAN"
 
 #: src/Search.php:2489
 msgid "rule"
@@ -17626,8 +17626,8 @@ msgid ""
 msgstr ""
 "GLPI uygulamasını BT uygulamalarınız ile birleştirmek, hata düzeltmesi ya da hazır yapılandırılmış kural ve sözlükleri kullanmak gibi istekleriniz var mı?\n"
 "\n"
-"Sizin için %s adresinden bu hizmetleri sağlıyoruz.\n"
-"GLPI-Network, tier 3 destek aboneliği bulunan ticari bir üründür. Böylece hataların belirli bir sürede düzeltileceğinden emin olabilirsiniz.\n"
+"Sizin için bu hizmetleri %s adresinde sunuyoruz.\n"
+"GLPI-Network, tier 3 destek aboneliği bulunan ticari bir üründür. Böylece hataların kısa sürede düzeltileceğinden emin olabilirsiniz.\n"
 "\n"
 "Aynı siteden GLPI bütünleştirmesi için size yardımcı olacak <b>resmi bir iş ortağı ile de iletişim kurabilirsiniz</b>.\n"
 "\n"
@@ -17955,8 +17955,8 @@ msgstr "%1$s kullanılarak bildirim gönderilemedi"
 #: src/Problem_Ticket.php:58
 msgid "Link Ticket/Problem"
 msgid_plural "Links Ticket/Problem"
-msgstr[0] "Destek kaydı/Sorun bağlantısı"
-msgstr[1] "Destek kaydı/Sorun bağlantıları"
+msgstr[0] "Destek kaydı / sorun bağlantısı"
+msgstr[1] "Destek kaydı / sorun bağlantıları"
 
 #: src/Problem_Ticket.php:422
 msgid "Create a problem from this ticket"
@@ -18083,11 +18083,11 @@ msgstr "Kilitlenecek ögelerin listesi"
 
 #: src/Config.php:477
 msgid "Auto Login"
-msgstr "Otomatik Oturum Açma"
+msgstr "Otomatik oturum açma"
 
 #: src/Config.php:480
 msgid "Time to allow \"Remember Me\""
-msgstr "\"Bilgilerim hatırlansın\" Süresi"
+msgstr "\"Bilgilerim hatırlansın\" süresi"
 
 #: src/Config.php:489
 msgid "Default state of checkbox"
@@ -18238,7 +18238,7 @@ msgstr "Her zaman"
 
 #: src/Config.php:861
 msgid "URL of the API"
-msgstr "API Adresi"
+msgstr "API adresi"
 
 #: src/Config.php:865
 msgid "Enable Rest API"
@@ -18246,7 +18246,7 @@ msgstr "Rest API kullanılsın"
 
 #: src/Config.php:872
 msgid "API inline Documentation"
-msgstr "API Satır Arası Belgeleri"
+msgstr "API satır arası belgeleri"
 
 #: src/Config.php:881
 msgid "Enable login with credentials"
@@ -18268,7 +18268,7 @@ msgid ""
 "Remote access key in user Settings tab "
 msgstr ""
 "Dış kullanıcı kodu ile API oturumu açılmasını ve bir oturum kodu alınmasını "
-"sağlar. Kullanıcı Ayarları sekmesindeki uzak erişim anahtarı bölümüne "
+"sağlar. Kullanıcı ayarları sekmesindeki uzak erişim anahtarı bölümüne "
 "bakabilirsiniz "
 
 #: src/Config.php:908
@@ -18327,7 +18327,7 @@ msgstr "Varsayılan dil"
 
 #: src/Config.php:1159
 msgid "Date format"
-msgstr "Tarih Biçimi"
+msgstr "Tarih biçimi"
 
 #: src/Config.php:1165
 msgid "Display order of surnames firstnames"
@@ -18335,11 +18335,11 @@ msgstr "Ad ve soyada göre görünüm sıralaması"
 
 #: src/Config.php:1166
 msgid "Surname, First name"
-msgstr "Soyad, Ad"
+msgstr "Soyad, ad"
 
 #: src/Config.php:1167
 msgid "First name, Surname"
-msgstr "Ad, Soyad"
+msgstr "Ad, soyad"
 
 #: src/Config.php:1170
 msgid "Number format"
@@ -18375,7 +18375,7 @@ msgstr "Değişikliklerim için bildirimler"
 
 #: src/Config.php:1254
 msgid "Results to display on home page"
-msgstr "Ana sayfada görüntülenecek sonuç sayısı"
+msgstr "Girişte görüntülenecek sonuç sayısı"
 
 #: src/Config.php:1269
 msgid "PDF export font"
@@ -18440,7 +18440,7 @@ msgstr "Varsayılan kişisel izlemeler"
 
 #: src/Config.php:1408
 msgid "Show new tickets on the home page"
-msgstr "Anasayfada yeni destek kayıtları görüntülensin"
+msgstr "Girişte yeni destek kayıtları görüntülensin"
 
 #: src/Config.php:1421
 msgid "Private tasks by default"
@@ -18498,13 +18498,13 @@ msgstr "Kritik durum eşiği"
 
 #: src/Config.php:1536
 msgid "Auto-lock Mode"
-msgstr "Otomatik Kilitleme Kipi"
+msgstr "Otomatik kilitleme kipi"
 
 #: src/Config.php:1538
 msgid ""
 "Direct Notification (requester for unlock will be the notification sender)"
 msgstr ""
-"Doğrudan Bildirim (kilidi açmak için istekte bulunan bildirim göndericisi "
+"Doğrudan bildirim (kilidi açmak için istekte bulunan bildirim göndericisi "
 "olacak)"
 
 #: src/Config.php:1545
@@ -18670,11 +18670,11 @@ msgstr "Kurulu sistem ve yapılandırması hakkında bilgiler"
 
 #: src/Config.php:2046
 msgid "To copy/paste in your support request"
-msgstr "Destek kaydınıza kopyalayıp/yapıştırmak için"
+msgstr "Destek kaydınıza kopyalayıp / yapıştırmak için"
 
 #: src/Config.php:2070
 msgid "Log Level"
-msgstr "Günlük Kaydı Düzeyi"
+msgstr "Günlük kaydı düzeyi"
 
 #: src/Config.php:2073
 msgid "1- Critical (login error only)"
@@ -18773,7 +18773,7 @@ msgstr "Tümünü değiştir"
 
 #: src/Config.php:3088
 msgid "Add/update relation between items"
-msgstr "Ögeler arası ilişki ekle/güncelle"
+msgstr "Ögeler arası ilişki ekle / güncelle"
 
 #: src/Config.php:3092
 msgid "Delete relation between items"
@@ -18789,7 +18789,7 @@ msgstr "Ögeler üzerine yazılım kurma ve kaldırma"
 
 #: src/Config.php:3138
 msgid "Installation/uninstallation versions on software"
-msgstr "Yazılım sürümleri kurma/kaldırma"
+msgstr "Yazılım sürümleri kurma / kaldırma"
 
 #: src/Config.php:3147
 msgid "Add/Remove items from software versions"
@@ -18805,7 +18805,7 @@ msgstr "Kullanıcılara profil ekle ve kaldır"
 
 #: src/Config.php:3169
 msgid "Add/remove groups to users"
-msgstr "Kullanıcılara grup ekle/kaldır"
+msgstr "Kullanıcılara grup ekle / kaldır"
 
 #: src/Config.php:3175
 msgid "User authentication method changes"
@@ -19760,8 +19760,8 @@ msgstr "Yanıt adresi"
 #: src/NotificationMailingSetting.php:107
 msgid "Optionnal reply to address."
 msgstr ""
-"İsteğe bağlı, gönderilen e-postaların Yanıtla alanında görüntülenecek "
-"e-posta adresi."
+"İsteğe bağlı, gönderilen e-postaların Yanıt alanında görüntülenecek e-posta "
+"adresi."
 
 #: src/NotificationMailingSetting.php:107
 #: src/NotificationMailingSetting.php:253
@@ -19771,7 +19771,7 @@ msgstr "Belirtilmez ise ana yönetici e-posta adresi kullanılır."
 #: src/NotificationMailingSetting.php:118
 msgid "Optionnal reply to name."
 msgstr ""
-"İsteğe bağlı, gönderilen e-postaların Yanıtla alanında görüntülenecek ad."
+"İsteğe bağlı, gönderilen e-postaların Yanıt alanında görüntülenecek ad."
 
 #: src/NotificationMailingSetting.php:118
 #: src/NotificationMailingSetting.php:136
@@ -20117,11 +20117,11 @@ msgstr "Yoksa, uygulama eki arşivlerini el ile indirip ayıklamanız gerekir."
 
 #: src/Marketplace/View.php:365
 msgid "Alpha ASC"
-msgstr "Alfabetik Artan"
+msgstr "Alfabetik artan"
 
 #: src/Marketplace/View.php:370
 msgid "Alpha DESC"
-msgstr "Alfabetik Azalan"
+msgstr "Alfabetik azalan"
 
 #: src/Marketplace/View.php:375
 msgid "Most popular"
@@ -20155,7 +20155,7 @@ msgstr "Uygulama eki listesini süz"
 
 #: src/Marketplace/View.php:497
 msgid "Homepage"
-msgstr "Web sitesi"
+msgstr "Giriş"
 
 #: src/Marketplace/View.php:504
 msgid "Get help"
@@ -20413,7 +20413,7 @@ msgstr "Aygıt türleri sözlüğü"
 
 #: src/Central.php:67
 msgid "Group View"
-msgstr "Grup Görünümü"
+msgstr "Grup görünümü"
 
 #: src/Central.php:74 templates/layout/parts/menu.html.twig:59
 msgid "Dashboard"
@@ -20516,7 +20516,7 @@ msgstr "Adreslenebilir ağ"
 
 #: src/IPNetwork.php:187
 msgid "Set the network using notation address/mask"
-msgstr "Ağı adres/ağ maskesi şeklinde yazın"
+msgstr "Ağı adres / ağ maskesi şeklinde yazın"
 
 #: src/IPNetwork.php:194
 msgid "An addressable network is a network defined on an equipment"
@@ -20653,7 +20653,7 @@ msgstr "Hizmet paketleri sözlüğü"
 
 #: src/SlaLevel_Ticket.php:39
 msgid "SLA level for Ticket"
-msgstr "Destek Kaydının Hizmet Düzeyi Sözleşmesi Düzeyi"
+msgstr "Destek kaydının hizmet düzeyi sözleşmesi düzeyi"
 
 #: src/SlaLevel_Ticket.php:143
 msgid "Automatic actions of SLA"
@@ -20921,7 +20921,7 @@ msgstr "Herhangi bir etki alanı ögesi bulunamadı."
 
 #: src/Console/Migration/Utf8mb4Command.php:85
 msgid "Convert database character set from \"utf8\" to \"utf8mb4\"."
-msgstr "Veritabanı karakter kümesini \"utf8\" yerine \"utf8mb4\" yap."
+msgstr "\"utf8\" veritabanı karakter kümesini \"utf8mb4\" olarak dönüştür."
 
 #: src/Console/Migration/Utf8mb4Command.php:106
 #: src/Console/Database/InstallCommand.php:262
@@ -21531,7 +21531,7 @@ msgstr "\"%1$s\" uygulama eki devre dışı bırakıldı."
 #: src/Console/Plugin/DeactivateCommand.php:131
 #, php-format
 msgid "Plugin \"%s\" is already inactive."
-msgstr "\"%s\" uygualma eki zaten devre dışı."
+msgstr "\"%s\" uygulama eki zaten devre dışı."
 
 #: src/Console/Plugin/DeactivateCommand.php:143
 msgid "Which plugin(s) do you want to deactivate (comma separated values)?"
@@ -21568,7 +21568,7 @@ msgid ""
 "Increase the verbosity of messages: 1 for normal output, 2 for more verbose "
 "output and 3 for debug"
 msgstr ""
-"İleti ayrıntısını arttırabilirsiniz: normal iletiler için 1, ayrıntılı "
+"İleti ayrıntısını arttırabilirsiniz: Normal iletiler için 1, ayrıntılı "
 "iletiler için 2, hata ayıklama için 3"
 
 #: src/Console/Application.php:153
@@ -22040,7 +22040,7 @@ msgstr ""
 
 #: src/Console/Rules/ReplayDictionnaryRulesCommand.php:67
 msgid "Currently only available for Software dictionnary."
-msgstr "Şu anda yalnız Yazılım sözlüğü ile kullanılabilir."
+msgstr "Şu anda yalnız yazılım sözlüğü ile kullanılabilir."
 
 #: src/Console/Rules/ReplayDictionnaryRulesCommand.php:79
 msgid "Which dictionnary do you want to replay?"
@@ -22387,7 +22387,7 @@ msgstr "Zorunlu"
 
 #: src/Console/System/ListServicesCommand.php:49
 msgid "List system services"
-msgstr "Sistem hizmetlerini listesi"
+msgstr "Sistem hizmetlerinin listesi"
 
 #: src/Console/System/CheckStatusCommand.php:51
 msgid "Check system status"
@@ -22436,7 +22436,7 @@ msgstr "Süresi dolmuş etki alanları"
 
 #: src/NotificationTargetDomain.php:40 src/NotificationTargetDomain.php:61
 msgid "Expiring domains"
-msgstr "Süresi dolcak etki alanları"
+msgstr "Süresi dolacak etki alanları"
 
 #: src/NotificationTargetDomain.php:48
 msgid "Technician in charge of the domain"
@@ -22471,7 +22471,7 @@ msgstr "Paylaş"
 
 #: src/RichText/RichText.php:377 templates/components/photoswipe.html.twig:57
 msgid "Zoom in/out"
-msgstr "Yakınlaştır / Uzaklaştır"
+msgstr "Yakınlaştır / uzaklaştır"
 
 #: src/RichText/RichText.php:388 templates/components/photoswipe.html.twig:73
 msgid "Previous (arrow left)"
@@ -22866,7 +22866,7 @@ msgstr "SELinux yapılandırması tamam."
 
 #: src/System/Requirement/ProtectedWebAccess.php:55
 msgid "Protected access to files directory"
-msgstr "Files klasörüne erişim korunuyor"
+msgstr "Files klasörüne erişim engelleniyor"
 
 #: src/System/Requirement/ProtectedWebAccess.php:56
 msgid ""
@@ -23166,7 +23166,7 @@ msgstr "Eşsiz alanlar"
 #: src/FieldUnicity.php:87 src/FieldUnicity.php:366
 #: src/NotificationTargetFieldUnicity.php:62
 msgid "Record into the database denied"
-msgstr "Veritabana kayıt işlemi reddedildi"
+msgstr "Veritabanına kayıt işlemi reddedildi"
 
 #: src/FieldUnicity.php:90 src/FieldUnicity.php:374
 msgid "Send a notification"
@@ -23324,7 +23324,7 @@ msgstr "Yorum:"
 
 #: js/gantt-helper.js:152
 msgid "Project / Task"
-msgstr "Proje / Görev"
+msgstr "Proje / görev"
 
 #: js/gantt-helper.js:202
 #, javascript-format
@@ -23639,19 +23639,19 @@ msgstr "Varsayılan kullanıcı adı ve parolalar:"
 
 #: templates/install/step8.html.twig:40
 msgid "glpi/glpi for the administrator account"
-msgstr "Yönetici hesabı için: glpi/glpi"
+msgstr "Yönetici hesabı için: glpi / glpi"
 
 #: templates/install/step8.html.twig:41
 msgid "tech/tech for the technician account"
-msgstr "Teknisyen hesabı için: tech/tech"
+msgstr "Teknisyen hesabı için: tech / tech"
 
 #: templates/install/step8.html.twig:42
 msgid "normal/normal for the normal account"
-msgstr "Normal kullanıcı için: normal/normal"
+msgstr "Normal kullanıcı için: normal / normal"
 
 #: templates/install/step8.html.twig:43
 msgid "post-only/postonly for the postonly account"
-msgstr "Yalnız ekleme hesabı için: post-only/post-only"
+msgstr "Yalnız ekleme hesabı için: post-only / post-only"
 
 #: templates/install/step8.html.twig:48
 msgid "You can delete or modify these accounts as well as the initial data."
@@ -23924,7 +23924,7 @@ msgstr "Tarih de silinsin mi?"
 
 #: templates/components/itilobject/service_levels.html.twig:184
 msgid "Assign a SLA"
-msgstr "Bir HDA ata"
+msgstr "Bir HDS ata"
 
 #: templates/components/itilobject/fields_panel.html.twig:120
 msgid "Close date"
@@ -23972,7 +23972,7 @@ msgstr "Çöp kutusunu görüntüle"
 
 #: templates/components/search/controls.html.twig:65
 msgid "Toggle search filters"
-msgstr "Arama süzgeçlerini aç/kapat"
+msgstr "Arama süzgeçlerini aç / kapat"
 
 #: templates/components/search/controls.html.twig:144
 msgid "Close modal"
@@ -24070,7 +24070,7 @@ msgstr ""
 
 #: templates/maintenance.html.twig:59
 msgid "Take me home"
-msgstr "Açılışa git"
+msgstr "Girişe git"
 
 #: templates/pages/tools/project/gantt.html.twig:47
 msgid "Zoom"

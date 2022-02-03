@@ -6,7 +6,6 @@
 # Translators:
 # Emanuele Podett <emanuele.podetti@gmail.com>, 2021
 # Andrea Garelli <garelli.andrea@gmail.com>, 2021
-# Stefano Ceccherini <stefano.ceccherini@gmail.com>, 2021
 # Emiliano Centurelli <emilcen80@gmail.com>, 2021
 # Andrea Olivares <andrea.olivares@stpauls.it>, 2021
 # Pierfrancesco Passerini <p.passerini@gmail.com>, 2021
@@ -14,7 +13,8 @@
 # Tiziano Sartori <tiziano.sartori@gmail.com>, 2021
 # DOMBRE Julien <moyo@indepnet.net>, 2021
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2021
-# Davide <spam@habilitas.it>, 2021
+# Stefano Ceccherini <stefano.ceccherini@gmail.com>, 2022
+# Davide <spam@habilitas.it>, 2022
 # 
 #, fuzzy
 msgid ""
@@ -23,7 +23,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-12-14 12:46+0000\n"
 "PO-Revision-Date: 2021-05-26 09:06+0000\n"
-"Last-Translator: Davide <spam@habilitas.it>, 2021\n"
+"Last-Translator: Davide <spam@habilitas.it>, 2022\n"
 "Language-Team: Italian (Italy) (https://www.transifex.com/glpi/teams/1637/it_IT/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1562,7 +1562,7 @@ msgstr "Per switch"
 
 #: front/report.networking.php:81
 msgid "By network socket"
-msgstr ""
+msgstr "Per punto rete"
 
 #: front/notification.tags.php:38
 msgid "List of available tags"
@@ -3293,7 +3293,7 @@ msgstr "Nessuna azione possibile"
 #: src/MassiveAction.php:142 src/MassiveAction.php:151
 #: src/MassiveAction.php:260 src/MassiveAction.php:900
 msgid "Implementation error!"
-msgstr ""
+msgstr "Errore di implementazione!"
 
 #: src/MassiveAction.php:253
 msgid "No selected items"
@@ -3398,7 +3398,7 @@ msgstr "oppure"
 
 #: src/MassiveAction.php:1009
 msgid "How many copies do you want to create?"
-msgstr ""
+msgstr "Quante copie vuoi creare?"
 
 #: src/MassiveAction.php:1035
 msgid "Are you sure you want to add this item to transfer list?"
@@ -3802,8 +3802,8 @@ msgstr "Lingua"
 #: templates/generic_show_form.html.twig:523
 msgid "Picture"
 msgid_plural "Pictures"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Immagine"
+msgstr[1] "Immagini"
 
 #: src/AuthLDAP.php:911 src/AuthLDAP.php:1252
 #: src/ContentTemplates/Parameters/UserParameters.php:81
@@ -4013,7 +4013,7 @@ msgstr "Disattiva"
 
 #: src/AuthLDAP.php:3989
 msgid "Do nothing"
-msgstr ""
+msgstr "Non fare nulla"
 
 #: src/AuthLDAP.php:3990
 msgid "Restore (move out of trashbin)"
@@ -4054,13 +4054,13 @@ msgstr ""
 #: src/SNMPCredential.php:47
 msgid "SNMP credential"
 msgid_plural "SNMP credentials"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Credenziale SNMP"
+msgstr[1] "Credenziali SNMP"
 
 #: src/SNMPCredential.php:58
 #: templates/components/form/snmpcredential.html.twig:56
 msgid "Community"
-msgstr ""
+msgstr "Comunità"
 
 #: src/Profile_User.php:142 src/Profile_User.php:290
 msgid "Add an authorization to a user"
@@ -4688,19 +4688,19 @@ msgstr ""
 
 #: src/PendingReason.php:180
 msgid "Every week"
-msgstr ""
+msgstr "Ogni settimana"
 
 #: src/PendingReason.php:181
 msgid "Every two weeks"
-msgstr ""
+msgstr "Ogni due settimane"
 
 #: src/PendingReason.php:182
 msgid "Every three weeks"
-msgstr ""
+msgstr "Ogni tre settimane"
 
 #: src/PendingReason.php:183
 msgid "Every four weeks"
-msgstr ""
+msgstr "Ogni quattro settimane"
 
 #: src/PendingReason.php:208
 msgid "Automatic resolution disabled"
@@ -5023,51 +5023,51 @@ msgstr ""
 
 #: src/PrinterLog.php:146 src/NetworkPortMetrics.php:146
 msgid "Y-m-d"
-msgstr ""
+msgstr "g-m-a"
 
 #: src/PrinterLog.php:179
 msgid "Total pages"
-msgstr ""
+msgstr "Pagine totali"
 
 #: src/PrinterLog.php:181
 msgid "Black & White pages"
-msgstr ""
+msgstr "Pagine B/N"
 
 #: src/PrinterLog.php:183
 msgid "Color pages"
-msgstr ""
+msgstr "Pagine a colori"
 
 #: src/PrinterLog.php:185
 msgid "Scans"
-msgstr ""
+msgstr "Scansioni"
 
 #: src/PrinterLog.php:187
 msgid "Recto/Verso pages"
-msgstr ""
+msgstr "Pagine fronte/retro"
 
 #: src/PrinterLog.php:189
 msgid "Prints"
-msgstr ""
+msgstr "Stampe"
 
 #: src/PrinterLog.php:191
 msgid "Black & White prints"
-msgstr ""
+msgstr "Stampe B/N"
 
 #: src/PrinterLog.php:193
 msgid "Color prints"
-msgstr ""
+msgstr "Stampe a colori"
 
 #: src/PrinterLog.php:195
 msgid "Copies"
-msgstr ""
+msgstr "Copie"
 
 #: src/PrinterLog.php:197
 msgid "Black & White copies"
-msgstr ""
+msgstr "Copie B/N"
 
 #: src/PrinterLog.php:199
 msgid "Color copies"
-msgstr ""
+msgstr "Copie a colori"
 
 #: src/PrinterLog.php:201 src/Contact_Supplier.php:169
 #: src/Contact_Supplier.php:303 src/Dropdown.php:506 src/Dropdown.php:532
@@ -5420,16 +5420,16 @@ msgstr "Dizionario delle architetture dei sistemi operativi"
 #: src/Agent.php:67
 msgid "Agent"
 msgid_plural "Agents"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Agente"
+msgstr[1] "Agenti"
 
 #: src/Agent.php:99 src/Agent.php:257
 msgid "Last contact"
-msgstr ""
+msgstr "Ultimo contatto"
 
 #: src/Agent.php:105 src/Agent.php:188
 msgid "Locked"
-msgstr ""
+msgstr "Bloccato"
 
 #: src/Agent.php:111 src/Agent.php:195
 msgid "Device id"
@@ -5447,7 +5447,7 @@ msgstr "Etichetta"
 
 #: src/Agent.php:221
 msgid "Item link"
-msgstr ""
+msgstr "Elemento da collegare"
 
 #: src/Agent.php:264
 msgid "Network discovery threads"
@@ -5477,7 +5477,7 @@ msgstr ""
 
 #: src/Agent.php:607
 msgid "Not allowed"
-msgstr ""
+msgstr "Non permesso"
 
 #: src/Agent.php:632
 #, php-format
@@ -5509,8 +5509,8 @@ msgstr "Elimina un progetto"
 #: src/Project.php:2588
 msgid "Manager"
 msgid_plural "Managers"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Gestore"
+msgstr[1] "Gestori"
 
 #: src/NotificationTargetProject.php:59 src/NotificationTargetProject.php:638
 #: src/Project.php:650 src/Project.php:1166
@@ -7234,15 +7234,15 @@ msgstr "Collega attività di progetto"
 #: src/Ticket.php:2752
 msgctxt "button"
 msgid "Add contract"
-msgstr ""
+msgstr "Aggiungi contratto"
 
 #: src/Ticket.php:2760
 msgid "Link to a problem"
-msgstr ""
+msgstr "Collega a un problema"
 
 #: src/Ticket.php:2766
 msgid "Resolve selected tickets"
-msgstr ""
+msgstr "Risolvi le chiamate selezionate"
 
 #: src/Ticket.php:2792
 msgid "Merge followups"
@@ -7295,7 +7295,7 @@ msgstr "Link"
 
 #: src/Ticket.php:2915
 msgid "Resolve"
-msgstr ""
+msgstr "Risolvi"
 
 #: src/Ticket.php:2925 src/CommonDevice.php:407 src/CommonDevice.php:409
 #: src/CommonDevice.php:411 src/CommonDBChild.php:847
@@ -8050,7 +8050,7 @@ msgstr "Visibilità"
 
 #: src/SavedSearch.php:500
 msgid "Save as a new search"
-msgstr ""
+msgstr "Salva come nuova ricerca"
 
 #: src/SavedSearch.php:609
 #, php-format
@@ -8451,23 +8451,23 @@ msgstr ""
 
 #: src/Inventory/Asset/Cartridge.php:58
 msgid "Maintenance kit"
-msgstr ""
+msgstr "Kit di manutenzione"
 
 #: src/Inventory/Asset/Cartridge.php:59
 msgid "Fuser kit"
-msgstr ""
+msgstr "Kit fusore"
 
 #: src/Inventory/Asset/Cartridge.php:60
 msgid "Transfer kit"
-msgstr ""
+msgstr "Kit di trasferimento"
 
 #: src/Inventory/Asset/Cartridge.php:61
 msgid "Cleaning kit"
-msgstr ""
+msgstr "Kit di pulizia"
 
 #: src/Inventory/Asset/Cartridge.php:62
 msgid "Developer"
-msgstr ""
+msgstr "Sviluppatore"
 
 #: src/Inventory/Asset/Cartridge.php:63
 msgid "Photoconductor"
@@ -8475,15 +8475,15 @@ msgstr ""
 
 #: src/Inventory/Asset/Cartridge.php:70
 msgid "Black"
-msgstr ""
+msgstr "Nero"
 
 #: src/Inventory/Asset/Cartridge.php:71
 msgid "Cyan"
-msgstr ""
+msgstr "Ciano"
 
 #: src/Inventory/Asset/Cartridge.php:72
 msgid "Light cyan"
-msgstr ""
+msgstr "Ciano chiaro"
 
 #: src/Inventory/Asset/Cartridge.php:73
 msgid "Magenta"
@@ -8495,15 +8495,15 @@ msgstr ""
 
 #: src/Inventory/Asset/Cartridge.php:75
 msgid "Yellow"
-msgstr ""
+msgstr "Giallo"
 
 #: src/Inventory/Asset/Cartridge.php:76 src/Inventory/Asset/Cartridge.php:78
 msgid "Grey"
-msgstr ""
+msgstr "Grigio"
 
 #: src/Inventory/Asset/Cartridge.php:77 src/Inventory/Asset/Cartridge.php:79
 msgid "Dark grey"
-msgstr ""
+msgstr "Grigio scuro"
 
 #: src/Inventory/Asset/Cartridge.php:83
 msgid "Max"
@@ -8552,7 +8552,7 @@ msgstr "Gestione"
 #: src/Inventory/Asset/NetworkEquipment.php:103
 #: src/Inventory/Asset/NetworkEquipment.php:155
 msgid "internal"
-msgstr ""
+msgstr "interno"
 
 #: src/Inventory/Inventory.php:283
 #, php-format
@@ -8574,7 +8574,7 @@ msgstr ""
 
 #: src/Inventory/Conf.php:102
 msgid "Import inventory file"
-msgstr ""
+msgstr "Importa file di inventario"
 
 #: src/Inventory/Conf.php:109
 #, php-format
@@ -8596,23 +8596,23 @@ msgstr "Importa"
 
 #: src/Inventory/Conf.php:171
 msgid "No file to import!"
-msgstr ""
+msgstr "Nessun file da importare!"
 
 #: src/Inventory/Conf.php:223
 msgid "File has not been imported:"
-msgstr ""
+msgstr "File non importato:"
 
 #: src/Inventory/Conf.php:229
 msgid "File has been successfully imported!"
-msgstr ""
+msgstr "File importato con successo!"
 
 #: src/Inventory/Conf.php:252
 msgid "Configuration"
-msgstr ""
+msgstr "Configurazione"
 
 #: src/Inventory/Conf.php:253
 msgid "Import from file"
-msgstr ""
+msgstr "Importa da file"
 
 #: src/Inventory/Conf.php:297
 msgid "Import options"
@@ -8632,7 +8632,7 @@ msgstr ""
 
 #: src/Inventory/Conf.php:416
 msgid "Import virtual machines"
-msgstr ""
+msgstr "Importa macchine virtuali"
 
 #: src/Inventory/Conf.php:446
 msgid "Create computer for virtual machines"
@@ -8650,15 +8650,15 @@ msgstr ""
 
 #: src/Inventory/Conf.php:555
 msgid "Virtual network cards"
-msgstr ""
+msgstr "Schede di rete virtuali"
 
 #: src/Inventory/Conf.php:614
 msgid "Network drives"
-msgstr ""
+msgstr "Dischi di rete"
 
 #: src/Inventory/Conf.php:629
 msgid "Removable drives"
-msgstr ""
+msgstr "Dischi rimovibili"
 
 #: src/Inventory/Conf.php:686 src/PlanningRecall.php:358
 #: src/Item_Devices.php:734 src/Dashboard/Grid.php:285 src/CommonGLPI.php:1346
@@ -8834,7 +8834,7 @@ msgstr ""
 #: src/NetworkPort.php:1105 src/NetworkPort.php:1128
 #: src/NetworkPortConnectionLog.php:131
 msgid "Connected"
-msgstr ""
+msgstr "Connesso"
 
 #: src/NetworkPort.php:1109 src/NetworkPortConnectionLog.php:134
 #: src/Computer_Item.php:601
@@ -8869,11 +8869,11 @@ msgstr ""
 
 #: src/NetworkPort.php:1503
 msgid "Internal status"
-msgstr ""
+msgstr "Stato interno"
 
 #: src/NetworkPort.php:1510
 msgid "Last change"
-msgstr ""
+msgstr "Ultima modifica"
 
 #: src/NetworkPort.php:1517
 msgid "Number of I/O bytes"
@@ -8894,7 +8894,7 @@ msgstr[0] "Connessioni"
 
 #: src/NetworkPort.php:1578
 msgid "Last connection"
-msgstr ""
+msgstr "Ultima connessione"
 
 #: src/NetworkPort.php:1586
 msgid "Alias"
@@ -9049,7 +9049,7 @@ msgstr[1] ""
 
 #: src/NetworkPortType.php:52 src/NetworkPortType.php:76
 msgid "Decimal"
-msgstr ""
+msgstr "Decimale"
 
 #: src/NetworkPortType.php:61 src/NetworkPortType.php:92
 msgid "Instanciation type"
@@ -9112,7 +9112,7 @@ msgstr[0] "Calendari"
 
 #: src/Dropdown.php:1088 src/Profile.php:1079
 msgid "Cable management"
-msgstr ""
+msgstr "Gestione dei cavi"
 
 #: src/Dropdown.php:1094 src/Profile.php:977 src/Profile.php:2151
 msgid "Internet"
@@ -10182,7 +10182,7 @@ msgstr[0] "+ %d anni"
 
 #: src/Html.php:3843
 msgid "Available variables"
-msgstr ""
+msgstr "Variabili disponibili"
 
 #. TRANS: %1$d, %2$d, %3$d are page numbers
 #: src/Html.php:3946 src/Html.php:4159
@@ -10205,31 +10205,31 @@ msgstr "%1$d su %2$d"
 
 #: src/Html.php:6766
 msgid "Just now"
-msgstr ""
+msgstr "Ora"
 
 #: src/Html.php:6769
 #, php-format
 msgid "%s minutes ago"
-msgstr ""
+msgstr "%s minuti fa"
 
 #: src/Html.php:6772
 #, php-format
 msgid "%s hours ago"
-msgstr ""
+msgstr "%s ore fa"
 
 #: src/Html.php:6776
 msgid "Yesterday"
-msgstr ""
+msgstr "Ieri"
 
 #: src/Html.php:6779
 #, php-format
 msgid "%s days ago"
-msgstr ""
+msgstr "%s giorni fa"
 
 #: src/Html.php:6782
 #, php-format
 msgid "%s weeks ago"
-msgstr ""
+msgstr "%s settimane fa"
 
 #: src/Html.php:6785
 msgid "Last month"
@@ -10237,38 +10237,38 @@ msgstr "Ultimo mese"
 
 #: src/Html.php:6794
 msgid "In a minute"
-msgstr ""
+msgstr "In un minuto"
 
 #: src/Html.php:6797
 #, php-format
 msgid "In %s minutes"
-msgstr ""
+msgstr "In %s minuti"
 
 #: src/Html.php:6800
 msgid "In an hour"
-msgstr ""
+msgstr "In un'ora"
 
 #: src/Html.php:6803
 #, php-format
 msgid "In %s hours"
-msgstr ""
+msgstr "In %s ore"
 
 #: src/Html.php:6807
 msgid "Tomorrow"
-msgstr ""
+msgstr "Domani"
 
 #: src/Html.php:6813
 msgid "next week"
-msgstr ""
+msgstr "la prossima settimana"
 
 #: src/Html.php:6816
 #, php-format
 msgid "In %s weeks"
-msgstr ""
+msgstr "In %s settimane"
 
 #: src/Html.php:6819
 msgid "next month"
-msgstr ""
+msgstr "il mese prossimo"
 
 #. TRANS: Always plural
 #: src/Notepad.php:52 src/Notepad.php:184
@@ -10533,7 +10533,7 @@ msgstr "Gruppo assegnato all'attività"
 
 #: src/NotificationTargetCommonITILObject.php:1862
 msgid "Internal type"
-msgstr ""
+msgstr "Tipo interno"
 
 #: src/NotificationTargetCommonITILObject.php:1865 src/Socket.php:332
 #: src/Socket.php:708 src/PDU_Rack.php:278 src/PDU_Rack.php:349
@@ -10660,7 +10660,7 @@ msgstr ""
 
 #: src/SavedSearch_Alert.php:174
 msgid "Notification frequency"
-msgstr ""
+msgstr "Frequenza notifiche"
 
 #: src/SavedSearch_Alert.php:224
 msgid "Notification does not exists!"
@@ -11971,7 +11971,7 @@ msgstr[1] ""
 
 #: src/RefusedEquipment.php:133
 msgid "Method"
-msgstr ""
+msgstr "Metodo"
 
 #: src/RefusedEquipment.php:260
 msgid "Inventory is still refused."
@@ -12199,7 +12199,7 @@ msgstr ""
 
 #: src/RuleImportAsset.php:117
 msgid "Item name"
-msgstr ""
+msgstr "Nome elemento"
 
 #: src/RuleImportAsset.php:132
 msgid "Port description"
@@ -12237,7 +12237,7 @@ msgstr ""
 
 #: src/RuleImportAsset.php:199
 msgid "Is partial"
-msgstr ""
+msgstr "È parziale"
 
 #: src/RuleImportAsset.php:213
 msgid "Inventory link"
@@ -12253,11 +12253,11 @@ msgstr ""
 
 #: src/RuleImportAsset.php:280
 msgid "is already present"
-msgstr ""
+msgstr "è già presente"
 
 #: src/RuleImportAsset.php:281
 msgid "is empty"
-msgstr ""
+msgstr "è vuoto"
 
 #: src/RuleImportAsset.php:994
 msgid "Use values found from an already refused equipment"
@@ -12750,7 +12750,7 @@ msgstr "Periferica temporaneamente non disponibile"
 
 #: src/Reservation.php:439
 msgid "View all items"
-msgstr ""
+msgstr "Visualizza tutti gli oggetti"
 
 #: src/Reservation.php:444
 msgid "All reservable devices"
@@ -12800,7 +12800,7 @@ msgstr "Elimina tutte le reiterazioni"
 
 #: src/Reservation.php:1014
 msgid "Reservations for this item"
-msgstr ""
+msgstr "Prenotazioni per questo elemento"
 
 #: src/Reservation.php:1095
 msgid "Current and future reservations"
@@ -13222,7 +13222,7 @@ msgstr[0] "Tipi di soluzioni"
 
 #: src/RecurrentChange.php:48
 msgid "Recurrent changes"
-msgstr ""
+msgstr "Modifiche periodiche"
 
 #: src/DropdownTranslation.php:101 src/DropdownTranslation.php:116
 msgid "There's already a translation for this field in this language"
@@ -13423,7 +13423,7 @@ msgstr "Rimuovi un contratto"
 
 #: src/Contract.php:1767
 msgid "No item."
-msgstr ""
+msgstr "Nessun elemento."
 
 #: src/Certificate.php:146 templates/pages/management/certificate.html.twig:37
 msgid "Self-signed"
@@ -13824,7 +13824,7 @@ msgstr ""
 #: src/Database.php:125 src/Database.php:232 src/Database.php:309
 #: src/DatabaseInstance.php:272
 msgid "Last backup date"
-msgstr ""
+msgstr "Data dell'ultimo backup"
 
 #: src/Database.php:197 src/Item_Disk.php:175 src/Item_Disk.php:293
 #: src/Item_Disk.php:410 src/Item_Disk.php:458
@@ -13837,11 +13837,11 @@ msgstr ""
 
 #: src/Database.php:369
 msgid "Add a database"
-msgstr ""
+msgstr "Aggiungi un database"
 
 #: src/Database.php:397
 msgid "No database"
-msgstr ""
+msgstr "Nessun database"
 
 #: src/Transfer.php:3829 src/Transfer.php:3836
 #: src/NetworkPortInstantiation.php:933 src/Computer_Item.php:247
@@ -13933,7 +13933,7 @@ msgstr "Se i contratti non sono più utilizzati"
 
 #: src/Transfer.php:3984
 msgid "If certificates are no longer used"
-msgstr ""
+msgstr "Se i certificati non sono più utilizzati"
 
 #: src/Transfer.php:4005
 msgid ""
@@ -14437,7 +14437,7 @@ msgstr ""
 #: templates/components/form/inventory_info.html.twig:50
 #: templates/components/form/inventory_info.html.twig:52
 msgid "Inventory file missing"
-msgstr ""
+msgstr "File di inventario mancante"
 
 #: src/Features/Inventoriable.php:154
 msgid "No agent has been linked."
@@ -14446,12 +14446,12 @@ msgstr ""
 #: src/Features/Inventoriable.php:189
 #: templates/components/form/inventory_info.html.twig:83
 msgid "Last inventory"
-msgstr ""
+msgstr "Ultimo inventario"
 
 #: src/Features/Inventoriable.php:194
 #: templates/components/form/inventory_info.html.twig:89
 msgid "Agent status"
-msgstr ""
+msgstr "Stato dell'agente"
 
 #: src/Features/Inventoriable.php:195
 #: templates/components/form/inventory_info.html.twig:90
@@ -14461,7 +14461,7 @@ msgstr ""
 #: src/Features/Inventoriable.php:198
 #: templates/components/form/inventory_info.html.twig:98
 msgid "Request inventory"
-msgstr ""
+msgstr "Richiedi inventario"
 
 #: src/Features/Inventoriable.php:199
 #: templates/components/form/inventory_info.html.twig:99
@@ -14494,8 +14494,8 @@ msgstr ""
 msgctxt "camera"
 msgid "Format"
 msgid_plural "Formats"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Formato"
+msgstr[1] "Formati"
 
 #: src/DocumentType.php:49 src/DocumentType.php:105
 msgid "Authorized upload"
@@ -14789,7 +14789,7 @@ msgstr ""
 
 #: src/Change.php:1354 src/Change.php:1403
 msgid "Changes to be processed"
-msgstr ""
+msgstr "Modifiche da elaborare"
 
 #: src/Change.php:1370 src/Change.php:1419
 msgid "Your changes in progress"
@@ -15273,8 +15273,8 @@ msgstr "Nessun indirizzo IP trovato"
 #: src/ImageFormat.php:41
 msgid "Image format"
 msgid_plural "Image formats"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Formato immagine"
+msgstr[1] "Formati immagine"
 
 #: src/NotificationTargetTicket.php:84
 msgid "To answer by email, write above this line"
@@ -16135,7 +16135,7 @@ msgstr "Orientamento"
 
 #: src/DeviceCamera.php:84 src/DeviceCamera.php:141
 msgid "Focal length"
-msgstr ""
+msgstr "Lunghezza focale"
 
 #: src/DeviceCamera.php:89 src/DeviceCamera.php:149
 msgid "Sensor size"
@@ -16155,7 +16155,7 @@ msgstr ""
 
 #: src/DeviceCamera.php:183
 msgid "focal length"
-msgstr ""
+msgstr "lunghezza focale"
 
 #: src/DeviceCamera.php:184
 msgid "sensorsize"
@@ -16209,8 +16209,8 @@ msgstr "Usa"
 #: src/Cable.php:46
 msgid "Cable"
 msgid_plural "Cables"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Cavo"
+msgstr[1] "Cavi"
 
 #: src/Cable.php:136 src/CableType.php:39
 msgid "Cable type"
@@ -16426,12 +16426,12 @@ msgstr[1] ""
 #: src/ComputerVirtualMachine.php:583
 msgid "State"
 msgid_plural "States"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Stato"
+msgstr[1] "Stati"
 
 #: src/DatabaseInstance.php:398
 msgid "Last boot date"
-msgstr ""
+msgstr "Data dell'ultimo avvio"
 
 #: src/DatabaseInstance.php:516
 msgid "No instance found"
@@ -16799,12 +16799,12 @@ msgstr "%s / %s attività completate"
 #: src/Project.php:2529 src/CommonITILObject.php:8234
 msgctxt "filters"
 msgid "The title of the item"
-msgstr ""
+msgstr "Il titolo dell'elemento"
 
 #: src/Project.php:2533 src/CommonITILObject.php:8238
 msgctxt "filters"
 msgid "The type of the item"
-msgstr ""
+msgstr "Il tipo dell'elemento"
 
 #: src/Project.php:2537
 msgctxt "filters"
@@ -16814,7 +16814,7 @@ msgstr ""
 #: src/Project.php:2541 src/CommonITILObject.php:8242
 msgctxt "filters"
 msgid "The content of the item"
-msgstr ""
+msgstr "Il contenuto dell'elemento"
 
 #: src/Project.php:2545 src/CommonITILObject.php:8246
 msgctxt "filters"
@@ -16847,15 +16847,15 @@ msgstr ""
 
 #: src/NetworkPortConnectionLog.php:116
 msgid "Connected item"
-msgstr ""
+msgstr "Elemento collegato"
 
 #: src/NetworkPortConnectionLog.php:122
 msgid "No result found"
-msgstr ""
+msgstr "Nessun risultato"
 
 #: src/NetworkPortConnectionLog.php:161
 msgid "No longer exists in database"
-msgstr ""
+msgstr "Non esiste più nel database"
 
 #: src/ProjectTeam.php:71
 msgid "Project team"
@@ -16870,7 +16870,7 @@ msgstr[0] "Firmware"
 #: src/DeviceFirmware.php:57 src/DeviceFirmware.php:83
 #: src/DeviceFirmware.php:131
 msgid "Release date"
-msgstr ""
+msgstr "Data di rilascio"
 
 #: src/DomainRecordType.php:206
 msgid "Fields"
@@ -16955,7 +16955,7 @@ msgstr ""
 
 #: src/ContentTemplates/Parameters/UserParameters.php:74
 msgid "Full name"
-msgstr ""
+msgstr "Nome completo"
 
 #: src/ContentTemplates/Parameters/UserParameters.php:78
 msgid "Mobile"
@@ -16998,11 +16998,11 @@ msgstr "Sommario"
 
 #: src/ContentTemplates/TemplateDocumentation.php:130
 msgid "Variable"
-msgstr ""
+msgstr "Variabile"
 
 #: src/ContentTemplates/TemplateDocumentation.php:132
 msgid "Usage"
-msgstr ""
+msgstr "Utilizzo"
 
 #: src/ContentTemplates/TemplateDocumentation.php:133
 msgid "References"
@@ -17229,7 +17229,7 @@ msgstr "Dizionario dei tipi di apparato di rete"
 
 #: src/KnowbaseItem_KnowbaseItemCategory.php:176
 msgid "Add a category"
-msgstr ""
+msgstr "Aggiungi categoria"
 
 #: src/KnowbaseItem_KnowbaseItemCategory.php:226
 msgid "Category name"
@@ -19375,17 +19375,17 @@ msgstr "Pianificazione"
 #: src/CommonITILObject.php:6490
 msgctxt "button"
 msgid "Answer"
-msgstr ""
+msgstr "Risposta"
 
 #: src/CommonITILObject.php:6500
 msgctxt "button"
 msgid "Create a task"
-msgstr ""
+msgstr "Crea una attività"
 
 #: src/CommonITILObject.php:6510
 msgctxt "button"
 msgid "Add a solution"
-msgstr ""
+msgstr "Aggiungi una soluzione"
 
 #: src/CommonITILObject.php:6520
 msgctxt "button"
@@ -19691,16 +19691,16 @@ msgstr "Trova un elemento libero in un periodo specifico"
 
 #: src/ReservationItem.php:570
 msgid "Booking calendar"
-msgstr ""
+msgstr "Calendario delle prenotazioni"
 
 #: src/ReservationItem.php:689
 msgid "Reserve this item"
-msgstr ""
+msgstr "Prenota questo elemento"
 
 #: src/ReservationItem.php:703
 msgctxt "button"
 msgid "Book"
-msgstr ""
+msgstr "Prenota"
 
 #: src/ReservationItem.php:792
 msgid "Device reservations expiring today"
@@ -20483,7 +20483,7 @@ msgstr ""
 #: src/Console/Migration/RacksPluginToCoreCommand.php:226
 #: src/Console/Migration/AppliancesPluginToCoreCommand.php:173
 msgid "Do you want to launch migration?"
-msgstr ""
+msgstr "Vuoi eseguire la migrazione?"
 
 #: src/Console/Migration/DomainsPluginToCoreCommand.php:170
 #: src/Console/Migration/RacksPluginToCoreCommand.php:270
@@ -20661,7 +20661,7 @@ msgstr ""
 #: src/Console/Migration/Utf8mb4Command.php:201
 #: src/Console/Migration/DynamicRowFormatCommand.php:156
 msgid "Errors occured during migration."
-msgstr ""
+msgstr "Ci sono stati degli errori durante la migrazione."
 
 #: src/Console/Migration/DynamicRowFormatCommand.php:64
 msgid ""
@@ -22089,12 +22089,12 @@ msgstr "ERRORE"
 #: src/Console/System/CheckRequirementsCommand.php:87
 #: templates/install/blocks/requirements_table.html.twig:45
 msgid "Suggested"
-msgstr ""
+msgstr "Consigliato"
 
 #: src/Console/System/CheckRequirementsCommand.php:88
 #: templates/install/blocks/requirements_table.html.twig:47
 msgid "Required"
-msgstr ""
+msgstr "Richiesto"
 
 #: src/Console/System/ListServicesCommand.php:49
 msgid "List system services"
@@ -22548,7 +22548,7 @@ msgstr ""
 
 #: src/System/Requirement/SeLinux.php:43
 msgid "SELinux configuration"
-msgstr ""
+msgstr "Configurazione SELinux"
 
 #. TRANS: %s is mode name (Permissive, Enforcing, Disabled or Unknown)
 #: src/System/Requirement/SeLinux.php:83
@@ -22993,23 +22993,23 @@ msgstr "Caricamento effettuato"
 
 #: js/gantt-helper.js:137
 msgid "Start date:"
-msgstr ""
+msgstr "Data di inizio:"
 
 #: js/gantt-helper.js:139
 msgid "End date:"
-msgstr ""
+msgstr "Data di termine:"
 
 #: js/gantt-helper.js:140
 msgid "Progress:"
-msgstr ""
+msgstr "Avanzamento:"
 
 #: js/gantt-helper.js:142
 msgid "Description:"
-msgstr ""
+msgstr "Descrizione:"
 
 #: js/gantt-helper.js:145
 msgid "Comment:"
-msgstr ""
+msgstr "Commento:"
 
 #: js/gantt-helper.js:152
 msgid "Project / Task"
@@ -23175,8 +23175,8 @@ msgstr "Serie"
 #: js/planning.js:358 js/planning.js:475 js/planning.js:518
 msgid "Instance"
 msgid_plural "Instances"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Istanza"
+msgstr[1] "Istanze"
 
 #: js/planning.js:466
 msgid "Recurring event resized"
@@ -23204,15 +23204,15 @@ msgstr ""
 
 #: js/planning.js:542
 msgid "Edit an event"
-msgstr ""
+msgstr "Modifica un evento"
 
 #: js/planning.js:580
 msgid "Add an event"
-msgstr ""
+msgstr "Aggiungi un evento"
 
 #: js/planning.js:681
 msgid "Add a calendar"
-msgstr ""
+msgstr "Aggiungi un calendario"
 
 #: js/rack.js:87
 msgid "Add PDU"
@@ -23224,11 +23224,11 @@ msgstr ""
 
 #: js/reservations.js:229
 msgid "Add reservation"
-msgstr ""
+msgstr "Aggiungi prenotazione"
 
 #: js/reservations.js:251
 msgid "Edit reservation"
-msgstr ""
+msgstr "Modifica prenotazione"
 
 #: templates/dropdown_form.html.twig:206
 msgid "Rack pictures"
@@ -23287,11 +23287,11 @@ msgstr "Impossibile connettersi al database"
 
 #: templates/install/step3.html.twig:59
 msgid "Database engine is not supported."
-msgstr ""
+msgstr "Il motore di database non è supportato."
 
 #: templates/install/step3.html.twig:66
 msgid "Database configuration is not supported."
-msgstr ""
+msgstr "La configurazione del database non è supportata."
 
 #: templates/install/step3.html.twig:76
 msgid "Please select a database:"
@@ -23299,7 +23299,7 @@ msgstr "Per favore seleziona il database:"
 
 #: templates/install/step3.html.twig:76
 msgid "Please select a database to update:"
-msgstr ""
+msgstr "Seleziona il database che si vuole aggiornare::"
 
 #: templates/install/step3.html.twig:88
 msgid "Create a new database or use an existing one:"
@@ -23373,7 +23373,7 @@ msgstr "Limita il numero di dati"
 
 #: templates/components/form/snmpcredential.html.twig:41
 msgid "SNMP version"
-msgstr ""
+msgstr "Versione SNMP"
 
 #: templates/components/form/snmpcredential.html.twig:71
 msgid "Encryption protocol for authentication "
@@ -23389,11 +23389,11 @@ msgstr "Orario di intervento"
 
 #: templates/components/form/support_hours.html.twig:36
 msgid "On week"
-msgstr ""
+msgstr "Durante la settimana"
 
 #: templates/components/form/support_hours.html.twig:41
 msgid "On Saturday"
-msgstr ""
+msgstr "Sabato"
 
 #: templates/components/form/support_hours.html.twig:42
 msgid "Use Saturday"
@@ -23447,11 +23447,11 @@ msgstr "Invia la chiamata"
 
 #: templates/components/itilobject/fields/priority_matrix.html.twig:71
 msgid "impact"
-msgstr ""
+msgstr "impatto"
 
 #: templates/components/itilobject/fields/priority_matrix.html.twig:92
 msgid "priority"
-msgstr ""
+msgstr "priorità"
 
 #: templates/components/itilobject/fields/status.html.twig:57
 msgid "Reopen"
@@ -23638,11 +23638,11 @@ msgstr ""
 
 #: templates/components/itilobject/actors/field.html.twig:143
 msgid "Number of tickets already assigned"
-msgstr ""
+msgstr "Totale chiamate già assegnate"
 
 #: templates/components/itilobject/actors/main.html.twig:96
 msgid "Observer"
-msgstr ""
+msgstr "Osservatore"
 
 #: templates/components/itilobject/actors/main.html.twig:143
 msgid "Edit notification settings"
@@ -23699,7 +23699,7 @@ msgstr "Scade il %s"
 
 #: templates/components/kanban/kanban.html.twig:53
 msgid "Role"
-msgstr ""
+msgstr "Ruolo"
 
 #: templates/components/kanban/item_panels/default_panel.html.twig:69
 msgid "Team"
@@ -23775,7 +23775,7 @@ msgstr "Giorni"
 
 #: templates/pages/tools/project/gantt.html.twig:54
 msgid "Weeks"
-msgstr ""
+msgstr "Settimane"
 
 #: templates/pages/tools/project/gantt.html.twig:57
 msgid "Months"
@@ -23787,7 +23787,7 @@ msgstr ""
 
 #: templates/pages/tools/project/gantt.html.twig:63
 msgid "Years"
-msgstr ""
+msgstr "Anni"
 
 #: templates/pages/tools/project/gantt.html.twig:73
 msgid "Find"
@@ -23981,7 +23981,7 @@ msgstr "Descrizione del problema"
 #: templates/layout/parts/context_links.html.twig:58
 #: templates/layout/parts/context_links.html.twig:60
 msgid "Lists"
-msgstr ""
+msgstr "Liste"
 
 #: templates/layout/parts/context_links.html.twig:83
 #: templates/layout/parts/context_links.html.twig:85

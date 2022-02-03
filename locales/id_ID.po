@@ -211,7 +211,7 @@ msgstr "Menambahkan perangkat baru"
 
 #: ajax/selectUnaffectedOrNewItem_Device.php:79
 msgid "No unaffected device!"
-msgstr ""
+msgstr "Tidak ada perangkat yang terpengaruh!"
 
 #: ajax/ticketiteminformation.php:72
 #, php-format
@@ -291,7 +291,7 @@ msgstr "Grup saya"
 #: ajax/searchoptionvalue.php:85 src/Dashboard/Filter.php:170
 #: src/DbUtils.php:1590 src/Search.php:3266
 msgid "Myself"
-msgstr ""
+msgstr "Diriku"
 
 #: ajax/ticketsatisfaction.php:59 src/Entity.php:1194
 msgid "Create survey after"
@@ -1559,7 +1559,7 @@ msgstr "Tautan Direktori LDAP"
 
 #: front/ldap.group.php:67
 msgid "Bulk import groups from a LDAP directory"
-msgstr ""
+msgstr "Impor massal grup dari direktori LDAP"
 
 #: front/ldap.group.php:69
 msgid "Import of new groups"
@@ -1620,7 +1620,7 @@ msgstr "%s mencoba untuk menggunakan jalur non standar."
 
 #: front/contenttemplates/documentation.php:46
 msgid "Template variables documentation"
-msgstr ""
+msgstr "Dokumentasi variabel template"
 
 #: front/report.year.list.php:45 src/NotificationTargetSoftwareLicense.php:98
 #: src/NotificationTargetReservation.php:186
@@ -1804,7 +1804,7 @@ msgstr "%smenambah aktor"
 #: front/problem.form.php:200
 #, php-format
 msgid "%s Kanban"
-msgstr ""
+msgstr "%s Kanban"
 
 #: front/change.form.php:211 front/ticket.form.php:252
 #: front/problem.form.php:214
@@ -1958,13 +1958,13 @@ msgstr "(%1$d masalah otorisasi, %2$d kegagalan)"
 #: front/item_disk.form.php:61
 #, php-format
 msgid "%s adds a volume"
-msgstr ""
+msgstr "%s Tambahkan Volume"
 
 #. TRANS: %s is the user login
 #: front/item_disk.form.php:78
 #, php-format
 msgid "%s purges a volume"
-msgstr ""
+msgstr "%sBersihkan Volume"
 
 #. TRANS: %s is the user login
 #: front/item_disk.form.php:96
@@ -2095,7 +2095,7 @@ msgstr ""
 #: front/item_remotemanagement.form.php:61
 #, php-format
 msgid "%s adds a remote management"
-msgstr ""
+msgstr "%s tambahkan manajemen remot"
 
 #. TRANS: %s is the user login
 #: front/item_remotemanagement.form.php:78
@@ -2317,13 +2317,13 @@ msgstr "%1$s Pembaruan lisensi %2$s"
 #: front/savedsearch_alert.form.php:58
 #, php-format
 msgid "%s adds an alert"
-msgstr ""
+msgstr "%s tambahkan peringatan"
 
 #. TRANS: %s is the user login
 #: front/savedsearch_alert.form.php:75
 #, php-format
 msgid "%s purges an alert"
-msgstr ""
+msgstr "%s membersihkan peringatan"
 
 #. TRANS: %s is the user login
 #: front/savedsearch_alert.form.php:91

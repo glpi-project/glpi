@@ -15,11 +15,11 @@
 # Stephan <stephan.rennert@web.de>, 2021
 # Florian - <community@subsidoo.net>, 2021
 # Thorsten, 2021
-# Viktor Schopf, 2021
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2021
 # DOMBRE Julien <moyo@indepnet.net>, 2021
 # Max Tf <transifex1@maxtf.de>, 2021
 # Ali Saglam <ali.saglam@live.de>, 2021
+# Viktor Schopf, 2022
 # 
 #, fuzzy
 msgid ""
@@ -28,7 +28,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-12-14 12:46+0000\n"
 "PO-Revision-Date: 2021-05-26 09:06+0000\n"
-"Last-Translator: Ali Saglam <ali.saglam@live.de>, 2021\n"
+"Last-Translator: Viktor Schopf, 2022\n"
 "Language-Team: German (Germany) (https://www.transifex.com/glpi/teams/1637/de_DE/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -8842,7 +8842,7 @@ msgstr "Wählen Sie die Einträge, die standardmäßig angezeigt werden sollen"
 
 #: src/NetworkPort.php:726
 msgid "Connections legend"
-msgstr ""
+msgstr "Legende der Verbindungen"
 
 #: src/NetworkPort.php:727
 msgid "Equipment in trunk or tagged mode"
@@ -8972,11 +8972,11 @@ msgstr ""
 
 #: src/NetworkPort.php:1503
 msgid "Internal status"
-msgstr ""
+msgstr "Interner Status"
 
 #: src/NetworkPort.php:1510
 msgid "Last change"
-msgstr ""
+msgstr "Letzte Änderung"
 
 #: src/NetworkPort.php:1517
 msgid "Number of I/O bytes"
@@ -8984,7 +8984,7 @@ msgstr ""
 
 #: src/NetworkPort.php:1524
 msgid "Number of I/O errors"
-msgstr ""
+msgstr "Anzahl I/O Fehler"
 
 #: src/NetworkPort.php:1531
 msgid "Duplex"
@@ -22553,6 +22553,8 @@ msgid ""
 "Timezones seems not loaded, see https://glpi-"
 "install.readthedocs.io/en/latest/timezones.html."
 msgstr ""
+"Zeitzonen scheinen nicht geladen zu sein, siehe https://glpi-"
+"install.readthedocs.io/en/latest/timezones.html."
 
 #: src/System/Requirement/DbTimezones.php:91
 msgid "Timezones seems loaded in database."

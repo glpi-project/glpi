@@ -7,7 +7,7 @@
 # Микола Якименко <yakimuseg@gmail.com>, 2021
 # DOMBRE Julien <moyo@indepnet.net>, 2021
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2021
-# Andriy Smilyanets <smile.andriy@gmail.com>, 2021
+# Andriy Smilyanets <smile.andriy@gmail.com>, 2022
 # 
 #, fuzzy
 msgid ""
@@ -16,7 +16,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-12-14 12:46+0000\n"
 "PO-Revision-Date: 2021-05-26 09:06+0000\n"
-"Last-Translator: Andriy Smilyanets <smile.andriy@gmail.com>, 2021\n"
+"Last-Translator: Andriy Smilyanets <smile.andriy@gmail.com>, 2022\n"
 "Language-Team: Ukrainian (Ukraine) (https://www.transifex.com/glpi/teams/1637/uk_UA/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1162,7 +1162,7 @@ msgstr "Обов’язкові поля не заповнені!"
 #: front/knowbaseitem_knowbaseitemcategory.form.php:55
 #, php-format
 msgid "%s adds a link with a category"
-msgstr ""
+msgstr "%s додав зв'язок з категорією"
 
 #: front/itiltemplatefield.form.php:64
 msgid "hidden"
@@ -4039,11 +4039,11 @@ msgstr "Вимкнути"
 
 #: src/AuthLDAP.php:3989
 msgid "Do nothing"
-msgstr ""
+msgstr "Нічого не робити"
 
 #: src/AuthLDAP.php:3990
 msgid "Restore (move out of trashbin)"
-msgstr ""
+msgstr "Відновити (перенести з корзини)"
 
 #: src/AuthLDAP.php:3991 src/Plugin.php:2563 src/Marketplace/View.php:771
 msgid "Enable"
@@ -5532,10 +5532,10 @@ msgstr "Видалити проект"
 #: src/Project.php:2588
 msgid "Manager"
 msgid_plural "Managers"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Керівник"
+msgstr[1] "Керівника"
+msgstr[2] "Керівників"
+msgstr[3] "Керівники"
 
 #: src/NotificationTargetProject.php:59 src/NotificationTargetProject.php:638
 #: src/Project.php:650 src/Project.php:1166
@@ -8694,15 +8694,15 @@ msgstr ""
 
 #: src/Inventory/Conf.php:555
 msgid "Virtual network cards"
-msgstr ""
+msgstr "Віртуальні мережеві карти"
 
 #: src/Inventory/Conf.php:614
 msgid "Network drives"
-msgstr ""
+msgstr "Мережеві диски"
 
 #: src/Inventory/Conf.php:629
 msgid "Removable drives"
-msgstr ""
+msgstr "Змінні диски"
 
 #: src/Inventory/Conf.php:686 src/PlanningRecall.php:358
 #: src/Item_Devices.php:734 src/Dashboard/Grid.php:285 src/CommonGLPI.php:1346
@@ -17271,7 +17271,7 @@ msgstr "Каталог типів мережевих пристроїв"
 
 #: src/KnowbaseItem_KnowbaseItemCategory.php:176
 msgid "Add a category"
-msgstr ""
+msgstr "Додати категорію"
 
 #: src/KnowbaseItem_KnowbaseItemCategory.php:226
 msgid "Category name"
@@ -17957,7 +17957,7 @@ msgstr "Дія після видалення користувача з AD/LDAP"
 
 #: src/Config.php:743
 msgid "Action when a user is restored in the LDAP directory"
-msgstr ""
+msgstr "Дія, коли користувач відновлений в каталогу LDAP"
 
 #: src/Config.php:748
 msgid "GLPI server time zone"
@@ -18437,7 +18437,7 @@ msgstr "1 - Критичний (тільки помилки входу)"
 
 #: src/Config.php:2074
 msgid "2- Severe (not used)"
-msgstr "2 - Дуже важливий (не використовується)"
+msgstr "2 - Найважливіший (не використовується)"
 
 #: src/Config.php:2075
 msgid "3- Important (successful logins)"
@@ -18508,7 +18508,7 @@ msgstr "Обережно, Ви користуєтесь тестовою, нес
 
 #: src/Config.php:3011
 msgid "You are using a pre-release version, be careful!"
-msgstr ""
+msgstr "Ви користуєтесь пре-релізною версією, будьте обережні!"
 
 #: src/Config.php:3018
 msgid "I know I am using a unstable version."
@@ -18990,7 +18990,7 @@ msgstr "Модель автоматичного перенесення підр�
 
 #: src/Entity.php:1760
 msgid "Agent base URL"
-msgstr ""
+msgstr "Базовий URL агенту"
 
 #: src/Entity.php:1899
 msgid "Alarms options"
@@ -19043,10 +19043,10 @@ msgstr "Конфігурація шаблонів"
 #: src/Entity.php:2517 src/ChangeTemplate.php:48
 msgid "Change template"
 msgid_plural "Change templates"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Змінити шаблон"
+msgstr[1] "Змінити шаблони"
+msgstr[2] "Змінити шаблони"
+msgstr[3] "Змінити шаблони"
 
 #: src/Entity.php:2573
 msgid "Tickets configuration"
@@ -19182,7 +19182,7 @@ msgstr "Найвищий"
 #: src/CommonITILObject.php:2834
 msgctxt "priority"
 msgid "Very high"
-msgstr "Дуже високий"
+msgstr "Найвищий"
 
 #: src/CommonITILObject.php:2837
 msgctxt "priority"
@@ -19202,7 +19202,7 @@ msgstr "Низький"
 #: src/CommonITILObject.php:2846
 msgctxt "priority"
 msgid "Very low"
-msgstr "Дуже низький"
+msgstr "Найнижчий"
 
 #: src/CommonITILObject.php:2850
 msgctxt "priority"
@@ -19212,7 +19212,7 @@ msgstr "Всі"
 #: src/CommonITILObject.php:2852
 msgctxt "priority"
 msgid "At least very low"
-msgstr "Принаймі дуже низька"
+msgstr "Принаймі найнижчий"
 
 #: src/CommonITILObject.php:2854
 msgctxt "priority"
@@ -19232,12 +19232,12 @@ msgstr "Принаймі висока"
 #: src/CommonITILObject.php:2860
 msgctxt "priority"
 msgid "At least very high"
-msgstr "Принаймі дуже висока"
+msgstr "Принаймі найвищий"
 
 #: src/CommonITILObject.php:2956 templates/anonymous_helpdesk.html.twig:45
 msgctxt "urgency"
 msgid "Very high"
-msgstr "Дуже висока"
+msgstr "Найвища"
 
 #: src/CommonITILObject.php:2959 templates/anonymous_helpdesk.html.twig:46
 msgctxt "urgency"
@@ -19257,7 +19257,7 @@ msgstr "Низька"
 #: src/CommonITILObject.php:2968 templates/anonymous_helpdesk.html.twig:49
 msgctxt "urgency"
 msgid "Very low"
-msgstr "Дуже низька"
+msgstr "Найнижча"
 
 #: src/CommonITILObject.php:2972
 msgctxt "urgency"
@@ -19267,7 +19267,7 @@ msgstr "Всі"
 #: src/CommonITILObject.php:2974
 msgctxt "urgency"
 msgid "At least very low"
-msgstr "Принаймі дуже низька"
+msgstr "Принаймі найнижча"
 
 #: src/CommonITILObject.php:2976
 msgctxt "urgency"
@@ -19287,12 +19287,12 @@ msgstr "Принаймі висока"
 #: src/CommonITILObject.php:2982
 msgctxt "urgency"
 msgid "At least very high"
-msgstr "Принаймі дуже висока"
+msgstr "Принаймі найвища"
 
 #: src/CommonITILObject.php:3078
 msgctxt "impact"
 msgid "Very high"
-msgstr "Дуже високий"
+msgstr "Найвищий"
 
 #: src/CommonITILObject.php:3081
 msgctxt "impact"
@@ -19312,7 +19312,7 @@ msgstr "Низький"
 #: src/CommonITILObject.php:3090
 msgctxt "impact"
 msgid "Very low"
-msgstr "Дуже низький"
+msgstr "Найнижчий"
 
 #: src/CommonITILObject.php:3094
 msgctxt "impact"
@@ -19322,7 +19322,7 @@ msgstr "Всі"
 #: src/CommonITILObject.php:3096
 msgctxt "impact"
 msgid "At least very low"
-msgstr "Принаймі дуже низька"
+msgstr "Принаймі найнижчий"
 
 #: src/CommonITILObject.php:3098
 msgctxt "impact"
@@ -19342,7 +19342,7 @@ msgstr "Принаймі висока"
 #: src/CommonITILObject.php:3104
 msgctxt "impact"
 msgid "At least very high"
-msgstr "Принаймі дуже висока"
+msgstr "Принаймі найвищий"
 
 #: src/CommonITILObject.php:3799
 msgid "Time to resolve + Progress"
@@ -21591,6 +21591,8 @@ msgstr "Можливі значення:"
 #, php-format
 msgid "Force strategy used for restored users (current configured action: \"%s\")"
 msgstr ""
+"Форсувати стратегію для відновлених користувачів (зараз налаштована дія: "
+"\"%s\")"
 
 #: src/Console/Ldap/SynchronizeUsersCommand.php:218
 msgid "No active LDAP server found."
@@ -21675,7 +21677,7 @@ msgstr "Видалені з LDAP"
 
 #: src/Console/Ldap/SynchronizeUsersCommand.php:425
 msgid "Restored from LDAP"
-msgstr ""
+msgstr "Відновлений з LDAP"
 
 #: src/Console/Ldap/SynchronizeUsersCommand.php:460
 msgid ""
@@ -23233,7 +23235,7 @@ msgstr "Додати календар"
 
 #: js/rack.js:87
 msgid "Add PDU"
-msgstr ""
+msgstr "Додати PDU"
 
 #: js/reservations.js:120
 msgid "Timeline Week"
@@ -23429,7 +23431,7 @@ msgstr "Закрити"
 
 #: templates/components/form/buttons.html.twig:89
 msgid "Keep the devices while deleting this item"
-msgstr ""
+msgstr "Зберігати пристрої при видаленні цього елементу"
 
 #: templates/components/form/dates.html.twig:53
 #, php-format
@@ -23716,19 +23718,19 @@ msgstr "Дійсно до %s"
 
 #: templates/components/kanban/kanban.html.twig:53
 msgid "Role"
-msgstr ""
+msgstr "Роль"
 
 #: templates/components/kanban/item_panels/default_panel.html.twig:69
 msgid "Team"
-msgstr ""
+msgstr "Команда"
 
 #: templates/components/kanban/item_panels/default_panel.html.twig:94
 msgid "No team members"
-msgstr ""
+msgstr "Немає членів команди"
 
 #: templates/components/kanban/item_panels/default_panel.html.twig:102
 msgid "Open full form"
-msgstr ""
+msgstr "Відкрити повну форму"
 
 #: templates/components/logs.html.twig:36
 msgid "No historical"
@@ -24007,7 +24009,7 @@ msgstr "Списки"
 #: templates/layout/parts/context_links.html.twig:83
 #: templates/layout/parts/context_links.html.twig:85
 msgid "Global GANTT"
-msgstr ""
+msgstr "Глобальний GANTT"
 
 #: templates/layout/parts/context_links.html.twig:90
 #: templates/layout/parts/context_links.html.twig:92
@@ -24020,7 +24022,7 @@ msgstr "Ctrl+Alt+G"
 
 #: templates/layout/parts/goto_button.html.twig:39
 msgid "Find menu"
-msgstr ""
+msgstr "Меню пошуку"
 
 #: templates/layout/parts/page_header.html.twig:63
 msgid "Collapse menu"

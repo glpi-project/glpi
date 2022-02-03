@@ -11,7 +11,7 @@
 # DOMBRE Julien <moyo@indepnet.net>, 2021
 # 青海K, 2021
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2021
-# Daisuke Inoue, 2021
+# Daisuke Inoue, 2022
 # 
 #, fuzzy
 msgid ""
@@ -20,7 +20,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-12-14 12:46+0000\n"
 "PO-Revision-Date: 2021-05-26 09:06+0000\n"
-"Last-Translator: Daisuke Inoue, 2021\n"
+"Last-Translator: Daisuke Inoue, 2022\n"
 "Language-Team: Japanese (Japan) (https://www.transifex.com/glpi/teams/1637/ja_JP/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -30,11 +30,11 @@ msgstr ""
 
 #: ajax/gantt.php:110
 msgid "Target item must be of project type"
-msgstr "対象のアイテムは、プロジェクト種類に合致していなくてはなりません"
+msgstr "対象のアイテムは、プロジェクトの型に合致していなくてはなりません"
 
 #: ajax/gantt.php:143
 msgid "Item must be of project type"
-msgstr "アイテムは、プロジェクト種類に合致していなくてはなりません"
+msgstr "アイテムは、プロジェクトの型に合致していなくてはなりません"
 
 #: ajax/gantt.php:208
 msgid "Link already exist!"
@@ -67,7 +67,7 @@ msgstr "使用可能"
 #: ajax/dropdownShowIPNetwork.php:55
 #, php-format
 msgid "IP network: %1$s/%2$s"
-msgstr "IPネットワーク: %1$s/%2$s"
+msgstr "IP ネットワーク: %1$s/%2$s"
 
 #: ajax/dropdownShowIPNetwork.php:56
 #, php-format
@@ -296,15 +296,15 @@ msgstr "自分"
 
 #: ajax/ticketsatisfaction.php:59 src/Entity.php:1194
 msgid "Create survey after"
-msgstr "指定日後に調査を作成"
+msgstr "指定日後にアンケートを作成"
 
 #: ajax/ticketsatisfaction.php:67 src/CronTask.php:684 src/CronTask.php:719
 msgid "As soon as possible"
-msgstr "できる限り早く"
+msgstr "できるだけ早く"
 
 #: ajax/ticketsatisfaction.php:73
 msgid "Rate to trigger survey"
-msgstr "調査のトリガーとなるレート"
+msgstr "アンケートのトリガーとなる比率"
 
 #: ajax/ticketsatisfaction.php:79 src/PendingReason.php:147
 #: src/PendingReason.php:204 src/PendingReason.php:257
@@ -748,7 +748,7 @@ msgid ""
 "hardware configuration."
 msgstr ""
 "弊社が収集するのは以下のデータのみです : "
-"プラグインの使用状況、ユーザーインターフェースのパフォーマンスおよび応答の統計、メモリーおよびハードウェアの設定。"
+"プラグインの利用統計、ユーザーインターフェースのパフォーマンスおよび応答の統計、メモリーおよびハードウェアの設定。"
 
 #: ajax/dcroom_size.php:63 templates/pages/assets/rack.html.twig:76
 #: templates/pages/assets/rack.html.twig:79
@@ -757,7 +757,7 @@ msgstr "スペースがないか、選択していません"
 
 #: ajax/dropdownTrackingDeviceType.php:71 front/find_num.php:77
 msgid "Enter the first letters (user, item name, serial or asset number)"
-msgstr "最初の文字を入力してください (ユーザー名、アイテム名、シリアル番号もしくは情報資産番号)"
+msgstr "最初の文字を入力してください （ユーザー名、アイテム名、シリアル番号もしくは情報資産番号）"
 
 #: ajax/central.php:87
 msgid "Invalid widget"
@@ -883,7 +883,7 @@ msgstr "契約中のハードウェア"
 #: src/Item_SoftwareLicense.php:815 src/Lockedfield.php:69
 #: templates/components/search/table.html.twig:93
 msgid "Item type"
-msgstr "アイテムの種類"
+msgstr "アイテムの型"
 
 #: front/report.contract.php:63 front/report.year.php:64
 #: src/NotImportedEmail.php:206 src/Csv/LogCsvExport.php:72
@@ -1079,7 +1079,7 @@ msgstr "%s が対象を追加"
 #: front/knowbaseitem.form.php:144
 #, php-format
 msgid "Knowledge base item has been reverted to revision %s"
-msgstr "ナレッジベースのアイテムを、リビジョン %s へと復元しました"
+msgstr "ナレッジベースのアイテムを、リビジョン %s で復元しました"
 
 #: front/knowbaseitem.form.php:151
 #, php-format
@@ -1149,7 +1149,7 @@ msgstr "未入力の必須項目があります！"
 #: front/knowbaseitem_knowbaseitemcategory.form.php:55
 #, php-format
 msgid "%s adds a link with a category"
-msgstr ""
+msgstr "%s がカテゴリ付リンクを追加"
 
 #: front/itiltemplatefield.form.php:64
 msgid "hidden"
@@ -1281,7 +1281,7 @@ msgstr[0] "カテゴリ"
 #: templates/generic_show_form.html.twig:165
 msgid "Type"
 msgid_plural "Types"
-msgstr[0] "種類"
+msgstr[0] "型"
 
 #: front/stat.graph.php:216 front/stat.tracking.php:96
 #: src/NotificationTargetProject.php:635
@@ -1319,7 +1319,7 @@ msgstr "影響度"
 #: templates/components/user/info_card.html.twig:75
 msgctxt "person"
 msgid "Title"
-msgstr "肩書"
+msgstr "題"
 
 #: front/stat.graph.php:351 front/stat.graph.php:352 src/Html.php:3932
 #: src/Html.php:4106 src/CommonGLPI.php:1019
@@ -1421,7 +1421,7 @@ msgstr "要素を選択してないか、未定義の操作です"
 #: front/inventory.conf.php:40 src/Inventory/Inventory.php:450
 #: src/Inventory/Inventory.php:887 src/Profile.php:1666
 msgid "Inventory"
-msgstr "棚卸"
+msgstr "資産"
 
 #: front/inventory.conf.php:53
 msgid "Configuration has been updated"
@@ -1474,7 +1474,7 @@ msgstr "カテゴリツリー"
 
 #: front/stat.tracking.php:103
 msgid "Location tree"
-msgstr "場所のツリー"
+msgstr "場所ツリー"
 
 #: front/stat.tracking.php:108 src/Profile_User.php:931 src/Plugin.php:2167
 #: src/NetworkPortFiberchannel.php:205 src/LevelAgreementLevel.php:88
@@ -1502,7 +1502,7 @@ msgstr "場所のツリー"
 #: src/ReservationItem.php:174 src/Supplier.php:144
 #: src/SoftwareLicense.php:335 src/Item_SoftwareLicense.php:71
 msgid "Characteristics"
-msgstr "プロパティ"
+msgstr "特徴"
 
 #: front/stat.tracking.php:109 src/Group.php:266 src/Group.php:478
 #: src/NotificationTargetCommonITILObject.php:1894 src/Log.php:536
@@ -1513,7 +1513,7 @@ msgstr "担当者"
 
 #: front/stat.tracking.php:110
 msgid "Technician as assigned"
-msgstr "割り当て済み技術者"
+msgstr "割当済み技術者"
 
 #: front/stat.tracking.php:112
 msgid "Technician in tasks"
@@ -1547,7 +1547,7 @@ msgstr "ハードウェア別"
 
 #: front/report.networking.php:81
 msgid "By network socket"
-msgstr "ネットワークソケット別"
+msgstr "ネットワーク端子別"
 
 #: front/notification.tags.php:38
 msgid "List of available tags"
@@ -1919,7 +1919,7 @@ msgstr "OK"
 
 #: front/tracking.injector.php:83
 msgid "Thank you for using our automatic helpdesk system."
-msgstr "ご利用ありがとうございました。"
+msgstr "自動ヘルプシステムのご利用、ありがとうございました。"
 
 #: front/tracking.injector.php:92 front/rule.common.php:129
 #: front/ldap.group.import.php:72 front/rule.backup.php:83
@@ -1953,7 +1953,7 @@ msgstr "操作は成功しました"
 #: front/massiveaction.php:78
 #, php-format
 msgid "(%1$d authorizations problems, %2$d failures)"
-msgstr "(認証の問題 %1$d, 失敗 %2$d)"
+msgstr "（認証の問題 %1$d, 失敗 %2$d）"
 
 #. TRANS: %s is the user login
 #: front/item_disk.form.php:61
@@ -2190,7 +2190,7 @@ msgstr "ネットワーク ポートの移行エラーを消去"
 
 #: front/rule.php:47
 msgid "Rule type"
-msgstr "ルールの種類"
+msgstr "ルールの型"
 
 #. TRANS: %s is the user login
 #: front/monitor.form.php:127 front/phone.form.php:127
@@ -2223,7 +2223,7 @@ msgstr "値"
 #: front/report.infocom.conso.php:252 front/report.infocom.php:273
 #, php-format
 msgid "%1$s account net value"
-msgstr "%1$s 口座価格（正味価格）"
+msgstr "%1$s 口座正味価格"
 
 #: front/report.infocom.conso.php:280 front/report.infocom.php:302
 #, php-format
@@ -2234,11 +2234,11 @@ msgstr "%1$s 価格"
 #: front/report.infocom.php:348
 #, php-format
 msgid "Total: Value=%1$s - Account net value=%2$s"
-msgstr "合計: 価格=%1$s - 正味の価格=%2$s"
+msgstr "合計: 価格 = %1$s- 正味の価格 = %2$s"
 
 #: front/report.infocom.conso.php:337 front/report.infocom.php:358
 msgid "Total account net value"
-msgstr "総口座価格（正味価格）"
+msgstr "総口座正味価格"
 
 #: front/report.infocom.conso.php:351 front/report.infocom.php:372
 msgid "Total value"
@@ -2357,7 +2357,7 @@ msgstr "代替ユーザー名"
 
 #: front/find_num.php:91
 msgid "Hardware type"
-msgstr "ハードウェアの種類"
+msgstr "ハードウェアの型"
 
 #: front/find_num.php:93 src/AuthLDAP.php:997 src/Profile_User.php:938
 #: src/Unmanaged.php:90 src/Csv/LogCsvExport.php:71 src/ContractCost.php:131
@@ -2493,24 +2493,24 @@ msgstr "ナレッジベースのアイテムの翻訳を、リビジョン %s �
 #: front/socket.form.php:62 front/socket.form.php:122
 #, php-format
 msgid "%s adds a socket"
-msgstr "%s がソケットを追加"
+msgstr "%s が端子を追加"
 
 #. TRANS: %s is the user login
 #: front/socket.form.php:79
 #, php-format
 msgid "%s purges a socket"
-msgstr "%s がソケットを抹消"
+msgstr "%s が端子を抹消"
 
 #. TRANS: %s is the user login
 #: front/socket.form.php:93
 #, php-format
 msgid "%s updates a socket"
-msgstr "%s がソケットを更新"
+msgstr "%s が端子を更新"
 
 #: front/socket.form.php:109
 #, php-format
 msgid "%1$s adds several sockets"
-msgstr "%1$s がいくつかのソケットを追加"
+msgstr "%1$s がいくつかの端子を追加"
 
 #: front/devices.php:38 front/devices.php:42 src/CommonDevice.php:50
 #: src/CommonDevice.php:299 src/Dropdown.php:940 src/Item_Devices.php:265
@@ -2871,7 +2871,7 @@ msgstr[0] "通知"
 #: front/cartridgeitem_printermodel.form.php:52
 #, php-format
 msgid "%s associates a type"
-msgstr "%s が種類の関連付け"
+msgstr "%s が型を関連付け"
 
 #: front/dictionnary.php:41 src/Rule.php:270
 msgid "Dictionary"
@@ -3251,7 +3251,7 @@ msgstr "可能な操作はありません"
 #: src/MassiveAction.php:142 src/MassiveAction.php:151
 #: src/MassiveAction.php:260 src/MassiveAction.php:900
 msgid "Implementation error!"
-msgstr ""
+msgstr "実装エラー！"
 
 #: src/MassiveAction.php:253
 msgid "No selected items"
@@ -3263,7 +3263,7 @@ msgstr "無効なプロセス"
 
 #: src/MassiveAction.php:457 src/MassiveAction.php:843
 msgid "Select the type of the item on which applying this action"
-msgstr "この操作に適用するアイテムの種類を選んでください"
+msgstr "この操作に適用するアイテムの型を選んでください"
 
 #: src/MassiveAction.php:493
 msgctxt "button"
@@ -3356,7 +3356,7 @@ msgstr "または"
 
 #: src/MassiveAction.php:1009
 msgid "How many copies do you want to create?"
-msgstr ""
+msgstr "コピーをいくつ作りますか？"
 
 #: src/MassiveAction.php:1035
 msgid "Are you sure you want to add this item to transfer list?"
@@ -3411,7 +3411,7 @@ msgstr "接続先"
 #: src/PrinterType.php:39 src/Rule.php:396
 msgid "Printer type"
 msgid_plural "Printer types"
-msgstr[0] "プリンターの種類"
+msgstr[0] "プリンターの型"
 
 #: src/AutoUpdateSystem.php:38
 msgid "Update Source"
@@ -3421,7 +3421,7 @@ msgstr[0] "更新元"
 #: src/ClusterType.php:38
 msgid "Cluster type"
 msgid_plural "Cluster types"
-msgstr[0] "クラスターの種類"
+msgstr[0] "クラスターの型"
 
 #: src/AuthLDAP.php:129
 msgid "LDAP directory"
@@ -3608,7 +3608,7 @@ msgstr "割り当て時にLDAP参照を更新（検索中以外）"
 
 #: src/AuthLDAP.php:581
 msgid "Domain name used by inventory tool for link the user"
-msgstr "棚卸ツールがユーザーをリンクする際に使うドメイン名"
+msgstr "インベントリーツールがユーザーをリンクする際に使うドメイン名"
 
 #: src/AuthLDAP.php:587
 msgid "TLS Certfile"
@@ -3671,7 +3671,7 @@ msgstr "グループに所属"
 
 #: src/AuthLDAP.php:771 src/AuthLDAP.php:1227
 msgid "Search type"
-msgstr "種類で検索"
+msgstr "型を検索"
 
 #: src/AuthLDAP.php:774 src/AuthLDAP.php:1199
 msgid "User attribute containing its groups"
@@ -3719,7 +3719,7 @@ msgstr "社員番号"
 #: src/AuthLDAP.php:883 src/AuthLDAP.php:1074 src/AuthLDAP.php:3712
 msgctxt "ldap"
 msgid "Phone"
-msgstr "電話機"
+msgstr "電話"
 
 #: src/AuthLDAP.php:886 src/AuthLDAP.php:1083 src/AuthLDAP.php:3713
 #: src/Contact_Supplier.php:301 src/Dropdown.php:492 src/Auth.php:1713
@@ -3824,7 +3824,7 @@ msgstr "作成日"
 
 #: src/AuthLDAP.php:1261
 msgid "Domain name used by inventory tool"
-msgstr "棚卸ツールが使用するドメイン名"
+msgstr "インベントリーツールが使用するドメイン名"
 
 #: src/AuthLDAP.php:1406 src/AuthLDAP.php:1421 src/AuthLDAP.php:3626
 msgid "Search filter for users"
@@ -3961,11 +3961,11 @@ msgstr "無効にする"
 
 #: src/AuthLDAP.php:3989
 msgid "Do nothing"
-msgstr ""
+msgstr "何もしない"
 
 #: src/AuthLDAP.php:3990
 msgid "Restore (move out of trashbin)"
-msgstr ""
+msgstr "復元 （ゴミ箱から取り出す）"
 
 #: src/AuthLDAP.php:3991 src/Plugin.php:2563 src/Marketplace/View.php:771
 msgid "Enable"
@@ -4212,22 +4212,22 @@ msgstr[0] "プラグイン"
 #: src/Plugin.php:709
 #, php-format
 msgid "Plugin %1$s has no uninstall function!"
-msgstr "プラグイン %1$s にはアンインストール機能がありません！"
+msgstr "%1$s プラグインにはアンインストール機能がありません！"
 
 #: src/Plugin.php:723
 #, php-format
 msgid "Plugin %1$s has been uninstalled!"
-msgstr "プラグイン %1$s をアンインストールしました！"
+msgstr "%1$s プラグインをアンインストールしました！"
 
 #: src/Plugin.php:725 src/Plugin.php:795 src/Plugin.php:902 src/Plugin.php:943
 #, php-format
 msgid "Plugin %1$s not found!"
-msgstr "プラグイン %1$s が見つかりません！"
+msgstr "%1$s プラグインが見つかりません！"
 
 #: src/Plugin.php:770
 #, php-format
 msgid "Plugin %1$s has been installed!"
-msgstr "プラグイン %1$s をインストールしました！"
+msgstr "%1$s プラグインをインストールしました！"
 
 #: src/Plugin.php:776 src/Plugin.php:2327 src/Plugin.php:2599
 msgctxt "button"
@@ -4236,22 +4236,22 @@ msgstr "有効にする"
 
 #: src/Plugin.php:781
 msgid "Do you want to %activate_link it?"
-msgstr "%a ctivate_link しますか？"
+msgstr "%aしますか？"
 
 #: src/Plugin.php:786
 #, php-format
 msgid "Plugin %1$s has been installed and must be configured!"
-msgstr "プラグイン %1$s をインストールしました。設定が必要です！"
+msgstr "%1$s プラグインをインストールしました。設定が必要です！"
 
 #: src/Plugin.php:792
 #, php-format
 msgid "Plugin %1$s has no install function!"
-msgstr "プラグイン %1$s にはインストール機能がありません！"
+msgstr "%1$s プラグインにはインストール機能がありません！"
 
 #: src/Plugin.php:827
 #, php-format
 msgid "Plugin %1$s is not CSRF compliant!"
-msgstr "プラグイン %1$s はCSRFに準拠していません！"
+msgstr "%1$s プラグインはCSRFに準拠していません！"
 
 #: src/Plugin.php:848
 msgid "Plugin prerequisites are not matching, it cannot be activated."
@@ -4260,7 +4260,7 @@ msgstr "プラグインの前提条件が一致していないため、有効化
 #: src/Plugin.php:883
 #, php-format
 msgid "Plugin %1$s has been activated!"
-msgstr "プラグイン %1$s を有効にしました！"
+msgstr "%1$s プラグインを有効にしました！"
 
 #: src/Plugin.php:893
 msgid "Plugin configuration must be done, it cannot be activated."
@@ -4269,7 +4269,7 @@ msgstr "プラグインの設定を行う必要があります。有効にする
 #: src/Plugin.php:934
 #, php-format
 msgid "Plugin %1$s has been deactivated!"
-msgstr "プラグイン %1$s を無効にしました！"
+msgstr "%1$s プラグインを無効にしました！"
 
 #: src/Plugin.php:1735 src/CronTask.php:894 src/RuleImportEntity.php:146
 msgid "GLPI"
@@ -4504,7 +4504,7 @@ msgstr "関連付け"
 #: src/IPNetwork_Vlan.php:166 src/NetworkPort_Vlan.php:171 src/Vlan.php:54
 #: src/Vlan.php:82 src/Vlan.php:175
 msgid "ID TAG"
-msgstr "ID TAG"
+msgstr "ID タグ"
 
 #: src/RuleImportEntityCollection.php:51 src/RuleImportEntity.php:47
 msgid "Rules for assigning an item to an entity"
@@ -4565,7 +4565,7 @@ msgstr "ファイバー チャンネル ポート速度"
 #: src/NetworkPortInstantiation.php:665 src/NetworkPortEthernet.php:155
 msgid "Network socket"
 msgid_plural "Network sockets"
-msgstr[0] ""
+msgstr[0] "ネットワーク端子"
 
 #: src/NetworkPortFiberchannel.php:213 src/Blacklist.php:232
 #: src/NetworkPortWifi.php:150 src/RefusedEquipment.php:124
@@ -4577,7 +4577,7 @@ msgstr "MACアドレス"
 
 #: src/NetworkPortFiberchannel.php:241
 msgid "Fiber port type"
-msgstr ""
+msgstr "光ファイバーポートの型"
 
 #. TRANS: %d is the speed
 #: src/NetworkPortFiberchannel.php:263 src/NetworkPortFiberchannel.php:310
@@ -4603,7 +4603,7 @@ msgstr "%d Mbit/秒"
 
 #: src/NetworkPortFiberchannel.php:376
 msgid "Network fiber socket"
-msgstr ""
+msgstr "ネットワーク光ファイバー端子"
 
 #: src/PendingReason.php:50
 msgid "Pending reason"
@@ -4947,7 +4947,7 @@ msgstr "変換する"
 
 #: src/Unmanaged.php:231
 msgid "Select an itemtype: "
-msgstr "アイテム種類を選択 :"
+msgstr "アイテム型を選択 :"
 
 #: src/ProblemTask.php:41
 msgid "Problem task"
@@ -5026,7 +5026,7 @@ msgstr "関係"
 #: src/ContentTemplates/Parameters/AssetParameters.php:70
 #: src/Appliance_Item.php:191
 msgid "Itemtype"
-msgstr "アイテム種類"
+msgstr "アイテム型"
 
 #: src/Csv/ImpactCsvExport.php:61 src/Event.php:295
 msgid "Id"
@@ -5103,7 +5103,7 @@ msgstr[0] "肩書"
 #: src/MonitorType.php:39 src/Rule.php:384
 msgid "Monitor type"
 msgid_plural "Monitor types"
-msgstr[0] "モニターの種類"
+msgstr[0] "モニターの型"
 
 #: src/Ticket_Contract.php:46
 msgid "Tickets / Contracts"
@@ -5158,7 +5158,7 @@ msgstr[0] "イベント"
 #: src/NetworkPortFiberchannelType.php:39
 msgid "Fiber type"
 msgid_plural "Fiber types"
-msgstr[0] ""
+msgstr[0] "光ファイバー端子の型"
 
 #: src/NetworkPort_Vlan.php:138 src/NetworkPort_Vlan.php:170
 #: src/NetworkPort_Vlan.php:385 src/Vlan.php:164
@@ -5209,7 +5209,7 @@ msgstr "完全に削除"
 #: src/Cable.php:183 src/Problem.php:467 src/Link_Itemtype.php:170
 msgid "Associated item type"
 msgid_plural "Associated item types"
-msgstr[0] "関連アイテムの種類"
+msgstr[0] "関連アイテムの型"
 
 #. TRANS: %1$s is the Itemtype name and $2$d the ID of the item
 #: src/Item_Ticket.php:1186 src/SavedSearch.php:413 src/CommonGLPI.php:1046
@@ -5284,7 +5284,7 @@ msgstr "アイテム ID"
 
 #: src/NotificationTargetObjectLock.php:60
 msgid "Item Type"
-msgstr "アイテムの種類"
+msgstr "アイテムの型"
 
 #: src/NotificationTargetObjectLock.php:61
 #: src/NotificationTargetObjectLock.php:62
@@ -5385,7 +5385,7 @@ msgstr "アイテム リンク"
 
 #: src/Agent.php:264
 msgid "Network discovery threads"
-msgstr ""
+msgstr "ネットワーク検出スレッド数"
 
 #: src/Agent.php:270 src/Agent.php:280 src/Agent.php:293 src/Agent.php:303
 #: src/Profile.php:1761 src/Profile.php:2364 src/Config.php:320
@@ -5395,19 +5395,19 @@ msgstr "一般設定"
 
 #: src/Agent.php:274
 msgid "Network discovery timeout"
-msgstr ""
+msgstr "ネットワーク検出タイムアウト"
 
 #: src/Agent.php:287
 msgid "Network inventory threads"
-msgstr ""
+msgstr "ネットワーク インベントリー スレッド数"
 
 #: src/Agent.php:297
 msgid "Network inventory timeout"
-msgstr ""
+msgstr "ネットワーク インベントリー タイムアウト"
 
 #: src/Agent.php:382
 msgid "\"deviceid\" is mandatory!"
-msgstr "”deviceid” は必須です！"
+msgstr "「deviceid」は必須です！"
 
 #: src/Agent.php:607
 msgid "Not allowed"
@@ -5443,7 +5443,7 @@ msgstr "プロジェクトの削除"
 #: src/Project.php:2588
 msgid "Manager"
 msgid_plural "Managers"
-msgstr[0] ""
+msgstr[0] "管理者"
 
 #: src/NotificationTargetProject.php:59 src/NotificationTargetProject.php:638
 #: src/Project.php:650 src/Project.php:1166
@@ -5768,7 +5768,7 @@ msgstr[0] "チケット"
 #: src/NetworkEquipmentType.php:39 src/Rule.php:420
 msgid "Networking equipment type"
 msgid_plural "Networking equipment types"
-msgstr[0] "ネットワーク機器の種類"
+msgstr[0] "ネットワーク機器の型"
 
 #: src/CableStrand.php:41 src/CableStrand.php:47 src/Cable.php:144
 msgid "Cable strand"
@@ -5798,7 +5798,7 @@ msgstr "エンドポイント A"
 #: src/ProjectTaskType.php:43
 msgid "Project tasks type"
 msgid_plural "Project tasks types"
-msgstr[0] "プロジェクトタスクの種類"
+msgstr[0] "プロジェクトタスクの型"
 
 #: src/AllAssets.php:43 src/Html.php:1364 src/Socket.php:908
 #: src/Dashboard/Grid.php:1164 src/RuleImportAsset.php:120
@@ -5979,7 +5979,7 @@ msgstr "メール本文（テキスト）"
 
 #: src/QueuedNotification.php:328 src/QueuedNotification.php:756
 msgid "Message ID"
-msgstr "メッセージID"
+msgstr "メッセージ ID"
 
 #: src/QueuedNotification.php:337 src/QueuedNotification.php:729
 msgid "Number of tries of sent"
@@ -6171,7 +6171,7 @@ msgstr "\"%1$s\" (%2$s) の検索件数警告"
 
 #: src/NotificationTargetSavedSearch_Alert.php:62
 msgid "Private search alert"
-msgstr "個人用の検索件数警告"
+msgstr "非公開の検索警告"
 
 #: src/NotificationTargetSavedSearch_Alert.php:101 src/Event.php:302
 #: src/Event.php:378 src/NotificationTargetFieldUnicity.php:78
@@ -6197,7 +6197,7 @@ msgstr[0] "自動実行操作"
 
 #: src/CronTask.php:205 src/CronTask.php:325
 msgid "Action aborted"
-msgstr "中止された操作"
+msgstr "操作が中止されました"
 
 #: src/CronTask.php:322
 msgid "Execution error"
@@ -6205,15 +6205,15 @@ msgstr "実行エラー"
 
 #: src/CronTask.php:328
 msgid "Action completed, partially processed"
-msgstr "一部を処理し、操作は完了しました。"
+msgstr "一部を処理し、操作は完了しました"
 
 #: src/CronTask.php:331
 msgid "Action completed, fully processed"
-msgstr "すべて処理し、操作は完了しました。"
+msgstr "すべて処理し、操作は完了しました"
 
 #: src/CronTask.php:334
 msgid "Action completed, no processing required"
-msgstr "処理が必要なものはなく、操作は完了しました。"
+msgstr "処理が必要なものはなく、操作は完了しました"
 
 #: src/CronTask.php:590 src/CronTask.php:1636
 msgid "Run frequency"
@@ -6651,7 +6651,7 @@ msgstr "ロードしています..."
 
 #: src/Knowbase.php:157
 msgid "No category found"
-msgstr ""
+msgstr "カテゴリが見つかりません"
 
 #: src/Knowbase.php:336
 msgid "Root category"
@@ -6789,7 +6789,7 @@ msgstr "受付済み"
 #: src/DeviceSensorType.php:41
 msgid "Sensor type"
 msgid_plural "Sensor types"
-msgstr[0] "センサーの種類"
+msgstr[0] "センサーの型"
 
 #: src/DeviceDrive.php:41
 msgid "Drive"
@@ -6877,7 +6877,7 @@ msgstr[0] "パッシブデバイス"
 
 #: src/RuleDictionnaryPhoneTypeCollection.php:44
 msgid "Dictionnary of phone types"
-msgstr "電話の種類の辞書"
+msgstr "電話の型の辞書"
 
 #: src/RuleDictionnaryPrinterModelCollection.php:44
 msgid "Dictionnary of printer models"
@@ -6997,7 +6997,7 @@ msgstr "全体抽出条件"
 
 #: src/RuleRight.php:240
 msgid "Authentication type"
-msgstr "認証の種類"
+msgstr "認証の型"
 
 #: src/RuleRight.php:253 src/Auth.php:1160 src/AuthMail.php:94
 msgid "Email server"
@@ -7044,7 +7044,7 @@ msgstr "LDAP抽出条件"
 #: src/ContactType.php:39
 msgid "Contact type"
 msgid_plural "Contact types"
-msgstr[0] "連絡先の種類"
+msgstr[0] "連絡先の型"
 
 #: src/Ticket.php:123
 msgid "Create ticket"
@@ -7071,7 +7071,7 @@ msgstr "満足度"
 
 #: src/Ticket.php:838
 msgid "Satisfaction survey expired"
-msgstr "期限切れの満足度調査"
+msgstr "期限切れの満足度アンケート"
 
 #: src/Ticket.php:841
 msgid "No generated survey"
@@ -7102,7 +7102,7 @@ msgstr "%s がチケット %s からの確認対応を催促"
 #: src/Ticket.php:2091
 #, php-format
 msgid "%s promotes a task from ticket %s"
-msgstr ""
+msgstr "%s が %s チケットのタスクを催促"
 
 #: src/Ticket.php:2124
 msgid "Your ticket has been registered."
@@ -7175,7 +7175,7 @@ msgstr "関係者をマージ"
 
 #: src/Ticket.php:2816
 msgid "Link type"
-msgstr "リンクの種類"
+msgstr "リンクの型"
 
 #: src/Ticket.php:2819 src/Ticket_Ticket.php:184 src/Ticket_Ticket.php:206
 #: src/Ticket_Ticket.php:211
@@ -7298,7 +7298,7 @@ msgstr "OLA"
 #: src/Stat/Data/Graph/StatDataSatisfactionSurvey.php:62
 #: src/NotificationTargetTicket.php:154
 msgid "Satisfaction survey"
-msgstr "満足度調査"
+msgstr "満足度アンケート"
 
 #: src/Ticket.php:3500
 msgid "Response date"
@@ -7517,7 +7517,7 @@ msgstr "未解決チケット"
 
 #: src/Ticket.php:6012
 msgid "Generation of satisfaction surveys"
-msgstr "満足度調査の作成"
+msgstr "満足度アンケートの作成"
 
 #: src/Ticket.php:6015
 msgid "Automatic closed tickets purge"
@@ -7843,7 +7843,7 @@ msgstr "すべての通知テンプレートを削除する"
 
 #: src/Notification.php:694 src/Notification.php:707
 msgid "Field itemtype is mandatory"
-msgstr "アイテム種類は必須項目です"
+msgstr "アイテム型は必須項目です"
 
 #: src/Peripheral.php:75
 msgid "Device"
@@ -7966,7 +7966,7 @@ msgstr "新しい検索として保存"
 #: src/SavedSearch.php:609
 #, php-format
 msgid "Partial load of the saved search: %s"
-msgstr ""
+msgstr "保存した検索の部分的なロード : %s"
 
 #: src/SavedSearch.php:848
 msgid "Count for this saved search has been disabled."
@@ -8017,7 +8017,7 @@ msgstr "時間超過して解決 %1$s (%2$s)"
 #: src/Stat/Data/Location/StatDataOpenSatisfaction.php:49
 #, php-format
 msgid "%1$s satisfaction survey (%2$s)"
-msgstr "%1$s 満足度調査 (%2$s)"
+msgstr "%1$s 満足度アンケート (%2$s)"
 
 #: src/Stat/Data/Location/StatDataClosed.php:49
 #, php-format
@@ -8110,7 +8110,7 @@ msgstr[0] "インストール"
 #: src/Item_SoftwareVersion.php:101 src/Item_SoftwareLicense.php:108
 msgctxt "software"
 msgid "Request source"
-msgstr "依頼ルート"
+msgstr "依頼元"
 
 #: src/Item_SoftwareVersion.php:476 src/Item_SoftwareVersion.php:1085
 #: src/Item_SoftwareVersion.php:1244 src/Software.php:533
@@ -8126,7 +8126,7 @@ msgstr "移動"
 
 #: src/Item_SoftwareVersion.php:1041
 msgid "All categories"
-msgstr "全カテゴリ"
+msgstr "すべてのカテゴリ"
 
 #: src/Item_SoftwareVersion.php:1042
 msgid "Uncategorized software"
@@ -8140,7 +8140,7 @@ msgstr "未分類のソフトウェア"
 #: src/ComputerVirtualMachine.php:348 src/Entity.php:1758
 #: src/Computer_Item.php:401 src/Computer_Item.php:569
 msgid "Automatic inventory"
-msgstr "自動棚卸"
+msgstr "自動インベントリー"
 
 #: src/Item_SoftwareVersion.php:1088
 msgid "Valid license"
@@ -8160,7 +8160,7 @@ msgstr "アイテムはオブジェクトにリンクしていません"
 
 #: src/MapGeolocation.php:112
 msgid "Set location here"
-msgstr "緯度・経度にここを設定"
+msgstr "場所をここに設定"
 
 #: src/TicketTask.php:41
 msgid "Ticket task"
@@ -8233,7 +8233,7 @@ msgstr[0] "デバイス : ケース モデル"
 #: src/ApplianceType.php:38
 msgid "Appliance type"
 msgid_plural "Appliance types"
-msgstr[0] "アプライアンスの種類"
+msgstr[0] "アプライアンスの型"
 
 #: src/Group.php:48
 msgid "Group"
@@ -8355,7 +8355,7 @@ msgstr "ドラム"
 
 #: src/Inventory/Asset/Cartridge.php:57
 msgid "Waste bin"
-msgstr "ゴミ箱"
+msgstr "廃棄ボトル"
 
 #: src/Inventory/Asset/Cartridge.php:58
 msgid "Maintenance kit"
@@ -8437,7 +8437,7 @@ msgstr "マット"
 
 #: src/Inventory/Asset/Cartridge.php:188
 msgid "Many information grouped"
-msgstr ""
+msgstr "グループ化した多くの情報"
 
 #: src/Inventory/Asset/Cartridge.php:191
 msgid "Staples"
@@ -8558,15 +8558,15 @@ msgstr "ホストから送信した仮想マシンの情報からPCパーツの�
 
 #: src/Inventory/Conf.php:555
 msgid "Virtual network cards"
-msgstr ""
+msgstr "仮想ネットワークカード"
 
 #: src/Inventory/Conf.php:614
 msgid "Network drives"
-msgstr ""
+msgstr "ネットワークドライブ"
 
 #: src/Inventory/Conf.php:629
 msgid "Removable drives"
-msgstr ""
+msgstr "リムーバブルドライブ"
 
 #: src/Inventory/Conf.php:686 src/PlanningRecall.php:358
 #: src/Item_Devices.php:734 src/Dashboard/Grid.php:285 src/CommonGLPI.php:1346
@@ -8633,7 +8633,7 @@ msgstr "共通オプション"
 
 #: src/NetworkPort.php:645
 msgid "Network port type to be added"
-msgstr "追加するネットワーク ポートの種類"
+msgstr "追加するネットワーク ポートの型"
 
 #: src/NetworkPort.php:662
 msgid "Add several ports"
@@ -8731,12 +8731,12 @@ msgstr "全"
 #: src/NetworkPort.php:1005
 #, php-format
 msgid "%s linked VLANs"
-msgstr "%s をVLANにリンクした"
+msgstr "%s が VLAN をリンクした"
 
 #: src/NetworkPort.php:1080
 #, php-format
 msgid "%s equipments connected to the hub"
-msgstr "機器 %s がハブに接続"
+msgstr "%s がハブに装置を接続"
 
 #: src/NetworkPort.php:1105 src/NetworkPort.php:1128
 #: src/NetworkPortConnectionLog.php:131
@@ -8822,7 +8822,7 @@ msgstr[0] "データセンター"
 #: src/Datacenter.php:150 src/Cable.php:301 src/Cable.php:316
 #: templates/generic_show_form.html.twig:130
 msgid "Data center position"
-msgstr "データセンタの場所"
+msgstr "データセンターの位置"
 
 #: src/NotificationTargetInfocom.php:41 src/Infocom.php:1669
 #: src/Entity.php:937 src/Entity.php:2028
@@ -8904,7 +8904,7 @@ msgstr "Redis (TLS)"
 #: src/Update.php:178
 #, php-format
 msgid "Unsupported version (%1$s)"
-msgstr "サポートしていないバージョン(%1$s)"
+msgstr "サポート外バージョン（%1$s）"
 
 #: src/Update.php:197 src/Central.php:486
 #: src/Console/Migration/Utf8mb4Command.php:115
@@ -8927,7 +8927,7 @@ msgstr "それらを移行するには、\"php bin/console %1$s\" コマンド�
 #: src/Console/Database/EnableTimezonesCommand.php:90
 #, php-format
 msgid "%1$s columns are using the deprecated datetime storage field type."
-msgstr "%1$s 列は、廃止された datetime ストレージ フィールド型を使用しています。"
+msgstr "%1$s カラムは、廃止された datetime ストレージ フィールド型を使用しています。"
 
 #: src/Update.php:215 src/Central.php:496
 #, php-format
@@ -8939,8 +8939,8 @@ msgid ""
 "Unable to create security key file! You have to run \"php bin/console "
 "glpi:security:change_key\" command to manually create this file."
 msgstr ""
-"セキュリティキーファイルを作成できません！ このファイルを手動で作成するには、 \"php bin/console "
-"glpi:security:change_key\" コマンドを実行する必要があります。"
+"セキュリティキーファイルを作成できません！ このファイルを手動で作成するには、 「php bin/console "
+"glpi:security:change_key」コマンドを実行する必要があります。"
 
 #: src/DeviceCameraModel.php:40
 msgid "Device camera model"
@@ -8950,7 +8950,7 @@ msgstr[0] "デバイス : カメラ モデル"
 #: src/NetworkPortType.php:43
 msgid "Network port type"
 msgid_plural "Network port types"
-msgstr[0] "ネットワークポートの種類"
+msgstr[0] "ネットワークポートの型"
 
 #: src/NetworkPortType.php:52 src/NetworkPortType.php:76
 msgid "Decimal"
@@ -8958,7 +8958,7 @@ msgstr "10進数"
 
 #: src/NetworkPortType.php:61 src/NetworkPortType.php:92
 msgid "Instanciation type"
-msgstr "インスタンス化の種類"
+msgstr "インスタンス化の型"
 
 #: src/Dropdown.php:242
 #, php-format
@@ -8967,11 +8967,11 @@ msgstr "%1$s"
 
 #: src/Dropdown.php:295 js/common.js:761
 msgid "Display on map"
-msgstr "マップ上に表示"
+msgstr "地図に表示"
 
 #: src/Dropdown.php:303
 msgid "Display on datacenter"
-msgstr ""
+msgstr "データセンダーに表示"
 
 #. TRANS: %s is the store path
 #: src/Dropdown.php:792
@@ -9017,7 +9017,7 @@ msgstr[0] "カレンダー"
 
 #: src/Dropdown.php:1088 src/Profile.php:1079
 msgid "Cable management"
-msgstr ""
+msgstr "ケーブル管理"
 
 #: src/Dropdown.php:1094 src/Profile.php:977 src/Profile.php:2151
 msgid "Internet"
@@ -9034,7 +9034,7 @@ msgstr "外部認証"
 
 #: src/Dropdown.php:1121
 msgid "Power management"
-msgstr "パワーマネージメント"
+msgstr "電源管理"
 
 #: src/Dropdown.php:1124
 msgid "Appliances"
@@ -9085,7 +9085,7 @@ msgstr[0] "%sミリ秒間"
 #, php-format
 msgid "%d unit"
 msgid_plural "%d units"
-msgstr[0] ""
+msgstr[0] "%d 個"
 
 #: src/Dropdown.php:1718
 #, php-format
@@ -9151,35 +9151,35 @@ msgstr "単品管理"
 
 #: src/Dropdown.php:2360 templates/components/search/controls.html.twig:93
 msgid "Current page in landscape PDF"
-msgstr "現在のページをPDF（横）で出力"
+msgstr "現在のページを横向きで PDF に出力"
 
 #: src/Dropdown.php:2361 templates/components/search/controls.html.twig:97
 msgid "Current page in portrait PDF"
-msgstr "現在のページを縦向きPDFで出力"
+msgstr "現在のページを縦向きで PDF に出力"
 
 #: src/Dropdown.php:2362 templates/components/search/controls.html.twig:101
 msgid "Current page in SLK"
-msgstr "現在のページをSLKで出力"
+msgstr "現在のページを SLK に出力"
 
 #: src/Dropdown.php:2363 templates/components/search/controls.html.twig:105
 msgid "Current page in CSV"
-msgstr "現在のページをCSVで出力"
+msgstr "現在のページを CSV に出力"
 
 #: src/Dropdown.php:2364 templates/components/search/controls.html.twig:109
 msgid "All pages in landscape PDF"
-msgstr "全ページをPDF（横）で出力"
+msgstr "すべてのページを横向きで PDF に出力"
 
 #: src/Dropdown.php:2365 templates/components/search/controls.html.twig:113
 msgid "All pages in portrait PDF"
-msgstr "すべてのページを縦向きPDFで出力"
+msgstr "すべてのページを縦向きで PDF に出力"
 
 #: src/Dropdown.php:2366 templates/components/search/controls.html.twig:117
 msgid "All pages in SLK"
-msgstr "全ページをSLKで出力"
+msgstr "すべてのページを SLK で出力"
 
 #: src/Dropdown.php:2367 templates/components/search/controls.html.twig:121
 msgid "All pages in CSV"
-msgstr "全ページをCSVで出力"
+msgstr "すべてのページを CSV で出力"
 
 #: src/Dropdown.php:2371 templates/components/search/controls.html.twig:126
 msgid "Copy names to clipboard"
@@ -9331,7 +9331,7 @@ msgstr "ユーザー名またはパスワードが間違っています"
 #: src/Auth.php:197 src/MailCollector.php:1365
 #, php-format
 msgid "Unsupported mail server type:%s."
-msgstr "サポートしていないメールサーバータイプ: %s"
+msgstr "サポートしていないメールサーバー : %s"
 
 #: src/Auth.php:275 src/Auth.php:953 src/Auth.php:981
 msgid "User not authorized to connect in GLPI"
@@ -9347,7 +9347,7 @@ msgstr "無効な cookie データ"
 
 #: src/Auth.php:628
 msgid "Auto login disabled"
-msgstr "自動ログイン無効"
+msgstr "自動ログインは無効です"
 
 #: src/Auth.php:845
 msgid "Connection to LDAP directory failed"
@@ -9375,11 +9375,11 @@ msgstr "%1$s は IP: %2$s からのログインに失敗しました"
 
 #: src/Auth.php:1087
 msgid "Authentication on GLPI database"
-msgstr "GLPIデータベースで認証"
+msgstr "GLPI データベースで認証"
 
 #: src/Auth.php:1099
 msgid "Authentication on a LDAP directory"
-msgstr "LDAPディレクトリで認証"
+msgstr "LDAP ディレクトリで認証"
 
 #: src/Auth.php:1112
 msgid "Authentication on mail server"
@@ -9417,7 +9417,7 @@ msgstr "その他"
 
 #: src/Auth.php:1214 src/Auth.php:1760
 msgid "GLPI internal database"
-msgstr "GLPI内部データベース"
+msgstr "GLPI 内部データベース"
 
 #: src/Auth.php:1217 src/Config.php:858 src/Config.php:2485
 msgid "API"
@@ -9445,7 +9445,7 @@ msgstr "同期"
 
 #: src/Auth.php:1561
 msgid "CAS authentication"
-msgstr "CAS認証"
+msgstr "CAS 認証"
 
 #: src/Auth.php:1563 src/Auth.php:1608 src/Auth.php:1631
 msgctxt "authentication"
@@ -9455,7 +9455,7 @@ msgstr "有効"
 #. TRANS: for CAS SSO system
 #: src/Auth.php:1572
 msgid "CAS Host"
-msgstr "CASホスト"
+msgstr "CAS ホスト"
 
 #. TRANS: for CAS SSO system
 #: src/Auth.php:1575
@@ -9465,7 +9465,7 @@ msgstr "CAS バージョン"
 #. TRANS: for CAS SSO system
 #: src/Auth.php:1584
 msgid "Root directory (optional)"
-msgstr "Rootディレクトリ(任意)"
+msgstr "Root ディレクトリ(任意)"
 
 #. TRANS: for CAS SSO system
 #: src/Auth.php:1587
@@ -9474,7 +9474,7 @@ msgstr "ログアウト時の転送先URL"
 
 #: src/Auth.php:1593
 msgid "The CURL extension for your PHP parser isn't installed"
-msgstr "CURL 拡張モジュールが PHP にインストールされていません"
+msgstr "CURL 拡張モジュールが PHP parser に未インストール"
 
 #: src/Auth.php:1597
 msgid ""
@@ -9493,15 +9493,15 @@ msgstr "x509 認証のためのメール属性"
 #: src/Auth.php:1616 src/Auth.php:1620 src/Auth.php:1624
 #, php-format
 msgid "Restrict %s field for x509 authentication (separator $)"
-msgstr "x509認証の %s項目を制限 (セパレータは$)"
+msgstr "x509認証の %s項目を制限 （セパレータは$）"
 
 #: src/Auth.php:1629
 msgid "Other authentication sent in the HTTP request"
-msgstr "HTTPリクエストで送信する値を使用したその他の認証"
+msgstr "HTTP リクエストで送信する値を使用したその他の認証"
 
 #: src/Auth.php:1643
 msgid "SSO logout url"
-msgstr "SSOログアウトURL"
+msgstr "SSO ログアウト URL"
 
 #: src/Auth.php:1649
 msgid "Remove the domain of logins like login@domain"
@@ -9522,7 +9522,7 @@ msgstr "未定義のインタフェース"
 
 #: src/NetworkPortMigration.php:113
 msgid "Invalid network (already defined or with invalid addresses)"
-msgstr "無効なネットワーク (既に定義している、または無効なアドレス)"
+msgstr "無効なネットワーク （定義既み、または無効なアドレス）"
 
 #: src/NetworkPortMigration.php:115
 msgid "Gateway not include inside the network"
@@ -9543,7 +9543,7 @@ msgstr "ネットワーク ポート情報は %s と競合しています"
 
 #: src/NetworkPortMigration.php:222
 msgid "Invalid address or netmask"
-msgstr "アドレスまたはネットマスクが無効です"
+msgstr "アドレスまたはネットマスクが無効"
 
 #: src/NetworkPortMigration.php:224
 msgid "No conflicting network"
@@ -9656,7 +9656,7 @@ msgstr "部屋番号"
 
 #: src/Location.php:96 src/Entity.php:1428 src/Entity.php:1433
 msgid "Location on map"
-msgstr "地図上の位置"
+msgstr "場所の地図"
 
 #: src/Location.php:100 src/Location.php:212 src/Location.php:280
 #: src/NotificationTargetTicket.php:640 src/NotificationTargetTicket.php:667
@@ -9696,7 +9696,7 @@ msgstr "エンジンは最初にチェックしたルールで停止します"
 
 #: src/RuleCollection.php:428
 msgid "The engine treats all the rules."
-msgstr "エンジンは全ルールを処理します"
+msgstr "エンジンはすべてのルールを処理します"
 
 #: src/RuleCollection.php:434
 msgid "The engine passes the result of a rule to the following one."
@@ -9712,11 +9712,11 @@ msgstr "使用したルール"
 
 #: src/RuleCollection.php:559 src/Rule.php:914
 msgid "Use rule for"
-msgstr "ルールタイプ"
+msgstr "ルールの使用目的"
 
 #: src/RuleCollection.php:640
 msgid "Remove all equipment import rules and recreate from defaults"
-msgstr "すべての機器インポートルールを削除して、デフォルトで再生成する"
+msgstr "すべての機器インポートルールを削除して、デフォルトから再生成する"
 
 #: src/RuleCollection.php:641
 msgid "Reset rules"
@@ -9741,7 +9741,7 @@ msgstr "エクスポート"
 
 #: src/RuleCollection.php:1084
 msgid "Import rules from a XML file"
-msgstr "XML形式のファイルでルールをインポート"
+msgstr "XML 形式のファイルでルールをインポート"
 
 #: src/RuleCollection.php:1140 src/GLPIUploadHandler.php:56
 msgid "No file was uploaded"
@@ -9749,7 +9749,7 @@ msgstr "アップロードしたファイルはありません"
 
 #: src/RuleCollection.php:1147 src/Document.php:1363
 msgid "Unauthorized file type"
-msgstr "許可していないファイルタイプ"
+msgstr "未許可のファイル形式"
 
 #: src/RuleCollection.php:1276
 msgid "Rules refused"
@@ -9784,11 +9784,11 @@ msgstr "理由"
 
 #: src/RuleCollection.php:1362
 msgid "Actions refused"
-msgstr "拒否した操作"
+msgstr "操作が拒否されました"
 
 #: src/RuleCollection.php:1368 src/Rule.php:1158
 msgid "Action type"
-msgstr "操作の種類"
+msgstr "操作の型"
 
 #: src/RuleCollection.php:1540
 msgid "Successful importation"
@@ -9931,7 +9931,7 @@ msgstr "アイテムが見つかりません"
 #: src/Html.php:606 src/Api/API.php:1048 src/Api/API.php:1823
 #: src/Api/API.php:1951 src/Api/API.php:2085 src/Api/API.php:2681
 msgid "You don't have permission to perform this action."
-msgstr "この操作を実行する権限がありません"
+msgstr "この操作を実行する権限がありません。"
 
 #: src/Html.php:739 templates/components/modal.html.twig:36
 #: templates/components/itilobject/actors/main.html.twig:145
@@ -9948,7 +9948,7 @@ msgstr "全般管理"
 #: src/Html.php:1426 templates/layout/parts/user_header.html.twig:97
 #: templates/layout/parts/user_header.html.twig:99
 msgid "My settings"
-msgstr "個人別設定"
+msgstr "個人設定"
 
 #: src/Html.php:1620 src/Central.php:503
 msgid "SQL replica: read only"
@@ -9991,7 +9991,7 @@ msgstr ""
 
 #: src/Html.php:2577
 msgid "Massive actions"
-msgstr ""
+msgstr "一斉操作"
 
 #: src/Html.php:3172 src/Html.php:3404 src/Html.php:6761
 msgid "Now"
@@ -10102,31 +10102,31 @@ msgstr "%1$d on %2$d"
 
 #: src/Html.php:6766
 msgid "Just now"
-msgstr ""
+msgstr "今"
 
 #: src/Html.php:6769
 #, php-format
 msgid "%s minutes ago"
-msgstr ""
+msgstr "%s 分前"
 
 #: src/Html.php:6772
 #, php-format
 msgid "%s hours ago"
-msgstr ""
+msgstr "%s 時間前"
 
 #: src/Html.php:6776
 msgid "Yesterday"
-msgstr ""
+msgstr "昨日"
 
 #: src/Html.php:6779
 #, php-format
 msgid "%s days ago"
-msgstr ""
+msgstr "%s 日前"
 
 #: src/Html.php:6782
 #, php-format
 msgid "%s weeks ago"
-msgstr ""
+msgstr "%s 週間前"
 
 #: src/Html.php:6785
 msgid "Last month"
@@ -10134,38 +10134,38 @@ msgstr "先月"
 
 #: src/Html.php:6794
 msgid "In a minute"
-msgstr ""
+msgstr "1 分以内"
 
 #: src/Html.php:6797
 #, php-format
 msgid "In %s minutes"
-msgstr ""
+msgstr "%s 分以内"
 
 #: src/Html.php:6800
 msgid "In an hour"
-msgstr ""
+msgstr "1 時間以内"
 
 #: src/Html.php:6803
 #, php-format
 msgid "In %s hours"
-msgstr ""
+msgstr "%s 時間以内"
 
 #: src/Html.php:6807
 msgid "Tomorrow"
-msgstr ""
+msgstr "明日"
 
 #: src/Html.php:6813
 msgid "next week"
-msgstr ""
+msgstr "来週"
 
 #: src/Html.php:6816
 #, php-format
 msgid "In %s weeks"
-msgstr ""
+msgstr "%s 週間以内"
 
 #: src/Html.php:6819
 msgid "next month"
-msgstr ""
+msgstr "来月"
 
 #. TRANS: Always plural
 #: src/Notepad.php:52 src/Notepad.php:184
@@ -10212,7 +10212,7 @@ msgstr "依頼人の新しいグループ"
 
 #: src/NotificationTargetCommonITILObject.php:125
 msgid "New user in observers"
-msgstr "オブザーバの新しいユーザー"
+msgstr "オブザーバーの新しいユーザー"
 
 #: src/NotificationTargetCommonITILObject.php:126
 msgid "New group in observers"
@@ -10341,7 +10341,7 @@ msgstr "解決日"
 
 #: src/NotificationTargetCommonITILObject.php:1700
 msgid "Requester ID"
-msgstr "依頼人のID"
+msgstr "依頼人 ID"
 
 #: src/NotificationTargetCommonITILObject.php:1702 src/RuleTicket.php:553
 msgid "Requester location"
@@ -10356,7 +10356,7 @@ msgstr[0] "サプライヤー"
 
 #: src/NotificationTargetCommonITILObject.php:1710
 msgid "Supplier ID"
-msgstr "サプライヤーID"
+msgstr "サプライヤー ID"
 
 #: src/NotificationTargetCommonITILObject.php:1718
 #: src/NotificationTargetCommonITILObject.php:1848 src/Contact.php:308
@@ -10411,7 +10411,7 @@ msgstr "材料費"
 
 #: src/NotificationTargetCommonITILObject.php:1805
 msgid "Category id"
-msgstr "カテゴリID"
+msgstr "カテゴリ ID"
 
 #: src/NotificationTargetCommonITILObject.php:1807
 msgid "Category comment"
@@ -10423,11 +10423,11 @@ msgstr "タスクに割り当てられたユーザー"
 
 #: src/NotificationTargetCommonITILObject.php:1810
 msgid "Group assigned to task"
-msgstr "タスクに割り当てられたグループ"
+msgstr "タスクに割当済みのグループ"
 
 #: src/NotificationTargetCommonITILObject.php:1862
 msgid "Internal type"
-msgstr "内部種類"
+msgstr "内部の型"
 
 #: src/NotificationTargetCommonITILObject.php:1865 src/Socket.php:332
 #: src/Socket.php:708 src/PDU_Rack.php:278 src/PDU_Rack.php:349
@@ -10436,7 +10436,7 @@ msgstr "内部種類"
 #: templates/pages/assets/socket.html.twig:45
 #: templates/pages/assets/socket.html.twig:97
 msgid "Position"
-msgstr "ポジション"
+msgstr "位置"
 
 #: src/NotificationTargetCommonITILObject.php:1878 src/ITILFollowup.php:76
 #: src/ITILFollowup.php:698 src/Profile.php:758 src/Profile.php:1280
@@ -10483,7 +10483,7 @@ msgstr "接続文字列"
 
 #: src/AuthMail.php:194
 msgid "Email domain Name (users email will be login@domain)"
-msgstr "メールドメイン名 ( ユーザーのメールアドレスは login@domain となります）"
+msgstr "メールドメイン名（ユーザーのメールアドレスは login@domain となります）"
 
 #. TRANS: %s is the datetime of update
 #: src/AuthMail.php:206 src/Document.php:436 src/MailCollector.php:321
@@ -10511,7 +10511,7 @@ msgstr "依頼の作成"
 
 #: src/TicketValidation.php:101
 msgid "Create a validation request for a request"
-msgstr "リクエストに対する検証依頼の作成"
+msgstr "依頼に対する検証依頼の作成"
 
 #: src/TicketValidation.php:103
 msgid "Create for incident"
@@ -10610,7 +10610,7 @@ msgstr "すべて一度に削除"
 #: src/LineType.php:38
 msgid "Line type"
 msgid_plural "Line types"
-msgstr[0] "回線の種類"
+msgstr[0] "回線のファイル型"
 
 #: src/RuleRightParameter.php:83
 msgid "LDAP criterion"
@@ -10620,7 +10620,7 @@ msgstr[0] "LDAP抽出条件"
 #: src/ContractType.php:39
 msgid "Contract type"
 msgid_plural "Contract types"
-msgstr[0] "契約の種類"
+msgstr[0] "契約の型"
 
 #: src/RuleRightCollection.php:85
 msgid "Entities assignment"
@@ -10694,12 +10694,12 @@ msgstr "予算残高計"
 #: src/PassiveDCEquipmentType.php:39
 msgid "Passive device type"
 msgid_plural "Passive device types"
-msgstr[0] "パッシブデバイスの種類"
+msgstr[0] "パッシブデバイスの型"
 
 #: src/PhoneType.php:39 src/Rule.php:432
 msgid "Phone type"
 msgid_plural "Phone types"
-msgstr[0] "電話の種類"
+msgstr[0] "電話の型"
 
 #: src/DeviceDriveModel.php:42
 msgid "Device drive model"
@@ -10714,30 +10714,30 @@ msgstr[0] "マザーボードモデル"
 #: src/Socket.php:320
 msgid "Socket"
 msgid_plural "Sockets"
-msgstr[0] ""
+msgstr[0] "端子"
 
 #: src/Socket.php:374 src/Socket.php:436 src/Socket.php:710 src/Socket.php:819
 #: src/Socket.php:854 src/Socket.php:910
 #: templates/pages/assets/socket.html.twig:66
 msgid "Wiring side"
-msgstr ""
+msgstr "配線側"
 
 #: src/Socket.php:665
 msgid "New socket for this item..."
-msgstr ""
+msgstr "このアイテムに対応する新しい端子..."
 
 #: src/Socket.php:880 src/Socket.php:964
 #, php-format
 msgid "Network sockets for %s"
-msgstr ""
+msgstr "%s用の新しいネットワーク端子"
 
 #: src/Socket.php:907
 msgid "Socket Model"
-msgstr ""
+msgstr "端子モデル"
 
 #: src/Socket.php:909
 msgid "NetworkPort"
-msgstr ""
+msgstr "ネットワークポート"
 
 #: src/Item_Devices.php:79
 #, php-format
@@ -10756,11 +10756,11 @@ msgstr "デバイスのバスの位置"
 
 #: src/Item_Devices.php:348
 msgid "bus ID"
-msgstr "バスID"
+msgstr "バス ID"
 
 #: src/Item_Devices.php:624
 msgid "Type of component"
-msgstr "PCパーツの種類"
+msgstr "PCパーツの型"
 
 #: src/Item_Devices.php:626
 msgid "Specificities"
@@ -10791,7 +10791,7 @@ msgstr "%1$s (%2$d%%) "
 
 #: src/Item_Devices.php:1144
 msgid "Please select a device type"
-msgstr "デバイスの種類を選択してください"
+msgstr "デバイスの型を選択してください"
 
 #: src/Item_Devices.php:1151
 msgid "Please select a device"
@@ -10807,7 +10807,7 @@ msgstr "クリップボードへのコピーに失敗しました"
 
 #: src/Item_Devices.php:1568
 msgid "A device ID is mandatory"
-msgstr "デバイスIDは必須です"
+msgstr "デバイス IDは必須です"
 
 #: src/Item_Devices.php:1620
 msgid "Update of "
@@ -10816,12 +10816,12 @@ msgstr "更新 : "
 #: src/DeviceSimcardType.php:43
 msgid "Simcard type"
 msgid_plural "Simcard types"
-msgstr[0] "SIMカードの種類"
+msgstr[0] "SIM カードの型"
 
 #: src/DatabaseInstanceType.php:38
 msgid "Database instance type"
 msgid_plural "Database instance types"
-msgstr[0] "データベースインスタンスの種類"
+msgstr[0] "データベースインスタンスの型"
 
 #: src/DatabaseInstanceCategory.php:38
 msgid "Database instance category"
@@ -10835,7 +10835,7 @@ msgstr[0] "タスクチーム"
 
 #: src/ProjectTaskTeam.php:169
 msgid "An item type is mandatory"
-msgstr "アイテム種類は必須です"
+msgstr "アイテム型は必須です"
 
 #: src/ProjectTaskTeam.php:178
 msgid "An item ID is mandatory"
@@ -10960,7 +10960,7 @@ msgstr "アップロード攻撃またはファイルが巨大である可能性
 
 #: src/Document.php:1368
 msgid "Manage document types"
-msgstr "ドキュメント タイプの管理"
+msgstr "ドキュメント 形式の管理"
 
 #: src/Document.php:1377
 #, php-format
@@ -11321,7 +11321,7 @@ msgstr "PCパーツのロック解除"
 
 #: src/Lock.php:716
 msgid "Select the type of the item that must be unlock"
-msgstr "ロック解除すべきアイテムの種類を選んでください"
+msgstr "ロック解除すべきアイテムの型を選んでください"
 
 #: src/VirtualMachineState.php:39
 msgid "State of the virtual machine"
@@ -11378,7 +11378,7 @@ msgstr[0] "エディション"
 #: src/Item_OperatingSystem.php:356 src/Item_OperatingSystem.php:413
 #: src/Item_OperatingSystem.php:500
 msgid "Product ID"
-msgstr "プロダクトID"
+msgstr "プロダクト ID"
 
 #: src/Item_OperatingSystem.php:426
 msgid "Operating System"
@@ -11727,7 +11727,7 @@ msgstr "個人用ダッシュボードは、ダッシュボード上で明示的
 
 #: src/Dashboard/Grid.php:886
 msgid "empty card!"
-msgstr ""
+msgstr "カードなし！"
 
 #: src/Dashboard/Grid.php:1127 src/Dashboard/Grid.php:1191
 #, php-format
@@ -11786,7 +11786,7 @@ msgstr "チケットの上位エンティティ"
 
 #: src/Dashboard/Grid.php:1315
 msgid "Top ticket's request types"
-msgstr "上位チケット依頼の種類"
+msgstr "チケット依頼の型のトップ"
 
 #: src/Dashboard/Grid.php:1316
 msgid "Top ticket's locations"
@@ -11802,11 +11802,11 @@ msgstr "上位チケットの依頼人グループ"
 
 #: src/Dashboard/Grid.php:1336
 msgid "Top ticket's observers"
-msgstr "チケットの上位オブザーバ"
+msgstr "上位チケットのオブザーバー"
 
 #: src/Dashboard/Grid.php:1337
 msgid "Top ticket's observer groups"
-msgstr "チケットの上位オブザーバグループ"
+msgstr "上位チケットのオブザーバーグループ"
 
 #: src/Dashboard/Grid.php:1338
 msgid "Top ticket's assignees"
@@ -11848,11 +11848,11 @@ msgstr "方法"
 
 #: src/RefusedEquipment.php:260
 msgid "Inventory is still refused."
-msgstr "棚卸をまだ拒否しています。"
+msgstr "インベントリーをまだ拒否しています。"
 
 #: src/RefusedEquipment.php:266
 msgid "Inventory is successful, refused entry log has been removed."
-msgstr "棚卸に成功し、拒否したログを削除しました。"
+msgstr "インベントリーに成功し、拒否したログを削除しました。"
 
 #: src/Planning.php:133
 msgid "CalDAV browser interface"
@@ -11898,7 +11898,7 @@ msgstr "利用不可"
 
 #: src/Planning.php:851
 msgid "Events type"
-msgstr "イベントの種類"
+msgstr "イベントの型"
 
 #: src/Planning.php:852
 msgid "Plannings"
@@ -11958,7 +11958,7 @@ msgstr "カレンダーの URL"
 
 #: src/Planning.php:1383
 msgid "Event type"
-msgstr "イベントの種類"
+msgstr "イベントの型"
 
 #: src/Planning.php:1513
 msgid "Period"
@@ -12033,7 +12033,7 @@ msgstr "アドホック (AP無)"
 
 #: src/WifiNetwork.php:107
 msgid "Wifi network type"
-msgstr "無線LANの種類"
+msgstr "無線 LAN の型"
 
 #: src/CommonITILCost.php:571 src/Profile.php:1271 src/Profile.php:2687
 msgid "Ticket cost"
@@ -12089,7 +12089,7 @@ msgstr "OS のシリアル番号"
 #: src/RuleImportEntity.php:104
 #: templates/components/form/inventory_info.html.twig:78
 msgid "Inventory tag"
-msgstr "棚卸タグ"
+msgstr "インベントリータグ"
 
 #: src/RuleImportAsset.php:179
 msgid "Linked asset"
@@ -12113,7 +12113,7 @@ msgstr "部分？"
 
 #: src/RuleImportAsset.php:213
 msgid "Inventory link"
-msgstr "棚卸リンク"
+msgstr "インベントリー リンク"
 
 #: src/RuleImportAsset.php:217 src/RuleImportEntity.php:353
 msgid "Refuse import"
@@ -12137,7 +12137,7 @@ msgstr "拒否した機器の値を使う"
 
 #: src/RuleImportAsset.php:2348
 msgid "No itemtype defined"
-msgstr "アイテム種類が未定義"
+msgstr "アイテム型が未定義"
 
 #: src/PDUModel.php:39
 msgid "PDU model"
@@ -12177,7 +12177,7 @@ msgstr "%s あてのメールをキューに追加しました"
 #: src/DeviceBatteryType.php:38
 msgid "Battery type"
 msgid_plural "Battery types"
-msgstr[0] "バッテリーの種類"
+msgstr[0] "バッテリーの型"
 
 #: src/SLM.php:56 templates/components/itilobject/fields_panel.html.twig:275
 msgid "Service level"
@@ -12203,7 +12203,7 @@ msgstr "ラック が必要です"
 
 #: src/PDU_Rack.php:106 src/Item_Enclosure.php:332 src/Item_Rack.php:933
 msgid "A position is required"
-msgstr "ポジションは必須です"
+msgstr "位置は必須です"
 
 #: src/PDU_Rack.php:110
 msgid "A side is required"
@@ -12394,11 +12394,11 @@ msgstr " %s へのメールを送信しました"
 
 #: src/CommonGLPI.php:332
 msgid "Debug"
-msgstr "Debug"
+msgstr "デバッグ"
 
 #: src/CommonGLPI.php:661
 msgid "Field will not be updated from inventory"
-msgstr "項目は棚卸で更新しません"
+msgstr "項目はインベントリーで更新しません"
 
 #: src/CommonGLPI.php:1010
 msgid "First"
@@ -12439,7 +12439,7 @@ msgstr "アイテムは定義済みです"
 #: src/CertificateType.php:43
 msgid "Certificate type"
 msgid_plural "Certificate types"
-msgstr[0] "証明書の種類"
+msgstr[0] "証明書の型"
 
 #: src/Enclosure.php:59
 msgid "Enclosure"
@@ -12448,12 +12448,12 @@ msgstr[0] "エンクロージャー"
 
 #: src/RuleDictionnaryPrinterTypeCollection.php:44
 msgid "Dictionnary of printer types"
-msgstr "プリンターの種類の辞書"
+msgstr "プリンターの型の辞書"
 
 #: src/SoftwareLicenseType.php:41
 msgid "License type"
 msgid_plural "License types"
-msgstr[0] "ライセンスの種類"
+msgstr[0] "ライセンスの型"
 
 #: src/NotificationAjax.php:92
 msgid "Error inserting browser notification to queue"
@@ -12462,7 +12462,7 @@ msgstr "ブラウザ通知をキューに入れる際にエラーが発生しま
 #: src/NotificationAjax.php:101
 #, php-format
 msgid "A browser notification to %s was added to queue"
-msgstr "%s 宛のブラウザ通知はキューに追加しました"
+msgstr "%s 宛のブラウザ通知をキューに追加しました"
 
 #: src/Change_Problem.php:63
 msgid "Link Problem/Change"
@@ -12580,7 +12580,7 @@ msgstr "イメージは最小高が必要です"
 
 #: src/GLPIUploadHandler.php:104
 msgid "Filetype not allowed"
-msgstr "許可していないファイル タイプ"
+msgstr "未許可のファイル形式"
 
 #: src/GLPIUploadHandler.php:108
 msgid "File upload aborted"
@@ -12917,7 +12917,7 @@ msgstr[0] "ITIL オブジェクト"
 
 #: src/Profile.php:1274 src/TicketRecurrent.php:53
 msgid "Recurrent tickets"
-msgstr "くり返しのチケット"
+msgstr "くり返しチケット"
 
 #: src/Profile.php:1437 src/Profile.php:1565
 msgid "From \\ To"
@@ -13011,7 +13011,7 @@ msgstr "チケット取り扱いの業務ルール"
 
 #: src/Profile.php:2719
 msgid "Managed domain records types"
-msgstr "マネージドドメインレコードの種類"
+msgstr "マネージドドメインレコードの型"
 
 #: src/Profile.php:3007
 msgid "No access"
@@ -13080,11 +13080,11 @@ msgstr[0] "ヶ月"
 #: src/SolutionType.php:39
 msgid "Solution type"
 msgid_plural "Solution types"
-msgstr[0] "解決の種類"
+msgstr[0] "解決の型"
 
 #: src/RecurrentChange.php:48
 msgid "Recurrent changes"
-msgstr "くり返しの変更依頼"
+msgstr "くり返し変更依頼"
 
 #: src/DropdownTranslation.php:101 src/DropdownTranslation.php:116
 msgid "There's already a translation for this field in this language"
@@ -13342,7 +13342,7 @@ msgstr "すべての履歴を抹消"
 #: src/DeviceGenericType.php:39
 msgid "Generic type"
 msgid_plural "Generic types"
-msgstr[0] "汎用の種類"
+msgstr[0] "汎用の型"
 
 #: src/Session.php:177 src/Session.php:185
 msgid "You don't have right to connect"
@@ -13380,7 +13380,7 @@ msgstr "プリンターの辞書"
 #: src/RuleDictionnaryPrinter.php:108
 #: templates/generic_show_form.html.twig:409
 msgid "Management type"
-msgstr "管理の種類"
+msgstr "管理の型"
 
 #. TRANS: Test of comment for translation (mark : //TRANS)
 #: src/DCRoom.php:49
@@ -13390,7 +13390,7 @@ msgstr[0] "サーバールーム"
 
 #: src/DCRoom.php:135 src/DCRoom.php:281
 msgid "Number of columns"
-msgstr "列数"
+msgstr "カラム数"
 
 #: src/DCRoom.php:147 src/DCRoom.php:289
 msgid "Number of rows"
@@ -13630,7 +13630,7 @@ msgstr "デバイス 2"
 #: src/Report.php:469 src/Report.php:478 src/CommonDeviceType.php:38
 msgid "Device type"
 msgid_plural "Device types"
-msgstr[0] "デバイスの種類"
+msgstr[0] "デバイスの型"
 
 #: src/Report.php:470 src/Report.php:479
 msgid "Device name"
@@ -13722,19 +13722,19 @@ msgstr "ソフトウェアが使われなくなった場合"
 
 #: src/Transfer.php:3863
 msgid "Links between printers and cartridge types and cartridges"
-msgstr "プリンターとカートリッジの種類とカートリッジ間のリンク"
+msgstr "プリンター・カートリッジの型・カートリッジ間のリンク"
 
 #: src/Transfer.php:3868
 msgid "If the cartridge types are no longer used"
-msgstr "カートリッジの種類が使われなくなった場合"
+msgstr "カートリッジの型が使われなくなった場合"
 
 #: src/Transfer.php:3874
 msgid "Links between cartridge types and cartridges"
-msgstr "カートリッジの種類とカートリッジ間のリンク"
+msgstr "カートリッジの型・カートリッジ間のリンク"
 
 #: src/Transfer.php:3884
 msgid "Links between consumable types and consumables"
-msgstr "消耗品の種類と消耗品間のリンク"
+msgstr "消耗品の型・消耗品間のリンク"
 
 #: src/Transfer.php:3888
 msgid "Links between computers and volumes"
@@ -13790,7 +13790,7 @@ msgstr "契約が使われなくなった場合"
 
 #: src/Transfer.php:3984
 msgid "If certificates are no longer used"
-msgstr ""
+msgstr "証明書を使用しなくなった場合"
 
 #: src/Transfer.php:4005
 msgid ""
@@ -13853,7 +13853,7 @@ msgstr "ダイナミック"
 #: src/DomainType.php:40
 msgid "Domain type"
 msgid_plural "Domain types"
-msgstr[0] "ドメインの種類"
+msgstr[0] "ドメインの型"
 
 #: src/DeviceGraphicCardModel.php:42
 msgid "Device graphic card model"
@@ -13888,7 +13888,7 @@ msgstr "Reply-To を依頼人として使用する（可能な場合）"
 
 #: src/MailCollector.php:305
 msgid "Add CC users as observer"
-msgstr "CC:ユーザーをオブザーバに追加する"
+msgstr "CC のユーザーをオブザーバーに追加する"
 
 #: src/MailCollector.php:310
 msgid "Collect only unread mail"
@@ -14161,7 +14161,7 @@ msgstr[0] "受信"
 
 #: src/NetworkPortInstantiation.php:85
 msgid "No options available for this port type."
-msgstr "このポートの種類には、オプションがありません"
+msgstr "このポートの型には、オプションがありません"
 
 #: src/NetworkPortInstantiation.php:163 src/NetworkPortInstantiation.php:196
 msgid "Virtual ports"
@@ -14205,7 +14205,7 @@ msgstr "接続"
 #: src/Features/DCBreadcrumb.php:172 src/Features/DCBreadcrumb.php:198
 #, php-format
 msgid "(U%1$u)"
-msgstr ""
+msgstr "(U%1$u)"
 
 #: src/Features/PlanningEvent.php:136 src/Features/PlanningEvent.php:196
 #: src/RSSFeed.php:629
@@ -14251,7 +14251,7 @@ msgstr "バックグラウンドイベント"
 #: src/Features/PlanningEvent.php:985 src/PlanningExternalEventTemplate.php:79
 #: src/PlanningExternalEvent.php:330
 msgid "Repeat"
-msgstr "繰り返し"
+msgstr "くり返し"
 
 #: src/Features/PlanningEvent.php:1044 src/Reminder.php:442
 msgid "Planning start date"
@@ -14264,7 +14264,7 @@ msgstr "計画終了日"
 #: src/Features/Inventoriable.php:112
 #: templates/components/form/inventory_info.html.twig:39
 msgid "Inventory information"
-msgstr "資産情報"
+msgstr "インベントリー情報"
 
 #. TRANS: parameter is the name of the asset
 #: src/Features/Inventoriable.php:125
@@ -14290,7 +14290,7 @@ msgstr "リンクしたエージェントはありません。"
 #: src/Features/Inventoriable.php:189
 #: templates/components/form/inventory_info.html.twig:83
 msgid "Last inventory"
-msgstr "最終棚卸"
+msgstr "最終インベントリー"
 
 #: src/Features/Inventoriable.php:194
 #: templates/components/form/inventory_info.html.twig:89
@@ -14305,12 +14305,12 @@ msgstr "エージェントに現在の状態を問い合わせる"
 #: src/Features/Inventoriable.php:198
 #: templates/components/form/inventory_info.html.twig:98
 msgid "Request inventory"
-msgstr "棚卸を依頼"
+msgstr "インベントリーを依頼"
 
 #: src/Features/Inventoriable.php:199
 #: templates/components/form/inventory_info.html.twig:99
 msgid "Request agent to proceed an new inventory"
-msgstr "棚卸をエージェントに依頼する"
+msgstr "インベントリーをエージェントに依頼する"
 
 #: src/CommonDBConnexity.php:314
 msgid "Cannot update item: not enough right on the parent(s) item(s)"
@@ -14354,7 +14354,7 @@ msgstr "正規表現と見なす"
 #: src/DocumentType.php:63
 msgid "Document type"
 msgid_plural "Document types"
-msgstr[0] "ドキュメントの種類"
+msgstr[0] "ドキュメントの形式"
 
 #: src/DocumentType.php:176 src/DocumentType.php:177
 #: templates/layout/parts/user_header.html.twig:79
@@ -14523,7 +14523,7 @@ msgstr[0] "カートリッジモデル"
 #: src/Cartridge.php:1089 src/CartridgeItemType.php:39
 msgid "Cartridge type"
 msgid_plural "Cartridge types"
-msgstr[0] "カートリッジの種類"
+msgstr[0] "カートリッジの型"
 
 #: src/Cartridge.php:1095
 msgid "Printed pages"
@@ -14625,15 +14625,15 @@ msgstr "リンクしたアイテムでの変更依頼"
 
 #: src/Change.php:1338 src/Change.php:1387
 msgid "Changes on pending status"
-msgstr ""
+msgstr "保留状態での変更"
 
 #: src/Change.php:1354 src/Change.php:1403
 msgid "Changes to be processed"
-msgstr ""
+msgstr "進行中に変更"
 
 #: src/Change.php:1370 src/Change.php:1419
 msgid "Your changes in progress"
-msgstr ""
+msgstr "進行中の変更"
 
 #: src/NetworkPortEthernet.php:42
 msgid "Ethernet port"
@@ -14642,7 +14642,7 @@ msgstr "イーサネットポート"
 #: src/NetworkPortEthernet.php:95 src/NetworkPortEthernet.php:153
 #: src/NetworkPortEthernet.php:228
 msgid "Ethernet port type"
-msgstr "イーサネットポートの種類"
+msgstr "イーサネットポートの型"
 
 #: src/NetworkPortEthernet.php:102 src/NetworkPortEthernet.php:152
 #: src/NetworkPortEthernet.php:237
@@ -14663,7 +14663,7 @@ msgstr "シングルモードファイバ"
 
 #: src/NetworkPortEthernet.php:405
 msgid "Ethernet socket"
-msgstr ""
+msgstr "イーサネット端子"
 
 #: src/DeviceGraphicCard.php:41
 msgid "Graphics card"
@@ -14712,11 +14712,11 @@ msgstr "ソフトウェアの辞書"
 #: src/Software.php:421 src/RuleSoftwareCategory.php:77
 #: templates/generic_show_form.html.twig:316
 msgid "Publisher"
-msgstr "発行者/出版社"
+msgstr "開発元"
 
 #: src/RuleDictionnarySoftware.php:93 src/RuleSoftwareCategory.php:85
 msgid "Category from inventory tool"
-msgstr "棚卸ツールのカテゴリ"
+msgstr "インベントリーツールのカテゴリ"
 
 #: src/DeviceProcessorModel.php:42
 msgid "Device processor model"
@@ -14740,12 +14740,12 @@ msgstr "基準"
 #: src/NotificationTargetCartridgeItem.php:97
 #: src/NotificationTargetConsumableItem.php:97
 msgid "Stock target"
-msgstr ""
+msgstr "在庫の対象"
 
 #: src/NotificationTargetCartridgeItem.php:98
 #: src/NotificationTargetConsumableItem.php:98
 msgid "To order"
-msgstr ""
+msgstr "要注文"
 
 #: src/DomainRecord.php:46
 msgid "Domain record"
@@ -14820,11 +14820,11 @@ msgstr[0] "業務評定"
 #: src/DeviceCaseType.php:39
 msgid "Case type"
 msgid_plural "Case types"
-msgstr[0] "ケースの種類"
+msgstr[0] "ケースの型"
 
 #: src/RuleDictionnaryMonitorTypeCollection.php:47
 msgid "Dictionnary of monitor types"
-msgstr "モニターの種類の辞書"
+msgstr "モニターの型の辞書"
 
 #: src/User.php:83 templates/dropdown_form.html.twig:84
 #: templates/components/form/snmpcredential.html.twig:62
@@ -14967,7 +14967,7 @@ msgstr "色"
 #: src/PDUType.php:39
 msgid "PDU type"
 msgid_plural "PDU types"
-msgstr[0] "電源タップの種類"
+msgstr[0] "電源タップの型"
 
 #: src/CommonITILValidation.php:346 src/CommonITILValidation.php:502
 #, php-format
@@ -15077,11 +15077,11 @@ msgstr "このアイテムは承認を待っています。解決または終了
 
 #: src/CommonITILValidation.php:1618
 msgid "This item is waiting for approval."
-msgstr ""
+msgstr "このアイテムは承認待ちです。"
 
 #: src/CommonITILValidation.php:1619
 msgid "Do you really want to resolve or close it?"
-msgstr ""
+msgstr "解決または終了に変更します。よろしいですか？"
 
 #: src/DeviceSoundCard.php:43
 msgid "Soundcard"
@@ -15090,7 +15090,7 @@ msgstr[0] "サウンドカード"
 
 #: src/IPAddress.php:249
 msgid "Order by item type"
-msgstr "アイテムの種類順"
+msgstr "アイテムの型順"
 
 #: src/IPAddress.php:270
 msgid "Other kind of items"
@@ -15154,7 +15154,7 @@ msgstr "OLA の自動リマインダー"
 
 #: src/NotificationTargetTicket.php:155
 msgid "Satisfaction survey answer"
-msgstr "満足度調査の回答"
+msgstr "満足度アンケートの回答"
 
 #: src/NotificationTargetTicket.php:199 src/NotificationTargetTicket.php:784
 #, php-format
@@ -15213,7 +15213,7 @@ msgstr "検証依頼への回答が作成されました"
 
 #: src/NotificationTargetTicket.php:730
 msgid "Creation date of the satisfaction survey"
-msgstr "満足度調査の作成日"
+msgstr "満足度アンケートの作成日"
 
 #: src/NotificationTargetTicket.php:731 src/TicketSatisfaction.php:160
 msgid "Response date to the satisfaction survey"
@@ -15225,11 +15225,11 @@ msgstr "満足度調査へのコメント"
 
 #: src/NotificationTargetTicket.php:742
 msgid "Survey type"
-msgstr "調査の種類"
+msgstr "アンケートの型"
 
 #: src/NotificationTargetTicket.php:752
 msgid "Invitation to fill out the survey"
-msgstr "調査の回答案内"
+msgstr "アンケートの回答依頼"
 
 #: src/DeviceHardDrive.php:41
 msgid "Hard drive"
@@ -15252,7 +15252,7 @@ msgstr "キャッシュのサイズ"
 
 #: src/DeviceHardDrive.php:232
 msgid "Hard drive type"
-msgstr "ストレージの種類"
+msgstr "ストレージの型"
 
 #: src/DeviceHardDrive.php:249
 msgid "Hard drive size"
@@ -15358,7 +15358,7 @@ msgstr "要求されたアイテムがありません"
 msgid ""
 "For this type of item, the financial and administrative information are only"
 " a model for the items which you should add."
-msgstr "このアイテムの種類の場合、財務管理情報は、追加しなければならないアイテムのモデルにすぎません。"
+msgstr "このアイテムの型の場合、財務管理情報は、追加しなければならないアイテムのモデルにすぎません。"
 
 #: src/Infocom.php:1190 src/Infocom.php:1584
 #: templates/components/infocom.html.twig:146
@@ -15398,7 +15398,7 @@ msgstr "保証開始日"
 #: src/Infocom.php:1280 src/Infocom.php:1512
 #: templates/components/infocom.html.twig:94
 msgid "Date of last physical inventory"
-msgstr "前回棚卸日"
+msgstr "前回インベントリー日"
 
 #: src/Infocom.php:1300 src/Infocom.php:1531
 #: templates/components/infocom.html.twig:286
@@ -15430,7 +15430,7 @@ msgstr "償却期間"
 #: src/Infocom.php:1384 src/Infocom.php:1610
 #: templates/components/infocom.html.twig:205
 msgid "Amortization type"
-msgstr "償却の種類"
+msgstr "償却の型"
 
 #: src/Infocom.php:1396 src/Infocom.php:1627
 #: templates/components/infocom.html.twig:222
@@ -15607,12 +15607,12 @@ msgstr[0] "ネットワーク機器モデル"
 #: src/Rule.php:372 src/ComputerType.php:39
 msgid "Computer type"
 msgid_plural "Computer types"
-msgstr[0] "コンピューターの種類"
+msgstr[0] "コンピューターの型"
 
 #: src/Rule.php:408
 msgid "Peripheral type"
 msgid_plural "Peripheral types"
-msgstr[0] "周辺機器の種類"
+msgstr[0] "周辺機器の型"
 
 #: src/Rule.php:559
 msgid "Rules management"
@@ -15667,7 +15667,7 @@ msgstr "キー"
 
 #: src/Rule.php:2453
 msgid "No item type defined"
-msgstr "アイテムの種類が未定義です"
+msgstr "アイテムの型が未定義です"
 
 #: src/Rule.php:3198
 msgid "Rules using the object have been disabled."
@@ -15776,7 +15776,7 @@ msgstr "テンプレートから自動補完"
 #: src/DeviceFirmwareType.php:38
 msgid "Firmware type"
 msgid_plural "Firmware types"
-msgstr[0] "ファームウェアの種類"
+msgstr[0] "ファームウェアの型"
 
 #: src/Vlan.php:46
 msgid "VLAN"
@@ -15790,7 +15790,7 @@ msgstr "タグ無し"
 #: src/RackType.php:39
 msgid "Rack type"
 msgid_plural "Rack types"
-msgstr[0] "ラックの種類"
+msgstr[0] "ラックの型"
 
 #: src/ProblemTemplate.php:48 src/Entity.php:2545
 msgid "Problem template"
@@ -15817,11 +15817,11 @@ msgstr "コピーした : "
 #: src/UserCategory.php:39
 msgid "User category"
 msgid_plural "User categories"
-msgstr[0] "職種"
+msgstr[0] "ユーザーカテゴリ"
 
 #: src/RuleDictionnaryComputerTypeCollection.php:47
 msgid "Dictionnary of computer types"
-msgstr "コンピュータータイプの種類の辞書"
+msgstr "コンピューターの型の辞書"
 
 #: src/SlaLevel.php:211
 msgid "Automatic reminders of SLA"
@@ -15866,7 +15866,7 @@ msgstr "暗号化アルゴリズム"
 
 #: src/Item_Disk.php:198 src/Item_Disk.php:347 src/Item_Disk.php:591
 msgid "Encryption type"
-msgstr "暗号化の種類"
+msgstr "暗号化の型"
 
 #: src/Item_Disk.php:275
 msgid "Add a volume"
@@ -15874,7 +15874,7 @@ msgstr "ディスク パーティションを追加"
 
 #: src/Item_Disk.php:295 src/Item_Disk.php:488
 msgid "Free percentage"
-msgstr "空き領域％"
+msgstr "空き領域の割合"
 
 #: src/Item_Disk.php:340
 msgid "Partial encryption"
@@ -15912,11 +15912,11 @@ msgstr "証明書担当グループ"
 #: src/DeviceSimcard.php:57 src/DeviceSimcard.php:78 src/DeviceBattery.php:62
 #: src/DeviceBattery.php:87 src/DeviceBattery.php:118
 msgid "Voltage"
-msgstr "電圧(V)"
+msgstr "電圧（V）"
 
 #: src/DeviceSimcard.php:63 src/DeviceSimcard.php:94
 msgid "Allow VOIP"
-msgstr "VoIPを許可"
+msgstr "VoIP を許可"
 
 #: src/RuleMatchedLog.php:56
 msgid "Matched rules"
@@ -15991,7 +15991,7 @@ msgstr "補助"
 #: src/RSSFeed.php:82 src/Central.php:69
 msgid "RSS feed"
 msgid_plural "RSS feed"
-msgstr[0] " RSSフィード"
+msgstr[0] "RSSフィード"
 
 #: src/RSSFeed.php:84 src/RSSFeed.php:970
 msgid "Personal RSS feed"
@@ -16037,7 +16037,7 @@ msgstr[0] "ケーブル"
 #: src/Cable.php:136 src/CableType.php:39
 msgid "Cable type"
 msgid_plural "Cable types"
-msgstr[0] "ケーブルの種類"
+msgstr[0] "ケーブルの型"
 
 #: src/LevelAgreement.php:205 src/LevelAgreement.php:398
 msgid "Maximum time"
@@ -16114,7 +16114,7 @@ msgstr "user_token パラメーターが無効なようです"
 
 #: src/Api/API.php:1154
 msgid "parent itemtype not found or not an instance of CommonDBTM"
-msgstr "上位のアイテム種類が見つからないか、CommonDBTM のインスタンスではありません"
+msgstr "上位のアイテム型が見つからないか、CommonDBTM のインスタンスではありません"
 
 #: src/Api/API.php:1584
 msgid "Malformed search criteria"
@@ -16122,15 +16122,15 @@ msgstr "不正な形式の検索条件"
 
 #: src/Api/API.php:1591
 msgid "Bad field ID in search criteria"
-msgstr "検索条件での項目IDが正しくありません"
+msgstr "検索条件での項目 ID が正しくありません"
 
 #: src/Api/API.php:1599
 msgid "Forbidden field ID in search criteria"
-msgstr "検索条件に項目IDが入っていません"
+msgstr "検索条件に項目 ID が入っていません"
 
 #: src/Api/API.php:1630
 msgid "ID is forbidden along with 'forcedisplay' parameter."
-msgstr "'forcedisplay'（無条件表示）パラメーターをつける場合は、IDが必要です。"
+msgstr "'forcedisplay'（無条件表示）パラメーターをつける場合は、ID が必要です。"
 
 #: src/Api/API.php:2127
 msgid "Email notifications are disabled"
@@ -16209,15 +16209,15 @@ msgstr "XMLRPC API"
 
 #: src/Api/APIXmlrpc.php:150
 msgid "missing itemtype"
-msgstr "不明なアイテム種類"
+msgstr "アイテムの型、なし"
 
 #: src/Api/APIXmlrpc.php:157
 msgid "itemtype not found or not an instance of CommonDBTM"
-msgstr "アイテム種類が見つからないか、CommonDBTM のインスタンスではありません"
+msgstr "アイテムの型が見つからないか、CommonDBTM のインスタンスではありません"
 
 #: src/Api/APIXmlrpc.php:164
 msgid "missing id"
-msgstr "idが見つかりません"
+msgstr "id が見つかりません"
 
 #: src/RuleSoftwareCategory.php:50 src/RuleSoftwareCategoryCollection.php:44
 msgid "Rules for assigning a category to software"
@@ -16225,12 +16225,12 @@ msgstr "ソフトウェアへのカテゴリ割り当てルール"
 
 #: src/RuleSoftwareCategory.php:101
 msgid "Import category from inventory tool"
-msgstr "棚卸ツールからカテゴリをインポートする"
+msgstr "インベントリーツールからカテゴリをインポートする"
 
 #: src/ConsumableItemType.php:39
 msgid "Consumable type"
 msgid_plural "Consumable types"
-msgstr[0] "消耗品の種類"
+msgstr[0] "消耗品の型"
 
 #: src/DatabaseInstance.php:66
 msgid "Database instance"
@@ -16250,13 +16250,13 @@ msgstr "最終ブート日"
 
 #: src/DatabaseInstance.php:516
 msgid "No instance found"
-msgstr ""
+msgstr "インスタンスが見つかりません"
 
 #: src/DatabaseInstance.php:532
 #, php-format
 msgid "%1$d database"
 msgid_plural "%1$d databases"
-msgstr[0] ""
+msgstr[0] "%1$d 個のデータベース"
 
 #: src/RegisteredID.php:52
 msgid "PCI"
@@ -16265,7 +16265,7 @@ msgstr "PCI"
 #: src/RegisteredID.php:59
 msgid "Registered ID (issued by PCI-SIG)"
 msgid_plural "Registered IDs (issued by PCI-SIG)"
-msgstr[0] "登録済みID（PCI-SIG で発行）"
+msgstr[0] "登録済み ID（PCI-SIG で発行）"
 
 #: src/SoftwareVersion.php:310
 msgctxt "button"
@@ -16288,7 +16288,7 @@ msgstr "デフォルトの翻訳"
 
 #: src/NotificationTemplateTranslation.php:151
 msgid "(leave the field empty for a generation from HTML)"
-msgstr "(HTMLから生成する場合、テキストボックスは空欄にしてください)"
+msgstr "（HTMLから生成する場合、テキストボックスは項目を空欄にしてください）"
 
 #: src/NotificationTemplateTranslation.php:382
 #: src/NotificationTemplateTranslation.php:421
@@ -16420,7 +16420,7 @@ msgstr "リンクしたアイテムの障害"
 #: src/PhonePowerSupply.php:42
 msgid "Phone power supply type"
 msgid_plural "Phone power supply types"
-msgstr[0] "電話の電源の種類"
+msgstr[0] "電話の電源の型"
 
 #: src/ITILTemplateMandatoryField.php:45
 msgid "Mandatory field"
@@ -16438,7 +16438,7 @@ msgstr "このエンクロージャーに新しいアイテムを追加..."
 #: src/Item_Enclosure.php:314 src/Item_Cluster.php:292 src/Item_Rack.php:915
 #: src/Appliance_Item.php:397 src/Appliance_Item_Relation.php:114
 msgid "An item type is required"
-msgstr "アイテムの種類は必須です"
+msgstr "アイテムの型は必須です"
 
 #: src/Item_Enclosure.php:320 src/Item_Cluster.php:298 src/Item_Rack.php:921
 #: src/Appliance_Item.php:403 src/Appliance_Item_Relation.php:120
@@ -16616,7 +16616,7 @@ msgstr "アイテムのタイトル"
 #: src/Project.php:2533 src/CommonITILObject.php:8238
 msgctxt "filters"
 msgid "The type of the item"
-msgstr "アイテムの種類"
+msgstr "アイテムの型"
 
 #: src/Project.php:2537
 msgctxt "filters"
@@ -16720,7 +16720,7 @@ msgstr "何が送られるか見る..."
 
 #: src/Telemetry.php:424
 msgid "Send \"usage statistics\""
-msgstr "\"利用統計\"を送信する"
+msgstr "「利用統計」を送信する"
 
 #: src/Telemetry.php:427 src/Console/Traits/TelemetryActivationTrait.php:98
 msgid "We need your help to improve GLPI and the plugins ecosystem!"
@@ -16732,13 +16732,14 @@ msgid ""
 "“Telemetry”, that anonymously with your permission, sends data to our "
 "telemetry website."
 msgstr ""
-"GLPI 9.2以降、\"テレメトリ\"と呼ばれる新しい統計機能を導入しました。これは、許可を得てテレメトリWebサイトへ匿名でデータを送信します。"
+"GLPI "
+"9.2以降、「テレメトリ」という新しい統計機能を導入しました。これは、利用者の許可にもとづき、テレメトリWebサイトへ匿名でデータを送信します。"
 
 #: src/Telemetry.php:429 src/Console/Traits/TelemetryActivationTrait.php:100
 msgid ""
 "Once sent, usage statistics are aggregated and made available to a broad "
 "range of GLPI developers."
-msgstr "送信すると、利用統計を集計し、幅広い GLPI 開発者が利用できるようになります。"
+msgstr "送信された利用統計は、集計され、幅広い GLPI 開発者が利用できるようになります。"
 
 #: src/Telemetry.php:430 src/Console/Traits/TelemetryActivationTrait.php:101
 msgid ""
@@ -16754,11 +16755,11 @@ msgstr "GLPI を参照する"
 msgid ""
 "Besides, if you appreciate GLPI and its community, please take a minute to "
 "reference your organization by filling %1$s"
-msgstr ""
+msgstr "あなたの組織での使用状況を%1$s に入力して、GLPI と GLPI コミュニティーにご協力ください。"
 
 #: src/Telemetry.php:453
 msgid "the registration form"
-msgstr ""
+msgstr "登録フォーム"
 
 #: src/ContentTemplates/Parameters/UserParameters.php:74
 msgid "Full name"
@@ -16781,12 +16782,12 @@ msgstr[0] "割り当てられた担当者"
 #: src/ContentTemplates/Parameters/CommonITILObjectParameters.php:79
 msgid "Assigned group"
 msgid_plural "Assigned groups"
-msgstr[0] "割り当てられたグループ"
+msgstr[0] "割当済みグループ"
 
 #: src/ContentTemplates/Parameters/CommonITILObjectParameters.php:80
 msgid "Assigned supplier"
 msgid_plural "Assigned suppliers"
-msgstr[0] "割り当てられたサプライヤー"
+msgstr[0] "割当済みサプライヤー"
 
 #: src/ContentTemplates/Parameters/LevelAgreementParameters.php:55
 msgid "Duration unit"
@@ -16834,7 +16835,7 @@ msgstr "互換プリンターモデルの追加"
 #: src/AgentType.php:41
 msgid "Agent type"
 msgid_plural "Agents types"
-msgstr[0] "エージェントの種類"
+msgstr[0] "エージェントの型"
 
 #: src/Event.php:154 src/Config.php:2482
 msgid "System"
@@ -16993,7 +16994,7 @@ msgstr[0] "ドメインの関係"
 #: src/SupplierType.php:39
 msgid "Third party type"
 msgid_plural "Third party types"
-msgstr[0] "サードパーティーの種類"
+msgstr[0] "サードパーティーの型"
 
 #: src/Phone.php:297 templates/pages/assets/phone.html.twig:40
 msgctxt "quantity"
@@ -17028,11 +17029,11 @@ msgstr[0] "エンクロージャー モデル"
 
 #: src/RuleDictionnaryNetworkEquipmentTypeCollection.php:44
 msgid "Dictionnary of network equipment types"
-msgstr "ネットワーク機器の種類の辞書"
+msgstr "ネットワーク機器の型の辞書"
 
 #: src/KnowbaseItem_KnowbaseItemCategory.php:176
 msgid "Add a category"
-msgstr ""
+msgstr "カテゴリを追加する"
 
 #: src/KnowbaseItem_KnowbaseItemCategory.php:226
 msgid "Category name"
@@ -17079,7 +17080,7 @@ msgstr[0] "デバイスモデル"
 #: src/SocketModel.php:39
 msgid "Socket model"
 msgid_plural "Socket models"
-msgstr[0] ""
+msgstr[0] "端子のモデル"
 
 #: src/GLPINetwork.php:66
 msgid "Registration"
@@ -17089,7 +17090,7 @@ msgstr "登録"
 msgid ""
 "A registration key is needed to use advanced feature (like marketplace) in "
 "GLPI"
-msgstr "GLPIの高度な機能（マーケットプレイスなど）を使用するには、登録キーが必要です"
+msgstr "GLPIの高度な機能（マーケットプレースなど）を使用するには、登録キーが必要です"
 
 #: src/GLPINetwork.php:71
 #, php-format
@@ -17219,7 +17220,7 @@ msgstr "水平位置（ラック正面側）"
 
 #: src/Item_Rack.php:672
 msgid "Reserved position?"
-msgstr ""
+msgstr "予約済みの場所？"
 
 #: src/Item_Rack.php:791
 msgid "asset rear side"
@@ -17709,7 +17710,7 @@ msgstr "LDAPディレクトリからユーザーを削除したときの操作"
 
 #: src/Config.php:743
 msgid "Action when a user is restored in the LDAP directory"
-msgstr ""
+msgstr "LDAP ディレクトリーでユーザーが復元された際の動作"
 
 #: src/Config.php:748
 msgid "GLPI server time zone"
@@ -17896,27 +17897,27 @@ msgstr "カラーパレット"
 
 #: src/Config.php:1321
 msgid "Page layout"
-msgstr ""
+msgstr "ページレイアウト"
 
 #: src/Config.php:1325
 msgid "Horizontal (menu in header)"
-msgstr ""
+msgstr "横方向（メニューはヘッダーに）"
 
 #: src/Config.php:1326
 msgid "Vertical (menu in sidebar)"
-msgstr ""
+msgstr "縦方向（メニューはサイドバーに）"
 
 #: src/Config.php:1356
 msgid "Rich text field layout"
-msgstr ""
+msgstr "リッチテキスト項目のレイアウト"
 
 #: src/Config.php:1361
 msgid "Inline (no toolbars)"
-msgstr ""
+msgstr "インライン（ツールバーなし）"
 
 #: src/Config.php:1362
 msgid "Classic (toolbar on top)"
-msgstr ""
+msgstr "クラシック（ツールバーを上部に）"
 
 #: src/Config.php:1371
 msgid "Enable high contrast"
@@ -17928,12 +17929,12 @@ msgstr "サーバー構成を使用する"
 
 #: src/Config.php:1389
 msgid "Timezone usage has not been activated."
-msgstr ""
+msgstr "タイムゾーンの利用は有効化されていません。"
 
 #: src/Config.php:1391
 #, php-format
 msgid "Run the \"php bin/console %1$s\" command to activate it."
-msgstr ""
+msgstr "「php bin/console %1$s」コマンドを実行して有効にしてください。"
 
 #: src/Config.php:1394
 msgid "Default central tab"
@@ -18079,12 +18080,12 @@ msgstr "PHP opcode cache"
 #: src/Config.php:1790 src/Config.php:2752
 #, php-format
 msgid "%s extension is installed"
-msgstr "%s 拡張モジュールをインストールしました"
+msgstr "%s 拡張モジュールはインストール済み"
 
 #: src/Config.php:1791
 #, php-format
 msgid "The \"%s\" extension is installed"
-msgstr "\"%s\" 拡張モジュールをインストールしました"
+msgstr "\"%s\" 拡張モジュールはインストール済み"
 
 #: src/Config.php:1808
 #, php-format
@@ -18151,7 +18152,7 @@ msgstr "\"php bin/console cache:configure\" コマンドで、キャッシュシ
 #: src/Config.php:1869
 #, php-format
 msgid "The \"%s\" cache extension is installed"
-msgstr "\"%s\" キャッシュ拡張モジュールをインストールしました"
+msgstr "\"%s\" キャッシュ拡張モジュールはインストール済み"
 
 #: src/Config.php:1871 src/Config.php:1893
 #, php-format
@@ -18217,7 +18218,7 @@ msgstr "アップグレード確認のためのプロキシ設定"
 
 #: src/Config.php:2146
 msgid "Copy system information"
-msgstr ""
+msgstr "システム情報のコピー"
 
 #: src/Config.php:2156
 msgid "Check if a new version is available"
@@ -18251,7 +18252,7 @@ msgstr "開発者向けバージョンを使用中。要注意！"
 
 #: src/Config.php:3011
 msgid "You are using a pre-release version, be careful!"
-msgstr ""
+msgstr "現在、プレリリースのバージョンを使っています。ご注意を！"
 
 #: src/Config.php:3018
 msgid "I know I am using a unstable version."
@@ -18287,7 +18288,7 @@ msgstr "アイテムへのソフトウェアのインストール・アンイン
 
 #: src/Config.php:3138
 msgid "Installation/uninstallation versions on software"
-msgstr ""
+msgstr "ソフトウェアの特定のバージョンをインストール・アンインストール"
 
 #: src/Config.php:3147
 msgid "Add/Remove items from software versions"
@@ -18455,7 +18456,7 @@ msgstr "新品のカートリッジ数"
 #: src/CartridgeItem.php:317 src/ConsumableItem.php:255
 #: templates/generic_show_form.html.twig:496
 msgid "Alert threshold"
-msgstr "警告のしきい値"
+msgstr "在庫不足警告のしきい値"
 
 #: src/CartridgeItem.php:367 src/CartridgeItem.php:564
 msgid "Send alarms on cartridges"
@@ -18466,7 +18467,7 @@ msgstr "カートリッジのアラームを送信する"
 msgid ""
 "Threshold of alarm reached for the type of cartridge: %1$s - Reference %2$s "
 "- Remaining %3$d"
-msgstr "%1$s カートリッジ種類のしきい値に達しました : 残数 %3$d （基準 %2$s）"
+msgstr "%1$s カートリッジの型の在庫が少なくなっています : 残数 %3$d （基準 %2$s）"
 
 #. TRANS: %s is entity name
 #: src/CartridgeItem.php:479
@@ -18495,7 +18496,7 @@ msgstr "エンティティを表示するLDAPディレクトリ情報属性"
 
 #: src/Entity.php:761 src/Entity.php:1502
 msgid "Information in inventory tool (TAG) representing the entity"
-msgstr "エンティティを代表する棚卸ツール (TAG) の情報"
+msgstr "エンティティを代表するインベントリーツール (TAG) の情報"
 
 #: src/Entity.php:770 src/Entity.php:1527
 msgid "LDAP directory of an entity"
@@ -18586,11 +18587,11 @@ msgstr "財務管理情報アラームのデフォルト値"
 
 #: src/Entity.php:987 src/Entity.php:1917
 msgid "Default threshold for cartridges count"
-msgstr "カートリッジ数のデフォルトしきい値"
+msgstr "カートリッジの在庫不足を警告するデフォルトしきい値"
 
 #: src/Entity.php:997 src/Entity.php:1957
 msgid "Default threshold for consumables count"
-msgstr "消耗品数のデフォルトしきい値"
+msgstr "消耗品の在庫不足を警告するデフォルトしきい値"
 
 #: src/Entity.php:1017
 msgid "Send Certificate alarms before"
@@ -18614,15 +18615,15 @@ msgstr "チケットの自動割り当て"
 
 #: src/Entity.php:1110 src/Entity.php:2599
 msgid "Tickets default type"
-msgstr "チケットのデフォルト種類"
+msgstr "チケットのデフォルト型"
 
 #: src/Entity.php:1175
 msgid "Satisfaction survey configuration"
-msgstr "満足度調査設定"
+msgstr "満足度アンケート設定"
 
 #: src/Entity.php:1185
 msgid "Satisfaction survey trigger rate"
-msgstr "満足度調査トリガーレート"
+msgstr "満足度アンケートトリガーレート"
 
 #. TRANS: software in plural
 #: src/Entity.php:1214 src/Entity.php:1714
@@ -18637,7 +18638,7 @@ msgstr "%s がアイテムを追加"
 
 #: src/Entity.php:1377
 msgid "Administrative Number"
-msgstr ""
+msgstr "管理番号"
 
 #: src/Entity.php:1439
 msgctxt "location"
@@ -18721,7 +18722,7 @@ msgstr "資産管理処理の自動エンティティ転送で使用するモデ
 
 #: src/Entity.php:1760
 msgid "Agent base URL"
-msgstr ""
+msgstr "エージェントベース URL"
 
 #: src/Entity.php:1899
 msgid "Alarms options"
@@ -18774,7 +18775,7 @@ msgstr "テンプレート構成"
 #: src/Entity.php:2517 src/ChangeTemplate.php:48
 msgid "Change template"
 msgid_plural "Change templates"
-msgstr[0] ""
+msgstr[0] "テンプレートの変更"
 
 #: src/Entity.php:2573
 msgid "Tickets configuration"
@@ -18814,7 +18815,7 @@ msgstr "チケットの抹消操作が無効です。"
 
 #: src/Entity.php:2840 src/Entity.php:2843
 msgid "Configuring the satisfaction survey"
-msgstr "満足度調査の設定"
+msgstr "満足度アンケートの設定"
 
 #: src/Entity.php:2848 src/Entity.php:3514 src/TicketSatisfaction.php:241
 #: src/TicketSatisfaction.php:293
@@ -18886,7 +18887,7 @@ msgstr "%1$s - 既存のデータベースに対するルールの再適用: %2$
 #: src/BudgetType.php:42
 msgid "Budget type"
 msgid_plural "Budget types"
-msgstr[0] "予算の種類"
+msgstr[0] "予算の型"
 
 #: src/CommonITILObject.php:1593 src/CommonITILObject.php:1612
 #: src/CommonITILObject.php:1633 src/CommonITILObject.php:1643
@@ -18900,7 +18901,7 @@ msgstr "定義済みの説明をそのまま使用することはできません
 
 #: src/CommonITILObject.php:2162
 msgid "Incorrect value for date field."
-msgstr ""
+msgstr "データ項目に不正な値です。"
 
 #: src/CommonITILObject.php:2831
 msgctxt "priority"
@@ -19136,31 +19137,31 @@ msgstr "計画"
 #: src/CommonITILObject.php:6490
 msgctxt "button"
 msgid "Answer"
-msgstr ""
+msgstr "回答"
 
 #: src/CommonITILObject.php:6500
 msgctxt "button"
 msgid "Create a task"
-msgstr ""
+msgstr "タスクを作る"
 
 #: src/CommonITILObject.php:6510
 msgctxt "button"
 msgid "Add a solution"
-msgstr ""
+msgstr "解決策を追加する"
 
 #: src/CommonITILObject.php:6520
 msgctxt "button"
 msgid "Ask for validation"
-msgstr ""
+msgstr "検証を依頼する"
 
 #: src/CommonITILObject.php:6825
 #, php-format
 msgid "%s: %s"
-msgstr ""
+msgstr "%s: %s"
 
 #: src/CommonITILObject.php:6827
 msgid "Log entry"
-msgstr ""
+msgstr "ログエントリー"
 
 #: src/APIClient.php:65
 msgid "API client"
@@ -19353,12 +19354,12 @@ msgstr "エンティティ管理者"
 #: src/InterfaceType.php:42
 msgid "Interface type (Hard drive...)"
 msgid_plural "Interface types (Hard drive...)"
-msgstr[0] "インターフェースの種類"
+msgstr[0] "インターフェースの型"
 
 #: src/ProjectType.php:43
 msgid "Project type"
 msgid_plural "Project types"
-msgstr[0] "プロジェクトの種類"
+msgstr[0] "プロジェクトの型"
 
 #: src/RuleDictionnaryManufacturerCollection.php:47
 msgid "Dictionary of manufacturers"
@@ -19470,7 +19471,7 @@ msgstr "予約の作成"
 
 #: src/ReservationItem.php:1009
 msgid "No reservable item!"
-msgstr ""
+msgstr "予約可能なアイテムがありません！"
 
 #: src/DeviceSensorModel.php:44
 msgid "Device sensor model"
@@ -19526,7 +19527,7 @@ msgstr "あなたの %1$s は登録無効です。"
 
 #: src/Marketplace/View.php:154
 msgid "A registration, at least a free one, is required to use marketplace!"
-msgstr "マーケットプレイスを利用するには、無料の登録が必要です!"
+msgstr "マーケットプレースを利用するには、無料の登録が必要です!"
 
 #: src/Marketplace/View.php:155
 #, php-format
@@ -19552,19 +19553,19 @@ msgstr "%1$s で更新してください。"
 msgid ""
 "Unable to fetch plugin list due to %s services website unavailability. "
 "Please try again later."
-msgstr ""
+msgstr "%s サービスのウェブサイトが利用できない状態のため、プラグインrリストを取得できません。後ほどお試しください。"
 
 #: src/Marketplace/View.php:331
 #, php-format
 msgid ""
 "Plugin list may be truncated due to %s services website unavailability. "
 "Please try again later."
-msgstr ""
+msgstr "%s サービスのウェブサイトが利用できないため、プラグインリストが一部取得できていないかもしれません。後ほどお試しください。"
 
 #: src/Marketplace/View.php:346
 #, php-format
 msgid "We can't write on the markeplace directory (%s)."
-msgstr "マーケットプレイス ディレクトリ (%s) へ書き込めません。"
+msgstr "マーケットプレース ディレクトリ (%s) へ書き込めません。"
 
 #: src/Marketplace/View.php:347
 msgid ""
@@ -19580,11 +19581,11 @@ msgstr "それ以外の場合は、プラグインアーカイブを手動でダ
 
 #: src/Marketplace/View.php:365
 msgid "Alpha ASC"
-msgstr "Alpha昇順"
+msgstr "アルファベット昇順"
 
 #: src/Marketplace/View.php:370
 msgid "Alpha DESC"
-msgstr "Alpha降順"
+msgstr "アルファベット降順"
 
 #: src/Marketplace/View.php:375
 msgid "Most popular"
@@ -19604,7 +19605,7 @@ msgstr "高評価"
 
 #: src/Marketplace/View.php:395
 msgid "Your plugin here ? Contact us."
-msgstr "必要なプラグインはここにありますか？私たちに連絡してください。"
+msgstr "あなたのプラグインはここに表示されていますか？　表示されていなければご連絡を。"
 
 #: src/Marketplace/View.php:397
 msgid "Refresh plugin list"
@@ -19628,7 +19629,7 @@ msgstr "Readme"
 
 #: src/Marketplace/View.php:674
 msgid "Download again"
-msgstr ""
+msgstr "再ダウンロード"
 
 #: src/Marketplace/View.php:683
 msgid "This plugin is not available for your GLPI version."
@@ -19652,7 +19653,7 @@ msgstr "ダウンロード"
 #: src/Marketplace/View.php:722
 #, php-format
 msgid "A new version (%s) is available, update?"
-msgstr ""
+msgstr "新しいバージョン（%s）が利用可能です。更新しますか？"
 
 #: src/Marketplace/View.php:735
 #, php-format
@@ -19677,15 +19678,15 @@ msgstr[0] "%s プラグイン"
 
 #: src/Marketplace/View.php:997
 msgid "Switch to marketplace"
-msgstr "マーケットプレイスへ切り替え"
+msgstr "マーケットプレースへ切り替え"
 
 #: src/Marketplace/View.php:1004
 msgid "GLPI provides a new marketplace to download and install plugins."
-msgstr "GLPIは、プラグインをダウンロードしてインストールするための新しいマーケットプレイスを提供します。"
+msgstr "GLPIは、プラグインをダウンロードしてインストールするための新しいマーケットプレースを提供します。"
 
 #: src/Marketplace/View.php:1006
 msgid "Do you want to replace the plugins setup page by the new marketplace?"
-msgstr ""
+msgstr "新しいマーケットプレースによるプラグイン設定ページに置き換えますか？"
 
 #: src/Marketplace/View.php:1018
 msgid "Later"
@@ -19735,7 +19736,7 @@ msgstr[0] "センサー"
 
 #: src/Domain.php:218
 msgid "Entity-ID"
-msgstr "エンティティID"
+msgstr "エンティティ ID"
 
 #: src/Domain.php:519 src/NotificationTargetDomain.php:91
 msgid "Expired or expiring domains"
@@ -19752,7 +19753,7 @@ msgstr "ドメインの警告を %1$s エンティティに送信しない"
 
 #: src/Link_Itemtype.php:95
 msgid "Add an item type"
-msgstr "アイテムの種類を追加"
+msgstr "アイテムの型を追加"
 
 #: src/Migration.php:273
 msgid "default_value must be 0 or 1"
@@ -19769,11 +19770,11 @@ msgstr "テーブル名を変更できません！ %1$s (%2$s) から %3$s (%4$s
 
 #: src/Migration.php:669 src/Migration.php:671
 msgid "ok"
-msgstr "ok"
+msgstr "〇"
 
 #: src/Migration.php:669 src/Migration.php:671
 msgid "nok"
-msgstr "nok"
+msgstr "×"
 
 #: src/Migration.php:769
 #, php-format
@@ -19857,7 +19858,7 @@ msgstr[0] "アプライアンス環境"
 
 #: src/RuleDictionnaryPeripheralTypeCollection.php:44
 msgid "Dictionnary of device types"
-msgstr "デバイスの種類の辞書"
+msgstr "デバイスの型の辞書"
 
 #: src/Central.php:67
 msgid "Group View"
@@ -20004,11 +20005,11 @@ msgstr "終了チケット数"
 
 #: src/Stat.php:542
 msgid "Number of opened satisfaction survey"
-msgstr "開催中の満足度調査の数"
+msgstr "開催中の満足度アンケートの数"
 
 #: src/Stat.php:547
 msgid "Number of answered satisfaction survey"
-msgstr "満足度調査の回答数"
+msgstr "満足度アンケートの回答数"
 
 #: src/Stat.php:552
 msgid "Average satisfaction"
@@ -20182,13 +20183,13 @@ msgstr "ドメイン プラグイン を更新します ( バージョン %s が
 msgid ""
 "Enable migration without plugin files (we cannot validate that plugin data "
 "are compatible with supported %s version)"
-msgstr "プラグインファイルなしでの移行を有効にする（プラグインデータをサポートしているバージョン %s と互換性があるかどうかは検証できません"
+msgstr "プラグインファイルなしでの移入を有効にする（プラグインデータをサポートしているバージョン %s と互換性があるかどうかは検証できません）"
 
 #: src/Console/Migration/DomainsPluginToCoreCommand.php:119
 msgid ""
 "You are about to launch migration of Domains plugin data into GLPI core "
 "tables."
-msgstr "ドメイン プラグイン のデータをGLPIコアテーブルへ移行開始します。"
+msgstr "ドメイン プラグインのデータを GLPI コアテーブルへ移入する作業を始めようとしています。"
 
 #: src/Console/Migration/DomainsPluginToCoreCommand.php:120
 #: src/Console/Migration/RacksPluginToCoreCommand.php:216
@@ -20200,7 +20201,7 @@ msgstr "処理に入る前に、既存データのバックアップをお勧め
 #: src/Console/Migration/RacksPluginToCoreCommand.php:226
 #: src/Console/Migration/AppliancesPluginToCoreCommand.php:173
 msgid "Do you want to launch migration?"
-msgstr ""
+msgstr "移行を開始しますか？"
 
 #: src/Console/Migration/DomainsPluginToCoreCommand.php:170
 #: src/Console/Migration/RacksPluginToCoreCommand.php:270
@@ -20254,31 +20255,31 @@ msgstr "移行できません。"
 
 #: src/Console/Migration/DomainsPluginToCoreCommand.php:317
 msgid "Importing domains types..."
-msgstr "ドメインの種類をインポートしています..."
+msgstr "ドメインの型をインポートしています..."
 
 #: src/Console/Migration/DomainsPluginToCoreCommand.php:346
 #, php-format
 msgid "Updating existing domain type %s..."
-msgstr "ドメインの種類\"%s\"を更新しています..."
+msgstr "ドメインの型「%s」を更新しています..."
 
 #: src/Console/Migration/DomainsPluginToCoreCommand.php:351
 #, php-format
 msgid "Importing domain type %s..."
-msgstr "ドメインの種類\"%s\"をインポートしています..."
+msgstr "ドメインの型「%s」をインポートしています..."
 
 #: src/Console/Migration/DomainsPluginToCoreCommand.php:384
 #, php-format
 msgid "Unable to add domain type %s."
-msgstr "ドメインの種類\"%s\"を追加できません。"
+msgstr "ドメインの型「%s」を追加できません。"
 
 #: src/Console/Migration/DomainsPluginToCoreCommand.php:385
 #, php-format
 msgid "Unable to update domain type %s."
-msgstr "ドメインの種類\"%s\"を更新できません。"
+msgstr "ドメインの型「%s」を更新できません。"
 
 #: src/Console/Migration/DomainsPluginToCoreCommand.php:404
 msgid "No domains types found."
-msgstr "ドメインの種類が見つかりません。"
+msgstr "ドメインの型が見つかりません。"
 
 #: src/Console/Migration/DomainsPluginToCoreCommand.php:424
 msgid "Importing domains..."
@@ -20297,7 +20298,7 @@ msgstr "ドメイン\"%s\"をインポートしています..."
 #: src/Console/Migration/DomainsPluginToCoreCommand.php:471
 #, php-format
 msgid "Unable to find mapping for type %s."
-msgstr "種類、%s とのマッピングが見つかりません。"
+msgstr "型 %s とのマッピングが見つかりません。"
 
 #: src/Console/Migration/DomainsPluginToCoreCommand.php:512
 #, php-format
@@ -20358,7 +20359,7 @@ msgstr "データベースの設定が \"utf8mb4\" の使用に対応してい�
 #: src/Console/Migration/Utf8mb4Command.php:123
 #, php-format
 msgid "%d tables are still using Compact or Redundant row format."
-msgstr ""
+msgstr "%d テーブルはまだ COMPACT または REDUNDANT 行フォーマットを使っています。"
 
 #: src/Console/Migration/Utf8mb4Command.php:155
 #, php-format
@@ -20472,7 +20473,7 @@ msgstr "別のアイテムに %d モデルが見つかりました。 それぞ�
 #: src/Console/Migration/RacksPluginToCoreCommand.php:552
 #, php-format
 msgid "Where do you want to import \"%s\"?"
-msgstr ""
+msgstr "どこに「%s」をインポートしますか？"
 
 #: src/Console/Migration/RacksPluginToCoreCommand.php:560
 msgid "Ignore (default)"
@@ -20541,17 +20542,17 @@ msgstr "ラックモデルが見つかりません。"
 
 #: src/Console/Migration/RacksPluginToCoreCommand.php:891
 msgid "Importing rack types..."
-msgstr "ラックの種類をインポートしています..."
+msgstr "ラックの型をインポートしています..."
 
 #: src/Console/Migration/RacksPluginToCoreCommand.php:909
 #, php-format
 msgid "Importing rack type \"%s\"..."
-msgstr "ラックの種類 \"%s\"をインポートしています..."
+msgstr "ラックの型「%s」をインポートしています..."
 
 #: src/Console/Migration/RacksPluginToCoreCommand.php:934
 #, php-format
 msgid "Unable to import rack type \"%s\"."
-msgstr "ラックの種類\"%s\"インポートできません。"
+msgstr "ラックの型「%s」インポートできません。"
 
 #: src/Console/Migration/RacksPluginToCoreCommand.php:974
 msgid "Importing rack states..."
@@ -20662,13 +20663,13 @@ msgstr "`%s` の更新に失敗しました。メッセージ \"(%s) %s\""
 #: src/Console/Database/EnableTimezonesCommand.php:79
 #: src/Console/Database/AbstractConfigureCommand.php:475
 msgid "Timezones usage cannot be activated due to following errors:"
-msgstr ""
+msgstr "下記のエラーにより、タイムゾーンの利用を有効にできません :"
 
 #: src/Console/Migration/TimestampsCommand.php:226
 #: src/Console/Database/AbstractConfigureCommand.php:485
 #, php-format
 msgid "Fix them and run the \"php bin/console %1$s\" command to enable timezones."
-msgstr ""
+msgstr "修正し、「php bin/console %1$s」コマンドでタイムゾーンを有効にしてください。"
 
 #: src/Console/Migration/AppliancesPluginToCoreCommand.php:144
 msgid "Migrate Appliances plugin data into GLPI core tables"
@@ -20705,7 +20706,7 @@ msgstr "プロファイル \"%s\" を更新できません。"
 
 #: src/Console/Migration/AppliancesPluginToCoreCommand.php:338
 msgid "Updating GLPI itemtypes..."
-msgstr "GLPI アイテム種類を更新しています..."
+msgstr "GLPI アイテム型を更新しています..."
 
 #: src/Console/Migration/AppliancesPluginToCoreCommand.php:363
 #, php-format
@@ -20757,12 +20758,12 @@ msgstr "アプライアンス %s (%d) を作成できません。"
 
 #: src/Console/Migration/AppliancesPluginToCoreCommand.php:580
 msgid "Creating Appliance types..."
-msgstr "アプライアンスの種類を作成しています..."
+msgstr "アプライアンスの型を作成しています..."
 
 #: src/Console/Migration/AppliancesPluginToCoreCommand.php:597
 #, php-format
 msgid "Importing type \"%s\"..."
-msgstr "種類 \"%s\" をインポートしています..."
+msgstr "型「%s」をインポートしています..."
 
 #: src/Console/Migration/AppliancesPluginToCoreCommand.php:642
 msgid "Creating Appliance relations..."
@@ -20776,7 +20777,7 @@ msgstr "関係 \"%s\" をインポートしています..."
 #: src/Console/Migration/AppliancesPluginToCoreCommand.php:685
 #, php-format
 msgid "Unable to found relation type %s from Appliance Item Relation %d."
-msgstr "アプライアンスのアイテムとの関係 %d から、関係の種類 %s が見つかりません。"
+msgstr "アプライアンスのアイテムの関係 %d から、関係の型 %s が見つかりません。"
 
 #: src/Console/Migration/AppliancesPluginToCoreCommand.php:712
 #, php-format
@@ -20827,24 +20828,24 @@ msgstr "プラグインをインストールしている場合でも、強制的
 #: src/Console/Plugin/DeactivateCommand.php:60
 #, php-format
 msgid "Processing plugin \"%s\"..."
-msgstr "プラグイン \"%s\" を処理しています..."
+msgstr "\"%s\" プラグインを処理しています..."
 
 #: src/Console/Plugin/InstallCommand.php:128
 #: src/Console/Plugin/ActivateCommand.php:73
 #: src/Console/Plugin/DeactivateCommand.php:73
 #, php-format
 msgid "Unable to load plugin \"%s\" information."
-msgstr "プラグイン \"%s\" の情報をロードできません。"
+msgstr "\"%s\" プラグインの情報をロードできません。"
 
 #: src/Console/Plugin/InstallCommand.php:138
 #, php-format
 msgid "Plugin \"%s\" installation failed."
-msgstr "プラグイン \"%s\" のインストールに失敗しました。"
+msgstr "\"%s\" プラグインのインストールに失敗しました。"
 
 #: src/Console/Plugin/InstallCommand.php:146
 #, php-format
 msgid "Plugin \"%1$s\" has been installed and must be configured."
-msgstr "インストールしたプラグイン \"%1$s\" の設定を行ってください。"
+msgstr "インストールした \"%1$s\" プラグインの設定を行ってください。"
 
 #: src/Console/Plugin/InstallCommand.php:147
 #, php-format
@@ -20853,7 +20854,7 @@ msgstr "インストールしたプラグイン \"%1$s\" を有効化できま�
 
 #: src/Console/Plugin/InstallCommand.php:161
 msgid "Which plugin(s) do you want to install (comma separated values)?"
-msgstr ""
+msgstr "どのプラグインをインストールしますか？（複数の場合は、カンマで区切る）"
 
 #: src/Console/Plugin/InstallCommand.php:240
 msgid "User name defined by --username option is invalid."
@@ -20871,66 +20872,66 @@ msgstr "プラグインディレクトリ \"%s\" が無効です。"
 msgid ""
 "Plugin \"%s\" is already installed. Use --force option to force "
 "reinstallation."
-msgstr "プラグイン \"%s\" をすでにインストールしています。 強制的に再インストールするには、--forceオプションを使用します。"
+msgstr "\"%s\" プラグインはインストール済みです。 強制的に再インストールするには、--forceオプションを使用します。"
 
 #: src/Console/Plugin/InstallCommand.php:313
 #, php-format
 msgid "Plugin \"%s\" function \"%s\" is missing."
-msgstr "プラグイン \"%s\" の関数 \"%s\" がありません。"
+msgstr "\"%s\" プラグインの関数 \"%s\" がありません。"
 
 #: src/Console/Plugin/InstallCommand.php:336
 #, php-format
 msgid "Plugin \"%s\" requirements not met."
-msgstr "プラグイン \"%s\" の要件を満たしていません。"
+msgstr "\"%s\" プラグインの要件を満たしていません。"
 
 #: src/Console/Plugin/ActivateCommand.php:81
 #, php-format
 msgid "Plugin \"%s\" activation failed."
-msgstr "プラグイン \"%s\" の有効化に失敗しました。"
+msgstr "\"%s\" プラグインの有効化に失敗しました。"
 
 #: src/Console/Plugin/ActivateCommand.php:89
 #, php-format
 msgid "Plugin \"%1$s\" has been activated."
-msgstr "プラグイン \"%1$s\" を有効にしました。"
+msgstr "\"%1$s\" プラグインを有効にしました。"
 
 #: src/Console/Plugin/ActivateCommand.php:123
 #: src/Console/Plugin/DeactivateCommand.php:123
 #, php-format
 msgid "Plugin \"%s\" is not yet installed."
-msgstr "プラグイン \"%s\" はインストールしていません。"
+msgstr "\"%s\" プラグインはまだインストールされていません。"
 
 #: src/Console/Plugin/ActivateCommand.php:131
 #, php-format
 msgid "Plugin \"%s\" is already active."
-msgstr "プラグイン \"%s\" は既に有効です。"
+msgstr "\"%s\" プラグインは既に有効です。"
 
 #: src/Console/Plugin/ActivateCommand.php:139
 #, php-format
 msgid "Plugin \"%s\" have to be installed and configured prior to activation."
-msgstr "有効化する前にプラグイン \"%s\" をインストールして設定する必要があります。"
+msgstr "有効化する前に\"%s\" プラグインをインストールして設定する必要があります。"
 
 #: src/Console/Plugin/ActivateCommand.php:151
 msgid "Which plugin(s) do you want to activate (comma separated values)?"
-msgstr ""
+msgstr "どのプラグインを有効にしますか？（複数の場合は、カンマで区切る）"
 
 #: src/Console/Plugin/DeactivateCommand.php:81
 #, php-format
 msgid "Plugin \"%s\" deactivation failed."
-msgstr "プラグイン \"%s\" の無効化に失敗しました。"
+msgstr "\"%s\" プラグインの無効化に失敗しました。"
 
 #: src/Console/Plugin/DeactivateCommand.php:89
 #, php-format
 msgid "Plugin \"%1$s\" has been deactivated."
-msgstr "プラグイン \"%1$s\" を無効にしました。"
+msgstr "\"%1$s\" プラグインを無効にしました。"
 
 #: src/Console/Plugin/DeactivateCommand.php:131
 #, php-format
 msgid "Plugin \"%s\" is already inactive."
-msgstr "プラグイン \"%s\" は既に無効になっています。"
+msgstr "\"%s\" プラグインは既に無効になっています。"
 
 #: src/Console/Plugin/DeactivateCommand.php:143
 msgid "Which plugin(s) do you want to deactivate (comma separated values)?"
-msgstr ""
+msgstr "どのプラグインを無効にしますか？（複数の場合は、カンマで区切る）"
 
 #: src/Console/Plugin/AbstractPluginCommand.php:61
 msgid "Run command on all plugins"
@@ -21020,7 +21021,7 @@ msgstr "いくつかの必須システム要件を満たしていません。"
 msgid ""
 "Cache context to clear (i.e. 'core' or 'plugin:plugin_name'). All contexts "
 "are cleared by default."
-msgstr ""
+msgstr "クリアーするキャッシュの内容（例 : 「core」または「plugin:plugin_name」）。標準ですべてがクリアーされます。"
 
 #: src/Console/Cache/ClearCommand.php:90 src/Console/Cache/DebugCommand.php:79
 #: src/Console/Cache/ConfigureCommand.php:134
@@ -21030,11 +21031,11 @@ msgstr "無効なキャッシュコンテキスト : %s"
 
 #: src/Console/Cache/ClearCommand.php:101
 msgid "Failed to clear cache."
-msgstr ""
+msgstr "キャッシュのクリアーに失敗しました。"
 
 #: src/Console/Cache/ClearCommand.php:107
 msgid "Cache cleared successfully."
-msgstr ""
+msgstr "キャッシュのクリアーを完了しました。"
 
 #: src/Console/Cache/SetNamespacePrefixCommand.php:89
 #: src/Console/Cache/ConfigureCommand.php:153
@@ -21050,21 +21051,21 @@ msgstr "キャッシュ設定を保存しました。"
 
 #: src/Console/Cache/DebugCommand.php:58
 msgid "Cache key to debug."
-msgstr ""
+msgstr "デバッグするキャッシュキー"
 
 #: src/Console/Cache/DebugCommand.php:65
 msgid "Cache context to clear (i.e. 'core' or 'plugin:plugin_name')."
-msgstr ""
+msgstr "クリアーするキャッシュの内容（例 : 「core」または「plugin:plugin_name」）。"
 
 #: src/Console/Cache/DebugCommand.php:87
 #, php-format
 msgid "Cache key \"%s\" is not set."
-msgstr ""
+msgstr "キャッシュキー、「%s」は設定されていません。"
 
 #: src/Console/Cache/DebugCommand.php:89
 #, php-format
 msgid "Cache key \"%s\" value:"
-msgstr ""
+msgstr "キャッシュキー「%s」の値 :"
 
 #: src/Console/Cache/ConfigureCommand.php:80
 msgid "Cache context (i.e. 'core' or 'plugin:plugin_name')"
@@ -21236,7 +21237,7 @@ msgstr "可能な値: "
 #: src/Console/Ldap/SynchronizeUsersCommand.php:146
 #, php-format
 msgid "Force strategy used for restored users (current configured action: \"%s\")"
-msgstr ""
+msgstr "復元するユーザーに強制するストラテジー（現在設定している操作 : 「%s」）"
 
 #: src/Console/Ldap/SynchronizeUsersCommand.php:218
 msgid "No active LDAP server found."
@@ -21321,7 +21322,7 @@ msgstr "LDAPから削除"
 
 #: src/Console/Ldap/SynchronizeUsersCommand.php:425
 msgid "Restored from LDAP"
-msgstr ""
+msgstr "LDAP から復元済"
 
 #: src/Console/Ldap/SynchronizeUsersCommand.php:460
 msgid ""
@@ -21364,7 +21365,7 @@ msgstr "ソフトウェア カテゴリ ルールの処理"
 #: src/Console/Rules/ProcessSoftwareCategoryRulesCommand.php:56
 msgid ""
 "Process rule for all software, even those having already a defined category"
-msgstr ""
+msgstr "カテゴリ定義済みであっても適用する、すべてのソフトウェアに対する処理ルール"
 
 #: src/Console/Rules/ProcessSoftwareCategoryRulesCommand.php:79
 msgid "No software to process."
@@ -21383,7 +21384,7 @@ msgstr "id \"%s\" のソフトウェアを読み込めません。"
 #: src/Console/Rules/ProcessSoftwareCategoryRulesCommand.php:126
 #, php-format
 msgid "Number of software processed: %d."
-msgstr ""
+msgstr "処理したソフトウェア数 : %d"
 
 #: src/Console/Rules/ReplayDictionnaryRulesCommand.php:50
 msgid "Replay dictionnary rules on existing items"
@@ -21397,7 +21398,7 @@ msgstr "辞書を利用する。 可能な値は次のとおりです。%s"
 #: src/Console/Rules/ReplayDictionnaryRulesCommand.php:66
 msgid ""
 "If option is set, only items having given manufacturer ID will be processed."
-msgstr "このオプションを設定すると、指定のメーカーIDをもったアイテムだけを処理します。"
+msgstr "このオプションを設定すると、指定のメーカー ID をもったアイテムだけを処理します。"
 
 #: src/Console/Rules/ReplayDictionnaryRulesCommand.php:67
 msgid "Currently only available for Software dictionnary."
@@ -21405,11 +21406,11 @@ msgstr "現在、ソフトウェア辞書でのみ使用できます。"
 
 #: src/Console/Rules/ReplayDictionnaryRulesCommand.php:79
 msgid "Which dictionnary do you want to replay?"
-msgstr ""
+msgstr "どの辞書を使いますか？"
 
 #: src/Console/Rules/ReplayDictionnaryRulesCommand.php:102
 msgid "Invalid \"dictionnary\" value."
-msgstr "辞書の値が無効です。"
+msgstr "「辞書」の値が無効です。"
 
 #: src/Console/Config/SetCommand.php:58
 msgid "Set configuration value"
@@ -21427,16 +21428,16 @@ msgstr "コンテキスト \"%s\" が無効です。"
 #: src/Console/Traits/TelemetryActivationTrait.php:60
 #, php-format
 msgid "Allow usage statistics sending to Telemetry service (%s)"
-msgstr ""
+msgstr "テレメトリーサービス（%s）へ利用統計を送信することを許可する"
 
 #: src/Console/Traits/TelemetryActivationTrait.php:69
 #, php-format
 msgid "Disallow usage statistics sending to Telemetry service (%s)"
-msgstr ""
+msgstr "テレメトリーサービス（%s）へ利用統計を送信することを許可しない"
 
 #: src/Console/Traits/TelemetryActivationTrait.php:110
 msgid "Do you want to send \"usage statistics\"?"
-msgstr ""
+msgstr "「利用統計」の送信を行いますか？"
 
 #: src/Console/Assets/CleanSoftwareCommand.php:86
 msgid "Option --max must be an integer."
@@ -21492,14 +21493,14 @@ msgstr "コマンド入力には、既存の構成を上書きする可能性の
 
 #: src/Console/Database/InstallCommand.php:141
 msgid "Do you want to reconfigure database?"
-msgstr ""
+msgstr "データベースの再設定を行いますか？"
 
 #: src/Console/Database/InstallCommand.php:167
 #: src/Console/Database/AbstractConfigureCommand.php:220
 msgid ""
 "Database configuration already exists. Use --reconfigure option to override "
 "existing configuration."
-msgstr "データベース構成が存在します。既存の構成を上書きするには --reconfigure オプションを使用します。"
+msgstr "データベース設定が存在します。既存の設定を上書きするには --reconfigure オプションを使用します。"
 
 #: src/Console/Database/InstallCommand.php:217
 msgid "Installation aborted."
@@ -21536,11 +21537,11 @@ msgstr "インストールが完了しました。"
 
 #: src/Console/Database/EnableTimezonesCommand.php:71
 msgid "Enable timezones usage."
-msgstr ""
+msgstr "タイムゾーンの使用を有効にします。"
 
 #: src/Console/Database/EnableTimezonesCommand.php:106
 msgid "Timezone usage has been enabled."
-msgstr ""
+msgstr "タイムゾーンの使用を有効にしました。"
 
 #: src/Console/Database/AbstractConfigureCommand.php:110
 #: src/Console/Database/AbstractConfigureCommand.php:437
@@ -21572,12 +21573,12 @@ msgstr "データベース ユーザー"
 
 #: src/Console/Database/AbstractConfigureCommand.php:147
 msgid "Reconfigure database, override configuration file if it already exists"
-msgstr "データベースを再構成し、すでに存在する構成ファイルを上書きします"
+msgstr "データベースを再設定し、すでに存在する設定ファイルを上書きします"
 
 #: src/Console/Database/AbstractConfigureCommand.php:154
 msgid ""
 "Indicated if deprecation warnings sent by database server should be logged"
-msgstr "データベースサーバーから送信された非推奨の警告をログに記録すべきかどうかを示します。"
+msgstr "非推奨の警告がデータベースサーバーから送信された際、ログに記録するかどうかを示します"
 
 #: src/Console/Database/AbstractConfigureCommand.php:162
 msgid "Database name:"
@@ -21598,24 +21599,24 @@ msgstr "設定を中断しました。"
 
 #: src/Console/Database/AbstractConfigureCommand.php:296
 msgid "Saving configuration file..."
-msgstr "構成ファイルを保存しています..."
+msgstr "設定ファイルを保存しています..."
 
 #: src/Console/Database/AbstractConfigureCommand.php:312
 #, php-format
 msgid "Cannot write configuration file \"%s\"."
-msgstr "構成ファイル \"%s\" を書き込めません。"
+msgstr "設定ファイル \"%s\" を書き込めません。"
 
 #: src/Console/Database/AbstractConfigureCommand.php:399
 msgid "Database name defined by --db-name option cannot be empty."
-msgstr "--db-nameオプションで定義したデータベース名は空にできません。"
+msgstr "--db-name オプションで定義するデータベース名は空にできません。"
 
 #: src/Console/Database/AbstractConfigureCommand.php:405
 msgid "Database user defined by --db-user option cannot be empty."
-msgstr "--db-user オプションで定義したデータベース ユーザーは空にできません。"
+msgstr "--db-user オプションで定義するデータベース ユーザーは空にできません。"
 
 #: src/Console/Database/AbstractConfigureCommand.php:412
 msgid "--db-password option value cannot be null."
-msgstr "--db-passwordオプションの値をnullにすることはできません。"
+msgstr "--db-password オプションの値を null にすることはできません。"
 
 #: src/Console/Database/UpdateCommand.php:76
 msgid "Update database schema to new version"
@@ -21623,7 +21624,7 @@ msgstr "データベーススキーマを新しいバージョンに更新する
 
 #: src/Console/Database/UpdateCommand.php:82
 msgid "Allow update to an unstable version"
-msgstr "不安定なバージョンへのアップデートを許可する"
+msgstr "不安定バージョンへの更新を許可する"
 
 #: src/Console/Database/UpdateCommand.php:89
 msgid ""
@@ -21637,18 +21638,18 @@ msgstr "現在"
 
 #: src/Console/Database/UpdateCommand.php:137
 msgid "GLPI version"
-msgstr "GLPIバージョン"
+msgstr "GLPI バージョン"
 
 #: src/Console/Database/UpdateCommand.php:138
 msgid "GLPI database version"
-msgstr "GLPIデータベースのバージョン"
+msgstr "GLPI データベースのバージョン"
 
 #: src/Console/Database/UpdateCommand.php:150
 #, php-format
 msgid ""
 "%s is not a stable release. Please upgrade manually or add --allow-unstable "
 "option."
-msgstr " %s は安定版ではありません。手動でアップグレードするか --allow-unstable オプションを追加してください。"
+msgstr "%s は安定版ではありません。手動でアップグレードするか --allow-unstable オプションを追加してください。"
 
 #: src/Console/Database/UpdateCommand.php:183
 msgid "Update aborted."
@@ -21712,7 +21713,7 @@ msgstr "メッセージ"
 
 #: src/Console/System/CheckRequirementsCommand.php:82
 msgid "INFO"
-msgstr ""
+msgstr "INFO"
 
 #: src/Console/System/CheckRequirementsCommand.php:83
 msgid "ERROR"
@@ -21721,12 +21722,12 @@ msgstr "エラー"
 #: src/Console/System/CheckRequirementsCommand.php:87
 #: templates/install/blocks/requirements_table.html.twig:45
 msgid "Suggested"
-msgstr ""
+msgstr "推奨"
 
 #: src/Console/System/CheckRequirementsCommand.php:88
 #: templates/install/blocks/requirements_table.html.twig:47
 msgid "Required"
-msgstr ""
+msgstr "必須"
 
 #: src/Console/System/ListServicesCommand.php:49
 msgid "List system services"
@@ -21758,7 +21759,7 @@ msgstr "消耗品のアラームを送信する"
 msgid ""
 "Threshold of alarm reached for the type of consumable: %1$s - Reference %2$s"
 " - Remaining %3$d"
-msgstr "%1$s 消耗品種類のしきい値に達しました :  残数 %3$d（基準 %2$s）"
+msgstr "消耗品の型 %1$sの在庫が少なくなっています :  残数 %3$d（基準 %2$s）"
 
 #. TRANS: %s is entity name
 #: src/ConsumableItem.php:407
@@ -21821,7 +21822,7 @@ msgstr "次へ（右矢印）"
 
 #: src/Impact.php:66 src/Impact.php:122 src/Impact.php:753
 msgid "Impact analysis"
-msgstr "相関図"
+msgstr "影響の分析"
 
 #: src/Impact.php:356
 msgid "This asset doesn't have any dependencies."
@@ -21829,7 +21830,7 @@ msgstr "この情報資産には依存関係はありません。"
 
 #: src/Impact.php:367
 msgid "Export to csv"
-msgstr "csvにエクスポート"
+msgstr "csv にエクスポート"
 
 #: src/Impact.php:383 src/Impact.php:1095
 msgid "Max depth"
@@ -21845,7 +21846,7 @@ msgstr "情報資産を追加する"
 
 #: src/Impact.php:999
 msgid "Filter itemtypes..."
-msgstr "アイテム種類でフィルター..."
+msgstr "アイテムの型でフィルター..."
 
 #: src/Impact.php:1033
 msgid "Filter assets..."
@@ -21913,7 +21914,7 @@ msgstr "相関図の構成"
 
 #: src/Impact.php:1785
 msgid "Enabled itemtypes"
-msgstr "有効なアイテム種類"
+msgstr "有効なアイテムの型"
 
 #: src/UserEmail.php:151 src/UserEmail.php:176
 msgid "Default email"
@@ -21921,11 +21922,11 @@ msgstr "デフォルトのメール"
 
 #: src/System/Requirement/DbTimezones.php:50
 msgid "DB timezone data"
-msgstr ""
+msgstr "DB タイムゾーンデータ"
 
 #: src/System/Requirement/DbTimezones.php:51
 msgid "Enable usage of timezones."
-msgstr ""
+msgstr "タイムゾーンの利用を有効にします。"
 
 #: src/System/Requirement/DbTimezones.php:61
 msgid "Access to timezone database (mysql) is not allowed."
@@ -21945,68 +21946,68 @@ msgstr ""
 
 #: src/System/Requirement/DbTimezones.php:91
 msgid "Timezones seems loaded in database."
-msgstr ""
+msgstr "データベースでタイムゾーンが読み込まれたようです。"
 
 #: src/System/Requirement/DirectoryWriteAccess.php:61
 msgid "Permissions for cache files"
-msgstr ""
+msgstr "キャッシュファイルの権限"
 
 #: src/System/Requirement/DirectoryWriteAccess.php:64
 msgid "Permissions for setting files"
-msgstr ""
+msgstr "設定ファイルの権限"
 
 #: src/System/Requirement/DirectoryWriteAccess.php:67
 msgid "Permissions for automatic actions files"
-msgstr ""
+msgstr "自動操作ファイルの権限"
 
 #: src/System/Requirement/DirectoryWriteAccess.php:70
 msgid "Permissions for document files"
-msgstr ""
+msgstr "ドキュメント ファイルの権限"
 
 #: src/System/Requirement/DirectoryWriteAccess.php:73
 msgid "Permissions for dump files"
-msgstr ""
+msgstr "ダンプファイルの権限"
 
 #: src/System/Requirement/DirectoryWriteAccess.php:76
 msgid "Permissions for graphic files"
-msgstr ""
+msgstr "画像ファイルの権限"
 
 #: src/System/Requirement/DirectoryWriteAccess.php:79
 msgid "Permissions for lock files"
-msgstr ""
+msgstr "lock ファイルの権限"
 
 #: src/System/Requirement/DirectoryWriteAccess.php:82
 msgid "Permissions for marketplace directory"
-msgstr ""
+msgstr "マーケットプレース ディレクトリーの権限"
 
 #: src/System/Requirement/DirectoryWriteAccess.php:85
 msgid "Permissions for plugins document files"
-msgstr ""
+msgstr "プラグインのドキュメント ファイルの権限"
 
 #: src/System/Requirement/DirectoryWriteAccess.php:88
 msgid "Permissions for pictures files"
-msgstr ""
+msgstr "写真ファイルの権限"
 
 #: src/System/Requirement/DirectoryWriteAccess.php:91
 msgid "Permissions for rss files"
-msgstr ""
+msgstr "RSS ファイルの権限"
 
 #: src/System/Requirement/DirectoryWriteAccess.php:94
 msgid "Permissions for session files"
-msgstr ""
+msgstr "セッション ファイルの権限"
 
 #: src/System/Requirement/DirectoryWriteAccess.php:97
 msgid "Permissions for temporary files"
-msgstr ""
+msgstr "一時ファイルの権限"
 
 #: src/System/Requirement/DirectoryWriteAccess.php:100
 msgid "Permissions for upload files"
-msgstr ""
+msgstr "アップロードファイルの権限"
 
 #: src/System/Requirement/DirectoryWriteAccess.php:103
 #, php-format
 msgid "Permissions for directory %s"
-msgstr ""
+msgstr "%sディレクトリーの権限"
 
 #: src/System/Requirement/DirectoryWriteAccess.php:117
 #, php-format
@@ -22016,7 +22017,7 @@ msgstr "%s への書き込みを検証しました。"
 #: src/System/Requirement/DirectoryWriteAccess.php:121
 #, php-format
 msgid "The file was created in %s but can't be deleted."
-msgstr "ファイルは %s で作成しましたが、削除できません。"
+msgstr "ファイルを %sに作成しましたが、削除できません。"
 
 #: src/System/Requirement/DirectoryWriteAccess.php:124
 #, php-format
@@ -22035,25 +22036,25 @@ msgstr "%s にディレクトリを作成できませんでした。"
 
 #: src/System/Requirement/PhpVersion.php:53
 msgid "PHP Parser"
-msgstr ""
+msgstr "PHP Parser"
 
 #: src/System/Requirement/PhpVersion.php:62
 #, php-format
 msgid "PHP version (%s) is supported."
-msgstr ""
+msgstr "PHP のバージョン（%s）はサポート対象です。"
 
 #: src/System/Requirement/PhpVersion.php:63
 #, php-format
 msgid "PHP version must be at least %s."
-msgstr ""
+msgstr "PHP のバージョンは最低 %s にする必要があります。"
 
 #: src/System/Requirement/SessionsConfiguration.php:43
 msgid "Sessions configuration"
-msgstr ""
+msgstr "セッション設定"
 
 #: src/System/Requirement/SessionsConfiguration.php:51
 msgid "session extension is not installed."
-msgstr ""
+msgstr "session 拡張モジュールが未インストールです。"
 
 #: src/System/Requirement/SessionsConfiguration.php:62
 msgid "\"session.auto_start\" and \"session.use_trans_sid\" must be set to off."
@@ -22073,11 +22074,11 @@ msgstr "詳細は、GLPI root の .htaccessファイルを参照してくださ�
 
 #: src/System/Requirement/SessionsConfiguration.php:76
 msgid "Sessions configuration is OK."
-msgstr ""
+msgstr "セッションの設定は OK です。"
 
 #: src/System/Requirement/LogsWriteAccess.php:57
 msgid "Permissions for log files"
-msgstr ""
+msgstr "ログファイルの権限"
 
 #: src/System/Requirement/LogsWriteAccess.php:66
 msgid "The log file has been created successfully."
@@ -22086,24 +22087,24 @@ msgstr "ログファイルを正常に作成しました。"
 #: src/System/Requirement/LogsWriteAccess.php:69
 #, php-format
 msgid "The log file could not be created in %s."
-msgstr "%s でログファイルを作成できませんでした。"
+msgstr "%s にログファイルを作成できませんでした。"
 
 #: src/System/Requirement/MysqliMysqlnd.php:56
 #: src/System/Requirement/Extension.php:75
 #, php-format
 msgid "%s extension is installed."
-msgstr ""
+msgstr "%s 拡張モジュールはインストール済み"
 
 #: src/System/Requirement/MysqliMysqlnd.php:58
 #, php-format
 msgid "%s extension is installed but is not using mysqlnd driver."
-msgstr ""
+msgstr "%s 拡張モジュールはインストール済みですが、mysqlnd ドライバを使用していません。"
 
 #: src/System/Requirement/MysqliMysqlnd.php:60
 #: src/System/Requirement/Extension.php:79
 #, php-format
 msgid "%s extension is missing."
-msgstr ""
+msgstr "%s 拡張モジュールがありません。"
 
 #: src/System/Requirement/MemoryLimit.php:53
 #: src/System/Requirement/MemoryLimit.php:73
@@ -22112,11 +22113,11 @@ msgstr "割り当てメモリー"
 
 #: src/System/Requirement/MemoryLimit.php:69
 msgid "Allocated memory is sufficient."
-msgstr ""
+msgstr "割り当てメモリーは十分です。"
 
 #: src/System/Requirement/MemoryLimit.php:70
 msgid "Allocated memory is unlimited."
-msgstr ""
+msgstr "割り当てメモリーは無制限です。"
 
 #: src/System/Requirement/MemoryLimit.php:74
 #, php-format
@@ -22129,7 +22130,7 @@ msgstr "php.iniファイルの memory_limit パラメータの値を増やして
 
 #: src/System/Requirement/DbConfiguration.php:52
 msgid "DB configuration"
-msgstr ""
+msgstr "DB 設定"
 
 #: src/System/Requirement/DbConfiguration.php:72
 msgid "Unable to validate database configuration variables."
@@ -22146,41 +22147,41 @@ msgstr "データベース設定は OK です。"
 #: src/System/Requirement/ExtensionGroup.php:78
 #, php-format
 msgid "Following extensions are installed: %s."
-msgstr ""
+msgstr "以下の拡張モジュールはインストール済み : %s。"
 
 #: src/System/Requirement/ExtensionGroup.php:82
 #, php-format
 msgid "Following extensions are not present: %s."
-msgstr ""
+msgstr "以下の拡張モジュールが存在しません : %s。"
 
 #: src/System/Requirement/ExtensionGroup.php:84
 #, php-format
 msgid "Following extensions are missing: %s."
-msgstr ""
+msgstr "以下の拡張モジュールが見つかりません : %s。"
 
 #: src/System/Requirement/DbEngine.php:50
 msgid "DB engine version"
-msgstr ""
+msgstr "DB エンジン バージョン"
 
 #: src/System/Requirement/DbEngine.php:68
 #, php-format
 msgid "Database engine version (%s) is supported."
-msgstr ""
+msgstr "DB エンジンのバージョン（%s）はサポート対象です。"
 
 #: src/System/Requirement/DbEngine.php:74
 #, php-format
 msgid "Database engine version (%s) is not supported."
-msgstr ""
+msgstr "DB エンジンのバージョン（%s）はサポートしていません。"
 
 #: src/System/Requirement/SeLinux.php:43
 msgid "SELinux configuration"
-msgstr ""
+msgstr "SELinux 設定"
 
 #. TRANS: %s is mode name (Permissive, Enforcing, Disabled or Unknown)
 #: src/System/Requirement/SeLinux.php:83
 #, php-format
 msgid "SELinux mode is %s"
-msgstr "SELinuxモードは %s です"
+msgstr "SELinuxモードは %s"
 
 #: src/System/Requirement/SeLinux.php:87
 msgid "For security reasons, SELinux mode should be Enforcing."
@@ -22197,37 +22198,37 @@ msgstr "SELinux の設定はOKです。"
 
 #: src/System/Requirement/ProtectedWebAccess.php:55
 msgid "Protected access to files directory"
-msgstr ""
+msgstr "ファイル ディレクトリーに対するアクセス保護"
 
 #: src/System/Requirement/ProtectedWebAccess.php:56
 msgid ""
 "Web access to GLPI var directories should be disabled to prevent "
 "unauthorized access to them."
-msgstr ""
+msgstr "GLPI の var ディレクトリーへの web アクセスは、無許可のアクセスを防ぐために無効にすべきです。"
 
 #: src/System/Requirement/ProtectedWebAccess.php:69
 msgid ""
 "Checking that web access to files directory is protected cannot be done on "
 "CLI context."
-msgstr "ファイルディレクトリへのWebアクセスが保護されているかどうかの確認は、CLIコンテキスト上ではできません。"
+msgstr "ファイルディレクトリへの web アクセスが保護されているかどうかの確認は、CLI コンテキスト上ではできません。"
 
 #: src/System/Requirement/ProtectedWebAccess.php:111
 msgid "Web access to the files directory should not be allowed"
-msgstr "ファイル ディレクトリへの Webアクセスは許可すべきではありません"
+msgstr "ファイル ディレクトリへの web アクセスは許可すべきではありません"
 
 #: src/System/Requirement/ProtectedWebAccess.php:112
 msgid "Check the .htaccess file and the web server configuration."
-msgstr ".htaccessファイルとWEBサーバー設定の確認"
+msgstr ".htaccessファイルと web サーバー設定の確認"
 
 #: src/System/Requirement/ProtectedWebAccess.php:115
 msgid "Web access to files directory is protected"
-msgstr "ファイルディレクトリへのWEBアクセスは保護されています"
+msgstr "ファイルディレクトリへの web アクセスは保護されています"
 
 #: src/System/Requirement/ProtectedWebAccess.php:119
 msgid ""
 "Web access to the files directory should not be allowed but this cannot be "
 "checked automatically on this instance."
-msgstr "ファイル ディレクトリへの Webアクセスは許可すべきではありません。しかしこのこのインスタンスでは自動チェックができません。"
+msgstr "ファイル ディレクトリへの web アクセスは許可すべきではありません。しかしこのインスタンスでは自動チェックができません。"
 
 #: src/System/Requirement/ProtectedWebAccess.php:121
 #, php-format
@@ -22235,7 +22236,8 @@ msgid ""
 "Make sure access to %s (%s) is forbidden; otherwise review .htaccess file "
 "and web server configuration."
 msgstr ""
-"%s (%s) へアクセスできないことを確認してください。アクセスできた場合は、.htaccessファイルとWebサーバーの構成を確認してください。"
+"%s (%s) へのアクセスが禁止されていることを確認してください。アクセスできた場合は、.htaccessファイルと web "
+"サーバーの設定を確認してください。"
 
 #: src/System/Requirement/ProtectedWebAccess.php:122
 msgid "error log file"
@@ -22244,80 +22246,82 @@ msgstr "エラー ログ ファイル"
 #: src/System/Requirement/Extension.php:55
 #, php-format
 msgid "%s extension"
-msgstr ""
+msgstr "%s拡張モジュール"
 
 #: src/System/Requirement/Extension.php:77
 #, php-format
 msgid "%s extension is not present."
-msgstr ""
+msgstr "%s 拡張モジュールがありません。"
 
 #: src/System/RequirementsManager.php:75
 msgid "PHP core extensions"
-msgstr ""
+msgstr "PHP core 拡張モジュール"
 
 #: src/System/RequirementsManager.php:81
 msgid ""
 "Required for remote access to resources (inventory agent requests, "
 "marketplace, RSS feeds, ...)."
-msgstr ""
+msgstr "リソース（インベントリー エージェント リクエスト、マーケットプレース、RSS フィード）へのリモートアクセスが必要です。"
 
 #: src/System/RequirementsManager.php:86
 msgid "Required for images handling."
-msgstr ""
+msgstr "画像の取り扱い（image handling）が必要です。"
 
 #: src/System/RequirementsManager.php:91
 msgid "Required for internationalization."
-msgstr ""
+msgstr "国際化・多言語化（internationalization）が必要です。"
 
 #: src/System/RequirementsManager.php:96
 msgid "Required for XML handling."
-msgstr ""
+msgstr "XML の取り扱い（XML handling）が必要です。"
 
 #: src/System/RequirementsManager.php:101
 msgid ""
 "Required for handling of compressed communication with inventory agents, "
 "installation of gzip packages from marketplace and PDF generation."
 msgstr ""
+"インベントリー エージェントとの通信、マーケットプレースからの gzip パッケージのインストールや PDF "
+"生成の関係で、圧縮通信の取り扱いが必要です。"
 
 #: src/System/RequirementsManager.php:112
 msgid "Permissions for GLPI var directories"
-msgstr ""
+msgstr "GLPI の var ディレクトリーの権限"
 
 #: src/System/RequirementsManager.php:130
 msgid "Enhance security on images validation."
-msgstr ""
+msgstr "画像検証のセキュリティーを強化します。"
 
 #: src/System/RequirementsManager.php:135
 msgid "Enable usage of authentication through remote LDAP server."
-msgstr ""
+msgstr "リモート LDAP サーバーを通じた認証の使用を有効にします。"
 
 #: src/System/RequirementsManager.php:140
 msgid "Enable email sending using SSL/TLS."
-msgstr ""
+msgstr "SSL/TLS を使ったメール送信を有効にします。"
 
 #: src/System/RequirementsManager.php:145
 msgid "Enable installation of zip packages from marketplace."
-msgstr ""
+msgstr "マーケットプレースから zip パッケージのインストールを有効にします。"
 
 #: src/System/RequirementsManager.php:150
 msgid "Enable installation of bz2 packages from marketplace."
-msgstr ""
+msgstr "マーケットプレースから bz2 パッケージのインストールを有効にします。"
 
 #: src/System/RequirementsManager.php:155
 msgid "Enhance PHP engine performances."
-msgstr ""
+msgstr "PHP エンジンのパフォーマンスを向上します。"
 
 #: src/System/RequirementsManager.php:158
 msgid "PHP emulated extensions"
-msgstr ""
+msgstr "PHP emulated 拡張モジュール"
 
 #: src/System/RequirementsManager.php:161
 msgid "Slightly enhance performances."
-msgstr ""
+msgstr "パフォーマンスをわずかに向上させます。"
 
 #: src/System/RequirementsManager.php:167
 msgid "Enable installation of plugins from marketplace."
-msgstr ""
+msgstr "マーケットプレースからのプラグインのインストールを有効にします。"
 
 #: src/DeviceBattery.php:40
 msgid "Battery"
@@ -22326,7 +22330,7 @@ msgstr[0] "バッテリー"
 
 #: src/DeviceBattery.php:58 src/DeviceBattery.php:119
 msgid "mWh"
-msgstr "mWh"
+msgstr "mW/時"
 
 #: src/DeviceBattery.php:64 src/DeviceBattery.php:118
 msgid "mV"
@@ -22340,7 +22344,7 @@ msgstr[0] "関係"
 
 #: src/Appliance_Item_Relation.php:126
 msgid "An appliance item is required"
-msgstr "アプライアンスが必要です"
+msgstr "アプライアンスアイテムが必要です"
 
 #: src/Appliance_Item_Relation.php:225 src/Appliance_Item_Relation.php:226
 msgid "New relation"
@@ -22349,12 +22353,12 @@ msgstr "新しい関係"
 #: src/DeviceMemoryType.php:39
 msgid "Memory type"
 msgid_plural "Memory types"
-msgstr[0] "メモリーの種類"
+msgstr[0] "メモリーの型"
 
 #: src/PeripheralType.php:39
 msgid "Devices type"
 msgid_plural "Devices types"
-msgstr[0] "デバイスの種類"
+msgstr[0] "デバイスの型"
 
 #: src/DeviceCase.php:41
 msgid "Case"
@@ -22483,7 +22487,7 @@ msgstr "通知の送信"
 
 #: src/FieldUnicity.php:499
 msgid "It's mandatory to select a type and at least one field"
-msgstr "種類と、１つ以上の項目の選択が必須です"
+msgstr "型と、１つ以上の項目の選択が必須です"
 
 #: src/Item_SoftwareLicense.php:241
 msgid "A version is required!"
@@ -22813,19 +22817,19 @@ msgstr "ドラッグしたイベントはくり返しイベントです。一連
 
 #: js/planning.js:542
 msgid "Edit an event"
-msgstr ""
+msgstr "イベントを編集する"
 
 #: js/planning.js:580
 msgid "Add an event"
-msgstr ""
+msgstr "イベントを追加する"
 
 #: js/planning.js:681
 msgid "Add a calendar"
-msgstr ""
+msgstr "カレンダーを追加する"
 
 #: js/rack.js:87
 msgid "Add PDU"
-msgstr ""
+msgstr "電源タップを追加する"
 
 #: js/reservations.js:120
 msgid "Timeline Week"
@@ -22833,19 +22837,19 @@ msgstr "週タイムライン"
 
 #: js/reservations.js:229
 msgid "Add reservation"
-msgstr ""
+msgstr "予約を追加する"
 
 #: js/reservations.js:251
 msgid "Edit reservation"
-msgstr ""
+msgstr "予約を編集する"
 
 #: templates/dropdown_form.html.twig:206
 msgid "Rack pictures"
-msgstr ""
+msgstr "ラックの画像"
 
 #: templates/dropdown_form.html.twig:218
 msgid "Other pictures"
-msgstr ""
+msgstr "その他の画像"
 
 #: templates/install/step7.html.twig:32 templates/install/update.html.twig:34
 msgid "One last thing before starting"
@@ -22866,7 +22870,7 @@ msgstr "以前のバージョンの GLPI を更新する場合は、「アップ
 
 #: templates/install/step0.html.twig:42
 msgid "Installation or update of GLPI"
-msgstr "GLPI のインストールまたはアップグレード"
+msgstr "GLPI のインストールまたは更新"
 
 #: templates/install/blocks/requirements_table.html.twig:35
 msgid "Test done"
@@ -22878,7 +22882,7 @@ msgstr "結果"
 
 #: templates/install/update.html.twig:65 templates/install/step8.html.twig:54
 msgid "Use GLPI"
-msgstr "GLPIを使用"
+msgstr "GLPI を使用"
 
 #: templates/install/step1.html.twig:32
 msgid ""
@@ -22895,11 +22899,11 @@ msgstr "データベースに接続できません"
 
 #: templates/install/step3.html.twig:59
 msgid "Database engine is not supported."
-msgstr ""
+msgstr "データベースエンジンはサポートしていません。"
 
 #: templates/install/step3.html.twig:66
 msgid "Database configuration is not supported."
-msgstr ""
+msgstr "データベース設定はサポートしていません。"
 
 #: templates/install/step3.html.twig:76
 msgid "Please select a database:"
@@ -22907,7 +22911,7 @@ msgstr "データベースを選択してください:"
 
 #: templates/install/step3.html.twig:76
 msgid "Please select a database to update:"
-msgstr ""
+msgstr "更新するデータベースを選択してください:"
 
 #: templates/install/step3.html.twig:88
 msgid "Create a new database or use an existing one:"
@@ -22979,15 +22983,15 @@ msgstr "データ数を制限する"
 
 #: templates/components/form/snmpcredential.html.twig:41
 msgid "SNMP version"
-msgstr ""
+msgstr "SNMP バージョン"
 
 #: templates/components/form/snmpcredential.html.twig:71
 msgid "Encryption protocol for authentication "
-msgstr ""
+msgstr "認証暗号化プロトコル"
 
 #: templates/components/form/snmpcredential.html.twig:88
 msgid "Encryption protocol for data"
-msgstr ""
+msgstr "データ暗号化プロトコル"
 
 #: templates/components/form/support_hours.html.twig:35
 msgid "Support hours"
@@ -22995,15 +22999,15 @@ msgstr "サポート時間"
 
 #: templates/components/form/support_hours.html.twig:36
 msgid "On week"
-msgstr ""
+msgstr "平日"
 
 #: templates/components/form/support_hours.html.twig:41
 msgid "On Saturday"
-msgstr ""
+msgstr "土曜"
 
 #: templates/components/form/support_hours.html.twig:42
 msgid "Use Saturday"
-msgstr ""
+msgstr "土曜に利用する"
 
 #: templates/components/form/support_hours.html.twig:46
 msgid "Sundays and holidays"
@@ -23011,7 +23015,7 @@ msgstr "日曜・祝日"
 
 #: templates/components/form/support_hours.html.twig:47
 msgid "Use Sunday"
-msgstr ""
+msgstr "日曜に利用する"
 
 #: templates/components/form/modals_macros.html.twig:64
 msgctxt "button"
@@ -23020,7 +23024,7 @@ msgstr "閉じる"
 
 #: templates/components/form/buttons.html.twig:89
 msgid "Keep the devices while deleting this item"
-msgstr ""
+msgstr "このアイテムを削除している間、機器を維持"
 
 #: templates/components/form/dates.html.twig:53
 #, php-format
@@ -23029,11 +23033,11 @@ msgstr "テンプレート %s から作成"
 
 #: templates/components/itilobject/selfservice.html.twig:52
 msgid "There is some tickets awaiting approval"
-msgstr ""
+msgstr "承認待ちのチケットあり"
 
 #: templates/components/itilobject/selfservice.html.twig:52
 msgid "check it out!"
-msgstr ""
+msgstr "ご確認を！"
 
 #: templates/components/itilobject/selfservice.html.twig:61
 msgid "Describe the incident or request"
@@ -23053,11 +23057,11 @@ msgstr "メッセージの送信"
 
 #: templates/components/itilobject/fields/priority_matrix.html.twig:71
 msgid "impact"
-msgstr ""
+msgstr "影響"
 
 #: templates/components/itilobject/fields/priority_matrix.html.twig:92
 msgid "priority"
-msgstr ""
+msgstr "重要度"
 
 #: templates/components/itilobject/fields/status.html.twig:57
 msgid "Reopen"
@@ -23075,11 +23079,11 @@ msgstr "すべてのアイテムの表示"
 
 #: templates/components/itilobject/footer.html.twig:44
 msgid "View other actions"
-msgstr ""
+msgstr "別の操作を表示"
 
 #: templates/components/itilobject/footer.html.twig:69
 msgid "Toggle panels width"
-msgstr ""
+msgstr "パネル幅を切り替え"
 
 #: templates/components/itilobject/timeline/form_task.html.twig:106
 #: templates/components/itilobject/timeline/form_followup.html.twig:57
@@ -23091,7 +23095,7 @@ msgstr "%1$s チケットから統合"
 #: templates/components/itilobject/timeline/form_followup.html.twig:69
 #, php-format
 msgid "Promoted to Ticket %1$s"
-msgstr "チケット %1$s との関連付けを提起した"
+msgstr "チケット %1$s を催促済み"
 
 #: templates/components/itilobject/timeline/form_task.html.twig:250
 #: templates/components/itilobject/timeline/form_followup.html.twig:159
@@ -23106,7 +23110,7 @@ msgstr "タスクをスケジュールする"
 #: templates/components/itilobject/timeline/form_task.html.twig:363
 #: templates/components/itilobject/timeline/form_followup.html.twig:202
 msgid "Set the status to pending"
-msgstr ""
+msgstr "状態を保留にする"
 
 #: templates/components/itilobject/timeline/todo-list-summary.html.twig:38
 #, php-format
@@ -23138,7 +23142,7 @@ msgstr "拒否する"
 
 #: templates/components/itilobject/timeline/form_document_item.html.twig:44
 msgid "File extension"
-msgstr ""
+msgstr "ファイルの拡張子"
 
 #: templates/components/itilobject/timeline/approbation_form.html.twig:50
 msgid "Approval of the solution"
@@ -23151,22 +23155,22 @@ msgstr "承認するかどうかは任意"
 #: templates/components/itilobject/timeline/timeline_item_header_badges.html.twig:48
 #, php-format
 msgid "Created: %1$s by %2$s"
-msgstr ""
+msgstr "作成 : %1$s （%2$s）　"
 
 #: templates/components/itilobject/timeline/timeline_item_header_badges.html.twig:50
 #, php-format
 msgid "Created: %1$s"
-msgstr ""
+msgstr "作成 : %1$s"
 
 #: templates/components/itilobject/timeline/timeline_item_header_badges.html.twig:72
 #, php-format
 msgid "Last update: %1$s by %2$s"
-msgstr ""
+msgstr "最終更新 : %1$s（%2$s）"
 
 #: templates/components/itilobject/timeline/form_solution.html.twig:60
 #, php-format
 msgid "%1$s on %2$s by %3$s"
-msgstr "%1$s : %2$s ( %3$s )"
+msgstr "%1$s : %2$s（%3$s）"
 
 #: templates/components/itilobject/timeline/form_solution.html.twig:89
 msgid ""
@@ -23181,7 +23185,7 @@ msgstr "解決の検索"
 #: templates/components/itilobject/timeline/pending_reasons_messages.html.twig:40
 #, php-format
 msgid "Pending: %s"
-msgstr ""
+msgstr "保留 : %s"
 
 #: templates/components/itilobject/timeline/pending_reasons_messages.html.twig:49
 #, php-format
@@ -23196,11 +23200,11 @@ msgstr "自動解決を %s にスケジュールしています"
 #: templates/components/itilobject/timeline/timeline_item_header.html.twig:69
 #, php-format
 msgid "%s was already promoted"
-msgstr ""
+msgstr "%s は催促済み"
 
 #: templates/components/itilobject/timeline/timeline_item_header.html.twig:84
 msgid "Promote to Ticket"
-msgstr "チケットとの関連付けを提起する"
+msgstr "チケットを催促"
 
 #: templates/components/itilobject/timeline/filter_timeline.html.twig:83
 msgid "Timeline filter"
@@ -23208,7 +23212,7 @@ msgstr "タイムラインフィルター"
 
 #: templates/components/itilobject/timeline/filter_timeline.html.twig:116
 msgid "View TODO list"
-msgstr ""
+msgstr "TODO リストを表示"
 
 #: templates/components/itilobject/service_levels.html.twig:114
 #, php-format
@@ -23229,7 +23233,7 @@ msgstr "終了日"
 
 #: templates/components/itilobject/fields_panel.html.twig:239
 msgid "Actors"
-msgstr ""
+msgstr "関係者"
 
 #: templates/components/itilobject/fields_panel.html.twig:351
 msgid "Plans"
@@ -23237,19 +23241,19 @@ msgstr "計画"
 
 #: templates/components/itilobject/actors/field.html.twig:92
 msgid "Direct email"
-msgstr ""
+msgstr "直メール"
 
 #: templates/components/itilobject/actors/field.html.twig:143
 msgid "Number of tickets already assigned"
-msgstr ""
+msgstr "割当済みチケット数"
 
 #: templates/components/itilobject/actors/main.html.twig:96
 msgid "Observer"
-msgstr ""
+msgstr "オブザーバー"
 
 #: templates/components/itilobject/actors/main.html.twig:143
 msgid "Edit notification settings"
-msgstr ""
+msgstr "通知設定を編集する"
 
 #: templates/components/itilobject/actors/main.html.twig:155
 msgid "Email address"
@@ -23269,15 +23273,15 @@ msgstr "ゴミ箱の中身を見る"
 
 #: templates/components/search/controls.html.twig:65
 msgid "Toggle search filters"
-msgstr ""
+msgstr "検索フィルターの切り替え"
 
 #: templates/components/search/controls.html.twig:144
 msgid "Close modal"
-msgstr ""
+msgstr "子画面を閉じる"
 
 #: templates/components/search/display_data.html.twig:50
 msgid "View all"
-msgstr ""
+msgstr "すべて表示"
 
 #: templates/components/infocom.html.twig:58
 msgid "Asset lifecycle"
@@ -23302,19 +23306,19 @@ msgstr "%s まで有効"
 
 #: templates/components/kanban/kanban.html.twig:53
 msgid "Role"
-msgstr ""
+msgstr "ロール"
 
 #: templates/components/kanban/item_panels/default_panel.html.twig:69
 msgid "Team"
-msgstr ""
+msgstr "チーム"
 
 #: templates/components/kanban/item_panels/default_panel.html.twig:94
 msgid "No team members"
-msgstr ""
+msgstr "チームメンバーなし"
 
 #: templates/components/kanban/item_panels/default_panel.html.twig:102
 msgid "Open full form"
-msgstr ""
+msgstr "フルフォームを開く"
 
 #: templates/components/logs.html.twig:36
 msgid "No historical"
@@ -23337,40 +23341,42 @@ msgstr "過去のフィルタに一致するものがありません"
 #: templates/pages/admin/events_list.html.twig:48
 #, php-format
 msgid "Show %s entries"
-msgstr ""
+msgstr "%s エントリーを表示"
 
 #: templates/components/pager.html.twig:74
 #, php-format
 msgid "%s rows / page"
-msgstr ""
+msgstr "ページあたり %s 行"
 
 #: templates/components/pager.html.twig:80
 #, php-format
 msgid "Showing %s to %s of %s rows"
-msgstr ""
+msgstr "全 %s 行のうち %s ～ %s を表示中"
 
 #: templates/components/pager.html.twig:83
 #, php-format
 msgid "%s-%s/%s"
-msgstr ""
+msgstr "%s-%s/%s"
 
 #: templates/maintenance.html.twig:40
 msgid "Temporarily down for maintenance"
-msgstr ""
+msgstr "メンテナンスのため、一時的に停止しています"
 
 #: templates/maintenance.html.twig:43
 msgid ""
 "Sorry for the inconvenience but we’re performing some maintenance at the "
 "moment. We’ll be back online shortly!"
 msgstr ""
+"ご不便をおかけしますが、現在メンテナンス作業中です。\n"
+"短時間で復旧する見込みです！"
 
 #: templates/maintenance.html.twig:59
 msgid "Take me home"
-msgstr ""
+msgstr "ホームへ"
 
 #: templates/pages/tools/project/gantt.html.twig:47
 msgid "Zoom"
-msgstr ""
+msgstr "ズーム"
 
 #: templates/pages/tools/project/gantt.html.twig:51
 msgid "Days"
@@ -23428,13 +23434,13 @@ msgstr "最大アイテム数"
 #: templates/pages/assets/cable.html.twig:70
 #, php-format
 msgid "Endpoint %s"
-msgstr ""
+msgstr "エンドポイント %s"
 
 #: templates/pages/assets/consumableitem.html.twig:41
 #: templates/pages/assets/cartridgeitem.html.twig:41
 msgctxt "quantity"
 msgid "Stock target"
-msgstr ""
+msgstr "在庫の対象"
 
 #: templates/pages/assets/rack.html.twig:82
 msgid "Position in room"
@@ -23486,11 +23492,11 @@ msgstr "LDAPディレクトリから一括インポートしたユーザー"
 
 #: templates/pages/login.html.twig:43
 msgid "Login to your account"
-msgstr ""
+msgstr "あなたのアカウントにログイン"
 
 #: templates/pages/login.html.twig:72
 msgid "Login source"
-msgstr ""
+msgstr "ログイン元"
 
 #: templates/pages/login.html.twig:81
 msgid "Remember me"
@@ -23498,11 +23504,11 @@ msgstr "ログインを記憶"
 
 #: templates/pages/login.html.twig:88
 msgid "Sign in"
-msgstr ""
+msgstr "サインイン"
 
 #: templates/pages/setup/authentication.html.twig:56
 msgid "The LDAP extension of your PHP parser isn’t installed"
-msgstr ""
+msgstr "LDAP 拡張モジュールが PHP parser に未インストール"
 
 #: templates/pages/setup/authentication.html.twig:68
 msgid "Others authentication methods"
@@ -23524,11 +23530,11 @@ msgstr "確認対応を有効にする"
 msgid ""
 "Unable to configure notifications: please configure at least one followup "
 "type using the above configuration."
-msgstr "通知を設定できません : 上記の設定を使用して、１つ以上の確認対応の種類を設定してください。"
+msgstr "通知を設定できません : 上記の設定を使用して、確認対応の種類のいずれかを設定してください。"
 
 #: templates/pages/setup/dropdowns_list.html.twig:63
 msgid "Dropdown with entity management"
-msgstr ""
+msgstr "エンティティ管理のドロップダウン"
 
 #: templates/password_form.html.twig:36
 msgid ""
@@ -23551,15 +23557,15 @@ msgstr "あなたのメールアドレスを入力してください。あなた
 
 #: templates/password_form.html.twig:95
 msgid "Forget it,"
-msgstr ""
+msgstr "忘れたので、"
 
 #: templates/password_form.html.twig:96
 msgid "send me back"
-msgstr ""
+msgstr "送ってください"
 
 #: templates/password_form.html.twig:97
 msgid "to the login screen."
-msgstr ""
+msgstr "ログイン画面へ。"
 
 #: templates/anonymous_helpdesk.html.twig:40
 msgid "Helpdesk reporting form"
@@ -23576,12 +23582,12 @@ msgstr "問題を記入してください"
 #: templates/layout/parts/context_links.html.twig:58
 #: templates/layout/parts/context_links.html.twig:60
 msgid "Lists"
-msgstr ""
+msgstr "リスト"
 
 #: templates/layout/parts/context_links.html.twig:83
 #: templates/layout/parts/context_links.html.twig:85
 msgid "Global GANTT"
-msgstr ""
+msgstr "全体 GANTT"
 
 #: templates/layout/parts/context_links.html.twig:90
 #: templates/layout/parts/context_links.html.twig:92
@@ -23590,19 +23596,19 @@ msgstr "全体カンバン"
 
 #: templates/layout/parts/goto_button.html.twig:34
 msgid "Ctrl+Alt+G"
-msgstr ""
+msgstr "Ctrl+Alt+G"
 
 #: templates/layout/parts/goto_button.html.twig:39
 msgid "Find menu"
-msgstr ""
+msgstr "メニューを探す"
 
 #: templates/layout/parts/page_header.html.twig:63
 msgid "Collapse menu"
-msgstr ""
+msgstr "メニューをたたむ"
 
 #: templates/layout/parts/saved_searches_list.html.twig:34
 msgid "You have not recorded any saved searches yet"
-msgstr ""
+msgstr "検索結果の保存が記録されていません"
 
 #: templates/layout/parts/saved_searches_list.html.twig:47
 msgid "Default search"
@@ -23610,23 +23616,23 @@ msgstr "デフォルト検索"
 
 #: templates/layout/parts/saved_searches_list.html.twig:47
 msgid "mark as default"
-msgstr ""
+msgstr "デフォルトに設定"
 
 #: templates/layout/parts/saved_searches_list.html.twig:53
 msgid "private"
-msgstr ""
+msgstr "非公開"
 
 #: templates/layout/parts/saved_searches.html.twig:48
 msgid "Manage all saved searches"
-msgstr ""
+msgstr "全保存済み検索を管理"
 
 #: templates/layout/parts/saved_searches.html.twig:53
 msgid "Pin this panel for the current page"
-msgstr ""
+msgstr "現在のページのこのパネルをピン留めする"
 
 #: templates/layout/parts/saved_searches.html.twig:58
 msgid "Close the panel"
-msgstr ""
+msgstr "パネルを閉じる"
 
 #: templates/layout/parts/saved_searches.html.twig:93
 msgid "Filter list"
@@ -23643,11 +23649,11 @@ msgstr "%s アイコンをクリックすると、該当のエンティティと
 
 #: templates/layout/parts/profile_selector.html.twig:83
 msgid "Search entity"
-msgstr ""
+msgstr "エンティティの検索"
 
 #: templates/layout/parts/profile_selector.html.twig:89
 msgid "Clear search"
-msgstr ""
+msgstr "検索をクリアー"
 
 #: templates/layout/parts/profile_selector.html.twig:93
 msgid "Select all"
@@ -23655,7 +23661,7 @@ msgstr "全選択"
 
 #: templates/layout/parts/profile_selector.html.twig:152
 msgid "No entity found"
-msgstr ""
+msgstr "エンティティは見つかりません"
 
 #: templates/layout/parts/page_footer.html.twig:39
 msgid "Back to top of the page"
@@ -23663,12 +23669,12 @@ msgstr "ページの先頭へ戻る"
 
 #: templates/layout/parts/page_footer.html.twig:40
 msgid "Top of the page"
-msgstr ""
+msgstr "ページの最上部へ"
 
 #: templates/layout/parts/global_search_form.html.twig:35
 #: templates/layout/parts/global_search_form.html.twig:37
 msgid "Search…"
-msgstr ""
+msgstr "検索..."
 
 #: templates/layout/parts/user_header.html.twig:37
 #: templates/layout/parts/user_header.html.twig:38
@@ -23691,7 +23697,7 @@ msgstr "デバッグモード が無効です"
 #: templates/layout/parts/user_header.html.twig:87
 #: templates/layout/parts/user_header.html.twig:113
 msgid "About"
-msgstr ""
+msgstr "About"
 
 #: templates/layout/parts/user_header.html.twig:101
 #: templates/layout/parts/user_header.html.twig:103
@@ -23700,7 +23706,7 @@ msgstr "ログアウト"
 
 #: templates/layout/parts/user_header.html.twig:124
 msgid "You will find it on the GLPI-PROJECT.org site."
-msgstr "GLPIプロジェクト公式サイト（GLPI-PROJECT.org）で入手できます"
+msgstr "GLPI プロジェクト公式サイト（GLPI-PROJECT.org）で入手できます"
 
 #: templates/layout/parts/impersonate_banner.html.twig:35
 #, php-format

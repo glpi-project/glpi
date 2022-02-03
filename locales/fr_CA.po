@@ -7291,7 +7291,7 @@ msgstr "Lier des tickets"
 #: src/Ticket.php:2749
 msgctxt "button"
 msgid "Link project task"
-msgstr ""
+msgstr "Lier une tâche projet"
 
 #: src/Ticket.php:2752
 msgctxt "button"
@@ -14272,7 +14272,7 @@ msgstr "Courriel %s introuvable. Import impossible."
 #: src/MailCollector.php:726
 #, php-format
 msgid "Message is invalid (%s). Check in \"%s\" for more details"
-msgstr ""
+msgstr "Message invalide (%s). Consultez \"%s\" pour plus de détails"
 
 #: src/MailCollector.php:779
 #, php-format
@@ -17626,7 +17626,7 @@ msgstr "La clé d'enregistrement est invalide."
 
 #: src/GLPINetwork.php:246
 msgid "The registration key refers to a terminated subscription."
-msgstr ""
+msgstr "La clé de souscription fait référence à une souscription résiliée."
 
 #: src/GLPINetwork.php:248
 msgid "The registration key is valid."
@@ -20105,12 +20105,12 @@ msgstr "renseignez votre clé d'enregistrement dans la configuration."
 #: src/Marketplace/View.php:164
 #, php-format
 msgid "Your %1$s subscription has been terminated."
-msgstr ""
+msgstr "Votre souscription %1$s a été résiliée."
 
 #: src/Marketplace/View.php:165
 #, php-format
 msgid "Renew it on %1$s."
-msgstr ""
+msgstr "Renouvelez la sur %1$s."
 
 #: src/Marketplace/View.php:330
 #, php-format
@@ -20201,7 +20201,7 @@ msgstr ""
 
 #: src/Marketplace/View.php:683
 msgid "This plugin is not available for your GLPI version."
-msgstr ""
+msgstr "Ce plugin n'est pas disponible pour votre version de GLPI."
 
 #: src/Marketplace/View.php:695
 msgid "The plugin has an available update but its directory is not writable."
@@ -22017,6 +22017,8 @@ msgid ""
 "Options --begin-date and --end-date can only be used with --only-create-new "
 "or --only-update-existing option."
 msgstr ""
+"Les options --begin-date et --end-date ne peuvent être utilisées qu'avec "
+"l'option --only-create-new ou --only-update-existing."
 
 #: src/Console/Ldap/SynchronizeUsersCommand.php:498
 msgid ""

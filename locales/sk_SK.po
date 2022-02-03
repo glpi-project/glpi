@@ -7,7 +7,7 @@
 # balucha <ondrej@odb.sk>, 2021
 # DOMBRE Julien <moyo@indepnet.net>, 2021
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2021
-# feonsu <feonsu@gmail.com>, 2021
+# feonsu <feonsu@gmail.com>, 2022
 # 
 #, fuzzy
 msgid ""
@@ -16,7 +16,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-12-14 12:46+0000\n"
 "PO-Revision-Date: 2021-05-26 09:06+0000\n"
-"Last-Translator: feonsu <feonsu@gmail.com>, 2021\n"
+"Last-Translator: feonsu <feonsu@gmail.com>, 2022\n"
 "Language-Team: Slovak (Slovakia) (https://www.transifex.com/glpi/teams/1637/sk_SK/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -26,15 +26,15 @@ msgstr ""
 
 #: ajax/gantt.php:110
 msgid "Target item must be of project type"
-msgstr ""
+msgstr "Cieľová položka musí byť typu projekt"
 
 #: ajax/gantt.php:143
 msgid "Item must be of project type"
-msgstr ""
+msgstr "Položka musí byť typu projekt"
 
 #: ajax/gantt.php:208
 msgid "Link already exist!"
-msgstr ""
+msgstr "Prepojenie už existuje"
 
 #: ajax/dropdownMassiveActionAuthMethods.php:70
 #: ajax/dropdownMassiveActionField.php:54 src/MassiveAction.php:708
@@ -209,7 +209,7 @@ msgstr "Pridať nový komponent"
 
 #: ajax/selectUnaffectedOrNewItem_Device.php:79
 msgid "No unaffected device!"
-msgstr ""
+msgstr "Žiadne neovplyvnené zariadenie!"
 
 #: ajax/ticketiteminformation.php:72
 #, php-format
@@ -758,6 +758,8 @@ msgid ""
 "responsiveness statistics about user interface features, memory, and "
 "hardware configuration."
 msgstr ""
+"Zbierame len nasledujúce dáta: používanie pluginov, výkon a štatistiky o "
+"funkciách užívateľského rozhrania, pamäti a hardvérovej konfigurácii."
 
 #: ajax/dcroom_size.php:63 templates/pages/assets/rack.html.twig:76
 #: templates/pages/assets/rack.html.twig:79
@@ -1452,7 +1454,7 @@ msgstr "Inventár"
 
 #: front/inventory.conf.php:53
 msgid "Configuration has been updated"
-msgstr ""
+msgstr "Konfigurácia bola aktualizovaná"
 
 #: front/stat.tracking.php:85 front/stat.tracking.php:107
 #: src/NotImportedEmail.php:188 src/Ticket.php:5194
@@ -1577,7 +1579,7 @@ msgstr "Podľa hardvéru"
 
 #: front/report.networking.php:81
 msgid "By network socket"
-msgstr ""
+msgstr "Podľa sieťovej zásuvky"
 
 #: front/notification.tags.php:38
 msgid "List of available tags"
@@ -1797,31 +1799,31 @@ msgstr "Zjednodušené rozhranie"
 #: front/databaseinstance.form.php:58
 #, php-format
 msgid "%s adds a database instance"
-msgstr ""
+msgstr "%s pridal databázovú inštanciu"
 
 #. TRANS: %s is the user login
 #: front/databaseinstance.form.php:75
 #, php-format
 msgid "%s deletes a database instance"
-msgstr ""
+msgstr "%s vymazal databázovú inštanciu"
 
 #. TRANS: %s is the user login
 #: front/databaseinstance.form.php:88
 #, php-format
 msgid "%s restores a database instance"
-msgstr ""
+msgstr "%s obnovil databázovú inštanciu"
 
 #. TRANS: %s is the user login
 #: front/databaseinstance.form.php:102
 #, php-format
 msgid "%s purges a database instance"
-msgstr ""
+msgstr "%s vymazal databázovú inštanciu"
 
 #. TRANS: %s is the user login
 #: front/databaseinstance.form.php:116
 #, php-format
 msgid "%s updates a database instance"
-msgstr ""
+msgstr "%s aktualizoval databázovú inštanciu"
 
 #. TRANS: %s is the user login
 #: front/change.form.php:138 front/change.form.php:156
@@ -1836,7 +1838,7 @@ msgstr "%s pridal účastníka"
 #: front/problem.form.php:200
 #, php-format
 msgid "%s Kanban"
-msgstr ""
+msgstr "%s Kanban"
 
 #: front/change.form.php:211 front/ticket.form.php:252
 #: front/problem.form.php:214
@@ -2130,19 +2132,19 @@ msgstr ""
 #: front/item_remotemanagement.form.php:61
 #, php-format
 msgid "%s adds a remote management"
-msgstr ""
+msgstr "%s pridal vzdialenú správu"
 
 #. TRANS: %s is the user login
 #: front/item_remotemanagement.form.php:78
 #, php-format
 msgid "%s purges a remote management"
-msgstr ""
+msgstr "%s vymazal vzdialenú správu"
 
 #. TRANS: %s is the user login
 #: front/item_remotemanagement.form.php:96
 #, php-format
 msgid "%s updates a remote management"
-msgstr ""
+msgstr "%s aktualizoval vzdialenú správu"
 
 #: front/stat.location.php:91 src/Profile.php:2293 src/CommonDropdown.php:68
 #: src/Event.php:158
@@ -2538,24 +2540,24 @@ msgstr "Preklad položky v databáze znalostí nebol vrátený na revíziu %s"
 #: front/socket.form.php:62 front/socket.form.php:122
 #, php-format
 msgid "%s adds a socket"
-msgstr ""
+msgstr "%s pridal zásuvku"
 
 #. TRANS: %s is the user login
 #: front/socket.form.php:79
 #, php-format
 msgid "%s purges a socket"
-msgstr ""
+msgstr "%s vymazal zásuvku"
 
 #. TRANS: %s is the user login
 #: front/socket.form.php:93
 #, php-format
 msgid "%s updates a socket"
-msgstr ""
+msgstr "%s aktualizoval zásuvku"
 
 #: front/socket.form.php:109
 #, php-format
 msgid "%1$s adds several sockets"
-msgstr ""
+msgstr "%1$s pridal viacero zásuviek"
 
 #: front/devices.php:38 front/devices.php:42 src/CommonDevice.php:50
 #: src/CommonDevice.php:299 src/Dropdown.php:940 src/Item_Devices.php:265
@@ -2577,7 +2579,7 @@ msgstr "Túto položku nemôžete riešiť!"
 #: front/rule.common.php:60
 #, php-format
 msgid "%1$s has been reset."
-msgstr ""
+msgstr "%1$s bolo vynulované."
 
 #: front/rule.common.php:97
 msgid "Replay the rules dictionary"
@@ -2828,15 +2830,15 @@ msgstr "Report o sieti podľa zásuviek: %s"
 
 #: front/config.form.php:69
 msgid "PHP OPcache reset successful"
-msgstr ""
+msgstr "Obnovenie PHP OPcache bolo úspešné"
 
 #: front/config.form.php:77
 msgid "GLPI cache reset successful"
-msgstr ""
+msgstr "Obnovenie vyrovnávacej pamäte GLPI bolo úspešné"
 
 #: front/config.form.php:85
 msgid "Translation cache reset successful"
-msgstr ""
+msgstr "Obnovenie vyrovnávacej pamäte prekladu bolo úspešné"
 
 #. TRANS: %s is the user login
 #: front/computervirtualmachine.form.php:59
@@ -3317,7 +3319,7 @@ msgstr "Nie je dostupná žiadna akcia"
 #: src/MassiveAction.php:142 src/MassiveAction.php:151
 #: src/MassiveAction.php:260 src/MassiveAction.php:900
 msgid "Implementation error!"
-msgstr ""
+msgstr "Chyba implementácie!"
 
 #: src/MassiveAction.php:253
 msgid "No selected items"
@@ -3422,12 +3424,15 @@ msgstr "alebo"
 
 #: src/MassiveAction.php:1009
 msgid "How many copies do you want to create?"
-msgstr ""
+msgstr "Koľko kópií chcete vytvoriť?"
 
 #: src/MassiveAction.php:1035
 msgid "Are you sure you want to add this item to transfer list?"
 msgid_plural "Are you sure you want to add these items to transfer list?"
-msgstr[0] "Naozaj chcete pridať tieto položky do zoznamu na presun?"
+msgstr[0] "Naozaj chcete pridať túto položku do zoznamu na presun?"
+msgstr[1] "Naozaj chcete pridať tieto položky do zoznamu na presun?"
+msgstr[2] "Naozaj chcete pridať tieto položky do zoznamu na presun?"
+msgstr[3] "Naozaj chcete pridať tieto položky do zoznamu na presun?"
 
 #: src/MassiveAction.php:1048
 msgid "Amendment to insert"
@@ -3463,7 +3468,10 @@ msgstr "Túto položku nemôžete zmazať, pretože je používaná v iných pol
 #: src/DeviceSoundCardModel.php:42
 msgid "Device sound card model"
 msgid_plural "Device sound card models"
-msgstr[0] "Modely zvukových kariet"
+msgstr[0] "Model zvukovej karty"
+msgstr[1] "Modely zvukových kariet"
+msgstr[2] "Modely zvukových kariet"
+msgstr[3] "Modely zvukových kariet"
 
 #: src/NetworkPortDialup.php:41
 msgid "Connection by dial line - Dialup Port"
@@ -3479,17 +3487,26 @@ msgstr "Pripojené k"
 #: src/PrinterType.php:39 src/Rule.php:396
 msgid "Printer type"
 msgid_plural "Printer types"
-msgstr[0] "Typy tlačiarní"
+msgstr[0] "Typ tlačiarne"
+msgstr[1] "Typy tlačiarní"
+msgstr[2] "Typy tlačiarní"
+msgstr[3] "Typy tlačiarní"
 
 #: src/AutoUpdateSystem.php:38
 msgid "Update Source"
 msgid_plural "Update Sources"
-msgstr[0] "Zdroje aktualizácií"
+msgstr[0] "Zdroj aktualizácií"
+msgstr[1] "Zdroje aktualizácií"
+msgstr[2] "Zdroje aktualizácií"
+msgstr[3] "Zdroje aktualizácií"
 
 #: src/ClusterType.php:38
 msgid "Cluster type"
 msgid_plural "Cluster types"
-msgstr[0] "Typy klastrov"
+msgstr[0] "Typ klastera"
+msgstr[1] "Typy klastrov"
+msgstr[2] "Typy klastrov"
+msgstr[3] "Typy klastrov"
 
 #: src/AuthLDAP.php:129
 msgid "LDAP directory"
@@ -3587,7 +3604,7 @@ msgstr "RootDN (pre neanonymné pripojenie)"
 
 #: src/AuthLDAP.php:444
 msgid "Use Bind"
-msgstr ""
+msgstr "Použiť väzbu (bind)"
 
 #: src/AuthLDAP.php:450
 msgid "Password (for non-anonymous binds)"
@@ -3681,20 +3698,20 @@ msgstr ""
 
 #: src/AuthLDAP.php:587
 msgid "TLS Certfile"
-msgstr ""
+msgstr "Súbor certifikátu TLS"
 
 #: src/AuthLDAP.php:590
 msgid "TLS Keyfile"
-msgstr ""
+msgstr "Súbor kľúča TLS"
 
 #: src/AuthLDAP.php:595 src/AuthLDAP.php:664 src/AuthLDAP.php:1270
 #: src/AuthLdapReplicate.php:93
 msgid "Timeout"
-msgstr ""
+msgstr "Časový limit"
 
 #: src/AuthLDAP.php:602 src/AuthLDAP.php:1275 src/AuthLdapReplicate.php:103
 msgid "No timeout"
-msgstr ""
+msgstr "Bez časového limitu"
 
 #: src/AuthLDAP.php:606 src/AuthLDAP.php:792 src/AuthLDAP.php:920
 #: src/AuthLDAP.php:956 src/Auth.php:1742 src/Dashboard/Grid.php:855
@@ -3823,10 +3840,10 @@ msgstr "Jazyk"
 #: templates/generic_show_form.html.twig:523
 msgid "Picture"
 msgid_plural "Pictures"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Obrázok"
+msgstr[1] "Obrázky"
+msgstr[2] "Obrázky"
+msgstr[3] "Obrázky"
 
 #: src/AuthLDAP.php:911 src/AuthLDAP.php:1252
 #: src/ContentTemplates/Parameters/UserParameters.php:81
@@ -4037,11 +4054,11 @@ msgstr "Deaktivovať"
 
 #: src/AuthLDAP.php:3989
 msgid "Do nothing"
-msgstr ""
+msgstr "Nerobiť nič"
 
 #: src/AuthLDAP.php:3990
 msgid "Restore (move out of trashbin)"
-msgstr ""
+msgstr "Obnoviť (presunúť mimo koša)"
 
 #: src/AuthLDAP.php:3991 src/Plugin.php:2563 src/Marketplace/View.php:771
 msgid "Enable"
@@ -4069,24 +4086,24 @@ msgstr "Zrušiť filtrovanie podľa dátumu"
 
 #: src/AuthLDAP.php:4462
 msgid "TLS certificate path is incorrect"
-msgstr ""
+msgstr "Cesta k certifikátu TLS je nesprávna"
 
 #: src/AuthLDAP.php:4474
 msgid "TLS key file path is incorrect"
-msgstr ""
+msgstr "Cesta ku kľúču TLS je nesprávna"
 
 #: src/SNMPCredential.php:47
 msgid "SNMP credential"
 msgid_plural "SNMP credentials"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "SNMP prihlasovacie údaje"
+msgstr[1] "SNMP prihlasovacie údaje"
+msgstr[2] "SNMP prihlasovacie údaje"
+msgstr[3] "SNMP prihlasovacie údaje"
 
 #: src/SNMPCredential.php:58
 #: templates/components/form/snmpcredential.html.twig:56
 msgid "Community"
-msgstr ""
+msgstr "Komunita SNMP"
 
 #: src/Profile_User.php:142 src/Profile_User.php:290
 msgid "Add an authorization to a user"
@@ -4212,7 +4229,10 @@ msgstr "Dynamicky"
 #: src/CommonDBVisible.php:312
 msgid "Profile"
 msgid_plural "Profiles"
-msgstr[0] "Profily"
+msgstr[0] "Profil"
+msgstr[1] "Profily"
+msgstr[2] "Profily"
+msgstr[3] "Profily"
 
 #: src/Profile_User.php:1002 src/Profile_User.php:1010
 #: src/Profile_User.php:1015
@@ -4223,7 +4243,10 @@ msgstr "%1$s, %2$s"
 #: src/Profile_User.php:1066
 msgid "Authorization"
 msgid_plural "Authorizations"
-msgstr[0] "Oprávnenia"
+msgstr[0] "Oprávnenie"
+msgstr[1] "Oprávnenia"
+msgstr[2] "Oprávnenia"
+msgstr[3] "Oprávnenia"
 
 #: src/OlaLevel_Ticket.php:44
 msgid "OLA level for Ticket"
@@ -4236,7 +4259,10 @@ msgstr "Automatické akcie z OLA"
 #: src/NotImportedEmail.php:61
 msgid "Refused email"
 msgid_plural "Refused emails"
-msgstr[0] "Odmietnuté emailov"
+msgstr[0] "Odmietnutý e-mail"
+msgstr[1] "Odmietnuté e-maily"
+msgstr[2] "Odmietnuté e-maily"
+msgstr[3] "Odmietnuté e-maily"
 
 #: src/NotImportedEmail.php:76
 msgid "Delete emails"
@@ -4286,7 +4312,10 @@ msgstr "Nedostatočné oprávnenia"
 #: src/Marketplace/NotificationTargetController.php:101
 msgid "Plugin"
 msgid_plural "Plugins"
-msgstr[0] "Pluginy"
+msgstr[0] "Plugin"
+msgstr[1] "Pluginy"
+msgstr[2] "Pluginy"
+msgstr[3] "Pluginy"
 
 #: src/Plugin.php:709
 #, php-format
@@ -4560,15 +4589,15 @@ msgstr "Zmazať"
 
 #: src/Plugin.php:2590 src/Plugin.php:2598
 msgid "This will only affect plugins already installed"
-msgstr ""
+msgstr "Toto ovplyvní iba už nainštalované pluginy"
 
 #: src/Plugin.php:2606
 msgid "This will only affect plugins already enabled"
-msgstr ""
+msgstr "Toto ovplyvní iba už povolené pluginy"
 
 #: src/Plugin.php:2614
 msgid "This will only affect plugins ready to be cleaned"
-msgstr ""
+msgstr "Toto ovplyvní iba pluginy pripravené k vyčisteniu"
 
 #: src/IPNetwork_Vlan.php:131 src/NetworkPort_Vlan.php:132
 #: src/NetworkPort.php:1388
@@ -4595,14 +4624,20 @@ msgstr "Pravidlá pre priradenie položky k entite"
 #: src/NetworkInterface.php:42
 msgid "Network interface"
 msgid_plural "Network interfaces"
-msgstr[0] "Sieťové rozhrania"
+msgstr[0] "Sieťové rozhranie"
+msgstr[1] "Sieťové rozhrania"
+msgstr[2] "Sieťové rozhrania"
+msgstr[3] "Sieťové rozhrania"
 
 #. TRANS: first parameter is the template name
 #: src/ITILTemplate.php:150 src/DomainRecord.php:352
 #, php-format
 msgid "%1$s template"
 msgid_plural "%1$s templates"
-msgstr[0] "%1$s šablóny"
+msgstr[0] "%1$s šablóna"
+msgstr[1] "%1$s šablóny"
+msgstr[2] "%1$s šablóny"
+msgstr[3] "%1$s šablóny"
 
 #: src/ITILTemplate.php:317 src/Ticket.php:2730
 #: templates/components/itilobject/fields/global_validation.html.twig:61
@@ -4647,10 +4682,10 @@ msgstr "Rýchlosť fiber channel portu"
 #: src/NetworkPortInstantiation.php:665 src/NetworkPortEthernet.php:155
 msgid "Network socket"
 msgid_plural "Network sockets"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Sieťová zásuvka"
+msgstr[1] "Sieťové zásuvky"
+msgstr[2] "Sieťové zásuvky"
+msgstr[3] "Sieťové zásuvky"
 
 #: src/NetworkPortFiberchannel.php:213 src/Blacklist.php:232
 #: src/NetworkPortWifi.php:150 src/RefusedEquipment.php:124
@@ -4662,7 +4697,7 @@ msgstr "MAC"
 
 #: src/NetworkPortFiberchannel.php:241
 msgid "Fiber port type"
-msgstr ""
+msgstr "Typ optického portu"
 
 #. TRANS: %d is the speed
 #: src/NetworkPortFiberchannel.php:263 src/NetworkPortFiberchannel.php:310
@@ -4688,63 +4723,63 @@ msgstr "%d Mbit/s"
 
 #: src/NetworkPortFiberchannel.php:376
 msgid "Network fiber socket"
-msgstr ""
+msgstr "Optická sieťová zásuvka"
 
 #: src/PendingReason.php:50
 msgid "Pending reason"
 msgid_plural "Pending reasons"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Dôvod čakania"
+msgstr[1] "Dôvody čakania"
+msgstr[2] "Dôvody čakania"
+msgstr[3] "Dôvody čakania"
 
 #: src/PendingReason.php:58 src/PendingReason.php:91
 msgid "Automatic follow-up frequency"
-msgstr ""
+msgstr "Frekvencia automatickej reakcie"
 
 #: src/PendingReason.php:70 src/PendingReason.php:100
 msgid "Follow-ups before automatic resolution"
-msgstr ""
+msgstr "Reakcia pred automatickým vyriešením"
 
 #: src/PendingReason.php:110
 msgid "Follow-up template"
-msgstr ""
+msgstr "Šablóna reakcie"
 
 #: src/PendingReason.php:151
 msgid "Automatic follow-up disabled"
-msgstr ""
+msgstr "Automatická reakcia vypnutá"
 
 #: src/PendingReason.php:180
 msgid "Every week"
-msgstr ""
+msgstr "Každý týždeň"
 
 #: src/PendingReason.php:181
 msgid "Every two weeks"
-msgstr ""
+msgstr "Každé dva týždne"
 
 #: src/PendingReason.php:182
 msgid "Every three weeks"
-msgstr ""
+msgstr "Každé tri týždne"
 
 #: src/PendingReason.php:183
 msgid "Every four weeks"
-msgstr ""
+msgstr "Každé štyri týždne"
 
 #: src/PendingReason.php:208
 msgid "Automatic resolution disabled"
-msgstr ""
+msgstr "Automatické vyriešenie vypnuté"
 
 #: src/PendingReason.php:237
 msgid "After one follow-up"
-msgstr ""
+msgstr "Po jednej reakcii"
 
 #: src/PendingReason.php:238
 msgid "After two follow-ups"
-msgstr ""
+msgstr "Po dvoch reakciách"
 
 #: src/PendingReason.php:239
 msgid "After three follow-ups"
-msgstr ""
+msgstr "Po troch reakciách"
 
 #: src/LevelAgreementLevel.php:78 src/Ticket.php:3382 src/Ticket.php:3433
 #: templates/components/itilobject/service_levels.html.twig:116
@@ -4770,37 +4805,55 @@ msgstr "Logický operátor"
 #, php-format
 msgid "+ %d minute"
 msgid_plural "+ %d minutes"
-msgstr[0] "+ %d minút"
+msgstr[0] "+ %d minúta"
+msgstr[1] "+ %d minúty"
+msgstr[2] "+ %d minút"
+msgstr[3] "+ %d minút"
 
 #: src/LevelAgreementLevel.php:257 src/Html.php:3190
 #, php-format
 msgid "- %d minute"
 msgid_plural "- %d minutes"
-msgstr[0] "- %d minút"
+msgstr[0] "- %d minúta"
+msgstr[1] "- %d minúty"
+msgstr[2] "- %d minút"
+msgstr[3] "- %d minút"
 
 #: src/LevelAgreementLevel.php:264 src/Html.php:3231
 #, php-format
 msgid "+ %d hour"
 msgid_plural "+ %d hours"
-msgstr[0] "+ %d hodín"
+msgstr[0] "+ %d hodina"
+msgstr[1] "+ %d hodiny"
+msgstr[2] "+ %d hodín"
+msgstr[3] "+ %d hodín"
 
 #: src/LevelAgreementLevel.php:269 src/Html.php:3186
 #, php-format
 msgid "- %d hour"
 msgid_plural "- %d hours"
-msgstr[0] "- %d hodín"
+msgstr[0] "- %d hodina"
+msgstr[1] "- %d hodiny"
+msgstr[2] "- %d hodín"
+msgstr[3] "- %d hodín"
 
 #: src/LevelAgreementLevel.php:278 src/Html.php:3236
 #, php-format
 msgid "+ %d day"
 msgid_plural "+ %d days"
-msgstr[0] "+ %d dní"
+msgstr[0] "+ %d deň"
+msgstr[1] "+ %d dni"
+msgstr[2] "+ %d dní"
+msgstr[3] "+ %d dní"
 
 #: src/LevelAgreementLevel.php:282 src/Html.php:3195
 #, php-format
 msgid "- %d day"
 msgid_plural "- %d days"
-msgstr[0] "- %d dní"
+msgstr[0] "- %d deň"
+msgstr[1] "- %d dni"
+msgstr[2] "- %d dní"
+msgstr[3] "- %d dní"
 
 #: src/LevelAgreementLevel.php:292 src/Ticket.php:3152 src/Ticket.php:3355
 #: src/Ticket.php:6541 src/OlaLevel.php:184 src/Dashboard/Provider.php:1487
@@ -4827,12 +4880,18 @@ msgstr "Termín splnenia"
 #: src/PrinterModel.php:42 src/Rule.php:324 src/CartridgeItem.php:346
 msgid "Printer model"
 msgid_plural "Printer models"
-msgstr[0] "Modely tlačiarní"
+msgstr[0] "Model tlačiarne"
+msgstr[1] "Modely tlačiarní"
+msgstr[2] "Modely tlačiarní"
+msgstr[3] "Modely tlačiarní"
 
 #: src/Cluster.php:54
 msgid "Cluster"
 msgid_plural "Clusters"
-msgstr[0] "Klastre"
+msgstr[0] "Klaster"
+msgstr[1] "Klastre"
+msgstr[2] "Klastre"
+msgstr[3] "Klastre"
 
 #: src/Cluster.php:93 src/Blacklist.php:234 src/RefusedEquipment.php:106
 #: src/RefusedEquipment.php:191 src/RuleImportAsset.php:141
@@ -4871,7 +4930,10 @@ msgstr "Skupina zodpovedná za hardvér"
 #: src/Blacklist.php:93 src/RuleCollection.php:2207
 msgid "Blacklist"
 msgid_plural "Blacklists"
-msgstr[0] "Čierne listiny"
+msgstr[0] "Čierna listina"
+msgstr[1] "Čierne listiny"
+msgstr[2] "Čierne listiny"
+msgstr[3] "Čierne listiny"
 
 #: src/Blacklist.php:231 src/Unmanaged.php:185 src/RefusedEquipment.php:115
 #: src/RuleImportAsset.php:129 src/NetworkName.php:224
@@ -4882,7 +4944,10 @@ msgstr "IP"
 #: src/Blacklist.php:239 src/Manufacturer.php:43 src/Rule.php:276
 msgid "Manufacturer"
 msgid_plural "Manufacturers"
-msgstr[0] "Výrobcovia"
+msgstr[0] "Výrobca"
+msgstr[1] "Výrobcovia"
+msgstr[2] "Výrobcovia"
+msgstr[3] "Výrobcovia"
 
 #: src/Alert.php:108 src/Alert.php:146 src/Alert.php:177 src/Contract.php:1580
 #: src/Infocom.php:654 src/Entity.php:810 src/Entity.php:1051
@@ -5018,10 +5083,10 @@ msgstr "Nasledujúce automatické akcie hlásia chybu. Je potrebný zásah."
 #: src/Unmanaged.php:47
 msgid "Unmanaged device"
 msgid_plural "Unmanaged devices"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Nespravované zariadenie"
+msgstr[1] "Nespravované zariadenia"
+msgstr[2] "Nespravované zariadenia"
+msgstr[3] "Nespravované zariadenia"
 
 #: src/Unmanaged.php:106
 msgid "Serial Number"
@@ -5029,48 +5094,51 @@ msgstr "Sériové číslo"
 
 #: src/Unmanaged.php:127 templates/pages/assets/unmanaged.html.twig:41
 msgid "Network hub"
-msgstr ""
+msgstr "Sieťový rozbočovač"
 
 #: src/Unmanaged.php:177 templates/generic_show_form.html.twig:380
 msgid "Sysdescr"
-msgstr ""
+msgstr "Popis systému"
 
 #: src/Unmanaged.php:210 src/Unmanaged.php:222
 msgid "Convert"
-msgstr ""
+msgstr "Konvertovať"
 
 #: src/Unmanaged.php:231
 msgid "Select an itemtype: "
-msgstr ""
+msgstr "Vyberte typ položky: "
 
 #: src/ProblemTask.php:41
 msgid "Problem task"
 msgid_plural "Problem tasks"
-msgstr[0] "Úlohy problémov"
+msgstr[0] "Úloha problému"
+msgstr[1] "Úlohy problémov"
+msgstr[2] "Úlohy problémov"
+msgstr[3] "Úlohy problémov"
 
 #: src/PrinterLog.php:55
 msgid "Page counters"
-msgstr ""
+msgstr "Počítadlo strán"
 
 #: src/PrinterLog.php:146 src/NetworkPortMetrics.php:146
 msgid "Y-m-d"
-msgstr ""
+msgstr "d.m.Y"
 
 #: src/PrinterLog.php:179
 msgid "Total pages"
-msgstr ""
+msgstr "Celkový počet strán"
 
 #: src/PrinterLog.php:181
 msgid "Black & White pages"
-msgstr ""
+msgstr "Čiernobiele strany"
 
 #: src/PrinterLog.php:183
 msgid "Color pages"
-msgstr ""
+msgstr "Farebné strany"
 
 #: src/PrinterLog.php:185
 msgid "Scans"
-msgstr ""
+msgstr "Naskenované"
 
 #: src/PrinterLog.php:187
 msgid "Recto/Verso pages"
@@ -5078,27 +5146,27 @@ msgstr ""
 
 #: src/PrinterLog.php:189
 msgid "Prints"
-msgstr ""
+msgstr "Vytlačené"
 
 #: src/PrinterLog.php:191
 msgid "Black & White prints"
-msgstr ""
+msgstr "Čiernobiela tlač"
 
 #: src/PrinterLog.php:193
 msgid "Color prints"
-msgstr ""
+msgstr "Farebná tlač"
 
 #: src/PrinterLog.php:195
 msgid "Copies"
-msgstr ""
+msgstr "Počet kópií"
 
 #: src/PrinterLog.php:197
 msgid "Black & White copies"
-msgstr ""
+msgstr "Čiernobiele kópie"
 
 #: src/PrinterLog.php:199
 msgid "Color copies"
-msgstr ""
+msgstr "Farebné kópie"
 
 #: src/PrinterLog.php:201 src/Contact_Supplier.php:169
 #: src/Contact_Supplier.php:303 src/Dropdown.php:506 src/Dropdown.php:532
@@ -5195,16 +5263,22 @@ msgstr "Dátum začiatku"
 #: src/UserTitle.php:39
 msgid "User title"
 msgid_plural "Users titles"
-msgstr[0] "Funkcie používateľov"
+msgstr[0] "Funkcia používateľa"
+msgstr[1] "Funkcie používateľov"
+msgstr[2] "Funkcie používateľov"
+msgstr[3] "Funkcie používateľov"
 
 #: src/MonitorType.php:39 src/Rule.php:384
 msgid "Monitor type"
 msgid_plural "Monitor types"
-msgstr[0] "Typy monitorov"
+msgstr[0] "Typ monitora"
+msgstr[1] "Typy monitorov"
+msgstr[2] "Typy monitorov"
+msgstr[3] "Typy monitorov"
 
 #: src/Ticket_Contract.php:46
 msgid "Tickets / Contracts"
-msgstr ""
+msgstr "Požiadavky / Zmluvy"
 
 #: src/Ticket_Contract.php:79 src/Contract_Supplier.php:141
 #: src/Contract_Item.php:298
@@ -5250,15 +5324,18 @@ msgstr "Dátum exspirácie"
 #: src/NotificationTargetConsumableItem.php:93
 msgid "Event"
 msgid_plural "Events"
-msgstr[0] "Udalosti"
+msgstr[0] "Udalosť"
+msgstr[1] "Udalosti"
+msgstr[2] "Udalosti"
+msgstr[3] "Udalosti"
 
 #: src/NetworkPortFiberchannelType.php:39
 msgid "Fiber type"
 msgid_plural "Fiber types"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Typ optiky"
+msgstr[1] "Typy optiky"
+msgstr[2] "Typy optiky"
+msgstr[3] "Typy optiky"
 
 #: src/NetworkPort_Vlan.php:138 src/NetworkPort_Vlan.php:170
 #: src/NetworkPort_Vlan.php:385 src/Vlan.php:164
@@ -5309,7 +5386,10 @@ msgstr "Zmazať natrvalo"
 #: src/Cable.php:183 src/Problem.php:467 src/Link_Itemtype.php:170
 msgid "Associated item type"
 msgid_plural "Associated item types"
-msgstr[0] "Typy priradených položiek"
+msgstr[0] "Typ priradenej položky"
+msgstr[1] "Typy priradených položiek"
+msgstr[2] "Typy priradených položiek"
+msgstr[3] "Typy priradených položiek"
 
 #. TRANS: %1$s is the Itemtype name and $2$d the ID of the item
 #: src/Item_Ticket.php:1186 src/SavedSearch.php:413 src/CommonGLPI.php:1046
@@ -5330,7 +5410,10 @@ msgstr "Položka bola úspešne odstránená"
 #: src/SoftwareCategory.php:42
 msgid "Software category"
 msgid_plural "Software categories"
-msgstr[0] "Kategórie softvéru"
+msgstr[0] "Kategória softvéru"
+msgstr[1] "Kategórie softvéru"
+msgstr[2] "Kategórie softvéru"
+msgstr[3] "Kategórie softvéru"
 
 #: src/ContractCost.php:46 src/ContractCost.php:164 src/ContractCost.php:266
 #: src/ContractCost.php:361 src/NotificationTargetProject.php:724
@@ -5357,6 +5440,9 @@ msgstr[0] "Kategórie softvéru"
 msgid "Cost"
 msgid_plural "Costs"
 msgstr[0] "Náklady"
+msgstr[1] "Náklady"
+msgstr[2] "Náklady"
+msgstr[3] "Náklady"
 
 #: src/ContractCost.php:350 src/ProjectCost.php:357 src/CommonITILCost.php:558
 msgid "Add a new cost"
@@ -5418,7 +5504,10 @@ msgstr "Uzamykateľ"
 #: src/Item_DeviceSimcard.php:53 src/DeviceSimcard.php:41
 msgid "Simcard"
 msgid_plural "Simcards"
-msgstr[0] "SIM karty"
+msgstr[0] "SIM karta"
+msgstr[1] "SIM karty"
+msgstr[2] "SIM karty"
+msgstr[3] "SIM karty"
 
 #: src/Item_DeviceSimcard.php:63 src/Item_DeviceSimcard.php:64
 msgid "PIN code"
@@ -5455,27 +5544,27 @@ msgstr "Číselník architektúr operačného systému"
 #: src/Agent.php:67
 msgid "Agent"
 msgid_plural "Agents"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Agent"
+msgstr[1] "Agenti"
+msgstr[2] "Agenti"
+msgstr[3] "Agenti"
 
 #: src/Agent.php:99 src/Agent.php:257
 msgid "Last contact"
-msgstr ""
+msgstr "Posledné spojenie"
 
 #: src/Agent.php:105 src/Agent.php:188
 msgid "Locked"
-msgstr ""
+msgstr "Uzamknutý"
 
 #: src/Agent.php:111 src/Agent.php:195
 msgid "Device id"
-msgstr ""
+msgstr "ID zariadenia"
 
 #: src/Agent.php:125 src/Agent.php:253 src/Features/Inventoriable.php:182
 #: templates/components/form/inventory_info.html.twig:73
 msgid "Useragent"
-msgstr ""
+msgstr "Agent používateľa"
 
 #: src/Agent.php:132 src/Agent.php:246 src/Document.php:949
 #: src/NotificationTemplateTranslation.php:381 src/Document_Item.php:747
@@ -5780,7 +5869,10 @@ msgstr "Počet dokumentov"
 #: src/Domain.php:156
 msgid "Associated item"
 msgid_plural "Associated items"
-msgstr[0] "Priradené položky"
+msgstr[0] "Priradená položka"
+msgstr[1] "Priradené položky"
+msgstr[2] "Priradené položky"
+msgstr[3] "Priradené položky"
 
 #: src/NotificationTargetProject.php:696 src/Printer.php:409
 #: src/Monitor.php:284 src/Peripheral.php:269
@@ -5836,7 +5928,10 @@ msgstr "Celé meno"
 #: src/NotificationTargetProjectTask.php:679
 msgid "Team member"
 msgid_plural "Team members"
-msgstr[0] "Členovia tímu"
+msgstr[0] "Člen tímu"
+msgstr[1] "Členovia tímu"
+msgstr[2] "Členovia tímu"
+msgstr[3] "Členovia tímu"
 
 #: src/NotificationTargetProject.php:766 src/NotificationTargetProject.php:783
 #: src/Group.php:271 src/NotificationTargetCommonITILObject.php:1879
@@ -5861,7 +5956,10 @@ msgstr[3] "Úlohy"
 #: src/NotificationTargetTicket.php:780 src/Stat.php:1717
 msgid "Change"
 msgid_plural "Changes"
-msgstr[0] "Zmeny"
+msgstr[0] "Zmena"
+msgstr[1] "Zmeny"
+msgstr[2] "Zmeny"
+msgstr[3] "Zmeny"
 
 #: src/NotificationTargetProject.php:771 src/NotificationTargetProject.php:787
 #: src/Ticket.php:107 src/Html.php:1848 src/NotificationTargetProblem.php:219
@@ -5872,20 +5970,26 @@ msgstr[0] "Zmeny"
 #: src/NotificationTargetProjectTask.php:678 src/Entity.php:2154
 msgid "Ticket"
 msgid_plural "Tickets"
-msgstr[0] "Požiadavky"
+msgstr[0] "Požiadavka"
+msgstr[1] "Požiadavky"
+msgstr[2] "Požiadavky"
+msgstr[3] "Požiadavky"
 
 #: src/NetworkEquipmentType.php:39 src/Rule.php:420
 msgid "Networking equipment type"
 msgid_plural "Networking equipment types"
-msgstr[0] "Typy sieťových zariadení"
+msgstr[0] "Typ sieťového zariadenia"
+msgstr[1] "Typy sieťových zariadení"
+msgstr[2] "Typy sieťových zariadení"
+msgstr[3] "Typy sieťových zariadení"
 
 #: src/CableStrand.php:41 src/CableStrand.php:47 src/Cable.php:144
 msgid "Cable strand"
 msgid_plural "Cable strands"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Vlákno kábla"
+msgstr[1] "Vlákna kábla"
+msgstr[2] "Vlákna kábla"
+msgstr[3] "Vlákna kábla"
 
 #: src/CableStrand.php:150 src/CableStrand.php:151 src/CableStrand.php:152
 #: src/CableStrand.php:153 src/Cable.php:161 src/Cable.php:172
@@ -5910,7 +6014,10 @@ msgstr ""
 #: src/ProjectTaskType.php:43
 msgid "Project tasks type"
 msgid_plural "Project tasks types"
-msgstr[0] "Typy projektových úloh"
+msgstr[0] "Typ projektovej úlohy"
+msgstr[1] "Typy projektových úloh"
+msgstr[2] "Typy projektových úloh"
+msgstr[3] "Typy projektových úloh"
 
 #: src/AllAssets.php:43 src/Html.php:1364 src/Socket.php:908
 #: src/Dashboard/Grid.php:1164 src/RuleImportAsset.php:120
@@ -5926,10 +6033,10 @@ msgstr[0] "Typy projektových úloh"
 #: src/Entity.php:1118 templates/pages/assets/cable.html.twig:102
 msgid "Asset"
 msgid_plural "Assets"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Inventár"
+msgstr[1] "Inventár"
+msgstr[2] "Inventár"
+msgstr[3] "Inventár"
 
 #: src/NetworkPortLocal.php:44
 msgid "Local loop port"
@@ -6149,7 +6256,10 @@ msgstr "Počet dní na uchovanie odoslaných e-mailov"
 #: src/Transfer.php:3907 src/Cartridge.php:1239 src/Rule.php:492
 msgid "Printer"
 msgid_plural "Printers"
-msgstr[0] "Tlačiarne"
+msgstr[0] "Tlačiareň"
+msgstr[1] "Tlačiarne"
+msgstr[2] "Tlačiarne"
+msgstr[3] "Tlačiarne"
 
 #: src/Printer.php:333 src/Monitor.php:207 src/Peripheral.php:192
 #: src/Phone.php:212 src/NetworkEquipment.php:272 src/Computer.php:358
@@ -6205,7 +6315,10 @@ msgstr "Aktuálny stav počítadla stránok"
 #: src/CartridgeItem.php:236 src/Entity.php:1903
 msgid "Cartridge"
 msgid_plural "Cartridges"
-msgstr[0] "Náplne"
+msgstr[0] "Náplň"
+msgstr[1] "Náplne"
+msgstr[2] "Náplne"
+msgstr[3] "Náplne"
 
 #: src/Printer.php:538 src/CartridgeItem.php:248
 msgid "Number of used cartridges"
@@ -6258,12 +6371,18 @@ msgstr "Chyby pripojenia"
 #: src/NotificationTargetMailCollector.php:100 src/MailCollector.php:105
 msgid "Receiver"
 msgid_plural "Receivers"
-msgstr[0] "Prijímače"
+msgstr[0] "Prijímač"
+msgstr[1] "Prijímače"
+msgstr[2] "Prijímače"
+msgstr[3] "Prijímače"
 
 #: src/RequestType.php:39
 msgid "Request source"
 msgid_plural "Request sources"
-msgstr[0] "Zdroje žiadostí"
+msgstr[0] "Zdroj žiadosti"
+msgstr[1] "Zdroje žiadostí"
+msgstr[2] "Zdroje žiadostí"
+msgstr[3] "Zdroje žiadostí"
 
 #: src/RequestType.php:50 src/RequestType.php:79
 msgid "Default for tickets"
@@ -6323,7 +6442,10 @@ msgstr "Číselník verzií OS"
 #: src/CronTask.php:82
 msgid "Automatic action"
 msgid_plural "Automatic actions"
-msgstr[0] "Automatické akcie"
+msgstr[0] "Automatická akcia"
+msgstr[1] "Automatické akcie"
+msgstr[2] "Automatické akcie"
+msgstr[3] "Automatické akcie"
 
 #: src/CronTask.php:205 src/CronTask.php:325
 msgid "Action aborted"
@@ -6454,21 +6576,30 @@ msgstr "Počet spustení"
 #, php-format
 msgid "%s start"
 msgid_plural "%s starts"
-msgstr[0] "%s spustení"
+msgstr[0] "%s spustenie"
+msgstr[1] "%s spustenia"
+msgstr[2] "%s spustení"
+msgstr[3] "%s spustení"
 
 #. TRANS: %s is the number of stops
 #: src/CronTask.php:1189
 #, php-format
 msgid "%s stop"
 msgid_plural "%s stops"
-msgstr[0] "%s zastavení"
+msgstr[0] "%s zastavenie"
+msgstr[1] "%s zastavenia"
+msgstr[2] "%s zastavení"
+msgstr[3] "%s zastavení"
 
 #. TRANS: %s is the number of errors
 #: src/CronTask.php:1192
 #, php-format
 msgid "%s error"
 msgid_plural "%s errors"
-msgstr[0] "%s chyby"
+msgstr[0] "%s chyba"
+msgstr[1] "%s chyby"
+msgstr[2] "%s chýb"
+msgstr[3] "%s chyby"
 
 #: src/CronTask.php:1227
 msgid "Minimal time"
@@ -6482,7 +6613,10 @@ msgstr "Minimálny čas"
 #, php-format
 msgid "%s second"
 msgid_plural "%s seconds"
-msgstr[0] "%s sekúnd"
+msgstr[0] "%s sekunda"
+msgstr[1] "%s sekundy"
+msgstr[2] "%s sekúnd"
+msgstr[3] "%s sekúnd"
 
 #: src/CronTask.php:1234
 msgid "Maximal time"
@@ -6512,7 +6646,10 @@ msgstr "Minimálny počet"
 #, php-format
 msgid "%s item"
 msgid_plural "%s items"
-msgstr[0] "%s položiek"
+msgstr[0] "%s položka"
+msgstr[1] "%s položky"
+msgstr[2] "%s položiek"
+msgstr[3] "%s položiek"
 
 #: src/CronTask.php:1262
 msgid "Maximal count"
@@ -6600,6 +6737,12 @@ msgstr "Konečná hodina intervalu behu"
 msgid "Clean %1$d session file created since more than %2$s seconds"
 msgid_plural "Clean %1$d session files created since more than %2$s seconds"
 msgstr[0] ""
+"Vymazaný %1$d súbor sedenia vytvorený pred viacej ako %2$s sekundami"
+msgstr[1] ""
+"Vymazaných %1$d súborov sedenia vytvorených pred viacej ako %2$s sekundami"
+msgstr[2] ""
+"Vymazaných %1$d súborov sedenia vytvorených pred viacej ako %2$s sekundami"
+msgstr[3] ""
 "Vymazaných %1$d súborov sedenia vytvorených pred viacej ako %2$s sekundami"
 
 #: src/CronTask.php:1798
@@ -6629,13 +6772,22 @@ msgstr ""
 #, php-format
 msgid "Clean %1$d graph file created since more than %2$s seconds"
 msgid_plural "Clean %1$d graph files created since more than %2$s seconds"
-msgstr[0] "Vymazaných %1$d grafov vytvorených pred viacej ako %2$s sekundami"
+msgstr[0] "Vymazaný %1$d graf vytvorený pred viacej ako %2$s sekundami"
+msgstr[1] "Vymazaných %1$d grafov vytvorených pred viacej ako %2$s sekundami"
+msgstr[2] "Vymazaných %1$d grafov vytvorených pred viacej ako %2$s sekundami"
+msgstr[3] "Vymazaných %1$d grafov vytvorených pred viacej ako %2$s sekundami"
 
 #: src/CronTask.php:1929
 #, php-format
 msgid "Clean %1$d temporary file created since more than %2$s seconds"
 msgid_plural "Clean %1$d temporary files created since more than %2$s seconds"
 msgstr[0] ""
+"Vymazaný %1$d dočasný súbor vytvorený pred viacej ako %2$s sekundami"
+msgstr[1] ""
+"Vymazaných %1$d dočasných súborov vytvorených pred viacej ako %2$s sekundami"
+msgstr[2] ""
+"Vymazaných %1$d dočasných súborov vytvorených pred viacej ako %2$s sekundami"
+msgstr[3] ""
 "Vymazaných %1$d dočasných súborov vytvorených pred viacej ako %2$s sekundami"
 
 #: src/CronTask.php:2039
@@ -6673,7 +6825,10 @@ msgstr "Počet dní na uchovanie archivovaných logov"
 #: src/Line.php:52
 msgid "Line"
 msgid_plural "Lines"
-msgstr[0] "Linky"
+msgstr[0] "Linka"
+msgstr[1] "Linky"
+msgstr[2] "Linky"
+msgstr[3] "Linky"
 
 #: src/Line.php:202 templates/pages/management/line.html.twig:40
 msgid "Caller number"
@@ -6686,17 +6841,17 @@ msgstr "Meno volajúceho"
 #: src/Printer_CartridgeInfo.php:72
 msgctxt "Cartridge inventoried information"
 msgid "Cartridge inventoried information"
-msgstr ""
+msgstr "Informácie o evidencii náplní"
 
 #: src/Printer_CartridgeInfo.php:101
 msgid "Property"
-msgstr ""
+msgstr "Náplň"
 
 #: src/Printer_CartridgeInfo.php:115
 #, php-format
 msgctxt "%1$s remaining page"
 msgid "%1$s remaining pages"
-msgstr ""
+msgstr "%1$s zostávajúcich strán"
 
 #: src/DisplayPreference.php:306
 msgid "No personal criteria. Create personal parameters?"
@@ -6825,12 +6980,18 @@ msgctxt "consumable"
 msgid "New"
 msgid_plural "New"
 msgstr[0] "Nové"
+msgstr[1] "Nové"
+msgstr[2] "Nové"
+msgstr[3] "Nové"
 
 #: src/Consumable.php:498
 msgctxt "consumable"
 msgid "Used"
 msgid_plural "Used"
 msgstr[0] "Použité"
+msgstr[1] "Použité"
+msgstr[2] "Použité"
+msgstr[3] "Použité"
 
 #: src/Consumable.php:528
 msgctxt "button"
@@ -6895,7 +7056,10 @@ msgstr "Nenašiel sa žiaden spotrebný materiál"
 #: src/Holiday.php:46 src/Calendar_Holiday.php:199
 msgid "Close time"
 msgid_plural "Close times"
-msgstr[0] "Dni voľna"
+msgstr[0] "Deň voľna"
+msgstr[1] "Dni voľna"
+msgstr[2] "Dni voľna"
+msgstr[3] "Dni voľna"
 
 #: src/Holiday.php:60 src/Holiday.php:89 src/Calendar_Holiday.php:145
 msgid "Recurrent"
@@ -6904,7 +7068,10 @@ msgstr "Opakovanie"
 #: src/ITILSolution.php:56
 msgid "Solution"
 msgid_plural "Solutions"
-msgstr[0] "Riešenia"
+msgstr[0] "Riešenie"
+msgstr[1] "Riešenia"
+msgstr[2] "Riešenia"
+msgstr[3] "Riešenia"
 
 #: src/ITILSolution.php:184
 msgid "The item is already solved, did anyone pushed a solution before you?"
@@ -6926,12 +7093,18 @@ msgstr "Akceptované"
 #: src/DeviceSensorType.php:41
 msgid "Sensor type"
 msgid_plural "Sensor types"
-msgstr[0] "Typy senzorov"
+msgstr[0] "Typ senzoru"
+msgstr[1] "Typy senzorov"
+msgstr[2] "Typy senzorov"
+msgstr[3] "Typy senzorov"
 
 #: src/DeviceDrive.php:41
 msgid "Drive"
 msgid_plural "Drives"
-msgstr[0] "Mechaniky"
+msgstr[0] "Mechanika"
+msgstr[1] "Mechaniky"
+msgstr[2] "Mechaniky"
+msgstr[3] "Mechaniky"
 
 #: src/DeviceDrive.php:51 src/DeviceDrive.php:74 src/DeviceDrive.php:123
 msgid "Writing ability"
@@ -6956,7 +7129,10 @@ msgstr "Obchodné pravidlá pre zariadenia"
 #: src/Appliance.php:62
 msgid "Appliance"
 msgid_plural "Appliances"
-msgstr[0] "Aplikácie"
+msgstr[0] "Aplikácia"
+msgstr[1] "Aplikácie"
+msgstr[2] "Aplikácie"
+msgstr[3] "Aplikácie"
 
 #: src/Appliance.php:165 src/DomainRecord.php:119 src/DomainRecord.php:452
 #: src/CommonITILTask.php:899 src/Domain_Item.php:517
@@ -7005,12 +7181,18 @@ msgstr "Zmazať z aplikácie"
 #: src/SsoVariable.php:48
 msgid "Field storage of the login in the HTTP request"
 msgid_plural "Fields storage of the login in the HTTP request"
-msgstr[0] "Polia pre uloženie prihlasovacieho mena v HTTP požiadavke"
+msgstr[0] "Pole pre uloženie prihlasovacieho mena v HTTP požiadavke"
+msgstr[1] "Polia pre uloženie prihlasovacieho mena v HTTP požiadavke"
+msgstr[2] "Polia pre uloženie prihlasovacieho mena v HTTP požiadavke"
+msgstr[3] "Polia pre uloženie prihlasovacieho mena v HTTP požiadavke"
 
 #: src/PassiveDCEquipment.php:49
 msgid "Passive device"
 msgid_plural "Passive devices"
-msgstr[0] "Pasívne zariadenia"
+msgstr[0] "Pasívne zariadenie"
+msgstr[1] "Pasívne zariadenia"
+msgstr[2] "Pasívne zariadenia"
+msgstr[3] "Pasívne zariadenia"
 
 #: src/RuleDictionnaryPhoneTypeCollection.php:44
 msgid "Dictionnary of phone types"
@@ -7023,7 +7205,10 @@ msgstr "Číselník modelov tlačiarní"
 #: src/KnowbaseItem_Item.php:55
 msgid "Knowledge base item"
 msgid_plural "Knowledge base items"
-msgstr[0] "Položky databázy znalostí"
+msgstr[0] "Položka databázy znalostí"
+msgstr[1] "Položky databázy znalostí"
+msgstr[2] "Položky databázy znalostí"
+msgstr[3] "Položky databázy znalostí"
 
 #: src/KnowbaseItem_Item.php:148
 msgid "Add a linked item"
@@ -7044,7 +7229,10 @@ msgstr "Nie je prepojená žiadna položka z databázy znalostí"
 #: src/KnowbaseItem_Item.php:196
 msgid "Linked item"
 msgid_plural "Linked items"
-msgstr[0] "Prepojené položky"
+msgstr[0] "Prepojená položka"
+msgstr[1] "Prepojené položky"
+msgstr[2] "Prepojené položky"
+msgstr[3] "Prepojené položky"
 
 #: src/KnowbaseItem_Item.php:225
 msgid "Update date"
@@ -7062,7 +7250,10 @@ msgstr "Pripojiť článok z databázy znalostí"
 #: src/PDU.php:57
 msgid "PDU"
 msgid_plural "PDUs"
-msgstr[0] "Napájacie PDU lišty"
+msgstr[0] "Napájacia PDU lišta"
+msgstr[1] "Napájacie PDU lišty"
+msgstr[2] "Napájacie PDU lišty"
+msgstr[3] "Napájacie PDU lišty"
 
 #: src/RuleImportComputer.php:51 src/RuleImportComputerCollection.php:60
 msgid "Rules for import and link computers"
@@ -7083,7 +7274,10 @@ msgstr "Podsieť"
 #: src/RuleImportComputer.php:95 src/IPAddress.php:108
 msgid "IP address"
 msgid_plural "IP addresses"
-msgstr[0] "IP adresy"
+msgstr[0] "IP adresa"
+msgstr[1] "IP adresy"
+msgstr[2] "IP adresy"
+msgstr[3] "IP adresy"
 
 #: src/RuleImportComputer.php:97 src/NetworkAlias.php:418
 msgid "Computer's name"
@@ -7181,7 +7375,10 @@ msgstr "LDAP kritéria"
 #: src/ContactType.php:39
 msgid "Contact type"
 msgid_plural "Contact types"
-msgstr[0] "Typy kontaktov"
+msgstr[0] "Typ kontaktu"
+msgstr[1] "Typy kontaktov"
+msgstr[2] "Typy kontaktov"
+msgstr[3] "Typy kontaktov"
 
 #: src/Ticket.php:123
 msgid "Create ticket"
@@ -7239,7 +7436,7 @@ msgstr "%s povýšil reakciu z požiadavky %s"
 #: src/Ticket.php:2091
 #, php-format
 msgid "%s promotes a task from ticket %s"
-msgstr ""
+msgstr "%s povýšil úlohu z požiadavky %s"
 
 #: src/Ticket.php:2124
 msgid "Your ticket has been registered."
@@ -7288,11 +7485,11 @@ msgstr "Pridať zmluvu"
 
 #: src/Ticket.php:2760
 msgid "Link to a problem"
-msgstr ""
+msgstr "Prepojiť s problémom"
 
 #: src/Ticket.php:2766
 msgid "Resolve selected tickets"
-msgstr ""
+msgstr "Vyriešiť vybrané požiadavky"
 
 #: src/Ticket.php:2792
 msgid "Merge followups"
@@ -7345,7 +7542,7 @@ msgstr "Odkaz"
 
 #: src/Ticket.php:2915
 msgid "Resolve"
-msgstr ""
+msgstr "Vyriešiť"
 
 #: src/Ticket.php:2925 src/CommonDevice.php:407 src/CommonDevice.php:409
 #: src/CommonDevice.php:411 src/CommonDBChild.php:847
@@ -7362,19 +7559,19 @@ msgstr "Pridať"
 
 #: src/Ticket.php:2996
 msgid "Missing input: no Problem selected"
-msgstr ""
+msgstr "Chýbajúci vstup: Nie je vybratý žiadny problém"
 
 #: src/Ticket.php:3002
 msgid "Selected Problem can't be loaded"
-msgstr ""
+msgstr "Vybratý problém nemôže byť načítaný"
 
 #: src/Ticket.php:3046
 msgid "Missing mandatory field in input"
-msgstr ""
+msgstr "Na vstupe chýba povinné pole"
 
 #: src/Ticket.php:3103
 msgid "No contract specified"
-msgstr ""
+msgstr "Nebola zadaná žiadna zmluva"
 
 #: src/Ticket.php:3163
 msgid "Time to own + Progress"
@@ -7452,7 +7649,10 @@ msgstr "Čas spracovania požiadavky"
 #: src/Ticket_Ticket.php:54
 msgid "Linked ticket"
 msgid_plural "Linked tickets"
-msgstr[0] "Prepojené požiadavky"
+msgstr[0] "Prepojená požiadavka"
+msgstr[1] "Prepojené požiadavky"
+msgstr[2] "Prepojené požiadavky"
+msgstr[3] "Prepojené požiadavky"
 
 #: src/Ticket.php:3563
 msgid "All linked tickets"
@@ -7599,7 +7799,10 @@ msgstr "Vytvoriť požiadavku"
 #, php-format
 msgid "%d new ticket"
 msgid_plural "%d new tickets"
-msgstr[0] "%d nových požiadaviek"
+msgstr[0] "%d nová požiadavka"
+msgstr[1] "%d nové požiadavky"
+msgstr[2] "%d nových požiadaviek"
+msgstr[3] "%d nových požiadaviek"
 
 #: src/Ticket.php:5534 src/Ticket.php:5769
 #: templates/layout/parts/context_links.html.twig:76
@@ -7628,7 +7831,10 @@ msgstr "Nová požiadavka k tejto položke..."
 #, php-format
 msgid "Last %d ticket"
 msgid_plural "Last %d tickets"
-msgstr[0] "Posledné %d požiadavky"
+msgstr[0] "Posledná %d požiadavka"
+msgstr[1] "Posledné %d požiadavky"
+msgstr[2] "Posledných %d požiadaviek"
+msgstr[3] "Posledných %d požiadaviek"
 
 #: src/Ticket.php:5773
 msgid "You don't have right to see all tickets"
@@ -7637,7 +7843,10 @@ msgstr "Nemáte oprávnenie na zobrazenie všetkých požiadaviek"
 #: src/Ticket.php:5816
 msgid "Ticket on linked items"
 msgid_plural "Tickets on linked items"
-msgstr[0] "Požiadavky na pripojených položkách"
+msgstr[0] "Požiadavka na pripojených položkách"
+msgstr[1] "Požiadavky na pripojených položkách"
+msgstr[2] "Požiadavky na pripojených položkách"
+msgstr[3] "Požiadavky na pripojených položkách"
 
 #: src/Ticket.php:5979
 msgid "Assign equipment"
@@ -7818,7 +8027,10 @@ msgstr "Opakovanie pravidiel na existujúcej databáze skončené %s"
 #: src/Fieldblacklist.php:46
 msgid "Ignored value for the unicity"
 msgid_plural "Ignored values for the unicity"
-msgstr[0] "Ignorované hodnoty jedinečnosti"
+msgstr[0] "Ignorovaná hodnota jedinečnosti"
+msgstr[1] "Ignorované hodnoty jedinečnosti"
+msgstr[2] "Ignorované hodnoty jedinečnosti"
+msgstr[3] "Ignorované hodnoty jedinečnosti"
 
 #: src/NotificationTargetReservation.php:41
 msgid "New reservation"
@@ -7849,7 +8061,10 @@ msgstr "URL rezervovanej položky"
 #: src/ReminderTranslation.php:54
 msgid "Translation"
 msgid_plural "Translations"
-msgstr[0] "Preklady"
+msgstr[0] "Preklad"
+msgstr[1] "Preklady"
+msgstr[2] "Preklady"
+msgstr[3] "Preklady"
 
 #: src/KnowbaseItemTranslation.php:89 src/CommonITILValidation.php:963
 #: src/KnowbaseItem.php:269 templates/components/user/info_card.html.twig:98
@@ -7892,7 +8107,10 @@ msgstr "%1$s položiek"
 #: src/Profile.php:2039 src/Transfer.php:3897
 msgid "Monitor"
 msgid_plural "Monitors"
-msgstr[0] "Monitory"
+msgstr[0] "Monitor"
+msgstr[1] "Monitory"
+msgstr[2] "Monitory"
+msgstr[3] "Monitory"
 
 #: src/Monitor.php:336 src/Database.php:108 src/Database.php:266
 #: src/Database.php:402 src/Item_DeviceMemory.php:55
@@ -7954,12 +8172,18 @@ msgstr "Hostia"
 #: src/DeviceGeneric.php:41
 msgid "Generic device"
 msgid_plural "Generic devices"
-msgstr[0] "Všeobecné zariadenia"
+msgstr[0] "Všeobecné zariadenie"
+msgstr[1] "Všeobecné zariadenia"
+msgstr[2] "Všeobecné zariadenia"
+msgstr[3] "Všeobecné zariadenia"
 
 #: src/RackModel.php:41
 msgid "Rack model"
 msgid_plural "Rack models"
-msgstr[0] "Modely rozvádzačov"
+msgstr[0] "Model rozvádzača"
+msgstr[1] "Modely rozvádzačov"
+msgstr[2] "Modely rozvádzačov"
+msgstr[3] "Modely rozvádzačov"
 
 #: src/Notification.php:219
 msgid "Allow response"
@@ -7986,7 +8210,10 @@ msgstr "Pole typ položky je povinné"
 #: src/Peripheral.php:75
 msgid "Device"
 msgid_plural "Devices"
-msgstr[0] "Zariadenia"
+msgstr[0] "Zariadenie"
+msgstr[1] "Zariadenia"
+msgstr[2] "Zariadenia"
+msgstr[3] "Zariadenia"
 
 #: src/Peripheral.php:321 src/Phone.php:349
 #: templates/generic_show_form.html.twig:505
@@ -8006,7 +8233,10 @@ msgstr[3] ""
 #: src/ContentTemplates/Parameters/CommonITILObjectParameters.php:62
 msgid "Link"
 msgid_plural "Links"
-msgstr[0] "Väzby"
+msgstr[0] "Väzba"
+msgstr[1] "Väzby"
+msgstr[2] "Väzby"
+msgstr[3] "Väzby"
 
 #: src/ManualLink.php:134 src/Link.php:179
 msgid "Open in a new window"
@@ -8018,7 +8248,7 @@ msgstr "Ikona"
 
 #: src/ManualLink.php:178
 msgid "URL is required"
-msgstr ""
+msgstr "URL adresa je požadovaná"
 
 #: src/ManualLink.php:202
 msgid "Invalid URL"
@@ -8026,7 +8256,7 @@ msgstr "Neplatná adresa URL"
 
 #: src/ManualLink.php:280
 msgid "You are about to delete this item. Do you confirm?"
-msgstr ""
+msgstr "Chystáte sa zmazať túto položku. Chcete potvrdiť?"
 
 #: src/ManualLink.php:283 src/ManualLink.php:285
 msgctxt "button"
@@ -8105,12 +8335,12 @@ msgstr "Viditeľnosť"
 
 #: src/SavedSearch.php:500
 msgid "Save as a new search"
-msgstr ""
+msgstr "Uložiť ako nové hľadanie"
 
 #: src/SavedSearch.php:609
 #, php-format
 msgid "Partial load of the saved search: %s"
-msgstr ""
+msgstr "Čiastočné načítanie uloženého hľadania: %s"
 
 #: src/SavedSearch.php:848
 msgid "Count for this saved search has been disabled."
@@ -8137,13 +8367,19 @@ msgstr "Oznámenie bolo vytvorené!"
 #: src/Plug.php:39
 msgid "Plug"
 msgid_plural "Plugs"
-msgstr[0] "El. zásuvky"
+msgstr[0] "El. zásuvka"
+msgstr[1] "El. zásuvky"
+msgstr[2] "El. zásuvky"
+msgstr[3] "El. zásuvky"
 
 #: src/TicketTemplate.php:48 src/Profile.php:2645 src/Entity.php:1032
 #: src/Entity.php:2489
 msgid "Ticket template"
 msgid_plural "Ticket templates"
-msgstr[0] "Šablóny požiadaviek"
+msgstr[0] "Šablóna požiadavky"
+msgstr[1] "Šablóny požiadaviek"
+msgstr[2] "Šablóny požiadaviek"
+msgstr[3] "Šablóny požiadaviek"
 
 #: src/Stat/Data/Location/StatDataSolved.php:49
 #, php-format
@@ -8177,6 +8413,9 @@ msgctxt "ticket"
 msgid "Opened"
 msgid_plural "Opened"
 msgstr[0] "Otvorené"
+msgstr[1] "Otvorené"
+msgstr[2] "Otvorené"
+msgstr[3] "Otvorené"
 
 #: src/Stat/Data/Sglobal/StatDataTicketNumber.php:59
 #: src/Stat/Data/Graph/StatDataTicketAverageTime.php:56
@@ -8185,6 +8424,9 @@ msgctxt "ticket"
 msgid "Solved"
 msgid_plural "Solved"
 msgstr[0] "Vyriešené"
+msgstr[1] "Vyriešené"
+msgstr[2] "Vyriešené"
+msgstr[3] "Vyriešené"
 
 #: src/Stat/Data/Sglobal/StatDataTicketNumber.php:62
 #: src/Stat/Data/Graph/StatDataTicketAverageTime.php:59
@@ -8204,13 +8446,19 @@ msgctxt "survey"
 msgid "Opened"
 msgid_plural "Opened"
 msgstr[0] "Otvorené"
+msgstr[1] "Otvorené"
+msgstr[2] "Otvorené"
+msgstr[3] "Otvorené"
 
 #: src/Stat/Data/Sglobal/StatDataSatisfaction.php:57
 #: src/Stat/Data/Graph/StatDataSatisfactionSurvey.php:54 src/Stat.php:563
 msgctxt "survey"
 msgid "Answered"
 msgid_plural "Answered"
-msgstr[0] "Odpovedané"
+msgstr[0] "Zodpovedané"
+msgstr[1] "Zodpovedané"
+msgstr[2] "Zodpovedané"
+msgstr[3] "Zodpovedané"
 
 #: src/Stat/Data/Sglobal/StatDataSatisfaction.php:65
 #: src/Stat/Data/Graph/StatDataSatisfactionSurvey.php:62 src/Stat.php:1696
@@ -8245,13 +8493,19 @@ msgstr[0] "Hodiny"
 #: src/ChangeTask.php:41
 msgid "Change task"
 msgid_plural "Change tasks"
-msgstr[0] "Úlohy zmien"
+msgstr[0] "Úloha zmeny"
+msgstr[1] "Úlohy zmeny"
+msgstr[2] "Úlohy zmeny"
+msgstr[3] "Úlohy zmeny"
 
 #: src/Item_SoftwareVersion.php:56 src/Software.php:976
 #: src/SoftwareVersion.php:350
 msgid "Installation"
 msgid_plural "Installations"
-msgstr[0] "Inštalácie"
+msgstr[0] "Inštalácia"
+msgstr[1] "Inštalácie"
+msgstr[2] "Inštalácie"
+msgstr[3] "Inštalácie"
 
 #: src/Item_SoftwareVersion.php:101 src/Item_SoftwareLicense.php:108
 msgctxt "software"
@@ -8311,7 +8565,10 @@ msgstr "Nastaviť umiestnenie sem"
 #: src/TicketTask.php:41
 msgid "Ticket task"
 msgid_plural "Ticket tasks"
-msgstr[0] "Úlohy požiadaviek"
+msgstr[0] "Úloha požiadavky"
+msgstr[1] "Úlohy požiadavky"
+msgstr[2] "Úlohy požiadavky"
+msgstr[3] "Úlohy požiadavky"
 
 #: src/TicketTask.php:264 src/ITILFollowup.php:846
 msgid "Update all"
@@ -8332,13 +8589,19 @@ msgstr "Zobraziť verejné"
 #: src/OperatingSystemVersion.php:42
 msgid "Version of the operating system"
 msgid_plural "Versions of the operating systems"
-msgstr[0] "Verzie operačného systému"
+msgstr[0] "Verzia operačného systému"
+msgstr[1] "Verzie operačného systému"
+msgstr[2] "Verzie operačného systému"
+msgstr[3] "Verzie operačného systému"
 
 #: src/DBConnection.php:74 src/Config.php:781 src/Config.php:2095
 #: src/Config.php:2493
 msgid "SQL replica"
 msgid_plural "SQL replicas"
-msgstr[0] "SQL replikácie"
+msgstr[0] "SQL replikácia"
+msgstr[1] "SQL replikácie"
+msgstr[2] "SQL replikácie"
+msgstr[3] "SQL replikácie"
 
 #: src/DBConnection.php:597
 msgid "Check the SQL replica"
@@ -8374,17 +8637,26 @@ msgstr "Rozdiel medzi master a slave"
 #: src/DeviceCaseModel.php:42
 msgid "Device case model"
 msgid_plural "Device case models"
-msgstr[0] "Modely skríň"
+msgstr[0] "Model skrine"
+msgstr[1] "Modely skríň"
+msgstr[2] "Modely skríň"
+msgstr[3] "Modely skríň"
 
 #: src/ApplianceType.php:38
 msgid "Appliance type"
 msgid_plural "Appliance types"
-msgstr[0] "Typy aplikácií"
+msgstr[0] "Typ aplikácie"
+msgstr[1] "Typy aplikácií"
+msgstr[2] "Typy aplikácií"
+msgstr[3] "Typy aplikácií"
 
 #: src/Group.php:48
 msgid "Group"
 msgid_plural "Groups"
-msgstr[0] "Skupiny"
+msgstr[0] "Skupina"
+msgstr[1] "Skupiny"
+msgstr[2] "Skupiny"
+msgstr[3] "Skupiny"
 
 #: src/Group.php:133 src/Group.php:785 src/User.php:250
 msgid "Used items"
@@ -8504,67 +8776,67 @@ msgstr "Valec"
 
 #: src/Inventory/Asset/Cartridge.php:57
 msgid "Waste bin"
-msgstr ""
+msgstr "Odpadová nádoba"
 
 #: src/Inventory/Asset/Cartridge.php:58
 msgid "Maintenance kit"
-msgstr ""
+msgstr "Údržbová jednotka"
 
 #: src/Inventory/Asset/Cartridge.php:59
 msgid "Fuser kit"
-msgstr ""
+msgstr "Zapekacia jednotka"
 
 #: src/Inventory/Asset/Cartridge.php:60
 msgid "Transfer kit"
-msgstr ""
+msgstr "Prenosová jednotka"
 
 #: src/Inventory/Asset/Cartridge.php:61
 msgid "Cleaning kit"
-msgstr ""
+msgstr "Čistiaca sada"
 
 #: src/Inventory/Asset/Cartridge.php:62
 msgid "Developer"
-msgstr ""
+msgstr "Vývojnica"
 
 #: src/Inventory/Asset/Cartridge.php:63
 msgid "Photoconductor"
-msgstr ""
+msgstr "Tlačový valec"
 
 #: src/Inventory/Asset/Cartridge.php:70
 msgid "Black"
-msgstr ""
+msgstr "Čierna"
 
 #: src/Inventory/Asset/Cartridge.php:71
 msgid "Cyan"
-msgstr ""
+msgstr "Azúrová"
 
 #: src/Inventory/Asset/Cartridge.php:72
 msgid "Light cyan"
-msgstr ""
+msgstr "Svetloazúrová"
 
 #: src/Inventory/Asset/Cartridge.php:73
 msgid "Magenta"
-msgstr ""
+msgstr "Purpurová"
 
 #: src/Inventory/Asset/Cartridge.php:74
 msgid "Light magenta"
-msgstr ""
+msgstr "Svetlopurpurová"
 
 #: src/Inventory/Asset/Cartridge.php:75
 msgid "Yellow"
-msgstr ""
+msgstr "Žltá"
 
 #: src/Inventory/Asset/Cartridge.php:76 src/Inventory/Asset/Cartridge.php:78
 msgid "Grey"
-msgstr ""
+msgstr "Sivá"
 
 #: src/Inventory/Asset/Cartridge.php:77 src/Inventory/Asset/Cartridge.php:79
 msgid "Dark grey"
-msgstr ""
+msgstr "Tmavosivá"
 
 #: src/Inventory/Asset/Cartridge.php:83
 msgid "Max"
-msgstr ""
+msgstr "Maximum"
 
 #: src/Inventory/Asset/Cartridge.php:84
 msgid "Used"
@@ -8578,11 +8850,11 @@ msgstr "Zostávajúce"
 
 #: src/Inventory/Asset/Cartridge.php:147
 msgid "Photo"
-msgstr ""
+msgstr "Foto"
 
 #: src/Inventory/Asset/Cartridge.php:148
 msgid "Matte"
-msgstr ""
+msgstr "Matný"
 
 #: src/Inventory/Asset/Cartridge.php:188
 msgid "Many information grouped"
@@ -8595,7 +8867,7 @@ msgstr ""
 #: src/Inventory/Asset/Bios.php:70
 #, php-format
 msgid "%1$s BIOS"
-msgstr ""
+msgstr "%1$s BIOS"
 
 #: src/Inventory/Asset/NetworkEquipment.php:102
 #: src/Inventory/Asset/NetworkEquipment.php:153 src/NetworkPort.php:611
@@ -8609,29 +8881,29 @@ msgstr "Správa"
 #: src/Inventory/Asset/NetworkEquipment.php:103
 #: src/Inventory/Asset/NetworkEquipment.php:155
 msgid "internal"
-msgstr ""
+msgstr "interná"
 
 #: src/Inventory/Inventory.php:283
 #, php-format
 msgid "Following keys has been ignored during process: %1$s"
-msgstr ""
+msgstr "Počas spracovania boli ignorované nasledujúce kľúče: %1$s"
 
 #: src/Inventory/Inventory.php:772
 msgid "Clean temporary files created from inventories"
-msgstr ""
+msgstr "Vyčistiť dočasné súbory vytvorené z inventárov"
 
 #: src/Inventory/Inventory.php:775
 msgid "Clean inventories orphaned files"
-msgstr ""
+msgstr "Vyčistiť osamotené súbory inventárov"
 
 #: src/Inventory/Inventory.php:799 src/Inventory/Inventory.php:870
 #, php-format
 msgid "File %1$s has been removed"
-msgstr ""
+msgstr "Súbor %1$s bol odstránený"
 
 #: src/Inventory/Conf.php:102
 msgid "Import inventory file"
-msgstr ""
+msgstr "Importovať inventárny súbor"
 
 #: src/Inventory/Conf.php:109
 #, php-format
@@ -8639,12 +8911,16 @@ msgid ""
 "You can use this menu to upload any inventory file. The file must have a "
 "known extension (%1$s).\n"
 msgstr ""
+"Toto menu môžete použiť na nahratie ľubovoľného inventárneho súboru. Tento "
+"súbor musí mať známu príponu (%1$s).\n"
 
 #: src/Inventory/Conf.php:112
 msgid ""
 "It is also possible to upload a compressed archive directly with a "
 "collection of inventory files."
 msgstr ""
+"Môžete tiež priamo nahrať komprimovaný archív s kolekciou inventárnych "
+"súborov."
 
 #: src/Inventory/Conf.php:119 src/NetworkPortType.php:57
 #: src/NetworkPortType.php:84
@@ -8653,23 +8929,23 @@ msgstr "Import"
 
 #: src/Inventory/Conf.php:171
 msgid "No file to import!"
-msgstr ""
+msgstr "Žiadny súbor na import!"
 
 #: src/Inventory/Conf.php:223
 msgid "File has not been imported:"
-msgstr ""
+msgstr "Súbor nebol naimportovaný: "
 
 #: src/Inventory/Conf.php:229
 msgid "File has been successfully imported!"
-msgstr ""
+msgstr "Súbor bol úspešne naimportovaný!"
 
 #: src/Inventory/Conf.php:252
 msgid "Configuration"
-msgstr ""
+msgstr "Konfigurácia"
 
 #: src/Inventory/Conf.php:253
 msgid "Import from file"
-msgstr ""
+msgstr "Import zo súboru"
 
 #: src/Inventory/Conf.php:297
 msgid "Import options"
@@ -8681,41 +8957,43 @@ msgstr "Východzí stav"
 
 #: src/Inventory/Conf.php:363
 msgid "Import monitor on serial partial match"
-msgstr ""
+msgstr "Importovať monitor pri čiastočnej zhode sériového č."
 
 #: src/Inventory/Conf.php:378
 msgid "Related configurations"
-msgstr ""
+msgstr "Súvisiace konfigurácie"
 
 #: src/Inventory/Conf.php:416
 msgid "Import virtual machines"
-msgstr ""
+msgstr "Import virtuálnych strojov"
 
 #: src/Inventory/Conf.php:446
 msgid "Create computer for virtual machines"
-msgstr ""
+msgstr "Vytvoriť počítač pre virtuálne stroje"
 
 #: src/Inventory/Conf.php:458
 msgid "Create components for virtual machines"
-msgstr ""
+msgstr "Vytvoriť komponenty pre virtuálne stroje"
 
 #: src/Inventory/Conf.php:472
 msgid ""
 "Will attempt to create components from VM information sent from host, do not"
 " use if you plan to inventory any VM directly!"
 msgstr ""
+"Pokúsi sa vytvoriť komponenty z VM informácií odoslaných zo servera. "
+"Nepoužívajte, ak plánujete inventarizovať akýkoľvek VM priamo!"
 
 #: src/Inventory/Conf.php:555
 msgid "Virtual network cards"
-msgstr ""
+msgstr "Virtuálne sieťové karty"
 
 #: src/Inventory/Conf.php:614
 msgid "Network drives"
-msgstr ""
+msgstr "Sieťové disky"
 
 #: src/Inventory/Conf.php:629
 msgid "Removable drives"
-msgstr ""
+msgstr "Vymeniteľné jednotky"
 
 #: src/Inventory/Conf.php:686 src/PlanningRecall.php:358
 #: src/Item_Devices.php:734 src/Dashboard/Grid.php:285 src/CommonGLPI.php:1346
@@ -8748,12 +9026,12 @@ msgstr "Uložiť"
 #: src/Inventory/Conf.php:714
 #, php-format
 msgid "Some properties are not known: %1$s"
-msgstr ""
+msgstr "Niektoré vlastnosti sú neznáme: %1$s"
 
 #: src/Inventory/Conf.php:753
 #, php-format
 msgid "Property %1$s does not exists!"
-msgstr ""
+msgstr "Vlastnosť %1$s neexistuje!"
 
 #: src/Inventory/Conf.php:767 src/Dashboard/Grid.php:1388 src/Profile.php:982
 #: src/Profile.php:1766 src/Profile.php:1905 src/Profile.php:3010
@@ -8799,28 +9077,28 @@ msgstr "Zvoľte predvolené položky na zobrazenie"
 
 #: src/NetworkPort.php:726
 msgid "Connections legend"
-msgstr ""
+msgstr "Legenda k pripojeniam"
 
 #: src/NetworkPort.php:727
 msgid "Equipment in trunk or tagged mode"
-msgstr ""
+msgstr "Zariadenie v režime trunk alebo tagované"
 
 #: src/NetworkPort.php:728
 msgid "Hub "
-msgstr ""
+msgstr "Rozbočovač"
 
 #: src/NetworkPort.php:729
 msgid "Other equipments"
-msgstr ""
+msgstr "Iné zariadenia"
 
 #: src/NetworkPort.php:730
 msgid "Aggregated port"
-msgstr ""
+msgstr "Agregovaný port"
 
 #: src/NetworkPort.php:736 src/NetworkPort.php:810
 #, php-format
 msgid "%s %s"
-msgstr ""
+msgstr "%s %s"
 
 #: src/NetworkPort.php:762
 msgid "No network port found"
@@ -8829,10 +9107,10 @@ msgstr "Nenašiel sa žiaden sieťový port"
 #: src/NetworkPort.php:812
 msgid "Management port"
 msgid_plural "Management ports"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Manažmentový port"
+msgstr[1] "Manažmentové porty"
+msgstr[2] "Manažmentové porty"
+msgstr[3] "Manažmentové porty"
 
 #. TRANS: list of unit (bps for bytes per second)
 #: src/NetworkPort.php:901
@@ -8865,11 +9143,11 @@ msgstr "Neznáme"
 
 #: src/NetworkPort.php:918
 msgid "Up"
-msgstr ""
+msgstr "Zapnutý"
 
 #: src/NetworkPort.php:922
 msgid "Down"
-msgstr ""
+msgstr "Vypnutý"
 
 #: src/NetworkPort.php:926
 msgid "Test"
@@ -8877,26 +9155,26 @@ msgstr "Testovanie"
 
 #: src/NetworkPort.php:976
 msgid "Half"
-msgstr ""
+msgstr "Polovičný duplex"
 
 #: src/NetworkPort.php:979
 msgid "Full"
-msgstr ""
+msgstr "Plný duplex"
 
 #: src/NetworkPort.php:1005
 #, php-format
 msgid "%s linked VLANs"
-msgstr ""
+msgstr "%s prepojené VLANy"
 
 #: src/NetworkPort.php:1080
 #, php-format
 msgid "%s equipments connected to the hub"
-msgstr ""
+msgstr "%s zariadení pripojených k rozbočovaču"
 
 #: src/NetworkPort.php:1105 src/NetworkPort.php:1128
 #: src/NetworkPortConnectionLog.php:131
 msgid "Connected"
-msgstr ""
+msgstr "Pripojené"
 
 #: src/NetworkPort.php:1109 src/NetworkPortConnectionLog.php:134
 #: src/Computer_Item.php:601
@@ -8909,13 +9187,16 @@ msgstr "Testovanie"
 
 #: src/NetworkPort.php:1121
 msgid "Dormant"
-msgstr ""
+msgstr "Neaktívne"
 
 #: src/NetworkPort.php:1275 src/NetworkPort.php:1280 src/NetworkPort.php:1427
 #: src/RuleImportAsset.php:135
 msgid "Port number"
 msgid_plural "Port numbers"
-msgstr[0] "Čísla portov"
+msgstr[0] "Číslo portu"
+msgstr[1] "Číslo portu"
+msgstr[2] "Číslo portu"
+msgstr[3] "Číslo portu"
 
 #: src/NetworkPort.php:1320 src/Dropdown.php:1075
 msgid "Networking"
@@ -8931,36 +9212,39 @@ msgstr "MTU"
 
 #: src/NetworkPort.php:1503
 msgid "Internal status"
-msgstr ""
+msgstr "Interný stav"
 
 #: src/NetworkPort.php:1510
 msgid "Last change"
-msgstr ""
+msgstr "Posledná zmena"
 
 #: src/NetworkPort.php:1517
 msgid "Number of I/O bytes"
-msgstr ""
+msgstr "Počet V/V bajtov"
 
 #: src/NetworkPort.php:1524
 msgid "Number of I/O errors"
-msgstr ""
+msgstr "Počet V/V chýb"
 
 #: src/NetworkPort.php:1531
 msgid "Duplex"
-msgstr ""
+msgstr "Duplex"
 
 #: src/NetworkPort.php:1571 src/Event.php:167 src/Computer_Item.php:793
 msgid "Connection"
 msgid_plural "Connections"
-msgstr[0] "Pripojenia"
+msgstr[0] "Pripojenie"
+msgstr[1] "Pripojenia"
+msgstr[2] "Pripojenia"
+msgstr[3] "Pripojenia"
 
 #: src/NetworkPort.php:1578
 msgid "Last connection"
-msgstr ""
+msgstr "Posledné pripojenie"
 
 #: src/NetworkPort.php:1586
 msgid "Alias"
-msgstr ""
+msgstr "Alias"
 
 #: src/NetworkPort.php:1706 src/NetworkPortInstantiation.php:913
 #: src/NetworkPortInstantiation.php:944
@@ -8972,7 +9256,10 @@ msgstr "%1$s  %2$s"
 #: src/Datacenter.php:50 src/Datacenter.php:140
 msgid "Data center"
 msgid_plural "Data centers"
-msgstr[0] "Dátové centrá"
+msgstr[0] "Dátové centrum"
+msgstr[1] "Dátové centrá"
+msgstr[2] "Dátové centrá"
+msgstr[3] "Dátové centrá"
 
 #: src/Datacenter.php:150 src/Cable.php:301 src/Cable.php:316
 #: templates/generic_show_form.html.twig:130
@@ -8996,7 +9283,10 @@ msgstr "Zapnúť reakcie cez prehliadač"
 #: src/NotificationAjaxSetting.php:66
 msgid "Browser notification"
 msgid_plural "Browser notifications"
-msgstr[0] "Oznámenia cez prehliadač"
+msgstr[0] "Oznámenie cez prehliadač"
+msgstr[1] "Oznámenia cez prehliadač"
+msgstr[2] "Oznámenia cez prehliadač"
+msgstr[3] "Oznámenia cez prehliadač"
 
 #: src/NotificationAjaxSetting.php:71 src/NotificationAjaxSetting.php:72
 #: src/NotificationAjaxSetting.php:73 src/NotificationAjaxSetting.php:74
@@ -9030,7 +9320,10 @@ msgstr "Poslať testovacie oznámenie cez prehliadač"
 #: src/Contact_Supplier.php:47
 msgid "Link Contact/Supplier"
 msgid_plural "Links Contact/Supplier"
-msgstr[0] "Väzby kontakt/dodávateľ"
+msgstr[0] "Väzba kontakt/dodávateľ"
+msgstr[1] "Väzby kontakt/dodávateľ"
+msgstr[2] "Väzby kontakt/dodávateľ"
+msgstr[3] "Väzby kontakt/dodávateľ"
 
 #: src/Contact_Supplier.php:131 src/Contract_Supplier.php:272
 msgid "Add a supplier"
@@ -9046,15 +9339,15 @@ msgstr "Pridať deň voľna"
 
 #: src/Cache/CacheManager.php:549
 msgid "Memcached"
-msgstr ""
+msgstr "Memcached"
 
 #: src/Cache/CacheManager.php:550
 msgid "Redis (TCP)"
-msgstr ""
+msgstr "Redis (TCP)"
 
 #: src/Cache/CacheManager.php:551
 msgid "Redis (TLS)"
-msgstr ""
+msgstr "Redis (TLS)"
 
 #: src/Update.php:178
 #, php-format
@@ -9066,7 +9359,7 @@ msgstr "Nepodporovaná verzia (%1$s)"
 #: src/Console/Migration/DynamicRowFormatCommand.php:85
 #, php-format
 msgid "%d tables are using the deprecated MyISAM storage engine."
-msgstr ""
+msgstr "%d tabuľky používajú zastarané databázové jadro MyISAM."
 
 #: src/Update.php:199 src/Update.php:205 src/Update.php:217
 #: src/Central.php:488 src/Central.php:493 src/Central.php:498
@@ -9076,18 +9369,18 @@ msgstr ""
 #: src/Console/Database/EnableTimezonesCommand.php:92
 #, php-format
 msgid "Run the \"php bin/console %1$s\" command to migrate them."
-msgstr ""
+msgstr "Spustite príkaz \"php bin/console %1$s\" na ich migráciu."
 
 #: src/Update.php:203 src/Central.php:491
 #: src/Console/Database/EnableTimezonesCommand.php:90
 #, php-format
 msgid "%1$s columns are using the deprecated datetime storage field type."
-msgstr ""
+msgstr "%1$s stĺpce používajú zastaraný typ poľa datetime."
 
 #: src/Update.php:215 src/Central.php:496
 #, php-format
 msgid "%1$s tables are using the deprecated utf8mb3 storage charset."
-msgstr ""
+msgstr "%1$s tabuľky používajú zastaranú znakovú sadu utf8mb3."
 
 #: src/Update.php:252
 msgid ""
@@ -9101,22 +9394,22 @@ msgstr ""
 #: src/DeviceCameraModel.php:40
 msgid "Device camera model"
 msgid_plural "Device camera models"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Model kamery"
+msgstr[1] "Modely kamier"
+msgstr[2] "Modely kamier"
+msgstr[3] "Modely kamier"
 
 #: src/NetworkPortType.php:43
 msgid "Network port type"
 msgid_plural "Network port types"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Typ sieťového portu"
+msgstr[1] "Typy sieťových portov"
+msgstr[2] "Typy sieťových portov"
+msgstr[3] "Typy sieťových portov"
 
 #: src/NetworkPortType.php:52 src/NetworkPortType.php:76
 msgid "Decimal"
-msgstr ""
+msgstr "Desatinné číslo"
 
 #: src/NetworkPortType.php:61 src/NetworkPortType.php:92
 msgid "Instanciation type"
@@ -9133,7 +9426,7 @@ msgstr "Zobraziť na mape"
 
 #: src/Dropdown.php:303
 msgid "Display on datacenter"
-msgstr ""
+msgstr "Zobraziť v dátovom centre"
 
 #. TRANS: %s is the store path
 #: src/Dropdown.php:792
@@ -9156,7 +9449,10 @@ msgstr "GMT"
 #, php-format
 msgid "%s hour"
 msgid_plural "%s hours"
-msgstr[0] "%s hodín"
+msgstr[0] "%s hodina"
+msgstr[1] "%s hodiny"
+msgstr[2] "%s hodín"
+msgstr[3] "%s hodín"
 
 #: src/Dropdown.php:957
 msgid "Common"
@@ -9165,7 +9461,10 @@ msgstr "Všeobecné"
 #: src/Dropdown.php:1043 src/ComputerVirtualMachine.php:560
 msgid "Virtual machine"
 msgid_plural "Virtual machines"
-msgstr[0] "Virtuálne stroje"
+msgstr[0] "Virtuálny stroj"
+msgstr[1] "Virtuálne stroje"
+msgstr[2] "Virtuálne stroje"
+msgstr[3] "Virtuálne stroje"
 
 #: src/Dropdown.php:1059 src/SLM.php:122 src/SLM.php:167 src/Profile.php:1825
 #: src/Profile.php:2409 src/CommonITILRecurrent.php:199
@@ -9175,11 +9474,14 @@ msgstr[0] "Virtuálne stroje"
 #: src/PlanningExternalEvent.php:318
 msgid "Calendar"
 msgid_plural "Calendars"
-msgstr[0] "Kalendáre"
+msgstr[0] "Kalendár"
+msgstr[1] "Kalendáre"
+msgstr[2] "Kalendáre"
+msgstr[3] "Kalendáre"
 
 #: src/Dropdown.php:1088 src/Profile.php:1079
 msgid "Cable management"
-msgstr ""
+msgstr "Správa káblov"
 
 #: src/Dropdown.php:1094 src/Profile.php:977 src/Profile.php:2151
 msgid "Internet"
@@ -9220,28 +9522,40 @@ msgstr[0] "%s rokov"
 #, php-format
 msgid "%s month"
 msgid_plural "%s months"
-msgstr[0] "%s mesiacov"
+msgstr[0] "%s mesiac"
+msgstr[1] "%s mesiace"
+msgstr[2] "%s mesiacov"
+msgstr[3] "%s mesiacov"
 
 #. TRANS: %s is a number of days
 #: src/Dropdown.php:1693
 #, php-format
 msgid "%s day"
 msgid_plural "%s days"
-msgstr[0] "%s dní"
+msgstr[0] "%s deň"
+msgstr[1] "%s dni"
+msgstr[2] "%s dní"
+msgstr[3] "%s dní"
 
 #. TRANS: %s is a number of minutes
 #: src/Dropdown.php:1701
 #, php-format
 msgid "%s minute"
 msgid_plural "%s minutes"
-msgstr[0] "%s minút"
+msgstr[0] "%s minúta"
+msgstr[1] "%s minúty"
+msgstr[2] "%s minút"
+msgstr[3] "%s minút"
 
 #. TRANS: %s is a number of milliseconds
 #: src/Dropdown.php:1709
 #, php-format
 msgid "%s millisecond"
 msgid_plural "%s milliseconds"
-msgstr[0] "%s milisekúnd"
+msgstr[0] "%s milisekunda"
+msgstr[1] "%s milisekundy"
+msgstr[2] "%s milisekúnd"
+msgstr[3] "%s milisekúnd"
 
 #: src/Dropdown.php:1712
 #, php-format
@@ -9261,7 +9575,10 @@ msgstr "%s%%"
 #, php-format
 msgid "%1$d day %2$dh%3$s"
 msgid_plural "%1$d days %2$dh%3$s"
-msgstr[0] "%1$d dní %2$dh%3$sm"
+msgstr[0] "%1$d deň %2$dh%3$sm"
+msgstr[1] "%1$d dni %2$dh%3$sm"
+msgstr[2] "%1$d dní %2$dh%3$sm"
+msgstr[3] "%1$d dní %2$dh%3$sm"
 
 #: src/Dropdown.php:1843 src/Dropdown.php:2195 src/PlanningRecall.php:301
 #: src/CommonITILRecurrent.php:258 src/LevelAgreement.php:717
@@ -9270,7 +9587,10 @@ msgstr[0] "%1$d dní %2$dh%3$sm"
 #, php-format
 msgid "%d day"
 msgid_plural "%d days"
-msgstr[0] "%d dní"
+msgstr[0] "%d deň"
+msgstr[1] "%d dni"
+msgstr[2] "%d dní"
+msgstr[3] "%d dní"
 
 #. TRANS: %1$d the number of hours, %2$s the number of minutes : display 3h15
 #: src/Dropdown.php:1851
@@ -9287,7 +9607,10 @@ msgstr "Ostatné..."
 #, php-format
 msgid "%d minute"
 msgid_plural "%d minutes"
-msgstr[0] "%d minút"
+msgstr[0] "%d minúta"
+msgstr[1] "%d minúty"
+msgstr[2] "%d minút"
+msgstr[3] "%d minút"
 
 #: src/Dropdown.php:2189 src/PlanningRecall.php:297
 #: src/CommonITILRecurrent.php:253 src/LevelAgreement.php:714
@@ -9295,7 +9618,10 @@ msgstr[0] "%d minút"
 #, php-format
 msgid "%d hour"
 msgid_plural "%d hours"
-msgstr[0] "%d hodín"
+msgstr[0] "%d hodina"
+msgstr[1] "%d hodiny"
+msgstr[2] "%d hodín"
+msgstr[3] "%d hodín"
 
 #: src/Dropdown.php:2244
 msgid "Use unitary management"
@@ -9367,13 +9693,19 @@ msgstr "Presunúť pod"
 #: src/PlanningRecall.php:44
 msgid "Planning reminder"
 msgid_plural "Planning reminders"
-msgstr[0] "Pripomínanie plánov"
+msgstr[0] "Pripomínanie plánu"
+msgstr[1] "Pripomínanie plánov"
+msgstr[2] "Pripomínanie plánov"
+msgstr[3] "Pripomínanie plánov"
 
 #: src/PlanningRecall.php:305
 #, php-format
 msgid "%d week"
 msgid_plural "%d weeks"
-msgstr[0] "%d týždňov"
+msgstr[0] "%d týždeň"
+msgstr[1] "%d týždne"
+msgstr[2] "%d týždňov"
+msgstr[3] "%d týždňov"
 
 #: src/PlanningRecall.php:376
 msgid "Send planning recalls"
@@ -9382,12 +9714,18 @@ msgstr "Poslať pripomenutie plánovania"
 #: src/Itil_Project.php:49
 msgid "Link Project/Itil"
 msgid_plural "Links Project/Itil"
-msgstr[0] "Väzby projekt/Itil"
+msgstr[0] "Väzba projekt/Itil"
+msgstr[1] "Väzby projekt/Itil"
+msgstr[2] "Väzby projekt/Itil"
+msgstr[3] "Väzby projekt/Itil"
 
 #: src/Itil_Project.php:88
 msgid "Itil item"
 msgid_plural "Itil items"
-msgstr[0] "Itil položky"
+msgstr[0] "Itil položka"
+msgstr[1] "Itil položky"
+msgstr[2] "Itil položky"
+msgstr[3] "Itil položky"
 
 #: src/Itil_Project.php:183 src/Change_Problem.php:165
 #: src/Change_Ticket.php:405
@@ -9431,7 +9769,10 @@ msgstr "MHz"
 #: src/Link.php:49 src/Link.php:701 src/Profile.php:1835 src/Profile.php:2350
 msgid "External link"
 msgid_plural "External links"
-msgstr[0] "Externé odkazy"
+msgstr[0] "Externý odkaz"
+msgstr[1] "Externé odkazy"
+msgstr[2] "Externé odkazy"
+msgstr[3] "Externé odkazy"
 
 #: src/Link.php:166
 msgid "field name in DB"
@@ -9517,12 +9858,18 @@ msgstr "Automatické prihlásenie je vypnuté"
 #: src/Auth.php:845
 msgid "Connection to LDAP directory failed"
 msgid_plural "Connection to LDAP directories failed"
-msgstr[0] "Zlyhalo pripojenie k adresárom LDAP "
+msgstr[0] "Zlyhalo pripojenie k adresáru LDAP "
+msgstr[1] "Zlyhalo pripojenie k adresárom LDAP "
+msgstr[2] "Zlyhalo pripojenie k adresárom LDAP "
+msgstr[3] "Zlyhalo pripojenie k adresárom LDAP "
 
 #: src/Auth.php:854
 msgid "User not found in LDAP directory"
 msgid_plural "User not found in LDAP directories"
-msgstr[0] "Používateľ sa nenašiel v LDAP adresároch"
+msgstr[0] "Používateľ sa nenašiel v LDAP adresári"
+msgstr[1] "Používateľ sa nenašiel v LDAP adresároch"
+msgstr[2] "Používateľ sa nenašiel v LDAP adresároch"
+msgstr[3] "Používateľ sa nenašiel v LDAP adresároch"
 
 #: src/Auth.php:865 src/Auth.php:874
 msgid "Empty login or password"
@@ -9677,7 +10024,10 @@ msgstr "Odobrať doménu z prihlasovacieho mena (login@domena)"
 #: src/PeripheralModel.php:39 src/Rule.php:336
 msgid "Peripheral model"
 msgid_plural "Peripheral models"
-msgstr[0] "Modely periférií"
+msgstr[0] "Model periférie"
+msgstr[1] "Modely periférií"
+msgstr[2] "Modely periférií"
+msgstr[3] "Modely periférií"
 
 #: src/NetworkPortMigration.php:49
 msgid "Network port migration"
@@ -9846,7 +10196,10 @@ msgstr "Výška"
 #: src/Location.php:120
 msgid "Location"
 msgid_plural "Locations"
-msgstr[0] "Umiestnenia"
+msgstr[0] "Umiestnenie"
+msgstr[1] "Umiestnenia"
+msgstr[2] "Umiestnenia"
+msgstr[3] "Umiestnenia"
 
 #: src/Location.php:203 src/NotificationTargetTicket.php:625
 #: src/NotificationTargetTicket.php:664
@@ -9888,7 +10241,7 @@ msgstr ""
 
 #: src/RuleCollection.php:641
 msgid "Reset rules"
-msgstr ""
+msgstr "Obnoviť pravidlá"
 
 #: src/RuleCollection.php:644 src/RuleCollection.php:650
 #: src/RefusedEquipment.php:207 src/RefusedEquipment.php:212
@@ -9938,7 +10291,10 @@ msgstr "Kritériá odmietnuté"
 #: src/RuleCriteria.php:95 src/RuleCriteria.php:647
 msgid "Criterion"
 msgid_plural "Criteria"
-msgstr[0] "Kritériá"
+msgstr[0] "Kritérium"
+msgstr[1] "Kritériá"
+msgstr[2] "Kritériá"
+msgstr[3] "Kritériá"
 
 #: src/RuleCollection.php:1334 src/Rule.php:1268 src/Rule.php:2136
 #: src/RuleCriteria.php:176
@@ -9998,7 +10354,10 @@ msgstr[3] "Schválenia"
 #: src/Event.php:159
 msgid "Rule"
 msgid_plural "Rules"
-msgstr[0] "Pravidlá"
+msgstr[0] "Pravidlo"
+msgstr[1] "Pravidlá"
+msgstr[2] "Pravidlá"
+msgstr[3] "Pravidlá"
 
 #: src/RuleCollection.php:2103
 #, php-format
@@ -10021,7 +10380,10 @@ msgstr "Globálny číselník"
 #: src/Pdu_Plug.php:46
 msgid "PDU plug"
 msgid_plural "PDU plugs"
-msgstr[0] "PDU zásuvky"
+msgstr[0] "PDU zásuvka"
+msgstr[1] "PDU zásuvky"
+msgstr[2] "PDU zásuvky"
+msgstr[3] "PDU zásuvky"
 
 #: src/Pdu_Plug.php:122
 msgid "Add a new plug"
@@ -10040,7 +10402,10 @@ msgstr "Nebola nájdená žiadna zásuvka"
 #: src/APIClient.php:317
 msgid "Log"
 msgid_plural "Logs"
-msgstr[0] "Logy"
+msgstr[0] "Log"
+msgstr[1] "Logy"
+msgstr[2] "Logy"
+msgstr[3] "Logy"
 
 #: src/OlaLevel.php:99 src/SlaLevel.php:93
 msgid "Add an escalation level"
@@ -10086,13 +10451,19 @@ msgstr "%1$s%2$d minút %3$d sekúnd"
 #, php-format
 msgid "%1$s%2$d minute"
 msgid_plural "%1$s%2$d minutes"
-msgstr[0] "%1$s%2$d minút"
+msgstr[0] "%1$s%2$d minúta"
+msgstr[1] "%1$s%2$d minúty"
+msgstr[2] "%1$s%2$d minút"
+msgstr[3] "%1$s%2$d minút"
 
 #: src/Html.php:457
 #, php-format
 msgid "%1$s%2$s second"
 msgid_plural "%1$s%2$s seconds"
-msgstr[0] "%1$s%2$s sekúnd"
+msgstr[0] "%1$s%2$s sekunda"
+msgstr[1] "%1$s%2$s sekundy"
+msgstr[2] "%1$s%2$s sekúnd"
+msgstr[3] "%1$s%2$s sekúnd"
 
 #: src/Html.php:593 src/Api/API.php:1943 src/Api/API.php:2056
 #: src/Api/API.php:2621
@@ -10130,7 +10501,10 @@ msgstr "SQL replikácia: iba na čítanie"
 #: src/Event.php:170 src/Entity.php:2136
 msgid "Reservation"
 msgid_plural "Reservations"
-msgstr[0] "Rezervácie"
+msgstr[0] "Rezervácia"
+msgstr[1] "Rezervácie"
+msgstr[2] "Rezervácie"
+msgstr[3] "Rezervácie"
 
 #: src/Html.php:1874 src/Config.php:3123
 msgid "Plugins"
@@ -10163,7 +10537,7 @@ msgstr ""
 
 #: src/Html.php:2577
 msgid "Massive actions"
-msgstr ""
+msgstr "Hromadné akcie"
 
 #: src/Html.php:3172 src/Html.php:3404 src/Html.php:6761
 msgid "Now"
@@ -10209,7 +10583,10 @@ msgstr "posledná sobota"
 #, php-format
 msgid "- %d week"
 msgid_plural "- %d weeks"
-msgstr[0] "- %d týždňov"
+msgstr[0] "- %d týždeň"
+msgstr[1] "- %d týždne"
+msgstr[2] "- %d týždňov"
+msgstr[3] "- %d týždňov"
 
 #: src/Html.php:3213
 msgid "Beginning of the month"
@@ -10219,7 +10596,10 @@ msgstr "Začiatok mesiaca"
 #, php-format
 msgid "- %d month"
 msgid_plural "- %d months"
-msgstr[0] "- %d mesiacov"
+msgstr[0] "- %d mesiac"
+msgstr[1] "- %d mesiace"
+msgstr[2] "- %d mesiacov"
+msgstr[3] "- %d mesiacov"
 
 #: src/Html.php:3221
 msgid "Beginning of the year"
@@ -10229,13 +10609,19 @@ msgstr "Začiatok roka"
 #, php-format
 msgid "- %d year"
 msgid_plural "- %d years"
-msgstr[0] "- %d rokov"
+msgstr[0] "- %d rok"
+msgstr[1] "- %d roky"
+msgstr[2] "- %d rokov"
+msgstr[3] "- %d rokov"
 
 #: src/Html.php:3240
 #, php-format
 msgid "+ %d week"
 msgid_plural "+ %d weeks"
-msgstr[0] "+ %d týždňov"
+msgstr[0] "+ %d týždeň"
+msgstr[1] "+ %d týždne"
+msgstr[2] "+ %d týždňov"
+msgstr[3] "+ %d týždňov"
 
 #: src/Html.php:3244
 #, php-format
@@ -10247,11 +10633,14 @@ msgstr[0] "+ %d mesiacov"
 #, php-format
 msgid "+ %d year"
 msgid_plural "+ %d years"
-msgstr[0] "+ %d rokov"
+msgstr[0] "+ %d rok"
+msgstr[1] "+ %d roky"
+msgstr[2] "+ %d rokov"
+msgstr[3] "+ %d rokov"
 
 #: src/Html.php:3843
 msgid "Available variables"
-msgstr ""
+msgstr "Dostupné premenné"
 
 #. TRANS: %1$d, %2$d, %3$d are page numbers
 #: src/Html.php:3946 src/Html.php:4159
@@ -10274,35 +10663,35 @@ msgstr "%1$d  %2$d"
 
 #: src/Html.php:6766
 msgid "Just now"
-msgstr ""
+msgstr "Práve teraz"
 
 #: src/Html.php:6769
 #, php-format
 msgid "%s minutes ago"
-msgstr ""
+msgstr "pred %s minútami"
 
 #: src/Html.php:6772
 #, php-format
 msgid "%s hours ago"
-msgstr ""
+msgstr "pred %s hodinami"
 
 #: src/Html.php:6776
 msgid "Yesterday"
-msgstr ""
+msgstr "Včera"
 
 #: src/Html.php:6779
 #, php-format
 msgid "%s days ago"
-msgstr ""
+msgstr "pred %s dňami"
 
 #: src/Html.php:6782
 #, php-format
 msgid "%s weeks ago"
-msgstr ""
+msgstr "pred %s týždňami"
 
 #: src/Html.php:6785
 msgid "Last month"
-msgstr "Posledný mesiac"
+msgstr "Minulý mesiac"
 
 #: src/Html.php:6794
 msgid "In a minute"
@@ -10324,11 +10713,11 @@ msgstr ""
 
 #: src/Html.php:6807
 msgid "Tomorrow"
-msgstr ""
+msgstr "Zajtra"
 
 #: src/Html.php:6813
 msgid "next week"
-msgstr ""
+msgstr "budúci týždeň"
 
 #: src/Html.php:6816
 #, php-format
@@ -10337,13 +10726,16 @@ msgstr ""
 
 #: src/Html.php:6819
 msgid "next month"
-msgstr ""
+msgstr "budúci mesiac"
 
 #. TRANS: Always plural
 #: src/Notepad.php:52 src/Notepad.php:184
 msgid "Note"
 msgid_plural "Notes"
-msgstr[0] "Poznámky"
+msgstr[0] "Poznámka"
+msgstr[1] "Poznámky"
+msgstr[2] "Poznámky"
+msgstr[3] "Poznámky"
 
 #: src/Notepad.php:254 src/NotificationTargetCommonITILObject.php:1724
 msgid "Last updater"
@@ -10533,7 +10925,10 @@ msgstr "Umiestnenie žiadateľa"
 #: src/Transfer.php:3940 src/Supplier.php:58
 msgid "Supplier"
 msgid_plural "Suppliers"
-msgstr[0] "Dodávatelia"
+msgstr[0] "Dodávateľ"
+msgstr[1] "Dodávatelia"
+msgstr[2] "Dodávatelia"
+msgstr[3] "Dodávatelia"
 
 #: src/NotificationTargetCommonITILObject.php:1710
 msgid "Supplier ID"
@@ -10608,7 +11003,7 @@ msgstr "Skupina priradená k úlohe"
 
 #: src/NotificationTargetCommonITILObject.php:1862
 msgid "Internal type"
-msgstr ""
+msgstr "Interný typ"
 
 #: src/NotificationTargetCommonITILObject.php:1865 src/Socket.php:332
 #: src/Socket.php:708 src/PDU_Rack.php:278 src/PDU_Rack.php:349
@@ -10624,7 +11019,10 @@ msgstr "Pozícia"
 #: src/Profile.php:1285
 msgid "Followup"
 msgid_plural "Followups"
-msgstr[0] "Reakcie"
+msgstr[0] "Reakcia"
+msgstr[1] "Reakcie"
+msgstr[2] "Reakcie"
+msgstr[3] "Reakcie"
 
 #: src/NotificationTargetCommonITILObject.php:1883
 #: src/NotificationTargetCommonITILObject.php:1900
@@ -10637,7 +11035,10 @@ msgstr ""
 #: src/Config.php:1524
 msgid "Day"
 msgid_plural "Days"
-msgstr[0] "Dni"
+msgstr[0] "Deň"
+msgstr[1] "Dni"
+msgstr[2] "Dni"
+msgstr[3] "Dni"
 
 #: src/NotificationTargetCommonITILObject.php:1896
 msgid "No defined category"
@@ -10655,7 +11056,10 @@ msgstr "Hodnota stavu v databáze"
 #: src/AuthMail.php:46
 msgid "Mail server"
 msgid_plural "Mail servers"
-msgstr[0] "E-mailové servery"
+msgstr[0] "E-mailový server"
+msgstr[1] "E-mailové servery"
+msgstr[2] "E-mailové servery"
+msgstr[3] "E-mailové servery"
 
 #. TRANS: for mail connection system
 #: src/AuthMail.php:127 src/Toolbox.php:1928 src/MailCollector.php:481
@@ -10713,12 +11117,18 @@ msgstr "Schváliť incident"
 #: src/DeviceGenericModel.php:42
 msgid "Device generic model"
 msgid_plural "Device generic models"
-msgstr[0] "Modely všeobecných zariadení"
+msgstr[0] "Model všeobecného zariadenia"
+msgstr[1] "Modely všeobecných zariadení"
+msgstr[2] "Modely všeobecných zariadení"
+msgstr[3] "Modely všeobecných zariadení"
 
 #: src/SavedSearch_Alert.php:57
 msgid "Saved search alert"
 msgid_plural "Saved searches alerts"
-msgstr[0] "Upozornenie na uložené hľadania"
+msgstr[0] "Upozornenie na uložené hľadanie"
+msgstr[1] "Upozornenie na uložené hľadania"
+msgstr[2] "Upozornenie na uložené hľadania"
+msgstr[3] "Upozornenie na uložené hľadania"
 
 #: src/SavedSearch_Alert.php:156 src/SavedSearch_Alert.php:272
 msgid "Operator"
@@ -10734,7 +11144,7 @@ msgstr ""
 
 #: src/SavedSearch_Alert.php:174
 msgid "Notification frequency"
-msgstr ""
+msgstr "Frekvencia oznámení"
 
 #: src/SavedSearch_Alert.php:224
 msgid "Notification does not exists!"
@@ -10747,7 +11157,10 @@ msgstr "vytvoriť ho teraz"
 #: src/SavedSearch_Alert.php:231
 msgid "Notification used:"
 msgid_plural "Notifications used:"
-msgstr[0] "Použité oznámenia:"
+msgstr[0] "Použité oznámenie:"
+msgstr[1] "Použité oznámenia:"
+msgstr[2] "Použité oznámenia:"
+msgstr[3] "Použité oznámenia:"
 
 #: src/SavedSearch_Alert.php:255
 msgid "Add an alert"
@@ -10793,17 +11206,26 @@ msgstr "Odstrániť všetko naraz"
 #: src/LineType.php:38
 msgid "Line type"
 msgid_plural "Line types"
-msgstr[0] "Typy liniek"
+msgstr[0] "Typ linky"
+msgstr[1] "Typy liniek"
+msgstr[2] "Typy liniek"
+msgstr[3] "Typy liniek"
 
 #: src/RuleRightParameter.php:83
 msgid "LDAP criterion"
 msgid_plural "LDAP criteria"
-msgstr[0] "LDAP kritéria"
+msgstr[0] "LDAP kritérium"
+msgstr[1] "LDAP kritéria"
+msgstr[2] "LDAP kritéria"
+msgstr[3] "LDAP kritéria"
 
 #: src/ContractType.php:39
 msgid "Contract type"
 msgid_plural "Contract types"
-msgstr[0] "Typy zmlúv"
+msgstr[0] "Typ zmluvy"
+msgstr[1] "Typy zmlúv"
+msgstr[2] "Typy zmlúv"
+msgstr[3] "Typy zmlúv"
 
 #: src/RuleRightCollection.php:85
 msgid "Entities assignment"
@@ -10824,25 +11246,31 @@ msgstr "Číselník modelov PC"
 
 #: src/Item_RemoteManagement.php:47
 msgid "Remote management"
-msgstr ""
+msgstr "Vzdialená správa"
 
 #: src/Item_RemoteManagement.php:128
 msgid "Add a remote management"
-msgstr ""
+msgstr "Pridať vzdialenú správu"
 
 #: src/Item_RemoteManagement.php:155 src/Item_RemoteManagement.php:343
 msgid "Remote ID"
-msgstr ""
+msgstr "Vzdialené ID"
 
 #: src/KnowbaseItemCategory.php:46 src/Profile.php:1805
 msgid "Knowledge base category"
 msgid_plural "Knowledge base categories"
-msgstr[0] "Kategórie databázy znalostí"
+msgstr[0] "Kategória databázy znalostí"
+msgstr[1] "Kategórie databázy znalostí"
+msgstr[2] "Kategórie databázy znalostí"
+msgstr[3] "Kategórie databázy znalostí"
 
 #: src/DeviceNetworkCard.php:43
 msgid "Network card"
 msgid_plural "Network cards"
-msgstr[0] "Sieťové karty"
+msgstr[0] "Sieťová karta"
+msgstr[1] "Sieťové karty"
+msgstr[2] "Sieťové karty"
+msgstr[3] "Sieťové karty"
 
 #: src/DeviceNetworkCard.php:68 src/DeviceNetworkCard.php:97
 msgid "MAC address by default"
@@ -10856,7 +11284,10 @@ msgstr "Dátový tok"
 #: src/Budget.php:58
 msgid "Budget"
 msgid_plural "Budgets"
-msgstr[0] "Rozpočty"
+msgstr[0] "Rozpočet"
+msgstr[1] "Rozpočty"
+msgstr[2] "Rozpočty"
+msgstr[3] "Rozpočty"
 
 #: src/Budget.php:84 src/User.php:255
 msgid "Main"
@@ -10877,30 +11308,42 @@ msgstr "Celkom zostáva z rozpočtu"
 #: src/PassiveDCEquipmentType.php:39
 msgid "Passive device type"
 msgid_plural "Passive device types"
-msgstr[0] "Typy pasívnych zariadení"
+msgstr[0] "Typ pasívneho zariadenia"
+msgstr[1] "Typy pasívnych zariadení"
+msgstr[2] "Typy pasívnych zariadení"
+msgstr[3] "Typy pasívnych zariadení"
 
 #: src/PhoneType.php:39 src/Rule.php:432
 msgid "Phone type"
 msgid_plural "Phone types"
-msgstr[0] "Typy telefónov"
+msgstr[0] "Typ telefónu"
+msgstr[1] "Typy telefónov"
+msgstr[2] "Typy telefónov"
+msgstr[3] "Typy telefónov"
 
 #: src/DeviceDriveModel.php:42
 msgid "Device drive model"
 msgid_plural "Device drive models"
-msgstr[0] "Modely mechaník"
+msgstr[0] "Model mechaniky"
+msgstr[1] "Modely mechaník"
+msgstr[2] "Modely mechaník"
+msgstr[3] "Modely mechaník"
 
 #: src/DeviceMotherboardModel.php:42
 msgid "System board model"
 msgid_plural "System board models"
-msgstr[0] "Modely základných dosiek"
+msgstr[0] "Model základnej dosky"
+msgstr[1] "Modely základných dosiek"
+msgstr[2] "Modely základných dosiek"
+msgstr[3] "Modely základných dosiek"
 
 #: src/Socket.php:320
 msgid "Socket"
 msgid_plural "Sockets"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Zásuvka"
+msgstr[1] "Zásuvky"
+msgstr[2] "Zásuvky"
+msgstr[3] "Zásuvky"
 
 #: src/Socket.php:374 src/Socket.php:436 src/Socket.php:710 src/Socket.php:819
 #: src/Socket.php:854 src/Socket.php:910
@@ -10910,16 +11353,16 @@ msgstr ""
 
 #: src/Socket.php:665
 msgid "New socket for this item..."
-msgstr ""
+msgstr "Nová zásuvka k tejto položke..."
 
 #: src/Socket.php:880 src/Socket.php:964
 #, php-format
 msgid "Network sockets for %s"
-msgstr ""
+msgstr "Sieťové zásuvky pre %s"
 
 #: src/Socket.php:907
 msgid "Socket Model"
-msgstr ""
+msgstr "Model zásuvky"
 
 #: src/Socket.php:909
 msgid "NetworkPort"
@@ -10968,7 +11411,10 @@ msgstr "%1$s z %2$s: %3$s"
 #: src/Item_Devices.php:982 src/KnowbaseItem.php:2087
 msgid "View"
 msgid_plural "Views"
-msgstr[0] "Zobrazení"
+msgstr[0] "Zobrazenie"
+msgstr[1] "Zobrazení"
+msgstr[2] "Zobrazení"
+msgstr[3] "Zobrazení"
 
 #: src/Item_Devices.php:1023 src/CommonITILValidation.php:1556
 #, php-format
@@ -11004,28 +11450,34 @@ msgstr "Aktualizácia "
 #: src/DeviceSimcardType.php:43
 msgid "Simcard type"
 msgid_plural "Simcard types"
-msgstr[0] "Typy SIM kariet"
+msgstr[0] "Typ SIM karty"
+msgstr[1] "Typy SIM kariet"
+msgstr[2] "Typy SIM kariet"
+msgstr[3] "Typy SIM kariet"
 
 #: src/DatabaseInstanceType.php:38
 msgid "Database instance type"
 msgid_plural "Database instance types"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Typ databázovej inštancie"
+msgstr[1] "Typy databázových inštancií"
+msgstr[2] "Typy databázových inštancií"
+msgstr[3] "Typy databázových inštancií"
 
 #: src/DatabaseInstanceCategory.php:38
 msgid "Database instance category"
 msgid_plural "Database instance categories"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Kategória databázovej inštancie"
+msgstr[1] "Kategórie databázových inštancií"
+msgstr[2] "Kategórie databázových inštancií"
+msgstr[3] "Kategórie databázových inštancií"
 
 #: src/ProjectTaskTeam.php:71
 msgid "Task team"
 msgid_plural "Task teams"
-msgstr[0] "Tímy úloh"
+msgstr[0] "Tím úlohy"
+msgstr[1] "Tímy úloh"
+msgstr[2] "Tímy úloh"
+msgstr[3] "Tímy úloh"
 
 #: src/ProjectTaskTeam.php:169
 msgid "An item type is mandatory"
@@ -11042,12 +11494,18 @@ msgstr "Projektová úloha je povinná"
 #: src/PassiveDCEquipmentModel.php:39
 msgid "Passive device model"
 msgid_plural "Passive device models"
-msgstr[0] "Modely pasívnych zariadení"
+msgstr[0] "Model pasívneho zariadenia"
+msgstr[1] "Modely pasívnych zariadení"
+msgstr[2] "Modely pasívnych zariadení"
+msgstr[3] "Modely pasívnych zariadení"
 
 #: src/Document.php:54
 msgid "Document"
 msgid_plural "Documents"
-msgstr[0] "Dokumenty"
+msgstr[0] "Dokument"
+msgstr[1] "Dokumenty"
+msgstr[2] "Dokumenty"
+msgstr[3] "Dokumenty"
 
 #: src/Document.php:181 src/Document.php:1112 src/Document.php:1211
 #: src/Document.php:1310
@@ -11479,24 +11937,24 @@ msgstr "Pridať reakciu k požiadavke (žiadateľ)"
 
 #: src/ITILFollowup.php:857
 msgid "Add followup (watcher)"
-msgstr ""
+msgstr "Pridať reakciu (pozorovateľ)"
 
 #: src/ITILFollowup.php:858
 msgid "Add a followup to tickets (watcher)"
-msgstr ""
+msgstr "Pridať reakciu k požiadavke (pozorovateľ)"
 
 #: src/PCIVendor.php:44
 msgid "PCI vendor"
 msgid_plural "PCI vendors"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Výrobca PCI"
+msgstr[1] "Výrobcovia PCI"
+msgstr[2] "Výrobcovia PCI"
+msgstr[3] "Výrobcovia PCI"
 
 #: src/PCIVendor.php:52 src/PCIVendor.php:70 src/USBVendor.php:52
 #: src/USBVendor.php:70
 msgid "Vendor ID"
-msgstr ""
+msgstr "ID výrobcu"
 
 #: src/PCIVendor.php:56 src/PCIVendor.php:78 src/USBVendor.php:56
 #: src/USBVendor.php:78
@@ -11506,7 +11964,10 @@ msgstr "ID zariadenia"
 #: src/ProjectTask_Ticket.php:65
 msgid "Link Ticket/Project task"
 msgid_plural "Links Ticket/Project task"
-msgstr[0] "Väzby požiadavka/projektová úloha"
+msgstr[0] "Väzba požiadavka/projektová úloha"
+msgstr[1] "Väzby požiadavka/projektová úloha"
+msgstr[2] "Väzby požiadavka/projektová úloha"
+msgstr[3] "Väzby požiadavka/projektová úloha"
 
 #: src/ProjectTask_Ticket.php:193
 msgid "Create a ticket from this task"
@@ -11536,7 +11997,10 @@ msgstr "Vyberte typ položky, ktorú je treba odomknúť"
 #: src/VirtualMachineState.php:39
 msgid "State of the virtual machine"
 msgid_plural "States of the virtual machine"
-msgstr[0] "Stavy virtuálnych strojov"
+msgstr[0] "Stav virtuálneho stroja"
+msgstr[1] "Stavy virtuálnych strojov"
+msgstr[2] "Stavy virtuálnych strojov"
+msgstr[3] "Stavy virtuálnych strojov"
 
 #: src/Certificate_Item.php:462 src/Certificate.php:223
 #: templates/pages/management/certificate.html.twig:42
@@ -11555,7 +12019,10 @@ msgstr "Neexspiruje"
 #: src/ITILTemplatePredefinedField.php:45
 msgid "Predefined field"
 msgid_plural "Predefined fields"
-msgstr[0] "Preddefinované polia"
+msgstr[0] "Preddefinované pole"
+msgstr[1] "Preddefinované polia"
+msgstr[2] "Preddefinované polia"
+msgstr[3] "Preddefinované polia"
 
 #: src/ITILTemplatePredefinedField.php:286
 msgid "Add a predefined field"
@@ -11564,26 +12031,38 @@ msgstr "Pridať preddefinované pole"
 #: src/Item_OperatingSystem.php:45
 msgid "Item operating system"
 msgid_plural "Item operating systems"
-msgstr[0] "Položka operačných systémov"
+msgstr[0] "Položka operačného systému"
+msgstr[1] "Položka operačných systémov"
+msgstr[2] "Položka operačných systémov"
+msgstr[3] "Položka operačných systémov"
 
 #: src/Item_OperatingSystem.php:151 src/Item_OperatingSystem.php:326
 #: src/Item_OperatingSystem.php:513 src/Item_OperatingSystem.php:621
 #: src/Software.php:574
 msgid "Architecture"
 msgid_plural "Architectures"
-msgstr[0] "Architektúry"
+msgstr[0] "Architektúra"
+msgstr[1] "Architektúry"
+msgstr[2] "Architektúry"
+msgstr[3] "Architektúry"
 
 #: src/Item_OperatingSystem.php:338 src/Item_OperatingSystem.php:531
 #: src/OperatingSystemKernel.php:40
 msgid "Kernel"
 msgid_plural "Kernels"
-msgstr[0] "Kernely"
+msgstr[0] "Kernel"
+msgstr[1] "Kernely"
+msgstr[2] "Kernely"
+msgstr[3] "Kernely"
 
 #: src/Item_OperatingSystem.php:347 src/Item_OperatingSystem.php:572
 #: src/Item_OperatingSystem.php:624 src/OperatingSystemEdition.php:40
 msgid "Edition"
 msgid_plural "Editions"
-msgstr[0] "Vydania"
+msgstr[0] "Edícia"
+msgstr[1] "Edície"
+msgstr[2] "Edície"
+msgstr[3] "Edície"
 
 #: src/Item_OperatingSystem.php:356 src/Item_OperatingSystem.php:413
 #: src/Item_OperatingSystem.php:500
@@ -11597,7 +12076,10 @@ msgstr "Operačný systém"
 #: src/Item_OperatingSystem.php:554 src/OperatingSystemKernelVersion.php:40
 msgid "Kernel version"
 msgid_plural "Kernel versions"
-msgstr[0] "Verzie kernelu"
+msgstr[0] "Verzia kernelu"
+msgstr[1] "Verzie kernelu"
+msgstr[2] "Verzie kernelu"
+msgstr[3] "Verzie kernelu"
 
 #: src/NotificationTargetProblem.php:47
 msgid "New problem"
@@ -11642,40 +12124,42 @@ msgstr "Pôvodný port"
 
 #: src/NetworkPortMetrics.php:54
 msgid "Network port metrics"
-msgstr ""
+msgstr "Metriky sieťového portu"
 
 #: src/NetworkPortMetrics.php:171
 msgid "Input/Output bytes"
-msgstr ""
+msgstr "Vstupno/výstupné bajty"
 
 #: src/NetworkPortMetrics.php:188
 msgid "Input/Output errors"
-msgstr ""
+msgstr "Vstupno/výstupné chyby"
 
 #: src/NetworkPortMetrics.php:204
 msgid "Input bytes"
-msgstr ""
+msgstr "Vstupné bajty"
 
 #: src/NetworkPortMetrics.php:206
 msgid "Output bytes"
-msgstr ""
+msgstr "Výstupné bajty"
 
 #: src/NetworkPortMetrics.php:208
 msgid "Input errors"
-msgstr ""
+msgstr "Vstupné chyby"
 
 #: src/NetworkPortMetrics.php:210
 msgid "Output errors"
-msgstr ""
+msgstr "Výstupné chyby"
 
 #: src/PendingReasonCron.php:48
 msgid ""
 "Send automated follow-ups on pending tickets and solve them if necessary"
 msgstr ""
+"Poslať automatické reakcie na čakajúce požiadavky a vyriešiť ich v prípade "
+"potreby"
 
 #: src/PendingReasonCron.php:194
 msgid "Automatic followups / resolution"
-msgstr ""
+msgstr "Automatické reakcie / riešenie"
 
 #: src/Dashboard/Provider.php:256 src/Dashboard/Grid.php:1176
 msgid "Late tickets"
@@ -11723,15 +12207,15 @@ msgstr ""
 
 #: src/Dashboard/Provider.php:535 src/Dashboard/Provider.php:679
 msgid "On time"
-msgstr ""
+msgstr "Načas"
 
 #: src/Dashboard/Provider.php:572
 msgid "Tickets by SLA status and by technician"
-msgstr ""
+msgstr "Požiadavky podľa stavu SLA a podľa technika"
 
 #: src/Dashboard/Provider.php:716
 msgid "Tickets by SLA status and by technician group"
-msgstr ""
+msgstr "Požiadavky podľa stavu SLA a podľa skupiny technikov"
 
 #: src/Dashboard/Provider.php:837
 msgid "without"
@@ -11799,7 +12283,7 @@ msgstr "Viacpruhový"
 
 #: src/Dashboard/Widget.php:160
 msgid "Multiple horizontal bars"
-msgstr ""
+msgstr "Vodorovný viacpruhový"
 
 #: src/Dashboard/Widget.php:170
 msgid "Stacked bars"
@@ -11807,7 +12291,7 @@ msgstr "Skladaný pruhový"
 
 #: src/Dashboard/Widget.php:180
 msgid "Horizontal stacked bars"
-msgstr ""
+msgstr "Vodorovný skladaný pruhový"
 
 #: src/Dashboard/Widget.php:190
 msgid "Horizontal bars"
@@ -11934,10 +12418,12 @@ msgid ""
 "A personal dashboard is not visible by other administrators unless you share"
 " explicitely the dashboard"
 msgstr ""
+"Osobný dashboard nie je viditeľný inými administrátormi, pokiaľ ho "
+"explicitne nenazdieľate"
 
 #: src/Dashboard/Grid.php:886
 msgid "empty card!"
-msgstr ""
+msgstr "prázdna karta!"
 
 #: src/Dashboard/Grid.php:1127 src/Dashboard/Grid.php:1191
 #, php-format
@@ -11980,11 +12466,11 @@ msgstr "Súhrn požiadaviek"
 
 #: src/Dashboard/Grid.php:1291
 msgid "Number of tickets by SLA status and technician"
-msgstr ""
+msgstr "Počet požiadaviek podľa stavu SLA a technika"
 
 #: src/Dashboard/Grid.php:1303
 msgid "Number of tickets by SLA status and technician group"
-msgstr ""
+msgstr "Počet požiadaviek podľa stavu SLA a skupiny technikov"
 
 #: src/Dashboard/Grid.php:1313
 msgid "Top ticket's categories"
@@ -12057,7 +12543,7 @@ msgstr[3] ""
 
 #: src/RefusedEquipment.php:133
 msgid "Method"
-msgstr ""
+msgstr "Metóda"
 
 #: src/RefusedEquipment.php:260
 msgid "Inventory is still refused."
@@ -12213,7 +12699,10 @@ msgstr "Zobraziť všetky plánovania"
 #: src/WifiNetwork.php:47
 msgid "Wifi network"
 msgid_plural "Wifi networks"
-msgstr[0] "Wifi siete"
+msgstr[0] "Wifi sieť"
+msgstr[1] "Wifi siete"
+msgstr[2] "Wifi siete"
+msgstr[3] "Wifi siete"
 
 #: src/WifiNetwork.php:69
 msgid "Ad-hoc"
@@ -12255,6 +12744,9 @@ msgstr "Typ Wifi siete"
 msgid "Ticket cost"
 msgid_plural "Ticket costs"
 msgstr[0] "Náklady na požiadavku"
+msgstr[1] "Náklady na požiadavku"
+msgstr[2] "Náklady na požiadavku"
+msgstr[3] "Náklady na požiadavku"
 
 #: src/CommonITILCost.php:574
 msgid "Item duration"
@@ -12263,7 +12755,10 @@ msgstr "Trvanie položky"
 #: src/DeviceHardDriveModel.php:42
 msgid "Device hard drive model"
 msgid_plural "Device hard drive models"
-msgstr[0] "Modely pevných diskov"
+msgstr[0] "Model pevného disku"
+msgstr[1] "Modely pevných diskov"
+msgstr[2] "Modely pevných diskov"
+msgstr[3] "Modely pevných diskov"
 
 #: src/Item_DeviceBattery.php:53
 msgid "Manufacturing date"
@@ -12271,11 +12766,11 @@ msgstr "Dátum výroby"
 
 #: src/Item_DeviceBattery.php:60
 msgid "Real capacity (mWh)"
-msgstr ""
+msgstr "Reálna kapacita (mWh)"
 
 #: src/Item_DeviceBattery.php:61
 msgid "Real capacity"
-msgstr ""
+msgstr "Reálna kapacita"
 
 #: src/RuleImportAsset.php:91
 msgid "Target entity for the asset"
@@ -12287,15 +12782,15 @@ msgstr ""
 
 #: src/RuleImportAsset.php:117
 msgid "Item name"
-msgstr ""
+msgstr "Názov položky"
 
 #: src/RuleImportAsset.php:132
 msgid "Port description"
-msgstr ""
+msgstr "Popis  portu"
 
 #: src/RuleImportAsset.php:144
 msgid "Device_id"
-msgstr ""
+msgstr "ID zariadenia"
 
 #: src/RuleImportAsset.php:147
 msgid "Serial of the operating system"
@@ -12358,7 +12853,10 @@ msgstr ""
 #: src/PDUModel.php:39
 msgid "PDU model"
 msgid_plural "PDU models"
-msgstr[0] "Modely napájacích PDU líšt"
+msgstr[0] "Model napájacej PDU lišty"
+msgstr[1] "Modely napájacích PDU líšt"
+msgstr[2] "Modely napájacích PDU líšt"
+msgstr[3] "Modely napájacích PDU líšt"
 
 #: src/NotificationMailing.php:95
 msgid "This is a test email."
@@ -12393,7 +12891,10 @@ msgstr "E-mail pre %s bol pridaný do fronty"
 #: src/DeviceBatteryType.php:38
 msgid "Battery type"
 msgid_plural "Battery types"
-msgstr[0] "Typy batérii"
+msgstr[0] "Typ batérie"
+msgstr[1] "Typy batérii"
+msgstr[2] "Typy batérii"
+msgstr[3] "Typy batérii"
 
 #: src/SLM.php:56 templates/components/itilobject/fields_panel.html.twig:275
 msgid "Service level"
@@ -12658,12 +13159,18 @@ msgstr "Položka je už definovaná"
 #: src/CertificateType.php:43
 msgid "Certificate type"
 msgid_plural "Certificate types"
-msgstr[0] "Typy certifikátov"
+msgstr[0] "Typ certifikátu"
+msgstr[1] "Typy certifikátov"
+msgstr[2] "Typy certifikátov"
+msgstr[3] "Typy certifikátov"
 
 #: src/Enclosure.php:59
 msgid "Enclosure"
 msgid_plural "Enclosures"
-msgstr[0] "Skrine"
+msgstr[0] "Skriňa"
+msgstr[1] "Skrine"
+msgstr[2] "Skrine"
+msgstr[3] "Skrine"
 
 #: src/RuleDictionnaryPrinterTypeCollection.php:44
 msgid "Dictionnary of printer types"
@@ -12672,7 +13179,10 @@ msgstr "Číselník typov tlačiarní"
 #: src/SoftwareLicenseType.php:41
 msgid "License type"
 msgid_plural "License types"
-msgstr[0] "Typy licencií"
+msgstr[0] "Typ licencie"
+msgstr[1] "Typy licencií"
+msgstr[2] "Typy licencií"
+msgstr[3] "Typy licencií"
 
 #: src/NotificationAjax.php:92
 msgid "Error inserting browser notification to queue"
@@ -12686,7 +13196,10 @@ msgstr "Oznámenie cez prehliadač pre %s bolo pridané do fronty"
 #: src/Change_Problem.php:63
 msgid "Link Problem/Change"
 msgid_plural "Links Problem/Change"
-msgstr[0] "Väzby problém/zmena"
+msgstr[0] "Väzba problém/zmena"
+msgstr[1] "Väzby problém/zmena"
+msgstr[2] "Väzby problém/zmena"
+msgstr[3] "Väzby problém/zmena"
 
 #: src/Change_Problem.php:179
 msgid "Create a change from this problem"
@@ -12696,7 +13209,10 @@ msgstr "Vytvoriť zmenu z tohto problému"
 #: src/Rack.php:63
 msgid "Rack"
 msgid_plural "Racks"
-msgstr[0] "Rozvádzače"
+msgstr[0] "Rozvádzač"
+msgstr[1] "Rozvádzače"
+msgstr[2] "Rozvádzače"
+msgstr[3] "Rozvádzače"
 
 #: src/Rack.php:173 templates/pages/assets/rack.html.twig:101
 msgid "Number of units"
@@ -12837,7 +13353,7 @@ msgstr "Zariadenie nie je dočasne k dispozícii"
 
 #: src/Reservation.php:439
 msgid "View all items"
-msgstr ""
+msgstr "Zobraziť všetky položky"
 
 #: src/Reservation.php:444
 msgid "All reservable devices"
@@ -12887,7 +13403,7 @@ msgstr "Zmazať všetky opakovania"
 
 #: src/Reservation.php:1014
 msgid "Reservations for this item"
-msgstr ""
+msgstr "Rezervácie pre túto položku"
 
 #: src/Reservation.php:1095
 msgid "Current and future reservations"
@@ -12909,7 +13425,10 @@ msgstr "Skončené rezervácie"
 #: src/ObjectLock.php:62
 msgid "Object Lock"
 msgid_plural "Object Locks"
-msgstr[0] "Zámky objektov"
+msgstr[0] "Zámok objektu"
+msgstr[1] "Zámky objektov"
+msgstr[2] "Zámky objektov"
+msgstr[3] "Zámky objektov"
 
 #: src/ObjectLock.php:156 src/ObjectLock.php:270
 msgid "Reload page?"
@@ -13057,18 +13576,27 @@ msgstr "Predvolená šablóna problémov"
 #: src/Reminder.php:929 src/Reminder.php:931
 msgid "Public reminder"
 msgid_plural "Public reminders"
-msgstr[0] "Verejné pripomienky"
+msgstr[0] "Verejná pripomienka"
+msgstr[1] "Verejné pripomienky"
+msgstr[2] "Verejné pripomienky"
+msgstr[3] "Verejné pripomienky"
 
 #: src/Profile.php:904 src/Profile.php:1153 src/Profile.php:2843
 #: src/RSSFeed.php:986 src/RSSFeed.php:988
 msgid "Public RSS feed"
 msgid_plural "Public RSS feeds"
-msgstr[0] "Verejné RSS zdroje"
+msgstr[0] "Verejný RSS zdroj"
+msgstr[1] "Verejné RSS zdroje"
+msgstr[2] "Verejné RSS zdroje"
+msgstr[3] "Verejné RSS zdroje"
 
 #: src/Profile.php:950 src/Profile.php:2025 src/Computer.php:80
 msgid "Computer"
 msgid_plural "Computers"
-msgstr[0] "Počítače"
+msgstr[0] "Počítač"
+msgstr[1] "Počítače"
+msgstr[2] "Počítače"
+msgstr[3] "Počítače"
 
 #: src/Profile.php:980
 msgid "Simcard PIN/PUK"
@@ -13077,7 +13605,10 @@ msgstr "PIN/PUK kód SIM karty"
 #: src/Profile.php:1038 src/Contact.php:56
 msgid "Contact"
 msgid_plural "Contacts"
-msgstr[0] "Kontakty"
+msgstr[0] "Kontakt"
+msgstr[1] "Kontakty"
+msgstr[2] "Kontakty"
+msgstr[3] "Kontakty"
 
 #: src/Profile.php:1048 src/Profile.php:2212
 msgid "Financial and administratives information"
@@ -13087,12 +13618,18 @@ msgstr "Finančné a administratívne informácie"
 #: src/Entity.php:2103
 msgid "Certificate"
 msgid_plural "Certificates"
-msgstr[0] "Certifikáty"
+msgstr[0] "Certifikát"
+msgstr[1] "Certifikáty"
+msgstr[2] "Certifikáty"
+msgstr[3] "Certifikáty"
 
 #: src/Profile.php:1070 src/Domain.php:66
 msgid "Domain"
 msgid_plural "Domains"
-msgstr[0] "Domény"
+msgstr[0] "Doména"
+msgstr[1] "Domény"
+msgstr[2] "Domény"
+msgstr[3] "Domény"
 
 #: src/Profile.php:1089
 msgid "Manageable domain records"
@@ -13101,12 +13638,18 @@ msgstr "Spravovať doménové záznamy"
 #: src/Profile.php:1156 src/Profile.php:2829
 msgid "Public saved search"
 msgid_plural "Public saved searches"
-msgstr[0] "Verejné uložené hľadania"
+msgstr[0] "Verejné uložené hľadanie"
+msgstr[1] "Verejné uložené hľadania"
+msgstr[2] "Verejné uložené hľadania"
+msgstr[3] "Verejné uložené hľadania"
 
 #: src/Profile.php:1159 src/Profile.php:2273 src/Report.php:47
 msgid "Report"
 msgid_plural "Reports"
-msgstr[0] "Reporty"
+msgstr[0] "Report"
+msgstr[1] "Reporty"
+msgstr[2] "Reporty"
+msgstr[3] "Reporty"
 
 #: src/Profile.php:1165
 msgid "Administration of reservations"
@@ -13133,12 +13676,18 @@ msgstr "Predvolená šablóna %1$s"
 #: src/Profile.php:1255 src/Notification_NotificationTemplate.php:60
 msgid "Template"
 msgid_plural "Templates"
-msgstr[0] "Šablóny"
+msgstr[0] "Šablóna"
+msgstr[1] "Šablóny"
+msgstr[2] "Šablóny"
+msgstr[3] "Šablóny"
 
 #: src/Profile.php:1264
 msgid "ITIL object"
 msgid_plural "ITIL objects"
-msgstr[0] "ITIL objekty"
+msgstr[0] "ITIL objekt"
+msgstr[1] "ITIL objekty"
+msgstr[2] "ITIL objekty"
+msgstr[3] "ITIL objekty"
 
 #: src/Profile.php:1274 src/TicketRecurrent.php:53
 msgid "Recurrent tickets"
@@ -13200,7 +13749,10 @@ msgstr "Zobrazenie výsledkov vyhľadávania"
 #: src/Profile.php:1789
 msgid "Global dropdown"
 msgid_plural "Global dropdowns"
-msgstr[0] "Globálne rozbaľovacie ponuky"
+msgstr[0] "Globálna rozbaľovacia ponuka"
+msgstr[1] "Globálne rozbaľovacie ponuky"
+msgstr[2] "Globálne rozbaľovacie ponuky"
+msgstr[3] "Globálne rozbaľovacie ponuky"
 
 #: src/Profile.php:1792
 msgid "Entity dropdowns"
@@ -13209,17 +13761,26 @@ msgstr "Rozbaľovacie ponuky entity"
 #: src/Profile.php:1800
 msgid "Ticket category"
 msgid_plural "Ticket categories"
-msgstr[0] "Kategórie požiadaviek"
+msgstr[0] "Kategória požiadavky"
+msgstr[1] "Kategórie požiadaviek"
+msgstr[2] "Kategórie požiadaviek"
+msgstr[3] "Kategórie požiadaviek"
 
 #: src/Profile.php:1810 src/CommonITILTask.php:728 src/TaskCategory.php:81
 msgid "Task category"
 msgid_plural "Task categories"
-msgstr[0] "Kategórie úloh"
+msgstr[0] "Kategória úlohy"
+msgstr[1] "Kategórie úloh"
+msgstr[2] "Kategórie úloh"
+msgstr[3] "Kategórie úloh"
 
 #: src/Profile.php:1815 src/State.php:47
 msgid "Status of items"
 msgid_plural "Statuses of items"
-msgstr[0] "Stavy položiek"
+msgstr[0] "Stav položky"
+msgstr[1] "Stavy položiek"
+msgstr[2] "Stavy položiek"
+msgstr[3] "Stavy položiek"
 
 #: src/Profile.php:1845 src/LevelAgreement.php:185 src/LevelAgreement.php:680
 msgid "SLM"
@@ -13228,7 +13789,10 @@ msgstr "SLM"
 #: src/Profile.php:1850 src/LineOperator.php:47
 msgid "Line operator"
 msgid_plural "Line operators"
-msgstr[0] "Telekomunikačný operátori"
+msgstr[0] "Telekomunikačný operátor"
+msgstr[1] "Telekomunikačný operátori"
+msgstr[2] "Telekomunikačný operátori"
+msgstr[3] "Telekomunikačný operátori"
 
 #: src/Profile.php:2428 src/RuleTicketCollection.php:68 src/RuleTicket.php:50
 msgid "Business rules for tickets"
@@ -13298,17 +13862,26 @@ msgstr[3] "%d mesiacov"
 #: src/Contract_Item.php:86
 msgid "Link Contract/Item"
 msgid_plural "Links Contract/Item"
-msgstr[0] "Väzby zmluva/položka"
+msgstr[0] "Väzba zmluva/položka"
+msgstr[1] "Väzby zmluva/položka"
+msgstr[2] "Väzby zmluva/položka"
+msgstr[3] "Väzby zmluva/položka"
 
 #: src/Contract_Item.php:391 src/Cartridge.php:900 src/Cartridge.php:903
 msgid "month"
 msgid_plural "months"
-msgstr[0] "mesiacov"
+msgstr[0] "mesiac"
+msgstr[1] "mesiace"
+msgstr[2] "mesiacov"
+msgstr[3] "mesiacov"
 
 #: src/SolutionType.php:39
 msgid "Solution type"
 msgid_plural "Solution types"
-msgstr[0] "Typy riešení"
+msgstr[0] "Typ riešenia"
+msgstr[1] "Typy riešení"
+msgstr[2] "Typy riešení"
+msgstr[3] "Typy riešení"
 
 #: src/RecurrentChange.php:48
 msgid "Recurrent changes"
@@ -13368,7 +13941,10 @@ msgstr "Úvodné vytvorenie"
 #, php-format
 msgid "%d year"
 msgid_plural "%d years"
-msgstr[0] "%d rokov"
+msgstr[0] "%d rok"
+msgstr[1] "%d roky"
+msgstr[2] "%d rokov"
+msgstr[3] "%d rokov"
 
 #: src/CommonITILRecurrent.php:348
 #, php-format
@@ -13433,7 +14009,10 @@ msgstr "E-mailové upozornenia"
 #: src/Contract.php:711 src/Contact.php:348
 msgid "Associated supplier"
 msgid_plural "Associated suppliers"
-msgstr[0] "Priradení dodávatelia"
+msgstr[0] "Priradený dodávateľ"
+msgstr[1] "Priradení dodávatelia"
+msgstr[2] "Priradení dodávatelia"
+msgstr[3] "Priradení dodávatelia"
 
 #: src/Contract.php:953
 msgid "Contracts expired in the last 30 days"
@@ -13513,7 +14092,7 @@ msgstr "Odstrániť zmluvu"
 
 #: src/Contract.php:1767
 msgid "No item."
-msgstr ""
+msgstr "Žiadna položka."
 
 #: src/Certificate.php:146 templates/pages/management/certificate.html.twig:37
 msgid "Self-signed"
@@ -13557,7 +14136,10 @@ msgstr "Odoslanie upozornenia na certifikáty zlyhalo"
 #: src/DeviceMemoryModel.php:42
 msgid "Device memory model"
 msgid_plural "Device memory models"
-msgstr[0] "Modely operačných pamätí"
+msgstr[0] "Model operačnej pamäte"
+msgstr[1] "Modely operačných pamätí"
+msgstr[2] "Modely operačných pamätí"
+msgstr[3] "Modely operačných pamätí"
 
 #: src/PurgeLogs.php:40 src/Config.php:2481
 msgid "Logs purge"
@@ -13570,7 +14152,10 @@ msgstr "Vymazať históriu"
 #: src/DeviceGenericType.php:39
 msgid "Generic type"
 msgid_plural "Generic types"
-msgstr[0] "Všeobecné typy"
+msgstr[0] "Všeobecný typ"
+msgstr[1] "Všeobecné typy"
+msgstr[2] "Všeobecné typy"
+msgstr[3] "Všeobecné typy"
 
 #: src/Session.php:177 src/Session.php:185
 msgid "You don't have right to connect"
@@ -13616,7 +14201,10 @@ msgstr "Typ manažmentu"
 #: src/DCRoom.php:49
 msgid "Server room"
 msgid_plural "Server rooms"
-msgstr[0] "Serverovne"
+msgstr[0] "Serverovňa"
+msgstr[1] "Serverovne"
+msgstr[2] "Serverovne"
+msgstr[3] "Serverovne"
 
 #: src/DCRoom.php:135 src/DCRoom.php:281
 msgid "Number of columns"
@@ -13817,7 +14405,10 @@ msgstr "1/4"
 #: src/DeviceFirmwareModel.php:41
 msgid "Device firmware model"
 msgid_plural "Device firmware models"
-msgstr[0] "Modely firmvérov"
+msgstr[0] "Modely firmvéru"
+msgstr[1] "Modely firmvérov"
+msgstr[2] "Modely firmvérov"
+msgstr[3] "Modely firmvérov"
 
 #: src/Report.php:72
 msgid "Default report"
@@ -13862,7 +14453,10 @@ msgstr "Zariadenie 2"
 #: src/Report.php:469 src/Report.php:478 src/CommonDeviceType.php:38
 msgid "Device type"
 msgid_plural "Device types"
-msgstr[0] "Typy zariadení"
+msgstr[0] "Typ zariadenia"
+msgstr[1] "Typy zariadení"
+msgstr[2] "Typy zariadení"
+msgstr[3] "Typy zariadení"
 
 #: src/Report.php:470 src/Report.php:479
 msgid "Device name"
@@ -13875,21 +14469,27 @@ msgstr "Číslo portu"
 #: src/ComputerModel.php:39 src/Rule.php:300
 msgid "Computer model"
 msgid_plural "Computer models"
-msgstr[0] "Modely počítačov"
+msgstr[0] "Model počítača"
+msgstr[1] "Modely počítačov"
+msgstr[2] "Modely počítačov"
+msgstr[3] "Modely počítačov"
 
 #: src/ImageResolution.php:40
 msgctxt "image"
 msgid "Resolution"
 msgid_plural "Resolutions"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Rozlíšenie"
+msgstr[1] "Rozlíšenia"
+msgstr[2] "Rozlíšenia"
+msgstr[3] "Rozlíšenia"
 
 #: src/Change_Ticket.php:61
 msgid "Link Ticket/Change"
 msgid_plural "Links Ticket/Change"
-msgstr[0] "Väzby požiadavka/zmena"
+msgstr[0] "Väzba požiadavka/zmena"
+msgstr[1] "Väzby požiadavka/zmena"
+msgstr[2] "Väzby požiadavka/zmena"
+msgstr[3] "Väzby požiadavka/zmena"
 
 #: src/Change_Ticket.php:299 src/Problem_Ticket.php:329
 msgid "Solve tickets"
@@ -13902,10 +14502,10 @@ msgstr "Vytvoriť zmenu z tejto požiadavky"
 #: src/Database.php:50 src/Config.php:793
 msgid "Database"
 msgid_plural "Databases"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Databáza"
+msgstr[1] "Databázy"
+msgstr[2] "Databázy"
+msgstr[3] "Databázy"
 
 #: src/Database.php:90 src/Database.php:403 src/DatabaseInstance.php:224
 #: templates/generic_show_form.html.twig:75
@@ -13932,11 +14532,11 @@ msgstr ""
 
 #: src/Database.php:369
 msgid "Add a database"
-msgstr ""
+msgstr "Pridať databázu"
 
 #: src/Database.php:397
 msgid "No database"
-msgstr ""
+msgstr "Žiadna databáza"
 
 #: src/Transfer.php:3829 src/Transfer.php:3836
 #: src/NetworkPortInstantiation.php:933 src/Computer_Item.php:247
@@ -14000,7 +14600,10 @@ msgstr "Ak zariadenia nie sú viac používané"
 #: src/ContentTemplates/Parameters/UserParameters.php:76 src/Phone.php:75
 msgid "Phone"
 msgid_plural "Phones"
-msgstr[0] "Telefóny"
+msgstr[0] "Telefón"
+msgstr[1] "Telefóny"
+msgstr[2] "Telefóny"
+msgstr[3] "Telefóny"
 
 #: src/Transfer.php:3931
 msgid "If phones are no longer used"
@@ -14028,7 +14631,7 @@ msgstr "Ak zmluvy už nie sú používané"
 
 #: src/Transfer.php:3984
 msgid "If certificates are no longer used"
-msgstr ""
+msgstr "Ak certifikáty nie sú viac používané"
 
 #: src/Transfer.php:4005
 msgid ""
@@ -14078,10 +14681,10 @@ msgstr "Neplatný email"
 msgctxt "camera"
 msgid "Resolution"
 msgid_plural "Resolutions"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Rozlíšenie"
+msgstr[1] "Rozlíšenia"
+msgstr[2] "Rozlíšenia"
+msgstr[3] "Rozlíšenia"
 
 #: src/Item_DeviceCamera_ImageResolution.php:151
 msgid "Is Video"
@@ -14095,12 +14698,18 @@ msgstr ""
 #: src/DomainType.php:40
 msgid "Domain type"
 msgid_plural "Domain types"
-msgstr[0] "Typy domén"
+msgstr[0] "Typ domény"
+msgstr[1] "Typy domén"
+msgstr[2] "Typy domén"
+msgstr[3] "Typy domén"
 
 #: src/DeviceGraphicCardModel.php:42
 msgid "Device graphic card model"
 msgid_plural "Device graphic card models"
-msgstr[0] "Modely grafických kariet"
+msgstr[0] "Model grafickej karty"
+msgstr[1] "Modely grafických kariet"
+msgstr[2] "Modely grafických kariet"
+msgstr[3] "Modely grafických kariet"
 
 #: src/MailCollector.php:238
 msgid ""
@@ -14292,7 +14901,7 @@ msgstr "Skopírovať predvolené od používateľa"
 
 #: src/RuleAction.php:431
 msgid "Copy first group from user"
-msgstr ""
+msgstr "Skopírovať prvú skupinu z používateľa"
 
 #: src/RuleAction.php:432
 msgid "Copy from item"
@@ -14335,7 +14944,10 @@ msgstr "D=Dynamic"
 #: src/NetworkName.php:65
 msgid "Network name"
 msgid_plural "Network names"
-msgstr[0] "Názvy sietí"
+msgstr[0] "Názov siete"
+msgstr[1] "Názvy sietí"
+msgstr[2] "Názvy sietí"
+msgstr[3] "Názvy sietí"
 
 #: src/NetworkName.php:155
 msgid ""
@@ -14408,7 +15020,10 @@ msgstr ""
 #: src/NotificationTarget.php:381
 msgid "Recipient"
 msgid_plural "Recipients"
-msgstr[0] "Príjemcovia"
+msgstr[0] "Príjemca"
+msgstr[1] "Príjemcovia"
+msgstr[2] "Príjemcovia"
+msgstr[3] "Príjemcovia"
 
 #: src/NetworkPortInstantiation.php:85
 msgid "No options available for this port type."
@@ -14456,7 +15071,7 @@ msgstr "Pripojiť"
 #: src/Features/DCBreadcrumb.php:172 src/Features/DCBreadcrumb.php:198
 #, php-format
 msgid "(U%1$u)"
-msgstr ""
+msgstr "(U%1$u)"
 
 #: src/Features/PlanningEvent.php:136 src/Features/PlanningEvent.php:196
 #: src/RSSFeed.php:629
@@ -14546,7 +15161,7 @@ msgstr ""
 #: src/Features/Inventoriable.php:194
 #: templates/components/form/inventory_info.html.twig:89
 msgid "Agent status"
-msgstr ""
+msgstr "Stav agenta"
 
 #: src/Features/Inventoriable.php:195
 #: templates/components/form/inventory_info.html.twig:90
@@ -14590,10 +15205,10 @@ msgstr ""
 msgctxt "camera"
 msgid "Format"
 msgid_plural "Formats"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Formát"
+msgstr[1] "Formáty"
+msgstr[2] "Formáty"
+msgstr[3] "Formáty"
 
 #: src/DocumentType.php:49 src/DocumentType.php:105
 msgid "Authorized upload"
@@ -14610,7 +15225,10 @@ msgstr "Môže obsahovať regulárny výraz"
 #: src/DocumentType.php:63
 msgid "Document type"
 msgid_plural "Document types"
-msgstr[0] "Typy dokumentov"
+msgstr[0] "Typ dokumentu"
+msgstr[1] "Typy dokumentov"
+msgstr[2] "Typy dokumentov"
+msgstr[3] "Typy dokumentov"
 
 #: src/DocumentType.php:176 src/DocumentType.php:177
 #: templates/layout/parts/user_header.html.twig:79
@@ -14621,7 +15239,10 @@ msgstr "Nápoveda"
 #: src/ComputerAntivirus.php:50 src/ComputerAntivirus.php:137
 msgid "Antivirus"
 msgid_plural "Antiviruses"
-msgstr[0] "Antivírusy"
+msgstr[0] "Antivírus"
+msgstr[1] "Antivírusy"
+msgstr[2] "Antivírusy"
+msgstr[3] "Antivírusy"
 
 #: src/ComputerAntivirus.php:125 src/ComputerAntivirus.php:204
 #: src/ComputerAntivirus.php:290 src/ComputerAntivirus.php:365
@@ -14682,18 +15303,27 @@ msgctxt "cartridge"
 msgid "New"
 msgid_plural "New"
 msgstr[0] "Nové"
+msgstr[1] "Nové"
+msgstr[2] "Nové"
+msgstr[3] "Nové"
 
 #: src/Cartridge.php:398 src/Cartridge.php:453 src/Cartridge.php:700
 msgctxt "cartridge"
 msgid "Used"
 msgid_plural "Used"
 msgstr[0] "Použité"
+msgstr[1] "Použité"
+msgstr[2] "Použité"
+msgstr[3] "Použité"
 
 #: src/Cartridge.php:400 src/Cartridge.php:455 src/Cartridge.php:702
 msgctxt "cartridge"
 msgid "Worn"
 msgid_plural "Worn"
 msgstr[0] "Opotrebované"
+msgstr[1] "Opotrebované"
+msgstr[2] "Opotrebované"
+msgstr[3] "Opotrebované"
 
 #: src/Cartridge.php:406
 #, php-format
@@ -14728,7 +15358,10 @@ msgstr "Počítadlo tlačiarne"
 #, php-format
 msgid "%d printed page"
 msgid_plural "%d printed pages"
-msgstr[0] "%d vytlačených strán"
+msgstr[0] "%d vytlačená strana"
+msgstr[1] "%d vytlačené strany"
+msgstr[2] "%d vytlačených strán"
+msgstr[3] "%d vytlačených strán"
 
 #: src/Cartridge.php:882
 msgid "Counter error"
@@ -14774,12 +15407,18 @@ msgstr "Použité tonerové náplne"
 #: src/Cartridge.php:1088 src/Cartridge.php:1245 src/CartridgeItem.php:55
 msgid "Cartridge model"
 msgid_plural "Cartridge models"
-msgstr[0] "Modely náplní"
+msgstr[0] "Model náplne"
+msgstr[1] "Modely náplní"
+msgstr[2] "Modely náplní"
+msgstr[3] "Modely náplní"
 
 #: src/Cartridge.php:1089 src/CartridgeItemType.php:39
 msgid "Cartridge type"
 msgid_plural "Cartridge types"
-msgstr[0] "Typy náplní"
+msgstr[0] "Typ náplne"
+msgstr[1] "Typy náplní"
+msgstr[2] "Typy náplní"
+msgstr[3] "Typy náplní"
 
 #: src/Cartridge.php:1095
 msgid "Printed pages"
@@ -14788,7 +15427,10 @@ msgstr "Vytlačené strany"
 #: src/IPNetmask.php:71
 msgid "Subnet mask"
 msgid_plural "Subnet masks"
-msgstr[0] "Masky podsiete"
+msgstr[0] "Maska podsiete"
+msgstr[1] "Masky podsiete"
+msgstr[2] "Masky podsiete"
+msgstr[3] "Masky podsiete"
 
 #: src/Change.php:500 src/Change.php:516 src/NotificationTargetChange.php:272
 msgid "Control list"
@@ -14818,7 +15460,10 @@ msgstr "Vyhodnotenie"
 #: src/ContentTemplates/Parameters/TicketParameters.php:78
 msgid "Approval"
 msgid_plural "Approvals"
-msgstr[0] "Schválenia"
+msgstr[0] "Schválenie"
+msgstr[1] "Schválenia"
+msgstr[2] "Schválenia"
+msgstr[3] "Schválenia"
 
 #: src/Change.php:578 src/Problem.php:710
 msgctxt "status"
@@ -14845,7 +15490,7 @@ msgstr "Zhodnotenie"
 #: src/Change.php:585
 msgctxt "status"
 msgid "Cancelled"
-msgstr ""
+msgstr "Zrušené"
 
 #: src/Change.php:586
 msgctxt "status"
@@ -14869,7 +15514,10 @@ msgstr "Nová zmena k tejto položke..."
 #, php-format
 msgid "Last %d change"
 msgid_plural "Last %d changes"
-msgstr[0] "Posledných %d zmien"
+msgstr[0] "Posledná %d zmena"
+msgstr[1] "Posledné %d zmeny"
+msgstr[2] "Posledných %d zmien"
+msgstr[3] "Posledných %d zmien"
 
 #: src/Change.php:1012 src/Change.php:1059 src/Change.php:1748
 msgid "No change found."
@@ -14919,12 +15567,15 @@ msgstr "Jednovidové optické vlákno"
 
 #: src/NetworkPortEthernet.php:405
 msgid "Ethernet socket"
-msgstr ""
+msgstr "Ethernetová zásuvka"
 
 #: src/DeviceGraphicCard.php:41
 msgid "Graphics card"
 msgid_plural "Graphics cards"
-msgstr[0] "Grafické karty"
+msgstr[0] "Grafická karta"
+msgstr[1] "Grafické karty"
+msgstr[2] "Grafické karty"
+msgstr[3] "Grafické karty"
 
 #: src/DeviceGraphicCard.php:51 src/DeviceGraphicCard.php:84
 #: src/DeviceGraphicCard.php:164 src/DeviceMotherboard.php:51
@@ -14942,20 +15593,23 @@ msgstr "Názov zariadenia"
 
 #: src/RuleImportEntity.php:129 src/Event.php:294 src/Event.php:373
 msgid "Source"
-msgstr "Položka (ID)"
+msgstr "Zdroj"
 
 #: src/RuleImportEntity.php:209
 msgid "is CIDR"
-msgstr ""
+msgstr "je CIDR"
 
 #: src/RuleImportEntity.php:210
 msgid "is not CIDR"
-msgstr ""
+msgstr "nie je CIDR"
 
 #: src/DevicePciModel.php:42
 msgid "Other component model"
 msgid_plural "Other component models"
-msgstr[0] "Modely iných zariadení"
+msgstr[0] "Model iného zariadenia"
+msgstr[1] "Modely iných zariadení"
+msgstr[2] "Modely iných zariadení"
+msgstr[3] "Modely iných zariadení"
 
 #. TRANS: plural for software
 #. TRANS: software in plural
@@ -14977,7 +15631,10 @@ msgstr "Kategória z inventarizačného nástroja"
 #: src/DeviceProcessorModel.php:42
 msgid "Device processor model"
 msgid_plural "Device processor models"
-msgstr[0] "Modely procesorov"
+msgstr[0] "Model procesora"
+msgstr[1] "Modely procesorov"
+msgstr[2] "Modely procesorov"
+msgstr[3] "Modely procesorov"
 
 #: src/RuleDictionnaryPhoneModelCollection.php:44
 msgid "Dictionnary of phone models"
@@ -15006,12 +15663,18 @@ msgstr ""
 #: src/DomainRecord.php:46
 msgid "Domain record"
 msgid_plural "Domains records"
-msgstr[0] "Doménové záznamy"
+msgstr[0] "Doménový záznam"
+msgstr[1] "Doménové záznamy"
+msgstr[2] "Doménové záznamy"
+msgstr[3] "Doménové záznamy"
 
 #: src/DomainRecord.php:53 src/DomainRecord.php:55
 msgid "Record"
 msgid_plural "Records"
-msgstr[0] "Záznamy"
+msgstr[0] "Záznam"
+msgstr[1] "Záznamy"
+msgstr[2] "Záznamy"
+msgstr[3] "Záznamy"
 
 #: src/DomainRecord.php:104 src/DomainRecord.php:469 src/DomainRecord.php:605
 msgid "TTL"
@@ -15044,7 +15707,10 @@ msgstr "Prepojiť záznam"
 #: src/Console/Database/UpdateCommand.php:133
 msgid "Target"
 msgid_plural "Targets"
-msgstr[0] "Ciele"
+msgstr[0] "Cieľ"
+msgstr[1] "Ciele"
+msgstr[2] "Ciele"
+msgstr[3] "Ciele"
 
 #: src/RuleAsset.php:137
 msgid "User location"
@@ -15052,7 +15718,7 @@ msgstr "Umiestnenie používateľa"
 
 #: src/RuleAsset.php:143
 msgid "User in group"
-msgstr ""
+msgstr "Používateľ v skupine"
 
 #: src/RuleAsset.php:169
 msgid "User based contact information"
@@ -15079,7 +15745,10 @@ msgstr[3] "Kritickosť pre podnikanie"
 #: src/DeviceCaseType.php:39
 msgid "Case type"
 msgid_plural "Case types"
-msgstr[0] "Typy skríň"
+msgstr[0] "Typ skrine"
+msgstr[1] "Typy skríň"
+msgstr[2] "Typy skríň"
+msgstr[3] "Typy skríň"
 
 #: src/RuleDictionnaryMonitorTypeCollection.php:47
 msgid "Dictionnary of monitor types"
@@ -15129,17 +15798,26 @@ msgstr "Stiahnuť VCard používateľa"
 #: src/VirtualMachineType.php:42
 msgid "Virtualization system"
 msgid_plural "Virtualization systems"
-msgstr[0] "Virtualizačné systémy"
+msgstr[0] "Virtualizačný systém"
+msgstr[1] "Virtualizačné systémy"
+msgstr[2] "Virtualizačné systémy"
+msgstr[3] "Virtualizačné systémy"
 
 #: src/Reminder.php:69
 msgid "Reminder"
 msgid_plural "Reminders"
-msgstr[0] "Pripomienky"
+msgstr[0] "Pripomienka"
+msgstr[1] "Pripomienky"
+msgstr[2] "Pripomienky"
+msgstr[3] "Pripomienky"
 
 #: src/Reminder.php:71 src/Reminder.php:904
 msgid "Personal reminder"
 msgid_plural "Personal reminders"
-msgstr[0] "Osobné pripomienky"
+msgstr[0] "Osobná pripomienka"
+msgstr[1] "Osobné pripomienky"
+msgstr[2] "Osobné pripomienky"
+msgstr[3] "Osobné pripomienky"
 
 #: src/Reminder.php:417 src/KnowbaseItem.php:2096
 msgid "Visibility start date"
@@ -15197,7 +15875,7 @@ msgstr ""
 msgid ""
 "If you confirm the deletion, all uses of this dropdown will be blanked."
 msgstr ""
-"Ak potvrdíte zmazanie,  všetky výskyty tejto rozbaľovacej ponuky budú "
+"Ak potvrdíte zmazanie, všetky výskyty tejto rozbaľovacej ponuky budú "
 "vymazané."
 
 #: src/CommonDropdown.php:590
@@ -15222,7 +15900,10 @@ msgstr "Nahradiť"
 #: src/PlanningEventCategory.php:38
 msgid "Event category"
 msgid_plural "Event categories"
-msgstr[0] "Kategórie udalostí"
+msgstr[0] "Kategória udalosti"
+msgstr[1] "Kategórie udalostí"
+msgstr[2] "Kategórie udalostí"
+msgstr[3] "Kategórie udalostí"
 
 #: src/PlanningEventCategory.php:46 src/Cable.php:245 src/ProjectState.php:57
 #: src/ProjectState.php:75 templates/pages/assets/cable.html.twig:54
@@ -15233,7 +15914,10 @@ msgstr "Farba"
 #: src/PDUType.php:39
 msgid "PDU type"
 msgid_plural "PDU types"
-msgstr[0] "Typy napájacích PDU líšt"
+msgstr[0] "Typ napájacej PDU lišty"
+msgstr[1] "Typy napájacích PDU líšt"
+msgstr[2] "Typy napájacích PDU líšt"
+msgstr[3] "Typy napájacích PDU líšt"
 
 #: src/CommonITILValidation.php:346 src/CommonITILValidation.php:502
 #, php-format
@@ -15355,7 +16039,10 @@ msgstr ""
 #: src/DeviceSoundCard.php:43
 msgid "Soundcard"
 msgid_plural "Soundcards"
-msgstr[0] "Zvukové karty"
+msgstr[0] "Zvuková karta"
+msgstr[1] "Zvukové karty"
+msgstr[2] "Zvukové karty"
+msgstr[3] "Zvukové karty"
 
 #: src/IPAddress.php:249
 msgid "Order by item type"
@@ -15372,10 +16059,10 @@ msgstr "Nenašla sa žiadna IP adresa"
 #: src/ImageFormat.php:41
 msgid "Image format"
 msgid_plural "Image formats"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Formát obrázka"
+msgstr[1] "Formáty obrázkov"
+msgstr[2] "Formáty obrázkov"
+msgstr[3] "Formáty obrázkov"
 
 #: src/NotificationTargetTicket.php:84
 msgid "To answer by email, write above this line"
@@ -15433,7 +16120,10 @@ msgstr "Odpoveď prehľadu spokojnosti"
 msgid "Without a reply, the ticket will be automatically closed after %s day"
 msgid_plural ""
 "Without a reply, the ticket will be automatically closed after %s days"
-msgstr[0] "Bez odpovede bude požiadavka automaticky uzatvorená po %s dňoch"
+msgstr[0] "Bez odpovede bude požiadavka automaticky uzatvorená po %s dni"
+msgstr[1] "Bez odpovede bude požiadavka automaticky uzatvorená po %s dňoch"
+msgstr[2] "Bez odpovede bude požiadavka automaticky uzatvorená po %s dňoch"
+msgstr[3] "Bez odpovede bude požiadavka automaticky uzatvorená po %s dňoch"
 
 #: src/NotificationTargetTicket.php:517 src/NotificationTargetChange.php:221
 #, php-format
@@ -15506,7 +16196,10 @@ msgstr "Pozvánka vyplniť prieskum spokojnosti"
 #: src/DeviceHardDrive.php:41
 msgid "Hard drive"
 msgid_plural "Hard drives"
-msgstr[0] "Pevné disky"
+msgstr[0] "Pevný disk"
+msgstr[1] "Pevné disky"
+msgstr[2] "Pevné disky"
+msgstr[3] "Pevné disky"
 
 #: src/DeviceHardDrive.php:51 src/DeviceHardDrive.php:79
 msgid "Capacity by default"
@@ -15729,7 +16422,10 @@ msgstr "Priradiť doménu"
 #: src/DeviceProcessor.php:41
 msgid "Processor"
 msgid_plural "Processors"
-msgstr[0] "Procesory"
+msgstr[0] "Procesor"
+msgstr[1] "Procesory"
+msgstr[2] "Procesory"
+msgstr[3] "Procesory"
 
 #: src/DeviceProcessor.php:51 src/DeviceProcessor.php:80
 msgid "Frequency by default"
@@ -15750,7 +16446,10 @@ msgstr "Frekvencia procesora"
 #: src/VirtualMachineSystem.php:42
 msgid "Virtualization model"
 msgid_plural "Virtualization models"
-msgstr[0] "Modely virtualizácie"
+msgstr[0] "Model virtualizácie"
+msgstr[1] "Modely virtualizácie"
+msgstr[2] "Modely virtualizácie"
+msgstr[3] "Modely virtualizácie"
 
 #: src/ITILCategory.php:67 src/ITILCategory.php:266 src/RuleTicket.php:530
 msgid "Code representing the ticket category"
@@ -15795,7 +16494,10 @@ msgstr "Šablóna pre problém"
 #: src/ITILCategory.php:277
 msgid "ITIL category"
 msgid_plural "ITIL categories"
-msgstr[0] "ITIL kategórie"
+msgstr[0] "ITIL kategória"
+msgstr[1] "ITIL kategórie"
+msgstr[2] "ITIL kategórie"
+msgstr[3] "ITIL kategórie"
 
 #: src/ITILCategory.php:340 src/ITILCategory.php:360
 msgid "Code representing the ticket category is already used"
@@ -15804,17 +16506,26 @@ msgstr "Kód predstavujúci kategóriu požiadavky je už použitý"
 #: src/PhoneModel.php:42 src/Rule.php:360
 msgid "Phone model"
 msgid_plural "Phone models"
-msgstr[0] "Modely telefónov"
+msgstr[0] "Model telefónu"
+msgstr[1] "Modely telefónov"
+msgstr[2] "Modely telefónov"
+msgstr[3] "Modely telefónov"
 
 #: src/PlanningExternalEventTemplate.php:53
 msgid "External events template"
 msgid_plural "External events templates"
-msgstr[0] "Šablóny externých udalostí"
+msgstr[0] "Šablóna externej udalosti"
+msgstr[1] "Šablóny externých udalostí"
+msgstr[2] "Šablóny externých udalostí"
+msgstr[3] "Šablóny externých udalostí"
 
 #: src/Filesystem.php:42
 msgid "File system"
 msgid_plural "File systems"
-msgstr[0] "Súborové systémy"
+msgstr[0] "Súborový systém"
+msgstr[1] "Súborové systémy"
+msgstr[2] "Súborové systémy"
+msgstr[3] "Súborové systémy"
 
 #: src/Software.php:89 src/Software.php:1015
 msgid "Merging"
@@ -15873,22 +16584,34 @@ msgstr "Vymazanie zmeny"
 #: src/Rule.php:312 src/MonitorModel.php:39
 msgid "Monitor model"
 msgid_plural "Monitor models"
-msgstr[0] "Modely monitorov"
+msgstr[0] "Model monitora"
+msgstr[1] "Modely monitorov"
+msgstr[2] "Modely monitorov"
+msgstr[3] "Modely monitorov"
 
 #: src/Rule.php:348 src/NetworkEquipmentModel.php:39
 msgid "Networking equipment model"
 msgid_plural "Networking equipment models"
-msgstr[0] "Modely sieťových zariadení"
+msgstr[0] "Model sieťového zariadenia"
+msgstr[1] "Modely sieťových zariadení"
+msgstr[2] "Modely sieťových zariadení"
+msgstr[3] "Modely sieťových zariadení"
 
 #: src/Rule.php:372 src/ComputerType.php:39
 msgid "Computer type"
 msgid_plural "Computer types"
-msgstr[0] "Typy počítačov"
+msgstr[0] "Typ počítača"
+msgstr[1] "Typy počítačov"
+msgstr[2] "Typy počítačov"
+msgstr[3] "Typy počítačov"
 
 #: src/Rule.php:408
 msgid "Peripheral type"
 msgid_plural "Peripheral types"
-msgstr[0] "Typy periférií"
+msgstr[0] "Typ periférie"
+msgstr[1] "Typy periférií"
+msgstr[2] "Typy periférií"
+msgstr[3] "Typy periférií"
 
 #: src/Rule.php:559
 msgid "Rules management"
@@ -15927,11 +16650,11 @@ msgstr "Pridať nové kritérium"
 
 #: src/Rule.php:1991
 msgid "Rule is active"
-msgstr ""
+msgstr "Pravidlo je aktívne"
 
 #: src/Rule.php:1991
 msgid "Rule is inactive"
-msgstr ""
+msgstr "Pravidlo je neaktívne"
 
 #: src/Rule.php:2181
 msgid "Result of the regular expression"
@@ -15943,7 +16666,7 @@ msgstr "Kľúč"
 
 #: src/Rule.php:2453
 msgid "No item type defined"
-msgstr ""
+msgstr "Nebol definovaný typ položky"
 
 #: src/Rule.php:3198
 msgid "Rules using the object have been disabled."
@@ -16052,12 +16775,18 @@ msgstr "Automaticky vyplnené zo šablóny"
 #: src/DeviceFirmwareType.php:38
 msgid "Firmware type"
 msgid_plural "Firmware types"
-msgstr[0] "Typy firmvérov"
+msgstr[0] "Typ firmvéru"
+msgstr[1] "Typy firmvérov"
+msgstr[2] "Typy firmvérov"
+msgstr[3] "Typy firmvérov"
 
 #: src/Vlan.php:46
 msgid "VLAN"
 msgid_plural "VLANs"
 msgstr[0] "VLAN"
+msgstr[1] "VLAN"
+msgstr[2] "VLAN"
+msgstr[3] "VLAN"
 
 #: src/Vlan.php:166
 msgid "Untagged"
@@ -16066,17 +16795,26 @@ msgstr "Untagged"
 #: src/RackType.php:39
 msgid "Rack type"
 msgid_plural "Rack types"
-msgstr[0] "Typy rozvádzačov"
+msgstr[0] "Typ rozvádzača"
+msgstr[1] "Typy rozvádzačov"
+msgstr[2] "Typy rozvádzačov"
+msgstr[3] "Typy rozvádzačov"
 
 #: src/ProblemTemplate.php:48 src/Entity.php:2545
 msgid "Problem template"
 msgid_plural "Problem templates"
-msgstr[0] "Šablóny problémov"
+msgstr[0] "Šablóna problému"
+msgstr[1] "Šablóny problémov"
+msgstr[2] "Šablóny problémov"
+msgstr[3] "Šablóny problémov"
 
 #: src/DeviceControl.php:43
 msgid "Controller"
 msgid_plural "Controllers"
-msgstr[0] "Radiče"
+msgstr[0] "Radič"
+msgstr[1] "Radiče"
+msgstr[2] "Radiče"
+msgstr[3] "Radiče"
 
 #: src/DeviceControl.php:53 src/DeviceControl.php:82
 msgid "RAID"
@@ -16093,7 +16831,10 @@ msgstr "Duplicita"
 #: src/UserCategory.php:39
 msgid "User category"
 msgid_plural "User categories"
-msgstr[0] "Kategórie používateľov"
+msgstr[0] "Kategória používateľa"
+msgstr[1] "Kategórie používateľov"
+msgstr[2] "Kategórie používateľov"
+msgstr[3] "Kategórie používateľov"
 
 #: src/RuleDictionnaryComputerTypeCollection.php:47
 msgid "Dictionnary of computer types"
@@ -16106,12 +16847,18 @@ msgstr "Automatické pripomienky SLA"
 #: src/OperatingSystem.php:42
 msgid "Operating system"
 msgid_plural "Operating systems"
-msgstr[0] "Operačné systémy"
+msgstr[0] "Operačný systém"
+msgstr[1] "Operačné systémy"
+msgstr[2] "Operačné systémy"
+msgstr[3] "Operačné systémy"
 
 #: src/Item_Disk.php:51 src/Item_Disk.php:434
 msgid "Volume"
 msgid_plural "Volumes"
-msgstr[0] "Zväzky"
+msgstr[0] "Zväzok"
+msgstr[1] "Zväzky"
+msgstr[2] "Zväzky"
+msgstr[3] "Zväzky"
 
 #: src/Item_Disk.php:160 src/Item_Disk.php:290 src/Item_Disk.php:391
 #: src/Item_Disk.php:519
@@ -16218,7 +16965,10 @@ msgstr ""
 #: src/DeviceCamera.php:40
 msgid "Camera"
 msgid_plural "Cameras"
-msgstr[0] "Kamery"
+msgstr[0] "Kamera"
+msgstr[1] "Kamery"
+msgstr[2] "Kamery"
+msgstr[3] "Kamery"
 
 #: src/DeviceCamera.php:69 src/DeviceCamera.php:117 src/DeviceCamera.php:180
 msgid "Flashunit"
@@ -16267,7 +17017,10 @@ msgstr ""
 #: src/RSSFeed.php:82 src/Central.php:69
 msgid "RSS feed"
 msgid_plural "RSS feed"
-msgstr[0] "RSS zdroje"
+msgstr[0] "RSS zdroj"
+msgstr[1] "RSS zdroje"
+msgstr[2] "RSS zdroje"
+msgstr[3] "RSS zdroje"
 
 #: src/RSSFeed.php:84 src/RSSFeed.php:970
 msgid "Personal RSS feed"
@@ -16308,18 +17061,18 @@ msgstr "Použiť"
 #: src/Cable.php:46
 msgid "Cable"
 msgid_plural "Cables"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Kábel"
+msgstr[1] "Káble"
+msgstr[2] "Káble"
+msgstr[3] "Káble"
 
 #: src/Cable.php:136 src/CableType.php:39
 msgid "Cable type"
 msgid_plural "Cable types"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Typ kábla"
+msgstr[1] "Typy káblov"
+msgstr[2] "Typy káblov"
+msgstr[3] "Typy káblov"
 
 #: src/LevelAgreement.php:205 src/LevelAgreement.php:398
 msgid "Maximum time"
@@ -16332,15 +17085,18 @@ msgstr "Koniec pracovného dňa"
 #: src/LevelAgreement.php:258
 msgid "Minute"
 msgid_plural "Minutes"
-msgstr[0] "Minúty"
+msgstr[0] "Minúta"
+msgstr[1] "Minúty"
+msgstr[2] "Minúty"
+msgstr[3] "Minúty"
 
 #: src/LevelAgreement.php:261
 msgid "Month"
 msgid_plural "Months"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Mesiac"
+msgstr[1] "Mesiace"
+msgstr[2] "Mesiace"
+msgstr[3] "Mesiace"
 
 #: src/LevelAgreement.php:364
 msgid "Add a new item"
@@ -16368,12 +17124,18 @@ msgstr "Nastavenia"
 #: src/DeviceBatteryModel.php:42
 msgid "Device battery model"
 msgid_plural "Device batteries models"
-msgstr[0] "Modely batérií"
+msgstr[0] "Model batérie"
+msgstr[1] "Modely batérií"
+msgstr[2] "Modely batérií"
+msgstr[3] "Modely batérií"
 
 #: src/DeviceNetworkCardModel.php:42
 msgid "Network card model"
 msgid_plural "Network card models"
-msgstr[0] "Modely sieťových kariet"
+msgstr[0] "Model sieťovej karty"
+msgstr[1] "Modely sieťových kariet"
+msgstr[2] "Modely sieťových kariet"
+msgstr[3] "Modely sieťových kariet"
 
 #: src/Api/API.php:153
 msgid "API disabled"
@@ -16518,25 +17280,28 @@ msgstr "Import kategórie z inventarizačného nástroja"
 #: src/ConsumableItemType.php:39
 msgid "Consumable type"
 msgid_plural "Consumable types"
-msgstr[0] "Typy spotrebného materiálu"
+msgstr[0] "Typ spotrebného materiálu"
+msgstr[1] "Typy spotrebného materiálu"
+msgstr[2] "Typy spotrebného materiálu"
+msgstr[3] "Typy spotrebného materiálu"
 
 #: src/DatabaseInstance.php:66
 msgid "Database instance"
 msgid_plural "Database instances"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Databázová inštancia"
+msgstr[1] "Databázové inštancie"
+msgstr[2] "Databázové inštancie"
+msgstr[3] "Databázové inštancie"
 
 #: src/DatabaseInstance.php:364 src/Project.php:601
 #: src/NetworkPortConnectionLog.php:114 src/ComputerVirtualMachine.php:351
 #: src/ComputerVirtualMachine.php:583
 msgid "State"
 msgid_plural "States"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Stav"
+msgstr[1] "Stavy"
+msgstr[2] "Stavy"
+msgstr[3] "Stavy"
 
 #: src/DatabaseInstance.php:398
 msgid "Last boot date"
@@ -16550,10 +17315,10 @@ msgstr ""
 #, php-format
 msgid "%1$d database"
 msgid_plural "%1$d databases"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "%1$d databáza"
+msgstr[1] "%1$d databázy"
+msgstr[2] "%1$d databáz"
+msgstr[3] "%1$d databáz"
 
 #: src/RegisteredID.php:52
 msgid "PCI"
@@ -16563,6 +17328,9 @@ msgstr "PCI"
 msgid "Registered ID (issued by PCI-SIG)"
 msgid_plural "Registered IDs (issued by PCI-SIG)"
 msgstr[0] "Registrované ID (vydané PCI-SIG)"
+msgstr[1] "Registrované ID (vydané PCI-SIG)"
+msgstr[2] "Registrované ID (vydané PCI-SIG)"
+msgstr[3] "Registrované ID (vydané PCI-SIG)"
 
 #: src/SoftwareVersion.php:310
 msgctxt "button"
@@ -16572,7 +17340,10 @@ msgstr "Pridať verziu"
 #: src/NotificationTemplateTranslation.php:51
 msgid "Template translation"
 msgid_plural "Template translations"
-msgstr[0] "Preklady šablón"
+msgstr[0] "Preklad šablóny"
+msgstr[1] "Preklady šablón"
+msgstr[2] "Preklady šablón"
+msgstr[3] "Preklady šablón"
 
 #: src/NotificationTemplateTranslation.php:125
 msgid "Show list of available tags"
@@ -16660,7 +17431,10 @@ msgstr "Pridať kritérium"
 #: src/Problem.php:72
 msgid "Problem"
 msgid_plural "Problems"
-msgstr[0] "Problémy"
+msgstr[0] "Problém"
+msgstr[1] "Problémy"
+msgstr[2] "Problémy"
+msgstr[3] "Problémy"
 
 #: src/Problem.php:483
 #: templates/components/itilobject/fields_panel.html.twig:307
@@ -16704,7 +17478,10 @@ msgstr "Nový problém k tejto položke..."
 #, php-format
 msgid "Last %d problem"
 msgid_plural "Last %d problems"
-msgstr[0] "Posledných %d problémov"
+msgstr[0] "Posledný %d problém"
+msgstr[1] "Posledné %d problémy"
+msgstr[2] "Posledných %d problémov"
+msgstr[3] "Posledných %d problémov"
 
 #: src/Problem.php:1649 src/Problem.php:1696
 msgid "No problem found."
@@ -16717,12 +17494,18 @@ msgstr "Problémy na pripojených položkách"
 #: src/PhonePowerSupply.php:42
 msgid "Phone power supply type"
 msgid_plural "Phone power supply types"
-msgstr[0] "Modely napájacích zdrojov telefónov"
+msgstr[0] "Model napájacieho zdroja telefónu"
+msgstr[1] "Modely napájacích zdrojov telefónov"
+msgstr[2] "Modely napájacích zdrojov telefónov"
+msgstr[3] "Modely napájacích zdrojov telefónov"
 
 #: src/ITILTemplateMandatoryField.php:45
 msgid "Mandatory field"
 msgid_plural "Mandatory fields"
-msgstr[0] "Povinné polia"
+msgstr[0] "Povinné pole"
+msgstr[1] "Povinné polia"
+msgstr[2] "Povinné polia"
+msgstr[3] "Povinné polia"
 
 #: src/ITILTemplateMandatoryField.php:195
 msgid "Add a mandatory field"
@@ -16883,7 +17666,10 @@ msgstr "Pridať člena tímu"
 #: src/Project.php:1807 src/Project.php:2590 src/ProjectTask.php:1520
 msgid "Member"
 msgid_plural "Members"
-msgstr[0] "Členovia"
+msgstr[0] "Člen"
+msgstr[1] "Členovia"
+msgstr[2] "Členovia"
+msgstr[3] "Členovia"
 
 #: src/Project.php:2257
 msgid "No status"
@@ -16971,12 +17757,18 @@ msgstr ""
 #: src/ProjectTeam.php:71
 msgid "Project team"
 msgid_plural "Project teams"
-msgstr[0] "Projektové tímy"
+msgstr[0] "Projektový tím"
+msgstr[1] "Projektové tímy"
+msgstr[2] "Projektové tímy"
+msgstr[3] "Projektové tímy"
 
 #: src/DeviceFirmware.php:40 src/Phone.php:365 src/NetworkEquipment.php:401
 msgid "Firmware"
 msgid_plural "Firmware"
-msgstr[0] "Firmvéry"
+msgstr[0] "Firmvér"
+msgstr[1] "Firmvéry"
+msgstr[2] "Firmvéry"
+msgstr[3] "Firmvéry"
 
 #: src/DeviceFirmware.php:57 src/DeviceFirmware.php:83
 #: src/DeviceFirmware.php:131
@@ -17001,7 +17793,10 @@ msgstr ""
 #: src/DomainRecordType.php:347
 msgid "Record type"
 msgid_plural "Records types"
-msgstr[0] "Typy záznamov"
+msgstr[0] "Typ záznamu"
+msgstr[1] "Typy záznamov"
+msgstr[2] "Typy záznamov"
+msgstr[3] "Typy záznamov"
 
 #: src/Telemetry.php:38
 msgid "Telemetry"
@@ -17085,18 +17880,18 @@ msgstr[3] ""
 #: src/ContentTemplates/Parameters/CommonITILObjectParameters.php:79
 msgid "Assigned group"
 msgid_plural "Assigned groups"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Priradená skupina"
+msgstr[1] "Priradené skupiny"
+msgstr[2] "Priradené skupiny"
+msgstr[3] "Priradené skupiny"
 
 #: src/ContentTemplates/Parameters/CommonITILObjectParameters.php:80
 msgid "Assigned supplier"
 msgid_plural "Assigned suppliers"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Priradený dodávateľ"
+msgstr[1] "Priradený dodávatelia"
+msgstr[2] "Priradený dodávatelia"
+msgstr[3] "Priradený dodávatelia"
 
 #: src/ContentTemplates/Parameters/LevelAgreementParameters.php:55
 msgid "Duration unit"
@@ -17144,10 +17939,10 @@ msgstr "Pridať kompatibilný model tlačiarne"
 #: src/AgentType.php:41
 msgid "Agent type"
 msgid_plural "Agents types"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Typ agenta"
+msgstr[1] "Typy agentov"
+msgstr[2] "Typy agentov"
+msgstr[3] "Typy agentov"
 
 #: src/Event.php:154 src/Config.php:2482
 msgid "System"
@@ -17177,7 +17972,10 @@ msgstr "Úroveň"
 #: src/KnowbaseItem_Revision.php:40 src/KnowbaseItem_Revision.php:130
 msgid "Revision"
 msgid_plural "Revisions"
-msgstr[0] "Revízie"
+msgstr[0] "Revízia"
+msgstr[1] "Revízie"
+msgstr[2] "Revízie"
+msgstr[3] "Revízie"
 
 #: src/KnowbaseItem_Revision.php:116
 msgid "No revisions"
@@ -17302,12 +18100,18 @@ msgstr "Upraviť komentár"
 #: src/DomainRelation.php:56
 msgid "Domain relation"
 msgid_plural "Domains relations"
-msgstr[0] "Vzťahy s doménami"
+msgstr[0] "Vzťah s doménou"
+msgstr[1] "Vzťahy s doménami"
+msgstr[2] "Vzťahy s doménami"
+msgstr[3] "Vzťahy s doménami"
 
 #: src/SupplierType.php:39
 msgid "Third party type"
 msgid_plural "Third party types"
-msgstr[0] "Typy tretích strán"
+msgstr[0] "Typ tretej strany"
+msgstr[1] "Typy tretích strán"
+msgstr[2] "Typy tretích strán"
+msgstr[3] "Typy tretích strán"
 
 #: src/Phone.php:297 templates/pages/assets/phone.html.twig:40
 msgctxt "quantity"
@@ -17325,7 +18129,10 @@ msgstr "Reproduktor"
 #: src/CalendarSegment.php:61
 msgid "Time range"
 msgid_plural "Time ranges"
-msgstr[0] "Časové rozsahy"
+msgstr[0] "Časový rozsah"
+msgstr[1] "Časové rozsahy"
+msgstr[2] "Časové rozsahy"
+msgstr[3] "Časové rozsahy"
 
 #: src/CalendarSegment.php:79
 msgid "Can not add a range riding an existing period"
@@ -17338,7 +18145,10 @@ msgstr "Pridať plán"
 #: src/EnclosureModel.php:39
 msgid "Enclosure model"
 msgid_plural "Enclosure models"
-msgstr[0] "Modely skríň"
+msgstr[0] "Model skrine"
+msgstr[1] "Modely skríň"
+msgstr[2] "Modely skríň"
+msgstr[3] "Modely skríň"
 
 #: src/RuleDictionnaryNetworkEquipmentTypeCollection.php:44
 msgid "Dictionnary of network equipment types"
@@ -17393,10 +18203,10 @@ msgstr[0] "Modely zariadení"
 #: src/SocketModel.php:39
 msgid "Socket model"
 msgid_plural "Socket models"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Model zásuvky"
+msgstr[1] "Modely zásuviek"
+msgstr[2] "Modely zásuviek"
+msgstr[3] "Modely zásuviek"
 
 #: src/GLPINetwork.php:66
 msgid "Registration"
@@ -17598,7 +18408,10 @@ msgstr "Dĺžka trvania požiadaviek"
 #: src/ProjectTask.php:73
 msgid "Project task"
 msgid_plural "Project tasks"
-msgstr[0] "Projektové úlohy"
+msgstr[0] "Projektová úloha"
+msgstr[1] "Projektové úlohy"
+msgstr[2] "Projektové úlohy"
+msgstr[3] "Projektové úlohy"
 
 #: src/ProjectTask.php:184
 msgid "Update (actor)"
@@ -17611,7 +18424,10 @@ msgstr "Prepojený projekt je povinný"
 #: src/ProjectTask.php:595 src/ProjectTaskTemplate.php:48
 msgid "Project task template"
 msgid_plural "Project task templates"
-msgstr[0] "Šablóny projektových úloh"
+msgstr[0] "Šablóna projektovej úlohy"
+msgstr[1] "Šablóny projektových úloh"
+msgstr[2] "Šablóny projektových úloh"
+msgstr[3] "Šablóny projektových úloh"
 
 #: src/ProjectTask.php:743
 msgid ""
@@ -17670,7 +18486,10 @@ msgstr "Táto položka nie je časťou FAQ"
 #, php-format
 msgid "%d view"
 msgid_plural "%d views"
-msgstr[0] "%d zobrazení"
+msgstr[0] "%d zobrazenie"
+msgstr[1] "%d zobrazenia"
+msgstr[2] "%d zobrazení"
+msgstr[3] "%d zobrazení"
 
 #: src/KnowbaseItem.php:878
 msgid "Add link"
@@ -17758,7 +18577,10 @@ msgstr "%1$s vrátil položku na revíziu %2$s"
 #: src/FQDN.php:47 src/NetworkAlias.php:318
 msgid "Internet domain"
 msgid_plural "Internet domains"
-msgstr[0] "Internetové domény"
+msgstr[0] "Internetová doména"
+msgstr[1] "Internetové domény"
+msgstr[2] "Internetové domény"
+msgstr[3] "Internetové domény"
 
 #: src/FQDN.php:55 src/FQDN.php:211
 msgid "FQDN"
@@ -17783,7 +18605,10 @@ msgstr "FQDN nie je platná"
 #: src/ProjectState.php:43
 msgid "Project state"
 msgid_plural "Project states"
-msgstr[0] "Stavy projektov"
+msgstr[0] "Stav projektu"
+msgstr[1] "Stavy projektov"
+msgstr[2] "Stavy projektov"
+msgstr[3] "Stavy projektov"
 
 #: src/ProjectState.php:61 src/ProjectState.php:83
 msgid "Finished state"
@@ -17797,7 +18622,10 @@ msgstr "Nepodarilo sa poslať oznámenia pomocou %1$s"
 #: src/Problem_Ticket.php:58
 msgid "Link Ticket/Problem"
 msgid_plural "Links Ticket/Problem"
-msgstr[0] "Väzby požiadavka/problém"
+msgstr[0] "Väzba požiadavka/problém"
+msgstr[1] "Väzby požiadavka/problém"
+msgstr[2] "Väzby požiadavka/problém"
+msgstr[3] "Väzby požiadavka/problém"
 
 #: src/Problem_Ticket.php:422
 msgid "Create a problem from this ticket"
@@ -17806,7 +18634,10 @@ msgstr "Vytvoriť problém z tejto požiadavky"
 #: src/OperatingSystemServicePack.php:42
 msgid "Service pack"
 msgid_plural "Service packs"
-msgstr[0] "Service packy"
+msgstr[0] "Service pack"
+msgstr[1] "Service packy"
+msgstr[2] "Service packy"
+msgstr[3] "Service packy"
 
 #: src/Config.php:72
 msgctxt "setup"
@@ -18128,7 +18959,7 @@ msgstr "Maximálna veľkosť súboru importovaného e-mailovým prijímačom"
 
 #: src/Config.php:975
 msgid "Default heading when adding a document to a ticket"
-msgstr "Predvolené záhlavie pri pridaní dokumentu k požiadavke"
+msgstr "Predvolená hlavička pri pridaní dokumentu k požiadavke"
 
 #: src/Config.php:980
 msgid "By default, a software may be linked to a ticket"
@@ -18230,27 +19061,27 @@ msgstr "Farebná paleta"
 
 #: src/Config.php:1321
 msgid "Page layout"
-msgstr ""
+msgstr "Rozloženie stránky"
 
 #: src/Config.php:1325
 msgid "Horizontal (menu in header)"
-msgstr ""
+msgstr "Vodorovné (menu v hlavičke)"
 
 #: src/Config.php:1326
 msgid "Vertical (menu in sidebar)"
-msgstr ""
+msgstr "Zvislé (menu v bočnom paneli)"
 
 #: src/Config.php:1356
 msgid "Rich text field layout"
-msgstr ""
+msgstr "Rozloženie polí editora textu"
 
 #: src/Config.php:1361
 msgid "Inline (no toolbars)"
-msgstr ""
+msgstr "Vnorené (žiadny panel nástrojov)"
 
 #: src/Config.php:1362
 msgid "Classic (toolbar on top)"
-msgstr ""
+msgstr "Klasické (panel nástrojov navrchu)"
 
 #: src/Config.php:1371
 msgid "Enable high contrast"
@@ -18262,16 +19093,16 @@ msgstr "Použiť konfiguráciu servera"
 
 #: src/Config.php:1389
 msgid "Timezone usage has not been activated."
-msgstr ""
+msgstr "Použitie časovej zóny nebolo aktivované."
 
 #: src/Config.php:1391
 #, php-format
 msgid "Run the \"php bin/console %1$s\" command to activate it."
-msgstr ""
+msgstr "Spustite príkaz \"php bin/console %1$s\" na jej aktiváciu."
 
 #: src/Config.php:1394
 msgid "Default central tab"
-msgstr ""
+msgstr "Predvolená centrálna karta"
 
 #: src/Config.php:1406
 msgid "Private followups by default"
@@ -18287,7 +19118,7 @@ msgstr "Súkromné úlohy ako predvolené"
 
 #: src/Config.php:1423
 msgid "Request sources by default"
-msgstr "Predvolený zdroj žiadosti "
+msgstr "Predvolený zdroj žiadosti"
 
 #: src/Config.php:1432
 msgid "Tasks state by default"
@@ -18688,7 +19519,10 @@ msgstr "Ponechať všetko"
 #, php-format
 msgid "Delete if older than %s month"
 msgid_plural "Delete if older than %s months"
-msgstr[0] "Zmazať staršie ako %s mesiacov"
+msgstr[0] "Zmazať staršie ako %s mesiac"
+msgstr[1] "Zmazať staršie ako %s mesiace"
+msgstr[2] "Zmazať staršie ako %s mesiacov"
+msgstr[3] "Zmazať staršie ako %s mesiacov"
 
 #: src/Config.php:3287
 msgid "Security setup"
@@ -18744,7 +19578,7 @@ msgstr "Nedeaktivovať"
 
 #: src/Config.php:3491
 msgid "Documents setup"
-msgstr ""
+msgstr "Nastavenie dokumentov"
 
 #: src/Config.php:3496
 msgid "Document files maximum size (Mio)"
@@ -18772,12 +19606,18 @@ msgstr "%1$s musí byť v danej úrovni jedinečné!"
 #: src/DocumentCategory.php:42
 msgid "Document heading"
 msgid_plural "Document headings"
-msgstr[0] "Hlavičky dokumentov"
+msgstr[0] "Hlavička dokumentu"
+msgstr[1] "Hlavičky dokumentov"
+msgstr[2] "Hlavičky dokumentov"
+msgstr[3] "Hlavičky dokumentov"
 
 #: src/ITILTemplateHiddenField.php:45
 msgid "Hidden field"
 msgid_plural "Hidden fields"
-msgstr[0] "Skryté polia"
+msgstr[0] "Skryté pole"
+msgstr[1] "Skryté polia"
+msgstr[2] "Skryté polia"
+msgstr[3] "Skryté polia"
 
 #: src/ITILTemplateHiddenField.php:194
 msgid "Add a hidden field"
@@ -18854,7 +19694,7 @@ msgstr "Možnosti oznámení"
 
 #: src/Entity.php:802 src/Entity.php:1852
 msgid "Delay to send email notifications"
-msgstr "Oneskorenie pre odoslanie oznámení"
+msgstr "Oneskorenie pre odoslanie oznámení e-mailom"
 
 #: src/Entity.php:817 src/Entity.php:1871
 msgid "Enable notifications by default"
@@ -19119,10 +19959,10 @@ msgstr "Konfigurácia šablón"
 #: src/Entity.php:2517 src/ChangeTemplate.php:48
 msgid "Change template"
 msgid_plural "Change templates"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Šablóna zmeny"
+msgstr[1] "Šablóny zmien"
+msgstr[2] "Šablóny zmien"
+msgstr[3] "Šablóny zmien"
 
 #: src/Entity.php:2573
 msgid "Tickets configuration"
@@ -19235,7 +20075,10 @@ msgstr ""
 #: src/BudgetType.php:42
 msgid "Budget type"
 msgid_plural "Budget types"
-msgstr[0] "Typy rozpočtov"
+msgstr[0] "Typ rozpočtu"
+msgstr[1] "Typy rozpočtov"
+msgstr[2] "Typy rozpočtov"
+msgstr[3] "Typy rozpočtov"
 
 #: src/CommonITILObject.php:1593 src/CommonITILObject.php:1612
 #: src/CommonITILObject.php:1633 src/CommonITILObject.php:1643
@@ -19456,7 +20299,10 @@ msgstr "E-mail pre reakciu"
 #: src/CommonITILObject.php:5052
 msgid "Time"
 msgid_plural "Times"
-msgstr[0] "Časy"
+msgstr[0] "Čas"
+msgstr[1] "Časy"
+msgstr[2] "Časy"
+msgstr[3] "Časy"
 
 #: src/CommonITILObject.php:6015
 #, php-format
@@ -19514,7 +20360,10 @@ msgstr ""
 #: src/APIClient.php:65
 msgid "API client"
 msgid_plural "API clients"
-msgstr[0] "API klienti"
+msgstr[0] "API klient"
+msgstr[1] "API klienti"
+msgstr[2] "API klienti"
+msgstr[3] "API klienti"
 
 #: src/APIClient.php:116 src/APIClient.php:211
 msgid "Log connections"
@@ -19556,7 +20405,10 @@ msgstr "Zapnúť reakcie cez e-mail"
 #: src/NotificationMailingSetting.php:70
 msgid "Email notification"
 msgid_plural "Email notifications"
-msgstr[0] "Oznámenia e-mailom"
+msgstr[0] "Oznámenie e-mailom"
+msgstr[1] "Oznámenia e-mailom"
+msgstr[2] "Oznámenia e-mailom"
+msgstr[3] "Oznámenia e-mailom"
 
 #: src/NotificationMailingSetting.php:90
 msgid "From email"
@@ -19704,12 +20556,18 @@ msgstr "Administrátor entity"
 #: src/InterfaceType.php:42
 msgid "Interface type (Hard drive...)"
 msgid_plural "Interface types (Hard drive...)"
-msgstr[0] "Typy rozhraní (pevný disk...)"
+msgstr[0] "Typ rozhrania (pevný disk...)"
+msgstr[1] "Typy rozhraní (pevný disk...)"
+msgstr[2] "Typy rozhraní (pevný disk...)"
+msgstr[3] "Typy rozhraní (pevný disk...)"
 
 #: src/ProjectType.php:43
 msgid "Project type"
 msgid_plural "Project types"
-msgstr[0] "Typy projektov"
+msgstr[0] "Typ projektu"
+msgstr[1] "Typy projektov"
+msgstr[2] "Typy projektov"
+msgstr[3] "Typy projektov"
 
 #: src/RuleDictionnaryManufacturerCollection.php:47
 msgid "Dictionary of manufacturers"
@@ -19756,7 +20614,10 @@ msgstr "Číselník modelov zariadení"
 #: src/ReservationItem.php:66
 msgid "Reservable item"
 msgid_plural "Reservable items"
-msgstr[0] "Rezervovateľné položky"
+msgstr[0] "Rezervovateľná položka"
+msgstr[1] "Rezervovateľné položky"
+msgstr[2] "Rezervovateľné položky"
+msgstr[3] "Rezervovateľné položky"
 
 #: src/ReservationItem.php:329
 msgid "Make unavailable"
@@ -19826,7 +20687,10 @@ msgstr ""
 #: src/DeviceSensorModel.php:44
 msgid "Device sensor model"
 msgid_plural "Device sensor models"
-msgstr[0] "Modely senzorov"
+msgstr[0] "Model senzora"
+msgstr[1] "Modely senzorov"
+msgstr[2] "Modely senzorov"
+msgstr[3] "Modely senzorov"
 
 #: src/Marketplace/NotificationTargetController.php:57
 #: src/Marketplace/Controller.php:288
@@ -20029,7 +20893,10 @@ msgstr ""
 #, php-format
 msgid "%s plugin"
 msgid_plural "%s plugins"
-msgstr[0] "%s pluginov"
+msgstr[0] "%s plugin"
+msgstr[1] "%s pluginy"
+msgstr[2] "%s pluginov"
+msgstr[3] "%s pluginov"
 
 #: src/Marketplace/View.php:997
 msgid "Switch to marketplace"
@@ -20073,12 +20940,18 @@ msgstr "Pridať kontakt"
 #: src/Supplier.php:275
 msgid "Associated contact"
 msgid_plural "Associated contacts"
-msgstr[0] "Priradené kontakty"
+msgstr[0] "Priradený kontakt"
+msgstr[1] "Priradené kontakty"
+msgstr[2] "Priradené kontakty"
+msgstr[3] "Priradené kontakty"
 
 #: src/Supplier.php:320
 msgid "Associated contract"
 msgid_plural "Associated contracts"
-msgstr[0] "Priradené zmluvy"
+msgstr[0] "Priradená zmluva"
+msgstr[1] "Priradené zmluvy"
+msgstr[2] "Priradené zmluvy"
+msgstr[3] "Priradené zmluvy"
 
 #: src/Supplier.php:371
 msgid "Web"
@@ -20087,7 +20960,10 @@ msgstr "Web"
 #: src/DeviceSensor.php:43
 msgid "Sensor"
 msgid_plural "Sensors"
-msgstr[0] "Senzory"
+msgstr[0] "Senzor"
+msgstr[1] "Senzory"
+msgstr[2] "Senzory"
+msgstr[3] "Senzory"
 
 #: src/Domain.php:218
 msgid "Entity-ID"
@@ -20211,7 +21087,10 @@ msgstr "Oneskorenie zapísania požiadavky"
 #: src/ApplianceEnvironment.php:38
 msgid "Appliance environment"
 msgid_plural "Appliance environments"
-msgstr[0] "Aplikačné prostredia"
+msgstr[0] "Aplikačné prostredie"
+msgstr[1] "Aplikačné prostredia"
+msgstr[2] "Aplikačné prostredia"
+msgstr[3] "Aplikačné prostredia"
 
 #: src/RuleDictionnaryPeripheralTypeCollection.php:44
 msgid "Dictionnary of device types"
@@ -20303,17 +21182,26 @@ msgstr "Pripojiť počítač"
 #: src/DeviceMotherboard.php:41
 msgid "System board"
 msgid_plural "System boards"
-msgstr[0] "Základné dosky"
+msgstr[0] "Základná doska"
+msgstr[1] "Základné dosky"
+msgstr[2] "Základné dosky"
+msgstr[3] "Základné dosky"
 
 #: src/OperatingSystemArchitecture.php:42
 msgid "Operating system architecture"
 msgid_plural "Operating system architectures"
-msgstr[0] "Architektúry operačného systému"
+msgstr[0] "Architektúra operačného systému"
+msgstr[1] "Architektúry operačného systému"
+msgstr[2] "Architektúry operačného systému"
+msgstr[3] "Architektúry operačného systému"
 
 #: src/IPNetwork.php:53
 msgid "IP network"
 msgid_plural "IP networks"
-msgstr[0] "IP siete"
+msgstr[0] "IP sieť"
+msgstr[1] "IP siete"
+msgstr[2] "IP siete"
+msgstr[3] "IP siete"
 
 #: src/IPNetwork.php:65
 msgid "IP version"
@@ -20438,7 +21326,10 @@ msgstr "Zvoľte štatistiku na zobrazenie"
 #: src/NetworkEquipment.php:76
 msgid "Network device"
 msgid_plural "Network devices"
-msgstr[0] "Sieťové zariadenia"
+msgstr[0] "Sieťové zariadenie"
+msgstr[1] "Sieťové zariadenia"
+msgstr[2] "Sieťové zariadenia"
+msgstr[3] "Sieťové zariadenia"
 
 #: src/Item_DeviceHardDrive.php:49 src/Item_DeviceHardDrive.php:52
 #: src/DeviceBattery.php:56 src/DeviceBattery.php:79 src/DeviceBattery.php:119
@@ -20448,10 +21339,10 @@ msgstr "Kapacita"
 #: src/USBVendor.php:44
 msgid "USB vendor"
 msgid_plural "USB vendors"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Výrobca USB"
+msgstr[1] "Výrobcovia USB"
+msgstr[2] "Výrobcovia USB"
+msgstr[3] "Výrobcovia USB"
 
 #: src/RuleDictionnaryOperatingSystemCollection.php:44
 msgid "Dictionnary of operating systems"
@@ -20743,7 +21634,7 @@ msgstr ""
 #: src/Console/Migration/Utf8mb4Command.php:155
 #, php-format
 msgid "Found %s table(s) requiring migration to \"utf8mb4\"."
-msgstr ""
+msgstr "Nájdených %s tabuliek vyžadujúcich migráciu na \"utf8mb4\"."
 
 #: src/Console/Migration/Utf8mb4Command.php:181
 #: src/Console/Migration/DynamicRowFormatCommand.php:144
@@ -20765,7 +21656,7 @@ msgstr ""
 #: src/Console/Migration/DynamicRowFormatCommand.php:115
 #, php-format
 msgid "Found %s table(s) requiring a migration to \"ROW_FORMAT=DYNAMIC\"."
-msgstr ""
+msgstr "Nájdených %s tabuliek vyžadujúcich migráciu na \"ROW_FORMAT=DYNAMIC\"."
 
 #: src/Console/Migration/RacksPluginToCoreCommand.php:160
 msgid "Migrate Racks plugin data into GLPI core tables"
@@ -22172,7 +23063,10 @@ msgstr "Skontrolovať stav systému"
 #: src/ConsumableItem.php:57
 msgid "Consumable model"
 msgid_plural "Consumable models"
-msgstr[0] "Modely spotrebného materiálu"
+msgstr[0] "Model spotrebného materiálu"
+msgstr[1] "Modely spotrebného materiálu"
+msgstr[2] "Modely spotrebného materiálu"
+msgstr[3] "Modely spotrebného materiálu"
 
 #: src/ConsumableItem.php:203
 msgid "Number of used consumables"
@@ -22766,7 +23660,10 @@ msgstr ""
 #: src/DeviceBattery.php:40
 msgid "Battery"
 msgid_plural "Batteries"
-msgstr[0] "Batérie"
+msgstr[0] "Batéria"
+msgstr[1] "Batérie"
+msgstr[2] "Batérie"
+msgstr[3] "Batérie"
 
 #: src/DeviceBattery.php:58 src/DeviceBattery.php:119
 msgid "mWh"
@@ -22796,17 +23693,26 @@ msgstr "Nový vzťah"
 #: src/DeviceMemoryType.php:39
 msgid "Memory type"
 msgid_plural "Memory types"
-msgstr[0] "Typy pamätí"
+msgstr[0] "Typ pamäte"
+msgstr[1] "Typy pamätí"
+msgstr[2] "Typy pamätí"
+msgstr[3] "Typy pamätí"
 
 #: src/PeripheralType.php:39
 msgid "Devices type"
 msgid_plural "Devices types"
-msgstr[0] "Typy zariadení"
+msgstr[0] "Typ zariadenia"
+msgstr[1] "Typy zariadení"
+msgstr[2] "Typy zariadení"
+msgstr[3] "Typy zariadení"
 
 #: src/DeviceCase.php:41
 msgid "Case"
 msgid_plural "Cases"
-msgstr[0] "Skrine"
+msgstr[0] "Skriňa"
+msgstr[1] "Skrine"
+msgstr[2] "Skrine"
+msgstr[3] "Skrine"
 
 #: src/DBmysql.php:403 src/DBmysql.php:1204 src/DBmysql.php:1325
 #: src/DBmysql.php:1435 src/DBmysql.php:1484
@@ -22817,12 +23723,18 @@ msgstr "%1$s - chyba počas databázového dotazu: %2$s - chyba %3$s"
 #: src/DevicePowerSupplyModel.php:42
 msgid "Device power supply model"
 msgid_plural "Device power supply models"
-msgstr[0] "Modely napájacích zdrojov"
+msgstr[0] "Model napájacieho zdroja"
+msgstr[1] "Modely napájacích zdrojov"
+msgstr[2] "Modely napájacích zdrojov"
+msgstr[3] "Modely napájacích zdrojov"
 
 #: src/SoftwareLicense.php:62 src/Item_SoftwareLicense.php:87
 msgid "License"
 msgid_plural "Licenses"
-msgstr[0] "Licencie"
+msgstr[0] "Licencia"
+msgstr[1] "Licencie"
+msgstr[2] "Licencie"
+msgstr[3] "Licencie"
 
 #: src/SoftwareLicense.php:90
 msgid "Please select a software for this license"
@@ -22884,7 +23796,10 @@ msgstr "Ovplyvnené položky"
 #: src/PlanningExternalEvent.php:54
 msgid "External event"
 msgid_plural "External events"
-msgstr[0] "Externé udalosti"
+msgstr[0] "Externá udalosť"
+msgstr[1] "Externé udalosti"
+msgstr[2] "Externé udalosti"
+msgstr[3] "Externé udalosti"
 
 #: src/PlanningExternalEvent.php:269
 msgid "Each guest will have a read-only copy of this event"
@@ -22943,12 +23858,18 @@ msgstr "Počet ovplyvnených položiek"
 #: src/DeviceControlModel.php:42
 msgid "Device control model"
 msgid_plural "Device control models"
-msgstr[0] "Modely radičov"
+msgstr[0] "Model radiču"
+msgstr[1] "Modely radičov"
+msgstr[2] "Modely radičov"
+msgstr[3] "Modely radičov"
 
 #: src/NetworkAlias.php:52
 msgid "Network alias"
 msgid_plural "Network aliases"
-msgstr[0] "Sieťové aliasy"
+msgstr[0] "Sieťový alias"
+msgstr[1] "Sieťové aliasy"
+msgstr[2] "Sieťové aliasy"
+msgstr[3] "Sieťové aliasy"
 
 #: src/NetworkAlias.php:293
 msgid "Add a network alias"
@@ -22957,7 +23878,10 @@ msgstr "Pridať sieťový alias"
 #: src/Lockedfield.php:49
 msgid "Locked field"
 msgid_plural "Locked fields"
-msgstr[0] "Zamknuté pole(ia)"
+msgstr[0] "Zamknuté pole"
+msgstr[1] "Zamknuté polia"
+msgstr[2] "Zamknuté polia"
+msgstr[3] "Zamknuté polia"
 
 #: src/Lockedfield.php:62
 msgid "Field name"
@@ -22991,7 +23915,10 @@ msgstr "Plánovaná akcia"
 #: src/DevicePowerSupply.php:41
 msgid "Power supply"
 msgid_plural "Power supplies"
-msgstr[0] "Zdroje napájania"
+msgstr[0] "Zdroj napájania"
+msgstr[1] "Zdroje napájania"
+msgstr[2] "Zdroje napájania"
+msgstr[3] "Zdroje napájania"
 
 #: src/DevicePowerSupply.php:51 src/DevicePowerSupply.php:71
 msgid "ATX"
@@ -23238,10 +24165,10 @@ msgstr "Séria"
 #: js/planning.js:358 js/planning.js:475 js/planning.js:518
 msgid "Instance"
 msgid_plural "Instances"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Inštancia"
+msgstr[1] "Inštancie"
+msgstr[2] "Inštancie"
+msgstr[3] "Inštancie"
 
 #: js/planning.js:466
 msgid "Recurring event resized"
@@ -23280,7 +24207,7 @@ msgstr ""
 
 #: js/rack.js:87
 msgid "Add PDU"
-msgstr ""
+msgstr "Pridať napájaciu PDU lištu"
 
 #: js/reservations.js:120
 msgid "Timeline Week"
@@ -23658,7 +24585,7 @@ msgstr ""
 #: templates/components/itilobject/timeline/timeline_item_header.html.twig:69
 #, php-format
 msgid "%s was already promoted"
-msgstr ""
+msgstr "%s už bola povýšená"
 
 #: templates/components/itilobject/timeline/timeline_item_header.html.twig:84
 msgid "Promote to Ticket"
@@ -23772,7 +24699,7 @@ msgstr ""
 
 #: templates/components/kanban/item_panels/default_panel.html.twig:94
 msgid "No team members"
-msgstr ""
+msgstr "Žiadni členovia tímu"
 
 #: templates/components/kanban/item_panels/default_panel.html.twig:102
 msgid "Open full form"
@@ -23844,7 +24771,7 @@ msgstr ""
 
 #: templates/pages/tools/project/gantt.html.twig:57
 msgid "Months"
-msgstr ""
+msgstr "Mesiace"
 
 #: templates/pages/tools/project/gantt.html.twig:60
 msgid "Quarters"
@@ -24068,7 +24995,7 @@ msgstr ""
 
 #: templates/layout/parts/page_header.html.twig:63
 msgid "Collapse menu"
-msgstr ""
+msgstr "Zbaliť menu"
 
 #: templates/layout/parts/saved_searches_list.html.twig:34
 msgid "You have not recorded any saved searches yet"

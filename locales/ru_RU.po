@@ -27,6 +27,10 @@
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2021
 # Ilya Pavlov <spirkaa@gmail.com>, 2021
 # Drsi Developer, 2021
+# Denis Braczun, 2021
+# Владимир Жуковец, 2022
+# Kirill Reinard, 2022
+# Ivan Ivanov, 2022
 # 
 #, fuzzy
 msgid ""
@@ -35,7 +39,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-12-14 12:46+0000\n"
 "PO-Revision-Date: 2021-05-26 09:06+0000\n"
-"Last-Translator: Drsi Developer, 2021\n"
+"Last-Translator: Ivan Ivanov, 2022\n"
 "Language-Team: Russian (Russia) (https://www.transifex.com/glpi/teams/1637/ru_RU/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -45,15 +49,15 @@ msgstr ""
 
 #: ajax/gantt.php:110
 msgid "Target item must be of project type"
-msgstr ""
+msgstr "Целевой элемент должен быть типа проекта"
 
 #: ajax/gantt.php:143
 msgid "Item must be of project type"
-msgstr ""
+msgstr "Элемент должен быть типа проекта"
 
 #: ajax/gantt.php:208
 msgid "Link already exist!"
-msgstr ""
+msgstr "Ссылка уже существует!"
 
 #: ajax/dropdownMassiveActionAuthMethods.php:70
 #: ajax/dropdownMassiveActionField.php:54 src/MassiveAction.php:708
@@ -228,7 +232,7 @@ msgstr "Добавить новые устройства"
 
 #: ajax/selectUnaffectedOrNewItem_Device.php:79
 msgid "No unaffected device!"
-msgstr ""
+msgstr "Незатронутое устройство!"
 
 #: ajax/ticketiteminformation.php:72
 #, php-format
@@ -313,7 +317,7 @@ msgstr "Мои группы"
 #: ajax/searchoptionvalue.php:85 src/Dashboard/Filter.php:170
 #: src/DbUtils.php:1590 src/Search.php:3266
 msgid "Myself"
-msgstr ""
+msgstr "Себя"
 
 #: ajax/ticketsatisfaction.php:59 src/Entity.php:1194
 msgid "Create survey after"
@@ -380,7 +384,7 @@ msgstr "URL"
 #: ajax/entitytreesons.php:83
 #: templates/layout/parts/profile_selector.html.twig:74
 msgid "+ sub-entities"
-msgstr ""
+msgstr "+ суб-сущности"
 
 #: ajax/dropdownItilActors.php:117 ajax/dropdownItilActors.php:214
 #: ajax/uemailUpdate.php:92 front/problem_supplier.form.php:47
@@ -771,6 +775,9 @@ msgid ""
 "responsiveness statistics about user interface features, memory, and "
 "hardware configuration."
 msgstr ""
+"Мы собираем только следующие данные: статистика использования плагинов, "
+"производительности и отзывчивости элементов пользовательского интерфейса, "
+"памяти и серверной конфигурации."
 
 #: ajax/dcroom_size.php:63 templates/pages/assets/rack.html.twig:76
 #: templates/pages/assets/rack.html.twig:79
@@ -785,7 +792,7 @@ msgstr ""
 
 #: ajax/central.php:87
 msgid "Invalid widget"
-msgstr ""
+msgstr "Недопустимый виджет"
 
 #: ajax/ticketassigninformation.php:75 ajax/ticketassigninformation.php:76
 #: ajax/ticketassigninformation.php:108 ajax/ticketassigninformation.php:109
@@ -1180,7 +1187,7 @@ msgstr "Обязательные поля не заполнены!"
 #: front/knowbaseitem_knowbaseitemcategory.form.php:55
 #, php-format
 msgid "%s adds a link with a category"
-msgstr ""
+msgstr "%s добавляет связь с категорией"
 
 #: front/itiltemplatefield.form.php:64
 msgid "hidden"
@@ -1590,7 +1597,7 @@ msgstr "По оборудованию"
 
 #: front/report.networking.php:81
 msgid "By network socket"
-msgstr ""
+msgstr "По сетевому разъему"
 
 #: front/notification.tags.php:38
 msgid "List of available tags"
@@ -1665,7 +1672,7 @@ msgstr "%s пытается использовать нестандартный 
 
 #: front/contenttemplates/documentation.php:46
 msgid "Template variables documentation"
-msgstr ""
+msgstr "Документация по переменным шаблона"
 
 #: front/report.year.list.php:45 src/NotificationTargetSoftwareLicense.php:98
 #: src/NotificationTargetReservation.php:186
@@ -1810,31 +1817,31 @@ msgstr "Упрощенный вид"
 #: front/databaseinstance.form.php:58
 #, php-format
 msgid "%s adds a database instance"
-msgstr ""
+msgstr "%s добавляет экземпляр базы данных"
 
 #. TRANS: %s is the user login
 #: front/databaseinstance.form.php:75
 #, php-format
 msgid "%s deletes a database instance"
-msgstr ""
+msgstr "%s удаляет экземпляр базы данных"
 
 #. TRANS: %s is the user login
 #: front/databaseinstance.form.php:88
 #, php-format
 msgid "%s restores a database instance"
-msgstr ""
+msgstr "%s восстанавливает экземпляр базы данных"
 
 #. TRANS: %s is the user login
 #: front/databaseinstance.form.php:102
 #, php-format
 msgid "%s purges a database instance"
-msgstr ""
+msgstr "%sочищает экземпляр базы данных"
 
 #. TRANS: %s is the user login
 #: front/databaseinstance.form.php:116
 #, php-format
 msgid "%s updates a database instance"
-msgstr ""
+msgstr "%s обновляет экземпляр базы данных"
 
 #. TRANS: %s is the user login
 #: front/change.form.php:138 front/change.form.php:156
@@ -1849,7 +1856,7 @@ msgstr "%s добавил исполнителя"
 #: front/problem.form.php:200
 #, php-format
 msgid "%s Kanban"
-msgstr ""
+msgstr "%s Канбан"
 
 #: front/change.form.php:211 front/ticket.form.php:252
 #: front/problem.form.php:214
@@ -2149,13 +2156,13 @@ msgstr "%s"
 #: front/item_remotemanagement.form.php:78
 #, php-format
 msgid "%s purges a remote management"
-msgstr ""
+msgstr "%s очищает удалённое управление"
 
 #. TRANS: %s is the user login
 #: front/item_remotemanagement.form.php:96
 #, php-format
 msgid "%s updates a remote management"
-msgstr ""
+msgstr "%s обновляет удалённое управление"
 
 #: front/stat.location.php:91 src/Profile.php:2293 src/CommonDropdown.php:68
 #: src/Event.php:158
@@ -2551,24 +2558,24 @@ msgstr "Перевод элемента базы знаний не возвра�
 #: front/socket.form.php:62 front/socket.form.php:122
 #, php-format
 msgid "%s adds a socket"
-msgstr ""
+msgstr "%s добавляет разъём"
 
 #. TRANS: %s is the user login
 #: front/socket.form.php:79
 #, php-format
 msgid "%s purges a socket"
-msgstr ""
+msgstr "%s очищает разъём"
 
 #. TRANS: %s is the user login
 #: front/socket.form.php:93
 #, php-format
 msgid "%s updates a socket"
-msgstr ""
+msgstr "%s обновляет разъём"
 
 #: front/socket.form.php:109
 #, php-format
 msgid "%1$s adds several sockets"
-msgstr ""
+msgstr "%1$s добавляет несколько разъёмов"
 
 #: front/devices.php:38 front/devices.php:42 src/CommonDevice.php:50
 #: src/CommonDevice.php:299 src/Dropdown.php:940 src/Item_Devices.php:265
@@ -4685,7 +4692,7 @@ msgstr "MAC"
 
 #: src/NetworkPortFiberchannel.php:241
 msgid "Fiber port type"
-msgstr ""
+msgstr "Оптический тип порта"
 
 #. TRANS: %d is the speed
 #: src/NetworkPortFiberchannel.php:263 src/NetworkPortFiberchannel.php:310
@@ -4711,31 +4718,31 @@ msgstr "%d Мбит/с"
 
 #: src/NetworkPortFiberchannel.php:376
 msgid "Network fiber socket"
-msgstr ""
+msgstr "Оптический сетевой разъём"
 
 #: src/PendingReason.php:50
 msgid "Pending reason"
 msgid_plural "Pending reasons"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Причина ожидания"
+msgstr[1] "Причин ожидания"
+msgstr[2] "Причин ожидания"
+msgstr[3] "Причины ожидания"
 
 #: src/PendingReason.php:58 src/PendingReason.php:91
 msgid "Automatic follow-up frequency"
-msgstr ""
+msgstr "Периодичность автоматического отслеживания"
 
 #: src/PendingReason.php:70 src/PendingReason.php:100
 msgid "Follow-ups before automatic resolution"
-msgstr ""
+msgstr "Отслеживать до автоматического разрешения"
 
 #: src/PendingReason.php:110
 msgid "Follow-up template"
-msgstr ""
+msgstr "Отслеживать шаблон"
 
 #: src/PendingReason.php:151
 msgid "Automatic follow-up disabled"
-msgstr ""
+msgstr "Автоматическое отслеживание отключено"
 
 #: src/PendingReason.php:180
 msgid "Every week"
@@ -4759,15 +4766,15 @@ msgstr "Автоматическое решение отключено"
 
 #: src/PendingReason.php:237
 msgid "After one follow-up"
-msgstr ""
+msgstr "После одного отслеживания"
 
 #: src/PendingReason.php:238
 msgid "After two follow-ups"
-msgstr ""
+msgstr "После двух отслеживаний"
 
 #: src/PendingReason.php:239
 msgid "After three follow-ups"
-msgstr ""
+msgstr "После трёх отслеживаний"
 
 #: src/LevelAgreementLevel.php:78 src/Ticket.php:3382 src/Ticket.php:3433
 #: templates/components/itilobject/service_levels.html.twig:116
@@ -5031,7 +5038,7 @@ msgstr "Описание"
 
 #: src/NotificationTargetCrontask.php:93
 msgid "Automatic actions list"
-msgstr ""
+msgstr "Список автоматических действий"
 
 #: src/NotificationTargetCrontask.php:99
 msgid ""
@@ -5043,10 +5050,10 @@ msgstr ""
 #: src/Unmanaged.php:47
 msgid "Unmanaged device"
 msgid_plural "Unmanaged devices"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Неуправляеоые устройство"
+msgstr[1] "Неуправляемых устройств"
+msgstr[2] "Неуправляемых устройств"
+msgstr[3] "Неуправляемые устройства"
 
 #: src/Unmanaged.php:106
 msgid "Serial Number"
@@ -5054,19 +5061,19 @@ msgstr "Серийный номер"
 
 #: src/Unmanaged.php:127 templates/pages/assets/unmanaged.html.twig:41
 msgid "Network hub"
-msgstr ""
+msgstr "Сетевой концетратор"
 
 #: src/Unmanaged.php:177 templates/generic_show_form.html.twig:380
 msgid "Sysdescr"
-msgstr ""
+msgstr "Описание системы"
 
 #: src/Unmanaged.php:210 src/Unmanaged.php:222
 msgid "Convert"
-msgstr ""
+msgstr "Конвертировать"
 
 #: src/Unmanaged.php:231
 msgid "Select an itemtype: "
-msgstr ""
+msgstr "Выберите тип элемента:"
 
 #: src/ProblemTask.php:41
 msgid "Problem task"
@@ -5075,7 +5082,7 @@ msgstr[0] "Задачи проблемы"
 
 #: src/PrinterLog.php:55
 msgid "Page counters"
-msgstr ""
+msgstr "Счётчики страниц"
 
 #: src/PrinterLog.php:146 src/NetworkPortMetrics.php:146
 msgid "Y-m-d"
@@ -5099,7 +5106,7 @@ msgstr "Сканы"
 
 #: src/PrinterLog.php:187
 msgid "Recto/Verso pages"
-msgstr ""
+msgstr "Страницы справа/слева"
 
 #: src/PrinterLog.php:189
 msgid "Prints"
@@ -5280,10 +5287,10 @@ msgstr[0] "События"
 #: src/NetworkPortFiberchannelType.php:39
 msgid "Fiber type"
 msgid_plural "Fiber types"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Тип оптической связи"
+msgstr[1] "Типов оптических связей"
+msgstr[2] "Типов оптических связей"
+msgstr[3] "Типы оптических связей"
 
 #: src/NetworkPort_Vlan.php:138 src/NetworkPort_Vlan.php:170
 #: src/NetworkPort_Vlan.php:385 src/Vlan.php:164
@@ -5480,10 +5487,10 @@ msgstr "Словарь архитектур операционной систе�
 #: src/Agent.php:67
 msgid "Agent"
 msgid_plural "Agents"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Агент"
+msgstr[1] "Агентов"
+msgstr[2] "Агентов"
+msgstr[3] "Агенты"
 
 #: src/Agent.php:99 src/Agent.php:257
 msgid "Last contact"
@@ -5491,16 +5498,16 @@ msgstr "Последний контакт"
 
 #: src/Agent.php:105 src/Agent.php:188
 msgid "Locked"
-msgstr ""
+msgstr "Заблокирован"
 
 #: src/Agent.php:111 src/Agent.php:195
 msgid "Device id"
-msgstr ""
+msgstr "ID устройства"
 
 #: src/Agent.php:125 src/Agent.php:253 src/Features/Inventoriable.php:182
 #: templates/components/form/inventory_info.html.twig:73
 msgid "Useragent"
-msgstr ""
+msgstr "Useragent"
 
 #: src/Agent.php:132 src/Agent.php:246 src/Document.php:949
 #: src/NotificationTemplateTranslation.php:381 src/Document_Item.php:747
@@ -5509,11 +5516,11 @@ msgstr "Тег"
 
 #: src/Agent.php:221
 msgid "Item link"
-msgstr ""
+msgstr "Связь элемента"
 
 #: src/Agent.php:264
 msgid "Network discovery threads"
-msgstr ""
+msgstr "Потоки сетевого обнаружения"
 
 #: src/Agent.php:270 src/Agent.php:280 src/Agent.php:293 src/Agent.php:303
 #: src/Profile.php:1761 src/Profile.php:2364 src/Config.php:320
@@ -5523,32 +5530,32 @@ msgstr "Общие настройки"
 
 #: src/Agent.php:274
 msgid "Network discovery timeout"
-msgstr ""
+msgstr "Таймаут сетевого обнаружения"
 
 #: src/Agent.php:287
 msgid "Network inventory threads"
-msgstr ""
+msgstr "Потоки сетевой инвентаризации"
 
 #: src/Agent.php:297
 msgid "Network inventory timeout"
-msgstr ""
+msgstr "Таймаут сетевой инвентаризации"
 
 #: src/Agent.php:382
 msgid "\"deviceid\" is mandatory!"
-msgstr ""
+msgstr "Поле \"ID устройства\" является обязательным!"
 
 #: src/Agent.php:607
 msgid "Not allowed"
-msgstr ""
+msgstr "Не разрешено"
 
 #: src/Agent.php:632
 #, php-format
 msgid "Requested at %s"
-msgstr ""
+msgstr "Запрошено в %s"
 
 #: src/Agent.php:633
 msgid "Y-m-d H:i:s"
-msgstr ""
+msgstr "d.m.Y H:i:s"
 
 #: src/NotificationTargetProject.php:47 js/gantt-helper.js:58
 #: js/gantt-helper.js:63 js/gantt-helper.js:313
@@ -5571,10 +5578,10 @@ msgstr "Удаление проекта"
 #: src/Project.php:2588
 msgid "Manager"
 msgid_plural "Managers"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Менеджер"
+msgstr[1] "Менеджеров"
+msgstr[2] "Менеджеров"
+msgstr[3] "Менеджеры"
 
 #: src/NotificationTargetProject.php:59 src/NotificationTargetProject.php:638
 #: src/Project.php:650 src/Project.php:1166
@@ -5907,10 +5914,10 @@ msgstr[0] "Типы сетевого оборудования"
 #: src/CableStrand.php:41 src/CableStrand.php:47 src/Cable.php:144
 msgid "Cable strand"
 msgid_plural "Cable strands"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Одна жила кабеля"
+msgstr[1] "Жил кабеля"
+msgstr[2] "Жил кабеля"
+msgstr[3] "Жилы кабеля"
 
 #: src/CableStrand.php:150 src/CableStrand.php:151 src/CableStrand.php:152
 #: src/CableStrand.php:153 src/Cable.php:161 src/Cable.php:172
@@ -5918,19 +5925,19 @@ msgstr[3] ""
 #: src/Cable.php:226 src/Cable.php:236 src/Cable.php:301 src/Cable.php:316
 #, php-format
 msgid "%s (%s)"
-msgstr ""
+msgstr "%s (%s)"
 
 #: src/CableStrand.php:150 src/CableStrand.php:151 src/Socket.php:291
 #: src/Cable.php:172 src/Cable.php:183 src/Cable.php:216 src/Cable.php:226
 #: src/Cable.php:316
 msgid "Endpoint B"
-msgstr ""
+msgstr "Точка подключения B"
 
 #: src/CableStrand.php:152 src/CableStrand.php:153 src/Socket.php:290
 #: src/Cable.php:161 src/Cable.php:194 src/Cable.php:206 src/Cable.php:236
 #: src/Cable.php:301
 msgid "Endpoint A"
-msgstr ""
+msgstr "Точка подключения A"
 
 #: src/ProjectTaskType.php:43
 msgid "Project tasks type"
@@ -5951,10 +5958,10 @@ msgstr[0] "Типы задач проекта"
 #: src/Entity.php:1118 templates/pages/assets/cable.html.twig:102
 msgid "Asset"
 msgid_plural "Assets"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Актив"
+msgstr[1] "Активов"
+msgstr[2] "Активов"
+msgstr[3] "Активы"
 
 #: src/NetworkPortLocal.php:44
 msgid "Local loop port"
@@ -6452,6 +6459,8 @@ msgstr "Запуск"
 #, php-format
 msgid "Error during %s execution. Check in \"%s\" for more details."
 msgstr ""
+"Возникла ошибка во время выполнения задачи %s. Проверьте детали выполнения "
+"задачи \"%s\"."
 
 #: src/CronTask.php:1029 src/CronTask.php:1041
 msgid "Can't start"
@@ -6493,10 +6502,10 @@ msgstr[0] "%s законченых"
 #, php-format
 msgid "%s error"
 msgid_plural "%s errors"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "%s ошибка"
+msgstr[1] "%s ошибок"
+msgstr[2] "%s ошибок"
+msgstr[3] "%s ошибки"
 
 #: src/CronTask.php:1227
 msgid "Minimal time"
@@ -6712,17 +6721,17 @@ msgstr "Имя абонента"
 #: src/Printer_CartridgeInfo.php:72
 msgctxt "Cartridge inventoried information"
 msgid "Cartridge inventoried information"
-msgstr ""
+msgstr "Информация по инвентаризации картриджа"
 
 #: src/Printer_CartridgeInfo.php:101
 msgid "Property"
-msgstr ""
+msgstr "Свойство"
 
 #: src/Printer_CartridgeInfo.php:115
 #, php-format
 msgctxt "%1$s remaining page"
 msgid "%1$s remaining pages"
-msgstr ""
+msgstr "%1$s оставшихся страниц"
 
 #: src/DisplayPreference.php:306
 msgid "No personal criteria. Create personal parameters?"
@@ -6814,7 +6823,7 @@ msgstr "Загрузка ..."
 
 #: src/Knowbase.php:157
 msgid "No category found"
-msgstr ""
+msgstr "Категория не найдена"
 
 #: src/Knowbase.php:336
 msgid "Root category"
@@ -6934,7 +6943,7 @@ msgstr[0] "Решения"
 
 #: src/ITILSolution.php:184
 msgid "The item is already solved, did anyone pushed a solution before you?"
-msgstr ""
+msgstr "Вопрос уже решен, кто то опубликовал решение до вас?"
 
 #: src/ITILSolution.php:373 src/CommonITILValidation.php:524
 msgid "Waiting for approval"
@@ -7246,7 +7255,7 @@ msgstr "Неизвестная заявка"
 
 #: src/Ticket.php:1715
 msgid "You cannot create a ticket for this user"
-msgstr ""
+msgstr "Вы не можете создать заявку для данного пользователя"
 
 #: src/Ticket.php:1876
 #, php-format
@@ -7265,7 +7274,7 @@ msgstr "%s предложил комментарий из заявки %s"
 #: src/Ticket.php:2091
 #, php-format
 msgid "%s promotes a task from ticket %s"
-msgstr ""
+msgstr "1%s предложил комментарий из заявки 1%s"
 
 #: src/Ticket.php:2124
 msgid "Your ticket has been registered."
@@ -7305,7 +7314,7 @@ msgstr "Связать заявки"
 #: src/Ticket.php:2749
 msgctxt "button"
 msgid "Link project task"
-msgstr ""
+msgstr "Связать задание проекта"
 
 #: src/Ticket.php:2752
 msgctxt "button"
@@ -7314,11 +7323,11 @@ msgstr "Добавить договор"
 
 #: src/Ticket.php:2760
 msgid "Link to a problem"
-msgstr ""
+msgstr "Связать с проблемой"
 
 #: src/Ticket.php:2766
 msgid "Resolve selected tickets"
-msgstr ""
+msgstr "Создать решение для выбранных заявок"
 
 #: src/Ticket.php:2792
 msgid "Merge followups"
@@ -7371,7 +7380,7 @@ msgstr "Связь"
 
 #: src/Ticket.php:2915
 msgid "Resolve"
-msgstr ""
+msgstr "Решить"
 
 #: src/Ticket.php:2925 src/CommonDevice.php:407 src/CommonDevice.php:409
 #: src/CommonDevice.php:411 src/CommonDBChild.php:847
@@ -7388,15 +7397,15 @@ msgstr "Добавить"
 
 #: src/Ticket.php:2996
 msgid "Missing input: no Problem selected"
-msgstr ""
+msgstr "Отсутствие данных: не выбрана проблема"
 
 #: src/Ticket.php:3002
 msgid "Selected Problem can't be loaded"
-msgstr ""
+msgstr "Выбранная проблема не загружается"
 
 #: src/Ticket.php:3046
 msgid "Missing mandatory field in input"
-msgstr ""
+msgstr "Отсутвуют данные в обязательном поле"
 
 #: src/Ticket.php:3103
 msgid "No contract specified"
@@ -7408,7 +7417,7 @@ msgstr "Время владения + Прогресса"
 
 #: src/Ticket.php:3173
 msgid "Time to own exceeded"
-msgstr ""
+msgstr "Превышено время владения"
 
 #: src/Ticket.php:3183 src/Ticket.php:3420 src/Ticket.php:6549
 #: src/NotificationTargetTicket.php:610
@@ -7421,7 +7430,7 @@ msgstr "Внутреннее время для решения + Продвиже
 
 #: src/Ticket.php:3204
 msgid "Internal time to resolve exceeded"
-msgstr ""
+msgstr "Превышено внутреннее время на решение"
 
 #: src/Ticket.php:3214 src/Ticket.php:3406 src/Ticket.php:6533
 #: src/NotificationTargetTicket.php:605
@@ -7434,7 +7443,7 @@ msgstr "Внутреннее время для владения + Продвиж
 
 #: src/Ticket.php:3235
 msgid "Internal time to own exceeded"
-msgstr ""
+msgstr "Превышено внутреннее время на владение"
 
 #: src/Ticket.php:3246
 msgid "Next escalation level"
@@ -8021,10 +8030,10 @@ msgstr "Торговая марка"
 #: src/ManualLink.php:48
 msgid "Manual link"
 msgid_plural "Manual links"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Ссылка на документацию"
+msgstr[1] "Ссылки на документацию"
+msgstr[2] "Ссылки на документацию"
+msgstr[3] "Ссылки на документацию"
 
 #: src/ManualLink.php:78
 #: src/ContentTemplates/Parameters/KnowbaseItemParameters.php:69
@@ -8051,7 +8060,7 @@ msgstr "Неверный URL"
 
 #: src/ManualLink.php:280
 msgid "You are about to delete this item. Do you confirm?"
-msgstr ""
+msgstr "Вы подтверждаете удаление выбранного элемента?"
 
 #: src/ManualLink.php:283 src/ManualLink.php:285
 msgctxt "button"
@@ -8088,7 +8097,7 @@ msgstr "Автоматически"
 
 #: src/SavedSearch.php:226
 msgid "Is private"
-msgstr ""
+msgstr "Личное"
 
 #: src/SavedSearch.php:243
 msgid "Last duration (ms)"
@@ -8130,12 +8139,12 @@ msgstr "Видимость"
 
 #: src/SavedSearch.php:500
 msgid "Save as a new search"
-msgstr ""
+msgstr "Сохранить как новый поиск"
 
 #: src/SavedSearch.php:609
 #, php-format
 msgid "Partial load of the saved search: %s"
-msgstr ""
+msgstr "Частичная загрузка сохранённых запросов поиска: %s"
 
 #: src/SavedSearch.php:848
 msgid "Count for this saved search has been disabled."
@@ -8281,7 +8290,7 @@ msgstr[0] "Установлены"
 #: src/Item_SoftwareVersion.php:101 src/Item_SoftwareLicense.php:108
 msgctxt "software"
 msgid "Request source"
-msgstr ""
+msgstr "Источник запроса"
 
 #: src/Item_SoftwareVersion.php:476 src/Item_SoftwareVersion.php:1085
 #: src/Item_SoftwareVersion.php:1244 src/Software.php:533
@@ -8527,7 +8536,7 @@ msgstr "Тонер"
 
 #: src/Inventory/Asset/Cartridge.php:55
 msgid "Drum"
-msgstr ""
+msgstr "Барабан"
 
 #: src/Inventory/Asset/Cartridge.php:57
 msgid "Waste bin"
@@ -8535,19 +8544,19 @@ msgstr "Бункер отработки"
 
 #: src/Inventory/Asset/Cartridge.php:58
 msgid "Maintenance kit"
-msgstr ""
+msgstr "Инструменты обслуживания"
 
 #: src/Inventory/Asset/Cartridge.php:59
 msgid "Fuser kit"
-msgstr ""
+msgstr "Комплект термоблока для барабана"
 
 #: src/Inventory/Asset/Cartridge.php:60
 msgid "Transfer kit"
-msgstr ""
+msgstr "Комплект для переноса"
 
 #: src/Inventory/Asset/Cartridge.php:61
 msgid "Cleaning kit"
-msgstr ""
+msgstr "Чистящий набор"
 
 #: src/Inventory/Asset/Cartridge.php:62
 msgid "Developer"
@@ -8555,7 +8564,7 @@ msgstr "Девелопер"
 
 #: src/Inventory/Asset/Cartridge.php:63
 msgid "Photoconductor"
-msgstr ""
+msgstr "Фотопроводник"
 
 #: src/Inventory/Asset/Cartridge.php:70
 msgid "Black"
@@ -8563,19 +8572,19 @@ msgstr "Чёрный"
 
 #: src/Inventory/Asset/Cartridge.php:71
 msgid "Cyan"
-msgstr ""
+msgstr "Голубой"
 
 #: src/Inventory/Asset/Cartridge.php:72
 msgid "Light cyan"
-msgstr ""
+msgstr "Cветло-голубой"
 
 #: src/Inventory/Asset/Cartridge.php:73
 msgid "Magenta"
-msgstr ""
+msgstr "Пурпурный"
 
 #: src/Inventory/Asset/Cartridge.php:74
 msgid "Light magenta"
-msgstr ""
+msgstr "Светло-пурпурный"
 
 #: src/Inventory/Asset/Cartridge.php:75
 msgid "Yellow"
@@ -8591,7 +8600,7 @@ msgstr "Тёмно серый"
 
 #: src/Inventory/Asset/Cartridge.php:83
 msgid "Max"
-msgstr ""
+msgstr "Максимум"
 
 #: src/Inventory/Asset/Cartridge.php:84
 msgid "Used"
@@ -8609,11 +8618,11 @@ msgstr "Фото"
 
 #: src/Inventory/Asset/Cartridge.php:148
 msgid "Matte"
-msgstr ""
+msgstr "Матовый"
 
 #: src/Inventory/Asset/Cartridge.php:188
 msgid "Many information grouped"
-msgstr ""
+msgstr "Много информации сгруппировано"
 
 #: src/Inventory/Asset/Cartridge.php:191
 msgid "Staples"
@@ -8641,24 +8650,24 @@ msgstr "внутренний"
 #: src/Inventory/Inventory.php:283
 #, php-format
 msgid "Following keys has been ignored during process: %1$s"
-msgstr ""
+msgstr "Во время процесса, следующие ключи были проигнорированы: %1$s"
 
 #: src/Inventory/Inventory.php:772
 msgid "Clean temporary files created from inventories"
-msgstr ""
+msgstr "Очистите временные файлы, созданные из запасов"
 
 #: src/Inventory/Inventory.php:775
 msgid "Clean inventories orphaned files"
-msgstr ""
+msgstr "Очистите потерянные файлы инвентаризации"
 
 #: src/Inventory/Inventory.php:799 src/Inventory/Inventory.php:870
 #, php-format
 msgid "File %1$s has been removed"
-msgstr ""
+msgstr "Файл %1$s был удалён"
 
 #: src/Inventory/Conf.php:102
 msgid "Import inventory file"
-msgstr ""
+msgstr "Импортировать файл инвентаризации"
 
 #: src/Inventory/Conf.php:109
 #, php-format
@@ -8666,12 +8675,16 @@ msgid ""
 "You can use this menu to upload any inventory file. The file must have a "
 "known extension (%1$s).\n"
 msgstr ""
+"Вы можете использовать меню для загрузки любого файла инфентаризации. У "
+"файла должно быть одно из известных расширений (%1$s)\n"
 
 #: src/Inventory/Conf.php:112
 msgid ""
 "It is also possible to upload a compressed archive directly with a "
 "collection of inventory files."
 msgstr ""
+"Также есть возможность загрузить сжатый архив с набором файлов "
+"инвентаризации."
 
 #: src/Inventory/Conf.php:119 src/NetworkPortType.php:57
 #: src/NetworkPortType.php:84
@@ -8680,15 +8693,15 @@ msgstr "Импорт"
 
 #: src/Inventory/Conf.php:171
 msgid "No file to import!"
-msgstr ""
+msgstr "Не выбран файл для импорта!"
 
 #: src/Inventory/Conf.php:223
 msgid "File has not been imported:"
-msgstr ""
+msgstr "Файл был импортирован:"
 
 #: src/Inventory/Conf.php:229
 msgid "File has been successfully imported!"
-msgstr ""
+msgstr "Файл был успешно импортирован!"
 
 #: src/Inventory/Conf.php:252
 msgid "Configuration"
@@ -8708,41 +8721,44 @@ msgstr "Статус по умолчанию"
 
 #: src/Inventory/Conf.php:363
 msgid "Import monitor on serial partial match"
-msgstr ""
+msgstr "Импорт монитора при частичном совпадении серийного номера"
 
 #: src/Inventory/Conf.php:378
 msgid "Related configurations"
-msgstr ""
+msgstr "Сопутствующие конфигурации"
 
 #: src/Inventory/Conf.php:416
 msgid "Import virtual machines"
-msgstr ""
+msgstr "Импортировать виртуальные машины"
 
 #: src/Inventory/Conf.php:446
 msgid "Create computer for virtual machines"
-msgstr ""
+msgstr "Создать компьютер для виртуальных машин"
 
 #: src/Inventory/Conf.php:458
 msgid "Create components for virtual machines"
-msgstr ""
+msgstr "Создать компоненты для виртуальных машин"
 
 #: src/Inventory/Conf.php:472
 msgid ""
 "Will attempt to create components from VM information sent from host, do not"
 " use if you plan to inventory any VM directly!"
 msgstr ""
+"Попытается создать компонент изходя из информации по вирутальной машине, "
+"присланной хостовой машиной. Не используйте его, если планируете "
+"непосредственно инвентаризировать каждую вирутальную машину."
 
 #: src/Inventory/Conf.php:555
 msgid "Virtual network cards"
-msgstr ""
+msgstr "Виртуальные сетевые карты"
 
 #: src/Inventory/Conf.php:614
 msgid "Network drives"
-msgstr ""
+msgstr "Сетевые диски"
 
 #: src/Inventory/Conf.php:629
 msgid "Removable drives"
-msgstr ""
+msgstr "Съемные диски"
 
 #: src/Inventory/Conf.php:686 src/PlanningRecall.php:358
 #: src/Item_Devices.php:734 src/Dashboard/Grid.php:285 src/CommonGLPI.php:1346
@@ -8775,12 +8791,12 @@ msgstr "Сохранить"
 #: src/Inventory/Conf.php:714
 #, php-format
 msgid "Some properties are not known: %1$s"
-msgstr ""
+msgstr "Некоторые свойства неизвестны: %1$s"
 
 #: src/Inventory/Conf.php:753
 #, php-format
 msgid "Property %1$s does not exists!"
-msgstr ""
+msgstr "Свойство %1$s не существует!"
 
 #: src/Inventory/Conf.php:767 src/Dashboard/Grid.php:1388 src/Profile.php:982
 #: src/Profile.php:1766 src/Profile.php:1905 src/Profile.php:3010
@@ -8826,11 +8842,11 @@ msgstr "Выберите элементы для показа по умолча�
 
 #: src/NetworkPort.php:726
 msgid "Connections legend"
-msgstr ""
+msgstr "Обозначение подключений"
 
 #: src/NetworkPort.php:727
 msgid "Equipment in trunk or tagged mode"
-msgstr ""
+msgstr "Оборудование в магистральном или помеченном режиме"
 
 #: src/NetworkPort.php:728
 msgid "Hub "
@@ -8838,11 +8854,11 @@ msgstr "Хаб"
 
 #: src/NetworkPort.php:729
 msgid "Other equipments"
-msgstr ""
+msgstr "Другое оборудование"
 
 #: src/NetworkPort.php:730
 msgid "Aggregated port"
-msgstr ""
+msgstr "Совокупный порт"
 
 #: src/NetworkPort.php:736 src/NetworkPort.php:810
 #, php-format
@@ -8877,7 +8893,7 @@ msgstr "Гбит/с"
 
 #: src/NetworkPort.php:901
 msgid "Tbps"
-msgstr ""
+msgstr "ТБ/с"
 
 #: src/NetworkPort.php:914 src/NetworkPort.php:1117
 #: src/Features/Inventoriable.php:197 src/GLPINetwork.php:113
@@ -8889,11 +8905,11 @@ msgstr "Неизвестно"
 
 #: src/NetworkPort.php:918
 msgid "Up"
-msgstr ""
+msgstr "Вверх"
 
 #: src/NetworkPort.php:922
 msgid "Down"
-msgstr ""
+msgstr "Вниз"
 
 #: src/NetworkPort.php:926
 msgid "Test"
@@ -8901,21 +8917,21 @@ msgstr "Тест"
 
 #: src/NetworkPort.php:976
 msgid "Half"
-msgstr ""
+msgstr "Половина"
 
 #: src/NetworkPort.php:979
 msgid "Full"
-msgstr ""
+msgstr "Полный"
 
 #: src/NetworkPort.php:1005
 #, php-format
 msgid "%s linked VLANs"
-msgstr ""
+msgstr "%s связанные VLAN'ы"
 
 #: src/NetworkPort.php:1080
 #, php-format
 msgid "%s equipments connected to the hub"
-msgstr ""
+msgstr "%s устройств, подключённых к концентратору"
 
 #: src/NetworkPort.php:1105 src/NetworkPort.php:1128
 #: src/NetworkPortConnectionLog.php:131
@@ -8933,16 +8949,16 @@ msgstr "Тестирование"
 
 #: src/NetworkPort.php:1121
 msgid "Dormant"
-msgstr ""
+msgstr "Неиспользуемый"
 
 #: src/NetworkPort.php:1275 src/NetworkPort.php:1280 src/NetworkPort.php:1427
 #: src/RuleImportAsset.php:135
 msgid "Port number"
 msgid_plural "Port numbers"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Номер порта"
+msgstr[1] "Номеров портов"
+msgstr[2] "Номеров портов"
+msgstr[3] "Номера портов"
 
 #: src/NetworkPort.php:1320 src/Dropdown.php:1075
 msgid "Networking"
@@ -8954,11 +8970,11 @@ msgstr "Удалить привязку к VLAN"
 
 #: src/NetworkPort.php:1489
 msgid "MTU"
-msgstr ""
+msgstr "MTU"
 
 #: src/NetworkPort.php:1503
 msgid "Internal status"
-msgstr ""
+msgstr "Внутренний статус"
 
 #: src/NetworkPort.php:1510
 msgid "Last change"
@@ -8966,11 +8982,11 @@ msgstr "Последнее изменение"
 
 #: src/NetworkPort.php:1517
 msgid "Number of I/O bytes"
-msgstr ""
+msgstr "Количество переданных байтов"
 
 #: src/NetworkPort.php:1524
 msgid "Number of I/O errors"
-msgstr ""
+msgstr "Количество ошибок передачи"
 
 #: src/NetworkPort.php:1531
 msgid "Duplex"
@@ -8987,7 +9003,7 @@ msgstr "Последнее подключение"
 
 #: src/NetworkPort.php:1586
 msgid "Alias"
-msgstr ""
+msgstr "Псевдоним"
 
 #: src/NetworkPort.php:1706 src/NetworkPortInstantiation.php:913
 #: src/NetworkPortInstantiation.php:944
@@ -9073,15 +9089,15 @@ msgstr "Добавить выходной"
 
 #: src/Cache/CacheManager.php:549
 msgid "Memcached"
-msgstr ""
+msgstr "Memcached"
 
 #: src/Cache/CacheManager.php:550
 msgid "Redis (TCP)"
-msgstr ""
+msgstr "Redis (TCP)"
 
 #: src/Cache/CacheManager.php:551
 msgid "Redis (TLS)"
-msgstr ""
+msgstr "Redis (TLS)"
 
 #: src/Update.php:178
 #, php-format
@@ -9093,7 +9109,7 @@ msgstr "Не поддерживаемая версия (%1$s)"
 #: src/Console/Migration/DynamicRowFormatCommand.php:85
 #, php-format
 msgid "%d tables are using the deprecated MyISAM storage engine."
-msgstr ""
+msgstr "%d таблицы используют устаревшую систему хранения данных MyISAM."
 
 #: src/Update.php:199 src/Update.php:205 src/Update.php:217
 #: src/Central.php:488 src/Central.php:493 src/Central.php:498
@@ -9103,48 +9119,50 @@ msgstr ""
 #: src/Console/Database/EnableTimezonesCommand.php:92
 #, php-format
 msgid "Run the \"php bin/console %1$s\" command to migrate them."
-msgstr ""
+msgstr "Выполните команду \"php bin/console %1$s\" для их миграции."
 
 #: src/Update.php:203 src/Central.php:491
 #: src/Console/Database/EnableTimezonesCommand.php:90
 #, php-format
 msgid "%1$s columns are using the deprecated datetime storage field type."
-msgstr ""
+msgstr "%1$s поля используют устаревший тип datetime."
 
 #: src/Update.php:215 src/Central.php:496
 #, php-format
 msgid "%1$s tables are using the deprecated utf8mb3 storage charset."
-msgstr ""
+msgstr "%1$s таблицы используют устаревшую кодировки utf8mb3."
 
 #: src/Update.php:252
 msgid ""
 "Unable to create security key file! You have to run \"php bin/console "
 "glpi:security:change_key\" command to manually create this file."
 msgstr ""
+"Не удаётся создать файл секретного ключа! Создайте его вручную, выполнив "
+"команду \"php bin/console glpi:security:change_key\"."
 
 #: src/DeviceCameraModel.php:40
 msgid "Device camera model"
 msgid_plural "Device camera models"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Модель камеры устройства"
+msgstr[1] "Модели камер устройств"
+msgstr[2] "Модели камер устройств"
+msgstr[3] "Модели камер устройств"
 
 #: src/NetworkPortType.php:43
 msgid "Network port type"
 msgid_plural "Network port types"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Тип сетевых портов"
+msgstr[1] "Типов сетевых портов"
+msgstr[2] "Типов сетевых портов"
+msgstr[3] "Типы сетевых портов"
 
 #: src/NetworkPortType.php:52 src/NetworkPortType.php:76
 msgid "Decimal"
-msgstr ""
+msgstr "Десятичный"
 
 #: src/NetworkPortType.php:61 src/NetworkPortType.php:92
 msgid "Instanciation type"
-msgstr ""
+msgstr "Тип создаваемого экземпляра"
 
 #: src/Dropdown.php:242
 #, php-format
@@ -9157,7 +9175,7 @@ msgstr "Отображение на карте"
 
 #: src/Dropdown.php:303
 msgid "Display on datacenter"
-msgstr ""
+msgstr "Отобразить в датацентре"
 
 #. TRANS: %s is the store path
 #: src/Dropdown.php:792
@@ -9203,7 +9221,7 @@ msgstr[0] "Календари"
 
 #: src/Dropdown.php:1088 src/Profile.php:1079
 msgid "Cable management"
-msgstr ""
+msgstr "Кабель-менеджмент"
 
 #: src/Dropdown.php:1094 src/Profile.php:977 src/Profile.php:2151
 msgid "Internet"
@@ -9237,64 +9255,64 @@ msgstr "Другие"
 #, php-format
 msgid "%s year"
 msgid_plural "%s years"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "%s год"
+msgstr[1] "%s лет"
+msgstr[2] "%s лет"
+msgstr[3] "%s лет"
 
 #. TRANS: %s is a number of months
 #: src/Dropdown.php:1689
 #, php-format
 msgid "%s month"
 msgid_plural "%s months"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "%s месяц"
+msgstr[1] "%s месяцев"
+msgstr[2] "%s месяцев"
+msgstr[3] "%s месяцев"
 
 #. TRANS: %s is a number of days
 #: src/Dropdown.php:1693
 #, php-format
 msgid "%s day"
 msgid_plural "%s days"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "%s день"
+msgstr[1] "%s дней"
+msgstr[2] "%s дней"
+msgstr[3] "%s дней"
 
 #. TRANS: %s is a number of minutes
 #: src/Dropdown.php:1701
 #, php-format
 msgid "%s minute"
 msgid_plural "%s minutes"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "%s минута"
+msgstr[1] "%s минут"
+msgstr[2] "%s минут"
+msgstr[3] "%s минут"
 
 #. TRANS: %s is a number of milliseconds
 #: src/Dropdown.php:1709
 #, php-format
 msgid "%s millisecond"
 msgid_plural "%s milliseconds"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "%s миллисекунда"
+msgstr[1] "%s миллисекунд"
+msgstr[2] "%s миллисекунд"
+msgstr[3] "%s миллисекунд"
 
 #: src/Dropdown.php:1712
 #, php-format
 msgid "%d unit"
 msgid_plural "%d units"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "%d единица"
+msgstr[1] "%d единиц"
+msgstr[2] "%d единиц"
+msgstr[3] "%d единиц"
 
 #: src/Dropdown.php:1718
 #, php-format
 msgid "%s%%"
-msgstr ""
+msgstr "%s%%"
 
 #: src/Dropdown.php:1837
 #, php-format
@@ -9389,7 +9407,7 @@ msgstr "Все страницы в CSV"
 
 #: src/Dropdown.php:2371 templates/components/search/controls.html.twig:126
 msgid "Copy names to clipboard"
-msgstr ""
+msgstr "Скопируйте наименования в буфер обмена"
 
 #: src/CommonTreeDropdown.php:533
 msgid "New child heading"
@@ -9639,7 +9657,7 @@ msgstr "Принудительная синхронизация"
 
 #: src/Auth.php:1466
 msgid "Clean LDAP fields and force synchronisation"
-msgstr ""
+msgstr "Очистите поля LDAP и принудительно выполните синхронизацию"
 
 #: src/Auth.php:1481
 msgid "Change of the authentication method"
@@ -9927,6 +9945,7 @@ msgstr "Использовать правила для"
 #: src/RuleCollection.php:640
 msgid "Remove all equipment import rules and recreate from defaults"
 msgstr ""
+"Удалите все правила импорта оборудования и восстановите их по умолчанию"
 
 #: src/RuleCollection.php:641
 msgid "Reset rules"
@@ -10205,7 +10224,7 @@ msgstr ""
 
 #: src/Html.php:2577
 msgid "Massive actions"
-msgstr ""
+msgstr "Массовые действия"
 
 #: src/Html.php:3172 src/Html.php:3404 src/Html.php:6761
 msgid "Now"
@@ -10293,7 +10312,7 @@ msgstr[0] "+ %d лет"
 
 #: src/Html.php:3843
 msgid "Available variables"
-msgstr ""
+msgstr "Доступные переменные"
 
 #. TRANS: %1$d, %2$d, %3$d are page numbers
 #: src/Html.php:3946 src/Html.php:4159
@@ -10316,31 +10335,31 @@ msgstr "%1$d на %2$d"
 
 #: src/Html.php:6766
 msgid "Just now"
-msgstr ""
+msgstr "Только что"
 
 #: src/Html.php:6769
 #, php-format
 msgid "%s minutes ago"
-msgstr ""
+msgstr "%s минут назад"
 
 #: src/Html.php:6772
 #, php-format
 msgid "%s hours ago"
-msgstr ""
+msgstr "%s часов назад"
 
 #: src/Html.php:6776
 msgid "Yesterday"
-msgstr ""
+msgstr "Вчера"
 
 #: src/Html.php:6779
 #, php-format
 msgid "%s days ago"
-msgstr ""
+msgstr "%s дней назад"
 
 #: src/Html.php:6782
 #, php-format
 msgid "%s weeks ago"
-msgstr ""
+msgstr "%s недель назад"
 
 #: src/Html.php:6785
 msgid "Last month"
@@ -10348,38 +10367,38 @@ msgstr "В прошлом месяце"
 
 #: src/Html.php:6794
 msgid "In a minute"
-msgstr ""
+msgstr "В течение минуты"
 
 #: src/Html.php:6797
 #, php-format
 msgid "In %s minutes"
-msgstr ""
+msgstr "В течение %s минут"
 
 #: src/Html.php:6800
 msgid "In an hour"
-msgstr ""
+msgstr "В течение часа"
 
 #: src/Html.php:6803
 #, php-format
 msgid "In %s hours"
-msgstr ""
+msgstr "В течение %s часов"
 
 #: src/Html.php:6807
 msgid "Tomorrow"
-msgstr ""
+msgstr "Завтра"
 
 #: src/Html.php:6813
 msgid "next week"
-msgstr ""
+msgstr "на следующей неделе"
 
 #: src/Html.php:6816
 #, php-format
 msgid "In %s weeks"
-msgstr ""
+msgstr "В течение %s недель"
 
 #: src/Html.php:6819
 msgid "next month"
-msgstr ""
+msgstr "в следующем месяце"
 
 #. TRANS: Always plural
 #: src/Notepad.php:52 src/Notepad.php:184
@@ -10473,11 +10492,11 @@ msgstr "Удаление комментария"
 
 #: src/NotificationTargetCommonITILObject.php:136
 msgid "User mentionned"
-msgstr ""
+msgstr "Пользователь отмечен"
 
 #: src/NotificationTargetCommonITILObject.php:805
 msgid "Mentionned user"
-msgstr ""
+msgstr "Отмеченый пользователь"
 
 #: src/NotificationTargetCommonITILObject.php:812
 msgid "Former technician in charge of the ticket"
@@ -10650,7 +10669,7 @@ msgstr "Группе назначена задача"
 
 #: src/NotificationTargetCommonITILObject.php:1862
 msgid "Internal type"
-msgstr ""
+msgstr "Внутренний тип"
 
 #: src/NotificationTargetCommonITILObject.php:1865 src/Socket.php:332
 #: src/Socket.php:708 src/PDU_Rack.php:278 src/PDU_Rack.php:349
@@ -10672,7 +10691,7 @@ msgstr[0] "Комментарии"
 #: src/NotificationTargetCommonITILObject.php:1900
 #, php-format
 msgid "Processing %1$s"
-msgstr ""
+msgstr "Обработка %1$s"
 
 #: src/NotificationTargetCommonITILObject.php:1893 src/LevelAgreement.php:260
 #: src/CalendarSegment.php:353 src/CalendarSegment.php:383 src/Config.php:1504
@@ -10777,7 +10796,7 @@ msgstr ""
 
 #: src/SavedSearch_Alert.php:174
 msgid "Notification frequency"
-msgstr ""
+msgstr "Частота оповещений"
 
 #: src/SavedSearch_Alert.php:224
 msgid "Notification does not exists!"
@@ -10871,11 +10890,11 @@ msgstr "Удалённое управление"
 
 #: src/Item_RemoteManagement.php:128
 msgid "Add a remote management"
-msgstr ""
+msgstr "Добавить удалённое управление"
 
 #: src/Item_RemoteManagement.php:155 src/Item_RemoteManagement.php:343
 msgid "Remote ID"
-msgstr ""
+msgstr "ID удалённого устройства"
 
 #: src/KnowbaseItemCategory.php:46 src/Profile.php:1805
 msgid "Knowledge base category"
@@ -10940,33 +10959,33 @@ msgstr[0] "Модели материнских плат"
 #: src/Socket.php:320
 msgid "Socket"
 msgid_plural "Sockets"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Розетка"
+msgstr[1] "Розетки"
+msgstr[2] "Розетки"
+msgstr[3] "Розетки"
 
 #: src/Socket.php:374 src/Socket.php:436 src/Socket.php:710 src/Socket.php:819
 #: src/Socket.php:854 src/Socket.php:910
 #: templates/pages/assets/socket.html.twig:66
 msgid "Wiring side"
-msgstr ""
+msgstr "Сторона подключения"
 
 #: src/Socket.php:665
 msgid "New socket for this item..."
-msgstr ""
+msgstr "Новая розетка для этого элемента."
 
 #: src/Socket.php:880 src/Socket.php:964
 #, php-format
 msgid "Network sockets for %s"
-msgstr ""
+msgstr "Сетевые розетки для 1%s"
 
 #: src/Socket.php:907
 msgid "Socket Model"
-msgstr ""
+msgstr "Модель розетки"
 
 #: src/Socket.php:909
 msgid "NetworkPort"
-msgstr ""
+msgstr "Порт сети"
 
 #: src/Item_Devices.php:79
 #, php-format
@@ -11051,18 +11070,18 @@ msgstr[0] "Типы SIM-карт"
 #: src/DatabaseInstanceType.php:38
 msgid "Database instance type"
 msgid_plural "Database instance types"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Тип экземпляра базы данных"
+msgstr[1] "Типы экземпляров базы данных"
+msgstr[2] "Типы экземпляров базы данных"
+msgstr[3] "Типы экземпляров базы данных"
 
 #: src/DatabaseInstanceCategory.php:38
 msgid "Database instance category"
 msgid_plural "Database instance categories"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Категория экземпляра базы данных"
+msgstr[1] "Категории экземпляров базы данных"
+msgstr[2] "Категории экземпляров базы данных"
+msgstr[3] "Категории экземпляров базы данных"
 
 #: src/ProjectTaskTeam.php:71
 msgid "Task team"
@@ -11521,19 +11540,19 @@ msgstr "Добавить комментарий к заявкам (инициа�
 
 #: src/ITILFollowup.php:857
 msgid "Add followup (watcher)"
-msgstr ""
+msgstr "Добавить в наблюдение (наблюдатель)"
 
 #: src/ITILFollowup.php:858
 msgid "Add a followup to tickets (watcher)"
-msgstr ""
+msgstr "Добавить в наблюдения тикет (наблюдатель)"
 
 #: src/PCIVendor.php:44
 msgid "PCI vendor"
 msgid_plural "PCI vendors"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Вендор PCI"
+msgstr[1] "Вендоры PCI"
+msgstr[2] "Вендоры PCI"
+msgstr[3] "Вендоры PCI"
 
 #: src/PCIVendor.php:52 src/PCIVendor.php:70 src/USBVendor.php:52
 #: src/USBVendor.php:70
@@ -11684,40 +11703,42 @@ msgstr "Первичный порт"
 
 #: src/NetworkPortMetrics.php:54
 msgid "Network port metrics"
-msgstr ""
+msgstr "Показатель сетевого порта"
 
 #: src/NetworkPortMetrics.php:171
 msgid "Input/Output bytes"
-msgstr ""
+msgstr "Байты ввода/вывода"
 
 #: src/NetworkPortMetrics.php:188
 msgid "Input/Output errors"
-msgstr ""
+msgstr "Ошибки ввода/вывода"
 
 #: src/NetworkPortMetrics.php:204
 msgid "Input bytes"
-msgstr ""
+msgstr "Входящие байты"
 
 #: src/NetworkPortMetrics.php:206
 msgid "Output bytes"
-msgstr ""
+msgstr "Исходящие байты"
 
 #: src/NetworkPortMetrics.php:208
 msgid "Input errors"
-msgstr ""
+msgstr "Входящие ошибки"
 
 #: src/NetworkPortMetrics.php:210
 msgid "Output errors"
-msgstr ""
+msgstr "Исходящие ошибки"
 
 #: src/PendingReasonCron.php:48
 msgid ""
 "Send automated follow-ups on pending tickets and solve them if necessary"
 msgstr ""
+"Отправлять автоматические действия по ожидающим обращениям и решать при "
+"необходимости"
 
 #: src/PendingReasonCron.php:194
 msgid "Automatic followups / resolution"
-msgstr ""
+msgstr "Автоматическое отслеживание / разрешение"
 
 #: src/Dashboard/Provider.php:256 src/Dashboard/Grid.php:1176
 msgid "Late tickets"
@@ -11725,7 +11746,7 @@ msgstr "Опаздывающие заявки"
 
 #: src/Dashboard/Provider.php:297
 msgid "Tickets waiting for validation"
-msgstr ""
+msgstr "Заявки ждут проверки"
 
 #: src/Dashboard/Provider.php:340
 msgid "Incoming tickets"
@@ -11753,11 +11774,11 @@ msgstr "Закрытые заявки"
 
 #: src/Dashboard/Provider.php:532 src/Dashboard/Provider.php:676
 msgid "Late own and resolve"
-msgstr ""
+msgstr "Поздно владеть и решать"
 
 #: src/Dashboard/Provider.php:533 src/Dashboard/Provider.php:677
 msgid "Late resolve"
-msgstr ""
+msgstr "Запоздалое решение"
 
 #: src/Dashboard/Provider.php:534 src/Dashboard/Provider.php:678
 msgid "Late own"
@@ -11877,7 +11898,7 @@ msgstr ""
 
 #: src/Dashboard/Widget.php:238
 msgid "List of articles"
-msgstr ""
+msgstr "Список статей"
 
 #: src/Dashboard/Widget.php:430 src/Dashboard/Widget.php:551
 #: src/Dashboard/Widget.php:1050 src/Dashboard/Widget.php:1877
@@ -12030,11 +12051,11 @@ msgstr ""
 
 #: src/Dashboard/Grid.php:1313
 msgid "Top ticket's categories"
-msgstr ""
+msgstr "Лучшие категории заявок"
 
 #: src/Dashboard/Grid.php:1314
 msgid "Top ticket's entities"
-msgstr ""
+msgstr "Самые популярные заявки"
 
 #: src/Dashboard/Grid.php:1315
 msgid "Top ticket's request types"
@@ -12062,7 +12083,7 @@ msgstr ""
 
 #: src/Dashboard/Grid.php:1338
 msgid "Top ticket's assignees"
-msgstr ""
+msgstr "Лучшие исполнители заявок"
 
 #: src/Dashboard/Grid.php:1339
 msgid "Top ticket's assignee groups"
@@ -12070,7 +12091,7 @@ msgstr ""
 
 #: src/Dashboard/Grid.php:1360
 msgid "List of reminders"
-msgstr ""
+msgstr "Список напоминаний"
 
 #: src/Dashboard/Grid.php:1368
 msgid "Editable markdown card"
@@ -12078,7 +12099,7 @@ msgstr ""
 
 #: src/Dashboard/Grid.php:1371
 msgid "Toggle edit mode to edit content"
-msgstr ""
+msgstr "Переключите режим редактирования, чтобы редактировать контент"
 
 #: src/Dashboard/Grid.php:1392 src/CommonDBTM.php:5159
 msgid "Purge"
@@ -12099,7 +12120,7 @@ msgstr[3] ""
 
 #: src/RefusedEquipment.php:133
 msgid "Method"
-msgstr ""
+msgstr "Метод"
 
 #: src/RefusedEquipment.php:260
 msgid "Inventory is still refused."
@@ -12329,15 +12350,15 @@ msgstr ""
 
 #: src/RuleImportAsset.php:117
 msgid "Item name"
-msgstr ""
+msgstr "Наименование элемента"
 
 #: src/RuleImportAsset.php:132
 msgid "Port description"
-msgstr ""
+msgstr "Описание порта"
 
 #: src/RuleImportAsset.php:144
 msgid "Device_id"
-msgstr ""
+msgstr "ID устройства"
 
 #: src/RuleImportAsset.php:147
 msgid "Serial of the operating system"
@@ -12879,7 +12900,7 @@ msgstr "Оборудование временно недоступно"
 
 #: src/Reservation.php:439
 msgid "View all items"
-msgstr ""
+msgstr "Отобразить все элементы"
 
 #: src/Reservation.php:444
 msgid "All reservable devices"
@@ -12888,7 +12909,7 @@ msgstr "Всё резервируемое оборудование"
 #: src/Reservation.php:555
 #, php-format
 msgid "Reserved by %s"
-msgstr ""
+msgstr "Зарезервирован %s"
 
 #: src/Reservation.php:602
 #, php-format
@@ -13426,17 +13447,17 @@ msgstr ""
 #: src/CommonITILRecurrent.php:581
 #, php-format
 msgid "%s %d successfully created"
-msgstr ""
+msgstr "%s %d создан успешно"
 
 #: src/CommonITILRecurrent.php:588
 #, php-format
 msgid "%s creation failed (check mandatory fields)"
-msgstr ""
+msgstr "%s не создан (проверьте обязательные поля)"
 
 #: src/CommonITILRecurrent.php:594
 #, php-format
 msgid "%s creation failed (no template)"
-msgstr ""
+msgstr "%s не создан (не выбран шаблон)"
 
 #: src/Contract.php:205
 msgctxt "quantity"
@@ -13557,7 +13578,7 @@ msgstr "Удалить договор"
 
 #: src/Contract.php:1767
 msgid "No item."
-msgstr ""
+msgstr "Нет элементов."
 
 #: src/Certificate.php:146 templates/pages/management/certificate.html.twig:37
 msgid "Self-signed"
@@ -13940,15 +13961,15 @@ msgstr "Создать изменение из этой задачи"
 #: src/Database.php:50 src/Config.php:793
 msgid "Database"
 msgid_plural "Databases"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "База данных"
+msgstr[1] "Баз данных"
+msgstr[2] "Баз данных"
+msgstr[3] "Базы данных"
 
 #: src/Database.php:90 src/Database.php:403 src/DatabaseInstance.php:224
 #: templates/generic_show_form.html.twig:75
 msgid "Is active"
-msgstr ""
+msgstr "Активен"
 
 #: src/Database.php:121 src/Database.php:404 src/DatabaseInstance.php:268
 msgid "Has backup"
@@ -13970,11 +13991,11 @@ msgstr ""
 
 #: src/Database.php:369
 msgid "Add a database"
-msgstr ""
+msgstr "Добавить базу данных"
 
 #: src/Database.php:397
 msgid "No database"
-msgstr ""
+msgstr "Нет базы данных"
 
 #: src/Transfer.php:3829 src/Transfer.php:3836
 #: src/NetworkPortInstantiation.php:933 src/Computer_Item.php:247
@@ -14066,7 +14087,7 @@ msgstr "Если договоры более не используются"
 
 #: src/Transfer.php:3984
 msgid "If certificates are no longer used"
-msgstr ""
+msgstr "Если сертификаты более не используются"
 
 #: src/Transfer.php:4005
 msgid ""
@@ -15032,7 +15053,7 @@ msgstr ""
 #: src/NotificationTargetCartridgeItem.php:98
 #: src/NotificationTargetConsumableItem.php:98
 msgid "To order"
-msgstr ""
+msgstr "Заказать"
 
 #: src/DomainRecord.php:46
 msgid "Domain record"
@@ -15064,7 +15085,7 @@ msgstr "Вам отказано в редактировании этого ти�
 
 #: src/DomainRecord.php:406 src/DomainRecord.php:408
 msgid "Open helper form"
-msgstr ""
+msgstr "Открыть вспомогательную форму"
 
 #: src/DomainRecord.php:535
 msgid "Link a record"
@@ -15380,7 +15401,7 @@ msgstr ""
 
 #: src/CommonITILValidation.php:1618
 msgid "This item is waiting for approval."
-msgstr ""
+msgstr "Этот элемент в ожидании подтверждения"
 
 #: src/CommonITILValidation.php:1619
 msgid "Do you really want to resolve or close it?"
@@ -16242,7 +16263,7 @@ msgstr "Правило"
 
 #: src/RuleMatchedLog.php:240 src/RuleMatchedLog.php:320
 msgid "Module"
-msgstr ""
+msgstr "Модуль"
 
 #: src/DeviceCamera.php:40
 msgid "Camera"
@@ -16337,18 +16358,18 @@ msgstr "Использовать"
 #: src/Cable.php:46
 msgid "Cable"
 msgid_plural "Cables"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Кабель"
+msgstr[1] "Кабелей"
+msgstr[2] "Кабелей"
+msgstr[3] "Кабели"
 
 #: src/Cable.php:136 src/CableType.php:39
 msgid "Cable type"
 msgid_plural "Cable types"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Типа кабеля"
+msgstr[1] "Типов кабелей"
+msgstr[2] "Типов кабелей"
+msgstr[3] "Типы кабелей"
 
 #: src/LevelAgreement.php:205 src/LevelAgreement.php:398
 msgid "Maximum time"
@@ -16937,12 +16958,12 @@ msgstr "%s / %s задач завершено"
 #: src/Project.php:2529 src/CommonITILObject.php:8234
 msgctxt "filters"
 msgid "The title of the item"
-msgstr ""
+msgstr "Заголовок элемента"
 
 #: src/Project.php:2533 src/CommonITILObject.php:8238
 msgctxt "filters"
 msgid "The type of the item"
-msgstr ""
+msgstr "Тип элемента"
 
 #: src/Project.php:2537
 msgctxt "filters"
@@ -17036,7 +17057,7 @@ msgstr "Телеметрия"
 
 #: src/Telemetry.php:258
 msgid "Send telemetry information"
-msgstr ""
+msgstr "Отправить телеметрию"
 
 #: src/Telemetry.php:348
 msgid "See what would be sent..."
@@ -17092,11 +17113,11 @@ msgstr ""
 
 #: src/ContentTemplates/Parameters/UserParameters.php:74
 msgid "Full name"
-msgstr ""
+msgstr "Полное имя"
 
 #: src/ContentTemplates/Parameters/UserParameters.php:78
 msgid "Mobile"
-msgstr ""
+msgstr "Мобильный:"
 
 #: src/ContentTemplates/Parameters/CommonITILObjectParameters.php:61
 msgid "Reference (# + id)"
@@ -17143,7 +17164,7 @@ msgstr "Сводка"
 
 #: src/ContentTemplates/TemplateDocumentation.php:130
 msgid "Variable"
-msgstr ""
+msgstr "Переменная"
 
 #: src/ContentTemplates/TemplateDocumentation.php:132
 msgid "Usage"
@@ -17372,7 +17393,7 @@ msgstr "Каталог типов сетевых устройств"
 
 #: src/KnowbaseItem_KnowbaseItemCategory.php:176
 msgid "Add a category"
-msgstr ""
+msgstr "Добавить категорию"
 
 #: src/KnowbaseItem_KnowbaseItemCategory.php:226
 msgid "Category name"
@@ -17469,7 +17490,7 @@ msgstr "Зарегистрировано"
 
 #: src/GLPINetwork.php:228
 msgid "Unable to fetch registration information."
-msgstr ""
+msgstr "Невозможно получить регистрационную информацию."
 
 #: src/GLPINetwork.php:244
 msgid "The registration key is invalid."
@@ -18259,11 +18280,11 @@ msgstr ""
 
 #: src/Config.php:1325
 msgid "Horizontal (menu in header)"
-msgstr ""
+msgstr "Горизонтально (меню в шапке)"
 
 #: src/Config.php:1326
 msgid "Vertical (menu in sidebar)"
-msgstr ""
+msgstr "Вертикально (боковое меню)"
 
 #: src/Config.php:1356
 msgid "Rich text field layout"
@@ -18275,7 +18296,7 @@ msgstr ""
 
 #: src/Config.php:1362
 msgid "Classic (toolbar on top)"
-msgstr ""
+msgstr "Классика (панель сверху)"
 
 #: src/Config.php:1371
 msgid "Enable high contrast"
@@ -18287,7 +18308,7 @@ msgstr "Использовать конфигурацию сервера"
 
 #: src/Config.php:1389
 msgid "Timezone usage has not been activated."
-msgstr ""
+msgstr "Использование часовых поясов не было активировано."
 
 #: src/Config.php:1391
 #, php-format
@@ -18614,7 +18635,7 @@ msgstr "Вы используете версию в разработке, буд
 
 #: src/Config.php:3011
 msgid "You are using a pre-release version, be careful!"
-msgstr ""
+msgstr "Вы используете предварительную версию. Будьте осторожны."
 
 #: src/Config.php:3018
 msgid "I know I am using a unstable version."
@@ -19452,7 +19473,7 @@ msgstr "Время до решения + Прогресса"
 
 #: src/CommonITILObject.php:3809
 msgid "Time to resolve exceeded"
-msgstr ""
+msgstr "Время на решение истекло"
 
 #: src/CommonITILObject.php:3873
 msgid "Last edit by"
@@ -19510,7 +19531,7 @@ msgstr "Планификация"
 #: src/CommonITILObject.php:6490
 msgctxt "button"
 msgid "Answer"
-msgstr ""
+msgstr "Ответ"
 
 #: src/CommonITILObject.php:6500
 msgctxt "button"
@@ -19520,7 +19541,7 @@ msgstr "Создать задачу"
 #: src/CommonITILObject.php:6510
 msgctxt "button"
 msgid "Add a solution"
-msgstr ""
+msgstr "Добавить решение"
 
 #: src/CommonITILObject.php:6520
 msgctxt "button"
@@ -20863,7 +20884,7 @@ msgstr "Невозможно создать датацентр."
 
 #: src/Console/Migration/RacksPluginToCoreCommand.php:518
 msgid "Importing other models..."
-msgstr ""
+msgstr "Importing other models..."
 
 #: src/Console/Migration/RacksPluginToCoreCommand.php:531
 msgid "Other items do not exist in GLPI core."
@@ -20929,7 +20950,7 @@ msgstr ""
 
 #: src/Console/Migration/RacksPluginToCoreCommand.php:810
 msgid "Importing rack models..."
-msgstr ""
+msgstr "Импорт моделей стоек..."
 
 #: src/Console/Migration/RacksPluginToCoreCommand.php:828
 #, php-format
@@ -20944,11 +20965,11 @@ msgstr ""
 #: src/Console/Migration/RacksPluginToCoreCommand.php:872
 #: src/Console/Migration/RacksPluginToCoreCommand.php:955
 msgid "No rack models found."
-msgstr ""
+msgstr "Моделей стоек не найдено."
 
 #: src/Console/Migration/RacksPluginToCoreCommand.php:891
 msgid "Importing rack types..."
-msgstr ""
+msgstr "Импорт типов стоек..."
 
 #: src/Console/Migration/RacksPluginToCoreCommand.php:909
 #, php-format
@@ -20962,7 +20983,7 @@ msgstr ""
 
 #: src/Console/Migration/RacksPluginToCoreCommand.php:974
 msgid "Importing rack states..."
-msgstr ""
+msgstr "Импорт состояний стойки..."
 
 #: src/Console/Migration/RacksPluginToCoreCommand.php:992
 #, php-format
@@ -20980,7 +21001,7 @@ msgstr ""
 
 #: src/Console/Migration/RacksPluginToCoreCommand.php:1058
 msgid "Importing rooms..."
-msgstr ""
+msgstr "Импорт помещений..."
 
 #: src/Console/Migration/RacksPluginToCoreCommand.php:1076
 #, php-format
@@ -20998,7 +21019,7 @@ msgstr "Кабинеты не найдены."
 
 #: src/Console/Migration/RacksPluginToCoreCommand.php:1143
 msgid "Importing racks..."
-msgstr ""
+msgstr "Импорт стоек..."
 
 #: src/Console/Migration/RacksPluginToCoreCommand.php:1163
 #, php-format
@@ -21012,11 +21033,11 @@ msgstr ""
 
 #: src/Console/Migration/RacksPluginToCoreCommand.php:1253
 msgid "No racks found."
-msgstr ""
+msgstr "Стоек не найдено."
 
 #: src/Console/Migration/RacksPluginToCoreCommand.php:1272
 msgid "Importing rack items..."
-msgstr ""
+msgstr "Импорт элементов стойки..."
 
 #: src/Console/Migration/RacksPluginToCoreCommand.php:1294
 #, php-format
@@ -21353,15 +21374,15 @@ msgstr "Все плагины"
 
 #: src/Console/Application.php:128
 msgid "The command to execute"
-msgstr ""
+msgstr "Команда на выполнение"
 
 #: src/Console/Application.php:135
 msgid "Display this help message"
-msgstr ""
+msgstr "Показать это справочное сообщение"
 
 #: src/Console/Application.php:141
 msgid "Do not output any message"
-msgstr ""
+msgstr "Не выводить никаких сообщений"
 
 #: src/Console/Application.php:147
 msgid ""
@@ -21375,19 +21396,19 @@ msgstr "Отобразить версию приложения"
 
 #: src/Console/Application.php:159
 msgid "Force ANSI output"
-msgstr ""
+msgstr "Принудительный вывод ANSI"
 
 #: src/Console/Application.php:165
 msgid "Disable ANSI output"
-msgstr ""
+msgstr "Отключить вывод ANSI"
 
 #: src/Console/Application.php:171
 msgid "Do not ask any interactive question"
-msgstr ""
+msgstr "Не задавайте интерактивных вопросов"
 
 #: src/Console/Application.php:177
 msgid "Configuration directory to use"
-msgstr ""
+msgstr "Каталог конфигурации для использования"
 
 #: src/Console/Application.php:183
 msgid "Disable GLPI plugins (unless commands forces plugins loading)"
@@ -21421,7 +21442,7 @@ msgstr ""
 
 #: src/Console/Application.php:492
 msgid "Some mandatory system requirements are missing."
-msgstr ""
+msgstr "Отсутствуют некоторые обязательные системные требования."
 
 #: src/Console/Cache/ClearCommand.php:72
 msgid ""
@@ -21437,11 +21458,11 @@ msgstr ""
 
 #: src/Console/Cache/ClearCommand.php:101
 msgid "Failed to clear cache."
-msgstr ""
+msgstr "Не удалось очистить кэш."
 
 #: src/Console/Cache/ClearCommand.php:107
 msgid "Cache cleared successfully."
-msgstr ""
+msgstr "Кэш очищен."
 
 #: src/Console/Cache/SetNamespacePrefixCommand.php:89
 #: src/Console/Cache/ConfigureCommand.php:153
@@ -21568,7 +21589,7 @@ msgstr ""
 #: src/Console/Task/UnlockCommand.php:155
 #, php-format
 msgid "Number of tasks unlocked: %d."
-msgstr ""
+msgstr "Количество разблокированных задач: 1%d ."
 
 #: src/Console/Task/UnlockCommand.php:180
 msgid "Option --cycle is not compatible with option --delay."
@@ -21728,7 +21749,7 @@ msgstr "Удалено из LDAP"
 
 #: src/Console/Ldap/SynchronizeUsersCommand.php:425
 msgid "Restored from LDAP"
-msgstr ""
+msgstr "Восстановлено из LDAP"
 
 #: src/Console/Ldap/SynchronizeUsersCommand.php:460
 msgid ""
@@ -21773,7 +21794,7 @@ msgstr ""
 
 #: src/Console/Rules/ProcessSoftwareCategoryRulesCommand.php:79
 msgid "No software to process."
-msgstr ""
+msgstr "Нет ПО для обработки."
 
 #: src/Console/Rules/ProcessSoftwareCategoryRulesCommand.php:91
 #, php-format
@@ -21818,7 +21839,7 @@ msgstr ""
 
 #: src/Console/Config/SetCommand.php:58
 msgid "Set configuration value"
-msgstr ""
+msgstr "Установить значение конфигурации"
 
 #: src/Console/Config/SetCommand.php:68
 msgid "Configuration value:"
@@ -21879,7 +21900,7 @@ msgstr "Невозможно изменить секретный ключево�
 
 #: src/Console/Security/ChangekeyCommand.php:106
 msgid "New security key generated; database updated."
-msgstr ""
+msgstr "New security key generated; database updated."
 
 #: src/Console/Database/InstallCommand.php:100
 msgid "Default language of GLPI"
@@ -21888,6 +21909,7 @@ msgstr "Язык GLPI по умолчанию"
 #: src/Console/Database/InstallCommand.php:108
 msgid "Force execution of installation, overriding existing database"
 msgstr ""
+"Принудительное выполнение установки с заменой существующей базы данных"
 
 #: src/Console/Database/InstallCommand.php:139
 msgid ""
@@ -21945,7 +21967,7 @@ msgstr ""
 
 #: src/Console/Database/EnableTimezonesCommand.php:106
 msgid "Timezone usage has been enabled."
-msgstr ""
+msgstr "Использование часовых поясов включено."
 
 #: src/Console/Database/AbstractConfigureCommand.php:110
 #: src/Console/Database/AbstractConfigureCommand.php:437
@@ -21957,7 +21979,7 @@ msgstr ""
 #: src/Console/Database/AbstractConfigureCommand.php:438
 #: src/Console/Database/UpdateCommand.php:135
 msgid "Database name"
-msgstr ""
+msgstr "Имя базы данных"
 
 #: src/Console/Database/AbstractConfigureCommand.php:125
 msgid ""
@@ -21967,13 +21989,13 @@ msgstr ""
 
 #: src/Console/Database/AbstractConfigureCommand.php:133
 msgid "Database port"
-msgstr ""
+msgstr "Порт базы данных"
 
 #: src/Console/Database/AbstractConfigureCommand.php:140
 #: src/Console/Database/AbstractConfigureCommand.php:439
 #: src/Console/Database/UpdateCommand.php:136
 msgid "Database user"
-msgstr ""
+msgstr "Пользователь базы данных"
 
 #: src/Console/Database/AbstractConfigureCommand.php:147
 msgid "Reconfigure database, override configuration file if it already exists"
@@ -21999,7 +22021,7 @@ msgstr "Пароль базы данных:"
 #: src/Console/Database/AbstractConfigureCommand.php:236
 #: src/Console/Database/AbstractConfigureCommand.php:499
 msgid "Configuration aborted."
-msgstr ""
+msgstr "Конфигурация прервана."
 
 #: src/Console/Database/AbstractConfigureCommand.php:296
 msgid "Saving configuration file..."
@@ -22008,7 +22030,7 @@ msgstr "Сохранить конфигурационный файл..."
 #: src/Console/Database/AbstractConfigureCommand.php:312
 #, php-format
 msgid "Cannot write configuration file \"%s\"."
-msgstr ""
+msgstr "Невозможно записать конфигурационный файл \"%s\""
 
 #: src/Console/Database/AbstractConfigureCommand.php:399
 msgid "Database name defined by --db-name option cannot be empty."
@@ -22024,11 +22046,11 @@ msgstr ""
 
 #: src/Console/Database/UpdateCommand.php:76
 msgid "Update database schema to new version"
-msgstr ""
+msgstr "Обновить схему базы данных до новой версии"
 
 #: src/Console/Database/UpdateCommand.php:82
 msgid "Allow update to an unstable version"
-msgstr ""
+msgstr "Разрешить обновление до нестабильной версии"
 
 #: src/Console/Database/UpdateCommand.php:89
 msgid ""
@@ -22063,6 +22085,8 @@ msgstr "Обновление прервано."
 msgid ""
 "Check for schema differences between current database and installation file."
 msgstr ""
+"Проверьте, нет ли различий в схемах между текущей базой данных и "
+"установочным файлом."
 
 #: src/Console/Database/CheckSchemaIntegrityCommand.php:76
 msgid "Strict comparison of definitions"
@@ -22451,7 +22475,7 @@ msgstr ""
 #: src/System/Requirement/PhpVersion.php:63
 #, php-format
 msgid "PHP version must be at least %s."
-msgstr ""
+msgstr "Версия PHP должна быть как минимум %s"
 
 #: src/System/Requirement/SessionsConfiguration.php:43
 msgid "Sessions configuration"
@@ -22547,7 +22571,7 @@ msgstr ""
 
 #: src/System/Requirement/DbConfiguration.php:89
 msgid "Database configuration is OK."
-msgstr ""
+msgstr "Конфигурация базы данных корректна."
 
 #: src/System/Requirement/ExtensionGroup.php:78
 #, php-format
@@ -23192,11 +23216,11 @@ msgstr "Сделать выбор"
 
 #: js/planning.js:350
 msgid "Delete the whole serie of the recurrent event"
-msgstr ""
+msgstr "Удалить всю серию повторяющегося события"
 
 #: js/planning.js:351
 msgid "or just add an exception by deleting this instance?"
-msgstr ""
+msgstr "или просто добавить исключение, удалив этот экземпляр?"
 
 #: js/planning.js:353 js/planning.js:470 js/planning.js:513
 msgid "Serie"
@@ -24065,7 +24089,7 @@ msgstr ""
 
 #: templates/layout/parts/saved_searches.html.twig:58
 msgid "Close the panel"
-msgstr ""
+msgstr "Закройте панель"
 
 #: templates/layout/parts/saved_searches.html.twig:93
 msgid "Filter list"

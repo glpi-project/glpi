@@ -21,16 +21,19 @@
 # Daniel Berton <danielsberton@gmail.com>, 2021
 # George Maia <georgemaia@gmail.com>, 2021
 # Gustavo Macedo <gxbm91@gmail.com>, 2021
-# Luiz Eduardo de Castilho Junior <castilhojr86@hotmail.com>, 2021
 # Rodrigo de Almeida Sottomaior Macedo <rmsolucoeseminformatica@protonmail.com>, 2021
 # Márcio Moraes <marciopanto@gmail.com>, 2021
 # Wanderlei Hüttel <wanderlei.huttel@gmail.com>, 2021
-# Arthur Ramos Schaefer <arthur.r.schaefer@gmail.com>, 2021
 # Paulo Henrique <atual.paulo@gmail.com>, 2021
 # Stevenes Donato <stevenesdonato@gmail.com>, 2021
 # DOMBRE Julien <moyo@indepnet.net>, 2021
 # Eduardo Mozart de Oliveira <eduardomozart182@gmail.com>, 2021
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2021
+# Luiz Eduardo de Castilho Junior <castilhojr86@hotmail.com>, 2021
+# Arthur Ramos Schaefer <arthur.r.schaefer@gmail.com>, 2021
+# Maurício Serafim <mauricio@solucoessigma.com.br>, 2021
+# Diego Rodrigo <diegorodrigo90@gmail.com>, 2022
+# Marcelo Oliveira, 2022
 # 
 #, fuzzy
 msgid ""
@@ -39,7 +42,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-12-14 12:46+0000\n"
 "PO-Revision-Date: 2021-05-26 09:06+0000\n"
-"Last-Translator: alexandre delaunay <delaunay.alexandre@gmail.com>, 2021\n"
+"Last-Translator: Marcelo Oliveira, 2022\n"
 "Language-Team: Portuguese (Brazil) (https://www.transifex.com/glpi/teams/1637/pt_BR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -49,11 +52,11 @@ msgstr ""
 
 #: ajax/gantt.php:110
 msgid "Target item must be of project type"
-msgstr "O item selecionado precisa ser um tipo de arquivo"
+msgstr "Destino do item deve ser um tipo de projeto"
 
 #: ajax/gantt.php:143
 msgid "Item must be of project type"
-msgstr "O item precisa ser um tipo de projeto"
+msgstr "item deve ser um tipo de projeto"
 
 #: ajax/gantt.php:208
 msgid "Link already exist!"
@@ -232,7 +235,7 @@ msgstr "Adicionar novos dispositivos"
 
 #: ajax/selectUnaffectedOrNewItem_Device.php:79
 msgid "No unaffected device!"
-msgstr ""
+msgstr "Dispositivo não afetado!"
 
 #: ajax/ticketiteminformation.php:72
 #, php-format
@@ -382,7 +385,7 @@ msgstr "URL"
 #: ajax/entitytreesons.php:83
 #: templates/layout/parts/profile_selector.html.twig:74
 msgid "+ sub-entities"
-msgstr ""
+msgstr "+ sub-entidades"
 
 #: ajax/dropdownItilActors.php:117 ajax/dropdownItilActors.php:214
 #: ajax/uemailUpdate.php:92 front/problem_supplier.form.php:47
@@ -771,6 +774,9 @@ msgid ""
 "responsiveness statistics about user interface features, memory, and "
 "hardware configuration."
 msgstr ""
+"Nós coletamos apenas os seguintes dados: uso de plugin, performance e "
+"estatísticas de capacidade de respostas sobre os recursos de interface de "
+"usuário, memória, e configuração de hardware."
 
 #: ajax/dcroom_size.php:63 templates/pages/assets/rack.html.twig:76
 #: templates/pages/assets/rack.html.twig:79
@@ -785,7 +791,7 @@ msgstr ""
 
 #: ajax/central.php:87
 msgid "Invalid widget"
-msgstr ""
+msgstr "widget inválido"
 
 #: ajax/ticketassigninformation.php:75 ajax/ticketassigninformation.php:76
 #: ajax/ticketassigninformation.php:108 ajax/ticketassigninformation.php:109
@@ -1175,7 +1181,7 @@ msgstr "Campos obrigatórios não foram preenchidos!"
 #: front/knowbaseitem_knowbaseitemcategory.form.php:55
 #, php-format
 msgid "%s adds a link with a category"
-msgstr ""
+msgstr "%s adiciona um link à categoria"
 
 #: front/itiltemplatefield.form.php:64
 msgid "hidden"
@@ -1577,7 +1583,7 @@ msgstr "Por hardware"
 
 #: front/report.networking.php:81
 msgid "By network socket"
-msgstr ""
+msgstr "Para soquete de rede"
 
 #: front/notification.tags.php:38
 msgid "List of available tags"
@@ -1836,7 +1842,7 @@ msgstr "%s adicionou um ator"
 #: front/problem.form.php:200
 #, php-format
 msgid "%s Kanban"
-msgstr ""
+msgstr "%sKanban"
 
 #: front/change.form.php:211 front/ticket.form.php:252
 #: front/problem.form.php:214
@@ -2533,24 +2539,24 @@ msgstr ""
 #: front/socket.form.php:62 front/socket.form.php:122
 #, php-format
 msgid "%s adds a socket"
-msgstr ""
+msgstr "%s adiciona um soquete"
 
 #. TRANS: %s is the user login
 #: front/socket.form.php:79
 #, php-format
 msgid "%s purges a socket"
-msgstr ""
+msgstr "%s expurga um soquete"
 
 #. TRANS: %s is the user login
 #: front/socket.form.php:93
 #, php-format
 msgid "%s updates a socket"
-msgstr ""
+msgstr "%s atualiza um soquete"
 
 #: front/socket.form.php:109
 #, php-format
 msgid "%1$s adds several sockets"
-msgstr ""
+msgstr "%1$s adiciona um soquete severo"
 
 #: front/devices.php:38 front/devices.php:42 src/CommonDevice.php:50
 #: src/CommonDevice.php:299 src/Dropdown.php:940 src/Item_Devices.php:265
@@ -3307,7 +3313,7 @@ msgstr "Nenhuma ação disponível"
 #: src/MassiveAction.php:142 src/MassiveAction.php:151
 #: src/MassiveAction.php:260 src/MassiveAction.php:900
 msgid "Implementation error!"
-msgstr ""
+msgstr "erro de implementação!"
 
 #: src/MassiveAction.php:253
 msgid "No selected items"
@@ -3412,7 +3418,7 @@ msgstr "ou"
 
 #: src/MassiveAction.php:1009
 msgid "How many copies do you want to create?"
-msgstr ""
+msgstr "Quantas cópias você deseja criar ?"
 
 #: src/MassiveAction.php:1035
 msgid "Are you sure you want to add this item to transfer list?"
@@ -3578,7 +3584,7 @@ msgstr "RootDN (para ligações não anônimas)"
 
 #: src/AuthLDAP.php:444
 msgid "Use Bind"
-msgstr ""
+msgstr "Use Bind"
 
 #: src/AuthLDAP.php:450
 msgid "Password (for non-anonymous binds)"
@@ -3672,20 +3678,20 @@ msgstr ""
 
 #: src/AuthLDAP.php:587
 msgid "TLS Certfile"
-msgstr ""
+msgstr "Certificado TLS"
 
 #: src/AuthLDAP.php:590
 msgid "TLS Keyfile"
-msgstr ""
+msgstr "Arquivo Chave TLS"
 
 #: src/AuthLDAP.php:595 src/AuthLDAP.php:664 src/AuthLDAP.php:1270
 #: src/AuthLdapReplicate.php:93
 msgid "Timeout"
-msgstr ""
+msgstr "Tempo limite"
 
 #: src/AuthLDAP.php:602 src/AuthLDAP.php:1275 src/AuthLdapReplicate.php:103
 msgid "No timeout"
-msgstr ""
+msgstr "Sem tempo limite"
 
 #: src/AuthLDAP.php:606 src/AuthLDAP.php:792 src/AuthLDAP.php:920
 #: src/AuthLDAP.php:956 src/Auth.php:1742 src/Dashboard/Grid.php:855
@@ -3814,8 +3820,8 @@ msgstr "Idioma"
 #: templates/generic_show_form.html.twig:523
 msgid "Picture"
 msgid_plural "Pictures"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Imagens"
+msgstr[1] "Imagens"
 
 #: src/AuthLDAP.php:911 src/AuthLDAP.php:1252
 #: src/ContentTemplates/Parameters/UserParameters.php:81
@@ -4028,11 +4034,11 @@ msgstr "Desabilitar"
 
 #: src/AuthLDAP.php:3989
 msgid "Do nothing"
-msgstr ""
+msgstr "Não fazer"
 
 #: src/AuthLDAP.php:3990
 msgid "Restore (move out of trashbin)"
-msgstr ""
+msgstr "Recuperar (retirar da lixeira)"
 
 #: src/AuthLDAP.php:3991 src/Plugin.php:2563 src/Marketplace/View.php:771
 msgid "Enable"
@@ -4069,13 +4075,13 @@ msgstr "Caminho de arquivo de chave privada do certificado TLS está incorreto"
 #: src/SNMPCredential.php:47
 msgid "SNMP credential"
 msgid_plural "SNMP credentials"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Credenciais SNMP"
+msgstr[1] "Credenciais SNMP"
 
 #: src/SNMPCredential.php:58
 #: templates/components/form/snmpcredential.html.twig:56
 msgid "Community"
-msgstr ""
+msgstr "Comunidade"
 
 #: src/Profile_User.php:142 src/Profile_User.php:290
 msgid "Add an authorization to a user"
@@ -4555,7 +4561,7 @@ msgstr "Isso afetará apenas plug-ins atualmente habilitados"
 
 #: src/Plugin.php:2614
 msgid "This will only affect plugins ready to be cleaned"
-msgstr ""
+msgstr "Isso afetará apenas plugins lidos e limpos"
 
 #: src/IPNetwork_Vlan.php:131 src/NetworkPort_Vlan.php:132
 #: src/NetworkPort.php:1388
@@ -4634,8 +4640,8 @@ msgstr "Velocidade da porta de canal de fibra"
 #: src/NetworkPortInstantiation.php:665 src/NetworkPortEthernet.php:155
 msgid "Network socket"
 msgid_plural "Network sockets"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Ponto de rede"
+msgstr[1] "Pontos de rede"
 
 #: src/NetworkPortFiberchannel.php:213 src/Blacklist.php:232
 #: src/NetworkPortWifi.php:150 src/RefusedEquipment.php:124
@@ -4647,7 +4653,7 @@ msgstr "MAC"
 
 #: src/NetworkPortFiberchannel.php:241
 msgid "Fiber port type"
-msgstr ""
+msgstr "Tipo de porta fibra"
 
 #. TRANS: %d is the speed
 #: src/NetworkPortFiberchannel.php:263 src/NetworkPortFiberchannel.php:310
@@ -4673,61 +4679,61 @@ msgstr "%d Mb/s"
 
 #: src/NetworkPortFiberchannel.php:376
 msgid "Network fiber socket"
-msgstr ""
+msgstr "Soquete de rede fibra"
 
 #: src/PendingReason.php:50
 msgid "Pending reason"
 msgid_plural "Pending reasons"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Motivo de pendência"
+msgstr[1] "Motivos de pendências"
 
 #: src/PendingReason.php:58 src/PendingReason.php:91
 msgid "Automatic follow-up frequency"
-msgstr ""
+msgstr "Frequência automática de acompanhamento"
 
 #: src/PendingReason.php:70 src/PendingReason.php:100
 msgid "Follow-ups before automatic resolution"
-msgstr ""
+msgstr "Acompanhamentos antes de solução automática"
 
 #: src/PendingReason.php:110
 msgid "Follow-up template"
-msgstr ""
+msgstr "Modelo de acompanhamento"
 
 #: src/PendingReason.php:151
 msgid "Automatic follow-up disabled"
-msgstr ""
+msgstr "Acompanhamento automático desabilitado"
 
 #: src/PendingReason.php:180
 msgid "Every week"
-msgstr ""
+msgstr "A cada semana"
 
 #: src/PendingReason.php:181
 msgid "Every two weeks"
-msgstr ""
+msgstr "A cada duas semanas"
 
 #: src/PendingReason.php:182
 msgid "Every three weeks"
-msgstr ""
+msgstr "A cada três semanas"
 
 #: src/PendingReason.php:183
 msgid "Every four weeks"
-msgstr ""
+msgstr "A cada quatro semanas"
 
 #: src/PendingReason.php:208
 msgid "Automatic resolution disabled"
-msgstr ""
+msgstr "Solução automática desabilitada"
 
 #: src/PendingReason.php:237
 msgid "After one follow-up"
-msgstr ""
+msgstr "Após um acompanhamento"
 
 #: src/PendingReason.php:238
 msgid "After two follow-ups"
-msgstr ""
+msgstr "Após dois acompanhamentos"
 
 #: src/PendingReason.php:239
 msgid "After three follow-ups"
-msgstr ""
+msgstr "Após três acompanhamentos"
 
 #: src/LevelAgreementLevel.php:78 src/Ticket.php:3382 src/Ticket.php:3433
 #: templates/components/itilobject/service_levels.html.twig:116
@@ -5016,7 +5022,7 @@ msgstr "Descrição de host (Sysdescr)"
 
 #: src/Unmanaged.php:210 src/Unmanaged.php:222
 msgid "Convert"
-msgstr ""
+msgstr "Converter"
 
 #: src/Unmanaged.php:231
 msgid "Select an itemtype: "
@@ -5181,7 +5187,7 @@ msgstr[0] "Tipos de monitores"
 
 #: src/Ticket_Contract.php:46
 msgid "Tickets / Contracts"
-msgstr ""
+msgstr "Chamados / Contratos"
 
 #: src/Ticket_Contract.php:79 src/Contract_Supplier.php:141
 #: src/Contract_Item.php:298
@@ -5232,8 +5238,8 @@ msgstr[0] "Eventos"
 #: src/NetworkPortFiberchannelType.php:39
 msgid "Fiber type"
 msgid_plural "Fiber types"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Tipo de fibra"
+msgstr[1] "Tipos de fibras"
 
 #: src/NetworkPort_Vlan.php:138 src/NetworkPort_Vlan.php:170
 #: src/NetworkPort_Vlan.php:385 src/Vlan.php:164
@@ -5456,11 +5462,11 @@ msgstr "TAG"
 
 #: src/Agent.php:221
 msgid "Item link"
-msgstr ""
+msgstr "Relação do item"
 
 #: src/Agent.php:264
 msgid "Network discovery threads"
-msgstr ""
+msgstr "Tópicos de descoberta de rede"
 
 #: src/Agent.php:270 src/Agent.php:280 src/Agent.php:293 src/Agent.php:303
 #: src/Profile.php:1761 src/Profile.php:2364 src/Config.php:320
@@ -5470,15 +5476,15 @@ msgstr "Configuração geral"
 
 #: src/Agent.php:274
 msgid "Network discovery timeout"
-msgstr ""
+msgstr "Tempo limite de descoberta de rede"
 
 #: src/Agent.php:287
 msgid "Network inventory threads"
-msgstr ""
+msgstr "Tópicos de inventário de rede"
 
 #: src/Agent.php:297
 msgid "Network inventory timeout"
-msgstr ""
+msgstr "Tempo limite do inventário de rede"
 
 #: src/Agent.php:382
 msgid "\"deviceid\" is mandatory!"
@@ -5518,8 +5524,8 @@ msgstr "Exclusão de um projeto"
 #: src/Project.php:2588
 msgid "Manager"
 msgid_plural "Managers"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Gerente"
+msgstr[1] "Gerentes"
 
 #: src/NotificationTargetProject.php:59 src/NotificationTargetProject.php:638
 #: src/Project.php:650 src/Project.php:1166
@@ -5850,8 +5856,8 @@ msgstr[0] "Tipos de equipamento de rede"
 #: src/CableStrand.php:41 src/CableStrand.php:47 src/Cable.php:144
 msgid "Cable strand"
 msgid_plural "Cable strands"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Cabo"
+msgstr[1] "Cabos"
 
 #: src/CableStrand.php:150 src/CableStrand.php:151 src/CableStrand.php:152
 #: src/CableStrand.php:153 src/Cable.php:161 src/Cable.php:172
@@ -5859,19 +5865,19 @@ msgstr[1] ""
 #: src/Cable.php:226 src/Cable.php:236 src/Cable.php:301 src/Cable.php:316
 #, php-format
 msgid "%s (%s)"
-msgstr ""
+msgstr "%s(%s)"
 
 #: src/CableStrand.php:150 src/CableStrand.php:151 src/Socket.php:291
 #: src/Cable.php:172 src/Cable.php:183 src/Cable.php:216 src/Cable.php:226
 #: src/Cable.php:316
 msgid "Endpoint B"
-msgstr ""
+msgstr "Ponto final B"
 
 #: src/CableStrand.php:152 src/CableStrand.php:153 src/Socket.php:290
 #: src/Cable.php:161 src/Cable.php:194 src/Cable.php:206 src/Cable.php:236
 #: src/Cable.php:301
 msgid "Endpoint A"
-msgstr ""
+msgstr "Ponto final A"
 
 #: src/ProjectTaskType.php:43
 msgid "Project tasks type"
@@ -5892,8 +5898,8 @@ msgstr[0] "Tipos de tarefas de projeto"
 #: src/Entity.php:1118 templates/pages/assets/cable.html.twig:102
 msgid "Asset"
 msgid_plural "Assets"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Ativo"
+msgstr[1] "Ativos"
 
 #: src/NetworkPortLocal.php:44
 msgid "Local loop port"
@@ -6740,7 +6746,7 @@ msgstr "Carregando..."
 
 #: src/Knowbase.php:157
 msgid "No category found"
-msgstr ""
+msgstr "Nenhuma categoria encontrada"
 
 #: src/Knowbase.php:336
 msgid "Root category"
@@ -6861,6 +6867,7 @@ msgstr[0] "Soluções"
 #: src/ITILSolution.php:184
 msgid "The item is already solved, did anyone pushed a solution before you?"
 msgstr ""
+"O item já está solucionado. Alguém adicionou uma solução antes de você?"
 
 #: src/ITILSolution.php:373 src/CommonITILValidation.php:524
 msgid "Waiting for approval"
@@ -7191,7 +7198,7 @@ msgstr "%s promovido para acompanhamento a partir do chamado %s"
 #: src/Ticket.php:2091
 #, php-format
 msgid "%s promotes a task from ticket %s"
-msgstr ""
+msgstr "%s promove uma tarefa do chamado %s"
 
 #: src/Ticket.php:2124
 msgid "Your ticket has been registered."
@@ -7231,12 +7238,12 @@ msgstr "Relacionar chamados"
 #: src/Ticket.php:2749
 msgctxt "button"
 msgid "Link project task"
-msgstr ""
+msgstr "Ligar tarefa do projeto"
 
 #: src/Ticket.php:2752
 msgctxt "button"
 msgid "Add contract"
-msgstr ""
+msgstr "Adicionar contrato"
 
 #: src/Ticket.php:2760
 msgid "Link to a problem"
@@ -7244,7 +7251,7 @@ msgstr "Vincular a um problema"
 
 #: src/Ticket.php:2766
 msgid "Resolve selected tickets"
-msgstr ""
+msgstr "Resolver chamados solucionados"
 
 #: src/Ticket.php:2792
 msgid "Merge followups"
@@ -7297,7 +7304,7 @@ msgstr "Link"
 
 #: src/Ticket.php:2915
 msgid "Resolve"
-msgstr ""
+msgstr "Resolver"
 
 #: src/Ticket.php:2925 src/CommonDevice.php:407 src/CommonDevice.php:409
 #: src/CommonDevice.php:411 src/CommonDBChild.php:847
@@ -7326,7 +7333,7 @@ msgstr "Campo obrigatório ausente na entrada"
 
 #: src/Ticket.php:3103
 msgid "No contract specified"
-msgstr ""
+msgstr "Nenhum contrato especificado"
 
 #: src/Ticket.php:3163
 msgid "Time to own + Progress"
@@ -7334,7 +7341,7 @@ msgstr "Tempo para atendimento + Progresso"
 
 #: src/Ticket.php:3173
 msgid "Time to own exceeded"
-msgstr ""
+msgstr "Tempo para adquirir excedido"
 
 #: src/Ticket.php:3183 src/Ticket.php:3420 src/Ticket.php:6549
 #: src/NotificationTargetTicket.php:610
@@ -7347,7 +7354,7 @@ msgstr "Tempo interno para solução + Progresso"
 
 #: src/Ticket.php:3204
 msgid "Internal time to resolve exceeded"
-msgstr ""
+msgstr "Tempo interno para resolver excedido"
 
 #: src/Ticket.php:3214 src/Ticket.php:3406 src/Ticket.php:6533
 #: src/NotificationTargetTicket.php:605
@@ -7360,7 +7367,7 @@ msgstr "Tempo interno para atendimento + Progresso"
 
 #: src/Ticket.php:3235
 msgid "Internal time to own exceeded"
-msgstr ""
+msgstr "Tempo interno para possuir excedido"
 
 #: src/Ticket.php:3246
 msgid "Next escalation level"
@@ -8058,7 +8065,7 @@ msgstr "Salvar como uma nova pesquisa"
 #: src/SavedSearch.php:609
 #, php-format
 msgid "Partial load of the saved search: %s"
-msgstr ""
+msgstr "Carregamento parcial da pesquisa salva: %s"
 
 #: src/SavedSearch.php:848
 msgid "Count for this saved search has been disabled."
@@ -8444,11 +8451,11 @@ msgstr "Toner"
 
 #: src/Inventory/Asset/Cartridge.php:55
 msgid "Drum"
-msgstr ""
+msgstr "Tambor"
 
 #: src/Inventory/Asset/Cartridge.php:57
 msgid "Waste bin"
-msgstr ""
+msgstr "Lixeira"
 
 #: src/Inventory/Asset/Cartridge.php:58
 msgid "Maintenance kit"
@@ -8460,7 +8467,7 @@ msgstr "Kit de fusor"
 
 #: src/Inventory/Asset/Cartridge.php:60
 msgid "Transfer kit"
-msgstr ""
+msgstr "Kit de transferência"
 
 #: src/Inventory/Asset/Cartridge.php:61
 msgid "Cleaning kit"
@@ -8468,7 +8475,7 @@ msgstr "Kit de limpeza"
 
 #: src/Inventory/Asset/Cartridge.php:62
 msgid "Developer"
-msgstr ""
+msgstr "Desenvolvedor"
 
 #: src/Inventory/Asset/Cartridge.php:63
 msgid "Photoconductor"
@@ -8508,7 +8515,7 @@ msgstr "Cinza Escuro"
 
 #: src/Inventory/Asset/Cartridge.php:83
 msgid "Max"
-msgstr ""
+msgstr "Máx."
 
 #: src/Inventory/Asset/Cartridge.php:84
 msgid "Used"
@@ -8522,24 +8529,24 @@ msgstr "Restando"
 
 #: src/Inventory/Asset/Cartridge.php:147
 msgid "Photo"
-msgstr ""
+msgstr "Foto"
 
 #: src/Inventory/Asset/Cartridge.php:148
 msgid "Matte"
-msgstr ""
+msgstr "Fosco"
 
 #: src/Inventory/Asset/Cartridge.php:188
 msgid "Many information grouped"
-msgstr ""
+msgstr "Muitas informações agrupadas"
 
 #: src/Inventory/Asset/Cartridge.php:191
 msgid "Staples"
-msgstr ""
+msgstr "Grampos"
 
 #: src/Inventory/Asset/Bios.php:70
 #, php-format
 msgid "%1$s BIOS"
-msgstr ""
+msgstr "%1$s BIOS"
 
 #: src/Inventory/Asset/NetworkEquipment.php:102
 #: src/Inventory/Asset/NetworkEquipment.php:153 src/NetworkPort.php:611
@@ -8657,15 +8664,15 @@ msgstr ""
 
 #: src/Inventory/Conf.php:555
 msgid "Virtual network cards"
-msgstr ""
+msgstr "Placas de rede virtual"
 
 #: src/Inventory/Conf.php:614
 msgid "Network drives"
-msgstr ""
+msgstr "Drives de rede"
 
 #: src/Inventory/Conf.php:629
 msgid "Removable drives"
-msgstr ""
+msgstr "Drives removíveis"
 
 #: src/Inventory/Conf.php:686 src/PlanningRecall.php:358
 #: src/Item_Devices.php:734 src/Dashboard/Grid.php:285 src/CommonGLPI.php:1346
@@ -8831,7 +8838,7 @@ msgstr "Full"
 #: src/NetworkPort.php:1005
 #, php-format
 msgid "%s linked VLANs"
-msgstr ""
+msgstr "%s VLANs vinculadas"
 
 #: src/NetworkPort.php:1080
 #, php-format
@@ -8854,7 +8861,7 @@ msgstr "Testando"
 
 #: src/NetworkPort.php:1121
 msgid "Dormant"
-msgstr ""
+msgstr "Dormente"
 
 #: src/NetworkPort.php:1275 src/NetworkPort.php:1280 src/NetworkPort.php:1427
 #: src/RuleImportAsset.php:135
@@ -8991,15 +8998,15 @@ msgstr "Adicionar um feriado"
 
 #: src/Cache/CacheManager.php:549
 msgid "Memcached"
-msgstr ""
+msgstr "Memcached"
 
 #: src/Cache/CacheManager.php:550
 msgid "Redis (TCP)"
-msgstr ""
+msgstr "Redis (TCP)"
 
 #: src/Cache/CacheManager.php:551
 msgid "Redis (TLS)"
-msgstr ""
+msgstr "Redis (TLS)"
 
 #: src/Update.php:178
 #, php-format
@@ -9011,7 +9018,7 @@ msgstr "Versão não suportada (%1$s)"
 #: src/Console/Migration/DynamicRowFormatCommand.php:85
 #, php-format
 msgid "%d tables are using the deprecated MyISAM storage engine."
-msgstr ""
+msgstr "%d tabelas estão usando o obsoleto mecanismo de armazenamento MyISAM."
 
 #: src/Update.php:199 src/Update.php:205 src/Update.php:217
 #: src/Central.php:488 src/Central.php:493 src/Central.php:498
@@ -9028,11 +9035,15 @@ msgstr "Execute o comando \"php bin/console %1$s\" para migrá-los(as)."
 #, php-format
 msgid "%1$s columns are using the deprecated datetime storage field type."
 msgstr ""
+"%1$s colunas estão usando o tipo de campo de armazenamento de data e hora "
+"obsoleto."
 
 #: src/Update.php:215 src/Central.php:496
 #, php-format
 msgid "%1$s tables are using the deprecated utf8mb3 storage charset."
 msgstr ""
+"%1$s tabelas estão usando o conjunto de caracteres de armazenamento utf8mb3 "
+"obsoleto."
 
 #: src/Update.php:252
 msgid ""
@@ -9046,22 +9057,22 @@ msgstr ""
 #: src/DeviceCameraModel.php:40
 msgid "Device camera model"
 msgid_plural "Device camera models"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Modelo de dispositivo câmeras"
+msgstr[1] "Modelos de dispositivos câmeras"
 
 #: src/NetworkPortType.php:43
 msgid "Network port type"
 msgid_plural "Network port types"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Tipos de porta de rede"
+msgstr[1] "Tipos de portas de redes"
 
 #: src/NetworkPortType.php:52 src/NetworkPortType.php:76
 msgid "Decimal"
-msgstr ""
+msgstr "Decimal"
 
 #: src/NetworkPortType.php:61 src/NetworkPortType.php:92
 msgid "Instanciation type"
-msgstr ""
+msgstr "Tipo de instanciação"
 
 #: src/Dropdown.php:242
 #, php-format
@@ -9074,7 +9085,7 @@ msgstr "Exibir no mapa"
 
 #: src/Dropdown.php:303
 msgid "Display on datacenter"
-msgstr ""
+msgstr "Exibir no datacenter"
 
 #. TRANS: %s is the store path
 #: src/Dropdown.php:792
@@ -9120,7 +9131,7 @@ msgstr[0] "Calendários"
 
 #: src/Dropdown.php:1088 src/Profile.php:1079
 msgid "Cable management"
-msgstr ""
+msgstr "Gerenciamento de cabos"
 
 #: src/Dropdown.php:1094 src/Profile.php:977 src/Profile.php:2151
 msgid "Internet"
@@ -9154,52 +9165,52 @@ msgstr "Outros"
 #, php-format
 msgid "%s year"
 msgid_plural "%s years"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%s ano"
+msgstr[1] "%s anos"
 
 #. TRANS: %s is a number of months
 #: src/Dropdown.php:1689
 #, php-format
 msgid "%s month"
 msgid_plural "%s months"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%s mês"
+msgstr[1] "%s meses"
 
 #. TRANS: %s is a number of days
 #: src/Dropdown.php:1693
 #, php-format
 msgid "%s day"
 msgid_plural "%s days"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%s dia"
+msgstr[1] "%s dias"
 
 #. TRANS: %s is a number of minutes
 #: src/Dropdown.php:1701
 #, php-format
 msgid "%s minute"
 msgid_plural "%s minutes"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%s minuto"
+msgstr[1] "%s minutos"
 
 #. TRANS: %s is a number of milliseconds
 #: src/Dropdown.php:1709
 #, php-format
 msgid "%s millisecond"
 msgid_plural "%s milliseconds"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%s milissegundo"
+msgstr[1] "%s milissegundos"
 
 #: src/Dropdown.php:1712
 #, php-format
 msgid "%d unit"
 msgid_plural "%d units"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d unidade"
+msgstr[1] "%d unidades"
 
 #: src/Dropdown.php:1718
 #, php-format
 msgid "%s%%"
-msgstr ""
+msgstr "%%%s"
 
 #: src/Dropdown.php:1837
 #, php-format
@@ -9542,7 +9553,7 @@ msgstr "Forçar sincronização"
 
 #: src/Auth.php:1466
 msgid "Clean LDAP fields and force synchronisation"
-msgstr ""
+msgstr "Limpar campos LDAP e forçar sincronização"
 
 #: src/Auth.php:1481
 msgid "Change of the authentication method"
@@ -9828,6 +9839,8 @@ msgstr "Usar regra para"
 #: src/RuleCollection.php:640
 msgid "Remove all equipment import rules and recreate from defaults"
 msgstr ""
+"Remover todas as regras de importação de equipamentos e recriar a partir dos"
+" padrões"
 
 #: src/RuleCollection.php:641
 msgid "Reset rules"
@@ -10104,7 +10117,7 @@ msgstr ""
 
 #: src/Html.php:2577
 msgid "Massive actions"
-msgstr ""
+msgstr "Ações em massa"
 
 #: src/Html.php:3172 src/Html.php:3404 src/Html.php:6761
 msgid "Now"
@@ -10192,7 +10205,7 @@ msgstr[0] "+ %d anos"
 
 #: src/Html.php:3843
 msgid "Available variables"
-msgstr ""
+msgstr "Variáveis disponíveis"
 
 #. TRANS: %1$d, %2$d, %3$d are page numbers
 #: src/Html.php:3946 src/Html.php:4159
@@ -10215,31 +10228,31 @@ msgstr "%1$d em %2$d"
 
 #: src/Html.php:6766
 msgid "Just now"
-msgstr ""
+msgstr "Agora mesmo"
 
 #: src/Html.php:6769
 #, php-format
 msgid "%s minutes ago"
-msgstr ""
+msgstr "%s minutos atrás"
 
 #: src/Html.php:6772
 #, php-format
 msgid "%s hours ago"
-msgstr ""
+msgstr "%s horas atrás"
 
 #: src/Html.php:6776
 msgid "Yesterday"
-msgstr ""
+msgstr "Ontem"
 
 #: src/Html.php:6779
 #, php-format
 msgid "%s days ago"
-msgstr ""
+msgstr "%s dias atrás"
 
 #: src/Html.php:6782
 #, php-format
 msgid "%s weeks ago"
-msgstr ""
+msgstr "%s semanas atrás"
 
 #: src/Html.php:6785
 msgid "Last month"
@@ -10247,38 +10260,38 @@ msgstr "Último mês"
 
 #: src/Html.php:6794
 msgid "In a minute"
-msgstr ""
+msgstr "Em um minuto"
 
 #: src/Html.php:6797
 #, php-format
 msgid "In %s minutes"
-msgstr ""
+msgstr "Em %s minutos"
 
 #: src/Html.php:6800
 msgid "In an hour"
-msgstr ""
+msgstr "Em uma hora"
 
 #: src/Html.php:6803
 #, php-format
 msgid "In %s hours"
-msgstr ""
+msgstr "Em %s horas"
 
 #: src/Html.php:6807
 msgid "Tomorrow"
-msgstr ""
+msgstr "Amanhã"
 
 #: src/Html.php:6813
 msgid "next week"
-msgstr ""
+msgstr "Semana que vem"
 
 #: src/Html.php:6816
 #, php-format
 msgid "In %s weeks"
-msgstr ""
+msgstr "Em %s semanas"
 
 #: src/Html.php:6819
 msgid "next month"
-msgstr ""
+msgstr "próximo mês"
 
 #. TRANS: Always plural
 #: src/Notepad.php:52 src/Notepad.php:184
@@ -10543,7 +10556,7 @@ msgstr "Grupo atribuído à tarefa"
 
 #: src/NotificationTargetCommonITILObject.php:1862
 msgid "Internal type"
-msgstr ""
+msgstr "Tipo interno"
 
 #: src/NotificationTargetCommonITILObject.php:1865 src/Socket.php:332
 #: src/Socket.php:708 src/PDU_Rack.php:278 src/PDU_Rack.php:349
@@ -10565,7 +10578,7 @@ msgstr[0] "Acompanhamentos"
 #: src/NotificationTargetCommonITILObject.php:1900
 #, php-format
 msgid "Processing %1$s"
-msgstr ""
+msgstr "Precesando %1$s"
 
 #: src/NotificationTargetCommonITILObject.php:1893 src/LevelAgreement.php:260
 #: src/CalendarSegment.php:353 src/CalendarSegment.php:383 src/Config.php:1504
@@ -10669,7 +10682,7 @@ msgstr ""
 
 #: src/SavedSearch_Alert.php:174
 msgid "Notification frequency"
-msgstr ""
+msgstr "Frequência de notificação"
 
 #: src/SavedSearch_Alert.php:224
 msgid "Notification does not exists!"
@@ -10832,8 +10845,8 @@ msgstr[0] "Modelos de placa-mãe"
 #: src/Socket.php:320
 msgid "Socket"
 msgid_plural "Sockets"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Ponto"
+msgstr[1] "Pontos"
 
 #: src/Socket.php:374 src/Socket.php:436 src/Socket.php:710 src/Socket.php:819
 #: src/Socket.php:854 src/Socket.php:910
@@ -10843,20 +10856,20 @@ msgstr ""
 
 #: src/Socket.php:665
 msgid "New socket for this item..."
-msgstr ""
+msgstr "Novo ponto para este item..."
 
 #: src/Socket.php:880 src/Socket.php:964
 #, php-format
 msgid "Network sockets for %s"
-msgstr ""
+msgstr "Pontos de rede para %s"
 
 #: src/Socket.php:907
 msgid "Socket Model"
-msgstr ""
+msgstr "Modelo do ponto"
 
 #: src/Socket.php:909
 msgid "NetworkPort"
-msgstr ""
+msgstr "Porta de rede"
 
 #: src/Item_Devices.php:79
 #, php-format
@@ -10942,14 +10955,14 @@ msgstr[0] "Tipos de cartão SIM"
 #: src/DatabaseInstanceType.php:38
 msgid "Database instance type"
 msgid_plural "Database instance types"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Tipo de instância de banco de dados"
+msgstr[1] "Tipos de instâncias de banco de dados"
 
 #: src/DatabaseInstanceCategory.php:38
 msgid "Database instance category"
 msgid_plural "Database instance categories"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Categoria de instância de banco de dados"
+msgstr[1] "Categorias de instâncias de banco de dados"
 
 #: src/ProjectTaskTeam.php:71
 msgid "Task team"
@@ -11418,8 +11431,8 @@ msgstr "Adicionar um acompanhamento aos tickets (observador)"
 #: src/PCIVendor.php:44
 msgid "PCI vendor"
 msgid_plural "PCI vendors"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Fabricante PCI"
+msgstr[1] "Fabricantes PCI"
 
 #: src/PCIVendor.php:52 src/PCIVendor.php:70 src/USBVendor.php:52
 #: src/USBVendor.php:70
@@ -11600,10 +11613,12 @@ msgstr "Erros de Envio"
 msgid ""
 "Send automated follow-ups on pending tickets and solve them if necessary"
 msgstr ""
+"Envie acompanhamentos automatizados de chamados pendentes e resolva se "
+"necessário"
 
 #: src/PendingReasonCron.php:194
 msgid "Automatic followups / resolution"
-msgstr ""
+msgstr "Acompanhamentos automático / resolução"
 
 #: src/Dashboard/Provider.php:256 src/Dashboard/Grid.php:1176
 msgid "Late tickets"
@@ -11611,7 +11626,7 @@ msgstr "Chamados atrasados"
 
 #: src/Dashboard/Provider.php:297
 msgid "Tickets waiting for validation"
-msgstr ""
+msgstr "Chamados aguardando validação"
 
 #: src/Dashboard/Provider.php:340
 msgid "Incoming tickets"
@@ -13433,7 +13448,7 @@ msgstr "Remover um contrato"
 
 #: src/Contract.php:1767
 msgid "No item."
-msgstr ""
+msgstr "Nenhum item."
 
 #: src/Certificate.php:146 templates/pages/management/certificate.html.twig:37
 msgid "Self-signed"
@@ -13835,7 +13850,7 @@ msgstr ""
 #: src/Database.php:125 src/Database.php:232 src/Database.php:309
 #: src/DatabaseInstance.php:272
 msgid "Last backup date"
-msgstr ""
+msgstr "Data do último backup"
 
 #: src/Database.php:197 src/Item_Disk.php:175 src/Item_Disk.php:293
 #: src/Item_Disk.php:410 src/Item_Disk.php:458
@@ -13844,15 +13859,15 @@ msgstr "Tamanho total"
 
 #: src/Database.php:224 src/Database.php:295
 msgid "Is on backup"
-msgstr ""
+msgstr "Está no backup"
 
 #: src/Database.php:369
 msgid "Add a database"
-msgstr ""
+msgstr "Adicionar um banco de dados"
 
 #: src/Database.php:397
 msgid "No database"
-msgstr ""
+msgstr "Sem banco de dados"
 
 #: src/Transfer.php:3829 src/Transfer.php:3836
 #: src/NetworkPortInstantiation.php:933 src/Computer_Item.php:247
@@ -14075,12 +14090,14 @@ msgstr "E-mail %s não encontrado. Impossível importar."
 #: src/MailCollector.php:726
 #, php-format
 msgid "Message is invalid (%s). Check in \"%s\" for more details"
-msgstr ""
+msgstr "A mensagem (%s) é inválida. Verifique em \"%s\" para mais detalhes"
 
 #: src/MailCollector.php:779
 #, php-format
 msgid "Error during message parsing (%s). Check in \"%s\" for more details"
 msgstr ""
+"Erro durante a análise da mensagem (%s). Verifique em \"%s\" para mais "
+"detalhes"
 
 #: src/MailCollector.php:925
 #, php-format
@@ -14799,11 +14816,11 @@ msgstr ""
 
 #: src/Change.php:1354 src/Change.php:1403
 msgid "Changes to be processed"
-msgstr ""
+msgstr "Alterações a serem processadas"
 
 #: src/Change.php:1370 src/Change.php:1419
 msgid "Your changes in progress"
-msgstr ""
+msgstr "Suas alterações em andamento"
 
 #: src/NetworkPortEthernet.php:42
 msgid "Ethernet port"
@@ -14833,7 +14850,7 @@ msgstr "Fibra monomodo"
 
 #: src/NetworkPortEthernet.php:405
 msgid "Ethernet socket"
-msgstr ""
+msgstr "soquete ethernet"
 
 #: src/DeviceGraphicCard.php:41
 msgid "Graphics card"
@@ -14910,12 +14927,12 @@ msgstr "Referência"
 #: src/NotificationTargetCartridgeItem.php:97
 #: src/NotificationTargetConsumableItem.php:97
 msgid "Stock target"
-msgstr ""
+msgstr "Estoque alvo"
 
 #: src/NotificationTargetCartridgeItem.php:98
 #: src/NotificationTargetConsumableItem.php:98
 msgid "To order"
-msgstr ""
+msgstr "Requisitar"
 
 #: src/DomainRecord.php:46
 msgid "Domain record"
@@ -14947,7 +14964,7 @@ msgstr "Você não tem permissão para editar este tipo de registro"
 
 #: src/DomainRecord.php:406 src/DomainRecord.php:408
 msgid "Open helper form"
-msgstr ""
+msgstr "Abrir formulário de ajuda"
 
 #: src/DomainRecord.php:535
 msgid "Link a record"
@@ -15258,11 +15275,11 @@ msgstr ""
 
 #: src/CommonITILValidation.php:1618
 msgid "This item is waiting for approval."
-msgstr ""
+msgstr "Este item está aguardando aprovação"
 
 #: src/CommonITILValidation.php:1619
 msgid "Do you really want to resolve or close it?"
-msgstr ""
+msgstr "Deseja realmente resolvê-lo ou fechá-lo?"
 
 #: src/DeviceSoundCard.php:43
 msgid "Soundcard"
@@ -17346,7 +17363,7 @@ msgstr "A chave de registro é inválida."
 
 #: src/GLPINetwork.php:246
 msgid "The registration key refers to a terminated subscription."
-msgstr ""
+msgstr "A chave de registro refere-se a uma assinatura encerrada."
 
 #: src/GLPINetwork.php:248
 msgid "The registration key is valid."
@@ -18065,15 +18082,15 @@ msgstr "Formato da data"
 
 #: src/Config.php:1165
 msgid "Display order of surnames firstnames"
-msgstr "Ordem de exibição de sobrenome e nomes"
+msgstr "Ordem de exibição de sobrenomes e nomes"
 
 #: src/Config.php:1166
 msgid "Surname, First name"
-msgstr "Sobrenome, primeiro nome"
+msgstr "Sobrenome, Primeiro nome"
 
 #: src/Config.php:1167
 msgid "First name, Surname"
-msgstr "Primeiro nome, sobrenome"
+msgstr "Primeiro nome, Sobrenome"
 
 #: src/Config.php:1170
 msgid "Number format"
@@ -19324,7 +19341,7 @@ msgstr "Tempo para solução + Progresso"
 
 #: src/CommonITILObject.php:3809
 msgid "Time to resolve exceeded"
-msgstr ""
+msgstr "Tempo para resolver excedido"
 
 #: src/CommonITILObject.php:3873
 msgid "Last edit by"
@@ -19795,12 +19812,12 @@ msgstr "preencha com sua chave de registro na configuração."
 #: src/Marketplace/View.php:164
 #, php-format
 msgid "Your %1$s subscription has been terminated."
-msgstr ""
+msgstr "Sua inscrição %1$s foi encerrada."
 
 #: src/Marketplace/View.php:165
 #, php-format
 msgid "Renew it on %1$s."
-msgstr ""
+msgstr "Renove em %1$s."
 
 #: src/Marketplace/View.php:330
 #, php-format
@@ -19891,7 +19908,7 @@ msgstr ""
 
 #: src/Marketplace/View.php:683
 msgid "This plugin is not available for your GLPI version."
-msgstr ""
+msgstr "Este plugin não está disponível para sua versão GLPI."
 
 #: src/Marketplace/View.php:695
 msgid "The plugin has an available update but its directory is not writable."
@@ -21701,6 +21718,8 @@ msgid ""
 "Options --begin-date and --end-date can only be used with --only-create-new "
 "or --only-update-existing option."
 msgstr ""
+"As opções --begin-date e --end-date só podem ser usadas com a opção --only-"
+"create-new ou --only-update-existing."
 
 #: src/Console/Ldap/SynchronizeUsersCommand.php:498
 msgid ""
@@ -22505,7 +22524,7 @@ msgstr "Memória alocada"
 
 #: src/System/Requirement/MemoryLimit.php:69
 msgid "Allocated memory is sufficient."
-msgstr ""
+msgstr "A memória alocada é suficiente."
 
 #: src/System/Requirement/MemoryLimit.php:70
 msgid "Allocated memory is unlimited."
@@ -23018,15 +23037,15 @@ msgstr ""
 
 #: js/gantt-helper.js:140
 msgid "Progress:"
-msgstr ""
+msgstr "Progresso:"
 
 #: js/gantt-helper.js:142
 msgid "Description:"
-msgstr ""
+msgstr "Descrição:"
 
 #: js/gantt-helper.js:145
 msgid "Comment:"
-msgstr ""
+msgstr "Comentário:"
 
 #: js/gantt-helper.js:152
 msgid "Project / Task"
@@ -23059,11 +23078,11 @@ msgstr ""
 
 #: js/gantt-helper.js:553
 msgid "Links between projects cannot be created."
-msgstr ""
+msgstr "Links entre projetos não podem ser criados."
 
 #: js/gantt-helper.js:556
 msgid "Links between projects and tasks cannot be created."
-msgstr ""
+msgstr "Links entre projetos e tarefas não podem ser criados."
 
 #: js/gantt-helper.js:559
 msgid "Target task can't start before source task ends."
@@ -23469,7 +23488,7 @@ msgstr ""
 
 #: templates/components/itilobject/fields/priority_matrix.html.twig:92
 msgid "priority"
-msgstr ""
+msgstr "Prioridade"
 
 #: templates/components/itilobject/fields/status.html.twig:57
 msgid "Reopen"
@@ -23721,7 +23740,7 @@ msgstr ""
 
 #: templates/components/kanban/item_panels/default_panel.html.twig:69
 msgid "Team"
-msgstr ""
+msgstr "Equipe"
 
 #: templates/components/kanban/item_panels/default_panel.html.twig:94
 msgid "No team members"
@@ -23771,7 +23790,7 @@ msgstr ""
 
 #: templates/maintenance.html.twig:40
 msgid "Temporarily down for maintenance"
-msgstr ""
+msgstr "Indisponível temporariamente para manutenção"
 
 #: templates/maintenance.html.twig:43
 msgid ""
@@ -23805,7 +23824,7 @@ msgstr ""
 
 #: templates/pages/tools/project/gantt.html.twig:63
 msgid "Years"
-msgstr ""
+msgstr "Anos"
 
 #: templates/pages/tools/project/gantt.html.twig:73
 msgid "Find"
@@ -23851,7 +23870,7 @@ msgstr ""
 #: templates/pages/assets/cartridgeitem.html.twig:41
 msgctxt "quantity"
 msgid "Stock target"
-msgstr ""
+msgstr "Estoque alvo"
 
 #: templates/pages/assets/rack.html.twig:82
 msgid "Position in room"
@@ -24114,7 +24133,7 @@ msgstr "Modo de depuração desativado"
 #: templates/layout/parts/user_header.html.twig:87
 #: templates/layout/parts/user_header.html.twig:113
 msgid "About"
-msgstr ""
+msgstr "Sobre"
 
 #: templates/layout/parts/user_header.html.twig:101
 #: templates/layout/parts/user_header.html.twig:103

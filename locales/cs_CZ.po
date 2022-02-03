@@ -10,7 +10,7 @@
 # Pavel Borecki <pavel.borecki@gmail.com>, 2021
 # DOMBRE Julien <moyo@indepnet.net>, 2021
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2021
-# David Stepan <stepand@tiscali.cz>, 2021
+# David Stepan <stepand@tiscali.cz>, 2022
 # 
 #, fuzzy
 msgid ""
@@ -19,7 +19,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-12-14 12:46+0000\n"
 "PO-Revision-Date: 2021-05-26 09:06+0000\n"
-"Last-Translator: David Stepan <stepand@tiscali.cz>, 2021\n"
+"Last-Translator: David Stepan <stepand@tiscali.cz>, 2022\n"
 "Language-Team: Czech (Czech Republic) (https://www.transifex.com/glpi/teams/1637/cs_CZ/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -8520,7 +8520,7 @@ msgstr[3] "Instalace"
 #: src/Item_SoftwareVersion.php:101 src/Item_SoftwareLicense.php:108
 msgctxt "software"
 msgid "Request source"
-msgstr ""
+msgstr "Požadovaný zdroj"
 
 #: src/Item_SoftwareVersion.php:476 src/Item_SoftwareVersion.php:1085
 #: src/Item_SoftwareVersion.php:1244 src/Software.php:533
@@ -12519,7 +12519,7 @@ msgstr ""
 
 #: src/Dashboard/Grid.php:1371
 msgid "Toggle edit mode to edit content"
-msgstr ""
+msgstr "Chcete-li upravit obsah, přepněte režim úprav"
 
 #: src/Dashboard/Grid.php:1392 src/CommonDBTM.php:5159
 msgid "Purge"
@@ -14775,12 +14775,12 @@ msgstr "E-mail %s nenalezen. Import není možný."
 #: src/MailCollector.php:726
 #, php-format
 msgid "Message is invalid (%s). Check in \"%s\" for more details"
-msgstr ""
+msgstr "Zpráva je neplatná (%s). Další podrobnosti najdete v „%s“."
 
 #: src/MailCollector.php:779
 #, php-format
 msgid "Error during message parsing (%s). Check in \"%s\" for more details"
-msgstr ""
+msgstr "Chyba při analýze zprávy (%s). Další podrobnosti najdete v „%s“."
 
 #: src/MailCollector.php:925
 #, php-format
@@ -17819,7 +17819,7 @@ msgstr "Telemetrie"
 
 #: src/Telemetry.php:258
 msgid "Send telemetry information"
-msgstr ""
+msgstr "Odeslat telemetrické informace"
 
 #: src/Telemetry.php:348
 msgid "See what would be sent..."
@@ -20937,7 +20937,7 @@ msgstr "Později"
 
 #: src/Marketplace/Controller.php:98 src/Marketplace/Controller.php:183
 msgid "Unable to download plugin archive."
-msgstr ""
+msgstr "Archiv zásuvného modulu nelze stáhnout."
 
 #: src/Marketplace/Controller.php:109
 #, php-format
@@ -21729,6 +21729,8 @@ msgstr ""
 msgid ""
 "You have to install Racks plugin files in version %s to be able to continue."
 msgstr ""
+"Abyste mohli pokračovat zásuvný musíte nainstalovat soubory zásuvného modulu"
+" Rozvaděče ve verzi %s."
 
 #: src/Console/Migration/RacksPluginToCoreCommand.php:344
 #, php-format
@@ -22684,6 +22686,8 @@ msgid ""
 "Options --begin-date and --end-date can only be used with --only-create-new "
 "or --only-update-existing option."
 msgstr ""
+"Možnosti --begin-date a --end-date lze použít pouze s volbou --only-create-"
+"new nebo --only-update-existing."
 
 #: src/Console/Ldap/SynchronizeUsersCommand.php:498
 msgid ""

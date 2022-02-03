@@ -14,6 +14,7 @@
 # DOMBRE Julien <moyo@indepnet.net>, 2021
 # Steven <Nevets82@gmail.com>, 2021
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2021
+# S. ypie, 2021
 # 
 #, fuzzy
 msgid ""
@@ -22,7 +23,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-12-14 12:46+0000\n"
 "PO-Revision-Date: 2021-05-26 09:06+0000\n"
-"Last-Translator: alexandre delaunay <delaunay.alexandre@gmail.com>, 2021\n"
+"Last-Translator: S. ypie, 2021\n"
 "Language-Team: Dutch (Netherlands) (https://www.transifex.com/glpi/teams/1637/nl_NL/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -40,7 +41,7 @@ msgstr ""
 
 #: ajax/gantt.php:208
 msgid "Link already exist!"
-msgstr ""
+msgstr "Koppeling bestaat al!"
 
 #: ajax/dropdownMassiveActionAuthMethods.php:70
 #: ajax/dropdownMassiveActionField.php:54 src/MassiveAction.php:708
@@ -296,7 +297,7 @@ msgstr "Mijn groepen"
 #: ajax/searchoptionvalue.php:85 src/Dashboard/Filter.php:170
 #: src/DbUtils.php:1590 src/Search.php:3266
 msgid "Myself"
-msgstr ""
+msgstr "Mijzelf"
 
 #: ajax/ticketsatisfaction.php:59 src/Entity.php:1194
 msgid "Create survey after"
@@ -304,7 +305,7 @@ msgstr "Maak enquete na"
 
 #: ajax/ticketsatisfaction.php:67 src/CronTask.php:684 src/CronTask.php:719
 msgid "As soon as possible"
-msgstr "ASAP"
+msgstr "z.s.m."
 
 #: ajax/ticketsatisfaction.php:73
 msgid "Rate to trigger survey"
@@ -752,6 +753,9 @@ msgid ""
 "responsiveness statistics about user interface features, memory, and "
 "hardware configuration."
 msgstr ""
+"We verzamelen alleen de volgende gegevens: gebruikte plugins, prestatie en "
+"reactietijden statistieken van de gebruikersinterface, geheugen en hardware "
+"configuratie."
 
 #: ajax/dcroom_size.php:63 templates/pages/assets/rack.html.twig:76
 #: templates/pages/assets/rack.html.twig:79
@@ -764,7 +768,7 @@ msgstr "Geef de eerste letters (gebruikersnaam, item, serie of inventarisnr.)"
 
 #: ajax/central.php:87
 msgid "Invalid widget"
-msgstr ""
+msgstr "Ongeldige widget"
 
 #: ajax/ticketassigninformation.php:75 ajax/ticketassigninformation.php:76
 #: ajax/ticketassigninformation.php:108 ajax/ticketassigninformation.php:109
@@ -1211,8 +1215,8 @@ msgstr "Technicus"
 #: templates/components/itilobject/fields_panel.html.twig:170
 msgid "Category"
 msgid_plural "Categories"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Categorie"
+msgstr[1] "Categoriën"
 
 #: front/stat.graph.php:176 front/stat.tracking.php:100
 #: front/stat.location.php:91 src/Blacklist.php:85 src/Blacklist.php:118
@@ -1287,8 +1291,8 @@ msgstr[1] ""
 #: templates/generic_show_form.html.twig:165
 msgid "Type"
 msgid_plural "Types"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Type"
+msgstr[1] "Typen"
 
 #: front/stat.graph.php:216 front/stat.tracking.php:96
 #: src/NotificationTargetProject.php:635
@@ -1890,8 +1894,8 @@ msgstr "Marktplaats"
 #: src/Transfer.php:3970 src/Entity.php:1983
 msgid "Contract"
 msgid_plural "Contract"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Contract"
+msgstr[1] "Contracten"
 
 #. TRANS: %s is the user login
 #: front/contract_supplier.form.php:66 front/contact_supplier.form.php:58
@@ -2898,8 +2902,8 @@ msgstr "%s verbindt een type"
 #: front/dictionnary.php:41 src/Rule.php:270
 msgid "Dictionary"
 msgid_plural "Dictionaries"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Woordenboeken"
+msgstr[1] "Woordenboeken"
 
 #: inc/config.php:148
 msgid "Service is down for maintenance. It will be back shortly."
@@ -3103,7 +3107,7 @@ msgstr ""
 
 #: install/migrations/update_9.4.x_to_9.5.0/dashboards.php:37
 msgid "Central"
-msgstr ""
+msgstr "Centraal"
 
 #: install/migrations/update_9.4.x_to_9.5.0/dashboards.php:174
 msgid "Assets"
@@ -3212,7 +3216,7 @@ msgstr "Doorgaan?"
 
 #: install/install.php:526
 msgid "Select your language"
-msgstr ""
+msgstr "Selecteer uw taal"
 
 #: install/install.php:550
 msgid "Beginning of the installation"
@@ -3244,7 +3248,7 @@ msgstr ""
 
 #: install/update.php:164
 msgid "Ignore warning"
-msgstr ""
+msgstr "Waarschuwing negeren"
 
 #: install/update.php:197 templates/pages/assets/software.html.twig:47
 msgid "Upgrade"
@@ -3370,7 +3374,7 @@ msgstr ""
 
 #: src/MassiveAction.php:607
 msgid "Add note"
-msgstr ""
+msgstr "Notitie toevoegen"
 
 #: src/MassiveAction.php:830
 msgid "Select the common field that you want to update"
@@ -3387,7 +3391,7 @@ msgstr "of"
 
 #: src/MassiveAction.php:1009
 msgid "How many copies do you want to create?"
-msgstr ""
+msgstr "Hoeveel kopiën wilt u maken?"
 
 #: src/MassiveAction.php:1035
 msgid "Are you sure you want to add this item to transfer list?"
@@ -3409,7 +3413,7 @@ msgstr "Updaten"
 
 #: src/MassiveAction.php:1062
 msgid "New Note"
-msgstr ""
+msgstr "Nieuwe notitie"
 
 #: src/MassiveAction.php:1240
 msgid ""
@@ -3758,7 +3762,7 @@ msgstr "Administratief nummer"
 #: src/AuthLDAP.php:883 src/AuthLDAP.php:1074 src/AuthLDAP.php:3712
 msgctxt "ldap"
 msgid "Phone"
-msgstr ""
+msgstr "Telefoon"
 
 #: src/AuthLDAP.php:886 src/AuthLDAP.php:1083 src/AuthLDAP.php:3713
 #: src/Contact_Supplier.php:301 src/Dropdown.php:492 src/Auth.php:1713
@@ -3793,8 +3797,8 @@ msgstr "Kies de taal"
 #: templates/generic_show_form.html.twig:523
 msgid "Picture"
 msgid_plural "Pictures"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Afbeelding"
+msgstr[1] "Afbeeldingen"
 
 #: src/AuthLDAP.php:911 src/AuthLDAP.php:1252
 #: src/ContentTemplates/Parameters/UserParameters.php:81
@@ -4006,7 +4010,7 @@ msgstr "Uitschakelen"
 
 #: src/AuthLDAP.php:3989
 msgid "Do nothing"
-msgstr ""
+msgstr "Niks doen"
 
 #: src/AuthLDAP.php:3990
 msgid "Restore (move out of trashbin)"
@@ -4480,7 +4484,7 @@ msgstr "Acties"
 #: src/Plugin.php:2284 src/Plugin.php:2286 src/Link.php:591
 #: src/Marketplace/View.php:787
 msgid "Configure"
-msgstr ""
+msgstr "Configureer"
 
 #: src/Plugin.php:2296 src/Plugin.php:2607
 msgctxt "button"
@@ -4568,8 +4572,8 @@ msgstr[0] "Netwerkinterfaces"
 #, php-format
 msgid "%1$s template"
 msgid_plural "%1$s templates"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%1$s sjabloon"
+msgstr[1] "%1$s sjablonen"
 
 #: src/ITILTemplate.php:317 src/Ticket.php:2730
 #: templates/components/itilobject/fields/global_validation.html.twig:61
@@ -4679,19 +4683,19 @@ msgstr ""
 
 #: src/PendingReason.php:180
 msgid "Every week"
-msgstr ""
+msgstr "Iedere week"
 
 #: src/PendingReason.php:181
 msgid "Every two weeks"
-msgstr ""
+msgstr "Iedere twee weken"
 
 #: src/PendingReason.php:182
 msgid "Every three weeks"
-msgstr ""
+msgstr "Iedere drie weken"
 
 #: src/PendingReason.php:183
 msgid "Every four weeks"
-msgstr ""
+msgstr "Iedere vier weken"
 
 #: src/PendingReason.php:208
 msgid "Automatic resolution disabled"
@@ -5052,7 +5056,7 @@ msgstr ""
 
 #: src/PrinterLog.php:195
 msgid "Copies"
-msgstr ""
+msgstr "Kopiën"
 
 #: src/PrinterLog.php:197
 msgid "Black & White copies"
@@ -5101,8 +5105,8 @@ msgstr "Beïnvloed door"
 #: templates/components/logs.html.twig:48
 msgid "Field"
 msgid_plural "Fields"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Veld"
+msgstr[1] "Velden"
 
 #: src/Csv/LogCsvExport.php:75 src/NotificationTargetProject.php:684
 #: src/NotificationTargetCommonITILObject.php:1944
@@ -5418,15 +5422,15 @@ msgstr[1] ""
 
 #: src/Agent.php:99 src/Agent.php:257
 msgid "Last contact"
-msgstr ""
+msgstr "Laatste contact"
 
 #: src/Agent.php:105 src/Agent.php:188
 msgid "Locked"
-msgstr ""
+msgstr "Vergrendeld"
 
 #: src/Agent.php:111 src/Agent.php:195
 msgid "Device id"
-msgstr ""
+msgstr "Apparaat ID"
 
 #: src/Agent.php:125 src/Agent.php:253 src/Features/Inventoriable.php:182
 #: templates/components/form/inventory_info.html.twig:73
@@ -5470,7 +5474,7 @@ msgstr ""
 
 #: src/Agent.php:607
 msgid "Not allowed"
-msgstr ""
+msgstr "Niet toegestaan"
 
 #: src/Agent.php:632
 #, php-format
@@ -6631,7 +6635,7 @@ msgstr ""
 
 #: src/Printer_CartridgeInfo.php:101
 msgid "Property"
-msgstr ""
+msgstr "Eigendom"
 
 #: src/Printer_CartridgeInfo.php:115
 #, php-format
@@ -6727,7 +6731,7 @@ msgstr "Tijdens laden..."
 
 #: src/Knowbase.php:157
 msgid "No category found"
-msgstr ""
+msgstr "Geen categorie gevonden"
 
 #: src/Knowbase.php:336
 msgid "Root category"
@@ -6949,8 +6953,8 @@ msgstr[0] "Velden voor de opslag van de login in het HTTP-verzoek"
 #: src/PassiveDCEquipment.php:49
 msgid "Passive device"
 msgid_plural "Passive devices"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Passief apparaat"
+msgstr[1] "Passieve apparaten"
 
 #: src/RuleDictionnaryPhoneTypeCollection.php:44
 msgid "Dictionnary of phone types"
@@ -7112,7 +7116,7 @@ msgstr "Standaardprofiel"
 
 #: src/RuleRight.php:381 src/Config.php:1375
 msgid "Timezone"
-msgstr ""
+msgstr "Tijdzone"
 
 #: src/RuleRight.php:416
 msgid "LDAP criteria"
@@ -7224,7 +7228,7 @@ msgstr ""
 #: src/Ticket.php:2752
 msgctxt "button"
 msgid "Add contract"
-msgstr ""
+msgstr "Contract toevoegen"
 
 #: src/Ticket.php:2760
 msgid "Link to a problem"
@@ -7236,15 +7240,15 @@ msgstr ""
 
 #: src/Ticket.php:2792
 msgid "Merge followups"
-msgstr ""
+msgstr "Opvolgingen Samenvoegen"
 
 #: src/Ticket.php:2798
 msgid "Merge documents"
-msgstr ""
+msgstr "Documenten Samenvoegen"
 
 #: src/Ticket.php:2804
 msgid "Merge tasks"
-msgstr ""
+msgstr "Taken samenvoegen"
 
 #: src/Ticket.php:2810
 msgid "Merge actors"
@@ -7252,7 +7256,7 @@ msgstr ""
 
 #: src/Ticket.php:2816
 msgid "Link type"
-msgstr ""
+msgstr "Link type"
 
 #: src/Ticket.php:2819 src/Ticket_Ticket.php:184 src/Ticket_Ticket.php:206
 #: src/Ticket_Ticket.php:211
@@ -7285,7 +7289,7 @@ msgstr "Link"
 
 #: src/Ticket.php:2915
 msgid "Resolve"
-msgstr ""
+msgstr "Oplossen"
 
 #: src/Ticket.php:2925 src/CommonDevice.php:407 src/CommonDevice.php:409
 #: src/CommonDevice.php:411 src/CommonDBChild.php:847
@@ -11803,31 +11807,31 @@ msgstr ""
 
 #: src/Dashboard/Grid.php:283
 msgid "Add filter"
-msgstr ""
+msgstr "Filter toevoegen"
 
 #: src/Dashboard/Grid.php:284 js/dashboard.js:912
 msgid "Add a new dashboard"
-msgstr ""
+msgstr "Nieuw dashboard toevoegen"
 
 #: src/Dashboard/Grid.php:600 js/dashboard.js:557
 msgid "Refresh this card"
-msgstr ""
+msgstr "Deze kaart verversen"
 
 #: src/Dashboard/Grid.php:601 js/dashboard.js:311 js/dashboard.js:558
 msgid "Edit this card"
-msgstr ""
+msgstr "Deze kaart bewerken"
 
 #: src/Dashboard/Grid.php:602 js/dashboard.js:559
 msgid "Delete this card"
-msgstr ""
+msgstr "Deze kaart verwijderen"
 
 #: src/Dashboard/Grid.php:695
 msgid "others"
-msgstr ""
+msgstr "Andere"
 
 #: src/Dashboard/Grid.php:749
 msgid "Filters"
-msgstr ""
+msgstr "Filter"
 
 #: src/Dashboard/Grid.php:785
 msgid "Embed in another application"
@@ -11853,7 +11857,7 @@ msgstr ""
 
 #: src/Dashboard/Grid.php:886
 msgid "empty card!"
-msgstr ""
+msgstr "lege kaart!"
 
 #: src/Dashboard/Grid.php:1127 src/Dashboard/Grid.php:1191
 #, php-format
@@ -14395,7 +14399,7 @@ msgstr ""
 
 #: src/Features/PlanningEvent.php:807
 msgid "By month"
-msgstr ""
+msgstr "op maand"
 
 #: src/Features/PlanningEvent.php:833
 msgid "Exceptions"
@@ -14414,7 +14418,7 @@ msgstr ""
 #: src/Features/PlanningEvent.php:985 src/PlanningExternalEventTemplate.php:79
 #: src/PlanningExternalEvent.php:330
 msgid "Repeat"
-msgstr ""
+msgstr "Herhalen"
 
 #: src/Features/PlanningEvent.php:1044 src/Reminder.php:442
 msgid "Planning start date"
@@ -16042,19 +16046,19 @@ msgstr "Vrije ruimte"
 
 #: src/Item_Disk.php:186 src/Item_Disk.php:296
 msgid "Encryption"
-msgstr ""
+msgstr "Versleuteling"
 
 #: src/Item_Disk.php:189 src/Item_Disk.php:343 src/Item_Disk.php:565
 msgid "Encryption tool"
-msgstr ""
+msgstr "Versleutelprogramma"
 
 #: src/Item_Disk.php:195 src/Item_Disk.php:345 src/Item_Disk.php:578
 msgid "Encryption algorithm"
-msgstr ""
+msgstr "Versleutel-algoritme"
 
 #: src/Item_Disk.php:198 src/Item_Disk.php:347 src/Item_Disk.php:591
 msgid "Encryption type"
-msgstr ""
+msgstr "Versletelingstype"
 
 #: src/Item_Disk.php:275
 msgid "Add a volume"
@@ -16066,23 +16070,23 @@ msgstr "Vrij percentage"
 
 #: src/Item_Disk.php:340
 msgid "Partial encryption"
-msgstr ""
+msgstr "Gedeeltelijke versleuteling"
 
 #: src/Item_Disk.php:550
 msgid "Encryption status"
-msgstr ""
+msgstr "Versleutelstatus"
 
 #: src/Item_Disk.php:611
 msgid "Not encrypted"
-msgstr ""
+msgstr "Versleuteld"
 
 #: src/Item_Disk.php:612
 msgid "Partially encrypted"
-msgstr ""
+msgstr "Gedeeltelijk versleuteld"
 
 #: src/Item_Disk.php:613
 msgid "Encrypted"
-msgstr ""
+msgstr "Versleuteld"
 
 #: src/NotificationTargetCertificate.php:47 src/Entity.php:1007
 #: src/Entity.php:2105
@@ -16155,7 +16159,7 @@ msgstr ""
 
 #: src/DeviceCamera.php:94 src/DeviceCamera.php:157
 msgid "Support"
-msgstr ""
+msgstr "Ondersteuning"
 
 #: src/DeviceCamera.php:133 src/DeviceCamera.php:182
 msgid "orientation"
@@ -16175,7 +16179,7 @@ msgstr ""
 
 #: src/DeviceCamera.php:185
 msgid "support"
-msgstr ""
+msgstr "ondersteuning"
 
 #: src/RSSFeed.php:82 src/Central.php:69
 msgid "RSS feed"
@@ -16222,8 +16226,8 @@ msgstr "Gebruik"
 #: src/Cable.php:46
 msgid "Cable"
 msgid_plural "Cables"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Kabel"
+msgstr[1] "Kabels"
 
 #: src/Cable.php:136 src/CableType.php:39
 msgid "Cable type"
@@ -16247,8 +16251,8 @@ msgstr[0] "Minuten"
 #: src/LevelAgreement.php:261
 msgid "Month"
 msgid_plural "Months"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Maand"
+msgstr[1] "Maanden"
 
 #: src/LevelAgreement.php:364
 msgid "Add a new item"
@@ -22997,7 +23001,7 @@ msgstr ""
 
 #: js/impact.js:1327
 msgid "Group properties..."
-msgstr ""
+msgstr "Groepseigenschappen"
 
 #: js/impact.js:1328
 msgid "Set name and/or color for this group"
@@ -23005,7 +23009,7 @@ msgstr ""
 
 #: js/impact.js:1335
 msgid "Remove from group"
-msgstr ""
+msgstr "Verwijder uit de groep"
 
 #: js/impact.js:1336
 msgid "Remove this asset from the group"
