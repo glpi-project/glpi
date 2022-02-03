@@ -2787,7 +2787,7 @@ msgstr "%1$s, %3$s ögesi için %2$s ayırtmasını ekledi"
 #: front/reservation.form.php:160
 #, php-format
 msgid "Reservation added for item %s at %s"
-msgstr ""
+msgstr " %s ögesi %s zamanı için ayırtıldı"
 
 #: front/report.contract.list.php:46
 msgid "List of the hardware under contract"
@@ -2864,7 +2864,7 @@ msgstr ""
 
 #: inc/config.php:186
 msgid "Update needed"
-msgstr ""
+msgstr "Güncelleme gerekli"
 
 #: inc/config.php:203 install/update.php:166 entrée standard:57
 msgid "Try again"
@@ -4397,7 +4397,7 @@ msgstr ""
 #: src/Update.php:227 src/Central.php:503
 #, php-format
 msgid "%d primary or foreign keys columns are using signed integers."
-msgstr ""
+msgstr "%d birincil dış anahtar sütununda işaretli tam sayılar kullanılıyor."
 
 #: src/Update.php:265
 msgid ""
@@ -6720,17 +6720,17 @@ msgstr "Bildirimler varsayılan olarak kullanılsın"
 #: src/Entity.php:884 src/Entity.php:1911
 #: src/NotificationMailingSetting.php:77
 msgid "Administrator email address"
-msgstr ""
+msgstr "Yönetici e-posta adresi"
 
 #: src/Entity.php:893 src/Entity.php:1962
 #: src/NotificationMailingSetting.php:106
 msgid "Reply-To address"
-msgstr ""
+msgstr "Yanıt adresi"
 
 #: src/Entity.php:902 src/Entity.php:1928
 #: src/NotificationMailingSetting.php:90
 msgid "Email sender address"
-msgstr ""
+msgstr "E-posta göndericinin adresi"
 
 #: src/Entity.php:911 src/Entity.php:1945
 #: src/NotificationMailingSetting.php:124
@@ -6750,12 +6750,12 @@ msgstr "Yönetici adı"
 #: src/NotificationMailingSetting.php:117 src/QueuedNotification.php:291
 #: src/QueuedNotification.php:753
 msgid "Reply-To name"
-msgstr ""
+msgstr "Yanıt adı"
 
 #: src/Entity.php:944 src/Entity.php:1935
 #: src/NotificationMailingSetting.php:98
 msgid "Email sender name"
-msgstr ""
+msgstr "E-posta göndericinin adı"
 
 #: src/Entity.php:953 src/Entity.php:1952
 #: src/NotificationMailingSetting.php:135
@@ -7105,7 +7105,7 @@ msgstr "Destek personeli anonimleştirilsin"
 
 #: src/Entity.php:2855
 msgid "Display initials for users without pictures"
-msgstr ""
+msgstr "Görseli olmayan kullanıcıların baş harfleri görüntülensin"
 
 #: src/Entity.php:2880
 msgid "Default contract"
@@ -7688,15 +7688,15 @@ msgstr "Veritabanı bağlantısı kurulamadı."
 #: src/NotificationTargetDBConnection.php:79 src/DBConnection.php:699
 #: src/DBConnection.php:703
 msgid "Difference between main and replica"
-msgstr ""
+msgstr "Asıl ve kopya arasındaki fark"
 
 #: src/NotificationTargetDBConnection.php:91
 msgid "Replica database out of sync!"
-msgstr ""
+msgstr "Kopya veritabanı eşitlenmemiş!"
 
 #: src/NotificationTargetDBConnection.php:93
 msgid "The replica database is desynchronized. The difference is of:"
-msgstr ""
+msgstr "Kopya veritabanı eşit değil. Fark şu şekilde:"
 
 #: src/DeviceGenericModel.php:42
 msgid "Device generic model"
@@ -7897,6 +7897,9 @@ msgid ""
 " email containing the informations required to reset your password. Please "
 "contact your administrator if you do not receive any email."
 msgstr ""
+"Belirtilen e-posta adresi var olan bir GLPI kullanıcısıyla eşleşiyorsa, "
+"parolanızı sıfırlamak için gerekli bilgileri içeren bir e-posta alacaksınız."
+" Herhangi bir e-posta almazsanız lütfen yöneticinizle görüşün."
 
 #: src/Api/API.php:2173
 msgid "Reset password successful."
@@ -10621,7 +10624,7 @@ msgstr "SQL kopyasını denetle"
 
 #: src/DBConnection.php:616
 msgid "Max delay between main and replica (minutes)"
-msgstr ""
+msgstr "Asıl ve kopya arasındaki en fazla gecikme (dakika)"
 
 #: src/DBConnection.php:649
 #, php-format
@@ -10631,7 +10634,7 @@ msgstr "SQL sunucusu: %s veritabanı ile bağlantı kuramadı"
 #: src/DBConnection.php:653
 #, php-format
 msgid "SQL server: %1$s, difference between main and replica: %2$s"
-msgstr ""
+msgstr "SQL sunucu: Asıl ve kopya arasında %1$s fark var: %2$s"
 
 #: src/DBConnection.php:692
 msgid "SQL server"
@@ -12315,7 +12318,7 @@ msgstr "Aygıt türleri sözlüğü"
 
 #: src/Item_Ticket.php:447
 msgid "Knowledge base entries"
-msgstr ""
+msgstr "Bilgi bankası kayıtları"
 
 #: src/Item_Ticket.php:654 src/Item_Ticket.php:878 src/Profile.php:3222
 #: src/Profile.php:3228
@@ -13360,6 +13363,8 @@ msgstr ""
 #: src/NotificationMailingSetting.php:107
 msgid "If not set, main or entity administrator email address will be used."
 msgstr ""
+"Ayarlanmamışsa, ana yönetici veya birim yöneticisinin e-posta adresi "
+"kullanılır."
 
 #: src/NotificationMailingSetting.php:99
 msgid "Name to use in from for sent emails."
@@ -13368,6 +13373,8 @@ msgstr "Gönderilen e-postaların Kimden alanında görüntülenecek ad."
 #: src/NotificationMailingSetting.php:99
 msgid "If not set, main or entity administrator email name will be used."
 msgstr ""
+"Ayarlanmamışsa, ana yönetici veya birim yöneticisinin e-posta adı "
+"kullanılır."
 
 #: src/NotificationMailingSetting.php:107
 msgid "Optionnal reply to address."
@@ -14058,18 +14065,18 @@ msgstr "\"ROW_FORMAT=DYNAMIC\" dönüştürmesi gerekli %s tablo bulundu."
 
 #: src/Console/Migration/UnsignedKeysCommand.php:56
 msgid "Migrate primary/foreign keys to unsigned integers"
-msgstr ""
+msgstr "Birincil/dış anahtarları işaretli olmayan tam sayılara geçirin"
 
 #: src/Console/Migration/UnsignedKeysCommand.php:65
 #, php-format
 msgid "Found %s primary/foreign key columns(s) using signed integers."
-msgstr ""
+msgstr "İşaretli tam sayılar kullanan %s birincil/dış anahtar sütunu bulundu."
 
 #: src/Console/Migration/UnsignedKeysCommand.php:95
 #, php-format
 msgid ""
 "Migration of column \"%s.%s\" cannot be done as it contains negative values."
-msgstr ""
+msgstr "Negatif değerler bulunduğundan \"%s.%s\" sütunu aktarılamadı."
 
 #: src/Console/Migration/UnsignedKeysCommand.php:115
 #, php-format
@@ -14077,16 +14084,18 @@ msgid ""
 "Migration of column \"%s.%s\" cannot be done as it is referenced in "
 "CONSTRAINT \"%s\" of table \"%s.%s\"."
 msgstr ""
+"\"%s.%s\" sütunu, CONSTRAINT \"%s\" ile \"%s.%s\" tablosuna bağlı olduğundan"
+" aktarılamadı."
 
 #: src/Console/Migration/UnsignedKeysCommand.php:133
 #, php-format
 msgid "Migrating column \"%s.%s\"..."
-msgstr ""
+msgstr "\"%s.%s\" sütunu aktarılıyor..."
 
 #: src/Console/Migration/UnsignedKeysCommand.php:152
 #, php-format
 msgid "Migration of column \"%s.%s\" failed with message \"(%s) %s\"."
-msgstr ""
+msgstr "\"%s.%s\" sütunu \"(%s) %s\" iletisi ile aktarılamadı."
 
 #: src/Console/Migration/MyIsamToInnoDbCommand.php:64
 msgid "Migrate MyISAM tables to InnoDB"
@@ -15011,6 +15020,8 @@ msgid ""
 "Use strict configuration, to enforce warnings triggering on deprecated or "
 "discouraged usages"
 msgstr ""
+"Kullanımdan kaldırılan veya önerilmeyen kullanımlarda uyarı verilmesini "
+"sağlamak için sıkı yapılandırma kullanılsın"
 
 #: src/Console/Database/AbstractConfigureCommand.php:154
 msgid "Database name:"
@@ -15062,29 +15073,37 @@ msgstr "Tanımların sıkı karşılaştırılması"
 
 #: src/Console/Database/CheckSchemaIntegrityCommand.php:83
 msgid "Check tokens related to all databases migrations."
-msgstr ""
+msgstr "Tüm veritabanı aktarımlarıyla ilgili belirteçler denetlensin."
 
 #: src/Console/Database/CheckSchemaIntegrityCommand.php:90
 msgid "Check tokens related to migration from \"MyISAM\" to \"InnoDB\"."
 msgstr ""
+"\"MyISAM\" işleyiciden \"InnoDB\" işleyiciye geçişle ilgili belirteçler "
+"denetlensin."
 
 #: src/Console/Database/CheckSchemaIntegrityCommand.php:97
 msgid "Check tokens related to migration from \"datetime\" to \"timestamp\"."
 msgstr ""
+"\"datetime\" biçiminden \"timestamp\" biçimine geçişle ilgili belirteçler "
+"denetlensin."
 
 #: src/Console/Database/CheckSchemaIntegrityCommand.php:104
 msgid "Check tokens related to migration from \"utf8\" to \"utf8mb4\"."
 msgstr ""
+"\"utf8\" karakter kümesinden \"utf8mb4\" kümesine geçişle ilgili belirteçler"
+" denetlensin."
 
 #: src/Console/Database/CheckSchemaIntegrityCommand.php:111
 msgid "Check tokens related to \"DYNAMIC\" row format migration."
-msgstr ""
+msgstr "\"DYNAMIC\" satır biçimi geçişiyle ilgili belirteçler denetlensin."
 
 #: src/Console/Database/CheckSchemaIntegrityCommand.php:118
 msgid ""
 "Check tokens related to migration from signed to unsigned integers in "
 "primary/foreign keys."
 msgstr ""
+"Birincil/dış anahtarlarda işaretliden işaretsiz tam sayılara geçişle ilgili "
+"belirteçler denetlensin."
 
 #: src/Console/Database/CheckSchemaIntegrityCommand.php:139
 #, php-format
@@ -15567,8 +15586,8 @@ msgstr[1] "Telefon modelleri"
 #: src/Rule.php:384 src/MonitorType.php:39
 msgid "Monitor type"
 msgid_plural "Monitors types"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Ekran türü"
+msgstr[1] "Ekran türleri"
 
 #: src/Rule.php:408
 msgid "Peripheral type"
@@ -17357,7 +17376,7 @@ msgstr "PHP sürümü (%s) destekleniyor."
 #: src/System/Requirement/PhpVersion.php:73
 #, php-format
 msgid "PHP version must be between %s and %s (exclusive)."
-msgstr ""
+msgstr "PHP sürümü %s ile %s (dışında) arasında olmalıdır."
 
 #: src/System/Requirement/LogsWriteAccess.php:57
 msgid "Permissions for log files"
@@ -19729,7 +19748,7 @@ msgstr "Alıcının adı"
 
 #: src/QueuedNotification.php:282 src/QueuedNotification.php:751
 msgid "Reply-To email"
-msgstr ""
+msgstr "Yanıt e-posta adresi"
 
 #: src/QueuedNotification.php:300 src/QueuedNotification.php:760
 msgid "Additional headers"
@@ -20042,7 +20061,7 @@ msgstr "SQL parolası"
 
 #: src/Config.php:803
 msgid "Use the replica for the search engine"
-msgstr ""
+msgstr "Arama motoru için kopya kullanılsın"
 
 #: src/Config.php:805
 msgid "If synced (all changes)"
@@ -20264,15 +20283,15 @@ msgstr "Varsayılan destek merkezi sekmesi"
 
 #: src/Config.php:1409
 msgid "Timeline order"
-msgstr ""
+msgstr "Zaman çizelgesi sıralaması"
 
 #: src/Config.php:1412
 msgid "Natural order (old items on top, recent on bottom)"
-msgstr ""
+msgstr "Doğal sıralama (üstte eskilerden altta yenilere)"
 
 #: src/Config.php:1413
 msgid "Reverse order (old items on bottom, recent on top"
-msgstr ""
+msgstr "Ters sıralama (üstte yenilerden altta eskilere)"
 
 #: src/Config.php:1425
 msgid "Private followups by default"
@@ -20899,11 +20918,11 @@ msgstr "Temel etki alanı"
 
 #: src/AuthLDAP.php:444
 msgid "Use Bind (for non-anonymous binds)"
-msgstr ""
+msgstr "Bind kullanılsın (anonim olmayan bağlantılar için)"
 
 #: src/AuthLDAP.php:445
 msgid "Allow to use RootDN and Password for non-anonymous binds."
-msgstr ""
+msgstr "Anonim olmayan bağlantılar için RootDN ve Parola kullanılabilsin."
 
 #: src/AuthLDAP.php:471
 msgid "RootDN (for non anonymous binds)"
@@ -21336,11 +21355,11 @@ msgstr "Topluluk"
 
 #: src/SNMPCredential.php:166
 msgid "You must select an SNMP version"
-msgstr ""
+msgstr "Bir SNMP sürümü seçmelisiniz"
 
 #: src/SNMPCredential.php:173
 msgid "You must enter a username"
-msgstr ""
+msgstr "Bir kullanıcı adı yazmalısınız"
 
 #: src/Document_Item.php:570 src/Document_Item.php:664
 msgid "Add a document"
@@ -23596,7 +23615,7 @@ msgstr ""
 
 #: entrée standard:47
 msgid "Please enter your new password."
-msgstr ""
+msgstr "Lütfen yeni parolanızı yazın."
 
 #: entrée standard:56
 msgid "Password confirmation"
@@ -23938,7 +23957,7 @@ msgstr "Bir HDS ata"
 
 #: entrée standard:52
 msgid "There are some tickets awaiting approval"
-msgstr ""
+msgstr "Onay bekleyen bazı destek kayıtları var"
 
 #: entrée standard:52
 msgid "check it out!"
@@ -24192,7 +24211,7 @@ msgstr "Genel Kanban"
 
 #: entrée standard:97 standard:99
 msgid "Transfer list"
-msgstr ""
+msgstr "Aktarım listesi"
 
 #: entrée standard:39
 msgid "Back to top of the page"
