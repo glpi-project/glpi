@@ -45,12 +45,6 @@
       __('Position')
    ) }}
 
-   {{ fields.dropdownField(
-      'Glpi\\SocketModel',
-      'socketmodels_id',
-      item.fields['socketmodels_id'],
-      'Glpi\\SocketModel'|itemtype_name,
-   ) }}
 
    {% set wiring_side %}
       {% do call('Glpi\\Socket::dropdownWiringSide', [
@@ -80,20 +74,4 @@
       _n('Network port', 'Network ports', get_plural_number()),
    ) }}
 
-   {% set asset_breadcrumb %}
-      <span id="show_asset_breadcrumb">
-      {% if item.fields['itemtype']|length > 0 and item.fields['items_id']|length %}
-         {% set breadcrumb = call(item.fields['itemtype'] ~ '::getDcBreadcrumbSpecificValueToDisplay', [
-            item.fields['items_id'],
-            params
-         ]) %}
-         {{ breadcrumb|raw }}
-      {% endif %}
-      </span>
-   {% endset %}
-   {{ fields.htmlField(
-      'items_id',
-      asset_breadcrumb,
-      __('Position'),
-   ) }}
 {% endblock %}
