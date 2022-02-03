@@ -35,50 +35,35 @@
  * @var Migration $migration
  */
 
-$migration->displayMessage('Add page layout configuration / user preference');
-Config::setConfigurationValues('core', ['page_layout' => 'vertical']);
+$migration->displayMessage('Add new configurations / user preferences');
+$migration->addConfig([
+    'default_central_tab'   => 0,
+    'page_layout'           => 'vertical',
+    'fold_menu'             => 0,
+    'fold_search'           => 0,
+    'savedsearches_pinned'  => 0,
+    'richtext_layout'       => 'inline',
+    'user_restored_ldap'    => 0,
+    'timeline_order'        => 'natural',
+    'itil_layout'           => 0,
+    'from_email'            => '',
+    'from_email_name'       => '',
+    'noreply_email'         => '',
+    'noreply_email_name'    => '',
+    'replyto_email'         => '',
+    'replyto_email_name'    => '',
+]);
+$migration->addField("glpi_users", "default_central_tab", "tinyint DEFAULT 0");
 $migration->addField('glpi_users', 'page_layout', 'char(20) DEFAULT NULL', ['after' => 'palette']);
-
-$migration->displayMessage('Add global menu folding config / user preference');
-Config::setConfigurationValues('core', ['fold_menu' => 0]);
 $migration->addField('glpi_users', 'fold_menu', 'tinyint DEFAULT NULL', ['after' => 'page_layout']);
-
-$migration->displayMessage('Add global menu folding config / user preference');
-Config::setConfigurationValues('core', ['fold_search' => 0]);
 $migration->addField('glpi_users', 'fold_search', 'tinyint DEFAULT NULL', ['after' => 'fold_menu']);
-
-$migration->displayMessage('Add saved searches pin config / user preference');
-Config::setConfigurationValues('core', ['savedsearches_pinned' => 0]);
 $migration->addField('glpi_users', 'savedsearches_pinned', 'text', ['after' => 'fold_search', 'nodefault' => true]);
-
-$migration->displayMessage('Add tinymce toolbar configuration / user preference');
-Config::setConfigurationValues('core', ['richtext_layout' => 'inline']);
 $migration->addField('glpi_users', 'richtext_layout', 'char(20) DEFAULT NULL', ['after' => 'savedsearches_pinned']);
-
-$migration->displayMessage('Drop content layout configuration / user preference');
-$migration->dropField('glpi_users', 'layout');
-Config::deleteConfigurationValues('core', ['layout']);
-
-$migration->displayMessage('Drop autocompletion configuration');
-Config::deleteConfigurationValues('core', ['use_ajax_autocompletion']);
-
-$migration->displayMessage('Add LDAP restore action preference');
-Config::setConfigurationValues('core', ['user_restored_ldap' => 0]);
-
-Config::setConfigurationValues('core', ['timeline_order' => 'natural']);
 $migration->addField("glpi_users", "timeline_order", "char(20) DEFAULT NULL", ['after' => 'savedsearches_pinned']);
-
-Config::setConfigurationValues('core', ['itil_layout' => 0]);
 $migration->addField('glpi_users', 'itil_layout', 'text', ['after' => 'timeline_order']);
 
-$migration->displayMessage('Drop obsolete automatic transfer configuration');
+$migration->displayMessage('Drop old configurations / user preferences');
+$migration->dropField('glpi_users', 'layout');
+Config::deleteConfigurationValues('core', ['layout']);
+Config::deleteConfigurationValues('core', ['use_ajax_autocompletion']);
 Config::deleteConfigurationValues('core', ['transfers_id_auto']);
-
-$migration->addConfig([
-    'from_email'         => '',
-    'from_email_name'    => '',
-    'noreply_email'      => '',
-    'noreply_email_name' => '',
-    'replyto_email'      => '',
-    'replyto_email_name' => '',
-]);
