@@ -3423,4 +3423,52 @@ HTML;
             Html::redirect($CFG_GLPI['root_doc'] . "/front/central.php");
         }
     }
+
+    /**
+     * Check if a mixed value (possibly a string) is an integer or a float
+     *
+     * @param mixed $value A possible float
+     *
+     * @return bool
+     */
+    public static function isFloat($value): bool
+    {
+        if (!is_numeric($value)) {
+            $type = gettype($value);
+
+            trigger_error(
+                "Calling isFloat on $type",
+                E_USER_WARNING
+            );
+            return false;
+        }
+
+        return (floatval($value) - intval($value)) > 0;
+    }
+
+    /**
+     * Get the number of decimals for a given value
+     *
+     * @param mixed $value A possible float
+     *
+     * @return int
+     */
+    public static function getDecimalNumbers($value): int
+    {
+        if (!is_numeric($value)) {
+            $type = gettype($value);
+
+            trigger_error(
+                "Calling getDecimalNumbers on $type",
+                E_USER_WARNING
+            );
+            return 0;
+        }
+
+        if (floatval($value) == intval($value)) {
+            return 0;
+        }
+
+        return strlen(preg_replace('/\d*\./', '', floatval($value)));
+    }
 }

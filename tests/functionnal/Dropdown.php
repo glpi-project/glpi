@@ -34,6 +34,7 @@
 namespace tests\units;
 
 use DbTestCase;
+use Generator;
 use Glpi\Socket;
 use Glpi\Toolbox\Sanitizer;
 use Session;
@@ -1570,5 +1571,110 @@ class Dropdown extends DbTestCase
                 'count' => 1,
             ]
         );
+    }
+
+    /**
+     * Data provider for testDropdownNumber
+     *
+     * @return Generator
+     */
+    protected function testDropdownNumberProvider(): Generator
+    {
+        yield [
+            'params' => [
+                'min'  => 1,
+                'max'  => 4,
+                'step' => 1,
+                'unit' => "",
+            ],
+            'expected' => [1, 2, 3, 4]
+        ];
+        yield [
+            'params' => [
+                'min' => 1,
+                'max' => 4,
+                'step' => 0.5,
+                'unit' => ""
+            ],
+            'expected' => [
+                1,
+                1.5,
+                2,
+                2.5,
+                3,
+                3.5,
+                4
+            ]
+        ];
+
+        yield [
+            'params' => [
+                'min' => 1,
+                'max' => 4,
+                'step' => 2,
+                'unit' => ""
+            ],
+            'expected' => [
+                1,
+                3
+            ]
+        ];
+
+        yield [
+            'params' => [
+                'min' => 1,
+                'max' => 4,
+                'step' => 2.5,
+                'unit' => ""
+            ],
+            'expected' => [
+                1,
+                3.5
+            ]
+        ];
+
+        yield [
+            'params' => [
+                'min' => 1,
+                'max' => 4,
+                'step' => 5.5,
+                'unit' => ""
+            ],
+            'expected' => [
+                1
+            ]
+        ];
+    }
+
+    /**
+     * Tests for Dropdown::DropdownNumber()
+     *
+     * @dataprovider testDropdownNumberProvider
+     *
+     * @param array $params
+     * @param array $expected
+     *
+     * @return void
+     */
+    public function testDropdownNumber(array $params, array $expected): void
+    {
+        $params['display'] = false;
+
+        $data = \Dropdown::getDropdownNumber($params, false);
+        $this->array($data)->hasKey("results");
+        $this->array($data['results'])->hasSize(count($expected));
+        $this->integer($data['count'])->isEqualTo(count($expected));
+
+        foreach ($data['results'] as $key => $dropdown_entry) {
+            $this->array($dropdown_entry)->hasKeys([
+                "id",
+                "text"
+            ]);
+
+            $numeric_text_value = floatval($dropdown_entry['text']);
+            $this->variable($dropdown_entry['id'])->isEqualTo($numeric_text_value);
+
+            $this->variable($dropdown_entry['id'])->isEqualTo($expected[$key]);
+        }
     }
 }
