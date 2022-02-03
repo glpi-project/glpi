@@ -664,7 +664,7 @@ JAVASCRIPT;
     }
 
 
-    static function getIcon()
+    public static function getIcon()
     {
         return "ti ti-file-search";
     }

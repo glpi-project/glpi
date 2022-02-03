@@ -368,7 +368,7 @@ class AuthMail extends CommonDBTM
     }
 
 
-    static function getIcon()
+    public static function getIcon()
     {
         return "far fa-envelope";
     }

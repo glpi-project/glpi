@@ -347,7 +347,7 @@ class Item_Enclosure extends CommonDBRelation
     }
 
 
-    static function getIcon()
+    public static function getIcon()
     {
         return Enclosure::getIcon();
     }

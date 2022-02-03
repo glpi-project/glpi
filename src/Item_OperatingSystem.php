@@ -701,7 +701,7 @@ class Item_OperatingSystem extends CommonDBRelation
     }
 
 
-    static function getIcon()
+    public static function getIcon()
     {
         return OperatingSystem::getIcon();
     }

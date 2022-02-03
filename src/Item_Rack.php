@@ -1066,7 +1066,7 @@ JAVASCRIPT;
     }
 
 
-    static function getIcon()
+    public static function getIcon()
     {
         return Rack::getIcon();
     }

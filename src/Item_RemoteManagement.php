@@ -377,7 +377,7 @@ class Item_RemoteManagement extends CommonDBChild
     }
 
 
-    static function getIcon()
+    public static function getIcon()
     {
         return "fas fa-laptop-house";
     }

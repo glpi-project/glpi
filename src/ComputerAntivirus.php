@@ -425,7 +425,7 @@ class ComputerAntivirus extends CommonDBChild
     }
 
 
-    static function getIcon()
+    public static function getIcon()
     {
         return "ti ti-virus-search";
     }
