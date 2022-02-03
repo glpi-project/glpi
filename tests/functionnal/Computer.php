@@ -543,7 +543,7 @@ class Computer extends DbTestCase {
       $this->array($iterator->next())->isIdenticalTo([
          'buy_date'  => '2021-01-01',
          'use_date'  => '2021-01-02',
-         'value'     => '800.00'
+         'value'     => '800.0000' //DB stores 4 decimal places
       ]);
    }
 
