@@ -99,7 +99,7 @@ window.GLPI.Search.GenericView = class GenericView {
             `);
             const bs_modal = new bootstrap.Modal(modal.get(0), {show: false});
             modal.on('show.bs.modal', () => {
-                const url = modal.attr('data-url')+'&url=' + encodeURIComponent(window.location.pathname + decodeURI(window.location.search));
+                const url = modal.attr('data-url')+'&url=' + encodeURIComponent(window.location.pathname + window.location.search);
                 modal.find('.modal-body').load(url, {});
             });
             bs_modal.show();

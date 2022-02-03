@@ -122,7 +122,7 @@ if ($_GET['action'] == 'create') {
         $id,
         [
             'type'      => $_GET['type'],
-            'url'       => rawurldecode($_GET["url"]),
+            'url'       => $_GET["url"],
             'itemtype'  => $_GET["itemtype"],
             'ajax'      => true
         ]
