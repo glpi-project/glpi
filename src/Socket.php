@@ -291,8 +291,8 @@ class Socket extends CommonDBChild
     public static function getSides()
     {
         return [
-            self::REAR   => __('Endpoint A'),
-            self::FRONT  => __('Endpoint B'),
+            self::REAR   => __('Rear'),
+            self::FRONT  => __('Front'),
         ];
     }
 
