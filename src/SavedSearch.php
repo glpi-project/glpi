@@ -302,7 +302,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
      */
     public function prepareSearchUrlForDB(array $input): array
     {
-        $taburl = parse_url(Sanitizer::unsanitize(rawurldecode($input['url'])));
+        $taburl = parse_url(Sanitizer::unsanitize($input['url']));
 
         $query_tab = [];
 
@@ -407,7 +407,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
         }
 
         if (isset($options['url'])) {
-            echo Html::hidden('url', ['value' => rawurlencode($options['url'])]);
+            echo Html::hidden('url', ['value' => $options['url']]);
         }
 
         echo "<tr><th colspan='4'>";
