@@ -174,6 +174,7 @@ if (isset($_POST["add"])) {
         empty($dropdown->third_level_menu) ? $dropdown->getType() : $dropdown->third_level_menu,
     ];
     $dropdown::displayFullPageForItem($_GET['id'], $menus, [
-        'formoptions' => ($options['formoptions'] ?? '') . ' data-track-changes=true'
+        'formoptions' => ($options['formoptions'] ?? '') . ' data-track-changes=true',
+        'id'          => $_GET["id"],
     ]);
 }
