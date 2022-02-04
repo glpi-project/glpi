@@ -1400,7 +1400,7 @@ HTML;
         ];
 
         if ($can_read_dashboard && strlen($default_asset_helpdesk) > 0) {
-            $menu['helpdesk']['default_dashboard'] = '/front/dashboard_assets.php';
+            $menu['helpdesk']['default_dashboard'] = '/front/dashboard_helpdesk.php';
         }
 
         $menu += [
