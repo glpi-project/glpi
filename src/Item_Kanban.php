@@ -59,12 +59,6 @@ class Item_Kanban extends CommonDBRelation
         $oldstate = self::loadStateForItem($itemtype, $items_id);
         $users_id = $force_global ? 0 : Session::getLoginUserID();
         $state = $item->prepareKanbanStateForUpdate($oldstate, $state, $users_id);
-        $all_columns = $item->getAllKanbanColumns();
-        foreach ($state as $column_i => $column) {
-            if ($all_columns[$column['column']]['drop_only']) {
-                unset($state[$column_i]);
-            }
-        }
 
         if ($state === null || $state === 'null' || $state === false) {
            // Save was probably denied in prepareKanbanStateForUpdate or an invalid state was given
@@ -151,20 +145,32 @@ class Item_Kanban extends CommonDBRelation
 
        // Search for old location and remove card
         foreach ($state as $column_index => $col) {
-            foreach ($col['cards'] as $card_index => $card_id) {
-                if ($card_id === $card) {
-                    unset($state[$column_index]['cards'][$card_index]);
-                    // Re-index
-                    $state[$column_index]['cards'] = array_values($state[$column_index]['cards']);
+            if (isset($col['cards'])) {
+                foreach ($col['cards'] as $card_index => $card_id) {
+                    if ($card_id === $card) {
+                        unset($state[$column_index]['cards'][$card_index]);
+                        // Re-index
+                        $state[$column_index]['cards'] = array_values($state[$column_index]['cards']);
+                    }
                 }
             }
         }
 
+        /** @var Kanban|CommonDBTM $item */
+        $item = new $itemtype();
+        $item->getFromDB($items_id);
+        $all_columns = $item->getAllKanbanColumns();
         $new_column_index = array_keys(array_filter($state, function ($c, $k) use ($column) {
             return $c['column'] === $column;
         }, ARRAY_FILTER_USE_BOTH));
         if (count($new_column_index)) {
-            array_splice($state[reset($new_column_index)]['cards'], $position, 0, $card);
+            $new_column_index = reset($new_column_index);
+            if (isset($all_columns[$new_column_index])) {
+                $drop_only = $all_columns[$new_column_index]['drop_only'] ?? false;
+                if (isset($all_columns[$new_column_index]) && !$drop_only) {
+                    array_splice($state[$new_column_index]['cards'], $position, 0, $card);
+                }
+            }
         }
 
         self::saveStateForItem($itemtype, $items_id, $state);
