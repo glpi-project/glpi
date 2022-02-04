@@ -271,8 +271,7 @@ class GLPINetwork extends CommonGLPI
             __("You need help to integrate GLPI in your IT, have a bug fixed or benefit from pre-configured rules or dictionaries?\n\n" .
             "We provide the %s space for you.\n" .
             "GLPI-Network is a commercial product that includes a subscription for tier 3 support, ensuring the correction of bugs encountered with a commitment time.\n\n" .
-            "In this same space, you will be able to <b>contact an official partner</b> to help you with your GLPI integration.\n\n" .
-            "Or, support the GLPI development effort by <b>donating</b>."),
+            "In this same space, you will be able to <b>contact an official partner</b> to help you with your GLPI integration."),
             "<a href='" . GLPI_NETWORK_SERVICES . "' target='_blank'>" . GLPI_NETWORK_SERVICES . "</a>"
         ));
     }
