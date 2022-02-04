@@ -327,6 +327,12 @@
 
     .timeline-item {
         min-width: 100%;
+
+        &.ITILSolution {
+            .timeline-content {
+                border-left: 1px solid transparent;
+            }
+        }
     }
 }
 
