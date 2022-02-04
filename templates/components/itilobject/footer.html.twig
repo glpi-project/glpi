@@ -40,8 +40,8 @@
 
 <div class="mx-n2 mb-n2 itil-footer itil-footer p-0 border-top" id="itil-footer">
    <div class="buttons-bar d-flex py-2">
-      {% if not item.isNewItem() %}
-         <div class="{{ timeline_btns_cls }} ps-3 timeline-buttons">
+      <div class="{{ timeline_btns_cls }} ps-3 timeline-buttons">
+         {% if not item.isNewItem() %}
             {% set default_action_data = timeline_itemtypes|first %}
             {% if item.isNotSolved() and default_action_data != false %}
                {% if timeline_itemtypes|length > 1 %}
@@ -77,8 +77,8 @@
                {{ legacy_timeline_actions|default('')|raw }}
             </ul>
             {{ include('components/itilobject/timeline/filter_timeline.html.twig') }}
-         </div>
-      {% endif %}
+         {% endif %}
+     </div>
 
       <div class="form-buttons {{ form_btns_cls }} d-flex justify-content-end ms-auto ms-md-0 my-n2 py-2 pe-3 card-footer border-top-0 position-relative">
          <span class="d-none d-md-block position-absolute top-0 start-0"
