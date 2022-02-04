@@ -281,8 +281,5 @@ if (isset($_GET["id"]) && ($_GET["id"] > 0)) {
         Html::header(sprintf(__('%s Kanban'), Ticket::getTypeName(1)), '', "helpdesk", "ticket");
         $track::showKanban(0);
         Html::footer();
-    } else if (isset($_GET['id'])) {
-        $menus = ["helpdesk", "ticket"];
-        Ticket::displayFullPageForItem($_GET["id"], $menus, $_REQUEST);
     }
 }
