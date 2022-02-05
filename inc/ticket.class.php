@@ -1068,6 +1068,8 @@ class Ticket extends CommonITILObject {
                 || ($DB->escape($this->fields[$key]) != $input[$key])) {
                $changes[] = $key;
             }
+         } elseif(isset($this->fields[$key]) && !isset($input[$key])){
+            $input[$key] = $this->fields[$key];
          }
       }
 
