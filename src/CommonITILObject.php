@@ -6760,6 +6760,7 @@ abstract class CommonITILObject extends CommonDBTM
                 $this->getAssociatedDocumentsCriteria($params['bypass_rights']),
                 'timeline_position'  => ['>', self::NO_TIMELINE]
             ]);
+            $can_view_documents = Document::canView();
             foreach ($document_items as $document_item) {
                 $document_obj->getFromDB($document_item['documents_id']);
 
@@ -6776,9 +6777,13 @@ abstract class CommonITILObject extends CommonDBTM
 
                 $timeline_key = $document_item['itemtype'] . "_" . $document_item['items_id'];
                 if ($document_item['itemtype'] == static::getType()) {
+                    $item['_can_edit'] = $can_view_documents && $document_obj->canUpdateItem();
+                    $item['_can_delete'] = $can_view_documents && $document_obj->canDeleteItem();
                   // document associated directly to itilobject
-                    $timeline["Document_" . $document_item['documents_id']]
-                     = ['type' => 'Document_Item', 'item' => $item];
+                    $timeline["Document_" . $document_item['documents_id']] = [
+                        'type' => 'Document_Item',
+                        'item' => $item
+                    ];
                 } else if (isset($timeline[$timeline_key])) {
                  // document associated to a sub item of itilobject
                     if (!isset($timeline[$timeline_key]['documents'])) {
@@ -6789,7 +6794,9 @@ abstract class CommonITILObject extends CommonDBTM
                     $is_image = Document::isImage($docpath);
                     $sub_document = [
                         'type' => 'Document_Item',
-                        'item' => $item
+                        'item' => $item,
+                        '_can_edit' => $can_view_documents && $document_obj->canUpdateItem(),
+                        '_can_delete' => $can_view_documents && $document_obj->canDeleteItem(),
                     ];
                     if ($is_image) {
                         $sub_document['_is_image'] = true;
