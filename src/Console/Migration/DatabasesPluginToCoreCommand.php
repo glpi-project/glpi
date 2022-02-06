@@ -112,14 +112,14 @@ class DatabasesPluginToCoreCommand extends AbstractCommand
             "is_helpdesk_visible",
         ],
         "glpi_plugin_databases_instances"       => [
-           "id",
-           "entities_id",
-           "is_recursive",
-           "name",
-           "plugin_databases_databases_id",
-           "port",
-           "path",
-           "comment",
+            "id",
+            "entities_id",
+            "is_recursive",
+            "name",
+            "plugin_databases_databases_id",
+            "port",
+            "path",
+            "comment",
         ],
 //        "glpi_plugin_databases_scripts"       => [
 //           "id",
@@ -557,72 +557,72 @@ class DatabasesPluginToCoreCommand extends AbstractCommand
     *
     * @return bool
     */
-   private function createDatabaseInstances(): bool
-   {
-      $this->output->writeln(
-         '<comment>' . __('Creating Databases instances...') . '</comment>',
-         OutputInterface::VERBOSITY_NORMAL
-      );
-      $iterator = $this->db->request([
-                                        'FROM' => 'glpi_plugin_databases_databases'
-                                     ]);
+    private function createDatabaseInstances(): bool
+    {
+        $this->output->writeln(
+            '<comment>' . __('Creating Databases instances...') . '</comment>',
+            OutputInterface::VERBOSITY_NORMAL
+        );
+        $iterator = $this->db->request([
+            'FROM' => 'glpi_plugin_databases_databases'
+        ]);
 
-      if (!count($iterator)) {
-         return true;
-      }
+        if (!count($iterator)) {
+            return true;
+        }
 
-      $progress_bar = new ProgressBar($this->output);
+        $progress_bar = new ProgressBar($this->output);
 
-      foreach ($progress_bar->iterate($iterator) as $database) {
-         $this->writelnOutputWithProgressBar(
-            sprintf(
-               __('Importing database instance "%s"...'),
-               $database['name']
-            ),
-            $progress_bar,
-            OutputInterface::VERBOSITY_VERY_VERBOSE
-         );
-
-         $app_fields = Sanitizer::sanitize([
-                                              'id'                            => $database['id'],
-                                              'entities_id'                   => $database['entities_id'],
-                                              'is_recursive'                  => $database['is_recursive'],
-                                              'name'                          => $database['name'],
-                                              'is_deleted'                    => $database['is_deleted'],
-                                              'is_active'                     => 1,
-                                              'databaseinstancetypes_id'      => $database['plugin_databases_databasetypes_id'],
-                                              'databaseinstancecategories_id' => $database['plugin_databases_databasecategories_id'],
-                                              'comment'                       => $database['comment'],
-                                              'locations_id'                  => $database['locations_id'],
-                                              'manufacturers_id'              => $database['manufacturers_id'],
-                                              'users_id_tech'                 => $database['users_id'],
-                                              'groups_id_tech'                => $database['groups_id'],
-                                              'date_mod'                      => $database['date_mod'],
-                                              'is_helpdesk_visible'           => $database['is_helpdesk_visible'],
-                                              'states_id'                     => 0,
-                                              'is_dynamic'                    => 0,
-                                           ]);
-
-         $app = new \DatabaseInstance();
-         if (!($app_id = $app->getFromDBByCrit($app_fields))) {
-            $app_id = $app->add($app_fields);
-         }
-
-         if (false === $app_id) {
-            $this->outputImportError(
-               sprintf(__('Unable to create Database instance %s (%d).'), $database['name'], (int) $database['id']),
-               $progress_bar
+        foreach ($progress_bar->iterate($iterator) as $database) {
+            $this->writelnOutputWithProgressBar(
+                sprintf(
+                    __('Importing database instance "%s"...'),
+                    $database['name']
+                ),
+                $progress_bar,
+                OutputInterface::VERBOSITY_VERY_VERBOSE
             );
-            if (!$this->input->getOption('skip-errors')) {
-               return false;
+
+            $app_fields = Sanitizer::sanitize([
+                'id'                            => $database['id'],
+                'entities_id'                   => $database['entities_id'],
+                'is_recursive'                  => $database['is_recursive'],
+                'name'                          => $database['name'],
+                'is_deleted'                    => $database['is_deleted'],
+                'is_active'                     => 1,
+                'databaseinstancetypes_id'      => $database['plugin_databases_databasetypes_id'],
+                'databaseinstancecategories_id' => $database['plugin_databases_databasecategories_id'],
+                'comment'                       => $database['comment'],
+                'locations_id'                  => $database['locations_id'],
+                'manufacturers_id'              => $database['manufacturers_id'],
+                'users_id_tech'                 => $database['users_id'],
+                'groups_id_tech'                => $database['groups_id'],
+                'date_mod'                      => $database['date_mod'],
+                'is_helpdesk_visible'           => $database['is_helpdesk_visible'],
+                'states_id'                     => 0,
+                'is_dynamic'                    => 0,
+            ]);
+
+            $app = new \DatabaseInstance();
+            if (!($app_id = $app->getFromDBByCrit($app_fields))) {
+                $app_id = $app->add($app_fields);
             }
-         }
-      }
 
-      $this->output->write(PHP_EOL);
+            if (false === $app_id) {
+                $this->outputImportError(
+                    sprintf(__('Unable to create Database instance %s (%d).'), $database['name'], (int) $database['id']),
+                    $progress_bar
+                );
+                if (!$this->input->getOption('skip-errors')) {
+                     return false;
+                }
+            }
+        }
 
-      return true;
-   }
+        $this->output->write(PHP_EOL);
+
+        return true;
+    }
     /**
      * Create database types.
      *
