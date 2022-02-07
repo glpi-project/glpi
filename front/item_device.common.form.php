@@ -113,5 +113,5 @@ if (isset($_POST["add"])) {
         $options = [];
     }
 
-    Item_Devices::displayFullPageForItem($_GET["id"], $menus, $options ?? []);
+    $item_device::displayFullPageForItem($_GET["id"], $menus, $options ?? []);
 }
