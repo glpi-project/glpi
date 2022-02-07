@@ -115,7 +115,6 @@ abstract class CommonDevice extends CommonDropdown
                             'page'  => $tmp->getSearchURL(false),
                             'links' => [
                                 'search' => $tmp->getSearchURL(false),
-                                'lists'  => "",
                             ]
                         ];
                         if ($tmp->canCreate()) {
@@ -137,7 +136,6 @@ abstract class CommonDevice extends CommonDropdown
                                 'page'  => $item_device_search_url,
                                 'links' => [
                                     'search' => $item_device_search_url,
-                                    'lists'  => "",
                                 ],
                             ];
                             if ($itemClass->canCreate()) {
