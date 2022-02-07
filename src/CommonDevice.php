@@ -110,18 +110,39 @@ abstract class CommonDevice extends CommonDropdown
             foreach ($dps as $tab) {
                 foreach ($tab as $key => $val) {
                     if ($tmp = getItemForItemtype($key)) {
-                        $menu['options'][$key]['title']           = $val;
-                        $menu['options'][$key]['page']            = $tmp->getSearchURL(false);
-                        $menu['options'][$key]['links']['search'] = $tmp->getSearchURL(false);
+                        $menu['options'][$key] = [
+                            'title' => $val,
+                            'page'  => $tmp->getSearchURL(false),
+                            'links' => [
+                                'search' => $tmp->getSearchURL(false),
+                                'lists'  => "",
+                            ]
+                        ];
                         if ($tmp->canCreate()) {
                             $menu['options'][$key]['links']['add'] = $tmp->getFormURL(false);
                         }
+
                         if ($itemClass = getItemForItemtype(self::getItem_DeviceType($key))) {
                             $itemTypeName = sprintf(__('%1$s items'), $key::getTypeName(1));
 
                             $listLabel = '<i class="fa fa-list pointer" title="' . $itemTypeName . '"></i>'
                             . '<span class="sr-only">' . $itemTypeName . '</span>';
                             $menu['options'][$key]['links'][$listLabel] = $itemClass->getSearchURL(false);
+
+                            // item device self links
+                            $item_device_key = $itemClass->getType();
+                            $item_device_search_url = $itemClass->getSearchURL(false);
+                            $menu['options'][$item_device_key] = [
+                                'title' => $itemTypeName,
+                                'page'  => $item_device_search_url,
+                                'links' => [
+                                    'search' => $item_device_search_url,
+                                    'lists'  => "",
+                                ],
+                            ];
+                            if ($itemClass->canCreate()) {
+                                $menu['options'][$item_device_key]['links']['add'] = $itemClass->getFormURL(false);
+                            }
                         }
                     }
                 }
