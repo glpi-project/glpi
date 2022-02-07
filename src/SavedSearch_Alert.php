@@ -176,7 +176,7 @@ class SavedSearch_Alert extends CommonDBChild
         $alert = new Alert();
         $alert->getFromDBByCrit([
             'items_id'  => $this->fields['savedsearches_id'],
-            'itemptype' => SavedSearch::getType(),
+            'itemtype' => SavedSearch::getType(),
         ]);
         Dropdown::showFrequency('frequency', $this->fields["frequency"]);
         echo "</td></tr>";
