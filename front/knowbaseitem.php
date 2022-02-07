@@ -41,6 +41,8 @@ if (isset($_GET["id"])) {
     Html::redirect(KnowbaseItem::getFormURLWithID($_GET["id"]));
 }
 
+Html::header(KnowbaseItem::getTypeName(1), $_SERVER['PHP_SELF'], "tools", "knowbaseitem");
+
 // Clean for search
 $_GET = Toolbox::stripslashes_deep($_GET);
 
@@ -63,5 +65,7 @@ if (isset($_GET['forcetab'])) {
     unset($_GET['forcetab']);
 }
 
-$menus = ["tools", "knowbaseitem"];
-Knowbase::displayTabContentForItem($_GET["id"] ?? 0, $menus, $_GET);
+$kb = new Knowbase();
+$kb->display($_GET);
+
+Html::footer();
