@@ -2857,7 +2857,10 @@ class Ticket extends CommonITILObject
                 return true;
 
             case 'link_to_problem':
-                Problem::dropdown(['name' => 'problems_id']);
+                Problem::dropdown([
+                    'name'      => 'problems_id',
+                    'condition' => Problem::getOpenCriteria()
+                ]);
                 echo '<br><br>';
                 echo Html::submit(_x('button', 'Link'), [
                     'name'      => 'link'
