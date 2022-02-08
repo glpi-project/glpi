@@ -75,13 +75,18 @@ class SeLinux extends AbstractRequirement
                 }
             }
         } else {
-            $exec_enabled ? strtolower(exec('/usr/sbin/getenforce')) : 'unknown';
+            exec('/usr/sbin/getenforce', $mode);
+            if (!$mode) {
+                $mode = 'unknown';
+            } else {
+                $mode = strtolower(array_pop($mode));
+            }
         }
         if (!in_array($mode, ['enforcing', 'permissive', 'disabled'])) {
             $mode = 'unknown';
         }
 
-       //TRANS: %s is mode name (Permissive, Enforcing, Disabled or Unknown)
+        //TRANS: %s is mode name (Permissive, Enforcing, Disabled or Unknown)
         $this->title = sprintf(__('SELinux mode is %s'), ucfirst($mode));
 
         if ('enforcing' !== $mode) {
