@@ -36,9 +36,11 @@
       <div class="row align-items-center m-n2">
          {% set name     = entry_i['name'] ?? entry_i['filename'] %}
          {% set filename = entry_i['filename'] ?? entry_i['name'] %}
+         {% set fk = item.getForeignKeyField() %}
+         {% set delete_link = item.getFormURL() ~ '?delete_document&documents_id=' ~ entry_i['id'] ~ '&' ~ fk ~ '=' ~ item.fields['id'] %}
 
          {% if entry_i['filename'] %}
-            {% set docpath = path('front/document.send.php?docid=' ~ entry_i['id']) %}
+            {% set docpath = path('front/document.send.php?docid=' ~ entry_i['id'] ~ "&" ~ fk ~ "=" ~ item.fields["id"]) %}
             <div class="col text-truncate">
                <a href="{{ docpath }}" target="_blank">
                   <img src="{{ filename|document_icon }}" alt="{{ __('File extension') }}" />
@@ -62,18 +64,21 @@
 
          <div class="col-auto">
             <div class="list-group-item-actions">
-               <a href="{{ 'Document'|itemtype_form_path(entry_i['id']) }}"
-                  class="btn btn-sm btn-ghost-secondary" title="{{ _x('button', 'Edit') }}"
-                  data-bs-toggle="tooltip" data-bs-placement="top">
-                  <i class="ti ti-edit"></i>
-               </a>
+               {% if entry_i['_can_edit'] %}
+                  <a href="{{ 'Document'|itemtype_form_path(entry_i['id']) }}"
+                     class="btn btn-sm btn-ghost-secondary" title="{{ _x('button', 'Edit') }}"
+                     data-bs-toggle="tooltip" data-bs-placement="top">
+                     <i class="ti ti-edit"></i>
+                  </a>
+               {% endif %}
 
-               {% set fk = item.getForeignKeyField() %}
-               <a href="{{ item.getFormURL() }}?delete_document&amp;documents_id={{ entry_i['id'] }}&amp;{{ fk }}={{ item.fields['id'] }}"
-                  class="btn btn-sm btn-ghost-secondary" title="{{ _x('button', 'Delete permanently') }}"
-                  data-bs-toggle="tooltip" data-bs-placement="top">
-                  <i class="ti ti-trash"></i>
-               </a>
+               {% if entry_i['_can_delete'] %}
+                  <a href="{{ delete_link }}"
+                     class="btn btn-sm btn-ghost-secondary" title="{{ _x('button', 'Delete permanently') }}"
+                     data-bs-toggle="tooltip" data-bs-placement="top">
+                     <i class="ti ti-trash"></i>
+                  </a>
+               {% endif %}
             </div>
          </div>
       </div>
