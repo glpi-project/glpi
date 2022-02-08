@@ -1268,7 +1268,8 @@ class Planning extends CommonGLPI
                 $options['parent']->getFromDB($params['parentid']);
             }
             $item = getItemForItemtype($params['itemtype']);
-            $item->showForm(intval($params['id']), $options);
+            $item->getFromDB((int) $params['id']);
+            $item->showForm((int)$params['id'], $options);
             $callback = "glpi_close_all_dialogs();
                       GLPIPlanning.refresh();
                       displayAjaxMessageAfterRedirect();";
