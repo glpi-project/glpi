@@ -4528,10 +4528,11 @@ JAVASCRIPT;
             case "contains":
                 if (isset($searchopt[$ID]["datatype"]) && ($searchopt[$ID]["datatype"] === 'decimal')) {
                     $matches = [];
-                    preg_match('/^(\d+.?\d?)/', $val, $matches);
-                    $val = $matches[1];
-                    if (!str_contains($val, '.')) {
-                        $val .= '.';
+                    if (preg_match('/^(\d+.?\d?)/', $val, $matches)) {
+                        $val = $matches[1];
+                        if (!str_contains($val, '.')) {
+                            $val .= '.';
+                        }
                     }
                 }
                 $SEARCH = self::makeTextSearch($val, $nott);
