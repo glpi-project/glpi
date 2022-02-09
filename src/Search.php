@@ -6044,14 +6044,44 @@ JAVASCRIPT;
             case "glpi_tickets.internal_time_to_resolve":
             case "glpi_problems.time_to_resolve":
             case "glpi_changes.time_to_resolve":
+                if (in_array($ID, [151, 181])) {
+                    break; // Skip "TTR + progress" search options
+                }
+
+                $value      = $data[$NAME][0]['name'];
+                $status     = $data[$NAME][0]['status'];
+                $solve_date = $data[$NAME][0]['solvedate'];
+
+                $is_late = !empty($value)
+                    && $status != CommonITILObject::WAITING
+                    && (
+                        $solve_date > $value
+                        || ($solve_date == null && $value < $_SESSION['glpi_currenttime'])
+                    );
+
+                if ($is_late) {
+                    $out = " class=\"shadow-none\" style=\"background-color: #cf9b9b\" ";
+                }
+                break;
             case "glpi_tickets.time_to_own":
             case "glpi_tickets.internal_time_to_own":
-                if (
-                    !in_array($ID, [151, 158, 181, 186])
-                    && !empty($data[$NAME][0]['name'])
-                    && ($data[$NAME][0]['status'] != CommonITILObject::WAITING)
-                    && ($data[$NAME][0]['name'] < $_SESSION['glpi_currenttime'])
-                ) {
+                if (in_array($ID, [158, 186])) {
+                    break; // Skip "TTO + progress" search options
+                }
+
+                $value        = $data[$NAME][0]['name'];
+                $status       = $data[$NAME][0]['status'];
+                $opening_date = $data[$NAME][0]['date'];
+                $tia_time     = $data[$NAME][0]['takeintoaccount_delay_stat'];
+
+                $is_late = !empty($value)
+                    && $status != CommonITILObject::WAITING
+                    && (
+                        $tia_time > strtotime($opening_date) - strtotime($value)
+                        || ($tia_time == 0 && $value < $_SESSION['glpi_currenttime'])
+                    );
+
+                if ($is_late) {
                     $out = " class=\"shadow-none\" style=\"background-color: #cf9b9b\" ";
                 }
                 break;
