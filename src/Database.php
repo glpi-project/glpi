@@ -251,11 +251,11 @@ class Database extends CommonDBChild
             'usehaving'          => true,
             'massiveaction'      => false,
             'joinparams'         => [
-               'beforejoin'         => [
-                  'table'              => DatabaseInstance::getTable(),
-                  'joinparams'         => [
-                     'jointype'           => 'item_itemtype',
-                     'specific_itemtype'  => 'Computer'
+                'beforejoin'         => [
+                    'table'              => DatabaseInstance::getTable(),
+                    'joinparams'         => [
+                        'jointype'           => 'item_itemtype',
+                        'specific_itemtype'  => 'Computer'
                   ]
                ]
             ]
