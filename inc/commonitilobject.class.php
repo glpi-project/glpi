@@ -1064,6 +1064,12 @@ abstract class CommonITILObject extends CommonDBTM {
                      if (isset($input['_auto_update'])
                          || $groupactors->can(-1, CREATE, $input['_itil_assign'])) {
                         $groupactors->add($input['_itil_assign']);
+
+                        // Reload object, needed as adding a group may trigger
+                        // some plugins hooks thay will update our current
+                        // object.
+                        $this->getFromDB($input["id"]);
+
                         $input['_forcenotif']                  = true;
                         if (((!isset($input['status'])
                              && (in_array($this->fields['status'], $this->getNewStatusArray())))
