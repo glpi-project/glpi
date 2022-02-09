@@ -3185,7 +3185,7 @@ JAVASCRIPT;
             'datatype'           => 'datetime',
             'maybefuture'        => true,
             'massiveaction'      => false,
-            'additionalfields'   => ['status']
+            'additionalfields'   => ['date', 'status', 'takeintoaccount_delay_stat']
         ];
 
         $tab[] = [
@@ -3216,7 +3216,7 @@ JAVASCRIPT;
             'datatype'           => 'datetime',
             'maybefuture'        => true,
             'massiveaction'      => false,
-            'additionalfields'   => ['status']
+            'additionalfields'   => ['solvedate', 'status']
         ];
 
         $tab[] = [
@@ -3247,7 +3247,7 @@ JAVASCRIPT;
             'datatype'           => 'datetime',
             'maybefuture'        => true,
             'massiveaction'      => false,
-            'additionalfields'   => ['status']
+            'additionalfields'   => ['date', 'status', 'takeintoaccount_delay_stat'],
         ];
 
         $tab[] = [

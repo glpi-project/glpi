@@ -3773,7 +3773,7 @@ abstract class CommonITILObject extends CommonDBTM
             'datatype'           => 'datetime',
             'maybefuture'        => true,
             'massiveaction'      => false,
-            'additionalfields'   => ['status']
+            'additionalfields'   => ['solvedate', 'status']
         ];
 
         $tab[] = [
@@ -3783,7 +3783,7 @@ abstract class CommonITILObject extends CommonDBTM
             'name'               => __('Time to resolve + Progress'),
             'massiveaction'      => false,
             'nosearch'           => true,
-            'additionalfields'   => ['status']
+            'additionalfields'   => ['status'],
         ];
 
         $tab[] = [
