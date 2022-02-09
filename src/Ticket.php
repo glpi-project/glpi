@@ -3195,7 +3195,8 @@ JAVASCRIPT;
             'name'               => __('Time to own + Progress'),
             'massiveaction'      => false,
             'nosearch'           => true,
-            'additionalfields'   => ['status']
+            'additionalfields'   => ['status'],
+            'computation'        => self::generateSLAOLAComputation('time_to_own')
         ];
 
         $tab[] = [

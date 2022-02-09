@@ -6015,6 +6015,7 @@ JAVASCRIPT;
      **/
     public static function displayConfigItem($itemtype, $ID, $data = [])
     {
+        global $DB;
 
         $searchopt  = &self::getOptions($itemtype);
 
@@ -6052,7 +6053,31 @@ JAVASCRIPT;
                     && ($data[$NAME][0]['status'] != CommonITILObject::WAITING)
                     && ($data[$NAME][0]['name'] < $_SESSION['glpi_currenttime'])
                 ) {
-                    $out = " class=\"shadow-none\" style=\"background-color: #cf9b9b\" ";
+                    //get SO ID because contians computation about exceeded TTR / TTO (SLA and OLA)
+                    switch ($table . "." . $field) {
+                        case "glpi_tickets.time_to_resolve":
+                            $soID = 151;
+                            break;
+                        case "glpi_tickets.internal_time_to_resolve":
+                            $soID = 180;
+                            break;
+                        case "glpi_problems.time_to_resolve":
+                            $soID = 151;
+                            break;
+                        case "glpi_changes.time_to_resolve":
+                            $soID = 151;
+                            break;
+                        case "glpi_tickets.time_to_own":
+                            $soID = 158;
+                            break;
+                        case "glpi_tickets.internal_time_to_own":
+                            $soID = 185;
+                            break;
+                    }
+
+                    if ($data['raw']['ITEM_' . "{$itemtype}_{$soID}"]) {
+                        $out = " class=\"shadow-none\" style=\"background-color: #cf9b9b\" ";
+                    }
                 }
                 break;
 
