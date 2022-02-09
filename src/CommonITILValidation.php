@@ -1409,7 +1409,7 @@ abstract class CommonITILValidation extends CommonDBChild
         ], [
             'value'               => $type,
             'display_emptychoice' => true,
-            'display'             => $params['display'],
+            'display'             => false,
             'disabled'            => $params['disabled'],
             'rand'                => $params['rand'],
             'width'               => $params['width'],
@@ -1423,7 +1423,7 @@ abstract class CommonITILValidation extends CommonDBChild
                 $CFG_GLPI["root_doc"] . "/ajax/dropdownValidator.php",
                 $params,
                 "",
-                $params['display']
+                false
             );
         }
         $params['validatortype'] = '__VALUE__';
@@ -1432,7 +1432,7 @@ abstract class CommonITILValidation extends CommonDBChild
             $params['applyto'],
             $CFG_GLPI["root_doc"] . "/ajax/dropdownValidator.php",
             $params,
-            $params['display']
+            false
         );
 
         if (!isset($options['applyto'])) {
