@@ -256,10 +256,10 @@ class Database extends CommonDBChild
                     'joinparams'         => [
                         'jointype'           => 'item_itemtype',
                         'specific_itemtype'  => 'Computer'
-                  ]
-               ]
+                    ]
+                ]
             ]
-         ];
+        ];
 
         return $tab;
     }
