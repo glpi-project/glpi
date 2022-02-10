@@ -4104,7 +4104,7 @@ class CommonDBTM extends CommonGLPI
                         case 'email':
                         case 'string':
                         case 'itemlink':
-                            if (strlen($value) > 255) {
+                            if (is_string($value) && strlen($value) > 255) {
                                 trigger_error(
                                     "$value exceed 255 characters long (" . strlen($value) . "), it will be truncated.",
                                     E_USER_WARNING
