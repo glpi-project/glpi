@@ -5385,7 +5385,9 @@ class CommonDBTM extends CommonGLPI
                     $toadd['timeline_position'] = CommonITILObject::NO_TIMELINE;
                 } else {
                     //get timeline_position from parent (followup  / task / doc)
-                    $toadd['timeline_position'] = $input['timeline_position'];
+                    if (isset($input['timeline_position'])) {
+                        $toadd['timeline_position'] = $input['timeline_position'];
+                    }
                 }
 
                 $docitem->add($toadd);
