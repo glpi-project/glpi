@@ -248,12 +248,13 @@ class Database extends CommonDBChild
             'linkfield'          => 'items_id',
             'name'               => Computer::getTypeName(0),
             'forcegroupby'       => true,
+            'usehaving'          => true,
             'massiveaction'      => false,
             'joinparams'         => [
                 'beforejoin'         => [
                     'table'              => DatabaseInstance::getTable(),
                     'joinparams'         => [
-                        'jointype'           => 'itemtype_item',
+                        'jointype'           => 'item_itemtype',
                         'specific_itemtype'  => 'Computer'
                     ]
                 ]
