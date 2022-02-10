@@ -5383,7 +5383,7 @@ class CommonDBTM extends CommonGLPI
                 ) {
                     //do not display inline docs in timeline
                     $toadd['timeline_position'] = CommonITILObject::NO_TIMELINE;
-                }else {
+                } else {
                     //get timeline_position from parent (followup  / task / doc)
                     $toadd['timeline_position'] = $input['timeline_position'];
                 }
