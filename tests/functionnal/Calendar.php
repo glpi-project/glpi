@@ -62,6 +62,18 @@ class Calendar extends DbTestCase
 
     protected function activeProvider()
     {
+        /**
+         * 2019-01-01 - Tuesday
+         * 2019-01-02 - Wednesday
+         * 2019-01-03 - Thursday
+         * 2019-01-04 - Friday
+         * 2019-01-05 - Saturday (Non-working day)
+         * 2019-01-06 - Sunday (Non-working day)
+         * 2019-01-07 - Monday
+         * 2019-01-08 - Tuesday
+         *
+         * Default calendar has 12-hour working day (8:00 - 20:00)
+         */
         return [
             [
                 'start'  => '2019-01-01 07:00:00',
@@ -72,22 +84,50 @@ class Calendar extends DbTestCase
                 'end'    => '2019-01-01 07:00:00',
                 'value'  => 0
             ], [
+                'start'  => '2019-01-01 06:00:00',
+                'end'    => '2019-01-01 09:00:00',
+                'value'  => HOUR_TIMESTAMP
+            ], [
+                'start'  => '2019-01-01 06:00:00',
+                'end'    => '2019-01-02 01:00:00',
+                'value'  => 12 * HOUR_TIMESTAMP
+            ], [
                 'start'  => '2019-01-01 00:00:00',
                 'end'    => '2019-01-08 00:00:00',
-                'value'  => 12 * HOUR_TIMESTAMP * 5
+                'value'  => 12 * HOUR_TIMESTAMP * 5 // 5 working days (7 days - 2 non-working days)
             ], [
                 'start'  => '2019-01-08 00:00:00',
                 'end'    => '2019-01-01 00:00:00',
-                'value'  => 0
+                'value'  => 0 // End date is before start date (No working hours)
             ], [
                 'start'  => '2019-01-01 07:00:00',
                 'end'    => '2019-01-01 09:00:00',
-                'value'  => HOUR_TIMESTAMP * 2,
+                'value'  => DAY_TIMESTAMP,
                 'days'   => true
             ], [
                 'start'  => '2019-01-01 00:00:00',
                 'end'    => '2019-01-08 00:00:00',
-                'value'  => WEEK_TIMESTAMP,
+                'value'  => 12 * HOUR_TIMESTAMP * 5,
+                'days'   => false
+            ], [
+                'start'  => '2019-01-01 00:00:00',
+                'end'    => '2019-01-08 00:00:00',
+                'value'  => 5 * DAY_TIMESTAMP,
+                'days'   => true
+            ], [
+                'start'  => '2019-01-01 00:00:00',
+                'end'    => '2019-01-04 00:00:00',
+                'value'  => 3 * DAY_TIMESTAMP,
+                'days'   => true
+            ], [
+                'start'  => '2019-01-05 00:00:00',
+                'end'    => '2019-01-07 00:00:00',
+                'value'  => 0,
+                'days'   => true
+            ], [
+                'start'  => '2019-01-01 00:19:50',
+                'end'    => '2019-01-02 00:18:00',
+                'value'  => DAY_TIMESTAMP,
                 'days'   => true
             ]
         ];
