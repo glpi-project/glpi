@@ -645,7 +645,7 @@ class Agent extends CommonDBTM
             ErrorHandler::getInstance()->handleException($e);
            //not authorized
             return ['answer' => __('Not allowed')];
-        } catch (\GuzzleHttp\Exception\ConnectException $e) {
+        } catch (Exception $e) {
            //no response
             return ['answer' => __('Unknown')];
         }
@@ -666,7 +666,7 @@ class Agent extends CommonDBTM
             ErrorHandler::getInstance()->handleException($e);
            //not authorized
             return ['answer' => __('Not allowed')];
-        } catch (\GuzzleHttp\Exception\ConnectException $e) {
+        } catch (Exception $e) {
            //no response
             return ['answer' => __('Unknown')];
         }
