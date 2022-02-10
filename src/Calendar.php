@@ -285,50 +285,45 @@ class Calendar extends CommonDropdown
 
         $activetime = 0;
 
-        $cache_duration = $this->getDurationsCache();
-
-        for ($actualtime = $timestart; $actualtime <= $timerealend; $actualtime += DAY_TIMESTAMP) {
-            $actualdate = date('Y-m-d', $actualtime);
-
-            if (!$this->isHoliday($actualdate)) {
-                $beginhour    = '00:00:00';
-                // Calendar segment work with '24:00:00' format for midnight
-                $endhour      = '24:00:00';
-                $dayofweek    = self::getDayNumberInWeek($actualtime);
-                $timeoftheday = 0;
-
-                if ($actualdate == $datestart) { // First day : cannot use cache
-                    $beginhour = date('H:i:s', $timestart);
-                }
-
-                if ($actualdate == $dateend) { // Last day : cannot use cache
-                    $endhour = date('H:i:s', $timeend);
-                }
-
-                if (
-                    (($actualdate == $datestart) || ($actualdate == $dateend))
-                    && ($cache_duration[$dayofweek] > 0)
-                ) {
-                     $timeoftheday = CalendarSegment::getActiveTimeBetween(
-                         $this->fields['id'],
-                         $dayofweek,
-                         $beginhour,
-                         $endhour
-                     );
-                } else {
-                    $cached_duration = $cache_duration[$dayofweek];
-                    if ($cached_duration > 0 && $work_in_days) {
-                        $timeoftheday = DAY_TIMESTAMP;
-                    } else {
-                        $timeoftheday = $cached_duration;
-                    }
-                }
-                $activetime += $timeoftheday;
-            }
-        }
-
         if ($work_in_days) {
-            $activetime = (int) ceil($activetime / DAY_TIMESTAMP) * DAY_TIMESTAMP;
+            $activetime = $timeend - $timestart;
+        } else {
+            $cache_duration = $this->getDurationsCache();
+
+            for ($actualtime = $timestart; $actualtime <= $timerealend; $actualtime += DAY_TIMESTAMP) {
+                $actualdate = date('Y-m-d', $actualtime);
+
+                if (!$this->isHoliday($actualdate)) {
+                    $beginhour    = '00:00:00';
+                    // Calendar segment work with '24:00:00' format for midnight
+                    $endhour      = '24:00:00';
+                    $dayofweek    = self::getDayNumberInWeek($actualtime);
+                    $timeoftheday = 0;
+
+                    if ($actualdate == $datestart) { // First day : cannot use cache
+                        $beginhour = date('H:i:s', $timestart);
+                    }
+
+                    if ($actualdate == $dateend) { // Last day : cannot use cache
+                        $endhour = date('H:i:s', $timeend);
+                    }
+
+                    if (
+                        (($actualdate == $datestart) || ($actualdate == $dateend))
+                        && ($cache_duration[$dayofweek] > 0)
+                    ) {
+                         $timeoftheday = CalendarSegment::getActiveTimeBetween(
+                             $this->fields['id'],
+                             $dayofweek,
+                             $beginhour,
+                             $endhour
+                         );
+                    } else {
+                        $timeoftheday = $cache_duration[$dayofweek];
+                    }
+                    $activetime += $timeoftheday;
+                }
+            }
         }
         return $activetime;
     }
