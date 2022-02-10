@@ -283,6 +283,6 @@ if (isset($_GET["id"]) && ($_GET["id"] > 0)) {
         Html::footer();
     } else {
         $menus = ["helpdesk", "ticket"];
-        Ticket::displayFullPageForItem($_GET["id"], $menus, $_REQUEST);
+        Ticket::displayFullPageForItem(0, $menus, $_REQUEST);
     }
 }
