@@ -1163,6 +1163,12 @@
       width: 1%;
    }
 
+   .bookmark_record {
+      .active {
+         color: #fed175 !important;
+      }
+   }
+
    .fa {
       &.bookmark_record, &.reset-search, &.fold-search {
          font-size: 1.5em;
@@ -1171,10 +1177,6 @@
          &:link {
             font-size: 1.5em;
             color: #ccc !important;
-         }
-
-         &.active {
-            color: #fed175 !important;
          }
       }
 
@@ -1190,10 +1192,6 @@
 
       &.reset-search:hover, &.bookmark_record.save:hover, &.fold-search:hover {
          color: #999 !important;
-
-         &.active {
-            color: #feb010 !important;
-         }
       }
    }
 
