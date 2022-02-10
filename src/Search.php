@@ -6559,15 +6559,19 @@ JAVASCRIPT;
                         switch ($table . '.' . $field) {
                             case "glpi_tickets.time_to_resolve":
                                 $slaField = 'slas_id_ttr';
+                                $sla_class = 'SLA';
                                 break;
                             case "glpi_tickets.time_to_own":
                                 $slaField = 'slas_id_tto';
+                                $sla_class = 'SLA';
                                 break;
                             case "glpi_tickets.internal_time_to_own":
                                 $slaField = 'olas_id_tto';
+                                $sla_class = 'OLA';
                                 break;
                             case "glpi_tickets.internal_time_to_resolve":
                                 $slaField = 'olas_id_ttr';
+                                $sla_class = 'OLA';
                                 break;
                         }
 
@@ -6582,7 +6586,7 @@ JAVASCRIPT;
                         }
 
                         if ($item->isField($slaField) && $item->fields[$slaField] != 0) { // Have SLA
-                            $sla = new SLA();
+                            $sla = new $sla_class();
                             $sla->getFromDB($item->fields[$slaField]);
                             $currenttime = $sla->getActiveTimeBetween(
                                 $item->fields['date'],
@@ -7204,7 +7208,7 @@ JAVASCRIPT;
                     }
 
                     $out = "";
-                    if ($progressbar_data['percent'] != null) {
+                    if ($progressbar_data['percent'] !== null) {
                         $out = <<<HTML
                   <span class='text-nowrap'>
                      {$progressbar_data['text']}
