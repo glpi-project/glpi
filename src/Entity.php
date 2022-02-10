@@ -96,6 +96,7 @@ class Entity extends CommonTreeDropdown
         'notification' => [
             'admin_email', 'replyto_email', 'from_email',
             'admin_email_name', 'replyto_email_name', 'from_email_name',
+            'noreply_email_name','noreply_email',
             'delay_send_emails',
             'is_notif_enable_default',
             'default_cartridges_alarm_threshold',
