@@ -5381,8 +5381,13 @@ class CommonDBTM extends CommonGLPI
                     && strpos($input[$options['content_field']], $doc->fields["tag"]) !== false
                     && strpos($doc->fields['mime'], 'image/') !== false
                 ) {
-                   //do not display inline docs in timeline
+                    //do not display inline docs in timeline
                     $toadd['timeline_position'] = CommonITILObject::NO_TIMELINE;
+                } else {
+                    //get timeline_position from parent (followup  / task / doc)
+                    if (isset($input['timeline_position'])) {
+                        $toadd['timeline_position'] = $input['timeline_position'];
+                    }
                 }
 
                 $docitem->add($toadd);
