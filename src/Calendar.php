@@ -261,7 +261,8 @@ class Calendar extends CommonDropdown
      *
      * @param $start           datetime begin
      * @param $end             datetime end
-     * @param $work_in_days    boolean  force working in days (false by default)
+     * @param $work_in_days    boolean  force working in days (false by default).
+     *      If set to true, non-working days and times are ignored and a simple time difference calculation is done.
      *
      * @return integer timestamp of delay
      */

@@ -799,19 +799,14 @@ abstract class LevelAgreement extends CommonDBChild
             return 0;
         }
 
+        $active_time = 0;
+
         if (isset($this->fields['id'])) {
             $cal          = new Calendar();
-            $work_in_days = ($this->fields['definition_time'] == 'day');
-
-           // Based on a calendar
-            if ($this->fields['calendars_id'] > 0) {
-                if ($cal->getFromDB($this->fields['calendars_id'])) {
-                    return $cal->getActiveTimeBetween($start, $end, $work_in_days);
-                }
-            } else { // No calendar
-                $timestart = strtotime($start);
-                $timeend   = strtotime($end);
-                return ($timeend - $timestart);
+            if ($this->fields['calendars_id'] > 0 && $cal->getFromDB($this->fields['calendars_id'])) {
+                $active_time = $cal->getActiveTimeBetween($start, $end);
+            } else {
+                $active_time = $cal->getActiveTimeBetween($start, $end, true);
             }
         }
         return 0;
