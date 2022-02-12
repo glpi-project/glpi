@@ -213,7 +213,7 @@
                   itiltemplate_class: '{{ itiltemplate.getType() }}',
                   itiltemplates_id: {{ itiltemplate.fields['id'] ?? 0 }},
                   itemtype: '{{ item.getType() }}',
-                  items_id: {{ item.fields['id'] }},
+                  items_id: {{ item.isNewItem() ? -1 : item.fields['id'] }},
                   item: {{ item.fields|json_encode|raw }},
                   returned_itemtypes: {{ (returned_itemtypes ?? ['User', 'Group', 'Supplier'])|json_encode()|raw }},
                };
