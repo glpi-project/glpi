@@ -872,7 +872,7 @@ class Ticket extends CommonITILObject
 
     public function defineTabs($options = [])
     {
-       global $PLUGIN_HOOKS;
+        global $PLUGIN_HOOKS;
 
         $ong = [];
         $this->addDefaultFormTab($ong);
@@ -902,18 +902,18 @@ class Ticket extends CommonITILObject
             $this->addStandardTab('Log', $ong, $options);
         }
 
-       if (isset($PLUGIN_HOOKS["customtabs"]) && is_array($PLUGIN_HOOKS["customtabs"])) {
-          foreach ($PLUGIN_HOOKS['customtabs'] as $plugin => $hook_ong) {
-             if (!Plugin::isPluginActive($plugin)) {
-                continue;
-             }
-             if (is_callable($hook_ong)) {
-                if (is_array($hook_ong(['item' => $ong]))) {
-                   $ong = $hook_ong(['item' => $ong]);
+        if (isset($PLUGIN_HOOKS["customtabs"]) && is_array($PLUGIN_HOOKS["customtabs"])) {
+            foreach ($PLUGIN_HOOKS['customtabs'] as $plugin => $hook_ong) {
+                if (!Plugin::isPluginActive($plugin)) {
+                    continue;
                 }
-             }
-          }
-       }
+                if (is_callable($hook_ong)) {
+                    if (is_array($hook_ong(['item' => $ong]))) {
+                        $ong = $hook_ong(['item' => $ong]);
+                    }
+                }
+            }
+        }
 
         return $ong;
     }
@@ -1207,7 +1207,7 @@ class Ticket extends CommonITILObject
            //try to find user from changes if exist (defined as _itil_requester)
             if (isset($input["_itil_requester"]["users_id"])) {
                 $user_id = $input["_itil_requester"]["users_id"];
-            } else if (isset($input["_users_id_requester"])) {  //else try to find user from input
+            } elseif (isset($input["_users_id_requester"])) {  //else try to find user from input
                 $user_id = is_array($input["_users_id_requester"]) ? reset($input["_users_id_requester"]) : $input["_users_id_requester"];
             }
 
@@ -1870,7 +1870,7 @@ class Ticket extends CommonITILObject
                     $input['_locations_id_of_requester'] = $user->fields['locations_id'];
                     $input['users_default_groups'] = $user->fields['groups_id'];
                     $tmprequester = $input["_users_id_requester"];
-                } else if (is_array($input["_users_id_requester"]) && ($user_id = reset($input["_users_id_requester"])) !== false) {
+                } elseif (is_array($input["_users_id_requester"]) && ($user_id = reset($input["_users_id_requester"])) !== false) {
                     if ($user->getFromDB($user_id)) {
                         $input['_locations_id_of_requester'] = $user->fields['locations_id'];
                         $input['users_default_groups'] = $user->fields['groups_id'];
@@ -2187,7 +2187,7 @@ class Ticket extends CommonITILObject
         if (isset($input["_add_validation"])) {
             if (isset($input['entities_id'])) {
                 $entid = $input['entities_id'];
-            } else if (isset($this->fields['entities_id'])) {
+            } elseif (isset($this->fields['entities_id'])) {
                 $entid = $this->fields['entities_id'];
             } else {
                 return false;
@@ -3014,7 +3014,7 @@ JAVASCRIPT;
                 foreach ($status as $id => $status_code) {
                     if ($status_code == 0) {
                         $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
-                    } else if ($status_code == 2) {
+                    } elseif ($status_code == 2) {
                         $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
                         $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
                     } else {
@@ -5314,7 +5314,7 @@ JAVASCRIPT;
                         foreach ($job->hardwaredatas as $hardwaredatas) {
                             if ($hardwaredatas->canView()) {
                                 $associated_elements[] = $hardwaredatas->getTypeName() . " - " . "<span class='b'>" . $hardwaredatas->getLink() . "</span>";
-                            } else if ($hardwaredatas) {
+                            } elseif ($hardwaredatas) {
                                 $associated_elements[] = $hardwaredatas->getTypeName() . " - " . "<span class='b'>" . $hardwaredatas->getNameID() . "</span>";
                             }
                         }
@@ -5961,7 +5961,7 @@ JAVASCRIPT;
                     if ($hardwaredatas->canView()) {
                         echo $hardwaredatas->getTypeName() . " - ";
                         echo "<span class='b'>" . $hardwaredatas->getLink() . "</span><br/>";
-                    } else if ($hardwaredatas) {
+                    } elseif ($hardwaredatas) {
                         echo $hardwaredatas->getTypeName() . " - ";
                         echo "<span class='b'>" . $hardwaredatas->getNameID() . "</span><br/>";
                     }
@@ -7017,7 +7017,7 @@ JAVASCRIPT;
                                     ) {
                                         // Internal users
                                         return false;
-                                    } else if (
+                                    } elseif (
                                         $existing_user['users_id'] == 0 && $user['users_id'] == 0 &&
                                         $existing_user['alternative_email'] === $user['alternative_email'] &&
                                         $existing_user['type'] === $user['type']
@@ -7048,7 +7048,7 @@ JAVASCRIPT;
                                     ) {
                                         // Internal suppliers
                                         return false;
-                                    } else if (
+                                    } elseif (
                                         $existing_supplier['suppliers_id'] == 0 && $supplier['suppliers_id'] == 0 &&
                                         $existing_supplier['alternative_email'] === $supplier['alternative_email'] &&
                                         $existing_supplier['type'] === $supplier['type']
