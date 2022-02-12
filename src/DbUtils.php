@@ -960,6 +960,9 @@ final class DbUtils
     {
         global $DB, $GLPI_CACHE;
 
+        if ($items_id === null) {
+            return [];
+        }
         $ckey = 'ancestors_cache_';
         if (is_array($items_id)) {
             $ckey .= $table . '_' . md5(implode('|', $items_id));
