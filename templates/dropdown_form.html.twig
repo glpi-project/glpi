@@ -34,7 +34,7 @@
 <div class="asset">
     {{ include('components/form/header.html.twig') }}
     {% set rand          = random() %}
-    {% set fields_params = fields_params ?? [] %}
+    {% set base_fields_params = fields_params ?? [] %}
     {% set params        = params ?? [] %}
     {% set target        = params['target'] ?? item.getFormURL() %}
     {% set withtemplate  = params['withtemplate'] ?? '' %}
@@ -61,6 +61,7 @@
 
         {# Dynamically show additional fields unique to certain dropdowns #}
         {% for field in additional_fields %}
+            {% set fields_params = base_fields_params %}
             {% set type = field['type']|default('') %}
             {% set show_field = true %}
             {% if field['name'] == 'entities_id' and (type != 'parent' or item.fields['id'] == 0) %}
