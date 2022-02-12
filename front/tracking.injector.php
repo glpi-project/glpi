@@ -92,11 +92,7 @@ if (isset($_POST['add'])) {
             echo "</div>";
         }
     } else {
-        echo "<div class='center'>";
-        echo "<img src='" . $CFG_GLPI["root_doc"] . "/pics/warning.png' alt='" . __s('Warning') . "'><br>";
-        Html::displayMessageAfterRedirect();
-        echo "<a href='" . $CFG_GLPI["root_doc"] . "/front/helpdesk.public.php?create_ticket=1'>" .
-            __('Back') . "</a></div>";
+        Html::back();
     }
     Html::nullFooter();
 } else { // reload display form
