@@ -1489,6 +1489,7 @@ HTML;
                             if (is_array($val)) {
                                 foreach ($val as $k => $object) {
                                     $menu[$key]['types'][] = $object;
+                                    $menu[$key]['icon']    = $object::getIcon();
                                 }
                             } else {
                                 if (isset($menu[$key])) {
