@@ -872,6 +872,8 @@ class Ticket extends CommonITILObject
 
     public function defineTabs($options = [])
     {
+       global $PLUGIN_HOOKS;
+
         $ong = [];
         $this->addDefaultFormTab($ong);
         $this->addStandardTab(__CLASS__, $ong, $options);
@@ -899,6 +901,19 @@ class Ticket extends CommonITILObject
         ) {
             $this->addStandardTab('Log', $ong, $options);
         }
+
+       if (isset($PLUGIN_HOOKS["customtabs"]) && is_array($PLUGIN_HOOKS["customtabs"])) {
+          foreach ($PLUGIN_HOOKS['customtabs'] as $plugin => $hook_ong) {
+             if (!Plugin::isPluginActive($plugin)) {
+                continue;
+             }
+             if (is_callable($hook_ong)) {
+                if (is_array($hook_ong(['item' => $ong]))) {
+                   $ong = $hook_ong(['item' => $ong]);
+                }
+             }
+          }
+       }
 
         return $ong;
     }
