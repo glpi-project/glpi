@@ -6,7 +6,7 @@
     "license": "GPL-2.0",
     "engines": {
         "node": ">= 16.0",
-        "npm": ">= 8.0"
+        "npm": ">= 7.0"
     },
     "dependencies": {
         "@eastdesire/jscolor": "^2.4.6",
