@@ -120,6 +120,14 @@ class Inventory
         }
 
         $converter = new Converter();
+        if (method_exists($this, 'getSchemaExtraProps')) {
+            $converter->setExtraProperties($this->getSchemaExtraProps());
+        }
+
+        if (method_exists($this, 'getSchemaExtraSubProps')) {
+            $converter->setExtraSubProperties($this->getSchemaExtraSubProps());
+        }
+
         if (Request::XML_MODE === $format) {
             $this->inventory_format = Request::XML_MODE;
             file_put_contents($dir . '/' . $this->inventory_id . '.xml', $data->asXML());
@@ -164,16 +172,24 @@ class Inventory
      */
     public function extractMetadata(): array
     {
-       //check
+        //check
         if ($this->inError()) {
             throw new \RuntimeException(print_r($this->getErrors(), true));
         }
 
         $this->metadata = [
-            'deviceid'  => $this->raw_data->deviceid,
-            'version'   => $this->raw_data->version ?? $this->raw_data->content->versionclient ?? null,
-            'itemtype'   => $this->raw_data->itemtype ?? 'Computer',
+            'deviceid' => $this->raw_data->deviceid,
+            'version' => $this->raw_data->version ?? $this->raw_data->content->versionclient ?? null,
+            'itemtype' => $this->raw_data->itemtype ?? 'Computer',
         ];
+
+
+        if (property_exists($this->raw_data->content, 'versionprovider')) {
+            $this->metadata['provider'] = [];
+            foreach ($this->raw_data->content->versionprovider as $property => $content) {
+                $this->metadata['provider'][$property] = $content;
+            }
+        }
 
         $expecteds = ['action', 'name', 'installed-tasks', 'enabled-tasks', 'tag'];
         foreach ($expecteds as $expected) {
@@ -208,7 +224,7 @@ class Inventory
     {
         global $DB;
 
-       //check
+        //check
         if ($this->inError()) {
             throw new \RuntimeException(print_r($this->getErrors(), true));
         }
@@ -218,86 +234,15 @@ class Inventory
         }
 
         try {
-           //bench
+            //bench
             $main_start = microtime(true);
             if (!$DB->inTransaction()) {
                 $DB->beginTransaction();
             }
 
-            $converter = new Converter();
-            $schema = json_decode(file_get_contents($converter->getSchemaPath()), true);
+            $this->data = (array)$this->raw_data->content;
 
-            $properties = array_keys($schema['properties']['content']['properties']);
-            unset($properties['versionclient']); //already handled in extractMetadata
-            if (method_exists($this, 'getSchemaExtraProps')) {
-                $properties = array_merge(
-                    $properties,
-                    $this->getSchemaExtraProps()
-                );
-            }
-            $contents = $this->raw_data->content;
-            $all_props = get_object_vars($contents);
-
-            $data = [];
-           //parse schema properties and handle if it exists in raw_data
-            foreach ($properties as $property) {
-                if (property_exists($contents, $property)) {
-                    $this->metadata['provider'] = [];
-
-                    $sub_properties = [];
-                    if (isset($schema['properties']['content']['properties'][$property]['properties'])) {
-                        $sub_properties = array_keys($schema['properties']['content']['properties'][$property]['properties']);
-                    }
-                    if (method_exists($this, 'getSchemaExtraSubProps')) {
-                        $sub_properties = array_merge(
-                            $sub_properties,
-                            $this->getSchemaExtraSubProps($property)
-                        );
-                    }
-
-                    switch ($property) {
-                        case 'versionprovider':
-                            foreach ($sub_properties as $sub_property) {
-                                if (property_exists($contents->$property, $sub_property)) {
-                                    $this->metadata['provider'][$sub_property] = $contents->$property->$sub_property;
-                                }
-                            }
-                            unset($all_props['versionprovider']);
-                            break;
-                        default:
-                            if (count($sub_properties)) {
-                                $data[$property] = [];
-                                foreach ($sub_properties as $sub_property) {
-                                    if (property_exists($contents->$property, $sub_property)) {
-                                        $data[$property][$sub_property] = $contents->$property->$sub_property;
-                                    }
-                                }
-                            } else {
-                                $data[$property] = $contents->$property;
-                            }
-                            break;
-                    }
-                }
-            }
-
-            $this->unhandled_data = array_diff_key($all_props, $data);
-            if (count($this->unhandled_data)) {
-                Session::addMessageAfterRedirect(
-                    sprintf(
-                        __('Following keys has been ignored during process: %1$s'),
-                        implode(
-                            ', ',
-                            array_keys($this->unhandled_data)
-                        )
-                    ),
-                    true,
-                    WARNING
-                );
-            }
-
-            $this->data = $data;
-
-           //create/load agent
+            //create/load agent
             $this->agent = new Agent();
             $this->agent->handleAgent($this->metadata);
 
@@ -319,7 +264,7 @@ class Inventory
 
             $this->mainasset = $main;
             if (isset($this->data['hardware'])) {
-               //hardware is handled in inventoried item, but may be used outside
+                //hardware is handled in inventoried item, but may be used outside
                 $this->data['hardware'] = $main->getHardware();
             }
 
@@ -337,7 +282,7 @@ class Inventory
         } finally {
             unset($_SESSION['glpiinventoryuserrunning']);
             $this->handleInventoryFile();
-           // * For benchs
+            // * For benchs
             $id = $this->item->fields['id'] ?? 0;
             $items = $this->mainasset->getInventoried() + $this->mainasset->getRefused();
             $extra = null;
@@ -426,7 +371,7 @@ class Inventory
     }
 
     /**
-     * Check if erorrs has been throwed
+     * Check if errors has been thrown
      *
      * @return boolean
      */
@@ -649,7 +594,7 @@ class Inventory
 
             if ($assettype !== false) {
                //handle if asset type has been found.
-                $asset = new $assettype($this->item, $value);
+                $asset = new $assettype($this->item, (array)$value);
                 $asset->withHistory($this->mainasset->withHistory());
                 if ($asset->checkConf($this->conf)) {
                     $asset->setMainAsset($this->mainasset);
