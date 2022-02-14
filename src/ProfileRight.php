@@ -53,12 +53,9 @@ class ProfileRight extends CommonDBChild
     {
         global $DB, $GLPI_CACHE;
 
-        $rights = [];
+        $rights = $GLPI_CACHE->get('all_possible_rights', []);
 
-        if (
-            !$GLPI_CACHE->has('all_possible_rights')
-            || count($GLPI_CACHE->get('all_possible_rights')) == 0
-        ) {
+        if (count($rights) == 0) {
             $iterator = $DB->request([
                 'SELECT'          => 'name',
                 'DISTINCT'        => true,
@@ -69,9 +66,8 @@ class ProfileRight extends CommonDBChild
                 $rights[$right['name']] = '';
             }
             $GLPI_CACHE->set('all_possible_rights', $rights);
-        } else {
-            $rights = $GLPI_CACHE->get('all_possible_rights');
         }
+
         return $rights;
     }
 

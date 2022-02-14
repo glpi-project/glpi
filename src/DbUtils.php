@@ -850,13 +850,10 @@ final class DbUtils
         global $DB, $GLPI_CACHE;
 
         $ckey = 'sons_cache_' . $table . '_' . $IDf;
-        $sons = false;
 
-        if ($GLPI_CACHE->has($ckey)) {
-            $sons = $GLPI_CACHE->get($ckey);
-            if ($sons !== null) {
-                return $sons;
-            }
+        $sons = $GLPI_CACHE->get($ckey);
+        if ($sons !== null) {
+            return $sons;
         }
 
         $parentIDfield = $this->getForeignKeyFieldForTable($table);
@@ -969,14 +966,13 @@ final class DbUtils
         } else {
             $ckey .= $table . '_' . $items_id;
         }
-        $ancestors = [];
 
-        if ($GLPI_CACHE->has($ckey)) {
-            $ancestors = $GLPI_CACHE->get($ckey);
-            if ($ancestors !== null) {
-                return $ancestors;
-            }
+        $ancestors = $GLPI_CACHE->get($ckey);
+        if ($ancestors !== null) {
+            return $ancestors;
         }
+
+        $ancestors = [];
 
        // IDs to be present in the final array
         $parentIDfield = $this->getForeignKeyFieldForTable($table);

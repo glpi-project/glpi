@@ -6690,11 +6690,9 @@ HTML;
         $file_hash = self::getScssFileHash($path);
 
        //check if files has changed
-        if (!isset($args['nocache']) && $GLPI_CACHE->has($fckey)) {
-            if ($file_hash != $GLPI_CACHE->get($fckey)) {
-               //file has changed
-                $args['reload'] = true;
-            }
+        if (!isset($args['nocache']) && $file_hash != $GLPI_CACHE->get($fckey)) {
+           //file has changed
+           $args['reload'] = true;
         }
 
        // Enable imports of ".scss" files from "css/lib", when path starts with "~".
@@ -6719,40 +6717,43 @@ HTML;
             }
         );
 
-        $css = '';
-        if (!isset($args['reload']) && !isset($args['nocache']) && $GLPI_CACHE->has($ckey)) {
+        if (!isset($args['reload']) && !isset($args['nocache'])) {
             $css = $GLPI_CACHE->get($ckey);
-        } else {
-            try {
-                Toolbox::logDebug("Compile $file");
-                $result = $scss->compileString($import, dirname($path));
-                $css = $result->getCss();
-                if (!isset($args['nocache'])) {
-                    $GLPI_CACHE->set($ckey, $css);
-                    $GLPI_CACHE->set($fckey, $file_hash);
-                }
-            } catch (\Throwable $e) {
-                ErrorHandler::getInstance()->handleException($e, true);
-                if (isset($args['debug'])) {
-                    $msg = 'An error occured during SCSS compilation: ' . $e->getMessage();
-                    $msg = str_replace(["\n", "\"", "'"], ['\00000a', '\0022', '\0027'], $msg);
-                    $css = <<<CSS
-                  html::before {
-                     background: #F33;
-                     content: '$msg';
-                     display: block;
-                     padding: 20px;
-                     position: sticky;
-                     top: 0;
-                     white-space: pre-wrap;
-                     z-index: 9999;
-                  }
+            if ($css !== null) {
+                return $css;
+            }
+        }
+
+        $css = '';
+        try {
+            Toolbox::logDebug("Compile $file");
+            $result = $scss->compileString($import, dirname($path));
+            $css = $result->getCss();
+            if (!isset($args['nocache'])) {
+                $GLPI_CACHE->set($ckey, $css);
+                $GLPI_CACHE->set($fckey, $file_hash);
+            }
+        } catch (\Throwable $e) {
+            ErrorHandler::getInstance()->handleException($e, true);
+            if (isset($args['debug'])) {
+                $msg = 'An error occured during SCSS compilation: ' . $e->getMessage();
+                $msg = str_replace(["\n", "\"", "'"], ['\00000a', '\0022', '\0027'], $msg);
+                $css = <<<CSS
+              html::before {
+                 background: #F33;
+                 content: '$msg';
+                 display: block;
+                 padding: 20px;
+                 position: sticky;
+                 top: 0;
+                 white-space: pre-wrap;
+                 z-index: 9999;
+              }
 CSS;
-                }
-                global $application;
-                if ($application instanceof Application) {
-                    throw $e;
-                }
+            }
+            global $application;
+            if ($application instanceof Application) {
+                throw $e;
             }
         }
 

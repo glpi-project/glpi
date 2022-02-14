@@ -142,9 +142,7 @@ class USBVendor extends CommonDropdown implements CacheableListInterface
     {
         global $GLPI_CACHE;
 
-        if ($GLPI_CACHE->has($this->cache_key)) {
-            $GLPI_CACHE->delete($this->cache_key);
-        }
+        $GLPI_CACHE->delete($this->cache_key);
     }
 
     /**

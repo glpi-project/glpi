@@ -311,8 +311,8 @@ class GLPINetwork extends CommonGLPI
         $lang = preg_replace('/^([a-z]+)_.+$/', '$1', $_SESSION["glpilanguage"]);
         $cache_key = 'glpi_network_offers_' . $lang;
 
-        if (!$force_refresh && $GLPI_CACHE->has($cache_key)) {
-            return $GLPI_CACHE->get($cache_key);
+        if (!$force_refresh && ($offers = $GLPI_CACHE->get($cache_key)) !== null) {
+            return $offers;
         }
 
         $error_message = null;
