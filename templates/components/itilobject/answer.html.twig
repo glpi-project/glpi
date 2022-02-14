@@ -49,6 +49,12 @@
                      </div>
                      <div>
                         {% if timeline_itemtype.template is defined %}
+                           {{ include(timeline_itemtype.template, {
+                              'item': item,
+                              'subitem': timeline_itemtype.item,
+                              'kb_id_toload': show_kb_sol
+                           }) }}
+                        {% else %}
                            {% set sf_options = {'parent': item} %}
                            {% if show_kb_sol %}
                               {% set sf_options = sf_options|merge({
