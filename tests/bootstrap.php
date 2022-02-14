@@ -774,3 +774,6 @@ function getItemByTypeName($type, $name, $onlyid = false)
 }
 
 loadDataset();
+
+// Ensure the tester plugin is loaded
+Plugin::load('tester');
