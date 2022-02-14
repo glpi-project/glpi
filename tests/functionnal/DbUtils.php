@@ -34,7 +34,6 @@
 namespace tests\units;
 
 use DbTestCase;
-use org\bovigo\vfs\vfsStream;
 
 /* Test for inc/dbutils.class.php */
 
@@ -1251,90 +1250,5 @@ class DbUtils extends DbTestCase
                ->exists();
         }
         $this->string($autoname)->isIdenticalTo($expected);
-    }
-
-
-    /**
-     * Data provider for self::testGetItemtypeWithFixedCase().
-     */
-    protected function fixItemtypeCaseProvider()
-    {
-        return [
-         // Bad case classnames matching and existing class file
-            [
-                'itemtype' => 'myclass',
-                'expected' => 'MyClass',
-            ],
-            [
-                'itemtype' => 'glpi\\appliCation\\CoNsOlE\\MyCommand',
-                'expected' => 'Glpi\\Application\\Console\\MyCommand',
-            ],
-            [
-                'itemtype' => 'PluginFooBaritem',
-                'expected' => 'PluginFooBarItem',
-            ],
-            [
-                'itemtype' => 'GlpiPluGin\\Foo\\Namespacedbar',
-                'expected' => 'GlpiPlugin\\Foo\\NamespacedBar',
-            ],
-         // Good case (should not be altered)
-            [
-                'itemtype' => 'MyClass',
-                'expected' => 'MyClass',
-            ],
-            [
-                'itemtype' => 'Glpi\\Application\\Console\\MyCommand',
-                'expected' => 'Glpi\\Application\\Console\\MyCommand',
-            ],
-            [
-                'itemtype' => 'GlpiPlugin\\Foo\\NamespacedBar',
-                'expected' => 'GlpiPlugin\\Foo\\NamespacedBar',
-            ],
-         // Not matching any class file (should not be altered)
-            [
-                'itemtype' => 'notanitemtype',
-                'expected' => 'notanitemtype',
-            ],
-            [
-                'itemtype' => 'GlpiPlugin\\Invalid\\itemtype',
-                'expected' => 'GlpiPlugin\\Invalid\\itemtype',
-            ],
-        ];
-    }
-
-    /**
-     * @dataProvider fixItemtypeCaseProvider
-     */
-    public function testGetItemtypeWithFixedCase($itemtype, $expected)
-    {
-
-        $this->newTestedInstance();
-
-        vfsStream::setup(
-            'glpi',
-            null,
-            [
-                'src' => [
-                    'Application' => [
-                        'Console' => [
-                            'MyCommand.php' => '',
-                        ],
-                    ],
-                    'MyClass.php' => '',
-                    'NamespacedClass.php' => '',
-                ],
-                'plugins' => [
-                    'foo' => [
-                        'src' => [
-                            'NamespacedBar.php' => '',
-                            'PluginFooBarItem.php' => '',
-                        ],
-                    ],
-                ],
-            ]
-        );
-
-        $result = $this->testedInstance->fixItemtypeCase($itemtype, vfsStream::url('glpi'));
-        $this->variable($result)->isEqualTo($expected);
     }
 }

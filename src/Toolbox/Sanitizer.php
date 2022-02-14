@@ -71,8 +71,8 @@ class Sanitizer
             return $value;
         }
 
-        if (preg_match('/^[a-zA-Z0-9_\\\]+$/', $value) && class_exists($value)) {
-           // Do not sanitize values that corresponds to an existing class, as classnames are considered safe
+        if (preg_match('/^[a-zA-Z0-9_\\\]+$/', $value) && $value === ClassHandler::getProperClassname($value)) {
+            // Do not sanitize values that corresponds to an existing class, as classnames are considered safe
             return $value;
         }
 
