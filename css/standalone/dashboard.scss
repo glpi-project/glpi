@@ -166,7 +166,7 @@ $break_tablet: 1400px;
             }
 
             .card {
-                border-color: currentColor;
+                border-color: currentcolor;
             }
         }
 
@@ -310,7 +310,7 @@ $break_tablet: 1400px;
             }
 
             &.active {
-                border: 2px inset currentColor;
+                border: 2px inset currentcolor;
             }
 
             &.fa-moon {
@@ -796,7 +796,7 @@ $break_tablet: 1400px;
         }
 
         i {
-            color: currentColor;
+            color: currentcolor;
         }
     }
 
@@ -871,7 +871,7 @@ $break_tablet: 1400px;
 
             .line {
                 display: table-row;
-                color: currentColor;
+                color: currentcolor;
 
                 * {
                     display: table-cell;
@@ -925,7 +925,7 @@ $break_tablet: 1400px;
         }
 
         .line {
-            color: currentColor;
+            color: currentcolor;
             margin: 5px;
             padding: 5px;
             font-weight: normal;
@@ -956,7 +956,7 @@ $break_tablet: 1400px;
 
             a,
             i.fa-user {
-                color: currentColor;
+                color: currentcolor;
             }
 
             i.fa-user {
@@ -1160,7 +1160,7 @@ $break_tablet: 1400px;
             padding: 5px;
             margin: $mdmargin_v 0;
             background-color: rgba(255, 255, 255, 90%);
-            border: 1px solid currentColor;
+            border: 1px solid currentcolor;
             border-radius: 1px;
             outline: none;
             font-family: monospace;
@@ -1175,11 +1175,11 @@ $break_tablet: 1400px;
         }
 
         h1 {
-            border-bottom: 2px solid currentColor;
+            border-bottom: 2px solid currentcolor;
         }
 
         h2 {
-            border-bottom: 1px solid currentColor;
+            border-bottom: 1px solid currentcolor;
         }
 
         img {
