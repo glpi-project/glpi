@@ -172,7 +172,7 @@ class Ticket extends CommonITILObject
             </span>
          ';
 
-            $links[$pic_validate] = Ticket::getSearchURL(false) . '?' . Toolbox::append_params($opt, '&amp;');
+            $links[$pic_validate] = Ticket::getSearchURL(false) . '?' . Toolbox::append_params($opt);
         }
 
         return $links;
