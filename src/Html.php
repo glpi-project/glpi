@@ -1489,6 +1489,9 @@ HTML;
                             if (is_array($val)) {
                                 foreach ($val as $k => $object) {
                                     $menu[$key]['types'][] = $object;
+                                    if (method_exists($object, 'getIcon')) {
+                                        $menu[$key]['icon']    = $object::getIcon();
+                                    }
                                 }
                             } else {
                                 if (isset($menu[$key])) {
