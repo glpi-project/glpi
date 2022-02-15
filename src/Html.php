@@ -6689,10 +6689,10 @@ HTML;
         $fckey = 'css_raw_file_' . $file;
         $file_hash = self::getScssFileHash($path);
 
-       //check if files has changed
+        //check if files has changed
         if (!isset($args['nocache']) && $file_hash != $GLPI_CACHE->get($fckey)) {
-           //file has changed
-           $args['reload'] = true;
+            //file has changed
+            $args['reload'] = true;
         }
 
        // Enable imports of ".scss" files from "css/lib", when path starts with "~".
