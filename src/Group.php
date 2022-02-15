@@ -83,6 +83,7 @@ class Group extends CommonTreeDropdown
         $this->fields['is_requester'] = 1;
         $this->fields['is_watcher']   = 1;
         $this->fields['is_assign']    = 1;
+        $this->fields['is_task']      = 1;
         $this->fields['is_notify']    = 1;
         $this->fields['is_itemgroup'] = 1;
         $this->fields['is_usergroup'] = 1;
