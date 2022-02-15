@@ -176,7 +176,7 @@ trait TreeBrowse
         $cat_item     = new $cat_itemtype();
 
         $params['export_all'] = true;
-        $data = Search::prepareDatasForSearch($itemtype, $params, ['id']);
+        $data = Search::prepareDatasForSearch($itemtype, $params);
         Search::constructSQL($data);
         $ids = [0];
         foreach ($DB->query($data['sql']['search']) as $row) {
