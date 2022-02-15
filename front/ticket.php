@@ -41,7 +41,17 @@ if (Session::getCurrentInterface() == "helpdesk") {
     Html::header(Ticket::getTypeName(Session::getPluralNumber()), '', "helpdesk", "ticket");
 }
 
-echo Html::manageRefreshPage(false, "$('div.ajax-container.search-display-data').data('js_class').getView().refreshResults();");
+$refresh_callback = <<<JS
+const container = $('div.ajax-container.search-display-data');
+if (container.length > 0 && container.data('js_class') !== undefined) {
+    container.data('js_class').getView().refreshResults();
+} else {
+    // Fallback when fluid search isn't initialized
+    window.location.reload();
+}
+JS;
+
+echo Html::manageRefreshPage(false, $refresh_callback);
 
 Search::show('Ticket');
 
