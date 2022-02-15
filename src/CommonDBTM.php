@@ -5963,7 +5963,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @return void
      */
-    protected function update1NTableData(
+    public function update1NTableData(
         string $commondb_relation,
         string $field,
         array $extra_input = []
@@ -6076,7 +6076,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @return void
      */
-    protected function load1NTableData(
+    public function load1NTableData(
         string $commondb_relation,
         string $field,
         array $extra_input = []
