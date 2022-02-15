@@ -166,9 +166,9 @@ class Ticket extends CommonITILObject
             $opt['criteria'][4]['link']       = 'AND NOT';
 
             $pic_validate = '
-            <i class="ti ti-eye-check" title="' . __s('Ticket waiting for your approval') . '"></i>
+            <i class="ti ti-eye-check" title="' . __s('Tickets waiting for your approval') . '"></i>
             <span class="d-none d-xxl-block">
-               ' . __s('Ticket waiting for your approval') . '
+               ' . __s('Tickets waiting for your approval') . '
             </span>
          ';
 
@@ -5507,7 +5507,7 @@ JAVASCRIPT;
 
             $twig_params['items'][] = [
                 'link'    => self::getSearchURL() . "?" . Toolbox::append_params($opt),
-                'text'    => __('Ticket waiting for your approval'),
+                'text'    => __('Tickets waiting for your approval'),
                 'icon'    => 'fas fa-check',
                 'count'   => $number_waitapproval
             ];
