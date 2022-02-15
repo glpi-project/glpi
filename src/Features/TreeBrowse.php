@@ -76,7 +76,7 @@ trait TreeBrowse
         $JS = <<<JAVASCRIPT
         var loadingindicator  = $("<div class='loadingindicator'>$loading_txt</div>");
         $('#items_list').html(loadingindicator);
-        $.fn.loadNode = function(cat_id) {
+        window.loadNode = function(cat_id) {
             $('#items_list').html(loadingindicator);
             $('#items_list').load('$ajax_url', {
                 'action': 'getItemslist',
@@ -133,7 +133,7 @@ trait TreeBrowse
                         var node = data.node;
                         var key  = node.key;
 
-                        $.fn.loadNode(key);
+                        window.loadNode(key);
                     },
 
                 });
