@@ -40,10 +40,10 @@ $default_charset = DBConnection::getDefaultCharset();
 $default_collation = DBConnection::getDefaultCollation();
 $default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
 
-if (!$DB->tableExists('glpi_dashboards_filters')) {
-    $migration->addField('glpi_dashboards_dashboards', 'users_id', "int {$default_key_sign} NOT NULL DEFAULT '0'", ['after' => 'context']);
-    $migration->addKey('glpi_dashboards_dashboards', 'users_id');
+$migration->addField('glpi_dashboards_dashboards', 'users_id', "int {$default_key_sign} NOT NULL DEFAULT '0'", ['after' => 'context']);
+$migration->addKey('glpi_dashboards_dashboards', 'users_id');
 
+if (!$DB->tableExists('glpi_dashboards_filters')) {
     $query = "CREATE TABLE `glpi_dashboards_filters` (
          `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
          `dashboards_dashboards_id` int {$default_key_sign} NOT NULL DEFAULT '0',
