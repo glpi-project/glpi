@@ -283,6 +283,9 @@ class Entity extends CommonTreeDropdown
         }
 
         $input = parent::prepareInputForAdd($input);
+        if ($input === false) {
+            return false;
+        }
 
         $input = $this->handleConfigStrategyFields($input);
 
@@ -319,8 +322,10 @@ class Entity extends CommonTreeDropdown
      **/
     public function prepareInputForUpdate($input)
     {
-
         $input = parent::prepareInputForUpdate($input);
+        if ($input === false) {
+            return false;
+        }
 
         $input = $this->handleConfigStrategyFields($input);
 
