@@ -31,58 +31,61 @@
 
 {% set is_ajax = data['searchform_id'] is defined and data['searchform_id'] is not null %}
 {% if not is_ajax %}
-<div class="ajax-container search-display-data">
-{% endif %}
+   <div class="ajax-container search-display-data">
+   {% endif %}
 
-{# Remove namespace separators for use in HTML attributes #}
-{% set normalized_itemtype = itemtype|replace({'\\': ''}) %}
+   {# Remove namespace separators for use in HTML attributes #}
+   {% set normalized_itemtype = itemtype|replace({'\\': ''}) %}
 
-<form id="massform{{ normalized_itemtype }}" method="get" action="{{ path('front/massiveaction.php') }}"
-      data-search-itemtype="{{ data['itemtype'] }}" data-start="{{ start }}" data-count="{{ count }}" data-limit="{{ limit }}" data-submit-once>
-   <div class="card card-sm mt-0 search-card">
-      <div class="card-header d-flex justify-content-between search-header pe-0">
-         {% if data['display_type'] == constant('Search::GLOBAL_SEARCH') %}
-            <h2>{{ itemtype|itemtype_name }}</h2>
+   <form id="massform{{ normalized_itemtype }}" method="get" action="{{ path('front/massiveaction.php') }}"
+         data-search-itemtype="{{ data['itemtype'] }}" data-start="{{ start }}" data-count="{{ count }}" data-limit="{{ limit }}" data-submit-once>
+      <div class="card card-sm mt-0 search-card">
+         <div class="card-header d-flex justify-content-between search-header pe-0">
+            {% if data['display_type'] == constant('Search::GLOBAL_SEARCH') %}
+               <h2>{{ itemtype|itemtype_name }}</h2>
 
-            {% if count > (start + constant('Search::GLOBAL_DISPLAY_COUNT')) %}
-               <a href="{{ href }}">
-                  <i class="far fa-eye"></i>
-                  {{ __('View all') }}
-               </a>
+               {% if count > (start + constant('Search::GLOBAL_DISPLAY_COUNT')) %}
+                  <a href="{{ href }}">
+                     <i class="far fa-eye"></i>
+                     {{ __('View all') }}
+                  </a>
+               {% endif %}
+            {% else %}
+               {{ include('components/search/controls.html.twig') }}
             {% endif %}
-         {% else %}
-            {{ include('components/search/controls.html.twig') }}
-         {% endif %}
-      </div>
+         </div>
 
-      {% if data['search']['as_map'] == 0 %}
-         {{ include('components/search/table.html.twig') }}
-      {% endif %}
-      {% if count > 0 %}
-         {% if data['display_type'] != constant('Search::GLOBAL_SEARCH') and data['search']['as_map'] == 0 %}
-            <div class="card-footer search-footer">
-               {{ include('components/pager.html.twig') }}
+         {% if data['search']['as_map'] == 0 %}
+            {{ include('components/search/table.html.twig') }}
+         {% endif %}
+         {% if count > 0 %}
+            {% if data['display_type'] != constant('Search::GLOBAL_SEARCH') and data['search']['as_map'] == 0 %}
+               <div class="card-footer search-footer">
+                  {{ include('components/pager.html.twig') }}
+               </div>
+            {% endif %}
+         {% elseif data['search']['as_map'] == 1 %}
+            <div class="alert alert-info mb-0 rounded-0 border-top-0 border-bottom-0 border-right-0" role="alert">
+               {{ __('No item found') }}
             </div>
          {% endif %}
-      {% elseif data['search']['as_map'] == 1 %}
-         <div class="alert alert-info mb-0 rounded-0 border-top-0 border-bottom-0 border-right-0" role="alert">
-            {{ __('No item found') }}
-         </div>
-      {% endif %}
+      </div>
+   </form>
+   {% if not is_ajax %}
    </div>
-</form>
-{% if not is_ajax %}
-</div>
-<script>
-    if (typeof initFluidSearch !== "function") {
-       window.initFluidSearch = () => {
-           new GLPI.Search.ResultsView("massform{{ normalized_itemtype }}", GLPI.Search.Table);
-       };
-    }
-    if (document.readyState === 'complete') {
-        initFluidSearch();
-    } else {
-        $(document).on('ready', initFluidSearch);
-    }
-</script>
+
+   {% if data['search']['as_map'] == 0 %}
+      <script>
+          if (typeof initFluidSearch !== "function") {
+             window.initFluidSearch = () => {
+                 new GLPI.Search.ResultsView("massform{{ normalized_itemtype }}", GLPI.Search.Table);
+             };
+          }
+          if (document.readyState === 'complete') {
+              initFluidSearch();
+          } else {
+              $(document).on('ready', initFluidSearch);
+          }
+      </script>
+   {% endif %}
 {% endif %}
