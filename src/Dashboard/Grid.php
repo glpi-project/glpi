@@ -1174,7 +1174,7 @@ HTML;
 
             $tickets_cases = [
                 'late'               => __("Late tickets"),
-                'waiting_validation' => __("Ticket waiting for your approval"),
+                'waiting_validation' => __("Tickets waiting for your approval"),
                 'notold'             => __('Not solved tickets'),
                 'incoming'           => __("New tickets"),
                 'waiting'            => __('Pending tickets'),
