@@ -276,7 +276,6 @@ class DatabasesPluginToCoreCommand extends AbstractCommand
          && $this->createDatabaseCategories()
          && $this->createDatabases()
          && $this->createDatabaseInstances()
-          && $this->createDatabaseInstanceItems()
          && $this->updateItemtypes()
          && $this->updateProfilesDatabaseRights();
     }
@@ -362,62 +361,6 @@ class DatabasesPluginToCoreCommand extends AbstractCommand
         return true;
     }
 
-    /**
-     * Create database instance items.
-     *
-     * @return bool
-     */
-    private function createDatabaseInstanceItems(): bool
-    {
-        $this->output->writeln(
-            '<comment>' . __('Creating Database Instances Items...') . '</comment>',
-            OutputInterface::VERBOSITY_NORMAL
-        );
-
-        $iterator = $this->db->request([
-            'FROM' => 'glpi_plugin_databases_databases_items'
-        ]);
-
-        if (!count($iterator)) {
-            return true;
-        }
-
-        $progress_bar = new ProgressBar($this->output);
-
-        foreach ($progress_bar->iterate($iterator) as $item) {
-            $this->writelnOutputWithProgressBar(
-                sprintf(
-                    __('Importing Database Instances item "%d"...'),
-                    (int) $item['id']
-                ),
-                $progress_bar,
-                OutputInterface::VERBOSITY_VERY_VERBOSE
-            );
-
-            $app_fields = Sanitizer::sanitize([
-                'id'            => $item['plugin_databases_databases_id'],
-                'items_id'      => $item['items_id'],
-                'itemtype'      => $item['itemtype']
-            ]);
-
-            $appi = new \DatabaseInstance();
-            $appi_id = $appi->update($app_fields);
-
-            if (false === $appi_id) {
-                $this->outputImportError(
-                    sprintf(__('Unable to create Database Instances item %d.'), (int) $item['id']),
-                    $progress_bar
-                );
-                if (!$this->input->getOption('skip-errors')) {
-                     return false;
-                }
-            }
-        }
-
-        $this->output->write(PHP_EOL);
-
-        return true;
-    }
 
     /**
      * Create database instance categories.
@@ -451,18 +394,18 @@ class DatabasesPluginToCoreCommand extends AbstractCommand
                 OutputInterface::VERBOSITY_VERY_VERBOSE
             );
 
-            $app_fields = Sanitizer::sanitize([
+            $database_fields = Sanitizer::sanitize([
                 'id'      => $env['id'],
                 'name'    => $env['name'],
                 'comment' => $env['comment']
             ]);
 
-            $appe = new \DatabaseInstanceCategory();
-            if (!($appe_id = $appe->getFromDBByCrit($app_fields))) {
-                $appe_id = $appe->add($app_fields);
+            $databasee = new \DatabaseInstanceCategory();
+            if (!($databasee_id = $databasee->getFromDBByCrit($database_fields))) {
+                $databasee_id = $databasee->add($database_fields);
             }
 
-            if (false === $appe_id) {
+            if (false === $databasee_id) {
                 $this->outputImportError(
                     sprintf(__('Unable to create Database Instance category %s (%d).'), $env['name'], (int) $env['id']),
                     $progress_bar
@@ -509,7 +452,7 @@ class DatabasesPluginToCoreCommand extends AbstractCommand
                 OutputInterface::VERBOSITY_VERY_VERBOSE
             );
 
-            $app_fields = Sanitizer::sanitize([
+            $database_fields = Sanitizer::sanitize([
                 'id'                       => $instance['id'],
                 'entities_id'              => $instance['entities_id'],
                 'is_recursive'             => $instance['is_recursive'],
@@ -519,12 +462,12 @@ class DatabasesPluginToCoreCommand extends AbstractCommand
                 'databaseinstances_id'               => $instance['plugin_databases_databases_id'],
             ]);
 
-            $app = new \Database();
-            if (!($app_id = $app->getFromDBByCrit($app_fields))) {
-                $app_id = $app->add($app_fields);
+            $database = new \Database();
+            if (!($database_id = $database->getFromDBByCrit($database_fields))) {
+                $database_id = $database->add($database_fields);
             }
 
-            if (false === $app_id) {
+            if (false === $database_id) {
                 $this->outputImportError(
                     sprintf(__('Unable to create Database %s (%d).'), $instance['name'], (int) $instance['id']),
                     $progress_bar
@@ -572,7 +515,7 @@ class DatabasesPluginToCoreCommand extends AbstractCommand
                 OutputInterface::VERBOSITY_VERY_VERBOSE
             );
 
-            $app_fields = Sanitizer::sanitize([
+            $database_fields = Sanitizer::sanitize([
                 'id'                            => $database['id'],
                 'entities_id'                   => $database['entities_id'],
                 'is_recursive'                  => $database['is_recursive'],
@@ -592,12 +535,12 @@ class DatabasesPluginToCoreCommand extends AbstractCommand
                 'is_dynamic'                    => 0,
             ]);
 
-            $app = new \DatabaseInstance();
-            if (!($app_id = $app->getFromDBByCrit($app_fields))) {
-                $app_id = $app->add($app_fields);
+            $database = new \DatabaseInstance();
+            if (!($database_id = $database->getFromDBByCrit($database_fields))) {
+                $database_id = $database->add($database_fields);
             }
 
-            if (false === $app_id) {
+            if (false === $database_id) {
                 $this->outputImportError(
                     sprintf(__('Unable to create Database instance %s (%d).'), $database['name'], (int) $database['id']),
                     $progress_bar
@@ -644,18 +587,18 @@ class DatabasesPluginToCoreCommand extends AbstractCommand
                 OutputInterface::VERBOSITY_VERY_VERBOSE
             );
 
-            $appt_fields = Sanitizer::sanitize([
+            $databaset_fields = Sanitizer::sanitize([
                 'id'                 => $type['id'],
                 'name'               => $type['name'],
                 'comment'            => $type['comment'],
             ]);
 
-            $appt = new \DatabaseInstanceType();
-            if (!($appt_id = $appt->getFromDBByCrit($appt_fields))) {
-                $appt_id = $appt->add($appt_fields);
+            $databaset = new \DatabaseInstanceType();
+            if (!($databaset_id = $databaset->getFromDBByCrit($databaset_fields))) {
+                $databaset_id = $databaset->add($databaset_fields);
             }
 
-            if (false === $appt_id) {
+            if (false === $databaset_id) {
                 $this->outputImportError(
                     sprintf(__('Unable to create Database Instance type %s (%d).'), $type['name'], (int) $type['id']),
                     $progress_bar
