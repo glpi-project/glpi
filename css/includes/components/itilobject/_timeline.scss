@@ -83,13 +83,15 @@
         }
     }
 
-    .timeline-more-actions {
-        visibility: hidden;
-    }
-
-    &:hover {
+    @media (hover: hover) {
         .timeline-more-actions {
-            visibility: visible;
+            visibility: hidden;
+        }
+
+        &:hover {
+            .timeline-more-actions {
+                visibility: visible;
+            }
         }
     }
 
