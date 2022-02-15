@@ -76,17 +76,6 @@ class DatabasesPluginToCoreCommand extends AbstractCommand
     const ERROR_PLUGIN_IMPORT_FAILED = 2;
 
     /**
-     * list of possible relations of the plugin indexed by their correspond integer in the plugin
-     *
-     * @var array
-     */
-    const PLUGIN_RELATION_TYPES = [
-//        1 => Location::class,
-//        2 => Network::class,
-//        3 => Domain::class,
-    ];
-
-    /**
      * list of usefull plugin tables and fields
      *
      * @var array
