@@ -1099,6 +1099,7 @@ class APIRest extends APIBaseClass
                 'status' => 200,
                 'response' => [
                     'ok'       => 2,
+                    'noaction' => 0,
                     'ko'       => 0,
                     'noright'  => 0,
                     'messages' => [],
@@ -1140,6 +1141,7 @@ class APIRest extends APIBaseClass
                 'status' => 200,
                 'response' => [
                     'ok'       => 2,
+                    'noaction' => 0,
                     'ko'       => 0,
                     'noright'  => 0,
                     'messages' => [],

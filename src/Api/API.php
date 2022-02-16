@@ -3287,7 +3287,7 @@ abstract class API
         $results = $ma->process();
         unset($results['redirect']);
 
-        if ($results['ok'] == 0 && $results['ko'] == 0 && $results['noright'] == 0) {
+        if ($results['ok'] == 0 && $results['noaction'] == 0 && $results['ko'] == 0 && $results['noright'] == 0) {
            // No items were processed, invalid action key -> 400
             return $this->returnError(
                 "Invalid action key parameter, run 'getMassiveActions' endpoint to see available keys",
