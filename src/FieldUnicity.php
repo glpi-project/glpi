@@ -39,7 +39,8 @@ class FieldUnicity extends CommonDropdown
    // From CommonDBTM
     public $dohistory          = true;
 
-    public $second_level_menu  = "control";
+    public $first_level_menu   = "config";
+    public $second_level_menu  = "fieldunicity";
     public $can_be_translated  = false;
 
     public static $rightname          = 'config';
@@ -63,12 +64,6 @@ class FieldUnicity extends CommonDropdown
     public static function canPurge()
     {
         return static::canUpdate();
-    }
-
-
-    public function displayHeader()
-    {
-        Html::header(FieldUnicity::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "config", "fieldunicity");
     }
 
     public function getAdditionalFields()

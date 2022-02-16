@@ -203,7 +203,7 @@ abstract class CommonDropdown extends CommonDBTM
     }
 
 
-    public function displayHeader()
+    final public function displayHeader()
     {
 
         if (empty($this->third_level_menu)) {

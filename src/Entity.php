@@ -484,13 +484,6 @@ class Entity extends CommonTreeDropdown
        // Empty title for entities
     }
 
-
-    public function displayHeader()
-    {
-        Html::header($this->getTypeName(1), '', "admin", "entity");
-    }
-
-
     /**
      * Get the ID of entity assigned to the object
      *
