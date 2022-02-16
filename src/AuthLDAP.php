@@ -4321,10 +4321,12 @@ class AuthLDAP extends CommonDBTM
     public static function getFieldValue($infos, $field)
     {
         $value = null;
-        if (is_array($infos[$field])) {
-            $value = $infos[$field][0];
-        } else {
-            $value = $infos[$field];
+        if (array_key_exists($field, $infos)) {
+            if (is_array($infos[$field])) {
+                $value = $infos[$field][0];
+            } else {
+                $value = $infos[$field];
+            }
         }
         if ($field != 'objectguid') {
             return $value;
