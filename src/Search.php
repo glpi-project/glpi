@@ -1747,7 +1747,7 @@ class Search
             ]),
             'may_be_deleted'      => $item instanceof CommonDBTM && $item->maybeDeleted(),
             'may_be_located'      => $item instanceof CommonDBTM && $item->maybeLocated(),
-            'may_be_browsed'      => Toolbox::hasTrait($item, \Glpi\Features\TreeBrowse::class),
+            'may_be_browsed'      => $item !== null && Toolbox::hasTrait($item, \Glpi\Features\TreeBrowse::class),
         ]);
 
        // Add items in item list
