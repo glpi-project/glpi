@@ -2786,7 +2786,7 @@ class AuthLDAP extends CommonDBTM
                         //Get the ID by sync field (Used to check if restoration is needed)
                         $searched_user = new User();
                         $user_found = false;
-                        if (!($user_found = $searched_user->getFromDBbySyncField($DB->escape($login)))) {
+                        if ($login === null || !($user_found = $searched_user->getFromDBbySyncField($DB->escape($login)))) {
                          //In case user id has changed : get id by dn (Used to check if restoration is needed)
                             $user_found = $searched_user->getFromDBbyDn($DB->escape($user_dn));
                         }
