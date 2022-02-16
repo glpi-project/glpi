@@ -221,10 +221,12 @@ class MassiveAction
                         $this->done        = [];
                         $this->nb_done     = 0;
                         $this->action_name = $POST['action_name'];
-                        $this->results     = ['ok'      => 0,
-                            'ko'      => 0,
-                            'noright' => 0,
-                            'messages' => []
+                        $this->results     = [
+                            'ok'       => 0,
+                            'noaction' => 0,
+                            'ko'       => 0,
+                            'noright'  => 0,
+                            'messages'  => []
                         ];
                         foreach ($POST['items'] as $itemtype => $ids) {
                             $this->nb_items += count($ids);
@@ -1607,6 +1609,10 @@ class MassiveAction
         switch ($result) {
             case MassiveAction::ACTION_OK:
                 $this->results['ok'] += $number;
+                break;
+
+            case MassiveAction::NO_ACTION:
+                $this->results['noaction'] += $number;
                 break;
 
             case MassiveAction::ACTION_KO:

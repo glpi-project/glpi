@@ -56,12 +56,15 @@ Html::popHeader(__('Bulk modification'), $_SERVER['PHP_SELF']);
 
 $results   = $ma->process();
 
-$nbok      = $results['ok'];
-$nbko      = $results['ko'];
-$nbnoright = $results['noright'];
+$nbok       = $results['ok'];
+$nbnoaction = $results['noaction'];
+$nbko       = $results['ko'];
+$nbnoright  = $results['noright'];
 
 $msg_type = INFO;
-if ($nbok == 0) {
+if ($nbnoaction > 0 && $nbok === 0 && $nbko === 0 && $nbnoright === 0) {
+    $message = __('Operation was done but no action was required');
+} else if ($nbok == 0) {
     $message = __('Failed operation');
     $msg_type = ERROR;
 } else if ($nbnoright || $nbko) {
@@ -69,6 +72,9 @@ if ($nbok == 0) {
     $msg_type = WARNING;
 } else {
     $message = __('Operation successful');
+    if ($nbnoaction > 0) {
+        $message .= "<br>" . sprintf(__('(%1$d items required no action)'), $nbnoaction);
+    }
 }
 if ($nbnoright || $nbko) {
    //TRANS: %$1d and %$2d are numbers
