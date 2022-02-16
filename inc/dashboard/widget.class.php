@@ -1136,11 +1136,23 @@ HTML;
 
                if (is_horizontal) {
                   var word_width = value.length * 5 + 5;
-                  labelX = data.x2 - word_width;
+
+                  if (value > 0) {
+                     labelX = data.x2 - word_width;
+                  } else{
+                     labelX = data.x2 + word_width;
+                  }
+
                   labelY = data.y2;
 
+                  if (value > 0) {
+                     width = data.x2 - data.x1;
+                  } else{
+                     width = data.x1 - data.x2;
+                  }
+
                   // don't display label if width too short
-                  if (data.x2 - data.x1 < word_width) {
+                  if (width < word_width) {
                      display_labels = false;
                   }
                }
