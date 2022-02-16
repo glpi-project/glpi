@@ -69,6 +69,16 @@ class QueuedNotification extends CommonDBTM
         return $forbidden;
     }
 
+    public function getForbiddenSingleMassiveActions()
+    {
+        $forbidden = parent::getForbiddenSingleMassiveActions();
+
+        if ($this->fields['mode'] === Notification_NotificationTemplate::MODE_AJAX) {
+            $forbidden[] = __CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'sendmail';
+        }
+
+        return $forbidden;
+    }
 
     /**
      * @see CommonDBTM::getSpecificMassiveActions()
