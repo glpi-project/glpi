@@ -1425,7 +1425,7 @@ class Provider extends CommonGLPI {
       return $s_criteria;
    }
 
-   private static function getFiltersCriteria(string $table = "", array $apply_filters = []) {
+   public static function getFiltersCriteria(string $table = "", array $apply_filters = []) {
       $DB = DBConnection::getReadConnection();
 
       $where = [];
