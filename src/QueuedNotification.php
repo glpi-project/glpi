@@ -774,7 +774,7 @@ class QueuedNotification extends CommonDBTM
 
         echo "<tr class='tab_bg_1 top' >";
         echo "<td colspan='2' class='queuemail_preview'>";
-        echo self::cleanHtml(Sanitizer::unsanitize($this->fields['body_html']));
+        echo self::cleanHtml(Sanitizer::unsanitize($this->fields['body_html'] ?? ''));
         echo "</td>";
         echo "<td colspan='2'>" . nl2br($this->fields['body_text'], false) . "</td>";
         echo "</tr>";
