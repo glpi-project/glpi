@@ -34,8 +34,7 @@
 namespace tests\units;
 
 use DbTestCase;
-use Monolog\Handler\TestHandler;
-use Monolog\Logger;
+use Psr\Log\LogLevel;
 
 // Generic test classe, to be extended for CommonDBTM Object
 
@@ -65,14 +64,8 @@ class DBmysqlIterator extends DbTestCase
     {
         global $DB;
 
-        $this->exception(
-            function () use ($DB) {
-                $DB->request('fakeTable');
-            }
-        )
-         ->isInstanceOf('GlpitestSQLerror')
-         ->message
-            ->contains("fakeTable' doesn't exist");
+        $DB->request('fakeTable');
+        $this->hasSqlLogRecordThatContains("Error: Table '{$DB->dbdefault}.fakeTable' doesn't exist", LogLevel::ERROR);
     }
 
 
@@ -143,28 +136,15 @@ class DBmysqlIterator extends DbTestCase
 
     public function testDebug()
     {
-        global $SQLLOGGER;
-
-        foreach ($SQLLOGGER->getHandlers() as $handler) {
-            if ($handler instanceof TestHandler) {
-                break;
-            }
-        }
-
-       //clean from previous queries
-        $handler->clear();
         define('GLPI_SQL_DEBUG', true);
 
         $id = mt_rand();
         $this->it->execute('foo', ['FIELDS' => 'name', 'id = ' . $id]);
 
-        $this->array($handler->getRecords())->hasSize(1);
-        $this->boolean(
-            $handler->hasRecordThatContains(
-                'Generated query: SELECT `name` FROM `foo` WHERE (id = ' . $id . ')',
-                Logger::DEBUG
-            )
-        )->isTrue();
+        $this->hasSqlLogRecordThatContains(
+            'Generated query: SELECT `name` FROM `foo` WHERE (id = ' . $id . ')',
+            LogLevel::DEBUG
+        );
     }
 
 

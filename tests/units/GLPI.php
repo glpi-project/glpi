@@ -37,13 +37,6 @@ namespace tests\units;
 
 class GLPI extends \GLPITestCase
 {
-    public function testGetLogLevel()
-    {
-        $glpi = new \GLPI();
-        $glpi->initLogger();
-        $this->integer($glpi->getLogLevel())->isIdenticalTo(\Monolog\Logger::DEBUG);
-    }
-
     public function testMissingLanguages()
     {
         global $CFG_GLPI;

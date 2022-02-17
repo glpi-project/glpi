@@ -38,7 +38,7 @@ use Monolog\Logger;
 
 class TestHandler extends BaseTestHandler
 {
-    public function dropFromRecord(string $message, int $level): void
+    public function dropFromRecords(string $message, int $level): void
     {
         foreach ($this->records as $index => $record) {
             if (Logger::toMonologLevel($record['level']) === $level && $record['message'] === $message) {

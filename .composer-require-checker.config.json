@@ -41,7 +41,6 @@
 
     "// GLPI test suite specific functions",
     "GLPI_SQL_DEBUG",
-    "GlpitestPHPerror", "GlpitestPHPnotice", "GlpitestPHPwarning", "GlpitestSQLError",
 
     "// apache function",
     "getallheaders",
