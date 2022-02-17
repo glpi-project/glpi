@@ -516,7 +516,7 @@ $CFG_GLPI['domain_types']        = ['Computer', 'Monitor', 'NetworkEquipment', '
 ];
 
 $CFG_GLPI['appliance_types']     = ['Computer', 'Monitor', 'NetworkEquipment', 'Peripheral', 'Phone',
-    'Printer', 'Software', 'Cluster', 'DatabaseInstance'
+    'Printer', 'Software', 'Appliance', 'Cluster', 'DatabaseInstance'
 ];
 
 $CFG_GLPI['appliance_relation_types'] = ['Location', 'Network', 'Domain'];
