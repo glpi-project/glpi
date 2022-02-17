@@ -32,6 +32,7 @@
  */
 
 use Glpi\Plugin\Hooks;
+use Glpi\Toolbox\Sanitizer;
 
 /**
  * Rule Class store all information about a GLPI rule :
@@ -2252,18 +2253,17 @@ class Rule extends CommonDBTM
      **/
     public function getMinimalCriteriaText($fields, $addtotd = '')
     {
+        $criterion = $this->getCriteriaName($fields["criteria"]);
+        $condition = RuleCriteria::getConditionByID($fields["condition"], get_class($this), $fields["criteria"]);
+        $pattern   = $this->getCriteriaDisplayPattern($fields["criteria"], $fields["condition"], $fields["pattern"]);
 
-        $text  = "<td $addtotd>" . Html::entities_deep($this->getCriteriaName($fields["criteria"])) . "</td>";
-        $text .= "<td $addtotd>" . Html::entities_deep(RuleCriteria::getConditionByID(
-            $fields["condition"],
-            get_class($this),
-            $fields["criteria"]
-        )) . "</td>";
-        $text .= "<td $addtotd>" . Html::entities_deep($this->getCriteriaDisplayPattern(
-            $fields["criteria"],
-            $fields["condition"],
-            $fields["pattern"]
-        )) . "</td>";
+        // Some data may come from the database, and be sanitized (i.e. html special chars already encoded),
+        // but some data may have been build from translation or from some plugin code and may be not sanitized.
+        // First, extract the verbatim value (i.e. with non encoded specia chars), then encode entities to
+        // ensure HTML validity (and to prevent XSS).
+        $text  = "<td $addtotd>" . Html::entities_deep(Sanitizer::getVerbatimValue($criterion)) . "</td>";
+        $text .= "<td $addtotd>" . Html::entities_deep(Sanitizer::getVerbatimValue($condition)) . "</td>";
+        $text .= "<td $addtotd>" . Html::entities_deep(Sanitizer::getVerbatimValue($pattern)) . "</td>";
         return $text;
     }
 
@@ -2274,18 +2274,19 @@ class Rule extends CommonDBTM
      **/
     public function getMinimalActionText($fields, $addtotd = '')
     {
+        $field = $this->getActionName($fields["field"]);
+        $type  = RuleAction::getActionByID($fields["action_type"]);
+        $value = isset($fields["value"])
+            ? $this->getActionValue($fields["field"], $fields['action_type'], $fields["value"])
+            : '';
 
-        $text  = "<td $addtotd>" . $this->getActionName($fields["field"]) . "</td>";
-        $text .= "<td $addtotd>" . RuleAction::getActionByID($fields["action_type"]) . "</td>";
-        if (isset($fields["value"])) {
-            $text .= "<td $addtotd>" . $this->getActionValue(
-                $fields["field"],
-                $fields['action_type'],
-                $fields["value"]
-            ) . "</td>";
-        } else {
-            $text .= "<td $addtotd>&nbsp;</td>";
-        }
+        // Some data may come from the database, and be sanitized (i.e. html special chars already encoded),
+        // but some data may have been build from translation or from some plugin code and may be not sanitized.
+        // First, extract the verbatim value (i.e. with non encoded specia chars), then encode entities to
+        // ensure HTML validity (and to prevent XSS).
+        $text  = "<td $addtotd>" . Html::entities_deep(Sanitizer::getVerbatimValue($field)) . "</td>";
+        $text .= "<td $addtotd>" . Html::entities_deep(Sanitizer::getVerbatimValue($type)) . "</td>";
+        $text .= "<td $addtotd>" . Html::entities_deep(Sanitizer::getVerbatimValue($value)) . "</td>";
         return $text;
     }
 
@@ -2572,8 +2573,8 @@ class Rule extends CommonDBTM
                     }
 
                    // $type == assign
-                    $tmp = Dropdown::getDropdownName($action["table"], $value);
-                    return (($tmp == '&nbsp;') ? NOT_AVAILABLE : $tmp);
+                    $name = Dropdown::getDropdownName($action["table"], $value);
+                    return (($name == '&nbsp;') ? NOT_AVAILABLE : $name);
 
                 case "dropdown_status":
                     return Ticket::getStatus($value);
@@ -2584,7 +2585,8 @@ class Rule extends CommonDBTM
                     return getUserName($value);
 
                 case "dropdown_groups_validate":
-                    return Dropdown::getDropdownName('glpi_groups', $value);
+                    $name = Dropdown::getDropdownName('glpi_groups', $value);
+                    return (($name == '&nbsp;') ? NOT_AVAILABLE : $name);
 
                 case "dropdown_validation_percent":
                     return Dropdown::getValueWithUnit($value, '%');
