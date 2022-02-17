@@ -33,6 +33,8 @@
 
 namespace tests\units;
 
+use Psr\Log\LogLevel;
+
 /* Test for inc/dbmysql.class.php */
 
 class DB extends \GLPITestCase
@@ -724,5 +726,41 @@ OTHER EXPRESSION;"
         $this->boolean($computer->getFromDB($computers_id_0))->isFalse();
 
         $DB->rollBack();
+    }
+
+    public function testGetLastQueryWarnings() {
+        $db = new \mock\DB();
+
+        $db->query('SELECT 1/0');
+        $this->array($db->getLastQueryWarnings())->isEqualTo(
+            [
+                [
+                    'Level'   => 'Warning',
+                    'Code'    => 1365,
+                    'Message' => 'Division by 0',
+                ]
+            ]
+        );
+        $this->hasSqlLogMessageThatContains('1365: Division by 0', LogLevel::WARNING);
+
+        $db->query('SELECT CAST("1a" AS SIGNED), CAST("123b" AS SIGNED)');
+        $this->array($db->getLastQueryWarnings())->isEqualTo(
+            [
+                [
+                    'Level'   => 'Warning',
+                    'Code'    => 1292,
+                    'Message' => 'Truncated incorrect INTEGER value: \'1a\'',
+                ],
+                [
+                    'Level'   => 'Warning',
+                    'Code'    => 1292,
+                    'Message' => 'Truncated incorrect INTEGER value: \'123b\'',
+                ]
+            ]
+        );
+        $this->hasSqlLogMessageThatContains(
+            '1292: Truncated incorrect INTEGER value: \'1a\'' . "\n" . '1292: Truncated incorrect INTEGER value: \'123b\'',
+            LogLevel::WARNING
+        );
     }
 }

@@ -769,7 +769,7 @@ class Html
                 echo "took  " . array_sum($DEBUG_SQL['times']) . "s</h1>";
 
                 echo "<table class='sql-debug table table-striped'><tr><th>N&#176; </th><th>Queries</th><th>Time</th>";
-                echo "<th>Rows</th><th>Errors</th></tr>";
+                echo "<th>Rows</th><th>Errors</th><th>SQL warnings</th></tr>";
 
                 foreach ($DEBUG_SQL['queries'] as $num => $query) {
                     echo "<tr><td>$num</td><td>";
@@ -781,6 +781,14 @@ class Html
                     echo "</td><td>";
                     if (isset($DEBUG_SQL['errors'][$num])) {
                         echo $DEBUG_SQL['errors'][$num];
+                    } else {
+                        echo "&nbsp;";
+                    }
+                    echo "</td><td>";
+                    if (isset($DEBUG_SQL['warnings'][$num])) {
+                        foreach ($DEBUG_SQL['warnings'][$num] as $warning) {
+                            echo sprintf('%s: %s', $warning['Code'], $warning['Message']) . '<br />';
+                        }
                     } else {
                         echo "&nbsp;";
                     }

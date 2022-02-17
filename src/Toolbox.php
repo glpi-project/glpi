@@ -375,10 +375,6 @@ class Toolbox
             }
         }
 
-        if (defined('TU_USER') && $level >= Logger::NOTICE) {
-            throw new \RuntimeException($msg);
-        }
-
         $tps = microtime(true);
 
         if ($logger === null) {

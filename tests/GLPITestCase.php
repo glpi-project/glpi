@@ -32,6 +32,8 @@
  */
 
 use atoum\atoum;
+use Glpi\Tests\Log\TestHandler;
+use Monolog\Logger;
 
 // Main GLPI test case. All tests should extends this class.
 
@@ -64,6 +66,20 @@ class GLPITestCase extends atoum
                     print_r($_SESSION['MESSAGE_AFTER_REDIRECT'], true)
                 )
             );
+        }
+
+        if (!$this->has_failed) {
+            global $PHP_LOG_HANDLER, $SQL_LOG_HANDLER;
+            foreach ([$PHP_LOG_HANDLER, $SQL_LOG_HANDLER] as $log_handler) {
+                $this->array($log_handler->getRecords())->isEmpty(
+                    sprintf(
+                        "Unexpected entries in log in %s::%s:\n%s",
+                        static::class,
+                        $method,
+                        print_r(array_column($log_handler->getRecords(), 'message'), true)
+                    )
+                );
+            }
         }
     }
 
@@ -112,6 +128,35 @@ class GLPITestCase extends atoum
                 print_r($_SESSION['MESSAGE_AFTER_REDIRECT'][$level] ?? [], true)
             )
         );
+        $this->has_failed = false;
+    }
+
+    protected function hasPhpLogMessageThatContains(string $message, string $level): void
+    {
+        global $PHP_LOG_HANDLER;
+        $this->hasLogMessageThatContains($PHP_LOG_HANDLER, $message, $level);
+    }
+
+    protected function hasSqlLogMessageThatContains(string $message, string $level): void
+    {
+        global $SQL_LOG_HANDLER;
+        $this->hasLogMessageThatContains($SQL_LOG_HANDLER, $message, $level);
+    }
+
+    private function hasLogMessageThatContains(TestHandler $handler, string $message, string $level): void
+    {
+        $this->has_failed = true;
+
+        $matching = null;
+        foreach ($handler->getRecords() as $record) {
+            if ($record['level'] === Logger::toMonologLevel($level) && strpos($record['message'], $message) !== false) {
+                $matching = $record;
+                break;
+            }
+        }
+        $this->variable($matching)->isNotNull('No matching log found.');
+        $handler->dropFromRecord($matching['message'], $matching['level']);
+
         $this->has_failed = false;
     }
 

@@ -344,11 +344,19 @@ class ErrorHandler
      */
     public function handleSqlWarnings(array $warnings, string $query)
     {
-        $this->outputDebugMessage(
-            'SQL Warnings',
-            "\n" . implode("\n", $warnings) . "\n" . sprintf('in query "%s"', $query),
-            self::ERROR_LEVEL_MAP[E_USER_WARNING]
-        );
+        $message = "\n"
+            . implode(
+                "\n",
+                array_map(
+                    function ($warning) {
+                        return sprintf('%s: %s', $warning['Code'], $warning['Message']);
+                    },
+                    $warnings
+                )
+            )
+            . "\n"
+            . sprintf('in query "%s"', $query);
+        $this->outputDebugMessage('SQL Warnings', $message, self::ERROR_LEVEL_MAP[E_USER_WARNING]);
     }
 
     /**
