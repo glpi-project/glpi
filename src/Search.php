@@ -1357,46 +1357,12 @@ class Search
         }
         $data['data'] = [];
 
-       // Use a ReadOnly connection if available and configured to be used
+        // Use a ReadOnly connection if available and configured to be used
         $DBread = DBConnection::getReadConnection();
-        $DBread->query("SET SESSION group_concat_max_len = 16384;");
-
-       // directly increase group_concat_max_len to avoid double query
-        if (count($data['search']['metacriteria'])) {
-            foreach ($data['search']['metacriteria'] as $metacriterion) {
-                if (
-                    $metacriterion['link'] == 'AND NOT'
-                    || $metacriterion['link'] == 'OR NOT'
-                ) {
-                    $DBread->query("SET SESSION group_concat_max_len = 4194304;");
-                    break;
-                }
-            }
-        }
+        $DBread->query("SET SESSION group_concat_max_len = 8194304;");
 
         $DBread->execution_time = true;
         $result = $DBread->query($data['sql']['search']);
-       /// Check group concat limit : if warning : increase limit
-        if ($result2 = $DBread->query('SHOW WARNINGS')) {
-            if ($DBread->numrows($result2) > 0) {
-                $res = $DBread->fetchAssoc($result2);
-                if ($res['Code'] == 1260) {
-                    $DBread->query("SET SESSION group_concat_max_len = 8194304;");
-                    $DBread->execution_time = true;
-                    $result = $DBread->query($data['sql']['search']);
-                }
-
-                if ($res['Code'] == 1116) { // too many tables
-                    echo self::showError(
-                        $data['search']['display_type'],
-                        __("'All' criterion is not usable with this object list, " .
-                                       "sql query fails (too many tables). " .
-                        "Please use 'Items seen' criterion instead")
-                    );
-                    return false;
-                }
-            }
-        }
 
         if ($result) {
             $data['data']['execution_time'] = $DBread->execution_time;
@@ -1654,7 +1620,17 @@ class Search
 
             $data['data']['count'] = count($data['data']['rows']);
         } else {
-            echo $DBread->error();
+            $error_no = $DBread->errno();
+            if ($error_no == 1116) { // Too many tables; MySQL can only use 61 tables in a join
+                echo self::showError(
+                    $data['search']['display_type'],
+                    __("'All' criterion is not usable with this object list, " .
+                                   "sql query fails (too many tables). " .
+                    "Please use 'Items seen' criterion instead")
+                );
+            } else {
+                echo $DBread->error();
+            }
         }
     }
 
