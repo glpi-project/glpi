@@ -34,6 +34,7 @@
 use atoum\atoum;
 use Glpi\Tests\Log\TestHandler;
 use Monolog\Logger;
+use Psr\Log\LogLevel;
 
 // Main GLPI test case. All tests should extends this class.
 
@@ -43,6 +44,16 @@ class GLPITestCase extends atoum
     private $str;
     protected $has_failed = false;
 
+    /**
+     * @var TestHandler
+     */
+    private $php_log_handler;
+
+    /**
+     * @var TestHandler
+     */
+    private $sql_log_handler;
+
     public function beforeTestMethod($method)
     {
        // By default, no session, not connected
@@ -51,6 +62,14 @@ class GLPITestCase extends atoum
        // Ensure cache is clear
         global $GLPI_CACHE;
         $GLPI_CACHE->clear();
+
+        // Init log handlers
+        global $PHPLOGGER, $SQLLOGGER;
+        /** @var Monolog\Logger $PHPLOGGER */
+        $this->php_log_handler = new TestHandler(LogLevel::DEBUG);
+        $PHPLOGGER->setHandlers([$this->php_log_handler]);
+        $this->sql_log_handler = new TestHandler(LogLevel::DEBUG);
+        $SQLLOGGER->setHandlers([$this->sql_log_handler]);
     }
 
     public function afterTestMethod($method)
@@ -69,8 +88,7 @@ class GLPITestCase extends atoum
         }
 
         if (!$this->has_failed) {
-            global $PHP_LOG_HANDLER, $SQL_LOG_HANDLER;
-            foreach ([$PHP_LOG_HANDLER, $SQL_LOG_HANDLER] as $log_handler) {
+            foreach ([$this->php_log_handler, $this->sql_log_handler] as $log_handler) {
                 $this->array($log_handler->getRecords())->isEmpty(
                     sprintf(
                         "Unexpected entries in log in %s::%s:\n%s",
@@ -131,19 +149,41 @@ class GLPITestCase extends atoum
         $this->has_failed = false;
     }
 
-    protected function hasPhpLogMessageThatContains(string $message, string $level): void
+    /**
+     * Check in PHP log for a record that contains given message.
+     *
+     * @param string $message
+     * @param string $level
+     *
+     * @return void
+     */
+    protected function hasPhpLogRecordThatContains(string $message, string $level): void
     {
-        global $PHP_LOG_HANDLER;
-        $this->hasLogMessageThatContains($PHP_LOG_HANDLER, $message, $level);
+        $this->hasLogRecordThatContains($this->php_log_handler, $message, $level);
     }
 
-    protected function hasSqlLogMessageThatContains(string $message, string $level): void
+    /**
+     * Check in SQL log for a record that contains given message.
+     *
+     * @param string $message
+     * @param string $level
+     *
+     * @return void
+     */
+    protected function hasSqlLogRecordThatContains(string $message, string $level): void
     {
-        global $SQL_LOG_HANDLER;
-        $this->hasLogMessageThatContains($SQL_LOG_HANDLER, $message, $level);
+        $this->hasLogRecordThatContains($this->sql_log_handler, $message, $level);
     }
 
-    private function hasLogMessageThatContains(TestHandler $handler, string $message, string $level): void
+    /**
+     * Check given log handler for a record that contains given message.
+     *
+     * @param string $message
+     * @param string $level
+     *
+     * @return void
+     */
+    private function hasLogRecordThatContains(TestHandler $handler, string $message, string $level): void
     {
         $this->has_failed = true;
 
@@ -155,7 +195,58 @@ class GLPITestCase extends atoum
             }
         }
         $this->variable($matching)->isNotNull('No matching log found.');
-        $handler->dropFromRecord($matching['message'], $matching['level']);
+        $handler->dropFromRecords($matching['message'], $matching['level']);
+
+        $this->has_failed = false;
+    }
+
+    /**
+     * Check in PHP log for a record that matches given pattern.
+     *
+     * @param string $message
+     * @param string $level
+     *
+     * @return void
+     */
+    protected function hasPhpLogRecordThatMatches(string $pattern, string $level): void
+    {
+        $this->hasLogRecordThatMatches($this->php_log_handler, $pattern, $level);
+    }
+
+    /**
+     * Check in SQL log for a record that matches given pattern.
+     *
+     * @param string $message
+     * @param string $level
+     *
+     * @return void
+     */
+    protected function hasSqlLogRecordThatMatches(string $pattern, string $level): void
+    {
+        $this->hasLogRecordThatMatches($this->sql_log_handler, $pattern, $level);
+    }
+
+    /**
+     * Check given log handler for a record that matches given pattern.
+     *
+     * @param string $message
+     * @param string $level
+     *
+     * @return void
+     */
+    private function hasLogRecordThatMatches(TestHandler $handler, string $pattern, string $level): void
+    {
+        $this->has_failed = true;
+
+        $matching = null;
+        foreach ($handler->getRecords() as $record) {
+            if ($record['level'] === Logger::toMonologLevel($level) && preg_match($pattern, $record['message']) === 1) {
+                $matching = $record;
+                break;
+            }
+        }
+        $this->variable($matching)->isNotNull('No matching log found.');
+        $handler->dropFromRecords($matching['message'], $matching['level']);
 
         $this->has_failed = false;
     }

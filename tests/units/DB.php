@@ -728,7 +728,8 @@ OTHER EXPRESSION;"
         $DB->rollBack();
     }
 
-    public function testGetLastQueryWarnings() {
+    public function testGetLastQueryWarnings()
+    {
         $db = new \mock\DB();
 
         $db->query('SELECT 1/0');
@@ -741,7 +742,7 @@ OTHER EXPRESSION;"
                 ]
             ]
         );
-        $this->hasSqlLogMessageThatContains('1365: Division by 0', LogLevel::WARNING);
+        $this->hasSqlLogRecordThatContains('1365: Division by 0', LogLevel::WARNING);
 
         $db->query('SELECT CAST("1a" AS SIGNED), CAST("123b" AS SIGNED)');
         $this->array($db->getLastQueryWarnings())->isEqualTo(
@@ -758,7 +759,7 @@ OTHER EXPRESSION;"
                 ]
             ]
         );
-        $this->hasSqlLogMessageThatContains(
+        $this->hasSqlLogRecordThatContains(
             '1292: Truncated incorrect INTEGER value: \'1a\'' . "\n" . '1292: Truncated incorrect INTEGER value: \'123b\'',
             LogLevel::WARNING
         );

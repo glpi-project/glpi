@@ -72,6 +72,7 @@ The present file will list all changes made to the project; according to the
 - Usage of `datetime` field type in database, in favor of `timestamp` field type.
 - Handling of encoded/escaped value in `autoName()`
 - `Netpoint` has been deprecated and replaced by `Socket`
+- `GLPI::getLogLevel()`
 - `Html::clean()`
 - `RuleImportComputer` class
 - `RuleImportComputerCollection` class
@@ -99,6 +100,8 @@ The present file will list all changes made to the project; according to the
 - `$CFG_GLPI['use_ajax_autocompletion']` entry
 - `$DEBUG_AUTOLOAD` global variable
 - `$LOADED_PLUGINS` global variable
+- `$PHP_LOG_HANDLER` global variable
+- `$SQL_LOG_HANDLER` global variable
 - `CommonDBTM::notificationqueueonaction` property
 - `NotificationTarget::html_tags` property
 - `getAllDatasFromTable()`

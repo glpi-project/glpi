@@ -32,7 +32,6 @@
  */
 
 use Glpi\Application\ErrorHandler;
-use Glpi\Tests\Log\TestHandler;
 use Monolog\Formatter\LineFormatter;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
@@ -52,12 +51,10 @@ class GLPI
      */
     public function initLogger()
     {
-        global $PHPLOGGER, $PHP_LOG_HANDLER, $SQLLOGGER, $SQL_LOG_HANDLER;
+        global $PHPLOGGER, $SQLLOGGER;
 
         $this->log_level = Logger::WARNING;
-        if (defined('TU_USER')) {
-            $this->log_level = Logger::DEBUG;
-        } else if (defined('GLPI_LOG_LVL')) {
+        if (defined('GLPI_LOG_LVL')) {
             $this->log_level = GLPI_LOG_LVL;
         } else if (
             !isset($_SESSION['glpi_use_mode'])
@@ -68,25 +65,19 @@ class GLPI
 
         foreach (['php', 'sql'] as $type) {
             $logger = new Logger('glpi' . $type . 'log');
-            if (defined('TU_USER')) {
-                $handler = new TestHandler($this->log_level);
-            } else {
-                $handler = new StreamHandler(
-                    GLPI_LOG_DIR . "/{$type}-errors.log",
-                    $this->log_level
-                );
-                $formatter = new LineFormatter(null, 'Y-m-d H:i:s', true, true);
-                $handler->setFormatter($formatter);
-            }
+            $handler = new StreamHandler(
+                GLPI_LOG_DIR . "/{$type}-errors.log",
+                $this->log_level
+            );
+            $formatter = new LineFormatter(null, 'Y-m-d H:i:s', true, true);
+            $handler->setFormatter($formatter);
             $logger->pushHandler($handler);
             switch ($type) {
                 case 'php':
                     $PHPLOGGER = $logger;
-                    $PHP_LOG_HANDLER = $handler;
                     break;
                 case 'sql':
                     $SQLLOGGER = $logger;
-                    $SQL_LOG_HANDLER = $handler;
                     break;
             }
         }
@@ -99,6 +90,7 @@ class GLPI
      */
     public function getLogLevel()
     {
+        Toolbox::deprecated();
         return $this->log_level;
     }
 

@@ -43,6 +43,7 @@ use NotificationTargetSoftwareLicense;
 use NotificationTargetTicket;
 use SoftwareLicense;
 use Ticket;
+use Psr\Log\LogLevel;
 
 class MailCollector extends DbTestCase
 {
@@ -578,16 +579,17 @@ class MailCollector extends DbTestCase
         $this->collector->maxfetch_emails = 1000; // Be sure to fetch all mails from test suite
         $msg = $this->collector->collect($this->mailgate_id);
 
-       // Check error log and clean it (to prevent test failure, see GLPITestCase::afterTestMethod()).
-        global $PHP_LOG_HANDLER;
-        $records  = $PHP_LOG_HANDLER->getRecords();
-        $messages = array_column($records, 'message');
-        $this->array($messages)->hasSize(2);
-       // 05-empty-from.eml
-        $this->string($messages[0])->contains('The input is not a valid email address. Use the basic format local-part@hostname');
-       // 17-malformed-email.eml
-        $this->string($messages[1])->contains('Header with Name date or date not found');
-        $PHP_LOG_HANDLER->clear();
+        // Check error log and clean it (to prevent test failure, see GLPITestCase::afterTestMethod()).
+        // 05-empty-from.eml
+        $this->hasPhpLogRecordThatContains(
+            'The input is not a valid email address. Use the basic format local-part@hostname',
+            LogLevel::CRITICAL
+        );
+        // 17-malformed-email.eml
+        $this->hasPhpLogRecordThatContains(
+            'Header with Name date or date not found',
+            LogLevel::CRITICAL
+        );
 
         $total_count                     = count(glob(GLPI_ROOT . '/tests/emails-tests/*.eml'));
         $expected_refused_count          = 3;

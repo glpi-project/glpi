@@ -34,6 +34,7 @@
 namespace tests\units;
 
 use org\bovigo\vfs\vfsStream;
+use Psr\Log\LogLevel;
 
 /* Test for inc/html.class.php */
 
@@ -64,6 +65,10 @@ class Html extends \GLPITestCase
         $this->string(\Html::convDate($mydate, 2))->isIdenticalTo($expected);
 
         $this->string(\Html::convDate('not a date', 2))->isIdenticalTo('not a date');
+        $this->hasPhpLogRecordThatContains(
+            'Exception: Failed to parse time string (not a date) at position 0 (n): The timezone could not be found in the database',
+            LogLevel::CRITICAL
+        );
     }
 
     public function testConvDateTime()

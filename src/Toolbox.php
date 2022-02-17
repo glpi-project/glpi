@@ -479,16 +479,7 @@ class Toolbox
     {
         global $SQLLOGGER;
         $args = func_get_args();
-        $msg = $args[0];
-        try {
-            self::log($SQLLOGGER, Logger::ERROR, $args);
-        } catch (\RuntimeException $e) {
-            $msg = $e->getMessage();
-        } finally {
-            if (class_exists('GlpitestSQLError')) { // For unit test
-                throw new \GlpitestSQLError($msg);
-            }
-        }
+        self::log($SQLLOGGER, Logger::ERROR, $args);
     }
 
 

@@ -44,6 +44,7 @@ use Glpi\Toolbox\Sanitizer;
 use ITILFollowup;
 use stdClass;
 use Ticket;
+use Psr\Log\LogLevel;
 
 /* Test for inc/toolbox.class.php */
 
@@ -239,16 +240,11 @@ class Toolbox extends DbTestCase
          ->isIdenticalTo($expected);
     }
 
-    public function testJsonDecodeWException()
+    public function testInvalidJsonDecode()
     {
-        $this->exception(
-            function () {
-                $this
-                  ->variable(\Toolbox::jsonDecode('"Monitor":"6","Computer":"35"', true));
-            }
-        )
-         ->isInstanceOf('RuntimeException')
-         ->message->contains('Unable to decode JSON string! Is this really JSON?');
+        $invalid = '"Monitor":"6","Computer":"35"';
+        $this->variable(\Toolbox::jsonDecode($invalid, true))->isIdenticalTo($invalid);
+        $this->hasPhpLogRecordThatContains('Unable to decode JSON string! Is this really JSON?', LogLevel::NOTICE);
     }
 
     protected function ucProvider()

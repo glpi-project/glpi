@@ -34,6 +34,7 @@
 namespace tests\units;
 
 use DbTestCase;
+use Psr\Log\LogLevel;
 
 /* Test for inc/item_operatingsystem.class.php */
 
@@ -96,14 +97,11 @@ class Item_OperatingSystem extends DbTestCase
             (int)\Item_OperatingSystem::countForItem($computer)
         )->isIdenticalTo(1);
 
-        $this->exception(
-            function () use ($ios, $input) {
-                $ios->add($input);
-            }
-        )
-         ->isInstanceOf('GlpitestSQLError')
-         ->message
-            ->matches("#Duplicate entry '.+' for key '(" . $ios->getTable() . "\.)?unicity'#");
+        $this->boolean($ios->add($input))->isFalse();
+        $this->hasSqlLogRecordThatMatches(
+            "/Error: Duplicate entry '{$computer->getID()}-Computer-{$objects['']->getID()}-{$objects['Architecture']->getID()}' for key '(glpi_items_operatingsystems\.)?unicity'/",
+            LogLevel::ERROR
+        );
 
         $this->integer(
             (int)\Item_OperatingSystem::countForItem($computer)
