@@ -8554,7 +8554,7 @@ abstract class CommonITILObject extends CommonDBTM
     public function getBrowserTabName(): string
     {
         return sprintf(
-            __('%1$s (%2$s) - %3$s'),
+            __('%1$s (#%2$s) - %3$s'),
             static::getTypeName(1),
             $this->getID(),
             $this->getHeaderName()
