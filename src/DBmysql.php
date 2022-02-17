@@ -188,6 +188,13 @@ class DBmysql
     private $field_cache = [];
 
     /**
+     * Last query warnings.
+     *
+     * @var array
+     */
+    private $last_query_warnings = [];
+
+    /**
      * Constructor / Connect to the MySQL Database
      *
      * @param integer $choice host number (default NULL)
@@ -372,17 +379,28 @@ class DBmysql
             $DEBUG_SQL['rows'][$SQL_TOTAL_REQUEST] = $this->affectedRows();
         }
 
-        if (!empty($warnings = $this->getWarnings())) {
-           // Output warnings in SQL log
+        $this->last_query_warnings = $this->fetchQueryWarnings();
+        $DEBUG_SQL['warnings'][$SQL_TOTAL_REQUEST] = $this->last_query_warnings;
+
+        // Output warnings in SQL log
+        if (!empty($this->last_query_warnings)) {
             $message = sprintf(
                 "  *** MySQL query warnings:\n  SQL: %s\n  Warnings: \n%s\n",
                 $query,
-                implode("\n", $warnings)
+                implode(
+                    "\n",
+                    array_map(
+                        function ($warning) {
+                            return sprintf('%s: %s', $warning['Code'], $warning['Message']);
+                        },
+                        $this->last_query_warnings
+                    )
+                )
             );
             $message .= Toolbox::backtrace(false, 'DBmysql->query()', ['Toolbox::backtrace()']);
             Toolbox::logSqlWarning($message);
 
-            ErrorHandler::getInstance()->handleSqlWarnings($warnings, $query);
+            ErrorHandler::getInstance()->handleSqlWarnings($this->last_query_warnings, $query);
         }
 
         if ($this->execution_time === true) {
@@ -1850,11 +1868,11 @@ class DBmysql
     }
 
     /**
-     * Get MySQL warnings.
+     * Fetch warnings from last query.
      *
-     * @return string[]
+     * @return array
      */
-    private function getWarnings()
+    private function fetchQueryWarnings(): array
     {
         $warnings = [];
 
@@ -1869,8 +1887,8 @@ class DBmysql
                 $excludes[] = 3778; // 'utf8_unicode_ci' is a collation of the deprecated character set UTF8MB3. Please consider using UTF8MB4 with an appropriate collation instead.
             }
             if (!$this->log_deprecation_warnings) {
-               // Mute deprecations related to elements that are heavilly used in old migrations and in plugins
-               // as it may require a lot of work to fix them.
+                // Mute deprecations related to elements that are heavilly used in old migrations and in plugins
+                // as it may require a lot of work to fix them.
                 $excludes[] = 1681; // Integer display width is deprecated and will be removed in a future release.
             }
 
@@ -1878,11 +1896,20 @@ class DBmysql
                 if ($warning['Level'] === 'Note' || in_array($warning['Code'], $excludes)) {
                     continue;
                 }
-                $warnings[] = sprintf('%s: %s', $warning['Code'], $warning['Message']);
+                $warnings[] = $warning;
             }
         }
 
         return $warnings;
+    }
+
+    /**
+     * Get SQL warnings related to last query.
+     * @return array
+     */
+    public function getLastQueryWarnings(): array
+    {
+        return $this->last_query_warnings;
     }
 
     /**

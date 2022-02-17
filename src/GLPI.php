@@ -32,9 +32,9 @@
  */
 
 use Glpi\Application\ErrorHandler;
+use Glpi\Tests\Log\TestHandler;
 use Monolog\Formatter\LineFormatter;
 use Monolog\Handler\StreamHandler;
-use Monolog\Handler\TestHandler;
 use Monolog\Logger;
 
 /**
