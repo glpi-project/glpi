@@ -84,12 +84,15 @@ trait MapGeolocation
             $('.leaflet-control-geocoder-form > input[type=text]').val(_tosearch);
          }
          var finalizeMap = function() {
-            var osmGeocoder = new L.Control.OSMGeocoder({
-               collapsed: false,
-               placeholder: '" . __s('Search') . "',
-               text: '" . __s('Search') . "'
+            var geocoder = L.Control.geocoder({
+                defaultMarkGeocode: false,
+                errorMessage: '" . __s('No result found') . "',
+                placeholder: '" . __s('Search') . "'
             });
-            map_elt.addControl(osmGeocoder);
+            geocoder.on('markgeocode', function(e) {
+                this._map.fitBounds(e.geocode.bbox);
+            });
+            map_elt.addControl(geocoder);
             _autoSearch();
 
             function onMapClick(e) {
