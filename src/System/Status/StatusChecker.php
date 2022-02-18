@@ -297,12 +297,7 @@ final class StatusChecker
                     }
 
                     if ($global_status !== self::STATUS_OK) {
-                        $message = sprintf(_x('glpi_status', 'OK: %d, WARNING: %d, PROBLEM: %d, TOTAL: %d'),
-                            $total_servers - $total_error,
-                            0, // No warning support
-                            $total_error,
-                            $total_servers
-                        );
+                        $message = sprintf(_x('glpi_status', 'OK: %d, WARNING: %d, PROBLEM: %d, TOTAL: %d'), $total_servers - $total_error, 0, $total_error, $total_servers);
                     }
                 }
                 $status['status'] = $global_status;
@@ -364,12 +359,7 @@ final class StatusChecker
                         }
                     }
                     if ($global_status !== self::STATUS_OK) {
-                        $message = sprintf(_x('glpi_status', 'OK: %d, WARNING: %d, PROBLEM: %d, TOTAL: %d'),
-                            $total_servers - $total_error,
-                            0, // No warning support
-                            $total_error,
-                            $total_servers
-                        );
+                        $message = sprintf(_x('glpi_status', 'OK: %d, WARNING: %d, PROBLEM: %d, TOTAL: %d'), $total_servers - $total_error, 0, $total_error, $total_servers);
                     }
                 }
                 $status['status'] = $global_status;
@@ -454,12 +444,7 @@ final class StatusChecker
                         }
                     }
                     if ($global_status !== self::STATUS_OK) {
-                        $message = sprintf(_x('glpi_status', 'OK: %d, WARNING: %d, PROBLEM: %d, TOTAL: %d'),
-                            $total_servers - $total_error,
-                            0, // No warning support
-                            $total_error,
-                            $total_servers
-                        );
+                        $message = sprintf(_x('glpi_status', 'OK: %d, WARNING: %d, PROBLEM: %d, TOTAL: %d'), $total_servers - $total_error, 0, $total_error, $total_servers);
                     }
                 }
                 $status['status'] = $global_status;
@@ -510,11 +495,7 @@ final class StatusChecker
                       $status['stuck'][] = $ct['name'];
                 }
                 $status['status'] = count($status['stuck']) ? self::STATUS_PROBLEM : self::STATUS_OK;
-                $status['status_msg'] = sprintf(_x('glpi_status', 'RUNNING: %d, STUCK: %d, TOTAL: %d'),
-                    $running,
-                    count($stuck_crontasks),
-                    count($crontasks)
-                );
+                $status['status_msg'] = sprintf(_x('glpi_status', 'RUNNING: %d, STUCK: %d, TOTAL: %d'), $running, count($stuck_crontasks), count($crontasks));
             }
         }
 
