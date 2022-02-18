@@ -42,6 +42,8 @@ use Toolbox;
 
 class CheckStatusCommand extends AbstractCommand
 {
+    protected $requires_db = false;
+
     protected function configure()
     {
         parent::configure();
