@@ -178,6 +178,11 @@ var filesToCopy = [
     },
     // SCSS files
     {
+        package: '@fontsource/inter',
+        from: '{scss/mixins.scss,files/*[0-9]00*.woff2}',
+        to: scssOutputPath,
+    },
+    {
         package: '@tabler/core',
         from: 'src/scss/**/*.scss',
         to: scssOutputPath,
