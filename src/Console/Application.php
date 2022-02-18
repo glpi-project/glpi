@@ -321,7 +321,7 @@ class Application extends BaseApplication
         }
 
         global $DB;
-        $DB = new DB();
+        $DB = @new DB();
         $this->db = $DB;
 
         if (!$this->db->connected) {
