@@ -29,11 +29,9 @@
  * ---------------------------------------------------------------------
  */
 
-@font-face {
-    font-family: Inter;
-    src: url("../fonts/Inter-Variable/Inter-VariableFont.ttf");
-}
+@import url("../fonts/Inter/inter.css");
 
+$google-font: false;
 $font-family-sans-serif: inter, -apple-system, blinkmacsystemfont, san francisco, segoe ui, roboto, helvetica neue, sans-serif !default;
 $ti-font-path: "../css/lib/tabler/icons/iconfont/fonts";
 
