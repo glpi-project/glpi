@@ -119,6 +119,9 @@ class Monitor extends DbTestCase {
 
       $expected = Monitor::getMonitorFields($added, $date);
 
+      $this->string($clonedMonitor->fields['name'])->isEqualTo("Copy of $expected[name] (1)");
+      unset($clonedMonitor->fields['name'], $expected['name']);
+
       $this->array($clonedMonitor->fields)->isIdenticalTo($expected);
    }
 }

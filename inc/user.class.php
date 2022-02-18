@@ -656,19 +656,14 @@ class User extends CommonDBTM {
       return $input;
    }
 
-   public function prepareInputForClone($input) {
-      if (isset($input['name'])) {
-         $suffix = 1;
-         $possibleName = $input['name'].$suffix;
-         while ($this->getFromDBbyName($possibleName)) {
-            $suffix++;
-            $possibleName = $input['name'].$suffix;
-         }
-         $input['name'] = $possibleName;
-      }
-      return $input;
+   public function computeCloneName(
+      string $current_name,
+      ?int $copy_index = null
+   ): string {
+      return Toolbox::slugify(
+         parent::computeCloneName($current_name, $copy_index)
+      );
    }
-
 
    function post_addItem() {
 

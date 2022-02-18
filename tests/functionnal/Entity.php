@@ -483,4 +483,38 @@ class Entity extends DbTestCase {
       $this->boolean($entity->getFromDB($entity_id))->isTrue();
       $this->string($entity->getCustomCssTag())->isEqualTo($expected);
    }
+
+   public function testMultipleClones() {
+      $this->login();
+
+      $this->createItems('Entity', [
+         [
+            'name'        => 'test_clone entity',
+            'entities_id' => 0,
+         ]
+      ]);
+
+      // Check that no clones exists
+      $entity = new \Entity;
+      $res = $entity->find(['name' => ['LIKE', 'Copy of test_clone%']]);
+      $this->array($res)->hasSize(0);
+
+      // Clone multiple times
+      $entity = getItemByTypeName('Entity', 'test_clone entity', false);
+      $this->integer($entity->clone())->isGreaterThan(0);
+      $this->integer($entity->clone())->isGreaterThan(0);
+      $this->integer($entity->clone())->isGreaterThan(0);
+      $this->integer($entity->clone())->isGreaterThan(0);
+
+      // Check that 4 clones were created
+      $entity = new \Entity;
+      $res = $entity->find(['name' => ['LIKE', 'Copy of test_clone%']]);
+      $this->array($res)->hasSize(4);
+
+      // Try to read each clones
+      $this->integer(getItemByTypeName('Entity', 'Copy of test_clone entity (1)', true))->isGreaterThan(0);
+      $this->integer(getItemByTypeName('Entity', 'Copy of test_clone entity (2)', true))->isGreaterThan(0);
+      $this->integer(getItemByTypeName('Entity', 'Copy of test_clone entity (3)', true))->isGreaterThan(0);
+      $this->integer(getItemByTypeName('Entity', 'Copy of test_clone entity (4)', true))->isGreaterThan(0);
+   }
 }

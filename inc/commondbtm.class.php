@@ -1225,13 +1225,13 @@ class CommonDBTM extends CommonGLPI {
     *
     * @since 9.5
     *
-    * @param array $override_input custom input to override
+    * @param array   $override_input custom input to override
     * @param boolean $history do history log ? (true by default)
     *
-    * @return integer the new ID of the clone (or false if fail)
+    * @return int|bool the new ID of the clone (or false if fail)
     */
    function clone(array $override_input = [], bool $history = true) {
-      global $DB, $CFG_GLPI;
+      global $DB;
 
       if ($DB->isSlave()) {
          return false;
@@ -1391,7 +1391,30 @@ class CommonDBTM extends CommonGLPI {
       return $input;
    }
 
-    /**
+   /**
+    * Compute the name of a copied item
+    *
+    * @param string   $current_item The item being copied
+    * @param null|int $copy_index   The index to append to the name
+    *
+    * @return string The computed name of the new item to be created
+    */
+   public function computeCloneName(
+      string $current_name,
+      ?int $copy_index = null
+   ): string {
+      $base_name = sprintf(__("Copy of %s"), $current_name);
+
+      if (is_null($copy_index)) {
+         return $base_name;
+      }
+
+      // Note, we can't use sprintf(__("Copy of %s (%d)"), $current_name, $copy_index) here
+      // We need to rely on the same translation to garantee uniqueness
+      return $base_name . " ($copy_index)";
+   }
+
+   /**
     * Prepare input datas for cloning the item
     *
     * @since 9.5
@@ -1399,11 +1422,47 @@ class CommonDBTM extends CommonGLPI {
     * @param array $input datas used to add the item
     *
     * @return array the modified $input array
-   **/
+    */
    function prepareInputForClone($input) {
+      global $DB;
+
       unset($input['id']);
       unset($input['date_mod']);
       unset($input['date_creation']);
+
+      // Force uniqueness for the name field
+      if (isset($input[static::getNameField()])) {
+         $current_name = $input[static::getNameField()];
+
+         // Find all exisiting copy names
+         $search = $this->computeCloneName($current_name) . "%";
+         $data = $DB->request([
+            'SELECT' => [static::getNameField()],
+            'FROM'   => $this->getTable(),
+            'WHERE'  => [
+               static::getNameField() => ['LIKE', $search]
+            ]
+         ]);
+         $names = [];
+
+         // Parse database data into an array containing all the names
+         foreach ($data as $row) {
+            $names[] = $row[static::getNameField()];
+         }
+
+         // The goal is to set the copy name as "Copy of {name} ({i})"
+         $copy_index = 0;
+
+         // Increment the index until we find an available name
+         do {
+            $copy_index++;
+            $copy_name = $this->computeCloneName($current_name, $copy_index);
+         } while (in_array($copy_name, $names));
+
+         // Override input with the first found valid name
+         $input[static::getNameField()] = $copy_name;
+      }
+
       return $input;
    }
 
