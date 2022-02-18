@@ -212,7 +212,7 @@ final class StatusChecker
             }
 
            // Check main server connection
-            if (!DBConnection::establishDBConnection(false, true, false)) {
+            if (!@DBConnection::establishDBConnection(false, true, false)) {
                 $status['master'] = [
                     'status' => self::STATUS_PROBLEM
                 ];
