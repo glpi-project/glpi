@@ -94,11 +94,6 @@
             </label>
             <span id='inventory_status'>{{ __('Unknown') }}</span>
          </div>
-
-         {% if item.fields['id'] > 0 and item.isField('is_dynamic') %}
-            {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::AUTOINVENTORY_INFORMATION'), item) }}
-         {% endif %}
-
       </div>
 
       <script>
@@ -146,6 +141,9 @@
          });
       });
       </script>
+   {% endif %}
+   {% if item.fields['id'] > 0 and item.isField('is_dynamic') %}
+      {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::AUTOINVENTORY_INFORMATION'), item) }}
    {% endif %}
 </div>
 {% endif %}
