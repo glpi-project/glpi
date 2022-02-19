@@ -399,6 +399,9 @@ final class DbUtils
         if ($itemtype === 'Event') {
            //to avoid issues when pecl-event is installed...
             $itemtype = 'Glpi\\Event';
+        } else if ($itemtype === 'Socket') {
+            // Avoid issues with class provided by sockets extension
+            $itemtype = 'Glpi\\Socket';
         }
 
        // If itemtype starts with "Glpi\" or "GlpiPlugin\" followed by a "\",
