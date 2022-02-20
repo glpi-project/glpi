@@ -90,7 +90,7 @@
 
                   {{ fields.dropdownArrayField(
                      'itemtype_endpoint_' ~ side,
-                     item.fields['connectortypes_id_' ~ side],
+                     item.fields['itemtype_endpoint_' ~ side],
                      call('Glpi\\Socket::getSocketLinkTypes'),
                      _n('Asset', 'Assets', 1),
                      side_options|merge({
