@@ -1199,18 +1199,23 @@ function updateItemOnEvent(dropdown_ids, target, url, params = {}, events = ['ch
                 const force_load_condition = (force_load_for.length > 0 && force_load_for.includes(zone_obj.val()));
 
                 const doLoad = () => {
+                    // Resolve params to another array to avoid overriding dynamic params like "__VALUE__"
+                    let resolved_params = {};
                     $.each(params, (k, v) => {
                         if (typeof v === "string") {
                             const reqs = v.match(/^__VALUE(\d+)__$/);
                             if (reqs !== null) {
-                                params[k] = $('#'+dropdown_ids[reqs[0]]).val();
+                                resolved_params[k] = $('#'+dropdown_ids[reqs[0]]).val();
+                            } else if (v === '__VALUE__') {
+                                resolved_params[k] = $('#'+dropdown_ids[0]).val();
+                            } else {
+                                resolved_params[k] = v;
                             }
-                            if (v === '__VALUE__') {
-                                params[k] = $('#'+dropdown_ids[0]).val();
-                            }
+                        } else {
+                            resolved_params[k] = v;
                         }
                     });
-                    $(target).load(url, params);
+                    $(target).load(url, resolved_params);
                 };
                 if (conditional && (min_size_condition || force_load_condition)) {
                     doLoad();
