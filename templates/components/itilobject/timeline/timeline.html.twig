@@ -139,16 +139,14 @@
                   <div class="card-body">
                      {{ include('components/itilobject/timeline/timeline_item_header.html.twig') }}
 
-                     {% if itiltype is same as 'ITILValidation' %}
-                        {{ include('components/itilobject/timeline/form_validation.html.twig', {'form_mode': 'view'}) }}
-                     {% elseif itiltype is same as 'ITILTask' %}
-                        {{ include('components/itilobject/timeline/form_task.html.twig', {'form_mode': 'view'}) }}
-                     {% elseif itiltype is same as 'ITILFollowup' %}
-                        {{ include('components/itilobject/timeline/form_followup.html.twig', {'form_mode': 'view'}) }}
-                     {% elseif itiltype is same as 'ITILSolution' %}
-                        {{ include('components/itilobject/timeline/form_solution.html.twig', {'form_mode': 'view'}) }}
-                     {% elseif itiltype is same as 'Document_Item' %}
-                        {{ include('components/itilobject/timeline/form_document_item.html.twig', {'form_mode': 'view'}) }}
+                     {% if itiltype in timeline_itemtypes|column('type') %}
+                        {% set matching_types = timeline_itemtypes|filter((v) => v.type == itiltype) %}
+                        {% if matching_types|length > 0 %}
+                           {% set timeline_itemtype = matching_types|first %}
+                           {% if timeline_itemtype.template is defined %}
+                              {{ include(timeline_itemtype.template, {'form_mode': 'view'}) }}
+                           {% endif %}
+                        {% endif %}
                      {% else %}
                         <div class="read-only-content">
                            {{ entry_i['content']|safe_html }}
