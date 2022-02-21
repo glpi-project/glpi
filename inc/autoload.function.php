@@ -303,27 +303,39 @@ function glpi_autoload($classname)
 
     $plug = isPluginItemType($classname);
     if (!$plug) {
+        // PSR-4 styled autoloading for classes without namespace
+        $path = sprintf('%s/src/%s.php', GLPI_ROOT, $classname);
+        if (strpos($classname, NS_GLPI) !== 0 && file_exists($path)) {
+            include_once($path);
+        }
+        return;
+    }
+
+    $plugin_name  = strtolower($plug['plugin']);
+    $plugin_class = $plug['class'];
+
+    if (!Plugin::isPluginLoaded($plugin_name)) {
         return false;
     }
 
-    $plugname = strtolower($plug['plugin']);
-    $dir      = null;
-    $item     = str_replace('\\', '/', strtolower($plug['class']));
-
-    if (!Plugin::isPluginLoaded($plugname)) {
-        return false;
-    }
-
+    $plugin_path = null;
     foreach (PLUGINS_DIRECTORIES as $plugins_dir) {
-        $dir_to_check = "{$plugins_dir}/$plugname/inc/";
+        $dir_to_check = sprintf('%s/%s', $plugins_dir, $plugin_name);
         if (is_dir($dir_to_check)) {
-            $dir = $dir_to_check;
+            $plugin_path = $dir_to_check;
             break;
         }
     }
 
-    if (file_exists("$dir$item.class.php")) {
-        include_once("$dir$item.class.php");
+    // Legacy class path, e.g. plugins/myplugin/foo.class.php
+    $legacy_path      = sprintf('%s/inc/%s.class.php', $plugin_path, str_replace('\\', '/', strtolower($plugin_class)));
+    // PSR-4 styled path for class without namespace, e.g. plugins/myplugin/MyPluginFoo.php
+    $psr4_styled_path = sprintf('%s/src/%s.php', $plugin_path, str_replace('\\', '/', $classname));
+    if (file_exists($legacy_path)) {
+        include_once($legacy_path);
+    } else if (strpos($classname, NS_PLUG) !== 0 && file_exists($psr4_styled_path)) {
+        // PSR-4 styled autoloading for classes without namespace
+        include_once($psr4_styled_path);
     }
 }
 
