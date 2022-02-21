@@ -112,7 +112,7 @@ class CartridgeItem extends CommonDBTM
     {
 
         $this->fields["alarm_threshold"] = Entity::getUsedConfig(
-            "cartriges_alert_repeat",
+            "cartridges_alert_repeat",
             $this->fields["entities_id"],
             "default_cartridges_alarm_threshold",
             10
