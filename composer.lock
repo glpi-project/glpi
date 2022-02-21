@@ -280,16 +280,16 @@
         },
         {
             "name": "glpi-project/inventory_format",
-            "version": "1.1.12",
+            "version": "1.1.13",
             "source": {
                 "type": "git",
                 "url": "https://github.com/glpi-project/inventory_format.git",
-                "reference": "d73de3a52c326ad4da062ec5d1f8277f6a32aeb5"
+                "reference": "6241b92348040d900d06d5fafc7002e6e6648071"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/glpi-project/inventory_format/zipball/d73de3a52c326ad4da062ec5d1f8277f6a32aeb5",
-                "reference": "d73de3a52c326ad4da062ec5d1f8277f6a32aeb5",
+                "url": "https://api.github.com/repos/glpi-project/inventory_format/zipball/6241b92348040d900d06d5fafc7002e6e6648071",
+                "reference": "6241b92348040d900d06d5fafc7002e6e6648071",
                 "shasum": ""
             },
             "require": {
@@ -338,7 +338,7 @@
                 "issues": "https://github.com/glpi-project/inventory_format/issues",
                 "source": "https://github.com/glpi-project/inventory_format"
             },
-            "time": "2022-01-21T06:56:14+00:00"
+            "time": "2022-02-14T11:04:09+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",
@@ -4043,12 +4043,12 @@
                 }
             },
             "autoload": {
-                "psr-4": {
-                    "Symfony\\Polyfill\\Mbstring\\": ""
-                },
                 "files": [
                     "bootstrap.php"
-                ]
+                ],
+                "psr-4": {
+                    "Symfony\\Polyfill\\Mbstring\\": ""
+                }
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
