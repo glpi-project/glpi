@@ -3154,6 +3154,8 @@ class Entity extends CommonTreeDropdown
      **/
     public static function getUsedConfig($fieldref, $entities_id, $fieldval = '', $default_value = -2)
     {
+        global $DB;
+
         $id_using_strategy = [
             'calendars_id',
             'changetemplates_id',
@@ -3176,44 +3178,40 @@ class Entity extends CommonTreeDropdown
             );
         }
 
-       // for calendar
         if (empty($fieldval)) {
             $fieldval = $fieldref;
         }
 
-        $entity = new self();
-       // Search in entity data of the current entity
-        if ($entity->getFromDB($entities_id)) {
-           // Value is defined : use it
-            if (isset($entity->fields[$fieldref])) {
-               // Numerical value
-                if (
-                    is_numeric($default_value)
-                    && ($entity->fields[$fieldref] != self::CONFIG_PARENT)
-                ) {
-                    return $entity->fields[$fieldval];
-                }
-               // String value
-                if (
-                    !is_numeric($default_value)
-                    && $entity->fields[$fieldref]
-                ) {
-                    return $entity->fields[$fieldval];
-                }
-            }
+        $entities_query = [
+            'SELECT' => ['id', 'entities_id', $fieldref],
+            'FROM'   => self::getTable(),
+            'WHERE'  => ['id' => array_merge([$entities_id], getAncestorsOf(self::getTable(), $entities_id))]
+        ];
+        if ($fieldval !== $fieldref) {
+            $entities_query['SELECT'][] = $fieldval;
         }
+        $entities_data = iterator_to_array($DB->request($entities_query));
 
-       // Entity data not found or not defined : search in parent one
-        if ($entities_id > 0) {
-            if ($entity->getFromDB($entities_id)) {
-                $ret = self::getUsedConfig(
-                    $fieldref,
-                    $entity->fields['entities_id'],
-                    $fieldval,
-                    $default_value
-                );
-                return $ret;
+        $current_id = $entities_id;
+        while ($current_id !== null) {
+            if (!array_key_exists($current_id, $entities_data)) {
+                break; // Cannot find entity data, so cannot continue
             }
+
+            $entity_data = $entities_data[$current_id];
+            if (isset($entity_data[$fieldref])) {
+                // Numerical value
+                if (is_numeric($default_value) && ($entity_data[$fieldref] != self::CONFIG_PARENT)) {
+                    return $entity_data[$fieldval];
+                }
+                // String value
+                if (!is_numeric($default_value) && $entity_data[$fieldref]) {
+                    return $entity_data[$fieldval];
+                }
+            }
+
+            // Value not found or not defined: search in parent one
+            $current_id = $entity_data['entities_id'];
         }
 
         return $default_value;
