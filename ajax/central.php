@@ -81,6 +81,9 @@ switch ($_REQUEST['widget']) {
             $itemtype::showListForCentral($personal);
         } else if ($itemtype === Planning::class) {
             $itemtype::showCentral($params['who']);
+        } else if ($itemtype === Reminder::class) {
+            $personal = ($params['personal'] ?? true) !== 'false';
+            $itemtype::showListForCentral($personal);
         }
         break;
     default:
