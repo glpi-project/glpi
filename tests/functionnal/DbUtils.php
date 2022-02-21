@@ -198,16 +198,34 @@ class DbUtils extends DbTestCase
         }
     }
 
-    /**
-     * @dataProvider dataTableType
-     **/
-    public function testGetItemForItemtype($table, $itemtype, $is_valid_type)
+    protected function getItemForItemtypeProvider(): iterable
     {
-        if ($is_valid_type) {
+        foreach ($this->dataTableType() as $test_case) {
+            yield [
+                'itemtype'       => $test_case['1'],
+                'is_valid'       => $test_case['2'],
+                'expected_class' => $test_case['1'],
+            ];
+
+            // Should find itemtype even if wrong case is used
+            yield [
+                'itemtype'       => strtolower($test_case['1']),
+                'is_valid'       => $test_case['2'],
+                'expected_class' => $test_case['1'],
+            ];
+        }
+    }
+
+    /**
+     * @dataProvider getItemForItemtypeProvider
+     **/
+    public function testGetItemForItemtype($itemtype, $is_valid, $expected_class)
+    {
+        if ($is_valid) {
             $this
             ->if($this->newTestedInstance)
             ->then
-               ->object($this->testedInstance->getItemForItemtype($itemtype))->isInstanceOf($itemtype);
+               ->object($this->testedInstance->getItemForItemtype($itemtype))->isInstanceOf($expected_class);
         } else {
             $this
             ->if($this->newTestedInstance)
@@ -216,9 +234,8 @@ class DbUtils extends DbTestCase
         }
 
        //keep testing old method from db.function
-        if ($is_valid_type) {
-            $this->object(getItemForItemtype($itemtype))
-            ->isInstanceOf($itemtype);
+        if ($is_valid) {
+            $this->object(getItemForItemtype($itemtype))->isInstanceOf($expected_class);
         } else {
             $this->boolean(getItemForItemtype($itemtype))->isFalse();
         }

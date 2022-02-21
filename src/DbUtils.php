@@ -396,11 +396,6 @@ final class DbUtils
             return false;
         }
 
-        if ($itemtype === 'Event') {
-           //to avoid issues when pecl-event is installed...
-            $itemtype = 'Glpi\\Event';
-        }
-
        // If itemtype starts with "Glpi\" or "GlpiPlugin\" followed by a "\",
        // then it is a namespaced itemtype that has been "sanitized".
        // Strip slashes to get its actual value.
@@ -410,6 +405,13 @@ final class DbUtils
          . '/';
         if (preg_match($sanitized_namespaced_pattern, $itemtype)) {
             $itemtype = stripslashes($itemtype);
+        }
+
+        $itemtype = $this->fixItemtypeCase($itemtype);
+
+        if ($itemtype === 'Event') {
+           //to avoid issues when pecl-event is installed...
+            $itemtype = 'Glpi\\Event';
         }
 
         if (!is_subclass_of($itemtype, CommonGLPI::class, true)) {
