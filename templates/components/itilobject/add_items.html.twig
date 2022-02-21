@@ -61,12 +61,24 @@
       }
 
       function itemAction{{ rand }}(action, itemtype, items_id) {
-         if (itemtype === undefined) {
-            itemtype = $('#dropdown_itemtype{{ rand }}').val();
-         }
-         if (items_id === undefined) {
-            items_id = $('#dropdown_add_items_id{{ rand }}').val()
-         }
+          if (itemtype === undefined && items_id === undefined) {
+              const my_items_dropdown = $('#dropdown_my_items{{ rand }}');
+              if (my_items_dropdown.length > 0) {
+                 const val = my_items_dropdown.val();
+                 if (val && val.includes('_')) {
+                    itemtype = val.split('_')[0];
+                    items_id = val.split('_')[1];
+                 }
+              }
+              if (itemtype === undefined && items_id === undefined) {
+                  const dropdown_itemtype = $('#dropdown_itemtype{{ rand }}');
+                  const dropdown_items_id = $('#dropdown_add_items_id{{ rand }}');
+                  if (dropdown_itemtype.length > 0 && dropdown_items_id.length > 0) {
+                      itemtype = dropdown_itemtype.val();
+                      items_id = dropdown_items_id.val();
+                  }
+              }
+          }
          if (!itemtype || !items_id) {
             glpi_toast_error(__('Please select an item to add'));
             return;
