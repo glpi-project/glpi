@@ -263,34 +263,15 @@ final class DbUtils
             }
 
             $base_itemtype = $this->fixItemtypeCase($prefix . $table);
-            $namespaced_itemtype = $this->fixItemtypeCase($pref2 . str_replace('_', '\\', $table));
-
-           // Both potential itemtype (with or without namespace) are pointing to the same file, so it will trigger a
-           // "Cannot declare class XXX, because the name is already in use" error if the "wrong" version is
-           // required by the autoloader when the good version is already loaded.
-           // i.e. `class_exists('Glpi\Computer')` will load `src/Computer.php` which may redeclare the `Computer class`
-           //
-           // To prevent this, we check existence of both without allowing the autoloader to be used.
-           // If none exists yet, we trigger the autoloader to ensure the class file is loaded and the class is defined.
-           //
-           // Then we check again existence of both without allowing the autoloader to be used,
-           // in order to find the good class to use.
-            if (!class_exists($base_itemtype, false) && !class_exists($namespaced_itemtype, false)) {
-                // Try to trigger loading of base itemtype
-                class_exists($base_itemtype);
-                if (!class_exists($namespaced_itemtype, false) && !class_exists($base_itemtype, false)) {
-                    // Namespace itemtype file will not be loaded by call to `class_exists($base_itemtype)`:
-                    // - if namespace has more than one level (i.e. "Glpi\Dashboard\Dashboard")
-                    // - if clanname without namespace already exists (i.e. `Socket` from `sockets` extension, `Event` from `event` extension, ...)
-                    class_exists($namespaced_itemtype); // Try to trigger loading of namespaced itemtype
-                }
-            }
 
             $itemtype = null;
-            if (class_exists($base_itemtype, false)) {
+            if (class_exists($base_itemtype)) {
                 $itemtype = $base_itemtype;
-            } else if (class_exists($namespaced_itemtype, false)) {
-                $itemtype = $namespaced_itemtype;
+            } else {
+                $namespaced_itemtype = $this->fixItemtypeCase($pref2 . str_replace('_', '\\', $table));
+                if (class_exists($namespaced_itemtype)) {
+                    $itemtype = $namespaced_itemtype;
+                }
             }
 
             if ($itemtype !== null && $item = $this->getItemForItemtype($itemtype)) {
