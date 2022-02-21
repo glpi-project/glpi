@@ -266,8 +266,13 @@ final class DbUtils
 
             $itemtype = null;
             if (class_exists($base_itemtype)) {
-                $itemtype = $base_itemtype;
-            } else {
+                $class_file = (new ReflectionClass($base_itemtype))->getFileName();
+                $is_glpi_class = $class_file !== false && str_starts_with(realpath($class_file), realpath(GLPI_ROOT));
+                if ($is_glpi_class) {
+                    $itemtype = $base_itemtype;
+                }
+            }
+            if ($itemtype === null) {
                 $namespaced_itemtype = $this->fixItemtypeCase($pref2 . str_replace('_', '\\', $table));
                 if (class_exists($namespaced_itemtype)) {
                     $itemtype = $namespaced_itemtype;
