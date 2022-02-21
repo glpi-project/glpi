@@ -51,22 +51,22 @@ use Search;
 trait TreeBrowse
 {
     /**
-     * Show the document browse view
+     * Show the browse view
      */
-    public static function showBrowseView(string $itemtype, array $params)
+    public static function showBrowseView(string $itemtype, array $params, $update = false)
     {
         global $CFG_GLPI;
 
         $ajax_url    = $CFG_GLPI["root_doc"] . "/ajax/treebrowse.php";
         $loading_txt = addslashes(__('Loading...'));
-        $start       = isset($_REQUEST['start'])
-                            ? $_REQUEST['start']
+        $start       = isset($params['start'])
+                            ? $params['start']
                             : 0;
-        $browse      = isset($_REQUEST['browse'])
-                            ? $_REQUEST['browse']
+        $browse      = isset($params['browse'])
+                            ? $params['browse']
                             : 0;
-        $is_deleted  = isset($_REQUEST['is_deleted'])
-                            ? $_REQUEST['is_deleted']
+        $is_deleted  = isset($params['is_deleted'])
+                            ? $params['is_deleted']
                             : 0;
         $criteria    = json_encode($params['criteria']);
 
@@ -74,81 +74,90 @@ trait TreeBrowse
         $no_cat_found  = __("No category found");
 
         $JS = <<<JAVASCRIPT
-        $(function() {
-            var loadingindicator  = $("<div class='loadingindicator'>$loading_txt</div>");
-            $('#items_list').html(loadingindicator); // loadingindicator on doc ready
-            var loadNode = function(cat_id) {
-                $('#items_list').html(loadingindicator);
-                $('#items_list').load('$ajax_url', {
-                    'action': 'getItemslist',
-                    'cat_id': cat_id,
-                    'itemtype': '$itemtype',
-                    'start': $start,
-                    'browse': $browse,
-                    'is_deleted': $is_deleted,
-                    'criteria': $criteria
-                });
-            };
-
-            $('#tree_category').fancytree({
-                // load plugins
-                extensions: ['filter', 'glyph', 'persist'],
-
-                // Scroll node into visible area, when focused by keyboard
-                autoScroll: true,
-
-                // enable font-awesome icons
-                glyph: {
-                    preset: "awesome5",
-                    map: {}
-                },
-
-                persist: {
-                    cookiePrefix: '$itemtype',
-                    expandLazy: true,
-                    overrideSource: true,
-                    store: "auto"
-                },
-
-                // load json data
-                source: {$category_list},
-
-                // filter plugin options
-                filter: {
-                    mode: "hide", // remove unmatched nodes
-                    autoExpand: true, // if results found in children, auto-expand parent
-                    nodata: '{$no_cat_found}', // message when no data found
-                },
-
-                // events
-                activate: function(event, data) {
-                    var node = data.node;
-                    var key  = node.key;
-
-                    loadNode(key);
-                },
-
+        var loadingindicator  = $("<div class='loadingindicator'>$loading_txt</div>");
+        $('#items_list').html(loadingindicator);
+        window.loadNode = function(cat_id) {
+            $('#items_list').html(loadingindicator);
+            $('#items_list').load('$ajax_url', {
+                'action': 'getItemslist',
+                'cat_id': cat_id,
+                'itemtype': '$itemtype',
+                'start': $start,
+                'browse': $browse,
+                'is_deleted': $is_deleted,
+                'criteria': $criteria
             });
-
-            var tree = $.ui.fancytree.getTree("#tree_category")
-            if (tree.activeNode === null) {
-                tree.activateKey(-1);
-            }
-            $(document).on('keyup', '#browser_tree_search', function() {
-                var search_text = $(this).val();
-                $.ui.fancytree.getTree("#tree_category").filterNodes(search_text);
-            });
-        });
-
+        };
         JAVASCRIPT;
+
+        if ($update) {
+            $category_list = json_encode(self::getTreeCategoryList($itemtype, $params));
+            $JS .= <<<JAVASCRIPT
+            $('#tree_category').fancytree('option', 'source', {$category_list});
+            JAVASCRIPT;
+        } else {
+            $JS .= <<<JAVASCRIPT
+            $(function() {
+                $('#tree_category').fancytree({
+                    // load plugins
+                    extensions: ['filter', 'glyph', 'persist'],
+
+                    // Scroll node into visible area, when focused by keyboard
+                    autoScroll: true,
+
+                    // enable font-awesome icons
+                    glyph: {
+                        preset: "awesome5",
+                        map: {}
+                    },
+
+                    persist: {
+                        cookiePrefix: '$itemtype',
+                        expandLazy: true,
+                        overrideSource: true,
+                        store: "auto"
+                    },
+
+                    // load json data
+                    source: {$category_list},
+
+                    // filter plugin options
+                    filter: {
+                        mode: "hide", // remove unmatched nodes
+                        autoExpand: true, // if results found in children, auto-expand parent
+                        nodata: '{$no_cat_found}', // message when no data found
+                    },
+
+                    // events
+                    activate: function(event, data) {
+                        var node = data.node;
+                        var key  = node.key;
+
+                        window.loadNode(key);
+                    },
+
+                });
+
+                var tree = $.ui.fancytree.getTree("#tree_category")
+                if (tree.activeNode === null) {
+                    tree.activateKey(-1);
+                }
+                $(document).on('keyup', '#browser_tree_search', function() {
+                    var search_text = $(this).val();
+                    $.ui.fancytree.getTree("#tree_category").filterNodes(search_text);
+                });
+            });
+
+            JAVASCRIPT;
+            echo "<div id='tree_browse'>
+            <div class='browser_tree d-flex flex-column'>
+                <input type='text' class='browser_tree_search' placeholder='" . __("Search…") . "' id='browser_tree_search'>
+                <div id='tree_category' class='browser-tree-container'></div>
+            </div>
+            <div id='items_list' class='browser_items'></div>
+            </div>";
+        }
         echo Html::scriptBlock($JS);
-        echo "<div id='tree_browse'>
-        <div class='browser_tree d-flex flex-column'>
-            <input type='text' class='browser_tree_search' placeholder='" . __("Search…") . "' id='browser_tree_search'>
-            <div id='tree_category' class='browser-tree-container'></div>
-        </div>
-        <div id='items_list' class='browser_items'></div>
-        </div>";
     }
 
     /**
@@ -167,7 +176,7 @@ trait TreeBrowse
         $cat_item     = new $cat_itemtype();
 
         $params['export_all'] = true;
-        $data = Search::prepareDatasForSearch($itemtype, $params, ['id']);
+        $data = Search::prepareDatasForSearch($itemtype, $params);
         Search::constructSQL($data);
         $ids = [0];
         foreach ($DB->query($data['sql']['search']) as $row) {
