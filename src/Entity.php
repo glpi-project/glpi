@@ -576,10 +576,36 @@ class Entity extends CommonTreeDropdown
 
     public function post_updateItem($history = 1)
     {
+        global $GLPI_CACHE;
+
         parent::post_updateItem($history);
 
        // clean entity tree cache
         $this->cleanEntitySelectorCache();
+
+        // Delete any cache entry corresponding to an updated entity config
+        // for current entities and all its childs
+        $entities_ids = array_merge([$this->fields['id']], getSonsOf(self::getTable(), $this->fields['id']));
+        $ignored_fields = [
+            'name',
+            'completename',
+            'entities_id',
+            'level',
+            'sons_cache',
+            'ancestors_cache',
+            'date_mod',
+            'date_creation',
+        ];
+        $cache_entries = [];
+        foreach ($this->updates as $field) {
+            if (in_array($field, $ignored_fields)) {
+                continue; // Ignore fields that cannot be used as config inheritance logic
+            }
+            foreach ($entities_ids as $entity_id) {
+                $cache_entries[] = sprintf('entity_%d_config_%s', $entity_id, $field);
+            }
+        }
+        $GLPI_CACHE->deleteMultiple($cache_entries);
     }
 
 
@@ -3154,7 +3180,7 @@ class Entity extends CommonTreeDropdown
      **/
     public static function getUsedConfig($fieldref, $entities_id, $fieldval = '', $default_value = -2)
     {
-        global $DB;
+        global $DB, $GLPI_CACHE;
 
         $id_using_strategy = [
             'calendars_id',
@@ -3182,39 +3208,52 @@ class Entity extends CommonTreeDropdown
             $fieldval = $fieldref;
         }
 
-        $entities_query = [
-            'SELECT' => ['id', 'entities_id', $fieldref],
-            'FROM'   => self::getTable(),
-            'WHERE'  => ['id' => array_merge([$entities_id], getAncestorsOf(self::getTable(), $entities_id))]
-        ];
-        if ($fieldval !== $fieldref) {
-            $entities_query['SELECT'][] = $fieldval;
-        }
-        $entities_data = iterator_to_array($DB->request($entities_query));
+        $ref_cache_key = sprintf('entity_%d_config_%s', $entities_id, $fieldref);
+        $val_cache_key = sprintf('entity_%d_config_%s', $entities_id, $fieldval);
 
-        $current_id = $entities_id;
-        while ($current_id !== null) {
-            if (!array_key_exists($current_id, $entities_data)) {
-                break; // Cannot find entity data, so cannot continue
+        $ref = $GLPI_CACHE->get($ref_cache_key);
+        $val = $fieldref === $fieldval ? $ref : $GLPI_CACHE->get($val_cache_key);
+
+        if ($ref === null || $val === null) {
+            $entities_query = [
+                'SELECT' => ['id', 'entities_id', $fieldref],
+                'FROM'   => self::getTable(),
+                'WHERE'  => ['id' => array_merge([$entities_id], getAncestorsOf(self::getTable(), $entities_id))]
+            ];
+            if ($fieldval !== $fieldref) {
+                $entities_query['SELECT'][] = $fieldval;
             }
+            $entities_data = iterator_to_array($DB->request($entities_query));
 
-            $entity_data = $entities_data[$current_id];
-            if (isset($entity_data[$fieldref])) {
-                // Numerical value
-                if (is_numeric($default_value) && ($entity_data[$fieldref] != self::CONFIG_PARENT)) {
-                    return $entity_data[$fieldval];
+            $current_id = $entities_id;
+            while ($current_id !== null) {
+                if (!array_key_exists($current_id, $entities_data)) {
+                    break; // Cannot find entity data, so cannot continue
                 }
-                // String value
-                if (!is_numeric($default_value) && $entity_data[$fieldref]) {
-                    return $entity_data[$fieldval];
+
+                $entity_data = $entities_data[$current_id];
+
+                $ref = $entity_data[$fieldref];
+                $inherits = (is_numeric($default_value) && $ref == self::CONFIG_PARENT)
+                    || (!is_numeric($default_value) && !$ref);
+                if (!$inherits) {
+                    $val = $entity_data[$fieldval];
+                    break;
                 }
+
+                // Value inherited: parse parent data
+                $current_id = $entity_data['entities_id'];
             }
-
-            // Value not found or not defined: search in parent one
-            $current_id = $entity_data['entities_id'];
         }
 
-        return $default_value;
+        $GLPI_CACHE->setMultiple(
+            [
+                $ref_cache_key => $ref,
+                $val_cache_key => $val,
+            ]
+        );
+
+        return $val ?? $default_value;
     }
 
 
