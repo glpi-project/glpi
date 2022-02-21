@@ -839,7 +839,7 @@ HTML;
 
         echo "<div class='d-flex align-items-center my-3'>";
         echo __('Personal') . "&nbsp;";
-        echo Html::showToolTip(__("A personal dashboard is not visible by other administrators unless you share explicitly the dashboard")) . "&nbsp";
+        echo Html::showToolTip(__("A personal dashboard is not visible by other administrators unless you explicitly share the dashboard")) . "&nbsp";
         echo Dropdown::showYesNo(
             'is_private',
             (self::$all_dashboards[$this->current]['users_id'] == '0' ? '0' : '1'),
