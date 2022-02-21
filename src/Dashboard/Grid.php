@@ -821,19 +821,13 @@ HTML;
            __("Or share the dashboard to these target objects:") .
            "</label><br>";
 
-        $values = [];
-        $raw_values = [
+        $values = [
             'profiles_id' => self::$all_dashboards[$this->current]['rights']['profiles_id'] ?? [],
             'entities_id' => self::$all_dashboards[$this->current]['rights']['entities_id'] ?? [],
             'users_id'    => self::$all_dashboards[$this->current]['rights']['users_id'] ?? [],
             'groups_id'   => self::$all_dashboards[$this->current]['rights']['groups_id'] ?? [],
         ];
 
-        foreach ($raw_values as $fkey => $ids) {
-            foreach ($ids as $id) {
-                $values[] = $fkey . "-" . $id;
-            }
-        }
         echo ShareDashboardDropdown::show($rand, $values);
         echo "<br>";
 

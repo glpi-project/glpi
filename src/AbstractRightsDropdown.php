@@ -75,20 +75,28 @@ abstract class AbstractRightsDropdown
     {
         global $CFG_GLPI;
 
-       // Build DOM id
+        // Flatten values
+        $dropdown_values = [];
+        foreach ($values as $fkey => $ids) {
+            foreach ($ids as $id) {
+                $dropdown_values[] = $fkey . "-" . $id;
+            }
+        }
+
+        // Build DOM id
         $field_id = $name . "_" . mt_rand();
 
-       // Build url
+        // Build url
         $url = $CFG_GLPI['root_doc'] . "/ajax/getRightDropdownValue.php";
 
-       // Build params
+        // Build params
         $params = [
-            'values' => $values,
-            'valuesnames' => self::getValueNames($values),
+            'name'        => $name . "[]",
+            'values'      => $dropdown_values,
+            'valuesnames' => self::getValueNames($dropdown_values),
             'multiple'    => true,
         ];
-
-        return Html::jsAjaxDropdown($name, $field_id, $url, $params);
+        return Html::jsAjaxDropdown($params['name'], $field_id, $url, $params);
     }
 
     /**
