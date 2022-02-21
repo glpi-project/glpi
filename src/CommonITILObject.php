@@ -7770,8 +7770,8 @@ abstract class CommonITILObject extends CommonDBTM
        // reload actors
         $this->loadActors();
 
-        if (isset($this->input['_additional_observers'])){
-            foreach($this->input['_additional_observers'] as $additional_observers) {
+        if (isset($this->input['_additional_observers'])) {
+            foreach ($this->input['_additional_observers'] as $additional_observers) {
                 $this->input['_actors']['observer'][] = [
                     'itemtype' => User::getType(),
                     'items_id' => $additional_observers['users_id'],
@@ -7781,8 +7781,8 @@ abstract class CommonITILObject extends CommonDBTM
             }
         }
 
-        if (isset($this->input['_additional_requesters'])){
-            foreach($this->input['_additional_requesters'] as $additional_requesters) {
+        if (isset($this->input['_additional_requesters'])) {
+            foreach ($this->input['_additional_requesters'] as $additional_requesters) {
                 $this->input['_actors']['requester'][] = [
                     'itemtype' => User::getType(),
                     'items_id' => $additional_requesters['users_id'],
@@ -7792,8 +7792,8 @@ abstract class CommonITILObject extends CommonDBTM
             }
         }
 
-        if (isset($this->input['_additional_assigns'])){
-            foreach($this->input['_additional_assigns'] as $additional_assigns) {
+        if (isset($this->input['_additional_assigns'])) {
+            foreach ($this->input['_additional_assigns'] as $additional_assigns) {
                 $this->input['_actors']['assign'][] = [
                     'itemtype' => User::getType(),
                     'items_id' => $additional_assigns['users_id'],
@@ -7803,8 +7803,8 @@ abstract class CommonITILObject extends CommonDBTM
             }
         }
 
-        if (isset($this->input['_additional_groups_observers'])){
-            foreach($this->input['_additional_groups_observers'] as $additional_groups_observers) {
+        if (isset($this->input['_additional_groups_observers'])) {
+            foreach ($this->input['_additional_groups_observers'] as $additional_groups_observers) {
                 $this->input['_actors']['observer'][] = [
                     'itemtype' => Group::getType(),
                     'items_id' => $additional_groups_observers['groups_id'],
@@ -7814,8 +7814,8 @@ abstract class CommonITILObject extends CommonDBTM
             }
         }
 
-        if (isset($this->input['_additional_groups_requesters'])){
-            foreach($this->input['_additional_groups_requesters'] as $additional_groups_requesters) {
+        if (isset($this->input['_additional_groups_requesters'])) {
+            foreach ($this->input['_additional_groups_requesters'] as $additional_groups_requesters) {
                 $this->input['_actors']['requester'][] = [
                     'itemtype' => Group::getType(),
                     'items_id' => $additional_groups_requesters['groups_id'],
@@ -7825,8 +7825,8 @@ abstract class CommonITILObject extends CommonDBTM
             }
         }
 
-        if (isset($this->input['_additional_groups_assigns'])){
-            foreach($this->input['_additional_groups_assigns'] as $additional_groups_assigns) {
+        if (isset($this->input['_additional_groups_assigns'])) {
+            foreach ($this->input['_additional_groups_assigns'] as $additional_groups_assigns) {
                 $this->input['_actors']['assign'][] = [
                     'itemtype' => Group::getType(),
                     'items_id' => $additional_groups_assigns['groups_id'],
