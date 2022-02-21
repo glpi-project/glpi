@@ -445,10 +445,7 @@ class Item_Devices extends CommonDBRelation
     {
         global $GLPI_CACHE;
 
-        if (!$GLPI_CACHE->has('item_device_affinities')) {
-            $GLPI_CACHE->set('item_device_affinities', ['' => static::getDeviceTypes()]);
-        }
-        $items_affinities = $GLPI_CACHE->get('item_device_affinities');
+        $items_affinities = $GLPI_CACHE->get('item_device_affinities', ['' => static::getDeviceTypes()]);
 
         if (!isset($items_affinities[$itemtype])) {
             $afffinities = [];

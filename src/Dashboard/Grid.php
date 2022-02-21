@@ -916,12 +916,10 @@ HTML;
                 header('Expires: ' . gmdate('D, d M Y H:i:s \G\M\T', time() + $cache_age));
             }
 
-           // server cache
-            if ($GLPI_CACHE->has($cache_key)) {
-                $dashboard_cards = $GLPI_CACHE->get($cache_key);
-                if (isset($dashboard_cards[$gridstack_id])) {
-                    return (string) $dashboard_cards[$gridstack_id];
-                }
+            // server cache
+            $dashboard_cards = $GLPI_CACHE->get($cache_key, []);
+            if (isset($dashboard_cards[$gridstack_id])) {
+                return (string) $dashboard_cards[$gridstack_id];
             }
         }
 
@@ -981,7 +979,7 @@ HTML;
 
        // store server cache
         if (strlen($dashboard)) {
-            $dashboard_cards = $GLPI_CACHE->get($cache_key) ?? [];
+            $dashboard_cards = $GLPI_CACHE->get($cache_key, []);
             $dashboard_cards[$gridstack_id] = $html;
             $GLPI_CACHE->set($cache_key, $dashboard_cards, new \DateInterval("PT" . $cache_age . "S"));
         }

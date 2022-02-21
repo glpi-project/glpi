@@ -399,10 +399,7 @@ class Plugins {
    public function getPluginsForTag(string $tag = "", bool $force_refresh = false): array {
       global $GLPI_CACHE;
 
-      $plugins_colct = [];
-      if (!$force_refresh && $GLPI_CACHE->has("marketplace_tag_$tag")) {
-         $plugins_colct = $GLPI_CACHE->get("marketplace_tag_$tag");
-      }
+      $plugins_colct = !$force_refresh ? $GLPI_CACHE->get("marketplace_tag_$tag", []) : [];
 
       if (!count($plugins_colct)) {
          $plugins_colct = $this->getPaginatedCollection("tags/{$tag}/plugin");

@@ -650,12 +650,12 @@ class NetworkPort extends InventoryAsset
         $exploded = explode(':', $mac);
 
         if (isset($exploded[2])) {
-            if (!$GLPI_CACHE->has('glpi_inventory_ouis')) {
+            $ouis = $GLPI_CACHE->get('glpi_inventory_ouis');
+            if ($ouis === null) {
                 $jsonfile = new FilesToJSON();
                 $ouis = json_decode(file_get_contents($jsonfile->getJsonFilePath('ouis')), true);
                 $GLPI_CACHE->set('glpi_inventory_ouis', $ouis);
             }
-            $ouis = $ouis ?? $GLPI_CACHE->get('glpi_inventory_ouis');
 
             $mac = sprintf('%s:%s:%s', $exploded[0], $exploded[1], $exploded[2]);
             return $ouis[strtoupper($mac)] ?? false;

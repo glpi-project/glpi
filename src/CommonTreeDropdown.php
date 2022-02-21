@@ -329,12 +329,10 @@ abstract class CommonTreeDropdown extends CommonDropdown
         if ($cache) {
             foreach ($ancestors as $ancestor) {
                 $ckey = 'sons_cache_' . $this->getTable() . '_' . $ancestor;
-                if ($GLPI_CACHE->has($ckey)) {
-                    $sons = $GLPI_CACHE->get($ckey);
-                    if (isset($sons[$this->getID()])) {
-                        unset($sons[$this->getID()]);
-                        $GLPI_CACHE->set($ckey, $sons);
-                    }
+                $sons = $GLPI_CACHE->get($ckey);
+                if ($sons !== null && isset($sons[$this->getID()])) {
+                    unset($sons[$this->getID()]);
+                    $GLPI_CACHE->set($ckey, $sons);
                 }
             }
         }
@@ -354,12 +352,10 @@ abstract class CommonTreeDropdown extends CommonDropdown
         $ancestors = getAncestorsOf($this->getTable(), $this->getID());
         foreach ($ancestors as $ancestor) {
             $ckey = 'sons_cache_' . $this->getTable() . '_' . $ancestor;
-            if ($GLPI_CACHE->has($ckey)) {
-                $sons = $GLPI_CACHE->get($ckey);
-                if (!isset($sons[$this->getID()])) {
-                    $sons[$this->getID()] = $this->getID();
-                    $GLPI_CACHE->set($ckey, $sons);
-                }
+            $sons = $GLPI_CACHE->get($ckey);
+            if ($sons !== null && !isset($sons[$this->getID()])) {
+                $sons[$this->getID()] = $this->getID();
+                $GLPI_CACHE->set($ckey, $sons);
             }
         }
     }
