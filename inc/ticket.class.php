@@ -1558,7 +1558,7 @@ class Ticket extends CommonITILObject {
       // Check a self-service user can create a ticket for another user.
       // We condition the check with a bool flag set in front/tracking.injector.php (self-service ticket controller).
       // This to avoid plugins having their process broken.
-      if (isset($input['check_delegatee'])
+      if (isset($input['check_delegatee'], $input['_users_id_requester'])
           && $input['check_delegatee']
           && !self::canDelegateeCreateTicket($input['_users_id_requester'], ($input['entities_id'] ?? -2))) {
          Session::addMessageAfterRedirect(__("You cannot create a ticket for this user"));
