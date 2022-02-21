@@ -1566,7 +1566,8 @@ HTML;
         return $menu;
     }
 
-    public static function generateHelpMenu() {
+    public static function generateHelpMenu()
+    {
         global $PLUGIN_HOOKS;
 
         $menu = [
