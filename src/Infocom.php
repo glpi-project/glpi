@@ -115,12 +115,14 @@ class Infocom extends CommonDBChild
     public function post_getEmpty()
     {
 
-        $this->fields["alert"] = Entity::getUsedConfig(
-            "use_infocoms_alert",
-            $this->fields["entities_id"],
-            "default_infocom_alert",
-            0
-        );
+        if (isset($_SESSION['glpiactive_entity'])) {
+            $this->fields["alert"] = Entity::getUsedConfig(
+                "use_infocoms_alert",
+                $_SESSION['glpiactive_entity'],
+                "default_infocom_alert",
+                0
+            );
+        }
     }
 
 
