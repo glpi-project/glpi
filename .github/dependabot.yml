@@ -1,6 +1,12 @@
 version: 2
 
 updates:
+  # Keep Github Actions dependencies up-to-date
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+
   # Strategy for npm dependencies on "future major release":
   # - monthly check;
   # - allow version increase in package.json.
