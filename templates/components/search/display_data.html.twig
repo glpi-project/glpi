@@ -31,7 +31,7 @@
 
 {% set is_ajax = data['searchform_id'] is defined and data['searchform_id'] is not null %}
 {% if not is_ajax %}
-<div class="ajax-container search-display-data">
+   <div class="ajax-container search-display-data">
 {% endif %}
 
 {# Remove namespace separators for use in HTML attributes #}
@@ -71,18 +71,22 @@
       {% endif %}
    </div>
 </form>
+
 {% if not is_ajax %}
-</div>
-<script>
-    if (typeof initFluidSearch !== "function") {
-       window.initFluidSearch = () => {
-           new GLPI.Search.ResultsView("massform{{ normalized_itemtype }}", GLPI.Search.Table);
-       };
-    }
-    if (document.readyState === 'complete') {
-        initFluidSearch();
-    } else {
-        $(document).on('ready', initFluidSearch);
-    }
-</script>
+   </div>
+
+   {% if data['search']['as_map'] == 0 %}
+      <script>
+          if (typeof initFluidSearch !== "function") {
+             window.initFluidSearch = () => {
+                 new GLPI.Search.ResultsView("massform{{ normalized_itemtype }}", GLPI.Search.Table);
+             };
+          }
+          if (document.readyState === 'complete') {
+              initFluidSearch();
+          } else {
+              $(document).on('ready', initFluidSearch);
+          }
+      </script>
+   {% endif %}
 {% endif %}
