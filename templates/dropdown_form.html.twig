@@ -217,7 +217,7 @@
                         {{ fields.smallTitle(__('Rack pictures'), 'Rack'|itemtype_icon) }}
                     {% endif %}
                     {% if item.fields[field['name']] is not empty %}
-                        {{ fields.imageField(field['name'], item.fields[field['name']]|picture_url, field['label'], fields_params|merge({
+                        {{ fields.imageField(field['name'], item.fields[field['name']]|picture_url, field['label'], base_fields_params|merge({
                         'clearable': item.canUpdateItem()
                     })) }}
                     {% else %}
@@ -232,7 +232,7 @@
                     {% for picture in pictures %}
                         {% set picture_urls = picture_urls|merge([picture|picture_url]) %}
                     {% endfor %}
-                    {{ fields.imageGalleryField(field['name'], picture_urls, '', fields_params|merge({
+                    {{ fields.imageGalleryField(field['name'], picture_urls, '', base_fields_params|merge({
                         'clearable': item.canUpdateItem(),
                         'no_label': true
                     })) }}
