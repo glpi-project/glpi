@@ -7770,69 +7770,32 @@ abstract class CommonITILObject extends CommonDBTM
        // reload actors
         $this->loadActors();
 
-        if (isset($this->input['_additional_observers'])) {
-            foreach ($this->input['_additional_observers'] as $additional_observers) {
-                $this->input['_actors']['observer'][] = [
-                    'itemtype' => User::getType(),
-                    'items_id' => $additional_observers['users_id'],
-                    'use_notification' => $additional_observers['use_notification'],
-                    'alternative_email' => ''
-                ];
-            }
-        }
+        // append additional actors (from glpi rules)
+        $additionnal_actors_fields = [
+            User::class => [
+                'observer' => '_additional_observers',
+                'requester' => '_additional_requesters',
+                'assign' => '_additional_assigns',
+            ],
+            Group::class => [
+                'observer' => '_additional_groups_observers',
+                'requester' => '_additional_groups_requesters',
+                'assign' => '_additional_groups_assigns',
+            ],
+        ];
 
-        if (isset($this->input['_additional_requesters'])) {
-            foreach ($this->input['_additional_requesters'] as $additional_requesters) {
-                $this->input['_actors']['requester'][] = [
-                    'itemtype' => User::getType(),
-                    'items_id' => $additional_requesters['users_id'],
-                    'use_notification' => $additional_requesters['use_notification'],
-                    'alternative_email' => ''
-                ];
-            }
-        }
-
-        if (isset($this->input['_additional_assigns'])) {
-            foreach ($this->input['_additional_assigns'] as $additional_assigns) {
-                $this->input['_actors']['assign'][] = [
-                    'itemtype' => User::getType(),
-                    'items_id' => $additional_assigns['users_id'],
-                    'use_notification' => $additional_assigns['use_notification'],
-                    'alternative_email' => ''
-                ];
-            }
-        }
-
-        if (isset($this->input['_additional_groups_observers'])) {
-            foreach ($this->input['_additional_groups_observers'] as $additional_groups_observers) {
-                $this->input['_actors']['observer'][] = [
-                    'itemtype' => Group::getType(),
-                    'items_id' => $additional_groups_observers['groups_id'],
-                    'use_notification' => $additional_groups_observers['use_notification'],
-                    'alternative_email' => ''
-                ];
-            }
-        }
-
-        if (isset($this->input['_additional_groups_requesters'])) {
-            foreach ($this->input['_additional_groups_requesters'] as $additional_groups_requesters) {
-                $this->input['_actors']['requester'][] = [
-                    'itemtype' => Group::getType(),
-                    'items_id' => $additional_groups_requesters['groups_id'],
-                    'use_notification' => $additional_groups_requesters['use_notification'],
-                    'alternative_email' => ''
-                ];
-            }
-        }
-
-        if (isset($this->input['_additional_groups_assigns'])) {
-            foreach ($this->input['_additional_groups_assigns'] as $additional_groups_assigns) {
-                $this->input['_actors']['assign'][] = [
-                    'itemtype' => Group::getType(),
-                    'items_id' => $additional_groups_assigns['groups_id'],
-                    'use_notification' => $additional_groups_assigns['use_notification'],
-                    'alternative_email' => ''
-                ];
+        foreach ($additionnal_actors_fields as $actor_class => $fields) {
+            foreach ($fields as $actor_type => $field) {
+                if (isset($this->input[$field])) {
+                    foreach ($this->input[$field] as $additional_actor) {
+                        $this->input['_actors'][$actor_type][] = [
+                            'itemtype' => $actor_class::getType(),
+                            'items_id' => $additional_actor[$actor_class::getForeignKeyField()],
+                            'use_notification' => $additional_actor['use_notification'],
+                            'alternative_email' => ''
+                        ];
+                    }
+                }
             }
         }
 
