@@ -1566,6 +1566,13 @@ HTML;
         return $menu;
     }
 
+    /**
+     * Generate menu array for simplified interface (helpdesk)
+     *
+     * @since  10
+     *
+     * @return array
+     */
     public static function generateHelpMenu()
     {
         global $PLUGIN_HOOKS;
