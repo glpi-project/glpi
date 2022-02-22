@@ -3163,7 +3163,7 @@ abstract class API
             $item::getType(),
             $item->isDeleted(),
             $item,
-            true
+            $item->getID()
         );
     }
 
@@ -3195,7 +3195,7 @@ abstract class API
             return $this->returnResponse([]);
         }
 
-        $actions = MassiveAction::getAllMassiveActions($itemtype, false, null, $is_deleted);
+        $actions = MassiveAction::getAllMassiveActions($itemtype, $is_deleted);
         if (!isset($actions[$action_key])) {
             return $this->returnError(
                 "Invalid action key parameter, run 'getMassiveActions' endpoint to see available keys",

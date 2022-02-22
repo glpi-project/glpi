@@ -59,12 +59,12 @@ class MassiveAction
      *
      * We trust all previous stages: we don't redo the checks
      *
-     * @param array   $POST    something like $_POST
-     * @param array   $GET     something like $_GET
-     * @param string  $stage   the current stage
-     * @param boolean $single  Get actions for a single item
+     * @param array     $POST       something like $_POST
+     * @param array     $GET        something like $_GET
+     * @param string    $stage      the current stage
+     * @param int|null  $items_id   Get actions for a single item
      **/
-    public function __construct(array $POST, array $GET, $stage, $single = false)
+    public function __construct(array $POST, array $GET, $stage, ?int $items_id = null)
     {
         global $CFG_GLPI;
 
@@ -120,7 +120,7 @@ class MassiveAction
                                     $itemtype,
                                     $POST['is_deleted'],
                                     $this->getCheckItem($POST),
-                                    $single
+                                    $items_id
                                 );
                                 $POST['actions'] = array_merge($actions, $POST['actions']);
                                 foreach ($actions as $action => $label) {
@@ -129,8 +129,8 @@ class MassiveAction
                                 }
                             }
                         }
-                        if (empty($POST['actions']) && false === $single) {
-                              throw new \Exception(__('No action available'));
+                        if (empty($POST['actions']) && $items_id === null) {
+                            throw new \Exception(__('No action available'));
                         }
                    // Initial items is used to define $_SESSION['glpimassiveactionselected']
                         $POST['initial_items'] = $POST['items'];
@@ -506,11 +506,11 @@ class MassiveAction
      * @param string|CommonDBTM $item        the item for which we want the massive actions
      * @param boolean           $is_deleted  massive action for deleted items ?   (default 0)
      * @param CommonDBTM        $checkitem   link item to check right              (default NULL)
-     * @param integer|boolean   $single      Get actions for a single item
+     * @param int|null          $items_id    Get actions for a single item
      *
      * @return array of massive actions or false if $item is not valid
      **/
-    public static function getAllMassiveActions($item, $is_deleted = 0, CommonDBTM $checkitem = null, $single = false)
+    public static function getAllMassiveActions($item, $is_deleted = 0, CommonDBTM $checkitem = null, ?int $items_id = null)
     {
         global $PLUGIN_HOOKS;
 
@@ -631,8 +631,10 @@ class MassiveAction
 
        // Manage forbidden actions : try complete action name or MassiveAction:action_name
         $forbidden_actions = $item->getForbiddenStandardMassiveAction();
-        if ($single !== false && !isAPI()) { // Do no filter single actions for API
-            $item->getFromDB($single);
+        if (
+            !isAPI() // Do no filter single actions for API
+            && $items_id !== null && $item->getFromDB($items_id)
+        ) {
             $forbidden_actions = array_merge(
                 $forbidden_actions,
                 $item->getForbiddenSingleMassiveActions()
@@ -676,7 +678,7 @@ class MassiveAction
         }
 
        // Remove icons for outputs that doesn't expect html
-        if (!$single || isAPI()) {
+        if ($items_id === null || isAPI()) {
             $actions = array_map(function ($action) {
                 return strip_tags($action);
             }, $actions);
