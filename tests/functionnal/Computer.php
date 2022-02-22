@@ -490,7 +490,10 @@ class Computer extends DbTestCase
             $this->integer(
                 countElementsInTable(
                     $relation::getTable(),
-                    ['items_id' => $clonedComputer->fields['id']]
+                    [
+                        'itemtype'  => 'Computer',
+                        'items_id'  => $clonedComputer->fields['id'],
+                    ]
                 )
             )->isIdenticalTo($expected);
         }
@@ -498,6 +501,61 @@ class Computer extends DbTestCase
        //check processor has been cloned
         $this->boolean($link->getFromDBByCrit(['itemtype' => 'Computer', 'items_id' => $added]))->isTrue();
         $this->boolean($docitem->getFromDBByCrit(['itemtype' => 'Computer', 'items_id' => $added]))->isTrue();
+    }
+
+    public function testCloneWithAutoCreateInfocom()
+    {
+        global $CFG_GLPI, $DB;
+
+        $this->login();
+        $this->setEntity('_test_root_entity', true);
+
+        $date = date('Y-m-d H:i:s');
+        $_SESSION['glpi_currenttime'] = $date;
+
+        // Test item cloning
+        $computer = $this->getNewComputer();
+        $id = $computer->fields['id'];
+
+        // add infocom
+        $infocom = new \Infocom();
+        $this->integer(
+            $infocom->add([
+                'itemtype'  => 'Computer',
+                'items_id'  => $id,
+                'buy_date'  => '2021-01-01',
+                'use_date'  => '2021-01-02',
+                'value'     => '800.00'
+            ])
+        )->isGreaterThan(0);
+
+        // clone!
+        $computer = new \Computer(); //$computer->fields contents is already escaped!
+        $this->boolean($computer->getFromDB($id))->isTrue();
+        $infocom_auto_create_original = $CFG_GLPI["infocom_auto_create"] ?? 0;
+        $CFG_GLPI["infocom_auto_create"] = 1;
+        $added = $computer->clone();
+        $CFG_GLPI["infocom_auto_create"] = $infocom_auto_create_original;
+        $this->integer((int)$added)->isGreaterThan(0);
+        $this->integer($added)->isNotEqualTo($computer->fields['id']);
+
+        $clonedComputer = new \Computer();
+        $this->boolean($clonedComputer->getFromDB($added))->isTrue();
+
+        $iterator = $DB->request([
+            'SELECT' => ['buy_date', 'use_date', 'value'],
+            'FROM'   => \Infocom::getTable(),
+            'WHERE'  => [
+                'itemtype'  => 'Computer',
+                'items_id'  => $clonedComputer->fields['id']
+            ]
+        ]);
+        $this->integer($iterator->count())->isEqualTo(1);
+        $this->array($iterator->current())->isIdenticalTo([
+            'buy_date'  => '2021-01-01',
+            'use_date'  => '2021-01-02',
+            'value'     => '800.0000' //DB stores 4 decimal places
+        ]);
     }
 
     public function testTransfer()
