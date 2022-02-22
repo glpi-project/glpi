@@ -1264,19 +1264,15 @@ HTML;
 
                   if (value > 0) {
                      labelX = data.x2 - word_width;
+                     bar_width = data.x2 - data.x1;
                   } else{
                      labelX = data.x2 + word_width;
+                     bar_width = data.x1 - data.x2;
                   }
                   labelY = data.y2;
 
-                  if (value > 0) {
-                     width = data.x2 - data.x1;
-                  } else{
-                     width = data.x1 - data.x2;
-                  }
-
                   // don't display label if width too short
-                  if (width < word_width) {
+                  if (bar_width < word_width) {
                      display_labels = false;
                   }
                }
