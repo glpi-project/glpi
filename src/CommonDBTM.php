@@ -5955,7 +5955,7 @@ class CommonDBTM extends CommonGLPI
             $params['entity_restrict'] = $this->getEntityID();
         }
 
-        return new MassiveAction($params, [], 'initial', $this->fields['id']);
+        return new MassiveAction($params, [], 'initial', $this->getID());
     }
 
     /**
