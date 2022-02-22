@@ -1570,6 +1570,102 @@ HTML;
     }
 
     /**
+     * Generate menu array for simplified interface (helpdesk)
+     *
+     * @since  10
+     *
+     * @return array
+     */
+    public static function generateHelpMenu()
+    {
+        global $PLUGIN_HOOKS;
+
+        $menu = [
+            'home' => [
+                'default' => '/front/helpdesk.public.php',
+                'title'   => __('Home'),
+                'icon'    => 'fas fa-home',
+            ],
+        ];
+
+        if (Session::haveRight("ticket", CREATE)) {
+            $menu['create_ticket'] = [
+                'default' => '/front/helpdesk.public.php?create_ticket=1',
+                'title'   => __('Create a ticket'),
+                'icon'    => 'ti ti-plus',
+            ];
+        }
+
+        if (
+            Session::haveRight("ticket", CREATE)
+            || Session::haveRight("ticket", Ticket::READMY)
+            || Session::haveRight("followup", ITILFollowup::SEEPUBLIC)
+        ) {
+            $menu['tickets'] = [
+                'default' => '/front/ticket.php',
+                'title'   => _n('Ticket', 'Tickets', Session::getPluralNumber()),
+                'icon'    => Ticket::getIcon(),
+                'content' => [
+                    'ticket' => [
+                        'links' => [
+                            'add'       => '/front/helpdesk.public.php?create_ticket=1',
+                            'search'    => Ticket::getSearchURL(),
+                            'lists'     => '',
+                        ]
+                    ]
+                ]
+            ];
+        }
+
+        if (Session::haveRight("reservation", ReservationItem::RESERVEANITEM)) {
+            $menu['reservation'] = [
+                'default' => '/front/reservationitem.php',
+                'title'   => _n('Reservation', 'Reservations', Session::getPluralNumber()),
+                'icon'    => ReservationItem::getIcon(),
+            ];
+        }
+
+        if (Session::haveRight('knowbase', KnowbaseItem::READFAQ)) {
+            $menu['faq'] = [
+                'default' => '/front/helpdesk.faq.php',
+                'title'   => __('FAQ'),
+                'icon'    => KnowbaseItem::getIcon(),
+            ];
+        }
+
+        if (
+            isset($PLUGIN_HOOKS["helpdesk_menu_entry"])
+            && count($PLUGIN_HOOKS["helpdesk_menu_entry"])
+        ) {
+            $menu['plugins'] = [
+                'title' => __("Plugins"),
+                'icon'  => Plugin::getIcon(),
+            ];
+
+            foreach ($PLUGIN_HOOKS["helpdesk_menu_entry"] as $plugin => $active) {
+                if (!Plugin::isPluginActive($plugin)) {
+                    continue;
+                }
+                if ($active) {
+                    $infos = Plugin::getInfo($plugin);
+                    $link = "";
+                    if (is_string($PLUGIN_HOOKS["helpdesk_menu_entry"][$plugin])) {
+                        $link = $PLUGIN_HOOKS["helpdesk_menu_entry"][$plugin];
+                    }
+                    $infos['page'] = $link;
+                    $infos['title'] = $infos['name'];
+                    if (isset($PLUGIN_HOOKS["helpdesk_menu_entry_icon"][$plugin])) {
+                        $infos['icon'] = $PLUGIN_HOOKS["helpdesk_menu_entry_icon"][$plugin];
+                    }
+                    $menu['plugins']['content'][$plugin] = $infos;
+                }
+            }
+        }
+
+        return $menu;
+    }
+
+    /**
      * Returns menu sector corresponding to given itemtype.
      *
      * @param string $itemtype
@@ -1865,7 +1961,7 @@ HTML;
         string $option = "",
         bool $add_id = true
     ) {
-        global $HEADER_LOADED, $PLUGIN_HOOKS;
+        global $HEADER_LOADED;
 
         // Print a nice HTML-head for help page
         if ($HEADER_LOADED) {
@@ -1875,88 +1971,7 @@ HTML;
 
         self::includeHeader($title, $sector, $item, $option, $add_id);
 
-        $menu = [
-            'home' => [
-                'default' => '/front/helpdesk.public.php',
-                'title'   => __('Home'),
-                'icon'    => 'fas fa-home',
-            ],
-        ];
-
-        if (Session::haveRight("ticket", CREATE)) {
-            $menu['create_ticket'] = [
-                'default' => '/front/helpdesk.public.php?create_ticket=1',
-                'title'   => __('Create a ticket'),
-                'icon'    => 'ti ti-plus',
-            ];
-        }
-
-        if (
-            Session::haveRight("ticket", CREATE)
-            || Session::haveRight("ticket", Ticket::READMY)
-            || Session::haveRight("followup", ITILFollowup::SEEPUBLIC)
-        ) {
-            $menu['tickets'] = [
-                'default' => '/front/ticket.php',
-                'title'   => _n('Ticket', 'Tickets', Session::getPluralNumber()),
-                'icon'    => Ticket::getIcon(),
-                'content' => [
-                    'ticket' => [
-                        'links' => [
-                            'add'       => '/front/helpdesk.public.php?create_ticket=1',
-                            'search'    => Ticket::getSearchURL(),
-                            'lists'     => '',
-                        ]
-                    ]
-                ]
-            ];
-        }
-
-        if (Session::haveRight("reservation", ReservationItem::RESERVEANITEM)) {
-            $menu['reservation'] = [
-                'default' => '/front/reservationitem.php',
-                'title'   => _n('Reservation', 'Reservations', Session::getPluralNumber()),
-                'icon'    => ReservationItem::getIcon(),
-            ];
-        }
-
-        if (Session::haveRight('knowbase', KnowbaseItem::READFAQ)) {
-            $menu['faq'] = [
-                'default' => '/front/helpdesk.faq.php',
-                'title'   => __('FAQ'),
-                'icon'    => KnowbaseItem::getIcon(),
-            ];
-        }
-
-        if (
-            isset($PLUGIN_HOOKS["helpdesk_menu_entry"])
-            && count($PLUGIN_HOOKS["helpdesk_menu_entry"])
-        ) {
-            $menu['plugins'] = [
-                'title' => __("Plugins"),
-                'icon'  => Plugin::getIcon(),
-            ];
-
-            foreach ($PLUGIN_HOOKS["helpdesk_menu_entry"] as $plugin => $active) {
-                if (!Plugin::isPluginActive($plugin)) {
-                    continue;
-                }
-                if ($active) {
-                    $infos = Plugin::getInfo($plugin);
-                    $link = "";
-                    if (is_string($PLUGIN_HOOKS["helpdesk_menu_entry"][$plugin])) {
-                        $link = $PLUGIN_HOOKS["helpdesk_menu_entry"][$plugin];
-                    }
-                    $infos['page'] = $link;
-                    $infos['title'] = $infos['name'];
-                    if (isset($PLUGIN_HOOKS["helpdesk_menu_entry_icon"][$plugin])) {
-                        $infos['icon'] = $PLUGIN_HOOKS["helpdesk_menu_entry_icon"][$plugin];
-                    }
-                    $menu['plugins']['content'][$plugin] = $infos;
-                }
-            }
-        }
-
+        $menu = self::generateHelpMenu();
         $menu = Plugin::doHookFunction("redefine_menus", $menu);
 
         $tmp_active_item = explode("/", $item);
