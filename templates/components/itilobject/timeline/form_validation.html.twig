@@ -171,11 +171,11 @@
                         'field_class': 'col-12',
                         'label_class': 'col-xxl-4',
                         'input_class': 'col-xxl-8 flex-wrap',
-                        'add_field_html': '<span id="show_validator_field" class="flex-grow-1">&nbsp;</span>',
+                        'add_field_html': '<span id="show_validator_field' ~ rand ~ '" class="flex-grow-1">&nbsp;</span>',
                      }) }}
                      {% if subitem.fields['validatortype'] is not null %}
                         <script type="application/javascript">
-                           $('#show_validator_field').load(CFG_GLPI.root_doc + '/ajax/dropdownValidator.php', {
+                           $('#show_validator_field{{ rand }}').load(CFG_GLPI.root_doc + '/ajax/dropdownValidator.php', {
                               id: {{ subitem.fields['id'] }},
                               entity: {{ item.fields['entities_id'] }},
                               right: "{{ item.getType() is same as 'Ticket' and item.fields['type'] == 2 ? 'validate_request' : 'validate_incident' }}",
@@ -184,7 +184,7 @@
                         </script>
                      {% else %}
                         <script type="application/javascript">
-                           updateItemOnSelectEvent("dropdown_validatortype{{ rand }}", '#show_validator_field',
+                           updateItemOnSelectEvent("dropdown_validatortype{{ rand }}", '#show_validator_field{{ rand }}',
                               CFG_GLPI.root_doc + '/ajax/dropdownValidator.php', {
                                  id: 0,
                                  entity: {{ item.fields['entities_id'] }},
