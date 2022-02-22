@@ -4613,7 +4613,7 @@ JAVASCRIPT;
         $can_requester = $this->canRequesterUpdateItem();
         $canpriority   = (bool) Session::haveRight(self::$rightname, self::CHANGEPRIORITY);
         $canassign     = $this->canAssign();
-        $canassigntome = $this->canAssignTome();
+        $canassigntome = $this->canAssignToMe();
 
         if ($ID && in_array($this->fields['status'], $this->getClosedStatusArray())) {
             $canupdate = false;
