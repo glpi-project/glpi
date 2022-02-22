@@ -38,10 +38,6 @@ jobs:
       PHP_IMAGE: "githubactions-php:${{ matrix.php-version }}"
       UPDATE_FILES_ACL: true
     steps:
-      - name: "Cancel previous runs"
-        uses: "styfle/cancel-workflow-action@0.9.1"
-        with:
-          access_token: "${{ github.token }}"
       - name: "Clean workspace"
         run: |
           echo "APP_CONTAINER_HOME=${{ runner.temp }}/app_home" >> $GITHUB_ENV
@@ -127,11 +123,6 @@ jobs:
       PHP_IMAGE: "githubactions-php:${{ matrix.php-version }}"
       UPDATE_FILES_ACL: true
     steps:
-      - name: "Cancel previous runs"
-        if: env.skip != 'true'
-        uses: "styfle/cancel-workflow-action@0.9.1"
-        with:
-          access_token: "${{ github.token }}"
       - name: "Clean workspace"
         if: env.skip != 'true'
         run: |
