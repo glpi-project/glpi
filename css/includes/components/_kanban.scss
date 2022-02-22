@@ -39,7 +39,8 @@
         font-size: 14px;
         padding: 10px;
 
-        .fas {
+        .fas,
+        .fa-solid {
             margin: auto auto auto 10px;
             font-size: 1.2em;
             cursor: pointer;
@@ -223,7 +224,8 @@
                         }
                     }
 
-                    i.fas {
+                    i.fas,
+                    i.fa-solid {
                         cursor: pointer;
                         flex: 0 1 auto;
                         position: relative;
@@ -295,7 +297,8 @@
 
                         .kanban-item-header,
                         .kanban-item-header a {
-                            .fas {
+                            .fas,
+                            .fa-solid {
                                 &:hover {
                                     text-decoration: none;
                                 }
@@ -304,7 +307,8 @@
                                 cursor: pointer;
                             }
 
-                            .kanban-item-title .fas {
+                            .kanban-item-title .fas,
+                            .kanban-item-title .fa-solid {
                                 float: none;
 
                                 &:last-of-type {

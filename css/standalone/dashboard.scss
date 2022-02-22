@@ -273,7 +273,9 @@ $break_tablet: 1400px;
             left: 5px;
 
             i.fas,
+            i.fa-solid,
             i.far,
+            i.fa-regular,
             i.ti {
                 margin-left: 0;
                 font-size: 1em;
@@ -293,7 +295,9 @@ $break_tablet: 1400px;
         }
 
         i.fas,
+        i.fa-solid,
         i.far,
+        i.fa-regular,
         i.ti {
             font-size: 1.35em;
             cursor: pointer;
@@ -615,7 +619,9 @@ $break_tablet: 1400px;
                 cursor: pointer;
 
                 i.fas,
+                i.fa-solid,
                 i.far,
+                i.fa-regular,
                 i.ti {
                     opacity: 0.6;
 
@@ -648,7 +654,9 @@ $break_tablet: 1400px;
                 border: 1px solid transparent;
 
                 .fas,
+                .fa-solid,
                 .far,
+                .fa-regular,
                 .ti {
                     position: absolute;
                     top: calc(50% - 16px);
