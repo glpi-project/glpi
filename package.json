@@ -10,7 +10,7 @@
     },
     "dependencies": {
         "@eastdesire/jscolor": "^2.4.6",
-        "@fortawesome/fontawesome-free": "^5.12.1",
+        "@fortawesome/fontawesome-free": "^6.0.0",
         "@fullcalendar/bootstrap": "^4.4.0",
         "@fullcalendar/core": "^4.4.0",
         "@fullcalendar/daygrid": "^4.4.0",
