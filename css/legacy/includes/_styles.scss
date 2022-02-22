@@ -211,7 +211,12 @@
 
    /* ################--------------- Layout  ---------------#################### */
    .headerRow th {
-      & > .fa, & > .far, & > .fas, & > button {
+      & > .fa,
+      & > .far,
+      & > .fa-regular,
+      & > .fas,
+      & > .fa-solid,
+      & > button {
          margin-left: 8px;
          vertical-align: middle;
       }
@@ -800,7 +805,12 @@
          line-height: 23px;
       }
 
-      a > img, i.fa, i.far, i.fas {
+      a > img,
+      i.fa,
+      i.far,
+      i.fa-regular,
+      i.fas,
+      i.fa-solid {
          font-size: 1.7em;
          vertical-align: top;
       }
@@ -878,7 +888,10 @@
       margin-bottom: 10px;
       white-space: nowrap;
 
-      i.far, i.fas {
+      i.far,
+      i.fa-regular,
+      i.fas,
+      i.fa-solid {
          color: #a3a3a3;
          margin-right: 3px;
          vertical-align: middle;
@@ -886,7 +899,10 @@
       }
 
       .fa-stack {
-         i.far, i.fas {
+         i.far,
+         i.fa-regular,
+         i.fas,
+         i.fa-solid {
             &.fa-stack-1x {
                font-size: .8em;
                top: .4em;
@@ -1320,11 +1336,16 @@
    /** Fixes for Font Awesome 5 icons not showing at all or
    with incorrect shading in some cases */
 
-   .fa:before, .fas:before, .fa:after, .fas:after {
+   .fa::before,
+   .fas::before,
+   .fa-solid::before,
+   .fa::after,
+   .fas::after,
+   .fa-solid::after {
       font-weight: 900;
    }
 
-   .far {
+   .far, .fa-regular {
       &:before, &:after {
          font-weight: 400;
       }
@@ -1378,7 +1399,7 @@
    }
 
    /* Styles for update page */
-   .tab_check td i.fas {
+   .tab_check td i.fa-solid {
       font-size: 12px;
       margin-right: 3px;
    }

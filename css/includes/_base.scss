@@ -110,8 +110,11 @@ body.iframed {
 
 .dropdown-item {
     & > .fas:first-child,
+    & > .fa-solid:first-child,
     & > .far:first-child,
+    & > .fa-regular:first-child,
     & > .fab:first-child,
+    & > .fa-brands:first-child,
     & > .ti:first-child {
         margin-right: 0.5em;
     }
@@ -151,8 +154,11 @@ body.iframed {
     }
 
     i.fas,
+    i.fa-solid,
     i.far,
+    i.fa-regular,
     i.fab,
+    i.fa-brands,
     i.ti,
     .fa-stack {
         margin-inline-start: 0;
@@ -164,8 +170,11 @@ body.iframed {
 
     &.btn-icon {
         i.fas,
+        i.fa-solid,
         i.far,
+        i.fa-regular,
         i.fab,
+        i.fa-brands,
         i.ti {
             margin-right: 0;
             line-height: 1.5em;
@@ -188,8 +197,11 @@ body.iframed {
             }
 
             i.fas,
+            i.fa-solid,
             i.far,
+            i.fa-regular,
             i.fab,
+            i.fa-brands,
             i.ti {
                 line-height: 1.2em;
             }

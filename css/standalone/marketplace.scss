@@ -149,7 +149,8 @@ $break_s_screen: 1400px;
                 backdrop-filter: blur(2px);
                 background-color: rgba(0, 0, 0, 50%);
 
-                i.fas {
+                i.fas,
+                i.fa-solid {
                     position: absolute;
                     top: 50%;
                     left: calc(50% - 1.5rem);
@@ -352,7 +353,9 @@ $break_s_screen: 1400px;
                             width: 85px;
 
                             i.fas,
-                            i.far {
+                            i.fa-solid,
+                            i.far,
+                            i.fa-regular {
                                 color: #fb0;
                             }
                         }

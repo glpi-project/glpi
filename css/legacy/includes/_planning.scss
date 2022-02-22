@@ -391,7 +391,10 @@
       padding: 8px 10px;
       cursor: pointer;
 
-      i.fas, i.far {
+      i.fas,
+      i.fa-solid,
+      i.far,
+      i.fa-regular {
          margin-right: 5px;
          color: #555
       }
