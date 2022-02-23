@@ -3549,9 +3549,11 @@ class Dropdown
         if (isset($_POST['searchText']) && (strlen($post['searchText']) > 0)) {
             $search = ['LIKE', Search::makeTextSearchValue($post['searchText'])];
             $orwhere = [
-                'name'   => $search,
-                'id'     => $post['searchText']
+                'name'   => $search
             ];
+            if (is_int($post['searchText']) || (is_string($post['searchText'] && ctype_digit($post['searchText'])))) {
+                $orwhere[] = ['id' => $post['searchText']];
+            }
 
             if ($DB->fieldExists($post['table'], "contact")) {
                 $orwhere['contact'] = $search;
