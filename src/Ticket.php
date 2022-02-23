@@ -4182,6 +4182,7 @@ JAVASCRIPT;
             $options['itilcategories_id'],
             $_SESSION["glpiactive_entity"]
         );
+        $options['_tickettemplate'] = $tt;
 
         $delegating = User::getDelegateGroupsForUser($options['entities_id']);
 
