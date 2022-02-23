@@ -593,12 +593,8 @@ class Computer extends DbTestCase
        //transer to another entity
         $transfer = new \Transfer();
 
-        $controller = new \atoum\atoum\mock\controller();
-        $controller->__construct = function () {
-          // void
-        };
-
-        $ma = new \mock\MassiveAction([], [], 'process', $controller);
+        $this->mockGenerator->orphanize('__construct');
+        $ma = new \mock\MassiveAction([], [], 'process');
 
         \MassiveAction::processMassiveActionsForOneItemtype(
             $ma,
