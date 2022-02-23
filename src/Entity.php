@@ -584,7 +584,7 @@ class Entity extends CommonTreeDropdown
         $this->cleanEntitySelectorCache();
 
         // Delete any cache entry corresponding to an updated entity config
-        // for current entities and all its childs
+        // for current entities and all its children
         $entities_ids = array_merge([$this->fields['id']], getSonsOf(self::getTable(), $this->fields['id']));
         $ignored_fields = [
             'name',
