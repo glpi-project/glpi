@@ -41,7 +41,6 @@ use Change_Item;
 use Contract_Item;
 use DB;
 use Document_Item;
-use Domain;
 use Glpi\Console\AbstractCommand;
 use Glpi\Toolbox\Sanitizer;
 use Infocom;
@@ -49,9 +48,7 @@ use Item_Problem;
 use Item_Project;
 use Item_Ticket;
 use KnowbaseItem_Item;
-use Location;
 use Log;
-use Network;
 use Profile;
 use Symfony\Component\Console\Exception\RuntimeException;
 use Symfony\Component\Console\Helper\ProgressBar;
@@ -76,12 +73,12 @@ class DatabasesPluginToCoreCommand extends AbstractCommand
     const ERROR_PLUGIN_IMPORT_FAILED = 2;
 
     /**
-     * list of usefull plugin tables and fields
+     * List of required plugin tables and fields.
      *
      * @var array
      */
     const PLUGIN_DATABASES_TABLES = [
-        "glpi_plugin_databases_databases"       => [
+        "glpi_plugin_databases_databases"           => [
             "id",
             "entities_id",
             "is_recursive",
@@ -100,7 +97,7 @@ class DatabasesPluginToCoreCommand extends AbstractCommand
             "link",
             "is_helpdesk_visible",
         ],
-        "glpi_plugin_databases_instances"       => [
+        "glpi_plugin_databases_instances"           => [
             "id",
             "entities_id",
             "is_recursive",
@@ -110,37 +107,18 @@ class DatabasesPluginToCoreCommand extends AbstractCommand
             "path",
             "comment",
         ],
-//        "glpi_plugin_databases_scripts"       => [
-//           "id",
-//           "entities_id",
-//           "is_recursive",
-//           "name",
-//           "plugin_databases_databases_id",
-//           "plugin_databases_scripttypes_id",
-//           "port",
-//           "path",
-//           "comment",
-//        ],
-        "glpi_plugin_databases_databasetypes"   => ["id","entities_id","name","comment"],
-        "glpi_plugin_databases_databasecategories"   => ["id","entities_id","name","comment"],
-//        "glpi_plugin_databases_servertypes"   => ["id","name","comment"],
-        "glpi_plugin_databases_scripttypes"   => ["id","name","comment"],
-        "glpi_plugin_databases_databases_items" => ["id", "plugin_databases_databases_id","items_id","itemtype"],
+        "glpi_plugin_databases_databasetypes"       => ["id","entities_id","name","comment"],
+        "glpi_plugin_databases_databasecategories"  => ["id","entities_id","name","comment"],
+        "glpi_plugin_databases_scripttypes"         => ["id","name","comment"],
+        "glpi_plugin_databases_databases_items"     => ["id", "plugin_databases_databases_id","items_id","itemtype"],
     ];
 
     /**
-     * itemtype corresponding to database in plugin
+     * Itemtype corresponding to database in plugin.
      *
      * @var string
      */
     const PLUGIN_DATABASES_ITEMTYPE = "PluginDatabasesDatabase";
-
-    /**
-     * itemtype corresponding to database in core
-     *
-     * @var string
-     */
-    const CORE_DATABASES_ITEMTYPE = "DatabaseInstance";
 
     protected function configure()
     {
@@ -161,7 +139,7 @@ class DatabasesPluginToCoreCommand extends AbstractCommand
     {
         $no_interaction = $input->getOption('no-interaction');
         if (!$no_interaction) {
-           // Ask for confirmation (unless --no-interaction)
+            // Ask for confirmation (unless --no-interaction)
             $output->writeln([
                 __('You are about to launch migration of Databases plugin data into GLPI core tables.'),
                 __('Any previous database created in core will be lost.'),
@@ -210,6 +188,7 @@ class DatabasesPluginToCoreCommand extends AbstractCommand
                 }
             }
         }
+
         if ($missing_tables) {
             $this->output->writeln(
                 '<error>' . __('Migration cannot be done.') . '</error>',
@@ -247,7 +226,7 @@ class DatabasesPluginToCoreCommand extends AbstractCommand
 
         $table  = Infocom::getTable();
         $result = $this->db->delete($table, [
-            'itemtype' => self::CORE_DATABASES_ITEMTYPE
+            'itemtype' => DatabaseInstance::class
         ]);
         if (!$result) {
             throw new \Symfony\Component\Console\Exception\RuntimeException(
@@ -298,7 +277,7 @@ class DatabasesPluginToCoreCommand extends AbstractCommand
                 "UPDATE %s SET helpdesk_item_type = REPLACE(helpdesk_item_type, '%s', '%s')",
                 DB::quoteName($table),
                 self::PLUGIN_DATABASES_ITEMTYPE,
-                self::CORE_DATABASES_ITEMTYPE
+                DatabaseInstance::class
             )
         );
         if (false === $result) {
@@ -338,7 +317,7 @@ class DatabasesPluginToCoreCommand extends AbstractCommand
 
         foreach ($itemtypes_tables as $itemtype_table) {
             $result = $this->db->update($itemtype_table, [
-                'itemtype' => self::CORE_DATABASES_ITEMTYPE,
+                'itemtype' => DatabaseInstance::class,
             ], [
                 'itemtype' => self::PLUGIN_DATABASES_ITEMTYPE,
             ]);
