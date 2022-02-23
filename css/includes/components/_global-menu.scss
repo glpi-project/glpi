@@ -37,6 +37,7 @@
 .topbar {
     background-color: $mainmenu-bg;
     color: $mainmenu-fg;
+    z-index: 2000;
 
     .btn-ghost-secondary {
         color: rgba($color: $mainmenu-fg, $alpha: 80%);
