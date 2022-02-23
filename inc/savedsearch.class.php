@@ -285,7 +285,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria {
          return false;
       }
 
-      $taburl = parse_url($input['url']);
+      $taburl = parse_url(Toolbox::unclean_cross_side_scripting_deep(Toolbox::stripslashes_deep($input['url'])));
 
       $key = "plugins";
       if (preg_match('/marketplace/i', $taburl["path"])) {
