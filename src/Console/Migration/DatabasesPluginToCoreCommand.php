@@ -206,12 +206,11 @@ class DatabasesPluginToCoreCommand extends AbstractCommand
     private function cleanCoreTables(): void
     {
         $core_tables = [
-            \Database::getTable(),
-            \DatabaseInstance::getTable(),
-            \DatabaseInstanceType::getTable(),
-            \DatabaseInstanceCategory::getTable(),
+            Database::getTable(),
+            DatabaseInstance::getTable(),
+            DatabaseInstanceType::getTable(),
+            DatabaseInstanceCategory::getTable(),
         ];
-
         foreach ($core_tables as $table) {
             $result = $this->db->query('TRUNCATE ' . DB::quoteName($table));
 
@@ -251,8 +250,8 @@ class DatabasesPluginToCoreCommand extends AbstractCommand
 
         $this->cleanCoreTables();
 
-        $this->createDatabaseTypes();
-        $this->createDatabaseCategories();
+        $this->createDatabaseInstanceTypes();
+        $this->createDatabaseInstanceCategories();
         $this->createDatabases();
         $this->createDatabaseInstances();
         $this->updateItemtypes();
@@ -311,11 +310,15 @@ class DatabasesPluginToCoreCommand extends AbstractCommand
         ];
 
         foreach ($itemtypes_tables as $itemtype_table) {
-            $result = $this->db->update($itemtype_table, [
-                'itemtype' => DatabaseInstance::class,
-            ], [
-                'itemtype' => self::PLUGIN_DATABASES_ITEMTYPE,
-            ]);
+            $result = $this->db->update(
+                $itemtype_table,
+                [
+                    'itemtype' => DatabaseInstance::class,
+                ],
+                [
+                    'itemtype' => self::PLUGIN_DATABASES_ITEMTYPE,
+                ]
+            );
 
             if (false === $result) {
                 $this->outputImportError(
@@ -336,10 +339,10 @@ class DatabasesPluginToCoreCommand extends AbstractCommand
      *
      * @return void
      */
-    private function createDatabaseCategories(): void
+    private function createDatabaseInstanceCategories(): void
     {
         $this->output->writeln(
-            '<comment>' . __('Creating Database Instance categories...') . '</comment>',
+            '<comment>' . sprintf(__('Creating %s...'), DatabaseInstanceCategory::getTypeName()) . '</comment>',
             OutputInterface::VERBOSITY_NORMAL
         );
 
@@ -353,30 +356,23 @@ class DatabasesPluginToCoreCommand extends AbstractCommand
 
         $progress_bar = new ProgressBar($this->output);
 
-        foreach ($progress_bar->iterate($iterator) as $env) {
+        foreach ($progress_bar->iterate($iterator) as $category_data) {
             $this->writelnOutputWithProgressBar(
-                sprintf(
-                    __('Importing Instance category "%s"...'),
-                    $env['name']
-                ),
+                sprintf(__('Importing %s "%s"...'), DatabaseInstanceCategory::getTypeName(), $category_data['name']),
                 $progress_bar,
                 OutputInterface::VERBOSITY_VERY_VERBOSE
             );
 
-            $database_fields = Sanitizer::sanitize([
-                'id'      => $env['id'],
-                'name'    => $env['name'],
-                'comment' => $env['comment']
+            $category_fields = Sanitizer::sanitize([
+                'id'        => $category_data['id'],
+                'name'      => $category_data['name'],
+                'comment'   => $category_data['comment']
             ]);
 
-            $databasee = new \DatabaseInstanceCategory();
-            if (!($databasee_id = $databasee->getFromDBByCrit($database_fields))) {
-                $databasee_id = $databasee->add($database_fields);
-            }
-
-            if (false === $databasee_id) {
+            $category = new DatabaseInstanceCategory();
+            if ($category->getFromDBByCrit($category_fields) === false && $category->add($category_fields) === false) {
                 $this->outputImportError(
-                    sprintf(__('Unable to create Database Instance category %s (%d).'), $env['name'], (int) $env['id']),
+                    sprintf(__('Unable to create %s "%s" (%d).'), DatabaseInstanceCategory::getTypeName(), $category_data['name'], (int) $category_data['id']),
                     $progress_bar
                 );
             }
@@ -393,11 +389,11 @@ class DatabasesPluginToCoreCommand extends AbstractCommand
     private function createDatabases(): void
     {
         $this->output->writeln(
-            '<comment>' . __('Creating Databases...') . '</comment>',
+            '<comment>' . sprintf(__('Creating %s...'), Database::getTypeName()) . '</comment>',
             OutputInterface::VERBOSITY_NORMAL
         );
         $iterator = $this->db->request([
-            'FROM' => 'glpi_plugin_databases_instances'
+            'FROM' => 'glpi_plugin_databases_instances' // Database in GLPI core corresponds to PluginDatabasesInstance
         ]);
 
         if ($iterator->count() === 0) {
@@ -406,34 +402,27 @@ class DatabasesPluginToCoreCommand extends AbstractCommand
 
         $progress_bar = new ProgressBar($this->output);
 
-        foreach ($progress_bar->iterate($iterator) as $instance) {
+        foreach ($progress_bar->iterate($iterator) as $database_data) {
             $this->writelnOutputWithProgressBar(
-                sprintf(
-                    __('Importing database "%s"...'),
-                    $instance['name']
-                ),
+                sprintf(__('Importing %s "%s"...'), Database::getTypeName(), $database_data['name']),
                 $progress_bar,
                 OutputInterface::VERBOSITY_VERY_VERBOSE
             );
 
             $database_fields = Sanitizer::sanitize([
-                'id'                       => $instance['id'],
-                'entities_id'              => $instance['entities_id'],
-                'is_recursive'             => $instance['is_recursive'],
-                'name'                     => $instance['name'],
-                'is_deleted'               => 0,
-                'is_active'               => 1,
-                'databaseinstances_id'               => $instance['plugin_databases_databases_id'],
+                'id'                    => $database_data['id'],
+                'entities_id'           => $database_data['entities_id'],
+                'is_recursive'          => $database_data['is_recursive'],
+                'name'                  => $database_data['name'],
+                'is_deleted'            => 0,
+                'is_active'             => 1,
+                'databaseinstances_id'  => $database_data['plugin_databases_databases_id'],
             ]);
 
-            $database = new \Database();
-            if (!($database_id = $database->getFromDBByCrit($database_fields))) {
-                $database_id = $database->add($database_fields);
-            }
-
-            if (false === $database_id) {
+            $database = new Database();
+            if ($database->getFromDBByCrit($database_fields) === false && $database->add($database_fields)) {
                 $this->outputImportError(
-                    sprintf(__('Unable to create Database %s (%d).'), $instance['name'], (int) $instance['id']),
+                    sprintf(__('Unable to create %s "%s" (%d).'), Database::getTypeName(), $database_data['name'], (int) $database_data['id']),
                     $progress_bar
                 );
             }
@@ -451,11 +440,11 @@ class DatabasesPluginToCoreCommand extends AbstractCommand
     private function createDatabaseInstances(): void
     {
         $this->output->writeln(
-            '<comment>' . __('Creating Databases instances...') . '</comment>',
+            '<comment>' . sprintf(__('Creating %s...'), DatabaseInstance::getTypeName()) . '</comment>',
             OutputInterface::VERBOSITY_NORMAL
         );
         $iterator = $this->db->request([
-            'FROM' => 'glpi_plugin_databases_databases'
+            'FROM' => 'glpi_plugin_databases_databases' // Database in GLPI core corresponds to PluginDatabasesDatabase
         ]);
 
         if ($iterator->count() === 0) {
@@ -464,44 +453,37 @@ class DatabasesPluginToCoreCommand extends AbstractCommand
 
         $progress_bar = new ProgressBar($this->output);
 
-        foreach ($progress_bar->iterate($iterator) as $database) {
+        foreach ($progress_bar->iterate($iterator) as $instance_data) {
             $this->writelnOutputWithProgressBar(
-                sprintf(
-                    __('Importing database instance "%s"...'),
-                    $database['name']
-                ),
+                sprintf(__('Importing %s "%s"...'), DatabaseInstance::getTypeName(), $instance_data['name']),
                 $progress_bar,
                 OutputInterface::VERBOSITY_VERY_VERBOSE
             );
 
             $database_fields = Sanitizer::sanitize([
-                'id'                            => $database['id'],
-                'entities_id'                   => $database['entities_id'],
-                'is_recursive'                  => $database['is_recursive'],
-                'name'                          => $database['name'],
-                'is_deleted'                    => $database['is_deleted'],
+                'id'                            => $instance_data['id'],
+                'entities_id'                   => $instance_data['entities_id'],
+                'is_recursive'                  => $instance_data['is_recursive'],
+                'name'                          => $instance_data['name'],
+                'is_deleted'                    => $instance_data['is_deleted'],
                 'is_active'                     => 1,
-                'databaseinstancetypes_id'      => $database['plugin_databases_databasetypes_id'],
-                'databaseinstancecategories_id' => $database['plugin_databases_databasecategories_id'],
-                'comment'                       => $database['comment'],
-                'locations_id'                  => $database['locations_id'],
-                'manufacturers_id'              => $database['manufacturers_id'],
-                'users_id_tech'                 => $database['users_id'],
-                'groups_id_tech'                => $database['groups_id'],
-                'date_mod'                      => $database['date_mod'],
-                'is_helpdesk_visible'           => $database['is_helpdesk_visible'],
+                'databaseinstancetypes_id'      => $instance_data['plugin_databases_databasetypes_id'],
+                'databaseinstancecategories_id' => $instance_data['plugin_databases_databasecategories_id'],
+                'comment'                       => $instance_data['comment'],
+                'locations_id'                  => $instance_data['locations_id'],
+                'manufacturers_id'              => $instance_data['manufacturers_id'],
+                'users_id_tech'                 => $instance_data['users_id'],
+                'groups_id_tech'                => $instance_data['groups_id'],
+                'date_mod'                      => $instance_data['date_mod'],
+                'is_helpdesk_visible'           => $instance_data['is_helpdesk_visible'],
                 'states_id'                     => 0,
                 'is_dynamic'                    => 0,
             ]);
 
-            $database = new \DatabaseInstance();
-            if (!($database_id = $database->getFromDBByCrit($database_fields))) {
-                $database_id = $database->add($database_fields);
-            }
-
-            if (false === $database_id) {
+            $instance = new DatabaseInstance();
+            if ($instance->getFromDBByCrit($database_fields) === false && $instance->add($database_fields) === false) {
                 $this->outputImportError(
-                    sprintf(__('Unable to create Database instance %s (%d).'), $database['name'], (int) $database['id']),
+                    sprintf(__('Unable to create %s "%s" (%d).'), DatabaseInstance::getTypeName(), $instance_data['name'], (int) $instance_data['id']),
                     $progress_bar
                 );
             }
@@ -511,14 +493,14 @@ class DatabasesPluginToCoreCommand extends AbstractCommand
     }
 
     /**
-     * Create database types.
+     * Create database instance types.
      *
      * @return void
      */
-    private function createDatabaseTypes(): void
+    private function createDatabaseInstanceTypes(): void
     {
         $this->output->writeln(
-            '<comment>' . __('Creating Database Instance types...') . '</comment>',
+            '<comment>' . sprintf(__('Creating %s...'), DatabaseInstanceType::getTypeName()) . '</comment>',
             OutputInterface::VERBOSITY_NORMAL
         );
 
@@ -532,30 +514,23 @@ class DatabasesPluginToCoreCommand extends AbstractCommand
 
         $progress_bar = new ProgressBar($this->output);
 
-        foreach ($progress_bar->iterate($iterator) as $type) {
+        foreach ($progress_bar->iterate($iterator) as $type_data) {
             $this->writelnOutputWithProgressBar(
-                sprintf(
-                    __('Importing type "%s"...'),
-                    $type['name']
-                ),
+                sprintf(__('Importing %s "%s"...'), DatabaseInstanceType::getTypeName(), $type_data['name']),
                 $progress_bar,
                 OutputInterface::VERBOSITY_VERY_VERBOSE
             );
 
-            $databaset_fields = Sanitizer::sanitize([
-                'id'                 => $type['id'],
-                'name'               => $type['name'],
-                'comment'            => $type['comment'],
+            $type_fields = Sanitizer::sanitize([
+                'id'        => $type_data['id'],
+                'name'      => $type_data['name'],
+                'comment'   => $type_data['comment'],
             ]);
 
-            $databaset = new \DatabaseInstanceType();
-            if (!($databaset_id = $databaset->getFromDBByCrit($databaset_fields))) {
-                $databaset_id = $databaset->add($databaset_fields);
-            }
-
-            if (false === $databaset_id) {
+            $type = new DatabaseInstanceType();
+            if ($type->getFromDBByCrit($type_fields) === false && $type->add($type_fields) === false) {
                 $this->outputImportError(
-                    sprintf(__('Unable to create Database Instance type %s (%d).'), $type['name'], (int) $type['id']),
+                    sprintf(__('Unable to create %s "%s" (%d).'), DatabaseInstanceType::getTypeName(), $type_data['name'], (int) $type_data['id']),
                     $progress_bar
                 );
             }
@@ -563,7 +538,6 @@ class DatabasesPluginToCoreCommand extends AbstractCommand
 
         $this->output->write(PHP_EOL);
     }
-
 
     /**
      * Output import error message.
@@ -575,7 +549,6 @@ class DatabasesPluginToCoreCommand extends AbstractCommand
      */
     private function outputImportError($message, ProgressBar $progress_bar = null): void
     {
-
         $skip_errors = $this->input->getOption('skip-errors');
 
         $verbosity = $skip_errors
