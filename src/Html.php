@@ -2787,7 +2787,7 @@ HTML;
          : "";
         $clear_btn = $p['clear_btn'] && $p['maybeempty'] && $p['canedit']
          ? "<a data-clear  title='" . __s('Clear') . "'>
-               <i class='input-group-text fa fa-times-circle pointer'></i>
+               <i class='input-group-text fas fa-times-circle pointer'></i>
             </a>"
          : "";
 
@@ -2980,7 +2980,7 @@ JS;
          ? " disabled='disabled'"
          : "";
         $clear    = $p['maybeempty'] && $p['canedit']
-         ? "<i class='input-group-text fa fa-times-circle fa-lg pointer' data-clear role='button' title='" . __s('Clear') . "'></i>"
+         ? "<i class='input-group-text fas fa-times-circle fa-lg pointer' data-clear role='button' title='" . __s('Clear') . "'></i>"
          : "";
 
         $output = <<<HTML
@@ -3112,7 +3112,7 @@ JS;
          : "";
         $clear    = $p['maybeempty'] && $p['canedit']
          ? "<a data-clear  title='" . __s('Clear') . "'>
-               <i class='input-group-text fa fa-times-circle pointer'></i>
+               <i class='input-group-text fas fa-times-circle pointer'></i>
             </a>"
          : "";
 
@@ -5759,7 +5759,7 @@ JAVASCRIPT
                 $textTag = $tag['tag'];
                 $domItems = "{0:'" . $upload['id'] . "', 1:'" . $upload['id'] . "'+'2'}";
                 $deleteUpload = "deleteImagePasted($domItems, '$textTag', $getEditor)";
-                $display .= '<span class="fa fa-times-circle pointer" onclick="' . $deleteUpload . '"></span>';
+                $display .= '<span class="fas fa-times-circle pointer" onclick="' . $deleteUpload . '"></span>';
 
                 $display .= "</p>";
             }
