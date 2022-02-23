@@ -424,7 +424,6 @@ HTML;
             rand:        '{$rand}',
             embed:       {$embed_str},
             ajax_cards:  {$ajax_cards},
-            all_cards:   {$cards_json},
             all_widgets: {$all_widgets_json},
             context:     "{$this->context}",
             cache_key:   "{$cache_key}",

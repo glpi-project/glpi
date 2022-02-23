@@ -144,7 +144,11 @@ switch ($_REQUEST['action']) {
         }
         echo json_encode($result);
         break;
-
+    case 'get_all_cards':
+        session_write_close();
+        header("Content-Type: application/json; charset=UTF-8");
+        echo json_encode($grid->getAllDasboardCards($_REQUEST['force'] ?? false));
+        break;
     case 'display_add_filter':
         $grid->displayFilterForm($_REQUEST);
         break;

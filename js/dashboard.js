@@ -88,379 +88,388 @@ var Dashboard = {
         this.cols         = options.cols;
         this.cache_key    = options.cache_key || "";
 
-        // compute the width offset of gridstack container relatively to viewport
-        var elem_domRect = this.elem_dom.getBoundingClientRect();
-        var width_offset = elem_domRect.left + (window.innerWidth - elem_domRect.right) + 0.02;
+        $.ajax({
+            url: CFG_GLPI.root_doc+"/ajax/dashboard.php",
+            method: 'GET',
+            data: {
+                action:     'get_all_cards'
+            }
+        }).then((all_cards) => {
+            this.all_cards = all_cards;
+            // compute the width offset of gridstack container relatively to viewport
+            var elem_domRect = this.elem_dom.getBoundingClientRect();
+            var width_offset = elem_domRect.left + (window.innerWidth - elem_domRect.right) + 0.02;
 
-        Dashboard.grid = GridStack.init({
-            column: options.cols,
-            maxRow: (options.rows + 1), // +1 for a hidden item at bottom (to fix height)
-            margin : this.cell_margin,
-            float: true, // widget can be placed anywhere on the grid, not only on top
-            animate: false, // as we don't move widget automatically, we don't need animation
-            draggable: { // override jquery ui draggable options
-                'cancel': 'textarea' // avoid draggable on some child elements
-            },
-            'minWidth': 768 -  width_offset, // breakpoint of one column mode (based on the dashboard container width), trying to reduce to match the `-md` breakpoint of bootstrap (this last is based on viewport width)
-        });
+            Dashboard.grid = GridStack.init({
+                column: options.cols,
+                maxRow: (options.rows + 1), // +1 for a hidden item at bottom (to fix height)
+                margin : this.cell_margin,
+                float: true, // widget can be placed anywhere on the grid, not only on top
+                animate: false, // as we don't move widget automatically, we don't need animation
+                draggable: { // override jquery ui draggable options
+                    'cancel': 'textarea' // avoid draggable on some child elements
+                },
+                'minWidth': 768 -  width_offset
+            });
 
-        // set grid in static to prevent edition (unless user click on edit button)
-        // previously in option, but current version of gridstack has a bug with one column mode (responsive)
-        // see https://github.com/gridstack/gridstack.js/issues/1229
-        Dashboard.grid.setStatic(true);
+            // set grid in static to prevent edition (unless user click on edit button)
+            // previously in option, but current version of gridstack has a bug with one column mode (responsive)
+            // see https://github.com/gridstack/gridstack.js/issues/1229
+            Dashboard.grid.setStatic(true);
 
-        // generate the css based on the grid width
-        Dashboard.generateCss();
+            // generate the css based on the grid width
+            Dashboard.generateCss();
 
-        // init filters from storage
-        Dashboard.initFilters();
-        Dashboard.refreshDashboard();
-
-        // retieve cards content by ajax
-        if (Dashboard.ajax_cards) {
-            Dashboard.getCardsAjax();
-        }
-
-        // animate the dashboards
-        if (!Dashboard.ajax_cards) {
-            Dashboard.fitNumbers();
-            Dashboard.animateNumbers();
-        }
-
-        // change dashboard
-        $("#dashboard-"+options.rand+" .toolbar .dashboard_select").change(function() {
-            Dashboard.current_name = $(this).val();
-            var selected_label = $(this).find("option:selected").text();
-            $(".dashboard-name").val(selected_label);
-            Dashboard.refreshDashboard();
-            Dashboard.setLastDashboard();
+            // init filters from storage
             Dashboard.initFilters();
-        });
+            Dashboard.refreshDashboard();
 
-        // add dashboard
-        $("#dashboard-"+options.rand+" .toolbar .add-dashboard").click(function() {
-            Dashboard.addForm();
-        });
-        $(document).on('submit', '.display-add-dashboard-form', function(event) {
-            event.preventDefault();
-
-            glpi_close_all_dialogs();
-            var button    = $(this);
-            var form_data = {};
-            $.each(button.closest('.display-add-dashboard-form').serializeArray(), function() {
-                form_data[this.name] = this.value;
-            });
-
-            Dashboard.addNew(form_data);
-        });
-
-        // delete dashboard
-        $("#dashboard-"+options.rand+" .toolbar .delete-dashboard").click(function() {
-            Dashboard.delete();
-        });
-
-        //clone dashboard
-        $("#dashboard-"+options.rand+" .toolbar .clone-dashboard").click(function() {
-            Dashboard.clone();
-        });
-
-        // embed mode toggle
-        $("#dashboard-"+options.rand+" .toolbar .open-embed").click(function() {
-            glpi_ajax_dialog({
-                title: __("Share or embed this dashboard"),
-                url: CFG_GLPI.root_doc+"/ajax/dashboard.php",
-                params: {
-                    action:  'display_embed_form',
-                    dashboard: Dashboard.current_name
-                },
-            });
-        });
-
-        // edit mode toggle
-        $("#dashboard-"+options.rand+" .toolbar .edit-dashboard").click(function() {
-            var activate = !$(this).hasClass('active');
-
-            Dashboard.setEditMode(activate);
-        });
-
-        // fullscreen mode toggle
-        var expand_selector = "#dashboard-"+options.rand+" .toggle-fullscreen";
-        $(expand_selector).click(function() {
-            Dashboard.toggleFullscreenMode($(this));
-        });
-        // trigger fullscreen off (by esc key)
-        $(document).on('fullscreenchange webkitfullscreenchange mozfullscreenchange MSFullscreenChange', function() {
-            if (!document.webkitIsFullScreen
-             && !document.mozFullScreen
-             && !document.msFullscreenElement !== null) {
-                Dashboard.disableFullscreenMode();
-            }
-        });
-
-        // night mode toggle
-        $("#dashboard-"+options.rand+" .toolbar .night-mode").click(function() {
-            $(this).toggleClass('active');
-            Dashboard.element.toggleClass('theme-dark');
-        });
-
-        // refresh mode toggle
-        $("#dashboard-"+options.rand+" .toolbar .auto-refresh").click(function() {
-            $(this).toggleClass('active');
-            var active = $(this).hasClass('active');
-
-            if (active) {
-                var seconds = parseInt(CFG_GLPI.refresh_ticket_list) * 60 || 30;
-                Dashboard.interval = setInterval(function() {
-                    Dashboard.refreshDashboard();
-                }, seconds * 1000);
-            } else {
-                clearInterval(Dashboard.interval);
-            }
-        });
-
-        // browser resized (use debounce to delay generation of css)
-        var debounce;
-        $(window).on('resize', function(event) {
-            if (event.target.constructor.name !== "Window") {
-                return;
+            // retieve cards content by ajax
+            if (Dashboard.ajax_cards) {
+                Dashboard.getCardsAjax();
             }
 
-            window.clearTimeout(debounce);
-            debounce = window.setTimeout(function() {
-                Dashboard.generateCss();
-
-                // fit again numbers
+            // animate the dashboards
+            if (!Dashboard.ajax_cards) {
                 Dashboard.fitNumbers();
-            }, 200);
-        });
-
-        // publish rights
-        $(document).on('click', '.display-rights-form .save_rights', function() {
-            glpi_close_all_dialogs();
-
-            var button    = $(this);
-            var form_data = {};
-            var is_private;
-            $.each(button.closest('.display-rights-form').serializeArray(), function() {
-                var current_val = this.value.split('-');
-                var right_name  = current_val[0];
-                var value       = current_val[1];
-                if (!(right_name in form_data)) {
-                    form_data[right_name] = [];
-                }
-                form_data[right_name].push(value);
-            });
-            is_private = button.closest('.display-rights-form').find('select[name="is_private"]').val();
-
-            $.post({
-                url: CFG_GLPI.root_doc+"/ajax/dashboard.php",
-                data: {
-                    action:     'save_rights',
-                    dashboard:  Dashboard.current_name,
-                    rights:     form_data,
-                    is_private: is_private,
-                }
-            });
-        });
-
-        // event: moving item
-        Dashboard.grid.on('dragstop', function() {
-            Dashboard.saveDashboard();
-        });
-
-        // event: resize item
-        Dashboard.grid.on('resizestop', function(event, elem) {
-            Dashboard.saveDashboard();
-
-            // resize also chart if exists
-            var chart = $(elem).find('.ct-chart');
-            if (chart.length > 0)  {
-                chart[0].__chartist__.update();
+                Dashboard.animateNumbers();
             }
 
-            // Used after "resize.fittext" event to reset our custom width "trick"
+            // change dashboard
+            $("#dashboard-"+options.rand+" .toolbar .dashboard_select").change(function() {
+                Dashboard.current_name = $(this).val();
+                var selected_label = $(this).find("option:selected").text();
+                $(".dashboard-name").val(selected_label);
+                Dashboard.refreshDashboard();
+                Dashboard.setLastDashboard();
+                Dashboard.initFilters();
+            });
+
+            // add dashboard
+            $("#dashboard-"+options.rand+" .toolbar .add-dashboard").click(function() {
+                Dashboard.addForm();
+            });
+            $(document).on('submit', '.display-add-dashboard-form', function(event) {
+                event.preventDefault();
+
+                glpi_close_all_dialogs();
+                var button    = $(this);
+                var form_data = {};
+                $.each(button.closest('.display-add-dashboard-form').serializeArray(), function() {
+                    form_data[this.name] = this.value;
+                });
+
+                Dashboard.addNew(form_data);
+            });
+
+            // delete dashboard
+            $("#dashboard-"+options.rand+" .toolbar .delete-dashboard").click(function() {
+                Dashboard.delete();
+            });
+
+            //clone dashboard
+            $("#dashboard-"+options.rand+" .toolbar .clone-dashboard").click(function() {
+                Dashboard.clone();
+            });
+
+            // embed mode toggle
+            $("#dashboard-"+options.rand+" .toolbar .open-embed").click(function() {
+                glpi_ajax_dialog({
+                    title: __("Share or embed this dashboard"),
+                    url: CFG_GLPI.root_doc+"/ajax/dashboard.php",
+                    params: {
+                        action:  'display_embed_form',
+                        dashboard: Dashboard.current_name
+                    },
+                });
+            });
+
+            // edit mode toggle
+            $("#dashboard-"+options.rand+" .toolbar .edit-dashboard").click(function() {
+                var activate = !$(this).hasClass('active');
+
+                Dashboard.setEditMode(activate);
+            });
+
+            // fullscreen mode toggle
+            var expand_selector = "#dashboard-"+options.rand+" .toggle-fullscreen";
+            $(expand_selector).click(function() {
+                Dashboard.toggleFullscreenMode($(this));
+            });
+            // trigger fullscreen off (by esc key)
+            $(document).on('fullscreenchange webkitfullscreenchange mozfullscreenchange MSFullscreenChange', function() {
+                if (!document.webkitIsFullScreen
+                    && !document.mozFullScreen
+                    && !document.msFullscreenElement !== null) {
+                    Dashboard.disableFullscreenMode();
+                }
+            });
+
+            // night mode toggle
+            $("#dashboard-"+options.rand+" .toolbar .night-mode").click(function() {
+                $(this).toggleClass('active');
+                Dashboard.element.toggleClass('theme-dark');
+            });
+
+            // refresh mode toggle
+            $("#dashboard-"+options.rand+" .toolbar .auto-refresh").click(function() {
+                $(this).toggleClass('active');
+                var active = $(this).hasClass('active');
+
+                if (active) {
+                    var seconds = parseInt(CFG_GLPI.refresh_ticket_list) * 60 || 30;
+                    Dashboard.interval = setInterval(function() {
+                        Dashboard.refreshDashboard();
+                    }, seconds * 1000);
+                } else {
+                    clearInterval(Dashboard.interval);
+                }
+            });
+
+            // browser resized (use debounce to delay generation of css)
+            var debounce;
+            $(window).on('resize', function(event) {
+                if (event.target.constructor.name !== "Window") {
+                    return;
+                }
+
+                window.clearTimeout(debounce);
+                debounce = window.setTimeout(function() {
+                    Dashboard.generateCss();
+
+                    // fit again numbers
+                    Dashboard.fitNumbers();
+                }, 200);
+            });
+
+            // publish rights
+            $(document).on('click', '.display-rights-form .save_rights', function() {
+                glpi_close_all_dialogs();
+
+                var button    = $(this);
+                var form_data = {};
+                var is_private;
+                $.each(button.closest('.display-rights-form').serializeArray(), function() {
+                    var current_val = this.value.split('-');
+                    var right_name  = current_val[0];
+                    var value       = current_val[1];
+                    if (!(right_name in form_data)) {
+                        form_data[right_name] = [];
+                    }
+                    form_data[right_name].push(value);
+                });
+                is_private = button.closest('.display-rights-form').find('select[name="is_private"]').val();
+
+                $.post({
+                    url: CFG_GLPI.root_doc+"/ajax/dashboard.php",
+                    data: {
+                        action:     'save_rights',
+                        dashboard:  Dashboard.current_name,
+                        rights:     form_data,
+                        is_private: is_private,
+                    }
+                });
+            });
+
+            // event: moving item
+            Dashboard.grid.on('dragstop', function() {
+                Dashboard.saveDashboard();
+            });
+
+            // event: resize item
+            Dashboard.grid.on('resizestop', function(event, elem) {
+                Dashboard.saveDashboard();
+
+                // resize also chart if exists
+                var chart = $(elem).find('.ct-chart');
+                if (chart.length > 0)  {
+                    chart[0].__chartist__.update();
+                }
+
+                // Used after "resize.fittext" event to reset our custom width "trick"
+                // See computeWidth() function for more info on the trick
+                that.resetComputedWidth($('body').find('.big-number').find('.formatted-number'));
+                that.resetComputedWidth($('body').find('.big-number').find('.label'));
+
+                // animate the number
+                Dashboard.fitNumbers($(elem));
+                Dashboard.animateNumbers($(elem));
+            });
+
+            // delete item
+            $(document).on('click', "#dashboard-"+options.rand+" .delete-item", function() {
+                var del_ctrl = $(this);
+                var item = del_ctrl.closest('.grid-stack-item')[0];
+
+                Dashboard.grid.removeWidget(item);
+                Dashboard.saveDashboard();
+            });
+
+            // refresh item
+            $(document).on('click', "#dashboard-"+options.rand+" .refresh-item", function() {
+                var refresh_ctrl = $(this);
+                var item = refresh_ctrl.closest('.grid-stack-item');
+                var id = item.attr('gs-id');
+
+                Dashboard.getCardsAjax("[gs-id="+id+"]");
+            });
+
+            // edit item
+            $(document).on('click', "#dashboard-"+options.rand+" .edit-item", function() {
+                var edit_ctrl = $(this);
+                var item      = edit_ctrl.parent().parent('.grid-stack-item');
+                var card_opt  = item.data('card-options');
+
+                glpi_ajax_dialog({
+                    title: __("Edit this card"),
+                    url: CFG_GLPI.root_doc+"/ajax/dashboard.php",
+                    params: {
+                        action:       'display_edit_widget',
+                        gridstack_id: item.attr('gs-id'),
+                        card_id:      card_opt.card_id,
+                        x:            item.attr('gs-x'),
+                        y:            item.attr('gs-y'),
+                        width:        item.attr('gs-w'),
+                        height:       item.attr('gs-h'),
+                        card_options: card_opt,
+                    },
+                });
+            });
+
+            // add new widget form
+            $(document).on("click", "#dashboard-"+options.rand+" .cell-add", function() {
+                var add_ctrl = $(this);
+
+                glpi_ajax_dialog({
+                    title: __("Add a card"),
+                    url: CFG_GLPI.root_doc+"/ajax/dashboard.php",
+                    params: {
+                        action: 'display_add_widget',
+                        x: add_ctrl.data('x'),
+                        y: add_ctrl.data('y')
+                    },
+                });
+            });
+
+            // save new or existing widget (submit form)
+            $(document).on('submit', '.display-widget-form ', function(event) {
+                event.preventDefault();
+
+                Dashboard.setWidgetFromForm($(this));
+            });
+
+            // add new filter
+            $(document).on("click", "#dashboard-"+options.rand+" .filters_toolbar .add-filter", function() {
+                glpi_close_all_dialogs();
+
+                var filters = Dashboard.getFiltersFromDB();
+                var filter_names    = Object.keys(filters);
+
+                glpi_ajax_dialog({
+                    title: __("Add a filter"),
+                    url: CFG_GLPI.root_doc+"/ajax/dashboard.php",
+                    params: {
+                        action: 'display_add_filter',
+                        used: filter_names
+                    },
+                });
+            });
+
+            // save new filter (submit form)
+            $(document).on('submit', '.display-filter-form ', function(event) {
+                event.preventDefault();
+
+                var form = $(this);
+
+                Dashboard.setFilterFromForm(form);
+            });
+
+            // delete existing filter
+            $(document).on("click", "#dashboard-"+options.rand+" .filters_toolbar .delete-filter", function() {
+                var filter = $(this).closest('.filter');
+                var filter_id = filter.data('filter-id');
+
+                // remove filter from dom
+                filter.remove();
+
+                // remove filter from storage and refresh cards
+                var filters = Dashboard.getFiltersFromDB();
+                delete filters[filter_id];
+                Dashboard.setFiltersInDB(filters);
+                Dashboard.refreshCardsImpactedByFilter(filter_id);
+            });
+
+            // rename dashboard
+            $(document).on('click', '.save-dashboard-name ', function(event) {
+                event.preventDefault();
+                // change in selector
+                $('.dashboard_select option[value='+Dashboard.current_name+']')
+                    .text($(".dashboard-name").val());
+                Dashboard.saveDashboard();
+
+                $('.display-message')
+                    .addClass('success')
+                    .text(__("Saved"))
+                    .show('fade').delay(2000).hide('fade');
+            });
+
+            // display widget types after selecting a card
+            $(document).on('select2:select', '.display-widget-form select[name=card_id]', function(event) {
+                var select2_data      = event.params.data;
+                var selected          = select2_data.id;
+                var widgettype_field  = $(this).closest('.display-widget-form').find('.widgettype_field');
+                var available_widgets = Dashboard.all_cards[selected].widgettype;
+                var force_checked     = available_widgets.length === 1;
+
+                widgettype_field
+                    .show()
+                    .find('input[type=radio]')
+                    .next('label').css('display', 'none').end()
+                    .filter("[value='"+available_widgets.join("'],[value='")+"']")
+                    .prop("checked", force_checked)
+                    .trigger('change')
+                    .next('label').css('display', 'inline-block');
+            });
+
+            // display gradient and limit after selecting a widget
+            $(document).on('change', '.display-widget-form [name=widgettype]', function() {
+                var widgetdom   = $(this);
+                var widgettype  = widgetdom.val();
+                var widget      = Dashboard.all_widgets[widgettype];
+                var usegradient = widget.gradient || false;
+                var pointlabels = widget.pointlbl || false;
+                var uselimit    = widget.limit || false;
+                var width       = widget.width  || 2;
+                var height      = widget.height || 2;
+
+                var form = widgetdom.closest('.display-widget-form');
+                form.find('.gradient_field').toggle(usegradient);
+                form.find('.pointlbl_field').toggle(pointlabels);
+                form.find('.limit_field').toggle(uselimit);
+
+                var width_field = form.find('[name="width"]');
+                var height_field = form.find('[name="height"]');
+                if (width_field.val() == 0) {
+                    width_field.val(width);
+                }
+                if (height_field.val() == 0) {
+                    height_field.val(height);
+                }
+            });
+
+            // markdown textarea edited
+            $(document).on('input', '.card.markdown textarea.markdown_content', function() {
+                Dashboard.saveMarkdown($(this));
+            });
+
+            // FitText() add an event listener that recompute the font size of all
+            // "fittexted" elements of the page.
+            // This means we need to apply our max-width "trick" on this event
             // See computeWidth() function for more info on the trick
-            that.resetComputedWidth($('body').find('.big-number').find('.formatted-number'));
-            that.resetComputedWidth($('body').find('.big-number').find('.label'));
-
-            // animate the number
-            Dashboard.fitNumbers($(elem));
-            Dashboard.animateNumbers($(elem));
-        });
-
-        // delete item
-        $(document).on('click', "#dashboard-"+options.rand+" .delete-item", function() {
-            var del_ctrl = $(this);
-            var item = del_ctrl.closest('.grid-stack-item')[0];
-
-            Dashboard.grid.removeWidget(item);
-            Dashboard.saveDashboard();
-        });
-
-        // refresh item
-        $(document).on('click', "#dashboard-"+options.rand+" .refresh-item", function() {
-            var refresh_ctrl = $(this);
-            var item = refresh_ctrl.closest('.grid-stack-item');
-            var id = item.attr('gs-id');
-
-            Dashboard.getCardsAjax("[gs-id="+id+"]");
-        });
-
-        // edit item
-        $(document).on('click', "#dashboard-"+options.rand+" .edit-item", function() {
-            var edit_ctrl = $(this);
-            var item      = edit_ctrl.parent().parent('.grid-stack-item');
-            var card_opt  = item.data('card-options');
-
-            glpi_ajax_dialog({
-                title: __("Edit this card"),
-                url: CFG_GLPI.root_doc+"/ajax/dashboard.php",
-                params: {
-                    action:       'display_edit_widget',
-                    gridstack_id: item.attr('gs-id'),
-                    card_id:      card_opt.card_id,
-                    x:            item.attr('gs-x'),
-                    y:            item.attr('gs-y'),
-                    width:        item.attr('gs-w'),
-                    height:       item.attr('gs-h'),
-                    card_options: card_opt,
-                },
+            $(window).on('resize.fittext', function() {
+                that.computeWidth($('body').find('.big-number').find('.formatted-number'));
+                that.computeWidth($('body').find('.big-number').find('.label'));
             });
-        });
-
-        // add new widget form
-        $(document).on("click", "#dashboard-"+options.rand+" .cell-add", function() {
-            var add_ctrl = $(this);
-
-            glpi_ajax_dialog({
-                title: __("Add a card"),
-                url: CFG_GLPI.root_doc+"/ajax/dashboard.php",
-                params: {
-                    action: 'display_add_widget',
-                    x: add_ctrl.data('x'),
-                    y: add_ctrl.data('y')
-                },
-            });
-        });
-
-        // save new or existing widget (submit form)
-        $(document).on('submit', '.display-widget-form ', function(event) {
-            event.preventDefault();
-
-            Dashboard.setWidgetFromForm($(this));
-        });
-
-        // add new filter
-        $(document).on("click", "#dashboard-"+options.rand+" .filters_toolbar .add-filter", function() {
-            glpi_close_all_dialogs();
-
-            var filters = Dashboard.getFiltersFromDB();
-            var filter_names    = Object.keys(filters);
-
-            glpi_ajax_dialog({
-                title: __("Add a filter"),
-                url: CFG_GLPI.root_doc+"/ajax/dashboard.php",
-                params: {
-                    action: 'display_add_filter',
-                    used: filter_names
-                },
-            });
-        });
-
-        // save new filter (submit form)
-        $(document).on('submit', '.display-filter-form ', function(event) {
-            event.preventDefault();
-
-            var form = $(this);
-
-            Dashboard.setFilterFromForm(form);
-        });
-
-        // delete existing filter
-        $(document).on("click", "#dashboard-"+options.rand+" .filters_toolbar .delete-filter", function() {
-            var filter = $(this).closest('.filter');
-            var filter_id = filter.data('filter-id');
-
-            // remove filter from dom
-            filter.remove();
-
-            // remove filter from storage and refresh cards
-            var filters = Dashboard.getFiltersFromDB();
-            delete filters[filter_id];
-            Dashboard.setFiltersInDB(filters);
-            Dashboard.refreshCardsImpactedByFilter(filter_id);
-        });
-
-        // rename dashboard
-        $(document).on('click', '.save-dashboard-name ', function(event) {
-            event.preventDefault();
-            // change in selector
-            $('.dashboard_select option[value='+Dashboard.current_name+']')
-                .text($(".dashboard-name").val());
-            Dashboard.saveDashboard();
-
-            $('.display-message')
-                .addClass('success')
-                .text(__("Saved"))
-                .show('fade').delay(2000).hide('fade');
-        });
-
-        // display widget types after selecting a card
-        $(document).on('select2:select', '.display-widget-form select[name=card_id]', function(event) {
-            var select2_data      = event.params.data;
-            var selected          = select2_data.id;
-            var widgettype_field  = $(this).closest('.display-widget-form').find('.widgettype_field');
-            var available_widgets = Dashboard.all_cards[selected].widgettype;
-            var force_checked     = available_widgets.length === 1;
-
-            widgettype_field
-                .show()
-                .find('input[type=radio]')
-                .next('label').css('display', 'none').end()
-                .filter("[value='"+available_widgets.join("'],[value='")+"']")
-                .prop("checked", force_checked)
-                .trigger('change')
-                .next('label').css('display', 'inline-block');
-        });
-
-        // display gradient and limit after selecting a widget
-        $(document).on('change', '.display-widget-form [name=widgettype]', function() {
-            var widgetdom   = $(this);
-            var widgettype  = widgetdom.val();
-            var widget      = Dashboard.all_widgets[widgettype];
-            var usegradient = widget.gradient || false;
-            var pointlabels = widget.pointlbl || false;
-            var uselimit    = widget.limit || false;
-            var width       = widget.width  || 2;
-            var height      = widget.height || 2;
-
-            var form = widgetdom.closest('.display-widget-form');
-            form.find('.gradient_field').toggle(usegradient);
-            form.find('.pointlbl_field').toggle(pointlabels);
-            form.find('.limit_field').toggle(uselimit);
-
-            var width_field = form.find('[name="width"]');
-            var height_field = form.find('[name="height"]');
-            if (width_field.val() == 0) {
-                width_field.val(width);
-            }
-            if (height_field.val() == 0) {
-                height_field.val(height);
-            }
-        });
-
-        // markdown textarea edited
-        $(document).on('input', '.card.markdown textarea.markdown_content', function() {
-            Dashboard.saveMarkdown($(this));
-        });
-
-        // FitText() add an event listener that recompute the font size of all
-        // "fittexted" elements of the page.
-        // This means we need to apply our max-width "trick" on this event
-        // See computeWidth() function for more info on the trick
-        $(window).on('resize.fittext', function() {
-            that.computeWidth($('body').find('.big-number').find('.formatted-number'));
-            that.computeWidth($('body').find('.big-number').find('.label'));
         });
     },
 
