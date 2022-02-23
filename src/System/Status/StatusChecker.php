@@ -191,14 +191,16 @@ final class StatusChecker
                     if (abs($diff) > 1000000000) {
                         $status['slaves']['servers'][$num] = [
                             'status'             => self::STATUS_PROBLEM,
-                            'replication_delay'  => '-1'
+                            'replication_delay'  => '-1',
+                            'status_msg'           => _x('glpi_status', 'Replication delay is too high')
                         ];
                         $status['slaves']['status'] = self::STATUS_PROBLEM;
                         $status['status'] = self::STATUS_PROBLEM;
                     } else if (abs($diff) > HOUR_TIMESTAMP) {
                         $status['slaves']['servers'][$num] = [
                             'status'             => self::STATUS_PROBLEM,
-                            'replication_delay'  => abs($diff)
+                            'replication_delay'  => abs($diff),
+                            'status_msg'           => _x('glpi_status', 'Replication delay is too high')
                         ];
                         $status['slaves']['status'] = self::STATUS_PROBLEM;
                         $status['status'] = self::STATUS_PROBLEM;
@@ -214,7 +216,8 @@ final class StatusChecker
            // Check main server connection
             if (!@DBConnection::establishDBConnection(false, true, false)) {
                 $status['master'] = [
-                    'status' => self::STATUS_PROBLEM
+                    'status' => self::STATUS_PROBLEM,
+                    'status_msg' => _x('glpi_status', 'Unable to connect to the main database')
                 ];
                 $status['status'] = self::STATUS_PROBLEM;
             }
@@ -256,9 +259,14 @@ final class StatusChecker
                // Check LDAP Auth connections
                 $ldap_methods = getAllDataFromTable('glpi_authldaps', ['is_active' => 1]);
 
-                if (count($ldap_methods)) {
-                    $status['status'] = self::STATUS_OK;
+                $total_servers = count($ldap_methods);
+                $total_error = 0;
+                $global_status = self::STATUS_NO_DATA;
+                $message = null;
+                if ($total_servers > 0) {
+                    $global_status = self::STATUS_OK;
                     foreach ($ldap_methods as $method) {
+                        $ldap = null;
                         try {
                             if (
                                 AuthLDAP::tryToConnectToServer(
@@ -272,18 +280,29 @@ final class StatusChecker
                                 ];
                             } else {
                                 $status['servers'][$method['name']] = [
-                                    'status' => self::STATUS_PROBLEM
+                                    'status' => self::STATUS_PROBLEM,
+                                    'status_msg' => _x('glpi_status', 'Unable to connect to the LDAP server')
                                 ];
-                                $status['status'] = self::STATUS_PROBLEM;
+                                $total_error++;
+                                $global_status = self::STATUS_PROBLEM;
                             }
                         } catch (\RuntimeException $e) {
-                          // May be missing LDAP extension (Probably test environment)
+                            // May be missing LDAP extension (Probably test environment)
                             $status['servers'][$method['name']] = [
                                 'status' => self::STATUS_PROBLEM
                             ];
-                            $status['status'] = self::STATUS_PROBLEM;
+                            $total_error++;
+                            $global_status = self::STATUS_PROBLEM;
                         }
                     }
+
+                    if ($global_status !== self::STATUS_OK) {
+                        $message = sprintf(_x('glpi_status', 'OK: %d, WARNING: %d, PROBLEM: %d, TOTAL: %d'), $total_servers - $total_error, 0, $total_error, $total_servers);
+                    }
+                }
+                $status['status'] = $global_status;
+                if ($message !== null) {
+                    $status['status_msg'] = $message;
                 }
             }
         }
@@ -308,8 +327,12 @@ final class StatusChecker
                // Check IMAP Auth connections
                 $imap_methods = getAllDataFromTable('glpi_authmails', ['is_active' => 1]);
 
-                if (count($imap_methods)) {
-                    $status['status'] = self::STATUS_OK;
+                $total_servers = count($imap_methods);
+                $total_error = 0;
+                $global_status = self::STATUS_NO_DATA;
+                $message = null;
+                if ($total_servers > 0) {
+                    $global_status = self::STATUS_OK;
                     foreach ($imap_methods as $method) {
                         $param = Toolbox::parseMailServerConnectString($method['connect_string'], true);
                         if ($param['ssl'] === true) {
@@ -320,19 +343,28 @@ final class StatusChecker
                             $host = $param['address'];
                         }
                         if ($fp = @fsockopen($host, $param['port'], $errno, $errstr, 1)) {
-                               $status['servers'][$method['name']] = [
-                                   'status' => 'OK'
-                               ];
+                            $status['servers'][$method['name']] = [
+                                'status' => self::STATUS_OK
+                            ];
                         } else {
                             $status['servers'][$method['name']] = [
-                                'status' => self::STATUS_PROBLEM
+                                'status' => self::STATUS_PROBLEM,
+                                'status_msg' => _x('glpi_status', 'Unable to connect to the IMAP server')
                             ];
-                            $status['status'] = self::STATUS_PROBLEM;
+                            $total_error++;
+                            $global_status = self::STATUS_PROBLEM;
                         }
                         if ($fp !== false) {
                                  fclose($fp);
                         }
                     }
+                    if ($global_status !== self::STATUS_OK) {
+                        $message = sprintf(_x('glpi_status', 'OK: %d, WARNING: %d, PROBLEM: %d, TOTAL: %d'), $total_servers - $total_error, 0, $total_error, $total_servers);
+                    }
+                }
+                $status['status'] = $global_status;
+                if ($message !== null) {
+                    $status['status_msg'] = $message;
                 }
             }
         }
@@ -385,25 +417,39 @@ final class StatusChecker
             ];
             if (self::isDBAvailable()) {
                 $mailcollectors = getAllDataFromTable('glpi_mailcollectors', ['is_active' => 1]);
-                if (count($mailcollectors)) {
-                    $status['status'] = self::STATUS_OK;
+
+                $total_servers = count($mailcollectors);
+                $total_error = 0;
+                $global_status = self::STATUS_NO_DATA;
+                $message = null;
+                if ($total_servers > 0) {
+                    $global_status = self::STATUS_OK;
                     $mailcol = new MailCollector();
                     foreach ($mailcollectors as $mc) {
                         if ($mailcol->getFromDB($mc['id'])) {
                             try {
                                 $mailcol->connect();
                                 $status['servers'][$mc['name']] = [
-                                    'status' => 'OK'
+                                    'status' => self::STATUS_OK
                                 ];
                             } catch (\Exception $e) {
                                 $status['servers'][$mc['name']] = [
                                     'status'       => self::STATUS_PROBLEM,
-                                    'error_code'   => $e->getCode()
+                                    'error_code'   => $e->getCode(),
+                                    'status_msg'      => $e->getMessage()
                                 ];
-                                $status['status'] = self::STATUS_PROBLEM;
+                                $total_error++;
+                                $global_status = self::STATUS_PROBLEM;
                             }
                         }
                     }
+                    if ($global_status !== self::STATUS_OK) {
+                        $message = sprintf(_x('glpi_status', 'OK: %d, WARNING: %d, PROBLEM: %d, TOTAL: %d'), $total_servers - $total_error, 0, $total_error, $total_servers);
+                    }
+                }
+                $status['status'] = $global_status;
+                if ($message !== null) {
+                    $status['status_msg'] = $message;
                 }
             }
         }
@@ -425,6 +471,10 @@ final class StatusChecker
                 'stuck' => []
             ];
             if (self::isDBAvailable()) {
+                $crontasks = getAllDataFromTable('glpi_crontasks');
+                $running = count(array_filter($crontasks, static function ($crontask) {
+                    return $crontask['state'] === CronTask::STATE_RUNNING;
+                }));
                 $stuck_crontasks = getAllDataFromTable(
                     'glpi_crontasks',
                     [
@@ -445,6 +495,7 @@ final class StatusChecker
                       $status['stuck'][] = $ct['name'];
                 }
                 $status['status'] = count($status['stuck']) ? self::STATUS_PROBLEM : self::STATUS_OK;
+                $status['status_msg'] = sprintf(_x('glpi_status', 'RUNNING: %d, STUCK: %d, TOTAL: %d'), $running, count($stuck_crontasks), count($crontasks));
             }
         }
 
@@ -470,13 +521,13 @@ final class StatusChecker
             if (!is_dir(GLPI_SESSION_DIR)) {
                 $status['session_dir'] = [
                     'status' => self::STATUS_PROBLEM,
-                    'status_msg'   => 'GLPI_SESSION_DIR variable is not a directory'
+                    'status_msg'   => sprintf(_x('glpi_status', '%s variable is not a directory'), 'GLPI_SESSION_DIR')
                 ];
                 $status['status'] = self::STATUS_PROBLEM;
             } else if (!is_writable(GLPI_SESSION_DIR)) {
                 $status['session_dir'] = [
                     'status' => self::STATUS_PROBLEM,
-                    'status_msg'   => 'GLPI_SESSION_DIR is not writeable'
+                    'status_msg'   => sprintf(_x('glpi_status', '%s variable is not writable'), 'GLPI_SESSION_DIR')
                 ];
                 $status['status'] = self::STATUS_PROBLEM;
             }
