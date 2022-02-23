@@ -1590,7 +1590,8 @@ class Config extends CommonDBTM
              "</td><td>";
             Grid::dropdownDashboard("default_dashboard_mini_ticket", [
                 'value' => $data['default_dashboard_mini_ticket'],
-                'display_emptychoice' => true
+                'display_emptychoice' => true,
+                'context'   => 'mini_core',
             ]);
             echo "</td></tr>";
         }

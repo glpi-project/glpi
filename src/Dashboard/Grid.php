@@ -54,22 +54,15 @@ class Grid
     protected $items           = [];
 
     public static $embed              = false;
-    public static $context            = '';
     public static $all_dashboards     = [];
 
-    public function __construct(
-        string $dashboard_key = "central",
-        int $grid_cols = 26,
-        int $grid_rows = 24,
-        string $context = "core"
-    ) {
+    public function __construct(string $dashboard_key = "central", int $grid_cols = 26, int $grid_rows = 24) {
 
         $this->current   = $dashboard_key;
         $this->grid_cols = $grid_cols;
         $this->grid_rows = $grid_rows;
 
         $this->dashboard = new Dashboard($dashboard_key);
-        self::$context   = $context;
     }
 
 
@@ -98,7 +91,7 @@ class Grid
             || count(self::$all_dashboards) === 0
             || $force
         ) {
-            self::$all_dashboards = Dashboard::getAll($force, !self::$embed, self::$context);
+            self::$all_dashboards = Dashboard::getAll($force, !self::$embed);
         }
 
         return is_array(self::$all_dashboards);
@@ -399,7 +392,7 @@ HTML;
         }
 
         $ajax_cards = GLPI_AJAX_DASHBOARD;
-        $context    = self::$context;
+        $context    = $this->dashboard->fields['context'];
         $cache_key  = sha1($_SESSION['glpiactiveentities_string '] ?? "");
 
         $js = <<<JAVASCRIPT
@@ -1478,14 +1471,13 @@ HTML;
 
     public static function dropdownDashboard(string $name = "", array $params = []): string
     {
-        self::loadAllDashboards();
+        $to_show = Dashboard::getAll(false, true, $params['context'] ?? 'core');
         $can_view_all = $params['can_view_all'] ?? false;
 
         $options_dashboards = [];
-        foreach (self::$all_dashboards as $key => $dashboard) {
+        foreach ($to_show as $key => $dashboard) {
             if (self::canViewSpecificicDashboard($key, $can_view_all)) {
                 $options_dashboards[$key] = $dashboard['name'] ?? $key;
-                ;
             }
         }
 

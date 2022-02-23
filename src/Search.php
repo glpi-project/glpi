@@ -87,7 +87,7 @@ class Search
             $itemtype == "Ticket"
             && $default = Glpi\Dashboard\Grid::getDefaultDashboardForMenu('mini_ticket', true)
         ) {
-            $dashboard = new Glpi\Dashboard\Grid($default, 33, 1, 'mini_core');
+            $dashboard = new Glpi\Dashboard\Grid($default, 33, 1);
             $dashboard->show(true);
         }
 

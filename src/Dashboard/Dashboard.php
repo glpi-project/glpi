@@ -363,56 +363,51 @@ class Dashboard extends \CommonDBTM
      *
      * @param bool   $force don't check dashboard are already loaded and force their load
      * @param bool   $check_rights use to remove rights checking (use in embed)
-     * @param string $context only dashboard for given context
+     * @param ?string $context only dashboard for given context
      *
      * @return array dasboards
      */
-    public static function getAll(
-        bool $force = false,
-        bool $check_rights = true,
-        string $context = 'core'
-    ): array {
+    public static function getAll(bool $force = false, bool $check_rights = true, ?string $context = 'core'): array {
         global $DB;
 
-        if (!$force && count(self::$all_dashboards) > 0) {
-            return self::$all_dashboards;
-        }
+        if ($force || count(self::$all_dashboards) == 0) {
+            self::$all_dashboards = [];
 
-       // empty previous data
-        self::$all_dashboards = [];
+            $dashboards = iterator_to_array($DB->request(self::getTable()));
+            $items      = iterator_to_array($DB->request(Item::getTable()));
+            $rights     = iterator_to_array($DB->request(Right::getTable()));
 
-        $dashboard_criteria = [];
-        if (strlen($context)) {
-            $dashboard_criteria['context'] = $context;
-        }
+            foreach ($dashboards as $dashboard) {
+                $key = $dashboard['key'];
+                $id  = $dashboard['id'];
 
-        $dashboards = iterator_to_array($DB->request(self::getTable(), ['WHERE' => $dashboard_criteria]));
-        $items      = iterator_to_array($DB->request(Item::getTable()));
-        $rights     = iterator_to_array($DB->request(Right::getTable()));
+                $d_rights = array_filter($rights, static function ($right_line) use ($id) {
+                    return $right_line['dashboards_dashboards_id'] == $id;
+                });
+                $dashboardItem = new self($key);
+                if ($check_rights && !$dashboardItem->canViewCurrent()) {
+                    continue;
+                }
+                $dashboard['rights'] = self::convertRights($d_rights);
 
-        foreach ($dashboards as $dashboard) {
-            $key = $dashboard['key'];
-            $id  = $dashboard['id'];
+                $d_items = array_filter($items, static function ($item) use ($id) {
+                    return $item['dashboards_dashboards_id'] == $id;
+                });
+                $d_items = array_map(static function ($item) {
+                    $item['card_options'] = importArrayFromDB($item['card_options']);
+                    return $item;
+                }, $d_items);
+                $dashboard['items'] = $d_items;
 
-            $d_rights = array_filter($rights, function ($right_line) use ($id) {
-                return $right_line['dashboards_dashboards_id'] == $id;
-            });
-            $dashboardItem = new self($key);
-            if ($check_rights && !$dashboardItem->canViewCurrent()) {
-                continue;
+                self::$all_dashboards[$key] = $dashboard;
             }
-            $dashboard['rights'] = self::convertRights($d_rights);
+        }
 
-            $d_items = array_filter($items, function ($item) use ($id) {
-                return $item['dashboards_dashboards_id'] == $id;
+        // Return dashboards filtered by context (if applicable)
+        if ($context !== null && $context !== '') {
+            return array_filter(self::$all_dashboards, static function ($dashboard) use ($context) {
+                return $dashboard['context'] === $context;
             });
-            $d_items = array_map(function ($item) {
-                $item['card_options'] = importArrayFromDB($item['card_options']);
-                return $item;
-            }, $d_items);
-            $dashboard['items'] = $d_items;
-
-            self::$all_dashboards[$key] = $dashboard;
         }
 
         return self::$all_dashboards;
