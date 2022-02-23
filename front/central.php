@@ -33,13 +33,6 @@
 
 include('../inc/includes.php');
 
-if (
-    !(isset($_GET["embed"])
-      && isset($_GET["dashboard"]))
-) {
-    Session::checkCentralAccess();
-}
-
 // embed (anonymous) dashboard
 if (isset($_GET["embed"]) && isset($_GET["dashboard"])) {
     $grid      = new Glpi\Dashboard\Grid($_GET["dashboard"]);
@@ -81,6 +74,8 @@ if (isset($_GET["active_entity"])) {
         }
     }
 }
+
+Session::checkCentralAccess();
 
 Html::header(Central::getTypeName(1), $_SERVER['PHP_SELF'], 'central', 'central');
 
