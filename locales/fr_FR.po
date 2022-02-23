@@ -17,6 +17,7 @@
 # Xavier CAILLAUD <thetsmr@gmail.com>, 2022
 # CupidSG, 2022
 # Johan Cwiklinski, 2022
+# SteadEXE, 2022
 # 
 #, fuzzy
 msgid ""
@@ -15648,8 +15649,8 @@ msgstr[1] "Modèles de téléphones"
 #: src/Rule.php:384 src/MonitorType.php:39
 msgid "Monitor type"
 msgid_plural "Monitors types"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Type de moniteur"
+msgstr[1] "Types de moniteurs"
 
 #: src/Rule.php:408
 msgid "Peripheral type"
