@@ -43,11 +43,11 @@ if (strpos($_SERVER['PHP_SELF'], "dropdownDelegationUsers.php")) {
 
 Session::checkLoginUser();
 
+$_POST['_users_id_requester'] = 0;
+$_POST['_right'] = "delegate";
 if ($_POST["nodelegate"] == 1) {
     $_POST['_users_id_requester'] = Session::getLoginUserID();
     $_POST['_right']              = "id";
-} else {
-    $_POST['_right'] = "delegate";
 }
 
 $ticket = new Ticket();

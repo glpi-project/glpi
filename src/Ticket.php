@@ -4064,8 +4064,6 @@ JAVASCRIPT;
      **/
     public function showFormHelpdesk($ID, $ticket_template = false)
     {
-        global $CFG_GLPI;
-
         if (!self::canCreate()) {
             return false;
         }

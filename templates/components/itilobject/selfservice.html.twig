@@ -87,31 +87,29 @@
                             })
                         ) }}
                     </div>
-                    <div class="col-sm-6">
-                        {% if config('use_check_pref') and params['nodelegate'] %}
-                            {% set personal_information %}
-                            <div class="d-inline-flex">
-                                <div class="card mb-0" id="user-info{{ rand }}">
-                                    <div class="card-body">
-                                        {% set user = get_current_user() %}
-                                        {% set user_fields = user.fields %}
-                                        {% set user_fields = user_fields|merge({user_name: user.getFriendlyName()|verbatim_value}) %}
-                                        {% set user_fields = user_fields|merge({email: user.getDefaultEmail()}) %}
-                                        {{ include('components/user/info_card.html.twig', {
-                                            'user': user_fields,
-                                            'can_edit': true
-                                        }, with_context = false) }}
-                                    </div>
+                    <div class="col-sm-6 {{ config('use_check_pref') and params['nodelegate'] ? "" : "d-none" }}" id="user-info{{ rand }}-block">
+                        {% set personal_information %}
+                        <div class="d-inline-flex">
+                            <div class="card mb-0" id="user-info{{ rand }}">
+                                <div class="card-body">
+                                    {% set user = get_current_user() %}
+                                    {% set user_fields = user.fields %}
+                                    {% set user_fields = user_fields|merge({user_name: user.getFriendlyName()|verbatim_value}) %}
+                                    {% set user_fields = user_fields|merge({email: user.getDefaultEmail()}) %}
+                                    {{ include('components/user/info_card.html.twig', {
+                                        'user': user_fields,
+                                        'can_edit': true
+                                    }, with_context = false) }}
                                 </div>
                             </div>
-                            {% endset %}
-                            {{ fields.field(
-                                '',
-                                personal_information,
-                                __('Check your personnal information'),
-                                base_field_options
-                            ) }}
-                        {% endif %}
+                        </div>
+                        {% endset %}
+                        {{ fields.field(
+                            '',
+                            personal_information,
+                            __('Check your personnal information'),
+                            base_field_options
+                        ) }}
                     </div>
                 </div>
 
@@ -287,11 +285,13 @@ $(function () {
     });
 
     $('#dropdown_nodelegate{{ rand }}').on('change', function() {
-        $('#delegate_other{{ rand }}')
+        var is_for_me = ($(this).val() == '1');
+        $('#user-info{{ rand }}-block').toggleClass('d-none', !is_for_me);
+        $('#delegate_other{{ rand }} .card-body')
             .html("")
             .load('{{ path('ajax/dropdownDelegationUsers.php') }}', {
                 'right': "delegate",
-                'nodelegate': true,
+                'nodelegate': (is_for_me ? 1 : 0),
                 '_users_id_requester': {{ params['_users_id_requester'] }},
                 '_users_id_requester_notif': {{ params['_users_id_requester_notif']|json_encode()|raw }},
                 'use_notification': {{ params['_users_id_requester_notif']['use_notification'] }},
