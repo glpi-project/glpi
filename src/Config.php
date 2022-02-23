@@ -1410,7 +1410,7 @@ class Config extends CommonDBTM
         echo "<td>";
         Dropdown::showFromArray('timeline_order', [
             CommonITILObject::TIMELINE_ORDER_NATURAL => __('Natural order (old items on top, recent on bottom)'),
-            CommonITILObject::TIMELINE_ORDER_REVERSE => __('Reverse order (old items on bottom, recent on top'),
+            CommonITILObject::TIMELINE_ORDER_REVERSE => __('Reverse order (old items on bottom, recent on top)'),
         ], [
             'value' => $data['timeline_order'],
             'rand' => $rand
