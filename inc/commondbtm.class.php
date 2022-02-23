@@ -173,6 +173,13 @@ class CommonDBTM extends CommonGLPI {
    function __construct () {
    }
 
+   /**
+    * Cache used to keep track of the last clone index
+    * Usefull when cloning an item multiple time to avoid iterating on the sql
+    * results multiple time while looking for an available unique name
+    * @var null|int
+    */
+   public static ?int $last_clone_index = null;
 
    /**
     * Return the table used to store this object
@@ -1221,7 +1228,43 @@ class CommonDBTM extends CommonGLPI {
    }
 
    /**
-    * Clones the current item
+    * Clone the current item multiple times
+    *
+    * @since 9.5
+    *
+    * @param int     $n              Number of clones
+    * @param array   $override_input Custom input to override
+    * @param boolean $history        Do history log ? (true by default)
+    *
+    * @return int|bool the new ID of the clone (or false if fail)
+    */
+   public function cloneNTimes(
+      int $n,
+      array $override_input = [],
+      bool $history = true
+   ): bool {
+      $failure = false;
+
+      try {
+         // Init index cache
+         self::$last_clone_index = 0;
+         for ($i = 0; $i < $n && !$failure; $i++) {
+            if ($this->clone($override_input, $history) === false) {
+               // Increment clone index cache to use less SQL
+               // queries looking for an available unique clone name
+               $failure = true;
+            }
+         }
+      } finally {
+         // Make sure cache is cleaned even on exception
+         self::$last_clone_index = null;
+      }
+
+      return !$failure;
+   }
+
+   /**
+    * Clone the current item
     *
     * @since 9.5
     *
@@ -1393,22 +1436,24 @@ class CommonDBTM extends CommonGLPI {
 
    /**
     * Compute the name of a copied item
+    * The goal is to set the copy name as "{name} (copy {i})" unless it's
+    * the first copy: in this case just "{name} (copy)" is acceptable
     *
-    * @param string   $current_item The item being copied
-    * @param null|int $copy_index   The index to append to the name
+    * @param string $current_item The item being copied
+    * @param int    $copy_index   The index to append to the copy's name
     *
     * @return string The computed name of the new item to be created
     */
    public function computeCloneName(
       string $current_name,
-      ?int $copy_index = null
+      int $copy_index
    ): string {
-      // No index specified or first copy
-      if (is_null($copy_index) || $copy_index == 1) {
+      // First copy
+      if ($copy_index == 1) {
          return sprintf(__("%s (copy)"), $current_name);
       }
 
-      // 1+ copy, add index
+      // Second+ copies, add index
       return sprintf(__("%s (copy %d)"), $current_name, $copy_index);
    }
 
@@ -1422,44 +1467,36 @@ class CommonDBTM extends CommonGLPI {
     * @return array the modified $input array
     */
    function prepareInputForClone($input) {
-      global $DB;
-
       unset($input['id']);
       unset($input['date_mod']);
       unset($input['date_creation']);
 
+      $name_field = static::getNameField();
+
       // Force uniqueness for the name field
-      if (isset($input[static::getNameField()])) {
-         $current_name = $input[static::getNameField()];
+      if (isset($input[$name_field])) {
          $copy_name = "";
+         $current_name = $input[$name_field];
+         $table = static::getTable();
 
-         // Find all exisiting names starting like our current item
-         $data = $DB->request([
-            'SELECT' => [static::getNameField()],
-            'FROM'   => $this->getTable(),
-            'WHERE'  => [
-               static::getNameField() => ['LIKE', "$current_name%"]
-            ]
-         ]);
-         $names = [];
-
-         // Parse database data into an array containing all the names
-         foreach ($data as $row) {
-            $names[] = $row[static::getNameField()];
-         }
-
-         // The goal is to set the copy name as "{name} (copy {i})" unless it's
-         // the first copy: in this case just "{name} (copy)" is acceptable
          $copy_index = 0;
 
-         // Increment the index until we find an available name
+         // Use index cache if defined
+         if (!is_null(self::$last_clone_index)) {
+            $copy_index = self::$last_clone_index;
+         }
+
+         // Try to find an available name
          do {
-            $copy_index++;
-            $copy_name = $this->computeCloneName($current_name, $copy_index);
-         } while (in_array($copy_name, $names));
+            $copy_name = $this->computeCloneName($current_name, ++$copy_index);
+            Toolbox::logError($copy_name);
+         } while (countElementsInTable($table, [$name_field => $copy_name]) > 0);
+
+         // Update index cache
+         self::$last_clone_index = $copy_index;
 
          // Override input with the first found valid name
-         $input[static::getNameField()] = $copy_name;
+         $input[$name_field] = $copy_name;
       }
 
       return $input;
