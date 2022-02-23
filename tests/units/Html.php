@@ -66,7 +66,7 @@ class Html extends \GLPITestCase
 
         $this->string(\Html::convDate('not a date', 2))->isIdenticalTo('not a date');
         $this->hasPhpLogRecordThatContains(
-            'Exception: Failed to parse time string (not a date) at position 0 (n): The timezone could not be found in the database',
+            'Failed to parse time string (not a date) at position 0 (n): The timezone could not be found in the database',
             LogLevel::CRITICAL
         );
     }
