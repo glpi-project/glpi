@@ -202,22 +202,31 @@ abstract class CommonDropdown extends CommonDBTM
         return $ong;
     }
 
-
-    final public function displayHeader()
+    public function displayHeader()
     {
-
-        if (empty($this->third_level_menu)) {
-            $this->third_level_menu = $this->getType();
-        }
-        Html::header(
-            $this->getTypeName(Session::getPluralNumber()),
-            '',
-            $this->first_level_menu,
-            $this->second_level_menu,
-            $this->third_level_menu
+        Toolbox::deprecated(
+            "This method is deprecated. Use displayCentralHeader() instead"
         );
     }
 
+    public static function displayCentralHeader(
+        ?string $title = null,
+        ?array $menus = null
+    ): void {
+        if (is_null($menus)) {
+            $dropdown = new static();
+
+            $menus = [
+                $dropdown->first_level_menu,
+                $dropdown->second_level_menu,
+                empty($dropdown->third_level_menu) ?
+                    $dropdown->getType() :
+                    $dropdown->third_level_menu
+            ];
+        }
+
+        parent::displayCentralHeader($title, $menus);
+    }
 
     /**
      * @since 0.83.3
