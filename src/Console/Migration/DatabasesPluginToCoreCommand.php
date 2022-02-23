@@ -41,7 +41,6 @@ use Change_Item;
 use Contract_Item;
 use DB;
 use Document_Item;
-use Glpi\Console\AbstractCommand;
 use Glpi\Toolbox\Sanitizer;
 use Infocom;
 use Item_Problem;
@@ -52,72 +51,16 @@ use Log;
 use Profile;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class DatabasesPluginToCoreCommand extends AbstractCommand
+class DatabasesPluginToCoreCommand extends AbstractPluginToCoreCommand
 {
-    /**
-     * Error code returned if plugin version or plugin data is invalid.
-     *
-     * @var integer
-     */
-    const ERROR_PLUGIN_VERSION_OR_DATA_INVALID = 1;
-
-    /**
-     * Error code returned when import failed.
-     *
-     * @var integer
-     */
-    const ERROR_PLUGIN_IMPORT_FAILED = 2;
-
     /**
      * Error code returned when cleaning code tables failed.
      *
      * @var integer
      */
     const ERROR_CORE_DATA_CLEAN_FAILED = 3;
-
-    /**
-     * List of required plugin tables and fields.
-     *
-     * @var array
-     */
-    const PLUGIN_DATABASES_TABLES = [
-        "glpi_plugin_databases_databases"           => [
-            "id",
-            "entities_id",
-            "is_recursive",
-            "name",
-            "is_deleted",
-            "plugin_databases_databasetypes_id",
-            "comment",
-            "locations_id",
-            "plugin_databases_databasecategories_id",
-            "users_id",
-            "groups_id",
-            "suppliers_id",
-            "plugin_databases_servertypes_id",
-            "manufacturers_id",
-            "date_mod",
-            "link",
-            "is_helpdesk_visible",
-        ],
-        "glpi_plugin_databases_instances"           => [
-            "id",
-            "entities_id",
-            "is_recursive",
-            "name",
-            "plugin_databases_databases_id",
-            "port",
-            "path",
-            "comment",
-        ],
-        "glpi_plugin_databases_databasetypes"       => ["id","entities_id","name","comment"],
-        "glpi_plugin_databases_databasecategories"  => ["id","entities_id","name","comment"],
-        "glpi_plugin_databases_scripttypes"         => ["id","name","comment"],
-        "glpi_plugin_databases_databases_items"     => ["id", "plugin_databases_databases_id","items_id","itemtype"],
-    ];
 
     /**
      * Itemtype corresponding to database in plugin.
@@ -132,13 +75,6 @@ class DatabasesPluginToCoreCommand extends AbstractCommand
 
         $this->setName('glpi:migration:databases_plugin_to_core');
         $this->setDescription(__('Migrate Databases plugin data into GLPI core tables'));
-
-        $this->addOption(
-            'skip-errors',
-            's',
-            InputOption::VALUE_NONE,
-            __('Do not exit on import errors')
-        );
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -146,56 +82,66 @@ class DatabasesPluginToCoreCommand extends AbstractCommand
         $no_interaction = $input->getOption('no-interaction');
         if (!$no_interaction) {
             // Ask for confirmation (unless --no-interaction)
-            $output->writeln([
-                __('You are about to launch migration of Databases plugin data into GLPI core tables.'),
-                __('Any previous database created in core will be lost.'),
-                __('It is better to make a backup of your existing data before continuing.')
-            ]);
+            $output->writeln(
+                [
+                    __('You are about to launch migration of Databases plugin data into GLPI core tables.'),
+                    __('Any previous database created in core will be lost.'),
+                    __('It is better to make a backup of your existing data before continuing.')
+                ],
+                OutputInterface::VERBOSITY_QUIET
+            );
 
             $this->askForConfirmation();
         }
 
-        $this->checkPlugin();
         $this->migratePlugin();
 
         $output->writeln('<info>' . __('Migration done.') . '</info>');
         return 0; // Success
     }
 
-    /**
-     * Check that required tables exists and fields are OK for migration.
-     *
-     * @return void
-     */
-    private function checkPlugin(): void
+    protected function getPluginKey(): string
     {
-        $missing_tables = false;
-        foreach (self::PLUGIN_DATABASES_TABLES as $table => $fields) {
-            if (!$this->db->tableExists($table)) {
-                $this->output->writeln(
-                    '<error>' . sprintf(__('Databases plugin table "%s" is missing.'), $table) . '</error>',
-                    OutputInterface::VERBOSITY_QUIET
-                );
-                $missing_tables = true;
-            } else {
-                foreach ($fields as $field) {
-                    if (!$this->db->fieldExists($table, $field)) {
-                        $this->output->writeln(
-                            '<error>' . sprintf(__('Databases plugin field "%s" is missing.'), $table . '.' . $field) . '</error>',
-                            OutputInterface::VERBOSITY_QUIET
-                        );
-                        $missing_tables = true;
-                    }
-                }
-            }
-        }
+        return 'databases';
+    }
 
-        if ($missing_tables) {
-            throw new \Glpi\Console\Exception\EarlyExitException(
-                '<error>' . __('Migration cannot be done.') . '</error>',
-                self::ERROR_PLUGIN_VERSION_OR_DATA_INVALID
-            );
-        }
+    protected function getRequiredMinimalPluginVersion(): ?string
+    {
+        return '2.3.0';
+    }
+
+    protected function getRequiredDatabasePluginFields(): array
+    {
+        return [
+            'glpi_plugin_databases_databases.id',
+            'glpi_plugin_databases_databases.entities_id',
+            'glpi_plugin_databases_databases.is_recursive',
+            'glpi_plugin_databases_databases.name',
+            'glpi_plugin_databases_databases.is_deleted',
+            'glpi_plugin_databases_databases.plugin_databases_databasetypes_id',
+            'glpi_plugin_databases_databases.plugin_databases_databasecategories_id',
+            'glpi_plugin_databases_databases.comment',
+            'glpi_plugin_databases_databases.locations_id',
+            'glpi_plugin_databases_databases.manufacturers_id',
+            'glpi_plugin_databases_databases.users_id',
+            'glpi_plugin_databases_databases.groups_id',
+            'glpi_plugin_databases_databases.date_mod',
+            'glpi_plugin_databases_databases.is_helpdesk_visible',
+
+            'glpi_plugin_databases_instances.id',
+            'glpi_plugin_databases_instances.entities_id',
+            'glpi_plugin_databases_instances.is_recursive',
+            'glpi_plugin_databases_instances.name',
+            'glpi_plugin_databases_instances.plugin_databases_databases_id',
+
+            'glpi_plugin_databases_databasetypes.id',
+            'glpi_plugin_databases_databasetypes.name',
+            'glpi_plugin_databases_databasetypes.comment',
+
+            'glpi_plugin_databases_databasecategories.id',
+            'glpi_plugin_databases_databasecategories.name',
+            'glpi_plugin_databases_databasecategories.comment',
+        ];
     }
 
     /**
@@ -233,7 +179,6 @@ class DatabasesPluginToCoreCommand extends AbstractCommand
             );
         }
     }
-
 
     /**
      * Copy plugin tables to backup tables from plugin to core keeping same ID.
@@ -333,7 +278,6 @@ class DatabasesPluginToCoreCommand extends AbstractCommand
         }
     }
 
-
     /**
      * Create database instance categories.
      *
@@ -430,7 +374,6 @@ class DatabasesPluginToCoreCommand extends AbstractCommand
 
         $this->output->write(PHP_EOL);
     }
-
 
    /**
     * Create databases instances.
@@ -537,44 +480,5 @@ class DatabasesPluginToCoreCommand extends AbstractCommand
         }
 
         $this->output->write(PHP_EOL);
-    }
-
-    /**
-     * Output import error message.
-     *
-     * @param string           $message
-     * @param ProgressBar|null $progress_bar
-     *
-     * @return void
-     */
-    private function outputImportError($message, ProgressBar $progress_bar = null): void
-    {
-        $skip_errors = $this->input->getOption('skip-errors');
-
-        $verbosity = $skip_errors
-            ? OutputInterface::VERBOSITY_NORMAL
-            : OutputInterface::VERBOSITY_QUIET;
-
-        $message = '<error>' . $message . '</error>';
-
-        if ($skip_errors && $progress_bar instanceof ProgressBar) {
-            $this->writelnOutputWithProgressBar(
-                $message,
-                $progress_bar,
-                $verbosity
-            );
-        } else {
-            if (!$skip_errors && $progress_bar instanceof ProgressBar) {
-                $this->output->write(PHP_EOL); // Keep progress bar last state and go to next line
-            }
-            $this->output->writeln(
-                $message,
-                $verbosity
-            );
-            throw new \Glpi\Console\Exception\EarlyExitException(
-                '<error>' . __('Plugin data import failed.') . '</error>',
-                self::ERROR_PLUGIN_IMPORT_FAILED
-            );
-        }
     }
 }
