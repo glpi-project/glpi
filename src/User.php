@@ -3926,6 +3926,7 @@ JAVASCRIPT;
         $joinprofileright = false;
         $WHERE = [];
 
+
         switch ($right) {
             case "interface":
                 $joinprofile = true;
@@ -4377,7 +4378,7 @@ JAVASCRIPT;
 
         // Make a select box with all glpi users
         if (!$p['multiple']) {
-            $user = getUserName($p['value'], 2);
+            $user = getUserName($p['value'], 2, true);
         }
 
         if ($p['readonly']) {

@@ -1601,10 +1601,11 @@ final class DbUtils
      * @param integer|string $ID   ID of the user.
      * @param integer $link 1 = Show link to user.form.php 2 = return array with comments and link
      *                      (default =0)
+     * @param $disable_anon   bool  disable anonymization of username.
      *
      * @return string username string (realname if not empty and name if realname is empty).
      */
-    public function getUserName($ID, $link = 0)
+    public function getUserName($ID, $link = 0, $disable_anon = false)
     {
         global $DB;
 
@@ -1641,7 +1642,7 @@ final class DbUtils
             if (count($iterator) == 1) {
                 $data     = $iterator->current();
 
-                $anon_name = $ID != ($_SESSION['glpiID'] ?? 0) && Session::getCurrentInterface() == 'helpdesk' ? User::getAnonymizedNameForUser($ID) : null;
+                $anon_name = !$disable_anon && $ID != ($_SESSION['glpiID'] ?? 0) && Session::getCurrentInterface() == 'helpdesk' ? User::getAnonymizedNameForUser($ID) : null;
                 if ($anon_name !== null) {
                     $username = $anon_name;
                 } else {
