@@ -6208,7 +6208,7 @@ class CommonDBTM extends CommonGLPI
      *                                'helpdesk' => [menu 1, menu 2, menu 3],
      *                               ]
      *                             - null (use auto computed values, mainly
-     *                             used for childs of commondropdown that can
+     *                             used for children of commondropdown that can
      *                             define their menus as object properties)
      * @param array      $options  Display options
      *
