@@ -315,10 +315,12 @@
     }
 
     .timeline-badges {
-        margin-bottom: -0.5rem;
+        margin-bottom: -0.75rem;
 
         .badge {
             @include tabler-badge-fix;
+
+            display: inline-block;
         }
     }
 }
