@@ -699,6 +699,22 @@ if (!$DB->fieldExists('glpi_printers', 'autoupdatesystems_id')) {
     $migration->addKey('glpi_printers', 'autoupdatesystems_id');
 }
 
+// Other autoupdatesystems_id additions
+$autoupdatesystems_tables = ['glpi_databaseinstances', 'glpi_monitors', 'glpi_peripherals', 'glpi_phones'];
+foreach ($autoupdatesystems_tables as $autoupdatesystems_table) {
+    if (!$DB->fieldExists($autoupdatesystems_table, 'autoupdatesystems_id')) {
+        $migration->addField(
+            $autoupdatesystems_table,
+            'autoupdatesystems_id',
+            "int {$default_key_sign} NOT NULL DEFAULT '0'",
+            [
+                'after' => 'is_dynamic',
+            ]
+        );
+        $migration->addKey($autoupdatesystems_table, 'autoupdatesystems_id');
+    }
+}
+
 if (countElementsInTable(Blacklist::getTable()) === 4) {
     $stmt = $DB->prepare(
         $DB->buildInsert(

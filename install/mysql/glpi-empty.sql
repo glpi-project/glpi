@@ -4232,6 +4232,7 @@ CREATE TABLE `glpi_monitors` (
   `states_id` int unsigned NOT NULL DEFAULT '0',
   `ticket_tco` decimal(20,4) DEFAULT '0.0000',
   `is_dynamic` tinyint NOT NULL DEFAULT '0',
+  `autoupdatesystems_id` int unsigned NOT NULL DEFAULT '0',
   `uuid` varchar(255) DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
   `is_recursive` tinyint NOT NULL DEFAULT '0',
@@ -4251,6 +4252,7 @@ CREATE TABLE `glpi_monitors` (
   KEY `is_deleted` (`is_deleted`),
   KEY `groups_id_tech` (`groups_id_tech`),
   KEY `is_dynamic` (`is_dynamic`),
+  KEY `autoupdatesystems_id` (`autoupdatesystems_id`),
   KEY `serial` (`serial`),
   KEY `otherserial` (`otherserial`),
   KEY `uuid` (`uuid`),
@@ -5152,6 +5154,7 @@ CREATE TABLE `glpi_peripherals` (
   `states_id` int unsigned NOT NULL DEFAULT '0',
   `ticket_tco` decimal(20,4) DEFAULT '0.0000',
   `is_dynamic` tinyint NOT NULL DEFAULT '0',
+  `autoupdatesystems_id` int unsigned NOT NULL DEFAULT '0',
   `uuid` varchar(255) DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
   `is_recursive` tinyint NOT NULL DEFAULT '0',
@@ -5172,6 +5175,7 @@ CREATE TABLE `glpi_peripherals` (
   KEY `date_mod` (`date_mod`),
   KEY `groups_id_tech` (`groups_id_tech`),
   KEY `is_dynamic` (`is_dynamic`),
+  KEY `autoupdatesystems_id` (`autoupdatesystems_id`),
   KEY `serial` (`serial`),
   KEY `otherserial` (`otherserial`),
   KEY `uuid` (`uuid`),
@@ -5266,6 +5270,7 @@ CREATE TABLE `glpi_phones` (
   `states_id` int unsigned NOT NULL DEFAULT '0',
   `ticket_tco` decimal(20,4) DEFAULT '0.0000',
   `is_dynamic` tinyint NOT NULL DEFAULT '0',
+  `autoupdatesystems_id` int unsigned NOT NULL DEFAULT '0',
   `uuid` varchar(255) DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
   `is_recursive` tinyint NOT NULL DEFAULT '0',
@@ -5287,6 +5292,7 @@ CREATE TABLE `glpi_phones` (
   KEY `date_mod` (`date_mod`),
   KEY `groups_id_tech` (`groups_id_tech`),
   KEY `is_dynamic` (`is_dynamic`),
+  KEY `autoupdatesystems_id` (`autoupdatesystems_id`),
   KEY `serial` (`serial`),
   KEY `otherserial` (`otherserial`),
   KEY `uuid` (`uuid`),
@@ -9100,6 +9106,7 @@ CREATE TABLE `glpi_databaseinstances` (
   `is_deleted` tinyint NOT NULL DEFAULT '0',
   `is_helpdesk_visible` tinyint NOT NULL DEFAULT '1',
   `is_dynamic` tinyint NOT NULL DEFAULT '0',
+  `autoupdatesystems_id` int unsigned NOT NULL DEFAULT '0',
   `date_creation` timestamp NULL DEFAULT NULL,
   `date_mod` timestamp NULL DEFAULT NULL,
   `date_lastboot` timestamp NULL DEFAULT NULL,
@@ -9122,7 +9129,8 @@ CREATE TABLE `glpi_databaseinstances` (
   KEY `date_creation` (`date_creation`),
   KEY `date_mod` (`date_mod`),
   KEY `is_helpdesk_visible` (`is_helpdesk_visible`),
-  KEY `is_dynamic` (`is_dynamic`)
+  KEY `is_dynamic` (`is_dynamic`),
+  KEY `autoupdatesystems_id` (`autoupdatesystems_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 DROP TABLE IF EXISTS `glpi_databases`;
