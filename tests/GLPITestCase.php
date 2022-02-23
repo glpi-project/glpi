@@ -187,14 +187,28 @@ class GLPITestCase extends atoum
     {
         $this->has_failed = true;
 
+        $records = array_map(
+            function ($record) {
+                // Keep only usefull info to display a comprehensive dump
+                return [
+                    'level'   => $record['level'],
+                    'message' => $record['message'],
+                ];
+            },
+            $handler->getRecords()
+        );
+
         $matching = null;
-        foreach ($handler->getRecords() as $record) {
+        foreach ($records as $record) {
             if ($record['level'] === Logger::toMonologLevel($level) && strpos($record['message'], $message) !== false) {
                 $matching = $record;
                 break;
             }
         }
-        $this->variable($matching)->isNotNull('No matching log found.');
+        $this->variable($matching)->isNotNull(
+            sprintf("Message not found in log records\n- %s\n+ %s", $message, print_r($records, true))
+        );
+
         $handler->dropFromRecords($matching['message'], $matching['level']);
 
         $this->has_failed = false;
