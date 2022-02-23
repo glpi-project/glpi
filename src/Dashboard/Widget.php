@@ -1262,10 +1262,11 @@ HTML;
                if (is_horizontal) {
                   var word_width = value.length * 5 + 5;
 
+                  var bar_width = 0;
                   if (value > 0) {
                      labelX = data.x2 - word_width;
                      bar_width = data.x2 - data.x1;
-                  } else{
+                  } else {
                      labelX = data.x2 + word_width;
                      bar_width = data.x1 - data.x2;
                   }
