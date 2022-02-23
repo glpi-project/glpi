@@ -50,7 +50,6 @@ use Item_Ticket;
 use KnowbaseItem_Item;
 use Log;
 use Profile;
-use Symfony\Component\Console\Exception\RuntimeException;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -66,11 +65,18 @@ class DatabasesPluginToCoreCommand extends AbstractCommand
     const ERROR_PLUGIN_VERSION_OR_DATA_INVALID = 1;
 
     /**
-     * Error code returned if import failed.
+     * Error code returned when import failed.
      *
      * @var integer
      */
     const ERROR_PLUGIN_IMPORT_FAILED = 2;
+
+    /**
+     * Error code returned when cleaning code tables failed.
+     *
+     * @var integer
+     */
+    const ERROR_CORE_DATA_CLEAN_FAILED = 3;
 
     /**
      * List of required plugin tables and fields.
@@ -149,13 +155,8 @@ class DatabasesPluginToCoreCommand extends AbstractCommand
             $this->askForConfirmation();
         }
 
-        if (!$this->checkPlugin()) {
-            return self::ERROR_PLUGIN_VERSION_OR_DATA_INVALID;
-        }
-
-        if (!$this->migratePlugin()) {
-            return self::ERROR_PLUGIN_IMPORT_FAILED;
-        }
+        $this->checkPlugin();
+        $this->migratePlugin();
 
         $output->writeln('<info>' . __('Migration done.') . '</info>');
         return 0; // Success
@@ -164,9 +165,9 @@ class DatabasesPluginToCoreCommand extends AbstractCommand
     /**
      * Check that required tables exists and fields are OK for migration.
      *
-     * @return bool
+     * @return void
      */
-    private function checkPlugin(): bool
+    private function checkPlugin(): void
     {
         $missing_tables = false;
         foreach (self::PLUGIN_DATABASES_TABLES as $table => $fields) {
@@ -190,22 +191,19 @@ class DatabasesPluginToCoreCommand extends AbstractCommand
         }
 
         if ($missing_tables) {
-            $this->output->writeln(
+            throw new \Glpi\Console\Exception\EarlyExitException(
                 '<error>' . __('Migration cannot be done.') . '</error>',
-                OutputInterface::VERBOSITY_QUIET
+                self::ERROR_PLUGIN_VERSION_OR_DATA_INVALID
             );
-            return false;
         }
-
-        return true;
     }
 
     /**
      * Clean data from core tables.
      *
-     * @throws RuntimeException
+     * @return void
      */
-    private function cleanCoreTables()
+    private function cleanCoreTables(): void
     {
         $core_tables = [
             \Database::getTable(),
@@ -218,8 +216,9 @@ class DatabasesPluginToCoreCommand extends AbstractCommand
             $result = $this->db->query('TRUNCATE ' . DB::quoteName($table));
 
             if (!$result) {
-                throw new \Symfony\Component\Console\Exception\RuntimeException(
-                    sprintf('Unable to truncate table "%s"', $table)
+                throw new \Glpi\Console\Exception\EarlyExitException(
+                    '<error>' . sprintf(__('Cleaning table "%s" failed.'), $table) . '</error>',
+                    self::ERROR_PLUGIN_VERSION_OR_DATA_INVALID
                 );
             }
         }
@@ -229,8 +228,9 @@ class DatabasesPluginToCoreCommand extends AbstractCommand
             'itemtype' => DatabaseInstance::class
         ]);
         if (!$result) {
-            throw new \Symfony\Component\Console\Exception\RuntimeException(
-                sprintf('Unable to clean table "%s"', $table)
+            throw new \Glpi\Console\Exception\EarlyExitException(
+                '<error>' . sprintf(__('Cleaning table "%s" failed.'), $table) . '</error>',
+                self::ERROR_PLUGIN_VERSION_OR_DATA_INVALID
             );
         }
     }
@@ -239,32 +239,32 @@ class DatabasesPluginToCoreCommand extends AbstractCommand
     /**
      * Copy plugin tables to backup tables from plugin to core keeping same ID.
      *
-     * @return bool
+     * @return void
      */
-    private function migratePlugin(): bool
+    private function migratePlugin(): void
     {
+        //prevent infocom creation from general setup
         global $CFG_GLPI;
-
-       //prevent infocom creation from general setup
         if (isset($CFG_GLPI["auto_create_infocoms"]) && $CFG_GLPI["auto_create_infocoms"]) {
             $CFG_GLPI['auto_create_infocoms'] = false;
         }
+
         $this->cleanCoreTables();
 
-        return $this->createDatabaseTypes()
-         && $this->createDatabaseCategories()
-         && $this->createDatabases()
-         && $this->createDatabaseInstances()
-         && $this->updateItemtypes()
-         && $this->updateProfilesDatabaseRights();
+        $this->createDatabaseTypes();
+        $this->createDatabaseCategories();
+        $this->createDatabases();
+        $this->createDatabaseInstances();
+        $this->updateItemtypes();
+        $this->updateProfilesDatabaseRights();
     }
 
     /**
      * Update profile rights (Associable items to a ticket).
      *
-     * @return bool
+     * @return void
      */
-    private function updateProfilesDatabaseRights(): bool
+    private function updateProfilesDatabaseRights(): void
     {
         $this->output->writeln(
             '<comment>' . __('Updating profiles...') . '</comment>',
@@ -284,20 +284,15 @@ class DatabasesPluginToCoreCommand extends AbstractCommand
             $this->outputImportError(
                 sprintf(__('Unable to update "%s" in profiles.'), __('Associable items to a ticket'))
             );
-            if (!$this->input->getOption('skip-errors')) {
-                 return false;
-            }
         }
-
-        return true;
     }
 
     /**
      * Rename itemtype in core tables.
      *
-     * @return bool
+     * @return void
      */
-    private function updateItemtypes(): bool
+    private function updateItemtypes(): void
     {
         $this->output->writeln(
             '<comment>' . __('Updating GLPI itemtypes...') . '</comment>',
@@ -331,22 +326,17 @@ class DatabasesPluginToCoreCommand extends AbstractCommand
                         $this->db->error()
                     )
                 );
-                if (!$this->input->getOption('skip-errors')) {
-                     return false;
-                }
             }
         }
-
-        return true;
     }
 
 
     /**
      * Create database instance categories.
      *
-     * @return bool
+     * @return void
      */
-    private function createDatabaseCategories(): bool
+    private function createDatabaseCategories(): void
     {
         $this->output->writeln(
             '<comment>' . __('Creating Database Instance categories...') . '</comment>',
@@ -357,8 +347,8 @@ class DatabasesPluginToCoreCommand extends AbstractCommand
             'FROM' => 'glpi_plugin_databases_databasecategories'
         ]);
 
-        if (!count($iterator)) {
-            return true;
+        if ($iterator->count() === 0) {
+            return;
         }
 
         $progress_bar = new ProgressBar($this->output);
@@ -389,23 +379,18 @@ class DatabasesPluginToCoreCommand extends AbstractCommand
                     sprintf(__('Unable to create Database Instance category %s (%d).'), $env['name'], (int) $env['id']),
                     $progress_bar
                 );
-                if (!$this->input->getOption('skip-errors')) {
-                     return false;
-                }
             }
         }
 
         $this->output->write(PHP_EOL);
-
-        return true;
     }
 
     /**
      * Create databases.
      *
-     * @return bool
+     * @return void
      */
-    private function createDatabases(): bool
+    private function createDatabases(): void
     {
         $this->output->writeln(
             '<comment>' . __('Creating Databases...') . '</comment>',
@@ -415,8 +400,8 @@ class DatabasesPluginToCoreCommand extends AbstractCommand
             'FROM' => 'glpi_plugin_databases_instances'
         ]);
 
-        if (!count($iterator)) {
-            return true;
+        if ($iterator->count() === 0) {
+            return;
         }
 
         $progress_bar = new ProgressBar($this->output);
@@ -451,24 +436,19 @@ class DatabasesPluginToCoreCommand extends AbstractCommand
                     sprintf(__('Unable to create Database %s (%d).'), $instance['name'], (int) $instance['id']),
                     $progress_bar
                 );
-                if (!$this->input->getOption('skip-errors')) {
-                     return false;
-                }
             }
         }
 
         $this->output->write(PHP_EOL);
-
-        return true;
     }
 
 
    /**
-    * Create databases.
+    * Create databases instances.
     *
-    * @return bool
+    * @return void
     */
-    private function createDatabaseInstances(): bool
+    private function createDatabaseInstances(): void
     {
         $this->output->writeln(
             '<comment>' . __('Creating Databases instances...') . '</comment>',
@@ -478,8 +458,8 @@ class DatabasesPluginToCoreCommand extends AbstractCommand
             'FROM' => 'glpi_plugin_databases_databases'
         ]);
 
-        if (!count($iterator)) {
-            return true;
+        if ($iterator->count() === 0) {
+            return;
         }
 
         $progress_bar = new ProgressBar($this->output);
@@ -524,22 +504,18 @@ class DatabasesPluginToCoreCommand extends AbstractCommand
                     sprintf(__('Unable to create Database instance %s (%d).'), $database['name'], (int) $database['id']),
                     $progress_bar
                 );
-                if (!$this->input->getOption('skip-errors')) {
-                     return false;
-                }
             }
         }
 
         $this->output->write(PHP_EOL);
-
-        return true;
     }
+
     /**
      * Create database types.
      *
-     * @return bool
+     * @return void
      */
-    private function createDatabaseTypes(): bool
+    private function createDatabaseTypes(): void
     {
         $this->output->writeln(
             '<comment>' . __('Creating Database Instance types...') . '</comment>',
@@ -550,7 +526,7 @@ class DatabasesPluginToCoreCommand extends AbstractCommand
             'FROM' => 'glpi_plugin_databases_databasetypes'
         ]);
 
-        if (!count($iterator)) {
+        if ($iterator->count() === 0) {
             return true;
         }
 
@@ -582,15 +558,10 @@ class DatabasesPluginToCoreCommand extends AbstractCommand
                     sprintf(__('Unable to create Database Instance type %s (%d).'), $type['name'], (int) $type['id']),
                     $progress_bar
                 );
-                if (!$this->input->getOption('skip-errors')) {
-                     return false;
-                }
             }
         }
 
         $this->output->write(PHP_EOL);
-
-        return true;
     }
 
 
@@ -602,14 +573,14 @@ class DatabasesPluginToCoreCommand extends AbstractCommand
      *
      * @return void
      */
-    private function outputImportError($message, ProgressBar $progress_bar = null)
+    private function outputImportError($message, ProgressBar $progress_bar = null): void
     {
 
         $skip_errors = $this->input->getOption('skip-errors');
 
         $verbosity = $skip_errors
-         ? OutputInterface::VERBOSITY_NORMAL
-         : OutputInterface::VERBOSITY_QUIET;
+            ? OutputInterface::VERBOSITY_NORMAL
+            : OutputInterface::VERBOSITY_QUIET;
 
         $message = '<error>' . $message . '</error>';
 
@@ -626,6 +597,10 @@ class DatabasesPluginToCoreCommand extends AbstractCommand
             $this->output->writeln(
                 $message,
                 $verbosity
+            );
+            throw new \Glpi\Console\Exception\EarlyExitException(
+                '<error>' . __('Plugin data import failed.') . '</error>',
+                self::ERROR_PLUGIN_IMPORT_FAILED
             );
         }
     }
