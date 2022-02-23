@@ -1261,11 +1261,19 @@ HTML;
 
                if (is_horizontal) {
                   var word_width = value.length * 5 + 5;
-                  labelX = data.x2 - word_width;
+                  var bar_width = 0;
+
+                  if (value > 0) {
+                     labelX = data.x2 - word_width;
+                     bar_width = data.x2 - data.x1;
+                  } else {
+                     labelX = data.x2 + word_width;
+                     bar_width = data.x1 - data.x2;
+                  }
                   labelY = data.y2;
 
                   // don't display label if width too short
-                  if (data.x2 - data.x1 < word_width) {
+                  if (bar_width < word_width) {
                      display_labels = false;
                   }
                }
