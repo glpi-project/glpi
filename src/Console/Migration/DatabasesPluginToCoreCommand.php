@@ -509,7 +509,7 @@ class DatabasesPluginToCoreCommand extends AbstractCommand
         ]);
 
         if ($iterator->count() === 0) {
-            return true;
+            return;
         }
 
         $progress_bar = new ProgressBar($this->output);
