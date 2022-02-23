@@ -155,7 +155,7 @@ class Appliance extends DbTestCase {
                $this->dateTime($dateClone)->isEqualTo($expectedDate);
                break;
             case 'name':
-               $this->variable($clonedApp->getField($k))->isEqualTo("Copy of {$app->getField($k)} (1)");
+               $this->variable($clonedApp->getField($k))->isEqualTo("{$app->getField($k)} (copy)");
                break;
             default:
                $this->variable($clonedApp->getField($k))->isEqualTo($app->getField($k));

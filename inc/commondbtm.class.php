@@ -1403,15 +1403,13 @@ class CommonDBTM extends CommonGLPI {
       string $current_name,
       ?int $copy_index = null
    ): string {
-      $base_name = sprintf(__("Copy of %s"), $current_name);
-
-      if (is_null($copy_index)) {
-         return $base_name;
+      // No index specified or first copy
+      if (is_null($copy_index) || $copy_index == 1) {
+         return sprintf(__("%s (copy)"), $current_name);
       }
 
-      // Note, we can't use sprintf(__("Copy of %s (%d)"), $current_name, $copy_index) here
-      // We need to rely on the same translation to garantee uniqueness
-      return $base_name . " ($copy_index)";
+      // 1+ copy, add index
+      return sprintf(__("%s (copy %d)"), $current_name, $copy_index);
    }
 
    /**
@@ -1433,14 +1431,14 @@ class CommonDBTM extends CommonGLPI {
       // Force uniqueness for the name field
       if (isset($input[static::getNameField()])) {
          $current_name = $input[static::getNameField()];
+         $copy_name = "";
 
-         // Find all exisiting copy names
-         $search = $this->computeCloneName($current_name) . "%";
+         // Find all exisiting names starting like our current item
          $data = $DB->request([
             'SELECT' => [static::getNameField()],
             'FROM'   => $this->getTable(),
             'WHERE'  => [
-               static::getNameField() => ['LIKE', $search]
+               static::getNameField() => ['LIKE', "$current_name%"]
             ]
          ]);
          $names = [];
@@ -1450,7 +1448,8 @@ class CommonDBTM extends CommonGLPI {
             $names[] = $row[static::getNameField()];
          }
 
-         // The goal is to set the copy name as "Copy of {name} ({i})"
+         // The goal is to set the copy name as "{name} (copy {i})" unless it's
+         // the first copy: in this case just "{name} (copy)" is acceptable
          $copy_index = 0;
 
          // Increment the index until we find an available name

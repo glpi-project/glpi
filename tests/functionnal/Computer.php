@@ -465,7 +465,7 @@ class Computer extends DbTestCase {
                $this->dateTime($dateClone)->isEqualTo($expectedDate);
                break;
             case 'name':
-               $this->variable($clonedComputer->getField($k))->isEqualTo("Copy of {$computer->getField($k)} (1)");
+               $this->variable($clonedComputer->getField($k))->isEqualTo("{$computer->getField($k)} (copy)");
                break;
             default:
                $this->variable($clonedComputer->getField($k))->isEqualTo($computer->getField($k));

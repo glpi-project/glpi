@@ -1421,7 +1421,7 @@ class Ticket extends DbTestCase {
                $this->dateTime($dateClone)->isEqualTo($expectedDate);
                break;
             case 'name':
-               $this->variable($clonedTicket->getField($k))->isEqualTo("Copy of {$ticket->getField($k)} (1)");
+               $this->variable($clonedTicket->getField($k))->isEqualTo("{$ticket->getField($k)} (copy)");
                break;
             default:
                $this->executeOnFailure(

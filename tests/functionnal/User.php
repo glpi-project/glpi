@@ -513,7 +513,7 @@ class User extends \DbTestCase {
                $this->variable($clonedUser->getField($k))->isNotEqualTo($user->getField($k));
                break;
             case 'name':
-               $this->variable($clonedUser->getField($k))->isEqualTo("copy-of-_test_user-1");
+               $this->variable($clonedUser->getField($k))->isEqualTo("_test_user-copy");
                break;
             case 'date_mod':
             case 'date_creation':

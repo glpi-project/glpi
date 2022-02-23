@@ -489,18 +489,18 @@ class Entity extends DbTestCase {
 
       $this->createItems('Entity', [
          [
-            'name'        => 'test_clone entity',
+            'name'        => 'test clone entity',
             'entities_id' => 0,
          ]
       ]);
 
       // Check that no clones exists
       $entity = new \Entity;
-      $res = $entity->find(['name' => ['LIKE', 'Copy of test_clone%']]);
+      $res = $entity->find(['name' => ['LIKE', 'test clone entity %']]);
       $this->array($res)->hasSize(0);
 
       // Clone multiple times
-      $entity = getItemByTypeName('Entity', 'test_clone entity', false);
+      $entity = getItemByTypeName('Entity', 'test clone entity', false);
       $this->integer($entity->clone())->isGreaterThan(0);
       $this->integer($entity->clone())->isGreaterThan(0);
       $this->integer($entity->clone())->isGreaterThan(0);
@@ -508,13 +508,13 @@ class Entity extends DbTestCase {
 
       // Check that 4 clones were created
       $entity = new \Entity;
-      $res = $entity->find(['name' => ['LIKE', 'Copy of test_clone%']]);
+      $res = $entity->find(['name' => ['LIKE', 'test clone entity %']]);
       $this->array($res)->hasSize(4);
 
       // Try to read each clones
-      $this->integer(getItemByTypeName('Entity', 'Copy of test_clone entity (1)', true))->isGreaterThan(0);
-      $this->integer(getItemByTypeName('Entity', 'Copy of test_clone entity (2)', true))->isGreaterThan(0);
-      $this->integer(getItemByTypeName('Entity', 'Copy of test_clone entity (3)', true))->isGreaterThan(0);
-      $this->integer(getItemByTypeName('Entity', 'Copy of test_clone entity (4)', true))->isGreaterThan(0);
+      $this->integer(getItemByTypeName('Entity', 'test clone entity (copy)', true))->isGreaterThan(0);
+      $this->integer(getItemByTypeName('Entity', 'test clone entity (copy 2)', true))->isGreaterThan(0);
+      $this->integer(getItemByTypeName('Entity', 'test clone entity (copy 3)', true))->isGreaterThan(0);
+      $this->integer(getItemByTypeName('Entity', 'test clone entity (copy 4)', true))->isGreaterThan(0);
    }
 }

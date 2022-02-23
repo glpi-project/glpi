@@ -274,7 +274,7 @@ class NetworkPort extends DbTestCase {
                $this->dateTime($dateClone)->isEqualTo($expectedDate);
                break;
             case 'name':
-               $this->variable($clonedNetworkport->getField($k))->isEqualTo("Copy of {$networkport->getField($k)} (1)");
+               $this->variable($clonedNetworkport->getField($k))->isEqualTo("{$networkport->getField($k)} (copy)");
                break;
             default:
                $this->variable($clonedNetworkport->getField($k))->isEqualTo($networkport->getField($k));

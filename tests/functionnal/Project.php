@@ -236,7 +236,7 @@ class Project extends DbTestCase {
       $this->boolean($project_clone->getFromDB($projects_id_clone))->isTrue();
 
       // Check name
-      $this->string($project_clone->fields['name'])->isEqualTo("Copy of $project_input[name] (1)");
+      $this->string($project_clone->fields['name'])->isEqualTo("$project_input[name] (copy)");
       unset($project_clone->fields['name'], $project_input['name']);
 
       // Check basics fields

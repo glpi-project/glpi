@@ -149,7 +149,7 @@ class Certificate extends DbTestCase {
                $this->dateTime($dateClone)->isEqualTo($expectedDate);
                break;
             case 'name':
-               $this->variable($clonedCertificate->getField($k))->isEqualTo("Copy of {$certificate->getField($k)} (1)");
+               $this->variable($clonedCertificate->getField($k))->isEqualTo("{$certificate->getField($k)} (copy)");
                break;
             default:
                $this->variable($clonedCertificate->getField($k))->isEqualTo($certificate->getField($k));
