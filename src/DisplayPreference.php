@@ -572,7 +572,7 @@ class DisplayPreference extends CommonDBTM
                             echo "<input type='hidden' name='itemtype' value='$itemtype'>";
                             echo "<button type='submit' name='purge'" .
                             " title=\"" . _sx('button', 'Delete permanently') . "\"" .
-                            " class='btn btn-icon btn-sm btn-ghost-secondary'><i class='fa fa-times-circle'></i></button>";
+                            " class='btn btn-icon btn-sm btn-ghost-secondary'><i class='fas fa-times-circle'></i></button>";
                             Html::closeForm();
                             echo "</td>\n";
                         } else {
