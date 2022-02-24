@@ -224,7 +224,7 @@ class DomainsPluginToCoreCommand extends AbstractPluginToCoreCommand
                         'entities_id'           => $domain_data['entities_id'],
                         'is_recursive'          => $domain_data['is_recursive'],
                         'domaintypes_id'        => $mapped_type !== null ? $mapped_type->getID() : 0,
-                        'date_creation'         => $domain_data['date_creation'],
+                        'date_domaincreation'   => $domain_data['date_creation'],
                         'date_expiration'       => $domain_data['date_expiration'],
                         'users_id_tech'         => $domain_data['users_id_tech'],
                         'groups_id_tech'        => $domain_data['groups_id_tech'],
