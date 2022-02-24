@@ -367,7 +367,8 @@ class Dashboard extends \CommonDBTM
      *
      * @return array dasboards
      */
-    public static function getAll(bool $force = false, bool $check_rights = true, ?string $context = 'core'): array {
+    public static function getAll(bool $force = false, bool $check_rights = true, ?string $context = 'core'): array
+    {
         global $DB;
 
         if ($force || count(self::$all_dashboards) == 0) {
