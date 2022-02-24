@@ -501,10 +501,7 @@ class Entity extends DbTestCase {
 
       // Clone multiple times
       $entity = getItemByTypeName('Entity', 'test clone entity', false);
-      $this->integer($entity->clone())->isGreaterThan(0);
-      $this->integer($entity->clone())->isGreaterThan(0);
-      $this->integer($entity->clone())->isGreaterThan(0);
-      $this->integer($entity->clone())->isGreaterThan(0);
+      $this->boolean($entity->cloneMultiple(4))->isTrue();
 
       // Check that 4 clones were created
       $entity = new \Entity;

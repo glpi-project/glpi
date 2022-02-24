@@ -168,18 +168,18 @@ class CommonDBTM extends CommonGLPI {
    static $undisclosedFields = [];
 
    /**
-    * Constructor
-   **/
-   function __construct () {
-   }
-
-   /**
     * Cache used to keep track of the last clone index
     * Usefull when cloning an item multiple time to avoid iterating on the sql
     * results multiple time while looking for an available unique name
     * @var null|int
     */
-   public static ?int $last_clone_index = null;
+   public static $last_clone_index = null;
+
+   /**
+    * Constructor
+   **/
+   function __construct () {
+   }
 
    /**
     * Return the table used to store this object
@@ -1238,7 +1238,7 @@ class CommonDBTM extends CommonGLPI {
     *
     * @return int|bool the new ID of the clone (or false if fail)
     */
-   public function cloneNTimes(
+   public function cloneMultiple(
       int $n,
       array $override_input = [],
       bool $history = true
@@ -1489,7 +1489,6 @@ class CommonDBTM extends CommonGLPI {
          // Try to find an available name
          do {
             $copy_name = $this->computeCloneName($current_name, ++$copy_index);
-            Toolbox::logError($copy_name);
          } while (countElementsInTable($table, [$name_field => $copy_name]) > 0);
 
          // Update index cache
