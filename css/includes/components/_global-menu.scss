@@ -37,7 +37,7 @@
 .topbar {
     background-color: $mainmenu-bg;
     color: $mainmenu-fg;
-    z-index: 2000;
+    z-index: $zindex-fixed;
 
     .btn-ghost-secondary {
         color: rgba($color: $mainmenu-fg, $alpha: 80%);
@@ -56,8 +56,6 @@
 }
 
 .topbar {
-    z-index: $zindex-fixed;
-
     .nav-item {
         i {
             margin-right: 0.3em;
