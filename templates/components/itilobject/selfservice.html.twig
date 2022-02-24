@@ -184,38 +184,8 @@
                   ) }}
                {% endif %}
 
-               {# {% set observers_field %}
-                  <div class="actor_single">
-                     {% for index_observer, observer in params['_users_id_observer'] %}
-                        {{ item.showFormHelpdeskObserver({
-                           '_user_index': index_observer,
-                           'show_first': false,
-                        }|merge(params)) }}
-                     {% endfor %}
-                  </div>
-               {% endset %}
-               {{ fields.field(
-                  'urgency',
-                  observers_field,
-                  _n('Watcher', 'Watchers', get_plural_number()),
-                  right_field_options
-               ) }} #}
-
                {% if not itiltemplate.isHiddenField('_users_id_observer') or not itiltemplate.isHiddenField('_groups_id_observer') %}
                   {% set observer_field %}
-                     {# {{ include('components/itilobject/actors/field.html.twig', {
-                        'item': item,
-                        'actortypeint': constant('CommonITILActor::OBSERVER'),
-                        'actortype': 'observer',
-                        'entities_id': params['entities_id'],
-                        'itiltemplate': itiltemplate,
-                        'params': params,
-                        'disable_assign_to_me': true,
-                        'canupdate': true,
-                        'entity_restrict': session('glpiactive_entity'),
-                        'returned_itemtypes': ['User'],
-                     }, with_context = false) }}
-                     <input type="hidden" name="_actors" id="_actors" /> #}
 
                      {{ include('components/itilobject/actors/main.html.twig', {
                         'item': item,

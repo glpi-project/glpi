@@ -207,7 +207,7 @@
                   action: 'getActors',
                   actortype: actorytype,
                   users_right: '{{ users_right ?? 'all' }}',
-                  entity_restrict: {{ entities_id }},
+                  entity_restrict: {{ item.fields['entities_id'] }},
                   searchText: params.term,
                   _idor_token: '{{ idor_token() }}',
                   itiltemplate_class: '{{ itiltemplate.getType() }}',
