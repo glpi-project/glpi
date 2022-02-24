@@ -20,7 +20,6 @@ The present file will list all changes made to the project; according to the
 - Usage of XML-RPC API is deprecated.
 - The database "slaves" property in the status checker (/status.php and glpi:system:status) is deprecated. Use "replicas" instead,
 - The database "master" property in the status checker (/status.php and glpi:system:status) is deprecated. Use "main" instead,
-- `CommonDropdown::displayHeader()` has been deprecated, call `CommonDropdown::displayCentralHeader()` instead and make sure to override properly `first_level_menu`, `second_level_menu` and `third_level_menu`.
 
 ### Removed
 - Autocomplete feature on text fields.
@@ -86,6 +85,7 @@ The present file will list all changes made to the project; according to the
 - `Toolbox::sodiumEncrypt()`
 - `Toolbox::startsWith()`
 - `Toolbox::unclean_cross_side_scripting_deep()`
+- `CommonDropdown::displayHeader()`, use `CommonDropdown::displayCentralHeader()` instead and make sure to override properly `first_level_menu`, `second_level_menu` and `third_level_menu`.
 
 #### Removed
 - `jQueryUI` has been removed in favor of `twbs/bootstrap`. This implies removal of following widgets: `$.accordion`, `$.autocomplete`,
