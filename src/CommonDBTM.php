@@ -6198,7 +6198,7 @@ class CommonDBTM extends CommonGLPI
      * @param int|string  $id      Id of the item to be displayed, may be a
      *                             string due to some weird default values.
      *                             Will be cast to int straight away.
-     * @param anull|array $menus   Menu path used to load specific JS file and
+     * @param null|array  $menus   Menu path used to load specific JS file and
      *                             show breadcumbs, see $CFG_GLPI['javascript']
      *                             and Html::includeHeader()
      *                             Three possible formats:
@@ -6295,11 +6295,6 @@ class CommonDBTM extends CommonGLPI
             $title = static::getTypeName(1);
         }
 
-        // Default menu if not specified: default values of Html::header
-        if (is_null($menus)) {
-            $menus = ['none', 'none', ''];
-        }
-
         Html::header(
             $title,
             $_SERVER['PHP_SELF'],
@@ -6325,11 +6320,6 @@ class CommonDBTM extends CommonGLPI
         // Default title if not specified: itemtype
         if (is_null($title)) {
             $title = static::getTypeName(1);
-        }
-
-        // Default menu if not specified: default values of Html::helpHeader
-        if (is_null($menus)) {
-            $menus = ['self-service', 'none', ''];
         }
 
         Html::helpHeader(

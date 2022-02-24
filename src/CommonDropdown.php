@@ -220,9 +220,7 @@ abstract class CommonDropdown extends CommonDBTM
             $menus = [
                 $dropdown->first_level_menu,
                 $dropdown->second_level_menu,
-                empty($dropdown->third_level_menu) ?
-                    $dropdown->getType() :
-                    $dropdown->third_level_menu
+                $dropdown->third_level_menu ?: $dropdown->getType()
             ];
         }
 
