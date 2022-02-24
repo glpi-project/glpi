@@ -197,8 +197,8 @@ class DatabasesPluginToCoreCommand extends AbstractPluginToCoreCommand
 
         $this->createDatabaseInstanceTypes();
         $this->createDatabaseInstanceCategories();
-        $this->createDatabases();
         $this->createDatabaseInstances();
+        $this->createDatabases();
         $this->updateItemtypes();
         $this->updateProfilesDatabaseRights();
     }
@@ -364,7 +364,7 @@ class DatabasesPluginToCoreCommand extends AbstractPluginToCoreCommand
             ]);
 
             $database = new Database();
-            if ($database->getFromDBByCrit($database_fields) === false && $database->add($database_fields)) {
+            if ($database->getFromDBByCrit($database_fields) === false && $database->add($database_fields) === false) {
                 $this->outputImportError(
                     sprintf(__('Unable to create %s "%s" (%d).'), Database::getTypeName(), $database_data['name'], (int) $database_data['id']),
                     $progress_bar
