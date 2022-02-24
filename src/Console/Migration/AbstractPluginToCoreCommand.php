@@ -141,14 +141,15 @@ abstract class AbstractPluginToCoreCommand extends AbstractCommand
     }
 
     /**
-     * Output import error message.
+     * Handle import error message.
+     * Throws a `\Glpi\Console\Exception\EarlyExitException` unless `skip-errors` option is used.
      *
      * @param string           $message
      * @param ProgressBar|null $progress_bar
      *
      * @return void
      */
-    protected function outputImportError($message, ProgressBar $progress_bar = null): void
+    protected function handleImportError($message, ProgressBar $progress_bar = null): void
     {
         $skip_errors = $this->input->getOption('skip-errors');
 

@@ -225,7 +225,7 @@ class DatabasesPluginToCoreCommand extends AbstractPluginToCoreCommand
             )
         );
         if (false === $result) {
-            $this->outputImportError(
+            $this->handleImportError(
                 sprintf(__('Unable to update "%s" in profiles.'), __('Associable items to a ticket'))
             );
         }
@@ -266,7 +266,7 @@ class DatabasesPluginToCoreCommand extends AbstractPluginToCoreCommand
             );
 
             if (false === $result) {
-                $this->outputImportError(
+                $this->handleImportError(
                     sprintf(
                         __('Migration of table "%s" failed with message "(%s) %s".'),
                         $itemtype_table,
@@ -315,7 +315,7 @@ class DatabasesPluginToCoreCommand extends AbstractPluginToCoreCommand
 
             $category = new DatabaseInstanceCategory();
             if ($category->getFromDBByCrit($category_fields) === false && $category->add($category_fields) === false) {
-                $this->outputImportError(
+                $this->handleImportError(
                     sprintf(__('Unable to create %s "%s" (%d).'), DatabaseInstanceCategory::getTypeName(), $category_data['name'], (int) $category_data['id']),
                     $progress_bar
                 );
@@ -365,7 +365,7 @@ class DatabasesPluginToCoreCommand extends AbstractPluginToCoreCommand
 
             $database = new Database();
             if ($database->getFromDBByCrit($database_fields) === false && $database->add($database_fields) === false) {
-                $this->outputImportError(
+                $this->handleImportError(
                     sprintf(__('Unable to create %s "%s" (%d).'), Database::getTypeName(), $database_data['name'], (int) $database_data['id']),
                     $progress_bar
                 );
@@ -425,7 +425,7 @@ class DatabasesPluginToCoreCommand extends AbstractPluginToCoreCommand
 
             $instance = new DatabaseInstance();
             if ($instance->getFromDBByCrit($database_fields) === false && $instance->add($database_fields) === false) {
-                $this->outputImportError(
+                $this->handleImportError(
                     sprintf(__('Unable to create %s "%s" (%d).'), DatabaseInstance::getTypeName(), $instance_data['name'], (int) $instance_data['id']),
                     $progress_bar
                 );
@@ -472,7 +472,7 @@ class DatabasesPluginToCoreCommand extends AbstractPluginToCoreCommand
 
             $type = new DatabaseInstanceType();
             if ($type->getFromDBByCrit($type_fields) === false && $type->add($type_fields) === false) {
-                $this->outputImportError(
+                $this->handleImportError(
                     sprintf(__('Unable to create %s "%s" (%d).'), DatabaseInstanceType::getTypeName(), $type_data['name'], (int) $type_data['id']),
                     $progress_bar
                 );
