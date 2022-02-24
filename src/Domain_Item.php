@@ -42,6 +42,11 @@ class Domain_Item extends CommonDBRelation
 
     public static $rightname = 'domain';
 
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Domain item', 'Domain items', $nb);
+    }
+
     public static function cleanForItem(CommonDBTM $item)
     {
         $temp = new self();

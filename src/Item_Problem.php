@@ -46,7 +46,10 @@ class Item_Problem extends CommonItilObject_Item
     public static $items_id_2          = 'items_id';
     public static $checkItem_2_Rights  = self::HAVE_VIEW_RIGHT_ON_ITEM;
 
-
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Problem item', 'Problem items', $nb);
+    }
 
     public function getForbiddenStandardMassiveAction()
     {

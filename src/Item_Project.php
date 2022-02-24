@@ -48,7 +48,10 @@ class Item_Project extends CommonDBRelation
     public static $items_id_2          = 'items_id';
     public static $checkItem_2_Rights  = self::HAVE_VIEW_RIGHT_ON_ITEM;
 
-
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Project item', 'Project items', $nb);
+    }
 
     public function getForbiddenStandardMassiveAction()
     {

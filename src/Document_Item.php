@@ -47,6 +47,10 @@ class Document_Item extends CommonDBRelation
     public static $items_id_2    = 'items_id';
     public static $take_entity_2 = false;
 
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Document item', 'Document items', $nb);
+    }
 
     public function getForbiddenStandardMassiveAction()
     {
