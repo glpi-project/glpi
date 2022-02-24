@@ -220,23 +220,33 @@ abstract class AbstractCommand extends Command implements GlpiCommandInterface
     /**
      * Ask for user confirmation before continuing command execution.
      *
+     * @param bool $default_to_yes
+     *
      * @return void
      */
-    protected function askForConfirmation(): void
+    protected function askForConfirmation(bool $default_to_yes = true): void
     {
+        $abort = false;
         if (!$this->input->getOption('no-interaction')) {
             $question_helper = $this->getHelper('question');
             $run = $question_helper->ask(
                 $this->input,
                 $this->output,
-                new ConfirmationQuestion(__('Do you want to continue?') . ' [Yes/no]', true)
+                new ConfirmationQuestion(
+                    __('Do you want to continue?') . ($default_to_yes ? ' [Yes/no]' : ' [yes/No]'),
+                    $default_to_yes
+                )
             );
-            if (!$run) {
-                 throw new \Glpi\Console\Exception\EarlyExitException(
-                     '<comment>' . __('Aborted.') . '</comment>',
-                     0 // Success code
-                 );
-            }
+            $abort = !$run;
+        } else {
+            $abort = !$default_to_yes;
+        }
+
+        if ($abort) {
+            throw new \Glpi\Console\Exception\EarlyExitException(
+                '<comment>' . __('Aborted.') . '</comment>',
+                0 // Success code
+            );
         }
     }
 }
