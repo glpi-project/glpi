@@ -1423,6 +1423,7 @@ class Item_Devices extends CommonDBRelation
 
         echo "<tr class='tab_bg_1'><td>" . _n('Item', 'Items', 1) . "</td>";
         echo "<td>";
+        echo Html::hidden(self::$itemtype_1, ['value' => $this->fields[self::$itemtype_1] ?? '']);
         if ($item === false) {
             echo __('No associated item');
         } else {
