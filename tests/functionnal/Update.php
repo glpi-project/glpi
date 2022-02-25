@@ -92,163 +92,230 @@ class Update extends \GLPITestCase
     public function migrationsProvider()
     {
         $path = realpath(GLPI_ROOT . '/install/migrations');
+
+        $migrations_910_to_921 = [
+            [
+                'file'           => $path . '/update_9.1.0_to_9.1.1.php',
+                'function'       => 'update910to911',
+                'target_version' => '9.1.1',
+            ],
+            [
+                'file'           => $path . '/update_9.1.1_to_9.1.3.php',
+                'function'       => 'update911to913',
+                'target_version' => '9.1.3',
+            ],
+            [
+                'file'           => $path . '/update_9.1.x_to_9.2.0.php',
+                'function'       => 'update91xto920',
+                'target_version' => '9.2.0',
+            ],
+            [
+                'file'           => $path . '/update_9.2.0_to_9.2.1.php',
+                'function'       => 'update920to921',
+                'target_version' => '9.2.1',
+            ],
+        ];
+
+        $migrations_921_to_941 = [
+            [
+                'file'           => $path . '/update_9.2.1_to_9.2.2.php',
+                'function'       => 'update921to922',
+                'target_version' => '9.2.2',
+            ],
+            [
+                'file'           => $path . '/update_9.2.2_to_9.2.3.php',
+                'function'       => 'update922to923',
+                'target_version' => '9.2.3',
+            ],
+            [
+                'file'           => $path . '/update_9.2.x_to_9.3.0.php',
+                'function'       => 'update92xto930',
+                'target_version' => '9.3.0',
+            ],
+            [
+                'file'           => $path . '/update_9.3.0_to_9.3.1.php',
+                'function'       => 'update930to931',
+                'target_version' => '9.3.1',
+            ],
+            [
+                'file'           => $path . '/update_9.3.1_to_9.3.2.php',
+                'function'       => 'update931to932',
+                'target_version' => '9.3.2',
+            ],
+            [
+                'file'           => $path . '/update_9.3.x_to_9.4.0.php',
+                'function'       => 'update93xto940',
+                'target_version' => '9.4.0',
+            ],
+            [
+                'file'           => $path . '/update_9.4.0_to_9.4.1.php',
+                'function'       => 'update940to941',
+                'target_version' => '9.4.1',
+            ],
+        ];
+
+        $migrations_941_to_957 = [
+            [
+                'file'           => $path . '/update_9.4.1_to_9.4.2.php',
+                'function'       => 'update941to942',
+                'target_version' => '9.4.2',
+            ],
+            [
+                'file'           => $path . '/update_9.4.2_to_9.4.3.php',
+                'function'       => 'update942to943',
+                'target_version' => '9.4.3',
+            ],
+            [
+                'file'           => $path . '/update_9.4.3_to_9.4.5.php',
+                'function'       => 'update943to945',
+                'target_version' => '9.4.5',
+            ],
+            [
+                'file'           => $path . '/update_9.4.5_to_9.4.6.php',
+                'function'       => 'update945to946',
+                'target_version' => '9.4.6',
+            ],
+            [
+                'file'           => $path . '/update_9.4.6_to_9.4.7.php',
+                'function'       => 'update946to947',
+                'target_version' => '9.4.7',
+            ],
+            [
+                'file'           => $path . '/update_9.4.x_to_9.5.0.php',
+                'function'       => 'update94xto950',
+                'target_version' => '9.5.0',
+            ],
+            [
+                'file'           => $path . '/update_9.5.1_to_9.5.2.php',
+                'function'       => 'update951to952',
+                'target_version' => '9.5.2',
+            ],
+            [
+                'file'           => $path . '/update_9.5.2_to_9.5.3.php',
+                'function'       => 'update952to953',
+                'target_version' => '9.5.3',
+            ],
+            [
+                'file'           => $path . '/update_9.5.3_to_9.5.4.php',
+                'function'       => 'update953to954',
+                'target_version' => '9.5.4',
+            ],
+            [
+                'file'           => $path . '/update_9.5.4_to_9.5.5.php',
+                'function'       => 'update954to955',
+                'target_version' => '9.5.5',
+            ],
+            [
+                'file'           => $path . '/update_9.5.5_to_9.5.6.php',
+                'function'       => 'update955to956',
+                'target_version' => '9.5.6',
+            ],
+            [
+                'file'           => $path . '/update_9.5.6_to_9.5.7.php',
+                'function'       => 'update956to957',
+                'target_version' => '9.5.7',
+            ],
+        ];
+
+        $migrations_957_to_1000 = [
+            [
+                'file'           => $path . '/update_9.5.x_to_10.0.0.php',
+                'function'       => 'update95xto1000',
+                'target_version' => '10.0.0',
+            ],
+        ];
+
         return [
             [
-            // Validates version normalization (9.1 -> 9.1.0).
+                // Validates version normalization (9.1 -> 9.1.0).
                 'current_version'     => '9.1',
                 'force_latest'        => false,
-                'expected_migrations' => [
-                    $path . '/update_9.1.0_to_9.1.1.php'  => 'update910to911',
-                    $path . '/update_9.1.1_to_9.1.3.php'  => 'update911to913',
-                    $path . '/update_9.1.x_to_9.2.0.php'  => 'update91xto920',
-                    $path . '/update_9.2.0_to_9.2.1.php'  => 'update920to921',
-                    $path . '/update_9.2.1_to_9.2.2.php'  => 'update921to922',
-                    $path . '/update_9.2.2_to_9.2.3.php'  => 'update922to923',
-                    $path . '/update_9.2.x_to_9.3.0.php'  => 'update92xto930',
-                    $path . '/update_9.3.0_to_9.3.1.php'  => 'update930to931',
-                    $path . '/update_9.3.1_to_9.3.2.php'  => 'update931to932',
-                    $path . '/update_9.3.x_to_9.4.0.php'  => 'update93xto940',
-                    $path . '/update_9.4.0_to_9.4.1.php'  => 'update940to941',
-                    $path . '/update_9.4.1_to_9.4.2.php'  => 'update941to942',
-                    $path . '/update_9.4.2_to_9.4.3.php'  => 'update942to943',
-                    $path . '/update_9.4.3_to_9.4.5.php'  => 'update943to945',
-                    $path . '/update_9.4.5_to_9.4.6.php'  => 'update945to946',
-                    $path . '/update_9.4.6_to_9.4.7.php'  => 'update946to947',
-                    $path . '/update_9.4.x_to_9.5.0.php'  => 'update94xto950',
-                    $path . '/update_9.5.1_to_9.5.2.php'  => 'update951to952',
-                    $path . '/update_9.5.2_to_9.5.3.php'  => 'update952to953',
-                    $path . '/update_9.5.3_to_9.5.4.php'  => 'update953to954',
-                    $path . '/update_9.5.4_to_9.5.5.php'  => 'update954to955',
-                    $path . '/update_9.5.5_to_9.5.6.php'  => 'update955to956',
-                    $path . '/update_9.5.6_to_9.5.7.php'  => 'update956to957',
-                    $path . '/update_9.5.x_to_10.0.0.php' => 'update95xto1000',
-                ],
+                'expected_migrations' => array_merge(
+                    $migrations_910_to_921,
+                    $migrations_921_to_941,
+                    $migrations_941_to_957,
+                    $migrations_957_to_1000
+                ),
             ],
             [
-            // Validate version normalization (9.4.1.1 -> 9.4.1).
+                // Validate version normalization (9.4.1.1 -> 9.4.1).
                 'current_version'     => '9.4.1.1',
                 'force_latest'        => false,
-                'expected_migrations' => [
-                    $path . '/update_9.4.1_to_9.4.2.php'  => 'update941to942',
-                    $path . '/update_9.4.2_to_9.4.3.php'  => 'update942to943',
-                    $path . '/update_9.4.3_to_9.4.5.php'  => 'update943to945',
-                    $path . '/update_9.4.5_to_9.4.6.php'  => 'update945to946',
-                    $path . '/update_9.4.6_to_9.4.7.php'  => 'update946to947',
-                    $path . '/update_9.4.x_to_9.5.0.php'  => 'update94xto950',
-                    $path . '/update_9.5.1_to_9.5.2.php'  => 'update951to952',
-                    $path . '/update_9.5.2_to_9.5.3.php'  => 'update952to953',
-                    $path . '/update_9.5.3_to_9.5.4.php'  => 'update953to954',
-                    $path . '/update_9.5.4_to_9.5.5.php'  => 'update954to955',
-                    $path . '/update_9.5.5_to_9.5.6.php'  => 'update955to956',
-                    $path . '/update_9.5.6_to_9.5.7.php'  => 'update956to957',
-                    $path . '/update_9.5.x_to_10.0.0.php' => 'update95xto1000',
-                ],
+                'expected_migrations' => array_merge(
+                    $migrations_941_to_957,
+                    $migrations_957_to_1000
+                ),
             ],
             [
-            // Validate 9.2.2 specific case.
+                // Validate 9.2.2 specific case.
                 'current_version'     => '9.2.2',
                 'force_latest'        => false,
-                'expected_migrations' => [
-                    $path . '/update_9.2.1_to_9.2.2.php'  => 'update921to922',
-                    $path . '/update_9.2.2_to_9.2.3.php'  => 'update922to923',
-                    $path . '/update_9.2.x_to_9.3.0.php'  => 'update92xto930',
-                    $path . '/update_9.3.0_to_9.3.1.php'  => 'update930to931',
-                    $path . '/update_9.3.1_to_9.3.2.php'  => 'update931to932',
-                    $path . '/update_9.3.x_to_9.4.0.php'  => 'update93xto940',
-                    $path . '/update_9.4.0_to_9.4.1.php'  => 'update940to941',
-                    $path . '/update_9.4.1_to_9.4.2.php'  => 'update941to942',
-                    $path . '/update_9.4.2_to_9.4.3.php'  => 'update942to943',
-                    $path . '/update_9.4.3_to_9.4.5.php'  => 'update943to945',
-                    $path . '/update_9.4.5_to_9.4.6.php'  => 'update945to946',
-                    $path . '/update_9.4.6_to_9.4.7.php'  => 'update946to947',
-                    $path . '/update_9.4.x_to_9.5.0.php'  => 'update94xto950',
-                    $path . '/update_9.5.1_to_9.5.2.php'  => 'update951to952',
-                    $path . '/update_9.5.2_to_9.5.3.php'  => 'update952to953',
-                    $path . '/update_9.5.3_to_9.5.4.php'  => 'update953to954',
-                    $path . '/update_9.5.4_to_9.5.5.php'  => 'update954to955',
-                    $path . '/update_9.5.5_to_9.5.6.php'  => 'update955to956',
-                    $path . '/update_9.5.6_to_9.5.7.php'  => 'update956to957',
-                    $path . '/update_9.5.x_to_10.0.0.php' => 'update95xto1000',
-                ],
+                'expected_migrations' => array_merge(
+                    $migrations_921_to_941,
+                    $migrations_941_to_957,
+                    $migrations_957_to_1000
+                ),
             ],
             [
-            // Dev versions always triggger latest migration
+                // Dev versions always triggger latest migration
                 'current_version'     => '10.0.0-dev',
                 'force_latest'        => false,
-                'expected_migrations' => [
-                    $path . '/update_9.5.x_to_10.0.0.php' => 'update95xto1000',
-                ],
+                'expected_migrations' => $migrations_957_to_1000,
             ],
             [
-            // Alpha versions always triggger latest migration
+                // Alpha versions always triggger latest migration
                 'current_version'     => '10.0.0-alpha',
                 'force_latest'        => false,
-                'expected_migrations' => [
-                    $path . '/update_9.5.x_to_10.0.0.php' => 'update95xto1000',
-                ],
+                'expected_migrations' => $migrations_957_to_1000,
             ],
             [
-            // AlphaX versions always triggger latest migration
+                // AlphaX versions always triggger latest migration
                 'current_version'     => '10.0.0-alpha3',
                 'force_latest'        => false,
-                'expected_migrations' => [
-                    $path . '/update_9.5.x_to_10.0.0.php' => 'update95xto1000',
-                ],
+                'expected_migrations' => $migrations_957_to_1000,
             ],
             [
-            // Beta versions always triggger latest migration
+                // Beta versions always triggger latest migration
                 'current_version'     => '10.0.0-beta',
                 'force_latest'        => false,
-                'expected_migrations' => [
-                    $path . '/update_9.5.x_to_10.0.0.php' => 'update95xto1000',
-                ],
+                'expected_migrations' => $migrations_957_to_1000,
             ],
             [
-            // BetaX versions always triggger latest migration
+                // BetaX versions always triggger latest migration
                 'current_version'     => '10.0.0-beta1',
                 'force_latest'        => false,
-                'expected_migrations' => [
-                    $path . '/update_9.5.x_to_10.0.0.php' => 'update95xto1000',
-                ],
+                'expected_migrations' => $migrations_957_to_1000,
             ],
             [
-            // RC versions always triggger latest migration
+                // RC versions always triggger latest migration
                 'current_version'     => '10.0.0-rc',
                 'force_latest'        => false,
-                'expected_migrations' => [
-                    $path . '/update_9.5.x_to_10.0.0.php' => 'update95xto1000',
-                ],
+                'expected_migrations' => $migrations_957_to_1000,
             ],
             [
-            // RCX versions always triggger latest migration
+                // RCX versions always triggger latest migration
                 'current_version'     => '10.0.0-rc2',
                 'force_latest'        => false,
-                'expected_migrations' => [
-                    $path . '/update_9.5.x_to_10.0.0.php' => 'update95xto1000',
-                ],
+                'expected_migrations' => $migrations_957_to_1000,
             ],
             [
-            // Force latests does not duplicate latest in list
+                // Force latests does not duplicate latest in list
                 'current_version'     => '10.0.0-dev',
                 'force_latest'        => true,
-                'expected_migrations' => [
-                    $path . '/update_9.5.x_to_10.0.0.php' => 'update95xto1000',
-                ],
+                'expected_migrations' => $migrations_957_to_1000,
             ],
             [
-            // Validate that list is empty when version matches
+                // Validate that list is empty when version matches
                 'current_version'     => '10.0.0',
                 'force_latest'        => false,
                 'expected_migrations' => [
                 ],
             ],
             [
-            // Validate force latest
+                // Validate force latest
                 'current_version'     => '10.0.0',
                 'force_latest'        => true,
-                'expected_migrations' => [
-                    $path . '/update_9.5.x_to_10.0.0.php' => 'update95xto1000',
-                ],
+                'expected_migrations' => $migrations_957_to_1000,
             ]
         ];
     }
@@ -258,8 +325,12 @@ class Update extends \GLPITestCase
      */
     public function testGetMigrationsToDo(string $current_version, bool $force_latest, array $expected_migrations)
     {
+        $class = new \ReflectionClass(\Update::class);
+        $method = $class->getMethod('getMigrationsToDo');
+        $method->setAccessible(true);
+
         global $DB;
         $update = new \Update($DB);
-        $this->array($update->getMigrationsToDo($current_version, $force_latest))->isIdenticalTo($expected_migrations);
+        $this->array($method->invokeArgs($update, [$current_version, $force_latest]))->isIdenticalTo($expected_migrations);
     }
 }
