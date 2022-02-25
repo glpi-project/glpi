@@ -159,37 +159,42 @@ class Update
             $current_version = $this->version;
         }
 
-        $DB = $this->DB;
-
-        // Remove strict flags to prevent failure on invalid legacy data.
-        // e.g. with `NO_ZERO_DATE` flag `ALTER TABLE` operations fails when a row contains a `0000-00-00 00:00:00` datetime value.
-        // Unitary removal of these flags is not pôssible as MySQL 8.0 triggers warning if
-        // `STRICT_{ALL|TRANS}_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO` are not used all together.
-        $sql_mode = $DB->query(sprintf('SELECT @@sql_mode as %s', $DB->quoteName('sql_mode')))->fetch_assoc()['sql_mode'] ?? '';
-        $sql_mode_flags = array_filter(
-            explode(',', $sql_mode),
-            function (string $flag) {
-                return !in_array(
-                    trim($flag),
-                    [
-                        'STRICT_ALL_TABLES',
-                        'STRICT_TRANS_TABLES',
-                        'NO_ZERO_IN_DATE',
-                        'NO_ZERO_DATE',
-                        'ERROR_FOR_DIVISION_BY_ZERO',
-                    ]
-                );
-            }
-        );
-        $DB->query(sprintf('SET SESSION sql_mode = %s', $DB->quote(implode(',', $sql_mode_flags))));
-
-       // To prevent problem of execution time
-        ini_set("max_execution_time", "0");
-
         if (version_compare($current_version, '0.80', 'lt')) {
             die('Upgrade is not supported before 0.80!');
             die(1);
         }
+
+        $DB = $this->DB;
+
+        $support_legacy_data = version_compare(VersionParser::getNormalizedVersion($current_version), '10.0.0', '>=')
+            ? (Config::getConfigurationValue('core', 'support_legacy_data') ?? true)
+            : true;
+        if ($support_legacy_data) {
+            // Remove strict flags to prevent failure on invalid legacy data.
+            // e.g. with `NO_ZERO_DATE` flag `ALTER TABLE` operations fails when a row contains a `0000-00-00 00:00:00` datetime value.
+            // Unitary removal of these flags is not pôssible as MySQL 8.0 triggers warning if
+            // `STRICT_{ALL|TRANS}_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO` are not used all together.
+            $sql_mode = $DB->query(sprintf('SELECT @@sql_mode as %s', $DB->quoteName('sql_mode')))->fetch_assoc()['sql_mode'] ?? '';
+            $sql_mode_flags = array_filter(
+                explode(',', $sql_mode),
+                function (string $flag) {
+                    return !in_array(
+                        trim($flag),
+                        [
+                            'STRICT_ALL_TABLES',
+                            'STRICT_TRANS_TABLES',
+                            'NO_ZERO_IN_DATE',
+                            'NO_ZERO_DATE',
+                            'ERROR_FOR_DIVISION_BY_ZERO',
+                        ]
+                    );
+                }
+            );
+            $DB->query(sprintf('SET SESSION sql_mode = %s', $DB->quote(implode(',', $sql_mode_flags))));
+        }
+
+       // To prevent problem of execution time
+        ini_set("max_execution_time", "0");
 
        // Update process desactivate all plugins
         $plugin = new Plugin();
