@@ -6133,24 +6133,12 @@ class CommonDBTM extends CommonGLPI
     public static function displayItemNotFoundPage(array $menus): void
     {
         $helpdesk = Session::getCurrentInterface() == "helpdesk";
+        $title = __('Item not found');
 
         if (!$helpdesk) {
-            Html::header(
-                __('Item not found'),
-                $_SERVER['PHP_SELF'],
-                $menus[0] ?? 'none',
-                $menus[1] ?? 'none',
-                $menus[2] ?? '',
-                false
-            );
+            static::displayCentralHeader($title, $menus);
         } else {
-            Html::helpHeader(
-                __('Item not found'),
-                $menus[0] ?? 'self-service',
-                $menus[1] ?? 'none',
-                $menus[2] ?? '',
-                false
-            );
+            static::displayHelpdeskHeader($title, $menus);
         }
 
         Html::displayNotFoundError();
@@ -6167,25 +6155,13 @@ class CommonDBTM extends CommonGLPI
     public static function displayAccessDeniedPage(array $menus): void
     {
         $helpdesk = Session::getCurrentInterface() == "helpdesk";
+        $title = __('Access denied');
 
         if (!$helpdesk) {
             Toolbox::handleProfileChangeRedirect();
-            Html::header(
-                __('Access denied'),
-                $_SERVER['PHP_SELF'],
-                $menus[0] ?? 'none',
-                $menus[1] ?? 'none',
-                $menus[2] ?? '',
-                false
-            );
+            static::displayCentralHeader($title, $menus);
         } else {
-            Html::helpHeader(
-                __('Access denied'),
-                $menus[0] ?? 'self-service',
-                $menus[1] ?? 'none',
-                $menus[2] ?? '',
-                false
-            );
+            static::displayHelpdeskHeader($title, $menus);
         }
 
         Html::displayRightError();
@@ -6225,25 +6201,28 @@ class CommonDBTM extends CommonGLPI
     /**
      * Display a full helpdesk page (header + content + footer) for a given item
      *
-     * @param int|string $id       Id of the item to be displayed, may be a
+     * @param int|string  $id      Id of the item to be displayed, may be a
      *                             string due to some weird default values.
      *                             Will be cast to int straight away.
-     * @param array      $menus    Menu path used to load specific JS file and
+     * @param null|array  $menus   Menu path used to load specific JS file and
      *                             show breadcumbs, see $CFG_GLPI['javascript']
      *                             and Html::includeHeader()
-     *                             Two possible formats:
+     *                             Three possible formats:
      *                             - [menu 1, menu 2, menu 3]
      *                             - [
      *                                'central'  => [menu 1, menu 2, menu 3],
      *                                'helpdesk' => [menu 1, menu 2, menu 3],
      *                               ]
+     *                             - null (use auto computed values, mainly
+     *                             used for children of commondropdown that can
+     *                             define their menus as object properties)
      * @param array      $options  Display options
      *
      * @return void
      */
     public static function displayFullPageForItem(
         $id,
-        array $menus,
+        ?array $menus = null,
         array $options = []
     ): void {
         $id = (int) $id;
@@ -6283,22 +6262,9 @@ class CommonDBTM extends CommonGLPI
 
         // Show header
         if ($interface == 'central') {
-            Html::header(
-                $title,
-                $_SERVER['PHP_SELF'],
-                $menus[0] ?? 'none',
-                $menus[1] ?? 'none',
-                $menus[2] ?? '',
-                false
-            );
+            static::displayCentralHeader($title, $menus);
         } else {
-            Html::helpHeader(
-                $title,
-                $menus[0] ?? 'self-service',
-                $menus[1] ?? 'none',
-                $menus[2] ?? '',
-                false
-            );
+            static::displayHelpdeskHeader($title, $menus);
         }
 
         // Show item
@@ -6316,5 +6282,58 @@ class CommonDBTM extends CommonGLPI
         } else {
             Html::helpFooter();
         }
+    }
+
+    /**
+     * Display a header for the "central" interface
+     *
+     * @param null|string  $title
+     * @param array|string $menus
+     *
+     * @return void
+     */
+    public static function displayCentralHeader(
+        ?string $title = null,
+        ?array $menus = null
+    ): void {
+        // Default title if not specified: current itemtype
+        if (is_null($title)) {
+            $title = static::getTypeName(1);
+        }
+
+        Html::header(
+            $title,
+            $_SERVER['PHP_SELF'],
+            $menus[0] ?? 'none',
+            $menus[1] ?? 'none',
+            $menus[2] ?? '',
+            false
+        );
+    }
+
+    /**
+     * Display a header for the "helpdesk" interface
+     *
+     * @param null|string  $title
+     * @param array|string $menus
+     *
+     * @return void
+     */
+    public static function displayHelpdeskHeader(
+        ?string $title = null,
+        ?array $menus = null
+    ): void {
+        // Default title if not specified: itemtype
+        if (is_null($title)) {
+            $title = static::getTypeName(1);
+        }
+
+        Html::helpHeader(
+            $title,
+            $menus[0] ?? 'self-service',
+            $menus[1] ?? 'none',
+            $menus[2] ?? '',
+            false
+        );
     }
 }

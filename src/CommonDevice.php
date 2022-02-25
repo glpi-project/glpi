@@ -44,6 +44,9 @@ abstract class CommonDevice extends CommonDropdown
    // From CommonDBTM
     public $dohistory           = true;
 
+    public $first_level_menu  = "config";
+    public $second_level_menu = "commondevice";
+    public $third_level_menu  = "";
 
     public static function getTypeName($nb = 0)
     {
@@ -323,13 +326,6 @@ abstract class CommonDevice extends CommonDropdown
             $this->getSearchURL()
         );
     }
-
-
-    public function displayHeader()
-    {
-        Html::header($this->getTypeName(1), '', "config", "commondevice", get_class($this));
-    }
-
 
     /**
      * @since 0.84

@@ -45,7 +45,7 @@ if (!$dropdown->canView()) {
     Html::displayRightError();
 }
 
-$dropdown->displayHeader();
+$dropdown::displayCentralHeader();
 
 Search::show(get_class($dropdown));
 
