@@ -4707,11 +4707,10 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             'states_id' => 0,
             'ticket_tco' => '0.0000',
             'is_dynamic' => 1,
-            'autoupdatesystems_id' => 0,
+            'autoupdatesystems_id' => $autoupdatesystems_id,
             'uuid' => 'af8d3fcfa6fe4784',
             'date_creation' => $computer->fields['date_creation'],
             'is_recursive' => 0,
-         //'autoupdatesystems_id' => $autoupdatesystems_id,
         ];
         $this->array($computer->fields)->isIdenticalTo($expected);
 
