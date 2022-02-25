@@ -4064,8 +4064,6 @@ JAVASCRIPT;
      **/
     public function showFormHelpdesk($ID, $ticket_template = false)
     {
-        global $CFG_GLPI;
-
         if (!self::canCreate()) {
             return false;
         }
@@ -4182,6 +4180,7 @@ JAVASCRIPT;
             $options['itilcategories_id'],
             $_SESSION["glpiactive_entity"]
         );
+        $options['_tickettemplate'] = $tt;
 
         $delegating = User::getDelegateGroupsForUser($options['entities_id']);
 

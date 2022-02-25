@@ -444,13 +444,14 @@ function formatUserName($ID, $login, $realname, $firstname, $link = 0, $cut = 0,
  *@param $ID   integer  ID of the user.
  *@param $link integer  1 = Show link to user.form.php 2 = return array with comments and link
  *                      (default =0)
+ *@param $disable_anon   bool  disable anonymization of username.
  *
  *@return string : username string (realname if not empty and name if realname is empty).
  **/
-function getUserName($ID, $link = 0)
+function getUserName($ID, $link = 0, $disable_anon = false)
 {
     $dbu = new DbUtils();
-    return $dbu->getUserName($ID, $link);
+    return $dbu->getUserName($ID, $link, $disable_anon);
 }
 
 

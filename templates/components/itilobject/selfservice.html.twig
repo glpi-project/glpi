@@ -33,85 +33,90 @@
 
 {% set rand = random() %}
 {% set base_field_options = {
-   'is_horizontal': false,
-   'full_width': true,
-   'full_width_adapt_column': false,
-   'fields_template': itiltemplate,
-   'rand': rand,
+    'is_horizontal': false,
+    'full_width': true,
+    'full_width_adapt_column': false,
+    'fields_template': itiltemplate,
+    'rand': rand,
 } %}
 {% set right_field_options = base_field_options|merge({
-   'is_horizontal': true,
-   'label_class': 'col-lg-3',
-   'input_class': 'col-lg-9',
+    'is_horizontal': true,
+    'label_class': 'col-lg-3',
+    'input_class': 'col-lg-9',
 }) %}
 
 <div class="container-lg">
 
-   {% if has_tickets_to_validate and not url_validate is empty %}
-      <div class="alert alert-warning" role="alert">
-      {{ __('There are some tickets awaiting approval') }} — <a href="{{ url_validate }}" class="alert-link">{{ __('check it out!') }}</a>
-      </div>
-   {% endif %}
+    {% if has_tickets_to_validate and not url_validate is empty %}
+        <div class="alert alert-warning" role="alert">
+            {{ __('There are some tickets awaiting approval') }} — <a href="{{ url_validate }}" class="alert-link">{{ __('check it out!') }}</a>
+        </div>
+    {% endif %}
 
    {{ include('components/itilobject/mainform_open.html.twig') }}
 
-   <div class="card card-lg">
-      <div class="card-header">
-         <h3 class="card-title">
-            {{ __('Describe the incident or request') }}
-         </h3>
-      </div>
+   <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">
+                {{ __('Describe the incident or request') }}
+            </h3>
+        </div>
 
-      <div class="card-body pb-3">
-         <div class="row justify-content-around">
-            <div class="col-12">
+        <div class="card-body bg-secondary-lt pt-0">
+            {% if delegating|length %}
+                <div class="row align-items-end w-100">
+                    <div class="col-sm-6">
 
-               {% if delegating|length %}
-                  {% set actor_add_form %}
-                     <div id="delegate_other{{ rand }}" class="alert alert-info mt-2">
-                        {{ item.showActorAddFormOnCreate(
-                           constant('CommonITILActor::REQUESTER'),
-                           params
-                        )|u.truncate(0) }}
-                     </div>
-                  {% endset %}
+                        {% set actor_add_form %}
+                            <div id="delegate_other{{ rand }}" class="card mt-2">
+                                <div class="card-body">
+                                    {{ item.showActorAddFormOnCreate(
+                                        constant('CommonITILActor::REQUESTER'),
+                                        params
+                                    )|u.truncate(0) }}
+                                </div>
+                            </div>
+                        {% endset %}
 
-                  {{ fields.dropdownYesNo(
-                     'nodelegate',
-                     params['nodelegate'],
-                     __('This ticket concerns me'),
-                     base_field_options|merge({
-                        'add_field_html': actor_add_form
-                     })
-                  ) }}
-
-                  {% if config('use_check_pref') and params['nodelegate'] %}
-                     <div class="mt-4">
+                        {{ fields.dropdownYesNo(
+                            'nodelegate',
+                            params['nodelegate'],
+                            __('This ticket concerns me'),
+                            base_field_options|merge({
+                                'add_field_html': actor_add_form
+                            })
+                        ) }}
+                    </div>
+                    <div class="col-sm-6 {{ config('use_check_pref') and params['nodelegate'] ? "" : "d-none" }}" id="user-info{{ rand }}-block">
                         {% set personal_information %}
-                           <div class="d-inline-flex">
-                              <div class="alert alert-info" id="user-info{{ rand }}">
-                                 {% set user = get_current_user() %}
-                                 {% set user_fields = user.fields %}
-                                 {% set user_fields = user_fields|merge({user_name: user.getFriendlyName()|verbatim_value}) %}
-                                 {% set user_fields = user_fields|merge({email: user.getDefaultEmail()}) %}
-                                 {{ include('components/user/info_card.html.twig', {
-                                    'user': user_fields,
-                                    'can_edit': true
-                                 }, with_context = false) }}
-                              </div>
-                           </div>
+                        <div class="d-inline-flex">
+                            <div class="card mb-0" id="user-info{{ rand }}">
+                                <div class="card-body">
+                                    {% set user = get_current_user() %}
+                                    {% set user_fields = user.fields %}
+                                    {% set user_fields = user_fields|merge({user_name: user.getFriendlyName()|verbatim_value}) %}
+                                    {% set user_fields = user_fields|merge({email: user.getDefaultEmail()}) %}
+                                    {{ include('components/user/info_card.html.twig', {
+                                        'user': user_fields,
+                                        'can_edit': true
+                                    }, with_context = false) }}
+                                </div>
+                            </div>
+                        </div>
                         {% endset %}
                         {{ fields.field(
-                           '',
-                           personal_information,
-                           __('Check your personnal information'),
-                           base_field_options
+                            '',
+                            personal_information,
+                            __('Check your personnal information'),
+                            base_field_options
                         ) }}
-                     </div>
-                  {% endif %}
-               {% endif %}
-            </div>
-            <div class="col-12 col-sm-7">
+                    </div>
+                </div>
+
+            {% endif %}
+        </div>
+        <div class="card-body row mx-0">
+            <div class="offset-md-1 col-md-8 col-xxl-6">
                {{ fields.field(
                   'type',
                   item.dropdownType('type', {
@@ -179,38 +184,8 @@
                   ) }}
                {% endif %}
 
-               {# {% set observers_field %}
-                  <div class="actor_single">
-                     {% for index_observer, observer in params['_users_id_observer'] %}
-                        {{ item.showFormHelpdeskObserver({
-                           '_user_index': index_observer,
-                           'show_first': false,
-                        }|merge(params)) }}
-                     {% endfor %}
-                  </div>
-               {% endset %}
-               {{ fields.field(
-                  'urgency',
-                  observers_field,
-                  _n('Watcher', 'Watchers', get_plural_number()),
-                  right_field_options
-               ) }} #}
-
                {% if not itiltemplate.isHiddenField('_users_id_observer') or not itiltemplate.isHiddenField('_groups_id_observer') %}
                   {% set observer_field %}
-                     {# {{ include('components/itilobject/actors/field.html.twig', {
-                        'item': item,
-                        'actortypeint': constant('CommonITILActor::OBSERVER'),
-                        'actortype': 'observer',
-                        'entities_id': params['entities_id'],
-                        'itiltemplate': itiltemplate,
-                        'params': params,
-                        'disable_assign_to_me': true,
-                        'canupdate': true,
-                        'entity_restrict': session('glpiactive_entity'),
-                        'returned_itemtypes': ['User'],
-                     }, with_context = false) }}
-                     <input type="hidden" name="_actors" id="_actors" /> #}
 
                      {{ include('components/itilobject/actors/main.html.twig', {
                         'item': item,
@@ -259,40 +234,41 @@
                   })
                ) }}
             </div>
-         </div>
-      </div>
+        </div>
 
-      <div class="card-footer text-center">
-         <input type="hidden" name="entities_id" value="{{ params['entities_id'] }}" />
-         <button type="submit" class="btn btn-primary" name="add">
-            <i class="fas fa-plus"></i>
-            <span>{{ __('Submit message') }}</span>
-         </button>
-      </div>
-   </div>
+        <div class="card-footer text-center">
+            <input type="hidden" name="entities_id" value="{{ params['entities_id'] }}" />
+            <button type="submit" class="btn btn-primary" name="add">
+                <i class="fas fa-plus"></i>
+                <span>{{ __('Submit message') }}</span>
+            </button>
+        </div>
+    </div>
 
    {{ include('components/itilobject/mainform_close.html.twig') }}
 </div>
 
 <script type="text/javascript">
 $(function () {
-   $('#btn-collapse-items{{ rand }}').on('click', function() {
-      $(this).hide();
-   });
+    $('#btn-collapse-items{{ rand }}').on('click', function() {
+        $(this).hide();
+    });
 
-   $('#dropdown_nodelegate{{ rand }}').on('change', function() {
-      $('#delegate_other{{ rand }}')
-         .html("")
-         .load('{{ path('ajax/dropdownDelegationUsers.php') }}', {
-            'right': "delegate",
-            'nodelegate': true,
-            '_users_id_requester': {{ params['_users_id_requester'] }},
-            '_users_id_requester_notif': {{ params['_users_id_requester_notif']|json_encode()|raw }},
-            'use_notification': {{ params['_users_id_requester_notif']['use_notification'] }},
-            'entity_restrict':  {{ session('glpiactive_entity') }}
-         });
-   })
+    $('#dropdown_nodelegate{{ rand }}').on('change', function() {
+        var is_for_me = ($(this).val() == '1');
+        $('#user-info{{ rand }}-block').toggleClass('d-none', !is_for_me);
+        $('#delegate_other{{ rand }} .card-body')
+            .html("")
+            .load('{{ path('ajax/dropdownDelegationUsers.php') }}', {
+                'right': "delegate",
+                'nodelegate': (is_for_me ? 1 : 0),
+                '_users_id_requester': {{ params['_users_id_requester'] }},
+                '_users_id_requester_notif': {{ params['_users_id_requester_notif']|json_encode()|raw }},
+                'use_notification': {{ params['_users_id_requester_notif']['use_notification'] }},
+                'entity_restrict':  {{ session('glpiactive_entity') }}
+            });
+    })
 
-   saveActorsToDom();
+    saveActorsToDom();
 });
 </script>
