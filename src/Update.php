@@ -161,6 +161,12 @@ class Update
 
         $DB = $this->DB;
 
+        // Remove the `NO_ZERO_DATE` flag to prevent failure on `ALTER TABLE` operations when
+        // a row contains a `0000-00-00 00:00:00` datetime value.
+        // Unitary removal of this flag is tricky as MySQL 8.0 triggers warning if
+        // `STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO` are not used all together.
+        $DB->query("SET SESSION sql_mode = ''");
+
        // To prevent problem of execution time
         ini_set("max_execution_time", "0");
 
