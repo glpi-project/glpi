@@ -1482,8 +1482,8 @@ class CommonDBTM extends CommonGLPI {
          $copy_index = 0;
 
          // Use index cache if defined
-         if (!is_null(self::$last_clone_index)) {
-            $copy_index = self::$last_clone_index;
+         if (!is_null($this->last_clone_index)) {
+            $copy_index = $this->last_clone_index;
          }
 
          // Try to find an available name
