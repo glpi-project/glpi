@@ -173,7 +173,7 @@ class CommonDBTM extends CommonGLPI {
     * results multiple time while looking for an available unique name
     * @var null|int
     */
-   public static $last_clone_index = null;
+   public $last_clone_index = null;
 
    /**
     * Constructor
@@ -1247,7 +1247,7 @@ class CommonDBTM extends CommonGLPI {
 
       try {
          // Init index cache
-         self::$last_clone_index = 0;
+         $this->last_clone_index = 0;
          for ($i = 0; $i < $n && !$failure; $i++) {
             if ($this->clone($override_input, $history) === false) {
                // Increment clone index cache to use less SQL
@@ -1257,7 +1257,7 @@ class CommonDBTM extends CommonGLPI {
          }
       } finally {
          // Make sure cache is cleaned even on exception
-         self::$last_clone_index = null;
+         $this->last_clone_index = null;
       }
 
       return !$failure;
@@ -1492,7 +1492,7 @@ class CommonDBTM extends CommonGLPI {
          } while (countElementsInTable($table, [$name_field => $copy_name]) > 0);
 
          // Update index cache
-         self::$last_clone_index = $copy_index;
+         $this->last_clone_index = $copy_index;
 
          // Override input with the first found valid name
          $input[$name_field] = $copy_name;
