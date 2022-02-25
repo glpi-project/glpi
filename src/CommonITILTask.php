@@ -471,15 +471,18 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
         $itemtype = $this->getItilObjectItemType();
 
         // Handle template
-        if (isset($input['_tasktemplates_id'])) {
+        if (isset($input['_templates_id'])) {
             $tasktemplate = new TaskTemplate;
-            $tasktemplate->getFromDB($input['_tasktemplates_id']);
+            $result = $tasktemplate->getFromDB($input['_templates_id']);
+            if (!$result) {
+                return false;
+            }
             $template_fields = $tasktemplate->fields;
             unset($template_fields['id']);
             if (isset($template_fields['content'])) {
                 $parent_item = new $itemtype;
                 $parent_item->getFromDB($input[$parent_item->getForeignKeyField()]);
-                $template_fields['content'] = $tasktemplate->getRenderedContent($parent_item);
+                $template_fields['content'] = Sanitizer::sanitize($tasktemplate->getRenderedContent($parent_item));
             }
             $input = array_replace($template_fields, $input);
         }
