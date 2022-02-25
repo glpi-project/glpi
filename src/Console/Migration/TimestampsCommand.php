@@ -115,6 +115,18 @@ class TimestampsCommand extends AbstractCommand
                         $nullable = true;
                     }
 
+                    // Fix invalid zero dates
+                    $this->db->update(
+                        $table['TABLE_NAME'],
+                        [
+                            $column['COLUMN_NAME'] => $nullable ? null : '1970-01-01 00:00:01'
+                        ],
+                        [
+                            ['NOT' => [$column['COLUMN_NAME'] => null]],
+                            [$column['COLUMN_NAME'] => ['<', '1970-01-01 00:00:01']],
+                        ]
+                    );
+
                      //guess default value
                     if (is_null($column['COLUMN_DEFAULT']) && !$nullable) { // no default
                       // Prevent MySQL/MariaDB to force "default current_timestamp on update current_timestamp"
