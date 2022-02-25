@@ -33,6 +33,7 @@
 
 namespace tests\units;
 
+use CommonITILObject;
 use DbTestCase;
 use Ticket;
 
@@ -40,12 +41,35 @@ use Ticket;
 
 class ITILSolution extends DbTestCase
 {
+    /**
+     * Create a new ITILObject and return its id or the object
+     *
+     * @param string $itemtype ITILObject parent to test followups on
+     * @param bool   $as_object
+     * @return integer|\CommonDBTM
+     */
+    private function getNewITILObject($itemtype, bool $as_object = false)
+    {
+        //create reference ITILObject
+        $itilobject = new $itemtype();
+        $this->integer((int)$itilobject->add([
+            'name'         => "$itemtype title",
+            'description'  => 'a description',
+            'content'      => '',
+            'entities_id'  => getItemByTypeName('Entity', '_test_root_entity', true),
+        ]))->isGreaterThan(0);
+
+        $this->boolean($itilobject->isNewItem())->isFalse();
+        $this->boolean($itilobject->can($itilobject->getID(), \READ))->isTrue();
+        return $as_object ? $itilobject : (int)$itilobject->getID();
+    }
+
     public function testTicketSolution()
     {
         $this->login();
 
         $uid = getItemByTypeName('User', TU_USER, true);
-        $ticket = new \Ticket();
+        $ticket = new Ticket();
         $this->integer((int)$ticket->add([
             'name'               => 'ticket title',
             'description'        => 'a description',
@@ -218,7 +242,7 @@ class ITILSolution extends DbTestCase
         $this->setEntity('Root entity', true);
 
         $uid = getItemByTypeName('User', TU_USER, true);
-        $ticket = new \Ticket();
+        $ticket = new Ticket();
         $duplicated = (int)$ticket->add([
             'name'               => 'Duplicated ticket',
             'description'        => 'A ticket that will be duplicated',
@@ -267,7 +291,7 @@ class ITILSolution extends DbTestCase
         $this->login();
 
         $uid = getItemByTypeName('User', TU_USER, true);
-        $ticket = new \Ticket();
+        $ticket = new Ticket();
         $this->integer((int)$ticket->add([
             'name'               => 'ticket title',
             'description'        => 'a description',
@@ -309,7 +333,7 @@ class ITILSolution extends DbTestCase
         $this->login(); // must be logged as ITILSolution uses Session::getLoginUserID()
 
        // Test uploads for item creation
-        $ticket = new \Ticket();
+        $ticket = new Ticket();
         $ticket->add([
             'name' => $this->getUniqueString(),
             'content' => 'test',
@@ -402,5 +426,42 @@ class ITILSolution extends DbTestCase
             $ticket->getFromDB($ticket->fields['id']);
             $this->integer($ticket->fields['status'])->isEqualTo(Ticket::SOLVED);
         }
+    }
+
+    public function testAddFromTemplate()
+    {
+        $this->login();
+
+        $ticket = $this->getNewITILObject('Ticket', true);
+        $template = new \SolutionTemplate();
+        $templates_id = $template->add([
+            'name'               => 'test template',
+            'content'            => 'test template',
+        ]);
+        $this->integer($templates_id)->isGreaterThan(0);
+        $solution = new \ITILSolution();
+        $solutions_id = $solution->add([
+            '_templates_id'      => $templates_id,
+            'itemtype'           => 'Ticket',
+            'items_id'           => $ticket->fields['id'],
+        ]);
+        $this->integer($solutions_id)->isGreaterThan(0);
+
+        $this->string($solution->fields['content'])->isEqualTo('&#60;p&#62;test template&#60;/p&#62;');
+
+        //Reset ticket status
+        $ticket->update([
+            'id'    => $ticket->fields['id'],
+            'status' => \CommonITILObject::INCOMING,
+        ]);
+        $solutions_id = $solution->add([
+            '_templates_id'      => $templates_id,
+            'itemtype'           => 'Ticket',
+            'items_id'           => $ticket->fields['id'],
+            'content'            => 'test template2',
+        ]);
+        $this->integer($solutions_id)->isGreaterThan(0);
+
+        $this->string($solution->fields['content'])->isEqualTo('test template2');
     }
 }

@@ -190,7 +190,7 @@ class ITILSolution extends CommonDBChild
             unset($template_fields['id']);
             if (isset($template_fields['content'])) {
                 $parent_item = new $input['itemtype'];
-                $parent_item->getFromDB($input[$parent_item->getForeignKeyField()]);
+                $parent_item->getFromDB($input['items_id']);
                 $template_fields['content'] = Sanitizer::sanitize($template->getRenderedContent($parent_item));
             }
             $input = array_replace($template_fields, $input);
