@@ -1314,12 +1314,6 @@ class MassiveAction {
                   // recovers the item from DB
                   if ($item->getFromDB($id)) {
                      $succeed = $item->cloneMultiple($input["nb_copy"]);
-                     // clone in a loop
-                     // for ($i = 0; $i < $input["nb_copy"] && $succeed; $i++) {
-                     //    if ($item->clone() === false) {
-                     //       $succeed = false;
-                     //    }
-                     // }
                      if ($succeed) {
                         $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
                      } else {
