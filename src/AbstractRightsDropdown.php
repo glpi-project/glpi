@@ -268,4 +268,43 @@ abstract class AbstractRightsDropdown
 
         return $groups_items;
     }
+
+    /**
+     * To be used in front files dealing with dropdown input created by
+     * static::show()
+     * Read values from a "flattened" select 2 multi itemtype dropdown like this:
+     * [
+     *    0 => 'users_id-3',
+     *    1 => 'users_id-14',
+     *    2 => 'groups_id-2',
+     *    3 => 'groups_id-78',
+     *    4 => 'profiles_id-1',
+     * ]
+     * into an array containings the ids of the specified $class parameter:
+     * $class = User -> [3, 14]
+     * $class = Group -> [2, 78]
+     * $class = Profile -> [1]
+     *
+     * @param array  $values Flattened array containing multiple itemtypes and ids
+     * @param string $class  Class to filter results on
+     *
+     * @return array List of ids
+     */
+    public static function getPostedIds(array $values, string $class): array
+    {
+        $inflated_values = [];
+
+        foreach ($values as $value) {
+            // Split fkey and ids
+            $parsed_values = explode("-", $value);
+            $fkey  = $parsed_values[0];
+            $value = $parsed_values[1];
+
+            if ($fkey == $class::getForeignKeyField()) {
+                $inflated_values[] = $value;
+            }
+        }
+
+        return $inflated_values;
+    }
 }
