@@ -161,11 +161,27 @@ class Update
 
         $DB = $this->DB;
 
-        // Remove the `NO_ZERO_DATE` flag to prevent failure on `ALTER TABLE` operations when
-        // a row contains a `0000-00-00 00:00:00` datetime value.
-        // Unitary removal of this flag is tricky as MySQL 8.0 triggers warning if
-        // `STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO` are not used all together.
-        $DB->query("SET SESSION sql_mode = ''");
+        // Remove strict flags to prevent failure on invalid legacy data.
+        // e.g. with `NO_ZERO_DATE` flag `ALTER TABLE` operations fails when a row contains a `0000-00-00 00:00:00` datetime value.
+        // Unitary removal of these flags is not pôssible as MySQL 8.0 triggers warning if
+        // `STRICT_{ALL|TRANS}_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO` are not used all together.
+        $sql_mode = $DB->query(sprintf('SELECT @@sql_mode as %s', $DB->quoteName('sql_mode')))->fetch_assoc()['sql_mode'] ?? '';
+        $sql_mode_flags = array_filter(
+            explode(',', $sql_mode),
+            function (string $flag) {
+                return !in_array(
+                    trim($flag),
+                    [
+                        'STRICT_ALL_TABLES',
+                        'STRICT_TRANS_TABLES',
+                        'NO_ZERO_IN_DATE',
+                        'NO_ZERO_DATE',
+                        'ERROR_FOR_DIVISION_BY_ZERO',
+                    ]
+                );
+            }
+        );
+        $DB->query(sprintf('SET SESSION sql_mode = %s', $DB->quote(implode(',', $sql_mode_flags))));
 
        // To prevent problem of execution time
         ini_set("max_execution_time", "0");
