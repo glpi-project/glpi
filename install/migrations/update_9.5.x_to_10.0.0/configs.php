@@ -52,6 +52,7 @@ $migration->addConfig([
     'noreply_email_name'    => '',
     'replyto_email'         => '',
     'replyto_email_name'    => '',
+    'support_legacy_data'   => 1, // GLPI instances updated from GLPI < 10.0 should support legacy data
 ]);
 $migration->addField("glpi_users", "default_central_tab", "tinyint DEFAULT 0");
 $migration->addField('glpi_users', 'page_layout', 'char(20) DEFAULT NULL', ['after' => 'palette']);

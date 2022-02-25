@@ -2925,6 +2925,22 @@ HTML;
         return $result;
     }
 
+
+    /**
+     * Get config value
+     *
+     * @param $context  string   context to get values (default for glpi is core)
+     * @param $name     string   config name
+     *
+     * @return mixed
+     *
+     * @since 10.0.0
+     */
+    public static function getConfigurationValue(string $context, string $name)
+    {
+        return self::getConfigurationValues($context, [$name])[$name] ?? null;
+    }
+
     /**
      * Load legacy configuration into $CFG_GLPI global variable.
      *
