@@ -51,15 +51,11 @@
 
         /* fallback */
         cursor: grab;
-        cursor: grab;
-        cursor: grab;
 
         &:active {
             cursor: move;
 
             /* fallback */
-            cursor: grabbing;
-            cursor: grabbing;
             cursor: grabbing;
         }
     }

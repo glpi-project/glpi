@@ -111,8 +111,7 @@
                 right: auto;
                 top: -1px;
                 bottom: auto;
-                border: 7px solid;
-                border-color: transparent;
+                border: 7px solid transparent;
             }
 
             &::after {
@@ -124,8 +123,7 @@
                 right: auto;
                 top: 0;
                 bottom: auto;
-                border: 6px solid;
-                border-color: transparent;
+                border: 6px solid transparent;
             }
 
             &.t-right {
