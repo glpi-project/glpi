@@ -318,7 +318,7 @@ class Dropdown
                 && $params['addicon']
             ) {
                   $icons .= '<div class="btn btn-outline-secondary"
-                               title="' . __s('Add') . '" data-bs-toggle="modal" data-bs-target="#add_'.$field_id.'">';
+                               title="' . __s('Add') . '" data-bs-toggle="modal" data-bs-target="#add_' . $field_id . '">';
                   $icons .= Ajax::createIframeModalWindow('add_' . $field_id, $item->getFormURL(), ['display' => false]);
                   $icons .= "<span data-bs-toggle='tooltip'>
                   <i class='fa-fw ti ti-plus'></i>
