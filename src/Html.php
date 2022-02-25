@@ -3629,7 +3629,7 @@ JS;
                 $out .= "</a>";
             }
 
-            $param['applyto'] = "tooltip$rand";
+            $param['applyto'] = (!empty($param['link']) && !empty($param['linkid'])) ? $param['linkid'] : "tooltip$rand";
         }
 
         if (empty($param['contentid'])) {
