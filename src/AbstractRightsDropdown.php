@@ -290,7 +290,7 @@ abstract class AbstractRightsDropdown
      *
      * @return array List of ids
      */
-    public static function inflateValues(array $values, string $class): array
+    public static function getPostedIds(array $values, string $class): array
     {
         $inflated_values = [];
 
