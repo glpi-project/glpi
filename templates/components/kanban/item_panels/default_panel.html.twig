@@ -78,7 +78,7 @@
                      <h5>{{ item.getTeamRoleName(team_role, get_plural_number()) }}</h5>
                      <ul class="list-group team-list" data-role="{{ team_role }}">
                         {% for team_member in role_members %}
-                           <li class="list-group-item d-flex justify-content-between" data-itemtype="{{ team_member.itemtype }}"
+                           <li class="list-group-item d-flex justify-content-between p-2" data-itemtype="{{ team_member.itemtype }}"
                                data-items_id="{{ team_member.items_id }}"
                                data-name="{{ team_member.display_name|default(team_member.name)|verbatim_value }}"
                                data-firstname="{{ team_member.firstname|verbatim_value }}"
