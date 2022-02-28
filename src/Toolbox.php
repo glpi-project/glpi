@@ -490,7 +490,7 @@ class Toolbox
      * @param string $hide Call to hide (but display script/line)
      * @param array  $skip Calls to not display at all
      *
-     * @return string if $log is false
+     * @return string
      *
      * @since 0.85
      **/
@@ -528,9 +528,9 @@ class Toolbox
 
         if ($log) {
             self::logInFile($log, $message, true);
-        } else {
-            return $message;
         }
+
+        return $message;
     }
 
     /**
