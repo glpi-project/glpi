@@ -76,6 +76,12 @@ abstract class CommonDBRelation extends CommonDBConnexity
 
     public $no_form_page                  = true;
 
+    /**
+     * Search option number to use in parent item log.
+     * Value is defined during logging process and unset after it.
+     * @var int
+     */
+    protected $_force_log_option;
 
     /**
      * Get request cirteria to search for an item
