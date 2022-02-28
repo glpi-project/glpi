@@ -2652,7 +2652,7 @@ JAVASCRIPT;
             !isset($request["itemtype"])
             || !isset($request["num"])
         ) {
-            return "";
+            return;
         }
 
         $num         = (int) $request['num'];
@@ -2680,14 +2680,16 @@ JAVASCRIPT;
             && $criteria['meta']
             && !$from_meta
         ) {
-            return self::displayMetaCriteria($request);
+            self::displayMetaCriteria($request);
+            return;
         }
 
         if (
             isset($criteria['criteria'])
             && is_array($criteria['criteria'])
         ) {
-            return self::displayCriteriaGroup($request);
+            self::displayCriteriaGroup($request);
+            return;
         }
 
         $add_padding = "p-2";
