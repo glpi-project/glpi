@@ -35,6 +35,7 @@ namespace tests\units;
 
 use CommonITILActor;
 use DbTestCase;
+use Glpi\Toolbox\Sanitizer;
 use ITILFollowup as CoreITILFollowup;
 use Ticket;
 use Ticket_User;
@@ -537,21 +538,21 @@ class ITILFollowup extends DbTestCase
         $this->integer($templates_id)->isGreaterThan(0);
         $fup = new \ITILFollowup();
         $fups_id = $fup->add([
-            '_templates_id'      => $templates_id,
-            'itemtype'           => 'Ticket',
-            'items_id'           => $ticket->fields['id'],
+            '_itilfollowuptemplates_id' => $templates_id,
+            'itemtype'                  => 'Ticket',
+            'items_id'                  => $ticket->fields['id'],
         ]);
         $this->integer($fups_id)->isGreaterThan(0);
 
-        $this->string($fup->fields['content'])->isEqualTo('<p>test template</p>');
+        $this->string($fup->fields['content'])->isEqualTo(Sanitizer::sanitize('<p>test template</p>', false));
         $this->integer($fup->fields['is_private'])->isEqualTo(1);
 
         $fups_id = $fup->add([
-            '_templates_id'      => $templates_id,
-            'itemtype'           => 'Ticket',
-            'items_id'           => $ticket->fields['id'],
-            'content'            => 'test template2',
-            'is_private'         => 0,
+            '_itilfollowuptemplates_id' => $templates_id,
+            'itemtype'                  => 'Ticket',
+            'items_id'                  => $ticket->fields['id'],
+            'content'                   => 'test template2',
+            'is_private'                => 0,
         ]);
         $this->integer($fups_id)->isGreaterThan(0);
 

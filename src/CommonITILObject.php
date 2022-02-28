@@ -7653,8 +7653,7 @@ abstract class CommonITILObject extends CommonDBTM
         $itiltask   = new $itiltask_class();
         foreach ($this->input['_tasktemplates_id'] as $tasktemplates_id) {
             $itiltask->add([
-                'tasktemplates_id'            => $tasktemplates_id,
-                '_templates_id'               => $tasktemplates_id,
+                '_tasktemplates_id'           => $tasktemplates_id,
                 $this->getForeignKeyField()   => $this->fields['id'],
                 'date'                        => $this->fields['date'],
                 '_disablenotif'               => true
@@ -7681,9 +7680,9 @@ abstract class CommonITILObject extends CommonDBTM
            // Insert new followup from template
             $fup = new ITILFollowup();
             $fup->add([
+                '_itilfollowuptemplates_id' => $fup_templates_id,
                 'itemtype'                  => $this->getType(),
                 'items_id'                  => $this->getID(),
-                '_templates_id'             => $fup_templates_id,
                 '_disablenotif'             => true,
             ]);
         }
@@ -7701,9 +7700,9 @@ abstract class CommonITILObject extends CommonDBTM
 
         $solution = new ITILSolution();
         $solution->add([
-            'itemtype'          => static::getType(),
-            'status'            => CommonITILValidation::WAITING,
-            'items_id'          => $this->fields['id']
+            '_solutiontemplates_id' => $this->input['_solutiontemplates_id'],
+            'itemtype'              => static::getType(),
+            'items_id'              => $this->fields['id'],
         ]);
     }
 

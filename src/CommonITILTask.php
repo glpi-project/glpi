@@ -472,19 +472,27 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
 
         // Handle template
         if (isset($input['_templates_id'])) {
-            $tasktemplate = new TaskTemplate;
-            $result = $tasktemplate->getFromDB($input['_templates_id']);
-            if (!$result) {
+            $template = new TaskTemplate();
+            $parent_item = new $itemtype();
+            if (
+                !$template->getFromDB($input['_templates_id'])
+                || !$parent_item->getFromDB($input[$parent_item->getForeignKeyField()])
+            ) {
                 return false;
             }
-            $template_fields = $tasktemplate->fields;
-            unset($template_fields['id']);
-            if (isset($template_fields['content'])) {
-                $parent_item = new $itemtype;
-                $parent_item->getFromDB($input[$parent_item->getForeignKeyField()]);
-                $template_fields['content'] = Sanitizer::sanitize($tasktemplate->getRenderedContent($parent_item));
-            }
-            $input = array_replace($template_fields, $input);
+            $input['tasktemplates_id']  = $input['_templates_id'];
+            $input = array_replace(
+                [
+                    'content'           => Sanitizer::sanitize($template->getRenderedContent($parent_item)),
+                    'taskcategories_id' => $template->fields['taskcategories_id'],
+                    'actiontime'        => $template->fields['actiontime'],
+                    'state'             => $template->fields['state'],
+                    'is_private'        => $template->fields['is_private'],
+                    'users_id_tech'     => $template->fields['users_id_tech'],
+                    'groups_id_tech'    => $template->fields['groups_id_tech'],
+                ],
+                $input
+            );
         }
 
         if (empty($input['content'])) {
