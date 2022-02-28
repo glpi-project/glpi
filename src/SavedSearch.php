@@ -769,6 +769,8 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
                 ]
             );
         }
+
+        return false;
     }
 
 
