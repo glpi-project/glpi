@@ -53,16 +53,21 @@
    {% set target = path("front/helpdesk.public.php") %}
 {% endif %}
 
+{% set current_entity = session('glpiactive_entity_name')|verbatim_value %}
+{% set current_entity_short = session('glpiactive_entity_shortname')|verbatim_value %}
+{% if current_entity != current_entity_short %}
+   {% set current_entity_short = '... > ' ~ current_entity_short %}
+{% endif %}
 {% if session('glpi_multientitiesmode') == 0 %}
-   <span class="dropdown-item dropdown-item-text">
+   <span class="dropdown-item dropdown-item-text" title="{{ current_entity }}">
       <i class="fa-fw ti ti-stack"></i>
-      {{ session('glpiactive_entity_name')|verbatim_value|u.truncate(35, '...') }}
+      {{ current_entity_short|u.truncate(35, '...') }}
    </span>
 {% else %}
    <div class="dropdown dropstart">
-      <a href="#" class="dropdown-item dropdown-toggle" data-bs-toggle="dropdown" data-bs-auto-close="outside">
+      <a href="#" class="dropdown-item dropdown-toggle" data-bs-toggle="dropdown" data-bs-auto-close="outside" title="{{ current_entity }}">
          <i class="fa-fw ti ti-stack"></i>
-         {{ session('glpiactive_entity_name')|verbatim_value|u.truncate(35, '...') }}
+         {{ current_entity_short|u.truncate(35, '...') }}
       </a>
       <div class="dropdown-menu p-3">
          <h3>{{ __('Select the desired entity') }}</h3>
