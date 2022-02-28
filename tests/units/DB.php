@@ -91,7 +91,7 @@ class DB extends \GLPITestCase
      */
     public function testQuoteName($raw, $quoted)
     {
-        $this->string(\DB::quoteName($raw))->isIdenticalTo($quoted);
+        $this->string(\DBmysql::quoteName($raw))->isIdenticalTo($quoted);
     }
 
     protected function dataValue()
@@ -116,7 +116,7 @@ class DB extends \GLPITestCase
      */
     public function testQuoteValue($raw, $expected)
     {
-        $this->string(\DB::quoteValue($raw))->isIdenticalTo($expected);
+        $this->string(\DBmysql::quoteValue($raw))->isIdenticalTo($expected);
     }
 
 
@@ -208,7 +208,7 @@ class DB extends \GLPITestCase
                 'UPDATE `table` SET `field` = :field WHERE  NOT (`id` IN (:idone, :idtwo))'
             ], [
                 'table', [
-                    'field'  => new \QueryExpression(\DB::quoteName('field') . ' + 1')
+                    'field'  => new \QueryExpression(\DBmysql::quoteName('field') . ' + 1')
                 ], [
                     'id'  => [1, 2]
                 ],
@@ -216,7 +216,7 @@ class DB extends \GLPITestCase
                 'UPDATE `table` SET `field` = `field` + 1 WHERE `id` IN (\'1\', \'2\')'
             ], [
                 'table', [
-                    'field'  => new \QueryExpression(\DB::quoteName('field') . ' + 1')
+                    'field'  => new \QueryExpression(\DBmysql::quoteName('field') . ' + 1')
                 ], [
                     'id'  => [1, 2]
                 ],

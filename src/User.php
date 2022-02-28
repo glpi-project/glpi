@@ -1634,9 +1634,9 @@ class User extends CommonDBTM
                         $lgroups = [];
                         foreach (Toolbox::addslashes_deep($v[$i][$field]) as $lgroup) {
                             $lgroups[] = [
-                                new \QueryExpression($DB::quoteValue($lgroup) .
+                                new \QueryExpression($DB->quoteValue($lgroup) .
                                              " LIKE " .
-                                             $DB::quoteName('ldap_value'))
+                                             $DB->quoteName('ldap_value'))
                             ];
                         }
                         $group_iterator = $DB->request([
@@ -6127,10 +6127,10 @@ JAVASCRIPT;
         }
 
         $table  = self::getTable();
-        $first  = DB::quoteName("$table.$first");
-        $second = DB::quoteName("$table.$second");
-        $alias  = DB::quoteName($alias);
-        $name   = DB::quoteName(self::getNameField());
+        $first  = DBmysql::quoteName("$table.$first");
+        $second = DBmysql::quoteName("$table.$second");
+        $alias  = DBmysql::quoteName($alias);
+        $name   = DBmysql::quoteName(self::getNameField());
 
         return new QueryExpression("IF(
             $first <> '' && $second <> '',

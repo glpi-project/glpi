@@ -693,7 +693,7 @@ class Ticket extends CommonITILObject
                         $nb = countElementsInTable(
                             ['glpi_tickets', 'glpi_tickets_users'],
                             [
-                                'glpi_tickets_users.tickets_id'  => new \QueryExpression(DB::quoteName('glpi_tickets.id')),
+                                'glpi_tickets_users.tickets_id'  => new \QueryExpression(DBmysql::quoteName('glpi_tickets.id')),
                                 'glpi_tickets_users.users_id'    => $item->getID(),
                                 'glpi_tickets_users.type'        => CommonITILActor::REQUESTER
                             ] + getEntitiesRestrictCriteria(self::getTable())
@@ -705,7 +705,7 @@ class Ticket extends CommonITILObject
                         $nb = countElementsInTable(
                             ['glpi_tickets', 'glpi_suppliers_tickets'],
                             [
-                                'glpi_suppliers_tickets.tickets_id'    => new \QueryExpression(DB::quoteName('glpi_tickets.id')),
+                                'glpi_suppliers_tickets.tickets_id'    => new \QueryExpression(DBmysql::quoteName('glpi_tickets.id')),
                                 'glpi_suppliers_tickets.suppliers_id'  => $item->getID()
                             ] + getEntitiesRestrictCriteria(self::getTable())
                         );
@@ -738,7 +738,7 @@ class Ticket extends CommonITILObject
                           $nb = countElementsInTable(
                               ['glpi_tickets', 'glpi_groups_tickets'],
                               [
-                                  'glpi_groups_tickets.tickets_id' => new \QueryExpression(DB::quoteName('glpi_tickets.id')),
+                                  'glpi_groups_tickets.tickets_id' => new \QueryExpression(DBmysql::quoteName('glpi_tickets.id')),
                                   'glpi_groups_tickets.groups_id'  => $item->getID(),
                                   'glpi_groups_tickets.type'       => CommonITILActor::REQUESTER
                               ] + getEntitiesRestrictCriteria(self::getTable())

@@ -69,7 +69,7 @@ class ManualLink extends CommonDBChild
                  $count += countElementsInTable(
                      ['glpi_links_itemtypes', 'glpi_links'],
                      [
-                         'glpi_links_itemtypes.links_id'  => new \QueryExpression(DB::quoteName('glpi_links.id')),
+                         'glpi_links_itemtypes.links_id'  => new \QueryExpression(DBmysql::quoteName('glpi_links.id')),
                          'glpi_links_itemtypes.itemtype'  => $item->getType()
                      ] + getEntitiesRestrictCriteria('glpi_links', '', '', false)
                  );

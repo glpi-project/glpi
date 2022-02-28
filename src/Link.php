@@ -80,7 +80,7 @@ class Link extends CommonDBTM
                 $nb = countElementsInTable(
                     ['glpi_links_itemtypes','glpi_links'],
                     [
-                        'glpi_links_itemtypes.links_id'  => new \QueryExpression(DB::quoteName('glpi_links.id')),
+                        'glpi_links_itemtypes.links_id'  => new \QueryExpression(DBmysql::quoteName('glpi_links.id')),
                         'glpi_links_itemtypes.itemtype'  => $item->getType()
                     ] + $entity_criteria
                 );

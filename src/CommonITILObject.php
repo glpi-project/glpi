@@ -7998,7 +7998,7 @@ abstract class CommonITILObject extends CommonDBTM
                     'FROM'   => new \QueryUnion([
                         [
                             'SELECT' => [
-                                new QueryExpression($DB::quoteName('tickets_id_1') . ' AS ' . $DB::quoteName('tickets_id')),
+                                new QueryExpression($DB->quoteName('tickets_id_1') . ' AS ' . $DB->quoteName('tickets_id')),
                                 'status'
                             ],
                             'FROM'   => $tt_table,
@@ -8017,7 +8017,7 @@ abstract class CommonITILObject extends CommonDBTM
                         ],
                         [
                             'SELECT' => [
-                                new QueryExpression($DB::quoteName('tickets_id_2') . ' AS ' . $DB::quoteName('tickets_id')),
+                                new QueryExpression($DB->quoteName('tickets_id_2') . ' AS ' . $DB->quoteName('tickets_id')),
                                 'status'
                             ],
                             'FROM'   => $tt_table,

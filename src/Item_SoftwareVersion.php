@@ -537,7 +537,7 @@ class Item_SoftwareVersion extends CommonDBRelation
                     'glpi_softwareversions.id AS vID',
                     "{$itemtable}.name AS itemname",
                     "{$itemtable}.id AS iID",
-                    new QueryExpression($DB->quoteValue($itemtype) . " AS " . $DB::quoteName('item_type')),
+                    new QueryExpression($DB->quoteValue($itemtype) . " AS " . $DB->quoteName('item_type')),
                 ],
                 'FROM'   => $item_version_table,
                 'INNER JOIN' => [
