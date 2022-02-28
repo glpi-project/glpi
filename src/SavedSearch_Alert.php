@@ -427,8 +427,12 @@ class SavedSearch_Alert extends CommonDBChild
                         Session::init($auth);
                     }
 
-                    $data = $savedsearch->execute(true);
-                    $count = (int)$data['data']['totalcount'];
+                    $count = null;
+                    if ($data = $savedsearch->execute(true)) {
+                        $count = (int)$data['data']['totalcount'];
+                    } else {
+                        $data = [];
+                    }
                     $value = (int)$row['value'];
 
                     $notify = false;
