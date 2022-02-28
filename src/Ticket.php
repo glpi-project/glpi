@@ -1747,8 +1747,8 @@ class Ticket extends CommonITILObject
                 foreach ($items as $items_id) {
                     if ($item = getItemForItemtype($itemtype)) {
                         $item->getFromDB($items_id);
-                        $input['_states_id_of_item']    = $item->fields['states_id'] ?? 0;
-                        $input['_locations_id_of_item'] = $item->fields['locations_id'] ?? 0;
+                        $input['_states_id_of_item']    = $item->fields['states_id'] ?? null;
+                        $input['_locations_id_of_item'] = $item->fields['locations_id'] ?? null;
                         if ($infocom->getFromDBforDevice($itemtype, $items_id)) {
                              $input['items_businesscriticities']
                               = Dropdown::getDropdownName(
