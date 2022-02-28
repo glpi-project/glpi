@@ -5889,8 +5889,8 @@ JAVASCRIPT;
         if ($to_type === 'Reservation' && in_array($from_referencetype, $CFG_GLPI['reservation_types'])) {
            // From reservation_types to Reservation
             $reservationitems_alias = "glpi_reservationitems{$alias_suffix}";
-            if (!in_array($infocom_alias, $already_link_tables2)) {
-                array_push($already_link_tables2, $infocom_alias);
+            if (!in_array($reservationitems_alias, $already_link_tables2)) {
+                array_push($already_link_tables2, $reservationitems_alias);
                 $JOIN .= "$LINK `glpi_reservationitems` AS `$reservationitems_alias`
                          ON (`$from_table`.`id` = `$reservationitems_alias`.`items_id`
                              AND `$reservationitems_alias`.`itemtype` = '$from_type') ";
