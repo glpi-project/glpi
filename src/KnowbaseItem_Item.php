@@ -247,8 +247,7 @@ class KnowbaseItem_Item extends CommonDBRelation
 
             $link = $linked_item::getFormURLWithID($linked_item->getID());
 
-            $createdate = $item::getType() == KnowbaseItem::getType() ? 'date_creation' : 'date';
-           // show line
+            // show line
             echo "<tr class='tab_bg_2'>";
 
             if ($canedit) {
@@ -264,7 +263,7 @@ class KnowbaseItem_Item extends CommonDBRelation
 
             echo "<td>" . $type . "</td>" .
                  "<td><a href=\"" . $link . "\">" . $name . "</a></td>" .
-                 "<td class='tab_date'>" . Html::convDateTime($linked_item->fields[$createdate]) . "</td>" .
+                 "<td class='tab_date'>" . Html::convDateTime($linked_item->fields['date_creation']) . "</td>" .
                  "<td class='tab_date'>" . Html::convDateTime($linked_item->fields['date_mod']) . "</td>";
             echo "</tr>";
         }
