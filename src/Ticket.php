@@ -4504,20 +4504,19 @@ JAVASCRIPT;
             $this->check(-1, CREATE, $options);
         }
 
-        $this->userentities = [];
+        $userentities = [];
         if (!$ID) {
-            $this->userentities         = $this->getEntitiesForRequesters($options);
-            $this->countentitiesforuser = count($this->userentities);
+            $userentities         = $this->getEntitiesForRequesters($options);
 
             if (
-                ($this->countentitiesforuser > 0)
-                && !in_array($this->fields["entities_id"], $this->userentities)
+                count($userentities) > 0
+                && !in_array($this->fields["entities_id"], $userentities)
             ) {
                // If entity is not in the list of user's entities,
                // then use as default value the first value of the user's entites list
-                $this->fields["entities_id"] = $this->userentities[0];
+                $this->fields["entities_id"] = $userentities[0];
                // Pass to values
-                $options['entities_id']       = $this->userentities[0];
+                $options['entities_id']       = $userentities[0];
             }
         }
 
@@ -4657,7 +4656,7 @@ JAVASCRIPT;
             'canassign'          => $canassign,
             'canassigntome'      => $canassigntome,
             'load_kb_sol'        => $options['load_kb_sol'] ?? 0,
-            'userentities'       => $this->userentities,
+            'userentities'       => $userentities,
         ]);
 
         return true;
