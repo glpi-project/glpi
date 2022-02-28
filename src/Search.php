@@ -3002,7 +3002,7 @@ JAVASCRIPT;
         ];
 
         echo "<div class='col-auto'>";
-        echo self::showGenericSearch($request['itemtype'], $params);
+        self::showGenericSearch($request['itemtype'], $params);
         echo "</div>";
 
         echo "</div>";//.row
@@ -5748,7 +5748,7 @@ JAVASCRIPT;
      * @param string $from_type             Reference item type ID
      * @param string $to_type               Item type to add
      * @param array  $already_link_tables2  Array of tables already joined
-     *
+     *showGenericSearch
      * @return string Meta Left join string
      **/
     public static function addMetaLeftJoin(
