@@ -250,9 +250,6 @@ trait Clonable
 
             // Update index cache
             $this->last_clone_index = $copy_index;
-
-            // Override input with the first found valid name
-            $copy_name;
         }
 
         return $copy_name;
