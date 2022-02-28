@@ -3569,18 +3569,21 @@ JS;
      **/
     public static function showToolTip($content, $options = [])
     {
-        $param['applyto']    = '';
-        $param['title']      = '';
-        $param['contentid']  = '';
-        $param['link']       = '';
-        $param['linkid']     = '';
-        $param['linktarget'] = '';
-        $param['awesome-class'] = 'fa-info';
-        $param['popup']      = '';
-        $param['ajax']       = '';
-        $param['display']    = true;
-        $param['autoclose']  = true;
-        $param['onclick']    = false;
+        $param = [
+            'applyto'       => '',
+            'title'         => '',
+            'contentid'     => '',
+            'link'          => '',
+            'linkid'        => '',
+            'linktarget'    => '',
+            'awesome-class' => 'fa-info',
+            'popup'         => '',
+            'ajax'          => '',
+            'display'       => true,
+            'autoclose'     => true,
+            'onclick'       => false,
+            'link_class'    => '',
+        ];
 
         if (is_array($options) && count($options)) {
             foreach ($options as $key => $val) {
@@ -3603,7 +3606,7 @@ JS;
         if (empty($param['applyto'])) {
             if (!empty($param['link'])) {
                 $out .= "<a id='" . (!empty($param['linkid']) ? $param['linkid'] : "tooltiplink$rand") . "'
-                        class='dropdown_tooltip'";
+                        class='dropdown_tooltip {$param['link_class']}'";
 
                 if (!empty($param['linktarget'])) {
                     $out .= " target='" . $param['linktarget'] . "' ";
@@ -3626,7 +3629,7 @@ JS;
                 $out .= "</a>";
             }
 
-            $param['applyto'] = "tooltip$rand";
+            $param['applyto'] = (!empty($param['link']) && !empty($param['linkid'])) ? $param['linkid'] : "tooltip$rand";
         }
 
         if (empty($param['contentid'])) {

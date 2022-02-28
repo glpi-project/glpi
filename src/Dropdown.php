@@ -300,7 +300,6 @@ class Dropdown
             }
 
            // Comment icon
-            $icons .= '<div class="btn btn-outline-secondary">';
             $icons .= Ajax::updateItemOnSelectEvent(
                 $field_id,
                 $comment_id,
@@ -308,8 +307,8 @@ class Dropdown
                 $paramscomment,
                 false
             );
+            $options_tooltip['link_class'] = 'btn btn-outline-secondary';
             $icons .= Html::showToolTip($comment, $options_tooltip);
-            $icons .= '</div>';
 
            // Add icon
             if (
@@ -319,10 +318,9 @@ class Dropdown
                 && $params['addicon']
             ) {
                   $icons .= '<div class="btn btn-outline-secondary"
-                               title="' . __s('Add') . '" data-bs-toggle="tooltip">';
+                               title="' . __s('Add') . '" data-bs-toggle="modal" data-bs-target="#add_' . $field_id . '">';
                   $icons .= Ajax::createIframeModalWindow('add_' . $field_id, $item->getFormURL(), ['display' => false]);
-                  $icons .= "<span data-bs-toggle='modal' data-bs-target='#add_$field_id'
-                           >
+                  $icons .= "<span data-bs-toggle='tooltip'>
                   <i class='fa-fw ti ti-plus'></i>
                   <span class='sr-only'>" . __s('Add') . "</span>
                </span>";
