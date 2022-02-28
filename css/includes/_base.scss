@@ -304,12 +304,3 @@ table {
     background-color: $color-contrast-light;
     color: $dark;
 }
-
-.list-group .list-group-item {
-    color: inherit;
-    border-color: $table-border-color;
-
-    &:hover {
-        background-color: $hover-bg;
-    }
-}

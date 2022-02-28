@@ -29,7 +29,21 @@
  * ---------------------------------------------------------------------
  */
 
-$assets-base: "../css/lib/tabler/core/dist"; // Tabler assets base url
+@import "~@fontsource/inter/scss/mixins";
+
+$fontDir: "../css/lib/fontsource/inter/files";
+
+@include fontFace($weight: 100);
+@include fontFace($weight: 200);
+@include fontFace($weight: 300);
+@include fontFace($weight: 400);
+@include fontFace($weight: 500);
+@include fontFace($weight: 600);
+@include fontFace($weight: 700);
+@include fontFace($weight: 800);
+@include fontFace($weight: 900);
+
+$font-family-sans-serif: inter, -apple-system, blinkmacsystemfont, san francisco, segoe ui, roboto, helvetica neue, sans-serif !default;
 $ti-font-path: "../css/lib/tabler/icons/iconfont/fonts";
 
 @import "~@tabler/icons/iconfont/tabler-icons";
