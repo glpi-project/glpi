@@ -184,7 +184,7 @@ if (isset($_POST["add"])) {
             }
         }
         $menus = [
-            'central'  => "tools", "knowbaseitem",
+            'central'  => ["tools", "knowbaseitem"],
             'helpdesk' => [],
         ];
         KnowbaseItem::displayFullPageForItem($_GET['id'], $menus, $options);
