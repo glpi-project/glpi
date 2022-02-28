@@ -33,6 +33,7 @@
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\ContentTemplates\TemplateManager;
+use Glpi\Toolbox\Sanitizer;
 
 /**
  * ITILSolution Class
@@ -176,6 +177,42 @@ class ITILSolution extends CommonDBChild
         ) {
             $this->item = new $input['itemtype']();
             $this->item->getFromDB($input['items_id']);
+        }
+
+        // Handle template
+        if (isset($input['_solutiontemplates_id'])) {
+            $template = new SolutionTemplate();
+            $parent_item = new $input['itemtype']();
+            if (
+                !$template->getFromDB($input['_solutiontemplates_id'])
+                || !$parent_item->getFromDB($input['items_id'])
+            ) {
+                return false;
+            }
+            $input = array_replace(
+                [
+                    'content'           => Sanitizer::sanitize($template->getRenderedContent($parent_item)),
+                    'solutiontypes_id'  => $template->fields['solutiontypes_id'],
+                    'status'            => CommonITILValidation::WAITING,
+                ],
+                $input
+            );
+        }
+
+        if (isset($input['_templates_id'])) {
+            $template = new SolutionTemplate();
+            $result = $template->getFromDB($input['_templates_id']);
+            if (!$result) {
+                return false;
+            }
+            $template_fields = $template->fields;
+            unset($template_fields['id']);
+            if (isset($template_fields['content'])) {
+                $parent_item = new $input['itemtype']();
+                $parent_item->getFromDB($input['items_id']);
+                $template_fields['content'] = Sanitizer::sanitize($template->getRenderedContent($parent_item));
+            }
+            $input = array_replace($template_fields, $input);
         }
 
        // check itil object is not already solved

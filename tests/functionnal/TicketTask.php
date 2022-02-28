@@ -366,4 +366,44 @@ class TicketTask extends DbTestCase
             ]
         );
     }
+
+    public function testAddFromTemplate()
+    {
+        $ticket = $this->getNewTicket(true);
+        $template = new \TaskTemplate();
+        $templates_id = $template->add([
+            'name'               => 'test template',
+            'content'            => 'test template',
+            'users_id_tech'      => getItemByTypeName('User', TU_USER, true),
+            'state'              => \Planning::DONE,
+            'is_private'         => 1,
+        ]);
+        $this->integer($templates_id)->isGreaterThan(0);
+        $task = new \TicketTask();
+        $tasks_id = $task->add([
+            '_tasktemplates_id'  => $templates_id,
+            'itemtype'           => 'Ticket',
+            'tickets_id'         => $ticket->fields['id'],
+        ]);
+        $this->integer($tasks_id)->isGreaterThan(0);
+
+        $this->string($task->fields['content'])->isEqualTo('&#60;p&#62;test template&#60;/p&#62;');
+        $this->integer($task->fields['users_id_tech'])->isEqualTo(getItemByTypeName('User', TU_USER, true));
+        $this->integer($task->fields['state'])->isEqualTo(\Planning::DONE);
+        $this->integer($task->fields['is_private'])->isEqualTo(1);
+
+        $tasks_id = $task->add([
+            '_tasktemplates_id'  => $templates_id,
+            'itemtype'           => 'Ticket',
+            'tickets_id'         => $ticket->fields['id'],
+            'state'              => \Planning::TODO,
+            'is_private'         => 0,
+        ]);
+        $this->integer($tasks_id)->isGreaterThan(0);
+
+        $this->string($task->fields['content'])->isEqualTo('&#60;p&#62;test template&#60;/p&#62;');
+        $this->integer($task->fields['users_id_tech'])->isEqualTo(getItemByTypeName('User', TU_USER, true));
+        $this->integer($task->fields['state'])->isEqualTo(\Planning::TODO);
+        $this->integer($task->fields['is_private'])->isEqualTo(0);
+    }
 }

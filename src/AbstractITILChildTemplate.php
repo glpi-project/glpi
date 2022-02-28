@@ -117,6 +117,10 @@ abstract class AbstractITILChildTemplate extends CommonDropdown
      */
     public function getRenderedContent(CommonITILObject $itil_item): string
     {
+        if (empty($this->fields['content'])) {
+            return '';
+        }
+
         $html = TemplateManager::renderContentForCommonITIL(
             $itil_item,
             $this->fields['content']

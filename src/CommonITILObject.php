@@ -7649,29 +7649,13 @@ abstract class CommonITILObject extends CommonDBTM
         }
 
        // Add tasks in tasktemplates if defined in itiltemplate
-        $tasktemplate = new TaskTemplate();
         $itiltask_class = $this->getType() . 'Task';
         $itiltask   = new $itiltask_class();
         foreach ($this->input['_tasktemplates_id'] as $tasktemplates_id) {
-            $tasktemplate->getFromDB($tasktemplates_id);
-
-           // Parse twig template
-            $tasktemplate_content = $tasktemplate->getRenderedContent($this);
-
-           // Sanitize generated HTML before adding it in DB
-            $tasktemplate_content = Sanitizer::sanitize($tasktemplate_content);
-
             $itiltask->add([
-                'tasktemplates_id'            => $tasktemplates_id,
-                'content'                     => $tasktemplate_content,
-                'taskcategories_id'           => $tasktemplate->fields['taskcategories_id'],
-                'actiontime'                  => $tasktemplate->fields['actiontime'],
-                'state'                       => $tasktemplate->fields['state'],
+                '_tasktemplates_id'           => $tasktemplates_id,
                 $this->getForeignKeyField()   => $this->fields['id'],
                 'date'                        => $this->fields['date'],
-                'is_private'                  => $tasktemplate->fields['is_private'],
-                'users_id_tech'               => $tasktemplate->fields['users_id_tech'],
-                'groups_id_tech'              => $tasktemplate->fields['groups_id_tech'],
                 '_disablenotif'               => true
             ]);
         }
@@ -7693,28 +7677,13 @@ abstract class CommonITILObject extends CommonDBTM
 
        // Add tasks in itilfollowup template if defined in itiltemplate
         foreach ($this->input['_itilfollowuptemplates_id'] as $fup_templates_id) {
-           // Get template
-            $fup_template = new ITILFollowupTemplate();
-            if (!$fup_template->getFromDB($fup_templates_id)) {
-               // Ingore if unable to load
-                continue;
-            };
-
-           // Parse twig template
-            $new_fup_content = $fup_template->getRenderedContent($this);
-
-           // Sanitize generated HTML before adding it in DB
-            $new_fup_content = Sanitizer::sanitize($new_fup_content);
-
            // Insert new followup from template
             $fup = new ITILFollowup();
             $fup->add([
-                'itemtype'        => $this->getType(),
-                'items_id'        => $this->getID(),
-                'content'         => $new_fup_content,
-                'is_private'      => $fup_template->fields['is_private'],
-                'requesttypes_id' => $fup_template->fields['requesttypes_id'],
-                '_disablenotif'   => true,
+                '_itilfollowuptemplates_id' => $fup_templates_id,
+                'itemtype'                  => $this->getType(),
+                'items_id'                  => $this->getID(),
+                '_disablenotif'             => true,
             ]);
         }
     }
@@ -7729,23 +7698,12 @@ abstract class CommonITILObject extends CommonDBTM
             return;
         }
 
-        $template = new SolutionTemplate();
-        if ($template->getFromDB($this->input['_solutiontemplates_id'])) {
-            // Parse twig template
-            $solution_content = $template->getRenderedContent($this);
-
-            // Sanitize generated HTML before adding it in DB
-            $solution_content = Sanitizer::sanitize($solution_content);
-
-            $solution = new ITILSolution();
-            $solution->add([
-                'itemtype'          => static::getType(),
-                'solutiontypes_id'  => $template->fields['solutiontypes_id'],
-                'content'           => $solution_content,
-                'status'            => CommonITILValidation::WAITING,
-                'items_id'          => $this->fields['id']
-            ]);
-        }
+        $solution = new ITILSolution();
+        $solution->add([
+            '_solutiontemplates_id' => $this->input['_solutiontemplates_id'],
+            'itemtype'              => static::getType(),
+            'items_id'              => $this->fields['id'],
+        ]);
     }
 
     /**

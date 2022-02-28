@@ -32,6 +32,7 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Toolbox\Sanitizer;
 
 /**
  * @since 9.4.0
@@ -422,6 +423,26 @@ class ITILFollowup extends CommonDBChild
 
     public function prepareInputForAdd($input)
     {
+        //Handle template
+        if (isset($input['_itilfollowuptemplates_id'])) {
+            $template = new ITILFollowupTemplate();
+            $parent_item = new $input['itemtype']();
+            if (
+                !$template->getFromDB($input['_itilfollowuptemplates_id'])
+                || !$parent_item->getFromDB($input['items_id'])
+            ) {
+                return false;
+            }
+            $input = array_replace(
+                [
+                    'content'         => Sanitizer::sanitize($template->getRenderedContent($parent_item)),
+                    'is_private'      => $template->fields['is_private'],
+                    'requesttypes_id' => $template->fields['requesttypes_id'],
+                ],
+                $input
+            );
+        }
+
         $input["_job"] = new $input['itemtype']();
 
         if (

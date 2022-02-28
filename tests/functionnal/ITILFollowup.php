@@ -35,6 +35,7 @@ namespace tests\units;
 
 use CommonITILActor;
 use DbTestCase;
+use Glpi\Toolbox\Sanitizer;
 use ITILFollowup as CoreITILFollowup;
 use Ticket;
 use Ticket_User;
@@ -45,12 +46,13 @@ use User;
 class ITILFollowup extends DbTestCase
 {
     /**
-     * Create a new ITILObject and return its id
+     * Create a new ITILObject and return its id or the object
      *
      * @param string $itemtype ITILObject parent to test followups on
-     * @return integer
+     * @param bool   $as_object
+     * @return integer|\CommonDBTM
      */
-    private function getNewITILObject($itemtype)
+    private function getNewITILObject($itemtype, bool $as_object = false)
     {
        //create reference ITILObject
         $itilobject = new $itemtype();
@@ -63,7 +65,7 @@ class ITILFollowup extends DbTestCase
 
         $this->boolean($itilobject->isNewItem())->isFalse();
         $this->boolean($itilobject->can($itilobject->getID(), \READ))->isTrue();
-        return (int)$itilobject->getID();
+        return $as_object ? $itilobject : (int)$itilobject->getID();
     }
 
     public function testACL()
@@ -520,5 +522,41 @@ class ITILFollowup extends DbTestCase
             'items_id' => $instance->getID(),
         ]);
         $this->integer($count)->isEqualTo(2);
+    }
+
+    public function testAddFromTemplate()
+    {
+        $this->login();
+
+        $ticket = $this->getNewITILObject('Ticket', true);
+        $template = new \ITILFollowupTemplate();
+        $templates_id = $template->add([
+            'name'               => 'test template',
+            'content'            => 'test template',
+            'is_private'         => 1,
+        ]);
+        $this->integer($templates_id)->isGreaterThan(0);
+        $fup = new \ITILFollowup();
+        $fups_id = $fup->add([
+            '_itilfollowuptemplates_id' => $templates_id,
+            'itemtype'                  => 'Ticket',
+            'items_id'                  => $ticket->fields['id'],
+        ]);
+        $this->integer($fups_id)->isGreaterThan(0);
+
+        $this->string($fup->fields['content'])->isEqualTo(Sanitizer::sanitize('<p>test template</p>', false));
+        $this->integer($fup->fields['is_private'])->isEqualTo(1);
+
+        $fups_id = $fup->add([
+            '_itilfollowuptemplates_id' => $templates_id,
+            'itemtype'                  => 'Ticket',
+            'items_id'                  => $ticket->fields['id'],
+            'content'                   => 'test template2',
+            'is_private'                => 0,
+        ]);
+        $this->integer($fups_id)->isGreaterThan(0);
+
+        $this->string($fup->fields['content'])->isEqualTo('test template2');
+        $this->integer($fup->fields['is_private'])->isEqualTo(0);
     }
 }
