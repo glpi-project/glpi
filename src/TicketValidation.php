@@ -83,6 +83,8 @@ class TicketValidation extends CommonITILValidation
                 }
             }
         }
+
+        return parent::canCreateItem();
     }
 
     /**
