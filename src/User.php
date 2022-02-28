@@ -1838,7 +1838,10 @@ class User extends CommonDBTM
                             break;
 
                         case 'users_id_supervisor':
-                            $this->fields[$k] = self::getIdByField('user_dn', $val, false);
+                            $supervisor_id = self::getIdByField('user_dn', $val, false);
+                            if ($supervisor_id) {
+                                $this->fields[$k] = $supervisor_id;
+                            }
                             break;
 
                         default:
