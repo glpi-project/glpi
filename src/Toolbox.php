@@ -866,10 +866,13 @@ class Toolbox
      *
      * @param string $path  directory or file to get size
      *
-     * @return integer
+     * @return null|integer
+     *
+     * @deprecated 10.0.0
      **/
     public static function filesizeDirectory($path)
     {
+        Toolbox::deprecated();
 
         if (!is_dir($path)) {
             return filesize($path);
@@ -888,6 +891,8 @@ class Toolbox
             closedir($handle);
             return $size;
         }
+
+        return null;
     }
 
 
