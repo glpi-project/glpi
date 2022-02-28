@@ -75,6 +75,7 @@ class Monitor extends DbTestCase
             'states_id' => 0,
             'ticket_tco' => '0.0000',
             'is_dynamic' => 0,
+            'autoupdatesystems_id' => 0,
             'date_creation' => $date,
             'is_recursive' => 0,
             'uuid' => null,
