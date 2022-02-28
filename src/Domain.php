@@ -583,6 +583,7 @@ class Domain extends CommonDropdown
             'FROM'   => self::getTable(),
             'WHERE'  => [
                 'NOT' => ['date_expiration' => null],
+                'entities_id'  => $entities_id,
                 'is_deleted'   => 0,
                 new QueryExpression("DATEDIFF(CURDATE(), " . $DB->quoteName('date_expiration') . ") > $delay"),
                 new QueryExpression("DATEDIFF(CURDATE(), " . $DB->quoteName('date_expiration') . ") > 0")
@@ -606,6 +607,7 @@ class Domain extends CommonDropdown
             'FROM'   => self::getTable(),
             'WHERE'  => [
                 'NOT' => ['date_expiration' => null],
+                'entities_id'  => $entities_id,
                 'is_deleted'   => 0,
                 new QueryExpression("DATEDIFF(CURDATE(), " . $DB->quoteName('date_expiration') . ") > -$delay"),
                 new QueryExpression("DATEDIFF(CURDATE(), " . $DB->quoteName('date_expiration') . ") < 0")
