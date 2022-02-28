@@ -247,7 +247,7 @@ class Unmanaged extends CommonDBTM
                 foreach ($ids as $id) {
                     $itemtype = $CFG_GLPI['inventory_types'][$_POST['itemtype']];
                     $unmanaged->convert($id, $itemtype);
-                    $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_OK);
+                    $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
                 }
                 break;
         }
