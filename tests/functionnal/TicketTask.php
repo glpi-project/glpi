@@ -381,7 +381,7 @@ class TicketTask extends DbTestCase
         $this->integer($templates_id)->isGreaterThan(0);
         $task = new \TicketTask();
         $tasks_id = $task->add([
-            '_templates_id'      => $templates_id,
+            '_tasktemplates_id'  => $templates_id,
             'itemtype'           => 'Ticket',
             'tickets_id'         => $ticket->fields['id'],
         ]);
@@ -393,7 +393,7 @@ class TicketTask extends DbTestCase
         $this->integer($task->fields['is_private'])->isEqualTo(1);
 
         $tasks_id = $task->add([
-            '_templates_id'      => $templates_id,
+            '_tasktemplates_id'  => $templates_id,
             'itemtype'           => 'Ticket',
             'tickets_id'         => $ticket->fields['id'],
             'state'              => \Planning::TODO,
