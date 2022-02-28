@@ -1912,7 +1912,7 @@ JAVASCRIPT;
      * @param $output          array    output data array
      * @param $global_result   boolean  global result
      *
-     * @return cleaned array
+     * @return void
      **/
     public function showTestResults($rule, array $output, $global_result)
     {

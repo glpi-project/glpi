@@ -68,9 +68,6 @@ class RuleRightCollection extends RuleCollection
     }
 
 
-    /**
-     * @see RuleCollection::showTestResults()
-     */
     public function showTestResults($rule, array $output, $global_result)
     {
 
