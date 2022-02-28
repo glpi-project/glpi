@@ -333,7 +333,7 @@ class User extends CommonDBTM
 
         $entities = $this->getEntities();
         $view_all = Session::canViewAllEntities();
-       // Have right on all entities ?
+        // Have right on all entities ?
         $all      = true;
         if (!$view_all) {
             foreach ($entities as $ent) {
@@ -345,10 +345,10 @@ class User extends CommonDBTM
         if ($all) { // Mark as deleted
             return true;
         }
-       // only delete profile
+
+        // only delete profile
         foreach ($entities as $ent) {
             if (Session::haveAccessToEntity($ent)) {
-                $all   = false;
                 $DB->delete(
                     'glpi_profiles_users',
                     [
@@ -357,8 +357,8 @@ class User extends CommonDBTM
                     ]
                 );
             }
-            return false;
         }
+        return false;
     }
 
 
