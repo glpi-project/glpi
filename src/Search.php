@@ -5446,7 +5446,7 @@ JAVASCRIPT;
 
        // Virtual field no link
         if (strpos($linkfield, '_virtual') === 0) {
-            return false;
+            return '';
         }
 
         $complexjoin = self::computeComplexJoinID($joinparams);
@@ -5737,6 +5737,8 @@ JAVASCRIPT;
             }
             return $before . $specific_leftjoin;
         }
+
+        return '';
     }
 
 
