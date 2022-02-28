@@ -1565,9 +1565,9 @@ class User extends CommonDBTM
      * @param string   $userdn          Basedn of the user
      * @param string   $login           User login
      *
-     * @return string|boolean Basedn of the user / false if not found
+     * @return void
      */
-    private function getFromLDAPGroupVirtual($ldap_connection, array $ldap_method, $userdn, $login)
+    private function getFromLDAPGroupVirtual($ldap_connection, array $ldap_method, $userdn, $login): void
     {
         global $DB;
 
