@@ -44,6 +44,14 @@ use Toolbox;
 trait Clonable
 {
     /**
+     * Cache used to keep track of the last clone index
+     * Usefull when cloning an item multiple time to avoid iterating on the sql
+     * results multiple time while looking for an available unique name
+     * @var null|int
+     */
+    protected $last_clone_index = null;
+
+    /**
      * Get relations class to clone along with current element.
      *
      * @return CommonDBTM::class[]
@@ -133,6 +141,42 @@ trait Clonable
     }
 
     /**
+     * Clone the current item multiple times
+     *
+     * @since 9.5
+     *
+     * @param int     $n              Number of clones
+     * @param array   $override_input Custom input to override
+     * @param boolean $history        Do history log ? (true by default)
+     *
+     * @return int|bool the new ID of the clone (or false if fail)
+     */
+    public function cloneMultiple(
+        int $n,
+        array $override_input = [],
+        bool $history = true
+    ): bool {
+        $failure = false;
+
+        try {
+            // Init index cache
+            $this->last_clone_index = 0;
+            for ($i = 0; $i < $n && !$failure; $i++) {
+                if ($this->clone($override_input, $history) === false) {
+                    // Increment clone index cache to use less SQL
+                    // queries looking for an available unique clone name
+                    $failure = true;
+                }
+            }
+        } finally {
+            // Make sure cache is cleaned even on exception
+            $this->last_clone_index = null;
+        }
+
+        return !$failure;
+    }
+
+    /**
      * Clones the current item
      *
      * @since 10.0.0
@@ -155,6 +199,11 @@ trait Clonable
             $input[$key] = $value;
         }
         $input = $new_item->cleanCloneInput($input);
+
+        if (($copy_name = $this->getUniqueCloneName($input)) !== null) {
+            $input[static::getNameField()] = $copy_name;
+        }
+
         $input = $new_item->prepareInputForClone($input);
 
         $input['clone'] = true;
@@ -166,6 +215,67 @@ trait Clonable
         }
 
         return $newID;
+    }
+
+    /**
+     * Returns unique clone name.
+     *
+     * @param array $input
+     *
+     * @return null|string
+     */
+    protected function getUniqueCloneName(array $input): ?string
+    {
+        $copy_name = null;
+
+        $name_field = static::getNameField();
+
+        // Force uniqueness for the name field
+        if (isset($input[$name_field])) {
+            $copy_name = "";
+            $current_name = $input[$name_field];
+            $table = static::getTable();
+
+            $copy_index = 0;
+
+            // Use index cache if defined
+            if (!is_null($this->last_clone_index)) {
+                $copy_index = $this->last_clone_index;
+            }
+
+            // Try to find an available name
+            do {
+                $copy_name = $this->computeCloneName($current_name, ++$copy_index);
+            } while (countElementsInTable($table, [$name_field => $copy_name]) > 0);
+
+            // Update index cache
+            $this->last_clone_index = $copy_index;
+        }
+
+        return $copy_name;
+    }
+
+    /**
+     * Compute the name of a copied item
+     * The goal is to set the copy name as "{name} (copy {i})" unless it's
+     * the first copy: in this case just "{name} (copy)" is acceptable
+     *
+     * @param string $current_item The item being copied
+     * @param int    $copy_index   The index to append to the copy's name
+     *
+     * @return string The computed name of the new item to be created
+     */
+    public function computeCloneName(
+        string $current_name,
+        int $copy_index
+    ): string {
+        // First copy
+        if ($copy_index == 1) {
+            return sprintf(__("%s (copy)"), $current_name);
+        }
+
+        // Second+ copies, add index
+        return sprintf(__("%s (copy %d)"), $current_name, $copy_index);
     }
 
     /**

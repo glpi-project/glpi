@@ -596,7 +596,7 @@ class Rule extends DbTestCase
         $this->boolean($rule->getFromDB($cloned))->isTrue();
 
         $this->integer($rule->fields['is_active'])->isIdenticalTo(0);
-        $this->string($rule->fields['name'])->isIdenticalTo('Copy of One user assignation');
+        $this->string($rule->fields['name'])->isIdenticalTo('One user assignation (copy)');
 
         foreach ($relations as $relation => $expected) {
             $this->integer(

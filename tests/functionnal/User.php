@@ -531,6 +531,9 @@ class User extends \DbTestCase
                     $expectedDate = new \DateTime($date);
                     $this->dateTime($dateClone)->isEqualTo($expectedDate);
                     break;
+                case 'name':
+                    $this->variable($clonedUser->getField($k))->isEqualTo("_test_user-copy");
+                    break;
                 default:
                     $this->variable($clonedUser->getField($k))->isEqualTo($user->getField($k));
             }

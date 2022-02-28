@@ -1047,4 +1047,37 @@ class Entity extends DbTestCase
         $link = $links->current();
         $this->integer($link['id'])->isEqualTo($contracts_id_1);
     }
+
+
+    public function testMultipleClones()
+    {
+        $this->login();
+
+        $this->createItems('Entity', [
+            [
+                'name'        => 'test clone entity',
+                'entities_id' => 0,
+            ]
+        ]);
+
+        // Check that no clones exists
+        $entity = new \Entity();
+        $res = $entity->find(['name' => ['LIKE', 'test clone entity %']]);
+        $this->array($res)->hasSize(0);
+
+        // Clone multiple times
+        $entity = getItemByTypeName('Entity', 'test clone entity', false);
+        $this->boolean($entity->cloneMultiple(4))->isTrue();
+
+        // Check that 4 clones were created
+        $entity = new \Entity();
+        $res = $entity->find(['name' => ['LIKE', 'test clone entity %']]);
+        $this->array($res)->hasSize(4);
+
+        // Try to read each clones
+        $this->integer(getItemByTypeName('Entity', 'test clone entity (copy)', true))->isGreaterThan(0);
+        $this->integer(getItemByTypeName('Entity', 'test clone entity (copy 2)', true))->isGreaterThan(0);
+        $this->integer(getItemByTypeName('Entity', 'test clone entity (copy 3)', true))->isGreaterThan(0);
+        $this->integer(getItemByTypeName('Entity', 'test clone entity (copy 4)', true))->isGreaterThan(0);
+    }
 }
