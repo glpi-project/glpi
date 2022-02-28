@@ -855,10 +855,57 @@ HTML,
                 'users_id' => $tuid,
                 'content'  => 'This is a reply that references Ticket 100 in References header (new format).' . "\r\n" . 'It should be added as followup.',
             ],
+            [
+                // 29.1-ticket-followup-above-header-and-under-footer-lines.eml
+                'items_id' => 101,
+                'users_id' => $tuid,
+                'content'  => 'My followup starts above header line...' . "\r\n" . '...and finishes under footer line.',
+            ],
+            [
+                // 29.2-ticket-followup-above-header-line.eml
+                'items_id' => 101,
+                'users_id' => $tuid,
+                'content'  => 'My followup is located above header line.',
+            ],
+            [
+                // 29.3-ticket-followup-under-footer-line.eml
+                'items_id' => 101,
+                'users_id' => $tuid,
+                'content'  => 'My followup is located under footer line.',
+            ],
+            [
+                // 29.4-ticket-followup-above-header-line-without-footer-line.eml
+                'items_id' => 101,
+                'users_id' => $tuid,
+                'content'  => 'My followup is located above header line, and there is no footer line.',
+            ],
+            [
+                // 29.5-ticket-followup-under-footer-line-without-header-line.eml
+                'items_id' => 101,
+                'users_id' => $tuid,
+                'content'  => 'My followup is located under footer line, and there is no header line.',
+            ],
+            [
+                // 29.6-ticket-followup-under-header-line-without-footer-line.eml
+                'items_id' => 101,
+                'users_id' => $tuid,
+                'content'  => 'My followup starts under header line...' . "\r\n\r\n"
+                    . 'HERE IS THE INITIAL NOTIFICATION CONTENT' . "\r\n\r\n"
+                    . '...and there is no footer line.',
+            ],
+            [
+                // 29.7-ticket-followup-under-header-line-without-footer-line.eml
+                'items_id' => 101,
+                'users_id' => $tuid,
+                'content'  => 'My followup starts above footer line...' . "\r\n\r\n"
+                    . 'HERE IS THE INITIAL NOTIFICATION CONTENT' . "\r\n\r\n"
+                    . '...and there is no header line.',
+            ],
         ];
 
         foreach ($expected_followups as $expected_followup) {
-            $this->integer(countElementsInTable(ITILFollowup::getTable(), Sanitizer::sanitize($expected_followup)))->isEqualTo(1);
+            $this->integer(countElementsInTable(ITILFollowup::getTable(), Sanitizer::sanitize($expected_followup)))
+                ->isEqualTo(1, sprintf("Followup not found:\n> %s", $expected_followup['content']));
         }
     }
 
