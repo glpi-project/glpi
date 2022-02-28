@@ -629,10 +629,4 @@ class NotificationTemplate extends CommonDBTM
         $queued = new QueuedNotification();
         $queued->deleteByCriteria(['notificationtemplates_id' => $this->fields['id']]);
     }
-
-    public function prepareInputForClone($input)
-    {
-        $input['name'] = $input['name'] . ' (clone)';
-        return $input;
-    }
 }

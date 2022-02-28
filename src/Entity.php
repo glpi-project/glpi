@@ -39,6 +39,7 @@ use Glpi\Plugin\Hooks;
  */
 class Entity extends CommonTreeDropdown
 {
+    use Glpi\Features\Clonable;
     use MapGeolocation;
 
     public $must_be_replace              = true;
@@ -139,6 +140,12 @@ class Entity extends CommonTreeDropdown
         $forbidden[] = 'restore';
         $forbidden[] = 'CommonDropdown' . MassiveAction::CLASS_ACTION_SEPARATOR . 'merge';
         return $forbidden;
+    }
+
+    public function getCloneRelations(): array
+    {
+        return [
+        ];
     }
 
     /**

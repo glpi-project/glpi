@@ -39,7 +39,9 @@ use Sabre\VObject;
 
 class User extends CommonDBTM
 {
-    use Glpi\Features\Clonable;
+    use Glpi\Features\Clonable {
+        Glpi\Features\Clonable::computeCloneName as baseComputeCloneName;
+    }
     use Glpi\Features\TreeBrowse;
 
    // From CommonDBTM
@@ -735,20 +737,14 @@ class User extends CommonDBTM
         return $input;
     }
 
-    public function prepareInputForClone($input)
-    {
-        if (isset($input['name'])) {
-            $suffix = 1;
-            $possibleName = $input['name'] . $suffix;
-            while ($this->getFromDBbyName($possibleName)) {
-                $suffix++;
-                $possibleName = $input['name'] . $suffix;
-            }
-            $input['name'] = $possibleName;
-        }
-        return $input;
+    public function computeCloneName(
+        string $current_name,
+        ?int $copy_index = null
+    ): string {
+        return Toolbox::slugify(
+            $this->baseComputeCloneName($current_name, $copy_index)
+        );
     }
-
 
     public function post_addItem()
     {
