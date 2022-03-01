@@ -1282,7 +1282,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       // check internal_time_to_resolve (OLA)
       if ((in_array("date", $this->updates) || in_array("internal_time_to_resolve", $this->updates))
-          && !is_null($this->fields["internal_time_to_resolve"])) { // Date set
+          && isset($this->fields["internal_time_to_resolve"]) && !is_null($this->fields["internal_time_to_resolve"])) { // Date set
 
          if ($this->fields["internal_time_to_resolve"] < $this->fields["date"]) {
             Session::addMessageAfterRedirect(__('Invalid dates. Update cancelled.'), false, ERROR);
