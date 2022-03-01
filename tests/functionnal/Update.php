@@ -258,8 +258,12 @@ class Update extends \GLPITestCase
      */
     public function testGetMigrationsToDo(string $current_version, bool $force_latest, array $expected_migrations)
     {
+        $class = new \ReflectionClass(\Update::class);
+        $method = $class->getMethod('getMigrationsToDo');
+        $method->setAccessible(true);
+
         global $DB;
         $update = new \Update($DB);
-        $this->array($update->getMigrationsToDo($current_version, $force_latest))->isIdenticalTo($expected_migrations);
+        $this->array($method->invokeArgs($update, [$current_version, $force_latest]))->isIdenticalTo($expected_migrations);
     }
 }

@@ -342,7 +342,7 @@ class Update
      *
      * @return array
      */
-    public function getMigrationsToDo(string $current_version, bool $force_latest = false): array
+    private function getMigrationsToDo(string $current_version, bool $force_latest = false): array
     {
         $migrations = [];
 
