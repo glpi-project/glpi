@@ -240,7 +240,30 @@ class Inventory
                 $DB->beginTransaction();
             }
 
-            $this->data = (array)$this->raw_data->content;
+
+            $converter = new Converter();
+            $schema = $converter->buildSchema();
+
+            $properties = array_keys((array)$schema->properties->content->properties);
+            unset($properties['versionclient'], $properties['versionprovider']); //already handled in extractMetadata
+            if (method_exists($this, 'getSchemaExtraProps')) {
+                $properties = array_merge(
+                    $properties,
+                    $this->getSchemaExtraProps()
+                );
+            }
+            $contents = $this->raw_data->content;
+            $all_props = get_object_vars($contents);
+
+            $data = [];
+            //parse schema properties and handle if it exists in raw_data
+            foreach ($properties as $property) {
+                if (property_exists($contents, $property)) {
+                    $data[$property] = $contents->$property;
+                }
+            }
+            $this->data = $data;
+            //$this->data = (array)$this->raw_data->content;
 
             //create/load agent
             $this->agent = new Agent();
