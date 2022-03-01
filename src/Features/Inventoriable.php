@@ -160,7 +160,7 @@ trait Inventoriable
        // Display auto inventory information
         if (
             !empty($this->fields['id'])
-            && $this->fields["is_dynamic"]
+            && $this->maybeDynamic() && $this->fields["is_dynamic"]
         ) {
             echo "<tr class='tab_bg_1'><td colspan='4'>";
             Plugin::doHook(Hooks::AUTOINVENTORY_INFORMATION, $this);

@@ -34,12 +34,21 @@
 namespace Glpi\Inventory\Asset;
 
 use CommonDBTM;
+use DeviceFirmwareType;
 use Glpi\Inventory\Conf;
 
 class Firmware extends Device
 {
     public function __construct(CommonDBTM $item, array $data = null)
     {
+        $type = new DeviceFirmwareType();
+        $type->getFromDBByCrit([
+            'name' => 'BIOS'
+        ]);
+        $this->devicetypes_id = $type->getID();
+        $this->devicetype_field = 'devicefirmwaretypes_id';
+        $this->include_type = false;
+
         parent::__construct($item, $data, 'Item_DeviceFirmware');
     }
 

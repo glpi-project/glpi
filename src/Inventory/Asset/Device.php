@@ -39,6 +39,10 @@ use Item_Devices;
 abstract class Device extends InventoryAsset
 {
     protected $id_class;
+    protected $restrict;
+    protected $devicetypes_id;
+    protected $devicetype_field;
+    protected $include_type;
 
     /**
      * Constructor
@@ -58,11 +62,24 @@ abstract class Device extends InventoryAsset
      *
      * @return array
      */
-    protected function getExisting($itemdevicetable, $fk): array
+    protected function getExisting($itemdevicetable, $fk, $devicetable): array
     {
         global $DB;
 
         $db_existing = [];
+
+        $where = [
+            "$itemdevicetable.items_id"     => $this->item->fields['id'],
+            "$itemdevicetable.itemtype"     => $this->item->getType()
+        ];
+
+        if ($this->devicetypes_id !== null) {
+            if ($this->include_type === true) {
+                $where[$this->devicetype_field] = $this->devicetypes_id;
+            } else {
+                $where[] = ['NOT' => [$this->devicetype_field => $this->devicetypes_id]];
+            }
+        }
 
         $iterator = $DB->request([
             'SELECT'    => [
@@ -70,10 +87,15 @@ abstract class Device extends InventoryAsset
                 "is_dynamic"
             ],
             'FROM'      => $itemdevicetable,
-            'WHERE'     => [
-                "$itemdevicetable.items_id"     => $this->item->fields['id'],
-                "$itemdevicetable.itemtype"     => $this->item->getType()
-            ]
+            'LEFT JOIN' => [
+                $devicetable => [
+                    'ON' => [
+                        $devicetable => 'id',
+                        $itemdevicetable => $fk
+                    ]
+                ]
+            ],
+            'WHERE'     => $where
         ]);
 
         foreach ($iterator as $row) {
@@ -100,7 +122,7 @@ abstract class Device extends InventoryAsset
             $devicetable     = getTableForItemType($devicetype);
             $fk              = getForeignKeyFieldForTable($devicetable);
 
-            $existing = $this->getExisting($itemdevicetable, $fk);
+            $existing = $this->getExisting($itemdevicetable, $fk, $devicetable);
             $deleted_items = [];
 
             foreach ($value as $val) {
@@ -111,18 +133,21 @@ abstract class Device extends InventoryAsset
 
                 //create device or get existing device ID
                 $device_id = $device->import(\Toolbox::addslashes_deep((array)$val));
+                $device->getFromDB($device_id);
 
                 //remove all existing instances
                 if (!isset($deleted_items[$device_id])) {
-                    $DB->delete(
-                        $itemdevice->getTable(),
-                        [
-                            $fk => $device_id,
-                            'items_id'     => $this->item->fields['id'],
-                            'itemtype'     => $this->item->getType(),
-                        ]
-                    );
-                    $deleted_items[$device_id] = $device_id;
+                    if ($this->devicetypes_id === null || $device->fields[$this->devicetype_field] != $this->devicetypes_id) {
+                        $DB->delete(
+                            $itemdevice->getTable(),
+                            [
+                                $fk => $device_id,
+                                'items_id' => $this->item->fields['id'],
+                                'itemtype' => $this->item->getType(),
+                            ]
+                        );
+                        $deleted_items[$device_id] = $device_id;
+                    }
                 }
 
                 $itemdevice_data = \Toolbox::addslashes_deep([
