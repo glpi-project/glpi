@@ -209,7 +209,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         $this->boolean($inventory->setData($json_str))->isTrue();
 
         $agent = new \Agent();
-        $this->integer($agent->handleAgent($inventory->extractMetadata()))->isGreaterThan(0);
+        $this->integer($agent->handleAgent($inventory->extractMetadata()))->isIdenticalTo(0);
 
         $main = new \Glpi\Inventory\Asset\NetworkEquipment($netequ, $json);
         $main->setAgent($agent)->setExtraData($data);
@@ -294,7 +294,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         $this->boolean($inventory->setData($json_str))->isTrue();
 
         $agent = new \Agent();
-        $this->integer($agent->handleAgent($inventory->extractMetadata()))->isGreaterThan(0);
+        $this->integer($agent->handleAgent($inventory->extractMetadata()))->isIdenticalTo(0);
 
         $main = new \Glpi\Inventory\Asset\NetworkEquipment($netequ, $json);
         $main->setAgent($agent)->setExtraData($data);
