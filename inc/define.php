@@ -525,6 +525,8 @@ $CFG_GLPI['remote_management_types'] = ['Computer', 'Phone'];
 
 $CFG_GLPI['databaseinstance_types'] = ['Computer'];
 
+$CFG_GLPI['agent_types'] = ['Computer', 'Phone'];
+
 $dashboard_libs = [
     'dashboard', 'gridstack',
     'charts', 'clipboard', 'sortable'
