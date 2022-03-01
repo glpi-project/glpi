@@ -369,7 +369,7 @@ class Agent extends CommonDBTM
             $input['tag'] = $metadata['tag'];
         }
 
-        if ($deviceid === 'foo') {
+        if ($deviceid === 'foo' || $metadata['itemtype'] !== 'Computer') {
             $input += [
                 'items_id' => 0,
                 'id' => 0
