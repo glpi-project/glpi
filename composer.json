@@ -121,11 +121,13 @@
         "lint": "parallel-lint  --exclude files --exclude marketplace --exclude plugins --exclude vendor --exclude tools/vendor .",
         "post-install-cmd": [
             "@php -r \"file_put_contents('.composer.hash', sha1_file('composer.lock'));\"",
-            "@php -f vendor/bin/build_hw_jsons"
+            "@php -f vendor/bin/build_hw_jsons",
+            "patch -f -p1 -d vendor/scssphp/scssphp/ < tools/patches/scssphp.patch || echo 'Error applying patch'"
         ],
         "post-update-cmd": [
             "@php -r \"file_put_contents('.composer.hash', sha1_file('composer.lock'));\"",
-            "@php -f vendor/bin/build_hw_jsons"
+            "@php -f vendor/bin/build_hw_jsons",
+            "patch -f -p1 -d vendor/scssphp/scssphp/ < tools/patches/scssphp.patch || echo 'Error applying patch'"
         ]
     },
     "repositories": {
