@@ -5994,7 +5994,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ], [
                 'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'slm',
-                'rights' => READ | UPDATE | CREATE | PURGE,
+                'rights' => READ | UPDATE | CREATE | PURGE | SLM::RIGHT_ASSIGN,
             ], [
                 'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'rule_dictionnary_printer',
@@ -6562,7 +6562,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ], [
                 'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'slm',
-                'rights' => READ,
+                'rights' => READ | SLM::RIGHT_ASSIGN,
             ], [
                 'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'rule_dictionnary_printer',

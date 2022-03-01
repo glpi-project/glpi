@@ -51,6 +51,8 @@ class SLM extends CommonDBTM
     const TTR = 0; // Time to resolve
     const TTO = 1; // Time to own
 
+    const RIGHT_ASSIGN = 256;
+
     public static function getTypeName($nb = 0)
     {
         return _n('Service level', 'Service levels', $nb);
@@ -292,5 +294,16 @@ class SLM extends CommonDBTM
     public static function getIcon()
     {
         return "ti ti-checkup-list";
+    }
+
+    public function getRights($interface = 'central')
+    {
+        $values = parent::getRights();
+        $values[self::RIGHT_ASSIGN]  = [
+            'short' => __('Assign'),
+            'long'  => __('Search result user display'),
+        ];
+
+        return $values;
     }
 }
