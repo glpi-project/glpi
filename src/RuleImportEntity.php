@@ -367,6 +367,7 @@ class RuleImportEntity extends Rule
                 'type' => 'dropdown_users'
             ]
         ];
+        $actions = array_merge(parent::getActions(), $actions);
 
         return $actions;
     }

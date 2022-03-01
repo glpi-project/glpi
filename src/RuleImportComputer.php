@@ -117,7 +117,7 @@ class RuleImportComputer extends Rule
     public function getActions()
     {
 
-        $actions                           = [];
+        $actions                           = parent::getActions();
 
         $actions['_ignore_import']['name'] = __('To be unaware of import');
         $actions['_ignore_import']['type'] = 'yesonly';

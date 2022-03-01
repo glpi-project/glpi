@@ -2874,7 +2874,12 @@ class Rule extends CommonDBTM
 
     public function getActions()
     {
-        return [];
+        return [
+            '_stop_rules_processing' => [
+                'name' => __('Stop rules processing'),
+                'type' => 'yesonly',
+            ]
+        ];
     }
 
 

@@ -1586,7 +1586,7 @@ JAVASCRIPT;
                     $output["_rule_process"] = false;
                     $rule->process($input, $output, $params, $p);
 
-                    if ($output["_rule_process"] && $this->stop_on_first_match) {
+                    if ((isset($output['_stop_rules_processing']) && $output['_stop_rules_processing'] === '1') || ($output["_rule_process"] && $this->stop_on_first_match)) {
                         unset($output["_rule_process"]);
                         $output["_ruleid"] = $rule->fields["id"];
                         return Toolbox::addslashes_deep($output);

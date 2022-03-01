@@ -314,7 +314,7 @@ class RuleRight extends Rule
     public function getActions()
     {
 
-        $actions                                              = [];
+        $actions                                              = parent::getActions();
 
         $actions['entities_id']['name']                       = Entity::getTypeName(1);
         $actions['entities_id']['type']                       = 'dropdown';

@@ -153,7 +153,7 @@ class RuleAsset extends Rule
     public function getActions()
     {
 
-        $actions                                = [];
+        $actions                                = parent::getActions();
 
         $actions['states_id']['name']           = __('Status');
         $actions['states_id']['type']           = 'dropdown';

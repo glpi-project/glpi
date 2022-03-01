@@ -93,7 +93,7 @@ class RuleDictionnaryPrinter extends Rule
     public function getActions()
     {
 
-        $actions                               = [];
+        $actions                               = parent::getActions();
 
         $actions['name']['name']               = __('Name');
         $actions['name']['force_actions']      = ['assign', 'regex_result'];

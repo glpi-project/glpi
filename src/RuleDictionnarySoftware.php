@@ -102,7 +102,7 @@ class RuleDictionnarySoftware extends Rule
     public function getActions()
     {
 
-        $actions                                  = [];
+        $actions                                  = parent::getActions();
 
         $actions['name']['name']                  = _n('Software', 'Software', 1);
         $actions['name']['force_actions']         = ['assign', 'regex_result'];
