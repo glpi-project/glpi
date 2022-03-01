@@ -41,19 +41,17 @@ class Bios extends Device
 {
     public function __construct(CommonDBTM $item, array $data = null)
     {
-        $type = new DeviceFirmwareType();
-        $type->getFromDBByCrit([
-            'name' => 'BIOS'
-        ]);
-        $this->devicetypes_id = $type->getID();
-        $this->devicetype_field = 'devicefirmwaretypes_id';
-        $this->include_type = true;
-
         parent::__construct($item, $data, 'Item_DeviceFirmware');
     }
 
     public function prepare(): array
     {
+        $type = new DeviceFirmwareType();
+        $type->getFromDBByCrit([
+            'name' => 'BIOS'
+        ]);
+        $type_id = $type->getID();
+
         $mapping = [
             'bdate'           => 'date',
             'bversion'        => 'version',
@@ -72,7 +70,7 @@ class Bios extends Device
             __('%1$s BIOS'),
             property_exists($val, 'bmanufacturer') ? $val->bmanufacturer : ''
         );
-        $val->devicefirmwaretypes_id = $this->devicetypes_id;
+        $val->devicefirmwaretypes_id = $type_id;
 
         $this->data = [$val];
         return $this->data;
