@@ -254,6 +254,7 @@ class Inventory
             }
             $contents = $this->raw_data->content;
             $all_props = get_object_vars($contents);
+            unset($all_props['versionclient'], $all_props['versionprovider']); //already handled in extractMetadata
 
             $data = [];
             //parse schema properties and handle if it exists in raw_data
@@ -262,8 +263,23 @@ class Inventory
                     $data[$property] = $contents->$property;
                 }
             }
+
+            $this->unhandled_data = array_diff_key($all_props, $data);
+            if (count($this->unhandled_data)) {
+                Session::addMessageAfterRedirect(
+                    sprintf(
+                        __('Following keys has been ignored during process: %1$s'),
+                        implode(
+                            ', ',
+                            array_keys($this->unhandled_data)
+                        )
+                    ),
+                    true,
+                    WARNING
+                );
+            }
+
             $this->data = $data;
-            //$this->data = (array)$this->raw_data->content;
 
             //create/load agent
             $this->agent = new Agent();
