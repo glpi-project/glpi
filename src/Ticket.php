@@ -1065,6 +1065,16 @@ class Ticket extends CommonITILObject
             }
         }
 
+        $can_assign_slm = Session::haveRight(SLM::$rightname, SLM::RIGHT_ASSIGN);
+        if (!$can_assign_slm) {
+            foreach ([SLM::TTR, SLM::TTO] as $slmType) {
+                [$dateField, $slaField] = SLA::getFieldNames($slmType);
+                unset($input[$dateField], $input[$slaField]);
+                [$dateField, $olaField] = OLA::getFieldNames($slmType);
+                unset($input[$dateField], $input[$olaField]);
+            }
+        }
+
        //must be handled here for tickets. @see CommonITILObject::prepareInputForUpdate()
         $input = $this->handleTemplateFields($input);
         if ($input === false) {
@@ -1800,6 +1810,16 @@ class Ticket extends CommonITILObject
                         break(2);
                     }
                 }
+            }
+        }
+
+        $can_assign_slm = Session::haveRight(SLM::$rightname, SLM::RIGHT_ASSIGN);
+        if (!$can_assign_slm) {
+            foreach ([SLM::TTR, SLM::TTO] as $slmType) {
+                [$dateField, $slaField] = SLA::getFieldNames($slmType);
+                unset($input[$dateField], $input[$slaField]);
+                [$dateField, $olaField] = OLA::getFieldNames($slmType);
+                unset($input[$dateField], $input[$olaField]);
             }
         }
 
