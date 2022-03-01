@@ -248,15 +248,15 @@ class Firmware extends AbstractInventoryAsset
        //computer inventory knows only "UCS 6248UP 48-Port" and "HP-HttpMg-Version" firmwares
         $this->doInventory($xml_source, true);
 
-       //we still have 3 firmwares + 1 bios
+        //we still have 3 firmwares + 1 bios
         $fws = $device_fw->find();
         $this->integer(count($fws))->isIdenticalTo(3 + 1);
 
-       //we still have 3 firmwares items linked to the computer
+        //we still have 3 firmwares items linked to the computer
         $fws = $item_fw->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
         $this->integer(count($fws))->isIdenticalTo(3);
 
-       //firmwares present in the inventory source are now dynamic
+        //firmwares present in the inventory source are now dynamic
         $fws = $item_fw->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 1]);
         $this->integer(count($fws))->isIdenticalTo(2);
 
