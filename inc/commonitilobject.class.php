@@ -2176,18 +2176,95 @@ abstract class CommonITILObject extends CommonDBTM {
    **/
    private function addAdditionalActors($input) {
 
+       /** @var CommonITILActor $useractors */
       $useractors = null;
       // Add user groups linked to ITIL objects
       if (!empty($this->userlinkclass)) {
          $useractors = new $this->userlinkclass();
       }
+      /** @var CommonITILActor $groupactors */
       $groupactors = null;
       if (!empty($this->grouplinkclass)) {
          $groupactors = new $this->grouplinkclass();
       }
+      /** @var CommonITILActor $supplieractors */
       $supplieractors = null;
       if (!empty($this->supplierlinkclass)) {
          $supplieractors = new $this->supplierlinkclass();
+      }
+
+      $actor_fields = [
+         'Group' => [
+            [
+               'name' => '_additional_groups_requesters',
+               'type' => CommonITILActor::REQUESTER
+            ],
+            [
+               'name' => '_additional_groups_observers',
+               'type' => CommonITILActor::OBSERVER
+            ],
+            [
+               'name' => '_additional_groups_assigns',
+               'type' => CommonITILActor::ASSIGN
+            ],
+         ],
+         'Supplier' => [
+            [
+               'name' => '_additional_suppliers_assigns',
+               'type' => CommonITILActor::ASSIGN
+            ],
+         ],
+         'User' => [
+            [
+               'name' => '_additional_requesters',
+               'type' => CommonITILActor::REQUESTER
+            ],
+            [
+               'name' => '_additional_observers',
+               'type' => CommonITILActor::OBSERVER
+            ],
+            [
+               'name' => '_additional_assigns',
+               'type' => CommonITILActor::ASSIGN
+            ],
+         ],
+      ];
+      $existing_users = $useractors->getActors($this->fields['id']);
+      $existing_groups = $groupactors->getActors($this->fields['id']);
+      $existing_suppliers = $supplieractors->getActors($this->fields['id']);
+
+      // Remove duplicate actors from field inputs
+      foreach ($actor_fields as $actor_type => $fields) {
+         foreach ($fields as $actor_field) {
+            if (isset($input[$actor_field['name']]) && is_array($input[$actor_field['name']])) {
+               $input[$actor_field['name']] = array_unique($input[$actor_field['name']]);
+            }
+         }
+      }
+
+      /**
+       * @var string|CommonDBTM $actor_type
+       * @var array $actor_fields
+       */
+      foreach ($actor_fields as $actor_type => $fields) {
+         $existing = [];
+         switch ($actor_type) {
+            case 'User':
+               $existing = $existing_users;
+               break;
+            case 'Group':
+               $existing = $existing_groups;
+               break;
+            case 'Supplier':
+               $existing = $existing_suppliers;
+               break;
+         }
+         foreach ($fields as $actor_field) {
+            $existing_ids = array_column($existing[$actor_field['type']] ?? [], $actor_type::getForeignKeyField());
+            $input[$actor_field['name']] = array_filter($input[$actor_field['name']] ?? [], static function ($value) use ($actor_type, $existing_ids) {
+               return !in_array($value[$actor_type::getForeignKeyField()], $existing_ids, false);
+            });
+         }
       }
 
       // "do not compute" flag set by business rules for "takeintoaccount_delay_stat" field
