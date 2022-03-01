@@ -179,4 +179,23 @@ class TemplateRenderer
             ErrorHandler::getInstance()->handleTwigError($e);
         }
     }
+
+    /**
+     * Renders a block in a template.
+     *
+     * @param string $template  Path to the template name
+     * @param string $block     Name of the block to render
+     * @param array  $variables Variables needed to render the template
+     *
+     * @return string
+     */
+    public function renderBlock(string $template, string $block, array $variables = []): string
+    {
+        try {
+            return $this->environment->load($template)->renderBlock($block, $variables);
+        } catch (\Twig\Error\Error $e) {
+            ErrorHandler::getInstance()->handleTwigError($e);
+        }
+        return '';
+    }
 }
