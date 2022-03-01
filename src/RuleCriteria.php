@@ -694,5 +694,7 @@ class RuleCriteria extends CommonDBChild
         echo "<tr><td colspan='4'><span id='criteria_span'>\n";
         echo "</span></td></tr>\n";
         $this->showFormButtons($options);
+
+        return true;
     }
 }

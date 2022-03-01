@@ -142,6 +142,8 @@ class ITILSolution extends CommonDBChild
             'subitem' => $this,
             'params'  => $options,
         ]);
+
+        return true;
     }
 
     /**

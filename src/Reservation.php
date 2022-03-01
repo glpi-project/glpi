@@ -862,6 +862,8 @@ JAVASCRIPT;
         echo "</table>";
         Html::closeForm();
         echo "</div>";
+
+        return true;
     }
 
 

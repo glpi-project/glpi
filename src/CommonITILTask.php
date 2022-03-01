@@ -1460,6 +1460,8 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
             'item'      => $options['parent'],
             'subitem'   => $this
         ]);
+
+        return true;
     }
 
 

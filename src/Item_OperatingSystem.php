@@ -379,6 +379,8 @@ class Item_OperatingSystem extends CommonDBRelation
         echo "</td></tr>";
         $options['formfooter'] = false;
         $this->showFormButtons($options);
+
+        return true;
     }
 
     protected function computeFriendlyName()

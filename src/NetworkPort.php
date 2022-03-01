@@ -1366,6 +1366,8 @@ class NetworkPort extends CommonDBChild
         }
 
         $this->showFormButtons($options);
+
+        return true;
     }
 
 

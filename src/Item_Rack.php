@@ -721,6 +721,8 @@ JAVASCRIPT;
         echo "</tr>";
 
         $this->showFormButtons($options);
+
+        return true;
     }
 
     public function post_getEmpty()

@@ -330,6 +330,8 @@ class NetworkPortMigration extends CommonDBChild
         echo "<$interface_cell></$interface_cell></tr>\n";
 
         $this->showFormButtons($options);
+
+        return true;
     }
 
 

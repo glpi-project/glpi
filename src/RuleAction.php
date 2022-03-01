@@ -769,5 +769,7 @@ class RuleAction extends CommonDBChild
         echo "</span></td>\n";
         echo "</tr>\n";
         $this->showFormButtons($options);
+
+        return true;
     }
 }

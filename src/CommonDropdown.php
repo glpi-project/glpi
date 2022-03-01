@@ -362,6 +362,8 @@ abstract class CommonDropdown extends CommonDBTM
             'params' => $options,
             'additional_fields' => $fields
         ]);
+
+        return true;
     }
 
 
