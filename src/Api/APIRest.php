@@ -44,21 +44,6 @@ use Toolbox;
 
 class APIRest extends API
 {
-    protected $request_uri;
-    protected $url_elements;
-    protected $verb;
-    protected $parameters;
-    protected $debug           = 0;
-    protected $format          = "json";
-
-    /**
-     *
-     * @param integer $nb Unused value
-     *
-     * @return string
-     *
-     * @see CommonGLPI::GetTypeName()
-     */
     public static function getTypeName($nb = 0)
     {
         return __('Rest API');
@@ -97,9 +82,11 @@ class APIRest extends API
      *  - Identifier
      *  - and parameters
      *
-     *  And send to method corresponding identified resource
+     * And send to method corresponding identified resource
      *
-     * @return mixed json with response or error
+     * Then send response to client.
+     *
+     * @return void
      */
     public function call()
     {
@@ -144,49 +131,49 @@ class APIRest extends API
 
        // inline documentation (api/)
         if ($is_inline_doc) {
-            return $this->inlineDocumentation("apirest.md");
+            $this->inlineDocumentation("apirest.md");
         } else if ($resource === "initSession") {
            // ## DECLARE ALL ENDPOINTS ##
            // login into glpi
             $this->session_write = true;
-            return $this->returnResponse($this->initSession($this->parameters));
+            $this->returnResponse($this->initSession($this->parameters));
         } else if ($resource === "killSession") {
            // logout from glpi
             $this->session_write = true;
-            return $this->returnResponse($this->killSession());
+            $this->returnResponse($this->killSession());
         } else if ($resource === "changeActiveEntities") {
            // change active entities
             $this->session_write = true;
-            return $this->returnResponse($this->changeActiveEntities($this->parameters));
+            $this->returnResponse($this->changeActiveEntities($this->parameters));
         } else if ($resource === "getMyEntities") {
            // get all entities of logged user
-            return $this->returnResponse($this->getMyEntities($this->parameters));
+            $this->returnResponse($this->getMyEntities($this->parameters));
         } else if ($resource === "getActiveEntities") {
            // get curent active entity
-            return $this->returnResponse($this->getActiveEntities($this->parameters));
+            $this->returnResponse($this->getActiveEntities($this->parameters));
         } else if ($resource === "changeActiveProfile") {
            // change active profile
             $this->session_write = true;
-            return $this->returnResponse($this->changeActiveProfile($this->parameters));
+            $this->returnResponse($this->changeActiveProfile($this->parameters));
         } else if ($resource === "getMyProfiles") {
            // get all profiles of current logged user
-            return $this->returnResponse($this->getMyProfiles($this->parameters));
+            $this->returnResponse($this->getMyProfiles($this->parameters));
         } else if ($resource === "getActiveProfile") {
            // get current active profile
-            return $this->returnResponse($this->getActiveProfile($this->parameters));
+            $this->returnResponse($this->getActiveProfile($this->parameters));
         } else if ($resource === "getFullSession") {
            // get complete php session
-            return $this->returnResponse($this->getFullSession($this->parameters));
+            $this->returnResponse($this->getFullSession($this->parameters));
         } else if ($resource === "getGlpiConfig") {
            // get complete php var $CFG_GLPI
-            return $this->returnResponse($this->getGlpiConfig($this->parameters));
+            $this->returnResponse($this->getGlpiConfig($this->parameters));
         } else if ($resource === "listSearchOptions") {
            // list searchOptions of an itemtype
             $itemtype = $this->getItemtype(1);
-            return $this->returnResponse($this->listSearchOptions($itemtype, $this->parameters));
+            $this->returnResponse($this->listSearchOptions($itemtype, $this->parameters));
         } else if ($resource === "getMultipleItems") {
            // get multiple items (with various itemtype)
-            return $this->returnResponse($this->getMultipleItems($this->parameters));
+            $this->returnResponse($this->getMultipleItems($this->parameters));
         } else if ($resource === "search") {
            // Search on itemtype
             $this->checkSessionToken();
@@ -211,24 +198,28 @@ class APIRest extends API
                 $code = 206; // partial content
             }
 
-            return $this->returnResponse($response, $code, $additionalheaders);
+            $this->returnResponse($response, $code, $additionalheaders);
         } else if ($resource === "lostPassword") {
             if ($this->verb != 'PUT' && $this->verb != 'PATCH') {
                // forbid password reset when HTTP verb is not PUT or PATCH
-                return $this->returnError(__("Only HTTP verb PUT is allowed"));
+                $this->returnError(__("Only HTTP verb PUT is allowed"));
             }
-            return $this->returnResponse($this->lostPassword($this->parameters));
+            $this->returnResponse($this->lostPassword($this->parameters));
         } else if ($resource == 'getMassiveActions') {
-            return $this->getMassiveActions(
-                $this->getItemtype(1, false, false),
-                $this->url_elements[2] ?? null,
-                json_decode(json_encode($this->parameters), true)['is_deleted'] ?? false,
+            $this->returnResponse(
+                $this->getMassiveActions(
+                    $this->getItemtype(1, false, false),
+                    $this->url_elements[2] ?? null,
+                    json_decode(json_encode($this->parameters), true)['is_deleted'] ?? false,
+                )
             );
         } else if ($resource == "getMassiveActionParameters") {
-            return $this->getMassiveActionParameters(
-                $this->getItemtype(1, false, false),
-                $this->url_elements[2] ?? null,
-                json_decode(json_encode($this->parameters), true)['is_deleted'] ?? false,
+            $this->returnResponse(
+                $this->getMassiveActionParameters(
+                    $this->getItemtype(1, false, false),
+                    $this->url_elements[2] ?? null,
+                    json_decode(json_encode($this->parameters), true)['is_deleted'] ?? false,
+                )
             );
         } else if ($resource == "applyMassiveAction") {
            // Parse parameters
@@ -239,7 +230,7 @@ class APIRest extends API
                 $this->returnError("No ids supplied", 400, "ERROR_MASSIVEACTION_NO_IDS");
             }
 
-            return $this->applyMassiveAction(
+            $this->applyMassiveAction(
                 $this->getItemtype(1, false, false),
                 $this->url_elements[2] ?? null,
                 $ids,
@@ -339,7 +330,7 @@ class APIRest extends API
                     $response = $this->deleteItems($itemtype, $this->parameters);
                     break;
             }
-            return $this->returnResponse($response, $code, $additionalheaders);
+            $this->returnResponse($response, $code, $additionalheaders);
         }
 
         $this->messageLostError();
@@ -649,5 +640,6 @@ class APIRest extends API
         } else if ($this->format == "json") {
             echo file_get_contents(GLPI_ROOT . '/' . $file);
         }
+        exit;
     }
 }
