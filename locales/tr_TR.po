@@ -6315,7 +6315,7 @@ msgstr "Tam etki alanı adı geçersiz"
 #: src/Profile.php:1130 src/Profile.php:2265 src/Html.php:1402
 #: src/Config.php:2560
 msgid "Management"
-msgstr "Yönetim"
+msgstr "İdari"
 
 #: src/Inventory/Asset/NetworkEquipment.php:103
 #: src/Inventory/Asset/NetworkEquipment.php:155

@@ -11,6 +11,7 @@
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2021
 # นัจ-ณวัสน์ เอกสิรินิธิพล <nawhath.aek@hotmail.com>, 2021
 # DOMBRE Julien <moyo@indepnet.net>, 2021
+# kanung chumchid <kn2296@gmail.com>, 2022
 # 
 #, fuzzy
 msgid ""
@@ -19,7 +20,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-02-03 09:37+0100\n"
 "PO-Revision-Date: 2021-05-26 09:06+0000\n"
-"Last-Translator: DOMBRE Julien <moyo@indepnet.net>, 2021\n"
+"Last-Translator: kanung chumchid <kn2296@gmail.com>, 2022\n"
 "Language-Team: Thai (Thailand) (https://www.transifex.com/glpi/teams/1637/th_TH/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -6762,7 +6763,7 @@ msgstr ""
 
 #: src/Entity.php:1524 src/Entity.php:1529 src/Location.php:96
 msgid "Location on map"
-msgstr ""
+msgstr "ตำแหน่งบนแผนที่"
 
 #: src/Entity.php:1535
 msgctxt "location"
@@ -8308,7 +8309,7 @@ msgstr ""
 
 #: src/Dashboard/Grid.php:1316
 msgid "Top ticket's locations"
-msgstr ""
+msgstr "แจ้งซ่อมสูงสุดตามสถานที่"
 
 #: src/Dashboard/Grid.php:1334
 msgid "Top ticket's requesters"
@@ -12203,7 +12204,7 @@ msgstr ""
 
 #: src/NotificationTargetTicket.php:621
 msgid "Location name"
-msgstr ""
+msgstr "ชื่อสถานที่"
 
 #: src/NotificationTargetTicket.php:626 src/NotificationTargetTicket.php:665
 #: src/Location.php:203
@@ -15224,7 +15225,7 @@ msgstr "กฎการใช้วัตถุถูกปิดใช้งา
 
 #: src/MapGeolocation.php:112
 msgid "Set location here"
-msgstr ""
+msgstr "ตั้งตำแหน่งที่นี่"
 
 #: src/DeviceCaseType.php:39
 msgid "Case type"
@@ -18155,7 +18156,7 @@ msgstr ""
 #: src/Location.php:120
 msgid "Location"
 msgid_plural "Locations"
-msgstr[0] "ที่ตั้ง"
+msgstr[0] "สาขา-ที่ตั้ง"
 
 #: src/RuleImportComputer.php:76
 msgid "Target entity for the computer"
@@ -19173,7 +19174,7 @@ msgstr "สร้างปัญหาจาก Ticket นี้"
 
 #: src/RuleAsset.php:139
 msgid "User location"
-msgstr ""
+msgstr "ตำแหน่งผู้ใช้/พนักงาน"
 
 #: src/RuleAsset.php:145
 msgid "User in group"

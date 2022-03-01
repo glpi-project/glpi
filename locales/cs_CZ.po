@@ -11,6 +11,7 @@
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2021
 # David Stepan <stepand@tiscali.cz>, 2022
 # Pavel Borecki <pavel.borecki@gmail.com>, 2022
+# Michal Čermák <michal.cermak79@gmail.com>, 2022
 # 
 #, fuzzy
 msgid ""
@@ -19,7 +20,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-02-03 09:37+0100\n"
 "PO-Revision-Date: 2021-05-26 09:06+0000\n"
-"Last-Translator: Pavel Borecki <pavel.borecki@gmail.com>, 2022\n"
+"Last-Translator: Michal Čermák <michal.cermak79@gmail.com>, 2022\n"
 "Language-Team: Czech (Czech Republic) (https://www.transifex.com/glpi/teams/1637/cs_CZ/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -207,7 +208,7 @@ msgstr "%1$s – port %2$s"
 #: ajax/dropdownConnectNetworkPort.php:137
 #, php-format
 msgid "%1$s - Network outlet %2$s"
-msgstr "%1$s ‒ síťová zásuvka %2$s"
+msgstr "%1$s ‒ Síťová zásuvka %2$s"
 
 #: ajax/dropdownMassiveActionAddActor.php:54 ajax/visibility.php:143
 #: ajax/dropdownMassiveActionAddValidator.php:56
@@ -325,7 +326,7 @@ msgstr "Přidat nová zařízení"
 
 #: ajax/selectUnaffectedOrNewItem_Device.php:79
 msgid "No unaffected device!"
-msgstr ""
+msgstr "Žádné neovlivněné zařízení!"
 
 #: ajax/ticketiteminformation.php:72
 #, php-format
@@ -457,15 +458,15 @@ msgstr "Žádný"
 
 #: ajax/gantt.php:110
 msgid "Target item must be of project type"
-msgstr ""
+msgstr "Cílová položka musí být projektového typu"
 
 #: ajax/gantt.php:143
 msgid "Item must be of project type"
-msgstr ""
+msgstr "Položka musí být projektového typu"
 
 #: ajax/gantt.php:208
 msgid "Link already exist!"
-msgstr ""
+msgstr "Odkaz již existuje!"
 
 #: ajax/telemetry.php:47
 msgid ""
@@ -473,6 +474,9 @@ msgid ""
 "responsiveness statistics about user interface features, memory, and "
 "hardware configuration."
 msgstr ""
+"Shromažďujeme pouze následující údaje: využití zásuvných modulů, statistiky "
+"výkonu a odezvy týkající se funkcí uživatelského rozhraní, paměti a "
+"konfigurace hardwaru."
 
 #: ajax/switchdebug.php:47
 msgid "Debug mode has been enabled!"
@@ -484,7 +488,7 @@ msgstr "Ladící režim byl vypnut!"
 
 #: ajax/central.php:87
 msgid "Invalid widget"
-msgstr ""
+msgstr "Neplatný widget"
 
 #. TRANS: select action 'update' (before doing it)
 #: ajax/dropdownMassiveActionOs.php:46 src/Socket.php:696 src/Cartridge.php:82
@@ -1486,7 +1490,7 @@ msgstr "Uložit a přidat do databáze znalostí"
 #: front/problem.form.php:201
 #, php-format
 msgid "%s Kanban"
-msgstr ""
+msgstr "%s Kanban"
 
 #: front/ticket.form.php:286 front/helpdesk.public.php:94
 #: src/NotificationTargetTicket.php:143
@@ -1894,7 +1898,7 @@ msgstr "Report o síti podle zásuvek: %s"
 #: front/socket.form.php:62 front/socket.form.php:122
 #, php-format
 msgid "%s adds a socket"
-msgstr ""
+msgstr "%s přidal zásuvku"
 
 #. TRANS: %s is the user login
 #: front/socket.form.php:79
@@ -1906,7 +1910,7 @@ msgstr ""
 #: front/socket.form.php:93
 #, php-format
 msgid "%s updates a socket"
-msgstr ""
+msgstr "%s aktualizoval zásuvku"
 
 #: front/socket.form.php:109
 #, php-format
@@ -2143,10 +2147,10 @@ msgstr "Technik"
 #: standard:81 standard:180 standard:199 standard:142
 msgid "Category"
 msgid_plural "Categories"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Kategorie"
+msgstr[1] "Kategorie"
+msgstr[2] "Kategorie"
+msgstr[3] "Kategorie"
 
 #: front/stat.graph.php:176 front/stat.tracking.php:102
 #: front/stat.location.php:91 src/CableStrand.php:146
@@ -2594,10 +2598,10 @@ msgstr "Hardware ve smlouvě"
 #: src/Profile.php:1082 src/Profile.php:2300
 msgid "Contract"
 msgid_plural "Contract"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Smlouva"
+msgstr[1] "Smlouvy"
+msgstr[2] "Smluv"
+msgstr[3] "Smlouvy"
 
 #: front/ldap.group.import.php:71 src/AuthLDAP.php:3942 src/Auth.php:268
 #: src/Auth.php:289
@@ -2898,7 +2902,7 @@ msgstr ""
 
 #: inc/config.php:186
 msgid "Update needed"
-msgstr ""
+msgstr "Je třeba aktualizace"
 
 #: inc/config.php:203 install/update.php:166 entrée standard:57
 msgid "Try again"
@@ -3307,7 +3311,7 @@ msgstr[3] ""
 #: src/Cable.php:227 src/Cable.php:237 src/Cable.php:302 src/Cable.php:317
 #, php-format
 msgid "%s (%s)"
-msgstr ""
+msgstr "%s (%s)"
 
 #: src/CableStrand.php:150 src/CableStrand.php:152 src/Budget.php:349
 #: src/Domain_Item.php:62 src/Domain_Item.php:64
@@ -3332,13 +3336,13 @@ msgstr[3] "Související položky"
 #: src/Cable.php:173 src/Cable.php:184 src/Cable.php:217 src/Cable.php:227
 #: src/Cable.php:317
 msgid "Endpoint B"
-msgstr ""
+msgstr "Koncový bod B"
 
 #: src/CableStrand.php:152 src/CableStrand.php:153 src/Socket.php:294
 #: src/Cable.php:162 src/Cable.php:195 src/Cable.php:207 src/Cable.php:237
 #: src/Cable.php:302
 msgid "Endpoint A"
-msgstr ""
+msgstr "Koncový bod A"
 
 #: src/CableStrand.php:209 src/SoftwareVersion.php:385
 #: src/Item_RemoteManagement.php:189 src/Item_Disk.php:361
@@ -4114,7 +4118,7 @@ msgstr ""
 
 #: src/Marketplace/View.php:140
 msgid "Maybe you could setup a proxy"
-msgstr ""
+msgstr "Možná byste mohli nastavit proxy server"
 
 #: src/Marketplace/View.php:142
 msgid "or please check later"
@@ -4127,7 +4131,7 @@ msgstr ""
 
 #: src/Marketplace/View.php:155
 msgid "A registration, at least a free one, is required to use marketplace!"
-msgstr ""
+msgstr "Pro používání obchodu je nutná registrace, alespoň bezplatná!"
 
 #: src/Marketplace/View.php:156
 #, php-format
@@ -4177,12 +4181,16 @@ msgid ""
 "If you want to ease the plugins download, please check permissions and "
 "ownership of this directory."
 msgstr ""
+"Pokud chcete usnadnit stahování zásuvných modulů, zkontrolujte prosím "
+"oprávnění a vlastnictví tohoto adresáře."
 
 #: src/Marketplace/View.php:349
 msgid ""
 "Otherwise, you will need to download and unzip the plugins archives "
 "manually."
 msgstr ""
+"V opačném případě budete muset archivy zásuvných modulů stáhnout a rozbalit "
+"ručně."
 
 #: src/Marketplace/View.php:366
 msgid "Alpha ASC"
@@ -4206,11 +4214,11 @@ msgstr ""
 
 #: src/Marketplace/View.php:391
 msgid "Best notes"
-msgstr ""
+msgstr "Nejlepší komentáře"
 
 #: src/Marketplace/View.php:396
 msgid "Your plugin here ? Contact us."
-msgstr ""
+msgstr "Váš plugin zde? Kontaktujte nás."
 
 #: src/Marketplace/View.php:398
 msgid "Refresh plugin list"
@@ -4238,7 +4246,7 @@ msgstr "Vyčistit"
 
 #: src/Marketplace/View.php:675
 msgid "Download again"
-msgstr ""
+msgstr "Stáhnout znovu"
 
 #: src/Marketplace/View.php:684
 msgid "This plugin is not available for your GLPI version."
@@ -4247,6 +4255,8 @@ msgstr "Tento zásuvný modul není dostupný pro vaší verzi GLPI."
 #: src/Marketplace/View.php:696
 msgid "The plugin has an available update but its directory is not writable."
 msgstr ""
+"Zásuvný modul má k dispozici aktualizaci, ale do jeho adresáře nelze "
+"zapisovat."
 
 #: src/Marketplace/View.php:700
 #, php-format
@@ -4262,12 +4272,14 @@ msgstr "Stáhnout"
 #: src/Marketplace/View.php:723
 #, php-format
 msgid "A new version (%s) is available, update?"
-msgstr ""
+msgstr "Nová verze (%s) je dostupná, aktualizovat?"
 
 #: src/Marketplace/View.php:736
 #, php-format
 msgid "You need a superior GLPI-Network offer to access to this plugin (%s)"
 msgstr ""
+"Pro přístup k tomuto zásuvnému modulu (%s) potřebujete superior GLPI-Network"
+" nabídku."
 
 #: src/Marketplace/View.php:748 src/Plugin.php:2564
 msgid "Install"
@@ -4302,7 +4314,7 @@ msgstr "Nastavit"
 #: src/Marketplace/View.php:851
 #, php-format
 msgid "You must have a %s subscription to get this plugin"
-msgstr ""
+msgstr "You must have a %s subscription to get this plugin"
 
 #: src/Marketplace/View.php:856
 #, php-format
@@ -4324,7 +4336,7 @@ msgstr "Přejít na obchod"
 
 #: src/Marketplace/View.php:1005
 msgid "GLPI provides a new marketplace to download and install plugins."
-msgstr ""
+msgstr "GLPI poskytuje nový obchod pro stahování a instalaci pluginů."
 
 #: src/Marketplace/View.php:1007
 msgid "Do you want to replace the plugins setup page by the new marketplace?"
@@ -4376,7 +4388,7 @@ msgstr ""
 
 #: src/Marketplace/Controller.php:132
 msgid "Unable to extract plugin archive."
-msgstr ""
+msgstr "Archiv pluginu nelze extrahovat."
 
 #: src/Marketplace/Controller.php:289
 #: src/Marketplace/NotificationTargetController.php:58
@@ -4844,7 +4856,7 @@ msgstr "pátek"
 
 #: src/Features/PlanningEvent.php:797 src/Toolbox.php:2134 src/Config.php:1017
 msgid "Saturday"
-msgstr "sobota"
+msgstr "Sobota"
 
 #: src/Features/PlanningEvent.php:798 src/Toolbox.php:2128 src/Config.php:1018
 msgid "Sunday"
@@ -4953,7 +4965,7 @@ msgstr ""
 
 #: src/Features/Inventoriable.php:112 entrée standard:39
 msgid "Inventory information"
-msgstr ""
+msgstr "Informace o inventáři"
 
 #. TRANS: parameter is the name of the asset
 #: src/Features/Inventoriable.php:125 entrée standard:46
@@ -4971,7 +4983,7 @@ msgstr ""
 
 #: src/Features/Inventoriable.php:154
 msgid "No agent has been linked."
-msgstr ""
+msgstr "Žádný agent nebyl přidružen."
 
 #: src/Features/Inventoriable.php:182 src/Agent.php:126 src/Agent.php:254
 #: entrée standard:68
@@ -4985,15 +4997,15 @@ msgstr "Značka inventáře"
 
 #: src/Features/Inventoriable.php:189 entrée standard:78
 msgid "Last inventory"
-msgstr ""
+msgstr "Poslední inventarizace"
 
 #: src/Features/Inventoriable.php:194 entrée standard:84
 msgid "Agent status"
-msgstr ""
+msgstr "Status agenta"
 
 #: src/Features/Inventoriable.php:195 entrée standard:85
 msgid "Ask agent about its current status"
-msgstr ""
+msgstr "Zeptejte se agenta na jeho aktuální stav"
 
 #: src/Features/Inventoriable.php:197 src/Agent.php:650 src/Agent.php:671
 #: src/GLPINetwork.php:113 src/GLPINetwork.php:118 src/NetworkPort.php:924
@@ -5007,7 +5019,7 @@ msgstr ""
 
 #: src/Features/Inventoriable.php:199 entrée standard:93
 msgid "Request agent to proceed an new inventory"
-msgstr ""
+msgstr "Žádost agenta o provedení nového soupisu"
 
 #: src/Features/Kanban.php:170 src/Project.php:165
 msgid "Kanban"
@@ -5039,7 +5051,7 @@ msgstr "Trvání"
 #: src/NotificationTargetContract.php:44 src/CommonITILRecurrent.php:184
 #: src/CommonITILRecurrent.php:316
 msgid "Periodicity"
-msgstr "Opakovanost"
+msgstr "Frekvence"
 
 #: src/Contract.php:280 src/Contract.php:281 src/Contract.php:282
 #: src/Contract.php:283 src/Contract.php:373 src/Contract.php:374
@@ -5254,7 +5266,7 @@ msgstr "Odstranit smlouvu"
 
 #: src/Contract.php:1772
 msgid "No item."
-msgstr ""
+msgstr "Žádná položka"
 
 #: src/OLA.php:49 src/RuleTicket.php:670 src/RuleTicket.php:681
 #: src/RuleTicket.php:835 src/RuleTicket.php:846
@@ -5287,7 +5299,7 @@ msgstr[3] "Typy spotřebního materiálu"
 
 #: src/PrinterLog.php:55
 msgid "Page counters"
-msgstr ""
+msgstr "Počítadla stránek"
 
 #: src/PrinterLog.php:146 src/NetworkPortMetrics.php:146
 msgid "Y-m-d"
@@ -5295,15 +5307,15 @@ msgstr ""
 
 #: src/PrinterLog.php:179
 msgid "Total pages"
-msgstr ""
+msgstr "Celkem stránek"
 
 #: src/PrinterLog.php:181
 msgid "Black & White pages"
-msgstr ""
+msgstr "Černobílé stránky"
 
 #: src/PrinterLog.php:183
 msgid "Color pages"
-msgstr ""
+msgstr "Barevné stránky"
 
 #: src/PrinterLog.php:185
 msgid "Scans"
@@ -5327,15 +5339,15 @@ msgstr ""
 
 #: src/PrinterLog.php:195
 msgid "Copies"
-msgstr ""
+msgstr "Kopií"
 
 #: src/PrinterLog.php:197
 msgid "Black & White copies"
-msgstr ""
+msgstr "Černobílé kopie"
 
 #: src/PrinterLog.php:199
 msgid "Color copies"
-msgstr ""
+msgstr "Barevné kopie"
 
 #: src/PrinterLog.php:201 src/Entity.php:693 src/Entity.php:1479
 #: src/NotificationTargetCommonITILObject.php:1719
@@ -6161,10 +6173,10 @@ msgstr "Pravidla pro přiřazování požadavků vytvářených e-mailovým při
 #: src/Socket.php:324
 msgid "Socket"
 msgid_plural "Sockets"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Zásuvka"
+msgstr[1] "Zásuvek"
+msgstr[2] "Zásuvek"
+msgstr[3] "Zásuvky"
 
 #: src/Socket.php:352 src/Item_Devices.php:175 src/Item_Ticket.php:1162
 #: src/Ticket.php:3332 src/Change.php:490 src/Problem.php:470
@@ -6183,11 +6195,11 @@ msgstr "Identifikátor přiřazené položky"
 #: src/Socket.php:378 src/Socket.php:440 src/Socket.php:719 src/Socket.php:829
 #: src/Socket.php:866 src/Socket.php:923 entrée standard:66
 msgid "Wiring side"
-msgstr ""
+msgstr "Strana zapojení"
 
 #: src/Socket.php:672
 msgid "New socket for this item..."
-msgstr ""
+msgstr "Nová zásuvka pro tuto položku..."
 
 #: src/Socket.php:697 src/Socket.php:906 src/Transfer.php:3819
 #: src/Transfer.php:3825 src/Transfer.php:3843 src/Transfer.php:3851
@@ -6221,10 +6233,10 @@ msgstr[3] "Síťové porty"
 #: src/NetworkPortEthernet.php:156 src/NetworkPortFiberchannel.php:155
 msgid "Network socket"
 msgid_plural "Network sockets"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Síťová zásuvka"
+msgstr[1] "Síťových zásuvek"
+msgstr[2] "Síťových zásuvek"
+msgstr[3] "Síťové zásuvky"
 
 #: src/Socket.php:892 src/Socket.php:978
 #, php-format
@@ -6233,7 +6245,7 @@ msgstr ""
 
 #: src/Socket.php:920
 msgid "Socket Model"
-msgstr ""
+msgstr "Model zásuvky"
 
 #: src/Socket.php:921 src/Entity.php:424 src/Entity.php:1213
 #: src/Transfer.php:3839 src/Dashboard/Grid.php:1164 src/Event.php:163
@@ -6249,14 +6261,14 @@ msgstr ""
 #: src/Config.php:545 src/Config.php:2558 entrée standard:95
 msgid "Asset"
 msgid_plural "Assets"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Inventář"
+msgstr[1] "Inventář"
+msgstr[2] "Inventář"
+msgstr[3] "Inventář"
 
 #: src/Socket.php:922
 msgid "NetworkPort"
-msgstr ""
+msgstr "Síťový port"
 
 #: src/PDU.php:57
 msgid "PDU"
@@ -6272,11 +6284,11 @@ msgstr "Datum výroby"
 
 #: src/Item_DeviceBattery.php:60
 msgid "Real capacity (mWh)"
-msgstr ""
+msgstr "Skutečná kapacita (mWh)"
 
 #: src/Item_DeviceBattery.php:61
 msgid "Real capacity"
-msgstr ""
+msgstr "Skutečná kapacita"
 
 #: src/UserTitle.php:39
 msgid "User title"
@@ -6457,15 +6469,15 @@ msgstr "Management"
 #: src/Inventory/Asset/NetworkEquipment.php:103
 #: src/Inventory/Asset/NetworkEquipment.php:155
 msgid "internal"
-msgstr ""
+msgstr "interní"
 
 #: src/Inventory/Asset/Cartridge.php:54
 msgid "Toner"
-msgstr ""
+msgstr "Toner"
 
 #: src/Inventory/Asset/Cartridge.php:55
 msgid "Drum"
-msgstr ""
+msgstr "Válec"
 
 #: src/Inventory/Asset/Cartridge.php:56 src/Entity.php:2039
 #: src/Cartridge.php:97 src/Printer.php:530 src/Profile.php:989
@@ -6479,11 +6491,11 @@ msgstr[3] "Náplně"
 
 #: src/Inventory/Asset/Cartridge.php:57
 msgid "Waste bin"
-msgstr ""
+msgstr "Odpadní nádoba"
 
 #: src/Inventory/Asset/Cartridge.php:58
 msgid "Maintenance kit"
-msgstr ""
+msgstr "Maintenance kit"
 
 #: src/Inventory/Asset/Cartridge.php:59
 msgid "Fuser kit"
@@ -6495,7 +6507,7 @@ msgstr ""
 
 #: src/Inventory/Asset/Cartridge.php:61
 msgid "Cleaning kit"
-msgstr ""
+msgstr "Čistící kit"
 
 #: src/Inventory/Asset/Cartridge.php:62
 msgid "Developer"
@@ -6507,7 +6519,7 @@ msgstr ""
 
 #: src/Inventory/Asset/Cartridge.php:70
 msgid "Black"
-msgstr ""
+msgstr "Černá"
 
 #: src/Inventory/Asset/Cartridge.php:71
 msgid "Cyan"
@@ -6527,11 +6539,11 @@ msgstr ""
 
 #: src/Inventory/Asset/Cartridge.php:75
 msgid "Yellow"
-msgstr ""
+msgstr "Žlutá"
 
 #: src/Inventory/Asset/Cartridge.php:76 src/Inventory/Asset/Cartridge.php:78
 msgid "Grey"
-msgstr ""
+msgstr "Šedá"
 
 #: src/Inventory/Asset/Cartridge.php:77 src/Inventory/Asset/Cartridge.php:79
 msgid "Dark grey"
@@ -6539,7 +6551,7 @@ msgstr ""
 
 #: src/Inventory/Asset/Cartridge.php:83
 msgid "Max"
-msgstr ""
+msgstr "Max"
 
 #: src/Inventory/Asset/Cartridge.php:84
 msgid "Used"
@@ -6547,7 +6559,7 @@ msgstr "Použité"
 
 #: src/Inventory/Asset/Cartridge.php:147
 msgid "Photo"
-msgstr ""
+msgstr "Foto"
 
 #: src/Inventory/Asset/Cartridge.php:148
 msgid "Matte"
@@ -6564,7 +6576,7 @@ msgstr ""
 #: src/Inventory/Asset/Bios.php:70
 #, php-format
 msgid "%1$s BIOS"
-msgstr ""
+msgstr "%1$s BIOS"
 
 #: src/Inventory/Inventory.php:287
 #, php-format
@@ -6595,7 +6607,7 @@ msgstr ""
 #: src/Inventory/Inventory.php:818 src/Inventory/Inventory.php:889
 #, php-format
 msgid "File %1$s has been removed"
-msgstr ""
+msgstr "Soubor %1$s byl odstraněn"
 
 #: src/Inventory/Conf.php:102
 msgid "Import inventory file"
@@ -6613,6 +6625,8 @@ msgid ""
 "It is also possible to upload a compressed archive directly with a "
 "collection of inventory files."
 msgstr ""
+"Je také možné nahrát komprimovaný archiv přímo s kolekcí inventárních "
+"souborů."
 
 #: src/Inventory/Conf.php:119 src/NetworkPortType.php:57
 #: src/NetworkPortType.php:84
@@ -6621,23 +6635,23 @@ msgstr "Import"
 
 #: src/Inventory/Conf.php:171
 msgid "No file to import!"
-msgstr ""
+msgstr "Žádný soubor k importu!"
 
 #: src/Inventory/Conf.php:223
 msgid "File has not been imported:"
-msgstr ""
+msgstr "Soubor nebyl importován:"
 
 #: src/Inventory/Conf.php:229
 msgid "File has been successfully imported!"
-msgstr ""
+msgstr "Soubor byl úspěšně importován!"
 
 #: src/Inventory/Conf.php:252
 msgid "Configuration"
-msgstr ""
+msgstr "Konfigurace"
 
 #: src/Inventory/Conf.php:253
 msgid "Import from file"
-msgstr ""
+msgstr "Importovat ze souboru"
 
 #: src/Inventory/Conf.php:297
 msgid "Import options"
@@ -6657,7 +6671,7 @@ msgstr ""
 
 #: src/Inventory/Conf.php:416
 msgid "Import virtual machines"
-msgstr ""
+msgstr "Import virtuálních počítačů"
 
 #: src/Inventory/Conf.php:446
 msgid "Create computer for virtual machines"
@@ -6665,25 +6679,28 @@ msgstr ""
 
 #: src/Inventory/Conf.php:458
 msgid "Create components for virtual machines"
-msgstr ""
+msgstr "Vytvoření komponent pro virtuální stroje"
 
 #: src/Inventory/Conf.php:472
 msgid ""
 "Will attempt to create components from VM information sent from host, do not"
 " use if you plan to inventory any VM directly!"
 msgstr ""
+"Pokusí se vytvořit komponenty z informací o virtuálním počítači zaslaných z "
+"hostitele, nepoužívejte, pokud plánujete inventarizaci jakéhokoli "
+"virtuálního počítače přímo!"
 
 #: src/Inventory/Conf.php:555
 msgid "Virtual network cards"
-msgstr ""
+msgstr "Virtuální síťová karta"
 
 #: src/Inventory/Conf.php:614
 msgid "Network drives"
-msgstr ""
+msgstr "Síťové disky"
 
 #: src/Inventory/Conf.php:629
 msgid "Removable drives"
-msgstr ""
+msgstr "Vyměnitelné disky"
 
 #: src/Inventory/Conf.php:686 src/Entity.php:1558 src/Entity.php:1646
 #: src/Entity.php:1870 src/Entity.php:2380 src/Entity.php:2480
@@ -6856,7 +6873,7 @@ msgstr "Ve výchozím stavu zapnout oznamování"
 #: src/Entity.php:884 src/Entity.php:1911
 #: src/NotificationMailingSetting.php:77
 msgid "Administrator email address"
-msgstr ""
+msgstr "E-mailová adresa správce"
 
 #: src/Entity.php:893 src/Entity.php:1962
 #: src/NotificationMailingSetting.php:106
@@ -7237,7 +7254,7 @@ msgstr "24/7"
 
 #: src/Entity.php:2782
 msgid "Automatic assignment of tickets, changes and problems"
-msgstr ""
+msgstr "Automatické přiřazování tiketů, změn a problémů"
 
 #: src/Entity.php:2805
 msgid "Mark followup added by a supplier though an email collector as private"
@@ -7251,11 +7268,11 @@ msgstr "Anonymizovat agenty podpory"
 
 #: src/Entity.php:2855
 msgid "Display initials for users without pictures"
-msgstr ""
+msgstr "Zobrazení iniciál pro uživatele bez obrázků"
 
 #: src/Entity.php:2880
 msgid "Default contract"
-msgstr ""
+msgstr "Výchozí smlouva"
 
 #: src/Entity.php:2886 src/Entity.php:2915
 msgid "Contract in ticket entity"
@@ -7315,7 +7332,7 @@ msgstr "Založeno na kategorii a poté položce"
 
 #: src/Entity.php:3443
 msgid "Replace the agent's name with a generic name"
-msgstr ""
+msgstr "Nahrazení jména agenta obecným názvem"
 
 #: src/Entity.php:3444
 msgid "Replace the agent's name with a customisable nickname"
@@ -7415,10 +7432,10 @@ msgstr "V databázi již neexistuje"
 #: src/Database.php:50 src/Config.php:790
 msgid "Database"
 msgid_plural "Databases"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Databáze"
+msgstr[1] "Databází"
+msgstr[2] "Databází"
+msgstr[3] "Databáze"
 
 #: src/Database.php:88 src/Database.php:410 src/DatabaseInstance.php:227
 #: src/Domain.php:96 entrée standard:75
@@ -7433,24 +7450,24 @@ msgstr "Velikost"
 
 #: src/Database.php:119 src/Database.php:411 src/DatabaseInstance.php:272
 msgid "Has backup"
-msgstr ""
+msgstr "Má zálohu"
 
 #: src/Database.php:123 src/Database.php:230 src/Database.php:316
 #: src/DatabaseInstance.php:276
 msgid "Last backup date"
-msgstr ""
+msgstr "Poslední záloha"
 
 #: src/Database.php:222 src/Database.php:302
 msgid "Is on backup"
-msgstr ""
+msgstr "Je v záloze"
 
 #: src/Database.php:376
 msgid "Add a database"
-msgstr ""
+msgstr "Přidat databázi"
 
 #: src/Database.php:404
 msgid "No database"
-msgstr ""
+msgstr "Žádná databáze"
 
 #: src/Holiday.php:46 src/Calendar_Holiday.php:201
 msgid "Close time"
@@ -7494,7 +7511,7 @@ msgstr[3] "Řešení"
 
 #: src/ITILSolution.php:184
 msgid "The item is already solved, did anyone pushed a solution before you?"
-msgstr ""
+msgstr "Položka je již vyřešena, prosadil někdo řešení před vámi?"
 
 #: src/ITILSolution.php:377 src/CommonITILValidation.php:543
 msgid "Waiting for approval"
@@ -7870,7 +7887,7 @@ msgstr "Nedaří se připojit do databáze."
 #: src/NotificationTargetDBConnection.php:79 src/DBConnection.php:699
 #: src/DBConnection.php:703
 msgid "Difference between main and replica"
-msgstr ""
+msgstr "Rozdíl mezi hlavní a replikou"
 
 #: src/NotificationTargetDBConnection.php:91
 msgid "Replica database out of sync!"
@@ -8089,6 +8106,9 @@ msgid ""
 " email containing the informations required to reset your password. Please "
 "contact your administrator if you do not receive any email."
 msgstr ""
+"Pokud se zadaná e-mailová adresa shoduje s existujícím uživatelem GLPI, "
+"obdržíte e-mail s informacemi potřebnými k obnovení hesla. Pokud žádný "
+"e-mail neobdržíte, kontaktujte prosím svého správce."
 
 #: src/Api/API.php:2173
 msgid "Reset password successful."
@@ -8257,7 +8277,7 @@ msgstr "Pokud smlouvy už nadále nejsou využívané"
 
 #: src/Transfer.php:4001
 msgid "If certificates are no longer used"
-msgstr ""
+msgstr "Pokud se certifikáty již nepoužívají"
 
 #: src/Transfer.php:4022
 msgid ""
@@ -8419,7 +8439,7 @@ msgstr ""
 
 #: src/CommonITILValidation.php:1659
 msgid "Do you really want to resolve or close it?"
-msgstr ""
+msgstr "Opravdu ji chcete vyřešit nebo uzavřít?"
 
 #: src/Preference.php:40 src/Impact.php:371 src/Impact.php:1058
 #: src/Impact.php:1117 src/Config.php:2550
@@ -8429,22 +8449,22 @@ msgstr "Nastavení"
 #: src/Agent.php:68
 msgid "Agent"
 msgid_plural "Agents"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Agent"
+msgstr[1] "Agent"
+msgstr[2] "Agent"
+msgstr[3] "Agent"
 
 #: src/Agent.php:100 src/Agent.php:258
 msgid "Last contact"
-msgstr ""
+msgstr "Poslední kontakt"
 
 #: src/Agent.php:106 src/Agent.php:189
 msgid "Locked"
-msgstr ""
+msgstr "Zamčeno"
 
 #: src/Agent.php:112 src/Agent.php:196
 msgid "Device id"
-msgstr ""
+msgstr "ID zařízení"
 
 #. TRANS: SMTP port
 #. TRANS: Proxy port
@@ -8484,7 +8504,7 @@ msgstr ""
 
 #: src/Agent.php:313
 msgid "Network inventory timeout"
-msgstr ""
+msgstr "Vypršel časový limit inventury sítě"
 
 #: src/Agent.php:403
 msgid "\"deviceid\" is mandatory!"
@@ -8492,7 +8512,7 @@ msgstr ""
 
 #: src/Agent.php:647 src/Agent.php:668
 msgid "Not allowed"
-msgstr ""
+msgstr "Nepovoleno"
 
 #: src/Agent.php:696
 #, php-format
@@ -8501,7 +8521,7 @@ msgstr ""
 
 #: src/Agent.php:697
 msgid "Y-m-d H:i:s"
-msgstr ""
+msgstr "Y-m-d H:i:s"
 
 #: src/IPNetwork_Vlan.php:132 src/NetworkPort.php:1405
 #: src/NetworkPort_Vlan.php:133
@@ -8519,7 +8539,7 @@ msgstr "Přiřadit"
 #: src/IPNetwork_Vlan.php:168 src/Vlan.php:54 src/Vlan.php:84 src/Vlan.php:177
 #: src/NetworkPort_Vlan.php:173
 msgid "ID TAG"
-msgstr "Identifikační štítek"
+msgstr "ID TAG"
 
 #: src/Dashboard/Grid.php:276 js/dashboard.js:165
 msgid "Share or embed this dashboard"
@@ -8598,6 +8618,8 @@ msgid ""
 "A personal dashboard is not visible by other administrators unless you share"
 " explicitely the dashboard"
 msgstr ""
+"Osobní řídicí panel není viditelný pro ostatní správce, pokud jej výslovně "
+"nesdílíte."
 
 #: src/Dashboard/Grid.php:855 src/Impact.php:402 src/Impact.php:1106
 #: src/Impact.php:1819 src/AuthLDAP.php:637 src/AuthLDAP.php:825
@@ -8608,7 +8630,7 @@ msgstr "Uložit"
 
 #: src/Dashboard/Grid.php:886
 msgid "empty card!"
-msgstr ""
+msgstr "prázdná karta!"
 
 #: src/Dashboard/Grid.php:1127 src/Dashboard/Grid.php:1191
 #, php-format
@@ -8883,7 +8905,7 @@ msgstr ""
 
 #: src/Dashboard/Provider.php:535 src/Dashboard/Provider.php:679
 msgid "On time"
-msgstr ""
+msgstr "Včas"
 
 #: src/Dashboard/Provider.php:572
 msgid "Tickets by SLA status and by technician"
@@ -9137,7 +9159,7 @@ msgstr "Registrační klíč není platný."
 
 #: src/GLPINetwork.php:246
 msgid "The registration key refers to a terminated subscription."
-msgstr ""
+msgstr "Registrační klíč se vztahuje k ukončenému předplatnému."
 
 #: src/GLPINetwork.php:248
 msgid "The registration key is valid."
@@ -9680,7 +9702,7 @@ msgstr "Skupina přiřazená k úkolu"
 
 #: src/NotificationTargetCommonITILObject.php:1868
 msgid "Internal type"
-msgstr ""
+msgstr "Interní typ"
 
 #: src/NotificationTargetCommonITILObject.php:1885 src/ITILFollowup.php:76
 #: src/ITILFollowup.php:701 src/Profile.php:763 src/Profile.php:1344
@@ -10225,10 +10247,10 @@ msgstr "Zopakování pravidel na stávající databázi zahájeno v %s"
 msgctxt "camera"
 msgid "Format"
 msgid_plural "Formats"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Formát"
+msgstr[1] "Formátů"
+msgstr[2] "Formátů"
+msgstr[3] "Formáty"
 
 #: src/DeviceGraphicCard.php:41
 msgid "Graphics card"
@@ -10539,27 +10561,27 @@ msgstr ""
 
 #: src/PendingReason.php:110
 msgid "Follow-up template"
-msgstr ""
+msgstr "Šablona následných opatření"
 
 #: src/PendingReason.php:151
 msgid "Automatic follow-up disabled"
-msgstr ""
+msgstr "Vypnutá automatická následná kontrola"
 
 #: src/PendingReason.php:180
 msgid "Every week"
-msgstr ""
+msgstr "Každý týden"
 
 #: src/PendingReason.php:181
 msgid "Every two weeks"
-msgstr ""
+msgstr "Každé dva týdny"
 
 #: src/PendingReason.php:182
 msgid "Every three weeks"
-msgstr ""
+msgstr "Každý třetí týden"
 
 #: src/PendingReason.php:183
 msgid "Every four weeks"
-msgstr ""
+msgstr "Každé čtyři týdny"
 
 #: src/PendingReason.php:208
 msgid "Automatic resolution disabled"
@@ -10567,15 +10589,15 @@ msgstr ""
 
 #: src/PendingReason.php:237
 msgid "After one follow-up"
-msgstr ""
+msgstr "Po jedné následné kontrole"
 
 #: src/PendingReason.php:238
 msgid "After two follow-ups"
-msgstr ""
+msgstr "Po dvou následných kontrolách"
 
 #: src/PendingReason.php:239
 msgid "After three follow-ups"
-msgstr ""
+msgstr "Po třech následných kontrolách"
 
 #: src/CalDAV/Backend/Calendar.php:88 src/CalDAV/Backend/Calendar.php:126
 #, php-format
@@ -10593,11 +10615,11 @@ msgstr[3] "VLANy"
 #: src/Vlan.php:166 src/NetworkPort_Vlan.php:139 src/NetworkPort_Vlan.php:172
 #: src/NetworkPort_Vlan.php:388
 msgid "Tagged"
-msgstr "Označený"
+msgstr "Tagovaný"
 
 #: src/Vlan.php:168
 msgid "Untagged"
-msgstr "Neoznačený"
+msgstr "Netagovaný"
 
 #: src/SLM.php:56 entrée standard:289 standard:293
 msgid "Service level"
@@ -10863,10 +10885,10 @@ msgstr "Rozlišený název skupiny"
 #: src/Group_User.php:607 src/Group_User.php:747
 msgid "Manager"
 msgid_plural "Managers"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Vedoucí"
+msgstr[1] "Vedoucí"
+msgstr[2] "Vedoucí"
+msgstr[3] "Vedoucí"
 
 #: src/Group.php:540 src/Group_User.php:209 src/Group_User.php:247
 #: src/Group_User.php:289 src/Group_User.php:345 src/Group_User.php:493
@@ -11376,7 +11398,7 @@ msgstr "Barva"
 
 #: src/KnowbaseItem_KnowbaseItemCategory.php:176
 msgid "Add a category"
-msgstr ""
+msgstr "Přidat kategorii"
 
 #: src/KnowbaseItem_KnowbaseItemCategory.php:192 src/KnowbaseItem_Item.php:183
 msgid "No linked items"
@@ -11430,10 +11452,10 @@ msgstr "šablona"
 #: src/CableType.php:39 src/Cable.php:137
 msgid "Cable type"
 msgid_plural "Cable types"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Typ kabele"
+msgstr[1] "Typy kabelů"
+msgstr[2] "Typy kabelů"
+msgstr[3] "Typy kabelů"
 
 #: src/DocumentCategory.php:42
 msgid "Document heading"
@@ -11585,10 +11607,10 @@ msgstr "Žádná položka k zobrazení"
 #: src/Unmanaged.php:47
 msgid "Unmanaged device"
 msgid_plural "Unmanaged devices"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Nespravovaná zařízení"
+msgstr[1] "Nespravovaná zařízení"
+msgstr[2] "Nespravovaná zařízení"
+msgstr[3] "Nespravovaná zařízení"
 
 #: src/Unmanaged.php:106
 msgid "Serial Number"
@@ -11719,7 +11741,7 @@ msgstr "Sítě"
 
 #: src/Dropdown.php:1139 src/Profile.php:1126
 msgid "Cable management"
-msgstr ""
+msgstr "Kabelový management"
 
 #: src/Dropdown.php:1145 src/Profile.php:1005 src/Profile.php:2253
 msgid "Internet"
@@ -12008,15 +12030,15 @@ msgstr "Vybrat položky pro výchozí zobrazení"
 
 #: src/NetworkPort.php:736
 msgid "Connections legend"
-msgstr ""
+msgstr "Legenda připojení"
 
 #: src/NetworkPort.php:737
 msgid "Equipment in trunk or tagged mode"
-msgstr ""
+msgstr "Zařízení v trunk nebo tagged módu"
 
 #: src/NetworkPort.php:738
 msgid "Hub "
-msgstr ""
+msgstr "Hub "
 
 #: src/NetworkPort.php:739
 msgid "Other equipments"
@@ -12024,7 +12046,7 @@ msgstr "Jiná zařízení"
 
 #: src/NetworkPort.php:740
 msgid "Aggregated port"
-msgstr ""
+msgstr "Agregovaný port"
 
 #: src/NetworkPort.php:746 src/NetworkPort.php:820
 #, php-format
@@ -12046,23 +12068,23 @@ msgstr[3] ""
 #. TRANS: list of unit (bps for bytes per second)
 #: src/NetworkPort.php:911
 msgid "bps"
-msgstr ""
+msgstr "bps"
 
 #: src/NetworkPort.php:911
 msgid "Kbps"
-msgstr ""
+msgstr "Kbps"
 
 #: src/NetworkPort.php:911
 msgid "Mbps"
-msgstr ""
+msgstr "Mbps"
 
 #: src/NetworkPort.php:911
 msgid "Gbps"
-msgstr ""
+msgstr "Gbps"
 
 #: src/NetworkPort.php:911
 msgid "Tbps"
-msgstr ""
+msgstr "Tbps"
 
 #: src/NetworkPort.php:928
 msgid "Up"
@@ -12078,11 +12100,11 @@ msgstr "Zkouška"
 
 #: src/NetworkPort.php:986
 msgid "Half"
-msgstr ""
+msgstr "Half"
 
 #: src/NetworkPort.php:989
 msgid "Full"
-msgstr ""
+msgstr "Full"
 
 #: src/NetworkPort.php:1015
 #, php-format
@@ -12100,7 +12122,7 @@ msgstr "Testování"
 
 #: src/NetworkPort.php:1131
 msgid "Dormant"
-msgstr ""
+msgstr "Neaktivní"
 
 #: src/NetworkPort.php:1285 src/NetworkPort.php:1290 src/NetworkPort.php:1444
 #: src/RuleImportAsset.php:135
@@ -12122,35 +12144,35 @@ msgstr "Zrušit přiřazení VLAN"
 
 #: src/NetworkPort.php:1506
 msgid "MTU"
-msgstr ""
+msgstr "MTU"
 
 #: src/NetworkPort.php:1520
 msgid "Internal status"
-msgstr ""
+msgstr "Interní status"
 
 #: src/NetworkPort.php:1527
 msgid "Last change"
-msgstr ""
+msgstr "Poslední změna"
 
 #: src/NetworkPort.php:1534
 msgid "Number of I/O bytes"
-msgstr ""
+msgstr "Počet I/O bytů"
 
 #: src/NetworkPort.php:1541
 msgid "Number of I/O errors"
-msgstr ""
+msgstr "Počet I/O chyb"
 
 #: src/NetworkPort.php:1548
 msgid "Duplex"
-msgstr ""
+msgstr "Duplex"
 
 #: src/NetworkPort.php:1595
 msgid "Last connection"
-msgstr ""
+msgstr "Poslední připojení"
 
 #: src/NetworkPort.php:1603
 msgid "Alias"
-msgstr ""
+msgstr "Alias"
 
 #: src/NetworkPort.php:1726 src/NetworkPortInstantiation.php:922
 #: src/NetworkPortInstantiation.php:953
@@ -13062,7 +13084,7 @@ msgstr "Propojit projektový úkol"
 #: src/Ticket.php:2779
 msgctxt "button"
 msgid "Add contract"
-msgstr ""
+msgstr "Přidat smlouvu"
 
 #: src/Ticket.php:2787
 msgid "Link to a problem"
@@ -13139,7 +13161,7 @@ msgstr "Chybějící povinné pole při zadání"
 
 #: src/Ticket.php:3132
 msgid "No contract specified"
-msgstr ""
+msgstr "Žádná smlouva není specifikována"
 
 #: src/Ticket.php:3192
 msgid "Time to own + Progress"
@@ -13773,6 +13795,8 @@ msgstr "Jméno které používat v hlavičkách odesílaných e-mailů."
 #: src/NotificationMailingSetting.php:99
 msgid "If not set, main or entity administrator email name will be used."
 msgstr ""
+"Pokud není nastaveno, použije se e-mailové jméno hlavního správce nebo "
+"správce subjektu."
 
 #: src/NotificationMailingSetting.php:107
 msgid "Optionnal reply to address."
@@ -13933,6 +13957,7 @@ msgstr "Zásuvný modul \"%s\" je již neaktivní."
 #: src/Console/Plugin/DeactivateCommand.php:143
 msgid "Which plugin(s) do you want to deactivate (comma separated values)?"
 msgstr ""
+"Který/é zásuvný/é modul/y chcete deaktivovat (hodnoty oddělené čárkou)?"
 
 #: src/Console/Plugin/AbstractPluginCommand.php:61
 msgid "Run command on all plugins"
@@ -13989,6 +14014,7 @@ msgstr "Zásuvný modul \"%1$s\" byl nainstalován a může být aktivován."
 #: src/Console/Plugin/InstallCommand.php:161
 msgid "Which plugin(s) do you want to install (comma separated values)?"
 msgstr ""
+"Který/é zásuvný/é modul/y chcete instalovat (hodnoty oddělené čárkou)?"
 
 #: src/Console/Plugin/InstallCommand.php:240
 msgid "User name defined by --username option is invalid."
@@ -14035,7 +14061,7 @@ msgstr "Zásuvný modul \"%s\" musí být před aktivací nainstalován a nastav
 
 #: src/Console/Plugin/ActivateCommand.php:151
 msgid "Which plugin(s) do you want to activate (comma separated values)?"
-msgstr ""
+msgstr "Který/é zásuvný/é modul/y chcete aktivovat (hodnoty oddělené čárkou)?"
 
 #: src/Console/Maintenance/DisableMaintenanceModeCommand.php:55
 msgid "Disable maintenance mode"
@@ -14071,7 +14097,7 @@ msgstr ""
 
 #: src/Console/Traits/TelemetryActivationTrait.php:110
 msgid "Do you want to send \"usage statistics\"?"
-msgstr ""
+msgstr "Chcete odesílat \"statistiky používání\"?"
 
 #: src/Console/Application.php:129
 msgid "The command to execute"
@@ -14175,7 +14201,7 @@ msgstr "Zprávy"
 
 #: src/Console/System/CheckRequirementsCommand.php:82
 msgid "INFO"
-msgstr ""
+msgstr "INFO"
 
 #: src/Console/System/CheckRequirementsCommand.php:83
 msgid "ERROR"
@@ -14183,7 +14209,7 @@ msgstr "CHYBA"
 
 #: src/Console/System/CheckRequirementsCommand.php:87 entrée standard:45
 msgid "Suggested"
-msgstr ""
+msgstr "Navržené"
 
 #: src/Console/System/CheckRequirementsCommand.php:88 entrée standard:47
 msgid "Required"
@@ -14809,7 +14835,7 @@ msgstr "Aktualizace `%s` skončila s chybou \"(%s) %s\"."
 #: src/Console/Database/EnableTimezonesCommand.php:79
 #: src/Console/Database/AbstractConfigureCommand.php:457
 msgid "Timezones usage cannot be activated due to following errors:"
-msgstr ""
+msgstr "Použití časových pásem nelze aktivovat z důvodu následujících chyb:"
 
 #: src/Console/Migration/TimestampsCommand.php:207
 #: src/Console/Database/AbstractConfigureCommand.php:467
@@ -15076,7 +15102,7 @@ msgstr "Smazáno z LDAP"
 
 #: src/Console/Ldap/SynchronizeUsersCommand.php:411
 msgid "Restored from LDAP"
-msgstr ""
+msgstr "Obnoveno z LDAP"
 
 #: src/Console/Ldap/SynchronizeUsersCommand.php:446
 msgid ""
@@ -15216,11 +15242,11 @@ msgstr ""
 
 #: src/Console/Cache/ClearCommand.php:101
 msgid "Failed to clear cache."
-msgstr ""
+msgstr "Nepodařilo se vymazat mezipaměť."
 
 #: src/Console/Cache/ClearCommand.php:107
 msgid "Cache cleared successfully."
-msgstr ""
+msgstr "Mezipaměť byla úspěšně vymazána."
 
 #: src/Console/Rules/ReplayDictionnaryRulesCommand.php:50
 msgid "Replay dictionnary rules on existing items"
@@ -15298,11 +15324,11 @@ msgstr "Nový bezpečnostní klíč byl vygenerován; databáze byla aktualizov�
 
 #: src/Console/Database/EnableTimezonesCommand.php:71
 msgid "Enable timezones usage."
-msgstr ""
+msgstr "Povolení používání časových pásem."
 
 #: src/Console/Database/EnableTimezonesCommand.php:106
 msgid "Timezone usage has been enabled."
-msgstr ""
+msgstr "Bylo povoleno používání časových pásem."
 
 #: src/Console/Database/InstallCommand.php:100
 msgid "Default language of GLPI"
@@ -15322,7 +15348,7 @@ msgstr ""
 
 #: src/Console/Database/InstallCommand.php:141
 msgid "Do you want to reconfigure database?"
-msgstr ""
+msgstr "Chcete změnit konfiguraci databáze?"
 
 #: src/Console/Database/InstallCommand.php:167
 #: src/Console/Database/AbstractConfigureCommand.php:206
@@ -15404,6 +15430,8 @@ msgid ""
 "Use strict configuration, to enforce warnings triggering on deprecated or "
 "discouraged usages"
 msgstr ""
+"Použijte přísnou konfiguraci, abyste vynutili spuštění varování při "
+"zastaralých nebo nedoporučených způsobech použití."
 
 #: src/Console/Database/AbstractConfigureCommand.php:154
 msgid "Database name:"
@@ -15474,6 +15502,8 @@ msgid ""
 "Check tokens related to migration from signed to unsigned integers in "
 "primary/foreign keys."
 msgstr ""
+"Kontrola tokenů souvisejících s přechodem z celých čísel se znaménkem na "
+"celá čísla bez znaménka v primárních/cizí klíčích."
 
 #: src/Console/Database/CheckSchemaIntegrityCommand.php:139
 #, php-format
@@ -15709,7 +15739,7 @@ msgstr[3] ""
 
 #: src/NetworkPortType.php:52 src/NetworkPortType.php:76
 msgid "Decimal"
-msgstr ""
+msgstr "Desetinné číslo"
 
 #: src/NetworkPortType.php:61 src/NetworkPortType.php:92
 msgid "Instanciation type"
@@ -16233,10 +16263,10 @@ msgstr "Číslo produktu"
 #: standard:539
 msgid "Picture"
 msgid_plural "Pictures"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Obrázek"
+msgstr[1] "Obrázek"
+msgstr[2] "Obrázek"
+msgstr[3] "Obrázky"
 
 #: src/CommonDropdown.php:166 src/CommonDropdown.php:479
 msgid "Front picture"
@@ -17260,11 +17290,11 @@ msgstr "Posílat připomenutí plánování"
 
 #: src/ContentTemplates/Parameters/UserParameters.php:74
 msgid "Full name"
-msgstr ""
+msgstr "Celé jméno"
 
 #: src/ContentTemplates/Parameters/UserParameters.php:78
 msgid "Mobile"
-msgstr ""
+msgstr "Mobilní"
 
 #: src/ContentTemplates/Parameters/UserParameters.php:80 src/AuthLDAP.php:884
 #: src/AuthLDAP.php:1089 src/AuthLDAP.php:3753 src/Auth.php:1664 entrée
@@ -17631,7 +17661,7 @@ msgstr "%1$d z %2$d"
 
 #: src/Html.php:6848
 msgid "Just now"
-msgstr ""
+msgstr "Právě teď"
 
 #: src/Html.php:6851
 #, php-format
@@ -17645,7 +17675,7 @@ msgstr ""
 
 #: src/Html.php:6858
 msgid "Yesterday"
-msgstr ""
+msgstr "Včera"
 
 #: src/Html.php:6861
 #, php-format
@@ -17681,20 +17711,20 @@ msgstr ""
 
 #: src/Html.php:6889
 msgid "Tomorrow"
-msgstr ""
+msgstr "Zítra"
 
 #: src/Html.php:6895
 msgid "next week"
-msgstr ""
+msgstr "minulý týden"
 
 #: src/Html.php:6898
 #, php-format
 msgid "In %s weeks"
-msgstr ""
+msgstr "V %s týdnu"
 
 #: src/Html.php:6901
 msgid "next month"
-msgstr ""
+msgstr "další měsíc"
 
 #: src/OperatingSystem.php:42
 msgid "Operating system"
@@ -17888,7 +17918,7 @@ msgstr ""
 
 #: src/System/Requirement/LogsWriteAccess.php:57
 msgid "Permissions for log files"
-msgstr ""
+msgstr "Oprávnění pro log soubory"
 
 #: src/System/Requirement/LogsWriteAccess.php:66
 msgid "The log file has been created successfully."
@@ -17901,7 +17931,7 @@ msgstr "Soubor logu není možné vytvořit v %s."
 
 #: src/System/Requirement/DbConfiguration.php:52
 msgid "DB configuration"
-msgstr ""
+msgstr "Konfigurace DB"
 
 #: src/System/Requirement/DbConfiguration.php:72
 msgid "Unable to validate database configuration variables."
@@ -17954,13 +17984,15 @@ msgstr "Zkuste zvýšit hodnotu parametru memory_limit v souboru php.ini."
 
 #: src/System/Requirement/ProtectedWebAccess.php:55
 msgid "Protected access to files directory"
-msgstr ""
+msgstr "Chráněný přístup k adresáři souborů"
 
 #: src/System/Requirement/ProtectedWebAccess.php:56
 msgid ""
 "Web access to GLPI var directories should be disabled to prevent "
 "unauthorized access to them."
 msgstr ""
+"Webový přístup k adresářům GLPI var by měl být zakázán, aby se zabránilo "
+"neoprávněnému přístupu k nim."
 
 #: src/System/Requirement/ProtectedWebAccess.php:69
 msgid ""
@@ -18033,7 +18065,7 @@ msgstr ""
 
 #: src/System/Requirement/SeLinux.php:43
 msgid "SELinux configuration"
-msgstr ""
+msgstr "SELinux konfigurace"
 
 #. TRANS: %s is mode name (Permissive, Enforcing, Disabled or Unknown)
 #: src/System/Requirement/SeLinux.php:83
@@ -18102,7 +18134,7 @@ msgstr ""
 
 #: src/System/Requirement/DbTimezones.php:51
 msgid "Enable usage of timezones."
-msgstr ""
+msgstr "Povolení používání časových pásem."
 
 #: src/System/Requirement/DbTimezones.php:61
 msgid "Access to timezone database (mysql) is not allowed."
@@ -18123,7 +18155,7 @@ msgstr ""
 
 #: src/System/Requirement/DbTimezones.php:91
 msgid "Timezones seems loaded in database."
-msgstr ""
+msgstr "Zdá se, že jsou v databázi načteny časové zóny"
 
 #: src/System/Requirement/DirectoryWriteAccess.php:61
 msgid "Permissions for cache files"
@@ -18163,7 +18195,7 @@ msgstr ""
 
 #: src/System/Requirement/DirectoryWriteAccess.php:88
 msgid "Permissions for pictures files"
-msgstr ""
+msgstr "Oprávnění pro soubory s obrázky"
 
 #: src/System/Requirement/DirectoryWriteAccess.php:91
 msgid "Permissions for rss files"
@@ -18220,6 +18252,8 @@ msgid ""
 "Required for remote access to resources (inventory agent requests, "
 "marketplace, RSS feeds, ...)."
 msgstr ""
+"Nutné pro vzdálený přístup ke zdrojům (požadavky inventárních agentů, "
+"obchod, kanály RSS, ...)."
 
 #: src/System/RequirementsManager.php:86
 msgid "Required for images handling."
@@ -18227,7 +18261,7 @@ msgstr ""
 
 #: src/System/RequirementsManager.php:91
 msgid "Required for internationalization."
-msgstr ""
+msgstr "Nutné pro internacionalizaci."
 
 #: src/System/RequirementsManager.php:96
 msgid "Required for XML handling."
@@ -18238,10 +18272,12 @@ msgid ""
 "Required for handling of compressed communication with inventory agents, "
 "installation of gzip packages from marketplace and PDF generation."
 msgstr ""
+"Potřebné pro zpracování komprimované komunikace s inventárními agenty, "
+"instalaci balíčků gzip z tržiště a generování PDF."
 
 #: src/System/RequirementsManager.php:112
 msgid "Permissions for GLPI var directories"
-msgstr ""
+msgstr "Oprávnění pro GLPI var adresář"
 
 #: src/System/RequirementsManager.php:130
 msgid "Enhance security on images validation."
@@ -19004,7 +19040,7 @@ msgstr "Přezkoumávání"
 #: src/Change.php:591
 msgctxt "status"
 msgid "Cancelled"
-msgstr ""
+msgstr "Zrušeno"
 
 #: src/Change.php:592
 msgctxt "status"
@@ -19047,11 +19083,11 @@ msgstr ""
 
 #: src/Change.php:1362 src/Change.php:1411
 msgid "Changes to be processed"
-msgstr ""
+msgstr "Změny ke zpracování"
 
 #: src/Change.php:1378 src/Change.php:1427
 msgid "Your changes in progress"
-msgstr ""
+msgstr "Vaše změny se zpracovávají"
 
 #: src/AuthLdapReplicate.php:89
 msgid "Add a LDAP directory replica"
@@ -19149,7 +19185,7 @@ msgstr "%d Mbit/s"
 
 #: src/NetworkPortEthernet.php:407
 msgid "Ethernet socket"
-msgstr ""
+msgstr "Zásuvka Ethernet"
 
 #: src/ProjectTask.php:73
 msgid "Project task"
@@ -19377,7 +19413,7 @@ msgstr "Vyberte kolonku, kterou chcete aktualizovat"
 
 #: src/MassiveAction.php:1014
 msgid "How many copies do you want to create?"
-msgstr ""
+msgstr "Kolik kopií chcete vytvořit?"
 
 #: src/MassiveAction.php:1040
 msgid "Are you sure you want to add this item to transfer list?"
@@ -19641,7 +19677,7 @@ msgstr ""
 
 #: src/SavedSearch_Alert.php:174
 msgid "Notification frequency"
-msgstr ""
+msgstr "Frekvence oznamování"
 
 #: src/SavedSearch_Alert.php:224
 msgid "Notification does not exists!"
@@ -20643,7 +20679,7 @@ msgstr "Akce, když bude uživatel smazán z LDAP adresáře"
 
 #: src/Config.php:740
 msgid "Action when a user is restored in the LDAP directory"
-msgstr ""
+msgstr "Akce při obnovení uživatele v adresáři LDAP"
 
 #: src/Config.php:745
 msgid "GLPI server time zone"
@@ -20872,7 +20908,7 @@ msgstr "Použít nastavení serveru"
 
 #: src/Config.php:1398
 msgid "Timezone usage has not been activated."
-msgstr ""
+msgstr "Používání časových pásem nebylo aktivováno."
 
 #: src/Config.php:1400
 #, php-format
@@ -20881,7 +20917,7 @@ msgstr ""
 
 #: src/Config.php:1403
 msgid "Default central tab"
-msgstr ""
+msgstr "Výchozí centrální karta"
 
 #: src/Config.php:1409
 msgid "Timeline order"
@@ -21175,7 +21211,7 @@ msgstr "Nastavení proxy serveru přes který zjišťovat dostupnost novější 
 
 #: src/Config.php:2183
 msgid "Copy system information"
-msgstr ""
+msgstr "Kopírovat systémové informace"
 
 #: src/Config.php:2193
 msgid "Check if a new version is available"
@@ -21218,7 +21254,7 @@ msgstr "Používáte vývojovou verzi, buďte opatrní!"
 
 #: src/Config.php:3095
 msgid "You are using a pre-release version, be careful!"
-msgstr ""
+msgstr "Používáte předběžnou verzi, buďte opatrní!"
 
 #: src/Config.php:3102
 msgid "I know I am using a unstable version."
@@ -21387,7 +21423,7 @@ msgstr ""
 
 #: src/Config.php:3580
 msgid "Document files maximum size (Mio)"
-msgstr ""
+msgstr "Maximální velikost souborů dokumentů (Mio)"
 
 #: src/PDU_Rack.php:98
 msgid "A pdu is required"
@@ -21780,7 +21816,7 @@ msgstr "Odebrat dynamická oprávnění a skupiny"
 
 #: src/AuthLDAP.php:4033
 msgid "Do nothing"
-msgstr ""
+msgstr "Nedělat nic"
 
 #: src/AuthLDAP.php:4034
 msgid "Restore (move out of trashbin)"
@@ -21822,7 +21858,7 @@ msgstr "Načítání…"
 
 #: src/Knowbase.php:157
 msgid "No category found"
-msgstr ""
+msgstr "Nenalezena žádná kategorie"
 
 #: src/Knowbase.php:336
 msgid "Root category"
@@ -21963,7 +21999,7 @@ msgstr[3] ""
 
 #: src/SNMPCredential.php:58 entrée standard:50
 msgid "Community"
-msgstr ""
+msgstr "Komunita"
 
 #: src/SNMPCredential.php:166
 msgid "You must select an SNMP version"
@@ -21971,7 +22007,7 @@ msgstr ""
 
 #: src/SNMPCredential.php:173
 msgid "You must enter a username"
-msgstr ""
+msgstr "Musíte zadat uživatelské jméno"
 
 #: src/Document_Item.php:570 src/Document_Item.php:664
 msgid "Add a document"
@@ -22715,17 +22751,17 @@ msgstr "Plánování"
 #: src/CommonITILObject.php:6508
 msgctxt "button"
 msgid "Answer"
-msgstr ""
+msgstr "Odpověď"
 
 #: src/CommonITILObject.php:6518
 msgctxt "button"
 msgid "Create a task"
-msgstr ""
+msgstr "Vytvořit úkol"
 
 #: src/CommonITILObject.php:6528
 msgctxt "button"
 msgid "Add a solution"
-msgstr ""
+msgstr "Přidat řešení"
 
 #: src/CommonITILObject.php:6538
 msgctxt "button"
@@ -22739,7 +22775,7 @@ msgstr ""
 
 #: src/CommonITILObject.php:6839
 msgid "Log entry"
-msgstr ""
+msgstr "Záznam v logu"
 
 #: src/DeviceSoundCardModel.php:42
 msgid "Device sound card model"
@@ -22752,10 +22788,10 @@ msgstr[3] "Modely zvukových zařízení"
 #: src/SocketModel.php:43
 msgid "Socket model"
 msgid_plural "Socket models"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Model zásuvky"
+msgstr[1] "Modelů zásuvek"
+msgstr[2] "Modelů zásuvek"
+msgstr[3] "Modely zásuvek "
 
 #: src/AuthMail.php:46
 msgid "Mail server"
@@ -22981,7 +23017,7 @@ msgstr "Platná licence"
 
 #: src/Item_SoftwareVersion.php:1135 entrée standard:79 standard:54
 msgid "Filter"
-msgstr ""
+msgstr "Filtr"
 
 #: src/RuleDictionnaryDropdownCollection.php:146
 msgid "Error replaying rules"
@@ -22993,7 +23029,7 @@ msgstr "Přidat typ položky"
 
 #: src/Ticket_Contract.php:46
 msgid "Tickets / Contracts"
-msgstr ""
+msgstr "Požadavky / Smlouvy"
 
 #: src/NotificationEvent.php:202
 #, php-format
@@ -23219,10 +23255,10 @@ msgstr[3] "Pasivní zařízení"
 #: src/Cable.php:47
 msgid "Cable"
 msgid_plural "Cables"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Kabel"
+msgstr[1] "Kabelů"
+msgstr[2] "Kabelů"
+msgstr[3] "Kabely"
 
 #: src/CronTask.php:82
 msgid "Automatic action"
@@ -23771,6 +23807,8 @@ msgstr "Odemknout položku"
 msgid ""
 "Send automated follow-ups on pending tickets and solve them if necessary"
 msgstr ""
+"Odesílání automatických následných zpráv o nevyřízených tiketech a jejich "
+"případné řešení."
 
 #: src/PendingReasonCron.php:194
 msgid "Automatic followups / resolution"
@@ -23792,11 +23830,11 @@ msgstr "Rychlost Fiber channel portu"
 
 #: src/NetworkPortFiberchannel.php:242
 msgid "Fiber port type"
-msgstr ""
+msgstr "Typ optického portu"
 
 #: src/NetworkPortFiberchannel.php:378
 msgid "Network fiber socket"
-msgstr ""
+msgstr "Optická síťová zásuvka"
 
 #: index.php:112
 msgid "You must accept cookies to reach this application"
@@ -23857,32 +23895,32 @@ msgstr "Nahrání úspěšné"
 
 #: js/gantt-helper.js:137
 msgid "Start date:"
-msgstr ""
+msgstr "Datum zahájení:"
 
 #: js/gantt-helper.js:139
 msgid "End date:"
-msgstr ""
+msgstr "Datum ukončení:"
 
 #: js/gantt-helper.js:140
 msgid "Progress:"
-msgstr ""
+msgstr "Postup:"
 
 #: js/gantt-helper.js:142
 msgid "Description:"
-msgstr ""
+msgstr "Popis:"
 
 #: js/gantt-helper.js:145
 msgid "Comment:"
-msgstr ""
+msgstr "Komentář:"
 
 #: js/gantt-helper.js:152
 msgid "Project / Task"
-msgstr ""
+msgstr "Projekt / Úkol"
 
 #: js/gantt-helper.js:202
 #, javascript-format
 msgid "Week #%s"
-msgstr ""
+msgstr "Týden #%s"
 
 #: js/gantt-helper.js:362
 msgid "Finish to Start: "
@@ -23906,53 +23944,53 @@ msgstr ""
 
 #: js/gantt-helper.js:507
 msgid "Gantt mode: 'Readonly'"
-msgstr ""
+msgstr "Režim Gantt: 'Pouze pro čtení'"
 
 #: js/gantt-helper.js:553
 msgid "Links between projects cannot be created."
-msgstr ""
+msgstr "Odkazy mezi projekty nelze vytvářet."
 
 #: js/gantt-helper.js:556
 msgid "Links between projects and tasks cannot be created."
-msgstr ""
+msgstr "Odkazy mezi projekty a úkoly nelze vytvářet."
 
 #: js/gantt-helper.js:559
 msgid "Target task can't start before source task ends."
-msgstr ""
+msgstr "Cílová úloha nemůže být spuštěna před ukončením zdrojové úlohy."
 
 #: js/gantt-helper.js:562
 msgid "Target task can't start before source task starts."
-msgstr ""
+msgstr "Cílová úloha nemůže být spuštěna před spuštěním zdrojové úlohy."
 
 #: js/gantt-helper.js:565
 msgid "Target task can't end before source task ends."
-msgstr ""
+msgstr "Cílová úloha nemůže skončit dříve, než skončí zdrojová úloha."
 
 #: js/gantt-helper.js:568
 msgid "Target task can't end before the source task starts."
-msgstr ""
+msgstr "Cílová úloha nemůže skončit před spuštěním zdrojové úlohy."
 
 #: js/gantt-helper.js:596
 msgid "Could not create task: "
-msgstr ""
+msgstr "Nepodařilo se vytvořit úkol: "
 
 #: js/gantt-helper.js:630 js/gantt-helper.js:657
 #, javascript-format
 msgid "Could not update Task[%s]: "
-msgstr ""
+msgstr "Nepodařilo se aktualizovat Úkol[%s]: "
 
 #: js/gantt-helper.js:735
 msgid "Could not create project: "
-msgstr ""
+msgstr "Nepodařilo se vytvořit projekt: "
 
 #: js/gantt-helper.js:763
 #, javascript-format
 msgid "Could not update Project[%s]: "
-msgstr ""
+msgstr "Nepodařilo se aktualizovat Project[%s]: "
 
 #: js/glpi_dialog.js:363
 msgid "Success"
-msgstr ""
+msgstr "Úspěch"
 
 #: js/impact.js:1312
 msgid "Go to"
@@ -24077,39 +24115,39 @@ msgstr ""
 
 #: js/planning.js:542
 msgid "Edit an event"
-msgstr ""
+msgstr "Upravit událost"
 
 #: js/planning.js:580
 msgid "Add an event"
-msgstr ""
+msgstr "Přidat událost"
 
 #: js/planning.js:681
 msgid "Add a calendar"
-msgstr ""
+msgstr "Přidat kalendář"
 
 #: js/rack.js:87
 msgid "Add PDU"
-msgstr ""
+msgstr "Přidat PDU"
 
 #: js/reservations.js:120
 msgid "Timeline Week"
-msgstr ""
+msgstr "Týdenní časová osa"
 
 #: js/reservations.js:229
 msgid "Add reservation"
-msgstr ""
+msgstr "Přidat rezervaci"
 
 #: js/reservations.js:251
 msgid "Edit reservation"
-msgstr ""
+msgstr "Editovat rezervaci"
 
 #: entrée standard:216
 msgid "Rack pictures"
-msgstr ""
+msgstr "Obrázek racku"
 
 #: entrée standard:228
 msgid "Other pictures"
-msgstr ""
+msgstr "Ostatní obrázky"
 
 #: entrée standard:39
 msgid "Approved device"
@@ -24184,7 +24222,7 @@ msgstr "Import nových skupin"
 #: entrée standard:48 standard:133
 #, php-format
 msgid "Show %s entries"
-msgstr ""
+msgstr "Zobrazit %s položek"
 
 #: entrée standard:37
 msgid "Bulk import users from a LDAP directory"
@@ -24192,7 +24230,7 @@ msgstr "Hromadný import uživatelů z LDAP adresáře"
 
 #: entrée standard:47
 msgid "Zoom"
-msgstr ""
+msgstr "Zoom"
 
 #: entrée standard:51
 msgid "Days"
@@ -24200,7 +24238,7 @@ msgstr "Dny"
 
 #: entrée standard:54
 msgid "Weeks"
-msgstr ""
+msgstr "Týdny"
 
 #: entrée standard:57
 msgid "Months"
@@ -24208,19 +24246,19 @@ msgstr "Měsíců"
 
 #: entrée standard:60
 msgid "Quarters"
-msgstr ""
+msgstr "Čtvrtletí"
 
 #: entrée standard:63
 msgid "Years"
-msgstr ""
+msgstr "Roky"
 
 #: entrée standard:73
 msgid "Find"
-msgstr ""
+msgstr "Nalézt"
 
 #: entrée standard:82
 msgid "by name"
-msgstr ""
+msgstr "podle jména"
 
 #: entrée standard:54 standard:100
 msgid ""
@@ -24250,7 +24288,7 @@ msgstr "Platné (přes kvótu)"
 
 #: entrée standard:43
 msgid "Login to your account"
-msgstr ""
+msgstr "Přihlášení k vašemu účtu"
 
 #: entrée standard:72
 msgid "Login source"
@@ -24262,7 +24300,7 @@ msgstr "Zapamatovat si mne"
 
 #: entrée standard:88
 msgid "Sign in"
-msgstr ""
+msgstr "Přihlásit se"
 
 #: entrée standard:39
 msgid "Notifications configuration"
@@ -24317,7 +24355,7 @@ msgstr ""
 
 #: entrée standard:47
 msgid "Please enter your new password."
-msgstr ""
+msgstr "Zadejte prosím nové heslo."
 
 #: entrée standard:56
 msgid "Password confirmation"
@@ -24352,6 +24390,8 @@ msgid ""
 "Sorry for the inconvenience but we’re performing some maintenance at the "
 "moment. We’ll be back online shortly!"
 msgstr ""
+"Omlouváme se za nepříjemnosti, ale v současné době provádíme údržbu. Brzy "
+"budeme opět online!"
 
 #: entrée standard:59
 msgid "Take me home"
@@ -24360,12 +24400,12 @@ msgstr ""
 #: entrée standard:74
 #, php-format
 msgid "%s rows / page"
-msgstr ""
+msgstr "%s řádků / strana"
 
 #: entrée standard:80
 #, php-format
 msgid "Showing %s to %s of %s rows"
-msgstr ""
+msgstr "Zobrazuje se %s až %s z %s řádků"
 
 #: entrée standard:83
 #, php-format
@@ -24374,7 +24414,7 @@ msgstr ""
 
 #: entrée standard:50
 msgid "View all"
-msgstr ""
+msgstr "Zobrazit vše"
 
 #: entrée standard:39
 msgid "Show as map"
@@ -24443,11 +24483,11 @@ msgstr "Platná do %s"
 
 #: entrée standard:69
 msgid "Team"
-msgstr ""
+msgstr "Team"
 
 #: entrée standard:94
 msgid "No team members"
-msgstr ""
+msgstr "Žádní členové týmu"
 
 #: entrée standard:102
 msgid "Open full form"
@@ -24459,7 +24499,7 @@ msgstr ""
 
 #: entrée standard:98
 msgid "Keep the devices while deleting this item"
-msgstr ""
+msgstr "Ponechání zařízení při odstraňování této položky"
 
 #: entrée standard:35
 msgid "Support hours"
@@ -24467,15 +24507,15 @@ msgstr "Denní doba, ve které je podpora poskytována"
 
 #: entrée standard:36
 msgid "On week"
-msgstr ""
+msgstr "V týdnu"
 
 #: entrée standard:41
 msgid "On Saturday"
-msgstr ""
+msgstr "V sobotu"
 
 #: entrée standard:42
 msgid "Use Saturday"
-msgstr ""
+msgstr "Použít sobotu"
 
 #: entrée standard:46
 msgid "Sundays and holidays"
@@ -24483,7 +24523,7 @@ msgstr "v neděli a svátek"
 
 #: entrée standard:47
 msgid "Use Sunday"
-msgstr ""
+msgstr "Použít neděli"
 
 #: entrée standard:53
 #, php-format
@@ -24492,7 +24532,7 @@ msgstr "Vytvořeno ze šablony %s"
 
 #: entrée standard:41
 msgid "SNMP version"
-msgstr ""
+msgstr "SNMP verze"
 
 #: entrée standard:75
 msgid "Encryption protocol for authentication "
@@ -24521,7 +24561,7 @@ msgstr "Plány"
 
 #: entrée standard:44
 msgid "File extension"
-msgstr ""
+msgstr "Přípona souboru"
 
 #: entrée standard:50
 msgid "Approval of the solution"
@@ -24641,7 +24681,7 @@ msgstr "Filtr časové osy"
 
 #: entrée standard:116
 msgid "View TODO list"
-msgstr ""
+msgstr "Zobrazit seznam TODO "
 
 #: entrée standard:114
 #, php-format
@@ -24658,7 +24698,7 @@ msgstr "Přiřadit SLA smlouvu"
 
 #: entrée standard:52
 msgid "There are some tickets awaiting approval"
-msgstr ""
+msgstr "Některé požadavky čekají na schválení"
 
 #: entrée standard:52
 msgid "check it out!"
@@ -24690,11 +24730,11 @@ msgstr ""
 
 #: entrée standard:99
 msgid "Observer"
-msgstr ""
+msgstr "Pozorovatel"
 
 #: entrée standard:147
 msgid "Edit notification settings"
-msgstr ""
+msgstr "Upravit nastavení oznámení"
 
 #: entrée standard:159
 msgid "Email address"
@@ -24710,11 +24750,11 @@ msgstr "Znovu otevřít"
 
 #: entrée standard:71
 msgid "impact"
-msgstr ""
+msgstr "Dopad"
 
 #: entrée standard:92
 msgid "priority"
-msgstr ""
+msgstr "Priorita"
 
 #: entrée standard:51
 #, php-format
@@ -24803,11 +24843,11 @@ msgstr "Nedaří se připojit do databáze"
 
 #: entrée standard:59
 msgid "Database engine is not supported."
-msgstr ""
+msgstr "Databázový engine není podporován."
 
 #: entrée standard:66
 msgid "Database configuration is not supported."
-msgstr ""
+msgstr "Konfigurace databáze není podporována."
 
 #: entrée standard:76
 msgid "Please select a database:"
@@ -24815,7 +24855,7 @@ msgstr "Zvolte databázi:"
 
 #: entrée standard:76
 msgid "Please select a database to update:"
-msgstr ""
+msgstr "Zvolte prosím databázi pro aktualizaci:"
 
 #: entrée standard:88
 msgid "Create a new database or use an existing one:"
@@ -24867,7 +24907,7 @@ msgstr ""
 
 #: entrée standard:89
 msgid "Clear search"
-msgstr ""
+msgstr "Vymazat vyhledávání"
 
 #: entrée standard:93
 msgid "Select all"
@@ -24879,15 +24919,15 @@ msgstr ""
 
 #: entrée standard:63
 msgid "Collapse menu"
-msgstr ""
+msgstr "Sbalit nabídku"
 
 #: entrée standard:35 standard:37
 msgid "Search…"
-msgstr ""
+msgstr "Vyhledávání..."
 
 #: entrée standard:34
 msgid "You have not recorded any saved searches yet"
-msgstr ""
+msgstr "Zatím jste nezaznamenali žádné uložené vyhledávání"
 
 #: entrée standard:47
 msgid "Default search"
@@ -24895,11 +24935,11 @@ msgstr "Výchozí vyhledávání"
 
 #: entrée standard:47
 msgid "mark as default"
-msgstr ""
+msgstr "označit jako výchozí"
 
 #: entrée standard:53
 msgid "private"
-msgstr ""
+msgstr "soukromé"
 
 #: entrée standard:58 standard:60
 msgid "Lists"
@@ -24936,15 +24976,15 @@ msgstr "Opustit přepnutí se do jiného uživatele."
 
 #: entrée standard:48
 msgid "Manage all saved searches"
-msgstr ""
+msgstr "Správa všech uložených hledání"
 
 #: entrée standard:53
 msgid "Pin this panel for the current page"
-msgstr ""
+msgstr "Připnout tento panel pro aktuální stránku"
 
 #: entrée standard:58
 msgid "Close the panel"
-msgstr ""
+msgstr "Zavřít panel"
 
 #: entrée standard:93
 msgid "Filter list"
@@ -24980,7 +25020,7 @@ msgstr "Najdete na webu GLPI-PROJECT.org."
 
 #: entrée standard:44
 msgid "Find menu"
-msgstr ""
+msgstr "Najít menu"
 
 #: entrée standard:286
 msgid "Empty for infinite"

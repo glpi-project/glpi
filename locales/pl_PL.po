@@ -7554,10 +7554,10 @@ msgstr "Pozostało w budżecie"
 #: src/DeviceCaseModel.php:42
 msgid "Device case model"
 msgid_plural "Device case models"
-msgstr[0] "Model obudowy"
-msgstr[1] "Modele obudów"
-msgstr[2] "Modele obudów"
-msgstr[3] "Modele obudów"
+msgstr[0] "Model obudowy urządzenia"
+msgstr[1] "Modele obudów urządzeń"
+msgstr[2] "Modeli obudów urządzeń"
+msgstr[3] "Modeli obudów urządzeń"
 
 #: src/Item_Cluster.php:117
 msgid "Add new item to this cluster..."

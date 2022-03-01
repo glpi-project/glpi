@@ -5,10 +5,10 @@
 # 
 # Translators:
 # Jokin Zengotitabengoa <jzengotitabengoa@olabide.com>, 2021
-# Alexander Gabilondo <alexgabi@disroot.org>, 2021
 # DOMBRE Julien <moyo@indepnet.net>, 2021
 # Gorka Olalde Mendia <gorka.olalde@alumni.mondragon.edu>, 2021
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2021
+# Alexander Gabilondo <alexgabi@disroot.org>, 2022
 # 
 #, fuzzy
 msgid ""
@@ -17,7 +17,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-02-03 09:37+0100\n"
 "PO-Revision-Date: 2021-05-26 09:06+0000\n"
-"Last-Translator: alexandre delaunay <delaunay.alexandre@gmail.com>, 2021\n"
+"Last-Translator: Alexander Gabilondo <alexgabi@disroot.org>, 2022\n"
 "Language-Team: Basque (Spain) (https://www.transifex.com/glpi/teams/1637/eu_ES/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -142,15 +142,15 @@ msgstr "Beharrezkoa den parametroa falta da|"
 
 #: ajax/getMapPoint.php:59
 msgid "Element seems not geolocalized or cannot be found"
-msgstr ""
+msgstr "Elementua ez dirudi geolokalizatuta edo ezin da aurkitu"
 
 #: ajax/getMapPoint.php:76
 msgid "Location seems not geolocalized!"
-msgstr ""
+msgstr "Kokapenak ez dirudi geolokalizaturik!"
 
 #: ajax/getMapPoint.php:77
 msgid "Consider filling latitude and longitude on this location."
-msgstr ""
+msgstr "Kontuan izan kokapen honetan latitudea eta longitudea betetzea."
 
 #. TRANS: %1$s is a type name - %2$s is a name
 #: ajax/dropdownConnectNetworkPort.php:128
@@ -466,11 +466,11 @@ msgstr ""
 
 #: ajax/switchdebug.php:47
 msgid "Debug mode has been enabled!"
-msgstr ""
+msgstr "Arazte modua gaitu da!"
 
 #: ajax/switchdebug.php:48
 msgid "Debug mode has been disabled!"
-msgstr ""
+msgstr "Arazte modua desgaitu da|"
 
 #: ajax/central.php:87
 msgid "Invalid widget"
@@ -2002,7 +2002,7 @@ msgstr "%s alerta eguneratzen du"
 
 #: front/itilsolution.form.php:51
 msgid "You cannot solve this item!"
-msgstr ""
+msgstr "Ezin duzu elementu hau konpondu!"
 
 #: front/item_softwarelicense.form.php:45 src/Item_Project.php:227
 #: src/Item_RemoteManagement.php:331 src/Item_Disk.php:151
@@ -2034,7 +2034,7 @@ msgstr[1] "Materialak"
 #: front/item_softwarelicense.form.php:58
 #, php-format
 msgid "%s associates an item and a license"
-msgstr ""
+msgstr "%s-k elementu bat eta lizentzia bat lotzen ditu"
 
 #: front/knowbaseitem_knowbaseitemcategory.form.php:55
 #, php-format
@@ -5396,6 +5396,8 @@ msgid ""
 "If name is a valid email address, it will be automatically added to "
 "blacklisted senders."
 msgstr ""
+"Izena baliozko helbide elektronikoa bada, automatikoki gehituko da zerrenda "
+"beltzeko bidaltzaileei."
 
 #: src/MailCollector.php:244 src/MailCollector.php:543
 #: src/NotificationTargetMailCollector.php:78
@@ -5472,7 +5474,7 @@ msgstr "Azkenengo eguneraketa %s-n"
 
 #: src/MailCollector.php:388 src/MailCollector.php:694
 msgid "An error occured trying to connect to collector."
-msgstr ""
+msgstr "Errore bat gertatu da biltzailera konektatzen saiatzean."
 
 #: src/MailCollector.php:403
 #, php-format
@@ -5497,12 +5499,14 @@ msgstr "%s posta ez da aurkitu. Ezin izan da inportatu."
 #: src/MailCollector.php:729
 #, php-format
 msgid "Message is invalid (%s). Check in \"%s\" for more details"
-msgstr ""
+msgstr "Mezua baliogabea da (%s). Begiratu \"%s\"-n zehaztasun gehiagorako."
 
 #: src/MailCollector.php:782
 #, php-format
 msgid "Error during message parsing (%s). Check in \"%s\" for more details"
 msgstr ""
+"Errorea gertatu da mezua aztertzean (%s). Begiratu  \"%s\"-n zehaztasun "
+"gehiagorako."
 
 #: src/MailCollector.php:928
 #, php-format
@@ -5510,6 +5514,8 @@ msgid ""
 "Number of messages: available=%1$d, already imported=%2$d, retrieved=%3$d, "
 "refused=%4$d, errors=%5$d, blacklisted=%6$d"
 msgstr ""
+"Mezu eskuragarrien kopurua=%1$d, inportatuak=%2$d, berreskuratuta=%3$d, "
+"ukatuak=%4$d, erroreak=%5$d, zerrenda beltzean=%6$d"
 
 #: src/MailCollector.php:942
 msgid "Could not connect to mailgate server"
@@ -7231,7 +7237,7 @@ msgstr ""
 
 #: src/NotificationTargetDomain.php:91 src/Domain.php:563
 msgid "Expired or expiring domains"
-msgstr ""
+msgstr "Iraungita edo iraungitzear dauden domeinuak"
 
 #: src/ITILSolution.php:56
 msgid "Solution"
@@ -17693,7 +17699,7 @@ msgstr "Elementuaren iraupena"
 
 #: src/RuleDictionnarySoftware.php:93 src/RuleSoftwareCategory.php:85
 msgid "Category from inventory tool"
-msgstr ""
+msgstr "Inbentarioko kategoria"
 
 #: src/NetworkPortFiberchannelType.php:39
 msgid "Fiber type"
@@ -18931,7 +18937,7 @@ msgstr "Softwarea kategorietara asignatzeko erregelak"
 
 #: src/RuleSoftwareCategory.php:101
 msgid "Import category from inventory tool"
-msgstr ""
+msgstr "Inportatu kategoria inbentariotik"
 
 #: src/NotificationTargetCrontask.php:41 src/NotificationTargetCrontask.php:81
 #: src/CronTask.php:2076
@@ -19376,7 +19382,7 @@ msgstr "Erabiltzailea taldean"
 
 #: src/RuleAsset.php:171
 msgid "User based contact information"
-msgstr ""
+msgstr "Erabiltzailean oinarritutako harremanetarako informazioa"
 
 #: src/Cache/CacheManager.php:549
 msgid "Memcached"

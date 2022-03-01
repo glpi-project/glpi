@@ -10,6 +10,7 @@
 # Sebastien <sebastien.janez@free.fr>, 2021
 # DOMBRE Julien <moyo@indepnet.net>, 2021
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2021
+# Joze Benedicic, 2022
 # 
 #, fuzzy
 msgid ""
@@ -18,7 +19,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-02-03 09:37+0100\n"
 "PO-Revision-Date: 2021-05-26 09:06+0000\n"
-"Last-Translator: alexandre delaunay <delaunay.alexandre@gmail.com>, 2021\n"
+"Last-Translator: Joze Benedicic, 2022\n"
 "Language-Team: Slovenian (Slovenia) (https://www.transifex.com/glpi/teams/1637/sl_SI/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -143,15 +144,16 @@ msgstr "Manjka zahtevan argument"
 
 #: ajax/getMapPoint.php:59
 msgid "Element seems not geolocalized or cannot be found"
-msgstr ""
+msgstr "Element ni geolokaliziran ali ni najden"
 
 #: ajax/getMapPoint.php:76
 msgid "Location seems not geolocalized!"
-msgstr ""
+msgstr "Zdi se, da lokacija ni geolokalizirana!"
 
 #: ajax/getMapPoint.php:77
 msgid "Consider filling latitude and longitude on this location."
 msgstr ""
+"Razmislite o izpolnitvi zemljepisne širine in dolžine na tej lokaciji."
 
 #. TRANS: %1$s is a type name - %2$s is a name
 #: ajax/dropdownConnectNetworkPort.php:128
@@ -256,14 +258,14 @@ msgstr "Dodaj"
 #: src/RuleAction.php:727 src/Rule.php:1146 src/Html.php:2533
 msgid "Action"
 msgid_plural "Actions"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Dejanje"
+msgstr[1] "Dejanji"
+msgstr[2] "Dejanja"
+msgstr[3] "Dejanja"
 
 #: ajax/entitytreesons.php:83 entrée standard:74
 msgid "+ sub-entities"
-msgstr ""
+msgstr "+ podentitete"
 
 #: ajax/resaperiod.php:51 ajax/resaperiod.php:57 ajax/resaperiod.php:81
 #: front/stat.item.php:75 front/report.year.list.php:190
@@ -324,16 +326,16 @@ msgstr "Dodaj novo napravo"
 
 #: ajax/selectUnaffectedOrNewItem_Device.php:79
 msgid "No unaffected device!"
-msgstr ""
+msgstr "Brez nespremenjenih naprav!"
 
 #: ajax/ticketiteminformation.php:72
 #, php-format
 msgid "%s ticket in progress or recently solved on this item."
 msgid_plural "%s tickets in progress or recently solved on this item."
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "%s zahtevek v teku ali pred kratkim rešen na tej postavki."
+msgstr[1] "%s zahtevka v teku ali pred kratkim rešena na tej postavki."
+msgstr[2] "%s  zahtevki v teku ali pred kratkim rešeni na tej postavki."
+msgstr[3] "%s zahtevkov v teku ali pred kratkim rešenih na tej postavki."
 
 #: ajax/private_public.php:50 src/Dashboard/Grid.php:841
 msgid "Personal"
@@ -369,11 +371,11 @@ msgstr "Prehod: %s"
 
 #: ajax/savedsearch.php:48
 msgid "Search has been saved"
-msgstr ""
+msgstr "Iskanje je bilo shranjeno"
 
 #: ajax/savedsearch.php:55
 msgid "Search has not been saved"
-msgstr ""
+msgstr "Iskanje ni bilo shranjeno"
 
 #: ajax/dropdownMassiveActionAddValidator.php:53
 #: ajax/dropdownMassiveActionAddValidator.php:142 src/SoftwareVersion.php:123
@@ -452,15 +454,15 @@ msgstr "Nobeden"
 
 #: ajax/gantt.php:110
 msgid "Target item must be of project type"
-msgstr ""
+msgstr "Cilj mora biti tipa projekt"
 
 #: ajax/gantt.php:143
 msgid "Item must be of project type"
-msgstr ""
+msgstr "Postavka mora biti tipa projekt"
 
 #: ajax/gantt.php:208
 msgid "Link already exist!"
-msgstr ""
+msgstr "Povezava že obstaja!"
 
 #: ajax/telemetry.php:47
 msgid ""
@@ -471,15 +473,15 @@ msgstr ""
 
 #: ajax/switchdebug.php:47
 msgid "Debug mode has been enabled!"
-msgstr ""
+msgstr "Način za odpravljanje napak je omogočen!"
 
 #: ajax/switchdebug.php:48
 msgid "Debug mode has been disabled!"
-msgstr ""
+msgstr "Način za odpravljanje napak je onemogočen!"
 
 #: ajax/central.php:87
 msgid "Invalid widget"
-msgstr ""
+msgstr "Neveljaven pripomoček"
 
 #. TRANS: select action 'update' (before doing it)
 #: ajax/dropdownMassiveActionOs.php:46 src/Socket.php:696 src/Cartridge.php:82
@@ -497,7 +499,7 @@ msgstr "Podvoji"
 
 #: ajax/dcroom_size.php:63 entrée standard:76 standard:79
 msgid "No room found or selected"
-msgstr ""
+msgstr "Nobena soba ni bila najdena ali izbrana"
 
 #: ajax/ticketsatisfaction.php:59 src/Entity.php:1289
 msgid "Create survey after"
@@ -568,7 +570,7 @@ msgstr "Moje skupine"
 #: ajax/searchoptionvalue.php:85 src/Dashboard/Filter.php:170
 #: src/Search.php:3274 src/DbUtils.php:1619
 msgid "Myself"
-msgstr ""
+msgstr "Jaz"
 
 #. TRANS: %1$s is entity name, %2$s is the message
 #. TRANS: %1$s is a name, %2$s is a number
@@ -767,10 +769,10 @@ msgstr "%1$s: %2$s"
 #: standard:76 standard:248
 msgid "Email"
 msgid_plural "Emails"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "E-poštno sporočilo"
+msgstr[1] "E-poštni sporočili"
+msgstr[2] "E-poštna sporočila"
+msgstr[3] "E-poštnih sporočil"
 
 #: ajax/dropdownTrackingDeviceType.php:71 front/find_num.php:77
 msgid "Enter the first letters (user, item name, serial or asset number)"
@@ -803,29 +805,29 @@ msgstr "Orodje \"čistilec migracije\""
 
 #: front/migrationcleaner.php:66 src/IPNetwork.php:1148
 msgid "Reinit the network topology"
-msgstr ""
+msgstr "Ponovno vzpostavite omrežno topologijo"
 
 #: front/migrationcleaner.php:73
 msgid "Clean the network port migration errors"
-msgstr ""
+msgstr "Uredite napake pri migraciji mrežnih portov"
 
 #. TRANS: %s is the user login
 #: front/computerantivirus.form.php:58
 #, php-format
 msgid "%s adds an antivirus"
-msgstr ""
+msgstr "%s doda protivirusno zaščito"
 
 #. TRANS: %s is the user login
 #: front/computerantivirus.form.php:75
 #, php-format
 msgid "%s purges an antivirus"
-msgstr ""
+msgstr "%s očisti protivirupprogram"
 
 #. TRANS: %s is the user login
 #: front/computerantivirus.form.php:92
 #, php-format
 msgid "%s updates an antivirus"
-msgstr ""
+msgstr "%s posodobi antivirusni program"
 
 #. TRANS: %s is the user login
 #: front/databaseinstance.form.php:58
@@ -1007,12 +1009,12 @@ msgstr "%s posodobi predmet"
 
 #: front/ipnetwork.form.php:43
 msgid "Successfully recreated network tree"
-msgstr ""
+msgstr "Uspešno poustvarjeno omrežno drevo"
 
 #: front/marketplace.php:43 src/Marketplace/View.php:64
 #: src/Marketplace/Controller.php:67
 msgid "Marketplace"
-msgstr ""
+msgstr "Tržnica"
 
 #. TRANS: %s is the user login
 #: front/printer.form.php:74 front/budget.form.php:75
@@ -1062,7 +1064,7 @@ msgstr "%s obnavlja predmet"
 #: front/phone.form.php:127 front/monitor.form.php:127
 #, php-format
 msgid "%s sets unitary management"
-msgstr ""
+msgstr "%s določa enotno upravljanje"
 
 #: front/reservationitem.php:39 front/reservation.php:43
 #: front/tracking.injector.php:54 front/tracking.injector.php:56
@@ -1124,10 +1126,10 @@ msgstr "Vrsta strojne opreme"
 #: src/Item_SoftwareVersion.php:81 entrée standard:177
 msgid "Associated element"
 msgid_plural "Associated elements"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Povezan element"
+msgstr[1] "Povezana elementa>"
+msgstr[2] "Povezani elementi"
+msgstr[3] "Povezanih elementov"
 
 #: front/find_num.php:93 src/Datacenter.php:98
 #: src/NotificationTargetProjectTask.php:587
@@ -1247,10 +1249,10 @@ msgstr "Inventarna številka"
 #: src/Log.php:904
 msgid "Software"
 msgid_plural "Software"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Programske opreme"
+msgstr[1] "Programske opreme"
+msgstr[2] "Programske opreme"
+msgstr[3] "Programske opreme"
 
 #. TRANS: %s is the user login
 #: front/computervirtualmachine.form.php:59
@@ -1262,13 +1264,13 @@ msgstr "%s dodaja virtualni računalnik"
 #: front/computervirtualmachine.form.php:76
 #, php-format
 msgid "%s purges a virtual machine"
-msgstr ""
+msgstr "%s počisti virtualno napravo"
 
 #. TRANS: %s is the user login
 #: front/computervirtualmachine.form.php:93
 #, php-format
 msgid "%s updates a virtual machine"
-msgstr ""
+msgstr "%s posodobi virtualno napravo"
 
 #: front/lockedfield.form.php:50
 #, php-format
@@ -1279,7 +1281,7 @@ msgstr ""
 #: front/group.form.php:115 front/dropdown.common.form.php:129
 #, php-format
 msgid "%s replaces an item"
-msgstr ""
+msgstr "%szamenja predmet"
 
 #. TRANS: %s is the user login
 #: front/supplier_ticket.form.php:65 front/group_problem.form.php:58
@@ -1293,14 +1295,14 @@ msgstr "%s izbriše akterja"
 
 #: front/dashboard_helpdesk.php:50
 msgid "Helpdesk Dashboard"
-msgstr ""
+msgstr "Nadzorna plošča Podpore uporabnikom"
 
 #: front/group_problem.form.php:65 front/change_group.form.php:65
 #: front/problem_user.form.php:77 front/ticket_user.form.php:72
 #: front/group_ticket.form.php:65 front/change_user.form.php:74
 msgid ""
 "You have been redirected because you no longer have access to this item"
-msgstr ""
+msgstr "Preusmerjeni ste bili, ker nimate več dostopa do tega predmeta"
 
 #: front/stat.php:36 front/stat.item.php:36 front/stat.global.php:41
 #: front/stat.graph.php:41 front/stat.tracking.php:42
@@ -1345,7 +1347,7 @@ msgstr "Kopiraj %s"
 #: front/ldap.group.php:42 src/Group.php:144 src/Group.php:326
 #: src/User.php:2227
 msgid "LDAP directory link"
-msgstr ""
+msgstr "Povezava do imenika LDAP "
 
 #: front/updatepassword.php:41 front/updatepassword.php:44
 #: front/updatepassword.php:47 src/Profile.php:720 src/Profile.php:2905
@@ -1354,31 +1356,31 @@ msgstr "Posodobite geslo"
 
 #: front/updatepassword.php:60
 msgid "Incorrect password"
-msgstr ""
+msgstr "Napačno geslo"
 
 #: front/updatepassword.php:69
 msgid "The new password must be different from current password"
-msgstr ""
+msgstr "Novo geslo mora biti drugačno od starega"
 
 #: front/updatepassword.php:71
 msgid "The two passwords do not match"
-msgstr ""
+msgstr "Vneseni gesli se ne ujemata"
 
 #: front/updatepassword.php:78
 msgid "An error occured during password update"
-msgstr ""
+msgstr "Prišlo je do napake pri posodabljanju gesla"
 
 #: front/updatepassword.php:89
 msgid "Password update"
-msgstr ""
+msgstr "Posodobitev gesla"
 
 #: front/updatepassword.php:92
 msgid "Your password has been successfully updated."
-msgstr ""
+msgstr "Vaše geslo je bilo uspešno posodobljeno."
 
 #: front/updatepassword.php:94
 msgid "Log in"
-msgstr ""
+msgstr "Prijava"
 
 #. TRANS: %s is the user login, %2$s is the license id
 #: front/softwarelicense.form.php:60
@@ -1390,7 +1392,7 @@ msgstr "%1$s doda licenco %2$s"
 #: front/softwarelicense.form.php:89
 #, php-format
 msgid "%1$s deletes the license %2$s"
-msgstr ""
+msgstr "%1$s pobriše licenco %2$s"
 
 #. TRANS: %s is the user login, %2$s is the license id
 #: front/softwarelicense.form.php:101
@@ -1419,18 +1421,18 @@ msgstr "%s poveže omrežno ime na predmet"
 #: front/display.options.php:42 src/CommonGLPI.php:1336
 #: src/CommonGLPI.php:1396 src/CommonGLPI.php:1398
 msgid "Display options"
-msgstr ""
+msgstr "Prikaži možnosti"
 
 #. TRANS: %s is user name
 #: front/pluginimage.send.php:54
 #, php-format
 msgid "%s makes a bad usage."
-msgstr ""
+msgstr "%s slabo uporablja."
 
 #: front/pluginimage.send.php:73
 #, php-format
 msgid "%s tries to use a non standard path."
-msgstr ""
+msgstr "%s poskuša uporabiti nestandardno pot."
 
 #: front/contenttemplates/documentation.php:46
 msgid "Template variables documentation"
@@ -1441,25 +1443,25 @@ msgstr ""
 #: front/knowbaseitem_comment.form.php:78 front/knowbaseitem_item.form.php:44
 #: front/knowbaseitem_knowbaseitemcategory.form.php:44
 msgid "Mandatory fields are not filled!"
-msgstr ""
+msgstr "Obvezna polja niso izpolnjena!"
 
 #: front/knowbaseitem_comment.form.php:65
 #, php-format
 msgid "%s adds a comment on knowledge base"
-msgstr ""
+msgstr "%s dodaja komentar v bazi znanja"
 
 #: front/knowbaseitem_comment.form.php:68
 msgid "Your comment has been added"
-msgstr ""
+msgstr "Vaš komentar je bil dodan"
 
 #: front/knowbaseitem_comment.form.php:91
 #, php-format
 msgid "%s edit a comment on knowledge base"
-msgstr ""
+msgstr "%s ureja komentar v bazi znanja"
 
 #: front/knowbaseitem_comment.form.php:94
 msgid "Your comment has been edited"
-msgstr ""
+msgstr "Vaš komentar je bil urejen"
 
 #. TRANS: %s is the user login
 #: front/ticket.form.php:207 front/change.form.php:138
@@ -1529,7 +1531,7 @@ msgstr "%s posodobi kartušo"
 #: front/item_device.common.form.php:69
 #, php-format
 msgid "%1$s adds an item"
-msgstr ""
+msgstr "%1$s doda predmet"
 
 #: front/document.send.php:46
 msgid "Unknown file"
@@ -1560,15 +1562,15 @@ msgstr "Nepravilno ime datoteke"
 #: src/CommonITILObject.php:2136
 #, php-format
 msgid "Mandatory fields are not filled. Please correct: %s"
-msgstr ""
+msgstr "Obvezna polja niso vpisana. Prosim popravi %s"
 
 #: front/dictionnary.php:42 src/Rule.php:270
 msgid "Dictionary"
 msgid_plural "Dictionaries"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Slovar"
+msgstr[1] "Slovarja"
+msgstr[2] "Slovarji"
+msgstr[3] "Slovarjev"
 
 #: front/planning.php:148 src/Event.php:157 src/Event.php:166
 #: src/Project.php:1646 src/Profile.php:1405 src/Profile.php:1420
@@ -1579,7 +1581,7 @@ msgstr "Urnik"
 
 #: front/massiveaction.php:44
 msgid "Bulk modification error"
-msgstr ""
+msgstr "Napaka pri množični spremembi"
 
 #: front/massiveaction.php:55
 msgid "Bulk modification"
@@ -1587,11 +1589,11 @@ msgstr "Velike spremembe"
 
 #: front/massiveaction.php:65 src/NotImportedEmail.php:248
 msgid "Failed operation"
-msgstr ""
+msgstr "Operacija spodletela"
 
 #: front/massiveaction.php:68
 msgid "Operation performed partially successful"
-msgstr ""
+msgstr "Operacija je bila delno uspešna"
 
 #: front/massiveaction.php:71 front/transfer.action.php:49
 #: front/transfer.action.php:56
@@ -1601,7 +1603,7 @@ msgstr "Operacija uspešna"
 #: front/massiveaction.php:76
 #, php-format
 msgid "(%1$d authorizations problems, %2$d failures)"
-msgstr ""
+msgstr "(%1$d težav z avtorizacijo, %2$dˇnapak)"
 
 #: front/notification.tags.php:38
 msgid "List of available tags"
@@ -1615,7 +1617,7 @@ msgstr "Domov"
 #: front/helpdesk.public.php:105 src/Central.php:455
 #, php-format
 msgid "Your password will expire on %s."
-msgstr ""
+msgstr "Vaše geslo bo poteklo %s."
 
 #: front/reservationitem.form.php:55
 #, php-format
@@ -1794,13 +1796,13 @@ msgstr "%s doda nosilec datotek"
 #: front/item_disk.form.php:78
 #, php-format
 msgid "%s purges a volume"
-msgstr ""
+msgstr "%s izbriše nosilec"
 
 #. TRANS: %s is the user login
 #: front/item_disk.form.php:96
 #, php-format
 msgid "%s updates a volume"
-msgstr ""
+msgstr "%s posodobi nosilec"
 
 #. TRANS: %s is the user login
 #: front/user.form.php:144 front/group_user.form.php:55
@@ -1816,15 +1818,15 @@ msgstr "%s izbriše uporabnika iz skupine"
 
 #: front/user.form.php:183
 msgid "Lang has been changed!"
-msgstr ""
+msgstr "Jezik je bil spremenjen!"
 
 #: front/user.form.php:187
 msgid "Unable to impersonate user"
-msgstr ""
+msgstr "Ni mogoče lažno predstavljati uporabnika"
 
 #: front/user.form.php:196
 msgid "Unable to stop impersonating user"
-msgstr ""
+msgstr "Ni mogoče zaključiti z lažnim predstavljanjem uporabnika"
 
 #: front/transfer.php:38 front/transfer.form.php:86
 #: front/transfer.action.php:36 src/Entity.php:1839 src/Rule.php:254
@@ -1834,21 +1836,21 @@ msgstr "Prenesi"
 
 #: front/itiltemplatefield.form.php:64
 msgid "hidden"
-msgstr ""
+msgstr "skrito"
 
 #: front/itiltemplatefield.form.php:67
 msgid "mandatory"
-msgstr ""
+msgstr "obvezno"
 
 #: front/itiltemplatefield.form.php:70
 msgid "predefined"
-msgstr ""
+msgstr "vnaprej določeno"
 
 #. TRANS: %1$s is the user login, %2$s the field type
 #: front/itiltemplatefield.form.php:81
 #, php-format
 msgid "%1$s adds %2$s field"
-msgstr ""
+msgstr "%1$s doda %2$s polje"
 
 #. TRANS: first parameter is the rule type name
 #: front/rule.common.php:60
@@ -1858,7 +1860,7 @@ msgstr ""
 
 #: front/rule.common.php:97
 msgid "Replay the rules dictionary"
-msgstr ""
+msgstr "Ponovno predvajajte slovar pravil"
 
 #: front/rule.common.php:99 install/update.php:87 src/Migration.php:131
 #: src/Software.php:1026
@@ -1868,7 +1870,7 @@ msgstr "Delo v teku..."
 #: front/rule.common.php:126
 #, php-format
 msgid "Task completed in %s"
-msgstr ""
+msgstr "Opravilo zaključeno v %s"
 
 #: front/rule.common.php:129 front/transfer.action.php:50
 #: front/transfer.action.php:57 front/tracking.injector.php:99
@@ -1909,7 +1911,7 @@ msgstr ""
 #: front/knowbaseitem_item.form.php:57
 #, php-format
 msgid "%s adds a link with an knowledge base"
-msgstr ""
+msgstr "%s doda povezavo do baze znanja"
 
 #: front/report.infocom.php:60 front/report.infocom.conso.php:60
 #: src/RuleAction.php:183 src/Printer_CartridgeInfo.php:71 src/Rule.php:1162
@@ -1959,11 +1961,11 @@ msgstr ""
 
 #: front/report.infocom.php:358 front/report.infocom.conso.php:337
 msgid "Total account net value"
-msgstr ""
+msgstr "Skupna neto vrednost računa"
 
 #: front/report.infocom.php:372 front/report.infocom.conso.php:351
 msgid "Total value"
-msgstr ""
+msgstr "Skupna vrednost"
 
 #. TRANS: %s is the user login
 #: front/contact_supplier.form.php:58 front/contract_supplier.form.php:66
@@ -1996,23 +1998,23 @@ msgstr "%s posodobi strošek"
 #: front/savedsearch_alert.form.php:58
 #, php-format
 msgid "%s adds an alert"
-msgstr ""
+msgstr "%s doda opozorilo"
 
 #. TRANS: %s is the user login
 #: front/savedsearch_alert.form.php:75
 #, php-format
 msgid "%s purges an alert"
-msgstr ""
+msgstr "%s pobriše opozorilo"
 
 #. TRANS: %s is the user login
 #: front/savedsearch_alert.form.php:91
 #, php-format
 msgid "%s updates an alert"
-msgstr ""
+msgstr "%s posodobi opozorilo"
 
 #: front/itilsolution.form.php:51
 msgid "You cannot solve this item!"
-msgstr ""
+msgstr "Tega predmeta ne morete rešiti!"
 
 #: front/item_softwarelicense.form.php:45 src/Item_Project.php:227
 #: src/Item_RemoteManagement.php:331 src/Item_Disk.php:151
@@ -2037,16 +2039,16 @@ msgstr ""
 #: src/Item_Problem.php:227 entrée standard:268 standard:272
 msgid "Item"
 msgid_plural "Items"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Predmet"
+msgstr[1] "Predmeta"
+msgstr[2] "Predmeti"
+msgstr[3] "Predmetov"
 
 #. TRANS: %s is the user login
 #: front/item_softwarelicense.form.php:58
 #, php-format
 msgid "%s associates an item and a license"
-msgstr ""
+msgstr "%s povezuje predmet in licenco"
 
 #: front/knowbaseitem_knowbaseitemcategory.form.php:55
 #, php-format
@@ -2077,7 +2079,7 @@ msgstr "%s izbriše več mrežnih vrat"
 
 #: front/networkportmigration.form.php:95
 msgid "Cannot change a migration network port to an unknown one"
-msgstr ""
+msgstr "Omrežnega porta za selitev ni mogoče spremeniti v neznanega"
 
 #: front/networkportmigration.form.php:98
 msgid "Network port is not available..."
@@ -2105,10 +2107,10 @@ msgstr ""
 #: src/Profile.php:993 src/Profile.php:2225 src/ConsumableItem.php:191
 msgid "Consumable"
 msgid_plural "Consumables"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Potrošni material"
+msgstr[1] "Potrošna materiala"
+msgstr[2] "Potrošni materiali"
+msgstr[3] "Potrošnih materialov"
 
 #: front/stat.graph.php:89 front/stat.graph.php:100 src/RuleTicket.php:569
 #: src/RuleTicket.php:741 src/Dashboard/Filter.php:70
@@ -2136,10 +2138,10 @@ msgstr "Tehnik"
 #: standard:81 standard:180 standard:199 standard:142
 msgid "Category"
 msgid_plural "Categories"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Kategorija"
+msgstr[1] "Kategoriji"
+msgstr[2] "Kategorije"
+msgstr[3] "Kategorij"
 
 #: front/stat.graph.php:176 front/stat.tracking.php:102
 #: front/stat.location.php:91 src/CableStrand.php:146
@@ -2213,10 +2215,10 @@ msgstr[3] ""
 #: standard:149 standard:165
 msgid "Type"
 msgid_plural "Types"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Tip"
+msgstr[1] "Tipa"
+msgstr[2] "Tipi"
+msgstr[3] "Tipov"
 
 #: front/stat.graph.php:216 front/stat.tracking.php:97 src/RuleTicket.php:628
 #: src/RuleTicket.php:788 src/NotificationTargetCommonITILObject.php:1699
@@ -2285,12 +2287,12 @@ msgstr "%s počisti odobritev"
 #: front/lock.form.php:57
 #, php-format
 msgid "You do not have rights to restore %s item."
-msgstr ""
+msgstr "Nimate pravic za obnovo predmeta %s."
 
 #: front/lock.form.php:82
 #, php-format
 msgid "You do not have rights to delete %s item."
-msgstr ""
+msgstr "Nimate pravic za izbris predmeta %s."
 
 #: front/search.php:37 src/MapGeolocation.php:89 src/MapGeolocation.php:90
 #: entrée standard:84 standard:48 standard:50
@@ -2340,10 +2342,10 @@ msgstr "Vrsta predmeta"
 #: src/CronTask.php:1366 src/CronTask.php:1431 entrée standard:46
 msgid "Date"
 msgid_plural "Dates"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Datum"
+msgstr[1] "Datuma"
+msgstr[2] "Datumi"
+msgstr[3] "Datumov"
 
 #: front/devices.php:38 front/devices.php:42 src/Transfer.php:3874
 #: src/Event.php:156 src/CommonDevice.php:50 src/CommonDevice.php:302
@@ -2353,10 +2355,10 @@ msgstr[3] ""
 #: src/Config.php:3268
 msgid "Component"
 msgid_plural "Components"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Komponenta"
+msgstr[1] "Komponenti"
+msgstr[2] "Komponente"
+msgstr[3] "Komponent"
 
 #: front/stat.tracking.php:85 front/stat.tracking.php:109
 #: src/RuleTicket.php:520 src/RuleTicket.php:725 src/NotImportedEmail.php:188
@@ -2377,10 +2379,10 @@ msgstr[3] ""
 #: entrée standard:157 standard:71
 msgid "Requester"
 msgid_plural "Requesters"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Naročnik"
+msgstr[1] "Naročnika"
+msgstr[2] "Naročniki"
+msgstr[3] "Naročnikov"
 
 #: front/stat.tracking.php:86 src/NotificationTargetProjectTask.php:524
 #: src/NotificationTargetCommonITILObject.php:824
@@ -2399,15 +2401,15 @@ msgstr "Pisec"
 
 #: front/stat.tracking.php:88 front/stat.tracking.php:118
 msgid "Group tree"
-msgstr ""
+msgstr "Drevo skupine"
 
 #: front/stat.tracking.php:94
 msgid "Category tree"
-msgstr ""
+msgstr "Drevo kategorije"
 
 #: front/stat.tracking.php:105
 msgid "Location tree"
-msgstr ""
+msgstr "Drevo lokacije"
 
 #: front/stat.tracking.php:110 src/SoftwareVersion.php:164
 #: src/Datacenter.php:82 src/NotificationTemplateTranslation.php:306
@@ -2446,11 +2448,11 @@ msgstr "Dodeljeno k"
 
 #: front/stat.tracking.php:112
 msgid "Technician as assigned"
-msgstr ""
+msgstr "Tehnik kot dodeljeno"
 
 #: front/stat.tracking.php:114
 msgid "Technician in tasks"
-msgstr ""
+msgstr "Tehnik pri nalogah"
 
 #: front/stat.tracking.php:142 front/stat.location.php:111
 msgid "Show graphics"
@@ -2460,31 +2462,31 @@ msgstr "Prikaži grafiko"
 #: front/itilfollowup.form.php:61
 #, php-format
 msgid "%s adds a followup"
-msgstr ""
+msgstr "%s doda opombo"
 
 #. TRANS: %s is the user login
 #: front/itilfollowup.form.php:78
 #, php-format
 msgid "%s approves or refuses a solution"
-msgstr ""
+msgstr "%s potrdi ali zavrne spremembo"
 
 #. TRANS: %s is the user login
 #: front/itilfollowup.form.php:91
 #, php-format
 msgid "%s updates a followup"
-msgstr ""
+msgstr "%s uredi opombo"
 
 #. TRANS: %s is the user login
 #: front/itilfollowup.form.php:105
 #, php-format
 msgid "%s purges a followup"
-msgstr ""
+msgstr "%s izbriše opombo"
 
 #. TRANS: %s is the user login
 #: front/cartridgeitem_printermodel.form.php:52
 #, php-format
 msgid "%s associates a type"
-msgstr ""
+msgstr "%s dodeli vrsto"
 
 #: front/report.switch.list.php:49
 #, php-format
@@ -2504,34 +2506,34 @@ msgstr "%s namesti programsko opremo"
 
 #: front/item_softwareversion.form.php:66
 msgid "Please select a software!"
-msgstr ""
+msgstr "Prosim izberite programsko opremo!"
 
 #: front/item_softwareversion.form.php:68
 msgid "Please select a version!"
-msgstr ""
+msgstr "Prosim izberite verzijo!"
 
 #. TRANS: %s is the user login
 #: front/networkport_vlan.form.php:55 front/ipnetwork_vlan.form.php:55
 #, php-format
 msgid "%s associates a VLAN to a network port"
-msgstr ""
+msgstr "%s poveže VLAN na mrežna vrata"
 
 #. TRANS: %s is the user login
 #: front/knowbaseitem.form.php:139 front/rssfeed.form.php:131
 #: front/reminder.form.php:131 src/KnowbaseItem.php:385
 #, php-format
 msgid "%s adds a target"
-msgstr ""
+msgstr "%s doda cilj"
 
 #: front/knowbaseitem.form.php:149
 #, php-format
 msgid "Knowledge base item has been reverted to revision %s"
-msgstr ""
+msgstr "Postavka baze znanja je bila povrnjena v revizijo %s"
 
 #: front/knowbaseitem.form.php:156
 #, php-format
 msgid "Knowledge base item has not been reverted to revision %s"
-msgstr ""
+msgstr "Postavka baze znanja ni bila povrnjena v revizijo %s"
 
 #: front/knowbaseitem.form.php:170 src/CommonGLPI.php:1459
 #: src/KnowbaseItem_Item.php:84 src/CommonDropdown.php:908
@@ -2569,13 +2571,13 @@ msgstr ""
 #: front/slalevel.form.php:52
 #, php-format
 msgid "%s updates a sla level"
-msgstr ""
+msgstr "%s posodobil raven SLA"
 
 #. TRANS: %s is the user login
 #: front/slalevel.form.php:83
 #, php-format
 msgid "%s purges a sla level"
-msgstr ""
+msgstr "%s je zbrisal SLA raven"
 
 #: front/report.contract.php:47
 msgid "Hardware under contract"
@@ -9666,12 +9668,12 @@ msgstr[3] ""
 #: src/Stat/Data/Location/StatDataClosed.php:49
 #, php-format
 msgid "Closed %1$s (%2$s)"
-msgstr ""
+msgstr "Zaprto %1$s (%2$s)"
 
 #: src/Stat/Data/Location/StatDataSolved.php:49
 #, php-format
 msgid "Solved %1$s (%2$s)"
-msgstr ""
+msgstr "Rešeno %1$s (%2$s)"
 
 #: src/Stat/Data/Location/StatDataLate.php:49
 #, php-format
@@ -9681,29 +9683,29 @@ msgstr ""
 #: src/Stat/Data/Location/StatDataOpenSatisfaction.php:49
 #, php-format
 msgid "%1$s satisfaction survey (%2$s)"
-msgstr ""
+msgstr "%1$s anketa o zadovoljstvu (%2$s)"
 
 #: src/Stat/Data/Location/StatDataOpened.php:49
 #, php-format
 msgid "Opened %1$s (%2$s)"
-msgstr ""
+msgstr "Odprto %1$s (%2$s)"
 
 #: src/Stat/Data/Sglobal/StatDataTicketAverageTime.php:69
 #: src/Stat/Data/Graph/StatDataTicketNumber.php:65 src/Stat.php:585
 #: src/CommonITILObject.php:5085
 msgid "Closure"
-msgstr ""
+msgstr "Zaprtje"
 
 #: src/Stat/Data/Sglobal/StatDataTicketAverageTime.php:72
 #: src/Stat/Data/Graph/StatDataTicketNumber.php:68 src/Stat.php:584
 #: src/CommonITILObject.php:5074 src/CommonITILObject.php:6378
 msgid "Resolution"
-msgstr ""
+msgstr "Rešitev"
 
 #: src/Stat/Data/Sglobal/StatDataTicketAverageTime.php:75
 #: src/Stat/Data/Graph/StatDataTicketNumber.php:71
 msgid "Real duration"
-msgstr ""
+msgstr "Dejansko trajanje"
 
 #: src/Stat/Data/Sglobal/StatDataTicketAverageTime.php:83
 #: src/Stat/Data/Graph/StatDataTicketNumber.php:92 src/Stat.php:497
@@ -9740,7 +9742,7 @@ msgstr[3] ""
 #: src/NotificationTargetTicket.php:154 src/Ticket.php:3496
 #: src/Ticket.php:5196
 msgid "Satisfaction survey"
-msgstr ""
+msgstr "Anketa o zadovoljstvu"
 
 #: src/Stat/Data/Sglobal/StatDataSatisfaction.php:65
 #: src/Stat/Data/Graph/StatDataSatisfactionSurvey.php:62 src/Stat.php:1696
@@ -9761,13 +9763,13 @@ msgstr "Številka"
 #: src/Ticket.php:815 src/Ticket.php:3541 src/TicketSatisfaction.php:44
 #: src/Stat.php:487
 msgid "Satisfaction"
-msgstr ""
+msgstr "Zadovoljstvo"
 
 #: src/Stat/Data/Graph/StatDataTicketNumber.php:84 src/Ticket.php:6585
 #: src/Stat.php:582 src/CommonITILObject.php:5064
 #: src/CommonITILObject.php:6377
 msgid "Take into account"
-msgstr ""
+msgstr "Upoštevaj"
 
 #: src/Domain_Item.php:491
 msgid "Associate a domain"
@@ -12571,11 +12573,11 @@ msgstr ""
 
 #: src/NotificationTargetTicket.php:84
 msgid "To answer by email, write above this line"
-msgstr ""
+msgstr "Če želite odgovoriti po e-pošti, pišite nad to vrstico"
 
 #: src/NotificationTargetTicket.php:103
 msgid "To answer by email, write under this line"
-msgstr ""
+msgstr "Če želite odgovoriti po e-pošti, pišite pod to vrstico"
 
 #: src/NotificationTargetTicket.php:144
 msgid "Update of a ticket"
@@ -19377,7 +19379,7 @@ msgstr ""
 
 #: src/Central.php:461 entrée standard:45
 msgid "Update my password"
-msgstr ""
+msgstr "Posodobi geslo"
 
 #: src/Central.php:475
 #, php-format

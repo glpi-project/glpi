@@ -9,7 +9,6 @@
 # Jean-Christophe Pirmolin <jean-christophe@pirmolin.com>, 2021
 # DOMBRE Julien <moyo@indepnet.net>, 2021
 # Milan Lefort <milan.lefort@orange.fr>, 2021
-# Tiago Graça, 2021
 # Pierre <plebel@teclib.com>, 2021
 # Cédric Anne, 2021
 # Legastelois François <flegastelois@teclib.com>, 2021
@@ -17,6 +16,8 @@
 # Xavier CAILLAUD <thetsmr@gmail.com>, 2022
 # CupidSG, 2022
 # Johan Cwiklinski, 2022
+# Tiago Graça, 2022
+# Jordan BAO, 2022
 # 
 #, fuzzy
 msgid ""
@@ -25,7 +26,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-02-03 09:37+0100\n"
 "PO-Revision-Date: 2021-05-26 09:06+0000\n"
-"Last-Translator: Johan Cwiklinski, 2022\n"
+"Last-Translator: Jordan BAO, 2022\n"
 "Language-Team: French (France) (https://www.transifex.com/glpi/teams/1637/fr_FR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -2799,7 +2800,7 @@ msgstr "%1$s ajoute la réservation %2$s pour l'objet %3$s"
 #: front/reservation.form.php:160
 #, php-format
 msgid "Reservation added for item %s at %s"
-msgstr ""
+msgstr "Réservation ajoutée pour l'item %s à %s"
 
 #: front/report.contract.list.php:46
 msgid "List of the hardware under contract"
@@ -6746,7 +6747,7 @@ msgstr "Activer les notifications par défaut"
 #: src/Entity.php:884 src/Entity.php:1911
 #: src/NotificationMailingSetting.php:77
 msgid "Administrator email address"
-msgstr ""
+msgstr "Courriel de l'administrateur"
 
 #: src/Entity.php:893 src/Entity.php:1962
 #: src/NotificationMailingSetting.php:106
@@ -6756,7 +6757,7 @@ msgstr ""
 #: src/Entity.php:902 src/Entity.php:1928
 #: src/NotificationMailingSetting.php:90
 msgid "Email sender address"
-msgstr ""
+msgstr "Courriel de l'expéditeur"
 
 #: src/Entity.php:911 src/Entity.php:1945
 #: src/NotificationMailingSetting.php:124
@@ -12355,7 +12356,7 @@ msgstr "Dictionnaire des types de périphériques"
 
 #: src/Item_Ticket.php:447
 msgid "Knowledge base entries"
-msgstr ""
+msgstr "Entrées de la base de connaissances"
 
 #: src/Item_Ticket.php:654 src/Item_Ticket.php:878 src/Profile.php:3222
 #: src/Profile.php:3228
@@ -15648,8 +15649,8 @@ msgstr[1] "Modèles de téléphones"
 #: src/Rule.php:384 src/MonitorType.php:39
 msgid "Monitor type"
 msgid_plural "Monitors types"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Type de moniteur"
+msgstr[1] "Types de moniteurs"
 
 #: src/Rule.php:408
 msgid "Peripheral type"
@@ -23305,7 +23306,7 @@ msgstr "Début-Fin :"
 
 #: js/gantt-helper.js:380
 msgid "Lag"
-msgstr ""
+msgstr "Latence"
 
 #: js/gantt-helper.js:507
 msgid "Gantt mode: 'Readonly'"
@@ -23721,7 +23722,7 @@ msgstr ""
 
 #: entrée standard:47
 msgid "Please enter your new password."
-msgstr ""
+msgstr "Veuillez saisir votre nouveau mot de passe."
 
 #: entrée standard:56
 msgid "Password confirmation"
@@ -24324,7 +24325,7 @@ msgstr "Kanban global"
 
 #: entrée standard:97 standard:99
 msgid "Transfer list"
-msgstr ""
+msgstr "Liste de transfert"
 
 #: entrée standard:39
 msgid "Back to top of the page"

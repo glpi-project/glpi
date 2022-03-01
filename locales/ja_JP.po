@@ -2765,7 +2765,7 @@ msgstr "%1$s がアイテム %3$s の予約 %2$s を追加"
 #: front/reservation.form.php:160
 #, php-format
 msgid "Reservation added for item %s at %s"
-msgstr ""
+msgstr "アイテム %s が予約されました@%s"
 
 #: front/report.contract.list.php:46
 msgid "List of the hardware under contract"
@@ -2840,7 +2840,7 @@ msgstr "データベースのバージョンとインストールしているフ
 
 #: inc/config.php:186
 msgid "Update needed"
-msgstr ""
+msgstr "更新が必要です"
 
 #: inc/config.php:203 install/update.php:166 entrée standard:57
 msgid "Try again"
@@ -4328,7 +4328,7 @@ msgstr "%1$s テーブルは、廃止された utf8mb3 ストレージ 文字セ
 #: src/Update.php:227 src/Central.php:503
 #, php-format
 msgid "%d primary or foreign keys columns are using signed integers."
-msgstr ""
+msgstr "%d のプライマリーキー列または外部キー列は符号付き整数を使用しています。"
 
 #: src/Update.php:265
 msgid ""
@@ -5193,7 +5193,7 @@ msgstr "FAX"
 #: src/LineType.php:38
 msgid "Line type"
 msgid_plural "Line types"
-msgstr[0] "回線のファイル型"
+msgstr[0] "回線の型"
 
 #: src/ComputerType.php:39 src/Rule.php:372
 msgid "Computer type"
@@ -6581,17 +6581,17 @@ msgstr "通知の有効をデフォルトに"
 #: src/Entity.php:884 src/Entity.php:1911
 #: src/NotificationMailingSetting.php:77
 msgid "Administrator email address"
-msgstr ""
+msgstr "管理者メールアドレス"
 
 #: src/Entity.php:893 src/Entity.php:1962
 #: src/NotificationMailingSetting.php:106
 msgid "Reply-To address"
-msgstr ""
+msgstr "返信先アドレス"
 
 #: src/Entity.php:902 src/Entity.php:1928
 #: src/NotificationMailingSetting.php:90
 msgid "Email sender address"
-msgstr ""
+msgstr "送信者アドレス"
 
 #: src/Entity.php:911 src/Entity.php:1945
 #: src/NotificationMailingSetting.php:124
@@ -6611,12 +6611,12 @@ msgstr "管理者名"
 #: src/NotificationMailingSetting.php:117 src/QueuedNotification.php:291
 #: src/QueuedNotification.php:753
 msgid "Reply-To name"
-msgstr ""
+msgstr "返信先名"
 
 #: src/Entity.php:944 src/Entity.php:1935
 #: src/NotificationMailingSetting.php:98
 msgid "Email sender name"
-msgstr ""
+msgstr "送信者名"
 
 #: src/Entity.php:953 src/Entity.php:1952
 #: src/NotificationMailingSetting.php:135
@@ -6957,7 +6957,7 @@ msgstr "サポートエージェントを匿名化する "
 
 #: src/Entity.php:2855
 msgid "Display initials for users without pictures"
-msgstr ""
+msgstr "写真ではなくイニシャルを表示する"
 
 #: src/Entity.php:2880
 msgid "Default contract"
@@ -7513,15 +7513,15 @@ msgstr "データベースに接続できませんでした"
 #: src/NotificationTargetDBConnection.php:79 src/DBConnection.php:699
 #: src/DBConnection.php:703
 msgid "Difference between main and replica"
-msgstr ""
+msgstr "メインとレプリカの差異"
 
 #: src/NotificationTargetDBConnection.php:91
 msgid "Replica database out of sync!"
-msgstr ""
+msgstr "レプリカデータベースが同期していません！"
 
 #: src/NotificationTargetDBConnection.php:93
 msgid "The replica database is desynchronized. The difference is of:"
-msgstr ""
+msgstr "レプリカデータベースは同期が解除されています。差異 : "
 
 #: src/DeviceGenericModel.php:42
 msgid "Device generic model"
@@ -7715,6 +7715,8 @@ msgid ""
 " email containing the informations required to reset your password. Please "
 "contact your administrator if you do not receive any email."
 msgstr ""
+"入力したメールアドレスが既存の GLPI "
+"ユーザーと一致する場合は、パスワードのリセットに必要な情報を記したメールを送信します。メールが届かない場合は、管理者に連絡してください。"
 
 #: src/Api/API.php:2173
 msgid "Reset password successful."
@@ -10367,7 +10369,7 @@ msgstr "SQLレプリカの確認"
 
 #: src/DBConnection.php:616
 msgid "Max delay between main and replica (minutes)"
-msgstr ""
+msgstr "メインとレプリカの最大遅延（分）"
 
 #: src/DBConnection.php:649
 #, php-format
@@ -10377,7 +10379,7 @@ msgstr "SQL サーバー : %s はデータベースに接続できません"
 #: src/DBConnection.php:653
 #, php-format
 msgid "SQL server: %1$s, difference between main and replica: %2$s"
-msgstr ""
+msgstr "SQL Server : %1$s, メインとレプリカの最大遅延 : %2$s"
 
 #: src/DBConnection.php:692
 msgid "SQL server"
@@ -12013,7 +12015,7 @@ msgstr "デバイスの型の辞書"
 
 #: src/Item_Ticket.php:447
 msgid "Knowledge base entries"
-msgstr ""
+msgstr "ナレッジベース 項目"
 
 #: src/Item_Ticket.php:654 src/Item_Ticket.php:878 src/Profile.php:3222
 #: src/Profile.php:3228
@@ -13028,7 +13030,7 @@ msgstr "フォームのメール送信元とするアドレス。"
 #: src/NotificationMailingSetting.php:91
 #: src/NotificationMailingSetting.php:107
 msgid "If not set, main or entity administrator email address will be used."
-msgstr ""
+msgstr "設定しない場合、メインまたはエンティティ管理者のメールを使います。"
 
 #: src/NotificationMailingSetting.php:99
 msgid "Name to use in from for sent emails."
@@ -13036,7 +13038,7 @@ msgstr "メールの送信者とする名前。"
 
 #: src/NotificationMailingSetting.php:99
 msgid "If not set, main or entity administrator email name will be used."
-msgstr ""
+msgstr "設定しない場合、メインまたはエンティティ管理者の名前を使います。"
 
 #: src/NotificationMailingSetting.php:107
 msgid "Optionnal reply to address."
@@ -13692,35 +13694,35 @@ msgstr "%s 個のテーブルは、\"ROW_FORMAT=DYNAMIC\" への移行が必要�
 
 #: src/Console/Migration/UnsignedKeysCommand.php:56
 msgid "Migrate primary/foreign keys to unsigned integers"
-msgstr ""
+msgstr "プライマリー・外部キーを符号なし整数に移行"
 
 #: src/Console/Migration/UnsignedKeysCommand.php:65
 #, php-format
 msgid "Found %s primary/foreign key columns(s) using signed integers."
-msgstr ""
+msgstr "%s 個の符号付き整数を使用しているプライマリー・外部キー列が見つかりました。"
 
 #: src/Console/Migration/UnsignedKeysCommand.php:95
 #, php-format
 msgid ""
 "Migration of column \"%s.%s\" cannot be done as it contains negative values."
-msgstr ""
+msgstr "「%s.%s」列は、負の値が含まれているので移行できません。"
 
 #: src/Console/Migration/UnsignedKeysCommand.php:115
 #, php-format
 msgid ""
 "Migration of column \"%s.%s\" cannot be done as it is referenced in "
 "CONSTRAINT \"%s\" of table \"%s.%s\"."
-msgstr ""
+msgstr "「%s.%s」列は、制約「%s」が「%s.%s」テーブルから参照されているので移行できません。"
 
 #: src/Console/Migration/UnsignedKeysCommand.php:133
 #, php-format
 msgid "Migrating column \"%s.%s\"..."
-msgstr ""
+msgstr "「%s.%s」列を移行しています..."
 
 #: src/Console/Migration/UnsignedKeysCommand.php:152
 #, php-format
 msgid "Migration of column \"%s.%s\" failed with message \"(%s) %s\"."
-msgstr ""
+msgstr "「%s.%s」列の移行に失敗しました。メッセージ : 「(%s) %s」"
 
 #: src/Console/Migration/MyIsamToInnoDbCommand.php:64
 msgid "Migrate MyISAM tables to InnoDB"
@@ -14594,7 +14596,7 @@ msgstr "データベースを再設定し、すでに存在する設定ファイ
 msgid ""
 "Use strict configuration, to enforce warnings triggering on deprecated or "
 "discouraged usages"
-msgstr ""
+msgstr "廃止予定または廃止された使い方をしたときに強制的に警告する、厳密な設定を使用する"
 
 #: src/Console/Database/AbstractConfigureCommand.php:154
 msgid "Database name:"
@@ -14640,29 +14642,29 @@ msgstr "定義の厳密な比較"
 
 #: src/Console/Database/CheckSchemaIntegrityCommand.php:83
 msgid "Check tokens related to all databases migrations."
-msgstr ""
+msgstr "すべてのデータベース移行に関連するトークンを確認してください。"
 
 #: src/Console/Database/CheckSchemaIntegrityCommand.php:90
 msgid "Check tokens related to migration from \"MyISAM\" to \"InnoDB\"."
-msgstr ""
+msgstr "「Myisam」から「InnoDB」への移行に関連するトークンを確認してください。"
 
 #: src/Console/Database/CheckSchemaIntegrityCommand.php:97
 msgid "Check tokens related to migration from \"datetime\" to \"timestamp\"."
-msgstr ""
+msgstr "「datetime」から「timestamp」の移行に関連するトークンを確認してください。"
 
 #: src/Console/Database/CheckSchemaIntegrityCommand.php:104
 msgid "Check tokens related to migration from \"utf8\" to \"utf8mb4\"."
-msgstr ""
+msgstr "「utf8」から「utf8mb4」への移行に関連するトークンを確認してください。"
 
 #: src/Console/Database/CheckSchemaIntegrityCommand.php:111
 msgid "Check tokens related to \"DYNAMIC\" row format migration."
-msgstr ""
+msgstr "「DYNAMIC」行フォーマットの移行に関連するトークンを確認してください。"
 
 #: src/Console/Database/CheckSchemaIntegrityCommand.php:118
 msgid ""
 "Check tokens related to migration from signed to unsigned integers in "
 "primary/foreign keys."
-msgstr ""
+msgstr "プライマリー・外部キーの符号付き整数から符号なしへの移行に関連するトークンを確認してください。"
 
 #: src/Console/Database/CheckSchemaIntegrityCommand.php:139
 #, php-format
@@ -15117,7 +15119,7 @@ msgstr[0] "電話機モデル"
 #: src/Rule.php:384 src/MonitorType.php:39
 msgid "Monitor type"
 msgid_plural "Monitors types"
-msgstr[0] ""
+msgstr[0] "モニターの型"
 
 #: src/Rule.php:408
 msgid "Peripheral type"
@@ -16842,7 +16844,7 @@ msgstr "PHP のバージョン（%s）はサポート対象です。"
 #: src/System/Requirement/PhpVersion.php:73
 #, php-format
 msgid "PHP version must be between %s and %s (exclusive)."
-msgstr ""
+msgstr "PHPのバージョンは %s から %s でなければなりません（排他的）。"
 
 #: src/System/Requirement/LogsWriteAccess.php:57
 msgid "Permissions for log files"
@@ -19128,7 +19130,7 @@ msgstr "受信者名"
 
 #: src/QueuedNotification.php:282 src/QueuedNotification.php:751
 msgid "Reply-To email"
-msgstr ""
+msgstr "返信先メール"
 
 #: src/QueuedNotification.php:300 src/QueuedNotification.php:760
 msgid "Additional headers"
@@ -19437,7 +19439,7 @@ msgstr "SQLパスワード"
 
 #: src/Config.php:803
 msgid "Use the replica for the search engine"
-msgstr ""
+msgstr "検索エンジンにレプリカを使用する"
 
 #: src/Config.php:805
 msgid "If synced (all changes)"
@@ -19653,15 +19655,15 @@ msgstr "デフォルトのセンタータブ"
 
 #: src/Config.php:1409
 msgid "Timeline order"
-msgstr ""
+msgstr "タイムラインの並び順"
 
 #: src/Config.php:1412
 msgid "Natural order (old items on top, recent on bottom)"
-msgstr ""
+msgstr "自然順（古いものが上、新しいものが下）"
 
 #: src/Config.php:1413
 msgid "Reverse order (old items on bottom, recent on top"
-msgstr ""
+msgstr "逆順（古いものが下、新しいものが上）"
 
 #: src/Config.php:1425
 msgid "Private followups by default"
@@ -20277,11 +20279,11 @@ msgstr "ベースDN"
 
 #: src/AuthLDAP.php:444
 msgid "Use Bind (for non-anonymous binds)"
-msgstr ""
+msgstr "認証を使う (非匿名認証用)"
 
 #: src/AuthLDAP.php:445
 msgid "Allow to use RootDN and Password for non-anonymous binds."
-msgstr ""
+msgstr "非匿名認証用に RootDN とパスワードの利用を許可する"
 
 #: src/AuthLDAP.php:471
 msgid "RootDN (for non anonymous binds)"
@@ -20709,11 +20711,11 @@ msgstr "コミュニティ"
 
 #: src/SNMPCredential.php:166
 msgid "You must select an SNMP version"
-msgstr ""
+msgstr "SNMP バージョンの選択は必須"
 
 #: src/SNMPCredential.php:173
 msgid "You must enter a username"
-msgstr ""
+msgstr "ユーザー名の入力は必須"
 
 #: src/Document_Item.php:570 src/Document_Item.php:664
 msgid "Add a document"
@@ -22550,7 +22552,7 @@ msgstr "%s プロジェクトを更新できませんでした :"
 
 #: js/glpi_dialog.js:363
 msgid "Success"
-msgstr ""
+msgstr "成功"
 
 #: js/impact.js:1312
 msgid "Go to"
@@ -22901,7 +22903,7 @@ msgstr "あなたのパスワードのリセット要求は期限切れか無効
 
 #: entrée standard:47
 msgid "Please enter your new password."
-msgstr ""
+msgstr "新しいパスワードを入力してください。"
 
 #: entrée standard:56
 msgid "Password confirmation"
@@ -23240,7 +23242,7 @@ msgstr "SLAの割り当て"
 
 #: entrée standard:52
 msgid "There are some tickets awaiting approval"
-msgstr ""
+msgstr "承認待ちのチケットあり"
 
 #: entrée standard:52
 msgid "check it out!"
@@ -23493,7 +23495,7 @@ msgstr "全体カンバン"
 
 #: entrée standard:97 standard:99
 msgid "Transfer list"
-msgstr ""
+msgstr "転送リスト"
 
 #: entrée standard:39
 msgid "Back to top of the page"
