@@ -192,7 +192,7 @@ trait TreeBrowse
                 'FROM'   => $itemtype::getTable(),
                 'WHERE'  => [
                     $itemtype::getTableField($cat_fk) => new QueryExpression(
-                        DB::quoteName($cat_itemtype::getTableField('id'))
+                        $DB->quoteName($cat_itemtype::getTableField('id'))
                     ),
                     $itemtype::getTableField('id') => $ids,
                 ]

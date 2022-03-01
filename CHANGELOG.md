@@ -72,12 +72,14 @@ The present file will list all changes made to the project; according to the
 - Usage of `datetime` field type in database, in favor of `timestamp` field type.
 - Handling of encoded/escaped value in `autoName()`
 - `Netpoint` has been deprecated and replaced by `Socket`
+- `CommonDropdown::displayHeader()`, use `CommonDropdown::displayCentralHeader()` instead and make sure to override properly `first_level_menu`, `second_level_menu` and `third_level_menu`.
 - `GLPI::getLogLevel()`
 - `Html::clean()`
 - `RuleImportComputer` class
 - `RuleImportComputerCollection` class
 - `Toolbox::clean_cross_side_scripting_deep()`
 - `Toolbox::endsWith()`
+- `Toolbox::filesizeDirectory()`
 - `Toolbox::getHtmlToDisplay()`
 - `Toolbox::logError()`
 - `Toolbox::logNotice()`
@@ -86,7 +88,6 @@ The present file will list all changes made to the project; according to the
 - `Toolbox::sodiumEncrypt()`
 - `Toolbox::startsWith()`
 - `Toolbox::unclean_cross_side_scripting_deep()`
-- `CommonDropdown::displayHeader()`, use `CommonDropdown::displayCentralHeader()` instead and make sure to override properly `first_level_menu`, `second_level_menu` and `third_level_menu`.
 
 #### Removed
 - `jQueryUI` has been removed in favor of `twbs/bootstrap`. This implies removal of following widgets: `$.accordion`, `$.autocomplete`,

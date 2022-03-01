@@ -490,7 +490,7 @@ class Toolbox
      * @param string $hide Call to hide (but display script/line)
      * @param array  $skip Calls to not display at all
      *
-     * @return string if $log is false
+     * @return string
      *
      * @since 0.85
      **/
@@ -528,9 +528,9 @@ class Toolbox
 
         if ($log) {
             self::logInFile($log, $message, true);
-        } else {
-            return $message;
         }
+
+        return $message;
     }
 
     /**
@@ -866,10 +866,13 @@ class Toolbox
      *
      * @param string $path  directory or file to get size
      *
-     * @return integer
+     * @return null|integer
+     *
+     * @deprecated 10.0.0
      **/
     public static function filesizeDirectory($path)
     {
+        Toolbox::deprecated();
 
         if (!is_dir($path)) {
             return filesize($path);
@@ -888,6 +891,8 @@ class Toolbox
             closedir($handle);
             return $size;
         }
+
+        return null;
     }
 
 

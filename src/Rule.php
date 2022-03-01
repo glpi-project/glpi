@@ -3316,7 +3316,7 @@ class Rule extends CommonDBTM
                              $nb = countElementsInTable(
                                  ['glpi_rules', 'glpi_ruleactions'],
                                  [
-                                     'glpi_ruleactions.rules_id'   => new \QueryExpression(DB::quoteName('glpi_rules.id')),
+                                     'glpi_ruleactions.rules_id'   => new \QueryExpression(DBmysql::quoteName('glpi_rules.id')),
                                      'glpi_rules.sub_type'         => $types,
                                      'glpi_ruleactions.field'      => 'entities_id',
                                      'glpi_ruleactions.value'      => $item->getID()

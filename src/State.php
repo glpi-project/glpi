@@ -239,19 +239,17 @@ class State extends CommonTreeDropdown
     }
 
 
-    /**
-     * @since 0.85
-     *
-     * @see CommonDBTM::getEmpty()
-     **/
     public function getEmpty()
     {
+        if (!parent::getEmpty()) {
+            return false;
+        }
 
-        parent::getEmpty();
-       //initialize is_visible_* fields at true to keep the same behavior as in older versions
-        foreach ($this->getvisibilityFields() as $type => $field) {
+        //initialize is_visible_* fields at true to keep the same behavior as in older versions
+        foreach ($this->getvisibilityFields() as $field) {
             $this->fields[$field] = 1;
         }
+        return true;
     }
 
 

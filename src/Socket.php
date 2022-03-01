@@ -94,9 +94,10 @@ class Socket extends CommonDBChild
 
 
     /**
-     * NetworkPort Form
-     * @return string ID of the select
-     **/
+     * NetworkPort Form.
+     *
+     * @return void
+     */
     public static function showNetworkPortForm($itemtype, $items_id, $networkports_id = 0, $options = [])
     {
 

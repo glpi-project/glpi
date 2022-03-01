@@ -80,7 +80,7 @@ class Link extends CommonDBTM
                 $nb = countElementsInTable(
                     ['glpi_links_itemtypes','glpi_links'],
                     [
-                        'glpi_links_itemtypes.links_id'  => new \QueryExpression(DB::quoteName('glpi_links.id')),
+                        'glpi_links_itemtypes.links_id'  => new \QueryExpression(DBmysql::quoteName('glpi_links.id')),
                         'glpi_links_itemtypes.itemtype'  => $item->getType()
                     ] + $entity_criteria
                 );
@@ -122,17 +122,15 @@ class Link extends CommonDBTM
     }
 
 
-    /**
-     * @since 0.85
-     *
-     * @see CommonDBTM::getEmpty()
-     **/
     public function getEmpty()
     {
+        if (!parent::getEmpty()) {
+            return false;
+        }
 
-        parent::getEmpty();
-       //Keep the same behavior as in previous versions
+        //Keep the same behavior as in previous versions
         $this->fields['open_window'] = 1;
+        return true;
     }
 
 

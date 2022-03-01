@@ -65,7 +65,7 @@ class Ticket_Ticket extends CommonDBRelation
 
         switch ($ma->getAction()) {
             case 'add':
-                $rand = Ticket_Ticket::dropdownLinks('link');
+                Ticket_Ticket::dropdownLinks('link');
                 printf(__('%1$s: %2$s'), Ticket::getTypeName(1), __('ID'));
                 echo "&nbsp;<input type='text' name='tickets_id_1' value='' size='10'>\n";
                 echo "<br><br>";

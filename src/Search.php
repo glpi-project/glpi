@@ -2652,7 +2652,7 @@ JAVASCRIPT;
             !isset($request["itemtype"])
             || !isset($request["num"])
         ) {
-            return "";
+            return;
         }
 
         $num         = (int) $request['num'];
@@ -2680,14 +2680,16 @@ JAVASCRIPT;
             && $criteria['meta']
             && !$from_meta
         ) {
-            return self::displayMetaCriteria($request);
+            self::displayMetaCriteria($request);
+            return;
         }
 
         if (
             isset($criteria['criteria'])
             && is_array($criteria['criteria'])
         ) {
-            return self::displayCriteriaGroup($request);
+            self::displayCriteriaGroup($request);
+            return;
         }
 
         $add_padding = "p-2";
@@ -3002,7 +3004,7 @@ JAVASCRIPT;
         ];
 
         echo "<div class='col-auto'>";
-        echo self::showGenericSearch($request['itemtype'], $params);
+        self::showGenericSearch($request['itemtype'], $params);
         echo "</div>";
 
         echo "</div>";//.row
@@ -5446,7 +5448,7 @@ JAVASCRIPT;
 
        // Virtual field no link
         if (strpos($linkfield, '_virtual') === 0) {
-            return false;
+            return '';
         }
 
         $complexjoin = self::computeComplexJoinID($joinparams);
@@ -5737,6 +5739,8 @@ JAVASCRIPT;
             }
             return $before . $specific_leftjoin;
         }
+
+        return '';
     }
 
 
@@ -5746,7 +5750,7 @@ JAVASCRIPT;
      * @param string $from_type             Reference item type ID
      * @param string $to_type               Item type to add
      * @param array  $already_link_tables2  Array of tables already joined
-     *
+     *showGenericSearch
      * @return string Meta Left join string
      **/
     public static function addMetaLeftJoin(
@@ -5889,8 +5893,8 @@ JAVASCRIPT;
         if ($to_type === 'Reservation' && in_array($from_referencetype, $CFG_GLPI['reservation_types'])) {
            // From reservation_types to Reservation
             $reservationitems_alias = "glpi_reservationitems{$alias_suffix}";
-            if (!in_array($infocom_alias, $already_link_tables2)) {
-                array_push($already_link_tables2, $infocom_alias);
+            if (!in_array($reservationitems_alias, $already_link_tables2)) {
+                array_push($already_link_tables2, $reservationitems_alias);
                 $JOIN .= "$LINK `glpi_reservationitems` AS `$reservationitems_alias`
                          ON (`$from_table`.`id` = `$reservationitems_alias`.`items_id`
                              AND `$reservationitems_alias`.`itemtype` = '$from_type') ";

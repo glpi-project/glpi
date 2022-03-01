@@ -185,7 +185,7 @@ class MarkdownBuilder
     /**
      * Helper function create a summary entry
      *
-     * @return string
+     * @return void
      */
     public function addSummaryEntry($label)
     {

@@ -178,5 +178,6 @@ class Ticket_Contract extends CommonDBRelation
             Html::closeForm();
         }
         echo "</div>";
+        return true;
     }
 }

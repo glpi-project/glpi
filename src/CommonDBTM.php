@@ -40,8 +40,12 @@ use Glpi\RichText\UserMention;
 use Glpi\Toolbox\Sanitizer;
 
 /**
- *  Common DataBase Table Manager Class - Persistent Object
- **/
+ * Common DataBase Table Manager Class - Persistent Object
+ *
+ * @property array $input     Add/Update fields input. Only defined during add/update process.
+ * @property array $updates   Updated fields keys. Only defined during update process.
+ * @property array $oldvalues Previous values of updated fields. Only defined during update process.
+ */
 class CommonDBTM extends CommonGLPI
 {
     /**

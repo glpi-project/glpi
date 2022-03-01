@@ -229,7 +229,7 @@ class AppliancesPluginToCoreCommand extends AbstractCommand
         ];
 
         foreach ($core_tables as $table) {
-            $result = $this->db->query('TRUNCATE ' . DB::quoteName($table));
+            $result = $this->db->query('TRUNCATE ' . $this->db->quoteName($table));
 
             if (!$result) {
                 throw new \Symfony\Component\Console\Exception\RuntimeException(
@@ -290,7 +290,7 @@ class AppliancesPluginToCoreCommand extends AbstractCommand
         $result = $this->db->query(
             sprintf(
                 "UPDATE %s SET helpdesk_item_type = REPLACE(helpdesk_item_type, '%s', '%s')",
-                DB::quoteName($table),
+                $this->db->quoteName($table),
                 self::PLUGIN_APPLIANCE_ITEMTYPE,
                 self::CORE_APPLIANCE_ITEMTYPE
             )

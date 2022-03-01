@@ -769,6 +769,8 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
                 ]
             );
         }
+
+        return false;
     }
 
 
@@ -1231,7 +1233,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
      *
      * @throws RuntimeException
      *
-     * @return array
+     * @return array|null
      **/
     public function execute($force = false, bool $enable_partial_warnings = true)
     {
@@ -1271,6 +1273,8 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
                 return $data;
             }
         }
+
+        return null;
     }
 
 

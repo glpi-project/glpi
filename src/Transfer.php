@@ -4009,6 +4009,7 @@ class Transfer extends CommonDBTM
             echo "</table></div>";
             Html::closeForm();
         }
+        return true;
     }
 
 

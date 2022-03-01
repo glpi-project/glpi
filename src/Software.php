@@ -239,9 +239,13 @@ class Software extends CommonDBTM
     public function getEmpty()
     {
         global $CFG_GLPI;
-        parent::getEmpty();
+
+        if (!parent::getEmpty()) {
+            return false;
+        }
 
         $this->fields["is_helpdesk_visible"] = $CFG_GLPI["default_software_helpdesk_visible"];
+        return true;
     }
 
 
