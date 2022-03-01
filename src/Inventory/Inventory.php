@@ -240,7 +240,6 @@ class Inventory
                 $DB->beginTransaction();
             }
 
-
             $converter = new Converter();
             $schema = $converter->buildSchema();
 
@@ -258,6 +257,7 @@ class Inventory
 
             $data = [];
             //parse schema properties and handle if it exists in raw_data
+            //it is important to keep schema order, changes may have side effects
             foreach ($properties as $property) {
                 if (property_exists($contents, $property)) {
                     $data[$property] = $contents->$property;
