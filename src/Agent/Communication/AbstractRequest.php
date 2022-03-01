@@ -218,6 +218,8 @@ abstract class AbstractRequest
             case self::JSON_MODE:
                 return $this->handleJSONRequest($data);
         }
+
+        return false;
     }
 
     /**
