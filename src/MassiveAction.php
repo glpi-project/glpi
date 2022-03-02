@@ -852,7 +852,7 @@ class MassiveAction
 
                     echo "</tr><tr>";
                     // Remove empty option groups
-                    $options = array_filter($options, static function($v) {
+                    $options = array_filter($options, static function ($v) {
                         return !is_array($v) || count($v) > 0;
                     });
                     if ($choose_field) {
