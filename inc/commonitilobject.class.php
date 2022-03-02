@@ -2262,6 +2262,9 @@ abstract class CommonITILObject extends CommonDBTM {
          foreach ($fields as $actor_field) {
             $existing_ids = array_column($existing[$actor_field['type']] ?? [], $actor_type::getForeignKeyField());
             $input[$actor_field['name']] = array_filter($input[$actor_field['name']] ?? [], static function ($value) use ($actor_type, $existing_ids) {
+               if (!is_array($value)) {
+                  $value = [$actor_type::getForeignKeyField() => $value];
+               }
                return !in_array($value[$actor_type::getForeignKeyField()], $existing_ids, false);
             });
          }
