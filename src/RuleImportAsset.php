@@ -1342,6 +1342,31 @@ class RuleImportAsset extends Rule
             ],
             'action'    => '_link'
         ];
+
+        $rules[] = [
+            'name'      => 'Computer import (by serial + uuid)',
+            'match'     => 'AND',
+            'is_active' => 1,
+            'criteria'  => [
+                [
+                    'criteria'  => 'itemtype',
+                    'condition' => Rule::PATTERN_IS,
+                    'pattern'   => 'Computer'
+                ],
+                [
+                    'criteria'  => 'uuid',
+                    'condition' => Rule::PATTERN_EXISTS,
+                    'pattern'   => 1
+                ],
+                [
+                    'criteria'  => 'serial',
+                    'condition' => Rule::PATTERN_EXISTS,
+                    'pattern'   => 1
+                ]
+            ],
+            'action'    => '_link'
+        ];
+
         $rules[] = [
             'name'      => 'Computer update (by serial)',
             'match'     => 'AND',
@@ -1431,30 +1456,6 @@ class RuleImportAsset extends Rule
                 ],
                 [
                     'criteria'  => 'name',
-                    'condition' => Rule::PATTERN_EXISTS,
-                    'pattern'   => 1
-                ]
-            ],
-            'action'    => '_link'
-        ];
-
-        $rules[] = [
-            'name'      => 'Computer import (by serial + uuid)',
-            'match'     => 'AND',
-            'is_active' => 1,
-            'criteria'  => [
-                [
-                    'criteria'  => 'itemtype',
-                    'condition' => Rule::PATTERN_IS,
-                    'pattern'   => 'Computer'
-                ],
-                [
-                    'criteria'  => 'uuid',
-                    'condition' => Rule::PATTERN_EXISTS,
-                    'pattern'   => 1
-                ],
-                [
-                    'criteria'  => 'serial',
                     'condition' => Rule::PATTERN_EXISTS,
                     'pattern'   => 1
                 ]
