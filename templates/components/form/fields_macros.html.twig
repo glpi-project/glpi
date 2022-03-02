@@ -234,7 +234,12 @@
       {% endset %}
    {% endif %}
 
-   {% set options = options|merge({'add_field_html': add_html}) %}
+   {% if add_html != '' %}
+      {% if options.add_field_html is defined %}
+         {% set add_html = add_html ~ options.add_field_html %}
+      {% endif %}
+      {% set options = options|merge({'add_field_html': add_html}) %}
+   {% endif %}
 
    {{ _self.field(name, field, label, options) }}
    {% if options.enable_mentions and config('use_notifications') %}
