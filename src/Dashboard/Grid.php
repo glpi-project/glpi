@@ -930,7 +930,7 @@ HTML;
             if (isset($card_options['args']['apply_filters'])) {
                 $provider_args['params']['apply_filters'] = $card_options['args']['apply_filters'];
             }
-            $widget_args = call_user_func_array($card['provider'], $provider_args);
+            $widget_args = call_user_func_array($card['provider'], array_values($provider_args));
         }
         $widget_args = array_merge($widget_args ?? [], $card_options['args'] ?? []);
 
