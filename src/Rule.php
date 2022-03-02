@@ -2876,7 +2876,7 @@ class Rule extends CommonDBTM
     {
         return [
             '_stop_rules_processing' => [
-                'name' => __('Stop rules processing'),
+                'name' => __('Skip remaining rules'),
                 'type' => 'yesonly',
             ]
         ];
