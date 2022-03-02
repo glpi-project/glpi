@@ -71,8 +71,10 @@ class Change extends DbTestCase {
       $result = $change->update([
          'id'                       => $changes_id,
          '_additional_requesters'   => [
-            'users_id' => $users_id,
-            'use_notification'  => 0,
+            [
+               'users_id' => $users_id,
+               'use_notification'  => 0,
+            ]
          ]
       ]);
       $this->boolean($result)->isTrue();
@@ -80,8 +82,10 @@ class Change extends DbTestCase {
       $result = $change->update([
          'id'                       => $changes_id,
          '_additional_requesters'   => [
-            'users_id' => $users_id,
-            'use_notification'  => 0,
+            [
+               'users_id' => $users_id,
+               'use_notification'  => 0,
+            ]
          ]
       ]);
       $this->boolean($result)->isTrue();
