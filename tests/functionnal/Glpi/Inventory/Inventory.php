@@ -4650,7 +4650,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         $manufacturers_id = $cmanuf['id'];
 
         //check created computer
-        $computers_id = $agent['items_id'];
+        $computers_id = $inventory->getAgent()->fields['items_id'];
         $this->integer($computers_id)->isGreaterThan(0);
         $computer = new \Phone();
         $this->boolean($computer->getFromDB($computers_id))->isTrue();

@@ -580,7 +580,7 @@ abstract class MainAsset extends InventoryAsset
      */
     public function rulepassed($items_id, $itemtype, $rules_id, $ports_id = 0)
     {
-        global $DB;
+        global $DB, $CFG_GLPI;
 
         $key = $this->current_key;
         $val = &$this->data[$key];
@@ -608,15 +608,18 @@ abstract class MainAsset extends InventoryAsset
             unset($input['ap_port']);
             unset($input['firmware']);
             $items_id = $this->item->add(Toolbox::addslashes_deep($input));
-            $this->agent->update(['id' => $this->agent->fields['id'], 'items_id' => $items_id, 'entities_id' => $entities_id]);
-
             $this->with_history = false;//do not handle history on main item first import
         } else {
             $this->item->getFromDB($items_id);
-            if (($this->agent->fields['items_id'] ?? 0) != $items_id) {
-                $this->agent->update(['id' => $this->agent->fields['id'], 'items_id' => $items_id, 'entities_id' => $entities_id]);
-            }
         }
+
+        if (in_array($itemtype, $CFG_GLPI['agent_types'])) {
+            $this->agent->update(['id' => $this->agent->fields['id'], 'items_id' => $items_id, 'entities_id' => $entities_id]);
+        } else {
+            $this->agent->fields['items_id'] = $items_id;
+            $this->agent->fields['entities_id'] = $entities_id;
+        }
+
 
         //check for any old agent to remove
         $agent = new \Agent();
