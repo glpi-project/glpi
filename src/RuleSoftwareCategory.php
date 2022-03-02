@@ -91,7 +91,7 @@ class RuleSoftwareCategory extends Rule
     public function getActions()
     {
 
-        $actions                                   = [];
+        $actions                                   = parent::getActions();
 
         $actions['softwarecategories_id']['name']  = _n('Category', 'Categories', 1);
         $actions['softwarecategories_id']['type']  = 'dropdown';

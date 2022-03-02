@@ -708,7 +708,7 @@ class RuleTicket extends Rule
     public function getActions()
     {
 
-        $actions                                              = [];
+        $actions                                              = parent::getActions();
 
         $actions['itilcategories_id']['name']                 = _n('Category', 'Categories', 1);
         $actions['itilcategories_id']['type']                 = 'dropdown';

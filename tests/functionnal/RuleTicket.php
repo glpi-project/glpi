@@ -2284,4 +2284,97 @@ class RuleTicket extends DbTestCase
         $this->boolean($ticket->getFromDB($tickets_id))->isTrue();
         $this->integer($ticket->fields['priority'])->isNotEqualTo(5);
     }
+
+    public function testStopProcessingAction()
+    {
+        $this->login();
+
+        // Create rule
+        $ruleticket = new \RuleTicket();
+        $rulecrit   = new \RuleCriteria();
+        $ruleaction = new \RuleAction();
+
+        $ruletid_1 = $ruleticket->add($ruletinput = [
+            'name'         => 'stopProcessingAction_1',
+            'match'        => 'AND',
+            'is_active'    => 1,
+            'sub_type'     => 'RuleTicket',
+            'condition'    => \RuleTicket::ONADD,
+            'is_recursive' => 1,
+        ]);
+        $this->checkInput($ruleticket, $ruletid_1, $ruletinput);
+
+        $ruletid_2 = $ruleticket->add($ruletinput = [
+            'name'         => 'stopProcessingAction_2',
+            'match'        => 'AND',
+            'is_active'    => 1,
+            'sub_type'     => 'RuleTicket',
+            'condition'    => \RuleTicket::ONADD,
+            'is_recursive' => 1,
+        ]);
+        $this->checkInput($ruleticket, $ruletid_2, $ruletinput);
+
+        $ruletid_3 = $ruleticket->add($ruletinput = [
+            'name'         => 'stopProcessingAction_3',
+            'match'        => 'AND',
+            'is_active'    => 1,
+            'sub_type'     => 'RuleTicket',
+            'condition'    => \RuleTicket::ONADD,
+            'is_recursive' => 1,
+        ]);
+        $this->checkInput($ruleticket, $ruletid_3, $ruletinput);
+
+        foreach ([$ruletid_1, $ruletid_2, $ruletid_3] as $ruletid) {
+            $crit_id = $rulecrit->add($crit_input = [
+                'rules_id'  => $ruletid,
+                'criteria'  => 'name',
+                'condition' => \Rule::PATTERN_IS,
+                'pattern'   => 'stopProcessingAction',
+            ]);
+            $this->checkInput($rulecrit, $crit_id, $crit_input);
+        }
+
+        $action_id = $ruleaction->add($action_input = [
+            'rules_id'    => $ruletid_1,
+            'action_type' => 'assign',
+            'field'       => 'impact',
+            'value'       => 1,
+        ]);
+        $this->checkInput($ruleaction, $action_id, $action_input);
+
+        $action_id = $ruleaction->add($action_input = [
+            'rules_id'    => $ruletid_2,
+            'action_type' => 'assign',
+            'field'       => 'impact',
+            'value'       => 2,
+        ]);
+        $this->checkInput($ruleaction, $action_id, $action_input);
+        $action_id = $ruleaction->add($action_input = [
+            'rules_id'    => $ruletid_2,
+            'action_type' => 'assign',
+            'field'       => '_stop_rules_processing',
+            'value'       => 1,
+        ]);
+        $this->checkInput($ruleaction, $action_id, $action_input);
+
+        $action_id = $ruleaction->add($action_input = [
+            'rules_id'    => $ruletid_3,
+            'action_type' => 'assign',
+            'field'       => 'impact',
+            'value'       => 3,
+        ]);
+        $this->checkInput($ruleaction, $action_id, $action_input);
+
+        // Check ticket that trigger rule on creation
+        $ticket = new \Ticket();
+        $tickets_id = $ticket->add($ticket_input = [
+            'name'              => 'stopProcessingAction',
+            'content'           => 'test stopProcessingAction'
+        ]);
+        $this->checkInput($ticket, $tickets_id, $ticket_input);
+
+        // Check that the rule was executed
+        $this->boolean($ticket->getFromDB($tickets_id))->isTrue();
+        $this->integer($ticket->fields['impact'])->isEqualTo(2);
+    }
 }
