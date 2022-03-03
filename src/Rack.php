@@ -80,7 +80,8 @@ class Rack extends CommonDBTM
         return $ong;
     }
 
-    static public function rawSearchOptionsToAdd($itemtype) {
+    public static function rawSearchOptionsToAdd($itemtype) 
+    {
         return [
             [
                 'id'                 => 'rack',
@@ -94,13 +95,13 @@ class Rack extends CommonDBTM
                 'datatype'           => 'dropdown',
                 'massiveaction'      => false,
                 'joinparams'         => [
-                'beforejoin'         => [
-                    'table'              => Item_Rack::getTable(),
-                    'joinparams'         => [
-                        'jointype'           => 'itemtype_item',
-                        'specific_itemtype'  => $itemtype
+                    'beforejoin'         => [
+                        'table'              => Item_Rack::getTable(),
+                        'joinparams'         => [
+                            'jointype'           => 'itemtype_item',
+                            'specific_itemtype'  => $itemtype
+                        ]
                     ]
-                ]
                 ]
             ],
             [
@@ -111,8 +112,8 @@ class Rack extends CommonDBTM
                 'datatype'           => 'number',
                 'massiveaction'      => false,
                 'joinparams'         => [
-                'jointype'           => 'itemtype_item',
-                'specific_itemtype'  => $itemtype
+                    'jointype'           => 'itemtype_item',
+                    'specific_itemtype'  => $itemtype
                 ]
             ],
         ];
