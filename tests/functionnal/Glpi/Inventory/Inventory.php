@@ -2180,10 +2180,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         global $DB;
         //check created agent
         $agenttype = $DB->request(['FROM' => \AgentType::getTable(), 'WHERE' => ['name' => 'Core']])->current();
-        $agents = $DB->request(['FROM' => \Agent::getTable()]);
-        $this->integer(count($agents))->isIdenticalTo(1);
-        $agent = $agents->current();
-        $this->array($agent)
+        $this->array($inventory->getAgent()->fields)
          ->string['deviceid']->isIdenticalTo('3k-1-pa3.glpi-project.infra-2020-12-31-11-28-51')
          ->string['name']->isIdenticalTo('3k-1-pa3.glpi-project.infra-2020-12-31-11-28-51')
          //->string['version']->isIdenticalTo('')
@@ -2671,10 +2668,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         global $DB;
         //check created agent
         $agenttype = $DB->request(['FROM' => \AgentType::getTable(), 'WHERE' => ['name' => 'Core']])->current();
-        $agents = $DB->request(['FROM' => \Agent::getTable()]);
-        $this->integer(count($agents))->isIdenticalTo(1);
-        $agent = $agents->current();
-        $this->array($agent)
+        $this->array($inventory->getAgent()->fields)
          ->string['deviceid']->isIdenticalTo('HP-2530-48G-2020-12-31-11-28-51')
          ->string['name']->isIdenticalTo('HP-2530-48G-2020-12-31-11-28-51')
          ->string['itemtype']->isIdenticalTo('NetworkEquipment')
@@ -3346,10 +3340,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         global $DB;
        //check created agent
         $agenttype = $DB->request(['FROM' => \AgentType::getTable(), 'WHERE' => ['name' => 'Core']])->current();
-        $agents = $DB->request(['FROM' => \Agent::getTable()]);
-        $this->integer(count($agents))->isIdenticalTo(1);
-        $agent = $agents->current();
-        $this->array($agent)
+        $this->array($inventory->getAgent()->fields)
          ->string['deviceid']->isIdenticalTo('CH-GV1-DSI-WLC-INSID-1-2020-12-31-11-28-51')
          ->string['name']->isIdenticalTo('CH-GV1-DSI-WLC-INSID-1-2020-12-31-11-28-51')
          //->string['version']->isIdenticalTo('')
@@ -3729,10 +3720,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         global $DB;
         //check created agent
         $agenttype = $DB->request(['FROM' => \AgentType::getTable(), 'WHERE' => ['name' => 'Core']])->current();
-        $agents = $DB->request(['FROM' => \Agent::getTable()]);
-        $this->integer(count($agents))->isIdenticalTo(1);
-        $agent = $agents->current();
-        $this->array($agent)
+        $this->array($inventory->getAgent()->fields)
          ->string['deviceid']->isIdenticalTo('DGS-3420-52T-2020-12-31-11-28-51')
          ->string['name']->isIdenticalTo('DGS-3420-52T-2020-12-31-11-28-51')
          //->string['version']->isIdenticalTo('')
@@ -3761,7 +3749,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         $locations_id = $cloc['id'];
 
         //check created computer
-        $equipments_id = $agent['items_id'];
+        $equipments_id = $inventory->getAgent()->fields['items_id'];
         $this->integer($equipments_id)->isGreaterThan(0);
         $equipment = new \NetworkEquipment();
         $this->boolean($equipment->getFromDB($equipments_id))->isTrue();
@@ -4662,7 +4650,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         $manufacturers_id = $cmanuf['id'];
 
         //check created computer
-        $computers_id = $agent['items_id'];
+        $computers_id = $inventory->getAgent()->fields['items_id'];
         $this->integer($computers_id)->isGreaterThan(0);
         $computer = new \Phone();
         $this->boolean($computer->getFromDB($computers_id))->isTrue();

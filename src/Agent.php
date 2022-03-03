@@ -342,6 +342,8 @@ class Agent extends CommonDBTM
      */
     public function handleAgent($metadata)
     {
+        global $CFG_GLPI;
+
         $deviceid = $metadata['deviceid'];
 
         $aid = false;
@@ -369,7 +371,7 @@ class Agent extends CommonDBTM
             $input['tag'] = $metadata['tag'];
         }
 
-        if ($deviceid === 'foo') {
+        if ($deviceid === 'foo' || !in_array($metadata['itemtype'], $CFG_GLPI['agent_types'])) {
             $input += [
                 'items_id' => 0,
                 'id' => 0
