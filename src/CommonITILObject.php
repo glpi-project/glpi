@@ -6518,6 +6518,17 @@ abstract class CommonITILObject extends CommonDBTM
                 'item'      => $validation
             ];
         }
+        if ($canadd_document) {
+            $itemtypes['document'] = [
+                'type'          => 'Document_Item',
+                'class'         => Document_Item::class,
+                'icon'          => Document_Item::getIcon(),
+                'label'         => _x('button', 'Add a document'),
+                'template'      => 'components/itilobject/timeline/form_document_item.html.twig',
+                'item'          => new Document_Item(),
+                'show_in_menu'  => false
+            ];
+        }
 
         if (isset($PLUGIN_HOOKS[Hooks::TIMELINE_ANSWER_ACTIONS])) {
             foreach ($PLUGIN_HOOKS[Hooks::TIMELINE_ANSWER_ACTIONS] as $plugin => $hook_itemtypes) {
