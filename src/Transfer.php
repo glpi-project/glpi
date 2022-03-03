@@ -3680,7 +3680,7 @@ class Transfer extends CommonDBTM
                     // Not a copy -> delete
                     if ($ID == $newID) {
                         foreach ($iterator as $data) {
-                            $np->delete(['id' => $data['id']]);
+                            $np->delete(['id' => $data['id']], 1);
                         }
                     }
                     // Copy -> do nothing
