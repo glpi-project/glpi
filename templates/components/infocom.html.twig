@@ -31,7 +31,7 @@
 
 {% import 'components/form/fields_macros.html.twig' as fields %}
 
-<div class="asset row flex-row">
+<div class="asset">
    {% if can_edit or can_create %}
       <form action="{{ path('front/infocom.form.php') }}" method="post" data-submit-once>
    {% endif %}
@@ -50,9 +50,9 @@
    {% else %}
       {% set disabled = (withtemplate != 2) %}
       {% set disabled = false %}
-
+      {% set in_modal = _get is defined and _get._in_modal|default("0") %}
       <input type="hidden" name="id" value="{{ infocom.fields['id'] }}" />
-      <div class="card-body d-flex flex-wrap">
+      <div class="card-body d-flex flex-wrap p-0 {{ in_modal == "1" ? "ps-3 me-2" : "" }}">
          <div class="col-12 flex-column">
             <div class="d-flex flex-row flex-wrap flex-xl-nowrap">
                <div class="row flex-row align-items-start flex-grow-1">
