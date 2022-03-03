@@ -80,7 +80,7 @@ class Rack extends CommonDBTM
         return $ong;
     }
 
-    public static function rawSearchOptionsToAdd($itemtype) 
+    public static function rawSearchOptionsToAdd($itemtype)
     {
         return [
             [
