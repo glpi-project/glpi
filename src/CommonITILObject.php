@@ -6785,11 +6785,12 @@ abstract class CommonITILObject extends CommonDBTM
                 $item['documents_item_id'] = $document_item['id'];
 
                 $item['timeline_position'] = $document_item['timeline_position'];
+                $item['_can_edit'] = $can_view_documents && $document_obj->canUpdateItem();
+                $item['_can_delete'] = $can_view_documents && $document_obj->canDeleteItem();
 
                 $timeline_key = $document_item['itemtype'] . "_" . $document_item['items_id'];
                 if ($document_item['itemtype'] == static::getType()) {
-                    $item['_can_edit'] = $can_view_documents && $document_obj->canUpdateItem();
-                    $item['_can_delete'] = $can_view_documents && $document_obj->canDeleteItem();
+
                   // document associated directly to itilobject
                     $timeline["Document_" . $document_item['documents_id']] = [
                         'type' => 'Document_Item',
@@ -6806,8 +6807,6 @@ abstract class CommonITILObject extends CommonDBTM
                     $sub_document = [
                         'type' => 'Document_Item',
                         'item' => $item,
-                        '_can_edit' => $can_view_documents && $document_obj->canUpdateItem(),
-                        '_can_delete' => $can_view_documents && $document_obj->canDeleteItem(),
                     ];
                     if ($is_image) {
                         $sub_document['_is_image'] = true;
