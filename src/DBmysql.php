@@ -1574,8 +1574,9 @@ class DBmysql
      */
     public function truncate($table)
     {
-        $table_name = $this::quoteName($table);
-        return $this->query("TRUNCATE $table_name");
+        // Use delete to prevent table corruption on some MySQL operations
+        // (i.e. when using mysqldump without `--single-transaction` option)
+        return $this->delete($table, [1]);
     }
 
     /**
