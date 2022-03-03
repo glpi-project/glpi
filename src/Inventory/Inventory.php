@@ -183,8 +183,7 @@ class Inventory
             'itemtype' => $this->raw_data->itemtype ?? 'Computer',
         ];
 
-
-        if (property_exists($this->raw_data->content, 'versionprovider')) {
+        if (property_exists($this->raw_data, 'content') && property_exists($this->raw_data->content, 'versionprovider')) {
             $this->metadata['provider'] = [];
             foreach ($this->raw_data->content->versionprovider as $property => $content) {
                 $this->metadata['provider'][$property] = $content;
