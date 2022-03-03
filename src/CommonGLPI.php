@@ -1124,6 +1124,7 @@ JAVASCRIPT;
     {
         // Item might already be loaded, skip load and rights checks
         $item_loaded = $options['loaded'] ?? false;
+        unset($options['loaded']);
         if (!$item_loaded) {
             if (
                 isset($options['id'])
