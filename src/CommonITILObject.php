@@ -8093,6 +8093,8 @@ abstract class CommonITILObject extends CommonDBTM
             }
             $existings = $this->getActorsForType($actortype);
 
+            $input_field_name = '_additional_' . $actortype_str . 's';
+
             $added   = [];
             $updated = [];
             $deleted = [];
@@ -8139,7 +8141,8 @@ abstract class CommonITILObject extends CommonDBTM
                     }
                 }
 
-                if ($found === false) {
+                $input_ids = isset($this->input[$input_field_name]) ? array_column($this->input[$input_field_name], $existing['itemtype']::getForeignKeyField()) : [];
+                if ($found === false && !in_array($existing['items_id'], $input_ids, false)) {
                     $deleted[] = $existing;
                 }
             }
