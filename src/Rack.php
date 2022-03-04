@@ -80,6 +80,45 @@ class Rack extends CommonDBTM
         return $ong;
     }
 
+    public static function rawSearchOptionsToAdd($itemtype)
+    {
+        return [
+            [
+                'id'                 => 'rack',
+                'name'               => _n('Rack', 'Racks', Session::getPluralNumber())
+            ],
+            [
+                'id'                 => '180',
+                'table'              => Rack::getTable(),
+                'field'              => 'name',
+                'name'               => __('Name'),
+                'datatype'           => 'dropdown',
+                'massiveaction'      => false,
+                'joinparams'         => [
+                    'beforejoin'         => [
+                        'table'              => Item_Rack::getTable(),
+                        'joinparams'         => [
+                            'jointype'           => 'itemtype_item',
+                            'specific_itemtype'  => $itemtype
+                        ]
+                    ]
+                ]
+            ],
+            [
+                'id'                 => '181',
+                'table'              => Item_Rack::getTable(),
+                'field'              => 'position',
+                'name'               => __('Position'),
+                'datatype'           => 'number',
+                'massiveaction'      => false,
+                'joinparams'         => [
+                    'jointype'           => 'itemtype_item',
+                    'specific_itemtype'  => $itemtype
+                ]
+            ],
+        ];
+    }
+
 
     /**
      * Print the rack form
