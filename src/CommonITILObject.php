@@ -6526,7 +6526,7 @@ abstract class CommonITILObject extends CommonDBTM
                 'label'         => _x('button', 'Add a document'),
                 'template'      => 'components/itilobject/timeline/form_document_item.html.twig',
                 'item'          => new Document_Item(),
-                'show_in_menu'  => false
+                'hide_in_menu'  => true
             ];
         }
 
