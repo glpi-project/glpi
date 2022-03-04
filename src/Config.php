@@ -133,7 +133,7 @@ class Config extends CommonDBTM
             $config_context = $input['config_context'];
             unset($input['id']);
             unset($input['_glpi_csrf_token']);
-            unset($input['update']);
+            unset($input['_update']);
             unset($input['config_context']);
             if (
                 (!empty($input['config_class']))
@@ -261,7 +261,7 @@ class Config extends CommonDBTM
        // Beware : with new management system, we must update each value
         unset($input['id']);
         unset($input['_glpi_csrf_token']);
-        unset($input['update']);
+        unset($input['_update']);
 
        // Add skipMaintenance if maintenance mode update
         if (isset($input['maintenance_mode']) && $input['maintenance_mode']) {

@@ -279,7 +279,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
 
        // update last editor if content change
         if (
-            isset($input['update'])
+            isset($input['_update'])
             && ($uid = Session::getLoginUserID())
         ) { // Change from task form
             $input["users_id_editor"] = $uid;
