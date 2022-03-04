@@ -790,6 +790,8 @@ class Toolbox
                 $params[] = (!empty($parent) ? $parent . '%5B' . rawurlencode($k) . '%5D' : rawurlencode($k)) . '=' . rawurlencode($v);
             }
         }
+        //Remove empty values
+        $params = array_filter($params);
         return implode($separator, $params);
     }
 

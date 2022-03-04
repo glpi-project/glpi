@@ -117,7 +117,8 @@ class Provider
             ]
         ];
 
-        $url = $item::getSearchURL() . "?" . Toolbox::append_params([
+        $search_url = $item::getSearchURL();
+        $url = $search_url . (str_contains($search_url, '?') ? '&' : '?') . Toolbox::append_params([
             $search_criteria,
             'reset' => 'reset',
         ]);
