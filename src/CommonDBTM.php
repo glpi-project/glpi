@@ -1194,10 +1194,10 @@ class CommonDBTM extends CommonGLPI
             $this->saveInput();
         }
 
-       if (isset($this->input['add'])) {
-          $this->input['_add'] = $this->input['add'];
-          unset($this->input['add']);
-       }
+        if (isset($this->input['add'])) {
+            $this->input['_add'] = $this->input['add'];
+            unset($this->input['add']);
+        }
 
        // Call the plugin hook - $this->input can be altered
        // This hook get the data from the form, not yet altered
@@ -1506,10 +1506,10 @@ class CommonDBTM extends CommonGLPI
             $this->saveInput();
         }
 
-       if (isset($this->input['update'])) {
-          $this->input['_update'] = $this->input['update'];
-          unset($this->input['update']);
-       }
+        if (isset($this->input['update'])) {
+            $this->input['_update'] = $this->input['update'];
+            unset($this->input['update']);
+        }
 
        // Plugin hook - $this->input can be altered
         Plugin::doHook(Hooks::PRE_ITEM_UPDATE, $this);
