@@ -44,7 +44,7 @@
          {% set post_figure_content %}
             <div class="col-auto">
                <div class="list-group-item-actions d-flex flex-column">
-                  {% if document['_can_edit'] %}
+                  {% if document['item']['_can_edit'] %}
                      <a href="{{ 'Document'|itemtype_form_path(document['item']['id']) }}"
                         class="btn btn-sm btn-ghost-secondary" title="{{ _x('button', 'Edit') }}"
                         data-bs-toggle="tooltip" data-bs-placement="top">
@@ -52,7 +52,7 @@
                      </a>
                   {% endif %}
 
-                  {% if document['_can_delete'] %}
+                  {% if document['item']['_can_delete'] %}
                      <a href="{{ delete_link }}"
                         class="btn btn-sm btn-ghost-secondary" title="{{ _x('button', 'Delete permanently') }}"
                         data-bs-toggle="tooltip" data-bs-placement="top">
