@@ -53,7 +53,7 @@
    {% endif %}
 
    <div class="row d-flex flex-column alin-items-stretch itil-object">
-      {% set fl_direction = (item.isNewItemg ? 'flex-column' : 'flex-column-reverse') %}
+      {% set fl_direction = (item.isNewItem ? 'flex-column' : 'flex-column-reverse') %}
       <div class="itil-left-side col-12 {{ left_side_cls }} order-last order-md-first pt-2 pe-2 pe-md-4 d-flex {{ fl_direction }} border-top border-4">
          {% if item.isNewItem() %}
             {{ include('components/itilobject/timeline/new_form.html.twig') }}
