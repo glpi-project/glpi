@@ -121,13 +121,16 @@ abstract class AbstractITILChildTemplate extends CommonDropdown
             return '';
         }
 
-        $content = DropdownTranslation::getTranslatedValue(
-            $this->getID(),
-            $this->getType(),
-            'content',
-            $_SESSION['glpilanguage'],
-            $this->fields['content']
-        );
+        $content = $this->fields['content'];
+        if (DropdownTranslation::isDropdownTranslationActive()) {
+            $content = DropdownTranslation::getTranslatedValue(
+                $this->getID(),
+                $this->getType(),
+                'content',
+                $_SESSION['glpilanguage'],
+                $content
+            );
+        }
 
         $html = TemplateManager::renderContentForCommonITIL(
             $itil_item,
