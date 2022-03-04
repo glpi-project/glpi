@@ -1506,15 +1506,15 @@ class CommonDBTM extends CommonGLPI
             $this->saveInput();
         }
 
+       if (isset($this->input['update'])) {
+          $this->input['_update'] = $this->input['update'];
+          unset($this->input['update']);
+       }
+
        // Plugin hook - $this->input can be altered
         Plugin::doHook(Hooks::PRE_ITEM_UPDATE, $this);
         if ($this->input && is_array($this->input)) {
             $this->input = $this->prepareInputForUpdate($this->input);
-
-            if (isset($this->input['update'])) {
-                $this->input['_update'] = $this->input['update'];
-                unset($this->input['update']);
-            }
             $this->filterValues(!isCommandLine());
         }
 
