@@ -78,8 +78,8 @@
          var element   = $(option.element);
          var itemtype  = element.data('itemtype') ?? option.itemtype;
          var items_id  = element.data('items-id') ?? option.items_id;
-         var text      = element.data('text') ?? option.text;
-         var title     = element.data('title') ?? option.title;
+         var text      = escapeMarkupText(element.data('text') ?? option.text ?? '');
+         var title     = escapeMarkupText(element.data('title') ?? option.title ?? '');
          var use_notif = element.data('use-notification') ?? option.use_notification ?? 1;
          var alt_email = element.data('alternative-email') ?? option.alternative_email ?? '';
 
