@@ -210,7 +210,7 @@ if (isset($_POST["add"])) {
 } else if (isset($_POST['delete_document'])) {
     $track->getFromDB((int)$_POST['tickets_id']);
     $doc = new Document();
-    $doc->getFromDB(intval($_POST['documents_id']));
+    $doc->getFromDB((int)$_POST['documents_id']);
     if ($doc->can($doc->getID(), UPDATE)) {
         $document_item = new Document_Item();
         $found_document_items = $document_item->find([
