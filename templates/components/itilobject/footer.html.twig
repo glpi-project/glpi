@@ -60,7 +60,7 @@
                      </button>
                   {% endif %}
                   <ul class="dropdown-menu">
-                     {% for action, timeline_itemtype in timeline_itemtypes|filter((v, k) => v.show_in_menu is not defined or v.show_in_menu == true) %}
+                     {% for action, timeline_itemtype in timeline_itemtypes|filter((v, k) => v.hide_in_menu is not defined or v.hide_in_menu != true) %}
                         {% if loop.index0 > 0 %}
                            <li><a class="dropdown-item action-{{ action }} answer-action" href="#"
                               data-bs-toggle="collapse" data-bs-target="#new-{{ timeline_itemtype.class }}-block">
