@@ -41,7 +41,7 @@ class SolutionTemplate extends AbstractITILChildTemplate
 
     public static $rightname = 'solutiontemplate';
 
-    public $can_be_translated = false;
+    public $can_be_translated = true;
 
 
     public static function getTypeName($nb = 0)
