@@ -2233,20 +2233,18 @@ abstract class CommonITILObject extends CommonDBTM {
       $existing_groups = $groupactors->getActors($this->fields['id']);
       $existing_suppliers = $supplieractors->getActors($this->fields['id']);
 
-      // Remove duplicate actors from field inputs
-      foreach ($actor_fields as $actor_type => $fields) {
-         foreach ($fields as $actor_field) {
-            if (isset($input[$actor_field['name']]) && is_array($input[$actor_field['name']])) {
-               $input[$actor_field['name']] = array_unique($input[$actor_field['name']]);
-            }
-         }
-      }
-
       /**
        * @var string|CommonDBTM $actor_type
        * @var array $actor_fields
        */
       foreach ($actor_fields as $actor_type => $fields) {
+         // Remove duplicate actors from field inputs
+         foreach ($fields as $actor_field) {
+            if (isset($input[$actor_field['name']]) && is_array($input[$actor_field['name']])) {
+               $input[$actor_field['name']] = array_unique($input[$actor_field['name']]);
+            }
+         }
+
          $existing = [];
          switch ($actor_type) {
             case 'User':
@@ -2260,13 +2258,15 @@ abstract class CommonITILObject extends CommonDBTM {
                break;
          }
          foreach ($fields as $actor_field) {
-            $existing_ids = array_column($existing[$actor_field['type']] ?? [], $actor_type::getForeignKeyField());
-            $input[$actor_field['name']] = array_filter($input[$actor_field['name']] ?? [], static function ($value) use ($actor_type, $existing_ids) {
-               if (!is_array($value)) {
-                  $value = [$actor_type::getForeignKeyField() => $value];
-               }
-               return !in_array($value[$actor_type::getForeignKeyField()], $existing_ids, false);
-            });
+            if (array_key_exists($actor_field['name'], $input)) {
+               $existing_ids = array_column($existing[$actor_field['type']] ?? [], $actor_type::getForeignKeyField());
+               $input[$actor_field['name']] = array_filter($input[$actor_field['name']] ?? [], static function ($value) use ($actor_type, $existing_ids) {
+                  if (!is_array($value)) {
+                     $value = [$actor_type::getForeignKeyField() => $value];
+                  }
+                  return !in_array($value[$actor_type::getForeignKeyField()], $existing_ids, false);
+               });
+            }
          }
       }
 
