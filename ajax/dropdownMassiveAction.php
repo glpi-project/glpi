@@ -37,7 +37,7 @@ header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 
 try {
-    $ma = new MassiveAction($_POST, $_GET, 'specialize');
+    $ma = new MassiveAction($_UPOST, $_GET, 'specialize');
 } catch (\Exception $e) {
     echo "<div class='center'><img src='" . $CFG_GLPI["root_doc"] . "/pics/warning.png' alt='" .
       __s('Warning') . "'><br><br>";
