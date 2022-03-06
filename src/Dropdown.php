@@ -440,7 +440,9 @@ class Dropdown
         $name    = "";
         $comment = "";
 
-        if ($id) {
+        $id_set = $id !== null
+            && (is_int($post['searchText']) || (is_string($id && ctype_digit($id))));
+        if ($id_set) {
             $SELECTNAME    = new \QueryExpression("'' AS " . $DB->quoteName('transname'));
             $SELECTCOMMENT = new \QueryExpression("'' AS " . $DB->quoteName('transcomment'));
             $JOIN          = [];
