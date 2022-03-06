@@ -97,27 +97,22 @@ class Provider extends CommonGLPI {
          $where['is_template'] = 0;
       }
 
-      
-
-      if( $item instanceof User){
+      if ($item instanceof User) {
          $where += getEntitiesRestrictCriteria(Profile_User::getTable());
          $request = [
             'SELECT' => ['COUNT DISTINCT' => $item::getTableField($item::getIndexName()) . ' as cpt'],
             'FROM'   => $i_table,
-            'INNER JOIN' => [Profile_User::getTable() => ['FKEY' => [Profile_User::getTable() => 'users_id', User::getTable() => 'id']]] , 
-            'WHERE'  => $where
+            'INNER JOIN' => [Profile_User::getTable() => ['FKEY' => [Profile_User::getTable() => 'users_id', User::getTable() => 'id']]] ,            'WHERE'  => $where
          ];
-      }else {
+      } else {
          if ($item->isEntityAssign()) {
             $where += getEntitiesRestrictCriteria($item::getTable());
-         } 
-         $request = [
+         }         $request = [
             'SELECT' => ['COUNT DISTINCT' => $item::getTableField($item::getIndexName()) . ' as cpt'],
             'FROM'   => $i_table,
             'WHERE'  => $where
          ];
       }
-
 
       $criteria = array_merge_recursive(
          $request,
