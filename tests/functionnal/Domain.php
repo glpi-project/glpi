@@ -2,7 +2,7 @@
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -115,14 +115,14 @@ class Domain extends DbTestCase {
       $iterator = $DB->request(\Domain::expiredDomainsCriteria($entity->fields['id']));
       $this->string($iterator->getSql())->isIdenticalTo(
          "SELECT * FROM `glpi_domains` WHERE " .
-         "NOT (`date_expiration` IS NULL) AND `is_deleted` = '0' ".
+         "NOT (`date_expiration` IS NULL) AND `entities_id` = '{$entity->fields['id']}' AND `is_deleted` = '0' ".
          "AND DATEDIFF(CURDATE(), `date_expiration`) > 1 AND DATEDIFF(CURDATE(), `date_expiration`) > 0"
       );
 
       $iterator = $DB->request(\Domain::closeExpiriesDomainsCriteria($entity->fields['id']));
       $this->string($iterator->getSql())->isIdenticalTo(
          "SELECT * FROM `glpi_domains` WHERE " .
-         "NOT (`date_expiration` IS NULL) AND `is_deleted` = '0' ".
+         "NOT (`date_expiration` IS NULL) AND `entities_id` = '{$entity->fields['id']}' AND `is_deleted` = '0' ".
          "AND DATEDIFF(CURDATE(), `date_expiration`) > -7 AND DATEDIFF(CURDATE(), `date_expiration`) < 0"
       );
    }

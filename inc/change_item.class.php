@@ -2,7 +2,7 @@
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -250,8 +250,9 @@ class Change_Item extends CommonItilObject_Item {
                         foreach ($linkeditems as $type => $tab) {
                            foreach ($tab as $ID) {
                               $typeitem = new $type;
-                              $typeitem->getFromDB($ID);
-                              $nb += self::countForItem($typeitem);
+                              if ($typeitem->getFromDB($ID)) {
+                                 $nb += self::countForItem($typeitem);
+                              }
                            }
                         }
                      }

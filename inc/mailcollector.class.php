@@ -2,7 +2,7 @@
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -1066,6 +1066,7 @@ class MailCollector  extends CommonDBTM {
       $tkt['_auto_import']           = 1;
       // For followup : do not check users_id = login user
       $tkt['_do_not_check_users_id'] = 1;
+      $tkt['_head'] = $headers;
       $body                          = $this->getBody($message);
 
       try {
@@ -1215,6 +1216,7 @@ class MailCollector  extends CommonDBTM {
       }
 
       $tkt['content'] = LitEmoji::encodeShortcode($tkt['content']);
+      $tkt['name']    = LitEmoji::encodeShortcode($tkt['name']);
 
       $tkt = Toolbox::addslashes_deep($tkt);
       return $tkt;
@@ -1408,10 +1410,6 @@ class MailCollector  extends CommonDBTM {
 
       $sender_email = $this->getEmailFromHeader($message, 'from');
 
-      if (preg_match('/^(mailer-daemon|postmaster)@/i', $sender_email) === 1) {
-         return [];
-      }
-
       $to = $this->getEmailFromHeader($message, 'to');
 
       $reply_to_addr = Toolbox::strtolower($this->getEmailFromHeader($message, 'reply-to'));
@@ -1584,17 +1582,23 @@ class MailCollector  extends CommonDBTM {
          $filename = Toolbox::filename($filename);
 
          //try to avoid conflict between inline image and attachment
-         $i = 2;
          while (in_array($filename, $this->files)) {
-            //replace filename with name_(num).EXT by name_(num+1).EXT
-            $new_filename = preg_replace("/(.*)_([0-9])*(\.[a-zA-Z0-9]*)$/", "$1_".$i."$3", $filename);
-            if ($new_filename !== $filename) {
-               $filename = $new_filename;
+            $info = new SplFileInfo($filename);
+            $extension  = $info->getExtension();
+            $basename = $info->getBaseName($extension == '' ? '' : '.' . $extension);
+
+            //replace basename with basename_(num) by basename_(num+1)
+            $matches = [];
+            if (preg_match("/(.*)_([0-9]+)$/", $basename, $matches)) {
+               //replace basename with basename_(num) by basename_(num+1)
+               $filename = $matches[1] . '_' . ((int)$matches[2] + 1);
             } else {
-               //the previous regex didn't found _num pattern, so add it with this one
-               $filename = preg_replace("/(.*)(\.[a-zA-Z0-9]*)$/", "$1_".$i."$2", $filename);
+               $filename .= '_2';
             }
-            $i++;
+
+            if ($extension != '') {
+               $filename .= ".$extension";
+            }
          }
 
          if ($part->getSize() > $maxsize) {

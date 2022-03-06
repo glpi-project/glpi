@@ -2,7 +2,7 @@
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -33,6 +33,7 @@ namespace tests\units;
 
 use DbTestCase;
 use ProjectTask;
+use ProjectTeam;
 
 /* Test for inc/project.class.php */
 class Project extends DbTestCase {
@@ -186,5 +187,83 @@ class Project extends DbTestCase {
          $this->integer($task_data['entities_id'])->isEqualTo($entity_id);
          $this->integer($task_data['is_recursive'])->isEqualTo(0);
       }
+   }
+
+   public function testClone() {
+      // Create a basic project
+      $project_name = 'Project testClone' . mt_rand();
+      $project_input = [
+         'name'     => $project_name,
+         'priority' => 5,
+      ];
+      $this->createItems('Project', [$project_input]);
+      $projects_id = getItemByTypeName("Project", $project_name, true);
+
+      // Create a user
+      $user_name = 'Project testClone - User' . mt_rand();
+      $this->createItems('User', [['name' => $user_name]]);
+      $users_id = getItemByTypeName("User", $user_name, true);
+
+      // Create a group
+      $group_name = 'Project testClone - Group' . mt_rand();
+      $this->createItems('Group', [['name' => $group_name]]);
+      $groups_id = getItemByTypeName("Group", $group_name, true);
+
+      // Add team to project
+      $this->createItems('ProjectTeam', [
+         [
+            'projects_id' => $projects_id,
+            'itemtype'    => 'User',
+            'items_id'    => $users_id,
+         ],
+         [
+            'projects_id' => $projects_id,
+            'itemtype'    => 'Group',
+            'items_id'    => $groups_id,
+         ],
+      ]);
+
+      // Load current project
+      $project = new \Project();
+      $this->boolean($project->getFromDB($projects_id))->isTrue();
+
+      // Clone project
+      $projects_id_clone = $project->clone();
+      $this->integer($projects_id_clone)->isGreaterThan(0);
+
+      // Load clone
+      $project_clone = new \Project();
+      $this->boolean($project_clone->getFromDB($projects_id_clone))->isTrue();
+
+      // Check name
+      $this->string($project_clone->fields['name'])->isEqualTo("$project_input[name] (copy)");
+      unset($project_clone->fields['name'], $project_input['name']);
+
+      // Check basics fields
+      foreach (array_keys($project_input) as $field) {
+         $this->variable($project_clone->fields[$field])->isEqualTo($project->fields[$field]);
+      }
+
+      // Load project team
+      $project_team = new ProjectTeam();
+      $team = [];
+      foreach ($project_team->find(['projects_id' => $projects_id]) as $row) {
+         $team[] = [
+            'itemtype' => $row['itemtype'],
+            'items_id' => $row['items_id'],
+         ];
+      }
+
+      // Load clone team
+      $team_clone = [];
+      foreach ($project_team->find(['projects_id' => $projects_id_clone]) as $row) {
+         $team_clone[] = [
+            'itemtype' => $row['itemtype'],
+            'items_id' => $row['items_id'],
+         ];
+      }
+
+      // Compare teams
+      $this->array($team_clone)->isEqualTo($team);
    }
 }

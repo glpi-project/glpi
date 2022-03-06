@@ -2,7 +2,7 @@
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -822,5 +822,48 @@ class Config extends DbTestCase {
       $found_history = array_values(getAllDataFromTable(Log::getTable(), $history_crit));
       array_walk($found_history, $clean_ids);
       $this->array($found_history)->isEqualTo($expected_history);
+   }
+
+   public function testAutoCreateInfocom() {
+      global $CFG_GLPI;
+
+      $infocom_types = $CFG_GLPI["infocom_types"];
+      $excluded_types = [
+         'Cartridge', // Should inherit from CartridgeItem
+         'Consumable', // Should inherit from ConsumableItem
+      ];
+      $infocom_types = array_diff($infocom_types, $excluded_types);
+
+      $infocom_auto_create_original = $CFG_GLPI["infocom_auto_create"] ?? 0;
+
+      $infocom = new \Infocom();
+      foreach ($infocom_types as $asset_type) {
+         $CFG_GLPI['auto_create_infocoms'] = 1;
+         $asset = new $asset_type();
+         $asset_id = $asset->add([
+            'name'                  => 'auto_infocom_test',
+            'entities_id'           => 0,
+            'softwares_id'          => 1, // Random ID for testing SoftwareLicense
+            'itemtype'              => 'Computer', // Random item type for testing Item_DeviceSimcard
+            'devicesimcards_id'     => 1, // Random ID for testing Item_DeviceSimcard
+         ]);
+         $CFG_GLPI['auto_create_infocoms'] = $infocom_auto_create_original;
+         // Verify an Infocom object exists for the newly created asset
+         $infocom_exists = $infocom->getFromDBforDevice($asset_type, $asset_id);
+         $this->boolean($infocom_exists)->isTrue();
+
+         $CFG_GLPI['auto_create_infocoms'] = 0;
+         // Verify an Infocom object does not exist for a newly created asset
+         $asset_id2 = $asset->add([
+            'name'                  => 'auto_infocom_test2',
+            'entities_id'           => 0,
+            'softwares_id'          => 1, // Random ID for testing SoftwareLicense
+            'itemtype'              => 'Computer', // Random item type for testing Item_DeviceSimcard
+            'devicesimcards_id'     => 1, // Random ID for testing Item_DeviceSimcard
+         ]);
+         $CFG_GLPI['auto_create_infocoms'] = $infocom_auto_create_original;
+         $infocom_exists = $infocom->getFromDBforDevice($asset_type, $asset_id2);
+         $this->boolean($infocom_exists)->isFalse();
+      }
    }
 }

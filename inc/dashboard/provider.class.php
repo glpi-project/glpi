@@ -2,7 +2,7 @@
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -260,6 +260,7 @@ class Provider extends CommonGLPI {
       switch ($case) {
          case 'notold':
             $search_criteria = [$notold];
+            $params['label']  = _x('status', 'Not solved');
             $query_criteria['WHERE']+= [
                "$table.status" => Ticket::getNotSolvedStatusArray(),
             ];
@@ -646,6 +647,9 @@ class Provider extends CommonGLPI {
                new QueryExpression("DATE_FORMAT(".$DB->quoteName("date").", '%Y-%m') AS ticket_month")
             ],
             'FROM'    => $t_table,
+            'WHERE'    => [
+               "$t_table.is_deleted" => 0,
+            ] + getEntitiesRestrictCriteria($t_table),
             'GROUPBY' => 'ticket_month',
             'ORDER'   => 'ticket_month ASC'
          ],

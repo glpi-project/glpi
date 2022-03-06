@@ -2,7 +2,7 @@
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -153,6 +153,9 @@ class Appliance extends DbTestCase {
                $dateClone = new \DateTime($clonedApp->getField($k));
                $expectedDate = new \DateTime($date);
                $this->dateTime($dateClone)->isEqualTo($expectedDate);
+               break;
+            case 'name':
+               $this->variable($clonedApp->getField($k))->isEqualTo("{$app->getField($k)} (copy)");
                break;
             default:
                $this->variable($clonedApp->getField($k))->isEqualTo($app->getField($k));

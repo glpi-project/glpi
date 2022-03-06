@@ -2,7 +2,7 @@
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -95,7 +95,7 @@ if ($_GET['action'] == 'create') {
    $savedsearch->showForm(
       0, [
          'type'      => $_GET['type'],
-         'url'       => rawurldecode($_GET["url"]),
+         'url'       => $_GET["url"],
          'itemtype'  => $_GET["itemtype"],
          'ajax'      => true
       ]

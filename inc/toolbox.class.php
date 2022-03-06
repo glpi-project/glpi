@@ -2,7 +2,7 @@
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -1331,11 +1331,11 @@ class Toolbox {
             || ($img_height > $max_size)) {
             $source_aspect_ratio = $img_width / $img_height;
             if ($source_aspect_ratio < 1) {
-               $new_width  = $max_size * $source_aspect_ratio;
+               $new_width  = ceil($max_size * $source_aspect_ratio);
                $new_height = $max_size;
             } else {
                $new_width  = $max_size;
-               $new_height = $max_size / $source_aspect_ratio;
+               $new_height = ceil($max_size / $source_aspect_ratio);
             }
          }
       }
@@ -3030,9 +3030,7 @@ class Toolbox {
     * @return string the IP address
     */
    public static function getRemoteIpAddress() {
-      return (isset($_SERVER["HTTP_X_FORWARDED_FOR"]) ?
-         self::clean_cross_side_scripting_deep($_SERVER["HTTP_X_FORWARDED_FOR"]):
-         $_SERVER["REMOTE_ADDR"]);
+      return $_SERVER["REMOTE_ADDR"];
    }
 
    /**
@@ -3600,5 +3598,51 @@ HTML;
       $tabs[-1] = 'All';
 
       return $tabs;
+   }
+
+   /**
+    * Check if a mixed value (possibly a string) is an integer or a float
+    *
+    * @param mixed $value A possible float
+    *
+    * @return bool
+    */
+   public static function isFloat($value): bool {
+      if (!is_numeric($value)) {
+         $type = gettype($value);
+
+         trigger_error(
+            "Calling isFloat on $type",
+            E_USER_WARNING
+         );
+         return false;
+      }
+
+      return (floatval($value) - intval($value)) > 0;
+   }
+
+   /**
+    * Get the number of decimals for a given value
+    *
+    * @param mixed $value A possible float
+    *
+    * @return int
+    */
+   public static function getDecimalNumbers($value): int {
+      if (!is_numeric($value)) {
+         $type = gettype($value);
+
+         trigger_error(
+            "Calling getDecimalNumbers on $type",
+            E_USER_WARNING
+         );
+         return 0;
+      }
+
+      if (floatval($value) == intval($value)) {
+         return 0;
+      }
+
+      return strlen(preg_replace('/\d*\./', '', floatval($value)));
    }
 }

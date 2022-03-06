@@ -2,7 +2,7 @@
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -53,17 +53,19 @@ class User extends \DbTestCase {
     *
     */
    public function testLostPassword() {
-      //would not be logical to login here
+      // would not be logical to login here
       $_SESSION['glpicronuserrunning'] = "cron_phpunit";
       $user = getItemByTypeName('User', TU_USER);
 
       // Test request for a password with invalid email
-      $this->exception(
+      $this->when(
          function() use ($user) {
             $user->forgetPassword('this-email-does-not-exists@example.com');
          }
-      )
-         ->isInstanceOf(\Glpi\Exception\ForgetPasswordException::class);
+      )->error()
+         ->withType(E_USER_WARNING)
+         ->withMessage("Failed to find a single user for 'this-email-does-not-exists@example.com', 0 user(s) found.")
+         ->exists();
 
       // Test request for a password
       $result = $user->forgetPassword($user->getDefaultEmail());
@@ -72,7 +74,6 @@ class User extends \DbTestCase {
       // Test reset password with a bad token
       $token = $user->getField('password_forget_token');
       $input = [
-         'email' => $user->getDefaultEmail(),
          'password_forget_token' => $token . 'bad',
          'password'  => TU_PASS,
          'password2' => TU_PASS
@@ -90,7 +91,6 @@ class User extends \DbTestCase {
 
       // 2 - Set a new password
       $input = [
-         'email' => $user->getDefaultEmail(),
          'password_forget_token' => $token,
          'password'  => 'NewPassword',
          'password2' => 'NewPassword'
@@ -101,7 +101,7 @@ class User extends \DbTestCase {
       $this->boolean($result)->isTrue();
       $newHash = $user->getField('password');
 
-      // 4 - Restore the initial password in the DB before checking he updated password
+      // 4 - Restore the initial password in the DB before checking the updated password
       // This ensure the original password is restored even if the next test fails
       $updateSuccess = $user->update([
          'id'        => $user->getID(),
@@ -510,8 +510,10 @@ class User extends \DbTestCase {
       foreach ($fields as $k => $v) {
          switch ($k) {
             case 'id':
-            case 'name':
                $this->variable($clonedUser->getField($k))->isNotEqualTo($user->getField($k));
+               break;
+            case 'name':
+               $this->variable($clonedUser->getField($k))->isEqualTo("_test_user-copy");
                break;
             case 'date_mod':
             case 'date_creation':

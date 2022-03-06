@@ -2,7 +2,7 @@
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -1871,5 +1871,44 @@ class AuthLDAP extends DbTestCase {
          'users_id' => $users_id,
       ]);
       $this->array($gus)->hasSize(1);
+   }
+
+   public function testLdapUnavailable() {
+       //Import user that doesn't exist yet
+       $auth = $this->login('brazil5', 'password', false);
+
+       $user = new \User();
+       $user->getFromDBbyName('brazil5');
+       $this->array($user->fields)
+           ->string['name']->isIdenticalTo('brazil5')
+           ->string['user_dn']->isIdenticalTo('uid=brazil5,ou=people,ou=ldap3,dc=glpi,dc=org');
+       $this->boolean($auth->user_present)->isFalse();
+       $this->boolean($auth->user_dn)->isFalse();
+       $this->resource($auth->ldap_connection)->isOfType('ldap link');
+
+       // Get original LDAP server port
+       $original_port = $this->ldap->fields['port'];
+       // Update LDAP to have inaccessible server
+       $this->boolean(
+           $this->ldap->update([
+               'id'     => $this->ldap->getID(),
+               'port'   => '1234',
+           ])
+       )->isTrue();
+
+       $auth = $this->login('brazil5', 'password', false, false);
+
+       // Restore original port
+       $this->boolean(
+           $this->ldap->update([
+               'id'     => $this->ldap->getID(),
+               'port'   => $original_port,
+           ])
+       )->isTrue();
+
+       $user->getFromDBbyName('brazil5');
+       // Verify trying to log in while LDAP unavailable does not disable user's GLPI account
+       $this->integer($user->fields['is_active'])->isEqualTo(1);
+       $this->integer($user->fields['is_deleted_ldap'])->isEqualTo(0);
    }
 }

@@ -2,7 +2,7 @@
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -443,13 +443,33 @@ class MailCollector extends DbTestCase {
          ])
       )->isGreaterThan(0);
 
+      // Hack to allow documents named "1234567890", "1234567890_2", ... (cf 28-multiple-attachments-no-extension.eml)
+      $doctype = new \DocumentType();
+      $this->integer(
+         $doctype->add([
+            'name'   => 'Type test',
+            'ext'    => '/^1234567890(_\\\d+)?$/'
+         ])
+      )->isGreaterThan(0);
+
       // Collect all mails
       $this->doConnect();
       $this->collector->maxfetch_emails = 1000; // Be sure to fetch all mails from test suite
       $msg = $this->collector->collect($this->mailgate_id);
 
+      // Check error log and clean it (to prevent test failure, see GLPITestCase::afterTestMethod()).
+      global $PHP_LOG_HANDLER;
+      $records  = $PHP_LOG_HANDLER->getRecords();
+      $messages = array_column($records, 'message');
+      $this->array($messages)->hasSize(2);
+      // 05-empty-from.eml
+      $this->string($messages[0])->contains('The input is not a valid email address. Use the basic format local-part@hostname');
+      // 17-malformed-email.eml
+      $this->string($messages[1])->contains('Header with Name date or date not found');
+      $PHP_LOG_HANDLER->clear();
+
       $total_count                     = count(glob(GLPI_ROOT . '/tests/emails-tests/*.eml'));
-      $expected_refused_count          = 2;
+      $expected_refused_count          = 3;
       $expected_error_count            = 2;
       $expected_blacklist_count        = 1;
       $expected_expected_already_seen  = 0;
@@ -520,7 +540,7 @@ class MailCollector extends DbTestCase {
             'users_id'      => $nuid,
             'actor_type'    => \CommonITILActor::REQUESTER,
             'tickets_names' => [
-               'Test import mail avec emoticons unicode',
+               'Test import mail avec emoticons :smiley: unicode',
                'Test images',
                'Test\'ed issue',
                'Test Email from Outlook',
@@ -537,6 +557,7 @@ class MailCollector extends DbTestCase {
                '24.2 Test attachment with short multibyte filename',
                '25 - Test attachment with invalid chars for OS',
                '26 Illegal char in body',
+               '28 Multiple attachments no extension',
             ]
          ],
          // Mails having "normal" user as observer (add_cc_to_observer = true)
@@ -557,6 +578,7 @@ class MailCollector extends DbTestCase {
          'Re: [GLPI #0038927] Update - Issues with new Windows 10 machine' => '&lt;p&gt;This message have reply to header, requester should be get from this header.&lt;/p&gt;',
          'Mono-part HTML message' => '&lt;p&gt;This HTML message does not use &lt;strong&gt;"multipart/alternative"&lt;/strong&gt; format.&lt;/p&gt;',
          '26 Illegal char in body' => '这是很坏的Minus C Blabla',
+         '28 Multiple attachments no extension' => '&lt;div&gt;&nbsp;&lt;/div&gt;&lt;div&gt;Test&lt;/div&gt;&lt;div&gt;&nbsp;&lt;/div&gt;',
       ];
 
       foreach ($actors_specs as $actor_specs) {
@@ -608,6 +630,9 @@ class MailCollector extends DbTestCase {
          '24.1-zhang-wen-jian-ming-jiang-dao-zhi-nei-rong-chu-zhi-biao-tou-zhong-de-lian-xu-xing.txt',
          '24.2-zhong-guo-zi-fu.txt',
          '25-new-text-document.txt',
+         '1234567890',
+         '1234567890_2',
+         '1234567890_3',
       ];
 
       $iterator = $DB->request(
@@ -661,17 +686,6 @@ class MailCollector extends DbTestCase {
       foreach ($expected_followups as $expected_followup) {
          $this->integer(countElementsInTable(ITILFollowup::getTable(), $expected_followup))->isEqualTo(1);
       }
-
-      // Check error log and clean it (to prevent test failure, see GLPITestCase::afterTestMethod()).
-      global $PHP_LOG_HANDLER;
-      $records  = $PHP_LOG_HANDLER->getRecords();
-      $messages = array_column($records, 'message');
-      $this->array($messages)->hasSize(2);
-      // 05-empty-from.eml
-      $this->string($messages[0])->contains('The input is not a valid email address. Use the basic format local-part@hostname');
-      // 17-malformed-email.eml
-      $this->string($messages[1])->contains('Header with Name date or date not found');
-      $PHP_LOG_HANDLER->clear();
    }
 
    protected function mailServerProtocolsProvider() {

@@ -2,7 +2,7 @@
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -53,6 +53,8 @@ class SeLinux extends AbstractRequirement {
          && function_exists('selinux_getenforce')
          && function_exists('selinux_get_boolean_active');
 
+      $exec_enabled = function_exists('exec') && !in_array('exec', explode(',', ini_get('disable_functions')), true);
+
       if (!$is_slash_separator || (!$are_bin_existing && !$are_functions_existing)) {
          // This is not a SELinux system
          $this->out_of_context = true;
@@ -74,7 +76,7 @@ class SeLinux extends AbstractRequirement {
             }
          }
       } else {
-         $mode = strtolower(exec('/usr/sbin/getenforce'));
+         $mode = $exec_enabled ? strtolower(exec('/usr/sbin/getenforce')) : 'unknown';
       }
       if (!in_array($mode, ['enforcing', 'permissive', 'disabled'])) {
          $mode = 'unknown';
@@ -109,11 +111,15 @@ class SeLinux extends AbstractRequirement {
             }
          } else {
             // command result is something like "httpd_can_network_connect --> on"
-            $state = preg_replace(
-               '/^.*(on|off)$/',
-               '$1',
-               strtolower(exec('/usr/sbin/getsebool ' . $bool))
-            );
+            if ($exec_enabled) {
+               $state = preg_replace(
+                  '/^.*(on|off)$/',
+                  '$1',
+                  strtolower(exec('/usr/sbin/getsebool ' . $bool))
+               );
+            } else {
+               $state = 'unknown';
+            }
          }
          if (!in_array($state, ['on', 'off'])) {
             $state = 'unknown';

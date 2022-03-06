@@ -2,7 +2,7 @@
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -3179,7 +3179,6 @@ class Rule extends CommonDBTM {
       $nextRanking = $this->getNextRanking();
 
       //Update fields of the new collection
-      $input['name']        = sprintf(__('Copy of %s'), $input['name']);
       $input['is_active']   = 0;
       $input['ranking']     = $nextRanking;
       $input['uuid']        = static::getUuid();

@@ -2,7 +2,7 @@
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -168,11 +168,18 @@ class CommonDBTM extends CommonGLPI {
    static $undisclosedFields = [];
 
    /**
+    * Cache used to keep track of the last clone index
+    * Usefull when cloning an item multiple time to avoid iterating on the sql
+    * results multiple time while looking for an available unique name
+    * @var null|int
+    */
+   public $last_clone_index = null;
+
+   /**
     * Constructor
    **/
    function __construct () {
    }
-
 
    /**
     * Return the table used to store this object
@@ -345,11 +352,13 @@ class CommonDBTM extends CommonGLPI {
          $row = $iter->next();
          return $this->getFromDB($row['id']);
       } else if (count($iter) > 1) {
-         Toolbox::logWarning(
+         trigger_error(
             sprintf(
-               'getFromDBByCrit expects to get one result, %1$s found!',
-               count($iter)
-            )
+               'getFromDBByCrit expects to get one result, %1$s found in query "%2$s".',
+               count($iter),
+               $iter->getSql()
+            ),
+            E_USER_WARNING
          );
       }
       return false;
@@ -1180,6 +1189,7 @@ class CommonDBTM extends CommonGLPI {
 
                 // Auto create infocoms
                if (isset($CFG_GLPI["auto_create_infocoms"]) && $CFG_GLPI["auto_create_infocoms"]
+                   && (!isset($input['clone']) || !$input['clone'])
                    && Infocom::canApplyOn($this)) {
 
                   $ic = new Infocom();
@@ -1218,17 +1228,53 @@ class CommonDBTM extends CommonGLPI {
    }
 
    /**
-    * Clones the current item
+    * Clone the current item multiple times
     *
     * @since 9.5
     *
-    * @param array $override_input custom input to override
+    * @param int     $n              Number of clones
+    * @param array   $override_input Custom input to override
+    * @param boolean $history        Do history log ? (true by default)
+    *
+    * @return int|bool the new ID of the clone (or false if fail)
+    */
+   public function cloneMultiple(
+      int $n,
+      array $override_input = [],
+      bool $history = true
+   ): bool {
+      $failure = false;
+
+      try {
+         // Init index cache
+         $this->last_clone_index = 0;
+         for ($i = 0; $i < $n && !$failure; $i++) {
+            if ($this->clone($override_input, $history) === false) {
+               // Increment clone index cache to use less SQL
+               // queries looking for an available unique clone name
+               $failure = true;
+            }
+         }
+      } finally {
+         // Make sure cache is cleaned even on exception
+         $this->last_clone_index = null;
+      }
+
+      return !$failure;
+   }
+
+   /**
+    * Clone the current item
+    *
+    * @since 9.5
+    *
+    * @param array   $override_input custom input to override
     * @param boolean $history do history log ? (true by default)
     *
-    * @return integer the new ID of the clone (or false if fail)
+    * @return int|bool the new ID of the clone (or false if fail)
     */
    function clone(array $override_input = [], bool $history = true) {
-      global $DB, $CFG_GLPI;
+      global $DB;
 
       if ($DB->isSlave()) {
          return false;
@@ -1388,7 +1434,30 @@ class CommonDBTM extends CommonGLPI {
       return $input;
    }
 
-    /**
+   /**
+    * Compute the name of a copied item
+    * The goal is to set the copy name as "{name} (copy {i})" unless it's
+    * the first copy: in this case just "{name} (copy)" is acceptable
+    *
+    * @param string $current_item The item being copied
+    * @param int    $copy_index   The index to append to the copy's name
+    *
+    * @return string The computed name of the new item to be created
+    */
+   public function computeCloneName(
+      string $current_name,
+      int $copy_index
+   ): string {
+      // First copy
+      if ($copy_index == 1) {
+         return sprintf(__("%s (copy)"), $current_name);
+      }
+
+      // Second+ copies, add index
+      return sprintf(__("%s (copy %d)"), $current_name, $copy_index);
+   }
+
+   /**
     * Prepare input datas for cloning the item
     *
     * @since 9.5
@@ -1396,11 +1465,39 @@ class CommonDBTM extends CommonGLPI {
     * @param array $input datas used to add the item
     *
     * @return array the modified $input array
-   **/
+    */
    function prepareInputForClone($input) {
       unset($input['id']);
       unset($input['date_mod']);
       unset($input['date_creation']);
+
+      $name_field = static::getNameField();
+
+      // Force uniqueness for the name field
+      if (isset($input[$name_field])) {
+         $copy_name = "";
+         $current_name = $input[$name_field];
+         $table = static::getTable();
+
+         $copy_index = 0;
+
+         // Use index cache if defined
+         if (!is_null($this->last_clone_index)) {
+            $copy_index = $this->last_clone_index;
+         }
+
+         // Try to find an available name
+         do {
+            $copy_name = $this->computeCloneName($current_name, ++$copy_index);
+         } while (countElementsInTable($table, [$name_field => $copy_name]) > 0);
+
+         // Update index cache
+         $this->last_clone_index = $copy_index;
+
+         // Override input with the first found valid name
+         $input[$name_field] = $copy_name;
+      }
+
       return $input;
    }
 
@@ -2197,7 +2294,7 @@ class CommonDBTM extends CommonGLPI {
     * @return boolean
    **/
    function canUnrecurs() {
-      global $DB;
+      global $DB, $CFG_GLPI;
 
       $ID  = $this->fields['id'];
       if (($ID < 0)
@@ -2323,8 +2420,8 @@ class CommonDBTM extends CommonGLPI {
       // TODO : do we need to check all relations in $RELATION["_virtual_device"] for this item
 
       // check connections of a computer
-      $connectcomputer = ['Monitor', 'Peripheral', 'Phone', 'Printer'];
-      if (in_array($this->getType(), $connectcomputer)) {
+      $connectcomputer = $CFG_GLPI["directconnect_types"];
+      if ($this->getType() === Computer::class || in_array($this->getType(), $connectcomputer)) {
          return Computer_Item::canUnrecursSpecif($this, $entities);
       }
       return true;
@@ -2343,6 +2440,12 @@ class CommonDBTM extends CommonGLPI {
     * @return boolean
    **/
    function canMassiveAction($action, $field, $value) {
+
+      if (static::maybeRecursive()) {
+         if ($field === 'is_recursive' && (int) $value === 0) {
+            return $this->canUnrecurs();
+         }
+      }
       return true;
    }
 
@@ -5203,6 +5306,16 @@ class CommonDBTM extends CommonGLPI {
             $entities_id = $input['_job']->fields['entities_id'];
          }
 
+         //retrieve is_recursive
+         $is_recursive = 0;
+         if (isset($this->fields["is_recursive"])) {
+            $is_recursive = $this->fields["is_recursive"];
+         } else if (isset($input['is_recursive'])) {
+            $is_recursive = $input['is_recursive'];
+         } else if (isset($input['_job']->fields['is_recursive'])) {
+            $is_recursive = $input['_job']->fields['is_recursive'];
+         }
+
          // Check for duplicate
          if ($doc->getFromDBbyContent($entities_id, $filename)) {
             if (!$doc->fields['is_blacklisted']) {
@@ -5234,7 +5347,7 @@ class CommonDBTM extends CommonGLPI {
             }
 
             $input2["entities_id"]             = $entities_id;
-            $input2["is_recursive"]            = 1;
+            $input2["is_recursive"]            = $is_recursive;
             $input2["documentcategories_id"]   = $CFG_GLPI["documentcategories_id_forticket"];
             $input2["_only_if_upload_succeed"] = 1;
             $input2["_filename"]               = [$file];

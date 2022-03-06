@@ -2,7 +2,7 @@
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -49,6 +49,9 @@ class Item_SoftwareVersion extends CommonDBRelation {
    static public $log_history_2_add    = Log::HISTORY_INSTALL_SOFTWARE;
    static public $log_history_2_delete = Log::HISTORY_UNINSTALL_SOFTWARE;
 
+   function useDeletedToLockIfDynamic() {
+      return false;
+   }
 
    static function getTypeName($nb = 0) {
       return _n('Installation', 'Installations', $nb);

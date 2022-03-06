@@ -2,7 +2,7 @@
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -1247,8 +1247,18 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria {
          case 'search' :
             if (strlen($params["contains"]) > 0) {
                $search  = Toolbox::unclean_cross_side_scripting_deep($params["contains"]);
-               $search_wilcard = explode(' ', $search);
-               $search_wilcard = implode('* ', $search_wilcard).'*';
+
+               // Replace all non word characters with spaces (see: https://stackoverflow.com/a/26537463)
+               $search_wilcard = preg_replace('/[^\p{L}\p{N}_]+/u', ' ', $search);
+
+               // Remove last space to avoid illegal syntax with " *"
+               $search_wilcard = trim($search_wilcard);
+
+               // Merge spaces since we are using them to split the string later
+               $search_wilcard = preg_replace('!\s+!', ' ', $search_wilcard);
+
+               $search_wilcard = explode(' ', $search_wilcard);
+               $search_wilcard = (implode('* ', $search_wilcard).'*');
 
                $addscore = [];
                if (KnowbaseItemTranslation::isKbTranslationActive()
@@ -1620,7 +1630,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria {
                   'WHERE'  => [
                      'items_id'  => $data["id"],
                      'itemtype'  => 'KnowbaseItem'
-                  ] + getEntitiesRestrictCriteria()
+                  ] + getEntitiesRestrictCriteria('', '', '', true)
                ]);
                while ($docs = $iterator->next()) {
                   $doc = new Document();
@@ -1950,7 +1960,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria {
 
          return $title;
       };
-      $pattern = '|<(h[1-6]{1})(.?[^>])?>(.+)</h[1-6]{1}>|';
+      $pattern = '|<(h[1-6]{1})(.?[^>])?>(.+?)</h[1-6]{1}>|';
       $answer = preg_replace_callback($pattern, $callback, $answer);
 
       return $answer;

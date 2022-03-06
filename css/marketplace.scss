@@ -123,6 +123,10 @@ $break_s_screen: 1400px;
             }
          }
 
+         .warning {
+            flex-basis: 100%;
+         }
+
          .plugin {
             $margin_width: 10px;
             width: calc(25% - #{$margin_width}); //minus margin

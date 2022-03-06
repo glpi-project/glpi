@@ -2,7 +2,7 @@
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -1891,7 +1891,10 @@ class Stat extends CommonGLPI {
             $data = $serie['data'];
             //$labels[$row_num] = $label;
             if (is_array($data) && count($data)) {
-               $headers[$row_num] = $serie['name'];
+               // in case of simple series, we should not have the name
+               if (isset($serie['name'])) {
+                  $headers[$row_num] = $serie['name'];
+               }
                foreach ($data as $key => $val) {
                   if (!isset($values[$key])) {
                      $values[$key] = [];

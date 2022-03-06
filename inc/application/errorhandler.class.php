@@ -2,7 +2,7 @@
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -234,10 +234,11 @@ class ErrorHandler {
     * This handler is called by PHP prior to exiting, when an Exception is not catched.
     *
     * @param \Throwable $exception
+    * @param bool $quiet
     *
     * @return void
     */
-   public function handleException(\Throwable $exception) {
+   public function handleException(\Throwable $exception, bool $quiet = false) {
       $this->exit_code = 255;
 
       $error_type = sprintf(
@@ -255,7 +256,9 @@ class ErrorHandler {
       $log_level = self::ERROR_LEVEL_MAP[E_ERROR];
 
       $this->logErrorMessage($error_type, $error_description, $error_trace, $log_level);
-      $this->outputDebugMessage($error_type, $error_description, $log_level, isCommandLine());
+      if (!$quiet) {
+         $this->outputDebugMessage($error_type, $error_description, $log_level, isCommandLine());
+      }
    }
 
    /**

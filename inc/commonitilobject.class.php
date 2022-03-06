@@ -2,7 +2,7 @@
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -855,6 +855,10 @@ abstract class CommonITILObject extends CommonDBTM {
 
    function prepareInputForUpdate($input) {
 
+      if (!$this->checkFieldsConsistency($input)) {
+         return false;
+      }
+
       // Add document if needed
       $this->getFromDB($input["id"]); // entities_id field required
 
@@ -1156,6 +1160,21 @@ abstract class CommonITILObject extends CommonDBTM {
          }
          $this->input = $this->addFiles($this->input, $options);
       }
+
+      // Handle deferred solution addition (for solution templates added by rule)
+      if (isset($this->input['_solutiontemplates_id'])) {
+         $template = new SolutionTemplate();
+         if ($template->getFromDB($this->input['_solutiontemplates_id'])) {
+            $solution = new ITILSolution();
+            $solution->add([
+               "itemtype" => static::getType(),
+               "solutiontypes_id" => $template->fields['solutiontypes_id'],
+               "content" => Toolbox::addslashes_deep($template->fields['content']),
+               "status" => CommonITILValidation::WAITING,
+               "items_id" => $this->fields['id']
+            ]);
+         }
+      }
    }
 
 
@@ -1400,7 +1419,7 @@ abstract class CommonITILObject extends CommonDBTM {
                }
 
             } else { // Not calendar defined
-               if ($this->fields['time_to_resolve'] > 0) {
+               if ((int)$this->fields['time_to_resolve'] > 0) {
                   // compute new due date : no calendar so add computed delay_time
                   $this->updates[]                 = "time_to_resolve";
                   $this->fields['time_to_resolve'] = date('Y-m-d H:i:s',
@@ -1433,7 +1452,7 @@ abstract class CommonITILObject extends CommonDBTM {
             if (($calendars_id > 0)
                 && $calendar->getFromDB($calendars_id)
                 && $calendar->hasAWorkingDay()) {
-               if ($this->fields['internal_time_to_resolve'] > 0) {
+               if ((int)$this->fields['internal_time_to_resolve'] > 0) {
                   // compute new internal_time_to_resolve using calendar
                   $this->updates[]                          = "internal_time_to_resolve";
                   $this->fields['internal_time_to_resolve'] = $calendar->computeEndDate(
@@ -1442,7 +1461,7 @@ abstract class CommonITILObject extends CommonDBTM {
                }
 
             } else { // Not calendar defined
-               if ($this->fields['internal_time_to_resolve'] > 0) {
+               if ((int)$this->fields['internal_time_to_resolve'] > 0) {
                   // compute new internal_time_to_resolve : no calendar so add computed delay_time
                   $this->updates[]                          = "internal_time_to_resolve";
                   $this->fields['internal_time_to_resolve'] = date('Y-m-d H:i:s',
@@ -1559,6 +1578,10 @@ abstract class CommonITILObject extends CommonDBTM {
 
    function prepareInputForAdd($input) {
       global $CFG_GLPI;
+
+      if (!$this->checkFieldsConsistency($input)) {
+         return false;
+      }
 
       // save value before clean;
       $title = ltrim($input['name']);
@@ -1736,6 +1759,23 @@ abstract class CommonITILObject extends CommonDBTM {
    }
 
    /**
+    * Check input fields consistency.
+    *
+    * @param array $input
+    *
+    * @return bool
+    */
+   private function checkFieldsConsistency(array $input): bool {
+      if (array_key_exists('date', $input) && !empty($input['date'])
+          && (!is_string($input['date']) || !preg_match('/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/', $input['date']))) {
+         Session::addMessageAfterRedirect(__('Incorrect value for date field.'), false, ERROR);
+         return false;
+      }
+
+      return true;
+   }
+
+   /**
     * Compute default values for Add
     * (to be passed in prepareInputForAdd before and after rules if needed)
     *
@@ -1800,10 +1840,26 @@ abstract class CommonITILObject extends CommonDBTM {
                'actiontime'                  => $tasktemplate->fields['actiontime'],
                'state'                       => $tasktemplate->fields['state'],
                $this->getForeignKeyField()   => $this->fields['id'],
+               'date'                        => $this->fields['date'],
                'is_private'                  => $tasktemplate->fields['is_private'],
                'users_id_tech'               => $tasktemplate->fields['users_id_tech'],
                'groups_id_tech'              => $tasktemplate->fields['groups_id_tech'],
                '_disablenotif'               => true
+            ]);
+         }
+      }
+
+      // Handle deferred solution addition (for solution templates added by rule)
+      if (isset($this->input['_solutiontemplates_id'])) {
+         $template = new SolutionTemplate();
+         if ($template->getFromDB($this->input['_solutiontemplates_id'])) {
+            $solution = new ITILSolution();
+            $solution->add([
+               "itemtype" => static::getType(),
+               "solutiontypes_id" => $template->fields['solutiontypes_id'],
+               "content" => Toolbox::addslashes_deep($template->fields['content']),
+               "status" => CommonITILValidation::WAITING,
+               "items_id" => $this->fields['id']
             ]);
          }
       }
@@ -3514,6 +3570,7 @@ abstract class CommonITILObject extends CommonDBTM {
          'field'              => 'name',
          'name'               => SolutionType::getTypeName(1),
          'datatype'           => 'dropdown',
+         'massiveaction'      => false,
          'forcegroupby'       => true,
          'joinparams'         => [
             'beforejoin'         => [
@@ -7121,7 +7178,7 @@ abstract class CommonITILObject extends CommonDBTM {
                   echo $user->getLink()."&nbsp;";
                   echo Html::showToolTip(
                      $userdata["comment"],
-                     ['link' => $userdata['link']]
+                     Session::getCurrentInterface() != 'helpdesk' ? ['link' => $userdata['link']] : []
                   );
                }
                echo "</span>";
@@ -7416,23 +7473,30 @@ abstract class CommonITILObject extends CommonDBTM {
             if (!empty($item_i['mime'])) {
                echo "&nbsp;";
                echo Html::showToolTip(
-                  sprintf(__('File size: %s'), Toolbox::getSize(filesize(GLPI_VAR_DIR . "/" . $item_i['filepath']))) . '<br>'
+                  sprintf(__('File size: %s'), Toolbox::getSize(filesize(GLPI_DOC_DIR . "/" . $item_i['filepath']))) . '<br>'
                   . sprintf(__('MIME type: %s'), $item_i['mime'])
                );
             }
             echo "<span class='buttons'>";
-            echo "<a href='".Document::getFormURLWithID($item_i['id'])."' class='edit_document fa fa-eye pointer' title='".
-                   _sx("button", "Show")."'>";
-            echo "<span class='sr-only'>" . _sx('button', 'Show') . "</span></a>";
+            if (Session::getCurrentInterface() != 'helpdesk') {
+               echo "<a href='".Document::getFormURLWithID($item_i['id'])."' class='edit_document fa fa-eye pointer' title='".
+                     _sx("button", "Show")."'>";
+               echo "<span class='sr-only'>" . _sx('button', 'Show') . "</span></a>";
+            }
 
             $doc = new Document();
             $doc->getFromDB($item_i['id']);
             if ($doc->can($item_i['id'], UPDATE)) {
-               echo "<a href='".static::getFormURL().
-                     "?delete_document&documents_id=".$item_i['id'].
-                     "&$foreignKey=".$this->getID()."' class='delete_document fas fa-trash-alt pointer' title='".
-                     _sx("button", "Delete permanently")."'>";
-               echo "<span class='sr-only'>" . _sx('button', 'Delete permanently')  . "</span></a>";
+               echo '<form method="POST" action="' . static::getFormURL() . '" style="display:inline;">';
+               echo Html::hidden('_glpi_csrf_token', ['value' => Session::getNewCSRFToken()]);
+               echo Html::hidden('delete_document', ['value' => 1]);
+               echo Html::hidden('documents_id', ['value' => $item_i['id']]);
+               echo Html::hidden($foreignKey, ['value' => $this->getID()]);
+               echo '<button type="submit" class="unstyled">';
+               echo '<i class="delete_document fas fa-trash-alt pointer"
+                        title="' .  _sx("button", "Delete permanently") . '"></i>';
+               echo '<span class="sr-only">' . _sx('button', 'Delete permanently') . '</span></a>';
+               echo '</form>';
             }
             echo "</span>";
          }
@@ -7483,7 +7547,7 @@ abstract class CommonITILObject extends CommonDBTM {
          $reqdata = getUserName($user->getID(), 2);
          echo Html::showToolTip(
             $reqdata["comment"],
-            ['link' => $reqdata['link']]
+            Session::getCurrentInterface() != 'helpdesk' ? ['link' => $reqdata['link']] : []
          );
       } else {
          echo _n('Requester', 'Requesters', count($requesters));
@@ -8347,4 +8411,60 @@ abstract class CommonITILObject extends CommonDBTM {
    }
 
    abstract public static function getItemLinkClass(): string;
+
+   protected function handleFileUploadField(ITILTemplate $template, array $options = []): void {
+      $options = array_replace([
+         'colwidth' => 13,
+      ], $options);
+
+      if (!in_array($this->fields['status'], $this->getClosedStatusArray())) {
+         // View files added
+         echo "<tr class='tab_bg_1'>";
+         // Permit to add doc when creating a ticket
+         echo "<th style='width:{$options['colwidth']}%'>";
+         echo $template->getBeginHiddenFieldText('_documents_id');
+         $doctitle =  sprintf(__('File (%s)'), Document::getMaxUploadSize());
+         printf(__('%1$s%2$s'), $doctitle, $template->getMandatoryMark('_documents_id'));
+         // Do not show if hidden.
+         if (!$template->isHiddenField('_documents_id')) {
+            DocumentType::showAvailableTypesLink();
+         }
+         echo $template->getEndHiddenFieldText('_documents_id');
+         echo "</th>";
+         echo "<td colspan='3'>";
+         // Do not set values
+         echo $template->getEndHiddenFieldValue('_documents_id');
+         if ($template->isPredefinedField('_documents_id')) {
+            if (isset($options['_documents_id'])
+               && is_array($options['_documents_id'])
+               && count($options['_documents_id'])) {
+
+               echo "<span class='b'>".__('Default documents:').'</span>';
+               echo "<br>";
+               $doc = new Document();
+               foreach ($options['_documents_id'] as $key => $val) {
+                  if ($doc->getFromDB($val)) {
+                     echo "<input type='hidden' name='_documents_id[$key]' value='$val'>";
+                     echo "- ".$doc->getNameID()."<br>";
+                  }
+               }
+            }
+         }
+         if (!$template->isHiddenField('_documents_id')) {
+            $uploads = [];
+            if (isset($this->input['_filename'])) {
+               $uploads['_filename'] = $this->input['_filename'];
+               $uploads['_tag_filename'] = $this->input['_tag_filename'];
+            }
+            Html::file([
+               'filecontainer' => 'fileupload_info_'.(strtolower(static::class)),
+               'showtitle'     => false,
+               'multiple'      => true,
+               'uploads'       => $uploads,
+            ]);
+         }
+         echo "</td>";
+         echo "</tr>";
+      }
+   }
 }

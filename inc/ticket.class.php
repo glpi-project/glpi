@@ -2,7 +2,7 @@
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -1104,6 +1104,11 @@ class Ticket extends CommonITILObject {
             $changes[]                             = '_groups_id_of_requester';
          }
 
+         // Special case to make sure rule depending on category completename are also executed
+         if (in_array('itilcategories_id', $changes)) {
+            $changes[] = 'itilcategories_id_cn';
+         }
+
          $input = $rules->processAllRules($input,
                                           $input,
                                           ['recursive'   => true,
@@ -1553,7 +1558,7 @@ class Ticket extends CommonITILObject {
       // Check a self-service user can create a ticket for another user.
       // We condition the check with a bool flag set in front/tracking.injector.php (self-service ticket controller).
       // This to avoid plugins having their process broken.
-      if (isset($input['check_delegatee'])
+      if (isset($input['check_delegatee'], $input['_users_id_requester'])
           && $input['check_delegatee']
           && !self::canDelegateeCreateTicket($input['_users_id_requester'], ($input['entities_id'] ?? -2))) {
          Session::addMessageAfterRedirect(__("You cannot create a ticket for this user"));
@@ -1832,7 +1837,6 @@ class Ticket extends CommonITILObject {
          if (isset($this->input["_followup"]['is_private'])) {
             $toadd["is_private"] = $this->input["_followup"]['is_private'];
          }
-         // $toadd['_no_notif'] = true;
 
          $fup->add($toadd);
       }
@@ -1858,8 +1862,6 @@ class Ticket extends CommonITILObject {
          if (isset($_SESSION['glpitask_private'])) {
             $toadd['is_private'] = $_SESSION['glpitask_private'];
          }
-
-         // $toadd['_no_notif'] = true;
 
          $task->add($toadd);
       }
@@ -1906,9 +1908,10 @@ class Ticket extends CommonITILObject {
          $projecttask = new ProjectTask();
          if ($projecttask->getFromDB($this->input['_projecttasks_id'])) {
             $pt = new ProjectTask_Ticket();
-            $pt->add(['projecttasks_id' => $this->input['_projecttasks_id'],
-                           'tickets_id'      => $this->fields['id'],
-                           /*'_no_notif'   => true*/]);
+            $pt->add([
+                'projecttasks_id' => $this->input['_projecttasks_id'],
+                'tickets_id'      => $this->fields['id'],
+            ]);
          }
       }
 
@@ -4943,56 +4946,9 @@ class Ticket extends CommonITILObject {
       echo "</td>";
       echo "</tr>";
 
-      if (!in_array($this->fields['status'], $this->getClosedStatusArray())) {
-         // View files added
-         echo "<tr class='tab_bg_1'>";
-         // Permit to add doc when creating a ticket
-         echo "<th style='width:$colsize1%'>";
-         echo $tt->getBeginHiddenFieldText('_documents_id');
-         $doctitle =  sprintf(__('File (%s)'), Document::getMaxUploadSize());
-         printf(__('%1$s%2$s'), $doctitle, $tt->getMandatoryMark('_documents_id'));
-         // Do not show if hidden.
-         if (!$tt->isHiddenField('_documents_id')) {
-            DocumentType::showAvailableTypesLink();
-         }
-         echo $tt->getEndHiddenFieldText('_documents_id');
-         echo "</th>";
-         echo "<td colspan='3'>";
-         // Do not set values
-         echo $tt->getEndHiddenFieldValue('_documents_id');
-         if ($tt->isPredefinedField('_documents_id')) {
-            if (isset($options['_documents_id'])
-               && is_array($options['_documents_id'])
-               && count($options['_documents_id'])) {
-
-               echo "<span class='b'>".__('Default documents:').'</span>';
-               echo "<br>";
-               $doc = new Document();
-               foreach ($options['_documents_id'] as $key => $val) {
-                  if ($doc->getFromDB($val)) {
-                     echo "<input type='hidden' name='_documents_id[$key]' value='$val'>";
-                     echo "- ".$doc->getNameID()."<br>";
-                  }
-               }
-            }
-         }
-         if (!$tt->isHiddenField('_documents_id')) {
-            $uploads = [];
-            if (isset($this->input['_filename'])) {
-               $uploads['_filename'] = $this->input['_filename'];
-               $uploads['_tag_filename'] = $this->input['_tag_filename'];
-            }
-            Html::file([
-               'filecontainer' => 'fileupload_info_ticket',
-               // 'editor_id'     => $content_id,
-               'showtitle'     => false,
-               'multiple'      => true,
-               'uploads'       => $uploads,
-            ]);
-         }
-         echo "</td>";
-         echo "</tr>";
-      }
+      $this->handleFileUploadField($tt, [
+         'colwidth' => $colsize1
+      ]);
 
       Plugin::doHook("post_item_form", ['item' => $this, 'options' => &$options]);
 
@@ -7048,6 +7004,8 @@ class Ticket extends CommonITILObject {
          //for closed Tickets, only keep transfer and unlock
          $excluded[] = 'TicketValidation:submit_validation';
          $excluded[] = 'Ticket:*';
+         $excluded[] = 'ITILFollowup:*';
+         $excluded[] = 'Document_Item:*';
       }
       return $excluded;
    }

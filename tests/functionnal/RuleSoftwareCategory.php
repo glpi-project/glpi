@@ -2,7 +2,7 @@
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -101,7 +101,7 @@ class RuleSoftwareCategory extends DbTestCase {
       $this->boolean($rule->getFromDB($cloned))->isTrue();
 
       $this->integer($rule->fields['is_active'])->isIdenticalTo(0);
-      $this->string($rule->fields['name'])->isIdenticalTo('Copy of Import category from inventory tool');
+      $this->string($rule->fields['name'])->isIdenticalTo('Import category from inventory tool (copy)');
 
       foreach ($relations as $relation => $expected) {
          $this->integer(

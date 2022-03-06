@@ -2,7 +2,7 @@
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -44,7 +44,7 @@ use Glpi\Event;
 include ('../inc/includes.php');
 
 if (!isset($_GET["name"]) || !isset($_GET["plugin"]) || !Plugin::isPluginActive($_GET["plugin"])) {
-   Event::log("-1", "system", 2, "security",
+   Event::log(0, "system", 2, "security",
               //TRANS: %s is user name
               sprintf(__('%s makes a bad usage.'), $_SESSION["glpiname"]));
    die("security");
@@ -58,7 +58,7 @@ if ((basename($_GET["name"]) != $_GET["name"])
     || !Toolbox::startsWith(realpath($filepath), realpath(GLPI_PLUGIN_DOC_DIR))
     || !Document::isImage($filepath)) {
 
-   Event::log("-1", "system", 1, "security",
+   Event::log(0, "system", 1, "security",
               sprintf(__('%s tries to use a non standard path.'), $_SESSION["glpiname"]));
    die("security");
 }

@@ -2,7 +2,7 @@
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -102,7 +102,7 @@ include_once (GLPI_ROOT . "/inc/autoload.function.php");
 
    // Define constants values based on server env variables (i.e. defined using apache SetEnv directive)
    foreach (array_keys($constants) as $name) {
-      if (($value = getenv($name)) !== false) {
+      if (!defined($name) && ($value = getenv($name)) !== false) {
          define($name, $value);
       }
    }

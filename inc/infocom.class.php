@@ -2,7 +2,7 @@
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -784,7 +784,11 @@ class Infocom extends CommonDBChild {
 
       $elapsed_years = $now->format('Y') - $usedate->format('Y');
 
-      $annuity = $value * (1 / $duration);
+      $annuity = 0;
+      if ($duration) {
+         $annuity = $value * (1 / $duration);
+      }
+
       $years = [];
       for ($i = 0; $i <= $elapsed_years; ++$i) {
          $begin_value      = $value;

@@ -2,7 +2,7 @@
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -360,7 +360,7 @@ class Plugin extends CommonDBTM {
          );
       }
 
-      $plugin_folders = scandir(GLPI_LOCAL_I18N_DIR);
+      $plugin_folders = is_dir(GLPI_LOCAL_I18N_DIR) ? scandir(GLPI_LOCAL_I18N_DIR) : [];
       $plugin_folders = array_filter($plugin_folders, function($dir) use ($plugin_key) {
          if (!is_dir(GLPI_LOCAL_I18N_DIR . "/$dir")) {
             return false;
@@ -374,7 +374,7 @@ class Plugin extends CommonDBTM {
       });
 
       foreach ($plugin_folders as $plugin_folder) {
-         $mofile = str_replace($locales_dir, GLPI_LOCAL_I18N_DIR . '/'. $plugin_folder . '/', $mofile);
+         $mofile = GLPI_LOCAL_I18N_DIR . "/$plugin_folder/$coretrytoload.mo";
          $phpfile = str_replace('.mo', '.php', $mofile);
 
          // Load local PHP file if it exists

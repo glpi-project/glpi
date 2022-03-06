@@ -2,7 +2,7 @@
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -46,23 +46,23 @@ Html::header_nocache();
 Session::checkLoginUser();
 
 $ret = 0;
-if (isset($_GET['unlock']) && isset($_GET["id"])) {
+if (isset($_POST['unlock']) && isset($_POST["id"])) {
    // then we may have something to unlock
    $ol = new ObjectLock();
-   if ($ol->getFromDB($_GET["id"])
+   if ($ol->getFromDB($_POST["id"])
        && $ol->deleteFromDB(1)) {
-      if (isset($_GET['force'])) {
+      if (isset($_POST['force'])) {
          Log::history($ol->fields['items_id'], $ol->fields['itemtype'], [0, '', ''], 0,
                       Log::HISTORY_UNLOCK_ITEM);
       }
       $ret = 1;
    }
 
-} else if (isset($_GET['requestunlock'])
-           && isset($_GET["id"])) {
+} else if (isset($_POST['requestunlock'])
+           && isset($_POST["id"])) {
    // the we must ask for unlock
    $ol = new ObjectLock();
-   if ($ol->getFromDB( $_GET["id"])) {
+   if ($ol->getFromDB($_POST["id"])) {
       NotificationEvent::raiseEvent( 'unlock', $ol );
       $ret = 1;
    }

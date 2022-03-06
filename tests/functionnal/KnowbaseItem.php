@@ -2,7 +2,7 @@
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -324,5 +324,70 @@ class KnowbaseItem extends DbTestCase {
       $this->array(\KnowbaseItem::getForCategory(1, $m_kbi))
          ->hasSize(1)
          ->contains(-1);
+   }
+
+   protected function testGetListRequestProvider(): array {
+      return [
+         [
+            'params' => [
+               'knowbaseitemcategories_id' => 0,
+               'faq' => false,
+               'contains' => "test1 ",
+            ],
+            'type' => 'search'
+         ],
+         [
+            'params' => [
+               'knowbaseitemcategories_id' => 0,
+               'faq' => false,
+               'contains' => "test1 / test2 ( test3 )",
+            ],
+            'type' => 'search'
+         ]
+      ];
+   }
+
+   /**
+    * @dataprovider testGetListRequestProvider
+    */
+   public function testGetListRequest(array $params, string $type): void {
+      global $DB;
+
+      // Build criteria array
+      $criteria = \KnowbaseItem::getListRequest($params, $type);
+      $this->array($criteria);
+
+      // Check that the request is valid
+      $DB->request($criteria);
+   }
+
+   public function testGetAnswerAnchors(): void {
+      // Create test KB with multiple headers
+      $kb_name = 'Test testGetAnswerAnchors' . mt_rand();
+      $input = [
+         'name' => $kb_name,
+         // Answer :
+         // <h1>title 1a</h1>
+         // <h2>title2</h2>
+         // <h1>title 1b</h1>
+         // <h1>title 1c</h1>
+         'answer' => '&lt;h1&gt;title 1a&lt;/h1&gt;&lt;h2&gt;title2&lt;/h2&gt;&lt;h1&gt;title 1b&lt;/h1&gt;&lt;h1&gt;title 1c&lt;/h1&gt;'
+      ];
+      $this->createItems('KnowbaseItem', [$input]);
+
+      // Load KB
+      /** @var \KnowbaseItem */
+      $kbi = getItemByTypeName("KnowbaseItem", $kb_name);
+      $answer = $kbi->getAnswer();
+
+      // Test anchors, there should be one per header
+      $this->string($answer)->contains('<h1 id="title-1a">');
+      $this->string($answer)->contains('<a href="#title-1a">');
+      $this->string($answer)->contains('<h2 id="title2">');
+      $this->string($answer)->contains('<a href="#title2">');
+      $this->string($answer)->contains('<h1 id="title-1b">');
+      $this->string($answer)->contains('<a href="#title-1b">');
+      $this->string($answer)->contains('<h1 id="title-1c">');
+      $this->string($answer)->contains('<a href="#title-1c">');
    }
 }

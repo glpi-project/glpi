@@ -2,7 +2,7 @@
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -46,6 +46,16 @@ if (isset($_POST['itilfollowuptemplates_id'])
     && $_POST['itilfollowuptemplates_id'] > 0) {
    $template = new ITILFollowupTemplate();
    $template->getFromDB($_POST['itilfollowuptemplates_id']);
+
+   if (DropdownTranslation::isDropdownTranslationActive()) {
+      $template->fields['content'] = DropdownTranslation::getTranslatedValue(
+         $template->getID(),
+         $template->getType(),
+         'content',
+         $_SESSION['glpilanguage'],
+         $template->fields['content']
+      );
+   }
 
    $template->fields = array_map('html_entity_decode', $template->fields);
    echo json_encode($template->fields);

@@ -2,7 +2,7 @@
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -51,7 +51,7 @@ if (isset($_POST["add"])) {
    Event::log($fup->getField('items_id'), strtolower($_POST['itemtype']), 4, "tracking",
               //TRANS: %s is the user login
               sprintf(__('%s adds a followup'), $_SESSION["glpiname"]));
-   Html::back();
+   Html::redirect($track->getFormURLWithID($fup->getField('items_id')));
 
 } else if (isset($_POST['add_close'])
            ||isset($_POST['add_reopen'])) {

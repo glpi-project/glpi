@@ -2,7 +2,7 @@
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -662,11 +662,11 @@ class NetworkPortInstantiation extends CommonDBChild {
 
       switch ($origin) {
          case 'NetworkPortAlias' :
-            $possible_ports[-1]         = Dropdown::EMPTY_VALUE;
-            $field_name                 = 'networkports_id_alias';
-            $selectOptions['multiple']  = false;
-            $selectOptions['on_change'] = 'updateForm(this.options[this.selectedIndex].value)';
-            $netport_types[]            = 'NetworkPortAggregate';
+            $field_name                           = 'networkports_id_alias';
+            $selectOptions['display_emptychoice'] = true;
+            $selectOptions['multiple']            = false;
+            $selectOptions['on_change']           = 'updateForm(this.options[this.selectedIndex].value)';
+            $netport_types[]                      = 'NetworkPortAggregate';
             break;
 
          case 'NetworkPortAggregate' :

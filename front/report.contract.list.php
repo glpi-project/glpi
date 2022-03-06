@@ -2,7 +2,7 @@
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -150,7 +150,6 @@ if (isset($_POST["item_type"]) && is_array($_POST["item_type"])) {
       } else {
          $criteria['SELECT'] = array_merge($criteria['SELECT'], [
             "$itemtable.is_deleted AS itemdeleted",
-            'glpi_locations.completename AS location',
             'glpi_infocoms.buy_date',
             'glpi_infocoms.warranty_duration'
          ]);
@@ -164,12 +163,18 @@ if (isset($_POST["item_type"]) && is_array($_POST["item_type"])) {
                ]
             ]
          ];
-         $criteria['LEFT JOIN']['glpi_locations'] = [
-            'ON'  => [
-               $itemtable        => 'locations_id',
-               'glpi_locations'   => 'id'
-            ]
-         ];
+         if ($DB->fieldExists($itemtable, 'locations_id')) {
+            $criteria['SELECT'][] = 'glpi_locations.completename AS location';
+            $criteria['LEFT JOIN']['glpi_locations'] = [
+               'ON'  => [
+                  $itemtable        => 'locations_id',
+                  'glpi_locations'   => 'id'
+               ]
+            ];
+         } else {
+            $criteria['SELECT'][] = new QueryExpression("'' AS location");
+         }
+
          if ($DB->fieldExists($itemtable, 'is_template')) {
             $criteria['WHERE'][] = ["$itemtable.is_template" => 0];
          }

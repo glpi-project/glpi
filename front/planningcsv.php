@@ -2,7 +2,7 @@
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -32,9 +32,7 @@
 
 include ('../inc/includes.php');
 
-if (!isset($_GET['genical'])) {
-   Session::checkRight("planning", READ);
-}
+Session::checkRight("planning", READ);
 
 $users_id = null;
 $groups_id = (isset($_GET["gID"]) ? (int)$_GET['uID'] : 0);

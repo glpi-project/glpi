@@ -24,7 +24,7 @@ Moreover, GLPI supports many [plugins](http://plugins.glpi-project.org) that pro
 
 ## Demonstration
 
-Check GLPI features by asking a free personnal demonstration on **[glpi-network.cloud](https://www.glpi-network.cloud)**
+Check GLPI features by asking for a free personal demonstration on **[glpi-network.cloud](https://www.glpi-network.cloud)**
 
 ## License
 
@@ -74,7 +74,7 @@ It is distributed under the GNU GENERAL PUBLIC LICENSE Version 2 - please consul
 
  * Supported browsers:
     - Edge
-    - Firefox (including 2 latests ESR version)
+    - Firefox (including 2 latest ESR versions)
     - Chrome
 
 Please, consider using browsers on editor's supported version
@@ -84,7 +84,6 @@ Please, consider using browsers on editor's supported version
 
 See :
 * [releases](https://github.com/glpi-project/glpi/releases) for tarball packages.
-* [Remi's RPM repository](http://rpms.remirepo.net/) for RPM packages (Fedora, RHEL, CentOS)
 
 
 ## Documentation
@@ -104,7 +103,6 @@ We are working on a [markdown version](https://github.com/glpi-project/doc)
 * [Issues](https://github.com/glpi-project/glpi/issues)
 * [Suggestions](http://suggest.glpi-project.org)
 * [Forum](http://forum.glpi-project.org)
-* IRC : irc://irc.freenode.org/glpi
 * [Development documentation](http://glpi-developer-documentation.readthedocs.io/en/master/)
 * [Plugin directory](http://plugins.glpi-project.org)
 * [Plugin development documentation](http://glpi-developer-documentation.readthedocs.io/en/master/plugins/index.html)
@@ -117,7 +115,7 @@ To ease support and development, we need your help when encountering issues.
 There is a GLPI version typical lifecycle:
  * A new major version (9.3) is released.
  * Minor versions (9.3.x), fixing bugs or issues, are published after several weeks.
-   Please consider updating to the latest realeased minor version if you encounter some bugs or performance issues.
- * Several months after major version realesed, a new major version (9.4) is released
+   Please consider updating to the latest released minor version if you encounter some bugs or performance issues.
+ * Several months after major version released, a new major version (9.4) is released.
    Previous major versions become unsupported, please update to the new major version.
    Obviously, we provide support for the migration tools too!

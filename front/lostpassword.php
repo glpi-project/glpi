@@ -2,7 +2,7 @@
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -46,7 +46,7 @@ Html::simpleHeader(__('Forgotten password?'));
 // REQUEST needed : GET on first access / POST on submit form
 if (isset($_REQUEST['password_forget_token'])) {
 
-   if (isset($_POST['email'])) {
+   if (isset($_POST['password'])) {
       $user->showUpdateForgottenPassword($_REQUEST);
    } else {
       User::showPasswordForgetChangeForm($_REQUEST['password_forget_token']);

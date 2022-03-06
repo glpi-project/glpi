@@ -2,7 +2,7 @@
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -494,11 +494,10 @@ class Update extends CommonGLPI {
          case "9.5.5":
             include_once "{$updir}update_955_956.php";
             update955to956();
-            break;
 
-         case "9.5.5":
-            include_once "{$updir}update_955_956.php";
-            update955to956();
+         case "9.5.6":
+            include_once "{$updir}update_956_957.php";
+            update956to957();
             break;
 
          case GLPI_VERSION:
@@ -537,11 +536,13 @@ class Update extends CommonGLPI {
          );
       }
 
-      // reset telemetry
-      $crontask_telemetry = new CronTask;
+      // Reset telemetry if its state is running, assuming it remained stuck due to telemetry service issue (see #7492).
+      $crontask_telemetry = new CronTask();
       $crontask_telemetry->getFromDBbyName("Telemetry", "telemetry");
-      $crontask_telemetry->resetDate();
-      $crontask_telemetry->resetState();
+      if ($crontask_telemetry->fields['state'] === CronTask::STATE_RUNNING) {
+         $crontask_telemetry->resetDate();
+         $crontask_telemetry->resetState();
+      }
 
       //generate security key if missing, and update db
       $glpikey = new GLPIKey();

@@ -2,7 +2,7 @@
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -666,7 +666,7 @@ class Cartridge extends CommonDBChild {
       if ($canedit && $number) {
          $rand = mt_rand();
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-         $actions = ['delete' => _x('button', 'Delete permanently'),
+         $actions = ['purge' => _x('button', 'Delete permanently'),
                      'Infocom'.MassiveAction::CLASS_ACTION_SEPARATOR.'activate'
                               => __('Enable the financial and administrative information')
                           ];

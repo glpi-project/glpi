@@ -2,7 +2,7 @@
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -473,6 +473,7 @@ function step6() {
    echo "<form action='install.php' method='post'>";
    echo "<input type='hidden' name='install' value='Etape_5'>";
 
+   $_SESSION['telemetry_from_install'] = true;
    echo Telemetry::showTelemetry();
    echo Telemetry::showReference();
 

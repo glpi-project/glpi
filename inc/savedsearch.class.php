@@ -2,7 +2,7 @@
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -285,7 +285,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria {
          return false;
       }
 
-      $taburl = parse_url(rawurldecode($input['url']));
+      $taburl = parse_url(Toolbox::unclean_cross_side_scripting_deep(Toolbox::stripslashes_deep($input['url'])));
 
       $key = "plugins";
       if (preg_match('/marketplace/i', $taburl["path"])) {
@@ -376,7 +376,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria {
       }
 
       if (isset($options['url'])) {
-         echo Html::hidden('url', ['value' => rawurlencode($options['url'])]);
+         echo Html::hidden('url', ['value' => $options['url']]);
       }
 
       echo "<tr><th colspan='4'>";

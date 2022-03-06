@@ -2,7 +2,7 @@
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -326,8 +326,11 @@ class Computer_Item extends CommonDBRelation{
          if (!empty($withtemplate)) {
             echo "<input type='hidden' name='_no_history' value='1'>";
          }
-         self::dropdownAllConnect('Computer', "items_id", $comp->fields["entities_id"],
-                                  $withtemplate, $used);
+         $entities = $comp->fields["entities_id"];
+         if ($comp->isRecursive()) {
+            $entities = getSonsOf("glpi_entities", $comp->getEntityID());
+         }
+         self::dropdownAllConnect('Computer', "items_id", $entities, $withtemplate, $used);
          echo "</td><td class='center' width='20%'>";
          echo "<input type='submit' name='add' value=\""._sx('button', 'Connect')."\" class='submit'>";
          echo "<input type='hidden' name='computers_id' value='".$comp->fields['id']."'>";
@@ -818,28 +821,57 @@ class Computer_Item extends CommonDBRelation{
    static function canUnrecursSpecif(CommonDBTM $item, $entities) {
       global $DB;
 
-      // RELATION : computers -> items
-      $iterator = $DB->request([
-         'SELECT' => [
-            'itemtype',
-            new \QueryExpression('GROUP_CONCAT(DISTINCT '.$DB->quoteName('items_id').') AS ids'),
-            'computers_id'
-         ],
-         'FROM'   => self::getTable(),
-         'WHERE'  => [
-            'itemtype'  => $item->getType(),
-            'items_id'  => $item->fields['id']
-         ],
-         'GROUP'  => 'itemtype'
-      ]);
+      if ($item instanceof Computer) {
+         // RELATION : items -> computers
+         $iterator = $DB->request([
+            'SELECT' => [
+               'itemtype',
+               new \QueryExpression('GROUP_CONCAT(DISTINCT ' . $DB->quoteName('items_id') . ') AS ids'),
+            ],
+            'FROM' => self::getTable(),
+            'WHERE' => [
+               'computers_id' => $item->fields['id']
+            ],
+            'GROUP' => 'itemtype'
+         ]);
 
-      while ($data = $iterator->next()) {
-         if (countElementsInTable("glpi_computers",
-                                    ['id' => $data["computers_id"],
-                                    'NOT' => ['entities_id' => $entities]]) > 0) {
-            return false;
+         while ($data = $iterator->next()) {
+            if (!class_exists($data['itemtype'])) {
+               continue;
+            }
+            if (countElementsInTable($data['itemtype']::getTable(),
+                  [
+                     'id' => $data['ids'],
+                     'NOT' => ['entities_id' => $entities]
+                  ]) > 0) {
+               return false;
+            }
+         }
+      } else {
+         // RELATION : computers -> items
+         $iterator = $DB->request([
+            'SELECT' => [
+               'itemtype',
+               new \QueryExpression('GROUP_CONCAT(DISTINCT ' . $DB->quoteName('items_id') . ') AS ids'),
+               'computers_id'
+            ],
+            'FROM' => self::getTable(),
+            'WHERE' => [
+               'itemtype' => $item->getType(),
+               'items_id' => $item->fields['id']
+            ],
+            'GROUP' => 'itemtype'
+         ]);
+
+         while ($data = $iterator->next()) {
+            if (countElementsInTable("glpi_computers",
+                  ['id' => $data["computers_id"],
+                     'NOT' => ['entities_id' => $entities]]) > 0) {
+               return false;
+            }
          }
       }
+
       return true;
    }
 

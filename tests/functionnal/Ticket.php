@@ -2,7 +2,7 @@
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -1420,12 +1420,15 @@ class Ticket extends DbTestCase {
                $expectedDate = new \DateTime($date);
                $this->dateTime($dateClone)->isEqualTo($expectedDate);
                break;
+            case 'name':
+               $this->variable($clonedTicket->getField($k))->isEqualTo("{$ticket->getField($k)} (copy)");
+               break;
             default:
                $this->executeOnFailure(
                   function() use ($k) {
-                      dump($k);
+                     var_dump($k);
                   }
-               )->variable($clonedTicket->getField($k))->isEqualTo($ticket->getField($k))->dump($k);
+               )->variable($clonedTicket->getField($k))->isEqualTo($ticket->getField($k));
          }
       }
    }

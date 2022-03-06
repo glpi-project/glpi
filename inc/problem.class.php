@@ -2,7 +2,7 @@
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -310,17 +310,19 @@ class Problem extends CommonITILObject {
          $ticket = new Ticket();
          if ($ticket->getFromDB($this->input['_tickets_id'])) {
             $pt = new Problem_Ticket();
-            $pt->add(['tickets_id'  => $this->input['_tickets_id'],
-                           'problems_id' => $this->fields['id'],
-                           /*'_no_notif'   => true*/]);
+            $pt->add([
+                'tickets_id'  => $this->input['_tickets_id'],
+                'problems_id' => $this->fields['id'],
+            ]);
 
             if (!empty($ticket->fields['itemtype'])
                 && ($ticket->fields['items_id'] > 0)) {
                $it = new Item_Problem();
-               $it->add(['problems_id' => $this->fields['id'],
-                              'itemtype'    => $ticket->fields['itemtype'],
-                              'items_id'    => $ticket->fields['items_id'],
-                              /*'_no_notif'   => true*/]);
+               $it->add([
+                   'problems_id' => $this->fields['id'],
+                   'itemtype'    => $ticket->fields['itemtype'],
+                   'items_id'    => $ticket->fields['items_id'],
+               ]);
             }
 
             //Copy associated elements
@@ -547,6 +549,7 @@ class Problem extends CommonITILObject {
          'field'              => 'name',
          'name'               => Problem::getTypeName(1),
          'datatype'           => 'dropdown',
+         'massiveaction'      => false,
          'forcegroupby'       => true,
          'joinparams'         => [
             'beforejoin'         => [
@@ -584,6 +587,7 @@ class Problem extends CommonITILObject {
          'field'              => 'solvedate',
          'name'               => __('Resolution date'),
          'datatype'           => 'datetime',
+         'massiveaction'      => false,
          'forcegroupby'       => true,
          'joinparams'         => [
             'beforejoin'         => [
@@ -601,6 +605,7 @@ class Problem extends CommonITILObject {
          'field'              => 'date',
          'name'               => __('Opening date'),
          'datatype'           => 'datetime',
+         'massiveaction'      => false,
          'forcegroupby'       => true,
          'joinparams'         => [
             'beforejoin'         => [
@@ -1654,6 +1659,10 @@ class Problem extends CommonITILObject {
       echo "</div>";
 
       echo $tt->getEndHiddenFieldValue('content', $this);
+
+      $this->handleFileUploadField($tt, [
+         'colwidth' => $colsize1
+      ]);
 
       $options['colspan'] = 2;
       if (!$options['template_preview']) {

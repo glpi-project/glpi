@@ -2,7 +2,7 @@
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -493,7 +493,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
       global $DB;
 
       if (isset($options['followup_id'])) {
-         $followuptable = getTableForItemType($this->obj->getType().'Followup');
+         $followuptable = ITILFollowup::getTable();
 
          $criteria = array_merge_recursive(
             ['INNER JOIN' => [

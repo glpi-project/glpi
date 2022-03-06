@@ -2,7 +2,7 @@
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -1230,6 +1230,11 @@ class Html {
 
       // auto desktop / mobile viewport
       echo "<meta name='viewport' content='width=device-width, initial-scale=1'>";
+
+      // CSRF token used for AJAX calls
+      // Ensure this token is not shared with the page, as result would be that some AJAX request will consume
+      // the token that would have been used by a form submitted from the same page.
+      echo '<meta property="glpi:csrf_token" content="' . Session::getNewCSRFToken(true) . '" />';
 
       //detect theme
       $theme = isset($_SESSION['glpipalette']) ? $_SESSION['glpipalette'] : 'auror';
@@ -4800,25 +4805,18 @@ JS;
          $allowclear = "true";
       }
 
-      unset($params['placeholder']);
-      unset($params['value']);
-      unset($params['valuename']);
-
       $options = [
          'id'        => $field_id,
          'selected'  => $value
       ];
-      if (!empty($params['specific_tags'])) {
-         foreach ($params['specific_tags'] as $tag => $val) {
-            if (is_array($val)) {
-               $val = implode(' ', $val);
-            }
-            $options[$tag] = $val;
-         }
-      }
 
       // manage multiple select (with multiple values)
-      if (isset($params['values']) && count($params['values'])) {
+      if (isset($params['values'])
+         && (
+            count($params['values'])
+            || !isset($params['value'])
+         )
+      ) {
          $values = array_combine($params['values'], $params['valuesnames']);
          $options['multiple'] = 'multiple';
          $options['selected'] = $params['values'];
@@ -4828,6 +4826,19 @@ JS;
          // simple select (multiple = no)
          if ($value !== null) {
             $values = ["$value" => $valuename];
+         }
+      }
+
+      unset($params['placeholder']);
+      unset($params['value']);
+      unset($params['valuename']);
+
+      if (!empty($params['specific_tags'])) {
+         foreach ($params['specific_tags'] as $tag => $val) {
+            if (is_array($val)) {
+               $val = implode(' ', $val);
+            }
+            $options[$tag] = $val;
          }
       }
 

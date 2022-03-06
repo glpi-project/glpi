@@ -2,7 +2,7 @@
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -105,6 +105,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
    }
 
    if (isCommandLine()
+       && !defined('TU_USER') // In test suite context, used --debug option is the atoum one
        && isset($_SERVER['argv'])) {
       $key = array_search('--debug', $_SERVER['argv']);
       if ($key) {

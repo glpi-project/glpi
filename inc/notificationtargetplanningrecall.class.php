@@ -2,7 +2,7 @@
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -53,8 +53,10 @@ class NotificationTargetPlanningRecall extends NotificationTarget {
    function addNotificationTargets($entity) {
       $this->addTarget(Notification::AUTHOR, _n('Requester', 'Requesters', 1));
       $this->addTarget(Notification::TASK_ASSIGN_TECH, __('Technician in charge of the task'));
+      $this->addTarget(Notification::TASK_ASSIGN_GROUP, __('Group in charge of the task'));
       $this->addTarget(Notification::PLANNING_EVENT_GUESTS, __('Guests'));
    }
+
 
    /**
     * @see NotificationTarget::addSpecificTargets()
@@ -63,18 +65,36 @@ class NotificationTargetPlanningRecall extends NotificationTarget {
       switch ($data['type']) {
          case Notification::USER_TYPE :
             switch ($data['items_id']) {
-               //Send to the ITIL object followup author
+               //Send to the ITIL object task author
                case Notification::TASK_ASSIGN_TECH :
-                  $this->addTaskAssignUser($options);
+                  $this->addTaskAssignUser();
                   break;
 
                case Notification::PLANNING_EVENT_GUESTS :
-                  $this->addGuests($options);
+                  $this->addGuests();
+                  break;
+
+               //Send to the ITIL object task group assigned
+               case Notification::TASK_ASSIGN_GROUP :
+                  $this->addTaskAssignGroup();
                   break;
             }
          break;
       }
    }
+
+
+   /**
+    * Get group assigned to the task
+    */
+   function addTaskAssignGroup() {
+      $item = new $this->obj->fields['itemtype'];
+      if ($item->getFromDB($this->obj->fields['items_id'])
+          && $item->isField('groups_id_tech')) {
+         $this->addForGroup(0, $item->fields['groups_id_tech']);
+      }
+   }
+
 
    /**
     * Get tech related to the task

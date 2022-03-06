@@ -2,7 +2,7 @@
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -47,14 +47,18 @@ use ITILFollowup;
  */
 class APIRest extends APIBaseClass {
 
+   protected function getLogFilePath(): string {
+      return __DIR__ . "/../../files/_log/php-errors.log";
+   }
+
    public function beforeTestMethod($method) {
       global $CFG_GLPI;
 
-      // Clear test server log
-      if (!file_exists(__DIR__ . '/error.log')) {
-         touch(__DIR__ . '/error.log');
-      }
-      file_put_contents(__DIR__ . '/error.log', "");
+      $logfile = $this->getLogFilePath();
+
+      // Empty log file
+      $file_updated = file_put_contents($logfile, "");
+      $this->variable($file_updated)->isNotIdenticalTo(false);
 
       $this->http_client = new GuzzleHttp\Client();
       $this->base_uri    = trim($CFG_GLPI['url_base_api'], "/")."/";
@@ -63,10 +67,30 @@ class APIRest extends APIBaseClass {
    }
 
    public function afterTestMethod($method) {
-      global $CFG_GLPI;
+      $logfile = $this->getLogFilePath();
 
       // Check that no errors occured on the test server
-      $this->string(file_get_contents(__DIR__ . '/error.log'))->isEmpty();
+      $this->string(file_get_contents($logfile))->isEmpty();
+   }
+
+   /**
+    * Check errors that are expected to happen on the API server side and thus
+    * can't be caught directly from the unit tests
+    *
+    * @param array $expected_errors
+    *
+    * @return void
+    */
+   protected function checkServerSideError(array $expected_errors): void {
+      $logfile = $this->getLogFilePath();
+      $errors = file_get_contents($logfile);
+
+      foreach ($expected_errors as $error) {
+         $this->string($errors)->contains($error);
+      }
+
+      // Clear error file
+      file_put_contents($logfile, "");
    }
 
    protected function doHttpRequest($verb = "get", $relative_uri = "", $params = []) {
@@ -102,9 +126,13 @@ class APIRest extends APIBaseClass {
       $verb         = isset($params['verb'])
                         ? $params['verb']
                         : 'GET';
-      $relative_uri = (!in_array($resource, ['getItem', 'getItems', 'createItems',
+
+      $resource_path  = parse_url($resource, PHP_URL_PATH);
+      $resource_query = parse_url($resource, PHP_URL_QUERY);
+
+      $relative_uri = (!in_array($resource_path, ['getItem', 'getItems', 'createItems',
                                              'updateItems', 'deleteItems'])
-                         ? $resource.'/'
+                         ? $resource_path.'/'
                          : '').
                       (isset($params['parent_itemtype'])
                          ? $params['parent_itemtype'].'/'
@@ -117,12 +145,22 @@ class APIRest extends APIBaseClass {
                          : '').
                       (isset($params['id'])
                          ? $params['id']
+                         : '').
+                      (!empty($resource_query)
+                         ? '?' . $resource_query
                          : '');
-      unset($params['itemtype'],
-            $params['id'],
-            $params['parent_itemtype'],
-            $params['parent_id'],
-            $params['verb']);
+
+      $expected_errors = $params['server_errors'] ?? [];
+
+      unset(
+         $params['itemtype'],
+         $params['id'],
+         $params['parent_itemtype'],
+         $params['parent_id'],
+         $params['verb'],
+         $params['server_errors']
+      );
+
       // launch query
       try {
          $res = $this->doHttpRequest($verb, $relative_uri, $params);
@@ -155,6 +193,7 @@ class APIRest extends APIBaseClass {
       // common tests
       $this->variable($res)->isNotNull();
       $this->array($expected_codes)->contains($res->getStatusCode());
+      $this->checkServerSideError($expected_errors);
       return $data;
    }
 
@@ -505,7 +544,7 @@ class APIRest extends APIBaseClass {
          ->hasKeys($deprecated_fields);
 
       // Clean db to prevent unicity failure on next run
-      $item->delete(['id' => $item_id]);
+      $item->delete(['id' => $item_id], true);
    }
 
    /**
@@ -539,7 +578,7 @@ class APIRest extends APIBaseClass {
       }
 
       // Clean db to prevent unicity failure on next run
-      $item->delete(['id' => $item_id]);
+      $item->delete(['id' => $item_id], true);
    }
 
    /**
@@ -571,7 +610,7 @@ class APIRest extends APIBaseClass {
       }
 
       // Clean db to prevent unicity failure on next run
-      $item->delete(['id' => $data['id']]);
+      $item->delete(['id' => $data['id']], true);
    }
 
    /**
@@ -607,7 +646,7 @@ class APIRest extends APIBaseClass {
       }
 
       // Clean db to prevent unicity failure on next run
-      $item->delete(['id' => $item_id]);
+      $item->delete(['id' => $item_id], true);
    }
 
    /**
@@ -627,7 +666,7 @@ class APIRest extends APIBaseClass {
       $this->integer($item_id);
 
       // Call API
-      $this->query("$deprecated_itemtype/$item_id", [
+      $this->query("$deprecated_itemtype/$item_id?force_purge=1", [
          'headers' => $headers,
          'verb'    => "DELETE",
       ], 200, "", true);

@@ -2,7 +2,7 @@
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -351,6 +351,11 @@ class Monitor extends CommonDBTM {
       $actions = parent::getSpecificMassiveActions($checkitem);
       if (static::canUpdate()) {
          Computer_Item::getMassiveActionsForItemtype($actions, __CLASS__, 0, $checkitem);
+         $actions += [
+            'Item_SoftwareLicense'.MassiveAction::CLASS_ACTION_SEPARATOR.'add'
+               => "<i class='ma-icon fas fa-key'></i>".
+                  _x('button', 'Add a license')
+         ];
          KnowbaseItem_Item::getMassiveActionsForItemtype($actions, __CLASS__, 0, $checkitem);
       }
 

@@ -2,7 +2,7 @@
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -44,6 +44,7 @@ use Html;
 use Plugin;
 use Profile;
 use Session;
+use ShareDashboardDropdown;
 use Telemetry;
 use Toolbox;
 use User;
@@ -899,69 +900,24 @@ HTML;
 
       echo "<form class='card no-shadow display-rights-form'>";
 
-      $profiles_value = self::$all_dashboards[$this->current]['rights']['profiles_id'] ?? [];
-      $profile_item = new Profile;
-      $profiles = $profile_item->find();
-      $profiles_items = [];
-      foreach ($profiles as $profile) {
-         $new_key = 'profiles_id-'.$profile['id'];
-         $profiles_items[$new_key] = $profile['name'];
-         if (in_array($profile['id'], $profiles_value)) {
-            $values[$new_key] = $new_key;
-         }
-      }
-
-      $entities_value = self::$all_dashboards[$this->current]['rights']['entities_id'] ?? [];
-      $entity_item = new Entity;
-      $entities = $entity_item->find(getEntitiesRestrictCriteria(Entity::getTable()));
-      $entities_items = [];
-      foreach ($entities as $entity) {
-         $new_key = 'entities_id-'.$entity['id'];
-         $entities_items[$new_key] = $entity['completename'];
-         if (in_array($entity['id'], $entities_value)) {
-            $values[$new_key] = $new_key;
-         }
-      }
-
-      $users_value = self::$all_dashboards[$this->current]['rights']['users_id'] ?? [];
-      $users = iterator_to_array(User::getSqlSearchResult(false));
-      $users_items = [];
-      foreach ($users as $user) {
-         $new_key = 'users_id-'.$user['id'];
-         $users_items[$new_key] = $user['name'];
-         if (in_array($user['id'], $users_value)) {
-            $values[$new_key] = $new_key;
-         }
-      }
-
-      $groups_value = self::$all_dashboards[$this->current]['rights']['groups_id'] ?? [];
-      $group_item = new Group;
-      $groups = $group_item->find(getEntitiesRestrictCriteria(Group::getTable()));
-      $groups_items = [];
-      foreach ($groups as $group) {
-         $new_key = 'groups_id-'.$group['id'];
-         $groups_items[$new_key] = $group['name'];
-         if (in_array($group['id'], $groups_value)) {
-            $values[$new_key] = $new_key;
-         }
-      }
-
-      $possible_rights = [
-         _n("Profile", "Profiles", 1) => $profiles_items,
-         _n("Entity", "Entities", 1)  => $entities_items,
-         _n("User", "Users", 1)       => $users_items,
-         _n("Group", "Groups", 1)     => $groups_items,
-      ];
-
       echo "<label for='dropdown_rights_id$rand'>".
            __("Or share the dashboard to these target objects:").
            "</label><br>";
-      Dropdown::showFromArray('rights_id', $possible_rights, [
-         'values'   => $values,
-         'multiple' => true,
-         'rand'     => $rand,
-         'width'    => '100%'
-      ]);
+
+      $values = [];
+      $raw_values = [
+         'profiles_id' => self::$all_dashboards[$this->current]['rights']['profiles_id'] ?? [],
+         'entities_id' => self::$all_dashboards[$this->current]['rights']['entities_id'] ?? [],
+         'users_id'    => self::$all_dashboards[$this->current]['rights']['users_id'] ?? [],
+         'groups_id'   => self::$all_dashboards[$this->current]['rights']['groups_id'] ?? [],
+      ];
+
+      foreach ($raw_values as $fkey => $ids) {
+         foreach ($ids as $id) {
+            $values[] = $fkey . "-" . $id;
+         }
+      }
+      echo ShareDashboardDropdown::show($rand, $values);
       echo "<br><br>";
 
       echo "<a href='#' class='vsubmit save_rights'>".__("Save")."</a>";
@@ -1000,6 +956,11 @@ HTML;
          return $notfound_html;
       }
       $card  = $cards[$card_id];
+
+      // allows plugins to control uniqueness of its cards in cache system
+      if (isset($card['custom_hash'])) {
+         $card_options['custom_hash'] = $card['custom_hash'];
+      }
 
       // manage cache
       $options_footprint = sha1(serialize($card_options).
@@ -1151,7 +1112,7 @@ HTML;
       ];
 
       $menu = Html::getMenuInfos();
-      array_walk($menu, function($firstlvl) use (&$menu_itemtypes) {
+      array_walk($menu, static function($firstlvl) use (&$menu_itemtypes) {
          $key = $firstlvl['title'];
          if (isset($firstlvl['types'])) {
             $menu_itemtypes[$key] = array_merge($menu_itemtypes[$key] ?? [], $firstlvl['types']);
@@ -1159,7 +1120,7 @@ HTML;
       });
 
       foreach ($menu_itemtypes as &$firstlvl) {
-         $firstlvl = array_filter($firstlvl, function($itemtype) use ($exclude) {
+         $firstlvl = array_filter($firstlvl, static function($itemtype) use ($exclude) {
             if (in_array($itemtype, $exclude)
                || !is_subclass_of($itemtype, 'CommonDBTM')) {
                return false;
@@ -1173,17 +1134,18 @@ HTML;
       return $menu_itemtypes;
    }
 
-
    /**
     * Construct catalog of all possible cards addable in a dashboard.
     *
+    * @param bool $force Force rebuild the catalog of cards
+    *
     * @return array
     */
-   public function getAllDasboardCards(): array {
+   public function getAllDasboardCards($force = false): array {
       global $CFG_GLPI;
 
       // anonymous fct for adding relevant filters to cards
-      $add_filters_fct = function($itemtable) {
+      $add_filters_fct = static function($itemtable) {
          $DB = DBConnection::getReadConnection();
 
          $add_filters = [];
@@ -1209,237 +1171,242 @@ HTML;
          return $add_filters;
       };
 
-      $cards = [];
-      $menu_itemtypes = $this->getMenuItemtypes();
-      foreach ($menu_itemtypes as $firstlvl => $itemtypes) {
-         foreach ($itemtypes as $itemtype) {
-            $clean_itemtype = str_replace('\\', '_', $itemtype);
-            $cards["bn_count_$clean_itemtype"] = [
+      static $cards = null;
+
+      if ($cards === null || $force) {
+         $cards = [];
+         $menu_itemtypes = $this->getMenuItemtypes();
+
+         foreach ($menu_itemtypes as $firstlvl => $itemtypes) {
+            foreach ($itemtypes as $itemtype) {
+               $clean_itemtype = str_replace('\\', '_', $itemtype);
+               $cards["bn_count_$clean_itemtype"] = [
+                  'widgettype' => ["bigNumber"],
+                  'group'      => $firstlvl,
+                  'itemtype'   => "\\$itemtype",
+                  'label'      => sprintf(__("Number of %s"), $itemtype::getTypeName()),
+                  'provider'   => "Glpi\\Dashboard\\Provider::bigNumber$itemtype",
+                  'filters'    => array_merge([
+                     'dates',
+                     'dates_mod',
+                  ], $add_filters_fct($itemtype::getTable()))
+               ];
+            }
+         }
+
+         // add multiple width for Assets itemtypes grouped by their foreign keys
+         $assets = array_merge($CFG_GLPI['asset_types'], ['Software']);
+         foreach ($assets as $itemtype) {
+            $fk_itemtypes = [
+               'State',
+               'Entity',
+               'Manufacturer',
+               'Location',
+            ];
+
+            if (class_exists($itemtype . 'Type')) {
+               $fk_itemtypes[] = $itemtype . 'Type';
+            }
+            if (class_exists($itemtype . 'Model')) {
+               $fk_itemtypes[] = $itemtype . 'Model';
+            }
+
+            foreach ($fk_itemtypes as $fk_itemtype) {
+               $label = sprintf(
+                  __("%s by %s"),
+                  $itemtype::getTypeName(Session::getPluralNumber()),
+                  $fk_itemtype::getFieldLabel()
+               );
+
+               $cards["count_" . $itemtype . "_" . $fk_itemtype] = [
+                  'widgettype' => ['summaryNumbers', 'multipleNumber', 'pie', 'donut', 'halfpie', 'halfdonut', 'bar', 'hbar'],
+                  'itemtype'   => "\\Computer",
+                  'group'      => __('Assets'),
+                  'label'      => $label,
+                  'provider'   => "Glpi\\Dashboard\\Provider::multipleNumber" . $itemtype . "By" . $fk_itemtype,
+                  'filters'    => array_merge([
+                     'dates',
+                     'dates_mod',
+                  ], $add_filters_fct($itemtype::getTable()))
+               ];
+            }
+         }
+
+         $tickets_cases = [
+            'late'               => __("Late tickets"),
+            'waiting_validation' => __("Ticket waiting for your approval"),
+            'notold'             => __('Not solved tickets'),
+            'incoming'           => __("New tickets"),
+            'waiting'            => __('Pending tickets'),
+            'assigned'           => __('Assigned tickets'),
+            'planned'            => __('Planned tickets'),
+            'solved'             => __('Solved tickets'),
+            'closed'             => __('Closed tickets'),
+         ];
+         foreach ($tickets_cases as $case => $label) {
+            $cards["bn_count_tickets_$case"] = [
                'widgettype' => ["bigNumber"],
-               'group'      => $firstlvl,
-               'itemtype'   => "\\$itemtype",
-               'label'      => sprintf(__("Number of %s"), $itemtype::getTypeName()),
-               'provider'   => "Glpi\\Dashboard\\Provider::bigNumber$itemtype",
-               'filters'    => array_merge([
-                  'dates',
-                  'dates_mod',
-               ], $add_filters_fct($itemtype::getTable()))
+               'itemtype'   => "\\Ticket",
+               'group'      => __('Assistance'),
+               'label'      => sprintf(__("Number of %s"), $label),
+               'provider'   => "Glpi\\Dashboard\\Provider::nbTicketsGeneric",
+               'args'       => [
+                  'case'   => $case,
+                  'params' => [
+                     'validation_check_user' => true,
+                  ]
+               ],
+               'cache'      => false,
+               'filters'    => [
+                  'dates', 'dates_mod', 'itilcategory',
+                  'group_tech', 'user_tech', 'requesttype', 'location'
+               ]
+            ];
+
+            $cards["table_count_tickets_$case"] = [
+               'widgettype' => ["searchShowList"],
+               'itemtype'   => "\\Ticket",
+               'group'      => __('Assistance'),
+               'label'      => sprintf(__("List of %s"), $label),
+               'provider'   => "Glpi\\Dashboard\\Provider::nbTicketsGeneric",
+               'args'       => [
+                  'case'   => $case,
+                  'params' => [
+                     'validation_check_user' => true,
+                  ]
+               ],
+               'filters'    => [
+                  'dates', 'dates_mod', 'itilcategory',
+                  'group_tech', 'user_tech', 'requesttype', 'location'
+               ]
             ];
          }
-      }
 
-      // add multiple width for Assets itemtypes grouped by their foreign keys
-      $assets = array_merge($CFG_GLPI['asset_types'], ['Software']);
-      foreach ($assets as $itemtype) {
-         $fk_itemtypes = [
-            'State',
-            'Entity',
-            'Manufacturer',
-            'Location',
+         // add specific ticket's cases
+         $cards["nb_opened_ticket"] = [
+            'widgettype' => ['line', 'area', 'bar'],
+            'itemtype'   => "\\Ticket",
+            'group'      => __('Assistance'),
+            'label'      => __("Number of tickets by month"),
+            'provider'   => "Glpi\\Dashboard\\Provider::ticketsOpened",
+            'filters'    => [
+               'dates', 'dates_mod', 'itilcategory',
+               'group_tech', 'user_tech', 'requesttype', 'location'
+            ]
          ];
 
-         if (class_exists($itemtype.'Type')) {
-            $fk_itemtypes[] = $itemtype.'Type';
-         }
-         if (class_exists($itemtype.'Model')) {
-            $fk_itemtypes[] = $itemtype.'Model';
-         }
+         $cards["ticket_evolution"] = [
+            'widgettype' => ['lines', 'areas', 'bars', 'stackedbars'],
+            'itemtype'   => "\\Ticket",
+            'group'      => __('Assistance'),
+            'label'      => __("Evolution of ticket in the past year"),
+            'provider'   => "Glpi\\Dashboard\\Provider::getTicketsEvolution",
+            'filters'    => [
+               'dates', 'dates_mod', 'itilcategory',
+               'group_tech', 'user_tech', 'requesttype', 'location'
+            ]
+         ];
 
-         foreach ($fk_itemtypes as $fk_itemtype) {
-            $label = sprintf(
-               __("%s by %s"),
-               $itemtype::getTypeName(Session::getPluralNumber()),
-               $fk_itemtype::getFieldLabel()
-            );
+         $cards["ticket_status"] = [
+            'widgettype' => ['lines', 'areas', 'bars', 'stackedbars'],
+            'itemtype'   => "\\Ticket",
+            'group'      => __('Assistance'),
+            'label'      => __("Tickets status by month"),
+            'provider'   => "Glpi\\Dashboard\\Provider::getTicketsStatus",
+            'filters'    => [
+               'dates', 'dates_mod', 'itilcategory',
+               'group_tech', 'user_tech', 'requesttype', 'location'
+            ]
+         ];
 
-            $cards["count_".$itemtype."_".$fk_itemtype] = [
-               'widgettype' => ['summaryNumbers', 'multipleNumber', 'pie', 'donut', 'halfpie', 'halfdonut', 'bar', 'hbar'],
-               'itemtype'   => "\\Computer",
-               'group'      => __('Assets'),
+         $cards["ticket_times"] = [
+            'widgettype' => ['lines', 'areas', 'bars', 'stackedbars'],
+            'itemtype'   => "\\Ticket",
+            'group'      => __('Assistance'),
+            'label'      => __("Tickets times (in hours)"),
+            'provider'   => "Glpi\\Dashboard\\Provider::averageTicketTimes",
+            'filters'    => [
+               'dates', 'dates_mod', 'itilcategory',
+               'group_tech', 'user_tech', 'requesttype', 'location'
+            ]
+         ];
+
+         $cards["tickets_summary"] = [
+            'widgettype' => ['summaryNumbers', 'multipleNumber', 'bar', 'hbar'],
+            'itemtype'   => "\\Ticket",
+            'group'      => __('Assistance'),
+            'label'      => __("Tickets summary"),
+            'provider'   => "Glpi\\Dashboard\\Provider::getTicketSummary",
+            'filters'    => [
+               'dates', 'dates_mod', 'itilcategory',
+               'group_tech', 'user_tech', 'requesttype', 'location'
+            ]
+         ];
+
+         foreach ([
+                     'ITILCategory' => __("Top ticket's categories"),
+                     'Entity'       => __("Top ticket's entities"),
+                     'RequestType'  => __("Top ticket's request types"),
+                     'Location'     => __("Top ticket's locations"),
+                  ] as $itemtype => $label) {
+            $cards["top_ticket_$itemtype"] = [
+               'widgettype' => ['summaryNumbers', 'pie', 'donut', 'halfpie', 'halfdonut', 'multipleNumber', 'bar', 'hbar'],
+               'itemtype'   => "\\Ticket",
+               'group'      => __('Assistance'),
                'label'      => $label,
-               'provider'   => "Glpi\\Dashboard\\Provider::multipleNumber".$itemtype."By".$fk_itemtype,
-               'filters'    => array_merge([
-                  'dates',
-                  'dates_mod',
-               ], $add_filters_fct($itemtype::getTable()))
+               'provider'   => "Glpi\\Dashboard\\Provider::multipleNumberTicketBy$itemtype",
+               'filters'    => [
+                  'dates', 'dates_mod', 'itilcategory',
+                  'group_tech', 'user_tech', 'requesttype', 'location'
+               ]
             ];
          }
-      }
 
-      $tickets_cases = [
-         'late'               => __("Late tickets"),
-         'waiting_validation' => __("Ticket waiting for your approval"),
-         'notold'             => __('Not solved tickets'),
-         'incoming'           => __("New tickets"),
-         'waiting'            => __('Pending tickets'),
-         'assigned'           => __('Assigned tickets'),
-         'planned'            => __('Planned tickets'),
-         'solved'             => __('Solved tickets'),
-         'closed'             => __('Closed tickets'),
-      ];
-      foreach ($tickets_cases as $case => $label) {
-         $cards["bn_count_tickets_$case"] = [
-            'widgettype' => ["bigNumber"],
-            'itemtype'   => "\\Ticket",
-            'group'      => __('Assistance'),
-            'label'      => sprintf(__("Number of %s"), $label),
-            'provider'   => "Glpi\\Dashboard\\Provider::nbTicketsGeneric",
-            'args'       => [
-               'case' => $case,
-               'params' => [
-                  'validation_check_user' => true,
+         foreach ([
+                     'user_requester'  => __("Top ticket's requesters"),
+                     'group_requester' => __("Top ticket's requester groups"),
+                     'user_observer'   => __("Top ticket's observers"),
+                     'group_observer'  => __("Top ticket's observer groups"),
+                     'user_assign'     => __("Top ticket's assignees"),
+                     'group_assign'    => __("Top ticket's assignee groups"),
+                  ] as $type => $label) {
+            $cards["top_ticket_$type"] = [
+               'widgettype' => ['pie', 'donut', 'halfpie', 'halfdonut', 'summaryNumbers', 'multipleNumber', 'bar', 'hbar'],
+               'itemtype'   => "\\Ticket",
+               'group'      => __('Assistance'),
+               'label'      => $label,
+               'provider'   => "Glpi\\Dashboard\\Provider::nbTicketsActor",
+               'args'       => [
+                  'case' => $type,
+               ],
+               'filters'    => [
+                  'dates', 'dates_mod', 'itilcategory',
+                  'group_tech', 'user_tech', 'requesttype', 'location'
                ]
-            ],
-            'cache'      => false,
-            'filters'    => [
-               'dates', 'dates_mod', 'itilcategory',
-               'group_tech', 'user_tech', 'requesttype', 'location'
+            ];
+         }
+
+         $cards["RemindersList"] = [
+            'widgettype' => ["articleList"],
+            'label'      => __("List of reminders"),
+            'group'      => __('Tools'),
+            'provider'   => "Glpi\\Dashboard\\Provider::getArticleListReminder",
+            'filters'    => ['dates', 'dates_mod']
+         ];
+
+         $cards["markdown_editable"] = [
+            'widgettype'   => ["markdown"],
+            'label'        => __("Editable markdown card"),
+            'group'        => __('Others'),
+            'card_options' => [
+               'content' => __("Toggle edit mode to edit content"),
             ]
          ];
 
-         $cards["table_count_tickets_$case"] = [
-            'widgettype' => ["searchShowList"],
-            'itemtype'   => "\\Ticket",
-            'group'      => __('Assistance'),
-            'label'      => sprintf(__("List of %s"), $label),
-            'provider'   => "Glpi\\Dashboard\\Provider::nbTicketsGeneric",
-            'args'       => [
-               'case' => $case,
-               'params' => [
-                  'validation_check_user' => true,
-               ]
-            ],
-            'filters'    => [
-               'dates', 'dates_mod', 'itilcategory',
-               'group_tech', 'user_tech', 'requesttype', 'location'
-            ]
-         ];
-      }
-
-      // add specific ticket's cases
-      $cards["nb_opened_ticket"] = [
-         'widgettype' => ['line', 'area', 'bar'],
-         'itemtype'   => "\\Ticket",
-         'group'      => __('Assistance'),
-         'label'      => __("Number of tickets by month"),
-         'provider'   => "Glpi\\Dashboard\\Provider::ticketsOpened",
-         'filters'    => [
-            'dates', 'dates_mod', 'itilcategory',
-            'group_tech', 'user_tech', 'requesttype', 'location'
-         ]
-      ];
-
-      $cards["ticket_evolution"] = [
-         'widgettype' => ['lines', 'areas', 'bars', 'stackedbars'],
-         'itemtype'   => "\\Ticket",
-         'group'      => __('Assistance'),
-         'label'      => __("Evolution of ticket in the past year"),
-         'provider'   => "Glpi\\Dashboard\\Provider::getTicketsEvolution",
-         'filters'    => [
-            'dates', 'dates_mod', 'itilcategory',
-            'group_tech', 'user_tech', 'requesttype', 'location'
-         ]
-      ];
-
-      $cards["ticket_status"] = [
-         'widgettype' => ['lines', 'areas', 'bars', 'stackedbars'],
-         'itemtype'   => "\\Ticket",
-         'group'      => __('Assistance'),
-         'label'      => __("Tickets status by month"),
-         'provider'   => "Glpi\\Dashboard\\Provider::getTicketsStatus",
-         'filters'    => [
-            'dates', 'dates_mod', 'itilcategory',
-            'group_tech', 'user_tech', 'requesttype', 'location'
-         ]
-      ];
-
-      $cards["ticket_times"] = [
-         'widgettype' => ['lines', 'areas', 'bars', 'stackedbars'],
-         'itemtype'   => "\\Ticket",
-         'group'      => __('Assistance'),
-         'label'      => __("Tickets times (in hours)"),
-         'provider'   => "Glpi\\Dashboard\\Provider::averageTicketTimes",
-         'filters'    => [
-            'dates', 'dates_mod', 'itilcategory',
-            'group_tech', 'user_tech', 'requesttype', 'location'
-         ]
-      ];
-
-      $cards["tickets_summary"] = [
-         'widgettype' => ['summaryNumbers', 'multipleNumber', 'bar', 'hbar'],
-         'itemtype'   => "\\Ticket",
-         'group'      => __('Assistance'),
-         'label'      => __("Tickets summary"),
-         'provider'   => "Glpi\\Dashboard\\Provider::getTicketSummary",
-         'filters'    => [
-            'dates', 'dates_mod', 'itilcategory',
-            'group_tech', 'user_tech', 'requesttype', 'location'
-         ]
-      ];
-
-      foreach ([
-         'ITILCategory' => __("Top ticket's categories"),
-         'Entity'       => __("Top ticket's entities"),
-         'RequestType'  => __("Top ticket's request types"),
-         'Location'     => __("Top ticket's locations"),
-      ] as $itemtype => $label) {
-         $cards["top_ticket_$itemtype"] = [
-            'widgettype' => ['summaryNumbers', 'pie', 'donut', 'halfpie', 'halfdonut', 'multipleNumber', 'bar', 'hbar'],
-            'itemtype'   => "\\Ticket",
-            'group'      => __('Assistance'),
-            'label'      => $label,
-            'provider'   => "Glpi\\Dashboard\\Provider::multipleNumberTicketBy$itemtype",
-            'filters'    => [
-               'dates', 'dates_mod', 'itilcategory',
-               'group_tech', 'user_tech', 'requesttype', 'location'
-            ]
-         ];
-      }
-
-      foreach ([
-         'user_requester'  => __("Top ticket's requesters"),
-         'group_requester' => __("Top ticket's requester groups"),
-         'user_observer'   => __("Top ticket's observers"),
-         'group_observer'  => __("Top ticket's observer groups"),
-         'user_assign'     => __("Top ticket's assignees"),
-         'group_assign'    => __("Top ticket's assignee groups"),
-      ] as $type => $label) {
-         $cards["top_ticket_$type"] = [
-            'widgettype' => ['pie', 'donut', 'halfpie', 'halfdonut', 'summaryNumbers', 'multipleNumber', 'bar', 'hbar'],
-            'itemtype'   => "\\Ticket",
-            'group'      => __('Assistance'),
-            'label'      => $label,
-            'provider'   => "Glpi\\Dashboard\\Provider::nbTicketsActor",
-            'args'       => [
-               'case' => $type,
-            ],
-            'filters'    => [
-               'dates', 'dates_mod', 'itilcategory',
-               'group_tech', 'user_tech', 'requesttype', 'location'
-            ]
-         ];
-      }
-
-      $cards["RemindersList"] = [
-         'widgettype'   => ["articleList"],
-         'label'        => __("List of reminders"),
-         'group'        => __('Tools'),
-         'provider'     => "Glpi\\Dashboard\\Provider::getArticleListReminder",
-         'filters'      => ['dates', 'dates_mod']
-      ];
-
-      $cards["markdown_editable"] = [
-         'widgettype'   => ["markdown"],
-         'label'        => __("Editable markdown card"),
-         'group'        => __('Others'),
-         'card_options' => [
-            'content' => __("Toggle edit mode to edit content"),
-         ]
-      ];
-
-      $more_cards = Plugin::doHookFunction("dashboard_cards");
-      if (is_array($more_cards)) {
-         $cards = array_merge($cards, $more_cards);
+         $more_cards = Plugin::doHookFunction("dashboard_cards");
+         if (is_array($more_cards)) {
+            $cards = array_merge($cards, $more_cards);
+         }
       }
 
       return $cards;

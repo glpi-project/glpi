@@ -2,7 +2,7 @@
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -118,6 +118,9 @@ class Monitor extends DbTestCase {
       $this->boolean($clonedMonitor->getFromDB($added))->isTrue();
 
       $expected = Monitor::getMonitorFields($added, $date);
+
+      $this->string($clonedMonitor->fields['name'])->isEqualTo("$expected[name] (copy)");
+      unset($clonedMonitor->fields['name'], $expected['name']);
 
       $this->array($clonedMonitor->fields)->isIdenticalTo($expected);
    }

@@ -1,7 +1,7 @@
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -40,8 +40,7 @@ function uploadFile(file, editor, input_name) {
    formdata.append('name', 'filename');
 
    // upload file with ajax
-   $.ajax({
-      type: 'POST',
+   $.post({
       url: CFG_GLPI.root_doc+'/ajax/fileupload.php',
       data: formdata,
       processData: false,

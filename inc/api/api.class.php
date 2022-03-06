@@ -3,7 +3,7 @@
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -1080,7 +1080,7 @@ abstract class API extends CommonGLPI {
       if (isset($params['with_logs'])
           && $params['with_logs']) {
          $fields['_logs'] = [];
-         if (!Session::haveRight($itemtype::$rightname, READNOTE)) {
+         if (!Log::canView()) {
             $fields['_logs'] = $this->arrayRightError();
          } else {
             $fields['_logs'] = getAllDataFromTable(
@@ -2161,7 +2161,7 @@ abstract class API extends CommonGLPI {
          return $this->returnError(__("Email notifications are disabled"));
       }
 
-      if (!isset($params['email'])) {
+      if (!isset($params['email']) && !$params['password_forget_token']) {
          return $this->returnError(__("email parameter missing"));
       }
 
@@ -2178,12 +2178,11 @@ abstract class API extends CommonGLPI {
             return $this->returnError($e->getMessage());
          }
          return $this->returnResponse([
-            __("An email has been sent to your email address. The email contains information for reset your password.")
+            __('If the given email address match an exisiting GLPI user, you will receive an email containing the informations required to reset your password. Please contact your administrator if you do not receive any email.')
          ]);
       } else {
          $password = isset($params['password']) ? $params['password'] : '';
          $input = [
-            'email'                    => Toolbox::addslashes_deep($params['email']),
             'password_forget_token'    => Toolbox::addslashes_deep($params['password_forget_token']),
             'password'                 => Toolbox::addslashes_deep($password),
             'password2'                => Toolbox::addslashes_deep($password),

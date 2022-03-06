@@ -2,7 +2,7 @@
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -957,7 +957,10 @@ class Search {
              && isset($criterion['itemtype'])) {
             $itemtype = $criterion['itemtype'];
             $meta = true;
-            $searchopt = &self::getOptions($itemtype);
+            $meta_searchopt = &self::getOptions($itemtype);
+         } else {
+            // Not a meta, use the same search option everywhere
+            $meta_searchopt = $searchopt;
          }
 
          // common search
@@ -986,7 +989,7 @@ class Search {
             }
 
             if (isset($criterion['criteria']) && count($criterion['criteria'])) {
-               $sub_sql = self::constructCriteriaSQL($criterion['criteria'], $data, $searchopt, $is_having);
+               $sub_sql = self::constructCriteriaSQL($criterion['criteria'], $data, $meta_searchopt, $is_having);
                if (strlen($sub_sql)) {
                   if ($NOT) {
                      $sql .= "$LINK NOT($sub_sql)";
@@ -994,7 +997,7 @@ class Search {
                      $sql .= "$LINK ($sub_sql)";
                   }
                }
-            } else if (isset($searchopt[$criterion['field']]["usehaving"])
+            } else if (isset($meta_searchopt[$criterion['field']]["usehaving"])
                        || ($meta && "AND NOT" === $criterion['link'])) {
                if (!$is_having) {
                   // the having part will be managed in a second pass
@@ -2149,18 +2152,6 @@ class Search {
          return [];
       }
 
-      $key_to_itemtypes = [
-         'directconnect_types'  => ['Computer'],
-         'infocom_types'        => ['Budget', 'Infocom'],
-         'linkgroup_types'      => ['Group'],
-         // 'linkgroup_tech_types' => 'Group', // Cannot handle ambiguity with 'Group' from 'linkgroup_types'
-         'linkuser_types'       => ['User'],
-         // 'linkuser_tech_types'  => 'User', // Cannot handle ambiguity with 'User' from 'linkuser_types'
-         'project_asset_types'  => ['Project'],
-         'rackable_types'       => ['Enclosure', 'Rack'],
-         'ticket_types'         => ['Change', 'Problem', 'Ticket'],
-      ];
-
       $linked = [];
       foreach ($CFG_GLPI as $key => $values) {
          if ($key === 'link_types') {
@@ -2173,22 +2164,13 @@ class Search {
             continue;
          }
 
-         $matches = [];
-         if (preg_match('/^(.+)_types$/', $key, $matches)) {
-            $config_itemtypes = array_key_exists($key, $key_to_itemtypes)
-               ? $key_to_itemtypes[$key]
-               : [ucwords($matches[1])];
-            foreach ($config_itemtypes as $config_itemtype) {
-               if (!is_a($config_itemtype, CommonDBTM::class, true)) {
-                  continue;
-               }
-               if ($itemtype === $config_itemtype::getType()) {
-                  // List is related to source itemtype, all types of list are so linked
-                  $linked = array_merge($linked, $values);
-               } else if (in_array($itemtype, $values)) {
-                  // Source itemtype is inside list, type corresponding to list is so linked
-                  $linked[] = $config_itemtype::getType();
-               }
+         foreach (self::getMetaParentItemtypesForTypesConfig($key) as $config_itemtype) {
+            if ($itemtype === $config_itemtype::getType()) {
+               // List is related to source itemtype, all types of list are so linked
+               $linked = array_merge($linked, $values);
+            } else if (in_array($itemtype, $values)) {
+               // Source itemtype is inside list, type corresponding to list is so linked
+               $linked[] = $config_itemtype::getType();
             }
          }
       }
@@ -2196,7 +2178,69 @@ class Search {
       return array_unique($linked);
    }
 
+   /**
+    * Returns parents itemtypes having subitems defined in given config key.
+    * This list is filtered and is only valid in a "meta" search context.
+    *
+    * @param string $config_key
+    *
+    * @return string[]
+    */
+   private static function getMetaParentItemtypesForTypesConfig(string $config_key): array {
+      $matches = [];
+      if (preg_match('/^(.+)_types$/', $config_key, $matches) === 0) {
+         return [];
+      }
 
+      $key_to_itemtypes = [
+         'directconnect_types'  => ['Computer'],
+         'infocom_types'        => ['Budget', 'Infocom'],
+         'linkgroup_types'      => ['Group'],
+         // 'linkgroup_tech_types' => ['Group'], // Cannot handle ambiguity with 'Group' from 'linkgroup_types'
+         'linkuser_types'       => ['User'],
+         // 'linkuser_tech_types'  => ['User'], // Cannot handle ambiguity with 'User' from 'linkuser_types'
+         'project_asset_types'  => ['Project'],
+         'rackable_types'       => ['Enclosure', 'Rack'],
+         'ticket_types'         => ['Change', 'Problem', 'Ticket'],
+      ];
+
+      if (array_key_exists($config_key, $key_to_itemtypes)) {
+         return $key_to_itemtypes[$config_key];
+      }
+
+      $itemclass = $matches[1];
+      if (is_a($itemclass, CommonDBTM::class, true)) {
+         return [$itemclass::getType()];
+      }
+
+      return [];
+   }
+
+   /**
+    * Check if an itemtype is a possible subitem of another itemtype in a "meta" search context.
+    *
+    * @param string $parent_itemtype
+    * @param string $child_itemtype
+    *
+    * @return boolean
+    */
+   private static function isPossibleMetaSubitemOf(string $parent_itemtype, string $child_itemtype) {
+      global $CFG_GLPI;
+
+      if (is_a($parent_itemtype, CommonITILObject::class, true)
+          && in_array($child_itemtype, array_keys($parent_itemtype::getAllTypesForHelpdesk()))) {
+         return true;
+      }
+
+      foreach ($CFG_GLPI as $key => $values) {
+         if (in_array($parent_itemtype, self::getMetaParentItemtypesForTypesConfig($key))
+             && in_array($child_itemtype, $values)) {
+            return true;
+         }
+      }
+
+      return false;
+   }
 
    /**
     * @since 0.85
@@ -3504,7 +3548,7 @@ JAVASCRIPT;
       $tocompute      = "`$table$addtable`.`$field`";
       $tocomputeid    = "`$table$addtable`.`id`";
 
-      $tocomputetrans = "IFNULL(`$table".$addtable."_trans`.`value`,'".self::NULLVALUE."') ";
+      $tocomputetrans = "IFNULL(`$table".$addtable."_trans_" . $field . "`.`value`,'".self::NULLVALUE."') ";
 
       $ADDITONALFIELDS = '';
       if (isset($searchopt[$ID]["additionalfields"])
@@ -3755,7 +3799,7 @@ JAVASCRIPT;
                       $TRANS = "GROUP_CONCAT(DISTINCT CONCAT(IFNULL($tocomputetrans, '".self::NULLVALUE."'),
                                                              '".self::SHORTSEP."',$tocomputeid) ORDER BY $tocomputeid
                                              SEPARATOR '".self::LONGSEP."')
-                                     AS `".$NAME."_trans`, ";
+                                     AS `".$NAME."_trans_" . $field . "`, ";
                   }
 
                   return " GROUP_CONCAT(DISTINCT CONCAT($tocompute, '".self::SHORTSEP."' ,
@@ -3780,7 +3824,7 @@ JAVASCRIPT;
          if (Session::haveTranslations(getItemTypeForTable($table), $field)) {
             $TRANS = "GROUP_CONCAT(DISTINCT CONCAT(IFNULL($tocomputetrans, '".self::NULLVALUE."'),
                                                    '".self::SHORTSEP."',$tocomputeid) ORDER BY $tocomputeid SEPARATOR '".self::LONGSEP."')
-                                  AS `".$NAME."_trans`, ";
+                                  AS `".$NAME."_trans_" . $field . "`, ";
 
          }
          return " GROUP_CONCAT(DISTINCT CONCAT(IFNULL($tocompute, '".self::NULLVALUE."'),
@@ -3791,7 +3835,7 @@ JAVASCRIPT;
       }
       $TRANS = '';
       if (Session::haveTranslations(getItemTypeForTable($table), $field)) {
-         $TRANS = $tocomputetrans." AS `".$NAME."_trans`, ";
+         $TRANS = $tocomputetrans." AS `".$NAME."_trans_" . $field . "`, ";
 
       }
       return "$tocompute AS `".$NAME."`, $TRANS $ADDITONALFIELDS";
@@ -4467,6 +4511,8 @@ JAVASCRIPT;
 
          case "glpi_tickets.global_validation" :
          case "glpi_ticketvalidations.status" :
+         case "glpi_changes.global_validation" :
+         case "glpi_changevalidations.status" :
             if ($val == 'all') {
                return "";
             }
@@ -4521,7 +4567,7 @@ JAVASCRIPT;
       }
 
       $tocompute      = "`$table`.`$field`";
-      $tocomputetrans = "`".$table."_trans`.`value`";
+      $tocomputetrans = "`".$table."_trans_" . $field . "`.`value`";
       if (isset($searchopt[$ID]["computation"])) {
          $tocompute = $searchopt[$ID]["computation"];
          $tocompute = str_replace($DB->quoteName('TABLE'), 'TABLE', $tocompute);
@@ -4943,7 +4989,7 @@ JAVASCRIPT;
           && !$is_fkey_composite_on_self) {
          $transitemtype = getItemTypeForTable($new_table);
          if (Session::haveTranslations($transitemtype, $field)) {
-            $transAS            = $nt.'_trans';
+            $transAS            = $nt.'_trans_'.$field;
             return self::joinDropdownTranslations(
                $transAS,
                $nt,
@@ -5175,7 +5221,7 @@ JAVASCRIPT;
                                               $addcondition)";
                   $transitemtype = getItemTypeForTable($new_table);
                   if (Session::haveTranslations($transitemtype, $field)) {
-                     $transAS            = $nt.'_trans';
+                     $transAS            = $nt.'_trans_'.$field;
                      $specific_leftjoin .= self::joinDropdownTranslations(
                         $transAS,
                         $nt,
@@ -5353,15 +5399,22 @@ JAVASCRIPT;
 
       // Generic JOIN
       $from_obj      = getItemForItemtype($from_referencetype);
+      $from_item_obj = null;
       $to_obj        = getItemForItemtype($to_type);
-      $from_item_obj = getItemForItemtype($from_referencetype . '_Item');
-      if (!$from_item_obj) {
-         $from_item_obj = getItemForItemtype('Item_' . $from_referencetype);
+      $to_item_obj   = null;
+      if (self::isPossibleMetaSubitemOf($from_referencetype, $to_type)) {
+         $from_item_obj = getItemForItemtype($from_referencetype . '_Item');
+         if (!$from_item_obj) {
+            $from_item_obj = getItemForItemtype('Item_' . $from_referencetype);
+         }
       }
-      $to_item_obj   = getItemForItemtype($to_type . '_Item');
-      if (!$to_item_obj) {
-         $to_item_obj = getItemForItemtype('Item_' . $to_type);
+      if (self::isPossibleMetaSubitemOf($to_type, $from_referencetype)) {
+         $to_item_obj   = getItemForItemtype($to_type . '_Item');
+         if (!$to_item_obj) {
+            $to_item_obj = getItemForItemtype('Item_' . $to_type);
+         }
       }
+
       if ($from_obj && $from_obj->isField($to_fk)) {
          // $from_table has a foreign key corresponding to $to_table
          if (!in_array($to_table, $already_link_tables2)) {
@@ -5892,15 +5945,19 @@ JAVASCRIPT;
                   switch ($table.'.'.$field) {
                      case "glpi_tickets.time_to_resolve" :
                         $slaField = 'slas_id_ttr';
+                        $sla_class = 'SLA';
                         break;
                      case "glpi_tickets.time_to_own" :
                         $slaField = 'slas_id_tto';
+                        $sla_class = 'SLA';
                         break;
                      case "glpi_tickets.internal_time_to_own" :
                         $slaField = 'olas_id_tto';
+                        $sla_class = 'OLA';
                         break;
                      case "glpi_tickets.internal_time_to_resolve" :
                         $slaField = 'olas_id_ttr';
+                        $sla_class = 'OLA';
                         break;
                   }
 
@@ -5915,7 +5972,7 @@ JAVASCRIPT;
                   }
 
                   if ($item->isField($slaField) && $item->fields[$slaField] != 0) { // Have SLA
-                     $sla = new SLA();
+                     $sla = new $sla_class();
                      $sla->getFromDB($item->fields[$slaField]);
                      $currenttime = $sla->getActiveTimeBetween($item->fields['date'],
                                                                date('Y-m-d H:i:s'));
@@ -6264,7 +6321,7 @@ JAVASCRIPT;
                      }
                      $count_display++;
                      $page  = $linkitemtype::getFormURLWithID($data[$ID][$k]['id']);
-                     $name  = Dropdown::getValueWithUnit($data[$ID][$k]['name'], $unit);
+                     $name  = $data[$ID][$k]['name'];
                      if ($_SESSION["glpiis_ids_visible"] || empty($data[$ID][$k]['name'])) {
                         $name = sprintf(__('%1$s (%2$s)'), $name, $data[$ID][$k]['id']);
                      }
@@ -6448,8 +6505,7 @@ JAVASCRIPT;
                         $out .= self::LBBR;
                      }
                      $count_display++;
-                     $out .= Dropdown::getValueWithUnit(Dropdown::getYesNo($data[$ID][$k]['name']),
-                                                        $unit);
+                     $out .= Dropdown::getYesNo($data[$ID][$k]['name']);
                   }
                }
                return $out;
@@ -6531,9 +6587,9 @@ JAVASCRIPT;
                   } else {
                      // Trans field exists
                      if (isset($data[$ID][$k]['trans']) && !empty($data[$ID][$k]['trans'])) {
-                        $out .=  Dropdown::getValueWithUnit($data[$ID][$k]['trans'], $unit);
+                        $out .= $data[$ID][$k]['trans'];
                      } else {
-                        $out .= Dropdown::getValueWithUnit($data[$ID][$k]['name'], $unit);
+                        $out .= $data[$ID][$k]['name'];
                      }
                   }
                }

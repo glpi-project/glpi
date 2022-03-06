@@ -1,7 +1,7 @@
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -53,6 +53,7 @@ var Dashboard = {
    cache_key: "",
 
    display: function(params) {
+      var that = this;
 
       // get passed options and merge it with default ones
       var options = (typeof params !== 'undefined')
@@ -228,7 +229,6 @@ var Dashboard = {
 
             // fit again numbers
             Dashboard.fitNumbers();
-            Dashboard.animateNumbers();
          }, 200);
       });
 
@@ -248,8 +248,7 @@ var Dashboard = {
             form_data[right_name].push(value);
          });
 
-         $.ajax({
-            method: 'POST',
+         $.post({
             url: CFG_GLPI.root_doc+"/ajax/dashboard.php",
             data: {
                action:    'save_rights',
@@ -273,6 +272,11 @@ var Dashboard = {
          if (chart.length > 0)  {
             chart[0].__chartist__.update();
          }
+
+         // Used after "resize.fittext" event to reset our custom width "trick"
+         // See computeWidth() function for more info on the trick
+         that.resetComputedWidth($('body').find('.big-number').find('.formatted-number'));
+         that.resetComputedWidth($('body').find('.big-number').find('.label'));
 
          // animate the number
          Dashboard.fitNumbers($(elem));
@@ -476,6 +480,15 @@ var Dashboard = {
       $(document).on('input', '.card.markdown textarea.markdown_content', function() {
          Dashboard.saveMarkdown($(this));
       });
+
+      // FitText() add an event listener that recompute the font size of all
+      // "fittexted" elements of the page.
+      // This means we need to apply our max-width "trick" on this event
+      // See computeWidth() function for more info on the trick
+      $(window).on('resize.fittext', function() {
+         that.computeWidth($('body').find('.big-number').find('.formatted-number'));
+         that.computeWidth($('body').find('.big-number').find('.label'));
+      });
    },
 
    saveMarkdown:function(textarea) {
@@ -542,8 +555,7 @@ var Dashboard = {
       var widget = Dashboard.addWidget(form_data);
 
       // get the html of the new card and save dashboard
-      $.ajax({
-         method: 'GET',
+      $.get({
          url: CFG_GLPI.root_doc+"/ajax/dashboard.php",
          data: {
             action:    'get_card',
@@ -608,8 +620,7 @@ var Dashboard = {
       });
 
       // get the html of the new card and save dashboard
-      $.ajax({
-         method: 'GET',
+      $.get({
          url: CFG_GLPI.root_doc+"/ajax/dashboard.php",
          data: {
             action:    'get_filter',
@@ -645,8 +656,7 @@ var Dashboard = {
    },
 
    setLastDashboard: function() {
-      $.ajax({
-         method: 'POST',
+      $.post({
          url: CFG_GLPI.root_doc+"/ajax/dashboard.php",
          data: {
             dashboard: Dashboard.current_name,
@@ -701,8 +711,7 @@ var Dashboard = {
          } : null;
       });
 
-      $.ajax({
-         method: 'POST',
+      $.post({
          url: CFG_GLPI.root_doc+"/ajax/dashboard.php",
          data: {
             action: 'save_items',
@@ -717,9 +726,63 @@ var Dashboard = {
       });
    },
 
+
+
+   /**
+    * FitText() only use the width of an item into consideration (and ignore the height).
+    * This means that if you keep increasing the width of a card without also
+    * increasing the height then your text will overflow the card's height at
+    * some point.
+    *
+    * This function fix this by reducing the available width of the parent DOM
+    * element to ensure a decent height / width ratio will be used by fitText()
+    *
+    * @param {*} items
+    */
+   computeWidth: function(items) {
+      items.each(function() {
+         // Compute parent dimension
+         var parent_width = $(this).parent().parent().width();
+         var parent_height = $(this).parent().parent().height();
+
+         // Only for "wide" cards
+         if (parent_width > parent_height) {
+            // FitText "ideal" ratio to avoid any overflow
+            // This value was found by using fitText() on a ~1600px wide span and
+            // checking the resulting text height.
+            // It probably wont be the perfect ratio for every possible texts
+            // length but it is a safe ratio to use for our calculation
+            var target_ratio = 0.35;
+
+            // Compute what our desired height would be if we want to match the
+            // target ratio
+            var desired_width = parent_height / target_ratio;
+            var desired_width_percent = (desired_width / parent_width) * 100;
+
+            // Keep half the space since we have two items to display (value and label)
+            var desired_width_percent_half = desired_width_percent / 2;
+
+            // Apply the width
+            $(this).css('width', desired_width_percent_half + '%');
+         }
+      });
+   },
+
+   /**
+    * Remove the custom width as it should only be used temporarily to 'trick'
+    * fitText into using a different fontSize and should not be applied to the
+    * actual text
+    *
+    * @param {*} items
+    */
+   resetComputedWidth: function(items) {
+      items.each(function() {
+         $(this).css('width', '100%');
+      });
+   },
+
    fitNumbers: function(parent_item) {
       parent_item = parent_item || $('body');
-
       var text_offset = 0.96;
 
       // responsive mode
@@ -728,6 +791,10 @@ var Dashboard = {
          text_offset = 1.8;
       }
 
+      // Set temporary max width to trick fitText and avoid overflow
+      this.computeWidth(parent_item.find('.big-number').find('.formatted-number'));
+      this.computeWidth(parent_item.find('.big-number').find('.label'));
+
       parent_item
          .find('.big-number')
          .find('.formatted-number').fitText(text_offset);
@@ -735,6 +802,7 @@ var Dashboard = {
       parent_item
          .find('.summary-numbers')
          .find('.formatted-number').fitText(text_offset-0.65);
+
       parent_item
          .find('.summary-numbers')
          .find('.line .label').fitText(text_offset-0.2);
@@ -742,6 +810,11 @@ var Dashboard = {
       parent_item
          .find('.big-number')
          .find('.label').fitText(text_offset - 0.2);
+
+      // Remove temporary width
+      this.resetComputedWidth(parent_item.find('.big-number').find('.formatted-number'));
+      this.resetComputedWidth(parent_item.find('.big-number').find('.label'));
+
    },
 
    animateNumbers: function(parent_item) {
@@ -906,7 +979,10 @@ var Dashboard = {
    getCardsAjax: function(specific_one) {
       specific_one = specific_one || "";
 
-      var promises = [];
+      var filters = Dashboard.getFiltersFromStorage();
+
+      let requested_cards = [];
+      let card_ajax_data = [];
       $(".grid-stack-item:not(.lock-bottom)"+specific_one).each(function() {
          var card         = $(this);
          var card_opt     = card.data('card-options');
@@ -921,30 +997,57 @@ var Dashboard = {
          }
 
          // append filters
-         var filters = Dashboard.getFiltersFromStorage();
          card_opt.apply_filters = filters;
 
-         promises.push($.get(CFG_GLPI.root_doc+"/ajax/dashboard.php", {
-            'action':      'get_card',
-            'dashboard':   Dashboard.current_name,
-            'card_id':     card_id,
-            'force':       (specific_one.length > 0 ? 1 : 0),
-            'embed':       (Dashboard.embed ? 1 : 0),
-            'args':        card_opt,
-            'd_cache_key': Dashboard.cache_key,
-            'c_cache_key': card_opt.cache_key || "",
-         }).then(function(html) {
-            card.children('.grid-stack-item-content')
-               .html(html);
-
-            Dashboard.fitNumbers(card);
-            Dashboard.animateNumbers(card);
-         }).fail(function() {
-            card.html("<div class='empty-card card-error'><i class='fas fa-exclamation-triangle'></i></div>");
-         }));
+         card_ajax_data.push({
+            'card_id': card_id,
+            'force': (specific_one.length > 0 ? 1 : 0),
+            'args': card_opt,
+            'c_cache_key': card_opt.cache_key || ""
+         });
+         requested_cards.push({
+            'card_el': card,
+            'card_id': card_id
+         });
       });
 
-      return promises;
+      return $.ajax({
+         url:CFG_GLPI.root_doc+"/ajax/dashboard.php",
+         method: 'POST',
+         data: {
+            'action': 'get_cards',
+            data: JSON.stringify({ //Preserve integers
+               'dashboard': Dashboard.current_name,
+               'force': (specific_one.length > 0 ? 1 : 0),
+               'embed': (Dashboard.embed ? 1 : 0),
+               'd_cache_key': Dashboard.cache_key,
+               'cards': card_ajax_data
+            })
+         }
+      }).then(function(results) {
+         $.each(requested_cards, (i2, crd) => {
+            let has_result = false;
+            const card = crd.card_el;
+            $.each(results, (card_id, card_result) => {
+               if (crd.card_id === card_id) {
+                  const html = card_result;
+                  has_result = true;
+                  card.children('.grid-stack-item-content').html(html);
+
+                  Dashboard.fitNumbers(card);
+                  Dashboard.animateNumbers(card);
+               }
+            });
+            if (!has_result) {
+               card.html("<div class='empty-card card-error'><i class='fas fa-exclamation-triangle'></i></div>");
+            }
+         });
+      }).fail(function() {
+         $.each(requested_cards, (i2, crd) => {
+            const card = crd.card_el;
+            card.html("<div class='empty-card card-error'><i class='fas fa-exclamation-triangle'></i></div>");
+         });
+      });
    },
 
    easter: function() {

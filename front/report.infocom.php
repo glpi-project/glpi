@@ -2,7 +2,7 @@
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -54,7 +54,8 @@ if (!empty($_POST["date1"])
 $stat = new Stat();
 $chart_opts =  [
    'width'  => '90%',
-   'legend' => false
+   'legend' => false,
+   'title'  => __('Value'),
 ];
 
 Report::title();
@@ -90,6 +91,10 @@ function display_infocoms_report($itemtype, $begin, $end) {
    global $DB, $valeurtot, $valeurnettetot, $valeurnettegraphtot, $valeurgraphtot, $CFG_GLPI, $stat, $chart_opts;
 
    $itemtable = getTableForItemType($itemtype);
+   // report need name and ticket_tco, many asset type don't have it therefore are not compatible
+   if (!$DB->fieldExists($itemtable, "ticket_tco", false)) {
+      return false;
+   }
    $criteria = [
       'SELECT'       => [
          'glpi_infocoms.*',
@@ -287,7 +292,7 @@ function display_infocoms_report($itemtype, $begin, $end) {
    return false;
 }
 
-$types = ['Computer', 'Monitor', 'NetworkEquipment', 'Peripheral', 'Phone', 'Printer'];
+$types = $CFG_GLPI["infocom_types"];
 
 $i = 0;
 echo "<table><tr><td class='top'>";

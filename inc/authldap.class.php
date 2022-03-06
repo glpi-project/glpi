@@ -2,7 +2,7 @@
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -2844,12 +2844,47 @@ class AuthLDAP extends CommonDBTM {
     * @return object identification object
     */
    static function tryLdapAuth($auth, $login, $password, $auths_id = 0, $user_dn = false, $break = true) {
+      global $DB;
 
       //If no specific source is given, test all ldap directories
       if ($auths_id <= 0) {
-         foreach ($auth->authtypes["ldap"] as $ldap_method) {
+         $user_found = false;
+
+         $ldap_methods = $auth->authtypes["ldap"];
+
+         // Sort servers to first try on known servers for given login.
+         // It is necessary to still necessary to try to connect on all servers to handle following cases:
+         //  - there are multiple users having same login on different LDAP servers,
+         //  - a user has been migrated from a LDAP server to another one, but GLPI is not yet aware of this.
+         // Caveat: if user uses a wrong password, a login attempt will still be done on all active LDAP servers.
+         $known_servers = $DB->request(
+            [
+               'SELECT' => 'auths_id',
+               'FROM'   => User::getTable(),
+               'WHERE'  => ['name' => addslashes($login)],
+            ]
+         );
+         $known_servers_id = array_column(iterator_to_array($known_servers), 'auths_id');
+         usort(
+            $ldap_methods,
+            function (array $a, array $b) use ($known_servers_id) {
+               if (in_array($a['id'], $known_servers_id) && !in_array($b['id'], $known_servers_id)) {
+                  return -1;
+               }
+               if (!in_array($a['id'], $known_servers_id) && in_array($b['id'], $known_servers_id)) {
+                  return 1;
+               }
+               return $a['id'] <=> $b['id'];
+            }
+         );
+
+         foreach ($ldap_methods as $ldap_method) {
             if ($ldap_method['is_active']) {
                $auth = self::ldapAuth($auth, $login, $password, $ldap_method, $user_dn);
+
+               if ($auth->user_found) {
+                  $user_found = true;
+               }
 
                if ($auth->auth_succeded
                    && $break) {
@@ -2857,6 +2892,8 @@ class AuthLDAP extends CommonDBTM {
                }
             }
          }
+
+         $auth->user_found = $user_found;
 
       } else if (array_key_exists($auths_id, $auth->authtypes["ldap"])) {
          // Check if the ldap server indicated as the last good one still exists !
@@ -3090,7 +3127,12 @@ class AuthLDAP extends CommonDBTM {
                 && ($entity->getField('authldaps_id') > 0)) {
 
                $authldap->getFromDB($_SESSION['ldap_import']['authldaps_id']);
-               $_SESSION['ldap_import']['authldaps_id'] = $entity->getField('authldaps_id');
+
+               if ($_SESSION['ldap_import']['authldaps_id'] == NOT_AVAILABLE) {
+                  // authldaps_id wasn't submitted by the user -> take entity config
+                  $_SESSION['ldap_import']['authldaps_id'] = $entity->getField('authldaps_id');
+               }
+
                $_SESSION['ldap_import']['basedn']       = $entity->getField('ldap_dn');
 
                // No dn specified in entity : use standard one

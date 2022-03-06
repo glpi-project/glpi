@@ -2,7 +2,7 @@
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -69,7 +69,7 @@ switch ($action) {
       if (isset($_SESSION['exportitems'])) {
          $rules_key = array_keys($_SESSION['exportitems']);
       } else {
-         $rules_key = array_keys($rule->find());
+         $rules_key = array_keys($rule->find(getEntitiesRestrictCriteria()));
       }
       $rulecollection->exportRulesToXML($rules_key);
       unset($_SESSION['exportitems']);

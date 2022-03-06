@@ -2,7 +2,7 @@
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -38,42 +38,47 @@ if (!isset($_REQUEST["action"])) {
    exit;
 }
 
-if (!isset($_REQUEST['embed']) || !$_REQUEST['embed']) {
+// Parse stringified JSON payload (Used to preserve integers)
+$request_data = array_merge($_REQUEST, json_decode($_UREQUEST['data'] ?? '{}', true));
+unset($request_data['data']);
+
+if (!isset($request_data['embed']) || !$request_data['embed']) {
    Session::checkCentralAccess();
 
 } else if (!in_array($_REQUEST['action'], [
    'get_dashboard_items',
-   'get_card'
+   'get_card',
+   'get_cards'
 ])) {
    Html::displayRightError();
 }
 
 $dashboard = new Glpi\Dashboard\Dashboard($_REQUEST['dashboard'] ?? "");
 
-switch ($_REQUEST['action']) {
+switch ($_POST['action'] ?? null) {
    case 'save_new_dashboard':
       echo $dashboard->saveNew(
-         $_REQUEST['title']   ?? "",
-         $_REQUEST['context'] ?? ""
+         $_POST['title']   ?? "",
+         $_POST['context'] ?? ""
       );
       exit;
 
    case 'save_items':
-      $dashboard->saveitems($_REQUEST['items'] ?? []);
-      $dashboard->saveTitle($_REQUEST['title'] ?? "");
+      $dashboard->saveitems($_POST['items'] ?? []);
+      $dashboard->saveTitle($_POST['title'] ?? "");
       exit;
 
    case 'save_rights':
-      echo $dashboard->saveRights($_REQUEST['rights'] ?? []);
+      echo $dashboard->saveRights($_POST['rights'] ?? []);
       exit;
 
    case 'delete_dashboard':
-      echo $dashboard->delete(['key' => $_REQUEST['dashboard']]);
+      echo $dashboard->delete(['key' => $_POST['dashboard']]);
       exit;
 
    case 'set_last_dashboard':
-      $grid = new Grid($_REQUEST['dashboard'] ?? "");
-      echo $grid->setLastDashboard($_REQUEST['page'], $_REQUEST['dashboard']);
+      $grid = new Grid($_POST['dashboard'] ?? "");
+      echo $grid->setLastDashboard($_POST['page'], $_POST['dashboard']);
       exit;
 
    case 'clone_dashboard':
@@ -106,6 +111,25 @@ switch ($_REQUEST['action']) {
    case 'get_card':
       session_write_close();
       echo $grid->getCardHtml($_REQUEST['card_id'], $_REQUEST);
+      break;
+
+   case 'get_cards':
+      session_write_close();
+      header("Content-Type: application/json; charset=UTF-8");
+      $cards = $request_data['cards'];
+      unset($request_data['cards']);
+      $result = [];
+      foreach ($cards as $card) {
+         try {
+            $result[$card['card_id']] = $grid->getCardHtml($card['card_id'], array_merge($request_data, $card));
+         } catch (\Throwable $e) {
+            // Send exception to logger without actually exiting.
+            // Use quiet mode to not break JSON result.
+            global $GLPI;
+            $GLPI->getErrorHandler()->handleException($e, true);
+         }
+      }
+      echo json_encode($result);
       break;
 
    case 'display_add_filter':

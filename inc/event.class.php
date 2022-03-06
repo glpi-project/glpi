@@ -2,7 +2,7 @@
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -179,7 +179,7 @@ class Event extends CommonDBTM {
    static function displayItemLogID($type, $items_id) {
       global $CFG_GLPI;
 
-      if (($items_id == "-1") || ($items_id == "0")) {
+      if ($items_id <= 0) {
          echo "&nbsp;";//$item;
       } else {
          switch ($type) {

@@ -1,7 +1,7 @@
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -511,7 +511,20 @@ input {
    box-shadow: none;
 }
 
+textarea {
+   &:required {
+      border: 1px rgba(255, 0, 0, 0.6) solid !important;
+      border-left-width: 3px !important;
+      padding-right: 0 !important;
+      box-shadow: none;
+   }
+}
+
 input:required:valid {
+   border: 1px solid rgb(211, 211, 211) !important;
+}
+
+textarea:required:valid {
    border: 1px solid rgb(211, 211, 211) !important;
 }
 
@@ -4195,6 +4208,8 @@ a.copyright {
 
 .edit_document, .delete_document {
    font-size: 1.5em !important;
+}
+.edit_document {
    margin-left: .5em;
 }
 
@@ -6590,6 +6605,9 @@ div.objectlockmessage {
    background-color: lightSalmon !important;
    flex-wrap: wrap;
    align-items: center;
+   position: sticky;
+   top: 0;
+   z-index: 1;
 }
 
 div.objectlockmessage a.vsubmit {

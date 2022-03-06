@@ -2,7 +2,7 @@
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -54,7 +54,8 @@ if (!empty($_POST["date1"])
 $stat = new Stat();
 $chart_opts =  [
    'width'  => '90%',
-   'legend' => false
+   'legend' => false,
+   'title'  => __('Value'),
 ];
 
 Report::title();
@@ -88,6 +89,9 @@ function display_infocoms_report($itemtype, $begin, $end) {
    global $DB, $valeurtot, $valeurnettetot, $valeurnettegraphtot, $valeurgraphtot, $CFG_GLPI, $stat, $chart_opts;
 
    $itemtable = getTableForItemType($itemtype);
+   if ($DB->fieldExists($itemtable, "ticket_tco", false)) { // those are in the std infocom report
+      return false;
+   }
 
    $criteria = [
       'SELECT'       => 'glpi_infocoms.*',
@@ -108,25 +112,6 @@ function display_infocoms_report($itemtype, $begin, $end) {
    ];
 
    switch ($itemtype) {
-      case 'Consumable' :
-         $criteria['INNER JOIN']['glpi_consumableitems'] = [
-            'ON'  => [
-               'glpi_consumables'      => 'consumableitems_id',
-               'glpi_consumableitems'  => 'id'
-            ]
-         ];
-         $criteria['WHERE'] =  getEntitiesRestrictCriteria("glpi_consumableitems");
-         break;
-
-      case 'Cartridge' :
-         $criteria['INNER JOIN']['glpi_cartridgeitems'] = [
-            'ON'  => [
-               'glpi_cartridgeitems'   => 'id',
-               'glpi_cartridges'       => 'cartridgeitems_id'
-            ]
-         ];
-         $criteria['WHERE'] =  getEntitiesRestrictCriteria("glpi_cartridgeitems");
-         break;
 
       case 'SoftwareLicense' :
          $criteria['INNER JOIN']['glpi_softwares'] = [
@@ -136,6 +121,18 @@ function display_infocoms_report($itemtype, $begin, $end) {
             ]
          ];
          $criteria['WHERE'] =  getEntitiesRestrictCriteria("glpi_softwarelicenses");
+         break;
+      default:
+         if (is_a($itemtype, CommonDBChild::class, true)) {
+            $childitemtype = $itemtype::$itemtype; // acces to child via $itemtype static
+            $criteria['INNER JOIN'][$childitemtype::getTable()] = [
+               'ON'  => [
+                  $itemtype::getTable() => $itemtype::$items_id,
+                  $childitemtype::getTable() => 'id'
+               ]
+            ];
+            $criteria['WHERE'] =  getEntitiesRestrictCriteria($itemtable);
+         }
          break;
    }
 
@@ -283,7 +280,7 @@ function display_infocoms_report($itemtype, $begin, $end) {
 }
 
 
-$types = ['Cartridge', 'Consumable', 'SoftwareLicense'];
+$types = $CFG_GLPI["infocom_types"];
 
 $i = 0;
 echo "<table width='90%'><tr><td class='center top'>";

@@ -2,7 +2,7 @@
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -989,8 +989,8 @@ abstract class CommonDropdown extends CommonDBTM {
             KnowbaseItem::getTable() . '.id'  => KnowbaseItem::getForCategory($this->fields['knowbaseitemcategories_id'])
          ]);
 
-         $kbitem->getFromDB(reset($found_kbitem)['id']);
          if (count($found_kbitem)) {
+            $kbitem->getFromDB(reset($found_kbitem)['id']);
             $ret.= "<div class='faqadd_block'>";
             $ret.= "<label for='display_faq_chkbox$rand'>";
             $ret.= "<img src='".$CFG_GLPI["root_doc"]."/pics/faqadd.png' class='middle pointer'

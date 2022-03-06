@@ -2,7 +2,7 @@
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -389,6 +389,8 @@ class Appliance extends CommonDBTM {
          'datatype'           => 'dropdown',
          'condition'          => ['is_visible_appliance' => 1]
       ];
+
+      $tab = array_merge($tab, Certificate::rawSearchOptionsToAdd());
 
       return $tab;
    }

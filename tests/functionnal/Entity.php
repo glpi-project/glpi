@@ -2,7 +2,7 @@
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -482,5 +482,36 @@ class Entity extends DbTestCase {
       // Validate method result
       $this->boolean($entity->getFromDB($entity_id))->isTrue();
       $this->string($entity->getCustomCssTag())->isEqualTo($expected);
+   }
+
+   public function testMultipleClones() {
+      $this->login();
+
+      $this->createItems('Entity', [
+         [
+            'name'        => 'test clone entity',
+            'entities_id' => 0,
+         ]
+      ]);
+
+      // Check that no clones exists
+      $entity = new \Entity;
+      $res = $entity->find(['name' => ['LIKE', 'test clone entity %']]);
+      $this->array($res)->hasSize(0);
+
+      // Clone multiple times
+      $entity = getItemByTypeName('Entity', 'test clone entity', false);
+      $this->boolean($entity->cloneMultiple(4))->isTrue();
+
+      // Check that 4 clones were created
+      $entity = new \Entity;
+      $res = $entity->find(['name' => ['LIKE', 'test clone entity %']]);
+      $this->array($res)->hasSize(4);
+
+      // Try to read each clones
+      $this->integer(getItemByTypeName('Entity', 'test clone entity (copy)', true))->isGreaterThan(0);
+      $this->integer(getItemByTypeName('Entity', 'test clone entity (copy 2)', true))->isGreaterThan(0);
+      $this->integer(getItemByTypeName('Entity', 'test clone entity (copy 3)', true))->isGreaterThan(0);
+      $this->integer(getItemByTypeName('Entity', 'test clone entity (copy 4)', true))->isGreaterThan(0);
    }
 }

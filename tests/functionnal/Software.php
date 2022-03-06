@@ -2,7 +2,7 @@
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -256,7 +256,7 @@ class Software extends DbTestCase {
 
       $this->boolean($software->getFromDB($softwares_id_2))->isTrue();
       $this->variable($software->fields['is_template'])->isEqualTo(0);
-      $this->string($software->fields['name'])->isIdenticalTo('MySoft');
+      $this->string($software->fields['name'])->isIdenticalTo('MySoft (copy)');
 
       $query = ['itemtype' => 'Software', 'items_id' => $softwares_id_2];
       $this->integer((int)countElementsInTable('glpi_infocoms', $query))->isIdenticalTo(1);
@@ -418,6 +418,6 @@ class Software extends DbTestCase {
 
       $this->login();
       $result   = $software->rawSearchOptions();
-      $this->array($result)->hasSize(50);
+      $this->array($result)->hasSize(57);
    }
 }

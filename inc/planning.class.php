@@ -2,7 +2,7 @@
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -866,6 +866,11 @@ class Planning extends CommonGLPI {
     */
    static function showSingleLinePlanningFilter($filter_key, $filter_data, $options = []) {
       global $CFG_GLPI;
+
+      // Invalid data, skip
+      if (!isset($filter_data['type'])) {
+         return;
+      }
 
       $params['show_delete']        = true;
       $params['filter_color_index'] = 0;

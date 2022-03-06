@@ -2,7 +2,7 @@
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -1313,13 +1313,7 @@ class MassiveAction {
                if ($item->can($id, CREATE)) {
                   // recovers the item from DB
                   if ($item->getFromDB($id)) {
-                     $succeed = true;
-                     // clone in a loop
-                     for ($i = 0; $i < $input["nb_copy"] && $succeed; $i++) {
-                        if ($item->clone() === false) {
-                           $succeed = false;
-                        }
-                     }
+                     $succeed = $item->cloneMultiple($input["nb_copy"]);
                      if ($succeed) {
                         $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
                      } else {

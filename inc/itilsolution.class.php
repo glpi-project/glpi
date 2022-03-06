@@ -2,7 +2,7 @@
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -384,6 +384,11 @@ class ITILSolution extends CommonDBChild {
       $input["_job"] = new $this->fields['itemtype']();
       if (!$input["_job"]->getFromDB($this->fields["items_id"])) {
          return false;
+      }
+
+      if (isset($input['update'])
+          && ($uid = Session::getLoginUserID())) {
+         $input["users_id_editor"] = $uid;
       }
 
       return $input;

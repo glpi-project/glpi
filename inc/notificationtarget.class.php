@@ -2,7 +2,7 @@
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -521,6 +521,11 @@ class NotificationTarget extends CommonDBChild {
              || (($user->fields['authtype'] == Auth::NOT_YET_AUTHENTIFIED)
                  && Auth::isAlternateAuth(Auth::checkAlternateAuthSystems()))) {
             $notificationoption['usertype'] = self::EXTERNAL_USER;
+         }
+
+         // retrieve timezone of the user if exists
+         if (!empty($user->fields['timezone']) && 'null' !== strtolower($user->fields['timezone'])) {
+            $notificationoption['timezone'] = $user->fields['timezone'];
          }
       }
 

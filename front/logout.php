@@ -2,7 +2,7 @@
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -76,13 +76,7 @@ if (isset($_SESSION["noAUTO"]) || isset($_GET['noAUTO'])) {
 Session::destroy();
 
 //Remove cookie to allow new login
-$cookie_name = session_name() . '_rememberme';
-$cookie_path = ini_get('session.cookie_path');
-
-if (isset($_COOKIE[$cookie_name])) {
-   setcookie($cookie_name, '', time() - 3600, $cookie_path);
-   unset($_COOKIE[$cookie_name]);
-}
+Auth::setRememberMeCookie('');
 
 // Redirect to the login-page
 Html::redirect($CFG_GLPI["root_doc"]."/index.php".$toADD);
