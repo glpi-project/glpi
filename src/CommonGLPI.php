@@ -1050,7 +1050,7 @@ JAVASCRIPT;
             if ($this instanceof CommonITILObject) {
                 echo "<h3 class='navigationheader-title strong d-flex align-items-center'>";
                 echo "<i class='" . $this->getIcon() . " me-1'></i>";
-                echo $this->getName();
+                echo $this->getId() . ' - ' . $this->getName();
                 echo "</h3>";
             }
 
