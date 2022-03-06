@@ -45,7 +45,7 @@ $dc_models = [ComputerModel::class, EnclosureModel::class, MonitorModel::class, 
 $front_rear_picture_itemtypes = [PhoneModel::class, PrinterModel::class];
 // Itemtypes with a 'pictures' field that can contain one or more pictures
 $misc_pictures_itemtypes = array_merge([PhoneModel::class, PrinterModel::class, Software::class, CartridgeItem::class, ConsumableItem::class,
-    RackModel::class, SoftwareLicense::class, Datacenter::class, Contact::class, Supplier::class
+    RackModel::class, SoftwareLicense::class, Datacenter::class, Contact::class, Supplier::class, Appliance::class
 ], $dc_models);
 
 /** @var CommonDBTM $itemtype */
