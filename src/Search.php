@@ -7033,7 +7033,8 @@ JAVASCRIPT;
                             }
                             $count_display++;
 
-                            $plaintext = RichText::getTextFromHtml($data[$ID][$k]['name'], false, true);
+
+                            $plaintext = RichText::getTextFromHtml($data[$ID][$k]['name'], false, true, true);
 
                             if (self::$output_type == self::HTML_OUTPUT && (Toolbox::strlen($plaintext) > $CFG_GLPI['cut'])) {
                                 $rand = mt_rand();

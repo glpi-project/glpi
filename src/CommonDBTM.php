@@ -4596,7 +4596,7 @@ class CommonDBTM extends CommonGLPI
 
                     case "text":
                         if (isset($searchoptions['htmltext']) && $searchoptions['htmltext']) {
-                            $value = RichText::getTextFromHtml($value, true, false);
+                            $value = RichText::getTextFromHtml($value, true, false, true);
                         }
 
                         return $options['html'] ? nl2br($value) : $value;
