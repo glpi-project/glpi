@@ -203,9 +203,12 @@ class Toolbox
      * @param $str string   string to analyse
      *
      * @return boolean
+     *
+     * @deprecated 10.1.0
      **/
     public static function seems_utf8($str)
     {
+        Toolbox::deprecated();
         return mb_check_encoding($str, "UTF-8");
     }
 
