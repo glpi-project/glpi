@@ -687,6 +687,7 @@ class MassiveAction
             }, $actions);
         }
 
+        asort($actions, SORT_STRING);
         return $actions;
     }
 
