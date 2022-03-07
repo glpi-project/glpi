@@ -131,7 +131,7 @@ abstract class Device extends InventoryAsset
                     'items_id'           => $this->item->fields['id'],
                     'is_dynamic'         => 1
                 ] + (array)$val);
-                $itemdevice->add($itemdevice_data, [], isset($existing[$device_id]) ? $this->withHistory() : false);
+                $itemdevice->add($itemdevice_data, [], false);
                 $this->itemdeviceAdded($itemdevice, $val);
                 unset($existing[$device_id]);
             }
