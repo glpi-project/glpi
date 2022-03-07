@@ -770,7 +770,7 @@ class MailCollector extends CommonDBTM
                               $rejinput['from']              = $requester;
                               $rejinput['to']                = $headers['to'];
                               $rejinput['users_id']          = $tkt['_users_id_requester'];
-                              $rejinput['subject']           = $DB->escape($this->cleanSubject($headers['subject']));
+                              $rejinput['subject']           = Sanitizer::sanitize($this->cleanSubject($headers['subject']));
                               $rejinput['messageid']         = $headers['message_id'];
                         }
                     } catch (\Throwable $e) {
@@ -1244,8 +1244,8 @@ class MailCollector extends CommonDBTM
             }
         }
 
-        $tkt = Sanitizer::sanitize($tkt);
         $tkt['name']    = LitEmoji::encodeShortcode($tkt['name']);
+        $tkt = Sanitizer::sanitize($tkt);
         return $tkt;
     }
 
@@ -1307,7 +1307,6 @@ class MailCollector extends CommonDBTM
     public function cleanSubject($text)
     {
         $text = str_replace("=20", "\n", $text);
-        $text =  Sanitizer::sanitize($text, false);
         return $text;
     }
 
