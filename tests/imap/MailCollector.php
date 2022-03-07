@@ -91,7 +91,7 @@ class MailCollector extends DbTestCase
                 'expected'  => "With a \ncarriage return"
             ], [
                 'raw'       => 'We have a problem, <strong>URGENT</strong>',
-                'expected'  => 'We have a problem, &#60;strong&#62;URGENT&#60;/strong&#62;'
+                'expected'  => 'We have a problem, <strong>URGENT</strong>'
             ], [ //dunno why...
                 'raw'       => 'Subject with =20 character',
                 'expected'  => "Subject with \n character"
@@ -681,6 +681,7 @@ class MailCollector extends DbTestCase
                     '25 - Test attachment with invalid chars for OS',
                     '26 Illegal char in body',
                     '28 Multiple attachments no extension',
+                    '30 - &#60;GLPI&#62; Special &#38; chars',
                 ]
             ],
          // Mails having "normal" user as observer (add_cc_to_observer = true)
