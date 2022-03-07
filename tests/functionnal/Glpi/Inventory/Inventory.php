@@ -1452,6 +1452,8 @@ class Inventory extends InventoryTestCase
             ++$types_count[$row['linked_action']];
         }
 
+        ksort($types_count);
+        ksort($expected_types_count);
         $this->array($types_count)->isIdenticalTo($expected_types_count);
 
         //fake computer update (nothing has changed)
@@ -1593,6 +1595,8 @@ class Inventory extends InventoryTestCase
             ++$types_count[$row['linked_action']];
         }
 
+        ksort($types_count);
+        ksort($expected_types_count);
         $this->array($types_count)->isIdenticalTo($expected_types_count);
 
         $inventory = $this->doInventory($json);
@@ -1771,12 +1775,11 @@ class Inventory extends InventoryTestCase
             'OFFSET' => $nblogsnow,
         ]);
 
-        $this->integer(count($logs))->isIdenticalTo(127);
+        $this->integer(count($logs))->isIdenticalTo(45);
 
         $expected_types_count = [
             \Log::HISTORY_DELETE_SUBITEM => 5,//networkport and networkname
-            \Log::HISTORY_ADD_DEVICE => 41,
-            \Log::HISTORY_CREATE_ITEM => 57, //virtual machines, os, manufacturer, net ports, net names, ...
+            \Log::HISTORY_CREATE_ITEM => 16, //virtual machines, os, manufacturer, net ports, net names, ...
             0 => 7, //Agent version, disks usage
             \Log::HISTORY_ADD_SUBITEM => 9,//network port/name, ip adrress, VMs
             \Log::HISTORY_UPDATE_SUBITEM => 4,//disks usage
@@ -1793,6 +1796,8 @@ class Inventory extends InventoryTestCase
             ++$types_count[$row['linked_action']];
         }
 
+        ksort($types_count);
+        ksort($expected_types_count);
         $this->array($types_count)->isEqualTo($expected_types_count);
 
         //check matchedlogs
