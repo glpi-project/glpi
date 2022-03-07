@@ -6395,7 +6395,7 @@ JAVASCRIPT;
                         $linkid = ($data[$ID][$k]['tickets_id_2'] == $data['id'])
                                  ? $data[$ID][$k]['name']
                                  : $data[$ID][$k]['tickets_id_2'];
-                        if (($linkid > 0) && !isset($displayed[$linkid])) {
+                        if ((is_int($linkid) && $linkid > 0) && !isset($displayed[$linkid])) {
                              $text  = "<a ";
                              $text .= "href=\"" . Ticket::getFormURLWithID($linkid) . "\">";
                              $text .= Dropdown::getDropdownName('glpi_tickets', $linkid) . "</a>";
