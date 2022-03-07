@@ -417,7 +417,7 @@ class Toolbox extends DbTestCase
      */
     public function testSeems_utf8($string, $utf)
     {
-        $this->boolean(\Toolbox::seems_utf8($string))->isIdenticalTo($utf);
+        $this->boolean(@\Toolbox::seems_utf8($string))->isIdenticalTo($utf);
     }
 
     public function testSaveAndDeletePicture()
