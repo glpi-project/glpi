@@ -200,8 +200,11 @@ trait Clonable
         }
         $input = $new_item->cleanCloneInput($input);
 
-        if (($copy_name = $this->getUniqueCloneName($input)) !== null) {
-            $input[static::getNameField()] = $copy_name;
+        // Do not compute a clone name if a new name is specified (Like creating from template)
+        if (!isset($override_input['name'])) {
+            if (($copy_name = $this->getUniqueCloneName($input)) !== null) {
+                $input[static::getNameField()] = $copy_name;
+            }
         }
 
         $input = $new_item->prepareInputForClone($input);

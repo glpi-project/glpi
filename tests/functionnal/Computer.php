@@ -561,6 +561,34 @@ class Computer extends DbTestCase
         ]);
     }
 
+    public function testCloneWithSpecificName()
+    {
+        /** @var \Computer $computer */
+        $computer = $this->getNewComputer();
+        $clone_id = $computer->clone([
+            'name' => 'testCloneWithSpecificName'
+        ]);
+        $this->integer($clone_id)->isGreaterThan(0);
+        $result = $computer->getFromDB($clone_id);
+        $this->boolean($result)->isTrue();
+        $this->string($computer->fields['name'])->isEqualTo('testCloneWithSpecificName');
+    }
+
+    public function testCloneWithAutoName()
+    {
+        /** @var \Computer $computer */
+        $computer = $this->getNewComputer();
+        $computer->update([
+            'id' => $computer->fields['id'],
+            'name' => 'testCloneWithAutoName'
+        ]);
+        $clone_id = $computer->clone();
+        $this->integer($clone_id)->isGreaterThan(0);
+        $result = $computer->getFromDB($clone_id);
+        $this->boolean($result)->isTrue();
+        $this->string($computer->fields['name'])->isEqualTo('testCloneWithAutoName (copy)');
+    }
+
     public function testTransfer()
     {
         $this->login();
