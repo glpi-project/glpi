@@ -61,7 +61,7 @@ class Config extends CommonDBTM {
 
    static $rightname              = 'config';
 
-   static $undisclosedFields      = ['proxy_passwd', 'smtp_passwd', 'glpinetwork_registration_key'];
+   static $undisclosedFields      = ['proxy_passwd', 'smtp_passwd'];
    static $saferUndisclosedFields = ['admin_email', 'admin_reply'];
 
    static function getTypeName($nb = 0) {
@@ -107,7 +107,6 @@ class Config extends CommonDBTM {
 
       $ong = [];
       $this->addStandardTab(__CLASS__, $ong, $options);
-      $this->addStandardTab('GLPINetwork', $ong, $options);
       $this->addStandardTab('Log', $ong, $options);
 
       return $ong;
@@ -2294,9 +2293,6 @@ class Config extends CommonDBTM {
                $tabs[6]  = _n('SQL replica', 'SQL replicas', Session::getPluralNumber());  // Slave
             }
             return $tabs;
-
-         case 'GLPINetwork':
-            return 'GLPI Network';
 
          case Impact::getType():
             return Impact::getTypeName();

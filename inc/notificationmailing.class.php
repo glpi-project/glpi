@@ -104,7 +104,6 @@ class NotificationMailing implements NotificationInterface {
       if (!$mmail->Send()) {
          Session::addMessageAfterRedirect(__('Failed to send test email to administrator'), false,
                                           ERROR);
-         GLPINetwork::addErrorMessageAfterRedirect();
          return false;
       } else {
          Session::addMessageAfterRedirect(__('Test email sent to administrator'));

@@ -5182,7 +5182,7 @@ JAVASCRIPT;
    static function checkDefaultPasswords() {
       global $DB;
 
-      $passwords = ['glpi'      => 'glpi',
+      $passwords = ['itsm'      => 'itsm',
                          'tech'      => 'tech',
                          'normal'    => 'normal',
                          'post-only' => 'postonly'];

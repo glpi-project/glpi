@@ -70,7 +70,6 @@ class GLPIKey {
     */
    protected $configs = [
       'core'   => [
-         'glpinetwork_registration_key',
          'proxy_passwd',
          'smtp_passwd',
       ]
