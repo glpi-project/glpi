@@ -1302,11 +1302,6 @@ class Html {
             Html::requireJs('dashboard');
          }
 
-         if (in_array('marketplace', $jslibs)) {
-            echo Html::scss('css/marketplace');
-            Html::requireJs('marketplace');
-         }
-
          if (in_array('rack', $jslibs)) {
             Html::requireJs('rack');
          }
@@ -6558,9 +6553,6 @@ JAVASCRIPT;
             break;
          case 'dashboard':
             $_SESSION['glpi_js_toload'][$name][] = 'js/dashboard.js';
-            break;
-         case 'marketplace':
-            $_SESSION['glpi_js_toload'][$name][] = 'js/marketplace.js';
             break;
          case 'gridstack':
             $_SESSION['glpi_js_toload'][$name][] = 'public/lib/gridstack.js';

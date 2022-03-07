@@ -78,9 +78,6 @@ class DirectoryWriteAccess extends AbstractRequirement {
          case realpath(GLPI_LOCK_DIR):
             $this->title = __('Checking write permissions for lock files');
             break;
-         case realpath(GLPI_MARKETPLACE_DIR):
-            $this->title = __('Checking write permissions for marketplace plugins directory');
-            break;
          case realpath(GLPI_PLUGIN_DOC_DIR):
             $this->title = __('Checking write permissions for plugins document files');
             break;

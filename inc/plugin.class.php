@@ -39,8 +39,6 @@ if (!defined('GLPI_ROOT')) {
 }
 
 use Psr\SimpleCache\CacheInterface;
-use Glpi\Marketplace\View as MarketplaceView;
-use Glpi\Marketplace\Controller as MarketplaceController;
 
 class Plugin extends CommonDBTM {
 
@@ -124,12 +122,9 @@ class Plugin extends CommonDBTM {
       $menu = parent::getMenuContent() ?: [];
 
       if (static::canView()) {
-         $redirect_mp = MarketplaceController::getPluginPageConfig();
 
          $menu['title'] = self::getMenuName();
-         $menu['page']  = $redirect_mp == MarketplaceController::MP_REPLACE_YES
-                           ? '/front/marketplace.php'
-                           : '/front/plugin.php';
+         $menu['page']  = '/front/plugin.php';
          $menu['icon']  = self::getIcon();
       }
       if (count($menu)) {
@@ -143,32 +138,15 @@ class Plugin extends CommonDBTM {
       if (!static::canView()) {
          return false;
       }
-      $mp_icon     = MarketplaceView::getIcon();
-      $mp_title    = MarketplaceView::getTypeName();
-      $marketplace = "<i class='$mp_icon pointer' title='$mp_title'></i><span class='sr-only'>$mp_title</span>";
 
       $cl_icon     = Plugin::getIcon();
       $cl_title    = Plugin::getTypeName();
       $classic     = "<i class='$cl_icon pointer' title='$cl_title'></i><span class='sr-only'>$cl_title</span>";
 
       return [
-         $marketplace => MarketplaceView::getSearchURL(false),
          $classic     => Plugin::getSearchURL(false),
       ];
 
-   }
-
-
-   static function getAdditionalMenuOptions() {
-      if (static::canView()) {
-         return [
-            'marketplace' => [
-               'icon'  => MarketplaceView::geticon(),
-               'title' => MarketplaceView::getTypeName(),
-               'page'  => MarketplaceView::getSearchURL(false),
-            ]
-         ];
-      }
    }
 
 

@@ -63,14 +63,6 @@ class GLPINetwork extends CommonGLPI {
 
       echo "<tr><th colspan='2'>" . __('Registration') . "</th></tr>";
 
-      if ($registration_key === "") {
-         echo "<tr><td colspan='2'>".
-         __('A registration key is needed to use advanced feature (like marketplace) in GLPI')."<br><br>".
-         "<a href='".GLPI_NETWORK_SERVICES."'>".sprintf(__('Register on %1$s!'), 'GLPI Network')."</a><br>".
-         __("And retrieve your key to paste it below").
-         "</td></tr>";
-      }
-
       $curl_error = null;
       if (!self::isServicesAvailable($curl_error)) {
          echo '<tr>';
