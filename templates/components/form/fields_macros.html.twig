@@ -598,10 +598,8 @@
       {% set options = options|merge({specific_tags: {'disabled': 'disabled'}}) %}
    {% endif %}
 
-   {% set types = options['types']|default([]) %}
-
    {% set field %}
-      {% do call('Dropdown::showHours', [name, types, {
+      {% do call('Dropdown::showHours', [name, {
          'rand': rand,
          'width': '100%',
          'value': value
