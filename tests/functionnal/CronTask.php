@@ -51,11 +51,6 @@ class CronTask extends DbTestCase {
             'should_register' => true, // Existing core class
          ],
          [
-            'itemtype'        => 'Glpi\Marketplace\Controller',
-            'name'            => 'CoreTest3',
-            'should_register' => true, // Existing core namespaced class
-         ],
-         [
             'itemtype'        => 'PluginTestItemtype',
             'name'            => 'PluginTest1',
             'should_register' => true, // Plugin class. Existence not checked.
@@ -140,11 +135,6 @@ class CronTask extends DbTestCase {
          [
             'itemtype'    => 'CronTask',
             'name'        => 'CoreTest1',
-            'should_run'  => true,
-         ],
-         [
-            'itemtype'    => 'Glpi\Marketplace\Controller',
-            'name'        => 'CoreTest2',
             'should_run'  => true,
          ],
          [
