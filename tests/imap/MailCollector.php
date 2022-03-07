@@ -663,7 +663,7 @@ class MailCollector extends DbTestCase
                 'users_id'      => $nuid,
                 'actor_type'    => \CommonITILActor::REQUESTER,
                 'tickets_names' => [
-                    'Test import mail avec emoticons :smiley: unicode',
+                    'Test import mail avec emoticons 😃 unicode',
                     'Test images',
                     'Test\'ed issue',
                     'Test Email from Outlook',
