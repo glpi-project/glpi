@@ -41,6 +41,7 @@ class Appliance extends CommonDBTM
 {
     use Glpi\Features\Clonable;
     use AssetImage;
+
    // From CommonDBTM
     public $dohistory                   = true;
     public static $rightname                   = 'appliance';
@@ -87,17 +88,17 @@ class Appliance extends CommonDBTM
     }
 
 
-   public function prepareInputForAdd($input)
-   {
-      $input = parent::prepareInputForAdd($input);
-      return $this->managePictures($input);
-   }
+    public function prepareInputForAdd($input)
+    {
+        $input = parent::prepareInputForAdd($input);
+        return $this->managePictures($input);
+    }
 
-   public function prepareInputForUpdate($input)
-   {
-      $input = parent::prepareInputForUpdate($input);
-      return $this->managePictures($input);
-   }
+    public function prepareInputForUpdate($input)
+    {
+        $input = parent::prepareInputForUpdate($input);
+        return $this->managePictures($input);
+    }
 
     /**
      * Print the appliance form
