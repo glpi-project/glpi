@@ -50,7 +50,7 @@ echo Html::scss('css/styles');
 if (isset($_SESSION['glpihighcontrast_css']) && $_SESSION['glpihighcontrast_css']) {
    echo Html::scss('css/highcontrast');
 }
-$theme = isset($_SESSION['glpipalette']) ? $_SESSION['glpipalette'] : 'auror';
+$theme = isset($_SESSION['glpipalette']) ? $_SESSION['glpipalette'] : 'itsmng';
 echo Html::scss('css/palettes/' . $theme);
 echo Html::script($CFG_GLPI["root_doc"].'/script.js');
 ?>

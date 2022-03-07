@@ -917,7 +917,7 @@ JAVASCRIPT;
    }
 
    function post_getEmpty() {
-      $this->fields['bgcolor'] = '#FEC95C';
+      $this->fields['bgcolor'] = '#F5B7B1';
    }
 
    /**

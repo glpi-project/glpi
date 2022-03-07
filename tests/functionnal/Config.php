@@ -408,22 +408,9 @@ class Config extends DbTestCase {
 
    public function testGetPalettes() {
       $expected = [
-         'aerialgreen'     => 'Aerialgreen',
-         'auror'           => 'Auror',
-         'automn'          => 'Automn',
-         'classic'         => 'Classic',
-         'clockworkorange' => 'Clockworkorange',
+         'itsmng'          => 'ITSM-NG',
          'dark'            => 'Dark',
-         'darker'          => 'Darker',
          'flood'           => 'Flood',
-         'greenflat'       => 'Greenflat',
-         'hipster'         => 'Hipster',
-         'icecream'        => 'Icecream',
-         'lightblue'       => 'Lightblue',
-         'premiumred'      => 'Premiumred',
-         'purplehaze'      => 'Purplehaze',
-         'teclib'          => 'Teclib',
-         'vintage'         => 'Vintage'
       ];
       $this
          ->if($this->newTestedInstance)

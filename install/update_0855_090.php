@@ -63,7 +63,7 @@ function update0855to090() {
    }
 
    // Add Color selector
-   Config::setConfigurationValues('core', ['palette' => 'auror']);
+   Config::setConfigurationValues('core', ['palette' => 'itsmng']);
    $migration->addField("glpi_users", "palette", "char(20) DEFAULT NULL");
 
    // add layout config

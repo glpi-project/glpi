@@ -1200,7 +1200,7 @@ class RacksPluginToCoreCommand extends AbstractCommand {
                   'template_name'    => $old_rack['template_name'],
                   'is_deleted'       => $old_rack['is_deleted'],
                   'dcrooms_id'       => $room_id,
-                  'bgcolor'          => "#FEC95C",
+                  'bgcolor'          => "#F5B7B1",
                ]
             );
 

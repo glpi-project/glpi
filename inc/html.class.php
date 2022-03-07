@@ -1237,7 +1237,7 @@ class Html {
       echo '<meta property="glpi:csrf_token" content="' . Session::getNewCSRFToken(true) . '" />';
 
       //detect theme
-      $theme = isset($_SESSION['glpipalette']) ? $_SESSION['glpipalette'] : 'auror';
+      $theme = isset($_SESSION['glpipalette']) ? $_SESSION['glpipalette'] : 'itsmng';
 
       echo Html::css('public/lib/base.css');
       //JSTree JS part is loaded on demand... But from an ajax call to display entities. Need to have CSS loaded.
