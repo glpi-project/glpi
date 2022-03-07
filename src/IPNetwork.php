@@ -249,7 +249,8 @@ class IPNetwork extends CommonImplicitTreeDropdown
         $netmask = new IPNetmask();
        // Don't validate an empty network
         if (empty($input["network"])) {
-            return ['error' => __('Invalid network address'),
+            return [
+                'error' => __('Missing network property (In CIDR notation. Ex: 192.168.1.1/24)'),
                 'input' => false
             ];
         }
