@@ -488,8 +488,6 @@ function step7() {
    echo "<form action='install.php' method='post'>";
    echo "<input type='hidden' name='install' value='Etape_6'>";
 
-   echo GLPINetwork::showInstallMessage();
-
    echo "<p class='submit'>";
    echo "<a href='".GLPI_NETWORK_SERVICES."' target='_blank' class='vsubmit'>".
             __('Donate')."</a>&nbsp;";
@@ -537,7 +535,7 @@ function step8() {
    echo "<h2>".__('The installation is finished')."</h2>";
 
    echo "<p>".__('Default logins / passwords are:')."</p>";
-   echo "<p><ul><li> ".__('glpi/glpi for the administrator account')."</li>";
+   echo "<p><ul><li> ".__('itsm/itsm for the administrator account')."</li>";
    echo "<li>".__('tech/tech for the technician account')."</li>";
    echo "<li>".__('normal/normal for the normal account')."</li>";
    echo "<li>".__('post-only/postonly for the postonly account')."</li></ul></p>";
@@ -677,18 +675,8 @@ if (!isset($_SESSION['can_process_install']) || !isset($_POST["install"])) {
                $_POST["newdatabasename"]);
          break;
 
-      case "Etape_4" : // send telemetry information
+      case "Etape_4" : // finish installation
          header_html(sprintf(__('Step %d'), 4));
-         step6();
-         break;
-
-      case "Etape_5" : // finish installation
-         header_html(sprintf(__('Step %d'), 5));
-         step7();
-         break;
-
-      case "Etape_6" : // finish installation
-         header_html(sprintf(__('Step %d'), 6));
          step8();
          break;
 

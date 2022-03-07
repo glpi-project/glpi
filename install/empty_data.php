@@ -8103,8 +8103,8 @@ $tables['glpi_transfers'] = [
 $tables['glpi_users'] = [
    [
       'id'         => '2',
-      'name'       => 'glpi',
-      'password'   => '$2y$10$rXXzbc2ShaiCldwkw4AZL.n.9QSH7c0c9XJAyyjrbL9BwmWditAYm',
+      'name'       => 'itsm',
+      'password'   => '$2y$10$w8wX.GPGo5q5tlyIXIzY/eBAk/a2r8KmHY8SIl32Q./1Na/nKEkUy',
       'language'   => null,
       'list_limit' => '20',
       'authtype'   => '1',
