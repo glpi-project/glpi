@@ -7742,7 +7742,11 @@ abstract class CommonITILObject extends CommonDBTM
        // parse posted actors
         foreach ($this->input['_actors'] as $actortype_str => $actors) {
             $actortype = constant("CommonITILActor::" . strtoupper($actortype_str));
-            if (!$this->canAssign() && $actortype == CommonITILActor::ASSIGN) {
+            if ($actortype === CommonITILActor::ASSIGN && !$this->canAssign()) {
+                continue;
+            }
+
+            if ($actortype !== CommonITILActor::ASSIGN && !$this->canUpdateItem()) {
                 continue;
             }
             $existings = $this->getActorsForType($actortype);

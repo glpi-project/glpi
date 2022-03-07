@@ -1297,6 +1297,26 @@ class Ticket extends DbTestCase
             $requestSource = true,
             $location = true
         );
+
+        // Assign right without UPDATE
+        $this->changeTechRight(\Ticket::ASSIGN | \Ticket::READALL);
+        $this->checkFormOutput(
+            $ticket,
+            $name = false,
+            $textarea = false,
+            $priority = false,
+            $save = true,
+            $assign = true,
+            $openDate = false,
+            $timeOwnResolve = false,
+            $type = false,
+            $status = false,
+            $urgency = false,
+            $impact = false,
+            $category = false,
+            $requestSource = false,
+            $location = false
+        );
     }
 
     public function testUpdateFollowup()
@@ -4133,10 +4153,10 @@ HTML
         // Update Entity to enable survey
         $entity = new \Entity();
         $result = $entity->update([
-            'id'                => $entities_id,
-            'inquest_config'    => 1,
-            'inquest_rate'      => 100,
-            'inquest_delay'     => 0,
+            'id' => $entities_id,
+            'inquest_config' => 1,
+            'inquest_rate' => 100,
+            'inquest_delay' => 0,
         ]);
         $this->boolean($result)->isTrue();
 
@@ -4166,9 +4186,9 @@ HTML
 
         $result = $entity->update([
             'id' => $entities_id,
-            'inquest_config'    => 1,
-            'inquest_rate'      => 100,
-            'inquest_delay'     => 0,
+            'inquest_config' => 1,
+            'inquest_rate' => 100,
+            'inquest_delay' => 0,
         ]);
         $this->boolean($result)->isTrue();
 
@@ -4187,5 +4207,164 @@ HTML
             ],
         ]);
         $this->integer($it->count())->isEqualTo(1);
+    }
+
+    public function testAddAssignWithoutUpdateRight()
+    {
+        $this->login();
+
+        $ticket = new \Ticket();
+        $tickets_id = $ticket->add([
+            'name' => 'testAddAssignWithoutUpdateRight',
+            'content' => 'testAddAssignWithoutUpdateRight',
+            '_skip_auto_assign' => true,
+        ]);
+        $this->integer($tickets_id)->isGreaterThan(0);
+
+        $ticket->loadActors();
+        $this->integer($ticket->countUsers(\CommonITILActor::ASSIGN))->isEqualTo(0);
+        $this->integer($ticket->countUsers(\CommonITILActor::REQUESTER))->isEqualTo(1);
+
+        $this->changeTechRight(\Ticket::ASSIGN | \Ticket::READALL);
+        $this->boolean($ticket->canUpdateItem())->isFalse();
+        $this->boolean((bool) $ticket->canAssign())->isTrue();
+        $this->boolean($ticket->update([
+            'id' => $tickets_id,
+            '_actors' => [
+                'requester' => [
+                    [
+                        'itemtype'  => 'User',
+                        'items_id'  => getItemByTypeName('User', 'post-only', true),
+                        'use_notification' => 0,
+                        'alternative_email' => '',
+                    ],
+                    [
+                        'itemtype'  => 'User',
+                        'items_id'  => getItemByTypeName('User', 'tech', true),
+                        'use_notification' => 0,
+                        'alternative_email' => '',
+                    ]
+                ],
+                'assign' => [
+                    [
+                        'itemtype'  => 'User',
+                        'items_id'  => getItemByTypeName('User', 'tech', true),
+                        'use_notification' => 0,
+                        'alternative_email' => '',
+                    ]
+                ],
+            ],
+        ]))->isTrue();
+        $ticket->loadActors();
+        // Verify new assignee was added
+        $this->integer($ticket->countUsers(\CommonITILActor::ASSIGN))->isEqualTo(1);
+        // Verify new requester wasn't added
+        $this->integer($ticket->countUsers(\CommonITILActor::REQUESTER))->isEqualTo(1);
+    }
+
+    public function testAddAssignWithoutAssignRight()
+    {
+        $this->login();
+
+        $ticket = new \Ticket();
+        $tickets_id = $ticket->add([
+            'name' => 'testAddAssignWithoutAssignRight',
+            'content' => 'testAddAssignWithoutAssignRight',
+            '_skip_auto_assign' => true,
+        ]);
+        $this->integer($tickets_id)->isGreaterThan(0);
+
+        $ticket->loadActors();
+        $this->integer($ticket->countUsers(\CommonITILActor::ASSIGN))->isEqualTo(0);
+        $this->integer($ticket->countUsers(\CommonITILActor::REQUESTER))->isEqualTo(1);
+
+        $this->changeTechRight(\Ticket::READALL | UPDATE);
+        $this->boolean($ticket->canUpdateItem())->isTrue();
+        $this->boolean((bool) $ticket->canAssign())->isFalse();
+        $this->boolean($ticket->update([
+            'id' => $tickets_id,
+            '_actors' => [
+                'requester' => [
+                    [
+                        'itemtype'  => 'User',
+                        'items_id'  => getItemByTypeName('User', 'post-only', true),
+                        'use_notification' => 0,
+                        'alternative_email' => '',
+                    ],
+                    [
+                        'itemtype'  => 'User',
+                        'items_id'  => getItemByTypeName('User', 'tech', true),
+                        'use_notification' => 0,
+                        'alternative_email' => '',
+                    ]
+                ],
+                'assign' => [
+                    [
+                        'itemtype'  => 'User',
+                        'items_id'  => getItemByTypeName('User', 'tech', true),
+                        'use_notification' => 0,
+                        'alternative_email' => '',
+                    ]
+                ],
+            ],
+        ]))->isTrue();
+        $ticket->loadActors();
+        // Verify new assignee wasn't added
+        $this->integer($ticket->countUsers(\CommonITILActor::ASSIGN))->isEqualTo(0);
+        // Verify new requester was added
+        $this->integer($ticket->countUsers(\CommonITILActor::REQUESTER))->isEqualTo(2);
+    }
+
+    public function testAddActorsWithAssignAndUpdateRight()
+    {
+        $this->login();
+
+        $ticket = new \Ticket();
+        $tickets_id = $ticket->add([
+            'name' => 'testAddActorsWithAssignAndUpdateRight',
+            'content' => 'testAddActorsWithAssignAndUpdateRight',
+            '_skip_auto_assign' => true,
+        ]);
+        $this->integer($tickets_id)->isGreaterThan(0);
+
+        $ticket->loadActors();
+        $this->integer($ticket->countUsers(\CommonITILActor::ASSIGN))->isEqualTo(0);
+        $this->integer($ticket->countUsers(\CommonITILActor::REQUESTER))->isEqualTo(1);
+
+        $this->changeTechRight(\Ticket::ASSIGN | UPDATE | \Ticket::READALL);
+        $this->boolean($ticket->canUpdateItem())->isTrue();
+        $this->boolean((bool) $ticket->canAssign())->isTrue();
+        $this->boolean($ticket->update([
+            'id' => $tickets_id,
+            '_actors' => [
+                'requester' => [
+                    [
+                        'itemtype'  => 'User',
+                        'items_id'  => getItemByTypeName('User', 'post-only', true),
+                        'use_notification' => 0,
+                        'alternative_email' => '',
+                    ],
+                    [
+                        'itemtype'  => 'User',
+                        'items_id'  => getItemByTypeName('User', 'tech', true),
+                        'use_notification' => 0,
+                        'alternative_email' => '',
+                    ]
+                ],
+                'assign' => [
+                    [
+                        'itemtype'  => 'User',
+                        'items_id'  => getItemByTypeName('User', 'tech', true),
+                        'use_notification' => 0,
+                        'alternative_email' => '',
+                    ]
+                ],
+            ],
+        ]))->isTrue();
+        $ticket->loadActors();
+        // Verify new assignee was added
+        $this->integer($ticket->countUsers(\CommonITILActor::ASSIGN))->isEqualTo(1);
+        // Verify new requester was added
+        $this->integer($ticket->countUsers(\CommonITILActor::REQUESTER))->isEqualTo(2);
     }
 }
