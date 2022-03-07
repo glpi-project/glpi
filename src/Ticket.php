@@ -4607,6 +4607,7 @@ JAVASCRIPT;
             ($ID ? $this->fields['entities_id'] : $options['entities_id'])
         );
 
+        $tpl_key = self::getTemplateFormFieldName();
         $predefined_fields = $this->getPredefinedTemplateFields($tt, $options, $default_values);
        // Put ticket template on $options for actors
         $options[str_replace('s_id', '', $tpl_key)] = $tt;
