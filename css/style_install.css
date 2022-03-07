@@ -32,7 +32,7 @@
 /*  ############# Definition des styles de l'install et de l'update ############# */
 
 body {
-   background-color:#1B2F62;
+   background-color:#7b081d;
    font-family: Verdana;
    color:#FFF;
 }
@@ -48,7 +48,7 @@ body {
 }
 
 a {
-   color: #FEC95C;
+   color: #F5B7B1;
    font-weight: bold;
 }
 
@@ -58,7 +58,7 @@ a {
    text-align:left;
    position:relative;
    padding:10px;
-   background:#3A5693;
+   background:#ae0c2a;
 }
 
 #logo_bloc {
@@ -68,7 +68,7 @@ a {
    margin:0;
    width: 145px;
    height: 80px;
-   background: url(../pics/login_logo_glpi.png)  no-repeat;
+   background: url(../pics/login_logo_itsm.png)  no-repeat;
 }
 
 
@@ -156,7 +156,7 @@ th {
 
 h2 {
    text-align:center;
-   color: #FEC95C
+   color: #F5B7B1
 }
 
 h3 {
@@ -207,13 +207,13 @@ span.vsubmit, a.vsubmit {
    height: auto;
    font: bold 12px Arial, Helvetica;
    color: #8f5a0a;
-   background-color: #FEC95C;
+   background-color: #F5B7B1;
    border: 0;
 }
 
 input.submit:hover,
 a.vsubmit:hover {
-   background-color: #fddb6f;
+   background-color: #c2908c;
    -moz-box-shadow: 0px 1px 1px #999;
    -webkit-box-shadow: 0px 1px 1px #999;
    box-shadow: 0px 1px 1px #999;
@@ -263,7 +263,7 @@ a.vsubmit:hover {
    -ms-transform: scale(1);
    transform: scale(1);
    opacity: 1;
-   background-color: #FEC95C;
+   background-color: #F5B7B1;
 }
 
 .radio .outer {
@@ -271,7 +271,7 @@ a.vsubmit:hover {
    height: 20px;
    display: block;
    float: left;
-   border: 3px solid #1B2F62;
+   border: 3px solid #7b081d;
    border-radius: 50%;
    /*background-color: #fff;*/
 }
@@ -287,7 +287,7 @@ a.vsubmit:hover {
    display: block;
    margin: 2px;
    border-radius: 50%;
-   background-color: #FEC95C;
+   background-color: #F5B7B1;
    opacity: 0;
 }
 

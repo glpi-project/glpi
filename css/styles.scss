@@ -648,7 +648,7 @@ input {
       height: auto;
       font: bold 12px Arial, Helvetica;
       color: #8f5a0a;
-      background-color: #FEC95C;
+      background-color: #F5B7B1;
       border: 0;
       white-space: nowrap;
       display: inline-block;
@@ -661,7 +661,7 @@ input {
    height: auto;
    font: bold 12px Arial, Helvetica;
    color: #8f5a0a;
-   background-color: #FEC95C;
+   background-color: #F5B7B1;
    border: 0;
    white-space: nowrap;
    display: inline-block;
@@ -3090,7 +3090,7 @@ a.icon_nav_move {
    }
 
    .select2-choice {
-      color: #3a5693;
+      color: #ae0c2a;
    }
 
    p {
@@ -3250,10 +3250,14 @@ ul#menu {
 #header #c_logo {
    position: absolute;
    z-index: 1000;
-   width: 100px;
+   width: 200px;
    height: 55px;
    float: left;
-   background: url("../pics/fd_logo.png") 0 0 repeat-x;
+   top: 5px;
+   left: 5px;
+   background: url("../pics/fd_logo.png");
+   background-size: 100%;
+   background-position-y: -8px;
 
    a {
       display: block;
@@ -3373,10 +3377,10 @@ ul#menu {
    }
 
    &:nth-of-type(3) {
-      background-color: #FEC95C;
+      background-color: #F5B7B1;
 
       &:after {
-         border-left-color: #FEC95C;
+         border-left-color: #F5B7B1;
       }
    }
 }
@@ -3432,13 +3436,13 @@ ul#menu {
       color: white;
 
       &:hover {
-         background: #8BAADA;
+         background: #d40e33;
       }
    }
 
    a:hover {
-      background-color: #3A5693;
-      color: #C7DBF5;
+      background-color: #ae0c2a;
+      color: #fff;
    }
 }
 
@@ -4442,13 +4446,13 @@ a.copyright {
    cursor: pointer;
    font: bold 12px Arial, Helvetica;
    color: #8f5a0a;
-   background-color: #FEC95C;
+   background-color: #F5B7B1;
    border: none;
    border-radius: 0;
 
    &:hover {
       cursor: pointer;
-      background-color: #fddb6f;
+      background-color: #c2908c;
       box-shadow: 0px 1px 1px #999;
    }
 
@@ -4493,7 +4497,7 @@ a.copyright {
 
    &.planned:after {
       content: '\f073';
-      color: #1B2F62;
+      color: #7b081d;
    }
 
    &.waiting:after {
@@ -4549,7 +4553,7 @@ a.copyright {
       }
 
       input[type="radio"]:checked + label {
-         background-color: #FEC95C;
+         background-color: #F5B7B1;
       }
    }
 }
@@ -5596,7 +5600,7 @@ span.count {
 /* Colors are same as #c_menu */
 
 .primary-bg {
-   background: #3A5693;
+   background: #760b18;
 }
 
 .primary-bg-inverse {
@@ -5612,10 +5616,10 @@ span.count {
 }
 
 .primary-fg-inverse {
-   color: #3A5693;
+   color: #ae0c2a;
 
    &:hover {
-      color: #3A5693;
+      color: #ae0c2a;
    }
 }
 
@@ -5635,7 +5639,7 @@ button.unstyled {
    cursor: pointer;
    font: bold 12px Arial, Helvetica;
    color: #8f5a0a;
-   background-color: #FEC95C;
+   background-color: #F5B7B1;
    border: 0;
    text-align: center;
 
@@ -6478,7 +6482,7 @@ input[name=as_map] {
    }
 
    &.approval {
-      color: #8CABDB;
+      color: #c70c2f;
    }
 
    &.eval {
@@ -6490,7 +6494,7 @@ input[name=as_map] {
    }
 
    &.planned {
-      color: #1B2F62;
+      color: #7b081d;
    }
 }
 
@@ -6735,7 +6739,7 @@ div.objectlockmessage > .form-group-checkbox {
             cursor: pointer;
             position: relative;
             &:hover {
-               background-color: #3a5693;
+               background-color: #ae0c2a;
                color: white;
             }
             ul {
@@ -6764,7 +6768,7 @@ div.objectlockmessage > .form-group-checkbox {
                float: right;
             }
             &.active {
-               background-color: #3a5693;
+               background-color: #ae0c2a;
                color: white;
             }
             a {
@@ -7023,7 +7027,7 @@ div.progress {
    height: 1em;
    border-radius: 5px;
    .progress-fg {
-      background-color: #8cabdb;
+      background-color: #c70c2f;
       height: 1em;
       float: left;
       border-radius: 5px;
