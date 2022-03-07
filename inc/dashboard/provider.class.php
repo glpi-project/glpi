@@ -105,7 +105,8 @@ class Provider extends CommonGLPI {
             'INNER JOIN' => [
                Profile_User::getTable() => [
                   'FKEY' => [
-                     Profile_User::getTable() => 'users_id', User::getTable() => 'id',
+                     Profile_User::getTable() => 'users_id',
+                     User::getTable() => 'id',
                   ]
                ]
             ] ,
