@@ -1088,6 +1088,11 @@ class MailCollector extends CommonDBTM
         } catch (\Laminas\Mail\Storage\Exception\InvalidArgumentException $e) {
             $subject = '';
         }
+        $tkt['name'] = $this->cleanSubject($subject);
+        if (!Toolbox::seems_utf8($tkt['name'])) {
+            $tkt['name'] = Toolbox::encodeInUtf8($tkt['name']);
+        }
+
         $tkt['_message']  = $message;
 
         if (!Toolbox::seems_utf8($body)) {
@@ -1190,15 +1195,11 @@ class MailCollector extends CommonDBTM
         if (!$DB->use_utf8mb4) {
            // Replace emojis by their shortcode
             $tkt['content'] = LitEmoji::encodeShortcode($tkt['content']);
+            $tkt['name']    = LitEmoji::encodeShortcode($tkt['name']);
         }
 
        // Clean mail content
         $tkt['content'] = $this->cleanContent($tkt['content']);
-
-        $tkt['name'] = $this->cleanSubject($subject);
-        if (!Toolbox::seems_utf8($tkt['name'])) {
-            $tkt['name'] = Toolbox::encodeInUtf8($tkt['name']);
-        }
 
         if (!isset($tkt['tickets_id'])) {
            // Which entity ?
@@ -1244,7 +1245,6 @@ class MailCollector extends CommonDBTM
             }
         }
 
-        $tkt['name']    = LitEmoji::encodeShortcode($tkt['name']);
         $tkt = Sanitizer::sanitize($tkt);
         return $tkt;
     }
