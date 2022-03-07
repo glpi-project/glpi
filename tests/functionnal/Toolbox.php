@@ -1071,7 +1071,14 @@ class Toolbox extends DbTestCase
                     ],
                     'b'   => 'test3'
                 ], '_', 'a%5B0%5D=test1_a%5B1%5D=test2_b=test3' // '[' converted to %5B, ']' converted to %5D
-            ]
+            ],
+            [
+                [
+                    'a'   => 'test1',
+                    [], // Empty array Should be ignored
+                    'b'   => 'test2'
+                ], '&', 'a=test1&b=test2'
+            ],
         ];
     }
 

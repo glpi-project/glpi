@@ -44,6 +44,7 @@ class Provider extends DbTestCase
         return [
             ['item' => new \Computer()],
             ['item' => new \Ticket()],
+            ['item' => new \Item_DeviceSimcard()],
         ];
     }
 
@@ -68,8 +69,16 @@ class Provider extends DbTestCase
                 'label',
                 'icon',
             ]);
-            $this->integer($result['number'])->isGreaterThan(0);
+            if ($item::getType() !== 'Item_DeviceSimcard') {
+                // Ignore count for simcards. None are added in Bootstrap process and is here for regression testing only.
+                $this->integer($result['number'])->isGreaterThan(0);
+            }
             $this->string($result['url'])->contains($item::getSearchURL());
+            //Verify URL doesn't have two query param joiners next to each other
+            $this->string($result['url'])->notContains('&&');
+            $this->string($result['url'])->notContains('?&');
+            //Verify URL only has one ? joiner
+            $this->integer(substr_count($result['url'], '?'))->isLessThanOrEqualTo(1);
             $this->string($result['label'])->isNotEmpty();
             $this->string($result['icon'])->isEqualTo($item::getIcon());
         }
