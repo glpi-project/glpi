@@ -432,8 +432,8 @@ class Html extends \GLPITestCase {
    public function testGetCopyrightMessage() {
       $message = \Html::getCopyrightMessage();
       $this->string($message)
-         ->contains(GLPI_VERSION)
-         ->contains(GLPI_YEAR);
+         ->contains(ITSM_VERSION)
+         ->contains(ITSM_YEAR);
    }
 
    public function testCss() {

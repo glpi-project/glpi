@@ -6469,13 +6469,13 @@ JAVASCRIPT;
     * @return string HTML copyright
     */
    static function getCopyrightMessage($withVersion = true) {
-      $message = "<a href=\"http://glpi-project.org/\" title=\"Powered by Teclib and contributors\" class=\"copyright\">";
-      $message .= "GLPI ";
+      $message = "<a href=\"https://www.itsm-ng.com\" target=\"_blank\" class=\"copyright\">";
+      $message .= "ITSM-NG ";
       // if required, add GLPI version (eg not for login page)
       if ($withVersion) {
-          $message .= GLPI_VERSION . " ";
+          $message .= ITSM_VERSION . " ";
       }
-      $message .= "Copyright (C) 2015-" . GLPI_YEAR . " Teclib' and contributors".
+      $message .= "Copyright (C) " . ITSM_YEAR . " ITSM-NG and contributors".
          "</a>";
       return $message;
    }
