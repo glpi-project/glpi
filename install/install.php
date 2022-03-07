@@ -54,7 +54,7 @@ function header_html($etape) {
     echo "<meta charset='utf-8'>";
    echo "<meta http-equiv='Content-Script-Type' content='text/javascript'> ";
     echo "<meta http-equiv='Content-Style-Type' content='text/css'> ";
-   echo "<title>Setup GLPI</title>";
+   echo "<title>Setup ITSM-NG</title>";
 
    // CFG
    echo Html::getCoreVariablesForJavascript();
@@ -72,7 +72,7 @@ function header_html($etape) {
    echo "<div id='principal'>";
    echo "<div id='bloc'>";
    echo "<div id='logo_bloc'></div>";
-   echo "<h2>GLPI SETUP</h2>";
+   echo "<h2>ITSM-NG SETUP</h2>";
    echo "<br><h3>". $etape ."</h3>";
 }
 
@@ -459,42 +459,6 @@ function step4 ($databasename, $newdatabasename) {
 
    $link->close();
 
-}
-
-//send telemetry information
-function step6() {
-   global $DB;
-   echo "<h3>".__('Collect data')."</h3>";
-
-   include_once(GLPI_ROOT . "/inc/dbmysql.class.php");
-   include_once(GLPI_CONFIG_DIR . "/config_db.php");
-   $DB = new DB();
-
-   echo "<form action='install.php' method='post'>";
-   echo "<input type='hidden' name='install' value='Etape_5'>";
-
-   $_SESSION['telemetry_from_install'] = true;
-   echo Telemetry::showTelemetry();
-   echo Telemetry::showReference();
-
-   echo "<p class='submit'><input type='submit' name='submit' class='submit' value='".
-            __('Continue')."'></p>";
-   Html::closeForm();
-}
-
-function step7() {
-   echo "<h3>".__('One last thing before starting')."</h3>";
-
-   echo "<form action='install.php' method='post'>";
-   echo "<input type='hidden' name='install' value='Etape_6'>";
-
-   echo "<p class='submit'>";
-   echo "<a href='".GLPI_NETWORK_SERVICES."' target='_blank' class='vsubmit'>".
-            __('Donate')."</a>&nbsp;";
-   echo "<input type='submit' name='submit' class='submit' value='".
-            __('Continue')."'>";
-   echo "</p>";
-   Html::closeForm();
 }
 
 // finish installation

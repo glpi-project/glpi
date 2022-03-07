@@ -106,7 +106,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
 
    echo "<body>";
    echo "<div id='firstboxlogin'>";
-   echo "<h1 id='logo_login'><img src='".$CFG_GLPI['root_doc']."/pics/login_logo_itsm.png' alt='GLPI' title='GLPI' width='374px' heigth='131px'/></h1>";
+   echo "<h1 id='logo_login'><img src='".$CFG_GLPI['root_doc']."/pics/login_logo_itsm.png' alt='ITSM-NG' title='ITSM-NG' width='374px' heigth='131px'/></h1>";
    echo "<div id='text-login'>";
    echo nl2br(Toolbox::unclean_html_cross_side_scripting_deep($CFG_GLPI['text_login']));
    echo "</div>";
