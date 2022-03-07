@@ -4187,6 +4187,51 @@ JAVASCRIPT;
             $options['_right'] = "delegate";
         }
 
+        // Predefined fields from template : reset them
+        if (isset($options['_predefined_fields'])) {
+            $options['_predefined_fields']
+                = Toolbox::decodeArrayFromInput($options['_predefined_fields']);
+        } else {
+            $options['_predefined_fields'] = [];
+        }
+
+        // Store predefined fields to be able not to take into account on change template
+        $predefined_fields = [];
+        $key = $this->getTemplateFormFieldName();
+
+        if (isset($tt->predefined) && count($tt->predefined)) {
+            foreach ($tt->predefined as $predeffield => $predefvalue) {
+                if (isset($options[$predeffield]) && isset($default_values[$predeffield])) {
+                    // Is always default value : not set
+                    // Set if already predefined field
+                    // Set if ticket template change
+                    if (((count($options['_predefined_fields']) == 0)
+                            && ($options[$predeffield] == $default_values[$predeffield]))
+                        || (isset($options['_predefined_fields'][$predeffield])
+                            && ($options[$predeffield] == $options['_predefined_fields'][$predeffield]))
+                        || (isset($options[$key])
+                            && ($options[$key] != $tt->getID()))) {
+                        $options[$predeffield]            = $predefvalue;
+                        $predefined_fields[$predeffield] = $predefvalue;
+                    }
+                } else { // Not defined options set as hidden field
+                    echo "<input type='hidden' name='$predeffield' value='$predefvalue'>";
+                }
+            }
+            // All predefined override : add option to say predifined exists
+            if (count($predefined_fields) == 0) {
+                $predefined_fields['_all_predefined_override'] = 1;
+            }
+        } else { // No template load : reset predefined values
+            if (count($options['_predefined_fields'])) {
+                foreach ($options['_predefined_fields'] as $predeffield => $predefvalue) {
+                    if ($options[$predeffield] == $predefvalue) {
+                        $options[$predeffield] = $default_values[$predeffield];
+                    }
+                }
+            }
+        }
+
         TemplateRenderer::getInstance()->display('components/itilobject/selfservice.html.twig', [
             'has_tickets_to_validate' => TicketValidation::getNumberToValidate(Session::getLoginUserID()) > 0,
             'url_validate'            => $url_validate,
@@ -4196,6 +4241,7 @@ JAVASCRIPT;
             'itiltemplate_key'        => self::getTemplateFormFieldName(),
             'itiltemplate'            => $tt,
             'delegating'              => $delegating,
+            'predefined_fields'       => Toolbox::prepareArrayForInput($predefined_fields),
         ]);
     }
 
