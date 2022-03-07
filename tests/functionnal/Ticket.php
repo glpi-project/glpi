@@ -4062,4 +4062,175 @@ HTML
         $this->boolean($ticket->getFromDB($tickets_id))->isTrue();
         $this->integer($ticket->fields['status'])->isEqualTo(\CommonITILObject::CLOSED);
     }
+
+    public function testSurveyCreation()
+    {
+        global $DB;
+
+        $this->login();
+        // Create ticket
+        $ticket = new \Ticket();
+        $tickets_id = $ticket->add([
+            'name' => 'testSurveyCreation',
+            'content' => 'testSurveyCreation',
+        ]);
+        $this->integer($tickets_id)->isGreaterThan(0);
+
+        $entities_id = $ticket->fields['entities_id'];
+        // Update Entity to enable survey
+        $entity = new \Entity();
+        $entity->getFromDB($entities_id);
+        $original_inquest_values = [
+            'inquest_config'    => $entity->fields['inquest_config'],
+            'inquest_rate'      => $entity->fields['inquest_rate'],
+            'inquest_delay'     => $entity->fields['inquest_delay'],
+        ];
+        $result = $entity->update([
+            'id' => $entities_id,
+            'inquest_config'    => 1,
+            'inquest_rate'      => 100,
+            'inquest_delay'     => 0,
+        ]);
+        $this->boolean($result)->isTrue();
+
+        $inquest = new \TicketSatisfaction();
+
+        // Verify no existing survey for ticket
+        $it = $DB->request([
+            'SELECT' => ['id'],
+            'FROM' => \TicketSatisfaction::getTable(),
+            'WHERE' => [
+                'tickets_id' => $tickets_id,
+            ],
+        ]);
+        $this->integer($it->count())->isEqualTo(0);
+
+        // Close ticket
+        $result_ticket = $ticket->update([
+            'id' => $tickets_id,
+            'status' => \CommonITILObject::CLOSED
+        ]);
+
+        // Reset entity
+        $result = $entity->update([
+            'id' => $entities_id,
+            'inquest_config'    => $original_inquest_values['inquest_config'],
+            'inquest_rate'      => $original_inquest_values['inquest_rate'],
+            'inquest_delay'     => $original_inquest_values['inquest_delay'],
+        ]);
+        $this->boolean($result)->isTrue();
+
+        $this->boolean($result_ticket)->isTrue();
+
+        // Verify survey created
+        $it = $DB->request([
+            'SELECT' => ['id'],
+            'FROM' => \TicketSatisfaction::getTable(),
+            'WHERE' => [
+                'tickets_id' => $tickets_id,
+            ],
+        ]);
+        $this->integer($it->count())->isEqualTo(1);
+    }
+
+    public function testSurveyCreationOnReopened()
+    {
+        global $DB;
+
+        $this->login();
+        // Create ticket
+        $ticket = new \Ticket();
+        $tickets_id = $ticket->add([
+            'name' => 'testSurveyCreation',
+            'content' => 'testSurveyCreation',
+        ]);
+        $this->integer($tickets_id)->isGreaterThan(0);
+
+        $entities_id = $ticket->fields['entities_id'];
+        // Update Entity to enable survey
+        $entity = new \Entity();
+        $entity->getFromDB($entities_id);
+        $original_inquest_values = [
+            'inquest_config'    => $entity->fields['inquest_config'],
+            'inquest_rate'      => $entity->fields['inquest_rate'],
+            'inquest_delay'     => $entity->fields['inquest_delay'],
+        ];
+        $result = $entity->update([
+            'id' => $entities_id,
+            'inquest_config'    => 1,
+            'inquest_rate'      => 100,
+            'inquest_delay'     => 0,
+        ]);
+        $this->boolean($result)->isTrue();
+
+        $inquest = new \TicketSatisfaction();
+
+        // Verify no existing survey for ticket
+        $it = $DB->request([
+            'SELECT' => ['id'],
+            'FROM' => \TicketSatisfaction::getTable(),
+            'WHERE' => [
+                'tickets_id' => $tickets_id,
+            ],
+        ]);
+        $this->integer($it->count())->isEqualTo(0);
+
+        // Close ticket
+        $result_ticket = $ticket->update([
+            'id' => $tickets_id,
+            'status' => \CommonITILObject::CLOSED
+        ]);
+
+        // Reset entity
+        $result = $entity->update([
+            'id' => $entities_id,
+            'inquest_config'    => $original_inquest_values['inquest_config'],
+            'inquest_rate'      => $original_inquest_values['inquest_rate'],
+            'inquest_delay'     => $original_inquest_values['inquest_delay'],
+        ]);
+        $this->boolean($result)->isTrue();
+
+        $this->boolean($result_ticket)->isTrue();
+
+        // Reopen ticket
+        $this->boolean($ticket->update([
+            'id' => $tickets_id,
+            'status' => \CommonITILObject::INCOMING
+        ]))->isTrue();
+
+        $result = $entity->update([
+            'id' => $entities_id,
+            'inquest_config'    => 1,
+            'inquest_rate'      => 100,
+            'inquest_delay'     => 0,
+        ]);
+        $this->boolean($result)->isTrue();
+
+        // Re-close ticket
+        $result_ticket = $ticket->update([
+            'id' => $tickets_id,
+            'status' => \CommonITILObject::CLOSED
+        ]);
+
+        // Reset entity
+        $result = $entity->update([
+            'id' => $entities_id,
+            'inquest_config'    => $original_inquest_values['inquest_config'],
+            'inquest_rate'      => $original_inquest_values['inquest_rate'],
+            'inquest_delay'     => $original_inquest_values['inquest_delay'],
+        ]);
+        $this->boolean($result)->isTrue();
+
+        $this->boolean($result_ticket)->isTrue();
+
+        // Verify survey created and only one exists
+        $it = $DB->request([
+            'SELECT' => ['id'],
+            'FROM' => \TicketSatisfaction::getTable(),
+            'WHERE' => [
+                'tickets_id' => $tickets_id,
+            ],
+        ]);
+        $this->integer($it->count())->isEqualTo(1);
+    }
 }
