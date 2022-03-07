@@ -506,7 +506,6 @@ class ITILFollowup extends CommonDBChild
         }
         unset($input["add_reopen"]);
        // }
-        unset($input["add"]);
 
         $itemtype = $input['itemtype'];
 

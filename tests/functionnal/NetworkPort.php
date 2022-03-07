@@ -324,4 +324,40 @@ class NetworkPort extends DbTestCase
             }
         }
     }
+
+    public function testClearSavedInputAfterUpdate()
+    {
+        $this->login();
+
+        // Check that there is no saveInput already
+        if (isset($_SESSION['saveInput']) && is_array($_SESSION['saveInput'])) {
+            $this->array($_SESSION['saveInput'])->notHasKey('NetworkPort');
+        }
+        $computer1 = getItemByTypeName('Computer', '_test_pc01');
+        $networkport = new \NetworkPort();
+
+        // Be sure added
+        $np_id = $networkport->add([
+            'items_id'           => $computer1->getID(),
+            'itemtype'           => 'Computer',
+            'entities_id'        => $computer1->fields['entities_id'],
+            'is_recursive'       => 0,
+            'logical_number'     => 5,
+            'mac'                => '00:24:81:eb:c6:d5',
+            'instantiation_type' => 'NetworkPortEthernet',
+            'name'               => 'eth1',
+        ]);
+        $this->integer((int)$np_id)->isGreaterThan(0);
+
+        $result = $networkport->update([
+            'id'                 => $np_id,
+            'comment'            => 'test',
+        ]);
+        $this->boolean($result)->isTrue();
+
+        // Check that there is no savedInput after update
+        if (isset($_SESSION['saveInput']) && is_array($_SESSION['saveInput'])) {
+            $this->array($_SESSION['saveInput'])->notHasKey('NetworkPort');
+        }
+    }
 }

@@ -651,4 +651,27 @@ class Computer extends DbTestCase
         ]);
         $this->integer(count($softwares))->isidenticalTo(1);
     }
+
+    public function testClearSavedInputAfterUpdate()
+    {
+        $this->login();
+
+        // Check that there is no saveInput already
+        if (isset($_SESSION['saveInput']) && is_array($_SESSION['saveInput'])) {
+            $this->array($_SESSION['saveInput'])->notHasKey('Computer');
+        }
+        $computer = $this->getNewComputer();
+        $cid = $computer->fields['id'];
+
+        $result = $computer->update([
+            'id'    => $cid,
+            'comment'  => 'test'
+        ]);
+        $this->boolean($result)->isTrue();
+
+        // Check that there is no savedInput after update
+        if (isset($_SESSION['saveInput']) && is_array($_SESSION['saveInput'])) {
+            $this->array($_SESSION['saveInput'])->notHasKey('Computer');
+        }
+    }
 }
