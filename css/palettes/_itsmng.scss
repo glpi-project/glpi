@@ -31,11 +31,11 @@
 /* ===== LOGIN ===== */
 
 #firstboxlogin {
-   background-color: #459436;
+   background-color: #7b081d;
 }
 
 #logo_login {
-   background: #8EC547;
+   background: #ae0c2a;
 }
 
 #display-login {
@@ -43,90 +43,76 @@
 }
 
 #text-login {
-   background-color: #459436;
+   background-color: #ae0c2a;
    color: #FFF;
-}
-
-#boxlogin #forget, #footer-login a {
-   color: #459436;
 }
 
 /* ====== GENERAL ====== */
 
 a, .btn-linkstyled {
-   color: #459436;
+   color: #ae0c2a;
 
    &:link {
-      color: #459436;
+      color: #ae0c2a;
    }
 }
 
 .ui-widget-content a {
-   color: #459436;
+   color: #ae0c2a;
 }
 
 .main_form tr.headerRow th {
-   color: #93CC4A;
+   color: #c70c2f;
 }
 
 /* ====== HEADER ====== */
 
 #header_top {
-   background-color: #459436;
+   background-color: #7b081d;
 }
 
 #c_preference a, #language_link > span {
-   color: #D9FFA8;
+   color: #fff;
 }
 
 #c_recherche form #champRecherche input {
-   background-color: #365731;
-   color: #D9FFA8;
+   background-color: #131425;
+   color: #fff;
 }
 
 #c_menu {
-   background-color: #8EC547;
+   background-color: #ae0c2a;
 }
 
 ul {
    &#menu {
       a {
          &.itemP, &.itemP1 {
-            color: #fff;
+            color: #FFF;
          }
       }
 
       > li.active {
-         background-color: #459436;
+         background-color: #c70c2f;
       }
    }
 
    &.ssmenu li.active {
-      background-color: #459436;
+      background-color: #c70c2f;
    }
 
    &#menu {
-      > li.active > a {
-         color: #D9FFA8;
-      }
-
-      ul {
-         &.ssmenu li.active > a {
-            color: #D9FFA8;
-         }
-
-         li a {
-            &:hover {
-               background: #93CC4A;
-               color: #D9FFA8;
-            }
-
-            color: #459436;
-         }
-      }
-
       > li:hover {
-         background-color: #93CC4A;
+         background-color: #d40e33;
+      }
+
+      ul li a {
+         &:hover {
+            background: #ae0c2a;
+            color: #fff;
+         }
+
+         color: #131425;
       }
    }
 }
@@ -135,51 +121,8 @@ ul {
    background-color: white;
 }
 
-/* ====== PANEL COMPONENTS ====== */
+/* ====== BUTTONS ====== */
 
-input.submit, span.vsubmit, a.vsubmit, .ui-widget-content span.vsubmit {
-   background-color: #8ec547;
-   color: #fff;
-}
-
-/* Primary color elements (white on blue BG) designed to be overridden from palettes */
-/* Colors are same as #c_menu */
-
-.primary-bg {
-   background: #8EC547;
-}
-
-.primary-bg-inverse {
-   background: #D9FFA8;
-}
-
-.primary-fg {
-   color: #D9FFA8;
-
-   &:hover {
-      color: #D9FFA8;
-   }
-}
-
-.primary-fg-inverse {
-   color: #8EC547;
-
-   &:hover {
-      color: #8EC547;
-   }
-}
-
-#show_all_menu {
-   dt a:hover {
-      background: #93CC4A;
-   }
-
-   a:hover {
-      background-color: #8EC547;
-      color: #D9FFA8;
-   }
-}
-
-div.progress .progress-fg {
-   background-color: #8EC547;
+a.vsubmit, .vsubmit a {
+   color: #8f5a0a;
 }

@@ -131,6 +131,12 @@ ul {
    background-color: white;
 }
 
+#header #c_logo {
+   background: url("../pics/fd_logo_dark.png");
+   background-size: 100%;
+   background-position-y: -8px;
+}
+
 /* ====== BUTTONS ====== */
 
 input.submit, span.vsubmit, a.vsubmit, .ui-widget-content span.vsubmit, a.vsubmit, #BackToTop {
