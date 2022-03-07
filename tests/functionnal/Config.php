@@ -85,7 +85,6 @@ class Config extends DbTestCase {
          'Config$2'      => 'Default values',
          'Config$3'      => 'Assets',
          'Config$4'      => 'Assistance',
-         'GLPINetwork$1' => 'GLPI Network',
          'Log$1'         => 'Historical',
       ];
       $this
@@ -116,7 +115,6 @@ class Config extends DbTestCase {
          'Config$7'      => 'Performance',
          'Config$8'      => 'API',
          'Config$11'      => \Impact::getTypeName(),
-         'GLPINetwork$1' => 'GLPI Network',
          'Log$1'         => 'Historical',
       ];
       $this

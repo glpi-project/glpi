@@ -1130,9 +1130,9 @@ class Dropdown extends DbTestCase {
                      'title'  => '_test_user - _test_user',
                   ],
                   2 => [
-                     'id'     => (int)getItemByTypeName('User', 'glpi', true),
-                     'text'   => 'glpi',
-                     'title'  => 'glpi - glpi',
+                     'id'     => (int)getItemByTypeName('User', 'itsm', true),
+                     'text'   => 'itsm',
+                     'title'  => 'itsm - itsm',
                   ],
                   3 => [
                      'id'     => (int)getItemByTypeName('User', 'normal', true),
@@ -1155,7 +1155,7 @@ class Dropdown extends DbTestCase {
          ], [
             'params'    => [
                'used'   => [
-                  getItemByTypeName('User', 'glpi', true),
+                  getItemByTypeName('User', 'itsm', true),
                   getItemByTypeName('User', 'tech', true)
                ]
             ],
@@ -1187,7 +1187,7 @@ class Dropdown extends DbTestCase {
             'params'    => [
                'all'    => true,
                'used'   => [
-                  getItemByTypeName('User', 'glpi', true),
+                  getItemByTypeName('User', 'itsm', true),
                   getItemByTypeName('User', 'tech', true),
                   getItemByTypeName('User', 'normal', true),
                   getItemByTypeName('User', 'post-only', true)

@@ -1547,7 +1547,7 @@ class Ticket extends DbTestCase {
       ] ))->isGreaterThan(0);
 
       $tlp = [
-         'glpi'      => ['pass' => 'glpi',     'pos' => \CommonITILObject::TIMELINE_LEFT],
+         'itsm'      => ['pass' => 'itsm',     'pos' => \CommonITILObject::TIMELINE_LEFT],
          'post-only' => ['pass' => 'postonly', 'pos' => \CommonITILObject::TIMELINE_LEFT],
          'tech'      => ['pass' => 'tech',     'pos' => \CommonITILObject::TIMELINE_RIGHT],
          'normal'    => ['pass' => 'normal',   'pos' => \CommonITILObject::TIMELINE_RIGHT]

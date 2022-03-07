@@ -62,8 +62,8 @@ class Profile extends DbTestCase {
          ],
          [
             'user'     => [
-               'login'    => 'glpi',
-               'password' => 'glpi',
+               'login'    => 'itsm',
+               'password' => 'itsm',
             ],
             'rightset' => [
                ['name' => \Computer::$rightname, 'value' => CREATE, 'expected' => true],

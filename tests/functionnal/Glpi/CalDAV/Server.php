@@ -52,9 +52,9 @@ class Server extends DbTestCase {
       $this->integer($group_2_id)->isGreaterThan(0);
 
       $users = [
-         getItemByTypeName('User', 'glpi', true) => [
-            'name'   => 'glpi',
-            'pass'   => 'glpi',
+         getItemByTypeName('User', 'itsm', true) => [
+            'name'   => 'itsm',
+            'pass'   => 'itsm',
             'groups' => [$group_1_id, $group_2_id],
          ],
          getItemByTypeName('User', 'tech', true) => [
@@ -209,8 +209,8 @@ class Server extends DbTestCase {
       $dataset[] = [
          'path'             => 'principals/users/',
          'expected_results' => $expected_results,
-         'login'            => 'glpi',
-         'pass'             => 'glpi',
+         'login'            => 'itsm',
+         'pass'             => 'itsm',
       ];
 
       // 'tech', 'normal', 'post-only' user can see only themselves in principals
@@ -267,8 +267,8 @@ class Server extends DbTestCase {
                   'resourcetype' => ['d:collection', 'cal:calendar'],
                ]
             ],
-            'login'            => 'glpi',
-            'pass'             => 'glpi',
+            'login'            => 'itsm',
+            'pass'             => 'itsm',
          ];
       }
 

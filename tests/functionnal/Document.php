@@ -242,12 +242,12 @@ class Document extends DbTestCase {
          (int)$document->add([
             'name'     => 'basic document',
             'filename' => 'doc.xls',
-            'users_id' => '2', // user "glpi"
+            'users_id' => '2', // user "itsm"
          ])
       )->isGreaterThan(0);
 
-      // glpi can see all documents
-      $this->login('glpi', 'glpi');
+      // itsm can see all documents
+      $this->login('itsm', 'itsm');
       $this->boolean($document->canViewFile())->isTrue();
 
       // tech can see all documents
