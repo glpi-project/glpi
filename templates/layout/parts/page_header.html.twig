@@ -49,14 +49,20 @@
                <span class="glpi-logo"></span>
             </a>
 
-            {{ include('layout/parts/goto_button.html.twig') }}
+            <span class="d-none d-lg-inline-block">
+                {{ include('layout/parts/goto_button.html.twig') }}
+            </span>
 
             <div class="d-lg-none">
                {{ include('layout/parts/user_header.html.twig') }}
             </div>
 
             <div class="collapse navbar-collapse" id="navbar-menu">
-               {{ include('layout/parts/menu.html.twig') }}
+                <span class="d-inline-block d-lg-none ms-2">
+                    {{ include('layout/parts/goto_button.html.twig') }}
+                </span>
+                {{ include('layout/parts/menu.html.twig') }}
+
 
                <p class="text-start">
                   <button class="btn btn-sm btn-ghost-secondary mb-2 reduce-menu d-none d-md-block">
@@ -69,11 +75,11 @@
       {% endif %}
 
       <header class="navbar d-print-none sticky-lg-top shadow-sm {{ user_pref('page_layout') == 'vertical' ? 'navbar-light navbar-expand-md' : 'navbar-dark navbar-expand-xl topbar' }}">
-         <div class="container-fluid flex-nowrap pe-0">
+         <div class="container-fluid flex-xl-nowrap pe-xl-0">
             {% if user_pref('page_layout') == 'vertical' %}
                {{ include('layout/parts/breadcrumbs.html.twig') }}
 
-               <div class="ms-md-auto d-none d-md-block flex-grow-1 flex-md-grow-0">
+               <div class="ms-xl-auto d-none d-xl-block flex-grow-1 flex-xl-grow-0">
                   {{ include('layout/parts/global_search_form.html.twig') }}
                </div>
             {% elseif user_pref('page_layout') == 'horizontal' %}
@@ -86,19 +92,19 @@
                   <span class="glpi-logo"></span>
                </a>
 
-               <div class="d-lg-none">
+               <div class="d-xl-none">
                   {{ include('layout/parts/user_header.html.twig') }}
                </div>
 
                <div class="collapse navbar-collapse justify-content-center" id="navbar-menu">
                   {{ include('layout/parts/menu.html.twig') }}
-                  <span class="ms-2 mt-2">
+                  <span class="ms-xl-2 d-inline-block mt-2 mt-xl-2">
                      {{ include('layout/parts/goto_button.html.twig') }}
                   </span>
                </div>
             {% endif %}
 
-            <div class="ms-md-4 d-none d-lg-block">
+            <div class="ms-md-4 d-none d-xl-block">
                {{ include('layout/parts/user_header.html.twig') }}
             </div>
          </div>
