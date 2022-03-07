@@ -575,7 +575,9 @@ class GLPIKanbanRights {
                 if (forms.length > 0) {
                     self.temp_forms[column.id] = [];
                     $.each(forms, function(i2, form) {
-                        self.temp_forms[column.id].push($(form).clone());
+                        // Copy event handlers for element and child elements
+                        // Otherwise, the Add button will act like a normal submit button (not wanted)
+                        self.temp_forms[column.id].push($(form).clone(true, true));
                     });
                 }
             });
