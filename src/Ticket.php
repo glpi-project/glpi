@@ -4049,6 +4049,64 @@ JAVASCRIPT;
         return $totalcost;
     }
 
+    /**
+     * Return an array of predefined fields while also loading them into the $options array
+     *
+     * @param ITILTemplate $tt The ticket template to use
+     * @param array $options The current options array
+     * @param array $default_values The default values to use in case they are not predefined
+     * @return array An array of the predefined values
+     */
+    private function getPredefinedTemplateFields(ITILTemplate $tt, array &$options, array $default_values): array
+    {
+        // Predefined fields from template : reset them
+        if (isset($options['_predefined_fields'])) {
+            $options['_predefined_fields']
+                = Toolbox::decodeArrayFromInput($options['_predefined_fields']);
+        } else {
+            $options['_predefined_fields'] = [];
+        }
+
+        // Store predefined fields to be able not to take into account on change template
+        $predefined_fields = [];
+        $key = self::getTemplateFormFieldName();
+
+        if (isset($tt->predefined) && count($tt->predefined)) {
+            foreach ($tt->predefined as $predeffield => $predefvalue) {
+                if (isset($options[$predeffield]) && isset($default_values[$predeffield])) {
+                    // Is always default value : not set
+                    // Set if already predefined field
+                    // Set if ticket template change
+                    if (
+                        ((count($options['_predefined_fields']) == 0)
+                            && ($options[$predeffield] == $default_values[$predeffield]))
+                        || (isset($options['_predefined_fields'][$predeffield])
+                            && ($options[$predeffield] == $options['_predefined_fields'][$predeffield]))
+                        || (isset($options[$key])
+                            && ($options[$key] != $tt->getID()))
+                    ) {
+                        $options[$predeffield]            = $predefvalue;
+                        $predefined_fields[$predeffield] = $predefvalue;
+                    }
+                } else { // Not defined options set as hidden field
+                    echo "<input type='hidden' name='$predeffield' value='$predefvalue'>";
+                }
+            }
+            // All predefined override : add option to say predifined exists
+            if (count($predefined_fields) == 0) {
+                $predefined_fields['_all_predefined_override'] = 1;
+            }
+        } else { // No template load : reset predefined values
+            if (count($options['_predefined_fields'])) {
+                foreach ($options['_predefined_fields'] as $predeffield => $predefvalue) {
+                    if ($options[$predeffield] == $predefvalue) {
+                        $options[$predeffield] = $default_values[$predeffield];
+                    }
+                }
+            }
+        }
+        return $predefined_fields;
+    }
 
     /**
      * Print the helpdesk form
@@ -4187,50 +4245,7 @@ JAVASCRIPT;
             $options['_right'] = "delegate";
         }
 
-        // Predefined fields from template : reset them
-        if (isset($options['_predefined_fields'])) {
-            $options['_predefined_fields']
-                = Toolbox::decodeArrayFromInput($options['_predefined_fields']);
-        } else {
-            $options['_predefined_fields'] = [];
-        }
-
-        // Store predefined fields to be able not to take into account on change template
-        $predefined_fields = [];
-        $key = $this->getTemplateFormFieldName();
-
-        if (isset($tt->predefined) && count($tt->predefined)) {
-            foreach ($tt->predefined as $predeffield => $predefvalue) {
-                if (isset($options[$predeffield]) && isset($default_values[$predeffield])) {
-                    // Is always default value : not set
-                    // Set if already predefined field
-                    // Set if ticket template change
-                    if (((count($options['_predefined_fields']) == 0)
-                            && ($options[$predeffield] == $default_values[$predeffield]))
-                        || (isset($options['_predefined_fields'][$predeffield])
-                            && ($options[$predeffield] == $options['_predefined_fields'][$predeffield]))
-                        || (isset($options[$key])
-                            && ($options[$key] != $tt->getID()))) {
-                        $options[$predeffield]            = $predefvalue;
-                        $predefined_fields[$predeffield] = $predefvalue;
-                    }
-                } else { // Not defined options set as hidden field
-                    echo "<input type='hidden' name='$predeffield' value='$predefvalue'>";
-                }
-            }
-            // All predefined override : add option to say predifined exists
-            if (count($predefined_fields) == 0) {
-                $predefined_fields['_all_predefined_override'] = 1;
-            }
-        } else { // No template load : reset predefined values
-            if (count($options['_predefined_fields'])) {
-                foreach ($options['_predefined_fields'] as $predeffield => $predefvalue) {
-                    if ($options[$predeffield] == $predefvalue) {
-                        $options[$predeffield] = $default_values[$predeffield];
-                    }
-                }
-            }
-        }
+        $predefined_fields = $this->getPredefinedTemplateFields($tt, $options, $default_values);
 
         TemplateRenderer::getInstance()->display('components/itilobject/selfservice.html.twig', [
             'has_tickets_to_validate' => TicketValidation::getNumberToValidate(Session::getLoginUserID()) > 0,
@@ -4592,58 +4607,7 @@ JAVASCRIPT;
             ($ID ? $this->fields['entities_id'] : $options['entities_id'])
         );
 
-       // Predefined fields from template : reset them
-        if (isset($options['_predefined_fields'])) {
-            $options['_predefined_fields']
-                        = Toolbox::decodeArrayFromInput($options['_predefined_fields']);
-        } else {
-            $options['_predefined_fields'] = [];
-        }
-
-       // Store predefined fields to be able not to take into account on change template
-       // Only manage predefined values on ticket creation
-        $predefined_fields = [];
-        $tpl_key = $this->getTemplateFormFieldName();
-        if (!$ID) {
-            if (isset($tt->predefined) && count($tt->predefined)) {
-                foreach ($tt->predefined as $predeffield => $predefvalue) {
-                    if (isset($default_values[$predeffield])) {
-                      // Is always default value : not set
-                      // Set if already predefined field
-                      // Set if ticket template change
-                        if (
-                            ((count($options['_predefined_fields']) == 0)
-                            && ($options[$predeffield] == $default_values[$predeffield]))
-                            || (isset($options['_predefined_fields'][$predeffield])
-                            && ($options[$predeffield] == $options['_predefined_fields'][$predeffield]))
-                            || (isset($options[$tpl_key])
-                            && ($options[$tpl_key] != $tt->getID()))
-                            // user pref for requestype can't overwrite requestype from template
-                            // when change category
-                            || (($predeffield == 'requesttypes_id')
-                            && empty($saved))
-                        ) {
-                             // Load template data
-                             $options[$predeffield]            = $predefvalue;
-                             $this->fields[$predeffield]      = $predefvalue;
-                             $predefined_fields[$predeffield] = $predefvalue;
-                        }
-                    }
-                }
-               // All predefined override : add option to say predifined exists
-                if (count($predefined_fields) == 0) {
-                    $predefined_fields['_all_predefined_override'] = 1;
-                }
-            } else { // No template load : reset predefined values
-                if (count($options['_predefined_fields'])) {
-                    foreach ($options['_predefined_fields'] as $predeffield => $predefvalue) {
-                        if ($options[$predeffield] == $predefvalue) {
-                            $options[$predeffield] = $default_values[$predeffield];
-                        }
-                    }
-                }
-            }
-        }
+        $predefined_fields = $this->getPredefinedTemplateFields($tt, $options, $default_values);
        // Put ticket template on $options for actors
         $options[str_replace('s_id', '', $tpl_key)] = $tt;
 
