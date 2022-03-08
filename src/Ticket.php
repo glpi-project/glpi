@@ -4053,7 +4053,7 @@ JAVASCRIPT;
      * Return an array of predefined fields while also loading them into the $options array
      *
      * @param ITILTemplate $tt The ticket template to use
-     * @param array $options The current options array
+     * @param array $options The current options array (PASSED BY REFERENCE)
      * @param array $default_values The default values to use in case they are not predefined
      * @return array An array of the predefined values
      */
@@ -4065,6 +4065,9 @@ JAVASCRIPT;
                 = Toolbox::decodeArrayFromInput($options['_predefined_fields']);
         } else {
             $options['_predefined_fields'] = [];
+        }
+        if (!isset($options['_hidden_fields'])) {
+            $options['_hidden_fields'] = [];
         }
 
         // Store predefined fields to be able not to take into account on change template
@@ -4089,7 +4092,7 @@ JAVASCRIPT;
                         $predefined_fields[$predeffield] = $predefvalue;
                     }
                 } else { // Not defined options set as hidden field
-                    echo "<input type='hidden' name='$predeffield' value='$predefvalue'>";
+                    $options['_hidden_fields'][$predeffield] = $predefvalue;
                 }
             }
             // All predefined override : add option to say predifined exists

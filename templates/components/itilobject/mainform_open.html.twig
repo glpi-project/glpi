@@ -85,8 +85,15 @@
    {% if params['_skip_promoted_fields'] is defined and params['_skip_promoted_fields'] > 0 %}
       <input type="hidden" name="_skip_promoted_fields" value="{{ params['_skip_promoted_fields'] }}" />
    {% endif %}
+
    {% if params['_tasktemplates_id'] is defined and params['_tasktemplates_id']|length > 0 %}
       {% for tasktemplate_id in params['_tasktemplates_id'] %}
          <input type="hidden" name="_tasktemplates_id[]" value="{{ tasktemplate_id }}" />
       {% endfor %}
    {% endif %}
+
+   {% if params['_hidden_fields'] is defined and params['_hidden_fields']|length > 0 %}
+      {% for field_name, field_value in params['_hidden_fields'] %}
+         <input type="hidden" name="{{ field_name }}" value="{{ field_value }}" />
+      {% endfor %}
+   {% emdif %}
