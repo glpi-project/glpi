@@ -581,6 +581,9 @@ class Rule extends CommonDBTM
         $isadmin = static::canUpdate();
         $actions = parent::getSpecificMassiveActions($checkitem);
 
+        if (!$this->isEntityAssign()) {
+            unset($actions[MassiveAction::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_transfer_list']);
+        }
         $collectiontype = $this->getCollectionClassName();
         if ($collection = getItemForItemtype($collectiontype)) {
             if (
