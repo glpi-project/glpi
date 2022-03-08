@@ -73,10 +73,11 @@ class FrontEndAssetsExtension extends AbstractExtension
      * Return domain-relative path of a CSS file.
      *
      * @param string $path
+     * @param array $options
      *
      * @return string
      */
-    public function cssPath(string $path): string
+    public function cssPath(string $path, array $options = []): string
     {
         $is_debug = isset($_SESSION['glpi_use_mode']) && $_SESSION['glpi_use_mode'] === Session::DEBUG_MODE;
 
@@ -97,7 +98,7 @@ class FrontEndAssetsExtension extends AbstractExtension
         }
 
         $path = Html::getPrefixedUrl($path);
-        $path = $this->getVersionnedPath($path);
+        $path = $this->getVersionnedPath($path, $options);
 
         return $path;
     }
@@ -106,10 +107,11 @@ class FrontEndAssetsExtension extends AbstractExtension
      * Return domain-relative path of a JS file.
      *
      * @param string $path
+     * @param array $options
      *
      * @return string
      */
-    public function jsPath(string $path): string
+    public function jsPath(string $path, array $options = []): string
     {
         $is_debug = isset($_SESSION['glpi_use_mode']) && $_SESSION['glpi_use_mode'] === Session::DEBUG_MODE;
 
@@ -120,7 +122,7 @@ class FrontEndAssetsExtension extends AbstractExtension
         }
 
         $path = Html::getPrefixedUrl($path);
-        $path = $this->getVersionnedPath($path);
+        $path = $this->getVersionnedPath($path, $options);
 
         return $path;
     }
@@ -132,10 +134,9 @@ class FrontEndAssetsExtension extends AbstractExtension
      *
      * @return string
      */
-    private function getVersionnedPath(string $path): string
+    private function getVersionnedPath(string $path, array $options = []): string
     {
-       // @TODO Adapt version to plugin version if path is related to a specific plugin
-        $version = GLPI_VERSION;
+        $version = $options['version'] ?? GLPI_VERSION;
         $path .= (strpos($path, '?') !== false ? '&' : '?') . 'v=' . $version;
 
         return $path;
@@ -182,7 +183,7 @@ class FrontEndAssetsExtension extends AbstractExtension
         $locales_domains = ['glpi' => GLPI_VERSION];
         $plugins = Plugin::getPlugins();
         foreach ($plugins as $plugin) {
-            $locales_domains[$plugin] = Plugin::getInfo($plugin, 'version');
+            $locales_domains[$plugin] = Plugin::getPluginFilesVersion($plugin);
         }
 
         $script = <<<JAVASCRIPT

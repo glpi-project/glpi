@@ -1570,6 +1570,18 @@ class Plugin extends CommonDBTM
     }
 
     /**
+     * Get plugin files version.
+     *
+     * @param string $key
+     *
+     * @return string|null
+     */
+    public static function getPluginFilesVersion(string $key): ?string
+    {
+        return (new self())->getInformationsFromDirectory($key)['version'] ?? null;
+    }
+
+    /**
      * Returns plugin information from directory.
      *
      * @param string $directory

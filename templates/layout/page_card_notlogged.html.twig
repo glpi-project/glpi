@@ -31,11 +31,17 @@
 
 {% set theme = config('palette') %}
 {% if css_files is not defined %}
-   {% set css_files = ['public/lib/base.css', 'css/palettes/' ~ theme ~ '.scss'] %}
+   {% set css_files = [
+       {'path': 'public/lib/base.css'},
+       {'path': 'css/palettes/' ~ theme ~ '.scss'}
+   ] %}
    {# TODO : load hight contrast css #}
 {% endif %}
 {% if js_files is not defined %}
-   {% set js_files = ['public/lib/base.js', 'js/common.js'] %}
+   {% set js_files = [
+       {'path': 'public/lib/base.js'},
+       {'path': 'js/common.js'}
+   ] %}
 {% endif %}
 
 {{ include('layout/parts/head.html.twig') }}

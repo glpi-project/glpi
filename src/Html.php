@@ -1200,21 +1200,21 @@ HTML;
             'js_files'  => [],
         ];
 
-        $tpl_vars['css_files'][] = 'public/lib/base.css';
+        $tpl_vars['css_files'][] = ['path' => 'public/lib/base.css'];
 
         if (isset($CFG_GLPI['notifications_ajax']) && $CFG_GLPI['notifications_ajax']) {
             Html::requireJs('notifications_ajax');
         }
 
-        $tpl_vars['css_files'][] = 'public/lib/leaflet.css';
+        $tpl_vars['css_files'][] = ['path' => 'public/lib/leaflet.css'];
         Html::requireJs('leaflet');
 
-        $tpl_vars['css_files'][] = 'public/lib/flatpickr.css';
+        $tpl_vars['css_files'][] = ['path' => 'public/lib/flatpickr.css'];
         // Include dark theme as base (may be cleaner look than light; colors overriden by GLPI's stylesheet)
-        $tpl_vars['css_files'][] = 'public/lib/flatpickr/themes/dark.css';
+        $tpl_vars['css_files'][] = ['path' => 'public/lib/flatpickr/themes/dark.css'];
         Html::requireJs('flatpickr');
 
-        $tpl_vars['css_files'][] = 'public/lib/photoswipe.css';
+        $tpl_vars['css_files'][] = ['path' => 'public/lib/photoswipe.css'];
         Html::requireJs('photoswipe');
 
        //on demand JS
@@ -1237,37 +1237,37 @@ HTML;
             }
 
             if (in_array('fullcalendar', $jslibs)) {
-                $tpl_vars['css_files'][] = 'public/lib/fullcalendar.css';
+                $tpl_vars['css_files'][] = ['path' => 'public/lib/fullcalendar.css'];
                 Html::requireJs('fullcalendar');
             }
 
             if (in_array('reservations', $jslibs)) {
-                $tpl_vars['css_files'][] = 'css/standalone/reservations.scss';
+                $tpl_vars['css_files'][] = ['path' => 'css/standalone/reservations.scss'];
                 Html::requireJs('reservations');
             }
 
             if (in_array('gantt', $jslibs)) {
-                $tpl_vars['css_files'][] = 'public/lib/dhtmlx-gantt.css';
+                $tpl_vars['css_files'][] = ['path' => 'public/lib/dhtmlx-gantt.css'];
                 Html::requireJs('gantt');
             }
 
             if (in_array('kanban', $jslibs)) {
-                $tpl_vars['js_modules'][] = 'js/modules/Kanban/Kanban.js';
+                $tpl_vars['js_modules'][] = ['path' => 'js/modules/Kanban/Kanban.js'];
                 Html::requireJs('kanban');
             }
 
             if (in_array('rateit', $jslibs)) {
-                $tpl_vars['css_files'][] = 'public/lib/jquery.rateit.css';
+                $tpl_vars['css_files'][] = ['path' => 'public/lib/jquery.rateit.css'];
                 Html::requireJs('rateit');
             }
 
             if (in_array('dashboard', $jslibs)) {
-                $tpl_vars['css_files'][] = 'css/standalone/dashboard.scss';
+                $tpl_vars['css_files'][] = ['path' => 'css/standalone/dashboard.scss'];
                 Html::requireJs('dashboard');
             }
 
             if (in_array('marketplace', $jslibs)) {
-                $tpl_vars['css_files'][] = 'css/standalone/marketplace.scss';
+                $tpl_vars['css_files'][] = ['path' => 'css/standalone/marketplace.scss'];
                 Html::requireJs('marketplace');
             }
 
@@ -1276,8 +1276,8 @@ HTML;
             }
 
             if (in_array('gridstack', $jslibs)) {
-                $tpl_vars['css_files'][] = 'public/lib/gridstack.css';
-                $tpl_vars['css_files'][] = 'css/standalone/gridstack-grids.scss';
+                $tpl_vars['css_files'][] = ['path' => 'public/lib/gridstack.css'];
+                $tpl_vars['css_files'][] = ['path' => 'css/standalone/gridstack-grids.scss'];
                 Html::requireJs('gridstack');
             }
 
@@ -1298,13 +1298,13 @@ HTML;
             }
 
             if (in_array('charts', $jslibs)) {
-                $tpl_vars['css_files'][] = 'public/lib/chartist.css';
-                $tpl_vars['css_files'][] = 'css/standalone/chartist.scss';
+                $tpl_vars['css_files'][] = ['path' => 'public/lib/chartist.css'];
+                $tpl_vars['css_files'][] = ['path' => 'css/standalone/chartist.scss'];
                 Html::requireJs('charts');
             }
 
             if (in_array('codemirror', $jslibs)) {
-                $tpl_vars['css_files'][] = 'public/lib/codemirror.css';
+                $tpl_vars['css_files'][] = ['path' => 'public/lib/codemirror.css'];
                 Html::requireJs('codemirror');
             }
 
@@ -1314,7 +1314,7 @@ HTML;
         }
 
         if (Session::getCurrentInterface() == "helpdesk") {
-            $tpl_vars['css_files'][] = 'public/lib/jquery.rateit.css';
+            $tpl_vars['css_files'][] = ['path' => 'public/lib/jquery.rateit.css'];
             Html::requireJs('rateit');
         }
 
@@ -1342,23 +1342,29 @@ HTML;
                 }
 
                 $plugin_web_dir  = Plugin::getWebDir($plugin, false);
+                $plugin_version  = Plugin::getPluginFilesVersion($plugin);
 
                 if (!is_array($files)) {
                     $files = [$files];
                 }
 
                 foreach ($files as $file) {
-                    $tpl_vars['css_files'][] = "$plugin_web_dir/$file";
+                    $tpl_vars['css_files'][] = [
+                        'path' => "$plugin_web_dir/$file",
+                        'options' => [
+                            'version' => $plugin_version,
+                        ]
+                    ];
                 }
             }
         }
-        $tpl_vars['css_files'][] = 'css/palettes/' . $theme . '.scss';
+        $tpl_vars['css_files'][] = ['path' => 'css/palettes/' . $theme . '.scss'];
 
-        $tpl_vars['js_files'][] = 'public/lib/base.js';
+        $tpl_vars['js_files'][] = ['path' => 'public/lib/base.js'];
 
        // Search
-        $tpl_vars['js_modules'][] = 'js/modules/Search/ResultsView.js';
-        $tpl_vars['js_modules'][] = 'js/modules/Search/Table.js';
+        $tpl_vars['js_modules'][] = ['path' => 'js/modules/Search/ResultsView.js'];
+        $tpl_vars['js_modules'][] = ['path' => 'js/modules/Search/Table.js'];
 
         TemplateRenderer::getInstance()->display('layout/parts/head.html.twig', $tpl_vars);
 
@@ -1810,7 +1816,7 @@ HTML;
                 $scripts = [$scripts];
             }
             foreach ($scripts as $script) {
-                $tpl_vars['js_files'][] = $script;
+                $tpl_vars['js_files'][] = ['path' => $script];
             }
         }
         $_SESSION['glpi_js_toload'] = [];
@@ -1823,12 +1829,12 @@ HTML;
                 $CFG_GLPI["languages"][$_SESSION['glpilanguage']][2]
             );
             if (file_exists(GLPI_ROOT . '/' . $filename)) {
-                $tpl_vars['js_files'][] = $filename;
+                $tpl_vars['js_files'][] = ['path' => $filename];
             }
         }
 
-        $tpl_vars['js_files'][] = 'js/common.js';
-        $tpl_vars['js_files'][] = 'js/misc.js';
+        $tpl_vars['js_files'][] = ['path' => 'js/common.js'];
+        $tpl_vars['js_files'][] = ['path' => 'js/misc.js'];
 
         if (isset($PLUGIN_HOOKS['add_javascript']) && count($PLUGIN_HOOKS['add_javascript'])) {
             foreach ($PLUGIN_HOOKS["add_javascript"] as $plugin => $files) {
@@ -1837,13 +1843,19 @@ HTML;
                 }
                 $plugin_root_dir = Plugin::getPhpDir($plugin, true);
                 $plugin_web_dir  = Plugin::getWebDir($plugin, false);
+                $plugin_version  = Plugin::getPluginFilesVersion($plugin);
 
                 if (!is_array($files)) {
                     $files = [$files];
                 }
                 foreach ($files as $file) {
                     if (file_exists($plugin_root_dir . "/{$file}")) {
-                        $tpl_vars['js_files'][] = $plugin_web_dir . "/{$file}";
+                        $tpl_vars['js_files'][] = [
+                            'path' => $plugin_web_dir . "/{$file}",
+                            'options' => [
+                                'version' => $plugin_version,
+                            ]
+                        ];
                     } else {
                         trigger_error("{$file} file not found from plugin $plugin!", E_USER_WARNING);
                     }
@@ -1857,13 +1869,19 @@ HTML;
                 }
                 $plugin_root_dir = Plugin::getPhpDir($plugin, true);
                 $plugin_web_dir  = Plugin::getWebDir($plugin, false);
+                $plugin_version  = Plugin::getPluginFilesVersion($plugin);
 
                 if (!is_array($files)) {
                     $files = [$files];
                 }
                 foreach ($files as $file) {
                     if (file_exists($plugin_root_dir . "/{$file}")) {
-                        $tpl_vars['js_modules'][] = $plugin_web_dir . "/{$file}";
+                        $tpl_vars['js_modules'][] = [
+                            'path' => $plugin_web_dir . "/{$file}",
+                            'options' => [
+                                'version' => $plugin_version,
+                            ]
+                        ];
                     } else {
                         trigger_error("{$file} file not found from plugin $plugin!", E_USER_WARNING);
                     }
@@ -6345,7 +6363,7 @@ JAVASCRIPT
                 }
                 $plugin_root_dir = Plugin::getPhpDir($plugin, true);
                 $plugin_web_dir  = Plugin::getWebDir($plugin, false);
-                $version = Plugin::getInfo($plugin, 'version');
+                $version = Plugin::getPluginFilesVersion($plugin);
                 if (!is_array($files)) {
                     $files = [$files];
                 }
@@ -6369,7 +6387,7 @@ JAVASCRIPT
                 }
                 $plugin_root_dir = Plugin::getPhpDir($plugin, true);
                 $plugin_web_dir  = Plugin::getWebDir($plugin, false);
-                $version = Plugin::getInfo($plugin, 'version');
+                $version = Plugin::getPluginFilesVersion($plugin);
                 if (!is_array($files)) {
                     $files = [$files];
                 }
