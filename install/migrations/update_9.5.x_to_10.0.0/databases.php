@@ -160,11 +160,11 @@ if (!$DB->tableExists('glpi_databases')) {
          KEY `is_recursive` (`is_recursive`),
          KEY `name` (`name`),
          KEY `is_active` (`is_active`),
-         KEY `is_deleted` (`is_deleted`),
-         KEY `is_dynamic` (`is_dynamic`),
          KEY `date_creation` (`date_creation`),
          KEY `date_mod` (`date_mod`),
-         KEY `databaseinstances_id` (`databaseinstances_id`)
+         KEY `databaseinstances_id` (`databaseinstances_id`),
+         KEY `is_deleted` (`is_deleted`),
+         KEY `is_dynamic` (`is_dynamic`)
       ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
     $DB->queryOrDie($query, "10.0 add table glpi_databases");
 }
@@ -173,6 +173,15 @@ $migration->addField('glpi_states', 'is_visible_database', 'bool', [
     'after' => 'is_visible_appliance'
 ]);
 $migration->addKey('glpi_states', 'is_visible_database');
+
+// Create glpi_databases is_dynamic if not exist (datamodel changed during v10.0 development)
+if (!$DB->fieldExists('glpi_databases', 'is_dynamic')) {
+    $migration->addField('glpi_databases', 'is_dynamic', "tinyint NOT NULL DEFAULT '0'", [
+        'after' => 'is_deleted'
+    ]);
+    $migration->addKey('is_dynamic', 'is_dynamic');
+    $migration->migrationOneTable('glpi_databases');
+}
 
 $migration->addRight('database', ALLSTANDARDRIGHT);
 $ADDTODISPLAYPREF['Database'] = [2, 3, 6, 9, 10];
