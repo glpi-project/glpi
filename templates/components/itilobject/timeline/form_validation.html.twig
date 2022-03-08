@@ -143,86 +143,88 @@
          </div>
       </form>
    {% else %}
-      <div class="itilvalidation">
+      <div class="itilvalidation card mt-4">
          <form name="asset_form" style="width: 100%;" class="d-flex flex-column" method="post"
                action="{{ subitem.getFormURL() }}" enctype="multipart/form-data" data-track-changes="true" data-submit-once>
             <input type="hidden" name="itemtype" value="{{ item.getType() }}" />
             <input type="hidden" name="{{ item.getForeignKeyField() }}" value="{{ item.fields['id'] }}" />
 
-            <div class="row">
-               <div class="col-12">
-                  {{ fields.readOnlyField(
-                     'approval_requester',
-                     get_current_user().getFriendlyName(),
-                     _n('Requester', 'Requester', 1),
-                     {
-                        'full_width': true,
-                        'rand': rand,
-                     }
-                  ) }}
+            <div class="card-header">
+                <h3 class="cart-title">{{ __("Validation request") }}</h3>
+            </div>
+            <div class="card-body">
+                {{ fields.readOnlyField(
+                    'approval_requester',
+                    get_current_user().getFriendlyName(),
+                    _n('Requester', 'Requester', 1),
+                    {
+                    'full_width': true,
+                    'rand': rand,
+                    }
+                ) }}
 
-                  {% if subitem.isNewItem() %}
-                     {{ fields.dropdownArrayField('validatortype', subitem.fields['validatortype'], {
-                        'User': 'User',
-                        'Group': 'Group'
-                     }, __('Approver'), {
-                        'display_emptychoice': true,
-                        'rand': rand,
-                        'field_class': 'col-12',
-                        'label_class': 'col-xxl-4',
-                        'input_class': 'col-xxl-8 flex-wrap',
-                        'add_field_html': '<span id="show_validator_field' ~ rand ~ '" class="flex-grow-1">&nbsp;</span>',
-                     }) }}
-                     {% if subitem.fields['validatortype'] is not null %}
-                        <script type="application/javascript">
-                           $('#show_validator_field{{ rand }}').load(CFG_GLPI.root_doc + '/ajax/dropdownValidator.php', {
-                              id: {{ subitem.fields['id'] }},
-                              entity: {{ item.fields['entities_id'] }},
-                              right: "{{ item.getType() is same as 'Ticket' and item.fields['type'] == 2 ? 'validate_request' : 'validate_incident' }}",
-                              validatortype: "{{ subitem.fields['users_id_validate']['groups_id'] is defined ? 'Group' : (subitem.fields['users_id_validate'] is not empty ? 'User' : '') }}"
-                           });
-                        </script>
-                     {% else %}
-                        <script type="application/javascript">
-                           updateItemOnSelectEvent("dropdown_validatortype{{ rand }}", '#show_validator_field{{ rand }}',
-                              CFG_GLPI.root_doc + '/ajax/dropdownValidator.php', {
-                                 id: 0,
-                                 entity: {{ item.fields['entities_id'] }},
-                                 right: "{{ item.getType() is same as 'Ticket' and item.fields['type'] == 2 ? 'validate_request' : 'validate_incident' }}",
-                                 validatortype: '__VALUE__',
-                                 groups_id: 0
-                              });
-                        </script>
-                     {% endif %}
-                  {% else %}
-                     {{ fields.dropdownField(
-                        'User',
-                        'users_id_validate',
-                        subitem.fields['users_id_validate'],
-                        __('Approver'),
-                        {
-                           'full_width': true,
-                        }
-                     ) }}
-                  {% endif %}
-
-                  {{ fields.textareaField(
-                     'comment_submission',
-                     subitem.fields['comment_submission'],
-                     _n('Comment', 'Comments', 1),
-                     {
+                {% if subitem.isNewItem() %}
+                    {{ fields.dropdownArrayField('validatortype', subitem.fields['validatortype'], {
+                    'User': 'User',
+                    'Group': 'Group'
+                    }, __('Approver'), {
+                    'display_emptychoice': true,
+                    'rand': rand,
+                    'field_class': 'col-12',
+                    'label_class': 'col-xxl-4',
+                    'input_class': 'col-xxl-8 flex-wrap',
+                    'add_field_html': '<span id="show_validator_field' ~ rand ~ '" class="flex-grow-1">&nbsp;</span>',
+                    }) }}
+                    {% if subitem.fields['validatortype'] is not null %}
+                    <script type="application/javascript">
+                        $('#show_validator_field{{ rand }}').load(CFG_GLPI.root_doc + '/ajax/dropdownValidator.php', {
+                            id: {{ subitem.fields['id'] }},
+                            entity: {{ item.fields['entities_id'] }},
+                            right: "{{ item.getType() is same as 'Ticket' and item.fields['type'] == 2 ? 'validate_request' : 'validate_incident' }}",
+                            validatortype: "{{ subitem.fields['users_id_validate']['groups_id'] is defined ? 'Group' : (subitem.fields['users_id_validate'] is not empty ? 'User' : '') }}"
+                        });
+                    </script>
+                    {% else %}
+                    <script type="application/javascript">
+                        updateItemOnSelectEvent("dropdown_validatortype{{ rand }}", '#show_validator_field{{ rand }}',
+                            CFG_GLPI.root_doc + '/ajax/dropdownValidator.php', {
+                                id: 0,
+                                entity: {{ item.fields['entities_id'] }},
+                                right: "{{ item.getType() is same as 'Ticket' and item.fields['type'] == 2 ? 'validate_request' : 'validate_incident' }}",
+                                validatortype: '__VALUE__',
+                                groups_id: 0
+                            });
+                    </script>
+                    {% endif %}
+                {% else %}
+                    {{ fields.dropdownField(
+                    'User',
+                    'users_id_validate',
+                    subitem.fields['users_id_validate'],
+                    __('Approver'),
+                    {
                         'full_width': true,
-                        'enable_richtext': true,
-                        'enable_fileupload': true,
-                        'enable_mentions': true,
-                        'rand': rand,
-                     }
-                  ) }}
-               </div>
+                    }
+                    ) }}
+                {% endif %}
+
+                {{ fields.textareaField(
+                    'comment_submission',
+                    subitem.fields['comment_submission'],
+                    _n('Comment', 'Comments', 1),
+                    {
+                    'full_width': true,
+                    'enable_richtext': true,
+                    'enable_fileupload': true,
+                    'enable_mentions': true,
+                    'rand': rand,
+                    }
+                ) }}
             </div>
 
             {{ call_plugin_hook('post_item_form', {"item": subitem, 'options': params}) }}
-            <div class="d-flex card-footer mx-n3 mb-n3">
+
+            <div class="d-flex justify-content-center card-footer">
                {% if subitem.fields['id'] <= 0 %}
                   <button class="btn btn-primary me-2" type="submit" name="add">
                      <i class="fas fa-plus"></i>
@@ -248,5 +250,9 @@
             <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
          </form>
       </div>
+
+      <script type="text/javascript">
+        window.scrollTo(0,document.body.scrollHeight);
+      </script>
    {% endif %}
 {% endblock %}

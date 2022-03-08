@@ -905,7 +905,7 @@ abstract class CommonITILValidation extends CommonDBChild
                 $item->fields["validation_percent"]
             );
             echo "</td>";
-            echo "<td><input type='submit' name='update' class='btn btn-primary' value='" .
+            echo "<td><input type='submit' name='update' class='btn btn-outline-secondary' value='" .
                     _sx('button', 'Save') . "'>";
             if (!empty($tID)) {
                 echo "<input type='hidden' name='id' value='$tID'>";
@@ -920,25 +920,6 @@ abstract class CommonITILValidation extends CommonDBChild
         echo "</table>";
         if ($canadd) {
             Html::closeForm();
-        }
-
-        echo "<div id='viewvalidation" . $tID . "$rand'></div>\n";
-
-        if ($canadd) {
-            echo "<script type='text/javascript' >\n";
-            echo "function viewAddValidation" . $tID . "$rand() {\n";
-            $params = ['type'             => $this->getType(),
-                'parenttype'       => static::$itemtype,
-                static::$items_id  => $tID,
-                'id'               => -1
-            ];
-            Ajax::updateItemJsCode(
-                "viewvalidation" . $tID . "$rand",
-                $CFG_GLPI["root_doc"] . "/ajax/viewsubitem.php",
-                $params
-            );
-            echo "};";
-            echo "</script>\n";
         }
 
         $iterator = $DB->Request([
@@ -965,7 +946,7 @@ abstract class CommonITILValidation extends CommonDBChild
                 ))
             ) {
                 echo "<tr class='tab_bg_1 noHover'><td class='center' colspan='" . $nb_colonnes . "'>";
-                echo "<a class='btn btn-primary' href='javascript:viewAddValidation" . $tID . "$rand();'>";
+                echo "<a class='btn btn-outline-secondary' href='javascript:viewAddValidation" . $tID . "$rand();'>";
                 echo __('Send an approval request') . "</a></td></tr>\n";
             }
         }
@@ -1052,6 +1033,25 @@ abstract class CommonITILValidation extends CommonDBChild
             echo __('No item found') . "</th></tr>\n";
         }
         echo "</table>";
+
+        echo "<div id='viewvalidation" . $tID . "$rand'></div>\n";
+
+        if ($canadd) {
+            echo "<script type='text/javascript' >\n";
+            echo "function viewAddValidation" . $tID . "$rand() {\n";
+            $params = ['type'             => $this->getType(),
+                'parenttype'       => static::$itemtype,
+                static::$items_id  => $tID,
+                'id'               => -1
+            ];
+            Ajax::updateItemJsCode(
+                "viewvalidation" . $tID . "$rand",
+                $CFG_GLPI["root_doc"] . "/ajax/viewsubitem.php",
+                $params
+            );
+            echo "};";
+            echo "</script>";
+        }
     }
 
 
