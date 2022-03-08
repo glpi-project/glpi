@@ -346,12 +346,18 @@ class OlaLevel_Ticket extends CommonDBTM
         ];
 
         $number = 0;
+        $last_escalation = -1;
         do {
             $iterator = $DB->request($criteria);
             $number = count($iterator);
             if ($number == 1) {
                 $data = $iterator->current();
+                if ($data['id'] === $last_escalation) {
+                    // Possible infinite loop. Trying to apply exact same SLA assignment.
+                    break;
+                }
                 self::doLevelForTicket($data, $olaType);
+                $last_escalation = $data['id'];
             }
         } while ($number == 1);
     }
