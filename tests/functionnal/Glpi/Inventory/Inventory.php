@@ -985,7 +985,6 @@ class Inventory extends InventoryTestCase
 
     private function checkComputer1Softwares(\Computer $computer, array $versions = [])
     {
-       //softwares
         $isoft = new \Item_SoftwareVersion();
         $iterator = $isoft->getFromItem($computer);
         $this->integer(count($iterator))->isIdenticalTo(6);
@@ -1084,10 +1083,10 @@ class Inventory extends InventoryTestCase
        //check inventory metadata
         $metadata = $inventory->getMetadata();
         $this->array($metadata)->hasSize(6)
-         ->string['deviceid']->isIdenticalTo('glpixps-2018-07-09-09-07-13')
-         ->string['version']->isIdenticalTo('FusionInventory-Agent_v2.5.2-1.fc31')
-         ->string['itemtype']->isIdenticalTo('Computer')
-         ->string['tag']->isIdenticalTo('000005');
+            ->string['deviceid']->isIdenticalTo('glpixps-2018-07-09-09-07-13')
+            ->string['version']->isIdenticalTo('FusionInventory-Agent_v2.5.2-1.fc31')
+            ->string['itemtype']->isIdenticalTo('Computer')
+            ->string['tag']->isIdenticalTo('000005');
         $this->array($metadata['provider'])->hasSize(10);
 
        //check created agent
@@ -1096,11 +1095,11 @@ class Inventory extends InventoryTestCase
         $this->integer(count($agents))->isIdenticalTo(1);
         $agent = $agents->current();
         $this->array($agent)
-         ->string['deviceid']->isIdenticalTo('glpixps-2018-07-09-09-07-13')
-         ->string['name']->isIdenticalTo('glpixps-2018-07-09-09-07-13')
-         ->string['version']->isIdenticalTo('2.5.2-1.fc31')
-         ->string['itemtype']->isIdenticalTo('Computer')
-         ->integer['agenttypes_id']->isIdenticalTo($agenttype['id']);
+            ->string['deviceid']->isIdenticalTo('glpixps-2018-07-09-09-07-13')
+            ->string['name']->isIdenticalTo('glpixps-2018-07-09-09-07-13')
+            ->string['version']->isIdenticalTo('2.5.2-1.fc31')
+            ->string['itemtype']->isIdenticalTo('Computer')
+            ->integer['agenttypes_id']->isIdenticalTo($agenttype['id']);
 
         //check created computer
         $computer = $this->checkComputer1($agent['items_id']);
@@ -1159,10 +1158,10 @@ class Inventory extends InventoryTestCase
         //check inventory metadata
         $metadata = $inventory->getMetadata();
         $this->array($metadata)->hasSize(6)
-         ->string['deviceid']->isIdenticalTo('LF014-2017-02-20-12-19-56')
-         ->string['version']->isIdenticalTo('FusionInventory-Agent_v2.3.19')
-         ->string['itemtype']->isIdenticalTo('Computer')
-         ->string['tag']->isIdenticalTo('000005');
+            ->string['deviceid']->isIdenticalTo('LF014-2017-02-20-12-19-56')
+            ->string['version']->isIdenticalTo('FusionInventory-Agent_v2.3.19')
+            ->string['itemtype']->isIdenticalTo('Computer')
+            ->string['tag']->isIdenticalTo('000005');
         $this->array($metadata['provider'])->hasSize(9);
 
         //check created agent
@@ -1171,11 +1170,11 @@ class Inventory extends InventoryTestCase
         $this->integer(count($agents))->isIdenticalTo(1);
         $agent = $agents->current();
         $this->array($agent)
-         ->string['deviceid']->isIdenticalTo('LF014-2017-02-20-12-19-56')
-         ->string['name']->isIdenticalTo('LF014-2017-02-20-12-19-56')
-         ->string['version']->isIdenticalTo('2.3.19')
-         ->string['itemtype']->isIdenticalTo('Computer')
-         ->integer['agenttypes_id']->isIdenticalTo($agenttype['id']);
+            ->string['deviceid']->isIdenticalTo('LF014-2017-02-20-12-19-56')
+            ->string['name']->isIdenticalTo('LF014-2017-02-20-12-19-56')
+            ->string['version']->isIdenticalTo('2.3.19')
+            ->string['itemtype']->isIdenticalTo('Computer')
+            ->integer['agenttypes_id']->isIdenticalTo($agenttype['id']);
 
         //check matchedlogs
         $mlogs = new \RuleMatchedLog();
@@ -1350,7 +1349,7 @@ class Inventory extends InventoryTestCase
         $iterator = \Computer_Item::getTypeItems($computers_id, 'Monitor');
         $this->integer(count($iterator))->isIdenticalTo(1);
 
-       //check network ports
+        //check network ports
         $iterator = $DB->request([
             'FROM'   => \NetworkPort::getTable(),
             'WHERE'  => [
@@ -1424,11 +1423,12 @@ class Inventory extends InventoryTestCase
         $expected_mem_component['busID'] = "1";
         $this->array($mem_component2)->isIdenticalTo($expected_mem_component);
 
-        //softwares
+        //software
         $isoft = new \Item_SoftwareVersion();
         $iterator = $isoft->getFromItem($computer);
         $this->integer(count($iterator))->isIdenticalTo(3033);
 
+        //computer has been created, check logs.
         //check for expected logs
         $nblogsnow = countElementsInTable(\Log::getTable());
         $logs = $DB->request([
@@ -1442,7 +1442,7 @@ class Inventory extends InventoryTestCase
             \Log::HISTORY_CREATE_ITEM => 64,
             \Log::HISTORY_ADD_SUBITEM => count($expecteds_fs),
             0 => 1, // Change Monitor contact (is_contact_autoupdate)
-            \Log::HISTORY_ADD_RELATION => 4 //OS and Monitor x2 each
+            \Log::HISTORY_ADD_RELATION => 4 //OS and Monitor on both sides
         ];
 
         $types_count = [];
@@ -1535,7 +1535,7 @@ class Inventory extends InventoryTestCase
         $iterator = \Computer_Item::getTypeItems($computers_id, 'Monitor');
         $this->integer(count($iterator))->isIdenticalTo(1);
 
-       //check network ports
+        //check network ports
         $iterator = $DB->request([
             'FROM'   => \NetworkPort::getTable(),
             'WHERE'  => [
@@ -1575,7 +1575,7 @@ class Inventory extends InventoryTestCase
         $expected_mem_component['busID'] = "1";
         $this->array($mem_component2)->isIdenticalTo($expected_mem_component);
 
-        //softwares
+        //software
         $isoft = new \Item_SoftwareVersion();
         $iterator = $isoft->getFromItem($computer);
         $this->integer(count($iterator))->isIdenticalTo(3033);
@@ -1602,7 +1602,7 @@ class Inventory extends InventoryTestCase
         ksort($expected_types_count);
         $this->array($types_count)->isIdenticalTo($expected_types_count);
 
-        $inventory = $this->doInventory($json);
+        $this->doInventory($json);
 
         //real computer update
         $json = file_get_contents(self::INV_FIXTURES . 'computer_3_updated.json');
@@ -1612,11 +1612,11 @@ class Inventory extends InventoryTestCase
         //check inventory metadata
         $metadata = $inventory->getMetadata();
         $this->array($metadata)->hasSize(6)
-         ->string['deviceid']->isIdenticalTo('LF014-2017-02-20-12-19-56')
-         ->string['version']->isIdenticalTo('FusionInventory-Agent_v2.3.20')
-         ->string['itemtype']->isIdenticalTo('Computer')
-         ->string['tag']->isIdenticalTo('000005')
-         ->string['action']->isIdenticalTo('inventory');
+            ->string['deviceid']->isIdenticalTo('LF014-2017-02-20-12-19-56')
+            ->string['version']->isIdenticalTo('FusionInventory-Agent_v2.3.20')
+            ->string['itemtype']->isIdenticalTo('Computer')
+            ->string['tag']->isIdenticalTo('000005')
+            ->string['action']->isIdenticalTo('inventory');
         ;
         $this->array($metadata['provider'])->hasSize(9);
 
@@ -1625,12 +1625,12 @@ class Inventory extends InventoryTestCase
         $this->integer(count($agents))->isIdenticalTo(1);
         $agent = $agents->current();
         $this->array($agent)
-         ->string['deviceid']->isIdenticalTo('LF014-2017-02-20-12-19-56')
-         ->string['name']->isIdenticalTo('LF014-2017-02-20-12-19-56')
-         ->string['version']->isIdenticalTo('2.3.20')
-         ->string['itemtype']->isIdenticalTo('Computer')
-         ->integer['items_id']->isIdenticalTo($computers_id)
-         ->integer['agenttypes_id']->isIdenticalTo($agenttype['id']);
+            ->string['deviceid']->isIdenticalTo('LF014-2017-02-20-12-19-56')
+            ->string['name']->isIdenticalTo('LF014-2017-02-20-12-19-56')
+            ->string['version']->isIdenticalTo('2.3.20')
+            ->string['itemtype']->isIdenticalTo('Computer')
+            ->integer['items_id']->isIdenticalTo($computers_id)
+            ->integer['agenttypes_id']->isIdenticalTo($agenttype['id']);
 
         $computer = new \Computer();
         $this->boolean($computer->getFromDB($computers_id))->isTrue();
@@ -1714,7 +1714,7 @@ class Inventory extends InventoryTestCase
         $iterator = \Computer_Item::getTypeItems($computers_id, 'Monitor');
         $this->integer(count($iterator))->isIdenticalTo(0);
 
-       //check network ports
+        //check network ports
         $iterator = $DB->request([
             'FROM'   => \NetworkPort::getTable(),
             'WHERE'  => [
@@ -1767,7 +1767,7 @@ class Inventory extends InventoryTestCase
         $expected_mem_component['busID'] = "1";
         $this->array($mem_component2)->isIdenticalTo($expected_mem_component);
 
-        //softwares
+        //software
         $isoft = new \Item_SoftwareVersion();
         $iterator = $isoft->getFromItem($computer);
         $this->integer(count($iterator))->isIdenticalTo(3184);
@@ -1874,9 +1874,9 @@ class Inventory extends InventoryTestCase
         $this->array($cloc);
         $locations_id = $cloc['id'];
 
-       //check created asset
+        //check created asset
         $equipments = $DB->request(['FROM' => \NetworkEquipment::getTable(), 'WHERE' => ['is_dynamic' => 1]]);
-       //no agent with deviceid equals to "foo"
+        //no agent with deviceid equals to "foo"
         $this->integer(count($equipments))->isIdenticalTo(1);
         $equipments_id = $equipments->current()['id'];
 
@@ -1921,7 +1921,7 @@ class Inventory extends InventoryTestCase
         ];
         $this->array($equipment->fields)->isIdenticalTo($expected);
 
-       //check network ports
+        //check network ports
         $expected_count = 164;
         $iterator = $DB->request([
             'FROM'   => \NetworkPort::getTable(),
@@ -2001,7 +2001,7 @@ class Inventory extends InventoryTestCase
             }
             ++$i;
 
-           //check for ips
+            //check for ips
             $ip_iterator = $DB->request([
                 'SELECT'       => [
                     \IPAddress::getTable() . '.name',
@@ -2032,7 +2032,7 @@ class Inventory extends InventoryTestCase
             }
         }
 
-       //check for components
+        //check for components
         $components = [];
         $allcount = 0;
         foreach (\Item_Devices::getItemAffinities('NetworkEquipment') as $link_type) {
@@ -2098,7 +2098,7 @@ class Inventory extends InventoryTestCase
 
         foreach ($expecteds as $type => $expected) {
             $component = array_values($components[$type]);
-           //hack to replace expected fkeys
+            //hack to replace expected fkeys
             foreach ($expected as $i => &$row) {
                 foreach (array_keys($row) as $key) {
                     if (isForeignKeyField($key)) {
@@ -2109,11 +2109,11 @@ class Inventory extends InventoryTestCase
             $this->array($component)->isIdenticalTo($expected);
         }
 
-       //ports connections
+        //ports connections
         $connections = $DB->request(['FROM' => \NetworkPort_NetworkPort::getTable()]);
         $this->integer(count($connections))->isIdenticalTo(5);
 
-       //unmanaged equipments
+        //unmanaged equipments
         $unmanageds = $DB->request(['FROM' => \Unmanaged::getTable()]);
         $this->integer(count($unmanageds))->isIdenticalTo(5);
 
@@ -2131,7 +2131,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             $this->string($unmanaged['sysdescr'])->isIdenticalTo($expecteds[$unmanaged['name']]);
         }
 
-       //check matchedlogs
+        //check matchedlogs
         $mlogs = new \RuleMatchedLog();
         $found = $mlogs->find();
         $this->array($found)->hasSize(6);//1 equipment, 5 unmanageds

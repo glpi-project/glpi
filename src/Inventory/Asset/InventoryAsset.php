@@ -164,14 +164,13 @@ abstract class InventoryAsset
     {
         $knowns = [];
 
-       //$blacklists = Blacklist::getBlacklists();
         $blacklist = new Blacklist();
 
         $data = $this->data;
         foreach ($data as &$value) {
             $blacklist->processBlackList($value);
-           // save raw manufacture name before its replacement by id for importing model
-           // (we need manufacturers name in when importing model in dictionary)
+            // save raw manufacture name before its replacement by id for importing model
+            // (we need manufacturers name in when importing model in dictionary)
             $manufacturer_name = "";
             if (property_exists($value, 'manufacturers_id')) {
                 $manufacturer_name = $value->manufacturers_id;

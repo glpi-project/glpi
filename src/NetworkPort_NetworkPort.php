@@ -228,7 +228,7 @@ class NetworkPort_NetworkPort extends CommonDBRelation
             }
         }
 
-       // If hub have no port, delete it
+        // If hub have no port, delete it
         foreach (array_keys($hubs_ids) as $unmanageds_id) {
             $networkports = $netport->find([
                 'itemtype'  => Unmanaged::getType(),

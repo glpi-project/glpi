@@ -1162,10 +1162,10 @@ class CommonDBTM extends CommonGLPI
             return false;
         }
 
-       // This means we are not adding a cloned object
+        // This means we are not adding a cloned object
         if (!Toolbox::hasTrait($this, \Glpi\Features\Clonable::class) || !isset($input['clone'])) {
-           // This means we are asked to clone the object (old way). This will clone the clone method
-           // that will set the clone parameter to true
+            // This means we are asked to clone the object (old way). This will clone the clone method
+            // that will set the clone parameter to true
             if (isset($input['_oldID'])) {
                 $id_to_clone = $input['_oldID'];
             }
@@ -1180,17 +1180,17 @@ class CommonDBTM extends CommonGLPI
             }
         }
 
-       // Store input in the object to be available in all sub-method / hook
+        // Store input in the object to be available in all sub-method / hook
         $this->input = $input;
 
-       // Manage the _no_history
+        // Manage the _no_history
         if (!isset($this->input['_no_history'])) {
             $this->input['_no_history'] = !$history;
         }
 
         if (isset($this->input['add'])) {
-           // Input from the interface
-           // Save this data to be available if add fail
+            // Input from the interface
+            // Save this data to be available if add fail
             $this->saveInput();
         }
 
@@ -1199,8 +1199,8 @@ class CommonDBTM extends CommonGLPI
             unset($this->input['add']);
         }
 
-       // Call the plugin hook - $this->input can be altered
-       // This hook get the data from the form, not yet altered
+        // Call the plugin hook - $this->input can be altered
+        // This hook get the data from the form, not yet altered
         Plugin::doHook(Hooks::PRE_ITEM_ADD, $this);
 
         if ($this->input && is_array($this->input)) {
@@ -1208,8 +1208,8 @@ class CommonDBTM extends CommonGLPI
         }
 
         if ($this->input && is_array($this->input)) {
-           // Call the plugin hook - $this->input can be altered
-           // This hook get the data altered by the object method
+            // Call the plugin hook - $this->input can be altered
+            // This hook get the data altered by the object method
             Plugin::doHook(Hooks::POST_PREPAREADD, $this);
         }
 
@@ -1218,14 +1218,14 @@ class CommonDBTM extends CommonGLPI
             $this->filterValues(!isCommandLine());
         }
 
-       //Process business rules for assets
+        //Process business rules for assets
         $this->assetBusinessRules(\RuleAsset::ONADD);
 
         if ($this->input && is_array($this->input)) {
             $this->fields = [];
             $table_fields = $DB->listFields($this->getTable());
 
-           // fill array for add
+            // fill array for add
             foreach (array_keys($this->input) as $key) {
                 if (
                     ($key[0] != '_')
@@ -1235,12 +1235,12 @@ class CommonDBTM extends CommonGLPI
                 }
             }
 
-           // Auto set date_creation if exsist
+            // Auto set date_creation if exsist
             if (isset($table_fields['date_creation']) && !isset($this->input['date_creation'])) {
                 $this->fields['date_creation'] = $_SESSION["glpi_currenttime"];
             }
 
-           // Auto set date_mod if exsist
+            // Auto set date_mod if exsist
             if (isset($table_fields['date_mod']) && !isset($this->input['date_mod'])) {
                 $this->fields['date_mod'] = $_SESSION["glpi_currenttime"];
             }
@@ -1268,7 +1268,7 @@ class CommonDBTM extends CommonGLPI
                         );
                     }
 
-                   // Auto create infocoms
+                    // Auto create infocoms
                     if (
                         isset($CFG_GLPI["auto_create_infocoms"]) && $CFG_GLPI["auto_create_infocoms"]
                         && (!isset($input['clone']) || !$input['clone'])
@@ -1282,20 +1282,20 @@ class CommonDBTM extends CommonGLPI
                         }
                     }
 
-                   // If itemtype is in infocomtype and if states_id field is filled
-                   // and item is not a template
+                    // If itemtype is in infocomtype and if states_id field is filled
+                    // and item is not a template
                     if (
                         Infocom::canApplyOn($this)
                         && isset($this->input['states_id'])
                             && (!isset($this->input['is_template'])
                                 || !$this->input['is_template'])
                     ) {
-                       //Check if we have to automatical fill dates
+                        //Check if we have to automatically fill dates
                         Infocom::manageDateOnStatusChange($this);
                     }
                     Plugin::doHook(Hooks::ITEM_ADD, $this);
 
-                   // As add have suceed, clean the old input value
+                    // As add have succeeded, clean the old input value
                     if (isset($this->input['_add'])) {
                         $this->clearSavedInput();
                     }

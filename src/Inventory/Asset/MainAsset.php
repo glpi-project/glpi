@@ -508,8 +508,8 @@ abstract class MainAsset extends InventoryAsset
                 $this->entities_id = $input['entities_id'];
             }
 
-           //call rules on current collected data to find item
-           //a callback on rulepassed() will be done if one is found.
+            //call rules on current collected data to find item
+            //a callback on rulepassed() will be done if one is found.
             $rule = new RuleImportAssetCollection();
             $rule->getCollectionPart();
             $datarules = $rule->processAllRules($input, [], ['class' => $this]);
@@ -580,7 +580,7 @@ abstract class MainAsset extends InventoryAsset
      */
     public function rulepassed($items_id, $itemtype, $rules_id, $ports_id = 0)
     {
-        global $DB, $CFG_GLPI;
+        global $CFG_GLPI;
 
         $key = $this->current_key;
         $val = &$this->data[$key];
