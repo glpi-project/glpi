@@ -76,9 +76,7 @@ if (isset($_POST["add"])) {
     }
     Html::back();
 } else if (isset($_POST['update'])) {
-    if (!$track->canAssign()) {
-        $track->check($_POST['id'], UPDATE);
-    }
+    $track->check($_POST['id'], UPDATE);
     $track->update($_POST);
 
     if (isset($_POST['kb_linked_id'])) {

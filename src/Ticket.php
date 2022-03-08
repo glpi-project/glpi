@@ -537,6 +537,7 @@ class Ticket extends CommonITILObject
         if (
             !Session::haveRight(self::$rightname, UPDATE)
             && !$this->ownItem()
+            && !$this->canAssign()
         ) {
            //we always return false, as ownItem() = true is managed by below self::canUpdate
             return false;
