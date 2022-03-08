@@ -1072,6 +1072,33 @@ class Inventory extends InventoryTestCase
         $this->array($battery)->isIdenticalTo($expected);
     }
 
+    private function checkLogs($count, $expected_types_count)
+    {
+        global $DB;
+
+        //check for expected logs
+        $nblogsnow = countElementsInTable(\Log::getTable());
+        $logs = $DB->request([
+            'FROM' => \Log::getTable(),
+            'LIMIT' => $nblogsnow,
+            'OFFSET' => $this->nblogs,
+        ]);
+        $this->integer(count($logs))->isIdenticalTo($count);
+
+        $types_count = [];
+        foreach ($logs as $row) {
+            $this->string($row['user_name'])->isIdenticalTo('inventory', print_r($row, true));
+            if (!isset($types_count[$row['linked_action']])) {
+                $types_count[$row['linked_action']] = 0;
+            }
+            ++$types_count[$row['linked_action']];
+        }
+
+        ksort($types_count);
+        ksort($expected_types_count);
+        $this->array($types_count)->isIdenticalTo($expected_types_count);
+    }
+
     public function testImportComputer()
     {
         global $DB, $CFG_GLPI;
@@ -1430,33 +1457,13 @@ class Inventory extends InventoryTestCase
 
         //computer has been created, check logs.
         //check for expected logs
-        $nblogsnow = countElementsInTable(\Log::getTable());
-        $logs = $DB->request([
-            'FROM' => \Log::getTable(),
-            'LIMIT' => $nblogsnow,
-            'OFFSET' => $this->nblogs,
-        ]);
-        $this->integer(count($logs))->isIdenticalTo(72);
-
         $expected_types_count = [
             \Log::HISTORY_CREATE_ITEM => 64,
             \Log::HISTORY_ADD_SUBITEM => count($expecteds_fs),
             0 => 1, // Change Monitor contact (is_contact_autoupdate)
             \Log::HISTORY_ADD_RELATION => 4 //OS and Monitor on both sides
         ];
-
-        $types_count = [];
-        foreach ($logs as $row) {
-            $this->string($row['user_name'])->isIdenticalTo('inventory', print_r($row, true));
-            if (!isset($types_count[$row['linked_action']])) {
-                $types_count[$row['linked_action']] = 0;
-            }
-            ++$types_count[$row['linked_action']];
-        }
-
-        ksort($types_count);
-        ksort($expected_types_count);
-        $this->array($types_count)->isIdenticalTo($expected_types_count);
+        $this->checkLogs(72, $expected_types_count);
 
         //fake computer update (nothing has changed)
         $json = file_get_contents(self::INV_FIXTURES . 'computer_3.json');
@@ -1581,26 +1588,7 @@ class Inventory extends InventoryTestCase
         $this->integer(count($iterator))->isIdenticalTo(3033);
 
         //check for expected logs
-        $nblogsnow = countElementsInTable(\Log::getTable());
-        $logs = $DB->request([
-            'FROM' => \Log::getTable(),
-            'LIMIT' => $nblogsnow,
-            'OFFSET' => $this->nblogs,
-        ]);
-        $this->integer(count($logs))->isIdenticalTo(72);
-
-        $types_count = [];
-        foreach ($logs as $row) {
-            $this->string($row['user_name'])->isIdenticalTo('inventory', print_r($row, true));
-            if (!isset($types_count[$row['linked_action']])) {
-                $types_count[$row['linked_action']] = 0;
-            }
-            ++$types_count[$row['linked_action']];
-        }
-
-        ksort($types_count);
-        ksort($expected_types_count);
-        $this->array($types_count)->isIdenticalTo($expected_types_count);
+        $this->checkLogs(72, $expected_types_count);
 
         $this->doInventory($json);
 
@@ -1773,14 +1761,6 @@ class Inventory extends InventoryTestCase
         $this->integer(count($iterator))->isIdenticalTo(3184);
 
         //check for expected logs after update
-        $logs = $DB->request([
-            'FROM' => \Log::getTable(),
-            'LIMIT' => countElementsInTable(\Log::getTable()),
-            'OFFSET' => $nblogsnow,
-        ]);
-
-        $this->integer(count($logs))->isIdenticalTo(45);
-
         $expected_types_count = [
             \Log::HISTORY_DELETE_SUBITEM => 5,//networkport and networkname
             \Log::HISTORY_CREATE_ITEM => 16, //virtual machines, os, manufacturer, net ports, net names, ...
@@ -1790,19 +1770,7 @@ class Inventory extends InventoryTestCase
             \Log::HISTORY_DEL_RELATION => 2,//monitor-computer relation
             \Log::HISTORY_UPDATE_RELATION => 2,//kernel version
         ];
-
-        $types_count = [];
-        foreach ($logs as $row) {
-            $this->string($row['user_name'])->isIdenticalTo('inventory', print_r($row, true));
-            if (!isset($types_count[$row['linked_action']])) {
-                $types_count[$row['linked_action']] = 0;
-            }
-            ++$types_count[$row['linked_action']];
-        }
-
-        ksort($types_count);
-        ksort($expected_types_count);
-        $this->array($types_count)->isEqualTo($expected_types_count);
+        $this->checkLogs(45, $expected_types_count);
 
         //check matchedlogs
         $mlogs = new \RuleMatchedLog();
