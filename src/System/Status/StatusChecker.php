@@ -564,7 +564,7 @@ final class StatusChecker
                 if (isset($plugin_status['ok']) && count(array_keys($plugin_status)) === 1) {
                     $status[$plugin] = [
                         'status'    => $plugin_status['ok'] ? self::STATUS_OK : self::STATUS_PROBLEM,
-                        'version'   => Plugin::getInfo($plugin)['version']
+                        'version'   => Plugin::getPluginFilesVersion($plugin)
                     ];
                 } else {
                     $status[$plugin] = $plugin_status;
