@@ -749,7 +749,7 @@ var GLPIPlanning  = {
                 sendDisplayEvent($(this), true);
             });
 
-        $('#planning_filter li.group_users > span > input[type="checkbox"]')
+        $('#planning_filter li.group_users > input[type="checkbox"]')
             .on('change', function() {
                 var parent_checkbox    = $(this);
                 var parent_li          = parent_checkbox.parents('li');
