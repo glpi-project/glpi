@@ -770,7 +770,6 @@ $DB->updateOrDie(
     ['entities_id' => 0],
     ['entities_id' => -1]
 );
-$migration->changeField('glpi_rules', 'entities_id', 'entities_id', "int {$default_key_sign} DEFAULT NULL");
 
 // Replace unused -1 default values on entities_id foreign keys
 $tables = [
