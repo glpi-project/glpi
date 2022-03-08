@@ -86,7 +86,6 @@ class NotificationEventMailing extends NotificationEventAbstract implements Noti
         $user = new User();
         if ($user->getFromDBbyEmail($CFG_GLPI['admin_email'])) {
             $admin['users_id'] = $user->getID();
-            $admin['usertype'] = $user->fields['usertype'];
         }
 
         return $admin;
@@ -115,7 +114,6 @@ class NotificationEventMailing extends NotificationEventAbstract implements Noti
                 $user = new User();
                 if ($user->getFromDBbyEmail($row['admin_email'])) {
                     $admin['users_id'] = $user->getID();
-                    $admin['usertype'] = $user->fields['usertype'];
                 }
                 $admins[] = $admin;
             }
