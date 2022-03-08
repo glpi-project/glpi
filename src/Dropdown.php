@@ -2007,6 +2007,7 @@ class Dropdown
         $param['noselect2']           = false;
         $param['templateResult']      = "templateResult";
         $param['templateSelection']   = "templateSelection";
+        $param['data-provider']       = '';
 
         if (is_array($options) && count($options)) {
             if (isset($options['value']) && strlen($options['value'])) {
@@ -2061,6 +2062,10 @@ class Dropdown
 
             if ($param['tooltip']) {
                 $output .= ' title="' . Html::entities_deep($param['tooltip']) . '"';
+            }
+
+            if ($param['data-provider']) {
+                $output .= ' data-provider="'.Html::entities_deep($param['data-provider']).'"';
             }
 
             if ($param['class']) {
