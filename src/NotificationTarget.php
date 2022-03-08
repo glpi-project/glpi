@@ -655,7 +655,7 @@ class NotificationTarget extends CommonDBChild
         $admin_data = $eventclass::getAdminData();
 
         if ($admin_data) {
-            if (!isset($admin_data['usertype'])) {
+            if (!isset($admin_data['users_id']) && !isset($admin_data['usertype'])) {
                 $admin_data['usertype'] = $this->getDefaultUserType();
             }
             $this->addToRecipientsList($admin_data);
@@ -756,7 +756,7 @@ class NotificationTarget extends CommonDBChild
 
         if ($admins_data) {
             foreach ($admins_data as $admin_data) {
-                if (!isset($admin_data['usertype'])) {
+                if (!isset($admin_data['users_id']) && !isset($admin_data['usertype'])) {
                     $admin_data['usertype'] = $this->getDefaultUserType();
                 }
                 $this->addToRecipientsList($admin_data);
