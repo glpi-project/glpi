@@ -3003,7 +3003,7 @@ class Rule extends CommonDBTM
         $this->dropdownRulesMatch();
         echo "</td><td class='tab_bg_2 center'>";
         echo "<input type=hidden name='sub_type' value='" . get_class($this) . "'>";
-        echo "<input type=hidden name='entities_id' value='-1'>";
+        echo "<input type=hidden name='entities_id' value='0'>";
         echo "<input type=hidden name='affectentity' value='$ID'>";
         echo "<input type=hidden name='_method' value='AddRule'>";
         echo "<input type='submit' name='execute' value=\"" . _sx('button', 'Add') . "\" class='btn btn-primary'>";
