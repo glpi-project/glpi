@@ -55,6 +55,7 @@ class Database extends CommonDBChild
         $ong = [];
         $this->addDefaultFormTab($ong)
          ->addImpactTab($ong, $options)
+         ->addStandardTab('Infocom', $ong, $options)
          ->addStandardTab('Document_Item', $ong, $options)
          ->addStandardTab('KnowbaseItem_Item', $ong, $options)
          ->addStandardTab('Ticket', $ong, $options)
@@ -62,6 +63,7 @@ class Database extends CommonDBChild
          ->addStandardTab('Change_Item', $ong, $options)
          ->addStandardTab('Notepad', $ong, $options)
          ->addStandardTab('Domain_Item', $ong, $options)
+         ->addStandardTab('Appliance_Item', $ong, $options)
          ->addStandardTab('Log', $ong, $options);
         return $ong;
     }
