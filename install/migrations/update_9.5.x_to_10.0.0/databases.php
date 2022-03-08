@@ -161,7 +161,7 @@ if (!$DB->tableExists('glpi_databases')) {
          KEY `name` (`name`),
          KEY `is_active` (`is_active`),
          KEY `is_deleted` (`is_deleted`),
-         KEY `is_dynamic` (`is_dynamic`)
+         KEY `is_dynamic` (`is_dynamic`),
          KEY `date_creation` (`date_creation`),
          KEY `date_mod` (`date_mod`),
          KEY `databaseinstances_id` (`databaseinstances_id`)
