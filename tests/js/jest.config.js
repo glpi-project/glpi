@@ -30,7 +30,7 @@
  */
 
 module.exports = {
-    setupFilesAfterEnv: ["jest-extended/all"],
+    setupFilesAfterEnv: ["<rootDir>/jest-setup.js"],
     setupFiles: ['<rootDir>/bootstrap.js'],
     transformIgnorePatterns: [
         // Change MODULE_NAME_HERE to your module that isn't being compiled
