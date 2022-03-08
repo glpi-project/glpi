@@ -934,6 +934,7 @@ class Planning extends CommonGLPI
         $actor = explode('_', $filter_key);
         $uID = 0;
         $gID = 0;
+        $expanded = '';
         if ($filter_data['type'] == 'user') {
             $uID = $actor[1];
             $user = new User();
@@ -943,6 +944,18 @@ class Planning extends CommonGLPI
             $group = new Group();
             $group->getFromDB($actor[1]);
             $title = $group->getName();
+            $enabled = $disabled = 0;
+            foreach ($filter_data['users'] as $user) {
+                if ($user['display']) {
+                    $enabled++;
+                } else {
+                    $disabled++;
+                    $filter_data['display'] = false;
+                }
+            }
+            if ($enabled > 0 && $disabled > 0) {
+                $expanded = ' expanded';
+            }
         } else if ($filter_data['type'] == 'group') {
             $gID = $actor[1];
             $group = new Group();
@@ -967,7 +980,7 @@ class Planning extends CommonGLPI
 
         echo "<li event_type='" . $filter_data['type'] . "'
                event_name='$filter_key'
-               class='" . $filter_data['type'] . "'>";
+               class='" . $filter_data['type'] . $expanded . "'>";
         Html::showCheckbox([
             'name'          => 'filters[]',
             'value'         => $filter_key,
