@@ -6261,7 +6261,7 @@ JAVASCRIPT;
         );
         echo "</td>";
 
-        echo "<td rowspan='3'>" . __('Picture') . "</td>";
+        echo "<td rowspan='3'>" . _n('Picture', 'Pictures', 1) . "</td>";
         echo "<td rowspan='3'>";
         echo self::getPictureForUser($ID);
 
