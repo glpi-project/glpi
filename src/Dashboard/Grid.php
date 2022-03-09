@@ -276,10 +276,6 @@ HTML;
             }
         }
 
-       // prepare all available cards
-        $cards = $this->getAllDasboardCards();
-        $cards_json = json_encode($cards);
-
        // prepare all available widgets
         $all_widgets = Widget::getAllTypes();
         $all_widgets_json = json_encode($all_widgets);
