@@ -86,22 +86,34 @@ export default class SearchInput {
         if (typeof this.options.input_options.attributes === 'object') {
             new_attrs = this.options.input_options.attributes;
         } else if (this.options.input_options.attributes === 'copy') {
-            const original_attr = this.original_input.attr();
-            // Get only non-data attributes
-            new_attrs = Object.keys(original_attr).filter(key => !key.startsWith('data-')).reduce((obj, key) => {
-                obj[key] = original_attr[key];
-                return obj;
-            }, {});
+            const original_attr = this.original_input.get(0).attributes;
+            for (let i = 0; i < original_attr.length; i++) {
+                // Get only non-data attributes
+                if (!original_attr[i].name.startsWith('data-')) {
+                    new_attrs[original_attr[i].name] = original_attr[i].value;
+                }
+            }
         }
 
         let new_data = {};
+        let old_data_attrs = {};
         if (typeof this.options.input_options.data === 'object') {
             new_data = this.options.input_options.data;
         } else if (this.options.input_options.data === 'copy') {
             new_data = this.original_input.data();
+            const original_attr = this.original_input.get(0).attributes;
+            // Get data attributes in case they aren't in jQuery data
+            for (let i = 0; i < original_attr.length; i++) {
+                // Get only data attributes
+                if (original_attr[i].name.startsWith('data-')) {
+                    old_data_attrs[original_attr[i].name] = original_attr[i].value;
+                }
+            }
         }
+
         // Add data attributes. We don't use $.data() because having the DOM attribute may be needed and using $.data doesn't add them.
-        Object.assign(Object.keys(new_data).reduce((obj, key) => {
+        // Information from $.data will override any data attributes of the same name
+        new_attrs = Object.assign(old_data_attrs, Object.keys(new_data).reduce((obj, key) => {
             obj['data-' + key] = new_data[key];
             return obj;
         }, new_attrs));
