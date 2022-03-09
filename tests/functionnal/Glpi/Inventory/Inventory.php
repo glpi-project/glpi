@@ -42,7 +42,7 @@ class Inventory extends InventoryTestCase
     {
         global $DB;
 
-       //get computer models, manufacturer, ...
+        //get computer models, manufacturer, ...
         $autoupdatesystems = $DB->request(['FROM' => \AutoupdateSystem::getTable(), 'WHERE' => ['name' => 'GLPI Native Inventory']])->current();
         $this->array($autoupdatesystems);
         $autoupdatesystems_id = $autoupdatesystems['id'];
@@ -92,10 +92,11 @@ class Inventory extends InventoryTestCase
             'uuid' => '4c4c4544-0034-3010-8048-b6c04f503732',
             'date_creation' => $computer->fields['date_creation'],
             'is_recursive' => 0,
+            'last_inventory_update' => $computer->fields['last_inventory_update'],
         ];
         $this->array($computer->fields)->isIdenticalTo($expected);
 
-       //operating system
+        //operating system
         $ios = new \Item_OperatingSystem();
         $iterator = $ios->getFromItem($computer);
         $record = $iterator->current();
@@ -123,7 +124,7 @@ class Inventory extends InventoryTestCase
             'is_dynamic' => 1
         ]);
 
-       //connections
+        //connections
         $iterator = \Computer_Item::getTypeItems($computers_id, 'Monitor');
         $this->integer(count($iterator))->isIdenticalTo(1);
         $monitor_link = $iterator->current();
@@ -181,7 +182,7 @@ class Inventory extends InventoryTestCase
         $this->boolean((bool)$monitor->fields['is_dynamic'])->isTrue();
         $this->string($monitor->fields['name'])->isIdenticalTo('DJCP6');
 
-       //check network ports
+        //check network ports
         $iterator = $DB->request([
             'FROM'   => \NetworkPort::getTable(),
             'WHERE'  => [
@@ -283,7 +284,7 @@ class Inventory extends InventoryTestCase
             $this->array($port)->isEqualTo($expected);
             ++$i;
 
-           //check for ips
+            //check for ips
             $ip_iterator = $DB->request([
                 'SELECT'       => [
                     \IPAddress::getTable() . '.name',
@@ -315,7 +316,7 @@ class Inventory extends InventoryTestCase
             }
         }
 
-       //check for components
+        //check for components
         $components = [];
         $allcount = 0;
         foreach (\Item_Devices::getItemAffinities('Computer') as $link_type) {
@@ -818,7 +819,7 @@ class Inventory extends InventoryTestCase
             $this->array($component)->isIdenticalTo($expected);
         }
 
-       //check printer
+        //check printer
         $iterator = \Computer_Item::getTypeItems($computers_id, 'Printer');
         $this->integer(count($iterator))->isIdenticalTo(1);
         $printer_link = $iterator->current();
@@ -1261,6 +1262,7 @@ class Inventory extends InventoryTestCase
             'uuid' => '0055ADC9-1D3A-E411-8043-B05D95113232',
             'date_creation' => $computer->fields['date_creation'],
             'is_recursive' => 0,
+            'last_inventory_update' => $computer->fields['last_inventory_update'],
         ];
         $this->array($computer->fields)->isIdenticalTo($expected);
 
@@ -1489,6 +1491,7 @@ class Inventory extends InventoryTestCase
             'uuid' => '0055ADC9-1D3A-E411-8043-B05D95113232',
             'date_creation' => $computer->fields['date_creation'],
             'is_recursive' => 0,
+            'last_inventory_update' => $computer->fields['last_inventory_update'],
         ];
         $this->array($computer->fields)->isIdenticalTo($expected);
 
@@ -1661,6 +1664,7 @@ class Inventory extends InventoryTestCase
             'uuid' => '0055ADC9-1D3A-E411-8043-B05D95113232',
             'date_creation' => $computer->fields['date_creation'],
             'is_recursive' => 0,
+            'last_inventory_update' => $computer->fields['last_inventory_update'],
         ];
         $this->array($computer->fields)->isIdenticalTo($expected);
 
@@ -4694,6 +4698,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             'uuid' => 'af8d3fcfa6fe4784',
             'date_creation' => $computer->fields['date_creation'],
             'is_recursive' => 0,
+            'last_inventory_update' => $computer->fields['last_inventory_update'],
         ];
         $this->array($computer->fields)->isIdenticalTo($expected);
 
