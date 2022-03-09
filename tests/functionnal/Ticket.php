@@ -772,8 +772,8 @@ class Ticket extends DbTestCase
         ob_end_clean();
         $crawler = new Crawler($output);
 
-       $backtrace = debug_backtrace(0, 1);
-       $caller = "File: {$backtrace[0]['file']} Function: {$backtrace[0]['function']}:{$backtrace[0]['line']}";
+        $backtrace = debug_backtrace(0, 1);
+        $caller = "File: {$backtrace[0]['file']} Function: {$backtrace[0]['function']}:{$backtrace[0]['line']}";
        // Opening date, editable
         $matches = iterator_to_array($crawler->filter("#itil-data input[name=date]:not([disabled])"));
         $this->array($matches)->hasSize(($openDate === true ? 1 : 0), "RW Opening date $caller");
