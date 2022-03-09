@@ -677,8 +677,8 @@ abstract class MainAsset extends InventoryAsset
             }
         }
 
-        $input = (array)$val;
-        $this->item->update(Toolbox::addslashes_deep($input), $this->withHistory());
+        //log is done at item creation from GLPI framework
+        $this->item->update(\Toolbox::addslashes_deep((array)$val), false);
 
         if (!($this->item instanceof RefusedEquipment)) {
             $this->handleAssets();

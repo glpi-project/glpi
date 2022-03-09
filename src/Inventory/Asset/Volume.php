@@ -161,7 +161,7 @@ class Volume extends InventoryAsset
                     $input = (array)$val + [
                         'id'           => $keydb,
                     ];
-                    $itemDisk->update(Toolbox::addslashes_deep($input), $this->withHistory());
+                    $this->updateItem($itemDisk, $input, \Log::HISTORY_UPDATE_SUBITEM);
                     unset($value[$key]);
                     unset($db_itemdisk[$keydb]);
                     break;
@@ -174,7 +174,7 @@ class Volume extends InventoryAsset
             foreach ($db_itemdisk as $dbid => $data) {
                 if ($data['is_dynamic'] == 1) {
                     //Delete only dynamics
-                    $itemDisk->delete(['id' => $dbid], 1);
+                    $this->deleteItem($itemDisk, ['id' => $dbid], \Log::HISTORY_DELETE_SUBITEM);
                 }
             }
         }
@@ -185,7 +185,7 @@ class Volume extends InventoryAsset
                     'itemtype'     => $this->item->getType()
                 ];
 
-                $itemDisk->add(Toolbox::addslashes_deep($input), [], $this->withHistory());
+                $this->addItem($itemDisk, $input, \Log::HISTORY_ADD_SUBITEM);
             }
         }
     }

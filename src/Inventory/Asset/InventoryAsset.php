@@ -64,6 +64,8 @@ abstract class InventoryAsset
     protected $main_asset;
     /** @var string */
     protected $request_query;
+    /** @var array */
+    private array $history = [];
 
     /**
      * Constructor
@@ -197,21 +199,47 @@ abstract class InventoryAsset
 
                     $entities_id = $this->entities_id;
                     if ($key == "locations_id") {
-                        $value->$key = Dropdown::importExternal('Location', addslashes($value->$key), $entities_id);
+                        $value->$key = Dropdown::importExternal(
+                            'Location',
+                            addslashes($value->$key),
+                            $entities_id,
+                            [],
+                            '',
+                            true,
+                            false);
                     } else if (preg_match('/^.+models_id/', $key)) {
-                       // models that need manufacturer relation for dictionary import
-                       // see CommonDCModelDropdown::$additional_fields_for_dictionnary
+                        // models that need manufacturer relation for dictionary import
+                        // see CommonDCModelDropdown::$additional_fields_for_dictionnary
                         $value->$key = Dropdown::importExternal(
                             getItemtypeForForeignKeyField($key),
                             addslashes($value->$key),
                             $entities_id,
-                            ['manufacturer' => $manufacturer_name]
+                            ['manufacturer' => $manufacturer_name],
+                            '',
+                            true,
+                            false
                         );
                     } else if (isset($this->foreignkey_itemtype[$key])) {
-                        $value->$key = Dropdown::importExternal($this->foreignkey_itemtype[$key], addslashes($value->$key), $entities_id);
+                        $value->$key = Dropdown::importExternal(
+                            $this->foreignkey_itemtype[$key],
+                            addslashes($value->$key),
+                            $entities_id,
+                            [],
+                            '',
+                            true,
+                            false
+                        );
                     } else if (isForeignKeyField($key) && $key != "users_id") {
                         $this->foreignkey_itemtype[$key] = getItemtypeForForeignKeyField($key);
-                        $value->$key = Dropdown::importExternal($this->foreignkey_itemtype[$key], addslashes($value->$key), $entities_id);
+                        $value->$key = Dropdown::importExternal(
+                            $this->foreignkey_itemtype[$key],
+                            addslashes($value->$key),
+                            $entities_id,
+                            [],
+                            '',
+                            true,
+                            false
+                        );
 
                         if (
                             $key == 'operatingsystemkernelversions_id'
@@ -221,10 +249,14 @@ abstract class InventoryAsset
                             $kversion = new OperatingSystemKernelVersion();
                             $kversion->getFromDB($value->$key);
                             if ($kversion->fields['operatingsystemkernels_id'] != $value->operatingsystemkernels_id) {
-                                $kversion->update([
-                                    'id'                          => $kversion->getID(),
-                                    'operatingsystemkernels_id'   => $value->operatingsystemkernels_id
-                                ], $this->withHistory());
+                                $this->updateItem(
+                                    $kversion,
+                                    [
+                                        'id'                          => $kversion->getID(),
+                                        'operatingsystemkernels_id'   => $value->operatingsystemkernels_id
+                                    ],
+                                    \Log::HISTORY_ADD_RELATION
+                                );
                             }
                         }
                     }
@@ -368,10 +400,58 @@ abstract class InventoryAsset
         $item->getFromDb($input['items_id']);
 
         if (!($item->fields['is_global'] ?? false)) {
+            $action = \Log::HISTORY_ADD_SUBITEM;
             if (isset($citem->fields['id'])) {
-                $citem->delete(['id' => $citem->fields['id']], true, $this->withHistory());
+                $citem->delete(['id' => $citem->fields['id']], true, false);
+                $action = \Log::HISTORY_UPDATE_SUBITEM;
             }
-            $citem->add($input, [], $this->withHistory());
+            $this->addItem($citem, $input, $action);
         }
+    }
+
+    protected function addItem(CommonDBTM $item, array $values, ?int $action = null)
+    {
+        $res = $item->add(\Toolbox::addslashes_deep($values), [], false);
+        $this->addLog($item, $action ?? \Log::HISTORY_ADD_DEVICE);
+        return $res;
+    }
+
+    protected function updateItem(CommonDBTM $item, array $values, ?int $action = null)
+    {
+        $res = $item->update(\Toolbox::addslashes_deep($values), false);
+        $this->addLog($item, $action ?? \Log::HISTORY_UPDATE_DEVICE);
+        return $res;
+    }
+
+    protected function deleteItem(CommonDBTM $item, array $values, ?int $action = null)
+    {
+        $res = $item->delete(\Toolbox::addslashes_deep($values), true, false);
+        $this->addLog($item, $action ?? \Log::HISTORY_DELETE_DEVICE);
+        return $res;
+    }
+
+    protected function addLog(CommonDBTM $item, int $action)
+    {
+        if (!isset($this->history[$action])) {
+            $this->history[$action] = [];
+        }
+
+        if (!isset($this->history[$action][$item->getType()])) {
+            $this->history[$action][$item->getType()] = [];
+        }
+
+        $this->history[$action][$item->getType()][] = $item;
+
+        return $this;
+    }
+
+    public function getLogs(): array
+    {
+        return $this->history;
+    }
+
+    public function handleLogs()
+    {
+        //TODO
     }
 }

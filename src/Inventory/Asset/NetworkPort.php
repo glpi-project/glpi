@@ -262,10 +262,14 @@ class NetworkPort extends InventoryAsset
                 $contacts_id = $wire->getOppositeContact($netports_id);
 
                 if (!($contacts_id && $contacts_id == $connections_id)) {
-                    $wire->add([
-                        'networkports_id_1'  => $netports_id,
-                        'networkports_id_2'  => $connections_id
-                    ], [], $this->withHistory());
+                    $this->addItem(
+                        $wire,
+                        [
+                            'networkports_id_1'  => $netports_id,
+                            'networkports_id_2'  => $connections_id
+                        ],
+                        \Log::HISTORY_ADD_RELATION
+                    );
                 }
             }
         }
@@ -326,10 +330,14 @@ class NetworkPort extends InventoryAsset
                 $contacts_id = $wire->getOppositeContact($netports_id);
 
                 if (!($contacts_id && $contacts_id == $connections_id)) {
-                    $wire->add([
-                        'networkports_id_1'  => $netports_id,
-                        'networkports_id_2'  => $connections_id
-                    ], [], $this->withHistory());
+                    $this->addItem(
+                        $wire,
+                        [
+                            'networkports_id_1'  => $netports_id,
+                            'networkports_id_2'  => $connections_id
+                        ],
+                        \Log::HISTORY_ADD_RELATION
+                    );
                 }
             }
             return;
@@ -512,7 +520,7 @@ class NetworkPort extends InventoryAsset
                     'networkports_id'       => $netports_id,
                     'networkports_id_list'  => []
                 ];
-                $input['id'] = $netport_aggregate->add($input, [], $this->withHistory());
+                $input['id'] = $this->addItem($netport_aggregate, $input, \Log::HISTORY_ADD_RELATION);
             }
 
             $input['networkports_id_list'] = array_values($aggregates);
@@ -577,7 +585,7 @@ class NetworkPort extends InventoryAsset
                     $input['name'] = $name;
                 }
             }
-            $items_id = $item->add(Toolbox::addslashes_deep($input), [], $this->withHistory());
+            $items_id = $this->addItem($item, $input);
 
             $rulesmatched = new \RuleMatchedLog();
             $agents_id = $this->agent->fields['id'];
@@ -627,7 +635,7 @@ class NetworkPort extends InventoryAsset
             if (property_exists($port, 'mac') && !empty($port->mac)) {
                 $input['mac'] = $port->mac;
             }
-            $ports_id = $netport->add(Toolbox::addslashes_deep($input), [], $this->withHistory());
+            $ports_id = $this->addItem($netport, $input, \Log::HISTORY_ADD_RELATION);
         }
 
         if (!isset($this->connection_ports[$itemtype])) {

@@ -155,7 +155,7 @@ class Monitor extends InventoryAsset
                     // add monitor
                     $val->entities_id = $entities_id;
                     $val->is_dynamic = 1;
-                    $items_id = $monitor->add(Toolbox::addslashes_deep((array)$val), [], $this->withHistory());
+                    $items_id = $this->addItem($monitor, (array)$val, \Log::HISTORY_ADD_DEVICE);
                 } else {
                     $items_id = $data['found_inventories'][0];
                 }
@@ -205,7 +205,7 @@ class Monitor extends InventoryAsset
            // Delete monitors links in DB
             if (!$this->main_asset || !$this->main_asset->isPartial()) {
                 foreach ($db_monitors as $idtmp => $monits_id) {
-                    $computer_Item->delete(['id' => $idtmp], 1);
+                    $computer_Item->delete(['id' => $idtmp], 1, false);
                 }
             }
 

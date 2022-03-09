@@ -110,7 +110,7 @@ abstract class Device extends InventoryAsset
                 }
 
                 //create device or get existing device ID
-                $device_id = $device->import(\Toolbox::addslashes_deep((array)$val));
+                $device_id = $device->import(\Toolbox::addslashes_deep((array)$val), false);
 
                 //remove all existing instances
                 if (!isset($deleted_items[$device_id])) {

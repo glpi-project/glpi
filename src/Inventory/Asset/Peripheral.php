@@ -160,10 +160,10 @@ class Peripheral extends InventoryAsset
                 if ($data['found_inventories'][0] == 0) {
                     // add peripheral
                     $val->entities_id = $this->entities_id;
-                    $items_id = $peripheral->add(Toolbox::addslashes_deep((array)$val), [], $this->withHistory());
+                    $items_id = $this->addItem($peripheral, (array)$val);
                 } else {
                     $items_id = $data['found_inventories'][0];
-                    $peripheral->update(Toolbox::addslashes_deep(['id' => $items_id] + (array)$val), $this->withHistory());
+                    $this->updateItem($peripheral, ['id' => $items_id] + (array)$val);
                 }
 
                 $peripherals[] = $items_id;
@@ -221,7 +221,7 @@ class Peripheral extends InventoryAsset
                     if ($peripherals_id == $data['id']) {
                         unset($peripherals[$key]);
                         unset($db_peripherals[$keydb]);
-                        $computer_Item->update(['id' => $keydb, 'is_dynamic' => 1], $this->withHistory());
+                        $this->updateItem($computer_Item, ['id' => $keydb, 'is_dynamic' => 1], \Log::HISTORY_UPDATE_SUBITEM);
                         break;
                     }
                 }

@@ -662,9 +662,9 @@ class Inventory
         $this->mainasset->checkConf($this->conf);
         $item_start = microtime(true);
         $this->mainasset->handle();
+        $this->mainasset->handleLogs();
         $this->item = $this->mainasset->getItem();
         $this->addBench($this->item->getType(), 'handle', $item_start);
-        return;
     }
 
     /**

@@ -159,7 +159,8 @@ class Software extends InventoryAsset
                 if (isset($res_rule["manufacturer"])) {
                     $val->manufacturers_id = Dropdown::import(
                         'Manufacturer',
-                        ['name' => $res_rule['manufacturer']]
+                        ['name' => $res_rule['manufacturer']],
+                        false
                     );
                 } else if (
                     property_exists($val, 'manufacturers_id')
@@ -170,7 +171,11 @@ class Software extends InventoryAsset
                         $new_value = Dropdown::importExternal(
                             'Manufacturer',
                             addslashes($val->manufacturers_id),
-                            $this->entities_id
+                            $this->entities_id,
+                            [],
+                            '',
+                            true,
+                            false
                         );
                         $mids[$val->manufacturers_id] = $new_value;
                     }

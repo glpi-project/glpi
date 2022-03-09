@@ -167,8 +167,8 @@ trait InventoryNetworkPort
                          'name'            => addslashes($port->name)
                      ];
 
-                     $networkport->update($input, $this->withHistory());
-                     $unmanaged->delete(['id' => $unmanageds_id], true);
+                     $this->updateItem($networkport, $input);
+                     $this->deleteItem($unmanaged, ['id' => $unmanageds_id], \Log::HISTORY_DELETE_ITEM);
                 }
             }
         }
@@ -232,7 +232,7 @@ trait InventoryNetworkPort
                      'gateway'      => $port->gateway,
                      'entities_id'  => $this->entities_id
                  ];
-                 $ipnetwork->add(Toolbox::addslashes_deep($input), [], $this->withHistory());
+                 $this->addItem($ipnetwork, $input);
             }
         }
     }
@@ -269,7 +269,7 @@ trait InventoryNetworkPort
             $input['trunk'] = 0;
         }
 
-        $netports_id = $networkport->add($input, [], $this->withHistory());
+        $netports_id = $this->addItem($networkport, $input);
         return $netports_id;
     }
 
@@ -296,7 +296,7 @@ trait InventoryNetworkPort
             $input['name'] = $name;
         }
 
-        $netname_id = $networkname->add($input, [], $this->withHistory());
+        $netname_id = $this->addItem($networkname, $input);
         return $netname_id;
     }
 
@@ -318,7 +318,7 @@ trait InventoryNetworkPort
                 'name'         => addslashes($ip),
                 'is_dynamic'   => 1
             ];
-            $ipaddress->add($input, [], $this->withHistory());
+            $this->addItem($ipaddress, $input);
         }
     }
 
@@ -386,12 +386,12 @@ trait InventoryNetworkPort
 
                //check for logical number change
                 if (property_exists($data, 'logical_number') && $data->logical_number != $db_lnumber) {
-                    $networkport->update(
+                    $this->updateItem(
+                        $networkport,
                         [
                             'id'              => $keydb,
                             'logical_number'  => $data->logical_number
-                        ],
-                        $this->withHistory()
+                        ]
                     );
                 }
 
@@ -572,9 +572,9 @@ trait InventoryNetworkPort
 
        //store instance
         if ($instance->isNewItem()) {
-            $instance->add(Toolbox::addslashes_deep($input), [], $this->withHistory());
+            $this->addItem($instance, $input);
         } else {
-            $instance->update(Toolbox::addslashes_deep($input), $this->withHistory());
+            $this->updateItem($instance, $input);
         }
     }
 

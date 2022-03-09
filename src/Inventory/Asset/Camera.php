@@ -100,7 +100,7 @@ class Camera extends Device
                     'name'         => addslashes($rsl),
                     'is_video'     => $is_video,
                     'is_dynamic'   => 1
-                ]);
+                ], [], false);
             }
 
             $cam_resolutions = new \Item_DeviceCamera_ImageResolution();
@@ -111,7 +111,7 @@ class Camera extends Device
             ];
 
             if (!$cam_resolutions->getFromDBByCrit($data)) {
-                $cam_resolutions->add($data);
+                $cam_resolutions->add($data, [], false);
             }
         }
     }
@@ -131,7 +131,7 @@ class Camera extends Device
                 $format->add([
                     'name' => addslashes($fmt),
                     'is_dynamic' => 1
-                ]);
+                ], [], false);
             }
 
             $cam_formats = new \Item_DeviceCamera_ImageFormat();
@@ -142,7 +142,7 @@ class Camera extends Device
             ];
 
             if (!$cam_formats->getFromDBByCrit($data)) {
-                $cam_formats->add($data);
+                $cam_formats->add($data, [], false);
             }
         }
     }

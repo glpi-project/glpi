@@ -241,17 +241,25 @@ class NetworkEquipment extends MainAsset
         $netname = new NetworkName();
         if ($netname->getFromDBByCrit(['itemtype' => 'NetworkPort', 'items_id' => $netports_id])) {
             if ($netname->fields['name'] != $port->name) {
-                $netname->update([
-                    'id'     => $netname->getID(),
-                    'name'   => addslashes($port->netname ?? $port->name)
-                ], $this->withHistory());
+                $this->updateItem(
+                    $netname,
+                    [
+                        'id'     => $netname->getID(),
+                        'name'   => $port->netname ?? $port->name
+                    ],
+                    \Log::HISTORY_UPDATE_RELATION
+                );
             }
         } else {
-            $netname->add([
-                'itemtype'  => 'NetworkPort',
-                'items_id'  => $netports_id,
-                'name'      => addslashes($port->name)
-            ], [], $this->withHistory());
+            $this->addItem(
+                $netname,
+                [
+                    'itemtype'  => 'NetworkPort',
+                    'items_id'  => $netports_id,
+                    'name'      => $port->name
+                ],
+                \Log::HISTORY_ADD_RELATION
+            );
         }
     }
 

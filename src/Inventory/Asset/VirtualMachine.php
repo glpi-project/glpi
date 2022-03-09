@@ -231,7 +231,7 @@ class VirtualMachine extends InventoryAsset
                             $input[$prop] = $val->$prop;
                         }
                     }
-                    $computerVirtualmachine->update(Toolbox::addslashes_deep($input), $this->withHistory());
+                    $this->updateItem($computerVirtualmachine, $input, \Log::HISTORY_UPDATE_SUBITEM);
                     unset($value[$key]);
                     unset($db_vms[$keydb]);
                     break;
@@ -242,7 +242,7 @@ class VirtualMachine extends InventoryAsset
         if ((!$this->main_asset || !$this->main_asset->isPartial()) && count($db_vms) != 0) {
            // Delete virtual machines links in DB
             foreach ($db_vms as $idtmp => $data) {
-                $computerVirtualmachine->delete(['id' => $idtmp], 1);
+                $this->deleteItem($computerVirtualmachine, ['id' => $idtmp], \Log::HISTORY_DELETE_SUBITEM);
             }
         }
 
@@ -251,7 +251,7 @@ class VirtualMachine extends InventoryAsset
                 $input = (array)$val;
                 $input['computers_id'] = $this->item->fields['id'];
                 $input['is_dynamic']  = 1;
-                $computerVirtualmachine->add(Toolbox::addslashes_deep($input), [], $this->withHistory());
+                $this->addItem($computerVirtualmachine, $input, \Log::HISTORY_ADD_SUBITEM);
             }
         }
 
@@ -300,13 +300,13 @@ class VirtualMachine extends InventoryAsset
                 if ($computers_vm_id == 0) {
                    // Add computer
                     $vm->entities_id = $this->item->fields['entities_id'];
-                    $computers_vm_id = $computervm->add(Toolbox::addslashes_deep((array)$vm), [], $this->withHistory());
+                    $computers_vm_id = $this->addItem($computervm, (array)$vm, \Log::HISTORY_ADD_RELATION);
                 } else {
                    // Update computer
                     $computervm->getFromDB($computers_vm_id);
                     $input = (array)$vm;
                     $input['id'] = $computers_vm_id;
-                    $computervm->update(Toolbox::addslashes_deep($input), $this->withHistory());
+                    $this->updateItem($computervm, $input, \Log::HISTORY_UPDATE_RELATION);
                 }
                //load if new, reload if not.
                 $computervm->getFromDB($computers_vm_id);
