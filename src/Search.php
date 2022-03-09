@@ -7235,7 +7235,7 @@ JAVASCRIPT;
                         {$progressbar_data['percent_text']}%
                      </div>
                   </div>
-                  HTML;
+HTML;
                     }
 
                     return $out;

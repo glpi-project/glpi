@@ -1018,7 +1018,7 @@ class Html
                      id="{$id}_text">
                </div>
             </div>
-         HTML;
+HTML;
         }
 
         if ($params['message'] !== null) {
@@ -5249,7 +5249,7 @@ JAVASCRIPT
                  aria-valuemax="{$max}">
             </div>
          </div>
-      HTML;
+HTML;
         return $html;
     }
 

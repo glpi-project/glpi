@@ -1670,7 +1670,7 @@ abstract class CommonITILValidation extends CommonDBChild
                         </div>
                      </div>
                   </div>
-               HTML;
+HTML;
                     echo $html;
                 }
                 break;
