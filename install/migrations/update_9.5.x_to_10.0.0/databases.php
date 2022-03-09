@@ -179,7 +179,7 @@ if (!$DB->fieldExists('glpi_databases', 'is_dynamic')) {
     $migration->addField('glpi_databases', 'is_dynamic', "tinyint NOT NULL DEFAULT '0'", [
         'after' => 'is_deleted'
     ]);
-    $migration->addKey('is_dynamic', 'is_dynamic');
+    $migration->addKey('glpi_databases', 'is_dynamic');
     $migration->migrationOneTable('glpi_databases');
 }
 
