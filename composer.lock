@@ -5071,20 +5071,21 @@
         },
         {
             "name": "glpi-project/tools",
-            "version": "0.4.3",
+            "version": "0.4.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/glpi-project/tools.git",
-                "reference": "00a4f4aee6501f8e003164555fa11a64d7987e96"
+                "reference": "4f36f111ba7f025bd17916f0d3402986ac098395"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/glpi-project/tools/zipball/00a4f4aee6501f8e003164555fa11a64d7987e96",
-                "reference": "00a4f4aee6501f8e003164555fa11a64d7987e96",
+                "url": "https://api.github.com/repos/glpi-project/tools/zipball/4f36f111ba7f025bd17916f0d3402986ac098395",
+                "reference": "4f36f111ba7f025bd17916f0d3402986ac098395",
                 "shasum": ""
             },
             "require": {
-                "symfony/console": "^4.4 || ^5.0"
+                "symfony/console": "^4.4 || ^5.0",
+                "twig/twig": "^3.3"
             },
             "bin": [
                 "bin/extract-locales",
@@ -5119,7 +5120,7 @@
                 "issues": "https://github.com/glpi-project/tools/issues",
                 "source": "https://github.com/glpi-project/tools"
             },
-            "time": "2022-03-09T10:50:19+00:00"
+            "time": "2022-03-10T13:35:21+00:00"
         },
         {
             "name": "maglnet/composer-require-checker",
