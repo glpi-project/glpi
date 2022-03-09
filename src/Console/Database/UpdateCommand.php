@@ -142,7 +142,7 @@ class UpdateCommand extends AbstractCommand implements ForceNoPluginsOptionComma
             return 0;
         }
 
-        if (!VersionParser::isStableRelease(GLPI_VERSION) && !$allow_unstable) {
+        if (VersionParser::isStableRelease($current_version) && !VersionParser::isStableRelease(GLPI_VERSION) && !$allow_unstable) {
            // Prevent unstable update unless explicitly asked
             $output->writeln(
                 sprintf(
