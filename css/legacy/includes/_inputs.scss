@@ -108,3 +108,8 @@ input.submit,
       border-color: $primary;
    }
 }
+
+.form-control.warn {
+   border-color: rgb(255, 0, 0) !important;
+   background-color: rgba(255, 0, 0, 0.1) !important;
+}
