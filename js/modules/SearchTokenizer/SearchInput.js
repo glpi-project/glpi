@@ -89,7 +89,7 @@ export default class SearchInput {
             const original_attr = this.original_input.get(0).attributes;
             for (let i = 0; i < original_attr.length; i++) {
                 // Get only non-data attributes
-                if (!original_attr[i].name.startsWith('data-')) {
+                if (!original_attr[i].name.startsWith('data-') && original_attr[i].name !== 'class') {
                     new_attrs[original_attr[i].name] = original_attr[i].value;
                 }
             }
