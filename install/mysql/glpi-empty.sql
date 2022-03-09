@@ -5275,6 +5275,7 @@ CREATE TABLE `glpi_phones` (
   `uuid` varchar(255) DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
   `is_recursive` tinyint NOT NULL DEFAULT '0',
+  `last_inventory_update` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `is_template` (`is_template`),

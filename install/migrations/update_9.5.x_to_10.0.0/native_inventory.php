@@ -302,6 +302,17 @@ if (!$DB->fieldExists('glpi_computers', 'last_inventory_update')) {
     );
 }
 
+if (!$DB->fieldExists('glpi_phones', 'last_inventory_update')) {
+    $migration->addField(
+        'glpi_phones',
+        'last_inventory_update',
+        'timestamp',
+        [
+            'after' => 'is_recursive',
+        ]
+    );
+}
+
 //new fields in networkports table
 $netport_fields = [
     'ifmtu' => "int NOT NULL DEFAULT '0'",

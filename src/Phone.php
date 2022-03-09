@@ -276,6 +276,14 @@ class Phone extends CommonDBTM
         ];
 
         $tab[] = [
+            'id'                 => '10',
+            'table'              => $this->getTable(),
+            'field'              => 'last_inventory_update',
+            'name'               => __('Last inventory date'),
+            'datatype'           => 'datetime',
+        ];
+
+        $tab[] = [
             'id'                 => '7',
             'table'              => $this->getTable(),
             'field'              => 'contact',
