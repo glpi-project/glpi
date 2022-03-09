@@ -174,13 +174,6 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
     }
 
 
-    public function isNewItem()
-    {
-       /// For tabs management : force isNewItem
-        return false;
-    }
-
-
     public function defineTabs($options = [])
     {
 
