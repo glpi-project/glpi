@@ -52,24 +52,20 @@ class Grid
     protected $current         = "";
     protected $dashboard       = null;
     protected $items           = [];
+    protected $context            = '';
 
     public static $embed              = false;
-    public static $context            = '';
     public static $all_dashboards     = [];
 
-    public function __construct(
-        string $dashboard_key = "central",
-        int $grid_cols = 26,
-        int $grid_rows = 24,
-        string $context = "core"
-    ) {
+    public function __construct(string $dashboard_key = "central", int $grid_cols = 26, int $grid_rows = 24, string $context = 'core')
+    {
 
         $this->current   = $dashboard_key;
         $this->grid_cols = $grid_cols;
         $this->grid_rows = $grid_rows;
 
         $this->dashboard = new Dashboard($dashboard_key);
-        self::$context   = $context;
+        $this->context   = $context;
     }
 
 
@@ -81,6 +77,15 @@ class Grid
     public function getDashboard()
     {
         return $this->dashboard;
+    }
+
+    /**
+     * Return the context used for this Grid instance
+     * @return string
+     */
+    public function getContext()
+    {
+        return $this->context;
     }
 
 
@@ -98,7 +103,7 @@ class Grid
             || count(self::$all_dashboards) === 0
             || $force
         ) {
-            self::$all_dashboards = Dashboard::getAll($force, !self::$embed, self::$context);
+            self::$all_dashboards = Dashboard::getAll($force, !self::$embed, '');
         }
 
         return is_array(self::$all_dashboards);
@@ -183,11 +188,12 @@ HTML;
 
 
     /**
-     * Do we have the right to view at least one dashboard in the current collection
+     * Do we have the right to view at least one dashboard?
      *
+     * This can be optionally restricted to a specific context.
      * @return bool
      */
-    public static function canViewOneDashboard(): bool
+    public static function canViewOneDashboard($context = null): bool
     {
        // check global (admin) right
         if (Dashboard::canView()) {
@@ -196,7 +202,13 @@ HTML;
 
         self::loadAllDashboards();
 
-        return (count(self::$all_dashboards) > 0);
+        $viewable = self::$all_dashboards;
+        if ($context) {
+            $viewable = array_filter(self::$all_dashboards, function ($dashboard) use ($context) {
+                return $dashboard['context'] === $context;
+            });
+        }
+        return (count($viewable) > 0);
     }
 
 
@@ -294,6 +306,7 @@ HTML;
                 'class'        => 'dashboard_select form-select',
                 'can_view_all' => $can_view_all,
                 'noselect2'    => true,
+                'context'      => $this->context
             ]);
         }
 
@@ -399,7 +412,6 @@ HTML;
         }
 
         $ajax_cards = GLPI_AJAX_DASHBOARD;
-        $context    = self::$context;
         $cache_key  = sha1($_SESSION['glpiactiveentities_string '] ?? "");
 
         $js = <<<JAVASCRIPT
@@ -414,7 +426,7 @@ HTML;
             ajax_cards:  {$ajax_cards},
             all_cards:   {$cards_json},
             all_widgets: {$all_widgets_json},
-            context:     "{$context}",
+            context:     "{$this->context}",
             cache_key:   "{$cache_key}",
          })
       });
@@ -1478,14 +1490,13 @@ HTML;
 
     public static function dropdownDashboard(string $name = "", array $params = []): string
     {
-        self::loadAllDashboards();
+        $to_show = Dashboard::getAll(false, true, $params['context'] ?? 'core');
         $can_view_all = $params['can_view_all'] ?? false;
 
         $options_dashboards = [];
-        foreach (self::$all_dashboards as $key => $dashboard) {
+        foreach ($to_show as $key => $dashboard) {
             if (self::canViewSpecificicDashboard($key, $can_view_all)) {
                 $options_dashboards[$key] = $dashboard['name'] ?? $key;
-                ;
             }
         }
 
