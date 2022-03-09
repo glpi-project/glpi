@@ -88,6 +88,10 @@ var Dashboard = {
         this.cols         = options.cols;
         this.cache_key    = options.cache_key || "";
 
+        // compute the width offset of gridstack container relatively to viewport
+        var elem_domRect = this.elem_dom.getBoundingClientRect();
+        var width_offset = elem_domRect.left + (window.innerWidth - elem_domRect.right) + 0.02;
+
         Dashboard.grid = GridStack.init({
             column: options.cols,
             maxRow: (options.rows + 1), // +1 for a hidden item at bottom (to fix height)
@@ -96,7 +100,8 @@ var Dashboard = {
             animate: false, // as we don't move widget automatically, we don't need animation
             draggable: { // override jquery ui draggable options
                 'cancel': 'textarea' // avoid draggable on some child elements
-            }
+            },
+            'minWidth': 768 -  width_offset, // breakpoint of one column mode (based on the dashboard container width), trying to reduce to match the `-md` breakpoint of bootstrap (this last is based on viewport width)
         });
 
         // set grid in static to prevent edition (unless user click on edit button)
