@@ -113,7 +113,7 @@ export default class SearchInput {
         if (Array.isArray(this.options.input_options.classes)) {
             this.displayed_input.addClass(this.options.input_options.classes.join(' '));
         } else if (this.options.input_options.classes === 'copy') {
-            this.displayed_input.addClass(this.original_input.attr('class').join(' '));
+            this.displayed_input.addClass(this.original_input.attr('class'));
         }
     }
 

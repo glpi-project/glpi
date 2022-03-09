@@ -111,7 +111,11 @@ describe('Search Tokenizer Input', () => {
         test_input.addClass(input_options.classes);
 
         const search_input = new SearchInput(test_input, {
-            input_options: input_options
+            input_options: {
+                classes: 'copy',
+                attributes: 'copy',
+                data: 'copy',
+            }
         });
         expect(search_input.original_input).toStrictEqual(test_input);
 
