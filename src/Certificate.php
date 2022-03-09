@@ -690,10 +690,12 @@ class Certificate extends CommonDBTM
             $before = Entity::getUsedConfig('send_certificates_alert_before_delay', $entity);
             $repeat = Entity::getUsedConfig('certificates_alert_repeat', $entity);
             if ($repeat > 0) {
-                $where_date = ['OR' => [
-                    ['glpi_alerts.date' => null],
-                    ['glpi_alerts.date' => ['<', new QueryExpression('CURRENT_TIMESTAMP() - INTERVAL ' . $repeat . ' second')]],
-                ]];
+                $where_date = [
+                    'OR' => [
+                        ['glpi_alerts.date' => null],
+                        ['glpi_alerts.date' => ['<', new QueryExpression('CURRENT_TIMESTAMP() - INTERVAL ' . $repeat . ' second')]],
+                    ]
+                ];
             } else {
                 $where_date = ['glpi_alerts.date' => null];
             }
