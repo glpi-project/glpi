@@ -352,7 +352,7 @@ class Database extends CommonDBChild
         ];
 
         $tab[] = [
-            'id'                 => '173',
+            'id'                 => '174',
             'table'              => self::getTable(),
             'field'              => 'is_dynamic',
             'linkfield'          => '',
