@@ -88,13 +88,13 @@ trait TreeBrowse
                 'criteria': $criteria
             });
         };
-        JAVASCRIPT;
+JAVASCRIPT;
 
         if ($update) {
             $category_list = json_encode(self::getTreeCategoryList($itemtype, $params));
             $JS .= <<<JAVASCRIPT
             $('#tree_category').fancytree('option', 'source', {$category_list});
-            JAVASCRIPT;
+JAVASCRIPT;
         } else {
             $JS .= <<<JAVASCRIPT
             $(function() {
@@ -148,7 +148,7 @@ trait TreeBrowse
                 });
             });
 
-            JAVASCRIPT;
+JAVASCRIPT;
             echo "<div id='tree_browse'>
             <div class='browser_tree d-flex flex-column'>
                 <input type='text' class='browser_tree_search' placeholder='" . __("Search…") . "' id='browser_tree_search'>

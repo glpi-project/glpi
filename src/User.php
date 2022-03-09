@@ -2303,7 +2303,7 @@ class User extends CommonDBTM
                      data-bs-toggle="tooltip" data-bs-placement="bottom">
                <i class="far fa-address-card fa-lg"></i>
             </a>
-         HTML;
+HTML;
             $header_toolbar[] = $vcard_btn;
 
             if (Session::canImpersonate($ID)) {
@@ -2315,7 +2315,7 @@ class User extends CommonDBTM
                        data-bs-toggle="tooltip" data-bs-placement="bottom">
                   <i class="fas fa-user-secret fa-lg"></i>
                </button>
-            HTML;
+HTML;
 
                // "impersonate" button type is set to "button" on form display to prevent it to be used
                // by default (as it is the first found in current form) when pressing "enter" key.
