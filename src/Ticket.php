@@ -536,7 +536,7 @@ class Ticket extends CommonITILObject
        // if we don't have global UPDATE right, maybe we can own the current ticket
         if (
             !Session::haveRight(self::$rightname, UPDATE)
-            && (!$this->ownItem() && !$this->canAssign())
+            && (!$this->ownItem())
         ) {
            //we always return false, as ownItem() = true is managed by below self::canUpdate
             return false;
