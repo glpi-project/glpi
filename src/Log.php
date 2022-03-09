@@ -101,29 +101,18 @@ class Log extends CommonDBTM
         return true;
     }
 
-
-    /**
-     * Construct  history for an item
-     *
-     * @param $item               CommonDBTM object
-     * @param $oldvalues    array of old values updated
-     * @param $values       array of all values of the item
-     *
-     * @return boolean for success (at least 1 log entry added)
-     **/
-    public static function constructHistory(CommonDBTM $item, $oldvalues, $values)
+    public static function prepareUpdateHistory(CommonDBTM $item, $oldvalues, $values): array
     {
-
         if (!count($oldvalues)) {
             return false;
         }
-       // needed to have  $SEARCHOPTION
+        // needed to have  $SEARCHOPTION
         list($real_type, $real_id) = $item->getLogTypeID();
         $searchopt                 = Search::getOptions($real_type);
         if (!is_array($searchopt)) {
             return false;
         }
-        $result = 0;
+        $changes = [];
 
         foreach ($oldvalues as $key => $oldval) {
             if (in_array($key, $item->getNonLoggedFields())) {
@@ -131,13 +120,13 @@ class Log extends CommonDBTM
             }
             $changes = [];
 
-           // Parsing $SEARCHOPTION to find changed field
+            // Parsing $SEARCHOPTION to find changed field
             foreach ($searchopt as $key2 => $val2) {
                 if (!isset($val2['table'])) {
-                   // skip sub-title
+                    // skip sub-title
                     continue;
                 }
-               // specific for profile
+                // specific for profile
                 if (
                     ($item->getType() == 'ProfileRight')
                     && ($key == 'rights')
@@ -147,72 +136,91 @@ class Log extends CommonDBTM
                         && ($val2['rightname'] == $item->fields['name'])
                     ) {
                         $id_search_option = $key2;
-                        $changes          =  [$id_search_option, addslashes($oldval ?? ''), $values[$key]];
+                        $changes          =  [$id_search_option, $oldval ?? '', $values[$key]];
                     }
                 } else if (
                     ($val2['linkfield'] == $key && $real_type === $item->getType())
-                       || ($key == $val2['field'] && $val2['table'] == $item->getTable())
+                    || ($key == $val2['field'] && $val2['table'] == $item->getTable())
                 ) {
-                   // Linkfield or standard field not massive action enable
+                    // Linkfield or standard field not massive action enable
                     $id_search_option = $key2; // Give ID of the $SEARCHOPTION
 
                     if ($val2['table'] == $item->getTable()) {
-                        $changes = [$id_search_option, addslashes($oldval ?? ''), $values[$key]];
+                        $changes = [$id_search_option, $oldval ?? '', $values[$key]];
                     } else {
-                       // other cases; link field -> get data from dropdown
+                        // other cases; link field -> get data from dropdown
                         if ($val2["table"] != 'glpi_auth_tables') {
                             $changes = [$id_search_option,
-                                addslashes(sprintf(
+                                sprintf(
                                     __('%1$s (%2$s)'),
                                     Dropdown::getDropdownName(
                                         $val2["table"],
                                         $oldval
                                     ),
                                     $oldval
-                                )),
-                                addslashes(sprintf(
+                                ),
+                                sprintf(
                                     __('%1$s (%2$s)'),
                                     Dropdown::getDropdownName(
                                         $val2["table"],
                                         $values[$key]
                                     ),
                                     $values[$key]
-                                ))
+                                )
                             ];
                         }
                     }
                     break;
                 }
             }
-            if (count($changes)) {
-                $result = self::history($real_id, $real_type, $changes);
-            }
         }
+
+        return [
+            'real_id' => $real_id,
+            'real_type' => $real_type,
+            'changes' => $changes
+        ];
+    }
+
+    /**
+     * Construct  history for an item
+     *
+     * @param CommonDBTM $item      CommonDBTM object
+     * @param array      $oldvalues array of old values updated
+     * @param array      $values    array of all values of the item
+     *
+     * @return boolean
+     **/
+    public static function constructHistory(CommonDBTM $item, $oldvalues, $values)
+    {
+        $prepared = static::prepareUpdateHistory($item, $oldvalues, $values);
+        list($real_id, $real_type, $changes) = array_values($prepared);
+        $result = (count($changes) ? self::history($real_id, $real_type, \Toolbox::addslashes_deep($changes)) : 0);
         return $result;
     }
 
-
     /**
-     * Log history
+     * Prepare adding history
      *
-     * @param $items_id
-     * @param $itemtype
-     * @param $changes
-     * @param $itemtype_link   (default '')
-     * @param $linked_action   (default '0')
+     * @param int $items_id
+     * @param string $itemtype
+     * @param array $changes
+     * @param string $itemtype_link
+     * @param int $linked_action
      *
-     * @return boolean success
-     **/
-    public static function history($items_id, $itemtype, $changes, $itemtype_link = '', $linked_action = '0')
-    {
+     * @return array
+     */
+    public static function prepareAddHistory(
+        int $items_id,
+        string $itemtype,
+        array $changes,
+        string $itemtype_link = '',
+        int $linked_action = 0
+    ): array {
         global $DB;
 
         $date_mod = $_SESSION["glpi_currenttime"];
-        if (empty($changes)) {
-            return false;
-        }
-
-       // create a query to insert history
+        // create a query to insert history
         $id_search_option = $changes[0];
         $old_value        = $changes[1];
         $new_value        = $changes[2];
@@ -236,10 +244,10 @@ class Log extends CommonDBTM
             );
         }
 
-        $old_value = $DB->escape(Toolbox::substr(stripslashes($old_value), 0, 180));
-        $new_value = $DB->escape(Toolbox::substr(stripslashes($new_value), 0, 180));
+        $old_value = Toolbox::substr(stripslashes($old_value), 0, 180);
+        $new_value = Toolbox::substr(stripslashes($new_value), 0, 180);
 
-       // Security to be sure that values do not pass over the max length
+        // Security to be sure that values do not pass over the max length
         if (Toolbox::strlen($old_value) > 255) {
             $old_value = Toolbox::substr($old_value, 0, 250);
         }
@@ -247,7 +255,7 @@ class Log extends CommonDBTM
             $new_value = Toolbox::substr($new_value, 0, 250);
         }
 
-        $params = [
+        return [
             'items_id'          => $items_id,
             'itemtype'          => $itemtype,
             'itemtype_link'     => $itemtype_link,
@@ -258,7 +266,39 @@ class Log extends CommonDBTM
             'old_value'         => $old_value,
             'new_value'         => $new_value
         ];
-        $result = $DB->insert(self::getTable(), $params);
+    }
+
+    /**
+     * Log history
+     *
+     * @param $items_id
+     * @param $itemtype
+     * @param $changes
+     * @param $itemtype_link   (default '')
+     * @param $linked_action   (default '0')
+     *
+     * @return boolean success
+     **/
+    public static function history($items_id, $itemtype, $changes, $itemtype_link = '', $linked_action = '0')
+    {
+        global $DB;
+
+        if (empty($changes)) {
+            return false;
+        }
+
+        $result = $DB->insert(
+            self::getTable(),
+            \Toolbox::addslashes_deep(
+                self::prepareAddHistory(
+                    $items_id,
+                    $itemtype,
+                    $changes,
+                    $itemtype_link,
+                    $linked_action
+                )
+            )
+        );
 
         if ($result && $DB->affectedRows($result) > 0) {
             return $_SESSION['glpi_maxhistory'] = $DB->insertId();
