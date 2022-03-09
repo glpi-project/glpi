@@ -9144,6 +9144,7 @@ CREATE TABLE `glpi_databases` (
   `is_onbackup` tinyint NOT NULL DEFAULT '0',
   `is_active` tinyint NOT NULL DEFAULT '0',
   `is_deleted` tinyint NOT NULL DEFAULT '0',
+  `is_dynamic` tinyint NOT NULL DEFAULT '0',
   `date_creation` timestamp NULL DEFAULT NULL,
   `date_mod` timestamp NULL DEFAULT NULL,
   `date_update` timestamp NULL DEFAULT NULL,
@@ -9154,6 +9155,7 @@ CREATE TABLE `glpi_databases` (
   KEY `name` (`name`),
   KEY `is_active` (`is_active`),
   KEY `is_deleted` (`is_deleted`),
+  KEY `is_dynamic` (`is_dynamic`),
   KEY `date_creation` (`date_creation`),
   KEY `date_mod` (`date_mod`),
   KEY `databaseinstances_id` (`databaseinstances_id`)
