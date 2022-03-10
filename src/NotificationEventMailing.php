@@ -178,31 +178,39 @@ class NotificationEventMailing extends NotificationEventAbstract implements Noti
                 // Retieve document list if mail is in HTML format (for inline images)
                 // or if documents are attached to mail.
                 $item = getItemForItemtype($current->fields['itemtype']);
-                $doc_crit = [
-                    'items_id' => $current->fields['items_id'],
-                    'itemtype' => $current->fields['itemtype'],
-                ];
-                if ($item instanceof CommonITILObject) {
-                    $item->getFromDB($current->fields['items_id']);
-                    $doc_crit = $item->getAssociatedDocumentsCriteria(true);
-                    if ($is_html) {
-                      // Remove documents having "NO_TIMELINE" position if mail is HTML, as
-                      // these documents corresponds to inlined images.
-                     // If notification is in plain text, they should be kepts as they cannot be rendered in text.
-                        $doc_crit[] = [
-                            'timeline_position'  => ['>', CommonITILObject::NO_TIMELINE]
-                        ];
+                if (
+                    $item !== false
+                    && (
+                        $current->fields['items_id'] > 0
+                        || ($current->fields['itemtype'] == Entity::class && $current->fields['items_id'] == 0)
+                    )
+                    && $item->getFromDB($current->fields['items_id'])
+                ) {
+                    $doc_crit = [
+                        'items_id' => $current->fields['items_id'],
+                        'itemtype' => $current->fields['itemtype'],
+                    ];
+                    if ($item instanceof CommonITILObject) {
+                        $doc_crit = $item->getAssociatedDocumentsCriteria(true);
+                        if ($is_html) {
+                            // Remove documents having "NO_TIMELINE" position if mail is HTML, as
+                            // these documents corresponds to inlined images.
+                            // If notification is in plain text, they should be kepts as they cannot be rendered in text.
+                            $doc_crit[] = [
+                                'timeline_position'  => ['>', CommonITILObject::NO_TIMELINE]
+                            ];
+                        }
                     }
-                }
-                $doc_items_iterator = $DB->request(
-                    [
-                        'SELECT' => ['documents_id'],
-                        'FROM'   => Document_Item::getTable(),
-                        'WHERE'  => $doc_crit,
-                    ]
-                );
-                foreach ($doc_items_iterator as $doc_item) {
-                     $documents_ids[] = $doc_item['documents_id'];
+                    $doc_items_iterator = $DB->request(
+                        [
+                            'SELECT' => ['documents_id'],
+                            'FROM'   => Document_Item::getTable(),
+                            'WHERE'  => $doc_crit,
+                        ]
+                    );
+                    foreach ($doc_items_iterator as $doc_item) {
+                         $documents_ids[] = $doc_item['documents_id'];
+                    }
                 }
             }
 

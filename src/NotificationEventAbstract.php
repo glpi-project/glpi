@@ -140,8 +140,8 @@ abstract class NotificationEventAbstract
                                     $send_data['_notificationtemplates_id'] = $data['notificationtemplates_id'];
                                     $send_data['_itemtype']                 = $item->getType();
                                     $send_data['_items_id']                 = method_exists($item, "getID")
-                                    ? $item->getID()
-                                    : 0;
+                                        ? max($item->getID(), 0)
+                                        : 0;
                                     $send_data['_entities_id']              = $entity;
                                     $send_data['mode']                      = $data['mode'];
 
