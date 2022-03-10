@@ -90,7 +90,7 @@
             {% endif %}
 
             <div class="row">
-               {% set col_md = get_current_interface() == 'central' ? 'col-md-9' : 'col-md-12' %}
+               {% set col_md = get_current_interface() == 'central' ? 'col-xl-7 col-xxl-8' : 'col-xxl-12' %}
                <div class="col-12 {{ col_md }}">
                   {{ fields.textareaField(
                      'content',
@@ -107,7 +107,7 @@
                   ) }}
                </div>
                {% if get_current_interface() == 'central' %}
-                  <div class="col-12 col-md-3 order-first order-md-last">
+                  <div class="col-12 col-xl-5 col-xxl-4 order-first order-md-last">
                      <div class="row">
 
                         {% set fup_template_lbl %}
