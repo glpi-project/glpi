@@ -383,7 +383,7 @@ class Ticket extends DbTestCase
             (int)$ticket->add([
                 'name'    => '',
                 'content' => 'A ticket to check ACLS',
-                '_users_id_requester' => getItemByTypeName('User', TU_USER, true),
+                '_users_id_requester' => getItemByTypeName('User', 'post-only', true),
             ])
         )->isGreaterThan(0);
 
