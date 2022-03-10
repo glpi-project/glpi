@@ -779,3 +779,10 @@ $tables = [
 foreach ($tables as $table) {
     $migration->changeField($table, 'entities_id', 'entities_id', "int {$default_key_sign} NOT NULL DEFAULT 0");
 }
+
+// Replace -1 default values on glpi_queuednotifications.items_id
+$DB->updateOrDie(
+    'glpi_queuednotifications',
+    ['items_id' => 0],
+    ['items_id' => -1]
+);
