@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-03-10 13:37+0000\n"
+"POT-Creation-Date: 2022-03-10 14:04+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18009,7 +18009,7 @@ msgstr ""
 #: src/CommonITILObject.php:4073 src/CommonITILObject.php:6344
 #: src/CommonITILObject.php:8311 src/RuleTicket.php:520 src/RuleTicket.php:725
 msgid "Requester"
-msgid_plural "Requester"
+msgid_plural "Requesters"
 msgstr[0] ""
 msgstr[1] ""
 

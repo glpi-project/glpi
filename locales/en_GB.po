@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-03-10 13:37+0000\n"
-"PO-Revision-Date: 2022-03-10 13:37+0000\n"
+"POT-Creation-Date: 2022-03-10 14:04+0000\n"
+"PO-Revision-Date: 2022-03-10 14:04+0000\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
 "Language: en_GB\n"
@@ -18151,9 +18151,9 @@ msgstr "Requested item not found"
 #: src/CommonITILObject.php:4073 src/CommonITILObject.php:6344
 #: src/CommonITILObject.php:8311 src/RuleTicket.php:520 src/RuleTicket.php:725
 msgid "Requester"
-msgid_plural "Requester"
+msgid_plural "Requesters"
 msgstr[0] "Requester"
-msgstr[1] "Requester"
+msgstr[1] "Requesters"
 
 #: src/NotificationTargetObjectLock.php:66
 msgid "Requester Firstname"
