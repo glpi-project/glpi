@@ -540,11 +540,12 @@ class Document extends CommonDBTM
     /**
      * Get download link for a document
      *
-     * @param string  $params    additonal parameters to be added to the link (default '')
-     * @param integer $len       maximum length of displayed string (default 20)
+     * @param string  $params     additonal parameters to be added to the link (default '')
+     * @param integer $len        maximum length of displayed string (default 20)
+     * @param ?array  $linkedItem Item linked to the document, to check access right. Contains foreign key of the itemtype and item ID
      *
      **/
-    public function getDownloadLink($params = '', $len = 20)
+    public function getDownloadLink($params = '', $len = 20, ?array $linkedItem = null)
     {
         global $DB,$CFG_GLPI;
 
@@ -567,12 +568,16 @@ class Document extends CommonDBTM
         $out   = '';
         $open  = '';
         $close = '';
+        $linkedItem = $linkedItem ?? ['tickets_id' => $this->fields['tickets_id']];
         if (
             self::canView()
-            || $this->canViewFile(['tickets_id' => $this->fields['tickets_id']])
+            || $this->canViewFile($linkedItem)
         ) {
+            $fk = array_keys($linkedItem)[0];
+            $items_id = $linkedItem[$fk];
+            $link = "&$fk=$items_id";
             $open  = "<a href='" . $CFG_GLPI["root_doc"] . "/front/document.send.php?docid=" .
-                    $this->fields['id'] . $params . "' alt=\"" . $initfileout . "\"
+                    $this->fields['id'] . $params . $link . "' alt=\"" . $initfileout . "\"
                     title=\"" . $initfileout . "\"target='_blank'>";
             $close = "</a>";
         }
@@ -687,6 +692,16 @@ class Document extends CommonDBTM
             && $this->canViewFileFromItilObject('Problem', $options["problems_id"])
         ) {
             return true;
+        }
+
+        if (count($options)) {
+            foreach ($options as $fk => $items_id) {
+                $itemtype = getItemtypeForForeignKeyField($fk);
+                if ($itemtype == 'UNKNOWN' || !$this->canViewFileFromOtherObject($itemtype, $items_id)) {
+                    continue;
+                }
+                return true;
+            }
         }
 
        // The following case should be reachable from the API
@@ -864,6 +879,23 @@ class Document extends CommonDBTM
         ])->current();
 
         return $result['cpt'] > 0;
+    }
+
+    public static function canViewFileFromOtherObject($itemtype, $items_id)
+    {
+        $item = new $itemtype();
+
+        if (!$item->can($items_id, READ)) {
+            return false;
+        }
+
+        /** @var CommonDBTM $item */
+        $item->getFromDB($items_id);
+        if ($item->canViewItem()) {
+            return true;
+        }
+
+        return false;
     }
 
     public static function rawSearchOptionsToAdd($itemtype = null)
