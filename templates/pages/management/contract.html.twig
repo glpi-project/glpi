@@ -126,7 +126,7 @@
       (constant('Contract::RENEWAL_EXPRESS')): __('Express'),
    }, __('Renewal')) }}
 
-   {{ fields.numberField('max_links_allowed', item.fields['max_links_allowed'], __('Max number of items'), {
+   {{ fields.dropdownNumberField('max_links_allowed', item.fields['max_links_allowed'], __('Max number of items'), {
       'min': 1,
       'max': 200000,
       'step': 1,
