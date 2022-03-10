@@ -89,7 +89,6 @@ class ProblemParameters extends AbstractParameters
             ],
             'requesters' => [
                 'users'  => [],
-                ],
                 'groups' => [],
             ],
             'observers' => [

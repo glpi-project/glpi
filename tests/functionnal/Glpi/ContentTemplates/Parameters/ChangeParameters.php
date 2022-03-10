@@ -86,7 +86,6 @@ class ChangeParameters extends AbstractParameters
             ],
             'requesters' => [
                 'users'  => [],
-                ],
                 'groups' => [],
             ],
             'observers' => [
