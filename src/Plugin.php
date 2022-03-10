@@ -255,10 +255,14 @@ class Plugin extends CommonDBTM
                 continue;
             }
 
-            if (file_exists("$base_dir/$plugin_key/setup.php")) {
+            $plugin_directory = "$base_dir/$plugin_key";
+
+            if (!file_exists($plugin_directory)) {
+                continue;
+            }
+
+            if ((new self())->loadPluginSetupFile($plugin_key)) {
                 $loaded = true;
-                $plugin_directory = "$base_dir/$plugin_key";
-                include_once("$plugin_directory/setup.php");
                 if (!in_array($plugin_key, self::$loaded_plugins)) {
                     // Register PSR-4 autoloader
                     $psr4_dir = $plugin_directory . '/src';
@@ -1590,34 +1594,73 @@ class Plugin extends CommonDBTM
      */
     public function getInformationsFromDirectory($directory)
     {
+        if (!$this->loadPluginSetupFile($directory)) {
+            return [];
+        }
 
-        $informations = [];
+        self::loadLang($directory);
+        return Toolbox::addslashes_deep(self::getInfo($directory));
+    }
+
+    /**
+     * Returns options for plugin having given key.
+     *
+     * @param string $key
+     *
+     * @return array
+     */
+    public function getPluginOptions(string $key): array
+    {
+        if (!$this->loadPluginSetupFile($key)) {
+            return [];
+        }
+
+        $options_callable = sprintf('plugin_%s_options', $key);
+        if (!function_exists($options_callable)) {
+            return [];
+        }
+
+        $options = $options_callable();
+        if (!is_array($options)) {
+            trigger_error(
+                sprintf('Invalid "options" key provided by plugin `plugin_%s_options()` method.', $key),
+                E_USER_WARNING
+            );
+            return [];
+        }
+
+        return $options;
+    }
+
+    /**
+     * Load plugin setup file.
+     *
+     * @param string $key
+     *
+     * @return bool
+     */
+    private function loadPluginSetupFile(string $key): bool
+    {
         foreach (PLUGINS_DIRECTORIES as $base_dir) {
             if (!is_dir($base_dir)) {
                 continue;
             }
-            $setup_file  = "$base_dir/$directory/setup.php";
+            $file_path = sprintf('%s/%s/setup.php', $base_dir, $key);
 
-            if (file_exists($setup_file)) {
-               // Includes are made inside a function to prevent included files to override
-               // variables used in this function.
-               // For example, if the included files contains a $plugin variable, it will
-               // replace the $plugin variable used here.
-                $include_fct = function () use ($directory, $setup_file) {
-                    self::loadLang($directory);
-                    include_once($setup_file);
+            if (file_exists($file_path)) {
+                // Includes are made inside a function to prevent included files to override
+                // variables used in this function.
+                // For example, if the included files contains a $key variable, it will
+                // replace the $key variable used here.
+                $include_fct = function () use ($key, $file_path) {
+                    include_once($file_path);
                 };
                 $include_fct();
-                $informations = Toolbox::addslashes_deep(self::getInfo($directory));
-
-               // plugin found, don't parse others directories
-                break;
+                return true;
             }
         }
-
-        return $informations;
+        return false;
     }
-
 
     /**
      * Get database relations for plugins
