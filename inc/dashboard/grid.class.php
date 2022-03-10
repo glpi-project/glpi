@@ -1194,9 +1194,8 @@ HTML;
             }
          }
 
-         foreach(get_declared_classes() as $itemtype){
-            if(is_subclass_of( $itemtype, 'Item_Devices')) {
-                  
+         foreach (get_declared_classes() as $itemtype) {
+            if (is_subclass_of( $itemtype, 'Item_Devices')) {
                $clean_itemtype = str_replace('\\', '_', $itemtype);
                $cards["bn_count_$clean_itemtype"] = [
                   'widgettype' => ["bigNumber"],
@@ -1212,9 +1211,8 @@ HTML;
             }
          }
 
-         foreach(get_declared_classes() as $itemtype){
-            if(is_subclass_of( $itemtype, 'CommonDevice')) {
-                  
+         foreach (get_declared_classes() as $itemtype) {
+            if (is_subclass_of( $itemtype, 'CommonDevice')) {
                $clean_itemtype = str_replace('\\', '_', $itemtype);
                $cards["bn_count_$clean_itemtype"] = [
                   'widgettype' => ["bigNumber"],
@@ -1229,7 +1227,6 @@ HTML;
                ];
             }
          }
-
 
          // add multiple width for Assets itemtypes grouped by their foreign keys
          $assets = array_merge($CFG_GLPI['asset_types'], ['Software']);
