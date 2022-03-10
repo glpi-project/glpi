@@ -139,11 +139,11 @@ $migration->addField('glpi_entities', 'noreply_email', 'string', ['update' => ''
 $migration->addField('glpi_entities', 'noreply_email_name', 'string', ['update' => '', 'condition' => 'WHERE `id` = 0']);
 /** /Email configuration at entity level */
 
-// Add certificates_alert_repeat to entity
-if (!$DB->fieldExists("glpi_entities", "certificates_alert_repeat")) {
+// Add certificates_alert_repeat_interval to entity
+if (!$DB->fieldExists("glpi_entities", "certificates_alert_repeat_interval")) {
     $migration->addField(
         "glpi_entities",
-        "certificates_alert_repeat",
+        "certificates_alert_repeat_interval",
         "integer",
         [
             'after'     => "send_certificates_alert_before_delay",

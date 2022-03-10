@@ -688,7 +688,7 @@ class Certificate extends CommonDBTM
         $message      = [];
         foreach (array_keys(Entity::getEntitiesToNotify('use_certificates_alert')) as $entity) {
             $before = Entity::getUsedConfig('send_certificates_alert_before_delay', $entity);
-            $repeat = Entity::getUsedConfig('certificates_alert_repeat', $entity);
+            $repeat = Entity::getUsedConfig('certificates_alert_repeat_interval', $entity);
             if ($repeat > 0) {
                 $where_date = [
                     'OR' => [
@@ -780,6 +780,7 @@ class Certificate extends CommonDBTM
                    // add alerts
                     foreach ($items as $ID => $certificate) {
                         $input["items_id"] = $ID;
+                        $alert->deleteByCriteria($input, 1);
                         $alert->add($input);
                         unset($alert->fields['id']);
                     }

@@ -108,7 +108,7 @@ class Entity extends CommonTreeDropdown
             'use_licenses_alert', 'use_certificates_alert',
             'send_licenses_alert_before_delay',
             'send_certificates_alert_before_delay',
-            'certificates_alert_repeat',
+            'certificates_alert_repeat_interval',
             'use_contracts_alert',
             'send_contracts_alert_before_delay',
             'use_reservations_alert', 'use_infocoms_alert',
@@ -2319,14 +2319,14 @@ class Entity extends CommonTreeDropdown
         }
         echo "</td></tr>";
         echo "<td>" . __('Reminders frequency for alarms on certificates') . "</td><td>";
-        $default_value = $entity->fields['certificates_alert_repeat'];
-        Alert::dropdown(['name'           => 'certificates_alert_repeat',
+        $default_value = $entity->fields['certificates_alert_repeat_interval'];
+        Alert::dropdown(['name'           => 'certificates_alert_repeat_interval',
             'value'          => $default_value,
             'inherit_parent' => (($ID > 0) ? 1 : 0)
         ]);
-        if ($entity->fields['certificates_alert_repeat'] == self::CONFIG_PARENT) {
-            $tid = self::getUsedConfig('certificates_alert_repeat', $entity->getField('entities_id'));
-            self::inheritedValue(self::getSpecificValueToDisplay('certificates_alert_repeat', $tid), true);
+        if ($entity->fields['certificates_alert_repeat_interval'] == self::CONFIG_PARENT) {
+            $tid = self::getUsedConfig('certificates_alert_repeat_interval', $entity->getField('entities_id'));
+            self::inheritedValue(self::getSpecificValueToDisplay('certificates_alert_repeat_interval', $tid), true);
         }
 
         echo "</td></tr>";

@@ -264,7 +264,7 @@
    {% endif %}
 
    {% if options.checkIsExpired %}
-      {% if value < "now"|date('Y-m-d H:i:s') %}
+      {% if value|date('Y-m-d H:i:s') < "now"|date('Y-m-d H:i:s') %}
          {% set class = 'warn' %}
       {% endif %}
    {% else %}
