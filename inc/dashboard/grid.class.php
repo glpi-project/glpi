@@ -1040,7 +1040,7 @@ HTML;
 
       // display a warning for empty card
       if (strlen($html) === 0) {
-         return $notfound_html.$card['provider'];
+         return $notfound_html;
       }
 
       $execution_time = round(microtime(true) - $start, 3);
