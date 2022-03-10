@@ -383,6 +383,7 @@ class Ticket extends DbTestCase
             (int)$ticket->add([
                 'name'    => '',
                 'content' => 'A ticket to check ACLS',
+                '_users_id_requester' => getItemByTypeName('User', TU_USER, true),
             ])
         )->isGreaterThan(0);
 
@@ -2888,8 +2889,8 @@ class Ticket extends DbTestCase
         $this->integer((int)$fup_count)->isEqualTo(4);
        // Target ticket should have the original document, one instance of the duplicate, and the new document from one of the source tickets
         $this->integer((int)$doc_count)->isEqualTo(3);
-       // Target ticket should have all users not marked as duplicates above + original requester (ID: 6)
-        $this->integer((int)$user_count)->isEqualTo(4);
+       // Target ticket should have all users not marked as duplicates above
+        $this->integer((int)$user_count)->isEqualTo(3);
        // Target ticket should have all groups not marked as duplicates above
         $this->integer((int)$group_count)->isEqualTo(2);
        // Target ticket should have all suppliers not marked as duplicates above
