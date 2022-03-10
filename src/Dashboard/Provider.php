@@ -44,6 +44,7 @@ use DBConnection;
 use Group;
 use Group_Ticket;
 use Problem;
+use Profile_User;
 use QueryExpression;
 use QuerySubQuery;
 use Search;
@@ -93,16 +94,34 @@ class Provider
             $where['is_template'] = 0;
         }
 
-        if ($item->isEntityAssign()) {
-            $where += getEntitiesRestrictCriteria($item::getTable());
-        }
-
-        $criteria = array_merge_recursive(
-            [
+        if ($item instanceof User) {
+            $where += getEntitiesRestrictCriteria(Profile_User::getTable());
+            $request = [
+                'SELECT' => ['COUNT DISTINCT' => $item::getTableField($item::getIndexName()) . ' as cpt'],
+                'FROM'   => $i_table,
+                'INNER JOIN' => [
+                    Profile_User::getTable() => [
+                        'FKEY' => [
+                            Profile_User::getTable() => 'users_id',
+                            User::getTable() => 'id',
+                        ]
+                    ]
+                ] ,
+                'WHERE'  => $where
+            ];
+        } else {
+            if ($item->isEntityAssign()) {
+                $where += getEntitiesRestrictCriteria($item::getTable());
+            }
+            $request = [
                 'SELECT' => ['COUNT DISTINCT' => $item::getTableField($item::getIndexName()) . ' as cpt'],
                 'FROM'   => $i_table,
                 'WHERE'  => $where
-            ],
+            ];
+        }
+
+        $criteria = array_merge_recursive(
+            $request,
             self::getFiltersCriteria($i_table, $params['apply_filters']),
             $item instanceof Ticket ? Ticket::getCriteriaFromProfile() : []
         );

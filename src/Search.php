@@ -3810,7 +3810,7 @@ JAVASCRIPT;
         $tocompute      = "`$table$addtable`.`$field`";
         $tocomputeid    = "`$table$addtable`.`id`";
 
-        $tocomputetrans = "IFNULL(`$table" . $addtable . "_trans`.`value`,'" . self::NULLVALUE . "') ";
+        $tocomputetrans = "IFNULL(`$table" . $addtable . "_trans_" . $field . "`.`value`,'" . self::NULLVALUE . "') ";
 
         $ADDITONALFIELDS = '';
         if (
@@ -4071,7 +4071,7 @@ JAVASCRIPT;
                             $TRANS = "GROUP_CONCAT(DISTINCT CONCAT(IFNULL($tocomputetrans, '" . self::NULLVALUE . "'),
                                                              '" . self::SHORTSEP . "',$tocomputeid) ORDER BY $tocomputeid
                                              SEPARATOR '" . self::LONGSEP . "')
-                                     AS `" . $NAME . "_trans`, ";
+                                     AS `" . $NAME . "_trans_" . $field . "`, ";
                         }
 
                         return " GROUP_CONCAT(DISTINCT CONCAT($tocompute, '" . self::SHORTSEP . "' ,
@@ -4098,7 +4098,7 @@ JAVASCRIPT;
             if (Session::haveTranslations(getItemTypeForTable($table), $field)) {
                 $TRANS = "GROUP_CONCAT(DISTINCT CONCAT(IFNULL($tocomputetrans, '" . self::NULLVALUE . "'),
                                                    '" . self::SHORTSEP . "',$tocomputeid) ORDER BY $tocomputeid SEPARATOR '" . self::LONGSEP . "')
-                                  AS `" . $NAME . "_trans`, ";
+                                  AS `" . $NAME . "_trans_" . $field . "`, ";
             }
             return " GROUP_CONCAT(DISTINCT CONCAT(IFNULL($tocompute, '" . self::NULLVALUE . "'),
                                                '" . self::SHORTSEP . "',$tocomputeid) ORDER BY $tocomputeid SEPARATOR '" . self::LONGSEP . "')
@@ -4108,7 +4108,7 @@ JAVASCRIPT;
         }
         $TRANS = '';
         if (Session::haveTranslations(getItemTypeForTable($table), $field)) {
-            $TRANS = $tocomputetrans . " AS `" . $NAME . "_trans`, ";
+            $TRANS = $tocomputetrans . " AS `" . $NAME . "_trans_" . $field . "`, ";
         }
         return "$tocompute AS `" . $NAME . "`, $TRANS $ADDITONALFIELDS";
     }
@@ -4891,7 +4891,7 @@ JAVASCRIPT;
         }
 
         $tocompute      = "`$table`.`$field`";
-        $tocomputetrans = "`" . $table . "_trans`.`value`";
+        $tocomputetrans = "`" . $table . "_trans_" . $field . "`.`value`";
         if (isset($searchopt[$ID]["computation"])) {
             $tocompute = $searchopt[$ID]["computation"];
             $tocompute = str_replace($DB->quoteName('TABLE'), 'TABLE', $tocompute);
@@ -5464,7 +5464,7 @@ JAVASCRIPT;
         ) {
             $transitemtype = getItemTypeForTable($new_table);
             if (Session::haveTranslations($transitemtype, $field)) {
-                $transAS            = $nt . '_trans';
+                $transAS            = $nt . '_trans_' . $field;
                 return self::joinDropdownTranslations(
                     $transAS,
                     $nt,
@@ -5726,7 +5726,7 @@ JAVASCRIPT;
                                               $addcondition)";
                         $transitemtype = getItemTypeForTable($new_table);
                         if (Session::haveTranslations($transitemtype, $field)) {
-                            $transAS            = $nt . '_trans';
+                            $transAS            = $nt . '_trans_' . $field;
                             $specific_leftjoin .= self::joinDropdownTranslations(
                                 $transAS,
                                 $nt,

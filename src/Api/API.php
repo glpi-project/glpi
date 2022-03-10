@@ -1000,7 +1000,7 @@ abstract class API
             && $params['with_logs']
         ) {
             $fields['_logs'] = [];
-            if (!Session::haveRight($itemtype::$rightname, READNOTE)) {
+            if (!Log::canView()) {
                 $fields['_logs'] = $this->arrayRightError();
             } else {
                 $fields['_logs'] = getAllDataFromTable(

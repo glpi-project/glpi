@@ -47,6 +47,16 @@ if (isset($_POST['projecttasktemplates_id']) && ($_POST['projecttasktemplates_id
     $template = new ProjectTaskTemplate();
     $template->getFromDB($_POST['projecttasktemplates_id']);
 
+    if (DropdownTranslation::isDropdownTranslationActive()) {
+        $template->fields['content'] = DropdownTranslation::getTranslatedValue(
+            $template->getID(),
+            $template->getType(),
+            'content',
+            $_SESSION['glpilanguage'],
+            $template->fields['content']
+        );
+    }
+
     $template->fields = array_map('html_entity_decode', $template->fields);
     echo json_encode($template->fields);
 }

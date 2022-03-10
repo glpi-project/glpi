@@ -87,7 +87,17 @@ if ($apply_twig) {
    // Render template content using twig
     $template->fields['content'] = $template->getRenderedContent($parent);
 } else {
-    $template->fields['content'] = RichText::getSafeHtml($template->fields['content']);
+    $content = $template->fields['content'];
+    if (DropdownTranslation::isDropdownTranslationActive()) {
+        $content = DropdownTranslation::getTranslatedValue(
+            $template->getID(),
+            $template->getType(),
+            'content',
+            $_SESSION['glpilanguage'],
+            $content
+        );
+    }
+    $template->fields['content'] = RichText::getSafeHtml($content);
 }
 
 // Return json response with the template fields

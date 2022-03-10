@@ -237,4 +237,39 @@ class Change extends DbTestCase
         $this->integer($change->countUsers(\CommonITILActor::ASSIGN))->isIdenticalTo(0);
         $this->integer($change->fields['status'])->isIdenticalTo(\CommonITILObject::ACCEPTED);
     }
+
+    public function testAddAdditionalActorsDuplicated()
+    {
+        $this->login();
+        $change = new \Change();
+        $changes_id = $change->add([
+            'name'           => "test add additional actors duplicated",
+            'content'        => "test add additional actors duplicated",
+        ]);
+        $this->integer($changes_id)->isGreaterThan(0);
+
+        $users_id = getItemByTypeName('User', TU_USER, true);
+
+        $result = $change->update([
+            'id'                       => $changes_id,
+            '_additional_requesters'   => [
+                [
+                    'users_id' => $users_id,
+                    'use_notification'  => 0,
+                ]
+            ]
+        ]);
+        $this->boolean($result)->isTrue();
+
+        $result = $change->update([
+            'id'                       => $changes_id,
+            '_additional_requesters'   => [
+                [
+                    'users_id' => $users_id,
+                    'use_notification'  => 0,
+                ]
+            ]
+        ]);
+        $this->boolean($result)->isTrue();
+    }
 }
