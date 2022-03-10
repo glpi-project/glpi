@@ -634,6 +634,7 @@ class MassiveAction
 
        // Manage forbidden actions : try complete action name or MassiveAction:action_name
         $forbidden_actions = $item->getForbiddenStandardMassiveAction();
+        $whitedlisted_actions = [];
         if (
             !isAPI() // Do no filter single actions for API
             && $items_id !== null && $item->getFromDB($items_id)
@@ -642,8 +643,8 @@ class MassiveAction
                 $forbidden_actions,
                 $item->getForbiddenSingleMassiveActions()
             );
+            $whitedlisted_actions = $item->getWhitelistedSingleMassiveActions();
         }
-        $whitedlisted_actions = $item->getWhitelistedSingleMassiveActions();
 
         if (is_array($forbidden_actions) && count($forbidden_actions)) {
             foreach ($forbidden_actions as $actiontodel) {
