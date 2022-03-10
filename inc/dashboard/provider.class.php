@@ -129,11 +129,13 @@ class Provider extends CommonGLPI {
             self::getSearchFiltersCriteria($i_table, $params['apply_filters'])
          ]
       ];
-
-      $url = $item::getSearchURL()."?".Toolbox::append_params([
-         $search_criteria,
-         'reset' => 'reset',
-      ]);
+      $base_url=$item::getSearchURL();
+      $url = $base_url
+         .(strpos($base_url, '?') ? '&amp;' : '?')
+         .Toolbox::append_params([
+            $search_criteria,
+            'reset' => 'reset',
+         ]);
 
       return [
          'number' => $nb_items,

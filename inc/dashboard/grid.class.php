@@ -1040,7 +1040,7 @@ HTML;
 
       // display a warning for empty card
       if (strlen($html) === 0) {
-         return $notfound_html;
+         return $notfound_html.$card['provider'];
       }
 
       $execution_time = round(microtime(true) - $start, 3);
@@ -1193,6 +1193,43 @@ HTML;
                ];
             }
          }
+
+         foreach(get_declared_classes() as $itemtype){
+            if(is_subclass_of( $itemtype, 'Item_Devices')) {
+                  
+               $clean_itemtype = str_replace('\\', '_', $itemtype);
+               $cards["bn_count_$clean_itemtype"] = [
+                  'widgettype' => ["bigNumber"],
+                  'group'      => __('Device'),
+                  'itemtype'   => "\\$itemtype",
+                  'label'      => sprintf(__("Number of %s"), $itemtype::getTypeName()),
+                  'provider'   => "Glpi\\Dashboard\\Provider::bigNumber$itemtype",
+                  'filters'    => array_merge([
+                     'dates',
+                     'dates_mod',
+                  ], $add_filters_fct($itemtype::getTable()))
+               ];
+            }
+         }
+
+         foreach(get_declared_classes() as $itemtype){
+            if(is_subclass_of( $itemtype, 'CommonDevice')) {
+                  
+               $clean_itemtype = str_replace('\\', '_', $itemtype);
+               $cards["bn_count_$clean_itemtype"] = [
+                  'widgettype' => ["bigNumber"],
+                  'group'      => __('Device'),
+                  'itemtype'   => "\\$itemtype",
+                  'label'      => sprintf(__("Number type of %s"), $itemtype::getTypeName()),
+                  'provider'   => "Glpi\\Dashboard\\Provider::bigNumber$itemtype",
+                  'filters'    => array_merge([
+                     'dates',
+                     'dates_mod',
+                  ], $add_filters_fct($itemtype::getTable()))
+               ];
+            }
+         }
+
 
          // add multiple width for Assets itemtypes grouped by their foreign keys
          $assets = array_merge($CFG_GLPI['asset_types'], ['Software']);
