@@ -1199,7 +1199,7 @@ HTML;
                $clean_itemtype = str_replace('\\', '_', $itemtype);
                $cards["bn_count_$clean_itemtype"] = [
                   'widgettype' => ["bigNumber"],
-                  'group'      => __('Device'),
+                  'group'      => _n('Device', 'Devices', 1),
                   'itemtype'   => "\\$itemtype",
                   'label'      => sprintf(__("Number of %s"), $itemtype::getTypeName()),
                   'provider'   => "Glpi\\Dashboard\\Provider::bigNumber$itemtype",
@@ -1216,7 +1216,7 @@ HTML;
                $clean_itemtype = str_replace('\\', '_', $itemtype);
                $cards["bn_count_$clean_itemtype"] = [
                   'widgettype' => ["bigNumber"],
-                  'group'      => __('Device'),
+                  'group'      => _n('Device', 'Devices', 1),
                   'itemtype'   => "\\$itemtype",
                   'label'      => sprintf(__("Number type of %s"), $itemtype::getTypeName()),
                   'provider'   => "Glpi\\Dashboard\\Provider::bigNumber$itemtype",
