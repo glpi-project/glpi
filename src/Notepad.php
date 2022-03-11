@@ -323,8 +323,23 @@ class Notepad extends CommonDBChild
                 echo "<div class='boxnote' id='view$id'>";
 
                 echo "<div class='boxnoteleft'>";
-                echo "<img class='user_picture_verysmall' alt=\"" . _sn('Picture', 'Pictures', 1) . "\" src='" .
-                User::getThumbnailURLForPicture($note['picture']) . "'>";
+                $thumbnail_url = User::getThumbnailURLForPicture($note['picture']);
+                $user = new User();
+                $user->getFromDB($note['users_id_lastupdater']);
+                $style = !empty($thumbnail_url) ? "background-image: url(\"$thumbnail_url\")" : ("background-color: " . $user->getUserInitialsBgColor());
+                echo '<a href="' . $user->getLinkURL() . '">';
+                $user_name = formatUserName(
+                    $user->getID(),
+                    $user->fields['name'],
+                    $user->fields['realname'],
+                    $user->fields['firstname']
+                );
+                echo '<span class="avatar avatar-md rounded" style="' . $style . '" title="' . $user_name . '">';
+                if (empty($thumbnail_url)) {
+                    echo $user->getUserInitials();
+                }
+                echo '</span>';
+                echo '</a>';
                 echo "</div>"; // boxnoteleft
 
                 echo "<div class='boxnotecontent'>";
@@ -371,7 +386,7 @@ class Notepad extends CommonDBChild
                         ['purge' => 'purge'],
                         _x('button', 'Delete permanently'),
                         ['id'   => $note['id']],
-                        'ti ti-circle-x',
+                        'ti-circle-x',
                         '',
                         __('Confirm the final deletion?')
                     );

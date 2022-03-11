@@ -4453,8 +4453,10 @@ JAVASCRIPT
         if (empty($btimage)) {
             $link .= $btlabel;
         } else {
-            if (substr($btimage, 0, strlen('fa-')) === 'fa-') {
+            if (strpos($btimage, 'fa-') === 0) {
                 $link .= "<span class='fas $btimage' title='$btlabel'><span class='sr-only'>$btlabel</span>";
+            } else if (strpos($btimage, 'ti-') === 0) {
+                $link .= "<span class='ti $btimage' title='$btlabel'><span class='sr-only'>$btlabel</span>";
             } else {
                 $link .= "<img src='$btimage' title='$btlabel' alt='$btlabel' class='pointer'>";
             }
