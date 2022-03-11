@@ -39,6 +39,7 @@ use CommonITILActor;
 use CommonITILObject;
 use CommonITILValidation;
 use CommonTreeDropdown;
+use CommonDevice;
 use Config;
 use DBConnection;
 use Group;
@@ -803,7 +804,9 @@ class Provider
         if ($fk_item instanceof CommonTreeDropdown) {
             $name = 'completename';
         }
-
+        if ($fk_item instanceof CommonDevice) {
+            $name = 'designation';
+        }
         if ($item->isEntityAssign()) {
             $where += getEntitiesRestrictCriteria($c_table, '', '', $item->maybeRecursive());
         }
