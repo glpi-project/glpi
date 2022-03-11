@@ -172,13 +172,14 @@ if (!$DB->tableExists('glpi_databases')) {
 if ($DB->fieldExists('glpi_states', 'is_visible_database')) {
     // Dev migration
     $migration->changeField('glpi_states', 'is_visible_database', 'is_visible_databaseinstance', 'bool', ['value' => 1]);
+    $migration->dropKey('glpi_states', 'is_visible_database');
 } else if (!$DB->fieldExists('glpi_states', 'is_visible_databaseinstance')) {
     $migration->addField('glpi_states', 'is_visible_databaseinstance', 'bool', [
         'value' => 1,
         'after' => 'is_visible_appliance'
     ]);
-    $migration->addKey('glpi_states', 'is_visible_databaseinstance');
 }
+$migration->addKey('glpi_states', 'is_visible_databaseinstance');
 
 // Create glpi_databases is_dynamic if not exist (datamodel changed during v10.0 development)
 if (!$DB->fieldExists('glpi_databases', 'is_dynamic')) {
