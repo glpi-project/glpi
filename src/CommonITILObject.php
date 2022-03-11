@@ -193,7 +193,7 @@ abstract class CommonITILObject extends CommonDBTM
                     $group_obj = new Group();
                     if ($group_obj->getFromDB($groups_id)) {
                         $actors[] = [
-                            'items_id' => $group_obj->fields['groups_id'],
+                            'items_id' => $group_obj->fields['id'],
                             'itemtype' => 'Group',
                             'text'     => $group_obj->getName(),
                             'title'    => $group_obj->getRawCompleteName(),
