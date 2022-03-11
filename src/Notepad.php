@@ -332,7 +332,8 @@ class Notepad extends CommonDBChild
                     $user->getID(),
                     $user->fields['name'],
                     $user->fields['realname'],
-                    $user->fields['firstname']);
+                    $user->fields['firstname']
+                );
                 echo '<span class="avatar avatar-md rounded" style="' . $style . '" title="' . $user_name . '">';
                 if (empty($thumbnail_url)) {
                     echo $user->getUserInitials();
