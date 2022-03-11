@@ -85,6 +85,7 @@ include_once __DIR__ . '/APIBaseClass.php';
 include_once __DIR__ . '/InventoryTestCase.php';
 include_once __DIR__ . '/functionnal/CommonITILRecurrent.php';
 include_once __DIR__ . '/functionnal/Glpi/ContentTemplates/Parameters/AbstractParameters.php';
+include_once __DIR__ . '/units/AbstractRightsDropdown.php';
 
 // check folder exists instead of class_exists('\GuzzleHttp\Client'), to prevent global includes
 if (file_exists(__DIR__ . '/../vendor/autoload.php') && !file_exists(__DIR__ . '/../vendor/guzzlehttp/guzzle')) {
