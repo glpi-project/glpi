@@ -2909,6 +2909,7 @@ abstract class CommonITILObject extends CommonDBTM
        }
 
        $priorities = [];
+       $active_priorities = [];
        foreach ($urgencies as $urgency) {
           foreach ($impacts as $impact) {
              if ($CFG_GLPI["_matrix_${urgency}_${impact}"]) {
@@ -2917,13 +2918,14 @@ abstract class CommonITILObject extends CommonDBTM
           }
        }
        $active_priorities = array_unique($priorities);
-
-       foreach ($values as $priority => $name) {
-          if (!in_array($priority, $active_priorities)) {
-             if ($p['withmajor'] && $priority == 6) {
-                continue;
+       if (count($active_priorities) > 0) {
+          foreach ($values as $priority => $name) {
+             if (!in_array($priority, $active_priorities)) {
+                if ($p['withmajor'] && $priority == 6) {
+                   continue;
+                }
+                unset($values[$priority]);
              }
-             unset($values[$priority]);
           }
        }
 
