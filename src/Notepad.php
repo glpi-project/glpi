@@ -328,7 +328,10 @@ class Notepad extends CommonDBChild
                 $user->getFromDB($note['users_id_lastupdater']);
                 $style = !empty($thumbnail_url) ? "background-image: url(\"$thumbnail_url\")" : ("background-color: " . $user->getUserInitialsBgColor());
                 echo '<a href="' . $user->getLinkURL() . '">';
-                $user_name = formatUserName($user->getID(), $user->fields['name'], $user->fields['realname'],
+                $user_name = formatUserName(
+                    $user->getID(),
+                    $user->fields['name'],
+                    $user->fields['realname'],
                     $user->fields['firstname']);
                 echo '<span class="avatar avatar-md rounded" style="' . $style . '" title="' . $user_name . '">';
                 if (empty($thumbnail_url)) {
