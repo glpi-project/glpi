@@ -841,4 +841,145 @@ PHP
             )->isNotEqualTo(false);
         }
     }
+
+    public function testGetPluginOptionsWithExpectedResult()
+    {
+        $key = $this->test_plugin_directory;
+        $plugin_path = $this->getTestPluginPath($key);
+
+        $this->boolean(
+            mkdir($plugin_path, 0700, true)
+        )->isTrue();
+        $this->variable(
+            file_put_contents(
+                implode(DIRECTORY_SEPARATOR, [$plugin_path, 'setup.php']),
+                <<<PHP
+<?php
+function plugin_version_{$key}() {
+    return [
+        'name'    => 'Test plugin',
+        'version' => '1.0',
+    ];
+}
+function plugin_{$key}_options() {
+    return [
+        'autoinstall_disabled' => true,
+        'another_option'       => 'abc',
+    ];
+}
+PHP
+            )
+        )->isNotEqualTo(false);
+
+        $plugin = new \Plugin();
+        $plugin_id = $plugin->add(
+            [
+                'directory' => $key,
+                'name'      => 'Test plugin',
+                'version'   => '1.0',
+                'state'     => \Plugin::ACTIVATED,
+            ]
+        );
+        $this->integer((int)$plugin_id)->isGreaterThan(0);
+
+        $this->array($plugin->getPluginOptions($key))->isEqualTo(
+            [
+                'autoinstall_disabled' => true,
+                'another_option'       => 'abc',
+            ]
+        );
+    }
+
+    public function testGetPluginOptionsWithoutDeclaredFunction()
+    {
+        $key = $this->test_plugin_directory;
+        $plugin_path = $this->getTestPluginPath($key);
+
+        $this->boolean(
+            mkdir($plugin_path, 0700, true)
+        )->isTrue();
+        $this->variable(
+            file_put_contents(
+                implode(DIRECTORY_SEPARATOR, [$plugin_path, 'setup.php']),
+                <<<PHP
+<?php
+function plugin_version_{$key}() {
+    return [
+        'name'    => 'Test plugin',
+        'version' => '1.0',
+    ];
+}
+PHP
+            )
+        )->isNotEqualTo(false);
+
+        $plugin = new \Plugin();
+        $plugin_id = $plugin->add(
+            [
+                'directory' => $key,
+                'name'      => 'Test plugin',
+                'version'   => '1.0',
+                'state'     => \Plugin::ACTIVATED,
+            ]
+        );
+        $this->integer((int)$plugin_id)->isGreaterThan(0);
+
+        $this->array($plugin->getPluginOptions($key))->isEqualTo([]);
+    }
+
+    public function testGetPluginOptionsWithUnexpectedResult()
+    {
+        $key = $this->test_plugin_directory;
+        $plugin_path = $this->getTestPluginPath($key);
+
+        $this->boolean(
+            mkdir($plugin_path, 0700, true)
+        )->isTrue();
+        $this->variable(
+            file_put_contents(
+                implode(DIRECTORY_SEPARATOR, [$plugin_path, 'setup.php']),
+                <<<PHP
+<?php
+function plugin_version_{$key}() {
+    return [
+        'name'    => 'Test plugin',
+        'version' => '1.0',
+    ];
+}
+function plugin_{$key}_options() {
+    return 'malformed result';
+}
+PHP
+            )
+        )->isNotEqualTo(false);
+
+        $plugin = new \Plugin();
+        $plugin_id = $plugin->add(
+            [
+                'directory' => $key,
+                'name'      => 'Test plugin',
+                'version'   => '1.0',
+                'state'     => \Plugin::ACTIVATED,
+            ]
+        );
+        $this->integer((int)$plugin_id)->isGreaterThan(0);
+
+        $result = null;
+        $this->when(
+            function () use ($plugin, $key, &$result) {
+                $result = $plugin->getPluginOptions($key);
+            }
+        )->error()
+         ->withType(E_USER_WARNING)
+         ->withMessage(sprintf('Invalid "options" key provided by plugin `plugin_%s_options()` method.', $key))
+            ->exists();
+
+        $this->array($result)->isEqualTo([]);
+    }
+
+    public function testGetPluginOptionsOnUnexistingPlugin()
+    {
+        $plugin = new \Plugin();
+        $this->array($plugin->getPluginOptions('thisplugindoesnotexists'))->isEqualTo([]);
+    }
 }
