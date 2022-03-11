@@ -157,7 +157,7 @@
             <input type="hidden" name="{{ item.getForeignKeyField() }}" value="{{ item.fields['id'] }}" />
             {{ call_plugin_hook('pre_item_form', {"item": subitem, 'options': params}) }}
 
-            <div class="row">
+            <div class="row mx-n3 mx-xxl-auto">
                <div class="col-12 col-xl-7 col-xxl-8">
                   {{ fields.textareaField(
                      'content',
@@ -173,7 +173,7 @@
                      }
                   ) }}
                </div>
-               <div class="col-12 col-xl-5 col-xxl-4 order-first order-md-last">
+               <div class="col-12 col-xl-5 col-xxl-4 order-first order-md-last pe-o pe-xxl-auto">
                   <div class="row">
 
                      {% set task_template_lbl %}
