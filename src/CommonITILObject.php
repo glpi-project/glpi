@@ -161,53 +161,64 @@ abstract class CommonITILObject extends CommonDBTM
 
         if ($this->isNewItem()) {
             // load default actors from itiltemplate passed from showForm in `params` var
-            // for user actor, we load firstly from template, else default actor
-            $users_id = ($params['_users_id_' . $actortypestring] ?? false) ?: $this->getDefaultActor($actortype);
-            $userobj  = new User();
-            if ($userobj->getFromDB($users_id)) {
-                $name = formatUserName(
-                    $userobj->fields["id"],
-                    $userobj->fields["name"],
-                    $userobj->fields["realname"],
-                    $userobj->fields["firstname"]
-                );
-                $email = UserEmail::getDefaultForUser($users_id);
-                $actors[] = [
-                    'items_id'          => $users_id,
-                    'itemtype'          => 'User',
-                    'text'              => $name,
-                    'title'             => $name,
-                    'use_notification'  => strlen($email) > 0,
-                    'alternative_email' => $email,
-                ];
-            }
+            // we find this key on the first load of template (when opening form)
+            // or when the template change (by category loading)
+            if (isset($params['_template_changed'])) {
+                // for user actor, we load firstly from template, else default actor
+                $user_typestring = '_users_id_' . $actortypestring;
+                $users_id = (int) (($params['_predefined_fields'][$user_typestring] ?? false)?: $this->getDefaultActor($actortype));
+                if ($users_id > 0) {
+                    $userobj  = new User();
+                    if ($userobj->getFromDB($users_id)) {
+                        $name = formatUserName(
+                            $userobj->fields["id"],
+                            $userobj->fields["name"],
+                            $userobj->fields["realname"],
+                            $userobj->fields["firstname"]
+                        );
+                        $email = UserEmail::getDefaultForUser($users_id);
+                        $actors[] = [
+                            'items_id'          => $users_id,
+                            'itemtype'          => 'User',
+                            'text'              => $name,
+                            'title'             => $name,
+                            'use_notification'  => strlen($email) > 0,
+                            'alternative_email' => $email,
+                        ];
+                    }
+                }
 
-            if (isset($params['_groups_id_' . $actortypestring]) && $params['_groups_id_' . $actortypestring] > 0) {
-                $group_obj = new Group();
-                if ($group_obj->getFromDB($params['_groups_id_' . $actortypestring])) {
-                    $actors[] = [
-                        'items_id' => $group_obj->fields['groups_id'],
-                        'itemtype' => 'Group',
-                        'text'     => $group_obj->getName(),
-                        'title'    => $group_obj->getRawCompleteName(),
-                    ];
+                $groups_id = (int) ($params['_predefined_fields']['_groups_id_' . $actortypestring] ?? 0);
+                if ($groups_id > 0) {
+                    $group_obj = new Group();
+                    if ($group_obj->getFromDB($groups_id)) {
+                        $actors[] = [
+                            'items_id' => $group_obj->fields['groups_id'],
+                            'itemtype' => 'Group',
+                            'text'     => $group_obj->getName(),
+                            'title'    => $group_obj->getRawCompleteName(),
+                        ];
+                    }
+                }
+
+                $suppliers_id = (int) ($params['_predefined_fields']['_suppliers_id_' . $actortypestring] ?? 0);
+                if ($suppliers_id > 0) {
+                    $supplier_obj = new Supplier();
+                    if ($supplier_obj->getFromDB($suppliers_id)) {
+                        $actors[] = [
+                            'items_id'          => $supplier_obj->fields['id'],
+                            'itemtype'          => 'Supplier',
+                            'text'              => $supplier_obj->fields['name'],
+                            'title'             => $supplier_obj->fields['name'],
+                            'use_notification'  => strlen($supplier_obj->fields['email']) > 0,
+                            'alternative_email' => $supplier_obj->fields['email'],
+                        ];
+                    }
                 }
             }
-            if (isset($params['_suppliers_id_' . $actortypestring]) && $params['_suppliers_id_' . $actortypestring] > 0) {
-                $supplier_obj = new Supplier();
-                if ($supplier_obj->getFromDB($params['_suppliers_id_' . $actortypestring])) {
-                    $actors[] = [
-                        'items_id'          => $supplier_obj->fields['id'],
-                        'itemtype'          => 'Supplier',
-                        'text'              => $supplier_obj->fields['name'],
-                        'title'             => $supplier_obj->fields['name'],
-                        'use_notification'  => strlen($supplier_obj->fields['email']) > 0,
-                        'alternative_email' => $supplier_obj->fields['email'],
-                    ];
-                }
-            }
 
-            // if we load any actor from _itemtype_actortype_id, we are loading template, and so we don't want anymore actors.
+            // if we load any actor from _itemtype_actortype_id, we are loading template,
+            // and so we don't want more actors.
             // if any actor exists and was absent in a field from template, it will be loaded by the POST data.
             // we choose to erase existing actors for any defined in the template.
             if (count($actors)) {
@@ -292,6 +303,31 @@ abstract class CommonITILObject extends CommonDBTM
         }
 
         return $actors;
+    }
+
+    /**
+     * Set template informations in $options array
+     * if the template changed from previous one, append also a _template_changed key.
+     * The last aims to be check when loading actos
+     *
+     * @param ITILTemplate $it the template we currently loading
+     * @param array        $options the options of the itilobject
+     *
+     * @return array $options input parameter filled with template informations
+     */
+    protected function setTemplateInOptions(ITILTemplate $it, array $options = []): array
+    {
+        $tpl_key = self::getTemplateFormFieldName();
+
+        // check if we load the default template (when openning form for example) or the template changed
+        if (!isset($options[$tpl_key]) || $options[$tpl_key] != $it->fields['id']) {
+            $options['_template_changed'] = true;
+        }
+
+        // Put ticket template on $options for actors
+        $options[str_replace('s_id', '', $tpl_key)] = $it;
+
+        return $options;
     }
 
 

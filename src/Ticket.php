@@ -4108,6 +4108,13 @@ JAVASCRIPT;
                 }
             }
         }
+
+        // append to options to know later we added predefined values
+        // we may need this especially for actors
+        if (count($predefined_fields)) {
+            $options['_predefined_fields'] = $predefined_fields;
+        }
+
         return $predefined_fields;
     }
 
@@ -4238,7 +4245,7 @@ JAVASCRIPT;
             $options['itilcategories_id'],
             $_SESSION["glpiactive_entity"]
         );
-        $options['_tickettemplate'] = $tt;
+        $this->setTemplateInOptions($tt, $options);
 
         $delegating = User::getDelegateGroupsForUser($options['entities_id']);
 
@@ -4610,10 +4617,10 @@ JAVASCRIPT;
             ($ID ? $this->fields['entities_id'] : $options['entities_id'])
         );
 
-        $tpl_key = self::getTemplateFormFieldName();
         $predefined_fields = $this->getPredefinedTemplateFields($tt, $options, $default_values);
-       // Put ticket template on $options for actors
-        $options[str_replace('s_id', '', $tpl_key)] = $tt;
+
+        // append template information in options
+        $options = $this->setTemplateInOptions($tt, $options);
 
        // check right used for this ticket
         $canupdate     = !$ID
@@ -4654,7 +4661,7 @@ JAVASCRIPT;
             'legacy_timeline_actions'  => $this->getLegacyTimelineActionsHTML(),
             'params'             => $options,
             'timeline'           => $this->getTimelineItems(),
-            'itiltemplate_key'   => $tpl_key,
+            'itiltemplate_key'   => self::getTemplateFormFieldName(),
             'itiltemplate'       => $tt,
             'predefined_fields'  => Toolbox::prepareArrayForInput($predefined_fields),
             'ticket_ticket'      => new Ticket_Ticket(),
