@@ -33,7 +33,7 @@
 
 include('getAbstractRightDropdownValue.php');
 
-// Only users who can update dashboard are allowed to share dashboard
+// Only users who can update dashboards are allowed to use the "share dashboard" feature
 // Users without this right shouldn't be allowed to read this dropdown values
 Session::checkRight('dashboard', UPDATE);
 
