@@ -164,27 +164,31 @@ abstract class CommonITILObject extends CommonDBTM
             // we find this key on the first load of template (when opening form)
             // or when the template change (by category loading)
             if (isset($params['_template_changed'])) {
-                // for user actor, we load firstly from template, else default actor
-                $user_typestring = '_users_id_' . $actortypestring;
-                $users_id = (int) (($params['_predefined_fields'][$user_typestring] ?? false) ?: $this->getDefaultActor($actortype));
-                if ($users_id > 0) {
-                    $userobj  = new User();
-                    if ($userobj->getFromDB($users_id)) {
-                        $name = formatUserName(
-                            $userobj->fields["id"],
-                            $userobj->fields["name"],
-                            $userobj->fields["realname"],
-                            $userobj->fields["firstname"]
-                        );
-                        $email = UserEmail::getDefaultForUser($users_id);
-                        $actors[] = [
-                            'items_id'          => $users_id,
-                            'itemtype'          => 'User',
-                            'text'              => $name,
-                            'title'             => $name,
-                            'use_notification'  => strlen($email) > 0,
-                            'alternative_email' => $email,
-                        ];
+                // we may have 2 types of usersautofill, from the template or from the user preference
+                $users_id_list = [
+                    (int) ($params['_predefined_fields']['_users_id_' . $actortypestring] ?? 0), // from template
+                    $this->getDefaultActor($actortype), // from default actor
+                ];
+                foreach($users_id_list as $users_id) {
+                    if ($users_id > 0) {
+                        $userobj  = new User();
+                        if ($userobj->getFromDB($users_id)) {
+                            $name = formatUserName(
+                                $userobj->fields["id"],
+                                $userobj->fields["name"],
+                                $userobj->fields["realname"],
+                                $userobj->fields["firstname"]
+                            );
+                            $email = UserEmail::getDefaultForUser($users_id);
+                            $actors[] = [
+                                'items_id'          => $users_id,
+                                'itemtype'          => 'User',
+                                'text'              => $name,
+                                'title'             => $name,
+                                'use_notification'  => strlen($email) > 0,
+                                'alternative_email' => $email,
+                            ];
+                        }
                     }
                 }
 
