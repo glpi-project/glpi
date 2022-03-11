@@ -169,7 +169,7 @@ abstract class CommonITILObject extends CommonDBTM
                     (int) ($params['_predefined_fields']['_users_id_' . $actortypestring] ?? 0), // from template
                     $this->getDefaultActor($actortype), // from default actor
                 ];
-                foreach($users_id_list as $users_id) {
+                foreach ($users_id_list as $users_id) {
                     if ($users_id > 0) {
                         $userobj  = new User();
                         if ($userobj->getFromDB($users_id)) {
