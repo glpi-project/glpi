@@ -210,6 +210,7 @@ class Certificate extends DbTestCase
             'id'                                   => 0,
             'use_certificates_alert'               => true,
             'send_certificates_alert_before_delay' => true,
+            'certificates_alert_repeat_interval'   => 60
         ]);
 
        // force usage of notification (no alert sended otherwise)
@@ -231,5 +232,35 @@ class Certificate extends DbTestCase
         $this->array($alert_certificate)
          ->string['itemtype']->isEqualTo('Certificate')
          ->integer['items_id']->isEqualTo($id);
+
+        // No new alert if the last one is less than 1 hour old
+        $alert_id = $alert_certificate['id'];
+        $ret      = $crontask->launch($force, 1, 'certificate');
+        $alerts   = $alert->find();
+
+        $this->array($alerts)
+            ->hasSize(1);
+        $alert_certificate = array_pop($alerts);
+        $this->array($alert_certificate)
+            ->string['itemtype']->isEqualTo('Certificate')
+            ->integer['items_id']->isEqualTo($id)
+            ->integer['id']->isEqualTo($alert_id);
+
+        // New alert if the last one is more than 1 hour old
+        $alert_id = $alert_certificate['id'];
+        $alert->update([
+            'id'    => $alert_id,
+            'date'  => date('Y-m-d', time() - DAY_TIMESTAMP)
+        ]);
+        $ret      = $crontask->launch($force, 1, 'certificate');
+        $alerts   = $alert->find();
+
+        $this->array($alerts)
+            ->hasSize(1);
+        $alert_certificate = array_pop($alerts);
+        $this->array($alert_certificate)
+            ->string['itemtype']->isEqualTo('Certificate')
+            ->integer['items_id']->isEqualTo($id)
+            ->integer['id']->isEqualTo($alert_id + 1);
     }
 }
