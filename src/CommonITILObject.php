@@ -2859,13 +2859,74 @@ abstract class CommonITILObject extends CommonDBTM
         ) {
             $values[6] = static::getPriorityName(6);
         }
-        $values[5] = static::getPriorityName(5);
-        $values[4] = static::getPriorityName(4);
-        $values[3] = static::getPriorityName(3);
-        $values[2] = static::getPriorityName(2);
-        $values[1] = static::getPriorityName(1);
 
-        return Dropdown::showFromArray($p['name'], $values, $p);
+       $values[5] = static::getPriorityName(5);
+       $values[4] = static::getPriorityName(4);
+       $values[3] = static::getPriorityName(3);
+       $values[2] = static::getPriorityName(2);
+       $values[1] = static::getPriorityName(1);
+
+       $urgencies = [];
+       if (isset($CFG_GLPI[static::URGENCY_MASK_FIELD])) {
+          if (($p['showtype'] == 'search')
+              || $CFG_GLPI[static::URGENCY_MASK_FIELD] & (1 << 5)) {
+             $urgencies[] = 5;
+          }
+          if (($p['showtype'] == 'search')
+              || $CFG_GLPI[static::URGENCY_MASK_FIELD] & (1 << 4)) {
+             $urgencies[] = 4;
+          }
+          $urgencies[] = 3;
+          if (($p['showtype'] == 'search')
+              || $CFG_GLPI[static::URGENCY_MASK_FIELD] & (1 << 2)) {
+             $urgencies[] = 2;
+          }
+          if (($p['showtype'] == 'search')
+              || $CFG_GLPI[static::URGENCY_MASK_FIELD] & (1 << 1)) {
+             $urgencies[] = 1;
+          }
+       }
+       $impacts = [];
+       if (isset($CFG_GLPI[static::IMPACT_MASK_FIELD])) {
+          if (($p['showtype'] == 'search')
+              || $CFG_GLPI[static::IMPACT_MASK_FIELD] & (1 << 5)) {
+             $impacts[] = 5;
+          }
+          if (($p['showtype'] == 'search')
+              || $CFG_GLPI[static::IMPACT_MASK_FIELD] & (1 << 4)) {
+             $impacts[] = 4;
+          }
+          $impacts[] = 3;
+          if (($p['showtype'] == 'search')
+              || $CFG_GLPI[static::IMPACT_MASK_FIELD] & (1 << 2)) {
+             $impacts[] = 2;
+          }
+          if (($p['showtype'] == 'search')
+              || $CFG_GLPI[static::IMPACT_MASK_FIELD] & (1 << 1)) {
+             $impacts[] = 1;
+          }
+       }
+
+       $priorities = [];
+       foreach ($urgencies as $urgency) {
+          foreach ($impacts as $impact) {
+             if ($CFG_GLPI["_matrix_${urgency}_${impact}"]) {
+                $priorities[] = $CFG_GLPI["_matrix_${urgency}_${impact}"];
+             }
+          }
+       }
+       $active_priorities = array_unique($priorities);
+       
+       foreach ($values as $priority => $name) {
+          if (!in_array($priority, $active_priorities)) {
+             if ($p['withmajor'] && $priority == 6) {
+                continue;
+             }
+             unset($values[$priority]);
+          }
+       }
+
+       return Dropdown::showFromArray($p['name'], $values, $p);
     }
 
 
