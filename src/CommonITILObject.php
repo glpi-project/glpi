@@ -160,42 +160,8 @@ abstract class CommonITILObject extends CommonDBTM
         $actortypestring = self::getActorFieldNameType($actortype);
 
         if ($this->isNewItem()) {
-           // existing actors (from a form reload)
-            if (isset($params['_actors']) && count($params['_actors'])) {
-                foreach ($params['_actors'] as $existing_actortype => $existing_actors) {
-                    if ($existing_actortype != $actortypestring) {
-                        continue;
-                    }
-                    foreach ($existing_actors as &$existing_actor) {
-                        $actor_obj = new $existing_actor['itemtype']();
-                        if ($actor_obj->getFromDB($existing_actor['items_id'])) {
-                            if ($actor_obj instanceof User) {
-                                $name = formatUserName(
-                                    $actor_obj->fields["id"],
-                                    $actor_obj->fields["name"],
-                                    $actor_obj->fields["realname"],
-                                    $actor_obj->fields["firstname"]
-                                );
-                                $completename = $name;
-                            } else {
-                                $name         = $actor_obj->getName();
-                                $completename = $actor_obj->getRawCompleteName();
-                            }
-
-                            $actors[] = $existing_actor + [
-                                'text'  => $name,
-                                'title' => $completename,
-                            ];
-                        }
-                    }
-                }
-                if (count($actors)) {
-                    return $actors;
-                }
-            }
-
-           // load default actors from itiltemplate passed from showForm in `params` var
-           // for user actor, we load firstly from template, else default actor
+            // load default actors from itiltemplate passed from showForm in `params` var
+            // for user actor, we load firstly from template, else default actor
             $users_id = ($params['_users_id_' . $actortypestring] ?? false) ?: $this->getDefaultActor($actortype);
             $userobj  = new User();
             if ($userobj->getFromDB($users_id)) {
@@ -239,6 +205,45 @@ abstract class CommonITILObject extends CommonDBTM
                         'alternative_email' => $supplier_obj->fields['email'],
                     ];
                 }
+            }
+
+            // if we load any actor from _itemtype_actortype_id, we are loading template, and so we don't want anymore actors.
+            // if any actor exists and was absent in a field from template, it will be loaded by the POST data.
+            // we choose to erase existing actors for any defined in the template.
+            if (count($actors)) {
+                return $actors;
+            }
+
+            // existing actors (from a form reload)
+            if (isset($params['_actors'])) {
+                foreach ($params['_actors'] as $existing_actortype => $existing_actors) {
+                    if ($existing_actortype != $actortypestring) {
+                        continue;
+                    }
+                    foreach ($existing_actors as &$existing_actor) {
+                        $actor_obj = new $existing_actor['itemtype']();
+                        if ($actor_obj->getFromDB($existing_actor['items_id'])) {
+                            if ($actor_obj instanceof User) {
+                                $name = formatUserName(
+                                    $actor_obj->fields["id"],
+                                    $actor_obj->fields["name"],
+                                    $actor_obj->fields["realname"],
+                                    $actor_obj->fields["firstname"]
+                                );
+                                $completename = $name;
+                            } else {
+                                $name         = $actor_obj->getName();
+                                $completename = $actor_obj->getRawCompleteName();
+                            }
+
+                            $actors[] = $existing_actor + [
+                                'text'  => $name,
+                                'title' => $completename,
+                            ];
+                        }
+                    }
+                }
+                return $actors;
             }
         }
 
