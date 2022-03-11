@@ -85,20 +85,7 @@ class ChangeParameters extends AbstractParameters
                 'completename' => 'category_testGetValues',
             ],
             'requesters' => [
-                'users'  => [
-                    [
-                        'id'       => getItemByTypeName("User", TU_USER, true),
-                        'login'     => TU_USER,
-                        'fullname' => TU_USER,
-                        'email'    => "_test_user@glpi.com",
-                        'phone'    => null,
-                        'phone2'   => null,
-                        'mobile'   => null,
-                        'firstname'  => null,
-                        'realname'   => null,
-                        'used_items' => [],
-                    ],
-                ],
+                'users'  => [],
                 'groups' => [],
             ],
             'observers' => [

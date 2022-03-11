@@ -1952,15 +1952,6 @@ abstract class CommonITILObject extends CommonDBTM
             $input['users_id_lastupdater'] = $last_updater;
         }
 
-       // No Auto set Import for external source
-        if (!isset($input['_auto_import'])) {
-            if (!isset($input["_users_id_requester"])) {
-                if ($uid = Session::getLoginUserID()) {
-                    $input["_users_id_requester"] = $uid;
-                }
-            }
-        }
-
         if (!isset($input['_skip_auto_assign']) || $input['_skip_auto_assign'] === false) {
            // No Auto set Import for external source
             if (
