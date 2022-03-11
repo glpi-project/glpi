@@ -216,7 +216,7 @@ class RacksPluginToCoreCommand extends AbstractCommand
                 ]
             );
 
-            $this->askForConfirmation();
+            $this->askForConfirmation(false);
         }
 
         if (!$this->checkPlugin()) {
