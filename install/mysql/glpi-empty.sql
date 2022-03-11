@@ -6863,7 +6863,7 @@ CREATE TABLE `glpi_states` (
   KEY `is_visible_cluster` (`is_visible_cluster`),
   KEY `is_visible_contract` (`is_visible_contract`),
   KEY `is_visible_appliance` (`is_visible_appliance`),
-  KEY `is_visible_databaseinstance` (`is_visible_database`),
+  KEY `is_visible_databaseinstance` (`is_visible_databaseinstance`),
   KEY `is_visible_cable` (`is_visible_cable`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
