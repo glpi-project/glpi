@@ -45,7 +45,7 @@ abstract class AbstractRightsDropdown
      *
      * @return string
      */
-    abstract protected function getAjaxUrl(): string;
+    abstract protected static function getAjaxUrl(): string;
 
     /**
      * To be redefined by subclasses, specify enabled types

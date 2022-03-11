@@ -33,7 +33,7 @@
 
 class ShareDashboardDropdown extends AbstractRightsDropdown
 {
-    protected function getAjaxUrl(): string
+    protected static function getAjaxUrl(): string
     {
         global $CFG_GLPI;
 
