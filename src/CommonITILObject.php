@@ -2825,8 +2825,9 @@ abstract class CommonITILObject extends CommonDBTM
      **/
     public static function dropdownPriority(array $options = [])
     {
+       global $CFG_GLPI;
 
-        $p = [
+       $p = [
             'name'      => 'priority',
             'value'     => 0,
             'showtype'  => 'normal',
@@ -2916,7 +2917,7 @@ abstract class CommonITILObject extends CommonDBTM
           }
        }
        $active_priorities = array_unique($priorities);
-       
+
        foreach ($values as $priority => $name) {
           if (!in_array($priority, $active_priorities)) {
              if ($p['withmajor'] && $priority == 6) {
