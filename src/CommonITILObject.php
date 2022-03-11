@@ -161,7 +161,7 @@ abstract class CommonITILObject extends CommonDBTM
 
         if ($this->isNewItem()) {
            // existing actors (from a form reload)
-            if (isset($params['_actors'])) {
+            if (isset($params['_actors']) && count($params['_actors'])) {
                 foreach ($params['_actors'] as $existing_actortype => $existing_actors) {
                     if ($existing_actortype != $actortypestring) {
                         continue;
