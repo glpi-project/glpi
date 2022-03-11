@@ -31,22 +31,10 @@
  * ---------------------------------------------------------------------
  */
 
-class ShareDashboardDropdown extends AbstractRightsDropdown
-{
-    protected function getAjaxUrl(): string
-    {
-        global $CFG_GLPI;
+include('getAbstractRightDropdownValue.php');
 
-        return $CFG_GLPI['root_doc'] . "/ajax/getShareDashboardDropdownValue.php";
-    }
+// Only users who can update dashboard are allowed to share dashboard
+// Users without this right shouldn't be allowed to read this dropdown values
+Session::checkRight('dashboard', UPDATE);
 
-    protected static function getTypes(): array
-    {
-        return [
-            User::getType(),
-            Entity::getType(),
-            Profile::getType(),
-            Group::getType(),
-        ];
-    }
-}
+show_rights_dropdown(ShareDashboardDropdown::class);

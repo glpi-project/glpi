@@ -37,6 +37,8 @@ header("Content-Type: application/json; charset=UTF-8");
 Html::header_nocache();
 Session::checkLoginUser();
 
-$search = $_POST['searchText'] ?? "";
-
-echo json_encode(ShareDashboardDropdown::fetchValues($search));
+function show_rights_dropdown(string $class)
+{
+    $search = $_POST['searchText'] ?? "";
+    echo json_encode($class::fetchValues($search));
+}
