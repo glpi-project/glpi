@@ -166,7 +166,7 @@ abstract class CommonITILObject extends CommonDBTM
             if (isset($params['_template_changed'])) {
                 // for user actor, we load firstly from template, else default actor
                 $user_typestring = '_users_id_' . $actortypestring;
-                $users_id = (int) (($params['_predefined_fields'][$user_typestring] ?? false)?: $this->getDefaultActor($actortype));
+                $users_id = (int) (($params['_predefined_fields'][$user_typestring] ?? false) ?: $this->getDefaultActor($actortype));
                 if ($users_id > 0) {
                     $userobj  = new User();
                     if ($userobj->getFromDB($users_id)) {
