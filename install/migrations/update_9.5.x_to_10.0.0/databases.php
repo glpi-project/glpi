@@ -171,7 +171,7 @@ if (!$DB->tableExists('glpi_databases')) {
 
 if ($DB->fieldExists('glpi_states', 'is_visible_database')) {
     // Dev migration
-    $migration->changeField('glpi_states', 'is_visible_database', 'is_visible_database_instance', 'bool', ['value' => 1]);
+    $migration->changeField('glpi_states', 'is_visible_database', 'is_visible_databaseinstance', 'bool', ['value' => 1]);
 } else if (!$DB->fieldExists('glpi_states', 'is_visible_databaseinstance')) {
     $migration->addField('glpi_states', 'is_visible_databaseinstance', 'bool', [
         'value' => 1,
