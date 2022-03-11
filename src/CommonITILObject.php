@@ -189,7 +189,9 @@ abstract class CommonITILObject extends CommonDBTM
                         }
                     }
                 }
-                return $actors;
+                if (count($actors)) {
+                    return $actors;
+                }
             }
 
            // load default actors from itiltemplate passed from showForm in `params` var
