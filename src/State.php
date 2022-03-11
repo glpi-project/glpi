@@ -497,7 +497,7 @@ class State extends CommonTreeDropdown
         $tab[] = [
             'id'                 => '39',
             'table'              => $this->getTable(),
-            'field'              => 'is_visible_database',
+            'field'              => 'is_visible_databaseinstance',
             'name'               => sprintf(
                 __('%1$s - %2$s'),
                 __('Visibility'),

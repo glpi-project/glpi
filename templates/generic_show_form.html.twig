@@ -80,6 +80,7 @@
                      {% endif %}
 
                      {% if item.isField('states_id') %}
+                        {% set condition = item.getType() in config('state_types') ? {('is_visible_' ~ item.getType()|lower): 1} : {} %}
                         {{ fields.dropdownField(
                            'State',
                            'states_id',
@@ -87,7 +88,7 @@
                            __('Status'),
                            {
                               'entity': item.fields['entities_id'],
-                              'condition': {'is_visible_computer': 1},
+                              'condition': condition
                            }
                         ) }}
                      {% endif %}

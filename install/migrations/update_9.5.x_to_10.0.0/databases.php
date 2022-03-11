@@ -168,11 +168,17 @@ if (!$DB->tableExists('glpi_databases')) {
       ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
     $DB->queryOrDie($query, "10.0 add table glpi_databases");
 }
-$migration->addField('glpi_states', 'is_visible_database', 'bool', [
-    'value' => 1,
-    'after' => 'is_visible_appliance'
-]);
-$migration->addKey('glpi_states', 'is_visible_database');
+
+if ($DB->fieldExists('glpi_states', 'is_visible_database')) {
+    // Dev migration
+    $migration->changeField('glpi_states', 'is_visible_database', 'is_visible_database_instance', 'bool', ['value' => 1]);
+} else if (!$DB->fieldExists('glpi_states', 'is_visible_databaseinstance')) {
+    $migration->addField('glpi_states', 'is_visible_databaseinstance', 'bool', [
+        'value' => 1,
+        'after' => 'is_visible_appliance'
+    ]);
+    $migration->addKey('glpi_states', 'is_visible_databaseinstance');
+}
 
 // Create glpi_databases is_dynamic if not exist (datamodel changed during v10.0 development)
 if (!$DB->fieldExists('glpi_databases', 'is_dynamic')) {
