@@ -80,11 +80,11 @@ class Controller extends CommonGLPI {
    /**
     * Download and uncompress plugin archive
     *
-    * @return int plugin status, @see properties of \Plugin class
+    * @return bool
     */
-   public function downloadPlugin():int {
+   public function downloadPlugin():bool {
       if (!self::hasWriteAccess()) {
-         return Plugin::UNKNOWN;
+         return false;
       }
 
       $api      = self::getAPI();
@@ -100,7 +100,7 @@ class Controller extends CommonGLPI {
             false,
             ERROR
          );
-         return Plugin::UNKNOWN;
+         return false;
       }
 
       // extract the archive
@@ -111,7 +111,7 @@ class Controller extends CommonGLPI {
             false,
             ERROR
          );
-         return Plugin::UNKNOWN;
+         return false;
       }
       $archive = UnifiedArchive::open($dest);
       $error = $archive === null;
@@ -133,7 +133,7 @@ class Controller extends CommonGLPI {
             false,
             ERROR
          );
-         return Plugin::UNKNOWN;
+         return false;
       }
 
       $plugin_inst = new Plugin();
@@ -153,6 +153,10 @@ class Controller extends CommonGLPI {
 
       // inform api the plugin has been downloaded
       $api->incrementPluginDownload($this->plugin_key, $plugin_inst->fields['version']);
+
+      if ($plugin_inst->getPluginOption($this->plugin_key, Plugin::OPTION_AUTOINSTALL_DISABLED, false)) {
+          return true;
+      }
 
       // try to install (or update) directly the plugin
       return $this->installPlugin();

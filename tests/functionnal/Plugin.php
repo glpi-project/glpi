@@ -863,8 +863,8 @@ function plugin_version_{$key}() {
 }
 function plugin_{$key}_options() {
     return [
-        'marketplace_autoinstal_disabled' => true,
-        'another_option'                  => 'abc',
+        'autoinstall_disabled' => true,
+        'another_option'       => 'abc',
     ];
 }
 PHP
@@ -884,8 +884,8 @@ PHP
 
         $this->array($plugin->getPluginOptions($key))->isEqualTo(
             [
-                'marketplace_autoinstal_disabled' => true,
-                'another_option'                  => 'abc',
+                'autoinstall_disabled' => true,
+                'another_option'       => 'abc',
             ]
         );
     }

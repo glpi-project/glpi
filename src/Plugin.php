@@ -86,6 +86,13 @@ class Plugin extends CommonDBTM
      */
     const NOTUPDATED     = 6;
 
+    /**
+     * Option used to indicates that auto installation of plugin should be disabled (bool value expected).
+     *
+     * @var string
+     */
+    const OPTION_AUTOINSTALL_DISABLED = 'autoinstall_disabled';
+
     public static $rightname = 'config';
 
     /**
@@ -1603,19 +1610,19 @@ class Plugin extends CommonDBTM
     }
 
     /**
-     * Returns options for plugin having given key.
+     * Returns plugin options.
      *
-     * @param string $key
+     * @param string $plugin_key
      *
      * @return array
      */
-    public function getPluginOptions(string $key): array
+    public function getPluginOptions(string $plugin_key): array
     {
-        if (!$this->loadPluginSetupFile($key)) {
+        if (!$this->loadPluginSetupFile($plugin_key)) {
             return [];
         }
 
-        $options_callable = sprintf('plugin_%s_options', $key);
+        $options_callable = sprintf('plugin_%s_options', $plugin_key);
         if (!function_exists($options_callable)) {
             return [];
         }
@@ -1623,7 +1630,7 @@ class Plugin extends CommonDBTM
         $options = $options_callable();
         if (!is_array($options)) {
             trigger_error(
-                sprintf('Invalid "options" key provided by plugin `plugin_%s_options()` method.', $key),
+                sprintf('Invalid "options" key provided by plugin `plugin_%s_options()` method.', $plugin_key),
                 E_USER_WARNING
             );
             return [];
@@ -1633,26 +1640,43 @@ class Plugin extends CommonDBTM
     }
 
     /**
+     * Returns plugin option.
+     *
+     * @param string $plugin_key
+     * @param string $option_key
+     * @param mixed  $default_value
+     *
+     * @return array
+     */
+    public function getPluginOption(string $plugin_key, string $option_key, $default_value = null)//: mixed
+    {
+        $options = $this->getPluginOptions($plugin_key);
+        return array_key_exists($option_key, $options)
+            ? $options[$option_key]
+            : $default_value;
+    }
+
+    /**
      * Load plugin setup file.
      *
-     * @param string $key
+     * @param string $plugin_key
      *
      * @return bool
      */
-    private function loadPluginSetupFile(string $key): bool
+    private function loadPluginSetupFile(string $plugin_key): bool
     {
         foreach (PLUGINS_DIRECTORIES as $base_dir) {
             if (!is_dir($base_dir)) {
                 continue;
             }
-            $file_path = sprintf('%s/%s/setup.php', $base_dir, $key);
+            $file_path = sprintf('%s/%s/setup.php', $base_dir, $plugin_key);
 
             if (file_exists($file_path)) {
                 // Includes are made inside a function to prevent included files to override
                 // variables used in this function.
                 // For example, if the included files contains a $key variable, it will
                 // replace the $key variable used here.
-                $include_fct = function () use ($key, $file_path) {
+                $include_fct = function () use ($plugin_key, $file_path) {
                     include_once($file_path);
                 };
                 $include_fct();
