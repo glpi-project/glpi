@@ -66,7 +66,7 @@ class DeleteOrphanLogsCommand extends AbstractCommand
            // Ask for confirmation (unless --no-interaction)
             $output->writeln(__('You are about to delete orphan logs of GLPI log table (glpi_logs).'));
 
-            $this->askForConfirmation();
+            $this->askForConfirmation(false);
         }
 
         $globalCount = 0;

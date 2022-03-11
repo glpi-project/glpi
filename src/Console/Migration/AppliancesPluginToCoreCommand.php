@@ -160,7 +160,7 @@ class AppliancesPluginToCoreCommand extends AbstractCommand
                 __('It is better to make a backup of your existing data before continuing.')
             ]);
 
-            $this->askForConfirmation();
+            $this->askForConfirmation(false);
         }
 
         if (!$this->checkPlugin()) {
