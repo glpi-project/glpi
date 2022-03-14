@@ -163,6 +163,7 @@ abstract class InventoryAsset
     public function handleLinks()
     {
         $knowns = [];
+        $foreignkey_itemtype = [];
 
         $blacklist = new Blacklist();
 
@@ -185,7 +186,7 @@ abstract class InventoryAsset
                     $manufacturer = new Manufacturer();
                     $value->$key  = $manufacturer->processName($value->$key);
                     if ($key == 'bios_manufacturers_id') {
-                        $this->foreignkey_itemtype[$key] = getItemtypeForForeignKeyField('manufacturers_id');
+                        $foreignkey_itemtype[$key] = getItemtypeForForeignKeyField('manufacturers_id');
                     }
                 }
                 if (!is_numeric($val)) {
@@ -207,11 +208,11 @@ abstract class InventoryAsset
                             $entities_id,
                             ['manufacturer' => $manufacturer_name]
                         );
-                    } else if (isset($this->foreignkey_itemtype[$key])) {
-                        $value->$key = Dropdown::importExternal($this->foreignkey_itemtype[$key], addslashes($value->$key), $entities_id);
+                    } else if (isset($foreignkey_itemtype[$key])) {
+                        $value->$key = Dropdown::importExternal($foreignkey_itemtype[$key], addslashes($value->$key), $entities_id);
                     } else if (isForeignKeyField($key) && $key != "users_id") {
-                        $this->foreignkey_itemtype[$key] = getItemtypeForForeignKeyField($key);
-                        $value->$key = Dropdown::importExternal($this->foreignkey_itemtype[$key], addslashes($value->$key), $entities_id);
+                        $foreignkey_itemtype[$key] = getItemtypeForForeignKeyField($key);
+                        $value->$key = Dropdown::importExternal($foreignkey_itemtype[$key], addslashes($value->$key), $entities_id);
 
                         if (
                             $key == 'operatingsystemkernelversions_id'

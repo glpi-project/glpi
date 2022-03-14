@@ -263,14 +263,14 @@ class Inventory
                 }
             }
 
-            $this->unhandled_data = array_diff_key($all_props, $data);
-            if (count($this->unhandled_data)) {
+            $unhandled_data = array_diff_key($all_props, $data);
+            if (count($unhandled_data)) {
                 Session::addMessageAfterRedirect(
                     sprintf(
                         __('Following keys has been ignored during process: %1$s'),
                         implode(
                             ', ',
-                            array_keys($this->unhandled_data)
+                            array_keys($unhandled_data)
                         )
                     ),
                     true,
