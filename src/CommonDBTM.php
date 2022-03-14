@@ -193,6 +193,13 @@ class CommonDBTM extends CommonGLPI
      */
     public static $undisclosedFields = [];
 
+    /**
+     * Current right that can be evaluated in "item_can" hook.
+     * Variable is set prior to hook call then unset.
+     * @var int
+     */
+    public $right;
+
 
     /**
      * Return the table used to store this object
