@@ -464,7 +464,7 @@ abstract class InventoryAsset
             foreach ($types as $type => $items) {
                 foreach ($items as $item) {
                     $inputs[] = \Log::prepareAddHistory(
-                        $item->fields['id'],
+                        $item->fields['id'] ?? 0,
                         $item->getType(),
                         [0, '', ''],
                         0/*$itemtype_link*/,
