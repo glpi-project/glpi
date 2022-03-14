@@ -4315,7 +4315,7 @@ HTML
         // Verify new assignee wasn't added
         $this->integer($ticket->countUsers(\CommonITILActor::ASSIGN))->isEqualTo(0);
         // Verify new requester was added
-        $this->integer($ticket->countUsers(\CommonITILActor::REQUESTER))->isEqualTo(1);
+        $this->integer($ticket->countUsers(\CommonITILActor::REQUESTER))->isEqualTo(2);
     }
 
     public function testAddActorsWithAssignAndUpdateRight()
@@ -4368,6 +4368,6 @@ HTML
         // Verify new assignee was added
         $this->integer($ticket->countUsers(\CommonITILActor::ASSIGN))->isEqualTo(1);
         // Verify new requester was added
-        $this->integer($ticket->countUsers(\CommonITILActor::REQUESTER))->isEqualTo(1);
+        $this->integer($ticket->countUsers(\CommonITILActor::REQUESTER))->isEqualTo(2);
     }
 }
