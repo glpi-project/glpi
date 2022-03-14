@@ -1535,7 +1535,10 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
         $this->initForm($ID, $options);
         $this->showFormHeader($options);
 
-        if (!isset($options['withtemplate']) || (int) $options['withtemplate'] !== 1) {
+        $is_template = isset($options['withtemplate']) && (int) $options['withtemplate'] === 1;
+        $from_template = isset($options['withtemplate']) && (int) $options['withtemplate'] === 2;
+
+        if (!$is_template) {
             echo "<tr class='tab_bg_1'>";
             echo "<td>" . __('Creation date') . "</td>";
             echo "<td>";
@@ -1548,7 +1551,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
                 'maybeempty' => false
             ]);
             echo "</td>";
-            if ($ID) {
+            if ($ID && !$from_template) {
                 echo "<td>" . __('Last update') . "</td>";
                 echo "<td >" . Html::convDateTime($this->fields["date_mod"]) . "</td>";
             } else {
