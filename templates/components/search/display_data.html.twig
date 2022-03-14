@@ -30,6 +30,7 @@
  #}
 
 {% set is_ajax = data['searchform_id'] is defined and data['searchform_id'] is not null %}
+{% set fluid_search = fluid_search|default(true) %}
 {% if not is_ajax %}
    <div class="ajax-container search-display-data">
 {% endif %}

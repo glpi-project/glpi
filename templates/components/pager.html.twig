@@ -67,7 +67,7 @@
 
 <div class="flex-grow-1 d-flex flex-wrap flex-md-nowrap  align-items-center justify-content-between mb-2 search-pager">
     {% set limitdropdown = include('components/dropdown/limit.html.twig', {
-        'no_onchange': true,
+        'no_onchange': fluid_search|default(false),
         'select_class': 'search-limit-dropdown',
     }) %}
     <span class="search-limit d-none d-md-block">
