@@ -70,10 +70,10 @@ final class UserMention
                 continue;
             }
 
-            if (property_exists($item, 'oldvalues') && array_key_exists($content_field, $item->oldvalues)) {
+            if (array_key_exists($content_field, $item->oldvalues)) {
                // Update case: content field was updated
                 $previous_value = $item->oldvalues[$content_field];
-            } else if (property_exists($item, 'updates')) {
+            } else if (count($item->updates) > 0) {
                // Update case: content field was not updated
                 $previous_value = $item->fields[$content_field];
             } else {
