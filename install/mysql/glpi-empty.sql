@@ -2719,6 +2719,7 @@ CREATE TABLE `glpi_entities` (
   `send_licenses_alert_before_delay` int NOT NULL DEFAULT '-2',
   `use_certificates_alert` int NOT NULL DEFAULT '-2',
   `send_certificates_alert_before_delay` int NOT NULL DEFAULT '-2',
+  `certificates_alert_repeat_interval` int NOT NULL DEFAULT '-2',
   `use_contracts_alert` int NOT NULL DEFAULT '-2',
   `send_contracts_alert_before_delay` int NOT NULL DEFAULT '-2',
   `use_infocoms_alert` int NOT NULL DEFAULT '-2',

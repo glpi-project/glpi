@@ -688,6 +688,17 @@ class Certificate extends CommonDBTM
         $message      = [];
         foreach (array_keys(Entity::getEntitiesToNotify('use_certificates_alert')) as $entity) {
             $before = Entity::getUsedConfig('send_certificates_alert_before_delay', $entity);
+            $repeat = Entity::getUsedConfig('certificates_alert_repeat_interval', $entity);
+            if ($repeat > 0) {
+                $where_date = [
+                    'OR' => [
+                        ['glpi_alerts.date' => null],
+                        ['glpi_alerts.date' => ['<', new QueryExpression('CURRENT_TIMESTAMP() - INTERVAL ' . $repeat . ' second')]],
+                    ]
+                ];
+            } else {
+                $where_date = ['glpi_alerts.date' => null];
+            }
            // Check licenses
             $result = $DB->request(
                 [
@@ -710,7 +721,7 @@ class Certificate extends CommonDBTM
                         ]
                     ],
                     'WHERE'     => [
-                        'glpi_alerts.date'              => null,
+                        $where_date,
                         'glpi_certificates.is_deleted'  => 0,
                         'glpi_certificates.is_template' => 0,
                         [
@@ -769,6 +780,7 @@ class Certificate extends CommonDBTM
                    // add alerts
                     foreach ($items as $ID => $certificate) {
                         $input["items_id"] = $ID;
+                        $alert->deleteByCriteria($input, 1);
                         $alert->add($input);
                         unset($alert->fields['id']);
                     }

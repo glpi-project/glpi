@@ -283,7 +283,8 @@
 
                      {% if item.isField('date_expiration') %}
                         {{ fields.datetimeField('date_expiration', item.fields['date_expiration'], __('Expiration date'), {
-                           'helper': __('Empty for infinite')
+                           'helper': __('Empty for infinite'),
+                           'checkIsExpired': true
                         }) }}
                      {% endif %}
 

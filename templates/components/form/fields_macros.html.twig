@@ -263,10 +263,18 @@
       {% set options = {'required': true}|merge(options) %}
    {% endif %}
 
+   {% if options.checkIsExpired %}
+      {% if value|date('Y-m-d H:i:s') < "now"|date('Y-m-d H:i:s') %}
+         {% set class = 'warn' %}
+      {% endif %}
+   {% else %}
+      {% set class = '' %}
+   {% endif %}
+
    <div class="input-group flex-grow-1 flatpickr" id="{{ options.id }}">
       {# .rounded-start added to prevent issue with bootstrap .input-group #}
       {# the first element is an input[type=hidden] added by flatpickr and so we don't have border-radius on the start #}
-      <input type="text" class="form-control rounded-start ps-2" data-input
+      <input type="text" class="form-control rounded-start ps-2 {{ class }}" data-input
              name="{{ name }}" value="{{ value|verbatim_value }}"
              {{ options.required ? 'required' : '' }}
              {{ options.disabled ? 'disabled' : '' }} />
