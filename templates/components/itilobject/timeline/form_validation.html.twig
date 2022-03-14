@@ -166,6 +166,7 @@
                 {% if subitem.isNewItem() %}
                     {{ fields.dropdownArrayField('validatortype', subitem.fields['validatortype'], {
                     'User': 'User'|itemtype_name,
+                    'Group_User': __('Group user(s)'),
                     'Group': 'Group'|itemtype_name
                     }, __('Approver'), {
                     'display_emptychoice': true,

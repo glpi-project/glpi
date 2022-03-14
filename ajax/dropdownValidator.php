@@ -45,23 +45,36 @@ if (isset($_POST["validatortype"])) {
     switch ($_POST["validatortype"]) {
         case 'user':
         case 'User':
-            if (isset($_POST['users_id_validate']['groups_id'])) {
-                $_POST['users_id_validate'] = [];
+            if (isset($_POST['items_id_target']['groups_id'])) {
+                $_POST['items_id_target'] = [];
             }
-            $value = (isset($_POST['users_id_validate'][0]) ? $_POST['users_id_validate'][0] : 0);
+            $value = (isset($_POST['items_id_target'][0]) ? $_POST['items_id_target'][0] : 0);
             User::dropdown([
-                'name'   => !empty($_POST['name']) ? $_POST['name'] . '[]' : 'users_id_validate[]',
+                'name'   => !empty($_POST['name']) ? $_POST['name'] . '[]' : 'items_id_target[]',
                 'entity' => $_POST['entity'],
                 'value'  => $value,
                 'right'  => $_POST['right'],
                 'width'  => '100%',
             ]);
+            echo Html::hidden('itemtype_target', ['value' => 'User']);
             break;
-
         case 'group':
         case 'Group':
-            $name = !empty($_POST['name']) ? $_POST['name'] . '[groups_id]' : 'groups_id';
-            $value = (isset($_POST['users_id_validate']['groups_id']) ? $_POST['users_id_validate']['groups_id'] : $_POST['groups_id']);
+            $value = (isset($_POST['items_id_target'][0]) ? $_POST['items_id_target'][0] : 0);
+            Group::dropdown([
+                'name'   => !empty($_POST['name']) ? $_POST['name'] . '[]' : 'items_id_target[]',
+                'entity' => $_POST['entity'],
+                'value'  => $value,
+                'right'  => $_POST['right'],
+                'width'  => '100%',
+            ]);
+            echo Html::hidden('itemtype_target', ['value' => 'Group']);
+            break;
+
+        case 'group_user':
+        case 'Group_User':
+            $name = 'groups_id';
+            $value = $_POST['groups_id'];
 
             $rand = Group::dropdown([
                 'name'   => $name,
@@ -69,11 +82,12 @@ if (isset($_POST["validatortype"])) {
                 'entity' => $_POST["entity"],
                 'width'  => '100%',
             ]);
+            echo Html::hidden('itemtype_target', ['value' => 'User']);
 
             $param                        = ['validatortype' => 'list_users'];
             $param['name']                = !empty($_POST['name']) ? $_POST['name'] : '';
-            $param['users_id_validate']   = isset($_POST['users_id_validate'])
-                                             ? $_POST['users_id_validate'] : '';
+            $param['items_id_target']   = isset($_POST['items_id_target'])
+                                             ? $_POST['items_id_target'] : '';
             $param['right']               = $_POST['right'];
             $param['entity']              = $_POST["entity"];
             $param['groups_id']           = '__VALUE__';
@@ -86,7 +100,6 @@ if (isset($_POST["validatortype"])) {
             if ($value) {
                 $param['validatortype'] = 'list_users';
                 $param['groups_id']     = $value;
-                unset($param['users_id_validate']['groups_id']);
                 Ajax::updateItem(
                     'show_list_users',
                     $CFG_GLPI["root_doc"] . "/ajax/dropdownValidator.php",
@@ -97,8 +110,8 @@ if (isset($_POST["validatortype"])) {
             break;
 
         case 'list_users':
-            if (isset($_POST['users_id_validate']['groups_id'])) {
-                $_POST['users_id_validate'] = [];
+            if (isset($_POST['groups_id'])) {
+                $_POST['items_id_target'] = [];
             }
             $opt             = ['groups_id' => $_POST["groups_id"],
                 'right'     => $_POST['right'],
@@ -108,8 +121,8 @@ if (isset($_POST["validatortype"])) {
             $users           = [];
             $param['values'] = [];
             $values          = [];
-            if (isset($_POST['users_id_validate']) && is_array($_POST['users_id_validate'])) {
-                $values = $_POST['users_id_validate'];
+            if (isset($_POST['items_id_target']) && is_array($_POST['items_id_target'])) {
+                $values = $_POST['items_id_target'];
             }
             foreach ($data_users as $data) {
                 $users[$data['id']] = formatUserName(
@@ -135,7 +148,7 @@ if (isset($_POST["validatortype"])) {
             $param['size']    = count($users);
 
             $rand  = Dropdown::showFromArray(
-                !empty($_POST['name']) ? $_POST['name'] : 'users_id_validate',
+                !empty($_POST['name']) ? $_POST['name'] : 'items_id_target',
                 $users,
                 $param
             );
@@ -145,7 +158,7 @@ if (isset($_POST["validatortype"])) {
                 $param_button = [
                     'validatortype'     => 'list_users',
                     'name'              => !empty($_POST['name']) ? $_POST['name'] : '',
-                    'users_id_validate' => '',
+                    'items_id_target'   => '',
                     'all_users'         => 1,
                     'groups_id'         => $_POST['groups_id'],
                     'entity'            => $_POST['entity'],

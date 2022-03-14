@@ -61,20 +61,24 @@ $fk       = getForeignKeyFieldForItemType($itemtype);
 
 if (isset($_POST["add"])) {
     $validation->check(-1, CREATE, $_POST);
-    if (
-        isset($_POST['users_id_validate'])
-        && (count($_POST['users_id_validate']) > 0)
-    ) {
-        $users = $_POST['users_id_validate'];
-        foreach ($users as $user) {
-            $_POST['users_id_validate'] = $user;
+    if (!isset($_POST['items_id_target'])) {
+        Html::back();
+        return;
+    }
+    if (!is_array($_POST['items_id_target'])) {
+        $_POST['items_id_target'] = [$_POST['items_id_target']];
+    }
+
+    if (count($_POST['items_id_target']) > 0) {
+        $targets = $_POST['items_id_target'];
+        foreach ($targets as $target) {
+            $_POST['items_id_target'] = $target;
             $validation->add($_POST);
             Event::log(
                 $validation->getField($fk),
                 strtolower($itemtype),
                 4,
                 "tracking",
-                //TRANS: %s is the user login
                 sprintf(__('%s adds an approval'), $_SESSION["glpiname"])
             );
         }

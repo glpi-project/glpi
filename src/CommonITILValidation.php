@@ -168,20 +168,69 @@ abstract class CommonITILValidation extends CommonDBChild
 
 
     /**
-     * Is the current user have right to update the current validation ?
+     * Does the current user have the rights needed to update the current validation?
      *
      * @return boolean
      */
     public function canUpdateItem()
     {
-
+        $is_target = $this->isCurrentUserValidationTarget();
         if (
-            !Session::haveRightsOr(static::$rightname, static::getCreateRights())
-            && ($this->fields["users_id_validate"] != Session::getLoginUserID())
+            !$is_target
+            && !Session::haveRightsOr(static::$rightname, static::getCreateRights())
         ) {
             return false;
         }
         return true;
+    }
+
+    /**
+     * Is the validation request for the current user or one or their groups (optional)?
+     * @param bool $include_groups If true, group memberships will be taken into account (true by default)
+     * @return bool
+     */
+    public function isCurrentUserValidationTarget(bool $include_groups = true): bool
+    {
+        $is_target = false;
+        //TODO Remove BC-fix code
+        if (!isset($this->fields['itemtype_target'])) {
+            $this->fields['itemtype_target'] = 'User';
+            $this->fields['items_id_target'] = $this->fields['users_id_validate'];
+        }
+
+        if ($this->fields['itemtype_target'] === 'User') {
+            $is_target = $this->fields['items_id_target'] == Session::getLoginUserID();
+        } else if ($include_groups && $this->fields['itemtype_target'] === 'Group') {
+            $is_target = in_array($this->fields['items_id_target'], $_SESSION['glpigroups']);
+        }
+        return $is_target;
+    }
+
+    public static function getValidationTargetCriteria(int $users_id): array
+    {
+        $group_user_table = Group_User::getTable();
+        return [
+            'LEFT JOIN' => [
+                $group_user_table => [
+                    'ON'    => [
+                        $group_user_table => 'users_id',
+                        new QueryExpression($users_id)
+                    ],
+                ]
+            ],
+            'WHERE' => [
+                'OR'    => [
+                    [
+                        'itemtype_target' => 'User',
+                        'items_id_target' => $users_id
+                    ],
+                    [
+                        'itemtype_target' => 'Group',
+                        new QueryExpression('items_id_target = ' . $group_user_table . '.groups_id')
+                    ]
+                ]
+            ]
+        ];
     }
 
 
@@ -192,16 +241,14 @@ abstract class CommonITILValidation extends CommonDBChild
     {
         global $DB;
 
+        $criteria = static::getValidationTargetCriteria(Session::getLoginUserID());
+        $criteria['WHERE'][static::$items_id] = $items_id;
         $iterator = $DB->request([
-            'SELECT' => ['users_id_validate'],
+            'SELECT' => [static::getTable() . '.id'],
             'FROM'   => static::getTable(),
-            'WHERE'  => [
-                static::$items_id    => $items_id,
-                'users_id_validate'  => Session::getLoginUserID()
-            ],
             'START'  => 0,
             'LIMIT'  => 1
-        ]);
+        ] + $criteria);
 
         if (count($iterator) > 0) {
             return true;
@@ -276,7 +323,13 @@ abstract class CommonITILValidation extends CommonDBChild
         $input["submission_date"] = $_SESSION["glpi_currenttime"];
         $input["status"]          = self::WAITING;
 
-        if (!isset($input["users_id_validate"]) || ($input["users_id_validate"] <= 0)) {
+        $user_validator = !isset($input['itemtype_target']) || $input['itemtype_target'] === 'User';
+        if (!isset($input['itemtype_target'])) {
+            //TODO Remove BC-fix code
+            $input['itemtype_target'] = 'User';
+            $input['items_id_target'] = $input['items_id_target'] ?? $input["users_id_validate"];
+        }
+        if ($user_validator && (!isset($input["items_id_target"]) || ($input["items_id_target"] <= 0))) {
             return false;
         }
 
@@ -355,20 +408,26 @@ abstract class CommonITILValidation extends CommonDBChild
                 $mailsend = NotificationEvent::raiseEvent('validation', $item, $options);
             }
             if ($mailsend) {
-                $user    = new User();
-                $user->getFromDB($this->fields["users_id_validate"]);
-                $email   = $user->getDefaultEmail();
-                if (!empty($email)) {
-                    Session::addMessageAfterRedirect(sprintf(__('Approval request sent to %s'), $user->getName()));
+                if ($this->fields['itemtype_target'] === 'User') {
+                    $user    = new User();
+                    $user->getFromDB($this->fields["items_id_target"]);
+                    $email   = $user->getDefaultEmail();
+                    if (!empty($email)) {
+                        Session::addMessageAfterRedirect(sprintf(__('Approval request sent to %s'), $user->getName()));
+                    } else {
+                        Session::addMessageAfterRedirect(
+                            sprintf(
+                                __('The selected user (%s) has no valid email address. The request has been created, without email confirmation.'),
+                                $user->getName()
+                            ),
+                            false,
+                            ERROR
+                        );
+                    }
                 } else {
-                    Session::addMessageAfterRedirect(
-                        sprintf(
-                            __('The selected user (%s) has no valid email address. The request has been created, without email confirmation.'),
-                            $user->getName()
-                        ),
-                        false,
-                        ERROR
-                    );
+                    $group = new Group();
+                    $group->getFromDB($this->fields["items_id_target"]);
+                    Session::addMessageAfterRedirect(sprintf(__('Approval request sent to %s'), $group->getName()));
                 }
             }
         }
@@ -380,7 +439,7 @@ abstract class CommonITILValidation extends CommonDBChild
     {
 
         $forbid_fields = [];
-        if ($this->fields["users_id_validate"] == Session::getLoginUserID() && isset($input["status"])) {
+        if ($this->isCurrentUserValidationTarget() && isset($input["status"])) {
             if (
                 ($input["status"] == self::REFUSED)
                 && (!isset($input["comment_validation"])
@@ -930,6 +989,7 @@ abstract class CommonITILValidation extends CommonDBChild
 
         $colonnes = ['', _x('item', 'State'), __('Request date'), __('Approval requester'),
             __('Request comments'), __('Approval status'),
+            __('Requested approver type'), __('Requested approver'),
             __('Approver'), __('Approval comments'), __('Documents')
         ];
         $nb_colonnes = count($colonnes);
@@ -1005,7 +1065,17 @@ abstract class CommonITILValidation extends CommonDBChild
                 $comment_submission = RichText::getEnhancedHtml($this->fields['comment_submission'], ['images_gallery' => true]);
                 echo "<td><div class='rich_text_container'>" . $comment_submission . "</div></td>";
                 echo "<td>" . Html::convDateTime($row["validation_date"]) . "</td>";
-                echo "<td>" . getUserName($row["users_id_validate"]) . "</td>";
+                $approver_type = $row["itemtype_target"] ?? 'User';
+                echo "<td>" . $approver_type::getTypeName(1) . "</td>";
+                if ($approver_type === 'User') {
+                    echo "<td>" . getUserName($row["items_id_target"]) . "</td>";
+                } else {
+                    $group = new Group();
+                    $group->getFromDB($row["items_id_target"]);
+                    echo "<td>" . $group->getFriendlyName() . "</td>";
+                }
+                $is_answered = $row['status'] !== self::WAITING && $row['users_id_validate'] > 0;
+                echo "<td>" . ($is_answered ? getUserName($row["users_id_validate"]) : '') . "</td>";
                 $comment_validation = RichText::getEnhancedHtml($this->fields['comment_validation'] ?? '', ['images_gallery' => true]);
                 echo "<td><div class='rich_text_container'>" . $comment_validation . "</div></td>";
 
@@ -1083,6 +1153,8 @@ abstract class CommonITILValidation extends CommonDBChild
     {
         $tab = [];
 
+        $table = static::getTable();
+
         $tab[] = [
             'id'                 => 'common',
             'name'               => CommonITILValidation::getTypeName(1)
@@ -1090,7 +1162,7 @@ abstract class CommonITILValidation extends CommonDBChild
 
         $tab[] = [
             'id'                 => '1',
-            'table'              => $this->getTable(),
+            'table'              => $table,
             'field'              => 'comment_submission',
             'name'               => __('Request comments'),
             'datatype'           => 'text',
@@ -1099,7 +1171,7 @@ abstract class CommonITILValidation extends CommonDBChild
 
         $tab[] = [
             'id'                 => '2',
-            'table'              => $this->getTable(),
+            'table'              => $table,
             'field'              => 'comment_validation',
             'name'               => __('Approval comments'),
             'datatype'           => 'text',
@@ -1108,7 +1180,7 @@ abstract class CommonITILValidation extends CommonDBChild
 
         $tab[] = [
             'id'                 => '3',
-            'table'              => $this->getTable(),
+            'table'              => $table,
             'field'              => 'status',
             'name'               => __('Status'),
             'searchtype'         => 'equals',
@@ -1117,7 +1189,7 @@ abstract class CommonITILValidation extends CommonDBChild
 
         $tab[] = [
             'id'                 => '4',
-            'table'              => $this->getTable(),
+            'table'              => $table,
             'field'              => 'submission_date',
             'name'               => __('Request date'),
             'datatype'           => 'datetime'
@@ -1125,7 +1197,7 @@ abstract class CommonITILValidation extends CommonDBChild
 
         $tab[] = [
             'id'                 => '5',
-            'table'              => $this->getTable(),
+            'table'              => $table,
             'field'              => 'validation_date',
             'name'               => __('Approval date'),
             'datatype'           => 'datetime'
@@ -1153,6 +1225,18 @@ abstract class CommonITILValidation extends CommonDBChild
             'right'              => [
                 'validate_request',
                 'validate_incident'
+            ]
+        ];
+
+        $tab[] = [
+            'id'                 => '8',
+            'table'              => $table,
+            'field'              => 'itemtype_target',
+            'name'               => __('Requested approver type'),
+            'datatype'           => 'dropdown',
+            'right'              => [
+                'create_incident_validation',
+                'create_request_validation'
             ]
         ];
 
@@ -1359,96 +1443,6 @@ abstract class CommonITILValidation extends CommonDBChild
 
         return $values;
     }
-
-
-    /**
-     * Dropdown of validator
-     *
-     * @param $options   array of options
-     *  - name                    : select name
-     *  - id                      : ID of object > 0 Update, < 0 New
-     *  - entity                  : ID of entity
-     *  - right                   : validation rights
-     *  - groups_id               : ID of group validator
-     *  - users_id_validate       : ID of user validator
-     *  - applyto
-     *
-     * @return void Output is printed
-     **/
-    public static function dropdownValidator(array $options = [])
-    {
-        global $CFG_GLPI;
-
-        $params = [
-            'name'              => '' ,
-            'id'                => 0,
-            'entity'            => $_SESSION['glpiactive_entity'],
-            'right'             => ['validate_request', 'validate_incident'],
-            'groups_id'         => 0,
-            'users_id_validate' => [],
-            'applyto'           => 'show_validator_field',
-            'display'           => true,
-            'disabled'          => false,
-            'width'             => '100%',
-            'required'          => false,
-            'rand'              => mt_rand(),
-        ];
-
-        foreach ($options as $key => $val) {
-            $params[$key] = $val;
-        }
-
-        $type  = '';
-        if (isset($params['users_id_validate']['groups_id'])) {
-            $type = 'group';
-        } else if (!empty($params['users_id_validate'])) {
-            $type = 'user';
-        }
-
-        $out = Dropdown::showFromArray("validatortype", [
-            'user'  => User::getTypeName(1),
-            'group' => Group::getTypeName(1)
-        ], [
-            'value'               => $type,
-            'display_emptychoice' => true,
-            'display'             => false,
-            'disabled'            => $params['disabled'],
-            'rand'                => $params['rand'],
-            'width'               => $params['width'],
-            'required'            => $params['required'],
-        ]);
-
-        if ($type) {
-            $params['validatortype'] = $type;
-            $out .= Ajax::updateItem(
-                $params['applyto'],
-                $CFG_GLPI["root_doc"] . "/ajax/dropdownValidator.php",
-                $params,
-                "",
-                false
-            );
-        }
-        $params['validatortype'] = '__VALUE__';
-        $out .= Ajax::updateItemOnSelectEvent(
-            "dropdown_validatortype{$params['rand']}",
-            $params['applyto'],
-            $CFG_GLPI["root_doc"] . "/ajax/dropdownValidator.php",
-            $params,
-            false
-        );
-
-        if (!isset($options['applyto'])) {
-            $out .= "<br><span id='" . $params['applyto'] . "'>&nbsp;</span>\n";
-        }
-
-        if ($params['display']) {
-            echo $out;
-            return $params['rand'];
-        } else {
-            return $out;
-        }
-    }
-
 
     /**
      * Get list of users from a group which have validation rights

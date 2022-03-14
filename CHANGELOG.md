@@ -7,9 +7,11 @@ The present file will list all changes made to the project; according to the
 
 ### Added
 - `Link ITIL Object` and `Unlink ITIL Object` massive actions for Tickets, Changes, and Problems.
+- Group approval requests (any user from group can approve).
 
 ### Changed
 - ITIL Objects can now be linked to any other ITIL Objects similar to the previous Ticket/Ticket links.
+- The approval option previously named `Group` is now called `Group user(s)` to better reflect that it shows a list of users from a specific group rather than allow sending an approval for a group.
 
 ### Deprecated
 
@@ -22,6 +24,10 @@ The present file will list all changes made to the project; according to the
 #### Added
 
 #### Changes
+- `users_id_validate` field for validations no longer indicates who the approval is for, rather it is only for who responded (Default '0' until responded).
+   Approval targets (who the approval is for) is now indicated by `itemtype_target` and `items_id_target` fields.
+- Notifications with `Approver` recipient have had this recipient replaced with the new `Approval target` recipient to maintain previous behavior as much as possible.
+  The previous recipient option still exists if needed. This replacement will only happen once during the upgrade.
 
 #### Deprecated
 - `front/change_problem.form.php` script usage.

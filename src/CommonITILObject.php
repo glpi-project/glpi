@@ -7140,25 +7140,35 @@ abstract class CommonITILObject extends CommonDBTM
             $valitation_obj   = new $validation_class();
             $validations = $valitation_obj->find([$foreignKey => $this->getID()]);
             foreach ($validations as $validations_id => $validation) {
+                /** @var CommonITILValidation $valitation_obj */
+                $valitation_obj->getFromDB($validations_id);
                 $canedit = $valitation_obj->can($validations_id, UPDATE);
-                $cananswer = ($validation['users_id_validate'] === Session::getLoginUserID() &&
-                $validation['status'] == CommonITILValidation::WAITING);
-                $user = new User();
-                $user->getFromDB($validation['users_id_validate']);
-
+                $cananswer = $valitation_obj->isCurrentUserValidationTarget() && ((int) $validation['status'] === CommonITILValidation::WAITING);
                 $request_key = $valitation_obj::getType() . '_' . $validations_id
                     . (empty($validation['validation_date']) ? '' : '_request'); // If no answer, no suffix to see attached documents on request
+
+                $content = __('Validation request');
+                $validation_target_type = $validation['itemtype_target'];
+                if ($validation_target_type === 'User') {
+                    $user = new User();
+                    $user->getFromDB($validation['items_id_target']);
+                    $content .= " <i class='ti ti-arrow-right'></i><i class='ti ti-user text-muted me-1'></i>" . $user->getlink();
+                } else if ($validation_target_type === 'Group') {
+                    $group = new Group();
+                    $group->getFromDB($validation['items_id_target']);
+                    $content .= " <i class='ti ti-arrow-right'></i><i class='ti ti-users text-muted me-1'></i>" . $group->getlink();
+                }
                 $timeline[$request_key] = [
                     'type' => $validation_class,
                     'item' => [
                         'id'        => $validations_id,
                         'date'      => $validation['submission_date'],
-                        'content'   => __('Validation request') . " <i class='ti ti-arrow-right'></i><i class='ti ti-user text-muted me-1'></i>" . $user->getlink(),
+                        'content'   => $content,
                         'comment_submission' => $validation['comment_submission'],
                         'users_id'  => $validation['users_id'],
                         'can_edit'  => $canedit,
                         'can_answer'   => $cananswer,
-                        'users_id_validate'  => $validation['users_id_validate'],
+                        'users_id_validate'  => ((int) $validation['users_id_validate'] > 0) ? $validation['users_id_validate'] : Session::getLoginUserID(),
                         'timeline_position' => $validation['timeline_position']
                     ],
                     'itiltype' => 'Validation',
@@ -7180,8 +7190,10 @@ abstract class CommonITILObject extends CommonDBTM
                             'comment_validation' => $validation['comment_validation'],
                             'users_id'  => $validation['users_id_validate'],
                             'status'    => "status_" . $validation['status'],
-                            'can_edit'  => $validation['users_id_validate'] === Session::getLoginUserID(),
+                            'can_edit'  => $canedit,
                             'timeline_position' => $validation['timeline_position'],
+                            'itemtype_target' => $validation['itemtype_target'],
+                            'items_id_target' => $validation['items_id_target']
                         ],
                         'class'    => 'validation-answer',
                         'itiltype' => 'Validation',

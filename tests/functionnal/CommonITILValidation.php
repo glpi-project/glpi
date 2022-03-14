@@ -39,7 +39,7 @@ use DbTestCase;
 
 class CommonITILValidation extends DbTestCase
 {
-    public function testGroupApproval()
+    public function testGroupUserApproval()
     {
         $this->login();
 
@@ -406,5 +406,168 @@ class CommonITILValidation extends DbTestCase
         );
 
         $this->integer($test_result)->isEqualTo($result);
+    }
+
+    public function testCanValidateUser()
+    {
+        $this->login();
+
+        $ticket = new \Ticket();
+        $tickets_id = $ticket->add([
+            'name'      => 'testCanValidateUser',
+            'content'   => 'testCanValidateUser',
+        ]);
+        $this->integer($tickets_id)->isGreaterThan(0);
+
+        $validation = new \TicketValidation();
+
+        // Test the current user cannot approve since there are no approvals
+        $this->boolean($validation::canValidate($tickets_id))->isFalse();
+
+        // Add user approval for current user
+        $validations_id_1 = $validation->add([
+            'tickets_id'            => $tickets_id,
+            'itemtype_target'       => 'User',
+            'items_id_target'       => $_SESSION['glpiID'],
+            'comment_submission'    => 'testCanValidateUser',
+        ]);
+        $this->integer($validations_id_1)->isGreaterThan(0);
+        $this->boolean($validation::canValidate($tickets_id))->isTrue();
+
+        // Add user approval for other  user
+        $validation = new \TicketValidation();
+        $validations_id_2 = $validation->add([
+            'tickets_id'            => $tickets_id,
+            'itemtype_target'       => 'User',
+            'items_id_target'       => $_SESSION['glpiID'] + 1, // Other user. Doesn't need to exist
+            'comment_submission'    => 'testCanValidateUser',
+        ]);
+        $this->integer($validations_id_2)->isGreaterThan(0);
+
+        // Test the current user can still approve since they still have an approval
+        $this->boolean($validation::canValidate($tickets_id))->isTrue();
+        // Remove user approval for current user
+        $this->boolean($validation->delete(['id' => $validations_id_1]))->isTrue();
+        // Test the current user cannot still approve since the remaining approval isn't for them
+        $this->boolean($validation::canValidate($tickets_id))->isFalse();
+    }
+
+    public function testCanValidateGroup()
+    {
+        $this->login();
+
+        $ticket = new \Ticket();
+        $tickets_id = $ticket->add([
+            'name'      => 'testCanValidateGroup',
+            'content'   => 'testCanValidateGroup',
+        ]);
+        $this->integer($tickets_id)->isGreaterThan(0);
+
+        $validation = new \TicketValidation();
+
+        // Test the current user cannot approve since there are no approvals
+        $this->boolean($validation::canValidate($tickets_id))->isFalse();
+
+        // Create a test group
+        $group = new \Group();
+        $groups_id = $group->add([
+            'name' => 'testCanValidateGroup',
+        ]);
+        $this->integer($groups_id)->isGreaterThan(0);
+
+        // Add current user to the group
+        $group_user = new \Group_User();
+        $this->integer($group_user->add([
+            'groups_id' => $groups_id,
+            'users_id'  => $_SESSION['glpiID'],
+        ]))->isGreaterThan(0);
+
+        // Add approval for user's group
+        $validations_id_1 = $validation->add([
+            'tickets_id'            => $tickets_id,
+            'itemtype_target'       => 'Group',
+            'items_id_target'       => $groups_id,
+            'comment_submission'    => 'testCanValidateGroup',
+        ]);
+        $this->integer($validations_id_1)->isGreaterThan(0);
+        $this->boolean($validation::canValidate($tickets_id))->isTrue();
+
+        // Add approval for other group
+        $validation = new \TicketValidation();
+        $validations_id_2 = $validation->add([
+            'tickets_id'            => $tickets_id,
+            'itemtype_target'       => 'Group',
+            'items_id_target'       => $groups_id + 1, // Other group. Doesn't need to exist
+            'comment_submission'    => 'testCanValidateGroup',
+        ]);
+        $this->integer($validations_id_2)->isGreaterThan(0);
+
+        // Test the current user can still approve since they still have an approval
+        $this->boolean($validation::canValidate($tickets_id))->isTrue();
+        // Remove approval for current user's group
+        $this->boolean($validation->delete(['id' => $validations_id_1]))->isTrue();
+        // Test the current user cannot still approve since the remaining approval isn't for them
+        $this->boolean($validation::canValidate($tickets_id))->isFalse();
+    }
+
+    public function testIsCurrentUserValidationTarget()
+    {
+        $this->login();
+
+        // Create ticket
+        $ticket = new \Ticket();
+        $tickets_id = $ticket->add([
+            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+            'name'      => 'testIsCurrentUserValidationTarget',
+            'content'   => 'testIsCurrentUserValidationTarget',
+        ]);
+        $this->integer($tickets_id)->isGreaterThan(0);
+
+        // Add validation for current user
+        $validation = new \TicketValidation();
+        $validations_id = $validation->add([
+            'tickets_id'            => $tickets_id,
+            'itemtype_target'       => 'User',
+            'items_id_target'       => $_SESSION['glpiID'],
+            'comment_submission'    => 'testIsCurrentUserValidationTarget',
+        ]);
+        $this->integer($validations_id)->isGreaterThan(0);
+
+        // Test the current user is the validation target
+        $this->boolean($validation->isCurrentUserValidationTarget())->isTrue();
+
+        // Delete validation
+        $this->boolean($validation->delete(['id' => $validations_id]))->isTrue();
+
+        // Create a test group
+        $group = new \Group();
+        $groups_id = $group->add([
+            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+            'name' => 'testIsCurrentUserValidationTarget',
+        ]);
+        $this->integer($groups_id)->isGreaterThan(0);
+        // Add current user to the group
+        $group_user = new \Group_User();
+        $this->integer($group_user->add([
+            'groups_id' => $groups_id,
+            'users_id'  => $_SESSION['glpiID'],
+        ]))->isGreaterThan(0);
+
+        // Force reload of group memberships is current session
+        \Session::loadGroups();
+
+        // Add validation for group
+        $validations_id = $validation->add([
+            'tickets_id'            => $tickets_id,
+            'itemtype_target'       => 'Group',
+            'items_id_target'       => $groups_id,
+            'comment_submission'    => 'testIsCurrentUserValidationTarget',
+        ]);
+        $this->integer($validations_id)->isGreaterThan(0);
+
+        // Test the current user is the validation target
+        $this->boolean($validation->isCurrentUserValidationTarget(true))->isTrue();
+        // Test the current user is not the validation target when groups are not considered
+        $this->boolean($validation->isCurrentUserValidationTarget(false))->isFalse();
     }
 }
