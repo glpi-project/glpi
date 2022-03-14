@@ -296,7 +296,7 @@ class Html
     {
 
         if (is_array($value)) {
-            return array_map([__CLASS__, __METHOD__], $value);
+            return array_map(__METHOD__, $value);
         }
         $order   = ['\r\n',
             '\n',
