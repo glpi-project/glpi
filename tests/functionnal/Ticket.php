@@ -4226,7 +4226,7 @@ HTML
 
         $ticket->loadActors();
         $this->integer($ticket->countUsers(\CommonITILActor::ASSIGN))->isEqualTo(0);
-        $this->integer($ticket->countUsers(\CommonITILActor::REQUESTER))->isEqualTo(1);
+        $this->integer($ticket->countUsers(\CommonITILActor::REQUESTER))->isEqualTo(0);
 
         $this->changeTechRight(\Ticket::ASSIGN | \Ticket::READALL);
         $this->boolean($ticket->canUpdateItem())->isFalse();
@@ -4262,7 +4262,7 @@ HTML
         // Verify new assignee was added
         $this->integer($ticket->countUsers(\CommonITILActor::ASSIGN))->isEqualTo(1);
         // Verify new requester wasn't added
-        $this->integer($ticket->countUsers(\CommonITILActor::REQUESTER))->isEqualTo(1);
+        $this->integer($ticket->countUsers(\CommonITILActor::REQUESTER))->isEqualTo(0);
     }
 
     public function testAddAssignWithoutAssignRight()
@@ -4279,7 +4279,7 @@ HTML
 
         $ticket->loadActors();
         $this->integer($ticket->countUsers(\CommonITILActor::ASSIGN))->isEqualTo(0);
-        $this->integer($ticket->countUsers(\CommonITILActor::REQUESTER))->isEqualTo(1);
+        $this->integer($ticket->countUsers(\CommonITILActor::REQUESTER))->isEqualTo(0);
 
         $this->changeTechRight(\Ticket::READALL | UPDATE);
         $this->boolean($ticket->canUpdateItem())->isTrue();
@@ -4315,7 +4315,7 @@ HTML
         // Verify new assignee wasn't added
         $this->integer($ticket->countUsers(\CommonITILActor::ASSIGN))->isEqualTo(0);
         // Verify new requester was added
-        $this->integer($ticket->countUsers(\CommonITILActor::REQUESTER))->isEqualTo(2);
+        $this->integer($ticket->countUsers(\CommonITILActor::REQUESTER))->isEqualTo(1);
     }
 
     public function testAddActorsWithAssignAndUpdateRight()
@@ -4332,7 +4332,7 @@ HTML
 
         $ticket->loadActors();
         $this->integer($ticket->countUsers(\CommonITILActor::ASSIGN))->isEqualTo(0);
-        $this->integer($ticket->countUsers(\CommonITILActor::REQUESTER))->isEqualTo(1);
+        $this->integer($ticket->countUsers(\CommonITILActor::REQUESTER))->isEqualTo(0);
 
         $this->changeTechRight(\Ticket::ASSIGN | UPDATE | \Ticket::READALL);
         $this->boolean($ticket->canUpdateItem())->isTrue();
@@ -4368,6 +4368,6 @@ HTML
         // Verify new assignee was added
         $this->integer($ticket->countUsers(\CommonITILActor::ASSIGN))->isEqualTo(1);
         // Verify new requester was added
-        $this->integer($ticket->countUsers(\CommonITILActor::REQUESTER))->isEqualTo(2);
+        $this->integer($ticket->countUsers(\CommonITILActor::REQUESTER))->isEqualTo(1);
     }
 }
