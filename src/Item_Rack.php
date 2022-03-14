@@ -231,16 +231,14 @@ class Item_Rack extends CommonDBRelation
             $modelsfield = strtolower($item->getType()) . 'models_id';
             $model = new $model_class();
             if ($model->getFromDB($item->fields[$modelsfield])) {
-                $item->model = $model;
-
-                if ($item->model->fields['required_units'] > 1) {
-                    $gs_item['height'] = $item->model->fields['required_units'];
+                if ($model->fields['required_units'] > 1) {
+                    $gs_item['height'] = $model->fields['required_units'];
                     $gs_item['y']      = $rack->fields['number_units'] + 1
                                     - $row['position']
-                                    - $item->model->fields['required_units'];
+                                    - $model->fields['required_units'];
                 }
 
-                if ($item->model->fields['is_half_rack'] == 1) {
+                if ($model->fields['is_half_rack'] == 1) {
                     $gs_item['half_rack'] = true;
                     $gs_item['width'] = 1;
                     $row['position'] .= "_" . $gs_item['x'];
@@ -249,27 +247,28 @@ class Item_Rack extends CommonDBRelation
                     }
                 }
 
-                if (!empty($item->model->fields['picture_front'])) {
-                    $gs_item['picture_f'] = Toolbox::getPictureUrl($item->model->fields['picture_front']);
+                if (!empty($model->fields['picture_front'])) {
+                    $gs_item['picture_f'] = Toolbox::getPictureUrl($model->fields['picture_front']);
                 }
-                if (!empty($item->model->fields['picture_rear'])) {
-                    $gs_item['picture_r'] = Toolbox::getPictureUrl($item->model->fields['picture_rear']);
+                if (!empty($model->fields['picture_rear'])) {
+                    $gs_item['picture_r'] = Toolbox::getPictureUrl($model->fields['picture_rear']);
                 }
             } else {
-                $item->model = null;
+                $model = null;
             }
 
             if (isset($data[$row['orientation']][$position])) {
                 $data[$row['orientation']][$row['position']] = [
                     'row'     => $row,
                     'item'    => $item,
+                    'model'   => $model,
                     'gs_item' => $gs_item
                 ];
 
                //add to other side if needed
                 if (
-                    $item->model == null
-                    || $item->model->fields['depth'] >= 1
+                    $model == null
+                    || $model->fields['depth'] >= 1
                 ) {
                     $gs_item['rear'] = true;
                     $flip_orientation = (int) !((bool) $row['orientation']);
@@ -284,7 +283,12 @@ class Item_Rack extends CommonDBRelation
                     ];
                 }
             } else {
-                $outbound[] = ['row' => $row, 'item' => $item, 'gs_item' => $gs_item];
+                $outbound[] = [
+                    'row'     => $row,
+                    'item'    => $item,
+                    'model'   => $model,
+                    'gs_item' => $gs_item,
+                ];
             }
         }
 
@@ -747,9 +751,9 @@ JAVASCRIPT;
                          ? $item->fields['otherserial']
                          : "";
             $model       = is_object($item)
-                        && is_object($item->model)
-                        && isset($item->model->fields['name'])
-                         ? $item->model->fields['name']
+                        && is_object($cell['model'])
+                        && isset($cell['model']->fields['name'])
+                         ? $cell['model']->fields['name']
                          : '';
             $rear        = $gs_item['rear'];
             $back_class  = $rear
@@ -969,30 +973,25 @@ JAVASCRIPT;
             $model_class = $item->getType() . 'Model';
             $modelsfield = strtolower($item->getType()) . 'models_id';
             $model = new $model_class();
-            if ($model->getFromDB($item->fields[$modelsfield])) {
-                $item->model = $model;
-            } else {
-                $item->model = null;
-            }
 
             $required_units = 1;
             $width          = 1;
             $depth          = 1;
-            if ($item->model != null) {
-                if ($item->model->fields['required_units'] > 1) {
-                    $required_units = $item->model->fields['required_units'];
+            if ($model->getFromDB($item->fields[$modelsfield])) {
+                if ($model->fields['required_units'] > 1) {
+                    $required_units = $model->fields['required_units'];
                 }
-                if ($item->model->fields['is_half_rack'] == 1) {
+                if ($model->fields['is_half_rack'] == 1) {
                     if ($this->isNewItem() && !isset($input['hpos']) || $input['hpos'] == 0) {
                         $error_detected[] = __('You must define an horizontal position for this item');
                     }
                     $width = 0.5;
                 }
-                if ($item->model->fields['depth'] != 1) {
+                if ($model->fields['depth'] != 1) {
                     if ($this->isNewItem() && !isset($input['orientation'])) {
                         $error_detected[] = __('You must define an orientation for this item');
                     }
-                    $depth = $item->model->fields['depth'];
+                    $depth = $model->fields['depth'];
                 }
             }
 
