@@ -1032,6 +1032,7 @@ abstract class CommonITILObject extends CommonDBTM
                // Manage assign and steal right
                 if (static::getType() === Ticket::getType() && Session::haveRightsOr(static::$rightname, [Ticket::ASSIGN, Ticket::STEAL])) {
                     $allowed_fields[] = '_itil_assign';
+                    $allowed_fields[] = '_actors'; // This will be filtered in CommonITILObject::updateActors()
                 }
 
                // Can only update initial fields if no followup or task already added
@@ -7809,6 +7810,13 @@ abstract class CommonITILObject extends CommonDBTM
        // parse posted actors
         foreach ($this->input['_actors'] as $actortype_str => $actors) {
             $actortype = constant("CommonITILActor::" . strtoupper($actortype_str));
+            if ($actortype === CommonITILActor::ASSIGN && !$this->canAssign()) {
+                continue;
+            }
+
+            if ($actortype !== CommonITILActor::ASSIGN && !$this->canUpdateItem()) {
+                continue;
+            }
             $existings = $this->getActorsForType($actortype);
 
             $added   = [];
