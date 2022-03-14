@@ -452,6 +452,40 @@ abstract class InventoryAsset
 
     public function handleLogs()
     {
-        //TODO
+        global $DB;
+
+        if (!count($this->history)) {
+            return;
+        }
+
+        $inputs = [];
+        foreach ($this->history as $action => $types) {
+
+            foreach ($types as $type => $items) {
+                foreach ($items as $item) {
+                    $inputs[] = \Log::prepareAddHistory(
+                        $item->fields['id'],
+                        $item->getType(),
+                        [0, '', ''],
+                        0/*$itemtype_link*/,
+                        $action
+                    );
+                }
+            }
+        }
+
+        $update = $DB->buildInsert(
+            \Log::getTable(),
+            array_fill_keys(array_keys($inputs[0]), new \QueryParam())
+        );
+        $stmt = $DB->prepare($update);
+
+        foreach ($inputs as $input) {
+            $stmt->bind_param(
+                'sssssssss',
+                ...array_values($input)
+            );
+            $DB->executeStatement($stmt);
+        }
     }
 }
