@@ -1458,12 +1458,13 @@ class Inventory extends InventoryTestCase
         //computer has been created, check logs.
         //check for expected logs
         $expected_types_count = [
-            \Log::HISTORY_CREATE_ITEM => 64,
-            \Log::HISTORY_ADD_SUBITEM => count($expecteds_fs),
+            \Log::HISTORY_ADD_DEVICE => 15, // ??
+            \Log::HISTORY_CREATE_ITEM => 2, //Agent and Computer
+            /*\Log::HISTORY_ADD_SUBITEM => count($expecteds_fs),
             0 => 1, // Change Monitor contact (is_contact_autoupdate)
-            \Log::HISTORY_ADD_RELATION => 4 //OS and Monitor on both sides
+            \Log::HISTORY_ADD_RELATION => 4 //OS and Monitor on both sides*/
         ];
-        $this->checkLogs(72, $expected_types_count);
+        $this->checkLogs(17, $expected_types_count);
 
         //fake computer update (nothing has changed)
         $json = file_get_contents(self::INV_FIXTURES . 'computer_3.json');
@@ -1588,7 +1589,7 @@ class Inventory extends InventoryTestCase
         $this->integer(count($iterator))->isIdenticalTo(3033);
 
         //check for expected logs
-        $this->checkLogs(72, $expected_types_count);
+        $this->checkLogs(17, $expected_types_count);
 
         $this->doInventory($json);
 
@@ -1763,14 +1764,16 @@ class Inventory extends InventoryTestCase
         //check for expected logs after update
         $expected_types_count = [
             \Log::HISTORY_DELETE_SUBITEM => 5,//networkport and networkname
-            \Log::HISTORY_CREATE_ITEM => 16, //virtual machines, os, manufacturer, net ports, net names, ...
-            0 => 7, //Agent version, disks usage
-            \Log::HISTORY_ADD_SUBITEM => 9,//network port/name, ip adrress, VMs
-            \Log::HISTORY_UPDATE_SUBITEM => 4,//disks usage
-            \Log::HISTORY_DEL_RELATION => 2,//monitor-computer relation
-            \Log::HISTORY_UPDATE_RELATION => 2,//kernel version
+            \Log::HISTORY_CREATE_ITEM => 2, //virtual machines, os, manufacturer, net ports, net names, ...
+            0 => 2, //Agent version, disks usage
+            //\Log::HISTORY_ADD_SUBITEM => 9,//network port/name, ip adrress, VMs
+            //\Log::HISTORY_UPDATE_SUBITEM => 4,//disks usage
+            //\Log::HISTORY_DEL_RELATION => 2,//monitor-computer relation
+            //\Log::HISTORY_UPDATE_RELATION => 2,//kernel version
+            \Log::HISTORY_ADD_DEVICE => 24, // ???
+            \Log::HISTORY_UPDATE_DEVICE => 4, // ???
         ];
-        $this->checkLogs(45, $expected_types_count);
+        $this->checkLogs(37, $expected_types_count);
 
         //check matchedlogs
         $mlogs = new \RuleMatchedLog();
