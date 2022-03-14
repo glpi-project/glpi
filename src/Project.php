@@ -1544,7 +1544,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
             echo "<td>";
 
             $date = $this->fields["date"];
-            if (!$ID) {
+            if (!$ID || $from_template) {
                 $date = $_SESSION['glpi_currenttime'];
             }
             Html::showDateTimeField("date", ['value' => $date,
