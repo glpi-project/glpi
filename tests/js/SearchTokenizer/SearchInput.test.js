@@ -58,6 +58,77 @@ describe('Search Tokenizer Input', () => {
         expect(default_tag_input.attr('contenteditable') === 'true').toBeTrue();
     });
 
+    test('Construct with custom input options', () => {
+        const test_input = $('input[name=filter]');
+        const input_options = {
+            classes: ['custom-class-1', 'custom-class-2'],
+            attributes: {
+                'test-attr-1': 'test-attr-1-value',
+                'test-attr-2': 'test-attr-2-value'
+            },
+            data: {
+                'test-data-1': 'test-data-1-value',
+                'test-data-2': 'test-data-2-value'
+            }
+        };
+
+        const search_input = new SearchInput(test_input, {
+            input_options: input_options
+        });
+        expect(search_input.original_input).toStrictEqual(test_input);
+
+        const displayed_input = search_input.displayed_input.get(0);
+        expect(displayed_input).toHaveClass(...input_options.classes);
+        $.each(input_options.attributes, (key, value) => {
+            expect(displayed_input).toHaveAttribute(key, value);
+        });
+        $.each(input_options.data, (key, value) => {
+            expect(displayed_input).toHaveAttribute('data-' + key, value);
+        });
+    });
+
+    test('Construct with copied input options', () => {
+        const test_input = $('input[name=filter]');
+        const input_options = {
+            classes: ['custom-class-1', 'custom-class-2'],
+            attributes: {
+                'test-attr-1': 'test-attr-1-value',
+                'test-attr-2': 'test-attr-2-value'
+            },
+            data: {
+                'test-data-1': 'test-data-1-value',
+                'test-data-2': 'test-data-2-value'
+            }
+        };
+
+        //Apply input options to test_input
+        $.each(input_options.attributes, (key, value) => {
+            test_input.attr(key, value);
+        });
+        $.each(input_options.data, (key, value) => {
+            test_input.attr('data-' + key, value);
+        });
+        test_input.addClass(input_options.classes);
+
+        const search_input = new SearchInput(test_input, {
+            input_options: {
+                classes: 'copy',
+                attributes: 'copy',
+                data: 'copy',
+            }
+        });
+        expect(search_input.original_input).toStrictEqual(test_input);
+
+        const displayed_input = search_input.displayed_input.get(0);
+        expect(displayed_input).toHaveClass(...input_options.classes);
+        $.each(input_options.attributes, (key, value) => {
+            expect(displayed_input).toHaveAttribute(key, value);
+        });
+        $.each(input_options.data, (key, value) => {
+            expect(displayed_input).toHaveAttribute('data-' + key, value);
+        });
+    });
+
     test('Tags Helper Content', () => {
         const test_input = $('input[name=filter]');
         const search_input = new SearchInput(test_input, {

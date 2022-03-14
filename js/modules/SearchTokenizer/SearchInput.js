@@ -38,6 +38,10 @@ import SearchTokenizer from "./SearchTokenizer.js";
  * @property {function} [on_result_change] Callback when the result changes
  * @property {TokenizerOptions} [tokenizer_options] Tokenizer options
  * @property {boolean} filter_on_type Whether to filter the suggestions on typing
+ * @property {{}} [input_options] Options for the new input element
+ * @property {[]|'copy'} [input_options.classes] Classes for the new input element. If set to "copy", the classes of the original input will be copied
+ * @property {{}|'copy'} [input_options.attributes] Attributes for the new input element. If set to "copy", the attributes of the original input will be copied
+ * @property {{}|'copy'} [input_options.data] Data for the new input element. If set to "copy", the attributes of the original input will be copied
  */
 
 export default class SearchInput {
@@ -55,6 +59,11 @@ export default class SearchInput {
             backspace_action: 'edit',
             tokenizer_options: {},
             filter_on_type: true,
+            input_options: {
+                classes: [],
+                attributes: {},
+                data: {}
+            }
         }, options || {});
         this.tokenizer = new SearchTokenizer(options.allowed_tags || {}, options.drop_unallowed_tags || false, options.tokenizer_options);
 
@@ -62,11 +71,62 @@ export default class SearchInput {
          <div class="form-control search-input d-flex" tabindex="0"></div>
       `).insertBefore(input);
         this.displayed_input.append(`<span class="search-input-tag-input flex-grow-1" contenteditable="true"></span>`);
+        this.applyInputOptions();
+
         this.original_input.hide();
 
         this.last_result = null;
 
         this.registerListeners();
+    }
+
+    applyInputOptions() {
+        let new_attrs = {};
+
+        if (typeof this.options.input_options.attributes === 'object') {
+            new_attrs = this.options.input_options.attributes;
+        } else if (this.options.input_options.attributes === 'copy') {
+            const original_attr = this.original_input.get(0).attributes;
+            for (let i = 0; i < original_attr.length; i++) {
+                // Get only non-data attributes
+                if (!original_attr[i].name.startsWith('data-') && original_attr[i].name !== 'class') {
+                    new_attrs[original_attr[i].name] = original_attr[i].value;
+                }
+            }
+        }
+
+        let new_data = {};
+        let old_data_attrs = {};
+        if (typeof this.options.input_options.data === 'object') {
+            new_data = this.options.input_options.data;
+        } else if (this.options.input_options.data === 'copy') {
+            new_data = this.original_input.data();
+            const original_attr = this.original_input.get(0).attributes;
+            // Get data attributes in case they aren't in jQuery data
+            for (let i = 0; i < original_attr.length; i++) {
+                // Get only data attributes
+                if (original_attr[i].name.startsWith('data-')) {
+                    old_data_attrs[original_attr[i].name] = original_attr[i].value;
+                }
+            }
+        }
+
+        // Add data attributes. We don't use $.data() because having the DOM attribute may be needed and using $.data doesn't add them.
+        // Information from $.data will override any data attributes of the same name
+        new_attrs = Object.assign(old_data_attrs, Object.keys(new_data).reduce((obj, key) => {
+            obj['data-' + key] = new_data[key];
+            return obj;
+        }, new_attrs));
+
+        // Apply attributes including data attributes
+        this.displayed_input.attr(new_attrs);
+
+        // Apply classes
+        if (Array.isArray(this.options.input_options.classes)) {
+            this.displayed_input.addClass(this.options.input_options.classes.join(' '));
+        } else if (this.options.input_options.classes === 'copy') {
+            this.displayed_input.addClass(this.original_input.attr('class'));
+        }
     }
 
     registerListeners() {

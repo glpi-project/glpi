@@ -29,13 +29,8 @@
  * ---------------------------------------------------------------------
  */
 
-module.exports = {
-    setupFilesAfterEnv: ["<rootDir>/jest-setup.js"],
-    setupFiles: ['<rootDir>/bootstrap.js'],
-    transformIgnorePatterns: [
-        // Change MODULE_NAME_HERE to your module that isn't being compiled
-        "/node_modules/(?!@tabler).+\\.js$"
-    ],
-    testEnvironment: 'jsdom',
-    slowTestThreshold: 10,
-};
+// Load jest-dom assertion library
+import '@testing-library/jest-dom';
+
+// Load extended jest assertions
+import "jest-extended/all";
