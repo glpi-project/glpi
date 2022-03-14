@@ -1386,6 +1386,10 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
         if (isset($input["id"]) && ($input["id"] > 0)) {
             $input["_oldID"] = $input["id"];
         }
+        if (isset($input['withtemplate']) && (int) $input['withtemplate'] == 2) {
+            // Remove dates for template from input. Keep date_creation because it can be overridden
+            unset($input['date'], $input['date_mod']);
+        }
         unset($input['id']);
         unset($input['withtemplate']);
 
@@ -1531,25 +1535,27 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
         $this->initForm($ID, $options);
         $this->showFormHeader($options);
 
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . __('Creation date') . "</td>";
-        echo "<td>";
+        if (!isset($options['withtemplate']) || (int) $options['withtemplate'] !== 1) {
+            echo "<tr class='tab_bg_1'>";
+            echo "<td>" . __('Creation date') . "</td>";
+            echo "<td>";
 
-        $date = $this->fields["date"];
-        if (!$ID) {
-            $date = $_SESSION['glpi_currenttime'];
+            $date = $this->fields["date"];
+            if (!$ID) {
+                $date = $_SESSION['glpi_currenttime'];
+            }
+            Html::showDateTimeField("date", ['value' => $date,
+                'maybeempty' => false
+            ]);
+            echo "</td>";
+            if ($ID) {
+                echo "<td>" . __('Last update') . "</td>";
+                echo "<td >" . Html::convDateTime($this->fields["date_mod"]) . "</td>";
+            } else {
+                echo "<td colspan='2'>&nbsp;</td>";
+            }
+            echo "</tr>";
         }
-        Html::showDateTimeField("date", ['value'      => $date,
-            'maybeempty' => false
-        ]);
-        echo "</td>";
-        if ($ID) {
-            echo "<td>" . __('Last update') . "</td>";
-            echo "<td >" . Html::convDateTime($this->fields["date_mod"]) . "</td>";
-        } else {
-            echo "<td colspan='2'>&nbsp;</td>";
-        }
-        echo "</tr>";
 
         echo "<tr class='tab_bg_1'>";
         echo "<td>" . __('Name') . "</td>";

@@ -168,6 +168,10 @@ class Project extends DbTestCase
         );
         $this->integer($task2_id)->isGreaterThan(0);
 
+        // Add 1 second to GLPI current time
+        $date2 = date('Y-m-d H:i:s', strtotime($date) + 1);
+        $_SESSION['glpi_currenttime'] = $date2;
+
        // Create from template
         $entity_id = getItemByTypeName('Entity', '_test_child_2', true);
         $project_id = $project->add(
@@ -184,6 +188,11 @@ class Project extends DbTestCase
        // Check created project
         $this->integer($project->fields['entities_id'])->isEqualTo($entity_id);
         $this->integer($project->fields['is_recursive'])->isEqualTo(0);
+
+        // Verify that the creation date was not copied from the template
+        $this->variable($project->fields['date'])->isNotEqualTo($date);
+        $this->variable($project->fields['date_creation'])->isNotEqualTo($date);
+        $this->variable($project->fields['date_mod'])->isNotEqualTo($date);
 
        // Check created tasks
         $tasks_data = getAllDataFromTable($project_task->getTable(), ['projects_id' => $project_id]);
