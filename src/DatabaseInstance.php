@@ -189,7 +189,7 @@ class DatabaseInstance extends CommonDBTM
         State::dropdown([
             'value'     => $this->fields["states_id"],
             'entity'    => $this->fields["entities_id"],
-            'condition' => ['is_visible_database' => 1],
+            'condition' => ['is_visible_databaseinstance' => 1],
             'rand'      => $rand
         ]);
         echo "</td></tr>\n";
