@@ -45,6 +45,13 @@ class Blacklist extends CommonDropdown
 
     public $can_be_translated = false;
 
+    /**
+     * Loaded blacklists.
+     * Used for caching purposes.
+     * @var array
+     */
+    private $blacklists;
+
     const IP             = 1;
     const MAC            = 2;
     const SERIAL         = 3;
