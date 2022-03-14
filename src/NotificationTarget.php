@@ -73,6 +73,13 @@ class NotificationTarget extends CommonDBChild
     public $options                     = [];
     public $raiseevent                  = '';
 
+    /**
+     * Recipient related to called "add_recipient_to_target" hook.
+     * Variable contains `itemtype` and `items_id` keys and is set only during hook execution.
+     * @var array
+     */
+    public $recipient_data;
+
     private $allow_response             = true;
     private $mode                       = null;
     private $event                      = null;
