@@ -57,6 +57,21 @@ class NetworkPort extends CommonDBChild
 
     public static $rightname                   = 'networking';
 
+    /**
+     * Subset of input that will be used for NetworkPortInstantiation.
+     * @var array
+     */
+    private $input_for_instantiation;
+    /**
+     * Subset of input that will be used for NetworkName.
+     * @var array
+     */
+    private $input_for_NetworkName;
+    /**
+     * Subset of input that will be used for NetworkPort_NetworkPort.
+     * @var array
+     */
+    private $input_for_NetworkPortConnect;
 
     public function getForbiddenStandardMassiveAction()
     {
