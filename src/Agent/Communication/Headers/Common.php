@@ -179,8 +179,7 @@ class Common
     {
         $propname = strtolower(str_replace('-', '_', $name));
 
-        //TODO: check header does exists, and has expected value
-        return $this->$propname;
+        return property_exists($this, $propname) ? $this->$propname : null;
     }
 
     /**
@@ -241,7 +240,9 @@ class Common
     public function setHeader($name, $value): self
     {
         $propname = strtolower(str_replace('-', '_', $name));
-        $this->$propname = $value;
+        if (property_exists($this, $propname)) {
+            $this->$propname = $value;
+        }
         return $this;
     }
 
@@ -255,6 +256,6 @@ class Common
     public function hasHeader($name): bool
     {
         $propname = strtolower(str_replace('-', '_', $name));
-        return (isset($this->$propname) && !empty($this->$propname));
+        return property_exists($this, $propname) && !empty($this->$propname);
     }
 }
