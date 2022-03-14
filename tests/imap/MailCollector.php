@@ -113,11 +113,17 @@ class MailCollector extends DbTestCase
 
     public function testListEncodings()
     {
-        $this
-         ->if($this->newTestedInstance)
-         ->then
-            ->array($this->testedInstance->listEncodings())
-               ->containsValues(['utf-8', 'iso-8859-1', 'iso-8859-14', 'cp1252']);
+        $this->newTestedInstance;
+
+        $this->when(
+            function () {
+                $this->array($this->testedInstance->listEncodings())
+                    ->containsValues(['utf-8', 'iso-8859-1', 'iso-8859-14', 'cp1252']);
+            }
+        )->error()
+           ->withType(E_USER_DEPRECATED)
+           ->withMessage('Called method is deprecated')
+           ->exists();
     }
 
     public function testPrepareInput()

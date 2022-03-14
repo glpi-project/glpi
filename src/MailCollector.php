@@ -1314,13 +1314,14 @@ class MailCollector extends CommonDBTM
    ///return supported encodings in lowercase.
     public function listEncodings()
     {
+        Toolbox::deprecated();
        // Encoding not listed
         static $enc = ['gb2312', 'gb18030'];
 
         if (count($enc) == 2) {
             foreach (mb_list_encodings() as $encoding) {
                 $enc[]   = Toolbox::strtolower($encoding);
-                $aliases = mb_encoding_aliases($encoding);
+                $aliases = @mb_encoding_aliases($encoding);
                 foreach ($aliases as $e) {
                     $enc[] = Toolbox::strtolower($e);
                 }
