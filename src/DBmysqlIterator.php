@@ -124,7 +124,6 @@ class DBmysqlIterator implements SeekableIterator, Countable
     {
         $this->sql = null;
         $this->res = false;
-        $this->parameters = [];
 
         $is_legacy = false;
 
