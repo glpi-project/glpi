@@ -160,35 +160,56 @@ abstract class CommonITILObject extends CommonDBTM
         $actortypestring = self::getActorFieldNameType($actortype);
 
         if ($this->isNewItem()) {
+            // load default user from preference only at the first load of new ticket form
+            // we don't want to trigger it on form reload
+            // at first load, the key _skip_default_actor is not present (can only be present after a submit)
+            if (!isset($params['_skip_default_actor'])) {
+                $users_id_default = $this->getDefaultActor($actortype);
+                if ($users_id_default > 0) {
+                    $userobj  = new User();
+                    if ($userobj->getFromDB($users_id_default)) {
+                        $name = formatUserName(
+                            $userobj->fields["id"],
+                            $userobj->fields["name"],
+                            $userobj->fields["realname"],
+                            $userobj->fields["firstname"]
+                        );
+                        $email = UserEmail::getDefaultForUser($users_id_default);
+                        $actors[] = [
+                            'items_id'          => $users_id_default,
+                            'itemtype'          => 'User',
+                            'text'              => $name,
+                            'title'             => $name,
+                            'use_notification'  => strlen($email) > 0,
+                            'alternative_email' => $email,
+                        ];
+                    }
+                }
+            }
+
             // load default actors from itiltemplate passed from showForm in `params` var
             // we find this key on the first load of template (when opening form)
             // or when the template change (by category loading)
             if (isset($params['_template_changed'])) {
-                // we may have 2 types of usersautofill, from the template or from the user preference
-                $users_id_list = [
-                    (int) ($params['_predefined_fields']['_users_id_' . $actortypestring] ?? 0), // from template
-                    $this->getDefaultActor($actortype), // from default actor
-                ];
-                foreach ($users_id_list as $users_id) {
-                    if ($users_id > 0) {
-                        $userobj  = new User();
-                        if ($userobj->getFromDB($users_id)) {
-                            $name = formatUserName(
-                                $userobj->fields["id"],
-                                $userobj->fields["name"],
-                                $userobj->fields["realname"],
-                                $userobj->fields["firstname"]
-                            );
-                            $email = UserEmail::getDefaultForUser($users_id);
-                            $actors[] = [
-                                'items_id'          => $users_id,
-                                'itemtype'          => 'User',
-                                'text'              => $name,
-                                'title'             => $name,
-                                'use_notification'  => strlen($email) > 0,
-                                'alternative_email' => $email,
-                            ];
-                        }
+                $users_id = (int) ($params['_predefined_fields']['_users_id_' . $actortypestring] ?? 0);
+                if ($users_id > 0) {
+                    $userobj  = new User();
+                    if ($userobj->getFromDB($users_id)) {
+                        $name = formatUserName(
+                            $userobj->fields["id"],
+                            $userobj->fields["name"],
+                            $userobj->fields["realname"],
+                            $userobj->fields["firstname"]
+                        );
+                        $email = UserEmail::getDefaultForUser($users_id);
+                        $actors[] = [
+                            'items_id'          => $users_id,
+                            'itemtype'          => 'User',
+                            'text'              => $name,
+                            'title'             => $name,
+                            'use_notification'  => strlen($email) > 0,
+                            'alternative_email' => $email,
+                        ];
                     }
                 }
 
