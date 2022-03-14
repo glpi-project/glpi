@@ -206,7 +206,8 @@ abstract class InventoryAsset
                             [],
                             '',
                             true,
-                            false);
+                            false
+                        );
                     } else if (preg_match('/^.+models_id/', $key)) {
                         // models that need manufacturer relation for dictionary import
                         // see CommonDCModelDropdown::$additional_fields_for_dictionnary
@@ -460,7 +461,6 @@ abstract class InventoryAsset
 
         $inputs = [];
         foreach ($this->history as $action => $types) {
-
             foreach ($types as $type => $items) {
                 foreach ($items as $item) {
                     $inputs[] = \Log::prepareAddHistory(
