@@ -50,6 +50,96 @@ class MassiveAction
     const ACTION_KO               = 2;
     const ACTION_NORIGHT          = 3;
 
+    /**
+     * Massive actions input.
+     * @var array
+     */
+    public $POST = [];
+
+    /**
+     * Current action key.
+     * @var string|null
+     */
+    public $action;
+
+    /**
+     * Current action name.
+     * @var string|null
+     */
+    public $action_name;
+
+    /**
+     * Class used to process current action.
+     * @var string
+     */
+    public $processor;
+
+    /**
+     * Items to process.
+     * @var array
+     */
+    public $items = [];
+
+    /**
+     * Results of process.
+     * @var array
+     */
+    public $results = [];
+
+    /**
+     * Current process identifier.
+     * @var int|null
+     */
+    private $identifier;
+
+    /**
+     * Total count of items in current process.
+     * @var int
+     */
+    private $nb_items = 0;
+
+    /**
+     * Count of done items in current process.
+     * @var int
+     */
+    private $nb_done = 0;
+
+    /**
+     * Items done in current process.
+     * @var array
+     */
+    private $done = [];
+
+    /**
+     * Items remaining in current process.
+     * @var array
+     */
+    private $remainings = [];
+
+    /**
+     * Fields to remove after reload.
+     * @var array
+     */
+    private $fields_to_remove_when_reload = [];
+
+    /**
+     * Computed timeout delay.
+     * @var int
+     */
+    private $timeout_delay;
+
+    /**
+     * Current process timer.
+     * @var int
+     */
+    private $timer;
+
+    /**
+     * Item used to check rights.
+     * Variable is used for caching purpose.
+     * @var CommonGLPI|null
+     */
+    private $check_item;
 
     /**
      * Constructor of massive actions.
@@ -73,8 +163,6 @@ class MassiveAction
             if (!isset($POST['is_deleted'])) {
                 $POST['is_deleted'] = 0;
             }
-
-            $this->nb_items = 0;
 
             if ((isset($POST['item'])) || (isset($POST['items']))) {
                 $remove_from_post = [];
@@ -243,11 +331,17 @@ class MassiveAction
                 }
 
                 $this->POST = $POST;
-                foreach (['items', 'action', 'processor'] as $field) {
-                    if (isset($this->POST[$field])) {
-                        $this->$field = $this->POST[$field];
-                    }
+
+                if (isset($this->POST['items']) && is_array($this->POST['items'])) {
+                    $this->items = $this->POST['items'];
                 }
+                if (isset($this->POST['action'])) {
+                    $this->action = $this->POST['action'];
+                }
+                if (isset($this->POST['processor'])) {
+                    $this->processor = $this->POST['processor'];
+                }
+
                 foreach ($remove_from_post as $field) {
                     if (isset($this->POST[$field])) {
                         unset($this->POST[$field]);
@@ -269,7 +363,7 @@ class MassiveAction
                 $this->$attribute = $value;
             }
             if ($this->identifier != $identifier) {
-                $this->error = __('Invalid process');
+                throw new \Exception(__('Invalid process'));
                 return;
             }
             unset($_SESSION['current_massive_action'][$identifier]);
@@ -277,9 +371,7 @@ class MassiveAction
 
        // Add process elements
         if ($stage == 'process') {
-            if (!isset($this->remainings)) {
-                $this->remainings = $this->items;
-            }
+            $this->remainings = $this->items;
 
             $this->fields_to_remove_when_reload = ['fields_to_remove_when_reload'];
 
@@ -309,11 +401,7 @@ class MassiveAction
      **/
     public function getInput()
     {
-
-        if (isset($this->POST)) {
-            return $this->POST;
-        }
-        return [];
+        return $this->POST;
     }
 
 
@@ -324,11 +412,7 @@ class MassiveAction
      **/
     public function getAction()
     {
-
-        if (isset($this->action)) {
-            return $this->action;
-        }
-        return null;
+        return $this->action;
     }
 
 
@@ -339,11 +423,7 @@ class MassiveAction
      **/
     public function getItems()
     {
-
-        if (isset($this->items)) {
-            return $this->items;
-        }
-        return [];
+        return $this->items;
     }
 
 
@@ -354,11 +434,7 @@ class MassiveAction
      **/
     public function getRemainings()
     {
-
-        if (isset($this->remainings)) {
-            return $this->remainings;
-        }
-        return [];
+        return $this->remainings;
     }
 
 
@@ -448,38 +524,37 @@ class MassiveAction
     public function getItemtype($display_selector)
     {
 
-        if (isset($this->items) && is_array($this->items)) {
-            $keys = array_keys($this->items);
-            if (count($keys) == 1) {
-                return $keys[0];
-            }
-
-            if (
-                $display_selector
-                && (count($keys) > 1)
-            ) {
-                $itemtypes = [-1 => Dropdown::EMPTY_VALUE];
-                foreach ($keys as $itemtype) {
-                    $itemtypes[$itemtype] = $itemtype::getTypeName(Session::getPluralNumber());
-                }
-                echo __('Select the type of the item on which applying this action') . "<br>\n";
-
-                $rand = Dropdown::showFromArray('specialize_itemtype', $itemtypes);
-                echo "<br><br>";
-
-                $params                        = $this->POST;
-                $params['specialize_itemtype'] = '__VALUE__';
-                Ajax::updateItemOnSelectEvent(
-                    "dropdown_specialize_itemtype$rand",
-                    "show_itemtype$rand",
-                    $_SERVER['REQUEST_URI'],
-                    $params
-                );
-
-                echo "<span id='show_itemtype$rand'>&nbsp;</span>\n";
-                exit();
-            }
+        $keys = array_keys($this->items);
+        if (count($keys) == 1) {
+            return $keys[0];
         }
+
+        if (
+            $display_selector
+            && (count($keys) > 1)
+        ) {
+            $itemtypes = [-1 => Dropdown::EMPTY_VALUE];
+            foreach ($keys as $itemtype) {
+                $itemtypes[$itemtype] = $itemtype::getTypeName(Session::getPluralNumber());
+            }
+            echo __('Select the type of the item on which applying this action') . "<br>\n";
+
+            $rand = Dropdown::showFromArray('specialize_itemtype', $itemtypes);
+            echo "<br><br>";
+
+            $params                        = $this->POST;
+            $params['specialize_itemtype'] = '__VALUE__';
+            Ajax::updateItemOnSelectEvent(
+                "dropdown_specialize_itemtype$rand",
+                "show_itemtype$rand",
+                $_SERVER['REQUEST_URI'],
+                $params
+            );
+
+            echo "<span id='show_itemtype$rand'>&nbsp;</span>\n";
+            exit();
+        }
+
         return false;
     }
 
