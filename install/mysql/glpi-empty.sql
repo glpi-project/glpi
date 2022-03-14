@@ -8650,6 +8650,7 @@ CREATE TABLE `glpi_appliances` (
   `serial` varchar(255) DEFAULT NULL,
   `otherserial` varchar(255) DEFAULT NULL,
   `is_helpdesk_visible` tinyint NOT NULL DEFAULT '1',
+  `pictures` text,
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`externalidentifier`),
   KEY `entities_id` (`entities_id`),

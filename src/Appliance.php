@@ -32,6 +32,7 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Features\AssetImage;
 
 /**
  * Appliances Class
@@ -39,6 +40,7 @@ use Glpi\Application\View\TemplateRenderer;
 class Appliance extends CommonDBTM
 {
     use Glpi\Features\Clonable;
+    use AssetImage;
 
    // From CommonDBTM
     public $dohistory                   = true;
@@ -85,6 +87,18 @@ class Appliance extends CommonDBTM
         return $ong;
     }
 
+
+    public function prepareInputForAdd($input)
+    {
+        $input = parent::prepareInputForAdd($input);
+        return $this->managePictures($input);
+    }
+
+    public function prepareInputForUpdate($input)
+    {
+        $input = parent::prepareInputForUpdate($input);
+        return $this->managePictures($input);
+    }
 
     /**
      * Print the appliance form
