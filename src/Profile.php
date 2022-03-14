@@ -69,6 +69,11 @@ class Profile extends CommonDBTM
 
     public static $rightname             = 'profile';
 
+    /**
+     * Profile rights to update after profile update.
+     * @var array
+     */
+    private $profileRight;
 
 
     public function getForbiddenStandardMassiveAction()
