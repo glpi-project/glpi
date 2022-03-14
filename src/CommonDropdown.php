@@ -686,17 +686,18 @@ abstract class CommonDropdown extends CommonDBTM
     /**
      * Import a dropdown - check if already exists
      *
-     * @param $input  array of value to import (name, ...)
+     * @param array   $input   values to import (name, ...)
+     * @param boolean $history  Whether to log import
      *
      * @return integer|boolean the ID of the new or existing dropdown (-1 or false on failure)
      **/
-    public function import(array $input)
+    public function import(array $input, bool $history = true)
     {
 
         if (!isset($input['name'])) {
             return -1;
         }
-       // Clean datas
+       // Clean data
         $input['name'] = trim($input['name']);
 
         if (empty($input['name'])) {
@@ -710,7 +711,7 @@ abstract class CommonDropdown extends CommonDBTM
             }
         }
 
-        return $this->add($input);
+        return $this->add($input, [], $history);
     }
 
 
@@ -725,6 +726,7 @@ abstract class CommonDropdown extends CommonDBTM
      * @param string  $comment         Comment (need to be addslashes)
      * @param boolean $add             if true, add it if not found. if false,
      *                                 just check if exists (true by default)
+     * @param boolean $history         Whether to log import
      *
      * @return integer Dropdown id
      **/
@@ -733,7 +735,8 @@ abstract class CommonDropdown extends CommonDBTM
         $entities_id = -1,
         $external_params = [],
         $comment = "",
-        $add = true
+        $add = true,
+        $history = true
     ) {
 
         $value = trim($value);
@@ -751,17 +754,6 @@ abstract class CommonDropdown extends CommonDBTM
                 $ruleinput[$field] = '';
             }
         }
-       /*
-       switch ($this->getTable()) {
-         case "glpi_computermodels" :
-         case "glpi_monitormodels" :
-         case "glpi_printermodels" :
-         case "glpi_peripheralmodels" :
-         case "glpi_phonemodels" :
-         case "glpi_networkequipmentmodels" :
-            $ruleinput["manufacturer"] = $external_params["manufacturer"];
-            break;
-       }*/
 
         $input = [
             'name'        => $value,
@@ -775,20 +767,17 @@ abstract class CommonDropdown extends CommonDBTM
                 $input["name"] = $res_rule["name"];
             }
         }
-        return ($add ? $this->import($input) : $this->findID($input));
+        return ($add ? $this->import($input, $history) : $this->findID($input));
     }
 
 
-    /**
-     * @see CommonDBTM::getSpecificMassiveActions()
-     **/
     public function getSpecificMassiveActions($checkitem = null)
     {
 
         $isadmin = static::canUpdate();
         $actions = parent::getSpecificMassiveActions($checkitem);
 
-       // Manage forbidden actions
+        // Manage forbidden actions
         $forbidden_actions = $this->getForbiddenStandardMassiveAction();
 
         if (
@@ -804,11 +793,6 @@ abstract class CommonDropdown extends CommonDBTM
     }
 
 
-    /**
-     * @since 0.85
-     *
-     * @see CommonDBTM::showMassiveActionsSubForm()
-     **/
     public static function showMassiveActionsSubForm(MassiveAction $ma)
     {
 
@@ -823,11 +807,6 @@ abstract class CommonDropdown extends CommonDBTM
     }
 
 
-    /**
-     * @since 0.85
-     *
-     * @see CommonDBTM::processMassiveActionsForOneItemtype()
-     **/
     public static function processMassiveActionsForOneItemtype(
         MassiveAction $ma,
         CommonDBTM $item,
@@ -852,21 +831,21 @@ abstract class CommonDropdown extends CommonDBTM
                             }
                         } else {
                             $input2 = $item->fields;
-                         // Remove keys (and name, tree dropdown will use completename)
+                            // Remove keys (and name, tree dropdown will use completename)
                             if ($item instanceof CommonTreeDropdown) {
                                 unset($input2['id'], $input2['name'], $input2[$fk]);
                             } else {
                                 unset($input2['id']);
                             }
-                      // Change entity
+                            // Change entity
                             $input2['entities_id']  = $_SESSION['glpiactive_entity'];
                             $input2['is_recursive'] = 1;
                             $input2 = Toolbox::addslashes_deep($input2);
-                      // Import new
+                            // Import new
                             if ($newid = $item->import($input2)) {
-                               // Delete old
+                                // Delete old
                                 if ($newid > 0 && $key != $newid) {
-                               // delete with purge for dropdown with trashbin (Budget)
+                                    // delete with purge for dropdown with trashbin (Budget)
                                     $item->delete(['id'          => $key,
                                         '_replace_by' => $newid
                                     ], 1);

@@ -459,11 +459,12 @@ abstract class CommonDevice extends CommonDropdown
     /**
      * Import a device is not exists
      *
-     * @param $input array of datas
+     * @param array   $input   values to import
+     * @param boolean $history Whether to log import
      *
      * @return integer ID of existing or new Device
      **/
-    public function import(array $input)
+    public function import(array $input, bool $history = true)
     {
         global $DB;
 
@@ -501,7 +502,7 @@ abstract class CommonDevice extends CommonDropdown
             return $line['id'];
         }
 
-        return $this->add($input);
+        return $this->add($input, [], $history);
     }
 
 

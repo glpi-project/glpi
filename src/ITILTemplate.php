@@ -718,39 +718,30 @@ abstract class ITILTemplate extends CommonDropdown
     }
 
 
-    /**
-     * Import a dropdown - check if already exists
-     *
-     * @since 0.90
-     *
-     * @param array $input  array of value to import (name, ...)
-     *
-     * @return integer|boolean true in case of success, -1 otherwise
-     **/
-    public function import(array $input)
+    public function import(array $input, bool $history = true)
     {
 
         if (!isset($input['name'])) {
             return -1;
         }
-       // Clean datas
+        // Clean data
         $input['name'] = trim($input['name']);
 
         if (empty($input['name'])) {
             return -1;
         }
 
-       // Check twin
+        // Check twin
         $ID = $this->findID($input);
         if ($ID > 0) {
            // Merge data
             $this->mergeTemplateFields($ID, $input['id']);
             $this->mergeTemplateITILCategories($ID, $input['id']);
 
-           // Delete source
+            // Delete source
             $this->delete($input, 1);
 
-           // Update destination with source input
+            // Update destination with source input
             $input['id'] = $ID;
         }
 

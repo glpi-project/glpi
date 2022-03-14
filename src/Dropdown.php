@@ -2334,18 +2334,19 @@ class Dropdown
     /**
      * Import a dropdown - check if already exists
      *
-     * @param string $itemtype  name of the class
-     * @param array  $input     of value to import
+     * @param string  $itemtype  name of the class
+     * @param array   $input     values to import
+     * @param boolean $history   Whether to log import
      *
      * @return boolean|integer ID of the new item or false on error
      **/
-    public static function import($itemtype, $input)
+    public static function import($itemtype, $input, $history = true)
     {
 
         if (!($item = getItemForItemtype($itemtype))) {
             return false;
         }
-        return $item->import($input);
+        return $item->import($input, $history);
     }
 
 
@@ -2360,6 +2361,7 @@ class Dropdown
      * @param array   $external_params
      * @param string  $comment
      * @param boolean $add              if true, add it if not found. if false, just check if exists
+     * @param boolean $history          Whether to log import
      *
      * @return integer : dropdown id.
      **/
@@ -2369,13 +2371,14 @@ class Dropdown
         $entities_id = -1,
         $external_params = [],
         $comment = '',
-        $add = true
+        $add = true,
+        $history = true
     ) {
 
         if (!($item = getItemForItemtype($itemtype))) {
             return false;
         }
-        return $item->importExternal($value, $entities_id, $external_params, $comment, $add);
+        return $item->importExternal($value, $entities_id, $external_params, $comment, $add, $history);
     }
 
     /**

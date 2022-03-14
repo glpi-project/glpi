@@ -922,11 +922,11 @@ abstract class CommonTreeDropdown extends CommonDropdown
     }
 
 
-    public function import(array $input)
+    public function import(array $input, bool $history = true)
     {
 
         if (isset($input['name'])) {
-            return parent::import($input);
+            return parent::import($input, $history);
         }
 
         if (!isset($input['completename']) || empty($input['completename'])) {
@@ -968,7 +968,7 @@ abstract class CommonTreeDropdown extends CommonDropdown
                 }
             }
 
-            $parent = parent::import($tmp);
+            $parent = parent::import($tmp, $history);
         }
         return $parent;
     }
