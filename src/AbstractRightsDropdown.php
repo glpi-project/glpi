@@ -38,17 +38,21 @@ abstract class AbstractRightsDropdown
     /**
      * Max limit per itemtype
      */
-    const LIMIT = 50;
+    public const LIMIT = 50;
+
+    /**
+     * To be redefined by subclasses, URL to front file
+     *
+     * @return string
+     */
+    abstract protected static function getAjaxUrl(): string;
 
     /**
      * To be redefined by subclasses, specify enabled types
      *
      * @return array
      */
-    protected static function getTypes(): array
-    {
-        return [];
-    }
+    abstract protected static function getTypes(): array;
 
     /**
      * Check if a given type is enabled
@@ -73,8 +77,6 @@ abstract class AbstractRightsDropdown
      */
     public static function show(string $name, array $values): string
     {
-        global $CFG_GLPI;
-
         // Flatten values
         $dropdown_values = [];
         foreach ($values as $fkey => $ids) {
@@ -87,7 +89,7 @@ abstract class AbstractRightsDropdown
         $field_id = $name . "_" . mt_rand();
 
         // Build url
-        $url = $CFG_GLPI['root_doc'] . "/ajax/getRightDropdownValue.php";
+        $url = static::getAjaxUrl();
 
         // Build params
         $params = [

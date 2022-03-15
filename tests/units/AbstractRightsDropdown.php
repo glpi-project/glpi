@@ -40,7 +40,7 @@ use Profile;
 use Ticket;
 use User;
 
-class AbstractRightsDropdown extends \GLPITestCase
+abstract class AbstractRightsDropdown extends \GLPITestCase
 {
     protected function testGetPostedIdsProvider(): Generator
     {

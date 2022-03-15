@@ -31,22 +31,14 @@
  * ---------------------------------------------------------------------
  */
 
-class ShareDashboardDropdown extends AbstractRightsDropdown
+include(__DIR__ . '/../inc/includes.php');
+
+header("Content-Type: application/json; charset=UTF-8");
+Html::header_nocache();
+Session::checkLoginUser();
+
+function show_rights_dropdown(string $class)
 {
-    protected static function getAjaxUrl(): string
-    {
-        global $CFG_GLPI;
-
-        return $CFG_GLPI['root_doc'] . "/ajax/getShareDashboardDropdownValue.php";
-    }
-
-    protected static function getTypes(): array
-    {
-        return [
-            User::getType(),
-            Entity::getType(),
-            Profile::getType(),
-            Group::getType(),
-        ];
-    }
+    $search = $_POST['searchText'] ?? "";
+    echo json_encode($class::fetchValues($search));
 }

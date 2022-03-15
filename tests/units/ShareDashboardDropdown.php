@@ -31,12 +31,8 @@
  * ---------------------------------------------------------------------
  */
 
-include('../inc/includes.php');
+namespace tests\units;
 
-header("Content-Type: application/json; charset=UTF-8");
-Html::header_nocache();
-Session::checkLoginUser();
-
-$search = $_POST['searchText'] ?? "";
-
-echo json_encode(ShareDashboardDropdown::fetchValues($search));
+class ShareDashboardDropdown extends AbstractRightsDropdown
+{
+}
