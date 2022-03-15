@@ -57,12 +57,8 @@ class Grid
     public static $embed              = false;
     public static $all_dashboards     = [];
 
-    public function __construct(
-        string $dashboard_key = "central",
-        int $grid_cols = 26,
-        int $grid_rows = 24,
-        string $context = 'core'
-    ) {
+    public function __construct(string $dashboard_key = "central", int $grid_cols = 26, int $grid_rows = 24, string $context = 'core')
+    {
 
         $this->current   = $dashboard_key;
         $this->grid_cols = $grid_cols;
@@ -1437,6 +1433,7 @@ HTML;
 
         return $cards;
     }
+
 
     public function getRights($interface = 'central')
     {
