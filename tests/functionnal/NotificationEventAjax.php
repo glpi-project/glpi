@@ -192,8 +192,8 @@ class NotificationEventAjax extends DbTestCase
 Associated item :
 
 
- Assigned to technicians : _test_user 
- Status : Processing (assigned)
+
+ Status : New
 
  Urgency : Medium
  Impact : Medium

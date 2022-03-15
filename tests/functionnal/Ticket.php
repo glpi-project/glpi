@@ -482,6 +482,7 @@ class Ticket extends DbTestCase
             (int)$ticket->add([
                 'name'    => '',
                 'content' => 'A ticket to check ACLS',
+                '_users_id_assign' => getItemByTypeName("User", 'tech', true),
             ])
         )->isGreaterThan(0);
 
@@ -597,6 +598,7 @@ class Ticket extends DbTestCase
             (int)$ticket->add([
                 'name'    => '',
                 'content' => 'Another ticket to check ACLS',
+                '_users_id_assign' => getItemByTypeName("User", 'tech', true),
             ])
         )->isGreaterThan(0);
         $this->boolean((bool)$ticket->getFromDB($ticket->getID()))->isTrue();
@@ -633,6 +635,7 @@ class Ticket extends DbTestCase
             (int)$ticket->add([
                 'name'    => '',
                 'content' => 'A ticket to check ACLS',
+                '_users_id_assign' => getItemByTypeName("User", TU_USER, true),
             ])
         )->isGreaterThan(0);
 
@@ -1184,6 +1187,7 @@ class Ticket extends DbTestCase
             (int)$ticket->add([
                 'name'    => '',
                 'content' => 'A ticket to check assign ACLS',
+                '_users_id_assign' => getItemByTypeName("User", TU_USER, true),
             ])
         )->isGreaterThan(0);
 
