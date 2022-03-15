@@ -540,14 +540,26 @@ class Document extends CommonDBTM
     /**
      * Get download link for a document
      *
-     * @param string  $params     additonal parameters to be added to the link (default '')
-     * @param integer $len        maximum length of displayed string (default 20)
-     * @param ?array  $linkedItem Item linked to the document, to check access right. Contains foreign key of the itemtype and item ID
+     * @param CommonDBTM|null   $linked_item    Item linked to the document, to check access right
+     * @param integer           $len            maximum length of displayed string (default 20)
      *
      **/
-    public function getDownloadLink($params = '', $len = 20, ?array $linkedItem = null)
+    public function getDownloadLink($linked_item = null, $len = 20)
     {
-        global $DB,$CFG_GLPI;
+        global $DB, $CFG_GLPI;
+
+        $link_params = '';
+        if (is_string($linked_item)) {
+            // Old behaviour.
+            // TODO: Deprecate it in GLPI 10.1.
+            // Toolbox::deprecated('Passing additionnal URL parameters in Document::getDownloadLink() is deprecated.');
+            $linked_item = null;
+            $link_params = $linked_item;
+        } elseif ($linked_item !== null && !($linked_item instanceof CommonDBTM)) {
+            throw new \InvalidArgumentException();
+        } else {
+            $link_params = sprintf('&itemtype=%s&items_id=%s', $linked_item->getType(), $linked_item->getID());
+        }
 
         $splitter = explode("/", $this->fields['filename']);
 
@@ -568,16 +580,14 @@ class Document extends CommonDBTM
         $out   = '';
         $open  = '';
         $close = '';
-        $linkedItem = $linkedItem ?? ['tickets_id' => $this->fields['tickets_id']];
-        if (
-            self::canView()
-            || $this->canViewFile($linkedItem)
-        ) {
-            $fk = array_keys($linkedItem)[0];
-            $items_id = $linkedItem[$fk];
-            $link = "&$fk=$items_id";
+
+        $can_view_options = $linked_item !== null
+            ? ['itemtype' => $linked_item->getType(), 'items_id' => $linked_item->getID()]
+            : ['itemtype' => Ticket::getType(), 'items_id' => $this->fields['tickets_id']];
+
+        if (self::canView() || $this->canViewFile($can_view_options)) {
             $open  = "<a href='" . $CFG_GLPI["root_doc"] . "/front/document.send.php?docid=" .
-                    $this->fields['id'] . $params . $link . "' alt=\"" . $initfileout . "\"
+                    $this->fields['id'] . $link_params . "' alt=\"" . $initfileout . "\"
                     title=\"" . $initfileout . "\"target='_blank'>";
             $close = "</a>";
         }
@@ -654,9 +664,13 @@ class Document extends CommonDBTM
 
 
     /**
-     * Check is the curent user is allowed to see the file
+     * Check is the curent user is allowed to see the file.
      *
-     * @param array $options Options (only 'tickets_id' used)
+     * @param array $options array of possible options used to check rights:
+     *     - itemtype/items_id:     itemtype and ID of item linked to document
+     *     - changes_id (legacy):   ID of Change linked to document
+     *     - problems_id (legacy):  ID of Problem linked to document
+     *     - tickets_id (legacy):   ID of Ticket linked to document
      *
      * @return boolean
      **/
@@ -680,36 +694,43 @@ class Document extends CommonDBTM
             return true;
         }
 
+        // new options
+        $itemtype = $options['itemtype'] ?? null;
+        $items_id = $options['items_id'] ?? null;
+
+        // legacy options
+        $changes_id  = $options['changes_id'] ?? null;
+        $problems_id = $options['problems_id'] ?? null;
+        $tickets_id  = $options['tickets_id'] ?? null;
+
         if (
-            isset($options["changes_id"])
-            && $this->canViewFileFromItilObject('Change', $options["changes_id"])
+            ($changes_id !== null && $this->canViewFileFromItilObject('Change', $changes_id))
+            || ($itemtype === 'Change' && $items_id !== null && $this->canViewFileFromItilObject('Change', $items_id))
         ) {
             return true;
         }
 
         if (
-            isset($options["problems_id"])
-            && $this->canViewFileFromItilObject('Problem', $options["problems_id"])
+            ($problems_id !== null && $this->canViewFileFromItilObject('Problem', $problems_id))
+            || ($itemtype === 'Problem' && $items_id !== null && $this->canViewFileFromItilObject('Problem', $items_id))
         ) {
             return true;
         }
 
-        if (count($options)) {
-            foreach ($options as $fk => $items_id) {
-                $itemtype = getItemtypeForForeignKeyField($fk);
-                if ($itemtype == 'UNKNOWN' || !$this->canViewFileFromOtherObject($itemtype, $items_id)) {
-                    continue;
-                }
-                return true;
-            }
+        if (
+            $itemtype !== null
+            && $items_id !== null
+            && $this->canViewFileFromOtherObject('$itemtype', $problems_id)
+        ) {
+            return true;
         }
 
-       // The following case should be reachable from the API
+        // The following case should be reachable from the API
         self::loadAPISessionIfExist();
 
         if (
-            isset($options["tickets_id"])
-            && $this->canViewFileFromItilObject('Ticket', $options["tickets_id"])
+            ($tickets_id !== null && $this->canViewFileFromItilObject('Ticket', $tickets_id))
+            || ($itemtype === 'Ticket' && $items_id !== null && $this->canViewFileFromItilObject('Ticket', $items_id))
         ) {
             return true;
         }
@@ -883,6 +904,23 @@ class Document extends CommonDBTM
 
     public static function canViewFileFromOtherObject($itemtype, $items_id)
     {
+        global $DB;
+
+        $result = $DB->request(
+            [
+                'FROM'  => Document_Item::getTable(),
+                'COUNT' => 'cpt',
+                'WHERE' => [
+                    'itemtype' => $itemtype,
+                    'items_id' => $items_id,
+                ]
+            ]
+        )->current();
+
+        if ($result['cpt'] === 0) {
+            return false;
+        }
+
         $item = new $itemtype();
 
         if (!$item->can($items_id, READ)) {
