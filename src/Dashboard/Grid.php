@@ -1139,7 +1139,7 @@ HTML;
             }
 
             foreach ($CFG_GLPI['itemdevices'] as $itemtype) {
-                $fk_itemtype = $itemtype::$itemtype_2;
+                $fk_itemtype = $itemtype::getDeviceType();
                 $label = sprintf(
                     __("Number of %s by type"),
                     $itemtype::getTypeName(Session::getPluralNumber()),
