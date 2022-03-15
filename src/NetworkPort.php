@@ -404,7 +404,7 @@ class NetworkPort extends CommonDBChild
                 $instantiation->update($this->input_for_instantiation, $history);
             }
         }
-        unset($this->input_for_instantiation);
+        $this->input_for_instantiation = null;
 
         if (
             isset($this->input_for_NetworkName)
@@ -442,7 +442,7 @@ class NetworkPort extends CommonDBChild
                 }
             }
         }
-        unset($this->input_for_NetworkName);
+        $this->input_for_NetworkName = null;
 
         if (
             isset($this->input_for_NetworkPortConnect)
@@ -457,7 +457,7 @@ class NetworkPort extends CommonDBChild
                 $nn->add($this->input_for_NetworkPortConnect, [], $history);
             }
         }
-        unset($this->input_for_NetworkPortConnect);
+        $this->input_for_NetworkPortConnect = null;
     }
 
 
