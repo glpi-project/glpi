@@ -6541,9 +6541,12 @@ abstract class CommonITILObject extends CommonDBTM
 
         $validation_class = $obj_type . 'Validation';
         $canadd_validation = false;
+        $can_view_validation = false;
         if (class_exists($validation_class)) {
+            /** @var CommonITILValidation $validation */
             $validation = new $validation_class();
             $canadd_validation = $validation->can(-1, CREATE, $tmp) && !in_array($this->fields["status"], $solved_closed_statuses, true);
+            $can_view_validation = $validation::canView();
         }
 
         $itemtypes = [];
@@ -6578,14 +6581,15 @@ abstract class CommonITILObject extends CommonDBTM
                 'item'      => new ITILSolution()
             ];
         }
-        if ($canadd_validation) {
+        if ($can_view_validation) {
             $itemtypes['validation'] = [
-                'type'      => 'ITILValidation',
-                'class'     => $validation_class,
-                'icon'      => 'ti ti-thumb-up',
-                'label'     => _x('button', 'Ask for validation'),
-                'template'  => 'components/itilobject/timeline/form_validation.html.twig',
-                'item'      => $validation
+                'type'          => 'ITILValidation',
+                'class'         => $validation_class,
+                'icon'          => 'ti ti-thumb-up',
+                'label'         => _x('button', 'Ask for validation'),
+                'template'      => 'components/itilobject/timeline/form_validation.html.twig',
+                'item'          => $validation,
+                'hide_in_menu'  => !$canadd_validation
             ];
         }
         if ($canadd_document) {
