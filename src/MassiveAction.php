@@ -418,7 +418,7 @@ class MassiveAction
             case 'remainings':
             case 'timeout_delay':
             case 'timer':
-                Toolbox::deprecated();
+                Toolbox::deprecated(sprintf('Reading private property %s::%s is deprecated', __CLASS__, $property));
                 $value = $this->$property;
                 break;
             default:
@@ -450,7 +450,7 @@ class MassiveAction
             case 'remainings':
             case 'timeout_delay':
             case 'timer':
-                Toolbox::deprecated();
+                Toolbox::deprecated(sprintf('Writing private property %s::%s is deprecated', __CLASS__, $property));
                 $this->$property = $value;
                 break;
             default:

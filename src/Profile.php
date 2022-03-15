@@ -80,7 +80,7 @@ class Profile extends CommonDBTM
         $value = null;
         switch ($property) {
             case 'profileRight':
-                Toolbox::deprecated();
+                Toolbox::deprecated(sprintf('Reading private property %s::%s is deprecated', __CLASS__, $property));
                 $value = $this->$property;
                 break;
             default:
@@ -98,7 +98,7 @@ class Profile extends CommonDBTM
     {
         switch ($property) {
             case 'profileRight':
-                Toolbox::deprecated();
+                Toolbox::deprecated(sprintf('Writing private property %s::%s is deprecated', __CLASS__, $property));
                 $this->$property = $value;
                 break;
             default:

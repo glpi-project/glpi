@@ -80,7 +80,7 @@ class NetworkPort extends CommonDBChild
             case 'input_for_instantiation':
             case 'input_for_NetworkName':
             case 'input_for_NetworkPortConnect':
-                Toolbox::deprecated();
+                Toolbox::deprecated(sprintf('Reading private property %s::%s is deprecated', __CLASS__, $property));
                 $value = $this->$property;
                 break;
             default:
@@ -100,7 +100,7 @@ class NetworkPort extends CommonDBChild
             case 'input_for_instantiation':
             case 'input_for_NetworkName':
             case 'input_for_NetworkPortConnect':
-                Toolbox::deprecated();
+                Toolbox::deprecated(sprintf('Writing private property %s::%s is deprecated', __CLASS__, $property));
                 $this->$property = $value;
                 break;
             default:

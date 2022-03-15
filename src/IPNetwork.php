@@ -109,7 +109,7 @@ class IPNetwork extends CommonImplicitTreeDropdown
             case 'data_for_implicit_update':
             case 'gateway':
             case 'netmask':
-                Toolbox::deprecated();
+                Toolbox::deprecated(sprintf('Writing private property %s::%s is deprecated', __CLASS__, $property));
                 // no break is intentionnal
             case 'networkUpdate':
                 // TODO Deprecate write access to variable in GLPI 10.1.
