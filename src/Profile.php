@@ -75,6 +75,42 @@ class Profile extends CommonDBTM
      */
     private $profileRight;
 
+    public function __get(string $property)
+    {
+        $value = null;
+        switch ($property) {
+            case 'profileRight':
+                Toolbox::deprecated();
+                $value = $this->$property;
+                break;
+            default:
+                $trace = debug_backtrace();
+                trigger_error(
+                    sprintf('Undefined property: %s::%s in %s on line %d', __CLASS__, $property, $trace[0]['file'], $trace[0]['line']),
+                    E_USER_WARNING
+                );
+                break;
+        }
+        return $value;
+    }
+
+    public function __set(string $property, $value)
+    {
+        switch ($property) {
+            case 'profileRight':
+                Toolbox::deprecated();
+                $this->$property = $value;
+                break;
+            default:
+                $trace = debug_backtrace();
+                trigger_error(
+                    sprintf('Undefined property: %s::%s in %s on line %d', __CLASS__, $property, $trace[0]['file'], $trace[0]['line']),
+                    E_USER_WARNING
+                );
+                break;
+        }
+    }
+
 
     public function getForbiddenStandardMassiveAction()
     {
