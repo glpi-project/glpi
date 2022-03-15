@@ -57,34 +57,34 @@ class MassiveAction
     public $POST = [];
 
     /**
+     * Results of process.
+     * @var array
+     */
+    public $results = [];
+
+    /**
      * Current action key.
      * @var string|null
      */
-    public $action;
+    private $action;
 
     /**
      * Current action name.
      * @var string|null
      */
-    public $action_name;
+    private $action_name;
 
     /**
      * Class used to process current action.
      * @var string
      */
-    public $processor;
+    private $processor;
 
     /**
      * Items to process.
      * @var array
      */
-    public $items = [];
-
-    /**
-     * Results of process.
-     * @var array
-     */
-    public $results = [];
+    private $items = [];
 
     /**
      * Current process identifier.
@@ -392,6 +392,77 @@ class MassiveAction
         }
     }
 
+    public function __get(string $property)
+    {
+        // TODO Deprecate access to variables in GLPI 10.1.
+        $value = null;
+        switch ($property) {
+            case 'action':
+                $value = $this->getAction();
+                break;
+            case 'action_name':
+                $value = $this->getActionName();
+                break;
+            case 'processor':
+                $value = $this->getProcessor();
+                break;
+            case 'items':
+                $value = $this->getItems();
+                break;
+            case 'check_item':
+            case 'done':
+            case 'fields_to_remove_when_reload':
+            case 'identifier':
+            case 'nb_done':
+            case 'nb_items':
+            case 'remainings':
+            case 'timeout_delay':
+            case 'timer':
+                Toolbox::deprecated();
+                $value = $this->$property;
+                break;
+            default:
+                $trace = debug_backtrace();
+                trigger_error(
+                    sprintf('Undefined property: %s::%s in %s on line %d', __CLASS__, $property, $trace[0]['file'], $trace[0]['line']),
+                    E_USER_WARNING
+                );
+                break;
+        }
+        return $value;
+    }
+
+    public function __set(string $property, $value)
+    {
+        // TODO Deprecate access to variables in GLPI 10.1.
+        $value = null;
+        switch ($property) {
+            case 'action':
+            case 'action_name':
+            case 'check_item':
+            case 'done':
+            case 'fields_to_remove_when_reload':
+            case 'identifier':
+            case 'items':
+            case 'nb_done':
+            case 'nb_items':
+            case 'processor':
+            case 'remainings':
+            case 'timeout_delay':
+            case 'timer':
+                Toolbox::deprecated();
+                $this->$property = $value;
+                break;
+            default:
+                $trace = debug_backtrace();
+                trigger_error(
+                    sprintf('Undefined property: %s::%s in %s on line %d', __CLASS__, $property, $trace[0]['file'], $trace[0]['line']),
+                    E_USER_WARNING
+                );
+                break;
+        }
+    }
+
 
     /**
      * Get the fields provided by previous stage through $_POST.
@@ -413,6 +484,26 @@ class MassiveAction
     public function getAction()
     {
         return $this->action;
+    }
+
+    /**
+     * Get current action name.
+     *
+     * @return
+     */
+    public function getActionName(): ?string
+    {
+        return $this->action_name;
+    }
+
+    /**
+     * Get current action processor classname.
+     *
+     * @return
+     */
+    public function getProcessor(): ?string
+    {
+        return $this->processor;
     }
 
 
