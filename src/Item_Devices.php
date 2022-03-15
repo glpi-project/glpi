@@ -86,7 +86,11 @@ class Item_Devices extends CommonDBRelation
     public static function getTypeName($nb = 0)
     {
         $device_type = static::getDeviceType();
-        return $device_type::getTypeName($nb);
+        $device_typename = $device_type::getTypeName(1);
+        return sprintf(
+            _n('%s item', '%s items', $nb),
+            $device_typename
+        );
     }
 
 
