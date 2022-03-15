@@ -49,7 +49,6 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
     protected $profiles  = [];
     protected $entities  = [];
     protected $items     = [];
-    protected $knowbase_items = [];
 
     const KNOWBASEADMIN = 1024;
     const READFAQ       = 2048;
