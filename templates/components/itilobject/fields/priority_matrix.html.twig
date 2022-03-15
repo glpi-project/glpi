@@ -73,7 +73,8 @@
 ) }}
 
 {% set priority_options = field_options|merge({
-   'disabled': (not canpriority)
+   'disabled': (not canpriority),
+   'withmajor': true
 }) %}
 {% if field_options.fields_template.isMandatoryField('priority') %}
    {% set priority_options = priority_options|merge({
