@@ -125,7 +125,10 @@ abstract class CommonDevice extends CommonDropdown
                         }
 
                         if ($itemClass = getItemForItemtype(self::getItem_DeviceType($key))) {
-                            $itemTypeName = sprintf(__('%1$s items'), $key::getTypeName(1));
+                            $itemTypeName = sprintf(
+                                _n('%s item', '%s items', Session::getPluralNumber()),
+                                $key::getTypeName(1)
+                            );
 
                             $listLabel = '<i class="fa fa-list pointer" title="' . $itemTypeName . '"></i>'
                             . '<span class="sr-only">' . $itemTypeName . '</span>';
