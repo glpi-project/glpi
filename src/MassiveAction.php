@@ -536,7 +536,7 @@ class MassiveAction
     public function __destruct()
     {
 
-        if (isset($this->identifier)) {
+        if ($this->identifier !== null) {
            // $this->identifier is unset by self::process() when the massive actions are finished
             foreach ($this->fields_to_remove_when_reload as $field) {
                 unset($this->$field);
@@ -552,20 +552,16 @@ class MassiveAction
     public function getCheckItem($POST)
     {
 
-        if (!isset($this->check_item)) {
-            if (isset($POST['check_itemtype'])) {
-                if (!($this->check_item = getItemForItemtype($POST['check_itemtype']))) {
+        if ($this->check_item === null && isset($POST['check_itemtype'])) {
+            if (!($this->check_item = getItemForItemtype($POST['check_itemtype']))) {
+                exit();
+            }
+            if (isset($POST['check_items_id'])) {
+                if (!$this->check_item->getFromDB($POST['check_items_id'])) {
                     exit();
+                } else {
+                    $this->check_item->getEmpty();
                 }
-                if (isset($POST['check_items_id'])) {
-                    if (!$this->check_item->getFromDB($POST['check_items_id'])) {
-                        exit();
-                    } else {
-                        $this->check_item->getEmpty();
-                    }
-                }
-            } else {
-                $this->check_item = null;
             }
         }
         return $this->check_item;
@@ -1334,7 +1330,7 @@ class MassiveAction
         $this->results['redirect'] = $this->redirect;
 
        // unset $this->identifier to ensure the action won't register in $_SESSION
-        unset($this->identifier);
+        $this->identifier = null;
 
         return $this->results;
     }

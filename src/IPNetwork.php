@@ -186,7 +186,7 @@ class IPNetwork extends CommonImplicitTreeDropdown
     public function getAddress()
     {
 
-        if (!isset($this->address)) {
+        if ($this->address === null) {
             $this->address = new IPAddress();
             if (!$this->address->setAddressFromArray($this->fields, "version", "address", "address")) {
                 return false;
@@ -199,7 +199,7 @@ class IPNetwork extends CommonImplicitTreeDropdown
     public function getNetmask()
     {
 
-        if (!isset($this->netmask)) {
+        if ($this->netmask === null) {
             $this->netmask = new IPNetmask();
             if (!$this->netmask->setAddressFromArray($this->fields, "version", "netmask", "netmask")) {
                 return false;
@@ -212,7 +212,7 @@ class IPNetwork extends CommonImplicitTreeDropdown
     public function getGateway()
     {
 
-        if (!isset($this->gateway)) {
+        if ($this->gateway === null) {
             $this->gateway = new IPAddress();
             if (!$this->gateway->setAddressFromArray($this->fields, "version", "gateway", "gateway")) {
                 return false;
@@ -229,9 +229,9 @@ class IPNetwork extends CommonImplicitTreeDropdown
     {
 
        // Be sure to remove addresses, otherwise reusing will provide old objects for getAddress, ...
-        unset($this->address);
-        unset($this->netmask);
-        unset($this->gateway);
+        $this->address = null;
+        $this->netmask = null;
+        $this->gateway = null;
 
         if (
             isset($this->fields["address"])
@@ -280,7 +280,7 @@ class IPNetwork extends CommonImplicitTreeDropdown
     public function getNewAncestor()
     {
 
-        if (isset($this->data_for_implicit_update)) {
+        if ($this->data_for_implicit_update !== null) {
             $params = ["address" => $this->data_for_implicit_update['address'],
                 "netmask" => $this->data_for_implicit_update['netmask']
             ];
@@ -497,8 +497,10 @@ class IPNetwork extends CommonImplicitTreeDropdown
             IPAddress_IPNetwork::linkIPAddressFromIPNetwork($this);
         }
 
-        unset($this->networkUpdate);
         parent::post_addItem();
+
+        $this->networkUpdate = null;
+        $this->data_for_implicit_update = null;
     }
 
 
@@ -529,7 +531,7 @@ class IPNetwork extends CommonImplicitTreeDropdown
     public function getPotentialSons()
     {
 
-        if (isset($this->data_for_implicit_update)) {
+        if ($this->data_for_implicit_update !== null) {
             $params = ["address"     => $this->data_for_implicit_update['address'],
                 "netmask"     => $this->data_for_implicit_update['netmask'],
                 "exclude IDs" => $this->getID()

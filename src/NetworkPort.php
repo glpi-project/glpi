@@ -339,9 +339,9 @@ class NetworkPort extends CommonDBChild
     {
 
         if (
-            isset($this->input_for_instantiation)
-            || isset($this->input_for_NetworkName)
-            || isset($this->input_for_NetworkPortConnect)
+            $this->input_for_instantiation !== null
+            || $this->input_for_NetworkName !== null
+            || $this->input_for_NetworkPortConnect !== null
             || !isset($input)
         ) {
             return;
@@ -394,7 +394,7 @@ class NetworkPort extends CommonDBChild
         $instantiation = $this->getInstantiation();
         if (
             $instantiation !== false
-            && isset($this->input_for_instantiation)
+            && is_array($this->input_for_instantiation)
             && count($this->input_for_instantiation) > 0
         ) {
             $this->input_for_instantiation['networkports_id'] = $this->getID();
@@ -407,7 +407,7 @@ class NetworkPort extends CommonDBChild
         $this->input_for_instantiation = null;
 
         if (
-            isset($this->input_for_NetworkName)
+            is_array($this->input_for_NetworkName)
             && count($this->input_for_NetworkName) > 0
             && !isset($_POST['several'])
         ) {
@@ -445,7 +445,7 @@ class NetworkPort extends CommonDBChild
         $this->input_for_NetworkName = null;
 
         if (
-            isset($this->input_for_NetworkPortConnect)
+            is_array($this->input_for_NetworkPortConnect)
             && count($this->input_for_NetworkPortConnect) > 0
         ) {
             if (

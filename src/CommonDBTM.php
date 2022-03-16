@@ -2806,7 +2806,7 @@ class CommonDBTM extends CommonGLPI
         if ($this->right !== $right) {
             return false;
         }
-        unset($this->right);
+        $this->right = null;
 
         switch ($right) {
             case READ:
@@ -4050,7 +4050,7 @@ class CommonDBTM extends CommonGLPI
        // }
        //Type mismatched fields
         $fails = [];
-        if (isset($this->input) && is_array($this->input) && count($this->input)) {
+        if (is_array($this->input) && count($this->input)) {
             foreach ($this->input as $key => $value) {
                 $unset        = false;
                 $regs         = [];

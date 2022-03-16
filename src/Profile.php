@@ -229,7 +229,7 @@ class Profile extends CommonDBTM
 
         if (count($this->profileRight) > 0) {
             ProfileRight::updateProfileRights($this->getID(), $this->profileRight);
-            unset($this->profileRight);
+            $this->profileRight = null;
         }
 
         if (in_array('is_default', $this->updates) && ($this->input["is_default"] == 1)) {
@@ -268,7 +268,7 @@ class Profile extends CommonDBTM
 
         $rights = ProfileRight::getAllPossibleRights();
         ProfileRight::updateProfileRights($this->fields['id'], $rights);
-        unset($this->profileRight);
+        $this->profileRight = null;
 
         if (isset($this->fields['is_default']) && ($this->fields["is_default"] == 1)) {
             $DB->update(

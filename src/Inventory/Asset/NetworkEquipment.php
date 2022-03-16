@@ -223,7 +223,7 @@ class NetworkEquipment extends MainAsset
 
     public function handleLinks(array $data = null)
     {
-        if (isset($this->current_key)) {
+        if ($this->current_key !== null) {
             $data = [$this->data[$this->current_key]];
         } else {
             $data = $this->data;
