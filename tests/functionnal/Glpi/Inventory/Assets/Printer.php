@@ -171,7 +171,7 @@ class Printer extends AbstractInventoryAsset
 
         unset($result['id']);
 
-        $this->array($result)->isIdenticalTo([
+        $this->array($result)->isEqualTo([
             'printers_id' => $printer->fields['id'],
             'total_pages' => 1802,
             'bw_pages' => 0,
