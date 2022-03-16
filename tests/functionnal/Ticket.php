@@ -4380,7 +4380,7 @@ HTML
     {
         $this->login();
 
-        $ticket = new \Ticket;
+        $ticket = new \Ticket();
         $ticket->getEmpty();
 
         $tech_id = getItemByTypeName('User', 'tech', true);
