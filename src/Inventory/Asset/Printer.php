@@ -305,12 +305,14 @@ class Printer extends NetworkEquipment
             return;
         }
 
-        $metrics = new PrinterLog();
-        $input = (array)$this->counters;
-        $input['printers_id'] = $this->item->fields['id'];
-        $input['date'] = $_SESSION['glpi_currenttime'];
+        $unicity_input = [
+            'printers_id' => $this->item->fields['id'],
+            'date'        => date('Y-m-d', strtotime($_SESSION['glpi_currenttime'])),
+        ];
+        $input = array_merge((array)$this->counters, $unicity_input);
 
-        if ($metrics->getFromDBByCrit(['printers_id' => $this->item->fields['id']])) {
+        $metrics = new PrinterLog();
+        if ($metrics->getFromDBByCrit($unicity_input)) {
             $input['id'] = $metrics->fields['id'];
             $metrics->update($input, false);
         } else {

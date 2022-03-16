@@ -726,8 +726,6 @@ if ($DB->fieldExists('glpi_objectlocks', 'date_mod', false)) {
 $tables = [
     'glpi_knowbaseitems_revisions',
     'glpi_networkportconnectionlogs',
-    'glpi_networkportmetrics',
-    'glpi_printerlogs',
 ];
 foreach ($tables as $table) {
     if ($DB->fieldExists($table, 'date_creation', false)) {

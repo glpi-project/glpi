@@ -492,12 +492,35 @@ if (!$DB->tableExists('glpi_printerlogs')) {
          `color_copies` int NOT NULL DEFAULT '0',
          `scanned` int NOT NULL DEFAULT '0',
          `faxed` int NOT NULL DEFAULT '0',
-         `date` timestamp NULL DEFAULT NULL,
+         `date` date DEFAULT NULL,
+         `date_creation` timestamp NULL DEFAULT NULL,
+         `date_mod` timestamp NULL DEFAULT NULL,
          PRIMARY KEY (`id`),
-         KEY `printers_id` (`printers_id`),
-         KEY `date` (`date`)
+         UNIQUE KEY `unicity` (`printers_id`,`date`),
+         KEY `date` (`date`),
+         KEY `date_mod` (`date_mod`),
+         KEY `date_creation` (`date_creation`)
       ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
     $DB->queryOrDie($query, "10.0 add table glpi_printerlogs");
+} else {
+    foreach (['date_creation', 'date_mod'] as $date_field) {
+        if (!$DB->fieldExists('glpi_printerlogs', $date_field)) {
+            $migration->addField(
+                'glpi_printerlogs',
+                $date_field,
+                'timestamp',
+                [
+                    'update' => $DB->quoteName('date'),
+                ]
+            );
+            $migration->addKey('glpi_printerlogs', $date_field);
+        }
+    }
+    // In GLPI 10.0.0-rc2 or earlier, `date` had timestamp datatype.
+    $migration->changeField('glpi_printerlogs', 'date', 'date', 'date');
+
+    $migration->dropKey('glpi_printerlogs', 'printers_id');
+    $migration->addKey('glpi_printerlogs', ['printers_id', 'date'], 'unicity', 'UNIQUE');
 }
 
 if (!$DB->tableExists('glpi_networkportconnectionlogs')) {
@@ -521,17 +544,40 @@ if (!$DB->tableExists('glpi_networkportconnectionlogs')) {
 if (!$DB->tableExists('glpi_networkportmetrics')) {
     $query = "CREATE TABLE `glpi_networkportmetrics` (
          `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
-         `date` timestamp NULL DEFAULT NULL,
+         `date` date DEFAULT NULL,
          `ifinbytes` bigint NOT NULL DEFAULT '0',
          `ifinerrors` bigint NOT NULL DEFAULT '0',
          `ifoutbytes` bigint NOT NULL DEFAULT '0',
          `ifouterrors` bigint NOT NULL DEFAULT '0',
          `networkports_id` int {$default_key_sign} NOT NULL DEFAULT '0',
+         `date_creation` timestamp NULL DEFAULT NULL,
+         `date_mod` timestamp NULL DEFAULT NULL,
          PRIMARY KEY (`id`),
+         UNIQUE KEY `unicity` (`networkports_id`,`date`),
          KEY `date` (`date`),
-         KEY `networkports_id` (`networkports_id`)
+         KEY `date_mod` (`date_mod`),
+         KEY `date_creation` (`date_creation`)
       ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
     $DB->queryOrDie($query, "10.0 add table glpi_networkportmetrics");
+} else {
+    foreach (['date_creation', 'date_mod'] as $date_field) {
+        if (!$DB->fieldExists('glpi_networkportmetrics', $date_field)) {
+            $migration->addField(
+                'glpi_networkportmetrics',
+                $date_field,
+                'timestamp',
+                [
+                    'update' => $DB->quoteName('date'),
+                ]
+            );
+            $migration->addKey('glpi_networkportmetrics', $date_field);
+        }
+    }
+    // In GLPI 10.0.0-rc2 or earlier, `date` had timestamp datatype.
+    $migration->changeField('glpi_networkportmetrics', 'date', 'date', 'date');
+
+    $migration->dropKey('glpi_networkportmetrics', 'networkports_id');
+    $migration->addKey('glpi_networkportmetrics', ['networkports_id', 'date'], 'unicity', 'UNIQUE');
 }
 
 if (!$DB->tableExists('glpi_refusedequipments')) {
