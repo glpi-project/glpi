@@ -114,9 +114,10 @@ class Problem_Ticket extends CommonDBRelation
 
         if ($donotif) {
             $problem = new Problem();
-            if ($problem->getFromDB($this->input["problems_id"])) {
-                $options = [];
-                NotificationEvent::raiseEvent("new", $problem, $options);
+            $ticket  = new Ticket();
+            if ($problem->getFromDB($this->input["problems_id"]) && $ticket->getFromDB($this->input["tickets_id"])) {
+                NotificationEvent::raiseEvent("update", $problem);
+                NotificationEvent::raiseEvent('update', $ticket);
             }
         }
 

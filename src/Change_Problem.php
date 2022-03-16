@@ -345,4 +345,22 @@ class Change_Problem extends CommonDBRelation
         }
         echo "</div>";
     }
+
+    public function post_addItem()
+    {
+        global $CFG_GLPI;
+
+        $donotif = !isset($this->input['_disablenotif']) && $CFG_GLPI["use_notifications"];
+
+        if ($donotif) {
+            $problem = new Problem();
+            $change  = new Change();
+            if ($problem->getFromDB($this->input["problems_id"]) && $change->getFromDB($this->input["changes_id"])) {
+                NotificationEvent::raiseEvent("update", $problem);
+                NotificationEvent::raiseEvent('update', $change);
+            }
+        }
+
+        parent::post_addItem();
+    }
 }

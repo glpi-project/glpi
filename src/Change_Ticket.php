@@ -471,4 +471,22 @@ class Change_Ticket extends CommonDBRelation
         }
         echo "</div>";
     }
+
+    public function post_addItem()
+    {
+        global $CFG_GLPI;
+
+        $donotif = !isset($this->input['_disablenotif']) && $CFG_GLPI["use_notifications"];
+
+        if ($donotif) {
+            $change = new Change();
+            $ticket  = new Ticket();
+            if ($change->getFromDB($this->input["changes_id"]) && $ticket->getFromDB($this->input["tickets_id"])) {
+                NotificationEvent::raiseEvent("update", $change);
+                NotificationEvent::raiseEvent('update', $ticket);
+            }
+        }
+
+        parent::post_addItem();
+    }
 }
