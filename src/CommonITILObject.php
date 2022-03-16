@@ -4634,6 +4634,12 @@ abstract class CommonITILObject extends CommonDBTM
        // For ticket templates : mandatories
         $key = $this->getTemplateFormFieldName();
         if (isset($options[$key])) {
+            if (is_numeric($options[$key])) {
+                $tt_id = $options[$key];
+                $tt_classname = self::getTemplateClass();
+                $options[$key] = new $tt_classname();
+                $options[$key]->getFromDB($tt_id);
+            }
             echo $options[$key]->getMandatoryMark("_users_id_" . $typename);
         }
 
