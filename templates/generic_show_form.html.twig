@@ -283,10 +283,17 @@
                      {% endif %}
 
                      {% if item.isField('date_expiration') %}
-                        {{ fields.datetimeField('date_expiration', item.fields['date_expiration'], __('Expiration date'), {
-                           'helper': __('Empty for infinite'),
-                           'checkIsExpired': true
-                        }) }}
+                        {% if item_type == 'Certificate' %}
+                           {{ fields.dateField('date_expiration', item.fields['date_expiration'], __('Expiration date'), {
+                              'helper': __('Empty for infinite'),
+                              'checkIsExpired': true
+                           }) }}
+                        {% else %}
+                           {{ fields.datetimeField('date_expiration', item.fields['date_expiration'], __('Expiration date'), {
+                              'helper': __('Empty for infinite'),
+                              'checkIsExpired': true
+                           }) }}
+                        {% endif %}
                      {% endif %}
 
                      {% if item.isField('ref') %}
