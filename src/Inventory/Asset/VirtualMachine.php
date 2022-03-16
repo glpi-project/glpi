@@ -300,13 +300,13 @@ class VirtualMachine extends InventoryAsset
                 if ($computers_vm_id == 0) {
                    // Add computer
                     $vm->entities_id = $this->item->fields['entities_id'];
-                    $computers_vm_id = $this->addItem($computervm, (array)$vm, \Log::HISTORY_ADD_RELATION);
+                    $computers_vm_id = $this->addItem($computervm, (array)$vm, \Log::HISTORY_ADD_SUBITEM);
                 } else {
                    // Update computer
                     $computervm->getFromDB($computers_vm_id);
                     $input = (array)$vm;
                     $input['id'] = $computers_vm_id;
-                    $this->updateItem($computervm, $input, \Log::HISTORY_UPDATE_RELATION);
+                    $this->updateItem($computervm, $input, \Log::HISTORY_UPDATE_SUBITEM);
                 }
                //load if new, reload if not.
                 $computervm->getFromDB($computers_vm_id);

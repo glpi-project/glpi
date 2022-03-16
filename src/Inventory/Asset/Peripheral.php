@@ -163,7 +163,7 @@ class Peripheral extends InventoryAsset
                     $items_id = $this->addItem($peripheral, (array)$val);
                 } else {
                     $items_id = $data['found_inventories'][0];
-                    $this->updateItem($peripheral, ['id' => $items_id] + (array)$val);
+                    $this->updateItem($peripheral, ['id' => $items_id] + (array)$val, \Log::HISTORY_UPDATE_SUBITEM);
                 }
 
                 $peripherals[] = $items_id;

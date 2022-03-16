@@ -66,6 +66,8 @@ abstract class InventoryAsset
     protected $request_query;
     /** @var array */
     private array $history = [];
+    /** @var bool */
+    private bool $is_new = false;
 
     /**
      * Constructor
@@ -413,21 +415,21 @@ abstract class InventoryAsset
     protected function addItem(CommonDBTM $item, array $values, ?int $action = null)
     {
         $res = $item->add(\Toolbox::addslashes_deep($values), [], false);
-        $this->addLog($item, $action ?? \Log::HISTORY_ADD_DEVICE);
+        $this->addLog($item, $action ?? \Log::HISTORY_CREATE_ITEM);
         return $res;
     }
 
-    protected function updateItem(CommonDBTM $item, array $values, ?int $action = null)
+    protected function updateItem(CommonDBTM $item, array $values, int $action)
     {
         $res = $item->update(\Toolbox::addslashes_deep($values), false);
-        $this->addLog($item, $action ?? \Log::HISTORY_UPDATE_DEVICE);
+        $this->addLog($item, $action);
         return $res;
     }
 
     protected function deleteItem(CommonDBTM $item, array $values, ?int $action = null)
     {
         $res = $item->delete(\Toolbox::addslashes_deep($values), true, false);
-        $this->addLog($item, $action ?? \Log::HISTORY_DELETE_DEVICE);
+        $this->addLog($item, $action ?? \Log::HISTORY_DELETE_ITEM);
         return $res;
     }
 
@@ -455,23 +457,49 @@ abstract class InventoryAsset
     {
         global $DB;
 
-        if (!count($this->history)) {
+        if (!count($this->history) || $this->isNew()) {
             return;
         }
 
         $inputs = [];
+        //TODO: get "log level"
         foreach ($this->history as $action => $types) {
             foreach ($types as $type => $items) {
                 foreach ($items as $item) {
-                    $inputs[] = \Log::prepareAddHistory(
-                        $item->fields['id'] ?? 0,
-                        $item->getType(),
-                        [0, '', ''],
-                        0/*$itemtype_link*/,
-                        $action
-                    );
+                    switch ($action) {
+                        case \Log::HISTORY_UPDATE_DEVICE:
+                        case \Log::HISTORY_UPDATE_SUBITEM:
+                        case \Log::HISTORY_UPDATE_RELATION:
+                            $prepared = \Log::prepareUpdateHistory(
+                                $item,
+                                $item->oldvalues,
+                                $item->fields
+                            );
+                            if ($prepared === null) {
+                                break;
+                            }
+                            list($real_id, $real_type, $changes) = array_values($prepared);
+                            if (count($changes)) {
+                                $inputs[] = \Log::prepareAddHistory($real_id, $real_type, \Toolbox::addslashes_deep($changes));
+                            }
+                            break;
+                        default:
+                            $inputs[] = \Log::prepareAddHistory(
+                                $item->fields['id'] ?? 0,
+                                $item->getType(),
+                                [0, '', ''],
+                                0/*$itemtype_link*/,
+                                $action
+                            );
+                            break;
+                    }
                 }
             }
+        }
+
+        if (!count($inputs)) {
+            //nothing to log
+            return;
         }
 
         $update = $DB->buildInsert(
@@ -487,5 +515,17 @@ abstract class InventoryAsset
             );
             $DB->executeStatement($stmt);
         }
+    }
+
+    protected function setNew(): self
+    {
+        $this->is_new = true;
+        $this->with_history = false;//do not handle history on main item first import
+        return $this;
+    }
+
+    public function isNew(): bool
+    {
+        return $this->is_new;
     }
 }

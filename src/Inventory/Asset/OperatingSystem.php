@@ -134,10 +134,10 @@ class OperatingSystem extends InventoryAsset
                 }
             }
             if ($same === false) {
-                $this->updateItem($ios, ['id' => $ios->getID()] + $input_os, \Log::HISTORY_UPDATE_RELATION);
+                $this->updateItem($ios, ['id' => $ios->getID()] + $input_os, \Log::HISTORY_UPDATE_SUBITEM);
             }
         } else {
-            $this->addItem($ios, $input_os, \Log::HISTORY_ADD_RELATION);
+            $this->addItem($ios, $input_os, \Log::HISTORY_ADD_SUBITEM);
         }
 
         $val->operatingsystems_id = $ios->fields['id'];

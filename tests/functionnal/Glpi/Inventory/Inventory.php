@@ -1096,12 +1096,19 @@ class Inventory extends InventoryTestCase
 
         ksort($types_count);
         ksort($expected_types_count);
-        $this->array($types_count)->isIdenticalTo($expected_types_count);
+        $this->array($types_count)->isIdenticalTo(
+            $expected_types_count,
+            sprintf(
+                "\nGot:\n%s\n\nExpected:\n%s",
+                print_r($types_count, true),
+                print_r($expected_types_count, true)
+            )
+        );
     }
 
     public function testImportComputer()
     {
-        global $DB, $CFG_GLPI;
+        global $DB;
 
         $json = file_get_contents(self::INV_FIXTURES . 'computer_1.json');
 
@@ -1176,7 +1183,7 @@ class Inventory extends InventoryTestCase
 
     public function testUpdateComputer()
     {
-        global $DB, $CFG_GLPI;
+        global $DB;
 
         $json = file_get_contents(self::INV_FIXTURES . 'computer_3.json');
 
@@ -1458,16 +1465,14 @@ class Inventory extends InventoryTestCase
         //computer has been created, check logs.
         //check for expected logs
         $expected_types_count = [
-            \Log::HISTORY_ADD_DEVICE => 15, // ??
             \Log::HISTORY_CREATE_ITEM => 2, //Agent and Computer
-            /*\Log::HISTORY_ADD_SUBITEM => count($expecteds_fs),
-            0 => 1, // Change Monitor contact (is_contact_autoupdate)
-            \Log::HISTORY_ADD_RELATION => 4 //OS and Monitor on both sides*/
         ];
-        $this->checkLogs(17, $expected_types_count);
+        $this->checkLogs(2, $expected_types_count);
 
         //fake computer update (nothing has changed)
         $json = file_get_contents(self::INV_FIXTURES . 'computer_3.json');
+        $this->doInventory($json);
+
         $this->boolean($computer->getFromDB($computers_id))->isTrue();
 
         $expected = [
@@ -1589,9 +1594,12 @@ class Inventory extends InventoryTestCase
         $this->integer(count($iterator))->isIdenticalTo(3033);
 
         //check for expected logs
-        $this->checkLogs(17, $expected_types_count);
-
-        $this->doInventory($json);
+        $expected_types_count = [
+            0 => 1,
+            \Log::HISTORY_DELETE_SUBITEM => 1,
+            \Log::HISTORY_CREATE_ITEM => 3
+        ];
+        $this->checkLogs(5, $expected_types_count);
 
         //real computer update
         $json = file_get_contents(self::INV_FIXTURES . 'computer_3_updated.json');
@@ -1764,16 +1772,11 @@ class Inventory extends InventoryTestCase
         //check for expected logs after update
         $expected_types_count = [
             \Log::HISTORY_DELETE_SUBITEM => 5,//networkport and networkname
-            \Log::HISTORY_CREATE_ITEM => 2, //virtual machines, os, manufacturer, net ports, net names, ...
+            \Log::HISTORY_CREATE_ITEM => 13, //virtual machines, os, manufacturer, net ports, net names, ...
             0 => 2, //Agent version, disks usage
-            //\Log::HISTORY_ADD_SUBITEM => 9,//network port/name, ip adrress, VMs
-            //\Log::HISTORY_UPDATE_SUBITEM => 4,//disks usage
-            //\Log::HISTORY_DEL_RELATION => 2,//monitor-computer relation
-            //\Log::HISTORY_UPDATE_RELATION => 2,//kernel version
-            \Log::HISTORY_ADD_DEVICE => 24, // ???
-            \Log::HISTORY_UPDATE_DEVICE => 4, // ???
+            \Log::HISTORY_ADD_RELATION => 1, // ???
         ];
-        $this->checkLogs(37, $expected_types_count);
+        $this->checkLogs(21, $expected_types_count);
 
         //check matchedlogs
         $mlogs = new \RuleMatchedLog();

@@ -101,16 +101,16 @@ class Log extends CommonDBTM
         return true;
     }
 
-    public static function prepareUpdateHistory(CommonDBTM $item, $oldvalues, $values): array
+    public static function prepareUpdateHistory(CommonDBTM $item, $oldvalues, $values):? array
     {
         if (!count($oldvalues)) {
-            return false;
+            return null;
         }
         // needed to have  $SEARCHOPTION
         list($real_type, $real_id) = $item->getLogTypeID();
         $searchopt                 = Search::getOptions($real_type);
         if (!is_array($searchopt)) {
-            return false;
+            return null;
         }
         $changes = [];
 

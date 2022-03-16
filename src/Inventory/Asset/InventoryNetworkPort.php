@@ -167,7 +167,7 @@ trait InventoryNetworkPort
                          'name'            => addslashes($port->name)
                      ];
 
-                     $this->updateItem($networkport, $input);
+                     $this->updateItem($networkport, $input, \Log::HISTORY_UPDATE_SUBITEM);
                      $this->deleteItem($unmanaged, ['id' => $unmanageds_id], \Log::HISTORY_DELETE_ITEM);
                 }
             }
@@ -323,7 +323,7 @@ trait InventoryNetworkPort
     }
 
     /**
-     * Hanlde network instantiation
+     * Handle network instantiation
      *
      * @return void
      */
@@ -379,33 +379,34 @@ trait InventoryNetworkPort
                     }
                 }
 
-               //check if port exists in database
+                //check if port exists in database
                 if ($comp_data != $datadb) {
                     continue;
                 }
 
-               //check for logical number change
+                //check for logical number change
                 if (property_exists($data, 'logical_number') && $data->logical_number != $db_lnumber) {
                     $this->updateItem(
                         $networkport,
                         [
                             'id'              => $keydb,
                             'logical_number'  => $data->logical_number
-                        ]
+                        ],
+                        \Log::HISTORY_UPDATE_SUBITEM
                     );
                 }
 
-               //handle instantiation type
+                //handle instantiation type
                 if (property_exists($data, 'instantiation_type')) {
                     $type = $data->instantiation_type;
 
-                   //handle only ethernet and fiberchannel
+                    //handle only ethernet and fiberchannel
                     $this->handleInstantiation($type, $data, $keydb, true);
                 }
 
                 $ips = $data->ipaddress;
                 if (count($ips)) {
-                   //handle network name
+                    //handle network name
                     if ($netname_stmt == null) {
                         $criteria = [
                             'SELECT' => 'id',
@@ -436,7 +437,7 @@ trait InventoryNetworkPort
                         $netname_id = $this->addNetworkName($keydb);
                     }
 
-                   //Handle ipaddresses
+                    //Handle ipaddresses
                     $db_addresses = [];
                     $iterator = $DB->request([
                         'SELECT' => ['id', 'name'],
@@ -456,7 +457,7 @@ trait InventoryNetworkPort
                             if ($ip_data == $db_ip_data) {
                                 unset($ips[$ip_key]);
                                 unset($db_addresses[$db_ip_key]);
-                             //result found in db, useless to continue
+                                //result found in db, useless to continue
                                 break 1;
                             }
                         }
@@ -464,7 +465,7 @@ trait InventoryNetworkPort
 
                     if (!$this->isMainPartial() && count($db_addresses) && count($ips)) {
                         $ipaddress = new IPAddress();
-                       //deleted IP addresses
+                        //deleted IP addresses
                         foreach (array_keys($db_addresses) as $id_ipa) {
                             $ipaddress->delete(['id' => $id_ipa], true);
                         }
@@ -488,7 +489,7 @@ trait InventoryNetworkPort
             }
         }
 
-       //delete remaining network ports, if any
+        //delete remaining network ports, if any
         if (!$this->isMainPartial() && count($db_ports)) {
             foreach ($db_ports as $netpid => $netpdata) {
                 if ($netpdata['name'] != 'management') { //prevent removing internal management port
@@ -570,11 +571,13 @@ trait InventoryNetworkPort
             }
         }
 
-       //store instance
+        //store instance
         if ($instance->isNewItem()) {
-            $this->addItem($instance, $input);
+            //$instance->add(\Toolbox::addslashes_deep($input), [], false);
+            $this->addItem($instance, $input, \Log::HISTORY_ADD_RELATION);
         } else {
-            $this->updateItem($instance, $input);
+            //$instance->update(\Toolbox::addslashes_deep($input), false);
+            $this->updateItem($instance, $input, \Log::HISTORY_UPDATE_RELATION);
         }
     }
 

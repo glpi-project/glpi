@@ -112,7 +112,7 @@ class RemoteManagement extends InventoryAsset
                     $input = (array)$val + [
                         'id'           => $keydb
                     ];
-                    $this->updateItem($mgmt, $input, \Log::HISTORY_UPDATE_RELATION);
+                    $this->updateItem($mgmt, $input, \Log::HISTORY_UPDATE_SUBITEM);
                     unset($value[$k]);
                     unset($db_mgmt[$keydb]);
                     break;
@@ -123,7 +123,7 @@ class RemoteManagement extends InventoryAsset
         if (!$this->main_asset || !$this->main_asset->isPartial()) {
             foreach ($db_mgmt as $idtmp => $data) {
                 if ($data['is_dynamic']) {
-                    $this->deleteItem($mgmt, ['id' => $idtmp], \Log::HISTORY_DEL_RELATION);
+                    $this->deleteItem($mgmt, ['id' => $idtmp], \Log::HISTORY_DELETE_SUBITEM);
                 }
             }
         }
@@ -132,7 +132,7 @@ class RemoteManagement extends InventoryAsset
             $val->itemtype = $this->item->getType();
             $val->items_id = $this->item->fields['id'];
             $val->is_dynamic = 1;
-            $this->addItem($mgmt, (array)$val, \Log::HISTORY_ADD_RELATION);
+            $this->addItem($mgmt, (array)$val, \Log::HISTORY_ADD_SUBITEM);
         }
     }
 

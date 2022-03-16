@@ -247,7 +247,7 @@ class NetworkEquipment extends MainAsset
                         'id'     => $netname->getID(),
                         'name'   => $port->netname ?? $port->name
                     ],
-                    \Log::HISTORY_UPDATE_RELATION
+                    \Log::HISTORY_UPDATE_SUBITEM
                 );
             }
         } else {
@@ -258,7 +258,7 @@ class NetworkEquipment extends MainAsset
                     'items_id'  => $netports_id,
                     'name'      => $port->name
                 ],
-                \Log::HISTORY_ADD_RELATION
+                \Log::HISTORY_ADD_SUBITEM
             );
         }
     }
