@@ -4233,7 +4233,8 @@ JAVASCRIPT;
             $options['itilcategories_id'],
             $_SESSION["glpiactive_entity"]
         );
-        $this->setTemplateInOptions($tt, $options);
+        // append template information in options
+        $options = $this->setTemplateInOptions($tt, $options);
 
         $delegating = User::getDelegateGroupsForUser($options['entities_id']);
 

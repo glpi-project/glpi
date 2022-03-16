@@ -36,6 +36,7 @@ use Glpi\Plugin\Hooks;
 use Glpi\RichText\RichText;
 use Glpi\Team\Team;
 use Glpi\Toolbox\Sanitizer;
+use Laminas\I18n\Validator\IsInt;
 
 /**
  * CommonITILObject Class
@@ -350,7 +351,7 @@ abstract class CommonITILObject extends CommonDBTM
         }
 
         // Put ticket template on $options for actors
-        $options[str_replace('s_id', '', $tpl_key)] = $it;
+        $options[str_replace('s_id', '', $tpl_key)] = $it->fields['id'];
 
         return $options;
     }
@@ -4634,13 +4635,14 @@ abstract class CommonITILObject extends CommonDBTM
        // For ticket templates : mandatories
         $key = $this->getTemplateFormFieldName();
         if (isset($options[$key])) {
+            $tt = $options[$key];
             if (is_numeric($options[$key])) {
                 $tt_id = $options[$key];
                 $tt_classname = self::getTemplateClass();
-                $options[$key] = new $tt_classname();
-                $options[$key]->getFromDB($tt_id);
+                $tt = new $tt_classname();
+                $tt->getFromDB($tt_id);
             }
-            echo $options[$key]->getMandatoryMark("_users_id_" . $typename);
+            echo $tt->getMandatoryMark("_users_id_" . $typename);
         }
 
         $right = $options["_right"] ?? $this->getDefaultActorRightSearch($type);
