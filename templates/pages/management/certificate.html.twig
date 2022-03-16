@@ -50,10 +50,6 @@
       withtemplate
    ) }}
 
-   {{ fields.datetimeField('expire', item.fields['expire'], __('Expiration'), {
-      'helper': __('On search engine, use "Expiration contains NULL" to search licenses with no expiration date')
-   }) }}
-
    {{ fields.textareaField('command', item.fields['command'], __('Command used')) }}
 
    {{ fields.textareaField('certificate_request', item.fields['certificate_request'], __('Certificate request (CSR)')) }}
