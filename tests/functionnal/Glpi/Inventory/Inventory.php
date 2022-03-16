@@ -1746,11 +1746,12 @@ class Inventory extends InventoryTestCase
             'OFFSET' => $nblogsnow,
         ]);
 
-        $this->integer(count($logs))->isIdenticalTo(1239);
+        $this->integer(count($logs))->isIdenticalTo(1241);
 
         $expected_types_count = [
             \Log::HISTORY_DELETE_SUBITEM => 4,//networkport and networkname
-            \Log::HISTORY_CREATE_ITEM => 197, //virtual machines, os, manufacturer, net ports, net names, ...
+            \Log::HISTORY_ADD_RELATION => 1, //new IPNetwork/IPAddress
+            \Log::HISTORY_CREATE_ITEM => 198, //virtual machines, os, manufacturer, net ports, net names, ...
             0 => 5, //Agent version, disks usage
             \Log::HISTORY_ADD_SUBITEM => 1025,//network port/name, ip adrress, VMs, Software
             \Log::HISTORY_UPDATE_SUBITEM => 4,//disks usage
