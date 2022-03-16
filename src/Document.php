@@ -720,7 +720,7 @@ class Document extends CommonDBTM
         if (
             $itemtype !== null
             && $items_id !== null
-            && $this->canViewFileFromOtherObject('$itemtype', $problems_id)
+            && $this->canViewFileFromItem('$itemtype', $problems_id)
         ) {
             return true;
         }
@@ -902,9 +902,31 @@ class Document extends CommonDBTM
         return $result['cpt'] > 0;
     }
 
-    public static function canViewFileFromOtherObject($itemtype, $items_id)
+    /**
+     * Check if file of current instance can be viewed from item having given itemtype/items_id.
+     *
+     * @global DBmysql $DB
+     *
+     * @param string  $itemtype
+     * @param integer $items_id
+     *
+     * @return boolean
+     */
+    private function canViewFileFromItem($itemtype, $items_id): bool
     {
         global $DB;
+
+        $item = new $itemtype();
+
+        if (!$item->can($items_id, READ)) {
+            return false;
+        }
+
+        /** @var CommonDBTM $item */
+        $item->getFromDB($items_id);
+        if (!$item->canViewItem()) {
+            return false;
+        }
 
         $result = $DB->request(
             [
@@ -921,19 +943,7 @@ class Document extends CommonDBTM
             return false;
         }
 
-        $item = new $itemtype();
-
-        if (!$item->can($items_id, READ)) {
-            return false;
-        }
-
-        /** @var CommonDBTM $item */
-        $item->getFromDB($items_id);
-        if ($item->canViewItem()) {
-            return true;
-        }
-
-        return false;
+        return true;
     }
 
     public static function rawSearchOptionsToAdd($itemtype = null)
