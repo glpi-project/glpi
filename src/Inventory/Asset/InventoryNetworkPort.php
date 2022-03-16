@@ -186,10 +186,11 @@ trait InventoryNetworkPort
         $ipnetwork = new IPNetwork();
         foreach ($this->ports as $port) {
             if (
-                !property_exists($port, 'gateway') || $port->gateway != ''
-                || property_exists($port, 'netmask') || $port->netmask != ''
-                || property_exists($port, 'subnet') ||  $port->subnet  != ''
+                !property_exists($port, 'gateway') || $port->gateway == ''
+                || !property_exists($port, 'netmask') || $port->netmask == ''
+                || !property_exists($port, 'subnet') ||  $port->subnet  == ''
             ) {
+                // Ignore ports with incomplete information
                 continue;
             }
 
