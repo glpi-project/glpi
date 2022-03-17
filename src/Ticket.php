@@ -4233,6 +4233,10 @@ JAVASCRIPT;
             $options['itilcategories_id'],
             $_SESSION["glpiactive_entity"]
         );
+
+        // override current fields in options with template fields and return the array of these predefined fields
+        $predefined_fields = $this->getPredefinedTemplateFields($tt, $options, $default_values);
+
         // append template information in options
         $options = $this->setTemplateInOptions($tt, $options);
 
@@ -4243,8 +4247,6 @@ JAVASCRIPT;
         } else {
             $options['_right'] = "delegate";
         }
-
-        $predefined_fields = $this->getPredefinedTemplateFields($tt, $options, $default_values);
 
         TemplateRenderer::getInstance()->display('components/itilobject/selfservice.html.twig', [
             'has_tickets_to_validate' => TicketValidation::getNumberToValidate(Session::getLoginUserID()) > 0,
@@ -4606,12 +4608,13 @@ JAVASCRIPT;
             ($ID ? $this->fields['entities_id'] : $options['entities_id'])
         );
 
+        // override current fields in options with template fields and return the array of these predefined fields
         $predefined_fields = $this->getPredefinedTemplateFields($tt, $options, $default_values);
 
         // append template information in options
         $options = $this->setTemplateInOptions($tt, $options);
 
-       // check right used for this ticket
+        // check right used for this ticket
         $canupdate     = !$ID
                         || (Session::getCurrentInterface() == "central"
                             && $this->canUpdateItem());
