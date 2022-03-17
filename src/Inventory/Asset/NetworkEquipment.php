@@ -244,14 +244,14 @@ class NetworkEquipment extends MainAsset
                 $netname->update([
                     'id'     => $netname->getID(),
                     'name'   => addslashes($port->netname ?? $port->name)
-                ], $this->withHistory());
+                ]);
             }
         } else {
             $netname->add([
                 'itemtype'  => 'NetworkPort',
                 'items_id'  => $netports_id,
                 'name'      => addslashes($port->name)
-            ], [], $this->withHistory());
+            ]);
         }
     }
 

@@ -678,7 +678,7 @@ abstract class MainAsset extends InventoryAsset
         }
 
         $input = (array)$val;
-        $this->item->update(Toolbox::addslashes_deep($input), $this->withHistory());
+        $this->item->update(Toolbox::addslashes_deep($input));
 
         if (!($this->item instanceof RefusedEquipment)) {
             $this->handleAssets();

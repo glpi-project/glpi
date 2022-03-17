@@ -226,7 +226,7 @@ abstract class InventoryAsset
                                 $kversion->update([
                                     'id'                          => $kversion->getID(),
                                     'operatingsystemkernels_id'   => $value->operatingsystemkernels_id
-                                ], $this->withHistory());
+                                ]);
                             }
                         }
                     }
@@ -298,21 +298,6 @@ abstract class InventoryAsset
     }
 
     /**
-     * Is history enabled on this asset?
-     *
-     * @param boolean|null $bool To change with_history
-     *
-     * @return boolean
-     */
-    public function withHistory($bool = null): bool
-    {
-        if ($bool !== null) {
-            $this->with_history = (bool)$bool;
-        }
-        return $this->with_history;
-    }
-
-    /**
      * Set item and itemtype
      *
      * @param CommonDBTM $item Item instance
@@ -371,9 +356,9 @@ abstract class InventoryAsset
 
         if (!($item->fields['is_global'] ?? false)) {
             if (isset($citem->fields['id'])) {
-                $citem->delete(['id' => $citem->fields['id']], true, $this->withHistory());
+                $citem->delete(['id' => $citem->fields['id']], true);
             }
-            $citem->add($input, [], $this->withHistory());
+            $citem->add($input);
         }
     }
 

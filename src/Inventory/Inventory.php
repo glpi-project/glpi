@@ -641,7 +641,6 @@ class Inventory
             if ($assettype !== false) {
                //handle if asset type has been found.
                 $asset = new $assettype($this->item, (array)$value);
-                $asset->withHistory($this->mainasset->withHistory());
                 if ($asset->checkConf($this->conf)) {
                     $asset->setMainAsset($this->mainasset);
                     $asset->setAgent($this->getAgent());
