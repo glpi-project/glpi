@@ -80,18 +80,18 @@ class HookManager
     {
         global $PLUGIN_HOOKS;
 
-       // Check if the given hook is a valid file hook
+        // Check if the given hook is a valid file hook
         $allowed_file_hooks = Hooks::getFileHooks();
-        if (!isset($allowed_file_hooks[$hook])) {
+        if (!in_array($hook, $allowed_file_hooks)) {
             trigger_error("Invalid file hook: '$hook'", E_USER_ERROR);
         }
 
-       // Init target array if needed
+        // Init target array if needed
         if (!isset($PLUGIN_HOOKS[$hook][$this->plugin])) {
             $PLUGIN_HOOKS[$hook][$this->plugin] = [];
         }
 
-       // Register file
+        // Register file
         $PLUGIN_HOOKS[$hook][$this->plugin][] = $file;
     }
 
@@ -107,9 +107,9 @@ class HookManager
     ): void {
         global $PLUGIN_HOOKS;
 
-       // Check if the given hook is a valid functionnal hook
+        // Check if the given hook is a valid functionnal hook
         $allowed_file_hooks = Hooks::getFunctionalHooks();
-        if (!isset($allowed_file_hooks[$hook])) {
+        if (!in_array($hook, $allowed_file_hooks)) {
             trigger_error("Invalid functional hook: '$hook'", E_USER_ERROR);
         }
 
@@ -130,10 +130,10 @@ class HookManager
     ): void {
         global $PLUGIN_HOOKS;
 
-       // Check if the given hook is a valid item hook
+        // Check if the given hook is a valid item hook
         $allowed_file_hooks = Hooks::getItemHooks();
-        if (!isset($allowed_file_hooks[$hook])) {
-            trigger_error("Invalid functionnal hook: '$hook'", E_USER_ERROR);
+        if (!in_array($hook, $allowed_file_hooks)) {
+            trigger_error("Invalid item hook: '$hook'", E_USER_ERROR);
         }
 
         $PLUGIN_HOOKS[$hook][$this->plugin][$itemtype] = $function;
