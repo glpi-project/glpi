@@ -228,6 +228,8 @@ class Inventory
             throw new \RuntimeException(print_r($this->getErrors(), true));
         }
 
+        \Log::useQueue();
+
         if (!isset($_SESSION['glpiinventoryuserrunning'])) {
             $_SESSION['glpiinventoryuserrunning'] = 'inventory';
         }
@@ -313,6 +315,8 @@ class Inventory
                 if (!defined('TU_USER')) {
                     $DB->commit();
                 }
+
+                \Log::handleQueue();
             }
         } catch (\Exception $e) {
             $DB->rollback();
