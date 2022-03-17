@@ -82,8 +82,8 @@ class NetworkPort_NetworkPort extends CommonDBRelation
             if ($this->fields['networkports_id_2'] == $ID) {
                 return $this->fields['networkports_id_1'];
             }
-            return false;
         }
+        return false;
     }
 
     /**
@@ -182,9 +182,7 @@ class NetworkPort_NetworkPort extends CommonDBRelation
     {
         $opposite_id = $this->getOppositeContact($ports_id);
         if ($opposite_id && $this->getFromDBForNetworkPort($opposite_id) || $this->getFromDBForNetworkPort($ports_id)) {
-            if ($this->delete($this->fields)) {
-                $this->cleanHubPorts();
-            }
+            $this->delete($this->fields);
         }
     }
 
@@ -263,7 +261,10 @@ class NetworkPort_NetworkPort extends CommonDBRelation
     public function prepareInputForAdd($input)
     {
 
-        if ($this->getFromDBForNetworkPort([$input['networkports_id_1'], $input['networkports_id_2']])) {
+        if (
+            $this->getFromDBForNetworkPort($input['networkports_id_1'])
+            || $this->getFromDBForNetworkPort($input['networkports_id_2'])
+        ) {
             trigger_error('Wired non unique!', E_USER_WARNING);
             return false;
         }
@@ -280,6 +281,11 @@ class NetworkPort_NetworkPort extends CommonDBRelation
     {
         $this->storeConnectionLog('remove');
         return true;
+    }
+
+    public function post_deleteItem()
+    {
+        $this->cleanHubPorts();
     }
 
     /**
