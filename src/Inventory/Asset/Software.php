@@ -658,15 +658,15 @@ class Software extends InventoryAsset
                  $stmt->bind_param($stmt_types, ...$stmt_values);
                  $DB->executeStatement($stmt);
                  $versions_id = $DB->insertId();
-                 if ($this->withHistory()) {
-                     \Log::history(
-                         $softwares_id,
-                         'Software',
-                         [0, '', sprintf(__('%1$s (%2$s)'), $version_name, $versions_id)],
-                         'SoftwareVersion',
-                         \Log::HISTORY_ADD_SUBITEM
-                     );
-                 }
+                if ($this->withHistory()) {
+                    \Log::history(
+                        $softwares_id,
+                        'Software',
+                        [0, '', sprintf(__('%1$s (%2$s)'), $version_name, $versions_id)],
+                        'SoftwareVersion',
+                        \Log::HISTORY_ADD_SUBITEM
+                    );
+                }
                  $this->versions[$vkey] = $versions_id;
             }
         }
