@@ -482,6 +482,7 @@ class Ticket extends DbTestCase
             (int)$ticket->add([
                 'name'    => '',
                 'content' => 'A ticket to check ACLS',
+                '_users_id_assign' => getItemByTypeName("User", 'tech', true),
             ])
         )->isGreaterThan(0);
 
@@ -597,6 +598,7 @@ class Ticket extends DbTestCase
             (int)$ticket->add([
                 'name'    => '',
                 'content' => 'Another ticket to check ACLS',
+                '_users_id_assign' => getItemByTypeName("User", 'tech', true),
             ])
         )->isGreaterThan(0);
         $this->boolean((bool)$ticket->getFromDB($ticket->getID()))->isTrue();
@@ -633,6 +635,7 @@ class Ticket extends DbTestCase
             (int)$ticket->add([
                 'name'    => '',
                 'content' => 'A ticket to check ACLS',
+                '_users_id_assign' => getItemByTypeName("User", TU_USER, true),
             ])
         )->isGreaterThan(0);
 
@@ -1184,6 +1187,7 @@ class Ticket extends DbTestCase
             (int)$ticket->add([
                 'name'    => '',
                 'content' => 'A ticket to check assign ACLS',
+                '_users_id_assign' => getItemByTypeName("User", TU_USER, true),
             ])
         )->isGreaterThan(0);
 
@@ -4369,5 +4373,127 @@ HTML
         $this->integer($ticket->countUsers(\CommonITILActor::ASSIGN))->isEqualTo(1);
         // Verify new requester was added
         $this->integer($ticket->countUsers(\CommonITILActor::REQUESTER))->isEqualTo(2);
+    }
+
+
+    public function testGetActorsForType()
+    {
+        $this->login();
+
+        $ticket = new \Ticket();
+        $ticket->getEmpty();
+
+        $tech_id = getItemByTypeName('User', 'tech', true);
+        $postonly_id = getItemByTypeName('User', 'post-only', true);
+
+        // ## 1st - test auto requester and assign feature
+        // ###############################################
+
+        $this->array($ticket->getActorsForType(\CommonITILActor::REQUESTER))->hasSize(1);
+        $this->array($ticket->getActorsForType(\CommonITILActor::OBSERVER))->hasSize(0);
+        $this->array($ticket->getActorsForType(\CommonITILActor::ASSIGN))->hasSize(1);
+
+        // disable autoactor by parameter
+        $params = ['_skip_default_actor' => true];
+        $this->array($ticket->getActorsForType(\CommonITILActor::REQUESTER, $params))->hasSize(0);
+        $this->array($ticket->getActorsForType(\CommonITILActor::OBSERVER, $params))->hasSize(0);
+        $this->array($ticket->getActorsForType(\CommonITILActor::ASSIGN, $params))->hasSize(0);
+
+        // disable autoactor in session
+        $_SESSION['glpiset_default_requester'] = false;
+        $_SESSION['glpiset_default_tech']      = false;
+        $this->array($ticket->getActorsForType(\CommonITILActor::REQUESTER))->hasSize(0);
+        $this->array($ticket->getActorsForType(\CommonITILActor::OBSERVER))->hasSize(0);
+        $this->array($ticket->getActorsForType(\CommonITILActor::ASSIGN))->hasSize(0);
+
+        // ## 2nd - test load actors from templates (simulated)
+        // ####################################################
+        //reset session
+        $_SESSION['glpiset_default_requester'] = true;
+        $_SESSION['glpiset_default_tech']      = true;
+        //prepare params
+        $params = [
+            '_template_changed'  => true,
+            '_predefined_fields' => [
+                '_users_id_requester' => $postonly_id,
+                '_users_id_observer'  => $postonly_id,
+                '_users_id_assign'    => $tech_id,
+            ]
+        ];
+        $this->array($ticket->getActorsForType(\CommonITILActor::REQUESTER, $params))->hasSize(2);
+        $this->array($ticket->getActorsForType(\CommonITILActor::OBSERVER, $params))->hasSize(1);
+        $this->array($ticket->getActorsForType(\CommonITILActor::ASSIGN, $params))->hasSize(2);
+
+        $_SESSION['glpiset_default_requester'] = false;
+        $_SESSION['glpiset_default_tech']      = false;
+        $this->array($ticket->getActorsForType(\CommonITILActor::REQUESTER, $params))->hasSize(1)
+            ->integer[0]
+            ->integer['items_id']->isEqualTo($postonly_id);
+        $this->array($ticket->getActorsForType(\CommonITILActor::OBSERVER, $params))->hasSize(1)
+            ->integer[0]
+            ->integer['items_id']->isEqualTo($postonly_id);
+        $this->array($ticket->getActorsForType(\CommonITILActor::ASSIGN, $params))->hasSize(1)
+            ->integer[0]
+            ->integer['items_id']->isEqualTo($tech_id);
+
+        // apend groups
+        $params['_predefined_fields']['_groups_id_requester'] = [1];
+        $params['_predefined_fields']['_groups_id_observer'] = [1];
+        $params['_predefined_fields']['_groups_id_assign'] = [1];
+
+        $this->array($ticket->getActorsForType(\CommonITILActor::REQUESTER, $params))->hasSize(2)
+            ->integer[1]
+            ->string['text']->isEqualTo("_test_group_1");
+        $this->array($ticket->getActorsForType(\CommonITILActor::OBSERVER, $params))->hasSize(2)
+            ->integer[1]
+            ->string['text']->isEqualTo("_test_group_1");
+        $this->array($ticket->getActorsForType(\CommonITILActor::ASSIGN, $params))->hasSize(2)
+            ->integer[1]
+            ->string['text']->isEqualTo("_test_group_1");
+
+        // ## 2nd - test load actors from _actors key (reload simulated)
+        // #############################################################
+        //reset session
+        $_SESSION['glpiset_default_requester'] = true;
+        $_SESSION['glpiset_default_tech']      = true;
+        //prepare params
+        $params = [
+            '_skip_default_actor' => true,
+            '_actors'             => [
+                'requester' => [
+                    ['itemtype' => 'User',  'items_id' => $postonly_id],
+                    ['itemtype' => 'Group', 'items_id' => 1]
+                ],
+                'observer'  => [
+                    ['itemtype' => 'User',  'items_id' => $postonly_id],
+                    ['itemtype' => 'Group', 'items_id' => 1]
+                ],
+                'assign'    => [
+                    ['itemtype' => 'User',  'items_id' => $tech_id],
+                    ['itemtype' => 'Group', 'items_id' => 1]
+                ],
+            ]
+        ];
+        $requesters = $ticket->getActorsForType(\CommonITILActor::REQUESTER, $params);
+        $this->array($requesters)->hasSize(2)
+            ->integer[0]
+            ->string['text']->isEqualTo("post-only");
+        $this->array($requesters)
+            ->integer[1]
+            ->string['text']->isEqualTo("_test_group_1");
+        $observers = $ticket->getActorsForType(\CommonITILActor::OBSERVER, $params);
+        $this->array($observers)->hasSize(2)
+            ->integer[0]
+            ->string['text']->isEqualTo("post-only");
+        $this->array($observers)
+            ->integer[1]
+            ->string['text']->isEqualTo("_test_group_1");
+        $assignees = $ticket->getActorsForType(\CommonITILActor::ASSIGN, $params);
+        $this->array($assignees)->hasSize(2)
+            ->integer[0]
+            ->string['text']->isEqualTo("tech");
+        $this->array($assignees)
+            ->integer[1]
+            ->string['text']->isEqualTo("_test_group_1");
     }
 }

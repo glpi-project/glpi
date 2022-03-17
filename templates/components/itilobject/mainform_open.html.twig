@@ -50,6 +50,7 @@
       data-track-changes="{{ track_changes }}" id="itil-form" class="{{ new_cls }}" data-submit-once>
    <input type="hidden" name="id" value="{{ item.fields['id'] ?? 0 }}" />
    <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
+   <input type="hidden" name="_skip_default_actor" value="1" />
 
    {% if itiltemplate_key is defined %}
       <input type="hidden" name="{{ itiltemplate_key }}" value="{{ itiltemplate.fields['id'] }}" />

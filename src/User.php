@@ -3916,6 +3916,8 @@ JAVASCRIPT;
     ) {
         global $DB;
 
+
+
        // No entity define : use active ones
         if ($entity_restrict < 0) {
             $entity_restrict = $_SESSION["glpiactiveentities"];
@@ -4169,6 +4171,14 @@ JAVASCRIPT;
                 ]
             ];
         }
+
+        // remove helpdesk user
+        $config = Config::getConfigurationValues('core');
+        $WHERE[] = [
+            'NOT' => [
+                'glpi_users.id' => $config['system_user']
+            ]
+        ];
 
         $criteria = [
             'FROM'            => 'glpi_users',

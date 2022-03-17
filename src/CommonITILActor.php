@@ -344,6 +344,20 @@ abstract class CommonITILActor extends CommonDBRelation
     public function prepareInputForAdd($input)
     {
 
+        // don't duplicate actors (search for existing before adding)
+        $fk_field = $this->getActorForeignKey();
+        if (isset($input[$fk_field])) {
+            $current_type    = $input['type'] ?? 0;
+            $actor_id        = $input[$fk_field];
+            $existing_actors = $this->getActors($input[static::getItilObjectForeignKey()] ?? 0);
+            $existing_ids    = array_column($existing_actors[$current_type] ?? [], $fk_field);
+
+            // actor already exists
+            if (in_array($actor_id, $existing_ids)) {
+                return false;
+            }
+        }
+
         if (!isset($input['alternative_email']) || is_null($input['alternative_email'])) {
             $input['alternative_email'] = '';
         } else if ($input['alternative_email'] != '' && !NotificationMailing::isUserAddressValid($input['alternative_email'])) {

@@ -160,7 +160,97 @@ abstract class CommonITILObject extends CommonDBTM
         $actortypestring = self::getActorFieldNameType($actortype);
 
         if ($this->isNewItem()) {
-           // existing actors (from a form reload)
+            // load default user from preference only at the first load of new ticket form
+            // we don't want to trigger it on form reload
+            // at first load, the key _skip_default_actor is not present (can only be present after a submit)
+            if (!isset($params['_skip_default_actor'])) {
+                $users_id_default = $this->getDefaultActor($actortype);
+                if ($users_id_default > 0) {
+                    $userobj  = new User();
+                    if ($userobj->getFromDB($users_id_default)) {
+                        $name = formatUserName(
+                            $userobj->fields["id"],
+                            $userobj->fields["name"],
+                            $userobj->fields["realname"],
+                            $userobj->fields["firstname"]
+                        );
+                        $email = UserEmail::getDefaultForUser($users_id_default);
+                        $actors[] = [
+                            'items_id'          => $users_id_default,
+                            'itemtype'          => 'User',
+                            'text'              => $name,
+                            'title'             => $name,
+                            'use_notification'  => strlen($email) > 0,
+                            'alternative_email' => $email,
+                        ];
+                    }
+                }
+            }
+
+            // load default actors from itiltemplate passed from showForm in `params` var
+            // we find this key on the first load of template (when opening form)
+            // or when the template change (by category loading)
+            if (isset($params['_template_changed'])) {
+                $users_id = (int) ($params['_predefined_fields']['_users_id_' . $actortypestring] ?? 0);
+                if ($users_id > 0) {
+                    $userobj  = new User();
+                    if ($userobj->getFromDB($users_id)) {
+                        $name = formatUserName(
+                            $userobj->fields["id"],
+                            $userobj->fields["name"],
+                            $userobj->fields["realname"],
+                            $userobj->fields["firstname"]
+                        );
+                        $email = UserEmail::getDefaultForUser($users_id);
+                        $actors[] = [
+                            'items_id'          => $users_id,
+                            'itemtype'          => 'User',
+                            'text'              => $name,
+                            'title'             => $name,
+                            'use_notification'  => strlen($email) > 0,
+                            'alternative_email' => $email,
+                        ];
+                    }
+                }
+
+                $groups_id = (int) ($params['_predefined_fields']['_groups_id_' . $actortypestring] ?? 0);
+                if ($groups_id > 0) {
+                    $group_obj = new Group();
+                    if ($group_obj->getFromDB($groups_id)) {
+                        $actors[] = [
+                            'items_id' => $group_obj->fields['id'],
+                            'itemtype' => 'Group',
+                            'text'     => $group_obj->getName(),
+                            'title'    => $group_obj->getRawCompleteName(),
+                        ];
+                    }
+                }
+
+                $suppliers_id = (int) ($params['_predefined_fields']['_suppliers_id_' . $actortypestring] ?? 0);
+                if ($suppliers_id > 0) {
+                    $supplier_obj = new Supplier();
+                    if ($supplier_obj->getFromDB($suppliers_id)) {
+                        $actors[] = [
+                            'items_id'          => $supplier_obj->fields['id'],
+                            'itemtype'          => 'Supplier',
+                            'text'              => $supplier_obj->fields['name'],
+                            'title'             => $supplier_obj->fields['name'],
+                            'use_notification'  => strlen($supplier_obj->fields['email']) > 0,
+                            'alternative_email' => $supplier_obj->fields['email'],
+                        ];
+                    }
+                }
+            }
+
+            // if we load any actor from _itemtype_actortype_id, we are loading template,
+            // and so we don't want more actors.
+            // if any actor exists and was absent in a field from template, it will be loaded by the POST data.
+            // we choose to erase existing actors for any defined in the template.
+            if (count($actors)) {
+                return $actors;
+            }
+
+            // existing actors (from a form reload)
             if (isset($params['_actors'])) {
                 foreach ($params['_actors'] as $existing_actortype => $existing_actors) {
                     if ($existing_actortype != $actortypestring) {
@@ -190,53 +280,6 @@ abstract class CommonITILObject extends CommonDBTM
                     }
                 }
                 return $actors;
-            }
-
-           // load default actors from itiltemplate passed from showForm in `params` var
-           // for user actor, we load firstly from template, else default actor
-            $users_id = ($params['_users_id_' . $actortypestring] ?? false) ?: $this->getDefaultActor($actortype);
-            $userobj  = new User();
-            if ($userobj->getFromDB($users_id)) {
-                $name = formatUserName(
-                    $userobj->fields["id"],
-                    $userobj->fields["name"],
-                    $userobj->fields["realname"],
-                    $userobj->fields["firstname"]
-                );
-                $email = UserEmail::getDefaultForUser($users_id);
-                $actors[] = [
-                    'items_id'          => $users_id,
-                    'itemtype'          => 'User',
-                    'text'              => $name,
-                    'title'             => $name,
-                    'use_notification'  => strlen($email) > 0,
-                    'alternative_email' => $email,
-                ];
-            }
-
-            if (isset($params['_groups_id_' . $actortypestring]) && $params['_groups_id_' . $actortypestring] > 0) {
-                $group_obj = new Group();
-                if ($group_obj->getFromDB($params['_groups_id_' . $actortypestring])) {
-                    $actors[] = [
-                        'items_id' => $group_obj->fields['groups_id'],
-                        'itemtype' => 'Group',
-                        'text'     => $group_obj->getName(),
-                        'title'    => $group_obj->getRawCompleteName(),
-                    ];
-                }
-            }
-            if (isset($params['_suppliers_id_' . $actortypestring]) && $params['_suppliers_id_' . $actortypestring] > 0) {
-                $supplier_obj = new Supplier();
-                if ($supplier_obj->getFromDB($params['_suppliers_id_' . $actortypestring])) {
-                    $actors[] = [
-                        'items_id'          => $supplier_obj->fields['id'],
-                        'itemtype'          => 'Supplier',
-                        'text'              => $supplier_obj->fields['name'],
-                        'title'             => $supplier_obj->fields['name'],
-                        'use_notification'  => strlen($supplier_obj->fields['email']) > 0,
-                        'alternative_email' => $supplier_obj->fields['email'],
-                    ];
-                }
             }
         }
 
@@ -285,6 +328,31 @@ abstract class CommonITILObject extends CommonDBTM
         }
 
         return $actors;
+    }
+
+    /**
+     * Set template informations in $options array
+     * if the template changed from previous one, append also a _template_changed key.
+     * The last aims to be check when loading actos
+     *
+     * @param ITILTemplate $it the template we currently loading
+     * @param array        $options the options of the itilobject
+     *
+     * @return array $options input parameter filled with template informations
+     */
+    protected function setTemplateInOptions(ITILTemplate $it, array $options = []): array
+    {
+        $tpl_key = self::getTemplateFormFieldName();
+
+        // check if we load the default template (when openning form for example) or the template changed
+        if (!isset($options[$tpl_key]) || $options[$tpl_key] != $it->fields['id']) {
+            $options['_template_changed'] = true;
+        }
+
+        // Put ticket template on $options for actors
+        $options[str_replace('s_id', '', $tpl_key)] = $it;
+
+        return $options;
     }
 
 
@@ -2538,83 +2606,6 @@ abstract class CommonITILObject extends CommonDBTM
         $supplieractors = null;
         if (!empty($this->supplierlinkclass)) {
             $supplieractors = new $this->supplierlinkclass();
-        }
-
-        $actor_fields = [
-            'Group' => [
-                [
-                    'name' => '_additional_groups_requesters',
-                    'type' => CommonITILActor::REQUESTER
-                ],
-                [
-                    'name' => '_additional_groups_observers',
-                    'type' => CommonITILActor::OBSERVER
-                ],
-                [
-                    'name' => '_additional_groups_assigns',
-                    'type' => CommonITILActor::ASSIGN
-                ],
-            ],
-            'Supplier' => [
-                [
-                    'name' => '_additional_suppliers_assigns',
-                    'type' => CommonITILActor::ASSIGN
-                ],
-            ],
-            'User' => [
-                [
-                    'name' => '_additional_requesters',
-                    'type' => CommonITILActor::REQUESTER
-                ],
-                [
-                    'name' => '_additional_observers',
-                    'type' => CommonITILActor::OBSERVER
-                ],
-                [
-                    'name' => '_additional_assigns',
-                    'type' => CommonITILActor::ASSIGN
-                ],
-            ],
-        ];
-        $existing_users = $useractors->getActors($this->fields['id']);
-        $existing_groups = $groupactors->getActors($this->fields['id']);
-        $existing_suppliers = $supplieractors->getActors($this->fields['id']);
-
-        /* @var string|CommonDBTM $actor_type */
-        foreach ($actor_fields as $actor_type => $fields) {
-            // Remove duplicate actors from field inputs
-            foreach ($fields as $actor_field) {
-                if (isset($input[$actor_field['name']]) && is_array($input[$actor_field['name']])) {
-                    $input[$actor_field['name']] = array_unique($input[$actor_field['name']]);
-                }
-            }
-
-            $existing = [];
-            switch ($actor_type) {
-                case 'User':
-                    $existing = $existing_users;
-                    break;
-                case 'Group':
-                    $existing = $existing_groups;
-                    break;
-                case 'Supplier':
-                    $existing = $existing_suppliers;
-                    break;
-            }
-            foreach ($fields as $actor_field) {
-                if (array_key_exists($actor_field['name'], $input)) {
-                    $existing_ids = array_column($existing[$actor_field['type']] ?? [], $actor_type::getForeignKeyField());
-                    $input[$actor_field['name']] = array_filter(
-                        $input[$actor_field['name']] ?? [],
-                        static function ($value) use ($actor_type, $existing_ids) {
-                            if (!is_array($value)) {
-                                $value = [$actor_type::getForeignKeyField() => $value];
-                            }
-                            return !in_array($value[$actor_type::getForeignKeyField()], $existing_ids, false);
-                        }
-                    );
-                }
-            }
         }
 
        // "do not compute" flag set by business rules for "takeintoaccount_delay_stat" field
