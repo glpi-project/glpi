@@ -2426,6 +2426,9 @@ class Dropdown
 
         $rand = mt_rand();
         Dropdown::showFromArray('display_type', $values, ['rand' => $rand]);
+        echo "<button type='submit' name='export' class='btn' ".
+             " title=\"" . _sx('button', 'Export') . "\">" .
+             "<i class='far fa-save'></i><span class='sr-only'>"._sx('button', 'Export')."<span>";
     }
 
 
