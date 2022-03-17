@@ -66,10 +66,10 @@ class Software extends InventoryAsset
             'system_category' => '_system_category'
         ];
 
-       //Dictionary for software
+        //Dictionary for software
         $rulecollection = new RuleDictionnarySoftwareCollection();
 
-       //Get the default entity for software, as defined in entity configuration
+        //Get the default entity for software, as defined in entity configuration
         $entities_id = $this->entities_id;
         $entities_id_software = Entity::getUsedConfig(
             'entities_strategy_software',
@@ -77,20 +77,20 @@ class Software extends InventoryAsset
             'entities_id_software'
         );
 
-       //By default a software is not recursive
+        //By default a software is not recursive
         $is_recursive = 0;
 
-       //Configuration says that software can be created in the computer's entity
+        //Configuration says that software can be created in the computer's entity
         if ($entities_id_software < 0) {
            //inherit from main asset's entity
             $entities_id_software = $entities_id;
         } else if ($entities_id_software != $entities_id) {
-           //Software created in a different entity than main asset one
+            //Software created in a different entity than main asset one
             $is_recursive = 1;
         }
         $this->entities_id_software = $entities_id_software;
 
-       //Count the number of software dictionary rules
+        //Count the number of software dictionary rules
         $count_rules = \countElementsInTable(
             "glpi_rules",
             [
@@ -121,14 +121,14 @@ class Software extends InventoryAsset
                 }
             }
 
-           //If the software name exists and is defined
+            //If the software name exists and is defined
             if (property_exists($val, 'name') && $val->name != '') {
                 $val->name = trim(preg_replace('/\s+/', ' ', $val->name));
 
                 $res_rule       = [];
 
-               //Only play rules engine if there's at least one rule
-               //for software dictionary
+                //Only play rules engine if there's at least one rule
+                //for software dictionary
                 if ($count_rules > 0) {
                     $rule_input = [
                         "name"               => $val->name,
@@ -146,16 +146,16 @@ class Software extends InventoryAsset
                     continue;
                 }
 
-               //If the name has been modified by the rules engine
+                //If the name has been modified by the rules engine
                 if (isset($res_rule["name"])) {
                     $val->name = $res_rule["name"];
                 }
-               //If the version has been modified by the rules engine
+                //If the version has been modified by the rules engine
                 if (isset($res_rule["version"])) {
                     $val->version = $res_rule["version"];
                 }
 
-               //If the manufacturer has been modified or set by the rules engine
+                //If the manufacturer has been modified or set by the rules engine
                 if (isset($res_rule["manufacturer"])) {
                     $val->manufacturers_id = Dropdown::import(
                         'Manufacturer',
@@ -179,53 +179,53 @@ class Software extends InventoryAsset
                     $val->manufacturers_id = 0;
                 }
 
-               //The rules engine has modified the entity
-               //(meaning that the software is recursive and defined
-               //in an upper entity)
+                //The rules engine has modified the entity
+                //(meaning that the software is recursive and defined
+                //in an upper entity)
                 if (isset($res_rule['new_entities_id'])) {
                     $val->entities_id = $res_rule['new_entities_id'];
                     $is_recursive    = 1;
                 }
 
-               //Entity is not set, get from configuration
+                //Entity is not set, get from configuration
                 if (!property_exists($val, 'entities_id') || $val->entities_id == '') {
                     $val->entities_id = $entities_id_software;
                 }
-               //version is undefined, set it to blank
+                //version is undefined, set it to blank
                 if (!property_exists($val, 'version')) {
                     $val->version = '';
                 }
-               //arch is undefined, set it to blankk
+                //arch is undefined, set it to blankk
                 if (!property_exists($val, 'arch')) {
                     $val->arch = '';
                 }
 
-               //not a template, not deleted, ...
+                //not a template, not deleted, ...
                 $val->is_template_item = 0;
                 $val->is_deleted_item = 0;
                 $val->operatingsystems_id = 0;
 
-               //Store recursivity
+                //Store recursivity
                 $val->is_recursive = $is_recursive;
 
-               //String with the manufacturer
+                //String with the manufacturer
                 $comp_key = $this->getSimpleCompareKey($val);
 
                 if ($val->manufacturers_id == 0) {
-                   //soft w/o manufacturer. Keep it to see later if one exists with manufacturer
+                    //soft w/o manufacturer. Keep it to see later if one exists with manufacturer
                     $without_manufacturer[$comp_key] = $k;
                 } else {
                     $with_manufacturer[$comp_key] = true;
                 }
             }
 
-           //ensure all columns are present
+            //ensure all columns are present
             if (!property_exists($val, 'comment')) {
                 $val->comment = null;
             }
         }
 
-       //NOTE: A same software may have a manufacturer or not. Keep the one with manufacturer.
+        //NOTE: A same software may have a manufacturer or not. Keep the one with manufacturer.
         foreach ($without_manufacturer as $comp_key => $data_index) {
             if (isset($with_manufacturer[$comp_key])) {
                //same software do exists with a manufacturer, remove current duplicate
@@ -240,9 +240,9 @@ class Software extends InventoryAsset
     {
         global $DB;
 
-       //Get configured entity
+        //Get configured entity
         $entities_id  = $this->entities_id_software;
-       //Get operating system
+        //Get operating system
         $operatingsystems_id = 0;
 
         if (isset($this->extra_data[OperatingSystem::class])) {
@@ -252,8 +252,8 @@ class Software extends InventoryAsset
 
         $db_software = [];
 
-       //Load existing software versions from db. Grab required fields
-       //to build comparison key @see getFullCompareKey
+        //Load existing software versions from db. Grab required fields
+        //to build comparison key @see getFullCompareKey
         $iterator = $DB->request([
             'SELECT' => [
                 'glpi_items_softwareversions.id as sid',
@@ -292,15 +292,15 @@ class Software extends InventoryAsset
             $db_software[$this->getFullCompareKey((object)$data)] = $softid;
         }
 
-       //check for existing links
+        //check for existing links
         $count_import = count($this->data);
         foreach ($this->data as $k => &$val) {
-           //operating system id is not known before handle(); set it in value
+            //operating system id is not known before handle(); set it in value
             $val->operatingsystems_id = $operatingsystems_id;
             $key = $this->getFullCompareKey($val);
             $dedup_vkey = $key . $this->getVersionKey($val, 0);
             if (isset($db_software[$key])) {
-               //link already exists in database, drop it
+                //link already exists in database, drop it
                 unset($this->data[$k]);
                 unset($db_software[$key]);
                 $this->current_versions[$dedup_vkey] = true;
@@ -313,7 +313,7 @@ class Software extends InventoryAsset
             }
         }
 
-       //not found version means soft has been removed or updated, drop it
+        //not found version means soft has been removed or updated, drop it
         if (count($db_software) > 0 && (!$this->main_asset || !$this->main_asset->isPartial() || $this->main_asset->isPartial() && $count_import)) {
             $DB->delete(
                 'glpi_items_softwareversions',
@@ -324,7 +324,7 @@ class Software extends InventoryAsset
         }
 
         if (!count($this->data)) {
-           //nothing to do!
+            //nothing to do!
             return;
         }
 
@@ -493,7 +493,7 @@ class Software extends InventoryAsset
         $entities_id  = $this->entities_id_software;
 
         if (!count($this->softwares)) {
-           //no existing software, no existing versions :)
+            //no existing software, no existing versions :)
             return;
         }
 
