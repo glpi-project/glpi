@@ -101,7 +101,7 @@ class Log extends CommonDBTM
         return true;
     }
 
-    public static function prepareUpdateHistory(CommonDBTM $item, $oldvalues, $values):? array
+    public static function prepareUpdateHistory(CommonDBTM $item, $oldvalues, $values): ?array
     {
         if (!count($oldvalues)) {
             return null;
