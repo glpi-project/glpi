@@ -2251,7 +2251,7 @@ class RuleImportAsset extends Rule
             'action'    => '_deny'
         ];
 
-       //load default rules from plugins
+        //load default rules from plugins
         if ($with_plugins && isset($PLUGIN_HOOKS['add_rules'])) {
             $ria = new self();
             foreach ($PLUGIN_HOOKS['add_rules'] as $plugin => $val) {
@@ -2286,20 +2286,20 @@ class RuleImportAsset extends Rule
             }
 
             if ($exists === true) {
-               //rule already exists, ignore.
+                //rule already exists, ignore.
                 continue;
             }
             $rule_id = $rulecollection->add($input);
 
-           // Add criteria
+            // Add criteria
             $ruleclass = $rulecollection->getRuleClass();
             foreach ($rule['criteria'] as $criteria) {
                 $rulecriteria = new RuleCriteria(get_class($ruleclass));
                 $criteria['rules_id'] = $rule_id;
-                $rulecriteria->add($criteria);
+                $rulecriteria->add($criteria, [], false);
             }
 
-           // Add action
+            // Add action
             $ruleaction = new RuleAction(get_class($ruleclass));
             $input = [
                 'rules_id'     => $rule_id,
@@ -2321,7 +2321,7 @@ class RuleImportAsset extends Rule
                     break;
             }
 
-            $ruleaction->add($input);
+            $ruleaction->add($input, [], false);
 
             $ranking++;
         }
