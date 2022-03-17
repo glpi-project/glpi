@@ -103,7 +103,7 @@ class Log extends CommonDBTM
 
     public static function prepareUpdateHistory(CommonDBTM $item, $oldvalues, $values): ?array
     {
-        if (!count($oldvalues)) {
+        if (!count($oldvalues ?? [])) {
             return null;
         }
         // needed to have  $SEARCHOPTION
