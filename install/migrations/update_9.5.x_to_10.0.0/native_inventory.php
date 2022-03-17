@@ -520,7 +520,28 @@ if (!$DB->tableExists('glpi_printerlogs')) {
     $migration->changeField('glpi_printerlogs', 'date', 'date', 'date');
 
     $migration->dropKey('glpi_printerlogs', 'printers_id');
-    $migration->addKey('glpi_printerlogs', ['printers_id', 'date'], 'unicity', 'UNIQUE');
+
+    if (!isIndex('glpi_printerlogs', 'unicity')) {
+        // Preserve only last insert for a given date.
+        $to_preserve_sql = new \QueryExpression(
+            sprintf(
+                'SELECT MAX(%s) as %s FROM %s GROUP BY %s, DATE(%s)',
+                $DB->quoteName('id'),
+                $DB->quoteName('id'),
+                $DB->quoteName('glpi_printerlogs'),
+                $DB->quoteName('printers_id'),
+                $DB->quoteName('date')
+            )
+        );
+        $to_preserve_result = $DB->query($to_preserve_sql->getValue())->fetch_all(MYSQLI_ASSOC);
+        $DB->delete(
+            'glpi_printerlogs',
+            [
+                'NOT' => ['id' => array_column($to_preserve_result, 'id')]
+            ]
+        );
+        $migration->addKey('glpi_printerlogs', ['printers_id', 'date'], 'unicity', 'UNIQUE');
+    }
 }
 
 if (!$DB->tableExists('glpi_networkportconnectionlogs')) {
@@ -577,7 +598,28 @@ if (!$DB->tableExists('glpi_networkportmetrics')) {
     $migration->changeField('glpi_networkportmetrics', 'date', 'date', 'date');
 
     $migration->dropKey('glpi_networkportmetrics', 'networkports_id');
-    $migration->addKey('glpi_networkportmetrics', ['networkports_id', 'date'], 'unicity', 'UNIQUE');
+
+    if (!isIndex('glpi_networkportmetrics', 'unicity')) {
+        // Preserve only last insert for a given date.
+        $to_preserve_sql = new \QueryExpression(
+            sprintf(
+                'SELECT MAX(%s) as %s FROM %s GROUP BY %s, DATE(%s)',
+                $DB->quoteName('id'),
+                $DB->quoteName('id'),
+                $DB->quoteName('glpi_networkportmetrics'),
+                $DB->quoteName('networkports_id'),
+                $DB->quoteName('date')
+            )
+        );
+        $to_preserve_result = $DB->query($to_preserve_sql->getValue())->fetch_all(MYSQLI_ASSOC);
+        $DB->delete(
+            'glpi_networkportmetrics',
+            [
+                'NOT' => ['id' => array_column($to_preserve_result, 'id')]
+            ]
+        );
+        $migration->addKey('glpi_networkportmetrics', ['networkports_id', 'date'], 'unicity', 'UNIQUE');
+    }
 }
 
 if (!$DB->tableExists('glpi_refusedequipments')) {
