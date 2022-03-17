@@ -228,6 +228,8 @@ class Inventory
             throw new \RuntimeException(print_r($this->getErrors(), true));
         }
 
+        \Log::useQueue();
+
         if (!isset($_SESSION['glpiinventoryuserrunning'])) {
             $_SESSION['glpiinventoryuserrunning'] = 'inventory';
         }
@@ -309,6 +311,12 @@ class Inventory
             if ($test_rules === false) {
                 $this->processInventoryData();
                 $this->handleItem();
+
+                if (!$this->mainasset->isNew()) {
+                    \Log::handleQueue();
+                } else {
+                    \Log::resetQueue();
+                }
 
                 if (!defined('TU_USER')) {
                     $DB->commit();
@@ -633,7 +641,6 @@ class Inventory
             if ($assettype !== false) {
                //handle if asset type has been found.
                 $asset = new $assettype($this->item, (array)$value);
-                $asset->withHistory($this->mainasset->withHistory());
                 if ($asset->checkConf($this->conf)) {
                     $asset->setMainAsset($this->mainasset);
                     $asset->setAgent($this->getAgent());

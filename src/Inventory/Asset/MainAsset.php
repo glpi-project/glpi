@@ -608,7 +608,7 @@ abstract class MainAsset extends InventoryAsset
             unset($input['ap_port']);
             unset($input['firmware']);
             $items_id = $this->item->add(Toolbox::addslashes_deep($input));
-            $this->with_history = false;//do not handle history on main item first import
+            $this->setNew();
         } else {
             $this->item->getFromDB($items_id);
         }
@@ -678,7 +678,7 @@ abstract class MainAsset extends InventoryAsset
         }
 
         $input = (array)$val;
-        $this->item->update(Toolbox::addslashes_deep($input), $this->withHistory());
+        $this->item->update(Toolbox::addslashes_deep($input));
 
         if (!($this->item instanceof RefusedEquipment)) {
             $this->handleAssets();

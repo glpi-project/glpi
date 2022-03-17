@@ -231,7 +231,7 @@ class VirtualMachine extends InventoryAsset
                             $input[$prop] = $val->$prop;
                         }
                     }
-                    $computerVirtualmachine->update(Toolbox::addslashes_deep($input), $this->withHistory());
+                    $computerVirtualmachine->update(Toolbox::addslashes_deep($input));
                     unset($value[$key]);
                     unset($db_vms[$keydb]);
                     break;
@@ -251,7 +251,7 @@ class VirtualMachine extends InventoryAsset
                 $input = (array)$val;
                 $input['computers_id'] = $this->item->fields['id'];
                 $input['is_dynamic']  = 1;
-                $computerVirtualmachine->add(Toolbox::addslashes_deep($input), [], $this->withHistory());
+                $computerVirtualmachine->add(Toolbox::addslashes_deep($input));
             }
         }
 
@@ -300,13 +300,13 @@ class VirtualMachine extends InventoryAsset
                 if ($computers_vm_id == 0) {
                    // Add computer
                     $vm->entities_id = $this->item->fields['entities_id'];
-                    $computers_vm_id = $computervm->add(Toolbox::addslashes_deep((array)$vm), [], $this->withHistory());
+                    $computers_vm_id = $computervm->add(Toolbox::addslashes_deep((array)$vm));
                 } else {
                    // Update computer
                     $computervm->getFromDB($computers_vm_id);
                     $input = (array)$vm;
                     $input['id'] = $computers_vm_id;
-                    $computervm->update(Toolbox::addslashes_deep($input), $this->withHistory());
+                    $computervm->update(Toolbox::addslashes_deep($input));
                 }
                //load if new, reload if not.
                 $computervm->getFromDB($computers_vm_id);

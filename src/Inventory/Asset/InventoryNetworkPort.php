@@ -167,7 +167,7 @@ trait InventoryNetworkPort
                          'name'            => addslashes($port->name)
                      ];
 
-                     $networkport->update($input, $this->withHistory());
+                     $networkport->update($input);
                      $unmanaged->delete(['id' => $unmanageds_id], true);
                 }
             }
@@ -232,7 +232,7 @@ trait InventoryNetworkPort
                      'gateway'      => $port->gateway,
                      'entities_id'  => $this->entities_id
                  ];
-                 $ipnetwork->add(Toolbox::addslashes_deep($input), [], $this->withHistory());
+                 $ipnetwork->add(Toolbox::addslashes_deep($input));
             }
         }
     }
@@ -269,7 +269,7 @@ trait InventoryNetworkPort
             $input['trunk'] = 0;
         }
 
-        $netports_id = $networkport->add($input, [], $this->withHistory());
+        $netports_id = $networkport->add($input);
         return $netports_id;
     }
 
@@ -296,7 +296,7 @@ trait InventoryNetworkPort
             $input['name'] = $name;
         }
 
-        $netname_id = $networkname->add($input, [], $this->withHistory());
+        $netname_id = $networkname->add($input);
         return $netname_id;
     }
 
@@ -318,7 +318,7 @@ trait InventoryNetworkPort
                 'name'         => addslashes($ip),
                 'is_dynamic'   => 1
             ];
-            $ipaddress->add($input, [], $this->withHistory());
+            $ipaddress->add($input);
         }
     }
 
@@ -390,8 +390,7 @@ trait InventoryNetworkPort
                         [
                             'id'              => $keydb,
                             'logical_number'  => $data->logical_number
-                        ],
-                        $this->withHistory()
+                        ]
                     );
                 }
 
@@ -572,9 +571,9 @@ trait InventoryNetworkPort
 
        //store instance
         if ($instance->isNewItem()) {
-            $instance->add(Toolbox::addslashes_deep($input), [], $this->withHistory());
+            $instance->add(Toolbox::addslashes_deep($input));
         } else {
-            $instance->update(Toolbox::addslashes_deep($input), $this->withHistory());
+            $instance->update(Toolbox::addslashes_deep($input));
         }
     }
 

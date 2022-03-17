@@ -123,7 +123,6 @@ class OperatingSystem extends InventoryAsset
             'entities_id'                       => $this->item->fields['entities_id']
         ];
 
-        $this->withHistory(true);//always store history for OS
         if (!$ios->isNewItem()) {
            //OS exists, check for updates
             $same = true;
@@ -134,10 +133,10 @@ class OperatingSystem extends InventoryAsset
                 }
             }
             if ($same === false) {
-                $ios->update(['id' => $ios->getID()] + Toolbox::addslashes_deep($input_os), $this->withHistory());
+                $ios->update(['id' => $ios->getID()] + Toolbox::addslashes_deep($input_os));
             }
         } else {
-            $ios->add(Toolbox::addslashes_deep($input_os), [], $this->withHistory());
+            $ios->add(Toolbox::addslashes_deep($input_os));
         }
 
         $val->operatingsystems_id = $ios->fields['id'];

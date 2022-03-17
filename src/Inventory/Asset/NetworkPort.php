@@ -265,7 +265,7 @@ class NetworkPort extends InventoryAsset
                     $wire->add([
                         'networkports_id_1'  => $netports_id,
                         'networkports_id_2'  => $connections_id
-                    ], [], $this->withHistory());
+                    ]);
                 }
             }
         }
@@ -329,7 +329,7 @@ class NetworkPort extends InventoryAsset
                     $wire->add([
                         'networkports_id_1'  => $netports_id,
                         'networkports_id_2'  => $connections_id
-                    ], [], $this->withHistory());
+                    ]);
                 }
             }
             return;
@@ -512,7 +512,7 @@ class NetworkPort extends InventoryAsset
                     'networkports_id'       => $netports_id,
                     'networkports_id_list'  => []
                 ];
-                $input['id'] = $netport_aggregate->add($input, [], $this->withHistory());
+                $input['id'] = $netport_aggregate->add($input);
             }
 
             $input['networkports_id_list'] = array_values($aggregates);
@@ -577,7 +577,7 @@ class NetworkPort extends InventoryAsset
                     $input['name'] = $name;
                 }
             }
-            $items_id = $item->add(Toolbox::addslashes_deep($input), [], $this->withHistory());
+            $items_id = $item->add(Toolbox::addslashes_deep($input));
 
             $rulesmatched = new \RuleMatchedLog();
             $agents_id = $this->agent->fields['id'];
@@ -627,7 +627,7 @@ class NetworkPort extends InventoryAsset
             if (property_exists($port, 'mac') && !empty($port->mac)) {
                 $input['mac'] = $port->mac;
             }
-            $ports_id = $netport->add(Toolbox::addslashes_deep($input), [], $this->withHistory());
+            $ports_id = $netport->add(Toolbox::addslashes_deep($input));
         }
 
         if (!isset($this->connection_ports[$itemtype])) {

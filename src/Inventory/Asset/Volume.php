@@ -161,7 +161,7 @@ class Volume extends InventoryAsset
                     $input = (array)$val + [
                         'id'           => $keydb,
                     ];
-                    $itemDisk->update(Toolbox::addslashes_deep($input), $this->withHistory());
+                    $itemDisk->update(Toolbox::addslashes_deep($input));
                     unset($value[$key]);
                     unset($db_itemdisk[$keydb]);
                     break;
@@ -185,7 +185,7 @@ class Volume extends InventoryAsset
                     'itemtype'     => $this->item->getType()
                 ];
 
-                $itemDisk->add(Toolbox::addslashes_deep($input), [], $this->withHistory());
+                $itemDisk->add(Toolbox::addslashes_deep($input));
             }
         }
     }

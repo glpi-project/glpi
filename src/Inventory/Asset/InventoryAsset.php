@@ -64,6 +64,8 @@ abstract class InventoryAsset
     protected $main_asset;
     /** @var string */
     protected $request_query;
+    /** @var bool */
+    private bool $is_new = false;
 
     /**
      * Constructor
@@ -224,7 +226,7 @@ abstract class InventoryAsset
                                 $kversion->update([
                                     'id'                          => $kversion->getID(),
                                     'operatingsystemkernels_id'   => $value->operatingsystemkernels_id
-                                ], $this->withHistory());
+                                ]);
                             }
                         }
                     }
@@ -296,21 +298,6 @@ abstract class InventoryAsset
     }
 
     /**
-     * Is history enabled on this asset?
-     *
-     * @param boolean|null $bool To change with_history
-     *
-     * @return boolean
-     */
-    public function withHistory($bool = null): bool
-    {
-        if ($bool !== null) {
-            $this->with_history = (bool)$bool;
-        }
-        return $this->with_history;
-    }
-
-    /**
      * Set item and itemtype
      *
      * @param CommonDBTM $item Item instance
@@ -369,9 +356,21 @@ abstract class InventoryAsset
 
         if (!($item->fields['is_global'] ?? false)) {
             if (isset($citem->fields['id'])) {
-                $citem->delete(['id' => $citem->fields['id']], true, $this->withHistory());
+                $citem->delete(['id' => $citem->fields['id']], true);
             }
-            $citem->add($input, [], $this->withHistory());
+            $citem->add($input);
         }
+    }
+
+    protected function setNew(): self
+    {
+        $this->is_new = true;
+        $this->with_history = false;//do not handle history on main item first import
+        return $this;
+    }
+
+    public function isNew(): bool
+    {
+        return $this->is_new;
     }
 }

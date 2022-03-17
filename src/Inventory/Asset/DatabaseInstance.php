@@ -137,14 +137,14 @@ class DatabaseInstance extends InventoryAsset
                         'itemtype'     => $this->item->getType(),
                         'items_id'     => $this->item->fields['id']
                     ];
-                    $items_id = $instance->add(Toolbox::addslashes_deep($input), [], $this->withHistory());
+                    $items_id = $instance->add(Toolbox::addslashes_deep($input));
                 } else {
                     $items_id = $data['found_inventories'][0];
                     $databases = $val->databases ?? [];
 
                     $instance->getFromDB($items_id);
                     $input += ['id' => $instance->fields['id']];
-                    $instance->update(Toolbox::addslashes_deep($input), $this->withHistory());
+                    $instance->update(Toolbox::addslashes_deep($input));
 
                     $existing_databases = $instance->getDatabases();
                    //update databases, relying on name
@@ -153,7 +153,7 @@ class DatabaseInstance extends InventoryAsset
                             if ($existing_database['name'] == $database->name) {
                                  $dbinput = (array)$database;
                                  $dbinput += ['id' => $dbkey, 'is_deleted' => 0, 'is_dynamic' => 1];
-                                 $odatabase->update(Toolbox::addslashes_deep($dbinput), [], $this->withHistory());
+                                 $odatabase->update(Toolbox::addslashes_deep($dbinput));
                                  unset(
                                      $existing_databases[$dbkey],
                                      $databases[$key]
@@ -166,7 +166,7 @@ class DatabaseInstance extends InventoryAsset
                    //cleanup associated databases
                     if (count($existing_databases)) {
                         foreach ($existing_databases as $dbkey => $existing_database) {
-                            $odatabase->delete(['id' => $dbkey], false, $this->withHistory());
+                            $odatabase->delete(['id' => $dbkey]);
                         }
                     }
                 }
@@ -178,7 +178,7 @@ class DatabaseInstance extends InventoryAsset
                         'databaseinstances_id' => $instance->fields['id'],
                         'is_dynamic' => 1
                     ];
-                    $odatabase->add(Toolbox::addslashes_deep($dbinput), [], $this->withHistory());
+                    $odatabase->add(Toolbox::addslashes_deep($dbinput));
                 }
 
                 $instances[$items_id] = $items_id;
