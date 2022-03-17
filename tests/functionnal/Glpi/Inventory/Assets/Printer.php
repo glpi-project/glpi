@@ -170,9 +170,8 @@ class Printer extends AbstractInventoryAsset
         $result = $iterator->current();
 
         unset($result['id']);
-        unset($result['date']);
 
-        $this->array($result)->isIdenticalTo([
+        $this->array($result)->isEqualTo([
             'printers_id' => $printer->fields['id'],
             'total_pages' => 1802,
             'bw_pages' => 0,
@@ -185,7 +184,10 @@ class Printer extends AbstractInventoryAsset
             'bw_copies' => 0,
             'color_copies' => 0,
             'scanned' => 0,
-            'faxed' => 0
+            'faxed' => 0,
+            'date' => date('Y-m-d', strtotime($_SESSION['glpi_currenttime'])),
+            'date_creation' => $_SESSION['glpi_currenttime'],
+            'date_mod' => $_SESSION['glpi_currenttime'],
         ]);
     }
 

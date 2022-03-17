@@ -408,15 +408,28 @@ class NetworkPort extends CommonDBChild
 
     public function updateMetrics()
     {
-        $metrics = new NetworkPortMetrics();
-        $metrics->add([
+        $unicity_input = [
             'networkports_id' => $this->fields['id'],
-            'ifinbytes'       => $this->fields['ifinbytes'] ?? 0,
-            'ifoutbytes'      => $this->fields['ifoutbytes'] ?? 0,
-            'ifinerrors'      => $this->fields['ifinerrors'] ?? 0,
-            'ifouterrors'     => $this->fields['ifouterrors'] ?? 0,
-            'date'            => $_SESSION['glpi_currenttime'],
-        ], [], false);
+            'date'            => date('Y-m-d', strtotime($_SESSION['glpi_currenttime'])),
+        ];
+        $input = array_merge(
+            [
+                'networkports_id' => $this->fields['id'],
+                'ifinbytes'       => $this->fields['ifinbytes'] ?? 0,
+                'ifoutbytes'      => $this->fields['ifoutbytes'] ?? 0,
+                'ifinerrors'      => $this->fields['ifinerrors'] ?? 0,
+                'ifouterrors'     => $this->fields['ifouterrors'] ?? 0,
+            ],
+            $unicity_input
+        );
+
+        $metrics = new NetworkPortMetrics();
+        if ($metrics->getFromDBByCrit($unicity_input)) {
+            $input['id'] = $metrics->fields['id'];
+            $metrics->update($input, false);
+        } else {
+            $metrics->add($input, [], false);
+        }
     }
 
 

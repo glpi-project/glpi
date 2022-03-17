@@ -8877,11 +8877,15 @@ CREATE TABLE `glpi_printerlogs` (
   `bw_copies` int NOT NULL DEFAULT '0',
   `color_copies` int NOT NULL DEFAULT '0',
   `scanned` int NOT NULL DEFAULT '0',
+  `date` date DEFAULT NULL,
+  `date_creation` timestamp NULL DEFAULT NULL,
+  `date_mod` timestamp NULL DEFAULT NULL,
   `faxed` int NOT NULL DEFAULT '0',
-  `date` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `printers_id` (`printers_id`),
-  KEY `date` (`date`)
+  UNIQUE KEY `unicity` (`printers_id`,`date`),
+  KEY `date` (`date`),
+  KEY `date_mod` (`date_mod`),
+  KEY `date_creation` (`date_creation`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 
@@ -8902,15 +8906,19 @@ CREATE TABLE `glpi_networkportconnectionlogs` (
 DROP TABLE IF EXISTS `glpi_networkportmetrics`;
 CREATE TABLE `glpi_networkportmetrics` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
-  `date` timestamp NULL DEFAULT NULL,
+  `date` date DEFAULT NULL,
   `ifinbytes` bigint NOT NULL DEFAULT '0',
   `ifinerrors` bigint NOT NULL DEFAULT '0',
   `ifoutbytes` bigint NOT NULL DEFAULT '0',
   `ifouterrors` bigint NOT NULL DEFAULT '0',
   `networkports_id` int unsigned NOT NULL DEFAULT '0',
+  `date_creation` timestamp NULL DEFAULT NULL,
+  `date_mod` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
+  UNIQUE KEY `unicity` (`networkports_id`,`date`),
   KEY `date` (`date`),
-  KEY `networkports_id` (`networkports_id`)
+  KEY `date_creation` (`date_creation`),
+  KEY `date_mod` (`date_mod`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 DROP TABLE IF EXISTS `glpi_refusedequipments`;

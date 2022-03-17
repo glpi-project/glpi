@@ -81,7 +81,9 @@ class NetworkPortMetrics extends DbTestCase
             'ifinbytes'    => 1076823325,
             'ifoutbytes'   => 2179528910,
             'date' => $value['date'],
-            'id' => $value['id']
+            'id' => $value['id'],
+            'date_creation' => $_SESSION['glpi_currenttime'],
+            'date_mod' => $_SESSION['glpi_currenttime'],
         ];
         $this->array($value)->isEqualTo($expected);
 
@@ -94,11 +96,9 @@ class NetworkPortMetrics extends DbTestCase
 
         $this->boolean($netport->update($port + ['id' => $netports_id]))->isTrue();
         $values = $metrics->getMetrics($netport);
-        $this->array($values)->hasSize(2);
+        $this->array($values)->hasSize(1); // Still 1 row, as there should be only one row per date
 
-        $value2 = array_pop($values);
-        $value1 = array_pop($values);
-        $this->array($value1)->isIdenticalTo($value);
+        $updated_value = array_pop($values);
 
         $expected = [
             'networkports_id' => $netports_id,
@@ -107,9 +107,11 @@ class NetworkPortMetrics extends DbTestCase
             'ifinbytes'    => 1056823325,
             'ifoutbytes'   => 2159528910,
             'date' => $value['date'],
-            'id' => $value['id']
+            'id' => $value['id'],
+            'date_creation' => $_SESSION['glpi_currenttime'],
+            'date_mod' => $_SESSION['glpi_currenttime'],
         ];
-        $this->array($value1)->isIdenticalTo($value);
+        $this->array($updated_value)->isEqualTo($expected);
 
        //check logs => no bytes nor errors
         global $DB;
