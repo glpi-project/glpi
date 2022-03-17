@@ -312,11 +312,15 @@ class Inventory
                 $this->processInventoryData();
                 $this->handleItem();
 
+                if (!$this->mainasset->isNew()) {
+                    \Log::handleQueue();
+                } else {
+                    \Log::resetQueue();
+                }
+
                 if (!defined('TU_USER')) {
                     $DB->commit();
                 }
-
-                \Log::handleQueue();
             }
         } catch (\Exception $e) {
             $DB->rollback();

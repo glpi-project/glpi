@@ -64,6 +64,8 @@ abstract class InventoryAsset
     protected $main_asset;
     /** @var string */
     protected $request_query;
+    /** @var bool */
+    private bool $is_new = false;
 
     /**
      * Constructor
@@ -373,5 +375,17 @@ abstract class InventoryAsset
             }
             $citem->add($input, [], $this->withHistory());
         }
+    }
+
+    protected function setNew(): self
+    {
+        $this->is_new = true;
+        $this->with_history = false;//do not handle history on main item first import
+        return $this;
+    }
+
+    public function isNew(): bool
+    {
+        return $this->is_new;
     }
 }
