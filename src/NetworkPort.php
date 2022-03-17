@@ -1174,9 +1174,6 @@ class NetworkPort extends CommonDBChild
                             break;
                         case 40:
                             $co_class = '';
-                            if (empty($port['ifstatus'])) {
-                                break;
-                            }
                             switch ($port['ifstatus']) {
                                 case 1: //up
                                     $co_class = 'fa-link netport green';
@@ -1190,13 +1187,14 @@ class NetworkPort extends CommonDBChild
                                     $co_class = 'fa-link netport orange';
                                     $title = __('Testing');
                                     break;
-                                case 4: //unknown
-                                    $co_class = 'fa-question-circle';
-                                    $title = __('Unknown');
-                                    break;
                                 case 5: //dormant
                                     $co_class = 'fa-link netport grey';
                                     $title = __('Dormant');
+                                    break;
+                                case 4: //unknown
+                                default:
+                                    $co_class = 'fa-question-circle';
+                                    $title = __('Unknown');
                                     break;
                             }
                             $output .= "<i class='fas $co_class' title='$title'></i> <span class='sr-only'>$title</span>";
