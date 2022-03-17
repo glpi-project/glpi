@@ -276,9 +276,9 @@ abstract class MainAsset extends InventoryAsset
                         ) {
                             $ldaps = $DB->request(
                                 'glpi_authldaps',
-                                ['WHERE'  => ['inventory_domain' => $a_users->domain]]
+                                ['WHERE' => ['inventory_domain' => $a_users->domain]]
                             );
-                             $ldaps_ids = [];
+                            $ldaps_ids = [];
                             foreach ($ldaps as $data_LDAP) {
                                 $ldaps_ids[] = $data_LDAP['id'];
                             }
@@ -296,7 +296,7 @@ abstract class MainAsset extends InventoryAsset
                             'LIMIT'  => 1
                         ]);
                         if ($row = $iterator->current()) {
-                              $val->users_id = $row['id'];
+                            $val->users_id = $row['id'];
                         }
                     }
                 }
@@ -304,7 +304,7 @@ abstract class MainAsset extends InventoryAsset
                 if ($user != '') {
                     if (property_exists($val, 'contact')) {
                         if ($val->contact == '') {
-                             $val->contact = $user;
+                            $val->contact = $user;
                         } else {
                             $val->contact .= "/" . $user;
                         }
@@ -425,7 +425,7 @@ abstract class MainAsset extends InventoryAsset
                             }
                         }
                         if (property_exists($network, 'subnet') && !empty($network->subnet)) {
-                                $input['subnet'][] = $network->subnet;
+                            $input['subnet'][] = $network->subnet;
                         }
                     }
                 }
@@ -433,11 +433,11 @@ abstract class MainAsset extends InventoryAsset
                 // Case of virtualmachines
                 if (
                     !isset($input['mac'])
-                     && !isset($input['ip'])
+                    && !isset($input['ip'])
                 ) {
                     foreach ($netports as $network) {
                         if (property_exists($network, 'mac') && !empty($network->mac)) {
-                             $input['mac'][] = $network->mac;
+                            $input['mac'][] = $network->mac;
                         }
                         foreach ($network->ipaddress as $ip) {
                             if ($ip != '127.0.0.1' && $ip != '::1') {
