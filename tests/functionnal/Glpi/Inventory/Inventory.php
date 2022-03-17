@@ -1773,10 +1773,11 @@ class Inventory extends InventoryTestCase
         $expected_types_count = [
             \Log::HISTORY_DELETE_SUBITEM => 5,//networkport and networkname
             \Log::HISTORY_CREATE_ITEM => 13, //virtual machines, os, manufacturer, net ports, net names, ...
-            0 => 2, //Agent version, disks usage
-            \Log::HISTORY_ADD_RELATION => 1, // ???
+            0 => 5, //Agent version, disks usage
+            \Log::HISTORY_ADD_RELATION => 2, // ???
+            \Log::HISTORY_ADD_SUBITEM => 3, // ???
         ];
-        $this->checkLogs(21, $expected_types_count);
+        $this->checkLogs(28, $expected_types_count);
 
         //check matchedlogs
         $mlogs = new \RuleMatchedLog();
