@@ -58,7 +58,7 @@ abstract class MainAsset extends InventoryAsset
     ];
     /** @var mixed */
     protected $raw_data;
-   /* @var array */
+    /* @var array */
     protected $hardware;
     /** @var integer */
     protected $states_id_default;
@@ -80,7 +80,7 @@ abstract class MainAsset extends InventoryAsset
         $namespaced = explode('\\', static::class);
         $this->itemtype = array_pop($namespaced);
         $this->item = $item;
-       //store raw data for reference
+        //store raw data for reference
         $this->raw_data = $data;
     }
 
@@ -113,7 +113,7 @@ abstract class MainAsset extends InventoryAsset
 
             $val = new \stdClass();
 
-           //set update system
+            //set update system
             $val->autoupdatesystems_id = $entry->content->autoupdatesystems_id ?? 'GLPI Native Inventory';
             $val->last_inventory_update = $_SESSION["glpi_currenttime"];
 
@@ -167,7 +167,7 @@ abstract class MainAsset extends InventoryAsset
             $val->$key = $property;
         }
 
-       // * Type of the asset
+        // * Type of the asset
         if (isset($hardware)) {
             $types_id = $this->getTypesFieldName();
             if (
@@ -176,7 +176,7 @@ abstract class MainAsset extends InventoryAsset
                 && $hardware->vmsystem != 'Physical'
             ) {
                 $val->$types_id = $hardware->vmsystem;
-               // HACK FOR BSDJail, remove serial and UUID (because it's of host, not container)
+                // HACK FOR BSDJail, remove serial and UUID (because it's of host, not container)
                 if ($hardware->vmsystem == 'BSDJail') {
                     if (property_exists($val, 'serial')) {
                         $val->serial = '';
@@ -245,7 +245,7 @@ abstract class MainAsset extends InventoryAsset
             }
         }
 
-       // * USERS
+        // * USERS
         $cnt = 0;
         if (isset($this->extra_data['users'])) {
             if (count($this->extra_data['users']) > 0) {
@@ -268,7 +268,7 @@ abstract class MainAsset extends InventoryAsset
                 }
                 if ($cnt == 0) {
                     if (property_exists($a_users, 'login')) {
-                       // Search on domain
+                        // Search on domain
                         $where_add = [];
                         if (
                             property_exists($a_users, 'domain')
@@ -348,7 +348,7 @@ abstract class MainAsset extends InventoryAsset
 
         if (property_exists($bios, 'ssn')) {
             $val->serial = trim($bios->ssn);
-           // HP patch for serial begin with 'S'
+            // HP patch for serial begin with 'S'
             if (
                 property_exists($val, 'manufacturers_id')
                 && strstr($val->manufacturers_id, "ewlett")
@@ -430,7 +430,7 @@ abstract class MainAsset extends InventoryAsset
                     }
                 }
 
-               // Case of virtualmachines
+                // Case of virtualmachines
                 if (
                     !isset($input['mac'])
                      && !isset($input['ip'])
@@ -454,7 +454,7 @@ abstract class MainAsset extends InventoryAsset
 
         $input['itemtype'] = $this->item->getType();
 
-       // * entity rules
+        // * entity rules
         $input['entities_id'] = $this->entities_id;
 
         return $input;
@@ -515,11 +515,11 @@ abstract class MainAsset extends InventoryAsset
             $datarules = $rule->processAllRules($input, [], ['class' => $this]);
 
             if (isset($datarules['_no_rule_matches']) and ($datarules['_no_rule_matches'] == '1')) {
-               //no rule matched, this is a new one
+                //no rule matched, this is a new one
                 $this->rulepassed(0, $this->item->getType(), null);
             } else if (!isset($datarules['found_inventories'])) {
                 if ($this->isAccessPoint($data)) {
-                   //Only main item is stored as refused, not all APs
+                    //Only main item is stored as refused, not all APs
                     unset($this->data[$key]);
                 } else {
                     $input['rules_id'] = $datarules['rules_id'];
@@ -748,8 +748,8 @@ abstract class MainAsset extends InventoryAsset
         $controllers = [];
         $ignored_controllers = [];
 
-       //ensure controllers are done last, some components will
-       //ask to ignore their associated controller
+        //ensure controllers are done last, some components will
+        //ask to ignore their associated controller
         if (isset($assets_list['\Glpi\Inventory\Asset\Controller'])) {
             $controllers = $assets_list['\Glpi\Inventory\Asset\Controller'];
             unset($assets_list['\Glpi\Inventory\Asset\Controller']);
@@ -765,11 +765,11 @@ abstract class MainAsset extends InventoryAsset
             }
         }
 
-       //do controllers
+        //do controllers
         foreach ($controllers as $asset) {
             $asset->setExtraData($this->assets);
             $asset->setExtraData(['\\' . get_class($this) => $mainasset]);
-           //do not handle ignored controllers
+            //do not handle ignored controllers
             $asset->setExtraData(['ignored' => $ignored_controllers]);
             $asset->handleLinks();
             $asset->handle();
@@ -850,5 +850,21 @@ abstract class MainAsset extends InventoryAsset
     protected function isAccessPoint($object): bool
     {
         return property_exists($object, 'is_ap') && $object->is_ap == true;
+    }
+
+    public function handleLogs()
+    {
+        if ($this->isNew()) {
+            return;
+        }
+
+        parent::handleLogs();
+
+        $assets_list = $this->assets;
+        foreach ($assets_list as $assets) {
+            foreach ($assets as $asset) {
+                $asset->handleLogs();
+            }
+        }
     }
 }
