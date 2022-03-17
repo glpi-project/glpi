@@ -359,7 +359,7 @@ abstract class CommonITILValidation extends CommonDBChild
                 $user->getFromDB($this->fields["users_id_validate"]);
                 $email   = $user->getDefaultEmail();
                 if (!empty($email)) {
-                    Session::addMessageAfterRedirect(sprintf(__('Approval request send to %s'), $user->getName()));
+                    Session::addMessageAfterRedirect(sprintf(__('Approval request sent to %s'), $user->getName()));
                 } else {
                     Session::addMessageAfterRedirect(
                         sprintf(
@@ -518,7 +518,7 @@ abstract class CommonITILValidation extends CommonDBChild
 
         switch ($case) {
             case 'add':
-                return sprintf(__('Approval request send to %s'), $username);
+                return sprintf(__('Approval request sent to %s'), $username);
 
             case 'delete':
                 return sprintf(__('Cancel the approval request to %s'), $username);
