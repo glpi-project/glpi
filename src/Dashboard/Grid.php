@@ -1138,6 +1138,55 @@ HTML;
                 }
             }
 
+            foreach ($CFG_GLPI['itemdevices'] as $itemtype) {
+                $fk_itemtype = $itemtype::getDeviceType();
+                $label = sprintf(
+                    __("Number of %s by type"),
+                    $itemtype::getTypeName(Session::getPluralNumber()),
+                    $fk_itemtype::getFieldLabel()
+                );
+
+                $cards["count_" . $itemtype . "_" . $fk_itemtype] = [
+                    'widgettype' => ['summaryNumbers', 'multipleNumber', 'pie', 'donut', 'halfpie', 'halfdonut', 'bar', 'hbar'],
+                    'itemtype'   => "\\$itemtype",
+                    'group'      =>  _n('Device', 'Devices', 1),
+                    'label'      => $label,
+                    'provider'   => "Glpi\\Dashboard\\Provider::multipleNumber" . $itemtype . "By" . $fk_itemtype,
+                    'filters'    => array_merge([
+                        'dates',
+                        'dates_mod',
+                    ], $add_filters_fct($itemtype::getTable()))
+                ];
+
+                $clean_itemtype = str_replace('\\', '_', $itemtype);
+                $cards["bn_count_$clean_itemtype"] = [
+                    'widgettype' => ["bigNumber"],
+                    'group'      => _n('Device', 'Devices', 1),
+                    'itemtype'   => "\\$itemtype",
+                    'label'      => sprintf(__("Number of %s"), $itemtype::getTypeName()),
+                    'provider'   => "Glpi\\Dashboard\\Provider::bigNumber$itemtype",
+                    'filters'    => array_merge([
+                        'dates',
+                        'dates_mod',
+                    ], $add_filters_fct($itemtype::getTable()))
+                ];
+            }
+
+            foreach ($CFG_GLPI['device_types'] as $itemtype) {
+                $clean_itemtype = str_replace('\\', '_', $itemtype);
+                $cards["bn_count_$clean_itemtype"] = [
+                    'widgettype' => ["bigNumber"],
+                    'group'      => _n('Device', 'Devices', 1),
+                    'itemtype'   => "\\$itemtype",
+                    'label'      => sprintf(__("Number of type of %s"), $itemtype::getTypeName()),
+                    'provider'   => "Glpi\\Dashboard\\Provider::bigNumber$itemtype",
+                    'filters'    => array_merge([
+                        'dates',
+                        'dates_mod',
+                    ], $add_filters_fct($itemtype::getTable()))
+                ];
+            }
+
            // add multiple width for Assets itemtypes grouped by their foreign keys
             $assets = array_merge($CFG_GLPI['asset_types'], ['Software']);
             foreach ($assets as $itemtype) {
