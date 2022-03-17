@@ -41,10 +41,6 @@ use Glpi\Toolbox\Sanitizer;
 
 /**
  * Common DataBase Table Manager Class - Persistent Object
- *
- * @property array $input     Add/Update fields input. Only defined during add/update process.
- * @property array $updates   Updated fields keys. Only defined during update process.
- * @property array $oldvalues Previous values of updated fields. Only defined during update process.
  */
 class CommonDBTM extends CommonGLPI
 {
@@ -54,6 +50,28 @@ class CommonDBTM extends CommonGLPI
      * @var mixed[]
      */
     public $fields = [];
+
+    /**
+     * Add/Update fields input. Filled during add/update process.
+     *
+     * @var mixed[]
+     */
+    public $input = [];
+
+    /**
+     * Updated fields keys. Filled during update process.
+     *
+     * @var mixed[]
+     */
+    public $updates = [];
+
+    /**
+     * Previous values of updated fields. Filled during update process.
+     *
+     * @var mixed[]
+     */
+    public $oldvalues = [];
+
 
     /**
      * Flag to determine whether or not changes must be logged into history.
@@ -174,6 +192,13 @@ class CommonDBTM extends CommonGLPI
      * @var array
      */
     public static $undisclosedFields = [];
+
+    /**
+     * Current right that can be evaluated in "item_can" hook.
+     * Variable is set prior to hook call then unset.
+     * @var int
+     */
+    public $right;
 
 
     /**
@@ -2781,7 +2806,7 @@ class CommonDBTM extends CommonGLPI
         if ($this->right !== $right) {
             return false;
         }
-        unset($this->right);
+        $this->right = null;
 
         switch ($right) {
             case READ:
@@ -4025,7 +4050,7 @@ class CommonDBTM extends CommonGLPI
        // }
        //Type mismatched fields
         $fails = [];
-        if (isset($this->input) && is_array($this->input) && count($this->input)) {
+        if (is_array($this->input) && count($this->input)) {
             foreach ($this->input as $key => $value) {
                 $unset        = false;
                 $regs         = [];

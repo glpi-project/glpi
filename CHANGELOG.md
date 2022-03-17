@@ -73,6 +73,7 @@ The present file will list all changes made to the project; according to the
 - `CommonDropdown::displayHeader()`, use `CommonDropdown::displayCentralHeader()` instead and make sure to override properly `first_level_menu`, `second_level_menu` and `third_level_menu`.
 - `GLPI::getLogLevel()`
 - `Html::clean()`
+- `MailCollector::listEncodings()`
 - `RuleImportComputer` class
 - `RuleImportComputerCollection` class
 - `Toolbox::clean_cross_side_scripting_deep()`

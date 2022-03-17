@@ -69,6 +69,47 @@ class Profile extends CommonDBTM
 
     public static $rightname             = 'profile';
 
+    /**
+     * Profile rights to update after profile update.
+     * @var array
+     */
+    private $profileRight;
+
+    public function __get(string $property)
+    {
+        $value = null;
+        switch ($property) {
+            case 'profileRight':
+                Toolbox::deprecated(sprintf('Reading private property %s::%s is deprecated', __CLASS__, $property));
+                $value = $this->$property;
+                break;
+            default:
+                $trace = debug_backtrace();
+                trigger_error(
+                    sprintf('Undefined property: %s::%s in %s on line %d', __CLASS__, $property, $trace[0]['file'], $trace[0]['line']),
+                    E_USER_WARNING
+                );
+                break;
+        }
+        return $value;
+    }
+
+    public function __set(string $property, $value)
+    {
+        switch ($property) {
+            case 'profileRight':
+                Toolbox::deprecated(sprintf('Writing private property %s::%s is deprecated', __CLASS__, $property));
+                $this->$property = $value;
+                break;
+            default:
+                $trace = debug_backtrace();
+                trigger_error(
+                    sprintf('Undefined property: %s::%s in %s on line %d', __CLASS__, $property, $trace[0]['file'], $trace[0]['line']),
+                    E_USER_WARNING
+                );
+                break;
+        }
+    }
 
 
     public function getForbiddenStandardMassiveAction()
@@ -188,7 +229,7 @@ class Profile extends CommonDBTM
 
         if (count($this->profileRight) > 0) {
             ProfileRight::updateProfileRights($this->getID(), $this->profileRight);
-            unset($this->profileRight);
+            $this->profileRight = null;
         }
 
         if (in_array('is_default', $this->updates) && ($this->input["is_default"] == 1)) {
@@ -227,7 +268,7 @@ class Profile extends CommonDBTM
 
         $rights = ProfileRight::getAllPossibleRights();
         ProfileRight::updateProfileRights($this->fields['id'], $rights);
-        unset($this->profileRight);
+        $this->profileRight = null;
 
         if (isset($this->fields['is_default']) && ($this->fields["is_default"] == 1)) {
             $DB->update(

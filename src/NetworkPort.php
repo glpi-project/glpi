@@ -57,6 +57,61 @@ class NetworkPort extends CommonDBChild
 
     public static $rightname                   = 'networking';
 
+    /**
+     * Subset of input that will be used for NetworkPortInstantiation.
+     * @var array
+     */
+    private $input_for_instantiation;
+    /**
+     * Subset of input that will be used for NetworkName.
+     * @var array
+     */
+    private $input_for_NetworkName;
+    /**
+     * Subset of input that will be used for NetworkPort_NetworkPort.
+     * @var array
+     */
+    private $input_for_NetworkPortConnect;
+
+    public function __get(string $property)
+    {
+        $value = null;
+        switch ($property) {
+            case 'input_for_instantiation':
+            case 'input_for_NetworkName':
+            case 'input_for_NetworkPortConnect':
+                Toolbox::deprecated(sprintf('Reading private property %s::%s is deprecated', __CLASS__, $property));
+                $value = $this->$property;
+                break;
+            default:
+                $trace = debug_backtrace();
+                trigger_error(
+                    sprintf('Undefined property: %s::%s in %s on line %d', __CLASS__, $property, $trace[0]['file'], $trace[0]['line']),
+                    E_USER_WARNING
+                );
+                break;
+        }
+        return $value;
+    }
+
+    public function __set(string $property, $value)
+    {
+        switch ($property) {
+            case 'input_for_instantiation':
+            case 'input_for_NetworkName':
+            case 'input_for_NetworkPortConnect':
+                Toolbox::deprecated(sprintf('Writing private property %s::%s is deprecated', __CLASS__, $property));
+                $this->$property = $value;
+                break;
+            default:
+                $trace = debug_backtrace();
+                trigger_error(
+                    sprintf('Undefined property: %s::%s in %s on line %d', __CLASS__, $property, $trace[0]['file'], $trace[0]['line']),
+                    E_USER_WARNING
+                );
+                break;
+        }
+    }
 
     public function getForbiddenStandardMassiveAction()
     {
@@ -284,9 +339,9 @@ class NetworkPort extends CommonDBChild
     {
 
         if (
-            isset($this->input_for_instantiation)
-            || isset($this->input_for_NetworkName)
-            || isset($this->input_for_NetworkPortConnect)
+            $this->input_for_instantiation !== null
+            || $this->input_for_NetworkName !== null
+            || $this->input_for_NetworkPortConnect !== null
             || !isset($input)
         ) {
             return;
@@ -339,7 +394,7 @@ class NetworkPort extends CommonDBChild
         $instantiation = $this->getInstantiation();
         if (
             $instantiation !== false
-            && isset($this->input_for_instantiation)
+            && is_array($this->input_for_instantiation)
             && count($this->input_for_instantiation) > 0
         ) {
             $this->input_for_instantiation['networkports_id'] = $this->getID();
@@ -349,10 +404,10 @@ class NetworkPort extends CommonDBChild
                 $instantiation->update($this->input_for_instantiation, $history);
             }
         }
-        unset($this->input_for_instantiation);
+        $this->input_for_instantiation = null;
 
         if (
-            isset($this->input_for_NetworkName)
+            is_array($this->input_for_NetworkName)
             && count($this->input_for_NetworkName) > 0
             && !isset($_POST['several'])
         ) {
@@ -387,10 +442,10 @@ class NetworkPort extends CommonDBChild
                 }
             }
         }
-        unset($this->input_for_NetworkName);
+        $this->input_for_NetworkName = null;
 
         if (
-            isset($this->input_for_NetworkPortConnect)
+            is_array($this->input_for_NetworkPortConnect)
             && count($this->input_for_NetworkPortConnect) > 0
         ) {
             if (
@@ -402,7 +457,7 @@ class NetworkPort extends CommonDBChild
                 $nn->add($this->input_for_NetworkPortConnect, [], $history);
             }
         }
-        unset($this->input_for_NetworkPortConnect);
+        $this->input_for_NetworkPortConnect = null;
     }
 
 

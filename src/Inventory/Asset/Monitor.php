@@ -79,7 +79,6 @@ class Monitor extends InventoryAsset
             }
 
             if (!isset($serials[$val->serial])) {
-                $this->linked_items['Monitor'][] = $val;
                 $serials[$val->serial] = 1;
             }
         }

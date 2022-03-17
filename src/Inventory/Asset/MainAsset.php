@@ -75,6 +75,8 @@ abstract class MainAsset extends InventoryAsset
     /** @var boolean */
     protected $partial = false;
 
+    protected $current_key;
+
     public function __construct(CommonDBTM $item, $data)
     {
         $namespaced = explode('\\', static::class);
