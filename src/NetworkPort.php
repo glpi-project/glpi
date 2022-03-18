@@ -649,7 +649,6 @@ class NetworkPort extends CommonDBChild
         }
 
         $netport = new self();
-        $netport->item = $item;
 
         if (($itemtype == 'NetworkPort') || ($withtemplate == 2)) {
             $canedit = false;
