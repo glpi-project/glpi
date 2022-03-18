@@ -38,11 +38,17 @@
 {% set collapsed_cls = (is_collapsed ? "right-collapsed" : "") %}
 {% set expanded_cls  = (is_expanded == "true" ? "right-expanded" : "") %}
 
-{% set left_side_cls = "col-md-8" %}
-{% set right_side_cls = "col-md-4" %}
+{% set left_regular_cls = "col-xl-8 col-md-10" %}
+{% set right_regular_cls = "col-xl-4 col-md-2" %}
+
+{% set left_expanded_cls = "col-xxl-4 col-md-4" %}
+{% set right_expanded_cls = "col-xxl-8 col-md-8" %}
+
+{% set left_side_cls = left_regular_cls %}
+{% set right_side_cls = right_regular_cls %}
 {% if is_expanded %}
-    {% set left_side_cls = "col-md-4" %}
-    {% set right_side_cls = "col-md-8" %}
+    {% set left_side_cls = left_expanded_cls %}
+    {% set right_side_cls = right_expanded_cls %}
 {% endif %}
 
 
@@ -111,21 +117,29 @@ $(function() {
    $(document).on("click", ".switch-panel-width", function() {
        if ($('#itil-object-container').hasClass('right-collapsed')) {
            $('#itil-object-container').removeClass('right-collapsed');
-       } else if ($('.itil-left-side').hasClass('col-md-8')) {
+       } else if ($('.itil-left-side').hasClass("{{ left_regular_cls }}")) {
+         // Expand right-side panel
          $('#itil-object-container').addClass('right-expanded');
-         $('.itil-left-side').removeClass('col-md-8').addClass('col-md-4');
-         $('.itil-footer .timeline-buttons').removeClass('col-md-8').addClass('col-md-4');
-         $('.itil-footer .form-buttons').removeClass('col-md').addClass('col-md-8');
-         $('.itil-right-side').removeClass('col-md-4').addClass('col-md-8');
+         // Left side
+         $('.itil-left-side').removeClass("{{ left_regular_cls }}").addClass("{{ left_expanded_cls }}");
+         $('.itil-footer .timeline-buttons').removeClass("{{ left_regular_cls }}").addClass("{{ left_expanded_cls }}");
+         // Right side
+         $('.itil-footer .form-buttons').removeClass('col-md').addClass("{{ right_expanded_cls }}");
+         $('.itil-right-side').removeClass("{{ right_regular_cls }}").addClass("{{ right_expanded_cls }}");
+         // Switcher buttons
          $('.switch-panel-width i.fas').removeClass('fa-caret-left').addClass('fa-caret-right');
          $('.itil-right-side .accordion-body:not(.accordion-actors).row .col-12').removeClass('col-12').addClass('col-sm-6');
          $('#actors .col-12').removeClass('col-12').addClass('col-sm-4');
       } else {
+         // Decrease right-side panel
          $('#itil-object-container').removeClass('right-expanded');
-         $('.itil-left-side').removeClass('col-md-4').addClass('col-md-8');
-         $('.itil-right-side').removeClass('col-md-8').addClass('col-md-4');
-         $('.itil-footer .timeline-buttons').removeClass('col-md-4').addClass('col-md-8');
-         $('.itil-footer .form-buttons').removeClass('col-md-8').addClass('col-md');
+         // Left side
+         $('.itil-left-side').removeClass("{{ left_expanded_cls }}").addClass("{{ left_regular_cls }}");
+         $('.itil-footer .timeline-buttons').removeClass("{{ left_expanded_cls }}").addClass("{{ left_regular_cls }}");
+         // Right side
+         $('.itil-footer .form-buttons').removeClass("{{ right_expanded_cls }}").addClass('col-md');
+         $('.itil-right-side').removeClass("{{ right_expanded_cls }}").addClass("{{ right_regular_cls }}");
+         // Switcher buttons
          $('.switch-panel-width i.fas').removeClass('fa-caret-right').addClass('fa-caret-left');
          $('.itil-right-side .accordion-body:not(.accordion-actors).row .col-sm-6').removeClass('col-sm-6').addClass('col-12');
          $('#actors .col-sm-4').removeClass('col-sm-4').addClass('col-12');

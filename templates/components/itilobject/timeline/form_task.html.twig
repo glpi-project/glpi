@@ -157,8 +157,8 @@
             <input type="hidden" name="{{ item.getForeignKeyField() }}" value="{{ item.fields['id'] }}" />
             {{ call_plugin_hook('pre_item_form', {"item": subitem, 'options': params}) }}
 
-            <div class="row">
-               <div class="col-12 col-md-9">
+            <div class="row mx-n3 mx-xxl-auto">
+               <div class="col-12 col-xl-7 col-xxl-8">
                   {{ fields.textareaField(
                      'content',
                      subitem.fields['content'],
@@ -173,7 +173,7 @@
                      }
                   ) }}
                </div>
-               <div class="col-12 col-md-3 order-first order-md-last">
+               <div class="col-12 col-xl-5 col-xxl-4 order-first order-md-last pe-o pe-xxl-auto">
                   <div class="row">
 
                      {% set task_template_lbl %}
@@ -339,11 +339,13 @@
                            });
                         }
                      </script>
-                     <button id="plan{{ rand }}" class="btn btn-outline-secondary d-block mb-2 text-truncate" onclick="showPlanUpdate{{ rand }}()" type="button">
-                        <i class="fas fa-calendar"></i>
-                        <span>{{ __('Plan this task') }}</span>
-                     </button>
-                     <div id="viewplan{{ rand }}"></div>
+                     <div class="col-12">
+                        <button id="plan{{ rand }}" class="btn btn-outline-secondary d-block mb-2 text-truncate" onclick="showPlanUpdate{{ rand }}()" type="button">
+                           <i class="fas fa-calendar"></i>
+                           <span>{{ __('Plan this task') }}</span>
+                        </button>
+                        <div id="viewplan{{ rand }}"></div>
+                     </div>
                   </div>
                </div>
             </div>
