@@ -330,29 +330,222 @@ abstract class CommonITILObject extends CommonDBTM
         return $actors;
     }
 
+
     /**
-     * Set template informations in $options array
-     * if the template changed from previous one, append also a _template_changed key.
-     * The last aims to be check when loading actos
-     *
-     * @param ITILTemplate $it the template we currently loading
-     * @param array        $options the options of the itilobject
-     *
-     * @return array $options input parameter filled with template informations
-     */
-    protected function setTemplateInOptions(ITILTemplate $it, array $options = []): array
+     * @param $ID
+     * @param $options   array
+     **/
+    public function showForm($ID, array $options = [])
     {
-        $tpl_key = self::getTemplateFormFieldName();
+        if (!static::canView()) {
+            return false;
+        }
+
+        $default_values = static::getDefaultValues();
+
+        // Restore saved value or override with page parameter
+        $options['_saved'] = $this->restoreInput();
+
+        // Restore saved values and override $this->fields
+        $this->restoreSavedValues($options['_saved']);
+
+        // Set default options
+        if (!$ID) {
+            foreach ($default_values as $key => $val) {
+                if (!isset($options[$key])) {
+                    if (isset($options['_saved'][$key])) {
+                        $options[$key] = $options['_saved'][$key];
+                    } else {
+                        $options[$key] = $val;
+                    }
+                }
+            }
+        }
+
+        $this->initForm($ID, $options);
+
+        $canupdate = !$ID || (Session::getCurrentInterface() == "central" && $this->canUpdateItem());
+
+        if (!$this->isNewItem()) {
+            $options['formtitle'] = sprintf(
+                __('%1$s - ID %2$d'),
+                $this->getTypeName(1),
+                $ID
+            );
+            //set ID as already defined
+            $options['noid'] = true;
+        }
+
+        // Load template if available
+        $tt = $this->getITILTemplateToUse(
+            $options['template_preview'] ?? 0,
+            $this->getType(),
+            ($ID ? $this->fields['itilcategories_id'] : $options['itilcategories_id']),
+            ($ID ? $this->fields['entities_id'] : $options['entities_id'])
+        );
+
+        $predefined_fields = $this->setPredefinedFields($tt, $options, $default_values);
+
+        TemplateRenderer::getInstance()->display('components/itilobject/layout.html.twig', [
+            'item'                    => $this,
+            'timeline_itemtypes'      => $this->getTimelineItemtypes(),
+            'legacy_timeline_actions' => $this->getLegacyTimelineActionsHTML(),
+            'params'                  => $options,
+            'timeline'                => $this->getTimelineItems(),
+            'itiltemplate_key'        => static::getTemplateFormFieldName(),
+            'itiltemplate'            => $tt,
+            'predefined_fields'       => Toolbox::prepareArrayForInput($predefined_fields),
+            'canupdate'               => $canupdate,
+            'canpriority'             => $canupdate,
+            'canassign'               => $canupdate,
+        ]);
+
+        return true;
+    }
+
+    /**
+     * Return an array of predefined fields from provided template
+     * Append also data to $options param (passed by reference) :
+     *  - if we transform a ticket (form change and problem) or a problem (for change) override with its field
+     *  - override form fields from template (ex: if content field is set in template, content field in option will be overriden)
+     *  - if template changed (provided template doesn't match the one found in options), append a key _template_changed in $options
+     *  - finally, append templates_id in options
+     *
+     * @param ITILTemplate $tt The ticket template to use
+     * @param array $options The current options array (PASSED BY REFERENCE)
+     * @param array $default_values The default values to use in case they are not predefined
+     * @return array An array of the predefined values
+     */
+    protected function setPredefinedFields(ITILTemplate $tt, array &$options, array $default_values): array
+    {
+        // Predefined fields from template : reset them
+        if (isset($options['_predefined_fields'])) {
+            $options['_predefined_fields'] = Toolbox::decodeArrayFromInput($options['_predefined_fields']);
+        } else {
+            $options['_predefined_fields'] = [];
+        }
+        if (!isset($options['_hidden_fields'])) {
+            $options['_hidden_fields'] = [];
+        }
+
+        // check original ticket for change and problem
+        $tickets_id = $options['tickets_id'] ?? $options['_tickets_id'] ?? null;
+        $ticket = new Ticket();
+        $ticket->getEmpty();
+        if (in_array($this->getType(), ['Change', 'Problem']) && $tickets_id) {
+            $ticket->getFromDB($tickets_id);
+
+            $options['content']             = $ticket->fields['content'];
+            $options['name']                = $ticket->fields['name'];
+            $options['impact']              = $ticket->fields['impact'];
+            $options['urgency']             = $ticket->fields['urgency'];
+            $options['priority']            = $ticket->fields['priority'];
+            if (isset($options['tickets_id'])) {
+                //page is reloaded on category change, we only want category on the very first load
+                $category = new ITILCategory();
+                $category->getFromDB($ticket->fields['itilcategories_id']);
+                $options['itilcategories_id'] = $category->fields['is_change'] ? $ticket->fields['itilcategories_id'] : 0;
+            }
+            $options['time_to_resolve']     = $ticket->fields['time_to_resolve'];
+            $options['entities_id']         = $ticket->fields['entities_id'];
+        }
+
+        // check original problem for change
+        $problems_id = $options['problems_id'] ?? $options['_problems_id'] ?? null;
+        $problem = new Problem();
+        $problem->getEmpty();
+        if ($this->getType() == "Change" && $problems_id) {
+            $problem->getFromDB($problems_id);
+
+            $options['content']             = $problem->fields['content'];
+            $options['name']                = $problem->fields['name'];
+            $options['impact']              = $problem->fields['impact'];
+            $options['urgency']             = $problem->fields['urgency'];
+            $options['priority']            = $problem->fields['priority'];
+            if (isset($options['problems_id'])) {
+                //page is reloaded on category change, we only want category on the very first load
+                $options['itilcategories_id'] = $problem->fields['itilcategories_id'];
+            }
+            $options['time_to_resolve']     = $problem->fields['time_to_resolve'];
+            $options['entities_id']         = $problem->fields['entities_id'];
+        }
+
+        // Store predefined fields to be able not to take into account on change template
+        $predefined_fields = [];
+        $tpl_key = static::getTemplateFormFieldName();
+
+        // Change and Problem can have predefined fields only on creation
+        if ($this->getType() == "Ticket" || $this->isNewItem()) {
+            if (isset($tt->predefined) && count($tt->predefined)) {
+                foreach ($tt->predefined as $predeffield => $predefvalue) {
+                    if (isset($options[$predeffield]) && isset($default_values[$predeffield])) {
+                        // Is always default value : not set
+                        // Set if already predefined field
+                        // Set if ticket template change
+                        if (
+                            ((count($options['_predefined_fields']) == 0)
+                                && ($options[$predeffield] == $default_values[$predeffield]))
+                            || (isset($options['_predefined_fields'][$predeffield])
+                                && ($options[$predeffield] == $options['_predefined_fields'][$predeffield]))
+                            || (isset($options[$tpl_key])
+                                && ($options[$tpl_key] != $tt->getID()))
+
+                            // user pref for requestype can't overwrite requestype from template
+                            // when change category
+                            || ($predeffield == 'requesttypes_id'
+                                && empty(($options['_saved'] ?? [])))
+
+                            // tests specificic for change & problem
+                            || ($tickets_id != null
+                                && $options[$predeffield] == $ticket->fields[$predeffield])
+                            || ($problems_id != null
+                                && $options[$predeffield] == $problem->fields[$predeffield])
+                        ) {
+                            $options[$predeffield]           = $predefvalue;
+                            $predefined_fields[$predeffield] = $predefvalue;
+                        }
+                    } else { // Not defined options set as hidden field
+                        $options['_hidden_fields'][$predeffield] = $predefvalue;
+                    }
+                }
+                // All predefined override : add option to say predifined exists
+                if (count($predefined_fields) == 0) {
+                    $predefined_fields['_all_predefined_override'] = 1;
+                }
+            } else { // No template load : reset predefined values
+                if (count($options['_predefined_fields'])) {
+                    foreach ($options['_predefined_fields'] as $predeffield => $predefvalue) {
+                        if ($options[$predeffield] == $predefvalue) {
+                            $options[$predeffield] = $default_values[$predeffield];
+                        }
+                    }
+                }
+            }
+        }
+        // append to options to know later we added predefined values
+        // we may need this especially for actors
+        if (count($predefined_fields)) {
+            $options['_predefined_fields'] = $predefined_fields;
+        }
 
         // check if we load the default template (when openning form for example) or the template changed
-        if (!isset($options[$tpl_key]) || $options[$tpl_key] != $it->fields['id']) {
+        if (!isset($options[$tpl_key]) || $options[$tpl_key] != $tt->getId()) {
             $options['_template_changed'] = true;
         }
 
-        // Put ticket template on $options for actors
-        $options[str_replace('s_id', '', $tpl_key)] = $it->fields['id'];
+        // Put ticket template id on $options for actors
+        $options[str_replace('s_id', '', $tpl_key)] = $tt->getId();
 
-        return $options;
+        // Add all values to fields of tickets for template preview
+        if (($options['template_preview'] ?? false)) {
+            foreach ($options as $key => $val) {
+                if (!isset($this->fields[$key])) {
+                    $this->fields[$key] = $val;
+                }
+            }
+        }
+
+        return $predefined_fields;
     }
 
 
