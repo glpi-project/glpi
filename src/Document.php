@@ -668,9 +668,9 @@ class Document extends CommonDBTM
      *
      * @param array $options array of possible options used to check rights:
      *     - itemtype/items_id:     itemtype and ID of item linked to document
-     *     - changes_id (legacy):   ID of Change linked to document
-     *     - problems_id (legacy):  ID of Problem linked to document
-     *     - tickets_id (legacy):   ID of Ticket linked to document
+     *     - changes_id (legacy):   ID of Change linked to document. Ignored if itemtype/items_id options are set.
+     *     - problems_id (legacy):  ID of Problem linked to document. Ignored if itemtype/items_id options are set.
+     *     - tickets_id (legacy):   ID of Ticket linked to document. Ignored if itemtype/items_id options are set.
      *
      * @return boolean
      **/
@@ -699,21 +699,15 @@ class Document extends CommonDBTM
         $items_id = $options['items_id'] ?? null;
 
         // legacy options
-        $changes_id  = $options['changes_id'] ?? null;
-        $problems_id = $options['problems_id'] ?? null;
-        $tickets_id  = $options['tickets_id'] ?? null;
+        $changes_id  = $itemtype === null ? ($options['changes_id'] ?? null) : ($itemtype === 'Change' ? $items_id : null);
+        $problems_id = $itemtype === null ? ($options['problems_id'] ?? null) : ($itemtype === 'Problem' ? $items_id : null);
+        $tickets_id  = $itemtype === null ? ($options['tickets_id'] ?? null) : ($itemtype === 'Ticket' ? $items_id : null);
 
-        if (
-            ($changes_id !== null && $this->canViewFileFromItilObject('Change', $changes_id))
-            || ($itemtype === 'Change' && $items_id !== null && $this->canViewFileFromItilObject('Change', $items_id))
-        ) {
+        if ($changes_id !== null && $this->canViewFileFromItilObject('Change', $changes_id)) {
             return true;
         }
 
-        if (
-            ($problems_id !== null && $this->canViewFileFromItilObject('Problem', $problems_id))
-            || ($itemtype === 'Problem' && $items_id !== null && $this->canViewFileFromItilObject('Problem', $items_id))
-        ) {
+        if ($problems_id !== null && $this->canViewFileFromItilObject('Problem', $problems_id)) {
             return true;
         }
 
@@ -728,10 +722,7 @@ class Document extends CommonDBTM
         // The following case should be reachable from the API
         self::loadAPISessionIfExist();
 
-        if (
-            ($tickets_id !== null && $this->canViewFileFromItilObject('Ticket', $tickets_id))
-            || ($itemtype === 'Ticket' && $items_id !== null && $this->canViewFileFromItilObject('Ticket', $items_id))
-        ) {
+        if ($tickets_id !== null && $this->canViewFileFromItilObject('Ticket', $tickets_id)) {
             return true;
         }
 
