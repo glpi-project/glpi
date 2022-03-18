@@ -3793,6 +3793,9 @@ JS;
         if (!$enable_images) {
             $invalid_elements .= ',img';
         }
+        if (!GLPI_ALLOW_IFRAME_IN_RICH_TEXT) {
+            $invalid_elements .= ',iframe';
+        }
 
         $plugins = [
             'autoresize',
