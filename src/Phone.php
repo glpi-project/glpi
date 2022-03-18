@@ -468,6 +468,39 @@ class Phone extends CommonDBTM
     }
 
 
+   /**
+    * @param $itemtype
+    *
+    * @return array
+    */
+    public static function rawSearchOptionsToAdd($itemtype = null)
+    {
+        $tab = [];
+
+        $tab[] = [
+            'id'                 => 'phone',
+            'name'               => self::getTypeName(Session::getPluralNumber())
+        ];
+
+        $tab[] = [
+            'id'                 => '132',
+            'table'              => 'glpi_computers_items',
+            'field'              => 'id',
+            'name'               => _x('quantity', 'Number of phones'),
+            'forcegroupby'       => true,
+            'usehaving'          => true,
+            'datatype'           => 'count',
+            'massiveaction'      => false,
+            'joinparams'         => [
+                'jointype'           => 'child',
+                'condition'          => ['NEWTABLE.itemtype' => 'Phone']
+            ]
+        ];
+
+        return $tab;
+    }
+
+
     public static function getIcon()
     {
         return "ti ti-phone";

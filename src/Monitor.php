@@ -468,6 +468,38 @@ class Monitor extends CommonDBTM
         return $tab;
     }
 
+   /**
+    * @param $itemtype
+    *
+    * @return array
+    */
+    public static function rawSearchOptionsToAdd($itemtype = null)
+    {
+        $tab = [];
+
+        $tab[] = [
+            'id'                 => 'monitor',
+            'name'               => self::getTypeName(Session::getPluralNumber())
+        ];
+
+        $tab[] = [
+            'id'                 => '129',
+            'table'              => 'glpi_computers_items',
+            'field'              => 'id',
+            'name'               => _x('quantity', 'Number of monitors'),
+            'forcegroupby'       => true,
+            'usehaving'          => true,
+            'datatype'           => 'count',
+            'massiveaction'      => false,
+            'joinparams'         => [
+                'jointype'           => 'child',
+                'condition'          => ['NEWTABLE.itemtype' => 'Monitor']
+            ]
+        ];
+
+        return $tab;
+    }
+
 
     public static function getIcon()
     {

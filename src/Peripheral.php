@@ -390,6 +390,38 @@ class Peripheral extends CommonDBTM
         return $tab;
     }
 
+   /**
+    * @param $itemtype
+    *
+    * @return array
+    */
+    public static function rawSearchOptionsToAdd($itemtype = null)
+    {
+        $tab = [];
+
+        $tab[] = [
+            'id'                 => 'peripheral',
+            'name'               => self::getTypeName(Session::getPluralNumber())
+        ];
+
+        $tab[] = [
+            'id'                 => '130',
+            'table'              => 'glpi_computers_items',
+            'field'              => 'id',
+            'name'               => _x('quantity', 'Number of peripherals'),
+            'forcegroupby'       => true,
+            'usehaving'          => true,
+            'datatype'           => 'count',
+            'massiveaction'      => false,
+            'joinparams'         => [
+                'jointype'           => 'child',
+                'condition'          => ['NEWTABLE.itemtype' => 'Peripheral']
+            ]
+        ];
+
+        return $tab;
+    }
+
 
     public static function getIcon()
     {
