@@ -120,15 +120,17 @@ class RuleImportAssetCollection extends RuleCollection
     public function prepareInputDataForProcess($input, $params)
     {
         $refused_id = $params['refusedequipments_id'] ?? null;
-        if ($refused_id !== null) {
-            $refused = new RefusedEquipment();
-            $refused->getFromDB($refused_id);
+        if ($refused_id === null) {
+            return $input;
+        }
 
+        $refused = new RefusedEquipment();
+        if ($refused->getFromDB($refused_id) && ($inventory_file = $refused->getInventoryFileName()) !== null) {
             $inventory_request = new \Glpi\Inventory\Request();
-            $contents = file_get_contents($refused->getInventoryFileName());
+            $contents = file_get_contents($inventory_file);
             $inventory_request
-            ->testRules()
-            ->handleRequest($contents);
+                ->testRules()
+                ->handleRequest($contents);
 
             $inventory = $inventory_request->getInventory();
             $item = $inventory->getItem();
@@ -149,6 +151,12 @@ class RuleImportAssetCollection extends RuleCollection
 
           //keep user values if any
             $input += $rules_input;
+        } else {
+            trigger_error(
+                sprintf('Invalid RefusedEquipment "%s" or inventory file missing', $refused_id),
+                E_USER_WARNING
+            );
+            $contents = '';
         }
 
         return $input;

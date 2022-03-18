@@ -43,8 +43,15 @@ $inventory_request->handleHeaders();
 $handle = true;
 if (isset($_GET['refused'])) {
     $refused = new RefusedEquipment();
-    $refused->getFromDB($_GET['refused']);
-    $contents = file_get_contents($refused->getInventoryFileName());
+    if ($refused->getFromDB($_GET['refused']) && ($inventory_file = $refused->getInventoryFileName()) !== null) {
+        $contents = file_get_contents($inventory_file);
+    } else {
+        trigger_error(
+            sprintf('Invalid RefusedEquipment "%s" or inventory file missing', $_GET['refused']),
+            E_USER_WARNING
+        );
+        $contents = '';
+    }
 } else if ($_SERVER['REQUEST_METHOD'] != 'POST') {
     if (isset($_GET['action']) && $_GET['action'] == 'getConfig') {
         /**
