@@ -473,35 +473,35 @@ class Phone extends CommonDBTM
     *
     * @return array
     */
-   public static function rawSearchOptionsToAdd($itemtype = null)
-   {
-      $tab = [];
+    public static function rawSearchOptionsToAdd($itemtype = null)
+    {
+        $tab = [];
 
-      $tab[] = [
-         'id'                 => 'phone',
-         'name'               => self::getTypeName(Session::getPluralNumber())
-      ];
+        $tab[] = [
+            'id'                 => 'phone',
+            'name'               => self::getTypeName(Session::getPluralNumber())
+        ];
 
-      $tab[] = [
-         'id'                 => '132',
-         'table'              => 'glpi_computers_items',
-         'field'              => 'id',
-         'name'               => _x('quantity', 'Number of phones'),
-         'forcegroupby'       => true,
-         'usehaving'          => true,
-         'datatype'           => 'count',
-         'massiveaction'      => false,
-         'joinparams'         => [
-            'jointype'           => 'child',
-            'condition'          => ['NEWTABLE.itemtype' => 'Phone']
-         ]
-      ];
+        $tab[] = [
+            'id'                 => '132',
+            'table'              => 'glpi_computers_items',
+            'field'              => 'id',
+            'name'               => _x('quantity', 'Number of phones'),
+            'forcegroupby'       => true,
+            'usehaving'          => true,
+            'datatype'           => 'count',
+            'massiveaction'      => false,
+            'joinparams'         => [
+                'jointype'           => 'child',
+                'condition'          => ['NEWTABLE.itemtype' => 'Phone']
+            ]
+        ];
 
-      return $tab;
-   }
+        return $tab;
+    }
 
 
-   public static function getIcon()
+    public static function getIcon()
     {
         return "ti ti-phone";
     }
