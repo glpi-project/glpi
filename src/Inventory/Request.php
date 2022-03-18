@@ -166,7 +166,7 @@ class Request extends AbstractRequest
         $this->inventory->contact($data);
 
         $response = [
-            'expiration' => $CFG_GLPI['inventory_frequence'] ?? self::DEFAULT_FREQUENCY,
+            'expiration' => $CFG_GLPI['inventory_frequency'] ?? self::DEFAULT_FREQUENCY,
             'status'     => 'ok'
         ];
 
@@ -198,7 +198,7 @@ class Request extends AbstractRequest
         if ($this->headers->hasHeader('GLPI-Agent-ID')) {
             $this->setMode(self::JSON_MODE);
             $response = [
-                'expiration' => $CFG_GLPI['inventory_frequence'] ?? self::DEFAULT_FREQUENCY,
+                'expiration' => $CFG_GLPI['inventory_frequency'] ?? self::DEFAULT_FREQUENCY,
                 'status'     => 'ok'
             ];
         } else {
@@ -325,7 +325,7 @@ class Request extends AbstractRequest
         $this->inventory->contact($data);
 
         $response = [
-            'expiration' => $CFG_GLPI['inventory_frequence'] ?? self::DEFAULT_FREQUENCY,
+            'expiration' => $CFG_GLPI['inventory_frequency'] ?? self::DEFAULT_FREQUENCY,
             'status'     => 'ok'
         ];
 
@@ -374,7 +374,7 @@ class Request extends AbstractRequest
         } else {
             if ($this->headers->hasHeader('GLPI-Agent-ID')) {
                 $response = [
-                    'expiration' => $CFG_GLPI['inventory_frequence'] ?? self::DEFAULT_FREQUENCY,
+                    'expiration' => $CFG_GLPI['inventory_frequency'] ?? self::DEFAULT_FREQUENCY,
                     'status'     => 'ok'
                 ];
             } else {
