@@ -143,8 +143,6 @@ class Volume extends InventoryAsset
 
     public function handle()
     {
-        global $DB;
-
         $itemDisk = new Item_Disk();
         $db_itemdisk = $this->getExisting();
 
