@@ -63,7 +63,7 @@ switch ($_REQUEST['action']) {
         }
 
         /** @var CommonDBTM $itemtype */
-        $itemtype = $_REQUEST['itemtype'];
+        $itemtype = $_UREQUEST['itemtype'];
         if (!$itemtype::canView()) {
             http_response_code(403);
             die;
