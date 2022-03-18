@@ -209,7 +209,7 @@ var Dashboard = {
             var active = $(this).hasClass('active');
 
             if (active) {
-                var seconds = parseInt(CFG_GLPI.refresh_ticket_list) * 60 || 30;
+                const seconds = parseInt(CFG_GLPI.refresh_views || 30) * 60;
                 Dashboard.interval = setInterval(function() {
                     Dashboard.refreshDashboard();
                 }, seconds * 1000);
