@@ -907,22 +907,7 @@ class NetworkPortInstantiation extends CommonDBChild
             $device2 = $oppositePort->getItem();
 
             if ($device2->can($device2->fields["id"], READ)) {
-                $networklink = $oppositePort->getLink();
-                $tooltip     = Html::showToolTip(
-                    $oppositePort->fields['comment'],
-                    ['display' => false]
-                );
-                $netlink     = sprintf(
-                    __('%1$s %2$s'),
-                    "<span class='b'>" . $networklink . "</span>\n",
-                    $tooltip
-                );
-               //TRANS: %1$s and %2$s are links
-                echo "&nbsp;" . sprintf(
-                    __('%1$s on %2$s'),
-                    $netlink,
-                    "<span class='b'>" . $device2->getLink() . "</span>"
-                );
+                echo $oppositePort->getLink();
                 if ($device1->fields["entities_id"] != $device2->fields["entities_id"]) {
                      echo "<br>(" . Dropdown::getDropdownName(
                          "glpi_entities",
@@ -940,7 +925,9 @@ class NetworkPortInstantiation extends CommonDBChild
                         $oppositePort->getFormURL(),
                         'disconnect',
                         _x('button', 'Disconnect'),
-                        ['id' => $relations_id]
+                        ['id' => $relations_id],
+                        'fa-unlink netport',
+                        'class="btn btn-sm btn-ghost-danger"'
                     );
                 }
             } else {
