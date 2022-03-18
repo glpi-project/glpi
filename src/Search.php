@@ -6425,6 +6425,11 @@ JAVASCRIPT;
                         $linkid = ($data[$ID][$k]['tickets_id_2'] == $data['id'])
                                  ? $data[$ID][$k]['name']
                                  : $data[$ID][$k]['tickets_id_2'];
+
+                        // If link ID is int or integer string, force conversion to int. Coversion to int and then string to compare is needed to ensure it isn't a decimal
+                        if (is_numeric($linkid) && ((string)(int)$linkid === (string)$linkid)) {
+                            $linkid = (int) $linkid;
+                        }
                         if ((is_int($linkid) && $linkid > 0) && !isset($displayed[$linkid])) {
                              $text  = "<a ";
                              $text .= "href=\"" . Ticket::getFormURLWithID($linkid) . "\">";
