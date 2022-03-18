@@ -291,7 +291,7 @@ class CommonDBTM extends CommonGLPI
         global $DB;
        // Make new database object and fill variables
 
-       // != 0 because 0 is consider as empty
+       // != 0 because 0 is considered as empty
         if (strlen((string)$ID) == 0) {
             return false;
         }

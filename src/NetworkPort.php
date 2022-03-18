@@ -702,7 +702,7 @@ class NetworkPort extends CommonDBChild
             'Networkport',
             Session::getLoginUserID()
         );
-       //hardcode add name column
+        //hardcode add name column
         array_unshift($dprefs, 1);
         $colspan = count($dprefs);
 
@@ -712,7 +712,7 @@ class NetworkPort extends CommonDBChild
             ++$colspan;
         }
 
-       // Show Add Form
+        // Show Add Form
         if (
             $canedit
             && (empty($withtemplate) || ($withtemplate != 2))
@@ -835,7 +835,7 @@ class NetworkPort extends CommonDBChild
         }
         echo "</tr>";
 
-       //display row contents
+        //display row contents
         if (!count($ports_iterator)) {
             echo "<tr><th colspan='$colspan'>" . __('No network port found') . "</th></tr>";
         }
@@ -859,7 +859,7 @@ class NetworkPort extends CommonDBChild
             Html::closeForm();
         }
 
-       //management ports
+        //management ports
         $criteria = [
             'FROM'   => $netport->getTable(),
             'WHERE'  => [
@@ -875,7 +875,7 @@ class NetworkPort extends CommonDBChild
             echo "<hr/>";
             echo "<table class='tab_cadre_fixehov'>";
 
-           //hradcode display preferences form management port
+            //hardcode display preferences form management port
             $dprefs = [
                 1, //name
                 4, //mac
@@ -892,7 +892,7 @@ class NetworkPort extends CommonDBChild
             echo "</th></tr></thead>";
 
             echo "<tr>";
-           //display table headers
+            //display table headers
             foreach ($dprefs as $dpref) {
                 echo "<th>";
                 foreach ($so as $option) {
@@ -905,7 +905,7 @@ class NetworkPort extends CommonDBChild
             }
             echo "</tr>";
 
-           //display row contents
+            //display row contents
             foreach ($mports_iterator as $row) {
                 echo $netport->showPort(
                     $row,
@@ -975,7 +975,7 @@ class NetworkPort extends CommonDBChild
                             break;
                         case 31:
                             $speed = $port[$option['field']];
-                           //TRANS: list of unit (bps for bytes per second)
+                            //TRANS: list of unit (bps for bytes per second)
                             $bytes = [__('bps'), __('Kbps'), __('Mbps'), __('Gbps'), __('Tbps')];
                             foreach ($bytes as $val) {
                                 if ($speed >= 1000) {
@@ -984,7 +984,7 @@ class NetworkPort extends CommonDBChild
                                     break;
                                 }
                             }
-                           //TRANS: %1$s is a number maybe float or string and %2$s the unit
+                            //TRANS: %1$s is a number maybe float or string and %2$s the unit
                             $output .= sprintf(__('%1$s %2$s'), round($speed, 2), $val);
                             break;
                         case 32:
@@ -1012,8 +1012,8 @@ class NetworkPort extends CommonDBChild
                             );
                             break;
                         case 34:
-                                $in = $port[$option['field']];
-                                $out = $port['ifoutbytes'];
+                            $in = $port[$option['field']];
+                            $out = $port['ifoutbytes'];
 
                             if (empty($in) && empty($out)) {
                                 break;
@@ -1034,8 +1034,8 @@ class NetworkPort extends CommonDBChild
                             $output .= sprintf('%s / %s', $in, $out);
                             break;
                         case 35:
-                              $in = $port[$option['field']];
-                              $out = $port['ifouterrors'];
+                            $in = $port[$option['field']];
+                            $out = $port['ifouterrors'];
 
                             if ($in == 0 && $out == 0) {
                                 break;
@@ -1114,7 +1114,7 @@ class NetworkPort extends CommonDBChild
                                 $device2 = $oppositePort->getItem();
                                 $output .= $this->getUnmanagedLink($device2, $oppositePort);
 
-                               //equipments connected to hubs
+                                //equipments connected to hubs
                                 if ($device2->getType() == Unmanaged::getType() && $device2->fields['hub'] == 1) {
                                     $houtput = "<div class='hub'>";
 
@@ -1231,7 +1231,6 @@ class NetworkPort extends CommonDBChild
                             $output .= $port[$option['field']];
                             break;
                     }
-                    continue;
                 }
             }
             $whole_output .= "<td class='$td_class'>" . $output . "</td>";
@@ -1269,35 +1268,22 @@ class NetworkPort extends CommonDBChild
 
     protected function getUnmanagedLink($device, $port)
     {
-        $device_link = $device->getLink(1);
+        $link = $port->getLink();
 
-        $link_replaces = $device->getName(0);
         if (!empty($port->fields['mac'])) {
-            $link_replaces .= '<br/>' . $port->fields['mac'];
+            $link .= '<br/>' . $port->fields['mac'];
         }
 
         $ips_iterator = $this->getIpsForPort($port->getType(), $port->getID());
-
         $ips = '';
         foreach ($ips_iterator as $ipa) {
             $ips .= ' ' . $ipa['name'];
         }
         if (!empty($ips)) {
-            $link_replaces .= '<br/>' . $ips;
+            $link .= '<br/>' . $ips;
         }
 
-        $device_link = str_replace(
-            $device->getName(0),
-            $link_replaces,
-            $device->getLink(1)
-        );
-
-        $icon = sprintf(
-            "<i class='%s'></i> ",
-            $device->getIcon()
-        );
-
-        return $icon . $device_link;
+        return $link;
     }
 
     public function showForm($ID, array $options = [])
@@ -1778,21 +1764,26 @@ class NetworkPort extends CommonDBChild
         return $specificities;
     }
 
-    public function computeFriendlyName()
+
+    public function getLink($options = [])
     {
-        global $DB;
+        $port_link = parent::getLink($options);
 
-        $iterator = $DB->request([
-            'SELECT' => ['name'],
-            'FROM'   => $this->fields['itemtype']::getTable(),
-            'WHERE'  => ['id' => $this->fields['items_id']]
-        ]);
+        $itemtype = $this->fields['itemtype'];
+        /** @var CommonDBTM */
+        $equipment = new $itemtype();
 
-        if ($iterator->count()) {
-            return sprintf(__('%1$s on %2$s'), parent::computeFriendlyName(), $iterator->current()['name']);
+        if ($equipment->getFromDB($this->fields['items_id'])) {
+            return sprintf(
+                '<i class="%1$s"></i> %2$s > <i class="%3$s"></i> %4$s',
+                $equipment->getIcon(),
+                $equipment->getLink(),
+                $this->getIcon(),
+                $port_link,
+            );
         }
 
-        return parent::computeFriendlyName();
+        return $port_link;
     }
 
     /**
@@ -1845,5 +1836,10 @@ class NetworkPort extends CommonDBChild
             'ifinerrors',
             'ifouterrors'
         ];
+    }
+
+    public static function getIcon()
+    {
+        return "fas fa-ethernet";
     }
 }
