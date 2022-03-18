@@ -36,7 +36,6 @@ use Glpi\Plugin\Hooks;
 use Glpi\RichText\RichText;
 use Glpi\Team\Team;
 use Glpi\Toolbox\Sanitizer;
-use Laminas\I18n\Validator\IsInt;
 
 /**
  * CommonITILObject Class
