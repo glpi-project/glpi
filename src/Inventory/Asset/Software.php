@@ -745,6 +745,14 @@ class Software extends InventoryAsset
                 $input['date_install']
             );
             $DB->executeStatement($stmt);
+
+            \Log::history(
+                $this->item->fields['id'],
+                $this->item->getType(),
+                [0, '', $val->name],
+                'Software',
+                \Log::HISTORY_ADD_SUBITEM
+            );
         }
     }
 
