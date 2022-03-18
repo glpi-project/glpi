@@ -372,7 +372,7 @@ class Update
             }
         }
 
-        ksort($migrations);
+        ksort($migrations, SORT_NATURAL);
 
         return $migrations;
     }
