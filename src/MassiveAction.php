@@ -142,6 +142,36 @@ class MassiveAction
     private $check_item;
 
     /**
+     * Redirect URL used after actions are processed.
+     * @var string
+     */
+    private $redirect;
+
+    /**
+     * Indicates whether progress bar has to be displayed.
+     * @var bool
+     */
+    private $display_progress_bars;
+
+    /**
+     * Indicates whether progress bar is currently displayed.
+     * @var bool
+     */
+    private $progress_bar_displayed;
+
+    /**
+     * Buffer that stores messages to display after redirect.
+     * @var null|array
+     */
+    private $message_after_redirect;
+
+    /**
+     * Itemtype currently processed.
+     * @var string
+     */
+    private $current_itemtype;
+
+    /**
      * Constructor of massive actions.
      * There is three stages and each one have its own objectives:
      * - initial: propose the actions and filter the checkboxes (only once)
@@ -410,11 +440,16 @@ class MassiveAction
                 $value = $this->getItems();
                 break;
             case 'check_item':
+            case 'current_itemtype':
+            case 'display_progress_bars':
             case 'done':
             case 'fields_to_remove_when_reload':
             case 'identifier':
+            case 'message_after_redirect':
             case 'nb_done':
             case 'nb_items':
+            case 'progress_bar_displayed':
+            case 'redirect':
             case 'remainings':
             case 'timeout_delay':
             case 'timer':
@@ -437,16 +472,23 @@ class MassiveAction
         // TODO Deprecate access to variables in GLPI 10.1.
         $value = null;
         switch ($property) {
+            case 'display_progress_bars':
+                $this->$property = $value;
+                break;
             case 'action':
             case 'action_name':
             case 'check_item':
+            case 'current_itemtype':
             case 'done':
             case 'fields_to_remove_when_reload':
             case 'identifier':
             case 'items':
+            case 'message_after_redirect':
             case 'nb_done':
             case 'nb_items':
             case 'processor':
+            case 'progress_bar_displayed':
+            case 'redirect':
             case 'remainings':
             case 'timeout_delay':
             case 'timer':
@@ -575,24 +617,19 @@ class MassiveAction
      **/
     public function addHiddenFields()
     {
+        $common_fields = ['action', 'processor', 'is_deleted', 'initial_items',
+            'item_itemtype', 'item_items_id', 'items', 'action_name'
+        ];
 
-        if (empty($this->hidden_fields_defined)) {
-            $this->hidden_fields_defined = true;
+        if (!empty($this->POST['massive_action_fields'])) {
+            $common_fields = array_merge($common_fields, $this->POST['massive_action_fields']);
+        }
 
-            $common_fields = ['action', 'processor', 'is_deleted', 'initial_items',
-                'item_itemtype', 'item_items_id', 'items', 'action_name'
-            ];
-
-            if (!empty($this->POST['massive_action_fields'])) {
-                $common_fields = array_merge($common_fields, $this->POST['massive_action_fields']);
-            }
-
-            foreach ($common_fields as $field) {
-                if (isset($this->POST[$field])) {
-                    // Value will be sanitized again when massive action form will be submitted.
-                    // It have to be unsanitized here to prevent double sanitization.
-                    echo Html::hidden($field, ['value' => Sanitizer::unsanitize($this->POST[$field])]);
-                }
+        foreach ($common_fields as $field) {
+            if (isset($this->POST[$field])) {
+                // Value will be sanitized again when massive action form will be submitted.
+                // It have to be unsanitized here to prevent double sanitization.
+                echo Html::hidden($field, ['value' => Sanitizer::unsanitize($this->POST[$field])]);
             }
         }
     }
@@ -1271,7 +1308,7 @@ class MassiveAction
         }
 
         if ($this->display_progress_bars) {
-            if (!isset($this->progress_bar_displayed)) {
+            if ($this->progress_bar_displayed !== true) {
                 Html::progressBar('main_' . $this->identifier, ['create'  => true,
                     'message' => $this->action_name
                 ]);
@@ -1283,7 +1320,7 @@ class MassiveAction
             }
             $percent = 100 * $this->nb_done / $this->nb_items;
             Html::progressBar('main_' . $this->identifier, ['percent' => $percent]);
-            if ((count($this->items) > 1) && isset($this->current_itemtype)) {
+            if ((count($this->items) > 1) && $this->current_itemtype !== null) {
                 $itemtype = $this->current_itemtype;
                 if (isset($this->items[$itemtype])) {
                     if (isset($this->done[$itemtype])) {
@@ -1316,10 +1353,10 @@ class MassiveAction
         if (!empty($this->remainings)) {
             $this->updateProgressBars();
 
-            if (isset($this->message_after_redirect) && !empty($this->message_after_redirect)) {
+            if (!empty($this->message_after_redirect)) {
                 $_SESSION["MESSAGE_AFTER_REDIRECT"] = $this->message_after_redirect;
                 Html::displayMessageAfterRedirect();
-                unset($this->message_after_redirect);
+                $this->message_after_redirect = null;
             }
 
             $processor = $this->processor;
