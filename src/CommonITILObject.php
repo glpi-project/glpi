@@ -2924,16 +2924,15 @@ abstract class CommonITILObject extends CommonDBTM
             }
         }
 
-        $priorities = [];
         $active_priorities = [];
         foreach ($urgencies as $urgency) {
             foreach ($impacts as $impact) {
                 if (isset($CFG_GLPI["_matrix_${urgency}_${impact}"])) {
-                    $priorities[] = $CFG_GLPI["_matrix_${urgency}_${impact}"];
+                    $active_priorities[] = $CFG_GLPI["_matrix_${urgency}_${impact}"];
                 }
             }
         }
-        $active_priorities = array_unique($priorities);
+        $active_priorities = array_unique($active_priorities);
         if (count($active_priorities) > 0) {
             foreach ($values as $priority => $name) {
                 if (!in_array($priority, $active_priorities)) {
