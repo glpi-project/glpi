@@ -42,13 +42,20 @@ class DataExport extends \GLPITestCase
 {
     protected function normalizeValueForTextExportProvider(): iterable
     {
-       // Standard value
+        // Standard value
         yield [
             'value'           => 'Some value',
             'expected_result' => 'Some value',
         ];
 
-       // Ticket title column
+        // Malformed HTML (some special chars are not encoded)
+        // It is not considered as sanitized, so it will be returned verbatim.
+        yield [
+            'value'           => '&#60;span&#62;span containing non encoded > special char&#60;/span&#62;',
+            'expected_result' => '&#60;span&#62;span containing non encoded > special char&#60;/span&#62;',
+        ];
+
+        // Ticket title column
         yield [
             'value'           => Sanitizer::sanitize(<<<HTML
 <a id="Ticket1" href="/front/ticket.form.php?id=1" data-hasqtip="0">Ticket title</a>
@@ -63,7 +70,15 @@ $(function(){\$('#Ticket1').qtip({
 //]]>
 </script>
 HTML, false),
-            'expected_result' => "Ticket title ",
+            'expected_result' => 'Ticket title',
+        ];
+
+        // Ticket status
+        yield [
+            'value'           => Sanitizer::sanitize(<<<HTML
+<i class="itilstatus far fa-circle assigned me-1" title="" data-bs-toggle="tooltip" data-bs-original-title="Processing (assigned)" aria-label="Processing (assigned)"></i>&nbsp;Processing (assigned)</span>
+HTML, false),
+            'expected_result' => 'Processing (assigned)',
         ];
     }
 

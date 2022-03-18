@@ -50,24 +50,36 @@ class DataExport
         $value = Sanitizer::unsanitize($value);
 
         if (RichText::isRichTextHtmlContent($value)) {
-           // Remove invisible contents (tooltips for instance)
             libxml_use_internal_errors(true); // Silent errors
             $document = new \DOMDocument();
             $document->loadHTML(
-                mb_convert_encoding('<div>' . $value . '</div>', 'HTML-ENTITIES', 'UTF-8'),
+                '<div>' . $value . '</div>',
                 LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD
             );
 
+            // Remove invisible contents (tooltips for instance)
             $xpath = new \DOMXPath($document);
             $invisible_elements = $xpath->query('//div[contains(@class, "invisible")]');
             foreach ($invisible_elements as $element) {
-                 $element->parentNode->removeChild($element);
+                $element->parentNode->removeChild($element);
+            }
+
+            // Remove FontAwesome and Table icons that does not contains any text
+            $icons_elements = $xpath->query('//*[contains(@class, "fa-") or contains(@class, "ti-")]');
+            foreach ($icons_elements as $element) {
+                if (strlen(trim($element->textContent)) === 0) {
+                    $element->parentNode->removeChild($element);
+                }
             }
 
             $value = $document->saveHTML();
 
-           // Transform into simple text
+            // Transform into simple text
             $value = RichText::getTextFromHtml($value, true, true);
+
+            // Remove extra spacing
+            $nbsp = chr(0xC2) . chr(0xA0); // unicode value of decoded &nbsp;
+            $value = trim($value, " \n\r\t" . $nbsp);
         }
 
         return $value;
