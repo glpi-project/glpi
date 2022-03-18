@@ -350,7 +350,7 @@ abstract class CommonITILObject extends CommonDBTM
         }
 
         // Put ticket template on $options for actors
-        $options[str_replace('s_id', '', $tpl_key)] = $it;
+        $options[str_replace('s_id', '', $tpl_key)] = $it->fields['id'];
 
         return $options;
     }
@@ -4713,7 +4713,14 @@ abstract class CommonITILObject extends CommonDBTM
        // For ticket templates : mandatories
         $key = $this->getTemplateFormFieldName();
         if (isset($options[$key])) {
-            echo $options[$key]->getMandatoryMark("_users_id_" . $typename);
+            $tt = $options[$key];
+            if (is_numeric($options[$key])) {
+                $tt_id = $options[$key];
+                $tt_classname = self::getTemplateClass();
+                $tt = new $tt_classname();
+                $tt->getFromDB($tt_id);
+            }
+            echo $tt->getMandatoryMark("_users_id_" . $typename);
         }
 
         $right = $options["_right"] ?? $this->getDefaultActorRightSearch($type);

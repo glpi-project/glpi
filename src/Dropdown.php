@@ -283,6 +283,8 @@ class Dropdown
                 } else {
                     $options_tooltip['link']       = $item->getSearchURL();
                 }
+            } else {
+                $options_tooltip['awesome-class'] = 'btn btn-outline-secondary fa-info';
             }
 
             if (empty($comment)) {
@@ -299,7 +301,7 @@ class Dropdown
                 $paramscomment['withlink'] = $link_id;
             }
 
-           // Comment icon
+            // Comment icon
             $icons .= Ajax::updateItemOnSelectEvent(
                 $field_id,
                 $comment_id,
@@ -310,7 +312,7 @@ class Dropdown
             $options_tooltip['link_class'] = 'btn btn-outline-secondary';
             $icons .= Html::showToolTip($comment, $options_tooltip);
 
-           // Add icon
+            // Add icon
             if (
                 ($item instanceof CommonDropdown)
                 && $item->canCreate()
