@@ -8628,7 +8628,7 @@ HTML;
     {
 
         $value = preg_replace('/\x0A/', ' ', $value);
-        $value = preg_replace('/\x0D/', null, $value);
+        $value = preg_replace('/\x0D/', '', $value);
         $value = str_replace("\"", "''", $value);
         $value = str_replace("\n", " | ", $value);
 
