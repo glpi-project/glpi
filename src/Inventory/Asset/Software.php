@@ -50,6 +50,7 @@ class Software extends InventoryAsset
     private $softwares = [];
     private $versions = [];
     private $current_versions = [];
+    private $deleted_versions = [];
     private $entities_id_software;
 
     /** @var array */
@@ -315,6 +316,8 @@ class Software extends InventoryAsset
 
         //not found version means soft has been removed or updated, drop it
         if (count($db_software) > 0 && (!$this->main_asset || !$this->main_asset->isPartial() || $this->main_asset->isPartial() && $count_import)) {
+            $this->deleted_versions = array_values($db_software);
+            $this->logDeletedSoftwares();
             $DB->delete(
                 'glpi_items_softwareversions',
                 [
@@ -752,6 +755,50 @@ class Software extends InventoryAsset
                 [0, '', $val->name],
                 'Software',
                 \Log::HISTORY_ADD_SUBITEM
+            );
+        }
+    }
+
+    /**
+     * logs the deleted softwares in the history
+     *
+     * @return void
+     */
+    public function logDeletedSoftwares() {
+        global $DB;
+
+        if (count($this->deleted_versions) == 0) {
+            return;
+        }
+
+        $iterator = $DB->request([
+            'SELECT' => 'glpi_softwares.name',
+            'FROM'   => 'glpi_softwares',
+            'LEFT JOIN' => [
+                'glpi_softwareversions' => [
+                    'ON'  => [
+                        'glpi_softwareversions' => 'softwares_id',
+                        'glpi_softwares'        => 'id'
+                    ]
+                ],
+                'glpi_items_softwareversions' => [
+                    'ON'  => [
+                        'glpi_items_softwareversions' => 'softwareversions_id',
+                        'glpi_softwareversions'       => 'id'
+                    ]
+                ],
+            ],
+            'WHERE'  => [
+                'glpi_items_softwareversions.id' => $this->deleted_versions
+            ]
+        ]);
+        foreach ($iterator as $software) {
+            \Log::history(
+                $this->item->fields['id'],
+                $this->item->getType(),
+                [0, '', $software['name']],
+                'Software',
+                \Log::HISTORY_DELETE_SUBITEM
             );
         }
     }
