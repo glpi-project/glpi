@@ -160,11 +160,13 @@ class Request extends AbstractRequest
      */
     public function getParams($data)
     {
+        global $CFG_GLPI;
+
         $this->inventory = new Inventory();
         $this->inventory->contact($data);
 
         $response = [
-            'expiration' => self::DEFAULT_FREQUENCY,
+            'expiration' => $CFG_GLPI['inventory_frequence'] ?? self::DEFAULT_FREQUENCY,
             'status'     => 'ok'
         ];
 
@@ -191,10 +193,12 @@ class Request extends AbstractRequest
      */
     public function prolog($data)
     {
+        global $CFG_GLPI;
+
         if ($this->headers->hasHeader('GLPI-Agent-ID')) {
             $this->setMode(self::JSON_MODE);
             $response = [
-                'expiration'  => self::DEFAULT_FREQUENCY,
+                'expiration' => $CFG_GLPI['inventory_frequence'] ?? self::DEFAULT_FREQUENCY,
                 'status'     => 'ok'
             ];
         } else {
@@ -315,11 +319,13 @@ class Request extends AbstractRequest
      */
     public function contact($data)
     {
+        global $CFG_GLPI;
+
         $this->inventory = new Inventory();
         $this->inventory->contact($data);
 
         $response = [
-            'expiration'  => self::DEFAULT_FREQUENCY,
+            'expiration' => $CFG_GLPI['inventory_frequence'] ?? self::DEFAULT_FREQUENCY,
             'status'     => 'ok'
         ];
 
@@ -352,6 +358,8 @@ class Request extends AbstractRequest
      */
     public function inventory($data)
     {
+        global $CFG_GLPI;
+
         $this->inventory = new Inventory();
         $this->inventory
          ->setRequestQuery($this->query)
@@ -366,7 +374,7 @@ class Request extends AbstractRequest
         } else {
             if ($this->headers->hasHeader('GLPI-Agent-ID')) {
                 $response = [
-                    'expiration'  => self::DEFAULT_FREQUENCY,
+                    'expiration' => $CFG_GLPI['inventory_frequence'] ?? self::DEFAULT_FREQUENCY,
                     'status'     => 'ok'
                 ];
             } else {
