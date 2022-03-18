@@ -1746,7 +1746,7 @@ class Inventory extends InventoryTestCase
             'OFFSET' => $nblogsnow,
         ]);
 
-        $this->integer(count($logs))->isIdenticalTo(1241);
+        $this->integer(count($logs))->isIdenticalTo(1238);
 
         $expected_types_count = [
             \Log::HISTORY_DELETE_SUBITEM => 4,//networkport and networkname
