@@ -120,12 +120,12 @@ class RuleImportAssetCollection extends RuleCollection
     public function prepareInputDataForProcess($input, $params)
     {
         $refused_id = $params['refusedequipments_id'] ?? null;
+        if ($refused_id === null) {
+            return $input;
+        }
+
         $refused = new RefusedEquipment();
-        if (
-            $refused_id !== null
-            && $refused->getFromDB($refused_id)
-            && ($inventory_file = $refused->getInventoryFileName()) !== null
-        ) {
+        if ($refused->getFromDB($refused_id) && ($inventory_file = $refused->getInventoryFileName()) !== null) {
             $inventory_request = new \Glpi\Inventory\Request();
             $contents = file_get_contents($inventory_file);
             $inventory_request
