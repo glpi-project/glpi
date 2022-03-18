@@ -576,6 +576,14 @@ class Computer extends CommonDBTM
 
         $tab = array_merge($tab, ComputerAntivirus::rawSearchOptionsToAdd());
 
+        $tab = array_merge($tab, Monitor::rawSearchOptionsToAdd());
+
+        $tab = array_merge($tab, Peripheral::rawSearchOptionsToAdd());
+
+        $tab = array_merge($tab, Printer::rawSearchOptionsToAdd());
+
+        $tab = array_merge($tab, Phone::rawSearchOptionsToAdd());
+
         $tab = array_merge($tab, Datacenter::rawSearchOptionsToAdd(get_class($this)));
 
         $tab = array_merge($tab, Rack::rawSearchOptionsToAdd(get_class($this)));
