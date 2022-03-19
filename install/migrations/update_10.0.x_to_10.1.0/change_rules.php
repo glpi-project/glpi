@@ -31,22 +31,10 @@
  * ---------------------------------------------------------------------
  */
 
-class RuleTicketCollection extends RuleCommonITILObjectCollection
-{
-   // From RuleCollection
-    public static $rightname    = 'rule_ticket';
-    public $menu_option         = 'ticket';
+/**
+ * @var DB $DB
+ * @var Migration $migration
+ */
 
-    /**
-     * @see RuleCollection::prepareInputDataForProcess()
-     **/
-    public function prepareInputDataForProcess($input, $params)
-    {
-
-       // Pass x-priority header if exists
-        if (isset($input['_head']['x-priority'])) {
-            $input['_x-priority'] = $input['_head']['x-priority'];
-        }
-        return parent::prepareInputDataForProcess($input, $params);
-    }
-}
+// Add permissions for rules
+$migration->addRight('rule_change');

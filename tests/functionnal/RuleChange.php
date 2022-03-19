@@ -31,22 +31,24 @@
  * ---------------------------------------------------------------------
  */
 
-class RuleTicketCollection extends RuleCommonITILObjectCollection
+namespace tests\units;
+
+// Force import because of atoum autoloader not working
+require_once 'RuleCommonITILObject.php';
+
+class RuleChange extends RuleCommonITILObject
 {
-   // From RuleCollection
-    public static $rightname    = 'rule_ticket';
-    public $menu_option         = 'ticket';
-
-    /**
-     * @see RuleCollection::prepareInputDataForProcess()
-     **/
-    public function prepareInputDataForProcess($input, $params)
+    public function testGetCriteria()
     {
+        $rule = $this->getRuleInstance();
+        $criteria = $rule->getCriterias();
+        $this->array($criteria)->size->isGreaterThan(20);
+    }
 
-       // Pass x-priority header if exists
-        if (isset($input['_head']['x-priority'])) {
-            $input['_x-priority'] = $input['_head']['x-priority'];
-        }
-        return parent::prepareInputDataForProcess($input, $params);
+    public function testGetActions()
+    {
+        $rule = $this->getRuleInstance();
+        $actions  = $rule->getActions();
+        $this->array($actions)->size->isGreaterThan(20);
     }
 }
