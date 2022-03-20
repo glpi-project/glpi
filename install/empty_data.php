@@ -5752,19 +5752,19 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ], [
                 'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'computer',
-                'rights' => '255',
+                'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE | UNLOCK,
             ], [
                 'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'monitor',
-                'rights' => '255',
+                'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE | UNLOCK,
             ], [
                 'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'software',
-                'rights' => '255',
+                'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE | UNLOCK,
             ], [
                 'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'networking',
-                'rights' => '255',
+                'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE | UNLOCK,
             ], [
                 'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'internet',
@@ -5772,35 +5772,35 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ], [
                 'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'printer',
-                'rights' => '255',
+                'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE | UNLOCK,
             ], [
                 'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'peripheral',
-                'rights' => '255',
+                'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE | UNLOCK,
             ], [
                 'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'cartridge',
-                'rights' => '255',
+                'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE | UNLOCK,
             ], [
                 'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'consumable',
-                'rights' => '255',
+                'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE | UNLOCK,
             ], [
                 'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'phone',
-                'rights' => '255',
+                'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE | UNLOCK,
             ], [
                 'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'contact_enterprise',
-                'rights' => '255',
+                'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE | UNLOCK,
             ], [
                 'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'document',
-                'rights' => '255',
+                'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE | UNLOCK,
             ], [
                 'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'contract',
-                'rights' => '255',
+                'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE | UNLOCK,
             ], [
                 'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'infocom',
@@ -7195,7 +7195,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ], [
                 'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'license',
-                'rights' => '255',
+                'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE | UNLOCK,
             ], [
                 'profiles_id' => self::PROFILE_HOTLINER,
                 'name' => 'license',
@@ -7227,7 +7227,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ], [
                 'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'line',
-                'rights' => '255',
+                'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE | UNLOCK,
             ], [
                 'profiles_id' => self::PROFILE_HOTLINER,
                 'name' => 'line',
@@ -7323,7 +7323,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ], [
                 'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'certificate',
-                'rights' => '255',
+                'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE | UNLOCK,
             ], [
                 'profiles_id' => self::PROFILE_HOTLINER,
                 'name' => 'certificate',
