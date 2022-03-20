@@ -38,13 +38,21 @@ use Glpi\Toolbox\Sanitizer;
 // and adding unnecessary variables to IDE autocomplete data that may result in errors
 $empty_data_builder = new class{
 
+    /** @var int Self-service profile ID */
     const PROFILE_SELF_SERVICE = 1;
+    /** @var int Observer profile ID */
     const PROFILE_OBSERVER     = 2;
+    /** @var int Admin profile ID */
     const PROFILE_ADMIN        = 3;
+    /** @var int Super-admin profile ID */
     const PROFILE_SUPER_ADMIN  = 4;
+    /** @var int Hotliner profile ID */
     const PROFILE_HOTLINER     = 5;
+    /** @var int Technician profile ID */
     const PROFILE_TECHNICIAN   = 6;
+    /** @var int Supervisor profile ID */
     const PROFILE_SUPERVISOR   = 7;
+    /** @var int Read-only profile ID */
     const PROFILE_READ_ONLY    = 8;
 
     const USER_GLPI            = 1;
@@ -4878,2787 +4886,2787 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
 
         $tables['glpi_profilerights'] = [
             [
-                'profiles_id' => '1',
+                'profiles_id' => self::PROFILE_SELF_SERVICE,
                 'name' => 'computer',
                 'rights' => '0',
             ], [
-                'profiles_id' => '1',
+                'profiles_id' => self::PROFILE_SELF_SERVICE,
                 'name' => 'monitor',
                 'rights' => '0',
             ], [
-                'profiles_id' => '1',
+                'profiles_id' => self::PROFILE_SELF_SERVICE,
                 'name' => 'software',
                 'rights' => '0',
             ], [
-                'profiles_id' => '1',
+                'profiles_id' => self::PROFILE_SELF_SERVICE,
                 'name' => 'networking',
                 'rights' => '0',
             ], [
-                'profiles_id' => '1',
+                'profiles_id' => self::PROFILE_SELF_SERVICE,
                 'name' => 'internet',
                 'rights' => '0',
             ], [
-                'profiles_id' => '1',
+                'profiles_id' => self::PROFILE_SELF_SERVICE,
                 'name' => 'printer',
                 'rights' => '0',
             ], [
-                'profiles_id' => '1',
+                'profiles_id' => self::PROFILE_SELF_SERVICE,
                 'name' => 'peripheral',
                 'rights' => '0',
             ], [
-                'profiles_id' => '1',
+                'profiles_id' => self::PROFILE_SELF_SERVICE,
                 'name' => 'cartridge',
                 'rights' => '0',
             ], [
-                'profiles_id' => '1',
+                'profiles_id' => self::PROFILE_SELF_SERVICE,
                 'name' => 'consumable',
                 'rights' => '0',
             ], [
-                'profiles_id' => '1',
+                'profiles_id' => self::PROFILE_SELF_SERVICE,
                 'name' => 'phone',
                 'rights' => '0',
             ], [
-                'profiles_id' => '6',
+                'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'queuednotification',
                 'rights' => '0',
             ], [
-                'profiles_id' => '1',
+                'profiles_id' => self::PROFILE_SELF_SERVICE,
                 'name' => 'contact_enterprise',
                 'rights' => '0',
             ], [
-                'profiles_id' => '1',
+                'profiles_id' => self::PROFILE_SELF_SERVICE,
                 'name' => 'document',
                 'rights' => '0',
             ], [
-                'profiles_id' => '1',
+                'profiles_id' => self::PROFILE_SELF_SERVICE,
                 'name' => 'contract',
                 'rights' => '0',
             ], [
-                'profiles_id' => '1',
+                'profiles_id' => self::PROFILE_SELF_SERVICE,
                 'name' => 'infocom',
                 'rights' => '0',
             ], [
-                'profiles_id' => '1',
+                'profiles_id' => self::PROFILE_SELF_SERVICE,
                 'name' => 'knowbase',
                 'rights' => '2048',
             ], [
-                'profiles_id' => '1',
+                'profiles_id' => self::PROFILE_SELF_SERVICE,
                 'name' => 'reservation',
                 'rights' => '1024',
             ], [
-                'profiles_id' => '1',
+                'profiles_id' => self::PROFILE_SELF_SERVICE,
                 'name' => 'reports',
                 'rights' => '0',
             ], [
-                'profiles_id' => '1',
+                'profiles_id' => self::PROFILE_SELF_SERVICE,
                 'name' => 'dropdown',
                 'rights' => '0',
             ], [
-                'profiles_id' => '1',
+                'profiles_id' => self::PROFILE_SELF_SERVICE,
                 'name' => 'device',
                 'rights' => '0',
             ], [
-                'profiles_id' => '1',
+                'profiles_id' => self::PROFILE_SELF_SERVICE,
                 'name' => 'typedoc',
                 'rights' => '0',
             ], [
-                'profiles_id' => '1',
+                'profiles_id' => self::PROFILE_SELF_SERVICE,
                 'name' => 'link',
                 'rights' => '0',
             ], [
-                'profiles_id' => '1',
+                'profiles_id' => self::PROFILE_SELF_SERVICE,
                 'name' => 'config',
                 'rights' => '0',
             ], [
-                'profiles_id' => '1',
+                'profiles_id' => self::PROFILE_SELF_SERVICE,
                 'name' => 'rule_ticket',
                 'rights' => '0',
             ], [
-                'profiles_id' => '1',
+                'profiles_id' => self::PROFILE_SELF_SERVICE,
                 'name' => 'rule_import',
                 'rights' => '0',
             ], [
-                'profiles_id' => '1',
+                'profiles_id' => self::PROFILE_SELF_SERVICE,
                 'name' => 'rule_ldap',
                 'rights' => '0',
             ], [
-                'profiles_id' => '1',
+                'profiles_id' => self::PROFILE_SELF_SERVICE,
                 'name' => 'rule_softwarecategories',
                 'rights' => '0',
             ], [
-                'profiles_id' => '1',
+                'profiles_id' => self::PROFILE_SELF_SERVICE,
                 'name' => 'search_config',
                 'rights' => '0',
             ], [
-                'profiles_id' => '5',
+                'profiles_id' => self::PROFILE_HOTLINER,
                 'name' => 'location',
                 'rights' => '0',
             ], [
-                'profiles_id' => '7',
+                'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'domain',
                 'rights' => '23',
             ], [
-                'profiles_id' => '1',
+                'profiles_id' => self::PROFILE_SELF_SERVICE,
                 'name' => 'profile',
                 'rights' => '0',
             ], [
-                'profiles_id' => '1',
+                'profiles_id' => self::PROFILE_SELF_SERVICE,
                 'name' => 'user',
                 'rights' => '0',
             ], [
-                'profiles_id' => '1',
+                'profiles_id' => self::PROFILE_SELF_SERVICE,
                 'name' => 'group',
                 'rights' => '0',
             ], [
-                'profiles_id' => '1',
+                'profiles_id' => self::PROFILE_SELF_SERVICE,
                 'name' => 'entity',
                 'rights' => '0',
             ], [
-                'profiles_id' => '1',
+                'profiles_id' => self::PROFILE_SELF_SERVICE,
                 'name' => 'transfer',
                 'rights' => '0',
             ], [
-                'profiles_id' => '1',
+                'profiles_id' => self::PROFILE_SELF_SERVICE,
                 'name' => 'logs',
                 'rights' => '0',
             ], [
-                'profiles_id' => '1',
+                'profiles_id' => self::PROFILE_SELF_SERVICE,
                 'name' => 'reminder_public',
                 'rights' => '1',
             ], [
-                'profiles_id' => '1',
+                'profiles_id' => self::PROFILE_SELF_SERVICE,
                 'name' => 'rssfeed_public',
                 'rights' => '1',
             ], [
-                'profiles_id' => '1',
+                'profiles_id' => self::PROFILE_SELF_SERVICE,
                 'name' => 'bookmark_public',
                 'rights' => '0',
             ], [
-                'profiles_id' => '1',
+                'profiles_id' => self::PROFILE_SELF_SERVICE,
                 'name' => 'backup',
                 'rights' => '0',
             ], [
-                'profiles_id' => '1',
+                'profiles_id' => self::PROFILE_SELF_SERVICE,
                 'name' => 'ticket',
                 'rights' => '5',
             ], [
-                'profiles_id' => '1',
+                'profiles_id' => self::PROFILE_SELF_SERVICE,
                 'name' => 'followup',
                 'rights' => '5',
             ], [
-                'profiles_id' => '1',
+                'profiles_id' => self::PROFILE_SELF_SERVICE,
                 'name' => 'task',
                 'rights' => '1',
             ], [
-                'profiles_id' => '1',
+                'profiles_id' => self::PROFILE_SELF_SERVICE,
                 'name' => 'planning',
                 'rights' => '0',
             ], [
-                'profiles_id' => '2',
+                'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'state',
                 'rights' => '0',
             ], [
-                'profiles_id' => '2',
+                'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'taskcategory',
                 'rights' => '0',
             ], [
-                'profiles_id' => '1',
+                'profiles_id' => self::PROFILE_SELF_SERVICE,
                 'name' => 'statistic',
                 'rights' => '0',
             ], [
-                'profiles_id' => '1',
+                'profiles_id' => self::PROFILE_SELF_SERVICE,
                 'name' => 'password_update',
                 'rights' => '1',
             ], [
-                'profiles_id' => '1',
+                'profiles_id' => self::PROFILE_SELF_SERVICE,
                 'name' => 'show_group_hardware',
                 'rights' => '0',
             ], [
-                'profiles_id' => '1',
+                'profiles_id' => self::PROFILE_SELF_SERVICE,
                 'name' => 'rule_dictionnary_software',
                 'rights' => '0',
             ], [
-                'profiles_id' => '1',
+                'profiles_id' => self::PROFILE_SELF_SERVICE,
                 'name' => 'rule_dictionnary_dropdown',
                 'rights' => '0',
             ], [
-                'profiles_id' => '1',
+                'profiles_id' => self::PROFILE_SELF_SERVICE,
                 'name' => 'budget',
                 'rights' => '0',
             ], [
-                'profiles_id' => '1',
+                'profiles_id' => self::PROFILE_SELF_SERVICE,
                 'name' => 'notification',
                 'rights' => '0',
             ], [
-                'profiles_id' => '1',
+                'profiles_id' => self::PROFILE_SELF_SERVICE,
                 'name' => 'rule_mailcollector',
                 'rights' => '0',
             ], [
-                'profiles_id' => '7',
+                'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'solutiontemplate',
                 'rights' => '23',
             ], [
-                'profiles_id' => '7',
+                'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'itilfollowuptemplate',
                 'rights' => '23',
             ], [
-                'profiles_id' => '1',
+                'profiles_id' => self::PROFILE_SELF_SERVICE,
                 'name' => 'calendar',
                 'rights' => '0',
             ], [
-                'profiles_id' => '1',
+                'profiles_id' => self::PROFILE_SELF_SERVICE,
                 'name' => 'slm',
                 'rights' => '0',
             ], [
-                'profiles_id' => '1',
+                'profiles_id' => self::PROFILE_SELF_SERVICE,
                 'name' => 'rule_dictionnary_printer',
                 'rights' => '0',
             ], [
-                'profiles_id' => '1',
+                'profiles_id' => self::PROFILE_SELF_SERVICE,
                 'name' => 'problem',
                 'rights' => '0',
             ], [
-                'profiles_id' => '2',
+                'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'cable_management',
                 'rights' => '0',
             ], [
-                'profiles_id' => '4',
+                'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'knowbasecategory',
                 'rights' => '23',
             ], [
-                'profiles_id' => '5',
+                'profiles_id' => self::PROFILE_HOTLINER,
                 'name' => 'itilcategory',
                 'rights' => '0',
             ], [
-                'profiles_id' => '1',
+                'profiles_id' => self::PROFILE_SELF_SERVICE,
                 'name' => 'itiltemplate',
                 'rights' => '0',
             ], [
-                'profiles_id' => '1',
+                'profiles_id' => self::PROFILE_SELF_SERVICE,
                 'name' => 'ticketrecurrent',
                 'rights' => '0',
             ], [
-                'profiles_id' => '1',
+                'profiles_id' => self::PROFILE_SELF_SERVICE,
                 'name' => 'ticketcost',
                 'rights' => '0',
             ], [
-                'profiles_id' => '6',
+                'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'changevalidation',
                 'rights' => '20',
             ], [
-                'profiles_id' => '1',
+                'profiles_id' => self::PROFILE_SELF_SERVICE,
                 'name' => 'ticketvalidation',
                 'rights' => '0',
             ], [
-                'profiles_id' => '2',
+                'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'computer',
                 'rights' => '33',
             ], [
-                'profiles_id' => '2',
+                'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'monitor',
                 'rights' => '33',
             ], [
-                'profiles_id' => '2',
+                'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'software',
                 'rights' => '33',
             ], [
-                'profiles_id' => '2',
+                'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'networking',
                 'rights' => '33',
             ], [
-                'profiles_id' => '2',
+                'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'internet',
                 'rights' => '1',
             ], [
-                'profiles_id' => '2',
+                'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'printer',
                 'rights' => '33',
             ], [
-                'profiles_id' => '2',
+                'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'peripheral',
                 'rights' => '33',
             ], [
-                'profiles_id' => '2',
+                'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'cartridge',
                 'rights' => '33',
             ], [
-                'profiles_id' => '2',
+                'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'consumable',
                 'rights' => '33',
             ], [
-                'profiles_id' => '2',
+                'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'phone',
                 'rights' => '33',
             ], [
-                'profiles_id' => '5',
+                'profiles_id' => self::PROFILE_HOTLINER,
                 'name' => 'queuednotification',
                 'rights' => '0',
             ], [
-                'profiles_id' => '2',
+                'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'contact_enterprise',
                 'rights' => '33',
             ], [
-                'profiles_id' => '2',
+                'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'document',
                 'rights' => '33',
             ], [
-                'profiles_id' => '2',
+                'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'contract',
                 'rights' => '33',
             ], [
-                'profiles_id' => '2',
+                'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'infocom',
                 'rights' => '1',
             ], [
-                'profiles_id' => '2',
+                'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'knowbase',
                 'rights' => '10241',
             ], [
-                'profiles_id' => '2',
+                'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'reservation',
                 'rights' => '1025',
             ], [
-                'profiles_id' => '2',
+                'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'reports',
                 'rights' => '1',
             ], [
-                'profiles_id' => '2',
+                'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'dropdown',
                 'rights' => '0',
             ], [
-                'profiles_id' => '2',
+                'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'device',
                 'rights' => '0',
             ], [
-                'profiles_id' => '2',
+                'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'typedoc',
                 'rights' => '1',
             ], [
-                'profiles_id' => '2',
+                'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'link',
                 'rights' => '1',
             ], [
-                'profiles_id' => '2',
+                'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'config',
                 'rights' => '0',
             ], [
-                'profiles_id' => '2',
+                'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'rule_ticket',
                 'rights' => '0',
             ], [
-                'profiles_id' => '2',
+                'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'rule_import',
                 'rights' => '0',
             ], [
-                'profiles_id' => '2',
+                'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'rule_ldap',
                 'rights' => '0',
             ], [
-                'profiles_id' => '2',
+                'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'rule_softwarecategories',
                 'rights' => '0',
             ], [
-                'profiles_id' => '2',
+                'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'search_config',
                 'rights' => '1024',
             ], [
-                'profiles_id' => '4',
+                'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'location',
                 'rights' => '23',
             ], [
-                'profiles_id' => '6',
+                'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'domain',
                 'rights' => '0',
             ], [
-                'profiles_id' => '2',
+                'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'profile',
                 'rights' => '0',
             ], [
-                'profiles_id' => '2',
+                'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'user',
                 'rights' => '2049',
             ], [
-                'profiles_id' => '2',
+                'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'group',
                 'rights' => '33',
             ], [
-                'profiles_id' => '2',
+                'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'entity',
                 'rights' => '0',
             ], [
-                'profiles_id' => '2',
+                'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'transfer',
                 'rights' => '0',
             ], [
-                'profiles_id' => '2',
+                'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'logs',
                 'rights' => '0',
             ], [
-                'profiles_id' => '2',
+                'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'reminder_public',
                 'rights' => '1',
             ], [
-                'profiles_id' => '2',
+                'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'rssfeed_public',
                 'rights' => '1',
             ], [
-                'profiles_id' => '2',
+                'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'bookmark_public',
                 'rights' => '0',
             ], [
-                'profiles_id' => '2',
+                'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'backup',
                 'rights' => '0',
             ], [
-                'profiles_id' => '2',
+                'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'ticket',
                 'rights' => '168989',
             ], [
-                'profiles_id' => '2',
+                'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'followup',
                 'rights' => '5',
             ], [
-                'profiles_id' => '2',
+                'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'task',
                 'rights' => '1',
             ], [
-                'profiles_id' => '6',
+                'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'projecttask',
                 'rights' => '1025',
             ], [
-                'profiles_id' => '7',
+                'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'projecttask',
                 'rights' => '1025',
             ], [
-                'profiles_id' => '2',
+                'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'planning',
                 'rights' => '1',
             ], [
-                'profiles_id' => '1',
+                'profiles_id' => self::PROFILE_SELF_SERVICE,
                 'name' => 'state',
                 'rights' => '0',
             ], [
-                'profiles_id' => '1',
+                'profiles_id' => self::PROFILE_SELF_SERVICE,
                 'name' => 'taskcategory',
                 'rights' => '0',
             ], [
-                'profiles_id' => '2',
+                'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'statistic',
                 'rights' => '1',
             ], [
-                'profiles_id' => '2',
+                'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'password_update',
                 'rights' => '1',
             ], [
-                'profiles_id' => '2',
+                'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'show_group_hardware',
                 'rights' => '0',
             ], [
-                'profiles_id' => '2',
+                'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'rule_dictionnary_software',
                 'rights' => '0',
             ], [
-                'profiles_id' => '2',
+                'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'rule_dictionnary_dropdown',
                 'rights' => '0',
             ], [
-                'profiles_id' => '2',
+                'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'budget',
                 'rights' => '33',
             ], [
-                'profiles_id' => '2',
+                'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'notification',
                 'rights' => '0',
             ], [
-                'profiles_id' => '2',
+                'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'rule_mailcollector',
                 'rights' => '0',
             ], [
-                'profiles_id' => '5',
+                'profiles_id' => self::PROFILE_HOTLINER,
                 'name' => 'solutiontemplate',
                 'rights' => '0',
             ], [
-                'profiles_id' => '5',
+                'profiles_id' => self::PROFILE_HOTLINER,
                 'name' => 'itilfollowuptemplate',
                 'rights' => '0',
             ], [
-                'profiles_id' => '6',
+                'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'solutiontemplate',
                 'rights' => '0',
             ], [
-                'profiles_id' => '6',
+                'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'itilfollowuptemplate',
                 'rights' => '0',
             ], [
-                'profiles_id' => '2',
+                'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'calendar',
                 'rights' => '0',
             ], [
-                'profiles_id' => '2',
+                'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'slm',
                 'rights' => '0',
             ], [
-                'profiles_id' => '2',
+                'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'rule_dictionnary_printer',
                 'rights' => '0',
             ], [
-                'profiles_id' => '2',
+                'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'problem',
                 'rights' => '1057',
             ], [
-                'profiles_id' => '1',
+                'profiles_id' => self::PROFILE_SELF_SERVICE,
                 'name' => 'cable_management',
                 'rights' => '0',
             ], [
-                'profiles_id' => '3',
+                'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'knowbasecategory',
                 'rights' => '23',
             ], [
-                'profiles_id' => '4',
+                'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'itilcategory',
                 'rights' => '23',
             ], [
-                'profiles_id' => '2',
+                'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'itiltemplate',
                 'rights' => '0',
             ], [
-                'profiles_id' => '2',
+                'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'ticketrecurrent',
                 'rights' => '0',
             ], [
-                'profiles_id' => '2',
+                'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'ticketcost',
                 'rights' => '1',
             ], [
-                'profiles_id' => '4',
+                'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'changevalidation',
                 'rights' => '1044',
             ], [
-                'profiles_id' => '5',
+                'profiles_id' => self::PROFILE_HOTLINER,
                 'name' => 'changevalidation',
                 'rights' => '20',
             ], [
-                'profiles_id' => '2',
+                'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'ticketvalidation',
                 'rights' => '15376',
             ], [
-                'profiles_id' => '3',
+                'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'computer',
                 'rights' => '127',
             ], [
-                'profiles_id' => '3',
+                'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'monitor',
                 'rights' => '127',
             ], [
-                'profiles_id' => '3',
+                'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'software',
                 'rights' => '127',
             ], [
-                'profiles_id' => '3',
+                'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'networking',
                 'rights' => '127',
             ], [
-                'profiles_id' => '3',
+                'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'internet',
                 'rights' => '31',
             ], [
-                'profiles_id' => '3',
+                'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'printer',
                 'rights' => '127',
             ], [
-                'profiles_id' => '3',
+                'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'peripheral',
                 'rights' => '127',
             ], [
-                'profiles_id' => '3',
+                'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'cartridge',
                 'rights' => '127',
             ], [
-                'profiles_id' => '3',
+                'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'consumable',
                 'rights' => '127',
             ], [
-                'profiles_id' => '3',
+                'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'phone',
                 'rights' => '127',
             ], [
-                'profiles_id' => '4',
+                'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'queuednotification',
                 'rights' => '31',
             ], [
-                'profiles_id' => '3',
+                'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'contact_enterprise',
                 'rights' => '127',
             ], [
-                'profiles_id' => '3',
+                'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'document',
                 'rights' => '127',
             ], [
-                'profiles_id' => '3',
+                'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'contract',
                 'rights' => '127',
             ], [
-                'profiles_id' => '3',
+                'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'infocom',
                 'rights' => '23',
             ], [
-                'profiles_id' => '3',
+                'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'knowbase',
                 'rights' => '14359',
             ], [
-                'profiles_id' => '3',
+                'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'reservation',
                 'rights' => '1055',
             ], [
-                'profiles_id' => '3',
+                'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'reports',
                 'rights' => '1',
             ], [
-                'profiles_id' => '3',
+                'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'dropdown',
                 'rights' => '23',
             ], [
-                'profiles_id' => '3',
+                'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'device',
                 'rights' => '23',
             ], [
-                'profiles_id' => '3',
+                'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'typedoc',
                 'rights' => '23',
             ], [
-                'profiles_id' => '3',
+                'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'link',
                 'rights' => '23',
             ], [
-                'profiles_id' => '3',
+                'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'config',
                 'rights' => '0',
             ], [
-                'profiles_id' => '3',
+                'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'rule_ticket',
                 'rights' => '1047',
             ], [
-                'profiles_id' => '3',
+                'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'rule_import',
                 'rights' => '0',
             ], [
-                'profiles_id' => '3',
+                'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'rule_ldap',
                 'rights' => '0',
             ], [
-                'profiles_id' => '3',
+                'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'rule_softwarecategories',
                 'rights' => '0',
             ], [
-                'profiles_id' => '3',
+                'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'search_config',
                 'rights' => '3072',
             ], [
-                'profiles_id' => '3',
+                'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'location',
                 'rights' => '23',
             ], [
-                'profiles_id' => '5',
+                'profiles_id' => self::PROFILE_HOTLINER,
                 'name' => 'domain',
                 'rights' => '0',
             ], [
-                'profiles_id' => '3',
+                'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'profile',
                 'rights' => '1',
             ], [
-                'profiles_id' => '3',
+                'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'user',
                 'rights' => '7199',
             ], [
-                'profiles_id' => '3',
+                'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'group',
                 'rights' => '119',
             ], [
-                'profiles_id' => '3',
+                'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'entity',
                 'rights' => '33',
             ], [
-                'profiles_id' => '3',
+                'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'transfer',
                 'rights' => '1',
             ], [
-                'profiles_id' => '3',
+                'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'logs',
                 'rights' => '1',
             ], [
-                'profiles_id' => '3',
+                'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'reminder_public',
                 'rights' => '23',
             ], [
-                'profiles_id' => '3',
+                'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'rssfeed_public',
                 'rights' => '23',
             ], [
-                'profiles_id' => '3',
+                'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'bookmark_public',
                 'rights' => '23',
             ], [
-                'profiles_id' => '3',
+                'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'backup',
                 'rights' => '1024',
             ], [
-                'profiles_id' => '3',
+                'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'ticket',
                 'rights' => '261151',
             ], [
-                'profiles_id' => '3',
+                'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'followup',
                 'rights' => '15383',
             ], [
-                'profiles_id' => '3',
+                'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'task',
                 'rights' => '13329',
             ], [
-                'profiles_id' => '3',
+                'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'projecttask',
                 'rights' => '1121',
             ], [
-                'profiles_id' => '4',
+                'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'projecttask',
                 'rights' => '1121',
             ], [
-                'profiles_id' => '5',
+                'profiles_id' => self::PROFILE_HOTLINER,
                 'name' => 'projecttask',
                 'rights' => '0',
             ], [
-                'profiles_id' => '3',
+                'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'planning',
                 'rights' => '3073',
             ], [
-                'profiles_id' => '7',
+                'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'taskcategory',
                 'rights' => '23',
             ], [
-                'profiles_id' => '7',
+                'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'cable_management',
                 'rights' => '23',
             ], [
-                'profiles_id' => '3',
+                'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'statistic',
                 'rights' => '1',
             ], [
-                'profiles_id' => '3',
+                'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'password_update',
                 'rights' => '1',
             ], [
-                'profiles_id' => '3',
+                'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'show_group_hardware',
                 'rights' => '0',
             ], [
-                'profiles_id' => '3',
+                'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'rule_dictionnary_software',
                 'rights' => '0',
             ], [
-                'profiles_id' => '3',
+                'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'rule_dictionnary_dropdown',
                 'rights' => '0',
             ], [
-                'profiles_id' => '3',
+                'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'budget',
                 'rights' => '127',
             ], [
-                'profiles_id' => '3',
+                'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'notification',
                 'rights' => '0',
             ], [
-                'profiles_id' => '3',
+                'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'rule_mailcollector',
                 'rights' => '23',
             ], [
-                'profiles_id' => '3',
+                'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'solutiontemplate',
                 'rights' => '23',
             ], [
-                'profiles_id' => '3',
+                'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'itilfollowuptemplate',
                 'rights' => '23',
             ], [
-                'profiles_id' => '4',
+                'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'solutiontemplate',
                 'rights' => '23',
             ], [
-                'profiles_id' => '4',
+                'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'itilfollowuptemplate',
                 'rights' => '23',
             ], [
-                'profiles_id' => '3',
+                'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'calendar',
                 'rights' => '23',
             ], [
-                'profiles_id' => '3',
+                'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'slm',
                 'rights' => '23',
             ], [
-                'profiles_id' => '3',
+                'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'rule_dictionnary_printer',
                 'rights' => '0',
             ], [
-                'profiles_id' => '3',
+                'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'problem',
                 'rights' => '1151',
             ], [
-                'profiles_id' => '2',
+                'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'knowbasecategory',
                 'rights' => '0',
             ], [
-                'profiles_id' => '3',
+                'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'itilcategory',
                 'rights' => '23',
             ], [
-                'profiles_id' => '3',
+                'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'itiltemplate',
                 'rights' => '23',
             ], [
-                'profiles_id' => '3',
+                'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'ticketrecurrent',
                 'rights' => '1',
             ], [
-                'profiles_id' => '3',
+                'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'ticketcost',
                 'rights' => '23',
             ], [
-                'profiles_id' => '2',
+                'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'changevalidation',
                 'rights' => '1044',
             ], [
-                'profiles_id' => '3',
+                'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'changevalidation',
                 'rights' => '1044',
             ], [
-                'profiles_id' => '3',
+                'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'ticketvalidation',
                 'rights' => '15376',
             ], [
-                'profiles_id' => '4',
+                'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'computer',
                 'rights' => '255',
             ], [
-                'profiles_id' => '4',
+                'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'monitor',
                 'rights' => '255',
             ], [
-                'profiles_id' => '4',
+                'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'software',
                 'rights' => '255',
             ], [
-                'profiles_id' => '4',
+                'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'networking',
                 'rights' => '255',
             ], [
-                'profiles_id' => '4',
+                'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'internet',
                 'rights' => '159',
             ], [
-                'profiles_id' => '4',
+                'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'printer',
                 'rights' => '255',
             ], [
-                'profiles_id' => '4',
+                'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'peripheral',
                 'rights' => '255',
             ], [
-                'profiles_id' => '4',
+                'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'cartridge',
                 'rights' => '255',
             ], [
-                'profiles_id' => '4',
+                'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'consumable',
                 'rights' => '255',
             ], [
-                'profiles_id' => '4',
+                'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'phone',
                 'rights' => '255',
             ], [
-                'profiles_id' => '4',
+                'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'contact_enterprise',
                 'rights' => '255',
             ], [
-                'profiles_id' => '4',
+                'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'document',
                 'rights' => '255',
             ], [
-                'profiles_id' => '4',
+                'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'contract',
                 'rights' => '255',
             ], [
-                'profiles_id' => '4',
+                'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'infocom',
                 'rights' => '23',
             ], [
-                'profiles_id' => '4',
+                'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'knowbase',
                 'rights' => '15383',
             ], [
-                'profiles_id' => '4',
+                'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'reservation',
                 'rights' => '1055',
             ], [
-                'profiles_id' => '4',
+                'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'reports',
                 'rights' => '1',
             ], [
-                'profiles_id' => '4',
+                'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'dropdown',
                 'rights' => '23',
             ], [
-                'profiles_id' => '4',
+                'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'device',
                 'rights' => '23',
             ], [
-                'profiles_id' => '4',
+                'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'typedoc',
                 'rights' => '23',
             ], [
-                'profiles_id' => '4',
+                'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'link',
                 'rights' => '159',
             ], [
-                'profiles_id' => '4',
+                'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'config',
                 'rights' => '3',
             ], [
-                'profiles_id' => '4',
+                'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'rule_ticket',
                 'rights' => '1047',
             ], [
-                'profiles_id' => '4',
+                'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'rule_import',
                 'rights' => '23',
             ], [
-                'profiles_id' => '4',
+                'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'rule_ldap',
                 'rights' => '23',
             ], [
-                'profiles_id' => '4',
+                'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'rule_softwarecategories',
                 'rights' => '23',
             ], [
-                'profiles_id' => '4',
+                'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'search_config',
                 'rights' => '3072',
             ], [
-                'profiles_id' => '2',
+                'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'location',
                 'rights' => '0',
             ], [
-                'profiles_id' => '4',
+                'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'domain',
                 'rights' => '23',
             ], [
-                'profiles_id' => '4',
+                'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'profile',
                 'rights' => '23',
             ], [
-                'profiles_id' => '4',
+                'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'user',
                 'rights' => '7327',
             ], [
-                'profiles_id' => '4',
+                'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'group',
                 'rights' => '119',
             ], [
-                'profiles_id' => '4',
+                'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'entity',
                 'rights' => '3327',
             ], [
-                'profiles_id' => '4',
+                'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'transfer',
                 'rights' => '23',
             ], [
-                'profiles_id' => '4',
+                'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'logs',
                 'rights' => '1',
             ], [
-                'profiles_id' => '4',
+                'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'reminder_public',
                 'rights' => '159',
             ], [
-                'profiles_id' => '4',
+                'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'rssfeed_public',
                 'rights' => '159',
             ], [
-                'profiles_id' => '4',
+                'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'bookmark_public',
                 'rights' => '23',
             ], [
-                'profiles_id' => '4',
+                'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'backup',
                 'rights' => '1045',
             ], [
-                'profiles_id' => '4',
+                'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'ticket',
                 'rights' => '261151',
             ], [
-                'profiles_id' => '4',
+                'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'followup',
                 'rights' => '15383',
             ], [
-                'profiles_id' => '4',
+                'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'task',
                 'rights' => '13329',
             ], [
-                'profiles_id' => '7',
+                'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'project',
                 'rights' => '1151',
             ], [
-                'profiles_id' => '1',
+                'profiles_id' => self::PROFILE_SELF_SERVICE,
                 'name' => 'projecttask',
                 'rights' => '0',
             ], [
-                'profiles_id' => '2',
+                'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'projecttask',
                 'rights' => '1025',
             ], [
-                'profiles_id' => '4',
+                'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'planning',
                 'rights' => '3073',
             ], [
-                'profiles_id' => '6',
+                'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'taskcategory',
                 'rights' => '0',
             ], [
-                'profiles_id' => '6',
+                'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'cable_management',
                 'rights' => '0',
             ], [
-                'profiles_id' => '4',
+                'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'statistic',
                 'rights' => '1',
             ], [
-                'profiles_id' => '4',
+                'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'password_update',
                 'rights' => '1',
             ], [
-                'profiles_id' => '4',
+                'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'show_group_hardware',
                 'rights' => '1',
             ], [
-                'profiles_id' => '4',
+                'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'rule_dictionnary_software',
                 'rights' => '23',
             ], [
-                'profiles_id' => '4',
+                'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'rule_dictionnary_dropdown',
                 'rights' => '23',
             ], [
-                'profiles_id' => '4',
+                'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'budget',
                 'rights' => '127',
             ], [
-                'profiles_id' => '4',
+                'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'notification',
                 'rights' => '23',
             ], [
-                'profiles_id' => '4',
+                'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'rule_mailcollector',
                 'rights' => '23',
             ], [
-                'profiles_id' => '1',
+                'profiles_id' => self::PROFILE_SELF_SERVICE,
                 'name' => 'solutiontemplate',
                 'rights' => '0',
             ], [
-                'profiles_id' => '1',
+                'profiles_id' => self::PROFILE_SELF_SERVICE,
                 'name' => 'itilfollowuptemplate',
                 'rights' => '0',
             ], [
-                'profiles_id' => '2',
+                'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'solutiontemplate',
                 'rights' => '0',
             ], [
-                'profiles_id' => '2',
+                'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'itilfollowuptemplate',
                 'rights' => '0',
             ], [
-                'profiles_id' => '4',
+                'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'calendar',
                 'rights' => '23',
             ], [
-                'profiles_id' => '4',
+                'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'slm',
                 'rights' => '23',
             ], [
-                'profiles_id' => '4',
+                'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'rule_dictionnary_printer',
                 'rights' => '23',
             ], [
-                'profiles_id' => '4',
+                'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'problem',
                 'rights' => '1151',
             ], [
-                'profiles_id' => '1',
+                'profiles_id' => self::PROFILE_SELF_SERVICE,
                 'name' => 'knowbasecategory',
                 'rights' => '0',
             ], [
-                'profiles_id' => '2',
+                'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'itilcategory',
                 'rights' => '0',
             ], [
-                'profiles_id' => '4',
+                'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'itiltemplate',
                 'rights' => '23',
             ], [
-                'profiles_id' => '4',
+                'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'ticketrecurrent',
                 'rights' => '23',
             ], [
-                'profiles_id' => '4',
+                'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'ticketcost',
                 'rights' => '23',
             ], [
-                'profiles_id' => '7',
+                'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'change',
                 'rights' => '1151',
             ], [
-                'profiles_id' => '1',
+                'profiles_id' => self::PROFILE_SELF_SERVICE,
                 'name' => 'changevalidation',
                 'rights' => '0',
             ], [
-                'profiles_id' => '4',
+                'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'ticketvalidation',
                 'rights' => '15376',
             ], [
-                'profiles_id' => '5',
+                'profiles_id' => self::PROFILE_HOTLINER,
                 'name' => 'computer',
                 'rights' => '0',
             ], [
-                'profiles_id' => '5',
+                'profiles_id' => self::PROFILE_HOTLINER,
                 'name' => 'monitor',
                 'rights' => '0',
             ], [
-                'profiles_id' => '5',
+                'profiles_id' => self::PROFILE_HOTLINER,
                 'name' => 'software',
                 'rights' => '0',
             ], [
-                'profiles_id' => '5',
+                'profiles_id' => self::PROFILE_HOTLINER,
                 'name' => 'networking',
                 'rights' => '0',
             ], [
-                'profiles_id' => '5',
+                'profiles_id' => self::PROFILE_HOTLINER,
                 'name' => 'internet',
                 'rights' => '0',
             ], [
-                'profiles_id' => '5',
+                'profiles_id' => self::PROFILE_HOTLINER,
                 'name' => 'printer',
                 'rights' => '0',
             ], [
-                'profiles_id' => '5',
+                'profiles_id' => self::PROFILE_HOTLINER,
                 'name' => 'peripheral',
                 'rights' => '0',
             ], [
-                'profiles_id' => '5',
+                'profiles_id' => self::PROFILE_HOTLINER,
                 'name' => 'cartridge',
                 'rights' => '0',
             ], [
-                'profiles_id' => '5',
+                'profiles_id' => self::PROFILE_HOTLINER,
                 'name' => 'consumable',
                 'rights' => '0',
             ], [
-                'profiles_id' => '5',
+                'profiles_id' => self::PROFILE_HOTLINER,
                 'name' => 'phone',
                 'rights' => '0',
             ], [
-                'profiles_id' => '3',
+                'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'queuednotification',
                 'rights' => '0',
             ], [
-                'profiles_id' => '5',
+                'profiles_id' => self::PROFILE_HOTLINER,
                 'name' => 'contact_enterprise',
                 'rights' => '0',
             ], [
-                'profiles_id' => '5',
+                'profiles_id' => self::PROFILE_HOTLINER,
                 'name' => 'document',
                 'rights' => '0',
             ], [
-                'profiles_id' => '5',
+                'profiles_id' => self::PROFILE_HOTLINER,
                 'name' => 'contract',
                 'rights' => '0',
             ], [
-                'profiles_id' => '5',
+                'profiles_id' => self::PROFILE_HOTLINER,
                 'name' => 'infocom',
                 'rights' => '0',
             ], [
-                'profiles_id' => '5',
+                'profiles_id' => self::PROFILE_HOTLINER,
                 'name' => 'knowbase',
                 'rights' => '10240',
             ], [
-                'profiles_id' => '5',
+                'profiles_id' => self::PROFILE_HOTLINER,
                 'name' => 'reservation',
                 'rights' => '0',
             ], [
-                'profiles_id' => '5',
+                'profiles_id' => self::PROFILE_HOTLINER,
                 'name' => 'reports',
                 'rights' => '0',
             ], [
-                'profiles_id' => '5',
+                'profiles_id' => self::PROFILE_HOTLINER,
                 'name' => 'dropdown',
                 'rights' => '0',
             ], [
-                'profiles_id' => '5',
+                'profiles_id' => self::PROFILE_HOTLINER,
                 'name' => 'device',
                 'rights' => '0',
             ], [
-                'profiles_id' => '5',
+                'profiles_id' => self::PROFILE_HOTLINER,
                 'name' => 'typedoc',
                 'rights' => '0',
             ], [
-                'profiles_id' => '5',
+                'profiles_id' => self::PROFILE_HOTLINER,
                 'name' => 'link',
                 'rights' => '0',
             ], [
-                'profiles_id' => '5',
+                'profiles_id' => self::PROFILE_HOTLINER,
                 'name' => 'config',
                 'rights' => '0',
             ], [
-                'profiles_id' => '5',
+                'profiles_id' => self::PROFILE_HOTLINER,
                 'name' => 'rule_ticket',
                 'rights' => '0',
             ], [
-                'profiles_id' => '5',
+                'profiles_id' => self::PROFILE_HOTLINER,
                 'name' => 'rule_import',
                 'rights' => '0',
             ], [
-                'profiles_id' => '5',
+                'profiles_id' => self::PROFILE_HOTLINER,
                 'name' => 'rule_ldap',
                 'rights' => '0',
             ], [
-                'profiles_id' => '5',
+                'profiles_id' => self::PROFILE_HOTLINER,
                 'name' => 'rule_softwarecategories',
                 'rights' => '0',
             ], [
-                'profiles_id' => '5',
+                'profiles_id' => self::PROFILE_HOTLINER,
                 'name' => 'search_config',
                 'rights' => '0',
             ], [
-                'profiles_id' => '1',
+                'profiles_id' => self::PROFILE_SELF_SERVICE,
                 'name' => 'location',
                 'rights' => '0',
             ], [
-                'profiles_id' => '3',
+                'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'domain',
                 'rights' => '23',
             ], [
-                'profiles_id' => '5',
+                'profiles_id' => self::PROFILE_HOTLINER,
                 'name' => 'profile',
                 'rights' => '0',
             ], [
-                'profiles_id' => '5',
+                'profiles_id' => self::PROFILE_HOTLINER,
                 'name' => 'user',
                 'rights' => '1025',
             ], [
-                'profiles_id' => '5',
+                'profiles_id' => self::PROFILE_HOTLINER,
                 'name' => 'group',
                 'rights' => '0',
             ], [
-                'profiles_id' => '5',
+                'profiles_id' => self::PROFILE_HOTLINER,
                 'name' => 'entity',
                 'rights' => '0',
             ], [
-                'profiles_id' => '5',
+                'profiles_id' => self::PROFILE_HOTLINER,
                 'name' => 'transfer',
                 'rights' => '0',
             ], [
-                'profiles_id' => '5',
+                'profiles_id' => self::PROFILE_HOTLINER,
                 'name' => 'logs',
                 'rights' => '0',
             ], [
-                'profiles_id' => '5',
+                'profiles_id' => self::PROFILE_HOTLINER,
                 'name' => 'reminder_public',
                 'rights' => '0',
             ], [
-                'profiles_id' => '5',
+                'profiles_id' => self::PROFILE_HOTLINER,
                 'name' => 'rssfeed_public',
                 'rights' => '0',
             ], [
-                'profiles_id' => '5',
+                'profiles_id' => self::PROFILE_HOTLINER,
                 'name' => 'bookmark_public',
                 'rights' => '0',
             ], [
-                'profiles_id' => '5',
+                'profiles_id' => self::PROFILE_HOTLINER,
                 'name' => 'backup',
                 'rights' => '0',
             ], [
-                'profiles_id' => '5',
+                'profiles_id' => self::PROFILE_HOTLINER,
                 'name' => 'ticket',
                 'rights' => '140295',
             ], [
-                'profiles_id' => '5',
+                'profiles_id' => self::PROFILE_HOTLINER,
                 'name' => 'followup',
                 'rights' => '12295',
             ], [
-                'profiles_id' => '5',
+                'profiles_id' => self::PROFILE_HOTLINER,
                 'name' => 'task',
                 'rights' => '8193',
             ], [
-                'profiles_id' => '4',
+                'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'project',
                 'rights' => '1151',
             ], [
-                'profiles_id' => '5',
+                'profiles_id' => self::PROFILE_HOTLINER,
                 'name' => 'project',
                 'rights' => '1151',
             ], [
-                'profiles_id' => '6',
+                'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'project',
                 'rights' => '1151',
             ], [
-                'profiles_id' => '5',
+                'profiles_id' => self::PROFILE_HOTLINER,
                 'name' => 'planning',
                 'rights' => '1',
             ], [
-                'profiles_id' => '5',
+                'profiles_id' => self::PROFILE_HOTLINER,
                 'name' => 'taskcategory',
                 'rights' => '0',
             ], [
-                'profiles_id' => '5',
+                'profiles_id' => self::PROFILE_HOTLINER,
                 'name' => 'cable_management',
                 'rights' => '0',
             ], [
-                'profiles_id' => '5',
+                'profiles_id' => self::PROFILE_HOTLINER,
                 'name' => 'statistic',
                 'rights' => '1',
             ], [
-                'profiles_id' => '5',
+                'profiles_id' => self::PROFILE_HOTLINER,
                 'name' => 'password_update',
                 'rights' => '1',
             ], [
-                'profiles_id' => '5',
+                'profiles_id' => self::PROFILE_HOTLINER,
                 'name' => 'show_group_hardware',
                 'rights' => '0',
             ], [
-                'profiles_id' => '5',
+                'profiles_id' => self::PROFILE_HOTLINER,
                 'name' => 'rule_dictionnary_software',
                 'rights' => '0',
             ], [
-                'profiles_id' => '5',
+                'profiles_id' => self::PROFILE_HOTLINER,
                 'name' => 'rule_dictionnary_dropdown',
                 'rights' => '0',
             ], [
-                'profiles_id' => '5',
+                'profiles_id' => self::PROFILE_HOTLINER,
                 'name' => 'budget',
                 'rights' => '0',
             ], [
-                'profiles_id' => '5',
+                'profiles_id' => self::PROFILE_HOTLINER,
                 'name' => 'notification',
                 'rights' => '0',
             ], [
-                'profiles_id' => '5',
+                'profiles_id' => self::PROFILE_HOTLINER,
                 'name' => 'rule_mailcollector',
                 'rights' => '0',
             ], [
-                'profiles_id' => '6',
+                'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'state',
                 'rights' => '0',
             ], [
-                'profiles_id' => '7',
+                'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'state',
                 'rights' => '23',
             ], [
-                'profiles_id' => '5',
+                'profiles_id' => self::PROFILE_HOTLINER,
                 'name' => 'calendar',
                 'rights' => '0',
             ], [
-                'profiles_id' => '5',
+                'profiles_id' => self::PROFILE_HOTLINER,
                 'name' => 'slm',
                 'rights' => '0',
             ], [
-                'profiles_id' => '5',
+                'profiles_id' => self::PROFILE_HOTLINER,
                 'name' => 'rule_dictionnary_printer',
                 'rights' => '0',
             ], [
-                'profiles_id' => '5',
+                'profiles_id' => self::PROFILE_HOTLINER,
                 'name' => 'problem',
                 'rights' => '1024',
             ], [
-                'profiles_id' => '7',
+                'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'knowbasecategory',
                 'rights' => '23',
             ], [
-                'profiles_id' => '1',
+                'profiles_id' => self::PROFILE_SELF_SERVICE,
                 'name' => 'itilcategory',
                 'rights' => '0',
             ], [
-                'profiles_id' => '5',
+                'profiles_id' => self::PROFILE_HOTLINER,
                 'name' => 'itiltemplate',
                 'rights' => '0',
             ], [
-                'profiles_id' => '5',
+                'profiles_id' => self::PROFILE_HOTLINER,
                 'name' => 'ticketrecurrent',
                 'rights' => '0',
             ], [
-                'profiles_id' => '5',
+                'profiles_id' => self::PROFILE_HOTLINER,
                 'name' => 'ticketcost',
                 'rights' => '23',
             ], [
-                'profiles_id' => '5',
+                'profiles_id' => self::PROFILE_HOTLINER,
                 'name' => 'change',
                 'rights' => '1054',
             ], [
-                'profiles_id' => '6',
+                'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'change',
                 'rights' => '1151',
             ], [
-                'profiles_id' => '5',
+                'profiles_id' => self::PROFILE_HOTLINER,
                 'name' => 'ticketvalidation',
                 'rights' => '3088',
             ], [
-                'profiles_id' => '6',
+                'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'computer',
                 'rights' => '127',
             ], [
-                'profiles_id' => '6',
+                'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'monitor',
                 'rights' => '127',
             ], [
-                'profiles_id' => '6',
+                'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'software',
                 'rights' => '127',
             ], [
-                'profiles_id' => '6',
+                'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'networking',
                 'rights' => '127',
             ], [
-                'profiles_id' => '6',
+                'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'internet',
                 'rights' => '31',
             ], [
-                'profiles_id' => '6',
+                'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'printer',
                 'rights' => '127',
             ], [
-                'profiles_id' => '6',
+                'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'peripheral',
                 'rights' => '127',
             ], [
-                'profiles_id' => '6',
+                'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'cartridge',
                 'rights' => '127',
             ], [
-                'profiles_id' => '6',
+                'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'consumable',
                 'rights' => '127',
             ], [
-                'profiles_id' => '6',
+                'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'phone',
                 'rights' => '127',
             ], [
-                'profiles_id' => '2',
+                'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'queuednotification',
                 'rights' => '0',
             ], [
-                'profiles_id' => '6',
+                'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'contact_enterprise',
                 'rights' => '96',
             ], [
-                'profiles_id' => '6',
+                'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'document',
                 'rights' => '127',
             ], [
-                'profiles_id' => '6',
+                'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'contract',
                 'rights' => '96',
             ], [
-                'profiles_id' => '6',
+                'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'infocom',
                 'rights' => '0',
             ], [
-                'profiles_id' => '6',
+                'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'knowbase',
                 'rights' => '14359',
             ], [
-                'profiles_id' => '6',
+                'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'reservation',
                 'rights' => '1055',
             ], [
-                'profiles_id' => '6',
+                'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'reports',
                 'rights' => '1',
             ], [
-                'profiles_id' => '6',
+                'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'dropdown',
                 'rights' => '0',
             ], [
-                'profiles_id' => '6',
+                'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'device',
                 'rights' => '0',
             ], [
-                'profiles_id' => '6',
+                'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'typedoc',
                 'rights' => '0',
             ], [
-                'profiles_id' => '6',
+                'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'link',
                 'rights' => '0',
             ], [
-                'profiles_id' => '6',
+                'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'config',
                 'rights' => '0',
             ], [
-                'profiles_id' => '6',
+                'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'rule_ticket',
                 'rights' => '0',
             ], [
-                'profiles_id' => '6',
+                'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'rule_import',
                 'rights' => '0',
             ], [
-                'profiles_id' => '6',
+                'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'rule_ldap',
                 'rights' => '0',
             ], [
-                'profiles_id' => '6',
+                'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'rule_softwarecategories',
                 'rights' => '0',
             ], [
-                'profiles_id' => '6',
+                'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'search_config',
                 'rights' => '0',
             ], [
-                'profiles_id' => '2',
+                'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'domain',
                 'rights' => '0',
             ], [
-                'profiles_id' => '6',
+                'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'profile',
                 'rights' => '0',
             ], [
-                'profiles_id' => '6',
+                'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'user',
                 'rights' => '1055',
             ], [
-                'profiles_id' => '6',
+                'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'group',
                 'rights' => '1',
             ], [
-                'profiles_id' => '6',
+                'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'entity',
                 'rights' => '33',
             ], [
-                'profiles_id' => '6',
+                'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'transfer',
                 'rights' => '1',
             ], [
-                'profiles_id' => '6',
+                'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'logs',
                 'rights' => '0',
             ], [
-                'profiles_id' => '6',
+                'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'reminder_public',
                 'rights' => '23',
             ], [
-                'profiles_id' => '6',
+                'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'rssfeed_public',
                 'rights' => '23',
             ], [
-                'profiles_id' => '6',
+                'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'bookmark_public',
                 'rights' => '0',
             ], [
-                'profiles_id' => '6',
+                'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'backup',
                 'rights' => '0',
             ], [
-                'profiles_id' => '6',
+                'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'ticket',
                 'rights' => '166919',
             ], [
-                'profiles_id' => '6',
+                'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'followup',
                 'rights' => '13319',
             ], [
-                'profiles_id' => '6',
+                'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'task',
                 'rights' => '13329',
             ], [
-                'profiles_id' => '1',
+                'profiles_id' => self::PROFILE_SELF_SERVICE,
                 'name' => 'project',
                 'rights' => '0',
             ], [
-                'profiles_id' => '2',
+                'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'project',
                 'rights' => '1025',
             ], [
-                'profiles_id' => '3',
+                'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'project',
                 'rights' => '1151',
             ], [
-                'profiles_id' => '6',
+                'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'planning',
                 'rights' => '1',
             ], [
-                'profiles_id' => '4',
+                'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'taskcategory',
                 'rights' => '23',
             ], [
-                'profiles_id' => '4',
+                'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'cable_management',
                 'rights' => '23',
             ], [
-                'profiles_id' => '6',
+                'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'statistic',
                 'rights' => '1',
             ], [
-                'profiles_id' => '6',
+                'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'password_update',
                 'rights' => '1',
             ], [
-                'profiles_id' => '6',
+                'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'show_group_hardware',
                 'rights' => '0',
             ], [
-                'profiles_id' => '6',
+                'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'rule_dictionnary_software',
                 'rights' => '0',
             ], [
-                'profiles_id' => '6',
+                'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'rule_dictionnary_dropdown',
                 'rights' => '0',
             ], [
-                'profiles_id' => '6',
+                'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'budget',
                 'rights' => '96',
             ], [
-                'profiles_id' => '6',
+                'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'notification',
                 'rights' => '0',
             ], [
-                'profiles_id' => '6',
+                'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'rule_mailcollector',
                 'rights' => '0',
             ], [
-                'profiles_id' => '4',
+                'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'state',
                 'rights' => '23',
             ], [
-                'profiles_id' => '5',
+                'profiles_id' => self::PROFILE_HOTLINER,
                 'name' => 'state',
                 'rights' => '0',
             ], [
-                'profiles_id' => '6',
+                'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'calendar',
                 'rights' => '0',
             ], [
-                'profiles_id' => '6',
+                'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'slm',
                 'rights' => '1',
             ], [
-                'profiles_id' => '6',
+                'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'rule_dictionnary_printer',
                 'rights' => '0',
             ], [
-                'profiles_id' => '6',
+                'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'problem',
                 'rights' => '1121',
             ], [
-                'profiles_id' => '6',
+                'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'knowbasecategory',
                 'rights' => '0',
             ], [
-                'profiles_id' => '7',
+                'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'itilcategory',
                 'rights' => '23',
             ], [
-                'profiles_id' => '7',
+                'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'location',
                 'rights' => '23',
             ], [
-                'profiles_id' => '6',
+                'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'itiltemplate',
                 'rights' => '1',
             ], [
-                'profiles_id' => '6',
+                'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'ticketrecurrent',
                 'rights' => '1',
             ], [
-                'profiles_id' => '6',
+                'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'ticketcost',
                 'rights' => '23',
             ], [
-                'profiles_id' => '3',
+                'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'change',
                 'rights' => '1151',
             ], [
-                'profiles_id' => '4',
+                'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'change',
                 'rights' => '1151',
             ], [
-                'profiles_id' => '6',
+                'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'ticketvalidation',
                 'rights' => '3088',
             ], [
-                'profiles_id' => '7',
+                'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'computer',
                 'rights' => '127',
             ], [
-                'profiles_id' => '7',
+                'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'monitor',
                 'rights' => '127',
             ], [
-                'profiles_id' => '7',
+                'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'software',
                 'rights' => '127',
             ], [
-                'profiles_id' => '7',
+                'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'networking',
                 'rights' => '127',
             ], [
-                'profiles_id' => '7',
+                'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'internet',
                 'rights' => '31',
             ], [
-                'profiles_id' => '7',
+                'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'printer',
                 'rights' => '127',
             ], [
-                'profiles_id' => '7',
+                'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'peripheral',
                 'rights' => '127',
             ], [
-                'profiles_id' => '7',
+                'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'cartridge',
                 'rights' => '127',
             ], [
-                'profiles_id' => '7',
+                'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'consumable',
                 'rights' => '127',
             ], [
-                'profiles_id' => '7',
+                'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'phone',
                 'rights' => '127',
             ], [
-                'profiles_id' => '1',
+                'profiles_id' => self::PROFILE_SELF_SERVICE,
                 'name' => 'queuednotification',
                 'rights' => '0',
             ], [
-                'profiles_id' => '7',
+                'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'contact_enterprise',
                 'rights' => '96',
             ], [
-                'profiles_id' => '7',
+                'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'document',
                 'rights' => '127',
             ], [
-                'profiles_id' => '7',
+                'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'contract',
                 'rights' => '96',
             ], [
-                'profiles_id' => '7',
+                'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'infocom',
                 'rights' => '0',
             ], [
-                'profiles_id' => '7',
+                'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'knowbase',
                 'rights' => '14359',
             ], [
-                'profiles_id' => '7',
+                'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'reservation',
                 'rights' => '1055',
             ], [
-                'profiles_id' => '7',
+                'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'reports',
                 'rights' => '1',
             ], [
-                'profiles_id' => '7',
+                'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'dropdown',
                 'rights' => '0',
             ], [
-                'profiles_id' => '7',
+                'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'device',
                 'rights' => '0',
             ], [
-                'profiles_id' => '7',
+                'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'typedoc',
                 'rights' => '0',
             ], [
-                'profiles_id' => '7',
+                'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'link',
                 'rights' => '0',
             ], [
-                'profiles_id' => '7',
+                'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'config',
                 'rights' => '0',
             ], [
-                'profiles_id' => '7',
+                'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'rule_ticket',
                 'rights' => '1047',
             ], [
-                'profiles_id' => '7',
+                'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'rule_import',
                 'rights' => '0',
             ], [
-                'profiles_id' => '7',
+                'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'rule_ldap',
                 'rights' => '0',
             ], [
-                'profiles_id' => '7',
+                'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'rule_softwarecategories',
                 'rights' => '0',
             ], [
-                'profiles_id' => '7',
+                'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'search_config',
                 'rights' => '0',
             ], [
-                'profiles_id' => '1',
+                'profiles_id' => self::PROFILE_SELF_SERVICE,
                 'name' => 'domain',
                 'rights' => '0',
             ], [
-                'profiles_id' => '7',
+                'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'profile',
                 'rights' => '0',
             ], [
-                'profiles_id' => '7',
+                'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'user',
                 'rights' => '1055',
             ], [
-                'profiles_id' => '7',
+                'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'group',
                 'rights' => '1',
             ], [
-                'profiles_id' => '7',
+                'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'entity',
                 'rights' => '33',
             ], [
-                'profiles_id' => '7',
+                'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'transfer',
                 'rights' => '1',
             ], [
-                'profiles_id' => '7',
+                'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'logs',
                 'rights' => '1',
             ], [
-                'profiles_id' => '7',
+                'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'reminder_public',
                 'rights' => '23',
             ], [
-                'profiles_id' => '7',
+                'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'rssfeed_public',
                 'rights' => '23',
             ], [
-                'profiles_id' => '7',
+                'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'bookmark_public',
                 'rights' => '0',
             ], [
-                'profiles_id' => '7',
+                'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'backup',
                 'rights' => '0',
             ], [
-                'profiles_id' => '7',
+                'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'ticket',
                 'rights' => '261151',
             ], [
-                'profiles_id' => '7',
+                'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'followup',
                 'rights' => '15383',
             ], [
-                'profiles_id' => '7',
+                'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'task',
                 'rights' => '13329',
             ], [
-                'profiles_id' => '7',
+                'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'queuednotification',
                 'rights' => '0',
             ], [
-                'profiles_id' => '7',
+                'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'planning',
                 'rights' => '3073',
             ], [
-                'profiles_id' => '3',
+                'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'taskcategory',
                 'rights' => '23',
             ], [
-                'profiles_id' => '3',
+                'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'cable_management',
                 'rights' => '23',
             ], [
-                'profiles_id' => '7',
+                'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'statistic',
                 'rights' => '1',
             ], [
-                'profiles_id' => '7',
+                'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'password_update',
                 'rights' => '1',
             ], [
-                'profiles_id' => '7',
+                'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'show_group_hardware',
                 'rights' => '0',
             ], [
-                'profiles_id' => '7',
+                'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'rule_dictionnary_software',
                 'rights' => '0',
             ], [
-                'profiles_id' => '7',
+                'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'rule_dictionnary_dropdown',
                 'rights' => '0',
             ], [
-                'profiles_id' => '7',
+                'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'budget',
                 'rights' => '96',
             ], [
-                'profiles_id' => '7',
+                'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'notification',
                 'rights' => '0',
             ], [
-                'profiles_id' => '7',
+                'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'rule_mailcollector',
                 'rights' => '23',
             ], [
-                'profiles_id' => '7',
+                'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'changevalidation',
                 'rights' => '1044',
             ], [
-                'profiles_id' => '3',
+                'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'state',
                 'rights' => '23',
             ], [
-                'profiles_id' => '7',
+                'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'calendar',
                 'rights' => '23',
             ], [
-                'profiles_id' => '7',
+                'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'slm',
                 'rights' => '23',
             ], [
-                'profiles_id' => '7',
+                'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'rule_dictionnary_printer',
                 'rights' => '0',
             ], [
-                'profiles_id' => '7',
+                'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'problem',
                 'rights' => '1151',
             ], [
-                'profiles_id' => '5',
+                'profiles_id' => self::PROFILE_HOTLINER,
                 'name' => 'knowbasecategory',
                 'rights' => '0',
             ], [
-                'profiles_id' => '6',
+                'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'itilcategory',
                 'rights' => '0',
             ], [
-                'profiles_id' => '6',
+                'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'location',
                 'rights' => '0',
             ], [
-                'profiles_id' => '7',
+                'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'itiltemplate',
                 'rights' => '23',
             ], [
-                'profiles_id' => '7',
+                'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'ticketrecurrent',
                 'rights' => '1',
             ], [
-                'profiles_id' => '7',
+                'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'ticketcost',
                 'rights' => '23',
             ], [
-                'profiles_id' => '1',
+                'profiles_id' => self::PROFILE_SELF_SERVICE,
                 'name' => 'change',
                 'rights' => '0',
             ], [
-                'profiles_id' => '2',
+                'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'change',
                 'rights' => '1057',
             ], [
-                'profiles_id' => '7',
+                'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'ticketvalidation',
                 'rights' => '15376',
             ], [
-                'profiles_id' => '8',
+                'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'backup',
                 'rights' => '1',
             ], [
-                'profiles_id' => '8',
+                'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'bookmark_public',
                 'rights' => '1',
             ], [
-                'profiles_id' => '8',
+                'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'budget',
                 'rights' => '33',
             ], [
-                'profiles_id' => '8',
+                'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'calendar',
                 'rights' => '1',
             ], [
-                'profiles_id' => '8',
+                'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'cartridge',
                 'rights' => '33',
             ], [
-                'profiles_id' => '8',
+                'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'change',
                 'rights' => '1057',
             ], [
-                'profiles_id' => '8',
+                'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'changevalidation',
                 'rights' => '0',
             ], [
-                'profiles_id' => '8',
+                'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'computer',
                 'rights' => '33',
             ], [
-                'profiles_id' => '8',
+                'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'config',
                 'rights' => '1',
             ], [
-                'profiles_id' => '8',
+                'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'consumable',
                 'rights' => '33',
             ], [
-                'profiles_id' => '8',
+                'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'contact_enterprise',
                 'rights' => '33',
             ], [
-                'profiles_id' => '8',
+                'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'contract',
                 'rights' => '33',
             ], [
-                'profiles_id' => '8',
+                'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'device',
                 'rights' => '1',
             ], [
-                'profiles_id' => '8',
+                'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'document',
                 'rights' => '33',
             ], [
-                'profiles_id' => '8',
+                'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'domain',
                 'rights' => '1',
             ], [
-                'profiles_id' => '8',
+                'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'dropdown',
                 'rights' => '1',
             ], [
-                'profiles_id' => '8',
+                'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'entity',
                 'rights' => '33',
             ], [
-                'profiles_id' => '8',
+                'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'followup',
                 'rights' => '8193',
             ], [
-                'profiles_id' => '8',
+                'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'global_validation',
                 'rights' => '0',
             ], [
-                'profiles_id' => '8',
+                'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'group',
                 'rights' => '33',
             ], [
-                'profiles_id' => '8',
+                'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'infocom',
                 'rights' => '1',
             ], [
-                'profiles_id' => '8',
+                'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'internet',
                 'rights' => '1',
             ], [
-                'profiles_id' => '8',
+                'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'itilcategory',
                 'rights' => '1',
             ], [
-                'profiles_id' => '8',
+                'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'knowbase',
                 'rights' => '10241',
             ], [
-                'profiles_id' => '8',
+                'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'knowbasecategory',
                 'rights' => '1',
             ], [
-                'profiles_id' => '8',
+                'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'link',
                 'rights' => '1',
             ], [
-                'profiles_id' => '8',
+                'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'location',
                 'rights' => '1',
             ], [
-                'profiles_id' => '8',
+                'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'logs',
                 'rights' => '1',
             ], [
-                'profiles_id' => '8',
+                'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'monitor',
                 'rights' => '33',
             ], [
-                'profiles_id' => '8',
+                'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'cable_management',
                 'rights' => '1',
             ], [
-                'profiles_id' => '8',
+                'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'networking',
                 'rights' => '33',
             ], [
-                'profiles_id' => '8',
+                'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'notification',
                 'rights' => '1',
             ], [
-                'profiles_id' => '8',
+                'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'password_update',
                 'rights' => '0',
             ], [
-                'profiles_id' => '8',
+                'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'peripheral',
                 'rights' => '33',
             ], [
-                'profiles_id' => '8',
+                'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'phone',
                 'rights' => '33',
             ], [
-                'profiles_id' => '8',
+                'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'planning',
                 'rights' => '3073',
             ], [
-                'profiles_id' => '8',
+                'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'printer',
                 'rights' => '33',
             ], [
-                'profiles_id' => '8',
+                'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'problem',
                 'rights' => '1057',
             ], [
-                'profiles_id' => '8',
+                'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'profile',
                 'rights' => '1',
             ], [
-                'profiles_id' => '8',
+                'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'project',
                 'rights' => '1057',
             ], [
-                'profiles_id' => '8',
+                'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'projecttask',
                 'rights' => '33',
             ], [
-                'profiles_id' => '8',
+                'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'queuednotification',
                 'rights' => '1',
             ], [
-                'profiles_id' => '8',
+                'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'reminder_public',
                 'rights' => '1',
             ], [
-                'profiles_id' => '8',
+                'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'reports',
                 'rights' => '1',
             ], [
-                'profiles_id' => '8',
+                'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'reservation',
                 'rights' => '1',
             ], [
-                'profiles_id' => '8',
+                'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'rssfeed_public',
                 'rights' => '1',
             ], [
-                'profiles_id' => '8',
+                'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'rule_dictionnary_dropdown',
                 'rights' => '1',
             ], [
-                'profiles_id' => '8',
+                'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'rule_dictionnary_printer',
                 'rights' => '1',
             ], [
-                'profiles_id' => '8',
+                'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'rule_dictionnary_software',
                 'rights' => '1',
             ], [
-                'profiles_id' => '8',
+                'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'rule_import',
                 'rights' => '1',
             ], [
-                'profiles_id' => '8',
+                'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'rule_ldap',
                 'rights' => '1',
             ], [
-                'profiles_id' => '8',
+                'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'rule_mailcollector',
                 'rights' => '1',
             ], [
-                'profiles_id' => '8',
+                'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'rule_softwarecategories',
                 'rights' => '1',
             ], [
-                'profiles_id' => '8',
+                'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'rule_ticket',
                 'rights' => '1',
             ], [
-                'profiles_id' => '8',
+                'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'search_config',
                 'rights' => '0',
             ], [
-                'profiles_id' => '8',
+                'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'show_group_hardware',
                 'rights' => '1',
             ], [
-                'profiles_id' => '8',
+                'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'slm',
                 'rights' => '1',
             ], [
-                'profiles_id' => '8',
+                'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'software',
                 'rights' => '33',
             ], [
-                'profiles_id' => '8',
+                'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'solutiontemplate',
                 'rights' => '1',
             ], [
-                'profiles_id' => '8',
+                'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'itilfollowuptemplate',
                 'rights' => '1',
             ], [
-                'profiles_id' => '8',
+                'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'state',
                 'rights' => '1',
             ], [
-                'profiles_id' => '8',
+                'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'statistic',
                 'rights' => '1',
             ], [
-                'profiles_id' => '8',
+                'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'task',
                 'rights' => '8193',
             ], [
-                'profiles_id' => '8',
+                'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'taskcategory',
                 'rights' => '1',
             ], [
-                'profiles_id' => '8',
+                'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'ticket',
                 'rights' => '138241',
             ], [
-                'profiles_id' => '8',
+                'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'ticketcost',
                 'rights' => '1',
             ], [
-                'profiles_id' => '8',
+                'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'ticketrecurrent',
                 'rights' => '1',
             ], [
-                'profiles_id' => '8',
+                'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'itiltemplate',
                 'rights' => '1',
             ], [
-                'profiles_id' => '8',
+                'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'ticketvalidation',
                 'rights' => '0',
             ], [
-                'profiles_id' => '8',
+                'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'transfer',
                 'rights' => '1',
             ], [
-                'profiles_id' => '8',
+                'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'typedoc',
                 'rights' => '1',
             ], [
-                'profiles_id' => '8',
+                'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'user',
                 'rights' => '1',
             ], [
-                'profiles_id' => '1',
+                'profiles_id' => self::PROFILE_SELF_SERVICE,
                 'name' => 'license',
                 'rights' => '0',
             ], [
-                'profiles_id' => '2',
+                'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'license',
                 'rights' => '33',
             ], [
-                'profiles_id' => '3',
+                'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'license',
                 'rights' => '127',
             ], [
-                'profiles_id' => '4',
+                'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'license',
                 'rights' => '255',
             ], [
-                'profiles_id' => '5',
+                'profiles_id' => self::PROFILE_HOTLINER,
                 'name' => 'license',
                 'rights' => '0',
             ], [
-                'profiles_id' => '6',
+                'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'license',
                 'rights' => '127',
             ], [
-                'profiles_id' => '7',
+                'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'license',
                 'rights' => '127',
             ], [
-                'profiles_id' => '8',
+                'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'license',
                 'rights' => '33',
             ], [
-                'profiles_id' => '1',
+                'profiles_id' => self::PROFILE_SELF_SERVICE,
                 'name' => 'line',
                 'rights' => '0',
             ], [
-                'profiles_id' => '2',
+                'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'line',
                 'rights' => '33',
             ], [
-                'profiles_id' => '3',
+                'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'line',
                 'rights' => '127',
             ], [
-                'profiles_id' => '4',
+                'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'line',
                 'rights' => '255',
             ], [
-                'profiles_id' => '5',
+                'profiles_id' => self::PROFILE_HOTLINER,
                 'name' => 'line',
                 'rights' => '0',
             ], [
-                'profiles_id' => '6',
-                'name' => 'line',
-                'rights' => '127',
-            ], [
-                'profiles_id' => '7',
+                'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'line',
                 'rights' => '127',
             ], [
-                'profiles_id' => '8',
+                'profiles_id' => self::PROFILE_SUPERVISOR,
+                'name' => 'line',
+                'rights' => '127',
+            ], [
+                'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'line',
                 'rights' => '33',
             ], [
-                'profiles_id' => '1',
+                'profiles_id' => self::PROFILE_SELF_SERVICE,
                 'name' => 'lineoperator',
                 'rights' => '0',
             ], [
-                'profiles_id' => '2',
+                'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'lineoperator',
                 'rights' => '33',
             ], [
-                'profiles_id' => '3',
+                'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'lineoperator',
                 'rights' => '23',
             ], [
-                'profiles_id' => '4',
+                'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'lineoperator',
                 'rights' => '23',
             ], [
-                'profiles_id' => '5',
+                'profiles_id' => self::PROFILE_HOTLINER,
                 'name' => 'lineoperator',
                 'rights' => '0',
             ], [
-                'profiles_id' => '6',
+                'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'lineoperator',
                 'rights' => '0',
             ], [
-                'profiles_id' => '7',
+                'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'lineoperator',
                 'rights' => '23',
             ], [
-                'profiles_id' => '8',
+                'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'lineoperator',
                 'rights' => '1',
             ], [
-                'profiles_id' => '1',
+                'profiles_id' => self::PROFILE_SELF_SERVICE,
                 'name' => 'devicesimcard_pinpuk',
                 'rights' => '0',
             ], [
-                'profiles_id' => '2',
+                'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'devicesimcard_pinpuk',
                 'rights' => '1',
             ], [
-                'profiles_id' => '3',
+                'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'devicesimcard_pinpuk',
                 'rights' => '3',
             ], [
-                'profiles_id' => '4',
+                'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'devicesimcard_pinpuk',
                 'rights' => '3',
             ], [
-                'profiles_id' => '5',
+                'profiles_id' => self::PROFILE_HOTLINER,
                 'name' => 'devicesimcard_pinpuk',
                 'rights' => '0',
             ], [
-                'profiles_id' => '6',
+                'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'devicesimcard_pinpuk',
                 'rights' => '3',
             ], [
-                'profiles_id' => '7',
+                'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'devicesimcard_pinpuk',
                 'rights' => '3',
             ], [
-                'profiles_id' => '8',
+                'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'devicesimcard_pinpuk',
                 'rights' => '1',
             ], [
-                'profiles_id' => '1',
+                'profiles_id' => self::PROFILE_SELF_SERVICE,
                 'name' => 'certificate',
                 'rights' => '0',
             ], [
-                'profiles_id' => '2',
+                'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'certificate',
                 'rights' => '33',
             ], [
-                'profiles_id' => '3',
+                'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'certificate',
                 'rights' => '127',
             ], [
-                'profiles_id' => '4',
+                'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'certificate',
                 'rights' => '255',
             ], [
-                'profiles_id' => '5',
+                'profiles_id' => self::PROFILE_HOTLINER,
                 'name' => 'certificate',
                 'rights' => '0',
             ], [
-                'profiles_id' => '6',
+                'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'certificate',
                 'rights' => '127',
             ], [
-                'profiles_id' => '7',
+                'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'certificate',
                 'rights' => '127',
             ], [
-                'profiles_id' => '8',
+                'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'certificate',
                 'rights' => '33',
             ], [
-                'profiles_id' => '1',
+                'profiles_id' => self::PROFILE_SELF_SERVICE,
                 'name' => 'datacenter',
                 'rights' => '0',
             ], [
-                'profiles_id' => '2',
+                'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'datacenter',
                 'rights' => '1',
             ], [
-                'profiles_id' => '3',
+                'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'datacenter',
                 'rights' => '31',
             ], [
-                'profiles_id' => '4',
+                'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'datacenter',
                 'rights' => '31',
             ], [
-                'profiles_id' => '5',
+                'profiles_id' => self::PROFILE_HOTLINER,
                 'name' => 'datacenter',
                 'rights' => '0',
             ], [
-                'profiles_id' => '6',
+                'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'datacenter',
                 'rights' => '31',
             ], [
-                'profiles_id' => '7',
+                'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'datacenter',
                 'rights' => '31',
             ], [
-                'profiles_id' => '8',
+                'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'datacenter',
                 'rights' => '1',
             ], [
-                'profiles_id' => '4',
+                'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'rule_asset',
                 'rights' => '1047',
             ], [
-                'profiles_id' => '1',
+                'profiles_id' => self::PROFILE_SELF_SERVICE,
                 'name' => 'personalization',
                 'rights' => '3',
             ], [
-                'profiles_id' => '2',
+                'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'personalization',
                 'rights' => '3',
             ], [
-                'profiles_id' => '3',
+                'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'personalization',
                 'rights' => '3',
             ], [
-                'profiles_id' => '4',
+                'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'personalization',
                 'rights' => '3',
             ], [
-                'profiles_id' => '5',
+                'profiles_id' => self::PROFILE_HOTLINER,
                 'name' => 'personalization',
                 'rights' => '3',
             ], [
-                'profiles_id' => '6',
+                'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'personalization',
                 'rights' => '3',
             ], [
-                'profiles_id' => '7',
+                'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'personalization',
                 'rights' => '3',
             ], [
-                'profiles_id' => '8',
+                'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'personalization',
                 'rights' => '3',
             ], [
-                'profiles_id' => '1',
+                'profiles_id' => self::PROFILE_SELF_SERVICE,
                 'name' => 'rule_asset',
                 'rights' => '0',
             ], [
-                'profiles_id' => '2',
+                'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'rule_asset',
                 'rights' => '0',
             ], [
-                'profiles_id' => '3',
+                'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'rule_asset',
                 'rights' => '0',
             ], [
-                'profiles_id' => '5',
+                'profiles_id' => self::PROFILE_HOTLINER,
                 'name' => 'rule_asset',
                 'rights' => '0',
             ], [
-                'profiles_id' => '6',
+                'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'rule_asset',
                 'rights' => '0',
             ], [
-                'profiles_id' => '7',
+                'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'rule_asset',
                 'rights' => '0',
             ], [
-                'profiles_id' => '8',
+                'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'rule_asset',
                 'rights' => '0',
             ], [
-                'profiles_id' => '1',
+                'profiles_id' => self::PROFILE_SELF_SERVICE,
                 'name' => 'global_validation',
                 'rights' => '0',
             ], [
-                'profiles_id' => '2',
+                'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'global_validation',
                 'rights' => '0',
             ], [
-                'profiles_id' => '3',
+                'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'global_validation',
                 'rights' => '0',
             ], [
-                'profiles_id' => '4',
+                'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'global_validation',
                 'rights' => '0',
             ], [
-                'profiles_id' => '5',
+                'profiles_id' => self::PROFILE_HOTLINER,
                 'name' => 'global_validation',
                 'rights' => '0',
             ], [
-                'profiles_id' => '6',
+                'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'global_validation',
                 'rights' => '0',
             ], [
-                'profiles_id' => '7',
+                'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'global_validation',
                 'rights' => '0',
             ], [
-                'profiles_id' => '1',
+                'profiles_id' => self::PROFILE_SELF_SERVICE,
                 'name' => 'cluster',
                 'rights' => 0,
             ], [
-                'profiles_id' => '2',
+                'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'cluster',
                 'rights' => 1,
             ], [
-                'profiles_id' => '3',
+                'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'cluster',
                 'rights' => 31,
             ], [
-                'profiles_id' => '4',
+                'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'cluster',
                 'rights' => 31,
             ], [
-                'profiles_id' => '5',
+                'profiles_id' => self::PROFILE_HOTLINER,
                 'name' => 'cluster',
                 'rights' => 0,
             ], [
-                'profiles_id' => '6',
+                'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'cluster',
                 'rights' => 31,
             ], [
-                'profiles_id' => '7',
+                'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'cluster',
                 'rights' => 31,
             ], [
-                'profiles_id' => '8',
+                'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'cluster',
                 'rights' => 1,
             ], [
-                'profiles_id' => '1',
+                'profiles_id' => self::PROFILE_SELF_SERVICE,
                 'name' => 'externalevent',
                 'rights' => 0,
             ], [
-                'profiles_id' => '2',
+                'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'externalevent',
                 'rights' => 1,
             ], [
-                'profiles_id' => '3',
+                'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'externalevent',
                 'rights' => 1055,
             ], [
-                'profiles_id' => '4',
+                'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'externalevent',
                 'rights' => 1055,
             ], [
-                'profiles_id' => '5',
+                'profiles_id' => self::PROFILE_HOTLINER,
                 'name' => 'externalevent',
                 'rights' => 0,
             ], [
-                'profiles_id' => '6',
+                'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'externalevent',
                 'rights' => 1,
             ], [
-                'profiles_id' => '7',
+                'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'externalevent',
                 'rights' => 31,
             ], [
-                'profiles_id' => '8',
+                'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'externalevent',
                 'rights' => 1,
             ], [
-                'profiles_id' => '1',
+                'profiles_id' => self::PROFILE_SELF_SERVICE,
                 'name' => 'dashboard',
                 'rights' => 0,
             ], [
-                'profiles_id' => '2',
+                'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'dashboard',
                 'rights' => 0,
             ], [
-                'profiles_id' => '3',
+                'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'dashboard',
                 'rights' => 0,
             ], [
-                'profiles_id' => '4',
+                'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'dashboard',
                 'rights' => 23,
             ], [
-                'profiles_id' => '5',
+                'profiles_id' => self::PROFILE_HOTLINER,
                 'name' => 'dashboard',
                 'rights' => 0,
             ], [
-                'profiles_id' => '6',
+                'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'dashboard',
                 'rights' => 0,
             ], [
-                'profiles_id' => '7',
+                'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'dashboard',
                 'rights' => 0,
             ], [
-                'profiles_id' => '8',
+                'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'dashboard',
                 'rights' => 0,
             ], [
-                'profiles_id' => '1',
+                'profiles_id' => self::PROFILE_SELF_SERVICE,
                 'name' => 'appliance',
                 'rights' => 0,
             ], [
-                'profiles_id' => '2',
+                'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'appliance',
                 'rights' => 1,
             ], [
-                'profiles_id' => '3',
-                'name' => 'appliance',
-                'rights' => 31,
-            ], [
-                'profiles_id' => '4',
+                'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'appliance',
                 'rights' => 31,
             ], [
-                'profiles_id' => '5',
-                'name' => 'appliance',
-                'rights' => 0,
-            ], [
-                'profiles_id' => '6',
+                'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'appliance',
                 'rights' => 31,
             ], [
-                'profiles_id' => '7',
+                'profiles_id' => self::PROFILE_HOTLINER,
+                'name' => 'appliance',
+                'rights' => 0,
+            ], [
+                'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'appliance',
                 'rights' => 31,
             ], [
-                'profiles_id' => '8',
+                'profiles_id' => self::PROFILE_SUPERVISOR,
+                'name' => 'appliance',
+                'rights' => 31,
+            ], [
+                'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'appliance',
                 'rights' => 1,
             ], [
-                'profiles_id' => '1',
+                'profiles_id' => self::PROFILE_SELF_SERVICE,
                 'name' => 'inventory',
                 'rights' => 0,
             ], [
-                'profiles_id' => '2',
+                'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'inventory',
                 'rights' => 0,
             ], [
-                'profiles_id' => '3',
-                'name' => 'inventory',
-                'rights' => 1,
-            ], [
-                'profiles_id' => '4',
+                'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'inventory',
                 'rights' => 1,
             ], [
-                'profiles_id' => '5',
+                'profiles_id' => self::PROFILE_SUPER_ADMIN,
+                'name' => 'inventory',
+                'rights' => 1,
+            ], [
+                'profiles_id' => self::PROFILE_HOTLINER,
                 'name' => 'inventory',
                 'rights' => 0,
             ], [
-                'profiles_id' => '6',
+                'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'inventory',
                 'rights' => 0,
             ], [
-                'profiles_id' => '7',
+                'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'inventory',
                 'rights' => 0,
             ], [
-                'profiles_id' => '8',
+                'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'inventory',
                 'rights' => 0,
             ], [
-                'profiles_id' => '1',
+                'profiles_id' => self::PROFILE_SELF_SERVICE,
                 'name' => 'pendingreason',
                 'rights' => 0,
             ], [
-                'profiles_id' => '2',
+                'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'pendingreason',
                 'rights' => 0,
             ], [
-                'profiles_id' => '3',
+                'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'pendingreason',
                 'rights' => 31,
             ], [
-                'profiles_id' => '4',
+                'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'pendingreason',
                 'rights' => 31,
             ], [
-                'profiles_id' => '5',
+                'profiles_id' => self::PROFILE_HOTLINER,
                 'name' => 'pendingreason',
                 'rights' => 1,
             ], [
-                'profiles_id' => '6',
+                'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'pendingreason',
                 'rights' => 1,
             ], [
-                'profiles_id' => '7',
+                'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'pendingreason',
                 'rights' => 1,
             ], [
-                'profiles_id' => '8',
+                'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'pendingreason',
                 'rights' => 1,
             ], [
-                'profiles_id' => '1',
+                'profiles_id' => self::PROFILE_SELF_SERVICE,
                 'name' => 'database',
                 'rights' => 0,
             ], [
-                'profiles_id' => '2',
+                'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'database',
                 'rights' => 1,
             ], [
-                'profiles_id' => '3',
+                'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'database',
                 'rights' => 31,
             ], [
-                'profiles_id' => '4',
+                'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'database',
                 'rights' => 31,
             ], [
-                'profiles_id' => '5',
+                'profiles_id' => self::PROFILE_HOTLINER,
                 'name' => 'database',
                 'rights' => 0,
             ], [
-                'profiles_id' => '6',
+                'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'database',
                 'rights' => 31,
             ], [
-                'profiles_id' => '7',
+                'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'database',
                 'rights' => 31,
             ], [
-                'profiles_id' => '8',
+                'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'database',
                 'rights' => 1,
             ],
@@ -7785,28 +7793,28 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             [
                 'id' => '2',
                 'users_id' => '2',
-                'profiles_id' => '4',
+                'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'entities_id' => '0',
                 'is_recursive' => '1',
                 'is_dynamic' => '0',
             ], [
                 'id' => '3',
                 'users_id' => '3',
-                'profiles_id' => '1',
+                'profiles_id' => self::PROFILE_SELF_SERVICE,
                 'entities_id' => '0',
                 'is_recursive' => '1',
                 'is_dynamic' => '0',
             ], [
                 'id' => '4',
                 'users_id' => '4',
-                'profiles_id' => '6',
+                'profiles_id' => self::PROFILE_TECHNICIAN,
                 'entities_id' => '0',
                 'is_recursive' => '1',
                 'is_dynamic' => '0',
             ], [
                 'id' => '5',
                 'users_id' => '5',
-                'profiles_id' => '2',
+                'profiles_id' => self::PROFILE_OBSERVER,
                 'entities_id' => '0',
                 'is_recursive' => '1',
                 'is_dynamic' => '0',
