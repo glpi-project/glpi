@@ -5288,7 +5288,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ], [
                 'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'user',
-                'rights' => READ | USER::READAUTHENT,
+                'rights' => READ | User::READAUTHENT,
             ], [
                 'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'group',
