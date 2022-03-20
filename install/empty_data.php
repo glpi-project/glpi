@@ -38,6 +38,20 @@ use Glpi\Toolbox\Sanitizer;
 // and adding unnecessary variables to IDE autocomplete data that may result in errors
 $empty_data_builder = new class{
 
+    const PROFILE_SELF_SERVICE = 1;
+    const PROFILE_OBSERVER     = 2;
+    const PROFILE_ADMIN        = 3;
+    const PROFILE_SUPER_ADMIN  = 4;
+    const PROFILE_HOTLINER     = 5;
+    const PROFILE_TECHNICIAN   = 6;
+    const PROFILE_SUPERVISOR   = 7;
+    const PROFILE_READ_ONLY    = 8;
+
+    const USER_GLPI            = 1;
+    const USER_POST_ONLY       = 2;
+    const USER_TECH            = 3;
+    const USER_NORMAL          = 4;
+
     public function getEmptyData(): array
     {
         $tables = [];
@@ -343,8 +357,8 @@ $empty_data_builder = new class{
                 'name' => 'cartridge',
                 'frequency' => '86400',
                 'param' => 10,
-                'state' => 0,
-                'mode' => 1,
+                'state' => CronTask::STATE_DISABLE,
+                'mode' => CronTask::MODE_INTERNAL,
                 'lastrun' => null,
                 'logs_lifetime' => 30,
             ], [
@@ -353,8 +367,8 @@ $empty_data_builder = new class{
                 'name' => 'consumable',
                 'frequency' => '86400',
                 'param' => 10,
-                'state' => 0,
-                'mode' => 1,
+                'state' => CronTask::STATE_DISABLE,
+                'mode' => CronTask::MODE_INTERNAL,
                 'lastrun' => null,
                 'logs_lifetime' => 30,
             ], [
@@ -363,8 +377,8 @@ $empty_data_builder = new class{
                 'name' => 'software',
                 'frequency' => '86400',
                 'param' => null,
-                'state' => 0,
-                'mode' => 1,
+                'state' => CronTask::STATE_DISABLE,
+                'mode' => CronTask::MODE_INTERNAL,
                 'lastrun' => null,
                 'logs_lifetime' => 30,
             ], [
@@ -373,8 +387,8 @@ $empty_data_builder = new class{
                 'name' => 'contract',
                 'frequency' => '86400',
                 'param' => null,
-                'state' => 1,
-                'mode' => 1,
+                'state' => CronTask::STATE_WAITING,
+                'mode' => CronTask::MODE_INTERNAL,
                 'lastrun' => null,
                 'logs_lifetime' => 30,
             ], [
@@ -383,8 +397,8 @@ $empty_data_builder = new class{
                 'name' => 'infocom',
                 'frequency' => '86400',
                 'param' => null,
-                'state' => 1,
-                'mode' => 1,
+                'state' => CronTask::STATE_WAITING,
+                'mode' => CronTask::MODE_INTERNAL,
                 'lastrun' => null,
                 'logs_lifetime' => 30,
             ], [
@@ -393,8 +407,8 @@ $empty_data_builder = new class{
                 'name' => 'logs',
                 'frequency' => '86400',
                 'param' => '30',
-                'state' => 0,
-                'mode' => 1,
+                'state' => CronTask::STATE_DISABLE,
+                'mode' => CronTask::MODE_INTERNAL,
                 'lastrun' => null,
                 'logs_lifetime' => 30,
             ], [
@@ -403,8 +417,8 @@ $empty_data_builder = new class{
                 'name' => 'mailgate',
                 'frequency' => '600',
                 'param' => '10',
-                'state' => 1,
-                'mode' => 1,
+                'state' => CronTask::STATE_WAITING,
+                'mode' => CronTask::MODE_INTERNAL,
                 'lastrun' => null,
                 'logs_lifetime' => 30,
             ], [
@@ -413,8 +427,8 @@ $empty_data_builder = new class{
                 'name' => 'checkdbreplicate',
                 'frequency' => '300',
                 'param' => null,
-                'state' => 0,
-                'mode' => 1,
+                'state' => CronTask::STATE_DISABLE,
+                'mode' => CronTask::MODE_INTERNAL,
                 'lastrun' => null,
                 'logs_lifetime' => 30,
             ], [
@@ -423,8 +437,8 @@ $empty_data_builder = new class{
                 'name' => 'checkupdate',
                 'frequency' => '604800',
                 'param' => null,
-                'state' => 0,
-                'mode' => 1,
+                'state' => CronTask::STATE_DISABLE,
+                'mode' => CronTask::MODE_INTERNAL,
                 'lastrun' => null,
                 'logs_lifetime' => 30,
             ], [
@@ -433,8 +447,8 @@ $empty_data_builder = new class{
                 'name' => 'session',
                 'frequency' => '86400',
                 'param' => null,
-                'state' => 1,
-                'mode' => 1,
+                'state' => CronTask::STATE_WAITING,
+                'mode' => CronTask::MODE_INTERNAL,
                 'lastrun' => null,
                 'logs_lifetime' => 30,
             ], [
@@ -443,8 +457,8 @@ $empty_data_builder = new class{
                 'name' => 'graph',
                 'frequency' => 3600,
                 'param' => null,
-                'state' => 1,
-                'mode' => 1,
+                'state' => CronTask::STATE_WAITING,
+                'mode' => CronTask::MODE_INTERNAL,
                 'lastrun' => null,
                 'logs_lifetime' => 30,
             ], [
@@ -453,8 +467,8 @@ $empty_data_builder = new class{
                 'name' => 'reservation',
                 'frequency' => 3600,
                 'param' => null,
-                'state' => 1,
-                'mode' => 1,
+                'state' => CronTask::STATE_WAITING,
+                'mode' => CronTask::MODE_INTERNAL,
                 'lastrun' => null,
                 'logs_lifetime' => 30,
             ], [
@@ -463,8 +477,8 @@ $empty_data_builder = new class{
                 'name' => 'closeticket',
                 'frequency' => 43200,
                 'param' => null,
-                'state' => 1,
-                'mode' => 1,
+                'state' => CronTask::STATE_WAITING,
+                'mode' => CronTask::MODE_INTERNAL,
                 'lastrun' => null,
                 'logs_lifetime' => 30,
             ], [
@@ -473,8 +487,8 @@ $empty_data_builder = new class{
                 'name' => 'alertnotclosed',
                 'frequency' => 43200,
                 'param' => null,
-                'state' => 1,
-                'mode' => 1,
+                'state' => CronTask::STATE_WAITING,
+                'mode' => CronTask::MODE_INTERNAL,
                 'lastrun' => null,
                 'logs_lifetime' => 30,
             ], [
@@ -483,8 +497,8 @@ $empty_data_builder = new class{
                 'name' => 'slaticket',
                 'frequency' => 300,
                 'param' => null,
-                'state' => 1,
-                'mode' => 1,
+                'state' => CronTask::STATE_WAITING,
+                'mode' => CronTask::MODE_INTERNAL,
                 'lastrun' => null,
                 'logs_lifetime' => 30,
             ], [
@@ -493,8 +507,8 @@ $empty_data_builder = new class{
                 'name' => 'createinquest',
                 'frequency' => 86400,
                 'param' => null,
-                'state' => 1,
-                'mode' => 1,
+                'state' => CronTask::STATE_WAITING,
+                'mode' => CronTask::MODE_INTERNAL,
                 'lastrun' => null,
                 'logs_lifetime' => 30,
             ], [
@@ -503,8 +517,8 @@ $empty_data_builder = new class{
                 'name' => 'watcher',
                 'frequency' => 86400,
                 'param' => null,
-                'state' => 1,
-                'mode' => 1,
+                'state' => CronTask::STATE_WAITING,
+                'mode' => CronTask::MODE_INTERNAL,
                 'lastrun' => null,
                 'logs_lifetime' => 30,
             ], [
@@ -513,8 +527,8 @@ $empty_data_builder = new class{
                 'name' => 'RecurrentItems',
                 'frequency' => 3600,
                 'param' => null,
-                'state' => 1,
-                'mode' => 1,
+                'state' => CronTask::STATE_WAITING,
+                'mode' => CronTask::MODE_INTERNAL,
                 'lastrun' => null,
                 'logs_lifetime' => 30,
             ], [
@@ -523,8 +537,8 @@ $empty_data_builder = new class{
                 'name' => 'planningrecall',
                 'frequency' => 300,
                 'param' => null,
-                'state' => 1,
-                'mode' => 1,
+                'state' => CronTask::STATE_WAITING,
+                'mode' => CronTask::MODE_INTERNAL,
                 'lastrun' => null,
                 'logs_lifetime' => 30,
             ], [
@@ -533,8 +547,8 @@ $empty_data_builder = new class{
                 'name' => 'queuednotification',
                 'frequency' => 60,
                 'param' => 50,
-                'state' => 1,
-                'mode' => 1,
+                'state' => CronTask::STATE_WAITING,
+                'mode' => CronTask::MODE_INTERNAL,
                 'lastrun' => null,
                 'logs_lifetime' => 30,
             ], [
@@ -543,8 +557,8 @@ $empty_data_builder = new class{
                 'name' => 'queuednotificationclean',
                 'frequency' => 86400,
                 'param' => 30,
-                'state' => 1,
-                'mode' => 1,
+                'state' => CronTask::STATE_WAITING,
+                'mode' => CronTask::MODE_INTERNAL,
                 'lastrun' => null,
                 'logs_lifetime' => 30,
             ], [
@@ -553,8 +567,8 @@ $empty_data_builder = new class{
                 'name' => 'temp',
                 'frequency' => 3600,
                 'param' => null,
-                'state' => 1,
-                'mode' => 1,
+                'state' => CronTask::STATE_WAITING,
+                'mode' => CronTask::MODE_INTERNAL,
                 'lastrun' => null,
                 'logs_lifetime' => 30,
             ], [
@@ -563,8 +577,8 @@ $empty_data_builder = new class{
                 'name' => 'mailgateerror',
                 'frequency' => 86400,
                 'param' => null,
-                'state' => 1,
-                'mode' => 1,
+                'state' => CronTask::STATE_WAITING,
+                'mode' => CronTask::MODE_INTERNAL,
                 'lastrun' => null,
                 'logs_lifetime' => 30,
             ], [
@@ -573,8 +587,8 @@ $empty_data_builder = new class{
                 'name' => 'circularlogs',
                 'frequency' => 86400,
                 'param' => 4,
-                'state' => 0,
-                'mode' => 1,
+                'state' => CronTask::STATE_DISABLE,
+                'mode' => CronTask::MODE_INTERNAL,
                 'lastrun' => null,
                 'logs_lifetime' => 30,
             ], [
@@ -583,8 +597,8 @@ $empty_data_builder = new class{
                 'name' => 'unlockobject',
                 'frequency' => 86400,
                 'param' => 4,
-                'state' => 0,
-                'mode' => 1,
+                'state' => CronTask::STATE_DISABLE,
+                'mode' => CronTask::MODE_INTERNAL,
                 'lastrun' => null,
                 'logs_lifetime' => 30,
             ], [
@@ -593,8 +607,8 @@ $empty_data_builder = new class{
                 'name' => 'countAll',
                 'frequency' => 604800,
                 'param' => null,
-                'state' => 0,
-                'mode' => 1,
+                'state' => CronTask::STATE_DISABLE,
+                'mode' => CronTask::MODE_INTERNAL,
                 'lastrun' => null,
                 'logs_lifetime' => 30,
             ], [
@@ -603,8 +617,8 @@ $empty_data_builder = new class{
                 'name' => 'savedsearchesalerts',
                 'frequency' => 86400,
                 'param' => null,
-                'state' => 0,
-                'mode' => 1,
+                'state' => CronTask::STATE_DISABLE,
+                'mode' => CronTask::MODE_INTERNAL,
                 'lastrun' => null,
                 'logs_lifetime' => 30,
             ], [
@@ -613,8 +627,8 @@ $empty_data_builder = new class{
                 'name' => 'telemetry',
                 'frequency' => 2592000,
                 'param' => null,
-                'state' => 0,
-                'mode' => 1,
+                'state' => CronTask::STATE_DISABLE,
+                'mode' => CronTask::MODE_INTERNAL,
                 'lastrun' => null,
                 'logs_lifetime' => 30,
             ], [
@@ -623,8 +637,8 @@ $empty_data_builder = new class{
                 'name' => 'certificate',
                 'frequency' => 86400,
                 'param' => null,
-                'state' => 1,
-                'mode' => 1,
+                'state' => CronTask::STATE_WAITING,
+                'mode' => CronTask::MODE_INTERNAL,
                 'lastrun' => null,
                 'logs_lifetime' => 30,
             ], [
@@ -633,8 +647,8 @@ $empty_data_builder = new class{
                 'name' => 'olaticket',
                 'frequency' => 300,
                 'param' => null,
-                'state' => 1,
-                'mode' => 1,
+                'state' => CronTask::STATE_WAITING,
+                'mode' => CronTask::MODE_INTERNAL,
                 'lastrun' => null,
                 'logs_lifetime' => 30,
             ], [
@@ -643,8 +657,8 @@ $empty_data_builder = new class{
                 'name' => 'PurgeLogs',
                 'frequency' => 604800,
                 'param' => 24,
-                'state' => 1,
-                'mode' => 2,
+                'state' => CronTask::STATE_WAITING,
+                'mode' => CronTask::MODE_EXTERNAL,
                 'lastrun' => null,
                 'logs_lifetime' => 30,
             ], [
@@ -653,8 +667,8 @@ $empty_data_builder = new class{
                 'name' => 'purgeticket',
                 'frequency' => 604800,
                 'param' => null,
-                'state' => 0,
-                'mode' => 2,
+                'state' => CronTask::STATE_DISABLE,
+                'mode' => CronTask::MODE_EXTERNAL,
                 'lastrun' => null,
                 'logs_lifetime' => 30,
             ], [
@@ -663,8 +677,8 @@ $empty_data_builder = new class{
                 'name' => 'cleanorphans',
                 'frequency' => 604800,
                 'param' => null,
-                'state' => 0,
-                'mode' => 2,
+                'state' => CronTask::STATE_DISABLE,
+                'mode' => CronTask::MODE_EXTERNAL,
                 'lastrun' => null,
                 'logs_lifetime' => 30,
             ], [
@@ -673,8 +687,8 @@ $empty_data_builder = new class{
                 'name' => 'passwordexpiration',
                 'frequency' => 86400,
                 'param' => 100,
-                'state' => 0,
-                'mode' => 2,
+                'state' => CronTask::STATE_DISABLE,
+                'mode' => CronTask::MODE_EXTERNAL,
                 'lastrun' => null,
                 'logs_lifetime' => 30,
             ], [
@@ -683,8 +697,8 @@ $empty_data_builder = new class{
                 'name' => 'checkAllUpdates',
                 'frequency' => 86400,
                 'param' => null,
-                'state' => 1,
-                'mode' => 2,
+                'state' => CronTask::STATE_WAITING,
+                'mode' => CronTask::MODE_EXTERNAL,
                 'lastrun' => null,
                 'logs_lifetime' => 30,
             ], [
@@ -693,8 +707,8 @@ $empty_data_builder = new class{
                 'name' => CleanSoftwareCron::TASK_NAME,
                 'frequency' => MONTH_TIMESTAMP,
                 'param' => 1000,
-                'state' => 0,
-                'mode' => 2,
+                'state' => CronTask::STATE_DISABLE,
+                'mode' => CronTask::MODE_EXTERNAL,
                 'lastrun' => null,
                 'logs_lifetime' => 300,
             ], [
@@ -703,8 +717,8 @@ $empty_data_builder = new class{
                 'name' => 'DomainsAlert',
                 'frequency' => 86400,
                 'param' => null,
-                'state' => 1,
-                'mode' => 2,
+                'state' => CronTask::STATE_WAITING,
+                'mode' => CronTask::MODE_EXTERNAL,
                 'lastrun' => null,
                 'logs_lifetime' => 30,
             ], [
@@ -713,8 +727,8 @@ $empty_data_builder = new class{
                 'name' => PendingReasonCron::TASK_NAME,
                 'frequency' => 30 * MINUTE_TIMESTAMP,
                 'param' => null,
-                'state' => 1,
-                'mode' => 2,
+                'state' => CronTask::STATE_WAITING,
+                'mode' => CronTask::MODE_EXTERNAL,
                 'lastrun' => null,
                 'logs_lifetime' => 60,
             ], [
@@ -723,8 +737,8 @@ $empty_data_builder = new class{
                 'name' => 'cleantemp',
                 'frequency' => 86400,
                 'param' => null,
-                'state' => 0,
-                'mode' => 2,
+                'state' => CronTask::STATE_DISABLE,
+                'mode' => CronTask::MODE_EXTERNAL,
                 'lastrun' => null,
                 'logs_lifetime' => 30,
             ], [
@@ -733,8 +747,8 @@ $empty_data_builder = new class{
                 'name' => 'cleanorphans',
                 'frequency' => 604800,
                 'param' => null,
-                'state' => 1,
-                'mode' => 2,
+                'state' => CronTask::STATE_WAITING,
+                'mode' => CronTask::MODE_EXTERNAL,
                 'lastrun' => null,
                 'logs_lifetime' => 30,
             ],
