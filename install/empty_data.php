@@ -36,8 +36,8 @@ use Glpi\Toolbox\Sanitizer;
 
 // Use anonymous class so we can have constants that define special values without polluting the global table
 // and adding unnecessary variables to IDE autocomplete data that may result in errors
-$empty_data_builder = new class{
-
+$empty_data_builder = new class
+{
     /** @var int Self-service profile ID */
     const PROFILE_SELF_SERVICE = 1;
     /** @var int Observer profile ID */
