@@ -4167,7 +4167,7 @@ JAVASCRIPT;
         );
 
         // override current fields in options with template fields and return the array of these predefined fields
-        $predefined_fields = $this->getPredefinedTemplateFields($tt, $options, $default_values);
+        $predefined_fields = $this->setPredefinedFields($tt, $options, $default_values);
 
         $delegating = User::getDelegateGroupsForUser($options['entities_id']);
 
