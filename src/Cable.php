@@ -40,6 +40,8 @@ use Glpi\SocketModel;
 /// Class Cable
 class Cable extends CommonDBTM
 {
+    use Glpi\Features\Clonable;
+
    // From CommonDBTM
     public $dohistory         = true;
     public static $rightname         = 'cable_management';
@@ -72,6 +74,16 @@ class Cable extends CommonDBTM
         $this->fields['color'] = '#dddddd';
         $this->fields['itemtype_endpoint_a'] = 'Computer';
         $this->fields['itemtype_endpoint_b'] = 'Computer';
+    }
+
+    public function getCloneRelations(): array
+    {
+        return [
+            Infocom::class,
+            Item_Ticket::class,
+            Item_Problem::class,
+            Change_Item::class,
+        ];
     }
 
     public static function getAdditionalMenuLinks()
