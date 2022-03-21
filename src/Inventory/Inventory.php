@@ -47,8 +47,8 @@ use Toolbox;
  */
 class Inventory
 {
-    const FULL_MODE = 0;
-    const INCR_MODE = 1;
+    public const FULL_MODE = 0;
+    public const INCR_MODE = 1;
 
     /** @var integer */
     protected $mode;
