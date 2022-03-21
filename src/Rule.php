@@ -1525,7 +1525,7 @@ class Rule extends CommonDBTM
      * @param $refoutput   the initial output array used to be manipulate by actions
      * @param $newoutput   the output array after actions process
      *
-     * @return the options array updated.
+     * @return void
      **/
     public function updateOnlyCriteria(&$options, $refoutput, $newoutput)
     {
