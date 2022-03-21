@@ -1653,7 +1653,7 @@ class Rule extends CommonDBTM
      * @param array $input          the input data used to check criteria
      * @param array &$check_results
      *
-     * @return boolean if criteria match
+     * @return void
      **/
     public function testCriterias($input, &$check_results)
     {
