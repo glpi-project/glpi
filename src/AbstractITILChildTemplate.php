@@ -43,7 +43,9 @@ abstract class AbstractITILChildTemplate extends CommonDropdown
 {
     public function showForm($ID, array $options = [])
     {
-        parent::showForm($ID, $options);
+        if (!parent::showForm($ID, $options)) {
+            return false;
+        }
 
        // Add autocompletion for ticket properties (twig templates)
         $parameters = ParametersPreset::getForAbstractTemplates();
@@ -57,6 +59,8 @@ abstract class AbstractITILChildTemplate extends CommonDropdown
             'textarea[name=content]',
             ParametersPreset::ITIL_CHILD_TEMPLATE
         );
+
+        return true;
     }
 
     public function prepareInputForAdd($input)

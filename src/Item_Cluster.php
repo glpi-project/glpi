@@ -261,6 +261,8 @@ class Item_Cluster extends CommonDBRelation
         echo "</tr>";
 
         $this->showFormButtons($options);
+
+        return true;
     }
 
     public function prepareInputForAdd($input)

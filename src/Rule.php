@@ -1483,15 +1483,14 @@ class Rule extends CommonDBTM
     /**
      * Process the rule
      *
-     * @param &$input          the input data used to check criteria
-     * @param &$output         the initial output array used to be manipulate by actions
-     * @param &$params         parameters for all internal functions
-     * @param &options   array options:
+     * @param array &$input the input data used to check criterias
+     * @param array &$output the initial ouput array used to be manipulate by actions
+     * @param array &$params parameters for all internal functions
+     * @param array &options array options:
      *                     - only_criteria : only react on specific criteria
      *
-     * @return the output array updated by actions.
-     *         If rule matched add field _rule_process to return value
-     **/
+     * @return void
+     */
     public function process(&$input, &$output, &$params, &$options = [])
     {
 
@@ -1526,7 +1525,7 @@ class Rule extends CommonDBTM
      * @param $refoutput   the initial output array used to be manipulate by actions
      * @param $newoutput   the output array after actions process
      *
-     * @return the options array updated.
+     * @return void
      **/
     public function updateOnlyCriteria(&$options, $refoutput, $newoutput)
     {
@@ -1654,7 +1653,7 @@ class Rule extends CommonDBTM
      * @param array $input          the input data used to check criteria
      * @param array &$check_results
      *
-     * @return boolean if criteria match
+     * @return void
      **/
     public function testCriterias($input, &$check_results)
     {
@@ -2393,7 +2392,7 @@ class Rule extends CommonDBTM
      * @param $condition condition used
      * @param $pattern   the pattern
      *
-     * @return a value associated with the criteria, or false otherwise
+     * @return mixed|false  A value associated with the criteria, or false otherwise
      **/
     public function getAdditionalCriteriaDisplayPattern($ID, $condition, $pattern)
     {
@@ -2471,11 +2470,6 @@ class Rule extends CommonDBTM
                     $types = $CFG_GLPI['state_types'];
                     $types[''] = __('No item type defined');
                     Dropdown::showItemTypes($name, $types, ['value' => $value]);
-                    $display = true;
-                    break;
-
-                case "dropdown_import_type":
-                    RuleAsset::dropdownImportType($name, $value);
                     $display = true;
                     break;
 

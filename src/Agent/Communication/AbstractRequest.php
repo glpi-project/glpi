@@ -144,15 +144,15 @@ abstract class AbstractRequest
     /**
      * Guess import mode
      *
-     * @return boolean
+     * @return void
      */
-    private function guessMode($contents)
+    private function guessMode($contents): void
     {
-       // In the case handleContentType() didn't set mode, just check $contents first char
+        // In the case handleContentType() didn't set mode, just check $contents first char
         if ($contents[0] === '{') {
             $this->setMode(self::JSON_MODE);
         } else {
-           //defaults to XML; whose validity is checked later.
+            //defaults to XML; whose validity is checked later.
             $this->setMode(self::XML_MODE);
         }
     }
@@ -218,6 +218,8 @@ abstract class AbstractRequest
             case self::JSON_MODE:
                 return $this->handleJSONRequest($data);
         }
+
+        return false;
     }
 
     /**

@@ -113,9 +113,6 @@ class RuleImportAsset extends Rule
                 'is_global' => true,
                 'allow_condition' => [Rule::PATTERN_IS, Rule::PATTERN_IS_NOT]
             ],
-            'name' => [
-                'name'            => __("Item name")
-            ],
             'model' => [
                 'name'            => sprintf('%s > %s', _n('Asset', 'Assets', 1), _n('Model', 'Models', 1)),
             ],
@@ -2442,6 +2439,7 @@ class RuleImportAsset extends Rule
                 $rule->getFromDB($values['id']);
                 return $rule->getLink();
         }
+        return parent::getSpecificValueToDisplay($field, $values, $options);
     }
 
     public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
@@ -2457,5 +2455,6 @@ class RuleImportAsset extends Rule
                     ] + $options
                 );
         }
+        return parent::getSpecificValueToSelect($field, $name, $values, $options);
     }
 }

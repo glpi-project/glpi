@@ -306,6 +306,8 @@ class PDU_Rack extends CommonDBRelation
         echo "</tr>";
 
         $this->showFormButtons($options);
+
+        return true;
     }
 
     public static function showListForRack(Rack $rack)

@@ -349,10 +349,11 @@ class RuleCollection extends CommonDBTM
      * @param $items     array    containg items to replay. If empty -> all
      * @param $params    array    additional parameters if needed
      *
-     * @return -1 if all rows done, else offset for next run
+     * @return int|false -1 if all rows done, else offset for next run, or false on error
      **/
     public function replayRulesOnExistingDB($offset = 0, $maxtime = 0, $items = [], $params = [])
     {
+        return false;
     }
 
 
@@ -1990,7 +1991,7 @@ JAVASCRIPT;
      * @param $check_dictionnary_type   check if the itemtype is a dictionnary or not
      *                                  (false by default)
      *
-     * @return the rulecollection class or null
+     * @return RuleCollection|null
      */
     public static function getClassByType($itemtype, $check_dictionnary_type = false)
     {
@@ -2013,8 +2014,8 @@ JAVASCRIPT;
             if ($item = getItemForItemtype($typeclass)) {
                 return $item;
             }
-            return null;
         }
+        return null;
     }
 
 

@@ -283,6 +283,8 @@ class Item_Enclosure extends CommonDBRelation
         echo "</tr>";
 
         $this->showFormButtons($options);
+
+        return true;
     }
 
     public function prepareInputForAdd($input)

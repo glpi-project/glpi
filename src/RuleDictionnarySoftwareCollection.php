@@ -105,9 +105,6 @@ class RuleDictionnarySoftwareCollection extends RuleCollection
     }
 
 
-    /**
-     * @see RuleCollection::replayRulesOnExistingDB()
-     **/
     public function replayRulesOnExistingDB($offset = 0, $maxtime = 0, $items = [], $params = [])
     {
         global $DB;
@@ -245,7 +242,7 @@ class RuleDictionnarySoftwareCollection extends RuleCollection
      * @param $IDs       array of software IDs to replay
      * @param $res_rule  array of rule results
      *
-     * @return Query result handler
+     * @return void
      **/
     public function replayDictionnaryOnSoftwaresByID(array $IDs, $res_rule = [])
     {
@@ -329,7 +326,7 @@ class RuleDictionnarySoftwareCollection extends RuleCollection
             $res_rule = $this->processAllRules($input, [], []);
         }
         $soft = new Software();
-        if (isset($res_rules['_ignore_import']) && ($res_rules['_ignore_import'] == 1)) {
+        if (isset($res_rule['_ignore_import']) && ($res_rule['_ignore_import'] == 1)) {
             $soft->putInTrash($ID, __('Software deleted by GLPI dictionary rules'));
             return;
         }

@@ -856,6 +856,8 @@ class ITILFollowup extends CommonDBChild
             'item'      => $options['parent'],
             'subitem'   => $this
         ]);
+
+        return true;
     }
 
 

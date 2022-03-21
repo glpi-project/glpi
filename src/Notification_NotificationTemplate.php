@@ -489,7 +489,9 @@ class Notification_NotificationTemplate extends CommonDBRelation
      *
      * @param array $options array of options
      *
-     * @return void
+     * @return integer|string
+     *    integer if option display=true (random part of elements id)
+     *    string if option display=false (HTML code)
      */
     public static function dropdownMode($options)
     {

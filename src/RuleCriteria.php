@@ -297,12 +297,14 @@ class RuleCriteria extends CommonDBChild
                     && !empty($values['rules_id'])
                     && $generic_rule->getFromDB($values['rules_id'])
                 ) {
-                    if (isset($values['criteria']) && !empty($values['criteria'])) {
-                        $options['criterion'] = $values['criteria'];
+                    if ($rule = getItemForItemtype($generic_rule->fields["sub_type"])) {
+                        if (isset($values['criteria']) && !empty($values['criteria'])) {
+                            $options['criterion'] = $values['criteria'];
+                        }
+                        $options['value'] = $values[$field];
+                        $options['name']  = $name;
+                        return $rule->dropdownConditions($generic_rule->fields["sub_type"], $options);
                     }
-                    $options['value'] = $values[$field];
-                    $options['name']  = $name;
-                    return $rule->dropdownConditions($generic_rule->fields["sub_type"], $options);
                 }
                 break;
 
@@ -694,5 +696,7 @@ class RuleCriteria extends CommonDBChild
         echo "<tr><td colspan='4'><span id='criteria_span'>\n";
         echo "</span></td></tr>\n";
         $this->showFormButtons($options);
+
+        return true;
     }
 }

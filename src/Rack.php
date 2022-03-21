@@ -314,6 +314,7 @@ class Rack extends CommonDBTM
                 );
              break;
         }
+        return '';
     }
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
@@ -323,6 +324,7 @@ class Rack extends CommonDBTM
                 self::showForRoom($item);
                 break;
         }
+        return true;
     }
 
     /**
