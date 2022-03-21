@@ -1483,15 +1483,14 @@ class Rule extends CommonDBTM
     /**
      * Process the rule
      *
-     * @param &$input          the input data used to check criteria
-     * @param &$output         the initial output array used to be manipulate by actions
-     * @param &$params         parameters for all internal functions
-     * @param &options   array options:
+     * @param array &$input the input data used to check criterias
+     * @param array &$output the initial ouput array used to be manipulate by actions
+     * @param array &$params parameters for all internal functions
+     * @param array &options array options:
      *                     - only_criteria : only react on specific criteria
      *
-     * @return the output array updated by actions.
-     *         If rule matched add field _rule_process to return value
-     **/
+     * @return void
+     */
     public function process(&$input, &$output, &$params, &$options = [])
     {
 
