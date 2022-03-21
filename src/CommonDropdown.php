@@ -775,6 +775,13 @@ abstract class CommonDropdown extends CommonDBTM
                 $input["name"] = $res_rule["name"];
             }
         }
+        // Merge extra input fields back in if they were not used by rules
+        foreach ($external_params as $k => $v) {
+            if (!in_array($k, $this->additional_fields_for_dictionnary, true)) {
+                $input[$k] = $v;
+            }
+        }
+
         return ($add ? $this->import($input) : $this->findID($input));
     }
 
