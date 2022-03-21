@@ -570,6 +570,8 @@ class Document extends DbTestCase
         $this->boolean($inlinedDocument->canViewFile())->isFalse();
         $this->boolean($basicDocument->canViewFile([$fkey => $item->getID()]))->isFalse();
         $this->boolean($inlinedDocument->canViewFile([$fkey => $item->getID()]))->isFalse();
+        $this->boolean($basicDocument->canViewFile(['itemtype' => $item->getType(), 'items_id' => $item->getID()]))->isFalse();
+        $this->boolean($inlinedDocument->canViewFile(['itemtype' => $item->getType(), 'items_id' => $item->getID()]))->isFalse();
 
        // post-only can see documents linked to its own ITIL (ITIL content)
         $itil_user_class = $itemtype . '_User';
@@ -586,6 +588,8 @@ class Document extends DbTestCase
         $this->boolean($inlinedDocument->canViewFile())->isFalse(); // False without params
         $this->boolean($basicDocument->canViewFile([$fkey => $item->getID()]))->isTrue();
         $this->boolean($inlinedDocument->canViewFile([$fkey => $item->getID()]))->isTrue();
+        $this->boolean($basicDocument->canViewFile(['itemtype' => $item->getType(), 'items_id' => $item->getID()]))->isTrue();
+        $this->boolean($inlinedDocument->canViewFile(['itemtype' => $item->getType(), 'items_id' => $item->getID()]))->isTrue();
     }
 
     /**
@@ -686,6 +690,7 @@ class Document extends DbTestCase
         $_SESSION["glpiactiveprofile"][$itil::$rightname] = READ; // force READ write for tested ITIL type
         $this->boolean($inlinedDocument->canViewFile())->isFalse();
         $this->boolean($inlinedDocument->canViewFile([$fkey => $itil->getID()]))->isFalse();
+        $this->boolean($inlinedDocument->canViewFile(['itemtype' => $itil->getType(), 'items_id' => $itil->getID()]))->isFalse();
 
        // post-only can see documents linked to its own ITIL
         $itil_user_class = $itil_itemtype . '_User';
@@ -700,6 +705,7 @@ class Document extends DbTestCase
 
         $this->boolean($inlinedDocument->canViewFile())->isFalse(); // False without params
         $this->boolean($inlinedDocument->canViewFile([$fkey => $itil->getID()]))->isTrue();
+        $this->boolean($inlinedDocument->canViewFile(['itemtype' => $itil->getType(), 'items_id' => $itil->getID()]))->isTrue();
     }
 
     public function testCronCleanorphans()

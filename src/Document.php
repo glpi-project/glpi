@@ -448,7 +448,7 @@ class Document extends CommonDBTM
         echo "</td>";
         if ($ID > 0) {
             echo "<td>" . __('Current file') . "</td>";
-            echo "<td>" . $this->getDownloadLink('', 45);
+            echo "<td>" . $this->getDownloadLink(null, 45);
             echo "<input type='hidden' name='current_filepath' value='" . $this->fields["filepath"] . "'>";
             echo "<input type='hidden' name='current_filename' value='" . $this->fields["filename"] . "'>";
             echo "</td>";
@@ -557,7 +557,7 @@ class Document extends CommonDBTM
             $link_params = $linked_item;
         } elseif ($linked_item !== null && !($linked_item instanceof CommonDBTM)) {
             throw new \InvalidArgumentException();
-        } else {
+        } elseif ($linked_item !== null) {
             $link_params = sprintf('&itemtype=%s&items_id=%s', $linked_item->getType(), $linked_item->getID());
         }
 
@@ -714,7 +714,7 @@ class Document extends CommonDBTM
         if (
             $itemtype !== null
             && $items_id !== null
-            && $this->canViewFileFromItem('$itemtype', $problems_id)
+            && $this->canViewFileFromItem($itemtype, $problems_id)
         ) {
             return true;
         }

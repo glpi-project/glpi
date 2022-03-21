@@ -775,11 +775,6 @@ class Document_Item extends CommonDBRelation
         if (empty($withtemplate)) {
             $withtemplate = 0;
         }
-        $linkparam = '';
-
-        if (get_class($item) == 'Ticket') {
-            $linkparam = "&amp;tickets_id=" . $item->fields['id'];
-        }
 
         $criteria = self::getDocumentForItemRequest($item, ["$sort $order"]);
 
@@ -872,7 +867,7 @@ class Document_Item extends CommonDBRelation
 
                 if ($document->getFromDB($docID)) {
                     $link         = $document->getLink();
-                    $downloadlink = $document->getDownloadLink($linkparam);
+                    $downloadlink = $document->getDownloadLink($item);
                 }
 
                 if ($item->getType() != 'Document') {
