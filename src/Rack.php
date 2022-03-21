@@ -323,6 +323,7 @@ class Rack extends CommonDBTM
                 self::showForRoom($item);
                 break;
         }
+        return true;
     }
 
     /**
