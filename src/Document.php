@@ -540,13 +540,26 @@ class Document extends CommonDBTM
     /**
      * Get download link for a document
      *
-     * @param string  $params    additonal parameters to be added to the link (default '')
-     * @param integer $len       maximum length of displayed string (default 20)
+     * @param CommonDBTM|null   $linked_item    Item linked to the document, to check access right
+     * @param integer           $len            maximum length of displayed string (default 20)
      *
      **/
-    public function getDownloadLink($params = '', $len = 20)
+    public function getDownloadLink($linked_item = null, $len = 20)
     {
-        global $DB,$CFG_GLPI;
+        global $DB, $CFG_GLPI;
+
+        $link_params = '';
+        if (is_string($linked_item)) {
+            // Old behaviour.
+            // TODO: Deprecate it in GLPI 10.1.
+            // Toolbox::deprecated('Passing additionnal URL parameters in Document::getDownloadLink() is deprecated.');
+            $linked_item = null;
+            $link_params = $linked_item;
+        } elseif ($linked_item !== null && !($linked_item instanceof CommonDBTM)) {
+            throw new \InvalidArgumentException();
+        } else {
+            $link_params = sprintf('&itemtype=%s&items_id=%s', $linked_item->getType(), $linked_item->getID());
+        }
 
         $splitter = explode("/", $this->fields['filename']);
 
@@ -567,12 +580,14 @@ class Document extends CommonDBTM
         $out   = '';
         $open  = '';
         $close = '';
-        if (
-            self::canView()
-            || $this->canViewFile(['tickets_id' => $this->fields['tickets_id']])
-        ) {
+
+        $can_view_options = $linked_item !== null
+            ? ['itemtype' => $linked_item->getType(), 'items_id' => $linked_item->getID()]
+            : ['itemtype' => Ticket::getType(), 'items_id' => $this->fields['tickets_id']];
+
+        if (self::canView() || $this->canViewFile($can_view_options)) {
             $open  = "<a href='" . $CFG_GLPI["root_doc"] . "/front/document.send.php?docid=" .
-                    $this->fields['id'] . $params . "' alt=\"" . $initfileout . "\"
+                    $this->fields['id'] . $link_params . "' alt=\"" . $initfileout . "\"
                     title=\"" . $initfileout . "\"target='_blank'>";
             $close = "</a>";
         }
@@ -649,9 +664,13 @@ class Document extends CommonDBTM
 
 
     /**
-     * Check is the curent user is allowed to see the file
+     * Check is the curent user is allowed to see the file.
      *
-     * @param array $options Options (only 'tickets_id' used)
+     * @param array $options array of possible options used to check rights:
+     *     - itemtype/items_id:     itemtype and ID of item linked to document
+     *     - changes_id (legacy):   ID of Change linked to document. Ignored if itemtype/items_id options are set.
+     *     - problems_id (legacy):  ID of Problem linked to document. Ignored if itemtype/items_id options are set.
+     *     - tickets_id (legacy):   ID of Ticket linked to document. Ignored if itemtype/items_id options are set.
      *
      * @return boolean
      **/
@@ -675,27 +694,35 @@ class Document extends CommonDBTM
             return true;
         }
 
-        if (
-            isset($options["changes_id"])
-            && $this->canViewFileFromItilObject('Change', $options["changes_id"])
-        ) {
+        // new options
+        $itemtype = $options['itemtype'] ?? null;
+        $items_id = $options['items_id'] ?? null;
+
+        // legacy options
+        $changes_id  = $itemtype === null ? ($options['changes_id'] ?? null) : ($itemtype === 'Change' ? $items_id : null);
+        $problems_id = $itemtype === null ? ($options['problems_id'] ?? null) : ($itemtype === 'Problem' ? $items_id : null);
+        $tickets_id  = $itemtype === null ? ($options['tickets_id'] ?? null) : ($itemtype === 'Ticket' ? $items_id : null);
+
+        if ($changes_id !== null && $this->canViewFileFromItilObject('Change', $changes_id)) {
+            return true;
+        }
+
+        if ($problems_id !== null && $this->canViewFileFromItilObject('Problem', $problems_id)) {
             return true;
         }
 
         if (
-            isset($options["problems_id"])
-            && $this->canViewFileFromItilObject('Problem', $options["problems_id"])
+            $itemtype !== null
+            && $items_id !== null
+            && $this->canViewFileFromItem('$itemtype', $problems_id)
         ) {
             return true;
         }
 
-       // The following case should be reachable from the API
+        // The following case should be reachable from the API
         self::loadAPISessionIfExist();
 
-        if (
-            isset($options["tickets_id"])
-            && $this->canViewFileFromItilObject('Ticket', $options["tickets_id"])
-        ) {
+        if ($tickets_id !== null && $this->canViewFileFromItilObject('Ticket', $tickets_id)) {
             return true;
         }
 
@@ -864,6 +891,50 @@ class Document extends CommonDBTM
         ])->current();
 
         return $result['cpt'] > 0;
+    }
+
+    /**
+     * Check if file of current instance can be viewed from item having given itemtype/items_id.
+     *
+     * @global DBmysql $DB
+     *
+     * @param string  $itemtype
+     * @param integer $items_id
+     *
+     * @return boolean
+     */
+    private function canViewFileFromItem($itemtype, $items_id): bool
+    {
+        global $DB;
+
+        $item = new $itemtype();
+
+        if (!$item->can($items_id, READ)) {
+            return false;
+        }
+
+        /** @var CommonDBTM $item */
+        $item->getFromDB($items_id);
+        if (!$item->canViewItem()) {
+            return false;
+        }
+
+        $result = $DB->request(
+            [
+                'FROM'  => Document_Item::getTable(),
+                'COUNT' => 'cpt',
+                'WHERE' => [
+                    'itemtype' => $itemtype,
+                    'items_id' => $items_id,
+                ]
+            ]
+        )->current();
+
+        if ($result['cpt'] === 0) {
+            return false;
+        }
+
+        return true;
     }
 
     public static function rawSearchOptionsToAdd($itemtype = null)
