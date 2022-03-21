@@ -1398,7 +1398,7 @@ class Item_SoftwareVersion extends CommonDBRelation
                 Html::showMassiveActionCheckBox(__CLASS__, $ID);
                 echo "</td>";
             }
-            echo "<td class='b'>";
+            echo "<td>";
             echo "<a href='" . Software::getFormURLWithID($data['softwares_id']) . "'>";
             echo ($_SESSION["glpiis_ids_visible"] ? sprintf(
                 __('%1$s (%2$s)'),
@@ -1526,7 +1526,7 @@ class Item_SoftwareVersion extends CommonDBRelation
             echo "</td>";
         }
 
-        echo "<td class='center b'>";
+        echo "<td>";
         echo "<a href='" . Software::getFormURLWithID($data['softwares_id']) . "'>";
         echo ($_SESSION["glpiis_ids_visible"] ? sprintf(
             __('%1$s (%2$s)'),
@@ -1551,7 +1551,10 @@ class Item_SoftwareVersion extends CommonDBRelation
                 )
             );
         }
-        echo "</td><td class='b'>" . $data["name"] . " - " . $serial;
+        echo "</td><td>" . $data["name"];
+        if (!empty($serial)) {
+            echo " - " . $serial;
+        }
 
         $comment = "<table><tr><td>" . __('Name') . "</td>" . "<td>" . $data['name'] . "</td></tr>" .
                  "<tr><td>" . __('Serial number') . "</td><td>" . $data['serial'] . "</td></tr>" .
