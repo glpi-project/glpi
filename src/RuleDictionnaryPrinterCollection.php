@@ -209,7 +209,7 @@ class RuleDictionnaryPrinterCollection extends RuleCollection
      * @param $IDs       array of printers IDs to replay
      * @param $res_rule  array of rule results
      *
-     * @return Query result handler
+     * @return void
      **/
     public function replayDictionnaryOnPrintersByID(array $IDs, $res_rule = [])
     {
