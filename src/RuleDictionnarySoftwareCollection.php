@@ -245,7 +245,7 @@ class RuleDictionnarySoftwareCollection extends RuleCollection
      * @param $IDs       array of software IDs to replay
      * @param $res_rule  array of rule results
      *
-     * @return Query result handler
+     * @return void
      **/
     public function replayDictionnaryOnSoftwaresByID(array $IDs, $res_rule = [])
     {
