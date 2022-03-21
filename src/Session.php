@@ -798,7 +798,12 @@ class Session
     {
 
         return (isset($_SESSION["glpiinventoryuserrunning"])
-              && (strpos($_SERVER['PHP_SELF'], '/inventory.php') || defined('TU_USER')));
+              && (
+                  strpos($_SERVER['PHP_SELF'], '/inventory.php')
+                  || strpos($_SERVER['PHP_SELF'], '/index.php')
+                  || defined('TU_USER')
+              )
+        );
     }
 
     /**
