@@ -856,7 +856,7 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
     /**
      * Show discovered feeds
      *
-     * @return nothin
+     * @return void
      **/
     public function showDiscoveredFeeds()
     {
@@ -869,7 +869,7 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
         $feed->handle_content_type();
 
         if ($feed->error()) {
-            return false;
+            return;
         }
 
         foreach ($feed->get_all_discovered_feeds() as $f) {
