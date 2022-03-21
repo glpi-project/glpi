@@ -107,8 +107,8 @@ class ProjectTeam extends CommonDBRelation
         switch ($item->getType()) {
             case 'Project':
                 $item->showTeam($item);
-                return true;
         }
+        return true;
     }
 
     /**
