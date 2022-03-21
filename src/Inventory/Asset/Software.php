@@ -50,6 +50,8 @@ class Software extends InventoryAsset
     private $softwares = [];
     private $versions = [];
     private $current_versions = [];
+    private $added_versions   = [];
+    private $updated_versions = [];
     private $deleted_versions = [];
     private $entities_id_software;
 
@@ -252,6 +254,7 @@ class Software extends InventoryAsset
         }
 
         $db_software = [];
+        $db_software_wo_version = [];
 
         //Load existing software versions from db. Grab required fields
         //to build comparison key @see getFullCompareKey
@@ -290,7 +293,13 @@ class Software extends InventoryAsset
         foreach ($iterator as $data) {
             $softid = $data['sid'];
             unset($data['sid']);
-            $db_software[$this->getFullCompareKey((object)$data)] = $softid;
+            $key_w_version = $this->getFullCompareKey((object)$data);
+            $key_wo_version = $this->getFullCompareKey((object)$data, false);
+            $db_software[$key_w_version] = $softid;
+            $db_software_wo_version[$key_wo_version] = [
+                'version' => $data['version'],
+                'name'    => $data['name'],
+            ];
         }
 
         //check for existing links
@@ -298,26 +307,49 @@ class Software extends InventoryAsset
         foreach ($this->data as $k => &$val) {
             //operating system id is not known before handle(); set it in value
             $val->operatingsystems_id = $operatingsystems_id;
-            $key = $this->getFullCompareKey($val);
-            $dedup_vkey = $key . $this->getVersionKey($val, 0);
-            if (isset($db_software[$key])) {
-                //link already exists in database, drop it
+
+            $key_w_version  = $this->getFullCompareKey($val);
+            $key_wo_version = $this->getFullCompareKey($val, false);
+
+            $old_version = $db_software_wo_version[$key_wo_version]['version'] ?? "";
+            $new_version = $val->version;
+
+            $dedup_vkey = $key_w_version . $this->getVersionKey($val, 0);
+            if (isset($db_software[$key_w_version])) {
+                // software exist with the same version
                 unset($this->data[$k]);
-                unset($db_software[$key]);
+                unset($db_software[$key_w_version]);
+                unset($db_software_wo_version[$key_wo_version]);
                 $this->current_versions[$dedup_vkey] = true;
             } else {
-                if (isset($this->current_versions[$dedup_vkey])) {
+                if ($old_version != "" && $old_version != $new_version) {
+                    // software exist but with different version
+                    $this->updated_versions[$key_wo_version] = [
+                        'name' => $val->name,
+                        'old'  => $old_version,
+                        'new'  => $new_version,
+                    ];
+
+                    unset($db_software_wo_version[$key_wo_version]);
+                } elseif (isset($this->current_versions[$dedup_vkey])) {
+                    // software addition already done (duplicate)
                     unset($this->data[$k]);
                 } else {
+                    // software addition
                     $this->current_versions[$dedup_vkey] = true;
+                    $this->added_versions[$key_wo_version] = [
+                        'name'    => $val->name,
+                        'version' => $new_version,
+                    ];
                 }
             }
         }
 
-        //not found version means soft has been removed or updated, drop it
+        // track deleted versions (without those which version changed)
+        $this->deleted_versions = array_values($db_software_wo_version);
+
         if (count($db_software) > 0 && (!$this->main_asset || !$this->main_asset->isPartial() || $this->main_asset->isPartial() && $count_import)) {
-            $this->deleted_versions = array_values($db_software);
-            $this->logDeletedSoftwares();
+            //not found version means soft has been removed or updated, drop it
             $DB->delete(
                 'glpi_items_softwareversions',
                 [
@@ -325,6 +357,9 @@ class Software extends InventoryAsset
                 ]
             );
         }
+
+        // store changes to logs
+        $this->logSoftwares();
 
         if (!count($this->data)) {
             //nothing to do!
@@ -389,11 +424,11 @@ class Software extends InventoryAsset
      *
      * @return string
      */
-    protected function getFullCompareKey(\stdClass $val): string
+    protected function getFullCompareKey(\stdClass $val, bool $with_version = true): string
     {
         return $this->getCompareKey([
             Toolbox::slugify($val->name),
-            strtolower($val->version),
+            $with_version ? strtolower($val->version) : '',
             strtolower($val->arch ?? ''),
             $val->manufacturers_id,
             $val->entities_id,
@@ -748,56 +783,45 @@ class Software extends InventoryAsset
                 $input['date_install']
             );
             $DB->executeStatement($stmt);
-
-            \Log::history(
-                $this->item->fields['id'],
-                $this->item->getType(),
-                [0, '', $val->name],
-                'Software',
-                \Log::HISTORY_ADD_SUBITEM
-            );
         }
     }
 
     /**
-     * logs the deleted softwares in the history
+     * logs changes of softwares in the history
      *
      * @return void
      */
-    public function logDeletedSoftwares()
+    public function logSoftwares()
     {
-        global $DB;
-
-        if (count($this->deleted_versions) == 0) {
-            return;
-        }
-
-        $iterator = $DB->request([
-            'SELECT' => 'glpi_softwares.name',
-            'FROM'   => 'glpi_softwares',
-            'LEFT JOIN' => [
-                'glpi_softwareversions' => [
-                    'ON'  => [
-                        'glpi_softwareversions' => 'softwares_id',
-                        'glpi_softwares'        => 'id'
-                    ]
-                ],
-                'glpi_items_softwareversions' => [
-                    'ON'  => [
-                        'glpi_items_softwareversions' => 'softwareversions_id',
-                        'glpi_softwareversions'       => 'id'
-                    ]
-                ],
-            ],
-            'WHERE'  => [
-                'glpi_items_softwareversions.id' => $this->deleted_versions
-            ]
-        ]);
-        foreach ($iterator as $software) {
+        foreach ($this->added_versions as $software_data) {
             \Log::history(
                 $this->item->fields['id'],
                 $this->item->getType(),
-                [0, '', $software['name']],
+                [0, '', sprintf(__('%1$s - %2$s'), $software_data['name'], $software_data['version'])],
+                'Software',
+                \Log::HISTORY_ADD_SUBITEM
+            );
+        }
+
+        foreach ($this->updated_versions as $software_data) {
+            \Log::history(
+                $this->item->fields['id'],
+                $this->item->getType(),
+                [
+                    0,
+                    '',
+                    sprintf('%1$s - %2$s -> %3$s', $software_data['name'], $software_data['old'], $software_data['new']),
+                ],
+                'Software',
+                \Log::HISTORY_UPDATE_SUBITEM
+            );
+        }
+
+        foreach ($this->deleted_versions as $software_data) {
+            \Log::history(
+                $this->item->fields['id'],
+                $this->item->getType(),
+                [0, '', sprintf('%1$s - %2$s', $software_data['name'], $software_data['version'])],
                 'Software',
                 \Log::HISTORY_DELETE_SUBITEM
             );
