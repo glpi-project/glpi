@@ -764,7 +764,8 @@ class Software extends InventoryAsset
      *
      * @return void
      */
-    public function logDeletedSoftwares() {
+    public function logDeletedSoftwares()
+    {
         global $DB;
 
         if (count($this->deleted_versions) == 0) {
