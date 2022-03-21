@@ -113,9 +113,6 @@ class RuleImportAsset extends Rule
                 'is_global' => true,
                 'allow_condition' => [Rule::PATTERN_IS, Rule::PATTERN_IS_NOT]
             ],
-            'name' => [
-                'name'            => __("Item name")
-            ],
             'model' => [
                 'name'            => sprintf('%s > %s', _n('Asset', 'Assets', 1), _n('Model', 'Models', 1)),
             ],
