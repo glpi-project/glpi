@@ -1990,7 +1990,7 @@ JAVASCRIPT;
      * @param $check_dictionnary_type   check if the itemtype is a dictionnary or not
      *                                  (false by default)
      *
-     * @return the rulecollection class or null
+     * @return RuleCollection|null
      */
     public static function getClassByType($itemtype, $check_dictionnary_type = false)
     {
@@ -2013,8 +2013,8 @@ JAVASCRIPT;
             if ($item = getItemForItemtype($typeclass)) {
                 return $item;
             }
-            return null;
         }
+        return null;
     }
 
 
