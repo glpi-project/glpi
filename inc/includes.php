@@ -68,6 +68,22 @@ if (
     ];
 }
 
+// Mark if Header is loaded or not :
+$HEADER_LOADED = false;
+$FOOTER_LOADED = false;
+if (isset($AJAX_INCLUDE)) {
+    $HEADER_LOADED = true;
+}
+
+/* On startup, register all plugins configured for use. */
+if (!isset($PLUGINS_INCLUDED)) {
+   // PLugin already included
+    $PLUGINS_INCLUDED = 1;
+    $PLUGINS_EXCLUDED = isset($PLUGINS_EXCLUDED) ? $PLUGINS_EXCLUDED : [];
+    $plugin = new Plugin();
+    $plugin->init(true, $PLUGINS_EXCLUDED);
+}
+
 // Security system
 if (isset($_POST)) {
     $_UPOST = $_POST; //keep raw, as a workaround
@@ -91,23 +107,6 @@ if (isset($_FILES)) {
     }
 }
 unset($file);
-
-// Mark if Header is loaded or not :
-$HEADER_LOADED = false;
-$FOOTER_LOADED = false;
-if (isset($AJAX_INCLUDE)) {
-    $HEADER_LOADED = true;
-}
-
-/* On startup, register all plugins configured for use. */
-if (!isset($PLUGINS_INCLUDED)) {
-   // PLugin already included
-    $PLUGINS_INCLUDED = 1;
-    $PLUGINS_EXCLUDED = isset($PLUGINS_EXCLUDED) ? $PLUGINS_EXCLUDED : [];
-    $plugin = new Plugin();
-    $plugin->init(true, $PLUGINS_EXCLUDED);
-}
-
 
 if (!isset($_SESSION["MESSAGE_AFTER_REDIRECT"])) {
     $_SESSION["MESSAGE_AFTER_REDIRECT"] = [];
