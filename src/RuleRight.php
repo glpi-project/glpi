@@ -305,6 +305,7 @@ class RuleRight extends Rule
         if (count($crit) && $crit['field'] == 'type') {
             return Auth::getMethodName($pattern, 0);
         }
+        return false;
     }
 
 

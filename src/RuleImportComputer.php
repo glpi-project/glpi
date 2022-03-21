@@ -190,9 +190,6 @@ class RuleImportComputer extends Rule
     }
 
 
-    /**
-     * @see Rule::getAdditionalCriteriaDisplayPattern()
-     **/
     public function getAdditionalCriteriaDisplayPattern($ID, $condition, $pattern)
     {
 

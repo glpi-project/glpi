@@ -174,11 +174,6 @@ class RuleImportEntity extends Rule
     }
 
 
-    /**
-     * @since 0.84
-     *
-     * @see Rule::getAdditionalCriteriaDisplayPattern()
-     **/
     public function getAdditionalCriteriaDisplayPattern($ID, $condition, $pattern)
     {
 
@@ -194,6 +189,7 @@ class RuleImportEntity extends Rule
             }
             return $name;
         }
+        return false;
     }
 
     /**

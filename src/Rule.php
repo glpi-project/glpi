@@ -2393,7 +2393,7 @@ class Rule extends CommonDBTM
      * @param $condition condition used
      * @param $pattern   the pattern
      *
-     * @return a value associated with the criteria, or false otherwise
+     * @return mixed|false  A value associated with the criteria, or false otherwise
      **/
     public function getAdditionalCriteriaDisplayPattern($ID, $condition, $pattern)
     {
