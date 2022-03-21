@@ -2474,11 +2474,6 @@ class Rule extends CommonDBTM
                     $display = true;
                     break;
 
-                case "dropdown_import_type":
-                    RuleAsset::dropdownImportType($name, $value);
-                    $display = true;
-                    break;
-
                 case "dropdown_urgency":
                     Ticket::dropdownUrgency(['name'  => $name,
                         'value' => $value
