@@ -45,10 +45,6 @@ class RuleDictionnaryDropdownCollection extends RuleCollection
     public $can_replay_rules    = true;
 
 
-
-    /**
-     * @see RuleCollection::replayRulesOnExistingDB()
-     **/
     public function replayRulesOnExistingDB($offset = 0, $maxtime = 0, $items = [], $params = [])
     {
         global $DB;

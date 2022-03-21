@@ -349,10 +349,11 @@ class RuleCollection extends CommonDBTM
      * @param $items     array    containg items to replay. If empty -> all
      * @param $params    array    additional parameters if needed
      *
-     * @return -1 if all rows done, else offset for next run
+     * @return int|false -1 if all rows done, else offset for next run, or false on error
      **/
     public function replayRulesOnExistingDB($offset = 0, $maxtime = 0, $items = [], $params = [])
     {
+        return false;
     }
 
 

@@ -67,9 +67,6 @@ class RuleDictionnaryPrinterCollection extends RuleCollection
     }
 
 
-    /**
-     * @see RuleCollection::replayRulesOnExistingDB()
-     **/
     public function replayRulesOnExistingDB($offset = 0, $maxtime = 0, $items = [], $params = [])
     {
         global $DB;
