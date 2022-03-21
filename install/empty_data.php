@@ -7694,7 +7694,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
 
         $tables['glpi_profiles'] = [
             [
-                'id' => '1',
+                'id' => self::PROFILE_SELF_SERVICE,
                 'name' => 'Self-Service',
                 'interface' => 'helpdesk',
                 'is_default' => '1',
@@ -7708,7 +7708,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'change_status' => null,
                 'managed_domainrecordtypes' => '[]',
             ], [
-                'id' => '2',
+                'id' => self::PROFILE_OBSERVER,
                 'name' => 'Observer',
                 'interface' => 'central',
                 'is_default' => '0',
@@ -7722,7 +7722,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'change_status' => null,
                 'managed_domainrecordtypes' => '[]',
             ], [
-                'id' => '3',
+                'id' => self::PROFILE_ADMIN,
                 'name' => 'Admin',
                 'interface' => 'central',
                 'is_default' => '0',
@@ -7736,7 +7736,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'change_status' => null,
                 'managed_domainrecordtypes' => '[-1]',
             ], [
-                'id' => '4',
+                'id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'Super-Admin',
                 'interface' => 'central',
                 'is_default' => '0',
@@ -7750,7 +7750,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'change_status' => null,
                 'managed_domainrecordtypes' => '[-1]',
             ], [
-                'id' => '5',
+                'id' => self::PROFILE_HOTLINER,
                 'name' => 'Hotliner',
                 'interface' => 'central',
                 'is_default' => '0',
@@ -7764,7 +7764,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'change_status' => null,
                 'managed_domainrecordtypes' => '[]',
             ], [
-                'id' => '6',
+                'id' => self::PROFILE_TECHNICIAN,
                 'name' => 'Technician',
                 'interface' => 'central',
                 'is_default' => '0',
@@ -7778,7 +7778,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'change_status' => null,
                 'managed_domainrecordtypes' => '[]',
             ], [
-                'id' => '7',
+                'id' => self::PROFILE_SUPERVISOR,
                 'name' => 'Supervisor',
                 'interface' => 'central',
                 'is_default' => '0',
@@ -7792,7 +7792,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'change_status' => null,
                 'managed_domainrecordtypes' => '[]',
             ], [
-                'id' => '8',
+                'id' => self::PROFILE_READ_ONLY,
                 'name' => 'Read-Only',
                 'interface' => 'central',
                 'is_default' => '0',
@@ -8388,7 +8388,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
 
         $tables['glpi_users'] = [
             [
-                'id' => '2',
+                'id' => self::USER_GLPI,
                 'name' => 'glpi',
                 'realname' => null,
                 'password' => '$2y$10$rXXzbc2ShaiCldwkw4AZL.n.9QSH7c0c9XJAyyjrbL9BwmWditAYm',
@@ -8396,7 +8396,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'list_limit' => '20',
                 'authtype' => '1',
             ], [
-                'id' => '3',
+                'id' => self::USER_POST_ONLY,
                 'name' => 'post-only',
                 'realname' => null,
                 'password' => '$2y$10$dTMar1F3ef5X/H1IjX9gYOjQWBR1K4bERGf4/oTPxFtJE/c3vXILm',
@@ -8404,7 +8404,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'list_limit' => '20',
                 'authtype' => '1',
             ], [
-                'id' => '4',
+                'id' => self::USER_TECH,
                 'name' => 'tech',
                 'realname' => null,
                 'password' => '$2y$10$.xEgErizkp6Az0z.DHyoeOoenuh0RcsX4JapBk2JMD6VI17KtB1lO',
@@ -8412,7 +8412,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'list_limit' => '20',
                 'authtype' => '1',
             ], [
-                'id' => '5',
+                'id' => self::USER_NORMAL,
                 'name' => 'normal',
                 'realname' => null,
                 'password' => '$2y$10$Z6doq4zVHkSPZFbPeXTCluN1Q/r0ryZ3ZsSJncJqkN3.8cRiN0NV.',
@@ -8420,7 +8420,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'list_limit' => '20',
                 'authtype' => '1',
             ], [
-                'id' => '6',
+                'id' => self::USER_SYSTEM,
                 'name' => 'glpi-system',
                 'realname' => 'Support',
                 'password' => '',
