@@ -5588,7 +5588,7 @@ $tables['glpi_profilerights'] = [
     ], [
         'profiles_id' => '3',
         'name'        => 'followup',
-        'rights'      => '15383',
+        'rights'      => '31767',
     ], [
         'profiles_id' => '3',
         'name'        => 'task',
@@ -5876,7 +5876,7 @@ $tables['glpi_profilerights'] = [
     ], [
         'profiles_id' => '4',
         'name'        => 'followup',
-        'rights'      => '15383',
+        'rights'      => '31767',
     ], [
         'profiles_id' => '4',
         'name'        => 'task',
@@ -6732,7 +6732,7 @@ $tables['glpi_profilerights'] = [
     ], [
         'profiles_id' => '7',
         'name'        => 'followup',
-        'rights'      => '15383',
+        'rights'      => '31767',
     ], [
         'profiles_id' => '7',
         'name'        => 'task',
