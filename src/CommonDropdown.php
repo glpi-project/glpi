@@ -777,6 +777,9 @@ abstract class CommonDropdown extends CommonDBTM
                 $input["name"] = $res_rule["name"];
             }
         }
+        // Merge extra input fields into $input
+        $input += $external_params;
+
         return ($add ? $this->import($input) : $this->findID($input));
     }
 
