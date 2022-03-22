@@ -40,6 +40,15 @@ class NotificationTargetChange extends NotificationTargetCommonITILObject
 {
     public $private_profiles = [];
 
+    public function validateSendTo($event, array $infos, $notify_me = false, $emitter = null)
+    {
+        if ($event == 'satisfaction') {
+            return true;
+        }
+
+        return parent::validateSendTo($event, $infos, $notify_me, $emitter);
+    }
+
     /**
      * Get events related to tickets
      **/
@@ -52,7 +61,9 @@ class NotificationTargetChange extends NotificationTargetCommonITILObject
             'validation'        => __('Validation request'),
             'validation_answer' => __('Validation request answer'),
             'closed'            => __('Closure of a change'),
-            'delete'            => __('Deleting a change')
+            'delete'            => __('Deleting a change'),
+            'satisfaction'      => __('Satisfaction survey'),
+            'replysatisfaction' => __('Satisfaction survey answer')
         ];
 
         $events = array_merge($events, parent::getEvents());
@@ -331,7 +342,7 @@ class NotificationTargetChange extends NotificationTargetCommonITILObject
                                         __('%1$s: %2$s'),
                                         __('Validation request'),
                                         __('URL')
-                                    )
+                                    ),
         ];
 
         foreach ($tags as $tag => $label) {

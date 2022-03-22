@@ -31,7 +31,7 @@
  * ---------------------------------------------------------------------
  */
 
-class TicketSatisfaction extends CommonITILSatisfaction
+class ChangeSatisfaction extends CommonITILSatisfaction
 {
-    public static $rightname = 'ticket';
+    public static $rightname = 'change';
 }
