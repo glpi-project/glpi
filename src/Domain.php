@@ -627,25 +627,46 @@ class Domain extends CommonDropdown
     {
         global $DB, $CFG_GLPI;
 
-        if (!$CFG_GLPI["notifications_mailing"]) {
+        if (!$CFG_GLPI["use_notifications"]) {
             return 0; // Nothing to do
         }
 
         $errors = 0;
         $total = 0;
 
-        foreach (array_keys(Entity::getEntitiesToNotify('use_certificates_alert')) as $entity) {
+        foreach (array_keys(Entity::getEntitiesToNotify('use_domains_alert')) as $entity) {
             $events = [
                 'DomainsWhichExpire' => [
-                    'query' => self::closeExpiriesDomainsCriteria($entity),
+                    'query'      => self::closeExpiriesDomainsCriteria($entity),
+                    'alert_type' => Alert::NOTICE,
                 ],
                 'ExpiredDomains' => [
                     'query' => self::expiredDomainsCriteria($entity),
+                    'alert_type' => Alert::END,
                 ]
             ];
 
             foreach ($events as $event => $event_specs) {
-                $query    = $event_specs['query'];
+                $query      = $event_specs['query'];
+                $alert_type = $event_specs['alert_type'];
+
+                $query['SELECT']    = ['glpi_domains.id'];
+                $query['LEFT JOIN'] = [
+                    'glpi_alerts' => [
+                        'FKEY'   => [
+                            'glpi_alerts'  => 'items_id',
+                            'glpi_domains' => 'id',
+                            [
+                                'AND' => [
+                                    'glpi_alerts.itemtype' => __CLASS__,
+                                    'glpi_alerts.type'     => $alert_type,
+                                ],
+                            ],
+                        ]
+                    ]
+                ];
+                $query['WHERE'][]   = ['glpi_alerts.date' => null];
+
                 $iterator = $DB->request($query);
 
                 foreach ($iterator as $domain_data) {
@@ -673,6 +694,16 @@ class Domain extends CommonDropdown
                         } else {
                             Session::addMessageAfterRedirect($msg);
                         }
+
+                        // Add alert
+                        $input = [
+                            'type'     => $alert_type,
+                            'itemtype' => __CLASS__,
+                            'items_id' => $domain_id,
+                        ];
+                        $alert = new Alert();
+                        $alert->deleteByCriteria($input, 1);
+                        $alert->add($input);
 
                         $total++;
                     } else {
