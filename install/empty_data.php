@@ -5622,7 +5622,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'followup',
                 'rights' => READ | UPDATE | CREATE | PURGE | ITILFollowup::UPDATEALL | ITILFollowup::ADDGROUPTICKET
-                    | ITILFollowup::ADDALLTICKET | ITILFollowup::SEEPRIVATE,
+                    | ITILFollowup::ADDALLTICKET | ITILFollowup::SEEPRIVATE | ITILFollowup::ADD_AS_OBSERVER,
             ], [
                 'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'task',
@@ -5915,7 +5915,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'followup',
                 'rights' => READ | UPDATE | CREATE | PURGE | ITILFollowup::UPDATEALL | ITILFollowup::ADDGROUPTICKET
-                    | ITILFollowup::ADDALLTICKET | ITILFollowup::SEEPRIVATE,
+                    | ITILFollowup::ADDALLTICKET | ITILFollowup::SEEPRIVATE | ITILFollowup::ADD_AS_OBSERVER,
             ], [
                 'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'task',
@@ -6778,7 +6778,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'followup',
                 'rights' => READ | UPDATE | CREATE | PURGE | ITILFollowup::UPDATEALL | ITILFollowup::ADDGROUPTICKET
-                    | ITILFollowup::ADDALLTICKET | ITILFollowup::SEEPRIVATE,
+                    | ITILFollowup::ADDALLTICKET | ITILFollowup::SEEPRIVATE | ITILFollowup::ADD_AS_OBSERVER,
             ], [
                 'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'task',
@@ -6887,7 +6887,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ], [
                 'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'change',
-                'rights' => Change::READMY | Change::READALL,
+                'rights' => Change::READMY | READNOTE | Change::READALL,
             ], [
                 'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'ticketvalidation',
