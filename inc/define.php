@@ -560,7 +560,7 @@ $CFG_GLPI['javascript'] = [
         'planning'  => ['clipboard', 'fullcalendar', 'tinymce', 'planning'],
         'ticket'    => array_merge(['rateit', 'tinymce', 'kanban'], $dashboard_libs),
         'problem'   => ['tinymce', 'kanban', 'sortable'],
-        'change'    => ['tinymce', 'kanban', 'sortable'],
+        'change'    => ['tinymce', 'kanban', 'sortable', 'rateit'],
         'stat'      => ['charts']
     ],
     'tools'     => [

@@ -94,6 +94,8 @@ abstract class CommonITILObject extends CommonDBTM
     const TIMELINE_ORDER_NATURAL = 'natural';
     const TIMELINE_ORDER_REVERSE = 'reverse';
 
+    const SURVEY           = 131072;
+
     abstract public static function getTaskClass();
 
     public function post_getFromDB()
@@ -9415,6 +9417,259 @@ abstract class CommonITILObject extends CommonDBTM
         }
         if (count($calendars)) {
             $input['_date_creation_calendars_id'] = $calendars;
+        }
+    }
+
+    public static function cronInfo($name)
+    {
+        switch ($name) {
+            case 'createinquest':
+                return ['description' => __('Generation of satisfaction surveys')];
+        }
+        return [];
+    }
+
+    /**
+     * Cron for automatically creating surveys for ITIL Objects
+     *
+     * @param CronTask $task
+     *
+     * @return integer (0 : nothing done - 1 : done)
+     **/
+    public static function cronCreateInquest($task)
+    {
+        global $DB;
+
+        $inquest_class = static::getType() . 'Satisfaction';
+
+        if (!class_exists($inquest_class)) {
+            return 0;
+        }
+
+        $conf        = new Entity();
+        /** @var CommonITILSatisfaction $inquest */
+        $inquest     = new $inquest_class();
+        $tot         = 0;
+        $maxentity   = [];
+        $tabentities = [];
+
+        // Get suffix for entity config fields. For backwards compatibility, ticket values have no suffix.
+        $config_suffix = static::getType() === 'Ticket' ? '' : ('_' . strtolower(static::getType()));
+
+        $rate = Entity::getUsedConfig('inquest_config' . $config_suffix, 0, 'inquest_rate' . $config_suffix);
+        if ($rate > 0) {
+            $tabentities[0] = $rate;
+        }
+
+        foreach ($DB->request('glpi_entities') as $entity) {
+            $rate   = Entity::getUsedConfig('inquest_config' . $config_suffix, $entity['id'], 'inquest_rate' . $config_suffix);
+            $parent = Entity::getUsedConfig('inquest_config' . $config_suffix, $entity['id'], 'entities_id');
+
+            if ($rate > 0) {
+                $tabentities[$entity['id']] = $rate;
+            }
+        }
+
+        foreach ($tabentities as $entity => $rate) {
+            $parent        = Entity::getUsedConfig('inquest_config' . $config_suffix, $entity, 'entities_id');
+            $delay         = Entity::getUsedConfig('inquest_config' . $config_suffix, $entity, 'inquest_delay' . $config_suffix);
+            $duration      = Entity::getUsedConfig('inquest_config' . $config_suffix, $entity, 'inquest_duration' . $config_suffix);
+            $type          = Entity::getUsedConfig('inquest_config' . $config_suffix, $entity);
+            $max_closedate = Entity::getUsedConfig('inquest_config' . $config_suffix, $entity, 'max_closedate' . $config_suffix);
+
+            $table = static::getTable();
+            $survey_table = $inquest::getTable();
+            $fk = static::getForeignKeyField();
+
+            $iterator = $DB->request([
+                'SELECT'    => [
+                    "$table.id",
+                    "$table.closedate",
+                    "$table.entities_id"
+                ],
+                'FROM'      => $table,
+                'LEFT JOIN' => [
+                    $survey_table => [
+                        'ON' => [
+                            $survey_table   => $fk,
+                            $table          => 'id'
+                        ]
+                    ],
+                    'glpi_entities'            => [
+                        'ON' => [
+                            $table          => 'entities_id',
+                            'glpi_entities' => 'id'
+                        ]
+                    ]
+                ],
+                'WHERE'     => [
+                    "$table.entities_id"          => $entity,
+                    "$table.is_deleted"           => 0,
+                    "$table.status"               => self::CLOSED,
+                    "$table.closedate"            => ['>', $max_closedate],
+                    new QueryExpression("ADDDATE(" . $DB->quoteName("$table.closedate") . ", INTERVAL $delay DAY) <= NOW()"),
+                    new QueryExpression("ADDDATE(" . $DB->quoteName("glpi_entities.max_closedate" . $config_suffix) . ", INTERVAL $duration DAY) <= NOW()"),
+                    "$survey_table.id" => null
+                ],
+                'ORDERBY'   => 'closedate ASC'
+            ]);
+
+            $nb            = 0;
+            $max_closedate = '';
+
+            foreach ($iterator as $itil_item) {
+                $max_closedate = $itil_item['closedate'];
+                if (mt_rand(1, 100) <= $rate) {
+                    if (
+                        $inquest->add([
+                            $fk             => $itil_item['id'],
+                            'date_begin'    => $_SESSION["glpi_currenttime"],
+                            'entities_id'   => $itil_item['entities_id'],
+                            'type'          => $type
+                        ])
+                    ) {
+                        $nb++;
+                    }
+                }
+            }
+
+            // keep all max_closedate of child entities
+            if (
+                !empty($max_closedate)
+                && (!isset($maxentity[$parent])
+                    || ($max_closedate > $maxentity[$parent]))
+            ) {
+                $maxentity[$parent] = $max_closedate;
+            }
+
+            if ($nb) {
+                $tot += $nb;
+                $task->addVolume($nb);
+                $task->log(sprintf(
+                    __('%1$s: %2$s'),
+                    Dropdown::getDropdownName('glpi_entities', $entity),
+                    $nb
+                ));
+            }
+        }
+
+        // Save the max_closedate so as not to test the same items twice
+        foreach ($maxentity as $parent => $maxdate) {
+            $conf->getFromDB($parent);
+            $conf->update([
+                'id'            => $conf->fields['id'],
+                //'entities_id'   => $parent,
+                'max_closedate' . $config_suffix => $maxdate
+            ]);
+        }
+
+        return ($tot > 0 ? 1 : 0);
+    }
+
+    /**
+     * Returns the {@link CommonITILSatisfaction} class for the current itemtype
+     * @return class-string<CommonITILSatisfaction>|null
+     */
+    public static function getSatisfactionClass(): ?string
+    {
+        $classname = static::class . 'Satisfaction';
+        return class_exists($classname) ? $classname : null;
+    }
+
+    /**
+     * Displays the current satisfaction survey for the given item or a message stating there is no survey.
+     *
+     * @param CommonITILObject $item The ITIL Object
+     * @return void
+     * @since 10.1.0
+     */
+    final protected static function showSatisfactionTabContent(CommonITILObject $item): void
+    {
+        $satisfaction_class = static::getSatisfactionClass();
+
+        if ($satisfaction_class === null) {
+            return;
+        }
+
+        /** @var CommonITILSatisfaction $satisfaction */
+        $satisfaction = new $satisfaction_class();
+        if (
+            in_array($item->fields['status'], static::getClosedStatusArray())
+            && $satisfaction->getFromDB($item->getId)
+        ) {
+            // Get suffix for entity config fields. For backwards compatibility, ticket values have no suffix.
+            $config_suffix = static::getType() === 'Ticket' ? '' : ('_' . strtolower(static::getType()));
+
+            $duration = (int) Entity::getUsedConfig('inquest_duration' . $config_suffix, $item->fields['entities_id']);
+            $date2    = strtotime($satisfaction->fields['date_begin']);
+            if (
+                ($duration === 0)
+                || (time() - $date2) <= $duration * DAY_TIMESTAMP
+            ) {
+                $satisfaction->showSatisactionForm($item);
+            } else {
+                echo "<p class='center b'>" . __('Satisfaction survey expired') . "</p>";
+            }
+        } else {
+            echo "<p class='center b'>" . __('No generated survey') . "</p>";
+        }
+    }
+
+    /**
+     * Handle the potential creation of a satisfaction survey for the current item when the item is updated.
+     *
+     * Must be called from {@link static::post_updateItem()}
+     *
+     * @return void
+     * @since 10.1.0
+     */
+    final protected function handleSatisfactionSurveyOnUpdate(): void
+    {
+        $satisfaction_class = $this->getSatisfactionClass();
+
+        if ($satisfaction_class === null) {
+            return;
+        }
+
+        /** @var CommonITILSatisfaction $satisfaction */
+        $satisfaction = new $satisfaction_class();
+
+        // Get suffix for entity config fields. For backwards compatibility, ticket values have no suffix.
+        $config_suffix = $this->getType() === 'Ticket' ? '' : ('_' . strtolower($this->getType()));
+        $rate          = Entity::getUsedConfig(
+            'inquest_config' . $config_suffix,
+            $this->fields['entities_id'],
+            'inquest_rate' . $config_suffix
+        );
+        $delay         = Entity::getUsedConfig(
+            'inquest_config' . $config_suffix,
+            $this->fields['entities_id'],
+            'inquest_delay' . $config_suffix
+        );
+        $type          = Entity::getUsedConfig('inquest_config' . $config_suffix, $this->fields['entities_id']);
+        $max_closedate = $this->fields['closedate'];
+
+        if (
+            in_array("status", $this->updates)
+            && in_array($this->input["status"], $this->getClosedStatusArray())
+            && ($delay == 0)
+            && ($rate > 0)
+            && (mt_rand(1, 100) <= $rate)
+        ) {
+            $fkey = $this->getForeignKeyField();
+
+            // For reopened ITIL object
+            $satisfaction->delete([$fkey => $this->fields['id']]);
+
+            $satisfaction->add(
+                [
+                    $fkey           => $this->fields['id'],
+                    'date_begin'    => $_SESSION["glpi_currenttime"],
+                    'entities_id'   => $this->fields['entities_id'],
+                    'type'          => $type,
+                    'max_closedate' => $max_closedate,
+                ]
+            );
         }
     }
 }
