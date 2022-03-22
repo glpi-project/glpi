@@ -713,8 +713,20 @@ class Item_Disk extends CommonDBChild
 
     public function getNonLoggedFields(): array
     {
-        return [
+        // we don't want to log at all changes of available space for a drive
+        // as it's likely to change every time
+        $exclude = [
             'freesize',
+            'date_mod',
         ];
+
+        // logging total size of zfs mount points make no sense as it's equal to the used space of the point + available space for the pool
+        // it's likely to have this key changing on each automatic inventory
+        // so we don't want to pollute logs with these frequent changes
+        if (($this->input['filesystem'] ?? "") == 'zfs') {
+            $exclude[] = 'totalsize';
+        }
+
+        return $exclude;
     }
 }
