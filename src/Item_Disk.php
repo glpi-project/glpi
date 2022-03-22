@@ -710,4 +710,11 @@ class Item_Disk extends CommonDBChild
 
         return parent::getSpecificValueToDisplay($field, $values, $options);
     }
+
+    public function getNonLoggedFields(): array
+    {
+        return [
+            'freesize',
+        ];
+    }
 }
