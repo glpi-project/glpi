@@ -404,6 +404,13 @@ class Change extends CommonITILObject
                     if ($item->canUpdate()) {
                          $ong[1] = __('Statistics');
                     }
+                    $satisfaction = new ChangeSatisfaction();
+                    if (
+                        $satisfaction->getFromDB($item->getID())
+                        && in_array($item->fields['status'], self::getClosedStatusArray())
+                    ) {
+                        $ong[3] = __('Satisfaction');
+                    }
 
                     return $ong;
             }
@@ -420,6 +427,9 @@ class Change extends CommonITILObject
                 switch ($tabnum) {
                     case 1:
                         $item->showStats();
+                        break;
+                    case 3:
+                        self::showSatisfactionTabContent($item);
                         break;
                 }
                 break;
@@ -456,6 +466,10 @@ class Change extends CommonITILObject
        // CommonITILTask does not extends CommonDBConnexity
         $ct = new ChangeTask();
         $ct->deleteByCriteria(['changes_id' => $this->fields['id']]);
+
+        // ChangeSatisfaction does not extends CommonDBConnexity
+        $cs = new ChangeSatisfaction();
+        $cs->deleteByCriteria(['changes_id' => $this->fields['id']]);
 
         $this->deleteChildrenAndRelationsFromDb(
             [
@@ -515,6 +529,8 @@ class Change extends CommonITILObject
             $this->getFromDB($this->fields['id']);
             NotificationEvent::raiseEvent($mailtype, $this);
         }
+
+        $this->handleSatisfactionSurveyOnUpdate();
     }
 
 
@@ -858,6 +874,10 @@ class Change extends CommonITILObject
 
         $values[self::READALL] = __('See all');
         $values[self::READMY]  = __('See (author)');
+        $values[self::SURVEY]  = [
+            'short' => __('Reply to survey (my change)'),
+            'long'  => __('Reply to survey for ticket created by me')
+        ];
 
         return $values;
     }

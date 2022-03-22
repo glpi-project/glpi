@@ -2753,6 +2753,14 @@ CREATE TABLE `glpi_entities` (
   `inquest_max_rate` int NOT NULL DEFAULT '5',
   `inquest_default_rate` int NOT NULL DEFAULT '3',
   `inquest_mandatory_comment` int NOT NULL DEFAULT '0',
+  `max_closedate_change` timestamp NULL DEFAULT NULL,
+  `inquest_config_change` int NOT NULL DEFAULT '-2',
+  `inquest_rate_change` int NOT NULL DEFAULT '0',
+  `inquest_delay_change` int NOT NULL DEFAULT '-10',
+  `inquest_URL_change` varchar(255) DEFAULT NULL,
+  `inquest_max_rate_change` int NOT NULL DEFAULT '5',
+  `inquest_default_rate_change` int NOT NULL DEFAULT '3',
+  `inquest_mandatory_comment_change` int NOT NULL DEFAULT '0',
   `autofill_warranty_date` varchar(255) NOT NULL DEFAULT '-2',
   `autofill_use_date` varchar(255) NOT NULL DEFAULT '-2',
   `autofill_buy_date` varchar(255) NOT NULL DEFAULT '-2',
@@ -2773,6 +2781,7 @@ CREATE TABLE `glpi_entities` (
   `delay_send_emails` int NOT NULL DEFAULT '-2',
   `is_notif_enable_default` int NOT NULL DEFAULT '-2',
   `inquest_duration` int NOT NULL DEFAULT '0',
+  `inquest_duration_change` int NOT NULL DEFAULT '0',
   `date_mod` timestamp NULL DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
   `autofill_decommission_date` varchar(255) NOT NULL DEFAULT '-2',
@@ -9262,6 +9271,19 @@ CREATE TABLE `glpi_problems_problems` (
    PRIMARY KEY (`id`),
    UNIQUE KEY `unicity` (`problems_id_1`,`problems_id_2`),
    KEY `problems_id_2` (`problems_id_2`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
+DROP TABLE IF EXISTS `glpi_changesatisfactions`;
+CREATE TABLE `glpi_changesatisfactions` (
+   `id` int unsigned NOT NULL AUTO_INCREMENT,
+   `changes_id` int unsigned NOT NULL DEFAULT '0',
+   `type` int NOT NULL DEFAULT '1',
+   `date_begin` timestamp NULL DEFAULT NULL,
+   `date_answered` timestamp NULL DEFAULT NULL,
+   `satisfaction` int DEFAULT NULL,
+   `comment` text,
+   PRIMARY KEY (`id`),
+   UNIQUE KEY `changes_id` (`changes_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 SET FOREIGN_KEY_CHECKS=1;

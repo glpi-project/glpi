@@ -115,3 +115,104 @@ if (!$notification_exists) {
     );
 }
 /** /Password initialization notification */
+
+
+/** Change Satisfaction notification */
+if (countElementsInTable('glpi_notifications', ['itemtype' => 'Change', 'event' => 'satisfaction']) === 0) {
+    $DB->insertOrDie(
+        'glpi_notificationtemplates',
+        [
+            'name'            => 'Change Satisfaction',
+            'itemtype'        => 'Change',
+            'date_mod'        => new \QueryExpression('NOW()'),
+        ],
+        'Add change satisfaction survey notification template'
+    );
+    $notificationtemplate_id = $DB->insertId();
+
+    $DB->insertOrDie(
+        'glpi_notificationtemplatetranslations',
+        [
+            'notificationtemplates_id' => $notificationtemplate_id,
+            'language'                 => '',
+            'subject'                  => '##change.action## ##change.title##',
+            'content_text'             => <<<PLAINTEXT
+##lang.change.title## : ##change.title##
+
+##lang.change.closedate## : ##change.closedate##
+
+##lang.satisfaction.text## ##change.urlsatisfaction##
+PLAINTEXT
+            ,
+            'content_html'             => <<<HTML
+&lt;p&gt;##lang.change.title## : ##change.title##&lt;/p&gt;
+&lt;p&gt;##lang.change.closedate## : ##change.closedate##&lt;/p&gt;
+&lt;p&gt;##lang.satisfaction.text## &lt;a href="##change.urlsatisfaction##"&gt;##change.urlsatisfaction##&lt;/a&gt;&lt;/p&gt;
+HTML
+            ,
+        ],
+        'Add change satisfaction survey notification template translations'
+    );
+
+    $notifications_data = [
+        [
+            'event' => 'satisfaction',
+            'name'  => 'Change Satisfaction',
+        ],
+        [
+            'event' => 'replysatisfaction',
+            'name'  => 'Change Satisfaction Answer',
+        ]
+    ];
+    foreach ($notifications_data as $notification_data) {
+        $DB->insertOrDie(
+            'glpi_notifications',
+            [
+                'name'            => $notification_data['name'],
+                'entities_id'     => 0,
+                'itemtype'        => 'Change',
+                'event'           => $notification_data['event'],
+                'comment'         => null,
+                'is_recursive'    => 1,
+                'is_active'       => 1,
+                'date_creation'   => new \QueryExpression('NOW()'),
+                'date_mod'        => new \QueryExpression('NOW()'),
+            ],
+            'Add change satisfaction survey notification'
+        );
+        $notification_id = $DB->insertId();
+
+        $DB->insertOrDie(
+            'glpi_notifications_notificationtemplates',
+            [
+                'notifications_id'         => $notification_id,
+                'mode'                     => Notification_NotificationTemplate::MODE_MAIL,
+                'notificationtemplates_id' => $notificationtemplate_id,
+            ],
+            'Add change satisfaction survey notification template instance'
+        );
+
+        $DB->insertOrDie(
+            'glpi_notificationtargets',
+            [
+                'items_id'         => 3,
+                'type'             => 1,
+                'notifications_id' => $notification_id,
+            ],
+            'Add change satisfaction survey notification targets'
+        );
+
+        if ($notification_data['event'] === 'replysatisfaction') {
+            $DB->insertOrDie(
+                'glpi_notificationtargets',
+                [
+                    'items_id'         => 2,
+                    'type'             => 1,
+                    'notifications_id' => $notification_id,
+                ],
+                'Add change satisfaction survey notification targets'
+            );
+        }
+    }
+}
+/** /Change Satisfaction notification */

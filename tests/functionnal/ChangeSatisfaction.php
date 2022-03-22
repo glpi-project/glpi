@@ -33,7 +33,11 @@
  * ---------------------------------------------------------------------
  */
 
-class TicketSatisfaction extends CommonITILSatisfaction
+namespace tests\units;
+
+// Force import because of atoum autoloader not working
+require_once 'CommonITILSatisfaction.php';
+
+class ChangeSatisfaction extends CommonITILSatisfaction
 {
-    public static $rightname = 'ticket';
 }
