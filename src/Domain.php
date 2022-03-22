@@ -628,74 +628,71 @@ class Domain extends CommonDropdown
         global $DB, $CFG_GLPI;
 
         if (!$CFG_GLPI["notifications_mailing"]) {
-            return 0;
+            return 0; // Nothing to do
         }
 
-        $message     = [];
-        $cron_status = 0;
+        $errors = 0;
+        $total = 0;
 
-        foreach (Entity::getEntitiesToNotify('use_domains_alert') as $entity => $value) {
-            $query_expired     = self::expiredDomainsCriteria($entity);
-            $query_whichexpire = self::closeExpiriesDomainsCriteria($entity);
-
-            $querys = [
-                Alert::NOTICE => $query_whichexpire,
-                Alert::END => $query_expired
+        foreach (array_keys(Entity::getEntitiesToNotify('use_certificates_alert')) as $entity) {
+            $events = [
+                'DomainsWhichExpire' => [
+                    'query' => self::closeExpiriesDomainsCriteria($entity),
+                ],
+                'ExpiredDomains' => [
+                    'query' => self::expiredDomainsCriteria($entity),
+                ]
             ];
 
-            $domain_infos    = [];
-            $domain_messages = [];
-
-            foreach ($querys as $type => $query) {
-                $domain_infos[$type] = [];
+            foreach ($events as $event => $event_specs) {
+                $query    = $event_specs['query'];
                 $iterator = $DB->request($query);
-                foreach ($iterator as $data) {
-                    $message                        = $data["name"] . ": " .
-                                                Html::convDate($data["date_expiration"]) . "<br>\n";
-                    $domain_infos[$type][$entity][] = $data;
 
-                    if (!isset($domain_messages[$type][$entity])) {
-                        $domain_messages[$type][$entity] = __('Domains expired since more') . "<br />";
+                foreach ($iterator as $domain_data) {
+                    $domain_id = $domain_data['id'];
+                    $domain = new self();
+                    if (!$domain->getFromDB($domain_id)) {
+                        $errors++;
+                        trigger_error(sprintf('Unable to load Domain "%s".', $domain_id), E_USER_WARNING);
+                        continue;
                     }
-                    $domain_messages[$type][$entity] .= $message;
-                }
-            }
 
-            foreach (array_keys($querys) as $type) {
-                foreach ($domain_infos[$type] as $entity => $domains) {
-                    if (
-                        NotificationEvent::raiseEvent(
-                            ($type == Alert::NOTICE ? "DomainsWhichExpire" : "ExpiredDomains"),
-                            new Domain(),
-                            ['entities_id' => $entity,
-                                'domains'     => $domains
-                            ]
-                        )
-                    ) {
-                        $message     = $domain_messages[$type][$entity];
-                        $cron_status = 1;
+                    if (NotificationEvent::raiseEvent($event, $domain)) {
+                        $msg = sprintf(
+                            __('%1$s: %2$s'),
+                            Dropdown::getDropdownName('glpi_entities', $entity),
+                            sprintf(
+                                $event === 'DomainsWhichExpire' ? __('Domain %1$s expires on %2$s') : __('Domain %1$s expired on %2$s'),
+                                $domain->fields['name'],
+                                Html::convDate($domain->fields['date_expiration'])
+                            )
+                        );
                         if ($task) {
-                            $task->log(Dropdown::getDropdownName("glpi_entities", $entity) . ":  $message\n");
+                            $task->log($msg);
                             $task->addVolume(1);
                         } else {
-                            Toolbox::addMessageAfterRedirect(Dropdown::getDropdownName("glpi_entities", $entity) . ":  $message");
+                            Session::addMessageAfterRedirect($msg);
                         }
+
+                        $total++;
                     } else {
-                        $message = sprintf(
-                            __('Domains alerts not send for entity %1$s'),
+                        $errors++;
+
+                        $msg = sprintf(
+                            __('Domains alerts sending failed for entity %1$s'),
                             Dropdown::getDropdownName("glpi_entities", $entity)
                         );
                         if ($task) {
-                            $task->log($message . "\n");
+                            $task->log($msg);
                         } else {
-                            Toolbox::addMessageAfterRedirect($message, false, ERROR);
+                            Session::addMessageAfterRedirect($msg, false, ERROR);
                         }
                     }
                 }
             }
         }
 
-        return $cron_status;
+        return $errors > 0 ? -1 : ($total > 0 ? 1 : 0);
     }
 
     /**

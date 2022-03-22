@@ -4824,15 +4824,12 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'id' => '26',
                 'notificationtemplates_id' => '26',
                 'language' => '',
-                'subject' => '##domain.action## : ##domain.entity##',
+                'subject' => '##domain.action## : ##domain.name##',
                 'content_text' => '##lang.domain.entity## :##domain.entity##
-   ##FOREACHdomains##
-   ##lang.domain.name## : ##domain.name## - ##lang.domain.dateexpiration## : ##domain.dateexpiration##
-   ##ENDFOREACHdomains##',
+   ##lang.domain.name## : ##domain.name## - ##lang.domain.dateexpiration## : ##domain.dateexpiration##',
                 'content_html' => '&lt;p&gt;##lang.domain.entity## :##domain.entity##&lt;br /&gt; &lt;br /&gt;
-                        ##FOREACHdomains##&lt;br /&gt;
                         ##lang.domain.name##  : ##domain.name## - ##lang.domain.dateexpiration## :  ##domain.dateexpiration##&lt;br /&gt;
-                        ##ENDFOREACHdomains##&lt;/p&gt;',
+                        &lt;/p&gt;',
 
             ], [
                 'id' => '27',
