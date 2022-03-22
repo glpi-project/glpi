@@ -717,7 +717,6 @@ class Item_Disk extends CommonDBChild
         // as it's likely to change every time
         $exclude = [
             'freesize',
-            'date_mod',
         ];
 
         // logging total size of zfs mount points make no sense as it's equal to the used space of the point + available space for the pool
