@@ -124,7 +124,10 @@ class Entity extends CommonTreeDropdown
             'autoclose_delay', 'inquest_config',
             'inquest_rate', 'inquest_delay',
             'inquest_duration','inquest_URL',
-            'max_closedate', 'tickettemplates_strategy', 'tickettemplates_id',
+            'max_closedate', 'inquest_config_change',
+            'inquest_rate_change', 'inquest_delay_change',
+            'inquest_duration_change','inquest_URL_change',
+            'max_closedate_change', 'tickettemplates_strategy', 'tickettemplates_id',
             'changetemplates_strategy', 'changetemplates_id', 'problemtemplates_strategy', 'problemtemplates_id',
             'suppliers_as_private', 'autopurge_delay', 'anonymize_support_agents', 'display_users_initials',
             'contracts_strategy_default', 'contracts_id_default'
@@ -344,21 +347,7 @@ class Entity extends CommonTreeDropdown
         }
 
         $input = $this->handleConfigStrategyFields($input);
-
-       // Si on change le taux de déclenchement de l'enquête (enquête activée) ou le type de l'enquete,
-       // cela s'applique aux prochains tickets - Pas à l'historique
-        if (
-            (isset($input['inquest_rate'])
-            && (($this->fields['inquest_rate'] == 0)
-               || is_null($this->fields['max_closedate']))
-            && ($input['inquest_rate'] != $this->fields['inquest_rate']))
-            || (isset($input['inquest_config'])
-              && (($this->fields['inquest_config'] == self::CONFIG_PARENT)
-                  || is_null($this->fields['max_closedate']))
-              && ($input['inquest_config'] != $this->fields['inquest_config']))
-        ) {
-            $input['max_closedate'] = $_SESSION["glpi_currenttime"];
-        }
+        $input = $this->handleSatisfactionSurveyConfigOnUpdate($input);
 
         if (!Session::isCron()) { // Filter input for connected
             $input = $this->checkRightDatas($input);
@@ -389,6 +378,46 @@ class Entity extends CommonTreeDropdown
                     $input[$field] = 0;
                     $input[$strategy_field] = $value;
                 }
+            }
+        }
+
+        return $input;
+    }
+
+    /**
+     * Handle satisfaction survey configuration on update.
+     *
+     * @param array $input
+     *
+     * @return array
+     */
+    private function handleSatisfactionSurveyConfigOnUpdate(array $input): array
+    {
+        foreach (['', '_change'] as $suffix) {
+            $config_key = 'inquest_config' . $suffix;
+            $rate_key   = 'inquest_rate' . $suffix;
+            $max_key    = 'max_closedate' . $suffix;
+
+            // If inquest config or rate change, defines the `max_closedate` config to ensure that new configuration
+            // will only be applied to tickets that are not already solved.
+            if (
+                (
+                    isset($input[$rate_key])
+                    && ($this->fields[$rate_key] == 0 || is_null($this->fields[$max_key]))
+                    && $input[$rate_key] != $this->fields[$rate_key]
+                )
+                || (
+                    isset($input[$config_key])
+                    && ($this->fields[$config_key] == self::CONFIG_PARENT || is_null($this->fields[$max_key]))
+                    && $input[$config_key] != $this->fields[$config_key]
+                )
+            ) {
+                $input[$max_key] = $_SESSION['glpi_currenttime'];
+            }
+
+            // `max_closedate` cannot be empty (cron would not work).
+            if (array_key_exists($max_key, $input) && empty($input[$max_key])) {
+                unset($input[$max_key]);
             }
         }
 
@@ -1303,7 +1332,7 @@ class Entity extends CommonTreeDropdown
             'id'                 => '43',
             'table'              => $this->getTable(),
             'field'              => 'inquest_config',
-            'name'               => __('Satisfaction survey configuration'),
+            'name'               => sprintf(__('Satisfaction survey configuration (%s)'), Ticket::getTypeName(1)),
             'massiveaction'      => false,
             'nosearch'           => true,
             'datatype'           => 'specific'
@@ -1313,7 +1342,7 @@ class Entity extends CommonTreeDropdown
             'id'                 => '44',
             'table'              => $this->getTable(),
             'field'              => 'inquest_rate',
-            'name'               => __('Satisfaction survey trigger rate'),
+            'name'               => sprintf(__('Satisfaction survey trigger rate (%s)'), Ticket::getTypeName(1)),
             'massiveaction'      => false,
             'datatype'           => 'number'
         ];
@@ -1322,7 +1351,7 @@ class Entity extends CommonTreeDropdown
             'id'                 => '45',
             'table'              => $this->getTable(),
             'field'              => 'inquest_delay',
-            'name'               => __('Create survey after'),
+            'name'               => sprintf(__('Create satisfaction survey after (%s)'), Ticket::getTypeName(1)),
             'massiveaction'      => false,
             'datatype'           => 'number'
         ];
@@ -1331,7 +1360,44 @@ class Entity extends CommonTreeDropdown
             'id'                 => '46',
             'table'              => $this->getTable(),
             'field'              => 'inquest_URL',
-            'name'               => __('URL'),
+            'name'               => sprintf(__('Satisfaction survey URL (%s)'), Ticket::getTypeName(1)),
+            'massiveaction'      => false,
+            'datatype'           => 'string',
+        ];
+
+        $tab[] = [
+            'id'                 => '71',
+            'table'              => $this->getTable(),
+            'field'              => 'inquest_config_change',
+            'name'               => sprintf(__('Satisfaction survey configuration (%s)'), Change::getTypeName(1)),
+            'massiveaction'      => false,
+            'nosearch'           => true,
+            'datatype'           => 'specific'
+        ];
+
+        $tab[] = [
+            'id'                 => '72',
+            'table'              => $this->getTable(),
+            'field'              => 'inquest_rate_change',
+            'name'               => sprintf(__('Satisfaction survey trigger rate (%s)'), Change::getTypeName(1)),
+            'massiveaction'      => false,
+            'datatype'           => 'number'
+        ];
+
+        $tab[] = [
+            'id'                 => '73',
+            'table'              => $this->getTable(),
+            'field'              => 'inquest_delay_change',
+            'name'               => sprintf(__('Create satisfaction survey after (%s)'), Change::getTypeName(1)),
+            'massiveaction'      => false,
+            'datatype'           => 'number'
+        ];
+
+        $tab[] = [
+            'id'                 => '74',
+            'table'              => $this->getTable(),
+            'field'              => 'inquest_URL_change',
+            'name'               => sprintf(__('Satisfaction survey URL (%s)'), Change::getTypeName(1)),
             'massiveaction'      => false,
             'datatype'           => 'string',
         ];
@@ -3057,83 +3123,102 @@ class Entity extends CommonTreeDropdown
         }
         echo "</td></tr>";
 
-        echo "<tr><th colspan='4'>" . __('Configuring the satisfaction survey') . "</th></tr>";
-
-        echo "<tr class='tab_bg_1'>" .
-           "<td colspan='2'>" . __('Configuring the satisfaction survey') . "</td>";
-        echo "<td colspan='2'>";
-
-       /// no inquest case = rate 0
-        $typeinquest = [self::CONFIG_PARENT  => __('Inheritance of the parent entity'),
-            1                    => __('Internal survey'),
-            2                    => __('External survey')
+        $inquest_types = [
+            Ticket::class   => TicketSatisfaction::class,
+            Change::class   => ChangeSatisfaction::class,
         ];
 
-       // No inherit from parent for root entity
-        if ($ID == 0) {
-            unset($typeinquest[self::CONFIG_PARENT]);
-            if ($entity->fields['inquest_config'] == self::CONFIG_PARENT) {
-                $entity->fields['inquest_config'] = 1;
-            }
-        }
-        $rand = Dropdown::showFromArray(
-            'inquest_config',
-            $typeinquest,
-            $options = ['value' => $entity->fields['inquest_config']]
-        );
-        echo "</td></tr>\n";
+        /**
+         * @var CommonITILObject $itemtype
+         * @var CommonITILSatisfaction $inquest_itemtype
+         */
+        foreach ($inquest_types as $itemtype => $inquest_itemtype) {
+            $config_title = sprintf(__('Configuring the satisfaction survey: %s'), $itemtype::getTypeName(Session::getPluralNumber()));
+            // Get suffix for entity config fields. For backwards compatibility, ticket values have no suffix.
+            $config_suffix = $itemtype::getType() === 'Ticket' ? '' : ('_' . strtolower($itemtype::getType()));
 
-        if ($entity->fields['inquest_config'] == self::CONFIG_PARENT) {
-            $inquestconfig = self::getUsedConfig('inquest_config', $entity->fields['entities_id']);
-            $inquestrate   = self::getUsedConfig(
-                'inquest_config',
-                $entity->fields['entities_id'],
-                'inquest_rate'
-            );
-            echo "<tr class='tab_bg_1'><td colspan='4'>";
+            echo "<tr><th colspan='4'>" . $config_title . "</th></tr>";
 
-            $inherit = "";
-            if ($inquestrate == 0) {
-                $inherit .= __('Disabled');
-            } else {
-                $inherit .= $typeinquest[$inquestconfig] . '<br>';
-                $inqconf = self::getUsedConfig(
-                    'inquest_config',
-                    $entity->fields['entities_id'],
-                    'inquest_delay'
-                );
+            echo "<tr class='tab_bg_1'>" .
+                "<td colspan='2'>" . __('Configuring the satisfaction survey') . "</td>";
+            echo "<td colspan='2'>";
 
-                $inherit .= sprintf(_n('%d day', '%d days', $inqconf), $inqconf);
-                $inherit .= "<br>";
-               //TRANS: %d is the percentage. %% to display %
-                $inherit .= sprintf(__('%d%%'), $inquestrate);
+            /// no inquest case = rate 0
+            $typeinquest = [
+                self::CONFIG_PARENT => __('Inheritance of the parent entity'),
+                CommonITILSatisfaction::TYPE_INTERNAL => __('Internal survey'),
+                CommonITILSatisfaction::TYPE_EXTERNAL => __('External survey')
+            ];
 
-                if ($inquestconfig == 2) {
-                    $inherit .= "<br>";
-                    $inherit .= self::getUsedConfig(
-                        'inquest_config',
-                        $entity->fields['entities_id'],
-                        'inquest_URL'
-                    );
+            // No inherit from parent for root entity
+            if ($ID == 0) {
+                unset($typeinquest[self::CONFIG_PARENT]);
+                if ($entity->fields['inquest_config' . $config_suffix] == self::CONFIG_PARENT) {
+                    $entity->fields['inquest_config' . $config_suffix] = 1;
                 }
             }
-            self::inheritedValue($inherit, true);
+            $rand = Dropdown::showFromArray(
+                'inquest_config' . $config_suffix,
+                $typeinquest,
+                $options = ['value' => $entity->fields['inquest_config' . $config_suffix]]
+            );
+            echo "</td></tr>\n";
+
+            if ($entity->fields['inquest_config' . $config_suffix] == self::CONFIG_PARENT) {
+                $inquestconfig = self::getUsedConfig('inquest_config' . $config_suffix, $entity->fields['entities_id']);
+                $inquestrate = self::getUsedConfig(
+                    'inquest_config' . $config_suffix,
+                    $entity->fields['entities_id'],
+                    'inquest_rate' . $config_suffix
+                );
+                echo "<tr class='tab_bg_1'><td colspan='4'>";
+
+                $inherit = "";
+                if ($inquestrate == 0) {
+                    $inherit .= __('Disabled');
+                } else {
+                    $inherit .= $typeinquest[$inquestconfig] . '<br>';
+                    $inqconf = self::getUsedConfig(
+                        'inquest_config' . $config_suffix,
+                        $entity->fields['entities_id'],
+                        'inquest_delay' . $config_suffix
+                    );
+
+                    $inherit .= sprintf(_n('%d day', '%d days', $inqconf), $inqconf);
+                    $inherit .= "<br>";
+                    //TRANS: %d is the percentage. %% to display %
+                    $inherit .= sprintf(__('%d%%'), $inquestrate);
+
+                    if ($inquestconfig == 2) {
+                        $inherit .= "<br>";
+                        $inherit .= self::getUsedConfig(
+                            'inquest_config' . $config_suffix,
+                            $entity->fields['entities_id'],
+                            'inquest_URL' . $config_suffix
+                        );
+                    }
+                }
+                self::inheritedValue($inherit, true);
+                echo "</td></tr>";
+            }
+
+            echo "<tr class='tab_bg_1'><td colspan='4'>";
+
+            $_POST = [
+                ('inquest_config' . $config_suffix) => $entity->fields['inquest_config' . $config_suffix],
+                'entities_id' => $ID
+            ];
+            $params = [
+                ('inquest_config' . $config_suffix) => '__VALUE__',
+                'entities_id' => $ID
+            ];
+            echo "<div id='inquestconfig'>";
+            $ajax_file =  GLPI_ROOT . '/ajax/' . strtolower($inquest_itemtype::getType()) . '.php';
+            include $ajax_file;
+            echo "</div>\n";
+
             echo "</td></tr>";
         }
-
-        echo "<tr class='tab_bg_1'><td colspan='4'>";
-
-        $_POST  = ['inquest_config' => $entity->fields['inquest_config'],
-            'entities_id'    => $ID
-        ];
-        $params = ['inquest_config' => '__VALUE__',
-            'entities_id'    => $ID
-        ];
-        echo "<div id='inquestconfig'>";
-        include GLPI_ROOT . '/ajax/ticketsatisfaction.php';
-        echo "</div>\n";
-
-        echo "</td></tr>";
 
         Plugin::doHook(Hooks::POST_ITEM_FORM, ['item' => $entity, 'options' => &$options]);
 
@@ -3249,90 +3334,119 @@ class Entity extends CommonTreeDropdown
 
 
     /**
-     * Generate link for ticket satisfaction
+     * Generate link for ITIL Object satisfaction
      *
      * @since 0.84 (before in entitydata.class)
      *
-     * @param $ticket ticket object
+     * @param CommonITILObject $item ITIL Object item to create the survey link for
      *
-     * @return string url contents
+     * @return string Url contents
      **/
-    public static function generateLinkSatisfaction($ticket)
+    public static function generateLinkSatisfaction($item)
     {
-        $url = self::getUsedConfig('inquest_config', $ticket->fields['entities_id'], 'inquest_URL');
+        $config_suffix = $item::getType() === 'Ticket' ? '' : ('_' . strtolower($item::getType()));
+        $url = self::getUsedConfig('inquest_config' . $config_suffix, $item->fields['entities_id'], 'inquest_URL' . $config_suffix);
 
-        if (strstr($url, "[TICKET_ID]")) {
-            $url = str_replace("[TICKET_ID]", $ticket->fields['id'], $url);
+        $tag_prefix = strtoupper($item::getType());
+
+        if (strstr($url, "[ITEMTYPE]")) {
+            $url = str_replace("[ITEMTYPE]", $item::getType(), $url);
+        }
+        if (strstr($url, "[ITEMTYPE_NAME]")) {
+            $url = str_replace("[ITEMTYPE_NAME]", $item::getTypeName(1), $url);
         }
 
-        if (strstr($url, "[TICKET_NAME]")) {
-            $url = str_replace("[TICKET_NAME]", urlencode($ticket->fields['name']), $url);
+        if (strstr($url, "[{$tag_prefix}_ID]")) {
+            $url = str_replace("[{$tag_prefix}_ID]", $item->fields['id'], $url);
         }
 
-        if (strstr($url, "[TICKET_CREATEDATE]")) {
-            $url = str_replace("[TICKET_CREATEDATE]", $ticket->fields['date'], $url);
+        if (strstr($url, "[{$tag_prefix}_NAME]")) {
+            $url = str_replace("[{$tag_prefix}_NAME]", urlencode($item->fields['name']), $url);
         }
 
-        if (strstr($url, "[TICKET_SOLVEDATE]")) {
-            $url = str_replace("[TICKET_SOLVEDATE]", $ticket->fields['solvedate'], $url);
+        if (strstr($url, "[{$tag_prefix}_CREATEDATE]")) {
+            $url = str_replace("[{$tag_prefix}_CREATEDATE]", $item->fields['date'], $url);
         }
 
-        if (strstr($url, "[REQUESTTYPE_ID]")) {
-            $url = str_replace("[REQUESTTYPE_ID]", $ticket->fields['requesttypes_id'], $url);
+        if (strstr($url, "[{$tag_prefix}_SOLVEDATE]")) {
+            $url = str_replace("[{$tag_prefix}_SOLVEDATE]", $item->fields['solvedate'], $url);
         }
 
-        if (strstr($url, "[REQUESTTYPE_NAME]")) {
+        if ($item::getType() === 'Ticket') {
+            if (strstr($url, "[REQUESTTYPE_ID]")) {
+                $url = str_replace("[REQUESTTYPE_ID]", $item->fields['requesttypes_id'], $url);
+            }
+
+            if (strstr($url, "[REQUESTTYPE_NAME]")) {
+                $url = str_replace(
+                    "[REQUESTTYPE_NAME]",
+                    urlencode(Dropdown::getDropdownName(
+                        'glpi_requesttypes',
+                        $item->fields['requesttypes_id']
+                    )),
+                    $url
+                );
+            }
+        }
+
+        if (strstr($url, "[{$tag_prefix}_PRIORITY]")) {
+            $url = str_replace("[{$tag_prefix}_PRIORITY]", $item->fields['priority'], $url);
+        }
+
+        if (strstr($url, "[{$tag_prefix}_PRIORITYNAME]")) {
             $url = str_replace(
-                "[REQUESTTYPE_NAME]",
-                urlencode(Dropdown::getDropdownName(
-                    'glpi_requesttypes',
-                    $ticket->fields['requesttypes_id']
-                )),
-                $url
-            );
-        }
-
-        if (strstr($url, "[TICKET_PRIORITY]")) {
-            $url = str_replace("[TICKET_PRIORITY]", $ticket->fields['priority'], $url);
-        }
-
-        if (strstr($url, "[TICKET_PRIORITYNAME]")) {
-            $url = str_replace(
-                "[TICKET_PRIORITYNAME]",
-                urlencode(CommonITILObject::getPriorityName($ticket->fields['priority'])),
+                "[{$tag_prefix}_PRIORITYNAME]",
+                urlencode(CommonITILObject::getPriorityName($item->fields['priority'])),
                 $url
             );
         }
 
         if (strstr($url, "[TICKETCATEGORY_ID]")) {
-            $url = str_replace("[TICKETCATEGORY_ID]", $ticket->fields['itilcategories_id'], $url);
+            Toolbox::deprecated('[TICKETCATEGORY_ID] in survey URLs tag are deprecated, use [ITILCATEGORY_ID] instead');
+            $url = str_replace("[TICKETCATEGORY_ID]", $item->fields['itilcategories_id'], $url);
+        }
+        if (strstr($url, "[ITILCATEGORY_ID]")) {
+            $url = str_replace("[ITILCATEGORY_ID]", $item->fields['itilcategories_id'], $url);
         }
 
         if (strstr($url, "[TICKETCATEGORY_NAME]")) {
+            Toolbox::deprecated('[TICKETCATEGORY_NAME] in survey URLs tag are deprecated, use [ITILCATEGORY_NAME] instead');
             $url = str_replace(
                 "[TICKETCATEGORY_NAME]",
                 urlencode(Dropdown::getDropdownName(
                     'glpi_itilcategories',
-                    $ticket->fields['itilcategories_id']
+                    $item->fields['itilcategories_id']
+                )),
+                $url
+            );
+        }
+        if (strstr($url, "[ITILCATEGORY_NAME]")) {
+            $url = str_replace(
+                "[ITILCATEGORY_NAME]",
+                urlencode(Dropdown::getDropdownName(
+                    'glpi_itilcategories',
+                    $item->fields['itilcategories_id']
                 )),
                 $url
             );
         }
 
-        if (strstr($url, "[TICKETTYPE_ID]")) {
-            $url = str_replace("[TICKETTYPE_ID]", $ticket->fields['type'], $url);
-        }
+        if ($item::getType() === 'Ticket') {
+            if (strstr($url, "[TICKETTYPE_ID]")) {
+                $url = str_replace("[TICKETTYPE_ID]", $item->fields['type'], $url);
+            }
 
-        if (strstr($url, "[TICKET_TYPENAME]")) {
-            $url = str_replace(
-                "[TICKET_TYPENAME]",
-                Ticket::getTicketTypeName($ticket->fields['type']),
-                $url
-            );
+            if (strstr($url, "[TICKET_TYPENAME]")) {
+                $url = str_replace(
+                    "[TICKET_TYPENAME]",
+                    Ticket::getTicketTypeName($item->fields['type']),
+                    $url
+                );
+            }
         }
 
         if (strstr($url, "[SOLUTIONTYPE_ID]")) {
-            $url = str_replace("[SOLUTIONTYPE_ID]", $ticket->fields['solutiontypes_id'], $url);
+            $url = str_replace("[SOLUTIONTYPE_ID]", $item->fields['solutiontypes_id'], $url);
         }
 
         if (strstr($url, "[SOLUTIONTYPE_NAME]")) {
@@ -3340,55 +3454,57 @@ class Entity extends CommonTreeDropdown
                 "[SOLUTIONTYPE_NAME]",
                 urlencode(Dropdown::getDropdownName(
                     'glpi_solutiontypes',
-                    $ticket->fields['solutiontypes_id']
+                    $item->fields['solutiontypes_id']
                 )),
                 $url
             );
         }
 
-        if (strstr($url, "[SLA_TTO_ID]")) {
-            $url = str_replace("[SLA_TTO_ID]", $ticket->fields['slas_id_tto'], $url);
-        }
+        if ($item::getType() === 'Ticket') {
+            if (strstr($url, "[SLA_TTO_ID]")) {
+                $url = str_replace("[SLA_TTO_ID]", $item->fields['slas_id_tto'], $url);
+            }
 
-        if (strstr($url, "[SLA_TTO_NAME]")) {
-            $url = str_replace(
-                "[SLA_TTO_NAME]",
-                urlencode(Dropdown::getDropdownName(
-                    'glpi_slas',
-                    $ticket->fields['slas_id_tto']
-                )),
-                $url
-            );
-        }
+            if (strstr($url, "[SLA_TTO_NAME]")) {
+                $url = str_replace(
+                    "[SLA_TTO_NAME]",
+                    urlencode(Dropdown::getDropdownName(
+                        'glpi_slas',
+                        $item->fields['slas_id_tto']
+                    )),
+                    $url
+                );
+            }
 
-        if (strstr($url, "[SLA_TTR_ID]")) {
-            $url = str_replace("[SLA_TTR_ID]", $ticket->fields['slas_id_ttr'], $url);
-        }
+            if (strstr($url, "[SLA_TTR_ID]")) {
+                $url = str_replace("[SLA_TTR_ID]", $item->fields['slas_id_ttr'], $url);
+            }
 
-        if (strstr($url, "[SLA_TTR_NAME]")) {
-            $url = str_replace(
-                "[SLA_TTR_NAME]",
-                urlencode(Dropdown::getDropdownName(
-                    'glpi_slas',
-                    $ticket->fields['slas_id_ttr']
-                )),
-                $url
-            );
-        }
+            if (strstr($url, "[SLA_TTR_NAME]")) {
+                $url = str_replace(
+                    "[SLA_TTR_NAME]",
+                    urlencode(Dropdown::getDropdownName(
+                        'glpi_slas',
+                        $item->fields['slas_id_ttr']
+                    )),
+                    $url
+                );
+            }
 
-        if (strstr($url, "[SLALEVEL_ID]")) {
-            $url = str_replace("[SLALEVEL_ID]", $ticket->fields['slalevels_id_ttr'], $url);
-        }
+            if (strstr($url, "[SLALEVEL_ID]")) {
+                $url = str_replace("[SLALEVEL_ID]", $item->fields['slalevels_id_ttr'], $url);
+            }
 
-        if (strstr($url, "[SLALEVEL_NAME]")) {
-            $url = str_replace(
-                "[SLALEVEL_NAME]",
-                urlencode(Dropdown::getDropdownName(
-                    'glpi_slalevels',
-                    $ticket->fields['slalevels_id_ttr']
-                )),
-                $url
-            );
+            if (strstr($url, "[SLALEVEL_NAME]")) {
+                $url = str_replace(
+                    "[SLALEVEL_NAME]",
+                    urlencode(Dropdown::getDropdownName(
+                        'glpi_slalevels',
+                        $item->fields['slalevels_id_ttr']
+                    )),
+                    $url
+                );
+            }
         }
 
         return $url;
@@ -3644,10 +3760,11 @@ class Entity extends CommonTreeDropdown
                 return __('No autofill');
 
             case 'inquest_config':
+            case 'inquest_config_change':
                 if ($values[$field] == self::CONFIG_PARENT) {
                     return __('Inheritance of the parent entity');
                 }
-                return TicketSatisfaction::getTypeInquestName($values[$field]);
+                return CommonITILSatisfaction::getTypeInquestName($values[$field]);
 
             case 'default_contract_alert':
                 return Contract::getAlertName($values[$field]);
@@ -3778,6 +3895,7 @@ class Entity extends CommonTreeDropdown
                 return Dropdown::showFromArray($name, $tab, $options);
 
             case 'inquest_config':
+            case 'inquest_config_change':
                 $typeinquest = [self::CONFIG_PARENT  => __('Inheritance of the parent entity'),
                     1                    => __('Internal survey'),
                     2                    => __('External survey')

@@ -2221,6 +2221,9 @@ $empty_data_builder = new class
                 'display_users_initials' => 1,
                 'contracts_strategy_default' => 0,
                 'transfers_strategy' => 0,
+                'inquest_config_change' => 1,
+                'inquest_rate_change' => 0,
+                'inquest_delay_change' => 0,
             ],
         ];
 
@@ -2858,6 +2861,20 @@ $empty_data_builder = new class
                 'event' => 'passwordinit',
                 'is_recursive' => 1,
                 'is_active' => 1,
+            ], [
+                'id'           => 74,
+                'name'         => 'Change Satisfaction',
+                'itemtype'     => 'Change',
+                'event'        => 'satisfaction',
+                'is_recursive' => 1,
+                'is_active'    => 1,
+            ], [
+                'id'           => 75,
+                'name'         => 'Change Satisfaction Answer',
+                'itemtype'     => 'Change',
+                'event'        => 'replysatisfaction',
+                'is_recursive' => 1,
+                'is_active'    => 1,
             ],
         ];
 
@@ -3227,6 +3244,16 @@ $empty_data_builder = new class
                 'notifications_id' => '73',
                 'mode' => 'mailing',
                 'notificationtemplates_id' => 29,
+            ], [
+                'id'                       => 74,
+                'notifications_id'         => '74',
+                'mode'                     => 'mailing',
+                'notificationtemplates_id' => 30,
+            ], [
+                'id'                       => 75,
+                'notifications_id'         => '75',
+                'mode'                     => 'mailing',
+                'notificationtemplates_id' => 30,
             ],
         ];
 
@@ -3926,6 +3953,21 @@ $empty_data_builder = new class
                 'items_id' => '19',
                 'type' => '1',
                 'notifications_id' => '73',
+            ], [
+                'id'               => '142',
+                'items_id'         => '3',
+                'type'             => '1',
+                'notifications_id' => '74',
+            ], [
+                'id'               => '143',
+                'items_id'         => '3',
+                'type'             => '1',
+                'notifications_id' => '75',
+            ], [
+                'id'               => '144',
+                'items_id'         => '2',
+                'type'             => '1',
+                'notifications_id' => '75',
             ],
         ];
 
@@ -4046,6 +4088,10 @@ $empty_data_builder = new class
                 'id' => '29',
                 'name' => 'Password Initialization',
                 'itemtype' => 'User',
+            ], [
+                'id'       => '30',
+                'name'     => 'Change Satisfaction',
+                'itemtype' => 'Change',
             ],
         ];
 
@@ -4916,6 +4962,17 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'content_html' => '&lt;p&gt;&lt;strong&gt;##user.realname## ##user.firstname##&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;##lang.passwordinit.information##&lt;/p&gt;
 &lt;p&gt;##lang.passwordinit.link## &lt;a title="##user.passwordiniturl##" href="##user.passwordiniturl##"&gt;##user.passwordiniturl##&lt;/a&gt;&lt;/p&gt;',
+            ], [
+                'id'                       => '30',
+                'notificationtemplates_id' => '30',
+                'language'                 => '',
+                'subject'                  => '##change.action## ##change.title##',
+                'content_text'             => '##lang.change.title## : ##change.title##
+##lang.change.closedate## : ##change.closedate##
+##lang.satisfaction.text## ##change.urlsatisfaction##',
+                'content_html'             => '&lt;p&gt;##lang.change.title## : ##change.title##&lt;/p&gt;
+&lt;p&gt;##lang.change.closedate## : ##change.closedate##&lt;/p&gt;
+&lt;p&gt;##lang.satisfaction.text## &lt;a href="##change.urlsatisfaction##"&gt;##change.urlsatisfaction##&lt;/a&gt;&lt;/p&gt;',
             ],
         ];
 
@@ -5355,7 +5412,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ], [
                 'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'ticket',
-                'rights' => READ | CREATE | DELETE | PURGE | Ticket::READALL | Ticket::READASSIGN | Ticket::OWN | Ticket::SURVEY,
+                'rights' => READ | CREATE | DELETE | PURGE | Ticket::READALL | Ticket::READASSIGN | Ticket::OWN | CommonITILObject::SURVEY,
             ], [
                 'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'followup',
@@ -5447,7 +5504,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ], [
                 'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'problem',
-                'rights' => Change::READMY | READNOTE | Change::READALL,
+                'rights' => Change::READMY | READNOTE | Change::READALL | CommonITILObject::SURVEY,
             ], [
                 'profiles_id' => self::PROFILE_SELF_SERVICE,
                 'name' => 'cable_management',
@@ -5648,7 +5705,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'ticket',
                 'rights' => ALLSTANDARDRIGHT | Ticket::READALL | Ticket::READGROUP | Ticket::READASSIGN | Ticket::ASSIGN
-                    | Ticket::STEAL | Ticket::OWN | Ticket::CHANGEPRIORITY | Ticket::SURVEY,
+                    | Ticket::STEAL | Ticket::OWN | Ticket::CHANGEPRIORITY | CommonITILObject::SURVEY,
             ], [
                 'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'followup',
@@ -5941,7 +5998,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'ticket',
                 'rights' => ALLSTANDARDRIGHT | Ticket::READALL | Ticket::READGROUP | Ticket::READASSIGN | Ticket::ASSIGN
-                    | Ticket::STEAL | Ticket::OWN | Ticket::CHANGEPRIORITY | Ticket::SURVEY,
+                    | Ticket::STEAL | Ticket::OWN | Ticket::CHANGEPRIORITY | CommonITILObject::SURVEY,
             ], [
                 'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'followup',
@@ -6235,7 +6292,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ], [
                 'profiles_id' => self::PROFILE_HOTLINER,
                 'name' => 'ticket',
-                'rights' => Ticket::READMY | UPDATE | CREATE | Ticket::READALL | Ticket::ASSIGN | Ticket::SURVEY,
+                'rights' => Ticket::READMY | UPDATE | CREATE | Ticket::READALL | Ticket::ASSIGN | CommonITILObject::SURVEY,
             ], [
                 'profiles_id' => self::PROFILE_HOTLINER,
                 'name' => 'followup',
@@ -6517,7 +6574,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'ticket',
                 'rights' => Ticket::READMY | UPDATE | CREATE | Ticket::READALL | Ticket::READGROUP
-                    | Ticket::OWN | Ticket::SURVEY,
+                    | Ticket::OWN | CommonITILObject::SURVEY,
             ], [
                 'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'followup',
@@ -6639,7 +6696,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ], [
                 'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'change',
-                'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE | Change::READALL,
+                'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE | Change::READALL | CommonITILObject::SURVEY,
             ], [
                 'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'ticketvalidation',
@@ -6804,7 +6861,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'ticket',
                 'rights' => ALLSTANDARDRIGHT | Ticket::READALL | Ticket::READGROUP | Ticket::READASSIGN | Ticket::ASSIGN
-                    | Ticket::STEAL | Ticket::OWN | Ticket::CHANGEPRIORITY | Ticket::SURVEY,
+                    | Ticket::STEAL | Ticket::OWN | Ticket::CHANGEPRIORITY | CommonITILObject::SURVEY,
             ], [
                 'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'followup',
@@ -6918,7 +6975,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ], [
                 'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'change',
-                'rights' => Change::READMY | READNOTE | Change::READALL,
+                'rights' => Change::READMY | READNOTE | Change::READALL | CommonITILObject::SURVEY,
             ], [
                 'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'ticketvalidation',
@@ -6946,7 +7003,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ], [
                 'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'change',
-                'rights' => Change::READMY | READNOTE | Change::READALL,
+                'rights' => Change::READMY | READNOTE | Change::READALL | CommonITILObject::SURVEY,
             ], [
                 'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'changevalidation',
@@ -7074,7 +7131,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ], [
                 'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'problem',
-                'rights' => Change::READMY | READNOTE | Change::READALL,
+                'rights' => Change::READMY | READNOTE | Change::READALL | CommonITILObject::SURVEY,
             ], [
                 'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'profile',
@@ -7082,7 +7139,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ], [
                 'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'project',
-                'rights' => Change::READMY | READNOTE | Change::READALL,
+                'rights' => Change::READMY | READNOTE | Change::READALL | CommonITILObject::SURVEY,
             ], [
                 'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'projecttask',
@@ -7182,7 +7239,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ], [
                 'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'ticket',
-                'rights' => Ticket::READMY | Ticket::READALL | Ticket::READGROUP | Ticket::READASSIGN | Ticket::SURVEY,
+                'rights' => Ticket::READMY | Ticket::READALL | Ticket::READGROUP | Ticket::READASSIGN | CommonITILObject::SURVEY,
             ], [
                 'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'ticketcost',

@@ -388,7 +388,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject
 
         $data['##ticket.numberofitems##'] = count($data['items']);
 
-       // Get followups, log, validation, satisfaction
+       // Get followups, log, validation
         if (!$simple) {
             $restrict          = ['tickets_id' => $item->getField('id')];
             $problems          = getAllDataFromTable('glpi_problems_tickets', $restrict);
@@ -510,38 +510,6 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject
                 $tmp['##validation.commentvalidation##'] = $validation['comment_validation'];
 
                 $data['validations'][] = $tmp;
-            }
-
-           // Ticket Satisfaction
-            $inquest                                = new TicketSatisfaction();
-            $data['##satisfaction.type##']         = '';
-            $data['##satisfaction.datebegin##']    = '';
-            $data['##satisfaction.dateanswered##'] = '';
-            $data['##satisfaction.satisfaction##'] = '';
-            $data['##satisfaction.description##']  = '';
-
-            if ($inquest->getFromDB($item->getField('id'))) {
-               // internal inquest
-                if ($inquest->fields['type'] == 1) {
-                    $data['##ticket.urlsatisfaction##']
-                           = $this->formatURL(
-                               $options['additionnaloption']['usertype'],
-                               "ticket_" . $item->getField("id") . '_Ticket$3'
-                           );
-                } else if ($inquest->fields['type'] == 2) { // external inquest
-                    $data['##ticket.urlsatisfaction##'] = Entity::generateLinkSatisfaction($item);
-                }
-
-                $data['##satisfaction.type##']
-                                       = $inquest->getTypeInquestName($inquest->getfield('type'));
-                $data['##satisfaction.datebegin##']
-                                       = Html::convDateTime($inquest->fields['date_begin']);
-                $data['##satisfaction.dateanswered##']
-                                       = Html::convDateTime($inquest->fields['date_answered']);
-                $data['##satisfaction.satisfaction##']
-                                       = $inquest->fields['satisfaction'];
-                $data['##satisfaction.description##']
-                                       = $inquest->fields['comment'];
             }
         }
         return $data;
@@ -697,43 +665,6 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject
             ]);
         }
 
-       // Events for ticket satisfaction
-        $tags = ['satisfaction.datebegin'    => __('Creation date of the satisfaction survey'),
-            'satisfaction.dateanswered' => __('Response date to the satisfaction survey'),
-            'satisfaction.satisfaction' => __('Satisfaction'),
-            'satisfaction.description'  => __('Comments to the satisfaction survey')
-        ];
-
-        foreach ($tags as $tag => $label) {
-            $this->addTagToList(['tag'    => $tag,
-                'label'  => $label,
-                'value'  => true,
-                'events' => ['satisfaction']
-            ]);
-        }
-
-        $tags = ['satisfaction.type'  => __('Survey type'),];
-
-        foreach ($tags as $tag => $label) {
-            $this->addTagToList(['tag'    => $tag,
-                'label'  => $label,
-                'value'  => true,
-                'lang'   => false,
-                'events' => ['satisfaction']
-            ]);
-        }
-
-        $tags = ['satisfaction.text' => __('Invitation to fill out the survey')];
-
-        foreach ($tags as $tag => $label) {
-            $this->addTagToList(['tag'    => $tag,
-                'label'  => $label,
-                'value'  => false,
-                'lang'   => true,
-                'events' => ['satisfaction']
-            ]);
-        }
-
        //Foreach global tags
         $tags = ['validations'   => _n('Validation', 'Validations', Session::getPluralNumber()),
             'problems'      => Problem::getTypeName(Session::getPluralNumber()),
@@ -787,11 +718,6 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject
             __('Validation request'),
             __('URL')
         ),
-            'ticket.urlsatisfaction'  => sprintf(
-                __('%1$s: %2$s'),
-                __('Satisfaction'),
-                __('URL')
-            ),
             'problem.id'              => sprintf(__('%1$s: %2$s'), Problem::getTypeName(1), __('ID')),
             'problem.date'            => sprintf(__('%1$s: %2$s'), Problem::getTypeName(1), _n('Date', 'Dates', 1)),
             'problem.url'             => sprintf(__('%1$s: %2$s'), Problem::getTypeName(1), ('URL')),
