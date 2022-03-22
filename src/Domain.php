@@ -32,7 +32,7 @@
  */
 
 /// Class Domain
-class Domain extends CommonDropdown
+class Domain extends CommonDBTM
 {
     use Glpi\Features\Clonable;
 

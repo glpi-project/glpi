@@ -40,6 +40,7 @@ The present file will list all changes made to the project; according to the
 - `Symfony\Console` library has been upgraded to version 5.4.
 - `CommonGLPI` constructor signature has been declared in an interface (`CommonGLPIInterface`).
 - `DBmysqlIterator` class compliancy with `Iterator` has been fixed (i.e. `DBmysqlIterator::next()` does not return current row anymore).
+- `Domain` class inheritance changed from `CommonDropdown` to `CommonDBTM`.
 - `showForm()` method of all classes inheriting `CommonDBTM` have been changed to match `CommonDBTM::showForm()` signature.
 - Format of `Message-Id` header sent in Tickets notifications changed to match format used by other items.
 - Added `DB::truncate()` to replace raw SQL queries
