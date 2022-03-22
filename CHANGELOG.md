@@ -9,6 +9,7 @@ The present file will list all changes made to the project; according to the
 - Business Rules for Changes
 - `Link ITIL Object` and `Unlink ITIL Object` massive actions for Tickets, Changes, and Problems.
 - Group approval requests (any user from group can approve).
+- Satisfaction surveys for Changes
 
 ### Changed
 - ITIL Objects can now be linked to any other ITIL Objects similar to the previous Ticket/Ticket links.
@@ -18,6 +19,7 @@ The present file will list all changes made to the project; according to the
 - The ticket business rule criteria `Ticket location` was renamed to `Location`.
 
 ### Deprecated
+- Survey URL tags `TICKETCATEGORY_ID` and `TICKETCATEGORY_NAME` are deprecated and replaced by `ITILCATEGORY_ID` and `ITILCATEGORY_NAME` respectively.
 
 ### Removed
 - `Link tickets` massive action for Tickets (Use `Link ITIL Object` instead).
