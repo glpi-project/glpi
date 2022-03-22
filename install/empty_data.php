@@ -4804,25 +4804,22 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'id' => '25',
                 'notificationtemplates_id' => '25',
                 'language' => '',
-                'subject' => '##certificate.action##  ##certificate.entity##',
+                'subject' => '##certificate.action##  ##certificate.name##',
                 'content_text' => '##lang.certificate.entity## : ##certificate.entity##
-
-##FOREACHcertificates##
 
 ##lang.certificate.serial## : ##certificate.serial##
 
 ##lang.certificate.expirationdate## : ##certificate.expirationdate##
 
-##certificate.url##
- ##ENDFOREACHcertificates##',
+##certificate.url##',
                 'content_html' => '&lt;p&gt;
 ##lang.certificate.entity## : ##certificate.entity##&lt;br /&gt;
-##FOREACHcertificates##
 &lt;br /&gt;##lang.certificate.name## : ##certificate.name##&lt;br /&gt;
 ##lang.certificate.serial## : ##certificate.serial##&lt;br /&gt;
 ##lang.certificate.expirationdate## : ##certificate.expirationdate##
 &lt;br /&gt; &lt;a href="##certificate.url##"&gt; ##certificate.url##
-&lt;/a&gt;&lt;br /&gt; ##ENDFOREACHcertificates##&lt;/p&gt;',
+&lt;/a&gt;&lt;br /&gt;
+&lt;/p&gt;',
             ], [
                 'id' => '26',
                 'notificationtemplates_id' => '26',

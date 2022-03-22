@@ -679,13 +679,13 @@ class Certificate extends CommonDBTM
     {
         global $DB, $CFG_GLPI;
 
-        $cron_status = 1;
-
         if (!$CFG_GLPI['use_notifications']) {
-            return 0;
+            return 0; // Nothing to do
         }
 
-        $message      = [];
+        $errors = 0;
+        $total = 0;
+
         foreach (array_keys(Entity::getEntitiesToNotify('use_certificates_alert')) as $entity) {
             $before = Entity::getUsedConfig('send_certificates_alert_before_delay', $entity);
             $repeat = Entity::getUsedConfig('certificates_alert_repeat_interval', $entity);
@@ -699,11 +699,10 @@ class Certificate extends CommonDBTM
             } else {
                 $where_date = ['glpi_alerts.date' => null];
             }
-           // Check licenses
-            $result = $DB->request(
+            $iterator = $DB->request(
                 [
                     'SELECT'    => [
-                        'glpi_certificates.*',
+                        'glpi_certificates.id',
                     ],
                     'FROM'      => self::getTable(),
                     'LEFT JOIN' => [
@@ -737,57 +736,50 @@ class Certificate extends CommonDBTM
                 ]
             );
 
-            $message = "";
-            $items   = [];
+            foreach ($iterator as $certificate_data) {
+                $certificate_id = $certificate_data['id'];
+                $certificate = new self();
+                if (!$certificate->getFromDB($certificate_id)) {
+                    $errors++;
+                    trigger_error(sprintf('Unable to load Certificate "%s".', $certificate_id), E_USER_WARNING);
+                    continue;
+                }
 
-            foreach ($result as $certificate) {
-                $name     = $certificate['name'] . ' - ' . $certificate['serial'];
-                //TRANS: %1$s the certificate name, %2$s is the expiration date
-                $message .= sprintf(
-                    __('Certificate %1$s expired on %2$s'),
-                    Html::convDate($certificate["date_expiration"]),
-                    $name
-                ) . "<br>\n";
-                 $items[$certificate['id']] = $certificate;
-            }
-
-            if (!empty($items)) {
-                $alert   = new Alert();
-                $options = [
-                    'entities_id'  => $entity,
-                    'certificates' => $items,
-                ];
-
-                if (NotificationEvent::raiseEvent('alert', new self(), $options)) {
-                    $entityname = Dropdown::getDropdownName("glpi_entities", $entity);
+                if (NotificationEvent::raiseEvent('alert', $certificate)) {
+                    $msg = sprintf(
+                        __('%1$s: %2$s'),
+                        Dropdown::getDropdownName('glpi_entities', $entity),
+                        sprintf(
+                            __('Certificate %1$s expired on %2$s'),
+                            $certificate->fields['name'] . (!empty($certificate->fields['serial']) ? ' - ' . $certificate->fields['serial'] : ''),
+                            Html::convDate($certificate->fields['date_expiration'])
+                        )
+                    );
                     if ($task) {
-                        //TRANS: %1$s is the entity, %2$s is the message
-                        $task->log(sprintf(__('%1$s: %2$s') . "\n", $entityname, $message));
+                        $task->log($msg);
                         $task->addVolume(1);
                     } else {
-                        Session::addMessageAfterRedirect(sprintf(
-                            __('%1$s: %2$s'),
-                            $entityname,
-                            $message
-                        ));
+                        Session::addMessageAfterRedirect($msg);
                     }
 
+                    // Add alert
                     $input = [
                         'type'     => Alert::END,
                         'itemtype' => __CLASS__,
+                        'items_id' => $certificate_id,
                     ];
+                    $alert = new Alert();
+                    $alert->deleteByCriteria($input, 1);
+                    $alert->add($input);
 
-                   // add alerts
-                    foreach ($items as $ID => $certificate) {
-                        $input["items_id"] = $ID;
-                        $alert->deleteByCriteria($input, 1);
-                        $alert->add($input);
-                        unset($alert->fields['id']);
-                    }
+                    $total++;
                 } else {
-                    $entityname = Dropdown::getDropdownName('glpi_entities', $entity);
-                   //TRANS: %s is entity name
-                    $msg = sprintf(__('%1$s: %2$s'), $entityname, __('Send Certificates alert failed'));
+                    $errors++;
+
+                    $msg = sprintf(
+                        __('Certificate alerts sending failed for entity %1$s'),
+                        Dropdown::getDropdownName("glpi_entities", $entity)
+                    );
                     if ($task) {
                         $task->log($msg);
                     } else {
@@ -796,7 +788,8 @@ class Certificate extends CommonDBTM
                 }
             }
         }
-        return $cron_status;
+
+        return $errors > 0 ? -1 : ($total > 0 ? 1 : 0);
     }
 
     /**

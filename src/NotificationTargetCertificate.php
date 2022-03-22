@@ -44,7 +44,7 @@ class NotificationTargetCertificate extends NotificationTarget
 {
     public function getEvents()
     {
-        return ['alert' => __('Alarms on expired certificates')];
+        return ['alert' => __('Alarm on expired certificate')];
     }
 
     public function addAdditionalTargets($event = '')
@@ -63,15 +63,20 @@ class NotificationTargetCertificate extends NotificationTarget
     {
 
         $events = $this->getAllEvents();
+        $certificate = $this->obj;
 
-       //These 2 params should be defined in $options table
-       //The only case where they're not defined in when displaying
-       //the debug tab of a certificate
         if (!isset($options['certificates'])) {
             $options['certificates'] = [];
+            if (!$certificate->isNewItem()) {
+                $options['certificates'][] = $certificate->fields;// Compatibility with old behaviour
+            }
+        } else {
+            Toolbox::deprecated('Using "certificates" option in NotificationTargetCertificate is deprecated.');
         }
         if (!isset($options['entities_id'])) {
-            $options['entities_id'] = $options['item']->fields['entities_id'];
+            $options['entities_id'] = $certificate->fields['entities_id'];
+        } else {
+            Toolbox::deprecated('Using "entities_id" option in NotificationTargetCertificate is deprecated.');
         }
 
         $this->data['##certificate.action##'] = $events[$event];
@@ -80,11 +85,20 @@ class NotificationTargetCertificate extends NotificationTarget
             $options['entities_id']
         );
 
-        foreach ($options['certificates'] as $id => $certificate) {
+        $this->data['##certificate.name##']           = $certificate->fields['name'];
+        $this->data['##certificate.serial##']         = $certificate->fields['serial'];
+        $this->data['##certificate.expirationdate##'] = Html::convDate($certificate->fields["date_expiration"]);
+        $this->data['##certificate.url##']            = $this->formatURL(
+            $options['additionnaloption']['usertype'],
+            "Certificate_" . $certificate->getID()
+        );
+
+        foreach ($options['certificates'] as $id => $certificate_data) {
+            // Old behaviour preserved as notifications rewriting in migrations is kind of complicated
             $this->data['certificates'][] = [
-                '##certificate.name##'           => $certificate['name'],
-                '##certificate.serial##'         => $certificate['serial'],
-                '##certificate.expirationdate##' => Html::convDate($certificate["date_expiration"]),
+                '##certificate.name##'           => $certificate_data['name'],
+                '##certificate.serial##'         => $certificate_data['serial'],
+                '##certificate.expirationdate##' => Html::convDate($certificate_data["date_expiration"]),
                 '##certificate.url##'            => $this->formatURL(
                     $options['additionnaloption']['usertype'],
                     "Certificate_" . $id
@@ -119,7 +133,7 @@ class NotificationTargetCertificate extends NotificationTarget
         }
 
         $this->addTagToList(['tag'     => 'certificates',
-            'label'   => __('Device list'),
+            'label'   => __('Certificates list (deprecated; contains only one element)'),
             'value'   => false,
             'foreach' => true
         ]);
