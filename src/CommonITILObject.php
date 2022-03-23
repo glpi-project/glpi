@@ -8093,8 +8093,6 @@ abstract class CommonITILObject extends CommonDBTM
             }
             $existings = $this->getActorsForType($actortype);
 
-            $input_field_name = '_additional_' . $actortype_str . 's';
-
             $added   = [];
             $updated = [];
             $deleted = [];
@@ -8141,8 +8139,26 @@ abstract class CommonITILObject extends CommonDBTM
                     }
                 }
 
-                $input_ids = isset($this->input[$input_field_name]) ? array_column($this->input[$input_field_name], $existing['itemtype']::getForeignKeyField()) : [];
-                if ($found === false && !in_array($existing['items_id'], $input_ids, false)) {
+
+                if ($existing['itemtype'] === 'User') {
+                    $input_field_name = '_additional_' . $actortype_str . 's';
+
+                } else {
+                    $type = strtolower($existing['itemtype']::getType());
+                    $input_field_name = '_additional_' . $type . 's_' . $actortype_str . 's';
+                }
+
+                if (isset($this->input[$input_field_name]) && count($this->input[$input_field_name])) {
+                    $first_item = reset($this->input[$input_field_name]);
+                    if (!is_array($first_item)) {
+                        $input_ids = isset($this->input[$input_field_name]) ? array_values($this->input[$input_field_name]) : [];
+                    } else {
+                        $input_ids = isset($this->input[$input_field_name]) ? array_column($this->input[$input_field_name], $existing['itemtype']::getForeignKeyField()) : [];
+                    }
+                } else {
+                    $input_ids = [];
+                }
+                if ($found === false && (!in_array($existing['items_id'], $input_ids, false))) {
                     $deleted[] = $existing;
                 }
             }
