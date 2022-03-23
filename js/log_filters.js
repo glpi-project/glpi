@@ -69,9 +69,9 @@ $(function() {
         $('.log_history_filter_row [name^="filters\\["]').on('keypress', function(event) {
             if (event.key === "Enter") {
                 event.preventDefault();
-                handleFilterChange()
+                handleFilterChange();
             }
-        })
+        });
     };
 
     var handleFilterChange = function () {
