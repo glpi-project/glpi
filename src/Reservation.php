@@ -632,8 +632,8 @@ JAVASCRIPT;
 
         return $reservation->update([
             'id'    => (int) $event['id'],
-            'begin' => $event['start'],
-            'end'   => $event['end']
+            'begin' => date("Y-m-d H:i:s", strtotime($event['start'])),
+            'end'   => date("Y-m-d H:i:s", strtotime($event['end'])),
         ]);
     }
 
