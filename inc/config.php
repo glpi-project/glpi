@@ -241,3 +241,10 @@ if (!isset($skip_db_check) && !file_exists(GLPI_CONFIG_DIR . "/config_db.php")) 
         exit();
     }
 }
+
+// First call to `Config::detectRootDoc()` cannot compute the value
+// in CLI context, as it requires DB connection to be up.
+// Now DB is up, so value can be computed.
+if (!isset($CFG_GLPI['root_doc'])) {
+    Config::detectRootDoc();
+}
