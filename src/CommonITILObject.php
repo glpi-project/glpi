@@ -8142,7 +8142,6 @@ abstract class CommonITILObject extends CommonDBTM
 
                 if ($existing['itemtype'] === 'User') {
                     $input_field_name = '_additional_' . $actortype_str . 's';
-
                 } else {
                     $type = strtolower($existing['itemtype']::getType());
                     $input_field_name = '_additional_' . $type . 's_' . $actortype_str . 's';
