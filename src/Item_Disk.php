@@ -721,7 +721,8 @@ class Item_Disk extends CommonDBChild
 
         // logging total size of zfs mount points make no sense as it's equal to the used space of the point + available space for the pool
         // it's likely to have this key changing on each automatic inventory
-        // so we don't want to pollute logs with these frequent changes
+        // so we don't want to pollute logs with these frequent changes.
+        // to note, `$this->input['filesystem']` will only be present on inventory request
         if (in_array(($this->input['filesystem'] ?? ""), ['zfs', 'fuse.zfs'])) {
             $exclude[] = 'totalsize';
         }
