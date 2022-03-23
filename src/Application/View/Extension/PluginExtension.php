@@ -47,6 +47,7 @@ class PluginExtension extends AbstractExtension
         return [
             new TwigFunction('call_plugin_hook', [$this, 'callPluginHook']),
             new TwigFunction('call_plugin_hook_func', [$this, 'callPluginHookFunction']),
+            new TwigFunction('get_plugin_web_dir', [$this, 'getPluginWebDir']),
         ];
     }
 
@@ -84,5 +85,22 @@ class PluginExtension extends AbstractExtension
         if ($return_result) {
             return $result;
         }
+    }
+
+    /**
+     * Call Plugin::getWebDir() with given params.
+     *
+     * @param string  $plugin
+     * @param bool    $full
+     * @param bool    $use_url_base
+     *
+     * @return string|null
+     */
+    public function getPluginWebDir(
+        string $plugin,
+        bool $full = true,
+        bool $use_url_base = false
+    ): ?string {
+        return Plugin::getWebDir($plugin, $full, $use_url_base) ?: null;
     }
 }

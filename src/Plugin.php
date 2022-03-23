@@ -2591,6 +2591,10 @@ class Plugin extends CommonDBTM
             }
         }
 
+        if ($directory === false) {
+            return false;
+        }
+
         if (!$full) {
             $directory = str_replace(GLPI_ROOT, "", $directory);
         }
@@ -2615,6 +2619,11 @@ class Plugin extends CommonDBTM
         global $CFG_GLPI;
 
         $directory = self::getPhpDir($plugin_key, false);
+
+        if ($directory === false) {
+            return false;
+        }
+
         $directory = ltrim($directory, '/\\');
 
         if ($full) {
