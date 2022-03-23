@@ -545,6 +545,8 @@ JAVASCRIPT;
                 'complete' => true,
             ]);
 
+            $editable = $canedit_admin || ($can_reserve && $my_item);
+
             $events[] = [
                 'id'          => $data['id'],
                 'resourceId'  => $data['itemtype'] . "-" . $data['items_id'],
@@ -561,7 +563,8 @@ JAVASCRIPT;
                 'items_id'    => $data['items_id'],
                 'color'       => Toolbox::getColorForString($name),
                 'ajaxurl'     => Reservation::getFormURLWithID($data['id']),
-                'editable'    => $canedit_admin || ($can_reserve && $my_item),
+                'editable'    => $editable, // "editable" is used by fullcalendar, but is not accessible
+                '_editable'   => $editable, // "_editable" will be used by custom event handlers
             ];
         }
 
@@ -701,7 +704,7 @@ JAVASCRIPT;
                 'items_id_name'   => 'items[]',
                 'itemtypes'       => $CFG_GLPI['reservation_types'],
                 'entity_restrict' => Session::getActiveEntity(),
-                'checkright'      => true,
+                'checkright'      => false,
                 'ajax_page'       => $CFG_GLPI['root_doc'] . '/ajax/reservable_items.php'
             ]);
             echo "<span id='item_dropdown'>";

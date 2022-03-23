@@ -241,18 +241,21 @@ var Reservations = function() {
             },
 
             eventClick: function(info) {
-                var event   = info.event;
-                var ajaxurl = event.extendedProps.ajaxurl;
+                var event    = info.event;
+                var ajaxurl  = event.extendedProps.ajaxurl;
+                var editable = event.extendedProps._editable;
 
-                if (ajaxurl) {
-                    info.jsEvent.preventDefault(); // don't let the browser navigate
+                info.jsEvent.preventDefault(); // don't let the browser navigate
 
-                    glpi_ajax_dialog({
-                        title: __("Edit reservation"),
-                        url: ajaxurl+"&ajax=true",
-                        dialogclass: 'modal-lg',
-                    });
+                if (!editable || !ajaxurl) {
+                    return;
                 }
+
+                glpi_ajax_dialog({
+                    title: __("Edit reservation"),
+                    url: ajaxurl+"&ajax=true",
+                    dialogclass: 'modal-lg',
+                });
             }
         });
 
