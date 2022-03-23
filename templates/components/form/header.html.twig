@@ -118,7 +118,6 @@
                   <span class="badge is_recursive-toggle mx-1 px-2 py-3">
                      <label class="form-check d-flex align-items-center mb-0">
                         {% set disabled = canedit == false %}
-                        {% set checked  = item.fields['is_recursive'] ? true : false %}
                         {% set comment  = __('Change visibility in child entities.') %}
 
                         {% if item is instanceof('CommonDBChild') %}
@@ -133,8 +132,12 @@
                         {% endif %}
 
                         <input class="form-check-input" type="checkbox" name="is_recursive" value="1"
-                              {% if checked %}checked="checked"{% endif %}
+                              {% if item.isRecursive() %}checked="checked"{% endif %}
                               {% if disabled %}disabled="disabled"{% endif %} />
+                        {% if item is instanceof('CommonDBChild') and item.isNewItem() and item.isRecursive() %}
+                            {# Send value on hidden field to ensure creation will use inherited recursivity on CommonDBChild #}
+                            <input type="hidden" name="is_recursive" value="1" />
+                        {% endif %}
                         <span class="form-check-label mb-0 mx-2">
                            {{ __('Child entities') }}
                            <i class="fas fa-info ms-1" title="{{ comment }}"></i>
