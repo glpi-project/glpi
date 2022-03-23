@@ -655,6 +655,7 @@ class Rack extends CommonDBTM
                glpi_ajax_dialog({
                   url : "{$rack->getFormURL()}",
                   method: 'GET',
+                  dialogclass: 'modal-xl',
                   params: {
                      room: $room_id,
                      position: _x + ',' + _y,
