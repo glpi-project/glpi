@@ -6399,7 +6399,7 @@ JAVASCRIPT;
                             }
                         }
                         return $out;
-                    } else if (($so["datatype"] ?? "") != "itemlink") {
+                    } else if (($so["datatype"] ?? "") != "itemlink" && !empty($data[$ID][0]['name'])) {
                         return Entity::badgeCompletename($data[$ID][0]['name']);
                     }
                     break;
