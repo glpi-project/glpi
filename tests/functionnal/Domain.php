@@ -180,4 +180,107 @@ class Domain extends DbTestCase
             $this->integer((int)$row['entities_id'])->isidenticalTo($entities_id);
         }
     }
+
+    public function testCronDomainsAlert()
+    {
+        $this->login();
+
+        // Force usage of notifications
+        global $CFG_GLPI;
+        $CFG_GLPI['use_notifications'] = true;
+
+        $alert    = new \Alert();
+        $domain   = new \Domain();
+        $crontask = new \CronTask();
+        $entities_id = getItemByTypeName('Entity', '_test_root_entity', true);
+
+        // Add domains
+        $domain_1_id = $domain->add([
+            'name'            => $this->getUniqueString(),
+            'entities_id'     => $entities_id,
+            'date_expiration' => date('Y-m-d', time() - MONTH_TIMESTAMP), // expired for a long time (> 7 days)
+        ]);
+        $this->integer($domain_1_id)->isGreaterThan(0);
+
+        $domain_2_id = $domain->add([
+            'name'            => $this->getUniqueString(),
+            'entities_id'     => $entities_id,
+            'date_expiration' => date('Y-m-d', time() - DAY_TIMESTAMP), // expired recently (< 7 days)
+        ]);
+        $this->integer($domain_2_id)->isGreaterThan(0);
+
+        $domain_3_id = $domain->add([
+            'name'            => $this->getUniqueString(),
+            'entities_id'     => $entities_id,
+            'date_expiration' => date('Y-m-d', time() + DAY_TIMESTAMP), // will expire soon (< 7 days)
+        ]);
+        $this->integer($domain_3_id)->isGreaterThan(0);
+
+        $domain_4_id = $domain->add([
+            'name'            => $this->getUniqueString(),
+            'entities_id'     => $entities_id,
+            'date_expiration' => date('Y-m-d', time() + MONTH_TIMESTAMP), // will expire in a long time (> 7 days)
+        ]);
+        $this->integer($domain_4_id)->isGreaterThan(0);
+
+        $domain_5_id = $domain->add([
+            'name'            => $this->getUniqueString(),
+            'entities_id'     => $entities_id,
+            'date_expiration' => null, // does not expire
+        ]);
+        $this->integer($domain_5_id)->isGreaterThan(0);
+
+        // Set root entity config domains alerts
+        $entity = new \Entity();
+        $updated = $entity->update([
+            'id'                                      => $entities_id,
+            'use_domains_alert'                       => 1,
+            'send_domains_alert_close_expiries_delay' => 7, // alert on domains that will expire in less than 7 days
+            'send_domains_alert_expired_delay'        => 7, // alert on domains expired since, at least, 7 days
+        ]);
+        $this->boolean($updated)->isTrue();
+
+        $result = $domain->cronDomainsAlert($crontask);
+        $this->integer($result)->isEqualTo(1); // 1 = fully processed
+
+        $this->integer(countElementsInTable(\Alert::getTable()))->isEqualTo(2);
+
+        $expired_alerts = $alert->find(
+            [
+                'itemtype' => 'Domain',
+                'type'     => \Alert::END,
+            ]
+        );
+        $expired_alert = reset($expired_alerts);
+        unset($expired_alert['id']);
+        $this->array($expired_alert)->isEqualTo(
+            [
+                'date'     => $_SESSION["glpi_currenttime"],
+                'itemtype' => 'Domain',
+                'items_id' => $domain_1_id,
+                'type'     => \Alert::END,
+            ]
+        );
+
+        $expiring_alerts = $alert->find(
+            [
+                'itemtype' => 'Domain',
+                'type'     => \Alert::NOTICE,
+            ]
+        );
+        $expiring_alert = reset($expiring_alerts);
+
+        unset($expiring_alert['id']);
+        $this->array($expiring_alert)->isEqualTo(
+            [
+                'date'     => $_SESSION["glpi_currenttime"],
+                'itemtype' => 'Domain',
+                'items_id' => $domain_3_id,
+                'type'     => \Alert::NOTICE,
+            ]
+        );
+
+        $result = $domain->cronDomainsAlert($crontask);
+        $this->integer($result)->isEqualTo(0); // 0 = nothing to do (alerts were already sent)
+    }
 }

@@ -253,6 +253,7 @@ class TestUpdatedDataCommand extends Command
             // Notification content is not automatically updated
                 'content_text',
                 'content_html',
+                'subject',
             ],
             'glpi_requesttypes' => [
                 'is_followup_default', // Field value was not forced by migration (0.90.x to 9.1.0)
