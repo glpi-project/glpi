@@ -33,7 +33,7 @@
 
 include('../inc/includes.php');
 
-Session::checkCentralAccess();
+Session::checkRight('reservation', ReservationItem::RESERVEANITEM);
 
 if (!isset($_REQUEST["action"])) {
     exit;
