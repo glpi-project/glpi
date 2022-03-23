@@ -64,6 +64,14 @@ $(function() {
             }, 800);
         });
         $('.log_history_filter_row select[name^="filters\\["]').on('change', handleFilterChange);
+
+        // prevent submit of parent form when pressing enter
+        $('.log_history_filter_row [name^="filters\\["]').on('keypress', function(event) {
+            if (event.key === "Enter") {
+                event.preventDefault();
+                handleFilterChange();
+            }
+        });
     };
 
     var handleFilterChange = function () {
