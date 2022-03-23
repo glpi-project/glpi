@@ -432,8 +432,10 @@ class Rack extends CommonDBTM
         $rows     = (int) $room->fields['vis_rows'];
         $cols     = (int) $room->fields['vis_cols'];
         $w_prct   = 100 / $cols;
-        $grid_w   = 40 * $cols;
-        $grid_h   = (39 * $rows) + 16;
+        $cell_w   = DCRoom::CELL_WIDTH;
+        $cell_h   = DCRoom::CELL_HEIGHT;
+        $grid_w   = DCRoom::CELL_WIDTH * $cols;
+        $grid_h   = ($cell_h * $rows) + 16;
         $ajax_url = $CFG_GLPI['root_doc'] . "/ajax/rack.php";
 
        //fill rows
@@ -475,7 +477,11 @@ class Rack extends CommonDBTM
             echo "</tbody></table>";
         }
 
-        echo "<style>";
+        echo "<style>
+            :root {
+                --grid-room-cell-w: {$cell_w}px;
+                --grid-room-cell-h: {$cell_h}px;
+            }";
         for ($i = 0; $i < $cols; $i++) {
             $left  = $i * $w_prct;
             $width = ($i + 1) * $w_prct;
@@ -495,7 +501,7 @@ class Rack extends CommonDBTM
             $blueprint = "
             <div class='blueprint'
                  style='background: url({$blueprint_url}) no-repeat top left/100% 100%;
-                        height: " . $grid_h . "px;'></div>";
+                        height: " . ($grid_h - 16) . "px;'></div>";
             $blueprint_ctrl = "<span class='mini_toggle active'
                                   id='toggle_blueprint'>" . __('Blueprint') . "</span>";
         }
@@ -566,7 +572,7 @@ class Rack extends CommonDBTM
          GridStack.init({
             column: $cols,
             maxRow: ($rows + 1),
-            cellHeight: 39,
+            cellHeight: {$cell_h},
             margin: 0,
             float: true,
             disableOneColumnMode: true,
