@@ -436,7 +436,7 @@ abstract class ITILTemplate extends CommonDropdown {
       if ($this->isHiddenField($field)) {
          $output .= "</span>";
          if ($ticket && isset($ticket->fields[$field])) {
-            $output .= "<input type='hidden' name='$field' value=\"".$ticket->fields[$field]."\">";
+            $output .= "<input type='hidden' name='$field' value=\"".htmlspecialchars($ticket->fields[$field], ENT_COMPAT)."\">";
          }
          if ($this->isPredefinedField($field)
              && !is_null($ticket)) {
