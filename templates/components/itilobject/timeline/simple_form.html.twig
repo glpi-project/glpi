@@ -46,6 +46,21 @@
 <form method="post" action="{{ target }}" {{ formoptions }} enctype="multipart/form-data" data-submit-once>
 {% endif %}
    <div class="row flex-column">
+      {% if not item.isNewItem() %}
+        {% set recipient = item.fields['users_id_recipient'] > 0 ? item.fields['users_id_recipient'] : session('glpiID') %}
+        {{ fields.dropdownField(
+            'User',
+            'users_id_recipient',
+            recipient,
+            __('By'),
+            field_options|merge({
+                maxlenght: 255,
+                entity: item.fields['entities_id'],
+                right: 'all',
+            })
+        ) }}
+      {% endif %}
+
       {{ fields.textField(
          'name',
          item.fields['name'],
