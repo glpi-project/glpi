@@ -2542,7 +2542,7 @@ class RuleTicket extends DbTestCase
         ]);
         $this->boolean($result)->isTrue();
     }
-    
+
     public function testAppendSupplierOnUpdate()
     {
         $this->login();
