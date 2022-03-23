@@ -94,13 +94,13 @@ class PluginExtension extends AbstractExtension
      * @param bool    $full
      * @param bool    $use_url_base
      *
-     * @return mixed|void
+     * @return string|null
      */
     public function getPluginWebDir(
         string $plugin,
         bool $full = true,
         bool $use_url_base = false
-    ) {
+    ) ?string {
         return Plugin::getWebDir($plugin, $full, $use_url_base);
     }
 }
