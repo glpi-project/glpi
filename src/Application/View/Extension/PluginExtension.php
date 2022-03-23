@@ -100,7 +100,12 @@ class PluginExtension extends AbstractExtension
         string $plugin,
         bool $full = true,
         bool $use_url_base = false
-    ) ?string {
-        return Plugin::getWebDir($plugin, $full, $use_url_base);
+    ): ?string {
+        $directory = Plugin::getWebDir($plugin, $full, $use_url_base);
+        if (empty($directory)) {
+            return null;
+        }
+
+        return $directory;
     }
 }
