@@ -8139,7 +8139,32 @@ abstract class CommonITILObject extends CommonDBTM
                     }
                 }
 
-                if ($found === false) {
+
+                if ($existing['itemtype'] === 'User') {
+                    $input_field_name = '_additional_' . $actortype_str . 's';
+                } else {
+                    $type = strtolower($existing['itemtype']::getType());
+                    $input_field_name = '_additional_' . $type . 's_' . $actortype_str . 's';
+                }
+
+                if (
+                    isset($this->input[$input_field_name])
+                    && is_array($this->input[$input_field_name])
+                    &&  count($this->input[$input_field_name])
+                ) {
+                    // Need to check two different formats for the input field
+                    $first_item = reset($this->input[$input_field_name]);
+                    if (!is_array($first_item)) {
+                        // Input field is a simple array of IDs
+                        $input_ids = array_values($this->input[$input_field_name]);
+                    } else {
+                        // Input field is an array of arrays containing foreign keys (Ex: groups_id => 5) and maybe some other data
+                        $input_ids = array_column($this->input[$input_field_name], $existing['itemtype']::getForeignKeyField());
+                    }
+                } else {
+                    $input_ids = [];
+                }
+                if ($found === false && (!in_array($existing['items_id'], $input_ids, false))) {
                     $deleted[] = $existing;
                 }
             }
