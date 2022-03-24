@@ -556,6 +556,9 @@ abstract class CommonDBChild extends CommonDBConnexity
                 && $item->dohistory
             ) {
                 foreach (array_keys($oldvalues) as $field) {
+                    if (in_array($field, $this->getNonLoggedFields())) {
+                        continue;
+                    }
                     $changes = $this->getHistoryChangeWhenUpdateField($field);
                     if ((!is_array($changes)) || (count($changes) != 3)) {
                         continue;
