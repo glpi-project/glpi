@@ -37,6 +37,7 @@ use Glpi\ContentTemplates\ParametersPreset;
 use Glpi\ContentTemplates\TemplateManager;
 use Glpi\Event;
 use Glpi\RichText\RichText;
+use Glpi\Toolbox\Sanitizer;
 
 /**
  * Ticket Class
@@ -6786,7 +6787,7 @@ JAVASCRIPT;
                     $input = [
                         'itemtype'        => 'Ticket',
                         'items_id'        => $merge_target_id,
-                        'content'         => $DB->escape($ticket->fields['name'] . "<br /><br />" . $ticket->fields['content']),
+                        'content'         => $DB->escape($ticket->fields['name'] . Sanitizer::sanitize("<br /><br />", false) . $ticket->fields['content']),
                         'users_id'        => $ticket->fields['users_id_recipient'],
                         'date_creation'   => $ticket->fields['date_creation'],
                         'date_mod'        => $ticket->fields['date_mod'],
