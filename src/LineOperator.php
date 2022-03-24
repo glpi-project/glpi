@@ -51,12 +51,12 @@ class LineOperator extends CommonDropdown
     {
         return [['name'  => 'mcc',
             'label' => __('Mobile Country Code'),
-            'type'  => 'text',
+            'type'  => 'integer',
             'list'  => true
         ],
             ['name'  => 'mnc',
                 'label' => __('Mobile Network Code'),
-                'type'  => 'text',
+                'type'  => 'integer',
                 'list'  => true
             ],
         ];
@@ -71,7 +71,7 @@ class LineOperator extends CommonDropdown
             'table'              => $this->getTable(),
             'field'              => 'mcc',
             'name'               => __('Mobile Country Code'),
-            'datatype'           => 'text',
+            'datatype'           => 'integer',
         ];
 
         $tab[] = [
@@ -79,7 +79,7 @@ class LineOperator extends CommonDropdown
             'table'              => $this->getTable(),
             'field'              => 'mnc',
             'name'               => __('Mobile Network Code'),
-            'datatype'           => 'text',
+            'datatype'           => 'integer',
         ];
 
         return $tab;
