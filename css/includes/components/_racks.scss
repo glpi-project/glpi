@@ -180,7 +180,7 @@ ul.indexes {
     .racks_add {
         border: 1px solid $table-border-color;
         border-width: 0 1px 1px 0;
-        background-size: var(--grid-room-cell-w) var(--grid-room-cell-h);
+        background-size: var(--dcroom-grid-cellw) var(--dcroom-grid-cellh);
         background-image:
             linear-gradient(
                 to right,
@@ -195,8 +195,8 @@ ul.indexes {
         margin-left: 15px;
 
         .cell_add {
-            height: var(--grid-room-cell-h);
-            width: var(--grid-room-cell-w);
+            height: var(--dcroom-grid-cellh);
+            width: var(--dcroom-grid-cellw);
             float: left;
 
             &::after {
@@ -278,7 +278,7 @@ ul.indexes {
 
             li {
                 float: left;
-                width: var(--grid-room-cell-w);
+                width: var(--dcroom-grid-cellw);
             }
         }
 
@@ -286,8 +286,8 @@ ul.indexes {
             width: 15px;
 
             li {
-                height: var(--grid-room-cell-h);
-                line-height: calc(var(--grid-room-cell-h) + 1px);
+                height: var(--dcroom-grid-cellh);
+                line-height: calc(var(--dcroom-grid-cellh) + 1px);
             }
         }
     }

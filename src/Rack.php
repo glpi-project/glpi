@@ -479,8 +479,8 @@ class Rack extends CommonDBTM
 
         echo "<style>
             :root {
-                --grid-room-cell-w: {$cell_w}px;
-                --grid-room-cell-h: {$cell_h}px;
+                --dcroom-grid-cellw: {$cell_w}px;
+                --dcroom-grid-cellh: {$cell_h}px;
             }";
         for ($i = 0; $i < $cols; $i++) {
             $left  = $i * $w_prct;
