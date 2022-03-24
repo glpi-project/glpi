@@ -38,4 +38,8 @@
     vertical-align: inherit;
     align-items: flex-start;
     vertical-align: middle;
+
+    .badge a {
+        color: inherit;
+    }
 }
