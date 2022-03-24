@@ -34,7 +34,7 @@
 {% endif %}
 
 {% set rand = random() %}
-<div id="grid_{{ rand }}" class="masonry_grid row row-cards">
+<div id="grid_{{ rand }}" class="masonry_grid row row-cards mb-5">
    {% for item in grid_items %}
       <div class="grid-item {{ grid_item_class }}">
          {{ item|raw }}
