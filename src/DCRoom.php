@@ -38,9 +38,6 @@ class DCRoom extends CommonDBTM
 {
     use Glpi\Features\DCBreadcrumb;
 
-    const CELL_HEIGHT = 39;
-    const CELL_WIDTH  = 40;
-
    // From CommonDBTM
     public $dohistory                   = true;
     protected $usenotepad               = true;
