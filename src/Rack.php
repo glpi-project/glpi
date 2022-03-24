@@ -435,7 +435,7 @@ class Rack extends CommonDBTM
         $cell_w   = DCRoom::CELL_WIDTH;
         $cell_h   = DCRoom::CELL_HEIGHT;
         $grid_w   = DCRoom::CELL_WIDTH * $cols;
-        $grid_h   = ($cell_h * $rows) + 16;
+        $grid_h   = $cell_h * $rows;
         $ajax_url = $CFG_GLPI['root_doc'] . "/ajax/rack.php";
 
        //fill rows
@@ -501,13 +501,13 @@ class Rack extends CommonDBTM
             $blueprint = "
             <div class='blueprint'
                  style='background: url({$blueprint_url}) no-repeat top left/100% 100%;
-                        height: " . ($grid_h - 16) . "px;'></div>";
+                        height: " . $grid_h . "px;'></div>";
             $blueprint_ctrl = "<span class='mini_toggle active'
                                   id='toggle_blueprint'>" . __('Blueprint') . "</span>";
         }
 
         echo "
-      <div class='grid-room' style='width: " . ($grid_w + 16) . "px; min-height: " . $grid_h . "px'>
+      <div class='grid-room' style='width: " . ($grid_w + 16) . "px; min-height: " . ($grid_h + 16) . "px'>
          <span class='racks_view_controls'>
             $blueprint_ctrl
             <span class='mini_toggle active'
