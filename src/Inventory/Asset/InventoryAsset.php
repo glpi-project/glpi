@@ -36,6 +36,7 @@ namespace Glpi\Inventory\Asset;
 use Agent;
 use Blacklist;
 use CommonDBTM;
+use CommonDropdown;
 use Dropdown;
 use Glpi\Inventory\Conf;
 use Glpi\Inventory\Request;
@@ -212,8 +213,8 @@ abstract class InventoryAsset
                         );
                     } else if (isset($foreignkey_itemtype[$key])) {
                         $value->$key = Dropdown::importExternal($foreignkey_itemtype[$key], addslashes($value->$key), $entities_id);
-                    } else if (isForeignKeyField($key) && $key != "users_id") {
-                        $foreignkey_itemtype[$key] = getItemtypeForForeignKeyField($key);
+                    } else if (isForeignKeyField($key) && is_a($itemtype = getItemtypeForForeignKeyField($key), CommonDropdown::class, true)) {
+                        $foreignkey_itemtype[$key] = $itemtype;
                         $value->$key = Dropdown::importExternal($foreignkey_itemtype[$key], addslashes($value->$key), $entities_id);
 
                         if (
