@@ -144,12 +144,12 @@ ul.indexes {
     position: relative;
 
     &::after {
-        content: "\f067";
+        content: "\eb0b";
         left: 45%;
         font-size: 1em;
         color: grey;
         top: 1px;
-        font-family: "Font Awesome 5 Free";
+        font-family: "tabler-icons" !important;
         position: absolute;
         font-weight: 900;
     }
