@@ -47,6 +47,6 @@ class Auth extends AbstractBasic
     protected function validateUserPass($username, $password)
     {
         $auth = new \Auth();
-        return $auth->login($username, $password);
+        return $auth->login($username, $password, true);
     }
 }
