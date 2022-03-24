@@ -427,18 +427,16 @@ class Rack extends CommonDBTM
 
         echo "<div id='viewgraph'>";
 
-        $data = [];
-
         $rows     = (int) $room->fields['vis_rows'];
         $cols     = (int) $room->fields['vis_cols'];
         $w_prct   = 100 / $cols;
         $cell_w   = DCRoom::CELL_WIDTH;
         $cell_h   = DCRoom::CELL_HEIGHT;
-        $grid_w   = DCRoom::CELL_WIDTH * $cols;
+        $grid_w   = $cell_w * $cols;
         $grid_h   = $cell_h * $rows;
         $ajax_url = $CFG_GLPI['root_doc'] . "/ajax/rack.php";
 
-       //fill rows
+        //fill rows
         $cells    = [];
         $outbound = [];
         foreach ($racks as &$item) {
@@ -530,7 +528,7 @@ class Rack extends CommonDBTM
             }
         }
 
-       // add a locked element to bottom to display a full grid
+        // add a locked element to bottom to display a full grid
         echo "<div class='grid-stack-item lock-bottom'
                  gs-no-resize='true'
                  gs-no-move='true'
