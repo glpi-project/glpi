@@ -33,6 +33,12 @@
 @mixin tabler-badge-fix {
     display: inline-flex;
     font-size: 0.625rem;
-    height: 1.25rem;
-    vertical-align: inherit;
+    min-height: 1.25rem;
+    height: auto;
+    align-items: flex-start;
+    vertical-align: middle;
+
+    .badge a {
+        color: inherit;
+    }
 }
