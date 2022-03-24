@@ -2523,7 +2523,7 @@ HTML;
 
             $CFG_GLPI['root_doc'] = $root_doc;
         } else {
-            // $_SERVER['REQUEST_URI'] is set, meaning that GLPI is probably acces from CLI.
+            // $_SERVER['REQUEST_URI'] is not set, meaning that GLPI is probably acces from CLI.
             // In this case, `$CFG_GLPI['root_doc']` has to be extracted from `$CFG_GLPI['url_base']`.
 
             $url_base = $CFG_GLPI['url_base'] ?? null;
