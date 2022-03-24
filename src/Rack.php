@@ -427,16 +427,16 @@ class Rack extends CommonDBTM
 
         echo "<div id='viewgraph'>";
 
-        $data = [];
-
         $rows     = (int) $room->fields['vis_rows'];
         $cols     = (int) $room->fields['vis_cols'];
         $w_prct   = 100 / $cols;
-        $grid_w   = 40 * $cols;
-        $grid_h   = (39 * $rows) + 16;
+        $cell_w   = 40;
+        $cell_h   = 39;
+        $grid_w   = $cell_w * $cols;
+        $grid_h   = $cell_h * $rows;
         $ajax_url = $CFG_GLPI['root_doc'] . "/ajax/rack.php";
 
-       //fill rows
+        //fill rows
         $cells    = [];
         $outbound = [];
         foreach ($racks as &$item) {
@@ -475,7 +475,11 @@ class Rack extends CommonDBTM
             echo "</tbody></table>";
         }
 
-        echo "<style>";
+        echo "<style>
+            :root {
+                --dcroom-grid-cellw: {$cell_w}px;
+                --dcroom-grid-cellh: {$cell_h}px;
+            }";
         for ($i = 0; $i < $cols; $i++) {
             $left  = $i * $w_prct;
             $width = ($i + 1) * $w_prct;
@@ -501,7 +505,7 @@ class Rack extends CommonDBTM
         }
 
         echo "
-      <div class='grid-room' style='width: " . ($grid_w + 16) . "px; min-height: " . $grid_h . "px'>
+      <div class='grid-room' style='width: " . ($grid_w + 16) . "px; min-height: " . ($grid_h + 16) . "px'>
          <span class='racks_view_controls'>
             $blueprint_ctrl
             <span class='mini_toggle active'
@@ -524,7 +528,7 @@ class Rack extends CommonDBTM
             }
         }
 
-       // add a locked element to bottom to display a full grid
+        // add a locked element to bottom to display a full grid
         echo "<div class='grid-stack-item lock-bottom'
                  gs-no-resize='true'
                  gs-no-move='true'
@@ -566,7 +570,7 @@ class Rack extends CommonDBTM
          GridStack.init({
             column: $cols,
             maxRow: ($rows + 1),
-            cellHeight: 39,
+            cellHeight: {$cell_h},
             margin: 0,
             float: true,
             disableOneColumnMode: true,

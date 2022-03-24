@@ -180,7 +180,7 @@ ul.indexes {
     .racks_add {
         border: 1px solid $table-border-color;
         border-width: 0 1px 1px 0;
-        background-size: 40px 39px;
+        background-size: var(--dcroom-grid-cellw) var(--dcroom-grid-cellh);
         background-image:
             linear-gradient(
                 to right,
@@ -195,8 +195,8 @@ ul.indexes {
         margin-left: 15px;
 
         .cell_add {
-            height: 39px;
-            width: 40px;
+            height: var(--dcroom-grid-cellh);
+            width: var(--dcroom-grid-cellw);
             float: left;
 
             &::after {
@@ -278,7 +278,7 @@ ul.indexes {
 
             li {
                 float: left;
-                width: 40px;
+                width: var(--dcroom-grid-cellw);
             }
         }
 
@@ -286,8 +286,8 @@ ul.indexes {
             width: 15px;
 
             li {
-                height: 39px;
-                line-height: 40px;
+                height: var(--dcroom-grid-cellh);
+                line-height: calc(var(--dcroom-grid-cellh) + 1px);
             }
         }
     }
