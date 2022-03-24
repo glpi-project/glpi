@@ -79,7 +79,7 @@
             {% if user_pref('page_layout') == 'vertical' %}
                {{ include('layout/parts/breadcrumbs.html.twig') }}
 
-               <div class="ms-xl-auto d-none d-xl-block flex-grow-1 flex-xl-grow-0">
+               <div class="ms-lg-auto d-none d-lg-block flex-grow-1 flex-lg-grow-0">
                   {{ include('layout/parts/global_search_form.html.twig') }}
                </div>
             {% elseif user_pref('page_layout') == 'horizontal' %}
@@ -92,7 +92,7 @@
                   <span class="glpi-logo"></span>
                </a>
 
-               <div class="d-xl-none">
+               <div class="d-lg-none">
                   {{ include('layout/parts/user_header.html.twig') }}
                </div>
 
@@ -104,7 +104,7 @@
                </div>
             {% endif %}
 
-            <div class="ms-md-4 d-none d-xl-block">
+            <div class="ms-md-4 d-none d-lg-block">
                {{ include('layout/parts/user_header.html.twig') }}
             </div>
          </div>
