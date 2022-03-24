@@ -48,7 +48,7 @@ class Alert extends CommonDBTM
     {
 
         if (!isset($input['date']) || empty($input['date'])) {
-            $input['date'] = date("Y-m-d H:i:s");
+            $input['date'] = $_SESSION['glpi_currenttime'];
         }
         return $input;
     }
