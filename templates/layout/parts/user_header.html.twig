@@ -47,7 +47,11 @@
                data-bs-toggle="dropdown" data-bs-auto-close="outside">
                <div class="pe-2 d-none d-xl-block">
                   <div>{{ (session('glpiactiveprofile')['name'] ?? '')|verbatim_value|u.truncate(35, '...') }}</div>
-                  <div class="mt-1 small text-muted">{{ session('glpiactive_entity_name')|verbatim_value|u.truncate(35, '...') }}</div>
+                  {% set entity_completename = session('glpiactive_entity_name')|verbatim_value %}
+                  <div class="mt-1 small text-muted" title="{{ entity_completename }}"
+                       data-bs-toggle="tooltip" data-bs-placement="bottom">
+                    {{ entity_completename|truncate_left }}
+                  </div>
                </div>
 
                 {{ include('components/user/picture.html.twig', {

@@ -58,6 +58,7 @@ class DataHelpersExtension extends AbstractExtension
             new TwigFilter('verbatim_value', [$this, 'getVerbatimValue']),
             new TwigFilter('shortcut', [$this, 'underlineShortcutLetter'], ['is_safe' => ['html']]),
             new TwigFilter('enhanced_html', [$this, 'getEnhancedHtml'], ['is_safe' => ['html']]),
+            new TwigFilter('truncate_left', [$this, 'truncateLeft']),
         ];
     }
 
@@ -222,5 +223,24 @@ class DataHelpersExtension extends AbstractExtension
         }
 
         return Sanitizer::getVerbatimValue($string);
+    }
+
+
+    /**
+     * return the provided string truncated on the left and preprend a prefix separator if length is reached
+     *
+     * @param string  $string the string to left truncate
+     * @param int     $length number of char to preserve
+     * @param int     $separator prefix to prepend to the string
+     *
+     * @return string truncated string
+     */
+    public function truncateLeft(string $string = "", int $length = 30, string $separator = "...")
+    {
+        if (mb_strlen($string) <= $length) {
+            return $string;
+        }
+
+        return $separator . mb_substr($string, -$length);
     }
 }
