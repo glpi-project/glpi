@@ -211,6 +211,11 @@ class Socket extends CommonDBChild
 
     public function prepareInputForAdd($input)
     {
+        // If no items_id is set, do not store itemtype or items_id
+        if (!isset($input['items_id']) || empty($input['items_id'])) {
+            unset($input['itemtype']);
+            unset($input['items_id']);
+        }
         $input = $this->retrievedataFromNetworkPort($input);
         return $input;
     }
@@ -218,6 +223,11 @@ class Socket extends CommonDBChild
 
     public function prepareInputForUpdate($input)
     {
+        // If no items_id is set, do not store itemtype or items_id
+        if (!isset($input['items_id']) || empty($input['items_id'])) {
+            unset($input['itemtype']);
+            unset($input['items_id']);
+        }
         $input = $this->retrievedataFromNetworkPort($input);
         return $input;
     }
@@ -810,6 +820,7 @@ class Socket extends CommonDBChild
         $number = countElementsInTable('glpi_sockets', ['locations_id' => $ID ]);
 
         if ($canedit) {
+            $socket_itemtypes = array_keys(self::getSocketLinkTypes());
             echo "<div class='first-bloc'>";
            // Minimal form for quick input.
             echo "<form action='" . $socket->getFormURL() . "' method='post'>";
@@ -831,7 +842,9 @@ class Socket extends CommonDBChild
             Socket::dropdownWiringSide("wiring_side", []);
             echo "</td>";
             echo "<td>" . __('Itemtype') . "</td><td>";
-            Dropdown::showFromArray('itemtype', self::getSocketLinkTypes(), []);
+            Dropdown::showSelectItemFromItemtypes([
+                'itemtypes' => $socket_itemtypes,
+            ]);
             echo "</td>";
 
             echo "<td>";
@@ -868,7 +881,9 @@ class Socket extends CommonDBChild
             Socket::dropdownWiringSide("wiring_side", []);
             echo "</td>";
             echo "<td>" . __('Itemtype') . "</td><td>";
-            Dropdown::showFromArray('itemtype', self::getSocketLinkTypes(), []);
+            Dropdown::showSelectItemFromItemtypes([
+                'itemtypes' => $socket_itemtypes,
+            ]);
             echo "</td>";
 
             echo "<td>";
@@ -955,9 +970,15 @@ class Socket extends CommonDBChild
                 $socketmodel->getFromDB($data['socketmodels_id']);
                 echo "<td>" . $socketmodel->getLink() . "</td>";
 
-                $asset = new $data['itemtype']();
-                $asset->getFromDB($data['items_id']);
-                echo "<td>" . $asset->getLink() . "</td>";
+                $link = '';
+                if (isset($data['itemtype']) && class_exists($data['itemtype'])) {
+                    $itemtype = $data['itemtype'];
+                    $asset     = new $itemtype();
+                    if ($asset->getFromDB($data['items_id'])) {
+                        $link = $asset->getLink();
+                    }
+                }
+                echo "<td>" . $link . "</td>";
 
                 $networkport = new NetworkPort();
                 $networkport->getFromDB($data['networkports_id']);
