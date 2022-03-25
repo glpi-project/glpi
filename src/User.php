@@ -4391,7 +4391,7 @@ JAVASCRIPT;
         }
 
         if ($p['readonly']) {
-            return $user["name"];
+            return '<span class="form-control" readonly>' . $user["name"] . '</span>';
         }
 
         $view_users = self::canView();
