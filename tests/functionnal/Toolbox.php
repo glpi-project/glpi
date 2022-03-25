@@ -1266,4 +1266,68 @@ class Toolbox extends DbTestCase
 
         $this->integer($result)->isEqualTo($decimals);
     }
+
+    /**
+     * Data provider for testGetMioSizeFromString
+     *
+     * @return Generator
+     */
+    protected function testGetMioSizeFromStringProvider(): Generator
+    {
+        yield [
+            'size'     => "1024",
+            'expected' => 1024,
+        ];
+
+        yield [
+            'size'     => "1024 mo",
+            'expected' => 1024,
+        ];
+
+        yield [
+            'size'     => "1024 mio",
+            'expected' => 1024,
+        ];
+
+        yield [
+            'size'     => "1024MO",
+            'expected' => 1024,
+        ];
+
+        yield [
+            'size'     => "2 gio",
+            'expected' => 2048,
+        ];
+
+        yield [
+            'size'     => "2gO",
+            'expected' => 2048,
+        ];
+
+        yield [
+            'size'     => "2 tio",
+            'expected' => 2097152,
+        ];
+
+        yield [
+            'size'     => "2TO",
+            'expected' => 2097152,
+        ];
+    }
+
+    /**
+     * Tests for Toolbox::getMioSizeFromString()
+     *
+     * @dataprovider testGetMioSizeFromStringProvider
+     *
+     * @param string $value
+     * @param mixed $expected
+     *
+     * @return void
+     */
+    public function testGetMioSizeFromString(string $size, $expected): void
+    {
+        $result = \Toolbox::getMioSizeFromString($size);
+        $this->variable($result)->isEqualTo($expected);
+    }
 }
