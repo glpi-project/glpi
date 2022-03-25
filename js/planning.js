@@ -423,6 +423,11 @@ var GLPIPlanning  = {
                         action: 'view_changed',
                         view:   view_type
                     }
+                }).done(function() {
+                    // indicate to central page we're done rendering
+                    if (!options.full_view) {
+                        $(document).trigger('masonry_grid:layout');
+                    }
                 });
 
                 // set end of day markers for timeline

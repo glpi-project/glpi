@@ -673,7 +673,7 @@ class Planning extends CommonGLPI
         }
 
        // display planning (and call js from js/planning.js)
-        echo "<div id='planning$rand'></div>";
+        echo "<div id='planning$rand' class='flex-fill'></div>";
         echo "</div>";
 
         echo Html::scriptBlock("$(function() {
