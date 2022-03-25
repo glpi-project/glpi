@@ -2480,33 +2480,61 @@ HTML;
 
     public static function detectRootDoc()
     {
-        global $CFG_GLPI;
+        global $DB, $CFG_GLPI;
 
-        if (!isset($CFG_GLPI["root_doc"])) {
-            if (!isset($_SERVER['REQUEST_URI'])) {
-                $_SERVER['REQUEST_URI'] = $_SERVER['PHP_SELF'];
-            }
+        if (isset($CFG_GLPI['root_doc'])) {
+            return; // already computed
+        }
 
-            $currentdir = getcwd();
-            chdir(GLPI_ROOT);
-            $glpidir    = str_replace(
-                str_replace('\\', '/', getcwd()),
-                "",
-                str_replace('\\', '/', $currentdir)
+        if (isset($_SERVER['REQUEST_URI'])) {
+            // $_SERVER['REQUEST_URI'] is set, meaning that GLPI is accessed from web server.
+            // In this case, `$CFG_GLPI['root_doc']` corresponds to the piece of URI
+            // that is common between `GLPI_ROOT` and $_SERVER['REQUEST_URI']
+            // e.g. GLPI_ROOT=/var/www/glpi and $_SERVER['REQUEST_URI']=/glpi/front/index.php -> $CFG_GLPI['root_doc']=/glpi
+
+            // Extract relative path of entry script directory
+            // e.g. /var/www/mydomain.org/glpi/front/index.php -> /front
+            $current_dir_relative = str_replace(
+                str_replace(DIRECTORY_SEPARATOR, '/', realpath(GLPI_ROOT)),
+                '',
+                str_replace(DIRECTORY_SEPARATOR, '/', realpath(getcwd()))
             );
-            chdir($currentdir);
-            $globaldir  = Html::cleanParametersURL($_SERVER['REQUEST_URI']);
-            $globaldir  = preg_replace("/\/[0-9a-zA-Z\.\-\_]+\.php/", "", $globaldir);
 
-           // api exception
-            if (strpos($globaldir, 'api/') !== false) {
-                 $globaldir = preg_replace("/(.*\/)api\/.*/", "$1", $globaldir);
+            // Extract relative path of request URI directory
+            // e.g. /glpi/front/index.php -> /glpi/front
+            $request_dir_relative = preg_replace(
+                '/\/[0-9a-zA-Z\.\-\_]+\.php/',
+                '',
+                Html::cleanParametersURL($_SERVER['REQUEST_URI'])
+            );
+            // API exception (handles `RewriteRule api/(.*)$ apirest.php/$1`)
+            if (strpos($request_dir_relative, 'api/') !== false) {
+                $request_dir_relative = preg_replace("/(.*\/)api\/.*/", "$1", $request_dir_relative);
             }
 
-            $CFG_GLPI["root_doc"] = str_replace($glpidir, "", $globaldir);
-            $CFG_GLPI["root_doc"] = preg_replace("/\/$/", "", $CFG_GLPI["root_doc"]);
-           // urldecode for space redirect to encoded URL : change entity
-            $CFG_GLPI["root_doc"] = urldecode($CFG_GLPI["root_doc"]);
+            // Remove relative path of entry script directory
+            // e.g. /glpi/front -> /glpi
+            $root_doc = str_replace($current_dir_relative, '', $request_dir_relative);
+            $root_doc = rtrim($root_doc, '/');
+
+            // urldecode for space redirect to encoded URL : change entity
+            // note: not sure this line is actually used
+            $root_doc = urldecode($root_doc);
+
+            $CFG_GLPI['root_doc'] = $root_doc;
+        } else {
+            // $_SERVER['REQUEST_URI'] is not set, meaning that GLPI is probably acces from CLI.
+            // In this case, `$CFG_GLPI['root_doc']` has to be extracted from `$CFG_GLPI['url_base']`.
+
+            $url_base = $CFG_GLPI['url_base'] ?? null;
+            // $CFG_GLPI may have not been loaded yet, load value form DB if `$CFG_GLPI['url_base']` is not set.
+            if ($url_base === null && $DB instanceof DBmysql && $DB->connected) {
+                $url_base = Config::getConfigurationValue('core', 'url_base');
+            }
+
+            if ($url_base !== null) {
+                $CFG_GLPI['root_doc'] = parse_url($url_base, PHP_URL_PATH) ?? '';
+            }
         }
     }
 
@@ -2683,22 +2711,24 @@ HTML;
         }
         $message = $error > 0 ? $ko_message : $ok_message;
 
-        $img = "<img src='" . $CFG_GLPI['root_doc'] . "/pics/";
-        $img .= ($error > 0 ? "ko_min" : "ok_min") . ".png' alt='$message' title='$message'/>";
-
         if (isCommandLine()) {
             echo $message . "\n";
-        } else if ($fordebug) {
-            echo $img . $message . "\n";
         } else {
-            $html = "<td";
-            if ($error > 0) {
-                $html .= " class='red'";
+            $img = "<img src='" . $CFG_GLPI['root_doc'] . "/pics/";
+            $img .= ($error > 0 ? "ko_min" : "ok_min") . ".png' alt='$message' title='$message'/>";
+
+            if ($fordebug) {
+                echo $img . $message . "\n";
+            } else {
+                $html = "<td";
+                if ($error > 0) {
+                    $html .= " class='red'";
+                }
+                $html .= ">";
+                $html .= $img;
+                $html .= '</td>';
+                echo $html;
             }
-            $html .= ">";
-            $html .= $img;
-            $html .= '</td>';
-            echo $html;
         }
         return $error;
     }

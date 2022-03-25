@@ -2596,9 +2596,6 @@ class Toolbox
 
         if (count($doc_data)) {
             $base_path = $CFG_GLPI['root_doc'];
-            if (isCommandLine()) {
-                $base_path = parse_url($CFG_GLPI['url_base'], PHP_URL_PATH);
-            }
 
             foreach ($doc_data as $id => $image) {
                 if (isset($image['tag'])) {

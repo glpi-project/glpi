@@ -300,8 +300,6 @@ class Application extends BaseApplication
         $GLPI = new GLPI();
         $GLPI->initLogger();
         $this->error_handler = $GLPI->initErrorHandler();
-
-        Config::detectRootDoc();
     }
 
     /**
@@ -388,6 +386,8 @@ class Application extends BaseApplication
 
         global $CFG_GLPI;
         $this->config = &$CFG_GLPI;
+
+        Config::detectRootDoc();
 
         if (!($this->db instanceof DB) || !$this->db->connected) {
             return;
