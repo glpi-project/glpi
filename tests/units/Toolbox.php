@@ -1101,6 +1101,16 @@ class Toolbox extends \GLPITestCase {
     */
    protected function testIsFloatProvider(): Generator {
       yield [
+         'value'    => null,
+         'expected' => false,
+      ];
+
+      yield [
+         'value'    => "",
+         'expected' => false,
+      ];
+
+      yield [
          'value'    => "1",
          'expected' => false,
       ];
