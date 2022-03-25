@@ -43,7 +43,7 @@
 </div>
 
 <script type="text/javascript">
-$(function () {
+$(function() {
    var msnry = new Masonry('#grid_{{ rand }}', {
       "percentPosition": true,
       "horizontalOrder": true,
@@ -52,5 +52,9 @@ $(function () {
    $('#grid_{{ rand }}').on("layout:refresh", function() {
       msnry.layout();
    });
+
+   $(document).on('masonry_grid:layout', function() {
+       msnry.layout();
+   })
 });
 </script>

@@ -72,7 +72,7 @@
                   this_obj.closest('.grid-item').remove();
                }
 
-               $('#home-dashboard{{ rand }} .masonry_grid').trigger('layout:refresh');
+               $(document).trigger('masonry_grid:layout');
             });
       });
    });
