@@ -184,7 +184,6 @@ class NotificationMailingSetting extends NotificationSetting
                 ]
             );
             $out .= Html::scriptBlock("$(function() {
-            console.log($('[name=smtp_mode]'));
             $('[name=smtp_mode]').on('change', function() {
                var _val = $(this).find('option:selected').val();
                if (_val == '" . MAIL_MAIL . "') {

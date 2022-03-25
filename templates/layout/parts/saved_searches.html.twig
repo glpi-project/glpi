@@ -195,11 +195,9 @@ $(function() {
             .closest('.card-footer')
             .siblings('.card-tabs')
             .find('.saved-searches-panel-content .savedsearches-item');
-         console.log(_rows)
          _rows.each(function() {
             var _row = $(this);
             var rowtext = _row.text().toLowerCase();
-            console.log(_row);
 
             var show = true;
 
