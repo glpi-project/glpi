@@ -1770,6 +1770,10 @@ class NetworkPort extends CommonDBChild
     {
         $port_link = parent::getLink($options);
 
+        if (!isset($this->fields['itemtype']) || !class_exists($this->fields['itemtype'])) {
+            return $port_link;
+        }
+
         $itemtype = $this->fields['itemtype'];
         /** @var CommonDBTM */
         $equipment = new $itemtype();
