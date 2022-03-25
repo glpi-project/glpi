@@ -80,6 +80,13 @@
       </li>
    {% elseif type == 'summary' %}
       <li class="nav-item">
+         <a href="{{ path(link) }}" class="btn btn-icon btn-sm btn-outline-secondary me-1 pe-2" title="{{ __('Summary') }}">
+            <i class="ti ti-notes"></i>
+            <span class="d-none d-xxl-block">{{ __('Summary') }}</span>
+         </a>
+      </li>
+   {% elseif type == 'summary_gantt' %}
+      <li class="nav-item">
          <a href="{{ path(link) }}" class="btn btn-icon btn-sm btn-outline-secondary me-1 pe-2" title="{{ __('Global GANTT') }}">
             <i class="fas fa-stream"></i>
             <span class="d-none d-xxl-block">{{ __('Global GANTT') }}</span>

@@ -269,7 +269,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
 
             $links[$pic_validate] = ProjectTask::getSearchURL(false);
 
-            $links['summary'] = Project::getFormURL(false) . '?showglobalgantt=1';
+            $links['summary_gantt'] = Project::getFormURL(false) . '?showglobalgantt=1';
             $links['summary_kanban'] = Project::getFormURL(false) . '?showglobalkanban=1';
         }
         if (count($links)) {
