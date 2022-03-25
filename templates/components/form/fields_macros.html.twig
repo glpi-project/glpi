@@ -200,6 +200,7 @@
       <textarea class="form-control" id="{{ id }}" name="{{ name }}" rows="3"
                 style="width: 100%;"
                 {{ options.disabled ? 'disabled' : '' }}
+                {{ options.readonly ? 'readonly' : '' }}
                 {{ options.required ? 'required' : '' }}>{{ options.enable_richtext ? value|safe_html|escape : value|verbatim_value }}</textarea>
    {% endset %}
 
@@ -213,7 +214,7 @@
    {% endif %}
 
    {% set add_html = '' %}
-   {% if options.enable_fileupload %}
+   {% if not options.readonly and options.enable_fileupload %}
       {% set add_html %}
          {% do call('Html::file', [{
              'editor_id': id,
@@ -222,7 +223,7 @@
              'required': options.fields_template.isMandatoryField('_documents_id')
          }]) %}
       {% endset %}
-   {% elseif not options.enable_fileupload and options.enable_richtext and options.enable_images %}
+   {% elseif not options.readonly and not options.enable_fileupload and options.enable_richtext and options.enable_images %}
       {% set add_html %}
          {% do call('Html::file', [{
              'editor_id': id,
@@ -277,8 +278,11 @@
       <input type="text" class="form-control rounded-start ps-2 {{ class }}" data-input
              name="{{ name }}" value="{{ value|verbatim_value }}"
              {{ options.required ? 'required' : '' }}
+             {{ options.readonly ? 'readonly' : '' }}
              {{ options.disabled ? 'disabled' : '' }} />
-      <i class="input-group-text far fa-calendar-alt" data-toggle role="button"></i>
+      {% if not options.readonly %}
+         <i class="input-group-text far fa-calendar-alt" data-toggle role="button"></i>
+      {% endif %}
    </div>
 {% endmacro %}
 
@@ -298,7 +302,8 @@
             dateFormat: 'Y-m-d',
             enableTime: false,
             weekNumbers: true,
-            allowInput: true,
+            allowInput: {{ options.readonly ? 'false' : 'true' }},
+            clickOpens: {{ options.readonly ? 'false' : 'true' }},
             locale: getFlatPickerLocale("{{ locale['language'] }}", "{{ locale['region'] }}"),
             onClose(dates, currentdatestring, picker) {
                picker.setDate(picker.altInput.value, true, picker.config.altFormat)
@@ -331,7 +336,8 @@
             wrap: true,
             enableSeconds: true,
             weekNumbers: true,
-            allowInput: true,
+            allowInput: {{ options.readonly ? 'false' : 'true' }},
+            clickOpens: {{ options.readonly ? 'false' : 'true' }},
             locale: getFlatPickerLocale('{{ locale['language'] }}', '{{ locale['region'] }}'),
             onClose(dates, currentdatestring, picker) {
                picker.setDate(picker.altInput.value, true, picker.config.altFormat)

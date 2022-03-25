@@ -176,13 +176,9 @@ class Dropdown
         }
 
         if ($params['readonly']) {
-            if ($params['multiple']) {
-                // Multiple values, print the names separated by commas
-                return implode(", ", $names);
-            } else {
-                // Single value, print the matching name
-                return $name;
-            }
+            return '<span class="form-control" readonly>'
+                . ($params['multiple'] ? implode(', ', $names) : $name)
+                . '</span>';
         }
 
        // Manage entity_sons
@@ -2057,7 +2053,7 @@ class Dropdown
                     $to_display[] = $elements[$value];
                 }
             }
-            $output .= implode('<br>', $to_display);
+            $output .= '<span class="form-control" readonly>' . implode(', ', $to_display) . '</span>';
         } else {
             $output  .= "<select name='$field_name' id='$field_id'";
 
