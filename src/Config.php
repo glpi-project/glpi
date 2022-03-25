@@ -2370,6 +2370,10 @@ HTML;
             [ 'name'    => 'symfony/polyfill-php80',
                 'check'   => 'str_contains'
             ],
+            [
+                'name'  => 'symfony/polyfill-php81',
+                'check' => 'array_is_list'
+            ],
         ];
         if (Toolbox::canUseCAS()) {
             $deps[] = [
