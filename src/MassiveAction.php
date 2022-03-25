@@ -1128,6 +1128,8 @@ class MassiveAction
                 foreach ($search_options as $search_option) {
                     $search_option = explode(':', $search_option);
                     $itemtype      = $search_option[0];
+                    // id_field value was previously sanitized because it was not a standalone class name
+                    $itemtype = Sanitizer::unsanitize($itemtype);
                     $index         = $search_option[1];
 
                     if (!$item = getItemForItemtype($itemtype)) {
