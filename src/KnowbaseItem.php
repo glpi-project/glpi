@@ -817,6 +817,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
         echo "<tr class='tab_bg_1'>";
         echo "<td colspan=2></td>";
         echo "<td>";
+        echo "<input type='hidden' name='users_id' value=\"" . Session::getLoginUserID() . "\">";
         if ($this->fields["date_creation"]) {
            //TRANS: %s is the datetime of insertion
             printf(__('Created on %s'), Html::convDateTime($this->fields["date_creation"]));
