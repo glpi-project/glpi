@@ -3462,4 +3462,39 @@ HTML;
 
         return strlen(preg_replace('/\d*\./', '', floatval($value)));
     }
+
+    /**
+     * Try to convert to Mio the given input
+     *
+     * @param string $size Input string
+     *
+     * @return mixed The Mio value as an integer if we were able to parse the
+     * input, else the unchanged input string
+     */
+    public static function getMioSizeFromString(string $size)
+    {
+        if (is_numeric($size)) {
+            // Already a numeric value, no work to be done
+            return $size;
+        }
+
+        if (!preg_match('/(\d+).*?(\w+)/', $size, $matches)) {
+            // Unkown format, keep the string as it is
+            return $size;
+        }
+        $supported_sizes = [
+            'mo'  => 0,
+            'mio' => 0,
+            'go'  => 1,
+            'gio' => 1,
+            'to'  => 2,
+            'tio' => 2,
+        ];
+        $exp = $supported_sizes[strtolower($matches[2]) ?? null];
+        if ($exp === null) {
+            // Unkown format, keep the string as it is
+            return $size;
+        }
+        return $matches[1] * pow(1024, $exp);
+    }
 }

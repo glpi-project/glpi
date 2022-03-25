@@ -3394,6 +3394,11 @@ JAVASCRIPT;
 
        // Preformat items
         if (isset($searchopt[$ID]["datatype"])) {
+            if ($searchopt[$ID]["datatype"] == "mio") {
+                // Parse value as it may contain a few different formats
+                $val = Toolbox::getMioSizeFromString($val);
+            }
+
             switch ($searchopt[$ID]["datatype"]) {
                 case "datetime":
                     if (in_array($searchtype, ['contains', 'notcontains'])) {
@@ -3426,6 +3431,7 @@ JAVASCRIPT;
                     return " {$LINK} ({$DB->quoteName($NAME)} $operator {$DB->quoteValue($val)}) ";
                 break;
                 case "count":
+                case "mio":
                 case "number":
                 case "decimal":
                 case "timestamp":
@@ -4900,6 +4906,11 @@ JAVASCRIPT;
 
        // Preformat items
         if (isset($searchopt[$ID]["datatype"])) {
+            if ($searchopt[$ID]["datatype"] == "mio") {
+                // Parse value as it may contain a few different formats
+                $val = Toolbox::getMioSizeFromString($val);
+            }
+
             switch ($searchopt[$ID]["datatype"]) {
                 case "itemtypename":
                     if (in_array($searchtype, ['equals', 'notequals'])) {
@@ -5013,6 +5024,7 @@ JAVASCRIPT;
                    // No break here : use number comparaison case
 
                 case "count":
+                case "mio":
                 case "number":
                 case "decimal":
                 case "timestamp":
@@ -7147,6 +7159,7 @@ JAVASCRIPT;
 
                 case "count":
                 case "number":
+                case "mio":
                     $out           = "";
                     $count_display = 0;
                     for ($k = 0; $k < $data[$ID]['count']; $k++) {
