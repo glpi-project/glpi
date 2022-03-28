@@ -752,10 +752,14 @@ class Inventory
             }
         }
 
-        Toolbox::logInFile(
-            "bench_inventory",
-            $output
-        );
+        if (isCommandLine()) {
+            echo $output . "\n";
+        } else {
+            Toolbox::logInFile(
+                "bench_inventory",
+                $output
+            );
+        }
     }
 
     public static function getIcon()
