@@ -1124,52 +1124,47 @@ class MassiveAction
                     $search_options = [];
                 }
 
-                $items         = [];
+                // TODO: ensure that all items are equivalent ...
+                $item   = null;
+                $search = null;
                 foreach ($search_options as $search_option) {
                     $search_option = explode(':', $search_option);
-                    $itemtype      = $search_option[0];
-                    $index         = $search_option[1];
+                    $so_itemtype   = $search_option[0];
+                    $so_index      = $search_option[1];
 
-                    if (!$item = getItemForItemtype($itemtype)) {
+                    if (!$so_item = getItemForItemtype($so_itemtype)) {
                         continue;
                     }
 
-                    if (Infocom::canApplyOn($itemtype)) {
-                        Session::checkSeveralRightsOr([$itemtype  => UPDATE,
+                    if (Infocom::canApplyOn($so_itemtype)) {
+                        Session::checkSeveralRightsOr([$so_itemtype  => UPDATE,
                             "infocom"  => UPDATE
                         ]);
                     } else {
-                        $item->checkGlobal(UPDATE);
+                        $so_item->checkGlobal(UPDATE);
                     }
 
-                    $search = Search::getOptions($itemtype);
-                    if (!isset($search[$index])) {
-                         exit();
+                    $itemtype_search_options = Search::getOptions($so_itemtype);
+                    if (!isset($itemtype_search_options[$so_index])) {
+                       exit();
                     }
-                    $item->search = $search[$index];
 
-                    $items[] = $item;
+                    $item   = $so_item;
+                    $search = $itemtype_search_options[$so_index];
+                    break; // No need to process all items a corresponding item/searchoption has been found
                 }
-
-                if (count($items) == 0) {
-                    exit();
-                }
-
-                // TODO: ensure that all items are equivalent ...
-                $item   = $items[0];
-                $search = $item->search;
 
                 $plugdisplay = false;
                 if (
                     ($plug = isPluginItemType($item->getType()))
                     // Specific for plugin which add link to core object
-                    || ($plug = isPluginItemType(getItemTypeForTable($item->search['table'])))
+                    || ($plug = isPluginItemType(getItemTypeForTable($search['table'])))
                 ) {
                     $plugdisplay = Plugin::doOneHook(
                         $plug['plugin'],
                         'MassiveActionsFieldsDisplay',
                         ['itemtype' => $item->getType(),
-                            'options'  => $item->search
+                            'options'  => $search
                         ]
                     );
                 }
