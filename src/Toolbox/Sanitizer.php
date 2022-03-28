@@ -71,12 +71,9 @@ class Sanitizer
             return $value;
         }
 
-        $class_match = [];
-        if (
-            preg_match('/^(?<class>[a-zA-Z0-9_\\\]+)(:?:[a-zA-Z0-9_]+)?$/', $value, $class_match)
-            && class_exists($class_match['class'])
-        ) {
-            // Do not sanitize values that corresponds to an existing class, as classnames are considered safe
+        if (self::isClassOfCallableIdentifier($value)) {
+            // Do not sanitize values that corresponds to an existing class, to prevent prevent having to unsanitize
+            // every usage of `itemtype` to correctly handle namespaces.
             return $value;
         }
 
@@ -222,6 +219,20 @@ class Sanitizer
         }
 
         return $has_special_chars;
+    }
+
+    /**
+     * Check wether the value correspond to a valid class (or a callable itentifier related to a valid class).
+     *
+     * @param string $value
+     *
+     * @return bool
+     */
+    public static function isClassOfCallableIdentifier(string $value): bool
+    {
+        $class_match = [];
+        return preg_match('/^(?<class>[a-zA-Z0-9_\\\]+)(:?:[a-zA-Z0-9_]+)?$/', $value, $class_match)
+            && class_exists($class_match['class']);
     }
 
     /**

@@ -401,4 +401,29 @@ TXT;
        // Re-sanitize a value provide the same result as first sanitization
         $this->variable($sanitizer->sanitize($sanitizer->unsanitize($value), $add_slashes))->isEqualTo($sanitized_value);
     }
+
+    protected function isClassOfCallableIdentifierProvider(): iterable
+    {
+        yield [
+            'value'    => 'mystring',
+            'is_class' => false,
+        ];
+        yield [
+            'value'    => 'Computer',
+            'is_class' => true,
+        ];
+        yield [
+            'value'    => 'Glpi\Socket',
+            'is_class' => true,
+        ];
+    }
+
+    /**
+     * @dataProvider isClassOfCallableIdentifierProvider
+     */
+    public function testIsClassOfCallableIdentifier(string $value, bool $is_class)
+    {
+        $sanitizer = $this->newTestedInstance();
+        $this->boolean($sanitizer->isClassOfCallableIdentifier($value))->isEqualTo($is_class);
+    }
 }
