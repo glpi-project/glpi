@@ -76,7 +76,7 @@
 
         &::before {
             color: #929292;
-            font-family: "Font Awesome 5 Free";
+            font: var(--fa-font-solid);
             padding-left: 3px;
         }
     }
@@ -103,8 +103,7 @@
         left: 161px;
 
         &::before {
-            content: "\f069";
-            font-weight: 900;
+            content: "\2a";
         }
     }
 
@@ -120,17 +119,15 @@
             color: #ff0014;
 
             &::before {
-                content: "\f12a";
-                padding-left: 8px;
+                content: "\21";
+                padding-left: 4px;
                 color: #e54e5a;
-                font-weight: 900;
             }
         }
     }
 
     .checked .dot::before {
         content: "\f00c";
-        font-weight: 900;
     }
 
     .end .dot {
@@ -140,7 +137,6 @@
 
         &::before {
             content: "\f024";
-            font-weight: 900;
         }
     }
 

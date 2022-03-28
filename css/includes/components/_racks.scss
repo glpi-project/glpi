@@ -149,9 +149,8 @@ ul.indexes {
         font-size: 1em;
         color: grey;
         top: 1px;
-        font-family: "Font Awesome 5 Free";
+        font: var(--fa-font-solid);
         position: absolute;
-        font-weight: 900;
     }
 
     &:hover {

@@ -453,9 +453,8 @@ $break_tablet: 1400px;
 
                         &::after {
                             position: absolute;
-                            font-family: "Font Awesome 5 Free";
                             color: #509ee3;
-                            font-weight: 900;
+                            font: var(--fa-font-solid);
                             content: "\f057";
                             opacity: 0.7;
                             font-size: 11px;
@@ -482,7 +481,7 @@ $break_tablet: 1400px;
                     }
 
                     &::after {
-                        font-family: "Font Awesome 5 Free";
+                        font: var(--fa-font-solid);
                         color: #74838f;
                         opacity: 0.7;
                         font-size: 14px;
@@ -575,14 +574,13 @@ $break_tablet: 1400px;
             }
 
             &::after {
-                content: "\f067";
+                content: "\2b";
                 left: 40%;
                 top: 40%;
                 font-size: 1em;
                 color: grey;
-                font-family: "Font Awesome 5 Free";
+                font: var(--fa-font-solid);
                 position: absolute;
-                font-weight: 900;
             }
         }
     }
@@ -695,8 +693,7 @@ $break_tablet: 1400px;
 
                 &::before {
                     content: "\f338";
-                    font-family: "Font Awesome 5 Free";
-                    font-weight: 900;
+                    font: var(--fa-font-solid);
                     font-size: 13px;
                     position: absolute;
                     bottom: -5px;
@@ -1318,9 +1315,8 @@ $break_tablet: 1400px;
                 bottom: 3px;
                 font-size: 1em;
                 color: rgb(39, 39, 39);
-                font-family: "Font Awesome 5 Free";
+                font: var(--fa-font-solid);
                 position: absolute;
-                font-weight: 900;
             }
         }
     }
