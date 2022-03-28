@@ -171,23 +171,48 @@ class GLPIUploadHandler extends UploadHandler
         return $upload_handler->generate_response($response, $params['print_response']);
     }
 
+    /**
+     * Overrided method to prevent deprecation when variable does not exist.
+     * @see UploadHandler::get_upload_data()
+     */
     protected function get_upload_data($id)
     {
-        return array_key_exists($id, $_FILES) ? $_FILES[$id] : null;
+        return array_key_exists($id, $_FILES) ? $_FILES[$id] : '';
     }
 
+    /**
+     * Overrided method to prevent deprecation when variable does not exist.
+     * @see UploadHandler::get_post_param()
+     */
     protected function get_post_param($id)
     {
-        return array_key_exists($id, $_POST) ? $_POST[$id] : null;
+        return array_key_exists($id, $_POST) ? $_POST[$id] : '';
     }
 
+    /**
+     * Overrided method to prevent deprecation when variable does not exist.
+     * @see UploadHandler::get_query_param()
+     */
     protected function get_query_param($id)
     {
-        return array_key_exists($id, $_GET) ? $_GET[$id] : null;
+        return array_key_exists($id, $_GET) ? $_GET[$id] : '';
     }
 
+    /**
+     * Overrided method to prevent deprecation when variable does not exist.
+     * @see UploadHandler::get_server_var()
+     */
     protected function get_server_var($id)
     {
-        return array_key_exists($id, $_SERVER) ? $_SERVER[$id] : null;
+        return array_key_exists($id, $_SERVER) ? $_SERVER[$id] : '';
+    }
+
+    /**
+     * Overrided method to prevent deprecation when using default `$suffix` value.
+     * @see UploadHandler::basename()
+     */
+    protected function basename($filepath, $suffix = '')
+    {
+        return parent::basename($filepath, $suffix);
     }
 }
