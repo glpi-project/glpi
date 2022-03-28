@@ -303,6 +303,14 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
             $document_item->clone($override_input);
         }
 
+        // Update parent percent_done
+        if ($this->fields['projecttasks_id'] > 0) {
+            self::recalculatePercentDone($this->fields['projecttasks_id']);
+        }
+        if ($this->fields['projects_id'] > 0) {
+            Project::recalculatePercentDone($this->fields['projects_id']);
+        }
+
         if (!isset($this->input['_disablenotif']) && $CFG_GLPI["use_notifications"]) {
            // Clean reload of the project
             $this->getFromDB($this->fields['id']);
@@ -370,6 +378,19 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
             NotificationEvent::raiseEvent('delete', $this);
         }
         return true;
+    }
+
+    public function post_purgeItem()
+    {
+        parent::post_purgeItem();
+
+        // Update parent percent_done
+        if ($this->fields['projecttasks_id'] > 0) {
+            self::recalculatePercentDone($this->fields['projecttasks_id']);
+        }
+        if ($this->fields['projects_id'] > 0) {
+            Project::recalculatePercentDone($this->fields['projects_id']);
+        }
     }
 
 
