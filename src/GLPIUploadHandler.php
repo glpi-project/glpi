@@ -134,9 +134,7 @@ class GLPIUploadHandler extends UploadHandler
         $upload_handler = new self(
             [
                 'accept_file_types'         => DocumentType::getUploadableFilePattern(),
-                'image_versions'            => [
-                    'auto_orient' => false,
-                ],
+                'image_versions'            => [],
                 'param_name'                => $pname,
                 'replace_dots_in_filenames' => false,
                 'upload_dir'                => $upload_dir,
