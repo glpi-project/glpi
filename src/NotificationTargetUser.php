@@ -41,6 +41,7 @@ class NotificationTargetUser extends NotificationTarget
         return [
             'passwordexpires' => __('Password expires'),
             'passwordforget'  => __('Forgotten password?'),
+            'passwordinit'    => __('Password initialization'),
         ];
     }
 
@@ -131,6 +132,12 @@ class NotificationTargetUser extends NotificationTarget
                 . "/front/lostpassword.php?password_forget_token="
                 . $this->obj->getField("password_forget_token"));
                 break;
+            case 'passwordinit':
+                $this->data['##user.token##']           = $this->obj->getField("password_forget_token");
+                $this->data['##user.passwordiniturl##'] = urldecode($CFG_GLPI["url_base"]
+                . "/front/initpassword.php?password_forget_token="
+                . $this->obj->getField("password_forget_token"));
+                break;
         }
 
         $this->getTags();
@@ -206,6 +213,17 @@ class NotificationTargetUser extends NotificationTarget
                 $lang_tags = [
                     'passwordforget.information' => __('You have been made a request to reset your account password.'),
                     'passwordforget.link'        => __('Just follow this link (you have one day):'),
+                ];
+                break;
+            case 'passwordinit':
+                $values_tags = [
+                    'user.token'           => __('Token'),
+                    'user.passwordiniturl' => __('URL'),
+                ];
+
+                $lang_tags = [
+                    'passwordinit.information' => __('Your account has just been created. Please set your password.'),
+                    'passwordinit.link'        => __('Just follow this link:'),
                 ];
                 break;
         }

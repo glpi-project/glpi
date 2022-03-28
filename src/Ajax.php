@@ -169,6 +169,10 @@ class Ajax
         }
         $url .= (strstr($url, '?') ? '&' :  '?') . '_in_modal=1';
 
+        if (isset($options['extradata'])) {
+            $url .= (strstr($url, '?') ? '&' :  '?') . Toolbox::append_params($options['extradata'], '&');
+        }
+
         $rand = mt_rand();
 
         $html = <<<HTML

@@ -3598,7 +3598,19 @@ HTML;
             ]
         );
         echo '</td>';
-        echo '<td colspan="2"></td>';
+        echo '<td>';
+        echo '<label for="password_init_token_delay' . $rand . '">';
+        echo __('Validity period of the password initialization link');
+        echo '</label>';
+        echo '</td>';
+        echo '<td>';
+        Dropdown::showTimeStamp('password_init_token_delay', ['value' => $CFG_GLPI["password_init_token_delay"],
+            'min'   => 0,
+            'max'   => MONTH_TIMESTAMP,
+            'step'  => DAY_TIMESTAMP,
+            'rand'  => $rand
+        ]);
+        echo '</td>';
         echo '</tr>';
 
         echo '<tr class="tab_bg_2">';

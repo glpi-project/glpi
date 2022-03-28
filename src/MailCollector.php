@@ -314,6 +314,11 @@ class MailCollector extends CommonDBTM
         Dropdown::showYesNo("collect_only_unread", $this->fields["collect_only_unread"]);
         echo "</td></tr>\n";
 
+        echo "<tr class='tab_bg_1'><td>" . __('Create user from email') . "</td>";
+        echo "<td>";
+        Dropdown::showYesNo("create_user_from_email", $this->fields["create_user_from_email"]);
+        echo "</td></tr>\n";
+
         echo "<tr class='tab_bg_1'><td>" . __('Comments') . "</td>";
         echo "<td><textarea class='form-control' name='comment' >" . $this->fields["comment"] . "</textarea>";
 
@@ -985,6 +990,10 @@ class MailCollector extends CommonDBTM
         $tkt['_uid']         = $uid;
         $tkt['_head']        = $headers;
 
+        $mailcollector = new MailCollector();
+        $mailcollector->getFromDB($options['mailgates_id']);
+        $createuserfromemail = $mailcollector->fields['create_user_from_email'];
+
        // Use mail date if it's defined
         if ($this->fields['use_mail_date'] && isset($headers['date'])) {
             $tkt['date'] = $headers['date'];
@@ -1025,7 +1034,7 @@ class MailCollector extends CommonDBTM
        //  Who is the user ?
         $requester = $this->getRequesterEmail($message);
 
-        $tkt['_users_id_requester']                              = User::getOrImportByEmail($requester);
+        $tkt['_users_id_requester']                              = User::getOrImportByEmail($requester, $createuserfromemail);
         $tkt["_users_id_requester_notif"]['use_notification'][0] = 1;
        // Set alternative email if user not found / used if anonymous mail creation is enable
         if (!$tkt['_users_id_requester']) {

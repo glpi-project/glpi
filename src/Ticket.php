@@ -4381,6 +4381,16 @@ JAVASCRIPT;
         $canpriority   = (bool) Session::haveRight(self::$rightname, self::CHANGEPRIORITY);
         $canassign     = $this->canAssign();
         $canassigntome = $this->canAssignToMe();
+        $cancreateuser = (bool) User::canCreate();
+
+        if ($cancreateuser) {
+            echo Ajax::createIframeModalWindow('add_' . $ID, User::getFormURL(), [
+                'display' => false,
+                'extradata' => [
+                    'entities_id' => $this->fields['entities_id']
+                ]
+            ]);
+        }
 
         if ($ID && in_array($this->fields['status'], $this->getClosedStatusArray())) {
             $canupdate = false;
@@ -4417,6 +4427,7 @@ JAVASCRIPT;
             'canassigntome'      => $canassigntome,
             'load_kb_sol'        => $options['load_kb_sol'] ?? 0,
             'userentities'       => $userentities,
+            'cancreateuser'      => $cancreateuser,
         ]);
 
         return true;

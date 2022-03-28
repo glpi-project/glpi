@@ -4148,6 +4148,7 @@ CREATE TABLE `glpi_mailcollectors` (
   `requester_field` int NOT NULL DEFAULT '0',
   `add_cc_to_observer` tinyint NOT NULL DEFAULT '0',
   `collect_only_unread` tinyint NOT NULL DEFAULT '0',
+  `create_user_from_email` tinyint NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `is_active` (`is_active`),

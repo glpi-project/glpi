@@ -335,6 +335,7 @@ $empty_data_builder = new class
             'password_expiration_delay' => '-1',
             'password_expiration_notice' => '-1',
             'password_expiration_lock_delay' => '-1',
+            'password_init_token_delay' => '86400',
             'default_dashboard_central' => 'central',
             'default_dashboard_assets' => 'assets',
             'default_dashboard_helpdesk' => 'assistance',
@@ -2850,6 +2851,13 @@ $empty_data_builder = new class
                 'event' => 'user_mention',
                 'is_recursive' => 1,
                 'is_active' => 1,
+            ], [
+                'id' => 73,
+                'name' => 'Password Initialization',
+                'itemtype' => 'User',
+                'event' => 'passwordinit',
+                'is_recursive' => 1,
+                'is_active' => 0,
             ],
         ];
 
@@ -3214,6 +3222,11 @@ $empty_data_builder = new class
                 'notifications_id' => '72',
                 'mode' => 'mailing',
                 'notificationtemplates_id' => 4,
+            ], [
+                'id' => 73,
+                'notifications_id' => '73',
+                'mode' => 'mailing',
+                'notificationtemplates_id' => 13,
             ],
         ];
 
@@ -3908,6 +3921,11 @@ $empty_data_builder = new class
                 'items_id' => '39',
                 'type' => '1',
                 'notifications_id' => '72',
+            ], [
+                'id' => '141',
+                'items_id' => '19',
+                'type' => '1',
+                'notifications_id' => '73',
             ],
         ];
 
@@ -4024,6 +4042,10 @@ $empty_data_builder = new class
                 'id' => '28',
                 'name' => 'Plugin updates',
                 'itemtype' => 'Glpi\\Marketplace\\Controller',
+            ], [
+                'id' => '29',
+                'name' => 'Password Initialization',
+                'itemtype' => 'User',
             ],
         ];
 
@@ -4881,6 +4903,19 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
 &lt;ul&gt;##FOREACHplugins##
 &lt;li&gt;##plugin.name## :##plugin.old_version## -&gt; ##plugin.version##&lt;/li&gt;
 ##ENDFOREACHplugins##&lt;/ul&gt;'
+            ], [
+                'id' => '29',
+                'notificationtemplates_id' => '29',
+                'language' => '',
+                'subject' => '##user.action##',
+                'content_text' => '##user.realname## ##user.firstname##
+
+##lang.passwordinit.information##
+
+##lang.passwordinit.link## ##user.passwordiniturl##',
+                'content_html' => '&lt;p&gt;&lt;strong&gt;##user.realname## ##user.firstname##&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;##lang.passwordinit.information##&lt;/p&gt;
+&lt;p&gt;##lang.passwordinit.link## &lt;a title="##user.passwordiniturl##" href="##user.passwordiniturl##"&gt;##user.passwordiniturl##&lt;/a&gt;&lt;/p&gt;',
             ],
         ];
 
