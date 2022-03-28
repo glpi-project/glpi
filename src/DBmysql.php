@@ -1249,8 +1249,9 @@ class DBmysql
             if (Sanitizer::isClassOfCallableIdentifier($value)) {
                 // Values that corresponds to an existing class are not sanitized (see `Glpi\Toolbox\Sanitizer::sanitize()`).
                 // However, if they contains backslashes, they have to be escaped.
+                // Note: method is called statically, so `$DB` may be not defined yet in edge cases (install process).
                 global $DB;
-                $value = $DB->escape($value);
+                $value = $DB instanceof DBmysql && $DB->connected ? $DB->escape($value) : $value;
             }
 
            // phone numbers may start with '+' and will be considered as numeric
