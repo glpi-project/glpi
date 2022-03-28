@@ -1146,7 +1146,7 @@ class MassiveAction
 
                     $itemtype_search_options = Search::getOptions($so_itemtype);
                     if (!isset($itemtype_search_options[$so_index])) {
-                       exit();
+                        exit();
                     }
 
                     $item   = $so_item;
