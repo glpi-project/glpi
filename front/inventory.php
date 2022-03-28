@@ -67,12 +67,12 @@ if (isset($_GET['refused'])) {
     $handle = false;
 } else {
     if (isCommandLine()) {
-        $f = fopen( 'php://stdin', 'r' );
+        $f = fopen('php://stdin', 'r');
         $contents = '';
-        while( $line = fgets( $f ) ) {
+        while ($line = fgets($f)) {
             $contents .= $line;
         }
-        fclose( $f );
+        fclose($f);
     } else {
         $contents = file_get_contents("php://input");
     }
