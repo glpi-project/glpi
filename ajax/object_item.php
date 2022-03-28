@@ -37,7 +37,11 @@ header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 
 Session::checkLoginUser();
-$item_ticket = new Item_Ticket();
+
+// continue only if the object possible classes
+if (!is_subclass_of($item_obj, 'CommonItilObject_Item') || !is_subclass_of($obj, 'CommonDBTM')) {
+    die();
+}
 
 switch ($_GET['action']) {
     case 'add':
@@ -47,14 +51,15 @@ switch ($_GET['action']) {
         if (isset($_GET['items_id']) && isset($_GET['itemtype']) && !empty($_GET['items_id'])) {
             $_GET['params']['items_id'][$_GET['itemtype']][$_GET['items_id']] = $_GET['items_id'];
         }
-        Item_Ticket::itemAddForm(new Ticket(), $_GET['params']);
+        $item_obj::itemAddForm(new $obj(), $_GET['params'] ?? []);
         break;
 
     case 'delete':
         if (isset($_GET['items_id']) && isset($_GET['itemtype']) && !empty($_GET['items_id'])) {
             $deleted = true;
             if ($_GET['params']['id'] > 0) {
-                $deleted = $item_ticket->deleteByCriteria(['tickets_id' => $_GET['params']['id'],
+                $deleted = $item_obj::deleteByCriteria([
+                    strtolower($item_obj::$itemtype_1) . 's_id' => $_GET['params']['id'],
                     'items_id'   => $_GET['items_id'],
                     'itemtype'   => $_GET['itemtype']
                 ]);
@@ -62,8 +67,7 @@ switch ($_GET['action']) {
             if ($deleted) {
                 unset($_GET['params']['items_id'][$_GET['itemtype']][array_search($_GET['items_id'], $_GET['params']['items_id'][$_GET['itemtype']])]);
             }
-            Item_Ticket::itemAddForm(new Ticket(), $_GET['params']);
+            $item_obj::itemAddForm(new $obj(), $_GET['params'] ?? []);
         }
-
         break;
 }

@@ -3775,7 +3775,7 @@ class CommonDBTM extends CommonGLPI
             if (defined('TU_USER') && $itemtype != null) {
                 if (isset($all_options[$optid])) {
                     $message = "Duplicate key $optid ({$all_options[$optid]['name']}/{$opt['name']}) in " .
-                    self::class . " searchOptionsToAdd for $itemtype!";
+                    static::class . " searchOptionsToAdd for $itemtype!";
 
                     trigger_error($message, E_USER_WARNING);
                 }
