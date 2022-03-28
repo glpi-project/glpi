@@ -1764,7 +1764,7 @@ class Contract extends CommonDBTM
             $start_date = Html::convDate($item->fields['begin_date']);
             echo Search::showItem($p['output_type'], $start_date, $item_num, $p['row_num'], $align);
 
-            $end_date = Html::convDate(Infocom::getWarrantyExpir($item->fields['begin_date'], $item->fields['duration'], 0, true));
+            $end_date = Infocom::getWarrantyExpir($item->fields['begin_date'], $item->fields['duration'], 0, true);
             echo Search::showItem($p['output_type'], $end_date, $item_num, $p['row_num'], $align);
 
             $comment = $item->fields['comment'];
