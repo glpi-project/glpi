@@ -3424,6 +3424,10 @@ HTML;
      */
     public static function isFloat($value): bool
     {
+        if ($value === null || $value === '') {
+            return false;
+        }
+
         if (!is_numeric($value)) {
             $type = gettype($value);
 

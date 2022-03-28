@@ -1184,6 +1184,16 @@ class Toolbox extends DbTestCase
     protected function testgetDecimalNumbersProvider(): Generator
     {
         yield [
+            'value'    => null,
+            'expected' => false,
+        ];
+
+        yield [
+            'value'    => "",
+            'expected' => false,
+        ];
+
+        yield [
             'value' => "1",
             'decimals' => 0
         ];
