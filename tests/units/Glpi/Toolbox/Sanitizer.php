@@ -114,6 +114,18 @@ class Sanitizer extends \GLPITestCase
             'sanitized_value' => ['itemtype' => 'Glpi\Dashboard\Dashboard'],
             'add_slashes'     => true,
         ];
+
+        // MassiveAction identifier / "Class::method" callable syntax should not be sanitized
+        yield [
+            'value'           => 'Glpi\Socket:update',
+            'sanitized_value' => 'Glpi\Socket:update',
+            'add_slashes'     => true,
+        ];
+        yield [
+            'value'           => 'Glpi\Socket:update\' OR 1 = 1', // invalid syntax, should be sanitized
+            'sanitized_value' => 'Glpi\\\Socket:update\\\' OR 1 = 1',
+            'add_slashes'     => true,
+        ];
     }
 
     /**
