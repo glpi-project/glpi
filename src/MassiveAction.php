@@ -1154,6 +1154,10 @@ class MassiveAction
                     break; // No need to process all items a corresponding item/searchoption has been found
                 }
 
+                if ($item === null) {
+                    exit();
+                }
+
                 $plugdisplay = false;
                 if (
                     ($plug = isPluginItemType($item->getType()))
