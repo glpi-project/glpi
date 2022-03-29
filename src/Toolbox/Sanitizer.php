@@ -105,13 +105,8 @@ class Sanitizer
             return $value;
         }
 
-        if (self::isHtmlEncoded($value)) {
-            $value = self::decodeHtmlSpecialChars($value);
-        }
-
-        if (self::isDbEscaped($value)) {
-            $value = self::dbUnescape($value);
-        }
+        $value = self::decodeHtmlSpecialChars($value);
+        $value = self::dbUnescape($value);
 
         return $value;
     }
@@ -255,8 +250,12 @@ class Sanitizer
      *
      * @return string
      */
-    private static function encodeHtmlSpecialChars(string $value): string
+    public static function encodeHtmlSpecialChars(string $value): string
     {
+        if (self::isHtmlEncoded($value)) {
+            return $value;
+        }
+
         $mapping = self::CHARS_MAPPING;
         return str_replace(array_keys($mapping), array_values($mapping), $value);
     }
@@ -268,8 +267,12 @@ class Sanitizer
      *
      * @return string
      */
-    private static function decodeHtmlSpecialChars(string $value): string
+    public static function decodeHtmlSpecialChars(string $value): string
     {
+        if (!self::isHtmlEncoded($value)) {
+            return $value;
+        }
+
         $mapping = null;
         foreach (self::CHARS_MAPPING as $htmlentity) {
             if (strpos($value, $htmlentity) !== false) {
@@ -301,8 +304,14 @@ class Sanitizer
      *
      * @return string
      */
-    private static function dbEscape(string $value): string
+    public static function dbEscape(string $value): string
     {
+        if (str_contains($value, '\\') && self::isDbEscaped($value)) {
+            // Value is already escaped, do not escape it again.
+            // Nota: use `str_contains` to speedup check.
+            return $value;
+        }
+
         global $DB;
         return $DB->escape($value);
     }
@@ -315,12 +324,13 @@ class Sanitizer
      *
      * @return string
      */
-    private static function dbUnescape(string $value): string
+    public static function dbUnescape(string $value): string
     {
        // stripslashes cannot be used here as it would produce "r" and "n" instead of "\r" and \n".
 
-        if (!str_contains($value, '\\')) {
-           // Value does not contains backslashes, so it has no escaped char.
+        if (!(str_contains($value, '\\') && self::isDbEscaped($value))) {
+            // Value is not escaped, do not unescape it.
+            // Nota: use `str_contains` to speedup check.
             return $value;
         }
 
