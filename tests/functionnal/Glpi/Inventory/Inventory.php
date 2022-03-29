@@ -1754,8 +1754,8 @@ class Inventory extends InventoryTestCase
             \Log::HISTORY_DEL_RELATION => 2,//monitor-computer relation
             \Log::HISTORY_ADD_SUBITEM => 1211,//network port/name, ip address, VMs, Software
             \Log::HISTORY_UPDATE_SUBITEM => 828,//disks usage, softwares updates
-            \Log::HISTORY_DELETE_SUBITEM => 36,//networkport and networkname, Software?
-            \Log::HISTORY_CREATE_ITEM => 198, //virtual machines, os, manufacturer, net ports, net names, ...
+            \Log::HISTORY_DELETE_SUBITEM => 35,//networkport and networkname, Software?
+            \Log::HISTORY_CREATE_ITEM => 197, //virtual machines, os, manufacturer, net ports, net names, ...
             \Log::HISTORY_UPDATE_RELATION => 2,//kernel version
         ];
 
