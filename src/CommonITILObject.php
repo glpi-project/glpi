@@ -1450,6 +1450,12 @@ abstract class CommonITILObject extends CommonDBTM
        // Add document if needed
         $this->getFromDB($input["id"]); // entities_id field required
 
+        // Map unique template field to itilobject_templates_id
+        // Leave original field. The new field is stored in the DB, while the original is used for everything else (left for BC)
+        if (isset($input[static::getTemplateFormFieldName()]) && (int) $input[static::getTemplateFormFieldName()] > 0) {
+            $input['itilobject_templates_id'] = (int) $input[static::getTemplateFormFieldName()];
+        }
+
         if ($this->getType() !== Ticket::getType()) {
            //cannot be handled here for tickets. @see Ticket::prepareInputForUpdate()
             $input = $this->handleTemplateFields($input);
@@ -2267,6 +2273,12 @@ abstract class CommonITILObject extends CommonDBTM
             return false;
         }
 
+        // Map unique template field to itilobject_templates_id
+        // Leave original field. The new field is stored in the DB, while the original is used for everything else (left for BC)
+        if (isset($input[static::getTemplateFormFieldName()]) && (int) $input[static::getTemplateFormFieldName()] > 0) {
+            $input['itilobject_templates_id'] = (int) $input[static::getTemplateFormFieldName()];
+        }
+
        // save value before clean;
         $title = ltrim($input['name']);
 
@@ -2563,7 +2575,6 @@ abstract class CommonITILObject extends CommonDBTM
 
     public function post_addItem()
     {
-
        // Handle "_tasktemplates_id" special input
         $this->handleTaskTemplateInput();
 
@@ -3796,6 +3807,7 @@ abstract class CommonITILObject extends CommonDBTM
      *  - value    : default value (default self::INCOMING)
      *  - showtype : list proposed : normal, search or allowed (default normal)
      *  - display  : boolean if false get string
+     *  - use_template_limits: Integer ID of the template to use when considering the available statuses (false disables this limitation).
      *
      * @return string|integer Output string if display option is set to false,
      *                        otherwise random part of dropdown id
@@ -3804,11 +3816,12 @@ abstract class CommonITILObject extends CommonDBTM
     {
 
         $p = [
-            'name'              => 'status',
-            'showtype'          => 'normal',
-            'display'           => true,
-            'templateResult'    => "templateItilStatus",
-            'templateSelection' => "templateItilStatus",
+            'name'                  => 'status',
+            'showtype'              => 'normal',
+            'display'               => true,
+            'templateResult'        => "templateItilStatus",
+            'templateSelection'     => "templateItilStatus",
+            'use_template_limits'   => false,
         ];
 
         if (is_array($options) && count($options)) {
@@ -3817,7 +3830,7 @@ abstract class CommonITILObject extends CommonDBTM
             }
         }
 
-        if (!isset($p['value']) || empty($p['value'])) {
+        if (empty($p['values']) && (!isset($p['value']) || empty($p['value']))) {
             $p['value']     = self::INCOMING;
         }
 
@@ -3833,6 +3846,17 @@ abstract class CommonITILObject extends CommonDBTM
             default:
                 $tab = static::getAllStatusArray(false);
                 break;
+        }
+
+        if ($p['use_template_limits'] !== false && (int) $p['use_template_limits'] > 0) {
+            $template_class = static::getTemplateClass();
+            $template = new $template_class();
+            if ($template->getFromDB($p['use_template_limits'])) {
+                $status_limit = $template->fields['status_limit'];
+                $tab = array_filter($tab, static function($status) use ($status_limit) {
+                    return in_array($status, $status_limit, false);
+                }, ARRAY_FILTER_USE_KEY);
+            }
         }
 
         return Dropdown::showFromArray($p['name'], $tab, $p);

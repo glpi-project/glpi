@@ -152,6 +152,34 @@ abstract class ITILTemplate extends CommonDropdown
         );
     }
 
+    public function getAdditionalFields()
+    {
+        $fields = parent::getAdditionalFields();
+
+        $fields[] = [
+            'name'   => 'status_limit',
+            'label'  => _n('Allowed status', 'Allowed statuses', Session::getPluralNumber()),
+            'type'   => 'specific',
+            'list'   => true
+        ];
+
+        return $fields;
+    }
+
+    public function displaySpecificTypeField($ID, $field = [], array $options = [])
+    {
+        /** @var CommonITILObject $itil_itemtype */
+        $itil_itemtype = str_replace('Template', '', static::getType());
+        switch ($field['name']) {
+            case 'status_limit':
+                $itil_itemtype::dropdownStatus([
+                    'name'      => $field['name'],
+                    'values'    => $this->fields[$field['name']] ?? [],
+                    'multiple'  => true,
+                ]);
+                break;
+        }
+    }
 
     /**
      * @param boolean $withtypeandcategory (default 0)
@@ -779,5 +807,44 @@ abstract class ITILTemplate extends CommonDropdown
     public static function getIcon()
     {
         return "fas fa-layer-group";
+    }
+
+    public function prepareInputForAdd($input)
+    {
+        $input = parent::prepareInputForAdd($input);
+
+        if (isset($input['status_limit']) && is_array($input['status_limit'])) {
+            $input['status_limit'] = exportArrayToDB($input['status_limit']);
+        }
+
+        return $input;
+    }
+
+    public function prepareInputForUpdate($input)
+    {
+        $input = parent::prepareInputForAdd($input);
+
+        if (isset($input['status_limit']) && is_array($input['status_limit'])) {
+            $input['status_limit'] = exportArrayToDB($input['status_limit']);
+        }
+
+        return $input;
+    }
+
+    public function post_getFromDB()
+    {
+        parent::post_getFromDB();
+
+        if (isset($this->fields['status_limit'])) {
+            $this->fields['status_limit'] = importArrayFromDB($this->fields['status_limit']);
+        }
+    }
+
+    public function post_getEmpty()
+    {
+        /** @var CommonITILObject $itil_itemtype */
+        $itil_itemtype = str_replace('Template', '', static::getType());
+
+        $this->fields['status_limit'] = array_keys($itil_itemtype::getAllStatusArray());
     }
 }
