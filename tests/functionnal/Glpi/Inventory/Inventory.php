@@ -1569,7 +1569,7 @@ class Inventory extends InventoryTestCase
             'LIMIT' => $nblogsnow,
             'OFFSET' => $this->nblogs,
         ]);
-        $this->integer(count($logs))->isIdenticalTo(3); //FIXME: should be 0
+        $this->integer(count($logs))->isIdenticalTo(1); //FIXME: should be 0
 
         //real computer update
         $json = file_get_contents(self::INV_FIXTURES . 'computer_3_updated.json');
