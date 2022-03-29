@@ -31,6 +31,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
+
 /**
  * ITIL Template class
  *
@@ -846,5 +848,46 @@ abstract class ITILTemplate extends CommonDropdown
         $itil_itemtype = str_replace('Template', '', static::getType());
 
         $this->fields['status_limit'] = array_keys($itil_itemtype::getAllStatusArray());
+    }
+
+    /**
+     * Count the number of ITIL Objects currently using the specified template
+     * @param int $templates_id
+     * @return int
+     */
+    public static function countAffectedItems(int $templates_id): int
+    {
+        /** @var CommonITILObject $itil_itemtype */
+        $itil_itemtype = str_replace('Template', '', static::getType());
+
+        $dbu = new DbUtils();
+        return $dbu->countElementsInTable(
+            $itil_itemtype::getTable(),
+            [
+                'itilobject_templates_id' => $templates_id
+            ]
+        );
+    }
+
+    public function showForm($ID, array $options = [])
+    {
+
+        if (!$this->isNewID($ID)) {
+            $this->check($ID, READ);
+        } else {
+            // Create item
+            $this->check(-1, CREATE);
+        }
+
+        $fields = $this->getAdditionalFields();
+
+        echo TemplateRenderer::getInstance()->render('components/itilobject/itiltemplate.html.twig', [
+            'item'   => $this,
+            'params' => $options,
+            'additional_fields' => $fields,
+            'affected_item_count' => static::countAffectedItems($ID)
+        ]);
+
+        return true;
     }
 }
