@@ -1702,7 +1702,7 @@ final class DbUtils
 
         $base_name = $objectName;
 
-        $objectName = Sanitizer::unsanitize($objectName);
+        $objectName = Sanitizer::decodeHtmlSpecialChars($objectName);
         $was_sanitized = $objectName !== $base_name;
         if ($was_sanitized) {
             Toolbox::deprecated('Handling of encoded/escaped value in autoName() is deprecated.');
@@ -1846,7 +1846,7 @@ final class DbUtils
         );
 
         if ($was_sanitized) {
-            $objectName = Sanitizer::sanitize($objectName, false);
+            $objectName = Sanitizer::encodeHtmlSpecialChars($objectName);
         }
 
         return $objectName;

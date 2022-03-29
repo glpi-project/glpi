@@ -572,8 +572,7 @@ TXT;
         $sanitizer = $this->newTestedInstance();
 
         // Value should stay the same if it has been sanitized then unsanitized
-        $this->variable($sanitizer->unsanitize($sanitizer->sanitize($value, true)))->isEqualTo($value);
-        $this->variable($sanitizer->unsanitize($sanitizer->sanitize($value, false)))->isEqualTo($value);
+        $this->variable($sanitizer->unsanitize($sanitizer->sanitize($value)))->isEqualTo($value);
 
         // Re-sanitize a value provide the same result as first sanitization
         $this->variable($sanitizer->sanitize($sanitizer->unsanitize($value)))->isEqualTo($sanitized_value);

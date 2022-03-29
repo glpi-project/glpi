@@ -426,7 +426,7 @@ if (!$DB->tableExists('glpi_networkporttypes') || countElementsInTable(NetworkPo
     if (!$DB->tableExists('glpi_networkporttypes')) {
         $migration->migrationOneTable(NetworkPortType::getTable());
     }
-    $default_types = Sanitizer::sanitize(NetworkPortType::getDefaults(), false);
+    $default_types = Sanitizer::encodeHtmlSpecialCharsRecursive(NetworkPortType::getDefaults());
     $reference = array_replace(
         $default_types[0],
         array_fill_keys(

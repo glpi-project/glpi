@@ -276,8 +276,8 @@ class Toolbox
      **/
     public static function clean_cross_side_scripting_deep($value)
     {
-        Toolbox::deprecated('Use "Glpi\Toolbox\Sanitizer::sanitize()"');
-        return Sanitizer::sanitize($value, false);
+        Toolbox::deprecated('Use "Glpi\Toolbox\Sanitizer::encodeHtmlSpecialCharsRecursive()"');
+        return Sanitizer::encodeHtmlSpecialCharsRecursive($value);
     }
 
 
@@ -294,9 +294,9 @@ class Toolbox
      **/
     public static function unclean_cross_side_scripting_deep($value)
     {
-        Toolbox::deprecated('Use "Glpi\Toolbox\Sanitizer::unsanitize()"');
+        Toolbox::deprecated('Use "Glpi\Toolbox\Sanitizer::decodeHtmlSpecialCharsRecursive()"');
         global $DB;
-        return $DB->escape(Sanitizer::unsanitize($value));
+        return $DB->escape(Sanitizer::decodeHtmlSpecialCharsRecursive($value));
     }
 
     /**
@@ -2623,7 +2623,7 @@ class Toolbox
                       // 1 - Replace direct tag (with prefix and suffix) by the image
                         $content_text = preg_replace(
                             '/' . Document::getImageTag($image['tag']) . '/',
-                            Sanitizer::sanitize($img, false),
+                            Sanitizer::encodeHtmlSpecialChars($img),
                             $content_text
                         );
 
@@ -2665,7 +2665,7 @@ class Toolbox
                                 $new_image,
                                 Sanitizer::unsanitize($content_text)
                             );
-                            $content_text = Sanitizer::sanitize($content_text, false);
+                            $content_text = Sanitizer::encodeHtmlSpecialChars($content_text);
                         }
 
                         // If the tag is from another ticket : link document to ticket

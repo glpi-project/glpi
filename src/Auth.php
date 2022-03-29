@@ -997,7 +997,7 @@ class Auth extends CommonGLPI
         if (!$DB->isSlave()) {
            // GET THE IP OF THE CLIENT
             $ip = getenv("HTTP_X_FORWARDED_FOR") ?
-            Sanitizer::sanitize(getenv("HTTP_X_FORWARDED_FOR"), false) :
+            Sanitizer::encodeHtmlSpecialChars(getenv("HTTP_X_FORWARDED_FOR")) :
             getenv("REMOTE_ADDR");
 
             if ($this->auth_succeded) {

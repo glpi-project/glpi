@@ -2019,7 +2019,7 @@ class Config extends CommonDBTM
         echo wordwrap($msg . "\n", $p['word_wrap_width'], "\n\t");
 
         if (isset($_SERVER["HTTP_USER_AGENT"])) {
-            echo "\t" . Sanitizer::sanitize($_SERVER["HTTP_USER_AGENT"], false) . "\n";
+            echo "\t" . Sanitizer::encodeHtmlSpecialChars($_SERVER["HTTP_USER_AGENT"]) . "\n";
         }
 
         foreach ($DB->getInfo() as $key => $val) {
