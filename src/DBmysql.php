@@ -1246,9 +1246,9 @@ class DBmysql
             // transform boolean as int (prevent `false` to be transformed to empty string)
             $value = "'" . (int)$value . "'";
         } else {
-            if (Sanitizer::isClassOfCallableIdentifier($value)) {
-                // Values that corresponds to an existing class are not sanitized (see `Glpi\Toolbox\Sanitizer::sanitize()`).
-                // However, if they contains backslashes, they have to be escaped.
+            if (Sanitizer::isNsClassOrCallableIdentifier($value)) {
+                // Values that corresponds to an existing namespaced class are not sanitized (see `Glpi\Toolbox\Sanitizer::sanitize()`).
+                // However, they have to be escaped in SQL queries.
                 // Note: method is called statically, so `$DB` may be not defined yet in edge cases (install process).
                 global $DB;
                 $value = $DB instanceof DBmysql && $DB->connected ? $DB->escape($value) : $value;

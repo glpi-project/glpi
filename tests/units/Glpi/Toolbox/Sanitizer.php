@@ -402,7 +402,7 @@ TXT;
         $this->variable($sanitizer->sanitize($sanitizer->unsanitize($value), $add_slashes))->isEqualTo($sanitized_value);
     }
 
-    protected function isClassOfCallableIdentifierProvider(): iterable
+    protected function isNsClassOrCallableIdentifierProvider(): iterable
     {
         yield [
             'value'    => 'mystring',
@@ -410,20 +410,24 @@ TXT;
         ];
         yield [
             'value'    => 'Computer',
-            'is_class' => true,
+            'is_class' => false, // not in a namespace
         ];
         yield [
             'value'    => 'Glpi\Socket',
             'is_class' => true,
         ];
+        yield [
+            'value'    => 'Glpi\\\\Socket',
+            'is_class' => false, // namespace separator are escaped, so it is not considered as a valid classname
+        ];
     }
 
     /**
-     * @dataProvider isClassOfCallableIdentifierProvider
+     * @dataProvider isNsClassOrCallableIdentifierProvider
      */
-    public function testIsClassOfCallableIdentifier(string $value, bool $is_class)
+    public function testIsNsClassOrCallableIdentifier(string $value, bool $is_class)
     {
         $sanitizer = $this->newTestedInstance();
-        $this->boolean($sanitizer->isClassOfCallableIdentifier($value))->isEqualTo($is_class);
+        $this->boolean($sanitizer->isNsClassOrCallableIdentifier($value))->isEqualTo($is_class);
     }
 }
