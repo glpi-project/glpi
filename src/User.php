@@ -1735,78 +1735,6 @@ class User extends CommonDBTM
             return false;
         }
 
-        ///Only process rules if working on the master database
-        if (!$DB->isSlave()) {
-            //Instanciate the affectation's rule
-            $rule = new RuleRightCollection();
-
-            //Process affectation rules :
-            //we don't care about the function's return because all
-            //the datas are stored in session temporary
-            if (isset($this->fields["_groups"])) {
-                $groups = $this->fields["_groups"];
-            } else {
-                $groups = [];
-            }
-
-            $this->fields = $rule->processAllRules($groups, Toolbox::stripslashes_deep($this->fields), [
-                'type'        => Auth::LDAP,
-                'ldap_server' => $ldap_method["id"],
-                'connection'  => $ldap_connection,
-                'userdn'      => $userdn,
-                'login'       => $this->fields['name'],
-                'mail_email'  => $this->fields['_emails']
-            ]);
-
-            $this->fields['_ruleright_process'] = true;
-
-            //If rule  action is ignore import
-            if (
-                $import
-                && isset($this->fields["_stop_import"])
-            ) {
-                return false;
-            }
-            //or no rights found & do not import users with no rights
-            if (
-                $import
-                && !$CFG_GLPI["use_noright_users_add"]
-            ) {
-                $ok = false;
-                if (
-                    isset($this->fields["_ldap_rules"])
-                    && count($this->fields["_ldap_rules"])
-                ) {
-                    if (
-                        isset($this->fields["_ldap_rules"]["rules_entities_rights"])
-                        && count($this->fields["_ldap_rules"]["rules_entities_rights"])
-                    ) {
-                        $ok = true;
-                    }
-                    if (!$ok) {
-                        $entity_count = 0;
-                        $right_count  = 0;
-                        if (Profile::getDefault()) {
-                            $right_count++;
-                        }
-                        if (isset($this->fields["_ldap_rules"]["rules_entities"])) {
-                            $entity_count += count($this->fields["_ldap_rules"]["rules_entities"]);
-                        }
-                        if (isset($this->input["_ldap_rules"]["rules_rights"])) {
-                            $right_count += count($this->fields["_ldap_rules"]["rules_rights"]);
-                        }
-                        if ($entity_count && $right_count) {
-                            $ok = true;
-                        }
-                    }
-                }
-                if (!$ok) {
-                    $this->fields["_stop_import"] = true;
-                    return false;
-                }
-            }
-        }
-
         if (is_resource($ldap_connection) || $ldap_connection instanceof \Ldap\Connection) {
            //Set all the search fields
             $this->fields['password'] = "";
@@ -1839,6 +1767,7 @@ class User extends CommonDBTM
            // force authtype as we retrieve this user by ldap (we could have login with SSO)
             $this->fields["authtype"] = Auth::LDAP;
 
+            $import_fields = [];
             foreach ($fields as $k => $e) {
                 $val = AuthLDAP::getFieldValue(
                     [$e => self::getLdapFieldValue($e, $v)],
@@ -1887,29 +1816,10 @@ class User extends CommonDBTM
                             break;
 
                         case "usertitles_id":
-                            $this->fields[$k] = Dropdown::importExternal('UserTitle', $val);
-                            break;
-
                         case 'locations_id':
-                           // use import to build the location tree
-                            $this->fields[$k] = Dropdown::import(
-                                'Location',
-                                ['completename' => $val,
-                                    'entities_id'  => 0,
-                                    'is_recursive' => 1
-                                ]
-                            );
-                            break;
-
                         case "usercategories_id":
-                            $this->fields[$k] = Dropdown::importExternal('UserCategory', $val);
-                            break;
-
                         case 'users_id_supervisor':
-                            $supervisor_id = self::getIdByField('user_dn', $val, false);
-                            if ($supervisor_id) {
-                                $this->fields[$k] = $supervisor_id;
-                            }
+                            $import_fields[$k] = $val;
                             break;
 
                         default:
@@ -1937,13 +1847,113 @@ class User extends CommonDBTM
                 $this->getFromLDAPGroupDiscret($ldap_connection, $ldap_method, $userdn, $login);
             }
 
+           ///Only process rules if working on the master database
             if (!$DB->isSlave()) {
+               //Instanciate the affectation's rule
+                $rule = new RuleRightCollection();
+
+               //Process affectation rules :
+               //we don't care about the function's return because all
+               //the datas are stored in session temporary
+                if (isset($this->fields["_groups"])) {
+                    $groups = $this->fields["_groups"];
+                } else {
+                    $groups = [];
+                }
+
+                $this->fields = $rule->processAllRules($groups, Toolbox::stripslashes_deep($this->fields), [
+                    'type'        => Auth::LDAP,
+                    'ldap_server' => $ldap_method["id"],
+                    'connection'  => $ldap_connection,
+                    'userdn'      => $userdn,
+                    'login'       => $this->fields['name'],
+                    'mail_email'  => $this->fields['_emails']
+                ]);
+
+                $this->fields['_ruleright_process'] = true;
+
+               //If rule  action is ignore import
+                if (
+                    $import
+                    && isset($this->fields["_stop_import"])
+                ) {
+                     return false;
+                }
+               //or no rights found & do not import users with no rights
+                if (
+                    $import
+                    && !$CFG_GLPI["use_noright_users_add"]
+                ) {
+                    $ok = false;
+                    if (
+                        isset($this->fields["_ldap_rules"])
+                        && count($this->fields["_ldap_rules"])
+                    ) {
+                        if (
+                            isset($this->fields["_ldap_rules"]["rules_entities_rights"])
+                            && count($this->fields["_ldap_rules"]["rules_entities_rights"])
+                        ) {
+                            $ok = true;
+                        }
+                        if (!$ok) {
+                            $entity_count = 0;
+                            $right_count  = 0;
+                            if (Profile::getDefault()) {
+                                $right_count++;
+                            }
+                            if (isset($this->fields["_ldap_rules"]["rules_entities"])) {
+                                $entity_count += count($this->fields["_ldap_rules"]["rules_entities"]);
+                            }
+                            if (isset($this->input["_ldap_rules"]["rules_rights"])) {
+                                $right_count += count($this->fields["_ldap_rules"]["rules_rights"]);
+                            }
+                            if ($entity_count && $right_count) {
+                                $ok = true;
+                            }
+                        }
+                    }
+                    if (!$ok) {
+                        $this->fields["_stop_import"] = true;
+                        return false;
+                    }
+                }
+
                // Add ldap result to data send to the hook
                 $this->fields['_ldap_result'] = $v;
                 $this->fields['_ldap_conn']   = $ldap_connection;
                //Hook to retrieve more information for ldap
                 $this->fields = Plugin::doHookFunction(Hooks::RETRIEVE_MORE_DATA_FROM_LDAP, $this->fields);
                 unset($this->fields['_ldap_result']);
+            }
+
+            foreach ($import_fields as $k => $val) {
+                switch ($k) {
+                    case "usertitles_id":
+                        $this->fields[$k] = Dropdown::importExternal('UserTitle', $val);
+                        break;
+
+                    case 'locations_id':
+                        // use import to build the location tree
+                        $this->fields[$k] = Dropdown::import(
+                            'Location',
+                            ['completename' => $val,
+                                'entities_id'  => 0,
+                                'is_recursive' => 1
+                            ]
+                        );
+                        break;
+
+                    case "usercategories_id":
+                        $this->fields[$k] = Dropdown::importExternal('UserCategory', $val);
+                        break;
+
+                    case 'users_id_supervisor':
+                        $supervisor_id = self::getIdByField('user_dn', $val, false);
+                        if ($supervisor_id) {
+                            $this->fields[$k] = $supervisor_id;
+                        }
+                        break;
+                }
             }
             return true;
         }
