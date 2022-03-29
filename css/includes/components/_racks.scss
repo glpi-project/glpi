@@ -146,10 +146,9 @@ ul.indexes {
     &::after {
         content: "\2b";
         left: 45%;
-        font-size: 1em;
         color: grey;
         top: 1px;
-        font: var(--fa-font-solid);
+        font: 1em var(--fa-font-solid);
         position: absolute;
     }
 

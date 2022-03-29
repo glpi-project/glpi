@@ -454,10 +454,9 @@ $break_tablet: 1400px;
                         &::after {
                             position: absolute;
                             color: #509ee3;
-                            font: var(--fa-font-solid);
+                            font: 11px var(--fa-font-solid);
                             content: "\f057";
                             opacity: 0.7;
-                            font-size: 11px;
                             left: 7px;
                         }
 
@@ -481,10 +480,9 @@ $break_tablet: 1400px;
                     }
 
                     &::after {
-                        font: var(--fa-font-solid);
+                        font: 14px var(--fa-font-solid);
                         color: #74838f;
                         opacity: 0.7;
-                        font-size: 14px;
                         pointer-events: none;
                         position: absolute;
                         right: 0;
@@ -577,9 +575,8 @@ $break_tablet: 1400px;
                 content: "\2b";
                 left: 40%;
                 top: 40%;
-                font-size: 1em;
                 color: grey;
-                font: var(--fa-font-solid);
+                font: 1em var(--fa-font-solid);
                 position: absolute;
             }
         }
@@ -693,8 +690,7 @@ $break_tablet: 1400px;
 
                 &::before {
                     content: "\f338";
-                    font: var(--fa-font-solid);
-                    font-size: 13px;
+                    font: 13px var(--fa-font-solid);
                     position: absolute;
                     bottom: -5px;
                     right: 1px;
@@ -1313,9 +1309,8 @@ $break_tablet: 1400px;
                 content: "\f00c";
                 right: 5px;
                 bottom: 3px;
-                font-size: 1em;
                 color: rgb(39, 39, 39);
-                font: var(--fa-font-solid);
+                font: 1em var(--fa-font-solid);
                 position: absolute;
             }
         }
