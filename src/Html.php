@@ -4130,7 +4130,7 @@ JAVASCRIPT
             echo "<tr><th>KEY</th><th>=></th><th>VALUE</th></tr>";
 
             foreach ($tab as $key => $val) {
-                $key = Sanitizer::sanitize($key, false);
+                $key = Sanitizer::encodeHtmlSpecialChars($key);
                 echo "<tr><td>";
                 echo $key;
                 $is_array = is_array($val);
