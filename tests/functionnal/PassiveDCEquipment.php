@@ -39,19 +39,6 @@ use DbTestCase;
 
 class PassiveDCEquipment extends DbTestCase
 {
-    private $method;
-
-    public function beforeTestMethod($method)
-    {
-        parent::beforeTestMethod($method);
-       //to handle GLPI barbarian replacements.
-        $this->method = str_replace(
-            ['\\', 'beforeTestMethod'],
-            ['', $method],
-            __METHOD__
-        );
-    }
-
     public function testAdd()
     {
         $obj = new \PassiveDCEquipment();
@@ -66,12 +53,12 @@ class PassiveDCEquipment extends DbTestCase
 
        // getField methods
         $this->variable($obj->getField('id'))->isEqualTo($id);
-        $this->string($obj->getField('name'))->isidenticalTo($this->method);
+        $this->string($obj->getField('name'))->isidenticalTo(__METHOD__);
 
        // fields property
         $this->array($obj->fields)
          ->integer['id']->isEqualTo($id)
-         ->string['name']->isidenticalTo($this->method);
+         ->string['name']->isidenticalTo(__METHOD__);
     }
 
     public function testDelete()
@@ -125,7 +112,7 @@ class PassiveDCEquipment extends DbTestCase
         $nb_before = (int)countElementsInTable('glpi_logs', ['itemtype' => 'PassiveDCEquipment', 'items_id' => $id]);
 
        // DeleteByCriteria without history
-        $this->boolean($obj->deleteByCriteria(['name' => $this->method], 0, 0))->isTrue();
+        $this->boolean($obj->deleteByCriteria(['name' => __METHOD__], 0, 0))->isTrue();
         $this->boolean($obj->getFromDB($id))->isTrue();
         $this->variable($obj->getField('is_deleted'))->isEqualTo(1);
         $this->variable($obj->isDeleted())->isEqualTo(1);
@@ -142,7 +129,7 @@ class PassiveDCEquipment extends DbTestCase
         $nb_before = (int)countElementsInTable('glpi_logs', ['itemtype' => 'PassiveDCEquipment', 'items_id' => $id]);
 
        // DeleteByCriteria with history
-        $this->boolean($obj->deleteByCriteria(['name' => $this->method], 0, 1))->isTrue;
+        $this->boolean($obj->deleteByCriteria(['name' => __METHOD__], 0, 1))->isTrue;
         $this->boolean($obj->getFromDB($id))->isTrue();
         $this->variable($obj->getField('is_deleted'))->isEqualTo(1);
         $this->variable($obj->isDeleted())->isEqualTo(1);
