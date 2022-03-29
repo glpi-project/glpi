@@ -103,12 +103,16 @@ class Sanitizer extends \GLPITestCase
 
         // Strings in array should be sanitized
         yield [
-            'value'           => [null, '<strong>string</strong>', 3.2, 'string', true, '<p>my</p>', 9798],
-            'sanitized_value' => [null, '&#60;strong&#62;string&#60;/strong&#62;', 3.2, 'string', true, '&#60;p&#62;my&#60;/p&#62;', 9798],
+            'value'             => [null, '<strong>string</strong>', 3.2, 'string', true, '<p>my</p>', 9798],
+            'sanitized_value'   => [null, '&#60;strong&#62;string&#60;/strong&#62;', 3.2, 'string', true, '&#60;p&#62;my&#60;/p&#62;', 9798],
+            'htmlencoded_value' => [null, '&#60;strong&#62;string&#60;/strong&#62;', 3.2, 'string', true, '&#60;p&#62;my&#60;/p&#62;', 9798],
+            'dbescaped_value'   => [null, '<strong>string</strong>', 3.2, 'string', true, '<p>my</p>', 9798],
         ];
         yield [
-            'value'           => [null, "<strong>text with slashable chars ' \n \"</strong>", 3.2, 'string', true, '<p>my</p>', 9798],
-            'sanitized_value' => [null, "&#60;strong&#62;text with slashable chars \' \\n \\\"&#60;/strong&#62;", 3.2, 'string', true, '&#60;p&#62;my&#60;/p&#62;', 9798],
+            'value'             => [null, "<strong>text with slashable chars ' \n \"</strong>", 3.2, 'string', true, '<p>my</p>', 9798],
+            'sanitized_value'   => [null, "&#60;strong&#62;text with slashable chars \' \\n \\\"&#60;/strong&#62;", 3.2, 'string', true, '&#60;p&#62;my&#60;/p&#62;', 9798],
+            'htmlencoded_value' => [null, "&#60;strong&#62;text with slashable chars ' \n \"&#60;/strong&#62;", 3.2, 'string', true, '&#60;p&#62;my&#60;/p&#62;', 9798],
+            'dbescaped_value'   => [null, "<strong>text with slashable chars \' \\n \\\"</strong>", 3.2, 'string', true, '<p>my</p>', 9798],
         ];
 
         // Namespaced itemtypes and MassiveAction identifier / "Class::method" callable should not be sanitized
@@ -157,7 +161,7 @@ class Sanitizer extends \GLPITestCase
         $htmlencoded_value = null,
         $dbescaped_value = null
     ) {
-        if ($htmlencoded_value === null) {
+        if (!is_string($htmlencoded_value)) {
             return; // Unrelated entry in provider
         }
 
@@ -171,13 +175,33 @@ class Sanitizer extends \GLPITestCase
     /**
      * @dataProvider rawValueProvider
      */
+    public function testEncodeHtmlSpecialCharsRecursive(
+        $value,
+        $sanitized_value,
+        $htmlencoded_value = null,
+        $dbescaped_value = null
+    ) {
+        if (!is_array($htmlencoded_value)) {
+            return; // Unrelated entry in provider
+        }
+
+        $sanitizer = $this->newTestedInstance();
+        $this->variable($sanitizer->encodeHtmlSpecialCharsRecursive($value))->isEqualTo($htmlencoded_value);
+
+        // Calling encodeHtmlSpecialCharsRecursive on escaped value should have no effect
+        $this->variable($sanitizer->encodeHtmlSpecialCharsRecursive($htmlencoded_value))->isEqualTo($htmlencoded_value);
+    }
+
+    /**
+     * @dataProvider rawValueProvider
+     */
     public function testDbEscape(
         $value,
         $sanitized_value,
         $htmlencoded_value = null,
         $dbescaped_value = null
     ) {
-        if ($dbescaped_value === null) {
+        if (!is_string($dbescaped_value)) {
             return; // Unrelated entry in provider
         }
 
@@ -186,6 +210,26 @@ class Sanitizer extends \GLPITestCase
 
         // Calling dbEscape on escaped value should have no effect
         $this->variable($sanitizer->dbEscape($dbescaped_value))->isEqualTo($dbescaped_value);
+    }
+
+    /**
+     * @dataProvider rawValueProvider
+     */
+    public function testDbEscapeRecursive(
+        $value,
+        $sanitized_value,
+        $htmlencoded_value = null,
+        $dbescaped_value = null
+    ) {
+        if (!is_array($dbescaped_value)) {
+            return; // Unrelated entry in provider
+        }
+
+        $sanitizer = $this->newTestedInstance();
+        $this->variable($sanitizer->dbEscapeRecursive($value))->isEqualTo($dbescaped_value);
+
+        // Calling dbEscapeRecursive on escaped value should have no effect
+        $this->variable($sanitizer->dbEscapeRecursive($dbescaped_value))->isEqualTo($dbescaped_value);
     }
 
     protected function sanitizedValueProvider(): iterable
@@ -241,7 +285,7 @@ class Sanitizer extends \GLPITestCase
         $htmlencoded_value = null,
         $dbescaped_value = null
     ) {
-        if ($dbescaped_value === null) {
+        if (!is_string($dbescaped_value)) {
             return; // Unrelated entry in provider
         }
 
@@ -255,21 +299,61 @@ class Sanitizer extends \GLPITestCase
     /**
      * @dataProvider sanitizedValueProvider
      */
+    public function testDbUnescapeRecursive(
+        $value,
+        $unsanitized_value,
+        $htmlencoded_value = null,
+        $dbescaped_value = null
+    ) {
+        if (!is_array($dbescaped_value)) {
+            return; // Unrelated entry in provider
+        }
+
+        $sanitizer = $this->newTestedInstance();
+        $this->variable($sanitizer->dbUnescapeRecursive($dbescaped_value))->isEqualTo($unsanitized_value);
+
+        // Calling dbUnescapeRecursive multiple times should not corrupt value
+        $this->variable($sanitizer->dbUnescapeRecursive($unsanitized_value))->isEqualTo($unsanitized_value);
+    }
+
+    /**
+     * @dataProvider sanitizedValueProvider
+     */
     public function testDecodeHtmlSpecialChars(
         $value,
         $unsanitized_value,
         $htmlencoded_value = null,
         $dbescaped_value = null
     ) {
-        if ($htmlencoded_value === null) {
+        if (!is_string($htmlencoded_value)) {
             return; // Unrelated entry in provider
         }
 
         $sanitizer = $this->newTestedInstance();
         $this->variable($sanitizer->decodeHtmlSpecialChars($htmlencoded_value))->isEqualTo($unsanitized_value);
 
-        // Calling dbUnescape multiple times should not corrupt value
+        // Calling decodeHtmlSpecialChars multiple times should not corrupt value
         $this->variable($sanitizer->decodeHtmlSpecialChars($unsanitized_value))->isEqualTo($unsanitized_value);
+    }
+
+    /**
+     * @dataProvider sanitizedValueProvider
+     */
+    public function testDecodeHtmlSpecialCharsRecursive(
+        $value,
+        $unsanitized_value,
+        $htmlencoded_value = null,
+        $dbescaped_value = null
+    ) {
+        if (!is_array($htmlencoded_value)) {
+            return; // Unrelated entry in provider
+        }
+
+        $sanitizer = $this->newTestedInstance();
+        $this->variable($sanitizer->decodeHtmlSpecialCharsRecursive($htmlencoded_value))->isEqualTo($unsanitized_value);
+
+        // Calling decodeHtmlSpecialCharsRecursive multiple times should not corrupt value
+        $this->variable($sanitizer->decodeHtmlSpecialCharsRecursive($unsanitized_value))->isEqualTo($unsanitized_value);
     }
 
     protected function isHtmlEncodedValueProvider(): iterable

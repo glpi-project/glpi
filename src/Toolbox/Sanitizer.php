@@ -60,8 +60,8 @@ class Sanitizer
     {
         if (is_array($value)) {
             return array_map(
-                function ($val) use ($db_escape) {
-                    return self::sanitize($val, $db_escape);
+                function ($val) {
+                    return self::sanitize($val);
                 },
                 $value
             );
@@ -261,6 +261,31 @@ class Sanitizer
     }
 
     /**
+     * Recursively encode HTML special chars on an array.
+     *
+     * @param array $values
+     *
+     * @return array
+     *
+     * @see self::encodeHtmlSpecialChars
+     */
+    public static function encodeHtmlSpecialCharsRecursive(array $values): array
+    {
+        return array_map(
+            function ($value) {
+                if (is_array($value)) {
+                    return self::encodeHtmlSpecialCharsRecursive($value);
+                }
+                if (is_string($value)) {
+                    return self::encodeHtmlSpecialChars($value);
+                }
+                return $value;
+            },
+            $values
+        );
+    }
+
+    /**
      * Decode HTML special chars.
      *
      * @param string $value
@@ -298,7 +323,32 @@ class Sanitizer
     }
 
     /**
-     * Escape special chars to protect DB queries.
+     * Recursively decode HTML special chars on an array.
+     *
+     * @param array $values
+     *
+     * @return array
+     *
+     * @see self::decodeHtmlSpecialChars
+     */
+    public static function decodeHtmlSpecialCharsRecursive(array $values): array
+    {
+        return array_map(
+            function ($value) {
+                if (is_array($value)) {
+                    return self::decodeHtmlSpecialCharsRecursive($value);
+                }
+                if (is_string($value)) {
+                    return self::decodeHtmlSpecialChars($value);
+                }
+                return $value;
+            },
+            $values
+        );
+    }
+
+    /**
+     * Escape DB special chars to protect DB queries.
      *
      * @param string $value
      *
@@ -314,6 +364,31 @@ class Sanitizer
 
         global $DB;
         return $DB->escape($value);
+    }
+
+    /**
+     * Recursively escape DB special chars.
+     *
+     * @param array $values
+     *
+     * @return array
+     *
+     * @see self::dbEscape
+     */
+    public static function dbEscapeRecursive(array $values): array
+    {
+        return array_map(
+            function ($value) {
+                if (is_array($value)) {
+                    return self::dbEscapeRecursive($value);
+                }
+                if (is_string($value)) {
+                    return self::dbEscape($value);
+                }
+                return $value;
+            },
+            $values
+        );
     }
 
     /**
@@ -369,5 +444,30 @@ class Sanitizer
         }
 
         return $value;
+    }
+
+    /**
+     * Recursively revert `mysqli::real_escape_string()` transformation.
+     *
+     * @param array $values
+     *
+     * @return array
+     *
+     * @see self::dbUnescape
+     */
+    public static function dbUnescapeRecursive(array $values): array
+    {
+        return array_map(
+            function ($value) {
+                if (is_array($value)) {
+                    return self::dbUnescapeRecursive($value);
+                }
+                if (is_string($value)) {
+                    return self::dbUnescape($value);
+                }
+                return $value;
+            },
+            $values
+        );
     }
 }
