@@ -1746,7 +1746,7 @@ class Inventory extends InventoryTestCase
             'OFFSET' => $nblogsnow,
         ]);
 
-        $this->integer(count($logs))->isIdenticalTo(2280);
+        $this->integer(count($logs))->isIdenticalTo(2279);
 
         $expected_types_count = [
             0 => 2, //Agent version, disks usage
