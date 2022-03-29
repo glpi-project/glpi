@@ -390,6 +390,7 @@ final class DbUtils
          . preg_quote('\\', '/') // followed by an additionnal \
          . '/';
         if (preg_match($sanitized_namespaced_pattern, $itemtype)) {
+            trigger_error(sprintf('Unexpected sanitized itemtype "%s" encountered.', $itemtype), E_USER_WARNING);
             $itemtype = stripslashes($itemtype);
         }
 

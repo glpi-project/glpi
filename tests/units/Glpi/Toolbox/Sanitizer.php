@@ -401,4 +401,33 @@ TXT;
        // Re-sanitize a value provide the same result as first sanitization
         $this->variable($sanitizer->sanitize($sanitizer->unsanitize($value), $add_slashes))->isEqualTo($sanitized_value);
     }
+
+    protected function isNsClassOrCallableIdentifierProvider(): iterable
+    {
+        yield [
+            'value'    => 'mystring',
+            'is_class' => false,
+        ];
+        yield [
+            'value'    => 'Computer',
+            'is_class' => false, // not in a namespace
+        ];
+        yield [
+            'value'    => 'Glpi\Socket',
+            'is_class' => true,
+        ];
+        yield [
+            'value'    => 'Glpi\\\\Socket',
+            'is_class' => false, // namespace separator are escaped, so it is not considered as a valid classname
+        ];
+    }
+
+    /**
+     * @dataProvider isNsClassOrCallableIdentifierProvider
+     */
+    public function testIsNsClassOrCallableIdentifier(string $value, bool $is_class)
+    {
+        $sanitizer = $this->newTestedInstance();
+        $this->boolean($sanitizer->isNsClassOrCallableIdentifier($value))->isEqualTo($is_class);
+    }
 }

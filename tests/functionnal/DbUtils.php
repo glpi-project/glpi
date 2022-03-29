@@ -247,9 +247,18 @@ class DbUtils extends DbTestCase
 
         $this
          ->if($this->newTestedInstance)
-         ->then
-            ->object($this->testedInstance->getItemForItemtype(addslashes('Glpi\Event')))->isInstanceOf('Glpi\Event')
-            ->object($this->testedInstance->getItemForItemtype(addslashes('GlpiPlugin\Bar\Foo')))->isInstanceOf('GlpiPlugin\Bar\Foo');
+         ->when(function () {
+               $this->object($this->testedInstance->getItemForItemtype(addslashes('Glpi\Event')))->isInstanceOf('Glpi\Event');
+         })->error
+            ->withType(E_USER_WARNING)
+            ->withMessage('Unexpected sanitized itemtype "Glpi\\\\Event" encountered.')
+            ->exists()
+         ->when(function () {
+               $this->object($this->testedInstance->getItemForItemtype(addslashes('GlpiPlugin\Bar\Foo')))->isInstanceOf('GlpiPlugin\Bar\Foo');
+         })->error
+            ->withType(E_USER_WARNING)
+            ->withMessage('Unexpected sanitized itemtype "GlpiPlugin\\\\Bar\\\\Foo" encountered.')
+            ->exists();
     }
 
     public function testGetItemForItemtypeAbstract()

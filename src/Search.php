@@ -4528,17 +4528,17 @@ JAVASCRIPT;
 
             case "equals":
                 if ($nott) {
-                    $SEARCH = " <> '$val'";
+                    $SEARCH = " <> " . DBmysql::quoteValue($val);
                 } else {
-                    $SEARCH = " = '$val'";
+                    $SEARCH = " = " . DBmysql::quoteValue($val);
                 }
                 break;
 
             case "notequals":
                 if ($nott) {
-                    $SEARCH = " = '$val'";
+                    $SEARCH = " = " . DBmysql::quoteValue($val);
                 } else {
-                    $SEARCH = " <> '$val'";
+                    $SEARCH = " <> " . DBmysql::quoteValue($val);
                 }
                 break;
 
@@ -8755,7 +8755,7 @@ HTML;
         if ($val == null) {
             $SEARCH = " IS $NOT NULL ";
         } else {
-            $SEARCH = " $NOT LIKE '$val' ";
+            $SEARCH = " $NOT LIKE " . DBmysql::quoteValue($val) . " ";
         }
         return $SEARCH;
     }
