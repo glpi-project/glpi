@@ -2761,6 +2761,10 @@ class CommonDBTM extends CommonGLPI
      **/
     public function can($ID, $right, array &$input = null)
     {
+        if (Session::isInventory()) {
+            return true;
+        }
+
        // Clean ID :
         $ID = Toolbox::cleanInteger($ID);
 

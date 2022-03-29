@@ -299,7 +299,7 @@ abstract class CommonDBConnexity extends CommonDBTM
             }
         }
 
-        if ($have_to_check && !Session::isInventory()) {
+        if ($have_to_check) {
             $new_item = clone $this;
 
            // Solution 1 : If we cannot create the new item or delete the old item,
