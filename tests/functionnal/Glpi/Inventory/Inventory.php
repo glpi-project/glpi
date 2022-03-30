@@ -1569,7 +1569,7 @@ class Inventory extends InventoryTestCase
             'LIMIT' => $nblogsnow,
             'OFFSET' => $this->nblogs,
         ]);
-        $this->integer(count($logs))->isIdenticalTo(3); //FIXME: should be 0
+        $this->integer(count($logs))->isIdenticalTo(1); //FIXME: should be 0
 
         //real computer update
         $json = file_get_contents(self::INV_FIXTURES . 'computer_3_updated.json');
@@ -1746,16 +1746,16 @@ class Inventory extends InventoryTestCase
             'OFFSET' => $nblogsnow,
         ]);
 
-        $this->integer(count($logs))->isIdenticalTo(2280);
+        $this->integer(count($logs))->isIdenticalTo(2279);
 
         $expected_types_count = [
-            0 => 2, //Agent version, disks usage
+            0 => 3, //Agent version, disks usage
             \Log::HISTORY_ADD_RELATION => 1, //new IPNetwork/IPAddress
             \Log::HISTORY_DEL_RELATION => 2,//monitor-computer relation
             \Log::HISTORY_ADD_SUBITEM => 1211,//network port/name, ip address, VMs, Software
             \Log::HISTORY_UPDATE_SUBITEM => 828,//disks usage, softwares updates
-            \Log::HISTORY_DELETE_SUBITEM => 36,//networkport and networkname, Software?
-            \Log::HISTORY_CREATE_ITEM => 198, //virtual machines, os, manufacturer, net ports, net names, ...
+            \Log::HISTORY_DELETE_SUBITEM => 35,//networkport and networkname, Software?
+            \Log::HISTORY_CREATE_ITEM => 197, //virtual machines, os, manufacturer, net ports, net names, ...
             \Log::HISTORY_UPDATE_RELATION => 2,//kernel version
         ];
 

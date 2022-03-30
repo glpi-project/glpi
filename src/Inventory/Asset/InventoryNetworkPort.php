@@ -377,6 +377,8 @@ trait InventoryNetworkPort
                 foreach (['name', 'mac', 'instantiation_type'] as $field) {
                     if (property_exists($data, $field)) {
                         $comp_data[$field] = strtolower($data->$field);
+                    } else {
+                        $comp_data[$field] = "";
                     }
                 }
 
