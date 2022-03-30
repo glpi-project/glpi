@@ -752,7 +752,7 @@ class Inventory
             }
         }
 
-        if (isCommandLine()) {
+        if (isCommandLine() && !defined('TU_USER')) {
             echo $output . "\n";
         } else {
             Toolbox::logInFile(

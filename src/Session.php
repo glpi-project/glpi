@@ -1122,7 +1122,11 @@ class Session
     {
         global $DB;
 
-       //If GLPI is using the slave DB -> read only mode
+        if (Session::isInventory()) {
+            return true;
+        }
+
+        //If GLPI is using the slave DB -> read only mode
         if (
             $DB->isSlave()
             && ($right & (CREATE | UPDATE | DELETE | PURGE))

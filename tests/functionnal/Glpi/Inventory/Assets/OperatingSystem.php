@@ -767,7 +767,6 @@ class OperatingSystem extends AbstractInventoryAsset
 
     public function testInventoryUpdate()
     {
-        $this->login();
         $computer = new \Computer();
         $os = new \OperatingSystem();
         $cos = new \Item_OperatingSystem();

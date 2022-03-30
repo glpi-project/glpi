@@ -324,7 +324,6 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
      */
     public function testPrepare($xml, $ports, $connections, $vlans, $aggregates)
     {
-        $this->login();
         $converter = new \Glpi\Inventory\Converter();
         $data = $converter->convert($xml);
         $json = json_decode($data);
