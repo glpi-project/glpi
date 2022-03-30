@@ -248,7 +248,6 @@ class NetworkCard extends AbstractInventoryAsset
      */
     public function testNoVirtuals($xml, $expected, $virtual)
     {
-        $this->login();
         $converter = new \Glpi\Inventory\Converter();
         $data = $converter->convert($xml);
         $json = json_decode($data);
@@ -256,11 +255,15 @@ class NetworkCard extends AbstractInventoryAsset
         $computer = getItemByTypeName('Computer', '_test_pc01');
         $asset = new \Glpi\Inventory\Asset\NetworkCard($computer, $json->content->networks);
         $asset->setExtraData((array)$json->content);
+        $this->login();
         $conf = new \Glpi\Inventory\Conf();
         $this->boolean($conf->saveConf(['component_networkcardvirtual' => 0]))->isTrue();
+        $this->logOut();
         $asset->checkConf($conf);
         $result = $asset->prepare();
+        $this->login();
         $this->boolean($conf->saveConf(['component_networkcardvirtual' => 1]))->isTrue();
+        $this->logOut();
         if ($virtual) {
             $this->array($result)->isEmpty();
         } else {

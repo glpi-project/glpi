@@ -4366,6 +4366,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         $this->login();
         $conf = new \Glpi\Inventory\Conf();
         $this->boolean($conf->saveConf(['vm_as_computer' => 1]))->isTrue();
+        $this->logout();
 
         $inventory = $this->doInventory($json);
 
