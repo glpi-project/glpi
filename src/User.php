@@ -2298,7 +2298,7 @@ class User extends CommonDBTM
             $vcard_url = User::getFormURLWithID($ID) . "&amp;getvcard=1";
             $vcard_btn = <<<HTML
             <a href="{$vcard_url}" target="_blank"
-                     class="btn btn-sm btn-ghost-secondary"
+                     class="btn btn-icon btn-sm btn-ghost-secondary"
                      title="{$vcard_lbl}"
                      data-bs-toggle="tooltip" data-bs-placement="bottom">
                <i class="far fa-address-card fa-lg"></i>
@@ -2310,7 +2310,7 @@ HTML;
                 $impersonate_lbl = __s('Impersonate');
                 $impersonate_btn = <<<HTML
                <button type="button" name="impersonate" value="1"
-                       class="btn btn-sm btn-ghost-secondary btn-impersonate"
+                       class="btn btn-icon btn-sm btn-ghost-secondary btn-impersonate"
                        title="{$impersonate_lbl}"
                        data-bs-toggle="tooltip" data-bs-placement="bottom">
                   <i class="fas fa-user-secret fa-lg"></i>
