@@ -528,6 +528,13 @@ JS;
                <i class='ti ti-book add_tooltip' title='" . __s("Readme") . "'></i>
                </a>"
             : "";
+
+        $changelog_url = Html::entities_deep($plugin['changelog_url'] ?? "");
+        $changelog_url = strlen($changelog_url)
+            ? "<a href='{$changelog_url}' target='_blank' >
+               <i class='ti ti-news add_tooltip' title='" . __s("Changelog") . "'></i>
+               </a>"
+             : "";
         $icon    = self::getPluginIcon($plugin);
         $network = self::getNetworkInformations($plugin);
 
@@ -552,6 +559,7 @@ JS;
                                 {$home_url}
                                 {$issues_url}
                                 {$readme_url}
+                                {$changelog_url}
                             </div>
                         </span>
                         <span class='misc-right'>
@@ -585,6 +593,7 @@ HTML;
                                 {$home_url}
                                 {$issues_url}
                                 {$readme_url}
+                                {$changelog_url}
                             </div>
                         </span>
                     </div>
