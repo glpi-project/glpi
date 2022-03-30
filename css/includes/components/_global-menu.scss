@@ -131,12 +131,11 @@
     }
 
     .reduce-menu::before {
-        font-family: "Font Awesome 5 Free";
+        font: var(--fa-font-solid);
         content: "\f100";
         display: inline-block;
         padding-right: 3px;
         vertical-align: middle;
-        font-weight: 900;
         font-size: 1.3333em;
         line-height: 0.75em;
     }

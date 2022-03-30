@@ -51,8 +51,7 @@
          display: block;
 
          &::before {
-            font-family: "Font Awesome 5 Free";
-            font-weight: 900;
+            font: var(--fa-font-solid);
             content: "\f191";
          }
       }
@@ -61,8 +60,7 @@
          .toggle {
             float: none;
             &::before {
-               font-family: "Font Awesome 5 Free";
-               font-weight: 900;
+               font: var(--fa-font-solid);
                content: "\f152";
             }
          }
@@ -139,16 +137,14 @@
                   vertical-align: middle;
 
                   &::before {
-                     font-family: "Font Awesome 5 Free";
-                     font-weight: 900;
+                     font: var(--fa-font-solid);
                      content: "\f0fe";
                   }
                }
 
                &.expanded .toggle {
                   &::before {
-                     font-family: "Font Awesome 5 Free";
-                     font-weight: 900;
+                     font: var(--fa-font-solid);
                      content: "\f146";
                   }
                }
