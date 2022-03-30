@@ -65,7 +65,7 @@ export default class SearchInput {
                 data: {}
             }
         }, options || {});
-        this.tokenizer = new SearchTokenizer(options.allowed_tags || {}, options.drop_unallowed_tags || false, options.tokenizer_options);
+        this.tokenizer = new SearchTokenizer(this.options.allowed_tags || {}, this.options.drop_unallowed_tags || false, this.options.tokenizer_options);
 
         this.displayed_input = $(`
          <div class="form-control search-input d-flex" tabindex="0"></div>
