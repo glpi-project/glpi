@@ -1749,7 +1749,7 @@ class Inventory extends InventoryTestCase
         $this->integer(count($logs))->isIdenticalTo(2279);
 
         $expected_types_count = [
-            0 => 2, //Agent version, disks usage
+            0 => 3, //Agent version, disks usage
             \Log::HISTORY_ADD_RELATION => 1, //new IPNetwork/IPAddress
             \Log::HISTORY_DEL_RELATION => 2,//monitor-computer relation
             \Log::HISTORY_ADD_SUBITEM => 1211,//network port/name, ip address, VMs, Software
