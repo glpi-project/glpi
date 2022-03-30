@@ -1923,7 +1923,6 @@ class User extends CommonDBTM
                         case "usertitles_id":
                             $this->fields[$k] = Dropdown::importExternal('UserTitle', $val);
                             break;
-    
                         case 'locations_id':
                             // use import to build the location tree
                             $this->fields[$k] = Dropdown::import(
@@ -1934,11 +1933,9 @@ class User extends CommonDBTM
                                 ]
                             );
                             break;
-    
                         case "usercategories_id":
                             $this->fields[$k] = Dropdown::importExternal('UserCategory', $val);
                             break;
-    
                         case 'users_id_supervisor':
                             $supervisor_id = self::getIdByField('user_dn', $val, false);
                             if ($supervisor_id) {
