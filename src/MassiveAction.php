@@ -1189,6 +1189,22 @@ class MassiveAction
                     if (isset($ma->POST['options'])) {
                         $options = $ma->POST['options'];
                     }
+                    switch ($item->getType()) {
+                        case 'Change':
+                            $search['condition'][] = 'is_change';
+                            break;
+                        case 'Problem':
+                            $search['condition'][] = 'is_problem';
+                            break;
+                        case 'Ticket':
+                            $search['condition'][] = [
+                                'OR' => [
+                                    'is_incident',
+                                    'is_request'
+                                ]
+                            ];
+                            break;
+                    }
                     if (isset($ma->POST['additionalvalues'])) {
                         $values = $ma->POST['additionalvalues'];
                     }
