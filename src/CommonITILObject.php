@@ -6809,52 +6809,44 @@ abstract class CommonITILObject extends CommonDBTM
         $canadd_document = $canadd_fup || ($this->canAddItem('Document') && !in_array($this->fields["status"], $solved_closed_statuses, true));
         $canadd_solution = $obj_type::canUpdate() && $this->canSolve() && !in_array($this->fields["status"], $solved_statuses, true);
 
-        $validation_class = $obj_type . 'Validation';
-        $canadd_validation = false;
-        $can_view_validation = false;
-        if (class_exists($validation_class)) {
-            /** @var CommonITILValidation $validation */
-            $validation = new $validation_class();
-            $canadd_validation = $validation->can(-1, CREATE, $tmp) && !in_array($this->fields["status"], $solved_closed_statuses, true);
-            $can_view_validation = $validation::canView();
-        }
+        $validation = $this->getValidationClassInstance();
+        $canadd_validation = $validation !== null
+            && $validation->can(-1, CREATE, $tmp)
+            && !in_array($this->fields["status"], $solved_closed_statuses, true);
 
         $itemtypes = [];
 
-        if ($canadd_fup) {
-            $itemtypes['answer'] = [
-                'type'      => 'ITILFollowup',
-                'class'     => 'ITILFollowup',
-                'icon'      => 'ti ti-message-circle',
-                'label'     => _x('button', 'Answer'),
-                'template'  => 'components/itilobject/timeline/form_followup.html.twig',
-                'item'      => $fup
-            ];
-        }
-        if ($canadd_task) {
-            $itemtypes['task'] = [
-                'type'      => 'ITILTask',
-                'class'     => $task_class,
-                'icon'      => 'ti ti-checkbox',
-                'label'     => _x('button', 'Create a task'),
-                'template'  => 'components/itilobject/timeline/form_task.html.twig',
-                'item'      => $task
-            ];
-        }
-        if ($canadd_solution) {
-            $itemtypes['solution'] = [
-                'type'      => 'ITILSolution',
-                'class'     => 'ITILSolution',
-                'icon'      => 'ti ti-check',
-                'label'     => _x('button', 'Add a solution'),
-                'template'  => 'components/itilobject/timeline/form_solution.html.twig',
-                'item'      => new ITILSolution()
-            ];
-        }
-        if ($can_view_validation) {
+        $itemtypes['answer'] = [
+            'type'          => 'ITILFollowup',
+            'class'         => 'ITILFollowup',
+            'icon'          => 'ti ti-message-circle',
+            'label'         => _x('button', 'Answer'),
+            'template'      => 'components/itilobject/timeline/form_followup.html.twig',
+            'item'          => $fup,
+            'hide_in_menu'  => !$canadd_fup
+        ];
+        $itemtypes['task'] = [
+            'type'          => 'ITILTask',
+            'class'         => $task_class,
+            'icon'          => 'ti ti-checkbox',
+            'label'         => _x('button', 'Create a task'),
+            'template'      => 'components/itilobject/timeline/form_task.html.twig',
+            'item'          => $task,
+            'hide_in_menu'  => !$canadd_task
+        ];
+        $itemtypes['solution'] = [
+            'type'          => 'ITILSolution',
+            'class'         => 'ITILSolution',
+            'icon'          => 'ti ti-check',
+            'label'         => _x('button', 'Add a solution'),
+            'template'      => 'components/itilobject/timeline/form_solution.html.twig',
+            'item'          => new ITILSolution(),
+            'hide_in_menu'  => !$canadd_solution
+        ];
+        if ($validation !== null) {
             $itemtypes['validation'] = [
                 'type'          => 'ITILValidation',
-                'class'         => $validation_class,
+                'class'         => $validation::getType(),
                 'icon'          => 'ti ti-thumb-up',
                 'label'         => _x('button', 'Ask for validation'),
                 'template'      => 'components/itilobject/timeline/form_validation.html.twig',
@@ -6862,17 +6854,15 @@ abstract class CommonITILObject extends CommonDBTM
                 'hide_in_menu'  => !$canadd_validation
             ];
         }
-        if ($canadd_document) {
-            $itemtypes['document'] = [
-                'type'          => 'Document_Item',
-                'class'         => Document_Item::class,
-                'icon'          => Document_Item::getIcon(),
-                'label'         => _x('button', 'Add a document'),
-                'template'      => 'components/itilobject/timeline/form_document_item.html.twig',
-                'item'          => new Document_Item(),
-                'hide_in_menu'  => true
-            ];
-        }
+        $itemtypes['document'] = [
+            'type'          => 'Document_Item',
+            'class'         => Document_Item::class,
+            'icon'          => Document_Item::getIcon(),
+            'label'         => _x('button', 'Add a document'),
+            'template'      => 'components/itilobject/timeline/form_document_item.html.twig',
+            'item'          => new Document_Item(),
+            'hide_in_menu'  => !$canadd_document
+        ];
 
         if (isset($PLUGIN_HOOKS[Hooks::TIMELINE_ANSWER_ACTIONS])) {
             foreach ($PLUGIN_HOOKS[Hooks::TIMELINE_ANSWER_ACTIONS] as $plugin => $hook_itemtypes) {
@@ -6949,6 +6939,8 @@ abstract class CommonITILObject extends CommonDBTM
         $foreignKey = static::getForeignKeyField();
         $timeline = [];
 
+        $canupdate_parent = $this->canUpdateItem() && !in_array($this->fields['status'], $this->getClosedStatusArray());
+
        //checks rights
         $restrict_fup = $restrict_task = [];
         if (!$params['expose_private'] && !Session::haveRight("followup", ITILFollowup::SEEPRIVATE)) {
@@ -6989,8 +6981,7 @@ abstract class CommonITILObject extends CommonDBTM
         }
 
        //add followups to timeline
-        $fupClass     = 'ITILFollowup';
-        $followup_obj = new $fupClass();
+        $followup_obj = new ITILFollowup();
         if ($followup_obj->canview() || $params['bypass_rights']) {
             $followups = $followup_obj->find(['items_id'  => $this->getID()] + $restrict_fup, ['date DESC', 'id DESC']);
             foreach ($followups as $followups_id => $followup) {
@@ -6998,7 +6989,7 @@ abstract class CommonITILObject extends CommonDBTM
                 if ($followup_obj->canViewItem()) {
                     $followup['can_edit'] = $followup_obj->canUpdateItem();
                     $timeline["ITILFollowup_" . $followups_id] = [
-                        'type' => $fupClass,
+                        'type' => ITILFollowup::class,
                         'item' => $followup,
                         'itiltype' => 'Followup'
                     ];
@@ -7130,7 +7121,7 @@ abstract class CommonITILObject extends CommonDBTM
 
                 $item['timeline_position'] = $document_item['timeline_position'];
                 $item['_can_edit'] = $can_view_documents && $document_obj->canUpdateItem();
-                $item['_can_delete'] = $can_view_documents && $document_obj->canDeleteItem();
+                $item['_can_delete'] = $can_view_documents && $document_obj->canDeleteItem() && $canupdate_parent;
 
                 $timeline_key = $document_item['itemtype'] . "_" . $document_item['items_id'];
                 if ($document_item['itemtype'] == static::getType()) {
