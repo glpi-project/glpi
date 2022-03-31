@@ -429,7 +429,7 @@ $CFG_GLPI["globalsearch_types"]           = ['Computer', 'Contact', 'Contract',
     'Ticket', 'Problem', 'Change',
     'User', 'Group', 'Project', 'Supplier',
     'Budget', 'Certificate', 'Line', 'Datacenter',
-    'DCRoom', 'Enclosure', 'PDU', 'Rack', 'Cluster',
+    'DCRoom', 'Enclosure', 'PDU', 'Rack', 'Cluster', 'PassiveDCEquipment',
     'Domain', 'Appliance'
 ];
 
