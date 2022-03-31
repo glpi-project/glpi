@@ -303,12 +303,12 @@ class Ticket extends CommonITILObject
                         if ($cat->getFromDB($value)) {
                             switch ($this->fields['type']) {
                                 case self::INCIDENT_TYPE:
-                                    if (!$cat->getField('is_incident')) {
+                                    if (!$cat->fields['is_incident']) {
                                         return false;
                                     }
                                     break;
                                 case self::DEMAND_TYPE:
-                                    if (!$cat->getField('is_request')) {
+                                    if (!$cat->fields['is_request']) {
                                         return false;
                                     }
                                     break;
