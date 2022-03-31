@@ -1189,23 +1189,21 @@ class MassiveAction
                     if (isset($ma->POST['options'])) {
                         $options = $ma->POST['options'];
                     }
-                    if (isset($ma->POST['container'])) {
-                        switch ($ma->POST['container']) {
-                            case 'massformChange':
-                                $search['condition'][] = 'is_change';
-                                break;
-                            case 'massformProblem':
-                                $search['condition'][] = 'is_problem';
-                                break;
-                            case 'massformTicket':
-                                $search['condition'][] = [
-                                    'OR' => [
-                                        'is_incident',
-                                        'is_request'
-                                    ]
-                                ];
-                                break;
-                        }
+                    switch ($item->getType()) {
+                        case 'Change':
+                            $search['condition'][] = 'is_change';
+                            break;
+                        case 'Problem':
+                            $search['condition'][] = 'is_problem';
+                            break;
+                        case 'Ticket':
+                            $search['condition'][] = [
+                                'OR' => [
+                                    'is_incident',
+                                    'is_request'
+                                ]
+                            ];
+                            break;
                     }
                     if (isset($ma->POST['additionalvalues'])) {
                         $values = $ma->POST['additionalvalues'];
