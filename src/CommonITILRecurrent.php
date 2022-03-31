@@ -542,6 +542,14 @@ abstract class CommonITILRecurrent extends CommonDropdown
     }
 
     /**
+     * Get all available types to which an ITIL object can be assigned
+     **/
+    public static function getAllTypesForHelpdesk()
+    {
+        return CommonITILObject::getAllTypesForHelpdesk();
+    }
+
+    /**
      * Create an item based on the specified template
      *
      * @return boolean

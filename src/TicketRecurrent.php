@@ -48,6 +48,8 @@ class TicketRecurrent extends CommonITILRecurrent
      */
     public static $rightname = 'ticketrecurrent';
 
+    public $userlinkclass  = 'Ticket_User';
+
     public static function getTypeName($nb = 0)
     {
         return __('Recurrent tickets');
@@ -84,5 +86,13 @@ class TicketRecurrent extends CommonITILRecurrent
         }
 
         return $input;
+    }
+
+
+    public function defineTabs($options = [])
+    {
+        $ong = parent::defineTabs($options);
+        $this->addStandardTab('Item_TicketRecurrent', $ong, $options);
+        return $ong;
     }
 }

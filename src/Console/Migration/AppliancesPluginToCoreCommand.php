@@ -49,6 +49,7 @@ use Infocom;
 use Item_Problem;
 use Item_Project;
 use Item_Ticket;
+use Item_TicketRecurrent;
 use KnowbaseItem_Item;
 use Location;
 use Log;
@@ -319,6 +320,7 @@ class AppliancesPluginToCoreCommand extends AbstractCommand
             OutputInterface::VERBOSITY_NORMAL
         );
         $itemtypes_tables = [
+            Item_TicketRecurrent::getTable(),
             Item_Ticket::getTable(),
             Item_Problem::getTable(),
             Change_Item::getTable(),

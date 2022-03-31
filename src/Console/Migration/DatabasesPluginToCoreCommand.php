@@ -43,6 +43,7 @@ use Document_Item;
 use Item_Problem;
 use Item_Project;
 use Item_Ticket;
+use Item_TicketRecurrent;
 use KnowbaseItem_Item;
 use Profile;
 use Session;
@@ -181,6 +182,7 @@ class DatabasesPluginToCoreCommand extends AbstractPluginToCoreCommand
         );
 
         $relations_itemtypes = [
+            Item_TicketRecurrent::class,
             Item_Ticket::class,
             Item_Problem::class,
             Change_Item::class,
