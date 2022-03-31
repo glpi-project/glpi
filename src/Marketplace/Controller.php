@@ -119,9 +119,10 @@ class Controller extends CommonGLPI
             return false;
         }
 
-        if (Toolbox::getMemoryLimit() < (512 * 1024 * 1024)) {
-            // Some plugins archives may be huge, as they may embed some binaries.
-            // Upgrade memory limit to 512M, which should be enough.
+        // Some plugins archives may be huge, as they may embed some binaries.
+        // Upgrade memory limit to 512M, which should be enough.
+        $memory_limit = (int)Toolbox::getMemoryLimit();
+        if ($memory_limit > 0 && $memory_limit < (512 * 1024 * 1024)) {
             ini_set('memory_limit', '512M');
         }
 
