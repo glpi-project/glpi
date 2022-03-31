@@ -120,6 +120,7 @@ class NetworkEquipment extends MainAsset
            //keep only stack parts, not main equipment
             $this->data = [];
             $switches = $this->getStackedSwitches();
+            $switch_index = 1;
             foreach ($switches as $switch) {
                 $stack = clone $val;
                 $stack->firmware = $switch->firmware ?? $switch->version ?? '';
@@ -128,7 +129,9 @@ class NetworkEquipment extends MainAsset
                 $stack->$model_field = $switch->model;
                 $stack->description = $stack->name . ' - ' . $switch->name;
                 $stack->name = $stack->name . ' - ' . $switch->name;
+                $stack->index = $switch_index;
                 $this->data[] = $stack;
+                $switch_index++;
             }
         } else {
            //keep an entry for main equipment
@@ -394,6 +397,9 @@ class NetworkEquipment extends MainAsset
             throw new \RuntimeException('Exactly one entry in data is expected.');
         } else {
             $data = current($this->data);
+            if (property_exists($data, 'index')) {
+                return $data->index;
+            }
             return preg_replace('/.+ - (\d)/', '$1', $data->name);
         }
     }

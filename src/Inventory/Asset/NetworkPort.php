@@ -654,7 +654,7 @@ class NetworkPort extends InventoryAsset
     {
         $mainasset = $this->extra_data['\Glpi\Inventory\Asset\\' . $this->item->getType()];
 
-       //handle ports for stacked switches
+        //handle ports for stacked switches
         if ($mainasset->isStackedSwitch()) {
             $bkp_ports = $this->ports;
             foreach ($this->ports as $k => $val) {
