@@ -298,6 +298,25 @@ class Ticket extends CommonITILObject
                             return false;
                         }
                         break;
+                    case 'itilcategories_id':
+                        $cat = new ITILCategory();
+                        if ($cat->getFromDB($value)) {
+                            switch ($this->fields['type']) {
+                                case self::INCIDENT_TYPE:
+                                    if (!$cat->getField('is_incident')) {
+                                        return false;
+                                    }
+                                    break;
+                                case self::DEMAND_TYPE:
+                                    if (!$cat->getField('is_request')) {
+                                        return false;
+                                    }
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }
+                        break;
                 }
                 break;
         }
