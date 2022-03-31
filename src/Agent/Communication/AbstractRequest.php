@@ -37,6 +37,7 @@ use DOMDocument;
 use DOMElement;
 use Glpi\Agent\Communication\Headers\Common;
 use Glpi\Application\ErrorHandler;
+use Toolbox;
 
 /**
  * Handle agent requests
@@ -188,6 +189,21 @@ abstract class AbstractRequest
      */
     public function handleRequest($data): bool
     {
+        // Some network inventories may request may contains lots of information.
+        // e.g. a Huawei S5720-52X-LI-AC inventory file may weigh 20MB,
+        // and GLPI will consume about 500MB of memory to handle it,
+        // and may take up to 2 minutes on server that has low performances.
+        //
+        // Setting limits to 1GB / 5 minutes should permit to handle any inventories request.
+        $memory_limit       = (int)Toolbox::getMemoryLimit();
+        $max_execution_time = ini_get('max_execution_time');
+        if ($memory_limit > 0 && $memory_limit < (1024 * 1024 * 1024)) {
+            ini_set('memory_limit', '1024M');
+        }
+        if ($max_execution_time > 0 && $max_execution_time < 300) {
+            ini_set('max_execution_time', '300');
+        }
+
         if ($this->compression !== self::COMPRESS_NONE) {
             switch ($this->compression) {
                 case self::COMPRESS_ZLIB:
