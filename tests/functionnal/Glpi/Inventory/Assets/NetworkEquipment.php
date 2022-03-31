@@ -227,6 +227,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
                 'serial' => 'FOC1243W0ED',
                 'type' => 'chassis',
                 'firmware' => '12.2(55)SE6',
+                'stack_number' => 1,
             ],
             2001 => [
                 'contained_index' => 1,
@@ -238,6 +239,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
                 'serial' => 'FOC1127Z4LH',
                 'type' => 'chassis',
                 'firmware' => '12.2(55)SE6',
+                'stack_number' => 2,
             ],
             3001 => [
                 'contained_index' => 1,
@@ -249,6 +251,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
                 'serial' => 'FOC1232W0JH',
                 'type' => 'chassis',
                 'firmware' => '12.2(55)SE6',
+                'stack_number' => 3,
             ],
             4001 => [
                 'contained_index' => 1,
@@ -260,6 +263,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
                 'serial' => 'FOC1033Y0M7',
                 'type' => 'chassis',
                 'firmware' => '12.2(55)SE6',
+                'stack_number' => 4,
             ],
             8001 => [
                 'contained_index' => 1,
@@ -271,6 +275,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
                 'serial' => 'FOC0929U1SR',
                 'type' => 'chassis',
                 'firmware' => '12.2(55)SE6',
+                'stack_number' => 8,
             ]
         ];
 
