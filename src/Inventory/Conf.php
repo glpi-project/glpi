@@ -148,9 +148,6 @@ class Conf extends CommonGLPI
      */
     public function importFile($files): Request
     {
-        ini_set("memory_limit", "-1");
-        ini_set("max_execution_time", "0");
-
         $path = $files['importfile']['tmp_name'];
         $name = $files['importfile']['name'];
 
