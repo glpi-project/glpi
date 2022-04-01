@@ -1645,4 +1645,42 @@ abstract class CommonItilObject_Item extends CommonDBRelation
         }
         return $rand;
     }
+
+    /** add items_2 on item_1 (fonction may already exist elswhere but I couldn't find it )
+     * @param $items_id_1 int CommonITILObject on which  items_ids_2 must be added
+     * @param $items_ids_2  array of elements (itemtype => array(id1, id2, id3, ...))
+     * @return bool if all are successful
+     */
+    public static function itemsadd($items_id_1, $items_ids_2)
+    {
+        $res = true;
+        foreach ($items_ids_2 as $itemtype_2 => $ids) {
+            foreach ($ids as $items_id_2) {
+                $cur = new static();
+                $cur->fields[static::$items_id_1] = $items_id_1;
+                $cur->fields[static::$itemtype_2] = $itemtype_2;
+                $cur->fields[static::$items_id_2] = $items_id_2;
+                if ($cur->addToDB()) {
+                    $msg = sprintf(
+                        __('%s %d successfully created for %s %d'),
+                        $itemtype_2,
+                        $items_id_2,
+                        static::$itemtype_2,
+                        $items_id_1
+                    );
+                    $res = $res & true;
+                } else {
+                    $msg = sprintf(
+                        __('%s %d successfully created for %s %d'),
+                        $itemtype_2,
+                        $items_id_2,
+                        static::$itemtype_2,
+                        $items_id_1
+                    );
+                    $res = false;
+                }
+            }
+        }
+        return $res;
+    }
 }

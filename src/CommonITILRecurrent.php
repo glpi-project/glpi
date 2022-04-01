@@ -551,10 +551,10 @@ abstract class CommonITILRecurrent extends CommonDropdown
 
     /**
      * Create an item based on the specified template
-     *
+     * @param $items_item_id array of elements (itemtype => array(id1, id2, id3, ...))
      * @return boolean
      */
-    public function createItem()
+    public function createItem($items_item_id = [])
     {
         $result = false;
         $concrete_class = static::getConcreteClass();
@@ -590,6 +590,12 @@ abstract class CommonITILRecurrent extends CommonDropdown
                     $concrete_class::getTypeName(1),
                     $items_id
                 );
+                // add item if any
+                if (count($items_item_id) > 0) {
+                    $item_item_class = $concrete_class::getItemLinkClass();
+                    $item_item_class::itemsAdd($items_id, $items_item_id);
+                }
+
                 $result = true;
             } else {
                 $msg = sprintf(
@@ -631,5 +637,27 @@ abstract class CommonITILRecurrent extends CommonDropdown
     public static function getIcon()
     {
         return "ti ti-alarm";
+    }
+
+    /**
+     * return the element related to the recurrent object
+     */
+    public function getRelatedElements()
+    {
+        global $DB;
+        $items = [];
+        if (method_exists(static::class, 'getItemLinkClass')) {
+            $item_class = (static::class)::getItemLinkClass();
+            $iterator = $DB->request([
+                'FROM'   => $item_class::getTable(),
+                'WHERE'  => [
+                    'ticketrecurrents_id' =>  $this->getId(),
+                ]
+            ]);
+            foreach ($iterator as $data) {
+                $items[$data['itemtype']][] = $data['id'];
+            }
+        }
+        return $items;
     }
 }
