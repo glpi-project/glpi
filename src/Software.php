@@ -1170,7 +1170,9 @@ class Software extends CommonDBTM
                     $input["softwarecategories_id"] = $softCat->importExternal($input["_system_category"]);
                 }
             }
-            $input["softwarecategories_id"] = 0;
+            if (!isset($input["softwarecategories_id"])) {
+                $input["softwarecategories_id"] = 0;
+            }
         }
     }
 }

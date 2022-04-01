@@ -104,13 +104,13 @@ class Software extends DbTestCase
 
         $input    = ['name' => 'A name', 'is_update' => 0, 'id' => 3, 'withtemplate' => 0];
         $result   = $software->prepareInputForAdd($input);
-        $expected = ['name' => 'A name', 'is_update' => 0, 'softwares_id' => 0, '_oldID' => 3];
+        $expected = ['name' => 'A name', 'is_update' => 0, 'softwares_id' => 0, '_oldID' => 3, 'softwarecategories_id' => 0];
 
         $this->array($result)->isIdenticalTo($expected);
 
         $input    = ['name' => 'A name', 'is_update' => 0, 'withtemplate' => 0];
         $result   = $software->prepareInputForAdd($input);
-        $expected = ['name' => 'A name', 'is_update' => 0, 'softwares_id' => 0];
+        $expected = ['name' => 'A name', 'is_update' => 0, 'softwares_id' => 0, 'softwarecategories_id' => 0];
 
         $this->array($result)->isIdenticalTo($expected);
 
