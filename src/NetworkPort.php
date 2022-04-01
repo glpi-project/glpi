@@ -31,6 +31,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Plugin\Hooks;
 use Glpi\Socket;
 
 /**
@@ -746,6 +747,8 @@ class NetworkPort extends CommonDBChild
             Html::closeForm();
         }
 
+        Plugin::doHook(Hooks::DISPLAY_NETPORT_LIST_BEFORE);
+
         $search_config_top    = '';
         if (
             Session::haveRightsOr('search_config', [
@@ -949,7 +952,8 @@ class NetworkPort extends CommonDBChild
             }
         }
 
-        $whole_output = "<tr class='$css_class'>";
+        $port_number = $port['logical_number'] ?? "";
+        $whole_output = "<tr class='$css_class' id='port_number_{$port_number}'>";
         if ($canedit && $with_ma) {
             $whole_output .= "<td>" . Html::getMassiveActionCheckBox(__CLASS__, $port['id']) . "</td>";
         }

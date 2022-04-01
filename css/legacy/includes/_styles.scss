@@ -1493,69 +1493,6 @@
       z-index: 11!important;
    }
 
-   .netport {
-      td {
-         &.green {
-         background-color: green;
-            color: white;
-         }
-
-         &.red {
-            background-color: red;
-            color: white;
-         }
-
-         &.orange {
-            background-color: orange;
-            color: white;
-         }
-      }
-
-      &.trunk {
-         background-color: MediumAquamarine;
-      }
-
-      &.hub {
-         background-color: LightSalmon;
-      }
-
-      &.cotrunk {
-         background-color: silver;
-      }
-
-      &.aggregated,
-      .aggregated {
-         background-color: teal;
-         color: white;
-         padding-left: 2em;
-
-         a {
-            color: white;
-         }
-      }
-
-      .hub {
-         border: 1px grey solid;
-         margin: 0 .5em 0 .5em;
-
-         div {
-            padding: .2em .5em;
-            border-bottom: 1px grey solid;
-            &:last-of-type {
-               border-bottom: none;
-            }
-         }
-      }
-   }
-
-   .netport-legend {
-      width: 100%;
-      td.netport {
-         text-align: center;
-         width: 25%;
-      }
-   }
-
    .dashboard.printer_barchart .g-chart .chart {
       flex:none;
       height: 500px;
