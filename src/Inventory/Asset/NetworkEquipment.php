@@ -309,7 +309,7 @@ class NetworkEquipment extends MainAsset
      *
      * @return array
      */
-    public function getStackedSwitches($parent_index = 0, $stack_number = 1): array
+    public function getStackedSwitches(): array
     {
         $components = $this->extra_data['network_components'] ?? [];
         if (!count($components)) {
@@ -317,17 +317,9 @@ class NetworkEquipment extends MainAsset
         }
 
         $switches = [];
-
+        $stack_number = 1;
         foreach ($components as $component) {
             switch ($component->type) {
-                // FIXME is this aims to do something more than calling twice the same code ?
-                // $parent_index is not used in recursive part
-                /* case 'stack':
-                    if ($parent_index == 0 && (!property_exists($component, 'parent_index') || !empty($component->parent_index))) {
-                        $switches += $this->getStackedSwitches($component->index, $stack_number);
-                        $stack_number += count($switches);
-                    }
-                    break; */
                 case 'chassis':
                     if (property_exists($component, 'serial')) {
                         $component->stack_number = $stack_number;
