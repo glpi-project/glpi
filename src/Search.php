@@ -7957,6 +7957,7 @@ HTML;
 
             if (isset($searchopt[$field_num]['datatype'])) {
                 switch ($searchopt[$field_num]['datatype']) {
+                    case 'mio':
                     case 'count':
                     case 'number':
                         $opt = [
