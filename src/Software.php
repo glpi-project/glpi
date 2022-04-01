@@ -1169,9 +1169,8 @@ class Software extends CommonDBTM
                     $softCat = new SoftwareCategory();
                     $input["softwarecategories_id"] = $softCat->importExternal($input["_system_category"]);
                 }
-            } else {
-                $input["softwarecategories_id"] = 0;
             }
+            $input["softwarecategories_id"] = 0;
         }
     }
 }

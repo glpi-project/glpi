@@ -611,6 +611,8 @@ class Software extends InventoryAsset
             if (!isset($this->softwares[$skey])) {
                 $stmt_columns = $this->cleanInputToPrepare((array)$val, $soft_fields);
 
+                $software->handleCategoryRules($stmt_columns);
+
                 if ($stmt === null) {
                     $stmt_types = str_repeat('s', count($stmt_columns));
                     $reference = array_fill_keys(
@@ -624,7 +626,6 @@ class Software extends InventoryAsset
                     $stmt = $DB->prepare($insert_query);
                 }
 
-                $software->handleCategoryRules($stmt_columns);
                 $stmt_values = array_values($stmt_columns);
                 $stmt->bind_param($stmt_types, ...$stmt_values);
                 $DB->executeStatement($stmt);
