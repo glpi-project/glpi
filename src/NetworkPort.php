@@ -747,7 +747,7 @@ class NetworkPort extends CommonDBChild
             Html::closeForm();
         }
 
-        Plugin::doHook(Hooks::DISPLAY_NETPORT_LIST_BEFORE);
+        Plugin::doHook(Hooks::DISPLAY_NETPORT_LIST_BEFORE, ['item' => $item]);
 
         $search_config_top    = '';
         if (
