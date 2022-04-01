@@ -260,8 +260,10 @@ class Software extends InventoryAsset
         //to build comparison key @see getFullCompareKey
         $iterator = $DB->request([
             'SELECT' => [
-                'glpi_items_softwareversions.id as sid',
+                'glpi_items_softwareversions.id as item_soft_version_id',
+                'glpi_softwares.id as softid',
                 'glpi_softwares.name',
+                'glpi_softwareversions.id AS versionid',
                 'glpi_softwareversions.name AS version',
                 'glpi_softwareversions.arch',
                 'glpi_softwares.manufacturers_id',
@@ -291,14 +293,16 @@ class Software extends InventoryAsset
         ]);
 
         foreach ($iterator as $data) {
-            $softid = $data['sid'];
-            unset($data['sid']);
+            $item_soft_v_id = $data['item_soft_version_id'];
+            unset($data['item_soft_version_id']);
             $key_w_version = $this->getFullCompareKey((object)$data);
             $key_wo_version = $this->getFullCompareKey((object)$data, false);
-            $db_software[$key_w_version] = $softid;
+            $db_software[$key_w_version] = $item_soft_v_id;
             $db_software_wo_version[$key_wo_version] = [
-                'version' => $data['version'],
-                'name'    => $data['name'],
+                'versionid' => $data['versionid'],
+                'softid'    => $data['softid'],
+                'version'   => $data['version'],
+                'name'      => $data['name'],
             ];
         }
 
@@ -784,6 +788,26 @@ class Software extends InventoryAsset
                 $input['date_install']
             );
             $DB->executeStatement($stmt);
+
+            // log the new installation into software history
+            $version_name = $val->version;
+            $asset_name   = $this->item->fields['name'];
+            \Log::history(
+                $softwares_id,
+                'Software',
+                [0, '', sprintf(__('%1$s - %2$s'), $version_name, $asset_name)],
+                'Item_SoftwareVersion',
+                \Log::HISTORY_ADD_SUBITEM
+            );
+
+            // log the new installation into software version history
+            \Log::history(
+                $versions_id,
+                'SoftwareVersion',
+                [0, '', $asset_name], // we just need the computer name in software version historical
+                'Item_SoftwareVersion',
+                \Log::HISTORY_ADD_SUBITEM
+            );
         }
     }
 
@@ -819,11 +843,36 @@ class Software extends InventoryAsset
         }
 
         foreach ($this->deleted_versions as $software_data) {
+            $softwares_id  = $software_data['softid'];
+            $versions_id   = $software_data['versionid'];
+            $software_name = $software_data['name'];
+            $version_name  = $software_data['version'];
+            $asset_name    = $this->item->fields['name'];
+
+            // log into asset
             \Log::history(
                 $this->item->fields['id'],
                 $this->item->getType(),
-                [0, '', sprintf('%1$s - %2$s', $software_data['name'], $software_data['version'])],
+                [0, '', sprintf('%1$s - %2$s', $software_name, $version_name)],
                 'Software',
+                \Log::HISTORY_DELETE_SUBITEM
+            );
+
+            // log the removal of installation into software history
+            \Log::history(
+                $softwares_id,
+                'Software',
+                [0, '', sprintf(__('%1$s - %2$s'), $version_name, $asset_name)],
+                'Item_SoftwareVersion',
+                \Log::HISTORY_DELETE_SUBITEM
+            );
+
+            // log the removal of installation into software version history
+            \Log::history(
+                $versions_id,
+                'SoftwareVersion',
+                [0, '', $asset_name], // we just need the computer name in software version historical
+                'Item_SoftwareVersion',
                 \Log::HISTORY_DELETE_SUBITEM
             );
         }
