@@ -29,7 +29,7 @@
  * ---------------------------------------------------------------------
  */
 
- .netport {
+.netport {
     &:target {
         animation: shakeX; // from animate css dependencies
         animation-duration: 2s;
