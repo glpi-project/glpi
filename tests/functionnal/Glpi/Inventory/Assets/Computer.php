@@ -199,7 +199,7 @@ class Computer extends AbstractInventoryAsset
 
         $data = (array)$json->content;
         $inventory = new \Glpi\Inventory\Inventory();
-        $this->boolean($inventory->setData($json_str))->isTrue();
+        $this->boolean($inventory->setData($json))->isTrue();
 
         $agent = new \Agent();
         $this->integer($agent->handleAgent($inventory->extractMetadata()))->isGreaterThan(0);

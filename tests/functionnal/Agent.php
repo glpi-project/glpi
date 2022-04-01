@@ -71,7 +71,7 @@ class Agent extends DbTestCase
     public function testAgentFeaturesFromItem()
     {
         //run an inventory
-        $json = file_get_contents(self::INV_FIXTURES . 'computer_1.json');
+        $json = json_decode(file_get_contents(self::INV_FIXTURES . 'computer_1.json'));
         $inventory = new \Glpi\Inventory\Inventory($json);
 
         if ($inventory->inError()) {
@@ -168,7 +168,7 @@ class Agent extends DbTestCase
     public function testAgentHasChanged()
     {
         //run an inventory
-        $json = file_get_contents(self::INV_FIXTURES . 'computer_1.json');
+        $json = json_decode(file_get_contents(self::INV_FIXTURES . 'computer_1.json'));
         $inventory = new \Glpi\Inventory\Inventory($json);
 
         if ($inventory->inError()) {

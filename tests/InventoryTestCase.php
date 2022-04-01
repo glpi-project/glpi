@@ -119,7 +119,7 @@ class InventoryTestCase extends \DbTestCase
     {
         if ($is_xml === true) {
             $converter = new \Glpi\Inventory\Converter();
-            $source = $converter->convert($source);
+            $source = json_decode($converter->convert($source));
         }
 
         $inventory = new \Glpi\Inventory\Inventory($source);
