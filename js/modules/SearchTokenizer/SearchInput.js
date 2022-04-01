@@ -554,7 +554,7 @@ export default class SearchInput {
         const selection = document.getSelection();
         const range = document.createRange();
 
-        if (node.lastChild.nodeType === Node.TEXT_NODE) {
+        if (node.lastChild && node.lastChild.nodeType === Node.TEXT_NODE) {
             range.setStart(node.lastChild, node.lastChild.length);
         } else {
             range.setStart(node, node.childNodes.length);
