@@ -56,7 +56,7 @@
         "leaflet.markercluster": "^1.4.1",
         "lodash": "^4.17.21",
         "masonry-layout": "^4.2.2",
-        "photoswipe": "^4.1.3",
+        "photoswipe": "^5.2.2",
         "plain-scrollbar": "github:ewya/PlainScrollbar#35221e7c7fa9633d6f61bcd9d7b418b6de6da73b",
         "prismjs": "^1.23.0",
         "process": "^0.11.10",
