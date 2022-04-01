@@ -789,8 +789,8 @@ class Software extends InventoryAsset
             $DB->executeStatement($stmt);
 
             // log the new installation into software history
-            $version_name = $val->version ?? "";
-            $asset_name   = $this->item->fields['name'] ?? "";
+            $version_name = $val->version;
+            $asset_name   = $this->item->fields['name'];
             \Log::history(
                 $softwares_id,
                 'Software',
@@ -842,11 +842,11 @@ class Software extends InventoryAsset
         }
 
         foreach ($this->deleted_versions as $software_data) {
-            $softwares_id  = $software_data['softid']    ?? "";
-            $versions_id   = $software_data['versionid'] ?? "";
-            $software_name = $software_data['name']      ?? "";
-            $version_name  = $software_data['version']   ?? "";
-            $asset_name    = $this->item->fields['name'] ?? "";
+            $softwares_id  = $software_data['softid'];
+            $versions_id   = $software_data['versionid'];
+            $software_name = $software_data['name'];
+            $version_name  = $software_data['version'];
+            $asset_name    = $this->item->fields['name'];
 
             // log into asset
             \Log::history(
