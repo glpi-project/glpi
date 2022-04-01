@@ -320,7 +320,7 @@ abstract class AbstractRequest
             $action = $jdata->query;
         }
 
-        return $this->handleAction($action, $data);
+        return $this->handleAction($action, $jdata);
     }
 
     /**
