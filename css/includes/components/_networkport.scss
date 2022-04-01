@@ -23,11 +23,11 @@
     }
 
     &.trunk {
-        background-color: MediumAquamarine;
+        background-color: mediumaquamarine;
     }
 
     &.hub {
-        background-color: LightSalmon;
+        background-color: lightsalmon;
     }
 
     &.cotrunk {
@@ -47,11 +47,12 @@
 
     .hub {
         border: 1px grey solid;
-        margin: 0 0.5em 0 0.5em;
+        margin: 0 0.5em;
 
         div {
             padding: 0.2em 0.5em;
             border-bottom: 1px grey solid;
+
             &:last-of-type {
                 border-bottom: none;
             }
@@ -61,6 +62,7 @@
 
 .netport-legend {
     width: 100%;
+
     td.netport {
         text-align: center;
         width: 25%;
