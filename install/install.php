@@ -153,6 +153,7 @@ function step3($host, $user, $password, $update)
 {
 
     error_reporting(16);
+    mysqli_report(MYSQLI_REPORT_OFF);
 
    //Check if the port is in url
     $hostport = explode(":", $host);
