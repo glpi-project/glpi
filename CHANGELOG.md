@@ -252,7 +252,9 @@ The present file will list all changes made to the project; according to the
 - `Update::declareOldItems()`
 - `User::showPersonalInformation()`
 
-## [9.5.6] unreleased
+## [9.5.7] 2022-01-27
+
+## [9.5.6] 2021-09-15
 
 ### Changed
 
