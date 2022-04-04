@@ -40,4 +40,4 @@ Session::checkLoginUser();
 
 $obj = 'Ticket';
 $item_obj = 'Item_Ticket';
-include('./object_item.php');
+include('./commonitilobject_item.php');

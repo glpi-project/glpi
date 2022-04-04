@@ -438,7 +438,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
             && static::canAddRelatedItem($obj)
         ) {
             echo "<div class='firstbloc'>";
-            echo "<form name='${obj_class}_item_form$rand' id='object_item_form$rand' method='post'
+            echo "<form name='${obj_class}_item_form$rand' id='commonitilobject_item_form$rand' method='post'
                     action='" . Toolbox::getItemTypeFormURL(static::class) . "'>";
             echo "<table class='tab_cadre_fixe'>";
             echo "<tr class='tab_bg_2'><th colspan='2'>" . __('Add an item') . "</th></tr>";
