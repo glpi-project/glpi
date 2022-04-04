@@ -694,7 +694,7 @@ class Search extends DbTestCase
             default:
                 if (array_key_exists('table', $so_data) && array_key_exists('field', $so_data)) {
                     $field = $DB->tableExists($so_data['table']) ? $DB->getField($so_data['table'], $so_data['field']) : null;
-                    if (preg_match('/int(\(\d+\))?$/', $field['Type'] ?? '')) {
+                    if (preg_match('/int(\(\d+\))?( unsigned)?$/', $field['Type'] ?? '')) {
                         $val = 1;
                         break;
                     }
