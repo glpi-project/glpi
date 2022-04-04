@@ -1205,7 +1205,7 @@ class Search
                     $tmplink = " AND ";
                 }
                // Manage Link if not first item
-                if (!empty($sql)) {
+               if (!empty($sql) && !$is_having) {
                     $sql .= $globallink;
                 }
                 $first2 = true;
