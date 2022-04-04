@@ -4289,7 +4289,6 @@ CREATE TABLE `glpi_sockets` (
   `locations_id` int unsigned NOT NULL DEFAULT '0',
   `name` varchar(255) DEFAULT NULL,
   `socketmodels_id` int unsigned NOT NULL DEFAULT '0',
-  `wiring_side` tinyint DEFAULT '1',
   `itemtype` varchar(255) DEFAULT NULL,
   `items_id` int unsigned NOT NULL DEFAULT '0',
   `networkports_id` int unsigned NOT NULL DEFAULT '0',
@@ -4302,7 +4301,6 @@ CREATE TABLE `glpi_sockets` (
   KEY `location_name` (`locations_id`,`name`),
   KEY `item` (`itemtype`,`items_id`),
   KEY `networkports_id` (`networkports_id`),
-  KEY `wiring_side` (`wiring_side`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;

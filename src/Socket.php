@@ -112,7 +112,8 @@ class Socket extends CommonDBChild
         $rand_itemtype = rand();
         $rand_items_id = rand();
 
-        echo "<span id='show_itemtype_field' class='input_listener'>";
+        echo "<div id='show_itemtype_field' class='input_listener'>";
+        echo "<label class='form-label'>" . __('Asset') . "</label>";
         Dropdown::showFromArray('itemtype', self::getSocketLinkTypes(), ['value' => $itemtype,
             'rand' => $rand_itemtype
         ]);
@@ -183,6 +184,12 @@ class Socket extends CommonDBChild
      **/
     public function showForm($ID, array $options = [])
     {
+
+        global $DB;
+
+        global $DB;
+
+        global $DB;
 
         $itemtype = null;
         if (isset($options['itemtype']) && !empty($options['itemtype'])) {
@@ -380,15 +387,6 @@ class Socket extends CommonDBChild
             'datatype'           => 'specific',
             'searchtype'         => 'equals',
             'additionalfields'   => ['itemtype']
-        ];
-
-        $tab[] = [
-            'id'                 => '9',
-            'table'              => Socket::getTable(),
-            'field'              => 'wiring_side',
-            'name'               => __('Wiring side'),
-            'searchtype'         => 'equals',
-            'datatype'           => 'specific'
         ];
 
         $tab = array_merge($tab, Location::rawSearchOptionsToAdd());
@@ -763,7 +761,6 @@ class Socket extends CommonDBChild
 
             echo "<td>" . $socket->fields["position"] . "</td>";
             echo "<td>" . Dropdown::getDropdownName(SocketModel::getTable(), $socket->fields["socketmodels_id"]) . "</td>";
-            echo "<td>" . self::getWiringSideName($socket->fields["wiring_side"]) . "</td>";
 
             $networkport = new NetworkPort();
             if ($networkport->getFromDB($socket->fields["networkports_id"])) {
@@ -838,9 +835,6 @@ class Socket extends CommonDBChild
             echo "</td>";
             echo "<td>" . SocketModel::getTypeName(1) . "</td><td>";
             SocketModel::dropdown("socketmodels_id", []);
-            echo "</td>";
-            echo "<td>" . __('Wiring side') . "</td><td>";
-            Socket::dropdownWiringSide("wiring_side", []);
             echo "</td>";
             echo "<td>" . __('Itemtype') . "</td><td>";
             Dropdown::showSelectItemFromItemtypes([
@@ -938,7 +932,6 @@ class Socket extends CommonDBChild
             echo "<th>" . __('Socket Model') . "</th>"; // socket Model
             echo "<th>" . _n('Asset', 'Assets', Session::getPluralNumber()) . "</th>"; // Asset
             echo "<th>" . __('NetworkPort') . "</th>"; // NetworkPort
-            echo "<th>" . __('Wiring side') . "</th>"; // Wiring side
             echo "<th>" . __('Comments') . "</th>"; // Comment
             echo "</tr>\n";
 

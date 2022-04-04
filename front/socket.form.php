@@ -49,7 +49,22 @@ if (!isset($_GET["itemtype"])) {
 }
 
 $socket = new Socket();
-if (isset($_POST["add"])) {
+if (isset($_POST["add_several"])) {
+    $socket->check(-1, CREATE, $_POST);
+
+    var_dump($_POST);
+    $name = $_POST["name"];
+
+    for ($i = $_POST["from"]; $i <= $_POST["to"]; $i++) {
+        $_POST["name"] = $_POST["prefix"]  . $name . $i . $_POST["suffix"];
+        $_POST["position"] = $i;
+        $socket->add($_POST);
+    }
+    if ($_SESSION['glpibackcreated']) {
+        Html::redirect($socket->getLinkURL());
+    }
+    Html::back();
+} else if (isset($_POST["add"])) {
     $socket->check(-1, CREATE, $_POST);
 
     if ($socket->add($_POST)) {
