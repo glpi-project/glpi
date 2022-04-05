@@ -204,7 +204,7 @@ class Inventory
      */
     public function contact($data)
     {
-        $this->raw_data = json_decode($data);
+        $this->raw_data = $data;
         $this->extractMetadata();
         //create/load agent
         $this->agent = new Agent();
