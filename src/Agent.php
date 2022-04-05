@@ -625,7 +625,7 @@ class Agent extends CommonDBTM
             }
         }
 
-        if (!$response || $response == null) {
+        if (!$response) {
             // throw last exception on no response
             throw $e;
         }
