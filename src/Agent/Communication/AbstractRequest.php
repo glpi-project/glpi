@@ -287,7 +287,7 @@ abstract class AbstractRequest
             return false;
         }
         $this->deviceid = (string)$xml->DEVICEID;
-       //query is not mandatory. Defaults to inventory
+        //query is not mandatory. Defaults to inventory
         $action = self::INVENT_QUERY;
         if (property_exists($xml, 'QUERY')) {
             $action = strtolower((string)$xml->QUERY);
