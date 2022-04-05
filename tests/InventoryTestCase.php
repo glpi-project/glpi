@@ -119,12 +119,10 @@ class InventoryTestCase extends \DbTestCase
     {
         if ($is_xml === true) {
             $converter = new \Glpi\Inventory\Converter();
-            $source = $converter->convert($source);
+            $source = json_decode($converter->convert($source));
         }
 
-        $CFG_GLPI["is_contact_autoupdate"] = 0;
         $inventory = new \Glpi\Inventory\Inventory($source);
-        $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
 
         if ($inventory->inError()) {
             $this->dump($inventory->getErrors());

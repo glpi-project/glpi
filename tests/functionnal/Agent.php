@@ -71,7 +71,7 @@ class Agent extends DbTestCase
     public function testAgentFeaturesFromItem()
     {
         //run an inventory
-        $json = file_get_contents(self::INV_FIXTURES . 'computer_1.json');
+        $json = json_decode(file_get_contents(self::INV_FIXTURES . 'computer_1.json'));
         $inventory = new \Glpi\Inventory\Inventory($json);
 
         if ($inventory->inError()) {
@@ -168,7 +168,7 @@ class Agent extends DbTestCase
     public function testAgentHasChanged()
     {
         //run an inventory
-        $json = file_get_contents(self::INV_FIXTURES . 'computer_1.json');
+        $json = json_decode(file_get_contents(self::INV_FIXTURES . 'computer_1.json'));
         $inventory = new \Glpi\Inventory\Inventory($json);
 
         if ($inventory->inError()) {
@@ -213,14 +213,14 @@ class Agent extends DbTestCase
         $this->object($item)->isInstanceOf('Computer');
 
         //play an update with changes
-        $json = json_decode($json);
+        $json = json_decode(file_get_contents(self::INV_FIXTURES . 'computer_1.json'));
 
         //change agent and therefore deviceid
         $json->content->versionclient = 'GLPI-Agent_v1';
         $json->deviceid = 'glpixps-2022-01-17-11-36-53';
 
         $CFG_GLPI["is_contact_autoupdate"] = 0;
-        $inventory = new \Glpi\Inventory\Inventory(json_encode($json));
+        $inventory = new \Glpi\Inventory\Inventory($json);
         $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
 
         if ($inventory->inError()) {

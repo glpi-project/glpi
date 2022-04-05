@@ -132,11 +132,10 @@ class Inventory
             $this->inventory_format = Request::XML_MODE;
             file_put_contents($dir . '/' . $this->inventory_id . '.xml', $data->asXML());
            //convert legacy format
-            $data = $converter->convert($data->asXML());
+            $data = json_decode($converter->convert($data->asXML()));
         } else {
-            file_put_contents($dir . '/' . $this->inventory_id . '.json', $data);
+            file_put_contents($dir . '/' . $this->inventory_id . '.json', json_encode($data));
         }
-        $data = json_decode($data);
 
         try {
             $converter->validate($data);

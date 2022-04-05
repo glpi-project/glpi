@@ -108,7 +108,7 @@ Compiled Fri 26-Mar-10 09:14 by prod_rel_team</DESCRIPTION>
         $this->integer($networkequipments_id)->isGreaterThan(0);
 
         $converter = new \Glpi\Inventory\Converter();
-        $data = $converter->convert($net_xml_source);
+        $data = json_decode($converter->convert($net_xml_source));
         $CFG_GLPI["is_contact_autoupdate"] = 0;
         $inventory = new \Glpi\Inventory\Inventory($data);
         $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
@@ -155,7 +155,7 @@ Compiled Fri 26-Mar-10 09:14 by prod_rel_team</DESCRIPTION>
 </REQUEST>";
 
         $converter = new \Glpi\Inventory\Converter();
-        $source = $converter->convert($comp_xml_source);
+        $source = json_decode($converter->convert($comp_xml_source));
 
         $CFG_GLPI["is_contact_autoupdate"] = 0;
         $inventory = new \Glpi\Inventory\Inventory($source);
