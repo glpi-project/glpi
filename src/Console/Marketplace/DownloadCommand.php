@@ -50,16 +50,13 @@ class DownloadCommand extends AbstractCommand
         $this->setAliases(['marketplace:download']);
         $this->setDescription('Download plugin from the GLPI marketplace');
 
-        $this->addArgument('plugins', InputArgument::REQUIRED, 'The internal plugin name(s)');
+        $this->addArgument('plugins', InputArgument::REQUIRED | InputArgument::IS_ARRAY, 'The internal plugin name(s)');
         $this->addOption('force', 'f', InputOption::VALUE_NONE, 'Force download even if the plugin is already downloaded');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $plugins = $input->getArgument('plugins');
-        if (!empty($plugins)) {
-            $plugins = explode(' ', $plugins);
-        }
 
         foreach ($plugins as $plugin) {
             if (!empty(trim($plugin))) {
