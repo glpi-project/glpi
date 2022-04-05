@@ -77,15 +77,16 @@
 {% endif %}
 
 {% if canupdate and not params['template_preview'] %}
+   {% set has_pending_link = params['_link']['tickets_id_2']|length > 0 %}
    <div class="mt-2">
-      <button class="btn btn-sm btn-ghost-secondary" type="button"
+      <button class="btn btn-sm btn-ghost-secondary {{ has_pending_link ? 'd-none' : '' }}" type="button"
                data-bs-toggle="collapse" data-bs-target="#link_ticket_dropdowns"
-               aria-expanded="false" aria-controls="link_ticket_dropdowns">
+               aria-expanded="false" aria-controls="link_ticket_dropdowns" onclick="$(this).hide();">
          <i class="fas fa-plus"></i>
          <span>{{ __('Add') }}</span>
       </button>
 
-      <span class="collapse {{ params['_link']['tickets_id_2']|length > 0 ? "show" : "" }}" id="link_ticket_dropdowns">
+      <span class="collapse {{ has_pending_link ? "show" : "" }}" id="link_ticket_dropdowns">
          {{ ticket_ticket.dropdownLinks(
             '_link[link]',
             params['_link']['link'] ?? ''
