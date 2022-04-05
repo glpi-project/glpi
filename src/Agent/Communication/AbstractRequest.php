@@ -351,11 +351,11 @@ abstract class AbstractRequest
             if ($this->mode === self::JSON_MODE) {
                 $this->addToResponse([
                     'status' => 'error',
-                    'message' => $message,
+                    'message' => \Html::resume_text($message, 250),
                     'expiration' => self::DEFAULT_FREQUENCY
                 ]);
             } else {
-                $this->addToResponse(['ERROR' => $message]);
+                $this->addToResponse(['ERROR' => \Html::resume_text($message, 250)]);
             }
         }
     }

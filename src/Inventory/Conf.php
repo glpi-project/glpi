@@ -46,6 +46,7 @@ use DevicePowerSupply;
 use DeviceProcessor;
 use DeviceSimcard;
 use DeviceSoundCard;
+use Glpi\Toolbox\Sanitizer;
 use Html;
 use NetworkPortType;
 use Session;
@@ -216,8 +217,15 @@ class Conf extends CommonGLPI
             $inventory_request->handleContentType($mime);
             $inventory_request->handleRequest($contents);
             if ($inventory_request->inError()) {
+                $response = $inventory_request->getResponse();
+                if ($inventory_request->getMode() === Request::JSON_MODE) {
+                    $response = json_decode($inventory_request->getResponse());
+                } else {
+                    $xml = simplexml_load_string($response);
+                    $response = $xml->ERROR;
+                }
                 Session::addMessageAfterRedirect(
-                    __('File has not been imported:') . " " . $inventory_request->getResponse(),
+                    __('File has not been imported:') . " " . Sanitizer::encodeHtmlSpecialChars($response),
                     true,
                     ERROR
                 );

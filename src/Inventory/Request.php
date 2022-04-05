@@ -357,10 +357,12 @@ class Request extends AbstractRequest
 
         $this->inventory = new Inventory();
         $this->inventory
-         ->setRequestQuery($this->query)
-         ->setData($data, $this->getMode());
+            ->setRequestQuery($this->query)
+            ->setData($data, $this->getMode());
 
-        $this->inventory->doInventory($this->test_rules);
+        if (!$this->inventory->inError()) {
+            $this->inventory->doInventory($this->test_rules);
+        }
 
         if ($this->inventory->inError()) {
             foreach ($this->inventory->getErrors() as $error) {
