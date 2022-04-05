@@ -60,7 +60,8 @@ jobs:
         if: ${{ steps.updated.outputs.build == 'yes' }}
         run: |
           docker exec --interactive ${{ job.services.app.id }} tools/make_release.sh -y . ${{ env.release_name }}
-          docker cp ${{ job.services.app.id }}:/tmp/glpi-${{ env.release_name }}.tgz ${{ github.workspace }}/${{ env.release_name }}.tar.gz
+          docker cp ${{ job.services.app.id }}:/tmp/glpi-${{ env.release_name }}.tgz ${{ github.workspace }}/${{ env.release_name }}.tar.gz
+          cp ${{ github.workspace }}/${{ env.release_name }}.tar.gz ${{ github.workspace }}/${{ steps.release-name.outputs.basename }}.tar.gz
       - uses: actions/checkout@v3
         if: ${{ steps.updated.outputs.build == 'yes' }}
         with:
@@ -79,10 +80,12 @@ jobs:
           git config --local user.email "$EMAIL"
           git config --local user.name "$NAME"
           echo "Removing previous ${{ matrix.branch }} builds"
-          git filter-branch --prune-empty -f --index-filter 'git rm --cached --ignore-unmatch "glpi/${{ steps.release-name.outputs.basename}}.*.tar.gz"' HEAD
-          cp -vf "${{ github.workspace }}/${{ env.release_name }}.tar.gz" glpi
+          git filter-branch --prune-empty -f --index-filter 'git rm --cached --ignore-unmatch "glpi/${{ steps.release-name.outputs.basename }}.tar.gz"' HEAD
+          git filter-branch --prune-empty -f --index-filter 'git rm --cached --ignore-unmatch "glpi/${{ steps.release-name.outputs.basename }}.*.tar.gz"' HEAD
+          cp -vf ${{ github.workspace }}/${{ steps.release-name.outputs.basename }}.tar.gz glpi
+          cp -vf ${{ github.workspace }}/${{ env.release_name }}.tar.gz glpi
           # script argument should be the ordered list of builds to index
-          ../tools/github-nightly-description.sh `ls -r glpi/*.tar.gz` >glpi/index.md
+          ../tools/github-nightly-description.sh `ls -r glpi/*.*.tar.gz` > glpi/index.md
           echo "Repository status:"
           git status
           ls -lt glpi
