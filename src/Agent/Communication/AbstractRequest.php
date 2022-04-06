@@ -312,7 +312,7 @@ abstract class AbstractRequest
             return false;
         }
 
-        $this->deviceid = $jdata->deviceid;
+        $this->deviceid = $jdata->deviceid ?? null;
         $action = self::INVENT_ACTION;
         if (property_exists($jdata, 'action')) {
             $action = $jdata->action;
@@ -351,11 +351,11 @@ abstract class AbstractRequest
             if ($this->mode === self::JSON_MODE) {
                 $this->addToResponse([
                     'status' => 'error',
-                    'message' => $message,
+                    'message' => \Html::resume_text($message, 250),
                     'expiration' => self::DEFAULT_FREQUENCY
                 ]);
             } else {
-                $this->addToResponse(['ERROR' => $message]);
+                $this->addToResponse(['ERROR' => \Html::resume_text($message, 250)]);
             }
         }
     }

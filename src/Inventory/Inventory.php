@@ -113,7 +113,7 @@ class Inventory
     public function setData($data, $format = Request::JSON_MODE): bool
     {
 
-       // Write inventory file
+        // Write inventory file
         $dir = GLPI_INVENTORY_DIR . '/';
         if (!is_dir($dir)) {
             mkdir($dir);
@@ -131,7 +131,7 @@ class Inventory
         if (Request::XML_MODE === $format) {
             $this->inventory_format = Request::XML_MODE;
             file_put_contents($dir . '/' . $this->inventory_id . '.xml', $data->asXML());
-           //convert legacy format
+            //convert legacy format
             $data = json_decode($converter->convert($data->asXML()));
         } else {
             file_put_contents($dir . '/' . $this->inventory_id . '.json', json_encode($data));
