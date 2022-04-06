@@ -37,6 +37,7 @@ use DbTestCase;
 use GLPIKey;
 use Group;
 use Group_User;
+use UserTitle;
 
 /* Test for inc/authldap.class.php */
 
@@ -2155,5 +2156,42 @@ class AuthLDAP extends DbTestCase
         } else {
             $this->object($ldap_connection)->isInstanceOf('\LDAP\Connection');
         }
+    }
+
+    public function testIgnoreImport()
+    {
+        //prepare rules
+        $rules = new \RuleRight();
+        $rules_id = $rules->add([
+            'sub_type'     => 'RuleRight',
+            'name'         => 'test ldap ignore import',
+            'match'        => 'AND',
+            'is_active'    => 1,
+            'entities_id'  => 0,
+            'is_recursive' => 1,
+        ]);
+        $criteria = new \RuleCriteria();
+        $criteria->add([
+            'rules_id'  => $rules_id,
+            'criteria'  => 'LDAP_SERVER',
+            'condition' => \Rule::PATTERN_IS,
+            'pattern'   => $this->ldap->getID(),
+        ]);
+        $actions = new \RuleAction();
+        $actions->add([
+            'rules_id'    => $rules_id,
+            'action_type' => 'assign',
+            'field'       => '_ignore_user_import',
+            'value'       => '1', // Reject
+        ]);
+        // login the user to force synchronisation
+        $this->login('brazil6', 'password', false, false);
+
+        // Check title not created
+        $ut = new UserTitle();
+        $uts = $ut->find([
+            'name' => 'manager',
+        ]);
+        $this->array($uts)->hasSize(0);
     }
 }

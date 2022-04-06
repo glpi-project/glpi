@@ -1767,6 +1767,7 @@ class User extends CommonDBTM
            // force authtype as we retrieve this user by ldap (we could have login with SSO)
             $this->fields["authtype"] = Auth::LDAP;
 
+            $import_fields = [];
             foreach ($fields as $k => $e) {
                 $val = AuthLDAP::getFieldValue(
                     [$e => self::getLdapFieldValue($e, $v)],
@@ -1815,29 +1816,10 @@ class User extends CommonDBTM
                             break;
 
                         case "usertitles_id":
-                            $this->fields[$k] = Dropdown::importExternal('UserTitle', $val);
-                            break;
-
                         case 'locations_id':
-                           // use import to build the location tree
-                            $this->fields[$k] = Dropdown::import(
-                                'Location',
-                                ['completename' => $val,
-                                    'entities_id'  => 0,
-                                    'is_recursive' => 1
-                                ]
-                            );
-                            break;
-
                         case "usercategories_id":
-                            $this->fields[$k] = Dropdown::importExternal('UserCategory', $val);
-                            break;
-
                         case 'users_id_supervisor':
-                            $supervisor_id = self::getIdByField('user_dn', $val, false);
-                            if ($supervisor_id) {
-                                $this->fields[$k] = $supervisor_id;
-                            }
+                            $import_fields[$k] = $val;
                             break;
 
                         default:
@@ -1936,6 +1918,33 @@ class User extends CommonDBTM
                     }
                 }
 
+                foreach ($import_fields as $k => $val) {
+                    switch ($k) {
+                        case "usertitles_id":
+                            $this->fields[$k] = Dropdown::importExternal('UserTitle', $val);
+                            break;
+                        case 'locations_id':
+                            // use import to build the location tree
+                            $this->fields[$k] = Dropdown::import(
+                                'Location',
+                                ['completename' => $val,
+                                    'entities_id'  => 0,
+                                    'is_recursive' => 1
+                                ]
+                            );
+                            break;
+                        case "usercategories_id":
+                            $this->fields[$k] = Dropdown::importExternal('UserCategory', $val);
+                            break;
+                        case 'users_id_supervisor':
+                            $supervisor_id = self::getIdByField('user_dn', $val, false);
+                            if ($supervisor_id) {
+                                $this->fields[$k] = $supervisor_id;
+                            }
+                            break;
+                    }
+                }
+
                // Add ldap result to data send to the hook
                 $this->fields['_ldap_result'] = $v;
                 $this->fields['_ldap_conn']   = $ldap_connection;
@@ -1943,6 +1952,7 @@ class User extends CommonDBTM
                 $this->fields = Plugin::doHookFunction(Hooks::RETRIEVE_MORE_DATA_FROM_LDAP, $this->fields);
                 unset($this->fields['_ldap_result']);
             }
+
             return true;
         }
         return false;
