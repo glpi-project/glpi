@@ -59,27 +59,28 @@ class DownloadCommand extends AbstractCommand
         $plugins = $input->getArgument('plugins');
 
         foreach ($plugins as $plugin) {
-            if (!empty(trim($plugin))) {
-                // If the plugin is already downloaded, refuse to download it again
-                if (!$input->getOption('force') && is_dir(GLPI_MARKETPLACE_DIR . '/' . $plugin)) {
-                    $error_msg = sprintf(__('Plugin "%s" is already downloaded. Use --force to force it to re-download.'), $plugin);
-                    $output->writeln("<error>$error_msg</error>");
-                    continue;
-                }
-                $controller = new Controller($plugin);
-                if ($controller->canBeDownloaded()) {
-                    $result = $controller->downloadPlugin(true);
-                    $success_msg = sprintf(__("Plugin %s downloaded successfully"), $plugin);
-                    $error_msg = sprintf(__("Plugin %s could not be downloaded"), $plugin);
-                    if ($result) {
-                        $output->writeln("<info>$success_msg</info>");
-                    } else {
-                        $output->writeln("<error>$error_msg</error>");
-                    }
+            if (empty(trim($plugin))) {
+                continue;
+            }
+            // If the plugin is already downloaded, refuse to download it again
+            if (!$input->getOption('force') && is_dir(GLPI_MARKETPLACE_DIR . '/' . $plugin)) {
+                $error_msg = sprintf(__('Plugin "%s" is already downloaded. Use --force to force it to re-download.'), $plugin);
+                $output->writeln("<error>$error_msg</error>");
+                continue;
+            }
+            $controller = new Controller($plugin);
+            if ($controller->canBeDownloaded()) {
+                $result = $controller->downloadPlugin(false);
+                $success_msg = sprintf(__("Plugin %s downloaded successfully"), $plugin);
+                $error_msg = sprintf(__("Plugin %s could not be downloaded"), $plugin);
+                if ($result) {
+                    $output->writeln("<info>$success_msg</info>");
                 } else {
-                    $output->writeln('<error>' . sprintf(__('Plugin "%s" cannot be downloaded'), $plugin) . '</error>');
-                    return 1;
+                    $output->writeln("<error>$error_msg</error>");
                 }
+            } else {
+                $output->writeln('<error>' . sprintf(__('Plugin "%s" cannot be downloaded'), $plugin) . '</error>');
+                return 1;
             }
         }
 
