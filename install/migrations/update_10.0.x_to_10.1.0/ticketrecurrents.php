@@ -41,6 +41,6 @@
 if (!$DB->fieldExists('glpi_items_ticketrecurrents', 'ticket_per_item')) {
     $query = "ALTER TABLE glpi_ticketrecurrents
               ADD COLUMN ticket_per_item TINYINT NOT NULL DEFAULT 0,
-              ADD KEY `ticket_per_item` (`ticket_per_item`)'";
+              ADD KEY `ticket_per_item` (`ticket_per_item`)";
     $DB->queryOrDie($query, "10.1.0 add column  ticket_per_item in glpi_items_ticketrecurrents");
 }

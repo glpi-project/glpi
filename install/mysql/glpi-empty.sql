@@ -7046,6 +7046,7 @@ CREATE TABLE `glpi_ticketrecurrents` (
   `next_creation_date` timestamp NULL DEFAULT NULL,
   `calendars_id` int unsigned NOT NULL DEFAULT '0',
   `end_date` timestamp NULL DEFAULT NULL,
+  `ticket_per_item` TINYINT NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `entities_id` (`entities_id`),
@@ -7053,7 +7054,8 @@ CREATE TABLE `glpi_ticketrecurrents` (
   KEY `is_active` (`is_active`),
   KEY `tickettemplates_id` (`tickettemplates_id`),
   KEY `next_creation_date` (`next_creation_date`),
-  KEY `calendars_id` (`calendars_id`)
+  KEY `calendars_id` (`calendars_id`),
+  KEY `ticket_per_item` (`ticket_per_item`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 
@@ -9191,5 +9193,17 @@ CREATE TABLE `glpi_snmpcredentials` (
    KEY `snmpversion` (`snmpversion`),
    KEY `is_deleted` (`is_deleted`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
+
+DROP TABLE IF EXISTS `glpi_items_ticketrecurrents`;
+CREATE TABLE `glpi_items_ticketrecurrents` (
+   `id` int NOT NULL AUTO_INCREMENT,
+   `itemtype` varchar(255) DEFAULT NULL,
+   `items_id` int NOT NULL DEFAULT '0',
+   `ticketrecurrents_id` int NOT NULL DEFAULT '0',
+   PRIMARY KEY (`id`),
+   UNIQUE KEY `unicity` (`itemtype`, `items_id`, `ticketrecurrents_id`),
+   KEY `ticketrecurrents_id` (`ticketrecurrents_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 
 SET FOREIGN_KEY_CHECKS=1;
