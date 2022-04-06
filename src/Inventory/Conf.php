@@ -219,7 +219,8 @@ class Conf extends CommonGLPI
             if ($inventory_request->inError()) {
                 $response = $inventory_request->getResponse();
                 if ($inventory_request->getMode() === Request::JSON_MODE) {
-                    $response = json_decode($inventory_request->getResponse());
+                    $json = json_decode($inventory_request->getResponse());
+                    $response = $json->message;
                 } else {
                     $xml = simplexml_load_string($response);
                     $response = $xml->ERROR;
