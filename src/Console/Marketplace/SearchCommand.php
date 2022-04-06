@@ -60,7 +60,7 @@ class SearchCommand extends AbstractCommand
         global $CFG_GLPI;
 
         if (!GLPINetwork::isRegistered()) {
-            $output->writeln("<error>" . __("The GLPI Network registration key io missing or invalid") . "</error>");
+            $output->writeln("<error>" . __("The GLPI Network registration key is missing or invalid") . "</error>");
         }
 
         $term = $input->getArgument('term');

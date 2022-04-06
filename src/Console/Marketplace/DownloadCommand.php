@@ -57,7 +57,7 @@ class DownloadCommand extends AbstractCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         if (!GLPINetwork::isRegistered()) {
-            $output->writeln("<error>" . __("The GLPI Network registration key io missing or invalid") . "</error>");
+            $output->writeln("<error>" . __("The GLPI Network registration key is missing or invalid") . "</error>");
         }
 
         $plugins = $input->getArgument('plugins');
