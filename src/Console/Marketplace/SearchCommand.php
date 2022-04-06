@@ -33,9 +33,11 @@
 
 namespace Glpi\Console\Marketplace;
 
+use GLPINetwork;
 use Glpi\Console\AbstractCommand;
 use Glpi\Marketplace\Api\Plugins;
 use Glpi\Marketplace\Controller;
+use Glpi\RichText\RichText;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -109,6 +111,10 @@ class SearchCommand extends AbstractCommand
                     break;
                 }
             }
+
+            // Prevent long lines to break table display, and prevent raw HTML to be displayed.
+            $short_description = wordwrap(RichText::getTextFromHtml($short_description), 70, "\n");
+
             $rows[] = [
                 'key' => $plugin['key'],
                 'name' => $plugin['name'],

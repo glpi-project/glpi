@@ -33,6 +33,7 @@
 
 namespace Glpi\Console\Marketplace;
 
+use GLPINetwork;
 use Glpi\Console\AbstractCommand;
 use Glpi\Marketplace\Api\Plugins;
 use Glpi\Marketplace\Controller;
@@ -57,8 +58,6 @@ class InfoCommand extends AbstractCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        global $CFG_GLPI;
-
         if (!GLPINetwork::isRegistered()) {
             $output->writeln("<error>" . __("The GLPI Network registration key is missing or invalid") . "</error>");
         }
