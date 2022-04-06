@@ -33,14 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Event;
-
-include('../inc/includes.php');
-
-Session::checkRight("logs", READ);
-
-Html::header(Event::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "admin", "Glpi\\Event");
-
-Search::show(Event::class);
-
-Html::footer();
+/**
+ * @var array $ADDTODISPLAYPREF
+ */
+$ADDTODISPLAYPREF['Glpi\Event'] = [155, 156, 157, 158, 159, 160];

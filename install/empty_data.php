@@ -1775,7 +1775,31 @@ $empty_data_builder = new class
                 'itemtype' => 'Plugin',
                 'num' => '8',
                 'rank' => '7',
-            ]
+            ], [
+                'itemtype' => 'Glpi\Event',
+                'num' => '155',
+                'rank' => '1',
+            ], [
+                'itemtype' => 'Glpi\Event',
+                'num' => '156',
+                'rank' => '2',
+            ], [
+                'itemtype' => 'Glpi\Event',
+                'num' => '157',
+                'rank' => '3',
+            ], [
+                'itemtype' => 'Glpi\Event',
+                'num' => '158',
+                'rank' => '4',
+            ], [
+                'itemtype' => 'Glpi\Event',
+                'num' => '159',
+                'rank' => '5',
+            ], [
+                'itemtype' => 'Glpi\Event',
+                'num' => '160',
+                'rank' => '6',
+            ],
         ];
 
         $ADDTODISPLAYPREF['Cluster'] = [31, 19];
