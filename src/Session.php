@@ -1590,6 +1590,7 @@ class Session
      */
     public static function canImpersonate($user_id)
     {
+        global $DB;
 
         if (
             $user_id <= 0 || self::getLoginUserID() == $user_id
@@ -1598,10 +1599,32 @@ class Session
             return false; // Cannot impersonate invalid user, self, or already impersonated user
         }
 
-       // For now we do not check more than config update right, but we may
-       // implement more fine checks in the future.
+        if (self::haveRight(Config::$rightname, UPDATE)) {
+            return true; // User can impersonate anyone
+        }
 
-        return self::haveRight(Config::$rightname, UPDATE);
+        // Check if user can impersonate lower-privileged users (or same level)
+        $can_impersonate = self::haveRight('user', User::IMPERSONATE);
+        if ($can_impersonate) {
+            $other_user_profiles = array_keys(Profile_User::getUserProfiles($user_id));
+            // Get all less-privileged (or equivalent) profiles than current one
+            $criteria = Profile::getUnderActiveProfileRestrictCriteria();
+            $iterator = $DB->request([
+                'SELECT' => ['id'],
+                'FROM'   => Profile::getTable(),
+                'WHERE'  => $criteria
+            ]);
+            $profiles = [];
+            foreach ($iterator as $data) {
+                $profiles[] = $data['id'];
+            }
+            // Check if all profiles of the user are less-privileged than current one
+            if (count($other_user_profiles) === count(array_intersect($profiles, $other_user_profiles))) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**

@@ -759,8 +759,8 @@ class Profile_User extends CommonDBRelation
      *
      * @since 9.3 can pass sqlfilter as a parameter
      *
-     * @param $user_ID            user ID
-     * @param $sqlfilter  string  additional filter (default [])
+     * @param int $user_ID      User ID
+     * @param array $sqlfilter  Additional filter (default [])
      *
      * @return array of the IDs of the profiles
      **/

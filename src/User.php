@@ -59,6 +59,7 @@ class User extends CommonDBTM
     const IMPORTEXTAUTHUSERS  = 1024;
     const READAUTHENT         = 2048;
     const UPDATEAUTHENT       = 4096;
+    const IMPERSONATE         = 8192;
 
     public static $rightname = 'user';
 
@@ -5790,6 +5791,9 @@ JAVASCRIPT;
        //TRANS: short for : Update method for user authentication and synchronization
         $values[self::UPDATEAUTHENT]      = ['short' => __('Update auth and sync'),
             'long'  => __('Update method for user authentication and synchronization')
+        ];
+        $values[self::IMPERSONATE]      = ['short' => __('Impersonate'),
+            'long'  => __('Impersonate users with the same or less rights')
         ];
 
         return $values;
