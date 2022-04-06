@@ -40,13 +40,13 @@
    // Add glpi_items_ticketrecurrents table for associated elements
 if (!$DB->tableExists('glpi_items_ticketrecurrents')) {
     $query = "CREATE TABLE `glpi_items_ticketrecurrents` (
-             `id` int NOT NULL AUTO_INCREMENT,
+             `id` int unsigned NOT NULL AUTO_INCREMENT,
              `itemtype` varchar(255) DEFAULT NULL,
              `items_id` int NOT NULL DEFAULT '0',
              `ticketrecurrents_id` int NOT NULL DEFAULT '0',
              PRIMARY KEY (`id`),
              UNIQUE KEY `unicity` (`itemtype`, `items_id`, `ticketrecurrents_id`),
              KEY `ticketrecurrents_id` (`ticketrecurrents_id`)
-             ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;";
     $DB->queryOrDie($query, "10.1.0 add table glpi_items_ticket");
 }
