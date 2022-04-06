@@ -58,10 +58,10 @@ class Supplier extends CommonDBTM
         return _n('Supplier', 'Suppliers', $nb);
     }
 
-   public function post_getEmpty()
-   {
-      $this->fields['is_active'] = 1;
-   }
+    public function post_getEmpty()
+    {
+        $this->fields['is_active'] = 1;
+    }
 
     public function prepareInputForAdd($input)
     {
