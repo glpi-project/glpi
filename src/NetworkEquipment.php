@@ -481,6 +481,15 @@ class NetworkEquipment extends CommonDBTM
             'datatype'           => 'dropdown'
         ];
 
+        $tab[] = [
+            'id'                 => '83',
+            'table'              => self::getTable(),
+            'field'              => 'last_inventory_update',
+            'name'               => __('Last inventory date'),
+            'datatype'           => 'datetime',
+            'massiveaction'      => false
+        ];
+
        // add operating system search options
         $tab = array_merge($tab, Item_OperatingSystem::rawSearchOptionsToAdd(get_class($this)));
 
