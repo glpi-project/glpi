@@ -500,14 +500,16 @@ class DisplayPreference extends CommonDBTM
             echo "</td></tr>";
         }
 
-       // print first element
-        echo "<tr>";
-        echo "<td>" . $searchopt[1]["name"];
+        if (isset($searchopt[1])) {
+            // print first element
+            echo "<tr>";
+            echo "<td>" . $searchopt[1]["name"];
 
-        if ($global_write) {
-            echo "</td><td colspan='3'>&nbsp;";
+            if ($global_write) {
+                echo "</td><td colspan='3'>&nbsp;";
+            }
+            echo "</td></tr>";
         }
-        echo "</td></tr>";
 
        // print entity
         if (

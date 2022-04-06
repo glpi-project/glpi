@@ -8,6 +8,7 @@ The present file will list all changes made to the project; according to the
 ### Added
 
 ### Changed
+- Logs are now shown using the Search Engine
 
 ### Deprecated
 
@@ -20,6 +21,7 @@ The present file will list all changes made to the project; according to the
 #### Changes
 
 #### Deprecated
+- `Glpi\Event::showList()`                                     
 - `Toolbox::seems_utf8()`
 
 #### Removed
