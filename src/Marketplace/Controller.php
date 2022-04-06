@@ -86,7 +86,7 @@ class Controller extends CommonGLPI
      *
      * @return bool
      */
-    public function downloadPlugin(): bool
+    public function downloadPlugin($auto_install = true): bool
     {
         if (!self::hasWriteAccess()) {
             return false;
@@ -169,7 +169,7 @@ class Controller extends CommonGLPI
         // inform api the plugin has been downloaded
         $api->incrementPluginDownload($this->plugin_key, $plugin_inst->fields['version']);
 
-        if ($plugin_inst->getPluginOption($this->plugin_key, Plugin::OPTION_AUTOINSTALL_DISABLED, false)) {
+        if (!$auto_install || $plugin_inst->getPluginOption($this->plugin_key, Plugin::OPTION_AUTOINSTALL_DISABLED, false)) {
             return true;
         }
 
