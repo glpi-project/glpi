@@ -34,7 +34,7 @@
 use Glpi\SocketModel;
 
 // Current version of GLPI
-define('GLPI_VERSION', '10.0.0-rc3');
+define('GLPI_VERSION', '10.1.0-dev');
 define(
     "GLPI_SCHEMA_VERSION",
     GLPI_VERSION . (
