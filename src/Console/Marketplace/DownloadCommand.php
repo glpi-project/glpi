@@ -48,10 +48,10 @@ class DownloadCommand extends AbstractCommand
 
         $this->setName('glpi:marketplace:download');
         $this->setAliases(['marketplace:download']);
-        $this->setDescription('Download plugin from the GLPI marketplace');
+        $this->setDescription(__('Download plugin from the GLPI marketplace'));
 
-        $this->addArgument('plugins', InputArgument::REQUIRED | InputArgument::IS_ARRAY, 'The internal plugin name(s)');
-        $this->addOption('force', 'f', InputOption::VALUE_NONE, 'Force download even if the plugin is already downloaded');
+        $this->addArgument('plugins', InputArgument::REQUIRED | InputArgument::IS_ARRAY, __('The plugin key'));
+        $this->addOption('force', 'f', InputOption::VALUE_NONE, __('Force download even if the plugin is already downloaded'));
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -62,7 +62,7 @@ class DownloadCommand extends AbstractCommand
             if (!empty(trim($plugin))) {
                 // If the plugin is already downloaded, refuse to download it again
                 if (!$input->getOption('force') && is_dir(GLPI_MARKETPLACE_DIR . '/' . $plugin)) {
-                    $error_msg = sprintf('Plugin "%s" is already downloaded. Use --force to force it to re-download.', $plugin);
+                    $error_msg = sprintf(__('Plugin "%s" is already downloaded. Use --force to force it to re-download.'), $plugin);
                     $output->writeln("<error>$error_msg</error>");
                     continue;
                 }
@@ -77,7 +77,8 @@ class DownloadCommand extends AbstractCommand
                         $output->writeln("<error>$error_msg</error>");
                     }
                 } else {
-                    throw new \RuntimeException(sprintf(__('Plugin "%s" cannot be downloaded'), $plugin));
+                    $output->writeln('<error>' . sprintf(__('Plugin "%s" cannot be downloaded'), $plugin) . '</error>');
+                    return 1;
                 }
             }
         }

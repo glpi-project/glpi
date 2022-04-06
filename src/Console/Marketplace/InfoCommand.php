@@ -50,9 +50,9 @@ class InfoCommand extends AbstractCommand
 
         $this->setName('glpi:marketplace:info');
         $this->setAliases(['marketplace:info']);
-        $this->setDescription('Get information about a plugin');
+        $this->setDescription(__('Get information about a plugin'));
 
-        $this->addArgument('plugin', InputArgument::REQUIRED, 'The plugin key');
+        $this->addArgument('plugin', InputArgument::REQUIRED, __('The plugin key'));
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -69,7 +69,7 @@ class InfoCommand extends AbstractCommand
         });
 
         if (count($result) === 0) {
-            $output->writeln('<error>Plugin not found</error>');
+            $output->writeln('<error>' . __('Plugin not found') . '</error>');
             return 1;
         }
 

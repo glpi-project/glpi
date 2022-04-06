@@ -50,9 +50,9 @@ class SearchCommand extends AbstractCommand
 
         $this->setName('glpi:marketplace:search');
         $this->setAliases(['marketplace:search']);
-        $this->setDescription('Search GLPI marketplace');
+        $this->setDescription(__('Search GLPI marketplace'));
 
-        $this->addArgument('term', InputArgument::OPTIONAL, 'The search term');
+        $this->addArgument('term', InputArgument::OPTIONAL, __('The search term'));
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
