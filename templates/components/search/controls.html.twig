@@ -158,7 +158,7 @@ $(document).ready(function() {
       modal += '</div>';
       modal += '<div class="modal-body">';
       modal += '<div class="ratio ratio-4x3">';
-      modal += '<iframe src="{{ path('front/displaypreference.form.php?itemtype=' ~ itemtype) }}"></iframe>'
+      modal += '<iframe src="{{ path('front/displaypreference.form.php?itemtype=' ~ itemtype|escape('url')) }}"></iframe>'
       modal += '</div>';
       modal += '</div>';
       modal += '</div>';
