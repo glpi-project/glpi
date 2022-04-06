@@ -225,6 +225,7 @@ class Conf extends CommonGLPI
                     $xml = simplexml_load_string($response);
                     $response = $xml->ERROR;
                 }
+                $response = str_replace('&nbsp;', ' ', $response);
                 Session::addMessageAfterRedirect(
                     __('File has not been imported:') . " " . Sanitizer::encodeHtmlSpecialChars($response),
                     true,

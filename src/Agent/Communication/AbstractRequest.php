@@ -312,7 +312,7 @@ abstract class AbstractRequest
             return false;
         }
 
-        $this->deviceid = $jdata->deviceid;
+        $this->deviceid = $jdata->deviceid ?? null;
         $action = self::INVENT_ACTION;
         if (property_exists($jdata, 'action')) {
             $action = $jdata->action;
