@@ -597,6 +597,7 @@ class Agent extends CommonDBTM
             $adresses = $this->getAgentURLs();
         }
 
+        $response = null;
         foreach ($adresses as $adress) {
             $options = [
                 'base_uri'        => sprintf('%s/%s', $adress, $endpoint),
