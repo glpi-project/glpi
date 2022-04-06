@@ -53,7 +53,7 @@ class DataExport
             libxml_use_internal_errors(true); // Silent errors
             $document = new \DOMDocument();
             $document->loadHTML(
-                '<div>' . $value . '</div>',
+                '<?xml encoding="utf-8" ?><div>' . $value . '</div>',
                 LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD
             );
 

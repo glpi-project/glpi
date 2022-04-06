@@ -48,6 +48,14 @@ class DataExport extends \GLPITestCase
             'expected_result' => 'Some value',
         ];
 
+        // Entity name with cyrillic chars
+        yield [
+            'value'           => <<<HTML
+<a id='Entity_1_1' href='/front/entity.form.php?id=1'><span class="text-muted">Root entity</span> &gt; <span >Это испытание!</span></a>
+HTML,
+            'expected_result' => 'Root entity > Это испытание!',
+        ];
+
         // Malformed HTML (some special chars are not encoded)
         // It is not considered as sanitized, so it will be returned verbatim.
         yield [
