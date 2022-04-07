@@ -74,6 +74,8 @@ abstract class MainAsset extends InventoryAsset
     protected $inventoried = [];
     /** @var boolean */
     protected $partial = false;
+    /** @var bool */
+    protected bool $is_discovery = false;
 
     protected $current_key;
 
@@ -517,11 +519,11 @@ abstract class MainAsset extends InventoryAsset
             $datarules = $rule->processAllRules($input, [], ['class' => $this]);
 
             if (isset($datarules['_no_rule_matches']) and ($datarules['_no_rule_matches'] == '1')) {
-               //no rule matched, this is a new one
+                //no rule matched, this is a new one
                 $this->rulepassed(0, $this->item->getType(), null);
             } else if (!isset($datarules['found_inventories'])) {
                 if ($this->isAccessPoint($data)) {
-                   //Only main item is stored as refused, not all APs
+                    //Only main item is stored as refused, not all APs
                     unset($this->data[$key]);
                 } else {
                     $input['rules_id'] = $datarules['rules_id'];
@@ -612,6 +614,11 @@ abstract class MainAsset extends InventoryAsset
             $items_id = $this->item->add(Toolbox::addslashes_deep($input));
             $this->setNew();
         } else {
+            if ($this->is_discovery === true) {
+                //do not update from network discoveries
+                //prevents discoveries to remove all ports, IPs and so on found with network inventory
+                return;
+            }
             $this->item->getFromDB($items_id);
         }
 
@@ -852,5 +859,18 @@ abstract class MainAsset extends InventoryAsset
     protected function isAccessPoint($object): bool
     {
         return property_exists($object, 'is_ap') && $object->is_ap == true;
+    }
+
+    /**
+     * Mark as discovery
+     *
+     * @param bool $disco
+     *
+     * @return $this
+     */
+    public function setDiscovery(bool $disco): self
+    {
+        $this->is_discovery = $disco;
+        return $this;
     }
 }
