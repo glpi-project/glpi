@@ -99,7 +99,7 @@ class NetworkEquipment extends MainAsset
                 if (property_exists($device, 'mac')) {
                     $port->mac = $device->mac;
                 }
-                $port->name = __('Management');
+                $port->name = 'Management';
                 $port->netname = __('internal');
                 $port->instantiation_type = 'NetworkPortAggregate';
                 $port->is_internal = true;
@@ -151,7 +151,7 @@ class NetworkEquipment extends MainAsset
                     //add internal port
                     $port = new \stdClass();
                     $port->mac = $ap->mac;
-                    $port->name = __('Management');
+                    $port->name = 'Management';
                     $port->is_internal = true;
                     $port->netname = __('internal');
                     $port->instantiation_type = 'NetworkPortAggregate';
