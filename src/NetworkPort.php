@@ -688,7 +688,7 @@ class NetworkPort extends CommonDBChild
                 'items_id'  => $item->getID(),
                 'itemtype'  => $item->getType(), [
                     'OR' => [
-                        ['name' => ['!=', __('Management')]],
+                        ['name' => ['!=', 'Management']],
                         ['name' => null]
                     ]
                 ]
@@ -867,7 +867,7 @@ class NetworkPort extends CommonDBChild
             'WHERE'  => [
                 'items_id'  => $item->getID(),
                 'itemtype'  => $item->getType(),
-                'name'      => __('Management')
+                'name'      => 'Management'
             ]
         ];
 
