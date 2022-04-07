@@ -327,19 +327,21 @@ class Inventory
         } finally {
             unset($_SESSION['glpiinventoryuserrunning']);
             $this->handleInventoryFile();
-            // * For benchs
-            $id = $this->item->fields['id'] ?? 0;
-            $items = $this->mainasset->getInventoried() + $this->mainasset->getRefused();
-            $extra = null;
-            if (count($items)) {
-                $extra = 'Inventoried assets: ';
-                foreach ($items as $item) {
-                    $extra .= $item->getType() . ' #' . $item->getId() . ', ';
+            if (isset($this->mainasset)) {
+                // * For benchs
+                $id = $this->item->fields['id'] ?? 0;
+                $items = $this->mainasset->getInventoried() + $this->mainasset->getRefused();
+                $extra = null;
+                if (count($items)) {
+                    $extra = 'Inventoried assets: ';
+                    foreach ($items as $item) {
+                        $extra .= $item->getType() . ' #' . $item->getId() . ', ';
+                    }
+                    $extra = rtrim($extra, ', ') . "\n";
                 }
-                $extra = rtrim($extra, ', ') . "\n";
+                $this->addBench($this->item->getType(), 'full', $main_start, $extra);
+                $this->printBenchResults();
             }
-            $this->addBench($this->item->getType(), 'full', $main_start, $extra);
-            $this->printBenchResults();
         }
 
         return [];
@@ -383,21 +385,23 @@ class Inventory
         $ext = (Request::XML_MODE === $this->inventory_format ? 'xml' : 'json');
         $tmpfile = sprintf('%s/%s.%s', GLPI_INVENTORY_DIR, $this->inventory_id, $ext);
 
-        $items = $this->getItems();
+        if (isset($this->mainasset)) {
+            $items = $this->getItems();
 
-        foreach ($items as $item) {
-            $itemtype = $item->getType();
-            if (!isset($item->fields['id']) || empty($item->fields['id'])) {
-                throw new \RuntimeException('Item ID is missing :(');
-            }
-            $id = $item->fields['id'];
+            foreach ($items as $item) {
+                $itemtype = $item->getType();
+                if (!isset($item->fields['id']) || empty($item->fields['id'])) {
+                    throw new \RuntimeException('Item ID is missing :(');
+                }
+                $id = $item->fields['id'];
 
-            $filename = GLPI_INVENTORY_DIR . '/' . $this->conf->buildInventoryFileName($itemtype, $id, $ext);
-            $subdir = dirname($filename);
-            if (!is_dir($subdir)) {
-                mkdir($subdir, 0755, true);
+                $filename = GLPI_INVENTORY_DIR . '/' . $this->conf->buildInventoryFileName($itemtype, $id, $ext);
+                $subdir = dirname($filename);
+                if (!is_dir($subdir)) {
+                    mkdir($subdir, 0755, true);
+                }
+                copy($tmpfile, $filename);
             }
-            copy($tmpfile, $filename);
         }
 
         if (file_exists($tmpfile)) {
