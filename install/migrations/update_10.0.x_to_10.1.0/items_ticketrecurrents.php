@@ -36,17 +36,27 @@
  * @var Migration $migration
  */
 
-   // Change Ticket recurent items
-   // Add glpi_items_ticketrecurrents table for associated elements
+$default_charset = DBConnection::getDefaultCharset();
+$default_collation = DBConnection::getDefaultCollation();
+$default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
+
+// Change Ticket recurent items
+// Add glpi_items_ticketrecurrents table for associated elements
 if (!$DB->tableExists('glpi_items_ticketrecurrents')) {
     $query = "CREATE TABLE `glpi_items_ticketrecurrents` (
-        `id` int unsigned NOT NULL AUTO_INCREMENT,
+        `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
         `itemtype` varchar(255) DEFAULT NULL,
-        `items_id` int NOT NULL DEFAULT '0',
-        `ticketrecurrents_id` int NOT NULL DEFAULT '0',
+        `items_id` int {$default_key_sign} NOT NULL DEFAULT '0',
+        `ticketrecurrents_id` int {$default_key_sign} NOT NULL DEFAULT '0',
         PRIMARY KEY (`id`),
         UNIQUE KEY `unicity` (`itemtype`, `items_id`, `ticketrecurrents_id`),
+        KEY `items_id` (`items_id`),
         KEY `ticketrecurrents_id` (`ticketrecurrents_id`)
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;";
+        ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;";
     $DB->queryOrDie($query, "10.1.0 add table glpi_items_ticket");
+}
+
+// Add glpi_items_ticketrecurrents table for associated elements
+if (!$DB->fieldExists('glpi_ticketrecurrents', 'ticket_per_item')) {
+    $migration->addField('glpi_ticketrecurrents', 'ticket_per_item', 'bool');
 }
