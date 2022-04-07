@@ -57,6 +57,5 @@ if (!$DB->tableExists('glpi_items_ticketrecurrents')) {
 }
 
 // Add glpi_items_ticketrecurrents table for associated elements
-if (!$DB->fieldExists('glpi_ticketrecurrents', 'ticket_per_item')) {
-    $migration->addField('glpi_ticketrecurrents', 'ticket_per_item', 'bool');
-}
+$migration->addField('glpi_ticketrecurrents', 'ticket_per_item', 'bool');
+$migration->addKey('glpi_ticketrecurrents', 'ticket_per_item');
