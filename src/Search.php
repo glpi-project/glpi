@@ -2660,7 +2660,8 @@ JAVASCRIPT;
         $p           = $request['p'];
         $options     = self::getCleanedOptions($request["itemtype"]);
         $randrow     = mt_rand();
-        $rowid       = 'searchrow' . $request['itemtype'] . $randrow;
+        $normalized_itemtype = strtolower(str_replace('\\', '', $request["itemtype"]));
+        $rowid       = 'searchrow' . $normalized_itemtype . $randrow;
         $addclass    = $num == 0 ? ' headerRow' : '';
         $prefix      = isset($p['prefix_crit']) ? $p['prefix_crit'] : '';
         $parents_num = isset($p['parents_num']) ? $p['parents_num'] : [];
@@ -2793,7 +2794,7 @@ JAVASCRIPT;
         ]);
         echo "</div>";
         $field_id = Html::cleanId("dropdown_criteria{$prefix}[$num][field]$rand");
-        $spanid   = Html::cleanId('SearchSpan' . $request["itemtype"] . $prefix . $num);
+        $spanid   = Html::cleanId('SearchSpan' . $normalized_itemtype . $prefix . $num);
 
         echo "<div class='col-auto'>";
         echo "<div class='row g-1' id='$spanid'>";
@@ -3142,8 +3143,9 @@ JAVASCRIPT;
         }
 
         $rands = -1;
+        $normalized_itemtype = strtolower(str_replace('\\', '', $request["itemtype"]));
         $dropdownname = Html::cleanId("spansearchtype$fieldname" .
-                                    $request["itemtype"] .
+                                    $normalized_itemtype .
                                     $prefix .
                                     $num);
         $searchopt = [];
