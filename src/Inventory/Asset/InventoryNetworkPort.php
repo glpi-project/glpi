@@ -148,7 +148,7 @@ trait InventoryNetworkPort
         $stmt = $DB->prepare($query);
 
         foreach ($this->ports as $port) {
-            if (property_exists($port, 'mac') && $port->mac != '') {
+            if (!$this->isMainPartial() && property_exists($port, 'mac') && $port->mac != '') {
                 $stmt->bind_param(
                     's',
                     $port->mac
