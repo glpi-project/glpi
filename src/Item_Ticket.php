@@ -156,8 +156,8 @@ class Item_Ticket extends CommonItilObject_Item
                              $rules = new RuleTicketCollection($ticket->fields['entities_id']);
 
                              $ticket->fields = $rules->processAllRules(
-                                 Toolbox::stripslashes_deep($ticket->fields),
-                                 Toolbox::stripslashes_deep($ticket->fields),
+                                 $ticket->fields,
+                                 $ticket->fields,
                                  ['recursive' => true]
                              );
 
