@@ -120,7 +120,7 @@ switch ($_SERVER['REQUEST_METHOD']) {
         }
 
        // Decode data (should be json)
-        $data = Toolbox::jsonDecode($_UPOST['impacts'], true);
+        $data = Toolbox::jsonDecode($_POST['impacts'], true);
         if (!is_array($data)) {
             Response::sendError(400, "Payload should be an array");
         }

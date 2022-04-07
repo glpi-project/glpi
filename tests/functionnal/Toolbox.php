@@ -226,6 +226,9 @@ class Toolbox extends DbTestCase
             ], [
                 '{\"Monitor\":[\"6\"],\"Computer\":[\"35\"]}',
                 ['Monitor' => ["6"], 'Computer' => ["35"]]
+            ], [
+                '{\"content\":\"&#60;p&#62;HTML !&#60;/p&#62;\"}',
+                ['content' => '<p>HTML !</p>']
             ]
         ];
     }
