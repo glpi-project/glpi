@@ -3834,6 +3834,7 @@ JS;
 
             // init editor
             tinyMCE.init(Object.assign({
+               branding: false,
                selector: '#{$name}',
 
                plugins: {$pluginsjs},
