@@ -1068,8 +1068,6 @@ class Ticket extends DbTestCase
     {
         global $DB;
 
-        $this->dump("changeTechRight: $rights");
-
        // set new rights
         $DB->update(
             'glpi_profilerights',
