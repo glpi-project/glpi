@@ -77,7 +77,7 @@ trait Inventoriable
 
             if (!$this->isDynamic()
                 || !isset($source->fields['id'])
-                || $this->fields['autoupdatesystems_id'] != $source->fields['id'])) {
+                || $this->fields['autoupdatesystems_id'] != $source->fields['id']) {
                 return null;
             }
         }
