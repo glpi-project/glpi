@@ -74,11 +74,9 @@ trait Inventoriable
         $source->getFromDBByCrit(['name' => 'GLPI Native Inventory']);
 
         if (!($this instanceof RefusedEquipment)
-            && (
-                !$this->isDynamic()
+            && (!$this->isDynamic()
                 || !isset($source->fields['id'])
-                || $this->fields['autoupdatesystems_id'] != $source->fields['id']
-            )) {
+                || $this->fields['autoupdatesystems_id'] != $source->fields['id'])) {
             return null;
         }
 
