@@ -457,7 +457,7 @@ class Auth extends CommonGLPI
                 $groups_id = array_column($groups, 'id');
                 $result = $rules->processAllRules(
                     $groups_id,
-                    Toolbox::stripslashes_deep($this->user->fields),
+                    $this->user->fields,
                     [
                         'type'  => Auth::DB_GLPI,
                         'login' => $this->user->fields['name'],
