@@ -89,14 +89,14 @@ abstract class MainAsset extends InventoryAsset
     }
 
     /**
-     * Get model foregien key field name
+     * Get model foreign key field name
      *
      * @return string
      */
     abstract protected function getModelsFieldName();
 
     /**
-     * Get model foregien key field name
+     * Get model foreign key field name
      *
      * @return string
      */
