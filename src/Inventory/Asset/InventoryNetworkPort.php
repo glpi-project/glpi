@@ -593,7 +593,7 @@ trait InventoryNetworkPort
         }
         foreach ($ports as $port) {
             $netports_id = $this->addNetworkPort($port);
-            if (count($port->ipaddress)) {
+            if (count(($port->ipaddress ?? []))) {
                 $netnames_id = $this->addNetworkName($netports_id, $port->netname ?? null);
                 $this->addIPAddresses($port->ipaddress, $netnames_id);
             }
