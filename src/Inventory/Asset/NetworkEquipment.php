@@ -92,28 +92,6 @@ class NetworkEquipment extends MainAsset
             foreach ($device as $key => $property) {
                 $val->$key = $property;
             }
-
-            if (property_exists($device, 'ips')) {
-                $portkey = 'management';
-                $port = new \stdClass();
-                if (property_exists($device, 'mac')) {
-                    $port->mac = $device->mac;
-                }
-                $port->name = __('Management');
-                $port->netname = __('internal');
-                $port->instantiation_type = 'NetworkPortAggregate';
-                $port->is_internal = true;
-                $port->ipaddress = [];
-
-               //add internal port(s)
-                foreach ($device->ips as $ip) {
-                    if ($ip != '127.0.0.1' && $ip != '::1' && !in_array($ip, $port->ipaddress)) {
-                        $port->ipaddress[] = $ip;
-                    }
-                }
-
-                $this->management_ports[$portkey] = $port;
-            }
         }
 
         if ($this->isStackedSwitch()) {
