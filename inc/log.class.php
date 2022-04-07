@@ -144,6 +144,13 @@ class Log extends CommonDBTM {
                $id_search_option = $key2; // Give ID of the $SEARCHOPTION
 
                if ($val2['table'] == $item->getTable()) {
+                  if ($val2['field'] === 'completename') {
+                     // Separator is not encoded in DB, and it could not be changed as this is mandatory to be able to split tree
+                     // correctly even if some tree elements are containing ">" char in their name (this one will be encoded).
+                     $separator = ' > ';
+                     $oldval = implode(Toolbox::clean_cross_side_scripting_deep($separator), explode($separator, $oldval));
+                     $values[$key] = implode(Toolbox::clean_cross_side_scripting_deep($separator), explode($separator, $values[$key]));
+                  }
                   $changes = [$id_search_option, addslashes($oldval), $values[$key]];
                } else {
                   // other cases; link field -> get data from dropdown
@@ -358,13 +365,22 @@ class Log extends CommonDBTM {
       if ($filtered_number > 0) {
          foreach (self::getHistoryData($item, $start, $_SESSION['glpilist_limit'], $sql_filters) as $data) {
             if ($data['display_history']) {
+               $change = $data['change'];
+
+               if (strpos($change, '>') !== false || strpos($change, '<') !== false) {
+                  // DB values are supposed to be tranformed by Toolbox::clean_cross_side_scripting_deep()
+                  // but sometime they are not.
+                  // It is mainly related to `>` separator in `completename` values in old log entries.
+                  $change = Toolbox::clean_cross_side_scripting_deep($change);
+               }
+
                // show line
                echo "<tr class='tab_bg_2'>";
                echo "<td>".$data['id']."</td>";
                echo "<td class='tab_date'>".$data['date_mod']."</td>";
                echo "<td>".$data['user_name']."</td>";
                echo "<td>".$data['field']."</td>";
-               echo "<td width='60%'>".Html::entities_deep($data['change'])."</td>";
+               echo "<td width='60%'>".$change."</td>";
                echo "</tr>";
             }
          }
