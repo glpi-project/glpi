@@ -7046,7 +7046,7 @@ CREATE TABLE `glpi_ticketrecurrents` (
   `next_creation_date` timestamp NULL DEFAULT NULL,
   `calendars_id` int unsigned NOT NULL DEFAULT '0',
   `end_date` timestamp NULL DEFAULT NULL,
-  `ticket_per_item` TINYINT NOT NULL DEFAULT '0',
+  `ticket_per_item` tinyint NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `entities_id` (`entities_id`),
@@ -9202,7 +9202,7 @@ CREATE TABLE `glpi_items_ticketrecurrents` (
    `items_id` int unsigned NOT NULL DEFAULT '0',
    `ticketrecurrents_id` int unsigned NOT NULL DEFAULT '0',
    PRIMARY KEY (`id`),
-   UNIQUE KEY `unicity` (`itemtype`, `items_id`, `ticketrecurrents_id`),
+   UNIQUE KEY `unicity` (`itemtype`,`items_id`,`ticketrecurrents_id`),
    KEY `items_id` (`items_id`),
    KEY `ticketrecurrents_id` (`ticketrecurrents_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;

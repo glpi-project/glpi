@@ -49,7 +49,7 @@ if (!$DB->tableExists('glpi_items_ticketrecurrents')) {
         `items_id` int {$default_key_sign} NOT NULL DEFAULT '0',
         `ticketrecurrents_id` int {$default_key_sign} NOT NULL DEFAULT '0',
         PRIMARY KEY (`id`),
-        UNIQUE KEY `unicity` (`itemtype`, `items_id`, `ticketrecurrents_id`),
+        UNIQUE KEY `unicity` (`itemtype`,`items_id`,`ticketrecurrents_id`),
         KEY `items_id` (`items_id`),
         KEY `ticketrecurrents_id` (`ticketrecurrents_id`)
         ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;";
