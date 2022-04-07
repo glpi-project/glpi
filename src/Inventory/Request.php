@@ -351,12 +351,12 @@ class Request extends AbstractRequest
 
         if ($this->isDiscovery()) {
             //force "partial" mode on network discoveries.
-            //prevents discoveries to remove all ports, IPs and so on found with network inventory
             $data->partial = true;
         }
 
         $this->inventory = new Inventory();
         $this->inventory
+            ->setDiscovery($this->isDiscovery())
             ->setRequestQuery($this->query)
             ->setData($data, $this->getMode());
 

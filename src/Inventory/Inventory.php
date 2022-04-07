@@ -78,6 +78,8 @@ class Inventory
     private $mainasset;
     /** @var string */
     private $request_query;
+    /** @var bool */
+    private bool $is_discovery = false;
 
     /**
      * @param mixed   $data   Inventory data, optional
@@ -293,9 +295,11 @@ class Inventory
 
             $main_class = $this->getMainClass();
             $main = new $main_class($this->item, $this->raw_data);
-            $main->setRequestQuery($this->request_query);
-            $main->setAgent($this->getAgent());
-            $main->setExtraData($this->data);
+            $main
+                ->setDiscovery($this->is_discovery)
+                ->setRequestQuery($this->request_query)
+                ->setAgent($this->getAgent())
+                ->setExtraData($this->data);
 
             $item_start = microtime(true);
             $main->prepare();
@@ -901,5 +905,18 @@ class Inventory
     public static function getTypeName($nb = 0)
     {
         return __("Inventory");
+    }
+
+    /**
+     * Mark as discovery
+     *
+     * @param bool $disco
+     *
+     * @return $this
+     */
+    public function setDiscovery(bool $disco): self
+    {
+        $this->is_discovery = $disco;
+        return $this;
     }
 }
