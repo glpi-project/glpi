@@ -3178,41 +3178,6 @@ class Ticket extends DbTestCase
         $this->integer($count)->isEqualTo(2);
     }
 
-    public function testKeepScreenshotFromTemplate()
-    {
-       //FIXME: temporary commented for other tests to work; must be fixed on modernui
-        return true;
-
-       //login to get session
-        $auth = new \Auth();
-        $this->boolean($auth->login(TU_USER, TU_PASS, true))->isTrue();
-
-       // create a template with a predeined description
-        $ticketTemplate = new \TicketTemplate();
-        $ticketTemplate->add([
-            'name' => $this->getUniqueString(),
-        ]);
-        $base64Image = base64_encode(file_get_contents(__DIR__ . '/../fixtures/uploads/foo.png'));
-        $content = '&lt;p&gt;&lt;img id="3e29dffe-0237ea21-5e57d2c8895d55.57735524"'
-        . ' src="data:image/png;base64,' . $base64Image . '" width="12" height="12" /&gt;&lt;/p&gt;';
-        $predefinedField = new \TicketTemplatePredefinedField();
-        $predefinedField->add([
-            'tickettemplates_id' => $ticketTemplate->getID(),
-            'num' => '21',
-            'value' => $content
-        ]);
-        $session_tpl_id_back = $_SESSION['glpiactiveprofile']['tickettemplates_id'];
-        $_SESSION['glpiactiveprofile']['tickettemplates_id'] = $ticketTemplate->getID();
-
-        $this->output(
-            function () use ($session_tpl_id_back) {
-                $instance = new \Ticket();
-                $instance->showForm('0');
-                $_SESSION['glpiactiveprofile']['tickettemplates_id'] = $session_tpl_id_back;
-            }
-        )->contains('src=&quot;data:image/png;base64,' . $base64Image . '&quot;');
-    }
-
 
     public function testCanDelegateeCreateTicket()
     {
