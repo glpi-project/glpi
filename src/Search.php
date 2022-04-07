@@ -190,8 +190,8 @@ class Search
             ];
             $globallinkto = Toolbox::append_params(
                 [
-                    'criteria'     => Toolbox::stripslashes_deep($criteria),
-                    'metacriteria' => Toolbox::stripslashes_deep($data['search']['metacriteria'])
+                    'criteria'     => Sanitizer::unsanitize($criteria),
+                    'metacriteria' => Sanitizer::unsanitize($data['search']['metacriteria'])
                 ],
                 '&amp;'
             );
@@ -1663,8 +1663,8 @@ class Search
 
        // Contruct parameters
         $globallinkto  = Toolbox::append_params([
-            'criteria'     => Toolbox::stripslashes_deep($search['criteria']),
-            'metacriteria' => Toolbox::stripslashes_deep($search['metacriteria'])
+            'criteria'     => Sanitizer::unsanitize($search['criteria']),
+            'metacriteria' => Sanitizer::unsanitize($search['metacriteria'])
         ], '&');
 
         $parameters = http_build_query([
@@ -2808,7 +2808,7 @@ JAVASCRIPT;
                      ? $criteria['searchtype']
                      : "";
         $p_value    = isset($criteria['value'])
-                     ? stripslashes($criteria['value'])
+                     ? Sanitizer::dbUnescape($criteria['value'])
                      : "";
 
         $params = [
@@ -3166,7 +3166,7 @@ JAVASCRIPT;
 
         echo "<div class='col-auto' id='$dropdownname' data-itemtype='{$request["itemtype"]}' data-fieldname='$fieldname' data-prefix='$prefix' data-num='$num'>";
         $params = [
-            'value'       => rawurlencode(stripslashes($request['value'])),
+            'value'       => rawurlencode(Sanitizer::dbUnescape($request['value'])),
             'searchopt'   => $searchopt,
             'searchtype'  => $request["searchtype"],
             'num'         => $num,
