@@ -2536,12 +2536,13 @@ class Search
         $idor_display_meta_criteria  = Session::getNewIDORToken($itemtype);
         $idor_display_criteria_group = Session::getNewIDORToken($itemtype);
 
+        $itemtype_escaped = addslashes($itemtype);
         $JS = <<<JAVASCRIPT
          $('#addsearchcriteria$rand_criteria').on('click', function(event) {
             event.preventDefault();
             $.post('{$CFG_GLPI['root_doc']}/ajax/search.php', {
                'action': 'display_criteria',
-               'itemtype': '$itemtype',
+               'itemtype': '$itemtype_escaped',
                'num': $nbsearchcountvar,
                'p': $json_p,
                '_idor_token': '$idor_display_criteria'
@@ -2556,7 +2557,7 @@ class Search
             event.preventDefault();
             $.post('{$CFG_GLPI['root_doc']}/ajax/search.php', {
                'action': 'display_meta_criteria',
-               'itemtype': '$itemtype',
+               'itemtype': '$itemtype_escaped',
                'meta': true,
                'num': $nbsearchcountvar,
                'p': $json_p,
@@ -2572,7 +2573,7 @@ class Search
             event.preventDefault();
             $.post('{$CFG_GLPI['root_doc']}/ajax/search.php', {
                'action': 'display_criteria_group',
-               'itemtype': '$itemtype',
+               'itemtype': '$itemtype_escaped',
                'meta': true,
                'num': $nbsearchcountvar,
                'p': $json_p,
