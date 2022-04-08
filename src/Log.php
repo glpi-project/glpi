@@ -32,6 +32,7 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Toolbox\Sanitizer;
 
 /**
  * Log Class
@@ -312,7 +313,7 @@ class Log extends CommonDBTM
             'additional_params' => $is_filtered ? http_build_query(['filters' => $filters]) : "",
             'is_tab'            => true,
             'items_id'          => $items_id,
-            'filters'           => Toolbox::stripslashes_deep($filters),
+            'filters'           => Sanitizer::dbEscapeRecursive($filters),
             'user_names'        => $is_filtered
             ? Log::getDistinctUserNamesValuesInItemLog($item)
             : [],
