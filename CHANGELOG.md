@@ -77,6 +77,7 @@ The present file will list all changes made to the project; according to the
 - `MailCollector::listEncodings()`
 - `RuleImportComputer` class
 - `RuleImportComputerCollection` class
+- `SLM::setTicketCalendar()`
 - `Toolbox::clean_cross_side_scripting_deep()`
 - `Toolbox::endsWith()`
 - `Toolbox::filesizeDirectory()`
