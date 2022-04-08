@@ -363,10 +363,6 @@ class Rule extends DbTestCase
         $this->string($ruleTicket->getActionName($field))->isIdenticalTo($label);
     }
 
-    public function testProcess()
-    {
-    }
-
     public function testPrepareInputDataForProcess()
     {
         $rule = new \Rule();
