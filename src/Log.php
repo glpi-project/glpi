@@ -162,6 +162,10 @@ class Log extends CommonDBTM
                     $id_search_option = $key2; // Give ID of the $SEARCHOPTION
 
                     if ($val2['table'] == $item->getTable()) {
+                        if ($val2['field'] === 'completename') {
+                            $oldval = CommonTreeDropdown::sanitizeSeparatorInCompletename($oldval);
+                            $values[$key] = CommonTreeDropdown::sanitizeSeparatorInCompletename($values[$key]);
+                        }
                         $changes = [$id_search_option, addslashes($oldval ?? ''), $values[$key]];
                     } else {
                        // other cases; link field -> get data from dropdown

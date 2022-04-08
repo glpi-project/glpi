@@ -31,6 +31,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Toolbox\Sanitizer;
+
 /**
  * CommonTreeDropdown Class
  *
@@ -977,5 +979,21 @@ abstract class CommonTreeDropdown extends CommonDropdown
     public static function getIcon()
     {
         return "ti ti-subtask";
+    }
+
+    /**
+     * Separator is not encoded in DB, and it could not be changed as this is mandatory to be able to split tree
+     * correctly even if some tree elements are containing ">" char in their name (this one will be encoded).
+     *
+     * This method aims to sanitize the completename value in display context.
+     *
+     * @param string $completename
+     *
+     * @return string
+     */
+    public static function sanitizeSeparatorInCompletename(string $completename): string
+    {
+        $separator = ' > ';
+        return implode(Sanitizer::sanitize($separator), explode($separator, $completename));
     }
 }
