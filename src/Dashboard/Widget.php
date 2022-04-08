@@ -39,6 +39,7 @@ use Mexitek\PHPColors\Color;
 use Michelf\MarkdownExtra;
 use Plugin;
 use ScssPhp\ScssPhp\Compiler;
+use Symfony\Component\DomCrawler\Crawler;
 use Search;
 use Toolbox;
 
@@ -1784,7 +1785,9 @@ HTML;
             'list_limit'         => $p['limit']
         ]);
         Search::showList($p['itemtype'], $params);
-        $search_result = ob_get_clean();
+
+        $crawler = new Crawler(ob_get_clean());
+        $search_result = $crawler->filter('.search-results')->outerHtml();
 
         $html = <<<HTML
       <style>
