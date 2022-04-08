@@ -159,9 +159,8 @@ class Dropdown {
          $params['condition'] = static::addNewCondition($params['condition']);
       }
 
-      if (!$item instanceof CommonTreeDropdown) {
-         $name = Toolbox::unclean_cross_side_scripting_deep($name);
-      }
+      $name = Toolbox::unclean_cross_side_scripting_deep($name);
+
       $p = ['value'                => $params['value'],
             'valuename'            => $name,
             'width'                => $params['width'],
