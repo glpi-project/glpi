@@ -583,19 +583,25 @@ class MailCollector extends DbTestCase
        // Collect all mails
         $this->doConnect();
         $this->collector->maxfetch_emails = 1000; // Be sure to fetch all mails from test suite
-        $msg = $this->collector->collect($this->mailgate_id);
+
+        $expected_errors = [
+            // 05-empty-from.eml
+            'The input is not a valid email address. Use the basic format local-part@hostname' => LogLevel::CRITICAL,
+            // 17-malformed-email.eml
+            'Header with Name date or date not found' => LogLevel::CRITICAL,
+        ];
+
+        $msg = null;
+        $this->output(
+            function () use (&$msg) {
+                $msg = $this->collector->collect($this->mailgate_id);
+            }
+        )->matches('/^(.*\n){' . count($expected_errors) . '}$/'); // Ensure that output has same count of lines than expected error count
 
         // Check error log and clean it (to prevent test failure, see GLPITestCase::afterTestMethod()).
-        // 05-empty-from.eml
-        $this->hasPhpLogRecordThatContains(
-            'The input is not a valid email address. Use the basic format local-part@hostname',
-            LogLevel::CRITICAL
-        );
-        // 17-malformed-email.eml
-        $this->hasPhpLogRecordThatContains(
-            'Header with Name date or date not found',
-            LogLevel::CRITICAL
-        );
+        foreach ($expected_errors as $error_message => $error_level) {
+            $this->hasPhpLogRecordThatContains($error_message, $error_level);
+        }
 
         $total_count                     = count(glob(GLPI_ROOT . '/tests/emails-tests/*.eml'));
         $expected_refused_count          = 3;
