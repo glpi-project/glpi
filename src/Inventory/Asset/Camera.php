@@ -54,7 +54,6 @@ class Camera extends Device
         ];
 
         foreach ($this->data as &$val) {
-
             if (property_exists($val, 'flashunit')) {
                 $val->flashunit = $val->flashunit ? 1 : 0;
             }
