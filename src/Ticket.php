@@ -6430,8 +6430,7 @@ JAVASCRIPT;
         if (isset($this->fields['slas_id_ttr']) && $this->fields['slas_id_ttr'] > 0) {
             $sla = new SLA();
             if ($sla->getFromDB($this->fields['slas_id_ttr'])) {
-                // not -1: calendar of the entity
-                if ($sla->getField('calendars_id') >= 0) {
+                if (!$sla->fields['use_ticket_calendar']) {
                     return $sla->getField('calendars_id');
                 }
             }
