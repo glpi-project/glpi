@@ -713,6 +713,8 @@ class User extends CommonDBTM
                     return false;
                 }
             }
+        } elseif (isset($this->input['_init_password']) && $this->input['_init_password']) {
+            $input['password'] = Toolbox::getRandomString(16);
         }
 
         if (isset($input["_extauth"])) {
@@ -5018,31 +5020,31 @@ JAVASCRIPT;
         if (count($iterator)) {
             $result = $iterator->current();
             return $result['id'];
-        } else {
-            if ($CFG_GLPI["is_users_auto_add"]) {
-               //Get all ldap servers with email field configured
-                $ldaps = AuthLDAP::getServersWithImportByEmailActive();
-               //Try to find the user by his email on each ldap server
+        } elseif ($CFG_GLPI["is_users_auto_add"]) {
+            //Get all ldap servers with email field configured
+            $ldaps = AuthLDAP::getServersWithImportByEmailActive();
+            //Try to find the user by his email on each ldap server
 
-                foreach ($ldaps as $ldap) {
-                    $params = [
-                        'method' => AuthLDAP::IDENTIFIER_EMAIL,
-                        'value'  => $email,
-                    ];
-                    $res = AuthLDAP::ldapImportUserByServerId(
-                        $params,
-                        AuthLDAP::ACTION_IMPORT,
-                        $ldap
-                    );
+            foreach ($ldaps as $ldap) {
+                $params = [
+                    'method' => AuthLDAP::IDENTIFIER_EMAIL,
+                    'value'  => $email,
+                ];
+                $res = AuthLDAP::ldapImportUserByServerId(
+                    $params,
+                    AuthLDAP::ACTION_IMPORT,
+                    $ldap
+                );
 
-                    if (isset($res['id'])) {
-                        return $res['id'];
-                    }
+                if (isset($res['id'])) {
+                    return $res['id'];
                 }
             }
             if ($createuserfromemail) {
                 $res = self::createUserFromMail($email);
-                return $res->fields['id'];
+                if (isset($res->fields['id'])) {
+                    return $res->fields['id'];
+                }
             }
         }
         return 0;
@@ -6609,7 +6611,6 @@ JAVASCRIPT;
         $user->add([
             'name'           => $email,
             'realname'       => $email,
-            'password'       => Toolbox::getRandomString(16),
             '_init_password' => true
         ]);
 

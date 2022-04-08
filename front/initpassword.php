@@ -40,6 +40,11 @@ if (
         ['itemtype' => 'User', 'event' => 'passwordinit', 'is_active' => 1]
     )
 ) {
+    Session::addMessageAfterRedirect(
+        __('Sending password initialization notification is not enabled.'),
+        false,
+        ERROR
+    );
     exit();
 }
 

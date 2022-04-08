@@ -314,7 +314,7 @@ class MailCollector extends CommonDBTM
         Dropdown::showYesNo("collect_only_unread", $this->fields["collect_only_unread"]);
         echo "</td></tr>\n";
 
-        echo "<tr class='tab_bg_1'><td>" . __('Create user from email') . "</td>";
+        echo "<tr class='tab_bg_1'><td>" . __('Automatically create user from email') . "</td>";
         echo "<td>";
         Dropdown::showYesNo("create_user_from_email", $this->fields["create_user_from_email"]);
         echo "</td></tr>\n";
