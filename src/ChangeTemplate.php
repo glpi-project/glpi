@@ -45,7 +45,7 @@ class ChangeTemplate extends ITILTemplate
 
     public static function getTypeName($nb = 0)
     {
-        return _n('Change template', 'change templates', $nb);
+        return _n('Change template', 'Change templates', $nb);
     }
 
     public function getCloneRelations(): array
