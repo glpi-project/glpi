@@ -38,28 +38,27 @@
 
 $default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
 
-$validation_types = [TicketValidation::class, ChangeValidation::class];
+$validation_tables = ['glpi_ticketvalidations', 'glpi_changevalidations'];
 
 $needed_migration = false;
 
 /** @var CommonITILValidation $validation_type */
-foreach ($validation_types as $validation_type) {
-    $table = $validation_type::getTable();
-    if (!$DB->fieldExists($table, 'itemtype_target')) {
-        $migration->addField($validation_type::getTable(), 'itemtype_target', 'varchar(255) NOT NULL', [
+foreach ($validation_tables as $validation_table) {
+    if (!$DB->fieldExists($validation_table, 'itemtype_target')) {
+        $migration->addField($validation_table, 'itemtype_target', 'varchar(255) NOT NULL', [
             'after'     => 'users_id_validate',
             'update'    => "'User'"
         ]);
         $needed_migration = true;
     }
-    if (!$DB->fieldExists($table, 'items_id_target')) {
-        $migration->addField($validation_type::getTable(), 'items_id_target', "int {$default_key_sign} NOT NULL DEFAULT '0'", [
+    if (!$DB->fieldExists($validation_table, 'items_id_target')) {
+        $migration->addField($validation_table, 'items_id_target', "int {$default_key_sign} NOT NULL DEFAULT '0'", [
             'after'     => 'itemtype_target',
-            'update'    => $table . '.users_id_validate',
+            'update'    => $DB->quoteName($validation_table . '.users_id_validate'),
         ]);
         $needed_migration = true;
     }
-    $migration->addKey($validation_type::getTable(), ['itemtype_target', 'items_id_target'], 'item_target');
+    $migration->addKey($validation_table, ['itemtype_target', 'items_id_target'], 'item_target');
 }
 
 // Update notification template targets to replace VALIDATION_APPROVER (14) with VALIDATION_TARGET (40) to match previous behavior as close as possible
