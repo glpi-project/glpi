@@ -94,7 +94,7 @@ var Dashboard = {
 
         Dashboard.grid = GridStack.init({
             column: options.cols,
-            maxRow: (options.rows + 1), // +1 for a hidden item at bottom (to fix height)
+            maxRow: options.rows,
             margin : this.cell_margin,
             float: true, // widget can be placed anywhere on the grid, not only on top
             animate: false, // as we don't move widget automatically, we don't need animation
