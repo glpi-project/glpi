@@ -55,8 +55,6 @@ JS;
 
 echo Html::manageRefreshPage(false, $refresh_callback);
 
-Plugin::doHook('display_ticket');
-
 Search::show('Ticket');
 
 if (Session::getCurrentInterface() == "helpdesk") {

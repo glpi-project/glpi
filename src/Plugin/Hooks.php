@@ -104,9 +104,11 @@ class Hooks
     const POST_ITEM_FORM          = 'post_item_form';
     const POST_SHOW_ITEM          = 'post_show_item';
     const POST_SHOW_TAB           = 'post_show_tab';
+    const POST_ITEM_LIST          = 'post_item_list';
     const PRE_ITEM_FORM           = 'pre_item_form';
     const PRE_SHOW_ITEM           = 'pre_show_item';
     const PRE_SHOW_TAB            = 'pre_show_tab';
+    const PRE_ITEM_LIST           = 'pre_item_list';
     const TIMELINE_ACTIONS        = 'timeline_actions';  // (keys: item, rand)
     const TIMELINE_ANSWER_ACTIONS = 'timeline_answer_actions';  // (keys: item)
     const SHOW_IN_TIMELINE        = 'show_in_timeline';  // (keys: item)

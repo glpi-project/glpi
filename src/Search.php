@@ -38,6 +38,7 @@ use Glpi\RichText\RichText;
 use Glpi\Socket;
 use Glpi\Toolbox\DataExport;
 use Glpi\Toolbox\Sanitizer;
+use Glpi\Plugin\Hooks;
 
 /**
  * Search Class
@@ -77,6 +78,7 @@ class Search
      **/
     public static function show($itemtype)
     {
+        Plugin::doHook(Hooks::PRE_ITEM_LIST, ['itemtype' => $itemtype, 'options' => []]);
 
         $params = self::manageParams($itemtype, $_GET);
         echo "<div class='search_page row'>";
@@ -101,6 +103,7 @@ class Search
         } else {
             self::showList($itemtype, $params);
         }
+        Plugin::doHook(Hooks::POST_ITEM_LIST, ['itemtype' => $itemtype, 'options' => []]);
         echo "</div>";
         echo "</div>";
     }
