@@ -207,16 +207,16 @@
         },
         {
             "name": "glpi-project/inventory_format",
-            "version": "1.0.2",
+            "version": "1.1.14",
             "source": {
                 "type": "git",
                 "url": "https://github.com/glpi-project/inventory_format.git",
-                "reference": "40b1272feb34bf10fd82739e9c3d07b98606b0db"
+                "reference": "85fc39f3bf64fec3e9f10d40d9090933de778c92"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/glpi-project/inventory_format/zipball/40b1272feb34bf10fd82739e9c3d07b98606b0db",
-                "reference": "40b1272feb34bf10fd82739e9c3d07b98606b0db",
+                "url": "https://api.github.com/repos/glpi-project/inventory_format/zipball/85fc39f3bf64fec3e9f10d40d9090933de778c92",
+                "reference": "85fc39f3bf64fec3e9f10d40d9090933de778c92",
                 "shasum": ""
             },
             "require": {
@@ -230,7 +230,8 @@
             "bin": [
                 "bin/convert",
                 "bin/build_hw_jsons",
-                "bin/refresh_hw_sources"
+                "bin/refresh_hw_sources",
+                "bin/validate"
             ],
             "type": "library",
             "extra": {
@@ -264,7 +265,7 @@
                 "issues": "https://github.com/glpi-project/inventory_format/issues",
                 "source": "https://github.com/glpi-project/inventory_format"
             },
-            "time": "2021-01-20T14:50:09+00:00"
+            "time": "2022-04-07T08:47:23+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",
@@ -3984,23 +3985,24 @@
         },
         {
             "name": "seld/jsonlint",
-            "version": "1.8.3",
+            "version": "1.9.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Seldaek/jsonlint.git",
-                "reference": "9ad6ce79c342fbd44df10ea95511a1b24dee5b57"
+                "reference": "4211420d25eba80712bff236a98960ef68b866b7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Seldaek/jsonlint/zipball/9ad6ce79c342fbd44df10ea95511a1b24dee5b57",
-                "reference": "9ad6ce79c342fbd44df10ea95511a1b24dee5b57",
+                "url": "https://api.github.com/repos/Seldaek/jsonlint/zipball/4211420d25eba80712bff236a98960ef68b866b7",
+                "reference": "4211420d25eba80712bff236a98960ef68b866b7",
                 "shasum": ""
             },
             "require": {
                 "php": "^5.3 || ^7.0 || ^8.0"
             },
             "require-dev": {
-                "phpunit/phpunit": "^4.8.35 || ^5.7 || ^6.0"
+                "phpstan/phpstan": "^1.5",
+                "phpunit/phpunit": "^4.8.35 || ^5.7 || ^6.0 || ^8.5.13"
             },
             "bin": [
                 "bin/jsonlint"
@@ -4031,7 +4033,7 @@
             ],
             "support": {
                 "issues": "https://github.com/Seldaek/jsonlint/issues",
-                "source": "https://github.com/Seldaek/jsonlint/tree/1.8.3"
+                "source": "https://github.com/Seldaek/jsonlint/tree/1.9.0"
             },
             "funding": [
                 {
@@ -4043,7 +4045,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2020-11-11T09:19:24+00:00"
+            "time": "2022-04-01T13:37:23+00:00"
         },
         {
             "name": "simplepie/simplepie",
@@ -4118,16 +4120,16 @@
         },
         {
             "name": "swaggest/json-diff",
-            "version": "v3.8.1",
+            "version": "v3.8.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/swaggest/json-diff.git",
-                "reference": "d2184358c5ef5ecaa1f6b4c2bce175fac2d25670"
+                "reference": "bb3e3b4e9d842bb2e48f31ea568d0459968d1d42"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/swaggest/json-diff/zipball/d2184358c5ef5ecaa1f6b4c2bce175fac2d25670",
-                "reference": "d2184358c5ef5ecaa1f6b4c2bce175fac2d25670",
+                "url": "https://api.github.com/repos/swaggest/json-diff/zipball/bb3e3b4e9d842bb2e48f31ea568d0459968d1d42",
+                "reference": "bb3e3b4e9d842bb2e48f31ea568d0459968d1d42",
                 "shasum": ""
             },
             "require": {
@@ -4155,34 +4157,36 @@
             "description": "JSON diff/rearrange/patch/pointer library for PHP",
             "support": {
                 "issues": "https://github.com/swaggest/json-diff/issues",
-                "source": "https://github.com/swaggest/json-diff/tree/v3.8.1"
+                "source": "https://github.com/swaggest/json-diff/tree/v3.8.3"
             },
-            "time": "2020-09-25T17:47:07+00:00"
+            "time": "2021-09-25T22:09:03+00:00"
         },
         {
             "name": "swaggest/json-schema",
-            "version": "v0.12.31",
+            "version": "v0.12.39",
             "source": {
                 "type": "git",
                 "url": "https://github.com/swaggest/php-json-schema.git",
-                "reference": "a4adcdbb38f38a19d3f1801150822172cf1c4853"
+                "reference": "193ba39cce1ffa2d55ddd5445315e945a63298a2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/swaggest/php-json-schema/zipball/a4adcdbb38f38a19d3f1801150822172cf1c4853",
-                "reference": "a4adcdbb38f38a19d3f1801150822172cf1c4853",
+                "url": "https://api.github.com/repos/swaggest/php-json-schema/zipball/193ba39cce1ffa2d55ddd5445315e945a63298a2",
+                "reference": "193ba39cce1ffa2d55ddd5445315e945a63298a2",
                 "shasum": ""
             },
             "require": {
                 "ext-json": "*",
-                "ext-mbstring": "*",
                 "php": ">=5.4",
                 "phplang/scope-exit": "^1.0",
-                "swaggest/json-diff": "^3.5.1"
+                "swaggest/json-diff": "^3.8.2",
+                "symfony/polyfill-mbstring": "^1.19"
             },
             "require-dev": {
-                "phpunit/php-code-coverage": "2.2.4",
-                "phpunit/phpunit": "4.8.35"
+                "phpunit/phpunit": "^4.8.23"
+            },
+            "suggest": {
+                "ext-mbstring": "For better performance"
             },
             "type": "library",
             "autoload": {
@@ -4204,9 +4208,9 @@
             "support": {
                 "email": "vearutop@gmail.com",
                 "issues": "https://github.com/swaggest/php-json-schema/issues",
-                "source": "https://github.com/swaggest/php-json-schema/tree/v0.12.31"
+                "source": "https://github.com/swaggest/php-json-schema/tree/v0.12.39"
             },
-            "time": "2020-09-21T09:31:21+00:00"
+            "time": "2021-10-15T18:12:27+00:00"
         },
         {
             "name": "symfony/console",
@@ -4367,7 +4371,7 @@
         },
         {
             "name": "symfony/polyfill-mbstring",
-            "version": "v1.24.0",
+            "version": "v1.25.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-mbstring.git",
@@ -4430,7 +4434,7 @@
                 "shim"
             ],
             "support": {
-                "source": "https://github.com/symfony/polyfill-mbstring/tree/v1.24.0"
+                "source": "https://github.com/symfony/polyfill-mbstring/tree/v1.25.0"
             },
             "funding": [
                 {
