@@ -1445,6 +1445,97 @@ abstract class CommonITILValidation extends CommonDBChild
     }
 
     /**
+     * Dropdown of validator
+     *
+     * @param $options   array of options
+     *  - name                    : select name
+     *  - id                      : ID of object > 0 Update, < 0 New
+     *  - entity                  : ID of entity
+     *  - right                   : validation rights
+     *  - groups_id               : ID of group validator
+     *  - users_id_validate       : ID of user validator
+     *  - applyto
+     *
+     * @return void Output is printed
+     * @deprecated 10.1.0
+     **/
+    public static function dropdownValidator(array $options = [])
+    {
+        global $CFG_GLPI;
+
+        Toolbox::deprecated();
+
+        $params = [
+            'name'              => '' ,
+            'id'                => 0,
+            'entity'            => $_SESSION['glpiactive_entity'],
+            'right'             => ['validate_request', 'validate_incident'],
+            'groups_id'         => 0,
+            'users_id_validate' => [],
+            'applyto'           => 'show_validator_field',
+            'display'           => true,
+            'disabled'          => false,
+            'width'             => '100%',
+            'required'          => false,
+            'rand'              => mt_rand(),
+        ];
+
+        foreach ($options as $key => $val) {
+            $params[$key] = $val;
+        }
+
+        $type  = '';
+        if (isset($params['users_id_validate']['groups_id'])) {
+            $type = 'group';
+        } else if (!empty($params['users_id_validate'])) {
+            $type = 'user';
+        }
+
+        $out = Dropdown::showFromArray("validatortype", [
+            'user'  => User::getTypeName(1),
+            'group' => Group::getTypeName(1)
+        ], [
+            'value'               => $type,
+            'display_emptychoice' => true,
+            'display'             => false,
+            'disabled'            => $params['disabled'],
+            'rand'                => $params['rand'],
+            'width'               => $params['width'],
+            'required'            => $params['required'],
+        ]);
+
+        if ($type) {
+            $params['validatortype'] = $type;
+            $out .= Ajax::updateItem(
+                $params['applyto'],
+                $CFG_GLPI["root_doc"] . "/ajax/dropdownValidator.php",
+                $params,
+                "",
+                false
+            );
+        }
+        $params['validatortype'] = '__VALUE__';
+        $out .= Ajax::updateItemOnSelectEvent(
+            "dropdown_validatortype{$params['rand']}",
+            $params['applyto'],
+            $CFG_GLPI["root_doc"] . "/ajax/dropdownValidator.php",
+            $params,
+            false
+        );
+
+        if (!isset($options['applyto'])) {
+            $out .= "<br><span id='" . $params['applyto'] . "'>&nbsp;</span>\n";
+        }
+
+        if ($params['display']) {
+            echo $out;
+            return $params['rand'];
+        } else {
+            return $out;
+        }
+    }
+
+    /**
      * Get list of users from a group which have validation rights
      *
      * @param $options   array   possible:
