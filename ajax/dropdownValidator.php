@@ -42,9 +42,13 @@ header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 
 if (isset($_POST["validatortype"])) {
-    switch ($_POST["validatortype"]) {
+    if (isset($_POST['users_id_validate'])) {
+        Toolbox::deprecated('Usage of "users_id_validate" parameter is deprecated in "ajax/dropdownValidator.php". Use "items_id_target" instead.');
+        $_POST['items_id_target'] = $_POST['users_id_validate'];
+    }
+
+    switch (strtolower($_POST["validatortype"])) {
         case 'user':
-        case 'User':
             if (isset($_POST['items_id_target']['groups_id'])) {
                 $_POST['items_id_target'] = [];
             }
@@ -58,8 +62,8 @@ if (isset($_POST["validatortype"])) {
             ]);
             echo Html::hidden('itemtype_target', ['value' => 'User']);
             break;
+
         case 'group':
-        case 'Group':
             $value = (isset($_POST['items_id_target'][0]) ? $_POST['items_id_target'][0] : 0);
             Group::dropdown([
                 'name'   => !empty($_POST['name']) ? $_POST['name'] . '[]' : 'items_id_target[]',
@@ -72,7 +76,6 @@ if (isset($_POST["validatortype"])) {
             break;
 
         case 'group_user':
-        case 'Group_User':
             $name = 'groups_id';
             $value = $_POST['groups_id'];
 

@@ -60,7 +60,14 @@ $itemtype = $validation->getItilObjectItemType();
 $fk       = getForeignKeyFieldForItemType($itemtype);
 
 if (isset($_POST["add"])) {
+    if (isset($_POST['users_id_validate'])) {
+        Toolbox::deprecated('Usage of "users_id_validate" parameter is deprecated in "front/commonitilvalidation.form.php". Use "items_id_target" instead.');
+        $_POST['items_id_target'] = $_POST['users_id_validate'];
+        $_POST['itemtype_target'] = User::class;
+    }
+
     $validation->check(-1, CREATE, $_POST);
+
     if (!isset($_POST['items_id_target'])) {
         Html::back();
         return;
@@ -79,6 +86,7 @@ if (isset($_POST["add"])) {
                 strtolower($itemtype),
                 4,
                 "tracking",
+                //TRANS: %s is the user login
                 sprintf(__('%s adds an approval'), $_SESSION["glpiname"])
             );
         }
