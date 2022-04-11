@@ -2422,20 +2422,20 @@
         },
         {
             "name": "mexitek/phpcolors",
-            "version": "v1.0.2",
+            "version": "v1.0.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/mexitek/phpColors.git",
-                "reference": "4b1ccc920b5fc3749a575c171d2f12fca0ecfded"
+                "reference": "4043974240ca7dc3c2bec3c158588148b605b206"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mexitek/phpColors/zipball/4b1ccc920b5fc3749a575c171d2f12fca0ecfded",
-                "reference": "4b1ccc920b5fc3749a575c171d2f12fca0ecfded",
+                "url": "https://api.github.com/repos/mexitek/phpColors/zipball/4043974240ca7dc3c2bec3c158588148b605b206",
+                "reference": "4043974240ca7dc3c2bec3c158588148b605b206",
                 "shasum": ""
             },
             "require": {
-                "php": "^7.2"
+                "php": "^7.2|^8.0"
             },
             "require-dev": {
                 "nette/tester": "^2.3",
@@ -2471,7 +2471,7 @@
                 "issues": "https://github.com/mexitek/phpColors/issues",
                 "source": "https://github.com/mexitek/phpColors"
             },
-            "time": "2020-11-05T06:04:47+00:00"
+            "time": "2021-11-26T13:19:08+00:00"
         },
         {
             "name": "michelf/php-markdown",
