@@ -500,10 +500,10 @@
         },
         {
             "name": "htmlawed/htmlawed",
-            "version": "1.2.5",
+            "version": "1.2.6",
             "dist": {
                 "type": "zip",
-                "url": "https://www.bioinformatics.org/phplabware/downloads/htmLawed125.zip"
+                "url": "https://www.bioinformatics.org/phplabware/downloads/htmLawed126.zip"
             },
             "type": "library",
             "autoload": {
