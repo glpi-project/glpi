@@ -37,7 +37,6 @@ The present file will list all changes made to the project; according to the
 
 #### Removed
 
-
 ## [10.0.0] unreleased
 
 ### Added
