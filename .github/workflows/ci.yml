@@ -1,11 +1,11 @@
 name: "GLPI CI"
 
 on:
-  # Runs test suite when a new commit is pushed on "master" and "*/bugfixes" branches
+  # Runs test suite when a new commit is pushed on "main" and "*/bugfixes" branches
   # and when a new tag is created
   push:
     branches:
-      - master
+      - main
       - '*/bugfixes'
       - 'feature/*'
       - 'fix/*'
@@ -115,8 +115,8 @@ jobs:
           - {php-version: "8.1", db-image: "percona:8.0", always: false}
     env:
       # Skip jobs that should not be always run on pull requests or on push on tier repository (to limit workers usage).
-      # No jobs will be skipped on nightly build, manual dispatch or push on main branches (master and */bugfixes) or tags.
-      skip: ${{ matrix.always == false && (github.event_name == 'pull_request' || github.repository != 'glpi-project/glpi' || !(github.event_name == 'workflow_dispatch' || github.ref == 'refs/heads/master' || endsWith(github.ref, '/bugfixes') || startsWith(github.ref, 'refs/tags'))) }}
+      # No jobs will be skipped on nightly build, manual dispatch or push on main branches (main and */bugfixes) or tags.
+      skip: ${{ matrix.always == false && (github.event_name == 'pull_request' || github.repository != 'glpi-project/glpi' || !(github.event_name == 'workflow_dispatch' || github.ref == 'refs/heads/main' || endsWith(github.ref, '/bugfixes') || startsWith(github.ref, 'refs/tags'))) }}
       COMPOSE_FILE: ".github/actions/docker-compose-app.yml:.github/actions/docker-compose-services.yml"
       APPLICATION_ROOT: "${{ github.workspace }}"
       DB_IMAGE: "githubactions-${{ matrix.db-image }}"

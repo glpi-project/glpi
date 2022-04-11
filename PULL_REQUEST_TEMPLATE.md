@@ -10,7 +10,7 @@ BEFORE SUBMITTING YOUR ISSUE, please make sure to read and follow these steps:
 * Please use the below template.
 
 For more information, please check contributing guide:
-https://github.com/glpi-project/glpi/blob/master/CONTRIBUTING.md
+https://github.com/glpi-project/glpi/blob/main/CONTRIBUTING.md
 
 The GLPI team.
 -->
