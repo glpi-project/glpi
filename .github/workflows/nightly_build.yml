@@ -52,10 +52,10 @@ jobs:
         id: release-name
         if: ${{ steps.updated.outputs.build == 'yes' }}
         run: |
-          REF_NAME=$(echo ${{ matrix.branch }} | sed -E 's|/|-|')
+          REF_NAME=$(echo ${{ matrix.branch }} | sed -E 's|/bugfixes||')
           echo "::set-output name=basename::$REF_NAME"
           SHA=$(git rev-parse --short HEAD)
-          echo "release_name=$REF_NAME.$SHA" >> $GITHUB_ENV
+          echo "release_name=$REF_NAME-$SHA" >> $GITHUB_ENV
       - name: "Build"
         if: ${{ steps.updated.outputs.build == 'yes' }}
         run: |
@@ -81,11 +81,11 @@ jobs:
           git config --local user.name "$NAME"
           echo "Removing previous ${{ matrix.branch }} builds"
           git filter-branch --prune-empty -f --index-filter 'git rm --cached --ignore-unmatch "glpi/${{ steps.release-name.outputs.basename }}.tar.gz"' HEAD
-          git filter-branch --prune-empty -f --index-filter 'git rm --cached --ignore-unmatch "glpi/${{ steps.release-name.outputs.basename }}.*.tar.gz"' HEAD
+          git filter-branch --prune-empty -f --index-filter 'git rm --cached --ignore-unmatch "glpi/${{ steps.release-name.outputs.basename }}-*.tar.gz"' HEAD
           cp -vf ${{ github.workspace }}/${{ steps.release-name.outputs.basename }}.tar.gz glpi
           cp -vf ${{ github.workspace }}/${{ env.release_name }}.tar.gz glpi
           # script argument should be the ordered list of builds to index
-          ../tools/github-nightly-description.sh `ls -r glpi/*.*.tar.gz` > glpi/index.md
+          ../tools/github-nightly-description.sh `ls -r glpi/*-*.tar.gz` > glpi/index.md
           echo "Repository status:"
           git status
           ls -lt glpi
