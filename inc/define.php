@@ -531,6 +531,8 @@ $CFG_GLPI['databaseinstance_types'] = ['Computer'];
 
 $CFG_GLPI['agent_types'] = ['Computer', 'Phone'];
 
+$CFG_GLPI['line_types'] = $CFG_GLPI['itemdevicesimcard_types'];
+
 $dashboard_libs = [
     'dashboard', 'gridstack',
     'charts', 'clipboard', 'sortable'

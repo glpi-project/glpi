@@ -1099,6 +1099,12 @@ class CommonDBTM extends CommonGLPI
             ]);
         }
 
+        if (in_array($this->getType(), $CFG_GLPI['line_types'])) {
+            $this->deleteChildrenAndRelationsFromDb([
+                Item_Line::class
+            ]);
+        }
+
         $lockedfield = new Lockedfield();
         if ($lockedfield->isHandled($this)) {
             $lockedfield->itemDeleted();

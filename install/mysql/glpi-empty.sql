@@ -9201,4 +9201,15 @@ CREATE TABLE `glpi_snmpcredentials` (
    KEY `is_deleted` (`is_deleted`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
+DROP TABLE IF EXISTS `glpi_items_lines`;
+CREATE TABLE `glpi_items_lines` (
+   `id` int unsigned NOT NULL AUTO_INCREMENT,
+   `lines_id` int unsigned NOT NULL DEFAULT '0',
+   `itemtype` varchar(100) DEFAULT NULL,
+   `items_id` int unsigned NOT NULL DEFAULT '0',
+   PRIMARY KEY (`id`),
+   UNIQUE KEY `unicity` (`lines_id`,`itemtype`,`items_id`),
+   KEY `item` (`itemtype`,`items_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
 SET FOREIGN_KEY_CHECKS=1;

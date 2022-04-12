@@ -770,6 +770,7 @@ class MassiveAction
                 }
             }
 
+            Line::getMassiveActionsForItemtype($actions, $itemtype, $is_deleted, $checkitem);
             Infocom::getMassiveActionsForItemtype($actions, $itemtype, $is_deleted, $checkitem);
 
             CommonDBConnexity::getMassiveActionsForItemtype(

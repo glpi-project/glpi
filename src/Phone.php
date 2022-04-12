@@ -99,6 +99,7 @@ class Phone extends CommonDBTM
         $this->addStandardTab('Item_OperatingSystem', $ong, $options);
         $this->addStandardTab('Item_SoftwareVersion', $ong, $options);
         $this->addStandardTab('Item_Devices', $ong, $options);
+        $this->addStandardTab('Item_Line', $ong, $options);
         $this->addStandardTab('Item_Disk', $ong, $options);
         $this->addStandardTab('Computer_Item', $ong, $options);
         $this->addStandardTab('NetworkPort', $ong, $options);
