@@ -910,14 +910,15 @@ class Socket extends CommonDBChild
                 $number
             );
 
+            $rand = mt_rand();
+            $massive_action_form_id = 'mass' . str_replace('\\', '', __CLASS__) . $rand;
             if ($canedit) {
-                $rand = mt_rand();
-                Html::openMassiveActionsForm('mass' . __CLASS__ . $rand);
+                Html::openMassiveActionsForm($massive_action_form_id);
                 $massiveactionparams
                 = ['num_displayed'
                            => min($_SESSION['glpilist_limit'], $number),
                     'container'
-                           => 'mass' . __CLASS__ . $rand,
+                           => $massive_action_form_id,
                     'specific_actions'
                            => ['purge' => _x('button', 'Delete permanently')]
                 ];
@@ -928,7 +929,7 @@ class Socket extends CommonDBChild
 
             if ($canedit) {
                 echo "<th width='10'>";
-                echo Html::getCheckAllAsCheckbox('mass' . __CLASS__ . $rand);
+                echo Html::getCheckAllAsCheckbox($massive_action_form_id);
                 echo "</th>";
             }
 
