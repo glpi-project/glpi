@@ -31,39 +31,11 @@
  * ---------------------------------------------------------------------
  */
 
-include('../inc/includes.php');
+/**
+ * @var Migration $migration
+ */
 
-if (
-    !$CFG_GLPI['notifications_mailing']
-    || !countElementsInTable(
-        'glpi_notifications',
-        ['itemtype' => 'User', 'event' => 'passwordinit', 'is_active' => 1]
-    )
-) {
-    Session::addMessageAfterRedirect(
-        __('Sending password initialization notification is not enabled.'),
-        false,
-        ERROR
-    );
-    Html::back();
-}
-
-$user = new User();
-
-// Manage password initialization
-// REQUEST needed : GET on first access / POST on submit form
-if (isset($_REQUEST['password_forget_token'])) {
-    if (isset($_POST['password'])) {
-        $user->showUpdateForgottenPassword($_REQUEST);
-    } else {
-        User::showPasswordInitChangeForm($_REQUEST['password_forget_token']);
-    }
-} else {
-    if (isset($_POST['email'])) {
-        $user->showInitPassword($_POST['email']);
-    } else {
-        User::showPasswordInitRequestForm();
-    }
-}
-
-exit();
+$migration->displayMessage('Add new configurations / user preferences');
+$migration->addConfig([
+    'password_init_token_delay' => '86400',
+]);
