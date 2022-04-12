@@ -106,12 +106,14 @@ abstract class CommonITILObject_CommonITILObject extends CommonDBRelation
 
     public static function showMassiveActionsSubForm(MassiveAction $ma)
     {
+        global $CFG_GLPI;
+
         switch ($ma->getAction()) {
             case 'add':
                 Dropdown::showSelectItemFromItemtypes([
                     'items_id_name'   => 'items_id_2',
                     'itemtype_name'   => 'itemtype_2',
-                    'itemtypes'       => [Ticket::class, Change::class, Problem::class],
+                    'itemtypes'       => $CFG_GLPI['itil_types'],
                     'checkright'      => true,
                     'entity_restrict' => $_SESSION['glpiactive_entity']
                 ]);
@@ -122,7 +124,7 @@ abstract class CommonITILObject_CommonITILObject extends CommonDBRelation
                 Dropdown::showSelectItemFromItemtypes([
                     'items_id_name'   => 'items_id_2',
                     'itemtype_name'   => 'itemtype_2',
-                    'itemtypes'       => [Ticket::class, Change::class, Problem::class],
+                    'itemtypes'       => $CFG_GLPI['itil_types'],
                     'checkright'      => true,
                     'entity_restrict' => $_SESSION['glpiactive_entity']
                 ]);
