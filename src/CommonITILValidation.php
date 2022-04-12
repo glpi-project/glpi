@@ -1499,8 +1499,8 @@ abstract class CommonITILValidation extends CommonDBChild
 
         $out = Dropdown::showFromArray("validatortype", [
             'User'  => User::getTypeName(1),
-            'Group' => Group::getTypeName(1),
             'Group_User' => __('Group user(s)'),
+            'Group' => Group::getTypeName(1),
         ], [
             'value'               => $type,
             'display_emptychoice' => true,
