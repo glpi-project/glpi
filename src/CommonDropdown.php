@@ -619,7 +619,6 @@ abstract class CommonDropdown extends CommonDBTM
                     'value'  => $this->fields[$fk],
                     'entity' => $this->getEntityID(),
                     'used'   => getSonsOf($this->getTable(), $ID),
-                    'width'   => '100%'
                 ]
             );
         } else {
