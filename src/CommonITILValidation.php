@@ -335,7 +335,7 @@ abstract class CommonITILValidation extends CommonDBChild
         ) {
             Toolbox::deprecated('Usage of "users_id_validate" field is deprecated in "CommonITILValidation". Use "itemtype_target"/"items_id_target" instead.');
             $input['itemtype_target'] = 'User';
-            $input['items_id_target'] = $this->fields['users_id_validate'];
+            $input['items_id_target'] = $input['users_id_validate'];
         }
 
         if ($user_validator && (!isset($input["items_id_target"]) || ($input["items_id_target"] <= 0))) {
