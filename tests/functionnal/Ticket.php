@@ -2948,7 +2948,7 @@ class Ticket extends DbTestCase
                 'TicketTask',
                 'Document'
             ],
-            'link_type'  => \Ticket_Ticket::SON_OF
+            'link_type'  => \CommonITILObject_CommonITILObject::SON_OF
         ];
 
         \Ticket::merge($ticket1, [$ticket2, $ticket3], $status, $mergeparams);

@@ -66,6 +66,9 @@ if ($_POST["idtable"] && class_exists($_POST["idtable"])) {
     if (isset($_POST['value'])) {
         $p['value'] = $_POST['value'];
     }
+    if (isset($_POST['valuename'])) {
+        $p['valuename'] = $_POST['valuename'];
+    }
     if (isset($_POST['entity_restrict'])) {
         $p['entity_restrict'] = $_POST['entity_restrict'];
     }

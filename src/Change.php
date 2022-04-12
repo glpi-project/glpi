@@ -276,15 +276,16 @@ class Change extends CommonITILObject
 
         $this->deleteChildrenAndRelationsFromDb(
             [
-            // Done by parent: Change_Group::class,
+                // Done by parent: Change_Group::class,
                 Change_Item::class,
                 Change_Problem::class,
-            // Done by parent: Change_Supplier::class,
+                // Done by parent: Change_Supplier::class,
                 Change_Ticket::class,
-            // Done by parent: Change_User::class,
+                // Done by parent: Change_User::class,
                 ChangeCost::class,
                 ChangeValidation::class,
-            // Done by parent: ITILSolution::class,
+                // Done by parent: ITILSolution::class,
+                Change_Change::class,
             ]
         );
 

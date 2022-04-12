@@ -33,7 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-class Problem_Ticket extends CommonDBRelation
+class Problem_Ticket extends CommonITILObject_CommonITILObject
 {
    // From CommonDBRelation
     public static $itemtype_1   = 'Problem';
@@ -41,19 +41,6 @@ class Problem_Ticket extends CommonDBRelation
 
     public static $itemtype_2   = 'Ticket';
     public static $items_id_2   = 'tickets_id';
-
-
-    /**
-     * @since 0.84
-     **/
-    public function getForbiddenStandardMassiveAction()
-    {
-
-        $forbidden   = parent::getForbiddenStandardMassiveAction();
-        $forbidden[] = 'update';
-        return $forbidden;
-    }
-
 
     public static function getTypeName($nb = 0)
     {
@@ -102,49 +89,6 @@ class Problem_Ticket extends CommonDBRelation
                 break;
         }
         return true;
-    }
-
-
-    /**
-     * @since 0.84
-     **/
-    public function post_addItem()
-    {
-        global $CFG_GLPI;
-
-        $donotif = !isset($this->input['_disablenotif']) && $CFG_GLPI["use_notifications"];
-
-        if ($donotif) {
-            $problem = new Problem();
-            $ticket  = new Ticket();
-            if ($problem->getFromDB($this->input["problems_id"]) && $ticket->getFromDB($this->input["tickets_id"])) {
-                NotificationEvent::raiseEvent("update", $problem);
-                NotificationEvent::raiseEvent('update', $ticket);
-            }
-        }
-
-        parent::post_addItem();
-    }
-
-
-    /**
-     * @since 0.84
-     **/
-    public function post_deleteFromDB()
-    {
-        global $CFG_GLPI;
-
-        $donotif = !isset($this->input['_disablenotif']) && $CFG_GLPI["use_notifications"];
-
-        if ($donotif) {
-            $problem = new Problem();
-            if ($problem->getFromDB($this->fields["problems_id"])) {
-                $options = [];
-                NotificationEvent::raiseEvent("delete", $problem, $options);
-            }
-        }
-
-        parent::post_deleteFromDB();
     }
 
 
@@ -297,20 +241,25 @@ class Problem_Ticket extends CommonDBRelation
         if ($canedit) {
             echo "<div class='firstbloc'>";
             echo "<form name='changeticket_form$rand' id='changeticket_form$rand' method='post'
-               action='" . Toolbox::getItemTypeFormURL(__CLASS__) . "'>";
+                action='" . CommonITILObject_CommonITILObject::getFormURL() . "'>";
 
             echo "<table class='tab_cadre_fixe'>";
-            echo "<tr class='tab_bg_2'><th colspan='2'>" . __('Add a ticket') . "</th></tr>";
+            echo "<tr class='tab_bg_2'><th>" . __('Add a ticket') . "</th></tr>";
 
-            echo "<tr class='tab_bg_2'><td class='right'>";
-            echo "<input type='hidden' name='problems_id' value='$ID'>";
+            echo "<tr class='tab_bg_2'><td>";
+            echo "<input type='hidden' name='itemtype_1' value='Problem'>";
+            echo "<input type='hidden' name='items_id_1' value='$ID'>";
+            echo "<input type='hidden' name='itemtype_2' value='Ticket'>";
+            echo self::dropdownLinks('link');
+            echo "&nbsp;";
             Ticket::dropdown([
+                'name'        => 'items_id_2',
                 'used'        => $used,
                 'entity'      => $problem->getEntityID(),
                 'entity_sons' => $problem->isRecursive(),
                 'displaywith' => ['id'],
             ]);
-            echo "</td><td class='center'>";
+            echo "&nbsp;";
             echo "<input type='submit' name='add' value=\"" . _sx('button', 'Add') . "\" class='btn btn-primary'>";
             echo "</td></tr>";
 
@@ -408,19 +357,23 @@ class Problem_Ticket extends CommonDBRelation
         if ($canedit) {
             echo "<div class='firstbloc'>";
             echo "<form name='problemticket_form$rand' id='problemticket_form$rand' method='post'
-                action='" . Toolbox::getItemTypeFormURL(__CLASS__) . "'>";
+                action='" . CommonITILObject_CommonITILObject::getFormURL() . "'>";
 
             echo "<table class='tab_cadre_fixe'>";
-            echo "<tr class='tab_bg_2'><th colspan='3'>" . __('Add a problem') . "</th></tr>";
+            echo "<tr class='tab_bg_2'><th colspan='2'>" . __('Add a problem') . "</th></tr>";
             echo "<tr class='tab_bg_2'><td>";
-            echo "<input type='hidden' name='tickets_id' value='$ID'>";
-
+            echo "<input type='hidden' name='itemtype_1' value='Ticket'>";
+            echo "<input type='hidden' name='items_id_1' value='$ID'>";
+            echo "<input type='hidden' name='itemtype_2' value='Problem'>";
+            echo self::dropdownLinks('link');
+            echo "&nbsp;";
             Problem::dropdown([
+                'name'      => 'items_id_2',
                 'used'      => $used,
                 'entity'    => $ticket->getEntityID(),
                 'condition' => Problem::getOpenCriteria()
             ]);
-            echo "</td><td class='center'>";
+            echo "&nbsp;";
             echo "<input type='submit' name='add' value=\"" . _sx('button', 'Add') . "\" class='btn btn-primary'>";
             echo "</td><td>";
             if (Session::haveRight('problem', CREATE)) {

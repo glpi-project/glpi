@@ -1281,19 +1281,6 @@ class Ticket extends CommonITILObject
             }
         }
 
-        if (isset($input['_link'])) {
-            $ticket_ticket = new Ticket_Ticket();
-            if (!empty($input['_link']['tickets_id_2'])) {
-                if ($ticket_ticket->can(-1, CREATE, $input['_link'])) {
-                    if ($ticket_ticket->add($input['_link'])) {
-                        $input['_forcenotif'] = true;
-                    }
-                } else {
-                    Session::addMessageAfterRedirect(__('Unknown ticket'), false, ERROR);
-                }
-            }
-        }
-
        // SLA / OLA affect by rules : reset time_to_resolve / internal_time_to_resolve
        // Manual SLA / OLA defined : reset time_to_resolve / internal_time_to_resolve
        // No manual SLA / OLA and due date defined : reset auto SLA / OLA
@@ -1613,7 +1600,9 @@ class Ticket extends CommonITILObject
             && (in_array($this->input['status'], $this->getSolvedStatusArray())
               || in_array($this->input['status'], $this->getClosedStatusArray()))
         ) {
-            Ticket_Ticket::manageLinkedTicketsOnSolved($this->getID());
+            CommonITILObject_CommonITILObject::manageLinksOnChange('Ticket', $this->getID(), [
+                'status'       => $this->input['status'],
+            ]);
         }
 
         $donotif = count($this->updates);
@@ -2058,26 +2047,12 @@ class Ticket extends CommonITILObject
         }
 
         $ticket_ticket = new Ticket_Ticket();
-
-       // From interface
-        if (isset($this->input['_link'])) {
-            $this->input['_link']['tickets_id_1'] = $this->fields['id'];
-           // message if ticket's ID doesn't exist
-            if (!empty($this->input['_link']['tickets_id_2'])) {
-                if ($ticket_ticket->can(-1, CREATE, $this->input['_link'])) {
-                    $ticket_ticket->add($this->input['_link']);
-                } else {
-                    Session::addMessageAfterRedirect(__('Unknown ticket'), false, ERROR);
-                }
-            }
-        }
-
        // From mailcollector : do not check rights
         if (isset($this->input["_linkedto"])) {
             $input2 = [
                 'tickets_id_1' => $this->fields['id'],
                 'tickets_id_2' => $this->input["_linkedto"],
-                'link'         => Ticket_Ticket::LINK_TO,
+                'link'         => CommonITILObject_CommonITILObject::LINK_TO,
             ];
             $ticket_ticket->add($input2);
         }
@@ -2547,7 +2522,7 @@ class Ticket extends CommonITILObject
     public function getSpecificMassiveActions($checkitem = null)
     {
 
-        $actions = [];
+        $actions = parent::getSpecificMassiveActions($checkitem);
 
         if (Session::getCurrentInterface() == 'central') {
             if (Ticket::canUpdate() && Ticket::canDelete()) {
@@ -2591,9 +2566,6 @@ class Ticket extends CommonITILObject
                  __('Add an actor');
                 $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'update_notif']
                 = __('Set notifications for all actors');
-                $actions['Ticket_Ticket' . MassiveAction::CLASS_ACTION_SEPARATOR . 'add']
-                = "<i class='fa-fw fas fa-link'></i>" .
-                 _x('button', 'Link tickets');
                 if (ProjectTask_Ticket::canCreate()) {
                     $actions['ProjectTask_Ticket' . MassiveAction::CLASS_ACTION_SEPARATOR . 'add']
                         = "<i class='fa-fw fas fa-link'></i>" .
@@ -2606,12 +2578,6 @@ class Ticket extends CommonITILObject
                 }
 
                 KnowbaseItem_Item::getMassiveActionsForItemtype($actions, __CLASS__, 0, $checkitem);
-            }
-
-            if (Problem::canUpdate()) {
-                $actions[self::getType() . MassiveAction::CLASS_ACTION_SEPARATOR . 'link_to_problem']
-                = "<i class='fa-fw " . Problem::getIcon() . "' ></i>" .
-                __("Link to a problem");
             }
 
             if (self::canUpdate()) {
@@ -2669,12 +2635,12 @@ class Ticket extends CommonITILObject
                 ]);
                 echo "</td></tr><tr><td><label for='dropdown_link_type$rand'>" . __('Link type') . "</label></td><td colspan='3'>";
                 Dropdown::showFromArray('link_type', [
-                    0                             => __('None'),
-                    Ticket_Ticket::LINK_TO        => __('Linked to'),
-                    Ticket_Ticket::DUPLICATE_WITH => __('Duplicates'),
-                    Ticket_Ticket::SON_OF         => __('Son of'),
-                    Ticket_Ticket::PARENT_OF      => __('Parent of')
-                ], ['value' => Ticket_Ticket::SON_OF, 'rand' => $rand]);
+                    0                                                   => __('None'),
+                    CommonITILObject_CommonITILObject::LINK_TO          => __('Linked to'),
+                    CommonITILObject_CommonITILObject::DUPLICATE_WITH   => __('Duplicates'),
+                    CommonITILObject_CommonITILObject::SON_OF           => __('Son of'),
+                    CommonITILObject_CommonITILObject::PARENT_OF        => __('Parent of')
+                ], ['value' => CommonITILObject_CommonITILObject::SON_OF, 'rand' => $rand]);
                 echo "</td></tr><tr><tr><td colspan='4'>";
                 echo Html::submit(_x('button', 'Merge'), [
                     'name'      => 'merge',
@@ -2684,6 +2650,7 @@ class Ticket extends CommonITILObject
                 return true;
 
             case 'link_to_problem':
+                Toolbox::deprecated('Ticket "link_to_problem" massive action is deprecated. Use CommonITILObject_CommonITILObject "add" massive action.');
                 Problem::dropdown([
                     'name'      => 'problems_id',
                     'condition' => Problem::getOpenCriteria()
@@ -2837,6 +2804,7 @@ JAVASCRIPT;
                 return;
 
             case 'link_to_problem':
+                Toolbox::deprecated('Ticket "link_to_problem" massive action is deprecated. Use CommonITILObject_CommonITILObject "add" massive action.');
                // Skip if not tickets
                 if ($item::getType() !== Ticket::getType()) {
                     $ma->addMessage($item->getErrorMessage(ERROR_COMPAT));
@@ -3438,7 +3406,7 @@ JAVASCRIPT;
                 'searchtype'         => 'equals',
                 'joinparams'         => [
                     'jointype'           => 'item_item',
-                    'condition'          => ['NEWTABLE.link' => Ticket_Ticket::DUPLICATE_WITH]
+                    'condition'          => ['NEWTABLE.link' => CommonITILObject_CommonITILObject::DUPLICATE_WITH]
                 ],
                 'additionalfields'   => ['tickets_id_2'],
                 'forcegroupby'       => true
@@ -3467,7 +3435,7 @@ JAVASCRIPT;
                 'usehaving'          => true,
                 'joinparams'         => [
                     'jointype'           => 'item_item',
-                    'condition'          => ['NEWTABLE.link' => Ticket_Ticket::DUPLICATE_WITH]
+                    'condition'          => ['NEWTABLE.link' => CommonITILObject_CommonITILObject::DUPLICATE_WITH]
                 ]
             ];
 
@@ -3487,7 +3455,7 @@ JAVASCRIPT;
                         'joinparams'         => [
                             'jointype'           => 'child',
                             'linkfield'          => 'tickets_id_1',
-                            'condition'          => ['NEWTABLE.link' => Ticket_Ticket::SON_OF]
+                            'condition'          => ['NEWTABLE.link' => CommonITILObject_CommonITILObject::SON_OF]
                         ]
                     ]
                 ],
@@ -3510,7 +3478,7 @@ JAVASCRIPT;
                         'joinparams'         => [
                             'jointype'           => 'child',
                             'linkfield'          => 'tickets_id_2',
-                            'condition'          => ['NEWTABLE.link' => Ticket_Ticket::SON_OF]
+                            'condition'          => ['NEWTABLE.link' => CommonITILObject_CommonITILObject::SON_OF]
                         ]
                     ]
                 ],
@@ -3528,7 +3496,7 @@ JAVASCRIPT;
                 'joinparams'         => [
                     'linkfield'          => 'tickets_id_2',
                     'jointype'           => 'child',
-                    'condition'          => ['NEWTABLE.link' => Ticket_Ticket::SON_OF]
+                    'condition'          => ['NEWTABLE.link' => CommonITILObject_CommonITILObject::SON_OF]
                 ],
                 'forcegroupby'       => true
             ];
@@ -3544,7 +3512,7 @@ JAVASCRIPT;
                 'joinparams'         => [
                     'linkfield'          => 'tickets_id_1',
                     'jointype'           => 'child',
-                    'condition'          => ['NEWTABLE.link' => Ticket_Ticket::SON_OF]
+                    'condition'          => ['NEWTABLE.link' => CommonITILObject_CommonITILObject::SON_OF]
                 ],
                 'additionalfields'   => ['tickets_id_2']
             ];
@@ -4155,7 +4123,9 @@ JAVASCRIPT;
                 'alternative_email' => ['']
             ],
             '_groups_id_observer'       => 0,
-            '_link'                     => ['tickets_id_2' => '',
+            // FIXME Use new format
+            '_link'                     => [
+                'tickets_id_2' => '',
                 'link'         => ''
             ],
             '_suppliers_id_assign'      => 0,
@@ -4263,8 +4233,9 @@ JAVASCRIPT;
                 if ($fup->getFromDB($options['_promoted_fup_id'])) {
                     $options['content'] = $fup->getField('content');
                     $options['_users_id_requester'] = $fup->fields['users_id'];
+                    // FIXME Use new format
                     $options['_link'] = [
-                        'link'         => Ticket_Ticket::SON_OF,
+                        'link'         => CommonITILObject_CommonITILObject::SON_OF,
                         'tickets_id_2' => $fup->fields['items_id']
                     ];
 
@@ -4286,8 +4257,9 @@ JAVASCRIPT;
                     $options['_users_id_requester'] = $tickettask->fields['users_id'];
                     $options['_users_id_assign'] = $tickettask->fields['users_id_tech'];
                     $options['_groups_id_assign'] = $tickettask->fields['groups_id_tech'];
+                    // FIXME Use new format
                     $options['_link'] = [
-                        'link'         => Ticket_Ticket::SON_OF,
+                        'link'         => CommonITILObject_CommonITILObject::SON_OF,
                         'tickets_id_2' => $tickettask->fields['tickets_id']
                     ];
 
@@ -4413,6 +4385,14 @@ JAVASCRIPT;
             $item_ticket = new Item_Ticket();
         }
 
+        // If a link is specified in the old format, convert it to the new one
+        if (isset($options['_link']) && isset($options['_link']['tickets_id_2'])) {
+            $options['_link'] = [
+                'itemtype_1' => 'Ticket',
+                'itemtype_2' => 'Ticket',
+                'items_id_2' => $options['_link']['tickets_id_2'],
+            ];
+        }
         TemplateRenderer::getInstance()->display('components/itilobject/layout.html.twig', [
             'item'               => $this,
             'timeline_itemtypes' => $this->getTimelineItemtypes(),
@@ -4423,7 +4403,6 @@ JAVASCRIPT;
             'itiltemplate_key'   => self::getTemplateFormFieldName(),
             'itiltemplate'       => $tt,
             'predefined_fields'  => Toolbox::prepareArrayForInput($predefined_fields),
-            'ticket_ticket'      => new Ticket_Ticket(),
             'item_ticket'        => $item_ticket,
             'sla'                => $sla,
             'ola'                => $ola,
@@ -6590,7 +6569,7 @@ JAVASCRIPT;
      *       full_transaction - Boolean value indicating if the entire merge must complete successfully, or if partial merges are allowed.
      *                By default, the full merge must complete. On failure, all database operations performed are rolled back.
      *       link_type - Integer indicating the link type of the merged tickets (See types in Ticket_Ticket).
-     *                By default, this is Ticket_Ticket::SON_OF. To disable linking, use 0 or a negative value.
+     *                By default, this is CommonITILObject_CommonITILObject::SON_OF. To disable linking, use 0 or a negative value.
      *       append_actors - Array of actor types to migrate into the ticket $merge_ticket. See types in CommonITILActor.
      *                By default, all actors are added to the ticket.
      * @param array $status Reference array that this function uses to store the status of each ticket attempted to be merged.
@@ -6605,7 +6584,7 @@ JAVASCRIPT;
         $p = [
             'linktypes'          => [],
             'full_transaction'   => true,
-            'link_type'          => Ticket_Ticket::SON_OF,
+            'link_type'          => CommonITILObject_CommonITILObject::SON_OF,
             'append_actors'      => [CommonITILActor::REQUESTER, CommonITILActor::OBSERVER, CommonITILActor::ASSIGN]
         ];
         $p = array_replace($p, $params);
