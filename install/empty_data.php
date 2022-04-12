@@ -3226,7 +3226,7 @@ $empty_data_builder = new class
                 'id' => 73,
                 'notifications_id' => '73',
                 'mode' => 'mailing',
-                'notificationtemplates_id' => 13,
+                'notificationtemplates_id' => 29,
             ],
         ];
 
