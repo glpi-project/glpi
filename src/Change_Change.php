@@ -32,32 +32,23 @@
  */
 
 /**
- * @since 0.84
- */
+ * @since 10.1.0
+ *
+ * Change_Change Class
+ *
+ * Relation between Changes and other Changes
+ **/
+class Change_Change extends CommonITILObject_CommonITILObject
+{
+    // From CommonDBRelation
+    public static $itemtype_1   = 'Change';
+    public static $items_id_1   = 'changes_id_1';
 
-use Glpi\Event;
+    public static $itemtype_2   = 'Change';
+    public static $items_id_2   = 'changes_id_2';
 
-include('../inc/includes.php');
-
-$ticket_ticket = new Ticket_Ticket();
-
-Session ::checkCentralAccess();
-
-Toolbox::deprecated();
-
-if (isset($_POST['purge'])) {
-    $ticket_ticket->check($_POST['id'], PURGE);
-
-    $ticket_ticket->delete($_POST, 1);
-
-    Event::log(
-        $_POST['tickets_id'],
-        "ticket",
-        4,
-        "tracking",
-        //TRANS: %s is the user login
-        sprintf(__('%s purges link between tickets'), $_SESSION["glpiname"])
-    );
-    Html::redirect(Ticket::getFormURLWithID($_POST['tickets_id']));
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Link Change/Change', 'Links Change/Change', $nb);
+    }
 }
-Html::displayErrorAndDie("lost");

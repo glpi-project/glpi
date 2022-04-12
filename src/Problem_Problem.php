@@ -32,32 +32,23 @@
  */
 
 /**
- * @since 0.84
- */
+ * @since 10.1.0
+ *
+ * Problem_Problem Class
+ *
+ * Relation between Problems and other Problems
+ **/
+class Problem_Problem extends CommonITILObject_CommonITILObject
+{
+    // From CommonDBRelation
+    public static $itemtype_1   = 'Problem';
+    public static $items_id_1   = 'problems_id_1';
 
-use Glpi\Event;
+    public static $itemtype_2   = 'Problem';
+    public static $items_id_2   = 'problems_id_2';
 
-include('../inc/includes.php');
-
-$ticket_ticket = new Ticket_Ticket();
-
-Session ::checkCentralAccess();
-
-Toolbox::deprecated();
-
-if (isset($_POST['purge'])) {
-    $ticket_ticket->check($_POST['id'], PURGE);
-
-    $ticket_ticket->delete($_POST, 1);
-
-    Event::log(
-        $_POST['tickets_id'],
-        "ticket",
-        4,
-        "tracking",
-        //TRANS: %s is the user login
-        sprintf(__('%s purges link between tickets'), $_SESSION["glpiname"])
-    );
-    Html::redirect(Ticket::getFormURLWithID($_POST['tickets_id']));
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Link Problem/Problem', 'Links Problem/Problem', $nb);
+    }
 }
-Html::displayErrorAndDie("lost");

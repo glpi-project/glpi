@@ -6,12 +6,16 @@ The present file will list all changes made to the project; according to the
 ## [10.1.0] unreleased
 
 ### Added
+- `Link ITIL Object` and `Unlink ITIL Object` massive actions for Tickets, Changes, and Problems.
 
 ### Changed
+- ITIL Objects can now be linked to any other ITIL Objects similar to the previous Ticket/Ticket links.
 
 ### Deprecated
 
 ### Removed
+- `Link tickets` massive action for Tickets (Use `Link ITIL Object` instead).
+- `Link to a problem` massive action for Tickets (Use `Link ITIL Object` instead).
 
 ### API changes
 
@@ -20,6 +24,16 @@ The present file will list all changes made to the project; according to the
 #### Changes
 
 #### Deprecated
+- `front/change_problem.form.php` script usage.
+- `front/change_ticket.form.php` script usage.
+- `front/problem_ticket.form.php` script usage.
+- `front/ticket_ticket.form.php` script usage.
+- `Ticket` `link_to_problem` massive action is deprecated. Use `CommonITILObject_CommonITILObject` `add` massive action instead.
+- `Ticket_Ticket` `add` massive action is deprecated. Use `CommonITILObject_CommonITILObject` `add` massive action instead.
+- `Ticket_Ticket::checkParentSon()`
+- `Ticket_Ticket::countOpenChildren()`
+- `Ticket_Ticket::getLinkedTicketsTo()`
+- `Ticket_Ticket::manageLinkedTicketsOnSolved()`
 
 #### Removed
 
