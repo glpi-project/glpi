@@ -273,6 +273,25 @@
                         ) }}
                      {% endif %}
 
+                     {# Post code field named differently for Suppliers. Placed after town to maintain field order from 9.5)#}
+                     {% if item.isField('postcode') %}
+                        {{ fields.autoNameField(
+                           'postcode',
+                           item,
+                           __('Postal code'),
+                           withtemplate
+                        ) }}
+                     {% endif %}
+
+                     {% if item_type == 'Supplier' or item_type == 'Contact' %}
+                        {{ fields.autoNameField(
+                           'state',
+                           item,
+                           __('State'),
+                           withtemplate
+                        ) }}
+                     {% endif %}
+
                      {% if item.isField('country') %}
                         {{ fields.autoNameField(
                            'country',
