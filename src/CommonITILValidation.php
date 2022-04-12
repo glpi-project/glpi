@@ -192,8 +192,12 @@ abstract class CommonITILValidation extends CommonDBChild
     public function isCurrentUserValidationTarget(bool $include_groups = true): bool
     {
         $is_target = false;
-        //TODO Remove BC-fix code
-        if (!isset($this->fields['itemtype_target'])) {
+
+        if (
+            (!isset($this->fields['itemtype_target']) || empty($this->fields['itemtype_target']))
+            && (isset($this->fields['users_id_validate']) && !empty($this->fields['users_id_validate']))
+        ) {
+            Toolbox::deprecated('Usage of "users_id_validate" field is deprecated in "CommonITILValidation". Use "itemtype_target"/"items_id_target" instead.');
             $this->fields['itemtype_target'] = 'User';
             $this->fields['items_id_target'] = $this->fields['users_id_validate'];
         }
@@ -324,11 +328,16 @@ abstract class CommonITILValidation extends CommonDBChild
         $input["status"]          = self::WAITING;
 
         $user_validator = !isset($input['itemtype_target']) || $input['itemtype_target'] === 'User';
-        if (!isset($input['itemtype_target'])) {
-            //TODO Remove BC-fix code
+
+        if (
+            (!isset($input['itemtype_target']) || empty($input['itemtype_target']))
+            && (isset($input['users_id_validate']) && !empty($input['users_id_validate']))
+        ) {
+            Toolbox::deprecated('Usage of "users_id_validate" field is deprecated in "CommonITILValidation". Use "itemtype_target"/"items_id_target" instead.');
             $input['itemtype_target'] = 'User';
-            $input['items_id_target'] = $input['items_id_target'] ?? $input["users_id_validate"];
+            $input['items_id_target'] = $this->fields['users_id_validate'];
         }
+
         if ($user_validator && (!isset($input["items_id_target"]) || ($input["items_id_target"] <= 0))) {
             return false;
         }
