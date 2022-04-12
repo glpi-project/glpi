@@ -527,6 +527,8 @@ $CFG_GLPI['databaseinstance_types'] = ['Computer'];
 
 $CFG_GLPI['agent_types'] = ['Computer', 'Phone'];
 
+$CFG_GLPI['itil_types'] = ['Ticket', 'Change', 'Problem'];
+
 $dashboard_libs = [
     'dashboard', 'gridstack',
     'charts', 'clipboard', 'sortable'
