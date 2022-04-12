@@ -731,6 +731,7 @@ CREATE TABLE `glpi_changes_problems` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `changes_id` int unsigned NOT NULL DEFAULT '0',
   `problems_id` int unsigned NOT NULL DEFAULT '0',
+  `link` int NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`changes_id`,`problems_id`),
   KEY `problems_id` (`problems_id`)
@@ -760,6 +761,7 @@ CREATE TABLE `glpi_changes_tickets` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `changes_id` int unsigned NOT NULL DEFAULT '0',
   `tickets_id` int unsigned NOT NULL DEFAULT '0',
+  `link` int NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`changes_id`,`tickets_id`),
   KEY `tickets_id` (`tickets_id`)
@@ -5580,6 +5582,7 @@ CREATE TABLE `glpi_problems_tickets` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `problems_id` int unsigned NOT NULL DEFAULT '0',
   `tickets_id` int unsigned NOT NULL DEFAULT '0',
+  `link` int NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`problems_id`,`tickets_id`),
   KEY `tickets_id` (`tickets_id`)
@@ -9222,6 +9225,28 @@ CREATE TABLE `glpi_items_lines` (
    PRIMARY KEY (`id`),
    UNIQUE KEY `unicity` (`lines_id`,`itemtype`,`items_id`),
    KEY `item` (`itemtype`,`items_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
+DROP TABLE IF EXISTS `glpi_changes_changes`;
+CREATE TABLE `glpi_changes_changes` (
+   `id` int unsigned NOT NULL AUTO_INCREMENT,
+   `changes_id_1` int unsigned NOT NULL DEFAULT '0',
+   `changes_id_2` int unsigned NOT NULL DEFAULT '0',
+   `link` int NOT NULL DEFAULT '1',
+   PRIMARY KEY (`id`),
+   UNIQUE KEY `unicity` (`changes_id_1`,`changes_id_2`),
+   KEY `changes_id_2` (`changes_id_2`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
+DROP TABLE IF EXISTS `glpi_problems_problems`;
+CREATE TABLE `glpi_problems_problems` (
+   `id` int unsigned NOT NULL AUTO_INCREMENT,
+   `problems_id_1` int unsigned NOT NULL DEFAULT '0',
+   `problems_id_2` int unsigned NOT NULL DEFAULT '0',
+   `link` int NOT NULL DEFAULT '1',
+   PRIMARY KEY (`id`),
+   UNIQUE KEY `unicity` (`problems_id_1`,`problems_id_2`),
+   KEY `problems_id_2` (`problems_id_2`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 SET FOREIGN_KEY_CHECKS=1;

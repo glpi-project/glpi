@@ -7,13 +7,17 @@ The present file will list all changes made to the project; according to the
 
 ### Added
 - Configurable toast notification location
+- `Link ITIL Object` and `Unlink ITIL Object` massive actions for Tickets, Changes, and Problems.
 
 ### Changed
+- ITIL Objects can now be linked to any other ITIL Objects similar to the previous Ticket/Ticket links.
 - Logs are now shown using the Search Engine
 
 ### Deprecated
 
 ### Removed
+- `Link tickets` massive action for Tickets (Use `Link ITIL Object` instead).
+- `Link to a problem` massive action for Tickets (Use `Link ITIL Object` instead).
 
 ### API changes
 
@@ -23,18 +27,28 @@ The present file will list all changes made to the project; according to the
 
 #### Deprecated
 - Usage of `GLPI_USE_CSRF_CHECK` constant.
+- `ajax/knowbase.php` script usage.
+- `front/change_problem.form.php` script usage.
+- `front/change_ticket.form.php` script usage.
+- `front/problem_ticket.form.php` script usage.
+- `front/ticket_ticket.form.php` script usage.
+- `Glpi\Event::showList()`
 - `Glpi\Features\DCBreadcrumb::getDcBreadcrumb()`
 - `Glpi\Features\DCBreadcrumb::getDcBreadcrumbSpecificValueToDisplay()`
 - `Glpi\Features\DCBreadcrumb::isEnclosurePart()`
 - `Glpi\Features\DCBreadcrumb::isRackPart()`
-- `ajax/knowbase.php` script usage.
-- `Glpi\Event::showList()`
 - `Html::displayAjaxMessageAfterRedirect()`
 - `HookManager::enableCSRF()`
 - `Knowbase::getTreeCategoryList()`
 - `Knowbase::showBrowseView()`
 - `Knowbase::showManageView()`
 - `KnowbaseItem::showManageForm()`
+- `Ticket` `link_to_problem` massive action is deprecated. Use `CommonITILObject_CommonITILObject` `add` massive action instead.
+- `Ticket_Ticket` `add` massive action is deprecated. Use `CommonITILObject_CommonITILObject` `add` massive action instead.
+- `Ticket_Ticket::checkParentSon()`
+- `Ticket_Ticket::countOpenChildren()`
+- `Ticket_Ticket::getLinkedTicketsTo()`
+- `Ticket_Ticket::manageLinkedTicketsOnSolved()`
 - `Toolbox::seems_utf8()`
 
 #### Removed

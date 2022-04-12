@@ -441,32 +441,29 @@
       </div>
    {% endif %}
 
-   {% if ticket_ticket %}
-      {% set linked_tickets_show = headers_states['linked_tickets'] is defined and headers_states['linked_tickets'] == "true" ? true : false %}
-      <div class="accordion-item">
-         <h2 class="accordion-header" id="linked_tickets-heading" title="{{ 'Ticket_Ticket'|itemtype_name(nb_linked_tickets) }}" data-bs-toggle="tooltip">
-            <button class="accordion-button {{ linked_tickets_show ? "" : "collapsed" }}" type="button" data-bs-toggle="collapse" data-bs-target="#linked_tickets" aria-expanded="true" aria-controls="linked_tickets">
-               <i class="ti ti-link me-1"></i>
-               {% set linked_tickets = ticket_ticket.getLinkedTicketsTo(item.fields['id']) %}
-               {% set nb_linked_tickets = linked_tickets|length %}
-               {% if item.isNewItem() and params['_link']['tickets_id_2']|length > 0 %}
-                  {% set nb_linked_tickets = 1 %}
-               {% endif %}
-               <span class="item-title">
-                    {{ 'Ticket_Ticket'|itemtype_name(nb_linked_tickets) }}
-               </span>
-               {% if nb_linked_tickets > 0 %}
-                  <span class="badge bg-secondary ms-2">{{ nb_linked_tickets }}</span>
-               {% endif %}
-            </button>
-         </h2>
-         <div id="linked_tickets" class="accordion-collapse collapse {{ linked_tickets_show ? "show" : "" }}" aria-labelledby="linked_tickets-heading">
-            <div class="accordion-body">
-               {{ include('components/itilobject/linked_tickets.html.twig') }}
-            </div>
+   {% set linked_itilobjects_show = headers_states['linked_itilobjects'] is defined and headers_states['linked_itilobjects'] == "true" ? true : false %}
+   {% set nb_linked_itilobjects = item.isNewItem() ? 0 : call('CommonITILObject_CommonITILObject::countAllLinks', [item.getType(), item.getId()]) %}
+   <div class="accordion-item">
+      <h2 class="accordion-header" id="linked_itilobjects-heading" title="{{ 'CommonITILObject_CommonITILObject'|itemtype_name(nb_linked_itilobjects) }}" data-bs-toggle="tooltip">
+         <button class="accordion-button {{ linked_itilobjects_show ? "" : "collapsed" }}" type="button" data-bs-toggle="collapse" data-bs-target="#linked_itilobjects" aria-expanded="true" aria-controls="linked_itilobjects">
+            <i class="ti ti-link me-1"></i>
+            {% if item.isNewItem() and params['_link']['items_id_2']|length > 0 %}
+               {% set nb_linked_itilobjects = 1 %}
+            {% endif %}
+            <span class="item-title">
+                 {{ 'CommonITILObject_CommonITILObject'|itemtype_name(nb_linked_itilobjects) }}
+            </span>
+            {% if nb_linked_itilobjects > 0 %}
+               <span class="badge bg-secondary ms-2">{{ nb_linked_itilobjects }}</span>
+            {% endif %}
+         </button>
+      </h2>
+      <div id="linked_itilobjects" class="accordion-collapse collapse {{ linked_itilobjects_show ? "show" : "" }}" aria-labelledby="linked_itilobjects-heading">
+         <div class="accordion-body">
+            {{ include('components/itilobject/linked_itilobjects.html.twig') }}
          </div>
       </div>
-   {% endif %}
+   </div>
 
     <span class="d-none d-md-block">
         <button type="button" class="switch-panel-width btn btn-sm btn-square btn-icon btn-ghost-secondary position-absolute bottom-0 start-0 mb-2">

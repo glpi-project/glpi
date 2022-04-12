@@ -40,7 +40,7 @@
  *
  * Relation between Changes and Problems
  **/
-class Change_Problem extends CommonDBRelation
+class Change_Problem extends CommonITILObject_CommonITILObject
 {
    // From CommonDBRelation
     public static $itemtype_1   = 'Change';
@@ -48,16 +48,6 @@ class Change_Problem extends CommonDBRelation
 
     public static $itemtype_2   = 'Problem';
     public static $items_id_2   = 'problems_id';
-
-
-
-    public function getForbiddenStandardMassiveAction()
-    {
-
-        $forbidden   = parent::getForbiddenStandardMassiveAction();
-        $forbidden[] = 'update';
-        return $forbidden;
-    }
 
 
     public static function getTypeName($nb = 0)
@@ -161,19 +151,24 @@ class Change_Problem extends CommonDBRelation
             echo "<div class='firstbloc'>";
 
             echo "<form name='changeproblem_form$rand' id='changeproblem_form$rand' method='post'
-                action='" . Toolbox::getItemTypeFormURL(__CLASS__) . "'>";
+                action='" . CommonITILObject_CommonITILObject::getFormURL() . "'>";
 
             echo "<table class='tab_cadre_fixe'>";
-            echo "<tr class='tab_bg_2'><th colspan='3'>" . __('Add a change') . "</th></tr>";
+            echo "<tr class='tab_bg_2'><th colspan='2'>" . __('Add a change') . "</th></tr>";
 
             echo "<tr class='tab_bg_2'><td>";
-            echo "<input type='hidden' name='problems_id' value='$ID'>";
+            echo "<input type='hidden' name='itemtype_1' value='Problem'>";
+            echo "<input type='hidden' name='items_id_1' value='$ID'>";
+            echo "<input type='hidden' name='itemtype_2' value='Change'>";
+            echo self::dropdownLinks('link');
+            echo "&nbsp;";
             Change::dropdown([
+                'name'        => 'items_id_2',
                 'used'        => $used,
                 'entity'      => $problem->getEntityID(),
                 'entity_sons' => $problem->isRecursive(),
             ]);
-            echo "</td><td class='center'>";
+            echo "&nbsp;";
             echo "<input type='submit' name='add' value=\"" . _sx('button', 'Add') . "\" class='btn btn-primary'>";
             echo "</td><td>";
             if (Session::haveRight('change', CREATE)) {
@@ -283,19 +278,24 @@ class Change_Problem extends CommonDBRelation
             echo "<div class='firstbloc'>";
 
             echo "<form name='changeproblem_form$rand' id='changeproblem_form$rand' method='post'
-                action='" . Toolbox::getItemTypeFormURL(__CLASS__) . "'>";
+                action='" . CommonITILObject_CommonITILObject::getFormURL() . "'>";
 
             echo "<table class='tab_cadre_fixe'>";
-            echo "<tr class='tab_bg_2'><th colspan='2'>" . __('Add a problem') . "</th></tr>";
+            echo "<tr class='tab_bg_2'><th>" . __('Add a problem') . "</th></tr>";
 
             echo "<tr class='tab_bg_2'><td>";
-            echo "<input type='hidden' name='changes_id' value='$ID'>";
+            echo "<input type='hidden' name='itemtype_1' value='Change'>";
+            echo "<input type='hidden' name='items_id_1' value='$ID'>";
+            echo "<input type='hidden' name='itemtype_2' value='Problem'>";
+            echo self::dropdownLinks('link');
+            echo "&nbsp;";
             Problem::dropdown([
-                'used'   => $used,
-                'entity' => $change->getEntityID(),
+                'name'      => 'items_id_2',
+                'used'      => $used,
+                'entity'    => $change->getEntityID(),
                 'condition' => Problem::getOpenCriteria()
             ]);
-            echo "</td><td class='center'>";
+            echo "&nbsp;";
             echo "<input type='submit' name='add' value=\"" . _sx('button', 'Add') . "\" class='btn btn-primary'>";
             echo "</td></tr></table>";
             Html::closeForm();
@@ -346,23 +346,5 @@ class Change_Problem extends CommonDBRelation
             Html::closeForm();
         }
         echo "</div>";
-    }
-
-    public function post_addItem()
-    {
-        global $CFG_GLPI;
-
-        $donotif = !isset($this->input['_disablenotif']) && $CFG_GLPI["use_notifications"];
-
-        if ($donotif) {
-            $problem = new Problem();
-            $change  = new Change();
-            if ($problem->getFromDB($this->input["problems_id"]) && $change->getFromDB($this->input["changes_id"])) {
-                NotificationEvent::raiseEvent("update", $problem);
-                NotificationEvent::raiseEvent('update', $change);
-            }
-        }
-
-        parent::post_addItem();
     }
 }

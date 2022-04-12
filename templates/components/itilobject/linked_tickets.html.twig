@@ -31,6 +31,9 @@
  # ---------------------------------------------------------------------
  #}
 
+{% do call('Toolbox::deprecated', ['Use "components/itilobject/linked_itilobjects.html.twig" instead.']) %}
+
+
 <input type="hidden" name="_link[tickets_id_1]" value="{{ item.fields['id'] }}" />
 
 {% set linked_tickets = ticket_ticket.getLinkedTicketsTo(item.fields['id']) %}

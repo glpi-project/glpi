@@ -33,46 +33,64 @@
  * ---------------------------------------------------------------------
  */
 
+/**
+ * @since 10.1.0
+ */
+
 use Glpi\Event;
 
 include('../inc/includes.php');
 
-Session ::checkLoginUser();
+Session ::checkCentralAccess();
 
-Toolbox::deprecated();
+if (isset($_POST['add'])) {
+    $link_class = isset($_POST['itemtype_1'], $_POST['itemtype_2'])
+        ? CommonITILObject_CommonITILObject::getLinkClass($_POST['itemtype_1'], $_POST['itemtype_2'])
+        : null;
 
-$item = new Problem_Ticket();
-
-if (isset($_POST["add"])) {
-    if (!empty($_POST['tickets_id']) && empty($_POST['problems_id'])) {
-        $message = sprintf(
-            __('Mandatory fields are not filled. Please correct: %s'),
-            Problem::getTypeName(1)
+    if ($link_class === null || !isset($_POST['items_id_1'], $_POST['items_id_2'])) {
+        Session::addMessageAfterRedirect(
+            __('Cannot create link.'),
+            false,
+            ERROR
         );
-        Session::addMessageAfterRedirect($message, false, ERROR);
-        Html::back();
     }
-    if (empty($_POST['tickets_id']) && !empty($_POST['problems_id'])) {
-        $message = sprintf(
-            __('Mandatory fields are not filled. Please correct: %s'),
-            Ticket::getTypeName(1)
-        );
-        Session::addMessageAfterRedirect($message, false, ERROR);
-        Html::back();
-    }
-    $item->check(-1, CREATE, $_POST);
 
-    if ($item->add($_POST)) {
+    $itil_itil = new $link_class();
+
+    $input = $itil_itil->normalizeInput($_POST);
+
+    $itil_itil->check(-1, CREATE, $input);
+
+    if ($itil_itil->add($input)) {
         Event::log(
-            $_POST["problems_id"],
-            "problem",
+            $_POST['items_id_1'],
+            $_POST['itemtype_1'],
             4,
-            "maintain",
+            "tracking",
             //TRANS: %s is the user login
             sprintf(__('%s adds a link with an item'), $_SESSION["glpiname"])
         );
     }
     Html::back();
 }
+if (isset($_POST['purge'], $_POST['id'])) {
+    [$link_class_1, $link_class_2, $link_id] = explode('_', $_POST['id'], 3);
+    $link_class = $link_class_1 . '_' . $link_class_2;
+    $itil_itil = new $link_class();
+    $_POST['id'] = $link_id;
+    $itil_itil->check($_POST['id'], PURGE);
 
+    $itil_itil->delete($_POST, 1);
+
+    Event::log(
+        $_POST['items_id'],
+        strtolower($_POST['itemtype']),
+        4,
+        "tracking",
+        //TRANS: %s is the user login
+        sprintf(__('%s purges link between ITIL Objects'), $_SESSION["glpiname"])
+    );
+    Html::redirect($_POST['itemtype']::getFormURLWithID($_POST['items_id']));
+}
 Html::displayErrorAndDie("lost");
