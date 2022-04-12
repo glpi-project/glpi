@@ -4132,7 +4132,7 @@ JAVASCRIPT;
             'olas_id_tto'               => 0,
             'olas_id_ttr'               => 0,
             '_add_validation'           => 0,
-            'users_id_validate'         => [],
+            '_validation_targets'       => [],
             'type'                      => $type,
             '_documents_id'             => [],
             '_tasktemplates_id'         => [],

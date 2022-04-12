@@ -284,7 +284,7 @@ abstract class CommonITILValidation extends CommonDBChild
                 $restrict = [static::$items_id => $item->getID()];
                // No rights for create only count asign ones
                 if (!Session::haveRightsOr(static::$rightname, static::getCreateRights())) {
-                    $restrict['users_id_validate'] = Session::getLoginUserID();
+                    $restrict['users_id_validate'] = Session::getLoginUserID(); // TODO
                 }
                 $nb = countElementsInTable(static::getTable(), $restrict);
             }
@@ -468,7 +468,7 @@ abstract class CommonITILValidation extends CommonDBChild
                 $input["validation_date"] = $_SESSION["glpi_currenttime"];
             }
 
-            $forbid_fields = ['entities_id', 'users_id', static::$items_id, 'users_id_validate',
+            $forbid_fields = ['entities_id', 'users_id', static::$items_id, 'users_id_validate', // TODO
                 'comment_submission', 'submission_date', 'is_recursive'
             ];
         } else if (Session::haveRightsOr(static::$rightname, $this->getCreateRights())) { // Update validation request
@@ -560,7 +560,7 @@ abstract class CommonITILValidation extends CommonDBChild
     {
 
         if ($field == 'status') {
-            $username = getUserName($this->fields["users_id_validate"]);
+            $username = getUserName($this->fields["users_id_validate"]); // TODO
 
             $result   = ['0', '', ''];
             if ($this->fields["status"] == self::ACCEPTED) {
@@ -582,7 +582,7 @@ abstract class CommonITILValidation extends CommonDBChild
     public function getHistoryNameForItem(CommonDBTM $item, $case)
     {
 
-        $username = getUserName($this->fields["users_id_validate"]);
+        $username = getUserName($this->fields["users_id_validate"]); // TODO
 
         switch ($case) {
             case 'add':
@@ -745,7 +745,7 @@ abstract class CommonITILValidation extends CommonDBChild
             'COUNT'  => 'cpt',
             'WHERE'  => [
                 'status'             => self::WAITING,
-                'users_id_validate'  => $users_id
+                'users_id_validate'  => $users_id // TODO
             ]
         ])->current();
 
@@ -885,13 +885,13 @@ abstract class CommonITILValidation extends CommonDBChild
                             'comment_submission'   => $input['comment_submission']
                         ];
                         if ($valid->can(-1, CREATE, $input2)) {
-                            $users = $input['users_id_validate'];
+                            $users = $input['users_id_validate']; // TODO
                             if (!is_array($users)) {
                                 $users = [$users];
                             }
                             $ok = true;
                             foreach ($users as $user) {
-                                $input2["users_id_validate"] = $user;
+                                $input2["users_id_validate"] = $user; // TODO
                                 if (!$valid->add($input2)) {
                                      $ok = false;
                                 }
@@ -1087,8 +1087,8 @@ abstract class CommonITILValidation extends CommonDBChild
                     $group->getFromDB($row["items_id_target"]);
                     echo "<td>" . $group->getFriendlyName() . "</td>";
                 }
-                $is_answered = $row['status'] !== self::WAITING && $row['users_id_validate'] > 0;
-                echo "<td>" . ($is_answered ? getUserName($row["users_id_validate"]) : '') . "</td>";
+                $is_answered = $row['status'] !== self::WAITING && $row['users_id_validate'] > 0; // TODO
+                echo "<td>" . ($is_answered ? getUserName($row["users_id_validate"]) : '') . "</td>"; // TODO
                 $comment_validation = RichText::getEnhancedHtml($this->fields['comment_validation'] ?? '', ['images_gallery' => true]);
                 echo "<td><div class='rich_text_container'>" . $comment_validation . "</div></td>";
 
@@ -1232,7 +1232,7 @@ abstract class CommonITILValidation extends CommonDBChild
             'id'                 => '7',
             'table'              => 'glpi_users',
             'field'              => 'name',
-            'linkfield'          => 'users_id_validate',
+            'linkfield'          => 'users_id_validate', // TODO
             'name'               => __('Approver'),
             'datatype'           => 'itemlink',
             'right'              => [
@@ -1378,7 +1378,7 @@ abstract class CommonITILValidation extends CommonDBChild
             'id'                 => '59',
             'table'              => 'glpi_users',
             'field'              => 'name',
-            'linkfield'          => 'users_id_validate',
+            'linkfield'          => 'users_id_validate', // TODO
             'name'               => __('Approver'),
             'datatype'           => 'itemlink',
             'right'              => (static::$itemtype == 'Ticket' ?
@@ -1461,27 +1461,57 @@ abstract class CommonITILValidation extends CommonDBChild
      * Dropdown of validator
      *
      * @param $options   array of options
-     *  - name                    : select name
+     *  - prefix                  : inputs prefix (i.e. a `_validator` prefix will result in having
+     *                              `_validator[itemtype]` and `_validator[items_id]` inputs
      *  - id                      : ID of object > 0 Update, < 0 New
      *  - entity                  : ID of entity
      *  - right                   : validation rights
-     *  - groups_id               : ID of group validator
-     *  - users_id_validate       : ID of user validator
+     *  - itemtype                : Validator itemtype (User or Group)
+     *  - items_id                : Validator id
      *  - applyto
      *
      * @return void Output is printed
+     *
+     * @since 10.1.0 Deprecated usage of 'name' option
+     * @since 10.1.0 Deprecated usage of 'groups_id' option
+     * @since 10.1.0 Deprecated usage of 'users_id_validate' option
      **/
     public static function dropdownValidator(array $options = [])
     {
         global $CFG_GLPI;
 
+        if (array_key_exists('name', $options)) {
+            Toolbox::deprecated('Usage of "name" option is deprecated in "CommonITILValidation::dropdownValidator()". Use "prefix" instead.');
+        }
+
+        if (array_key_exists('users_id_validate', $options)) {
+            Toolbox::deprecated('Usage of "users_id_validate" option is deprecated in "CommonITILValidation::dropdownValidator()". Use "itemtype"/"items_id" instead.');
+            if (isset($options['users_id_validate']['groups_id'])) {
+                $options['itemtype'] = Group::class;
+                $options['items_id'] = $options['users_id_validate']['groups_id'];
+            } else {
+                $options['itemtype'] = User::class;
+                $options['items_id'] = is_array($options['users_id_validate'])
+                    ? current($options['users_id_validate'])
+                    : $options['users_id_validate'];
+            }
+            unset($options['users_id_validate']);
+        }
+
+        if (array_key_exists('groups_id', $options)) {
+            Toolbox::deprecated('Usage of "groups_id" option is deprecated in "CommonITILValidation::dropdownValidator()". Use "itemtype"/"items_id" instead.');
+            $options['itemtype'] = Group::class;
+            $options['items_id'] = $options['groups_id'];
+            unset($options['groups_id']);
+        }
+
         $params = [
-            'name'              => '' ,
+            'prefix'            => '_validator',
             'id'                => 0,
             'entity'            => $_SESSION['glpiactive_entity'],
             'right'             => ['validate_request', 'validate_incident'],
-            'groups_id'         => 0,
-            'users_id_validate' => [],
+            'itemtype'          => '',
+            'items_id'          => 0,
             'applyto'           => 'show_validator_field',
             'display'           => true,
             'disabled'          => false,
@@ -1494,19 +1524,15 @@ abstract class CommonITILValidation extends CommonDBChild
             $params[$key] = $val;
         }
 
-        $type  = '';
-        if (isset($params['users_id_validate']['groups_id'])) {
-            $type = 'group';
-        } else if (!empty($params['users_id_validate'])) {
-            $type = 'user';
-        }
-
-        $out = Dropdown::showFromArray("validatortype", [
-            'User'  => User::getTypeName(1),
+        $validatortype_name = array_key_exists('name', $params)
+            ? 'validatortype' // legacy behaviour, remove it in GLPI 11.0
+            : $params['prefix'] . '[validatortype]';
+        $out = Dropdown::showFromArray($validatortype_name, [
+            'User'       => User::getTypeName(1),
             'Group_User' => __('Group user(s)'),
-            'Group' => Group::getTypeName(1),
+            'Group'      => Group::getTypeName(1),
         ], [
-            'value'               => $type,
+            'value'               => $params['itemtype'],
             'display_emptychoice' => true,
             'display'             => false,
             'disabled'            => $params['disabled'],
@@ -1515,8 +1541,8 @@ abstract class CommonITILValidation extends CommonDBChild
             'required'            => $params['required'],
         ]);
 
-        if ($type) {
-            $params['validatortype'] = $type;
+        if (!empty($params['itemtype'])) {
+            $params['validatortype'] = $params['itemtype'];
             $out .= Ajax::updateItem(
                 $params['applyto'],
                 $CFG_GLPI["root_doc"] . "/ajax/dropdownValidator.php",
@@ -1527,7 +1553,7 @@ abstract class CommonITILValidation extends CommonDBChild
         }
         $params['validatortype'] = '__VALUE__';
         $out .= Ajax::updateItemOnSelectEvent(
-            "dropdown_validatortype{$params['rand']}",
+            "dropdown_{$validatortype_name}{$params['rand']}",
             $params['applyto'],
             $CFG_GLPI["root_doc"] . "/ajax/dropdownValidator.php",
             $params,

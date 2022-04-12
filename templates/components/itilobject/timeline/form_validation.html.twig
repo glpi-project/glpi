@@ -72,7 +72,7 @@
                   action="{{ entry['type']|itemtype_form_path }}" method="post" data-submit-once>
 
                <input type="hidden" name="id" value="{{ entry_i['id'] }}" />
-               <input type="hidden" name="users_id_validate" value="{{ entry_i['users_id_validate'] }}" />
+               <input type="hidden" name="users_id_validate" value="{{ entry_i['users_id_validate'] }}" /> {# TODO #}
                <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
                {{ call_plugin_hook('pre_item_form', {"item": subitem, 'options': params}) }}
 
@@ -110,7 +110,7 @@
             action="{{ subitem.getFormURL() }}" enctype="multipart/form-data" data-track-changes="true" data-submit-once>
 
          <input type="hidden" name="id" value="{{ subitem.fields['id'] }}" />
-         <input type="hidden" name="users_id_validate" value="{{ subitem.fields['users_id_validate'] }}" />
+         <input type="hidden" name="users_id_validate" value="{{ subitem.fields['users_id_validate'] }}" /> {# TODO #}
          <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
 
          {{ call_plugin_hook('pre_item_form', {"item": subitem, 'options': params}) }}
@@ -178,6 +178,7 @@
                     }) }}
                     {% if subitem.fields['validatortype'] is not null %}
                     <script type="application/javascript">
+                    {# TODO #}
                         $('#show_validator_field{{ rand }}').load(CFG_GLPI.root_doc + '/ajax/dropdownValidator.php', {
                             id: {{ subitem.fields['id'] }},
                             entity: {{ item.fields['entities_id'] }},
@@ -198,6 +199,7 @@
                     </script>
                     {% endif %}
                 {% else %}
+                {# TODO #}
                     {{ fields.dropdownField(
                     'User',
                     'users_id_validate',

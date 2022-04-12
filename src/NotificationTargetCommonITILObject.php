@@ -458,7 +458,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
             $criteria = ['LEFT JOIN' => [
                 User::getTable() => [
                     'ON' => [
-                        $validationtable  => 'users_id_validate',
+                        $validationtable  => 'users_id_validate', // TODO
                         User::getTable()  => 'id'
                     ]
                 ]

@@ -59,10 +59,9 @@
          {{ fields.field(
             '_add_validation',
             call('TicketValidation::dropdownValidator', [{
-               'name': 'users_id_validate',
+               'prefix': '_validation_targets[0]',
                'entity': item.fields['entities_id'],
                'right': validation_right,
-               'users_id_validate': params['users_id_validate'],
                'display': false,
                'disabled': (not canupdate),
             }|merge(required)]),

@@ -498,7 +498,7 @@ class RuleAction extends CommonDBChild
                 if (
                     isset($actions_options[$action["field"]])
                      && ($action["field"] != 'groups_id_validate')
-                     && ($action["field"] != 'users_id_validate')
+                     && ($action["field"] != 'users_id_validate') // TODO
                      && ($action["field"] != 'affectobject')
                 ) {
                     $actions[$action["field"]] = $action["field"];

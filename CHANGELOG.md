@@ -30,12 +30,15 @@ The present file will list all changes made to the project; according to the
   The previous recipient option still exists if needed. This replacement will only happen once during the upgrade.
 
 #### Deprecated
-- Usage of `users_id_validate` parameter in `ajax/dropdownValidator.php` and `front/commonitilvalidation.form.php`.
+- Usage of `name` and `users_id_validate` parameter in `ajax/dropdownValidator.php` and `front/commonitilvalidation.form.php`.
+- Usage of `users_id_validate` parameter in `front/commonitilvalidation.form.php`.
 - `front/change_problem.form.php` script usage.
 - `front/change_ticket.form.php` script usage.
 - `front/problem_ticket.form.php` script usage.
 - `front/ticket_ticket.form.php` script usage.
+- Usage of `users_id_validate` input in `CommonITILObject`.
 - Usage of `users_id_validate` field in `CommonITILValidation`.
+- Usage of `groups_id`, `name` and `users_id_validate` options in `CommonITILValidation::dropdownValidator()`.
 - `CommonITILObject::isValidator()`
 - `CommonITILValidation::alreadyExists()`
 - `Ticket` `link_to_problem` massive action is deprecated. Use `CommonITILObject_CommonITILObject` `add` massive action instead.
