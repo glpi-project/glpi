@@ -39,6 +39,8 @@ include('../inc/includes.php');
 
 Session ::checkLoginUser();
 
+Toolbox::deprecated();
+
 $item = new Problem_Ticket();
 
 if (isset($_POST["add"])) {

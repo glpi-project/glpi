@@ -266,7 +266,7 @@ class ITILSolution extends DbTestCase
             (int)$link->add([
                 'tickets_id_1' => $duplicated,
                 'tickets_id_2' => $duplicate,
-                'link'         => \Ticket_Ticket::DUPLICATE_WITH
+                'link'         => \CommonITILObject_CommonITILObject::DUPLICATE_WITH
             ])
         )->isGreaterThan(0);
 

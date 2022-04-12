@@ -1380,6 +1380,44 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
 
        // Complex mode
         if (!$simple) {
+            $linked = CommonITILObject_CommonITILObject::getAllLinkedTo($item->getType(), $item->getField('id'));
+            $data['linkedtickets'] = [];
+            $data['linkedchanges'] = [];
+            $data['linkedproblems'] = [];
+
+            foreach ($linked as $link) {
+                $itemtype = $link['itemtype'];
+                $link_item = new $link['itemtype']();
+                if ($link_item->getFromDB($link['items_id'])) {
+                    $tmp = [];
+                    $tmp['##linked' . strtolower($itemtype) . '.id##'] = $link['items_id'];
+                    $tmp['##linked' . strtolower($itemtype) . '.link##'] = CommonITILObject_CommonITILObject::getLinkName($link['link']);
+                    $tmp['##linked' . strtolower($itemtype) . '.url##'] = $this->formatURL(
+                        $options['additionnaloption']['usertype'],
+                        strtolower($itemtype) . "_" . $link['items_id']
+                    );
+
+                    $tmp['##linked' . strtolower($itemtype) . '.title##'] = $link_item->getField('name');
+                    $tmp['##linked' . strtolower($itemtype) . '.content##'] = $link_item->getField('content');
+
+                    switch ($itemtype) {
+                        case 'Ticket':
+                            $data['linkedtickets'][] = $tmp;
+                            break;
+                        case 'Change':
+                            $data['linkedchanges'][] = $tmp;
+                            break;
+                        case 'Problem':
+                            $data['linkedproblems'][] = $tmp;
+                            break;
+                    }
+                }
+            }
+
+            $data['##ticket.numberoflinkedtickets##'] = count($data['linkedtickets']);
+            $data['##ticket.numberoflinkedchanges##'] = count($data['linkedchanges']);
+            $data['##ticket.numberoflinkedproblems##'] = count($data['linkedproblems']);
+
             $show_private = $options['additionnaloption']['show_private'] ?? false;
             $followup_restrict = [];
             $followup_restrict['items_id'] = $item->getField('id');
@@ -1871,6 +1909,9 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
             'timelineitems.typename'            => _n('Type', 'Types', 1),
             'timelineitems.description'         => __('Description'),
             'timelineitems.position'            => __('Position'),
+            $objettype . '.numberoflinkedtickets' => _x('quantity', 'Number of linked tickets'),
+            $objettype . '.numberoflinkedchanges' => _x('quantity', 'Number of linked changes'),
+            $objettype . '.numberoflinkedproblems' => _x('quantity', 'Number of linked problems'),
 
         ];
 
@@ -1889,7 +1930,10 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
             'costs'     => _n('Cost', 'Costs', Session::getPluralNumber()),
             'authors'   => _n('Requester', 'Requesters', Session::getPluralNumber()),
             'suppliers' => _n('Supplier', 'Suppliers', Session::getPluralNumber()),
-            'timelineitems' => sprintf(__('Processing %1$s'), strtolower($objettype))
+            'timelineitems' => sprintf(__('Processing %1$s'), strtolower($objettype)),
+            'linkedtickets' => _n('Linked ticket', 'Linked tickets', Session::getPluralNumber()),
+            'linkedchanges' => _n('Linked change', 'Linked changes', Session::getPluralNumber()),
+            'linkedproblems' => _n('Linked problem', 'Linked problems', Session::getPluralNumber()),
         ];
 
         foreach ($tags as $tag => $label) {
@@ -1901,14 +1945,18 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
         }
 
        //Tags with just lang
-        $tags = [$objettype . '.days'               => _n('Day', 'Days', Session::getPluralNumber()),
-            $objettype . '.attribution'        => __('Assigned to'),
-            $objettype . '.entity'             => Entity::getTypeName(1),
-            $objettype . '.nocategoryassigned' => __('No defined category'),
-            $objettype . '.log'                => __('Historical'),
-            $objettype . '.tasks'              => _n('Task', 'Tasks', Session::getPluralNumber()),
-            $objettype . '.costs'              => _n('Cost', 'Costs', Session::getPluralNumber()),
-            $objettype . '.timelineitems'       => sprintf(__('Processing %1$s'), strtolower($objettype))
+        $tags = [
+            $objettype . '.days'                => _n('Day', 'Days', Session::getPluralNumber()),
+            $objettype . '.attribution'         => __('Assigned to'),
+            $objettype . '.entity'              => Entity::getTypeName(1),
+            $objettype . '.nocategoryassigned'  => __('No defined category'),
+            $objettype . '.log'                 => __('Historical'),
+            $objettype . '.tasks'               => _n('Task', 'Tasks', Session::getPluralNumber()),
+            $objettype . '.costs'               => _n('Cost', 'Costs', Session::getPluralNumber()),
+            $objettype . '.timelineitems'       => sprintf(__('Processing %1$s'), strtolower($objettype)),
+            $objettype . '.linkedtickets'       => _n('Linked ticket', 'Linked tickets', Session::getPluralNumber()),
+            $objettype . '.linkedchanges'       => _n('Linked change', 'Linked changes', Session::getPluralNumber()),
+            $objettype . '.linkedproblems'      => _n('Linked problem', 'Linked problems', Session::getPluralNumber()),
         ];
 
         foreach ($tags as $tag => $label) {
@@ -1995,7 +2043,82 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
                 __('%1$s: %2$s'),
                 Document::getTypeName(Session::getPluralNumber()),
                 __('URL')
-            )
+            ),
+            'linkedticket.id'         => sprintf(
+                __('%1$s: %2$s'),
+                _n('Linked ticket', 'Linked tickets', 1),
+                __('ID')
+            ),
+            'linkedticket.link'       => sprintf(
+                __('%1$s: %2$s'),
+                _n('Linked ticket', 'Linked tickets', 1),
+                Link::getTypeName(1)
+            ),
+            'linkedticket.url'        => sprintf(
+                __('%1$s: %2$s'),
+                _n('Linked ticket', 'Linked tickets', 1),
+                __('URL')
+            ),
+            'linkedticket.title'      => sprintf(
+                __('%1$s: %2$s'),
+                _n('Linked ticket', 'Linked tickets', 1),
+                __('Title')
+            ),
+            'linkedticket.content'    => sprintf(
+                __('%1$s: %2$s'),
+                _n('Linked ticket', 'Linked tickets', 1),
+                __('Description')
+            ),
+            'linkedchange.id'         => sprintf(
+                __('%1$s: %2$s'),
+                _n('Linked change', 'Linked changes', 1),
+                __('ID')
+            ),
+            'linkedchange.link'       => sprintf(
+                __('%1$s: %2$s'),
+                _n('Linked change', 'Linked changes', 1),
+                Link::getTypeName(1)
+            ),
+            'linkedchange.url'        => sprintf(
+                __('%1$s: %2$s'),
+                _n('Linked change', 'Linked changes', 1),
+                __('URL')
+            ),
+            'linkedchange.title'      => sprintf(
+                __('%1$s: %2$s'),
+                _n('Linked change', 'Linked changes', 1),
+                __('Title')
+            ),
+            'linkedchange.content'    => sprintf(
+                __('%1$s: %2$s'),
+                _n('Linked change', 'Linked changes', 1),
+                __('Description')
+            ),
+            'linkedproblem.id'         => sprintf(
+                __('%1$s: %2$s'),
+                _n('Linked problem', 'Linked problems', 1),
+                __('ID')
+            ),
+            'linkedproblem.link'       => sprintf(
+                __('%1$s: %2$s'),
+                _n('Linked problem', 'Linked problems', 1),
+                Link::getTypeName(1)
+            ),
+            'linkedproblem.url'        => sprintf(
+                __('%1$s: %2$s'),
+                _n('Linked problem', 'Linked problems', 1),
+                __('URL')
+            ),
+            'linkedproblem.title'      => sprintf(
+                __('%1$s: %2$s'),
+                _n('Linked problem', 'Linked problems', 1),
+                __('Title')
+            ),
+            'linkedproblem.content'    => sprintf(
+                __('%1$s: %2$s'),
+                _n('Linked problem', 'Linked problems', 1),
+                __('Description')
+            ),
         ];
 
         foreach ($tags as $tag => $label) {

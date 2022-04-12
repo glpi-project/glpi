@@ -1525,20 +1525,22 @@ class Dropdown
     {
         global $CFG_GLPI;
 
-        $params = [];
-        $params['itemtype_name']       = 'itemtype';
-        $params['items_id_name']       = 'items_id';
-        $params['itemtypes']           = '';
-        $params['default_itemtype']    = 0;
-        $params['entity_restrict']     = -1;
-        $params['onlyglobal']          = false;
-        $params['checkright']          = false;
-        $params['showItemSpecificity'] = '';
-        $params['emptylabel']          = self::EMPTY_VALUE;
-        $params['used']                = [];
-        $params['ajax_page']           = $CFG_GLPI["root_doc"] . "/ajax/dropdownAllItems.php";
-        $params['display']             = true;
-        $params['rand']                = mt_rand();
+        $params = [
+            'itemtype_name'         => 'itemtype',
+            'items_id_name'         => 'items_id',
+            'itemtypes'             => '',
+            'default_itemtype'      => 0,
+            'default_items_id'      => -1,
+            'entity_restrict'       => -1,
+            'onlyglobal'            => false,
+            'checkright'            => false,
+            'showItemSpecificity'   => '',
+            'emptylabel'            => self::EMPTY_VALUE,
+            'used'                  => [],
+            'ajax_page'             => $CFG_GLPI["root_doc"] . "/ajax/dropdownAllItems.php",
+            'display'               => true,
+            'rand'                  => mt_rand(),
+        ];
 
         if (is_array($options) && count($options)) {
             foreach ($options as $key => $val) {
@@ -1551,7 +1553,7 @@ class Dropdown
             'name'       => $params['itemtype_name'],
             'emptylabel' => $params['emptylabel'],
             'display'    => $params['display'],
-            'rand'       => $params['rand'],
+            'rand'       => $params['rand']
         ]);
 
         $p_ajax = [
@@ -1568,6 +1570,15 @@ class Dropdown
         }
         if ($params['used']) {
             $p_ajax['used'] = $params['used'];
+        }
+        if (!empty($params['default_itemtype']) && $params['default_items_id'] > 0) {
+            $p_ajax["value"] = $params['default_items_id'];
+            // If default itemtype is a CommonDBTM
+            if (is_subclass_of($params['default_itemtype'], 'CommonDBTM', true)) {
+                $item = new $params['default_itemtype']();
+                $item->getFromDB($params['default_items_id']);
+                $p_ajax["valuename"] = $item->getName();
+            }
         }
 
         $field_id = Html::cleanId("dropdown_" . $params['itemtype_name'] . $params['rand']);

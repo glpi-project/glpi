@@ -304,7 +304,9 @@ class ITILSolution extends CommonDBChild
 
         // Add solution to duplicates
         if ($this->item->getType() == 'Ticket' && !isset($this->input['_linked_ticket'])) {
-            Ticket_Ticket::manageLinkedTicketsOnSolved($this->item->getID(), $this);
+            CommonITILObject_CommonITILObject::manageLinksOnChange('Ticket', $this->item->getID(), [
+                '_solution' => $this,
+            ]);
         }
 
         if (!isset($this->input['_linked_ticket'])) {

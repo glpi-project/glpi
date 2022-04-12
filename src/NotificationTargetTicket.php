@@ -388,39 +388,8 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject
 
         $data['##ticket.numberofitems##'] = count($data['items']);
 
-       // Get followups, log, validation, satisfaction, linked tickets
+       // Get followups, log, validation, satisfaction
         if (!$simple) {
-           // Linked tickets
-            $linked_tickets         = Ticket_Ticket::getLinkedTicketsTo($item->getField('id'));
-            $data['linkedtickets'] = [];
-            if (count($linked_tickets)) {
-                $linkedticket = new Ticket();
-                foreach ($linked_tickets as $row) {
-                    if ($linkedticket->getFromDB($row['tickets_id'])) {
-                        $tmp = [];
-
-                        $tmp['##linkedticket.id##']
-                                    = $row['tickets_id'];
-                        $tmp['##linkedticket.link##']
-                                    = Ticket_Ticket::getLinkName($row['link']);
-                        $tmp['##linkedticket.url##']
-                                    = $this->formatURL(
-                                        $options['additionnaloption']['usertype'],
-                                        "ticket_" . $row['tickets_id']
-                                    );
-
-                        $tmp['##linkedticket.title##']
-                                    = $linkedticket->getField('name');
-                        $tmp['##linkedticket.content##']
-                                    = $linkedticket->getField('content');
-
-                        $data['linkedtickets'][] = $tmp;
-                    }
-                }
-            }
-
-            $data['##ticket.numberoflinkedtickets##'] = count($data['linkedtickets']);
-
             $restrict          = ['tickets_id' => $item->getField('id')];
             $problems          = getAllDataFromTable('glpi_problems_tickets', $restrict);
             $data['problems'] = [];
@@ -658,7 +627,6 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject
             'ticket.item.user'             => User::getTypeName(1),
             'ticket.item.group'            => Group::getTypeName(1),
             'ticket.isdeleted'             => __('Deleted'),
-            'ticket.numberoflinkedtickets' => _x('quantity', 'Number of linked tickets'),
             'ticket.numberofproblems'      => _x('quantity', 'Number of problems'),
             'ticket.numberofchanges'       => _x('quantity', 'Number of changes'),
             'ticket.numberofitems'         => _x('quantity', 'Number of items'),
@@ -771,7 +739,6 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject
 
        //Foreach global tags
         $tags = ['validations'   => _n('Validation', 'Validations', Session::getPluralNumber()),
-            'linkedtickets' => _n('Linked ticket', 'Linked tickets', Session::getPluralNumber()),
             'problems'      => Problem::getTypeName(Session::getPluralNumber()),
             'changes'       => _n('Change', 'Changes', Session::getPluralNumber()),
             'items'         => _n('Associated item', 'Associated items', Session::getPluralNumber()),
@@ -787,7 +754,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject
         }
 
        //Tags with just lang
-        $tags = ['ticket.linkedtickets'    => _n('Linked ticket', 'Linked tickets', Session::getPluralNumber()),
+        $tags = [
             'ticket.problems'         => Problem::getTypeName(Session::getPluralNumber()),
             'ticket.changes'          => _n('Change', 'Changes', Session::getPluralNumber()),
             'ticket.autoclosewarning'
@@ -827,31 +794,6 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject
                 __('%1$s: %2$s'),
                 __('Satisfaction'),
                 __('URL')
-            ),
-            'linkedticket.id'         => sprintf(
-                __('%1$s: %2$s'),
-                _n('Linked ticket', 'Linked tickets', 1),
-                __('ID')
-            ),
-            'linkedticket.link'       => sprintf(
-                __('%1$s: %2$s'),
-                _n('Linked ticket', 'Linked tickets', 1),
-                Link::getTypeName(1)
-            ),
-            'linkedticket.url'        => sprintf(
-                __('%1$s: %2$s'),
-                _n('Linked ticket', 'Linked tickets', 1),
-                __('URL')
-            ),
-            'linkedticket.title'      => sprintf(
-                __('%1$s: %2$s'),
-                _n('Linked ticket', 'Linked tickets', 1),
-                __('Title')
-            ),
-            'linkedticket.content'    => sprintf(
-                __('%1$s: %2$s'),
-                _n('Linked ticket', 'Linked tickets', 1),
-                __('Description')
             ),
             'problem.id'              => sprintf(__('%1$s: %2$s'), Problem::getTypeName(1), __('ID')),
             'problem.date'            => sprintf(__('%1$s: %2$s'), Problem::getTypeName(1), _n('Date', 'Dates', 1)),

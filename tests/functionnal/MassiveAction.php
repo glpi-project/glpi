@@ -89,7 +89,7 @@ class MassiveAction extends DbTestCase
                 'itemtype'     => 'Ticket',
                 'items_id'     => '_ticket01',
                 'allcount'     => 20,
-                'singlecount'  => 10
+                'singlecount'  => 9
             ], [
                 'itemtype'     => 'Profile',
                 'items_id'     => 'Super-Admin',
@@ -417,7 +417,7 @@ class MassiveAction extends DbTestCase
         }
 
        // Execute action
-        $this->processMassiveActionsForOneItemtype(
+        @$this->processMassiveActionsForOneItemtype(
             "link_to_problem",
             $item,
             [$item->fields['id']],
