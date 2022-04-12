@@ -1466,13 +1466,10 @@ abstract class CommonITILValidation extends CommonDBChild
      *  - applyto
      *
      * @return void Output is printed
-     * @deprecated 10.1.0
      **/
     public static function dropdownValidator(array $options = [])
     {
         global $CFG_GLPI;
-
-        Toolbox::deprecated();
 
         $params = [
             'name'              => '' ,
@@ -1501,8 +1498,9 @@ abstract class CommonITILValidation extends CommonDBChild
         }
 
         $out = Dropdown::showFromArray("validatortype", [
-            'user'  => User::getTypeName(1),
-            'group' => Group::getTypeName(1)
+            'User'  => User::getTypeName(1),
+            'Group' => Group::getTypeName(1),
+            'Group_User' => __('Group user(s)'),
         ], [
             'value'               => $type,
             'display_emptychoice' => true,
