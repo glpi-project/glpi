@@ -8545,10 +8545,7 @@ abstract class CommonITILObject extends CommonDBTM
     {
         $itilitem = new static();
 
-        if (
-            ($ID <= 0 && !Project::canView()) ||
-            ($ID > 0 && (!$itilitem->getFromDB($ID) || !$itilitem->canView()))
-        ) {
+        if (($ID > 0 && !$itilitem->getFromDB($ID)) || !$itilitem::canView()) {
             return false;
         }
 
