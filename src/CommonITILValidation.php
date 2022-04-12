@@ -327,25 +327,44 @@ abstract class CommonITILValidation extends CommonDBChild
         $input["submission_date"] = $_SESSION["glpi_currenttime"];
         $input["status"]          = self::WAITING;
 
-        $user_validator = !isset($input['itemtype_target']) || $input['itemtype_target'] === 'User';
-
         if (
             (!isset($input['itemtype_target']) || empty($input['itemtype_target']))
             && (isset($input['users_id_validate']) && !empty($input['users_id_validate']))
         ) {
             Toolbox::deprecated('Usage of "users_id_validate" field is deprecated in "CommonITILValidation". Use "itemtype_target"/"items_id_target" instead.');
-            $input['itemtype_target'] = 'User';
+            $input['itemtype_target'] = User::class;
             $input['items_id_target'] = $input['users_id_validate'];
         }
 
-        if ($user_validator && (!isset($input["items_id_target"]) || ($input["items_id_target"] <= 0))) {
+        if (
+            !isset($input['itemtype_target']) || empty($input['itemtype_target'])
+            || !isset($input["items_id_target"]) || $input["items_id_target"] <= 0) {
             return false;
         }
+
+        $input = $this->autosetUsersIdValidate($input);
 
         $itemtype = static::$itemtype;
         $input['timeline_position'] = $itemtype::getTimelinePosition($input[static::$items_id], $this->getType(), $input["users_id"]);
 
         return parent::prepareInputForAdd($input);
+    }
+
+    /**
+     * Automatically defines `users_id_validate` field based on `itemtype_target`/`items_id_target`.
+     * This is done to prevent BC breaks related to introduction of `itemtype_target`/`items_id_target` fields.
+     *
+     * @param array $input
+     *
+     * @return array
+     */
+    private function autosetUsersIdValidate(array $input): array
+    {
+        if (array_key_exists('itemtype_target', $input) && $input['itemtype_target'] === User::class) {
+            $input['users_id_validate'] = $input['items_id_target'];
+        }
+
+        return $input;
     }
 
 
@@ -468,7 +487,7 @@ abstract class CommonITILValidation extends CommonDBChild
                 $input["validation_date"] = $_SESSION["glpi_currenttime"];
             }
 
-            $forbid_fields = ['entities_id', 'users_id', static::$items_id, 'users_id_validate', // TODO
+            $forbid_fields = ['entities_id', 'users_id', static::$items_id, 'itemtype_target', 'items_id_target',
                 'comment_submission', 'submission_date', 'is_recursive'
             ];
         } else if (Session::haveRightsOr(static::$rightname, $this->getCreateRights())) { // Update validation request
@@ -484,6 +503,8 @@ abstract class CommonITILValidation extends CommonDBChild
                 }
             }
         }
+
+        $input = $this->autosetUsersIdValidate($input);
 
         return parent::prepareInputForUpdate($input);
     }

@@ -24,8 +24,8 @@ The present file will list all changes made to the project; according to the
 #### Added
 
 #### Changes
-- `users_id_validate` field for validations no longer indicates who the approval is for, rather it is only for who responded (Default '0' until responded).
-   Approval targets (who the approval is for) is now indicated by `itemtype_target` and `items_id_target` fields.
+- `users_id_validate` field in `CommonITILValidation` will now have a `0` value when approval target is a group, until a group member answer to the approval request.
+  Approval targets (who the approval is for) is now indicated by `itemtype_target` and `items_id_target` fields.
 - Notifications with `Approver` recipient have had this recipient replaced with the new `Approval target` recipient to maintain previous behavior as much as possible.
   The previous recipient option still exists if needed. This replacement will only happen once during the upgrade.
 
@@ -37,7 +37,6 @@ The present file will list all changes made to the project; according to the
 - `front/problem_ticket.form.php` script usage.
 - `front/ticket_ticket.form.php` script usage.
 - Usage of `users_id_validate` input in `CommonITILObject`.
-- Usage of `users_id_validate` field in `CommonITILValidation`.
 - Usage of `groups_id`, `name` and `users_id_validate` options in `CommonITILValidation::dropdownValidator()`.
 - `CommonITILObject::isValidator()`
 - `CommonITILValidation::alreadyExists()`

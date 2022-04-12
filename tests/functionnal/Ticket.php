@@ -1912,7 +1912,7 @@ class Ticket extends DbTestCase
 
         $this->integer((int) $input['_add_validation'])->isEqualTo(0);
 
-        $this->array($input['users_id_validate'])->size->isEqualTo(0);
+        $this->array($input['_validation_targets'])->size->isEqualTo(0);
         $this->integer((int) $input['type'])->isEqualTo(\Ticket::INCIDENT_TYPE);
         $this->array($input['_documents_id'])->size->isEqualTo(0);
         $this->array($input['_tasktemplates_id'])->size->isEqualTo(0);
