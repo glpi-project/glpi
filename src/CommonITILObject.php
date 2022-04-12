@@ -708,17 +708,65 @@ abstract class CommonITILObject extends CommonDBTM
             isset($_SESSION["glpigroups"])
             && $this->haveAGroup(CommonITILActor::ASSIGN, $_SESSION['glpigroups'])
          )
-         || $this->isValidator(Session::getLoginUserID())
+         || $this->isUserValidationRequested(Session::getLoginUserID(), true)
         );
+    }
+
+    /**
+     * Check if user validation is requested.
+     *
+     * @param int $users_id
+     *
+     * @return bool
+     */
+    final protected function isUserValidationRequested(int $users_id, bool $search_in_groups): bool
+    {
+        $validation = $this->getValidationClassInstance();
+        if ($validation === null) {
+            // Object cannot be validated
+            return false;
+        }
+
+        $target_criteria = [
+            'itemtype_target' => User::class,
+            'items_id_target' => $users_id,
+        ];
+        if ($search_in_groups) {
+            $groups = Group_User::getUserGroups($users_id);
+            if (!empty($groups)) {
+                $target_criteria = [
+                    'OR' => [
+                        $target_criteria,
+                        [
+                            'itemtype_target' => Group::class,
+                            'items_id_target' => array_column($groups, 'groups_id'),
+                        ]
+                    ]
+                ];
+            }
+        }
+
+        $validation_requests = $validation->find(
+            [
+                getForeignKeyFieldForItemType(static::class) => $this->getID(),
+                $target_criteria,
+            ]
+        );
+
+        return count($validation_requests) > 0;
     }
 
     /**
      * Check if the given users is a validator
      * @param int $users_id
      * @return bool
+     *
+     * @deprecated 10.1.0
      */
     public function isValidator($users_id): bool
     {
+        Toolbox::deprecated('"CommonITILObject::isValidator()" is deprecated. Use "CommonITILObject::isUserValidationRequested()" instead.');
+
         if (!$users_id) {
            // Invalid parameter
             return false;
@@ -8288,6 +8336,7 @@ abstract class CommonITILObject extends CommonDBTM
 
             // Validation user added on ticket form
             if (isset($input['users_id_validate'])) {
+                // TODO deprecated.
                 if (array_key_exists('groups_id', $input['users_id_validate'])) {
                     foreach ($input['users_id_validate'] as $key => $validation_to_add) {
                         if (is_numeric($key)) {
@@ -8332,8 +8381,9 @@ abstract class CommonITILObject extends CommonDBTM
                     $add_done = false;
                     foreach ($validations_to_send as $user) {
                         // Do not auto add twice same validation
-                        if (!$validation->alreadyExists($values[$self_fk], $user)) {
-                            $values["users_id_validate"] = $user;
+                        if (!$this->isUserValidationRequested($user, false)) {
+                            $values["itemtype_target"] = User::class;
+                            $values["items_id_target"] = $user;
                             if ($validation->add($values)) {
                                 $add_done = true;
                             }

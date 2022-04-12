@@ -36,6 +36,8 @@ The present file will list all changes made to the project; according to the
 - `front/problem_ticket.form.php` script usage.
 - `front/ticket_ticket.form.php` script usage.
 - Usage of `users_id_validate` field in `CommonITILValidation`.
+- `CommonITILObject::isValidator()`
+- `CommonITILValidation::alreadyExists()`
 - `Ticket` `link_to_problem` massive action is deprecated. Use `CommonITILObject_CommonITILObject` `add` massive action instead.
 - `Ticket_Ticket` `add` massive action is deprecated. Use `CommonITILObject_CommonITILObject` `add` massive action instead.
 - `Ticket_Ticket::checkParentSon()`

@@ -785,9 +785,13 @@ abstract class CommonITILValidation extends CommonDBChild
      * @since 0.85
      *
      * @return boolean
+     *
+     * @deprecated 10.1.0
      **/
     public static function alreadyExists($items_id, $users_id)
     {
+        Toolbox::deprecated();
+
         global $DB;
 
         $iterator = $DB->request([

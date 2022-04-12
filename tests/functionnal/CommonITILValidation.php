@@ -182,8 +182,9 @@ class CommonITILValidation extends DbTestCase
         $validation = new \TicketValidation();
         $this->boolean(
             $validation->getFromDBByCrit([
-                'tickets_id'         => $tid,
-                'users_id_validate'  => getItemByTypeName('User', 'glpi', true)
+                'tickets_id'      => $tid,
+                'itemtype_target' => 'User',
+                'items_id_target' => getItemByTypeName('User', 'glpi', true),
             ])
         )->isTrue();
 
@@ -202,8 +203,9 @@ class CommonITILValidation extends DbTestCase
         $validation = new \TicketValidation();
         $this->boolean(
             $validation->getFromDBByCrit([
-                'tickets_id'         => $tickets_id,
-                'users_id_validate'  => getItemByTypeName('User', 'glpi', true)
+                'tickets_id'      => $tickets_id,
+                'itemtype_target' => 'User',
+                'items_id_target' => getItemByTypeName('User', 'glpi', true),
             ])
         )->isTrue();
 

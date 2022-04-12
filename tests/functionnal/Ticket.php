@@ -1471,7 +1471,8 @@ class Ticket extends DbTestCase
                 (int)$val->add([
                     'tickets_id'   => $tickets_id,
                     'comment_submission'      => 'A simple validation',
-                    'users_id_validate' => 5, // normal
+                    'itemtype_target' => 'User',
+                    'items_id_target' => 5, // normal
                     'status' => 2
                 ])
             )->isGreaterThan(0);
@@ -3719,12 +3720,14 @@ HTML
        // TicketValidation items to create before tests
         $this->createItems(TicketValidation::class, [
             [
-                'tickets_id'        => $tickets_id_1,
-                'users_id_validate' => $users_id_1,
+                'tickets_id'      => $tickets_id_1,
+                'itemtype_target' => 'User',
+                'items_id_target' => $users_id_1,
             ],
             [
-                'tickets_id'        => $tickets_id_2,
-                'users_id_validate' => $users_id_2,
+                'tickets_id'      => $tickets_id_2,
+                'itemtype_target' => 'User',
+                'items_id_target' => $users_id_2,
             ],
         ]);
 
@@ -3762,7 +3765,7 @@ HTML
     ) {
         $ticket = new \Ticket();
         $this->boolean($ticket->getFromDB($tickets_id))->isTrue();
-        $this->boolean($ticket->isValidator($users_id))->isEqualTo($expected);
+        $this->boolean(@$ticket->isValidator($users_id))->isEqualTo($expected);
     }
 
     public function testGetTeamRoles(): void
