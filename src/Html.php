@@ -5512,7 +5512,10 @@ HTML;
             if ($p['showtitle']) {
                 $display .= "<b>";
                 $display .= sprintf(__('%1$s (%2$s)'), __('File(s)'), Document::getMaxUploadSize());
-                $display .= DocumentType::showAvailableTypesLink(['display' => false]);
+                $display .= DocumentType::showAvailableTypesLink([
+                    'display' => false,
+                    'rand'    => $p['rand']
+                ]);
                 if ($p['required']) {
                     $display .= '<span class="required">*</span>';
                 }
