@@ -58,7 +58,7 @@
 
          {{ fields.field(
             '_add_validation',
-            call('TicketValidation::dropdownValidator', [{
+            call('CommonITILValidation::dropdownValidator', [{
                'name': 'users_id_validate',
                'entity': item.fields['entities_id'],
                'right': validation_right,
