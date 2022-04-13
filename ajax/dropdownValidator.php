@@ -79,7 +79,7 @@ if (isset($_POST["validatortype"])) {
 
         case 'group':
             Group::dropdown([
-                'name'   => !empty($_POST['name']) ? $_POST['name'] . '[]' : 'items_id_target[]',
+                'name'   => $items_id_name,
                 'entity' => $_POST['entity'],
                 'value'  => $_POST['items_id'],
                 'right'  => $_POST['right'],
@@ -152,13 +152,6 @@ if (isset($_POST["validatortype"])) {
                 }
             }
 
-           // Display all users
-            if (
-                isset($_POST['all_users'])
-                && $_POST['all_users']
-            ) {
-                $param['values'] =  array_keys($users);
-            }
             $param['multiple'] = true;
             $param['display'] = true;
             $param['size']    = count($users);
@@ -168,35 +161,6 @@ if (isset($_POST["validatortype"])) {
                 $users,
                 $param
             );
-
-           // Display all/none buttons to select all or no users in group
-            if (!empty($_POST['groups_id'])) {
-                $param_button = [
-                    'validatortype'     => 'list_users',
-                    'name'              => $items_id_name,
-                    'items_id_target'   => '',
-                    'all_users'         => 1,
-                    'groups_id'         => $_POST['groups_id'],
-                    'entity'            => $_POST['entity'],
-                    'right'             => $_POST['right'],
-                ];
-                Ajax::updateItemOnEvent(
-                    'all_users',
-                    'show_list_users',
-                    $CFG_GLPI["root_doc"] . "/ajax/dropdownValidator.php",
-                    $param_button,
-                    ['click']
-                );
-
-                 $param_button['all_users'] = 0;
-                 Ajax::updateItemOnEvent(
-                     'no_users',
-                     'show_list_users',
-                     $CFG_GLPI["root_doc"] . "/ajax/dropdownValidator.php",
-                     $param_button,
-                     ['click']
-                 );
-            }
             break;
     }
 }
