@@ -781,7 +781,7 @@ abstract class CommonITILValidation extends CommonDBChild
      *
      * @return array
      */
-    final public function getTargetCriteriaForUser(int $users_id, bool $search_in_groups = true): array
+    final public static function getTargetCriteriaForUser(int $users_id, bool $search_in_groups = true): array
     {
         $target_criteria = [
             static::getTableField('itemtype_target') => User::class,
