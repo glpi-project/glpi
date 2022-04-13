@@ -30,8 +30,8 @@ The present file will list all changes made to the project; according to the
   The previous recipient option still exists if needed. This replacement will only happen once during the upgrade.
 
 #### Deprecated
+- Usage of `ajax/dropdownMassiveActionAddValidator.php` and `ajax/dropdownValidator.php` without `validation_class` parameter.
 - Usage of `name` and `users_id_validate` parameter in `ajax/dropdownValidator.php`.
-- Usage of `ajax/dropdownMassiveActionAddValidator.php` without `validation_class` parameter.
 - Usage of `users_id_validate` parameter in `front/commonitilvalidation.form.php`.
 - `front/change_problem.form.php` script usage.
 - `front/change_ticket.form.php` script usage.

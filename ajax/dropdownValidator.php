@@ -42,6 +42,12 @@ header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 
 if (isset($_POST["validatortype"])) {
+    if (!array_key_exists('validation_class', $_POST)) {
+        Toolbox::deprecated('Usage of "ajax/dropdownValidator.php" without "validation_class" parameter is deprecated.');
+        $validation_class   = TicketValidation::class;
+    } else {
+        $validation_class   = $_POST['validation_class'];
+    }
     if (array_key_exists('name', $_POST)) {
         Toolbox::deprecated('Usage of "name" parameter is deprecated in "ajax/dropdownValidator.php". Use "prefix" instead.');
         $itemtype_name      = 'itemtype_validate';
@@ -133,7 +139,7 @@ if (isset($_POST["validatortype"])) {
                 'right'     => $_POST['right'],
                 'entity'    => $_POST["entity"]
             ];
-            $data_users      = TicketValidation::getGroupUserHaveRights($opt);
+            $data_users      = $validation_class::getGroupUserHaveRights($opt);
             $users           = [];
             $param['values'] = [];
             $values          = [];
