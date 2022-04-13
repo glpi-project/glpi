@@ -53,10 +53,14 @@ if (isset($_POST["validatortype"])) {
         $itemtype_name      = 'itemtype_validate';
         $items_id_name      = !empty($_POST['name']) ? $_POST['name'] . '[]' : 'users_id_validate[]';
         $groups_id_name     = 'groups_id';
-    } else {
-        $itemtype_name      = $_POST['prefix'] . '[itemtype]';
-        $items_id_name      = $_POST['prefix'] . '[items_id]';
+    } elseif (isset($_POST['prefix']) && !empty($_POST['prefix'])) {
+        $itemtype_name      = $_POST['prefix'] . '[itemtype_target]';
+        $items_id_name      = $_POST['prefix'] . '[items_id_target]';
         $groups_id_name     = $_POST['prefix'] . '[groups_id]';
+    } else {
+        $itemtype_name      = 'itemtype_target';
+        $items_id_name      = 'items_id_target';
+        $groups_id_name     = 'groups_id';
     }
 
     if (array_key_exists('users_id_validate', $_POST)) {
@@ -64,8 +68,8 @@ if (isset($_POST["validatortype"])) {
         if (isset($_POST['users_id_validate']['groups_id'])) {
             $_POST['groups_id'] = $_POST['users_id_validate']['groups_id'];
         } else {
-            $_POST['itemtype'] = User::class;
-            $_POST['items_id'] = $_POST["validatortype"] !== 'list_users'
+            $_POST['itemtype_target'] = User::class;
+            $_POST['items_id_target'] = $_POST["validatortype"] !== 'list_users'
                 ? (isset($_POST['users_id_validate'][0]) ? $_POST['users_id_validate'][0] : 0)
                 : (is_array($_POST['users_id_validate']) ? $_POST['users_id_validate'] : []);
         }
@@ -76,7 +80,7 @@ if (isset($_POST["validatortype"])) {
             User::dropdown([
                 'name'   => $items_id_name,
                 'entity' => $_POST['entity'],
-                'value'  => $_POST['items_id'],
+                'value'  => $_POST['items_id_target'],
                 'right'  => $_POST['right'],
                 'width'  => '100%',
             ]);
@@ -87,7 +91,7 @@ if (isset($_POST["validatortype"])) {
             Group::dropdown([
                 'name'   => $items_id_name,
                 'entity' => $_POST['entity'],
-                'value'  => $_POST['items_id'],
+                'value'  => $_POST['items_id_target'],
                 'right'  => $_POST['right'],
                 'width'  => '100%',
             ]);
@@ -111,10 +115,14 @@ if (isset($_POST["validatortype"])) {
                 'right'         => $_POST['right'],
                 'entity'        => $_POST['entity'],
                 'groups_id'     => '__VALUE__',
+                'items_id'      => $_POST['items_id_target'],
             ];
             if (array_key_exists('name', $_POST)) {
                 // TODO Drop in GLPI 11.0
                 $param['name'] = !empty($_POST['name']) ? $_POST['name'] : '';
+            }
+            if (array_key_exists('validation_class', $_POST)) {
+                $param['validation_class'] = $_POST['validation_class'];
             }
             Ajax::updateItemOnSelectEvent(
                 "dropdown_{$groups_id_name}{$rand}",

@@ -2425,9 +2425,9 @@ abstract class CommonITILObject extends CommonDBTM
                             if (
                                 ($key == '_add_validation')
                                 && !empty($input['_validation_targets'])
-                                && isset($input['_validation_targets'][0]['itemtype'], $input['_validation_targets'][0]['items_id'])
-                                && class_exists($input['_validation_targets'][0]['itemtype'])
-                                && ($input['_validation_targets'][0]['items_id'] > 0)
+                                && isset($input['_validation_targets'][0]['itemtype_target'], $input['_validation_targets'][0]['items_id_target'])
+                                && class_exists($input['_validation_targets'][0]['itemtype_target'])
+                                && ($input['_validation_targets'][0]['items_id_target'] > 0)
                             ) {
                                 unset($mandatory_missing['_add_validation']);
                             }
@@ -2504,8 +2504,8 @@ abstract class CommonITILObject extends CommonDBTM
             $users_ids = !is_array($input['users_id_validate']) ? [$input['users_id_validate']] : $input['users_id_validate'];
             foreach ($users_ids as $user_id) {
                 $input['_validation_targets'][] = [
-                    'itemtype' => User::class,
-                    'items_id' => $user_id,
+                    'itemtype_target' => User::class,
+                    'items_id_target' => $user_id,
                 ];
             }
         }
@@ -7222,7 +7222,7 @@ abstract class CommonITILObject extends CommonDBTM
                 /** @var CommonITILValidation $valitation_obj */
                 $valitation_obj->getFromDB($validations_id);
                 $canedit = $valitation_obj->can($validations_id, UPDATE);
-                $cananswer = $valitation_obj->isCurrentUserValidationTarget() && ((int) $validation['status'] === CommonITILValidation::WAITING);
+                $cananswer = $valitation_obj->isCurrentUserValidationTarget(true) && ((int) $validation['status'] === CommonITILValidation::WAITING);
                 $request_key = $valitation_obj::getType() . '_' . $validations_id
                     . (empty($validation['validation_date']) ? '' : '_request'); // If no answer, no suffix to see attached documents on request
 
@@ -7247,7 +7247,10 @@ abstract class CommonITILObject extends CommonDBTM
                         'users_id'  => $validation['users_id'],
                         'can_edit'  => $canedit,
                         'can_answer'   => $cananswer,
-                        'users_id_validate'  => ((int) $validation['users_id_validate'] > 0) ? $validation['users_id_validate'] : Session::getLoginUserID(), // TODO
+                        'users_id_validate' => ((int) $validation['users_id_validate'] > 0)
+                            ? $validation['users_id_validate']
+                            // 'users_id_validate' will be set to current user id once answer will be submitted
+                            : ($cananswer ? Session::getLoginUserID() : 0),
                         'timeline_position' => $validation['timeline_position']
                     ],
                     'itiltype' => 'Validation',
@@ -7267,7 +7270,7 @@ abstract class CommonITILObject extends CommonDBTM
                             'content'   => __('Validation request answer') . " : " .
                             _sx('status', ucfirst($validation_class::getStatus($validation['status']))),
                             'comment_validation' => $validation['comment_validation'],
-                            'users_id'  => $validation['users_id_validate'], // TODO
+                            'users_id'  => $validation['users_id_validate'],
                             'status'    => "status_" . $validation['status'],
                             'can_edit'  => $canedit,
                             'timeline_position' => $validation['timeline_position'],
@@ -8386,17 +8389,17 @@ abstract class CommonITILObject extends CommonDBTM
             if (array_key_exists('_validation_targets', $input)) {
                 foreach ($input['_validation_targets'] as $validation_target) {
                     if (
-                        !array_key_exists('itemtype', $validation_target)
-                        || !array_key_exists('items_id', $validation_target)
+                        !array_key_exists('itemtype_target', $validation_target)
+                        || !array_key_exists('items_id_target', $validation_target)
                     ) {
                         continue; // User may have not selected both fields
                     }
-                    if (!is_array($validation_target['items_id'])) {
-                        $validation_target['items_id'] = [$validation_target['items_id']];
+                    if (!is_array($validation_target['items_id_target'])) {
+                        $validation_target['items_id_target'] = [$validation_target['items_id_target']];
                     }
-                    foreach ($validation_target['items_id'] as $items_id_target) {
+                    foreach ($validation_target['items_id_target'] as $items_id_target) {
                         $validations_to_send[] = [
-                            'itemtype_target' => $validation_target['itemtype'],
+                            'itemtype_target' => $validation_target['itemtype_target'],
                             'items_id_target' => $items_id_target,
                         ];
                     }

@@ -222,7 +222,7 @@ class NotificationTargetChange extends NotificationTargetCommonITILObject
                 );
                 $tmp['##validation.answer.title##'] = sprintf(
                     __('An answer to an approval request was produced by %s'),
-                    getUserName($validation['users_id_validate']) // TODO
+                    getUserName($validation['users_id_validate'])
                 );
                 $tmp['##validation.author##'] = getUserName($validation['users_id']);
                 $tmp['##validation.status##'] = ChangeValidation::getStatus($validation['status']);
@@ -239,7 +239,7 @@ class NotificationTargetChange extends NotificationTargetCommonITILObject
                 $tmp['##validation.validator_target_type##'] = $itemtype_target::getTypeName(1);
                 $tmp['##validation.validator_target##'] = $validation_target_name;
                 $tmp['##validation.validationdate##'] = Html::convDateTime($validation['validation_date']);
-                $tmp['##validation.validator##'] = getUserName($validation['users_id_validate']); // TODO
+                $tmp['##validation.validator##'] = getUserName($validation['users_id_validate']);
                 $tmp['##validation.commentvalidation##'] = $validation['comment_validation'];
 
                 $data['validations'][] = $tmp;

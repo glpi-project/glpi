@@ -4475,7 +4475,7 @@ JAVASCRIPT;
                 $WHERE = array_merge(
                     $WHERE,
                     [
-                        'users_id_validate'              => Session::getLoginUserID(),
+                        'users_id_validate'              => Session::getLoginUserID(), // TODO
                         'glpi_ticketvalidations.status'  => CommonITILValidation::WAITING,
                         'glpi_tickets.global_validation' => CommonITILValidation::WAITING,
                         'NOT'                            => [
@@ -5143,7 +5143,7 @@ JAVASCRIPT;
             $ORWHERE = ['OR' => [
                 'glpi_tickets_users.users_id'                => Session::getLoginUserID(),
                 'glpi_tickets.users_id_recipient'            => Session::getLoginUserID(),
-                'glpi_ticketvalidations.users_id_validate'   => Session::getLoginUserID()
+                'glpi_ticketvalidations.users_id_validate'   => Session::getLoginUserID(), // TODO
             ]
             ];
 
@@ -6481,7 +6481,7 @@ JAVASCRIPT;
            // Subquery for validator
             $validation_query = "SELECT `tickets_id`
             FROM `glpi_ticketvalidations`
-            WHERE `users_id_validate` = '$user'";
+            WHERE `users_id_validate` = '$user'"; // TODO
             $condition .= "OR `$fieldID` IN ($validation_query) ";
         }
 

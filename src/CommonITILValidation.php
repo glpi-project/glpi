@@ -174,7 +174,7 @@ abstract class CommonITILValidation extends CommonDBChild
      */
     public function canUpdateItem()
     {
-        $is_target = $this->isCurrentUserValidationTarget();
+        $is_target = $this->isCurrentUserValidationTarget(true);
         if (
             !$is_target
             && !Session::haveRightsOr(static::$rightname, static::getCreateRights())
@@ -197,7 +197,7 @@ abstract class CommonITILValidation extends CommonDBChild
             (!isset($this->fields['itemtype_target']) || empty($this->fields['itemtype_target']))
             && (isset($this->fields['users_id_validate']) && !empty($this->fields['users_id_validate']))
         ) {
-            Toolbox::deprecated('Usage of "users_id_validate" field is deprecated in "CommonITILValidation". Use "itemtype_target"/"items_id_target" instead.');
+            Toolbox::deprecated('Defining "users_id_validate" field without defining "itemtype_target"/"items_id_target" fields is deprecated in "CommonITILValidation".');
             $this->fields['itemtype_target'] = 'User';
             $this->fields['items_id_target'] = $this->fields['users_id_validate'];
         }
@@ -331,7 +331,7 @@ abstract class CommonITILValidation extends CommonDBChild
             (!isset($input['itemtype_target']) || empty($input['itemtype_target']))
             && (isset($input['users_id_validate']) && !empty($input['users_id_validate']))
         ) {
-            Toolbox::deprecated('Usage of "users_id_validate" field is deprecated in "CommonITILValidation". Use "itemtype_target"/"items_id_target" instead.');
+            Toolbox::deprecated('Defining "users_id_validate" field during creation is deprecated in "CommonITILValidation".');
             $input['itemtype_target'] = User::class;
             $input['items_id_target'] = $input['users_id_validate'];
         }
@@ -468,7 +468,7 @@ abstract class CommonITILValidation extends CommonDBChild
     {
 
         $forbid_fields = [];
-        if ($this->isCurrentUserValidationTarget() && isset($input["status"])) {
+        if ($this->isCurrentUserValidationTarget(true) && isset($input["status"])) {
             if (
                 ($input["status"] == self::REFUSED)
                 && (!isset($input["comment_validation"])
@@ -857,7 +857,7 @@ abstract class CommonITILValidation extends CommonDBChild
             'validation_class' => static::class,
             'validatortype'    => '__VALUE__',
             'entity'           => $_SESSION['glpiactive_entity'],
-            'right'            => ['validate_request', 'validate_incident']
+            'right'            => static::$itemtype == 'Ticket' ? ['validate_request', 'validate_incident'] : 'validate'
         ];
 
         Ajax::updateItemOnSelectEvent(
@@ -1122,8 +1122,8 @@ abstract class CommonITILValidation extends CommonDBChild
                     $group->getFromDB($row["items_id_target"]);
                     echo "<td>" . $group->getFriendlyName() . "</td>";
                 }
-                $is_answered = $row['status'] !== self::WAITING && $row['users_id_validate'] > 0; // TODO
-                echo "<td>" . ($is_answered ? getUserName($row["users_id_validate"]) : '') . "</td>"; // TODO
+                $is_answered = $row['status'] !== self::WAITING && $row['users_id_validate'] > 0;
+                echo "<td>" . ($is_answered ? getUserName($row["users_id_validate"]) : '') . "</td>";
                 $comment_validation = RichText::getEnhancedHtml($this->fields['comment_validation'] ?? '', ['images_gallery' => true]);
                 echo "<td><div class='rich_text_container'>" . $comment_validation . "</div></td>";
 
@@ -1416,10 +1416,7 @@ abstract class CommonITILValidation extends CommonDBChild
             'linkfield'          => 'users_id_validate', // TODO
             'name'               => __('Approver'),
             'datatype'           => 'itemlink',
-            'right'              => (static::$itemtype == 'Ticket' ?
-            ['validate_request', 'validate_incident'] :
-            'validate'
-         ),
+            'right'              => static::$itemtype == 'Ticket' ? ['validate_request', 'validate_incident'] : 'validate',
             'forcegroupby'       => true,
             'massiveaction'      => false,
             'joinparams'         => [
@@ -1496,19 +1493,20 @@ abstract class CommonITILValidation extends CommonDBChild
      * Dropdown of validator
      *
      * @param $options   array of options
-     *  - prefix                  : inputs prefix (i.e. a `_validator` prefix will result in having
-     *                              `_validator[itemtype]` and `_validator[items_id]` inputs
+     *  - prefix                  : inputs prefix
+     *                              - an empty prefix will result in having `itemtype` and `items_id` inputs
+     *                              - a `_validator` prefix will result in having `_validator[itemtype]` and `_validator[items_id]` inputs
      *  - id                      : ID of object > 0 Update, < 0 New
      *  - entity                  : ID of entity
      *  - right                   : validation rights
-     *  - itemtype                : Validator itemtype (User or Group)
-     *  - items_id                : Validator id
+     *  - groups_id               : ID of preselected group when validator are users of a same group
+     *  - itemtype_target         : Validator itemtype (User or Group)
+     *  - items_id_target         : Validator id (can be an array)
      *  - applyto
      *
      * @return void Output is printed
      *
      * @since 10.1.0 Deprecated usage of 'name' option
-     * @since 10.1.0 Deprecated usage of 'groups_id' option
      * @since 10.1.0 Deprecated usage of 'users_id_validate' option
      **/
     public static function dropdownValidator(array $options = [])
@@ -1520,33 +1518,27 @@ abstract class CommonITILValidation extends CommonDBChild
         }
 
         if (array_key_exists('users_id_validate', $options)) {
-            Toolbox::deprecated('Usage of "users_id_validate" option is deprecated in "CommonITILValidation::dropdownValidator()". Use "itemtype"/"items_id" instead.');
+            Toolbox::deprecated('Usage of "users_id_validate" option is deprecated in "CommonITILValidation::dropdownValidator()". Use "itemtype_target"/"items_id_target" instead.');
             if (isset($options['users_id_validate']['groups_id'])) {
-                $options['itemtype'] = Group::class;
-                $options['items_id'] = $options['users_id_validate']['groups_id'];
+                $options['itemtype_target'] = Group::class;
+                $options['items_id_target'] = $options['users_id_validate']['groups_id'];
             } else {
-                $options['itemtype'] = User::class;
-                $options['items_id'] = is_array($options['users_id_validate'])
+                $options['itemtype_target'] = User::class;
+                $options['items_id_target'] = is_array($options['users_id_validate'])
                     ? current($options['users_id_validate'])
                     : $options['users_id_validate'];
             }
             unset($options['users_id_validate']);
         }
 
-        if (array_key_exists('groups_id', $options)) {
-            Toolbox::deprecated('Usage of "groups_id" option is deprecated in "CommonITILValidation::dropdownValidator()". Use "itemtype"/"items_id" instead.');
-            $options['itemtype'] = Group::class;
-            $options['items_id'] = $options['groups_id'];
-            unset($options['groups_id']);
-        }
-
         $params = [
-            'prefix'            => '_validator',
+            'prefix'            => null,
             'id'                => 0,
             'entity'            => $_SESSION['glpiactive_entity'],
-            'right'             => ['validate_request', 'validate_incident'],
-            'itemtype'          => '',
-            'items_id'          => 0,
+            'right'             => static::$itemtype == 'Ticket' ? ['validate_request', 'validate_incident'] : 'validate',
+            'groups_id'         => 0,
+            'itemtype_target'   => '',
+            'items_id_target'   => 0,
             'applyto'           => 'show_validator_field',
             'display'           => true,
             'disabled'          => false,
@@ -1559,6 +1551,12 @@ abstract class CommonITILValidation extends CommonDBChild
             $params[$key] = $val;
         }
 
+        $params['validation_class'] = static::class;
+
+        $validatortype = array_key_exists('groups_id', $options) && !empty($options['groups_id'])
+            ? 'Group_User'
+            : $options['itemtype_target'];
+
         $validatortype_name = array_key_exists('name', $params)
             ? 'validatortype' // legacy behaviour, remove it in GLPI 11.0
             : $params['prefix'] . '[validatortype]';
@@ -1567,7 +1565,7 @@ abstract class CommonITILValidation extends CommonDBChild
             'Group_User' => __('Group user(s)'),
             'Group'      => Group::getTypeName(1),
         ], [
-            'value'               => $params['itemtype'],
+            'value'               => $validatortype,
             'display_emptychoice' => true,
             'display'             => false,
             'disabled'            => $params['disabled'],
@@ -1576,22 +1574,20 @@ abstract class CommonITILValidation extends CommonDBChild
             'required'            => $params['required'],
         ]);
 
-        if (!empty($params['itemtype'])) {
-            $params['validatortype'] = $params['itemtype'];
+        if ($validatortype) {
             $out .= Ajax::updateItem(
                 $params['applyto'],
                 $CFG_GLPI["root_doc"] . "/ajax/dropdownValidator.php",
-                $params,
+                array_merge($params, ['validatortype' => $validatortype]),
                 "",
                 false
             );
         }
-        $params['validatortype'] = '__VALUE__';
         $out .= Ajax::updateItemOnSelectEvent(
             "dropdown_{$validatortype_name}{$params['rand']}",
             $params['applyto'],
             $CFG_GLPI["root_doc"] . "/ajax/dropdownValidator.php",
-            $params,
+            array_merge($params, ['validatortype' => '__VALUE__']),
             false
         );
 
@@ -1606,6 +1602,7 @@ abstract class CommonITILValidation extends CommonDBChild
             return $out;
         }
     }
+
 
     /**
      * Get list of users from a group which have validation rights
