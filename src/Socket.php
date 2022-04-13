@@ -698,8 +698,9 @@ class Socket extends CommonDBChild
         ]);
         $numrows = count($iterator);
 
+        $massive_action_form_id = 'mass' . str_replace('\\', '', static::class) . $rand;
         if ($canedit) {
-            Html::openMassiveActionsForm('mass' . get_called_class() . $rand);
+            Html::openMassiveActionsForm($massive_action_form_id);
             $massiveactionparams
             = ['num_displayed'
                         => min($_SESSION['glpilist_limit'], $numrows),
@@ -720,8 +721,8 @@ class Socket extends CommonDBChild
 
         if ($canedit) {
             $header_begin  .= "<th width='10'>";
-            $header_top    .= Html::getCheckAllAsCheckbox('mass' . get_called_class() . $rand);
-            $header_bottom .= Html::getCheckAllAsCheckbox('mass' . get_called_class() . $rand);
+            $header_top    .= Html::getCheckAllAsCheckbox($massive_action_form_id);
+            $header_bottom .= Html::getCheckAllAsCheckbox($massive_action_form_id);
             $header_end    .= "</th>";
         }
         $header_end .= "<th>" . __('Name') . "</th>";
