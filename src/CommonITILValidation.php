@@ -181,7 +181,8 @@ abstract class CommonITILValidation extends CommonDBChild
         ) {
             return false;
         }
-        return true;
+        return (int) $this->fields['status'] === self::WAITING
+            || (int) $this->fields['users_id_validate'] === Session::getLoginUserID();
     }
 
     /**
