@@ -698,7 +698,7 @@ class Socket extends CommonDBChild
         ]);
         $numrows = count($iterator);
 
-        $massive_action_form_id = 'mass' . str_replace('\\', '', __CLASS__) . $rand;
+        $massive_action_form_id = 'mass' . str_replace('\\', '', static::class) . $rand;
         if ($canedit) {
             Html::openMassiveActionsForm($massive_action_form_id);
             $massiveactionparams
