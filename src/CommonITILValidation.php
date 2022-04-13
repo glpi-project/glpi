@@ -558,7 +558,6 @@ abstract class CommonITILValidation extends CommonDBChild
     {
 
         if ($field == 'status') {
-
             $result   = ['0', '', ''];
             if ($this->fields["status"] == self::ACCEPTED) {
                 //TRANS: %s is the username
