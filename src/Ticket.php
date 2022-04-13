@@ -4475,7 +4475,7 @@ JAVASCRIPT;
                 $WHERE = array_merge(
                     $WHERE,
                     [
-                        'users_id_validate'              => Session::getLoginUserID(), // TODO
+                        TicketValidation::getTargetCriteriaForUser(Session::getLoginUserID()),
                         'glpi_ticketvalidations.status'  => CommonITILValidation::WAITING,
                         'glpi_tickets.global_validation' => CommonITILValidation::WAITING,
                         'NOT'                            => [
@@ -5141,9 +5141,9 @@ JAVASCRIPT;
 
         if ($foruser) {
             $ORWHERE = ['OR' => [
-                'glpi_tickets_users.users_id'                => Session::getLoginUserID(),
-                'glpi_tickets.users_id_recipient'            => Session::getLoginUserID(),
-                'glpi_ticketvalidations.users_id_validate'   => Session::getLoginUserID(), // TODO
+                'glpi_tickets_users.users_id'     => Session::getLoginUserID(),
+                'glpi_tickets.users_id_recipient' => Session::getLoginUserID(),
+                TicketValidation::getTargetCriteriaForUser(Session::getLoginUserID()),
             ]
             ];
 
@@ -6481,7 +6481,8 @@ JAVASCRIPT;
            // Subquery for validator
             $validation_query = "SELECT `tickets_id`
             FROM `glpi_ticketvalidations`
-            WHERE `users_id_validate` = '$user'"; // TODO
+            WHERE (`itemtype_target` = 'User' AND `items_id_target` = '$user')
+                OR (`itemtype_target` = 'Group' AND `items_id_target` IN (SELECT `glpi_groups_users`.`groups_id` FROM `glpi_groups_users` WHERE `glpi_groups_users`.`users_id` = '$user'))";
             $condition .= "OR `$fieldID` IN ($validation_query) ";
         }
 

@@ -337,9 +337,8 @@ class Provider
                     'glpi_ticketvalidations.status' => CommonITILValidation::WAITING,
                 ];
 
-                $extra_criteria = [];
                 if ($params['validation_check_user']) {
-                    $extra_criteria = \TicketValidation::getValidationTargetCriteria(Session::getLoginUserID());
+                    $where[] = \TicketValidation::getTargetCriteriaForUser(Session::getLoginUserID());
                 }
 
                 $query_criteria = array_merge_recursive($query_criteria, [
@@ -351,8 +350,8 @@ class Provider
                             ]
                         ]
                     ],
-                    'WHERE' => $where,
-                ] + $extra_criteria);
+                    'WHERE' => $where
+                ]);
                 break;
 
            // Statuses speciale cases (no break)

@@ -727,29 +727,10 @@ abstract class CommonITILObject extends CommonDBTM
             return false;
         }
 
-        $target_criteria = [
-            'itemtype_target' => User::class,
-            'items_id_target' => $users_id,
-        ];
-        if ($search_in_groups) {
-            $groups = Group_User::getUserGroups($users_id);
-            if (!empty($groups)) {
-                $target_criteria = [
-                    'OR' => [
-                        $target_criteria,
-                        [
-                            'itemtype_target' => Group::class,
-                            'items_id_target' => array_column($groups, 'groups_id'),
-                        ]
-                    ]
-                ];
-            }
-        }
-
         $validation_requests = $validation->find(
             [
                 getForeignKeyFieldForItemType(static::class) => $this->getID(),
-                $target_criteria,
+                $validation->getTargetCriteriaForUser($users_id, $search_in_groups),
             ]
         );
 

@@ -211,33 +211,6 @@ abstract class CommonITILValidation extends CommonDBChild
         return $is_target;
     }
 
-    public static function getValidationTargetCriteria(int $users_id): array
-    {
-        $group_user_table = Group_User::getTable();
-        return [
-            'LEFT JOIN' => [
-                $group_user_table => [
-                    'ON'    => [
-                        $group_user_table => 'users_id',
-                        new QueryExpression($users_id)
-                    ],
-                ]
-            ],
-            'WHERE' => [
-                'OR'    => [
-                    [
-                        'itemtype_target' => 'User',
-                        'items_id_target' => $users_id
-                    ],
-                    [
-                        'itemtype_target' => 'Group',
-                        new QueryExpression('items_id_target = ' . $group_user_table . '.groups_id')
-                    ]
-                ]
-            ]
-        ];
-    }
-
 
     /**
      * @param integer $items_id ID of the item
@@ -246,14 +219,16 @@ abstract class CommonITILValidation extends CommonDBChild
     {
         global $DB;
 
-        $criteria = static::getValidationTargetCriteria(Session::getLoginUserID());
-        $criteria['WHERE'][static::$items_id] = $items_id;
         $iterator = $DB->request([
             'SELECT' => [static::getTable() . '.id'],
             'FROM'   => static::getTable(),
+            'WHERE'  => [
+                static::$items_id => $items_id,
+                static::getTargetCriteriaForUser(Session::getLoginUserID()),
+            ],
             'START'  => 0,
             'LIMIT'  => 1
-        ] + $criteria);
+        ]);
 
         if (count($iterator) > 0) {
             return true;
@@ -285,7 +260,7 @@ abstract class CommonITILValidation extends CommonDBChild
                 $restrict = [static::$items_id => $item->getID()];
                // No rights for create only count asign ones
                 if (!Session::haveRightsOr(static::$rightname, static::getCreateRights())) {
-                    $restrict['users_id_validate'] = Session::getLoginUserID(); // TODO
+                    $restrict[] = static::getTargetCriteriaForUser(Session::getLoginUserID());
                 }
                 $nb = countElementsInTable(static::getTable(), $restrict);
             }
@@ -767,12 +742,47 @@ abstract class CommonITILValidation extends CommonDBChild
             'FROM'   => static::getTable(),
             'COUNT'  => 'cpt',
             'WHERE'  => [
-                'status'             => self::WAITING,
-                'users_id_validate'  => $users_id // TODO
+                'status' => self::WAITING,
+                static::getTargetCriteriaForUser($users_id)
             ]
         ])->current();
 
         return $row['cpt'];
+    }
+
+    /**
+     * Return criteria to apply to get only validations on which given user is targetted.
+     *
+     * @param int $users_id
+     * @param bool $search_in_groups
+     *
+     * @return array
+     */
+    final public function getTargetCriteriaForUser(int $users_id, bool $search_in_groups = true): array
+    {
+        $target_criteria = [
+            static::getTableField('itemtype_target') => User::class,
+            static::getTableField('items_id_target') => $users_id,
+        ];
+        if ($search_in_groups) {
+            $target_criteria = [
+                'OR' => [
+                    $target_criteria,
+                    [
+                        static::getTableField('itemtype_target') => Group::class,
+                        static::getTableField('items_id_target') => new \QuerySubQuery([
+                            'SELECT' => Group_User::getTableField('groups_id'),
+                            'FROM'   => Group_User::getTable(),
+                            'WHERE'  => [
+                                Group_User::getTableField('users_id') => $users_id,
+                            ]
+                        ])
+                    ]
+                ]
+            ];
+        }
+
+        return $target_criteria;
     }
 
 
