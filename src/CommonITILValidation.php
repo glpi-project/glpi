@@ -1291,23 +1291,17 @@ abstract class CommonITILValidation extends CommonDBChild
             'field'              => 'name',
             'name'               => __('Approval requester'),
             'datatype'           => 'itemlink',
-            'right'              => [
-                'create_incident_validation',
-                'create_request_validation'
-            ]
+            'right'              => static::$itemtype == 'Ticket' ? 'create_ticket_validate' : 'create_validate',
         ];
 
         $tab[] = [
             'id'                 => '7',
             'table'              => 'glpi_users',
             'field'              => 'name',
-            'linkfield'          => 'users_id_validate', // TODO
+            'linkfield'          => 'users_id_validate',
             'name'               => __('Approver'),
             'datatype'           => 'itemlink',
-            'right'              => [
-                'validate_request',
-                'validate_incident'
-            ]
+            'right'              => static::$itemtype == 'Ticket' ? ['validate_request', 'validate_incident'] : 'validate',
         ];
 
         $tab[] = [
@@ -1316,10 +1310,6 @@ abstract class CommonITILValidation extends CommonDBChild
             'field'              => 'itemtype_target',
             'name'               => __('Requested approver type'),
             'datatype'           => 'dropdown',
-            'right'              => [
-                'create_incident_validation',
-                'create_request_validation'
-            ]
         ];
 
         return $tab;
@@ -1447,7 +1437,7 @@ abstract class CommonITILValidation extends CommonDBChild
             'id'                 => '59',
             'table'              => 'glpi_users',
             'field'              => 'name',
-            'linkfield'          => 'users_id_validate', // TODO
+            'linkfield'          => 'users_id_validate',
             'name'               => __('Approver'),
             'datatype'           => 'itemlink',
             'right'              => static::$itemtype == 'Ticket' ? ['validate_request', 'validate_incident'] : 'validate',
