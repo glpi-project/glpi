@@ -58,14 +58,14 @@
 
          {{ fields.field(
             '_add_validation',
-            call('CommonITILValidation::dropdownValidator', [{
+            validation.dropdownValidator({
                'name': 'users_id_validate',
                'entity': item.fields['entities_id'],
                'right': validation_right,
                'users_id_validate': params['users_id_validate'],
                'display': false,
                'disabled': (not canupdate),
-            }|merge(required)]),
+            }|merge(required)),
             __('Approval request'),
             field_options
          ) }}
