@@ -841,19 +841,23 @@ abstract class CommonITILValidation extends CommonDBChild
 
         global $CFG_GLPI;
 
-        $types            = ['user'  => User::getTypeName(1),
-            'group' => Group::getTypeName(1)
+        $types = [
+            'User'       => User::getTypeName(1),
+            'Group_User' => __('Group user(s)'),
+            'Group'      => Group::getTypeName(1),
         ];
 
-        $rand             = Dropdown::showFromArray(
+        $rand = Dropdown::showFromArray(
             "validatortype",
             $types,
             ['display_emptychoice' => true]
         );
 
-        $paramsmassaction = ['validatortype' => '__VALUE__',
-            'entity'        => $_SESSION['glpiactive_entity'],
-            'right'         => ['validate_request', 'validate_incident']
+        $paramsmassaction = [
+            'validation_class' => static::class,
+            'validatortype'    => '__VALUE__',
+            'entity'           => $_SESSION['glpiactive_entity'],
+            'right'            => ['validate_request', 'validate_incident']
         ];
 
         Ajax::updateItemOnSelectEvent(
@@ -907,13 +911,22 @@ abstract class CommonITILValidation extends CommonDBChild
                             'comment_submission'   => $input['comment_submission']
                         ];
                         if ($valid->can(-1, CREATE, $input2)) {
-                            $users = $input['users_id_validate']; // TODO
-                            if (!is_array($users)) {
-                                $users = [$users];
+                            if (array_key_exists('users_id_validate', $input)) {
+                                Toolbox::deprecated('Usage of "users_id_validate" in input is deprecated. Use "itemtype_target"/"items_id_target" instead.');
+                                $input['itemtype_target'] = User::class;
+                                $input['items_id_target'] = $input['users_id_validate'];
+                            }
+
+                            $itemtype  = $input['itemtype_target'];
+                            $items_ids = $input['items_id_target'];
+
+                            if (!is_array($items_ids)) {
+                                $items_ids = [$items_ids];
                             }
                             $ok = true;
-                            foreach ($users as $user) {
-                                $input2["users_id_validate"] = $user; // TODO
+                            foreach ($items_ids as $item_id) {
+                                $input2["itemtype_target"] = $itemtype;
+                                $input2["items_id_target"] = $item_id;
                                 if (!$valid->add($input2)) {
                                      $ok = false;
                                 }

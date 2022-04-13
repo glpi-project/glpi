@@ -8376,7 +8376,7 @@ abstract class CommonITILObject extends CommonDBTM
                         } else {
                             $validations_to_send[] = [
                                 'itemtype_target' => User::class,
-                                'items_id_target' => $validation,
+                                'items_id_target' => $value,
                             ];
                         }
                 }
