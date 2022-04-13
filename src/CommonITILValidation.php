@@ -338,7 +338,8 @@ abstract class CommonITILValidation extends CommonDBChild
 
         if (
             !isset($input['itemtype_target']) || empty($input['itemtype_target'])
-            || !isset($input["items_id_target"]) || $input["items_id_target"] <= 0) {
+            || !isset($input["items_id_target"]) || $input["items_id_target"] <= 0
+        ) {
             return false;
         }
 
