@@ -558,15 +558,14 @@ abstract class CommonITILValidation extends CommonDBChild
     {
 
         if ($field == 'status') {
-            $username = getUserName($this->fields["users_id_validate"]); // TODO
 
             $result   = ['0', '', ''];
             if ($this->fields["status"] == self::ACCEPTED) {
                 //TRANS: %s is the username
-                $result[2] = sprintf(__('Approval granted by %s'), $username);
+                $result[2] = sprintf(__('Approval granted by %s'), getUserName($this->fields["users_id_validate"]));
             } else {
-               //TRANS: %s is the username
-                $result[2] = sprintf(__('Update the approval request to %s'), $username);
+                //TRANS: %s is the username
+                $result[2] = sprintf(__('Update the approval request to %s'), $this->getTargetName());
             }
             return $result;
         }
@@ -579,17 +578,41 @@ abstract class CommonITILValidation extends CommonDBChild
      **/
     public function getHistoryNameForItem(CommonDBTM $item, $case)
     {
-
-        $username = getUserName($this->fields["users_id_validate"]); // TODO
+        $target_name = $this->getTargetName();
 
         switch ($case) {
             case 'add':
-                return sprintf(__('Approval request sent to %s'), $username);
+                return sprintf(__('Approval request sent to %s'), $target_name);
 
             case 'delete':
-                return sprintf(__('Cancel the approval request to %s'), $username);
+                return sprintf(__('Cancel the approval request to %s'), $target_name);
         }
         return '';
+    }
+
+    /**
+     * Returns the target name.
+     *
+     * @return string
+     */
+    final protected function getTargetName(): string
+    {
+        $target_name = '';
+        switch ($this->fields['itemtype_target']) {
+            case User::class:
+                $target_name = getUserName($this->fields['items_id_target']);
+                break;
+            default:
+                if (!is_a($this->fields['itemtype_target'], CommonDBTM::class, true)) {
+                    break;
+                }
+                $target_item = new $this->fields['itemtype_target']();
+                if ($target_item->getFromDB($this->fields['items_id_target'])) {
+                    $target_name = $target_item->getNameID();
+                }
+                break;
+        }
+        return $target_name;
     }
 
 
