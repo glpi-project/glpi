@@ -830,4 +830,28 @@ class DBConnection extends CommonDBTM
 
         return 'unsigned';
     }
+
+    /**
+     * Return a DB instance using given connection parameters.
+     *
+     * @param string $host
+     * @param string $user
+     * @param string $password
+     * @param string $dbname
+     *
+     * @return DBmysql
+     */
+    public static function getDbInstanceUsingParameters(string $host, string $user, string $password, string $dbname): DBmysql
+    {
+        return new class ($host, $user, $password, $dbname) extends DBmysql {
+            public function __construct($host, $user, $password, $dbname)
+            {
+                  $this->dbhost     = $host;
+                  $this->dbuser     = $user;
+                  $this->dbpassword = $password;
+                  $this->dbdefault  = $dbname;
+                  parent::__construct();
+            }
+        };
+    }
 }

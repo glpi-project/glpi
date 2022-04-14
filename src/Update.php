@@ -95,15 +95,25 @@ class Update
         $DB = $this->DB;
 
         if (!$DB->tableExists('glpi_config') && !$DB->tableExists('glpi_configs')) {
-           //very, very old version!
-            $currents = [
-                'version'   => '0.1',
-                'dbversion' => '0.1',
-                'language'  => 'en_GB'
-            ];
+            if ($DB->listTables()->count() > 0) {
+                // < 0.31
+                // Version was not yet stored in DB
+                $currents = [
+                    'version'   => '0.1',
+                    'dbversion' => '0.1',
+                    'language'  => 'en_GB',
+                ];
+            } else {
+                // Not a GLPI database
+                $currents = [
+                    'version'   => null,
+                    'dbversion' => null,
+                    'language'  => 'en_GB',
+                ];
+            }
         } else if (!$DB->tableExists("glpi_configs")) {
-           // < 0.78
-           // Get current version
+            // >= 0.31 and < 0.78
+            // Get current version
             $result = $DB->request([
                 'SELECT' => ['version', 'language'],
                 'FROM'   => 'glpi_config'
@@ -113,8 +123,8 @@ class Update
             $currents['dbversion']  = $currents['version'];
             $currents['language']   = trim($result['language']);
         } else if ($DB->fieldExists('glpi_configs', 'version')) {
-           // < 0.85
-           // Get current version and language
+            // < 0.85
+            // Get current version and language
             $result = $DB->request([
                 'SELECT' => ['version', 'language'],
                 'FROM'   => 'glpi_configs'
@@ -124,14 +134,15 @@ class Update
             $currents['dbversion']  = $currents['version'];
             $currents['language']   = trim($result['language']);
         } else {
-            $currents = Config::getConfigurationValues(
+            // >= 0.85
+            $values = Config::getConfigurationValues(
                 'core',
                 ['version', 'dbversion', 'language']
             );
 
-            if (!isset($currents['dbversion'])) {
-                $currents['dbversion'] = $currents['version'];
-            }
+            $currents['version']   = $values['version'] ?? null;
+            $currents['dbversion'] = $values['dbversion'] ?? $currents['version']; // `dbversion` was not existing prior to 9.2.0
+            $currents['language']  = $values['language'] ?? 'en_GB';
         }
 
         $this->version    = $currents['version'];
