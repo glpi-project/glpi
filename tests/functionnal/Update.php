@@ -122,6 +122,7 @@ class Update extends \GLPITestCase
                     $path . '/update_9.5.5_to_9.5.6.php'  => 'update955to956',
                     $path . '/update_9.5.6_to_9.5.7.php'  => 'update956to957',
                     $path . '/update_9.5.x_to_10.0.0.php' => 'update95xto1000',
+                    $path . '/update_10.0.x_to_10.1.0.php' => 'update100xto1010',
                 ],
             ],
             [
@@ -142,6 +143,7 @@ class Update extends \GLPITestCase
                     $path . '/update_9.5.5_to_9.5.6.php'  => 'update955to956',
                     $path . '/update_9.5.6_to_9.5.7.php'  => 'update956to957',
                     $path . '/update_9.5.x_to_10.0.0.php' => 'update95xto1000',
+                    $path . '/update_10.0.x_to_10.1.0.php' => 'update100xto1010',
                 ],
             ],
             [
@@ -169,6 +171,7 @@ class Update extends \GLPITestCase
                     $path . '/update_9.5.5_to_9.5.6.php'  => 'update955to956',
                     $path . '/update_9.5.6_to_9.5.7.php'  => 'update956to957',
                     $path . '/update_9.5.x_to_10.0.0.php' => 'update95xto1000',
+                    $path . '/update_10.0.x_to_10.1.0.php' => 'update100xto1010',
                 ],
             ],
             [
@@ -177,6 +180,7 @@ class Update extends \GLPITestCase
                 'force_latest'        => false,
                 'expected_migrations' => [
                     $path . '/update_9.5.x_to_10.0.0.php' => 'update95xto1000',
+                    $path . '/update_10.0.x_to_10.1.0.php' => 'update100xto1010',
                 ],
             ],
             [
@@ -185,6 +189,7 @@ class Update extends \GLPITestCase
                 'force_latest'        => false,
                 'expected_migrations' => [
                     $path . '/update_9.5.x_to_10.0.0.php' => 'update95xto1000',
+                    $path . '/update_10.0.x_to_10.1.0.php' => 'update100xto1010',
                 ],
             ],
             [
@@ -193,6 +198,7 @@ class Update extends \GLPITestCase
                 'force_latest'        => false,
                 'expected_migrations' => [
                     $path . '/update_9.5.x_to_10.0.0.php' => 'update95xto1000',
+                    $path . '/update_10.0.x_to_10.1.0.php' => 'update100xto1010',
                 ],
             ],
             [
@@ -201,6 +207,7 @@ class Update extends \GLPITestCase
                 'force_latest'        => false,
                 'expected_migrations' => [
                     $path . '/update_9.5.x_to_10.0.0.php' => 'update95xto1000',
+                    $path . '/update_10.0.x_to_10.1.0.php' => 'update100xto1010',
                 ],
             ],
             [
@@ -209,6 +216,7 @@ class Update extends \GLPITestCase
                 'force_latest'        => false,
                 'expected_migrations' => [
                     $path . '/update_9.5.x_to_10.0.0.php' => 'update95xto1000',
+                    $path . '/update_10.0.x_to_10.1.0.php' => 'update100xto1010',
                 ],
             ],
             [
@@ -217,6 +225,7 @@ class Update extends \GLPITestCase
                 'force_latest'        => false,
                 'expected_migrations' => [
                     $path . '/update_9.5.x_to_10.0.0.php' => 'update95xto1000',
+                    $path . '/update_10.0.x_to_10.1.0.php' => 'update100xto1010',
                 ],
             ],
             [
@@ -225,6 +234,7 @@ class Update extends \GLPITestCase
                 'force_latest'        => false,
                 'expected_migrations' => [
                     $path . '/update_9.5.x_to_10.0.0.php' => 'update95xto1000',
+                    $path . '/update_10.0.x_to_10.1.0.php' => 'update100xto1010',
                 ],
             ],
             [
@@ -233,13 +243,15 @@ class Update extends \GLPITestCase
                 'force_latest'        => true,
                 'expected_migrations' => [
                     $path . '/update_9.5.x_to_10.0.0.php' => 'update95xto1000',
+                    $path . '/update_10.0.x_to_10.1.0.php' => 'update100xto1010',
                 ],
             ],
             [
             // Validate that list is empty when version matches
                 'current_version'     => '10.0.0',
                 'force_latest'        => false,
-                'expected_migrations' => [
+                'expected_migrations' => [         
+                    $path . '/update_10.0.x_to_10.1.0.php' => 'update100xto1010',
                 ],
             ],
             [
@@ -248,6 +260,7 @@ class Update extends \GLPITestCase
                 'force_latest'        => true,
                 'expected_migrations' => [
                     $path . '/update_9.5.x_to_10.0.0.php' => 'update95xto1000',
+                    $path . '/update_10.0.x_to_10.1.0.php' => 'update100xto1010',
                 ],
             ]
         ];
