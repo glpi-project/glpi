@@ -569,7 +569,7 @@ if (!isset($_SESSION['can_process_install']) || !isset($_POST["install"])) {
             Toolbox::setDebugMode(Session::DEBUG_MODE, 0, 0, 1);
 
             header_html(sprintf(__('Step %d'), 1));
-            step2($_POST["update"] ?? 'no');
+            step2($_POST["update"]);
             break;
 
         case "Etape_2": // mysql settings ok, go test mysql settings and select database.
