@@ -46,6 +46,7 @@
          {{ __("Back") }}
       </button>
 
+      <input type="hidden" name="update" value="{{ update }}">
       <input type="hidden" name="install" value="Etape_1">
       <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
    </form>
