@@ -48,7 +48,7 @@ if ($_POST["actortype"] > 0) {
         $_SESSION['glpiactive_entity'],
         [],
         true,
-        false,
+        true,
         false
     );
     echo "&nbsp;<input type='submit' name='add_actor' class='btn btn-primary' value=\"" . _sx('button', 'Add') . "\">";

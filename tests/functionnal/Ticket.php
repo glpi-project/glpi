@@ -252,7 +252,7 @@ class Ticket extends DbTestCase
 
        // 6.1 -> check first task
         $taskA = array_shift($found_tasks);
-        $this->string($taskA['content'])->isIdenticalTo(Sanitizer::sanitize('<p>my task template A</p>', false));
+        $this->string($taskA['content'])->isIdenticalTo(Sanitizer::encodeHtmlSpecialChars('<p>my task template A</p>'));
         $this->variable($taskA['taskcategories_id'])->isEqualTo($taskcat_id);
         $this->variable($taskA['actiontime'])->isEqualTo(60);
         $this->variable($taskA['is_private'])->isEqualTo(1);
@@ -262,7 +262,7 @@ class Ticket extends DbTestCase
 
        // 6.2 -> check second task
         $taskB = array_shift($found_tasks);
-        $this->string($taskB['content'])->isIdenticalTo(Sanitizer::sanitize('<p>my task template B</p>', false));
+        $this->string($taskB['content'])->isIdenticalTo(Sanitizer::encodeHtmlSpecialChars('<p>my task template B</p>'));
         $this->variable($taskB['taskcategories_id'])->isEqualTo($taskcat_id);
         $this->variable($taskB['actiontime'])->isEqualTo(120);
         $this->variable($taskB['is_private'])->isEqualTo(0);
@@ -1067,8 +1067,6 @@ class Ticket extends DbTestCase
     public function changeTechRight($rights = 168967)
     {
         global $DB;
-
-        $this->dump("changeTechRight: $rights");
 
        // set new rights
         $DB->update(
@@ -3056,9 +3054,6 @@ class Ticket extends DbTestCase
 
     public function testKeepScreenshotsOnFormReload()
     {
-       //FIXME: temporary commented for other tests to work; must be fixed on modernui
-        return true;
-
        //login to get session
         $auth = new \Auth();
         $this->boolean($auth->login(TU_USER, TU_PASS, true))->isTrue();
@@ -3181,41 +3176,6 @@ class Ticket extends DbTestCase
             'items_id' => $instance->getID(),
         ]);
         $this->integer($count)->isEqualTo(2);
-    }
-
-    public function testKeepScreenshotFromTemplate()
-    {
-       //FIXME: temporary commented for other tests to work; must be fixed on modernui
-        return true;
-
-       //login to get session
-        $auth = new \Auth();
-        $this->boolean($auth->login(TU_USER, TU_PASS, true))->isTrue();
-
-       // create a template with a predeined description
-        $ticketTemplate = new \TicketTemplate();
-        $ticketTemplate->add([
-            'name' => $this->getUniqueString(),
-        ]);
-        $base64Image = base64_encode(file_get_contents(__DIR__ . '/../fixtures/uploads/foo.png'));
-        $content = '&lt;p&gt;&lt;img id="3e29dffe-0237ea21-5e57d2c8895d55.57735524"'
-        . ' src="data:image/png;base64,' . $base64Image . '" width="12" height="12" /&gt;&lt;/p&gt;';
-        $predefinedField = new \TicketTemplatePredefinedField();
-        $predefinedField->add([
-            'tickettemplates_id' => $ticketTemplate->getID(),
-            'num' => '21',
-            'value' => $content
-        ]);
-        $session_tpl_id_back = $_SESSION['glpiactiveprofile']['tickettemplates_id'];
-        $_SESSION['glpiactiveprofile']['tickettemplates_id'] = $ticketTemplate->getID();
-
-        $this->output(
-            function () use ($session_tpl_id_back) {
-                $instance = new \Ticket();
-                $instance->showForm('0');
-                $_SESSION['glpiactiveprofile']['tickettemplates_id'] = $session_tpl_id_back;
-            }
-        )->contains('src=&quot;data:image/png;base64,' . $base64Image . '&quot;');
     }
 
 

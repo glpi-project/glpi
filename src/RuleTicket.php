@@ -515,6 +515,12 @@ class RuleTicket extends Rule
         $criterias['type']['linkfield']                       = 'type';
         $criterias['type']['type']                            = 'dropdown_tickettype';
 
+        $criterias['_users_id_recipient']['table']            = 'glpi_users';
+        $criterias['_users_id_recipient']['field']            = 'name';
+        $criterias['_users_id_recipient']['name']             = __('Writer');
+        $criterias['_users_id_recipient']['linkfield']        = '_users_id_recipient';
+        $criterias['_users_id_recipient']['type']             = 'dropdown_users';
+
         $criterias['_users_id_requester']['table']            = 'glpi_users';
         $criterias['_users_id_requester']['field']            = 'name';
         $criterias['_users_id_requester']['name']             = _n('Requester', 'Requesters', 1);

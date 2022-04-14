@@ -32,6 +32,7 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Toolbox\Sanitizer;
 
 /**
  * Log Class
@@ -161,6 +162,10 @@ class Log extends CommonDBTM
                     $id_search_option = $key2; // Give ID of the $SEARCHOPTION
 
                     if ($val2['table'] == $item->getTable()) {
+                        if ($val2['field'] === 'completename') {
+                            $oldval = CommonTreeDropdown::sanitizeSeparatorInCompletename($oldval);
+                            $values[$key] = CommonTreeDropdown::sanitizeSeparatorInCompletename($values[$key]);
+                        }
                         $changes = [$id_search_option, addslashes($oldval ?? ''), $values[$key]];
                     } else {
                        // other cases; link field -> get data from dropdown
@@ -312,7 +317,7 @@ class Log extends CommonDBTM
             'additional_params' => $is_filtered ? http_build_query(['filters' => $filters]) : "",
             'is_tab'            => true,
             'items_id'          => $items_id,
-            'filters'           => Toolbox::stripslashes_deep($filters),
+            'filters'           => Sanitizer::dbEscapeRecursive($filters),
             'user_names'        => $is_filtered
             ? Log::getDistinctUserNamesValuesInItemLog($item)
             : [],

@@ -43,12 +43,13 @@ class Hooks
     const ADD_JAVASCRIPT = 'add_javascript';
 
    // Function hooks with no parameters
-    const CHANGE_ENTITY    = 'change_entity';
-    const CHANGE_PROFILE   = 'change_profile';
-    const DISPLAY_LOGIN    = 'display_login';
-    const DISPLAY_CENTRAL  = 'display_central';
-    const INIT_SESSION     = 'init_session';
-    const POST_INIT        = 'post_init';
+    const CHANGE_ENTITY               = 'change_entity';
+    const CHANGE_PROFILE              = 'change_profile';
+    const DISPLAY_LOGIN               = 'display_login';
+    const DISPLAY_CENTRAL             = 'display_central';
+    const DISPLAY_NETPORT_LIST_BEFORE = 'display_netport_list_before';
+    const INIT_SESSION                = 'init_session';
+    const POST_INIT                   = 'post_init';
 
    // Specific function hooks with parameters
     const RULE_MATCHED        = 'rule_matched';

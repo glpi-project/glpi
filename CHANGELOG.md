@@ -3,6 +3,26 @@
 The present file will list all changes made to the project; according to the
 [Keep a Changelog](http://keepachangelog.com/) project.
 
+## [10.1.0] unreleased
+
+### Added
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+### API changes
+
+#### Added
+
+#### Changes
+
+#### Deprecated
+
+#### Removed
+
 ## [10.0.0] unreleased
 
 ### Added
@@ -252,7 +272,9 @@ The present file will list all changes made to the project; according to the
 - `Update::declareOldItems()`
 - `User::showPersonalInformation()`
 
-## [9.5.6] unreleased
+## [9.5.7] 2022-01-27
+
+## [9.5.6] 2021-09-15
 
 ### Changed
 

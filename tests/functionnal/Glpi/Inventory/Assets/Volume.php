@@ -421,7 +421,7 @@ class Volume extends AbstractInventoryAsset
   <QUERY>INVENTORY</QUERY>
 </REQUEST>";
 
-       //per default, configuration allows all volumes import. change that.
+        //per default, configuration allows all volumes import. change that.
         $this->login();
         $conf = new \Glpi\Inventory\Conf();
         $this->boolean(
@@ -431,10 +431,12 @@ class Volume extends AbstractInventoryAsset
                 'component_removablemedia' => 0
             ])
         )->isTrue();
+        $this->logout();
 
-       //first inventory should import no disk.
+        //first inventory should import no disk.
         $inventory = $this->doInventory($xml_source, true);
 
+        $this->login();
         $this->boolean(
             $conf->saveConf([
                 'import_volume' => 1,
@@ -442,15 +444,17 @@ class Volume extends AbstractInventoryAsset
                 'component_removablemedia' => 1
             ])
         )->isTrue();
+        $this->logOut();
 
         $computer = $inventory->getItem();
         $computers_id = $computer->fields['id'];
 
-       //no disks linked to the computer
+        //no disks linked to the computer
         $disks = $item_disk->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
         $this->integer(count($disks))->isIdenticalTo(0);
 
-       //set config to inventory disks, but no network nor removable
+        //set config to inventory disks, but no network nor removable
+        $this->login();
         $this->boolean(
             $conf->saveConf([
                 'import_volume' => 1,
@@ -458,10 +462,12 @@ class Volume extends AbstractInventoryAsset
                 'component_removablemedia' => 0
             ])
         )->isTrue();
+        $this->logOut();
 
-       //first inventory should import 2 disks (C: and Z:).
+        //first inventory should import 2 disks (C: and Z:).
         $inventory = $this->doInventory($xml_source, true);
 
+        $this->login();
         $this->boolean(
             $conf->saveConf([
                 'import_volume' => 1,
@@ -469,15 +475,17 @@ class Volume extends AbstractInventoryAsset
                 'component_removablemedia' => 1
             ])
         )->isTrue();
+        $this->logOut();
 
         $computer = $inventory->getItem();
         $computers_id = $computer->fields['id'];
 
-       //C: and Z: has been linked to the computer
+        //C: and Z: has been linked to the computer
         $disks = $item_disk->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
         $this->integer(count($disks))->isIdenticalTo(2);
 
-       //set config to inventory disks, network and removable (the default)
+        //set config to inventory disks, network and removable (the default)
+        $this->login();
         $this->boolean(
             $conf->saveConf([
                 'import_volume' => 1,
@@ -485,14 +493,15 @@ class Volume extends AbstractInventoryAsset
                 'component_removablemedia' => 1
             ])
         )->isTrue();
+        $this->logout();
 
-       //inventory should import all 4 disks.
+        //inventory should import all 4 disks.
         $inventory = $this->doInventory($xml_source, true);
 
         $computer = $inventory->getItem();
         $computers_id = $computer->fields['id'];
 
-       //all disks has been linked to the computer
+        //all disks has been linked to the computer
         $disks = $item_disk->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
         $this->integer(count($disks))->isIdenticalTo(4);
 
@@ -505,7 +514,8 @@ class Volume extends AbstractInventoryAsset
         }
         $this->boolean($item_disk->getFromDB($removables_id))->isTrue();
 
-       //set config to inventory disks and network, but no removable
+        //set config to inventory disks and network, but no removable
+        $this->login();
         $this->boolean(
             $conf->saveConf([
                 'import_volume' => 1,
@@ -513,9 +523,11 @@ class Volume extends AbstractInventoryAsset
                 'component_removablemedia' => 0
             ])
         )->isTrue();
+        $this->logout();
 
-        $inventory = $this->doInventory($xml_source, true);
+        $this->doInventory($xml_source, true);
 
+        $this->login();
         $this->boolean(
             $conf->saveConf([
                 'import_volume' => 1,
@@ -523,12 +535,13 @@ class Volume extends AbstractInventoryAsset
                 'component_removablemedia' => 1
             ])
         )->isTrue();
+        $this->logout();
 
-       //3 disks are now been linked to the computer
+        //3 disks are now been linked to the computer
         $disks = $item_disk->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
         $this->integer(count($disks))->isIdenticalTo(3);
 
-       //ensure removable has been removed!
+        //ensure removable has been removed!
         $this->boolean($item_disk->getFromDB($removables_id))->isFalse();
     }
 }

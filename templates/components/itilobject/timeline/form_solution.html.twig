@@ -97,7 +97,8 @@
                <div class="col-12 col-xl-7 col-xxl-8">
                   {% set content = subitem.fields['content'] %}
                   {% if kb_id_toload > 0 %}
-                     {% set content = 'TODO content' %}
+                     {% set kb_item = get_item("KnowbaseItem", kb_id_toload) %}
+                     {% set content = (kb_item.fields['answer'] ?? "") %}
                   {% endif %}
 
                   {{ fields.textareaField(
@@ -178,7 +179,7 @@
                      {% if can_read_kb and kb_id_toload > 0 %}
                         {% set link_kb_lbl %}
                            <i class="fas fa-link fa-fw me-1" data-bs-toggle="tooltip" data-bs-placement="top"
-                              title="{{ __('Link to knowledge base entry #%id')|format('TODO kb id') }}"></i>
+                              title="{{ __('Link to knowledge base entry #%id')|replace({'%id': kb_id_toload}) }}"></i>
                         {% endset %}
                         {{ fields.sliderField(
                            'kb_linked_id',

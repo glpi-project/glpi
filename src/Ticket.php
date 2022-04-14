@@ -298,6 +298,25 @@ class Ticket extends CommonITILObject
                             return false;
                         }
                         break;
+                    case 'itilcategories_id':
+                        $cat = new ITILCategory();
+                        if ($cat->getFromDB($value)) {
+                            switch ($this->fields['type']) {
+                                case self::INCIDENT_TYPE:
+                                    if (!$cat->fields['is_incident']) {
+                                        return false;
+                                    }
+                                    break;
+                                case self::DEMAND_TYPE:
+                                    if (!$cat->fields['is_request']) {
+                                        return false;
+                                    }
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }
+                        break;
                 }
                 break;
         }
@@ -6619,7 +6638,7 @@ JAVASCRIPT;
                     $input = [
                         'itemtype'        => 'Ticket',
                         'items_id'        => $merge_target_id,
-                        'content'         => $DB->escape($ticket->fields['name'] . Sanitizer::sanitize("<br /><br />", false) . $ticket->fields['content']),
+                        'content'         => $DB->escape($ticket->fields['name'] . Sanitizer::encodeHtmlSpecialChars("<br /><br />") . $ticket->fields['content']),
                         'users_id'        => $ticket->fields['users_id_recipient'],
                         'date_creation'   => $ticket->fields['date_creation'],
                         'date_mod'        => $ticket->fields['date_mod'],

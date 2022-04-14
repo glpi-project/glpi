@@ -99,7 +99,7 @@ class NetworkEquipment extends MainAsset
                 if (property_exists($device, 'mac')) {
                     $port->mac = $device->mac;
                 }
-                $port->name = __('Management');
+                $port->name = 'Management';
                 $port->netname = __('internal');
                 $port->instantiation_type = 'NetworkPortAggregate';
                 $port->is_internal = true;
@@ -128,6 +128,7 @@ class NetworkEquipment extends MainAsset
                 $stack->$model_field = $switch->model;
                 $stack->description = $stack->name . ' - ' . $switch->name;
                 $stack->name = $stack->name . ' - ' . $switch->name;
+                $stack->stack_number = $switch->stack_number ?? null;
                 $this->data[] = $stack;
             }
         } else {
@@ -150,7 +151,7 @@ class NetworkEquipment extends MainAsset
                     //add internal port
                     $port = new \stdClass();
                     $port->mac = $ap->mac;
-                    $port->name = __('Management');
+                    $port->name = 'Management';
                     $port->is_internal = true;
                     $port->netname = __('internal');
                     $port->instantiation_type = 'NetworkPortAggregate';
@@ -308,7 +309,7 @@ class NetworkEquipment extends MainAsset
      *
      * @return array
      */
-    public function getStackedSwitches($parent_index = 0): array
+    public function getStackedSwitches(): array
     {
         $components = $this->extra_data['network_components'] ?? [];
         if (!count($components)) {
@@ -316,18 +317,15 @@ class NetworkEquipment extends MainAsset
         }
 
         $switches = [];
-
+        $stack_number = 1;
         foreach ($components as $component) {
             switch ($component->type) {
-                case 'stack':
-                    if ($parent_index == 0 && (!property_exists($component, 'parent_index') || !empty($component->parent_index))) {
-                        $switches += $this->getStackedSwitches($component->index);
-                    }
-                    break;
                 case 'chassis':
                     if (property_exists($component, 'serial')) {
+                        $component->stack_number = $stack_number;
                         $switches[$component->index] = $component;
                     }
+                    $stack_number++;
                     break;
             }
         }
@@ -394,7 +392,12 @@ class NetworkEquipment extends MainAsset
             throw new \RuntimeException('Exactly one entry in data is expected.');
         } else {
             $data = current($this->data);
-            return preg_replace('/.+ - (\d)/', '$1', $data->name);
+
+            if ($data->stack_number !== null) {
+                return $data->stack_number;
+            }
+
+            return preg_replace('/.+\s(\d+)$/', '$1', $data->name);
         }
     }
 }

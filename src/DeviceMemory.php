@@ -250,7 +250,7 @@ class DeviceMemory extends CommonDevice
             'name'               => _n('Memory', 'Memories', 1),
             'forcegroupby'       => true,
             'usehaving'          => true,
-            'datatype'           => 'number',
+            'datatype'           => 'mio',
             'width'              => 100,
             'massiveaction'      => false,
             'joinparams'         => $main_joinparams,

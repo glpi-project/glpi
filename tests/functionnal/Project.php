@@ -128,6 +128,48 @@ class Project extends DbTestCase
         $this->integer($project_2->fields['percent_done'])->isEqualTo(25);
     }
 
+    public function testAutocalculatePercentDoneOnTaskAddAndDelete()
+    {
+        $this->login(); // must be logged as ProjectTask uses Session::getLoginUserID()
+
+        $project = new \Project();
+        $project_id_1 = $project->add([
+            'name' => 'Project 1',
+            'auto_percent_done' => 1
+        ]);
+        $this->integer((int) $project_id_1)->isGreaterThan(0);
+
+        $projecttask = new \ProjectTask();
+        $projecttask_id_1 = $projecttask->add([
+            'name' => 'Project Task 1',
+            'projects_id' => $project_id_1,
+            'projecttasktemplates_id' => 0,
+            'percent_done'  => 0
+        ]);
+        $this->integer((int) $projecttask_id_1)->isGreaterThan(0);
+
+        // Project percent done should be 0 now
+        $project->getFromDB($project_id_1);
+        $this->integer($project->fields['percent_done'])->isEqualTo(0);
+
+        // Add a new task with 100 percent done
+        $projecttask_id_2 = $projecttask->add([
+            'name' => 'Project Task 2',
+            'projects_id' => $project_id_1,
+            'projecttasktemplates_id' => 0,
+            'percent_done'  => 100
+        ]);
+
+        // Project percent done should be 50 now
+        $project->getFromDB($project_id_1);
+        $this->integer($project->fields['percent_done'])->isEqualTo(50);
+
+        // Delete the first task and check the project percent done is 100
+        $projecttask->delete(['id' => $projecttask_id_1], true);
+        $project->getFromDB($project_id_1);
+        $this->integer($project->fields['percent_done'])->isEqualTo(100);
+    }
+
     public function testCreateFromTemplate()
     {
         $this->login();

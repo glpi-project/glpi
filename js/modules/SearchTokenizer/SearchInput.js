@@ -65,10 +65,10 @@ export default class SearchInput {
                 data: {}
             }
         }, options || {});
-        this.tokenizer = new SearchTokenizer(options.allowed_tags || {}, options.drop_unallowed_tags || false, options.tokenizer_options);
+        this.tokenizer = new SearchTokenizer(this.options.allowed_tags || {}, this.options.drop_unallowed_tags || false, this.options.tokenizer_options);
 
         this.displayed_input = $(`
-         <div class="form-control search-input d-flex" tabindex="0"></div>
+         <div class="form-control search-input d-flex overflow-auto" tabindex="0"></div>
       `).insertBefore(input);
         this.displayed_input.append(`<span class="search-input-tag-input flex-grow-1" contenteditable="true"></span>`);
         this.applyInputOptions();
@@ -554,7 +554,7 @@ export default class SearchInput {
         const selection = document.getSelection();
         const range = document.createRange();
 
-        if (node.lastChild.nodeType === Node.TEXT_NODE) {
+        if (node.lastChild && node.lastChild.nodeType === Node.TEXT_NODE) {
             range.setStart(node.lastChild, node.lastChild.length);
         } else {
             range.setStart(node, node.childNodes.length);

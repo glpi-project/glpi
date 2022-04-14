@@ -54,6 +54,10 @@ class Camera extends Device
         ];
 
         foreach ($this->data as &$val) {
+            if (property_exists($val, 'flashunit')) {
+                $val->flashunit = $val->flashunit ? 1 : 0;
+            }
+
             foreach ($mapping as $origin => $dest) {
                 if (property_exists($val, $origin)) {
                     $val->$dest = $val->$origin;

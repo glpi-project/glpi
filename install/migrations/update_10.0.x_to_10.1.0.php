@@ -36,6 +36,7 @@
  *
  * @return bool for success (will die for most error)
  **/
+
 function update100xto1010()
 {
     global $DB, $migration;
@@ -62,33 +63,31 @@ function update100xto1010()
         $rank = 1;
         foreach ($tab as $newval) {
             $DB->updateOrInsert(
-                "glpi_displaypreferences",
+
+                'glpi_displaypreferences',
                 [
                     'rank'      => $rank++
                 ],
-                Toolbox::addslashes_deep(
-                    [
-                        'users_id'  => "0",
-                        'itemtype'  => $type,
-                        'num'       => $newval,
-                    ]
-                )
+                [
+                    'users_id'  => '0',
+                    'itemtype'  => $type,
+                    'num'       => $newval,
+                ]
             );
         }
     }
-
     foreach ($DELFROMDISPLAYPREF as $type => $tab) {
         $DB->delete(
             'glpi_displaypreferences',
-            Toolbox::addslashes_deep(
-                [
-                    'itemtype'  => $type,
-                    'num'       => $tab
-                ]
-            )
+            [
+                'itemtype'  => $type,
+                'num'       => $tab
+            ]
+
         );
     }
 
     $migration->executeMigration();
+
     return $updateresult;
 }

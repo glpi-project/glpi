@@ -170,7 +170,7 @@ class KnowbaseItem_Comment extends CommonDBTM
                        cache: false,
                        data: _data,
                        success: function(data) {
-                          var _form = $('<div class=\"newcomment\" id=\"newcomment'+_this.data('id')+'\">' + data + '</div>');
+                          var _form = $('<div class=\"newcomment ms-3\" id=\"newcomment'+_this.data('id')+'\">' + data + '</div>');
                           _bindForm(_form);
                           _this.parents('.h_item').after(_form);
                        },
@@ -271,34 +271,30 @@ class KnowbaseItem_Comment extends CommonDBTM
             $user->getFromDB($comment['users_id']);
 
             $html .= "<li class='comment" . ($level > 0 ? ' subcomment' : '') . "' id='kbcomment{$comment['id']}'>";
-            $html .= "<div class='h_item left'>";
+            $html .= "<div class='h_item left d-flex'>";
             if ($level === 0) {
                 $html .= '<hr/>';
             }
             $html .= "<div class='h_info'>";
             $html .= "<div class='h_date'>" . Html::convDateTime($comment['date_creation']) . "</div>";
             $html .= "<div class='h_user'>";
-            $html .= "<div class='tooltip_picture_border'>";
-            $html .= "<img class='user_picture' alt='' src='" .
-                User::getThumbnailURLForPicture($user->fields['picture']) . "'>";
-            $html .= "</div>";
-            $html .= "<span class='h_user_name'>";
-            $userdata = getUserName($user->getID(), 2);
-            $html .= $user->getLink() . "&nbsp;";
-            $html .= Html::showToolTip(
-                $userdata["comment"],
-                ['link' => $userdata['link'], 'display' => false]
-            );
-            $html .= "</span>";
+            $thumbnail_url = User::getThumbnailURLForPicture($user->fields['picture']);
+            $style = !empty($thumbnail_url) ? "background-image: url(\"$thumbnail_url\")" : ("background-color: " . $user->getUserInitialsBgColor());
+            $html .= '<a href="' . $user->getLinkURL() . '">';
+            $html .= "<span class='avatar avatar-md rounded' style='{$style}'>";
+            if (empty($thumbnail_url)) {
+                $html .= $user->getUserInitials();
+            }
+            $html .= '</span></a>';
             $html .= "</div>"; // h_user
             $html .= "</div>"; //h_info
 
             $html .= "<div class='h_content KnowbaseItemComment'>";
-            $html .= "<div class='displayed_content'>";
+            $html .= "<div class='displayed_content ms-2'>";
 
             if ($cancomment) {
                 if (Session::getLoginUserID() == $comment['users_id']) {
-                    $html .= "<span class='fa fa-pencil-square-o edit_item'
+                    $html .= "<span class='ti ti-edit edit_item pointer'
                   data-kbitem_id='{$comment['knowbaseitems_id']}'
                   data-lang='{$comment['language']}'
                   data-id='{$comment['id']}'></span>";

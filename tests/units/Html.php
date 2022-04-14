@@ -64,11 +64,13 @@ class Html extends \GLPITestCase
         $expected = date('m-d-Y');
         $this->string(\Html::convDate($mydate, 2))->isIdenticalTo($expected);
 
-        $this->string(\Html::convDate('not a date', 2))->isIdenticalTo('not a date');
-        $this->hasPhpLogRecordThatContains(
-            'Failed to parse time string (not a date) at position 0 (n): The timezone could not be found in the database',
-            LogLevel::CRITICAL
-        );
+        $expected_error = 'Failed to parse time string (not a date) at position 0 (n): The timezone could not be found in the database';
+        $this->output(
+            function () {
+                $this->string(\Html::convDate('not a date', 2))->isIdenticalTo('not a date');
+            }
+        )->contains($expected_error);
+        $this->hasPhpLogRecordThatContains($expected_error, LogLevel::CRITICAL);
     }
 
     public function testConvDateTime()

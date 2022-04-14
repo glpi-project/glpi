@@ -70,6 +70,9 @@ class Migration extends \GLPITestCase
             $this->output(
                 function () {
                     $this->migration = new \mock\Migration(GLPI_VERSION);
+                    $this->calling($this->migration)->displayTitle = function ($msg) {
+                        echo $msg;
+                    };
                     $this->calling($this->migration)->displayMessage = function ($msg) {
                         echo $msg;
                     };
@@ -612,7 +615,12 @@ class Migration extends \GLPITestCase
         $this->when(
             function () {
                 $this->migration->addField('my_table', 'my_field', 'bool', ['value' => 2]);
-                $this->migration->executeMigration();
+
+                $this->output(
+                    function () {
+                        $this->migration->executeMigration();
+                    }
+                )->isEqualTo('Change of the database layout - my_tableTask completed.');
             }
         )->error()
          ->withType(E_USER_ERROR)
@@ -630,7 +638,12 @@ class Migration extends \GLPITestCase
         $this->when(
             function () {
                 $this->migration->addField('my_table', 'my_field', 'integer', ['value' => 'foo']);
-                $this->migration->executeMigration();
+
+                $this->output(
+                    function () {
+                        $this->migration->executeMigration();
+                    }
+                )->isEqualTo('Change of the database layout - my_tableTask completed.');
             }
         )->error()
          ->withType(E_USER_ERROR)
@@ -647,17 +660,36 @@ class Migration extends \GLPITestCase
                 'testright1', 'testright2', 'testright3', 'testright4'
             ]
         ]);
-       //Test adding a READ right when profile has READ and UPDATE config right (Default)
-        $this->migration->addRight('testright1', READ);
-       //Test adding a READ right when profile has UPDATE group right
-        $this->migration->addRight('testright2', READ, ['group' => UPDATE]);
-       //Test adding an UPDATE right when profile has READ and UPDATE group right and CREATE entity right
-        $this->migration->addRight('testright3', UPDATE, [
-            'group'  => READ | UPDATE,
-            'entity' => CREATE
-        ]);
-       //Test adding a READ right when profile with no requirements
-        $this->migration->addRight('testright4', READ, []);
+        //Test adding a READ right when profile has READ and UPDATE config right (Default)
+        $this->output(
+            function () {
+                $this->migration->addRight('testright1', READ);
+            }
+        )->isEqualTo('New rights has been added for testright1, you should review ACLs after update');
+
+        //Test adding a READ right when profile has UPDATE group right
+        $this->output(
+            function () {
+                $this->migration->addRight('testright2', READ, ['group' => UPDATE]);
+            }
+        )->isEqualTo('New rights has been added for testright2, you should review ACLs after update');
+
+        //Test adding an UPDATE right when profile has READ and UPDATE group right and CREATE entity right
+        $this->output(
+            function () {
+                $this->migration->addRight('testright3', UPDATE, [
+                    'group'  => READ | UPDATE,
+                    'entity' => CREATE
+                ]);
+            }
+        )->isEqualTo('New rights has been added for testright3, you should review ACLs after update');
+
+        //Test adding a READ right when profile with no requirements
+        $this->output(
+            function () {
+                $this->migration->addRight('testright4', READ, []);
+            }
+        )->isEqualTo('New rights has been added for testright4, you should review ACLs after update');
 
         $right1 = $DB->request([
             'FROM' => 'glpi_profilerights',
@@ -695,13 +727,17 @@ class Migration extends \GLPITestCase
         ]);
         $this->integer(count($right1))->isEqualTo(8);
 
-       //Test adding a READ right only on profiles where it has not been set yet
+        //Test adding a READ right only on profiles where it has not been set yet
         $DB->delete('glpi_profilerights', [
             'profiles_id' => [1, 2, 3, 4],
             'name' => 'testright4'
         ]);
 
-        $this->migration->addRight('testright4', READ | UPDATE, []);
+        $this->output(
+            function () {
+                $this->migration->addRight('testright4', READ | UPDATE, []);
+            }
+        )->isEqualTo('New rights has been added for testright4, you should review ACLs after update');
 
         $right4 = $DB->request([
             'FROM' => 'glpi_profilerights',
@@ -754,7 +790,15 @@ class Migration extends \GLPITestCase
         $this->migration->addField('glpi_oldtable', 'bool_field', 'bool');
         $this->migration->addKey('glpi_oldtable', 'id', 'id', 'UNIQUE');
         $this->migration->addKey('glpi_oldtable', 'fulltext_key', 'fulltext_key', 'FULLTEXT');
-        $this->migration->migrationOneTable('glpi_oldtable');
+        $this->output(
+            function () {
+                $this->migration->migrationOneTable('glpi_oldtable');
+            }
+        )->isEqualTo(
+            'Change of the database layout - glpi_oldtable'
+            . 'Adding fulltext indices - glpi_oldtable'
+            . 'Adding unicity indices - glpi_oldtable'
+        );
         $this->migration->renameTable('glpi_oldtable', 'glpi_newtable');
 
         $this->array($this->queries)->isIdenticalTo(
@@ -773,7 +817,15 @@ class Migration extends \GLPITestCase
         $this->migration->addKey('glpi_oldtable', 'id', 'id', 'UNIQUE');
         $this->migration->addKey('glpi_oldtable', 'fulltext_key', 'fulltext_key', 'FULLTEXT');
         $this->migration->renameTable('glpi_oldtable', 'glpi_newtable');
-        $this->migration->migrationOneTable('glpi_newtable');
+        $this->output(
+            function () {
+                $this->migration->migrationOneTable('glpi_newtable');
+            }
+        )->isEqualTo(
+            'Change of the database layout - glpi_newtable'
+            . 'Adding fulltext indices - glpi_newtable'
+            . 'Adding unicity indices - glpi_newtable'
+        );
 
         $this->array($this->queries)->isIdenticalTo(
             [
@@ -796,14 +848,17 @@ class Migration extends \GLPITestCase
 
         $this->calling($this->db)->tableExists = false;
 
-        $migration = $this->migration;
-        $this->exception(
-            function () use ($migration) {
-                $migration->renameItemtype('SomeOldType', 'NewName');
+        $this->output(
+            function () {
+                $this->exception(
+                    function () {
+                        $this->migration->renameItemtype('SomeOldType', 'NewName');
+                    }
+                )->isInstanceOf(\RuntimeException::class)
+                ->message
+                ->contains('Table "glpi_someoldtypes" does not exists.');
             }
-        )->isInstanceOf(\RuntimeException::class)
-        ->message
-        ->contains('Table "glpi_someoldtypes" does not exists.');
+        )->isEqualTo('Rename "SomeOldType" itemtype to "NewName"');
     }
 
     /**
@@ -817,13 +872,17 @@ class Migration extends \GLPITestCase
 
         $this->calling($this->db)->tableExists = true;
 
-        $this->exception(
+        $this->output(
             function () {
-                $this->migration->renameItemtype('SomeOldType', 'NewName');
+                $this->exception(
+                    function () {
+                        $this->migration->renameItemtype('SomeOldType', 'NewName');
+                    }
+                )->isInstanceOf(\RuntimeException::class)
+                ->message
+                ->contains('Table "glpi_someoldtypes" cannot be renamed as table "glpi_newnames" already exists.');
             }
-        )->isInstanceOf(\RuntimeException::class)
-        ->message
-        ->contains('Table "glpi_someoldtypes" cannot be renamed as table "glpi_newnames" already exists.');
+        )->isEqualTo('Rename "SomeOldType" itemtype to "NewName"');
     }
 
     /**
@@ -845,13 +904,18 @@ class Migration extends \GLPITestCase
             ]
         ]);
 
-        $this->exception(
+
+        $this->output(
             function () {
-                $this->migration->renameItemtype('SomeOldType', 'NewName');
+                $this->exception(
+                    function () {
+                        $this->migration->renameItemtype('SomeOldType', 'NewName');
+                    }
+                )->isInstanceOf(\RuntimeException::class)
+                ->message
+                ->contains('Field "someoldtypes_id" cannot be renamed in table "glpi_item_with_fkey" as "newnames_id" is field already exists.');
             }
-        )->isInstanceOf(\RuntimeException::class)
-        ->message
-        ->contains('Field "someoldtypes_id" cannot be renamed in table "glpi_item_with_fkey" as "newnames_id" is field already exists.');
+        )->isEqualTo('Rename "SomeOldType" itemtype to "NewName"');
     }
 
     /**
@@ -907,7 +971,7 @@ class Migration extends \GLPITestCase
             implode(
                 '',
                 [
-                    '============================ Rename "SomeOldType" itemtype to "NewName" ============================' . "\n",
+                    'Rename "SomeOldType" itemtype to "NewName"',
                     'Rename "glpi_someoldtypes" table to "glpi_newnames"',
                     'Rename "someoldtypes_id" foreign keys to "newnames_id" in all tables',
                     'Rename "SomeOldType" itemtype to "NewName" in all tables',
@@ -941,7 +1005,7 @@ class Migration extends \GLPITestCase
             implode(
                 '',
                 [
-                    '============================ Rename "SomeOldType" itemtype to "NewName" ============================' . "\n",
+                    'Rename "SomeOldType" itemtype to "NewName"',
                     'Rename "SomeOldType" itemtype to "NewName" in all tables',
                     'Task completed.',
                 ]
@@ -1006,7 +1070,12 @@ class Migration extends \GLPITestCase
         };
 
         $this->migration->changeSearchOption('Computer', 40, 100);
-        $this->migration->executeMigration();
+
+        $this->output(
+            function () {
+                $this->migration->executeMigration();
+            }
+        )->isIdenticalTo('Task completed.');
 
         $this->array($this->queries)->isIdenticalTo([
             "UPDATE `glpi_displaypreferences` SET `num` = '100' WHERE `itemtype` = 'Computer' AND `num` = '40'",

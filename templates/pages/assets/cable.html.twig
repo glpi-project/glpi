@@ -151,7 +151,6 @@
 
                         //listener to refresh socket selector and breadcrumb
                         $(document).on('change', '#dropdown_items_id_endpoint_{{ side }}{{ rand_side }}', function(e) {
-                           console.log("test");
                            var items_id = $('#dropdown_items_id_endpoint_{{ side }}{{ rand_side }}').find(':selected').val();
                            var itemtype = $('#dropdown_itemtype_endpoint_{{ side }}{{ rand_side }}').find(':selected').val();
                            var socketmodels_id = $('#dropdown_socketmodels_id_endpoint_{{ side }}{{ rand_side }}').find(':selected').val();

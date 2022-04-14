@@ -48,6 +48,14 @@ class DataExport extends \GLPITestCase
             'expected_result' => 'Some value',
         ];
 
+        // Entity name with cyrillic chars
+        yield [
+            'value'           => <<<HTML
+<a id='Entity_1_1' href='/front/entity.form.php?id=1'><span class="text-muted">Root entity</span> &gt; <span >Это испытание!</span></a>
+HTML,
+            'expected_result' => 'Root entity > Это испытание!',
+        ];
+
         // Malformed HTML (some special chars are not encoded)
         // It is not considered as sanitized, so it will be returned verbatim.
         yield [
@@ -57,7 +65,7 @@ class DataExport extends \GLPITestCase
 
         // Ticket title column
         yield [
-            'value'           => Sanitizer::sanitize(<<<HTML
+            'value'           => Sanitizer::encodeHtmlSpecialChars(<<<HTML
 <a id="Ticket1" href="/front/ticket.form.php?id=1" data-hasqtip="0">Ticket title</a>
 <div id="contentTicket1" class="invisible"><div class="content"><p>Ticket content ...</p></div></div>
 <script type="text/javascript">
@@ -69,15 +77,15 @@ $(function(){\$('#Ticket1').qtip({
 
 //]]>
 </script>
-HTML, false),
+HTML),
             'expected_result' => 'Ticket title',
         ];
 
         // Ticket status
         yield [
-            'value'           => Sanitizer::sanitize(<<<HTML
+            'value'           => Sanitizer::encodeHtmlSpecialChars(<<<HTML
 <i class="itilstatus far fa-circle assigned me-1" title="" data-bs-toggle="tooltip" data-bs-original-title="Processing (assigned)" aria-label="Processing (assigned)"></i>&nbsp;Processing (assigned)</span>
-HTML, false),
+HTML),
             'expected_result' => 'Processing (assigned)',
         ];
     }

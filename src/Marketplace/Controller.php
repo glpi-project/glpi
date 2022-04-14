@@ -86,7 +86,7 @@ class Controller extends CommonGLPI
      *
      * @return bool
      */
-    public function downloadPlugin(): bool
+    public function downloadPlugin($auto_install = true): bool
     {
         if (!self::hasWriteAccess()) {
             return false;
@@ -118,6 +118,14 @@ class Controller extends CommonGLPI
             );
             return false;
         }
+
+        // Some plugins archives may be huge, as they may embed some binaries.
+        // Upgrade memory limit to 512M, which should be enough.
+        $memory_limit = (int)Toolbox::getMemoryLimit();
+        if ($memory_limit > 0 && $memory_limit < (512 * 1024 * 1024)) {
+            ini_set('memory_limit', '512M');
+        }
+
         $archive = UnifiedArchive::open($dest);
         $error = $archive === null;
         if (!$error) {
@@ -161,7 +169,7 @@ class Controller extends CommonGLPI
         // inform api the plugin has been downloaded
         $api->incrementPluginDownload($this->plugin_key, $plugin_inst->fields['version']);
 
-        if ($plugin_inst->getPluginOption($this->plugin_key, Plugin::OPTION_AUTOINSTALL_DISABLED, false)) {
+        if (!$auto_install || $plugin_inst->getPluginOption($this->plugin_key, Plugin::OPTION_AUTOINSTALL_DISABLED, false)) {
             return true;
         }
 

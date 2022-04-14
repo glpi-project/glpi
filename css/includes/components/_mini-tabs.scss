@@ -81,10 +81,8 @@
             content: "\f204";
             left: 0;
             top: 0;
-            font-size: 15px;
-            font-family: "Font Awesome 5 Free";
+            font: 15px var(--fa-font-solid);
             position: absolute;
-            font-weight: 900;
         }
 
         &.active::before {

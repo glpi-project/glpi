@@ -146,12 +146,10 @@ ul.indexes {
     &::after {
         content: "\2b";
         left: 45%;
-        font-size: 1em;
         color: grey;
         top: 1px;
-        font-family: "Font Awesome 5 Free";
+        font: 1em var(--fa-font-solid);
         position: absolute;
-        font-weight: 900;
     }
 
     &:hover {

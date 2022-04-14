@@ -78,6 +78,18 @@ class DbTestCase extends \GLPITestCase
     }
 
     /**
+     * Log out current user
+     *
+     * @return void
+     */
+    protected function logOut()
+    {
+        $ctime = $_SESSION['glpi_currenttime'];
+        \Session::destroy();
+        $_SESSION['glpi_currenttime'] = $ctime;
+    }
+
+    /**
      * change current entity
      *
      * @param int|string $entityname Name of the entity (or its id)
@@ -103,7 +115,7 @@ class DbTestCase extends \GLPITestCase
      */
     protected function checkInput(CommonDBTM $object, $id = 0, $input = [])
     {
-        $input = \Toolbox::stripslashes_deep($input); // slashes in input should not be stored in DB
+        $input = Sanitizer::dbUnescapeRecursive($input); // slashes in input should not be stored in DB
 
         $this->integer((int)$id)->isGreaterThan(0);
         $this->boolean($object->getFromDB($id))->isTrue();
@@ -141,38 +153,32 @@ class DbTestCase extends \GLPITestCase
         );
 
         $classes = [];
-        foreach (new \DirectoryIterator('inc/') as $fileInfo) {
-            if (!$fileInfo->isFile()) {
+        foreach (new \DirectoryIterator('src/') as $fileInfo) {
+            if ($fileInfo->getExtension() !== 'php') {
                 continue;
             }
 
-            $php_file = file_get_contents("inc/" . $fileInfo->getFilename());
-            $tokens = token_get_all($php_file);
-            $class_token = false;
-            foreach ($tokens as $token) {
-                if (is_array($token)) {
-                    if ($token[0] == T_CLASS) {
-                        $class_token = true;
-                    } else if ($class_token && $token[0] == T_STRING) {
-                        $classname = $token[1];
-
-                        foreach ($excludes as $exclude) {
-                            if ($classname === $exclude || @preg_match($exclude, $classname) === 1) {
-                                 break 2; // Class is excluded from results, go to next file
-                            }
-                        }
-
-                        if ($function) {
-                            if (method_exists($classname, $function)) {
-                                $classes[] = $classname;
-                            }
-                        } else {
-                            $classes[] = $classname;
-                        }
-
-                        break; // Assume there is only one class by file
-                    }
+            $classname = $fileInfo->getBasename('.php');
+            foreach ($excludes as $exclude) {
+                if ($classname === $exclude || @preg_match($exclude, $classname) === 1) {
+                     break 2; // Class is excluded from results, go to next file
                 }
+            }
+
+            if (!class_exists($classname)) {
+                continue;
+            }
+            $reflectionClass = new ReflectionClass($classname);
+            if ($reflectionClass->isAbstract()) {
+                continue;
+            }
+
+            if ($function) {
+                if (method_exists($classname, $function)) {
+                    $classes[] = $classname;
+                }
+            } else {
+                $classes[] = $classname;
             }
         }
         return array_unique($classes);

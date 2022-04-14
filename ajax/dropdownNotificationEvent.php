@@ -39,4 +39,4 @@ if (strpos($_SERVER['PHP_SELF'], "dropdownNotificationEvent.php")) {
 
 Session::checkRight("notification", UPDATE);
 
-NotificationEvent::dropdownEvents(Toolbox::stripslashes_deep($_POST['itemtype']));
+NotificationEvent::dropdownEvents($_POST['itemtype']);

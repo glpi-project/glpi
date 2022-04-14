@@ -111,8 +111,6 @@ $(function () {
 
       if (input_value.length > 0) {
          timerid = setTimeout(function() {
-            console.log(input_value);
-
             $('.dropdowns-list .list-group-item:not(:icontains('+input_value+'))').hide();
             $('.dropdowns-list .list-group-item:icontains('+input_value+')')
                .closest('.accordion-collapse').addClass('show')
@@ -126,8 +124,6 @@ $(function () {
    })
 
    $('.dropdowns-list .collapse').on('shown.bs.collapse hidden.bs.collapse', function() {
-      console.log('shown.bs.collapse', $(this));
-
       $('.dropdowns-list .masonry_grid').trigger("layout:refresh");
    })
 });

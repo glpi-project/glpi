@@ -8441,7 +8441,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
 
         $tables[DomainRecordType::getTable()] = DomainRecordType::getDefaults();
         $tables[DomainRelation::getTable()] = DomainRelation::getDefaults();
-        $tables[NetworkPortType::getTable()] = Sanitizer::sanitize(NetworkPortType::getDefaults(), false);
+        $tables[NetworkPortType::getTable()] = Sanitizer::encodeHtmlSpecialCharsRecursive(NetworkPortType::getDefaults());
 
         $tables['glpi_agenttypes'] = [
             [

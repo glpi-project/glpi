@@ -34,7 +34,7 @@
 use Glpi\Inventory\Request;
 
 if (!defined('GLPI_ROOT')) {
-    include('../inc/includes.php');
+    include(__DIR__ . '/../inc/includes.php');
 }
 
 $inventory_request = new Request();
@@ -52,7 +52,7 @@ if (isset($_GET['refused'])) {
         );
         $contents = '';
     }
-} else if ($_SERVER['REQUEST_METHOD'] != 'POST') {
+} else if (!isCommandLine() && $_SERVER['REQUEST_METHOD'] != 'POST') {
     if (isset($_GET['action']) && $_GET['action'] == 'getConfig') {
         /**
          * Even if Fusion protocol is not supported for getConfig requests, they
@@ -66,7 +66,16 @@ if (isset($_GET['refused'])) {
     }
     $handle = false;
 } else {
-    $contents = file_get_contents("php://input");
+    if (isCommandLine()) {
+        $f = fopen('php://stdin', 'r');
+        $contents = '';
+        while ($line = fgets($f)) {
+            $contents .= $line;
+        }
+        fclose($f);
+    } else {
+        $contents = file_get_contents("php://input");
+    }
 }
 
 if ($handle === true) {
@@ -81,6 +90,9 @@ if (isset($_GET['refused'])) {
     $redirect_url = $refused->handleInventoryRequest($inventory_request);
     Html::redirect($redirect_url);
 } else {
+    if (isCommandLine()) {
+        exit(0);
+    }
     $headers = $inventory_request->getHeaders(true);
     http_response_code($inventory_request->getHttpResponseCode());
     foreach ($headers as $key => $value) {

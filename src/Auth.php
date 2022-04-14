@@ -457,7 +457,7 @@ class Auth extends CommonGLPI
                 $groups_id = array_column($groups, 'id');
                 $result = $rules->processAllRules(
                     $groups_id,
-                    Toolbox::stripslashes_deep($this->user->fields),
+                    $this->user->fields,
                     [
                         'type'  => Auth::DB_GLPI,
                         'login' => $this->user->fields['name'],
@@ -964,27 +964,19 @@ class Auth extends CommonGLPI
                 }
             } else {
                 if ($this->user_present) {
-                   // First stripslashes to avoid double slashes
-                    $input = Toolbox::stripslashes_deep($this->user->fields);
-                   // Then ensure addslashes
-                    $input = Toolbox::addslashes_deep($input);
-
                    // Add the user e-mail if present
                     if (isset($email)) {
                          $this->user->fields['_useremails'] = $email;
                     }
-                    $this->user->update($input);
+                    $this->user->update(Sanitizer::sanitize($this->user->fields));
                 } else if ($CFG_GLPI["is_users_auto_add"]) {
                    // Auto add user
-                   // First stripslashes to avoid double slashes
-                    $input = Toolbox::stripslashes_deep($this->user->fields);
-                   // Then ensure addslashes
-                    $input = Toolbox::addslashes_deep($input);
+                    $input = $this->user->fields;
                     unset($this->user->fields);
                     if ($authtype == self::EXTERNAL && !isset($input["authtype"])) {
                         $input["authtype"] = $authtype;
                     }
-                    $this->user->add($input);
+                    $this->user->add(Sanitizer::sanitize($input));
                 } else {
                    // Auto add not enable so auth failed
                     $this->addToError(__('User not authorized to connect in GLPI'));
@@ -997,7 +989,7 @@ class Auth extends CommonGLPI
         if (!$DB->isSlave()) {
            // GET THE IP OF THE CLIENT
             $ip = getenv("HTTP_X_FORWARDED_FOR") ?
-            Sanitizer::sanitize(getenv("HTTP_X_FORWARDED_FOR"), false) :
+            Sanitizer::encodeHtmlSpecialChars(getenv("HTTP_X_FORWARDED_FOR")) :
             getenv("REMOTE_ADDR");
 
             if ($this->auth_succeded) {

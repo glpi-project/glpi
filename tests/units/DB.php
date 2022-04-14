@@ -108,6 +108,7 @@ class DB extends \GLPITestCase
             ['`field', "'`field'"],
             [false, "'0'"],
             [true, "'1'"],
+            ['Glpi\Socket', "'Glpi\\\Socket'"],
         ];
     }
 

@@ -31,6 +31,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Plugin\Hooks;
 use Glpi\Socket;
 
 /**
@@ -687,7 +688,7 @@ class NetworkPort extends CommonDBChild
                 'items_id'  => $item->getID(),
                 'itemtype'  => $item->getType(), [
                     'OR' => [
-                        ['name' => ['!=', __('Management')]],
+                        ['name' => ['!=', 'Management']],
                         ['name' => null]
                     ]
                 ]
@@ -745,6 +746,8 @@ class NetworkPort extends CommonDBChild
             echo "</td></tr></table></div>\n";
             Html::closeForm();
         }
+
+        Plugin::doHook(Hooks::DISPLAY_NETPORT_LIST_BEFORE, ['item' => $item]);
 
         $search_config_top    = '';
         if (
@@ -864,7 +867,7 @@ class NetworkPort extends CommonDBChild
             'WHERE'  => [
                 'items_id'  => $item->getID(),
                 'itemtype'  => $item->getType(),
-                'name'      => __('Management')
+                'name'      => 'Management'
             ]
         ];
 
@@ -949,7 +952,8 @@ class NetworkPort extends CommonDBChild
             }
         }
 
-        $whole_output = "<tr class='$css_class'>";
+        $port_number = $port['logical_number'] ?? "";
+        $whole_output = "<tr class='$css_class' id='port_number_{$port_number}'>";
         if ($canedit && $with_ma) {
             $whole_output .= "<td>" . Html::getMassiveActionCheckBox(__CLASS__, $port['id']) . "</td>";
         }

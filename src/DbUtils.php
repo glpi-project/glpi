@@ -390,6 +390,7 @@ final class DbUtils
          . preg_quote('\\', '/') // followed by an additionnal \
          . '/';
         if (preg_match($sanitized_namespaced_pattern, $itemtype)) {
+            trigger_error(sprintf('Unexpected sanitized itemtype "%s" encountered.', $itemtype), E_USER_WARNING);
             $itemtype = stripslashes($itemtype);
         }
 
@@ -1262,10 +1263,7 @@ final class DbUtils
                 $name = $result['completename'];
             }
 
-           // Separator is not encoded in DB, and it could not be changed as this is mandatory to be able to split tree
-           // correctly even if some tree elements are containing ">" char in their name (this one will be encoded).
-            $separator = ' > ';
-            $name = implode(Sanitizer::sanitize($separator), explode($separator, $name));
+            $name = CommonTreeDropdown::sanitizeSeparatorInCompletename($name);
 
             if ($tooltip) {
                 $comment  = sprintf(
@@ -1701,7 +1699,7 @@ final class DbUtils
 
         $base_name = $objectName;
 
-        $objectName = Sanitizer::unsanitize($objectName);
+        $objectName = Sanitizer::decodeHtmlSpecialChars($objectName);
         $was_sanitized = $objectName !== $base_name;
         if ($was_sanitized) {
             Toolbox::deprecated('Handling of encoded/escaped value in autoName() is deprecated.');
@@ -1845,7 +1843,7 @@ final class DbUtils
         );
 
         if ($was_sanitized) {
-            $objectName = Sanitizer::sanitize($objectName, false);
+            $objectName = Sanitizer::encodeHtmlSpecialChars($objectName);
         }
 
         return $objectName;

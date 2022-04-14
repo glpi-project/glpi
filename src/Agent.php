@@ -597,6 +597,7 @@ class Agent extends CommonDBTM
             $adresses = $this->getAgentURLs();
         }
 
+        $response = null;
         foreach ($adresses as $adress) {
             $options = [
                 'base_uri'        => sprintf('%s/%s', $adress, $endpoint),
@@ -690,7 +691,7 @@ class Agent extends CommonDBTM
 
         switch ($request) {
             case self::ACTION_STATUS:
-                $data['answer'] = Sanitizer::sanitize(preg_replace('/status: /', '', $raw_content), false);
+                $data['answer'] = Sanitizer::encodeHtmlSpecialChars(preg_replace('/status: /', '', $raw_content));
                 break;
             case self::ACTION_INVENTORY:
                 $now = new DateTime();

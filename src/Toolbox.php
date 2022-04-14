@@ -276,8 +276,8 @@ class Toolbox
      **/
     public static function clean_cross_side_scripting_deep($value)
     {
-        Toolbox::deprecated('Use "Glpi\Toolbox\Sanitizer::sanitize()"');
-        return Sanitizer::sanitize($value, false);
+        Toolbox::deprecated('Use "Glpi\Toolbox\Sanitizer::encodeHtmlSpecialCharsRecursive()"');
+        return Sanitizer::encodeHtmlSpecialCharsRecursive($value);
     }
 
 
@@ -294,9 +294,9 @@ class Toolbox
      **/
     public static function unclean_cross_side_scripting_deep($value)
     {
-        Toolbox::deprecated('Use "Glpi\Toolbox\Sanitizer::unsanitize()"');
+        Toolbox::deprecated('Use "Glpi\Toolbox\Sanitizer::decodeHtmlSpecialCharsRecursive()"');
         global $DB;
-        return $DB->escape(Sanitizer::unsanitize($value));
+        return $DB->escape(Sanitizer::decodeHtmlSpecialCharsRecursive($value));
     }
 
     /**
@@ -2623,7 +2623,7 @@ class Toolbox
                       // 1 - Replace direct tag (with prefix and suffix) by the image
                         $content_text = preg_replace(
                             '/' . Document::getImageTag($image['tag']) . '/',
-                            Sanitizer::sanitize($img, false),
+                            Sanitizer::encodeHtmlSpecialChars($img),
                             $content_text
                         );
 
@@ -2665,7 +2665,7 @@ class Toolbox
                                 $new_image,
                                 Sanitizer::unsanitize($content_text)
                             );
-                            $content_text = Sanitizer::sanitize($content_text, false);
+                            $content_text = Sanitizer::encodeHtmlSpecialChars($content_text);
                         }
 
                         // If the tag is from another ticket : link document to ticket
@@ -2723,7 +2723,7 @@ class Toolbox
 
     /**
      * Decode JSON in GLPI
-     * Because json can have been modified from addslashes_deep
+     * Because json can have been modified from Sanitizer
      *
      * @param string $encoded Encoded JSON
      * @param boolean $assoc  assoc parameter of json_encode native function
@@ -2740,8 +2740,8 @@ class Toolbox
         $json = json_decode($encoded, $assoc);
 
         if (json_last_error() != JSON_ERROR_NONE) {
-           //something went wrong... Try to stripslashes before decoding.
-            $json = json_decode(self::stripslashes_deep($encoded), $assoc);
+           //something went wrong... Try to unsanitize before decoding.
+            $json = json_decode(Sanitizer::unsanitize($encoded), $assoc);
             if (json_last_error() != JSON_ERROR_NONE) {
                 self::log(null, Logger::NOTICE, ['Unable to decode JSON string! Is this really JSON?']);
                 return $encoded;
@@ -3424,6 +3424,10 @@ HTML;
      */
     public static function isFloat($value): bool
     {
+        if ($value === null || $value === '') {
+            return false;
+        }
+
         if (!is_numeric($value)) {
             $type = gettype($value);
 
@@ -3461,5 +3465,40 @@ HTML;
         }
 
         return strlen(preg_replace('/\d*\./', '', floatval($value)));
+    }
+
+    /**
+     * Try to convert to Mio the given input
+     *
+     * @param string $size Input string
+     *
+     * @return mixed The Mio value as an integer if we were able to parse the
+     * input, else the unchanged input string
+     */
+    public static function getMioSizeFromString(string $size)
+    {
+        if (is_numeric($size)) {
+            // Already a numeric value, no work to be done
+            return $size;
+        }
+
+        if (!preg_match('/(\d+).*?(\w+)/', $size, $matches)) {
+            // Unkown format, keep the string as it is
+            return $size;
+        }
+        $supported_sizes = [
+            'mo'  => 0,
+            'mio' => 0,
+            'go'  => 1,
+            'gio' => 1,
+            'to'  => 2,
+            'tio' => 2,
+        ];
+        $exp = $supported_sizes[strtolower($matches[2]) ?? null];
+        if ($exp === null) {
+            // Unkown format, keep the string as it is
+            return $size;
+        }
+        return $matches[1] * pow(1024, $exp);
     }
 }

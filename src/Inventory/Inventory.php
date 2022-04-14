@@ -78,6 +78,8 @@ class Inventory
     private $mainasset;
     /** @var string */
     private $request_query;
+    /** @var bool */
+    private bool $is_discovery = false;
 
     /**
      * @param mixed   $data   Inventory data, optional
@@ -113,7 +115,7 @@ class Inventory
     public function setData($data, $format = Request::JSON_MODE): bool
     {
 
-       // Write inventory file
+        // Write inventory file
         $dir = GLPI_INVENTORY_DIR . '/';
         if (!is_dir($dir)) {
             mkdir($dir);
@@ -131,12 +133,11 @@ class Inventory
         if (Request::XML_MODE === $format) {
             $this->inventory_format = Request::XML_MODE;
             file_put_contents($dir . '/' . $this->inventory_id . '.xml', $data->asXML());
-           //convert legacy format
-            $data = $converter->convert($data->asXML());
+            //convert legacy format
+            $data = json_decode($converter->convert($data->asXML()));
         } else {
-            file_put_contents($dir . '/' . $this->inventory_id . '.json', $data);
+            file_put_contents($dir . '/' . $this->inventory_id . '.json', json_encode($data));
         }
-        $data = json_decode($data);
 
         try {
             $converter->validate($data);
@@ -205,7 +206,7 @@ class Inventory
      */
     public function contact($data)
     {
-        $this->raw_data = json_decode($data);
+        $this->raw_data = $data;
         $this->extractMetadata();
         //create/load agent
         $this->agent = new Agent();
@@ -294,9 +295,11 @@ class Inventory
 
             $main_class = $this->getMainClass();
             $main = new $main_class($this->item, $this->raw_data);
-            $main->setRequestQuery($this->request_query);
-            $main->setAgent($this->getAgent());
-            $main->setExtraData($this->data);
+            $main
+                ->setDiscovery($this->is_discovery)
+                ->setRequestQuery($this->request_query)
+                ->setAgent($this->getAgent())
+                ->setExtraData($this->data);
 
             $item_start = microtime(true);
             $main->prepare();
@@ -328,19 +331,21 @@ class Inventory
         } finally {
             unset($_SESSION['glpiinventoryuserrunning']);
             $this->handleInventoryFile();
-            // * For benchs
-            $id = $this->item->fields['id'] ?? 0;
-            $items = $this->mainasset->getInventoried() + $this->mainasset->getRefused();
-            $extra = null;
-            if (count($items)) {
-                $extra = 'Inventoried assets: ';
-                foreach ($items as $item) {
-                    $extra .= $item->getType() . ' #' . $item->getId() . ', ';
+            if (isset($this->mainasset)) {
+                // * For benchs
+                $id = $this->item->fields['id'] ?? 0;
+                $items = $this->mainasset->getInventoried() + $this->mainasset->getRefused();
+                $extra = null;
+                if (count($items)) {
+                    $extra = 'Inventoried assets: ';
+                    foreach ($items as $item) {
+                        $extra .= $item->getType() . ' #' . $item->getId() . ', ';
+                    }
+                    $extra = rtrim($extra, ', ') . "\n";
                 }
-                $extra = rtrim($extra, ', ') . "\n";
+                $this->addBench($this->item->getType(), 'full', $main_start, $extra);
+                $this->printBenchResults();
             }
-            $this->addBench($this->item->getType(), 'full', $main_start, $extra);
-            $this->printBenchResults();
         }
 
         return [];
@@ -384,21 +389,23 @@ class Inventory
         $ext = (Request::XML_MODE === $this->inventory_format ? 'xml' : 'json');
         $tmpfile = sprintf('%s/%s.%s', GLPI_INVENTORY_DIR, $this->inventory_id, $ext);
 
-        $items = $this->getItems();
+        if (isset($this->mainasset)) {
+            $items = $this->getItems();
 
-        foreach ($items as $item) {
-            $itemtype = $item->getType();
-            if (!isset($item->fields['id']) || empty($item->fields['id'])) {
-                throw new \RuntimeException('Item ID is missing :(');
-            }
-            $id = $item->fields['id'];
+            foreach ($items as $item) {
+                $itemtype = $item->getType();
+                if (!isset($item->fields['id']) || empty($item->fields['id'])) {
+                    throw new \RuntimeException('Item ID is missing :(');
+                }
+                $id = $item->fields['id'];
 
-            $filename = GLPI_INVENTORY_DIR . '/' . $this->conf->buildInventoryFileName($itemtype, $id, $ext);
-            $subdir = dirname($filename);
-            if (!is_dir($subdir)) {
-                mkdir($subdir, 0755, true);
+                $filename = GLPI_INVENTORY_DIR . '/' . $this->conf->buildInventoryFileName($itemtype, $id, $ext);
+                $subdir = dirname($filename);
+                if (!is_dir($subdir)) {
+                    mkdir($subdir, 0755, true);
+                }
+                copy($tmpfile, $filename);
             }
-            copy($tmpfile, $filename);
         }
 
         if (file_exists($tmpfile)) {
@@ -752,10 +759,14 @@ class Inventory
             }
         }
 
-        Toolbox::logInFile(
-            "bench_inventory",
-            $output
-        );
+        if (isCommandLine() && !defined('TU_USER')) {
+            echo $output . "\n";
+        } else {
+            Toolbox::logInFile(
+                "bench_inventory",
+                $output
+            );
+        }
     }
 
     public static function getIcon()
@@ -898,5 +909,18 @@ class Inventory
     public static function getTypeName($nb = 0)
     {
         return __("Inventory");
+    }
+
+    /**
+     * Mark as discovery
+     *
+     * @param bool $disco
+     *
+     * @return $this
+     */
+    public function setDiscovery(bool $disco): self
+    {
+        $this->is_discovery = $disco;
+        return $this;
     }
 }

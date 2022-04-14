@@ -33,6 +33,7 @@
 
 use Glpi\Application\ErrorHandler;
 use Glpi\System\Requirement\DbTimezones;
+use Glpi\Toolbox\Sanitizer;
 
 /**
  *  Database class for Mysql
@@ -1237,15 +1238,23 @@ class DBmysql
     public static function quoteValue($value)
     {
         if ($value instanceof QueryParam || $value instanceof QueryExpression) {
-           //no quote for query parameters nor expressions
+            //no quote for query parameters nor expressions
             $value = $value->getValue();
         } else if ($value === null || $value === 'NULL' || $value === 'null') {
             $value = 'NULL';
         } else if (is_bool($value)) {
-           // transform boolean as int (prevent `false` to be transformed to empty string)
+            // transform boolean as int (prevent `false` to be transformed to empty string)
             $value = "'" . (int)$value . "'";
         } else {
-           //phone numbers may start with '+' and will be considered as numeric
+            if (Sanitizer::isNsClassOrCallableIdentifier($value)) {
+                // Values that corresponds to an existing namespaced class are not sanitized (see `Glpi\Toolbox\Sanitizer::sanitize()`).
+                // However, they have to be escaped in SQL queries.
+                // Note: method is called statically, so `$DB` may be not defined yet in edge cases (install process).
+                global $DB;
+                $value = $DB instanceof DBmysql && $DB->connected ? $DB->escape($value) : $value;
+            }
+
+           // phone numbers may start with '+' and will be considered as numeric
             $value = "'$value'";
         }
         return $value;

@@ -753,6 +753,7 @@ JAVASCRIPT;
                          ? $item->fields['otherserial']
                          : "";
             $model       = is_object($item)
+                        && isset($cell['model'])
                         && is_object($cell['model'])
                         && isset($cell['model']->fields['name'])
                          ? $cell['model']->fields['name']
