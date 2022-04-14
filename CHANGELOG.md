@@ -38,6 +38,7 @@ The present file will list all changes made to the project; according to the
 - `front/problem_ticket.form.php` script usage.
 - `front/ticket_ticket.form.php` script usage.
 - Usage of `users_id_validate` input in `CommonITILObject`.
+- Defining "users_id_validate" field without defining "itemtype_target"/"items_id_target" in "CommonITILValidation".
 - Usage of `name` and `users_id_validate` options in `CommonITILValidation::dropdownValidator()`.
 - `CommonITILObject::isValidator()`
 - `CommonITILValidation::alreadyExists()`

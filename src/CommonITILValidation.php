@@ -429,10 +429,11 @@ abstract class CommonITILValidation extends CommonDBChild
                             ERROR
                         );
                     }
-                } else {
-                    $group = new Group();
-                    $group->getFromDB($this->fields["items_id_target"]);
-                    Session::addMessageAfterRedirect(sprintf(__('Approval request sent to %s'), $group->getName()));
+                } elseif (is_a($this->fields["itemtype_target"], CommonDBTM::class, true)) {
+                    $target = new $this->fields["itemtype_target"]();
+                    if ($target->getFromDB($this->fields["items_id_target"])) {
+                        Session::addMessageAfterRedirect(sprintf(__('Approval request sent to %s'), $target->getName()));
+                    }
                 }
             }
         }
