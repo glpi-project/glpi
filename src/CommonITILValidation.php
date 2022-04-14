@@ -1147,15 +1147,20 @@ abstract class CommonITILValidation extends CommonDBChild
                 $comment_submission = RichText::getEnhancedHtml($this->fields['comment_submission'], ['images_gallery' => true]);
                 echo "<td><div class='rich_text_container'>" . $comment_submission . "</div></td>";
                 echo "<td>" . Html::convDateTime($row["validation_date"]) . "</td>";
-                $approver_type = $row["itemtype_target"] ?? 'User';
-                echo "<td>" . $approver_type::getTypeName(1) . "</td>";
-                if ($approver_type === 'User') {
-                    echo "<td>" . getUserName($row["items_id_target"]) . "</td>";
-                } else {
-                    $group = new Group();
-                    $group->getFromDB($row["items_id_target"]);
-                    echo "<td>" . $group->getFriendlyName() . "</td>";
+                $type_name   = null;
+                $target_name = null;
+                if ($row["itemtype_target"] === 'User') {
+                    $type_name   = User::getTypeName();
+                    $target_name = getUserName($row["items_id_target"]);
+                } elseif (is_a($row["itemtype_target"], CommonDBTM::class, true)) {
+                    $target = new $row["itemtype_target"]();
+                    $type_name = $target->getTypeName();
+                    if ($target->getFromDB($row["items_id_target"])) {
+                        $target_name = $target->getName();
+                    }
                 }
+                echo "<td>" . $type_name . "</td>";
+                echo "<td>" . $target_name . "</td>";
                 $is_answered = $row['status'] !== self::WAITING && $row['users_id_validate'] > 0;
                 echo "<td>" . ($is_answered ? getUserName($row["users_id_validate"]) : '') . "</td>";
                 $comment_validation = RichText::getEnhancedHtml($this->fields['comment_validation'] ?? '', ['images_gallery' => true]);
