@@ -42,7 +42,6 @@ use Symfony\Component\Console\Question\ChoiceQuestion;
 
 abstract class AbstractMarketplaceCommand extends AbstractCommand
 {
-
     /**
      * Get the available choices for the plugin selection
      *
