@@ -509,6 +509,46 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
         }
     }
 
+    /**
+     * Add all users and groups who were asked for an approval answer
+     *
+     * @param array $options Options
+     * @return void
+     */
+    public function addValidationTarget($options = [])
+    {
+        global $DB;
+
+        if (isset($options['validation_id'])) {
+            $validation_type = $this->obj->getType() . 'Validation';
+            $validation = new $validation_type();
+            $validation->getFromDB($options['validation_id']);
+            if ($validation->fields['itemtype_target'] === 'User') {
+                $validationtable = getTableForItemType($this->obj->getType() . 'Validation');
+
+                $criteria = [
+                    'LEFT JOIN' => [
+                        User::getTable() => [
+                            'ON' => [
+                                $validationtable => 'items_id_target',
+                                User::getTable() => 'id'
+                            ]
+                        ]
+                    ]
+                ] + $this->getDistinctUserCriteria() + $this->getProfileJoinCriteria();
+                $criteria['FROM'] = $validationtable;
+                $criteria['WHERE']["$validationtable.id"] = $options['validation_id'];
+
+                $iterator = $DB->request($criteria);
+                foreach ($iterator as $data) {
+                    $this->addToRecipientsList($data);
+                }
+            } else if ($validation->fields['itemtype_target'] === 'Group') {
+                $this->addForGroup(0, $validation->fields['items_id_target']);
+            }
+        }
+    }
+
 
     /**
      * Add author related to the followup
@@ -864,6 +904,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
 
         if (($event == 'validation') || ($event == 'validation_answer')) {
             $this->addTarget(Notification::VALIDATION_REQUESTER, __('Approval requester'));
+            $this->addTarget(Notification::VALIDATION_TARGET, __('Approval target'));
             $this->addTarget(Notification::VALIDATION_APPROVER, __('Approver'));
         }
 
@@ -943,6 +984,10 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
 
                     case Notification::ASSIGN_GROUP:
                         $this->addLinkedGroupByType(CommonITILActor::ASSIGN);
+                        break;
+
+                    case Notification::VALIDATION_TARGET:
+                        $this->addValidationTarget($options);
                         break;
 
                //Send to the ITIL object validation approver
