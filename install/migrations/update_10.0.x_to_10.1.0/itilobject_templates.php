@@ -59,10 +59,6 @@ $itiltemplate_tables = [
     'glpi_problemtemplates' => [1, 7, 2, 3, 4, 5, 8, 6],
 ];
 
-/**
- * @var CommonITILObject $itil_type
- * @var string $table
- */
 foreach ($itiltemplate_tables as $table => $all_statuses) {
     if (!$DB->fieldExists($table, 'status_limit')) {
         $default_value = exportArrayToDB($all_statuses);
