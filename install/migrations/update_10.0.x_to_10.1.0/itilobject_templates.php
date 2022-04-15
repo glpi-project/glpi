@@ -50,18 +50,18 @@ foreach ($itil_type_tables as $table) {
 
 // Add status_allowed field to all ITIL Object template tables
 $itiltemplate_tables = [
-    'Ticket'    => 'glpi_tickettemplates',
-    'Change'    => 'glpi_changetemplates',
-    'Problem'   => 'glpi_problemtemplates'
+    'glpi_tickettemplates'  => [1, 2, 3, 4, 5, 6],
+    'glpi_changetemplates'  => [1, 9, 10, 7, 4, 11, 12, 5, 8, 6, 14, 13],
+    'glpi_problemtemplates' => [1, 7, 2, 3, 4, 5, 8, 6],
 ];
 
 /**
  * @var CommonITILObject $itil_type
  * @var string $table
  */
-foreach ($itiltemplate_tables as $itil_type => $table) {
+foreach ($itiltemplate_tables as $table => $all_statuses) {
     if (!$DB->fieldExists($table, 'status_limit')) {
-        $default_value = exportArrayToDB(array_keys($itil_type::getAllStatusArray()));
+        $default_value = exportArrayToDB($all_statuses);
         $migration->addField($table, 'status_limit', 'string', [
             'null'  => false,
             'value' => $default_value
