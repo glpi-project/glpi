@@ -641,8 +641,8 @@ abstract class CommonITILValidation extends DbTestCase
         ]);
         $this->integer((int) $validations_id)->isGreaterThan(0);
         $this->integer($validation_class::getNumberToValidate($user->getID()))->isEqualTo(1);
-        $this->integer($validation_class::getTicketStatusNumber($itil_item->getID(), \CommonITILValidation::WAITING))->isEqualTo(1);
-        $this->integer($validation_class::getTicketStatusNumber($itil_item->getID(), \CommonITILValidation::ACCEPTED))->isEqualTo(0);
+        $this->integer(@$validation_class::getTicketStatusNumber($itil_item->getID(), \CommonITILValidation::WAITING))->isEqualTo(1);
+        $this->integer(@$validation_class::getTicketStatusNumber($itil_item->getID(), \CommonITILValidation::ACCEPTED))->isEqualTo(0);
 
         $validations_id = $validation->add([
             $itil_class::getForeignKeyField() => $itil_item->getID(),
@@ -653,15 +653,16 @@ abstract class CommonITILValidation extends DbTestCase
         ]);
         $this->integer((int) $validations_id)->isGreaterThan(0);
         $this->integer($validation_class::getNumberToValidate($user->getID()))->isEqualTo(2);
-        $this->integer($validation_class::getTicketStatusNumber($itil_item->getID(), \CommonITILValidation::WAITING))->isEqualTo(2);
-        $this->integer($validation_class::getTicketStatusNumber($itil_item->getID(), \CommonITILValidation::ACCEPTED))->isEqualTo(0);
+        $this->integer(@$validation_class::getTicketStatusNumber($itil_item->getID(), \CommonITILValidation::WAITING))->isEqualTo(2);
+        $this->integer(@$validation_class::getTicketStatusNumber($itil_item->getID(), \CommonITILValidation::ACCEPTED))->isEqualTo(0);
 
         $validation->update([
             'id' => $validations_id,
             'status' => \CommonITILValidation::ACCEPTED,
         ]);
-        $this->integer($validation_class::getTicketStatusNumber($itil_item->getID(), \CommonITILValidation::WAITING))->isEqualTo(1);
-        $this->integer($validation_class::getTicketStatusNumber($itil_item->getID(), \CommonITILValidation::ACCEPTED))->isEqualTo(1);
+        $this->integer($validation_class::getNumberToValidate($user->getID()))->isEqualTo(1);
+        $this->integer(@$validation_class::getTicketStatusNumber($itil_item->getID(), \CommonITILValidation::WAITING))->isEqualTo(1);
+        $this->integer(@$validation_class::getTicketStatusNumber($itil_item->getID(), \CommonITILValidation::ACCEPTED))->isEqualTo(1);
     }
 
     public function testGetCanValidationStatusArray()

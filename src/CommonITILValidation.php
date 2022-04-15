@@ -814,9 +814,13 @@ abstract class CommonITILValidation extends CommonDBChild
      *
      * @param integer $items_id item ID
      * @param integer $status   status
+     *
+     * @deprecated 10.1.0
      **/
     public static function getTicketStatusNumber($items_id, $status)
     {
+        Toolbox::deprecated();
+
         global $DB;
 
         $row = $DB->request([

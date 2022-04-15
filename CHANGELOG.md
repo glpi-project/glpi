@@ -42,6 +42,7 @@ The present file will list all changes made to the project; according to the
 - Usage of `name` and `users_id_validate` options in `CommonITILValidation::dropdownValidator()`.
 - `CommonITILObject::isValidator()`
 - `CommonITILValidation::alreadyExists()`
+- `CommonITILValidation::getTicketStatusNumber()`
 - `Ticket` `link_to_problem` massive action is deprecated. Use `CommonITILObject_CommonITILObject` `add` massive action instead.
 - `Ticket_Ticket` `add` massive action is deprecated. Use `CommonITILObject_CommonITILObject` `add` massive action instead.
 - `Ticket_Ticket::checkParentSon()`
