@@ -6370,7 +6370,16 @@ class CommonDBTM extends CommonGLPI
         );
     }
 
-    final public function cleanAlerts(array $types)
+    /**
+     * Delete alerts of given types related to current item.
+     *
+     * @param array $types
+     *
+     * @return void
+     *
+     * @since 10.0.0
+     */
+    final public function cleanAlerts(array $types): void
     {
         if (in_array('date_expiration', $this->updates)) {
             $input = [
