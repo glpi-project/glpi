@@ -38,13 +38,17 @@
 
 $default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
 
-// Add itilobject_templates_id fields to all ITIL Objects
-$itil_type_tables = ['glpi_tickets', 'glpi_changes', 'glpi_problems'];
+// Add template foreign key field to all ITIL Objects
+$itil_type_tables = [
+    'glpi_tickets'  => 'tickettemplates_id',
+    'glpi_changes'  => 'changetemplates_id',
+    'glpi_problems' => 'problemtemplates_id',
+];
 
-foreach ($itil_type_tables as $table) {
-    if (!$DB->fieldExists($table, 'itilobject_templates_id')) {
-        $migration->addField($table, 'itilobject_templates_id', "int {$default_key_sign} NOT NULL DEFAULT '0'");
-        $migration->addKey($table, 'itilobject_templates_id');
+foreach ($itil_type_tables as $table => $fkey_to_add) {
+    if (!$DB->fieldExists($table, $fkey_to_add)) {
+        $migration->addField($table, $fkey_to_add, "int {$default_key_sign} NOT NULL DEFAULT '0'");
+        $migration->addKey($table, $fkey_to_add);
     }
 }
 

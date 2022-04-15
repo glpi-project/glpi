@@ -1450,10 +1450,11 @@ abstract class CommonITILObject extends CommonDBTM
        // Add document if needed
         $this->getFromDB($input["id"]); // entities_id field required
 
-        // Map unique template field to itilobject_templates_id
+        // Map unique template field to template foreign key
         // Leave original field. The new field is stored in the DB, while the original is used for everything else (left for BC)
         if (isset($input[static::getTemplateFormFieldName()]) && (int) $input[static::getTemplateFormFieldName()] > 0) {
-            $input['itilobject_templates_id'] = (int) $input[static::getTemplateFormFieldName()];
+            $tpl_class = static::getTemplateClass();
+            $input[$tpl_class::getForeignKeyField()] = (int) $input[static::getTemplateFormFieldName()];
         }
 
         if ($this->getType() !== Ticket::getType()) {
@@ -2273,10 +2274,11 @@ abstract class CommonITILObject extends CommonDBTM
             return false;
         }
 
-        // Map unique template field to itilobject_templates_id
+        // Map unique template field to template foreign key
         // Leave original field. The new field is stored in the DB, while the original is used for everything else (left for BC)
         if (isset($input[static::getTemplateFormFieldName()]) && (int) $input[static::getTemplateFormFieldName()] > 0) {
-            $input['itilobject_templates_id'] = (int) $input[static::getTemplateFormFieldName()];
+            $tpl_class = static::getTemplateClass();
+            $input[$tpl_class::getForeignKeyField()] = (int) $input[static::getTemplateFormFieldName()];
         }
 
        // save value before clean;

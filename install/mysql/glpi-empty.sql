@@ -672,7 +672,7 @@ CREATE TABLE `glpi_changes` (
   `close_delay_stat` int NOT NULL DEFAULT '0',
   `solve_delay_stat` int NOT NULL DEFAULT '0',
   `date_creation` timestamp NULL DEFAULT NULL,
-  `itilobject_templates_id` int unsigned NOT NULL DEFAULT '0',
+  `changetemplates_id` int unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `entities_id` (`entities_id`),
@@ -692,7 +692,7 @@ CREATE TABLE `glpi_changes` (
   KEY `global_validation` (`global_validation`),
   KEY `users_id_lastupdater` (`users_id_lastupdater`),
   KEY `date_creation` (`date_creation`),
-  KEY `itilobject_templates_id` (`itilobject_templates_id`)
+  KEY `changetemplates_id` (`changetemplates_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 
@@ -5531,7 +5531,7 @@ CREATE TABLE `glpi_problems` (
   `close_delay_stat` int NOT NULL DEFAULT '0',
   `solve_delay_stat` int NOT NULL DEFAULT '0',
   `date_creation` timestamp NULL DEFAULT NULL,
-  `itilobject_templates_id` int unsigned NOT NULL DEFAULT '0',
+  `problemtemplates_id` int unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `entities_id` (`entities_id`),
@@ -5550,7 +5550,7 @@ CREATE TABLE `glpi_problems` (
   KEY `time_to_resolve` (`time_to_resolve`),
   KEY `users_id_lastupdater` (`users_id_lastupdater`),
   KEY `date_creation` (`date_creation`),
-  KEY `itilobject_templates_id` (`itilobject_templates_id`)
+  KEY `problemtemplates_id` (`problemtemplates_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 
@@ -7139,7 +7139,7 @@ CREATE TABLE `glpi_tickets` (
   `locations_id` int unsigned NOT NULL DEFAULT '0',
   `validation_percent` int NOT NULL DEFAULT '0',
   `date_creation` timestamp NULL DEFAULT NULL,
-  `itilobject_templates_id` int unsigned NOT NULL DEFAULT '0',
+  `tickettemplates_id` int unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `date` (`date`),
   KEY `closedate` (`closedate`),
@@ -7171,7 +7171,7 @@ CREATE TABLE `glpi_tickets` (
   KEY `date_creation` (`date_creation`),
   KEY `ola_waiting_duration` (`ola_waiting_duration`),
   KEY `olalevels_id_ttr` (`olalevels_id_ttr`),
-  KEY `itilobject_templates_id` (`itilobject_templates_id`)
+  KEY `tickettemplates_id` (`tickettemplates_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 

@@ -864,7 +864,7 @@ abstract class ITILTemplate extends CommonDropdown
         return $dbu->countElementsInTable(
             $itil_itemtype::getTable(),
             [
-                'itilobject_templates_id' => $templates_id
+                static::getForeignKeyField() => $templates_id
             ]
         );
     }
