@@ -43,7 +43,12 @@ use Symfony\Component\Console\Question\ChoiceQuestion;
 abstract class AbstractMarketplaceCommand extends AbstractCommand
 {
 
-    protected function getPluginChoiceChoices()
+    /**
+     * Get the available choices for the plugin selection
+     *
+     * @return array Array of choices where the key is the plugin key and the value is the plugin name
+     */
+    protected function getPluginChoiceChoices(): array
     {
         $controller = new Controller();
         $plugins = $controller::getAPI()->getAllPlugins();
@@ -55,7 +60,11 @@ abstract class AbstractMarketplaceCommand extends AbstractCommand
         return $result;
     }
 
-    abstract protected function getPluginChoiceQuestion();
+    /**
+     * Get the plugin choice question prompt
+     * @return string
+     */
+    abstract protected function getPluginChoiceQuestion(): string;
 
     protected function interact(InputInterface $input, OutputInterface $output)
     {
