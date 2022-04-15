@@ -92,7 +92,7 @@ class DownloadCommand extends AbstractMarketplaceCommand
         return 0; // Success
     }
 
-    protected function getPluginChoiceQuestion()
+    protected function getPluginChoiceQuestion(): string
     {
         return __('Which plugin(s) do you want to download (comma separated values)?');
     }

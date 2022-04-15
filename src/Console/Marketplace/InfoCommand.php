@@ -78,7 +78,7 @@ class InfoCommand extends AbstractMarketplaceCommand
         return 0; // Success
     }
 
-    protected function getPluginChoiceQuestion()
+    protected function getPluginChoiceQuestion(): string
     {
         return __('Which plugin do you want information on?');
     }
