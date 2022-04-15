@@ -805,4 +805,11 @@ class Certificate extends CommonDBTM
     {
         return "ti ti-certificate";
     }
+
+
+    public function post_updateItem($history = 1)
+    {
+        $this->cleanAlerts([Alert::END]);
+        parent::post_updateItem($history);
+    }
 }

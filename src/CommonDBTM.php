@@ -1859,15 +1859,6 @@ class CommonDBTM extends CommonGLPI
      **/
     public function post_updateItem($history = 1)
     {
-        if (in_array('date_expiration', $this->updates)) {
-            $input = [
-                'type'     => Alert::END,
-                'itemtype' => $this->getType(),
-                'items_id' => $this->fields['id'],
-            ];
-            $alert = new Alert();
-            $alert->deleteByCriteria($input, 1);
-        }
 
         UserMention::handleUserMentions($this);
     }
@@ -6377,5 +6368,18 @@ class CommonDBTM extends CommonGLPI
             $menus[2] ?? '',
             false
         );
+    }
+
+    final public function cleanAlerts(array $types)
+    {
+        if (in_array('date_expiration', $this->updates)) {
+            $input = [
+                'type'     => $types,
+                'itemtype' => $this->getType(),
+                'items_id' => $this->fields['id'],
+            ];
+            $alert = new Alert();
+            $alert->deleteByCriteria($input, 1);
+        }
     }
 }
