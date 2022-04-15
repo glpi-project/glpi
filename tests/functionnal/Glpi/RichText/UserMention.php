@@ -474,14 +474,16 @@ HTML
 
        // Create TicketValidation
         $input = [
-            'tickets_id'        => $ticket_id,
-            'users_id_validate' => Session::getLoginUserID(),
+            'tickets_id'      => $ticket_id,
+            'itemtype_target' => 'User',
+            'items_id_target' => Session::getLoginUserID(),
         ];
         if ($submission_add !== null) {
             $input['comment_submission'] = $submission_add;
         }
         if ($validation_add !== null) {
             $input['comment_validation'] = $validation_add;
+            $input['users_id_validate']  = Session::getLoginUserID();
         }
         $ticket_validation = new TicketValidation();
         $ticket_validation_id = $ticket_validation->add($input);

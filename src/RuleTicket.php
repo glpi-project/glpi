@@ -877,7 +877,7 @@ class RuleTicket extends Rule
         $actions['groups_id_validate']['name']                = sprintf(
             __('%1$s - %2$s'),
             __('Send an approval request'),
-            Group::getTypeName(1)
+            __('Group users'),
         );
         $actions['groups_id_validate']['type']                = 'dropdown_groups_validate';
         $actions['groups_id_validate']['force_actions']       = ['add_validation'];

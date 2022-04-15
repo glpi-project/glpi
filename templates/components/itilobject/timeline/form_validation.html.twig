@@ -38,6 +38,7 @@
 
 {% block timeline_card %}
    {% if form_mode == 'view' %}
+      {# Item displayed in timeline #}
       <div class="read-only-content w-100">
          {{ entry_i['content']|raw }}
 
@@ -108,6 +109,7 @@
          {% endif %}
       </div>
    {% elseif form_mode == 'answer' %}
+      {# Form displayed when user updates its answer #}
       <form name="asset_form" style="width: 100%;" class="d-flex flex-column" method="post"
             action="{{ subitem.getFormURL() }}" enctype="multipart/form-data" data-track-changes="true" data-submit-once>
 
@@ -145,6 +147,7 @@
          </div>
       </form>
    {% else %}
+      {# Form displayed when user creates/edits an approval request #}
       <div class="itilvalidation card mt-4">
          <form name="asset_form" style="width: 100%;" class="d-flex flex-column" method="post"
                action="{{ subitem.getFormURL() }}" enctype="multipart/form-data" data-track-changes="true" data-submit-once>
@@ -166,48 +169,36 @@
                 ) }}
 
                 {% if subitem.isNewItem() %}
-                    {{ fields.dropdownArrayField('validatortype', subitem.fields['validatortype'], {
-                    'User': 'User'|itemtype_name,
-                    'Group': 'Group'|itemtype_name
-                    }, __('Approver'), {
-                    'display_emptychoice': true,
-                    'rand': rand,
-                    'field_class': 'col-12',
-                    'label_class': 'col-xxl-4',
-                    'input_class': 'col-xxl-8 flex-wrap',
-                    'add_field_html': '<span id="show_validator_field' ~ rand ~ '" class="flex-grow-1">&nbsp;</span>',
-                    }) }}
-                    {% if subitem.fields['validatortype'] is not null %}
-                    <script type="application/javascript">
-                        $('#show_validator_field{{ rand }}').load(CFG_GLPI.root_doc + '/ajax/dropdownValidator.php', {
-                            id: {{ subitem.fields['id'] }},
-                            entity: {{ item.fields['entities_id'] }},
-                            right: "{{ item.getType() is same as 'Ticket' and item.fields['type'] == 2 ? 'validate_request' : 'validate_incident' }}",
-                            validatortype: "{{ subitem.fields['users_id_validate']['groups_id'] is defined ? 'Group' : (subitem.fields['users_id_validate'] is not empty ? 'User' : '') }}"
-                        });
-                    </script>
-                    {% else %}
-                    <script type="application/javascript">
-                        updateItemOnSelectEvent("dropdown_validatortype{{ rand }}", '#show_validator_field{{ rand }}',
-                            CFG_GLPI.root_doc + '/ajax/dropdownValidator.php', {
-                                id: 0,
-                                entity: {{ item.fields['entities_id'] }},
-                                right: "{{ item.getType() is same as 'Ticket' and item.fields['type'] == 2 ? 'validate_request' : 'validate_incident' }}",
-                                validatortype: '__VALUE__',
-                                groups_id: 0
-                            });
-                    </script>
+                    {% set validation_right = 'validate' %}
+                    {% if item.getType() == 'Ticket' %}
+                       {% if item.fields['type'] == constant('Ticket::INCIDENT_TYPE') %}
+                          {% set validation_right = 'validate_incident' %}
+                       {% elseif item.fields['type'] == constant('Ticket::DEMAND_TYPE') %}
+                          {% set validation_right = 'validate_request' %}
+                       {% endif %}
                     {% endif %}
+                    {{ fields.field(
+                        '_add_validation',
+                        subitem.dropdownValidator({
+                            'entity': item.fields['entities_id'],
+                            'itemtype_target': subitem.fields['itemtype_target'],
+                            'items_id_target': subitem.fields['items_id_target'] ?? '',
+                            'right': validation_right,
+                            'display': false,
+                        }),
+                        __('Approver'),
+                        {
+                            'full_width': true,
+                        }
+                    ) }}
                 {% else %}
-                    {{ fields.dropdownField(
-                    'User',
-                    'users_id_validate',
-                    subitem.fields['users_id_validate'],
-                    __('Approver'),
-                    {
-                       'disabled': true,
-                       'full_width': true,
-                    }
+                    {{ fields.readOnlyField(
+                        '',
+                        get_item_name(subitem.fields['itemtype_target'], subitem.fields['items_id_target']),
+                        __('Approver'),
+                        {
+                           'full_width': true,
+                        }
                     ) }}
                 {% endif %}
 
