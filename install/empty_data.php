@@ -7501,11 +7501,11 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ], [
                 'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'externalevent',
-                'rights' => 1055,
+                'rights' => ALLSTANDARDRIGHT | PlanningExternalEvent::MANAGE_BG_EVENTS,
             ], [
                 'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'externalevent',
-                'rights' => 1055,
+                'rights' => ALLSTANDARDRIGHT | PlanningExternalEvent::MANAGE_BG_EVENTS,
             ], [
                 'profiles_id' => self::PROFILE_HOTLINER,
                 'name' => 'externalevent',
