@@ -46,6 +46,15 @@ body.mce-content-body {
 }
 
 .rich_text_container {
+    thead,
+    tbody,
+    tfoot,
+    tr,
+    td,
+    th {
+        border-width: inherit; // Prevent removal of borders from reboot CSS
+    }
+
     img {
         max-width: 100%;
     }
