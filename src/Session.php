@@ -318,7 +318,11 @@ class Session
         }
         $url = '';
 
-        if (!isset($_SERVER['REQUEST_URI']) || (strpos($_SERVER['REQUEST_URI'], "tabs") > 0)) {
+        if (
+            !isset($_SERVER['REQUEST_URI'])
+            || (strpos($_SERVER['REQUEST_URI'], "tabs") > 0)
+            || (preg_match('/\/ajax\/\w+.php/', $_SERVER['REQUEST_URI']))
+        ) {
             if (isset($_SERVER['HTTP_REFERER'])) {
                 $url = $_SERVER['HTTP_REFERER'];
             }

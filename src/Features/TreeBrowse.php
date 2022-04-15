@@ -37,7 +37,6 @@ namespace Glpi\Features;
 
 use CommonITILObject;
 use CommonTreeDropdown;
-use DB;
 use DropdownTranslation;
 use Html;
 use ITILCategory;
@@ -70,6 +69,9 @@ trait TreeBrowse
         $is_deleted  = isset($params['is_deleted'])
                             ? $params['is_deleted']
                             : 0;
+        $unpublished = isset($params['unpublished'])
+                            ? $params['unpublished']
+                            : 0;
         $criteria    = json_encode($params['criteria']);
 
         $category_list = json_encode(self::getTreeCategoryList($itemtype, $params));
@@ -87,6 +89,7 @@ trait TreeBrowse
                 'start': $start,
                 'browse': $browse,
                 'is_deleted': $is_deleted,
+                'unpublished': $unpublished,
                 'criteria': $criteria
             });
         };
@@ -178,6 +181,7 @@ JAVASCRIPT;
         $cat_item     = new $cat_itemtype();
 
         $params['export_all'] = true;
+
         $data = Search::prepareDatasForSearch($itemtype, $params);
         Search::constructSQL($data);
         $ids = [0];
@@ -187,13 +191,29 @@ JAVASCRIPT;
 
         $cat_table = $cat_itemtype::getTable();
         $cat_fk    = $cat_itemtype::getForeignKeyField();
+        $cat_join = $itemtype . '_' . $cat_itemtype;
+
+        if (class_exists($cat_join)) {
+            $join = [
+                $cat_join::getTable() => [
+                    'ON'  => [
+                        $cat_join::getTable() => $itemtype::getForeignKeyField(),
+                        $itemtype::getTable() => 'id'
+                    ]
+                ]
+            ];
+        } else {
+            $join = [];
+            $cat_join = $itemtype;
+        }
 
         $items_subquery = new QuerySubQuery(
             [
                 'SELECT' => ['COUNT DISTINCT' => $itemtype::getTableField('id') . ' as cpt'],
                 'FROM'   => $itemtype::getTable(),
+                'LEFT JOIN' => $join,
                 'WHERE'  => [
-                    $itemtype::getTableField($cat_fk) => new QueryExpression(
+                    $cat_join::getTableField($cat_fk) => new QueryExpression(
                         $DB->quoteName($cat_itemtype::getTableField('id'))
                     ),
                     $itemtype::getTableField('id') => $ids,
@@ -238,24 +258,29 @@ JAVASCRIPT;
         }
 
         // Without category
+        $join[$cat_table] = [
+            'ON' => [
+                $cat_join::getTable() => $cat_itemtype::getForeignKeyField(),
+                $cat_table => 'id'
+            ]
+        ];
         $no_cat_count = $DB->request(
             [
                 'SELECT' => ['COUNT DISTINCT' => $itemtype::getTableField('id') . ' as cpt'],
                 'FROM'   => $itemtype::getTable(),
+                'LEFT JOIN' => $join,
                 'WHERE'  => [
-                    $itemtype::getTableField($cat_fk) => 0,
+                    $cat_itemtype::getTableField('id') => null,
                     $itemtype::getTableField('id') => $ids,
                 ]
             ]
         )->current();
-        if ($no_cat_count['cpt'] > 0) {
-            $categories[] = [
-                'id'          => -1,
-                'name'        => __('Without Category'),
-                'items_count' => $no_cat_count['cpt'],
-                $cat_fk       => 0,
-            ];
-        }
+        $categories[] = [
+            'id'          => -1,
+            'name'        => __('Without Category'),
+            'items_count' => $no_cat_count['cpt'],
+            $cat_fk       => 0,
+        ];
 
         // construct flat data
         $nodes   = [];

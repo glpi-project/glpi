@@ -26,8 +26,13 @@ The present file will list all changes made to the project; according to the
 - `Glpi\Features\DCBreadcrumb::getDcBreadcrumbSpecificValueToDisplay()`
 - `Glpi\Features\DCBreadcrumb::isEnclosurePart()`
 - `Glpi\Features\DCBreadcrumb::isRackPart()`
+- `ajax/knowbase.php` script usage.
 - `Glpi\Event::showList()`
 - `Html::displayAjaxMessageAfterRedirect()`
+- `Knowbase::getTreeCategoryList()`
+- `Knowbase::showBrowseView()`
+- `Knowbase::showManageView()`
+- `KnowbaseItem::showManageForm()`
 - `Toolbox::seems_utf8()`
 
 #### Removed

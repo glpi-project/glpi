@@ -423,4 +423,45 @@ class KnowbaseItem_Item extends CommonDBRelation
     {
         return KnowbaseItem::getIcon();
     }
+
+    public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
+    {
+
+        if (!is_array($values)) {
+            $values = [$field => $values];
+        }
+        $options['display'] = false;
+        switch ($field) {
+            case 'items_id':
+                if (isset($values['itemtype']) && !empty($values['itemtype'])) {
+                    $options['name']  = $name;
+                    $options['value'] = $values[$field];
+                    return Dropdown::show($values['itemtype'], $options);
+                }
+                break;
+        }
+        return parent::getSpecificValueToSelect($field, $name, $values, $options);
+    }
+
+    public static function getSpecificValueToDisplay($field, $values, array $options = [])
+    {
+
+        if (!is_array($values)) {
+            $values = [$field => $values];
+        }
+
+        switch ($field) {
+            case 'items_id':
+                if (isset($values['itemtype'])) {
+                    if ($values[$field] > 0) {
+                        $item = new $values['itemtype']();
+                        $item->getFromDB($values[$field]);
+                        return "<a href='" . $item->getLinkURL() . "'>" . $item->fields['name'] . "</a>";
+                    }
+                }
+                return ' ';
+            break;
+        }
+        return parent::getSpecificValueToDisplay($field, $values, $options);
+    }
 }

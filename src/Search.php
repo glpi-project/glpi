@@ -414,6 +414,10 @@ class Search
         $p['list_limit']          = $_SESSION['glpilist_limit'];
         $p['massiveactionparams'] = [];
 
+        if ($itemtype == KnowbaseItem::class) {
+            $params = KnowbaseItem::getAdditionalSearchCriteria($params);
+        }
+
         foreach ($params as $key => $val) {
             switch ($key) {
                 case 'order':
@@ -539,6 +543,9 @@ class Search
                             } else if ($criterion['field'] == 'view') {
                                 $data['search']['view_search'] = true;
                             }
+                            if (isset($criterion['virtual']) && $criterion['virtual']) {
+                                $data['virtual'][$criterion['field']] = $criterion['field'];
+                            }
                         }
 
                         if (
@@ -576,8 +583,8 @@ class Search
                 $tmpview[] = $val;
             }
         }
-        $data['toview']    = $tmpview;
-        $data['tocompute'] = $data['toview'];
+        $data['tocompute'] = $tmpview;
+        $data['toview'] = array_diff($data['tocompute'], $data['virtual'] ?? []);
 
        // Force item to display
         if ($forcetoview) {
@@ -640,7 +647,7 @@ class Search
 
        //// 1 - SELECT
        // request currentuser for SQL supervision, not displayed
-        $SELECT = "SELECT DISTINCT `$itemtable`.`id` AS id, '" . Toolbox::addslashes_deep($_SESSION['glpiname']) . "' AS currentuser,
+        $SELECT = "SELECT DISTINCT `$itemtable`.`id` AS id, '" . Toolbox::addslashes_deep($_SESSION['glpiname'] ?? '') . "' AS currentuser,
                         " . self::addDefaultSelect($data['itemtype']);
 
        // Add select for all toview item
@@ -822,7 +829,7 @@ class Search
             $count = "count(DISTINCT `$itemtable`.`id`)";
            // request currentuser for SQL supervision, not displayed
             $query_num = "SELECT $count,
-                              '" . Toolbox::addslashes_deep($_SESSION['glpiname']) . "' AS currentuser
+                              '" . Toolbox::addslashes_deep($_SESSION['glpiname'] ?? '') . "' AS currentuser
                        FROM `$itemtable`" .
                        $COMMONLEFTJOIN;
 
@@ -1724,6 +1731,7 @@ class Search
             'may_be_deleted'      => $item instanceof CommonDBTM && $item->maybeDeleted(),
             'may_be_located'      => $item instanceof CommonDBTM && $item->maybeLocated(),
             'may_be_browsed'      => $item !== null && Toolbox::hasTrait($item, \Glpi\Features\TreeBrowse::class),
+            'may_be_unpublished'  => $itemtype == 'KnowbaseItem' && $item->canUpdate(),
         ]);
 
         // Add items in item list
@@ -2432,6 +2440,7 @@ class Search
         $p['addhidden']    = [];
         $p['actionname']   = 'search';
         $p['actionvalue']  = _sx('button', 'Search');
+        $p['unpublished']  = 0;
 
         foreach ($params as $key => $val) {
             $p[$key] = $val;
@@ -2727,6 +2736,10 @@ JAVASCRIPT;
                 echo Html::hidden('browse', [
                     'value' => $p['browse'],
                     'id'    => 'browse'
+                ]);
+                echo Html::hidden('unpublished', [
+                    'value' => $p['unpublished'],
+                    'id'    => 'unpublished'
                 ]);
             }
             echo "<div class='col-auto'>";
@@ -7372,7 +7385,8 @@ HTML;
         $default_values["sort"]        = 1;
         $default_values["is_deleted"]  = 0;
         $default_values["as_map"]      = 0;
-        $default_values["browse"]      = 0;
+        $default_values["browse"]      = $itemtype::$browse_default ?? 0;
+        $default_values["unpublished"] = 0;
 
         if (isset($params['start'])) {
             $params['start'] = (int)$params['start'];
@@ -7495,7 +7509,7 @@ HTML;
             if (!isset($params[$key])) {
                 if (
                     $usesession
-                    && ($key == 'is_deleted' || $key == 'as_map' || $key == 'browse' || !isset($saved_params['criteria'])) // retrieve session only if not a new request
+                    && ($key == 'is_deleted' || $key == 'as_map' || $key == 'browse' || $key == 'unpublished' || !isset($saved_params['criteria'])) // retrieve session only if not a new request
                     && isset($_SESSION['glpisearch'][$itemtype][$key])
                 ) {
                     $params[$key] = $_SESSION['glpisearch'][$itemtype][$key];
