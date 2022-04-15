@@ -2577,6 +2577,7 @@ abstract class CommonITILObject extends CommonDBTM
 
     public function post_addItem()
     {
+
        // Handle "_tasktemplates_id" special input
         $this->handleTaskTemplateInput();
 
