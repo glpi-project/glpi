@@ -39,5 +39,4 @@ use Glpi\Tests\CommonITILValidation;
 
 class ChangeValidation extends CommonITILValidation
 {
-
 }

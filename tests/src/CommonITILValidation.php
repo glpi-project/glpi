@@ -39,7 +39,6 @@ use DbTestCase;
 
 abstract class CommonITILValidation extends DbTestCase
 {
-
     protected function getTestedClass()
     {
         $test_class = static::class;
@@ -493,7 +492,6 @@ abstract class CommonITILValidation extends DbTestCase
                     $this->variable($v)->isEqualTo($expected[$k]);
                 }
             }
-
         } else {
             $this->boolean($validation->prepareInputForUpdate($input))->isFalse();
         }
