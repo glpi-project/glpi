@@ -44,7 +44,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class SearchCommand extends AbstractCommand
+class SearchCommand extends AbstractMarketplaceCommand
 {
     protected function configure()
     {
@@ -127,5 +127,10 @@ class SearchCommand extends AbstractCommand
         $table->render();
 
         return 0; // Success
+    }
+
+    protected function getPluginChoiceQuestion()
+    {
+        return '';
     }
 }
