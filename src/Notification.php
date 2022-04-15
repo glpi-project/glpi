@@ -132,6 +132,8 @@ class Notification extends CommonDBTM
     const PLANNING_EVENT_GUESTS               = 38;
    //Notification to the mentionned user
     const MENTIONNED_USER                     = 39;
+    //Notification to the ticket's validation target (Who was asked to approve)
+    const VALIDATION_TARGET                   = 40;
 
    // From CommonDBTM
     public $dohistory = true;

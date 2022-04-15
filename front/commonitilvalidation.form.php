@@ -62,14 +62,26 @@ $itemtype = $validation->getItilObjectItemType();
 $fk       = getForeignKeyFieldForItemType($itemtype);
 
 if (isset($_POST["add"])) {
+    if (isset($_POST['users_id_validate'])) {
+        Toolbox::deprecated('Usage of "users_id_validate" parameter is deprecated in "front/commonitilvalidation.form.php". Use "items_id_target" instead.');
+        $_POST['items_id_target'] = $_POST['users_id_validate'];
+        $_POST['itemtype_target'] = User::class;
+    }
+
     $validation->check(-1, CREATE, $_POST);
-    if (
-        isset($_POST['users_id_validate'])
-        && (count($_POST['users_id_validate']) > 0)
-    ) {
-        $users = $_POST['users_id_validate'];
-        foreach ($users as $user) {
-            $_POST['users_id_validate'] = $user;
+
+    if (!isset($_POST['items_id_target'])) {
+        Html::back();
+        return;
+    }
+    if (!is_array($_POST['items_id_target'])) {
+        $_POST['items_id_target'] = [$_POST['items_id_target']];
+    }
+
+    if (count($_POST['items_id_target']) > 0) {
+        $targets = $_POST['items_id_target'];
+        foreach ($targets as $target) {
+            $_POST['items_id_target'] = $target;
             $validation->add($_POST);
             Event::log(
                 $validation->getField($fk),

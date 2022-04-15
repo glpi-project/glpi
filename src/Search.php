@@ -4372,8 +4372,10 @@ JAVASCRIPT;
                             ]
                         )
                     ) {
-                        $condition .= " OR `glpi_ticketvalidations`.`users_id_validate`
-                                          = '" . Session::getLoginUserID() . "'";
+                        $condition .= " OR (`glpi_ticketvalidations`.`itemtype_target` = 'User' AND `glpi_ticketvalidations`.`items_id_target` = '" . Session::getLoginUserID() . "')";
+                        if (count($_SESSION['glpigroups'])) {
+                            $condition .= " OR (`glpi_ticketvalidations`.`itemtype_target` = 'Group' AND `glpi_ticketvalidations`.`items_id_target` IN (" . implode(",", $_SESSION['glpigroups']) . "))";
+                        }
                     }
                     $condition .= ") ";
                 }

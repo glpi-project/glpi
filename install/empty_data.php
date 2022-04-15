@@ -3333,7 +3333,7 @@ $empty_data_builder = new class
                 'notifications_id' => '19',
             ], [
                 'id' => '15',
-                'items_id' => '14',
+                'items_id' => '40',
                 'type' => '1',
                 'notifications_id' => '12',
             ], [
@@ -3618,7 +3618,7 @@ $empty_data_builder = new class
                 'notifications_id' => '36',
             ], [
                 'id' => '73',
-                'items_id' => '14',
+                'items_id' => '40',
                 'type' => '1',
                 'notifications_id' => '37',
             ], [

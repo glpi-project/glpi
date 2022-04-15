@@ -1591,7 +1591,7 @@ class Problem extends CommonITILObject
             'itilcategories_id'          => 0,
             'actiontime'                 => 0,
             '_add_validation'            => 0,
-            'users_id_validate'          => [],
+            '_validation_targets'        => [],
             '_tasktemplates_id'          => [],
             'items_id'                   => 0,
             '_actors'                     => [],

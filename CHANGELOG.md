@@ -8,10 +8,12 @@ The present file will list all changes made to the project; according to the
 ### Added
 - Configurable toast notification location
 - `Link ITIL Object` and `Unlink ITIL Object` massive actions for Tickets, Changes, and Problems.
+- Group approval requests (any user from group can approve).
 
 ### Changed
 - ITIL Objects can now be linked to any other ITIL Objects similar to the previous Ticket/Ticket links.
 - Logs are now shown using the Search Engine
+- The approval option previously named `Group` is now called `Group user(s)` to better reflect that it shows a list of users from a specific group rather than allow sending an approval for a group.
 
 ### Deprecated
 
@@ -24,14 +26,27 @@ The present file will list all changes made to the project; according to the
 #### Added
 
 #### Changes
+- `users_id_validate` field in `CommonITILValidation` will now have a `0` value when approval target is a group, until a group member answer to the approval request.
+  Approval targets (who the approval is for) is now indicated by `itemtype_target` and `items_id_target` fields.
+- Notifications with `Approver` recipient have had this recipient replaced with the new `Approval target` recipient to maintain previous behavior as much as possible.
+  The previous recipient option still exists if needed. This replacement will only happen once during the upgrade.
 
 #### Deprecated
 - Usage of `GLPI_USE_CSRF_CHECK` constant.
+- Usage of `ajax/dropdownMassiveActionAddValidator.php` and `ajax/dropdownValidator.php` without `validation_class` parameter.
+- Usage of `name` and `users_id_validate` parameter in `ajax/dropdownValidator.php`.
+- Usage of `users_id_validate` parameter in `front/commonitilvalidation.form.php`.
 - `ajax/knowbase.php` script usage.
 - `front/change_problem.form.php` script usage.
 - `front/change_ticket.form.php` script usage.
 - `front/problem_ticket.form.php` script usage.
 - `front/ticket_ticket.form.php` script usage.
+- Usage of `users_id_validate` input in `CommonITILObject`.
+- Defining "users_id_validate" field without defining "itemtype_target"/"items_id_target" in "CommonITILValidation".
+- Usage of `name` and `users_id_validate` options in `CommonITILValidation::dropdownValidator()`.
+- `CommonITILObject::isValidator()`
+- `CommonITILValidation::alreadyExists()`
+- `CommonITILValidation::getTicketStatusNumber()`
 - `Glpi\Event::showList()`
 - `Glpi\Features\DCBreadcrumb::getDcBreadcrumb()`
 - `Glpi\Features\DCBreadcrumb::getDcBreadcrumbSpecificValueToDisplay()`

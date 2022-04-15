@@ -341,7 +341,7 @@ class Rule extends DbTestCase
             [sprintf(
                 __('%1$s - %2$s'),
                 __('Send an approval request'),
-                \Group::getTypeName(1)
+                __('Group users')
             )           , 'groups_id_validate'
             ],
             [sprintf(

@@ -46,50 +46,96 @@ Html::header_nocache();
 /** @global array $CFG_GLPI */
 
 if (isset($_POST["validatortype"])) {
-    switch ($_POST["validatortype"]) {
+    if (!array_key_exists('validation_class', $_POST)) {
+        Toolbox::deprecated('Usage of "ajax/dropdownValidator.php" without "validation_class" parameter is deprecated.');
+        $validation_class   = TicketValidation::class;
+    } else {
+        $validation_class   = $_POST['validation_class'];
+    }
+    if (array_key_exists('name', $_POST)) {
+        Toolbox::deprecated('Usage of "name" parameter is deprecated in "ajax/dropdownValidator.php". Use "prefix" instead.');
+        $itemtype_name      = 'itemtype_validate';
+        $items_id_name      = !empty($_POST['name']) ? $_POST['name'] . '[]' : 'users_id_validate[]';
+        $groups_id_name     = 'groups_id';
+    } elseif (isset($_POST['prefix']) && !empty($_POST['prefix'])) {
+        $itemtype_name      = $_POST['prefix'] . '[itemtype_target]';
+        $items_id_name      = $_POST['prefix'] . '[items_id_target]';
+        $groups_id_name     = $_POST['prefix'] . '[groups_id]';
+    } else {
+        $itemtype_name      = 'itemtype_target';
+        $items_id_name      = 'items_id_target';
+        $groups_id_name     = 'groups_id';
+    }
+
+    if (array_key_exists('users_id_validate', $_POST)) {
+        Toolbox::deprecated('Usage of "users_id_validate" parameter is deprecated in "ajax/dropdownValidator.php". Use "items_id_target" instead.');
+        if (isset($_POST['users_id_validate']['groups_id'])) {
+            $_POST['groups_id'] = $_POST['users_id_validate']['groups_id'];
+        } else {
+            $_POST['itemtype_target'] = User::class;
+            $_POST['items_id_target'] = $_POST["validatortype"] !== 'list_users'
+                ? ($_POST['users_id_validate'][0] ?? 0)
+                : (is_array($_POST['users_id_validate']) ? $_POST['users_id_validate'] : []);
+        }
+    }
+
+    switch (strtolower($_POST['validatortype'])) {
         case 'user':
-        case 'User':
-            if (isset($_POST['users_id_validate']['groups_id'])) {
-                $_POST['users_id_validate'] = [];
-            }
-            $value = ($_POST['users_id_validate'][0] ?? 0);
             User::dropdown([
-                'name'   => !empty($_POST['name']) ? $_POST['name'] . '[]' : 'users_id_validate[]',
+                'name'   => $items_id_name,
                 'entity' => $_POST['entity'],
-                'value'  => $value,
+                'value'  => $_POST['items_id_target'],
                 'right'  => $_POST['right'],
                 'width'  => '100%',
             ]);
+            echo Html::hidden($itemtype_name, ['value' => 'User']);
             break;
 
         case 'group':
-        case 'Group':
-            $name = !empty($_POST['name']) ? $_POST['name'] . '[groups_id]' : 'groups_id';
-            $value = ($_POST['users_id_validate']['groups_id'] ?? $_POST['groups_id']);
+            Group::dropdown([
+                'name'   => $items_id_name,
+                'entity' => $_POST['entity'],
+                'value'  => $_POST['items_id_target'],
+                'right'  => $_POST['right'],
+                'width'  => '100%',
+            ]);
+            echo Html::hidden($itemtype_name, ['value' => 'Group']);
+            break;
+
+        case 'group_user':
+            $value = $_POST['groups_id'] ?? 0;
 
             $rand = Group::dropdown([
-                'name'   => $name,
+                'name'   => $groups_id_name,
                 'value'  => $value,
                 'entity' => $_POST["entity"],
                 'width'  => '100%',
             ]);
+            echo Html::hidden($itemtype_name, ['value' => 'User']);
 
-            $param                        = ['validatortype' => 'list_users'];
-            $param['name']                = !empty($_POST['name']) ? $_POST['name'] : '';
-            $param['users_id_validate']   = $_POST['users_id_validate'] ?? '';
-            $param['right']               = $_POST['right'];
-            $param['entity']              = $_POST["entity"];
-            $param['groups_id']           = '__VALUE__';
+            $param = [
+                'prefix'        => $_POST['prefix'],
+                'validatortype' => 'list_users',
+                'right'         => $_POST['right'],
+                'entity'        => $_POST['entity'],
+                'groups_id'     => '__VALUE__',
+                'items_id'      => $_POST['items_id_target'],
+            ];
+            if (array_key_exists('name', $_POST)) {
+                // TODO Drop in GLPI 11.0
+                $param['name'] = !empty($_POST['name']) ? $_POST['name'] : '';
+            }
+            if (array_key_exists('validation_class', $_POST)) {
+                $param['validation_class'] = $_POST['validation_class'];
+            }
             Ajax::updateItemOnSelectEvent(
-                "dropdown_$name$rand",
+                "dropdown_{$groups_id_name}{$rand}",
                 "show_list_users",
                 $CFG_GLPI["root_doc"] . "/ajax/dropdownValidator.php",
                 $param
             );
             if ($value) {
-                $param['validatortype'] = 'list_users';
                 $param['groups_id']     = $value;
-                unset($param['users_id_validate']['groups_id']);
                 Ajax::updateItem(
                     'show_list_users',
                     $CFG_GLPI["root_doc"] . "/ajax/dropdownValidator.php",
@@ -100,19 +146,17 @@ if (isset($_POST["validatortype"])) {
             break;
 
         case 'list_users':
-            if (isset($_POST['users_id_validate']['groups_id'])) {
-                $_POST['users_id_validate'] = [];
-            }
-            $opt             = ['groups_id' => $_POST["groups_id"],
+            $opt             = [
+                'groups_id' => $_POST["groups_id"],
                 'right'     => $_POST['right'],
                 'entity'    => $_POST["entity"]
             ];
-            $data_users      = TicketValidation::getGroupUserHaveRights($opt);
+            $data_users      = $validation_class::getGroupUserHaveRights($opt);
             $users           = [];
             $param['values'] = [];
             $values          = [];
-            if (isset($_POST['users_id_validate']) && is_array($_POST['users_id_validate'])) {
-                $values = $_POST['users_id_validate'];
+            if (isset($_POST['items_id']) && is_array($_POST['items_id'])) {
+                $values = $_POST['items_id'];
             }
             foreach ($data_users as $data) {
                 $users[$data['id']] = formatUserName(
@@ -126,51 +170,15 @@ if (isset($_POST["validatortype"])) {
                 }
             }
 
-           // Display all users
-            if (
-                isset($_POST['all_users'])
-                && $_POST['all_users']
-            ) {
-                $param['values'] =  array_keys($users);
-            }
             $param['multiple'] = true;
             $param['display'] = true;
             $param['size']    = count($users);
 
             $rand  = Dropdown::showFromArray(
-                !empty($_POST['name']) ? $_POST['name'] : 'users_id_validate',
+                $items_id_name,
                 $users,
                 $param
             );
-
-           // Display all/none buttons to select all or no users in group
-            if (!empty($_POST['groups_id'])) {
-                $param_button = [
-                    'validatortype'     => 'list_users',
-                    'name'              => !empty($_POST['name']) ? $_POST['name'] : '',
-                    'users_id_validate' => '',
-                    'all_users'         => 1,
-                    'groups_id'         => $_POST['groups_id'],
-                    'entity'            => $_POST['entity'],
-                    'right'             => $_POST['right'],
-                ];
-                Ajax::updateItemOnEvent(
-                    'all_users',
-                    'show_list_users',
-                    $CFG_GLPI["root_doc"] . "/ajax/dropdownValidator.php",
-                    $param_button,
-                    ['click']
-                );
-
-                 $param_button['all_users'] = 0;
-                 Ajax::updateItemOnEvent(
-                     'no_users',
-                     'show_list_users',
-                     $CFG_GLPI["root_doc"] . "/ajax/dropdownValidator.php",
-                     $param_button,
-                     ['click']
-                 );
-            }
             break;
     }
 }

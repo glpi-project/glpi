@@ -735,7 +735,7 @@ abstract class CommonITILObject extends CommonDBTM
             isset($_SESSION["glpigroups"])
             && $this->haveAGroup(CommonITILActor::ASSIGN, $_SESSION['glpigroups'])
          )
-         || $this->isValidator(Session::getLoginUserID())
+         || $this->isUserValidationRequested(Session::getLoginUserID(), true)
         );
     }
 
@@ -764,12 +764,41 @@ abstract class CommonITILObject extends CommonDBTM
     }
 
     /**
+     * Check if user validation is requested.
+     *
+     * @param int $users_id
+     *
+     * @return bool
+     */
+    final protected function isUserValidationRequested(int $users_id, bool $search_in_groups): bool
+    {
+        $validation = $this->getValidationClassInstance();
+        if ($validation === null) {
+            // Object cannot be validated
+            return false;
+        }
+
+        $validation_requests = $validation->find(
+            [
+                getForeignKeyFieldForItemType(static::class) => $this->getID(),
+                $validation->getTargetCriteriaForUser($users_id, $search_in_groups),
+            ]
+        );
+
+        return count($validation_requests) > 0;
+    }
+
+    /**
      * Check if the given users is a validator
      * @param int $users_id
      * @return bool
+     *
+     * @deprecated 10.1.0
      */
     public function isValidator($users_id): bool
     {
+        Toolbox::deprecated('"CommonITILObject::isValidator()" is deprecated. Use "CommonITILObject::isUserValidationRequested()" instead.');
+
         if (!$users_id) {
            // Invalid parameter
             return false;
@@ -1468,6 +1497,7 @@ abstract class CommonITILObject extends CommonDBTM
 
     public function prepareInputForUpdate($input)
     {
+        $input = $this->handleInputDeprecations($input);
 
         if (!$this->checkFieldsConsistency($input)) {
             return false;
@@ -2287,6 +2317,8 @@ abstract class CommonITILObject extends CommonDBTM
     {
         global $CFG_GLPI;
 
+        $input = $this->handleInputDeprecations($input);
+
         if (!$this->checkFieldsConsistency($input)) {
             return false;
         }
@@ -2429,9 +2461,10 @@ abstract class CommonITILObject extends CommonDBTM
 
                             if (
                                 ($key == '_add_validation')
-                                && !empty($input['users_id_validate'])
-                                && isset($input['users_id_validate'][0])
-                                && ($input['users_id_validate'][0] > 0)
+                                && !empty($input['_validation_targets'])
+                                && isset($input['_validation_targets'][0]['itemtype_target'], $input['_validation_targets'][0]['items_id_target'])
+                                && class_exists($input['_validation_targets'][0]['itemtype_target'])
+                                && ($input['_validation_targets'][0]['items_id_target'] > 0)
                             ) {
                                 unset($mandatory_missing['_add_validation']);
                             }
@@ -2484,6 +2517,33 @@ abstract class CommonITILObject extends CommonDBTM
                         }
                     }
                 }
+            }
+        }
+
+        return $input;
+    }
+
+    /**
+     * Handle input deprecations by transfering old supported input keys to new input keys.
+     *
+     * @param array $input
+     *
+     * @return array
+     */
+    private function handleInputDeprecations(array $input): array
+    {
+        if (array_key_exists('users_id_validate', $input)) {
+            Toolbox::deprecated('Usage of "users_id_validate" in input is deprecated. Use "_validation_targets" instead.');
+
+            if (!array_key_exists('_validation_targets', $input)) {
+                $input['_validation_targets'] = [];
+            }
+            $users_ids = !is_array($input['users_id_validate']) ? [$input['users_id_validate']] : $input['users_id_validate'];
+            foreach ($users_ids as $user_id) {
+                $input['_validation_targets'][] = [
+                    'itemtype_target' => User::class,
+                    'items_id_target' => $user_id,
+                ];
             }
         }
 
@@ -7190,25 +7250,35 @@ abstract class CommonITILObject extends CommonDBTM
             $valitation_obj   = new $validation_class();
             $validations = $valitation_obj->find([$foreignKey => $this->getID()]);
             foreach ($validations as $validations_id => $validation) {
+                /** @var CommonITILValidation $valitation_obj */
+                $valitation_obj->getFromDB($validations_id);
                 $canedit = $valitation_obj->can($validations_id, UPDATE);
-                $cananswer = ($validation['users_id_validate'] === Session::getLoginUserID() &&
-                $validation['status'] == CommonITILValidation::WAITING);
-                $user = new User();
-                $user->getFromDB($validation['users_id_validate']);
-
+                $cananswer = $valitation_obj->isCurrentUserValidationTarget(true) && ((int) $validation['status'] === CommonITILValidation::WAITING);
                 $request_key = $valitation_obj::getType() . '_' . $validations_id
                     . (empty($validation['validation_date']) ? '' : '_request'); // If no answer, no suffix to see attached documents on request
+
+                $content = __('Validation request');
+                if (is_a($validation['itemtype_target'], CommonDBTM::class, true)) {
+                    $validation_target = new $validation['itemtype_target']();
+                    if ($validation_target->getFromDB($validation['items_id_target'])) {
+                        $content .= " <i class='ti ti-arrow-right'></i><i class='{$validation_target->getIcon()} text-muted me-1'></i>"
+                            . $validation_target->getlink();
+                    }
+                }
                 $timeline[$request_key] = [
                     'type' => $validation_class,
                     'item' => [
                         'id'        => $validations_id,
                         'date'      => $validation['submission_date'],
-                        'content'   => __('Validation request') . " <i class='ti ti-arrow-right'></i><i class='ti ti-user text-muted me-1'></i>" . $user->getlink(),
+                        'content'   => $content,
                         'comment_submission' => $validation['comment_submission'],
                         'users_id'  => $validation['users_id'],
                         'can_edit'  => $canedit,
                         'can_answer'   => $cananswer,
-                        'users_id_validate'  => $validation['users_id_validate'],
+                        'users_id_validate' => ((int) $validation['users_id_validate'] > 0)
+                            ? $validation['users_id_validate']
+                            // 'users_id_validate' will be set to current user id once answer will be submitted
+                            : ($cananswer ? Session::getLoginUserID() : 0),
                         'timeline_position' => $validation['timeline_position']
                     ],
                     'itiltype' => 'Validation',
@@ -7230,8 +7300,10 @@ abstract class CommonITILObject extends CommonDBTM
                             'comment_validation' => $validation['comment_validation'],
                             'users_id'  => $validation['users_id_validate'],
                             'status'    => "status_" . $validation['status'],
-                            'can_edit'  => $validation['users_id_validate'] === Session::getLoginUserID(),
+                            'can_edit'  => $canedit,
                             'timeline_position' => $validation['timeline_position'],
+                            'itemtype_target' => $validation['itemtype_target'],
+                            'items_id_target' => $validation['items_id_target']
                         ],
                         'class'    => 'validation-answer',
                         'itiltype' => 'Validation',
@@ -8239,7 +8311,10 @@ abstract class CommonITILObject extends CommonDBTM
                                 ['is_manager' => 1]
                             );
                             foreach ($users as $data) {
-                                 $validations_to_send[] = $data['id'];
+                                $validations_to_send[] = [
+                                    'itemtype_target' => User::class,
+                                    'items_id_target' => $data['id'],
+                                ];
                             }
                         }
                         // Add to already set groups
@@ -8249,7 +8324,10 @@ abstract class CommonITILObject extends CommonDBTM
                                 ['is_manager' => 1]
                             );
                             foreach ($users as $data) {
-                                $validations_to_send[] = $data['id'];
+                                $validations_to_send[] = [
+                                    'itemtype_target' => User::class,
+                                    'items_id_target' => $data['id'],
+                                ];
                             }
                         }
                         break;
@@ -8264,7 +8342,10 @@ abstract class CommonITILObject extends CommonDBTM
                                 ['is_manager' => 1]
                             );
                             foreach ($users as $data) {
-                                $validations_to_send[] = $data['id'];
+                                $validations_to_send[] = [
+                                    'itemtype_target' => User::class,
+                                    'items_id_target' => $data['id'],
+                                ];
                             }
                         }
                         foreach ($this->getGroups(CommonITILActor::ASSIGN) as $d) {
@@ -8273,24 +8354,26 @@ abstract class CommonITILObject extends CommonDBTM
                                 ['is_manager' => 1]
                             );
                             foreach ($users as $data) {
-                                 $validations_to_send[] = $data['id'];
+                                $validations_to_send[] = [
+                                    'itemtype_target' => User::class,
+                                    'items_id_target' => $data['id'],
+                                ];
                             }
                         }
                         break;
 
                     case 'requester_responsible':
                         if (isset($input['_users_id_requester'])) {
-                            if (is_array($input['_users_id_requester'])) {
-                                foreach ($input['_users_id_requester'] as $users_id) {
-                                    $user = new User();
-                                    if ($user->getFromDB($users_id)) {
-                                          $validations_to_send[] = $user->getField('users_id_supervisor');
-                                    }
-                                }
-                            } else {
+                            $requesters = is_array($input['_users_id_requester'])
+                                ? $input['_users_id_requester']
+                                : [$input['_users_id_requester']];
+                            foreach ($requesters as $users_id) {
                                 $user = new User();
-                                if ($user->getFromDB($input['_users_id_requester'])) {
-                                     $validations_to_send[] = $user->getField('users_id_supervisor');
+                                if ($user->getFromDB($users_id)) {
+                                    $validations_to_send[] = [
+                                        'itemtype_target' => User::class,
+                                        'items_id_target' => $user->fields['users_id_supervisor'],
+                                    ];
                                 }
                             }
                         }
@@ -8315,34 +8398,44 @@ abstract class CommonITILObject extends CommonDBTM
                                 $data_users = $validation->getGroupUserHaveRights($opt);
 
                                 foreach ($data_users as $user) {
-                                    $validations_to_send[] = $user['id'];
+                                    $validations_to_send[] = [
+                                        'itemtype_target' => User::class,
+                                        'items_id_target' => $user['id'],
+                                    ];
                                 }
                             }
                         } else {
-                            $validations_to_send[] = $value;
+                            $validations_to_send[] = [
+                                'itemtype_target' => User::class,
+                                'items_id_target' => $value,
+                            ];
                         }
                 }
             }
 
             // Validation user added on ticket form
-            if (isset($input['users_id_validate'])) {
-                if (array_key_exists('groups_id', $input['users_id_validate'])) {
-                    foreach ($input['users_id_validate'] as $key => $validation_to_add) {
-                        if (is_numeric($key)) {
-                            $validations_to_send[] = $validation_to_add;
-                        }
+            if (array_key_exists('_validation_targets', $input)) {
+                foreach ($input['_validation_targets'] as $validation_target) {
+                    if (
+                        !array_key_exists('itemtype_target', $validation_target)
+                        || !array_key_exists('items_id_target', $validation_target)
+                    ) {
+                        continue; // User may have not selected both fields
                     }
-                } else {
-                    foreach ($input['users_id_validate'] as $key => $validation_to_add) {
-                        if (is_numeric($key)) {
-                             $validations_to_send[] = $validation_to_add;
-                        }
+                    if (!is_array($validation_target['items_id_target'])) {
+                        $validation_target['items_id_target'] = [$validation_target['items_id_target']];
+                    }
+                    foreach ($validation_target['items_id_target'] as $items_id_target) {
+                        $validations_to_send[] = [
+                            'itemtype_target' => $validation_target['itemtype_target'],
+                            'items_id_target' => $items_id_target,
+                        ];
                     }
                 }
             }
 
             // Keep only one
-            $validations_to_send = array_unique($validations_to_send);
+            $validations_to_send = array_unique($validations_to_send, SORT_REGULAR);
 
             if (count($validations_to_send)) {
                 $values            = [];
@@ -8368,13 +8461,18 @@ abstract class CommonITILObject extends CommonDBTM
                     || $validation->can(-1, CREATE, $values)
                 ) { // cron or allowed user
                     $add_done = false;
-                    foreach ($validations_to_send as $user) {
+                    foreach ($validations_to_send as $validation_to_send) {
                         // Do not auto add twice same validation
-                        if (!$validation->alreadyExists($values[$self_fk], $user)) {
-                            $values["users_id_validate"] = $user;
-                            if ($validation->add($values)) {
-                                $add_done = true;
-                            }
+                        if (
+                            $validation_to_send['itemtype_target'] === User::class
+                            && $this->isUserValidationRequested($validation_to_send['items_id_target'], false)
+                        ) {
+                            continue;
+                        }
+                        $values['itemtype_target'] = $validation_to_send['itemtype_target'];
+                        $values['items_id_target'] = $validation_to_send['items_id_target'];
+                        if ($validation->add($values)) {
+                            $add_done = true;
                         }
                     }
                     if ($add_done) {
