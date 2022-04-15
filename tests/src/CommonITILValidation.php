@@ -171,8 +171,8 @@ abstract class CommonITILValidation extends DbTestCase
         $itil_class = $this->getITILObjectClass();
         $itil_item = new $itil_class();
         $itil_items_id = $itil_item->add([
-            'name'      => 'testCanValidateUser',
-            'content'   => 'testCanValidateUser',
+            'name'      => __FUNCTION__,
+            'content'   => __FUNCTION__,
         ]);
         $this->integer($itil_items_id)->isGreaterThan(0);
 
@@ -187,7 +187,7 @@ abstract class CommonITILValidation extends DbTestCase
             $itil_class::getForeignKeyField()   => $itil_items_id,
             'itemtype_target'                   => 'User',
             'items_id_target'                   => $_SESSION['glpiID'],
-            'comment_submission'                => 'testCanValidateUser',
+            'comment_submission'                => __FUNCTION__,
         ]);
         $this->integer($validations_id_1)->isGreaterThan(0);
         $this->boolean($validation::canValidate($itil_items_id))->isTrue();
@@ -198,7 +198,7 @@ abstract class CommonITILValidation extends DbTestCase
             $itil_class::getForeignKeyField()   => $itil_items_id,
             'itemtype_target'                   => 'User',
             'items_id_target'                   => $_SESSION['glpiID'] + 1, // Other user. Doesn't need to exist
-            'comment_submission'                => 'testCanValidateUser',
+            'comment_submission'                => __FUNCTION__,
         ]);
         $this->integer($validations_id_2)->isGreaterThan(0);
 
@@ -217,8 +217,8 @@ abstract class CommonITILValidation extends DbTestCase
         $itil_class = $this->getITILObjectClass();
         $itil_item = new $itil_class();
         $itil_items_id = $itil_item->add([
-            'name'      => 'testCanValidateGroup',
-            'content'   => 'testCanValidateGroup',
+            'name'      => __FUNCTION__,
+            'content'   => __FUNCTION__,
         ]);
         $this->integer($itil_items_id)->isGreaterThan(0);
 
@@ -231,7 +231,7 @@ abstract class CommonITILValidation extends DbTestCase
         // Create a test group
         $group = new \Group();
         $groups_id = $group->add([
-            'name' => 'testCanValidateGroup',
+            'name' => __FUNCTION__,
         ]);
         $this->integer($groups_id)->isGreaterThan(0);
 
@@ -247,7 +247,7 @@ abstract class CommonITILValidation extends DbTestCase
             $itil_class::getForeignKeyField()   => $itil_items_id,
             'itemtype_target'                   => 'Group',
             'items_id_target'                   => $groups_id,
-            'comment_submission'                => 'testCanValidateGroup',
+            'comment_submission'                => __FUNCTION__,
         ]);
         $this->integer($validations_id_1)->isGreaterThan(0);
         $this->boolean($validation::canValidate($itil_items_id))->isTrue();
@@ -258,7 +258,7 @@ abstract class CommonITILValidation extends DbTestCase
             $itil_class::getForeignKeyField()   => $itil_items_id,
             'itemtype_target'                   => 'Group',
             'items_id_target'                   => $groups_id + 1, // Other group. Doesn't need to exist
-            'comment_submission'                => 'testCanValidateGroup',
+            'comment_submission'                => __FUNCTION__,
         ]);
         $this->integer($validations_id_2)->isGreaterThan(0);
 
@@ -279,8 +279,8 @@ abstract class CommonITILValidation extends DbTestCase
         $itil_item = new $itil_class();
         $itil_items_id = $itil_item->add([
             'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
-            'name'      => 'testIsCurrentUserValidationTarget',
-            'content'   => 'testIsCurrentUserValidationTarget',
+            'name'      => __FUNCTION__,
+            'content'   => __FUNCTION__,
         ]);
         $this->integer($itil_items_id)->isGreaterThan(0);
 
@@ -290,7 +290,7 @@ abstract class CommonITILValidation extends DbTestCase
             $itil_class::getForeignKeyField()   => $itil_items_id,
             'itemtype_target'                   => 'User',
             'items_id_target'                   => $_SESSION['glpiID'],
-            'comment_submission'                => 'testIsCurrentUserValidationTarget',
+            'comment_submission'                => __FUNCTION__,
         ]);
         $this->integer($validations_id)->isGreaterThan(0);
 
@@ -304,7 +304,7 @@ abstract class CommonITILValidation extends DbTestCase
         $group = new \Group();
         $groups_id = $group->add([
             'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
-            'name' => 'testIsCurrentUserValidationTarget',
+            'name' => __FUNCTION__,
         ]);
         $this->integer($groups_id)->isGreaterThan(0);
         // Add current user to the group
@@ -322,7 +322,7 @@ abstract class CommonITILValidation extends DbTestCase
             $itil_class::getForeignKeyField()   => $itil_items_id,
             'itemtype_target'                   => 'Group',
             'items_id_target'                   => $groups_id,
-            'comment_submission'                => 'testIsCurrentUserValidationTarget',
+            'comment_submission'                => __FUNCTION__,
         ]);
         $this->integer($validations_id)->isGreaterThan(0);
 
@@ -613,21 +613,21 @@ abstract class CommonITILValidation extends DbTestCase
 
         $user = new \User();
         $user->add([
-            'name' => 'testCreateValidation',
-            'password' => 'testCreateValidation',
-            'password2' => 'testCreateValidation',
+            'name' => __FUNCTION__,
+            'password' => __FUNCTION__,
+            'password2' => __FUNCTION__,
         ]);
-        $group = $this->createItem('Group', ['name' => 'testCreateValidation']);
+        $group = $this->createItem('Group', ['name' => __FUNCTION__]);
         $this->createItem('Group_User', ['users_id' => $user->getID(), 'groups_id' => $group->getID()]);
 
-        $this->login('testCreateValidation', 'testCreateValidation');
+        $this->login(__FUNCTION__, __FUNCTION__);
 
         $itil_class = $this->getITILObjectClass();
 
         /** @var \CommonITILObject $itil_item */
         $itil_item = $this->createItem($itil_class, [
-            'name' => 'testGetHistoryNameForItem',
-            'content' => 'testGetHistoryNameForItem',
+            'name' => __FUNCTION__,
+            'content' => __FUNCTION__,
             'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
             'status' => \CommonITILObject::INCOMING,
         ]);
