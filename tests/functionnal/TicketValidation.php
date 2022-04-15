@@ -33,7 +33,6 @@
 
 namespace tests\units;
 
-use DbTestCase;
 use Glpi\Tests\CommonITILValidation;
 
 /* Test for src/TicketValidation.php */
@@ -55,16 +54,17 @@ class TicketValidation extends CommonITILValidation
         $this->integer($gid)->isGreaterThan(0);
 
         $uid1 = getItemByTypeName('User', 'glpi', true);
-        $uid2 = getItemByTypeName('User', 'tech', true);
         $user = new \User();
-        $uid3 = (int)$user->add([
-            'name'   => 'approval'
+        $uid2 = (int)$user->add([
+            'name'      => 'approval',
+            'password'  => 'approval',
+            'password2' => 'approval'
         ]);
-        $this->integer($uid3)->isGreaterThan(0);
+        $this->integer($uid2)->isGreaterThan(0);
         $profile = new \Profile_User();
         $this->integer(
             (int)$profile->add([
-                'users_id'     => $uid3,
+                'users_id'     => $uid2,
                 'profiles_id'  => getItemByTypeName('Profile', 'admin', true),
                 'entities_id'  => 0
             ])
@@ -83,14 +83,6 @@ class TicketValidation extends CommonITILValidation
             (int)$guser->add([
                 'groups_id' => $gid,
                 'users_id'  => $uid2
-            ])
-        )->isGreaterThan(0);
-
-        $guser = new \Group_User();
-        $this->integer(
-            (int)$guser->add([
-                'groups_id' => $gid,
-                'users_id'  => $uid3
             ])
         )->isGreaterThan(0);
 
@@ -180,22 +172,22 @@ class TicketValidation extends CommonITILValidation
         $this->boolean($ticket->getFromDB($tid))->isTrue();
         $this->integer((int)$ticket->getField('global_validation'))->isEqualTo(\CommonITILValidation::WAITING);
 
-        $this->login('glpi', 'glpi');
         $ticket->getFromDB($tid);
 
+        // accept first validation
+        $this->login('glpi', 'glpi');
         $validation = new \TicketValidation();
         $this->boolean(
             $validation->getFromDBByCrit([
                 'tickets_id' => $tid,
                 'itemtype_target' => 'User',
-                'items_id_target' => getItemByTypeName('User', 'glpi', true),
+                'items_id_target' => $uid1,
             ])
         )->isTrue();
 
         $this->boolean(
             $validation->update([
                 'id' => $validation->fields['id'],
-                'tickets_id' => $tid,
                 'status' => \CommonITILValidation::ACCEPTED
             ])
         )->isTrue();
@@ -203,19 +195,19 @@ class TicketValidation extends CommonITILValidation
         $this->boolean($ticket->getFromDB($tid))->isTrue();
         $this->integer((int)$ticket->getField('global_validation'))->isEqualTo(\CommonITILValidation::ACCEPTED);
 
-        //refuse other one
+        // refuse other one
+        $this->login('approval', 'approval');
         $validation = new \TicketValidation();
         $this->boolean(
             $validation->getFromDBByCrit([
                 'tickets_id' => $tickets_id,
                 'itemtype_target' => 'User',
-                'items_id_target' => getItemByTypeName('User', 'glpi', true),
+                'items_id_target' => $uid2,
             ])
         )->isTrue();
 
         $res = $validation->update([
             'id' => $validation->fields['id'],
-            'tickets_id' => $tickets_id,
             'status' => \CommonITILValidation::REFUSED
         ]);
 
@@ -263,43 +255,60 @@ class TicketValidation extends CommonITILValidation
         //require 100% for global status to be changed
         /** Create a ticket, approval requested */
         $ticket = new \Ticket();
-        $tickets_id = $ticket->add($ticket_input = [
+        $tickets_id_2 = $ticket->add($ticket_input = [
             'name' => "test ticket, approval will be added",
             'content' => "test",
             '_groups_id_assign' => $gid,
             'validation_percent' => 100
         ]);
         unset($ticket_input['_groups_id_assign']);
-        $this->checkInput($ticket, $tickets_id, $ticket_input);
+        $this->checkInput($ticket, $tickets_id_2, $ticket_input);
 
         $this->integer(countElementsInTable(
             \TicketValidation::getTable(),
-            ['tickets_id' => $tickets_id]
+            ['tickets_id' => $tickets_id_2]
         ))->isEqualTo(2);
 
         $this->integer((int)$ticket->getField('global_validation'))->isEqualTo(\CommonITILValidation::WAITING);
 
-        /* FIXME: works well from UI, but not from here
+        // accept first validation
         $this->login('glpi', 'glpi');
-        $ticket->getFromDB($tickets_id);
-
         $validation = new \TicketValidation();
         $this->boolean(
-          $validation->getFromDBByCrit([
-             'tickets_id'         => $tickets_id,
-             'users_id_validate'  => getItemByTypeName('User', 'glpi', true)
-          ])
+            $validation->getFromDBByCrit([
+                'tickets_id' => $tickets_id_2,
+                'itemtype_target' => 'User',
+                'items_id_target' => $uid1,
+            ])
         )->isTrue();
 
         $this->boolean(
-          $validation->update([
-             'id'           => $validation->fields['id'],
-             'tickets_id'   => $tickets_id,
-             'status'       => \CommonITILValidation::ACCEPTED
-          ])
+            $validation->update([
+                'id' => $validation->fields['id'],
+                'status' => \CommonITILValidation::ACCEPTED
+            ])
         )->isTrue();
 
+        $this->boolean($ticket->getFromDB($tickets_id_2))->isTrue();
+        $this->integer((int)$ticket->getField('global_validation'))->isEqualTo(\CommonITILValidation::WAITING);
+
+        // accept second one
+        $this->login('approval', 'approval');
+        $validation = new \TicketValidation();
+        $this->boolean(
+            $validation->getFromDBByCrit([
+                'tickets_id' => $tickets_id_2,
+                'itemtype_target' => 'User',
+                'items_id_target' => $uid2,
+            ])
+        )->isTrue();
+
+        $res = $validation->update([
+            'id' => $validation->fields['id'],
+            'status' => \CommonITILValidation::ACCEPTED
+        ]);
+
         $this->boolean($ticket->getFromDB($tid))->isTrue();
-        $this->integer((int)$ticket->getField('global_validation'))->isEqualTo(\CommonITILValidation::WAITING);*/
+        $this->integer((int)$ticket->getField('global_validation'))->isEqualTo(\CommonITILValidation::ACCEPTED);
     }
 }
