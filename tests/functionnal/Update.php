@@ -242,8 +242,7 @@ class Update extends \GLPITestCase
                 // Validate that list is empty when version matches
                 'current_version'     => '10.1.0',
                 'force_latest'        => false,
-                'expected_migrations' => [         
-                    $path . '/update_10.0.x_to_10.1.0.php' => 'update100xto1010',
+                'expected_migrations' => [
                 ],
             ],
             [

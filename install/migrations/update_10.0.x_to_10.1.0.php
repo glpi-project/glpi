@@ -35,8 +35,7 @@
  * Update from 10.0.x to 10.1.0
  *
  * @return bool for success (will die for most error)
- **/
-
+ */
 function update100xto1010()
 {
     global $DB, $migration;
@@ -63,7 +62,6 @@ function update100xto1010()
         $rank = 1;
         foreach ($tab as $newval) {
             $DB->updateOrInsert(
-
                 'glpi_displaypreferences',
                 [
                     'rank'      => $rank++
@@ -83,7 +81,6 @@ function update100xto1010()
                 'itemtype'  => $type,
                 'num'       => $tab
             ]
-
         );
     }
 
