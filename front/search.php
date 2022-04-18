@@ -59,7 +59,7 @@ if (isset($_GET["globalsearch"])) {
             $params["criteria"][$count]["searchtype"]  = 'contains';
             $params["criteria"][$count]["value"]       = $searchtext;
 
-            echo "<div class='my-4 search-container w-100 disable-overflow-y'>";
+            echo "<div class='search-container w-100 disable-overflow-y'>";
             Search::showList($itemtype, $params);
             echo "</div>";
         }
