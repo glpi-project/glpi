@@ -75,7 +75,7 @@ abstract class ITILTemplate extends CommonDropdown
     public function getFromDBWithData($ID, $withtypeandcategory = true)
     {
         if ($this->getFromDB($ID)) {
-            $itiltype = str_replace('Template', '', static::getType());
+            $itiltype = static::getITILObjectClass();
             $itil_object  = new $itiltype();
             $itemstable = $itil_object->getItemsTable();
             $tth_class = $itiltype . 'TemplateHiddenField';
@@ -146,7 +146,7 @@ abstract class ITILTemplate extends CommonDropdown
 
     public static function getTypeName($nb = 0)
     {
-        $itiltype = str_replace('Template', '', static::getType());
+        $itiltype = static::getITILObjectClass();
        //TRANS %1$S is the ITIL type
         return sprintf(
             _n('%1$s template', '%1$s templates', $nb),
@@ -171,7 +171,7 @@ abstract class ITILTemplate extends CommonDropdown
     public function displaySpecificTypeField($ID, $field = [], array $options = [])
     {
         /** @var CommonITILObject $itil_itemtype */
-        $itil_itemtype = str_replace('Template', '', static::getType());
+        $itil_itemtype = static::getITILObjectClass();
         switch ($field['name']) {
             case 'allowed_statuses':
                 $itil_itemtype::dropdownStatus([
@@ -192,7 +192,7 @@ abstract class ITILTemplate extends CommonDropdown
 
         static $allowed_fields = [];
 
-        $itiltype = str_replace('Template', '', static::getType());
+        $itiltype = static::getITILObjectClass();
 
        // For integer value for index
         if ($withtypeandcategory) {
@@ -338,7 +338,7 @@ abstract class ITILTemplate extends CommonDropdown
     public function getAllowedFieldsNames($withtypeandcategory = 0, $with_items_id = 0)
     {
 
-        $itiltype = str_replace('Template', '', static::getType());
+        $itiltype = static::getITILObjectClass();
         $searchOption = Search::getOptions($itiltype);
         $tab          = $this->getAllowedFields($withtypeandcategory, $with_items_id);
         foreach (array_keys($tab) as $ID) {
@@ -392,7 +392,7 @@ abstract class ITILTemplate extends CommonDropdown
     {
         $ong          = [];
         $this->addDefaultFormTab($ong);
-        $itiltype = str_replace('Template', '', static::getType());
+        $itiltype = static::getITILObjectClass();
         $this->addStandardTab($itiltype . 'TemplateMandatoryField', $ong, $options);
         $this->addStandardTab($itiltype . 'TemplatePredefinedField', $ong, $options);
         $this->addStandardTab($itiltype . 'TemplateHiddenField', $ong, $options);
@@ -529,7 +529,7 @@ abstract class ITILTemplate extends CommonDropdown
             return false;
         }
         if ($tt->getFromDBWithData($tt->getID())) {
-            $itiltype = str_replace('Template', '', static::getType());
+            $itiltype = static::getITILObjectClass();
             $itil_object = new $itiltype();
             $itil_object->showForm(0, ['template_preview' => $tt->getID()]);
         }
@@ -628,7 +628,7 @@ abstract class ITILTemplate extends CommonDropdown
 
        // Tables linked to ticket template
         $to_merge = ['predefinedfields', 'mandatoryfields', 'hiddenfields'];
-        $itiltype = str_replace('Template', '', static::getType());
+        $itiltype = static::getITILObjectClass();
 
        // Source fields
         $source = [];
@@ -845,7 +845,7 @@ abstract class ITILTemplate extends CommonDropdown
     public function post_getEmpty()
     {
         /** @var CommonITILObject $itil_itemtype */
-        $itil_itemtype = str_replace('Template', '', static::getType());
+        $itil_itemtype = static::getITILObjectClass();
 
         $this->fields['allowed_statuses'] = array_keys($itil_itemtype::getAllStatusArray());
     }
@@ -858,7 +858,7 @@ abstract class ITILTemplate extends CommonDropdown
     public static function countAffectedItems(int $templates_id): int
     {
         /** @var CommonITILObject $itil_itemtype */
-        $itil_itemtype = str_replace('Template', '', static::getType());
+        $itil_itemtype = static::getITILObjectClass();
 
         $dbu = new DbUtils();
         return $dbu->countElementsInTable(
@@ -889,5 +889,14 @@ abstract class ITILTemplate extends CommonDropdown
         ]);
 
         return true;
+    }
+
+    /**
+     * Get the ITILObject class that is related to the current ITILTemplate class
+     * @return string
+     */
+    public static function getITILObjectClass(): string
+    {
+        return str_replace('Template', '', static::getType());
     }
 }
