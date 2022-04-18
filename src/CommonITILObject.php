@@ -3855,9 +3855,9 @@ abstract class CommonITILObject extends CommonDBTM
             $template_class = static::getTemplateClass();
             $template = new $template_class();
             if ($template->getFromDB($p['use_template_limits'])) {
-                $status_limit = $template->fields['status_limit'];
-                $tab = array_filter($tab, static function ($status) use ($status_limit) {
-                    return in_array($status, $status_limit, false);
+                $allowed_statuses = $template->fields['allowed_statuses'];
+                $tab = array_filter($tab, static function ($status) use ($allowed_statuses) {
+                    return in_array($status, $allowed_statuses, false);
                 }, ARRAY_FILTER_USE_KEY);
             }
         }

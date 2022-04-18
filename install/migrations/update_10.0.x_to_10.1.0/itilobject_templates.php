@@ -60,9 +60,9 @@ $itiltemplate_tables = [
 ];
 
 foreach ($itiltemplate_tables as $table => $all_statuses) {
-    if (!$DB->fieldExists($table, 'status_limit')) {
+    if (!$DB->fieldExists($table, 'allowed_statuses')) {
         $default_value = exportArrayToDB($all_statuses);
-        $migration->addField($table, 'status_limit', 'string', [
+        $migration->addField($table, 'allowed_statuses', 'string', [
             'null'  => false,
             'value' => $default_value
         ]);

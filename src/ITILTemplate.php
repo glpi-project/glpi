@@ -159,7 +159,7 @@ abstract class ITILTemplate extends CommonDropdown
         $fields = parent::getAdditionalFields();
 
         $fields[] = [
-            'name'   => 'status_limit',
+            'name'   => 'allowed_statuses',
             'label'  => _n('Allowed status', 'Allowed statuses', Session::getPluralNumber()),
             'type'   => 'specific',
             'list'   => true
@@ -173,7 +173,7 @@ abstract class ITILTemplate extends CommonDropdown
         /** @var CommonITILObject $itil_itemtype */
         $itil_itemtype = str_replace('Template', '', static::getType());
         switch ($field['name']) {
-            case 'status_limit':
+            case 'allowed_statuses':
                 $itil_itemtype::dropdownStatus([
                     'name'      => $field['name'],
                     'values'    => $this->fields[$field['name']] ?? [],
@@ -815,8 +815,8 @@ abstract class ITILTemplate extends CommonDropdown
     {
         $input = parent::prepareInputForAdd($input);
 
-        if (isset($input['status_limit']) && is_array($input['status_limit'])) {
-            $input['status_limit'] = exportArrayToDB($input['status_limit']);
+        if (isset($input['allowed_statuses']) && is_array($input['allowed_statuses'])) {
+            $input['allowed_statuses'] = exportArrayToDB($input['allowed_statuses']);
         }
 
         return $input;
@@ -826,8 +826,8 @@ abstract class ITILTemplate extends CommonDropdown
     {
         $input = parent::prepareInputForAdd($input);
 
-        if (isset($input['status_limit']) && is_array($input['status_limit'])) {
-            $input['status_limit'] = exportArrayToDB($input['status_limit']);
+        if (isset($input['allowed_statuses']) && is_array($input['allowed_statuses'])) {
+            $input['allowed_statuses'] = exportArrayToDB($input['allowed_statuses']);
         }
 
         return $input;
@@ -837,8 +837,8 @@ abstract class ITILTemplate extends CommonDropdown
     {
         parent::post_getFromDB();
 
-        if (isset($this->fields['status_limit'])) {
-            $this->fields['status_limit'] = importArrayFromDB($this->fields['status_limit']);
+        if (isset($this->fields['allowed_statuses'])) {
+            $this->fields['allowed_statuses'] = importArrayFromDB($this->fields['allowed_statuses']);
         }
     }
 
@@ -847,7 +847,7 @@ abstract class ITILTemplate extends CommonDropdown
         /** @var CommonITILObject $itil_itemtype */
         $itil_itemtype = str_replace('Template', '', static::getType());
 
-        $this->fields['status_limit'] = array_keys($itil_itemtype::getAllStatusArray());
+        $this->fields['allowed_statuses'] = array_keys($itil_itemtype::getAllStatusArray());
     }
 
     /**
