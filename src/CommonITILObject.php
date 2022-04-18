@@ -3856,6 +3856,10 @@ abstract class CommonITILObject extends CommonDBTM
             $template = new $template_class();
             if ($template->getFromDB($p['use_template_limits'])) {
                 $allowed_statuses = $template->fields['allowed_statuses'];
+                // Allow current value if set
+                if (isset($p['value']) && !empty($p['value'])) {
+                    $allowed_statuses[] = $p['value'];
+                }
                 $tab = array_filter($tab, static function ($status) use ($allowed_statuses) {
                     return in_array($status, $allowed_statuses, false);
                 }, ARRAY_FILTER_USE_KEY);
