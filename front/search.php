@@ -42,7 +42,7 @@ if (!$CFG_GLPI['allow_search_global']) {
 if (isset($_GET["globalsearch"])) {
     $searchtext = trim($_GET["globalsearch"]);
 
-    echo "<div class='search_page flex-row flex-wrap'>";
+    echo "<div class='search_page search_page_global flex-row flex-wrap'>";
     foreach ($CFG_GLPI["globalsearch_types"] as $itemtype) {
         if (
             ($item = getItemForItemtype($itemtype))
