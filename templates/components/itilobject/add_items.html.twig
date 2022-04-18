@@ -86,7 +86,7 @@
             return;
          }
          $.ajax({
-            url: CFG_GLPI.root_doc + '/ajax/itemTicket.php',
+            url: CFG_GLPI.root_doc + '/ajax/{{ item_class|lower }}.php',
             dataType: 'html',
             data: {
                'action': action,

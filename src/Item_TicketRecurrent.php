@@ -33,6 +33,38 @@
  * ---------------------------------------------------------------------
  */
 
-include(__DIR__ . '/item_ticket.php');
+/**
+ * Item_TicketRecurrent Class
+ *
+ *  Relation between TicketRecurrents and Items
+ **/
+class Item_TicketRecurrent extends CommonItilObject_Item
+{
+   // From CommonDBRelation
+    public static $itemtype_1          = 'TicketRecurrent';
+    public static $items_id_1          = 'ticketrecurrents_id';
 
-Toolbox::deprecated('Use ajax/item_ticket.php instead.');
+    public static $itemtype_2          = 'itemtype';
+    public static $items_id_2          = 'items_id';
+    public static $checkItem_2_Rights  = self::HAVE_VIEW_RIGHT_ON_ITEM;
+
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Ticket recurrent item', 'Ticket recurrent items', $nb);
+    }
+
+    /**
+     * Print the HTML ajax associated item add
+     *
+     * @param TicketRecurrent $ticketrecurrent   object holding the item
+     * @param array $options   array of possible options:
+     *    - id                  : ID of the object holding the items
+     *    - items_id            : array of elements (itemtype => array(id1, id2, id3, ...))
+     *
+     * @return void
+     */
+    public static function itemAddForm(TicketRecurrent $ticketrecurrent, $options = [])
+    {
+        parent::displayItemAddForm($ticketrecurrent, $options);
+    }
+}

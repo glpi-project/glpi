@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
-include(__DIR__ . '/item_ticket.php');
+include('../inc/includes.php');
 
-Toolbox::deprecated('Use ajax/item_ticket.php instead.');
+$obj      = new TicketRecurrent();
+$item_obj = new Item_TicketRecurrent();
+include(GLPI_ROOT . '/front/commonitilobject_item.form.php');

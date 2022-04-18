@@ -46,6 +46,7 @@ The present file will list all changes made to the project; according to the
 - Usage of `ajax/dropdownMassiveActionAddValidator.php` and `ajax/dropdownValidator.php` without `validation_class` parameter.
 - Usage of `name` and `users_id_validate` parameter in `ajax/dropdownValidator.php`.
 - Usage of `users_id_validate` parameter in `front/commonitilvalidation.form.php`.
+- `ajax/itemTicket.php` script usage.
 - `ajax/knowbase.php` script usage.
 - `front/change_problem.form.php` script usage.
 - `front/change_ticket.form.php` script usage.
@@ -63,6 +64,7 @@ The present file will list all changes made to the project; according to the
 - `Glpi\Features\DCBreadcrumb::isEnclosurePart()`
 - `Glpi\Features\DCBreadcrumb::isRackPart()`
 - `Html::displayAjaxMessageAfterRedirect()`
+- `Item_Ticket::showForTicket()`
 - `HookManager::enableCSRF()`
 - `Knowbase::getTreeCategoryList()`
 - `Knowbase::showBrowseView()`

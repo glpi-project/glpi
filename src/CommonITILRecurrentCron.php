@@ -85,20 +85,40 @@ class CommonITILRecurrentCron extends CommonDBTM
             ]);
 
             foreach ($iterator as $data) {
-                /** @var CommonITILRecurrent */
+                /** @var CommonITILRecurrent $item */
                 $item = new $itemtype();
                 $item->fields = $data;
+                // get items
+                $related_items = $item->getRelatedElements();
 
-                if ($item->createItem()) {
-                    $total++;
+                if ($item->fields['ticket_per_item']) {
+                    foreach ($related_items as $related_itemtype => $related_items_ids) {
+                        foreach ($related_items_ids as $related_item_id) {
+                            if ($item->createItem([$related_itemtype => [$related_item_id]])) {
+                                $total++;
+                            } else {
+                                //TRANS: %s is a name
+                                $task->log(
+                                    sprintf(
+                                        __('Failed to create recurrent item %s'),
+                                        $data['name']
+                                    )
+                                );
+                            }
+                        }
+                    }
                 } else {
-                 //TRANS: %s is a name
-                    $task->log(
-                        sprintf(
-                            __('Failed to create recurrent item %s'),
-                            $data['name']
-                        )
-                    );
+                    if ($item->createItem($related_items)) {
+                        $total++;
+                    } else {
+                        //TRANS: %s is a name
+                        $task->log(
+                            sprintf(
+                                __('Failed to create recurrent item %s'),
+                                $data['name']
+                            )
+                        );
+                    }
                 }
             }
         }

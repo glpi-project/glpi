@@ -33,6 +33,15 @@
  * ---------------------------------------------------------------------
  */
 
-include(__DIR__ . '/item_ticket.php');
+// Direct access to file
+if (strpos($_SERVER['PHP_SELF'], "ticketrecurrentiteminformation.php")) {
+    $AJAX_INCLUDE = 1;
+    include('../inc/includes.php');
+    header("Content-Type: text/html; charset=UTF-8");
+    Html::header_nocache();
+}
 
-Toolbox::deprecated('Use ajax/item_ticket.php instead.');
+Session::checkLoginUser();
+
+$obj = new TicketRecurrent();
+include(GLPI_ROOT . '/ajax/commonitilobjectiteminformation.php');

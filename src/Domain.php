@@ -55,6 +55,7 @@ class Domain extends CommonDBTM
             Domain_Item::class,
             Infocom::class,
             Item_Ticket::class,
+            Item_TicketRecurrent::class,
             Item_Problem::class,
             Change_Item::class,
             Contract_Item::class,

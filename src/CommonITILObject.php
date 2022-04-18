@@ -1294,6 +1294,64 @@ abstract class CommonITILObject extends CommonDBTM
         );
     }
 
+    /**
+     * Get active or solved tickets for an hardware last X days
+     *
+     * @since 0.83
+     *
+     * @param $itemtype  string   Item type
+     * @param $items_id  integer  ID of the Item
+     * @param $days      integer  day number
+     *
+     * @return array
+     **/
+    public function getActiveOrSolvedLastDaysForItem($itemtype, $items_id, $days)
+    {
+        global $DB;
+
+        $result = [];
+
+        $class_l_pl = getPlural(strtolower(static::class));
+
+        $iterator = $DB->request([
+            'FROM'      => $this->getTable(),
+            'LEFT JOIN' => [
+                "glpi_items_${class_l_pl}" => [
+                    'ON' => [
+                        "glpi_items_${class_l_pl}" => "${class_l_pl}_id",
+                        $this->getTable()    => 'id'
+                    ]
+                ]
+            ],
+            'WHERE'     => [
+                'glpi_items_tickets.items_id' => $items_id,
+                'glpi_items_tickets.itemtype' => $itemtype,
+                'OR'                          => [
+                    [
+                        'NOT' => [
+                            $this->getTable() . '.status' => array_merge(
+                                $this->getClosedStatusArray(),
+                                $this->getSolvedStatusArray()
+                            )
+                        ]
+                    ],
+                    [
+                        'NOT' => [$this->getTable() . '.solvedate' => null],
+                        new \QueryExpression(
+                            "ADDDATE(" . $DB->quoteName($this->getTable()) .
+                            "." . $DB->quoteName('solvedate') . ", INTERVAL $days DAY) > NOW()"
+                        )
+                    ]
+                ]
+            ]
+        ]);
+
+        foreach ($iterator as $tick) {
+            $result[$tick['id']] = $tick['name'];
+        }
+
+        return $result;
+    }
 
     public function cleanDBonPurge()
     {
