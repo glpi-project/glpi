@@ -34,15 +34,15 @@
 use Glpi\Application\View\TemplateRenderer;
 
 /**
- * Item_Ticket Class
+ * Item_TicketRecurrent Class
  *
- *  Relation between Tickets and Items
+ *  Relation between TicketRecurrents and Items
  **/
-class Item_Ticket extends CommonItilObject_Item
+class Item_TicketRecurrent extends CommonItilObject_Item
 {
    // From CommonDBRelation
-    public static $itemtype_1          = 'Ticket';
-    public static $items_id_1          = 'tickets_id';
+    public static $itemtype_1          = 'TicketRecurrent';
+    public static $items_id_1          = 'ticketrecurrents_id';
 
     public static $itemtype_2          = 'itemtype';
     public static $items_id_2          = 'items_id';
@@ -50,7 +50,7 @@ class Item_Ticket extends CommonItilObject_Item
 
     public static function getTypeName($nb = 0)
     {
-        return _n('Ticket item', 'Ticket items', $nb);
+        return _n('Ticket recurrent item', 'Ticket recurrent items', $nb);
     }
 
     /**
@@ -63,15 +63,10 @@ class Item_Ticket extends CommonItilObject_Item
     *
     * @return boolean
     **/
-    public static function canAddRelatedItem($ticket, $type = '')
+    public static function canAddRelatedItem($ticketrecurrent, $type = '')
     {
-        return !in_array(
-            $ticket->fields['status'],
-            array_merge(
-                $ticket->getClosedStatusArray(),
-                $ticket->getSolvedStatusArray()
-            )
-        );
+        // no reason to bloc adding item
+        return true;
     }
 
     public function prepareInputForAdd($input)
@@ -79,7 +74,7 @@ class Item_Ticket extends CommonItilObject_Item
 
        // Avoid duplicate entry
         if (
-            countElementsInTable($this->getTable(), ['tickets_id' => $input['tickets_id'],
+            countElementsInTable($this->getTable(), ['ticketrecurrents_id' => $input['ticketrecurrents_id'],
                 'itemtype'   => $input['itemtype'],
                 'items_id'   => $input['items_id']
             ]) > 0
@@ -87,28 +82,28 @@ class Item_Ticket extends CommonItilObject_Item
             return false;
         }
 
-        $ticket = new Ticket();
-        $ticket->getFromDB($input['tickets_id']);
+        $ticketrecurrent = new TicketRecurrent();
+        $ticketrecurrent->getFromDB($input['ticketrecurrents_id']);
 
        // Get item location if location is not already set in ticket
-        if (empty($ticket->fields['locations_id'])) {
+        if (empty($ticketrecurrent->fields['locations_id'])) {
             if (($input["items_id"] > 0) && !empty($input["itemtype"])) {
                 if ($item = getItemForItemtype($input["itemtype"])) {
                     if ($item->getFromDB($input["items_id"])) {
                         if ($item->isField('locations_id')) {
-                             $ticket->fields['_locations_id_of_item'] = $item->fields['locations_id'];
+                             $ticketrecurrent->fields['_locations_id_of_item'] = $item->fields['locations_id'];
 
                              // Process Business Rules
-                             $rules = new RuleTicketCollection($ticket->fields['entities_id']);
+                             $rules = new RuleTicketCollection($ticketrecurrent->fields['entities_id']);
 
-                             $ticket->fields = $rules->processAllRules(
-                                 $ticket->fields,
-                                 $ticket->fields,
+                             $ticketrecurrent->fields = $rules->processAllRules(
+                                 Toolbox::stripslashes_deep($ticketrecurrent->fields),
+                                 Toolbox::stripslashes_deep($ticketrecurrent->fields),
                                  ['recursive' => true]
                              );
 
-                               unset($ticket->fields['_locations_id_of_item']);
-                               $ticket->updateInDB(['locations_id']);
+                               unset($ticketrecurrent->fields['_locations_id_of_item']);
+                               $ticketrecurrent->updateInDB(['locations_id']);
                         }
                     }
                 }
@@ -121,59 +116,59 @@ class Item_Ticket extends CommonItilObject_Item
     /**
     * Print the HTML ajax associated item add
     *
-    * @param $ticket Ticket object
+    * @param $ticketrecurrent ticketrecurrent object
     * @param $options   array of possible options:
-    *    - id                  : ID of the ticket
+    *    - id                  : ID of the ticketrecurrent
     *    - _users_id_requester : ID of the requester user
     *    - items_id            : array of elements (itemtype => array(id1, id2, id3, ...))
     *
     * @return void
    **/
-    public static function itemAddForm($ticket, $options = [])
+    public static function itemAddForm($ticketrecurrent, $options = [])
     {
         if ($options['id'] ?? 0 > 0) {
             // Get requester
-            $class        = new $ticket->userlinkclass();
-            $tickets_user = $class->getActors($options['id']);
+            $class        = new $ticketrecurrent->userlinkclass();
+            $ticketrecurrents_user = $class->getActors($options['id']);
             if (
-                isset($tickets_user[CommonITILActor::REQUESTER])
-                && (count($tickets_user[CommonITILActor::REQUESTER]) == 1)
+                isset($ticketrecurrents_user[CommonITILActor::REQUESTER])
+                && (count($ticketrecurrents_user[CommonITILActor::REQUESTER]) == 1)
             ) {
-                foreach ($tickets_user[CommonITILActor::REQUESTER] as $user_id_single) {
+                foreach ($ticketrecurrents_user[CommonITILActor::REQUESTER] as $user_id_single) {
                     $options['_users_id_requester'] = $user_id_single['users_id'];
                 }
             }
         }
-        parent::itemAddForm($ticket, $options);
+        parent::itemAddForm($ticketrecurrent, $options);
     }
 
     /**
-     * Print the HTML array for Items linked to a ticket
+     * Print the HTML array for Items linked to a ticketrecurrent
      *
-     * @param $ticket Ticket object
+     * @param $ticketrecurrent ticketrecurrent object
      *
      * @return void
      **/
-    public static function showForTicket(Ticket $ticket)
+    public static function showForTicket(TicketRecurrent $ticketrecurrent)
     {
         Toolbox::deprecated();
-        static::showForObject($ticket);
+        static::showForObject($ticketrecurrent);
     }
 
-    public static function showForObject($ticket, $options = [])
+    public static function showForObject($ticketrecurrent, $options = [])
     {
         // Get requester
-        $class        = new $ticket->userlinkclass();
-        $tickets_user = $class->getActors($ticket->fields['id']);
+        $class        = new $ticketrecurrent->userlinkclass();
+        $ticketrecurrents_user = $class->getActors($ticketrecurrent->fields['id']);
         $options['_users_id_requester'] = 0;
         if (
-            isset($tickets_user[CommonITILActor::REQUESTER])
-            && (count($tickets_user[CommonITILActor::REQUESTER]) == 1)
+            isset($ticketrecurrents_user[CommonITILActor::REQUESTER])
+            && (count($ticketrecurrents_user[CommonITILActor::REQUESTER]) == 1)
         ) {
-            foreach ($tickets_user[CommonITILActor::REQUESTER] as $user_id_single) {
+            foreach ($ticketrecurrents_user[CommonITILActor::REQUESTER] as $user_id_single) {
                 $options['_users_id_requester'] = $user_id_single['users_id'];
             }
         }
-        return parent::showForObject($ticket, $options);
+        return parent::showForObject($ticketrecurrent, $options);
     }
 }

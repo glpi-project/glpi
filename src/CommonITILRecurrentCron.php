@@ -86,17 +86,39 @@ class CommonITILRecurrentCron extends CommonDBTM
                 /** @var CommonITILRecurrent */
                 $item = new $itemtype();
                 $item->fields = $data;
+                // get items
+                $items_item = $item->getRelatedElements();
 
-                if ($item->createItem()) {
-                    $total++;
+                if ($item->fields['ticket_per_item']) {
+                    foreach ($items_item as $item_item_type => $ids) {
+                        foreach ($ids as $id) {
+                            $item_item[$item_item_type][] = $id;
+                            if ($item->createItem($item_item)) {
+                                $total++;
+                            } else {
+                            //TRANS: %s is a name
+                                $task->log(
+                                    sprintf(
+                                        __('Failed to create recurrent item %s'),
+                                        $data['name']
+                                    )
+                                );
+                            }
+                        }
+                    }
+                    // get
                 } else {
-                 //TRANS: %s is a name
-                    $task->log(
-                        sprintf(
-                            __('Failed to create recurrent item %s'),
-                            $data['name']
-                        )
-                    );
+                    if ($item->createItem($items_item)) {
+                        $total++;
+                    } else {
+                    //TRANS: %s is a name
+                        $task->log(
+                            sprintf(
+                                __('Failed to create recurrent item %s'),
+                                $data['name']
+                            )
+                        );
+                    }
                 }
             }
         }

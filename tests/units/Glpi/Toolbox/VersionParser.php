@@ -146,6 +146,13 @@ class VersionParser extends \GLPITestCase
                 'stable'              => true,
                 'dev'                 => false,
             ],
+            [
+                'version'             => '10.1.0-dev',
+                'keep_stability_flag' => false,
+                'normalized'          => '10.1.0',
+                'stable'              => false,
+                'dev'                 => true,
+            ],
         ];
     }
 

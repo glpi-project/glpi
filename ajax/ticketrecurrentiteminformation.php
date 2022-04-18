@@ -32,7 +32,7 @@
  */
 
 // Direct access to file
-if (strpos($_SERVER['PHP_SELF'], "ticketiteminformation.php")) {
+if (strpos($_SERVER['PHP_SELF'], "ticketrecurrentiteminformation.php")) {
     $AJAX_INCLUDE = 1;
     include('../inc/includes.php');
     header("Content-Type: text/html; charset=UTF-8");
@@ -41,6 +41,6 @@ if (strpos($_SERVER['PHP_SELF'], "ticketiteminformation.php")) {
 
 Session::checkLoginUser();
 
-$obj_class = 'Ticket';
-$item_obj_class = 'Item_Ticket';
+$obj_class = 'TicketRecurrent';
+$item_obj_class = 'Item_TicketRecurrent';
 include('./commonitilobjectiteminformation.php');

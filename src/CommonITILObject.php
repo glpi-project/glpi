@@ -1203,6 +1203,64 @@ abstract class CommonITILObject extends CommonDBTM
         );
     }
 
+    /**
+     * Get active or solved tickets for an hardware last X days
+     *
+     * @since 0.83
+     *
+     * @param $itemtype  string   Item type
+     * @param $items_id  integer  ID of the Item
+     * @param $days      integer  day number
+     *
+     * @return array
+     **/
+    public function getActiveOrSolvedLastDaysForItem($itemtype, $items_id, $days)
+    {
+        global $DB;
+
+        $result = [];
+
+        $class_l_pl = getPlural(strtolower(static::class));
+
+        $iterator = $DB->request([
+            'FROM'      => $this->getTable(),
+            'LEFT JOIN' => [
+                "glpi_items_${class_l_pl}" => [
+                    'ON' => [
+                        "glpi_items_${class_l_pl}" => "${class_l_pl}_id",
+                        $this->getTable()    => 'id'
+                    ]
+                ]
+            ],
+            'WHERE'     => [
+                'glpi_items_tickets.items_id' => $items_id,
+                'glpi_items_tickets.itemtype' => $itemtype,
+                'OR'                          => [
+                    [
+                        'NOT' => [
+                            $this->getTable() . '.status' => array_merge(
+                                $this->getClosedStatusArray(),
+                                $this->getSolvedStatusArray()
+                            )
+                        ]
+                    ],
+                    [
+                        'NOT' => [$this->getTable() . '.solvedate' => null],
+                        new \QueryExpression(
+                            "ADDDATE(" . $DB->quoteName($this->getTable()) .
+                            "." . $DB->quoteName('solvedate') . ", INTERVAL $days DAY) > NOW()"
+                        )
+                    ]
+                ]
+            ]
+        ]);
+
+        foreach ($iterator as $tick) {
+            $result[$tick['id']] = $tick['name'];
+        }
+
+        return $result;
+    }
 
     public function cleanDBonPurge()
     {
@@ -6504,11 +6562,12 @@ abstract class CommonITILObject extends CommonDBTM
             if (!$p['ticket_stats']) {
                // Sixth Colum
                // Ticket : simple link to item
+               // extend to other ITIL object ? new Item_Ticket(); --> new Item_${self::class}();
                 $sixth_col  = "";
                 $is_deleted = false;
-                $item_ticket = new Item_Ticket();
-                $data = $item_ticket->find(['tickets_id' => $item->fields['id']]);
-
+                $classname = "Item_" . static::class;
+                $item_ticket = new $classname();
+                $data = $item_ticket->find([strtolower(static::class) . 's_id' => $item->fields['id']]);
                 if ($item->getType() == 'Ticket') {
                     if (!empty($data)) {
                         foreach ($data as $val) {

@@ -2373,48 +2373,7 @@ class Ticket extends CommonITILObject
      **/
     public function getActiveOrSolvedLastDaysTicketsForItem($itemtype, $items_id, $days)
     {
-        global $DB;
-
-        $result = [];
-
-        $iterator = $DB->request([
-            'FROM'      => $this->getTable(),
-            'LEFT JOIN' => [
-                'glpi_items_tickets' => [
-                    'ON' => [
-                        'glpi_items_tickets' => 'tickets_id',
-                        $this->getTable()    => 'id'
-                    ]
-                ]
-            ],
-            'WHERE'     => [
-                'glpi_items_tickets.items_id' => $items_id,
-                'glpi_items_tickets.itemtype' => $itemtype,
-                'OR'                          => [
-                    [
-                        'NOT' => [
-                            $this->getTable() . '.status' => array_merge(
-                                $this->getClosedStatusArray(),
-                                $this->getSolvedStatusArray()
-                            )
-                        ]
-                    ],
-                    [
-                        'NOT' => [$this->getTable() . '.solvedate' => null],
-                        new \QueryExpression(
-                            "ADDDATE(" . $DB->quoteName($this->getTable()) .
-                            "." . $DB->quoteName('solvedate') . ", INTERVAL $days DAY) > NOW()"
-                        )
-                    ]
-                ]
-            ]
-        ]);
-
-        foreach ($iterator as $tick) {
-            $result[$tick['id']] = $tick['name'];
-        }
-
-        return $result;
+        return $this->getActiveOrSolvedLastDaysForItem($itemtype, $items_id, $days);
     }
 
 
@@ -5560,17 +5519,18 @@ JAVASCRIPT;
             return false;
         }
 
-        $criteria = self::getCommonCriteria();
-        $restrict = [];
-        $options  = [
+
+        $options = [
+            'metacriteria' => [],
+            'restrict' => [],
             'criteria' => [],
-            'reset'    => 'reset',
+            'reset'    => 'reset'
         ];
 
         switch ($item->getType()) {
             case 'User':
-                $restrict['glpi_tickets_users.users_id'] = $item->getID();
-                $restrict['glpi_tickets_users.type'] = CommonITILActor::REQUESTER;
+                $options['restrict']['glpi_tickets_users.users_id'] = $item->getID();
+                $options['restrict']['glpi_tickets_users.type'] = CommonITILActor::REQUESTER;
 
                 $options['criteria'][0]['field']      = 4; // status
                 $options['criteria'][0]['searchtype'] = 'equals';
@@ -5579,7 +5539,7 @@ JAVASCRIPT;
                 break;
 
             case 'SLA':
-                $restrict[] = [
+                $options['restrict'][] = [
                     'OR' => [
                         'slas_id_tto'  => $item->getID(),
                         'slas_id_ttr'  => $item->getID()
@@ -5594,7 +5554,7 @@ JAVASCRIPT;
                 break;
 
             case 'OLA':
-                $restrict[] = [
+                $options['restrict'][] = [
                     'OR' => [
                         'olas_id_tto'  => $item->getID(),
                         'olas_id_ttr'  => $item->getID()
@@ -5609,8 +5569,8 @@ JAVASCRIPT;
                 break;
 
             case 'Supplier':
-                $restrict['glpi_suppliers_tickets.suppliers_id'] = $item->getID();
-                $restrict['glpi_suppliers_tickets.type'] = CommonITILActor::ASSIGN;
+                $options['restrict']['glpi_suppliers_tickets.suppliers_id'] = $item->getID();
+                $options['restrict']['glpi_suppliers_tickets.type'] = CommonITILActor::ASSIGN;
 
                 $options['criteria'][0]['field']      = 6;
                 $options['criteria'][0]['searchtype'] = 'equals';
@@ -5637,8 +5597,8 @@ JAVASCRIPT;
                 }
                 echo "</td></tr></table>";
 
-                $restrict['glpi_groups_tickets.groups_id'] = ($tree ? getSonsOf('glpi_groups', $item->getID()) : $item->getID());
-                $restrict['glpi_groups_tickets.type'] = CommonITILActor::REQUESTER;
+                $options['restrict']['glpi_groups_tickets.groups_id'] = ($tree ? getSonsOf('glpi_groups', $item->getID()) : $item->getID());
+                $options['restrict']['glpi_groups_tickets.type'] = CommonITILActor::REQUESTER;
 
                 $options['criteria'][0]['field']      = 71;
                 $options['criteria'][0]['searchtype'] = ($tree ? 'under' : 'equals');
@@ -5647,8 +5607,8 @@ JAVASCRIPT;
                 break;
 
             default:
-                $restrict['glpi_items_tickets.items_id'] = $item->getID();
-                $restrict['glpi_items_tickets.itemtype'] = $item->getType();
+                $options['restrict']['glpi_items_tickets.items_id'] = $item->getID();
+                $options['restrict']['glpi_items_tickets.itemtype'] = $item->getType();
 
                // you can only see your tickets
                 if (!Session::haveRight(self::$rightname, self::READALL)) {
@@ -5664,7 +5624,7 @@ JAVASCRIPT;
                     if (count($_SESSION['glpigroups'])) {
                         $or['glpi_groups_tickets.groups_id'] = $_SESSION['glpigroups'];
                     }
-                    $restrict[] = ['OR' => $or];
+                    $options['restrict'][] = ['OR' => $or];
                 }
 
                 $options['criteria'][0]['field']      = 12;
@@ -5682,135 +5642,7 @@ JAVASCRIPT;
                 $options['metacriteria'][0]['link']       = 'AND';
                 break;
         }
-
-        $criteria['WHERE'] = $restrict + getEntitiesRestrictCriteria(self::getTable());
-        $criteria['WHERE']['glpi_tickets.is_deleted'] = 0;
-        $criteria['LIMIT'] = (int)$_SESSION['glpilist_limit'];
-        $iterator = $DB->request($criteria);
-        $number = count($iterator);
-
-        $colspan = 11;
-        if (count($_SESSION["glpiactiveentities"]) > 1) {
-            $colspan++;
-        }
-
-       // Ticket for the item
-       // Link to open a new ticket
-        if (
-            $item->getID()
-            && !$item->isDeleted()
-            && Ticket::isPossibleToAssignType($item->getType())
-            && self::canCreate()
-            && !(!empty($withtemplate) && ($withtemplate == 2))
-            && (!isset($item->fields['is_template']) || ($item->fields['is_template'] == 0))
-        ) {
-            echo "<div class='firstbloc'>";
-            Html::showSimpleForm(
-                Ticket::getFormURL(),
-                '_add_fromitem',
-                __('New ticket for this item...'),
-                ['itemtype' => $item->getType(),
-                    'items_id' => $item->getID()
-                ]
-            );
-            echo "</div>";
-        }
-
-        if (
-            $item->getID()
-            && ($item->getType() == 'User')
-            && self::canCreate()
-            && !(!empty($withtemplate) && ($withtemplate == 2))
-        ) {
-            echo "<div class='firstbloc'>";
-            Html::showSimpleForm(
-                Ticket::getFormURL(),
-                '_add_fromitem',
-                __('New ticket for this item...'),
-                ['_users_id_requester' => $item->getID()]
-            );
-            echo "</div>";
-        }
-
-        echo "<div class='table-responsive'>";
-
-        if ($number > 0) {
-            echo "<table class='tab_cadre_fixehov'>";
-            if (Session::haveRight(self::$rightname, self::READALL)) {
-                Session::initNavigateListItems(
-                    'Ticket',
-                    //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
-                                           sprintf(
-                                               __('%1$s = %2$s'),
-                                               $item->getTypeName(1),
-                                               $item->getName()
-                                           )
-                );
-
-                echo "<tr class='noHover'><th colspan='$colspan'>";
-                $title = sprintf(_n('Last %d ticket', 'Last %d tickets', $number), $number);
-                $link = "<a href='" . Ticket::getSearchURL() . "?" .
-                      Toolbox::append_params($options, '&amp;') . "'>" . __('Show all') . "</a>";
-                $title = printf(__('%1$s (%2$s)'), $title, $link);
-                echo "</th></tr>";
-            } else {
-                echo "<tr><th colspan='$colspan'>" . __("You don't have right to see all tickets") . "</th></tr>";
-            }
-        } else {
-            echo "<table class='tab_cadre_fixe'>";
-            echo "<tr><th>" . __('No ticket found.') . "</th></tr>";
-        }
-
-       // Ticket list
-        if ($number > 0) {
-            self::commonListHeader(Search::HTML_OUTPUT);
-
-            foreach ($iterator as $data) {
-                Session::addToNavigateListItems('Ticket', $data["id"]);
-                self::showShort($data["id"]);
-            }
-            self::commonListHeader(Search::HTML_OUTPUT);
-        }
-
-        echo "</table></div>";
-
-       // Tickets for linked items
-        $linkeditems = $item->getLinkedItems();
-        $restrict    = [];
-        if (count($linkeditems)) {
-            foreach ($linkeditems as $ltype => $tab) {
-                foreach ($tab as $lID) {
-                    $restrict[] = ['AND' => ['itemtype' => $ltype, 'items_id' => $lID]];
-                }
-            }
-        }
-
-        if (
-            count($restrict)
-            && Session::haveRight(self::$rightname, self::READALL)
-        ) {
-            $criteria = self::getCommonCriteria();
-            $criteria['WHERE'] = ['OR' => $restrict]
-             + getEntitiesRestrictCriteria(self::getTable());
-            $iterator = $DB->request($criteria);
-            $number = count($iterator);
-
-            echo "<div class='spaced table-responsive'><table class='tab_cadre_fixe'>";
-            echo "<tr><th colspan='12'>";
-            echo _n('Ticket on linked items', 'Tickets on linked items', $number);
-            echo "</th></tr>";
-            if ($number > 0) {
-                self::commonListHeader(Search::HTML_OUTPUT);
-                foreach ($iterator as $data) {
-                    // Session::addToNavigateListItems(TRACKING_TYPE,$data["id"]);
-                    self::showShort($data["id"]);
-                }
-                self::commonListHeader(Search::HTML_OUTPUT);
-            } else {
-                echo "<tr><th>" . __('No ticket found.') . "</th></tr>";
-            }
-            echo "</table></div>";
-        }
+        Item_Ticket::showListForItem($item, $withtemplate, $options);
     }
 
     /**
