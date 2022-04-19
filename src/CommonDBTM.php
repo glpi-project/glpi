@@ -2685,6 +2685,7 @@ class CommonDBTM extends CommonGLPI
             'formoptions'    => '',
             'canedit'        => true,
             'formtitle'      => null,
+            'no_header'      => false,
             'noid'           => false,
             'header_toolbar' => [],
         ];
@@ -2710,6 +2711,7 @@ class CommonDBTM extends CommonGLPI
         TemplateRenderer::getInstance()->display('components/form/header.html.twig', [
             'item'           => $this,
             'params'         => $params,
+            'no_header'      => $params['no_header'],
             'header_toolbar' => $header_toolbar,
         ]);
 
