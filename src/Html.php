@@ -1666,6 +1666,17 @@ HTML;
                     $link = "";
                     if (is_string($PLUGIN_HOOKS["helpdesk_menu_entry"][$plugin])) {
                         $link = $PLUGIN_HOOKS["helpdesk_menu_entry"][$plugin];
+
+                        // Ensure menu entries have all a starting `/`
+                        if (!str_starts_with($link, '/')) {
+                            $link = '/' . $link;
+                        }
+
+                        // Prefix with plugin path if plugin path is missing
+                        $plugin_dir = Plugin::getWebDir($plugin, false);
+                        if (!str_starts_with($link, '/' . $plugin_dir)) {
+                            $link = '/' . $plugin_dir . $link;
+                        }
                     }
                     $infos['page'] = $link;
                     $infos['title'] = $infos['name'];
