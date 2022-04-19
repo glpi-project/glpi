@@ -32,6 +32,7 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Event;
 use Glpi\Plugin\Hooks;
 use Glpi\RichText\RichText;
 use Glpi\Team\Team;
@@ -1742,6 +1743,9 @@ abstract class CommonITILObject extends CommonDBTM
        // handle actors changes
         $this->updateActors();
 
+        // Send validation requests
+        $this->manageValidationAdd($this->input);
+
         parent::post_updateItem();
     }
 
@@ -2751,6 +2755,9 @@ abstract class CommonITILObject extends CommonDBTM
 
        // Additional actors
         $this->addAdditionalActors($this->input);
+
+        // Send validation requests
+        $this->manageValidationAdd($this->input);
 
         parent::post_addItem();
     }
@@ -8048,6 +8055,207 @@ abstract class CommonITILObject extends CommonDBTM
             'itemtype'              => static::getType(),
             'items_id'              => $this->fields['id'],
         ]);
+    }
+
+    /**
+     * Manage Validation add from input (form and rules)
+     *
+     * @param array $input
+     *
+     * @return boolean
+     */
+    public function manageValidationAdd($input)
+    {
+        $validation = $this->getValidationClassInstance();
+
+        if ($validation === null) {
+            return true;
+        }
+
+        $self_fk = $this->getForeignKeyField();
+
+        //Action for send_validation rule
+        if (isset($input["_add_validation"])) {
+            if (isset($input['entities_id'])) {
+                $entid = $input['entities_id'];
+            } else if (isset($this->fields['entities_id'])) {
+                $entid = $this->fields['entities_id'];
+            } else {
+                return false;
+            }
+
+            $validations_to_send = [];
+            if (!is_array($input["_add_validation"])) {
+                $input["_add_validation"] = [$input["_add_validation"]];
+            }
+
+            foreach ($input["_add_validation"] as $key => $value) {
+                switch ($value) {
+                    case 'requester_supervisor':
+                        if (
+                            isset($input['_groups_id_requester'])
+                            && $input['_groups_id_requester']
+                        ) {
+                            $users = Group_User::getGroupUsers(
+                                $input['_groups_id_requester'],
+                                ['is_manager' => 1]
+                            );
+                            foreach ($users as $data) {
+                                 $validations_to_send[] = $data['id'];
+                            }
+                        }
+                        // Add to already set groups
+                        foreach ($this->getGroups(CommonITILActor::REQUESTER) as $d) {
+                            $users = Group_User::getGroupUsers(
+                                $d['groups_id'],
+                                ['is_manager' => 1]
+                            );
+                            foreach ($users as $data) {
+                                $validations_to_send[] = $data['id'];
+                            }
+                        }
+                        break;
+
+                    case 'assign_supervisor':
+                        if (
+                            isset($input['_groups_id_assign'])
+                            && $input['_groups_id_assign']
+                        ) {
+                            $users = Group_User::getGroupUsers(
+                                $input['_groups_id_assign'],
+                                ['is_manager' => 1]
+                            );
+                            foreach ($users as $data) {
+                                $validations_to_send[] = $data['id'];
+                            }
+                        }
+                        foreach ($this->getGroups(CommonITILActor::ASSIGN) as $d) {
+                            $users = Group_User::getGroupUsers(
+                                $d['groups_id'],
+                                ['is_manager' => 1]
+                            );
+                            foreach ($users as $data) {
+                                 $validations_to_send[] = $data['id'];
+                            }
+                        }
+                        break;
+
+                    case 'requester_responsible':
+                        if (isset($input['_users_id_requester'])) {
+                            if (is_array($input['_users_id_requester'])) {
+                                foreach ($input['_users_id_requester'] as $users_id) {
+                                    $user = new User();
+                                    if ($user->getFromDB($users_id)) {
+                                          $validations_to_send[] = $user->getField('users_id_supervisor');
+                                    }
+                                }
+                            } else {
+                                $user = new User();
+                                if ($user->getFromDB($input['_users_id_requester'])) {
+                                     $validations_to_send[] = $user->getField('users_id_supervisor');
+                                }
+                            }
+                        }
+                        break;
+
+                    default:
+                        // Group case from rules
+                        if ($key === 'group') {
+                            foreach ($value as $groups_id) {
+                                $validation_right = 'validate';
+                                if ($this->getType() === Ticket::class) {
+                                    $validation_right = isset($input['type']) && $input['type'] == Ticket::DEMAND_TYPE
+                                        ? 'validate_request'
+                                        : 'validate_incident';
+                                }
+                                $opt = [
+                                    'groups_id' => $groups_id,
+                                    'right'     => $validation_right,
+                                    'entity'    => $entid
+                                ];
+
+                                $data_users = $validation->getGroupUserHaveRights($opt);
+
+                                foreach ($data_users as $user) {
+                                    $validations_to_send[] = $user['id'];
+                                }
+                            }
+                        } else {
+                            $validations_to_send[] = $value;
+                        }
+                }
+            }
+
+            // Validation user added on ticket form
+            if (isset($input['users_id_validate'])) {
+                if (array_key_exists('groups_id', $input['users_id_validate'])) {
+                    foreach ($input['users_id_validate'] as $key => $validation_to_add) {
+                        if (is_numeric($key)) {
+                            $validations_to_send[] = $validation_to_add;
+                        }
+                    }
+                } else {
+                    foreach ($input['users_id_validate'] as $key => $validation_to_add) {
+                        if (is_numeric($key)) {
+                             $validations_to_send[] = $validation_to_add;
+                        }
+                    }
+                }
+            }
+
+            // Keep only one
+            $validations_to_send = array_unique($validations_to_send);
+
+            if (count($validations_to_send)) {
+                $values            = [];
+                $values[$self_fk]  = $this->fields['id'];
+                if (isset($input['id']) && $input['id'] != $this->fields['id']) {
+                    $values['_itilobject_add'] = true;
+                }
+
+                // to know update by rules
+                if (isset($input["_rule_process"])) {
+                    $values['_rule_process'] = $input["_rule_process"];
+                }
+                // if auto_import, tranfert it for validation
+                if (isset($input['_auto_import'])) {
+                    $values['_auto_import'] = $input['_auto_import'];
+                }
+
+                // Cron or rule process of hability to do
+                if (
+                    Session::isCron()
+                    || isset($input["_auto_import"])
+                    || isset($input["_rule_process"])
+                    || $validation->can(-1, CREATE, $values)
+                ) { // cron or allowed user
+                    $add_done = false;
+                    foreach ($validations_to_send as $user) {
+                        // Do not auto add twice same validation
+                        if (!$validation->alreadyExists($values[$self_fk], $user)) {
+                            $values["users_id_validate"] = $user;
+                            if ($validation->add($values)) {
+                                $add_done = true;
+                            }
+                        }
+                    }
+                    if ($add_done) {
+                        Event::log(
+                            $this->fields['id'],
+                            strtolower($this->getType()),
+                            4,
+                            "tracking",
+                            sprintf(
+                                __('%1$s updates the item %2$s'),
+                                $_SESSION["glpiname"],
+                                $this->fields['id']
+                            )
+                        );
+                    }
+                }
+            }
+        }
+        return true;
     }
 
     /**
