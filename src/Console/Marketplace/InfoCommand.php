@@ -34,16 +34,12 @@
 namespace Glpi\Console\Marketplace;
 
 use GLPINetwork;
-use Glpi\Console\AbstractCommand;
-use Glpi\Marketplace\Api\Plugins;
 use Glpi\Marketplace\Controller;
-use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class InfoCommand extends AbstractCommand
+class InfoCommand extends AbstractMarketplaceCommand
 {
     protected function configure()
     {
@@ -80,5 +76,10 @@ class InfoCommand extends AbstractCommand
         $output->write(var_export($result, true));
 
         return 0; // Success
+    }
+
+    protected function getPluginChoiceQuestion(): string
+    {
+        return __('Which plugin do you want information on?');
     }
 }
