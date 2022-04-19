@@ -804,7 +804,7 @@ var Dashboard = {
                 var precision    = count.data('precision');
                 var number       = count.children('.number');
                 var suffix       = count.children('.suffix').text();
-				var targetNumber = number.text();
+                var targetNumber = number.text();
 
                 // Some custom formats may contain text in the number field, no animation in this case
                 if (isNaN(number.text())) {
@@ -817,9 +817,9 @@ var Dashboard = {
                     step: function () {
                         number.text(this.Counter.toFixed(precision))+suffix;
                     },
-					complete: function () {
-						number.text(targetNumber.text())+suffix;
-					}
+                    complete: function () {
+                        number.text(targetNumber.text())+suffix;
+                    }
                 });
             });
     },
