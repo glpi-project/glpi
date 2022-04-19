@@ -277,6 +277,16 @@ abstract class CommonITILObject extends CommonDBTM
                                 'text'  => $name,
                                 'title' => $completename,
                             ];
+                        } elseif (
+                            $actor_obj instanceof User
+                            && $existing_actor['items_id'] == 0
+                            && strlen($existing_actor['alternative_email']
+                        ) > 0) {
+                            // direct mail actor
+                            $actors[] = $existing_actor + [
+                                'text'  => $existing_actor['alternative_email'],
+                                'title' => $existing_actor['alternative_email'],
+                            ];
                         }
                     }
                 }
