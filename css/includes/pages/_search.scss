@@ -180,11 +180,17 @@
 }
 
 body.horizontal-layout {
-    .search_page {
+    .search_page:not(.search_page_global) {
         .search-container {
             @include media-breakpoint-up(sm) {
                 height: calc(100vh - #{$topbar-height} - #{$contextbar-height} - #{$content-margin});
             }
+        }
+    }
+
+    .search_page_global {
+        @include media-breakpoint-up(sm) {
+            height: calc(100vh - #{$topbar-height} - #{$contextbar-height} - #{$content-margin});
         }
     }
 }
