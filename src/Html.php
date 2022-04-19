@@ -1666,7 +1666,7 @@ HTML;
                     if (is_string($PLUGIN_HOOKS["helpdesk_menu_entry"][$plugin])) {
                         $link = $PLUGIN_HOOKS["helpdesk_menu_entry"][$plugin];
                     }
-                    $infos['page'] = Plugin::getWebDir($plugin) . $link;
+                    $infos['page'] = Plugin::getWebDir($plugin, false) . $link;
                     $infos['title'] = $infos['name'];
                     if (isset($PLUGIN_HOOKS["helpdesk_menu_entry_icon"][$plugin])) {
                         $infos['icon'] = $PLUGIN_HOOKS["helpdesk_menu_entry_icon"][$plugin];
