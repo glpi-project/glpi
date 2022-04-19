@@ -209,10 +209,11 @@ var Dashboard = {
             var active = $(this).hasClass('active');
 
             if (active) {
-                var seconds = parseInt(CFG_GLPI.refresh_views || 30) * 60;
-                if (seconds <= 0) {
-                    seconds = 60;
+                var minutes = parseInt(CFG_GLPI.refresh_views);
+                if (minutes == 0 || Number.isNaN(minutes)) {
+                    minutes = 30;
                 }
+                var seconds = minutes * 60;
                 Dashboard.interval = setInterval(function() {
                     Dashboard.refreshDashboard();
                 }, seconds * 1000);
