@@ -37,6 +37,7 @@ use Glpi\Application\ErrorHandler;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Console\Application;
 use Glpi\Plugin\Hooks;
+use Glpi\Toolbox\FrontEnd;
 use Glpi\Toolbox\Sanitizer;
 use ScssPhp\ScssPhp\Compiler;
 
@@ -3786,7 +3787,7 @@ JS;
         $content_css = preg_replace('/^.*href="([^"]+)".*$/', '$1', self::scss('css/palettes/' . $_SESSION['glpipalette'] ?? 'auror'))
          . ',' . preg_replace('/^.*href="([^"]+)".*$/', '$1', self::css('public/lib/base.css'));
 
-        $cache_suffix = '?v=' . GLPI_VERSION;
+        $cache_suffix = '?v=' . FrontEnd::getVersionCacheKey(GLPI_VERSION);
         $readonlyjs   = $readonly ? 'true' : 'false';
 
         $invalid_elements = 'applet,canvas,embed,form,object';
@@ -5355,7 +5356,7 @@ HTML;
         $url = self::getPrefixedUrl($url);
 
         if ($version) {
-            $url .= '?v=' . $version;
+            $url .= '?v=' . FrontEnd::getVersionCacheKey($version);
         }
 
         return sprintf('<script type="%s" src="%s"></script>', $type, $url);
@@ -5438,7 +5439,7 @@ HTML;
             unset($options['version']);
         }
 
-        $url .= ((strpos($url, '?') !== false) ? '&' : '?') . 'v=' . $version;
+        $url .= ((strpos($url, '?') !== false) ? '&' : '?') . 'v=' . FrontEnd::getVersionCacheKey($version);
 
         return sprintf(
             '<link rel="stylesheet" type="text/css" href="%s" %s>',
