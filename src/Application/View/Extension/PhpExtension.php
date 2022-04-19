@@ -48,7 +48,7 @@ class PhpExtension extends AbstractExtension
         return [
             new TwigFunction('php_config', [$this, 'phpConfig']),
             new TwigFunction('call', [$this, 'call']),
-            new TwigFunction('static', [$this, 'getStatic']),
+            new TwigFunction('get_static', [$this, 'getStatic']),
         ];
     }
 
