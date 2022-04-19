@@ -45,7 +45,7 @@
          {% set validation_right = 'validate_request' %}
       {% endif %}
    {% endif %}
-   {% set can_create = has_profile_right(static(validation, 'rightname'), create_right_val) %}
+   {% set can_create = has_profile_right(get_static(validation, 'rightname'), create_right_val) %}
 
    {% if item.isNewItem() %}
       {% if can_create %}
