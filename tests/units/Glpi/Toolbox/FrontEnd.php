@@ -33,13 +33,11 @@
 
 namespace tests\units\Glpi\Toolbox;
 
-
 /**
  * Test class for src/Glpi/Toolbox/dataexport.class.php
  */
 class FrontEnd extends \GLPITestCase
 {
-
     public function testGetVersionCacheKey()
     {
         $instance = $this->newTestedInstance();
