@@ -582,6 +582,8 @@ abstract class CommonITILObject extends CommonDBTM
             $entities = array_intersect($entities, $user_entities);
         }
 
+        $entities = array_values($entities); // Ensure keys are starting at 0
+
         return $entities;
     }
 
