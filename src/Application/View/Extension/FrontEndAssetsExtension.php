@@ -35,6 +35,7 @@ namespace Glpi\Application\View\Extension;
 
 use DBmysql;
 use Entity;
+use Glpi\Toolbox\FrontEnd;
 use Html;
 use Plugin;
 use Session;
@@ -137,7 +138,7 @@ class FrontEndAssetsExtension extends AbstractExtension
     private function getVersionnedPath(string $path, array $options = []): string
     {
         $version = $options['version'] ?? GLPI_VERSION;
-        $path .= (strpos($path, '?') !== false ? '&' : '?') . 'v=' . $version;
+        $path .= (strpos($path, '?') !== false ? '&' : '?') . 'v=' . FrontEnd::getVersionCacheKey($version);
 
         return $path;
     }
@@ -196,7 +197,7 @@ JAVASCRIPT;
             $locales_path = Html::getPrefixedUrl(
                 '/front/locale.php'
                 . '?domain=' . $locale_domain
-                . '&version=' . $locale_version
+                . '&v=' . FrontEnd::getVersionCacheKey($locale_version)
                 . ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE ? '&debug' : '')
             );
             $script .= <<<JAVASCRIPT
