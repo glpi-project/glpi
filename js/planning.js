@@ -54,6 +54,7 @@ var GLPIPlanning  = {
             license_key: "",
             resources: [],
             now: null,
+            can_create: false,
             rand: '',
             header: {
                 left:   'prev,next,today',
@@ -552,6 +553,11 @@ var GLPIPlanning  = {
             // ADD EVENTS
             selectable: true,
             select: function(info) {
+                if (!options.can_create) {
+                    GLPIPlanning.calendar.unselect();
+                    return false;
+                }
+
                 var itemtype = (((((info || {})
                     .resource || {})
                     ._resource || {})
