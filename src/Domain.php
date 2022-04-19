@@ -833,4 +833,10 @@ class Domain extends CommonDBTM
     {
         return "fas fa-globe-americas";
     }
+
+    public function post_updateItem($history = 1)
+    {
+        $this->cleanAlerts([Alert::END, Alert::NOTICE]);
+        parent::post_updateItem($history);
+    }
 }
