@@ -4316,9 +4316,10 @@ JAVASCRIPT;
             ) {
                 // If entity is not in the list of user's entities,
                 // then use as default value the first value of the user's entites list
-                $this->fields["entities_id"] = $userentities[0];
+                $first_entity = current($userentities);
+                $this->fields["entities_id"] = $first_entity;
                 // Pass to values
-                $options['entities_id']      = $userentities[0];
+                $options['entities_id']      = $first_entity;
             }
         }
 
