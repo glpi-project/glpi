@@ -4395,6 +4395,7 @@ JAVASCRIPT;
             'canassigntome'      => $canassigntome,
             'load_kb_sol'        => $options['load_kb_sol'] ?? 0,
             'userentities'       => $userentities,
+            'is_requester'       => $this->isUser(CommonITILActor::REQUESTER, Session::getLoginUserID()),
         ]);
 
         return true;

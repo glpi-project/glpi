@@ -84,7 +84,7 @@
             <input type="hidden" name="items_id" value="{{ item.fields['id'] }}" />
             {{ call_plugin_hook('pre_item_form', {"item": subitem, 'options': params}) }}
 
-            {% set openfollowup = _get['_openfollowup'] ?? false %}
+            {% set openfollowup = (_get['_openfollowup'] ?? false) or is_requester %}
             {% if openfollowup %}
                <input type="hidden" name="add_reopen" value="1" />
             {% endif %}

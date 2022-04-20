@@ -409,6 +409,7 @@ abstract class CommonITILObject extends CommonDBTM
             'canupdate'               => $canupdate,
             'canpriority'             => $canupdate,
             'canassign'               => $canupdate,
+            'is_requester'            => $this->isUser(CommonITILActor::REQUESTER, Session::getLoginUserID()),
         ]);
 
         return true;
