@@ -113,6 +113,8 @@
                     </div>
                 </div>
 
+            {% else %}
+                <input type="hidden" name="_users_id_requester" value="{{ session('glpiID') }}">
             {% endif %}
         </div>
         <div class="card-body row mx-0">
