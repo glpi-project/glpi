@@ -3,7 +3,7 @@
 The present file will list all changes made to the project; according to the
 [Keep a Changelog](http://keepachangelog.com/) project.
 
-## [10.0.0] unreleased
+## [10.0.0] 2022-04-20
 
 ### Added
 - Added UUID to all other itemtypes that are related to Operating Systems (Phones, Printers, etc)
