@@ -818,7 +818,7 @@ var Dashboard = {
                         number.text(this.Counter.toFixed(precision))+suffix;
                     },
                     complete: function () {
-                        number.text(targetNumber.text())+suffix;
+                        number.text(targetNumber)+suffix;
                     }
                 });
             });
