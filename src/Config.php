@@ -3777,6 +3777,11 @@ HTML;
             $safe_config = array_diff_key($safe_config, $excludedKeys);
         }
 
+        // override with session values
+        foreach ($safe_config as $key => &$value) {
+            $value = $_SESSION['glpi' . $key] ?? $value;
+        }
+
         return $safe_config;
     }
 
