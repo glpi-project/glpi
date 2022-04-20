@@ -6322,6 +6322,7 @@ JAVASCRIPT;
                             'avatar_size'   => "avatar-sm",
                         ]);
                     }
+                    break;
 
                 case "glpi_profiles.name":
                     if (
