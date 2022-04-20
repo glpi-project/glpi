@@ -3806,6 +3806,9 @@ JAVASCRIPT;
             'name'               => __('Responsible'),
             'datatype'           => 'dropdown',
             'massiveaction'      => false,
+            'additionalfields'   => [
+                '0' => 'id'
+            ]
         ];
 
        // add objectlock search options
