@@ -746,7 +746,7 @@ class User extends CommonDBTM {
          }
          if ($newPicture) {
             $fullpath = GLPI_TMP_DIR."/".$input["_picture"];
-            if (Toolbox::getMime($fullpath, 'image')) {
+            if (Document::isImage($fullpath)) {
                // Unlink old picture (clean on changing format)
                self::dropPictureFiles($this->fields['picture']);
                // Move uploaded file
@@ -763,8 +763,7 @@ class User extends CommonDBTM {
                $picture_path = GLPI_PICTURE_DIR  . "/$sub/${filename}.$extension";
                self::dropPictureFiles("$sub/${filename}.$extension");
 
-               if (Document::isImage($fullpath)
-                   && Document::renameForce($fullpath, $picture_path)) {
+               if (Document::renameForce($fullpath, $picture_path)) {
                   Session::addMessageAfterRedirect(__('The file is valid. Upload is successful.'));
                   // For display
                   $input['picture'] = "$sub/${filename}.$extension";
@@ -773,12 +772,14 @@ class User extends CommonDBTM {
                   $thumb_path = GLPI_PICTURE_DIR . "/$sub/${filename}_min.$extension";
                   Toolbox::resizePicture($picture_path, $thumb_path);
                } else {
-                  Session::addMessageAfterRedirect(__('Potential upload attack or file too large. Moving temporary file failed.'),
+                  Session::addMessageAfterRedirect(__('Moving temporary file failed.'),
                         false, ERROR);
+                  @unlink($fullpath);
                }
             } else {
                Session::addMessageAfterRedirect(__('The file is not an image file.'),
                      false, ERROR);
+               @unlink($fullpath);
             }
          } else {
             //ldap jpegphoto synchronisation.
