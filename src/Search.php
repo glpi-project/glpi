@@ -6313,12 +6313,16 @@ JAVASCRIPT;
                         return sprintf(__('%1$s %2$s'), $usernameformat, $toadd);
                     }
 
-                    return TemplateRenderer::getInstance()->render('components/user/picture.html.twig', [
-                        'users_id'      => $data['id'],
-                        'display_login' => true,
-                        'force_login'   => true,
-                        'avatar_size'   => "avatar-sm",
-                    ]);
+                    $current_users_id = $data[$ID][0]['id'] ?? 0;
+                    if ($current_users_id > 0) {
+                        return TemplateRenderer::getInstance()->render('components/user/picture.html.twig', [
+                            'users_id'      => $current_users_id,
+                            'display_login' => true,
+                            'force_login'   => true,
+                            'avatar_size'   => "avatar-sm",
+                        ]);
+                    }
+                    break;
 
                 case "glpi_profiles.name":
                     if (
