@@ -73,8 +73,8 @@ switch ($_REQUEST['widget']) {
     case 'central_list':
         if (method_exists($itemtype, 'showCentralList')) {
             if (is_subclass_of($itemtype, CommonITILObject::class)) {
-                $showgroupproblems = isset($params['showgroupproblems']) ? ($params['showgroupproblems'] !== 'false') : false;
-                $itemtype::showCentralList($params['start'], $params['status'] ?? 'process', $showgroupproblems);
+                $showgrouptickets = isset($params['showgrouptickets']) ? ($params['showgrouptickets'] !== 'false') : false;
+                $itemtype::showCentralList($params['start'], $params['status'] ?? 'process', $showgrouptickets);
             }
         } else if ($itemtype === RSSFeed::class) {
             $personal = $params['personal'] !== 'false';

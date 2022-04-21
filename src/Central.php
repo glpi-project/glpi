@@ -425,9 +425,9 @@ class Central extends CommonGLPI
         ];
         foreach ($lists as $list) {
             $card_params = [
-                'start'              => 0,
-                'status'             => $list['status'],
-                'showgrouptickets'   => 'true'
+                'start'             => 0,
+                'status'            => $list['status'],
+                'showgrouptickets'  => 'true'
             ];
             $idor = Session::getNewIDORToken($list['itemtype'], $card_params);
             $twig_params['cards'][] = [
