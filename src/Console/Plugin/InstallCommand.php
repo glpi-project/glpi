@@ -45,6 +45,13 @@ use User;
 
 class InstallCommand extends AbstractPluginCommand
 {
+    /**
+     * Error code returned when a plugin installation failed.
+     *
+     * @var integer
+     */
+    const ERROR_PLUGIN_INSTALLATION_FAILED = 1;
+
     protected function configure()
     {
         parent::configure();
@@ -110,6 +117,8 @@ class InstallCommand extends AbstractPluginCommand
 
         $params      = $this->getAdditionnalParameters($input);
 
+        $failed = false;
+
         foreach ($directories as $directory) {
             $output->writeln(
                 '<info>' . sprintf(__('Processing plugin "%s"...'), $directory) . '</info>',
@@ -120,7 +129,8 @@ class InstallCommand extends AbstractPluginCommand
             $plugin->checkPluginState($directory); // Be sure that plugin information are up to date in DB
 
             if (!$this->canRunInstallMethod($directory, $force)) {
-                 continue;
+                $failed = true;
+                continue;
             }
 
             if (!$plugin->getFromDBByCrit(['directory' => $directory])) {
@@ -128,6 +138,7 @@ class InstallCommand extends AbstractPluginCommand
                     '<error>' . sprintf(__('Unable to load plugin "%s" information.'), $directory) . '</error>',
                     OutputInterface::VERBOSITY_QUIET
                 );
+                $failed = true;
                 continue;
             }
             $plugin->install($plugin->fields['id'], $params);
@@ -139,6 +150,7 @@ class InstallCommand extends AbstractPluginCommand
                     OutputInterface::VERBOSITY_QUIET
                 );
                 $this->outputSessionBufferedMessages([WARNING, ERROR]);
+                $failed = true;
                 continue;
             }
 
@@ -150,6 +162,10 @@ class InstallCommand extends AbstractPluginCommand
                 '<info>' . sprintf($message, $directory) . '</info>',
                 OutputInterface::VERBOSITY_NORMAL
             );
+        }
+
+        if ($failed) {
+            return self::ERROR_PLUGIN_INSTALLATION_FAILED;
         }
 
         return 0; // Success
