@@ -4458,7 +4458,8 @@ HTML
     }
 
 
-    public function testNeedReopen() {
+    public function testNeedReopen()
+    {
         $this->login();
 
         $tech_id     = getItemByTypeName('User', 'tech', true);
@@ -4493,7 +4494,7 @@ HTML
         $this->boolean((bool)$ticket->needReopen())->isTrue();
 
         // force a reopen
-        $followup = new \ITILFollowup;
+        $followup = new \ITILFollowup();
         $followup->add([
             'itemtype'   => 'Ticket',
             'items_id'   => $tickets_id,
@@ -4505,6 +4506,5 @@ HTML
         $this->boolean((bool)$ticket->getFromDB($ticket->getID()))->isTrue();
         $this->integer($ticket->fields['status'])->isEqualTo(\Ticket::ASSIGNED);
         $this->boolean((bool)$ticket->needReopen())->isFalse();
-
     }
 }
