@@ -513,6 +513,22 @@ abstract class MainAsset extends InventoryAsset
                     $input['entities_id'] = $dataEntity['entities_id'];
                 }
                 $this->entities_id = $input['entities_id'];
+
+                if (isset($dataEntity['is_recursive'])) {
+                    $this->is_recursive = $input['is_recursive'];
+                }
+                if (isset($dataEntity['locations_id'])) {
+                    $this->locations_id = $input['locations_id'];
+                }
+                if (isset($dataEntity['states_id'])) {
+                    $this->states_id = $input['states_id'];
+                }
+                if (isset($dataEntity['groups_id_tech'])) {
+                    $this->groups_id_tech = $input['groups_id_tech'];
+                }
+                if (isset($dataEntity['users_id_tech'])) {
+                    $this->users_id_tech = $input['users_id_tech'];
+                }
             }
 
             //call rules on current collected data to find item
@@ -595,8 +611,11 @@ abstract class MainAsset extends InventoryAsset
         $val->is_dynamic = 1;
         $val->entities_id = $entities_id;
 
+        $val->is_recursive = $this->is_recursive ?? $val->is_recursive ?? $this->item->fields['is_recursive'] ?? 0;
         $val->states_id = $this->states_id_default ?? $this->item->fields['states_id'] ?? 0;
         $val->locations_id = $this->locations_id ?? $val->locations_id ?? $this->item->fields['locations_id'] ?? 0;
+        $val->groups_id_tech = $this->groups_id_tech ?? $val->groups_id_tech ?? $this->item->fields['groups_id_tech'] ?? 0;
+        $val->users_id_tech = $this->users_id_tech ?? $val->users_id_tech ?? $this->item->fields['users_id_tech'] ?? 0;
 
         $orig_glpiactive_entity = $_SESSION['glpiactive_entity'] ?? null;
         $orig_glpiactiveentities = $_SESSION['glpiactiveentities'] ?? null;
