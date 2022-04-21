@@ -44,6 +44,7 @@ use Config;
 use DBConnection;
 use Group;
 use Group_Ticket;
+use ITILCategory;
 use Problem;
 use Profile_User;
 use QueryExpression;
@@ -1676,7 +1677,7 @@ class Provider
             $s_criteria['criteria'][] = [
                 'link'       => 'AND',
                 'field'      => self::getSearchOptionID($table, 'itilcategories_id', 'glpi_itilcategories'), // itilcategory
-                'searchtype' => 'equals',
+                'searchtype' => 'under',
                 'value'      => (int) $apply_filters['itilcategory']
             ];
         }
@@ -1825,7 +1826,7 @@ class Provider
             && (int) $apply_filters['itilcategory'] > 0
         ) {
             $where += [
-                "$table.itilcategories_id" => (int) $apply_filters['itilcategory']
+                "$table.itilcategories_id" => getSonsOf(ITILCategory::getTable(), (int) $apply_filters['itilcategory'])
             ];
         }
 
