@@ -409,7 +409,6 @@ abstract class CommonITILObject extends CommonDBTM
             'canupdate'               => $canupdate,
             'canpriority'             => $canupdate,
             'canassign'               => $canupdate,
-            'is_requester'            => $this->isUser(CommonITILActor::REQUESTER, Session::getLoginUserID()),
         ]);
 
         return true;
@@ -723,6 +722,30 @@ abstract class CommonITILObject extends CommonDBTM
          )
          || $this->isValidator(Session::getLoginUserID())
         );
+    }
+
+
+    /**
+     * Do the current ItilObject need to be reopened by a requester answer
+     *
+     * @since 10.0.1
+     *
+     * @return boolean
+     */
+    public function needReopen(): bool
+    {
+        $my_id    = Session::getLoginUserID();
+        $my_groups = $_SESSION["glpigroups"] ?? [];
+
+        $ami_requester       = $this->isUser(CommonITILActor::REQUESTER, $my_id);
+        $ami_requester_group = $this->isGroup(CommonITILActor::REQUESTER, $my_groups);
+
+        $ami_assignee        = $this->isUser(CommonITILActor::ASSIGN, $my_id);
+        $ami_assignee_group  = $this->isGroup(CommonITILActor::ASSIGN, $my_groups);
+
+        return in_array($this->fields["status"], static::getReopenableStatusArray())
+            && ($ami_requester || $ami_requester_group)
+            && !($ami_assignee || $ami_assignee_group);
     }
 
     /**
