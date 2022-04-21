@@ -4456,4 +4456,55 @@ HTML
             ->integer[1]
             ->string['text']->isEqualTo("_test_group_1");
     }
+
+
+    public function testNeedReopen() {
+        $this->login();
+
+        $tech_id     = getItemByTypeName('User', 'tech', true);
+        $postonly_id = getItemByTypeName('User', 'post-only', true);
+
+        $ticket = new \Ticket();
+        $tickets_id = $ticket->add([
+            'name'                => 'testNeedReopen',
+            'content'             => 'testNeedReopen',
+            '_users_id_requester' => $postonly_id,
+            '_users_id_assign'    => $tech_id,
+        ]);
+        $this->integer($tickets_id)->isGreaterThan(0);
+        $this->boolean((bool)$ticket->getFromDB($ticket->getID()))->isTrue();
+        $this->integer($ticket->fields['status'])->isEqualTo(\Ticket::ASSIGNED);
+        $this->boolean((bool)$ticket->needReopen())->isFalse();
+
+        $ticket->update([
+            'id' => $tickets_id,
+            'status' => \Ticket::WAITING,
+        ]);
+
+        // tech user cant reopen
+        $this->boolean((bool)$ticket->getFromDB($ticket->getID()))->isTrue();
+        $this->integer($ticket->fields['status'])->isEqualTo(\Ticket::WAITING);
+        $this->boolean((bool)$ticket->needReopen())->isFalse();
+
+        // requester can reopen
+        $this->login('post-only', 'postonly');
+        $this->boolean((bool)$ticket->getFromDB($ticket->getID()))->isTrue();
+        $this->integer($ticket->fields['status'])->isEqualTo(\Ticket::WAITING);
+        $this->boolean((bool)$ticket->needReopen())->isTrue();
+
+        // force a reopen
+        $followup = new \ITILFollowup;
+        $followup->add([
+            'itemtype'   => 'Ticket',
+            'items_id'   => $tickets_id,
+            'content'    => 'testNeedReopen',
+            'add_reopen' => 1,
+        ]);
+
+        // requester cant reopen anymore (ticket is already in an open state)
+        $this->boolean((bool)$ticket->getFromDB($ticket->getID()))->isTrue();
+        $this->integer($ticket->fields['status'])->isEqualTo(\Ticket::ASSIGNED);
+        $this->boolean((bool)$ticket->needReopen())->isFalse();
+
+    }
 }
