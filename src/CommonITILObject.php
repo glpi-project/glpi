@@ -8410,7 +8410,10 @@ abstract class CommonITILObject extends CommonDBTM
             }
 
            // update actors
-            $common_actor_input = [];
+            $common_actor_input = [
+                '_do_not_compute_takeintoaccount' => $this->isTakeIntoAccountComputationBlocked($this->input),
+                '_from_object'                    => true,
+            ];
             if ($disable_notifications) {
                 $common_actor_input['_disablenotif'] = true;
             }
@@ -8421,6 +8424,25 @@ abstract class CommonITILObject extends CommonDBTM
                     $actor_obj::$items_id_2 => $actor['items_id'],   // ex 'users_id' => 1
                     'type'                  => $actortype,
                 ]);
+                if (
+                    $actortype === CommonITILActor::ASSIGN
+                    && (
+                        (!isset($this->input['status']) && in_array($this->fields['status'], $this->getNewStatusArray()))
+                        || (isset($this->input['status']) && in_array($this->input['status'], $this->getNewStatusArray()))
+                    )
+                    && in_array(self::ASSIGNED, array_keys($this->getAllStatusArray()))
+                    && !$this->isStatusComputationBlocked($this->input)
+                ) {
+                    $self = new static();
+                    $self->update(
+                        [
+                            'id'                              => $this->getID(),
+                            'status'                          => self::ASSIGNED,
+                            '_do_not_compute_takeintoaccount' => $this->isTakeIntoAccountComputationBlocked($this->input),
+                            '_from_assignment'                => true
+                        ]
+                    );
+                }
             }
             foreach ($updated as $actor) {
                 $actor_obj = $this->getActorObjectForItem($actor['itemtype']);
@@ -8523,15 +8545,31 @@ abstract class CommonITILObject extends CommonDBTM
     protected function assign(array $input)
     {
         if (
-            ((isset($input["_users_id_assign"])
-            && ((!is_array($input['_users_id_assign']) &&  $input["_users_id_assign"] > 0)
-               || is_array($input['_users_id_assign']) && count($input['_users_id_assign']) > 0))
-            || (isset($input["_groups_id_assign"])
-            && ((!is_array($input['_groups_id_assign']) && $input["_groups_id_assign"] > 0)
-               || is_array($input['_groups_id_assign']) && count($input['_groups_id_assign']) > 0))
-            || (isset($input["_suppliers_id_assign"])
-            && ((!is_array($input['_suppliers_id_assign']) && $input["_suppliers_id_assign"] > 0)
-               || is_array($input['_suppliers_id_assign']) && count($input['_suppliers_id_assign']) > 0)))
+            (
+                (
+                    isset($input['_actors']['assign'])
+                    && is_array($input['_actors']['assign'])
+                    && count($input['_actors']['assign']) > 0
+                ) || (
+                    isset($input["_users_id_assign"])
+                    && (
+                        (!is_array($input['_users_id_assign']) && $input["_users_id_assign"] > 0)
+                        || is_array($input['_users_id_assign']) && count($input['_users_id_assign']) > 0
+                    )
+                ) || (
+                    isset($input["_groups_id_assign"])
+                    && (
+                        (!is_array($input['_groups_id_assign']) && $input["_groups_id_assign"] > 0)
+                        || is_array($input['_groups_id_assign']) && count($input['_groups_id_assign']) > 0
+                    )
+                ) || (
+                    isset($input["_suppliers_id_assign"])
+                    && (
+                        (!is_array($input['_suppliers_id_assign']) && $input["_suppliers_id_assign"] > 0)
+                        || is_array($input['_suppliers_id_assign']) && count($input['_suppliers_id_assign']) > 0
+                    )
+                )
+            )
             && (in_array($input['status'], $this->getNewStatusArray()))
             && !$this->isStatusComputationBlocked($input)
         ) {
