@@ -727,7 +727,7 @@ class Plugin extends CommonDBTM
                 'state'   => self::NOTINSTALLED,
             ]);
             $this->unload($this->fields['directory']);
-            self::doHook('post_plugin_uninstall', $this->fields['directory']);
+            self::doHook(Hooks::POST_PLUGIN_UNINSTALL, $this->fields['directory']);
 
             $type = INFO;
             $message = sprintf(__('Plugin %1$s has been uninstalled!'), $this->fields['name']);
@@ -797,7 +797,7 @@ class Plugin extends CommonDBTM
                         ]);
                         $message = sprintf(__('Plugin %1$s has been installed and must be configured!'), $this->fields['name']);
                     }
-                    self::doHook('post_plugin_install', $this->fields['directory']);
+                    self::doHook(Hooks::POST_PLUGIN_UNINSTALL, $this->fields['directory']);
                 }
             } else {
                 $type = WARNING;
@@ -890,7 +890,7 @@ class Plugin extends CommonDBTM
                 if (isset($_SESSION['glpimenu'])) {
                     unset($_SESSION['glpimenu']);
                 }
-                self::doHook('post_plugin_enable', $this->fields['directory']);
+                self::doHook(Hooks::POST_PLUGIN_ENABLE, $this->fields['directory']);
 
                 Session::addMessageAfterRedirect(
                     sprintf(__('Plugin %1$s has been activated!'), $this->fields['name']),
@@ -936,7 +936,7 @@ class Plugin extends CommonDBTM
                 'state' => self::NOTACTIVATED
             ]);
             $this->unload($this->fields['directory']);
-            self::doHook('post_plugin_disable', $this->fields['directory']);
+            self::doHook(Hooks::POST_PLUGIN_DISABLE, $this->fields['directory']);
 
            // reset menu
             if (isset($_SESSION['glpimenu'])) {
@@ -982,7 +982,7 @@ class Plugin extends CommonDBTM
 
         $dirs = array_keys(self::$activated_plugins);
         foreach ($dirs as $dir) {
-            self::doHook('post_plugin_disable', $dir);
+            self::doHook(Hooks::POST_PLUGIN_DISABLE, $dir);
         }
 
         self::$activated_plugins = [];
@@ -1008,7 +1008,7 @@ class Plugin extends CommonDBTM
             CronTask::Unregister($this->fields['directory']);
 
             $this->unload($this->fields['directory']);
-            self::doHook('post_plugin_clean', $this->fields['directory']);
+            self::doHook(Hooks::POST_PLUGIN_CLEAN, $this->fields['directory']);
             $this->delete(['id' => $ID]);
         }
     }
