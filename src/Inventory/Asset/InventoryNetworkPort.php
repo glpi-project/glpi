@@ -405,7 +405,7 @@ trait InventoryNetworkPort
                     $this->handleInstantiation($type, $data, $keydb, true);
                 }
 
-                $ips = $data->ipaddress;
+                $ips = $data->ipaddress ?? [];
                 if (count($ips)) {
                    //handle network name
                     if ($netname_stmt == null) {
