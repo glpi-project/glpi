@@ -2354,6 +2354,10 @@ HTML;
             [ 'name'    => 'html2text/html2text',
                 'check'   => 'Html2Text\\Html2Text'
             ],
+            [
+                'name'    => 'symfony/css-selector',
+                'check'   => 'Symfony\\Component\\CssSelector\\CssSelectorConverter'
+            ],
             [ 'name'    => 'symfony/dom-crawler',
                 'check'   => 'Symfony\\Component\\DomCrawler\\Crawler'
             ],

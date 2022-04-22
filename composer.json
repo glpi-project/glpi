@@ -57,6 +57,7 @@
         "simplepie/simplepie": "^1.5",
         "symfony/cache": "^5.4",
         "symfony/console": "^5.4",
+        "symfony/css-selector": "^5.4",
         "symfony/dom-crawler": "^5.4",
         "symfony/polyfill-ctype": "^1.23",
         "symfony/polyfill-iconv": "^1.23",
@@ -76,8 +77,7 @@
         "maglnet/composer-require-checker": "^3.5",
         "mikey179/vfsstream": "^1.6",
         "php-parallel-lint/php-parallel-lint": "^1.3",
-        "squizlabs/php_codesniffer": "^3.6",
-        "symfony/css-selector": "^5.4"
+        "squizlabs/php_codesniffer": "^3.6"
     },
     "replace": {
         "paragonie/random_compat": "*",
