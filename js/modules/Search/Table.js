@@ -186,7 +186,7 @@ window.GLPI.Search.Table = class Table extends GenericView {
                 this.getElement().trigger('search_refresh', [this.getElement()]);
                 this.hideLoadingSpinner();
                 this.shiftSelectAllCheckbox();
-            }).fail(() => {
+            }, () => {
                 handle_search_failure();
             });
         } catch (error) {
