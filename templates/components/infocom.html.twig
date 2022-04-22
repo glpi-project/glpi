@@ -170,14 +170,20 @@
                         'value',
                         infocom.fields['value'],
                         _x('price', 'Value'),
-                        {'disabled': disabled}
+                        {
+                            'disabled': disabled,
+                            'step': 'any',
+                        }
                      ) }}
 
                      {{ fields.numberField(
                         'warranty_value',
                         infocom.fields['warranty_value'],
                         __('Warranty extension value'),
-                        {'disabled': disabled}
+                        {
+                            'disabled': disabled,
+                            'step': 'any',
+                        }
                      ) }}
 
 
