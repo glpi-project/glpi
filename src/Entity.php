@@ -330,6 +330,12 @@ class Entity extends CommonTreeDropdown
      **/
     public function prepareInputForUpdate($input)
     {
+        // Force entities_id = NULL for root entity
+        if ($input['id'] == 0) {
+            $input['entities_id'] = null;
+            $input['level']       = 1;
+        }
+
         $input = parent::prepareInputForUpdate($input);
         if ($input === false) {
             return false;
@@ -352,11 +358,6 @@ class Entity extends CommonTreeDropdown
             $input['max_closedate'] = $_SESSION["glpi_currenttime"];
         }
 
-       // Force entities_id = NULL for root entity
-        if ($input['id'] == 0) {
-            $input['entities_id'] = 'NULL';
-            $input['level']       = 1;
-        }
         if (!Session::isCron()) { // Filter input for connected
             $input = $this->checkRightDatas($input);
         }
