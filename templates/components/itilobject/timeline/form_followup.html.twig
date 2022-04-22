@@ -84,7 +84,8 @@
             <input type="hidden" name="items_id" value="{{ item.fields['id'] }}" />
             {{ call_plugin_hook('pre_item_form', {"item": subitem, 'options': params}) }}
 
-            {% if (_get['_openfollowup'] ?? false) or item.needReopen() %}
+            {% set add_reopen = (_get['_openfollowup'] ?? false) or item.needReopen() %}
+            {% if add_reopen %}
                <input type="hidden" name="add_reopen" value="1" />
             {% endif %}
 
@@ -102,6 +103,7 @@
                         'enable_fileupload': true,
                         'enable_mentions': true,
                         'rand': rand,
+                        'required': add_reopen
                      }
                   ) }}
                </div>
