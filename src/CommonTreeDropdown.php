@@ -196,7 +196,7 @@ abstract class CommonTreeDropdown extends CommonDropdown
     {
         global $GLPI_CACHE;
 
-        if (isset($input[$this->getForeignKeyField()]) && $input[$this->getForeignKeyField()] !== '') {
+        if (isset($input[$this->getForeignKeyField()])) {
            // Can't move a parent under a child
             if (
                 in_array(
