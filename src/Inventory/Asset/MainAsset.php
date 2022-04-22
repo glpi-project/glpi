@@ -516,6 +516,7 @@ abstract class MainAsset extends InventoryAsset
                 $this->entities_id = $input['entities_id'];
 
                 // get data from rules (like locations_id, states_id, groups_id_tech, etc)
+                // we don't want virtual action (prefixed by _)
                 $ruleentity_actions = $ruleEntity->getRuleClass()->getAllActions();
                 foreach ($ruleentity_actions as $action_key => $action_data) {
                     if (
