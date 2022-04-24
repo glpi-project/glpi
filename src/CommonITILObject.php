@@ -6982,6 +6982,10 @@ abstract class CommonITILObject extends CommonDBTM
         $foreignKey = static::getForeignKeyField();
         $timeline = [];
 
+        if ($this->isNewItem()) {
+            return $timeline;
+        }
+
         $canupdate_parent = $this->canUpdateItem() && !in_array($this->fields['status'], $this->getClosedStatusArray());
 
        //checks rights
