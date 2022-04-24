@@ -396,6 +396,18 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
             $kb_item_item = new KnowbaseItem_Item();
             $kb_item_item->add($params);
         }
+
+        // Handle categories
+        if (isset($this->input['knowbaseitemcategories_id'])) {
+            $kb_cats = is_array($this->input['knowbaseitemcategories_id']) ? $this->input['knowbaseitemcategories_id'] : [$this->input['knowbaseitemcategories_id']];
+            foreach ($kb_cats as $kb_cat) {
+                $kb_cat_item = new KnowbaseItem_KnowbaseItemCategory();
+                $kb_cat_item->add([
+                    'knowbaseitems_id' => $this->getID(),
+                    'knowbaseitemcategories_id' => $kb_cat,
+                ]);
+            }
+        }
     }
 
 
@@ -815,7 +827,17 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
         $options['formoptions'] = "data-track-changes=true";
         $this->showFormHeader($options);
         echo "<tr class='tab_bg_1'>";
-        echo "<td colspan=2></td>";
+        if ($this->isNewItem()) {
+            echo "<td>" . KnowbaseItemCategory::getTypeName(Session::getPluralNumber()) . "</td>";
+            echo "<td>";
+            KnowbaseItemCategory::dropdown([
+                'value' => [],
+                'multiple' => true,
+            ]);
+            echo "</td>";
+        } else {
+            echo "<td colspan=2></td>";
+        }
         echo "<td>";
         echo "<input type='hidden' name='users_id' value=\"" . Session::getLoginUserID() . "\">";
         if ($this->fields["date_creation"]) {
