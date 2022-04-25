@@ -1253,6 +1253,7 @@ $RELATION = [
             'tickettemplates_id_demand',
         ],
         'glpi_profiles'                        => 'tickettemplates_id',
+        'glpi_tickets'                         => 'tickettemplates_id',
         'glpi_ticketrecurrents'                => 'tickettemplates_id',
         '_glpi_tickettemplatehiddenfields'     => 'tickettemplates_id',
         '_glpi_tickettemplatemandatoryfields'  => 'tickettemplates_id',
@@ -1263,6 +1264,7 @@ $RELATION = [
         'glpi_itilcategories'                  => [
             'changetemplates_id',
         ],
+        'glpi_changes'                         => 'changetemplates_id',
         '_glpi_changetemplatehiddenfields'     => 'changetemplates_id',
         '_glpi_changetemplatemandatoryfields'  => 'changetemplates_id',
         '_glpi_changetemplatepredefinedfields' => 'changetemplates_id',
@@ -1272,6 +1274,7 @@ $RELATION = [
         'glpi_itilcategories'                  => [
             'problemtemplates_id',
         ],
+        'glpi_problems'                         => 'problemtemplates_id',
         '_glpi_problemtemplatehiddenfields'     => 'problemtemplates_id',
         '_glpi_problemtemplatemandatoryfields'  => 'problemtemplates_id',
         '_glpi_problemtemplatepredefinedfields' => 'problemtemplates_id',
