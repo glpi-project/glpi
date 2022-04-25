@@ -140,6 +140,8 @@
                }|merge(field_options) %}
                {% if item.isNewItem() %}
                   {% set type_params = type_params|merge({'on_change': 'this.form.submit()',}) %}
+               {% else %}
+                  {% set type_params = type_params|merge({'on_change': 'reloadCategory()',}) %}
                {% endif %}
                {{ fields.field(
                   'type',
@@ -174,6 +176,7 @@
             {% elseif item.getType() == 'Change' %}
                {% set cat_params = cat_params|merge({'condition': {'is_change': 1}}) %}
             {% endif %}
+            <span id="category_block_{{ rand }}">
             {{ fields.dropdownField(
                'ITILCategory',
                'itilcategories_id',
@@ -181,6 +184,7 @@
                _n('Category', 'Categories', 1),
                cat_params
             ) }}
+            </span>
 
             {{ include('components/itilobject/fields/status.html.twig') }}
 
@@ -440,4 +444,17 @@ $(function() {
       })
    }
 });
+
+var reloadCategory = function() {
+    var type = $('[name=type]').val();
+
+    $('#category_block_{{ rand }} .field-container').load(
+        '{{ path("ajax/dropdownTicketCategories.php") }}',
+        {
+            'type': type,
+            'entity_restrict': {{ item.fields['entities_id'] }},
+            'value': {{ item.fields['itilcategories_id'] }},
+        }
+    );
+};
 </script>

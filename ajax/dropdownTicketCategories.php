@@ -68,4 +68,5 @@ if ($_POST["type"]) {
 }
 
 $opt['condition'] = $condition;
+$opt['width']     = '100%';
 ITILCategory::dropdown($opt);
