@@ -113,7 +113,7 @@ class Socket extends CommonDBChild
         $rand_items_id = rand();
 
         echo "<div id='show_itemtype_field' class='input_listener'>";
-        echo "<label class='form-label'>" . __('Asset') . "</label>";
+        echo "<label class='form-label'>". __('Asset') ."</label>";
         Dropdown::showFromArray('itemtype', self::getSocketLinkTypes(), ['value' => $itemtype,
             'rand' => $rand_itemtype
         ]);

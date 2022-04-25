@@ -81,7 +81,7 @@ if (isset($_POST["add_several"])) {
         }
     }
     Html::back();
-} else if (isset($_POST["purge"])) {
+} elseif (isset($_POST["purge"])) {
     $socket->check($_POST["id"], PURGE);
 
     if ($socket->delete($_POST, 1)) {
@@ -95,7 +95,7 @@ if (isset($_POST["add_several"])) {
         );
     }
     $socket->redirectToList();
-} else if (isset($_POST["update"])) {
+} elseif (isset($_POST["update"])) {
     $socket->check($_POST["id"], UPDATE);
 
     if ($socket->update($_POST)) {
@@ -109,7 +109,7 @@ if (isset($_POST["add_several"])) {
         );
     }
     Html::back();
-} else if (isset($_POST["execute_multi"])) {
+} elseif (isset($_POST["execute_multi"])) {
     $socket->check(-1, CREATE, $_POST);
 
     for ($i = $_POST["_from"]; $i <= $_POST["_to"]; $i++) {
@@ -124,7 +124,7 @@ if (isset($_POST["add_several"])) {
         sprintf(__('%1$s adds several sockets'), $_SESSION["glpiname"])
     );
     Html::back();
-} else if (isset($_POST["execute_single"])) {
+} elseif (isset($_POST["execute_single"])) {
     $socket->check(-1, CREATE, $_POST);
 
     if ($socket->add($_POST)) {
@@ -148,7 +148,7 @@ if (isset($_POST["add_several"])) {
     }
     if (!$socket->isNewItem()) {
         $itemtype = $socket->fields['itemtype'];
-    } else if ($_GET['itemtype'] != '') {
+    } elseif ($_GET['itemtype'] != '') {
         $itemtype = $_GET['itemtype'];
     }
 
