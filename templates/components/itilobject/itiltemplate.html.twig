@@ -31,42 +31,29 @@
  # ---------------------------------------------------------------------
  #}
 
-{% import 'components/form/fields_macros.html.twig' as fields %}
+{% extends 'dropdown_form.html.twig' %}
 
-{% if canupdate %}
-   {% set status_field %}
-      {{ item.dropdownStatus({
-         'value': item.fields['status'],
-         'showtype': 'allowed',
-         'width': '100%',
-         'display': false,
-         'use_template_limits': itiltemplate.fields['id']
-      }|merge(field_options))|raw }}
+{% block more_fields %}
+   {% if affected_item_count is defined and affected_item_count > 0 %}
+      <script>
+          (function() {
+              const save_button = $('button[name="update"]');
+              const delete_button = $('button[name="delete"]');
+              const confirm_message = '{{ __('This template affects one or more items, are you sure you want to perform this action?') }}';
 
-      {% set validation_class = item.getValidationClassInstance() %}
-      {% if validation_class is not null %}
-         {{ validation_class.alertValidation(item, 'status') }}
-      {% endif %}
-   {% endset %}
-{% else %}
-   {% set field_options = field_options|merge({'center': true}) %}
-   {% set status_field %}
-      {{ item.getStatusIcon(item.fields['status'])|raw }}
-      {{ item.getStatus(item.fields['status']) }}
-
-      {% if item.canReopen() %}
-         <a href="{{ item.getLinkURL() }}&amp;_openfollowup=1"
-            class="btn btn-ghost-secondary">
-            <i class="far fa-folder-open"></i>
-            <span>{{ __('Reopen') }}</span>
-         </a>
-      {% endif %}
-   {% endset %}
-{% endif %}
-
-{{ fields.field(
-   'status',
-   status_field,
-   __('Status'),
-   field_options
-) }}
+              if (save_button.length > 0) {
+                  save_button.on('click', function() {
+                      //Ask for confirmation
+                      return confirm(confirm_message);
+                  });
+              }
+              if (delete_button.length > 0) {
+                  delete_button.on('click', function() {
+                      //Ask for confirmation
+                      return confirm(confirm_message);
+                  });
+              }
+          })();
+      </script>
+   {% endif %}
+{% endblock %}

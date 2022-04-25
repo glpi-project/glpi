@@ -402,8 +402,13 @@ abstract class CommonITILObject extends CommonDBTM
             $type = ($ID ? $this->fields['type'] : $options['type']);
         }
         // Load template if available
+        $predefined_template = 0;
+        $template_class = static::getTemplateClass();
+        if (class_exists($template_class) && (int) $ID > 0 && isset($this->fields[$template_class::getForeignKeyField()])) {
+            $predefined_template = $this->fields[$template_class::getForeignKeyField()];
+        }
         $tt = $this->getITILTemplateToUse(
-            $options['template_preview'] ?? 0,
+            $options['template_preview'] ?? $predefined_template,
             $type,
             ($ID ? $this->fields['itilcategories_id'] : $options['itilcategories_id']),
             ($ID ? $this->fields['entities_id'] : $options['entities_id'])
@@ -1506,6 +1511,13 @@ abstract class CommonITILObject extends CommonDBTM
        // Add document if needed
         $this->getFromDB($input["id"]); // entities_id field required
 
+        // Map unique template field to template foreign key
+        // Leave original field. The new field is stored in the DB, while the original is used for everything else (left for BC)
+        if (isset($input[static::getTemplateFormFieldName()]) && (int) $input[static::getTemplateFormFieldName()] > 0) {
+            $tpl_class = static::getTemplateClass();
+            $input[$tpl_class::getForeignKeyField()] = (int) $input[static::getTemplateFormFieldName()];
+        }
+
         if ($this->getType() !== Ticket::getType()) {
            //cannot be handled here for tickets. @see Ticket::prepareInputForUpdate()
             $input = $this->handleTemplateFields($input);
@@ -2321,6 +2333,13 @@ abstract class CommonITILObject extends CommonDBTM
 
         if (!$this->checkFieldsConsistency($input)) {
             return false;
+        }
+
+        // Map unique template field to template foreign key
+        // Leave original field. The new field is stored in the DB, while the original is used for everything else (left for BC)
+        if (isset($input[static::getTemplateFormFieldName()]) && (int) $input[static::getTemplateFormFieldName()] > 0) {
+            $tpl_class = static::getTemplateClass();
+            $input[$tpl_class::getForeignKeyField()] = (int) $input[static::getTemplateFormFieldName()];
         }
 
        // save value before clean;
@@ -3851,6 +3870,7 @@ abstract class CommonITILObject extends CommonDBTM
      *  - value    : default value (default self::INCOMING)
      *  - showtype : list proposed : normal, search or allowed (default normal)
      *  - display  : boolean if false get string
+     *  - use_template_limits: Integer ID of the template to use when considering the available statuses (false disables this limitation).
      *
      * @return string|integer Output string if display option is set to false,
      *                        otherwise random part of dropdown id
@@ -3859,11 +3879,12 @@ abstract class CommonITILObject extends CommonDBTM
     {
 
         $p = [
-            'name'              => 'status',
-            'showtype'          => 'normal',
-            'display'           => true,
-            'templateResult'    => "templateItilStatus",
-            'templateSelection' => "templateItilStatus",
+            'name'                  => 'status',
+            'showtype'              => 'normal',
+            'display'               => true,
+            'templateResult'        => "templateItilStatus",
+            'templateSelection'     => "templateItilStatus",
+            'use_template_limits'   => false,
         ];
 
         if (is_array($options) && count($options)) {
@@ -3872,7 +3893,7 @@ abstract class CommonITILObject extends CommonDBTM
             }
         }
 
-        if (!isset($p['value']) || empty($p['value'])) {
+        if (empty($p['values']) && (!isset($p['value']) || empty($p['value']))) {
             $p['value']     = self::INCOMING;
         }
 
@@ -3888,6 +3909,21 @@ abstract class CommonITILObject extends CommonDBTM
             default:
                 $tab = static::getAllStatusArray(false);
                 break;
+        }
+
+        if ($p['use_template_limits'] !== false && (int) $p['use_template_limits'] > 0) {
+            $template_class = static::getTemplateClass();
+            $template = new $template_class();
+            if ($template->getFromDB($p['use_template_limits'])) {
+                $allowed_statuses = $template->fields['allowed_statuses'];
+                // Allow current value if set
+                if (isset($p['value']) && !empty($p['value'])) {
+                    $allowed_statuses[] = $p['value'];
+                }
+                $tab = array_filter($tab, static function ($status) use ($allowed_statuses) {
+                    return in_array($status, $allowed_statuses, false);
+                }, ARRAY_FILTER_USE_KEY);
+            }
         }
 
         return Dropdown::showFromArray($p['name'], $tab, $p);
@@ -4444,6 +4480,17 @@ abstract class CommonITILObject extends CommonDBTM
                     ]
                 ]
             ]
+        ];
+
+        $tab[] = [
+            'id'                 => '401',
+            'table'              => $this->getTemplateClass()::getTable(),
+            'field'              => 'name',
+            'name'               => __('Template'),
+            'massiveaction'      => false,
+            'searchtype'         => ['equals', 'notequals'],
+            'datatype'           => 'dropdown',
+            'linkfield'          => $this->getTemplateClass()::getForeignKeyField(),
         ];
 
         return $tab;

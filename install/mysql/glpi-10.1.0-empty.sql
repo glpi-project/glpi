@@ -674,6 +674,7 @@ CREATE TABLE `glpi_changes` (
   `close_delay_stat` int NOT NULL DEFAULT '0',
   `solve_delay_stat` int NOT NULL DEFAULT '0',
   `date_creation` timestamp NULL DEFAULT NULL,
+  `changetemplates_id` int unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `entities_id` (`entities_id`),
@@ -692,7 +693,8 @@ CREATE TABLE `glpi_changes` (
   KEY `time_to_resolve` (`time_to_resolve`),
   KEY `global_validation` (`global_validation`),
   KEY `users_id_lastupdater` (`users_id_lastupdater`),
-  KEY `date_creation` (`date_creation`)
+  KEY `date_creation` (`date_creation`),
+  KEY `changetemplates_id` (`changetemplates_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 
@@ -5541,6 +5543,7 @@ CREATE TABLE `glpi_problems` (
   `close_delay_stat` int NOT NULL DEFAULT '0',
   `solve_delay_stat` int NOT NULL DEFAULT '0',
   `date_creation` timestamp NULL DEFAULT NULL,
+  `problemtemplates_id` int unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `entities_id` (`entities_id`),
@@ -5558,7 +5561,8 @@ CREATE TABLE `glpi_problems` (
   KEY `impact` (`impact`),
   KEY `time_to_resolve` (`time_to_resolve`),
   KEY `users_id_lastupdater` (`users_id_lastupdater`),
-  KEY `date_creation` (`date_creation`)
+  KEY `date_creation` (`date_creation`),
+  KEY `problemtemplates_id` (`problemtemplates_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 
@@ -7150,6 +7154,7 @@ CREATE TABLE `glpi_tickets` (
   `locations_id` int unsigned NOT NULL DEFAULT '0',
   `validation_percent` int NOT NULL DEFAULT '0',
   `date_creation` timestamp NULL DEFAULT NULL,
+  `tickettemplates_id` int unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `date` (`date`),
   KEY `closedate` (`closedate`),
@@ -7180,7 +7185,8 @@ CREATE TABLE `glpi_tickets` (
   KEY `locations_id` (`locations_id`),
   KEY `date_creation` (`date_creation`),
   KEY `ola_waiting_duration` (`ola_waiting_duration`),
-  KEY `olalevels_id_ttr` (`olalevels_id_ttr`)
+  KEY `olalevels_id_ttr` (`olalevels_id_ttr`),
+  KEY `tickettemplates_id` (`tickettemplates_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 
@@ -7390,6 +7396,7 @@ CREATE TABLE `glpi_tickettemplates` (
   `entities_id` int unsigned NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
   `comment` text,
+  `allowed_statuses` varchar(255) NOT NULL DEFAULT '[1,2,3,4,5,6]',
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `entities_id` (`entities_id`),
@@ -7406,6 +7413,7 @@ CREATE TABLE `glpi_changetemplates` (
   `entities_id` int unsigned NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
   `comment` text,
+  `allowed_statuses` varchar(255) NOT NULL DEFAULT '[1,9,10,7,4,11,12,5,8,6,14,13]',
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `entities_id` (`entities_id`),
@@ -7421,6 +7429,7 @@ CREATE TABLE `glpi_problemtemplates` (
   `entities_id` int unsigned NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
   `comment` text,
+  `allowed_statuses` varchar(255) NOT NULL DEFAULT '[1,7,2,3,4,5,8,6]',
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `entities_id` (`entities_id`),
