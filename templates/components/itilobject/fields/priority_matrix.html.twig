@@ -55,7 +55,7 @@
 
 {% set impact_options = field_options %}
 {% if field_options.fields_template.isMandatoryField('impact') %}
-   {% set impact_options = impact_option|merge({
+   {% set impact_options = impact_options|merge({
       'required': true,
    }) %}
 {% endif %}
