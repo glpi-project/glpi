@@ -31,12 +31,15 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Toolbox\Sanitizer;
-
 class RuleTicket extends RuleCommonITILObject
 {
    // From Rule
     public static $rightname = 'rule_ticket';
+
+    public function getTitle()
+    {
+        return __('Business rules for tickets');
+    }
 
     public function executeActions($output, $params, array $input = [])
     {

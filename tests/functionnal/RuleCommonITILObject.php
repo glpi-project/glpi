@@ -34,8 +34,6 @@
 namespace tests\units;
 
 use CommonITILValidation;
-use Contract;
-use ContractType;
 use DbTestCase;
 use Glpi\Toolbox\Sanitizer;
 use Group_User;

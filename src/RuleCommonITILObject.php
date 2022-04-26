@@ -55,14 +55,6 @@ abstract class RuleCommonITILObject extends Rule
         return $matches[1];
     }
 
-    public function getTitle()
-    {
-        /** @var CommonITILObject $itemtype */
-        $itemtype = static::getItemtype();
-        $itemtype_name = $itemtype::getTypeName(Session::getPluralNumber());
-        return sprintf(__('Business rules for %s'), strtolower($itemtype_name));
-    }
-
     public function maybeRecursive()
     {
         return true;

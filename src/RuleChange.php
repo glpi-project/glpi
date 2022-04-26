@@ -31,10 +31,13 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Toolbox\Sanitizer;
-
 class RuleChange extends RuleCommonITILObject
 {
     // From Rule
     public static $rightname = 'rule_change';
+
+    public function getTitle()
+    {
+        return __('Business rules for changes');
+    }
 }

@@ -37,6 +37,11 @@ class RuleTicketCollection extends RuleCommonITILObjectCollection
     public static $rightname    = 'rule_ticket';
     public $menu_option         = 'ticket';
 
+    public function getTitle()
+    {
+        return __('Business rules for tickets');
+    }
+
     /**
      * @see RuleCollection::prepareInputDataForProcess()
      **/

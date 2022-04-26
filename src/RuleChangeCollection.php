@@ -36,4 +36,9 @@ class RuleChangeCollection extends RuleCommonITILObjectCollection
     // From RuleCollection
     public static $rightname                        = 'rule_change';
     public $menu_option                             = 'change';
+
+    public function getTitle()
+    {
+        return __('Business rules for changes');
+    }
 }
