@@ -663,7 +663,7 @@ class CommonGLPI implements CommonGLPIInterface
 
                             $locked_js = <<<JAVASCRIPT
                         $(function() {
-                            $("{$js_expr}").closest("div,td").prev()
+                            $("{$js_expr}").closest("div.form-field > div,td").prev()
                             .append("<i class=\"ti ti-lock\" title=\"{$lockedtitle}\"></i>")
                             .toggleClass("lockedfield", true)
                             .removeClass("lockfield") //to drop duplicated fusion icon
@@ -699,7 +699,7 @@ JAVASCRIPT;
 
                                     $locked_js = <<<JAVASCRIPT
                                 $(function() {
-                                    $("{$js_expr}").closest("div,td").prev()
+                                    $("{$js_expr}").closest("div.form-field > div,td").prev()
                                     .append("<i class=\"ti ti-lock\" title=\"{$lockedtitle}\"></i>")
                                     .toggleClass("lockedfield", true)
                                     .removeClass("lockfield") //to drop duplicated fusion icon
